@@ -62,4 +62,4 @@ def kwone(*samples, axis=0):
 
 
 def cheatsheet() -> str:
-    return "kwone() -> Kruskal-Wallis one-way ANOVA (nonparametric)."
+    return "kwone: kwone() -> Kruskal-Wallis one-way ANOVA (nonparametric)."

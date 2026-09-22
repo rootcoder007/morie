@@ -21,4 +21,4 @@ def autocov(x: Union[Sequence, np.ndarray], k: int = 1) -> float:
 
 
 def cheatsheet() -> str:
-    return "autocov(x, k) -> Sample autocovariance at lag k."
+    return "autocov: autocov(x, k) -> Sample autocovariance at lag k."

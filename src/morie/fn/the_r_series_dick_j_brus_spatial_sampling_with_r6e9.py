@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_9(*args,
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_9() -> Deprecated; use :func:`morie.fn.cluster_total_si` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r6e9: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_9() -> Deprecated; use :func:`morie.fn.cluster_total_si` instead."

@@ -7,8 +7,8 @@ from morie.fn.bndpos import bound_pos_treatment
 
 def test_bndpos_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
+    y = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
+    D = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
     y_max = 100
     result = bound_pos_treatment(y, D, y_max)
     assert isinstance(result, dict)
@@ -17,8 +17,8 @@ def test_bndpos_basic():
 
 def test_bndpos_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
+    y = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
+    D = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
     y_max = 100
     result = bound_pos_treatment(y, D, y_max)
     assert isinstance(result, dict)

@@ -325,4 +325,4 @@ staheldonoho = stahel_donoho
 
 
 def cheatsheet() -> str:
-    return "median(v) -> The sample median."
+    return "stahdo: median(v) -> The sample median."

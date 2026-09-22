@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_16_equation_1(*args
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_16_equation_1() -> Deprecated; use :func:`morie.fn.linear_model_prediction` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r16e1: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_16_equation_1() -> Deprecated; use :func:`morie.fn.linear_model_prediction` instead."

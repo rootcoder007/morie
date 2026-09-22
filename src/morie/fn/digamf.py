@@ -10,4 +10,4 @@ def digamf(x):
 
 
 def cheatsheet() -> str:
-    return "digamf(x) -> Digamma function ψ(x) = d/dx ln Γ(x)."
+    return "digamf: digamf(x) -> Digamma function ψ(x) = d/dx ln Γ(x)."

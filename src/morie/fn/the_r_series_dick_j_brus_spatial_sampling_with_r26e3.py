@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_3(*args
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_3() -> Deprecated; use :func:`morie.fn.autocorrelated_mean_variance` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r26e3: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_3() -> Deprecated; use :func:`morie.fn.autocorrelated_mean_variance` instead."

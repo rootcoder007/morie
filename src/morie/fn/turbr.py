@@ -96,4 +96,4 @@ def turbr(
 
 
 def cheatsheet() -> str:
-    return "turbr(n) -> Generate a turbo code interleaver permutation."
+    return "turbr: turbr(n) -> Generate a turbo code interleaver permutation."

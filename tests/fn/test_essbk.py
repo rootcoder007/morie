@@ -10,9 +10,7 @@ def test_essbk_basic():
     chains = np.random.default_rng(42).normal(0, 1, 100)
     result = effective_sample_size_bulk(chains)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "ess_bulk" in result
 def test_essbk_edge():
     """Test edge cases."""
     chains = np.random.default_rng(42).normal(0, 1, 100)

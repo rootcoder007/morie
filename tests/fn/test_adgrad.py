@@ -12,9 +12,7 @@ def test_adgrad_basic():
     eps = np.random.default_rng(42).normal(0, 1, 100)
     result = adagrad(g, lr, eps)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "update" in result
 def test_adgrad_edge():
     """Test edge cases."""
     g = np.random.default_rng(43).normal(0, 1, 100)

@@ -209,4 +209,4 @@ def _uno_cstat(time, event, risk_score):
 
 
 def cheatsheet() -> str:
-    return "cstat(time, event, risk_score, method) -> Compute the concordance statistic (C-index) for a survival model."
+    return "cstat: cstat(time, event, risk_score, method) -> Compute the concordance statistic (C-index) for a survival model."

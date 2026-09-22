@@ -30,4 +30,4 @@ def yindex(tpr: float, fpr: float):
 
 
 def cheatsheet() -> str:
-    return "yindex(tpr, fpr) -> Youden's J statistic: TPR - FPR."
+    return "yindex: yindex(tpr, fpr) -> Youden's J statistic: TPR - FPR."

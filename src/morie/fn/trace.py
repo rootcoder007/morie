@@ -16,4 +16,4 @@ def trace(A: Union[Sequence, np.ndarray]) -> float:
 
 
 def cheatsheet() -> str:
-    return "trace(A) -> Trace of a square matrix: Σᵢ Aᵢᵢ."
+    return "trace: trace(A) -> Trace of a square matrix: Σᵢ Aᵢᵢ."

@@ -46,4 +46,4 @@ eigensymmetric = eigen_symmetric
 
 
 def cheatsheet() -> str:
-    return "eigen_symmetric(A) -> Eigenvalue decomposition for a real symmetric matrix."
+    return "eigsm: eigen_symmetric(A) -> Eigenvalue decomposition for a real symmetric matrix."

@@ -43,4 +43,4 @@ def dwtest(residuals: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "dwtest(residuals) -> Durbin-Watson statistic for autocorrelated residuals."
+    return "dwtest: dwtest(residuals) -> Durbin-Watson statistic for autocorrelated residuals."

@@ -65,4 +65,4 @@ def hawkr(
 
 
 def cheatsheet() -> str:
-    return "hawkr(M, G, c, hbar, kB) -> Compute the Hawking temperature of a Schwarzschild black hole."
+    return "hawkr: hawkr(M, G, c, hbar, kB) -> Compute the Hawking temperature of a Schwarzschild black hole."

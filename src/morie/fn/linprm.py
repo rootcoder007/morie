@@ -232,4 +232,4 @@ linear_programming = linear_program
 
 
 def cheatsheet() -> str:
-    return "interior_point(c, A, b, tol, max_iter) -> Mehrotra's predictor-corrector on :math:`Ax = b,\\ x \\ge 0`."
+    return "linprm: interior_point(c, A, b, tol, max_iter) -> Mehrotra's predictor-corrector on :math:`Ax = b,\\ x \\ge 0`."

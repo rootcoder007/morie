@@ -23,4 +23,4 @@ def ca_chapter_11_equation_1(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_11_equation_1() -> Deprecated; use :func:`morie.fn.cohens_d_sample` instead."
+    return "ca11e1: ca_chapter_11_equation_1() -> Deprecated; use :func:`morie.fn.cohens_d_sample` instead."

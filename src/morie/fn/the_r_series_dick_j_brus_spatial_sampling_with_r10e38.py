@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_38(*arg
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_38() -> Deprecated; use :func:`morie.fn.mixed_calibration_intercept` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r10e38: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_38() -> Deprecated; use :func:`morie.fn.mixed_calibration_intercept` instead."

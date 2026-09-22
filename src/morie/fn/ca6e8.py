@@ -23,4 +23,4 @@ def ca_chapter_6_equation_8(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_6_equation_8() -> Deprecated; use :func:`morie.fn.negative_binomial_variance` instead."
+    return "ca6e8: ca_chapter_6_equation_8() -> Deprecated; use :func:`morie.fn.negative_binomial_variance` instead."

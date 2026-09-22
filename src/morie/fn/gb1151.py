@@ -112,4 +112,4 @@ gibbons_blomqvist_q = normcorr
 
 
 def cheatsheet() -> str:
-    return "normcorr(x, y, rho, nodes) -> R_F, the correlation of the expected normal scores."
+    return "gb1151: normcorr(x, y, rho, nodes) -> R_F, the correlation of the expected normal scores."

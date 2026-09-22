@@ -114,4 +114,4 @@ def mrsrv(
 
 
 def cheatsheet() -> str:
-    return "mrsrv(time, event, covariates, beta, ties) -> Compute martingale residuals for a fitted Cox model."
+    return "mrsrv: mrsrv(time, event, covariates, beta, ties) -> Compute martingale residuals for a fitted Cox model."

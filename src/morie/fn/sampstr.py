@@ -26,4 +26,4 @@ def sampstr(strata: dict, n_total: int, seed: int = 42) -> dict:
 
 
 def cheatsheet() -> str:
-    return "sampstr(strata, n_total, seed) -> Stratified sample with proportional allocation."
+    return "sampstr: sampstr(strata, n_total, seed) -> Stratified sample with proportional allocation."

@@ -90,4 +90,4 @@ gibbons_ks_critical_values = kscrit
 
 
 def cheatsheet() -> str:
-    return "kscrit(n, alpha, exact) -> Two-sided critical value D_{n,alpha} of the KS statistic."
+    return "gb_kscl: kscrit(n, alpha, exact) -> Two-sided critical value D_{n,alpha} of the KS statistic."

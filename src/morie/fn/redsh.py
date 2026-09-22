@@ -73,4 +73,4 @@ def redsh(
 
 
 def cheatsheet() -> str:
-    return "redsh(z, wavelength_obs, wavelength_emit, a_emit, a_obs) -> Compute cosmological redshift and related quantities."
+    return "redsh: redsh(z, wavelength_obs, wavelength_emit, a_emit, a_obs) -> Compute cosmological redshift and related quantities."

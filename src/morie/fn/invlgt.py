@@ -18,4 +18,4 @@ def invlgt(x):
 
 
 def cheatsheet() -> str:
-    return "invlgt(x) -> Inverse logit: σ(x) = 1 / (1 + exp(-x))."
+    return "invlgt: invlgt(x) -> Inverse logit: σ(x) = 1 / (1 + exp(-x))."

@@ -66,4 +66,4 @@ def focal(
 
 
 def cheatsheet() -> str:
-    return "focal(y_true, y_pred, alpha, gamma, from_logits, epsilon) -> Focal loss."
+    return "focal: focal(y_true, y_pred, alpha, gamma, from_logits, epsilon) -> Focal loss."

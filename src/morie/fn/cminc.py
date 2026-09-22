@@ -143,4 +143,4 @@ def cminc(
 
 
 def cheatsheet() -> str:
-    return "cminc(time, event, cause) -> Estimate the cumulative incidence function (CIF) for a specific cause"
+    return "cminc: cminc(time, event, cause) -> Estimate the cumulative incidence function (CIF) for a specific cause"

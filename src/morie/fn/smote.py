@@ -122,4 +122,4 @@ applysmote = apply_smote
 
 
 def cheatsheet() -> str:
-    return "apply_smote(X, y) -> Apply SMOTE oversampling to balance a binary outcome."
+    return "smote: apply_smote(X, y) -> Apply SMOTE oversampling to balance a binary outcome."

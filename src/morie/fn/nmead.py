@@ -117,4 +117,4 @@ def nmead(f, x0, alpha=1.0, beta=0.5, gamma=2.0, tol=1e-8, max_iter=5000, full_o
 
 
 def cheatsheet() -> str:
-    return "nmead(f, x0, alpha, beta, gamma, tol, max_iter, full_output) -> Nelder-Mead simplex method for unconstrained minimization."
+    return "nmead: nmead(f, x0, alpha, beta, gamma, tol, max_iter, full_output) -> Nelder-Mead simplex method for unconstrained minimization."

@@ -137,4 +137,4 @@ gibbons_ks_exact_dist = ksexact
 
 
 def cheatsheet() -> str:
-    return "ksexact(d, n) -> P(D_n < d) by the Durbin matrix form of Theorem 4.3.2."
+    return "gb432: ksexact(d, n) -> P(D_n < d) by the Durbin matrix form of Theorem 4.3.2."

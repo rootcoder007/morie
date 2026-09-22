@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_36() -> Deprecated; use :func:`morie.fn.truncated_power_spline` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e36: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_36() -> Deprecated; use :func:`morie.fn.truncated_power_spline` instead."

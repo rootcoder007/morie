@@ -90,4 +90,4 @@ gibbons_ks2samp = wwruns
 
 
 def cheatsheet() -> str:
-    return "wwruns(x, y) -> Total runs in the pooled ordering of two samples."
+    return "gb621: wwruns(x, y) -> Total runs in the pooled ordering of two samples."

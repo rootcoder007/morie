@@ -23,4 +23,4 @@ def ca_chapter_9_equation_13(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_9_equation_13() -> Deprecated; use :func:`morie.fn.anova_randomized_block` instead."
+    return "ca9e13: ca_chapter_9_equation_13() -> Deprecated; use :func:`morie.fn.anova_randomized_block` instead."

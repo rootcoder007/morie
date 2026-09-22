@@ -76,4 +76,4 @@ sorsolve = sor_solve
 
 
 def cheatsheet() -> str:
-    return "sor_solve(A, b) -> Successive Over-Relaxation iterative solver for Ax = b."
+    return "sorsl: sor_solve(A, b) -> Successive Over-Relaxation iterative solver for Ax = b."

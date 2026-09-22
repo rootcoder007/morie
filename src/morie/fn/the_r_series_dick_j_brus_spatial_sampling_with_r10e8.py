@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_8(*args
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_8() -> Deprecated; use :func:`morie.fn.regression_estimator_general` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r10e8: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_8() -> Deprecated; use :func:`morie.fn.regression_estimator_general` instead."

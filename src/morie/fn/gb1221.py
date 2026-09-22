@@ -104,4 +104,4 @@ gibbons_friedman = friedq
 
 
 def cheatsheet() -> str:
-    return "friedq(data, correct) -> Friedman's Q for a k x n table of blocks by treatments."
+    return "gb1221: friedq(data, correct) -> Friedman's Q for a k x n table of blocks by treatments."

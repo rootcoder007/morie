@@ -64,4 +64,4 @@ gibbons_edf_def = edfstep
 
 
 def cheatsheet() -> str:
-    return "edfstep(x, t) -> Empirical cdf of a sample evaluated at one or more points."
+    return "gb_edf: edfstep(x, t) -> Empirical cdf of a sample evaluated at one or more points."

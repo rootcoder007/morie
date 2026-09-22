@@ -19,4 +19,4 @@ def glassd(treated, control) -> float:
 
 
 def cheatsheet() -> str:
-    return "glassd(treated, control) -> Glass's Δ: (mean_t − mean_c) / sd_c."
+    return "glassd: glassd(treated, control) -> Glass's Δ: (mean_t − mean_c) / sd_c."

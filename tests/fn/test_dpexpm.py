@@ -7,22 +7,14 @@ from morie.fn.dpexpm import dp_exponential_mechanism
 
 def test_dpexpm_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
     candidates = np.random.default_rng(42).normal(0, 1, 100)
     utility = np.random.default_rng(42).normal(0, 1, 100)
-    epsilon = 1e-6
-    sensitivity = np.random.default_rng(42).normal(0, 1, 100)
-    result = dp_exponential_mechanism(y, candidates, utility, epsilon, sensitivity)
+    result = dp_exponential_mechanism(candidates, utility)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "selected" in result
 def test_dpexpm_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
     candidates = np.random.default_rng(42).normal(0, 1, 100)
     utility = np.random.default_rng(42).normal(0, 1, 100)
-    epsilon = 1e-6
-    sensitivity = np.random.default_rng(42).normal(0, 1, 100)
-    result = dp_exponential_mechanism(y, candidates, utility, epsilon, sensitivity)
+    result = dp_exponential_mechanism(candidates, utility)
     assert isinstance(result, dict)

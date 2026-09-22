@@ -51,4 +51,4 @@ def paired(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "paired(x, y) -> Paired t-test on matched x, y samples."
+    return "paired: paired(x, y) -> Paired t-test on matched x, y samples."

@@ -35,4 +35,4 @@ def geomean(x: Union[Sequence[float], np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "geomean(x) -> Geometric mean = (Π_i x_i)^(1/n)."
+    return "geomean: geomean(x) -> Geometric mean = (Π_i x_i)^(1/n)."

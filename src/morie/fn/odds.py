@@ -57,4 +57,4 @@ def odds(table_2x2: Union[Sequence, np.ndarray], continuity: float = 0.0):
 
 
 def cheatsheet() -> str:
-    return "odds(table_2x2, continuity) -> Odds ratio for [[a,b],[c,d]]: OR = (a*d) / (b*c)."
+    return "odds: odds(table_2x2, continuity) -> Odds ratio for [[a,b],[c,d]]: OR = (a*d) / (b*c)."

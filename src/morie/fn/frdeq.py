@@ -78,4 +78,4 @@ def frdeq(
 
 
 def cheatsheet() -> str:
-    return "frdeq(H0, Omega_m, Omega_r, Omega_Lambda, k, a_range, n_points) -> Compute Friedmann equation quantities for FLRW cosmology."
+    return "frdeq: frdeq(H0, Omega_m, Omega_r, Omega_Lambda, k, a_range, n_points) -> Compute Friedmann equation quantities for FLRW cosmology."

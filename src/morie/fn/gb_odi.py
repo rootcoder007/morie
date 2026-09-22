@@ -92,4 +92,4 @@ gibbons_odds_ratio = oddsrat
 
 
 def cheatsheet() -> str:
-    return "oddsrat(table, alpha, cc) -> Odds ratio, its Woolf logit interval and the associated test."
+    return "gb_odi: oddsrat(table, alpha, cc) -> Odds ratio, its Woolf logit interval and the associated test."

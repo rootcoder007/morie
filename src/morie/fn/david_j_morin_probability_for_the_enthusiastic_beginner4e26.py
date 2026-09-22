@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_2
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_26() -> Deprecated; use :func:`morie.fn.exponential_waiting_density` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner4e26: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_26() -> Deprecated; use :func:`morie.fn.exponential_waiting_density` instead."

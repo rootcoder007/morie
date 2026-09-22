@@ -10,9 +10,7 @@ def test_clocen_basic():
     G = np.eye(10)
     result = closeness_centrality(G)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "closeness" in result
 def test_clocen_edge():
     """Test edge cases."""
     G = np.eye(10)

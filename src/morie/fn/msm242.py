@@ -23,4 +23,4 @@ def mvsml_preprocessing_eq_2_3(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "mvsml_preprocessing_eq_2_3() -> Deprecated; use :func:`morie.fn.gblup_gebv` instead."
+    return "msm242: mvsml_preprocessing_eq_2_3() -> Deprecated; use :func:`morie.fn.gblup_gebv` instead."

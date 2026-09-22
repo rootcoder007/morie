@@ -55,4 +55,4 @@ def hinge(
 
 
 def cheatsheet() -> str:
-    return "hinge(y_true, y_pred, margin) -> Hinge loss."
+    return "hinge: hinge(y_true, y_pred, margin) -> Hinge loss."

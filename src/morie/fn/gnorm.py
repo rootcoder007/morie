@@ -68,4 +68,4 @@ def gnorm(
 
 
 def cheatsheet() -> str:
-    return "gnorm(x, num_groups, epsilon, gamma, beta) -> Group normalization."
+    return "gnorm: gnorm(x, num_groups, epsilon, gamma, beta) -> Group normalization."

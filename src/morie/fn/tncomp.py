@@ -139,4 +139,4 @@ def maxmin_diversity(fps, k, objective="maxmin", seed=None):
 
 
 def cheatsheet() -> str:
-    return "distance_matrix(fps) -> All pairwise Tanimoto distances."
+    return "tncomp: distance_matrix(fps) -> All pairwise Tanimoto distances."

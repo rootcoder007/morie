@@ -23,4 +23,4 @@ def ca_chapter_12_equation_3(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_12_equation_3() -> Deprecated; use :func:`morie.fn.ols_matrix` instead."
+    return "ca12e3: ca_chapter_12_equation_3() -> Deprecated; use :func:`morie.fn.ols_matrix` instead."

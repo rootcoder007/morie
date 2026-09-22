@@ -62,4 +62,4 @@ def plank(
 
 
 def cheatsheet() -> str:
-    return "plank(nu, T, h, c, kB) -> Compute the Planck spectral radiance for blackbody radiation."
+    return "plank: plank(nu, T, h, c, kB) -> Compute the Planck spectral radiance for blackbody radiation."

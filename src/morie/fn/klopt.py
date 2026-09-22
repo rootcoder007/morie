@@ -89,4 +89,4 @@ def klopt(
 
 
 def cheatsheet() -> str:
-    return "klopt(target_pmf, support, sufficient_stats) -> Find the distribution in an exponential family closest to target in KL."
+    return "klopt: klopt(target_pmf, support, sufficient_stats) -> Find the distribution in an exponential family closest to target in KL."

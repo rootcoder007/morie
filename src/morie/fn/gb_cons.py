@@ -70,4 +70,4 @@ gibbons_consistency = consist
 
 
 def cheatsheet() -> str:
-    return "consist(nvals, effect, alpha) -> Power along a sequence of sample sizes, and the consistency verdict."
+    return "gb_cons: consist(nvals, effect, alpha) -> Power along a sequence of sample sizes, and the consistency verdict."

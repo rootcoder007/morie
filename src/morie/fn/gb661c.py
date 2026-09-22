@@ -70,4 +70,4 @@ gibbons_mw_ci = mwuci
 
 
 def cheatsheet() -> str:
-    return "mwuci(x, y, k) -> Interval for theta built from the mn differences X_i - Y_j."
+    return "gb661c: mwuci(x, y, k) -> Interval for theta built from the mn differences X_i - Y_j."

@@ -11,9 +11,7 @@ def test_gb_kcp_basic():
     alpha = 0.05
     result = gibbons_ks_conf_band(x, alpha)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
-
-
+    assert "at" in result
 def test_gb_kcp_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

@@ -64,4 +64,4 @@ def gcn(G, X, W):
 
 
 def cheatsheet() -> str:
-    return "gcn(G, X, W) -> One propagation step of the un-renormalised GCN layer."
+    return "gcnemd: gcn(G, X, W) -> One propagation step of the un-renormalised GCN layer."

@@ -23,4 +23,4 @@ def ghosal_ch3_discrete_hazard_rate(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ghosal_ch3_discrete_hazard_rate() -> Deprecated; use :func:`morie.fn.discrete_hazard` instead."
+    return "ghs010: ghosal_ch3_discrete_hazard_rate() -> Deprecated; use :func:`morie.fn.discrete_hazard` instead."

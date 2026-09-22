@@ -10,9 +10,7 @@ def test_baytrace_basic():
     chains = np.random.default_rng(42).normal(0, 1, 100)
     result = trace_plot(chains)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
-
-
+    assert "running_mean" in result
 def test_baytrace_edge():
     """Test edge cases."""
     chains = np.random.default_rng(42).normal(0, 1, 100)

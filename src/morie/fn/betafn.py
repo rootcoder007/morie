@@ -10,4 +10,4 @@ def betafn(a, b):
 
 
 def cheatsheet() -> str:
-    return "betafn(a, b) -> Beta function B(a, b) = Γ(a)Γ(b)/Γ(a+b)."
+    return "betafn: betafn(a, b) -> Beta function B(a, b) = Γ(a)Γ(b)/Γ(a+b)."

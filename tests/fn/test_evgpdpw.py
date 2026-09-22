@@ -7,14 +7,12 @@ from morie.fn.evgpdpw import evt_gpd_pwm
 
 def test_evgpdpw_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = evt_gpd_pwm(y)
+    x = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = evt_gpd_pwm(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "sigma" in result
 def test_evgpdpw_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = evt_gpd_pwm(y)
+    x = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = evt_gpd_pwm(x)
     assert isinstance(result, dict)

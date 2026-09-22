@@ -49,4 +49,4 @@ def bhfdr(p_values: Sequence[float], alpha: float = 0.05):
 
 
 def cheatsheet() -> str:
-    return "bhfdr(p_values, alpha) -> BH FDR rejection vector."
+    return "bhfdr: bhfdr(p_values, alpha) -> BH FDR rejection vector."

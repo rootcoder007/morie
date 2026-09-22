@@ -10,9 +10,7 @@ def test_ca7e4_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = cluster_means_model(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "cluster_means" in result
 def test_ca7e4_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

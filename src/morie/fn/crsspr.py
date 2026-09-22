@@ -18,4 +18,4 @@ def crsspr(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]) -> fl
 
 
 def cheatsheet() -> str:
-    return "crsspr(x, y) -> Σᵢ (xᵢ − x̄)(yᵢ − ȳ) -- cross-product of centered series."
+    return "crsspr: crsspr(x, y) -> Σᵢ (xᵢ − x̄)(yᵢ − ȳ) -- cross-product of centered series."

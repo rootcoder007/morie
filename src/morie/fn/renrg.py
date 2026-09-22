@@ -86,4 +86,4 @@ def renrg(
 
 
 def cheatsheet() -> str:
-    return "renrg(coupling, n_flavors, n_colors, gauge_group, loop_order) -> Compute the renormalization group beta function for QCD."
+    return "renrg: renrg(coupling, n_flavors, n_colors, gauge_group, loop_order) -> Compute the renormalization group beta function for QCD."

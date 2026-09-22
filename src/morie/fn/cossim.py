@@ -18,4 +18,4 @@ def cossim(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]) -> fl
 
 
 def cheatsheet() -> str:
-    return "cossim(x, y) -> Cosine similarity: x·y / (||x|| ||y||)."
+    return "cossim: cossim(x, y) -> Cosine similarity: x·y / (||x|| ||y||)."

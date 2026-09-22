@@ -76,4 +76,4 @@ def hubbl(
 
 
 def cheatsheet() -> str:
-    return "hubbl(z, H0, Omega_m, Omega_r, Omega_Lambda) -> Compute Hubble parameter H(z) and related quantities at redshift z."
+    return "hubbl: hubbl(z, H0, Omega_m, Omega_r, Omega_Lambda) -> Compute Hubble parameter H(z) and related quantities at redshift z."

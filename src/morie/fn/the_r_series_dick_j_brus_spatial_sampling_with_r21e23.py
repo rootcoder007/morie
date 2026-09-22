@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_23(*arg
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_23() -> Deprecated; use :func:`morie.fn.gaussian_loglikelihood` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r21e23: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_23() -> Deprecated; use :func:`morie.fn.gaussian_loglikelihood` instead."

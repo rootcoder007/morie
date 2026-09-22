@@ -134,4 +134,4 @@ def facta(
 
 
 def cheatsheet() -> str:
-    return "facta(X, n_factors, max_iter, tol, scale) -> Factor Analysis via Principal Axis Factoring."
+    return "facta: facta(X, n_factors, max_iter, tol, scale) -> Factor Analysis via Principal Axis Factoring."

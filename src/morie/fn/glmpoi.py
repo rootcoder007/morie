@@ -95,4 +95,4 @@ def glmpoi(X: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray], add_i
 
 
 def cheatsheet() -> str:
-    return "glmpoi(X, y, add_intercept) -> Poisson regression (GLM with log link)."
+    return "glmpoi: glmpoi(X, y, add_intercept) -> Poisson regression (GLM with log link)."

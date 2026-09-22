@@ -50,4 +50,4 @@ def cochr(data, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "cochr(data, axis, cdf) -> Cochran's Q test for k≥2 paired binary outcomes."
+    return "cochr: cochr(data, axis, cdf) -> Cochran's Q test for k≥2 paired binary outcomes."

@@ -38,4 +38,4 @@ def shanon(p: Union[Sequence[float], np.ndarray], base: float = 2.0):
 
 
 def cheatsheet() -> str:
-    return "shanon(p, base) -> Shannon entropy H(p) = -Σ p_i log_b(p_i)."
+    return "shanon: shanon(p, base) -> Shannon entropy H(p) = -Σ p_i log_b(p_i)."

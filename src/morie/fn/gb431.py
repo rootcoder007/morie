@@ -62,4 +62,4 @@ gibbons_ks_dist_free = ksdistfree
 
 
 def cheatsheet() -> str:
-    return "ksdistfree(x, cdf) -> D_n, D+_n, D-_n together with the PIT values that make them free."
+    return "gb431: ksdistfree(x, cdf) -> D_n, D+_n, D-_n together with the PIT values that make them free."

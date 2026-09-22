@@ -64,4 +64,4 @@ matrixsqrt = matrix_sqrt
 
 
 def cheatsheet() -> str:
-    return "matrix_sqrt(A) -> Matrix square root via Denman-Beavers iteration."
+    return "mtsqr: matrix_sqrt(A) -> Matrix square root via Denman-Beavers iteration."

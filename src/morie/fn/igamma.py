@@ -15,4 +15,4 @@ def igamma(a: float, x: float) -> float:
 
 
 def cheatsheet() -> str:
-    return "igamma(a, x) -> Regularised lower incomplete gamma function P(a, x)."
+    return "igamma: igamma(a, x) -> Regularised lower incomplete gamma function P(a, x)."

@@ -73,4 +73,4 @@ def aurroc(y_true: Union[Sequence, np.ndarray], score: Union[Sequence, np.ndarra
 
 
 def cheatsheet() -> str:
-    return "aurroc(y_true, score) -> Area under the ROC curve."
+    return "aurroc: aurroc(y_true, score) -> Area under the ROC curve."

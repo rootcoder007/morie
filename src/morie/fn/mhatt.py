@@ -64,4 +64,4 @@ def mhatt(
 
 
 def cheatsheet() -> str:
-    return "mhatt(query, key, value, num_heads, d_model) -> Multi-head scaled dot-product attention."
+    return "mhatt: mhatt(query, key, value, num_heads, d_model) -> Multi-head scaled dot-product attention."

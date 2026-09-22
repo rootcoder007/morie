@@ -90,4 +90,4 @@ gibbons_rvn_test = rvntest
 
 
 def cheatsheet() -> str:
-    return "rvntest(x, alternative) -> Bartels rank von Neumann ratio test for randomness."
+    return "gb35rvn: rvntest(x, alternative) -> Bartels rank von Neumann ratio test for randomness."

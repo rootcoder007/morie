@@ -21,4 +21,4 @@ def autocor(x: Union[Sequence, np.ndarray], k: int = 1) -> float:
 
 
 def cheatsheet() -> str:
-    return "autocor(x, k) -> Sample autocorrelation at lag k."
+    return "autocor: autocor(x, k) -> Sample autocorrelation at lag k."

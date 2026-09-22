@@ -12,9 +12,7 @@ def test_dppca_basic():
     epsilon = 1e-6
     result = dp_pca(X, k, epsilon)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "components" in result
 def test_dppca_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

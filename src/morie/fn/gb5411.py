@@ -67,4 +67,4 @@ gibbons_sign_pvalue = signp
 
 
 def cheatsheet() -> str:
-    return "signp(k, n, alternative) -> Exact sign-test p-value from the Binomial(N, 1/2) null."
+    return "gb5411: signp(k, n, alternative) -> Exact sign-test p-value from the Binomial(N, 1/2) null."

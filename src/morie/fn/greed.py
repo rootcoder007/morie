@@ -67,4 +67,4 @@ def greed(
 
 
 def cheatsheet() -> str:
-    return "greed(initial_token, step_fn, max_length, temperature, seed) -> Greedy decoding with temperature."
+    return "greed: greed(initial_token, step_fn, max_length, temperature, seed) -> Greedy decoding with temperature."

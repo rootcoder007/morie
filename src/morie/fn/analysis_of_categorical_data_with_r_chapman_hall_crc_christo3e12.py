@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_12() -> Deprecated; use :func:`morie.fn.category_prob_from_cumulative` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e12: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_12() -> Deprecated; use :func:`morie.fn.category_prob_from_cumulative` instead."

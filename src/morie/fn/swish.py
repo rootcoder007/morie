@@ -40,4 +40,4 @@ def swish(x, derivative=False):
 
 
 def cheatsheet() -> str:
-    return "swish(x, derivative) -> Swish (SiLU) activation."
+    return "swish: swish(x, derivative) -> Swish (SiLU) activation."

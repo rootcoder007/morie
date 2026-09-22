@@ -97,4 +97,4 @@ def huffc(pmf: np.ndarray, symbols: list = None) -> dict:
 
 
 def cheatsheet() -> str:
-    return "huffc(pmf, symbols) -> Build a Huffman code for a discrete source."
+    return "huffc: huffc(pmf, symbols) -> Build a Huffman code for a discrete source."

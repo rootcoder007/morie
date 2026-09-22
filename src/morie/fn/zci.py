@@ -16,4 +16,4 @@ def zci(sigma: float, n: int, conf: float = 0.95) -> float:
 
 
 def cheatsheet() -> str:
-    return "zci(sigma, n, conf) -> Half-width of a z-based confidence interval for the mean."
+    return "zci: zci(sigma, n, conf) -> Half-width of a z-based confidence interval for the mean."

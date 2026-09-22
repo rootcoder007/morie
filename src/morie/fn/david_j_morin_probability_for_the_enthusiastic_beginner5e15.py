@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_1
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_15() -> Deprecated; use :func:`morie.fn.gaussian_approx_biased` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner5e15: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_15() -> Deprecated; use :func:`morie.fn.gaussian_approx_biased` instead."

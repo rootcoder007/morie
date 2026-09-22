@@ -23,4 +23,4 @@ def ca_chapter_3_equation_1(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_3_equation_1() -> Deprecated; use :func:`morie.fn.tolerance` instead."
+    return "ca3e1: ca_chapter_3_equation_1() -> Deprecated; use :func:`morie.fn.tolerance` instead."

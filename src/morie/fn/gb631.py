@@ -91,4 +91,4 @@ gibbons_ks2 = ks2
 
 
 def cheatsheet() -> str:
-    return "ks2(x, y) -> Two-sample KS statistic and its exact null tail probability."
+    return "gb631: ks2(x, y) -> Two-sample KS statistic and its exact null tail probability."

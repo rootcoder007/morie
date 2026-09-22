@@ -99,4 +99,4 @@ def runsq(x, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "runsq(x, axis, cdf) -> Wald-Wolfowitz runs test for randomness."
+    return "runsq: runsq(x, axis, cdf) -> Wald-Wolfowitz runs test for randomness."

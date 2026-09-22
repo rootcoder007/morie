@@ -74,4 +74,4 @@ gibbons_mcnemar_ci = mcnemarci
 
 
 def cheatsheet() -> str:
-    return "mcnemarci(table, alpha) -> Interval for theta_12 - theta_21 from the McNemar variance."
+    return "gb_mci: mcnemarci(table, alpha) -> Interval for theta_12 - theta_21 from the McNemar variance."

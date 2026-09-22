@@ -84,4 +84,4 @@ newtonmethod = newton_method
 
 
 def cheatsheet() -> str:
-    return "newton_method(f, x0) -> Newton's method for finding roots of f(x) = 0."
+    return "newtm: newton_method(f, x0) -> Newton's method for finding roots of f(x) = 0."

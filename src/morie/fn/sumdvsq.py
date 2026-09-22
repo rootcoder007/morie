@@ -18,4 +18,4 @@ def sumdvsq(x: Union[Sequence[float], np.ndarray]) -> float:
 
 
 def cheatsheet() -> str:
-    return "sumdvsq(x) -> Sum of squared deviations: Σᵢ (xᵢ − x̄)²."
+    return "sumdvsq: sumdvsq(x) -> Sum of squared deviations: Σᵢ (xᵢ − x̄)²."

@@ -68,4 +68,4 @@ def tsale(pmf: np.ndarray, q: float) -> dict:
 
 
 def cheatsheet() -> str:
-    return "tsale(pmf, q) -> Compute Tsallis entropy of order q."
+    return "tsale: tsale(pmf, q) -> Compute Tsallis entropy of order q."

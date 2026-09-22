@@ -11,9 +11,7 @@ def test_gb621t_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = gibbons_ww2_ties(x, y)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
-
-
+    assert "rmin" in result
 def test_gb621t_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

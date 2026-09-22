@@ -10,9 +10,7 @@ def test_cfst_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     T = np.random.default_rng(43).integers(0, 2, 100)
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_trees = np.random.default_rng(42).normal(0, 1, 100)
-    min_node_size = 100
-    result = causal_forest(Y, T, X, n_trees, min_node_size)
+    result = causal_forest(Y, T, X)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
@@ -22,7 +20,5 @@ def test_cfst_edge():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     T = np.random.default_rng(43).integers(0, 2, 100)
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_trees = np.random.default_rng(42).normal(0, 1, 100)
-    min_node_size = 100
-    result = causal_forest(Y, T, X, n_trees, min_node_size)
+    result = causal_forest(Y, T, X)
     assert isinstance(result, dict)

@@ -108,4 +108,4 @@ def signt(x, theta0=None, axis=0, alternative="two-sided", cdf=None):
 
 
 def cheatsheet() -> str:
-    return "signt(x, theta0, axis, alternative, cdf) -> Sign test for population quantiles."
+    return "signt: signt(x, theta0, axis, alternative, cdf) -> Sign test for population quantiles."

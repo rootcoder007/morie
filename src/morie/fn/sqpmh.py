@@ -71,4 +71,4 @@ def sqpmh(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, full_output=False)
 
 
 def cheatsheet() -> str:
-    return "sqpmh(f, grad_f, constraints, x0, tol, max_iter, full_output) -> Sequential quadratic programming (SQP) for constrained optimization."
+    return "sqpmh: sqpmh(f, grad_f, constraints, x0, tol, max_iter, full_output) -> Sequential quadratic programming (SQP) for constrained optimization."

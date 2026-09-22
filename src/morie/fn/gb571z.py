@@ -69,4 +69,4 @@ gibbons_wsrt_ties_zeros = wsrties
 
 
 def cheatsheet() -> str:
-    return "wsrties(d, m0) -> Variance of T+ corrected for tied |d| and dropped zeros."
+    return "gb571z: wsrties(d, m0) -> Variance of T+ corrected for tied |d| and dropped zeros."

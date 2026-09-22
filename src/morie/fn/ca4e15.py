@@ -23,4 +23,4 @@ def ca_chapter_4_equation_15(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_4_equation_15() -> Deprecated; use :func:`morie.fn.wald_statistic` instead."
+    return "ca4e15: ca_chapter_4_equation_15() -> Deprecated; use :func:`morie.fn.wald_statistic` instead."

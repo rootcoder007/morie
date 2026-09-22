@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_16() -> Deprecated; use :func:`morie.fn.linear_predictor_variance` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e16: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_16() -> Deprecated; use :func:`morie.fn.linear_predictor_variance` instead."

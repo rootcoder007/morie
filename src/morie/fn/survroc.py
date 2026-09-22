@@ -250,4 +250,4 @@ def time_dependent_roc(times, events, marker, t, route="km"):
 
 
 def cheatsheet() -> str:
-    return "kaplan_meier(times, events, at) -> The product-limit estimator of :math:`S(t)`."
+    return "survroc: kaplan_meier(times, events, at) -> The product-limit estimator of :math:`S(t)`."

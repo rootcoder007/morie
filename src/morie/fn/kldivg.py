@@ -46,4 +46,4 @@ def kldivg(p: Union[Sequence[float], np.ndarray], q: Union[Sequence[float], np.n
 
 
 def cheatsheet() -> str:
-    return "kldivg(p, q, base) -> KL(P||Q) = Sigma p_i log(p_i / q_i)."
+    return "kldivg: kldivg(p, q, base) -> KL(P||Q) = Sigma p_i log(p_i / q_i)."

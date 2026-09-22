@@ -86,4 +86,4 @@ def matthews_corrcoef(y_true, y_pred) -> float:
 
 
 def cheatsheet() -> str:
-    return "mcc(tp, tn, fp, fn) -> Matthews correlation coefficient for 2x2 confusion matrix."
+    return "mcc: mcc(tp, tn, fp, fn) -> Matthews correlation coefficient for 2x2 confusion matrix."

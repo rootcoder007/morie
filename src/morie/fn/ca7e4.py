@@ -23,4 +23,4 @@ def ca_chapter_7_equation_4(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_7_equation_4() -> Deprecated; use :func:`morie.fn.cluster_means_model` instead."
+    return "ca7e4: ca_chapter_7_equation_4() -> Deprecated; use :func:`morie.fn.cluster_means_model` instead."

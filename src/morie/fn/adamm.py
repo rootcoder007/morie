@@ -79,4 +79,4 @@ adamoptimize = adam_optimize
 
 
 def cheatsheet() -> str:
-    return "adam_optimize(f, grad, x0) -> Adam optimizer."
+    return "adamm: adam_optimize(f, grad, x0) -> Adam optimizer."

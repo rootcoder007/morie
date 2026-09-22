@@ -66,4 +66,4 @@ gibbons_sign_sample_size_2 = signnasy
 
 
 def cheatsheet() -> str:
-    return "signnasy(theta, alpha, beta) -> Sample size for a two-sided sign test."
+    return "gb_ssj: signnasy(theta, alpha, beta) -> Sample size for a two-sided sign test."

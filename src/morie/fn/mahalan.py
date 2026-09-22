@@ -49,4 +49,4 @@ def mahalan(x: Union[Sequence, np.ndarray], mu: Union[Sequence, np.ndarray], cov
 
 
 def cheatsheet() -> str:
-    return "mahalan(x, mu, cov) -> Mahalanobis distance: sqrt((x-mu)' Sigma^-1 (x-mu))."
+    return "mahalan: mahalan(x, mu, cov) -> Mahalanobis distance: sqrt((x-mu)' Sigma^-1 (x-mu))."

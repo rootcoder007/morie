@@ -44,4 +44,4 @@ def npowtt(d: float, target_power: float = 0.8, alpha: float = 0.05, max_n: int 
 
 
 def cheatsheet() -> str:
-    return "npowtt(d, target_power, alpha, max_n) -> Smallest equal-group n giving target power for two-sample t."
+    return "npowtt: npowtt(d, target_power, alpha, max_n) -> Smallest equal-group n giving target power for two-sample t."

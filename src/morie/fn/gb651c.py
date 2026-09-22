@@ -91,4 +91,4 @@ gibbons_ctrl_median_curtail = ctrlmedcur
 
 
 def cheatsheet() -> str:
-    return "ctrlmedcur(m, n, alpha) -> Stopping index d for the curtailed control median test."
+    return "gb651c: ctrlmedcur(m, n, alpha) -> Stopping index d for the curtailed control median test."

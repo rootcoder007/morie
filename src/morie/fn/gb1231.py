@@ -102,4 +102,4 @@ gibbons_page_test = pagel
 
 
 def cheatsheet() -> str:
-    return "pagel(data, weights) -> L = sum of weighted treatment rank sums, eq. (12.3.1)."
+    return "gb1231: pagel(data, weights) -> L = sum of weighted treatment rank sums, eq. (12.3.1)."

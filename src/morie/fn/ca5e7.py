@@ -23,4 +23,4 @@ def ca_chapter_5_equation_7(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_5_equation_7() -> Deprecated; use :func:`morie.fn.cumulative_logit` instead."
+    return "ca5e7: ca_chapter_5_equation_7() -> Deprecated; use :func:`morie.fn.cumulative_logit` instead."

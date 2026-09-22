@@ -104,4 +104,4 @@ def penrs(
 
 
 def cheatsheet() -> str:
-    return "penrs(r, t, M, geometry, G, c) -> Compute Penrose (conformal/compactified) diagram coordinates."
+    return "penrs: penrs(r, t, M, geometry, G, c) -> Compute Penrose (conformal/compactified) diagram coordinates."

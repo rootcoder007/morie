@@ -43,4 +43,4 @@ def medkt(*samples, axis=0):
 
 
 def cheatsheet() -> str:
-    return "medkt() -> Median test for k≥2 independent samples."
+    return "medkt: medkt() -> Median test for k≥2 independent samples."

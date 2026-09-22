@@ -87,4 +87,4 @@ def fista(f, grad_f, prox_g, x0, step_size=0.01, tol=1e-6, max_iter=1000, full_o
 
 
 def cheatsheet() -> str:
-    return "fista(f, grad_f, prox_g, x0, step_size, tol, max_iter, full_output) -> FISTA for composite optimization."
+    return "fista: fista(f, grad_f, prox_g, x0, step_size, tol, max_iter, full_output) -> FISTA for composite optimization."

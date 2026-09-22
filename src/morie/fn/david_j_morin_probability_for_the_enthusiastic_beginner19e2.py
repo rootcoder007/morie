@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_19_equation_
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_19_equation_2(x, y) -> Deprecated; use :func:`morie.fn.lsqfit` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner19e2: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_19_equation_2(x, y) -> Deprecated; use :func:`morie.fn.lsqfit` instead."

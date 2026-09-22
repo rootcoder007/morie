@@ -10,9 +10,7 @@ def test_ebfmi_basic():
     chains = np.random.default_rng(42).normal(0, 1, 100)
     result = energy_bayesian_fmi(chains)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "ebfmi" in result
 def test_ebfmi_edge():
     """Test edge cases."""
     chains = np.random.default_rng(42).normal(0, 1, 100)

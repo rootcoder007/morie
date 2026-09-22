@@ -23,4 +23,4 @@ def ca_chapter_5_equation_6(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_5_equation_6() -> Deprecated; use :func:`morie.fn.cumulative_probability` instead."
+    return "ca5e6: ca_chapter_5_equation_6() -> Deprecated; use :func:`morie.fn.cumulative_probability` instead."

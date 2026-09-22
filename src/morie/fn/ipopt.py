@@ -104,4 +104,4 @@ def ipopt(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, mu_init=1.0, full_
 
 
 def cheatsheet() -> str:
-    return "ipopt(f, grad_f, constraints, x0, tol, max_iter, mu_init, full_output) -> Interior point barrier method for constrained optimization."
+    return "ipopt: ipopt(f, grad_f, constraints, x0, tol, max_iter, mu_init, full_output) -> Interior point barrier method for constrained optimization."

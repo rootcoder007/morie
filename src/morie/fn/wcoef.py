@@ -51,4 +51,4 @@ def wcoef(data, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "wcoef(data, axis, cdf) -> Kendall's coefficient of concordance W."
+    return "wcoef: wcoef(data, axis, cdf) -> Kendall's coefficient of concordance W."

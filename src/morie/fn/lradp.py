@@ -64,4 +64,4 @@ def lradp(
 
 
 def cheatsheet() -> str:
-    return "lradp(t, t_max, learning_rate_min, learning_rate_max) -> Cosine annealing learning rate scheduler."
+    return "lradp: lradp(t, t_max, learning_rate_min, learning_rate_max) -> Cosine annealing learning rate scheduler."

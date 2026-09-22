@@ -100,4 +100,4 @@ gibbons_ordered_categories = linbylin
 
 
 def cheatsheet() -> str:
-    return "linbylin(table, scores) -> T = sum_j w_j X_{1j} over ordered columns, Sec. 14.6.1."
+    return "gb1461o: linbylin(table, scores) -> T = sum_j w_j X_{1j} over ordered columns, Sec. 14.6.1."

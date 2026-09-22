@@ -13,4 +13,4 @@ def omeg2(ss_between: float, df_between: int, ms_within: float, ss_total: float)
 
 
 def cheatsheet() -> str:
-    return "omeg2(ss_between, df_between, ms_within, ss_total) -> Omega-squared: less biased than η² for small samples."
+    return "omeg2: omeg2(ss_between, df_between, ms_within, ss_total) -> Omega-squared: less biased than η² for small samples."

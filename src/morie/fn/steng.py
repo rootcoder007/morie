@@ -58,4 +58,4 @@ def steng(
 
 
 def cheatsheet() -> str:
-    return "steng(rho, p, u, metric, c) -> Construct the stress-energy tensor for a perfect fluid."
+    return "steng: steng(rho, p, u, metric, c) -> Construct the stress-energy tensor for a perfect fluid."

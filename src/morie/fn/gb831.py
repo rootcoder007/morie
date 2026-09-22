@@ -94,4 +94,4 @@ gibbons_terry_hoeffding = normscores
 
 
 def cheatsheet() -> str:
-    return "normscores(x, y, nodes) -> Terry-Hoeffding c_1 test: expected normal order statistics as scores."
+    return "gb831: normscores(x, y, nodes) -> Terry-Hoeffding c_1 test: expected normal order statistics as scores."

@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_27(*arg
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_27() -> Deprecated; use :func:`morie.fn.ratio_g_weight` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r10e27: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_27() -> Deprecated; use :func:`morie.fn.ratio_g_weight` instead."

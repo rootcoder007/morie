@@ -57,4 +57,4 @@ def fabdt(x, y, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "fabdt(x, y, axis, cdf) -> Freund-Ansari-Bradley-David test for equality of scale parameters."
+    return "fabdt: fabdt(x, y, axis, cdf) -> Freund-Ansari-Bradley-David test for equality of scale parameters."

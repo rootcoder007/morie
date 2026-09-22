@@ -59,4 +59,4 @@ gibbons_sign_efficacy = effsign
 
 
 def cheatsheet() -> str:
-    return "effsign(n, fmed) -> e(K_N) = 4 N f^2(theta) for the one-sample sign test."
+    return "gb1331s: effsign(n, fmed) -> e(K_N) = 4 N f^2(theta) for the one-sample sign test."

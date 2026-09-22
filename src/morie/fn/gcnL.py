@@ -58,4 +58,4 @@ def gcn(A, X, W):
 
 
 def cheatsheet() -> str:
-    return "gcn(A, X, W) -> One renormalised GCN propagation step."
+    return "gcnL: gcn(A, X, W) -> One renormalised GCN propagation step."

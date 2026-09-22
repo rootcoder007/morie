@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_15_equation_4(*args
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_15_equation_4() -> Deprecated; use :func:`morie.fn.trend_weights` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r15e4: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_15_equation_4() -> Deprecated; use :func:`morie.fn.trend_weights` instead."

@@ -18,4 +18,4 @@ def softmx(x: Union[Sequence[float], np.ndarray]) -> np.ndarray:
 
 
 def cheatsheet() -> str:
-    return "softmx(x) -> Softmax: σᵢ(x) = exp(xᵢ) / Σⱼ exp(xⱼ)."
+    return "softmx: softmx(x) -> Softmax: σᵢ(x) = exp(xᵢ) / Σⱼ exp(xⱼ)."

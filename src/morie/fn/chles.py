@@ -59,4 +59,4 @@ choleskysolve = cholesky_solve
 
 
 def cheatsheet() -> str:
-    return "cholesky_solve(A, b) -> Cholesky decomposition of a symmetric positive-definite matrix."
+    return "chles: cholesky_solve(A, b) -> Cholesky decomposition of a symmetric positive-definite matrix."

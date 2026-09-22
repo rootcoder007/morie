@@ -23,4 +23,4 @@ def ca_chapter_11_equation_20(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_11_equation_20() -> Deprecated; use :func:`morie.fn.d_probit` instead."
+    return "ca11e20: ca_chapter_11_equation_20() -> Deprecated; use :func:`morie.fn.d_probit` instead."

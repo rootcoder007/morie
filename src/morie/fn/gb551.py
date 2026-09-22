@@ -67,4 +67,4 @@ gibbons_rank_order_stat = absrank
 
 
 def cheatsheet() -> str:
-    return "absrank(d) -> Ranks of |d_i| among the absolute values, with their signs."
+    return "gb551: absrank(d) -> Ranks of |d_i| among the absolute values, with their signs."

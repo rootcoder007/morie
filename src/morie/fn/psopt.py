@@ -103,4 +103,4 @@ def psopt(f, bounds, n_particles=30, generations=100, w=0.7, c1=1.5, c2=1.5, ful
 
 
 def cheatsheet() -> str:
-    return "psopt(f, bounds, n_particles, generations, w, c1, c2, full_output, seed) -> Particle swarm optimization (PSO) for global optimization."
+    return "psopt: psopt(f, bounds, n_particles, generations, w, c1, c2, full_output, seed) -> Particle swarm optimization (PSO) for global optimization."

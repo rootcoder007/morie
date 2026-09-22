@@ -81,4 +81,4 @@ gibbons_wsrt_normal_approx = wsrz
 
 
 def cheatsheet() -> str:
-    return "wsrz(tplus, n, alternative, correct) -> Standardised signed-rank statistic."
+    return "gb_wsn: wsrz(tplus, n, alternative, correct) -> Standardised signed-rank statistic."

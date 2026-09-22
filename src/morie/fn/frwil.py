@@ -223,4 +223,4 @@ freewilsonqsar = free_wilson
 
 
 def cheatsheet() -> str:
-    return "design_matrix(compounds, constraint) -> The indicator design, with the chosen constraint applied."
+    return "frwil: design_matrix(compounds, constraint) -> The indicator design, with the chosen constraint applied."

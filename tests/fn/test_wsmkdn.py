@@ -12,9 +12,7 @@ def test_wsmkdn_basic():
     h = 0.3
     result = wasserman_kde(x, data, h)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "x" in result
 def test_wsmkdn_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

@@ -12,4 +12,4 @@ def chcrit(df: int, alpha: float = 0.05) -> float:
 
 
 def cheatsheet() -> str:
-    return "chcrit(df, alpha) -> Upper-tail χ² critical value (df, α)."
+    return "chcrit: chcrit(df, alpha) -> Upper-tail χ² critical value (df, α)."

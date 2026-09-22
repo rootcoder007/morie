@@ -59,4 +59,4 @@ gibbons_sign_simpower = signsimpow
 
 
 def cheatsheet() -> str:
-    return "signsimpow(samples, m0, kcrit) -> Monte-Carlo power of the sign test over pre-drawn samples."
+    return "gb5415: signsimpow(samples, m0, kcrit) -> Monte-Carlo power of the sign test over pre-drawn samples."

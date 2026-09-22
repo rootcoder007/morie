@@ -40,4 +40,4 @@ def hpdint(samples: Union[Sequence[float], np.ndarray], cred: float = 0.95):
 
 
 def cheatsheet() -> str:
-    return "hpdint(samples, cred) -> HPD credible interval for posterior MCMC samples."
+    return "hpdint: hpdint(samples, cred) -> HPD credible interval for posterior MCMC samples."

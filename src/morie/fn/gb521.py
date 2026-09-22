@@ -71,4 +71,4 @@ gibbons_quantile_ci = quantci
 
 
 def cheatsheet() -> str:
-    return "quantci(x, p, r, s) -> Order-statistic confidence interval (X_(r), X_(s)) for x_p."
+    return "gb521: quantci(x, p, r, s) -> Order-statistic confidence interval (X_(r), X_(s)) for x_p."

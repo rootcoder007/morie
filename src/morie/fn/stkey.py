@@ -67,4 +67,4 @@ def stkey(x, y, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "stkey(x, y, axis, cdf) -> Siegel-Tukey test for equality of scale parameters."
+    return "stkey: stkey(x, y, axis, cdf) -> Siegel-Tukey test for equality of scale parameters."

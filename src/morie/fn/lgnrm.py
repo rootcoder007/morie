@@ -220,4 +220,4 @@ def lgnrm(
 
 
 def cheatsheet() -> str:
-    return "lgnrm(time, event, covariates, max_iter, tol) -> Fit a log-normal AFT model via maximum likelihood estimation."
+    return "lgnrm: lgnrm(time, event, covariates, max_iter, tol) -> Fit a log-normal AFT model via maximum likelihood estimation."

@@ -87,4 +87,4 @@ gibbons_kendall_null = taunull
 
 
 def cheatsheet() -> str:
-    return "taunull(n, s) -> Null law of the concordance excess S = P - Q for Kendall's tau."
+    return "gb1122: taunull(n, s) -> Null law of the concordance excess S = P - Q for Kendall's tau."

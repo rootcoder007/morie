@@ -102,4 +102,4 @@ lbfgsoptimize = lbfgs_optimize
 
 
 def cheatsheet() -> str:
-    return "lbfgs_optimize(f, grad, x0) -> Limited-memory BFGS quasi-Newton optimizer."
+    return "lbfgm: lbfgs_optimize(f, grad, x0) -> Limited-memory BFGS quasi-Newton optimizer."

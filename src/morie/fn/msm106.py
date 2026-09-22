@@ -23,4 +23,4 @@ def mvsml_bayesian_regression_pt2_eq_7_6(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "mvsml_bayesian_regression_pt2_eq_7_6() -> Deprecated; use :func:`morie.fn.multinomial_probabilities` instead."
+    return "msm106: mvsml_bayesian_regression_pt2_eq_7_6() -> Deprecated; use :func:`morie.fn.multinomial_probabilities` instead."

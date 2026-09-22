@@ -101,4 +101,4 @@ def kstwo(x, y, axis=0):
 
 
 def cheatsheet() -> str:
-    return "kstwo(x, y, axis) -> Kolmogorov-Smirnov two-sample test."
+    return "kstwo: kstwo(x, y, axis) -> Kolmogorov-Smirnov two-sample test."

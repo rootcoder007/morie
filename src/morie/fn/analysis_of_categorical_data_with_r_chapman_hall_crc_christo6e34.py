@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_34() -> Deprecated; use :func:`morie.fn.piecewise_cubic` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e34: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_34() -> Deprecated; use :func:`morie.fn.piecewise_cubic` instead."

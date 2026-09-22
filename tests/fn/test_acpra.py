@@ -10,9 +10,7 @@ def test_acpra_basic():
     chains = np.random.default_rng(42).normal(0, 1, 100)
     result = acceptance_rate_diagnostic(chains)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "acceptance_rate" in result
 def test_acpra_edge():
     """Test edge cases."""
     chains = np.random.default_rng(42).normal(0, 1, 100)

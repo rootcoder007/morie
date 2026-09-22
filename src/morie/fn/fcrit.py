@@ -12,4 +12,4 @@ def fcrit(df1: int, df2: int, alpha: float = 0.05) -> float:
 
 
 def cheatsheet() -> str:
-    return "fcrit(df1, df2, alpha) -> Upper-tail F critical value (df1, df2, α)."
+    return "fcrit: fcrit(df1, df2, alpha) -> Upper-tail F critical value (df1, df2, α)."

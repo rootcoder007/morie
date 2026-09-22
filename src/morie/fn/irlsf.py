@@ -119,4 +119,4 @@ def irlsf(X, y, family="gaussian", max_iter=100, tol=1e-6, full_output=False):
 
 
 def cheatsheet() -> str:
-    return "irlsf(X, y, family, max_iter, tol, full_output) -> IRLS (iteratively reweighted least squares) for GLM fitting."
+    return "irlsf: irlsf(X, y, family, max_iter, tol, full_output) -> IRLS (iteratively reweighted least squares) for GLM fitting."

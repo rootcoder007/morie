@@ -35,4 +35,4 @@ def logodds(p: Union[float, Sequence[float], np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "logodds(p) -> Log-odds (logit): ln(p / (1 - p))."
+    return "logodds: logodds(p) -> Log-odds (logit): ln(p / (1 - p))."

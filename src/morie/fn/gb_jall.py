@@ -60,4 +60,4 @@ gibbons_joint_all_order = ostatjall
 
 
 def cheatsheet() -> str:
-    return "ostatjall(x, pdf) -> Joint pdf of X_(1) < ... < X_(n): n! times the product of f."
+    return "gb_jall: ostatjall(x, pdf) -> Joint pdf of X_(1) < ... < X_(n): n! times the product of f."

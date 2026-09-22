@@ -23,4 +23,4 @@ def ca_chapter_11_equation_44(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_11_equation_44() -> Deprecated; use :func:`morie.fn.tau2_dersimonian_laird` instead."
+    return "ca11e44: ca_chapter_11_equation_44() -> Deprecated; use :func:`morie.fn.tau2_dersimonian_laird` instead."

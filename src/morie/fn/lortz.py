@@ -66,4 +66,4 @@ def lortz(
 
 
 def cheatsheet() -> str:
-    return "lortz(event, v, c) -> Apply a Lorentz boost along the x-axis."
+    return "lortz: lortz(event, v, c) -> Apply a Lorentz boost along the x-axis."

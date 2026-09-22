@@ -56,4 +56,4 @@ def paget(data, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "paget(data, axis, cdf) -> Page's test for ordered alternatives in repeated measures design."
+    return "paget: paget(data, axis, cdf) -> Page's test for ordered alternatives in repeated measures design."

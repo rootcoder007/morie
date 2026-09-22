@@ -8,9 +8,7 @@ def test_gb1122_basic():
     n = 100
     result = gibbons_kendall_null(n)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
-
-
+    assert "support" in result
 def test_gb1122_edge():
     """Test edge cases."""
     n = 100

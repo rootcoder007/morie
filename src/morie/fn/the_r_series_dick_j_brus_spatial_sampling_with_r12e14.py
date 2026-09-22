@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_14(*arg
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_14() -> Deprecated; use :func:`morie.fn.n_design_effect` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r12e14: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_14() -> Deprecated; use :func:`morie.fn.n_design_effect` instead."

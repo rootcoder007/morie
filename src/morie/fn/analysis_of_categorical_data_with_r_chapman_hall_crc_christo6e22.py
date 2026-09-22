@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_22() -> Deprecated; use :func:`morie.fn.bayes_rule` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e22: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_22() -> Deprecated; use :func:`morie.fn.bayes_rule` instead."

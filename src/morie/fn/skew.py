@@ -42,4 +42,4 @@ def skew(x: Union[Sequence[float], np.ndarray], bias: bool = False):
 
 
 def cheatsheet() -> str:
-    return "skew(x, bias) -> Sample skewness (Fisher-Pearson g_1)."
+    return "skew: skew(x, bias) -> Sample skewness (Fisher-Pearson g_1)."

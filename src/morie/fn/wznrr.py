@@ -92,4 +92,4 @@ def wznrr(
 
 
 def cheatsheet() -> str:
-    return "wznrr(joint_pmf, distortion_matrix, target_distortion) -> Compute the Wyner-Ziv rate-distortion function (lower bound)."
+    return "wznrr: wznrr(joint_pmf, distortion_matrix, target_distortion) -> Compute the Wyner-Ziv rate-distortion function (lower bound)."

@@ -78,4 +78,4 @@ gibbons_ks_one_sided_dist = ksplusdist
 
 
 def cheatsheet() -> str:
-    return "ksplusdist(c, n) -> P(D+_n >= c) by the Birnbaum-Tingey closed form."
+    return "gb434: ksplusdist(c, n) -> P(D+_n >= c) by the Birnbaum-Tingey closed form."

@@ -11,9 +11,7 @@ def test_dpchpr_basic():
     alpha = 0.05
     result = dp_changepoint(y, alpha)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "changepoint" in result
 def test_dpchpr_edge():
     """Test edge cases."""
     y = np.random.default_rng(43).normal(0, 1, 100)

@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_2
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_28(x, n_reps, mu, sigma) -> Deprecated; use :func:`morie.fn.gausscount` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner5e28: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_28(x, n_reps, mu, sigma) -> Deprecated; use :func:`morie.fn.gausscount` instead."

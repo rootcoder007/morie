@@ -102,4 +102,4 @@ def wlshv(x, axis=0):
 
 
 def cheatsheet() -> str:
-    return "wlshv(x, axis) -> Compute Walsh averages for confidence intervals on the median."
+    return "wlshv: wlshv(x, axis) -> Compute Walsh averages for confidence intervals on the median."

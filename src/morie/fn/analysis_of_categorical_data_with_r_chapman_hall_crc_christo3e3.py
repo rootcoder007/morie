@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_3() -> Deprecated; use :func:`morie.fn.product_multinomial_pmf` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e3: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_3() -> Deprecated; use :func:`morie.fn.product_multinomial_pmf` instead."

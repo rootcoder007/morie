@@ -46,4 +46,4 @@ svdcompute = svd_compute
 
 
 def cheatsheet() -> str:
-    return "svd_compute(A) -> Singular Value Decomposition."
+    return "svdcp: svd_compute(A) -> Singular Value Decomposition."

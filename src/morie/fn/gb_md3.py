@@ -71,4 +71,4 @@ gibbons_median_ties = medties
 
 
 def cheatsheet() -> str:
-    return "medties(x, y) -> Median test when observations equal the combined median."
+    return "gb_md3: medties(x, y) -> Median test when observations equal the combined median."

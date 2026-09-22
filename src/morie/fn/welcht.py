@@ -54,4 +54,4 @@ def welcht(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "welcht(x, y) -> Welch's two-sample t-test (unequal variances assumed)."
+    return "welcht: welcht(x, y) -> Welch's two-sample t-test (unequal variances assumed)."

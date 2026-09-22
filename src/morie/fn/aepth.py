@@ -88,4 +88,4 @@ def aepth(
 
 
 def cheatsheet() -> str:
-    return "aepth(pmf, n) -> Verify the AEP via Monte Carlo simulation."
+    return "aepth: aepth(pmf, n) -> Verify the AEP via Monte Carlo simulation."

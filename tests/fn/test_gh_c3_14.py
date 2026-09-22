@@ -9,7 +9,7 @@ def test_gh_c3_14_basic():
     """Test basic functionality."""
     x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     result = ghosal_mpt_prior(x)
-    assert "estimate" in result
+    assert "grid" in result
     assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
 
 

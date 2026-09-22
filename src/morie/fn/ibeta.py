@@ -15,4 +15,4 @@ def ibeta(a: float, b: float, x: float) -> float:
 
 
 def cheatsheet() -> str:
-    return "ibeta(a, b, x) -> Regularised incomplete beta function I_x(a, b)."
+    return "ibeta: ibeta(a, b, x) -> Regularised incomplete beta function I_x(a, b)."

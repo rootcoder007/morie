@@ -40,4 +40,4 @@ def relu6(x, derivative=False):
 
 
 def cheatsheet() -> str:
-    return "relu6(x, derivative) -> ReLU6 activation."
+    return "relu6: relu6(x, derivative) -> ReLU6 activation."

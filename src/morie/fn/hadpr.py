@@ -43,4 +43,4 @@ hadpr = hadamard_product
 
 
 def cheatsheet() -> str:
-    return "hadamard_product(A, B) -> Hadamard (element-wise) product of two matrices."
+    return "hadpr: hadamard_product(A, B) -> Hadamard (element-wise) product of two matrices."

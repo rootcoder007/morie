@@ -173,4 +173,4 @@ def phchk(
 
 
 def cheatsheet() -> str:
-    return "phchk(time, event, covariates, beta, transform, cdf) -> Test the proportional hazards assumption using scaled Schoenfeld residuals."
+    return "phchk: phchk(time, event, covariates, beta, transform, cdf) -> Test the proportional hazards assumption using scaled Schoenfeld residuals."

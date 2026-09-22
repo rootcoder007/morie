@@ -397,4 +397,4 @@ llparser = ll_parser
 
 
 def cheatsheet() -> str:
-    return "grammar(rules, start) -> A context-free grammar as a list of ``(lhs, [symbols])``."
+    return "prsLL: grammar(rules, start) -> A context-free grammar as a list of ``(lhs, [symbols])``."

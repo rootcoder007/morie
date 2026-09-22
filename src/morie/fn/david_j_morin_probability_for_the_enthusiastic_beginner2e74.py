@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_7
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_74() -> Deprecated; use :func:`morie.fn.bayes_general` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner2e74: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_74() -> Deprecated; use :func:`morie.fn.bayes_general` instead."

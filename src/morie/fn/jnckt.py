@@ -51,4 +51,4 @@ def jnckt(*samples, axis=0):
 
 
 def cheatsheet() -> str:
-    return "jnckt() -> Jonckheere-Terpstra test for ordered alternatives."
+    return "jnckt: jnckt() -> Jonckheere-Terpstra test for ordered alternatives."

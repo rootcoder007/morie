@@ -155,4 +155,4 @@ def medsv(
 
 
 def cheatsheet() -> str:
-    return "medsv(time, event, alpha, quantile) -> Estimate median (or other quantile) survival time with confidence interval."
+    return "medsv: medsv(time, event, alpha, quantile) -> Estimate median (or other quantile) survival time with confidence interval."

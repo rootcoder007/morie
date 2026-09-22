@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7(*args
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7() -> Deprecated; use :func:`morie.fn.twophase_regression_variance` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r11e7: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7() -> Deprecated; use :func:`morie.fn.twophase_regression_variance` instead."

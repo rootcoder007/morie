@@ -69,4 +69,4 @@ def einsf(
 
 
 def cheatsheet() -> str:
-    return "einsf(ricci_tensor, scalar_curvature, metric, stress_energy, Lambda, G, c) -> Compute the Einstein tensor and verify the field equations."
+    return "einsf: einsf(ricci_tensor, scalar_curvature, metric, stress_energy, Lambda, G, c) -> Compute the Einstein tensor and verify the field equations."

@@ -165,4 +165,4 @@ def gmprl(
 
 
 def cheatsheet() -> str:
-    return "gmprl(time, event, covariates, max_iter, tol) -> Fit a Gompertz proportional-hazards survival model via MLE."
+    return "gmprl: gmprl(time, event, covariates, max_iter, tol) -> Fit a Gompertz proportional-hazards survival model via MLE."

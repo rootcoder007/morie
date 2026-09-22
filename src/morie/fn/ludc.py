@@ -59,4 +59,4 @@ ludc = lu_decomposition
 
 
 def cheatsheet() -> str:
-    return "lu_decomposition(A) -> LU decomposition with partial pivoting."
+    return "ludc: lu_decomposition(A) -> LU decomposition with partial pivoting."

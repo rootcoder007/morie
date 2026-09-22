@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_9(*args,
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_9() -> Deprecated; use :func:`morie.fn.twostage_optimal_n_variance` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r7e9: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_9() -> Deprecated; use :func:`morie.fn.twostage_optimal_n_variance` instead."

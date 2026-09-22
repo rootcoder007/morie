@@ -39,4 +39,4 @@ def iqrng(x: Union[Sequence[float], np.ndarray], method: str = "linear"):
 
 
 def cheatsheet() -> str:
-    return "iqrng(x, method) -> Interquartile range = Q3 - Q1."
+    return "iqrng: iqrng(x, method) -> Interquartile range = Q3 - Q1."

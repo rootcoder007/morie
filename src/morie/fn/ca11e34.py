@@ -23,4 +23,4 @@ def ca_chapter_11_equation_34(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_11_equation_34() -> Deprecated; use :func:`morie.fn.fixed_effect_weight` instead."
+    return "ca11e34: ca_chapter_11_equation_34() -> Deprecated; use :func:`morie.fn.fixed_effect_weight` instead."

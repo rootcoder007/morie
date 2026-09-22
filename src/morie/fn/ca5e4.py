@@ -23,4 +23,4 @@ def ca_chapter_5_equation_4(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_5_equation_4() -> Deprecated; use :func:`morie.fn.multinomial_conditional_or` instead."
+    return "ca5e4: ca_chapter_5_equation_4() -> Deprecated; use :func:`morie.fn.multinomial_conditional_or` instead."

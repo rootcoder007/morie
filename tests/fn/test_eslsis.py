@@ -12,9 +12,7 @@ def test_eslsis_basic():
     d = 5
     result = esl_sis_screening(X, y, d)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "selected" in result
 def test_eslsis_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

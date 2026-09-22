@@ -36,4 +36,4 @@ def somerd(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "somerd(x, y) -> Somers' D - asymmetric ordinal-ordinal association."
+    return "somerd: somerd(x, y) -> Somers' D - asymmetric ordinal-ordinal association."

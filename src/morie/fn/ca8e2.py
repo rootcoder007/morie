@@ -23,4 +23,4 @@ def ca_chapter_8_equation_2(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_8_equation_2() -> Deprecated; use :func:`morie.fn.cohens_d_population` instead."
+    return "ca8e2: ca_chapter_8_equation_2() -> Deprecated; use :func:`morie.fn.cohens_d_population` instead."

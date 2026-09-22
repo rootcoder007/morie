@@ -148,4 +148,4 @@ def mlfac(
 
 
 def cheatsheet() -> str:
-    return "mlfac(X, n_factors, max_iter, tol, scale) -> Maximum Likelihood Factor Analysis."
+    return "mlfac: mlfac(X, n_factors, max_iter, tol, scale) -> Maximum Likelihood Factor Analysis."

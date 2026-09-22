@@ -9,9 +9,7 @@ def test_dpcrp_basic():
     alpha = 0.05
     result = chinese_restaurant_process(n, alpha)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "table" in result
 def test_dpcrp_edge():
     """Test edge cases."""
     n = 100

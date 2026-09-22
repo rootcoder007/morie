@@ -10,4 +10,4 @@ def gammfn(x):
 
 
 def cheatsheet() -> str:
-    return "gammfn(x) -> Gamma function Γ(x) = (x-1)!."
+    return "gammfn: gammfn(x) -> Gamma function Γ(x) = (x-1)!."

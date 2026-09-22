@@ -49,4 +49,4 @@ def rpenc(seq_len, d_model, base=10000):
 
 
 def cheatsheet() -> str:
-    return "rpenc(seq_len, d_model, base) -> Rotary positional encoding."
+    return "rpenc: rpenc(seq_len, d_model, base) -> Rotary positional encoding."

@@ -419,4 +419,4 @@ termrewriting = term_rewriting
 
 
 def cheatsheet() -> str:
-    return "rule(lhs, rhs) -> A rewrite rule, checked for the two conditions rules need."
+    return "trmRew: rule(lhs, rhs) -> A rewrite rule, checked for the two conditions rules need."

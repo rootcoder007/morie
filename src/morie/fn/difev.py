@@ -99,4 +99,4 @@ def difev(f, bounds, pop_size=50, generations=100, F=0.8, Cr=0.7, full_output=Fa
 
 
 def cheatsheet() -> str:
-    return "difev(f, bounds, pop_size, generations, F, Cr, full_output, seed) -> Differential evolution (DE) for global optimization."
+    return "difev: difev(f, bounds, pop_size, generations, F, Cr, full_output, seed) -> Differential evolution (DE) for global optimization."

@@ -110,4 +110,4 @@ def vrmxr(L, max_iter=1000, tol=1e-6, gamma=1.0):
 
 
 def cheatsheet() -> str:
-    return "vrmxr(L, max_iter, tol, gamma) -> Varimax rotation of factor loadings."
+    return "vrmxr: vrmxr(L, max_iter, tol, gamma) -> Varimax rotation of factor loadings."

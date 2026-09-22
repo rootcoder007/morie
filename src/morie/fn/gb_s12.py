@@ -64,4 +64,4 @@ gibbons_smirnov_one_sided = smirnov1
 
 
 def cheatsheet() -> str:
-    return "smirnov1(d, m, n) -> P(D+_{m,n} >= d) exactly, plus the one-sided asymptotic form."
+    return "gb_s12: smirnov1(d, m, n) -> P(D+_{m,n} >= d) exactly, plus the one-sided asymptotic form."

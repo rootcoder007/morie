@@ -35,4 +35,4 @@ def wasdst(u: Union[Sequence, np.ndarray], v: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "wasdst(u, v) -> 1D Wasserstein-1 (earth mover's) distance."
+    return "wasdst: wasdst(u, v) -> 1D Wasserstein-1 (earth mover's) distance."

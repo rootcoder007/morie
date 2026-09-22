@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_2
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_25(n_sigmas, sigma) -> Deprecated; use :func:`morie.fn.gausstail` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner5e25: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_25(n_sigmas, sigma) -> Deprecated; use :func:`morie.fn.gausstail` instead."

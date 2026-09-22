@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_3
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33(x, n, delta) -> Deprecated; use :func:`morie.fn.diffquotn` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner7e33: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33(x, n, delta) -> Deprecated; use :func:`morie.fn.diffquotn` instead."

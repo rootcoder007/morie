@@ -93,4 +93,4 @@ gibbons_chernoff_savage = lrankasymp
 
 
 def cheatsheet() -> str:
-    return "lrankasymp(j, jprime, lam, n, nodes) -> Null Chernoff-Savage mean and variance from the score function."
+    return "gb738: lrankasymp(j, jprime, lam, n, nodes) -> Null Chernoff-Savage mean and variance from the score function."

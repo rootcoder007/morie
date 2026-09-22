@@ -97,4 +97,4 @@ def ising(
 
 
 def cheatsheet() -> str:
-    return "ising(T, J, kB, n_sites) -> Compute 2D Ising model thermodynamic quantities using Onsager's"
+    return "ising: ising(T, J, kB, n_sites) -> Compute 2D Ising model thermodynamic quantities using Onsager's"

@@ -71,4 +71,4 @@ variance_inflation = vif
 
 
 def cheatsheet() -> str:
-    return "vif(X) -> Variance Inflation Factor for each column of X."
+    return "vif: vif(X) -> Variance Inflation Factor for each column of X."

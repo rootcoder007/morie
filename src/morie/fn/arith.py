@@ -93,4 +93,4 @@ def arith(message: list, pmf: np.ndarray, symbols: list = None, cdf=None, *, pre
 
 
 def cheatsheet() -> str:
-    return "arith(message, pmf, symbols, cdf) -> Arithmetic coding: encode a message into a sub-interval of [0, 1)."
+    return "arith: arith(message, pmf, symbols, cdf) -> Arithmetic coding: encode a message into a sub-interval of [0, 1)."

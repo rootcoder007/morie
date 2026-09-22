@@ -71,4 +71,4 @@ gibbons_chisq_gof = chigof
 
 
 def cheatsheet() -> str:
-    return "chigof(observed, expected, ddof) -> Pearson goodness-of-fit statistic Q for k categories."
+    return "gb421: chigof(observed, expected, ddof) -> Pearson goodness-of-fit statistic Q for k categories."

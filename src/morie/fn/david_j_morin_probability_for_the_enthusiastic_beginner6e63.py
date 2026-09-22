@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_6
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_63(x, y, tol) -> Deprecated; use :func:`morie.fn.covindep` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner6e63: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_63(x, y, tol) -> Deprecated; use :func:`morie.fn.covindep` instead."

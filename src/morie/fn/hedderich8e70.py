@@ -31,4 +31,4 @@ def hedderich_chapter_8_equation_70(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "hedderich_chapter_8_equation_70() -> Deprecated; use :func:`morie.fn.pseudor2` instead."
+    return "hedderich8e70: hedderich_chapter_8_equation_70() -> Deprecated; use :func:`morie.fn.pseudor2` instead."

@@ -78,4 +78,4 @@ gmressolve = gmres_solve
 
 
 def cheatsheet() -> str:
-    return "gmres_solve(A, b) -> GMRES (Generalized Minimal RESidual) iterative solver."
+    return "gmrss: gmres_solve(A, b) -> GMRES (Generalized Minimal RESidual) iterative solver."

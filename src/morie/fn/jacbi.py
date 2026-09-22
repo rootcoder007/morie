@@ -68,4 +68,4 @@ jacobisolve = jacobi_solve
 
 
 def cheatsheet() -> str:
-    return "jacobi_solve(A, b) -> Jacobi iterative method for Ax = b."
+    return "jacbi: jacobi_solve(A, b) -> Jacobi iterative method for Ax = b."

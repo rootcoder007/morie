@@ -7,16 +7,14 @@ from morie.fn.ghs009 import ghosal_ch3_stick_breaking_weights
 
 def test_ghs009_basic():
     """Test basic functionality."""
-    V_l = np.random.default_rng(42).normal(0, 1, 100)
-    j = np.random.default_rng(42).normal(0, 1, 100)
-    result = ghosal_ch3_stick_breaking_weights(V_l, j)
+    V = np.random.default_rng(42).uniform(0.05, 0.95, 100)
+    result = ghosal_ch3_stick_breaking_weights(V)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
 
 def test_ghs009_edge():
     """Test edge cases."""
-    V_l = np.random.default_rng(42).normal(0, 1, 100)
-    j = np.random.default_rng(42).normal(0, 1, 100)
-    result = ghosal_ch3_stick_breaking_weights(V_l, j)
+    V = np.random.default_rng(42).uniform(0.05, 0.95, 100)
+    result = ghosal_ch3_stick_breaking_weights(V)
     assert isinstance(result, dict)

@@ -72,4 +72,4 @@ gibbons_hodges_wilcoxon = hlwsrlink
 
 
 def cheatsheet() -> str:
-    return "hlwsrlink(x, m0) -> Median of the Walsh averages, and the T+ counting identity."
+    return "gb_hw: hlwsrlink(x, m0) -> Median of the Walsh averages, and the T+ counting identity."

@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_18(*args
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_18() -> Deprecated; use :func:`morie.fn.infinite_total` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r3e18: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_18() -> Deprecated; use :func:`morie.fn.infinite_total` instead."

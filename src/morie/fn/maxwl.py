@@ -104,4 +104,4 @@ def maxwl(
 
 
 def cheatsheet() -> str:
-    return "maxwl(E, B, c) -> Construct the electromagnetic field tensor (Faraday tensor) and"
+    return "maxwl: maxwl(E, B, c) -> Construct the electromagnetic field tensor (Faraday tensor) and"

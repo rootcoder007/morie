@@ -26,4 +26,4 @@ def studres(
 
 
 def cheatsheet() -> str:
-    return "studres(y, yhat, leverage) -> Internally-studentized residuals."
+    return "studres: studres(y, yhat, leverage) -> Internally-studentized residuals."

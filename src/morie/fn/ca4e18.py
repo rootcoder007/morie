@@ -23,4 +23,4 @@ def ca_chapter_4_equation_18(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_4_equation_18() -> Deprecated; use :func:`morie.fn.likelihood_ratio_chi2` instead."
+    return "ca4e18: ca_chapter_4_equation_18() -> Deprecated; use :func:`morie.fn.likelihood_ratio_chi2` instead."

@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_6
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_66(n) -> Deprecated; use :func:`morie.fn.halfheads` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner2e66: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_66(n) -> Deprecated; use :func:`morie.fn.halfheads` instead."

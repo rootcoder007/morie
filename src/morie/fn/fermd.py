@@ -52,4 +52,4 @@ def fermd(
 
 
 def cheatsheet() -> str:
-    return "fermd(energies, mu, T, kB) -> Compute the Fermi-Dirac distribution."
+    return "fermd: fermd(energies, mu, T, kB) -> Compute the Fermi-Dirac distribution."

@@ -23,4 +23,4 @@ def ca_chapter_9_equation_1(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_9_equation_1() -> Deprecated; use :func:`morie.fn.treatment_b_confounded` instead."
+    return "ca9e1: ca_chapter_9_equation_1() -> Deprecated; use :func:`morie.fn.treatment_b_confounded` instead."

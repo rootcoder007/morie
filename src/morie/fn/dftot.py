@@ -10,4 +10,4 @@ def dftot(n: int) -> int:
 
 
 def cheatsheet() -> str:
-    return "dftot(n) -> Total degrees of freedom: n − 1."
+    return "dftot: dftot(n) -> Total degrees of freedom: n − 1."

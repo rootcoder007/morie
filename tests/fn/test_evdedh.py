@@ -11,9 +11,7 @@ def test_evdedh_basic():
     k = 5
     result = evt_dekkers_einmahl_dehaan(x, k)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "xi" in result
 def test_evdedh_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

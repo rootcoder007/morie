@@ -72,4 +72,4 @@ matrixlog = matrix_log
 
 
 def cheatsheet() -> str:
-    return "matrix_log(A) -> Matrix logarithm log(A) via inverse scaling and squaring."
+    return "mtlog: matrix_log(A) -> Matrix logarithm log(A) via inverse scaling and squaring."

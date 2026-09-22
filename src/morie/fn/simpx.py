@@ -192,4 +192,4 @@ simplexlp = simplex_lp
 
 
 def cheatsheet() -> str:
-    return "simplex_lp(c, A_ub, b_ub) -> Simplex method for linear programming."
+    return "simpx: simplex_lp(c, A_ub, b_ub) -> Simplex method for linear programming."

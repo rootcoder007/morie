@@ -38,4 +38,4 @@ def wilcoxn(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray] = Non
 
 
 def cheatsheet() -> str:
-    return "wilcoxn(x, y, alternative) -> Wilcoxon signed-rank test (paired or one-sample)."
+    return "wilcoxn: wilcoxn(x, y, alternative) -> Wilcoxon signed-rank test (paired or one-sample)."

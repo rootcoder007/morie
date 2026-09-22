@@ -10,9 +10,7 @@ def test_bayess_basic():
     chain = np.random.default_rng(42).normal(0, 1, 100)
     result = effective_sample_size_bayes(chain)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "ess" in result
 def test_bayess_edge():
     """Test edge cases."""
     chain = np.random.default_rng(42).normal(0, 1, 100)

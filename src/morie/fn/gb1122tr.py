@@ -87,4 +87,4 @@ gibbons_kendall_trend = tautrend
 
 
 def cheatsheet() -> str:
-    return "tautrend(y, alternative) -> Trend test from the concordance of Y with its time index."
+    return "gb1122tr: tautrend(y, alternative) -> Trend test from the concordance of Y with its time index."

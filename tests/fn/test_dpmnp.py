@@ -11,9 +11,7 @@ def test_dpmnp_basic():
     epsilon = 1e-6
     result = dp_minmax(x, epsilon)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "lower" in result
 def test_dpmnp_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

@@ -67,4 +67,4 @@ gibbons_wsrt_efficacy = effwsr
 
 
 def cheatsheet() -> str:
-    return "effwsr(n, f0, integral) -> e(T+) for a parent symmetric about the median."
+    return "gb1331w: effwsr(n, f0, integral) -> e(T+) for a parent symmetric about the median."

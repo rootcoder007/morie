@@ -65,4 +65,4 @@ def srmrc(x, y, axis=0, ci_level=0.95, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "srmrc(x, y, axis, ci_level, cdf) -> Spearman rank correlation coefficient with confidence interval."
+    return "srmrc: srmrc(x, y, axis, ci_level, cdf) -> Spearman rank correlation coefficient with confidence interval."

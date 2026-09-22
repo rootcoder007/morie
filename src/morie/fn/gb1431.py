@@ -75,4 +75,4 @@ gibbons_k2_contingency = chik2
 
 
 def cheatsheet() -> str:
-    return "chik2(successes, ns) -> Test of equal proportions across k groups, Sec. 14.3."
+    return "gb1431: chik2(successes, ns) -> Test of equal proportions across k groups, Sec. 14.3."

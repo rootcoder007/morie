@@ -48,4 +48,4 @@ def hotelt2(X: Union[Sequence, np.ndarray], mu0: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "hotelt2(X, mu0) -> Hotelling T^2 for testing mu = mu0."
+    return "hotelt2: hotelt2(X, mu0) -> Hotelling T^2 for testing mu = mu0."

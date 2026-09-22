@@ -11,9 +11,7 @@ def test_rgwvd_basic():
     fs = 100.0
     result = rangayyan_wigner_ville(x, fs)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "tfd" in result
 def test_rgwvd_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

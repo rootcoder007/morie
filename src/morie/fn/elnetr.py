@@ -87,4 +87,4 @@ def elnetr(
 
 
 def cheatsheet() -> str:
-    return "elnetr(X, y, alpha, l1_ratio, fit_intercept, max_iter) -> Elastic net - convex combination of L1 and L2 penalties."
+    return "elnetr: elnetr(X, y, alpha, l1_ratio, fit_intercept, max_iter) -> Elastic net - convex combination of L1 and L2 penalties."

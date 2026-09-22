@@ -280,4 +280,4 @@ unification = unify
 
 
 def cheatsheet() -> str:
-    return "var(name) -> A variable term."
+    return "unifAlg: var(name) -> A variable term."

@@ -14,4 +14,4 @@ def tcrit(df: int, alpha: float = 0.05, two_sided: bool = True) -> float:
 
 
 def cheatsheet() -> str:
-    return "tcrit(df, alpha, two_sided) -> Two-sided t critical value at significance α with df."
+    return "tcrit: tcrit(df, alpha, two_sided) -> Two-sided t critical value at significance α with df."

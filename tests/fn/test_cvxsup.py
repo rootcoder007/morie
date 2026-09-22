@@ -11,9 +11,7 @@ def test_cvxsup_basic():
     x0 = np.random.default_rng(42).normal(0, 1, 100)
     result = boyd_support_hyperplane(C, x0)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "a" in result
 def test_cvxsup_edge():
     """Test edge cases."""
     C = np.random.default_rng(42).normal(0, 1, 100)

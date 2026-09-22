@@ -133,4 +133,4 @@ def ander(x, dist="norm", dist_params=None, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "ander(x, dist, dist_params, axis, cdf) -> Anderson-Darling test for goodness of fit."
+    return "ander: ander(x, dist, dist_params, axis, cdf) -> Anderson-Darling test for goodness of fit."

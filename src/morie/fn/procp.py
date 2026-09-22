@@ -86,4 +86,4 @@ def procp(X, Y, orthogonal=True, scale=False):
 
 
 def cheatsheet() -> str:
-    return "procp(X, Y, orthogonal, scale) -> Procrustes rotation: find optimal transformation of X to match Y."
+    return "procp: procp(X, Y, orthogonal, scale) -> Procrustes rotation: find optimal transformation of X to match Y."

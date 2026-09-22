@@ -96,4 +96,4 @@ def rudwn(x, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "rudwn(x, axis, cdf) -> Runs up and down test for randomness."
+    return "rudwn: rudwn(x, axis, cdf) -> Runs up and down test for randomness."

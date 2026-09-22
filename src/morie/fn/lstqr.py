@@ -60,4 +60,4 @@ lstsqqr = lstsq_qr
 
 
 def cheatsheet() -> str:
-    return "lstsq_qr(A, b) -> Least squares solution via QR decomposition."
+    return "lstqr: lstsq_qr(A, b) -> Least squares solution via QR decomposition."

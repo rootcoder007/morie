@@ -36,4 +36,4 @@ def cohensh(p1: float, p2: float):
 
 
 def cheatsheet() -> str:
-    return "cohensh(p1, p2) -> Cohen's h for two proportions: 2 * (asin(sqrt(p1)) - asin(sqrt(p2)))."
+    return "cohensh: cohensh(p1, p2) -> Cohen's h for two proportions: 2 * (asin(sqrt(p1)) - asin(sqrt(p2)))."

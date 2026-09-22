@@ -12,4 +12,4 @@ def nperm(n: int, k: int) -> int:
 
 
 def cheatsheet() -> str:
-    return "nperm(n, k) -> P(n, k) -- ordered permutations."
+    return "nperm: nperm(n, k) -> P(n, k) -- ordered permutations."

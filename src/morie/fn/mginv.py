@@ -49,4 +49,4 @@ mginv = pseudoinverse
 
 
 def cheatsheet() -> str:
-    return "pseudoinverse(A) -> Moore-Penrose pseudoinverse via SVD."
+    return "mginv: pseudoinverse(A) -> Moore-Penrose pseudoinverse via SVD."

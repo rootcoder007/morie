@@ -15,4 +15,4 @@ def sampsrs(population, n: int, seed: int = 42):
 
 
 def cheatsheet() -> str:
-    return "sampsrs(population, n, seed) -> Simple random sample of size n, without replacement."
+    return "sampsrs: sampsrs(population, n, seed) -> Simple random sample of size n, without replacement."

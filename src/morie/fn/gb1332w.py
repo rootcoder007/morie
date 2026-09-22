@@ -60,4 +60,4 @@ gibbons_wrs_efficacy = effwrs
 
 
 def cheatsheet() -> str:
-    return "effwrs(m, n, integral) -> e(U_{m,n}) for the two-sample location problem."
+    return "gb1332w: effwrs(m, n, integral) -> e(U_{m,n}) for the two-sample location problem."

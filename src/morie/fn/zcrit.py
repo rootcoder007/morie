@@ -14,4 +14,4 @@ def zcrit(alpha: float = 0.05, two_sided: bool = True) -> float:
 
 
 def cheatsheet() -> str:
-    return "zcrit(alpha, two_sided) -> Two-sided z critical value at significance level α."
+    return "zcrit: zcrit(alpha, two_sided) -> Two-sided z critical value at significance level α."

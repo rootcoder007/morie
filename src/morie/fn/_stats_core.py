@@ -949,30 +949,43 @@ def _pearson_r(x, y):
     return _bi.max(-1.0, _bi.min(1.0, r))
 
 
-def pearsonr(x, y):
+def _one_sided(p_two, stat, alternative):
+    """scipy's alternative= on a symmetric two-sided p: half of it on the
+    side the statistic falls, 1 - that half on the other side."""
+    if alternative == "two-sided":
+        return p_two
+    half = p_two / 2.0
+    if alternative == "greater":
+        return half if stat >= 0 else 1.0 - half
+    if alternative == "less":
+        return half if stat <= 0 else 1.0 - half
+    raise ValueError("alternative must be 'two-sided', 'less' or 'greater'")
+
+
+def pearsonr(x, y, alternative="two-sided"):
     x, y = _flatten(x), _flatten(y)
     n = len(x)
     r = _pearson_r(x, y)
     if r != r:
         return _TestResult(r, _math.nan)  # a constant input: undefined, as scipy
     if n < 3 or abs(r) == 1.0:
-        return _TestResult(r, 0.0 if abs(r) == 1.0 else 1.0)
+        return _TestResult(r, _one_sided(0.0 if abs(r) == 1.0 else 1.0, r, alternative))
     tstat = r * _math.sqrt((n - 2) / (1.0 - r * r))
     p = 2.0 * t.sf(abs(tstat), n - 2)
-    return _TestResult(r, _bi.min(1.0, p))
+    return _TestResult(r, _one_sided(_bi.min(1.0, p), r, alternative))
 
 
-def spearmanr(x, y):
+def spearmanr(x, y, alternative="two-sided"):
     rx = rankdata(x)
     ry = rankdata(y)
-    return pearsonr(rx, ry)
+    return pearsonr(rx, ry, alternative=alternative)
 
 
 def pointbiserialr(x, y):
     return pearsonr(x, y)
 
 
-def kendalltau(x, y):
+def kendalltau(x, y, alternative="two-sided"):
     x, y = _flatten(x), _flatten(y)
     n = len(x)
     conc = disc = 0
@@ -1019,7 +1032,7 @@ def kendalltau(x, y):
         total = _math.factorial(n)
         d = _bi.min(conc, disc)
         p_low = _math.fsum(counts[:d + 1]) / total
-        return _TestResult(tau, _bi.min(1.0, 2.0 * p_low))
+        return _TestResult(tau, _one_sided(_bi.min(1.0, 2.0 * p_low), tau, alternative))
     # asymptotic with the tie-corrected variance (Kendall 1970; scipy)
     def tie_sizes(v):
         c = {}
@@ -1038,7 +1051,7 @@ def kendalltau(x, y):
     var = (v0 - vt - vu) / 18.0 + v1 + v2
     z = (conc - disc) / _math.sqrt(var) if var > 0 else 0.0
     p = 2.0 * norm.sf(abs(z))
-    return _TestResult(tau, _bi.min(1.0, p))
+    return _TestResult(tau, _one_sided(_bi.min(1.0, p), tau, alternative))
 
 
 def linregress(x, y=None):

@@ -21,4 +21,4 @@ def bsperc(boot_estimates: Union[Sequence[float], np.ndarray], conf: float = 0.9
 
 
 def cheatsheet() -> str:
-    return "bsperc(boot_estimates, conf) -> Percentile bootstrap confidence interval (lo, hi)."
+    return "bsperc: bsperc(boot_estimates, conf) -> Percentile bootstrap confidence interval (lo, hi)."

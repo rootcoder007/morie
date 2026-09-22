@@ -92,4 +92,4 @@ def rmspf(f, grad_f, x0, learning_rate=0.01, decay=0.9, epsilon=1e-8, max_iter=1
 
 
 def cheatsheet() -> str:
-    return "rmspf(f, grad_f, x0, learning_rate, decay, epsilon, max_iter, full_output, seed) -> RMSprop optimizer for unconstrained minimization."
+    return "rmspf: rmspf(f, grad_f, x0, learning_rate, decay, epsilon, max_iter, full_output, seed) -> RMSprop optimizer for unconstrained minimization."

@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_8
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_81() -> Deprecated; use :func:`morie.fn.excess_score_factor` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner6e81: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_81() -> Deprecated; use :func:`morie.fn.excess_score_factor` instead."

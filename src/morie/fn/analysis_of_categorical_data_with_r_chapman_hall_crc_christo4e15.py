@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_15() -> Deprecated; use :func:`morie.fn.poisson_rate_mean` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e15: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_15() -> Deprecated; use :func:`morie.fn.poisson_rate_mean` instead."

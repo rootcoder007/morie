@@ -55,4 +55,4 @@ def bosed(
 
 
 def cheatsheet() -> str:
-    return "bosed(energies, mu, T, kB) -> Compute the Bose-Einstein distribution."
+    return "bosed: bosed(energies, mu, T, kB) -> Compute the Bose-Einstein distribution."

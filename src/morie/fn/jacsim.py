@@ -11,4 +11,4 @@ def jacsim(a, b) -> float:
 
 
 def cheatsheet() -> str:
-    return "jacsim(a, b) -> Jaccard similarity for two sets: |A ∩ B| / |A ∪ B|."
+    return "jacsim: jacsim(a, b) -> Jaccard similarity for two sets: |A ∩ B| / |A ∪ B|."

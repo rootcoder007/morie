@@ -68,4 +68,4 @@ secantmethod = secant_method
 
 
 def cheatsheet() -> str:
-    return "secant_method(f, x0, x1) -> Secant method for finding roots of f(x) = 0."
+    return "secnt: secant_method(f, x0, x1) -> Secant method for finding roots of f(x) = 0."

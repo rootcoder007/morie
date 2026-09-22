@@ -378,4 +378,4 @@ forwardsearch = forward_search
 
 
 def cheatsheet() -> str:
-    return "consistency_factor(m, n) -> Riani, Atkinson & Cerioli's factor for a truncated scale."
+    return "forwsr: consistency_factor(m, n) -> Riani, Atkinson & Cerioli's factor for a truncated scale."

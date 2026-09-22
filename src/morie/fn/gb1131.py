@@ -89,4 +89,4 @@ gibbons_spearman_rho = spearrho
 
 
 def cheatsheet() -> str:
-    return "spearrho(x, y) -> R from the sum of squared rank differences, eq. (11.3.2)."
+    return "gb1131: spearrho(x, y) -> R from the sum of squared rank differences, eq. (11.3.2)."

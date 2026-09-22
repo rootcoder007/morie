@@ -91,4 +91,4 @@ inpnt = interior_point_lp
 
 
 def cheatsheet() -> str:
-    return "interior_point_lp(c, A_eq, b_eq) -> Primal-dual interior point method for LP."
+    return "inpnt: interior_point_lp(c, A_eq, b_eq) -> Primal-dual interior point method for LP."

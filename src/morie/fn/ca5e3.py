@@ -23,4 +23,4 @@ def ca_chapter_5_equation_3(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_5_equation_3() -> Deprecated; use :func:`morie.fn.multinomial_probs` instead."
+    return "ca5e3: ca_chapter_5_equation_3() -> Deprecated; use :func:`morie.fn.multinomial_probs` instead."

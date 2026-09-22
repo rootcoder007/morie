@@ -13,4 +13,4 @@ def sampsys(population, k: int, start: int = 0):
 
 
 def cheatsheet() -> str:
-    return "sampsys(population, k, start) -> Systematic sample: take every k-th unit starting at index `start`."
+    return "sampsys: sampsys(population, k, start) -> Systematic sample: take every k-th unit starting at index `start`."

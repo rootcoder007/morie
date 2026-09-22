@@ -102,4 +102,4 @@ def mednt(x, y, axis=0):
 
 
 def cheatsheet() -> str:
-    return "mednt(x, y, axis) -> Median test for two independent samples."
+    return "mednt: mednt(x, y, axis) -> Median test for two independent samples."

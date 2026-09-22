@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_3
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_39(m, xavg) -> Deprecated; use :func:`morie.fn.groupavg` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner6e39: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_39(m, xavg) -> Deprecated; use :func:`morie.fn.groupavg` instead."

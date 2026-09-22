@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_4
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_40() -> Deprecated; use :func:`morie.fn.regression_to_mean_factor` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner6e40: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_40() -> Deprecated; use :func:`morie.fn.regression_to_mean_factor` instead."

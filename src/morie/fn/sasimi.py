@@ -205,4 +205,4 @@ def tanimoto_similarity(fp_a, fp_b, coefficient="tanimoto",
 
 
 def cheatsheet() -> str:
-    return "fingerprint(bits, n_bits) -> Normalise a fingerprint to a frozen set of on-bit indices."
+    return "sasimi: fingerprint(bits, n_bits) -> Normalise a fingerprint to a frozen set of on-bit indices."

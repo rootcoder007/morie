@@ -23,4 +23,4 @@ def ca_chapter_2_equation_18(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_2_equation_18() -> Deprecated; use :func:`morie.fn.f_nested_ss` instead."
+    return "ca2e18: ca_chapter_2_equation_18() -> Deprecated; use :func:`morie.fn.f_nested_ss` instead."

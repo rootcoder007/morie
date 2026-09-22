@@ -91,4 +91,4 @@ gibbons_ctrl_median = ctrlmed
 
 
 def cheatsheet() -> str:
-    return "ctrlmed(x, y, alternative) -> Mathisen's control median test, eq. (6.5.1)."
+    return "gb651: ctrlmed(x, y, alternative) -> Mathisen's control median test, eq. (6.5.1)."

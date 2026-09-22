@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_1
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_11(a, kmax) -> Deprecated; use :func:`morie.fn.poissum1` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner7e11: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_11(a, kmax) -> Deprecated; use :func:`morie.fn.poissum1` instead."

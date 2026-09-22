@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_10_equation_
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_10_equation_6(m, sigma_x, sigma_z) -> Deprecated; use :func:`morie.fn.linmodel` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner10e6: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_10_equation_6(m, sigma_x, sigma_z) -> Deprecated; use :func:`morie.fn.linmodel` instead."

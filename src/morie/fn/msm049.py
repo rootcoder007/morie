@@ -23,4 +23,4 @@ def mvsml_bayesian_regression_eq_6_4(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "mvsml_bayesian_regression_eq_6_4() -> Deprecated; use :func:`morie.fn.bayes_gblup_gibbs` instead."
+    return "msm049: mvsml_bayesian_regression_eq_6_4() -> Deprecated; use :func:`morie.fn.bayes_gblup_gibbs` instead."

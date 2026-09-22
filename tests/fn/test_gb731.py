@@ -9,16 +9,12 @@ def test_gb731_basic():
     """Test basic functionality."""
     a = np.random.default_rng(42).normal(0, 1, 100)
     m = 10
-    n = 100
-    result = gibbons_linrank_moments(a, m, n)
+    result = gibbons_linrank_moments(a, m)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
-
-
+    assert "mean" in result
 def test_gb731_edge():
     """Test edge cases."""
     a = np.random.default_rng(42).normal(0, 1, 100)
     m = 10
-    n = 100
-    result = gibbons_linrank_moments(a, m, n)
+    result = gibbons_linrank_moments(a, m)
     assert isinstance(result, dict)

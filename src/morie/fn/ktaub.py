@@ -90,4 +90,4 @@ def ktaub(x, y, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "ktaub(x, y, axis, cdf) -> Kendall's tau-b correlation coefficient (with ties correction)."
+    return "ktaub: ktaub(x, y, axis, cdf) -> Kendall's tau-b correlation coefficient (with ties correction)."

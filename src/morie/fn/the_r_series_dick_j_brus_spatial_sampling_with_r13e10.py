@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_10(*arg
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_10() -> Deprecated; use :func:`morie.fn.optimal_allocation_variance` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r13e10: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_10() -> Deprecated; use :func:`morie.fn.optimal_allocation_variance` instead."

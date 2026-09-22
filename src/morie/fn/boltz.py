@@ -69,4 +69,4 @@ def boltz(
 
 
 def cheatsheet() -> str:
-    return "boltz(energies, T, degeneracies, kB) -> Compute the Boltzmann distribution and partition function."
+    return "boltz: boltz(energies, T, degeneracies, kB) -> Compute the Boltzmann distribution and partition function."

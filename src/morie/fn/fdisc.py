@@ -93,4 +93,4 @@ def fdisc(
 
 
 def cheatsheet() -> str:
-    return "fdisc(p, q) -> Compute an f-divergence between two discrete distributions."
+    return "fdisc: fdisc(p, q) -> Compute an f-divergence between two discrete distributions."

@@ -67,4 +67,4 @@ def riman(
 
 
 def cheatsheet() -> str:
-    return "riman(christoffel, christoffel_derivs, metric_func, coords, h) -> Compute the Riemann curvature tensor from Christoffel symbols."
+    return "riman: riman(christoffel, christoffel_derivs, metric_func, coords, h) -> Compute the Riemann curvature tensor from Christoffel symbols."

@@ -278,4 +278,4 @@ surveycox = survey_cox
 
 
 def cheatsheet() -> str:
-    return "score_residuals(time, event, X, beta, weights) -> Per-subject score residuals at ``beta``."
+    return "svycox: score_residuals(time, event, X, beta, weights) -> Per-subject score residuals at ``beta``."

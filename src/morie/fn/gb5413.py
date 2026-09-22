@@ -68,4 +68,4 @@ gibbons_sign_zeros = signzero
 
 
 def cheatsheet() -> str:
-    return "signzero(x, m0, method) -> Resolve zero differences before applying the sign test."
+    return "gb5413: signzero(x, m0, method) -> Resolve zero differences before applying the sign test."

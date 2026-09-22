@@ -104,4 +104,4 @@ def chi2sf(x, df):
 
 
 def cheatsheet() -> str:
-    return "golden(f, lo, hi, iters) -> Golden-section minimiser with a fixed iteration count."
+    return "t3util: golden(f, lo, hi, iters) -> Golden-section minimiser with a fixed iteration count."

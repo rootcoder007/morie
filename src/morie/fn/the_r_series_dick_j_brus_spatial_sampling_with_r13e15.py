@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_15(*arg
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_15() -> Deprecated; use :func:`morie.fn.expected_squared_distance` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r13e15: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_15() -> Deprecated; use :func:`morie.fn.expected_squared_distance` instead."

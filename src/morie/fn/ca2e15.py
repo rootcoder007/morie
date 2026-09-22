@@ -23,4 +23,4 @@ def ca_chapter_2_equation_15(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_2_equation_15() -> Deprecated; use :func:`morie.fn.adjusted_r2` instead."
+    return "ca2e15: ca_chapter_2_equation_15() -> Deprecated; use :func:`morie.fn.adjusted_r2` instead."

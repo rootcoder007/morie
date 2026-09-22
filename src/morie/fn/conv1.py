@@ -62,4 +62,4 @@ def conv1(x, kernel, padding="valid", stride=1):
 
 
 def cheatsheet() -> str:
-    return "conv1(x, kernel, padding, stride) -> 1D convolution."
+    return "conv1: conv1(x, kernel, padding, stride) -> 1D convolution."

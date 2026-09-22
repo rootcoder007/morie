@@ -7,16 +7,12 @@ from morie.fn.aithil import compositional_hill
 
 def test_aithil_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    result = compositional_hill(x, q)
+    x = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = compositional_hill(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "hill" in result
 def test_aithil_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    result = compositional_hill(x, q)
+    x = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = compositional_hill(x)
     assert isinstance(result, dict)

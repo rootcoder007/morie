@@ -15,4 +15,4 @@ def eucldst(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]) -> f
 
 
 def cheatsheet() -> str:
-    return "eucldst(x, y) -> Euclidean (L₂) distance between vectors x and y."
+    return "eucldst: eucldst(x, y) -> Euclidean (L₂) distance between vectors x and y."

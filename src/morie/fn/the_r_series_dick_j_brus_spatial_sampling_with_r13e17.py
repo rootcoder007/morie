@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_17(*arg
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_17() -> Deprecated; use :func:`morie.fn.ospats_objective` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r13e17: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_17() -> Deprecated; use :func:`morie.fn.ospats_objective` instead."

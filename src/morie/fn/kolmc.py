@@ -70,4 +70,4 @@ def kolmc(data: np.ndarray) -> dict:
 
 
 def cheatsheet() -> str:
-    return "kolmc(data) -> Approximate Kolmogorov complexity using compression ratio."
+    return "kolmc: kolmc(data) -> Approximate Kolmogorov complexity using compression ratio."

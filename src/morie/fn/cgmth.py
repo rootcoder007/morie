@@ -130,4 +130,4 @@ def cgmth(f, grad_f, x0, tol=1e-6, max_iter=1000, full_output=False):
 
 
 def cheatsheet() -> str:
-    return "cgmth(f, grad_f, x0, tol, max_iter, full_output) -> Conjugate gradient method for unconstrained minimization."
+    return "cgmth: cgmth(f, grad_f, x0, tol, max_iter, full_output) -> Conjugate gradient method for unconstrained minimization."

@@ -74,4 +74,4 @@ def lasr(
 
 
 def cheatsheet() -> str:
-    return "lasr(X, y, alpha, fit_intercept, max_iter) -> Lasso regression (L1-regularized OLS) - performs variable selection."
+    return "lasr: lasr(X, y, alpha, fit_intercept, max_iter) -> Lasso regression (L1-regularized OLS) - performs variable selection."

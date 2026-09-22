@@ -81,4 +81,4 @@ gibbons_mw_sampsize = mwun
 
 
 def cheatsheet() -> str:
-    return "mwun(p, c, alpha, beta, twosided) -> Total sample size N for a Mann-Whitney test of given power."
+    return "gb661s: mwun(p, c, alpha, beta, twosided) -> Total sample size N for a Mann-Whitney test of given power."

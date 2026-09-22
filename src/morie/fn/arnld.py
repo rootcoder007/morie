@@ -64,4 +64,4 @@ arnld = arnoldi
 
 
 def cheatsheet() -> str:
-    return "arnoldi(A) -> Arnoldi iteration building an orthonormal Krylov basis."
+    return "arnld: arnoldi(A) -> Arnoldi iteration building an orthonormal Krylov basis."

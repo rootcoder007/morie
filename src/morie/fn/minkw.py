@@ -50,4 +50,4 @@ minkw = minkowski_dist
 
 
 def cheatsheet() -> str:
-    return "minkowski_dist(a, b, p) -> Compute the Minkowski distance (Lp norm) between two vectors."
+    return "minkw: minkowski_dist(a, b, p) -> Compute the Minkowski distance (Lp norm) between two vectors."

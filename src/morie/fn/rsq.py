@@ -54,4 +54,4 @@ def rsq(y_true: Union[Sequence[float], np.ndarray], y_pred: Union[Sequence[float
 
 
 def cheatsheet() -> str:
-    return "rsq(y_true, y_pred) -> R^2 = 1 - SS_res / SS_tot."
+    return "rsq: rsq(y_true, y_pred) -> R^2 = 1 - SS_res / SS_tot."

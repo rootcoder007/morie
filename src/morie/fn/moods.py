@@ -69,4 +69,4 @@ def moods(x, y, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "moods(x, y, axis, cdf) -> Mood's test for equality of scale parameters."
+    return "moods: moods(x, y, axis, cdf) -> Mood's test for equality of scale parameters."

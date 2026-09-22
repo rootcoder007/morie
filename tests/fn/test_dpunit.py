@@ -11,9 +11,7 @@ def test_dpunit_basic():
     records = np.random.default_rng(42).normal(0, 1, 100)
     result = dp_unit_definition(unit, records)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "n_records" in result
 def test_dpunit_edge():
     """Test edge cases."""
     unit = np.random.default_rng(42).normal(0, 1, 100)

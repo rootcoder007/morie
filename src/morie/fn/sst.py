@@ -17,4 +17,4 @@ def sst(y: Union[Sequence[float], np.ndarray]) -> float:
 
 
 def cheatsheet() -> str:
-    return "sst(y) -> Total sum of squares: Σᵢ (yᵢ − ȳ)²."
+    return "sst: sst(y) -> Total sum of squares: Σᵢ (yᵢ − ȳ)²."

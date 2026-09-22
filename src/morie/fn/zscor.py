@@ -17,4 +17,4 @@ def zscor(x: Union[Sequence, np.ndarray]) -> np.ndarray:
 
 
 def cheatsheet() -> str:
-    return "zscor(x) -> Z-score: (x − x̄) / s. Sample-SD (ddof=1)."
+    return "zscor: zscor(x) -> Z-score: (x − x̄) / s. Sample-SD (ddof=1)."

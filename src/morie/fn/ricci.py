@@ -58,4 +58,4 @@ def ricci(
 
 
 def cheatsheet() -> str:
-    return "ricci(riemann, metric) -> Compute the Ricci tensor and scalar curvature from the Riemann tensor."
+    return "ricci: ricci(riemann, metric) -> Compute the Ricci tensor and scalar curvature from the Riemann tensor."

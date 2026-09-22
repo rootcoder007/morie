@@ -10,4 +10,4 @@ def dferr(n: int, k: int) -> int:
 
 
 def cheatsheet() -> str:
-    return "dferr(n, k) -> Error (residual) degrees of freedom: n − k − 1."
+    return "dferr: dferr(n, k) -> Error (residual) degrees of freedom: n − k − 1."

@@ -18,4 +18,4 @@ def tukyl(residual: float, c: float = 4.685) -> float:
 
 
 def cheatsheet() -> str:
-    return "tukyl(residual, c) -> Tukey biweight (bisquare) loss."
+    return "tukyl: tukyl(residual, c) -> Tukey biweight (bisquare) loss."

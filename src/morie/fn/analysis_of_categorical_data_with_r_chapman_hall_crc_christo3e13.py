@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_13() -> Deprecated; use :func:`morie.fn.polr_parameterization` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e13: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_13() -> Deprecated; use :func:`morie.fn.polr_parameterization` instead."

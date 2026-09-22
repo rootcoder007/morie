@@ -23,4 +23,4 @@ def ca_chapter_8_equation_3(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_8_equation_3() -> Deprecated; use :func:`morie.fn.power_from_delta_t` instead."
+    return "ca8e3: ca_chapter_8_equation_3() -> Deprecated; use :func:`morie.fn.power_from_delta_t` instead."

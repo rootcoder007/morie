@@ -47,4 +47,4 @@ def anddrl(x: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "anddrl(x) -> Anderson-Darling test for Normality (more tail-sensitive than Shapiro)."
+    return "anddrl: anddrl(x) -> Anderson-Darling test for Normality (more tail-sensitive than Shapiro)."

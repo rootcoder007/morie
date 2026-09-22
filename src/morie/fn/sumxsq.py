@@ -16,4 +16,4 @@ def sumxsq(x: Union[Sequence[float], np.ndarray]) -> float:
 
 
 def cheatsheet() -> str:
-    return "sumxsq(x) -> Σᵢ xᵢ² -- uncorrected sum of squares."
+    return "sumxsq: sumxsq(x) -> Σᵢ xᵢ² -- uncorrected sum of squares."

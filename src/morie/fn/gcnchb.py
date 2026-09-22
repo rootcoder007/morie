@@ -79,4 +79,4 @@ def chebnet(L, X, K=3, theta=None):
 
 
 def cheatsheet() -> str:
-    return "chebnet(L, X, K, theta) -> Chebyshev polynomial filter of order K-1 applied to X."
+    return "gcnchb: chebnet(L, X, K, theta) -> Chebyshev polynomial filter of order K-1 applied to X."

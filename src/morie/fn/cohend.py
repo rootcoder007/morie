@@ -66,4 +66,4 @@ def cohend(x1: Union[Sequence[float], np.ndarray], x2: Union[Sequence[float], np
 
 
 def cheatsheet() -> str:
-    return "cohend(x1, x2) -> Cohen's d for two-sample mean difference."
+    return "cohend: cohend(x1, x2) -> Cohen's d for two-sample mean difference."

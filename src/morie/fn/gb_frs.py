@@ -74,4 +74,4 @@ gibbons_friedman_chi2_approp = friedchi
 
 
 def cheatsheet() -> str:
-    return "friedchi(q, k, n) -> Reference chi-square tail for Q, with its exact first two moments."
+    return "gb_frs: friedchi(q, k, n) -> Reference chi-square tail for Q, with its exact first two moments."

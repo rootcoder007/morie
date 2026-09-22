@@ -23,4 +23,4 @@ def ca_chapter_8_equation_7(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_8_equation_7() -> Deprecated; use :func:`morie.fn.r2_from_f2` instead."
+    return "ca8e7: ca_chapter_8_equation_7() -> Deprecated; use :func:`morie.fn.r2_from_f2` instead."

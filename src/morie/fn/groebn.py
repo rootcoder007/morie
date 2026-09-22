@@ -331,4 +331,4 @@ def groebner(polys, order="lex", prune=True, reduced=True):
 
 
 def cheatsheet() -> str:
-    return "poly(terms, nvars) -> A polynomial as ``{exponent tuple: coefficient}``."
+    return "groebn: poly(terms, nvars) -> A polynomial as ``{exponent tuple: coefficient}``."

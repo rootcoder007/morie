@@ -63,4 +63,4 @@ gibbons_order_cdf = ostatcdf
 
 
 def cheatsheet() -> str:
-    return "ostatcdf(t, r, n, cdf) -> P[X_(r) <= t] as an upper binomial tail in F_X(t)."
+    return "gb241: ostatcdf(t, r, n, cdf) -> P[X_(r) <= t] as an upper binomial tail in F_X(t)."

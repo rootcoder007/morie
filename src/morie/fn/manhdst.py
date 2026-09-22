@@ -15,4 +15,4 @@ def manhdst(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]) -> f
 
 
 def cheatsheet() -> str:
-    return "manhdst(x, y) -> Manhattan (L₁) distance: Σ |xᵢ − yᵢ|."
+    return "manhdst: manhdst(x, y) -> Manhattan (L₁) distance: Σ |xᵢ − yᵢ|."

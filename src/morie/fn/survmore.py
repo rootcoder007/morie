@@ -1104,4 +1104,4 @@ def paracompare(time, event, X=None, dists=None):
 
 
 def cheatsheet() -> str:
-    return "rmst(time, event, tau, alpha) -> Restricted mean survival time."
+    return "survmore: rmst(time, event, tau, alpha) -> Restricted mean survival time."

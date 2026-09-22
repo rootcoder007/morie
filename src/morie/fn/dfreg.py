@@ -10,4 +10,4 @@ def dfreg(k: int) -> int:
 
 
 def cheatsheet() -> str:
-    return "dfreg(k) -> Regression degrees of freedom: number of slope params."
+    return "dfreg: dfreg(k) -> Regression degrees of freedom: number of slope params."

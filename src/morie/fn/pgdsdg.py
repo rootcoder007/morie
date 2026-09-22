@@ -225,4 +225,4 @@ def projected_gradient_descent(f, grad, x0, project, **kw):
 
 
 def cheatsheet() -> str:
-    return "project_box(x, lower, upper) -> Clip into :math:`[l, u]`, coordinatewise."
+    return "pgdsdg: project_box(x, lower, upper) -> Clip into :math:`[l, u]`, coordinatewise."

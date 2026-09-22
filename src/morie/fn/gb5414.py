@@ -93,4 +93,4 @@ gibbons_sign_power = signpow
 
 
 def cheatsheet() -> str:
-    return "signpow(n, theta, alpha, exact) -> Power of the upper-tailed sign test against H1: M > M0."
+    return "gb5414: signpow(n, theta, alpha, exact) -> Power of the upper-tailed sign test against H1: M > M0."

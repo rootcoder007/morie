@@ -83,4 +83,4 @@ gibbons_ctrl_median_power = ctrlmedpow
 
 
 def cheatsheet() -> str:
-    return "ctrlmedpow(m, n, d, h, nodes) -> P(V <= d) under an alternative, Sec. 6.5.2."
+    return "gb651p: ctrlmedpow(m, n, d, h, nodes) -> P(V <= d) under an alternative, Sec. 6.5.2."

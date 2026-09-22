@@ -72,4 +72,4 @@ def cosmx(
 
 
 def cheatsheet() -> str:
-    return "cosmx(z, H0, Omega_m, Omega_Lambda) -> Compute comoving distance, luminosity distance, angular diameter distance,"
+    return "cosmx: cosmx(z, H0, Omega_m, Omega_Lambda) -> Compute comoving distance, luminosity distance, angular diameter distance,"

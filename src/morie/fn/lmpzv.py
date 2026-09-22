@@ -74,4 +74,4 @@ def lmpzv(sequence: np.ndarray) -> dict:
 
 
 def cheatsheet() -> str:
-    return "lmpzv(sequence) -> Compute the Lempel-Ziv complexity of a discrete sequence."
+    return "lmpzv: lmpzv(sequence) -> Compute the Lempel-Ziv complexity of a discrete sequence."

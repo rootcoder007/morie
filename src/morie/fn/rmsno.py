@@ -53,4 +53,4 @@ def rmsno(
 
 
 def cheatsheet() -> str:
-    return "rmsno(x, epsilon, gamma) -> RMS normalization."
+    return "rmsno: rmsno(x, epsilon, gamma) -> RMS normalization."

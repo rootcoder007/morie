@@ -14,4 +14,4 @@ def eigval(A: Union[Sequence, np.ndarray]) -> np.ndarray:
 
 
 def cheatsheet() -> str:
-    return "eigval(A) -> Eigenvalues of a symmetric matrix (ascending order)."
+    return "eigval: eigval(A) -> Eigenvalues of a symmetric matrix (ascending order)."

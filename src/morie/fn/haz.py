@@ -29,4 +29,4 @@ def haz(pdf_t: float, surv_t: float):
 
 
 def cheatsheet() -> str:
-    return "haz(pdf_t, surv_t) -> Hazard rate at time t: f(t) / S(t)."
+    return "haz: haz(pdf_t, surv_t) -> Hazard rate at time t: f(t) / S(t)."

@@ -87,4 +87,4 @@ gibbons_fab_test = ansbrad
 
 
 def cheatsheet() -> str:
-    return "ansbrad(x, y) -> A_N with the folded (absolute-deviation) scores, eq. (9.3.1)."
+    return "gb931: ansbrad(x, y) -> A_N with the folded (absolute-deviation) scores, eq. (9.3.1)."

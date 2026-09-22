@@ -229,4 +229,4 @@ def cxphr(
 
 
 def cheatsheet() -> str:
-    return "cxphr(time, event, covariates, max_iter, tol, ties) -> Fit a Cox proportional hazards model via partial likelihood maximisation"
+    return "cxphr: cxphr(time, event, covariates, max_iter, tol, ties) -> Fit a Cox proportional hazards model via partial likelihood maximisation"

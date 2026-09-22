@@ -72,4 +72,4 @@ def bkent(
 
 
 def cheatsheet() -> str:
-    return "bkent(M, A, G, c, hbar, kB) -> Compute Bekenstein-Hawking black hole entropy."
+    return "bkent: bkent(M, A, G, c, hbar, kB) -> Compute Bekenstein-Hawking black hole entropy."

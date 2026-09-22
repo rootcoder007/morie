@@ -87,4 +87,4 @@ def mdscl(D, n_dims=2):
 
 
 def cheatsheet() -> str:
-    return "mdscl(D, n_dims) -> Classical Multidimensional Scaling."
+    return "mdscl: mdscl(D, n_dims) -> Classical Multidimensional Scaling."

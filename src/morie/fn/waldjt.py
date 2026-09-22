@@ -40,4 +40,4 @@ def waldjt(
 
 
 def cheatsheet() -> str:
-    return "waldjt(beta, cov, R, r) -> Joint Wald test of H0: R*beta = r."
+    return "waldjt: waldjt(beta, cov, R, r) -> Joint Wald test of H0: R*beta = r."

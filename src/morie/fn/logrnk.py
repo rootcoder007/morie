@@ -60,4 +60,4 @@ logrank_test = logrnk
 
 
 def cheatsheet() -> str:
-    return "logrnk(times1, events1, times2, events2) -> Log-rank test for difference between two survival curves."
+    return "logrnk: logrnk(times1, events1, times2, events2) -> Log-rank test for difference between two survival curves."

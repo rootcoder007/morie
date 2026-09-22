@@ -59,4 +59,4 @@ def huber(
 
 
 def cheatsheet() -> str:
-    return "huber(y_true, y_pred, delta) -> Huber loss."
+    return "huber: huber(y_true, y_pred, delta) -> Huber loss."

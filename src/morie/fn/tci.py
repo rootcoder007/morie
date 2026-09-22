@@ -16,4 +16,4 @@ def tci(s: float, n: int, conf: float = 0.95) -> float:
 
 
 def cheatsheet() -> str:
-    return "tci(s, n, conf) -> Half-width of a t-based confidence interval."
+    return "tci: tci(s, n, conf) -> Half-width of a t-based confidence interval."

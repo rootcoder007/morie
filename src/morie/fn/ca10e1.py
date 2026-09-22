@@ -23,4 +23,4 @@ def ca_chapter_10_equation_1(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_10_equation_1() -> Deprecated; use :func:`morie.fn.psm_standardized_bias` instead."
+    return "ca10e1: ca_chapter_10_equation_1() -> Deprecated; use :func:`morie.fn.psm_standardized_bias` instead."

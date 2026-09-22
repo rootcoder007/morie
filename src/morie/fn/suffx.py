@@ -115,4 +115,4 @@ def suffx(
 
 
 def cheatsheet() -> str:
-    return "suffx(data, statistic, log_likelihood, theta_grid) -> Test whether T(X) is a sufficient statistic for theta via factorization."
+    return "suffx: suffx(data, statistic, log_likelihood, theta_grid) -> Test whether T(X) is a sufficient statistic for theta via factorization."

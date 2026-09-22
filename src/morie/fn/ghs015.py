@@ -23,4 +23,4 @@ def ghosal_ch3_dirichlet_posterior_var(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ghosal_ch3_dirichlet_posterior_var() -> Deprecated; use :func:`morie.fn.cdp_posterior_var` instead."
+    return "ghs015: ghosal_ch3_dirichlet_posterior_var() -> Deprecated; use :func:`morie.fn.cdp_posterior_var` instead."

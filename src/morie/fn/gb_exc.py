@@ -79,4 +79,4 @@ gibbons_exceedance_stat = exceed
 
 
 def cheatsheet() -> str:
-    return "exceed(i, m, n, j) -> Exact null law of the placement P_(i) = m S_m(Y_(i))."
+    return "gb_exc: exceed(i, m, n, j) -> Exact null law of the placement P_(i) = m S_m(Y_(i))."

@@ -66,4 +66,4 @@ gibbons_edf_binomial = edfbinom
 
 
 def cheatsheet() -> str:
-    return "edfbinom(n, fx, i) -> Distribution of the EDF count T_n(x) = n * S_n(x)."
+    return "gb231: edfbinom(n, fx, i) -> Distribution of the EDF count T_n(x) = n * S_n(x)."

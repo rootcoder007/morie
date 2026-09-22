@@ -89,4 +89,4 @@ def adamw(
 
 
 def cheatsheet() -> str:
-    return "adamw(weights, gradients, learning_rate, beta1, beta2, epsilon, weight_decay, m, v, t) -> AdamW optimizer step."
+    return "adamw: adamw(weights, gradients, learning_rate, beta1, beta2, epsilon, weight_decay, m, v, t) -> AdamW optimizer step."

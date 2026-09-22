@@ -313,4 +313,4 @@ lrparser = lr_parser
 
 
 def cheatsheet() -> str:
-    return "augment(g) -> Add :math:`S' \\to S` so acceptance is a single reduction."
+    return "prsLR: augment(g) -> Add :math:`S' \\to S` so acceptance is a single reduction."

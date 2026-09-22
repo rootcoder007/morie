@@ -112,4 +112,4 @@ def genmh(f, bounds, pop_size=50, generations=100, pc=0.7, pm=0.1, full_output=F
 
 
 def cheatsheet() -> str:
-    return "genmh(f, bounds, pop_size, generations, pc, pm, full_output, seed) -> Genetic algorithm for global optimization."
+    return "genmh: genmh(f, bounds, pop_size, generations, pc, pm, full_output, seed) -> Genetic algorithm for global optimization."

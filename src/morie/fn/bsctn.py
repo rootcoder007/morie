@@ -82,4 +82,4 @@ def bsctn(f, a, b, tol=1e-6, max_iter=100, full_output=False):
 
 
 def cheatsheet() -> str:
-    return "bsctn(f, a, b, tol, max_iter, full_output) -> Bisection method for root finding."
+    return "bsctn: bsctn(f, a, b, tol, max_iter, full_output) -> Bisection method for root finding."

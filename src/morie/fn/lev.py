@@ -18,4 +18,4 @@ def lev(X: Union[Sequence, np.ndarray]) -> np.ndarray:
 
 
 def cheatsheet() -> str:
-    return "lev(X) -> Hat-matrix diagonals (leverage values)."
+    return "lev: lev(X) -> Hat-matrix diagonals (leverage values)."

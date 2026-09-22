@@ -97,4 +97,4 @@ def densm(
 
 
 def cheatsheet() -> str:
-    return "densm(state, rho, operation, subsystem_dims, trace_out) -> Density matrix construction and operations."
+    return "densm: densm(state, rho, operation, subsystem_dims, trace_out) -> Density matrix construction and operations."

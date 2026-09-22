@@ -23,4 +23,4 @@ def ca_chapter_8_equation_6(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_8_equation_6() -> Deprecated; use :func:`morie.fn.noncentrality_delta_r` instead."
+    return "ca8e6: ca_chapter_8_equation_6() -> Deprecated; use :func:`morie.fn.noncentrality_delta_r` instead."

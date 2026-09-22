@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_4() -> Deprecated; use :func:`morie.fn.logistic_joint_probability` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e4: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_4() -> Deprecated; use :func:`morie.fn.logistic_joint_probability` instead."

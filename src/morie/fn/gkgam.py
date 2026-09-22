@@ -59,4 +59,4 @@ def gkgam(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "gkgam(x, y) -> Goodman-Kruskal gamma - ordinal association ignoring ties."
+    return "gkgam: gkgam(x, y) -> Goodman-Kruskal gamma - ordinal association ignoring ties."

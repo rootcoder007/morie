@@ -128,4 +128,4 @@ butinacluster = butina_clusters
 
 
 def cheatsheet() -> str:
-    return "neighbour_lists(fps, threshold) -> For each compound, the set of others within ``threshold``."
+    return "clusmd: neighbour_lists(fps, threshold) -> For each compound, the set of others within ``threshold``."

@@ -97,4 +97,4 @@ def dirac(
 
 
 def cheatsheet() -> str:
-    return "dirac(p, m, spin, particle, hbar, c) -> Compute the free-particle Dirac spinor and energy."
+    return "dirac: dirac(p, m, spin, particle, hbar, c) -> Compute the free-particle Dirac spinor and energy."

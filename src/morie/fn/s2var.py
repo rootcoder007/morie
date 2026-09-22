@@ -31,4 +31,4 @@ def s2var(x: Union[Sequence[float], np.ndarray]) -> float:
 
 
 def cheatsheet() -> str:
-    return "s2var(x) -> Unbiased sample variance with Bessel's correction."
+    return "s2var: s2var(x) -> Unbiased sample variance with Bessel's correction."

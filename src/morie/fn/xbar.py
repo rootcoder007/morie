@@ -28,4 +28,4 @@ def xbar(x: Union[Sequence[float], np.ndarray]) -> float:
 
 
 def cheatsheet() -> str:
-    return "xbar(x) -> Sample arithmetic mean."
+    return "xbar: xbar(x) -> Sample arithmetic mean."

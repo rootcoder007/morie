@@ -52,4 +52,4 @@ def softm(x, axis=-1, derivative=False):
 
 
 def cheatsheet() -> str:
-    return "softm(x, axis, derivative) -> Softmax activation (numerically stable)."
+    return "softm: softm(x, axis, derivative) -> Softmax activation (numerically stable)."

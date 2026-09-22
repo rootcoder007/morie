@@ -86,4 +86,4 @@ def wdist(
 
 
 def cheatsheet() -> str:
-    return "wdist(x, y) -> Compute the p-Wasserstein distance between two 1-D distributions."
+    return "wdist: wdist(x, y) -> Compute the p-Wasserstein distance between two 1-D distributions."

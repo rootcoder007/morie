@@ -27,4 +27,4 @@ def akike(loglik: float, k: int):
 
 
 def cheatsheet() -> str:
-    return "akike(loglik, k) -> Akaike Information Criterion: AIC = 2k - 2 log L."
+    return "akike: akike(loglik, k) -> Akaike Information Criterion: AIC = 2k - 2 log L."

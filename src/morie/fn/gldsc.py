@@ -87,4 +87,4 @@ def gldsc(f, a, b, tol=1e-6, max_iter=100, full_output=False):
 
 
 def cheatsheet() -> str:
-    return "gldsc(f, a, b, tol, max_iter, full_output) -> Golden section search for univariate minimization."
+    return "gldsc: gldsc(f, a, b, tol, max_iter, full_output) -> Golden section search for univariate minimization."

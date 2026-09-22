@@ -59,4 +59,4 @@ def kmsurv(times: Union[Sequence, np.ndarray], events: Union[Sequence, np.ndarra
 
 
 def cheatsheet() -> str:
-    return "kmsurv(times, events) -> Kaplan-Meier estimator of S(t) for right-censored data."
+    return "kmsurv: kmsurv(times, events) -> Kaplan-Meier estimator of S(t) for right-censored data."

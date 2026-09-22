@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_4_equation_18(*args
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_4_equation_18() -> Deprecated; use :func:`morie.fn.stratified_cost` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r4e18: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_4_equation_18() -> Deprecated; use :func:`morie.fn.stratified_cost` instead."

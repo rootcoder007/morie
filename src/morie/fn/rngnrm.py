@@ -17,4 +17,4 @@ def rngnrm(x: Union[Sequence, np.ndarray]) -> np.ndarray:
 
 
 def cheatsheet() -> str:
-    return "rngnrm(x) -> Min-max scale x to [0, 1]: (x − min) / (max − min)."
+    return "rngnrm: rngnrm(x) -> Min-max scale x to [0, 1]: (x − min) / (max − min)."

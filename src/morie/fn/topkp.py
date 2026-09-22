@@ -77,4 +77,4 @@ def topkp(
 
 
 def cheatsheet() -> str:
-    return "topkp(logits, top_k, top_p, temperature, seed) -> Top-k and top-p sampling."
+    return "topkp: topkp(logits, top_k, top_p, temperature, seed) -> Top-k and top-p sampling."

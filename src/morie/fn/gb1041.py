@@ -101,4 +101,4 @@ gibbons_kruskal_wallis = kwh
 
 
 def cheatsheet() -> str:
-    return "kwh(samples, correct) -> H statistic with the tie correction of eq. (10.4.5)."
+    return "gb1041: kwh(samples, correct) -> H statistic with the tie correction of eq. (10.4.5)."

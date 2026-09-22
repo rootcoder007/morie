@@ -47,4 +47,4 @@ def posem(seq_len, d_model, base=10000):
 
 
 def cheatsheet() -> str:
-    return "posem(seq_len, d_model, base) -> Sinusoidal positional encoding."
+    return "posem: posem(seq_len, d_model, base) -> Sinusoidal positional encoding."

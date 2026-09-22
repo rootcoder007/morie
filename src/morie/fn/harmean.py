@@ -33,4 +33,4 @@ def harmean(x: Union[Sequence[float], np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "harmean(x) -> Harmonic mean = n / Σ (1/x_i)."
+    return "harmean: harmean(x) -> Harmonic mean = n / Σ (1/x_i)."

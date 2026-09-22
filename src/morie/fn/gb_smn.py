@@ -64,4 +64,4 @@ gibbons_smirnov_2sided = smirnov2
 
 
 def cheatsheet() -> str:
-    return "smirnov2(d, m, n) -> P(D_{m,n} >= d) exactly, by lattice-path counting."
+    return "gb_smn: smirnov2(d, m, n) -> P(D_{m,n} >= d) exactly, by lattice-path counting."

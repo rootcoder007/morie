@@ -57,4 +57,4 @@ def crsvm(x, dist="norm", dist_params=None, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "crsvm(x, dist, dist_params, axis, cdf) -> Cramer-von Mises goodness-of-fit test."
+    return "crsvm: crsvm(x, dist, dist_params, axis, cdf) -> Cramer-von Mises goodness-of-fit test."

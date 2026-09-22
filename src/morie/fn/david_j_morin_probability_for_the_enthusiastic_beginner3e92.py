@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_9
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_92(sigma, N) -> Deprecated; use :func:`morie.fn.varxbar` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner3e92: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_92(sigma, N) -> Deprecated; use :func:`morie.fn.varxbar` instead."

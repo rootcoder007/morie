@@ -83,4 +83,4 @@ gibbons_multinomial_gof = multgof
 
 
 def cheatsheet() -> str:
-    return "multgof(observed, probs, ddof) -> Pearson Q for a multinomial null, Sec. 14.6."
+    return "gb1461: multgof(observed, probs, ddof) -> Pearson Q for a multinomial null, Sec. 14.6."

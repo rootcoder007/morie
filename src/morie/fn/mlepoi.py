@@ -52,4 +52,4 @@ def mlepoi(counts: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "mlepoi(counts) -> MLE Poisson fit: lambda_hat = mean."
+    return "mlepoi: mlepoi(counts) -> MLE Poisson fit: lambda_hat = mean."

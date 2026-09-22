@@ -23,4 +23,4 @@ def ca_chapter_7_equation_1(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_7_equation_1() -> Deprecated; use :func:`morie.fn.grand_mean_model` instead."
+    return "ca7e1: ca_chapter_7_equation_1() -> Deprecated; use :func:`morie.fn.grand_mean_model` instead."

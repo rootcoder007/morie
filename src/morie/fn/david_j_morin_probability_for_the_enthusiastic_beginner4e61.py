@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_6
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_61(n, p) -> Deprecated; use :func:`morie.fn.binommean` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner4e61: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_61(n, p) -> Deprecated; use :func:`morie.fn.binommean` instead."

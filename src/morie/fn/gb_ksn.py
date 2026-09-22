@@ -84,4 +84,4 @@ gibbons_ks_sample_size = ksn
 
 
 def cheatsheet() -> str:
-    return "ksn(c, alpha) -> Smallest n with P(D_n < c) >= 1 - alpha."
+    return "gb_ksn: ksn(c, alpha) -> Smallest n with P(D_n < c) >= 1 - alpha."

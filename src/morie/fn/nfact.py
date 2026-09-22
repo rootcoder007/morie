@@ -12,4 +12,4 @@ def nfact(n: int) -> int:
 
 
 def cheatsheet() -> str:
-    return "nfact(n) -> n! -- factorial."
+    return "nfact: nfact(n) -> n! -- factorial."

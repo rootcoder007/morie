@@ -72,4 +72,4 @@ gibbons_median_test_ci = medtestci
 
 
 def cheatsheet() -> str:
-    return "medtestci(x, y, c) -> Order-statistic interval for theta from median-test inversion."
+    return "gb641c: medtestci(x, y, c) -> Order-statistic interval for theta from median-test inversion."

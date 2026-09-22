@@ -81,4 +81,4 @@ gibbons_sign_median_ci = signmedci
 
 
 def cheatsheet() -> str:
-    return "signmedci(x, alpha) -> Order-statistic confidence interval for the median."
+    return "gb5417: signmedci(x, alpha) -> Order-statistic confidence interval for the median."

@@ -129,4 +129,4 @@ def ksone(x, dist="norm", dist_params=None, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "ksone(x, dist, dist_params, axis, cdf) -> Kolmogorov-Smirnov one-sample test."
+    return "ksone: ksone(x, dist, dist_params, axis, cdf) -> Kolmogorov-Smirnov one-sample test."

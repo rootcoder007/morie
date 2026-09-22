@@ -39,4 +39,4 @@ def hedgeg(cohens_d: float, n1: int, n2: int):
 
 
 def cheatsheet() -> str:
-    return "hedgeg(cohens_d, n1, n2) -> Hedges' g: small-sample correction of Cohen's d."
+    return "hedgeg: hedgeg(cohens_d, n1, n2) -> Hedges' g: small-sample correction of Cohen's d."

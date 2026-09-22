@@ -10,9 +10,7 @@ def test_cvxhul_basic():
     S = np.random.default_rng(42).normal(0, 1, 100)
     result = boyd_convex_hull(S)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "vertices" in result
 def test_cvxhul_edge():
     """Test edge cases."""
     S = np.random.default_rng(42).normal(0, 1, 100)

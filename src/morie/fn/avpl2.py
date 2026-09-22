@@ -65,4 +65,4 @@ def avpl2(x, pool_size=2, stride=None, padding="valid"):
 
 
 def cheatsheet() -> str:
-    return "avpl2(x, pool_size, stride, padding) -> 2D average pooling."
+    return "avpl2: avpl2(x, pool_size, stride, padding) -> 2D average pooling."

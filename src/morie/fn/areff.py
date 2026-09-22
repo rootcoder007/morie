@@ -29,4 +29,4 @@ def areff(test1_stat, test2_stat, n, test1_name="Test1", test2_name="Test2"):
 
 
 def cheatsheet() -> str:
-    return "areff(test1_stat, test2_stat, n, test1_name, test2_name) -> Asymptotic relative efficiency between two tests."
+    return "areff: areff(test1_stat, test2_stat, n, test1_name, test2_name) -> Asymptotic relative efficiency between two tests."

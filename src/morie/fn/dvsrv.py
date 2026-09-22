@@ -93,4 +93,4 @@ def dvsrv(
 
 
 def cheatsheet() -> str:
-    return "dvsrv(time, event, covariates, beta) -> Compute deviance residuals for a fitted Cox proportional hazards model."
+    return "dvsrv: dvsrv(time, event, covariates, beta) -> Compute deviance residuals for a fitted Cox proportional hazards model."

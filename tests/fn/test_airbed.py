@@ -11,9 +11,7 @@ def test_airbed_basic():
     ef = np.random.default_rng(42).normal(0, 1, 100)
     result = emissions_inventory(activity, ef)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "total" in result
 def test_airbed_edge():
     """Test edge cases."""
     activity = np.random.default_rng(42).normal(0, 1, 100)

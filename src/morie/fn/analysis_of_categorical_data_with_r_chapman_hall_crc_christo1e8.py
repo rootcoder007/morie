@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_8() -> Deprecated; use :func:`morie.fn.lrt_two_groups` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e8: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_8() -> Deprecated; use :func:`morie.fn.lrt_two_groups` instead."

@@ -101,4 +101,4 @@ gibbons_median_test_power = medtestpow
 
 
 def cheatsheet() -> str:
-    return "medtestpow(m, n, r, wcrit, g, nodes) -> Power of a one-sided precedence (median) test, eqs. (6.4.9)-(6.4.10)."
+    return "gb641p: medtestpow(m, n, r, wcrit, g, nodes) -> Power of a one-sided precedence (median) test, eqs. (6.4.9)-(6.4.10)."

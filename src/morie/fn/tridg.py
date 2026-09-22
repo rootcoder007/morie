@@ -60,4 +60,4 @@ thomassolve = thomas_solve
 
 
 def cheatsheet() -> str:
-    return "thomas_solve(a, b, c, d) -> Thomas algorithm for tridiagonal systems."
+    return "tridg: thomas_solve(a, b, c, d) -> Thomas algorithm for tridiagonal systems."

@@ -17,4 +17,4 @@ def invsym(A: Union[Sequence, np.ndarray]) -> np.ndarray:
 
 
 def cheatsheet() -> str:
-    return "invsym(A) -> Pseudo-inverse of a symmetric matrix."
+    return "invsym: invsym(A) -> Pseudo-inverse of a symmetric matrix."

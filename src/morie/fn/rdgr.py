@@ -67,4 +67,4 @@ def rdgr(
 
 
 def cheatsheet() -> str:
-    return "rdgr(X, y, alpha, fit_intercept) -> Ridge regression (L2-regularized OLS)."
+    return "rdgr: rdgr(X, y, alpha, fit_intercept) -> Ridge regression (L2-regularized OLS)."

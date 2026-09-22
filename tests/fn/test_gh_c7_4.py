@@ -9,7 +9,7 @@ def test_gh_c7_4_basic():
     """Test basic functionality."""
     x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     result = ghosal_norm_mix_con(x)
-    assert "estimate" in result
+    assert "grid" in result
     assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
 
 

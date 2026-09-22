@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_8
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_86(p_a, p_b_given_a, p_b_given_not_a) -> Deprecated; use :func:`morie.fn.ptotal` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner2e86: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_86(p_a, p_b_given_a, p_b_given_not_a) -> Deprecated; use :func:`morie.fn.ptotal` instead."

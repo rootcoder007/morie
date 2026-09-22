@@ -90,4 +90,4 @@ gibbons_sukhatme = sukhatme
 
 
 def cheatsheet() -> str:
-    return "sukhatme(x, y, alternative) -> T counts pairs with X strictly between 0 and Y, eq. (9.7.1)."
+    return "gb971: sukhatme(x, y, alternative) -> T counts pairs with X strictly between 0 and Y, eq. (9.7.1)."

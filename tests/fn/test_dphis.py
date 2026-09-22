@@ -12,9 +12,7 @@ def test_dphis_basic():
     epsilon = 1e-6
     result = dp_histogram(x, bins, epsilon)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "release" in result
 def test_dphis_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

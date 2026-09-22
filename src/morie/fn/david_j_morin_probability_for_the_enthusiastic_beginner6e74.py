@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_7
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_74(r, sigma_x, sigma_y, y0) -> Deprecated; use :func:`morie.fn.stripmean` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner6e74: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_74(r, sigma_x, sigma_y, y0) -> Deprecated; use :func:`morie.fn.stripmean` instead."

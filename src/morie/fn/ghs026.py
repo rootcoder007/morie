@@ -23,4 +23,4 @@ def ghosal_ch3_tailfree_finite_density_pm(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ghosal_ch3_tailfree_finite_density_pm() -> Deprecated; use :func:`morie.fn._bits` instead."
+    return "ghs026: ghosal_ch3_tailfree_finite_density_pm() -> Deprecated; use :func:`morie.fn._bits` instead."

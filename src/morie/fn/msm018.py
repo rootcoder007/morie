@@ -23,4 +23,4 @@ def mvsml_linear_mixed_models_eq_5_4(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "mvsml_linear_mixed_models_eq_5_4() -> Deprecated; use :func:`morie.fn.gxe_blup_model` instead."
+    return "msm018: mvsml_linear_mixed_models_eq_5_4() -> Deprecated; use :func:`morie.fn.gxe_blup_model` instead."

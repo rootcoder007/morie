@@ -52,4 +52,4 @@ bandedsolve = banded_solve
 
 
 def cheatsheet() -> str:
-    return "banded_solve(A, b) -> Solve a banded linear system Ax = b."
+    return "bndmt: banded_solve(A, b) -> Solve a banded linear system Ax = b."

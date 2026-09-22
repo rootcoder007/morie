@@ -38,4 +38,4 @@ def kentau(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "kentau(x, y) -> Kendall's tau-b with tie correction."
+    return "kentau: kentau(x, y) -> Kendall's tau-b with tie correction."

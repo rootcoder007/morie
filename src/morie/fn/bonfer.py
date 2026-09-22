@@ -32,4 +32,4 @@ def bonfer(alpha: float, m: int):
 
 
 def cheatsheet() -> str:
-    return "bonfer(alpha, m) -> Bonferroni-corrected significance threshold: alpha' = alpha / m."
+    return "bonfer: bonfer(alpha, m) -> Bonferroni-corrected significance threshold: alpha' = alpha / m."

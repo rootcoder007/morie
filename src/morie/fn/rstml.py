@@ -183,4 +183,4 @@ def rstml(
 
 
 def cheatsheet() -> str:
-    return "rstml(time, event, tau, group, alpha) -> Estimate restricted mean survival time (RMST) up to restriction time tau."
+    return "rstml: rstml(time, event, tau, group, alpha) -> Estimate restricted mean survival time (RMST) up to restriction time tau."

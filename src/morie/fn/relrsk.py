@@ -55,4 +55,4 @@ def relrsk(table_2x2: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "relrsk(table_2x2) -> Relative risk for [[a,b],[c,d]]."
+    return "relrsk: relrsk(table_2x2) -> Relative risk for [[a,b],[c,d]]."

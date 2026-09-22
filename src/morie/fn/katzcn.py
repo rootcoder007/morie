@@ -50,4 +50,4 @@ def katz_centrality(G, alpha=0.1, beta=1.0):
 
 
 def cheatsheet() -> str:
-    return "katz_centrality(G, alpha, beta) -> Katz scores of adjacency matrix G with baseline beta."
+    return "katzcn: katz_centrality(G, alpha, beta) -> Katz scores of adjacency matrix G with baseline beta."

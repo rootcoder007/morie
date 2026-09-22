@@ -31,4 +31,4 @@ def hedderich_chapter_8_equation_96(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "hedderich_chapter_8_equation_96() -> Deprecated; use :func:`morie.fn.llgsq` instead."
+    return "hedderich8e96: hedderich_chapter_8_equation_96() -> Deprecated; use :func:`morie.fn.llgsq` instead."

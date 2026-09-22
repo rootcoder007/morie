@@ -85,4 +85,4 @@ def mhfit(f, majorizer, x0, tol=1e-6, max_iter=100, full_output=False):
 
 
 def cheatsheet() -> str:
-    return "mhfit(f, majorizer, x0, tol, max_iter, full_output) -> MM (minorization-maximization) algorithm."
+    return "mhfit: mhfit(f, majorizer, x0, tol, max_iter, full_output) -> MM (minorization-maximization) algorithm."

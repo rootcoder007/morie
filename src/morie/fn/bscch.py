@@ -45,4 +45,4 @@ def bscch(p: float) -> dict:
 
 
 def cheatsheet() -> str:
-    return "bscch(p) -> Capacity of a binary symmetric channel (BSC)."
+    return "bscch: bscch(p) -> Capacity of a binary symmetric channel (BSC)."

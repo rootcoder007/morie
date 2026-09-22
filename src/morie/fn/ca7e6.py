@@ -23,4 +23,4 @@ def ca_chapter_7_equation_6(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_7_equation_6() -> Deprecated; use :func:`morie.fn.variance_components_sigma2_u` instead."
+    return "ca7e6: ca_chapter_7_equation_6() -> Deprecated; use :func:`morie.fn.variance_components_sigma2_u` instead."

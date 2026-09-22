@@ -102,4 +102,4 @@ def mxent(
 
 
 def cheatsheet() -> str:
-    return "mxent(support, constraints) -> Find the maximum entropy distribution on a finite support."
+    return "mxent: mxent(support, constraints) -> Find the maximum entropy distribution on a finite support."

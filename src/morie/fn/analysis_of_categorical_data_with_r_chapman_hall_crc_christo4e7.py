@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_7() -> Deprecated; use :func:`morie.fn.loglinear_odds_ratio` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e7: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_7() -> Deprecated; use :func:`morie.fn.loglinear_odds_ratio` instead."

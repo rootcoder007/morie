@@ -195,4 +195,4 @@ def k02bfs(A):
 
 
 def cheatsheet() -> str:
-    return "k02fe(y, v) -> Inverse-variance fixed-effect summary."
+    return "k02util: k02fe(y, v) -> Inverse-variance fixed-effect summary."

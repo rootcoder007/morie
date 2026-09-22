@@ -1117,6 +1117,11 @@ class oarr(list):
     def tolist(self):
         return list(self)
 
+    @property
+    def data(self):
+        # marr exposes .data; object arrays were the one kind without it
+        return list(self)
+
     def _map(self, fn):
         out = [fn(v) for v in self]
         try:
@@ -4154,6 +4159,44 @@ class _Testing:
                 raise AssertionError(
                     "not close at index %d: %r != %r (rtol=%g, atol=%g). %s"
                     % (i, x, y, rtol, atol, err_msg))
+
+    @staticmethod
+    def assert_almost_equal(actual, desired, decimal=7, err_msg="", verbose=True):
+        # numpy: abs(desired - actual) < 1.5 * 10**(-decimal), elementwise
+        _Testing.assert_allclose(actual, desired, rtol=0.0, atol=1.5 * 10.0 ** (-decimal),
+                                 err_msg=err_msg, verbose=verbose)
+
+    @staticmethod
+    def assert_array_almost_equal(actual, desired, decimal=6, err_msg="", verbose=True):
+        _Testing.assert_allclose(actual, desired, rtol=0.0, atol=1.5 * 10.0 ** (-decimal),
+                                 err_msg=err_msg, verbose=verbose)
+
+    @staticmethod
+    def assert_approx_equal(actual, desired, significant=7, err_msg="", verbose=True):
+        a, d = float(actual), float(desired)
+        scale = _bi.max(_bi.abs(a), _bi.abs(d), 1e-300)
+        if _bi.abs(a - d) / scale >= 10.0 ** (-(significant - 1)):
+            raise AssertionError("not equal to %d significant digits: %r != %r. %s"
+                                 % (significant, a, d, err_msg))
+
+    @staticmethod
+    def assert_equal(actual, desired, err_msg="", verbose=True):
+        if isinstance(actual, (int, float, str, bool)) and isinstance(desired, (int, float, str, bool)):
+            if actual != desired and not (actual != actual and desired != desired):
+                raise AssertionError("%r != %r. %s" % (actual, desired, err_msg))
+            return
+        _Testing.assert_array_equal(actual, desired, err_msg=err_msg, verbose=verbose)
+
+    @staticmethod
+    def assert_array_less(x, y, err_msg="", verbose=True):
+        del verbose
+        a = list(asarray(x)._flat())
+        d = list(asarray(y)._flat())
+        if len(d) == 1:
+            d = d * len(a)
+        for i, (u, v) in enumerate(zip(a, d)):
+            if not u < v:
+                raise AssertionError("not less at index %d: %r >= %r. %s" % (i, u, v, err_msg))
 
     @staticmethod
     def assert_array_equal(actual, desired, err_msg="", verbose=True):

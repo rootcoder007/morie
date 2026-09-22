@@ -10,9 +10,7 @@ def test_cvxell_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = boyd_minvol_ellipsoid(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "center" in result
 def test_cvxell_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

@@ -47,4 +47,4 @@ def permpv(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray], n_per
 
 
 def cheatsheet() -> str:
-    return "permpv(x, y, n_perm, seed) -> Permutation p-value for H0: same distribution."
+    return "permpv: permpv(x, y, n_perm, seed) -> Permutation p-value for H0: same distribution."

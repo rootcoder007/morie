@@ -12,9 +12,7 @@ def test_cvxdwl_basic():
     nu = np.random.default_rng(42).normal(0, 1, 100)
     result = boyd_dual_function(L, lambda_, nu)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "value" in result
 def test_cvxdwl_edge():
     """Test edge cases."""
     L = np.random.default_rng(42).normal(0, 1, 100)

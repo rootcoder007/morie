@@ -193,4 +193,4 @@ def kmcnf(
 
 
 def cheatsheet() -> str:
-    return "kmcnf(time, event, alpha, ci_type) -> Kaplan-Meier estimator with confidence intervals."
+    return "kmcnf: kmcnf(time, event, alpha, ci_type) -> Kaplan-Meier estimator with confidence intervals."

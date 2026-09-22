@@ -60,4 +60,4 @@ def entqm(
 
 
 def cheatsheet() -> str:
-    return "entqm(rho, base) -> Compute the von Neumann entropy of a quantum density matrix."
+    return "entqm: entqm(rho, base) -> Compute the von Neumann entropy of a quantum density matrix."

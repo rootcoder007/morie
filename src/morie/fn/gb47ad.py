@@ -106,4 +106,4 @@ gibbons_anderson_darling = adtest
 
 
 def cheatsheet() -> str:
-    return "adtest(x, cdf, case, alpha) -> Anderson-Darling statistic W_n^2 and Stephens's modified form."
+    return "gb47ad: adtest(x, cdf, case, alpha) -> Anderson-Darling statistic W_n^2 and Stephens's modified form."

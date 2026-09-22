@@ -80,4 +80,4 @@ gibbons_ctrl_normal_asymp = kctrlasymp
 
 
 def cheatsheet() -> str:
-    return "kctrlasymp(lam, dens, pval) -> Covariance matrix Sigma of the limiting normal for W_N."
+    return "gb10711: kctrlasymp(lam, dens, pval) -> Covariance matrix Sigma of the limiting normal for W_N."

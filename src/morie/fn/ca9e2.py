@@ -23,4 +23,4 @@ def ca_chapter_9_equation_2(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_9_equation_2() -> Deprecated; use :func:`morie.fn.treatment_b_randomized` instead."
+    return "ca9e2: ca_chapter_9_equation_2() -> Deprecated; use :func:`morie.fn.treatment_b_randomized` instead."

@@ -67,4 +67,4 @@ def renyh(pmf: np.ndarray, alpha: float) -> dict:
 
 
 def cheatsheet() -> str:
-    return "renyh(pmf, alpha) -> Compute Renyi entropy of order alpha."
+    return "renyh: renyh(pmf, alpha) -> Compute Renyi entropy of order alpha."

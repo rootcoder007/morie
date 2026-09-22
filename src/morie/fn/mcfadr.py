@@ -51,4 +51,4 @@ def mcfadr(ll_full: float, ll_null: float):
 
 
 def cheatsheet() -> str:
-    return "mcfadr(ll_full, ll_null) -> McFadden pseudo-R^2 for (logistic) regression model fit."
+    return "mcfadr: mcfadr(ll_full, ll_null) -> McFadden pseudo-R^2 for (logistic) regression model fit."

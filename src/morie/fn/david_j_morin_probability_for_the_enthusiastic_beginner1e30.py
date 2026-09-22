@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_3
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_30(N) -> Deprecated; use :func:`morie.fn.tripnorep` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner1e30: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_30(N) -> Deprecated; use :func:`morie.fn.tripnorep` instead."

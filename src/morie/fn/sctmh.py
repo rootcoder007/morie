@@ -85,4 +85,4 @@ def sctmh(f, x0, x1, tol=1e-6, max_iter=100, full_output=False):
 
 
 def cheatsheet() -> str:
-    return "sctmh(f, x0, x1, tol, max_iter, full_output) -> Secant method for root finding."
+    return "sctmh: sctmh(f, x0, x1, tol, max_iter, full_output) -> Secant method for root finding."

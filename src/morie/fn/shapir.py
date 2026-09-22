@@ -43,4 +43,4 @@ def shapir(x: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "shapir(x) -> Shapiro-Wilk test for Normality."
+    return "shapir: shapir(x) -> Shapiro-Wilk test for Normality."

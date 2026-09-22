@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_8
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_8(N, n) -> Deprecated; use :func:`morie.fn.binomcoef` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner1e8: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_8(N, n) -> Deprecated; use :func:`morie.fn.binomcoef` instead."

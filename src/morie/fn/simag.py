@@ -96,4 +96,4 @@ def simag(f, x0, bounds, T_init=1.0, cooling_rate=0.95, max_iter=10000, full_out
 
 
 def cheatsheet() -> str:
-    return "simag(f, x0, bounds, T_init, cooling_rate, max_iter, full_output, seed) -> Simulated annealing for global optimization."
+    return "simag: simag(f, x0, bounds, T_init, cooling_rate, max_iter, full_output, seed) -> Simulated annealing for global optimization."

@@ -90,4 +90,4 @@ def lrunt(x, axis=0):
 
 
 def cheatsheet() -> str:
-    return "lrunt(x, axis) -> Longest run test for randomness."
+    return "lrunt: lrunt(x, axis) -> Longest run test for randomness."

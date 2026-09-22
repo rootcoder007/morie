@@ -17,4 +17,4 @@ def dffop(x: Union[Sequence, np.ndarray], k: int = 1) -> np.ndarray:
 
 
 def cheatsheet() -> str:
-    return "dffop(x, k) -> k-th-order difference. ∇x = xₜ − xₜ₋₁; ∇²x = ∇(∇x); etc."
+    return "dffop: dffop(x, k) -> k-th-order difference. ∇x = xₜ − xₜ₋₁; ∇²x = ∇(∇x); etc."

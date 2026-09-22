@@ -91,4 +91,4 @@ gibbons_klotz_scale = klotzsc
 
 
 def cheatsheet() -> str:
-    return "klotzsc(x, y) -> K_N with squared inverse-normal scores."
+    return "gb951: klotzsc(x, y) -> K_N with squared inverse-normal scores."

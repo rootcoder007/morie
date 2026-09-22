@@ -55,4 +55,4 @@ def ksonebs(
 
 
 def cheatsheet() -> str:
-    return "ksonebs(x, cdf_or_y, alternative) -> Kolmogorov-Smirnov goodness-of-fit / two-sample test."
+    return "ksonebs: ksonebs(x, cdf_or_y, alternative) -> Kolmogorov-Smirnov goodness-of-fit / two-sample test."

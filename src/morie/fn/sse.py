@@ -18,4 +18,4 @@ def sse(y_true: Union[Sequence[float], np.ndarray], y_pred: Union[Sequence[float
 
 
 def cheatsheet() -> str:
-    return "sse(y_true, y_pred) -> Error (residual) sum of squares: Σᵢ (yᵢ − ŷᵢ)²."
+    return "sse: sse(y_true, y_pred) -> Error (residual) sum of squares: Σᵢ (yᵢ − ŷᵢ)²."

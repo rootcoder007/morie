@@ -75,4 +75,4 @@ gibbons_vdw_test = vdw
 
 
 def cheatsheet() -> str:
-    return "vdw(x, y) -> Van der Waerden X_1 test with scores Phi^{-1}(i/(N+1))."
+    return "gb832: vdw(x, y) -> Van der Waerden X_1 test with scores Phi^{-1}(i/(N+1))."

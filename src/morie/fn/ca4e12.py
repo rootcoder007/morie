@@ -23,4 +23,4 @@ def ca_chapter_4_equation_12(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ca_chapter_4_equation_12() -> Deprecated; use :func:`morie.fn.percent_correct_predictions` instead."
+    return "ca4e12: ca_chapter_4_equation_12() -> Deprecated; use :func:`morie.fn.percent_correct_predictions` instead."

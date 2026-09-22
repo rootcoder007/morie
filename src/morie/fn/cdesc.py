@@ -100,4 +100,4 @@ def cdesc(f, grad_f, x0, tol=1e-6, max_iter=1000, cyclic=True, full_output=False
 
 
 def cheatsheet() -> str:
-    return "cdesc(f, grad_f, x0, tol, max_iter, cyclic, full_output) -> Coordinate descent for unconstrained optimization."
+    return "cdesc: cdesc(f, grad_f, x0, tol, max_iter, cyclic, full_output) -> Coordinate descent for unconstrained optimization."

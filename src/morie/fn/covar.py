@@ -40,4 +40,4 @@ def covar(x: Union[Sequence[float], np.ndarray], y: Union[Sequence[float], np.nd
 
 
 def cheatsheet() -> str:
-    return "covar(x, y) -> Unbiased sample covariance with verbose result."
+    return "covar: covar(x, y) -> Unbiased sample covariance with verbose result."

@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_2() -> Deprecated; use :func:`morie.fn.logistic_pi` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e2: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_2() -> Deprecated; use :func:`morie.fn.logistic_pi` instead."

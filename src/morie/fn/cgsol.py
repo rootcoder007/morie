@@ -62,4 +62,4 @@ cgsol = conjugate_gradient
 
 
 def cheatsheet() -> str:
-    return "conjugate_gradient(A, b) -> Conjugate gradient method for Ax = b (A must be SPD)."
+    return "cgsol: conjugate_gradient(A, b) -> Conjugate gradient method for Ax = b (A must be SPD)."

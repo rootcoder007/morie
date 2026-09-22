@@ -239,4 +239,4 @@ gibbsslice = gibbs_slice
 
 
 def cheatsheet() -> str:
-    return "slice_sample_1d(logf, x0, rng, w, max_steps, lower, upper) -> One univariate slice transition. Returns the draw and the cost."
+    return "baygsl: slice_sample_1d(logf, x0, rng, w, max_steps, lower, upper) -> One univariate slice transition. Returns the draw and the cost."

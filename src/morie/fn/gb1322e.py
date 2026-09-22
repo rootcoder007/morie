@@ -51,4 +51,4 @@ gibbons_efficacy = efficacy
 
 
 def cheatsheet() -> str:
-    return "efficacy(deriv, var) -> e(T_n) = [dE(T_n)/dtheta]^2 / sigma^2(T_n)."
+    return "gb1322e: efficacy(deriv, var) -> e(T_n) = [dE(T_n)/dtheta]^2 / sigma^2(T_n)."

@@ -38,4 +38,4 @@ def flatn(x, batch_size=None):
 
 
 def cheatsheet() -> str:
-    return "flatn(x, batch_size) -> Flatten layer."
+    return "flatn: flatn(x, batch_size) -> Flatten layer."

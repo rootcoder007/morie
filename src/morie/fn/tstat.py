@@ -14,4 +14,4 @@ def tstat(estimate: float, std_error: float, null_value: float = 0.0) -> float:
 
 
 def cheatsheet() -> str:
-    return "tstat(estimate, std_error, null_value) -> t-statistic: (estimate - H0) / SE."
+    return "tstat: tstat(estimate, std_error, null_value) -> t-statistic: (estimate - H0) / SE."

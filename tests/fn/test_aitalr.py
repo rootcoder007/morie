@@ -7,16 +7,12 @@ from morie.fn.aitalr import aitchison_alr
 
 def test_aitalr_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    ref = np.random.default_rng(42).normal(0, 1, 100)
-    result = aitchison_alr(x, ref)
+    x = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = aitchison_alr(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "alr" in result
 def test_aitalr_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    ref = np.random.default_rng(42).normal(0, 1, 100)
-    result = aitchison_alr(x, ref)
+    x = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = aitchison_alr(x)
     assert isinstance(result, dict)

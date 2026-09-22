@@ -45,4 +45,4 @@ matrixnorms = matrix_norms
 
 
 def cheatsheet() -> str:
-    return "matrix_norms(A) -> Compute standard matrix norms."
+    return "matnm: matrix_norms(A) -> Compute standard matrix norms."

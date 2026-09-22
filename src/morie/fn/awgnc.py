@@ -57,4 +57,4 @@ def awgnc(snr_db: float = None, *, snr_linear: float = None) -> dict:
 
 
 def cheatsheet() -> str:
-    return "awgnc(snr_db) -> Capacity of an additive white Gaussian noise channel."
+    return "awgnc: awgnc(snr_db) -> Capacity of an additive white Gaussian noise channel."

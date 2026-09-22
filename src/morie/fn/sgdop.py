@@ -111,4 +111,4 @@ def sgdop(
 
 
 def cheatsheet() -> str:
-    return "sgdop(weights, gradients, learning_rate, momentum, nesterov, velocity) -> Stochastic gradient descent with momentum."
+    return "sgdop: sgdop(weights, gradients, learning_rate, momentum, nesterov, velocity) -> Stochastic gradient descent with momentum."

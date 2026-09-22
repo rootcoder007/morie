@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_2
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_21() -> Deprecated; use :func:`morie.fn.prob_or_general` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner2e21: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_21() -> Deprecated; use :func:`morie.fn.prob_or_general` instead."

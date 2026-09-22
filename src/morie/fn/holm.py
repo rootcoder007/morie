@@ -53,4 +53,4 @@ def holm(p_values: Sequence[float], alpha: float = 0.05):
 
 
 def cheatsheet() -> str:
-    return "holm(p_values, alpha) -> Holm-Bonferroni step-down rejection vector."
+    return "holm: holm(p_values, alpha) -> Holm-Bonferroni step-down rejection vector."

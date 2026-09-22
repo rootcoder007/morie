@@ -63,4 +63,4 @@ def kmeans2(X: Union[Sequence, np.ndarray], n_clusters: int = 3, n_init: int = 1
 
 
 def cheatsheet() -> str:
-    return "kmeans2(X, n_clusters, n_init, random_state) -> K-means clustering."
+    return "kmeans2: kmeans2(X, n_clusters, n_init, random_state) -> K-means clustering."

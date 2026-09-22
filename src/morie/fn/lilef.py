@@ -112,4 +112,4 @@ def lilef(x, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "lilef(x, axis, cdf) -> Lilliefors test for normality."
+    return "lilef: lilef(x, axis, cdf) -> Lilliefors test for normality."

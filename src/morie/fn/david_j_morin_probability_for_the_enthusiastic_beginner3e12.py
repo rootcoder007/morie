@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_1
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_12(values_x, probs_x, values_y, probs_y) -> Deprecated; use :func:`morie.fn.esumconv` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner3e12: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_12(values_x, probs_x, values_y, probs_y) -> Deprecated; use :func:`morie.fn.esumconv` instead."

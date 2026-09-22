@@ -122,4 +122,4 @@ def lbfgs(f, grad_f, x0, m=10, tol=1e-6, max_iter=1000, full_output=False):
 
 
 def cheatsheet() -> str:
-    return "lbfgs(f, grad_f, x0, m, tol, max_iter, full_output) -> Limited-memory BFGS (L-BFGS) quasi-Newton method."
+    return "lbfgs: lbfgs(f, grad_f, x0, m, tol, max_iter, full_output) -> Limited-memory BFGS (L-BFGS) quasi-Newton method."

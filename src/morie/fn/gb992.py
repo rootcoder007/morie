@@ -83,4 +83,4 @@ gibbons_fligner_killeen = rosenbm
 
 
 def cheatsheet() -> str:
-    return "rosenbm(x, y) -> R = number of X's outside the range of the Y sample."
+    return "gb992: rosenbm(x, y) -> R = number of X's outside the range of the Y sample."

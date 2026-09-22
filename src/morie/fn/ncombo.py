@@ -12,4 +12,4 @@ def ncombo(n: int, k: int) -> int:
 
 
 def cheatsheet() -> str:
-    return "ncombo(n, k) -> C(n, k) -- unordered combinations."
+    return "ncombo: ncombo(n, k) -> C(n, k) -- unordered combinations."

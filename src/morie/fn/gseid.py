@@ -65,4 +65,4 @@ gseid = gauss_seidel
 
 
 def cheatsheet() -> str:
-    return "gauss_seidel(A, b) -> Gauss-Seidel iterative method for Ax = b."
+    return "gseid: gauss_seidel(A, b) -> Gauss-Seidel iterative method for Ax = b."

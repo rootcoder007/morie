@@ -10,9 +10,7 @@ def test_cvxnch_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = boyd_nuclear_norm(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "nuclear" in result
 def test_cvxnch_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

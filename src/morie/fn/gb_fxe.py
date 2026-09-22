@@ -80,4 +80,4 @@ gibbons_fisher_one_sided = fisherex1
 
 
 def cheatsheet() -> str:
-    return "fisherex1(table, alternative) -> The single-tail form of the exact conditional test, Sec. 14.4."
+    return "gb_fxe: fisherex1(table, alternative) -> The single-tail form of the exact conditional test, Sec. 14.4."

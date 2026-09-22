@@ -65,4 +65,4 @@ gibbons_marginal_quant = sampquant
 
 
 def cheatsheet() -> str:
-    return "sampquant(x, p) -> Point estimate of the population p-th quantile."
+    return "gb_mnq: sampquant(x, p) -> Point estimate of the population p-th quantile."

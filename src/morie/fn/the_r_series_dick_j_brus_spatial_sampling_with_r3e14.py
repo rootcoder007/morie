@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_14(*args
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_14() -> Deprecated; use :func:`morie.fn.si_proportion_variance` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r3e14: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_14() -> Deprecated; use :func:`morie.fn.si_proportion_variance` instead."

@@ -71,4 +71,4 @@ def mxpl2(x, pool_size=2, stride=None, padding="valid"):
 
 
 def cheatsheet() -> str:
-    return "mxpl2(x, pool_size, stride, padding) -> 2D max pooling."
+    return "mxpl2: mxpl2(x, pool_size, stride, padding) -> 2D max pooling."

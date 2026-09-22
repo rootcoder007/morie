@@ -111,4 +111,4 @@ def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=Fals
 
 
 def cheatsheet() -> str:
-    return "emfit(X, n_components, max_iter, tol, seed, full_output) -> EM algorithm for Gaussian mixture models."
+    return "emfit: emfit(X, n_components, max_iter, tol, seed, full_output) -> EM algorithm for Gaussian mixture models."

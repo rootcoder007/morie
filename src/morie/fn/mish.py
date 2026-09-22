@@ -44,4 +44,4 @@ def mish(x, derivative=False):
 
 
 def cheatsheet() -> str:
-    return "mish(x, derivative) -> Mish activation."
+    return "mish: mish(x, derivative) -> Mish activation."

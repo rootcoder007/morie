@@ -10,4 +10,4 @@ def erfunc(x):
 
 
 def cheatsheet() -> str:
-    return "erfunc(x) -> Gaussian error function erf(x) = (2/√π) ∫₀ˣ e^(-t²) dt."
+    return "erfunc: erfunc(x) -> Gaussian error function erf(x) = (2/√π) ∫₀ˣ e^(-t²) dt."

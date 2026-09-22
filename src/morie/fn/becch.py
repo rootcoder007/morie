@@ -39,4 +39,4 @@ def becch(epsilon: float) -> dict:
 
 
 def cheatsheet() -> str:
-    return "becch(epsilon) -> Capacity of a binary erasure channel (BEC)."
+    return "becch: becch(epsilon) -> Capacity of a binary erasure channel (BEC)."

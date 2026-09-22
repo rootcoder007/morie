@@ -99,4 +99,4 @@ def rtdst(
 
 
 def cheatsheet() -> str:
-    return "rtdst(pmf, distortion_matrix, target_distortion) -> Compute the rate-distortion function R(D) via Blahut-Arimoto algorithm."
+    return "rtdst: rtdst(pmf, distortion_matrix, target_distortion) -> Compute the rate-distortion function R(D) via Blahut-Arimoto algorithm."

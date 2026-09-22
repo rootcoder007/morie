@@ -45,4 +45,4 @@ def gpool(x):
 
 
 def cheatsheet() -> str:
-    return "gpool(x) -> Global average pooling."
+    return "gpool: gpool(x) -> Global average pooling."

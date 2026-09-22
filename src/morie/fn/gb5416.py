@@ -69,4 +69,4 @@ gibbons_sign_sampsize = signn
 
 
 def cheatsheet() -> str:
-    return "signn(theta, alpha, beta) -> Normal-approximation sample size for a one-sided sign test."
+    return "gb5416: signn(theta, alpha, beta) -> Normal-approximation sample size for a one-sided sign test."

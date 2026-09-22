@@ -56,4 +56,4 @@ gibbons_two_sample_t_efficacy = efft2
 
 
 def cheatsheet() -> str:
-    return "efft2(m, n, sigma2) -> e(T*_{m,n}) = mn / [sigma^2 (m+n)]."
+    return "gb_ttm: efft2(m, n, sigma2) -> e(T*_{m,n}) = mn / [sigma^2 (m+n)]."

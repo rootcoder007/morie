@@ -75,4 +75,4 @@ def beams(
 
 
 def cheatsheet() -> str:
-    return "beams(initial_token, step_fn, max_length, beam_width, vocab_size, seed) -> Beam search decoding."
+    return "beams: beams(initial_token, step_fn, max_length, beam_width, vocab_size, seed) -> Beam search decoding."

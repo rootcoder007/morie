@@ -13,4 +13,4 @@ def etasq(ss_between: float, ss_total: float) -> float:
 
 
 def cheatsheet() -> str:
-    return "etasq(ss_between, ss_total) -> Eta-squared: SS_between / SS_total."
+    return "etasq: etasq(ss_between, ss_total) -> Eta-squared: SS_between / SS_total."

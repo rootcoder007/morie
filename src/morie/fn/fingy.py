@@ -209,4 +209,4 @@ def _km_estimator(time, event):
 
 
 def cheatsheet() -> str:
-    return "fingy(time, event, covariates, cause, max_iter, tol) -> Fit the Fine-Gray subdistribution hazard model for competing risks."
+    return "fingy: fingy(time, event, covariates, cause, max_iter, tol) -> Fit the Fine-Gray subdistribution hazard model for competing risks."

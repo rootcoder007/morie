@@ -149,4 +149,4 @@ def cxsnl(
 
 
 def cheatsheet() -> str:
-    return "cxsnl(time, event, covariates, beta, model, model_params) -> Compute Cox-Snell residuals for a fitted survival model."
+    return "cxsnl: cxsnl(time, event, covariates, beta, model, model_params) -> Compute Cox-Snell residuals for a fitted survival model."

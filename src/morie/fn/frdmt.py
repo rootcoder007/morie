@@ -78,4 +78,4 @@ def frdmt(data, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "frdmt(data, axis, cdf) -> Friedman two-way ANOVA by ranks."
+    return "frdmt: frdmt(data, axis, cdf) -> Friedman two-way ANOVA by ranks."

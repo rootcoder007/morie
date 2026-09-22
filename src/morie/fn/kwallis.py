@@ -42,4 +42,4 @@ def kwallis(*groups: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "kwallis() -> Kruskal-Wallis H-test (nonparametric one-way ANOVA)."
+    return "kwallis: kwallis() -> Kruskal-Wallis H-test (nonparametric one-way ANOVA)."

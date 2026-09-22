@@ -23,4 +23,4 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_5
 
 
 def cheatsheet() -> str:
-    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_55() -> Deprecated; use :func:`morie.fn.sd_of_mean_hetero` instead."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner3e55: david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_55() -> Deprecated; use :func:`morie.fn.sd_of_mean_hetero` instead."

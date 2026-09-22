@@ -1016,4 +1016,4 @@ def jsonlt(x=None, route="to_json", **kw):
 
 
 def cheatsheet() -> str:
-    return "box(x) -> box from morie.fn.jsonlt"
+    return "jsonlt: box(x) -> box from morie.fn.jsonlt"

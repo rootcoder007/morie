@@ -36,4 +36,4 @@ def ljbox(residuals: Union[Sequence, np.ndarray], lags: int = 10):
 
 
 def cheatsheet() -> str:
-    return "ljbox(residuals, lags) -> Ljung-Box Q-statistic for serial correlation in residuals."
+    return "ljbox: ljbox(residuals, lags) -> Ljung-Box Q-statistic for serial correlation in residuals."

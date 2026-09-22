@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_10() -> Deprecated; use :func:`morie.fn.or_wald_interval` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e10: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_10() -> Deprecated; use :func:`morie.fn.or_wald_interval` instead."

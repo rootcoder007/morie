@@ -63,4 +63,4 @@ def xenty(
 
 
 def cheatsheet() -> str:
-    return "xenty(y_true, y_pred, from_logits, epsilon) -> Cross-entropy loss."
+    return "xenty: xenty(y_true, y_pred, from_logits, epsilon) -> Cross-entropy loss."

@@ -103,4 +103,4 @@ gibbons_k_ctrl_median = kctrlmed
 
 
 def cheatsheet() -> str:
-    return "kctrlmed(samples, p) -> Block counts V_ij against the control-sample quantiles."
+    return "gb1031: kctrlmed(samples, p) -> Block counts V_ij against the control-sample quantiles."

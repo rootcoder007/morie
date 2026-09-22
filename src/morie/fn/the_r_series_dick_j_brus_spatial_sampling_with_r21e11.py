@@ -23,4 +23,4 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_11(*arg
 
 
 def cheatsheet() -> str:
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_11() -> Deprecated; use :func:`morie.fn.ok_variance_semivariance_form` instead."
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r21e11: the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_11() -> Deprecated; use :func:`morie.fn.ok_variance_semivariance_form` instead."

@@ -39,4 +39,4 @@ def mlenrm(x: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "mlenrm(x) -> MLE Normal fit: mu_hat, sigma_hat (1/n divisor)."
+    return "mlenrm: mlenrm(x) -> MLE Normal fit: mu_hat, sigma_hat (1/n divisor)."

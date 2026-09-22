@@ -23,4 +23,4 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equat
 
 
 def cheatsheet() -> str:
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_2() -> Deprecated; use :func:`morie.fn.bic_posterior_probs` instead."
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e2: analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_2() -> Deprecated; use :func:`morie.fn.bic_posterior_probs` instead."

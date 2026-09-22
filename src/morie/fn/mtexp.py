@@ -58,4 +58,4 @@ matrixexp = matrix_exp
 
 
 def cheatsheet() -> str:
-    return "matrix_exp(A) -> Matrix exponential exp(A) via scaling-and-squaring with Taylor series."
+    return "mtexp: matrix_exp(A) -> Matrix exponential exp(A) via scaling-and-squaring with Taylor series."

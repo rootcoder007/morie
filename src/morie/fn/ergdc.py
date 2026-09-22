@@ -143,4 +143,4 @@ def ergdc(
 
 
 def cheatsheet() -> str:
-    return "ergdc(transition_matrix) -> Verify ergodic properties of a discrete-time Markov chain."
+    return "ergdc: ergdc(transition_matrix) -> Verify ergodic properties of a discrete-time Markov chain."

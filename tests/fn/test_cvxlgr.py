@@ -10,9 +10,7 @@ def test_cvxlgr_basic():
     u = np.random.default_rng(44).normal(0, 1, 100)
     result = boyd_logistic_loss(u)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "loss" in result
 def test_cvxlgr_edge():
     """Test edge cases."""
     u = np.random.default_rng(44).normal(0, 1, 100)

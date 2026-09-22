@@ -57,4 +57,4 @@ gibbons_sign_test = signk
 
 
 def cheatsheet() -> str:
-    return "signk(x, m0) -> Sign-test statistic K = #{X_i > M0} and its null moments."
+    return "gb541: signk(x, m0) -> Sign-test statistic K = #{X_i > M0} and its null moments."

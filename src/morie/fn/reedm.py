@@ -76,4 +76,4 @@ def reedm(r: int, m: int) -> dict:
 
 
 def cheatsheet() -> str:
-    return "reedm(r, m) -> Construct the generator matrix for Reed-Muller code RM(r, m)."
+    return "reedm: reedm(r, m) -> Construct the generator matrix for Reed-Muller code RM(r, m)."

@@ -8,8 +8,7 @@ from morie.fn.agnod1 import alphazero_node_init
 def test_agnod1_basic():
     """Test basic functionality."""
     p = 5
-    action_space = np.random.default_rng(42).normal(0, 1, 100)
-    result = alphazero_node_init(p, action_space)
+    result = alphazero_node_init(p)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
@@ -17,6 +16,5 @@ def test_agnod1_basic():
 def test_agnod1_edge():
     """Test edge cases."""
     p = 5
-    action_space = np.random.default_rng(42).normal(0, 1, 100)
-    result = alphazero_node_init(p, action_space)
+    result = alphazero_node_init(p)
     assert isinstance(result, dict)

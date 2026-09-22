@@ -86,4 +86,4 @@ gibbons_joint_order = ostatjoint
 
 
 def cheatsheet() -> str:
-    return "ostatjoint(x, y, r, s, n, cdf, pdf) -> Joint pdf of X_(r) and X_(s) at (x, y) with x < y and r < s."
+    return "gb_jnt: ostatjoint(x, y, r, s, n, cdf, pdf) -> Joint pdf of X_(r) and X_(s) at (x, y) with x < y and r < s."

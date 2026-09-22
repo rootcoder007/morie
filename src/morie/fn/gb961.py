@@ -109,4 +109,4 @@ gibbons_pct_mod_rank_sc = pctranksc
 
 
 def cheatsheet() -> str:
-    return "pctranksc(x, y, s, r) -> T_s + B_r, the percentile modified scale statistic."
+    return "gb961: pctranksc(x, y, s, r) -> T_s + B_r, the percentile modified scale statistic."

@@ -12,9 +12,7 @@ def test_bnscrf_basic():
     alpha = 0.05
     result = bound_credible_interval(lower, upper, alpha)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "lower" in result
 def test_bnscrf_edge():
     """Test edge cases."""
     lower = np.random.default_rng(42).normal(0, 1, 100)

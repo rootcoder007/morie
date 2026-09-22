@@ -37,4 +37,4 @@ def spearm(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
 
 
 def cheatsheet() -> str:
-    return "spearm(x, y) -> Spearman's rank correlation rho."
+    return "spearm: spearm(x, y) -> Spearman's rank correlation rho."

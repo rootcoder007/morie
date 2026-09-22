@@ -61,4 +61,4 @@ gibbons_cramer_von_mises = cvmw2
 
 
 def cheatsheet() -> str:
-    return "cvmw2(x, cdf) -> Cramer-von Mises W^2 for a fully specified continuous F_0."
+    return "gb_cvmc: cvmw2(x, cdf) -> Cramer-von Mises W^2 for a fully specified continuous F_0."

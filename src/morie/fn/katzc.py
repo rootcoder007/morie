@@ -61,4 +61,4 @@ def katz_centrality(y, A, alpha=0.1, beta=0.0):
 
 
 def cheatsheet() -> str:
-    return "katz_centrality(y, A, alpha, beta) -> Walk-weighted status with the self term removed."
+    return "katzc: katz_centrality(y, A, alpha, beta) -> Walk-weighted status with the self term removed."

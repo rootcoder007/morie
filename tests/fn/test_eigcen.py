@@ -10,9 +10,7 @@ def test_eigcen_basic():
     G = np.eye(10)
     result = eigenvector_centrality(G)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "centrality" in result
 def test_eigcen_edge():
     """Test edge cases."""
     G = np.eye(10)

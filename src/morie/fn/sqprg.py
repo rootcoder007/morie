@@ -98,4 +98,4 @@ sqpoptimize = sqp_optimize
 
 
 def cheatsheet() -> str:
-    return "sqp_optimize(f, grad_f, constraints, x0) -> Sequential Quadratic Programming for equality-constrained problems."
+    return "sqprg: sqp_optimize(f, grad_f, constraints, x0) -> Sequential Quadratic Programming for equality-constrained problems."

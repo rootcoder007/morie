@@ -78,4 +78,4 @@ def chcap(
 
 
 def cheatsheet() -> str:
-    return "chcap(transition_matrix) -> Compute channel capacity C = max_{p(x)} I(X;Y) via Blahut-Arimoto."
+    return "chcap: chcap(transition_matrix) -> Compute channel capacity C = max_{p(x)} I(X;Y) via Blahut-Arimoto."

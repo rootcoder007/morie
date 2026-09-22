@@ -119,4 +119,4 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq="ucb", kappa=2.576, full_output=F
 
 
 def cheatsheet() -> str:
-    return "bysop(f, bounds, n_init, n_iter, acq, kappa, full_output, seed, cdf) -> Bayesian optimization for global optimization."
+    return "bysop: bysop(f, bounds, n_init, n_iter, acq, kappa, full_output, seed, cdf) -> Bayesian optimization for global optimization."

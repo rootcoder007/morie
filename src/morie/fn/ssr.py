@@ -18,4 +18,4 @@ def ssr(y_pred: Union[Sequence[float], np.ndarray], y_true: Union[Sequence[float
 
 
 def cheatsheet() -> str:
-    return "ssr(y_pred, y_true) -> Regression sum of squares: Σᵢ (ŷᵢ − ȳ)²."
+    return "ssr: ssr(y_pred, y_true) -> Regression sum of squares: Σᵢ (ŷᵢ − ȳ)²."

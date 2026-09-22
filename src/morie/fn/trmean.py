@@ -39,4 +39,4 @@ def trmean(x: Union[Sequence[float], np.ndarray], trim: float = 0.1):
 
 
 def cheatsheet() -> str:
-    return "trmean(x, trim) -> Symmetric trimmed mean."
+    return "trmean: trmean(x, trim) -> Symmetric trimmed mean."

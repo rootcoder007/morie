@@ -55,4 +55,4 @@ def drupt(
 
 
 def cheatsheet() -> str:
-    return "drupt(x, rate, training, seed) -> Dropout layer (forward pass)."
+    return "drupt: drupt(x, rate, training, seed) -> Dropout layer (forward pass)."

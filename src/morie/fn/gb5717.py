@@ -76,4 +76,4 @@ gibbons_wsrt_symmetry = wsrsym
 
 
 def cheatsheet() -> str:
-    return "wsrsym(x, centre) -> Test H0: the population is symmetric about ``centre``."
+    return "gb5717: wsrsym(x, centre) -> Test H0: the population is symmetric about ``centre``."

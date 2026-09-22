@@ -33,4 +33,4 @@ def bayic(loglik: float, k: int, n: int):
 
 
 def cheatsheet() -> str:
-    return "bayic(loglik, k, n) -> BIC = k log(n) - 2 log L."
+    return "bayic: bayic(loglik, k, n) -> BIC = k log(n) - 2 log L."

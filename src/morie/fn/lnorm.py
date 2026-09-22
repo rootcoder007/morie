@@ -60,4 +60,4 @@ def lnorm(
 
 
 def cheatsheet() -> str:
-    return "lnorm(x, epsilon, gamma, beta) -> Layer normalization."
+    return "lnorm: lnorm(x, epsilon, gamma, beta) -> Layer normalization."

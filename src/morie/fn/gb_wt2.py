@@ -91,4 +91,4 @@ gibbons_ww_two_samp_runs = wwexact
 
 
 def cheatsheet() -> str:
-    return "wwexact(x, y, tail) -> Wald-Wolfowitz runs test with an exact p-value from Theorem 3.2.2."
+    return "gb_wt2: wwexact(x, y, tail) -> Wald-Wolfowitz runs test with an exact p-value from Theorem 3.2.2."

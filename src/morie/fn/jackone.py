@@ -21,4 +21,4 @@ def jackone(x: Union[Sequence, np.ndarray], stat: Callable) -> np.ndarray:
 
 
 def cheatsheet() -> str:
-    return "jackone(x, stat) -> Leave-one-out jackknife: stat applied to each n−1-subset."
+    return "jackone: jackone(x, stat) -> Leave-one-out jackknife: stat applied to each n−1-subset."

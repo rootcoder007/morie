@@ -91,4 +91,4 @@ def finfo(
 
 
 def cheatsheet() -> str:
-    return "finfo(log_likelihood_grad, theta) -> Estimate the Fisher information matrix via Monte Carlo or numerical diff."
+    return "finfo: finfo(log_likelihood_grad, theta) -> Estimate the Fisher information matrix via Monte Carlo or numerical diff."

@@ -71,4 +71,4 @@ def gcnii(A, H0, alpha=0.1, beta=0.5, K=4):
 
 
 def cheatsheet() -> str:
-    return "gcnii(A, H0, alpha, beta, K) -> K layers of the GCNII recursion with W = I."
+    return "gcnII: gcnii(A, H0, alpha, beta, K) -> K layers of the GCNII recursion with W = I."

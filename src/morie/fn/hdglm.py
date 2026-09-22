@@ -91,4 +91,4 @@ def hdglm(x, axis=0):
 
 
 def cheatsheet() -> str:
-    return "hdglm(x, axis) -> Hodges-Lehmann point estimator for population location."
+    return "hdglm: hdglm(x, axis) -> Hodges-Lehmann point estimator for population location."

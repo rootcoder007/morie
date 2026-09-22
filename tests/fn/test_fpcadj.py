@@ -9,9 +9,7 @@ def test_fpcadj_basic():
     N = 100
     result = finite_population_corr(n, N)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "fpc" in result
 def test_fpcadj_edge():
     """Test edge cases."""
     n = 100

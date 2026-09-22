@@ -96,4 +96,4 @@ gibbons_kw_mult_comp = kwmc
 
 
 def cheatsheet() -> str:
-    return "kwmc(rank_means, ns, alpha) -> Pairwise rank-mean comparisons at an experimentwise level."
+    return "gb1041m: kwmc(rank_means, ns, alpha) -> Pairwise rank-mean comparisons at an experimentwise level."

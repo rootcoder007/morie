@@ -118,4 +118,4 @@ def brtmh(f, a, b, tol=1e-6, max_iter=100, full_output=False):
 
 
 def cheatsheet() -> str:
-    return "brtmh(f, a, b, tol, max_iter, full_output) -> Brent's method for root finding."
+    return "brtmh: brtmh(f, a, b, tol, max_iter, full_output) -> Brent's method for root finding."

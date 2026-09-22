@@ -60,4 +60,4 @@ def klotz(x, y, axis=0, cdf=None):
 
 
 def cheatsheet() -> str:
-    return "klotz(x, y, axis, cdf) -> Klotz test for equality of scale parameters using normal scores."
+    return "klotz: klotz(x, y, axis, cdf) -> Klotz test for equality of scale parameters using normal scores."

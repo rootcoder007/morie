@@ -236,4 +236,4 @@ def convergent_cross_mapping(x, y, E=2, tau=1, **kw):
 
 
 def cheatsheet() -> str:
-    return "embed(series, E, tau) -> Time-delay embedding: vectors :math:`(x_t, x_{t-\\tau},"
+    return "cnvlfc: embed(series, E, tau) -> Time-delay embedding: vectors :math:`(x_t, x_{t-\\tau},"

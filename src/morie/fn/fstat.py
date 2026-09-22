@@ -16,4 +16,4 @@ def fstat(ssr_val: float, sse_val: float, k: int, n: int) -> float:
 
 
 def cheatsheet() -> str:
-    return "fstat(ssr_val, sse_val, k, n) -> F-statistic: (SSR / k) / (SSE / (n - k - 1))."
+    return "fstat: fstat(ssr_val, sse_val, k, n) -> F-statistic: (SSR / k) / (SSE / (n - k - 1))."
