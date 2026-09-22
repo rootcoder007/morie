@@ -39,16 +39,14 @@ matching that maximise covariate balance.  Delegates to
 otherwise runs a base-R genetic algorithm.
 }
 \examples{
-\donttest{
-set.seed(1)
-df <- data.frame(
-  y = rnorm(150), d = rbinom(150, 1, 0.4),
-  x1 = rnorm(150), x2 = rnorm(150),
-  region = sample(c("North", "South"), 150, TRUE),
-  year = sample(2020:2022, 150, TRUE),
-  treat3 = sample(0:2, 150, TRUE))
-morie_matching_genetic(df, "d", c("x1", "x2"),
-                       pop_size = 50, n_generations = 20)
+if (requireNamespace("MatchIt", quietly = TRUE)) {
+  \donttest{
+  set.seed(1)
+  df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+                   x1 = rnorm(200), x2 = rnorm(200))
+  morie_matching_genetic(df, "d", c("x1", "x2"),
+                         pop_size = 50, n_generations = 20)
+  }
 }
 }
 \references{

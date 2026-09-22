@@ -1117,7 +1117,10 @@ morie_siu_audit_case <- function(case_number,
 #'   parser and external disagree, the \code{html_excerpt} is the
 #'   tie-breaker.
 #' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
+#' # Materialize the corpus cache first (fast via rmoriedata):
+#' morie_fetch_siu(cache_dir = file.path(tempdir(), "morie", "siu"))
 #' # Caller supplies their own external table; nothing about the
 #' # mapping or the file format is canonical to morie.
 #' external <- data.frame(case_id = "17-OVI-201", officers = 1L)
@@ -1129,6 +1132,7 @@ morie_siu_audit_case <- function(case_number,
 #' )
 #' subset(cmp, !agree)
 #' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_siu_compare <- function(case_number, external,
                               field_map = NULL,
@@ -2213,18 +2217,19 @@ morie_siu_sanity_check <- function(df) {
 #' @return Invisibly, a data frame of newly-recorded
 #'   (case_number, field, verified_value) translations.
 #' @examples
-#' \donttest{
-#' Sys.setenv(
-#'   OLLAMA_HOST = "http://localhost:11434",
-#'   OLLAMA_MODEL = "translategemma:latest"
-#' )
-#' csv <- morie_fetch_siu(cache_html = TRUE)
+#' \dontshow{if (morie_llm_probe_ollama() && requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' # Uses the local Ollama server (OLLAMA_HOST, default
+#' # http://localhost:11434; model via OLLAMA_MODEL, e.g.
+#' # translategemma:latest). Corpus cache first:
+#' csv <- morie_fetch_siu(cache_dir = file.path(tempdir(), "morie", "siu"))
 #' # Translate every non-English row to English:
-#' morie_siu_translate(target_lang = "en")
-#' # Or translate everything to Hindi for a Hindi-first reader:
-#' morie_siu_translate(target_lang = "hi")
-#' # Re-fetch picks up the new overrides automatically:
-#' csv <- morie_fetch_siu(overwrite = TRUE)
+#' morie_siu_translate(target_lang = "en",
+#'                     cache_dir = file.path(tempdir(), "morie", "siu"))
+#' \dontshow{\}) # examplesIf}
+#' \donttest{
+#' # Needs the SIU HTML cache plus a configured LLM provider (e.g. local
+#' # ollama); translates the French-only directors reports field-by-field.
+#' res <- morie_siu_translate_fr_to_en(case_numbers = "26-OCI-168")
 #' }
 #' @export
 morie_siu_translate <- function(

@@ -175,8 +175,11 @@ morie_pps_sample <- function(df, size_col, n, seed = 42L,
 #'   `distribution` (numeric vector of bootstrap statistics).
 #' @export
 #' @examples
-#' df <- data.frame(x = rnorm(100))
-#' morie_bootstrap_sample(df, statistic = function(d) mean(d$x))
+#' set.seed(1)
+#' if (requireNamespace("ranger", quietly = TRUE)) {
+#'   df <- data.frame(x = rnorm(100))
+#'   morie_bootstrap_sample(df, statistic = function(d) mean(d$x))
+#' }
 morie_bootstrap_sample <- function(df, statistic, n_bootstrap = 1000L, seed = 42L) {
   .morie_local_seed(seed)
   n <- nrow(df)

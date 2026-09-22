@@ -23,8 +23,24 @@ A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 Wraps \code{stats::p.adjust(method = "BH")}.
 }
 \examples{
-set.seed(1)
-p <- c(runif(80), runif(20, 0, 0.005))
-res <- benjamini_hochberg(p)
-head(res$adjusted)
+if (requireNamespace("mutoss", quietly = TRUE)) {
+  set.seed(1)
+  # 100 tests, 20 true effects: FDR control keeps more power than FWER.
+  p <- c(runif(80), runif(20, 0, 0.005))
+
+  res <- benjamini_hochberg(p)
+  res$n_rejected
+  head(res$adjusted)          # BH-adjusted q-values
+  sum(res$rejected)           # discoveries at the default alpha = 0.05
+
+  # BH controls the false discovery rate, so it rejects far more than the
+  # FWER methods on the same data:
+  c(BH = benjamini_hochberg(p)$n_rejected,
+    holm = holm(p)$n_rejected,
+    bonferroni = bonferroni(p)$n_rejected)
+
+  # `bh()` is a shorthand alias; `alpha` sets the FDR level.
+  identical(bh(p)$adjusted, benjamini_hochberg(p)$adjusted)
+  benjamini_hochberg(p, alpha = 0.10)$n_rejected
+}
 }

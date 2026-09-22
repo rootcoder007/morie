@@ -19,11 +19,14 @@ Print method for advanced TPS spatial-analysis results
 }
 \examples{
 \donttest{
-set.seed(1); n <- 200
-df <- data.frame(HOOD_158 = sample(sprintf("\%03d", 1:20), n, TRUE),
-                 LAT_WGS84 = 43.65 + rnorm(n, 0, 0.05),
-                 LONG_WGS84 = -79.38 + rnorm(n, 0, 0.05))
-res <- morie_tps_getis_ord_g_star(df)
-print(res)
+if (requireNamespace("dbscan", quietly = TRUE)) {
+  set.seed(2026)
+  df <- data.frame(
+    LAT_WGS84 = c(rnorm(60, 43.65, 0.005), rnorm(60, 43.70, 0.005)),
+    LONG_WGS84 = c(rnorm(60, -79.40, 0.005), rnorm(60, -79.38, 0.005))
+  )
+  obj <- morie_tps_dbscan_clusters(df, eps_km = 0.5, min_samples = 5L)
+  print(obj)
+}
 }
 }

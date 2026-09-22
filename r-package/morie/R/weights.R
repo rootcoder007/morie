@@ -160,8 +160,14 @@ morie_weights_poststratify <- function(weights, strata, population_totals) {
 #'   `diagnostics` (from `morie_weights_diagnostics`).
 #' @export
 #' @examples
-#' morie_weights_rake(weights = c(1, 2, 3, 4, 5, 6, 7, 8), df = data.frame(x = c(1, 2, 3,
-#' 4), y = c(2, 4, 5, 9)), margins = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' if (requireNamespace("survey", quietly = TRUE)) {
+#'   set.seed(1)
+#'   df <- data.frame(g = rep(c("m", "f"), 15), r = rep(c("x", "y", "z"), 10))
+#'   res <- morie_weights_rake(rep(1, 30), df,
+#'                             list(g = c(m = 50, f = 50), r = c(x = 30, y = 40, z = 30)))
+#'   res$converged
+#' }
+#' @export
 morie_weights_rake <- function(weights, df, margins,
                                max_iter = 100, tol = 1e-6, bounds = NULL) {
   w <- as.numeric(weights)
@@ -530,8 +536,12 @@ morie_weights_deff <- function(weights) {
 #'   \code{pct_extreme}.
 #' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_weights_detect_extreme(V)
+#' if (requireNamespace("survey", quietly = TRUE)) {
+#'   set.seed(1)
+#'   w <- c(runif(28, 0.5, 2), 25, 30)
+#'   str(morie_weights_detect_extreme(w), max.level = 1)
+#' }
+#' @export
 morie_weights_detect_extreme <- function(weights, k = 3) {
   w <- as.numeric(weights)
   q <- stats::quantile(w, c(0.25, 0.75), names = FALSE)
@@ -562,8 +572,12 @@ morie_weights_detect_extreme <- function(weights, k = 3) {
 #'   recording the stratum of each replicate.
 #' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_weights_jackknife(V)
+#' if (requireNamespace("survey", quietly = TRUE)) {
+#'   set.seed(1)
+#'   res <- morie_weights_jackknife(runif(10, 0.5, 2))
+#'   str(res, max.level = 1)
+#' }
+#' @export
 morie_weights_jackknife <- function(weights, strata = NULL,
                                     jk_type = c("JK1", "JKn")) {
   jk_type <- match.arg(jk_type)
@@ -613,8 +627,12 @@ morie_weights_jackknife <- function(weights, strata = NULL,
 #'   rows and \code{n_replicates} columns.
 #' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_weights_brr(V, V)
+#' if (requireNamespace("survey", quietly = TRUE)) {
+#'   set.seed(1)
+#'   res <- morie_weights_brr(runif(16, 0.5, 2), rep(1:8, each = 2))
+#'   str(res, max.level = 1)
+#' }
+#' @export
 morie_weights_brr <- function(weights, strata, n_replicates = NULL,
                               seed = 42) {
   w <- as.numeric(weights)

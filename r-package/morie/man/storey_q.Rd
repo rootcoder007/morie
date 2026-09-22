@@ -25,10 +25,20 @@ Estimates the proportion of true null hypotheses (pi0) and
 tightens the BH thresholds by that factor.
 }
 \examples{
-make_p <- function(n_null = 80, n_sig = 20, seed = 1) {
-    set.seed(seed)
-    c(runif(n_null), pmin(runif(n_sig, 0, 0.005), 1))
+if (requireNamespace("qvalue", quietly = TRUE)) {
+  set.seed(1)
+  p <- c(runif(80), runif(20, 0, 0.005))
+
+  res <- storey_q(p)
+  res$pi0                     # estimated proportion of true nulls
+  head(res$adjusted)          # q-values
+  res$n_rejected
+
+  # `lambda_param` tunes the pi0 estimator; different lambda, different pi0.
+  storey_q(p, lambda_param = 0.5)$pi0
+  storey_q(p, lambda_param = 0.8)$pi0
+
+  # Adaptive FDR rejects at least as many as BH (pi0 <= 1 tightens BH):
+  c(storey = storey_q(p)$n_rejected, BH = benjamini_hochberg(p)$n_rejected)
 }
-p <- make_p(50, 10)
-storey_q(p, lambda_param = 0.5)
 }

@@ -641,9 +641,11 @@ morie_datasets_otis_a01 <- function(offline = TRUE, ...) {
 #'
 #' @return A `data.frame` with columns `case_number`, `url`, `posted_date`.
 #' @examples
-#' \donttest{
-#' reports <- try(morie_datasets_siu_director_reports())
-#' if (!inherits(reports, "try-error")) head(reports)
+#' if (requireNamespace("rvest", quietly = TRUE) && requireNamespace("xml2", quietly = TRUE)) {
+#'   \donttest{
+#'   reports <- try(morie_datasets_siu_director_reports())
+#'   if (!inherits(reports, "try-error")) head(reports)
+#'   }
 #' }
 #' @export
 morie_datasets_siu_director_reports <- function() {

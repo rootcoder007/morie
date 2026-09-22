@@ -39,12 +39,11 @@ passed to \code{cansim::set_cansim_api_key()} so authenticated
 rate limits apply.
 }
 \examples{
+\dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 \dontrun{
 # Requires the 'cansim' package and network access.
 df <- morie_ingest_statcan_cansim("35-10-0177")
 head(df)
 }
-}
-\seealso{
-\code{\link{morie_ingest_statcan_csv}}
+\dontshow{\}) # examplesIf}
 }

@@ -155,17 +155,13 @@ NULL
 #'   the propensity score in observational studies for causal effects.
 #'   \emph{Biometrika}, 70(1), 41--55.
 #' @examples
-#' \donttest{
-#' set.seed(1)
-#' df <- data.frame(
-#'   y = rnorm(150), d = rbinom(150, 1, 0.4),
-#'   x1 = rnorm(150), x2 = rnorm(150),
-#'   region = sample(c("North", "South"), 150, TRUE),
-#'   year = sample(2020:2022, 150, TRUE),
-#'   treat3 = sample(0:2, 150, TRUE))
-#' df <- data.frame(d = rbinom(200, 1, 0.4),
-#'                  x1 = rnorm(200), x2 = rnorm(200))
-#' ps <- morie_matching_estimate_propensity(df, "d", c("x1", "x2"))
+#' if (requireNamespace("gbm", quietly = TRUE)) {
+#'   \donttest{
+#'   set.seed(1)
+#'   df <- data.frame(d = rbinom(200, 1, 0.4),
+#'                    x1 = rnorm(200), x2 = rnorm(200))
+#'   ps <- morie_matching_estimate_propensity(df, "d", c("x1", "x2"))
+#'   }
 #' }
 #' @export
 morie_matching_estimate_propensity <- function(data, treatment, covariates,
@@ -232,17 +228,15 @@ morie_matching_trim_propensity <- function(ps, lower = 0.01, upper = 0.99) {
 #'   \code{"trim"} (drop the extreme 5 percent of each tail).
 #' @return A subset of \code{data} on common support.
 #' @examples
-#' \donttest{
-#' set.seed(1)
-#' df <- data.frame(
-#'   y = rnorm(150), d = rbinom(150, 1, 0.4),
-#'   x1 = rnorm(150), x2 = rnorm(150),
-#'   region = sample(c("North", "South"), 150, TRUE),
-#'   year = sample(2020:2022, 150, TRUE),
-#'   treat3 = sample(0:2, 150, TRUE))
-#' df$propensity_score <- morie_matching_estimate_propensity(df, "d",
-#'                                                           c("x1", "x2"))
-#' morie_matching_common_support(df, "d")
+#' if (requireNamespace("gbm", quietly = TRUE)) {
+#'   \donttest{
+#'   set.seed(1)
+#'   df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+#'                    x1 = rnorm(200), x2 = rnorm(200))
+#'   df$propensity_score <- morie_matching_estimate_propensity(df, "d",
+#'                                                             c("x1", "x2"))
+#'   morie_matching_common_support(df, "d")
+#'   }
 #' }
 #' @export
 morie_matching_common_support <- function(data, treatment,
@@ -423,15 +417,13 @@ morie_matching_exact <- function(data, treatment, exact_vars) {
 #'   without balance checking: Coarsened exact matching.
 #'   \emph{Political Analysis}, 20(1), 1--24.
 #' @examples
-#' \donttest{
-#' set.seed(1)
-#' df <- data.frame(
-#'   y = rnorm(150), d = rbinom(150, 1, 0.4),
-#'   x1 = rnorm(150), x2 = rnorm(150),
-#'   region = sample(c("North", "South"), 150, TRUE),
-#'   year = sample(2020:2022, 150, TRUE),
-#'   treat3 = sample(0:2, 150, TRUE))
-#' morie_matching_cem(df, "d", c("x1", "x2"), n_bins = 5)
+#' if (requireNamespace("MatchIt", quietly = TRUE)) {
+#'   \donttest{
+#'   set.seed(1)
+#'   df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+#'                    x1 = rnorm(200), x2 = rnorm(200))
+#'   morie_matching_cem(df, "d", c("x1", "x2"), n_bins = 5)
+#'   }
 #' }
 #' @export
 morie_matching_cem <- function(data, treatment, covariates, n_bins = 5L) {
@@ -504,15 +496,13 @@ morie_matching_mahalanobis <- function(data, treatment, covariates,
 #'   aligned to the rows that survive the NA drop.
 #' @return A list of class \code{morie_match_result}.
 #' @examples
-#' \donttest{
-#' set.seed(1)
-#' df <- data.frame(
-#'   y = rnorm(150), d = rbinom(150, 1, 0.4),
-#'   x1 = rnorm(150), x2 = rnorm(150),
-#'   region = sample(c("North", "South"), 150, TRUE),
-#'   year = sample(2020:2022, 150, TRUE),
-#'   treat3 = sample(0:2, 150, TRUE))
-#' morie_matching_optimal_pair(df, "d", c("x1", "x2"))
+#' if (requireNamespace("MatchIt", quietly = TRUE)) {
+#'   \donttest{
+#'   set.seed(1)
+#'   df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+#'                    x1 = rnorm(200), x2 = rnorm(200))
+#'   morie_matching_optimal_pair(df, "d", c("x1", "x2"))
+#'   }
 #' }
 #' @export
 morie_matching_optimal_pair <- function(data, treatment, covariates,
@@ -722,15 +712,13 @@ morie_matching_subclassify <- function(data, treatment, covariates,
 #' @references Hainmueller, J. (2012). Entropy balancing for causal effects.
 #'   \emph{Political Analysis}, 20(1), 25--46.
 #' @examples
-#' \donttest{
-#' set.seed(1)
-#' df <- data.frame(
-#'   y = rnorm(150), d = rbinom(150, 1, 0.4),
-#'   x1 = rnorm(150), x2 = rnorm(150),
-#'   region = sample(c("North", "South"), 150, TRUE),
-#'   year = sample(2020:2022, 150, TRUE),
-#'   treat3 = sample(0:2, 150, TRUE))
-#' w <- morie_matching_entropy_balance(df, "d", c("x1", "x2"))
+#' if (requireNamespace("ebal", quietly = TRUE)) {
+#'   \donttest{
+#'   set.seed(1)
+#'   df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+#'                    x1 = rnorm(200), x2 = rnorm(200))
+#'   w <- morie_matching_entropy_balance(df, "d", c("x1", "x2"))
+#'   }
 #' }
 #' @export
 morie_matching_entropy_balance <- function(data, treatment, covariates,
@@ -785,16 +773,14 @@ morie_matching_entropy_balance <- function(data, treatment, covariates,
 #'   estimating causal effects.  \emph{Review of Economics and
 #'   Statistics}, 95(3), 932--945.
 #' @examples
-#' \donttest{
-#' set.seed(1)
-#' df <- data.frame(
-#'   y = rnorm(150), d = rbinom(150, 1, 0.4),
-#'   x1 = rnorm(150), x2 = rnorm(150),
-#'   region = sample(c("North", "South"), 150, TRUE),
-#'   year = sample(2020:2022, 150, TRUE),
-#'   treat3 = sample(0:2, 150, TRUE))
-#' morie_matching_genetic(df, "d", c("x1", "x2"),
-#'                        pop_size = 50, n_generations = 20)
+#' if (requireNamespace("MatchIt", quietly = TRUE)) {
+#'   \donttest{
+#'   set.seed(1)
+#'   df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+#'                    x1 = rnorm(200), x2 = rnorm(200))
+#'   morie_matching_genetic(df, "d", c("x1", "x2"),
+#'                          pop_size = 50, n_generations = 20)
+#'   }
 #' }
 #' @export
 morie_matching_genetic <- function(data, treatment, covariates,
@@ -1075,17 +1061,15 @@ morie_matching_balance <- function(data, treatment, covariates,
 #' @return A data frame with columns \code{covariate}, \code{smd_before},
 #'   \code{smd_after}, \code{abs_smd_before}, \code{abs_smd_after}.
 #' @examples
-#' \donttest{
-#' set.seed(1)
-#' df <- data.frame(
-#'   y = rnorm(150), d = rbinom(150, 1, 0.4),
-#'   x1 = rnorm(150), x2 = rnorm(150),
-#'   region = sample(c("North", "South"), 150, TRUE),
-#'   year = sample(2020:2022, 150, TRUE),
-#'   treat3 = sample(0:2, 150, TRUE))
-#' res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
-#' morie_matching_love_plot_data(df, res$matched_data,
-#'                               "d", c("x1", "x2"))
+#' if (requireNamespace("cobalt", quietly = TRUE)) {
+#'   \donttest{
+#'   set.seed(1)
+#'   df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+#'                    x1 = rnorm(200), x2 = rnorm(200))
+#'   res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
+#'   morie_matching_love_plot_data(df, res$matched_data,
+#'                                 "d", c("x1", "x2"))
+#'   }
 #' }
 #' @export
 morie_matching_love_plot_data <- function(unmatched_data, matched_data,
@@ -1242,16 +1226,15 @@ morie_matching_att_matched <- function(data, outcome, treatment,
 #' @param alpha Significance level for confidence intervals.
 #' @return A list of class \code{morie_te_result}.
 #' @examples
-#' \donttest{
-#' set.seed(1)
-#' df <- data.frame(
-#'   y = rnorm(150), d = rbinom(150, 1, 0.4),
-#'   x1 = rnorm(150), x2 = rnorm(150),
-#'   region = sample(c("North", "South"), 150, TRUE),
-#'   year = sample(2020:2022, 150, TRUE),
-#'   treat3 = sample(0:2, 150, TRUE))
-#' morie_matching_ate_matched(df, "y", "d", c("x1", "x2"),
-#'                            weights = "._cem_weight")
+#' if (requireNamespace("MatchIt", quietly = TRUE)) {
+#'   \donttest{
+#'   set.seed(1)
+#'   df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+#'                    x1 = rnorm(200), x2 = rnorm(200))
+#'   m <- morie_matching_cem(df, "d", c("x1", "x2"), n_bins = 5)
+#'   morie_matching_ate_matched(m$matched_data, "y", "d", c("x1", "x2"),
+#'                              weights = "weights")
+#'   }
 #' }
 #' @export
 morie_matching_ate_matched <- function(data, outcome, treatment, covariates,
@@ -1338,16 +1321,14 @@ morie_matching_atc_matched <- function(data, outcome, treatment,
 #'   of matching estimators for average treatment effects.
 #'   \emph{Econometrica}, 74(1), 235--267.
 #' @examples
-#' \donttest{
-#' set.seed(1)
-#' df <- data.frame(
-#'   y = rnorm(150), d = rbinom(150, 1, 0.4),
-#'   x1 = rnorm(150), x2 = rnorm(150),
-#'   region = sample(c("North", "South"), 150, TRUE),
-#'   year = sample(2020:2022, 150, TRUE),
-#'   treat3 = sample(0:2, 150, TRUE))
-#' res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
-#' morie_matching_abadie_imbens_se(df, "y", "d", res$match_pairs)
+#' if (requireNamespace("sensitivitymv", quietly = TRUE)) {
+#'   \donttest{
+#'   set.seed(1)
+#'   df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+#'                    x1 = rnorm(200), x2 = rnorm(200))
+#'   res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
+#'   morie_matching_abadie_imbens_se(df, "y", "d", res$match_pairs)
+#'   }
 #' }
 #' @export
 morie_matching_abadie_imbens_se <- function(data, outcome, treatment,

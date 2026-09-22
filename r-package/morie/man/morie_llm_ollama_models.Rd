@@ -33,10 +33,14 @@ gateway. A local daemon needs no key; set \code{OLLAMA_API_KEY} for gateways
 that require a bearer token.
 }
 \examples{
+# \dontrun (not \donttest): this reaches the network. \donttest
+# examples ARE run by pkgdown and by CRAN's --run-donttest.
 \dontrun{
-# Point at your own Ollama server, then see what it serves:
-Sys.setenv(OLLAMA_HOST = "http://localhost:11434")
-models <- morie_llm_ollama_models()
-models$name
+if (requireNamespace("httr2", quietly = TRUE)) {
+  # Point at your own Ollama server, then see what it serves:
+  Sys.setenv(OLLAMA_HOST = "http://localhost:11434")
+  models <- morie_llm_ollama_models()
+  models$name
+  }
 }
 }

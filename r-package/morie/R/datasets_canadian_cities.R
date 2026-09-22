@@ -165,9 +165,19 @@ morie_datasets_calgary_fire_stations <- function(offline = TRUE,
 #' @return A `data.frame` of records.
 #' @export
 #' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
-#' df <- morie_datasets_calgary_socrata_by_id("848s-4m4z", limit = 100L)
+#' cat_df <- morie_datasets_calgary_opendata_bulk_layers()
+#' df <- try(morie_datasets_calgary_socrata_by_id(cat_df$soda_id[1], limit = 5L))
+#' if (!inherits(df, "try-error")) head(df)
 #' }
+#' \dontshow{\}) # examplesIf}
+#' \donttest{
+#' cat_df <- morie_datasets_edmonton_opendata_bulk_layers()
+#' df <- try(morie_datasets_edmonton_socrata_by_id(cat_df$soda_id[1], limit = 5L))
+#' if (!inherits(df, "try-error")) head(df)
+#' }
+#' @export
 morie_datasets_calgary_socrata_by_id <- function(soda_id,
                                                    limit = 1000L) {
   url <- sprintf("%s/resource/%s.json?$limit=%d",

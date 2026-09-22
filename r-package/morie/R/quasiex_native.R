@@ -35,10 +35,15 @@
 #' @references Callaway & Sant'Anna (2021) J. Econometrics 225(2);
 #'   Goodman-Bacon (2021) J. Econometrics 225(2).
 #' @examples
-#' df <- expand.grid(id = 1:30, t = 1:6)
-#' df$g <- ifelse(df$id <= 15, 4L, NA)
-#' df$y <- rnorm(nrow(df)) + ifelse(!is.na(df$g) & df$t >= df$g, 2, 0)
-#' morie_did(df, "y", "id", "t", "g")
+#' set.seed(1)
+#' if (morie_crypto_liboqs_available()) {
+#'   if (requireNamespace("did", quietly = TRUE)) {
+#'     df <- expand.grid(id = 1:30, t = 1:6)
+#'     df$g <- ifelse(df$id <= 15, 4L, NA)
+#'     df$y <- rnorm(nrow(df)) + ifelse(!is.na(df$g) & df$t >= df$g, 2, 0)
+#'     morie_did(df, "y", "id", "t", "g")
+#'   }
+#' }
 #' @export
 morie_did <- function(data, outcome, unit, time, treatment_time,
                       covariates = NULL, n_bootstrap = 200L,

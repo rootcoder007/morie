@@ -776,12 +776,14 @@ correlation_table <- function(data, method = "pearson", show_stars = TRUE,
 #'   character string holding the rendered table in the requested
 #'   format.
 #' @examples
-#' set.seed(1)
-#' df <- data.frame(x = rnorm(30))
-#' df$y <- df$x + rnorm(30)
-#' m1 <- lm(y ~ 1, data = df)
-#' m2 <- lm(y ~ x, data = df)
-#' model_comparison_table(list(null = m1, fit = m2))
+#' if (requireNamespace("car", quietly = TRUE)) {
+#'   set.seed(1)
+#'   df <- data.frame(x = rnorm(30))
+#'   df$y <- df$x + rnorm(30)
+#'   m1 <- lm(y ~ 1, data = df)
+#'   m2 <- lm(y ~ x, data = df)
+#'   model_comparison_table(list(null = m1, fit = m2))
+#' }
 #' @export
 model_comparison_table <- function(models, nested = FALSE, digits = 3L,
                                      output_format = "dataframe",

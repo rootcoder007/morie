@@ -27,5 +27,8 @@ delegation; the eigenvalues/vectors are cross-validated against
 urca in tests.
 }
 \examples{
-morie_vecm(Y = matrix(rnorm(100), 50, 2))
+set.seed(1)
+if (requireNamespace("urca", quietly = TRUE)) {
+  morie_vecm(Y = matrix(rnorm(100), 50, 2))
+}
 }

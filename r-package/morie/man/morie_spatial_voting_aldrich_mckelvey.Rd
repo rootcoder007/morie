@@ -41,10 +41,12 @@ they are defined for every respondent with at least two placements
 against a self-placement, which this function does not take).
 }
 \examples{
-set.seed(1)
-Z <- matrix(rnorm(20 * 5), 20, 5)
-fit <- morie_spatial_voting_aldrich_mckelvey(Z)
-fit$zhat
+if (requireNamespace("basicspace", quietly = TRUE)) {
+  set.seed(1)
+  Z <- matrix(rnorm(20 * 5), 20, 5)
+  fit <- morie_spatial_voting_aldrich_mckelvey(Z)
+  fit$zhat
+}
 }
 \references{
 Aldrich, J. H. and McKelvey, R. D. (1977). "A Method of Scaling with

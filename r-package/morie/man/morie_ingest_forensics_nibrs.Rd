@@ -47,12 +47,14 @@ sub-objects flattened using dotted keys
 (\code{offense.code}, \code{victim.age}, ...).
 }
 \examples{
-\donttest{
-df <- morie_ingest_forensics_nibrs(
+\dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontrun{
+# No API key needed: falls back to the bundled synthetic sample.
+df <- suppressWarnings(morie_ingest_forensics_nibrs(
   year = 2023, offense = "aggravated-assault", state = "GA",
-  api_key = Sys.getenv("FBI_CDE_API_KEY"),
-  max_features = 5000L
-)
+  max_features = 10L
+))
 head(df)
 }
+\dontshow{\}) # examplesIf}
 }

@@ -17,6 +17,17 @@ A \code{morie_rich_result} list with elements \code{method},
 Fisher's method for combining independent p-values
 }
 \examples{
-res <- fisher_combined(c(0.001, 0.6, 0.5))
-res$p_value
+if (requireNamespace("poolr", quietly = TRUE)) {
+  # Combine several independent tests into one global p-value.
+  res <- fisher_combined(c(0.001, 0.6, 0.5))
+  res                          # rich print: statistic, df, combined p
+  res$p_value                  # the combined p-value
+  res$statistic                # chi-square = -2 * sum(log p)
+
+  # One small p can drive the combination significant.
+  fisher_combined(c(0.0001, 0.9, 0.8, 0.7))$p_value
+
+  # All-null inputs stay non-significant.
+  fisher_combined(c(0.4, 0.5, 0.6))$p_value
+}
 }

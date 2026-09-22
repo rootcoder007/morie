@@ -41,13 +41,10 @@ column names preserved): \code{id}, \code{case_number},
 \code{latitude}, \code{longitude}.
 }
 \examples{
+\dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 \donttest{
 df <- morie_ingest_chicago_crime(year = 2024, max_features = 10000L)
 head(df)
 }
-}
-\seealso{
-\code{\link{morie_ingest_chicago_socrata}},
-\code{\link{morie_ingest_bigquery_table}} for the BigQuery
-public-data mirror (\code{bigquery-public-data.chicago_crime}).
+\dontshow{\}) # examplesIf}
 }

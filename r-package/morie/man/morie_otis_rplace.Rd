@@ -34,8 +34,10 @@ proportion matrix of unique-individual placements for one fiscal
 year, optionally filtered by gender.
 }
 \examples{
-\donttest{
+if (requireNamespace("readr", quietly = TRUE)) {
+  \donttest{
   df <- morie_otis_load()
-  morie_otis_rplace(df, year = 2024)
+    morie_otis_rplace(df, year = 2024)
+  }
 }
 }

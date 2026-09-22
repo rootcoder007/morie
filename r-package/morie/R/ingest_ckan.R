@@ -194,13 +194,15 @@
 #' @param timeout HTTP timeout in seconds.
 #' @return A named list as returned by the CKAN Action API.
 #' @examples
-#' \dontrun{
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
 #' res <- morie_ingest_ckan_package_search(
 #'   "https://open.canada.ca/data",
 #'   query = "corrections"
 #' )
 #' length(res$results)
 #' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_ingest_ckan_package_search <- function(portal,
                                              query = NULL,
@@ -235,7 +237,13 @@ morie_ingest_ckan_package_search <- function(portal,
 #' @param timeout HTTP timeout in seconds.
 #' @return The package metadata list.
 #' @examples
-#' \dontrun{try(morie_ingest_ckan_package_show("https://open.canada.ca/data", "some-package-id"))}
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' try(morie_ingest_ckan_package_show(
+#'   "https://data.ontario.ca",
+#'   "324ff147-816c-4143-a414-d1e973dca140"))
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_ingest_ckan_package_show <- function(portal,
                                            package_id,
@@ -267,7 +275,13 @@ morie_ingest_ckan_package_show <- function(portal,
 #' @param timeout HTTP timeout in seconds.
 #' @return The resource metadata list.
 #' @examples
-#' \dontrun{try(morie_ingest_ckan_resource_show("https://open.canada.ca/data", "some-resource-id"))}
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' try(morie_ingest_ckan_resource_show(
+#'   "https://data.ontario.ca",
+#'   "ea9dc29c-b4f1-4426-b1f2-974ce995aca1"))
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_ingest_ckan_resource_show <- function(portal,
                                             resource_id,
@@ -312,7 +326,13 @@ morie_ingest_ckan_resource_show <- function(portal,
 #' @param timeout HTTP timeout in seconds.
 #' @return A base R \code{data.frame}.
 #' @examples
-#' \donttest{try(morie_ingest_ckan_read_resource("https://open.canada.ca/data", "some-resource-id"))}
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' try(morie_ingest_ckan_read_resource(
+#'   "https://data.ontario.ca",
+#'   "ea9dc29c-b4f1-4426-b1f2-974ce995aca1"))
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_ingest_ckan_read_resource <- function(portal,
                                             url_or_id,
@@ -408,7 +428,13 @@ morie_ingest_ckan_read_resource <- function(portal,
 #' @param timeout HTTP timeout in seconds.
 #' @return A named list of data.frames.
 #' @examples
-#' \donttest{try(morie_ingest_ckan_fetch_package_csvs("https://open.canada.ca/data", "some-package-id"))}
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' try(morie_ingest_ckan_fetch_package_csvs(
+#'   "https://data.ontario.ca",
+#'   "324ff147-816c-4143-a414-d1e973dca140"))
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_ingest_ckan_fetch_package_csvs <- function(
     portal,
@@ -470,7 +496,10 @@ morie_ingest_ckan_fetch_package_csvs <- function(
 #' @param timeout HTTP timeout in seconds.
 #' @return A base R \code{data.frame}.
 #' @examples
-#' \dontrun{try(morie_ingest_ckan_search_packages("https://open.canada.ca/data", query = "crime", rows = 1L))}
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{try(morie_ingest_ckan_search_packages("https://open.canada.ca/data",
+#'   query = "crime", rows = 1L))}
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_ingest_ckan_search_packages <- function(portal,
                                               query,

@@ -47,6 +47,13 @@ Requires the optional \pkg{bigrquery} package and a billing project
 datasets are billed to the caller's project, not the dataset
 owner's.
 }
+\examples{
+\donttest{
+\dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\donttest{try(morie_ingest_chicago_crime_bigquery())}
+\dontshow{\}) # examplesIf}
+}
+}
 \seealso{
 \code{\link{morie_ingest_chicago_crime}},
 \code{\link{morie_ingest_bigquery_table}}

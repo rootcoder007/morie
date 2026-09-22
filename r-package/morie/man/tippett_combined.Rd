@@ -17,9 +17,16 @@ A \code{morie_rich_result} list with elements \code{method},
 Tippett's minimum-p method
 }
 \examples{
-set.seed(1)
-p <- c(runif(50), runif(10, 0, 0.005))
-res <- bonferroni(p, alpha = 0.05)
-res$n_rejected
-tippett_combined(p_values = p)
+if (requireNamespace("poolr", quietly = TRUE)) {
+  p <- c(0.001, 0.008, 0.02, 0.04, 0.2, 0.5)
+
+  res <- tippett_combined(p)
+  res$statistic                # the minimum p-value
+  res$p_value                  # 1 - (1 - min p)^m
+
+  # Tippett is powerful when a single strong signal is enough (min-p);
+  # contrast with Fisher, which aggregates evidence across all tests.
+  c(tippett = tippett_combined(p)$p_value,
+    fisher  = fisher_combined(p)$p_value)
+}
 }

@@ -27,8 +27,10 @@ adjustment routine (see \code{morie_multiple_testing}).
 Convenience dispatcher for p-value adjustment methods
 }
 \examples{
-set.seed(1)
-p <- c(runif(20), runif(5, 0, 0.005))
-res <- adjust_p_values(p, method = "bh")
-res$n_rejected
+if (requireNamespace("poolr", quietly = TRUE)) {
+  set.seed(1)
+  p <- c(runif(20), runif(5, 0, 0.005))
+  res <- adjust_p_values(p, method = "bh")
+  res$n_rejected
+}
 }

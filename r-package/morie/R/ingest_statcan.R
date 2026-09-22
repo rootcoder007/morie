@@ -85,6 +85,7 @@
 #'   \code{\link[utils]{read.csv}} if \pkg{readr} is unavailable).
 #' @return A base R \code{data.frame}.
 #' @examples
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \dontrun{
 #' # Requires network access.
 #' url <- paste0(
@@ -94,8 +95,7 @@
 #' df <- morie_ingest_statcan_csv(url)
 #' head(df)
 #' }
-#' @seealso \code{\link{morie_ingest_statcan_cansim}},
-#'   \code{\link{morie_cache_dir}}
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_ingest_statcan_csv <- function(url,
                                      member = NULL,
@@ -170,12 +170,13 @@ morie_ingest_statcan_csv <- function(url,
 #'   \code{\link[cansim]{get_cansim}}.
 #' @return A base R \code{data.frame}.
 #' @examples
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \dontrun{
 #' # Requires the 'cansim' package and network access.
 #' df <- morie_ingest_statcan_cansim("35-10-0177")
 #' head(df)
 #' }
-#' @seealso \code{\link{morie_ingest_statcan_csv}}
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_ingest_statcan_cansim <- function(table_id,
                                         language = c("eng", "fra"),

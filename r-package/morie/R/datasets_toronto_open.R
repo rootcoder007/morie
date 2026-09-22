@@ -149,10 +149,16 @@ morie_datasets_toronto_asr_miscellaneous <- function(offline = TRUE,
 #' @return A `data.frame` of records.
 #' @export
 #' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
-#' data(ckan_metadata, package = "morie")
-#' recs <- morie_datasets_toronto_open_ckan_resource(ckan_metadata$package_id[1])
+#' cat_df <- morie_datasets_toronto_opendata_bulk_layers()
+#' df <- try(morie_datasets_toronto_open_ckan_resource(cat_df$resource_id[1],
+#'   limit = 5L
+#' ))
+#' if (!inherits(df, "try-error")) head(df)
 #' }
+#' \dontshow{\}) # examplesIf}
+#' @export
 morie_datasets_toronto_open_ckan_resource <- function(resource_id,
                                                         limit = 100L) {
   url <- sprintf("%s/action/datastore_search?resource_id=%s&limit=%d",

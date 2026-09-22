@@ -7,7 +7,10 @@
 #' @param max_lag Max ADF augmentation lags. Default \code{floor(12*(n/100)^0.25)}.
 #' @return Named list with \code{adf_statistic, p_value, beta, n, method}.
 #' @examples
-#' morie_eg_coint(y1 = rnorm(100), y2 = rnorm(100))
+#' set.seed(1)
+#' if (requireNamespace("urca", quietly = TRUE)) {
+#'   morie_eg_coint(y1 = rnorm(100), y2 = rnorm(100))
+#' }
 #' @export
 morie_eg_coint <- function(y1, y2, max_lag = NULL) {
   y1 <- as.numeric(y1)

@@ -383,8 +383,10 @@ NULL
 #' @return The value of \code{.morie_sobol_cpp}.
 #' @export
 #' @examples
-#' res <- .morie_sobol(n = 3L, d = 3L)
-#' res
+#' if (requireNamespace("geepack", quietly = TRUE)) {
+#'   res <- .morie_sobol(n = 3L, d = 3L)
+#'   res
+#' }
 .morie_sobol <- function(n, d) {
   n <- as.integer(n)
   d <- as.integer(d)

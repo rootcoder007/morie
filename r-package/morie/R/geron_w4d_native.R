@@ -544,8 +544,10 @@ morie_geron_self_supervised <- function(X, pretext = "mask", noise = 0.1, seed =
 #'   objective, laplacian, affinity, alpha, estimate, n, method.
 #' @export
 #' @examples
-#' morie_geron_semisupervised(X_l = c(1, 2, 3, 4, 5, 6, 7, 8), y_l = c(1, 2, 3, 4, 5, 6,
-#' 7, 8), X_u = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' if (requireNamespace("MASS", quietly = TRUE)) {
+#'   morie_geron_semisupervised(X_l = c(1, 2, 3, 4, 5, 6, 7, 8), y_l = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'     X_u = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' }
 morie_geron_semisupervised <- function(X_l, y_l, X_u, alpha = 1.0, gamma = 1.0,
                                         fit_intercept = TRUE) {
   L1 <- as.matrix(X_l)
@@ -1323,8 +1325,10 @@ morie_geron_stride <- function(in_dim, k, p = 0, s = 1) {
 #'   optimism, leverage, r2, estimate, n, method.
 #' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_geron_supervised_learning(V, V)
+#' if (requireNamespace("MASS", quietly = TRUE)) {
+#'   V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#'   morie_geron_supervised_learning(V, V)
+#' }
 morie_geron_supervised_learning <- function(X, y, ridge = 0.0, fit_intercept = TRUE) {
   A <- as.matrix(X)
   t <- as.numeric(y)

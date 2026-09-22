@@ -19,5 +19,9 @@ Effective number of tests (>= 1).
 Effective number of independent tests from a correlation matrix
 }
 \examples{
-n_effective_tests(correlation_matrix = 5L)
+if (requireNamespace("poolr", quietly = TRUE)) {
+  set.seed(1)
+  X <- matrix(rnorm(200), ncol = 5)
+  n_effective_tests(stats::cor(X))
+}
 }

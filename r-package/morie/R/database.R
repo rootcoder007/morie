@@ -129,11 +129,12 @@ morie_cache_dir <- function(subdir = NULL) {
 #'   batch use to skip the prompt.
 #' @return Invisibly, the number of files removed.
 #' @examples
+#' \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
 #' # Non-interactive: skip the confirmation prompt.
 #' morie_cache_clear("siu", confirm = FALSE)
 #' }
-#' @seealso \code{\link{morie_cache_dir}}
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_cache_clear <- function(subdir = NULL, confirm = interactive()) {
   path <- morie_cache_dir(subdir)
@@ -401,11 +402,18 @@ morie_cache_file <- function(path, table_name, db_path = NULL, con = NULL) {
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame with canonical CPADS columns.
 #' @examples
-#' \donttest{
-#' # Needs the CPADS PUMF (local file, cache, or a live CKAN fetch).
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE) && requireNamespace("jsonlite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' # Local-first and offline: use_ckan = FALSE consults the bundled copy
+#' # and the local cache only, and errors when neither is present.
+#' cpads <- try(morie_load_cpads(use_ckan = FALSE), silent = TRUE)
+#' if (!inherits(cpads, "try-error")) head(cpads)
+#' \dontrun{
+#' # The live CKAN fetch pages through the datastore; it ran for over ten
+#' # minutes in the docs build, so it is shown rather than executed.
 #' cpads <- morie_load_cpads(use_ckan = TRUE)
 #' if (!is.null(cpads)) head(cpads)
 #' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_load_cpads <- function(db_path = NULL, use_ckan = TRUE, con = NULL) {
   # 1. Local files.
@@ -620,15 +628,20 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
 #' @return A data.frame.
 #' @examples
 #' \donttest{
-#' df <- morie_load_dataset("ocp21") # CPADS 2021-2022 (default DuckDB cache)
-#' df <- morie_load_dataset("ocp21", refresh = TRUE) # force re-fetch
+#' \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' # CPADS 2021-2022 (default DuckDB cache); try() so a transient
+#' # upstream outage does not fail the check
+#' df <- try(morie_load_dataset("ocp21"))
+#' df <- try(morie_load_dataset("ocp21", refresh = TRUE)) # force re-fetch
 #'
 #' # PostgreSQL cache (run a server first):
 #' # con <- DBI::dbConnect(RPostgres::Postgres(),
 #' #   host = "localhost", dbname = "morie", user = "...")
 #' # df <- morie_load_dataset("ocp21", con = con)
 #' }
-#' @seealso \code{\link{morie_fetch}}, \code{\link{morie_ckan_search}}
+#' \dontshow{\}) # examplesIf}
+#' }
 #' @export
 morie_load_dataset <- function(key, db_path = NULL, refresh = FALSE,
                                con = NULL) {

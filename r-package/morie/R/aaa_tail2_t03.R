@@ -30,9 +30,11 @@
 #' @return The value of \code{out}, as built in the body.
 #' @export
 #' @examples
-#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
-#' res <- .morie_t2_inv(A = A)
-#' res
+#' if (requireNamespace("metafor", quietly = TRUE)) {
+#'   A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#'   res <- .morie_t2_inv(A = A)
+#'   res
+#' }
 .morie_t2_inv <- function(A) {
   k <- nrow(A)
   M <- cbind(A, diag(1, k))

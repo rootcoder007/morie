@@ -290,20 +290,22 @@ morie_geron_hf_pipelines <- function(task, inputs, model, labels = NULL, top_k =
 #' estimate, n, method.
 #' @export
 #' @examples
-#' W <- list(W_z = matrix(0, 2, 2), U_z = matrix(0, 2, 2), b_z = c(0,
-#'     0), W_r = matrix(0, 2, 2), U_r = matrix(0, 2, 2), b_r = c(0,
-#'     0), W_h = matrix(0, 2, 2), U_h = matrix(0, 2, 2), b_h = c(0,
-#'     0))
-#' r <- morie_geron_gru(c(0, 0), c(4, -2), W)
-#' X <- matrix(c(1, 2, 3, 4), ncol = 1)
-#' y <- c(3, 6, 9, 12)
-#' lg <- function(p, Xb, yb) {
-#'     r <- as.numeric(Xb %*% p) - yb
-#'     list(mean(r^2), (2/length(yb)) * as.numeric(t(Xb) %*% r))
+#' if (requireNamespace("ranger", quietly = TRUE)) {
+#'   W <- list(W_z = matrix(0, 2, 2), U_z = matrix(0, 2, 2), b_z = c(0,
+#'       0), W_r = matrix(0, 2, 2), U_r = matrix(0, 2, 2), b_r = c(0,
+#'       0), W_h = matrix(0, 2, 2), U_h = matrix(0, 2, 2), b_h = c(0,
+#'       0))
+#'   r <- morie_geron_gru(c(0, 0), c(4, -2), W)
+#'   X <- matrix(c(1, 2, 3, 4), ncol = 1)
+#'   y <- c(3, 6, 9, 12)
+#'   lg <- function(p, Xb, yb) {
+#'       r <- as.numeric(Xb %*% p) - yb
+#'       list(mean(r^2), (2/length(yb)) * as.numeric(t(Xb) %*% r))
+#'   }
+#'   m0 <- list(params = 0, loss_and_grad = lg)
+#'   morie_geron_hf_trainer(m0, list(epochs = 50, batch_size = 4,
+#'       learning_rate = 0.05), list(X, y), list(X, y))
 #' }
-#' m0 <- list(params = 0, loss_and_grad = lg)
-#' morie_geron_hf_trainer(m0, list(epochs = 50, batch_size = 4,
-#'     learning_rate = 0.05), list(X, y), list(X, y))
 morie_geron_hf_trainer <- function(model, args = list(), train_ds, eval_ds = NULL) {
   .morie_gr_need(!is.null(model$params) && !is.null(model$loss_and_grad),
                  "geron_hf_trainer: model needs params and loss_and_grad")

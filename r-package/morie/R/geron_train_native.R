@@ -2022,16 +2022,18 @@ morie_geron_gru_cell <- function(x_t, h_prev, Wz, Wr, W) {
 #'   `n_fits`.
 #' @export
 #' @examples
-#' set.seed(5)
-#' X <- matrix(rnorm(60), 30, 2)
-#' y <- as.numeric(X[, 1] > 0)
-#' fs <- function(Xtr, ytr, Xte, yte, params) {
-#'   b <- qr.solve(cbind(1, as.matrix(Xtr)), as.numeric(ytr))
-#'   pred <- as.numeric(cbind(1, as.matrix(Xte)) %*% b)
-#'   -mean((pred - yte)^2) * params$w
+#' if (requireNamespace("ranger", quietly = TRUE)) {
+#'   set.seed(5)
+#'   X <- matrix(rnorm(60), 30, 2)
+#'   y <- as.numeric(X[, 1] > 0)
+#'   fs <- function(Xtr, ytr, Xte, yte, params) {
+#'     b <- qr.solve(cbind(1, as.matrix(Xtr)), as.numeric(ytr))
+#'     pred <- as.numeric(cbind(1, as.matrix(Xte)) %*% b)
+#'     -mean((pred - yte)^2) * params$w
+#'   }
+#'   morie_geron_grid_search_cv(X, y, param_grid = list(w = c(1, 2)),
+#'                              K = 3, fit_score = fs)
 #' }
-#' morie_geron_grid_search_cv(X, y, param_grid = list(w = c(1, 2)),
-#'                            K = 3, fit_score = fs)
 morie_geron_grid_search_cv <- function(X, y, param_grid, K, fit_score,
                                        shuffle = FALSE, seed = 0) {
   A <- X

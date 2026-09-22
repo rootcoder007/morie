@@ -15,13 +15,13 @@ morie_spatial_voting_bayesian_mds(
 \arguments{
 \item{D}{Distance matrix.}
 
-\item{n_dims}{Integer; latent dimensionality.}
+\item{n_dims}{Dimensions.}
 
-\item{n_samples}{Integer; posterior-sample count.}
+\item{n_samples}{MCMC samples.}
 
 \item{burn_in}{Burn-in length.}
 
-\item{sigma_init}{Numeric; initial value for the latent-coordinate scale (default 1).}
+\item{sigma_init}{Initial sigma.}
 }
 \value{
 List: \code{positions}/\code{coords} (posterior-mean or modal
@@ -31,14 +31,14 @@ configuration), fit diagnostics, and an \code{engine} tag.
 Bayesian MDS (stub) -- log-normal distances via Metropolis
 }
 \examples{
-\donttest{
-set.seed(1)
-X <- matrix(rnorm(30), 10, 3)
-D <- as.matrix(dist(X))
-fit <- morie_spatial_voting_bayesian_mds(D, n_dims = 2L,
-                                         n_samples = 200L,
-                                         burn_in = 50L)
-dim(fit$positions)
+if (requireNamespace("smacof", quietly = TRUE)) {
+  \donttest{
+  # A real dissimilarity matrix (the all-zero matrix is degenerate
+  # and makes the stress majorizer divide by zero).
+  set.seed(1)
+  X <- matrix(rnorm(30), 10, 3)
+  morie_spatial_voting_bayesian_mds(as.matrix(dist(X)))
+  }
 }
 }
 \references{

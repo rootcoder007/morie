@@ -182,6 +182,7 @@ morie_ingest_chicago_resources <- function() {
 #' @param user_agent,timeout Standard request knobs.
 #' @return A base R \code{data.frame}.
 #' @examples
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
 #' # Chicago crimes (schema verified 2026-07: `year` is a real column)
 #' df <- try(morie_ingest_chicago_socrata(
@@ -198,6 +199,7 @@ morie_ingest_chicago_resources <- function() {
 #'   max_features = 100L
 #' ))
 #' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_ingest_chicago_socrata <- function(resource_url,
                                          where = NULL,
@@ -265,13 +267,12 @@ morie_ingest_chicago_socrata <- function(resource_url,
 #' @param user_agent,timeout Standard request knobs.
 #' @return A base R \code{data.frame}.
 #' @examples
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
 #' df <- morie_ingest_chicago_crime(year = 2024, max_features = 10000L)
 #' head(df)
 #' }
-#' @seealso \code{\link{morie_ingest_chicago_socrata}},
-#'   \code{\link{morie_ingest_bigquery_table}} for the BigQuery
-#'   public-data mirror (\code{bigquery-public-data.chicago_crime}).
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_ingest_chicago_crime <- function(year = NULL,
                                        where = NULL,
@@ -327,6 +328,10 @@ morie_ingest_chicago_crime <- function(year = NULL,
 #'   \code{\link{morie_ingest_bigquery_table}}
 #' @examples
 #' \donttest{
+#' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{try(morie_ingest_chicago_crime_bigquery())}
+#' \dontshow{\}) # examplesIf}
+#' }
 #' @export
 morie_ingest_chicago_crime_bigquery <- function(where = NULL,
                                                 year = NULL,

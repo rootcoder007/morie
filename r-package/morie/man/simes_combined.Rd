@@ -17,9 +17,17 @@ A \code{morie_rich_result} list with elements \code{method},
 Simes test for the global null
 }
 \examples{
-set.seed(1)
-p <- c(runif(50), runif(10, 0, 0.005))
-res <- bonferroni(p, alpha = 0.05)
-res$n_rejected
-simes_combined(p_values = p)
+if (requireNamespace("mutoss", quietly = TRUE)) {
+  p <- c(0.001, 0.008, 0.02, 0.04, 0.2, 0.5)
+
+  res <- simes_combined(p)
+  res$p_value                  # Simes global-null p (min of sorted p * m/i)
+
+  # Simes is a less conservative global-null test than Bonferroni's min:
+  c(simes = simes_combined(p)$p_value,
+    bonferroni_min = min(bonferroni(p)$adjusted))
+
+  # A single very small p makes the global null significant.
+  simes_combined(c(0.0005, 0.4, 0.6, 0.8))$p_value
+}
 }

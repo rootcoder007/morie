@@ -26,6 +26,9 @@ matrix double one half and zero the other. For exact Hadamard ordering use
 \code{survey::as.svrepdesign(..., type = "BRR")}.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_weights_brr(V, V)
+if (requireNamespace("survey", quietly = TRUE)) {
+  set.seed(1)
+  res <- morie_weights_brr(runif(16, 0.5, 2), rep(1:8, each = 2))
+  str(res, max.level = 1)
+}
 }

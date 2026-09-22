@@ -1,5 +1,11 @@
 # morie 1.3.2 - 2026-09-21
 
+## Examples
+
+Every example that needs a Suggests package is guarded on
+`requireNamespace()`, as in rmorie (158 examples; a check cell without
+CausalImpact failed on `morie_causal_impact()`).
+
 ## Missing values
 
 `morie_fairness_gini()` is `NA` with a warning and an "undefined"

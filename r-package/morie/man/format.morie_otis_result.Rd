@@ -19,8 +19,11 @@ formatted result, suitable for \code{cat()} or \code{print()}.
 Format method for OTIS results
 }
 \examples{
-\donttest{
-D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-morie:::format.morie_otis_result(D)
+if (requireNamespace("readr", quietly = TRUE)) {
+  \donttest{
+  df <- morie_otis_load()
+    res <- morie_otis_all_analyses(df, year = 2024)
+  cat(format(res))
+  }
 }
 }
