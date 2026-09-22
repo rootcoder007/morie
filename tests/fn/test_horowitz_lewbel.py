@@ -26,12 +26,14 @@ def test_lewbel_recovers_beta_under_unknown_heteroskedasticity():
     beta = np.array([0.0, 1.0])
     est = []
     for s in range(6):
-        X, y, V = _draw(6000, np.random.default_rng(s), beta)
+        # n is kept moderate: the kernel density evaluation is O(n^2)
+        # (an n x n distance matrix per call), so large n times out.
+        X, y, V = _draw(1500, np.random.default_rng(s), beta)
         est.append(horowitz_lewbel_estimator(X, y, V)["beta"][1])
     # the error scale depends on x1, which is exactly the case probit
     # gets wrong and this estimator is built for
     assert abs(np.median(est) - beta[1]) < 0.25
-    out = horowitz_lewbel_estimator(*_draw(4000, rng, beta))
+    out = horowitz_lewbel_estimator(*_draw(1500, rng, beta))
     assert out["root_n_consistent"] is True
     assert out["heteroskedasticity_allowed"] is True
     assert out["coefficient_on_V"] == 1.0
@@ -44,12 +46,12 @@ def test_lewbel_converges_as_n_grows():
         return np.median([
             abs(horowitz_lewbel_estimator(*_draw(n, np.random.default_rng(s)))["beta"][1] - 1.0)
             for s in range(6)])
-    assert err(8000) < err(500)
+    assert err(1500) < err(500)
 
 
 def test_the_normal_shortcut_agrees_with_the_kernel_density():
     rng = np.random.default_rng(3)
-    X, y, V = _draw(4000, rng)
+    X, y, V = _draw(1500, rng)
     a = horowitz_lewbel_estimator(X, y, V)
     b = horowitz_lewbel_estimator(X, y, V, density="normal")
     # U really is normal here, so Estimator 1's parametric shortcut
@@ -64,7 +66,7 @@ def test_the_indicator_direction_matters():
     # -- as at least one secondary description of this estimator
     # states -- does NOT give the same estimand.
     rng = np.random.default_rng(1)
-    X, y, V = _draw(6000, rng)
+    X, y, V = _draw(1500, rng)
     out = horowitz_lewbel_estimator(X, y, V)
     from morie.fn._horowitz import kernel, silverman_bw
     Vc = V - V.mean()
@@ -78,7 +80,7 @@ def test_the_indicator_direction_matters():
 
 def test_lewbel_reports_the_weight_it_is_placing_on_the_tails():
     rng = np.random.default_rng(4)
-    X, y, V = _draw(2000, rng)
+    X, y, V = _draw(1500, rng)
     out = horowitz_lewbel_estimator(X, y, V)
     # 1/f(U) is a genuine weight and it is large in the tails: this is
     # the estimator's known fragility, reported rather than hidden
@@ -103,7 +105,7 @@ def test_lewbel_validates_its_inputs():
 
 def test_lewbel_with_instruments_runs_two_stage_least_squares():
     rng = np.random.default_rng(7)
-    n = 6000
+    n = 1500
     zi = rng.standard_normal(n)
     u = rng.standard_normal(n)
     x1 = zi + u  # endogenous: correlated with the error through u

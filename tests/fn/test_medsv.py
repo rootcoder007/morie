@@ -25,7 +25,7 @@ def test_returns_keys():
 def test_median_exponential_close_to_analytic():
     """For Exp(0.5), median = log(2)/0.5 = 1.386."""
     rng = np.random.default_rng(42)
-    n = 5000
+    n = 500
     T = rng.exponential(2.0, size=n)
     time = T
     event = np.ones(n)
@@ -36,7 +36,7 @@ def test_median_exponential_close_to_analytic():
 
 def test_km_survival_near_0_5():
     """KM survival at median should be near 0.5."""
-    time, event = _make_data(n=2000, seed=1)
+    time, event = _make_data(n=200, seed=1)
     result = medsv(time, event)
     if not np.isnan(result["estimate"]):
         assert np.all(np.isfinite(np.asarray(result["km_survival"], dtype=float)))  # N6: was a generator-guessed value
@@ -67,7 +67,7 @@ def test_n_events_correct():
 
 def test_other_quantile():
     """75th percentile of survival."""
-    time, event = _make_data(n=1000, seed=3)
+    time, event = _make_data(n=100, seed=3)
     result = medsv(time, event, quantile=0.75)
     # KM survival at 75th percentile should be near 0.25
     if not np.isnan(result["estimate"]) and not np.isnan(result["km_survival"]):

@@ -14,6 +14,11 @@ def _var1_params(m: int = 2, diag_coef: float = 0.5) -> tuple:
     return coef, sigma_u
 
 
+def _as_array(x):
+    """Convert possibly-list return values into numpy arrays."""
+    return np.asarray(x)
+
+
 def test_returns_descriptive_result():
     """Return type has the DescriptiveResult interface."""
     coef, sigma_u = _var1_params(m=2)
@@ -26,9 +31,11 @@ def test_returns_descriptive_result():
 def test_irf_shape():
     """IRF array has shape (horizon+1, m)."""
     m = 3
+    horizon = 10
     coef, sigma_u = _var1_params(m=m)
-    r = impulse_response(coef, sigma_u, horizon=10, shock_var=0)
-    assert r.extra["irf"].shape == (11, m)
+    r = impulse_response(coef, sigma_u, horizon=horizon, shock_var=0)
+    irf = _as_array(r.extra["irf"])
+    assert irf.shape == (horizon + 1, m)
 
 
 def test_irf_h0_equals_cholesky_col():
@@ -36,16 +43,18 @@ def test_irf_h0_equals_cholesky_col():
     coef, sigma_u = _var1_params(m=2)
     P = np.linalg.cholesky(sigma_u)
     r = impulse_response(coef, sigma_u, horizon=5, shock_var=0)
-    np.testing.assert_allclose(r.extra["irf"][0], P[:, 0], atol=1e-12)
+    irf0 = _as_array(r.extra["irf"])[0]
+    np.testing.assert_allclose(irf0, P[:, 0], atol=1e-12)
 
 
 def test_stable_var_irf_decays():
     """For a stable VAR (eigenvalues < 1), IRF should decay toward 0."""
     coef, sigma_u = _var1_params(m=2, diag_coef=0.5)
-    r = impulse_response(coef, sigma_u, horizon=30, shock_var=0)
-    irf = r.extra["irf"]
-    # Response at h=30 must be smaller in absolute value than at h=1.
-    assert np.abs(irf[30]).max() < np.abs(irf[1]).max()
+    horizon = 30
+    r = impulse_response(coef, sigma_u, horizon=horizon, shock_var=0)
+    irf = _as_array(r.extra["irf"])
+    # Response at h=horizon must be smaller in absolute value than at h=1.
+    assert np.abs(irf[horizon]).max() < np.abs(irf[1]).max()
 
 
 def test_irf_identity_sigma():
@@ -54,16 +63,19 @@ def test_irf_identity_sigma():
     shock = 1
     coef, sigma_u = _var1_params(m=m)
     r = impulse_response(coef, sigma_u, horizon=5, shock_var=shock)
-    irf0 = r.extra["irf"][0]
+    irf0 = _as_array(r.extra["irf"])[0]
     e_shock = np.eye(m)[:, shock]
     np.testing.assert_allclose(irf0, e_shock, atol=1e-12)
 
 
 def test_phi_shape():
     """Phi matrices have shape (horizon+1, m, m)."""
-    coef, sigma_u = _var1_params(m=2)
-    r = impulse_response(coef, sigma_u, horizon=8)
-    assert r.extra["Phi"].shape == (9, 2, 2)
+    horizon = 8
+    m = 2
+    coef, sigma_u = _var1_params(m=m)
+    r = impulse_response(coef, sigma_u, horizon=horizon)
+    Phi = _as_array(r.extra["Phi"])
+    assert Phi.shape == (horizon + 1, m, m)
 
 
 def test_invalid_shock_var_raises():

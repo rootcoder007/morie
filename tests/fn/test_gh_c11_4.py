@@ -10,10 +10,16 @@ def test_gh_c11_4_basic():
     x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     result = ghosal_gp_dens_crt(x)
     assert "n" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert np.all(np.isfinite(np.asarray(result["rate"], dtype=float)))
+    assert "smoothness" in result
+    assert "kernel" in result
+    assert "minimax_rate" in result
+    assert "attains_minimax" in result
+    assert "rate_kind" in result
 
 
 def test_gh_c11_4_edge():
     """Test edge cases."""
-    result = ghosal_gp_dens_crt(np.array([42.0]))
-    assert result["n"] == 1
+    import pytest
+    with pytest.raises(ValueError):
+        ghosal_gp_dens_crt(np.array([42.0]))

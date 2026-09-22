@@ -7,20 +7,16 @@ from morie.fn.bhltmsm import behavioral_health_msm
 
 def test_bhltmsm_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    baseline = np.random.default_rng(42).normal(0, 1, 100)
-    result = behavioral_health_msm(y, A, H, baseline)
+    outcome = np.random.default_rng(42).normal(0, 1, 100)
+    cumulative = np.random.default_rng(42).normal(0, 1, 100)
+    result = behavioral_health_msm(outcome, cumulative)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
 
 def test_bhltmsm_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    baseline = np.random.default_rng(42).normal(0, 1, 100)
-    result = behavioral_health_msm(y, A, H, baseline)
+    outcome = np.random.default_rng(42).normal(0, 1, 100)
+    cumulative = np.random.default_rng(42).normal(0, 1, 100)
+    result = behavioral_health_msm(outcome, cumulative)
     assert isinstance(result, dict)

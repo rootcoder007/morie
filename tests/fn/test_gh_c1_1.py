@@ -10,10 +10,20 @@ def test_gh_c1_1_basic():
     x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     result = ghosal_bayes_rule_infinite(x)
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
 
 
 def test_gh_c1_1_edge():
     """Test edge cases."""
-    result = ghosal_bayes_rule_infinite(np.array([42.0]))
-    assert result["n"] == 1
+    grid = np.array([42.0])
+    result = ghosal_bayes_rule_infinite(grid)
+    # Documented payload keys: estimate, posterior, grid, method.
+    assert "estimate" in result
+    assert "posterior" in result
+    assert "grid" in result
+    # With a single grid point, the posterior mass lives entirely there,
+    # so the posterior estimate must equal that grid value.
+    th = np.asarray(grid, dtype=float).ravel()
+    expected_estimate = float(th[0])
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
+    assert abs(float(result["estimate"]) - expected_estimate) < 1e-12

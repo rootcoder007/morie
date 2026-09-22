@@ -7,13 +7,17 @@ from morie.fn.gh_c4_10 import ghosal_dp_polya_urn
 
 def test_gh_c4_10_basic():
     """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = ghosal_dp_polya_urn(x)
+    result = ghosal_dp_polya_urn(n=5, alpha=2.0, seed=42)
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
+    assert result["n"] == 5
+    assert result["method"].startswith("Polya")
 
 
 def test_gh_c4_10_edge():
     """Test edge cases."""
-    result = ghosal_dp_polya_urn(np.array([42.0]))
+    result = ghosal_dp_polya_urn(n=1, alpha=0.5, seed=7)
     assert result["n"] == 1
+    # independent formula: count distinct values in drawn sequence
+    expected_estimate = float(len(set(result["draws_head"])))
+    assert result["estimate"] == expected_estimate

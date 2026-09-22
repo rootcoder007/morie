@@ -49,7 +49,7 @@ def test_latnh_is_reproducible_and_seed_sensitive():
     a = np.asarray(lh(N=20, d=2, seed=9)["sample"])
     b = np.asarray(lh(N=20, d=2, seed=9)["sample"])
     c = np.asarray(lh(N=20, d=2, seed=10)["sample"])
-    assert a == pytest.approx(b, abs=0.0)
+    assert np.allclose(a, b, atol=0.0)
     assert not np.allclose(a, c)
 
 

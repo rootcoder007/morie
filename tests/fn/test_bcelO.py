@@ -7,16 +7,14 @@ from morie.fn.bcelO import binary_crossentropy_loss
 
 def test_bcelO_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    result = binary_crossentropy_loss(y, p)
+    Y = np.random.default_rng(42).uniform(0.05, 0.95, 100)
+    P = np.random.default_rng(42).uniform(0.05, 0.95, 100)
+    result = binary_crossentropy_loss(Y, P)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "loss" in result
 def test_bcelO_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    result = binary_crossentropy_loss(y, p)
+    Y = np.random.default_rng(42).uniform(0.05, 0.95, 100)
+    P = np.random.default_rng(42).uniform(0.05, 0.95, 100)
+    result = binary_crossentropy_loss(Y, P)
     assert isinstance(result, dict)

@@ -15,10 +15,10 @@ def _cubic(seed=1, n=250):
 
 def test_front_end_matches_the_canonical_implementation():
     x, y = _cubic()
-    a = additive_noise_model(x, y, B=60, seed=5)
-    b = bivariate_causal_test(x, y, B=60, seed=5)
+    a = additive_noise_model(x, y, B=20, seed=5)
+    b = bivariate_causal_test(x, y, B=20, seed=5)
     assert a["direction"] == b["direction"]
-    assert a["hsic_xy"] == b["hsic_xy"]
+    assert a["hsic_xy"] == pytest.approx(b["hsic_xy"], rel=1e-9, abs=1e-12)
 
 
 def test_an_unimplemented_regressor_is_refused_not_ignored():

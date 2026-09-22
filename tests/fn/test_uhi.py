@@ -27,17 +27,20 @@ def test_uhi_array_stats():
     Tu = np.array([22.0, 24.0, 26.0, 28.0, 30.0])
     Tr = np.array([20.0, 21.0, 23.0, 24.0, 25.0])
     r = uhi(Tu, Tr)
+    diffs = Tu - Tr
     # diffs: 2, 3, 3, 4, 5; mean=3.4, min=2, max=5
-    assert r.extra["mean_uhi_C"] == pytest.approx(3.4)
-    assert r.extra["min_C"] == pytest.approx(2.0)
-    assert r.extra["max_C"] == pytest.approx(5.0)
+    expected_mean = float(diffs.mean())
+    assert r.value == pytest.approx(expected_mean)
+    assert r.extra["mean_uhi_C"] == pytest.approx(expected_mean)
+    assert r.extra["min_C"] == pytest.approx(float(diffs.min()))
+    assert r.extra["max_C"] == pytest.approx(float(diffs.max()))
     assert r.extra["n_obs"] == 5
 
 
 def test_uhi_timestamps_passed_through():
     from morie.fn import _frame_core as pd
 
-    ts = pd.date_range("2026-07-01", periods=3, freq="h")
+    ts = pd.date_range("2026-07-01", periods=3, freq="H")
     r = uhi(np.array([25, 26, 28]), np.array([22, 23, 24]), timestamps=ts)
     assert "timestamps" in r.extra
     assert len(r.extra["timestamps"]) == 3

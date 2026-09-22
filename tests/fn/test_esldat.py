@@ -8,15 +8,11 @@ from morie.fn.esldat import esl_dropout
 def test_esldat_basic():
     """Test basic functionality."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    p = 5
-    result = esl_dropout(X, p)
+    result = esl_dropout(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "output" in result
 def test_esldat_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    p = 5
-    result = esl_dropout(X, p)
+    result = esl_dropout(X)
     assert isinstance(result, dict)

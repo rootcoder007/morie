@@ -10,9 +10,7 @@ def test_gb571z_basic():
     differences = np.random.default_rng(42).normal(0, 1, 100)
     result = gibbons_wsrt_ties_zeros(differences)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
-
-
+    assert "var" in result
 def test_gb571z_edge():
     """Test edge cases."""
     differences = np.random.default_rng(42).normal(0, 1, 100)

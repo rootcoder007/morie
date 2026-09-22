@@ -7,14 +7,19 @@ from morie.fn.d_from_r_pointbiserial import d_from_r_pointbiserial
 
 def test_ca11e22_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = d_from_r_pointbiserial(x)
+    r = 0.3
+    result = d_from_r_pointbiserial(r)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    expected = 2 * r / np.sqrt(1 - r ** 2)
+    assert result["value"] == expected
 
 
 def test_ca11e22_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = d_from_r_pointbiserial(x)
+    r = -0.5
+    result = d_from_r_pointbiserial(r)
     assert isinstance(result, dict)
+    assert "value" in result
+    expected = 2 * r / np.sqrt(1 - r ** 2)
+    assert result["value"] == expected

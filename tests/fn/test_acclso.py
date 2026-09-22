@@ -10,17 +10,13 @@ def test_acclso_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     y = np.random.default_rng(43).normal(0, 1, 100)
     lam = 0.1
-    steps = np.random.default_rng(42).normal(0, 1, 100)
-    result = accelerated_lasso(X, y, lam, steps)
+    result = accelerated_lasso(X, y, lam)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "beta" in result
 def test_acclso_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     y = np.random.default_rng(43).normal(0, 1, 100)
     lam = 0.1
-    steps = np.random.default_rng(42).normal(0, 1, 100)
-    result = accelerated_lasso(X, y, lam, steps)
+    result = accelerated_lasso(X, y, lam)
     assert isinstance(result, dict)

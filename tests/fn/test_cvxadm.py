@@ -7,24 +7,33 @@ from morie.fn.cvxadm import boyd_admm
 
 def test_cvxadm_basic():
     """Test basic functionality."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    g = np.random.default_rng(43).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    B = np.random.default_rng(43).normal(0, 1, (10, 10))
-    c = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    f = lambda v, r: v
+    g = lambda v, r: v
+    A = rng.normal(0, 1, (10, 10))
+    B = rng.normal(0, 1, (10, 10))
+    c = rng.normal(0, 1, 10)
     rho = 0.5
-    result = boyd_admm(f, g, A, B, c, rho)
+    result = boyd_admm(f, g, A, B, c, rho, n=10)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "x" in result
+    assert "z" in result
+    assert "u" in result
+    assert "n_iter" in result
+    assert "converged" in result
+    assert "primal_residual" in result
+    assert "dual_residual" in result
+    assert "residual_path" in result
 
 
 def test_cvxadm_edge():
     """Test edge cases."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    g = np.random.default_rng(43).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    B = np.random.default_rng(43).normal(0, 1, (10, 10))
-    c = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    f = lambda v, r: v
+    g = lambda v, r: v
+    A = rng.normal(0, 1, (10, 10))
+    B = rng.normal(0, 1, (10, 10))
+    c = rng.normal(0, 1, 10)
     rho = 0.5
-    result = boyd_admm(f, g, A, B, c, rho)
+    result = boyd_admm(f, g, A, B, c, rho, n=10)
     assert isinstance(result, dict)

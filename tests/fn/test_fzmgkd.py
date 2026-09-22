@@ -7,18 +7,32 @@ from morie.fn.fzmgkd import fauzi_modified_gamma_kde
 
 def test_fzmgkd_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    x = rng.uniform(0.5, 5.0, 100)
     bandwidth = 0.3
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    result = fauzi_modified_gamma_kde(x, bandwidth, a)
+    grid = rng.uniform(0.5, 5.0, 100)
+    result = fauzi_modified_gamma_kde(x, grid, bandwidth)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result
+    assert "ah" in result
+    assert "a4h" in result
+    assert "grid" in result
+    assert "h" in result
+    assert "n" in result
+    assert "method" in result
+    # The estimate is non-negative by construction (Eq. 1.14).
+    for v in result["estimate"]:
+        assert v >= 0.0
 
 
 def test_fzmgkd_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    x = rng.uniform(0.5, 5.0, 100)
     bandwidth = 0.3
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    result = fauzi_modified_gamma_kde(x, bandwidth, a)
+    grid = rng.uniform(0.5, 5.0, 100)
+    result = fauzi_modified_gamma_kde(x, grid, bandwidth)
     assert isinstance(result, dict)
+    assert len(result["estimate"]) == len(result["grid"]) == grid.size
+    assert result["n"] == x.size
+    assert result["h"] == float(bandwidth)

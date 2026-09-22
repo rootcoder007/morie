@@ -7,16 +7,16 @@ from morie.fn.gb_kws import gibbons_kw_chi2_approx
 
 def test_gb_kws_basic():
     """Test basic functionality."""
-    H = np.random.default_rng(42).normal(0, 1, 100)
+    h = 3
     k = 5
-    result = gibbons_kw_chi2_approx(H, k)
+    result = gibbons_kw_chi2_approx(h, k)
     assert isinstance(result, dict)
     assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb_kws_edge():
     """Test edge cases."""
-    H = np.random.default_rng(42).normal(0, 1, 100)
+    h = 3
     k = 5
-    result = gibbons_kw_chi2_approx(H, k)
+    result = gibbons_kw_chi2_approx(h, k)
     assert isinstance(result, dict)

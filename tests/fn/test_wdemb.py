@@ -17,7 +17,8 @@ def test_wdemb_repeated_ids_give_identical_rows():
     vector within a call."""
     E = np.arange(12.0).reshape(3, 4)
     out = np.asarray(we(np.array([2, 2, 2]), E=E)["tensor"])
-    assert np.allclose(out, out[0])
+    expected = np.broadcast_to(out[0], out.shape)
+    assert np.allclose(out, expected)
 
 
 def test_wdemb_output_shape_is_ids_by_d_model():

@@ -7,16 +7,19 @@ from morie.fn.alfcrp import alphafold_cropping
 
 def test_alfcrp_basic():
     """Test basic functionality."""
-    sequence = np.random.default_rng(42).normal(0, 1, 100)
+    seqlen = 100
     crop_size = 100
-    result = alphafold_cropping(sequence, crop_size)
+    result = alphafold_cropping(seqlen, crop_size)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert result["estimate"] == crop_size
 
 
 def test_alfcrp_edge():
     """Test edge cases."""
-    sequence = np.random.default_rng(42).normal(0, 1, 100)
+    seqlen = 100
     crop_size = 100
-    result = alphafold_cropping(sequence, crop_size)
+    result = alphafold_cropping(seqlen, crop_size)
     assert isinstance(result, dict)
+    assert result["idx"] == list(range(0, seqlen))
+    assert result["startmax"] == seqlen - crop_size + 1
+    assert result["method"] == "AlphaFold contiguous residue cropping"

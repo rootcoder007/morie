@@ -6,14 +6,20 @@ from morie.fn.gh_inf_dim_cr import ghosal_inf_dim_credible
 
 
 def test_gh_inf_dim_cr_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = ghosal_inf_dim_credible(x)
+    """Test basic functionality with documented signature."""
+    # Function takes keyword args: n, dim, level, n_sim, seed (no positional array).
+    result = ghosal_inf_dim_credible(n=50, dim=5, level=0.9, n_sim=20, seed=0)
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    est = float(np.asarray(result["estimate"], dtype=float))
+    assert np.all(np.isfinite(est))
 
 
 def test_gh_inf_dim_cr_edge():
-    """Test edge cases."""
-    result = ghosal_inf_dim_credible(np.array([42.0]))
-    assert result["n"] == 1
+    """Test that the result has documented keys and finite scalar."""
+    result = ghosal_inf_dim_credible(n=10, dim=2, level=0.9, n_sim=5, seed=1)
+    # Documented return keys: estimate, nominal, conservative_or_close, method.
+    for key in ("estimate", "nominal", "conservative_or_close", "method"):
+        assert key in result
+    est = float(np.asarray(result["estimate"], dtype=float))
+    assert 0.0 <= est <= 1.0
+    assert float(result["nominal"]) == 0.9

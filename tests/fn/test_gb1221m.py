@@ -12,9 +12,7 @@ def test_gb1221m_basic():
     alpha = 0.05
     result = gibbons_friedman_mult(data, k, alpha)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
-
-
+    assert "bound" in result
 def test_gb1221m_edge():
     """Test edge cases."""
     data = np.random.default_rng(42).normal(0, 1, 100)

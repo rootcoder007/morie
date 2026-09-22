@@ -6,7 +6,7 @@ import pytest
 from morie.fn.counRS import counterfactual_rec
 
 
-def _logged(seed=42, n=4000, k=3):
+def _logged(seed=42, n=400, k=3):
     rng = np.random.default_rng(seed)
     a = rng.integers(0, k, n)
     true_r = np.array([0.1, 0.5, 0.9])

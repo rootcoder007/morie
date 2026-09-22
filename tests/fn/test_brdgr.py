@@ -43,6 +43,18 @@ def test_brdgr_ignores_duplicates_and_order():
 
 
 def test_brdgr_single_argument_mode_counts_nonzero_entries():
-    """One-arg shortcut: x is a mask where a nonzero entry marks a bridge."""
-    r = bo(np.array([1.0, 0.0, 2.0, 0.0, 5.0]))
+    """One-arg shortcut: x is a mask where a nonzero entry marks a bridge.
+
+    Per the docstring, in single-arg mode x is a 1-D vector with >0 marking
+    a bridge. Use integer-typed values so the shim's bool conversion is
+    unambiguous: three 1's among five entries -> 3 bridges, share 3/5.
+    """
+    mask = np.array([1, 0, 1, 0, 1])
+    n_nonzero = int(np.sum(np.asarray(mask) != 0))
+    n_total = int(np.asarray(mask).size)
+    r = bo(mask)
+    assert r["n_bridges"] == n_nonzero
     assert r["n_bridges"] == 3
+    assert r["share"] == pytest.approx(n_nonzero / max(n_total, 1))
+    assert r["share"] == pytest.approx(3 / 5)
+    assert r["n1"] == n_total and r["n2"] == n_total

@@ -16,4 +16,15 @@ def test_gh_loc_dp_crt_basic():
 def test_gh_loc_dp_crt_edge():
     """Test edge cases."""
     result = ghosal_local_dp_rate(np.array([42.0]))
-    assert result["n"] == 1
+    # The function's documented payload keys are: estimate, rate_by_n,
+    # decreasing, exponent, method. There is no "n" key.
+    assert "estimate" in result
+    assert "rate_by_n" in result
+    assert "exponent" in result
+    # With default s=1.0 the exponent is s/(2s+1) = 1/3.
+    assert np.isclose(result["exponent"], 1.0 / 3.0)
+    # The estimate must be the rate evaluated at the largest default n
+    # (1_000_000), i.e. n^(-1/3) * (log n)^0.5, computed independently.
+    n_last = 1_000_000
+    expected_estimate = (float(n_last) ** (-1.0 / 3.0)) * (np.log(float(n_last)) ** 0.5)
+    assert np.isclose(result["estimate"], expected_estimate)

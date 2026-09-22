@@ -16,4 +16,12 @@ def test_gh_dp_kl_nbhd_basic():
 def test_gh_dp_kl_nbhd_edge():
     """Test edge cases."""
     result = ghosal_dp_kl_nbhd_mass(np.array([42.0]))
-    assert result["n"] == 1
+    # A single-category weight distribution is degenerate: there is exactly one
+    # possible Dirichlet sample (all mass on the single category), so the KL
+    # divergence between p0 = [1.0] and p = [1.0] is 0, which is below every
+    # eps in eps_list, yielding log_mass = log(n_sim/n_sim) = 0.0 for the
+    # smallest-eps (last) entry, which is the reported estimate.
+    assert result["estimate"] == 0.0
+    assert all(lm == 0.0 for lm in result["log_mass_by_eps"])
+    assert result["method"] == "KL-neighborhood prior mass (GvdV 2017 sec. 7.2)"
+    assert result["monotone"] is True

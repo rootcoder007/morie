@@ -7,14 +7,12 @@ from morie.fn.ca11e24 import ca_chapter_11_equation_24
 
 def test_ca11e24_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ca_chapter_11_equation_24(x)
+    d = 3
+    result = ca_chapter_11_equation_24(d)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "value" in result
 def test_ca11e24_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ca_chapter_11_equation_24(x)
+    d = 3
+    result = ca_chapter_11_equation_24(d)
     assert isinstance(result, dict)

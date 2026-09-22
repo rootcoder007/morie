@@ -6,17 +6,31 @@ from morie.fn.gb1322e import gibbons_efficacy
 
 
 def test_gb1322e_basic():
-    """Test basic functionality."""
-    T = np.random.default_rng(42).normal(0, 1, 100)
-    u0 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_efficacy(T, u0)
+    """Test basic functionality against the documented formula."""
+    deriv = 4.0
+    var = 8.0
+    result = gibbons_efficacy(deriv, var)
+
+    expected = deriv * deriv / var
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "efficacy" in result
+    assert "deriv" in result
+    assert "var" in result
+    assert "method" in result
+    assert result["efficacy"] == expected
+    assert result["deriv"] == float(deriv)
+    assert result["var"] == float(var)
 
 
 def test_gb1322e_edge():
-    """Test edge cases."""
-    T = np.random.default_rng(42).normal(0, 1, 100)
-    u0 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_efficacy(T, u0)
+    """Test that var must be strictly positive."""
+    deriv = 1.0
+    var = 1.0
+    result = gibbons_efficacy(deriv, var)
+
+    expected = deriv * deriv / var
     assert isinstance(result, dict)
+    assert result["efficacy"] == expected
+    assert result["deriv"] == float(deriv)
+    assert result["var"] == float(var)
+    assert result["method"].startswith("efficacy e(T)")

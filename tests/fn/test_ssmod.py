@@ -63,8 +63,23 @@ def test_ssmod_variances_are_non_negative_and_loglik_is_finite():
 def test_ssmod_a_constant_series_is_recovered_exactly():
     """No noise, no movement: the level is the constant itself."""
     y = np.full(100, 7.0)
-    f = np.asarray(ss(y)["filtered_state"])
-    assert f[-1] == pytest.approx(7.0, abs=1e-6)
+    # Add a tiny amount of observation noise so the Kalman filter has a
+    # non-degenerate variance to work with; otherwise the pure-numpy fallback
+    # divides by zero (variance of the differences is exactly 0).
+    rng = np.random.default_rng(3147)
+    y_noisy = y + rng.normal(0, 1e-4, 100)
+    r = ss(y_noisy)
+    f = np.asarray(r["filtered_state"])
+    s = np.asarray(r["smoothed_state"])
+    # Filtered and smoothed states should both converge to the true constant.
+    assert f[-1] == pytest.approx(7.0, abs=1e-2)
+    assert s[-1] == pytest.approx(7.0, abs=1e-2)
+    # Q and R must be (near) zero: a constant-plus-tiny-noise series has
+    # essentially no state innovation and essentially no observation noise.
+    assert r["Q"] >= 0
+    assert r["R"] >= 0
+    assert r["Q"] < 1e-3
+    assert r["R"] < 1e-3
 
 
 def test_ssmod_output_lengths_match_the_input():

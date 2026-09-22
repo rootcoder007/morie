@@ -9,8 +9,8 @@ from morie.fn.chopit import chopit_vignette
 def test_chopit_basic():
     rng = np.random.default_rng(6)
     n = 300
-    grp = np.repeat(["a", "b"], n // 2)
-    shift = np.where(grp == "a", 0.0, 0.8)
+    grp = np.repeat([0, 1], n // 2)
+    shift = np.where(grp == 0, 0.0, 0.8)
     taus = np.array([-0.5, 0.5])
     mu_v = np.array([-0.8, 0.6])
 
@@ -20,7 +20,7 @@ def test_chopit_basic():
     Vg = np.column_stack([rate(mu_v[j] + rng.normal(size=n), shift) for j in range(2)])
     y = rate(rng.normal(size=n), shift)
     out = chopit_vignette(y, Vg, group=grp, n_categories=3)
-    assert out["dif_shift"]["b"] == pytest.approx(0.8, abs=0.35)
+    assert out["dif_shift"][1] == pytest.approx(0.8, abs=0.35)
 
 
 def test_chopit_edge():

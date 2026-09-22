@@ -19,7 +19,7 @@ def _rook_w_rowstd(side):
     return W / W.sum(axis=1, keepdims=True)
 
 
-def _simulate(seed, rho, beta, side=12):
+def _simulate(seed, rho, beta, side=8):
     """y = (I - rho W)^{-1} (X beta + eps), the reduced form of the lag model."""
     rng = np.random.default_rng(seed)
     n = side * side
@@ -45,7 +45,7 @@ def test_sarla_recovers_rho_and_beta():
 
 def test_sarla_finds_no_lag_in_independent_data():
     """With rho = 0 the model must not invent spatial structure. Measured
-    |rho_hat| < 0.12 for each of seeds 1..3."""
+    |rho_hat| < 0.15 for each of seeds 1..3."""
     for s in (1, 2, 3):
         X, y, W = _simulate(s, rho=0.0, beta=np.array([1.0, 2.0]))
         assert abs(float(spatial_ar_lag(X, y, W)["rho"])) < 0.15

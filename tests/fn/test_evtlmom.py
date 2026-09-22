@@ -8,10 +8,7 @@ from morie.fn.evtlmom import evt_trimmed_lmom
 def test_evtlmom_basic():
     """Test basic functionality."""
     x = np.random.default_rng(42).normal(0, 1, 100)
-    s = 90
-    t = np.linspace(0, 10, 100)
-    order = 4
-    result = evt_trimmed_lmom(x, s, t, order)
+    result = evt_trimmed_lmom(x)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
@@ -19,8 +16,5 @@ def test_evtlmom_basic():
 def test_evtlmom_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)
-    s = 90
-    t = np.linspace(0, 10, 100)
-    order = 4
-    result = evt_trimmed_lmom(x, s, t, order)
+    result = evt_trimmed_lmom(x)
     assert isinstance(result, dict)

@@ -7,7 +7,7 @@ from morie.fn.aitsdv import compositional_shannon
 
 def test_aitsdv_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
+    x = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
     result = compositional_shannon(x)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -15,6 +15,6 @@ def test_aitsdv_basic():
 
 def test_aitsdv_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
+    x = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
     result = compositional_shannon(x)
     assert isinstance(result, dict)

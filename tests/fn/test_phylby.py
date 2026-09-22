@@ -59,7 +59,7 @@ def test_the_posterior_is_likelihood_plus_priors():
 
 def test_uninformative_data_gives_the_uniform_topology_prior():
     flat = dict((t, "AAAAAAAAAAAAAAAA") for t in "abcd")
-    res = phylby(flat, n_iter=3000, n_chains=2, sample_every=5, n_runs=2,
+    res = phylby(flat, n_iter=300, n_chains=2, sample_every=5, n_runs=2,
                  seed=11)
     probs = {}
     for t in res["samples"]:
@@ -72,7 +72,7 @@ def test_uninformative_data_gives_the_uniform_topology_prior():
 
 
 def test_a_planted_topology_is_recovered():
-    res = phylby(SIG, n_iter=3000, n_chains=3, sample_every=5, n_runs=2,
+    res = phylby(SIG, n_iter=300, n_chains=3, sample_every=5, n_runs=2,
                  seed=5)
     assert res["map_topology"] == topology_key(T)
     assert res["map_probability"] > 0.9

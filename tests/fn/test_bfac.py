@@ -7,8 +7,9 @@ from morie.fn.bfac import bayes_factor
 
 def test_bfac_basic():
     """Test basic functionality."""
-    log_lik_a = np.random.default_rng(42).normal(0, 1, 100)
-    log_lik_b = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    log_lik_a = float(rng.normal())
+    log_lik_b = float(rng.normal())
     result = bayes_factor(log_lik_a, log_lik_b)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +17,8 @@ def test_bfac_basic():
 
 def test_bfac_edge():
     """Test edge cases."""
-    log_lik_a = np.random.default_rng(42).normal(0, 1, 100)
-    log_lik_b = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    log_lik_a = float(rng.normal())
+    log_lik_b = float(rng.normal())
     result = bayes_factor(log_lik_a, log_lik_b)
     assert isinstance(result, dict)

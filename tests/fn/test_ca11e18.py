@@ -6,15 +6,20 @@ from morie.fn.ca11e18 import ca_chapter_11_equation_18
 
 
 def test_ca11e18_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
+    """Test basic functionality with a scalar ln(OR)."""
+    x = 0.825
     result = ca_chapter_11_equation_18(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    expected = 0.825 / 1.65
+    assert abs(result["value"] - expected) < 1e-12
+    assert "method" in result
 
 
 def test_ca11e18_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
+    """Test edge case with ln(OR) = 0."""
+    x = 0.0
     result = ca_chapter_11_equation_18(x)
     assert isinstance(result, dict)
+    assert "value" in result
+    assert result["value"] == 0.0

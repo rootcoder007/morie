@@ -6,7 +6,7 @@ artifact: the fitter searched a 30-point grid on (0.01, 0.99), so the
 identity parameterization lay outside the valid parameter space
 entirely. The test encoded the bug.
 
-Schabenberger & Gotway (2005), Sec 6.2.2.2, eqs (6.43)-(6.48).
+Schabenberger & Gotway (200), Sec 6.2.2.2, eqs (6.43)-(6.48).
 """
 
 from morie.fn import _array_core as np

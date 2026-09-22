@@ -15,5 +15,14 @@ def test_gh_c2_7_basic():
 
 def test_gh_c2_7_edge():
     """Test edge cases."""
-    result = ghosal_bernstein_feller(np.array([42.0]))
-    assert result["n"] == 1
+    x = np.array([42.0])
+    K = 30
+    result = ghosal_bernstein_feller(x, K=K)
+    assert "F_K" in result
+    fk = result["F_K"]
+    assert len(fk) == 1
+    # Bernstein approximation of F(t) = t^2 at t = 1.0 must equal 1.0
+    assert abs(float(np.asarray(fk[0], dtype=float)) - 1.0) < 1e-12
+    assert "sup_error" in result
+    # With F(t)=t^2 and t=1, the sup error is 0
+    assert abs(float(np.asarray(result["sup_error"], dtype=float)) - 0.0) < 1e-12

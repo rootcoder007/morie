@@ -7,14 +7,19 @@ from morie.fn.ca11e8 import ca_chapter_11_equation_8
 
 def test_ca11e8_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ca_chapter_11_equation_8(x)
+    a, b, c, d = 50, 30, 20, 60
+    result = ca_chapter_11_equation_8(a, b, c, d)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    expected = (a / (a + b)) / (c / (c + d))
+    assert result["value"] == expected
 
 
 def test_ca11e8_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ca_chapter_11_equation_8(x)
+    # When a/(a+b) equals c/(c+d), the risk ratio is 1.
+    a, b, c, d = 10, 10, 10, 10
+    result = ca_chapter_11_equation_8(a, b, c, d)
     assert isinstance(result, dict)
+    assert result["value"] == 1.0
+    assert result["method"] == "Weisburd et al. (2022) eq. (11.8)"

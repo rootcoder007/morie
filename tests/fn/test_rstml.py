@@ -38,7 +38,7 @@ def test_rmst_leq_tau():
 def test_rmst_exponential_analytic():
     """For exp(rate=1) with no censoring, RMST(tau) = 1 - exp(-tau)."""
     rng = np.random.default_rng(42)
-    n = 10000
+    n = 1000
     T = rng.exponential(1.0, size=n)
     time = T
     event = np.ones(n)

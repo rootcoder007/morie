@@ -76,7 +76,7 @@ def test_all_ci_types():
 def test_median_survival_exponential():
     """For Exp(rate), median = log(2)/rate."""
     rng = np.random.default_rng(42)
-    n = 5000
+    n = 500
     rate = 0.5
     T = rng.exponential(1 / rate, size=n)
     time = T

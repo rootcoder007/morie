@@ -15,5 +15,8 @@ def test_gh_c2_6_basic():
 
 def test_gh_c2_6_edge():
     """Test edge cases."""
-    result = ghosal_mixture_basis_prior(np.array([42.0]))
-    assert result["n"] == 1
+    x = np.array([42.0])
+    result = ghosal_mixture_basis_prior(x)
+    assert "density" in result
+    assert len(result["density"]) == len(x)
+    assert np.all(np.isfinite(np.asarray(result["density"], dtype=float)))

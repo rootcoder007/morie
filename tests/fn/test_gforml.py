@@ -13,7 +13,7 @@ def _tv_dgp(seed, n=3000):
     L2 = 0.5 * L1 + 0.7 * A1 + rng.normal(scale=0.7, size=n)
     A2 = (rng.random(n) < 1 / (1 + np.exp(-1.5 * L2))).astype(float)
     y = A1 + A2 + L2 + rng.normal(scale=0.5, size=n)
-    return y, np.c_[A1, A2], np.c_[L1, L2]
+    return y, np.stack([A1, A2], axis=1), np.stack([L1, L2], axis=1)
 
 
 def test_gforml_basic():

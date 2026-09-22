@@ -10,10 +10,25 @@ def test_gh_c7_4_basic():
     x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     result = ghosal_norm_mix_con(x)
     assert "grid" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert "density" in result
+    assert "reference_density" in result
+    assert "hellinger_to_reference" in result
+    assert "consistency" in result
+    assert "requires" in result
+    assert "n" in result
+    assert "method" in result
+    assert np.all(np.isfinite(np.asarray(result["density"], dtype=float)))
+    assert np.all(np.isfinite(np.asarray(result["reference_density"], dtype=float)))
+    assert np.all(np.isfinite(np.asarray(result["grid"], dtype=float)))
+    assert np.isfinite(float(result["hellinger_to_reference"]))
+    assert 0.0 <= float(result["hellinger_to_reference"]) <= 1.0
+    assert result["n"] == 5
 
 
 def test_gh_c7_4_edge():
     """Test edge cases."""
-    result = ghosal_norm_mix_con(np.array([42.0]))
-    assert result["n"] == 1
+    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+    result = ghosal_norm_mix_con(x)
+    assert result["n"] == 6
+    assert np.all(np.isfinite(np.asarray(result["density"], dtype=float)))
+    assert np.all(np.isfinite(np.asarray(result["reference_density"], dtype=float)))

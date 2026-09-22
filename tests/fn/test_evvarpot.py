@@ -6,23 +6,44 @@ from morie.fn.evvarpot import evt_pot_var
 
 
 def test_evvarpot_basic():
-    """Test basic functionality."""
-    u = np.random.default_rng(44).normal(0, 1, 100)
+    """Test basic functionality against the documented formula."""
+    u = 2.0
     sigma = 1.0
-    xi = np.random.default_rng(42).normal(0, 1, 100)
-    zeta_u = np.random.default_rng(42).normal(0, 1, 100)
-    p = 5
+    xi = 0.5
+    zeta_u = 0.1
+    p = 0.99  # p must exceed 1 - zeta_u = 0.9
+
+    r = (1.0 - p) / zeta_u
+    expected_var = u + (sigma / xi) * (r ** (-xi) - 1.0)
+
     result = evt_pot_var(u, sigma, xi, zeta_u, p)
+
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "VaR" in result
+    assert "estimate" in result
+    assert "tail_prob" in result
+    assert "p" in result
+    assert result["p"] == p
+    assert abs(result["VaR"] - expected_var) < 1e-12
+    assert abs(result["estimate"] - expected_var) < 1e-12
+    # Self-consistency: implied tail probability at the VaR should be ~ (1 - p)
+    assert abs(result["tail_prob"] - (1.0 - p)) < 1e-9
 
 
 def test_evvarpot_edge():
-    """Test edge cases."""
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    sigma = 1.0
-    xi = np.random.default_rng(42).normal(0, 1, 100)
-    zeta_u = np.random.default_rng(42).normal(0, 1, 100)
-    p = 5
+    """Test edge case xi = 0 (log branch)."""
+    u = 1.0
+    sigma = 2.0
+    xi = 0.0
+    zeta_u = 0.2
+    p = 0.95  # > 1 - zeta_u = 0.8
+
+    # xi -> 0 limit: u + sigma * log(zeta_u / (1 - p))
+    expected_var = u + sigma * np.log(zeta_u / (1.0 - p))
+
     result = evt_pot_var(u, sigma, xi, zeta_u, p)
+
     assert isinstance(result, dict)
+    assert abs(result["VaR"] - expected_var) < 1e-9
+    assert abs(result["estimate"] - expected_var) < 1e-9
+    assert abs(result["tail_prob"] - (1.0 - p)) < 1e-9

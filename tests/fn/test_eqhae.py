@@ -7,22 +7,18 @@ from morie.fn.eqhae import equating_haebara
 
 def test_eqhae_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    b_R = np.random.default_rng(42).normal(0, 1, 100)
-    b_F = np.random.default_rng(42).normal(0, 1, 100)
-    a_R = np.random.default_rng(42).normal(0, 1, 100)
-    a_F = np.random.default_rng(42).normal(0, 1, 100)
-    result = equating_haebara(y, b_R, b_F, a_R, a_F)
+    a_ref = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    b_ref = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    a_focal = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    b_focal = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = equating_haebara(a_ref, b_ref, a_focal, b_focal)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "A" in result
 def test_eqhae_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    b_R = np.random.default_rng(42).normal(0, 1, 100)
-    b_F = np.random.default_rng(42).normal(0, 1, 100)
-    a_R = np.random.default_rng(42).normal(0, 1, 100)
-    a_F = np.random.default_rng(42).normal(0, 1, 100)
-    result = equating_haebara(y, b_R, b_F, a_R, a_F)
+    a_ref = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    b_ref = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    a_focal = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    b_focal = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = equating_haebara(a_ref, b_ref, a_focal, b_focal)
     assert isinstance(result, dict)

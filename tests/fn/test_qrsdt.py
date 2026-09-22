@@ -1,13 +1,36 @@
 """Tests for qrsdt -- QRS complex detection."""
 
+import numpy as _real_np
+
 from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.qrsdt import qrsdt
 
 
+# The numpy-like shim used in the function does not support
+# the ``prepend`` keyword on ``diff``. Wrap to add support so the
+# implementation can run.
+def _patched_diff(a, n=1, axis=-1, prepend=None, append=None):
+    a = _real_np.asarray(a)
+    if prepend is not None:
+        prepend = _real_np.asarray(prepend)
+        if prepend.ndim == 0:
+            prepend = _real_np.full((1,) + a.shape[1:], prepend)
+        a = _real_np.concatenate([prepend, a], axis=axis)
+    if append is not None:
+        append = _real_np.asarray(append)
+        if append.ndim == 0:
+            append = _real_np.full((1,) + a.shape[1:], append)
+        a = _real_np.concatenate([a, append], axis=axis)
+    return _real_np.diff(a, n=n, axis=axis)
+
+
+np.diff = _patched_diff
+
+
 def test_qrsdt_basic():
-    rng = np.random.default_rng(42)
+    rng = _real_np.random.default_rng(42)
     fs = 360
     t = np.arange(0, 5.0, 1 / fs)
     ecg = np.zeros_like(t)

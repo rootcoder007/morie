@@ -7,14 +7,25 @@ from morie.fn.d_from_t import d_from_t
 
 def test_ca11e5_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = d_from_t(x)
+    t = 2.0
+    n1 = 50
+    n2 = 50
+    result = d_from_t(t, n1, n2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    # Verify against the documented formula: d = t * sqrt((n1 + n2) / (n1 * n2))
+    expected = t * np.sqrt((n1 + n2) / (n1 * n2))
+    assert np.isclose(result["value"], expected)
 
 
 def test_ca11e5_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = d_from_t(x)
+    """Test edge cases: equal group sizes, large t."""
+    t = 5.0
+    n1 = 30
+    n2 = 70
+    result = d_from_t(t, n1, n2)
     assert isinstance(result, dict)
+    assert "value" in result
+    # Independent recomputation of the formula
+    expected = t * np.sqrt((n1 + n2) / (n1 * n2))
+    assert np.isclose(result["value"], expected)

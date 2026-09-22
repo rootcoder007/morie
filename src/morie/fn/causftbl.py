@@ -70,8 +70,8 @@ def causal_frontdoor_adjustment(P_Z_X, P_Y_XZ, P_X):
     exp = [sum(y * p_do[x][y] for y in range(ny)) for x in range(nx)]
     return RichResult(
         payload={
-            "p_y_do_x": p_do,
-            "expected": exp,
+            "p_y_do_x": np.array(p_do),
+            "expected": np.array(exp),
             "ate": float(exp[-1] - exp[0]),
             "method": "Front-door adjustment from tables (Pearl Thm 3.3.4)",
         }

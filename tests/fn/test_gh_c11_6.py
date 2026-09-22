@@ -7,13 +7,29 @@ from morie.fn.gh_c11_6 import ghosal_bm_prior
 
 def test_gh_c11_6_basic():
     """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = ghosal_bm_prior(x)
+    n_grid, n_sim, seed = 200, 400, 42
+    result = ghosal_bm_prior(n_grid=n_grid, n_sim=n_sim, seed=seed)
+    # Documented keys: estimate, theory_min_st, cov_gap, var_gap, method
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert "theory_min_st" in result
+    assert "cov_gap" in result
+    assert "var_gap" in result
+    assert "method" in result
+    est = float(np.asarray(result["estimate"], dtype=float))
+    assert np.all(np.isfinite(np.asarray([est])))
+    # theory_min_st = (n_grid//4) / n_grid = 1/4
+    theory_min_st = (n_grid // 4) / n_grid
+    # Estimate of Cov(W(s), W(t)) should be close to min(s,t)=1/4 (with small Monte Carlo error)
+    assert abs(est - theory_min_st) < 0.05
 
 
 def test_gh_c11_6_edge():
     """Test edge cases."""
-    result = ghosal_bm_prior(np.array([42.0]))
-    assert result["n"] == 1
+    n_grid, n_sim, seed = 50, 100, 7
+    result = ghosal_bm_prior(n_grid=n_grid, n_sim=n_sim, seed=seed)
+    s_idx, t_idx = n_grid // 4, n_grid // 2
+    theory_min_st = s_idx / n_grid
+    est = float(np.asarray(result["estimate"], dtype=float))
+    assert result["theory_min_st"] == theory_min_st
+    assert abs(est - theory_min_st) < 0.1
+    assert "Brownian motion prior" in result["method"]

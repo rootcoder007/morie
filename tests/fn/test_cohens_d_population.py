@@ -7,14 +7,18 @@ from morie.fn.cohens_d_population import cohens_d_population
 
 def test_ca8e2_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cohens_d_population(x)
+    mu1, mu2, sigma = 5.0, 3.0, 2.0
+    expected = (mu1 - mu2) / sigma
+    result = cohens_d_population(mu1, mu2, sigma)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    assert result["value"] == expected
 
 
 def test_ca8e2_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cohens_d_population(x)
+    mu1, mu2, sigma = 0.0, 0.0, 1.0
+    expected = (mu1 - mu2) / sigma
+    result = cohens_d_population(mu1, mu2, sigma)
     assert isinstance(result, dict)
+    assert result["value"] == expected

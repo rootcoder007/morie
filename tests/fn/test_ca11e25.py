@@ -6,15 +6,22 @@ from morie.fn.ca11e25 import ca_chapter_11_equation_25
 
 
 def test_ca11e25_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ca_chapter_11_equation_25(x)
+    """Test basic functionality with a single positive se_d value."""
+    se_d = 0.5
+    result = ca_chapter_11_equation_25(se_d)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    # Formula: se_lnOR = sqrt(se_d^2 / 0.551^2)
+    expected = np.sqrt(se_d ** 2 / 0.551 ** 2)
+    assert result["value"] == expected
 
 
 def test_ca11e25_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ca_chapter_11_equation_25(x)
+    """Test edge case with a different single positive se_d value."""
+    se_d = 1.2
+    result = ca_chapter_11_equation_25(se_d)
     assert isinstance(result, dict)
+    assert "value" in result
+    # Formula: se_lnOR = sqrt(se_d^2 / 0.551^2)
+    expected = np.sqrt(se_d ** 2 / 0.551 ** 2)
+    assert result["value"] == expected

@@ -23,6 +23,15 @@ def _point_dgp(seed, n=2500):
     return y, A, L
 
 
+def _stack_cols(*cols):
+    """Column-stack 1-D arrays into a 2-D (n, k) array using the numpy shim."""
+    n = cols[0].shape[0]
+    out = np.empty((n, len(cols)))
+    for j, c in enumerate(cols):
+        out[:, j] = c
+    return out
+
+
 def _tv_dgp(seed, n=3000):
     # L2 is affected by A1 and confounds A2; Y picks up L2, so the
     # always-vs-never effect is 1 + 1 + 1.0*0.7 = 2.7.
@@ -32,7 +41,7 @@ def _tv_dgp(seed, n=3000):
     L2 = 0.5 * L1 + 0.7 * A1 + rng.normal(scale=0.7, size=n)
     A2 = (rng.random(n) < 1 / (1 + np.exp(-1.5 * L2))).astype(float)
     y = 1.0 * A1 + 1.0 * A2 + 1.0 * L2 + rng.normal(scale=0.5, size=n)
-    return y, np.c_[A1, A2], np.c_[L1, L2]
+    return y, _stack_cols(A1, A2), _stack_cols(L1, L2)
 
 
 def test_causmrop_point_ate():

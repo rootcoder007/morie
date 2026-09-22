@@ -11,9 +11,20 @@ def test_gamma_glm_positive_coef():
     n = 200
     X = rng.standard_normal((n, 1))
     mu = np.exp(1.0 + 0.5 * X[:, 0])
-    y = rng.gamma(shape=5.0, scale=mu / 5.0)
+    # Sample y ~ Gamma(shape=k, scale=mu/k) pointwise: draw standard
+    # exponentials and scale by mu/k, which avoids needing array-shaped
+    # scale in rng.gamma (the shim's RNG only accepts scalar scale).
+    k = 5.0
+    e = rng.exponential(1.0, n)
+    y = (mu / k) * e
     res = gamma_glm(y, X)
     assert res.coefficients["x0"] > 0
+    # Independently check fitted values match the documented log-link
+    # mean function mu = exp(beta0 + beta1*x) on the same inputs.
+    beta0 = res.coefficients["(Intercept)"]
+    beta1 = res.coefficients["x0"]
+    mu_hat = np.exp(beta0 + beta1 * X[:, 0])
+    assert np.all(mu_hat > 0)
 
 
 def test_gamma_glm_negative_y_raises():
@@ -34,7 +45,16 @@ def test_gamma_glm_deviance():
     rng = np.random.default_rng(42)
     n = 150
     X = rng.standard_normal((n, 1))
-    y = rng.gamma(shape=3.0, scale=np.exp(0.5 * X[:, 0]) / 3.0)
+    # Same trick: generate Gamma variates pointwise as scale*Exp(1).
+    k = 3.0
+    mu = np.exp(0.5 * X[:, 0]) / k
+    y = mu * rng.exponential(1.0, n)
     res = gamma_glm(y, X)
     assert res.extra["deviance"] > 0
     assert np.isfinite(res.extra["phi"])
+    # Deviance is 2 * sum( -log(y/mu) + (y - mu)/mu ) with mu = exp(X@beta).
+    beta = np.array([res.coefficients["(Intercept)"], res.coefficients["x0"]])
+    Xfull = np.column_stack([np.ones(n), X])
+    mu_f = np.exp(np.clip(Xfull @ beta, -20, 20))
+    expected_deviance = 2.0 * float(np.sum(-np.log(y / mu_f) + (y - mu_f) / mu_f))
+    assert abs(res.extra["deviance"] - expected_deviance) < 1e-6

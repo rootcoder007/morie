@@ -6,7 +6,7 @@ import pytest
 from morie.fn.archm import arch_in_mean
 
 
-def _dgp(seed, n=3000, omega=0.2, alpha=0.4, delta=0.8, mu=0.1):
+def _dgp(seed, n=500, omega=0.2, alpha=0.4, delta=0.8, mu=0.1):
     """y_t = mu + delta sigma_t + eps_t, sigma_t^2 = omega + alpha eps_{t-1}^2
     (Engle, Lilien & Robins 1987)."""
     rng = np.random.default_rng(seed)

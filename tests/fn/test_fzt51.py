@@ -6,19 +6,52 @@ from morie.fn.fzt51 import fauzi_thm5_1_naive_kernel_equiv
 
 
 def test_fzt51_basic():
-    """Test basic functionality."""
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    bandwidth = 0.3
-    cdf = lambda v: 1.0 / (1.0 + np.exp(-v))
-    result = fauzi_thm5_1_naive_kernel_equiv(data, bandwidth, cdf)
+    """Test basic functionality with documented scalar arguments."""
+    ks_emp = 0.12
+    ks_kernel = 0.10
+    cvm_emp = 0.25
+    cvm_kernel = 0.23
+
+    result = fauzi_thm5_1_naive_kernel_equiv(ks_emp, ks_kernel, cvm_emp, cvm_kernel)
+
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+
+    # Check that the documented keys are present.
+    for key in ("ksdiff", "cvmdiff", "close", "tol", "method"):
+        assert key in result
+
+    # Compute expected differences independently from the formula.
+    expected_ksdiff = abs(float(ks_emp) - float(ks_kernel))
+    expected_cvmdiff = abs(float(cvm_emp) - float(cvm_kernel))
+
+    assert result["ksdiff"] == expected_ksdiff
+    assert result["cvmdiff"] == expected_cvmdiff
+
+    # Default tolerance is 0.05; both differences should be below it.
+    assert result["tol"] == 0.05
+    assert result["close"] is True
+    assert result["method"] == "naive kernel vs empirical GOF equivalence (Theorem 5.1)"
 
 
 def test_fzt51_edge():
-    """Test edge cases."""
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    bandwidth = 0.3
-    cdf = lambda v: 1.0 / (1.0 + np.exp(-v))
-    result = fauzi_thm5_1_naive_kernel_equiv(data, bandwidth, cdf)
+    """Test edge case where differences exceed the tolerance."""
+    ks_emp = 0.30
+    ks_kernel = 0.10
+    cvm_emp = 0.40
+    cvm_kernel = 0.20
+    tol = 0.05
+
+    result = fauzi_thm5_1_naive_kernel_equiv(
+        ks_emp, ks_kernel, cvm_emp, cvm_kernel, tol=tol
+    )
+
     assert isinstance(result, dict)
+
+    expected_ksdiff = abs(float(ks_emp) - float(ks_kernel))
+    expected_cvmdiff = abs(float(cvm_emp) - float(cvm_kernel))
+
+    assert result["ksdiff"] == expected_ksdiff
+    assert result["cvmdiff"] == expected_cvmdiff
+    assert result["tol"] == tol
+    # Both differences exceed tolerance, so not close.
+    assert result["close"] is False

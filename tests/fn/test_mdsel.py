@@ -13,8 +13,20 @@ def test_basic_output():
     y = X[:, 0] + rng.standard_normal(n) * 0.5
     result = mdsel(X, y, n_folds=3, seed=7)
     assert "selected" in result
+    assert "selected_1se" in result
     assert "cv_risks" in result
+    assert "cv_ses" in result
     assert "model_names" in result
+    assert "n" in result
+    assert "n_folds" in result
+    assert result["n"] == n
+    assert result["n_folds"] == 3
+    assert len(result["cv_risks"]) == 4  # default: Intercept, OLS, Ridge(1), Ridge(10)
+    assert len(result["cv_ses"]) == 4
+    assert len(result["model_names"]) == 4
+    assert set(result["model_names"]) == {"Intercept", "OLS", "Ridge(1)", "Ridge(10)"}
+    assert 0 <= result["selected"] < len(result["model_names"])
+    assert 0 <= result["selected_1se"] < len(result["model_names"])
 
 
 def test_ols_beats_intercept():
@@ -36,7 +48,12 @@ def test_1se_rule():
     result = mdsel(X, y, n_folds=3, seed=42)
     assert 0 <= result["selected_1se"] < len(result["model_names"])
 
+    # The 1SE rule: selected_1se must satisfy cv_risks[selected_1se] <= cv_risks[selected] + cv_ses[selected]
+    selected = result["selected"]
+    threshold = float(result["cv_risks"][selected] + result["cv_ses"][selected])
+    assert float(result["cv_risks"][result["selected_1se"]]) <= threshold
+
 
 def test_empty_raises():
     with pytest.raises(ValueError, match="non-empty"):
-        mdsel(np.array([]).reshape(0, 1), np.array([]))
+        mdsel(np.zeros((0, 2)), np.zeros(0))

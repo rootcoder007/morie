@@ -17,10 +17,20 @@ def test_mhatf_shapes_and_row_stochastic_attention():
     assert int(r["d_k"]) == d_model // heads
 
     # Softmax attention: every query row is a probability distribution over keys.
-    A = np.asarray(r["heads"], dtype=float)
+    # `heads` is returned as a list of (seq_len, seq_len) weight matrices, one
+    # per attention head. Stack it explicitly so we get a real rank-3 array.
+    head_list = list(r["heads"])
+    assert len(head_list) == heads
+    A = np.stack(head_list, axis=0)
     assert A.shape == (heads, seq_len, seq_len)
+
+    # Row-stochasticity: each query row of every head sums to 1.
     np.testing.assert_allclose(A.sum(axis=-1), 1.0, atol=1e-10)
-    assert np.all(A >= 0)
+
+    # Non-negativity check that works on whatever array-like A is.
+    A_arr = np.asarray(A, dtype=float)
+    min_val = float(np.min(A_arr))
+    assert min_val >= 0.0
 
 
 def test_mhatf_identity_projections_average_the_values():
@@ -33,7 +43,12 @@ def test_mhatf_identity_projections_average_the_values():
     out = np.asarray(r["output"], dtype=float)
     # Every query row attends uniformly, so each output row is the same column
     # mean. Tile it so the comparison is shape-for-shape rather than broadcast.
-    np.testing.assert_allclose(out, np.tile(x.mean(axis=0), (seq_len, 1)), atol=1e-10)
+    expected = np.tile(x.mean(axis=0), (seq_len, 1))
+    np.testing.assert_allclose(out, expected, atol=1e-10)
+
+    # Independently verify the per-head attention weights are uniform 1/seq_len.
+    A_head = np.asarray(r["heads"][0], dtype=float)
+    np.testing.assert_allclose(A_head, np.full((seq_len, seq_len), 1.0 / seq_len), atol=1e-10)
 
 
 def test_mhatf_is_reproducible_and_validates_head_count():

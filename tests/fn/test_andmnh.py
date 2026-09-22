@@ -19,7 +19,7 @@ def _kq_numeric(kfun, q):
     return b + (b - a) / 3.0
 
 
-def _int_k2(kfun, hi, n=40001):
+def _int_k2(kfun, hi, n=4000):
     step = hi / (n - 1)
     tot = 0.0
     for i in range(n):

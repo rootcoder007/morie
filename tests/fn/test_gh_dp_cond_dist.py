@@ -16,4 +16,5 @@ def test_gh_dp_cond_dist_basic():
 def test_gh_dp_cond_dist_edge():
     """Test edge cases."""
     result = ghosal_dp_conditional_distribution(np.array([42.0]))
-    assert result["n"] == 1
+    assert np.isscalar(result["estimate"]) or np.asarray(result["estimate"]).shape == ()
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))

@@ -46,12 +46,21 @@ def test_sptau_expectation_matches_the_book_lattice():
 def test_sptau_detects_clustering_and_dispersion():
     side = 8
     W = _rook_w(side)
-    grad = np.add.outer(np.arange(side), np.arange(side)).ravel().astype(float)
+    # Build a monotonic gradient by looping over raster cells in row-major order.
+    n = side * side
+    grad = np.empty(n)
+    for r in range(side):
+        for c in range(side):
+            grad[r * side + c] = float(r + c)
     pos = spatial_autocorrelation(grad, W)
     assert float(pos["statistic"]) > 0.5
     assert float(pos["p_value"]) < 1e-6
 
-    checker = np.indices((side, side)).sum(axis=0).ravel() % 2 * 2.0 - 1.0
+    # Build a checkerboard pattern (+1 on even-sum cells, -1 on odd-sum cells).
+    checker = np.empty(n)
+    for r in range(side):
+        for c in range(side):
+            checker[r * side + c] = 1.0 if ((r + c) % 2 == 0) else -1.0
     neg = spatial_autocorrelation(checker, W)
     assert float(neg["statistic"]) < float(neg["expectation"])
     assert float(neg["p_value"]) < 1e-6

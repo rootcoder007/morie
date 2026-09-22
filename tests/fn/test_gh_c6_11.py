@@ -7,13 +7,22 @@ from morie.fn.gh_c6_11 import ghosal_markov_con
 
 def test_gh_c6_11_basic():
     """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = ghosal_markov_con(x)
+    a0, b0, n, seed = 0.3, 0.6, 3000, 42
+    result = ghosal_markov_con(a0=a0, b0=b0, n=n, seed=seed)
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
+    assert "a_hat" in result
+    assert "b_hat" in result
+    assert 0.0 < result["a_hat"] < 1.0
+    assert 0.0 < result["b_hat"] < 1.0
+    assert result["estimate"] >= 0.0
 
 
 def test_gh_c6_11_edge():
     """Test edge cases."""
-    result = ghosal_markov_con(np.array([42.0]))
-    assert result["n"] == 1
+    a0, b0, n, seed = 0.3, 0.6, 1, 42
+    result = ghosal_markov_con(a0=a0, b0=b0, n=n, seed=seed)
+    assert "estimate" in result
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
+    assert "a_hat" in result
+    assert "b_hat" in result

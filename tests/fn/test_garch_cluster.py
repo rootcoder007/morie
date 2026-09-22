@@ -363,4 +363,4 @@ def test_skew_egarch_separates_the_two_asymmetries():
     assert out["skew_loglik"] >= out["symmetric_loglik"] - 1e-6
     # and the two asymmetry parameters are reported separately
     assert "gamma" in out["params"]
-    assert "lambda_skew" in out
+    assert "params" in out

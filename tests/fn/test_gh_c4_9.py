@@ -16,4 +16,6 @@ def test_gh_c4_9_basic():
 def test_gh_c4_9_edge():
     """Test edge cases."""
     result = ghosal_dp_gamma(np.array([42.0]))
-    assert result["n"] == 1
+    # With a single base mass, P(A) = U(A)/U(X) = 1.0 by construction.
+    assert result["estimate"] == 1.0
+    assert np.all(np.asarray(result["P"], dtype=float) == np.array([1.0]))

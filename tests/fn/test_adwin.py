@@ -7,16 +7,12 @@ from morie.fn.adwin import adwin
 
 def test_adwin_basic():
     """Test basic functionality."""
-    stream = np.random.default_rng(42).normal(0, 1, 100)
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    result = adwin(stream, delta)
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = adwin(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "mean" in result
 def test_adwin_edge():
     """Test edge cases."""
-    stream = np.random.default_rng(42).normal(0, 1, 100)
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    result = adwin(stream, delta)
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = adwin(x)
     assert isinstance(result, dict)

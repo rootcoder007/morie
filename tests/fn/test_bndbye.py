@@ -6,19 +6,23 @@ from morie.fn.bndbye import bound_bayes_credible
 
 
 def test_bndbye_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    prior = np.random.default_rng(42).normal(0, 1, 100)
-    result = bound_bayes_credible(y, X, prior)
+    """Test basic functionality with scalar inputs."""
+    phi_hat = 1.0
+    half_width = 0.5
+    se_phi = 0.2
+    result = bound_bayes_credible(phi_hat, half_width, se_phi)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    # Check that result contains a recognized key
+    assert "estimate" in result or "width_ratio_hpd_over_cs" in result
 
 
 def test_bndbye_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    prior = np.random.default_rng(42).normal(0, 1, 100)
-    result = bound_bayes_credible(y, X, prior)
+    """Test edge cases with scalar inputs."""
+    phi_hat = 2.0
+    half_width = 0.1
+    se_phi = 0.05
+    result = bound_bayes_credible(phi_hat, half_width, se_phi, level=0.9)
     assert isinstance(result, dict)
+    # Verify some structural keys exist
+    assert "credible_hpd" in result
+    assert "confidence_set" in result

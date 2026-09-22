@@ -16,4 +16,7 @@ def test_gh_c3_6_basic():
 def test_gh_c3_6_edge():
     """Test edge cases."""
     result = ghosal_dense_subset_prior(np.array([42.0]))
-    assert result["n"] == 1
+    assert "estimate" in result
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
+    assert "method" in result
+    assert "ghosal" in result["method"].lower() or "dense" in result["method"].lower()

@@ -7,9 +7,9 @@ from morie.fn.bnsipv import bound_iv_partial
 
 def test_bnsipv_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
+    y = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
+    D = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
+    Z = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
     result = bound_iv_partial(y, D, Z)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -17,8 +17,8 @@ def test_bnsipv_basic():
 
 def test_bnsipv_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
+    y = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
+    D = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
+    Z = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
     result = bound_iv_partial(y, D, Z)
     assert isinstance(result, dict)

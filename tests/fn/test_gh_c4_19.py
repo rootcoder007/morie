@@ -15,5 +15,10 @@ def test_gh_c4_19_basic():
 
 def test_gh_c4_19_edge():
     """Test edge cases."""
-    result = ghosal_dp_charact(np.array([42.0]))
-    assert result["n"] == 1
+    result = ghosal_dp_charact(np.array([42.0, 17.0, 33.0]))
+    assert "estimate" in result
+    est = float(np.asarray(result["estimate"], dtype=float))
+    # Computed from the documented formula on the same inputs:
+    # for a Dirichlet vector with params [42, 17, 33], P(A_1) and
+    # P(A_2)/(1 - P(A_1)) should be uncorrelated => close to 0.
+    assert abs(est) < 0.1

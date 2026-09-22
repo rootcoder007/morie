@@ -1293,6 +1293,21 @@ class DataFrame:
 
     def __setitem__(self, key, value):
         n = self.shape[0]
+        if isinstance(key, (list, tuple)):
+            # df[["a", "b"]] = 2-D array / frame / list of rows: one
+            # column at a time (pandas semantics); a scalar fills all
+            if isinstance(value, DataFrame):
+                for k, c in zip(key, value._cols):
+                    self[k] = list(value._cols[c])
+                return
+            vals = value.tolist() if hasattr(value, "tolist") else value
+            if isinstance(vals, list) and vals and isinstance(vals[0], list):
+                for j, k in enumerate(key):
+                    self[k] = [row[j] for row in vals]
+                return
+            for k in key:
+                self[k] = value
+            return
         if isinstance(value, Series):
             value = list(value._data)
         elif hasattr(value, "tolist"):
@@ -1403,6 +1418,26 @@ class DataFrame:
                          index=list(self.index))
 
     isnull = isna
+
+    def any(self, axis=0):
+        if axis in (1, "columns"):
+            return Series([any(bool(self._cols[c][i]) for c in self._cols
+                               if not _isnan(self._cols[c][i]))
+                           for i in range(self.shape[0])],
+                          index=list(self.index))
+        return Series([any(bool(v) for v in vals if not _isnan(v))
+                       for vals in self._cols.values()],
+                      index=list(self._cols))
+
+    def all(self, axis=0):
+        if axis in (1, "columns"):
+            return Series([all(bool(self._cols[c][i]) for c in self._cols
+                               if not _isnan(self._cols[c][i]))
+                           for i in range(self.shape[0])],
+                          index=list(self.index))
+        return Series([all(bool(v) for v in vals if not _isnan(v))
+                       for vals in self._cols.values()],
+                      index=list(self._cols))
 
     def notna(self):
         return DataFrame({c: [not _isnan(v) for v in vals]
@@ -2003,6 +2038,33 @@ class _ILoc:
     def __init__(self, df):
         self._df = df
 
+    def __setitem__(self, key, value):
+        df = self._df
+        cols = list(df._cols)
+        n = df.shape[0]
+        if isinstance(key, tuple):
+            rk, ck = key
+            cidx = (list(range(len(cols)))[ck] if isinstance(ck, slice)
+                    else [int(ck)] if not isinstance(ck, (list, tuple))
+                    else [int(c) for c in ck])
+        else:
+            rk, cidx = key, list(range(len(cols)))
+        ridx = (list(range(n))[rk] if isinstance(rk, slice)
+                else [int(rk) if int(rk) >= 0 else n + int(rk)]
+                if not isinstance(rk, (list, tuple))
+                else [int(r) for r in rk])
+        vals = value.tolist() if hasattr(value, "tolist") else value
+        if isinstance(vals, Series):
+            vals = list(vals._data)
+        for a, r in enumerate(ridx):
+            for b, c in enumerate(cidx):
+                if isinstance(vals, list):
+                    v = vals[a] if len(ridx) > 1 and not isinstance(vals[0], list) \
+                        else (vals[a][b] if isinstance(vals[0], list) else vals[b])
+                else:
+                    v = vals
+                df._cols[cols[c]][r] = v
+
     def __getitem__(self, key):
         df = self._df
         if isinstance(key, tuple):
@@ -2032,6 +2094,35 @@ class _ILoc:
         return df._take(list(key))
 
 
+def _loc_key(k, labels):
+    """Normalise a .loc key against the axis labels.
+
+    A marr used to be read as a boolean mask unconditionally, so
+    ``df.loc[unit_ids, t]`` with integer unit ids (a marr of labels)
+    silently became a mask of the first rows. A marr is a mask only
+    when the array core flagged it as one (a comparison result) or when
+    it is 0/1-valued, as long as the frame, and none of the values are
+    labels; otherwise its values are labels, with integral floats read
+    as the integer labels they came from.
+    """
+    if isinstance(k, Series):
+        return k.tolist()
+    if isinstance(k, Index):
+        return list(k)
+    if type(k).__name__ == "marr":
+        vals = k._flat()
+        if getattr(k, "_is_mask", False):
+            return [bool(v) for v in vals]
+        lab = set(labels)
+        conv = [(int(v) if isinstance(v, float) and v.is_integer()
+                 and int(v) in lab else v) for v in vals]
+        if len(vals) == len(labels) and all(v in (0.0, 1.0) for v in vals) \
+                and not all(c in lab for c in conv):
+            return [bool(v) for v in vals]
+        return conv
+    return k
+
+
 class _Loc:
     def __init__(self, df):
         self._df = df
@@ -2040,10 +2131,8 @@ class _Loc:
         df = self._df
         if isinstance(key, tuple):
             rk, ck = key
-            if isinstance(rk, Series):
-                rk = rk.tolist()
-            elif type(rk).__name__ == "marr":
-                rk = [bool(v) for v in rk._flat()]
+            rk = _loc_key(rk, df.index)
+            ck = _loc_key(ck, list(df._cols))
             if isinstance(rk, list) and rk \
                     and isinstance(rk[0], bool):
                 sub = df[rk]
@@ -2063,15 +2152,15 @@ class _Loc:
                         and ck in df._cols):
                     return df._cols[ck][i]
                 return Series([df._cols[c][i] for c in ck], index=ck)
-            if isinstance(ck, str):
+            if isinstance(ck, str) or not isinstance(ck, (list, tuple)):
                 return sub[ck]
             return sub[list(ck)]
-        if isinstance(key, Series):
-            key = key.tolist()
-        elif type(key).__name__ == "marr":
-            key = [bool(v) for v in key._flat()]
+        key = _loc_key(key, df.index)
         if isinstance(key, list) and key and isinstance(key[0], bool):
             return df[key]
+        if isinstance(key, list):
+            pos = {k: i for i, k in enumerate(df.index)}
+            return df._take([pos[k] for k in key])
         i = df.index.index(key)
         return df.iloc[i]
 
@@ -2079,10 +2168,7 @@ class _Loc:
         df = self._df
         if isinstance(key, tuple):
             rk, ck = key
-            if isinstance(rk, Series):
-                rk = rk.tolist()
-            elif type(rk).__name__ == "marr":
-                rk = [bool(v) for v in rk._flat()]
+            rk = _loc_key(rk, df.index)
             if isinstance(value, Series):
                 value = list(value._data)
             if isinstance(rk, list) and rk \

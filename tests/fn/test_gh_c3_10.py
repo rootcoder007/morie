@@ -10,10 +10,24 @@ def test_gh_c3_10_basic():
     x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     result = ghosal_norm_crm(x)
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
 
 
 def test_gh_c3_10_edge():
     """Test edge cases."""
-    result = ghosal_norm_crm(np.array([42.0]))
-    assert result["n"] == 1
+    n_jumps = 400
+    seed = 42
+    result = ghosal_norm_crm(np.array([42.0]), n_jumps=n_jumps, seed=seed)
+    assert result["n_jumps"] == n_jumps
+    assert result["total_mass"] == 1.0
+
+    # Independent recomputation: mirror the documented formula.
+    rng = np.random.default_rng(seed)
+    locs = [float(v) for v in rng.uniform(0, 1, n_jumps)._flat()]
+    jumps = [float(rng.gamma(1.0 / n_jumps * 4.0, 1.0))
+             for _ in range(n_jumps)]
+    tot = sum(jumps)
+    w = [j / tot for j in jumps]
+    half = sum(wi for wi, t in zip(w, locs) if t < 0.5)
+
+    assert np.isclose(float(result["estimate"]), half)

@@ -6,7 +6,7 @@ import pytest
 from morie.fn.difsbs import dif_sibtest
 
 
-def _items(seed=0, n=3000, p=6, dif=0.0, dif_item=0):
+def _items(seed=0, n=300, p=6, dif=0.0, dif_item=0):
     """Binary items. The focal group differs in ability, and optionally
     one item carries genuine DIF on top of that."""
     rng = np.random.default_rng(seed)

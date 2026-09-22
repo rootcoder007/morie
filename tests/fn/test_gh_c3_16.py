@@ -15,5 +15,12 @@ def test_gh_c3_16_basic():
 
 def test_gh_c3_16_edge():
     """Test edge cases."""
-    result = ghosal_evsplit_pt(np.array([42.0]))
-    assert result["n"] == 1
+    x = np.array([42.0])
+    data = np.array([0.3, 0.5, 0.7])
+    result = ghosal_evsplit_pt(x, data=data, depth=4, a_scale=2.0)
+    assert result["n"] == len(data)
+    assert result["n"] == 3
+    assert result["depth"] == 4
+    assert "estimate" in result
+    assert "method" in result
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))

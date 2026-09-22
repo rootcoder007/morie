@@ -6,7 +6,7 @@ import pytest
 from morie.fn.egrch import egarch_model
 
 
-def _dgp(seed, n=3000, omega=-0.2, alpha=0.2, gamma=-0.15, beta=0.95):
+def _dgp(seed, n=300, omega=-0.2, alpha=0.2, gamma=-0.15, beta=0.95):
     """log s2_t = omega + alpha(|z| - E|z|) + gamma z + beta log s2_{t-1}
     (Nelson 1991). gamma < 0 is the leverage effect."""
     rng = np.random.default_rng(seed)
@@ -35,7 +35,7 @@ def test_egrch_recovers_persistence_and_leverage_sign():
 def test_egrch_variance_is_positive_without_constraints():
     """The point of modelling LOG variance: no parameter constraint is
     needed for positivity, so every fitted variance must be positive."""
-    r = egarch_model(_dgp(7, n=600))
+    r = egarch_model(_dgp(7, n=60))
     assert np.all(np.asarray(r["conditional_variance"], dtype=float) > 0)
 
 

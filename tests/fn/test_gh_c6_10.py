@@ -7,13 +7,24 @@ from morie.fn.gh_c6_10 import ghosal_non_iid_con
 
 def test_gh_c6_10_basic():
     """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = ghosal_non_iid_con(x)
+    result = ghosal_non_iid_con()
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert "error_by_n" in result
+    assert "avg_kl_at_delta_0.1" in result
+    assert "method" in result
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
 
 
 def test_gh_c6_10_edge():
     """Test edge cases."""
-    result = ghosal_non_iid_con(np.array([42.0]))
-    assert result["n"] == 1
+    result = ghosal_non_iid_con()
+    # error_by_n should have one entry per provided n
+    assert len(result["error_by_n"]) == 3
+    # estimate equals the last entry of error_by_n
+    assert result["estimate"] == result["error_by_n"][-1]
+    # Independent recomputation of avg_kl_at_delta_0.1 from the documented formula:
+    # average over i in 0..29 of 0.01 / (2 * (1 + (i % 3))**2)
+    expected_avg_kl = sum(
+        0.01 / (2.0 * (1 + (i % 3)) ** 2) for i in range(30)
+    ) / 30.0
+    assert abs(result["avg_kl_at_delta_0.1"] - expected_avg_kl) < 1e-15

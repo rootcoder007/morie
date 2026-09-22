@@ -12,10 +12,16 @@ def test_emtxt_basic():
     theta = np.linspace(-1.5, 1.5, n)
     psi = rng.normal(1.0, 0.3, size=k)
     beta = rng.normal(0.0, 0.8, size=k)
-    Y = rng.poisson(np.exp(1.0 + psi[None, :] + beta[None, :] * theta[:, None]))
+    mu = 1.0 + psi[None, :] + beta[None, :] * theta[:, None]
+    Y = rng.poisson(np.exp(mu)).reshape(n, k)
     out = em_irt_text(Y, polarity=(0, n - 1))
     assert np.corrcoef(out["theta"], theta)[0, 1] > 0.95
     assert out["theta"][0] < out["theta"][-1]
+    assert out["alpha"][0] == 0.0
+    assert out["n_docs"] == n
+    assert out["n_words"] == k
+    assert out["converged"] is True
+    assert out["n_iter"] >= 1
 
 
 def test_emtxt_edge():

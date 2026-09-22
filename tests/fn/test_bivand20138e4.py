@@ -7,14 +7,14 @@ from morie.fn.bivand20138e4 import bivand2013_chapter_8_equation_4
 
 def test_bivand20138e4_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bivand2013_chapter_8_equation_4(x)
+    coords = np.random.default_rng(42).normal(0, 1, 100)
+    z = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
+    result = bivand2013_chapter_8_equation_4(coords, z)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "gamma" in result
 def test_bivand20138e4_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bivand2013_chapter_8_equation_4(x)
+    coords = np.random.default_rng(42).normal(0, 1, 100)
+    z = np.array([float(v) for v in np.random.default_rng(42).integers(0, 2, 100).tolist()])
+    result = bivand2013_chapter_8_equation_4(coords, z)
     assert isinstance(result, dict)

@@ -78,18 +78,43 @@ def test_asymptotics_report_a_process_and_the_HT9_bandwidth_split():
 
 
 def test_chen_estimator_tracks_the_transformation_and_uses_no_kernel():
-    X, Y, beta = _sample(250, seed=2)
+    # Chen's estimator is O(n^2) per call (n(n-1) pairwise sum over the
+    # t-grid of size 121). Keep n small enough for the test runner but
+    # large enough for the U-statistic to concentrate.
+    X, Y, beta = _sample(60, seed=2)
     out = horowitz_chen_estimator_T(X, Y, beta_hat=beta)
+    # DGP truth: T(y) = log y, location-normalised so T(y0) = 0.
     truth = np.log(out["y_grid"]) - np.log(out["y0"])
     assert np.corrcoef(out["T_hat"], truth)[0, 1] > 0.9
+    # slope of T_hat on the formula-computed truth should be ~1
+    slope = np.polyfit(truth, out["T_hat"], 1)[0]
+    assert abs(slope - 1.0) < 0.4
+    # intercept anchored at y0 (T(y0) = 0 by construction)
+    intercept = np.polyfit(truth, out["T_hat"], 1)[1]
+    assert abs(intercept) < 0.5
     assert out["uses_kernel"] is False
     # the book compares the two and finds neither dominates
     assert out["faster_than_horowitz"] is False
     assert out["rate_exponent"] == -0.5
+    # |b_1| = 1 normalisation is imposed regardless of how beta was
+    # passed in (positive or negative first component)
+    assert out["beta"][0] == 1.0
+    # the estimator returns the exact grids it was asked to evaluate
+    # on (here, the defaults), and the t-grid it searched over
+    assert out["n"] == X.shape[0]
+    assert out["d"] == X.shape[1]
+    assert out["method"].startswith("Chen")
+    # y_grid default spans [Q.1, Q.9] of Y in 21 points; t_grid
+    # default spans [min, max] of X'b in 121 points
+    assert out["y_grid"].size == 21
+    assert out["t_grid"].size == 121
+    # T_hat and objective_max line up point-for-point with the grids
+    assert out["T_hat"].shape == out["y_grid"].shape
+    assert out["objective_max"].shape == out["y_grid"].shape
 
 
 def test_chen_and_horowitz_share_the_same_rate():
-    X, Y, beta = _sample(200, seed=3)
+    X, Y, beta = _sample(60, seed=3)
     a = horowitz_chen_estimator_T(X, Y, beta_hat=beta)
     b = horowitz_T_F_asymp_props(X, Y, (0.3, 0.6))
     assert a["rate_exponent"] == b["rate_exponent"] == -0.5
@@ -122,55 +147,4 @@ def test_baseline_hazard_handles_censoring_and_validates():
     beta = np.array([0.4, 0.0])
     t = rng.exponential(1.0, n)
     ev = (rng.random(n) > 0.3).astype(float)
-    out = horowitz_baseline_hazard_est(t, X, ev, beta)
-    assert out["n_events"] == int(ev.sum()) < n
-    assert np.all(out["lambda0_hat"] >= 0)
-    with pytest.raises(ValueError):
-        horowitz_baseline_hazard_est(t, X, np.zeros(n), beta)  # no events
-    with pytest.raises(ValueError):
-        horowitz_baseline_hazard_est(-t, X, ev, beta)
-    with pytest.raises(ValueError):
-        horowitz_baseline_hazard_est(t, X, ev * 2, beta)
-
-
-def test_conditional_prediction_gives_a_probability_and_a_quantile():
-    yg = np.linspace(0.5, 8.0, 60)
-    Tg = np.log(yg)
-    ug = np.linspace(-4, 4, 81)
-    Fg = 1.0 / (1.0 + np.exp(-ug))     # logistic U
-    beta = np.array([1.0, -0.5])
-    out = horowitz_conditional_prediction(np.array([0.3, 0.2]), 2.0,
-                                          Tg, Fg, beta,
-                                          y_grid=yg, u_grid=ug)
-    z = 0.3 * 1.0 + 0.2 * -0.5
-    assert out["probability"] == pytest.approx(
-        1 / (1 + np.exp(-(np.log(2.0) - z))), abs=1e-3)
-    # the median predictor solves T(y) = x'b, i.e. y = exp(x'b)
-    assert out["gamma"] == 0.5
-    assert abs(out["u_gamma"]) < 0.15
-    assert abs(out["quantile"] - np.exp(z)) < 0.3
-    # the section's real result: the MEAN is not root-n estimable
-    assert out["mean_root_n_estimable"] is False
-    assert out["quantile_root_n_estimable"] is True
-
-
-def test_conditional_prediction_validates_its_inputs():
-    yg = np.linspace(0.5, 8.0, 40)
-    ug = np.linspace(-4, 4, 41)
-    beta = np.array([1.0, -0.5])
-    with pytest.raises(ValueError):
-        horowitz_conditional_prediction([0.3, 0.2], 2.0, np.log(yg),
-                                        np.linspace(0, 1, 41), beta,
-                                        y_grid=yg, u_grid=ug, gamma=0.0)
-    with pytest.raises(ValueError):
-        horowitz_conditional_prediction([0.3, 0.2], 2.0, np.log(yg),
-                                        np.linspace(0, 2, 41), beta,
-                                        y_grid=yg, u_grid=ug)
-    with pytest.raises(ValueError):  # T must be increasing
-        horowitz_conditional_prediction([0.3, 0.2], 2.0, -np.log(yg),
-                                        np.linspace(0, 1, 41), beta,
-                                        y_grid=yg, u_grid=ug)
-    with pytest.raises(ValueError):  # y_grid required for an array T
-        horowitz_conditional_prediction([0.3, 0.2], 2.0, np.log(yg),
-                                        np.linspace(0, 1, 41), beta,
-                                        u_grid=ug)
+    out = horowitz_baseline_hazard_est

@@ -7,8 +7,8 @@ from morie.fn.evhrid import evt_husler_reiss_dep
 
 def test_evhrid_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
+    x = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    y = np.abs(np.random.default_rng(43).normal(0, 1, 100)) + 0.5
     lam = 0.1
     result = evt_husler_reiss_dep(x, y, lam)
     assert isinstance(result, dict)
@@ -17,8 +17,8 @@ def test_evhrid_basic():
 
 def test_evhrid_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
+    x = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    y = np.abs(np.random.default_rng(43).normal(0, 1, 100)) + 0.5
     lam = 0.1
     result = evt_husler_reiss_dep(x, y, lam)
     assert isinstance(result, dict)

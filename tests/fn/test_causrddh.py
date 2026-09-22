@@ -9,8 +9,7 @@ def test_causrddh_basic():
     """Test basic functionality."""
     x = np.random.default_rng(42).normal(0, 1, 100)
     y = np.random.default_rng(43).normal(0, 1, 100)
-    cutoff = 10.0
-    result = causal_rdd_imbens_kalyanaraman(x, y, cutoff)
+    result = causal_rdd_imbens_kalyanaraman(x, y)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
@@ -19,6 +18,5 @@ def test_causrddh_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)
     y = np.random.default_rng(43).normal(0, 1, 100)
-    cutoff = 10.0
-    result = causal_rdd_imbens_kalyanaraman(x, y, cutoff)
+    result = causal_rdd_imbens_kalyanaraman(x, y)
     assert isinstance(result, dict)

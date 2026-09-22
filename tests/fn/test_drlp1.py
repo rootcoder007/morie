@@ -11,8 +11,7 @@ def test_drlp1_basic():
     D = np.random.default_rng(42).normal(0, 1, 100)
     unit = np.random.default_rng(42).normal(0, 1, 100)
     time = np.linspace(0, 10, 100)
-    horizon = np.random.default_rng(42).normal(0, 1, 100)
-    result = dr_lp_did(y, D, unit, time, horizon)
+    result = dr_lp_did(y, D, unit, time)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
@@ -23,6 +22,5 @@ def test_drlp1_edge():
     D = np.random.default_rng(42).normal(0, 1, 100)
     unit = np.random.default_rng(42).normal(0, 1, 100)
     time = np.linspace(0, 10, 100)
-    horizon = np.random.default_rng(42).normal(0, 1, 100)
-    result = dr_lp_did(y, D, unit, time, horizon)
+    result = dr_lp_did(y, D, unit, time)
     assert isinstance(result, dict)

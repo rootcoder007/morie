@@ -10,10 +10,12 @@ def test_gh_c2_5_basic():
     x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     result = ghosal_histogram_prior(x)
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
 
 
 def test_gh_c2_5_edge():
     """Test edge cases."""
     result = ghosal_histogram_prior(np.array([42.0]))
-    assert result["n"] == 1
+    assert "density" in result
+    assert len(result["density"]) == 1
+    assert result["estimate"] == result["density"][0]

@@ -15,5 +15,11 @@ def test_gh_c13_7_basic():
 
 def test_gh_c13_7_edge():
     """Test edge cases."""
-    result = ghosal_mix_bp(np.array([42.0]))
-    assert result["n"] == 1
+    # ghosal_mix_bp returns a RichResult with payload keys including
+    # 'estimate', 'component_means', and 'method' (no 'n').
+    # With a single component and default t=1, estimate == lambda.
+    lam = 42.0
+    result = ghosal_mix_bp([lam])
+    assert "estimate" in result
+    assert float(result["estimate"]) == lam
+    assert float(np.asarray(result["estimate"], dtype=float)) == lam

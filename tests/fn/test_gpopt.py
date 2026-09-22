@@ -22,9 +22,9 @@ def test_finds_minimum():
 
 
 def test_history_shape():
-    result = gp_optimize(_sphere, [[-5, 5], [-5, 5]], n_calls=15)
-    assert result["x_history"].shape == (15, 2)
-    assert len(result["y_history"]) == 15
+    result = gp_optimize(_sphere, [[-5, 5], [-5, 5]], n_calls=10, n_initial=5)
+    assert result["x_history"].shape == (10, 2)
+    assert len(result["y_history"]) == 10
 
 
 def test_best_in_history():

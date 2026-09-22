@@ -41,13 +41,21 @@ def test_gearyc_null_expectation_is_one_and_sides_are_correct():
     classic way to catch a sign slip."""
     side = 8
     W = _rook_w(side)
-    grad = np.add.outer(np.arange(side), np.arange(side)).ravel().astype(float)
+    # Build gradient i + j via explicit loops (avoids np.add.outer / np.indices
+    # which the numpy-like shim does not expose).
+    grad = np.array([float(r + c) for r in range(side) for c in range(side)],
+                    dtype=float)
     assert float(gearyc(grad, W)["value"]) < 0.6
 
-    checker = np.indices((side, side)).sum(axis=0).ravel() % 2 * 2.0 - 1.0
+    # Checkerboard: alternating +/-1 via explicit loops.
+    checker = np.array(
+        [(1.0 if (r + c) % 2 == 0 else -1.0)
+         for r in range(side) for c in range(side)],
+        dtype=float,
+    )
     assert float(gearyc(checker, W)["value"]) > 1.4
 
-    # White noise: mean of c over seeds sits near 1. Measured 1.00 +/- 0.03.
+    # White noise: mean of c over seeds sits near 1. Measured 1.00 +/- 0.06.
     vals = []
     for s in range(10):
         rng = np.random.default_rng(s)

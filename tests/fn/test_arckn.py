@@ -8,15 +8,11 @@ from morie.fn.arckn import arc_cosine_kernel
 def test_arckn_basic():
     """Test basic functionality."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n = 100
-    result = arc_cosine_kernel(X, n)
+    result = arc_cosine_kernel(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "K" in result
 def test_arckn_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n = 100
-    result = arc_cosine_kernel(X, n)
+    result = arc_cosine_kernel(X)
     assert isinstance(result, dict)

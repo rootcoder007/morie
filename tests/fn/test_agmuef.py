@@ -7,18 +7,16 @@ from morie.fn.agmuef import muzero_efficient_exploration
 
 def test_agmuef_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    root_state = np.random.default_rng(42).normal(0, 1, 100)
-    sims = np.random.default_rng(42).normal(0, 1, 100)
-    result = muzero_efficient_exploration(model, root_state, sims)
+    Q = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    N = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    P = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = muzero_efficient_exploration(Q, N, P)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "score" in result
 def test_agmuef_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    root_state = np.random.default_rng(42).normal(0, 1, 100)
-    sims = np.random.default_rng(42).normal(0, 1, 100)
-    result = muzero_efficient_exploration(model, root_state, sims)
+    Q = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    N = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    P = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = muzero_efficient_exploration(Q, N, P)
     assert isinstance(result, dict)

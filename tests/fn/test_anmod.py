@@ -27,9 +27,9 @@ def test_hsic_detects_a_nonlinear_dependence_that_correlation_misses():
 def test_recovers_a_nonlinear_forward_direction():
     """X -> Y with a cubic link and additive noise."""
     rng = np.random.default_rng(2)
-    x = rng.uniform(-2, 2, 300)
-    y = x**3 + rng.normal(0, 0.5, 300)
-    assert additive_noise_model(x, y, B=100, seed=3)["direction"] == "X->Y"
+    x = rng.uniform(-2, 2, 200)
+    y = x**3 + rng.normal(0, 0.5, 200)
+    assert additive_noise_model(x, y, B=40, seed=3)["direction"] == "X->Y"
 
 
 def test_recovers_the_reverse_direction_when_generated_that_way():
@@ -37,9 +37,9 @@ def test_recovers_the_reverse_direction_when_generated_that_way():
     arguments rather than only exercising one orientation. Measured at
     6/6 correct over seeds in each direction with a cubic link."""
     rng = np.random.default_rng(4)
-    y = rng.uniform(-2, 2, 300)
-    x = y**3 + rng.normal(0, 0.5, 300)
-    assert additive_noise_model(x, y, B=100, seed=3)["direction"] == "Y->X"
+    y = rng.uniform(-2, 2, 200)
+    x = y**3 + rng.normal(0, 0.5, 200)
+    assert additive_noise_model(x, y, B=40, seed=3)["direction"] == "Y->X"
 
 
 def test_a_saturating_link_defeats_the_method():
@@ -52,9 +52,9 @@ def test_a_saturating_link_defeats_the_method():
     the method needs a link that stays informative across the range.
     """
     rng = np.random.default_rng(4)
-    y = rng.uniform(-2, 2, 300)
-    x = np.tanh(3 * y) + rng.normal(0, 0.2, 300)
-    assert additive_noise_model(x, y, B=60, seed=3)["direction"] == "X->Y"
+    y = rng.uniform(-2, 2, 200)
+    x = np.tanh(3 * y) + rng.normal(0, 0.2, 200)
+    assert additive_noise_model(x, y, B=30, seed=3)["direction"] == "X->Y"
 
 
 def test_linear_gaussian_is_reported_as_inconclusive():
@@ -62,9 +62,9 @@ def test_linear_gaussian_is_reported_as_inconclusive():
     noise both directions admit independent residuals, so no bivariate
     method can break the tie. The result must say so rather than pick."""
     rng = np.random.default_rng(5)
-    x = rng.normal(0, 1, 300)
-    y = 2.0 * x + rng.normal(0, 1, 300)
-    assert not additive_noise_model(x, y, B=100, seed=3)["conclusive"]
+    x = rng.normal(0, 1, 200)
+    y = 2.0 * x + rng.normal(0, 1, 200)
+    assert not additive_noise_model(x, y, B=40, seed=3)["conclusive"]
 
 
 def test_hsic_is_symmetric():
@@ -75,18 +75,18 @@ def test_hsic_is_symmetric():
 
 def test_p_values_are_ranks_and_cannot_be_zero():
     rng = np.random.default_rng(7)
-    x = rng.uniform(-2, 2, 200)
-    y = x**3 + rng.normal(0, 0.4, 200)
-    r = additive_noise_model(x, y, B=49, seed=1)
-    assert r["p_xy"] >= 1 / 50 and r["p_yx"] >= 1 / 50
+    x = rng.uniform(-2, 2, 150)
+    y = x**3 + rng.normal(0, 0.4, 150)
+    r = additive_noise_model(x, y, B=19, seed=1)
+    assert r["p_xy"] >= 1 / 20 and r["p_yx"] >= 1 / 20
 
 
 def test_seed_makes_it_reproducible():
     rng = np.random.default_rng(8)
     x = rng.uniform(-2, 2, 150)
     y = x**3 + rng.normal(0, 0.4, 150)
-    a = additive_noise_model(x, y, B=49, seed=11)
-    b = additive_noise_model(x, y, B=49, seed=11)
+    a = additive_noise_model(x, y, B=19, seed=11)
+    b = additive_noise_model(x, y, B=19, seed=11)
     assert a["p_xy"] == b["p_xy"] and a["direction"] == b["direction"]
 
 

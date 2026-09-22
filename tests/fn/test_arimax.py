@@ -9,20 +9,12 @@ def test_arimax_basic():
     """Test basic functionality."""
     y = np.random.default_rng(43).normal(0, 1, 100)
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    p = 5
-    d = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    result = arimax(y, X, p, d, q)
+    result = arimax(y, X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "beta" in result
 def test_arimax_edge():
     """Test edge cases."""
     y = np.random.default_rng(43).normal(0, 1, 100)
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    p = 5
-    d = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    result = arimax(y, X, p, d, q)
+    result = arimax(y, X)
     assert isinstance(result, dict)

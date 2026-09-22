@@ -8,15 +8,11 @@ from morie.fn.andrews import andrews_sine
 def test_andrews_basic():
     """Test basic functionality."""
     r = 10
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    result = andrews_sine(r, c)
+    result = andrews_sine(r)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "psi" in result
 def test_andrews_edge():
     """Test edge cases."""
     r = 10
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    result = andrews_sine(r, c)
+    result = andrews_sine(r)
     assert isinstance(result, dict)

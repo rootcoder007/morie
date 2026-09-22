@@ -14,6 +14,14 @@ def test_gh_c13_3_basic():
 
 
 def test_gh_c13_3_edge():
-    """Test edge cases."""
-    result = ghosal_beta_proc_def(np.array([42.0]))
-    assert result["n"] == 1
+    """Test edge cases: single grid point should yield a path of length 1
+    equal to the estimate, with a recorded method key."""
+    grid = np.array([42.0])
+    result = ghosal_beta_proc_def(grid)
+    assert "estimate" in result
+    assert "cum_hazard" in result
+    assert "nondecreasing" in result
+    assert "method" in result
+    assert len(result["cum_hazard"]) == 1
+    assert result["estimate"] == result["cum_hazard"][-1]
+    assert result["nondecreasing"] is True

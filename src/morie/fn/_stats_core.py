@@ -226,7 +226,42 @@ def _edge_wrap(name, fn):
     bisection cap (chi2: 13.0, t: 55.0), logpdf outside the support
     raised, and geom.cdf(-1) was -0.43.
     """
+    import inspect as _inspect
+    _params = list(_inspect.signature(fn).parameters)[2:]   # after self, x
+    _takes_loc = "loc" in _params
+    _takes_scale = "scale" in _params
+    _n_pos = len(_params)
+
     def wrapped(self, x, *args, **kw):
+        # scipy's loc / scale on a body that has none: shift and scale
+        # the argument (cdf/sf/pdf family) or the result (ppf/isf). Given
+        # positionally past the body's own parameters, they are loc then
+        # scale, as in t.ppf(q, df, loc, scale).
+        loc = kw.pop("loc", 0.0) if not _takes_loc else None
+        scale = kw.pop("scale", 1.0) if not _takes_scale else None
+        if len(args) > _n_pos:
+            extra, args = args[_n_pos:], args[:_n_pos]
+            if loc is not None:
+                loc = extra[0]
+            if scale is not None and len(extra) > 1:
+                scale = extra[1]
+        loc = 0.0 if loc is None else float(loc)
+        scale = 1.0 if scale is None else float(scale)
+        affine = loc != 0.0 or scale != 1.0
+        if affine and scale <= 0:
+            return _math.nan
+        if affine:
+            if name in ("ppf", "isf"):
+                base = wrapped(self, x, *args, **kw)
+                return _maybe_map(lambda r: loc + scale * r, base)
+            shifted = _maybe_map(lambda v: (v - loc) / scale, x)
+            base = wrapped(self, shifted, *args, **kw)
+            if name == "pdf":
+                return _maybe_map(lambda r: r / scale, base)
+            if name == "logpdf":
+                return _maybe_map(lambda r: r - _math.log(scale), base)
+            return base
+
         def one(v):
             v = float(v)
             if v != v:

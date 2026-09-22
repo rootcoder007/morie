@@ -7,18 +7,17 @@ from morie.fn.autofm import autoformer
 
 def test_autofm_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    seq_len = 100
-    result = autoformer(X, y, seq_len)
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    kernel = 25
+    result = autoformer(x, kernel)
     assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
+    assert "trend" in result
+    assert "seasonal" in result
 
 
 def test_autofm_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    seq_len = 100
-    result = autoformer(X, y, seq_len)
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    kernel = 25
+    result = autoformer(x, kernel)
     assert isinstance(result, dict)

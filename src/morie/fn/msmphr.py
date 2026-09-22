@@ -21,13 +21,20 @@ def _weighted_cox(X, time, event, w, max_iter=100, tol=1e-9):
         ew = w * np.exp(eta)
         S0 = np.cumsum(ew[::-1])[::-1]
         S1 = np.cumsum((ew[:, None] * X)[::-1], axis=0)[::-1]
+        # S2(i) = sum_{k >= i} ew_k x_k x_k^T as a suffix sum of the
+        # p*p outer products (row-major flattened), so the risk-set
+        # Hessian is O(n p^2) rather than the O(n^2 p^2) of recomputing
+        # the tail product at every event
+        xx = np.array([[X[k, a] * X[k, b] for a in range(p) for b in range(p)]
+                       for k in range(n)])
+        S2 = np.cumsum((ew[:, None] * xx)[::-1], axis=0)[::-1]
         grad = np.zeros(p)
         H = np.zeros((p, p))
         for i in np.flatnonzero(event == 1):
             xbar = S1[i] / S0[i]
             grad += w[i] * (X[i] - xbar)
-            S2 = ((ew[i:, None] * X[i:]).T @ X[i:]) / S0[i]
-            H += w[i] * (S2 - np.outer(xbar, xbar))
+            S2i = S2[i].reshape(p, p) / S0[i]
+            H += w[i] * (S2i - np.outer(xbar, xbar))
         try:
             step = np.linalg.solve(H, grad)
         except np.linalg.LinAlgError:

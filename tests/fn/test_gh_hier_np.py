@@ -10,10 +10,14 @@ def test_gh_hier_np_basic():
     x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     result = ghosal_hierarchical_np(x)
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
 
 
 def test_gh_hier_np_edge():
     """Test edge cases."""
     result = ghosal_hierarchical_np(np.array([42.0]))
-    assert result["n"] == 1
+    assert "K_n" in result
+    assert isinstance(result["K_n"], int)
+    assert result["K_n"] >= 0
+    assert "posterior_positive" in result
+    assert "method" in result

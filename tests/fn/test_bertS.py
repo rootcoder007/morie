@@ -7,18 +7,14 @@ from morie.fn.bertS import bertscore
 
 def test_bertS_basic():
     """Test basic functionality."""
-    candidate = np.random.default_rng(42).normal(0, 1, 100)
     reference = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = bertscore(candidate, reference, model)
+    candidate = np.random.default_rng(42).normal(0, 1, 100)
+    result = bertscore(reference, candidate)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "P" in result
 def test_bertS_edge():
     """Test edge cases."""
-    candidate = np.random.default_rng(42).normal(0, 1, 100)
     reference = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = bertscore(candidate, reference, model)
+    candidate = np.random.default_rng(42).normal(0, 1, 100)
+    result = bertscore(reference, candidate)
     assert isinstance(result, dict)

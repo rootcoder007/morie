@@ -8,7 +8,7 @@ from morie.fn.tbats import tbats
 def test_tbats_basic():
     """TBATS fit on simple series."""
     rng = np.random.default_rng(42)
-    y = np.sin(np.arange(100) * 2 * np.pi / 12) + rng.standard_normal(100) * 0.1
+    y = 5.0 + np.sin(np.arange(100) * 2 * np.pi / 12) + rng.standard_normal(100) * 0.1
     r = tbats(y, seasonal_periods=[12])
     assert r.fitted.shape == y.shape
     assert r.residuals.shape == y.shape

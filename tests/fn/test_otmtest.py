@@ -1,7 +1,7 @@
 """Tests for otmtest.ot_mmd_two_sample.
 
 The estimators are checked against a direct transcription of Gretton et
-al. (2012), and the test against its own operating characteristics.
+al. (201), and the test against its own operating characteristics.
 """
 
 from morie.fn import _array_core as np

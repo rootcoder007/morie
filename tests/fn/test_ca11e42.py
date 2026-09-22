@@ -7,14 +7,22 @@ from morie.fn.ca11e42 import ca_chapter_11_equation_42
 
 def test_ca11e42_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ca_chapter_11_equation_42(x)
+    q = 50.0
+    df = 10
+    result = ca_chapter_11_equation_42(q, df)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    # Independently compute the documented formula: I^2 = ((Q - df) / Q) * 100
+    expected = ((q - df) / q) * 100
+    assert result["value"] == expected
 
 
 def test_ca11e42_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ca_chapter_11_equation_42(x)
+    q = 10.0
+    df = 5
+    result = ca_chapter_11_equation_42(q, df)
     assert isinstance(result, dict)
+    assert "value" in result
+    expected = ((q - df) / q) * 100
+    assert result["value"] == expected

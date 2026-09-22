@@ -14,9 +14,16 @@ def test_gctvc_basic():
     L2 = 0.5 * L1 + 0.7 * A1 + rng.normal(scale=0.7, size=n)
     A2 = (rng.random(n) < 1 / (1 + np.exp(-1.5 * L2))).astype(float)
     y = A1 + A2 + L2 + rng.normal(scale=0.5, size=n)
-    result = g_computation_time_varying(y, np.c_[A1, A2], np.c_[L1, L2], n_mc=4000)
+    treatment_history = np.column_stack([A1, A2])
+    covariate_history = np.column_stack([L1, L2])
+    result = g_computation_time_varying(
+        y, treatment_history, covariate_history, n_mc=4000
+    )
     assert result["estimate"] == pytest.approx(2.7, abs=0.25)  # measured ~2.68
     assert result["estimate"] == pytest.approx(result["EY_always"] - result["EY_never"])
+    assert result["n"] == n
+    assert result["n_periods"] == 2
+    assert result["method"] == "G-computation (parametric g-formula) always-vs-never contrast"
 
 
 def test_gctvc_edge():

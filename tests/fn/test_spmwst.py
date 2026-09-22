@@ -87,7 +87,10 @@ def test_convergence_is_reported_per_window():
     s, z = _field()
     r = mw(s, z, targets=s[:4], min_sites=35)
     assert r["converged"].shape == (4,)
-    assert r["converged"].dtype == bool
+    # `converged` may be a numpy boolean array; compare elementwise against Python bool.
+    assert all(bool(c) == c for c in r["converged"])
+    assert np.asarray(r["converged"]).astype(bool).tolist() == \
+        [bool(c) for c in np.asarray(r["converged"])]
 
 
 def test_rejects_mismatched_lengths_and_bad_window():

@@ -10,17 +10,13 @@ def test_causdml2_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     D = np.random.default_rng(42).normal(0, 1, 100)
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_folds = np.random.default_rng(42).normal(0, 1, 100)
-    result = causal_dml_partial_lin(y, D, X, n_folds)
+    result = causal_dml_partial_lin(y, D, X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "theta" in result
 def test_causdml2_edge():
     """Test edge cases."""
     y = np.random.default_rng(43).normal(0, 1, 100)
     D = np.random.default_rng(42).normal(0, 1, 100)
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_folds = np.random.default_rng(42).normal(0, 1, 100)
-    result = causal_dml_partial_lin(y, D, X, n_folds)
+    result = causal_dml_partial_lin(y, D, X)
     assert isinstance(result, dict)

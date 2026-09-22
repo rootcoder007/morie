@@ -333,12 +333,17 @@ def minimize(fun, x0, args=(), method=None, bounds=None, **kw):
         _raw = fun
 
         def fun(z, *a):          # noqa: F811 -- deliberate shadow
-            return _raw(clip(list(z)), *a)
+            return _raw(_ac.marr(clip(list(z))), *a)
     else:
         def clip(v):
             return list(v)
 
-    if m in ("neldermead", "powell"):
+    constraints = kw.get("constraints")
+    if m in ("slsqp", "cobyla", "trustconstr") or constraints:
+        res = _constrained(fun, x0, constraints, args=args,
+                           maxiter=opts.get("maxiter"),
+                           ftol=opts.get("ftol", 1e-9), lo=lo, hi=hi)
+    elif m in ("neldermead", "powell"):
         res = _nelder_mead(fun, x0, args=args,
                            maxiter=opts.get("maxiter"),
                            xatol=opts.get("xatol", 1e-8),
@@ -355,6 +360,91 @@ def minimize(fun, x0, args=(), method=None, bounds=None, **kw):
                              success=getattr(res, "success", True),
                              nit=getattr(res, "nit", 0))
     return res
+
+
+def _constrained(fun, x0, constraints, args=(), maxiter=None, ftol=1e-9,
+                 lo=None, hi=None):
+    """Equality / inequality constrained minimisation (the SLSQP call
+    sites) by the augmented Lagrangian method of Hestenes-Powell:
+
+        L_r(x, lam, mu) = f(x) - sum lam_i h_i(x) + r/2 sum h_i(x)^2
+                          + 1/(2r) sum ( max(0, mu_j - r g_j(x))^2 - mu_j^2 )
+
+    with h_i(x) = 0 the equalities and g_j(x) >= 0 the inequalities
+    (scipy's constraint convention). Each outer round minimises L_r with
+    the quasi-Newton engine, updates the multipliers
+    lam <- lam - r h, mu <- max(0, mu - r g), and grows r when the
+    violation did not fall by a factor of four (Nocedal & Wright 2006,
+    Framework 17.3). Bounds are handled by the projection wrapper
+    installed by ``minimize`` before this is called.
+    """
+    if constraints is None:
+        constraints = []
+    if isinstance(constraints, dict):
+        constraints = [constraints]
+    def _vec(f, cargs):
+        def g(x):
+            return [float(v) for v in
+                    _ac.atleast_1d(f(_ac.asarray(x), *cargs))._flat()]
+        return g
+
+    eqs, ineqs = [], []
+    for c in constraints:
+        vec = _vec(c["fun"], tuple(c.get("args", ())))
+        (eqs if c.get("type", "eq") == "eq" else ineqs).append(vec)
+
+    # bounds join the inequality set: the projection wrapper alone makes
+    # the objective flat outside the box, so the quasi-Newton engine
+    # could park there with the equality constraints unmet
+    for i, (a, b) in enumerate(zip(lo or [], hi or [])):
+        if a > -_math.inf:
+            ineqs.append(lambda x, i=i, a=a: [x[i] - a])
+        if b < _math.inf:
+            ineqs.append(lambda x, i=i, b=b: [b - x[i]])
+
+    def h_all(x):
+        return [v for f in eqs for v in f(x)]
+
+    def g_all(x):
+        return [v for f in ineqs for v in f(x)]
+
+    x = list(x0)
+    lam = [0.0] * len(h_all(x))
+    mu = [0.0] * len(g_all(x))
+    r = 10.0
+    outer = maxiter or 50
+    viol_prev = _math.inf
+    fx = float(fun(_ac.marr(x), *args))
+    for _ in range(outer):
+        def lagr(z, lam=lam, mu=mu, r=r):
+            zz = _ac.marr(list(z))
+            val = float(fun(zz, *args))
+            for hv, lv in zip(h_all(zz), lam):
+                val += -lv * hv + 0.5 * r * hv * hv
+            for gv, mv in zip(g_all(zz), mu):
+                t = max(0.0, mv - r * gv)
+                val += (t * t - mv * mv) / (2.0 * r)
+            return val
+        res = _bfgs(lagr, x, args=(), maxiter=200, gtol=1e-8)
+        x_new = list(_ac.asarray(res.x)._flat())
+        hv = h_all(x_new)
+        gv = g_all(x_new)
+        viol = max([abs(v) for v in hv] + [max(0.0, -v) for v in gv] + [0.0])
+        lam = [lv - r * v for lv, v in zip(lam, hv)]
+        mu = [max(0.0, mv - r * v) for mv, v in zip(mu, gv)]
+        f_new = float(fun(_ac.marr(x_new), *args))
+        step = max([abs(a - b) for a, b in zip(x_new, x)] + [0.0])
+        x = x_new
+        if viol <= 1e-9 and (abs(f_new - fx) <= ftol * max(1.0, abs(fx))
+                             or step <= 1e-10):
+            fx = f_new
+            break
+        fx = f_new
+        if viol > 0.25 * viol_prev:
+            r = min(r * 10.0, 1e12)
+        viol_prev = viol
+    return OptimizeResult(x=_ac.asarray(x), fun=fx, success=viol <= 1e-6,
+                          nit=outer)
 
 
 def minimize_scalar(fun, bounds=None, method=None, **kw):

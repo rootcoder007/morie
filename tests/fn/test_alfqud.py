@@ -7,18 +7,43 @@ from morie.fn.alfqud import alphadev_quicksort_disc
 
 def test_alfqud_basic():
     """Test basic functionality."""
-    target = np.random.default_rng(43).integers(0, 2, 100)
-    action_space = np.random.default_rng(42).normal(0, 1, 100)
-    reward_fn = lambda v: v
-    result = alphadev_quicksort_disc(target, action_space, reward_fn)
+    rng = np.random.default_rng(43)
+    target = [list(rng.integers(0, 100, 5).tolist()) for _ in range(4)]
+    reward_fn = lambda prog, inputs, targets, n_reg: 0
+    result = alphadev_quicksort_disc(target, reward_fn=reward_fn,
+                                     n_reg=2, max_len=2,
+                                     search="bfs", seed=0)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "program" in result
+    assert "score" in result
+    assert "correct" in result
+    assert "max_correct" in result
+    assert "solved" in result
+    assert "outputs" in result
+    assert "targets" in result
+    assert "length" in result
+    assert "nodes" in result
+    assert "n_actions" in result
+    assert "search" in result
+    assert result["n_mem"] == 5
+    assert result["n_reg"] == 2
+    assert result["max_len"] == 2
+    assert result["latency_weight"] == 0.0
+    assert result["search"] == "bfs"
+    full = sum(len(t) for t in target)
+    assert result["max_correct"] == full
+    expected_targets = [sorted(list(x)) for x in target]
+    assert result["targets"] == expected_targets
 
 
 def test_alfqud_edge():
     """Test edge cases."""
-    target = np.random.default_rng(43).integers(0, 2, 100)
-    action_space = np.random.default_rng(42).normal(0, 1, 100)
-    reward_fn = lambda v: v
-    result = alphadev_quicksort_disc(target, action_space, reward_fn)
+    rng = np.random.default_rng(43)
+    target = [list(rng.integers(0, 100, 3).tolist()) for _ in range(2)]
+    reward_fn = lambda prog, inputs, targets, n_reg: 0
+    result = alphadev_quicksort_disc(target, reward_fn=reward_fn,
+                                     n_reg=2, max_len=1,
+                                     search="bfs", seed=0)
     assert isinstance(result, dict)
+    assert result["length"] <= 1
+    assert result["max_len"] == 1

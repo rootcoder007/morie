@@ -20,13 +20,19 @@ def _cox_newton(X, time, event, max_iter=100, tol=1e-9):
         # risk set n..i (times sorted ascending): reverse cumulative sums
         S0 = np.cumsum(w[::-1])[::-1]
         S1 = np.cumsum((w[:, None] * X)[::-1], axis=0)[::-1]
+        # S2(i) = sum_{k >= i} w_k x_k x_k^T as a suffix sum of the p*p
+        # outer products (row-major flattened): O(n p^2) for the whole
+        # risk-set Hessian instead of O(n^2 p^2) from recomputing the
+        # tail product at every event
+        xx = np.array([[X[k, a] * X[k, b] for a in range(p) for b in range(p)]
+                       for k in range(n)])
+        S2 = np.cumsum((w[:, None] * xx)[::-1], axis=0)[::-1]
         grad = np.zeros(p)
         H = np.zeros((p, p))
         for i in np.flatnonzero(event == 1):
             xbar = S1[i] / S0[i]
             grad += X[i] - xbar
-            S2 = ((w[i:, None] * X[i:]).T @ X[i:]) / S0[i]
-            H += S2 - np.outer(xbar, xbar)
+            H += S2[i].reshape(p, p) / S0[i] - np.outer(xbar, xbar)
         try:
             step = np.linalg.solve(H, grad)
         except np.linalg.LinAlgError:

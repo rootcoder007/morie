@@ -7,20 +7,20 @@ from morie.fn.besagl import besag_York_Mollie
 
 def test_besagl_basic():
     """Test basic functionality."""
-    counts = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    offset = np.random.default_rng(42).normal(0, 1, 100)
-    adjacency = np.array([[0, 1, 0], [0, 0, 1], [0, 0, 0]])
-    result = besag_York_Mollie(counts, X, offset, adjacency)
+    y = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    E = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    A = np.random.default_rng(42).normal(0, 1, (100, 100))
+    u = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    v = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = besag_York_Mollie(y, E, A, u, v)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "logpost" in result
 def test_besagl_edge():
     """Test edge cases."""
-    counts = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    offset = np.random.default_rng(42).normal(0, 1, 100)
-    adjacency = np.array([[0, 1, 0], [0, 0, 1], [0, 0, 0]])
-    result = besag_York_Mollie(counts, X, offset, adjacency)
+    y = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    E = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    A = np.random.default_rng(42).normal(0, 1, (100, 100))
+    u = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    v = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = besag_York_Mollie(y, E, A, u, v)
     assert isinstance(result, dict)

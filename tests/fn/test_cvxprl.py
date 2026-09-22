@@ -7,18 +7,30 @@ from morie.fn.cvxprl import boyd_perspective
 
 def test_cvxprl_basic():
     """Test basic functionality."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
+    rng = np.random.default_rng(42)
+    f = lambda z: z ** 2
+    x = rng.normal(0, 1, 100)
+    t = np.linspace(0.5, 10, 100)
     result = boyd_perspective(f, x, t)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    assert "ratio" in result
+    assert "f_ratio" in result
+    assert "homogeneous" in result
+    expected_value = t * f(x / t)
+    assert np.allclose(result["value"], expected_value)
+    assert np.allclose(result["ratio"], x / t)
+    assert np.allclose(result["f_ratio"], f(x / t))
+    assert result["homogeneous"] is True
 
 
 def test_cvxprl_edge():
     """Test edge cases."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
+    rng = np.random.default_rng(42)
+    f = lambda z: z ** 2
+    x = rng.normal(0, 1, 100)
+    t = np.linspace(0.5, 10, 100)
     result = boyd_perspective(f, x, t)
     assert isinstance(result, dict)
+    assert "value" in result
+    assert result["homogeneous"] is True

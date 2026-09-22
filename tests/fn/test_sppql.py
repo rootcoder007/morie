@@ -11,7 +11,8 @@ def _data(n=30, seed=7):
     rs = np.random.RandomState(seed)
     X = np.column_stack([np.ones(n), rs.uniform(-1, 1, n)])
     beta = np.array([0.5, 0.7])
-    d = np.abs(np.subtract.outer(np.linspace(0, 8, n), np.linspace(0, 8, n)))
+    grid = np.linspace(0, 8, n)
+    d = np.abs(grid[:, None] - grid[None, :])
     Sigma_S = 0.4 * np.exp(-d / 2.5)
     S = np.linalg.cholesky(Sigma_S + 1e-10 * np.eye(n)) @ rs.normal(0, 1, n)
     y = np.array([float(rs.poisson(m)) for m in np.exp(X @ beta + S)])
@@ -61,7 +62,8 @@ def test_marginal_and_conditional_specifications_are_distinguished():
     """The text's choice: dependence in R, or in Sigma_S."""
     y, X, Sigma_S, _ = _data()
     n = y.size
-    d = np.abs(np.subtract.outer(np.linspace(0, 8, n), np.linspace(0, 8, n)))
+    grid = np.linspace(0, 8, n)
+    d = np.abs(grid[:, None] - grid[None, :])
     cond = schabenberger_pql(y, X, Sigma_S, family="poisson")
     marg = schabenberger_pql(y, X, 1e-8 * np.eye(n), family="poisson",
                              R=np.exp(-d / 2.5))

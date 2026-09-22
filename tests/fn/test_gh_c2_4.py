@@ -15,5 +15,15 @@ def test_gh_c2_4_basic():
 
 def test_gh_c2_4_edge():
     """Test edge cases."""
-    result = ghosal_exp_link(np.array([42.0]))
-    assert result["n"] == 1
+    # Need at least two points for the trapezoidal normalizer; use two points.
+    x = np.array([1.0, 2.0])
+    import math
+    result = ghosal_exp_link(x)
+    assert "normalizer" in result
+    # Independent computation of the trapezoidal normalizer.
+    xs = [1.0, 2.0]
+    psi = lambda t: math.sin(3.0 * t)
+    e0 = math.exp(psi(xs[0]))
+    e1 = math.exp(psi(xs[1]))
+    expected_Z = 0.5 * (e0 + e1) * (xs[1] - xs[0])
+    assert math.isclose(float(result["normalizer"]), expected_Z, rel_tol=1e-12)

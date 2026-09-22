@@ -8,15 +8,11 @@ from morie.fn.esttsl import theta_method
 def test_esttsl_basic():
     """Test basic functionality."""
     y = np.random.default_rng(43).normal(0, 1, 100)
-    horizon = np.random.default_rng(42).normal(0, 1, 100)
-    result = theta_method(y, horizon)
+    result = theta_method(y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "forecast" in result
 def test_esttsl_edge():
     """Test edge cases."""
     y = np.random.default_rng(43).normal(0, 1, 100)
-    horizon = np.random.default_rng(42).normal(0, 1, 100)
-    result = theta_method(y, horizon)
+    result = theta_method(y)
     assert isinstance(result, dict)

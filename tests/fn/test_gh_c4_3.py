@@ -7,13 +7,20 @@ from morie.fn.gh_c4_3 import ghosal_dp_var
 
 def test_gh_c4_3_basic():
     """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = ghosal_dp_var(x)
+    g0 = 0.4
+    alpha = 3.0
+    x = np.array([g0])
+    result = ghosal_dp_var(x, alpha)
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    expected = g0 * (1.0 - g0) / (1.0 + abs(alpha))
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
+    assert np.isclose(float(result["estimate"]), expected)
 
 
 def test_gh_c4_3_edge():
     """Test edge cases."""
-    result = ghosal_dp_var(np.array([42.0]))
-    assert result["n"] == 1
+    g0 = 42.0
+    alpha = 0.0
+    result = ghosal_dp_var(np.array([g0]), alpha)
+    expected = g0 * (1.0 - g0) / (1.0 + abs(alpha))
+    assert np.isclose(float(result["estimate"]), expected)

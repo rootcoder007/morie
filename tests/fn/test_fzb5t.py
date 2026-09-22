@@ -7,20 +7,42 @@ from morie.fn.fzb5t import fauzi_b5_coefficient_mrl
 
 def test_fzb5t_basic():
     """Test basic functionality."""
-    t = np.linspace(0, 10, 100)
-    g_func = lambda v: v
-    density = np.random.default_rng(42).normal(0, 1, 100)
-    mrl = np.random.default_rng(42).normal(0, 1, 100)
-    result = fauzi_b5_coefficient_mrl(t, g_func, density, mrl)
+    dg = 0.5
+    density = 0.3
+    mrl = 2.0
+    surv = 0.8
+    result = fauzi_b5_coefficient_mrl(dg, density, mrl, surv)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result
+    assert "varterm" in result
+    assert "method" in result
+    expected_estimate = dg * density * mrl ** 2
+    expected_varterm = expected_estimate / (surv * surv)
+    assert result["estimate"] == expected_estimate
+    assert result["varterm"] == expected_varterm
+
+
+def test_fzb5t_no_surv():
+    """Test without surv argument returns NaN varterm."""
+    dg = 0.5
+    density = 0.3
+    mrl = 2.0
+    result = fauzi_b5_coefficient_mrl(dg, density, mrl)
+    assert isinstance(result, dict)
+    assert "estimate" in result
+    assert "varterm" in result
+    assert "method" in result
+    expected_estimate = dg * density * mrl ** 2
+    assert result["estimate"] == expected_estimate
+    assert np.isnan(result["varterm"])
 
 
 def test_fzb5t_edge():
     """Test edge cases."""
-    t = np.linspace(0, 10, 100)
-    g_func = lambda v: v
-    density = np.random.default_rng(42).normal(0, 1, 100)
-    mrl = np.random.default_rng(42).normal(0, 1, 100)
-    result = fauzi_b5_coefficient_mrl(t, g_func, density, mrl)
+    dg = 1.0
+    density = 0.0
+    mrl = 2.0
+    surv = 0.5
+    result = fauzi_b5_coefficient_mrl(dg, density, mrl, surv)
     assert isinstance(result, dict)
+    assert result["estimate"] == 0.0

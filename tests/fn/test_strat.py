@@ -12,7 +12,7 @@ def test_equal_strata():
     df = pd.DataFrame(
         {
             "y": rng.standard_normal(200),
-            "stratum": np.repeat(["A", "B"], 100),
+            "stratum": np.repeat([0, 1], 100),
         }
     )
     result = stratified_mean(df)
@@ -26,11 +26,18 @@ def test_weighted_mean():
     df = pd.DataFrame(
         {
             "y": np.concatenate([rng.normal(10, 1, 50), rng.normal(20, 1, 50)]),
-            "stratum": np.repeat(["A", "B"], 50),
+            "stratum": np.repeat([0, 1], 50),
         }
     )
-    # A is 90% of population
-    result = stratified_mean(df, pop_sizes={"A": 900, "B": 100})
+    # A (stratum 0) is 90% of population
+    result = stratified_mean(df, pop_sizes={0: 900, 1: 100})
+    # Independent computation of the documented formula:
+    # W_h = N_h / N; y_bar_st = sum(W_h * y_bar_h)
+    N_total = 900 + 100
+    y_bar_A = float(df["y"][df["stratum"] == 0].mean())
+    y_bar_B = float(df["y"][df["stratum"] == 1].mean())
+    expected = (900 / N_total) * y_bar_A + (100 / N_total) * y_bar_B
+    assert abs(result.value - expected) < 1e-9
     assert result.value < 15  # Weighted toward A's mean of 10
     assert result.extra["n_strata"] == 2
 

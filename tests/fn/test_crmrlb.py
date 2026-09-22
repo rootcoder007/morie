@@ -7,14 +7,12 @@ from morie.fn.crmrlb import cramer_rao_bound
 
 def test_crmrlb_basic():
     """Test basic functionality."""
-    fisher_info = np.random.default_rng(42).normal(0, 1, 100)
+    fisher_info = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
     result = cramer_rao_bound(fisher_info)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "bound" in result
 def test_crmrlb_edge():
     """Test edge cases."""
-    fisher_info = np.random.default_rng(42).normal(0, 1, 100)
+    fisher_info = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
     result = cramer_rao_bound(fisher_info)
     assert isinstance(result, dict)

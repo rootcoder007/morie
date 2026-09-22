@@ -7,7 +7,7 @@ from morie.fn.baysrr import bayes_ridge
 
 def test_baysrr_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
+    y = np.random.default_rng(43).normal(0, 1, 10)
     M = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = bayes_ridge(y, M)
     assert isinstance(result, dict)
@@ -16,7 +16,7 @@ def test_baysrr_basic():
 
 def test_baysrr_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
+    y = np.random.default_rng(43).normal(0, 1, 10)
     M = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = bayes_ridge(y, M)
     assert isinstance(result, dict)

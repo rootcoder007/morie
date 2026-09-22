@@ -10,7 +10,7 @@ def _setup(n=20, seed=5):
     rs = np.random.RandomState(seed)
     X = np.column_stack([np.ones(n), rs.uniform(-1, 1, n)])
     t = np.linspace(0, 8, n)
-    d = np.abs(np.subtract.outer(t, t))
+    d = np.abs(t[:, None] - t[None, :])
     Sigma = 0.5 * np.exp(-d / 2.0) + 0.05 * np.eye(n)
     nu = rs.normal(0.5, 0.4, n)
     s0 = 0.5 * np.exp(-np.abs(t - 4.0) / 2.0)

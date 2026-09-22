@@ -7,13 +7,22 @@ from morie.fn.gh_c6_1 import ghosal_weak_consist
 
 def test_gh_c6_1_basic():
     """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = ghosal_weak_consist(x)
+    result = ghosal_weak_consist(theta0=0.3, eps=0.1, ns=(20, 80, 320, 1280),
+                                 seed=42)
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert "mass_outside_by_n" in result
+    estimate = result["estimate"]
+    masses = result["mass_outside_by_n"]
+    assert np.all(np.isfinite(np.asarray(estimate, dtype=float)))
+    assert np.all(np.isfinite(np.asarray(masses, dtype=float)))
+    assert len(masses) == 4
+    # The estimate key should be the last mass
+    assert float(np.asarray(estimate)) == float(np.asarray(masses[-1]))
 
 
 def test_gh_c6_1_edge():
-    """Test edge cases."""
-    result = ghosal_weak_consist(np.array([42.0]))
-    assert result["n"] == 1
+    """Test edge cases with a single n."""
+    result = ghosal_weak_consist(theta0=0.3, eps=0.1, ns=(50,), seed=42)
+    assert "estimate" in result
+    assert "mass_outside_by_n" in result
+    assert len(result["mass_outside_by_n"]) == 1

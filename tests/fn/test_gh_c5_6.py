@@ -10,10 +10,13 @@ def test_gh_c5_6_basic():
     x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     result = ghosal_vb_dpm(x)
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
 
 
 def test_gh_c5_6_edge():
     """Test edge cases."""
     result = ghosal_vb_dpm(np.array([42.0]))
-    assert result["n"] == 1
+    assert "estimate" in result
+    centers = result["centers"]
+    arr = np.asarray(centers, dtype=float)
+    assert np.all(np.isfinite(arr))

@@ -8,15 +8,11 @@ from morie.fn.eslwlt import esl_wavelet_smooth
 def test_eslwlt_basic():
     """Test basic functionality."""
     y = np.random.default_rng(43).normal(0, 1, 100)
-    wavelet = "morl"
-    result = esl_wavelet_smooth(y, wavelet)
+    result = esl_wavelet_smooth(y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "signal" in result
 def test_eslwlt_edge():
     """Test edge cases."""
     y = np.random.default_rng(43).normal(0, 1, 100)
-    wavelet = "morl"
-    result = esl_wavelet_smooth(y, wavelet)
+    result = esl_wavelet_smooth(y)
     assert isinstance(result, dict)

@@ -7,14 +7,25 @@ from morie.fn.cox_snell_r2 import cox_snell_r2
 
 def test_ca4e13_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cox_snell_r2(x)
+    rng = np.random.default_rng(42)
+    neg2ll_null = rng.normal(200, 1, 100).sum()
+    neg2ll_full = rng.normal(150, 1, 100).sum()
+    n = 100
+    result = cox_snell_r2(neg2ll_null, neg2ll_full, n)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "value" in result
+    expected = 1 - np.exp(-(neg2ll_null - neg2ll_full) / n)
+    assert np.isclose(result["value"], expected)
 
 
 def test_ca4e13_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cox_snell_r2(x)
+    rng = np.random.default_rng(42)
+    neg2ll_null = rng.normal(200, 1, 50).sum()
+    neg2ll_full = rng.normal(180, 1, 50).sum()
+    n = 50
+    result = cox_snell_r2(neg2ll_null, neg2ll_full, n)
     assert isinstance(result, dict)
+    assert "value" in result
+    expected = 1 - np.exp(-(neg2ll_null - neg2ll_full) / n)
+    assert np.isclose(result["value"], expected)

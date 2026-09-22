@@ -7,18 +7,12 @@ from morie.fn.dprnyi import renyi_dp_composition
 
 def test_dprnyi_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    epsilons = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    result = renyi_dp_composition(y, epsilons, alpha)
+    epsilons = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = renyi_dp_composition(epsilons)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
+    assert "rdp_total" in result
 def test_dprnyi_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    epsilons = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    result = renyi_dp_composition(y, epsilons, alpha)
+    epsilons = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5
+    result = renyi_dp_composition(epsilons)
     assert isinstance(result, dict)

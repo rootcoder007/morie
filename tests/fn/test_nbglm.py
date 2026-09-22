@@ -10,8 +10,12 @@ def test_nbglm_positive_coef():
     n = 300
     X = rng.standard_normal((n, 1))
     mu = np.exp(0.5 + 1.0 * X[:, 0])
-    y = rng.negative_binomial(n=5, p=5 / (5 + mu))
-    res = negbin_glm(y.astype(float), X, alpha=0.2)
+    n_nb = 5.0
+    p_nb = n_nb / (n_nb + mu)
+    y = np.empty(n, dtype=float)
+    for i in range(n):
+        y[i] = float(rng.negative_binomial(n=n_nb, p=float(p_nb[i])))
+    res = negbin_glm(y, X, alpha=0.2)
     assert res.coefficients["x0"] > 0
 
 
