@@ -73,3 +73,7 @@ sorsl = sor_solve
 
 # compact alias per ledger/NAMING.md
 sorsolve = sor_solve
+
+
+def cheatsheet() -> str:
+    return "sor_solve(A, b) -> Successive Over-Relaxation iterative solver for Ax = b."

@@ -71,3 +71,7 @@ def lasr(
         ],
         payload={"coef": coefs.tolist(), "intercept": intercept, "r2": r2, "alpha": alpha, "nonzero": nonzero},
     )
+
+
+def cheatsheet() -> str:
+    return "lasr(X, y, alpha, fit_intercept, max_iter) -> Lasso regression (L1-regularized OLS) - performs variable selection."

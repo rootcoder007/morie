@@ -96,3 +96,7 @@ def runsq(x, axis=0, cdf=None):
         "p_value": float(p_value),
         "interpretation": interpretation,
     }
+
+
+def cheatsheet() -> str:
+    return "runsq(x, axis, cdf) -> Wald-Wolfowitz runs test for randomness."

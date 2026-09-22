@@ -15,3 +15,7 @@ def ssr(y_pred: Union[Sequence[float], np.ndarray], y_true: Union[Sequence[float
     yp = np.asarray(y_pred, dtype=float)
     yt = np.asarray(y_true, dtype=float)
     return float(np.sum((yp - yt.mean()) ** 2))
+
+
+def cheatsheet() -> str:
+    return "ssr(y_pred, y_true) -> Regression sum of squares: Σᵢ (ŷᵢ − ȳ)²."

@@ -61,3 +61,7 @@ def pitman_efficacy(deriv, var):
 
 
 arepit = are_pitman
+
+
+def cheatsheet() -> str:
+    return "are_pitman(deriv, var, deriv_star, var_star) -> ARE of one test against another via their Pitman efficacies."

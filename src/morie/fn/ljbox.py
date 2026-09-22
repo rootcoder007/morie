@@ -33,3 +33,7 @@ def ljbox(residuals: Union[Sequence, np.ndarray], lags: int = 10):
             ("Max |rho| up to lag", float(np.max(np.abs(rho)))),
         ],
     )
+
+
+def cheatsheet() -> str:
+    return "ljbox(residuals, lags) -> Ljung-Box Q-statistic for serial correlation in residuals."

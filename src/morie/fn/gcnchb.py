@@ -76,3 +76,7 @@ def chebnet(L, X, K=3, theta=None):
             "method": "sum_k theta_k T_k(2L/lmax - I) X, Defferrard et al. (2016) eqs. (4)-(5)",
         },
     )
+
+
+def cheatsheet() -> str:
+    return "chebnet(L, X, K, theta) -> Chebyshev polynomial filter of order K-1 applied to X."

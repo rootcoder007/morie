@@ -79,3 +79,7 @@ def quanttest(x, q0, p=0.5, alternative="two-sided"):
 
 
 gibbons_quantile_test = quanttest
+
+
+def cheatsheet() -> str:
+    return "quanttest(x, q0, p, alternative) -> Binomial test of H0: x_p = q0 using the count below q0."

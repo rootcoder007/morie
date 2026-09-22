@@ -416,3 +416,7 @@ def term_rewriting(term, rules, strategy="innermost",
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 termrewriting = term_rewriting
+
+
+def cheatsheet() -> str:
+    return "rule(lhs, rhs) -> A rewrite rule, checked for the two conditions rules need."

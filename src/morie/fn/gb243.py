@@ -63,3 +63,7 @@ def ostatbeta(u, r, n):
 
 
 gibbons_order_beta = ostatbeta
+
+
+def cheatsheet() -> str:
+    return "ostatbeta(u, r, n) -> Density, cdf and moments of U_(r) for a Uniform(0, 1) parent."

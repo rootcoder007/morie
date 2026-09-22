@@ -91,3 +91,7 @@ def fisherex(table, alternative="two-sided"):
 
 
 gibbons_fisher_exact = fisherex
+
+
+def cheatsheet() -> str:
+    return "fisherex(table, alternative) -> Exact conditional test of independence, Sec. 14.4."

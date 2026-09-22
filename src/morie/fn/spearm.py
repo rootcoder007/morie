@@ -34,3 +34,7 @@ def spearm(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
             ("Direction", "positive" if res.statistic > 0 else "negative"),
         ],
     )
+
+
+def cheatsheet() -> str:
+    return "spearm(x, y) -> Spearman's rank correlation rho."

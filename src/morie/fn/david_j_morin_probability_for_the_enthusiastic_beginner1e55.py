@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5
         stacklevel=2,
     )
     return _impl(n, N)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_55(n, N) -> Deprecated; use :func:`morie.fn.starbrec` instead."

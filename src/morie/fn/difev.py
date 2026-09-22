@@ -96,3 +96,7 @@ def difev(f, bounds, pop_size=50, generations=100, F=0.8, Cr=0.7, full_output=Fa
     if full_output:
         return x[best_idx], {"generations": generations, "converged": False, "final_value": fx[best_idx]}
     return x[best_idx]
+
+
+def cheatsheet() -> str:
+    return "difev(f, bounds, pop_size, generations, F, Cr, full_output, seed) -> Differential evolution (DE) for global optimization."

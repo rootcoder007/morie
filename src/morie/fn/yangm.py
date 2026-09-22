@@ -78,3 +78,7 @@ def yangm(
         "action_density": float(action_density),
         "structure_constants": f,
     }
+
+
+def cheatsheet() -> str:
+    return "yangm(A, g_coupling, structure_constants) -> Compute the Yang-Mills field strength tensor and action density."

@@ -20,3 +20,7 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_15_equation_10(*arg
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_15_equation_10() -> Deprecated; use :func:`morie.fn.gls_estimator` instead."

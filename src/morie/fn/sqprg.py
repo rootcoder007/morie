@@ -95,3 +95,7 @@ sqprg = sqp_optimize
 
 # compact alias per ledger/NAMING.md
 sqpoptimize = sqp_optimize
+
+
+def cheatsheet() -> str:
+    return "sqp_optimize(f, grad_f, constraints, x0) -> Sequential Quadratic Programming for equality-constrained problems."

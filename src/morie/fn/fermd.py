@@ -49,3 +49,7 @@ def fermd(
         "mean_occupation": float(np.mean(f)),
         "total_energy": float(np.sum(energies * f)),
     }
+
+
+def cheatsheet() -> str:
+    return "fermd(energies, mu, T, kB) -> Compute the Fermi-Dirac distribution."

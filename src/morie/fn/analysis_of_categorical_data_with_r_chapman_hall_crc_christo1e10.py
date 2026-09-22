@@ -20,3 +20,7 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equat
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_10() -> Deprecated; use :func:`morie.fn.or_wald_interval` instead."

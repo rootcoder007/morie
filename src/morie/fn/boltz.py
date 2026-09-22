@@ -66,3 +66,7 @@ def boltz(
         "entropy": float(entropy),
         "free_energy": float(free_energy),
     }
+
+
+def cheatsheet() -> str:
+    return "boltz(energies, T, degeneracies, kB) -> Compute the Boltzmann distribution and partition function."

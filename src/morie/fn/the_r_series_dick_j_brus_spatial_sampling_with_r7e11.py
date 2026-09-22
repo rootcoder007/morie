@@ -20,3 +20,7 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_11(*args
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_11() -> Deprecated; use :func:`morie.fn.twostage_optimal_n_budget` instead."

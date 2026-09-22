@@ -76,3 +76,7 @@ def exactsize(pmf, alpha=0.05, upper=True):
 
 
 gibbons_type1_error = exactsize
+
+
+def cheatsheet() -> str:
+    return "exactsize(pmf, alpha, upper) -> Attainable significance levels and the p-value of an observation."

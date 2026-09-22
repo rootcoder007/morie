@@ -48,3 +48,7 @@ def mcfadr(ll_full: float, ll_null: float):
         ),
         payload={"value": r2, "statistic": r2, "benchmark": bench},
     )
+
+
+def cheatsheet() -> str:
+    return "mcfadr(ll_full, ll_null) -> McFadden pseudo-R^2 for (logistic) regression model fit."

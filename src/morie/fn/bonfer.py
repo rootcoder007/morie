@@ -29,3 +29,7 @@ def bonfer(alpha: float, m: int):
         interpretation=(f"To control FWER at {alpha}, reject each test only if p < {corrected:.4g}."),
         payload={"value": corrected, "statistic": corrected, "alpha": alpha, "m": m},
     )
+
+
+def cheatsheet() -> str:
+    return "bonfer(alpha, m) -> Bonferroni-corrected significance threshold: alpha' = alpha / m."

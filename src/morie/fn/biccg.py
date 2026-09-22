@@ -79,3 +79,7 @@ def bicgstab(
 
 
 biccg = bicgstab
+
+
+def cheatsheet() -> str:
+    return "bicgstab(A, b) -> BiCGSTAB (Bi-Conjugate Gradient Stabilized) iterative solver."

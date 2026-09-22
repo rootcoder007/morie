@@ -68,3 +68,7 @@ def medties(x, y):
 
 
 gibbons_median_ties = medties
+
+
+def cheatsheet() -> str:
+    return "medties(x, y) -> Median test when observations equal the combined median."

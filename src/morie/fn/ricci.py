@@ -55,3 +55,7 @@ def ricci(
         "scalar_curvature": float(scalar),
         "metric_inverse": ginv,
     }
+
+
+def cheatsheet() -> str:
+    return "ricci(riemann, metric) -> Compute the Ricci tensor and scalar curvature from the Riemann tensor."

@@ -73,3 +73,7 @@ def reedm(r: int, m: int) -> dict:
         "d_min": d_min,
         "rate": k / n,
     }
+
+
+def cheatsheet() -> str:
+    return "reedm(r, m) -> Construct the generator matrix for Reed-Muller code RM(r, m)."

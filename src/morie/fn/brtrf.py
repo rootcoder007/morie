@@ -95,3 +95,7 @@ brtrf = brent_root
 
 # compact alias per ledger/NAMING.md
 brentroot = brent_root
+
+
+def cheatsheet() -> str:
+    return "brent_root(f, a, b) -> Brent's method for finding a root of f in [a, b]."

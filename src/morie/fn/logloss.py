@@ -41,3 +41,7 @@ def logloss(p_pred: Union[Sequence, np.ndarray], y_true: Union[Sequence, np.ndar
         ),
         payload={"value": ll, "statistic": ll, "skill_score": skill, "baseline": ll_baseline},
     )
+
+
+def cheatsheet() -> str:
+    return "logloss(p_pred, y_true, eps) -> Binary cross-entropy: -1/n Sigma [y_i log p_i + (1-y_i) log(1-p_i)]."

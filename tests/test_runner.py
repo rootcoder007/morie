@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from morie.runner import build_parser, execute_pipeline, main
 
 _RTESTS_DIR = Path(__file__).resolve().parents[1] / "rtests"
@@ -25,7 +27,7 @@ def test_execute_pipeline_runs_when_confirmed(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert status == 0
     assert "Selected modules: power-design" in captured.out
-    assert "Pipeline completed successfully." in captured.out
+    assert "Pipeline completed successfully (" in captured.out
     assert "Completed modules: power-design" in captured.out
 
 
@@ -58,6 +60,7 @@ def test_parser_accepts_run_module_arguments():
     assert args.cpads_csv.endswith("cpads-2021-2022-pumf2.csv")
 
 
+@pytest.mark.skipif(not _RTESTS_DIR.exists(), reason="needs the sibling rtests/ legacy root")
 def test_main_runs_parity_review(monkeypatch, capsys, tmp_path):
     csv_path = tmp_path / "parity.csv"
     monkeypatch.setattr(

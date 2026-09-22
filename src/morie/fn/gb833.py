@@ -111,3 +111,7 @@ def pctrankloc(x, y, s=0.5, r=None):
 
 
 gibbons_pct_mod_rank_loc = pctrankloc
+
+
+def cheatsheet() -> str:
+    return "pctrankloc(x, y, s, r) -> Gastwirth's T_s - B_r location statistic."

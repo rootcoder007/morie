@@ -87,3 +87,7 @@ def lillieexp(x, alpha=0.05):
 
 
 gibbons_lilliefors_exp = lillieexp
+
+
+def cheatsheet() -> str:
+    return "lillieexp(x, alpha) -> Lilliefors's KS test for the exponential, mean estimated."

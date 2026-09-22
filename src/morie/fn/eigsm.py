@@ -43,3 +43,7 @@ eigsm = eigen_symmetric
 
 # compact alias per ledger/NAMING.md
 eigensymmetric = eigen_symmetric
+
+
+def cheatsheet() -> str:
+    return "eigen_symmetric(A) -> Eigenvalue decomposition for a real symmetric matrix."

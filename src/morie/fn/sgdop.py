@@ -108,3 +108,7 @@ def sgdop(
         weights_new = weights + velocity
 
     return RichResult(payload={"weights": weights_new, "velocity": velocity})
+
+
+def cheatsheet() -> str:
+    return "sgdop(weights, gradients, learning_rate, momentum, nesterov, velocity) -> Stochastic gradient descent with momentum."

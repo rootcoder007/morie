@@ -58,3 +58,7 @@ def katz_centrality(y, A, alpha=0.1, beta=0.0):
             "method": "x = (I - alpha A)^{-1} (alpha A) y + beta, Katz (1953)",
         },
     )
+
+
+def cheatsheet() -> str:
+    return "katz_centrality(y, A, alpha, beta) -> Walk-weighted status with the self term removed."

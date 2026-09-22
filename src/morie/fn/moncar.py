@@ -47,7 +47,7 @@ def monte_carlo(
 
     # AST-validated evaluation: only arithmetic operators, literals, and
     # attribute/call chains on np/x are allowed; no builtins reachable.
-    from morie._exec_guard import safe_eval_expr
+    from morie._safe_expr import safe_eval_expr
 
     try:
         fx = safe_eval_expr(fn_expr, {"np": np, "x": x})

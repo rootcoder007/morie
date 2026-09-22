@@ -76,3 +76,7 @@ adamm = adam_optimize
 
 # compact alias per ledger/NAMING.md
 adamoptimize = adam_optimize
+
+
+def cheatsheet() -> str:
+    return "adam_optimize(f, grad, x0) -> Adam optimizer."

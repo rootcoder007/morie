@@ -140,3 +140,7 @@ def ergdc(
         "n_communicating_classes": n_classes,
         "spectral_gap": spectral_gap,
     }
+
+
+def cheatsheet() -> str:
+    return "ergdc(transition_matrix) -> Verify ergodic properties of a discrete-time Markov chain."

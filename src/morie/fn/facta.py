@@ -131,3 +131,7 @@ def facta(
         "variance_explained": variance_explained,
         "iterations": iteration + 1,
     }
+
+
+def cheatsheet() -> str:
+    return "facta(X, n_factors, max_iter, tol, scale) -> Factor Analysis via Principal Axis Factoring."

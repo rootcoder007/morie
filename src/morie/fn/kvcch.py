@@ -59,3 +59,7 @@ def kvcch(
         "full_k": cache_k,
         "full_v": cache_v,
     }
+
+
+def cheatsheet() -> str:
+    return "kvcch(key, value, cache_k, cache_v) -> KV-cache update for autoregressive generation."

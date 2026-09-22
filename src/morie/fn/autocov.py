@@ -18,3 +18,7 @@ def autocov(x: Union[Sequence, np.ndarray], k: int = 1) -> float:
         raise ValueError("require 0 ≤ k < n.")
     mu = a.mean()
     return float(((a[: n - k] - mu) * (a[k:] - mu)).sum() / n)
+
+
+def cheatsheet() -> str:
+    return "autocov(x, k) -> Sample autocovariance at lag k."

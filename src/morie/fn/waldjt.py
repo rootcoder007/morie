@@ -37,3 +37,7 @@ def waldjt(
             ("R-beta - r norm", float(np.linalg.norm(diff))),
         ],
     )
+
+
+def cheatsheet() -> str:
+    return "waldjt(beta, cov, R, r) -> Joint Wald test of H0: R*beta = r."

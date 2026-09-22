@@ -98,3 +98,7 @@ def kstwo(x, y, axis=0):
         "n1": int(n1),
         "n2": int(n2),
     }
+
+
+def cheatsheet() -> str:
+    return "kstwo(x, y, axis) -> Kolmogorov-Smirnov two-sample test."

@@ -15,3 +15,7 @@ def lev(X: Union[Sequence, np.ndarray]) -> np.ndarray:
     X = np.asarray(X, dtype=float)
     H = X @ np.linalg.pinv(X.T @ X) @ X.T
     return np.diag(H)
+
+
+def cheatsheet() -> str:
+    return "lev(X) -> Hat-matrix diagonals (leverage values)."

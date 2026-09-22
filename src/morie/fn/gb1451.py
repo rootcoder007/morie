@@ -77,3 +77,7 @@ def mcnemarq(table, correct=False):
 
 
 gibbons_mcnemar = mcnemarq
+
+
+def cheatsheet() -> str:
+    return "mcnemarq(table, correct) -> McNemar's chi-square on the discordant pairs, eq. (14.5.1)."

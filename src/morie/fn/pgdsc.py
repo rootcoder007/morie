@@ -76,3 +76,7 @@ def pgdsc(f, grad_f, prox_g, x0, step_size=0.01, tol=1e-6, max_iter=1000, full_o
     if full_output:
         return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x
+
+
+def cheatsheet() -> str:
+    return "pgdsc(f, grad_f, prox_g, x0, step_size, tol, max_iter, full_output) -> Proximal gradient descent for composite optimization."

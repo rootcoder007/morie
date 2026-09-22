@@ -39,3 +39,7 @@ def fishex(table: Union[Sequence, np.ndarray], alternative: str = "two-sided"):
         ],
         warnings=warnings,
     )
+
+
+def cheatsheet() -> str:
+    return "fishex(table, alternative) -> Fisher's exact test for a 2x2 contingency table."

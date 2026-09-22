@@ -23,3 +23,7 @@ def sampstr(strata: dict, n_total: int, seed: int = 42) -> dict:
         idx = rng.choice(sizes[k], size=n_k, replace=False)
         out[k] = [units[i] for i in idx]
     return out
+
+
+def cheatsheet() -> str:
+    return "sampstr(strata, n_total, seed) -> Stratified sample with proportional allocation."

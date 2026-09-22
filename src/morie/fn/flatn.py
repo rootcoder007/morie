@@ -35,3 +35,7 @@ def flatn(x, batch_size=None):
 
     batch = x.shape[0]
     return x.reshape(batch, -1)
+
+
+def cheatsheet() -> str:
+    return "flatn(x, batch_size) -> Flatten layer."

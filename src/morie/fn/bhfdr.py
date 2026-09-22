@@ -46,3 +46,7 @@ def bhfdr(p_values: Sequence[float], alpha: float = 0.05):
         ),
         payload={"rejects": out, "n_reject": n_reject, "alpha": alpha},
     )
+
+
+def cheatsheet() -> str:
+    return "bhfdr(p_values, alpha) -> BH FDR rejection vector."

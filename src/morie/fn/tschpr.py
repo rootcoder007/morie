@@ -43,3 +43,7 @@ def tschpr(table: Union[Sequence, np.ndarray]):
         ),
         payload={"value": T, "statistic": T, "chi2": float(chi2), "pvalue": float(p), "dof": int(dof)},
     )
+
+
+def cheatsheet() -> str:
+    return "tschpr(table) -> Tschuprow's T: chi^2-based categorical association."

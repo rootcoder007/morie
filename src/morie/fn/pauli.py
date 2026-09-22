@@ -81,3 +81,7 @@ def pauli(
         }
     else:
         raise ValueError(f"Unknown operator: {operator}")
+
+
+def cheatsheet() -> str:
+    return "pauli(operator, theta, phi) -> Compute Pauli matrices and spin-1/2 operators."

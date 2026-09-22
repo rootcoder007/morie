@@ -60,3 +60,7 @@ def mnkws(
         "metric": eta,
         "separation": dx,
     }
+
+
+def cheatsheet() -> str:
+    return "mnkws(event_a, event_b, signature) -> Compute the Minkowski spacetime interval between two events."

@@ -63,3 +63,7 @@ def wrsci(x, y, wcrit):
 
 
 gibbons_wrs_ci = wrsci
+
+
+def cheatsheet() -> str:
+    return "wrsci(x, y, wcrit) -> Shift interval from the rank-sum critical value."

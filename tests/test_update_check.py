@@ -9,17 +9,22 @@ import morie._update_check as uc
 
 
 def test_parse_version_numeric():
-    assert uc._parse_version("0.9.0") == (0, 9, 0)
-    assert uc._parse_version("1.2.3") == (1, 2, 3)
-    assert uc._parse_version("0.10.0") == (0, 10, 0)
+    # numeric components first, then a release marker
+    assert uc._parse_version("0.9.0")[:3] == (0, 9, 0)
+    assert uc._parse_version("1.2.3")[:3] == (1, 2, 3)
+    assert uc._parse_version("0.10.0")[:3] == (0, 10, 0)
+    assert uc._parse_version("0.10.0") > uc._parse_version("0.9.0")
 
 
 def test_parse_version_handles_suffixes():
-    # a non-numeric character ends that chunk's parse
-    assert uc._parse_version("0.9.0a1") == (0, 9, 0)
-    assert uc._parse_version("0.9.0+local") == (0, 9, 0)
-    assert uc._parse_version("0.0.0+unknown") == (0, 0, 0)
-    assert uc._parse_version("garbage") == (0,)
+    # a pre-release sorts below its release; a local label ranks with it;
+    # a post-release above it
+    assert uc._parse_version("0.9.0a1") < uc._parse_version("0.9.0")
+    assert uc._parse_version("2.0.0rc1") < uc._parse_version("2.0.0")
+    assert uc._parse_version("0.9.0+local") == uc._parse_version("0.9.0")
+    assert uc._parse_version("0.0.0+unknown")[:3] == (0, 0, 0)
+    assert uc._parse_version("1.3.2.post1") > uc._parse_version("1.3.2")
+    assert uc._parse_version("garbage")[:1] == (0,)
 
 
 def test_version_ordering():

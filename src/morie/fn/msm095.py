@@ -20,3 +20,7 @@ def mvsml_bayesian_regression_pt2_eq_7_4(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "mvsml_bayesian_regression_pt2_eq_7_4() -> Deprecated; use :func:`morie.fn.ordinal_probit_gblup_gibbs` instead."

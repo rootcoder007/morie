@@ -136,3 +136,7 @@ def maxmin_diversity(fps, k, objective="maxmin", seed=None):
     if len(chosen) > 1:
         out.update(diversity(fps, chosen, M))
     return RichResult(payload=out)
+
+
+def cheatsheet() -> str:
+    return "distance_matrix(fps) -> All pairwise Tanimoto distances."

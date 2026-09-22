@@ -86,3 +86,7 @@ def krankstat(samples, scores=None):
 
 
 gibbons_k_rank_alt = krankstat
+
+
+def cheatsheet() -> str:
+    return "krankstat(samples, scores) -> Q from eq. (10.5.1) and its chi-square standardisation."

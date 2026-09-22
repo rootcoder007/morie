@@ -278,6 +278,33 @@ class RidgeCV(Ridge):
         return Ridge.fit(self, Xd, yv)
 
 
+def _sigmoid(e):
+    """Numerically stable logistic without a cutoff.
+
+    The previous form, ``1/(1+exp(-e)) if e > -30 else 0.0``, made a NaN
+    linear predictor a probability of exactly 0 (nan > -30 is False), so
+    one missing covariate value gave every unit a propensity of 0 and an
+    IPW weight of 100; it also returned a hard 0 below -30 where the true
+    value is 1e-13. exp(e)/(1+exp(e)) for e < 0 underflows to 0 only
+    below about -745, and NaN stays NaN.
+    """
+    if e != e:
+        return e
+    if e >= 0.0:
+        return 1.0 / (1.0 + _math.exp(-e))
+    ex = _math.exp(e)
+    return ex / (1.0 + ex)
+
+
+def _check_finite(rows, what="X"):
+    for r in rows:
+        for v in r:
+            if v != v or v in (float("inf"), float("-inf")):
+                raise ValueError(
+                    f"{what} contains NaN or infinite values; drop or impute "
+                    "them before fitting (sklearn raises here too)")
+
+
 class LogisticRegression:
     """Binary logistic with L2 (matches sklearn C parametrization)."""
 
@@ -296,6 +323,7 @@ class LogisticRegression:
         if len(self.classes_) != 2:
             raise ValueError("binary only in native core")
         yv = [1.0 if v == self.classes_[1] else 0.0 for v in yraw]
+        _check_finite(Xd)
         if self.fit_intercept:
             Xd = [[1.0] + r for r in Xd]
         n, k = len(Xd), len(Xd[0])
@@ -304,8 +332,7 @@ class LogisticRegression:
         for _ in range(self.max_iter):
             eta = [_math.fsum(Xd[r][j] * b[j] for j in range(k))
                    for r in range(n)]
-            p = [1.0 / (1.0 + _math.exp(-e)) if e > -30 else 0.0
-                 for e in eta]
+            p = [_sigmoid(e) for e in eta]
             g = [_math.fsum(Xd[r][i] * (p[r] - yv[r])
                             for r in range(n)) for i in range(k)]
             H = [[_math.fsum(Xd[r][i] * p[r] * (1.0 - p[r])
@@ -331,6 +358,7 @@ class LogisticRegression:
 
     def decision_function(self, X):
         Xd = _X2d(X)
+        _check_finite(Xd)
         c = self.coef_.tolist()[0]
         b0 = self.intercept_.tolist()[0]
         return _ac.marr([b0 + _math.fsum(r[j] * c[j]
@@ -341,7 +369,7 @@ class LogisticRegression:
         z = self.decision_function(X)._flat()
         out = []
         for e in z:
-            p1 = 1.0 / (1.0 + _math.exp(-e)) if e > -30 else 0.0
+            p1 = _sigmoid(e)
             out.append([1.0 - p1, p1])
         return _ac.marr(out)
 

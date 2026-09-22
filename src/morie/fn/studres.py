@@ -23,3 +23,7 @@ def studres(
     p_eff = sum(h)  # trace of hat matrix
     s = float(np.sqrt(np.sum(resid**2) / max(n - p_eff, 1)))
     return resid / (s * np.sqrt(np.maximum(1 - h, 1e-12)))
+
+
+def cheatsheet() -> str:
+    return "studres(y, yhat, leverage) -> Internally-studentized residuals."

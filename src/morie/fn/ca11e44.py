@@ -20,3 +20,7 @@ def ca_chapter_11_equation_44(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_11_equation_44() -> Deprecated; use :func:`morie.fn.tau2_dersimonian_laird` instead."

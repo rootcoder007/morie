@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_5
         stacklevel=2,
     )
     return _impl(values, probs)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_59(values, probs) -> Deprecated; use :func:`morie.fn.pmfvar` instead."

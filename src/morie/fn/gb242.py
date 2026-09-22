@@ -58,3 +58,7 @@ def ostatpdf(x, r, n, cdf, pdf):
 
 
 gibbons_order_pdf = ostatpdf
+
+
+def cheatsheet() -> str:
+    return "ostatpdf(x, r, n, cdf, pdf) -> Density of X_(r) for a continuous parent."

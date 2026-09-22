@@ -76,3 +76,7 @@ def chrsf(
         "christoffel": Gamma,
         "metric_inverse": ginv,
     }
+
+
+def cheatsheet() -> str:
+    return "chrsf(metric, coords, metric_derivs, h, metric_func) -> Compute Christoffel symbols of the second kind."

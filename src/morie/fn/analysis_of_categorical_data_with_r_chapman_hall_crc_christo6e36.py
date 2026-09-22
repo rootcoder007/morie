@@ -20,3 +20,7 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equat
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_36() -> Deprecated; use :func:`morie.fn.truncated_power_spline` instead."

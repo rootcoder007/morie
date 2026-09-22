@@ -83,3 +83,7 @@ def matthews_corrcoef(y_true, y_pred) -> float:
     fp = int(np.sum(~t & p))
     fn = int(np.sum(t & ~p))
     return float(mcc(tp, tn, fp, fn)["value"])
+
+
+def cheatsheet() -> str:
+    return "mcc(tp, tn, fp, fn) -> Matthews correlation coefficient for 2x2 confusion matrix."

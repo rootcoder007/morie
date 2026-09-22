@@ -116,3 +116,7 @@ def irlsf(X, y, family="gaussian", max_iter=100, tol=1e-6, full_output=False):
             dev = np.sum((y - eta) ** 2)
         return beta, {"iterations": max_iter, "converged": False, "deviance": dev}
     return beta
+
+
+def cheatsheet() -> str:
+    return "irlsf(X, y, family, max_iter, tol, full_output) -> IRLS (iteratively reweighted least squares) for GLM fitting."

@@ -15,3 +15,7 @@ def cossim(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]) -> fl
     if na == 0 or nb == 0:
         raise ValueError("zero-norm vector.")
     return float(np.dot(a, b) / (na * nb))
+
+
+def cheatsheet() -> str:
+    return "cossim(x, y) -> Cosine similarity: x·y / (||x|| ||y||)."

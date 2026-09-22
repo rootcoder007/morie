@@ -20,3 +20,7 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_24(*arg
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_24() -> Deprecated; use :func:`morie.fn.beta_posterior_pdf` instead."

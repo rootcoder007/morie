@@ -229,3 +229,7 @@ def linear_program(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 linear_programming = linear_program
+
+
+def cheatsheet() -> str:
+    return "interior_point(c, A, b, tol, max_iter) -> Mehrotra's predictor-corrector on :math:`Ax = b,\ x \ge 0`."

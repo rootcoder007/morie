@@ -34,3 +34,7 @@ def powtt2(d: float, n1: int, n2: int, alpha: float = 0.05):
         ),
         payload={"value": pw, "statistic": pw, "beta": 1 - pw, "df": df},
     )
+
+
+def cheatsheet() -> str:
+    return "powtt2(d, n1, n2, alpha) -> Power for two-sample t-test of mean difference at effect d."

@@ -52,3 +52,7 @@ def hinge(
     loss = np.maximum(margin - y_true * y_pred, 0)
 
     return float(np.mean(loss))
+
+
+def cheatsheet() -> str:
+    return "hinge(y_true, y_pred, margin) -> Hinge loss."

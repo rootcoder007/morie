@@ -88,3 +88,7 @@ def moodscale(x, y):
 
 
 gibbons_mood_scale = moodscale
+
+
+def cheatsheet() -> str:
+    return "moodscale(x, y) -> Mood's M_N statistic for a difference in dispersion."

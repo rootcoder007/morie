@@ -219,3 +219,7 @@ def rangayyan_wavelet_denoise(x, wavelet="db4", level=None, mode="soft"):
         },
     )
     return with_describe_pointer(res, "rgwav")
+
+
+def cheatsheet() -> str:
+    return "rangayyan_wavelet_denoise(x, wavelet, level, mode) -> Donoho-Johnstone wavelet denoising."

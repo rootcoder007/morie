@@ -328,3 +328,7 @@ def groebner(polys, order="lex", prune=True, reduced=True):
     r"""Entry point: the Gröbner basis of ``polys`` in ``order``."""
     return buchberger(polys, order=order, prune=prune,
                       reduced=reduced)
+
+
+def cheatsheet() -> str:
+    return "poly(terms, nvars) -> A polynomial as ``{exponent tuple: coefficient}``."

@@ -70,3 +70,7 @@ def redsh(
         "velocity_approx_km_s": float(v_approx),
         "velocity_relativistic_km_s": float(v_rel),
     }
+
+
+def cheatsheet() -> str:
+    return "redsh(z, wavelength_obs, wavelength_emit, a_emit, a_obs) -> Compute cosmological redshift and related quantities."

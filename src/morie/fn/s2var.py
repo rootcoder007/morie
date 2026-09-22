@@ -28,3 +28,7 @@ def s2var(x: Union[Sequence[float], np.ndarray]) -> float:
     if a.size < 2:
         raise ValueError("need at least 2 observations for sample variance.")
     return float(a.var(ddof=1))
+
+
+def cheatsheet() -> str:
+    return "s2var(x) -> Unbiased sample variance with Bessel's correction."

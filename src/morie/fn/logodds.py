@@ -32,3 +32,7 @@ def logodds(p: Union[float, Sequence[float], np.ndarray]):
     if np.any((a <= 0) | (a >= 1)):
         raise ValueError("all elements of p must be in (0, 1).")
     return np.log(a / (1.0 - a))
+
+
+def cheatsheet() -> str:
+    return "logodds(p) -> Log-odds (logit): ln(p / (1 - p))."

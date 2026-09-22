@@ -94,3 +94,7 @@ def dirac(
         "spinor": spinor,
         "gamma_matrices": [gamma0, gamma1, gamma2, gamma3],
     }
+
+
+def cheatsheet() -> str:
+    return "dirac(p, m, spin, particle, hbar, c) -> Compute the free-particle Dirac spinor and energy."

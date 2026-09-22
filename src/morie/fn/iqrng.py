@@ -36,3 +36,7 @@ def iqrng(x: Union[Sequence[float], np.ndarray], method: str = "linear"):
         ),
         payload={"value": iqr_val, "statistic": iqr_val, "q1": q1, "q3": q3, "median": median},
     )
+
+
+def cheatsheet() -> str:
+    return "iqrng(x, method) -> Interquartile range = Q3 - Q1."

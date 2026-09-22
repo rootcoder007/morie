@@ -145,3 +145,7 @@ def mlfac(
         "aic": aic,
         "bic": bic,
     }
+
+
+def cheatsheet() -> str:
+    return "mlfac(X, n_factors, max_iter, tol, scale) -> Maximum Likelihood Factor Analysis."

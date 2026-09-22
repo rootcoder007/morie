@@ -86,3 +86,7 @@ def klopt(
         "kl_divergence_bits": max(kl_bits, 0.0),
         "lambdas": lambdas,
     }
+
+
+def cheatsheet() -> str:
+    return "klopt(target_pmf, support, sufficient_stats) -> Find the distribution in an exponential family closest to target in KL."

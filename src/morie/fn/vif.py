@@ -68,3 +68,7 @@ def vif(X: Union[Sequence, np.ndarray]) -> RichResult:
 
 # Back-compat alias -- older imports reference `variance_inflation`.
 variance_inflation = vif
+
+
+def cheatsheet() -> str:
+    return "vif(X) -> Variance Inflation Factor for each column of X."

@@ -12,3 +12,7 @@ def sampsrs(population, n: int, seed: int = 42):
         raise ValueError("n exceeds population size.")
     idx = rng.choice(len(pop), size=n, replace=False)
     return [pop[i] for i in idx]
+
+
+def cheatsheet() -> str:
+    return "sampsrs(population, n, seed) -> Simple random sample of size n, without replacement."

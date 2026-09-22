@@ -53,3 +53,7 @@ def efft(n, sigma2):
 
 
 gibbons_t_efficacy = efft
+
+
+def cheatsheet() -> str:
+    return "efft(n, sigma2) -> e(T*_N) = N / sigma^2 for the one-sample t test."

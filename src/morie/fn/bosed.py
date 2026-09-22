@@ -52,3 +52,7 @@ def bosed(
         "mean_occupation": float(np.mean(n)),
         "total_energy": float(np.sum(energies * n)),
     }
+
+
+def cheatsheet() -> str:
+    return "bosed(energies, mu, T, kB) -> Compute the Bose-Einstein distribution."

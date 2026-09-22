@@ -20,3 +20,7 @@ def mvsml_elements_lin_reg_eq_3_5(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "mvsml_elements_lin_reg_eq_3_5() -> Deprecated; use :func:`morie.fn.ridge_fit` instead."

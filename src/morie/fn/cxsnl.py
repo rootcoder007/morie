@@ -146,3 +146,7 @@ def cxsnl(
         "km_times": km_r_times,
         "km_neg_log_surv": neg_log_surv,
     }
+
+
+def cheatsheet() -> str:
+    return "cxsnl(time, event, covariates, beta, model, model_params) -> Compute Cox-Snell residuals for a fitted survival model."

@@ -247,3 +247,7 @@ def time_dependent_roc(times, events, marker, t, route="km"):
         "method": "Heagerty, Lumley & Pepe (2000) cumulative "
                   "case / dynamic control ROC, %s estimator" % route,
     })
+
+
+def cheatsheet() -> str:
+    return "kaplan_meier(times, events, at) -> The product-limit estimator of :math:`S(t)`."

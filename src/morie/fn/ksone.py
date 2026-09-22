@@ -126,3 +126,7 @@ def ksone(x, dist="norm", dist_params=None, axis=0, cdf=None):
         "critical_value": float(critical_value),
         "interpretation": interpretation,
     }
+
+
+def cheatsheet() -> str:
+    return "ksone(x, dist, dist_params, axis, cdf) -> Kolmogorov-Smirnov one-sample test."

@@ -68,3 +68,7 @@ def gcnii(A, H0, alpha=0.1, beta=0.5, K=4):
             "method": "H = relu((1-a) Ah H + a H0) with W = I, Chen et al. (2020) eq. (3)",
         },
     )
+
+
+def cheatsheet() -> str:
+    return "gcnii(A, H0, alpha, beta, K) -> K layers of the GCNII recursion with W = I."

@@ -28,3 +28,7 @@ def hedderich_chapter_8_equation_96(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "hedderich_chapter_8_equation_96() -> Deprecated; use :func:`morie.fn.llgsq` instead."

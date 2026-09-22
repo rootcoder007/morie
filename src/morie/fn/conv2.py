@@ -63,3 +63,7 @@ def conv2(x, kernel, padding="valid", stride=1):
             )
 
     return output
+
+
+def cheatsheet() -> str:
+    return "conv2(x, kernel, padding, stride) -> 2D convolution."

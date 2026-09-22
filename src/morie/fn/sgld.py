@@ -122,3 +122,7 @@ def sgld(
     if full_output:
         return samples, {"n_iterations": n_iter}
     return samples
+
+
+def cheatsheet() -> str:
+    return "sgld(log_likelihood, log_prior, X, y, param_shape, learning_rate, friction, n_iter, batch_size, seed, full_output) -> Stochastic gradient Langevin dynamics (SGLD) for Bayesian inference."

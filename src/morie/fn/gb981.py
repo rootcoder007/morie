@@ -96,3 +96,7 @@ def scaleci(x, y, alpha=0.05, k=None):
 
 
 gibbons_scale_ci = scaleci
+
+
+def cheatsheet() -> str:
+    return "scaleci(x, y, alpha, k) -> Interval for theta from the ordered positive ratios x_i / y_j."

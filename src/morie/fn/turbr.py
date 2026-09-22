@@ -93,3 +93,7 @@ def turbr(
         "spread": min_spread,
         "method": method,
     }
+
+
+def cheatsheet() -> str:
+    return "turbr(n) -> Generate a turbo code interleaver permutation."

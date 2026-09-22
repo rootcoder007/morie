@@ -1101,3 +1101,7 @@ def paracompare(time, event, X=None, dists=None):
         out["lr_weibull_vs_exponential"] = lr
         out["lr_p_value"] = _chi2_sf(max(lr, 0.0), 1)
     return RichResult(payload=out)
+
+
+def cheatsheet() -> str:
+    return "rmst(time, event, tau, alpha) -> Restricted mean survival time."

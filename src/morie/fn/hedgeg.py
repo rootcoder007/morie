@@ -36,3 +36,7 @@ def hedgeg(cohens_d: float, n1: int, n2: int):
         ),
         payload={"value": g, "statistic": g, "J": J, "benchmark": bench},
     )
+
+
+def cheatsheet() -> str:
+    return "hedgeg(cohens_d, n1, n2) -> Hedges' g: small-sample correction of Cohen's d."

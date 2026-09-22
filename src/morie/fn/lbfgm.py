@@ -99,3 +99,7 @@ lbfgm = lbfgs_optimize
 
 # compact alias per ledger/NAMING.md
 lbfgsoptimize = lbfgs_optimize
+
+
+def cheatsheet() -> str:
+    return "lbfgs_optimize(f, grad, x0) -> Limited-memory BFGS quasi-Newton optimizer."

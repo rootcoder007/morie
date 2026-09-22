@@ -54,3 +54,7 @@ def bayesf(loglik_h1: float, loglik_h0: float, k_h1: int, k_h0: int, n: int):
         interpretation=f"BF_10 = {bf:.4g} -> {strength} (Jeffreys/Kass-Raftery scale).",
         payload={"value": bf, "statistic": bf, "strength": strength, "bic_h1": bic_h1, "bic_h0": bic_h0},
     )
+
+
+def cheatsheet() -> str:
+    return "bayesf(loglik_h1, loglik_h0, k_h1, k_h0, n) -> Bayes factor BF_10 approximated from BIC difference."

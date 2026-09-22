@@ -37,3 +37,7 @@ def bptest(residuals: Union[Sequence, np.ndarray], X: Union[Sequence, np.ndarray
             ("Predictors in X", p),
         ],
     )
+
+
+def cheatsheet() -> str:
+    return "bptest(residuals, X) -> Breusch-Pagan test - is residual variance a function of X?"

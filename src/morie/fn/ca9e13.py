@@ -20,3 +20,7 @@ def ca_chapter_9_equation_13(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_9_equation_13() -> Deprecated; use :func:`morie.fn.anova_randomized_block` instead."

@@ -63,3 +63,7 @@ def lortz(
         "beta": beta,
         "boost_matrix": L,
     }
+
+
+def cheatsheet() -> str:
+    return "lortz(event, v, c) -> Apply a Lorentz boost along the x-axis."

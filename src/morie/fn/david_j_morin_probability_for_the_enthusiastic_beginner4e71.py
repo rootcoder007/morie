@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_7
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_71() -> Deprecated; use :func:`morie.fn.hypergeometric_pmf` instead."

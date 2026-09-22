@@ -20,3 +20,7 @@ def ca_chapter_7_equation_1(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_7_equation_1() -> Deprecated; use :func:`morie.fn.grand_mean_model` instead."

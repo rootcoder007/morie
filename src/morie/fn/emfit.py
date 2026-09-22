@@ -108,3 +108,7 @@ def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=Fals
     if full_output:
         return params, {"iterations": max_iter, "converged": False}
     return params, {"iterations": max_iter, "converged": False}
+
+
+def cheatsheet() -> str:
+    return "emfit(X, n_components, max_iter, tol, seed, full_output) -> EM algorithm for Gaussian mixture models."

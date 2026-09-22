@@ -12,3 +12,7 @@ def manhdst(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]) -> f
     a = np.asarray(x, dtype=float)
     b = np.asarray(y, dtype=float)
     return float(np.sum(np.abs(a - b)))
+
+
+def cheatsheet() -> str:
+    return "manhdst(x, y) -> Manhattan (L₁) distance: Σ |xᵢ − yᵢ|."

@@ -20,3 +20,7 @@ def ca_chapter_2_equation_19(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_2_equation_19() -> Deprecated; use :func:`morie.fn.f_nested_r2` instead."

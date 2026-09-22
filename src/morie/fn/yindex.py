@@ -27,3 +27,7 @@ def yindex(tpr: float, fpr: float):
         ),
         payload={"value": j, "statistic": j, "tpr": tpr, "fpr": fpr},
     )
+
+
+def cheatsheet() -> str:
+    return "yindex(tpr, fpr) -> Youden's J statistic: TPR - FPR."

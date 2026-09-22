@@ -20,3 +20,7 @@ def ca_chapter_11_equation_9(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_11_equation_9() -> Deprecated; use :func:`morie.fn.se_log_rr` instead."

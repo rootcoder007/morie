@@ -41,3 +41,7 @@ def npowtt(d: float, target_power: float = 0.8, alpha: float = 0.05, max_n: int 
         interpretation=(f"For d={d}, alpha={alpha}: need n={n} per group ({2 * n} total) for power >={target_power}."),
         payload={"value": n, "statistic": n, "n_per_group": n, "achieved_power": pw},
     )
+
+
+def cheatsheet() -> str:
+    return "npowtt(d, target_power, alpha, max_n) -> Smallest equal-group n giving target power for two-sample t."

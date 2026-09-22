@@ -15,3 +15,7 @@ def sse(y_true: Union[Sequence[float], np.ndarray], y_pred: Union[Sequence[float
     yt = np.asarray(y_true, dtype=float)
     yp = np.asarray(y_pred, dtype=float)
     return float(np.sum((yt - yp) ** 2))
+
+
+def cheatsheet() -> str:
+    return "sse(y_true, y_pred) -> Error (residual) sum of squares: Σᵢ (yᵢ − ŷᵢ)²."

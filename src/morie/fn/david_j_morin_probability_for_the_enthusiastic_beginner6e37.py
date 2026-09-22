@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_3
         stacklevel=2,
     )
     return _impl(sigma_signal, sigma_noise)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_37(sigma_signal, sigma_noise) -> Deprecated; use :func:`morie.fn.retestr` instead."

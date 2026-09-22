@@ -11,3 +11,7 @@ def eigval(A: Union[Sequence, np.ndarray]) -> np.ndarray:
     """Eigenvalues of a symmetric matrix (ascending order)."""
     M = np.asarray(A, dtype=float)
     return np.linalg.eigvalsh(M)
+
+
+def cheatsheet() -> str:
+    return "eigval(A) -> Eigenvalues of a symmetric matrix (ascending order)."

@@ -55,3 +55,7 @@ def steng(
         "stress_energy": T,
         "trace": float(trace),
     }
+
+
+def cheatsheet() -> str:
+    return "steng(rho, p, u, metric, c) -> Construct the stress-energy tensor for a perfect fluid."

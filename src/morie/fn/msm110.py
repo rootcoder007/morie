@@ -20,3 +20,7 @@ def mvsml_bayesian_regression_pt2_eq_7_8(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "mvsml_bayesian_regression_pt2_eq_7_8() -> Deprecated; use :func:`morie.fn.multinomial_loglik` instead."

@@ -75,3 +75,7 @@ def frdmt(data, axis=0, cdf=None):
         "b": int(b),
         "interpretation": "reject" if p_value < 0.05 else "not reject",
     }
+
+
+def cheatsheet() -> str:
+    return "frdmt(data, axis, cdf) -> Friedman two-way ANOVA by ranks."

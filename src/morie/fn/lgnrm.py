@@ -217,3 +217,7 @@ def lgnrm(
         "aic": float(aic),
         "bic": float(bic),
     }
+
+
+def cheatsheet() -> str:
+    return "lgnrm(time, event, covariates, max_iter, tol) -> Fit a log-normal AFT model via maximum likelihood estimation."

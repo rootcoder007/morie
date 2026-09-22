@@ -20,3 +20,7 @@ def ca_chapter_11_equation_10(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_11_equation_10() -> Deprecated; use :func:`morie.fn.odds_ratio_2x2` instead."

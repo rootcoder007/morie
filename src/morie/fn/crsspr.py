@@ -15,3 +15,7 @@ def crsspr(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]) -> fl
     a = np.asarray(x, dtype=float)
     b = np.asarray(y, dtype=float)
     return float(np.sum((a - a.mean()) * (b - b.mean())))
+
+
+def cheatsheet() -> str:
+    return "crsspr(x, y) -> Σᵢ (xᵢ − x̄)(yᵢ − ȳ) -- cross-product of centered series."

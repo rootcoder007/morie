@@ -94,3 +94,7 @@ def huffc(pmf: np.ndarray, symbols: list = None) -> dict:
         "entropy": entropy,
         "efficiency": efficiency,
     }
+
+
+def cheatsheet() -> str:
+    return "huffc(pmf, symbols) -> Build a Huffman code for a discrete source."

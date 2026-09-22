@@ -59,3 +59,7 @@ def kwone(*samples, axis=0):
         "n_total": int(n_total),
         "interpretation": "reject" if p_value < 0.05 else "not reject",
     }
+
+
+def cheatsheet() -> str:
+    return "kwone() -> Kruskal-Wallis one-way ANOVA (nonparametric)."

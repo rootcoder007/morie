@@ -14,3 +14,7 @@ def zscor(x: Union[Sequence, np.ndarray]) -> np.ndarray:
     if sd == 0:
         raise ValueError("zero variance.")
     return (a - a.mean()) / sd
+
+
+def cheatsheet() -> str:
+    return "zscor(x) -> Z-score: (x − x̄) / s. Sample-SD (ddof=1)."

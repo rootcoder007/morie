@@ -20,3 +20,7 @@ def ghosal_ch3_dirichlet_posterior_cov(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ghosal_ch3_dirichlet_posterior_cov() -> Deprecated; use :func:`morie.fn.cdp_posterior_cov` instead."

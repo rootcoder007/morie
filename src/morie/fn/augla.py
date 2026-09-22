@@ -88,3 +88,7 @@ def augmented_lagrangian(
 
 
 augla = augmented_lagrangian
+
+
+def cheatsheet() -> str:
+    return "augmented_lagrangian(f, grad_f, constraints, x0) -> Augmented Lagrangian method for equality-constrained optimization."

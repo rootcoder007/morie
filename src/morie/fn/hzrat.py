@@ -136,3 +136,7 @@ def hzrat(
             "reference_group": reference,
             "comparison_groups": non_ref_groups,
         }
+
+
+def cheatsheet() -> str:
+    return "hzrat(time, event, group, reference, alpha, ties) -> Estimate hazard ratio between groups from a two-sample Cox model."

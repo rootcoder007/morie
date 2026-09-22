@@ -42,3 +42,7 @@ def manwhi(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray], alter
         ],
         warnings=warnings,
     )
+
+
+def cheatsheet() -> str:
+    return "manwhi(x, y, alternative) -> Mann-Whitney U test for independent samples."

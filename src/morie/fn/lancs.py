@@ -65,3 +65,7 @@ def lanczos(
 
 
 lancs = lanczos
+
+
+def cheatsheet() -> str:
+    return "lanczos(A) -> Lanczos algorithm for the *k* largest eigenvalues of a symmetric matrix."

@@ -114,3 +114,7 @@ def nmead(f, x0, alpha=1.0, beta=0.5, gamma=2.0, tol=1e-8, max_iter=5000, full_o
         best_idx = np.argmin(f_vals)
         return simplex[best_idx], {"iterations": max_iter, "converged": False, "final_value": f_vals[best_idx]}
     return simplex[np.argmin(f_vals)]
+
+
+def cheatsheet() -> str:
+    return "nmead(f, x0, alpha, beta, gamma, tol, max_iter, full_output) -> Nelder-Mead simplex method for unconstrained minimization."

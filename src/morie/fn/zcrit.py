@@ -11,3 +11,7 @@ def zcrit(alpha: float = 0.05, two_sided: bool = True) -> float:
     if two_sided:
         return float(norm.ppf(1 - alpha / 2))
     return float(norm.ppf(1 - alpha))
+
+
+def cheatsheet() -> str:
+    return "zcrit(alpha, two_sided) -> Two-sided z critical value at significance level α."

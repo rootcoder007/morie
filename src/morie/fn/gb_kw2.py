@@ -69,3 +69,7 @@ def kwalt(rank_sums, ns):
 
 
 gibbons_kw_alt_form = kwalt
+
+
+def cheatsheet() -> str:
+    return "kwalt(rank_sums, ns) -> H from the weighted sum of squared rank-sum deviations."

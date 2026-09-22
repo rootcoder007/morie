@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_3
         stacklevel=2,
     )
     return _impl(r, sigma_x, sigma_y)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_36(r, sigma_x, sigma_y) -> Deprecated; use :func:`morie.fn.revslope` instead."

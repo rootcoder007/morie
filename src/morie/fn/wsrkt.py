@@ -147,3 +147,7 @@ def wsrkt(x, y=None, theta0=None, axis=0, alternative="two-sided", cdf=None):
         "p_value": float(p_value),
         "interpretation": interpretation,
     }
+
+
+def cheatsheet() -> str:
+    return "wsrkt(x, y, theta0, axis, alternative, cdf) -> Wilcoxon signed-rank test (one- or paired-sample)."

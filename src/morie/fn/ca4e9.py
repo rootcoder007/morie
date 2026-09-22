@@ -20,3 +20,7 @@ def ca_chapter_4_equation_9(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_4_equation_9() -> Deprecated; use :func:`morie.fn.derivative_at_mean` instead."

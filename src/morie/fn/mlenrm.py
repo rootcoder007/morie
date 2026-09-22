@@ -36,3 +36,7 @@ def mlenrm(x: Union[Sequence, np.ndarray]):
         else [f"small sample n={a.size}; MLE sigma is downward-biased - consider sigma_unbiased for inference."],
         payload={"mu": mu, "sigma": sigma_mle, "sigma_unbiased": sigma_unbiased, "loglik": log_lik},
     )
+
+
+def cheatsheet() -> str:
+    return "mlenrm(x) -> MLE Normal fit: mu_hat, sigma_hat (1/n divisor)."

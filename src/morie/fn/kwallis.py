@@ -39,3 +39,7 @@ def kwallis(*groups: Union[Sequence, np.ndarray]):
         + [(f"Median group {i + 1}", float(np.median(a))) for i, a in enumerate(arrs)],
         warnings=warnings,
     )
+
+
+def cheatsheet() -> str:
+    return "kwallis() -> Kruskal-Wallis H-test (nonparametric one-way ANOVA)."

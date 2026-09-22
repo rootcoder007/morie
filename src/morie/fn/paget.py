@@ -53,3 +53,7 @@ def paget(data, axis=0, cdf=None):
         "b": int(b),
         "interpretation": "reject" if p_value < 0.05 else "not reject",
     }
+
+
+def cheatsheet() -> str:
+    return "paget(data, axis, cdf) -> Page's test for ordered alternatives in repeated measures design."

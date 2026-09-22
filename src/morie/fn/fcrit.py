@@ -9,3 +9,7 @@ def fcrit(df1: int, df2: int, alpha: float = 0.05) -> float:
     if df1 < 1 or df2 < 1 or not 0 < alpha < 1:
         raise ValueError("invalid args.")
     return float(_f.ppf(1 - alpha, df1, df2))
+
+
+def cheatsheet() -> str:
+    return "fcrit(df1, df2, alpha) -> Upper-tail F critical value (df1, df2, α)."

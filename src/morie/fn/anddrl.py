@@ -44,3 +44,7 @@ def anddrl(x: Union[Sequence, np.ndarray]):
             "significance_levels": list(res.significance_level),
         },
     )
+
+
+def cheatsheet() -> str:
+    return "anddrl(x) -> Anderson-Darling test for Normality (more tail-sensitive than Shapiro)."

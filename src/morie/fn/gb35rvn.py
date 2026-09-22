@@ -87,3 +87,7 @@ def rvntest(x, alternative="two-sided"):
 
 
 gibbons_rvn_test = rvntest
+
+
+def cheatsheet() -> str:
+    return "rvntest(x, alternative) -> Bartels rank von Neumann ratio test for randomness."

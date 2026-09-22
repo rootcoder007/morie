@@ -61,3 +61,7 @@ mtsqr = matrix_sqrt
 
 # compact alias per ledger/NAMING.md
 matrixsqrt = matrix_sqrt
+
+
+def cheatsheet() -> str:
+    return "matrix_sqrt(A) -> Matrix square root via Denman-Beavers iteration."

@@ -342,13 +342,12 @@ def tool_describe_data(code: str = "") -> str:
     """Describe a dataset: load from morie.data or describe a DataFrame expression."""
     stdout_buf = io.StringIO()
     try:
-        from morie._exec_guard import guarded_exec
+        from morie._exec_guard import guarded_exec, guarded_namespace
 
-        exec_globals: dict[str, Any] = {}
-        guarded_exec(
-            "import morie.fn._frame_core as pd; import morie.fn._array_core as np; from morie.data import load_dataset, DATASET_CATALOG; " + code,
-            exec_globals,
-        )
+        # pd, np, load_dataset and DATASET_CATALOG are injected; `import
+        # morie` inside guarded code is refused (see _exec_guard)
+        exec_globals: dict[str, Any] = guarded_namespace()
+        guarded_exec(code, exec_globals)
         df = exec_globals.get("df")
         if df is not None and hasattr(df, "describe"):
             with redirect_stdout(stdout_buf):
@@ -1132,16 +1131,14 @@ def tool_compare_methods(methods: str, data_code: str = "") -> str:
     context: dict[str, Any] = {}
     if data_code:
         try:
-            from morie.fn import _array_core as np
+            from morie._exec_guard import guarded_exec, guarded_namespace
 
-            from morie._exec_guard import guarded_exec
-
-            context["np"] = np
+            context.update(guarded_namespace())
             guarded_exec(data_code, context)
         except Exception as exc:
             return f"Error in data setup: {exc}"
 
-    skip = {"np", "pd", "__builtins__"}
+    skip = {"np", "pd", "load_dataset", "DATASET_CATALOG", "__builtins__"}
     kwargs = {k: v for k, v in context.items() if not k.startswith("_") and k not in skip}
 
     lines = [f"=== METHOD COMPARISON ({len(method_list)} methods) ===\n"]
@@ -1193,16 +1190,14 @@ def tool_run_suite(domain: str, data_code: str = "") -> str:
     context: dict[str, Any] = {}
     if data_code:
         try:
-            from morie.fn import _array_core as np
+            from morie._exec_guard import guarded_exec, guarded_namespace
 
-            from morie._exec_guard import guarded_exec
-
-            context["np"] = np
+            context.update(guarded_namespace())
             guarded_exec(data_code, context)
         except Exception as exc:
             return f"Error in data setup: {exc}"
 
-    skip = {"np", "pd", "__builtins__"}
+    skip = {"np", "pd", "load_dataset", "DATASET_CATALOG", "__builtins__"}
     kwargs = {k: v for k, v in context.items() if not k.startswith("_") and k not in skip}
 
     lines = [f"=== {domain.upper()} SUITE -- {len(core)} core functions ===\n"]

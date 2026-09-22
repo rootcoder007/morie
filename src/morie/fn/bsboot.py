@@ -21,3 +21,7 @@ def bsboot(x: Union[Sequence, np.ndarray], stat: Callable, n_boot: int = 1000, s
         idx = rng.integers(0, n, size=n)
         out[b] = stat(a[idx])
     return out
+
+
+def cheatsheet() -> str:
+    return "bsboot(x, stat, n_boot, seed) -> Generate `n_boot` bootstrap statistics by resampling x with"

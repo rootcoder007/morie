@@ -20,3 +20,7 @@ def ca_chapter_12_equation_2(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_12_equation_2() -> Deprecated; use :func:`morie.fn.morans_i_expected` instead."

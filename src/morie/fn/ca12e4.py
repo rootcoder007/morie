@@ -20,3 +20,7 @@ def ca_chapter_12_equation_4(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_12_equation_4() -> Deprecated; use :func:`morie.fn.spatial_lag_reduced_form` instead."

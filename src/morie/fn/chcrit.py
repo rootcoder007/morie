@@ -9,3 +9,7 @@ def chcrit(df: int, alpha: float = 0.05) -> float:
     if df < 1 or not 0 < alpha < 1:
         raise ValueError("invalid df or alpha.")
     return float(chi2.ppf(1 - alpha, df))
+
+
+def cheatsheet() -> str:
+    return "chcrit(df, alpha) -> Upper-tail χ² critical value (df, α)."

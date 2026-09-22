@@ -18,3 +18,7 @@ def autocor(x: Union[Sequence, np.ndarray], k: int = 1) -> float:
     if g0 == 0:
         raise ValueError("zero variance -- autocorrelation undefined.")
     return _ac(x, k) / g0
+
+
+def cheatsheet() -> str:
+    return "autocor(x, k) -> Sample autocorrelation at lag k."

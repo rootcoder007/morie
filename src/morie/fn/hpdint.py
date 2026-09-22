@@ -37,3 +37,7 @@ def hpdint(samples: Union[Sequence[float], np.ndarray], cred: float = 0.95):
         interpretation=(f"Posterior probability that the parameter lies in [{lo:.4g}, {hi:.4g}] is {cred * 100:.0f}%."),
         payload={"value": (lo, hi), "lo": lo, "hi": hi, "credible_level": cred, "width": hi - lo},
     )
+
+
+def cheatsheet() -> str:
+    return "hpdint(samples, cred) -> HPD credible interval for posterior MCMC samples."

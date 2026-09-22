@@ -16,3 +16,7 @@ def glassd(treated, control) -> float:
     if sd_c == 0:
         raise ValueError("control SD is zero.")
     return (float(t.mean()) - float(c.mean())) / sd_c
+
+
+def cheatsheet() -> str:
+    return "glassd(treated, control) -> Glass's Δ: (mean_t − mean_c) / sd_c."

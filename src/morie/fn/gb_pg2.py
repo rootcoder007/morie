@@ -72,3 +72,7 @@ def pageasymp(ell, k, n, correct=True):
 
 
 gibbons_page_asymp = pageasymp
+
+
+def cheatsheet() -> str:
+    return "pageasymp(ell, k, n, correct) -> Normal approximation to Page's L with continuity correction."

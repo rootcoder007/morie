@@ -20,3 +20,7 @@ def ca_chapter_9_equation_10(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_9_equation_10() -> Deprecated; use :func:`morie.fn.t_paired` instead."

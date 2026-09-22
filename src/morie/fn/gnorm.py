@@ -65,3 +65,7 @@ def gnorm(
         x_norm = x_norm + beta.reshape(1, channels, *[1] * (x.ndim - 2))
 
     return {"output": x_norm, "mean": mean.reshape(batch, num_groups, -1), "var": var.reshape(batch, num_groups, -1)}
+
+
+def cheatsheet() -> str:
+    return "gnorm(x, num_groups, epsilon, gamma, beta) -> Group normalization."

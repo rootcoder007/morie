@@ -13,3 +13,7 @@ def zci(sigma: float, n: int, conf: float = 0.95) -> float:
         raise ValueError("invalid arguments.")
     z = norm.ppf(0.5 + conf / 2)
     return float(z * sigma / (n**0.5))
+
+
+def cheatsheet() -> str:
+    return "zci(sigma, n, conf) -> Half-width of a z-based confidence interval for the mean."

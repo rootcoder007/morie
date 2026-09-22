@@ -50,3 +50,7 @@ def gelua(x, approximate=False, derivative=False, cdf=None):
             return cdf + x * pdf
         else:
             return x * cdf
+
+
+def cheatsheet() -> str:
+    return "gelua(x, approximate, derivative, cdf) -> GELU activation."

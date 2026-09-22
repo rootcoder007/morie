@@ -99,3 +99,7 @@ def lillienorm(x, alpha=0.05):
 
 
 gibbons_lilliefors_normal = lillienorm
+
+
+def cheatsheet() -> str:
+    return "lillienorm(x, alpha) -> Lilliefors's KS test for normality, parameters estimated."

@@ -26,3 +26,7 @@ def haz(pdf_t: float, surv_t: float):
         ),
         payload={"value": h, "statistic": h, "pdf": pdf_t, "surv": surv_t},
     )
+
+
+def cheatsheet() -> str:
+    return "haz(pdf_t, surv_t) -> Hazard rate at time t: f(t) / S(t)."

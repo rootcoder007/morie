@@ -81,3 +81,7 @@ def particle_swarm(
 
 
 pswrm = particle_swarm
+
+
+def cheatsheet() -> str:
+    return "particle_swarm(f, bounds) -> Particle Swarm Optimization (PSO)."

@@ -93,3 +93,7 @@ def geods(
         "position": sol.y[:4].T,
         "velocity": sol.y[4:].T,
     }
+
+
+def cheatsheet() -> str:
+    return "geods(metric_func, x0, u0, tau_span, n_points, h) -> Solve the geodesic equation via numerical integration."

@@ -375,3 +375,7 @@ def forward_search_regression(X, y, start=None, n_draw=500, seed=1,
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 forwardsearch = forward_search
+
+
+def cheatsheet() -> str:
+    return "consistency_factor(m, n) -> Riani, Atkinson & Cerioli's factor for a truncated scale."

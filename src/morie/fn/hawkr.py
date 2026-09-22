@@ -62,3 +62,7 @@ def hawkr(
         "evaporation_time_s": float(t_evap),
         "peak_wavelength_m": float(lambda_peak),
     }
+
+
+def cheatsheet() -> str:
+    return "hawkr(M, G, c, hbar, kB) -> Compute the Hawking temperature of a Schwarzschild black hole."

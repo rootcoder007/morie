@@ -68,3 +68,7 @@ def mxpl2(x, pool_size=2, stride=None, padding="valid"):
                 mask[b, i * stride + max_idx[0], j * stride + max_idx[1]] = 1
 
     return RichResult(payload={"output": output, "mask": mask})
+
+
+def cheatsheet() -> str:
+    return "mxpl2(x, pool_size, stride, padding) -> 2D max pooling."

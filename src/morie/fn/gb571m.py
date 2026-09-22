@@ -54,3 +54,7 @@ def wsrmom(n):
 
 
 gibbons_wsrt_mean = wsrmom
+
+
+def cheatsheet() -> str:
+    return "wsrmom(n) -> Moments of T+ under H0 -- Gibbons eq. (5.7.2)."

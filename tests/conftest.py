@@ -20,7 +20,7 @@ from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 import pytest
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]  # the repository root
 PY_PACKAGE = ROOT / "tools" / "py-package"
 
 if str(PY_PACKAGE) not in sys.path:

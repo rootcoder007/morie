@@ -42,3 +42,7 @@ def bscch(p: float) -> dict:
     else:
         h = -p * np.log2(p) - (1 - p) * np.log2(1 - p)
     return RichResult(payload={"capacity": 1.0 - h, "crossover_prob": p})
+
+
+def cheatsheet() -> str:
+    return "bscch(p) -> Capacity of a binary symmetric channel (BSC)."

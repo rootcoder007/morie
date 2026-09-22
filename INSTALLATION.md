@@ -533,5 +533,6 @@ remove.packages("morie")
 - Documentation: <https://rootcoder007.github.io/morie/>
 - Source / issues: <https://github.com/rootcoder007/morie>
 - PyPI: <https://pypi.org/project/morie/>
+- `import morie` checks PyPI once a day for a newer release; set `MORIE_NO_UPDATE_CHECK=1` to disable it.
 - r-universe: <https://rootcoder007.r-universe.dev/morie>
 - Homebrew tap: <https://github.com/rootcoder007/homebrew-morie>

@@ -63,3 +63,7 @@ def friedvar(k, n):
 
 
 gibbons_friedman_variance = friedvar
+
+
+def cheatsheet() -> str:
+    return "friedvar(k, n) -> E[S], Var[S] and the moments of Q -- eqs. (12.2.7) and after."

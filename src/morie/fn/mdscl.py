@@ -84,3 +84,7 @@ def mdscl(D, n_dims=2):
         "stress": stress,
         "eigenvalues": eigenvalues_keep,
     }
+
+
+def cheatsheet() -> str:
+    return "mdscl(D, n_dims) -> Classical Multidimensional Scaling."

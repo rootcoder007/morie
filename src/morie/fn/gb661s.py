@@ -78,3 +78,7 @@ def mwun(p, c=0.5, alpha=0.05, beta=0.10, twosided=False):
 
 
 gibbons_mw_sampsize = mwun
+
+
+def cheatsheet() -> str:
+    return "mwun(p, c, alpha, beta, twosided) -> Total sample size N for a Mann-Whitney test of given power."

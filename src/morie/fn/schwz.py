@@ -62,3 +62,7 @@ def schwz(
         "r_schwarzschild": rs,
         "f": f,
     }
+
+
+def cheatsheet() -> str:
+    return "schwz(r, M, theta, G, c) -> Compute the Schwarzschild metric tensor at radius r."

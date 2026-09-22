@@ -13,3 +13,7 @@ def trace(A: Union[Sequence, np.ndarray]) -> float:
     if M.shape[0] != M.shape[1]:
         raise ValueError("matrix must be square.")
     return float(np.trace(M))
+
+
+def cheatsheet() -> str:
+    return "trace(A) -> Trace of a square matrix: Σᵢ Aᵢᵢ."

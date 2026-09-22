@@ -226,3 +226,7 @@ def cxphr(
         "converged": converged,
         "vcov": vcov,
     }
+
+
+def cheatsheet() -> str:
+    return "cxphr(time, event, covariates, max_iter, tol, ties) -> Fit a Cox proportional hazards model via partial likelihood maximisation"

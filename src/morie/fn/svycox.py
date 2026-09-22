@@ -275,3 +275,7 @@ def survey_cox(time, event, X, weights=None, strata=None,
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 surveycox = survey_cox
+
+
+def cheatsheet() -> str:
+    return "score_residuals(time, event, X, beta, weights) -> Per-subject score residuals at ``beta``."

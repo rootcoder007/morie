@@ -99,3 +99,7 @@ def klgrd(
         "phi": phi_out,
         "dispersion_relation": {"k": k, "omega": omega},
     }
+
+
+def cheatsheet() -> str:
+    return "klgrd(m, x_range, n_x, t_span, n_t, initial_phi, initial_dphi_dt, hbar, c) -> Solve the 1+1D Klein-Gordon equation numerically."

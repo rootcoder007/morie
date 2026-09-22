@@ -28,3 +28,7 @@ def hedderich_chapter_8_equation_70(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "hedderich_chapter_8_equation_70() -> Deprecated; use :func:`morie.fn.pseudor2` instead."

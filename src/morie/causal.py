@@ -92,6 +92,17 @@ def compute_propensity_scores(data: pd.DataFrame, treatment: str, covariates: li
     X_raw = data[covariates].copy()
     y = data[treatment]
 
+    # A missing covariate or treatment value is refused, not propagated:
+    # one NaN made the whole propensity vector exactly 0 (no warning), and
+    # the IPW weights downstream came out capped at 100 for every unit,
+    # which reads as a positivity problem rather than a data gap.
+    missing = [c for c in [*covariates, treatment] if bool(data[c].isna().any())]
+    if missing:
+        raise ValueError(
+            "missing values in " + ", ".join(repr(c) for c in missing)
+            + "; drop or impute them (e.g. data.dropna(subset=...)) before "
+            "estimating propensity scores")
+
     # Encode any non-numeric columns so LogisticRegression receives a numeric
     # matrix.  LabelEncoder maps each unique string/category to an integer.
     for col in X_raw.columns:

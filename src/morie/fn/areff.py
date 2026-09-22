@@ -26,3 +26,7 @@ def areff(test1_stat, test2_stat, n, test1_name="Test1", test2_name="Test2"):
         "interpretation": f"{test1_name} is {are:.2f}x as efficient as {test2_name}",
         "n_ratio": float(1 / are),
     }
+
+
+def cheatsheet() -> str:
+    return "areff(test1_stat, test2_stat, n, test1_name, test2_name) -> Asymptotic relative efficiency between two tests."

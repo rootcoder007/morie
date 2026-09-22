@@ -64,3 +64,7 @@ def greed(
         probabilities.append(float(probs[next_token]))
 
     return RichResult(payload={"sequence": sequence, "probabilities": probabilities})
+
+
+def cheatsheet() -> str:
+    return "greed(initial_token, step_fn, max_length, temperature, seed) -> Greedy decoding with temperature."

@@ -68,3 +68,7 @@ def jtmom(ns):
 
 
 gibbons_jt_moments = jtmom
+
+
+def cheatsheet() -> str:
+    return "jtmom(ns) -> E_0[B] and Var_0[B] -- eqs. (10.6.2) and (10.6.3)."

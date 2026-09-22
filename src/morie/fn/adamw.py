@@ -86,3 +86,7 @@ def adamw(
     weights = weights - learning_rate * weight_decay * weights
 
     return RichResult(payload={"weights": weights, "m": m, "v": v, "t": t})
+
+
+def cheatsheet() -> str:
+    return "adamw(weights, gradients, learning_rate, beta1, beta2, epsilon, weight_decay, m, v, t) -> AdamW optimizer step."

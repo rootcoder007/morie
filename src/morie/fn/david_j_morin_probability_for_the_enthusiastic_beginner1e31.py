@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_3
         stacklevel=2,
     )
     return _impl(N)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_31(N) -> Deprecated; use :func:`morie.fn.sumints` instead."

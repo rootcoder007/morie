@@ -170,3 +170,65 @@ class TestTrustKnobs:
             assert set(k) == {"name", "enabled", "detail"}
             assert k["enabled"] is False  # all safe by default
             assert k["detail"]
+
+
+class TestSandboxEscape:
+    """morie's own modules re-export the stdlib; none of it may be reached."""
+
+    @pytest.mark.parametrize(
+        "code",
+        [
+            "import morie.container as m\nm.subprocess.run(['/bin/true'])",
+            "import morie.container as m\nm.subprocess.run('true', shell=True)",
+            "import morie.bricklayer as b\nb.subprocess.run(['/bin/true'])",
+            "import morie.doctor as d\nd.os.replace('a', 'b')",
+            "import morie.engine_bridge as e\ne.ctypes.CDLL(None)",
+            "import morie\nmorie.importlib.import_module('os')",
+        ],
+    )
+    def test_morie_import_is_refused(self, code):
+        with pytest.raises(ExecGuardError):
+            guarded_exec(code, {})
+
+    def test_injected_namespace_works(self):
+        from morie._exec_guard import guarded_namespace
+
+        ns = guarded_namespace()
+        guarded_exec(
+            "df = pd.DataFrame({'a': [1.0, 2.0, 3.0]})\n"
+            "m = np.mean(df['a'].tolist())\n"
+            "r = np.random.default_rng(1).normal(0, 1, 3)",
+            ns,
+        )
+        assert ns["m"] == 2.0
+        assert len(ns["r"].tolist()) == 3
+
+    def test_injected_modules_hide_stdlib_modules(self):
+        import types
+
+        from morie._exec_guard import _GuardedModule, guarded_namespace
+
+        fake = types.ModuleType("morie.fake")
+        import os as _os
+        fake.os = _os
+        fake.value = 3
+        gm = _GuardedModule(fake)
+        assert gm.value == 3
+        with pytest.raises(ExecGuardError):
+            gm.os
+        with pytest.raises(ExecGuardError):
+            gm._mod
+        with pytest.raises(ExecGuardError):
+            gm.new_attr = 1
+        ns = guarded_namespace()
+        for name in ("subprocess", "os", "importlib"):
+            with pytest.raises(ExecGuardError):
+                guarded_exec(f"np.{name}", dict(ns))
+
+    def test_safe_eval_expr_is_shipped_separately(self):
+        from morie._safe_expr import safe_eval_expr as shipped
+
+        assert shipped is safe_eval_expr
+        assert shipped("1 + 2 * x", {"x": 3}) == 7
+        with pytest.raises(ValueError):
+            shipped("__import__('os')")

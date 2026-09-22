@@ -93,3 +93,7 @@ def admm(f, g, A, b, rho=1.0, max_iter=1000, tol=1e-4, full_output=False):
     if full_output:
         return x, {"iterations": max_iter, "converged": False}
     return x
+
+
+def cheatsheet() -> str:
+    return "admm(f, g, A, b, rho, max_iter, tol, full_output) -> ADMM for constrained optimization."

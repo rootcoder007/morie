@@ -44,3 +44,7 @@ def kurt(x: Union[Sequence[float], np.ndarray], fisher: bool = True, bias: bool 
         ),
         payload={"value": g2, "statistic": g2, "shape": shape},
     )
+
+
+def cheatsheet() -> str:
+    return "kurt(x, fisher, bias) -> Sample kurtosis (Fisher excess g_2)."

@@ -64,3 +64,7 @@ def kscvmcmp(x, cdf):
 
 
 gibbons_ks_cvm_comparison = kscvmcmp
+
+
+def cheatsheet() -> str:
+    return "kscvmcmp(x, cdf) -> Both statistics side by side, with the deviation profile."

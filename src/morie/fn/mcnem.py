@@ -54,3 +54,7 @@ def mcnem(table: Union[Sequence, np.ndarray], continuity: bool = True):
         ],
         warnings=warnings,
     )
+
+
+def cheatsheet() -> str:
+    return "mcnem(table, continuity) -> McNemar test for paired binary outcomes (2x2)."

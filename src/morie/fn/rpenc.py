@@ -46,3 +46,7 @@ def rpenc(seq_len, d_model, base=10000):
     rope[:, 1::2] = np.sin(angles)
 
     return rope
+
+
+def cheatsheet() -> str:
+    return "rpenc(seq_len, d_model, base) -> Rotary positional encoding."

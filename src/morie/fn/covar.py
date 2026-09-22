@@ -37,3 +37,7 @@ def covar(x: Union[Sequence[float], np.ndarray], y: Union[Sequence[float], np.nd
         ),
         payload={"value": cov_val, "statistic": cov_val, "correlation": corr, "sd_x": sd_a, "sd_y": sd_b},
     )
+
+
+def cheatsheet() -> str:
+    return "covar(x, y) -> Unbiased sample covariance with verbose result."

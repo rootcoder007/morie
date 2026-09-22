@@ -19,3 +19,7 @@ def lagop(x: Union[Sequence, np.ndarray], k: int = 1) -> np.ndarray:
     if k < a.size:
         out[k:] = a[: a.size - k]
     return out
+
+
+def cheatsheet() -> str:
+    return "lagop(x, k) -> k-th lag of a series. First k entries are NaN (no prior data)."

@@ -20,3 +20,7 @@ def ca_chapter_2_equation_17(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_2_equation_17() -> Deprecated; use :func:`morie.fn.f_overall_r2` instead."

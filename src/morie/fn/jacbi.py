@@ -65,3 +65,7 @@ jacbi = jacobi_solve
 
 # compact alias per ledger/NAMING.md
 jacobisolve = jacobi_solve
+
+
+def cheatsheet() -> str:
+    return "jacobi_solve(A, b) -> Jacobi iterative method for Ax = b."

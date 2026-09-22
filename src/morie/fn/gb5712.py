@@ -71,3 +71,7 @@ def wsrpow(n, p1, p2, alpha=0.05):
 
 
 gibbons_wsrt_power = wsrpow
+
+
+def cheatsheet() -> str:
+    return "wsrpow(n, p1, p2, alpha) -> Normal-approximation power of the upper-tailed signed-rank test."

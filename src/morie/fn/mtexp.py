@@ -55,3 +55,7 @@ mtexp = matrix_exp
 
 # compact alias per ledger/NAMING.md
 matrixexp = matrix_exp
+
+
+def cheatsheet() -> str:
+    return "matrix_exp(A) -> Matrix exponential exp(A) via scaling-and-squaring with Taylor series."

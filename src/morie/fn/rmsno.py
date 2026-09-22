@@ -50,3 +50,7 @@ def rmsno(
         x_norm = x_norm * gamma
 
     return RichResult(payload={"output": x_norm, "rms": rms})
+
+
+def cheatsheet() -> str:
+    return "rmsno(x, epsilon, gamma) -> RMS normalization."

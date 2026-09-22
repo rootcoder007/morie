@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_6
         stacklevel=2,
     )
     return _impl(grid_x, density_x, grid_y, density_y, z, dz)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_66(grid_x, density_x, grid_y, density_y, z, dz) -> Deprecated; use :func:`morie.fn.sumdensp` instead."

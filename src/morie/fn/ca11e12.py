@@ -20,3 +20,7 @@ def ca_chapter_11_equation_12(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_11_equation_12() -> Deprecated; use :func:`morie.fn.fisher_z` instead."

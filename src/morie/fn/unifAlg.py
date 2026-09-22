@@ -277,3 +277,7 @@ def factor_through(general, other, over):
 
 # compact alias per ledger/NAMING.md
 unification = unify
+
+
+def cheatsheet() -> str:
+    return "var(name) -> A variable term."

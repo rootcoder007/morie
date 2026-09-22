@@ -145,3 +145,7 @@ def wlcst(time: np.ndarray, event: np.ndarray, group: np.ndarray, weight: str = 
         "observed": np.array([obs_1, obs_2]),
         "expected": np.array([exp_1, exp_2]),
     }
+
+
+def cheatsheet() -> str:
+    return "wlcst(time, event, group, weight, cdf) -> Wilcoxon (Breslow) weighted log-rank test for comparing survival curves."

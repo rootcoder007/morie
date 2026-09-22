@@ -61,3 +61,7 @@ def mhatt(
     output = np.dot(attention_weights, value)
 
     return RichResult(payload={"output": output, "attention_weights": attention_weights})
+
+
+def cheatsheet() -> str:
+    return "mhatt(query, key, value, num_heads, d_model) -> Multi-head scaled dot-product attention."

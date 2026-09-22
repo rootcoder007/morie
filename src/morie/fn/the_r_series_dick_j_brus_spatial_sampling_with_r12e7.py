@@ -20,3 +20,7 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_7(*args
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_7() -> Deprecated; use :func:`morie.fn.n_for_mean_length` instead."

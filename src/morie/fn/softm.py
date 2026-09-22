@@ -49,3 +49,7 @@ def softm(x, axis=-1, derivative=False):
         return RichResult(payload={"output": softmax, "jacobian": jacobian})
     else:
         return softmax
+
+
+def cheatsheet() -> str:
+    return "softm(x, axis, derivative) -> Softmax activation (numerically stable)."

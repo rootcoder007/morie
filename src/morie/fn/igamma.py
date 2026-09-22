@@ -12,3 +12,7 @@ def igamma(a: float, x: float) -> float:
     if a <= 0 or x < 0:
         raise ValueError("require a>0 and x≥0.")
     return float(gammainc(a, x))
+
+
+def cheatsheet() -> str:
+    return "igamma(a, x) -> Regularised lower incomplete gamma function P(a, x)."

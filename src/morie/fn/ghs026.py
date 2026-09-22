@@ -20,3 +20,7 @@ def ghosal_ch3_tailfree_finite_density_pm(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ghosal_ch3_tailfree_finite_density_pm() -> Deprecated; use :func:`morie.fn._bits` instead."

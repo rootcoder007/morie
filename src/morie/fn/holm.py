@@ -50,3 +50,7 @@ def holm(p_values: Sequence[float], alpha: float = 0.05):
         ),
         payload={"rejects": out, "n_reject": n_reject, "alpha": alpha},
     )
+
+
+def cheatsheet() -> str:
+    return "holm(p_values, alpha) -> Holm-Bonferroni step-down rejection vector."

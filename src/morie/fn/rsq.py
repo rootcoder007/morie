@@ -51,3 +51,7 @@ def rsq(y_true: Union[Sequence[float], np.ndarray], y_pred: Union[Sequence[float
         interpretation=(f"R^2 = {r2:.4f} -> {bench}. Range (-inf, 1]; 1 = perfect."),
         payload={"value": r2, "statistic": r2, "ss_res": ss_res, "ss_tot": ss_tot},
     )
+
+
+def cheatsheet() -> str:
+    return "rsq(y_true, y_pred) -> R^2 = 1 - SS_res / SS_tot."

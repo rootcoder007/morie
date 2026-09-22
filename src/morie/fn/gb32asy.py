@@ -77,3 +77,7 @@ def runsz(r, n1, n2, correct=False):
 
 
 gibbons_runs_asymp_normal = runsz
+
+
+def cheatsheet() -> str:
+    return "runsz(r, n1, n2, correct) -> Standardised total-runs statistic for the Wald-Wolfowitz test."

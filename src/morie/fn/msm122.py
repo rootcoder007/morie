@@ -20,3 +20,7 @@ def mvsml_bayesian_regression_pt2_eq_7_11(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "mvsml_bayesian_regression_pt2_eq_7_11() -> Deprecated; use :func:`morie.fn.penalized_poisson_fit` instead."

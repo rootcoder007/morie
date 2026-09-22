@@ -74,3 +74,7 @@ def typst(
         "n": n,
         "epsilon": epsilon,
     }
+
+
+def cheatsheet() -> str:
+    return "typst(pmf, n) -> Compute typical set properties for an i.i.d. source."

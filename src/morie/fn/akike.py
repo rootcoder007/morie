@@ -24,3 +24,7 @@ def akike(loglik: float, k: int):
         ),
         payload={"value": aic, "statistic": aic, "loglik": loglik, "k": k},
     )
+
+
+def cheatsheet() -> str:
+    return "akike(loglik, k) -> Akaike Information Criterion: AIC = 2k - 2 log L."

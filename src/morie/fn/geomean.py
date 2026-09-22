@@ -32,3 +32,7 @@ def geomean(x: Union[Sequence[float], np.ndarray]):
         ),
         payload={"value": g, "statistic": g, "arithmetic_mean": arith},
     )
+
+
+def cheatsheet() -> str:
+    return "geomean(x) -> Geometric mean = (Π_i x_i)^(1/n)."

@@ -69,3 +69,7 @@ def cosmx(
         "angular_diameter_distance_Mpc": float(da),
         "lookback_time_Gyr": float(tl),
     }
+
+
+def cheatsheet() -> str:
+    return "cosmx(z, H0, Omega_m, Omega_Lambda) -> Compute comoving distance, luminosity distance, angular diameter distance,"

@@ -280,8 +280,10 @@ def tox_matrix_reliability(
 def tox_left_censor_impute(values, lod: float, method: str = "half") -> dict[str, Any]:
     """Impute left-censored (below-LOD) toxicology values.
 
-    Applies a documented simple-substitution rule to censored entries (``NaN``
-    or below ``lod``). For regression on censored data prefer
+    Applies a documented simple-substitution rule to entries below ``lod``.
+    A ``NaN`` is *not measured*, not *below the detection limit*: it is left
+    as ``NaN``, excluded from the censoring fraction, and counted in
+    ``n_missing``. For regression on censored data prefer
     ``morie.horowitz_censored_regression``. R parity:
     ``morie_tox_left_censor_impute``.
     """
@@ -297,13 +299,17 @@ def tox_left_censor_impute(values, lod: float, method: str = "half") -> dict[str
         sub = lod
     else:
         raise ValueError("`method` must be 'half', 'sqrt2', or 'lod'")
-    censored = np.isnan(values) | (values < lod)
+    measured = ~np.isnan(values)
+    censored = measured & (values < lod)
     imputed = values.copy()
     imputed[censored] = sub
+    n_measured = int(measured.sum())
     return {
         "imputed": imputed,
         "censored": censored,
-        "fraction_censored": float(censored.mean()),
+        "fraction_censored": (float(censored.sum() / n_measured)
+                              if n_measured else float("nan")),
+        "n_missing": int(values.size - n_measured),
     }
 
 

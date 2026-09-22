@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_1
         stacklevel=2,
     )
     return _impl(a, kmax)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_11(a, kmax) -> Deprecated; use :func:`morie.fn.poissum1` instead."

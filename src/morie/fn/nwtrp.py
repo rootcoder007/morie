@@ -103,3 +103,7 @@ def nwtrp(f, fprime, x0, tol=1e-6, max_iter=100, full_output=False):
             "final_residual": float(np.linalg.norm(np.atleast_1d(f(x)))),
         }
     return x
+
+
+def cheatsheet() -> str:
+    return "nwtrp(f, fprime, x0, tol, max_iter, full_output) -> Newton-Raphson root finding method."

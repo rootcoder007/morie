@@ -81,3 +81,7 @@ newtm = newton_method
 
 # compact alias per ledger/NAMING.md
 newtonmethod = newton_method
+
+
+def cheatsheet() -> str:
+    return "newton_method(f, x0) -> Newton's method for finding roots of f(x) = 0."

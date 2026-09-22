@@ -61,3 +61,7 @@ def jtsum(samples):
 
 
 gibbons_jt_cd_form = jtsum
+
+
+def cheatsheet() -> str:
+    return "jtsum(samples) -> The full U_ij matrix whose upper triangle sums to B."

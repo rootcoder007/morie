@@ -297,3 +297,7 @@ def replicate_weights(d, method="jkn", R=200, fay=0.0, seed=1):
         "hadamard_order": rep.get("hadamard_order"),
         "fay": rep.get("fay"), "seed": rep.get("seed"),
     })
+
+
+def cheatsheet() -> str:
+    return "design(weights, strata, psu) -> A survey design: sampling weights, strata and PSU labels."

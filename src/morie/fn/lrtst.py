@@ -26,3 +26,7 @@ def lrtst(loglik_full: float, loglik_reduced: float, df_diff: int):
             ("Extra parameters", df_diff),
         ],
     )
+
+
+def cheatsheet() -> str:
+    return "lrtst(loglik_full, loglik_reduced, df_diff) -> LR test for nested models. LR = -2(LL_red - LL_full) ~ chi^2(df_diff)."

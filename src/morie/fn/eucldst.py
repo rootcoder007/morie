@@ -12,3 +12,7 @@ def eucldst(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]) -> f
     a = np.asarray(x, dtype=float)
     b = np.asarray(y, dtype=float)
     return float(np.sqrt(np.sum((a - b) ** 2)))
+
+
+def cheatsheet() -> str:
+    return "eucldst(x, y) -> Euclidean (L₂) distance between vectors x and y."

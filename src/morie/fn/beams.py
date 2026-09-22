@@ -72,3 +72,7 @@ def beams(
         sequences = [c[1] for c in candidates[:beam_width]]
 
     return RichResult(payload={"sequences": sequences, "scores": scores})
+
+
+def cheatsheet() -> str:
+    return "beams(initial_token, step_fn, max_length, beam_width, vocab_size, seed) -> Beam search decoding."

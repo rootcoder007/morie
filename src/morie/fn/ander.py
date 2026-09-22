@@ -130,3 +130,7 @@ def ander(x, dist="norm", dist_params=None, axis=0, cdf=None):
         "critical_value": float(critical_value),
         "interpretation": interpretation,
     }
+
+
+def cheatsheet() -> str:
+    return "ander(x, dist, dist_params, axis, cdf) -> Anderson-Darling test for goodness of fit."

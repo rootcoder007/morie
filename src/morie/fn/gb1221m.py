@@ -78,3 +78,7 @@ def friedmc(rank_sums, k, alpha=0.20):
 
 
 gibbons_friedman_mult = friedmc
+
+
+def cheatsheet() -> str:
+    return "friedmc(rank_sums, k, alpha) -> Pairwise treatment comparisons from the Friedman rank sums."

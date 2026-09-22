@@ -66,3 +66,7 @@ def moods(x, y, axis=0, cdf=None):
         "p_value": float(p_value),
         "interpretation": "reject" if p_value < 0.05 else "not reject",
     }
+
+
+def cheatsheet() -> str:
+    return "moods(x, y, axis, cdf) -> Mood's test for equality of scale parameters."

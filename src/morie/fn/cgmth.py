@@ -127,3 +127,7 @@ def cgmth(f, grad_f, x0, tol=1e-6, max_iter=1000, full_output=False):
     if full_output:
         return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x
+
+
+def cheatsheet() -> str:
+    return "cgmth(f, grad_f, x0, tol, max_iter, full_output) -> Conjugate gradient method for unconstrained minimization."

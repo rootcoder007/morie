@@ -20,3 +20,7 @@ def mvsml_bayesian_regression_eq_6_10(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "mvsml_bayesian_regression_eq_6_10() -> Deprecated; use :func:`morie.fn.multitrait_ridge_form` instead."

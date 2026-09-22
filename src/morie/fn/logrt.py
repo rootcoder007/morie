@@ -161,3 +161,7 @@ def logrt(
         "observed": obs_total,
         "expected": exp_total,
     }
+
+
+def cheatsheet() -> str:
+    return "logrt(time, event, group, rho, strata, cdf) -> Log-rank test (and weighted variants) for comparing survival curves"

@@ -71,3 +71,7 @@ def wsrsimpow(samples, m0, tcrit):
 
 
 gibbons_wsrt_simpower = wsrsimpow
+
+
+def cheatsheet() -> str:
+    return "wsrsimpow(samples, m0, tcrit) -> Monte-Carlo power of the signed-rank test over pre-drawn samples."

@@ -233,3 +233,7 @@ def coupled_logistic(n, rx=3.8, ry=3.5, bxy=0.0, byx=0.1,
 def convergent_cross_mapping(x, y, E=2, tau=1, **kw):
     r"""Entry point: see :func:`ccm`."""
     return ccm(x, y, E, tau, **kw)
+
+
+def cheatsheet() -> str:
+    return "embed(series, E, tau) -> Time-delay embedding: vectors :math:`(x_t, x_{t-\tau},"

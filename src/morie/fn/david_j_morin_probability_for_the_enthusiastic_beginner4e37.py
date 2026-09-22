@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_3
         stacklevel=2,
     )
     return _impl(lam_eps, n)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_37(lam_eps, n) -> Deprecated; use :func:`morie.fn.onemexp` instead."

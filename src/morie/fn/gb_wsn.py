@@ -78,3 +78,7 @@ def wsrz(tplus, n, alternative="two-sided", correct=False):
 
 
 gibbons_wsrt_normal_approx = wsrz
+
+
+def cheatsheet() -> str:
+    return "wsrz(tplus, n, alternative, correct) -> Standardised signed-rank statistic."

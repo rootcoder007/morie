@@ -64,3 +64,7 @@ def rdgr(
         warnings=[] if alpha > 0 else ["alpha=0; behaves like plain OLS."],
         payload={"coef": coefs.tolist(), "intercept": intercept, "r2": r2, "alpha": alpha},
     )
+
+
+def cheatsheet() -> str:
+    return "rdgr(X, y, alpha, fit_intercept) -> Ridge regression (L2-regularized OLS)."

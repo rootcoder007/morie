@@ -8,3 +8,7 @@ def jacsim(a, b) -> float:
     if not sa and not sb:
         return 1.0
     return len(sa & sb) / len(sa | sb)
+
+
+def cheatsheet() -> str:
+    return "jacsim(a, b) -> Jaccard similarity for two sets: |A ∩ B| / |A ∪ B|."

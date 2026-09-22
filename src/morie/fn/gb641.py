@@ -84,3 +84,7 @@ def medtest(x, y):
 
 
 gibbons_median_test = medtest
+
+
+def cheatsheet() -> str:
+    return "medtest(x, y) -> Median test statistic U and its hypergeometric null law."

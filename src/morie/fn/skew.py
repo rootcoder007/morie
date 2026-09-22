@@ -39,3 +39,7 @@ def skew(x: Union[Sequence[float], np.ndarray], bias: bool = False):
         ),
         payload={"value": g1, "statistic": g1, "shape": shape},
     )
+
+
+def cheatsheet() -> str:
+    return "skew(x, bias) -> Sample skewness (Fisher-Pearson g_1)."

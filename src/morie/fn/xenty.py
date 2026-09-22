@@ -60,3 +60,7 @@ def xenty(
         loss = -np.mean(np.sum(y_true * np.log(y_pred), axis=1))
 
     return float(loss)
+
+
+def cheatsheet() -> str:
+    return "xenty(y_true, y_pred, from_logits, epsilon) -> Cross-entropy loss."

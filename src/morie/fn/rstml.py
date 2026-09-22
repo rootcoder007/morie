@@ -180,3 +180,7 @@ def rstml(
             "p_value": p_val,
             "tau": float(tau),
         }
+
+
+def cheatsheet() -> str:
+    return "rstml(time, event, tau, group, alpha) -> Estimate restricted mean survival time (RMST) up to restriction time tau."

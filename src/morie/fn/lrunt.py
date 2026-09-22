@@ -87,3 +87,7 @@ def lrunt(x, axis=0):
         "critical_value": int(critical_value),
         "interpretation": interpretation,
     }
+
+
+def cheatsheet() -> str:
+    return "lrunt(x, axis) -> Longest run test for randomness."

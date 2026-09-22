@@ -41,3 +41,7 @@ def mish(x, derivative=False):
         return sigmoid * (x * sech2 + tanh_arg)
     else:
         return x * np.tanh(softplus)
+
+
+def cheatsheet() -> str:
+    return "mish(x, derivative) -> Mish activation."

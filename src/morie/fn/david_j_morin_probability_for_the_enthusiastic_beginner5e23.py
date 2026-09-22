@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_2
         stacklevel=2,
     )
     return _impl(k, a)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_23(k, a) -> Deprecated; use :func:`morie.fn.poisgauss` instead."

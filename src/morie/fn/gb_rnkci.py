@@ -63,3 +63,7 @@ def rankci(values, k, level=None):
 
 
 gibbons_rank_ci = rankci
+
+
+def cheatsheet() -> str:
+    return "rankci(values, k, level) -> Interval (V_(k+1), V_(M-k)) from an inverted rank test."

@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_1
         stacklevel=2,
     )
     return _impl(x, y)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_14(x, y) -> Deprecated; use :func:`morie.fn.covshort` instead."

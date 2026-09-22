@@ -88,3 +88,7 @@ def kmedtest(samples):
 
 
 gibbons_k_median_test = kmedtest
+
+
+def cheatsheet() -> str:
+    return "kmedtest(samples) -> Q for the 2 x k table of counts below the combined median."

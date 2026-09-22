@@ -37,3 +37,7 @@ def relu6(x, derivative=False):
         return np.where((x >= 0) & (x <= 6), 1.0, 0.0)
     else:
         return np.clip(x, 0, 6)
+
+
+def cheatsheet() -> str:
+    return "relu6(x, derivative) -> ReLU6 activation."

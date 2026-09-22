@@ -75,3 +75,7 @@ def chcap(
                 mi += r[i] * W[i, j] * np.log2(W[i, j] / q[j])
 
     return RichResult(payload={"capacity": max(mi, 0.0), "optimal_input": r})
+
+
+def cheatsheet() -> str:
+    return "chcap(transition_matrix) -> Compute channel capacity C = max_{p(x)} I(X;Y) via Blahut-Arimoto."

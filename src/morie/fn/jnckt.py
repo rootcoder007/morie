@@ -48,3 +48,7 @@ def jnckt(*samples, axis=0):
         "k": int(k),
         "interpretation": "reject" if p_value < 0.05 else "not reject",
     }
+
+
+def cheatsheet() -> str:
+    return "jnckt() -> Jonckheere-Terpstra test for ordered alternatives."

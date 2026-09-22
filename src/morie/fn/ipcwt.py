@@ -128,3 +128,7 @@ def ipcwt(
         "km_c_surv": km_c_surv,
         "tau": float(tau),
     }
+
+
+def cheatsheet() -> str:
+    return "ipcwt(time, event, covariates, method, tau) -> Compute inverse probability of censoring weights (IPCW) for each subject."

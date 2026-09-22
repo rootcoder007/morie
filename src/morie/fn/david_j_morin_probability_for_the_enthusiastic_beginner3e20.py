@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_2
         stacklevel=2,
     )
     return _impl(sides)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_20(sides) -> Deprecated; use :func:`morie.fn.dievar` instead."

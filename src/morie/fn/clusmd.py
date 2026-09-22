@@ -125,3 +125,7 @@ def butina_clustering(fps, threshold=0.8, recount=False):
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 butina_cluster = butina_clusters
 butinacluster = butina_clusters
+
+
+def cheatsheet() -> str:
+    return "neighbour_lists(fps, threshold) -> For each compound, the set of others within ``threshold``."

@@ -64,3 +64,7 @@ def stkey(x, y, axis=0, cdf=None):
         "p_value": float(p_value),
         "interpretation": "reject" if p_value < 0.05 else "not reject",
     }
+
+
+def cheatsheet() -> str:
+    return "stkey(x, y, axis, cdf) -> Siegel-Tukey test for equality of scale parameters."

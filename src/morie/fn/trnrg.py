@@ -116,3 +116,7 @@ def trnrg(f, grad_f, hess_f, x0, tol=1e-6, max_iter=100, radius=1.0, full_output
     if full_output:
         return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x
+
+
+def cheatsheet() -> str:
+    return "trnrg(f, grad_f, hess_f, x0, tol, max_iter, radius, full_output) -> Trust region method for unconstrained minimization."

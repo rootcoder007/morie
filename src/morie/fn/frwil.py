@@ -220,3 +220,7 @@ def predict_activity(fit, compound):
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 free_wilson_qsar = free_wilson
 freewilsonqsar = free_wilson
+
+
+def cheatsheet() -> str:
+    return "design_matrix(compounds, constraint) -> The indicator design, with the chosen constraint applied."

@@ -162,3 +162,7 @@ def gmprl(
         "aic": float(aic),
         "bic": float(bic),
     }
+
+
+def cheatsheet() -> str:
+    return "gmprl(time, event, covariates, max_iter, tol) -> Fit a Gompertz proportional-hazards survival model via MLE."

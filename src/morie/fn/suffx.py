@@ -112,3 +112,7 @@ def suffx(
         "mean_violation": mean_violation,
         "n_comparisons": n_comp,
     }
+
+
+def cheatsheet() -> str:
+    return "suffx(data, statistic, log_likelihood, theta_grid) -> Test whether T(X) is a sufficient statistic for theta via factorization."

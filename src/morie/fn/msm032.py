@@ -20,3 +20,7 @@ def mvsml_linear_mixed_models_eq_5_6(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "mvsml_linear_mixed_models_eq_5_6() -> Deprecated; use :func:`morie.fn.gxe_multitrait_model` instead."

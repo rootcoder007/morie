@@ -54,3 +54,7 @@ def crsvm(x, dist="norm", dist_params=None, axis=0, cdf=None):
         "critical_value": float(critical),
         "interpretation": "reject" if W_sq > critical else "not reject",
     }
+
+
+def cheatsheet() -> str:
+    return "crsvm(x, dist, dist_params, axis, cdf) -> Cramer-von Mises goodness-of-fit test."

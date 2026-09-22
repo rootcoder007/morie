@@ -116,3 +116,7 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq="ucb", kappa=2.576, full_output=F
     if full_output:
         return X[best_idx], {"n_evals": len(y), "converged": False, "final_value": y[best_idx]}
     return X[best_idx]
+
+
+def cheatsheet() -> str:
+    return "bysop(f, bounds, n_init, n_iter, acq, kappa, full_output, seed, cdf) -> Bayesian optimization for global optimization."

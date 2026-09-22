@@ -94,3 +94,7 @@ def ising(
         "internal_energy_per_site": float(u_per_site),
         "is_ordered": bool(Tc > T),
     }
+
+
+def cheatsheet() -> str:
+    return "ising(T, J, kB, n_sites) -> Compute 2D Ising model thermodynamic quantities using Onsager's"

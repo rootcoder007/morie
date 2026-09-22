@@ -13,6 +13,9 @@ The R package ships **native causal-inference engines** — matching (nearest/Ma
 [![rmorie on r-universe](https://rootcoder007.r-universe.dev/badges/rmorie)](https://rootcoder007.r-universe.dev/rmorie)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
+> `import morie` checks PyPI once a day for a newer release (fail-silent,
+> cached). Set `MORIE_NO_UPDATE_CHECK=1` to disable it.
+
 ## Installation
 
 > Full step-by-step install guide with platform-specific notes (PEP 668 on Debian, python 3.13 segfault on Raspberry Pi OS, etc.) is at **[INSTALLATION.md](https://github.com/rootcoder007/morie/blob/main/INSTALLATION.md)**.

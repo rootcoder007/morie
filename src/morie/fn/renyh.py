@@ -64,3 +64,7 @@ def renyh(pmf: np.ndarray, alpha: float) -> dict:
         h_alpha = float(np.log2(np.sum(p_pos**alpha)) / (1.0 - alpha))
 
     return RichResult(payload={"entropy": h_alpha, "alpha": alpha, "shannon_entropy": shannon})
+
+
+def cheatsheet() -> str:
+    return "renyh(pmf, alpha) -> Compute Renyi entropy of order alpha."

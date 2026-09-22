@@ -48,3 +48,7 @@ def paired(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
         ],
         warnings=warnings,
     )
+
+
+def cheatsheet() -> str:
+    return "paired(x, y) -> Paired t-test on matched x, y samples."

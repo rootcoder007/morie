@@ -82,3 +82,7 @@ def randtest(pmf, alpha=0.05, pmf_alt=None):
 
 
 gibbons_rz_test = randtest
+
+
+def cheatsheet() -> str:
+    return "randtest(pmf, alpha, pmf_alt) -> Randomized test: reject above t2, reject with probability p at t1."

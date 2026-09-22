@@ -14,3 +14,7 @@ def invsym(A: Union[Sequence, np.ndarray]) -> np.ndarray:
     """
     M = np.asarray(A, dtype=float)
     return np.linalg.pinv(M)
+
+
+def cheatsheet() -> str:
+    return "invsym(A) -> Pseudo-inverse of a symmetric matrix."

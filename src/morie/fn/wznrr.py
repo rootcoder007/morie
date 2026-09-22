@@ -89,3 +89,7 @@ def wznrr(
         "rate_saving": max(rate_no_si - rate_wz, 0.0),
         "H_X_given_Y": h_x_given_y,
     }
+
+
+def cheatsheet() -> str:
+    return "wznrr(joint_pmf, distortion_matrix, target_distortion) -> Compute the Wyner-Ziv rate-distortion function (lower bound)."

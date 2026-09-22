@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_6
         stacklevel=2,
     )
     return _impl(n, k)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_60(n, k) -> Deprecated; use :func:`morie.fn.pascalid` instead."

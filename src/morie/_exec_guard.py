@@ -25,7 +25,14 @@ import os
 import shlex
 import subprocess
 import sys
+import types
 from typing import Any
+
+from morie._safe_expr import (  # noqa: F401  (shipped evaluator)
+    _BLOCKED_NAMES,
+    _EXPR_NODES,
+    safe_eval_expr,
+)
 
 
 class ExecGuardError(RuntimeError):
@@ -123,16 +130,17 @@ def knob_status() -> list[dict[str, Any]]:
 # Guarded exec() for LLM-generated setup/data code (agent tools).
 # --------------------------------------------------------------------------
 
+# "morie" is deliberately NOT here. morie's own modules import os,
+# subprocess, ctypes, importlib and pickle as ordinary attributes, so
+# `import morie.container as m; m.subprocess.run([...])` was a two-line
+# escape and no attribute blocklist could close it (importlib.import_module
+# defeats any list by construction). Guarded code gets morie's arrays,
+# frames and dataset loaders through guarded_namespace() instead.
 _ALLOWED_IMPORT_ROOTS = {
     "numpy", "pandas", "scipy", "math", "statistics", "random",
-    "itertools", "collections", "datetime", "json", "re", "morie",
+    "itertools", "collections", "datetime", "json", "re",
 }
 
-_BLOCKED_NAMES = {
-    "eval", "exec", "compile", "__import__", "open", "input",
-    "breakpoint", "globals", "locals", "vars", "getattr", "setattr",
-    "delattr", "exit", "quit", "help", "memoryview", "object",
-}
 
 # Attribute names blocked even without a leading underscore: format-string
 # escapes and known deserialization / native-load RCE gadgets on otherwise
@@ -145,6 +153,10 @@ _BLOCKED_ATTRS = {
     "read_pickle", "to_pickle", "load_library", "ctypeslib",
     # process/shell gadgets (belt-and-braces; the modules aren't importable)
     "system", "popen", "fork", "check_output", "Popen",
+    # stdlib modules that library code re-exports as attributes; the
+    # module proxy below refuses them by type, this refuses them by name
+    "os", "sys", "subprocess", "shutil", "importlib", "ctypes", "pickle",
+    "socket", "builtins", "import_module", "CDLL", "sysconfig",
 }
 
 _SAFE_BUILTIN_NAMES = (
@@ -158,6 +170,58 @@ _SAFE_BUILTIN_NAMES = (
     "KeyError", "TypeError", "ValueError", "ZeroDivisionError", "True",
     "False", "None",
 )
+
+
+class _GuardedModule:
+    """Read-only view of a morie module for guarded code.
+
+    Attribute access refuses underscore names, the attribute blocklist,
+    and any value that is a module outside morie's own namespace. A
+    morie submodule comes back wrapped the same way, so no chain of
+    attributes reaches os, subprocess, ctypes or importlib.
+    """
+
+    __slots__ = ("_mod",)
+
+    def __init__(self, mod: types.ModuleType) -> None:
+        object.__setattr__(self, "_mod", mod)
+
+    def __getattribute__(self, name: str) -> Any:
+        if name.startswith("_") or name in _BLOCKED_ATTRS:
+            raise ExecGuardError(f"access to attribute '{name}' is not allowed")
+        val = getattr(object.__getattribute__(self, "_mod"), name)
+        if isinstance(val, types.ModuleType):
+            if (val.__name__ + ".").startswith("morie."):
+                return _GuardedModule(val)
+            raise ExecGuardError(
+                f"access to module '{val.__name__}' is not allowed in guarded code"
+            )
+        return val
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        raise ExecGuardError("guarded modules are read-only")
+
+    def __repr__(self) -> str:
+        return f"<guarded {object.__getattribute__(self, '_mod').__name__}>"
+
+
+def guarded_namespace() -> dict[str, Any]:
+    """The names guarded code may use.
+
+    ``np`` and ``pd`` are morie's own array and frame modules behind
+    :class:`_GuardedModule`; ``load_dataset`` and ``DATASET_CATALOG``
+    are the bundled-data entry points. This replaces ``import morie``
+    inside guarded code, which is refused.
+    """
+    from morie.data import DATASET_CATALOG, load_dataset
+    from morie.fn import _array_core, _frame_core
+
+    return {
+        "np": _GuardedModule(_array_core),
+        "pd": _GuardedModule(_frame_core),
+        "load_dataset": load_dataset,
+        "DATASET_CATALOG": DATASET_CATALOG,
+    }
 
 
 def _guarded_import(name: str, *args: Any, **kwargs: Any) -> Any:
@@ -227,51 +291,6 @@ def guarded_exec(code: str, namespace: dict[str, Any]) -> None:
     safe_builtins["__import__"] = _guarded_import
     namespace["__builtins__"] = safe_builtins
     exec(compile(tree, "<morie-guarded>", "exec"), namespace)  # noqa: S102
-
-
-# --------------------------------------------------------------------------
-# Safe eval for pure expressions (math formulas, boolean logic).
-# --------------------------------------------------------------------------
-
-_EXPR_NODES = (
-    ast.Expression, ast.BoolOp, ast.BinOp, ast.UnaryOp, ast.Compare,
-    ast.Call, ast.Attribute, ast.Name, ast.Constant, ast.Tuple, ast.List,
-    ast.Subscript, ast.IfExp, ast.Load,
-    # operator tokens
-    ast.And, ast.Or, ast.Not, ast.Invert, ast.UAdd, ast.USub,
-    ast.Add, ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow,
-    ast.Eq, ast.NotEq, ast.Lt, ast.LtE, ast.Gt, ast.GtE,
-    ast.Slice, ast.keyword,
-)
-
-
-def safe_eval_expr(expression: str, namespace: dict[str, Any] | None = None) -> Any:
-    """Evaluate a single expression after strict AST validation.
-
-    Only arithmetic/boolean/comparison operators, literals, names bound
-    in ``namespace``, and attribute/call chains on those names (no
-    underscore attributes) are allowed. No builtins are reachable.
-    """
-    namespace = dict(namespace or {})
-    try:
-        tree = ast.parse(expression, mode="eval")
-    except SyntaxError as exc:
-        raise ValueError(f"invalid expression: {exc}") from exc
-
-    for node in ast.walk(tree):
-        if not isinstance(node, _EXPR_NODES):
-            raise ValueError(
-                f"disallowed syntax in expression: {type(node).__name__}"
-            )
-        if isinstance(node, ast.Attribute) and node.attr.startswith("_"):
-            raise ValueError(f"underscore attribute '{node.attr}' not allowed")
-        if isinstance(node, ast.Name) and (
-            node.id.startswith("__") or node.id in _BLOCKED_NAMES
-        ):
-            raise ValueError(f"name '{node.id}' not allowed")
-
-    namespace["__builtins__"] = {}
-    return eval(compile(tree, "<morie-expr>", "eval"), namespace)  # noqa: S307
 
 
 # --------------------------------------------------------------------------

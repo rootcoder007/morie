@@ -94,3 +94,7 @@ def wstnbrg(x, y):
 
 
 gibbons_conover_scale = wstnbrg
+
+
+def cheatsheet() -> str:
+    return "wstnbrg(x, y) -> U = number of X observations inside the Y interquartile range."

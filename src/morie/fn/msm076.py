@@ -20,3 +20,7 @@ def mvsml_bayesian_regression_eq_6_11(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "mvsml_bayesian_regression_eq_6_11() -> Deprecated; use :func:`morie.fn.bmtme_conditionals` instead."

@@ -7,3 +7,7 @@ from ._sci_core import erf
 def erfunc(x):
     """Gaussian error function erf(x) = (2/√π) ∫₀ˣ e^(-t²) dt."""
     return float(erf(x)) if isinstance(x, (int, float)) else erf(x)
+
+
+def cheatsheet() -> str:
+    return "erfunc(x) -> Gaussian error function erf(x) = (2/√π) ∫₀ˣ e^(-t²) dt."

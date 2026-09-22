@@ -73,3 +73,7 @@ def hubbl(
         "lookback_time_Gyr": float(lookback_Gyr),
         "age_Gyr": float(age_Gyr),
     }
+
+
+def cheatsheet() -> str:
+    return "hubbl(z, H0, Omega_m, Omega_r, Omega_Lambda) -> Compute Hubble parameter H(z) and related quantities at redshift z."

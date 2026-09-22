@@ -65,3 +65,7 @@ secnt = secant_method
 
 # compact alias per ledger/NAMING.md
 secantmethod = secant_method
+
+
+def cheatsheet() -> str:
+    return "secant_method(f, x0, x1) -> Secant method for finding roots of f(x) = 0."

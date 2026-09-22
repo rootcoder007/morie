@@ -88,3 +88,7 @@ def ctrlmed(x, y, alternative="two-sided"):
 
 
 gibbons_ctrl_median = ctrlmed
+
+
+def cheatsheet() -> str:
+    return "ctrlmed(x, y, alternative) -> Mathisen's control median test, eq. (6.5.1)."

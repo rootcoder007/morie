@@ -31,3 +31,7 @@ def diffd(y_treated_pre: float, y_treated_post: float, y_control_pre: float, y_c
         ),
         payload={"value": dd, "estimate": dd, "treated_change": treated_change, "control_change": control_change},
     )
+
+
+def cheatsheet() -> str:
+    return "diffd(y_treated_pre, y_treated_post, y_control_pre, y_control_post) -> Canonical Difference-in-Differences estimator (2x2)."

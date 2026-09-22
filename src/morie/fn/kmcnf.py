@@ -190,3 +190,7 @@ def kmcnf(
         "greenwood_var": km_gw_var,
         "median_survival": median_surv,
     }
+
+
+def cheatsheet() -> str:
+    return "kmcnf(time, event, alpha, ci_type) -> Kaplan-Meier estimator with confidence intervals."

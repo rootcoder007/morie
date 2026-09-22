@@ -11,6 +11,16 @@ Canada CODR). It does not warehouse private data. It does ship cryptographic
 primitives (libsodium + liboqs PQC) used by the `morie.crypto` subpackage
 for unrelated downstream applications.
 
+## Network access at import time
+
+`import morie` starts a daemon thread that fetches
+`https://pypi.org/pypi/morie/json` at most once a day to compare the
+installed version with the latest release. It is fail-silent, cached under
+the user cache directory, sends nothing but the request, and is disabled
+by setting `MORIE_NO_UPDATE_CHECK=1` (the test suite sets it). No other
+network access happens without an explicit call (`morie update`, the
+fetchers, the LLM commands).
+
 ## Reporting a vulnerability
 
 Email **<vsruhela@proton.me>** — **do not** open a public GitHub Issue

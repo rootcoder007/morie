@@ -95,3 +95,7 @@ def pageexact(k, n, ell=None):
 
 
 gibbons_page_exact = pageexact
+
+
+def cheatsheet() -> str:
+    return "pageexact(k, n, ell) -> Exact null law of L, built block by block."

@@ -70,3 +70,7 @@ def aurroc(y_true: Union[Sequence, np.ndarray], score: Union[Sequence, np.ndarra
         interpretation=f"AUROC={auc:.3f} -> {bench}.",
         payload={"value": auc, "statistic": auc, "benchmark": bench, "n_positive": pos, "n_negative": neg},
     )
+
+
+def cheatsheet() -> str:
+    return "aurroc(y_true, score) -> Area under the ROC curve."

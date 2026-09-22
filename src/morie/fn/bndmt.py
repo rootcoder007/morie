@@ -49,3 +49,7 @@ bndmt = banded_solve
 
 # compact alias per ledger/NAMING.md
 bandedsolve = banded_solve
+
+
+def cheatsheet() -> str:
+    return "banded_solve(A, b) -> Solve a banded linear system Ax = b."

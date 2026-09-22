@@ -394,3 +394,7 @@ def ll_parser(grammar_, tokens, route="table"):
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 llparser = ll_parser
+
+
+def cheatsheet() -> str:
+    return "grammar(rules, start) -> A context-free grammar as a list of ``(lhs, [symbols])``."

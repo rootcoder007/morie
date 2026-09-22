@@ -99,3 +99,7 @@ def mednt(x, y, axis=0):
         "n2_below": int(n2_below),
         "interpretation": interpretation,
     }
+
+
+def cheatsheet() -> str:
+    return "mednt(x, y, axis) -> Median test for two independent samples."

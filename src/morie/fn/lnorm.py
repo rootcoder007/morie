@@ -57,3 +57,7 @@ def lnorm(
         x_norm = x_norm + beta
 
     return RichResult(payload={"output": x_norm, "mean": mean, "var": var})
+
+
+def cheatsheet() -> str:
+    return "lnorm(x, epsilon, gamma, beta) -> Layer normalization."

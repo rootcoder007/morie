@@ -47,3 +47,7 @@ def minkowski_dist(a: np.ndarray, b: np.ndarray, p: float = 2.0) -> DescriptiveR
 
 
 minkw = minkowski_dist
+
+
+def cheatsheet() -> str:
+    return "minkowski_dist(a, b, p) -> Compute the Minkowski distance (Lp norm) between two vectors."

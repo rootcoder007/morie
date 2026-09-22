@@ -69,3 +69,7 @@ def lrankprop(a, z):
 
 
 gibbons_linrank_properties = lrankprop
+
+
+def cheatsheet() -> str:
+    return "lrankprop(a, z) -> The two identities of Theorem 7.3.7, checked on real scores."

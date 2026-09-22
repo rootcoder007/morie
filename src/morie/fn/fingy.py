@@ -206,3 +206,7 @@ def _km_estimator(time, event):
     if len(event_times) == 0:
         return np.array([0.0]), np.array([1.0])
     return event_times, np.array(surv_vals)
+
+
+def cheatsheet() -> str:
+    return "fingy(time, event, covariates, cause, max_iter, tol) -> Fit the Fine-Gray subdistribution hazard model for competing risks."

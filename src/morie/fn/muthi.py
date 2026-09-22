@@ -45,3 +45,7 @@ def muthi(joint: Union[Sequence, np.ndarray]):
             "H_y": float(Hy),
         },
     )
+
+
+def cheatsheet() -> str:
+    return "muthi(joint) -> MI from joint p(x,y): I(X;Y) = Sigma_ij P_ij log(P_ij / (P_i. P.j))."

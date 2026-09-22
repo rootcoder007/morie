@@ -236,3 +236,7 @@ def hybrid_gibbs_slice(log_conditionals, x0, n=2000, **kw):
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 gibbsslice = gibbs_slice
+
+
+def cheatsheet() -> str:
+    return "slice_sample_1d(logf, x0, rng, w, max_steps, lower, upper) -> One univariate slice transition. Returns the draw and the cost."

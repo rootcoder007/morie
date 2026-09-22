@@ -40,3 +40,7 @@ def kronecker(
 
 
 krncr = kronecker
+
+
+def cheatsheet() -> str:
+    return "kronecker(A, B) -> Kronecker (tensor) product of two matrices."

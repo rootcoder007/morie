@@ -67,3 +67,7 @@ def kolmc(data: np.ndarray) -> dict:
         "normalized_complexity": norm,
         "complexity_bits": compressed_size * 8.0,
     }
+
+
+def cheatsheet() -> str:
+    return "kolmc(data) -> Approximate Kolmogorov complexity using compression ratio."

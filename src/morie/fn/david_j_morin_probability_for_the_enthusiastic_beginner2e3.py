@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_3
         stacklevel=2,
     )
     return _impl(ps)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_3(ps) -> Deprecated; use :func:`morie.fn.pandind` instead."

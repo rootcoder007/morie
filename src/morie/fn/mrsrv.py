@@ -111,3 +111,7 @@ def mrsrv(
         "baseline_cumhaz": H0_i,
         "expected": expected,
     }
+
+
+def cheatsheet() -> str:
+    return "mrsrv(time, event, covariates, beta, ties) -> Compute martingale residuals for a fitted Cox model."

@@ -83,3 +83,7 @@ def rhotest(r, n, alternative="two-sided"):
 
 
 gibbons_spearman_test = rhotest
+
+
+def cheatsheet() -> str:
+    return "rhotest(r, n, alternative) -> Both large-sample tests of H0: rho = 0 from Sec. 11.3.3."

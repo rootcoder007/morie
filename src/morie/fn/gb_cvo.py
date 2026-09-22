@@ -57,3 +57,7 @@ def ostatcov(r, s, n):
 
 
 gibbons_order_covariance = ostatcov
+
+
+def cheatsheet() -> str:
+    return "ostatcov(r, s, n) -> Cov(U_(r), U_(s)) and the induced correlation."

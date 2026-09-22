@@ -74,3 +74,7 @@ def topkp(
     token_id = rng.choice(len(logits), p=probs)
 
     return RichResult(payload={"token_id": int(token_id), "probabilities": probs})
+
+
+def cheatsheet() -> str:
+    return "topkp(logits, top_k, top_p, temperature, seed) -> Top-k and top-p sampling."

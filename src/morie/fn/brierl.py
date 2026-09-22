@@ -42,3 +42,7 @@ def brierl(p_pred: Union[Sequence, np.ndarray], y_true: Union[Sequence, np.ndarr
         ),
         payload={"value": bs, "statistic": bs, "skill_score": skill, "baseline": bs_baseline},
     )
+
+
+def cheatsheet() -> str:
+    return "brierl(p_pred, y_true) -> Brier score: (1/n) Sigma (p_i - y_i)^2."

@@ -74,3 +74,7 @@ def slepw(joint_pmf: np.ndarray) -> dict:
         "R_Y_min": h_y_given_x,
         "R_sum_min": h_xy,
     }
+
+
+def cheatsheet() -> str:
+    return "slepw(joint_pmf) -> Compute the Slepian-Wolf rate region for two correlated sources."

@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_3
         stacklevel=2,
     )
     return _impl(k, n, a)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_34(k, n, a) -> Deprecated; use :func:`morie.fn.binpoislim` instead."

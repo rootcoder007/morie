@@ -67,3 +67,7 @@ def wsrn(p2, alpha=0.05, beta=0.05, twosided=False):
 
 
 gibbons_wsrt_sampsize = wsrn
+
+
+def cheatsheet() -> str:
+    return "wsrn(p2, alpha, beta, twosided) -> Noether sample size for the Wilcoxon signed-rank test."

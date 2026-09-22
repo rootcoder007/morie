@@ -15,3 +15,7 @@ def sumdvsq(x: Union[Sequence[float], np.ndarray]) -> float:
     """
     a = np.asarray(x, dtype=float)
     return float(np.sum((a - a.mean()) ** 2))
+
+
+def cheatsheet() -> str:
+    return "sumdvsq(x) -> Sum of squared deviations: Σᵢ (xᵢ − x̄)²."

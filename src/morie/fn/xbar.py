@@ -25,3 +25,7 @@ def xbar(x: Union[Sequence[float], np.ndarray]) -> float:
     if a.size == 0:
         raise ValueError("cannot take mean of empty sample.")
     return float(a.mean())
+
+
+def cheatsheet() -> str:
+    return "xbar(x) -> Sample arithmetic mean."

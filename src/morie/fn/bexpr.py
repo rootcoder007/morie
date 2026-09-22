@@ -50,7 +50,7 @@ def boolean_eval(
 
     # AST-validated evaluation (boolean/comparison operators and literals
     # only, no builtins reachable) -- replaces a raw eval() sink.
-    from morie._exec_guard import safe_eval_expr
+    from morie._safe_expr import safe_eval_expr
 
     result = int(bool(safe_eval_expr(expr)))
 

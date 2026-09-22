@@ -60,3 +60,7 @@ def kmeans2(X: Union[Sequence, np.ndarray], n_clusters: int = 3, n_init: int = 1
         warnings=[] if min(sizes) > 1 else ["one or more clusters has only 1 point - check k or initialization."],
         payload={"labels": labels.tolist(), "centroids": km.cluster_centers_.tolist(), "inertia": float(km.inertia_)},
     )
+
+
+def cheatsheet() -> str:
+    return "kmeans2(X, n_clusters, n_init, random_state) -> K-means clustering."

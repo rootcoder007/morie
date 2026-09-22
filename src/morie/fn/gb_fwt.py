@@ -91,3 +91,7 @@ def ctrltree(samples, r=None):
 
 
 gibbons_fligner_wolfe_test = ctrltree
+
+
+def cheatsheet() -> str:
+    return "ctrltree(samples, r) -> Chakraborti-Desu W: treatment observations preceding T."

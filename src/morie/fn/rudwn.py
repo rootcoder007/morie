@@ -93,3 +93,7 @@ def rudwn(x, axis=0, cdf=None):
         "p_value": float(p_value),
         "interpretation": interpretation,
     }
+
+
+def cheatsheet() -> str:
+    return "rudwn(x, axis, cdf) -> Runs up and down test for randomness."

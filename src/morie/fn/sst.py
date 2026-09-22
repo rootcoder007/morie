@@ -14,3 +14,7 @@ def sst(y: Union[Sequence[float], np.ndarray]) -> float:
     """
     a = np.asarray(y, dtype=float)
     return float(np.sum((a - a.mean()) ** 2))
+
+
+def cheatsheet() -> str:
+    return "sst(y) -> Total sum of squares: Σᵢ (yᵢ − ȳ)²."

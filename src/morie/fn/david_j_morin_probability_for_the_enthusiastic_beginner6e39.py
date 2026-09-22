@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_3
         stacklevel=2,
     )
     return _impl(m, xavg)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_39(m, xavg) -> Deprecated; use :func:`morie.fn.groupavg` instead."

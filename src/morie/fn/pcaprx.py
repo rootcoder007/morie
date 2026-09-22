@@ -81,3 +81,7 @@ def pcaprx(X: Union[Sequence, np.ndarray], n_components: int | None = None, stan
             "n_for_95": n_for_95,
         },
     )
+
+
+def cheatsheet() -> str:
+    return "pcaprx(X, n_components, standardize) -> PCA: orthogonal components ranked by explained variance."

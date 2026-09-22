@@ -206,3 +206,7 @@ def _uno_cstat(time, event, risk_score):
         "tied": 0,
         "comparable": int(denom),
     }
+
+
+def cheatsheet() -> str:
+    return "cstat(time, event, risk_score, method) -> Compute the concordance statistic (C-index) for a survival model."

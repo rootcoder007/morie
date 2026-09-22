@@ -37,3 +37,7 @@ spdmt = sparse_diagonal
 
 # compact alias per ledger/NAMING.md
 sparsediagonal = sparse_diagonal
+
+
+def cheatsheet() -> str:
+    return "sparse_diagonal(diags) -> We are what we repeatedly do. Excellence is a habit. -- Aristotle"

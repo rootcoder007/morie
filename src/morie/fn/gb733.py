@@ -67,3 +67,7 @@ def lrankcov(a, b, m, n):
 
 
 gibbons_linrank_covariance = lrankcov
+
+
+def cheatsheet() -> str:
+    return "lrankcov(a, b, m, n) -> Cov(B_N, T_N) for two linear rank statistics on the same ranking."

@@ -55,3 +55,7 @@ def expfrq(table: Union[Sequence, np.ndarray]):
             "total": float(n),
         },
     )
+
+
+def cheatsheet() -> str:
+    return "expfrq(table) -> Expected frequency under independence: E_ij = (row_i * col_j) / N."

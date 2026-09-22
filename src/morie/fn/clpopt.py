@@ -368,3 +368,7 @@ def linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
                 "slack": r["x"][n:], "maximise": bool(maximise),
                 "n_original": n, "n_slack": sf["n_slack"]})
     return RichResult(payload=out)
+
+
+def cheatsheet() -> str:
+    return "standard_form(c, A_ub, b_ub, A_eq, b_eq, upper) -> Convert an inequality-form program to :math:`Ax = b,\ x \ge 0`."

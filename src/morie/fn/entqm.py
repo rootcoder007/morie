@@ -57,3 +57,7 @@ def entqm(
         "is_pure": abs(purity - 1.0) < 1e-10,
         "rank": rank,
     }
+
+
+def cheatsheet() -> str:
+    return "entqm(rho, base) -> Compute the von Neumann entropy of a quantum density matrix."

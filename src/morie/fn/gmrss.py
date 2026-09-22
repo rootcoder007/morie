@@ -75,3 +75,7 @@ gmrss = gmres_solve
 
 # compact alias per ledger/NAMING.md
 gmressolve = gmres_solve
+
+
+def cheatsheet() -> str:
+    return "gmres_solve(A, b) -> GMRES (Generalized Minimal RESidual) iterative solver."

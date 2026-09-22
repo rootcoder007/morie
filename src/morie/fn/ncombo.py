@@ -9,3 +9,7 @@ def ncombo(n: int, k: int) -> int:
     if k < 0 or n < 0 or k > n:
         raise ValueError("require 0 ≤ k ≤ n.")
     return math.comb(n, k)
+
+
+def cheatsheet() -> str:
+    return "ncombo(n, k) -> C(n, k) -- unordered combinations."

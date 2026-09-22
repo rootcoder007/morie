@@ -20,3 +20,7 @@ def ghosal_ch3_polya_tree_first_two_moments(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ghosal_ch3_polya_tree_first_two_moments() -> Deprecated; use :func:`morie.fn.pt_set_mass_mean` instead."

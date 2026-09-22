@@ -107,3 +107,7 @@ def nadmf(f, grad_f, x0, learning_rate=0.01, momentum=0.9, tol=1e-6, max_iter=10
             "final_value": best_f,
         }
     return best_x
+
+
+def cheatsheet() -> str:
+    return "nadmf(f, grad_f, x0, learning_rate, momentum, tol, max_iter, full_output, seed) -> Nesterov accelerated gradient (NAG) for unconstrained minimization."

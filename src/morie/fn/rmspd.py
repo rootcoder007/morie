@@ -67,3 +67,7 @@ def rmsprop_optimize(
 
 
 rmspd = rmsprop_optimize
+
+
+def cheatsheet() -> str:
+    return "rmsprop_optimize(f, grad, x0) -> RMSProp adaptive learning rate optimizer."

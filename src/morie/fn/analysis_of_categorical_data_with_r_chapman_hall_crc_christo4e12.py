@@ -20,3 +20,7 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equat
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_12() -> Deprecated; use :func:`morie.fn.ordinal_score_mean_ratio` instead."

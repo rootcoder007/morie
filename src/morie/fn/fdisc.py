@@ -90,3 +90,7 @@ def fdisc(
         )
 
     return RichResult(payload={"divergence": max(val, 0.0), "type": divergence, "symmetric": sym})
+
+
+def cheatsheet() -> str:
+    return "fdisc(p, q) -> Compute an f-divergence between two discrete distributions."

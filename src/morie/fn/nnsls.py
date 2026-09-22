@@ -71,3 +71,7 @@ def nnls(
 
 
 nnsls = nnls
+
+
+def cheatsheet() -> str:
+    return "nnls(A, b) -> Non-negative least squares: min ||Ax - b||_2 subject to x >= 0."

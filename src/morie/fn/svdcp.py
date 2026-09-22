@@ -43,3 +43,7 @@ svdcp = svd_compute
 
 # compact alias per ledger/NAMING.md
 svdcompute = svd_compute
+
+
+def cheatsheet() -> str:
+    return "svd_compute(A) -> Singular Value Decomposition."

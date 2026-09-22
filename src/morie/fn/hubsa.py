@@ -74,3 +74,7 @@ def hits_hubs_authorities(y, A, tol=1e-12, max_iter=1000):
             "method": "Kleinberg (1999) I/O recursion, stopped at max|dh| <= tol",
         },
     )
+
+
+def cheatsheet() -> str:
+    return "hits_hubs_authorities(y, A, tol, max_iter) -> Run the HITS recursion from start vector y until it settles."

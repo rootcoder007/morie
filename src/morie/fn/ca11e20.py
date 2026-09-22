@@ -20,3 +20,7 @@ def ca_chapter_11_equation_20(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_11_equation_20() -> Deprecated; use :func:`morie.fn.d_probit` instead."

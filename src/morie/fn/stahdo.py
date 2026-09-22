@@ -322,3 +322,7 @@ def stahel_donoho_outlyingness(X, directions="subsample",
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 staheldonoho = stahel_donoho
+
+
+def cheatsheet() -> str:
+    return "median(v) -> The sample median."

@@ -82,3 +82,7 @@ def sctmh(f, x0, x1, tol=1e-6, max_iter=100, full_output=False):
     if full_output:
         return x_curr, {"iterations": max_iter, "converged": False, "final_residual": np.abs(f_curr)}
     return x_curr
+
+
+def cheatsheet() -> str:
+    return "sctmh(f, x0, x1, tol, max_iter, full_output) -> Secant method for root finding."

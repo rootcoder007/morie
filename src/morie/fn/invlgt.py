@@ -15,3 +15,7 @@ def invlgt(x):
 
     a = np.asarray(x, dtype=float)
     return 1.0 / (1.0 + np.exp(-a))
+
+
+def cheatsheet() -> str:
+    return "invlgt(x) -> Inverse logit: σ(x) = 1 / (1 + exp(-x))."

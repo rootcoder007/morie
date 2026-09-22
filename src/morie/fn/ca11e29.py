@@ -20,3 +20,7 @@ def ca_chapter_11_equation_29(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_11_equation_29() -> Deprecated; use :func:`morie.fn.rr_from_or` instead."

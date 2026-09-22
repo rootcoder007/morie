@@ -9,3 +9,7 @@ def nfact(n: int) -> int:
     if n < 0:
         raise ValueError("n must be non-negative.")
     return math.factorial(n)
+
+
+def cheatsheet() -> str:
+    return "nfact(n) -> n! -- factorial."

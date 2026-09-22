@@ -61,3 +61,7 @@ def kwchi(h, k, ns=None):
 
 
 gibbons_kw_chi2_approx = kwchi
+
+
+def cheatsheet() -> str:
+    return "kwchi(h, k, ns) -> Reference chi-square tail for H, with the book's caveat."

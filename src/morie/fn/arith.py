@@ -90,3 +90,7 @@ def arith(message: list, pmf: np.ndarray, symbols: list = None, cdf=None, *, pre
         "bits_required": bits_req,
         "decoded": decoded,
     }
+
+
+def cheatsheet() -> str:
+    return "arith(message, pmf, symbols, cdf) -> Arithmetic coding: encode a message into a sub-interval of [0, 1)."

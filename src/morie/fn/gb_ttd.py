@@ -93,3 +93,7 @@ def runstab(n1, n2, r=None):
 
 
 gibbons_total_runs_dist_table = runstab
+
+
+def cheatsheet() -> str:
+    return "runstab(n1, n2, r) -> Exact pmf and cdf of R over its whole support."

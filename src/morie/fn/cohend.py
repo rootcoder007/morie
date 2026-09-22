@@ -63,3 +63,7 @@ def cohend(x1: Union[Sequence[float], np.ndarray], x2: Union[Sequence[float], np
         interpretation=(f"d={d:.3f} -> {bench} effect (Cohen 1988 benchmarks: .2/.5/.8 = small/medium/large)."),
         payload={"value": d, "statistic": d, "s_pooled": s_pooled, "benchmark": bench},
     )
+
+
+def cheatsheet() -> str:
+    return "cohend(x1, x2) -> Cohen's d for two-sample mean difference."

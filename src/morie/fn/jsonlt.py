@@ -1013,3 +1013,7 @@ def jsonlt(x=None, route="to_json", **kw):
         out = unserialize_json(x)
     return {"route": route, "result": out,
             "method": "jsonlite mapping (Ooms 2014), RFC 8259"}
+
+
+def cheatsheet() -> str:
+    return "box(x) -> box from morie.fn.jsonlt"

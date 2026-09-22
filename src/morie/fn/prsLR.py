@@ -310,3 +310,7 @@ def lr_parser(grammar_, tokens, method="lr1"):
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 lrparser = lr_parser
+
+
+def cheatsheet() -> str:
+    return "augment(g) -> Add :math:`S' \to S` so acceptance is a single reduction."

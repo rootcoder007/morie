@@ -46,3 +46,7 @@ def rnkci(x, ci_level=0.95, axis=0):
         "ci_level": float(ci_level),
         "n": int(n),
     }
+
+
+def cheatsheet() -> str:
+    return "rnkci(x, ci_level, axis) -> Rank-based confidence interval for population median."

@@ -606,6 +606,12 @@ def fairness_gini(values: Any, *, group: Any = None) -> RichResult:
     """
     vals = _as_1d(values, "values").astype(float)
     warnings: list[str] = []
+    n_missing = int(np.sum(~np.isfinite(vals)))
+    if n_missing:
+        warnings.append(
+            f"{n_missing} missing or non-finite value(s); the Gini coefficient "
+            "is undefined (NaN) until they are dropped or imputed."
+        )
     if np.any(vals < 0):
         warnings.append(
             "negative values present; the Gini coefficient assumes "
@@ -633,15 +639,22 @@ def fairness_gini(values: Any, *, group: Any = None) -> RichResult:
             }
         )
 
-    interp = f"Gini = {overall:.3f}. " + (
-        "The quantity is highly concentrated — a small share of units absorbs most of it."
-        if overall >= 0.5
-        else "The quantity is relatively evenly spread."
-    )
+    if overall != overall:
+        interp = (
+            f"Gini is undefined: {n_missing} of {int(vals.size)} values are missing "
+            "or non-finite."
+        )
+    else:
+        interp = f"Gini = {overall:.3f}. " + (
+            "The quantity is highly concentrated — a small share of units absorbs most of it."
+            if overall >= 0.5
+            else "The quantity is relatively evenly spread."
+        )
 
     return RichResult(
         title="Gini Coefficient",
-        summary_lines=[("Gini", overall), ("n", int(vals.size))],
+        summary_lines=[("Gini", overall), ("n", int(vals.size)),
+                       ("n_missing", n_missing)],
         sections=sections,
         warnings=warnings,
         interpretation=interp,
@@ -649,6 +662,7 @@ def fairness_gini(values: Any, *, group: Any = None) -> RichResult:
             "value": overall,
             "gini": overall,
             "per_group": per_group,
+            "n_missing": n_missing,
         },
     )
 
@@ -760,10 +774,19 @@ def _gini(x: np.ndarray) -> float:
     ascending and i running 1..n.  Returns 0.0 for an all-zero or
     single-element input (no inequality defined).
     """
-    x = np.sort(np.asarray(x, dtype=float))
+    x = np.asarray(x, dtype=float)
     n = x.size
-    total = x.sum()
-    if n < 2 or total <= 0 or not np.isfinite(total):
+    if n < 2:
         return 0.0
+    total = x.sum()
+    if not np.isfinite(total):
+        # a missing or infinite value: undefined, and 0.0 would read as
+        # perfect equality ("relatively evenly spread") on a data gap
+        return float("nan")
+    if total == 0:
+        return 0.0
+    if total < 0:
+        return float("nan")
+    x = np.sort(x)
     idx = np.arange(1, n + 1)
     return float((2.0 * np.sum(idx * x)) / (n * total) - (n + 1.0) / n)

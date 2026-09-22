@@ -97,3 +97,7 @@ def cdesc(f, grad_f, x0, tol=1e-6, max_iter=1000, cyclic=True, full_output=False
     if full_output:
         return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x
+
+
+def cheatsheet() -> str:
+    return "cdesc(f, grad_f, x0, tol, max_iter, cyclic, full_output) -> Coordinate descent for unconstrained optimization."

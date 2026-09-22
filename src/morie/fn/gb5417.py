@@ -78,3 +78,7 @@ def signmedci(x, alpha=0.05):
 
 
 gibbons_sign_median_ci = signmedci
+
+
+def cheatsheet() -> str:
+    return "signmedci(x, alpha) -> Order-statistic confidence interval for the median."

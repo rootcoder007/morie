@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_8
         stacklevel=2,
     )
     return _impl(k, n)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_8(k, n) -> Deprecated; use :func:`morie.fn.coinpmf` instead."

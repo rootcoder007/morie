@@ -56,3 +56,7 @@ def kmsurv(times: Union[Sequence, np.ndarray], events: Union[Sequence, np.ndarra
         warnings=warnings,
         payload={"times": out_t, "survival": out_s, "events": events_total, "censored": censored_total},
     )
+
+
+def cheatsheet() -> str:
+    return "kmsurv(times, events) -> Kaplan-Meier estimator of S(t) for right-censored data."

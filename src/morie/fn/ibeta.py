@@ -12,3 +12,7 @@ def ibeta(a: float, b: float, x: float) -> float:
     if not 0 <= x <= 1:
         raise ValueError("x must be in [0, 1].")
     return float(betainc(a, b, x))
+
+
+def cheatsheet() -> str:
+    return "ibeta(a, b, x) -> Regularised incomplete beta function I_x(a, b)."

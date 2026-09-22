@@ -46,3 +46,7 @@ def qr_decomposition(
 
 
 qrdcp = qr_decomposition
+
+
+def cheatsheet() -> str:
+    return "qr_decomposition(A) -> QR decomposition via Householder reflections."

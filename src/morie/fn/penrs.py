@@ -101,3 +101,7 @@ def penrs(
         }
     else:
         raise ValueError("geometry must be 'schwarzschild' or 'minkowski'.")
+
+
+def cheatsheet() -> str:
+    return "penrs(r, t, M, geometry, G, c) -> Compute Penrose (conformal/compactified) diagram coordinates."

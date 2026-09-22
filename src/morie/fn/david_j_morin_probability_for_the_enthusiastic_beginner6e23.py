@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_2
         stacklevel=2,
     )
     return _impl(y)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_23(y) -> Deprecated; use :func:`morie.fn.bestconst` instead."

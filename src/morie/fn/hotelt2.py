@@ -45,3 +45,7 @@ def hotelt2(X: Union[Sequence, np.ndarray], mu0: Union[Sequence, np.ndarray]):
         warnings=warnings,
         extra_payload={"T2": t2, "F": f_stat, "df1": p, "df2": n - p, "xbar": xbar.tolist(), "mu0": mu0.tolist()},
     )
+
+
+def cheatsheet() -> str:
+    return "hotelt2(X, mu0) -> Hotelling T^2 for testing mu = mu0."

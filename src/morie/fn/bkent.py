@@ -69,3 +69,7 @@ def bkent(
         "r_schwarzschild": float(rs),
         "temperature_K": float(T_H),
     }
+
+
+def cheatsheet() -> str:
+    return "bkent(M, A, G, c, hbar, kB) -> Compute Bekenstein-Hawking black hole entropy."

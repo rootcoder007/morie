@@ -92,3 +92,7 @@ def mwu(x, y):
 
 
 gibbons_mannwhitney = mwu
+
+
+def cheatsheet() -> str:
+    return "mwu(x, y) -> U = #{(i, j) : Y_j < X_i}, with exact and normal-approximation tails."

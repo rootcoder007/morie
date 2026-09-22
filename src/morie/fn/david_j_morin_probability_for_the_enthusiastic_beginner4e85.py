@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_8
         stacklevel=2,
     )
     return _impl(tau)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_85(tau) -> Deprecated; use :func:`morie.fn.expmom2` instead."

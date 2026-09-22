@@ -72,3 +72,7 @@ def runsudvar(n, r=None, alpha=0.05):
 
 
 gibbons_runs_ud_var = runsudvar
+
+
+def cheatsheet() -> str:
+    return "runsudvar(n, r, alpha) -> Mean and variance of R, the number of runs up and down."

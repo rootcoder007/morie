@@ -69,3 +69,7 @@ def wsignif(w, k, n):
 
 
 gibbons_concordance_signif = wsignif
+
+
+def cheatsheet() -> str:
+    return "wsignif(w, k, n) -> Chi-square test of independence based on W, Sec. 12.4.2."

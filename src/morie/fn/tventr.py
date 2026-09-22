@@ -32,3 +32,7 @@ def tventr(p: Union[Sequence, np.ndarray], q: Union[Sequence, np.ndarray]):
         ),
         payload={"value": tv, "statistic": tv},
     )
+
+
+def cheatsheet() -> str:
+    return "tventr(p, q) -> Total variation distance: 0.5 * Sigma |p_i - q_i|."

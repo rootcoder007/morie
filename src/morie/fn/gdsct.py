@@ -69,3 +69,7 @@ def gradient_descent(
 
 
 gdsct = gradient_descent
+
+
+def cheatsheet() -> str:
+    return "gradient_descent(f, grad, x0) -> Gradient descent with momentum."

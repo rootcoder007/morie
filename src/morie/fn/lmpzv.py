@@ -71,3 +71,7 @@ def lmpzv(sequence: np.ndarray) -> dict:
         normalized = float(complexity)
 
     return RichResult(payload={"complexity": complexity, "normalized": normalized, "length": n})
+
+
+def cheatsheet() -> str:
+    return "lmpzv(sequence) -> Compute the Lempel-Ziv complexity of a discrete sequence."

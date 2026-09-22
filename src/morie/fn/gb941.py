@@ -115,3 +115,7 @@ def sgltukey(x, y):
 
 
 gibbons_siegel_tukey = sgltukey
+
+
+def cheatsheet() -> str:
+    return "sgltukey(x, y) -> Siegel-Tukey statistic: the first N integers, dealt from the ends."

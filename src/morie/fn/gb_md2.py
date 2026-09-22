@@ -98,3 +98,7 @@ def medtest2(x, y, alpha=0.05):
 
 
 gibbons_median_test_2sided = medtest2
+
+
+def cheatsheet() -> str:
+    return "medtest2(x, y, alpha) -> Median test against a two-sided alternative, with the exact region."

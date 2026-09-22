@@ -44,3 +44,7 @@ def posem(seq_len, d_model, base=10000):
     pos_encoding[:, 1::2] = np.cos(pos_encoding[:, 1::2])
 
     return pos_encoding
+
+
+def cheatsheet() -> str:
+    return "posem(seq_len, d_model, base) -> Sinusoidal positional encoding."

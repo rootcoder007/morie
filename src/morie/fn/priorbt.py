@@ -43,3 +43,7 @@ def priorbt(alpha_prior: float, beta_prior: float, successes: int, trials: int):
             "statistic": post_mean,
         },
     )
+
+
+def cheatsheet() -> str:
+    return "priorbt(alpha_prior, beta_prior, successes, trials) -> Beta-Binomial conjugate posterior update."

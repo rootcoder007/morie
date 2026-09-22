@@ -15,3 +15,7 @@ def tukyl(residual: float, c: float = 4.685) -> float:
         u = (r / c) ** 2
         return (c * c / 6.0) * (1.0 - (1.0 - u) ** 3)
     return c * c / 6.0
+
+
+def cheatsheet() -> str:
+    return "tukyl(residual, c) -> Tukey biweight (bisquare) loss."

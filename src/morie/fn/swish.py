@@ -37,3 +37,7 @@ def swish(x, derivative=False):
         return sigmoid * (1.0 + x * (1.0 - sigmoid))
     else:
         return x * sigmoid
+
+
+def cheatsheet() -> str:
+    return "swish(x, derivative) -> Swish (SiLU) activation."

@@ -13,3 +13,7 @@ def fstat(ssr_val: float, sse_val: float, k: int, n: int) -> float:
     if k < 1 or n - k - 1 < 1:
         raise ValueError(f"invalid k={k} or n={n}.")
     return (ssr_val / k) / (sse_val / (n - k - 1))
+
+
+def cheatsheet() -> str:
+    return "fstat(ssr_val, sse_val, k, n) -> F-statistic: (SSR / k) / (SSE / (n - k - 1))."

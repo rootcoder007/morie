@@ -83,3 +83,7 @@ def procp(X, Y, orthogonal=True, scale=False):
         "residual": residual,
         "disparity": disparity,
     }
+
+
+def cheatsheet() -> str:
+    return "procp(X, Y, orthogonal, scale) -> Procrustes rotation: find optimal transformation of X to match Y."

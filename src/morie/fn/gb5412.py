@@ -79,3 +79,7 @@ def signz(k, n, alternative="two-sided", correct=True):
 
 
 gibbons_sign_normal_approx = signz
+
+
+def cheatsheet() -> str:
+    return "signz(k, n, alternative, correct) -> Standardised sign statistic, eq. (5.4.7)."

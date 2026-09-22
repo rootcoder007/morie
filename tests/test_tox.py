@@ -88,10 +88,14 @@ def test_matrix_reliability_ranks_protected_above_blood():
 
 def test_left_censor_impute():
     out = tox.tox_left_censor_impute([0.4, np.nan, 0.9, 0.02], lod=0.05)
-    assert np.allclose(out["imputed"], [0.4, 0.025, 0.9, 0.025])
-    assert list(out["censored"]) == [False, True, False, True]
-    assert out["fraction_censored"] == 0.5
-    assert tox.tox_left_censor_impute([np.nan], lod=0.1, method="sqrt2")[
+    # NaN is "not measured": it stays NaN, is not censored, and is counted
+    assert np.allclose(out["imputed"], [0.4, np.nan, 0.9, 0.025], equal_nan=True)
+    assert list(out["censored"]) == [False, False, False, True]
+    assert out["fraction_censored"] == pytest.approx(1 / 3)
+    assert out["n_missing"] == 1
+    only_na = tox.tox_left_censor_impute([np.nan], lod=0.1, method="sqrt2")
+    assert np.isnan(only_na["imputed"][0]) and np.isnan(only_na["fraction_censored"])
+    assert tox.tox_left_censor_impute([0.01], lod=0.1, method="sqrt2")[
         "imputed"
     ][0] == pytest.approx(0.1 / np.sqrt(2))
     with pytest.raises(ValueError, match="> 0"):

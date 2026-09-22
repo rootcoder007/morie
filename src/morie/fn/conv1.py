@@ -59,3 +59,7 @@ def conv1(x, kernel, padding="valid", stride=1):
         output[:, i] = np.sum(x_padded[:, i * stride : i * stride + k_size] * kernel, axis=1)
 
     return output
+
+
+def cheatsheet() -> str:
+    return "conv1(x, kernel, padding, stride) -> 1D convolution."

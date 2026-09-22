@@ -189,3 +189,7 @@ simpx = simplex_lp
 # compact alias per ledger/NAMING.md
 
 simplexlp = simplex_lp
+
+
+def cheatsheet() -> str:
+    return "simplex_lp(c, A_ub, b_ub) -> Simplex method for linear programming."

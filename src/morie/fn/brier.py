@@ -191,3 +191,7 @@ def brier(
             "integrated_brier": ibs,
             "eval_time": eval_times,
         }
+
+
+def cheatsheet() -> str:
+    return "brier(time, event, predicted_survival, eval_time, method) -> Compute the (IPCW) Brier score for a survival model at a specified time."

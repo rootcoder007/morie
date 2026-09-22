@@ -88,3 +88,7 @@ def hdglm(x, axis=0):
         "lower_ci": float(ci_lower),
         "upper_ci": float(ci_upper),
     }
+
+
+def cheatsheet() -> str:
+    return "hdglm(x, axis) -> Hodges-Lehmann point estimator for population location."

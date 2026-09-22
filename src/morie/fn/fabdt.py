@@ -54,3 +54,7 @@ def fabdt(x, y, axis=0, cdf=None):
         "p_value": float(p_value),
         "interpretation": "reject" if p_value < 0.05 else "not reject",
     }
+
+
+def cheatsheet() -> str:
+    return "fabdt(x, y, axis, cdf) -> Freund-Ansari-Bradley-David test for equality of scale parameters."

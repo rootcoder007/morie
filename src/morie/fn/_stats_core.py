@@ -197,11 +197,46 @@ def _maybe_map(fn, x):
     return fn(float(x))
 
 
+def _rng_from(random_state):
+    """A generator from a seed, an existing generator, or None."""
+    from . import _array_core as _ac
+    if hasattr(random_state, "random") and callable(random_state.random):
+        return random_state
+    return _ac.random.default_rng(random_state)
+
+
 class _Dist:
     """Common frozen/unfrozen scipy-like surface."""
 
     def __call__(self, *args, **kw):
         return self.__class__(*args, **kw)
+
+    def rvs(self, *args, size=None, random_state=None, **kw):
+        """Random variates by inverse transform: ppf applied to uniforms.
+
+        Every distribution with a ppf gets rvs from this one definition
+        (27 of 29 had none, so mrm_clt_demo() could not run). A frozen
+        instance draws with its own parameters; an unfrozen one takes
+        them as the positional/keyword arguments its ppf takes.
+        ``random_state`` may be a seed or an existing default_rng()
+        generator, as in numpy.
+        """
+        from . import _array_core as _ac
+        rng = _rng_from(random_state)
+        if size is None:
+            return float(self.ppf(rng.random(), *args, **kw))
+        if isinstance(size, (tuple, list)):
+            dims = [int(d) for d in size]
+            n = 1
+            for d in dims:
+                n *= d
+        else:
+            dims, n = [int(size)], int(size)
+        out = [float(self.ppf(rng.random(), *args, **kw)) for _ in range(n)]
+        if len(dims) == 2:
+            r, c = dims
+            return _ac.marr([out[i * c:(i + 1) * c] for i in range(r)])
+        return _ac.marr(out)
 
     def sf(self, x, *args, **kw):
         c = self.cdf(x, *args, **kw)
@@ -259,9 +294,10 @@ class _Norm(_Dist):
         return _maybe_map(lambda v: d.loc + d.scale * _norm_ppf(v), q)
 
     def rvs(self, size=None, random_state=None):
-        from . import _array_core as _ac
-        rng = _ac.random.default_rng(random_state)
-        return rng.normal(self.loc, self.scale, size)
+        # Box-Muller through the generator; random_state may itself be a
+        # generator (default_rng() used to hand one to SplitMix64's seed
+        # arithmetic and die on `generator & mask`)
+        return _rng_from(random_state).normal(self.loc, self.scale, size)
 
 
 class _Chi2(_Dist):
@@ -1170,7 +1206,41 @@ def binomtest(k, n, p=0.5, alternative="two-sided"):
     else:
         pv = _math.fsum(pmf(x) for x in range(k + 1))
     return _TestResult(float(k), _bi.min(1.0, pv),
-                       k=k, n=n, proportion_estimate=k / n)
+                       k=k, n=n, proportion_estimate=k / n,
+                       proportion_ci=lambda confidence_level=0.95, method="exact":
+                       _proportion_ci(k, n, confidence_level, method))
+
+
+class _ConfidenceInterval(tuple):
+    def __new__(cls, low, high):
+        obj = super().__new__(cls, (low, high))
+        obj.low, obj.high = low, high
+        return obj
+
+
+def _proportion_ci(k, n, confidence_level=0.95, method="exact"):
+    """Confidence interval for a binomial proportion.
+
+    ``exact`` is Clopper-Pearson through the beta quantiles
+    (low = B(a/2; k, n-k+1), high = B(1-a/2; k+1, n-k), with 0 and 1 at
+    the ends); ``wilson`` is the score interval. This is what
+    scipy's BinomTestResult.proportion_ci returns, and what
+    mrm_oneprop_test() called on a result that did not have it.
+    """
+    a = 1.0 - float(confidence_level)
+    k, n = int(k), int(n)
+    if method == "exact":
+        low = 0.0 if k == 0 else float(beta.ppf(a / 2.0, k, n - k + 1))
+        high = 1.0 if k == n else float(beta.ppf(1.0 - a / 2.0, k + 1, n - k))
+        return _ConfidenceInterval(low, high)
+    if method == "wilson":
+        z = _norm_ppf(1.0 - a / 2.0)
+        ph = k / n
+        den = 1.0 + z * z / n
+        centre = (ph + z * z / (2.0 * n)) / den
+        half = z * _math.sqrt(ph * (1.0 - ph) / n + z * z / (4.0 * n * n)) / den
+        return _ConfidenceInterval(_bi.max(0.0, centre - half), _bi.min(1.0, centre + half))
+    raise ValueError("method must be 'exact' or 'wilson'")
 
 
 # ---------------------------------------------------- KS family
@@ -1758,6 +1828,12 @@ class _WeibullMin(_Dist):
 
 
 class _NBinom(_Dist):
+    def ppf(self, q, n, p):
+        # walk the cdf; the mean n(1-p)/p bounds how far a quantile can sit
+        kmax = int(20 * (n * (1.0 - p) / p + 1.0) + 50)
+        return _maybe_map(lambda v: _ppf_discrete(
+            lambda kk: self.cdf(kk, n, p), v, 0, kmax), q)
+
     def pmf(self, k, n, p):
         def one(kk):
             kk = int(kk)
@@ -1778,7 +1854,31 @@ class _NBinom(_Dist):
         return 1.0 - self.cdf(k, n, p)
 
 
+def _ppf_discrete(cdf_at, q, kmin, kmax):
+    """Smallest integer k in [kmin, kmax] with cdf(k) >= q."""
+    if not 0.0 <= q <= 1.0:
+        return _math.nan
+    if q == 0.0:
+        return float(kmin)
+    k = kmin
+    while k < kmax and cdf_at(k) < q * (1.0 - 1e-12):
+        k += 1
+    return float(k)
+
+
 class _Geom(_Dist):
+    def ppf(self, q, p):
+        # support k >= 1, as scipy: ceil(log(1 - q) / log(1 - p))
+        def one(v):
+            if not 0.0 <= v <= 1.0:
+                return _math.nan
+            if v == 0.0:
+                return 1.0
+            if v == 1.0:
+                return _math.inf
+            return _bi.max(1.0, float(_math.ceil(_math.log1p(-v) / _math.log1p(-p))))
+        return _maybe_map(one, q)
+
     def pmf(self, k, p):
         def one(kk):
             return p * (1.0 - p) ** (int(kk) - 1)
@@ -1793,6 +1893,12 @@ class _Geom(_Dist):
 
 
 class _HyperGeom(_Dist):
+    def ppf(self, q, M, n, N):
+        kmin = _bi.max(0, N - (M - n))
+        kmax = _bi.min(n, N)
+        return _maybe_map(lambda v: _ppf_discrete(
+            lambda kk: self.cdf(kk, M, n, N), v, kmin, kmax), q)
+
     def pmf(self, k, M, n, N):
         def one(kk):
             kk = int(kk)

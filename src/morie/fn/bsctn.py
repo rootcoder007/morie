@@ -79,3 +79,7 @@ def bsctn(f, a, b, tol=1e-6, max_iter=100, full_output=False):
         c = (a + b) / 2.0
         return c, {"iterations": max_iter, "converged": False, "final_residual": np.abs(f(c))}
     return (a + b) / 2.0
+
+
+def cheatsheet() -> str:
+    return "bsctn(f, a, b, tol, max_iter, full_output) -> Bisection method for root finding."

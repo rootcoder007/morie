@@ -56,3 +56,7 @@ chles = cholesky_solve
 
 # compact alias per ledger/NAMING.md
 choleskysolve = cholesky_solve
+
+
+def cheatsheet() -> str:
+    return "cholesky_solve(A, b) -> Cholesky decomposition of a symmetric positive-definite matrix."

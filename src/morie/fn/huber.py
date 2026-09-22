@@ -56,3 +56,7 @@ def huber(
     )
 
     return float(np.mean(loss))
+
+
+def cheatsheet() -> str:
+    return "huber(y_true, y_pred, delta) -> Huber loss."

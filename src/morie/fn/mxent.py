@@ -99,3 +99,7 @@ def mxent(
         "lagrange_multipliers": lambdas,
         "constraint_errors": errors,
     }
+
+
+def cheatsheet() -> str:
+    return "mxent(support, constraints) -> Find the maximum entropy distribution on a finite support."

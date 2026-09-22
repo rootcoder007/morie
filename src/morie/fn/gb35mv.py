@@ -55,3 +55,7 @@ def rvnmom(n):
 
 
 gibbons_rvn_moments = rvnmom
+
+
+def cheatsheet() -> str:
+    return "rvnmom(n) -> Asymptotic null mean and variance of RVN."

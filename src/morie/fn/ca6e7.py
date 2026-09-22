@@ -20,3 +20,7 @@ def ca_chapter_6_equation_7(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_6_equation_7() -> Deprecated; use :func:`morie.fn.poisson_offset_predict` instead."

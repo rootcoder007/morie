@@ -18,3 +18,7 @@ def bsperc(boot_estimates: Union[Sequence[float], np.ndarray], conf: float = 0.9
     lo_q = (1 - conf) / 2
     hi_q = 1 - lo_q
     return (float(np.quantile(a, lo_q)), float(np.quantile(a, hi_q)))
+
+
+def cheatsheet() -> str:
+    return "bsperc(boot_estimates, conf) -> Percentile bootstrap confidence interval (lo, hi)."

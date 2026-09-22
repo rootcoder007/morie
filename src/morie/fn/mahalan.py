@@ -46,3 +46,7 @@ def mahalan(x: Union[Sequence, np.ndarray], mu: Union[Sequence, np.ndarray], cov
         ),
         payload={"distance": dist, "squared": dist**2, "dimension": x.size, "cov_condition": cond},
     )
+
+
+def cheatsheet() -> str:
+    return "mahalan(x, mu, cov) -> Mahalanobis distance: sqrt((x-mu)' Sigma^-1 (x-mu))."

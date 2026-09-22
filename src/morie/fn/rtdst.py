@@ -96,3 +96,7 @@ def rtdst(
                 mi += joint[i, j] * np.log2(joint[i, j] / (pmf[i] * marg[j] + eps))
 
     return RichResult(payload={"rate": max(mi, 0.0), "distortion": expected_d, "optimal_mapping": cond})
+
+
+def cheatsheet() -> str:
+    return "rtdst(pmf, distortion_matrix, target_distortion) -> Compute the rate-distortion function R(D) via Blahut-Arimoto algorithm."

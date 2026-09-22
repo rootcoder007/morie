@@ -10,3 +10,7 @@ def etasq(ss_between: float, ss_total: float) -> float:
     if ss_total <= 0:
         raise ValueError("ss_total must be positive.")
     return ss_between / ss_total
+
+
+def cheatsheet() -> str:
+    return "etasq(ss_between, ss_total) -> Eta-squared: SS_between / SS_total."

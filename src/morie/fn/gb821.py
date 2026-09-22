@@ -101,3 +101,7 @@ def wrs(x, y):
 
 
 gibbons_wilcoxon_ranksum = wrs
+
+
+def cheatsheet() -> str:
+    return "wrs(x, y) -> W_N = sum of the X ranks in the combined ordering."

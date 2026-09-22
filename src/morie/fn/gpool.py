@@ -42,3 +42,7 @@ def gpool(x):
     output = np.mean(x, axis=spatial_axes)
 
     return output
+
+
+def cheatsheet() -> str:
+    return "gpool(x) -> Global average pooling."

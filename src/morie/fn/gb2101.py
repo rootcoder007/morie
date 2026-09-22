@@ -62,3 +62,7 @@ def ostatasymp(p, n, xp, fxp):
 
 
 gibbons_asymp_order_normal = ostatasymp
+
+
+def cheatsheet() -> str:
+    return "ostatasymp(p, n, xp, fxp) -> Large-sample normal law for the sample p-th quantile."

@@ -7,3 +7,7 @@ def dfreg(k: int) -> int:
     if k < 1:
         raise ValueError("k must be at least 1.")
     return k
+
+
+def cheatsheet() -> str:
+    return "dfreg(k) -> Regression degrees of freedom: number of slope params."

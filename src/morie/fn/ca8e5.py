@@ -20,3 +20,7 @@ def ca_chapter_8_equation_5(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_8_equation_5() -> Deprecated; use :func:`morie.fn.noncentrality_lambda_f` instead."

@@ -63,3 +63,7 @@ def focal(
     focal_loss = alpha * modulation * ce_loss
 
     return float(np.mean(focal_loss))
+
+
+def cheatsheet() -> str:
+    return "focal(y_true, y_pred, alpha, gamma, from_logits, epsilon) -> Focal loss."

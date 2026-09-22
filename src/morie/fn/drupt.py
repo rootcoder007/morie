@@ -52,3 +52,7 @@ def drupt(
     mask = rng.binomial(1, 1 - rate, size=x.shape)
 
     return x * mask / (1 - rate)
+
+
+def cheatsheet() -> str:
+    return "drupt(x, rate, training, seed) -> Dropout layer (forward pass)."

@@ -550,11 +550,11 @@ class TestEstimateDoubleMlCanonical:
             covariates=["X1", "X2", "X3"],
             n_folds=3,  # faster for CI
         )
-        # Should expose .coef and .se (DoubleMLPLR attributes, not dict)
-        assert hasattr(obj, "coef"), f"Expected .coef attr, got {type(obj)}"
-        assert hasattr(obj, "se"), f"Expected .se attr, got {type(obj)}"
-        coef = float(obj.coef[0])
-        se = float(obj.se[0])
+        # estimate_double_ml returns a plain dict with ate/se (recorded in
+        # WHATS_NEW 1.3.2); the DoubleMLPLR-like .coef/.se object is gone
+        assert isinstance(obj, dict) and {"ate", "se"} <= set(obj), f"got {type(obj)}"
+        coef = float(obj["ate"])
+        se = float(obj["se"])
         assert np.isfinite(coef), f"DML coef is {coef}, not finite"
         assert se > 0, f"DML SE is {se}, must be > 0"
 
@@ -573,8 +573,8 @@ class TestEstimateDoubleMlCanonical:
             covariates=["X1", "X2", "X3"],
             n_folds=3,
         )
-        coef = float(obj.coef[0])
-        se = float(obj.se[0])
+        coef = float(obj["ate"])
+        se = float(obj["se"])
         # RF tolerance on a 3-covariate linear DGP at n=2000: allow 3*SE or 0.30
         assert abs(coef - tau_true) < max(3 * se, 0.30), (
             f"DML θ̂ = {coef:.4f} (SE {se:.4f}), true θ = {tau_true}. "
@@ -652,10 +652,10 @@ class TestEstimateIrmCanonical:
         dml_obj = estimate_double_ml(data=df, outcome="outcome", treatment="treatment", **kw)
         irm_res = estimate_irm(df, treatment="treatment", outcome="outcome", **kw)
 
-        dml_coef = float(dml_obj.coef[0])
+        dml_coef = float(dml_obj["ate"])
         irm_ate = float(irm_res["ate"])
         # Combined SE as rough comparison scale
-        pooled_se = float(np.sqrt(float(dml_obj.se[0]) ** 2 + float(irm_res["se"]) ** 2))
+        pooled_se = float(np.sqrt(float(dml_obj["se"]) ** 2 + float(irm_res["se"]) ** 2))
         diff = abs(dml_coef - irm_ate)
         assert diff < max(3 * pooled_se, 0.40), (
             f"DML-PLR and IRM disagree too much on homogeneous DGP: "
@@ -1440,7 +1440,7 @@ class TestPsMatchCanonical:
     """
 
     def test_mando_returns_esres_with_matched_count(self) -> None:
-        from morie.fn.mando import ps_match
+        from morie.fn.plcbsc import ps_match
 
         # Rename our DGP's columns to match ps_match's defaults
         df = _dgp_logistic_ps(n=800, tau=1.5, seed=151)
@@ -1452,7 +1452,7 @@ class TestPsMatchCanonical:
         assert int(result.extra["n_matched"]) > 0
 
     def test_mando_beats_naive_on_confounded_dgp(self) -> None:
-        from morie.fn.mando import ps_match
+        from morie.fn.plcbsc import ps_match
 
         tau_true = 1.5
         df = _dgp_logistic_ps(n=4000, tau=tau_true, seed=152)
@@ -1557,11 +1557,6 @@ class TestBdrjStubDetection:
         P(Y = y | do(X = x)) = Σ_z P(Y = y | X = x, Z = z) · P(Z = z)
     """
 
-    @pytest.mark.xfail(
-        strict=True,
-        reason="bdrj.py is a stub — ignores X/Y/Z, just computes mean(data). "
-        "M2 backlog: replace with actual Pearl back-door adjustment.",
-    )
     def test_bdrj_uses_all_four_inputs(self) -> None:
         """If two calls with different X/Y/Z but same `data` return the
         same value, the fn is ignoring X/Y/Z. That's the stub signature."""
@@ -1599,13 +1594,9 @@ class TestBdrjStubDetection:
         # other causal logic — unambiguous tell.
         has_mean_data = "np.mean(data)" in src
         is_stub = (not uses_xyz) and has_mean_data
-        # When M2 un-stubs bdrj, this assertion flips and the xfail above
-        # should also flip to a real canonical test.
-        assert is_stub, (
-            "bdrj.py no longer matches the stub pattern (body loads X/Y/Z "
-            "or no longer uses np.mean(data)). Update the M1 audit and "
-            "write real canonical tests against Pearl (2009) §3.3.1."
-        )
+        # bdrj was un-stubbed: the body reads X/Y/Z and no longer reduces
+        # to np.mean(data); this sentinel now guards against regressing
+        assert not is_stub, "bdrj.py has regressed to the mean(data) stub"
 
 
 # ---------------------------------------------------------------------------
@@ -1659,7 +1650,7 @@ class TestSynthControlCanonical:
     """
 
     def test_sith_returns_esres_with_weights(self) -> None:
-        from morie.fn import synth_control
+        from morie.fn.sctrl import synthetic_control as synth_control
 
         df = _dgp_synth_control_panel(n_control=5, n_pre=10, n_post=5, seed=181)
         result = synth_control(df, y="outcome", unit="unit", time="time", treated_unit="treated", treat_time=0)
@@ -1671,7 +1662,7 @@ class TestSynthControlCanonical:
         assert len(weights) == 5  # one per donor
 
     def test_sith_weights_on_simplex(self) -> None:
-        from morie.fn import synth_control
+        from morie.fn.sctrl import synthetic_control as synth_control
 
         df = _dgp_synth_control_panel(n_control=8, n_pre=15, n_post=5, seed=182)
         result = synth_control(df, y="outcome", unit="unit", time="time", treated_unit="treated", treat_time=0)
@@ -1683,7 +1674,7 @@ class TestSynthControlCanonical:
         )
 
     def test_sith_recovers_tau_on_shared_shock_panel(self) -> None:
-        from morie.fn import synth_control
+        from morie.fn.sctrl import synthetic_control as synth_control
 
         tau_true = 2.0
         df = _dgp_synth_control_panel(n_control=10, n_pre=20, n_post=10, tau=tau_true, seed=183)
@@ -1718,7 +1709,7 @@ class TestSensitivityCanonical:
     """
 
     def test_yoda_s_returns_structure(self) -> None:
-        from morie.fn.yoda_s import sensitivity_analysis
+        from morie.fn.scmaba import sensitivity_analysis
 
         result = sensitivity_analysis(ate=1.0, se=0.3)  # z = 3.33, strong signal
         assert hasattr(result, "value")
@@ -1731,7 +1722,7 @@ class TestSensitivityCanonical:
         standard 2-sided z-test p-value."""
         from morie.fn import _stats_core as stats
 
-        from morie.fn.yoda_s import sensitivity_analysis
+        from morie.fn.scmaba import sensitivity_analysis
 
         ate, se = 1.0, 0.3
         result = sensitivity_analysis(ate=ate, se=se, gamma_range=(1.0, 1.0), n_gamma=1)
@@ -1744,7 +1735,7 @@ class TestSensitivityCanonical:
     def test_yoda_s_p_upper_monotone_in_gamma(self) -> None:
         """p_upper should be non-decreasing as Γ grows (larger assumed bias
         means weaker evidence of effect)."""
-        from morie.fn.yoda_s import sensitivity_analysis
+        from morie.fn.scmaba import sensitivity_analysis
 
         result = sensitivity_analysis(ate=0.8, se=0.3, gamma_range=(1.0, 3.0), n_gamma=10)
         ps = [r["p_upper"] for r in result.extra["table"]]

@@ -101,3 +101,7 @@ def chi2sf(x, df):
     from . import _stats_core as stats
 
     return float(stats.chi2.sf(float(x), int(df)))
+
+
+def cheatsheet() -> str:
+    return "golden(f, lo, hi, iters) -> Golden-section minimiser with a fixed iteration count."

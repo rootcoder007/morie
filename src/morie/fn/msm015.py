@@ -20,3 +20,7 @@ def mvsml_linear_mixed_models_eq_5_3(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "mvsml_linear_mixed_models_eq_5_3() -> Deprecated; use :func:`morie.fn.gblup_model` instead."

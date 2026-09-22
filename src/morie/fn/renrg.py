@@ -83,3 +83,7 @@ def renrg(
     if b1 is not None:
         result["b1"] = float(b1)
     return result
+
+
+def cheatsheet() -> str:
+    return "renrg(coupling, n_flavors, n_colors, gauge_group, loop_order) -> Compute the renormalization group beta function for QCD."

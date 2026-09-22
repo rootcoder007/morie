@@ -20,3 +20,7 @@ def ca_chapter_11_equation_34(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_11_equation_34() -> Deprecated; use :func:`morie.fn.fixed_effect_weight` instead."

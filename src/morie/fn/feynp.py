@@ -111,3 +111,7 @@ def feynp(
         "classical_action": float(S_cl),
         "relative_error": float(rel_err),
     }
+
+
+def cheatsheet() -> str:
+    return "feynp(x_i, x_f, T, m, omega, n_paths, n_slices, seed, hbar) -> Evaluate the Feynman path integral for a 1D harmonic oscillator"

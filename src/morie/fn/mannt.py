@@ -121,3 +121,7 @@ def mannt(x, y, axis=0, alternative="two-sided", cdf=None):
         "p_value": float(p_value),
         "interpretation": interpretation,
     }
+
+
+def cheatsheet() -> str:
+    return "mannt(x, y, axis, alternative, cdf) -> Mann-Whitney U test for two independent samples."

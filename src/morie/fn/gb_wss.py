@@ -85,3 +85,7 @@ def wrsz(w, m, n, alternative="two-sided", correct=False, ties=None):
 
 
 gibbons_wrs_normal_approx = wrsz
+
+
+def cheatsheet() -> str:
+    return "wrsz(w, m, n, alternative, correct, ties) -> Standardised rank-sum statistic, with the optional tie correction."

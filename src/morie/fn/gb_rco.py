@@ -92,3 +92,7 @@ def taupartial(x, y, z):
 
 
 gibbons_rank_corr_partial = taupartial
+
+
+def cheatsheet() -> str:
+    return "taupartial(x, y, z) -> T_{XY.Z} from the 2 x 2 table of concordance agreements."

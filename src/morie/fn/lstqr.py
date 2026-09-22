@@ -57,3 +57,7 @@ lstqr = lstsq_qr
 
 # compact alias per ledger/NAMING.md
 lstsqqr = lstsq_qr
+
+
+def cheatsheet() -> str:
+    return "lstsq_qr(A, b) -> Least squares solution via QR decomposition."

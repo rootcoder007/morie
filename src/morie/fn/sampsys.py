@@ -10,3 +10,7 @@ def sampsys(population, k: int, start: int = 0):
     if start < 0 or start >= len(pop):
         raise ValueError("start out of range.")
     return pop[start::k]
+
+
+def cheatsheet() -> str:
+    return "sampsys(population, k, start) -> Systematic sample: take every k-th unit starting at index `start`."

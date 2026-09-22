@@ -36,3 +36,7 @@ def becch(epsilon: float) -> dict:
     if not 0 <= epsilon <= 1:
         raise ValueError(f"epsilon must be in [0, 1], got {epsilon}.")
     return RichResult(payload={"capacity": 1.0 - epsilon, "erasure_prob": epsilon})
+
+
+def cheatsheet() -> str:
+    return "becch(epsilon) -> Capacity of a binary erasure channel (BEC)."

@@ -80,3 +80,7 @@ def ctrlmedpow(m, n, d, h, nodes=2001):
 
 
 gibbons_ctrl_median_power = ctrlmedpow
+
+
+def cheatsheet() -> str:
+    return "ctrlmedpow(m, n, d, h, nodes) -> P(V <= d) under an alternative, Sec. 6.5.2."

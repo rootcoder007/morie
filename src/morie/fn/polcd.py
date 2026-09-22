@@ -77,3 +77,7 @@ def polcd(
         "bhattacharyya": z_channels,
         "rate": k / n,
     }
+
+
+def cheatsheet() -> str:
+    return "polcd(n, k) -> Construct a polar code by selecting the k most reliable bit-channels."

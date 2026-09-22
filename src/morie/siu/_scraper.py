@@ -84,6 +84,31 @@ def _cache_path(cache_dir: Path, drid: int, suffix: str = ".html") -> Path:
     wait_max=15.0,
     wait_jitter=1.5,
 )
+def _atomic_write(path, html: str) -> None:
+    """Write next to the target under a unique name, then rename: a reader
+    sees the old file or the whole new one, and two scrapers on the same
+    case id no longer share a temp name."""
+    import tempfile
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=path.name + ".", suffix=".tmp")
+    try:
+        with open(fd, "w", encoding="utf-8") as fh:
+            fh.write(html)
+        Path(tmp).replace(path)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
+
+
+def _parsed_something(row: dict, drid) -> bool:
+    """True when the parser found report content, not just the id/url."""
+    for k, v in row.items():
+        if k in ("drid", "source_url", "nrid"):
+            continue
+        if v not in (None, "", [], {}) and not (isinstance(v, float) and v != v):
+            return True
+    return False
+
+
 def _fetch(client: httpx.Client, url: str) -> httpx.Response:
     """Single GET with retry on transport / 5xx errors. 404 is NOT retried."""
     r = client.get(url, follow_redirects=True)
@@ -126,7 +151,8 @@ def scrape_drid(
         client = httpx.Client(timeout=DEFAULT_TIMEOUT, headers={"User-Agent": USER_AGENT})
 
     try:
-        if cache and html_path.exists():
+        fetched_from_cache = bool(cache and html_path.exists())
+        if fetched_from_cache:
             html = html_path.read_text(encoding="utf-8", errors="replace")
         else:
             r = _fetch(client, url)
@@ -134,11 +160,12 @@ def scrape_drid(
                 sentinel.write_bytes(b"")
                 return _empty_404_row(drid, url)
             html = r.text
-            tmp = html_path.with_suffix(".html.tmp")
-            tmp.write_text(html, encoding="utf-8")
-            tmp.replace(html_path)
 
         row = parse_html(html, drid=drid, source_url=url)
+        if not fetched_from_cache and _parsed_something(row, drid):
+            # cache only a page that parsed as a report: a maintenance or
+            # captive-portal page served with a 200 must not be kept forever
+            _atomic_write(html_path, html)
 
         # ── paired news release fetch + merge ───────────────────────
         if fetch_news and row.get("nrid"):
@@ -187,9 +214,8 @@ def _scrape_news(
             if r.status_code == 404:
                 return {"nrid": nrid, "source_url_news": url}
             html = r.text
-            tmp = html_path.with_suffix(".html.tmp")
-            tmp.write_text(html, encoding="utf-8")
-            tmp.replace(html_path)
+            if "<html" in html[:2000].lower() and len(html) > 500:
+                _atomic_write(html_path, html)
         finally:
             if owns:
                 client.close()

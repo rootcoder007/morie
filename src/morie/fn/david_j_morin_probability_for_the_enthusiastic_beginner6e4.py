@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_4
         stacklevel=2,
     )
     return _impl(m, mu_x, mu_z)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_4(m, mu_x, mu_z) -> Deprecated; use :func:`morie.fn.muy` instead."

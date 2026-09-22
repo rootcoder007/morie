@@ -192,3 +192,7 @@ def k02bfs(A):
                     queue.append(v)
         out.append(dist)
     return out
+
+
+def cheatsheet() -> str:
+    return "k02fe(y, v) -> Inverse-variance fixed-effect summary."

@@ -14,3 +14,7 @@ def rngnrm(x: Union[Sequence, np.ndarray]) -> np.ndarray:
     if mx == mn:
         raise ValueError("all values are identical.")
     return (a - mn) / (mx - mn)
+
+
+def cheatsheet() -> str:
+    return "rngnrm(x) -> Min-max scale x to [0, 1]: (x − min) / (max − min)."

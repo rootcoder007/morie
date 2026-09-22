@@ -183,3 +183,7 @@ def lglog(
         "aic": float(aic),
         "bic": float(bic),
     }
+
+
+def cheatsheet() -> str:
+    return "lglog(time, event, covariates, max_iter, tol) -> Fit a log-logistic AFT model via maximum likelihood estimation."

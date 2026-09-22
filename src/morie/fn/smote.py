@@ -119,3 +119,7 @@ def apply_smote(
 
 # compact alias per ledger/NAMING.md
 applysmote = apply_smote
+
+
+def cheatsheet() -> str:
+    return "apply_smote(X, y) -> Apply SMOTE oversampling to balance a binary outcome."

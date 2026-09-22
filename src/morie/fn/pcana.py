@@ -103,3 +103,7 @@ def pcana(
         result["loadings"] = loadings
 
     return result
+
+
+def cheatsheet() -> str:
+    return "pcana(X, n_components, scale, return_loadings) -> Principal Component Analysis via eigendecomposition."

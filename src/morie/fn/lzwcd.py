@@ -93,3 +93,7 @@ def lzwcd(data: np.ndarray, *, alphabet_size: int = 256) -> dict:
         "dictionary_size": next_code,
         "decompressed": np.array(decompressed, dtype=np.int64),
     }
+
+
+def cheatsheet() -> str:
+    return "lzwcd(data) -> LZW compression for integer sequences."

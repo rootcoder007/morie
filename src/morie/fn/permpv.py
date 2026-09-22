@@ -44,3 +44,7 @@ def permpv(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray], n_per
         if n_perm >= 1000
         else [f"only {n_perm} permutations - p-value may be discrete; consider increasing for borderline cases."],
     )
+
+
+def cheatsheet() -> str:
+    return "permpv(x, y, n_perm, seed) -> Permutation p-value for H0: same distribution."

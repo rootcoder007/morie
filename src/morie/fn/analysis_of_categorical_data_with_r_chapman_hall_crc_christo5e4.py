@@ -20,3 +20,7 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equat
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_4() -> Deprecated; use :func:`morie.fn.model_averaged_variance` instead."

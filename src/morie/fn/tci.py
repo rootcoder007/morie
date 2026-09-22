@@ -13,3 +13,7 @@ def tci(s: float, n: int, conf: float = 0.95) -> float:
         raise ValueError("invalid arguments.")
     crit = _t.ppf(0.5 + conf / 2, df=n - 1)
     return float(crit * s / (n**0.5))
+
+
+def cheatsheet() -> str:
+    return "tci(s, n, conf) -> Half-width of a t-based confidence interval."

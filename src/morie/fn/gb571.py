@@ -79,3 +79,7 @@ def wsr(x, m0=0.0):
 
 
 gibbons_wilcoxon_signed_rank = wsr
+
+
+def cheatsheet() -> str:
+    return "wsr(x, m0) -> Signed-rank statistic T+ = sum of ranks of the positive |d|."

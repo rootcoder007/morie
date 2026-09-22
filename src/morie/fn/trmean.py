@@ -36,3 +36,7 @@ def trmean(x: Union[Sequence[float], np.ndarray], trim: float = 0.1):
         ),
         payload={"value": tm, "statistic": tm, "trim": trim, "arithmetic_mean": arith, "n_trimmed": n_trimmed},
     )
+
+
+def cheatsheet() -> str:
+    return "trmean(x, trim) -> Symmetric trimmed mean."

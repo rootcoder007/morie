@@ -497,6 +497,9 @@ class Series:
         for i, v in zip(self.index, self._data):
             if not _isnan(v) and (best is None or v > best):
                 best, bi = v, i
+        if bi is None:
+            # pandas raises; a None here travelled on as a lookup key
+            raise ValueError("attempt to get argmax of an empty or all-NA sequence")
         return bi
 
     def idxmin(self):
@@ -504,6 +507,8 @@ class Series:
         for i, v in zip(self.index, self._data):
             if not _isnan(v) and (best is None or v < best):
                 best, bi = v, i
+        if bi is None:
+            raise ValueError("attempt to get argmin of an empty or all-NA sequence")
         return bi
 
     # ---- missing data
@@ -646,20 +651,50 @@ class Series:
         idx_name = getattr(self, "index_name", None) or "index"
         return DataFrame({idx_name: idx, val_name: list(self._data)})
 
-    def rank(self, ascending=True):
-        idx = sorted(range(len(self._data)),
-                     key=lambda i: self._data[i],
-                     reverse=not ascending)
-        ranks = [0.0] * len(self._data)
+    def rank(self, ascending=True, method="average", na_option="keep"):
+        """pandas Series.rank.
+
+        A NaN is not a value: with ``na_option="keep"`` (the default) it
+        gets rank NaN and does not shift the others (it used to take a
+        rank of its own and push every larger value up by one);
+        ``"top"``/``"bottom"`` rank it first/last. ``method`` is one of
+        average, min, max, first, dense.
+        """
+        if method not in ("average", "min", "max", "first", "dense"):
+            raise ValueError("method must be one of average, min, max, first, dense")
+        if na_option not in ("keep", "top", "bottom"):
+            raise ValueError("na_option must be one of keep, top, bottom")
+        vals = list(self._data)
+        n = len(vals)
+        isna = [_isnan(v) for v in vals]
+        live = [i for i in range(n) if not isna[i]]
+        nas = [i for i in range(n) if isna[i]]
+        live.sort(key=lambda i: vals[i], reverse=not ascending)
+        # NaNs form one tied block placed before (top) or after (bottom)
+        # the live values, or are left out (keep)
+        order = live if na_option == "keep" else (
+            nas + live if na_option == "top" else live + nas)
+        ranks = [float("nan")] * n
         i = 0
-        while i < len(idx):
+        dense = 0
+        while i < len(order):
             j = i
-            while (j + 1 < len(idx)
-                   and self._data[idx[j + 1]] == self._data[idx[i]]):
+            while (j + 1 < len(order) and isna[order[j + 1]] == isna[order[i]]
+                   and (isna[order[i]] or vals[order[j + 1]] == vals[order[i]])):
                 j += 1
-            avg = (i + j) / 2.0 + 1.0
+            dense += 1
             for k in range(i, j + 1):
-                ranks[idx[k]] = avg
+                if method == "average":
+                    r = (i + j) / 2.0 + 1.0
+                elif method == "min":
+                    r = i + 1.0
+                elif method == "max":
+                    r = j + 1.0
+                elif method == "first":
+                    r = k + 1.0
+                else:
+                    r = float(dense)
+                ranks[order[k]] = r
             i = j + 1
         return Series(ranks, index=list(self.index), name=self.name)
 
@@ -1313,6 +1348,10 @@ class DataFrame:
         n = len(cols)
         mat = [[1.0] * n for _ in range(n)]
         for i in range(n):
+            # pandas: a zero-variance or all-NaN column is NaN with itself
+            col = [float(v) for v in self._cols[cols[i]] if not _isnan(v)]
+            if len(col) < 2 or min(col) == max(col):
+                mat[i][i] = float("nan")
             for j in range(i + 1, n):
                 mat[i][j] = mat[j][i] = _pearson(
                     self._cols[cols[i]], self._cols[cols[j]])

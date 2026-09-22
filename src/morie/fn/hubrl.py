@@ -12,3 +12,7 @@ def hubrl(residual: float, delta: float = 1.345) -> float:
     if r <= delta:
         return 0.5 * residual * residual
     return delta * r - 0.5 * delta * delta
+
+
+def cheatsheet() -> str:
+    return "hubrl(residual, delta) -> Huber loss: quadratic for small residuals, linear for large."

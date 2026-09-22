@@ -63,3 +63,7 @@ def placement(x, y):
 
 
 gibbons_placement_def = placement
+
+
+def cheatsheet() -> str:
+    return "placement(x, y) -> Placement P_(j) of each ordered Y among the X observations."

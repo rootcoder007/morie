@@ -85,3 +85,7 @@ def friedties(data):
 
 
 gibbons_friedman_ties = friedties
+
+
+def cheatsheet() -> str:
+    return "friedties(data) -> Tie correction for Friedman's Q, with the correction factor shown."

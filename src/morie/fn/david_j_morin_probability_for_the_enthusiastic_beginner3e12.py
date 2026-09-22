@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_1
         stacklevel=2,
     )
     return _impl(values_x, probs_x, values_y, probs_y)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_12(values_x, probs_x, values_y, probs_y) -> Deprecated; use :func:`morie.fn.esumconv` instead."

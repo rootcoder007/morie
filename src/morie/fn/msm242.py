@@ -20,3 +20,7 @@ def mvsml_preprocessing_eq_2_3(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "mvsml_preprocessing_eq_2_3() -> Deprecated; use :func:`morie.fn.gblup_gebv` instead."

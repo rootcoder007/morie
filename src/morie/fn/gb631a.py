@@ -69,3 +69,7 @@ def ks2asymp(d, m, n):
 
 
 gibbons_ks2_asymp = ks2asymp
+
+
+def cheatsheet() -> str:
+    return "ks2asymp(d, m, n) -> Kolmogorov limit for D_{m,n}."

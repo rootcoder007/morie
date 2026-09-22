@@ -13,3 +13,7 @@ def sumxsq(x: Union[Sequence[float], np.ndarray]) -> float:
     """
     a = np.asarray(x, dtype=float)
     return float(np.sum(a * a))
+
+
+def cheatsheet() -> str:
+    return "sumxsq(x) -> Σᵢ xᵢ² -- uncorrected sum of squares."

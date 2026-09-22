@@ -35,3 +35,7 @@ def shanon(p: Union[Sequence[float], np.ndarray], base: float = 2.0):
         interpretation=(f"H={H:.4f} {'bits' if base == 2 else 'units'}; normalized = {norm:.3f} (1.0 = uniform)."),
         payload={"value": H, "statistic": H, "max_entropy": H_max, "normalized": norm},
     )
+
+
+def cheatsheet() -> str:
+    return "shanon(p, base) -> Shannon entropy H(p) = -Σ p_i log_b(p_i)."

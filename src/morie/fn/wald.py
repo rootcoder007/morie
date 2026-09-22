@@ -34,3 +34,7 @@ def wald(estimate: float, std_error: float, null_value: float = 0.0, test: str =
             ("|z|", abs(z)),
         ],
     )
+
+
+def cheatsheet() -> str:
+    return "wald(estimate, std_error, null_value, test) -> Wald test for H0: theta = theta0."

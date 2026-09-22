@@ -44,3 +44,7 @@ def mad(x: Union[Sequence[float], np.ndarray], scale: str = "normal"):
         ),
         payload={"value": v, "statistic": v, "raw": raw, "median": median},
     )
+
+
+def cheatsheet() -> str:
+    return "mad(x, scale) -> Median Absolute Deviation."

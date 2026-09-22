@@ -69,3 +69,7 @@ mtlog = matrix_log
 
 # compact alias per ledger/NAMING.md
 matrixlog = matrix_log
+
+
+def cheatsheet() -> str:
+    return "matrix_log(A) -> Matrix logarithm log(A) via inverse scaling and squaring."

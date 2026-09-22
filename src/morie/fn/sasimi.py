@@ -202,3 +202,7 @@ def tanimoto_similarity(fp_a, fp_b, coefficient="tanimoto",
         "method": "Willett, Barnard & Downs (1998) binary "
                   "fingerprint coefficients",
     })
+
+
+def cheatsheet() -> str:
+    return "fingerprint(bits, n_bits) -> Normalise a fingerprint to a frozen set of on-bit indices."

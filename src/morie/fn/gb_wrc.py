@@ -97,3 +97,7 @@ def runscrit(n1, n2, alpha=0.05, tail="two-sided"):
 
 
 gibbons_runs_critical = runscrit
+
+
+def cheatsheet() -> str:
+    return "runscrit(n1, n2, alpha, tail) -> Largest exact-level rejection region for the total-runs test."

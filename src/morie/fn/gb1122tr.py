@@ -84,3 +84,7 @@ def tautrend(y, alternative="two-sided"):
 
 
 gibbons_kendall_trend = tautrend
+
+
+def cheatsheet() -> str:
+    return "tautrend(y, alternative) -> Trend test from the concordance of Y with its time index."

@@ -94,3 +94,7 @@ def densm(
 
     else:
         raise ValueError(f"Unknown operation: {operation}")
+
+
+def cheatsheet() -> str:
+    return "densm(state, rho, operation, subsystem_dims, trace_out) -> Density matrix construction and operations."

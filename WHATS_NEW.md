@@ -9,6 +9,69 @@ Per-package full changelogs:
 
 ## 1.3.2 (2026-09-21)
 
+- **Exec guard (source tree only).** `import morie` is refused inside
+  guarded code: morie's modules re-export `os`, `subprocess`, `ctypes` and
+  `importlib` as attributes, so `m.subprocess.run([...])` escaped the
+  sandbox in two lines. Guarded code now receives `np`, `pd`,
+  `load_dataset` and `DATASET_CATALOG` through read-only module proxies
+  (`morie._exec_guard.guarded_namespace()`).
+- **`bexpr()` / `boolean_eval()` and `moncar()` work from a wheel.** The
+  pure-expression evaluator moved to `morie._safe_expr`, which ships;
+  they imported it from `_exec_guard`, which the wheel strips.
+- **Missing values are refused, not turned into numbers.**
+  `LogisticRegression` (morie's own) raises on NaN/inf instead of a NaN
+  predictor becoming probability 0 (one missing covariate gave every unit
+  propensity 0 and IPW weight 100); `compute_propensity_scores()` names
+  the columns with missing values. `fairness_gini()` is NaN with a
+  warning and `n_missing` on non-finite input instead of 0.0 "evenly
+  spread". `tox_left_censor_impute()` no longer counts NaN as below the
+  detection limit: it stays NaN, is excluded from `fraction_censored`, and
+  is reported as `n_missing` (Python and both R arms).
+- **`morie.fn._array_core` follows numpy on NaN and shapes.** `max`,
+  `min`, `argmax`, `argmin` propagate NaN regardless of position; `sort`
+  and `argsort` put NaN last and sort a 2-D input along its last axis;
+  `sign(nan)` and `angle(nan)` are NaN; `trace` needs 2-D; `nanargmax`
+  raises on an all-NaN input (it returned -1, which indexed the last
+  element); `nanstd`/`nanvar` honour `axis`/`keepdims`; `spacing()` runs
+  (it referenced an undefined name); `cumsum`/`cumprod` take `axis`;
+  `nonzero` returns one index array per axis; `tile(m, k)` tiles the last
+  axis; `kron` of two vectors is a vector; `ediff1d` flattens; `flip` with
+  no axis reverses every axis; `squeeze([x])` is a scalar. Domain errors
+  are NaN and overflows are inf (`arcsin(2)`, `log10(-1)`, `floor(nan)`,
+  `x / 0`, `x % 0`, `inf + -inf` in a sum); an empty mean/var is NaN
+  with a RuntimeWarning. `random.default_rng(generator)` returns that
+  generator, and the generator gains the rest of numpy's surface:
+  `standard_t`, `triangular`, `weibull`, `pareto`, `power`, `rayleigh`,
+  `gumbel`, `logistic`, `wald`, `vonmises`, `f`, `noncentral_chisquare`,
+  `negative_binomial`, `hypergeometric`, `multinomial`, `zipf`,
+  `logseries`, `standard_cauchy`, `standard_exponential`, `random_sample`,
+  `bytes`.
+- **`morie.fn._stats_core`.** Every distribution has `rvs()` (inverse
+  transform through its `ppf`; `geom`, `nbinom`, `hypergeom` gain a
+  `ppf`), so `mrm_clt_demo()` runs for any base distribution.
+  `binomtest()` results carry `proportion_ci(method="exact"|"wilson")`,
+  so `mrm_oneprop_test()` runs (the documented example
+  `mrm_oneprop_test(40, 100, 0.5)` gives `p_value_exact = 0.05688793`).
+- **`morie.fn._frame_core`.** `Series.rank()` leaves NaN as NaN
+  (`na_option="keep"`; also `"top"`/`"bottom"`) and takes
+  `method=average|min|max|first|dense`; `DataFrame.corr()` puts NaN, not
+  1.0, on the diagonal of a zero-variance or all-NaN column;
+  `idxmax()`/`idxmin()` raise on all-NA input instead of returning None.
+- **API change recorded.** `estimate_double_ml()` and `estimate_irm()`
+  return a plain dict with `ate`/`se` (they returned a DoubleMLPLR-like
+  object with `.coef`/`.se`); the canonical tests now assert the dict.
+- **CLI.** `morie agent` and `morie ask` exit 1 when no LLM backend was
+  reachable and the local fallback text was printed; the agent branch
+  reports why it fell back instead of swallowing the exception.
+- **Housekeeping.** `_update_check` orders a pre-release below its
+  release (`2.0.0rc1` is no longer "newer than 2.0.0"); `tests/conftest.py`
+  resolves the repository root, not its parent; `tests/test_runner.py` is
+  back in the suite; every `morie.fn` module has a `cheatsheet()`.
+- **Documented.** `import morie` starts a once-a-day, fail-silent
+  version check against `pypi.org` (opt out with
+  `MORIE_NO_UPDATE_CHECK=1`); it is now in README, INSTALLATION and
+  SECURITY, not only the changelog.
+
 - **Spatial voting.** basicspace calls are gated on a matrix with at least
   two rows and two columns; its Fortran overruns on thinner input and the
   process dies later.

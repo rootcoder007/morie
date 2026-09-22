@@ -63,3 +63,7 @@ def areratio(deriv, var, deriv_star, var_star):
 
 
 gibbons_are_formula = areratio
+
+
+def cheatsheet() -> str:
+    return "areratio(deriv, var, deriv_star, var_star) -> ARE(T, T*) from the two derivatives and the two null variances."

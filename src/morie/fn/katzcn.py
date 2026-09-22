@@ -47,3 +47,7 @@ def katz_centrality(G, alpha=0.1, beta=1.0):
             "method": "C_K = (I - alpha A)^{-1} beta 1, Katz (1953)",
         },
     )
+
+
+def cheatsheet() -> str:
+    return "katz_centrality(G, alpha, beta) -> Katz scores of adjacency matrix G with baseline beta."

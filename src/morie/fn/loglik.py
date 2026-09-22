@@ -32,3 +32,7 @@ def loglik(x: Union[Sequence[float], np.ndarray], pdf: Callable[[float], float])
         ),
         payload={"value": ll, "statistic": ll},
     )
+
+
+def cheatsheet() -> str:
+    return "loglik(x, pdf) -> Sum of log-pdfs evaluated at each observation."

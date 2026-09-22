@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_4
         stacklevel=2,
     )
     return _impl(sigmas)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_43(sigmas) -> Deprecated; use :func:`morie.fn.sdsum` instead."

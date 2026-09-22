@@ -64,3 +64,7 @@ def signp(k, n, alternative="two-sided"):
 
 
 gibbons_sign_pvalue = signp
+
+
+def cheatsheet() -> str:
+    return "signp(k, n, alternative) -> Exact sign-test p-value from the Binomial(N, 1/2) null."

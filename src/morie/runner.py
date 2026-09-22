@@ -657,6 +657,19 @@ def _friendly_error(exc: BaseException) -> str | None:
     return None
 
 
+def _llm_exit_code(payload) -> int:
+    """0 when an LLM answered; 1 when the static local fallback did.
+
+    `morie agent`/`morie ask` returned 0 unconditionally, so a scripted
+    call could not tell an answer from "no backend reachable".
+    """
+    if isinstance(payload, dict) and payload.get("mode") == "local_fallback":
+        print("no LLM backend was reachable; this is the local fallback text",
+              file=sys.stderr)
+        return 1
+    return 0
+
+
 def main() -> int:
     """
     Entry point for the MORIE command line interface.
@@ -821,7 +834,11 @@ def _main_impl() -> int:
                 if resp.tool_calls_made:
                     print(f"\n[{len(resp.tool_calls_made)} tool calls in {resp.iterations} iterations]")
             agent.close()
-        except Exception:
+        except Exception as exc:
+            # the agent needs an LLM backend; say why it stepped aside
+            # rather than hiding a real bug in create_agent()
+            print(f"agent unavailable ({type(exc).__name__}: {exc}); "
+                  "falling back to Perseus", file=sys.stderr)
             payload = ask_percy(
                 args.question,
                 context=getattr(args, "context", None),
@@ -834,6 +851,7 @@ def _main_impl() -> int:
                 sys.stdout.write("\n")
             else:
                 print(payload["output_text"])
+            return _llm_exit_code(payload)
         return 0
 
     if args.command == "ask":
@@ -851,7 +869,7 @@ def _main_impl() -> int:
             sys.stdout.write("\n")
         else:
             print(payload["output_text"])
-        return 0
+        return _llm_exit_code(payload)
 
     if args.command == "chat":
         from .chat import run_chat_repl

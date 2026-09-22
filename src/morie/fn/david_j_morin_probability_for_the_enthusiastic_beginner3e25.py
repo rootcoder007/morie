@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_2
         stacklevel=2,
     )
     return _impl([var_x, var_y])
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_25(var_x, var_y) -> Deprecated; use :func:`morie.fn.varsum` instead."

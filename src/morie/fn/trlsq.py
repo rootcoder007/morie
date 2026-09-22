@@ -47,3 +47,7 @@ def total_least_squares(
 
 
 trlsq = total_least_squares
+
+
+def cheatsheet() -> str:
+    return "total_least_squares(A, b) -> Total Least Squares (errors-in-variables regression)."

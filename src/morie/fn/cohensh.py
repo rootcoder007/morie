@@ -33,3 +33,7 @@ def cohensh(p1: float, p2: float):
         interpretation=(f"h = {h:+.3f}; |h| benchmarks: 0.2 small, 0.5 medium, 0.8 large (Cohen 1988)."),
         payload={"value": h, "statistic": h, "benchmark": bench},
     )
+
+
+def cheatsheet() -> str:
+    return "cohensh(p1, p2) -> Cohen's h for two proportions: 2 * (asin(sqrt(p1)) - asin(sqrt(p2)))."

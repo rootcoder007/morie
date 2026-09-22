@@ -49,3 +49,7 @@ def mlepoi(counts: Union[Sequence, np.ndarray]):
         warnings=warnings,
         payload={"lambda": lam, "value": lam, "statistic": lam, "variance": var_obs, "overdispersion": overdisp},
     )
+
+
+def cheatsheet() -> str:
+    return "mlepoi(counts) -> MLE Poisson fit: lambda_hat = mean."

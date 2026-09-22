@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import time
 
@@ -31,22 +32,40 @@ def _cache_path() -> str:
 
 
 def _parse_version(s: str) -> tuple[int, ...]:
-    """Leading numeric components of a version, e.g. '0.9.0' -> (0, 9, 0).
+    """Version key: numeric components, then a pre-release marker.
 
-    A non-numeric chunk (a pre-release or local suffix) ends the parse.
+    '0.9.0' -> (0, 9, 0, 1); '2.0.0rc1' -> (2, 0, 0, 0, 1). A pre-release
+    (rc/a/b/dev suffix on the last numeric chunk) sorts BELOW the release
+    with the same numbers, so a release candidate on PyPI is never
+    advertised as a newer stable release than the one installed.
     """
     parts: list[int] = []
+    pre: tuple[int, ...] = (1,)
     for chunk in str(s).split("."):
         digits = ""
-        for ch in chunk:
+        rest = ""
+        for k, ch in enumerate(chunk):
             if ch.isdigit():
                 digits += ch
             else:
+                rest = chunk[k:]
                 break
         if not digits:
+            rest = chunk  # ".post1", ".rc1", ".dev0": the whole chunk is the tag
+            if not re.match(r"(a|b|rc|dev|post)\d*$", rest):
+                break
+        else:
+            parts.append(int(digits))
+        if rest.startswith("+"):
+            break  # a local label ("+unknown", "+g1234") ranks with its release
+        if rest:
+            m = re.match(r"(a|b|rc|dev|post)?(\d*)", rest)
+            tag = (m.group(1) or "") if m else ""
+            num = int(m.group(2) or 0) if m else 0
+            pre = (2, num) if tag == "post" else (
+                0, {"dev": 0, "a": 1, "b": 2, "rc": 3}.get(tag, 0), num)
             break
-        parts.append(int(digits))
-    return tuple(parts) or (0,)
+    return tuple(parts or [0]) + pre
 
 
 def _read_cache() -> dict:
@@ -107,7 +126,7 @@ def maybe_notify(installed_version: str) -> None:
     _NOTIFIED = True
 
     installed = _parse_version(installed_version)
-    if installed <= (0, 0, 0):  # dev / unknown install -- never nag
+    if installed[:3] <= (0, 0, 0):  # dev / unknown install -- never nag
         return
 
     cache = _read_cache()

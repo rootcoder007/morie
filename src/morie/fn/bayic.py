@@ -30,3 +30,7 @@ def bayic(loglik: float, k: int, n: int):
         ),
         payload={"value": bic, "statistic": bic, "aic": aic, "loglik": loglik, "k": k, "n": n},
     )
+
+
+def cheatsheet() -> str:
+    return "bayic(loglik, k, n) -> BIC = k log(n) - 2 log L."

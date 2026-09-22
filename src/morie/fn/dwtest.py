@@ -40,3 +40,7 @@ def dwtest(residuals: Union[Sequence, np.ndarray]):
         ),
         payload={"value": dw, "statistic": dw, "verdict": verdict},
     )
+
+
+def cheatsheet() -> str:
+    return "dwtest(residuals) -> Durbin-Watson statistic for autocorrelated residuals."

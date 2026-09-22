@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_3
         stacklevel=2,
     )
     return _impl(x, n, delta)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33(x, n, delta) -> Deprecated; use :func:`morie.fn.diffquotn` instead."

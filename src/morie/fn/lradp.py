@@ -61,3 +61,7 @@ def lradp(
     lr = learning_rate_min + 0.5 * (learning_rate_max - learning_rate_min) * (1 + np.cos(np.pi * t / t_max))
 
     return float(lr)
+
+
+def cheatsheet() -> str:
+    return "lradp(t, t_max, learning_rate_min, learning_rate_max) -> Cosine annealing learning rate scheduler."

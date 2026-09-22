@@ -54,3 +54,7 @@ def moodmom(m, n):
 
 
 gibbons_mood_moments = moodmom
+
+
+def cheatsheet() -> str:
+    return "moodmom(m, n) -> E[M_N] and Var[M_N] under H0 -- eqs. (9.2.2) and (9.2.3)."

@@ -48,3 +48,7 @@ def wcoef(data, axis=0, cdf=None):
         "n": int(n),
         "interpretation": "reject" if p_value < 0.05 else "not reject",
     }
+
+
+def cheatsheet() -> str:
+    return "wcoef(data, axis, cdf) -> Kendall's coefficient of concordance W."

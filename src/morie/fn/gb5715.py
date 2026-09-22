@@ -82,3 +82,7 @@ def wsrci(x, tcrit):
 
 
 gibbons_wsrt_ci = wsrci
+
+
+def cheatsheet() -> str:
+    return "wsrci(x, tcrit) -> Confidence interval for M from the ordered Walsh averages."

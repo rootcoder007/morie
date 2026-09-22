@@ -54,3 +54,7 @@ def awgnc(snr_db: float = None, *, snr_linear: float = None) -> dict:
 
     cap = 0.5 * np.log2(1.0 + snr_lin)
     return RichResult(payload={"capacity": cap, "snr_db": snr_d, "snr_linear": snr_lin})
+
+
+def cheatsheet() -> str:
+    return "awgnc(snr_db) -> Capacity of an additive white Gaussian noise channel."

@@ -170,3 +170,7 @@ def phchk(
         "global_chi2": global_chi2,
         "global_p_value": global_p,
     }
+
+
+def cheatsheet() -> str:
+    return "phchk(time, event, covariates, beta, transform, cdf) -> Test the proportional hazards assumption using scaled Schoenfeld residuals."

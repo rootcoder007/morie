@@ -30,3 +30,7 @@ def harmean(x: Union[Sequence[float], np.ndarray]):
         interpretation=("HM <= GM <= AM always. Use HM for averaging rates (e.g., mph over equal distances)."),
         payload={"value": h, "statistic": h, "arithmetic_mean": arith},
     )
+
+
+def cheatsheet() -> str:
+    return "harmean(x) -> Harmonic mean = n / Σ (1/x_i)."

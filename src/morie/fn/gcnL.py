@@ -55,3 +55,7 @@ def gcn(A, X, W):
             "method": "H' = relu(Dt^{-1/2}(A+I)Dt^{-1/2} X W), Kipf & Welling (2017) eq. (8)",
         },
     )
+
+
+def cheatsheet() -> str:
+    return "gcn(A, X, W) -> One renormalised GCN propagation step."

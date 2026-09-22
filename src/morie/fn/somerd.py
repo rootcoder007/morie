@@ -33,3 +33,7 @@ def somerd(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
         ],
         extra_payload={"table": np.asarray(res.table).tolist()},
     )
+
+
+def cheatsheet() -> str:
+    return "somerd(x, y) -> Somers' D - asymmetric ordinal-ordinal association."

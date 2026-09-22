@@ -80,3 +80,7 @@ def chiindep(table, correct=False):
 
 
 gibbons_chisq_contingency = chiindep
+
+
+def cheatsheet() -> str:
+    return "chiindep(table, correct) -> Pearson Q for independence, Sec. 14.2."

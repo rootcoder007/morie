@@ -59,3 +59,7 @@ def plank(
         "total_power": float(total_power),
         "wien_peak": float(nu_peak),
     }
+
+
+def cheatsheet() -> str:
+    return "plank(nu, T, h, c, kB) -> Compute the Planck spectral radiance for blackbody radiation."

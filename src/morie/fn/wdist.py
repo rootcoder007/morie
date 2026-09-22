@@ -83,3 +83,7 @@ def wdist(
         dist = float(np.sum(mid_diff * deltas) ** (1.0 / p))
 
     return RichResult(payload={"distance": float(dist), "order": p})
+
+
+def cheatsheet() -> str:
+    return "wdist(x, y) -> Compute the p-Wasserstein distance between two 1-D distributions."

@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_1
         stacklevel=2,
     )
     return _impl(a, n)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_14(a, n) -> Deprecated; use :func:`morie.fn.powexpapx` instead."

@@ -94,3 +94,7 @@ def jtstat(samples, alternative="greater"):
 
 
 gibbons_jonckheere = jtstat
+
+
+def cheatsheet() -> str:
+    return "jtstat(samples, alternative) -> B = sum of the pairwise Mann-Whitney counts, Sec. 10.6."

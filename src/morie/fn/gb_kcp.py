@@ -74,3 +74,7 @@ def ksband(x, dcrit, at=None):
 
 
 gibbons_ks_conf_band = ksband
+
+
+def cheatsheet() -> str:
+    return "ksband(x, dcrit, at) -> Lower and upper confidence bands L_n(x), U_n(x) for F_X."

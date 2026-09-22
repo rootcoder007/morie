@@ -101,3 +101,7 @@ def maxwl(
         "energy_density": float(u),
         "poynting_vector": S,
     }
+
+
+def cheatsheet() -> str:
+    return "maxwl(E, B, c) -> Construct the electromagnetic field tensor (Faraday tensor) and"

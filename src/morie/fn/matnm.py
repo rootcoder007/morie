@@ -42,3 +42,7 @@ matnm = matrix_norms
 
 # compact alias per ledger/NAMING.md
 matrixnorms = matrix_norms
+
+
+def cheatsheet() -> str:
+    return "matrix_norms(A) -> Compute standard matrix norms."

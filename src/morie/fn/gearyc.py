@@ -66,3 +66,7 @@ def gearyc(x: Union[Sequence, np.ndarray], W: Union[Sequence, np.ndarray]):
         ),
         payload={"value": C, "statistic": C, "pattern": pattern},
     )
+
+
+def cheatsheet() -> str:
+    return "gearyc(x, W) -> Geary's C: alternative spatial autocorrelation."

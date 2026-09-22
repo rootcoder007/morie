@@ -20,3 +20,7 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_1
         stacklevel=2,
     )
     return _impl(x_dev, a)
+
+
+def cheatsheet() -> str:
+    return "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_17(x_dev, a) -> Deprecated; use :func:`morie.fn.poisstirc` instead."

@@ -104,3 +104,7 @@ def wwties(x, y):
 
 
 gibbons_ww2_ties = wwties
+
+
+def cheatsheet() -> str:
+    return "wwties(x, y) -> Smallest and largest R over all resolutions of the ties."

@@ -20,3 +20,7 @@ def ca_chapter_8_equation_2(*args, **kwargs):
         stacklevel=2,
     )
     return _impl(*args, **kwargs)
+
+
+def cheatsheet() -> str:
+    return "ca_chapter_8_equation_2() -> Deprecated; use :func:`morie.fn.cohens_d_population` instead."

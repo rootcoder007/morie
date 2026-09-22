@@ -87,3 +87,7 @@ def adagr(f, grad_f, x0, learning_rate=0.01, epsilon=1e-8, max_iter=1000, full_o
     if full_output:
         return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x
+
+
+def cheatsheet() -> str:
+    return "adagr(f, grad_f, x0, learning_rate, epsilon, max_iter, full_output, seed) -> Adagrad optimizer for unconstrained minimization."

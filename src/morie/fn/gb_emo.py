@@ -60,3 +60,7 @@ def ostatmom(r, n, k=1):
 
 
 gibbons_order_moments = ostatmom
+
+
+def cheatsheet() -> str:
+    return "ostatmom(r, n, k) -> k-th raw moment of U_(r), plus its mean and variance."
