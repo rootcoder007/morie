@@ -26,6 +26,6 @@ blipqformer = qformer_attend
 
 
 def cheatsheet() -> str:
-    from . import blip2v
+    import importlib
 
-    return blip2v.cheatsheet()
+    return importlib.import_module("morie.fn.blip2v").cheatsheet()

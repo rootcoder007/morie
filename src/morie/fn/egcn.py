@@ -28,6 +28,6 @@ egcn = e_gcn
 
 
 def cheatsheet() -> str:
-    from . import egnnL
+    import importlib
 
-    return egnnL.cheatsheet()
+    return importlib.import_module("morie.fn.egnnL").cheatsheet()
