@@ -9,6 +9,9 @@ Per-package full changelogs:
 
 ## 1.3.2 (2026-09-21)
 
+- **Spatial voting.** basicspace calls are gated on a matrix with at least
+  two rows and two columns; its Fortran overruns on thinner input and the
+  process dies later.
 - **Clustering.** `predict.morie_cluster()` computes the n x k centroid
   distances directly instead of an (n + k)^2 distance matrix (6 s and
   2.8 GB at n = 10,000, out of memory at 20,000); `morie_cluster()` gains
