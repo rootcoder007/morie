@@ -25,6 +25,11 @@ The reference cell is dropped from each set so the design has
 full rank.  Returns the coefficients on \code{X} only -- the
 fixed effects are nuisance.
 }
+\examples{
+morie_two_way_fixed_effects(Y = c(1, 2, 3, 4, 5, 6, 7, 8), unit = c(1, 2, 3, 4, 5, 6, 7, 8),
+  period = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
 \references{
 Wooldridge (2025) Sec. 3.
 }
+\keyword{internal}

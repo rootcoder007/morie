@@ -17,6 +17,10 @@ A scalar numeric: the Gaussian standard deviation sigma.
 \description{
 The noise scale that buys a given rho
 }
+\examples{
+sigma_for_rho(sensitivity = 5L, rho = 0.5)
+}
 \references{
 Bun, M. & Steinke, T. (2016). Proposition 1.6.
 }
+\keyword{internal}

@@ -7,7 +7,7 @@
 viterbi_decode(emissions, labels, transitions = NULL, transition_scores = NULL)
 }
 \arguments{
-\item{emissions}{A vector; its length is taken and its elements indexed.}
+\item{emissions}{A matrix; passed to \code{as.matrix}.}
 
 \item{labels}{A vector; its length is taken and its elements indexed.}
 
@@ -23,3 +23,9 @@ A step of the benRea_native implementation. Called by \code{ner_decode}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+S <- c("a", "b", "c")
+viterbi_decode(M, S)
+}
+\keyword{internal}

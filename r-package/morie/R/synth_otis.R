@@ -19,19 +19,8 @@
 # This helper draws every column name + every categorical level from
 # the authoritative dictionary.
 
-#' .morie_otis_a01_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_a01_panel()
-#' res
+#' Internal helper: Morie Otis A01 Panel
+#' @noRd
 .morie_otis_a01_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -49,19 +38,8 @@
   )
 }
 
-#' .morie_otis_b01_panel
-#'
-#' A step of the synth_otis implementation. Called by \code{morie_synth_otis}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_b01_panel()
-#' res
+#' Internal helper: Morie Otis B01 Panel
+#' @noRd
 .morie_otis_b01_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -87,19 +65,8 @@
   )
 }
 
-#' .morie_otis_b02_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_b02_panel()
-#' res
+#' Internal helper: Morie Otis B02 Panel
+#' @noRd
 .morie_otis_b02_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -113,19 +80,8 @@
   )
 }
 
-#' .morie_otis_b03_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_b03_panel()
-#' res
+#' Internal helper: Morie Otis B03 Panel
+#' @noRd
 .morie_otis_b03_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -142,19 +98,8 @@
   )
 }
 
-#' .morie_otis_b04_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_b04_panel()
-#' res
+#' Internal helper: Morie Otis B04 Panel
+#' @noRd
 .morie_otis_b04_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -167,19 +112,8 @@
   )
 }
 
-#' .morie_otis_b05_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_b05_panel()
-#' res
+#' Internal helper: Morie Otis B05 Panel
+#' @noRd
 .morie_otis_b05_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -190,19 +124,8 @@
   )
 }
 
-#' .morie_otis_b06_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_b06_panel()
-#' res
+#' Internal helper: Morie Otis B06 Panel
+#' @noRd
 .morie_otis_b06_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -220,19 +143,8 @@
   )
 }
 
-#' .morie_otis_b07_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_b07_panel()
-#' res
+#' Internal helper: Morie Otis B07 Panel
+#' @noRd
 .morie_otis_b07_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -245,19 +157,8 @@
   )
 }
 
-#' .morie_otis_b08_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_b08_panel()
-#' res
+#' Internal helper: Morie Otis B08 Panel
+#' @noRd
 .morie_otis_b08_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -274,19 +175,8 @@
   )
 }
 
-#' .morie_otis_b09_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_b09_panel()
-#' res
+#' Internal helper: Morie Otis B09 Panel
+#' @noRd
 .morie_otis_b09_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -299,19 +189,8 @@
   )
 }
 
-#' .morie_otis_c01_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c01_panel()
-#' res
+#' Internal helper: Morie Otis C01 Panel
+#' @noRd
 .morie_otis_c01_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -324,19 +203,8 @@
   )
 }
 
-#' .morie_otis_c02_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c02_panel()
-#' res
+#' Internal helper: Morie Otis C02 Panel
+#' @noRd
 .morie_otis_c02_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -353,19 +221,8 @@
   )
 }
 
-#' .morie_otis_c03_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c03_panel()
-#' res
+#' Internal helper: Morie Otis C03 Panel
+#' @noRd
 .morie_otis_c03_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -379,19 +236,8 @@
   )
 }
 
-#' .morie_otis_c04_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c04_panel()
-#' res
+#' Internal helper: Morie Otis C04 Panel
+#' @noRd
 .morie_otis_c04_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -404,19 +250,8 @@
   )
 }
 
-#' .morie_otis_c05_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c05_panel()
-#' res
+#' Internal helper: Morie Otis C05 Panel
+#' @noRd
 .morie_otis_c05_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -430,19 +265,8 @@
   )
 }
 
-#' .morie_otis_c06_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c06_panel()
-#' res
+#' Internal helper: Morie Otis C06 Panel
+#' @noRd
 .morie_otis_c06_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -455,19 +279,8 @@
   )
 }
 
-#' .morie_otis_c07_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c07_panel()
-#' res
+#' Internal helper: Morie Otis C07 Panel
+#' @noRd
 .morie_otis_c07_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -481,19 +294,8 @@
   )
 }
 
-#' .morie_otis_c08_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c08_panel()
-#' res
+#' Internal helper: Morie Otis C08 Panel
+#' @noRd
 .morie_otis_c08_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -508,19 +310,8 @@
   )
 }
 
-#' .morie_otis_c09_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c09_panel()
-#' res
+#' Internal helper: Morie Otis C09 Panel
+#' @noRd
 .morie_otis_c09_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -534,19 +325,8 @@
   )
 }
 
-#' .morie_otis_c10_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c10_panel()
-#' res
+#' Internal helper: Morie Otis C10 Panel
+#' @noRd
 .morie_otis_c10_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -564,19 +344,8 @@
   )
 }
 
-#' .morie_otis_c11_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c11_panel()
-#' res
+#' Internal helper: Morie Otis C11 Panel
+#' @noRd
 .morie_otis_c11_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -588,19 +357,8 @@
   )
 }
 
-#' .morie_otis_c12_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_c12_panel()
-#' res
+#' Internal helper: Morie Otis C12 Panel
+#' @noRd
 .morie_otis_c12_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -614,19 +372,8 @@
   )
 }
 
-#' .morie_otis_d01_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_d01_panel()
-#' res
+#' Internal helper: Morie Otis D01 Panel
+#' @noRd
 .morie_otis_d01_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -640,19 +387,8 @@
   )
 }
 
-#' .morie_otis_d02_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_d02_panel()
-#' res
+#' Internal helper: Morie Otis D02 Panel
+#' @noRd
 .morie_otis_d02_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -663,19 +399,8 @@
   )
 }
 
-#' .morie_otis_d03_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_d03_panel()
-#' res
+#' Internal helper: Morie Otis D03 Panel
+#' @noRd
 .morie_otis_d03_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -686,19 +411,8 @@
   )
 }
 
-#' .morie_otis_d04_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_d04_panel()
-#' res
+#' Internal helper: Morie Otis D04 Panel
+#' @noRd
 .morie_otis_d04_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -710,19 +424,8 @@
   )
 }
 
-#' .morie_otis_d05_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_d05_panel()
-#' res
+#' Internal helper: Morie Otis D05 Panel
+#' @noRd
 .morie_otis_d05_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -733,19 +436,8 @@
   )
 }
 
-#' .morie_otis_d06_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_d06_panel()
-#' res
+#' Internal helper: Morie Otis D06 Panel
+#' @noRd
 .morie_otis_d06_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -757,19 +449,8 @@
   )
 }
 
-#' .morie_otis_d07_panel
-#'
-#' A step of the synth_otis implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n Passed to \code{sample}. Defaults to \code{200L}.
-#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
-#' @return A data frame.
-#' @export
-#' @examples
-#' res <- .morie_otis_d07_panel()
-#' res
+#' Internal helper: Morie Otis D07 Panel
+#' @noRd
 .morie_otis_d07_panel <- function(n = 200L, seed = 1L) {
   .morie_local_seed(seed)
   data.frame(
@@ -806,7 +487,7 @@
 #' @return A \code{data.frame} with the dictionary-derived schema.
 #' @seealso \code{\link{morie_synth_otis_all}} for the full 29-dataset
 #'   list; \code{\link{morie_datasets_otis_a01}} and friends for the
-#'   real bundled+live loaders.
+#'   real included+live loaders.
 #' @export
 #' @examples
 #' df <- morie_synth_otis("c11", n = 50)

@@ -41,3 +41,8 @@ A step of the sschin_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_sschin_chained_imputation(time = c(1, 2, 3, 4, 5, 6, 7, 8),
+  event = c(0, 1, 0, 1, 1, 0, 1, 0), X = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

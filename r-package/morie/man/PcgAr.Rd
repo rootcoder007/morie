@@ -25,3 +25,9 @@ bandwidth -(fs/pi) log|p|.  Only the upper half plane is reported:
 for a real signal the poles are conjugate pairs, and listing both
 halves would double-count every resonance.
 }
+\examples{
+set.seed(1)
+x <- sin(2 * pi * 40 * (1:500) / 1000) + rnorm(500) * 0.1
+PcgAr(x, fs = 1000)
+}
+\keyword{internal}

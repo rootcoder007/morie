@@ -11,6 +11,14 @@ network_influence_variance(ic, friends)
 
 \item{friends}{See Usage.}
 }
+\value{
+A list with \code{se}, \code{se_independent}, \code{edges_counted}, \code{note}.
+}
 \description{
 Variance with covariance along edges only
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie:::network_influence_variance(V, V)
+}
+\keyword{internal}

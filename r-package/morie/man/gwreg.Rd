@@ -36,6 +36,7 @@ Local WLS at each site i:
 X)^-1 X^top W(s_i) y}.
 }
 \examples{
+set.seed(1)
 gwreg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100), 50, 2))
 }
 \references{

@@ -2,15 +2,26 @@
 % Please edit documentation in R/slowdp_native.R
 \name{truncation_error}
 \alias{truncation_error}
-\title{Closed-form expected tail (alpha/(1+alpha))^K}
+\title{truncation_error}
 \usage{
 truncation_error(alpha, K)
 }
 \arguments{
-\item{alpha}{See Usage.}
+\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{K}{See Usage.}
+\item{K}{Coerced to integer by the body, with \code{as.integer}.}
+}
+\value{
+A list with \code{expected_tail}, \code{kept}, \code{alpha}, \code{K},
+\code{per_stick_factor}, \code{note}.
 }
 \description{
-Closed-form expected tail (alpha/(1+alpha))^K
+A step of the slowdp_native implementation. Called by \code{decay_diagnostics},
+\code{sticks_for_tolerance}, \code{truncated_dp}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+truncation_error(alpha = 0.5, K = 5L)
+}
+\keyword{internal}

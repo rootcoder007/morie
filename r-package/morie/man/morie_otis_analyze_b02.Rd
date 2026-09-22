@@ -10,14 +10,13 @@ morie_otis_analyze_b02(data)
 \item{data}{b02 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines, year-trend table and
-gender x region crosstab of total segregation days.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 Aggregate segregation days per person per year (b02)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_b02(V)
+otis_b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+res <- morie_otis_analyze_b02(otis_b02)
+class(res)
 }

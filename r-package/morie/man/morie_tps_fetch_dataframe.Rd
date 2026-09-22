@@ -20,7 +20,12 @@ then reads it back. Mirrors the Python \code{fetch_tps_dataframe}
 convenience used as a \code{DATASET_CATALOG} fetcher.
 }
 \examples{
-\donttest{
+# The layers this can fetch -- a local lookup, no network.
+morie_tps_list_categories()
+\dontrun{
+# Fetching one is a live ArcGIS query; it ran for nine minutes in the
+# docs build, so it is shown rather than executed.
 df <- morie_tps_fetch_dataframe(morie_tps_list_categories()[1])
+head(df)
 }
 }

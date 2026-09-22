@@ -32,18 +32,8 @@ NULL
 # Internal: pairwise lat/long distance in kilometres (haversine)
 # ---------------------------------------------------------------------------
 
-#' .haversine_km
-#'
-#' A step of the mrm_tps implementation. Called by \code{mrm_tps_levy_scaling}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param lat1 Numeric; combined arithmetically in the body.
-#' @param lon1 Numeric; combined arithmetically in the body.
-#' @param lat2 Numeric; combined arithmetically in the body.
-#' @param lon2 Numeric; combined arithmetically in the body.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Haversine Km
+#' @noRd
 .haversine_km <- function(lat1, lon1, lat2, lon2) {
   R <- 6371
   rad <- pi / 180
@@ -320,31 +310,16 @@ mrm_tps_neighbourhood_recurrence_km <- function(
 #' sinusoidal baseline) AIC, branching ratio, and KS p-value per
 #' category as a tidy data.frame.
 #'
-#' The reference manifest is shipped with the package at
-#' `system.file("extdata", "paper_hawkes_refit.json", package = "morie")`.
-#' Pass `manifest_path = NULL` (the default) to read the bundled copy;
-#' pass an explicit path to load a user-supplied refit.
-#'
-#' @param manifest_path Path to a `paper_hawkes_refit.json` file. If
-#'   `NULL` (the default), the bundled reference manifest is used.
+#' @param manifest_path Path to `paper_hawkes_refit.json`.
 #' @return A data.frame with one row per category, columns
 #'   `category`, `n_fitted`, `T_days`, `aic_mark`, `kappa_mark`,
 #'   `ks_p_mark`, `aic_nm`, `eta_nm`, `ks_p_nm`, `delta_aic`.
 #' @export
 #' @examples
-#' df <- mrm_tps_load_hawkes_refit()
-#' head(df)
-mrm_tps_load_hawkes_refit <- function(manifest_path = NULL) {
-  if (is.null(manifest_path)) {
-    manifest_path <- system.file(
-      "extdata", "paper_hawkes_refit.json", package = "morie"
-    )
-    if (!nzchar(manifest_path)) {
-      stop("Bundled paper_hawkes_refit.json not found in the morie ",
-           "installation. Reinstall morie or pass an explicit ",
-           "manifest_path.", call. = FALSE)
-    }
-  }
+#' if (FALSE) {
+#'   mrm_tps_load_hawkes_refit("paper_hawkes_refit.json")
+#' }
+mrm_tps_load_hawkes_refit <- function(manifest_path) {
   stopifnot(file.exists(manifest_path))
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop("jsonlite is required for mrm_tps_load_hawkes_refit().")

@@ -11,6 +11,14 @@ morie_geron_recall_hm(y_true, y_pred, pos_label = 1)
 
 \item{pos_label}{Positive label.}
 }
+\value{
+A list with \code{recall}, \code{tp}, \code{fn}, \code{fp}, \code{f1}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Recall (true positive rate) = TP / (TP + FN) (Geron Ch 3, hmrec)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_recall_hm(V, V)
+}
+\keyword{internal}

@@ -12,9 +12,7 @@ mcnemar_test(contingency_table, exact = FALSE)
 \item{exact}{Use exact binomial.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the chi-square (or discordant-pair) statistic, p-value, df = 1,
-and n (the table total).
+An object of class \code{"morie_test_result"}.
 }
 \description{
 McNemar's test (paired nominal data)

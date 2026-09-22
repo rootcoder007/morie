@@ -13,7 +13,7 @@
 A numeric value.
 }
 \description{
-A step of the tqlld_native implementation. Called by \code{.tqlld_gaussian_cells}.
+A step of the tqlld_native implementation. Called by \code{.gaussian_cells}.
 See the file header for the source the module follows.
 source it follows.
 }

@@ -23,7 +23,6 @@ do not match.
 }
 \examples{
 \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_tps_year_to_hood_version(V)
+morie_tps_year_to_hood_version(2019)
 \dontshow{\}) # examplesIf}
 }

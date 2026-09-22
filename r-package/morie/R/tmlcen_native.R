@@ -164,8 +164,7 @@
 #' @return The value of \code{.tmlcen_weighted_logit}.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
 #' res <- .tmlcen_logit_irls(Z = X, y = y)
 #' res
@@ -258,8 +257,7 @@
 #' @return Nothing; this branch always raises.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .tmlcen_coerce_subject_list(x = X, n = 3L)
 #' res
 .tmlcen_coerce_subject_list <- function(x, n) {
@@ -279,7 +277,7 @@
 
 # coarsen_interval: the interval (L, R] implied by one subject's
 # monitoring, Sec. 8.5.
-#' Coarsen_interval: the interval (L, R] implied by one subject\'s
+#' Coarsen_interval: the interval (L, R] implied by one subject's
 #'
 #' monitoring, Sec. 8.5.
 #'
@@ -287,6 +285,11 @@
 #' @param deltas Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{L}, \code{R}.
 #' @export
+#' @examples
+#' times <- c(1.2, 3.4, 2.1, 5.0)
+#' deltas <- c(1, 0, 1, 1)
+#' morie_coarsen_interval(times, deltas)
+#' @keywords internal
 morie_coarsen_interval <- function(times, deltas) {
   ts <- as.numeric(times)
   ds <- as.numeric(deltas)
@@ -328,6 +331,10 @@ morie_coarsen_interval <- function(times, deltas) {
 #' @param ridge Passed to \code{.tmlcen_logit_irls}. Defaults to \code{1e-08}.
 #' @return A list with \code{G}, \code{grid}, \code{b}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_censoring_survival(V, V)
+#' @keywords internal
 morie_censoring_survival <- function(times, censored, A = NULL, W = NULL,
                                      grid = NULL, by_covariate = TRUE,
                                      ridge = 1e-8) {
@@ -388,7 +395,7 @@ morie_censoring_survival <- function(times, censored, A = NULL, W = NULL,
 }
 
 # ipcw_interval: Sec. 8.5's IPCW estimator of Psi_a = int r(t) Fbar_a(t) dt
-#' Ipcw_interval: Sec. 8.5\'s IPCW estimator of Psi_a = int r(t)
+#' Ipcw_interval: Sec. 8.5's IPCW estimator of Psi_a = int r(t)
 #' Fbar_a(t) dt
 #'
 #' A step of the tmlcen_native implementation. Called by \code{morie_tmle_censoring}.
@@ -406,6 +413,7 @@ morie_censoring_survival <- function(times, censored, A = NULL, W = NULL,
 #' @param ridge Passed to \code{.tmlcen_logit_irls}. Defaults to \code{1e-08}.
 #' @return A numeric value.
 #' @export
+#' @keywords internal
 morie_ipcw_interval <- function(W, A, times, deltas, a = 1.0, r = NULL,
                                 g = NULL, gc = NULL, ridge = 1e-8) {
   av <- as.numeric(A)

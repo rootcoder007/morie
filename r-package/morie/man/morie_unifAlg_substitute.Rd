@@ -20,3 +20,9 @@ A step of the unifAlg_native implementation. Called by \code{.trmRew_canonical},
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+x <- morie_unifAlg_var("x")
+t <- morie_unifAlg_app("f", x)
+morie_unifAlg_substitute(t, list(x = morie_unifAlg_const("a")))
+}
+\keyword{internal}

@@ -17,8 +17,7 @@
 #
 # Public R names mirror the Python module under the `morie_iv_*` prefix.
 
-#' @importFrom stats lm glm coef vcov pnorm pt pf pchisq qnorm qt qchisq model.matrix
-#' model.frame fitted residuals binomial as.formula sigma complete.cases quantile predict
+#' @importFrom stats lm glm coef vcov pnorm pt pf pchisq qnorm qt qchisq model.matrix model.frame fitted residuals binomial as.formula sigma complete.cases quantile predict
 #' @importFrom utils head
 NULL
 
@@ -177,7 +176,7 @@ NULL
 
 #' Two-Stage Least Squares (2SLS)
 #'
-#' Estimates a linear IV model via 2SLS (morie native k-class engine).
+#' Estimates a linear IV model via 2SLS (rmorie native k-class engine).
 #'
 #' @param data Data frame.
 #' @param outcome Name of the outcome column.
@@ -226,7 +225,7 @@ morie_iv_tsls <- function(data, outcome, endogenous, instruments,
   fit <- .morie_iv_kclass_native(d$y, d$X, d$Z, kappa = 1,
                                  robust = robust, cluster = cl)
   .morie_iv_result(fit$beta, fit$se, fit$n,
-                   method = "2sls (morie native)",
+                   method = "2sls (rmorie native)",
                    alpha = alpha, dof = fit$df,
                    details = list(residuals = fit$residuals,
                                   vcov = fit$vcov,
@@ -262,7 +261,7 @@ morie_iv_liml <- function(data, outcome, endogenous, instruments,
   fit <- .morie_iv_kclass_native(d$y, d$X, d$Z, kappa = kap,
                                  robust = robust)
   .morie_iv_result(fit$beta, fit$se, fit$n,
-                   method = "liml (morie native k-class)",
+                   method = "liml (rmorie native k-class)",
                    alpha = alpha, dof = fit$df,
                    details = list(kappa = kap,
                                   residuals = fit$residuals,
@@ -271,7 +270,7 @@ morie_iv_liml <- function(data, outcome, endogenous, instruments,
 
 #' Generalised Method of Moments (GMM) IV
 #'
-#' Two-step efficient GMM (morie native; HC0-weighted second step).
+#' Two-step efficient GMM (rmorie native; HC0-weighted second step).
 #' @inheritParams morie_iv_tsls
 #' @param weight_matrix One of \code{"optimal"} (default, two-step) or
 #'   \code{"identity"} (one-step / 2SLS-equivalent).
@@ -296,13 +295,13 @@ morie_iv_gmm <- function(data, outcome, endogenous, instruments,
     fit <- .morie_iv_kclass_native(d$y, d$X, d$Z, kappa = 1,
                                    robust = robust)
     return(.morie_iv_result(fit$beta, fit$se, fit$n,
-                            method = "gmm (identity = 2sls, morie native)",
+                            method = "gmm (identity = 2sls, rmorie native)",
                             alpha = alpha, dof = fit$df,
                             details = list(vcov = fit$vcov)))
   }
   fit <- .morie_iv_gmm2_native(d$y, d$X, d$Z)
   .morie_iv_result(fit$beta, fit$se, fit$n,
-                   method = "gmm (two-step efficient, morie native)",
+                   method = "gmm (two-step efficient, rmorie native)",
                    alpha = alpha, dof = NA,
                    details = list(vcov = fit$vcov, J = fit$J,
                                   J_p = fit$J_p))
@@ -330,7 +329,7 @@ morie_iv_cue_gmm <- function(data, outcome, endogenous, instruments,
   fit <- .morie_iv_cue_native(d$y, d$X, d$Z, max_iter = max_iter,
                               tol = tol)
   .morie_iv_result(fit$beta, fit$se, fit$n,
-                   method = "cue-gmm (morie native)",
+                   method = "cue-gmm (rmorie native)",
                    alpha = alpha, dof = NA,
                    details = list(vcov = fit$vcov, J = fit$J,
                                   converged = fit$converged))
@@ -667,7 +666,7 @@ morie_iv_hansen_j <- function(data, outcome, endogenous, instruments,
   d <- .morie_iv_design(data, outcome, endogenous, instruments, exogenous)
   fit <- .morie_iv_gmm2_native(d$y, d$X, d$Z)
   list(statistic = fit$J, p_value = fit$J_p,
-       name = "Hansen J (morie native)", df = fit$J_df)
+       name = "Hansen J (rmorie native)", df = fit$J_df)
 }
 
 #' Hausman test: OLS vs 2SLS
@@ -965,7 +964,7 @@ morie_iv_panel <- function(data, outcome, endogenous, instruments, unit,
   }
   res <- morie_iv_tsls(data, outcome, endogenous, instruments, exogenous,
                        alpha = alpha)
-  res$method <- "panel IV (morie native within + 2sls)"
+  res$method <- "panel IV (rmorie native within + 2sls)"
   res
 }
 

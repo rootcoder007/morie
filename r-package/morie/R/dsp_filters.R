@@ -43,13 +43,15 @@ morie_dsp_moving_average <- function(x, window = 5L) {
 #' t <- seq.int(0, 199) / 200
 #' x <- sin(2 * pi * 5 * t) + rnorm(200, sd = 0.4)
 #' y <- morie_dsp_hann_filter(x, window = 7L)
-#' sd(y) < sd(x)  # smoothing reduces variance
+#' sd(y) < sd(x) # smoothing reduces variance
 #' @export
 morie_dsp_hann_filter <- function(x, window = 5L) {
   x <- as.numeric(x)
   window <- as.integer(window)
   if (window < 1L) stop("window must be >= 1")
-  if (window == 1L) return(x)
+  if (window == 1L) {
+    return(x)
+  }
   # numpy.hanning is N-point symmetric, zero at the ends.
   w <- 0.5 - 0.5 * cos(2 * pi * seq.int(0, window - 1L) / (window - 1L))
   w <- w / sum(w)
@@ -72,7 +74,7 @@ morie_dsp_hann_filter <- function(x, window = 5L) {
 #' set.seed(2)
 #' t <- seq(0, 199) / 200
 #' x <- sin(2 * pi * 4 * t) + rnorm(200, sd = 0.3)
-#' x[seq(20, 200, by = 20)] <- 10  # impulse contamination
+#' x[seq(20, 200, by = 20)] <- 10 # impulse contamination
 #' y <- morie_dsp_alpha_trimmed_mean(x, window = 9L, alpha = 0.3)
 #' head(y)
 #' @export
@@ -82,7 +84,9 @@ morie_dsp_alpha_trimmed_mean <- function(x, window = 5L, alpha = 0.2) {
   if (window < 1L) stop("window must be >= 1")
   if (alpha < 0 || alpha >= 0.5) stop("alpha must be in [0, 0.5)")
   n <- length(x)
-  if (n == 0L) return(numeric(0))
+  if (n == 0L) {
+    return(numeric(0))
+  }
   half <- window %/% 2L
   trim <- as.integer(alpha * window)
   y <- numeric(n)
@@ -122,14 +126,18 @@ morie_dsp_median_filter <- function(x, kernel_size = 5L) {
   if (k %% 2L == 0L) k <- k + 1L
   half <- k %/% 2L
   n <- length(x)
-  if (n == 0L) return(numeric(0))
+  if (n == 0L) {
+    return(numeric(0))
+  }
   if (.morie_dsp_cpp_ok("morie_dsp_median_filter_cpp")) {
     return(morie_dsp_median_filter_cpp(x, k))
   }
   # Zero-pad to mimic scipy.signal.medfilt's default behaviour.
   padded <- c(rep(0, half), x, rep(0, half))
-  vapply(seq_len(n), function(i) stats::median(padded[i:(i + k - 1L)]),
-         numeric(1))
+  vapply(
+    seq_len(n), function(i) stats::median(padded[i:(i + k - 1L)]),
+    numeric(1)
+  )
 }
 
 #' Wiener filter (frequency domain)
@@ -404,7 +412,7 @@ morie_dsp_matched <- function(x, template) {
 #' t <- seq.int(0, 99) / 100
 #' segs <- t(replicate(8, sin(2 * pi * 5 * t) + rnorm(100, sd = 0.3)))
 #' y <- morie_dsp_ensemble_average(segs)
-#' sd(y) < sd(segs[1, ])  # averaging reduces noise
+#' sd(y) < sd(segs[1, ]) # averaging reduces noise
 #' @export
 morie_dsp_ensemble_average <- function(segments) {
   segments <- as.matrix(segments)
@@ -423,7 +431,8 @@ morie_dsp_ensemble_average <- function(segments) {
 #' @references Rangayyan & Krishnan (2015), Ch. 3, sec. 3.3.
 #' @examples
 #' set.seed(11L)
-#' fs <- 200L; t <- seq(0, (2000 - 1) / fs, length.out = 2000)
+#' fs <- 200L
+#' t <- seq(0, (2000 - 1) / fs, length.out = 2000)
 #' x <- sin(2 * pi * 5 * t)
 #' triggers <- seq(60L, length(x) - 100L, by = 100L)
 #' morie_dsp_synchronized_average(x, trigger_indices = triggers, window = 80L)
@@ -441,7 +450,9 @@ morie_dsp_synchronized_average <- function(x, trigger_indices,
       segs[[length(segs) + 1L]] <- x[s:e]
     }
   }
-  if (length(segs) == 0L) return(numeric(window))
+  if (length(segs) == 0L) {
+    return(numeric(window))
+  }
   rowMeans(do.call(cbind, segs))
 }
 
@@ -462,7 +473,9 @@ morie_dsp_synchronized_average <- function(x, trigger_indices,
 morie_dsp_snr <- function(signal, noise) {
   ps <- mean(signal^2)
   pn <- mean(noise^2)
-  if (pn == 0) return(Inf)
+  if (pn == 0) {
+    return(Inf)
+  }
   10 * log10(ps / pn)
 }
 
@@ -511,8 +524,10 @@ morie_dsp_turning_points <- function(x) {
   expected <- 2 * (n - 2) / 3
   variance <- (16 * n - 29) / 90
   z <- (turns - expected) / sqrt(variance)
-  list(turning_points = as.integer(turns), expected = expected,
-       z_statistic = z, stationary = abs(z) < 1.96)
+  list(
+    turning_points = as.integer(turns), expected = expected,
+    z_statistic = z, stationary = abs(z) < 1.96
+  )
 }
 
 #' Coefficient of variation
@@ -526,11 +541,13 @@ morie_dsp_turning_points <- function(x) {
 #' set.seed(1)
 #' x <- rnorm(100, mean = 5)
 #' morie_dsp_cv(x)
-#' morie_dsp_cv(c(-1, 1))  # zero mean: Inf
+#' morie_dsp_cv(c(-1, 1)) # zero mean: Inf
 #' @export
 morie_dsp_cv <- function(x) {
   m <- mean(x)
-  if (m == 0) return(Inf)
+  if (m == 0) {
+    return(Inf)
+  }
   stats::sd(x) / abs(m)
 }
 
@@ -566,7 +583,7 @@ morie_dsp_wiener_hopf <- function(Rxx, rxd) {
 #' set.seed(1)
 #' x <- rnorm(64)
 #' cc <- morie_dsp_cross_correlation(x, x, max_lag = 16L)
-#' which.max(cc)  # centre index = lag 0
+#' which.max(cc) # centre index = lag 0
 #' @export
 morie_dsp_cross_correlation <- function(x, y, max_lag = NULL) {
   x <- as.numeric(x)
@@ -609,7 +626,7 @@ morie_dsp_cross_correlation <- function(x, y, max_lag = NULL) {
 #' @examples
 #' x <- c(1, 2, 3, 4, 5)
 #' d <- morie_dsp_even_odd(x)
-#' d$even + d$odd  # reconstructs x
+#' d$even + d$odd # reconstructs x
 #' @export
 morie_dsp_even_odd <- function(x) {
   x <- as.numeric(x)
@@ -620,25 +637,12 @@ morie_dsp_even_odd <- function(x) {
 # ---- internal helpers -------------------------------------------------
 
 # "same"-mode convolution matching numpy.convolve(x, k, "same").
-#' "same"-mode convolution matching numpy.convolve(x, k, "same")
-#'
-#' A step of the dsp_filters implementation. Called by \code{morie_dsp_hann_filter},
-#' \code{morie_dsp_matched}, \code{morie_dsp_moving_average} and 2 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param x A vector; its length is taken.
-#' @param k A vector; its length is taken.
-#' @return The value of \code{[}.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .same_convolve(x = x, k = 3L)
-#' res
+#' Internal helper: Same Convolve
+#' @noRd
 .same_convolve <- function(x, k) {
   n <- length(x)
   m <- length(k)
-  full <- stats::convolve(x, rev(k), type = "open")  # numpy "full"
+  full <- stats::convolve(x, rev(k), type = "open") # numpy "full"
   out_len <- n
   start <- (length(full) - out_len) %/% 2L + 1L
   full[start:(start + out_len - 1L)]

@@ -51,7 +51,8 @@ morie_lattice_convex_hull <- function(points) {
   if (ncol(p) != 2L) stop("points must be an (n, 2) matrix.", call. = FALSE)
   if (nrow(p) < 3L) {
     stop(sprintf("need at least 3 distinct points; got %d.", nrow(p)),
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   ord <- order(p[, 1], p[, 2])
   p <- p[ord, , drop = FALSE]
@@ -60,7 +61,7 @@ morie_lattice_convex_hull <- function(points) {
     for (i in rows) {
       pt <- p[i, ]
       while (length(h) >= 2L &&
-             .morie_cross3(h[[length(h) - 1L]], h[[length(h)]], pt) <= 0) {
+        .morie_cross3(h[[length(h) - 1L]], h[[length(h)]], pt) <= 0) {
         h[[length(h)]] <- NULL
       }
       h[[length(h) + 1L]] <- pt
@@ -72,15 +73,18 @@ morie_lattice_convex_hull <- function(points) {
   hull <- c(lower[-length(lower)], upper[-length(upper)])
   if (length(hull) < 3L) {
     stop("all points are collinear; the hull is a segment and has no interior.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   hm <- do.call(rbind, hull)
   nh <- nrow(hm)
   nxt <- c(2:nh, 1L)
   twice <- sum(hm[, 1] * hm[nxt, 2] - hm[nxt, 1] * hm[, 2])
-  list(hull = hm, n_vertices = nh, twice_area = twice, area = twice / 2,
-       estimate = twice / 2, n = nrow(p),
-       method = "Andrew's monotone chain, exact integer orientation")
+  list(
+    hull = hm, n_vertices = nh, twice_area = twice, area = twice / 2,
+    estimate = twice / 2, n = nrow(p),
+    method = "Andrew's monotone chain, exact integer orientation"
+  )
 }
 
 #' Pick's theorem, checked by counting rather than assumed
@@ -116,14 +120,17 @@ morie_pick_theorem <- function(vertices, verify_by_enumeration = TRUE,
   n <- nrow(v)
   if (n < 3L) {
     stop(sprintf("a polygon needs at least 3 vertices; got %d.", n),
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   nxt <- c(2:n, 1L)
   twice <- sum(v[, 1] * v[nxt, 2] - v[nxt, 1] * v[, 2])
   gcd2 <- function(a, b) {
-    while (b != 0) { t <- b
-    b <- a %% b
-    a <- t }
+    while (b != 0) {
+      t <- b
+      b <- a %% b
+      a <- t
+    }
     a
   }
   boundary <- sum(vapply(seq_len(n), function(i) {
@@ -145,9 +152,9 @@ morie_pick_theorem <- function(vertices, verify_by_enumeration = TRUE,
       by <- v[nxt[i], 2]
       cr <- (bx - ax) * (py - ay) - (by - ay) * (px - ax)
       if (cr == 0 &&
-          px >= min(ax, bx) && px <= max(ax, bx) &&
-          py >= min(ay, by) && py <= max(ay, by)) {
-        return(FALSE)   # on the boundary
+        px >= min(ax, bx) && px <= max(ax, bx) &&
+        py >= min(ay, by) && py <= max(ay, by)) {
+        return(FALSE) # on the boundary
       }
       if ((ay > py) != (by > py)) {
         lhs <- (px - ax) * (by - ay)
@@ -174,7 +181,8 @@ morie_pick_theorem <- function(vertices, verify_by_enumeration = TRUE,
         "The bounding box holds %g lattice points, above the enumeration",
         "cap of %g, so the theorem was NOT verified by direct counting",
         "here. The Pick value is still returned; 'verified' is NA, not",
-        "TRUE."), box, enumeration_cap))
+        "TRUE."
+      ), box, enumeration_cap))
     } else {
       cnt <- 0L
       for (px in xr[1]:xr[2]) {
@@ -190,14 +198,17 @@ morie_pick_theorem <- function(vertices, verify_by_enumeration = TRUE,
     warns <- c(warns, paste(
       "Direct counting disagrees with Pick's formula. For a SIMPLE",
       "polygon that is impossible, so the input is self-intersecting or",
-      "traversed with repeated vertices."))
+      "traversed with repeated vertices."
+    ))
   }
-  list(area = area2 / 2, twice_area = area2, boundary = boundary,
-       interior = interior_pick, interior_enumerated = interior_direct,
-       verified = verified,
-       pick_holds = if (!is.na(verified)) verified else parity_ok,
-       estimate = area2 / 2, n = n, warnings = warns,
-       method = "Pick's theorem (Pick 1899), checked by enumeration")
+  list(
+    area = area2 / 2, twice_area = area2, boundary = boundary,
+    interior = interior_pick, interior_enumerated = interior_direct,
+    verified = verified,
+    pick_holds = if (!is.na(verified)) verified else parity_ok,
+    estimate = area2 / 2, n = n, warnings = warns,
+    method = "Pick's theorem (Pick 1899), checked by enumeration"
+  )
 }
 
 #' The Erdos-Szekeres monotone subsequence theorem
@@ -225,7 +236,8 @@ morie_erdos_szekeres_check <- function(sequence, r = NULL, s = NULL) {
   if (n == 0L) stop("the sequence is empty.", call. = FALSE)
   if (anyDuplicated(w)) {
     stop("the theorem needs distinct values; ties were supplied.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   inc <- rep(1L, n)
   dec <- rep(1L, n)
@@ -255,10 +267,12 @@ morie_erdos_szekeres_check <- function(sequence, r = NULL, s = NULL) {
     applies <- n >= threshold
     met <- if (applies) li >= r || ld >= s else NULL
   }
-  list(longest_increasing = li, longest_decreasing = ld,
-       threshold = threshold, applies = applies, guarantee_met = met,
-       estimate = as.numeric(li), n = n,
-       method = "Erdos-Szekeres theorem (1935)")
+  list(
+    longest_increasing = li, longest_decreasing = ld,
+    threshold = threshold, applies = applies, guarantee_met = met,
+    estimate = as.numeric(li), n = n,
+    method = "Erdos-Szekeres theorem (1935)"
+  )
 }
 
 #' The happy ending problem
@@ -284,7 +298,8 @@ morie_happy_ending_quadrilateral <- function(points) {
   if (ncol(p) != 2L) stop("points must be an (n, 2) matrix.", call. = FALSE)
   if (nrow(p) < 5L) {
     stop(sprintf("the theorem is about 5 or more points; got %d.", nrow(p)),
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (anyDuplicated(p)) stop("points must be distinct.", call. = FALSE)
   np <- nrow(p)
@@ -296,7 +311,8 @@ morie_happy_ending_quadrilateral <- function(points) {
     if (.morie_cross3(a, b, cc) == 0) {
       stop(sprintf(
         "points (%d, %d), (%d, %d), (%d, %d) are collinear; the theorem assumes general position.",
-        a[1], a[2], b[1], b[2], cc[1], cc[2]), call. = FALSE)
+        a[1], a[2], b[1], b[2], cc[1], cc[2]
+      ), call. = FALSE)
     }
   }
   hull4 <- function(idx) {
@@ -308,7 +324,7 @@ morie_happy_ending_quadrilateral <- function(points) {
       for (i in rows) {
         pt <- q[i, ]
         while (length(h) >= 2L &&
-               .morie_cross3(h[[length(h) - 1L]], h[[length(h)]], pt) <= 0) {
+          .morie_cross3(h[[length(h) - 1L]], h[[length(h)]], pt) <= 0) {
           h[[length(h)]] <- NULL
         }
         h[[length(h) + 1L]] <- pt
@@ -334,13 +350,17 @@ morie_happy_ending_quadrilateral <- function(points) {
         break
       }
     }
-    if (!found_here) { all_five_ok <- FALSE
-    break }
+    if (!found_here) {
+      all_five_ok <- FALSE
+      break
+    }
   }
-  list(found = !is.null(witness), witness = witness,
-       every_five_subset = all_five_ok,
-       estimate = as.numeric(!is.null(witness)), n = np,
-       method = "Happy ending theorem (Erdos and Szekeres 1935)")
+  list(
+    found = !is.null(witness), witness = witness,
+    every_five_subset = all_five_ok,
+    estimate = as.numeric(!is.null(witness)), n = np,
+    method = "Happy ending theorem (Erdos and Szekeres 1935)"
+  )
 }
 
 #' Helly's theorem on the line
@@ -364,8 +384,11 @@ morie_happy_ending_quadrilateral <- function(points) {
 morie_helly_intervals <- function(intervals) {
   iv <- as.matrix(intervals)
   if (nrow(iv) < 1L) stop("no intervals supplied.", call. = FALSE)
-  if (ncol(iv) != 2L) stop("intervals must be an (n, 2) matrix.",
-                           call. = FALSE)
+  if (ncol(iv) != 2L) {
+    stop("intervals must be an (n, 2) matrix.",
+      call. = FALSE
+    )
+  }
   if (any(iv[, 1] > iv[, 2])) {
     stop("every interval must have a <= b.", call. = FALSE)
   }
@@ -376,7 +399,7 @@ morie_helly_intervals <- function(intervals) {
       i <- pr[1, k]
       j <- pr[2, k]
       if (iv[i, 2] < iv[j, 1] || iv[j, 2] < iv[i, 1]) {
-        disjoint <- c(i, j) - 1L   # 0-based, matching Python
+        disjoint <- c(i, j) - 1L # 0-based, matching Python
         break
       }
     }
@@ -385,9 +408,11 @@ morie_helly_intervals <- function(intervals) {
   hi <- min(iv[, 2])
   common <- lo <= hi
   holds <- common || !is.null(disjoint)
-  list(pairwise_intersecting = is.null(disjoint), disjoint_pair = disjoint,
-       common_point_exists = common,
-       witness = if (common) c(lo, hi) else NULL,
-       helly_holds = holds, estimate = as.numeric(common), n = nrow(iv),
-       method = "Helly's theorem, d = 1 (Helly 1923)")
+  list(
+    pairwise_intersecting = is.null(disjoint), disjoint_pair = disjoint,
+    common_point_exists = common,
+    witness = if (common) c(lo, hi) else NULL,
+    helly_holds = holds, estimate = as.numeric(common), n = nrow(iv),
+    method = "Helly's theorem, d = 1 (Helly 1923)"
+  )
 }

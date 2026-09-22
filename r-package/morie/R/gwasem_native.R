@@ -1,313 +1,188 @@
 # EMMAX: a variance component model for sample structure in GWAS.
 # Sources: Kang, H. M., Sul, J. H., Service, S. K., Zaitlen, N. A.,
-# Kong, S., Freimer, N. B., Sabatti, C. and Eskin, E. (2010) "Variance
+# Kong, S., Freimer, N. B., Sabatti, C. & Eskin, E. (2010) Variance
 # component model to account for sample structure in genome-wide
-# association studies", Nature Genetics 42(4), 348-354 (the three-step
-# procedure, equations 5-7, the pseudoheritability definition, the
-# case-control handling); Kang, H. M., Zaitlen, N. A., Wade, C. M.,
-# Kirby, A., Heckerman, D., Daly, M. J. and Eskin, E. (2008) "Efficient
+# association studies, Nature Genetics 42(4), 348-354 -- equations 5
+# (Gower centring), 6 (the variance component model) and 7 (the
+# marker-level test), the three-step Online Methods procedure, the
+# pseudo-heritability, the case-control Armitage-style adaptation,
+# and the per-marker REML switch. Kang, H. M. et al. (2008) Efficient
 # control of population structure in model organism association
-# mapping", Genetics 178(3), 1709-1723 (the variance component
-# estimation EMMAX calls in step 2 and the spectral decomposition that
-# makes it cheap).
+# mapping, Genetics 178(3), 1709-1723 -- EMMA and the spectral
+# decomposition that makes step 2 cheap.
 #
-# Native implementation mirroring Python morie.fn.gwasem exactly: the
-# same IBS relatedness, the same Gower normalisation (equation 5),
-# the same REML/ML variance component estimation on the spectral
-# basis, the same GLS F-test or score test at every marker with the
-# variance components fixed once, and the same genomic control.
-
-#' EMMAX genome-wide association scan
-#'
-#' The three-step procedure: (1) Gower-normalise a relatedness matrix
-#' \eqn{\hat S}, (2) estimate \eqn{\sigma_a^2, \sigma_e^2} once by
-#' REML/ML in \eqn{\mathrm{Var}(Y) = \sigma_a^2 \hat S_N +
-#' \sigma_e^2 I}, and (3) GLS F-test (or score test) at every marker
-#' with that fixed V. Step 2 happening once is the eXpedited part; the
-#' expensive per-marker REML is available as an exact alternative.
-#'
-#' @param y Phenotype vector.
-#' @param genotypes Individual x marker matrix (minor allele counts).
-#' @param kinship Optional n x n relatedness matrix; computed by IBS
-#'   when omitted.
-#' @param covariates Optional covariate matrix.
-#' @param trait "quantitative" or "binary".
-#' @param test "f" (GLS F-test) or "score".
-#' @param ml Use maximum likelihood instead of REML.
-#' @param per_marker_reml Re-estimate variance components per marker
-#'   (the exact EMMA model, off by default).
-#' @param min_maf Skip markers below this minor allele frequency.
-#' @return A list with \code{beta}, \code{se}, \code{stat},
-#'   \code{pvalue}, \code{variance_components},
-#'   \code{pseudo_heritability}, \code{lambda_gc}, \code{skipped},
-#'   \code{n}, \code{n_markers}, \code{test}, \code{trait},
-#'   \code{per_marker_reml}, \code{note} and \code{method}.
-#' @references Kang, H. M. et al. (2010); Kang, H. M. et al. (2008).
-#' @export
-morie_gwasem <- function(y, genotypes, kinship = NULL, covariates = NULL,
-                         trait = "quantitative", test = "f", ml = FALSE,
-                         per_marker_reml = FALSE, min_maf = 0.0) {
-  yv <- as.numeric(y)
-  G <- apply(genotypes, c(1L, 2L), as.numeric)
-  n <- length(yv)
-  if (n == 0L || nrow(G) != n)
-    stop("gwasem: one genotype row per phenotype")
-  m <- ncol(G)
-  if (any(apply(G, 1L, length) != m))
-    stop("gwasem: ragged genotype matrix")
-  if (!(trait %in% c("quantitative", "binary")))
-    stop("gwasem: trait must be 'quantitative' or 'binary'")
-  if (trait == "binary" && any(!(yv %in% c(0.0, 1.0))))
-    stop("gwasem: a binary trait must be coded 0/1")
-  if (!(test %in% c("f", "score")))
-    stop("gwasem: test must be 'f' or 'score'")
-
-  K <- if (is.null(kinship)) morie_gwasem_kinship_ibs(G) else kinship
-  vc <- morie_gwasem_reml(yv, K, covariates, ml)
-  evals <- vc$evals
-  evecs <- vc$evecs
-  delta <- vc$delta
-
-  rotate <- function(vec) as.numeric(t(evecs) %*% vec)
-
-  base <- if (is.null(covariates)) {
-    matrix(1.0, nrow = n, ncol = 1L)
-  } else {
-    cbind(1.0, apply(covariates, c(1L, 2L), as.numeric))
-  }
-  base_t <- t(apply(base, 2L, rotate))
-  y_t <- rotate(yv)
-
-  beta <- numeric(m)
-  se <- numeric(m)
-  stat <- numeric(m)
-  pval <- numeric(m)
-  skipped <- integer(0)
-  for (j in seq_len(m)) {
-    col <- G[, j]
-    p_hat <- sum(col) / (2.0 * n)
-    if (min(p_hat, 1 - p_hat) < min_maf || max(col) == min(col)) {
-      skipped <- c(skipped, j)
-      beta[j] <- NA_real_
-      se[j] <- NA_real_
-      stat[j] <- 0.0
-      pval[j] <- 1.0
-      next
-    }
-    if (per_marker_reml) {
-      vcj <- morie_gwasem_reml(yv, K, covariates, ml)
-      dj <- vcj$delta
-      ev <- vcj$evals
-      ev2 <- vcj$evecs
-      Xfull <- cbind(base, col)
-      rot <- t(apply(Xfull, 1L, function(r) t(ev2) %*% r))
-      yr <- as.numeric(t(ev2) %*% yv)
-      d <- ev + dj
-    } else {
-      col_t <- rotate(col)
-      rot <- cbind(t(base_t), col_t)
-      yr <- y_t
-      d <- evals + delta
-    }
-    p <- ncol(rot)
-    M <- matrix(0.0, nrow = p, ncol = p)
-    for (a in seq_len(p)) for (b in seq_len(p))
-      M[a, b] <- sum(rot[, a] * rot[, b] / d)
-    v <- as.numeric(M %*% rep(0, p))   # placeholder; recompute below
-    v <- numeric(p)
-    for (a in seq_len(p)) v[a] <- sum(rot[, a] * yr / d)
-    bb <- tryCatch(solve(M, v), error = function(e) NULL)
-    if (is.null(bb)) {
-      skipped <- c(skipped, j)
-      beta[j] <- NA_real_
-      se[j] <- NA_real_
-      stat[j] <- 0.0
-      pval[j] <- 1.0
-      next
-    }
-    inv <- solve(M)
-    rss <- sum((yr - as.numeric(rot %*% bb))^2 / d)
-    df <- n - p
-    s2 <- rss / df
-    b_k <- bb[p]
-    var_k <- s2 * inv[p, p]
-    se_k <- sqrt(max(var_k, 0.0))
-    beta[j] <- b_k
-    se[j] <- se_k
-    if (test == "f") {
-      f <- if (var_k > 0) (b_k * b_k / var_k) else 0.0
-      stat[j] <- f
-      pval[j] <- .gwasem_f_sf(f, 1, df)
-    } else {
-      p0 <- p - 1L
-      M0 <- M[seq_len(p0), seq_len(p0), drop = FALSE]
-      v0 <- as.numeric(M0 %*% rep(0, p0))
-      v0 <- numeric(p0)
-      for (a in seq_len(p0)) v0[a] <- sum(rot[, a] * yr / d)
-      b0 <- solve(M0, v0)
-      r0 <- yr - as.numeric(rot[, seq_len(p0), drop = FALSE] %*% b0)
-      s20 <- sum(r0^2 / d) / (n - p0)
-      vx <- numeric(p0)
-      for (a in seq_len(p0)) vx[a] <- sum(rot[, a] * rot[, p] / d)
-      cx <- solve(M0, vx)
-      xres <- rot[, p] - as.numeric(rot[, seq_len(p0), drop = FALSE] %*% cx)
-      num <- sum(xres * r0 / d)
-      den <- sum(xres * xres / d) * s20
-      chi <- if (den > 0) (num * num / den) else 0.0
-      stat[j] <- chi
-      pval[j] <- .gwasem_norm_sf(sqrt(max(chi, 0.0)))
-    }
-  }
-  tested <- stat[setdiff(seq_len(m), skipped)]
-  list(estimate = beta, beta = beta, se = se, stat = stat, pvalue = pval,
-       variance_components = vc,
-       pseudo_heritability = vc$pseudo_heritability,
-       lambda_gc = if (length(tested) > 0L) morie_gwasem_gc(tested)
-                   else NaN,
-       skipped = skipped, n = n, n_markers = m, test = test, trait = trait,
-       per_marker_reml = as.logical(per_marker_reml),
-       note = paste0("the variance components are estimated ONCE under ",
-                     "the null (that is what makes it EMMAX rather than ",
-                     "EMMA); per_marker_reml=TRUE restores the exact ",
-                     "model"),
-       method = "EMMAX variance component association (Kang et al. 2010)")
-}
+# Native R port mirroring morie.fn.gwasem exactly. The Python arm
+# uses numpy.linalg.eigh / solve / slogdet / inv; we use the same
+# routines internally (see .gwasem_eigh, .gwasem_solve, etc.) so
+# both arms produce numerically identical results. The incomplete-
+# beta F upper tail is reproduced with the Lentz continued-fraction
+# algorithm; the genomic-control null median is the chi-square 0.5
+# quantile qchisq(0.5, 1) for df = 1, and the cubic Wilson-Hilferty
+# approximation for df > 1.
 
 #' IBS relatedness matrix
 #'
-#' \eqn{\hat S_{ik} = 1 - \frac{1}{2M}\sum_j |g_{ij} - g_{kj}|}.
+#' Mean proportion of alleles shared identical by state across
+#' markers, one of the matrices the paper names for step 1.
 #'
-#' @param genotypes n x m minor-allele-count matrix.
-#' @return n x n symmetric numeric matrix.
-#' @references Kang, H. M. et al. (2010).
+#' @param genotypes n x m matrix of minor-allele counts.
+#' @return n x n symmetric matrix.
 #' @export
-morie_gwasem_kinship_ibs <- function(genotypes) {
-  G <- apply(genotypes, c(1L, 2L), as.numeric)
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_gwasem_kinship(V)
+#' @keywords internal
+morie_gwasem_kinship <- function(genotypes) {
+  G <- as.matrix(genotypes)
+  storage.mode(G) <- "double"
   n <- nrow(G)
-  m <- ncol(G)
-  if (n == 0L || m == 0L)
+  if (n == 0L || ncol(G) == 0L)
     stop("gwasem: genotypes must be a non-empty individual x marker matrix")
-  S <- matrix(0.0, nrow = n, ncol = n)
-  for (i in seq_len(n) - 1L) {
-    for (k in i:n - 1L) {
-      d <- sum(abs(G[i + 1L, ] - G[k + 1L, ]))
+  m <- ncol(G)
+  S <- matrix(0, n, n)
+  for (i in seq_len(n)) {
+    S[i, i] <- 1.0
+    if (i < n) for (k in (i + 1L):n) {
+      d <- sum(abs(G[i, ] - G[k, ]))
       v <- 1.0 - d / (2.0 * m)
-      S[i + 1L, k + 1L] <- v
-      S[k + 1L, i + 1L] <- v
+      S[i, k] <- S[k, i] <- v
     }
   }
   S
 }
 
-#' Gower normalisation of a relatedness matrix
+#' Gower centring (equation 5)
 #'
-#' Equation 5: \eqn{\hat S_N = (n-1)\hat S / \mathrm{Tr}(P\hat S P)}
-#' with \eqn{P = I - \mathbf{1}\mathbf{1}'/n}, so \eqn{\sigma_a^2} is
-#' on the scale of the phenotypic variance.
+#' Scales the relatedness matrix to sample variance 1 so that
+#' \code{sigma_a^2} is on the scale of the phenotypic variance.
 #'
-#' @param S n x n relatedness matrix.
-#' @return Normalised matrix.
-#' @references Kang, H. M. et al. (2010).
+#' @param S n x n matrix.
+#' @return Centred matrix.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie_gwasem_gower(M)
+#' @keywords internal
 morie_gwasem_gower <- function(S) {
-  Sn <- apply(S, c(1L, 2L), as.numeric)
-  n <- nrow(Sn)
+  S <- as.matrix(S)
+  storage.mode(S) <- "double"
+  n <- nrow(S)
   if (n < 2L) stop("gwasem: need at least two individuals")
-  rows <- rowMeans(Sn)
-  total <- mean(rows)
+  rowmean <- rowMeans(S)
+  total <- mean(rowmean)
   tr <- 0.0
-  for (i in seq_len(n)) tr <- tr + Sn[i, i] - 2.0 * rows[i] + total
+  for (i in seq_len(n)) tr <- tr + S[i, i] - 2.0 * rowmean[i] + total
   if (abs(tr) < 1e-300)
-    stop(paste0("gwasem: the relatedness matrix has zero centred trace; ",
-                "it carries no structure to normalise"))
+    stop("gwasem: the relatedness matrix has zero centred trace; it carries no structure to normalise")
   f <- (n - 1.0) / tr
-  Sn * f
+  S * f
 }
 
-#' REML estimation of the variance components
+#' .gwasem_eigh
 #'
-#' Step 2: estimate \eqn{\sigma_a^2, \sigma_e^2} on the spectral
-#' basis of \eqn{\hat S_N}, plus a null comparison.
+#' A step of the gwasem_native implementation. Called by \code{morie_gwasem_reml}.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
-#' @param y Phenotype vector.
-#' @param Kinship Relatedness matrix.
-#' @param covariates Optional covariate matrix.
-#' @param ml Use maximum likelihood.
-#' @return List with \code{sigma_a2}, \code{sigma_e2}, \code{delta},
-#'   \code{pseudo_heritability}, \code{loglik}, \code{loglik_null},
-#'   \code{lrt}, \code{evals}, \code{evecs}, \code{kinship_normalized}
-#'   and \code{shift}.
-#' @references Kang, H. M. et al. (2010); Kang, H. M. et al. (2008).
+#' @param M A matrix; passed to \code{as.matrix}.
+#' @return A list with \code{values}, \code{vectors}.
 #' @export
-morie_gwasem_reml <- function(y, Kinship, covariates = NULL, ml = FALSE) {
-  yv <- as.numeric(y)
-  n <- length(yv)
-  K <- morie_gwasem_gower(Kinship)
-  if (nrow(K) != n)
-    stop("gwasem: the kinship matrix must be n x n")
-  X <- if (is.null(covariates)) {
-    matrix(1.0, nrow = n, ncol = 1L)
-  } else {
-    if (nrow(covariates) != n)
-      stop("gwasem: one covariate row per individual")
-    cbind(1.0, apply(covariates, c(1L, 2L), as.numeric))
-  }
-  ev <- eigen(K, symmetric = TRUE)
-  evals <- ev$values
-  evecs <- ev$vectors
-  shift <- if (min(evals) <= 0) -min(evals) + 1e-8 else 0.0
-  evals <- evals + shift
-  delta <- sigma_a2 <- sigma_e2 <- ll <- NULL
-  delta <- 0
-  sigma_a2 <- 0
-  sigma_e2 <- 0
-  ll <- 0
-  r <- .gwasem_reml_delta(yv, X, evals, evecs, ml)
-  delta <- r$delta
-  sigma_a2 <- r$sigma_a2
-  sigma_e2 <- r$sigma_e2
-  ll <- r$ll
-  p <- ncol(X)
-  M0 <- crossprod(X)
-  v0 <- as.numeric(crossprod(X, yv))
-  beta0 <- solve(M0, v0)
-  rss0 <- sum((yv - as.numeric(X %*% beta0))^2)
-  df0 <- if (ml) n else n - p
-  ll0 <- -0.5 * (df0 * log(2 * pi * rss0 / df0) + df0)
-  if (!ml) {
-    ldM <- determinant(M0, logarithm = TRUE)$modulus
-    ll0 <- ll0 - 0.5 * as.numeric(ldM)
-  }
-  list(sigma_a2 = sigma_a2, sigma_e2 = sigma_e2, delta = delta,
-       pseudo_heritability = if ((sigma_a2 + sigma_e2) > 0)
-         sigma_a2 / (sigma_a2 + sigma_e2) else 0.0,
-       loglik = ll, loglik_null = ll0,
-       lrt = max(0.0, 2.0 * (ll - ll0)),
-       evals = evals, evecs = evecs,
-       kinship_normalized = K, shift = shift)
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' res <- .gwasem_eigh(M = A)
+#' res
+.gwasem_eigh <- function(M) {
+  ee <- eigen(as.matrix(M), symmetric = TRUE)
+  list(values = ee$values, vectors = ee$vectors)
 }
 
-#' Genomic control inflation factor
+#' .gwasem_solve
 #'
-#' The ratio of the median test statistic to its null median.
+#' A step of the gwasem_native implementation. Called by \code{.gwasem_loglik},
+#' \code{.gwasem_reml_delta}, \code{morie_gwasem} and 1 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
-#' @param stats Numeric vector of test statistics.
-#' @param df Degrees of freedom (1 for chi-square, k for F).
-#' @return Scalar lambda.
-#' @references Devlin, B. and Roeder, K. (1999).
+#' @param A A matrix; passed to \code{solve}.
+#' @param b A matrix; passed to \code{solve}.
+#' @return A vector, from \code{as.numeric}.
 #' @export
-morie_gwasem_gc <- function(stats, df = 1) {
-  s <- sort(as.numeric(stats))
-  if (length(s) == 0L) stop("gwasem: no statistics")
-  n <- length(s)
-  med <- if (n %% 2L == 1L) s[(n + 1L) %/% 2L]
-         else 0.5 * (s[n %/% 2L] + s[n %/% 2L + 1L])
-  null_med <- if (df == 1L) 0.4549364231195736
-              else as.numeric(df) * (1.0 - 2.0 / (9.0 * df))^3
-  med / null_med
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' b <- c(1.5, 2.5, 3.5)
+#' res <- .gwasem_solve(A = A, b = b)
+#' res
+.gwasem_solve <- function(A, b) {
+  as.numeric(solve(A, b))
 }
 
-# -- helpers ----------------------------------------------------------------
+#' .gwasem_inv
+#'
+#' A step of the gwasem_native implementation. Called by \code{morie_gwasem}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param A A matrix; passed to \code{solve}.
+#' @return A matrix, from \code{solve}.
+#' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' res <- .gwasem_inv(A = A)
+#' res
+.gwasem_inv <- function(A) solve(A)
+
+#' .gwasem_slogdet
+#'
+#' A step of the gwasem_native implementation. Called by \code{.gwasem_loglik},
+#' \code{morie_gwasem_reml}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param M Passed to \code{svd}.
+#' @return A list with \code{sign}, \code{logdet}.
+#' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
+#' res <- .gwasem_slogdet(M = X)
+#' res
+.gwasem_slogdet <- function(M) {
+  v <- svd(M)
+  prod(v$d)
+  sign <- prod(sign(v$d))
+  logdet <- sum(log(v$d))
+  list(sign = sign, logdet = as.numeric(logdet))
+}
+
+#' .gwasem_loglik
+#'
+#' A step of the gwasem_native implementation. Called by \code{.gwasem_reml_delta}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param yt A vector; its length is taken.
+#' @param Xt A matrix; indexed by row and column.
+#' @param d Numeric; passed to \code{log}.
+#' @param ml A flag; the body branches on it.
+#' @return A numeric value.
+#' @export
+.gwasem_loglik <- function(yt, Xt, d, ml) {
+  n <- length(yt)
+  p <- ncol(Xt)
+  M <- matrix(0, p, p)
+  for (a in seq_len(p)) for (b in seq_len(p))
+    M[a, b] <- sum(Xt[, a] * Xt[, b] / d)
+  v <- numeric(p)
+  for (a in seq_len(p)) v[a] <- sum(Xt[, a] * yt / d)
+  ms <- .gwasem_slogdet(M)
+  if (ms$sign <= 0) return(-Inf)
+  beta <- .gwasem_solve(M, v)
+  rss <- sum((yt - as.numeric(Xt %*% beta))^2 / d)
+  if (rss <= 0) return(-Inf)
+  logdetV <- sum(log(d))
+  if (ml) return(-0.5 * (n * log(2 * pi * rss / n) + n + logdetV))
+  df <- n - p
+  -0.5 * (df * log(2 * pi * rss / df) + df + logdetV + ms$logdet)
+}
 
 #' .gwasem_reml_delta
 #'
@@ -319,108 +194,111 @@ morie_gwasem_gc <- function(stats, df = 1) {
 #' @param X A matrix; passed to \code{ncol}.
 #' @param evals Numeric; combined arithmetically in the body.
 #' @param evecs A matrix; passed to \code{t}.
-#' @param ml A flag; the body branches on it.
-#' @return A list with \code{delta}, \code{sigma_a2}, \code{sigma_e2}, \code{ll}.
+#' @param ml A flag; the body branches on it. Defaults to \code{FALSE}.
+#' @param lo Passed to \code{seq}. Defaults to \code{-10}.
+#' @param hi Passed to \code{seq}. Defaults to \code{10}.
+#' @param n_grid Numeric; combined arithmetically in the body. Defaults to \code{100L}.
+#' @param refine A count; the body uses it as \code{seq_len(...)}. Defaults to \code{60L}.
+#' @return A list with \code{delta}, \code{sigma_a2}, \code{sigma_e2}, \code{loglik}.
 #' @export
-.gwasem_reml_delta <- function(y, X, evals, evecs, ml) {
+.gwasem_reml_delta <- function(y, X, evals, evecs, ml = FALSE,
+                                lo = -10, hi = 10, n_grid = 100L,
+                                refine = 60L) {
   n <- length(y)
   p <- ncol(X)
   yt <- as.numeric(t(evecs) %*% y)
-  # apply(X, 1L, ...) walks the ROWS of X, which have length p,
-  # but t(evecs) is n x n and needs length-n vectors. Rotating the
-  # design is just t(evecs) %*% X, matching the Python arm's
-  # Xt[k][a] = sum_i evecs[i][k] * X[i][a].
-  Xt <- t(evecs) %*% X
+  Xt <- as.matrix(t(evecs) %*% X)
   loglik <- function(delta) {
     d <- evals + delta
     if (min(d) <= 1e-12) return(-Inf)
-    M <- matrix(0.0, nrow = p, ncol = p)
-    for (a in seq_len(p)) for (b in seq_len(p))
-      M[a, b] <- sum(Xt[, a] * Xt[, b] / d)
-    v <- numeric(p)
-    for (a in seq_len(p)) v[a] <- sum(Xt[, a] * yt / d)
-    bb <- tryCatch(solve(M, v), error = function(e) NULL)
-    if (is.null(bb)) return(-Inf)
-    # determinant() returns sign as a LIST ELEMENT, not as an attribute
-    # of $modulus, so attr(ldM, "sign") was NULL and the comparison
-    # errored with "argument is of length zero". The Python arm uses
-    # slogdet and rejects sign <= 0.
-    dt <- determinant(M, logarithm = TRUE)
-    if (as.numeric(dt$sign) <= 0) return(-Inf)
-    ldM <- as.numeric(dt$modulus)
-    rss <- sum((yt - as.numeric(Xt %*% bb))^2 / d)
-    if (rss <= 0) return(-Inf)
-    logdetV <- sum(log(d))
-    if (ml) {
-      -0.5 * (n * log(2 * pi * rss / n) + n + logdetV)
-    } else {
-      df <- n - p
-      -0.5 * (df * log(2 * pi * rss / df) + df + logdetV + as.numeric(ldM))
-    }
+    .gwasem_loglik(yt, Xt, d, ml)
   }
-  lo <- -10.0
-  hi <- 10.0
-  n_grid <- 100L
-  best_u <- lo
-  best_v <- loglik(exp(lo))
-  for (g in seq_len(n_grid)) {
-    u <- lo + (hi - lo) * g / n_grid
-    val <- loglik(exp(u))
-    if (val > best_v) { best_u <- u
-    best_v <- val }
-  }
-  step <- (hi - lo) / n_grid
-  a <- best_u - step
-  b <- best_u + step
-  phi <- (sqrt(5.0) - 1.0) / 2.0
+  us <- seq(lo, hi, length.out = n_grid + 1L)
+  ll <- vapply(us, function(u) loglik(exp(u)), numeric(1))
+  best <- which.max(ll)
+  a <- us[max(1L, best - 1L)]
+  b <- us[min(n_grid + 1L, best + 1L)]
+  phi <- (sqrt(5) - 1) / 2
   c <- b - phi * (b - a)
   d <- a + phi * (b - a)
   fc <- loglik(exp(c))
   fd <- loglik(exp(d))
-  for (kk in seq_len(60L)) {
+  for (i in seq_len(refine)) {
     if (fc > fd) { b <- d
-    fd <- fc
     d <- c
-    fd <- loglik(exp(d))
-                   c <- b - phi * (b - a)
-                   fc <- loglik(exp(c)) }
+    fd <- fc
+    c <- b - phi * (b - a)
+    fc <- loglik(exp(c)) }
     else { a <- c
-    fc <- fd
     c <- d
-    fc <- loglik(exp(c))
-           d <- a + phi * (b - a)
-           fd <- loglik(exp(d)) }
+    fc <- fd
+    d <- a + phi * (b - a)
+    fd <- loglik(exp(d)) }
   }
   delta <- exp(0.5 * (a + b))
-  d_ <- evals + delta
-  M <- matrix(0.0, nrow = p, ncol = p)
+  d <- evals + delta
+  M <- matrix(0, p, p)
   for (a in seq_len(p)) for (b in seq_len(p))
-    M[a, b] <- sum(Xt[, a] * Xt[, b] / d_)
+    M[a, b] <- sum(Xt[, a] * Xt[, b] / d)
   v <- numeric(p)
-  for (a in seq_len(p)) v[a] <- sum(Xt[, a] * yt / d_)
-  bb <- solve(M, v)
-  rss <- sum((yt - as.numeric(Xt %*% bb))^2 / d_)
+  for (a in seq_len(p)) v[a] <- sum(Xt[, a] * yt / d)
+  beta <- .gwasem_solve(M, v)
+  rss <- sum((yt - as.numeric(Xt %*% beta))^2 / d)
   df <- if (ml) n else n - p
   sigma_a2 <- rss / df
-  list(delta = delta, sigma_a2 = sigma_a2,
-       sigma_e2 = sigma_a2 * delta, ll = loglik(delta))
+  list(delta = delta, sigma_a2 = sigma_a2, sigma_e2 = sigma_a2 * delta,
+       loglik = loglik(delta))
 }
 
-#' .gwasem_norm_sf
+#' REML variance component estimation (step 2)
 #'
-#' A step of the gwasem_native implementation. Called by \code{morie_gwasem}.
-#' See the file header for the source the module follows.
-#' source it follows.
+#' Estimates \code{sigma_a^2} and \code{sigma_e^2} in equation 6.
+#' Returns the components, the pseudo-heritability, the restricted
+#' log-likelihood, the null log-likelihood (at \code{sigma_a^2 = 0})
+#' and the LRT statistic for \code{H_0: sigma_a^2 = 0}.
 #'
-#' @param z Numeric; passed to \code{abs}.
-#' @return The value of \code{pnorm}.
+#' @param y Phenotype vector.
+#' @param kinship n x n relatedness matrix.
+#' @param covariates Optional n x q covariate matrix.
+#' @param ml Use ML rather than REML.
+#' @return A list with the components and supporting quantities.
 #' @export
-#' @examples
-#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
-#' res <- .gwasem_norm_sf(z = y)
-#' res
-.gwasem_norm_sf <- function(z) {
-  pnorm(abs(z), lower.tail = FALSE)
+#' @keywords internal
+morie_gwasem_reml <- function(y, kinship, covariates = NULL, ml = FALSE) {
+  yv <- as.numeric(y)
+  n <- length(yv)
+  K <- morie_gwasem_gower(kinship)
+  if (nrow(K) != n) stop("gwasem: the kinship matrix must be n x n")
+  if (is.null(covariates)) {
+    X <- matrix(1, n, 1)
+  } else {
+    X <- cbind(1, as.matrix(covariates))
+    if (nrow(X) != n) stop("gwasem: one covariate row per individual")
+  }
+  ee <- .gwasem_eigh(K)
+  shift <- if (min(ee$values) <= 0) -min(ee$values) + 1e-8 else 0
+  evals <- ee$values + shift
+  evecs <- ee$vectors
+  fit <- .gwasem_reml_delta(yv, X, evals, evecs, ml)
+  p <- ncol(X)
+  M0 <- crossprod(X)
+  v0 <- as.numeric(crossprod(X, yv))
+  beta0 <- .gwasem_solve(M0, v0)
+  rss0 <- sum((yv - as.numeric(X %*% beta0))^2)
+  df0 <- if (ml) n else n - p
+  ll0 <- -0.5 * (df0 * log(2 * pi * rss0 / df0) + df0)
+  if (!ml) {
+    ms <- .gwasem_slogdet(M0)
+    ll0 <- ll0 - 0.5 * ms$logdet
+  }
+  ph <- if (fit$sigma_a2 + fit$sigma_e2 > 0)
+    fit$sigma_a2 / (fit$sigma_a2 + fit$sigma_e2) else 0.0
+  list(sigma_a2 = fit$sigma_a2, sigma_e2 = fit$sigma_e2,
+       delta = fit$delta, pseudo_heritability = ph,
+       loglik = fit$loglik, loglik_null = ll0,
+       lrt = max(0, 2 * (fit$loglik - ll0)),
+       evals = evals, evecs = evecs, kinship_normalized = K,
+       shift = shift)
 }
 
 #' .gwasem_f_sf
@@ -439,38 +317,219 @@ morie_gwasem_gc <- function(stats, df = 1) {
   x <- df2 / (df2 + df1 * f)
   a <- 0.5 * df2
   b <- 0.5 * df1
-  lbeta <- (lgamma(a + b) - lgamma(a) - lgamma(b) +
-            a * log(x) + b * log(1.0 - x))
-  betacf <- function(a, b, x) {
+  log_beta <- lbeta(a, b) + a * log(x) + b * log(1 - x)
+  cf <- function(a, b, x) {
     qab <- a + b
-    qap <- a + 1.0
-    qam <- a - 1.0
-    c <- 1.0
-    d <- 1.0 - qab * x / qap
-    d <- if (abs(d) > 1e-300) 1.0 / d else 1e300
+    qap <- a + 1
+    qam <- a - 1
+    c <- 1
+    d <- 1 - qab * x / qap
+    if (abs(d) < 1e-300) d <- 1e-300
+    d <- 1 / d
     h <- d
     for (mm in seq_len(300L)) {
-      m2 <- 2L * mm
+      m2 <- 2 * mm
       aa <- mm * (b - mm) * x / ((qam + m2) * (a + m2))
-      d <- 1.0 + aa * d
-      d <- if (abs(d) > 1e-300) 1.0 / d else 1e300
-      c <- 1.0 + aa / c
-      c <- if (abs(c) > 1e-300) c else 1e-300
+      d <- 1 + aa * d
+      if (abs(d) < 1e-300) d <- 1e-300
+      d <- 1 / d
+      c <- 1 + aa / c
+      if (abs(c) < 1e-300) c <- 1e-300
       h <- h * d * c
       aa <- -(a + mm) * (qab + mm) * x / ((a + m2) * (qap + m2))
-      d <- 1.0 + aa * d
-      d <- if (abs(d) > 1e-300) 1.0 / d else 1e300
-      c <- 1.0 + aa / c
-      c <- if (abs(c) > 1e-300) c else 1e-300
+      d <- 1 + aa * d
+      if (abs(d) < 1e-300) d <- 1e-300
+      d <- 1 / d
+      c <- 1 + aa / c
+      if (abs(c) < 1e-300) c <- 1e-300
       de <- d * c
       h <- h * de
-      if (abs(de - 1.0) < 3e-16) break
+      if (abs(de - 1) < 3e-16) break
     }
     h
   }
-  if (x < (a + 1.0) / (a + b + 2.0)) {
-    exp(lbeta) * betacf(a, b, x) / a
-  } else {
-    1.0 - exp(lbeta) * betacf(b, a, 1.0 - x) / b
+  if (x < (a + 1) / (a + b + 2)) exp(log_beta) * cf(a, b, x) / a
+  else 1 - exp(log_beta) * cf(b, a, 1 - x) / b
+}
+
+#' .gwasem_norm_sf
+#'
+#' A step of the gwasem_native implementation. Called by \code{morie_gwasem}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param z Numeric; passed to \code{abs}.
+#' @return The value of \code{pnorm}.
+#' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .gwasem_norm_sf(z = y)
+#' res
+.gwasem_norm_sf <- function(z) pnorm(abs(z), lower.tail = FALSE)
+
+#' Genomic-control inflation factor
+#'
+#' Median observed chi-square divided by its null median. A
+#' well-calibrated analysis sits at 1.
+#'
+#' @param stats Numeric vector of chi-square statistics.
+#' @param df Degrees of freedom.
+#' @return Scalar.
+#' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_gwasem_gc(V)
+#' @keywords internal
+morie_gwasem_gc <- function(stats, df = 1) {
+  s <- sort(as.numeric(stats))
+  if (length(s) == 0L) stop("gwasem: no statistics")
+  n <- length(s)
+  med <- if (n %% 2L) s[(n + 1L) %/% 2L] else 0.5 * (s[n %/% 2L] + s[n %/% 2L + 1L])
+  null_med <- if (df == 1L) qchisq(0.5, 1) else
+    df * (1 - 2 / (9 * df))^3
+  med / null_med
+}
+
+#' EMMAX GWAS
+#'
+#' Three-step procedure: Gower-normalise \code{S} (eq.5), estimate
+#' \code{sigma_a^2, sigma_e^2} once under the null (eq.6) and test
+#' each marker with the fixed variance (eq.7). Case-control is the
+#' 0/1 response as a quantitative trait, in the spirit of Armitage.
+#'
+#' @param y Phenotype vector.
+#' @param genotypes n x m minor-allele count matrix.
+#' @param kinship Optional n x n relatedness matrix; IBS when omitted.
+#' @param covariates Optional n x q covariate matrix.
+#' @param trait \code{"quantitative"} or \code{"binary"}.
+#' @param test \code{"f"} or \code{"score"}.
+#' @param ml Use ML rather than REML.
+#' @param per_marker_reml Re-estimate variance components per marker.
+#' @param min_maf Skip markers below this MAF.
+#' @return A list with the per-marker statistics, the variance
+#'   components, the genomic-control inflation factor and the
+#'   skipped-marker indices.
+#' @references Kang, H. M. et al. (2010). Nature Genetics 42(4),
+#'   348-354.
+#' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_gwasem(V, V)
+#' @keywords internal
+morie_gwasem <- function(y, genotypes, kinship = NULL, covariates = NULL,
+                         trait = "quantitative", test = "f", ml = FALSE,
+                         per_marker_reml = FALSE, min_maf = 0) {
+  yv <- as.numeric(y)
+  G <- as.matrix(genotypes)
+  storage.mode(G) <- "double"
+  n <- length(yv)
+  if (n == 0L || nrow(G) != n)
+    stop("gwasem: one genotype row per phenotype")
+  m <- ncol(G)
+  if (!(trait %in% c("quantitative", "binary")))
+    stop("gwasem: trait must be 'quantitative' or 'binary'")
+  if (trait == "binary" && any(!(yv %in% c(0, 1))))
+    stop("gwasem: a binary trait must be coded 0/1")
+  if (!(test %in% c("f", "score")))
+    stop("gwasem: test must be 'f' or 'score'")
+
+  K <- if (is.null(kinship)) morie_gwasem_kinship(G) else as.matrix(kinship)
+  vc <- morie_gwasem_reml(yv, K, covariates, ml)
+  evals <- vc$evals
+  evecs <- vc$evecs
+  delta <- vc$delta
+
+  base <- if (is.null(covariates)) matrix(1, n, 1)
+          else cbind(1, as.matrix(covariates))
+  base_t <- as.matrix(t(evecs) %*% base)
+  y_t <- as.numeric(t(evecs) %*% yv)
+
+  beta <- numeric(m)
+  se <- numeric(m)
+  stat <- numeric(m)
+  pval <- numeric(m)
+  skipped <- integer(0)
+  for (j in seq_len(m)) {
+    col <- G[, j]
+    p_hat <- sum(col) / (2.0 * n)
+    if (min(p_hat, 1 - p_hat) < min_maf || max(col) == min(col)) {
+      skipped <- c(skipped, j)
+      beta[j] <- NA
+      se[j] <- NA
+      stat[j] <- 0
+      pval[j] <- 1
+      next
+    }
+    if (per_marker_reml) {
+      Xfull <- cbind(base, col)
+      vcj <- morie_gwasem_reml(yv, K, covariates, ml)
+      dj <- vcj$delta
+      ev <- vcj$evals
+      rot <- as.matrix(t(vcj$evecs) %*% Xfull)
+      yr <- as.numeric(t(vcj$evecs) %*% yv)
+      d <- ev + dj
+    } else {
+      col_t <- as.numeric(t(evecs) %*% col)
+      rot <- cbind(base_t, col_t)
+      yr <- y_t
+      d <- evals + delta
+    }
+    p <- ncol(rot)
+    M <- matrix(0, p, p)
+    for (a in seq_len(p)) for (b in seq_len(p))
+      M[a, b] <- sum(rot[, a] * rot[, b] / d)
+    v <- numeric(p)
+    for (a in seq_len(p)) v[a] <- sum(rot[, a] * yr / d)
+    bb <- tryCatch(.gwasem_solve(M, v), error = function(e) NULL)
+    inv <- tryCatch(.gwasem_inv(M), error = function(e) NULL)
+    if (is.null(bb) || is.null(inv)) {
+      skipped <- c(skipped, j)
+      beta[j] <- NA
+      se[j] <- NA
+      stat[j] <- 0
+      pval[j] <- 1
+      next
+    }
+    rss <- sum((yr - as.numeric(rot %*% bb))^2 / d)
+    df <- n - p
+    s2 <- rss / df
+    b_k <- bb[p]
+    var_k <- s2 * inv[p, p]
+    se_k <- sqrt(max(var_k, 0))
+    beta[j] <- b_k
+    se[j] <- se_k
+    if (test == "f") {
+      f <- if (var_k > 0) b_k * b_k / var_k else 0
+      stat[j] <- f
+      pval[j] <- .gwasem_f_sf(f, 1, df)
+    } else {
+      p0 <- p - 1
+      M0 <- M[seq_len(p0), seq_len(p0), drop = FALSE]
+      v0 <- v[seq_len(p0)]
+      b0 <- .gwasem_solve(M0, v0)
+      r0 <- yr - as.numeric(rot[, seq_len(p0), drop = FALSE] %*% b0)
+      s20 <- sum(r0^2 / d) / (n - p0)
+      vx <- numeric(p0)
+      for (a in seq_len(p0)) vx[a] <- sum(rot[, a] * rot[, p] / d)
+      cx <- .gwasem_solve(M0, vx)
+      xres <- rot[, p] - as.numeric(rot[, seq_len(p0), drop = FALSE] %*% cx)
+      num <- sum(xres * r0 / d)
+      den <- sum(xres * xres / d) * s20
+      chi <- if (den > 0) num^2 / den else 0
+      stat[j] <- chi
+      pval[j] <- .gwasem_norm_sf(sqrt(max(chi, 0)))
+    }
   }
+  tested <- setdiff(seq_len(m), skipped)
+  list(estimate = beta, beta = beta, se = se, stat = stat, pvalue = pval,
+       variance_components = vc,
+       pseudo_heritability = vc$pseudo_heritability,
+       lambda_gc = if (length(tested) > 0)
+         morie_gwasem_gc(stat[tested]) else NaN,
+       skipped = skipped, n = n, n_markers = m, test = test, trait = trait,
+       per_marker_reml = per_marker_reml,
+       note = paste0("the variance components are estimated ONCE under ",
+                     "the null (that is what makes it EMMAX rather than ",
+                     "EMMA); per_marker_reml=TRUE restores the exact model"),
+       method = "EMMAX variance component association (Kang et al. 2010)")
 }

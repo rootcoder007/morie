@@ -29,9 +29,14 @@ Named list with bias-adjusted distribution summaries.
 }
 \description{
 Draws bias parameters from prior distributions and returns the
-distribution of bias-adjusted estimates.
+distribution of bias-adjusted estimates.  Cross-references
+\pkg{episensr} (\code{episensr::probsens}) for the canonical
+multi-bias version with separate selection-bias and
+misclassification-bias models; use \pkg{episensr} directly when
+you need those.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-probabilistic_bias_analysis(V, V)
+set.seed(1)
+str(probabilistic_bias_analysis(0.5, 0.15, n_simulations = 2000L),
+    max.level = 1)
 }

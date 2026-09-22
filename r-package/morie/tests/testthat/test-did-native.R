@@ -51,7 +51,7 @@ test_that("morie_did_panel_fe recovers tau and carries the native label", {
   pan <- .mk_stag_panel(seed = 2)
   res <- morie_did_panel_fe(pan, "y", "d", "id", "tt")
   expect_equal(res$estimate, 1.5, tolerance = 0.15)
-  expect_identical(res$method, "did_panel_fe (morie native)")
+  expect_identical(res$method, "did_panel_fe (rmorie native)")
   expect_true(is.finite(res$std_error) && res$std_error > 0)
   expect_equal(res$details$n_units, 200)
   expect_equal(res$details$n_periods, 8)
@@ -70,7 +70,7 @@ test_that("native event study: reference period zero, effects post-onset", {
   expect_true(all(post$estimate > 1.0))
   pre <- cf[cf$relative_time < -1, ]
   expect_true(all(abs(pre$estimate) < 0.5))
-  expect_identical(res$details$backend, "morie native")
+  expect_identical(res$details$backend, "rmorie native")
 })
 
 test_that("event-study treatment_time column accepts Inf never-treated", {
@@ -137,7 +137,7 @@ test_that("doubly robust DiD: native label, recovery, both SE conventions", {
   df <- data.frame(y = y, d = d, post = post, x = x)
   res <- morie_did_doubly_robust(df, "y", "d", "post", covariates = "x",
                                  n_bootstrap = 0L)
-  expect_identical(res$method, "did_doubly_robust (morie native)")
+  expect_identical(res$method, "did_doubly_robust (rmorie native)")
   expect_equal(res$estimate, 2, tolerance = 0.25)
   res_b <- morie_did_doubly_robust(df, "y", "d", "post", covariates = "x",
                                    n_bootstrap = 0L,
@@ -178,7 +178,7 @@ test_that("morie_did_chaisemartin_dhaultfoeuille: finite estimate + boot SE", {
   expect_equal(res$estimate, 1.5, tolerance = 0.3)
   expect_true(is.finite(res$std_error) && res$std_error > 0)
   expect_equal(res$method, "chaisemartin_dhaultfoeuille")
-  expect_identical(res$details$backend, "morie native")
+  expect_identical(res$details$backend, "rmorie native")
 })
 
 test_that("Goodman-Bacon: weights sum to 1 and overall equals TWFE", {
@@ -203,7 +203,7 @@ test_that("feTR weights: sum to 1; late-period negative weights detected", {
   expect_s3_class(out, "morie_did_twfe_diagnostics")
   expect_equal(out$sum_weights, 1, tolerance = 1e-10)
   expect_true(out$n_negative_weights >= 0)
-  expect_identical(out$method, "twoway_fe_weights (morie native)")
+  expect_identical(out$method, "twoway_fe_weights (rmorie native)")
   expect_error(morie_did_twoway_fe_weights(pan, "id", "tt", "d2",
                                            type = "feS"),
                "feTR")
@@ -347,7 +347,7 @@ test_that("morie_did_synthetic + synthdid_estimate use the native engine", {
   }))
   res <- morie_did_synthetic(pan, "y", "unit", "time", "g",
                              n_bootstrap = 50L, seed = 33)
-  expect_equal(res$method, "synthetic_did (morie native)")
+  expect_equal(res$method, "synthetic_did (rmorie native)")
   expect_equal(res$estimate, 1.2, tolerance = 0.35)
   expect_true(is.finite(res$std_error))
   res2 <- morie_did_synthdid_estimate(pan, "unit", "time", "w01", "y",
@@ -356,5 +356,5 @@ test_that("morie_did_synthetic + synthdid_estimate use the native engine", {
   expect_equal(res2$att, res$estimate, tolerance = 1e-10)
   expect_equal(res2$n_pre, 6L)
   expect_equal(res2$n_treated, 2L)
-  expect_identical(res2$method, "sdid (morie native)")
+  expect_identical(res2$method, "sdid (rmorie native)")
 })

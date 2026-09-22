@@ -14,6 +14,7 @@
 #' @param drop Optional multiplicative dropout mask, \code{n x cs}.
 #' @return A list with \code{s}, \code{estimate}, \code{n} and \code{method}.
 #' @references Jumper et al (2021) Nature 596:583-589, Suppl. Algorithm 20
+#' @export
 Alfstrtr <- function(s, w1, w2, w3, layernorm = TRUE, drop = NULL) {
   n <- nrow(s)
   out <- matrix(0, n, ncol(s))
@@ -25,6 +26,8 @@ Alfstrtr <- function(s, w1, w2, w3, layernorm = TRUE, drop = NULL) {
     if (!is.null(drop)) u <- u * as.numeric(drop[i, ])
     out[i, ] <- if (layernorm) alfLnorm(u) else u
   }
-  list(s = out, estimate = mean(out), n = n,
-       method = "AlphaFold structure module transition")
+  list(
+    s = out, estimate = mean(out), n = n,
+    method = "AlphaFold structure module transition"
+  )
 }

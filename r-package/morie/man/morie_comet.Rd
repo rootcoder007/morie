@@ -25,3 +25,10 @@ A step of the comet_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+hyp <- rnorm(4); src <- rnorm(4); ref <- rnorm(4)
+W <- matrix(rnorm(24, 0, 0.3), 1, 24)
+morie_comet(hyp, src, ref, W)
+}
+\keyword{internal}

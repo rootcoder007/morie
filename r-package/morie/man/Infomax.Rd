@@ -29,3 +29,12 @@ A step of the rangayyan_class2 implementation. No other function in the package 
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(5)
+S <- rbind(sin(2 * pi * (1:300) / 25), sign(sin(2 * pi * (1:300) / 60)))
+A <- matrix(c(1, 0.5, 0.4, 1), 2, 2)
+X <- A \%*\% S
+r <- Infomax(X, maxiter = 100)
+str(r, max.level = 1)
+}
+\keyword{internal}

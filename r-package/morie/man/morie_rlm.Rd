@@ -22,7 +22,10 @@ morie_rlm(
 
 \item{acc}{Convergence tolerance on the residual change.}
 
-\item{add_intercept}{See Usage.}
+\item{add_intercept}{When the second argument is a design
+matrix rather than a data frame, prepend an intercept column.
+Ignored for the formula interface, where the model frame
+already carries one.}
 }
 \value{
 A \code{morie_rlm} object.

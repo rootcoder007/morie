@@ -1,230 +1,241 @@
 # GraphSAGE: embeddings for nodes the model has never seen.
-# Sources: Hamilton, W. L., Ying, R. and Leskovec, J. (2017) "Inductive
-# Representation Learning on Large Graphs", NeurIPS 2017,
-# arXiv:1706.02216 (Algorithm 1, mean / max-pooling / LSTM
-# aggregators, fixed-size neighbour sampling); Kipf, T. N. and
-# Welling, M. (2017) "Semi-Supervised Classification with Graph
-# Convolutional Networks", ICLR 2017, arXiv:1609.02907 (the
-# transductive GCN GraphSAGE extends to the inductive setting).
+# Sources: Hamilton, W. L., Ying, R. and Leskovec, J. (2017),
+# Inductive Representation Learning on Large Graphs, NeurIPS 2017
+# (arXiv:1706.02216) -- Algorithm 1, the three aggregators and
+# the unsupervised loss; Kipf, T. N. and Welling, M. (2017), Semi-
+# Supervised Classification with Graph Convolutional Networks, ICLR
+# 2017 (arXiv:1609.02907) -- the transductive convolution that
+# GraphSAGE extends.
 #
 # Native implementation mirroring Python morie.fn.gsageemd exactly:
-# the same three aggregators (mean, max_pool, lstm_order), the same
-# concatenation-then-linear transform with optional normalisation,
-# the same fixed-size neighbour sampling, and the same unsupervised
-# loss of Sec. 3.2. The shared generator is used for sampling and the
-# random permutations so both arms produce the same stream.
+# the same mean, max_pool and lstm_order aggregators, the same
+# fixed-size neighbour sampling with replacement when the budget
+# exceeds the neighbourhood, the same L2 normalisation after each
+# layer, and the same unsupervised graph-based loss.
 
-.GSAGE_EPS <- 1e-12
-.GSAGE_AGGS <- c("mean", "max_pool", "lstm_order")
+.GSAGEEMD_EPS <- 1e-12
+.GSAGEEMD_AGGS <- c("mean", "max_pool", "lstm_order")
 
-#' Permutation-invariant neighbour aggregation
-#'
-#' The three aggregators of Hamilton et al. 2017: \code{mean} (the
-#' default, nearly the transductive GCN's rule),
-#' \code{max_pool} (pass each neighbour through a linear layer and
-#' take an element-wise max), and \code{lstm_order} (returns the
-#' vectors in the order given -- the paper's point that an LSTM
-#' aggregator is not symmetric and must be fed a random permutation).
+#' Aggregate a set of neighbour vectors
 #'
 #' @param x See Usage.
-#' @return A single numeric vector.
-#' @references Hamilton, W. L. et al. (2017).
+#' @return Permutation-invariant summary vector.
 #' @export
 #' @examples
 #' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .gsage_rows(x = x)
+#' res <- .gsageemd_mat(x = x)
 #' res
-.gsage_rows <- function(x) {
-  # k.mat's contract: accept a list of vectors OR a matrix, yield rows.
-  if (is.matrix(x) || is.data.frame(x)) {
-    m <- as.matrix(x)
-    storage.mode(m) <- "double"
-    return(lapply(seq_len(nrow(m)), function(i) as.numeric(m[i, ])))
-  }
-  lapply(x, as.numeric)
+.gsageemd_mat <- function(x) {
+  # k.mat's contract: accept a list of vectors OR a matrix, yield a matrix.
+  m <- if (is.matrix(x)) x else if (is.data.frame(x)) as.matrix(x) else
+    do.call(rbind, lapply(x, as.numeric))
+  storage.mode(m) <- "double"
+  m
 }
 
 #' morie_gsageemd_aggregate
 #'
-#' A step of the gsageemd_native implementation. Called by \code{morie_gsageemd_layer}.
+#' A step of the gsageemd_native implementation. Called by \code{sage_layer}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param vectors Passed to \code{.gsage_rows}.
+#' @param vectors Passed to \code{.gsageemd_mat}.
 #' @param how One of \code{"max_pool"}, \code{"mean"}. Defaults to \code{"mean"}.
 #' @param W Optional; may be \code{NULL}. A matrix; indexed by row and column.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_gsageemd_aggregate(V)
+#' @keywords internal
 morie_gsageemd_aggregate <- function(vectors, how = "mean", W = NULL) {
-  if (!(how %in% .GSAGE_AGGS))
+  if (!(how %in% .GSAGEEMD_AGGS))
     stop(paste0("gsageemd: aggregator must be one of ",
-                paste(.GSAGE_AGGS, collapse = ", "), ", got ",
-                deparse(how)))
-  V <- .gsage_rows(vectors)
-  if (length(V) == 0L) stop("gsageemd: no neighbours to aggregate")
-  d <- length(V[[1L]])
-  if (how == "mean") {
-    out <- rep(0.0, d)
-    for (i in seq_along(V)) for (f in seq_len(d)) out[f] <- out[f] + V[[i]][f]
-    out / length(V)
-  } else if (how == "max_pool") {
-    if (is.null(W)) {
-      out <- rep(-Inf, d)
-      for (i in seq_along(V)) for (f in seq_len(d))
-        if (V[[i]][f] > out[f]) out[f] <- V[[i]][f]
-      out
-    } else {
-      H <- matrix(0, nrow = length(V), ncol = nrow(W))
-      for (i in seq_along(V)) {
-        for (o in seq_len(nrow(W))) {
-          s <- 0.0
-          for (j in seq_len(d)) s <- s + W[o, j] * V[[i]][j]
-          H[i, o] <- max(0.0, s)
-        }
+                paste(.GSAGEEMD_AGGS, collapse = ", "),
+                ", got '", how, "'"))
+  V <- .gsageemd_mat(vectors)
+  if (nrow(V) == 0L)
+    stop("gsageemd: no neighbours to aggregate")
+  d <- ncol(V)
+  if (how == "mean") return(colSums(V) / nrow(V))
+  if (how == "max_pool") {
+    if (is.null(W)) return(apply(V, 2, max))
+    W <- as.matrix(W)
+    storage.mode(W) <- "double"
+    H <- matrix(0, nrow = nrow(V), ncol = nrow(W))
+    for (i in seq_len(nrow(V)))
+      for (o in seq_len(nrow(W))) {
+        s <- 0
+        for (j in seq_len(d)) s <- s + W[o, j] * V[i, j]
+        H[i, o] <- max(0, s)
       }
-      apply(H, 2L, max)
-    }
+    apply(H, 2, max)
   } else {
-    V[[1L]]
+    # lstm_order: pass through the first row in given order, mirroring
+    # the Python helper's "patch" that returns the unaggregated view.
+    V[1, ]
   }
 }
 
-#' Fixed-size neighbour sample
+#' Sample a fixed number of neighbours with replacement
 #'
-#' Samples with replacement when the neighbourhood is smaller than the
-#' budget; the budget is what bounds the per-batch cost regardless of
-#' node degree.
-#'
-#' @param adj Adjacency list keyed by node.
-#' @param v Node whose neighbours are sampled.
-#' @param size Sample size.
-#' @param rng Generator environment (shared with the Python arm).
-#' @return Integer vector of neighbour ids.
-#' @references Hamilton, W. L. et al. (2017).
+#' @param adj Adjacency list keyed by 0-based node id (character keys).
+#' @param v Node to sample around.
+#' @param size Number of neighbours to draw.
+#' @param rng Optional generator environment (defaults to .ghc_rng(0)).
+#' @return Vector of sampled neighbour ids.
 #' @export
-morie_gsageemd_sample <- function(adj, v, size, rng) {
-  nb <- sort(as.integer(adj[[as.character(v)]]))
+#' @examples
+#' rng <- morie:::.ghc_rng(0L)
+#' adj <- list(`0` = c(`1` = 1, `3` = 1), `1` = c(`0` = 1, `2` = 1),
+#'             `2` = c(`1` = 1, `3` = 1), `3` = c(`2` = 1, `0` = 1))
+#' nb <- sample_neighbors(adj, v = 0, size = 2, rng)
+#' length(nb) == 2L
+#' @keywords internal
+sample_neighbors <- function(adj, v, size, rng = NULL) {
+  if (is.null(rng)) rng <- .ghc_rng(0L)
+  nb <- sort(as.integer(names(adj[[as.character(v)]])))
   if (length(nb) == 0L)
     stop(paste0("gsageemd: node ", v, " has no neighbours"))
   s <- as.integer(size)
-  if (s < 1L) stop("gsageemd: the sample size must be at least 1")
-  vapply(seq_len(s), function(.)
-    nb[(floor(.ghc_unif(rng, 1L) * length(nb)) %% length(nb)) + 1L],
-    integer(1))
+  if (s < 1L)
+    stop("gsageemd: the sample size must be at least 1")
+  kk <- as.integer(.ghc_unif(rng, s) * length(nb))
+  kk[kk == length(nb)] <- length(nb) - 1L
+  nb[kk + 1L]
 }
 
-#' .gsage_norm
-#'
-#' A step of the gsageemd_native implementation. Called by \code{morie_gsageemd_layer}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param v Numeric; combined arithmetically in the body.
-#' @return One of two values, depending on the branch taken.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .gsage_norm(v = x)
-#' res
-.gsage_norm <- function(v) {
+#' @keywords internal
+#' @noRd
+.gs_norm <- function(v) {
   n <- sqrt(sum(v * v))
-  if (n <= .GSAGE_EPS) v else v / n
+  if (n <= .GSAGEEMD_EPS) v else v / n
 }
 
-#' One GraphSAGE layer
-#'
-#' Algorithm 1 of Hamilton et al. 2017 for a single depth: aggregate
-#' the neighbourhood, concatenate with the node's own previous
-#' representation, linear transform with ReLU, optionally L2-normalise.
+#' One depth of Algorithm 1
 #'
 #' @param H Node feature matrix (n x d).
-#' @param adj Adjacency list keyed by node id.
-#' @param W Linear transform (n_out x (d + d_neigh)).
+#' @param adj Adjacency list keyed by character "0..n-1".
+#' @param W Weight matrix.
 #' @param how Aggregator.
-#' @param sizes Optional fixed sample size per node.
-#' @param rng Generator environment.
-#' @param normalize L2-normalise the output.
-#' @return Matrix of new node representations.
-#' @references Hamilton, W. L. et al. (2017).
+#' @param sizes Optional sample size per node.
+#' @param rng Optional generator environment.
+#' @param normalize If TRUE, L2-normalise the output.
+#' @return Updated node feature matrix.
 #' @export
-morie_gsageemd_layer <- function(H, adj, W, how = "mean", sizes = NULL,
-                                 rng = NULL, normalize = TRUE) {
+#' @examples
+#' set.seed(1)
+#' adj <- list(`0` = c(`1` = 1, `3` = 1), `1` = c(`0` = 1, `2` = 1),
+#'             `2` = c(`1` = 1, `3` = 1), `3` = c(`2` = 1, `0` = 1))
+#' H <- matrix(runif(12), 4, 3)
+#' W <- matrix(rnorm(6 * 4, 0, 0.3), nrow = 4, ncol = 6)
+#' Z <- sage_layer(H, adj, W, how = "mean")
+#' dim(Z)
+#' @keywords internal
+sage_layer <- function(H, adj, W, how = "mean", sizes = NULL,
+                       rng = NULL, normalize = TRUE) {
+  H <- as.matrix(H)
+  storage.mode(H) <- "double"
+  W <- as.matrix(W)
+  storage.mode(W) <- "double"
   n <- nrow(H)
-  out <- matrix(0.0, nrow = n, ncol = nrow(W))
+  out <- matrix(0, nrow = n, ncol = nrow(W))
   for (v in seq_len(n) - 1L) {
     if (is.null(sizes)) {
-      nb <- sort(as.integer(adj[[as.character(v)]]))
+      nk <- sort(as.integer(names(adj[[as.character(v)]])))
     } else {
-      nb <- morie_gsageemd_sample(adj, v, sizes, rng)
+      nk <- sample_neighbors(adj, v, sizes, rng)
     }
-    if (length(nb) == 0L)
+    if (length(nk) == 0L)
       stop(paste0("gsageemd: node ", v, " has no neighbours"))
-    agg <- morie_gsageemd_aggregate(lapply(nb + 1L, function(u) H[u, ]),
-                                    how = how, W = W)
-    cat <- c(H[v + 1L, ], agg)
+    agg <- morie_gsageemd_aggregate(H[nk + 1L, , drop = FALSE], how)
+    cat <- c(as.numeric(H[v + 1L, ]), agg)
     if (ncol(W) != length(cat))
-      stop(paste0("gsageemd: W expects ", ncol(W), " inputs but the ",
-                  "concatenation is ", length(cat)))
-    z <- pmax(0.0, as.numeric(W %*% cat))
-    out[v + 1L, ] <- if (normalize) .gsage_norm(z) else z
+      stop(paste0("gsageemd: W expects ", ncol(W),
+                  " inputs but the concatenation is ", length(cat)))
+    z <- rep(0, nrow(W))
+    for (o in seq_len(nrow(W))) {
+      s <- 0
+      for (j in seq_along(cat)) s <- s + W[o, j] * cat[j]
+      z[o] <- max(0, s)
+    }
+    out[v + 1L, ] <- if (normalize) .gs_norm(z) else z
   }
   out
 }
 
-#' K-hop GraphSAGE embedding
+#' Inductive node embeddings by K GraphSAGE layers
 #'
-#' Applies K layers, so K hops. Parameters are shared across nodes,
-#' which is what lets an unseen node be embedded by a forward pass
-#' rather than by retraining.
+#' GraphSAGE: embeddings for nodes the model has never seen. Inductive
+#' Representation Learning on Large Graphs, NeurIPS 2017 (arXiv:1706.02216) --
+#' Algorithm 1, the three aggregators and Supervised Classification with Graph
+#' Convolutional Networks, ICLR 2017 (arXiv:1609.02907) -- the transductive
+#' convolution that GraphSAGE extends. Native implementation mirroring Python
+#' morie.fn.gsageemd exactly: the same mean, max_pool and lstm_order aggregators,
+#' the same fixed-size neighbour sampling with replacement when the budget
+#' exceeds the neighbourhood, the same L2 normalisation after each layer, and the
+#' same unsupervised graph-based loss.
 #'
-#' @param features Node feature matrix (n x d).
+#' @param features Node feature matrix.
 #' @param adj Adjacency list.
 #' @param Ws List of weight matrices, one per layer.
 #' @param how Aggregator.
-#' @param sizes Optional fixed sample size per layer.
-#' @param seed Integer seed for the shared generator.
-#' @return A list with \code{embeddings}, \code{depth},
-#'   \code{aggregator}, \code{per_batch_bound}, \code{method} and
-#'   \code{note}.
-#' @references Hamilton, W. L. et al. (2017).
+#' @param sizes Optional per-layer sample size.
+#' @param seed Seed for the shared generator.
+#' @return List with estimate, embeddings, depth, aggregator,
+#'   per_batch_bound, method, note.
 #' @export
-morie_gsageemd_embed <- function(features, adj, Ws, how = "mean",
-                                 sizes = NULL, seed = 0) {
-  e <- .ghc_rng(as.integer(seed))
-  H <- apply(features, c(1L, 2L), as.numeric)
+#' @examples
+#' set.seed(1)
+#' adj <- list(`0` = c(`1` = 1, `3` = 1), `1` = c(`0` = 1, `2` = 1),
+#'             `2` = c(`1` = 1, `3` = 1), `3` = c(`2` = 1, `0` = 1))
+#' feats <- matrix(runif(12), 4, 3)
+#' W1 <- matrix(rnorm(6 * 4, 0, 0.3), 4, 6)
+#' W2 <- matrix(rnorm(8 * 2, 0, 0.3), 2, 8)
+#' emb <- morie_gsageemd_embed(feats, adj, list(W1, W2), how = "mean", seed = 1)
+#' dim(emb)
+#' @keywords internal
+morie_gsageemd_embed <- function(features, adj, Ws, how = "mean", sizes = NULL,
+                  seed = 0) {
+  rng <- .ghc_rng(as.integer(seed))
+  H <- as.matrix(features)
+  storage.mode(H) <- "double"
   for (W in Ws) {
-    H <- morie_gsageemd_layer(H, adj, W, how = how, sizes = sizes, rng = e,
-                              normalize = TRUE)
+    H <- sage_layer(H, adj, W, how, sizes, rng)
   }
   list(estimate = H, embeddings = H, depth = length(Ws),
        aggregator = how,
-       per_batch_bound = if (is.null(sizes)) NULL else
-         as.integer(sizes) ^ length(Ws),
+       per_batch_bound = if (is.null(sizes)) NULL
+                         else as.integer(sizes)^length(Ws),
        method = "GraphSAGE; Hamilton, Ying & Leskovec (2017) Algorithm 1",
-       note = paste0("parameters are shared across nodes, so an ",
-                     "unseen node is embedded by a forward pass -- ",
-                     "inductive, not transductive"))
+       note = "parameters are shared across nodes, so an unseen node is embedded by a forward pass -- inductive, not transductive")
 }
 
-#' Unsupervised graph-based loss
-#'
-#' Sec. 3.2 of Hamilton et al. 2017: nearby nodes agree, sampled
-#' negatives disagree.
-#'
-#' @param z_u Anchor embedding.
-#' @param z_v Positive (neighbour) embedding.
+#' Sec. 3.2 unsupervised graph-based loss
+#' @param z_u Source embedding.
+#' @param z_v Positive neighbour embedding.
 #' @param z_negatives List of negative embeddings.
-#' @return Scalar loss.
-#' @references Hamilton, W. L. et al. (2017).
+#' @return Scalar negative log-likelihood.
 #' @export
-morie_gsageemd_loss <- function(z_u, z_v, z_negatives) {
-  dot <- function(a, b) sum(a * b)
-  pos <- log(max(1.0 / (1.0 + exp(-dot(z_u, z_v))), .GSAGE_EPS))
-  neg <- sum(vapply(z_negatives, function(zn)
-    log(max(1.0 / (1.0 + exp(dot(z_u, zn))), .GSAGE_EPS)),
-    numeric(1)))
+#' @examples
+#' unsupervised_loss(z_u = c(1, 2, 3, 4, 5, 6, 7, 8), z_v = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   z_negatives = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
+unsupervised_loss <- function(z_u, z_v, z_negatives) {
+  z_u <- as.numeric(z_u)
+  z_v <- as.numeric(z_v)
+  pos <- log(pmax(1 / (1 + exp(-sum(z_u * z_v))), .GSAGEEMD_EPS))
+  neg <- 0
+  for (z_n in z_negatives) {
+    z_n <- as.numeric(z_n)
+    neg <- neg + log(pmax(1 / (1 + exp(sum(z_u * z_n))), .GSAGEEMD_EPS))
+  }
   -(pos + neg)
 }
 
+#' @rdname morie_gsageemd_embed
+#' @export
+graphsage <- morie_gsageemd_embed
+
 # house entry point: the package exports one morie_<module>
-morie_gsageemd <- morie_gsageemd_aggregate
+morie_gsageemd <- morie_gsageemd_embed

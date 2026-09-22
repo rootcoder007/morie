@@ -37,6 +37,15 @@
 #' @return A list with \code{replicates}, \code{mean}, \code{se},
 #' \code{influence_curve_se}, \code{ratio}, \code{note}.
 #' @export
+#' @examples
+#' if (requireNamespace("ranger", quietly = TRUE)) {
+#'   set.seed(1)
+#'   d <- rnorm(50, 1)
+#'   r <- morie_tlboot(d, estimator = function(s) mean(unlist(s)),
+#'                     B = 200L, method = "naive")
+#'   str(r, max.level = 1)
+#' }
+#' @keywords internal
 morie_tlboot <- function(data, estimator, B = 200L, seed = 0L,
                          method = c("naive", "targeted",
                                     "multiplier"),
@@ -70,10 +79,14 @@ morie_tlboot <- function(data, estimator, B = 200L, seed = 0L,
   }
 
   if (method == "targeted") {
+    # In this mode the first argument is P_star_sampler, not a frame:
+    # it is called with the rng. Bind it to its own name so the call
+    # does not read as utils::data().
+    sampler <- data
     e <- .ghc_rng(as.numeric(seed))
     out <- numeric(B)
     for (b in seq_len(B)) {
-      out[b] <- as.numeric(estimator(data(e)))
+      out[b] <- as.numeric(estimator(sampler(e)))
     }
     m <- mean(out)
     if (B > 1L)
@@ -130,6 +143,14 @@ morie_tlboot <- function(data, estimator, B = 200L, seed = 0L,
 #' @param seed Passed to \code{morie_tlboot}. Defaults to \code{0L}.
 #' @return The value of \code{morie_tlboot}.
 #' @export
+#' @examples
+#' if (requireNamespace("ranger", quietly = TRUE)) {
+#'   set.seed(1)
+#'   d <- rnorm(50, 1)
+#'   r <- naive_bootstrap(d, estimator = function(s) mean(unlist(s)), B = 200L)
+#'   str(r, max.level = 1)
+#' }
+#' @keywords internal
 naive_bootstrap <- function(data, estimator, B = 200L, seed = 0L) {
   morie_tlboot(data = data, estimator = estimator, B = B,
                seed = seed, method = "naive")
@@ -147,6 +168,15 @@ naive_bootstrap <- function(data, estimator, B = 200L, seed = 0L) {
 #' @param seed Passed to \code{morie_tlboot}. Defaults to \code{0L}.
 #' @return The value of \code{morie_tlboot}.
 #' @export
+#' @examples
+#' if (requireNamespace("ranger", quietly = TRUE)) {
+#'   set.seed(2)
+#'   sampler <- function(e) rnorm(30, morie:::.ghc_norm(e, 1L))
+#'   r <- targeted_bootstrap(sampler, estimator = function(s) mean(s),
+#'                           B = 100L)
+#'   str(r, max.level = 1)
+#' }
+#' @keywords internal
 targeted_bootstrap <- function(P_star_sampler, estimator, B = 200L,
                                seed = 0L) {
   if (!is.function(P_star_sampler)) {
@@ -190,6 +220,10 @@ targeted_bootstrap <- function(P_star_sampler, estimator, B = 200L,
 #' @param seed Passed to \code{morie_tlboot}. Defaults to \code{0L}.
 #' @return The value of \code{morie_tlboot}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' multiplier_bootstrap(V)
+#' @keywords internal
 multiplier_bootstrap <- function(ic, B = 1000L, seed = 0L) {
   morie_tlboot(data = NULL, estimator = NULL, B = B,
                seed = seed, method = "multiplier", ic = ic)
@@ -208,6 +242,12 @@ multiplier_bootstrap <- function(ic, B = 1000L, seed = 0L) {
 #' @return A list with \code{mean}, \code{se}, \code{mean_error}, \code{se_ratio},
 #' \code{first_two_moments_ok}, \code{note}.
 #' @export
+#' @examples
+#' set.seed(3)
+#' reps <- rnorm(500, 2, 0.3)
+#' r <- moment_check(reps, target_mean = 2, target_se = 0.3)
+#' str(r, max.level = 1)
+#' @keywords internal
 moment_check <- function(replicates, target_mean, target_se,
                          tol = 0.15) {
   v <- as.numeric(replicates)

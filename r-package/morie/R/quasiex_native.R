@@ -121,7 +121,14 @@ morie_did <- function(data, outcome, unit, time, treatment_time,
 #'
 #' @param x A \code{morie_did} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `invisible`.
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie:::print.morie_did(D)
+#' @references
+#'   Borusyak, Jaravel & Spiess (2024) REStud 91(6).
 #' @export
+#' @keywords internal
 print.morie_did <- function(x, ...) {
   cat("Difference-in-differences --", x$method, "\n")
   cat(sprintf("  ATT: %.4f  (SE %.4f)  95%% CI [%.4f, %.4f]  p = %.3g\n",
@@ -163,6 +170,7 @@ print.morie_did <- function(x, ...) {
 #' @references Staiger & Stock (1997); Anderson & Rubin (1949);
 #'   Stock & Yogo (2005).
 #' @examples
+#' set.seed(1)
 #' n <- 200
 #' z <- rnorm(n); u <- rnorm(n)
 #' d <- z + 0.5 * u + rnorm(n)
@@ -235,7 +243,21 @@ morie_iv_2sls <- function(data, outcome, endogenous, instruments,
 #'
 #' @param x A \code{morie_iv} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `invisible`.
+#' @examples
+#' set.seed(1)
+#' n <- 200
+#' z <- rnorm(n)
+#' xend <- 0.8 * z + rnorm(n)
+#' yy <- 1 + 2 * xend + rnorm(n)
+#' df <- data.frame(y = yy, x = xend, z = z)
+#' fit <- morie_iv_2sls(df, "y", "x", "z")
+#' print(fit)
+#' @references
+#'   Staiger & Stock (1997); Anderson & Rubin (1949);
+#'   Stock & Yogo (2005).
 #' @export
+#' @keywords internal
 print.morie_iv <- function(x, ...) {
   cat("Two-stage least squares --", x$method, "\n")
   if (x$weak_instruments) {
@@ -349,7 +371,21 @@ morie_rdd <- function(data, outcome, running, cutoff = 0,
 #'
 #' @param x A \code{morie_rdd} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `invisible`.
+#' @examples
+#' set.seed(1)
+#' n <- 500
+#' xr <- runif(n, -1, 1)
+#' tr <- as.integer(xr >= 0)
+#' yy <- 0.5 * xr + 0.4 * tr + rnorm(n) * 0.3
+#' df <- data.frame(y = yy, x = xr)
+#' fit <- morie_rdd(df, "y", "x", cutoff = 0)
+#' print(fit)
+#' @references
+#'   Imbens & Kalyanaraman (2012); Calonico, Cattaneo &
+#'   Titiunik (2014); McCrary (2008).
 #' @export
+#' @keywords internal
 print.morie_rdd <- function(x, ...) {
   cat(sprintf("Regression discontinuity (%s), bandwidth = %.4f\n",
               x$kind, x$bandwidth))

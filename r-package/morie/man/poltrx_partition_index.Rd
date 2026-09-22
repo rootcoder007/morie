@@ -22,6 +22,10 @@ A list with \code{epsilon}, \code{interval} and
 \description{
 Returns the binary string, which IS the address in the tree.
 }
+\examples{
+poltrx_partition_index(0.3, level = 2)
+}
 \references{
 Muller, P. & Quintana, F. A. (2004). Sec. 2.3.
 }
+\keyword{internal}

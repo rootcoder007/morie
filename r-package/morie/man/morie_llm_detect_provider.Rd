@@ -2,16 +2,18 @@
 % Please edit documentation in R/llm.R
 \name{morie_llm_detect_provider}
 \alias{morie_llm_detect_provider}
-\title{morie_llm_detect_provider}
+\title{Detect the active LLM provider}
 \usage{
 morie_llm_detect_provider()
 }
 \value{
-A character value.
+Character scalar provider key: ollama / gemini / api / openai / local.
 }
 \description{
-A step of the llm implementation. Called by \code{morie_llm_agent_available},
-\code{morie_llm_ask}, \code{morie_llm_ask_multi}.
-See the file header for the source the module follows.
-follows.
+Detect the active LLM provider
+}
+\examples{
+old <- options(morie.llm.ollama_cached = FALSE)
+morie_llm_detect_provider()
+options(old)
 }

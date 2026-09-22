@@ -26,3 +26,7 @@ A step of the regmlm_native implementation. Called by \code{morie_regmlm}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+level1_stack(preds = list(a = 1, b = 2), y = 5L)
+}
+\keyword{internal}

@@ -56,9 +56,7 @@ cached HTML.}
 Invisibly, a data frame of newly-recorded
 (case_number, field, verified_value) translations.
 
-The same value as \code{\link{morie_siu_translate}}: invisibly,
-the updated SIU \code{data.frame} (cached translations written to
-\code{cache_dir}).
+The input, invisibly.
 }
 \description{
 For SIU cases whose parser-emitted text isn't in the reader's
@@ -108,6 +106,11 @@ csv <- morie_fetch_siu(cache_dir = file.path(tempdir(), "morie", "siu"))
 morie_siu_translate(target_lang = "en",
                     cache_dir = file.path(tempdir(), "morie", "siu"))
 \dontshow{\}) # examplesIf}
+\donttest{
+# Needs the SIU HTML cache plus a configured LLM provider (e.g. local
+# ollama); translates the French-only directors reports field-by-field.
+res <- morie_siu_translate_fr_to_en(case_numbers = "26-OCI-168")
+}
 \donttest{
 # Needs the SIU HTML cache plus a configured LLM provider (e.g. local
 # ollama); translates the French-only directors reports field-by-field.

@@ -11,13 +11,13 @@
 
 \item{measure}{One of \code{"rKL"}, \code{"rND"}.}
 
-\item{step}{Passed to \code{.cutoffs}.}
+\item{step}{Passed to \code{cutoffs}.}
 }
 \value{
 The value of \code{tot}, as built in the body.
 }
 \description{
-A step of the fairRC_native implementation. Called by \code{.measure}, \code{.normalizer}.
+A step of the fairRC_native implementation. Called by \code{.measure}, \code{normalizer}.
 See the file header for the source the module follows.
 source it follows.
 }

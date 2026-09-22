@@ -31,7 +31,11 @@ the Python arm's safeguard against log(0). For \code{n = 1L} the
 release is a scalar; for \code{n > 1L} it is a numeric vector of
 length \code{n}, matching the Python list payload.
 }
+\examples{
+morie_zfmech(value = c(1, 2, 3, 4, 5, 6, 7, 8), sensitivity = 5L, rho = 0.5)
+}
 \references{
 Bun, M. & Steinke, T. (2016). Proposition 1.6;
 Dwork et al. (2006) for the Gaussian mechanism itself.
 }
+\keyword{internal}

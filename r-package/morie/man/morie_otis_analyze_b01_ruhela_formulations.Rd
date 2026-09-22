@@ -25,8 +25,6 @@ OTIS b01 Ruhela formulations (full DLRM)
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
-otis_b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
 morie_otis_analyze_b01_ruhela_formulations(otis_b01)
 }
 }

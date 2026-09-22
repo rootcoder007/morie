@@ -26,7 +26,11 @@ the Dirichlet process. The form is forced by Proposition 4: a
 size-biased permutation admits the residual allocation form with
 independent factors if and only if the betas take this form.
 }
+\examples{
+morie_pmpfit(alpha = 0.5, theta = 0.5, K = 5L)
+}
 \references{
 Pitman, J. & Yor, M. (1997). The Annals of
 Probability, 25(2), 855-900.
 }
+\keyword{internal}

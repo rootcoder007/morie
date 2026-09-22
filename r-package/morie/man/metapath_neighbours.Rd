@@ -21,3 +21,8 @@ A step of the hetgnn_native implementation. Called by \code{han_forward}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+metapath_neighbours(edges = c(1, 2, 3, 4, 5, 6, 7, 8), types = c("a", "b", "c"),
+  metapath = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

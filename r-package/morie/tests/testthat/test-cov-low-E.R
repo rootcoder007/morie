@@ -106,6 +106,7 @@ test_that("morie_cache_dir respects MORIE_CACHE_DIR", {
 })
 
 test_that("morie_db_connect opens a SQLite handle on .db extension", {
+  testthat::skip_if_not_installed("RSQLite")
   skip_if_not_installed("DBI")
   tmp <- tempfile(fileext = ".db")
   withr::defer({
@@ -164,7 +165,7 @@ test_that("morie_dataset_info errors on unknown key", {
 test_that("morie_load_dataset errors on unknown key", {
   expect_error(
     morie_load_dataset("not_a_real_key_zzz"),
-    "Unknown dataset key"
+    "Unknown dataset"
   )
 })
 

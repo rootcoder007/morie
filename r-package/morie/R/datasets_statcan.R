@@ -25,7 +25,7 @@
 
 #' Statistics Canada CCJS cube registry (curated subset)
 #'
-#' Phase 3DDD3. Bundled 10-row registry of high-traffic
+#' Phase 3DDD3. Included 10-row registry of high-traffic
 #' Canadian Centre for Justice and Community Safety Statistics
 #' cubes published through StatCan CODR -- the federal-level
 #' complement to morie's provincial loaders (Ontario OTIS, BC VPD,
@@ -33,21 +33,25 @@
 #'
 #' @return A `data.frame` with `product_id`, `cube_title_en`,
 #'   `dimensions`, `frequency`.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' cubes <- morie_datasets_statcan_ccjs_cubes()
 #' subset(cubes, grepl("homicide", cube_title_en, ignore.case = TRUE))
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_statcan_ccjs_cubes <- function() {
-  path <- system.file("extdata", "statcan_ccjs_cubes.csv",
-                      package = "morie")
+  path <- .morie_extdata("statcan_ccjs_cubes.csv")
   if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
     path <- system.file("extdata", "statcan_ccjs_cubes.csv", package = "rmoriedata")
   }
-  if (!nzchar(path))
+  if (!nzchar(path)) {
     stop("bundled StatCan CCJS cube registry missing", call. = FALSE)
-  utils::read.csv(path, stringsAsFactors = FALSE,
-                  check.names = FALSE,
-                  colClasses = c(product_id = "integer"))
+  }
+  utils::read.csv(path,
+    stringsAsFactors = FALSE,
+    check.names = FALSE,
+    colClasses = c(product_id = "integer")
+  )
 }
 
 #' Fetch a StatCan cube's metadata (dimensions + members) via WDS
@@ -69,21 +73,31 @@ morie_datasets_statcan_ccjs_cubes <- function() {
 #' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_statcan_cube_metadata <- function(product_id,
-                                                   timeout_s = 60L) {
+                                                 timeout_s = 60L) {
   body <- list(list(productId = as.integer(product_id)))
   r <- .morie_dataset_http_post_json(
     sprintf("%s/getCubeMetadata", .MORIE_STATCAN_WDS_BASE),
-    body = body, timeout_s = timeout_s)
-  if (!is.null(r$message) && is.character(r$message))
+    body = body, timeout_s = timeout_s
+  )
+  if (!is.null(r$message) && is.character(r$message)) {
     stop("StatCan WDS: ", r$message[[1L]], call. = FALSE)
-  if (length(r) == 0L || !is.list(r[[1]]) || is.null(r[[1]]$status))
+  }
+  if (length(r) == 0L || !is.list(r[[1]]) || is.null(r[[1]]$status)) {
     stop("StatCan WDS returned empty or malformed response ",
-         "(the service intermittently rejects cloud IPs)", call. = FALSE)
-  if (r[[1]]$status != "SUCCESS")
-    stop(sprintf("StatCan WDS status=%s: %s",
-                  r[[1]]$status,
-                  paste(unlist(r[[1]]), collapse = "; ")),
-          call. = FALSE)
+      "(the service intermittently rejects cloud IPs)",
+      call. = FALSE
+    )
+  }
+  if (r[[1]]$status != "SUCCESS") {
+    stop(
+      sprintf(
+        "StatCan WDS status=%s: %s",
+        r[[1]]$status,
+        paste(unlist(r[[1]]), collapse = "; ")
+      ),
+      call. = FALSE
+    )
+  }
   r[[1]]
 }
 
@@ -102,45 +116,60 @@ morie_datasets_statcan_cube_metadata <- function(product_id,
 #'   `decimals`, `status`, `symbol`, `scalar_factor`.
 #' @examples
 #' \donttest{
-#' df <- morie_datasets_statcan_vectors(c(109502878L, 109502879L),
-#'                                         n_periods = 3)
-#' nrow(df)  # ~6
+#' df <- try(morie_datasets_statcan_vectors(c(109502878L, 109502879L),
+#'   n_periods = 3
+#' ))
+#' if (!inherits(df, "try-error")) nrow(df) # ~6
 #' }
 #' @export
 morie_datasets_statcan_vectors <- function(vector_ids,
-                                             n_periods = 5L,
-                                             timeout_s = 60L) {
+                                           n_periods = 5L,
+                                           timeout_s = 60L) {
+  # Accept both notations: bare ids and Statistics Canada's standard
+  # "v"-prefixed vector ids (e.g. "v41690973").
   ids <- suppressWarnings(as.integer(sub("^[vV]", "", as.character(vector_ids))))
-  if (anyNA(ids))
-    stop("vector_ids must be numeric or 'v'-prefixed numeric IDs", call. = FALSE)
+  if (anyNA(ids)) {
+    stop("morie_datasets_statcan_vectors: vector_ids must be numeric ",
+      "or 'v'-prefixed StatCan vector ids (e.g. 'v41690973').",
+      call. = FALSE
+    )
+  }
   body <- lapply(ids, function(v) {
     list(vectorId = v, latestN = as.integer(n_periods))
   })
   r <- .morie_dataset_http_post_json(
-    sprintf("%s/getDataFromVectorsAndLatestNPeriods",
-             .MORIE_STATCAN_WDS_BASE),
-    body = body, timeout_s = timeout_s)
+    sprintf(
+      "%s/getDataFromVectorsAndLatestNPeriods",
+      .MORIE_STATCAN_WDS_BASE
+    ),
+    body = body, timeout_s = timeout_s
+  )
   rows <- list()
   for (e in r) {
+    if (!is.list(e)) next
     if (is.null(e$status) || e$status != "SUCCESS") next
     o <- e$object
     if (is.null(o$vectorDataPoint)) next
     for (p in o$vectorDataPoint) {
       rows[[length(rows) + 1L]] <- data.frame(
-        vector_id     = o$vectorId,
-        coordinate    = o$coordinate %||% NA_character_,
-        ref_period    = p$refPer,
-        value         = if (is.null(p$value)) NA_real_ else as.numeric(p$value),
-        decimals      = p$decimals %||% NA_integer_,
-        status        = p$statusCode %||% NA_character_,
-        symbol        = p$symbolCode %||% NA_character_,
+        vector_id = o$vectorId,
+        coordinate = o$coordinate %||% NA_character_,
+        ref_period = p$refPer,
+        value = if (is.null(p$value)) NA_real_ else as.numeric(p$value),
+        decimals = p$decimals %||% NA_integer_,
+        status = p$statusCode %||% NA_character_,
+        symbol = p$symbolCode %||% NA_character_,
         scalar_factor = p$scalarFactorCode %||% NA_integer_,
-        stringsAsFactors = FALSE)
+        stringsAsFactors = FALSE
+      )
     }
   }
-  if (length(rows) == 0L)
-    return(data.frame(vector_id = integer(0), coordinate = character(0),
-                       ref_period = character(0), value = numeric(0)))
+  if (length(rows) == 0L) {
+    return(data.frame(
+      vector_id = integer(0), coordinate = character(0),
+      ref_period = character(0), value = numeric(0)
+    ))
+  }
   out <- do.call(rbind, rows)
   rownames(out) <- NULL
   out
@@ -157,22 +186,28 @@ morie_datasets_statcan_vectors <- function(vector_ids,
 #' @param language One of `"en"` or `"fr"`.
 #' @return Character URL string.
 #' @examples
+#' # \donttest: needs an internet connection, so it is not run by
+#' # default; it runs fine for a user who has one.
 #' \donttest{
-#' url <- morie_datasets_statcan_full_csv_url(35100177)
-#' # download.file(url, "ccjs_177.zip")
+#' url <- try(morie_datasets_statcan_full_csv_url(35100177))
+#' # if (!inherits(url, "try-error")) download.file(url, "ccjs_177.zip")
 #' }
 #' @export
 morie_datasets_statcan_full_csv_url <- function(product_id,
-                                                  language = c("en", "fr")) {
+                                                language = c("en", "fr")) {
   language <- match.arg(language)
-  url <- sprintf("%s/getFullTableDownloadCSV/%d/%s",
-                  .MORIE_STATCAN_WDS_BASE,
-                  as.integer(product_id), language)
+  url <- sprintf(
+    "%s/getFullTableDownloadCSV/%d/%s",
+    .MORIE_STATCAN_WDS_BASE,
+    as.integer(product_id), language
+  )
   r <- .morie_dataset_http_json(url)
   status <- if (is.list(r)) r$status %||% "NULL" else "NULL"
-  if (!is.list(r) || is.null(r$status) || r$status != "SUCCESS")
+  if (!is.list(r) || is.null(r$status) || r$status != "SUCCESS") {
     stop(sprintf("StatCan WDS getFullTableDownloadCSV status=%s", status),
-          call. = FALSE)
+      call. = FALSE
+    )
+  }
   r$object
 }
 

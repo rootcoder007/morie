@@ -20,3 +20,8 @@ A list with \code{W}, \code{magnitude}, \code{undetermined_bins},
 the ratio is undefined; returning zero there is a choice, and it is
 flagged so a caller can tell it apart from a genuine zero response.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+WienerFreq(V, V)
+}
+\keyword{internal}

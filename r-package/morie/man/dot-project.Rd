@@ -2,24 +2,24 @@
 % Please edit documentation in R/tmldyn_native.R
 \name{.project}
 \alias{.project}
-\title{Least-squares projection of values onto the basis V at the eval rows}
+\title{.project}
 \usage{
 .project(values, basis, n, ridge)
 }
 \arguments{
 \item{values}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{basis}{Optional; may be \code{NULL}. A matrix; the body checks with \code{is.matrix}.}
+\item{basis}{Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.}
 
 \item{n}{Accepted by the signature and not used anywhere in the body.}
 
-\item{ridge}{Passed to \code{.tmldyn_lstsq}.}
+\item{ridge}{Numeric; combined arithmetically in the body.}
 }
 \value{
 A vector, from \code{as.numeric}.
 }
 \description{
-A step of the tmldyn_native implementation. Called by \code{.sequential_blips}.
+A step of the tmldyn_native implementation. Called by \code{sequential_blips}.
 See the file header for the source the module follows.
 source it follows.
 }

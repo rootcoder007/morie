@@ -25,10 +25,14 @@
 .morie_rg_dft <- function(x) {
   n <- length(x)
   idx <- seq_len(n) - 1L
-  re <- vapply(idx, function(k) .morie_fsum(x * cos(-2 * pi * idx * k / n)),
-               numeric(1))
-  im <- vapply(idx, function(k) .morie_fsum(x * sin(-2 * pi * idx * k / n)),
-               numeric(1))
+  re <- vapply(
+    idx, function(k) .morie_fsum(x * cos(-2 * pi * idx * k / n)),
+    numeric(1)
+  )
+  im <- vapply(
+    idx, function(k) .morie_fsum(x * sin(-2 * pi * idx * k / n)),
+    numeric(1)
+  )
   list(re = re, im = im)
 }
 
@@ -63,15 +67,21 @@
 #' @export
 .morie_rg_unwrap <- function(phase) {
   out <- numeric(length(phase))
-  if (!length(phase)) return(out)
+  if (!length(phase)) {
+    return(out)
+  }
   out[1] <- phase[1]
   off <- 0
   for (i in seq_along(phase)[-1]) {
     d <- phase[i] - phase[i - 1L]
-    while (d > pi) { off <- off - 2 * pi
-    d <- d - 2 * pi }
-    while (d < -pi) { off <- off + 2 * pi
-    d <- d + 2 * pi }
+    while (d > pi) {
+      off <- off - 2 * pi
+      d <- d - 2 * pi
+    }
+    while (d < -pi) {
+      off <- off + 2 * pi
+      d <- d + 2 * pi
+    }
     out[i] <- phase[i] + off
   }
   out
@@ -87,6 +97,10 @@
 #' @return A list with \code{cepstrum}, \code{log_magnitude}, \code{n}, \code{zero_bins},
 #' \code{invertible}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Cepstrum(V)
+#' @keywords internal
 Cepstrum <- function(x) {
   # real cepstrum: c(n) = IDFT(log|DFT(x)|).  Keeps only the magnitude,
   # so it discards the phase and is NOT invertible -- the whole
@@ -99,10 +113,12 @@ Cepstrum <- function(x) {
   mags <- sqrt(f$re^2 + f$im^2)
   floor_ <- 1e-300
   logmag <- log(pmax(mags, floor_))
-  list(cepstrum = .morie_rg_idft_re(logmag, numeric(n)),
-       log_magnitude = logmag, n = n, zero_bins = sum(mags <= floor_),
-       invertible = FALSE,
-       method = "real cepstrum; contrast Rangayyan (2024) eq. (4.64)")
+  list(
+    cepstrum = .morie_rg_idft_re(logmag, numeric(n)),
+    log_magnitude = logmag, n = n, zero_bins = sum(mags <= floor_),
+    invertible = FALSE,
+    method = "real cepstrum; contrast Rangayyan (2024) eq. (4.64)"
+  )
 }
 
 #' Eqs (4.63)-(4.64): the inverse transform of log|X| + j angle(X)
@@ -116,6 +132,10 @@ Cepstrum <- function(x) {
 #' \code{detrended_phase}, \code{linear_phase_removed}, \code{delay_removed}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' CCepstrum(V)
+#' @keywords internal
 CCepstrum <- function(x) {
   # eqs (4.63)-(4.64): the inverse transform of log|X| + j angle(X).
   # The phase is unwrapped over k = 0..N/2 and mirrored by odd symmetry;
@@ -126,9 +146,12 @@ CCepstrum <- function(x) {
   f <- .morie_rg_dft(xs)
   mags <- sqrt(f$re^2 + f$im^2)
   floor_ <- 1e-300
-  if (any(mags <= floor_))
-    stop(sprintf("the complex log needs a nonzero spectrum at every bin; %d bins vanish",
-                 sum(mags <= floor_)))
+  if (any(mags <= floor_)) {
+    stop(sprintf(
+      "the complex log needs a nonzero spectrum at every bin; %d bins vanish",
+      sum(mags <= floor_)
+    ))
+  }
   half <- n %/% 2L
   raw <- atan2(f$im, f$re)
   up <- .morie_rg_unwrap(raw[seq_len(half + 1L)])
@@ -136,10 +159,12 @@ CCepstrum <- function(x) {
   slope <- if (half > 0L) r_int * pi / half else 0
   up <- up - slope * (seq_len(half + 1L) - 1L)
   detr <- c(up, -up[(n - (half + 1L):(n - 1L)) + 1L])
-  list(cepstrum = .morie_rg_idft_re(log(mags), detr),
-       log_magnitude = log(mags), phase = detr, detrended_phase = detr,
-       linear_phase_removed = slope, delay_removed = r_int, n = n,
-       method = "Rangayyan (2024) eqs. (4.63)-(4.64)")
+  list(
+    cepstrum = .morie_rg_idft_re(log(mags), detr),
+    log_magnitude = log(mags), phase = detr, detrended_phase = detr,
+    linear_phase_removed = slope, delay_removed = r_int, n = n,
+    method = "Rangayyan (2024) eqs. (4.63)-(4.64)"
+  )
 }
 
 #' Eqs (4.63)-(4.64) with the unwrapping diagnostics the book calls "an
@@ -150,6 +175,10 @@ CCepstrum <- function(x) {
 #' @param x Passed to \code{CCepstrum}.
 #' @return The value of \code{r}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' CCepX(V)
+#' @keywords internal
 CCepX <- function(x) {
   # eqs (4.63)-(4.64) with the unwrapping diagnostics the book calls "an
   # important consideration": a 2-pi jump at nearly every bin means the
@@ -160,8 +189,10 @@ CCepX <- function(x) {
   r$wrapped_phase <- wrapped
   r$phase_jumps <- jumps
   r$well_conditioned <- jumps < length(wrapped) %/% 4L
-  r$method <- paste("Rangayyan (2024) eqs. (4.63)-(4.64), with the",
-                    "phase-unwrapping diagnostics")
+  r$method <- paste(
+    "Rangayyan (2024) eqs. (4.63)-(4.64), with the",
+    "phase-unwrapping diagnostics"
+  )
   r
 }
 
@@ -174,6 +205,10 @@ CCepX <- function(x) {
 #' @return A list with \code{y}, \code{x}, \code{p}, \code{n}, \code{separable_by_log},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' MultModel(V, V)
+#' @keywords internal
 MultModel <- function(x, p) {
   # eq (4.58): y(t) = x(t) p(t), the model a multiplicative homomorphic
   # system addresses.
@@ -181,9 +216,11 @@ MultModel <- function(x, p) {
   ps <- as.numeric(p)
   if (length(xs) != length(ps)) stop("x and p must have the same length")
   if (!length(xs)) stop("need at least one sample")
-  list(y = xs * ps, x = xs, p = ps, n = length(xs),
-       separable_by_log = all(xs != 0) && all(ps != 0),
-       method = "Rangayyan (2024) eq. (4.58)")
+  list(
+    y = xs * ps, x = xs, p = ps, n = length(xs),
+    separable_by_log = all(xs != 0) && all(ps != 0),
+    method = "Rangayyan (2024) eq. (4.58)"
+  )
 }
 
 #' Eq (4.59): log\[y\] = log\[x\] + log\[p\], for x != 0 and p != 0.  The
@@ -208,15 +245,20 @@ LogSep <- function(x, p) {
   ps <- as.numeric(p)
   if (length(xs) != length(ps)) stop("x and p must have the same length")
   if (!length(xs)) stop("need at least one sample")
-  if (any(xs <= 0) || any(ps <= 0))
-    stop("eq. (4.59) needs x(t) != 0 and p(t) != 0; the real logarithm ",
-         "also needs them positive")
+  if (any(xs <= 0) || any(ps <= 0)) {
+    stop(
+      "eq. (4.59) needs x(t) != 0 and p(t) != 0; the real logarithm ",
+      "also needs them positive"
+    )
+  }
   lhs <- log(xs * ps)
   rhs <- log(xs) + log(ps)
   gap <- max(abs(lhs - rhs))
-  list(log_y = lhs, log_x = log(xs), log_p = log(ps), sum = rhs,
-       max_difference = gap, additive = gap <= 1e-12 * (1 + max(abs(lhs))),
-       method = "Rangayyan (2024) eq. (4.59)")
+  list(
+    log_y = lhs, log_x = log(xs), log_p = log(ps), sum = rhs,
+    max_difference = gap, additive = gap <= 1e-12 * (1 + max(abs(lhs))),
+    method = "Rangayyan (2024) eq. (4.59)"
+  )
 }
 
 #' Eq (4.61): y(t) = x(t) * h(t), the model homomorphic DEconvolution
@@ -227,16 +269,23 @@ LogSep <- function(x, p) {
 #' @param h Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{y}, \code{n}, \code{n_x}, \code{n_h}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' ConvModel(V, V)
+#' @keywords internal
 ConvModel <- function(x, h) {
   # eq (4.61): y(t) = x(t) * h(t), the model homomorphic DEconvolution
   # addresses.
   xs <- as.numeric(x)
   hs <- as.numeric(h)
-  if (!length(xs) || !length(hs))
+  if (!length(xs) || !length(hs)) {
     stop("both signals need at least one sample")
+  }
   y <- .morie_rg_conv(xs, hs)
-  list(y = y, n = length(y), n_x = length(xs), n_h = length(hs),
-       method = "Rangayyan (2024) eq. (4.61)")
+  list(
+    y = y, n = length(y), n_x = length(xs), n_h = length(hs),
+    method = "Rangayyan (2024) eq. (4.61)"
+  )
 }
 
 #' Eq (4.66): y_hat = x_hat + h_hat.  The residual is not exactly zero
@@ -250,14 +299,19 @@ ConvModel <- function(x, h) {
 #' \code{residual}, \code{max_residual}, \code{relative_residual},
 #' \code{truncation_note}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' CCepSum(V, V)
+#' @keywords internal
 CCepSum <- function(x, h) {
   # eq (4.66): y_hat = x_hat + h_hat.  The residual is not exactly zero
   # because the cepstrum is of infinite duration (eq 4.73) and the DFT
   # truncates it; the size of the residual is the useful number.
   xs <- as.numeric(x)
   hs <- as.numeric(h)
-  if (!length(xs) || !length(hs))
+  if (!length(xs) || !length(hs)) {
     stop("both signals need at least one sample")
+  }
   n <- length(xs) + length(hs) - 1L
   y <- .morie_rg_conv(xs, hs)
   cy <- CCepstrum(y)$cepstrum
@@ -266,13 +320,17 @@ CCepSum <- function(x, h) {
   resid <- cy - cx - ch
   scale <- max(abs(cy))
   if (scale == 0) scale <- 1
-  list(y = y, cepstrum_y = cy, cepstrum_x = cx, cepstrum_h = ch,
-       residual = resid, max_residual = max(abs(resid)),
-       relative_residual = max(abs(resid)) / scale,
-       truncation_note = paste("the complex cepstrum is of infinite",
-                               "duration (eq. 4.73), so a finite DFT",
-                               "leaves a residual"),
-       method = "Rangayyan (2024) eqs. (4.65)-(4.66)")
+  list(
+    y = y, cepstrum_y = cy, cepstrum_x = cx, cepstrum_h = ch,
+    residual = resid, max_residual = max(abs(resid)),
+    relative_residual = max(abs(resid)) / scale,
+    truncation_note = paste(
+      "the complex cepstrum is of infinite",
+      "duration (eq. 4.73), so a finite DFT",
+      "leaves a residual"
+    ),
+    method = "Rangayyan (2024) eqs. (4.65)-(4.66)"
+  )
 }
 
 #' RatZ
@@ -290,6 +348,7 @@ CCepSum <- function(x, h) {
 #' @param z Optional; may be \code{NULL}. Coerced to complex by the body, with \code{as.complex}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @keywords internal
 RatZ <- function(gain, r, zeros_in, zeros_out, poles_in, poles_out,
                  z = NULL) {
   # The rational form whose complex log the book expands at eq (4.68).
@@ -307,17 +366,24 @@ RatZ <- function(gain, r, zeros_in, zeros_out, poles_in, poles_out,
   }
   for (nm in c("zeros_out", "poles_out")) {
     g <- if (nm == "zeros_out") bo else do_
-    if (any(Mod(g) >= 1))
-      stop(nm, " holds the RECIPROCAL of a root outside the unit circle, ",
-           "so it must itself be inside")
+    if (any(Mod(g) >= 1)) {
+      stop(
+        nm, " holds the RECIPROCAL of a root outside the unit circle, ",
+        "so it must itself be inside"
+      )
+    }
   }
-  out <- list(gain = as.complex(gain), r = as.integer(r), zeros_in = ai,
-              zeros_out = bo, poles_in = ci, poles_out = do_,
-              minimum_phase = !length(bo) && !length(do_),
-              maximum_phase = !length(ai) && !length(ci),
-              method = "Rangayyan (2024) the rational form expanded at eq. (4.68)")
-  if (is.null(z)) { out$X <- NULL
-  return(out) }
+  out <- list(
+    gain = as.complex(gain), r = as.integer(r), zeros_in = ai,
+    zeros_out = bo, poles_in = ci, poles_out = do_,
+    minimum_phase = !length(bo) && !length(do_),
+    maximum_phase = !length(ai) && !length(ci),
+    method = "Rangayyan (2024) the rational form expanded at eq. (4.68)"
+  )
+  if (is.null(z)) {
+    out$X <- NULL
+    return(out)
+  }
   pts <- as.complex(z)
   if (any(pts == 0)) stop("z = 0 is a pole of the z^-1 factors")
   vals <- vapply(pts, function(zv) {
@@ -352,6 +418,11 @@ RatZ <- function(gain, r, zeros_in, zeros_out, poles_in, poles_out,
 #' \code{negative}, \code{causal}, \code{anticausal}, \code{infinite_duration},
 #' \code{nmax}, \code{method}.
 #' @export
+#' @examples
+#' CCepClosed(gain = 5L, zeros_in = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   zeros_out = c(1, 2, 3, 4, 5, 6, 7, 8), poles_in = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   poles_out = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 CCepClosed <- function(gain, zeros_in, zeros_out, poles_in, poles_out,
                        nmax = 32) {
   # eq (4.72): x_hat(0) = log|A|; for n > 0, -sum a^n/n + sum c^n/n; for
@@ -368,17 +439,21 @@ CCepClosed <- function(gain, zeros_in, zeros_out, poles_in, poles_out,
   g <- Mod(as.complex(gain))
   if (g <= 0) stop("the gain must be nonzero")
   ns <- seq_len(k)
-  pos <- vapply(ns, function(n)
-    sum(-(ai^n) / n) + sum((ci^n) / n), complex(1))
-  neg <- vapply(ns, function(n)
-    sum((bo^n) / n) - sum((do_^n) / n), complex(1))
-  list(cepstrum = c(rev(neg), as.complex(log(g)), pos),
-       quefrency = (-k):k, c0 = log(g), positive = pos,
-       negative = rev(neg),
-       causal = !length(bo) && !length(do_),
-       anticausal = !length(ai) && !length(ci),
-       infinite_duration = TRUE, nmax = k,
-       method = "Rangayyan (2024) eq. (4.72)")
+  pos <- vapply(ns, function(n) {
+    sum(-(ai^n) / n) + sum((ci^n) / n)
+  }, complex(1))
+  neg <- vapply(ns, function(n) {
+    sum((bo^n) / n) - sum((do_^n) / n)
+  }, complex(1))
+  list(
+    cepstrum = c(rev(neg), as.complex(log(g)), pos),
+    quefrency = (-k):k, c0 = log(g), positive = pos,
+    negative = rev(neg),
+    causal = !length(bo) && !length(do_),
+    anticausal = !length(ai) && !length(ci),
+    infinite_duration = TRUE, nmax = k,
+    method = "Rangayyan (2024) eq. (4.72)"
+  )
 }
 
 #' CCepDecay
@@ -397,14 +472,20 @@ CCepClosed <- function(gain, zeros_in, zeros_out, poles_in, poles_out,
 #' @return A list with \code{alpha}, \code{K}, \code{bound}, \code{quefrency},
 #' \code{decays_at_least_as_one_over_n}, \code{near_unit_circle}, \code{method}.
 #' @export
+#' @examples
+#' CCepDecay(zeros_in = c(1, 2, 3, 4, 5, 6, 7, 8), zeros_out = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   poles_in = c(1, 2, 3, 4, 5, 6, 7, 8), poles_out = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 CCepDecay <- function(zeros_in, zeros_out, poles_in, poles_out, nmax = 32,
                       constant = NULL) {
   # eq (4.73): |x_hat(n)| < K |alpha^n / n| with alpha the largest root
   # modulus.  The geometric factor is what makes liftering work; a root
   # close to the unit circle sends alpha towards 1, leaving only the 1/n
   # decay and a cepstrum a short lifter will truncate badly.
-  roots <- c(as.complex(zeros_in), as.complex(zeros_out),
-             as.complex(poles_in), as.complex(poles_out))
+  roots <- c(
+    as.complex(zeros_in), as.complex(zeros_out),
+    as.complex(poles_in), as.complex(poles_out)
+  )
   if (!length(roots)) stop("need at least one root")
   alpha <- max(Mod(roots))
   if (alpha <= 0) stop("all roots are at the origin; the bound is vacuous")
@@ -412,14 +493,16 @@ CCepDecay <- function(zeros_in, zeros_out, poles_in, poles_out, nmax = 32,
   if (k < 1L) stop("nmax must be positive")
   kk <- if (is.null(constant)) length(roots) else as.numeric(constant)
   ns <- seq_len(k)
-  list(alpha = alpha, K = kk, bound = kk * alpha^ns / ns, quefrency = ns,
-       decays_at_least_as_one_over_n = TRUE, near_unit_circle = alpha > 0.95,
-       method = "Rangayyan (2024) eq. (4.73)")
+  list(
+    alpha = alpha, K = kk, bound = kk * alpha^ns / ns, quefrency = ns,
+    decays_at_least_as_one_over_n = TRUE, near_unit_circle = alpha > 0.95,
+    method = "Rangayyan (2024) eq. (4.73)"
+  )
 }
 
 #' Eqs (4.79)-(4.80): the complex cepstrum of a wavelet plus one echo
 #'
-#' is the wavelet\'s cepstrum plus impulses at n0 and its multiples,
+#' is the wavelet's cepstrum plus impulses at n0 and its multiples,
 #' amplitudes (-1)^(k+1) a^k / k.  The expansion needs |a| < 1, which
 #' the book states and which is enforced.
 #'
@@ -430,6 +513,9 @@ CCepDecay <- function(zeros_in, zeros_out, poles_in, poles_out, nmax = 32,
 #' \code{as.numeric}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' EchoSeries(0.5, 8, terms = 4)
+#' @keywords internal
 EchoSeries <- function(a, n0, terms = 10, omega = NULL) {
   # eqs (4.79)-(4.80): the complex cepstrum of a wavelet plus one echo
   # is the wavelet's cepstrum plus impulses at n0 and its multiples,
@@ -444,17 +530,25 @@ EchoSeries <- function(a, n0, terms = 10, omega = NULL) {
   i <- seq_len(k)
   amps <- (-1)^(i + 1) * av^i / i
   lags <- i * d
-  out <- list(amplitudes = amps, quefrencies = lags, a = av, n0 = d,
-              terms = k, first_peak = d,
-              method = "Rangayyan (2024) eqs. (4.79)-(4.80)")
+  out <- list(
+    amplitudes = amps, quefrencies = lags, a = av, n0 = d,
+    terms = k, first_peak = d,
+    method = "Rangayyan (2024) eqs. (4.79)-(4.80)"
+  )
   if (!is.null(omega)) {
     ws <- as.numeric(omega)
-    vals <- vapply(ws, function(w)
-      sum(amps * complex(real = cos(-w * lags), imaginary = sin(-w * lags))),
-      complex(1))
-    exact <- vapply(ws, function(w)
-      log(1 + av * complex(real = cos(-w * d), imaginary = sin(-w * d))),
-      complex(1))
+    vals <- vapply(
+      ws, function(w) {
+        sum(amps * complex(real = cos(-w * lags), imaginary = sin(-w * lags)))
+      },
+      complex(1)
+    )
+    exact <- vapply(
+      ws, function(w) {
+        log(1 + av * complex(real = cos(-w * d), imaginary = sin(-w * d)))
+      },
+      complex(1)
+    )
     one <- length(ws) == 1L
     out$series <- if (one) vals[[1]] else vals
     out$exact <- if (one) exact[[1]] else exact
@@ -475,6 +569,10 @@ EchoSeries <- function(a, n0, terms = 10, omega = NULL) {
 #' \code{squared}, \code{zero_bins}, \code{retains_phase}, \code{additivity_exact},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' PCepstrum(V)
+#' @keywords internal
 PCepstrum <- function(x, square = TRUE) {
   # eq (4.81).  The book notes the final squaring is omitted in some
   # definitions, and that it matters: WITH the square, eq (4.82) holds
@@ -488,18 +586,20 @@ PCepstrum <- function(x, square = TRUE) {
   floor_ <- 1e-300
   logp <- log(pmax(p2, floor_))
   base <- .morie_rg_idft_re(logp, numeric(n))
-  list(cepstrum = if (square) base^2 else base, unsquared = base,
-       log_power = logp, n = n, squared = isTRUE(square),
-       zero_bins = sum(p2 <= floor_), retains_phase = FALSE,
-       additivity_exact = !isTRUE(square),
-       method = "Rangayyan (2024) eq. (4.81)")
+  list(
+    cepstrum = if (square) base^2 else base, unsquared = base,
+    log_power = logp, n = n, squared = isTRUE(square),
+    zero_bins = sum(p2 <= floor_), retains_phase = FALSE,
+    additivity_exact = !isTRUE(square),
+    method = "Rangayyan (2024) eq. (4.81)"
+  )
 }
 
 #' Eq (4.82): the power cepstra of a convolution add, exactly when the
 #'
 #' squaring of eq (4.81) is omitted.  square defaults to FALSE here for
-#' that reason; TRUE reproduces the book\'s definition and shows how
-#' large the neglected cross-term is on the caller\'s own data.
+#' that reason; TRUE reproduces the book's definition and shows how
+#' large the neglected cross-term is on the caller's own data.
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param h Coerced to numeric by the body, with \code{as.numeric}.
@@ -508,6 +608,10 @@ PCepstrum <- function(x, square = TRUE) {
 #' \code{residual}, \code{max_residual}, \code{relative_residual}, \code{squared},
 #' \code{exact}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' PCepSum(V, V)
+#' @keywords internal
 PCepSum <- function(x, h, square = FALSE) {
   # eq (4.82): the power cepstra of a convolution add, exactly when the
   # squaring of eq (4.81) is omitted.  square defaults to FALSE here for
@@ -515,8 +619,9 @@ PCepSum <- function(x, h, square = FALSE) {
   # large the neglected cross-term is on the caller's own data.
   xs <- as.numeric(x)
   hs <- as.numeric(h)
-  if (!length(xs) || !length(hs))
+  if (!length(xs) || !length(hs)) {
     stop("both signals need at least one sample")
+  }
   n <- length(xs) + length(hs) - 1L
   y <- .morie_rg_conv(xs, hs)
   cy <- PCepstrum(y, square = square)$cepstrum
@@ -525,11 +630,13 @@ PCepSum <- function(x, h, square = FALSE) {
   resid <- cy - cx - ch
   scale <- max(abs(cy))
   if (scale == 0) scale <- 1
-  list(y = y, cepstrum_y = cy, cepstrum_x = cx, cepstrum_h = ch,
-       residual = resid, max_residual = max(abs(resid)),
-       relative_residual = max(abs(resid)) / scale,
-       squared = isTRUE(square), exact = !isTRUE(square),
-       method = "Rangayyan (2024) eq. (4.82)")
+  list(
+    y = y, cepstrum_y = cy, cepstrum_x = cx, cepstrum_h = ch,
+    residual = resid, max_residual = max(abs(resid)),
+    relative_residual = max(abs(resid)) / scale,
+    squared = isTRUE(square), exact = !isTRUE(square),
+    method = "Rangayyan (2024) eq. (4.82)"
+  )
 }
 
 #' Eq (4.83): y_hat_p(n) = \[y_hat(n) + y_hat(-n)\]^2 -- the squared even
@@ -562,11 +669,13 @@ PCepRel <- function(x) {
   resid <- folded - direct
   scale <- max(abs(direct))
   if (scale == 0) scale <- 1
-  list(from_complex = folded, direct = direct, residual = resid,
-       max_residual = max(abs(resid)),
-       relative_residual = max(abs(resid)) / scale,
-       phase_lost = TRUE, n = n,
-       method = "Rangayyan (2024) eq. (4.83)")
+  list(
+    from_complex = folded, direct = direct, residual = resid,
+    max_residual = max(abs(resid)),
+    relative_residual = max(abs(resid)) / scale,
+    phase_lost = TRUE, n = n,
+    method = "Rangayyan (2024) eq. (4.83)"
+  )
 }
 
 #' Section 4.7.3: the vocal tract lives at LOW quefrency, the glottal
@@ -583,6 +692,10 @@ PCepRel <- function(x) {
 #' @return A list with \code{liftered}, \code{n}, \code{low}, \code{high}, \code{keep},
 #' \code{symmetric}, \code{n_kept}, \code{energy_kept}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Lifter(V)
+#' @keywords internal
 Lifter <- function(cepstrum_values, low = NULL, high = NULL, keep = "low") {
   # Section 4.7.3: the vocal tract lives at LOW quefrency, the glottal
   # excitation at the pitch period and its multiples.  The window is
@@ -597,21 +710,28 @@ Lifter <- function(cepstrum_values, low = NULL, high = NULL, keep = "low") {
   hi <- if (is.null(high)) half else as.integer(high)
   if (lo < 0L || hi < 0L) stop("quefrency limits must be nonnegative")
   if (hi < lo) stop("high must not be below low")
-  if (!keep %in% c("low", "high", "band"))
+  if (!keep %in% c("low", "high", "band")) {
     stop("keep must be 'low', 'high' or 'band'")
+  }
   idx <- seq_len(n) - 1L
   q <- abs(ifelse(idx <= half, idx, idx - n))
-  take <- switch(keep, low = q <= hi, high = q >= lo, band = q >= lo & q <= hi)
+  take <- switch(keep,
+    low = q <= hi,
+    high = q >= lo,
+    band = q >= lo & q <= hi
+  )
   out <- ifelse(take, cc, 0)
-  list(liftered = out, n = n, low = lo, high = hi, keep = keep,
-       symmetric = TRUE, n_kept = sum(take),
-       energy_kept = if (any(cc != 0)) sum(out^2) / sum(cc^2) else 0,
-       method = "Rangayyan (2024) Section 4.7.3 (cepstral liftering)")
+  list(
+    liftered = out, n = n, low = lo, high = hi, keep = keep,
+    symmetric = TRUE, n_kept = sum(take),
+    energy_kept = if (any(cc != 0)) sum(out^2) / sum(cc^2) else 0,
+    method = "Rangayyan (2024) Section 4.7.3 (cepstral liftering)"
+  )
 }
 
 #' Section 4.7.1, Figure 4.23: log -> linear filter -> exp.  The signal
 #'
-#' must be strictly positive (eq 4.59\'s side condition); a signal that
+#' must be strictly positive (eq 4.59's side condition); a signal that
 #' crosses zero needs the complex-log route of HomDeconv.  Rejected
 #' rather than clipped, since clipping changes the factorization.
 #'
@@ -621,6 +741,9 @@ Lifter <- function(cepstrum_values, low = NULL, high = NULL, keep = "low") {
 #' @return A list with \code{y}, \code{log_domain}, \code{log_input}, \code{cutoff},
 #' \code{keep}, \code{n}, \code{stages}, \code{method}.
 #' @export
+#' @examples
+#' HomoFilt(y = c(1, 2, 3, 4, 5, 6, 7, 8), cutoff = 0.5)
+#' @keywords internal
 HomoFilt <- function(y, cutoff, keep = "low") {
   # Section 4.7.1, Figure 4.23: log -> linear filter -> exp.  The signal
   # must be strictly positive (eq 4.59's side condition); a signal that
@@ -629,9 +752,12 @@ HomoFilt <- function(y, cutoff, keep = "low") {
   ys <- as.numeric(y)
   n <- length(ys)
   if (n < 4L) stop("need at least four samples")
-  if (any(ys <= 0))
-    stop("the multiplicative homomorphic filter needs a strictly positive ",
-         "signal (eq. 4.59); use the complex-cepstrum route for signed data")
+  if (any(ys <= 0)) {
+    stop(
+      "the multiplicative homomorphic filter needs a strictly positive ",
+      "signal (eq. 4.59); use the complex-cepstrum route for signed data"
+    )
+  }
   if (!keep %in% c("low", "high")) stop("keep must be 'low' or 'high'")
   k <- as.integer(cutoff)
   if (k < 0L || k > n %/% 2L) stop("cutoff must lie in 0..N/2")
@@ -641,9 +767,11 @@ HomoFilt <- function(y, cutoff, keep = "low") {
   band <- pmin(idx, n - idx)
   take <- if (keep == "low") band <= k else band > k
   filtered <- .morie_rg_idft_re(ifelse(take, f$re, 0), ifelse(take, f$im, 0))
-  list(y = exp(filtered), log_domain = filtered, log_input = ly, cutoff = k,
-       keep = keep, n = n, stages = c("log", "linear filter", "exp"),
-       method = "Rangayyan (2024) Section 4.7.1, eqs. (4.58)-(4.60)")
+  list(
+    y = exp(filtered), log_domain = filtered, log_input = ly, cutoff = k,
+    keep = keep, n = n, stages = c("log", "linear filter", "exp"),
+    method = "Rangayyan (2024) Section 4.7.1, eqs. (4.58)-(4.60)"
+  )
 }
 
 #' Section 4.7.2: DFT -> complex log -> IDFT -> lifter -> DFT -> exp ->
@@ -658,6 +786,9 @@ HomoFilt <- function(y, cutoff, keep = "low") {
 #' \code{keep}, \code{n}, \code{linear_phase_removed}, \code{imaginary_energy},
 #' \code{stages}, \code{method}.
 #' @export
+#' @examples
+#' HomDeconv(y = c(1, 2, 3, 4, 5, 6, 7, 8), cutoff = 0.5)
+#' @keywords internal
 HomDeconv <- function(y, cutoff, keep = "low") {
   # Section 4.7.2: DFT -> complex log -> IDFT -> lifter -> DFT -> exp ->
   # IDFT.  Low quefrency estimates the slowly varying component (the
@@ -671,13 +802,17 @@ HomDeconv <- function(y, cutoff, keep = "low") {
   m <- exp(f$re)
   out_re <- m * cos(f$im)
   out_im <- m * sin(f$im)
-  list(y = .morie_rg_idft_re(out_re, out_im), cepstrum = cep$cepstrum,
-       liftered = lf, cutoff = as.integer(cutoff), keep = keep, n = n,
-       linear_phase_removed = cep$linear_phase_removed,
-       imaginary_energy = sum(out_im^2),
-       stages = c("DFT", "complex log", "IDFT", "lifter", "DFT", "exp",
-                  "IDFT"),
-       method = "Rangayyan (2024) Section 4.7.2, eqs. (4.61)-(4.66)")
+  list(
+    y = .morie_rg_idft_re(out_re, out_im), cepstrum = cep$cepstrum,
+    liftered = lf, cutoff = as.integer(cutoff), keep = keep, n = n,
+    linear_phase_removed = cep$linear_phase_removed,
+    imaginary_energy = sum(out_im^2),
+    stages = c(
+      "DFT", "complex log", "IDFT", "lifter", "DFT", "exp",
+      "IDFT"
+    ),
+    method = "Rangayyan (2024) Section 4.7.2, eqs. (4.61)-(4.66)"
+  )
 }
 
 #' Section 4.7.3.  The two lifters must PARTITION the quefrency axis
@@ -694,6 +829,9 @@ HomDeconv <- function(y, cutoff, keep = "low") {
 #' \code{reconstruction}, \code{reconstruction_error}, \code{relative_error},
 #' \code{separation_premise}, \code{method}.
 #' @export
+#' @examples
+#' HomPred(y = c(1, 2, 3, 4, 5, 6, 7, 8), cutoff = 1)
+#' @keywords internal
 HomPred <- function(y, cutoff) {
   # Section 4.7.3.  The two lifters must PARTITION the quefrency axis
   # (|q| <= k and |q| > k); sharing the cutoff keeps q = 0 and q = k in
@@ -709,17 +847,22 @@ HomPred <- function(y, cutoff) {
   low <- HomDeconv(ys, k, keep = "low")$y
   high <- HomDeconv(ys, k + 1L, keep = "high")$y
   idx <- seq_len(n) - 1L
-  conv <- vapply(idx, function(i)
-    .morie_fsum(low * high[((i - idx) %% n) + 1L]), numeric(1))
+  conv <- vapply(idx, function(i) {
+    .morie_fsum(low * high[((i - idx) %% n) + 1L])
+  }, numeric(1))
   err <- max(abs(conv - ys))
   scale <- max(abs(ys))
   if (scale == 0) scale <- 1
-  list(low_time = low, high_time = high, cutoff = k, n = n,
-       reconstruction = conv, reconstruction_error = err,
-       relative_error = err / scale,
-       separation_premise = paste("eq. (4.66) assumes the two components",
-                                  "occupy non-overlapping quefrency ranges"),
-       method = "Rangayyan (2024) Section 4.7.3")
+  list(
+    low_time = low, high_time = high, cutoff = k, n = n,
+    reconstruction = conv, reconstruction_error = err,
+    relative_error = err / scale,
+    separation_premise = paste(
+      "eq. (4.66) assumes the two components",
+      "occupy non-overlapping quefrency ranges"
+    ),
+    method = "Rangayyan (2024) Section 4.7.3"
+  )
 }
 
 #' VocalTract
@@ -739,6 +882,13 @@ HomPred <- function(y, cutoff) {
 #' \code{pitch_period}, \code{pitch_hz}, \code{peak_quefrency}, \code{fs}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' \donttest{
+#' set.seed(1)
+#' y <- sin(2 * pi * 120 * (0:1599) / 8000) + rnorm(1600) * 0.01
+#' VocalTract(y, fs = 8000)
+#' }
+#' @keywords internal
 VocalTract <- function(y, fs, pitch_period = NULL, cutoff = NULL,
                        pitch_range = c(0.002, 0.020)) {
   # Section 4.7.3: the vocal tract contributes only below the pitch
@@ -755,9 +905,12 @@ VocalTract <- function(y, fs, pitch_period = NULL, cutoff = NULL,
   half <- n %/% 2L
   lo_q <- max(1L, as.integer(pitch_range[1] * fsv))
   hi_q <- min(half, as.integer(pitch_range[2] * fsv) + 1L)
-  if (hi_q <= lo_q)
-    stop("the pitch range holds no quefrency bins at this sampling rate ",
-         "and record length")
+  if (hi_q <= lo_q) {
+    stop(
+      "the pitch range holds no quefrency bins at this sampling rate ",
+      "and record length"
+    )
+  }
   if (is.null(pitch_period)) {
     rng <- lo_q:(hi_q - 1L)
     peak <- rng[which.max(abs(cep[rng + 1L]))]
@@ -769,11 +922,15 @@ VocalTract <- function(y, fs, pitch_period = NULL, cutoff = NULL,
   k <- if (!is.null(cutoff)) as.integer(cutoff) else max(1L, as.integer(0.9 * peak))
   if (k >= half) stop("the lifter cutoff exceeds the usable quefrency range")
   est <- HomDeconv(ys, k, keep = "low")
-  list(response = est$y, cepstrum = cep, cutoff = k, pitch_period = period,
-       pitch_hz = if (period > 0) 1 / period else NULL,
-       peak_quefrency = peak, fs = fsv, n = n,
-       method = paste("Rangayyan (2024) Section 4.7.3 (vocal-tract",
-                      "response by low-time liftering)"))
+  list(
+    response = est$y, cepstrum = cep, cutoff = k, pitch_period = period,
+    pitch_hz = if (period > 0) 1 / period else NULL,
+    peak_quefrency = peak, fs = fsv, n = n,
+    method = paste(
+      "Rangayyan (2024) Section 4.7.3 (vocal-tract",
+      "response by low-time liftering)"
+    )
+  )
 }
 
 #' Section 4.7.2, after eq (4.73): a minimum-phase signal has a CAUSAL
@@ -787,6 +944,10 @@ VocalTract <- function(y, fs, pitch_period = NULL, cutoff = NULL,
 #' @return A list with \code{y}, \code{cepstrum}, \code{n}, \code{magnitude_error},
 #' \code{magnitude_preserved}, \code{energy_front_loaded}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' MinPhase(V)
+#' @keywords internal
 MinPhase <- function(x) {
   # Section 4.7.2, after eq (4.73): a minimum-phase signal has a CAUSAL
   # complex cepstrum.  Folding the anticausal half onto the causal half
@@ -814,12 +975,16 @@ MinPhase <- function(x) {
   gap <- max(abs(src - dst))
   scale <- max(src)
   if (scale == 0) scale <- 1
-  list(y = y, cepstrum = cc, n = n, magnitude_error = gap,
-       magnitude_preserved = gap <= 1e-6 * scale,
-       energy_front_loaded = sum(y[seq_len(half)]^2) >=
-         sum(y[(half + 1L):n]^2),
-       method = paste("Rangayyan (2024) Section 4.7.2 (minimum-phase",
-                      "correspondent from the causal cepstrum)"))
+  list(
+    y = y, cepstrum = cc, n = n, magnitude_error = gap,
+    magnitude_preserved = gap <= 1e-6 * scale,
+    energy_front_loaded = sum(y[seq_len(half)]^2) >=
+      sum(y[(half + 1L):n]^2),
+    method = paste(
+      "Rangayyan (2024) Section 4.7.2 (minimum-phase",
+      "correspondent from the causal cepstrum)"
+    )
+  )
 }
 
 #' Mfcc
@@ -838,6 +1003,9 @@ MinPhase <- function(x) {
 #' \code{edges}, \code{n_filters}, \code{n_coeffs}, \code{fs}, \code{empty_filters},
 #' \code{c0_is_energy}, \code{method}.
 #' @export
+#' @examples
+#' Mfcc(x = c(1, 2, 3, 4, 5, 6, 7, 8), fs = 5L)
+#' @keywords internal
 Mfcc <- function(x, fs, n_filters = 26, n_coeffs = 13, fmin = 0,
                  fmax = NULL) {
   # Davis and Mermelstein (1980): power spectrum, triangular mel
@@ -856,8 +1024,9 @@ Mfcc <- function(x, fs, n_filters = 26, n_coeffs = 13, fmin = 0,
   if (nf < 2L) stop("need at least two mel filters")
   if (nc < 1L || nc > nf) stop("n_coeffs must lie in 1..n_filters")
   top <- if (is.null(fmax)) fsv / 2 else as.numeric(fmax)
-  if (!(fmin >= 0 && fmin < top && top <= fsv / 2))
+  if (!(fmin >= 0 && fmin < top && top <= fsv / 2)) {
     stop("need 0 <= fmin < fmax <= fs/2")
+  }
   f <- .morie_rg_dft(xs)
   half <- n %/% 2L + 1L
   power <- (f$re[seq_len(half)]^2 + f$im[seq_len(half)]^2) / n
@@ -878,14 +1047,19 @@ Mfcc <- function(x, fs, n_filters = 26, n_coeffs = 13, fmin = 0,
   }, numeric(1))
   floor_ <- 1e-300
   logs <- log(pmax(energies, floor_))
-  coeffs <- vapply(0:(nc - 1L), function(k)
-    .morie_fsum(logs * cos(pi * k * (seq_len(nf) - 0.5) / nf)), numeric(1))
-  list(mfcc = coeffs, filterbank_energies = energies, log_energies = logs,
-       edges = edges, n_filters = nf, n_coeffs = nc, fs = fsv,
-       empty_filters = sum(energies <= floor_), c0_is_energy = TRUE,
-       method = paste("Davis and Mermelstein (1980); a mel-warped,",
-                      "DCT-based cepstrum, not the homomorphic cepstrum",
-                      "of Rangayyan (2024) Section 4.7"))
+  coeffs <- vapply(0:(nc - 1L), function(k) {
+    .morie_fsum(logs * cos(pi * k * (seq_len(nf) - 0.5) / nf))
+  }, numeric(1))
+  list(
+    mfcc = coeffs, filterbank_energies = energies, log_energies = logs,
+    edges = edges, n_filters = nf, n_coeffs = nc, fs = fsv,
+    empty_filters = sum(energies <= floor_), c0_is_energy = TRUE,
+    method = paste(
+      "Davis and Mermelstein (1980); a mel-warped,",
+      "DCT-based cepstrum, not the homomorphic cepstrum",
+      "of Rangayyan (2024) Section 4.7"
+    )
+  )
 }
 
 # pre-policy spellings

@@ -15,6 +15,7 @@
 #' @return list(estimate, beta, intercept, se, beta_se, lam, sigma2, n_iter, n, p, method).
 #' @references Park & Casella (2008) JASA 103:681. Montesinos Lopez Ch 4.
 #' @examples
+#' set.seed(1)
 #' morie_bayesian_lasso_full(
 #'   x = matrix(rnorm(150), 50, 3), y = rnorm(50),
 #'   n_iter = 50L, burn = 10L, lam = 1, seed = 1L,
@@ -22,8 +23,8 @@
 #' )
 #' @export
 morie_bayesian_lasso_full <- function(x, y, n_iter = 200, burn = 50,
-                                lam = NULL, seed = 0,
-                                deterministic_seed = NULL) {
+                                      lam = NULL, seed = 0,
+                                      deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
     .morie_local_det_rng("blasf", deterministic_seed)
   } else {

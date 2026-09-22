@@ -21,3 +21,7 @@ A step of the sdpwts_native implementation. Called by \code{.sdpwts_objective}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+sdpwts_barrier(x = c(1, 2, 3, 4, 5, 6, 7, 8), F0 = 5L, Fs = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

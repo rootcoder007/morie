@@ -46,8 +46,9 @@
 #' b <- c(1.5, 2.5, 3.5)
 #' res <- .morie_spx_matvec(A = A, b = b)
 #' res
-.morie_spx_matvec <- function(A, b)
+.morie_spx_matvec <- function(A, b) {
   vapply(seq_len(nrow(A)), function(i) .morie_fsum(A[i, ] * b), numeric(1))
+}
 
 #' .morie_spx_matmul
 #'
@@ -62,9 +63,11 @@
 #' @export
 .morie_spx_matmul <- function(A, B) {
   out <- matrix(0, nrow(A), ncol(B))
-  for (i in seq_len(nrow(A)))
-    for (j in seq_len(ncol(B)))
+  for (i in seq_len(nrow(A))) {
+    for (j in seq_len(ncol(B))) {
       out[i, j] <- .morie_fsum(A[i, ] * B[, j])
+    }
+  }
   out
 }
 
@@ -100,15 +103,18 @@
   # Gauss-Jordan with partial pivoting; raises rather than returning
   # garbage on a singular system.
   n <- nrow(A)
-  if (n != length(b) || ncol(A) != n)
+  if (n != length(b) || ncol(A) != n) {
     stop("linear system is not square or is inconsistent")
+  }
   M <- cbind(A, as.numeric(b))
   for (cc in seq_len(n)) {
     p <- cc - 1L + which.max(abs(M[cc:n, cc]))
     if (abs(M[p, cc]) < 1e-300) stop("linear system is singular")
-    if (p != cc) { tmp <- M[cc, ]
-    M[cc, ] <- M[p, ]
-    M[p, ] <- tmp }
+    if (p != cc) {
+      tmp <- M[cc, ]
+      M[cc, ] <- M[p, ]
+      M[p, ] <- tmp
+    }
     pv <- M[cc, cc]
     for (r in seq_len(n)) {
       if (r == cc) next
@@ -142,19 +148,25 @@
   acc <- 0
   for (cc in seq_len(n)) {
     p <- cc - 1L + which.max(abs(M[cc:n, cc]))
-    if (abs(M[p, cc]) < 1e-300) return(c(0, -Inf))
-    if (p != cc) { tmp <- M[cc, ]
-    M[cc, ] <- M[p, ]
-    M[p, ] <- tmp
-    sgn <- -sgn }
+    if (abs(M[p, cc]) < 1e-300) {
+      return(c(0, -Inf))
+    }
+    if (p != cc) {
+      tmp <- M[cc, ]
+      M[cc, ] <- M[p, ]
+      M[p, ] <- tmp
+      sgn <- -sgn
+    }
     pv <- M[cc, cc]
     if (pv < 0) sgn <- -sgn
     acc <- acc + log(abs(pv))
-    if (cc < n) for (r in (cc + 1L):n) {
-      f <- M[r, cc] / pv
-      if (f == 0) next
-      k <- cc:n
-      M[r, k] <- M[r, k] - f * M[cc, k]
+    if (cc < n) {
+      for (r in (cc + 1L):n) {
+        f <- M[r, cc] / pv
+        if (f == 0) next
+        k <- cc:n
+        M[r, k] <- M[r, k] - f * M[cc, k]
+      }
     }
   }
   c(sgn, acc)
@@ -257,10 +269,12 @@
   # X_k = sum_u x_u exp(-i w_k u), u and k running from 0.
   n <- length(x)
   idx <- seq_len(n) - 1L
-  re <- vapply(idx, function(k)
-    .morie_fsum(x * cos(-2 * pi * k * idx / n)), numeric(1))
-  im <- vapply(idx, function(k)
-    .morie_fsum(x * sin(-2 * pi * k * idx / n)), numeric(1))
+  re <- vapply(idx, function(k) {
+    .morie_fsum(x * cos(-2 * pi * k * idx / n))
+  }, numeric(1))
+  im <- vapply(idx, function(k) {
+    .morie_fsum(x * sin(-2 * pi * k * idx / n))
+  }, numeric(1))
   list(re = re, im = im)
 }
 
@@ -320,7 +334,7 @@
 #' b <- c(1.5, 2.5, 3.5)
 #' res <- .morie_spx_dist(a = A, b = b)
 #' res
-.morie_spx_dist <- function(a, b) sqrt(.morie_fsum((a - b) ^ 2))
+.morie_spx_dist <- function(a, b) sqrt(.morie_fsum((a - b)^2))
 
 #' .morie_spx_p2
 #'
@@ -353,11 +367,13 @@
 .morie_spx_chkw <- function(w, n, zero_diag = TRUE) {
   W <- as.matrix(w)
   if (nrow(W) != ncol(W)) stop("`w` must be square")
-  if (!is.null(n) && nrow(W) != n)
+  if (!is.null(n) && nrow(W) != n) {
     stop(sprintf("`w` must be %d by %d", n, n))
+  }
   if (any(!is.finite(W))) stop("`w` must be finite")
-  if (zero_diag && any(diag(W) != 0))
+  if (zero_diag && any(diag(W) != 0)) {
     stop("`w` must have a zero diagonal; a site is not its own neighbour")
+  }
   W
 }
 
@@ -398,23 +414,30 @@
 #' \code{npairs}, \code{n}, \code{incomplete_description_of_second_order_structure},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' SpAcf(V, V)
+#' @keywords internal
 SpAcf <- function(coords, z, bins = NULL, cutoff = NULL) {
   # Empirical correlogram R(h) = C(h)/C(0), Schabenberger & Gotway (2005)
   # Sec. 1.4.2 and Chapter problem 1.14.  C(0) uses the 1/n divisor.
   zz <- .morie_spx_chkv(z, "z")
   cc <- as.matrix(coords)
   n <- length(zz)
-  if (nrow(cc) != n)
+  if (nrow(cc) != n) {
     stop(sprintf("`coords` has %d rows but `z` has %d values", nrow(cc), n))
+  }
   if (n < 3L) stop("at least 3 sites are needed for a lag class")
   d <- zz - .morie_fsum(zz) / n
   c0 <- .morie_fsum(d * d) / n
   if (c0 <= 0) stop("`z` is constant; C(0) is zero and R(h) undefined")
   h <- numeric(0)
   prod <- numeric(0)
-  for (i in seq_len(n - 1L)) for (j in (i + 1L):n) {
-    h <- c(h, .morie_spx_dist(cc[i, ], cc[j, ]))
-    prod <- c(prod, d[i] * d[j])
+  for (i in seq_len(n - 1L)) {
+    for (j in (i + 1L):n) {
+      h <- c(h, .morie_spx_dist(cc[i, ], cc[j, ]))
+      prod <- c(prod, d[i] * d[j])
+    }
   }
   hmax <- max(h)
   if (!is.null(cutoff)) {
@@ -450,12 +473,16 @@ SpAcf <- function(coords, z, bins = NULL, cutoff = NULL) {
     }
     lo <- e
   }
-  list(lags = edges, centres = centres, cov = cov, acf = acf, c0 = c0,
-       npairs = npairs, n = n,
-       incomplete_description_of_second_order_structure = TRUE,
-       method = paste("Empirical correlogram R(h)=C(h)/C(0);",
-                      "Schabenberger & Gotway (2005) Sec. 1.4.2 and",
-                      "Chapter problem 1.14"))
+  list(
+    lags = edges, centres = centres, cov = cov, acf = acf, c0 = c0,
+    npairs = npairs, n = n,
+    incomplete_description_of_second_order_structure = TRUE,
+    method = paste(
+      "Empirical correlogram R(h)=C(h)/C(0);",
+      "Schabenberger & Gotway (2005) Sec. 1.4.2 and",
+      "Chapter problem 1.14"
+    )
+  )
 }
 
 #' Eq (1.17), Sec. 1.3.3.  sum_i I(s_i) = w.. I is checked, not assumed:
@@ -467,6 +494,12 @@ SpAcf <- function(coords, z, bins = NULL, cutoff = NULL) {
 #' @return A list with \code{local}, \code{expectation}, \code{lagged}, \code{global_i},
 #' \code{s0}, \code{sum_identity_gap}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' W <- matrix(0, 5, 5)
+#' W[abs(row(W) - col(W)) == 1] <- 1
+#' LisaI(rnorm(5), W)
+#' @keywords internal
 LisaI <- function(x, w) {
   # eq (1.17), Sec. 1.3.3.  sum_i I(s_i) = w.. I is checked, not assumed:
   # a non-zero gap means the weights or the scaling are wrong.
@@ -482,16 +515,22 @@ LisaI <- function(x, w) {
   if (s0 <= 0) stop("total weight w.. must be positive")
   lagged <- vapply(seq_len(n), function(i) .morie_fsum(W[i, ] * d), numeric(1))
   local <- n * d * lagged / ss
-  expect <- vapply(seq_len(n), function(i) -.morie_fsum(W[i, ]) / (n - 1),
-                   numeric(1))
+  expect <- vapply(
+    seq_len(n), function(i) -.morie_fsum(W[i, ]) / (n - 1),
+    numeric(1)
+  )
   gi <- n * .morie_fsum(as.numeric(W) * as.numeric(outer(d, d))) / (s0 * ss)
-  list(local = local, expectation = expect, lagged = lagged, global_i = gi,
-       s0 = s0, sum_identity_gap = .morie_fsum(local) - s0 * gi, n = n,
-       method = paste("Local Moran's I, Schabenberger & Gotway (2005)",
-                      "eq (1.17), Sec. 1.3.3; after Anselin (1995)"))
+  list(
+    local = local, expectation = expect, lagged = lagged, global_i = gi,
+    s0 = s0, sum_identity_gap = .morie_fsum(local) - s0 * gi, n = n,
+    method = paste(
+      "Local Moran's I, Schabenberger & Gotway (2005)",
+      "eq (1.17), Sec. 1.3.3; after Anselin (1995)"
+    )
+  )
 }
 
-#' Eqs (1.4) and (1.5) with the book\'s own default choices,
+#' Eqs (1.4) and (1.5) with the book's own default choices,
 #'
 #' W_ij = ||s_i - s_j|| and U_ij = |Z_i - Z_j|, plus the regression
 #' slope beta = M2 / sum sum W_ij^2 displayed in Sec. 1.3.1.
@@ -503,6 +542,10 @@ LisaI <- function(x, w) {
 #' @return A list with \code{m1}, \code{m2}, \code{beta}, \code{sw2}, \code{s0},
 #' \code{mean_attribute}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' MantelM2(V, V)
+#' @keywords internal
 MantelM2 <- function(coords, x, w = NULL, u = NULL) {
   # eqs (1.4) and (1.5) with the book's own default choices,
   # W_ij = ||s_i - s_j|| and U_ij = |Z_i - Z_j|, plus the regression slope
@@ -512,11 +555,15 @@ MantelM2 <- function(coords, x, w = NULL, u = NULL) {
   if (n < 2L) stop("at least 2 sites are needed for a pair")
   if (is.null(w)) {
     cc <- as.matrix(coords)
-    if (nrow(cc) != n)
+    if (nrow(cc) != n) {
       stop(sprintf("`coords` has %d rows but `x` has %d values", nrow(cc), n))
+    }
     W <- matrix(0, n, n)
-    for (i in seq_len(n)) for (j in seq_len(n))
-      if (i != j) W[i, j] <- .morie_spx_dist(cc[i, ], cc[j, ])
+    for (i in seq_len(n)) {
+      for (j in seq_len(n)) {
+        if (i != j) W[i, j] <- .morie_spx_dist(cc[i, ], cc[j, ])
+      }
+    }
   } else {
     W <- .morie_spx_chkw(w, n)
   }
@@ -530,16 +577,20 @@ MantelM2 <- function(coords, x, w = NULL, u = NULL) {
   m2 <- .morie_fsum(as.numeric(W) * as.numeric(U))
   sw2 <- .morie_fsum(as.numeric(W) * as.numeric(W))
   if (sw2 <= 0) stop("all spatial proximities are zero; beta undefined")
-  list(m1 = m1, m2 = m2, beta = m2 / sw2, sw2 = sw2,
-       s0 = .morie_fsum(as.numeric(W)),
-       mean_attribute = .morie_fsum(z) / n, n = n,
-       method = paste("Mantel statistics M1 and M2, Schabenberger & Gotway",
-                      "(2005) eqs (1.4)-(1.5), Sec. 1.3.1; Mantel (1967)"))
+  list(
+    m1 = m1, m2 = m2, beta = m2 / sw2, sw2 = sw2,
+    s0 = .morie_fsum(as.numeric(W)),
+    mean_attribute = .morie_fsum(z) / n, n = n,
+    method = paste(
+      "Mantel statistics M1 and M2, Schabenberger & Gotway",
+      "(2005) eqs (1.4)-(1.5), Sec. 1.3.1; Mantel (1967)"
+    )
+  )
 }
 
 #' Gaussian Z-test of Sec. 1.3.1 with U of eq (1.10).  The book states
 #'
-#' the approach but does not print Eg[M2] or Varg[M2]; both are derived
+#' the approach but does not print Eg\[M2\] or Varg[M2]; both are derived
 #' from the quadratic-form moments and are stated in the Python
 #' docstring.  Only the SYMMETRIC part of W contributes.
 #'
@@ -550,6 +601,13 @@ MantelM2 <- function(coords, x, w = NULL, u = NULL) {
 #' @return A list with \code{m2}, \code{expectation}, \code{variance}, \code{z},
 #' \code{p_value}, \code{sigma2}, \code{n}, \code{gaussian_moments_apply}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' coords <- matrix(runif(10), 5, 2)
+#' W <- matrix(0, 5, 5)
+#' W[abs(row(W) - col(W)) == 1] <- 1
+#' MantelZ(coords, rnorm(5), W)
+#' @keywords internal
 MantelZ <- function(coords, x, w, u = NULL) {
   # Gaussian Z-test of Sec. 1.3.1 with U of eq (1.10).  The book states
   # the approach but does not print Eg[M2] or Varg[M2]; both are derived
@@ -565,15 +623,19 @@ MantelZ <- function(coords, x, w, u = NULL) {
   if (ss <= 0) stop("`x` is constant; the Mantel statistic is degenerate")
   if (!is.null(u)) {
     U <- .morie_spx_chkw(u, n)
-    return(list(m2 = .morie_fsum(as.numeric(W) * as.numeric(U)),
-                expectation = NA_real_, variance = NA_real_,
-                z = NA_real_, p_value = NA_real_,
-                sigma2 = ss / (n - 1), n = n,
-                gaussian_moments_apply = FALSE,
-                method = paste("Mantel M2 with a user-supplied U; the",
-                               "Gaussian Z-test of Schabenberger & Gotway",
-                               "Sec. 1.3.1 needs U of eq (1.10) and is not",
-                               "reported")))
+    return(list(
+      m2 = .morie_fsum(as.numeric(W) * as.numeric(U)),
+      expectation = NA_real_, variance = NA_real_,
+      z = NA_real_, p_value = NA_real_,
+      sigma2 = ss / (n - 1), n = n,
+      gaussian_moments_apply = FALSE,
+      method = paste(
+        "Mantel M2 with a user-supplied U; the",
+        "Gaussian Z-test of Schabenberger & Gotway",
+        "Sec. 1.3.1 needs U of eq (1.10) and is not",
+        "reported"
+      )
+    ))
   }
   m2 <- .morie_fsum(as.numeric(W) * as.numeric(outer(d, d)))
   A <- 0.5 * (W + t(W))
@@ -582,17 +644,24 @@ MantelZ <- function(coords, x, w, u = NULL) {
   s2 <- ss / (n - 1)
   ex <- s2 * .morie_spx_trace(AM)
   vr <- 2 * s2 * s2 * .morie_spx_trace(.morie_spx_matmul(AM, AM))
-  if (vr <= 0)
-    stop(paste("the null variance of M2 is not positive;",
-               "the weight matrix carries no information"))
+  if (vr <= 0) {
+    stop(paste(
+      "the null variance of M2 is not positive;",
+      "the weight matrix carries no information"
+    ))
+  }
   zz <- (m2 - ex) / sqrt(vr)
-  list(m2 = m2, expectation = ex, variance = vr, z = zz,
-       p_value = .morie_spx_p2(zz), sigma2 = s2, n = n,
-       gaussian_moments_apply = TRUE,
-       method = paste("Standardized Mantel z_M, Gaussian Z-test of",
-                      "Schabenberger & Gotway (2005) Sec. 1.3.1 with U of",
-                      "eq (1.10); the moments are derived, the book states",
-                      "only the approach"))
+  list(
+    m2 = m2, expectation = ex, variance = vr, z = zz,
+    p_value = .morie_spx_p2(zz), sigma2 = s2, n = n,
+    gaussian_moments_apply = TRUE,
+    method = paste(
+      "Standardized Mantel z_M, Gaussian Z-test of",
+      "Schabenberger & Gotway (2005) Sec. 1.3.1 with U of",
+      "eq (1.10); the moments are derived, the book states",
+      "only the approach"
+    )
+  )
 }
 
 #' Eq (1.16).  Eg\[Ires\] = n tr\[MW\] / \{(n-k) w..\} is the book's own
@@ -630,9 +699,12 @@ MoranRes <- function(residuals, w, x = NULL) {
     P <- diag(n) - matrix(1 / n, n, n)
   } else {
     X <- as.matrix(x)
-    if (nrow(X) != n)
-      stop(sprintf("`x` has %d rows but `residuals` has %d values",
-                   nrow(X), n))
+    if (nrow(X) != n) {
+      stop(sprintf(
+        "`x` has %d rows but `residuals` has %d values",
+        nrow(X), n
+      ))
+    }
     k <- ncol(X)
     if (n - k < 3L) stop("need n - k >= 3 residual degrees of freedom")
     G <- .morie_spx_matmul(t(X), X)
@@ -659,17 +731,21 @@ MoranRes <- function(residuals, w, x = NULL) {
   vr <- scale * scale * (et2 - et * et)
   if (vr <= 0) stop("the null variance of Ires is not positive")
   zz <- (ires - ex) / sqrt(vr)
-  list(i = ires, expectation = ex, variance = vr, z = zz,
-       p_value = .morie_spx_p2(zz), s0 = s0, tr_mw = trb,
-       k = k, n = n, not_minus_one_over_n_minus_one = TRUE,
-       method = paste("Moran's I on OLS residuals, Schabenberger & Gotway",
-                      "(2005) eq (1.16) with Eg[Ires] as printed in",
-                      "Sec. 1.3.2; the variance is derived"))
+  list(
+    i = ires, expectation = ex, variance = vr, z = zz,
+    p_value = .morie_spx_p2(zz), s0 = s0, tr_mw = trb,
+    k = k, n = n, not_minus_one_over_n_minus_one = TRUE,
+    method = paste(
+      "Moran's I on OLS residuals, Schabenberger & Gotway",
+      "(2005) eq (1.16) with Eg[Ires] as printed in",
+      "Sec. 1.3.2; the variance is derived"
+    )
+  )
 }
 
 # --- Ch 3: point patterns --------------------------------------------------
 
-#' R(h) = K\'(h) / (2 h pi), Sec. 3.4.1, with Khat of Sec. 3.4.2 and the
+#' R(h) = K'(h) / (2 h pi), Sec. 3.4.1, with Khat of Sec. 3.4.2 and the
 #'
 #' intensity of eq (3.8).  The naive estimator is NEGATIVELY BIASED (the
 #' book says so outright), hence the border correction by default.
@@ -682,6 +758,10 @@ MoranRes <- function(residuals, w, x = NULL) {
 #' @return A list with \code{r}, \code{k}, \code{pcf}, \code{lambda}, \code{area},
 #' \code{csr_k}, \code{csr_pcf_is_one}, \code{correction}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' Pcf(D)
+#' @keywords internal
 Pcf <- function(points, region = NULL, r = NULL, correction = "border") {
   # R(h) = K'(h) / (2 h pi), Sec. 3.4.1, with Khat of Sec. 3.4.2 and the
   # intensity of eq (3.8).  The naive estimator is NEGATIVELY BIASED (the
@@ -694,13 +774,15 @@ Pcf <- function(points, region = NULL, r = NULL, correction = "border") {
     reg <- rbind(range(P[, 1L]), range(P[, 2L]))
   } else {
     reg <- as.matrix(region)
-    if (nrow(reg) != 2L || ncol(reg) != 2L)
+    if (nrow(reg) != 2L || ncol(reg) != 2L) {
       stop("`region` must be ((xlo, xhi), (ylo, yhi))")
+    }
   }
   wid <- reg[1L, 2L] - reg[1L, 1L]
   hgt <- reg[2L, 2L] - reg[2L, 1L]
-  if (wid <= 0 || hgt <= 0)
+  if (wid <= 0 || hgt <= 0) {
     stop("`region` must have positive width and height")
+  }
   area <- wid * hgt
   lam <- n / area
   if (is.null(r)) {
@@ -713,25 +795,39 @@ Pcf <- function(points, region = NULL, r = NULL, correction = "border") {
   }
   if (length(rr) < 2L) stop("at least 2 radii are needed to difference K")
   D <- matrix(0, n, n)
-  for (i in seq_len(n)) for (j in seq_len(n))
-    D[i, j] <- .morie_spx_dist(P[i, 1:2], P[j, 1:2])
-  bd <- vapply(seq_len(n), function(i)
-    min(P[i, 1L] - reg[1L, 1L], reg[1L, 2L] - P[i, 1L],
-        P[i, 2L] - reg[2L, 1L], reg[2L, 2L] - P[i, 2L]), numeric(1))
+  for (i in seq_len(n)) {
+    for (j in seq_len(n)) {
+      D[i, j] <- .morie_spx_dist(P[i, 1:2], P[j, 1:2])
+    }
+  }
+  bd <- vapply(seq_len(n), function(i) {
+    min(
+      P[i, 1L] - reg[1L, 1L], reg[1L, 2L] - P[i, 1L],
+      P[i, 2L] - reg[2L, 1L], reg[2L, 2L] - P[i, 2L]
+    )
+  }, numeric(1))
   kv <- numeric(0)
   for (h in rr) {
     if (identical(correction, "none")) {
       cnt <- 0
-      for (i in seq_len(n)) for (j in seq_len(n))
-        if (i != j && D[i, j] <= h) cnt <- cnt + 1
+      for (i in seq_len(n)) {
+        for (j in seq_len(n)) {
+          if (i != j && D[i, j] <= h) cnt <- cnt + 1
+        }
+      }
       kv <- c(kv, (cnt / n) / lam)
     } else if (identical(correction, "border")) {
       keep <- which(bd > h)
-      if (!length(keep)) { kv <- c(kv, NaN)
-      next }
+      if (!length(keep)) {
+        kv <- c(kv, NaN)
+        next
+      }
       cnt <- 0
-      for (i in seq_len(n)) for (j in keep)
-        if (i != j && D[i, j] <= h) cnt <- cnt + 1
+      for (i in seq_len(n)) {
+        for (j in keep) {
+          if (i != j && D[i, j] <= h) cnt <- cnt + 1
+        }
+      }
       kv <- c(kv, (cnt / length(keep)) / lam)
     } else {
       stop("`correction` must be \"border\" or \"none\"")
@@ -740,17 +836,25 @@ Pcf <- function(points, region = NULL, r = NULL, correction = "border") {
   m <- length(rr)
   g <- numeric(m)
   for (k in seq_len(m)) {
-    der <- if (k == 1L) (kv[2L] - kv[1L]) / (rr[2L] - rr[1L])
-           else if (k == m) (kv[m] - kv[m - 1L]) / (rr[m] - rr[m - 1L])
-           else (kv[k + 1L] - kv[k - 1L]) / (rr[k + 1L] - rr[k - 1L])
+    der <- if (k == 1L) {
+      (kv[2L] - kv[1L]) / (rr[2L] - rr[1L])
+    } else if (k == m) {
+      (kv[m] - kv[m - 1L]) / (rr[m] - rr[m - 1L])
+    } else {
+      (kv[k + 1L] - kv[k - 1L]) / (rr[k + 1L] - rr[k - 1L])
+    }
     g[k] <- der / (2 * pi * rr[k])
   }
-  list(r = rr, k = kv, pcf = g, lambda = lam, area = area,
-       csr_k = pi * rr * rr, csr_pcf_is_one = TRUE,
-       correction = correction, n = n,
-       method = paste("Pair correlation R(h)=K'(h)/(2 pi h), Schabenberger",
-                      "& Gotway (2005) Sec. 3.4.1, with Khat of Sec. 3.4.2",
-                      "and eq (3.8)"))
+  list(
+    r = rr, k = kv, pcf = g, lambda = lam, area = area,
+    csr_k = pi * rr * rr, csr_pcf_is_one = TRUE,
+    correction = correction, n = n,
+    method = paste(
+      "Pair correlation R(h)=K'(h)/(2 pi h), Schabenberger",
+      "& Gotway (2005) Sec. 3.4.1, with Khat of Sec. 3.4.2",
+      "and eq (3.8)"
+    )
+  )
 }
 
 # --- Ch 4: semivariogram and periodogram -----------------------------------
@@ -768,6 +872,10 @@ Pcf <- function(points, region = NULL, r = NULL, correction = "border") {
 #' @return A list with \code{h}, \code{gamma}, \code{cov}, \code{nugget}, \code{psill},
 #' \code{sill}, \code{range}, \code{true_range}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' SphVario(V)
+#' @keywords internal
 SphVario <- function(h, c0 = 0, c = 1, a = 1) {
   # gamma(h) = c0 + c{3h/(2a) - (1/2)(h/a)^3} on 0 < h <= a, eq (4.15)
   # plus the nugget of Sec. 4.3.6; covariance eq (4.14).  gamma(0) = 0
@@ -785,21 +893,28 @@ SphVario <- function(h, c0 = 0, c = 1, a = 1) {
   cov <- numeric(length(hh))
   for (i in seq_along(hh)) {
     t <- hh[i]
-    if (t == 0) { gam[i] <- 0
-    cov[i] <- c0 + c }
-    else if (t <= a) {
+    if (t == 0) {
+      gam[i] <- 0
+      cov[i] <- c0 + c
+    } else if (t <= a) {
       u <- t / a
       s <- 1.5 * u - 0.5 * u * u * u
       gam[i] <- c0 + c * s
       cov[i] <- c * (1 - s)
-    } else { gam[i] <- c0 + c
-    cov[i] <- 0 }
+    } else {
+      gam[i] <- c0 + c
+      cov[i] <- 0
+    }
   }
-  list(h = hh, gamma = gam, cov = cov, nugget = c0, psill = c,
-       sill = c0 + c, range = a, true_range = TRUE, n = length(hh),
-       method = paste("Spherical semivariogram, Schabenberger & Gotway",
-                      "(2005) eq (4.15) with the nugget of Sec. 4.3.6;",
-                      "covariance eq (4.14)"))
+  list(
+    h = hh, gamma = gam, cov = cov, nugget = c0, psill = c,
+    sill = c0 + c, range = a, true_range = TRUE, n = length(hh),
+    method = paste(
+      "Spherical semivariogram, Schabenberger & Gotway",
+      "(2005) eq (4.15) with the nugget of Sec. 4.3.6;",
+      "covariance eq (4.14)"
+    )
+  )
 }
 
 #' Eq (4.57) specialised to R^1 in Sec. 4.7.1.1, checked against the
@@ -813,6 +928,10 @@ SphVario <- function(h, c0 = 0, c = 1, a = 1) {
 #' \code{max_difference}, \code{acov}, \code{zero_frequency_excluded}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Pgram(V)
+#' @keywords internal
 Pgram <- function(y) {
   # eq (4.57) specialised to R^1 in Sec. 4.7.1.1, checked against the
   # covariance form of eq (4.58).  THE ZERO FREQUENCY IS EXCLUDED: the
@@ -823,8 +942,9 @@ Pgram <- function(y) {
   if (r < 4L) stop("at least 4 lattice sites are needed")
   m <- .morie_fsum(z) / r
   d <- z - m
-  if (.morie_fsum(d * d) <= 0)
+  if (.morie_fsum(d * d) <= 0) {
     stop("`y` is constant; the periodogram is identically 0")
+  }
   lo <- -((r - 1L) %/% 2L)
   hi <- r %/% 2L
   js <- setdiff(lo:hi, 0L)
@@ -835,18 +955,26 @@ Pgram <- function(y) {
     im <- .morie_fsum(-d * sin(w * u))
     (re * re + im * im) / (2 * pi * r)
   }, numeric(1))
-  acov <- vapply(0:(r - 1L), function(k)
-    .morie_fsum(d[seq_len(r - k)] * d[seq_len(r - k) + k]) / r, numeric(1))
-  viacov <- vapply(omega, function(w)
-    (acov[1L] + 2 * .morie_fsum(cos(w * seq_len(r - 1L)) *
-                                acov[seq_len(r - 1L) + 1L])) / (2 * pi),
-    numeric(1))
-  list(omega = omega, periodogram = direct, from_covariance = viacov,
-       max_difference = max(abs(direct - viacov)), acov = acov,
-       zero_frequency_excluded = TRUE, n = r,
-       method = paste("Periodogram, Schabenberger & Gotway (2005) eq (4.57)",
-                      "specialised to R^1 in Sec. 4.7.1.1, checked against",
-                      "eq (4.58)"))
+  acov <- vapply(0:(r - 1L), function(k) {
+    .morie_fsum(d[seq_len(r - k)] * d[seq_len(r - k) + k]) / r
+  }, numeric(1))
+  viacov <- vapply(
+    omega, function(w) {
+      (acov[1L] + 2 * .morie_fsum(cos(w * seq_len(r - 1L)) *
+        acov[seq_len(r - 1L) + 1L])) / (2 * pi)
+    },
+    numeric(1)
+  )
+  list(
+    omega = omega, periodogram = direct, from_covariance = viacov,
+    max_difference = max(abs(direct - viacov)), acov = acov,
+    zero_frequency_excluded = TRUE, n = r,
+    method = paste(
+      "Periodogram, Schabenberger & Gotway (2005) eq (4.57)",
+      "specialised to R^1 in Sec. 4.7.1.1, checked against",
+      "eq (4.58)"
+    )
+  )
 }
 
 #' Daniell (equal-weight) smoothing of the eq (4.57) periodogram.  NOT
@@ -863,6 +991,10 @@ Pgram <- function(y) {
 #' @return A list with \code{omega}, \code{smoothed}, \code{raw}, \code{span},
 #' \code{equivalent_df}, \code{circular_window}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' SmPgram(V)
+#' @keywords internal
 SmPgram <- function(y, span = 3L) {
   # Daniell (equal-weight) smoothing of the eq (4.57) periodogram.  NOT in
   # Schabenberger & Gotway: "Daniell" and "smoothed periodogram" are
@@ -871,25 +1003,33 @@ SmPgram <- function(y, span = 3L) {
   # Series, 2nd edn, Ch. 8.  The window is CIRCULAR; a truncating window
   # would bias both ends.
   span <- as.integer(span)
-  if (span < 1L || span %% 2L == 0L)
+  if (span < 1L || span %% 2L == 0L) {
     stop("`span` must be an odd positive integer")
+  }
   base <- Pgram(y)
   raw <- base$periodogram
   m <- length(raw)
-  if (span > m)
-    stop(sprintf("`span` (%d) exceeds the number of Fourier ordinates (%d)",
-                 span, m))
+  if (span > m) {
+    stop(sprintf(
+      "`span` (%d) exceeds the number of Fourier ordinates (%d)",
+      span, m
+    ))
+  }
   half <- span %/% 2L
   sm <- vapply(seq_len(m), function(k) {
     idx <- ((k - 1L + (-half):half) %% m) + 1L
     .morie_fsum(raw[idx]) / span
   }, numeric(1))
-  list(omega = base$omega, smoothed = sm, raw = raw, span = span,
-       equivalent_df = 2 * span, circular_window = TRUE, n = base$n,
-       method = paste("Daniell-smoothed periodogram; periodogram from",
-                      "Schabenberger & Gotway (2005) eq (4.57), the",
-                      "smoother is NOT in that book (see Bloomfield 2000,",
-                      "Ch. 8)"))
+  list(
+    omega = base$omega, smoothed = sm, raw = raw, span = span,
+    equivalent_df = 2 * span, circular_window = TRUE, n = base$n,
+    method = paste(
+      "Daniell-smoothed periodogram; periodogram from",
+      "Schabenberger & Gotway (2005) eq (4.57), the",
+      "smoother is NOT in that book (see Bloomfield 2000,",
+      "Ch. 8)"
+    )
+  )
 }
 
 # --- Ch 6: spatial autoregression ------------------------------------------
@@ -906,6 +1046,11 @@ SmPgram <- function(y, span = 3L) {
 #' @return A list with \code{rho}, \code{dominant_eigenvalue}, \code{eigenvector},
 #' \code{sar_rho_bound}, \code{symmetric}, \code{iterations}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' W <- matrix(0, 5, 5)
+#' W[abs(row(W) - col(W)) == 1] <- 1
+#' SpecRad(W)
+#' @keywords internal
 SpecRad <- function(g, iters = 400L) {
   # The SAR bound |rho| < 1/rho(W) comes from the non-singularity
   # condition in the PROSE of Sec. 6.2.2.1, p. 336 (1/theta_min < rho <
@@ -917,30 +1062,40 @@ SpecRad <- function(g, iters = 400L) {
   if (n < 2L) stop("`g` must be at least 2 by 2")
   iters <- as.integer(iters)
   if (iters < 1L) stop("`iters` must be positive")
-  if (any(abs(W - t(W)) > 1e-12))
-    stop(paste("`g` must be symmetric; power iteration on a non-symmetric",
-               "matrix can converge to a complex pair and report a modulus",
-               "that is not the spectral radius"))
+  if (any(abs(W - t(W)) > 1e-12)) {
+    stop(paste(
+      "`g` must be symmetric; power iteration on a non-symmetric",
+      "matrix can converge to a complex pair and report a modulus",
+      "that is not the spectral radius"
+    ))
+  }
   v <- as.numeric(((seq_len(n) - 1L) %% 7L) + 1L)
   v <- v / sqrt(.morie_spx_dot(v, v))
   for (it in seq_len(iters)) {
     u <- .morie_spx_matvec(W, v)
     s <- sqrt(.morie_spx_dot(u, u))
-    if (s < 1e-300)
-      stop(paste("`g` is numerically zero; the spectral radius is 0 and",
-                 "no eigenvector is defined"))
+    if (s < 1e-300) {
+      stop(paste(
+        "`g` is numerically zero; the spectral radius is 0 and",
+        "no eigenvector is defined"
+      ))
+    }
     v <- u / s
   }
   lam <- .morie_spx_dot(v, .morie_spx_matvec(W, v))
   rho <- abs(lam)
   if (rho <= 0) stop("the spectral radius is 0; `g` has no edges")
   v <- .morie_spx_fixsign(v)
-  list(rho = rho, dominant_eigenvalue = lam, eigenvector = v,
-       sar_rho_bound = 1 / rho, symmetric = TRUE, iterations = iters, n = n,
-       method = paste("Spectral radius by power iteration (Golub & Van Loan",
-                      "2013, Sec. 7.3); the SAR bound |rho| < 1/rho(W) is",
-                      "Schabenberger & Gotway (2005) Sec. 6.2.2.1, p. 336",
-                      "-- NOT eq (6.48)"))
+  list(
+    rho = rho, dominant_eigenvalue = lam, eigenvector = v,
+    sar_rho_bound = 1 / rho, symmetric = TRUE, iterations = iters, n = n,
+    method = paste(
+      "Spectral radius by power iteration (Golub & Van Loan",
+      "2013, Sec. 7.3); the SAR bound |rho| < 1/rho(W) is",
+      "Schabenberger & Gotway (2005) Sec. 6.2.2.1, p. 336",
+      "-- NOT eq (6.48)"
+    )
+  )
 }
 
 #' .morie_spx_sarneg2
@@ -959,13 +1114,17 @@ SpecRad <- function(g, iters = 400L) {
   n <- length(y)
   A <- diag(n) - rho * W
   sl <- .morie_spx_logabsdet(A)
-  if (sl[1L] <= 0 || !is.finite(sl[2L])) return(list(v = Inf, b = NULL, s2 = NaN))
+  if (sl[1L] <= 0 || !is.finite(sl[2L])) {
+    return(list(v = Inf, b = NULL, s2 = NaN))
+  }
   ys <- .morie_spx_matvec(A, y)
   Xs <- .morie_spx_matmul(A, X)
   b <- .morie_spx_lstsq(Xs, ys)
   r <- ys - .morie_spx_matvec(Xs, b)
   s2 <- .morie_spx_dot(r, r) / n
-  if (s2 <= 0) return(list(v = Inf, b = NULL, s2 = NaN))
+  if (s2 <= 0) {
+    return(list(v = Inf, b = NULL, s2 = NaN))
+  }
   list(v = n * log(2 * pi * s2) + n - 2 * sl[2L], b = b, s2 = s2)
 }
 
@@ -985,6 +1144,14 @@ SpecRad <- function(g, iters = 400L) {
 #' \code{rho_bounds}, \code{ols_beta}, \code{spectral_radius},
 #' \code{is_error_model_not_lag_model}, \code{k}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(3)
+#' W <- matrix(0, 12, 12)
+#' W[abs(row(W) - col(W)) == 1] <- 1
+#' x <- rnorm(12)
+#' y <- 1 + 2 * x + rnorm(12, 0, 0.3)
+#' str(SpErrMod(x, y, W), max.level = 1)
+#' @keywords internal
 SpErrMod <- function(x, y, w, n_grid = 201L, refine = 60L) {
   # SAR ERROR model, eqs (6.35)-(6.37) of Sec. 6.2.2.1 -- NOT the spatially
   # lagged model of eq (6.38).  Whitening by A = I - rho W profiles beta
@@ -993,14 +1160,18 @@ SpErrMod <- function(x, y, w, n_grid = 201L, refine = 60L) {
   yy <- .morie_spx_chkv(y, "y")
   n <- length(yy)
   X <- as.matrix(x)
-  if (nrow(X) != n)
+  if (nrow(X) != n) {
     stop(sprintf("`x` has %d rows but `y` has %d values", nrow(X), n))
+  }
   k <- ncol(X)
   if (n <= k + 1L) stop("need n > k + 1 observations")
   W <- .morie_spx_chkw(w, n)
-  if (any(abs(W - t(W)) > 1e-12))
-    stop(paste("`w` must be symmetric for the eigenvalue bound of",
-               "Sec. 6.2.2.1 to reduce to the spectral radius"))
+  if (any(abs(W - t(W)) > 1e-12)) {
+    stop(paste(
+      "`w` must be symmetric for the eigenvalue bound of",
+      "Sec. 6.2.2.1 to reduce to the spectral radius"
+    ))
+  }
   n_grid <- as.integer(n_grid)
   if (n_grid < 5L) stop("`n_grid` must be at least 5")
   v <- as.numeric(((seq_len(n) - 1L) %% 7L) + 1L)
@@ -1020,8 +1191,10 @@ SpErrMod <- function(x, y, w, n_grid = 201L, refine = 60L) {
   for (gi in seq_len(n_grid)) {
     rho <- lo + (hi - lo) * (gi - 1L) / (n_grid - 1L)
     f <- .morie_spx_sarneg2(yy, X, W, rho)
-    if (f$v < bestv) { bestv <- f$v
-    bestr <- rho }
+    if (f$v < bestv) {
+      bestv <- f$v
+      bestr <- rho
+    }
   }
   step <- (hi - lo) / (n_grid - 1L)
   a <- max(lo, bestr - step)
@@ -1048,23 +1221,30 @@ SpErrMod <- function(x, y, w, n_grid = 201L, refine = 60L) {
   }
   rho <- 0.5 * (a + b)
   f <- .morie_spx_sarneg2(yy, X, W, rho)
-  if (is.null(f$b))
-    stop(paste("the likelihood is undefined at the optimum; check that",
-               "`w` admits a non-singular I - rho W"))
-  list(rho = rho, beta = f$b, sigma2 = f$s2, neg2loglik = f$v,
-       rho_bounds = c(lo, hi), ols_beta = .morie_spx_lstsq(X, yy),
-       spectral_radius = srad, is_error_model_not_lag_model = TRUE,
-       k = k, n = n,
-       method = paste("SAR error model by ML, Schabenberger & Gotway (2005)",
-                      "eqs (6.35)-(6.37), Sec. 6.2.2.1; concentrated",
-                      "likelihood, grid scan + golden section"))
+  if (is.null(f$b)) {
+    stop(paste(
+      "the likelihood is undefined at the optimum; check that",
+      "`w` admits a non-singular I - rho W"
+    ))
+  }
+  list(
+    rho = rho, beta = f$b, sigma2 = f$s2, neg2loglik = f$v,
+    rho_bounds = c(lo, hi), ols_beta = .morie_spx_lstsq(X, yy),
+    spectral_radius = srad, is_error_model_not_lag_model = TRUE,
+    k = k, n = n,
+    method = paste(
+      "SAR error model by ML, Schabenberger & Gotway (2005)",
+      "eqs (6.35)-(6.37), Sec. 6.2.2.1; concentrated",
+      "likelihood, grid scan + golden section"
+    )
+  )
 }
 
 # --- methods NOT in Schabenberger & Gotway ---------------------------------
 
-#' Cohen\'s kappa (Cohen 1960) scored over NEIGHBOUR pairs rather than
+#' Cohen's kappa (Cohen 1960) scored over NEIGHBOUR pairs rather than
 #'
-#' same-site pairs; the pairing is Mantel\'s M2, eq (1.5), with U_ij =
+#' same-site pairs; the pairing is Mantel's M2, eq (1.5), with U_ij =
 #' I\{x_i = y_j\}.  The kappa coefficient itself is NOT in the book.
 #'
 #' @param x Passed to \code{.morie_spx_chkv}.
@@ -1074,6 +1254,12 @@ SpErrMod <- function(x, y, w, n_grid = 201L, refine = 60L) {
 #' \code{categories}, \code{s0}, \code{compares_neighbours_not_same_site}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' set.seed(3)
+#' W <- matrix(0, 8, 8)
+#' W[abs(row(W) - col(W)) == 1] <- 1
+#' SpKappa(rbinom(8, 1, 0.5), rbinom(8, 1, 0.5), W)
+#' @keywords internal
 SpKappa <- function(x, y, w) {
   # Cohen's kappa (Cohen 1960) scored over NEIGHBOUR pairs rather than
   # same-site pairs; the pairing is Mantel's M2, eq (1.5), with
@@ -1088,8 +1274,9 @@ SpKappa <- function(x, y, w) {
   if (any(abs(xv - xi) > 1e-9)) stop("`x` must hold integer category codes")
   if (any(abs(yv - yi) > 1e-9)) stop("`y` must hold integer category codes")
   W <- .morie_spx_chkw(w, n)
-  if (any(W < 0))
+  if (any(W < 0)) {
     stop("`w` must be non-negative for kappa to be a proportion")
+  }
   s0 <- .morie_fsum(as.numeric(W))
   if (s0 <= 0) stop("total weight w.. must be positive")
   cats <- sort(unique(c(xi, yi)))
@@ -1097,25 +1284,35 @@ SpKappa <- function(x, y, w) {
   po <- .morie_fsum(as.numeric(W) * as.numeric(agree)) / s0
   rows <- vapply(seq_len(n), function(i) .morie_fsum(W[i, ]), numeric(1))
   cols <- vapply(seq_len(n), function(j) .morie_fsum(W[, j]), numeric(1))
-  pe <- .morie_fsum(vapply(cats, function(cv)
-    (.morie_fsum(rows[xi == cv]) / s0) * (.morie_fsum(cols[yi == cv]) / s0),
-    numeric(1)))
-  if (abs(1 - pe) < 1e-12)
-    stop(paste("expected agreement is 1; kappa is undefined (both maps are",
-               "effectively constant)"))
-  list(kappa = (po - pe) / (1 - pe), p_observed = po, p_expected = pe,
-       categories = as.numeric(cats), s0 = s0,
-       compares_neighbours_not_same_site = TRUE, n = n,
-       method = paste("Cohen's kappa (Cohen 1960) over the neighbour pairs",
-                      "of Mantel's M2, Schabenberger & Gotway (2005)",
-                      "eq (1.5); the kappa coefficient is NOT in that book"))
+  pe <- .morie_fsum(vapply(
+    cats, function(cv) {
+      (.morie_fsum(rows[xi == cv]) / s0) * (.morie_fsum(cols[yi == cv]) / s0)
+    },
+    numeric(1)
+  ))
+  if (abs(1 - pe) < 1e-12) {
+    stop(paste(
+      "expected agreement is 1; kappa is undefined (both maps are",
+      "effectively constant)"
+    ))
+  }
+  list(
+    kappa = (po - pe) / (1 - pe), p_observed = po, p_expected = pe,
+    categories = as.numeric(cats), s0 = s0,
+    compares_neighbours_not_same_site = TRUE, n = n,
+    method = paste(
+      "Cohen's kappa (Cohen 1960) over the neighbour pairs",
+      "of Mantel's M2, Schabenberger & Gotway (2005)",
+      "eq (1.5); the kappa coefficient is NOT in that book"
+    )
+  )
 }
 
 #' Local Moran eq (1.17) with EXACT conditional-randomization moments
 #'
 #' (simple random sampling without replacement of the other n-1
 #' deviations into the neighbour slots).  The HH/LL/HL/LH labels are
-#' Anselin (1996)\'s Moran scatterplot, NOT in Schabenberger & Gotway; a
+#' Anselin (1996)'s Moran scatterplot, NOT in Schabenberger & Gotway; a
 #' fixed-string search of the book for "quadrant" and "Moran scatter"
 #' finds only an unrelated kriging search neighbourhood.
 #'
@@ -1126,6 +1323,12 @@ SpKappa <- function(x, y, w) {
 #' \code{lagged_mean}, \code{counts}, \code{alpha}, \code{conditional_randomization},
 #' \code{hl_and_lh_are_outliers_not_clusters}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(4)
+#' W <- matrix(0, 8, 8)
+#' W[abs(row(W) - col(W)) == 1] <- 1
+#' str(LisaClust(rnorm(8), W), max.level = 1)
+#' @keywords internal
 LisaClust <- function(x, w, alpha = 0.05) {
   # Local Moran eq (1.17) with EXACT conditional-randomization moments
   # (simple random sampling without replacement of the other n-1
@@ -1135,12 +1338,14 @@ LisaClust <- function(x, w, alpha = 0.05) {
   # finds only an unrelated kriging search neighbourhood.
   z <- .morie_spx_chkv(x, "x")
   n <- length(z)
-  if (n < 4L)
+  if (n < 4L) {
     stop("at least 4 sites are needed; the conditional variance divides by n-2")
+  }
   W <- .morie_spx_chkw(w, n)
   alpha <- as.numeric(alpha)
-  if (!(alpha > 0 && alpha < 1))
+  if (!(alpha > 0 && alpha < 1)) {
     stop("`alpha` must lie strictly between 0 and 1")
+  }
   m <- .morie_fsum(z) / n
   d <- z - m
   ss <- .morie_fsum(d * d)
@@ -1155,7 +1360,7 @@ LisaClust <- function(x, w, alpha = 0.05) {
     local[i] <- n * d[i] * li / ss
     others <- d[-i]
     mb <- .morie_fsum(others) / (n - 1)
-    v <- .morie_fsum((others - mb) ^ 2) / (n - 1)
+    v <- .morie_fsum((others - mb)^2) / (n - 1)
     s1 <- .morie_fsum(W[i, ])
     s2 <- .morie_fsum(W[i, ] * W[i, ])
     varl <- v * (s2 - s1 * s1 / (n - 1)) * (n - 1) / (n - 2)
@@ -1171,27 +1376,36 @@ LisaClust <- function(x, w, alpha = 0.05) {
     pv <- .morie_spx_p2(zi)
     zs[i] <- zi
     ps[i] <- pv
-    labels[i] <- if (pv >= alpha) "NS"
-      else if (d[i] >= 0 && lagm[i] >= 0) "HH"
-      else if (d[i] < 0 && lagm[i] < 0) "LL"
-      else if (d[i] >= 0) "HL" else "LH"
+    labels[i] <- if (pv >= alpha) {
+      "NS"
+    } else if (d[i] >= 0 && lagm[i] >= 0) {
+      "HH"
+    } else if (d[i] < 0 && lagm[i] < 0) {
+      "LL"
+    } else if (d[i] >= 0) "HL" else "LH"
   }
-  counts <- vapply(c("HH", "LL", "HL", "LH", "NS"),
-                   function(k) sum(labels == k), numeric(1))
-  list(labels = labels, local = local, z = zs, p_value = ps,
-       lagged_mean = lagm, counts = counts, alpha = alpha,
-       conditional_randomization = TRUE,
-       hl_and_lh_are_outliers_not_clusters = TRUE, n = n,
-       method = paste("Local Moran eq (1.17) of Schabenberger & Gotway",
-                      "(2005) Sec. 1.3.3 with exact",
-                      "conditional-randomization moments; the HH/LL/HL/LH",
-                      "labels are Anselin (1996), not in that book"))
+  counts <- vapply(
+    c("HH", "LL", "HL", "LH", "NS"),
+    function(k) sum(labels == k), numeric(1)
+  )
+  list(
+    labels = labels, local = local, z = zs, p_value = ps,
+    lagged_mean = lagm, counts = counts, alpha = alpha,
+    conditional_randomization = TRUE,
+    hl_and_lh_are_outliers_not_clusters = TRUE, n = n,
+    method = paste(
+      "Local Moran eq (1.17) of Schabenberger & Gotway",
+      "(2005) Sec. 1.3.3 with exact",
+      "conditional-randomization moments; the HH/LL/HL/LH",
+      "labels are Anselin (1996), not in that book"
+    )
+  )
 }
 
 #' Tukey (1977), Exploratory Data Analysis.  NOT in Schabenberger &
 #'
 #' Gotway -- a fixed-string search for "polish" returns nothing; the
-#' book\'s trend removal is the OLS trend surface of Sec. 5.3.1.  Median
+#' book's trend removal is the OLS trend surface of Sec. 5.3.1.  Median
 #' polish is resistant to outliers, which is why the geostatistical
 #' literature reaches for it first.  A sweep must run row-then-column in
 #' a FIXED order; median polish is not order-invariant.
@@ -1203,6 +1417,10 @@ LisaClust <- function(x, w, alpha = 0.05) {
 #' \code{fitted}, \code{abs_residual_sum}, \code{sweeps}, \code{resistant_to_outliers},
 #' \code{nrow}, \code{ncol}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' MedPolish(M)
+#' @keywords internal
 MedPolish <- function(values, grid = NULL, iters = 10L) {
   # Tukey (1977), Exploratory Data Analysis.  NOT in Schabenberger &
   # Gotway -- a fixed-string search for "polish" returns nothing; the
@@ -1213,11 +1431,15 @@ MedPolish <- function(values, grid = NULL, iters = 10L) {
   if (!is.null(grid)) {
     flat <- as.numeric(values)
     g <- as.integer(grid)
-    if (length(g) != 2L || g[1L] < 1L || g[2L] < 1L)
+    if (length(g) != 2L || g[1L] < 1L || g[2L] < 1L) {
       stop("`grid` must be (nrow, ncol), both positive")
-    if (length(flat) != g[1L] * g[2L])
-      stop(sprintf("`values` has %d entries but `grid` asks for %d",
-                   length(flat), g[1L] * g[2L]))
+    }
+    if (length(flat) != g[1L] * g[2L]) {
+      stop(sprintf(
+        "`values` has %d entries but `grid` asks for %d",
+        length(flat), g[1L] * g[2L]
+      ))
+    }
     Y <- matrix(flat, nrow = g[1L], ncol = g[2L], byrow = TRUE)
   } else {
     Y <- as.matrix(values)
@@ -1250,21 +1472,25 @@ MedPolish <- function(values, grid = NULL, iters = 10L) {
     row <- row - d
   }
   fitted <- outer(row, col, "+") + overall
-  list(overall = overall, row = row, col = col, residuals = res,
-       fitted = fitted,
-       abs_residual_sum = .morie_fsum(abs(as.numeric(res))),
-       sweeps = iters, resistant_to_outliers = TRUE,
-       nrow = nr, ncol = nc, n = nr * nc,
-       method = paste("Median polish (Tukey 1977, Exploratory Data",
-                      "Analysis); NOT in Schabenberger & Gotway, whose",
-                      "trend removal is the OLS trend surface of",
-                      "Sec. 5.3.1"))
+  list(
+    overall = overall, row = row, col = col, residuals = res,
+    fitted = fitted,
+    abs_residual_sum = .morie_fsum(abs(as.numeric(res))),
+    sweeps = iters, resistant_to_outliers = TRUE,
+    nrow = nr, ncol = nc, n = nr * nc,
+    method = paste(
+      "Median polish (Tukey 1977, Exploratory Data",
+      "Analysis); NOT in Schabenberger & Gotway, whose",
+      "trend removal is the OLS trend surface of",
+      "Sec. 5.3.1"
+    )
+  )
 }
 
 #' Thetahat_j = ybar.. + (1 - lambda_j)(ybar_j - ybar..),
 #'
 #' lambda_j = sigma2_e / (sigma2_e + n_j sigma2_u).  lambda depends on
-#' the CLUSTER\'S OWN SIZE; a common lambda over-shrinks the large
+#' the CLUSTER'S OWN SIZE; a common lambda over-shrinks the large
 #' clusters. Stein (1956); Morris (1983) JASA 78:47-55.  NOT in
 #' Schabenberger & Gotway -- a fixed-string search for "shrinkage"
 #' returns nothing.
@@ -1277,6 +1503,12 @@ MedPolish <- function(values, grid = NULL, iters = 10L) {
 #' \code{sizes}, \code{grand_mean}, \code{sigma2_u}, \code{sigma2_e},
 #' \code{shrinkage_depends_on_cluster_size}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(4)
+#' y <- c(rnorm(5, 1), rnorm(8, 2), rnorm(3, 0))
+#' cl <- c(rep(0, 5), rep(1, 8), rep(2, 3))
+#' ShrinkPred(y, cl, sigma2_u = 0.5, sigma2_e = 1)
+#' @keywords internal
 ShrinkPred <- function(y, cluster, sigma2_u, sigma2_e) {
   # thetahat_j = ybar.. + (1 - lambda_j)(ybar_j - ybar..),
   # lambda_j = sigma2_e / (sigma2_e + n_j sigma2_u).  lambda depends on the
@@ -1294,8 +1526,9 @@ ShrinkPred <- function(y, cluster, sigma2_u, sigma2_e) {
   if (su < 0) stop("`sigma2_u` must be non-negative")
   if (se <= 0) stop("`sigma2_e` must be positive")
   keys <- sort(unique(ci))
-  if (length(keys) < 2L)
+  if (length(keys) < 2L) {
     stop("at least 2 clusters are needed for shrinkage to mean anything")
+  }
   grand <- .morie_fsum(yy) / n
   sizes <- numeric(0)
   raw <- numeric(0)
@@ -1311,13 +1544,17 @@ ShrinkPred <- function(y, cluster, sigma2_u, sigma2_e) {
     lam <- c(lam, lj)
     shrunk <- c(shrunk, grand + (1 - lj) * (mj - grand))
   }
-  list(clusters = as.numeric(keys), shrunk = shrunk, raw = raw,
-       lambda = lam, sizes = sizes, grand_mean = grand,
-       sigma2_u = su, sigma2_e = se,
-       shrinkage_depends_on_cluster_size = TRUE, n = n,
-       method = paste("Level-2 shrinkage / empirical-Bayes predictor",
-                      "(Stein 1956; Morris 1983); NOT in Schabenberger &",
-                      "Gotway"))
+  list(
+    clusters = as.numeric(keys), shrunk = shrunk, raw = raw,
+    lambda = lam, sizes = sizes, grand_mean = grand,
+    sigma2_u = su, sigma2_e = se,
+    shrinkage_depends_on_cluster_size = TRUE, n = n,
+    method = paste(
+      "Level-2 shrinkage / empirical-Bayes predictor",
+      "(Stein 1956; Morris 1983); NOT in Schabenberger &",
+      "Gotway"
+    )
+  )
 }
 
 #' SparseVector
@@ -1338,6 +1575,9 @@ ShrinkPred <- function(y, cluster, sigma2_u, sigma2_e) {
 #' \code{c}, \code{cost_scales_with_c_not_with_m}, \code{answered}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' SparseVector(queries = c(1, 2, 3, 4, 5, 6, 7, 8), threshold = 0.5)
+#' @keywords internal
 SparseVector <- function(queries, threshold, c = 1L, epsilon = 1,
                          threshold_noise = 0, query_noise = NULL) {
   # AboveThreshold / sparse vector (Dwork & Roth 2014, Alg. 2; Hardt &
@@ -1351,11 +1591,15 @@ SparseVector <- function(queries, threshold, c = 1L, epsilon = 1,
   cc <- as.integer(c)
   eps <- as.numeric(epsilon)
   if (cc < 1L) stop("`c` must be at least 1")
-  if (cc > m)
+  if (cc > m) {
     stop(sprintf("`c` (%d) exceeds the number of queries (%d)", cc, m))
+  }
   if (eps <= 0) stop("`epsilon` must be positive")
-  qn <- if (is.null(query_noise)) rep(0, m) else
+  qn <- if (is.null(query_noise)) {
+    rep(0, m)
+  } else {
     .morie_spx_chkv(query_noise, "query_noise")
+  }
   if (length(qn) != m) stop("`query_noise` must have one entry per query")
   tn <- t + as.numeric(threshold_noise)
   above <- rep(NA, m)
@@ -1363,8 +1607,10 @@ SparseVector <- function(queries, threshold, c = 1L, epsilon = 1,
   hits <- 0L
   halted <- m
   for (i in seq_len(m)) {
-    if (hits >= cc) { halted <- i - 1L
-    break }
+    if (hits >= cc) {
+      halted <- i - 1L
+      break
+    }
     if (q[i] + qn[i] >= tn) {
       above[i] <- TRUE
       released[i] <- q[i] + qn[i]
@@ -1373,17 +1619,21 @@ SparseVector <- function(queries, threshold, c = 1L, epsilon = 1,
       above[i] <- FALSE
     }
   }
-  list(above = above, released = released, halted_at = halted,
-       n_above = hits, noisy_threshold = tn,
-       noise_scales = c(threshold = 2 / eps, query = 2 * cc / eps),
-       epsilon_split = c(threshold = eps / 2, queries = eps / 2),
-       epsilon = eps, c = cc,
-       cost_scales_with_c_not_with_m = TRUE,
-       answered = sum(!is.na(above)), n = m,
-       method = paste("Sparse vector / AboveThreshold (Dwork & Roth 2014,",
-                      "Alg. 2; Hardt & Rothblum 2010) with",
-                      "caller-supplied noise; NOT in Schabenberger &",
-                      "Gotway"))
+  list(
+    above = above, released = released, halted_at = halted,
+    n_above = hits, noisy_threshold = tn,
+    noise_scales = c(threshold = 2 / eps, query = 2 * cc / eps),
+    epsilon_split = c(threshold = eps / 2, queries = eps / 2),
+    epsilon = eps, c = cc,
+    cost_scales_with_c_not_with_m = TRUE,
+    answered = sum(!is.na(above)), n = m,
+    method = paste(
+      "Sparse vector / AboveThreshold (Dwork & Roth 2014,",
+      "Alg. 2; Hardt & Rothblum 2010) with",
+      "caller-supplied noise; NOT in Schabenberger &",
+      "Gotway"
+    )
+  )
 }
 
 #' Alpha = sum_x min(p,q) = 1 - TV(p,q); E\[tokens\] =
@@ -1411,27 +1661,37 @@ SpecDec <- function(draft, target, gamma = 4L) {
   # expectation, not a sampled run.
   q <- .morie_spx_chkv(draft, "draft")
   p <- .morie_spx_chkv(target, "target")
-  if (length(q) != length(p))
+  if (length(q) != length(p)) {
     stop("`draft` and `target` must cover the same vocabulary")
+  }
   if (length(q) < 2L) stop("a vocabulary of at least 2 tokens is needed")
   if (any(q < 0) || any(p < 0)) stop("probabilities must be non-negative")
-  if (abs(.morie_fsum(q) - 1) > 1e-9)
+  if (abs(.morie_fsum(q) - 1) > 1e-9) {
     stop(sprintf("`draft` must sum to 1 (got %.12g)", .morie_fsum(q)))
-  if (abs(.morie_fsum(p) - 1) > 1e-9)
+  }
+  if (abs(.morie_fsum(p) - 1) > 1e-9) {
     stop(sprintf("`target` must sum to 1 (got %.12g)", .morie_fsum(p)))
+  }
   g <- as.integer(gamma)
   if (g < 1L) stop("`gamma` must be at least 1")
   alpha <- .morie_fsum(pmin(p, q))
   tv <- 1 - alpha
-  expect <- if (tv <= 1e-15) as.numeric(g + 1L)
-            else (1 - alpha ^ (g + 1L)) / (1 - alpha)
-  list(alpha = alpha, tv_distance = tv, expected_tokens = expect,
-       gamma = as.numeric(g), max_tokens = as.numeric(g + 1L),
-       deterministic_expectation_not_a_sampled_run = TRUE,
-       n = length(p),
-       method = paste("Speculative decoding acceptance rate and expected",
-                      "token yield (Leviathan, Kalman & Matias 2023); NOT",
-                      "in Schabenberger & Gotway"))
+  expect <- if (tv <= 1e-15) {
+    as.numeric(g + 1L)
+  } else {
+    (1 - alpha^(g + 1L)) / (1 - alpha)
+  }
+  list(
+    alpha = alpha, tv_distance = tv, expected_tokens = expect,
+    gamma = as.numeric(g), max_tokens = as.numeric(g + 1L),
+    deterministic_expectation_not_a_sampled_run = TRUE,
+    n = length(p),
+    method = paste(
+      "Speculative decoding acceptance rate and expected",
+      "token yield (Leviathan, Kalman & Matias 2023); NOT",
+      "in Schabenberger & Gotway"
+    )
+  )
 }
 
 #' Raw cross-periodogram S_xy(w) = X(w) conj(Y(w)) / (2 pi n) on
@@ -1446,6 +1706,10 @@ SpecDec <- function(draft, target, gamma = 4L) {
 #' \code{amplitude}, \code{phase}, \code{means_removed}, \code{raw_not_consistent},
 #' \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' CrossSpec(V, V)
+#' @keywords internal
 CrossSpec <- function(x, y) {
   # Raw cross-periodogram S_xy(w) = X(w) conj(Y(w)) / (2 pi n) on
   # MEAN-REMOVED records (Brillinger 2001, Ch. 7).  NOT in Schabenberger &
@@ -1458,8 +1722,9 @@ CrossSpec <- function(x, y) {
   if (n < 4L) stop("at least 4 observations are needed")
   dx <- xv - .morie_fsum(xv) / n
   dy <- yv - .morie_fsum(yv) / n
-  if (.morie_fsum(dx * dx) <= 0 || .morie_fsum(dy * dy) <= 0)
+  if (.morie_fsum(dx * dx) <= 0 || .morie_fsum(dy * dy) <= 0) {
     stop("`x` and `y` must not be constant")
+  }
   fx <- .morie_spx_dft(dx)
   fy <- .morie_spx_dft(dy)
   scale <- 2 * pi * n
@@ -1469,11 +1734,15 @@ CrossSpec <- function(x, y) {
     scale
   im <- (fx$im[ks + 1L] * fy$re[ks + 1L] - fx$re[ks + 1L] * fy$im[ks + 1L]) /
     scale
-  list(omega = omega, cospectrum = re, quadrature = -im,
-       amplitude = sqrt(re * re + im * im), phase = atan2(im, re),
-       means_removed = TRUE, raw_not_consistent = TRUE, n = n,
-       method = paste("Raw cross-periodogram (Brillinger 2001, Ch. 7);",
-                      "NOT in Schabenberger & Gotway"))
+  list(
+    omega = omega, cospectrum = re, quadrature = -im,
+    amplitude = sqrt(re * re + im * im), phase = atan2(im, re),
+    means_removed = TRUE, raw_not_consistent = TRUE, n = n,
+    method = paste(
+      "Raw cross-periodogram (Brillinger 2001, Ch. 7);",
+      "NOT in Schabenberger & Gotway"
+    )
+  )
 }
 
 #' C_xy = |S_xy|^2 / (S_xx S_yy) by Welch averaging (Bendat & Piersol
@@ -1492,6 +1761,14 @@ CrossSpec <- function(x, y) {
 #' \code{n_segments}, \code{nperseg}, \code{step},
 #' \code{single_segment_coherence_is_identically_one}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(5)
+#' n <- 512
+#' s <- sin(2 * pi * 0.1 * (1:n))
+#' x <- s + 0.3 * rnorm(n)
+#' y <- s + 0.3 * rnorm(n)
+#' str(MsCoh(x, y, nperseg = 128), max.level = 1)
+#' @keywords internal
 MsCoh <- function(x, y, nperseg = NULL, overlap = 0.5) {
   # C_xy = |S_xy|^2 / (S_xx S_yy) by Welch averaging (Bendat & Piersol
   # 2010, Ch. 5).  NOT in Schabenberger & Gotway -- a fixed-string search
@@ -1504,16 +1781,20 @@ MsCoh <- function(x, y, nperseg = NULL, overlap = 0.5) {
   if (length(yv) != n) stop("`x` and `y` must have the same length")
   m <- if (is.null(nperseg)) max(8L, n %/% 4L) else as.integer(nperseg)
   if (m < 8L) stop("`nperseg` must be at least 8")
-  if (m > n)
+  if (m > n) {
     stop(sprintf("`nperseg` (%d) exceeds the record length (%d)", m, n))
+  }
   overlap <- as.numeric(overlap)
   if (!(overlap >= 0 && overlap < 1)) stop("`overlap` must lie in [0, 1)")
   step <- max(1L, as.integer(round(m * (1 - overlap))))
   starts <- seq.int(0L, n - m, by = step)
-  if (length(starts) < 2L)
-    stop(paste("fewer than 2 segments: coherence would be identically 1",
-               "and would mean nothing; shorten `nperseg` or lengthen the",
-               "records"))
+  if (length(starts) < 2L) {
+    stop(paste(
+      "fewer than 2 segments: coherence would be identically 1",
+      "and would mean nothing; shorten `nperseg` or lengthen the",
+      "records"
+    ))
+  }
   win <- 0.5 - 0.5 * cos(2 * pi * (seq_len(m) - 1L) / (m - 1))
   ks <- seq_len(m %/% 2L)
   sxx <- rep(0, length(ks))
@@ -1538,14 +1819,18 @@ MsCoh <- function(x, y, nperseg = NULL, overlap = 0.5) {
   }
   nseg <- length(starts)
   den <- sxx * syy
-  coh <- ifelse(den <= 0, NaN, (cre ^ 2 + cim ^ 2) / den)
-  list(omega = 2 * pi * ks / m, coherence = coh,
-       sxx = sxx / nseg, syy = syy / nseg,
-       n_segments = nseg, nperseg = m, step = step,
-       single_segment_coherence_is_identically_one = TRUE, n = n,
-       method = paste("Magnitude-squared coherence by Welch averaging",
-                      "(Bendat & Piersol 2010, Ch. 5); NOT in",
-                      "Schabenberger & Gotway"))
+  coh <- ifelse(den <= 0, NaN, (cre^2 + cim^2) / den)
+  list(
+    omega = 2 * pi * ks / m, coherence = coh,
+    sxx = sxx / nseg, syy = syy / nseg,
+    n_segments = nseg, nperseg = m, step = step,
+    single_segment_coherence_is_identically_one = TRUE, n = n,
+    method = paste(
+      "Magnitude-squared coherence by Welch averaging",
+      "(Bendat & Piersol 2010, Ch. 5); NOT in",
+      "Schabenberger & Gotway"
+    )
+  )
 }
 
 #' Spectral residual saliency (Hou & Zhang 2007).  NOT in Schabenberger
@@ -1561,6 +1846,10 @@ MsCoh <- function(x, y, nperseg = NULL, overlap = 0.5) {
 #' \code{log_amplitude}, \code{floored}, \code{phase_is_preserved}, \code{q}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' SpecAnom(V)
+#' @keywords internal
 SpecAnom <- function(x, q = 3L) {
   # Spectral residual saliency (Hou & Zhang 2007).  NOT in Schabenberger &
   # Gotway.  THE PHASE IS KEPT: rebuilding from the residual amplitude
@@ -1571,8 +1860,9 @@ SpecAnom <- function(x, q = 3L) {
   if (n < 8L) stop("at least 8 samples are needed")
   q <- as.integer(q)
   if (q < 1L || q %% 2L == 0L) stop("`q` must be an odd positive integer")
-  if (q > n)
+  if (q > n) {
     stop(sprintf("`q` (%d) exceeds the record length (%d)", q, n))
+  }
   f <- .morie_spx_dft(v)
   amp <- sqrt(f$re * f$re + f$im * f$im)
   floored <- sum(amp < 1e-300)
@@ -1587,11 +1877,15 @@ SpecAnom <- function(x, q = 3L) {
   rec <- .morie_spx_idftre(exp(res) * cos(ph), exp(res) * sin(ph))
   sal <- rec * rec
   pk <- max(sal)
-  list(saliency = sal, peak = pk, peak_index = which.max(sal) - 1L,
-       residual = res, log_amplitude = lg, floored = floored,
-       phase_is_preserved = TRUE, q = q, n = n,
-       method = paste("Spectral residual saliency (Hou & Zhang 2007); NOT",
-                      "in Schabenberger & Gotway"))
+  list(
+    saliency = sal, peak = pk, peak_index = which.max(sal) - 1L,
+    residual = res, log_amplitude = lg, floored = floored,
+    phase_is_preserved = TRUE, q = q, n = n,
+    method = paste(
+      "Spectral residual saliency (Hou & Zhang 2007); NOT",
+      "in Schabenberger & Gotway"
+    )
+  )
 }
 
 #' L_sym = I - D^-1/2 A D^-1/2.  The clustering lives in the SMALLEST
@@ -1608,6 +1902,14 @@ SpecAnom <- function(x, q = 3L) {
 #' \code{degree}, \code{smallest_eigenvalues_not_largest}, \code{k}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' A <- matrix(0, 6, 6)
+#' A[1, 2] <- A[2, 3] <- A[1, 3] <- 1
+#' A[4, 5] <- A[5, 6] <- A[4, 6] <- 1
+#' A[3, 4] <- 0.05
+#' A <- A + t(A)
+#' SpecClust(A, k = 2L)
+#' @keywords internal
 SpecClust <- function(a, k = 2L) {
   # L_sym = I - D^-1/2 A D^-1/2.  The clustering lives in the SMALLEST
   # eigenvalues, so power iteration runs on 2I - L_sym and the values are
@@ -1617,14 +1919,18 @@ SpecClust <- function(a, k = 2L) {
   W <- .morie_spx_chkw(a, NULL)
   n <- nrow(W)
   k <- as.integer(k)
-  if (k < 2L || k > n)
+  if (k < 2L || k > n) {
     stop("`k` must lie between 2 and the number of nodes")
+  }
   if (any(W < 0)) stop("`a` must be non-negative")
   if (any(abs(W - t(W)) > 1e-12)) stop("`a` must be symmetric")
   deg <- vapply(seq_len(n), function(i) .morie_fsum(W[i, ]), numeric(1))
-  if (any(deg <= 0))
-    stop(sprintf("node %d has degree 0; an isolated node belongs to no cluster",
-                 which(deg <= 0)[1L] - 1L))
+  if (any(deg <= 0)) {
+    stop(sprintf(
+      "node %d has degree 0; an isolated node belongs to no cluster",
+      which(deg <= 0)[1L] - 1L
+    ))
+  }
   ds <- 1 / sqrt(deg)
   lsym <- diag(n) - (ds * W) * rep(ds, each = n)
   shifted <- diag(2, n) - lsym
@@ -1635,14 +1941,16 @@ SpecClust <- function(a, k = 2L) {
     labels <- as.numeric(fied >= 0)
   } else {
     srt <- sort(fied)
-    cen <- vapply(seq_len(k), function(cv)
-      srt[round((n - 1) * (cv - 0.5) / k) + 1L], numeric(1))
+    cen <- vapply(seq_len(k), function(cv) {
+      srt[round((n - 1) * (cv - 0.5) / k) + 1L]
+    }, numeric(1))
     labels <- rep(0, n)
     for (it in seq_len(50L)) {
       for (i in seq_len(n)) {
         best <- 1L
-        for (cv in seq_len(k))
+        for (cv in seq_len(k)) {
           if (abs(fied[i] - cen[cv]) < abs(fied[i] - cen[best])) best <- cv
+        }
         labels[i] <- best - 1L
       }
       for (cv in seq_len(k)) {
@@ -1652,15 +1960,19 @@ SpecClust <- function(a, k = 2L) {
     }
   }
   sizes <- vapply(seq_len(k), function(cv) sum(labels == cv - 1L), numeric(1))
-  list(labels = labels, sizes = sizes, eigenvalues = eig, fiedler = fied,
-       degree = deg, smallest_eigenvalues_not_largest = TRUE,
-       k = k, n = n,
-       method = paste("Normalized spectral clustering (Ng, Jordan & Weiss",
-                      "2001) with deterministic order-statistic starts;",
-                      "NOT in Schabenberger & Gotway"))
+  list(
+    labels = labels, sizes = sizes, eigenvalues = eig, fiedler = fied,
+    degree = deg, smallest_eigenvalues_not_largest = TRUE,
+    k = k, n = n,
+    method = paste(
+      "Normalized spectral clustering (Ng, Jordan & Weiss",
+      "2001) with deterministic order-statistic starts;",
+      "NOT in Schabenberger & Gotway"
+    )
+  )
 }
 
-#' MULTISPATI: diagonalise H = (1/n) X\' ((W + W\')/2) X on the centred,
+#' MULTISPATI: diagonalise H = (1/n) X' ((W + W')/2) X on the centred,
 #'
 #' unit-variance X, so an axis is scored by SPATIAL covariance, not
 #' variance.  Eigenvalues may be NEGATIVE -- that is a local-contrast
@@ -1676,6 +1988,13 @@ SpecClust <- function(a, k = 2L) {
 #' \code{lagged_scores}, \code{total_variance}, \code{eigenvalues_may_be_negative},
 #' \code{weights_symmetrised}, \code{naxes}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(6)
+#' W <- matrix(0, 10, 10)
+#' W[abs(row(W) - col(W)) == 1] <- 1
+#' X <- matrix(rnorm(30), 10, 3)
+#' str(SpatialPca(X, W), max.level = 1)
+#' @keywords internal
 SpatialPca <- function(x, w, naxes = 2L) {
   # MULTISPATI: diagonalise H = (1/n) X' ((W + W')/2) X on the centred,
   # unit-variance X, so an axis is scored by SPATIAL covariance, not
@@ -1689,32 +2008,40 @@ SpatialPca <- function(x, w, naxes = 2L) {
   p <- ncol(X)
   if (n < 3L) stop("at least 3 sites are needed")
   naxes <- as.integer(naxes)
-  if (naxes < 1L || naxes > p)
+  if (naxes < 1L || naxes > p) {
     stop("`naxes` must lie between 1 and the number of columns")
+  }
   W <- .morie_spx_chkw(w, n)
   Z <- matrix(0, n, p)
   for (j in seq_len(p)) {
     cj <- as.numeric(X[, j])
     d <- cj - .morie_fsum(cj) / n
     s <- sqrt(.morie_fsum(d * d) / n)
-    if (s <= 0)
+    if (s <= 0) {
       stop("a column of `x` is constant and cannot be scaled to unit variance")
+    }
     Z[, j] <- d / s
   }
   sym <- 0.5 * (W + t(W))
   H <- .morie_spx_matmul(t(Z), .morie_spx_matmul(sym, Z)) / n
   H <- 0.5 * (H + t(H))
   te <- .morie_spx_topeigs(H, naxes)
-  scores <- lapply(seq_len(naxes), function(a)
-    vapply(seq_len(n), function(i)
-      .morie_fsum(Z[i, ] * te$vectors[[a]]), numeric(1)))
+  scores <- lapply(seq_len(naxes), function(a) {
+    vapply(seq_len(n), function(i) {
+      .morie_fsum(Z[i, ] * te$vectors[[a]])
+    }, numeric(1))
+  })
   lagged <- lapply(scores, function(s) .morie_spx_matvec(sym, s))
-  list(eigenvalues = te$values, loadings = te$vectors, scores = scores,
-       lagged_scores = lagged, total_variance = as.numeric(p),
-       eigenvalues_may_be_negative = TRUE, weights_symmetrised = TRUE,
-       naxes = naxes, n = n,
-       method = paste("MULTISPATI spatial PCA (Dray, Said & Debias 2008);",
-                      "NOT in Schabenberger & Gotway"))
+  list(
+    eigenvalues = te$values, loadings = te$vectors, scores = scores,
+    lagged_scores = lagged, total_variance = as.numeric(p),
+    eigenvalues_may_be_negative = TRUE, weights_symmetrised = TRUE,
+    naxes = naxes, n = n,
+    method = paste(
+      "MULTISPATI spatial PCA (Dray, Said & Debias 2008);",
+      "NOT in Schabenberger & Gotway"
+    )
+  )
 }
 
 #' Thin-plate spline eta(r) = r^2 log r plus linear covariates, solved
@@ -1751,21 +2078,31 @@ SpGam <- function(y, x, coords, lam = 0) {
   yv <- .morie_spx_chkv(y, "y")
   n <- length(yv)
   cc <- as.matrix(coords)
-  if (nrow(cc) != n)
+  if (nrow(cc) != n) {
     stop(sprintf("`coords` has %d rows but `y` has %d values", nrow(cc), n))
-  if (ncol(cc) < 2L)
+  }
+  if (ncol(cc) < 2L) {
     stop("`coords` must have two columns for a 2-D thin-plate spline")
+  }
   lam <- as.numeric(lam)
   if (lam < 0) stop("`lam` must be non-negative")
-  Tm <- if (is.null(x)) cbind(1, cc[, 1L], cc[, 2L]) else
+  Tm <- if (is.null(x)) {
+    cbind(1, cc[, 1L], cc[, 2L])
+  } else {
     cbind(1, cc[, 1L], cc[, 2L], as.matrix(x))
+  }
   m <- ncol(Tm)
-  if (n <= m)
+  if (n <= m) {
     stop(sprintf("need more sites than null-space columns (%d)", m))
+  }
   K <- matrix(0, n, n)
-  for (i in seq_len(n)) for (j in seq_len(n)) if (i != j) {
-    r <- .morie_spx_dist(cc[i, 1:2], cc[j, 1:2])
-    K[i, j] <- if (r > 0) r * r * log(r) else 0
+  for (i in seq_len(n)) {
+    for (j in seq_len(n)) {
+      if (i != j) {
+        r <- .morie_spx_dist(cc[i, 1:2], cc[j, 1:2])
+        K[i, j] <- if (r > 0) r * r * log(r) else 0
+      }
+    }
   }
   size <- n + m
   A <- matrix(0, size, size)
@@ -1776,18 +2113,24 @@ SpGam <- function(y, x, coords, lam = 0) {
   sol <- .morie_spx_solve(A, c(yv, rep(0, m)))
   cw <- sol[seq_len(n)]
   d <- sol[n + seq_len(m)]
-  fitted <- vapply(seq_len(n), function(i)
-    .morie_fsum(K[i, ] * cw) + .morie_fsum(Tm[i, ] * d), numeric(1))
+  fitted <- vapply(seq_len(n), function(i) {
+    .morie_fsum(K[i, ] * cw) + .morie_fsum(Tm[i, ] * d)
+  }, numeric(1))
   resid <- yv - fitted
-  list(fitted = fitted, residuals = resid, coef = d, spline_weights = cw,
-       rss = .morie_fsum(resid * resid),
-       penalty = .morie_fsum(vapply(seq_len(n), function(i)
-         cw[i] * .morie_fsum(K[i, ] * cw), numeric(1))),
-       lam = lam, null_space_is_unpenalised = TRUE, n = n,
-       method = paste("Thin-plate spline surface plus linear covariates",
-                      "(Duchon 1977; Wood 2006, Ch. 4); NOT in",
-                      "Schabenberger & Gotway, whose parametric analogue",
-                      "is Sec. 5.3.1"))
+  list(
+    fitted = fitted, residuals = resid, coef = d, spline_weights = cw,
+    rss = .morie_fsum(resid * resid),
+    penalty = .morie_fsum(vapply(seq_len(n), function(i) {
+      cw[i] * .morie_fsum(K[i, ] * cw)
+    }, numeric(1))),
+    lam = lam, null_space_is_unpenalised = TRUE, n = n,
+    method = paste(
+      "Thin-plate spline surface plus linear covariates",
+      "(Duchon 1977; Wood 2006, Ch. 4); NOT in",
+      "Schabenberger & Gotway, whose parametric analogue",
+      "is Sec. 5.3.1"
+    )
+  )
 }
 
 #' I = H(R) - H(R|S), bits.  H_noise is the STIMULUS-WEIGHTED average of
@@ -1805,6 +2148,10 @@ SpGam <- function(y, x, coords, lam = 0) {
 #' \code{n_stimuli}, \code{nbins}, \code{n_per_cell}, \code{bits},
 #' \code{biased_upward_at_small_n}, \code{equal_count_bins}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' SpikeInfo(V, V)
+#' @keywords internal
 SpikeInfo <- function(spike, stim, nbins = 2L) {
   # I = H(R) - H(R|S), bits.  H_noise is the STIMULUS-WEIGHTED average of
   # the per-stimulus entropies; weighting them equally inflates I whenever
@@ -1819,17 +2166,23 @@ SpikeInfo <- function(spike, stim, nbins = 2L) {
   if (n < 4L) stop("at least 4 trials are needed")
   nbins <- as.integer(nbins)
   if (nbins < 2L) stop("`nbins` must be at least 2")
-  if (nbins > n)
+  if (nbins > n) {
     stop(sprintf("`nbins` (%d) exceeds the number of trials (%d)", nbins, n))
+  }
   si <- round(s)
   if (any(abs(s - si) > 1e-9)) stop("`stim` must hold integer class labels")
   keys <- sort(unique(si))
   if (length(keys) < 2L) stop("at least 2 stimulus classes are needed")
   srt <- sort(r)
-  edges <- vapply(seq_len(nbins - 1L), function(b)
-    srt[round(n * b / nbins)], numeric(1))
+  edges <- vapply(seq_len(nbins - 1L), function(b) {
+    srt[round(n * b / nbins)]
+  }, numeric(1))
   binof <- function(v) {
-    for (b in seq_len(nbins - 1L)) if (v <= edges[b]) return(b - 1L)
+    for (b in seq_len(nbins - 1L)) {
+      if (v <= edges[b]) {
+        return(b - 1L)
+      }
+    }
     nbins - 1L
   }
   code <- vapply(r, binof, numeric(1))
@@ -1838,8 +2191,10 @@ SpikeInfo <- function(spike, stim, nbins = 2L) {
     h <- 0
     for (b in seq_len(nbins) - 1L) {
       cnt <- sum(codes == b)
-      if (cnt) { p <- cnt / mm
-      h <- h - p * log(p, 2) }
+      if (cnt) {
+        p <- cnt / mm
+        h <- h - p * log(p, 2)
+      }
     }
     h
   }
@@ -1849,13 +2204,17 @@ SpikeInfo <- function(spike, stim, nbins = 2L) {
     sub <- code[si == cv]
     hnoise <- hnoise + (length(sub) / n) * ent(sub)
   }
-  list(information = htot - hnoise, h_total = htot, h_noise = hnoise,
-       n_stimuli = length(keys), nbins = nbins,
-       n_per_cell = n / (nbins * length(keys)), bits = TRUE,
-       biased_upward_at_small_n = TRUE, equal_count_bins = TRUE, n = n,
-       method = paste("Direct-method spike-train information (Strong et al.",
-                      "1998), no bias correction; NOT in Schabenberger &",
-                      "Gotway"))
+  list(
+    information = htot - hnoise, h_total = htot, h_noise = hnoise,
+    n_stimuli = length(keys), nbins = nbins,
+    n_per_cell = n / (nbins * length(keys)), bits = TRUE,
+    biased_upward_at_small_n = TRUE, equal_count_bins = TRUE, n = n,
+    method = paste(
+      "Direct-method spike-train information (Strong et al.",
+      "1998), no bias correction; NOT in Schabenberger &",
+      "Gotway"
+    )
+  )
 }
 
 #' Psi = E\[ \{g(A - delta | H) / g(A | H)\} Y \] -- the density ratio at
@@ -1895,31 +2254,37 @@ ShiftInt <- function(y, a, h, delta = 1, trim = NULL) {
   if (length(av) != n) stop("`y` and `a` must have the same length")
   if (n < 4L) stop("at least 4 observations are needed")
   D <- if (is.null(h)) matrix(1, n, 1L) else cbind(1, as.matrix(h))
-  if (nrow(D) != n)
+  if (nrow(D) != n) {
     stop(sprintf("`h` has %d rows but `y` has %d values", nrow(D), n))
+  }
   k <- ncol(D)
   if (n <= k) stop("need more observations than covariates + 1")
   d <- as.numeric(delta)
   gam <- .morie_spx_lstsq(D, av)
   res <- av - .morie_spx_matvec(D, gam)
   tau2 <- .morie_fsum(res * res) / (n - k)
-  if (tau2 <= 0)
+  if (tau2 <= 0) {
     stop("the exposure is perfectly predicted by `h`; no shift is identified")
+  }
   w <- exp((d / tau2) * (res - 0.5 * d))
   if (!is.null(trim)) {
     cap <- as.numeric(trim)
     if (cap <= 0) stop("`trim` must be positive")
     w <- pmin(w, cap)
   }
-  list(psi = .morie_fsum(w * yv) / n, naive_mean = .morie_fsum(yv) / n,
-       weights = w, max_weight = max(w), mean_weight = .morie_fsum(w) / n,
-       tau2 = tau2, gamma = gam, delta = d,
-       weight_uses_back_shifted_density = TRUE,
-       gaussian_working_model = TRUE, n = n,
-       method = paste("Shifted-intervention IPW psi =",
-                      "E[g(A-delta|H)/g(A|H) Y] with a Gaussian exposure",
-                      "model (Diaz & van der Laan 2012, 2018); NOT in",
-                      "Schabenberger & Gotway"))
+  list(
+    psi = .morie_fsum(w * yv) / n, naive_mean = .morie_fsum(yv) / n,
+    weights = w, max_weight = max(w), mean_weight = .morie_fsum(w) / n,
+    tau2 = tau2, gamma = gam, delta = d,
+    weight_uses_back_shifted_density = TRUE,
+    gaussian_working_model = TRUE, n = n,
+    method = paste(
+      "Shifted-intervention IPW psi =",
+      "E[g(A-delta|H)/g(A|H) Y] with a Gaussian exposure",
+      "model (Diaz & van der Laan 2012, 2018); NOT in",
+      "Schabenberger & Gotway"
+    )
+  )
 }
 
 # pre-policy spellings kept as aliases

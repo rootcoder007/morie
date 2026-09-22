@@ -26,3 +26,11 @@ A step of the varcal_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+reads <- c(
+  lapply(1:3, function(i) list(pos = 0L, seq = "ACGTTCGT")),
+  lapply(1:3, function(i) list(pos = 0L, seq = "ACGTACGT")))
+r <- morie_varcal(reads, reference = "ACGTACGTAC")
+str(r, max.level = 1)
+}
+\keyword{internal}

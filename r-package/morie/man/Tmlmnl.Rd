@@ -36,8 +36,7 @@ Formula: with out-of-fold \code{Q} and \code{g},
 the input order, so both language arms use the same partition.
 }
 \examples{
-Tmlmnl(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4,
-5, 6, 7, 8))
+Tmlmnl(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Chernozhukov, V. et al. (2018). Econometrics Journal

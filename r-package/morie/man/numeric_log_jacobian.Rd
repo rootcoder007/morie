@@ -21,3 +21,10 @@ A step of the bayrjmcmc_native implementation. Called by \code{reversible_jump_m
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+j <- numeric_log_jacobian(function(z) c(z[1] + z[2], z[1] - z[2]),
+                          c(0.4, 0.2))
+stopifnot(abs(j - log(2)) < 1e-5)
+j
+}
+\keyword{internal}

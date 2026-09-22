@@ -50,6 +50,10 @@ The disaggregation-sums-back identity is checked exactly so a
 profile that did not reconstitute would surface as an inconsistency
 rather than silently change the total.
 }
+\examples{
+morie_adida(y = c(1, 2, 3, 4, 5, 6, 7, 8), m = 3L)
+}
 \references{
 Nikolopoulos, K. et al. (2011).
 }
+\keyword{internal}

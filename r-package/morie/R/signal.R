@@ -221,7 +221,7 @@ hfd <- function(x, kmax = 10L) {
 
 #' Phonocardiogram (PCG) bandpass filter
 #'
-#' Convenience preset wrapping [buttbp()] with the standard PCG band
+#' Convenience preset wrapping \[buttbp()\] with the standard PCG band
 #' (25--400 Hz at 2000 Hz sampling). Removes baseline drift below 25 Hz and
 #' anti-aliased high-frequency noise above 400 Hz.
 #'
@@ -229,7 +229,7 @@ hfd <- function(x, kmax = 10L) {
 #' @param fs Sampling frequency (Hz, default 2000).
 #' @param low Lower cutoff (Hz, default 25).
 #' @param high Upper cutoff (Hz, default 400).
-#' @return List with filtered signal (see [buttbp()]).
+#' @return List with filtered signal (see \[buttbp()\]).
 #' @export
 #' @examples
 #' \donttest{
@@ -1134,28 +1134,4 @@ sgolay <- function(x, window = 11L, polyorder = 3L) {
     n_samples = length(res$filtered),
     extra = list(window = window, polyorder = polyorder)
   )
-}
-
-#' .morie_py_call
-#'
-#' A step of the signal implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' it follows.
-#'
-#' @param fn_name Passed to \code{paste}.
-#' @param ... Passed through.
-#' @return A character value.
-#' @export
-.morie_py_call <- function(fn_name, ...) {
-  args <- list(...)
-  arg_str <- paste(vapply(args, function(a) {
-    if (is.numeric(a) && length(a) > 1) {
-      paste0("[", paste(a, collapse = ","), "]")
-    } else {
-      as.character(a)
-    }
-  }, character(1)), collapse = " ")
-  cmd <- paste(fn_name, arg_str)
-  out <- system2("python3", c("-m", "morie.stat_bridge", "exec", cmd), stdout = TRUE, stderr = TRUE)
-  paste(out, collapse = "\n")
 }

@@ -15,7 +15,7 @@
 #' @param fan_out Number of output units.
 #' @param seed RNG seed.
 #' @param uniform Use uniform (TRUE, default) or normal (FALSE).
-#' @return Named list \code{(weights, value, fan_in, fan_out, mean, std,
+#' @return Named list \eqn{(weights, value, fan_in, fan_out, mean, std,
 #'   shape, method)}.
 #' @references Glorot & Bengio (2010), AISTATS.
 #' @examples
@@ -49,17 +49,8 @@ morie_xavir_xavier_init <- function(fan_in, fan_out, seed = 42L, uniform = TRUE)
   )
 }
 
-#' .Random.seed_safe
-#'
-#' A step of the xavir implementation. Called by \code{morie_xavir_xavier_init}.
-#' See the file header for the source the module follows.
-#' it follows.
-#'
-#' @return One of two values, depending on the branch taken.
-#' @export
-#' @examples
-#' res <- .Random.seed_safe()
-#' res
+#' Internal helper: Random.seed Safe
+#' @noRd
 .Random.seed_safe <- function() {
   if (exists(".Random.seed", envir = globalenv())) {
     get(".Random.seed", envir = globalenv())
@@ -68,15 +59,8 @@ morie_xavir_xavier_init <- function(fan_in, fan_out, seed = 42L, uniform = TRUE)
   }
 }
 
-#' .Random.seed_restore
-#'
-#' A step of the xavir implementation. Called by \code{morie_xavir_xavier_init}.
-#' See the file header for the source the module follows.
-#' it follows.
-#'
-#' @param old Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @return One of two values, depending on the branch taken.
-#' @export
+#' Internal helper: Random.seed Restore
+#' @noRd
 .Random.seed_restore <- function(old) {
   if (is.null(old)) {
     if (exists(".Random.seed", envir = globalenv())) {

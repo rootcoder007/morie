@@ -78,12 +78,13 @@
 #' loaded or called.
 #'
 #' @inheritParams morie_garch_fit
-#' @return Named list with \code{omega, alpha, gamma, beta, loglik,
+#' @return Named list with \eqn{omega, alpha, gamma, beta, loglik,
 #'   conditional_variance, n, method}.
 #' @references
 #' Nelson, D. B. (1991). Conditional heteroskedasticity in asset returns:
 #' a new approach. \emph{Econometrica}, 59(2), 347-370.
 #' @examples
+#' set.seed(1)
 #' morie_egarch_model(x = rnorm(50))
 #' @export
 morie_egarch_model <- function(x) {

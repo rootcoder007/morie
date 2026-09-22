@@ -13,11 +13,12 @@
 #'   If NULL, proportional weights W_h = n_h/sum(n_h) are used.
 #' @return list: estimate, se, ci_lower, ci_upper, weights, strata_means,
 #'   n_strata, method.
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(y = rnorm(100), stratum = rep(c("a", "b"), each = 50))
+#' morie_stratified_sampling(df, y = "y", strata = "stratum")
 #' @keywords internal
 #' @export
-#' @examples
-#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' strat(D)
 strat <- function(data, y = "y", strata = "stratum", pop_sizes = NULL) {
   yv <- as.numeric(data[[y]])
   sv <- data[[strata]]

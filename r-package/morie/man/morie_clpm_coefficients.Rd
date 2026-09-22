@@ -24,3 +24,8 @@ A step of the tmlcll_native implementation. Called by \code{morie_ri_clpm_coeffi
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+morie_clpm_coefficients(M, M)
+}
+\keyword{internal}

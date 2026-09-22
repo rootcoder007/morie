@@ -34,3 +34,7 @@ A step of the sv_dl_native implementation. Called by \code{morie_sv_dl_refine_br
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_sv_dl_gotoh_score_vectors(consensus = 5L, ref = 5L)
+}
+\keyword{internal}

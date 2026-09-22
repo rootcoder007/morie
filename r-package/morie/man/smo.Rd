@@ -27,3 +27,12 @@ A step of the svmopt_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+X <- rbind(matrix(rnorm(20, -1.5), 10, 2), matrix(rnorm(20, 1.5), 10, 2))
+y <- rep(c(-1, 1), each = 10)
+K <- X \%*\% t(X)
+r <- smo(y, K, C = 1)
+str(r, max.level = 1)
+}
+\keyword{internal}

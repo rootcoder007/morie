@@ -47,7 +47,7 @@ test_that("native nearest matching returns the morie_match_result shape", {
   expect_s3_class(r, "morie_match_result")
   expect_true(all(c("matched_data", "n_treated", "n_matched_control",
                     "match_pairs", "method", "details") %in% names(r)))
-  expect_identical(r$method, "nearest_neighbor (morie native)")
+  expect_identical(r$method, "nearest_neighbor (rmorie native)")
   expect_true(all(c("treated_idx", "control_idx", "distance") %in%
                     names(r$match_pairs)))
   expect_true(all(r$match_pairs$distance >= 0))
@@ -108,7 +108,7 @@ test_that("native mahalanobis matching returns the result shape", {
   d <- .dgp_confounded(n = 500L, seed = 21L)
   r <- morie_matching_mahalanobis(d, "d", c("x1", "x2", "x3"))
   expect_s3_class(r, "morie_match_result")
-  expect_identical(r$method, "mahalanobis (morie native)")
+  expect_identical(r$method, "mahalanobis (rmorie native)")
   expect_false(any(duplicated(r$match_pairs$control_idx)))
   expect_true(all(r$match_pairs$distance >= 0))
 })
@@ -158,7 +158,7 @@ test_that("native exact matching keeps only two-arm strata", {
   df <- .dgp_discrete()
   res <- morie_matching_exact(df, "d", c("region", "year"))
   expect_s3_class(res$matched_data, "data.frame")
-  expect_identical(res$method, "exact (morie native)")
+  expect_identical(res$method, "exact (rmorie native)")
   md <- res$matched_data
   key <- paste(md$region, md$year)
   for (k in unique(key)) {
@@ -197,7 +197,7 @@ test_that("native CEM returns the contract shape with L1 diagnostic", {
   skip_heavy()
   df <- .dgp_confounded(n = 800L)
   res <- morie_matching_cem(df, "d", c("x1", "x2", "x3"), n_bins = 4L)
-  expect_identical(res$method, "cem (morie native)")
+  expect_identical(res$method, "cem (rmorie native)")
   expect_true(res$n_treated > 0)
   expect_true(res$n_matched_control > 0)
   expect_true(is.numeric(res$details$l1_before))
@@ -227,7 +227,7 @@ test_that("native CEM honours per-variable n_bins list with Sturges fallback", {
   skip_heavy()
   df <- .dgp_confounded(n = 600L)
   res <- morie_matching_cem(df, "d", c("x1", "x2"), n_bins = list(x1 = 3L))
-  expect_identical(res$method, "cem (morie native)")
+  expect_identical(res$method, "cem (rmorie native)")
   expect_true(res$n_treated > 0)
 })
 
@@ -246,7 +246,7 @@ test_that("native optimal matching returns the result shape (propensity)", {
   d <- .dgp_confounded(n = 500L, seed = 31L)
   r <- morie_matching_optimal_pair(d, "d", c("x1", "x2", "x3"))
   expect_s3_class(r, "morie_match_result")
-  expect_identical(r$method, "optimal_pair (morie native)")
+  expect_identical(r$method, "optimal_pair (rmorie native)")
   expect_equal(r$n_treated, sum(stats::complete.cases(
     d[, c("d", "x1", "x2", "x3")]) & d$d == 1))
   expect_false(any(duplicated(r$match_pairs$control_idx)))
@@ -293,7 +293,7 @@ test_that("native genetic matching returns the result shape", {
   r <- morie_matching_genetic(d, "d", c("x1", "x2", "x3"),
                               pop_size = 12L, n_generations = 4L)
   expect_s3_class(r, "morie_match_result")
-  expect_identical(r$method, "genetic (morie native)")
+  expect_identical(r$method, "genetic (rmorie native)")
   expect_named(r$details$best_weights, c("x1", "x2", "x3"))
   expect_true(all(r$details$best_weights > 0))
   expect_false(any(duplicated(r$match_pairs$control_idx)))
@@ -429,7 +429,7 @@ test_that("native PLR recovers theta on a linear DGP and is deterministic", {
   r1 <- morie_estimate_double_ml(df, "y", "d", paste0("x", 1:4))
   r2 <- morie_estimate_double_ml(df, "y", "d", paste0("x", 1:4))
   expect_identical(r1, r2)
-  expect_identical(r1$method, "PLR (morie native)")
+  expect_identical(r1$method, "PLR (rmorie native)")
   expect_lt(abs(r1$ate - 0.8), 3 * r1$se)
   expect_true(r1$ci_lower < r1$ate && r1$ate < r1$ci_upper)
 })
@@ -458,7 +458,7 @@ test_that("native IRM recovers theta with the AIPW score", {
   names(df)[3:5] <- paste0("x", 1:3)
   r <- morie_estimate_irm(df, treatment = "d", outcome = "y",
                           covariates = paste0("x", 1:3))
-  expect_identical(r$method, "IRM (morie native)")
+  expect_identical(r$method, "IRM (rmorie native)")
   expect_lt(abs(r$ate - 0.7), 3 * r$se)
 })
 

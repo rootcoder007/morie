@@ -26,3 +26,14 @@ second derivative is used because the notch rides on the falling limb
 of the pulse, which a first derivative cannot separate from the limb
 itself.
 }
+\examples{
+set.seed(1)
+fs <- 250
+tv <- seq(0, 2, by = 1 / fs)
+ph <- (tv \%\% 0.8) / 0.8
+cp <- exp(-((ph - 0.25) / 0.12)^2) + 0.35 * exp(-((ph - 0.55) / 0.05)^2)
+cp <- cp + 0.01 * rnorm(length(cp))
+r <- DicNotch(cp, fs = fs)
+r$notch
+}
+\keyword{internal}

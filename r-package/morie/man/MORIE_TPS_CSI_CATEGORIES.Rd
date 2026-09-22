@@ -13,5 +13,5 @@ Character vector.
 Canonical CSI category names (the 9 TPS open-data feeds)
 }
 \examples{
-MORIE_TPS_CSI_CATEGORIES()
+MORIE_TPS_CSI_CATEGORIES
 }

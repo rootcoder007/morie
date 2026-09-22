@@ -24,3 +24,8 @@ A list with \code{ccf}, \code{delays}, \code{overlap_fraction},
 samples that BOTH signals cover.  Long delays use less data, so the
 overlap fraction travels with the estimate.
 }
+\examples{
+XCorrCont(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+  t = c(1, 2, 3, 4, 5, 6, 7, 8), delays = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -51,3 +51,8 @@ A step of the bigtm_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+docs <- list(c(0, 1, 2, 0), c(1, 2, 0, 1), c(2, 0, 1, 2))
+gibbs_bigram_topic(docs, T = 2, V = 3, iters = 20L, burn = 5L)
+}
+\keyword{internal}

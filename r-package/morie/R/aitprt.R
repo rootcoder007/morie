@@ -21,6 +21,8 @@ Perturb <- function(x, y, total = 1) {
   if (any(x <= 0) || any(y <= 0)) stop("compositions must be strictly positive")
   p <- x * y
   k <- as.numeric(total)
-  .t1_result(composition = k * p / sum(p), total = k, D = length(x),
-             method = "Perturbation on the simplex")
+  .t1_result(
+    composition = k * p / sum(p), total = k, D = length(x),
+    method = "Perturbation on the simplex"
+  )
 }

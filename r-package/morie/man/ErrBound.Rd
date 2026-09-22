@@ -25,3 +25,7 @@ divergence does not bound the error this way, and substituting it
 would give a number that looks like a bound and is not one.  The
 bound is on the OPTIMAL classifier, a floor no real one can beat.
 }
+\examples{
+ErrBound(0.5, 0.5, 1.4)
+}
+\keyword{internal}

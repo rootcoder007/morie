@@ -36,7 +36,7 @@ threshold-specific model is reported.}
 \item{max_iter, tol}{IRLS / GLM control passed to \code{\link[stats]{glm.fit}}.}
 }
 \value{
-An object of class \code{c("mrm_threshold_specific_ordinal",
+An object of class \eqn{c("mrm_threshold_specific_ordinal",
   "morie_mrm_result", "list")} with elements
 \code{threshold_labels}, \code{covariate_names},
 \code{coefficients} (a (K-1) x p matrix), \code{cutpoints},
@@ -51,6 +51,7 @@ covariates.  Optionally fits the proportional-odds baseline and
 returns the likelihood-ratio test of PO vs. threshold-specific.
 }
 \examples{
+set.seed(1)
 if (FALSE) {
   df <- data.frame(
     y = sample(c("low", "med", "high"), 200, replace = TRUE),

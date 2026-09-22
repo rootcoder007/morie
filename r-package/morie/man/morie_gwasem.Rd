@@ -2,7 +2,7 @@
 % Please edit documentation in R/gwasem_native.R
 \name{morie_gwasem}
 \alias{morie_gwasem}
-\title{EMMAX genome-wide association scan}
+\title{EMMAX GWAS}
 \usage{
 morie_gwasem(
   y,
@@ -19,39 +19,39 @@ morie_gwasem(
 \arguments{
 \item{y}{Phenotype vector.}
 
-\item{genotypes}{Individual x marker matrix (minor allele counts).}
+\item{genotypes}{n x m minor-allele count matrix.}
 
-\item{kinship}{Optional n x n relatedness matrix; computed by IBS
-when omitted.}
+\item{kinship}{Optional n x n relatedness matrix; IBS when omitted.}
 
-\item{covariates}{Optional covariate matrix.}
+\item{covariates}{Optional n x q covariate matrix.}
 
-\item{trait}{"quantitative" or "binary".}
+\item{trait}{\code{"quantitative"} or \code{"binary"}.}
 
-\item{test}{"f" (GLS F-test) or "score".}
+\item{test}{\code{"f"} or \code{"score"}.}
 
-\item{ml}{Use maximum likelihood instead of REML.}
+\item{ml}{Use ML rather than REML.}
 
-\item{per_marker_reml}{Re-estimate variance components per marker
-(the exact EMMA model, off by default).}
+\item{per_marker_reml}{Re-estimate variance components per marker.}
 
-\item{min_maf}{Skip markers below this minor allele frequency.}
+\item{min_maf}{Skip markers below this MAF.}
 }
 \value{
-A list with \code{beta}, \code{se}, \code{stat},
-\code{pvalue}, \code{variance_components},
-\code{pseudo_heritability}, \code{lambda_gc}, \code{skipped},
-\code{n}, \code{n_markers}, \code{test}, \code{trait},
-\code{per_marker_reml}, \code{note} and \code{method}.
+A list with the per-marker statistics, the variance
+components, the genomic-control inflation factor and the
+skipped-marker indices.
 }
 \description{
-The three-step procedure: (1) Gower-normalise a relatedness matrix
-\eqn{\hat S}, (2) estimate \eqn{\sigma_a^2, \sigma_e^2} once by
-REML/ML in \eqn{\mathrm{Var}(Y) = \sigma_a^2 \hat S_N +
-\sigma_e^2 I}, and (3) GLS F-test (or score test) at every marker
-with that fixed V. Step 2 happening once is the eXpedited part; the
-expensive per-marker REML is available as an exact alternative.
+Three-step procedure: Gower-normalise \code{S} (eq.5), estimate
+\code{sigma_a^2, sigma_e^2} once under the null (eq.6) and test
+each marker with the fixed variance (eq.7). Case-control is the
+0/1 response as a quantitative trait, in the spirit of Armitage.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_gwasem(V, V)
 }
 \references{
-Kang, H. M. et al. (2010); Kang, H. M. et al. (2008).
+Kang, H. M. et al. (2010). Nature Genetics 42(4),
+348-354.
 }
+\keyword{internal}

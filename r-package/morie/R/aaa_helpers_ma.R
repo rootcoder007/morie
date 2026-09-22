@@ -6,7 +6,7 @@
 # Weighted least squares. cov is (X' W X)^{-1}, the model-based
 # covariance -- correct when the weights really are inverse variances,
 # which is the whole premise of inverse-variance meta-analysis.
-#' Weighted least squares. cov is (X\' W X)^\{-1\}, the model-based
+#' Weighted least squares. cov is (X' W X)^\{-1\}, the model-based
 #'
 #' covariance -- correct when the weights really are inverse variances,
 #' which is the whole premise of inverse-variance meta-analysis.
@@ -48,8 +48,9 @@
 #' @export
 .ma_net_design <- function(design) {
   D <- as.matrix(design)
-  if (ncol(D) != 2L)
+  if (ncol(D) != 2L) {
     stop("design must have two columns: baseline, comparator")
+  }
   treats <- sort(unique(as.integer(D)))
   T <- length(treats)
   if (T < 2L) stop("a network needs at least two treatments")

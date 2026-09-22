@@ -16,9 +16,7 @@ auto_test(x, y = NULL, paired = FALSE, confidence = 0.95)
 \item{confidence}{Confidence level.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-from the dispatched test (one-sample t, paired t, Wilcoxon signed-rank,
-two-sample t, Welch's t, or Mann-Whitney U).
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Decision logic:

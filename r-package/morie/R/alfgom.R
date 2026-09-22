@@ -47,8 +47,10 @@ Rolloutmc <- function(state, rollout_net, horizon = 16, step = NULL,
     a <- length(p) - 1L
     for (j in seq_along(p)) {
       cc <- cc + p[j]
-      if (u < cc) { a <- j - 1L
-      break }
+      if (u < cc) {
+        a <- j - 1L
+        break
+      }
     }
     acts <- c(acts, as.integer(a))
     if (is.null(step)) break
@@ -65,7 +67,9 @@ Rolloutmc <- function(state, rollout_net, horizon = 16, step = NULL,
     L <- as.numeric(lam)
     val <- (1 - L) * vt + L * z
   }
-  list(estimate = val, z = z, v_theta = vt, lam = as.numeric(lam), plies = i,
-       trajectory = traj, actions = acts,
-       method = "AlphaGo mixed leaf value (1-lambda) v_theta + lambda z_L")
+  list(
+    estimate = val, z = z, v_theta = vt, lam = as.numeric(lam), plies = i,
+    trajectory = traj, actions = acts,
+    method = "AlphaGo mixed leaf value (1-lambda) v_theta + lambda z_L"
+  )
 }

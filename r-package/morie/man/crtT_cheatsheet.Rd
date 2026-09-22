@@ -14,3 +14,7 @@ A step of the crtT_mixedcase_native implementation. No other function in the pac
 See the file header for the source the module follows.
 for the source it follows.
 }
+\examples{
+crtT_cheatsheet()
+}
+\keyword{internal}

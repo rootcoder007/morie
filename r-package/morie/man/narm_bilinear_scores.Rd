@@ -22,3 +22,7 @@ A step of the narm_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+narm_bilinear_scores(embeddings = c(1, 2, 3, 4, 5, 6, 7, 8), B = 5L, c_t = 5L)
+}
+\keyword{internal}

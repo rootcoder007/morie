@@ -23,3 +23,9 @@ A step of the ttrace_native implementation. Called by \code{morie_ttrace}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r <- probability_of_control(reps = 20, seed = 1, R0 = 1.5,
+                            trace_prob = 0.8)
+str(r, max.level = 1)
+}
+\keyword{internal}

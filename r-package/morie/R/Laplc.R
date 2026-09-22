@@ -21,7 +21,12 @@
 #' Delegating wrapper (not a bare assignment) so that source collation
 #' order does not matter at load time; the body is a single call to the
 #' target, so outputs are exactly identical.
+#' @return The value of `morie_dp_laplace_mechanism`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Laplc(V)
+#' @keywords internal
 Laplc <- function(y, sensitivity = 1, epsilon = 1, seed = NULL) {
   morie_dp_laplace_mechanism(y, sensitivity = sensitivity,
                              epsilon = epsilon, seed = seed)

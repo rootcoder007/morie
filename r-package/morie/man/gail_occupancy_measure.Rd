@@ -16,10 +16,15 @@ Named numeric vector of pair frequencies.
 \description{
 GAIL's whole framing is that imitation is occupancy-measure
 matching, so this is worth being able to look at directly. Returns
-a named numeric vector whose names are stringified \code{(state,
+a named numeric vector whose names are stringified \eqn{(state,
 action)} pairs and whose values are the empirical frequencies over
 the supplied samples.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+gail_occupancy_measure(V, V)
 }
 \references{
 Ho & Ermon (2016) arXiv:1606.03476.
 }
+\keyword{internal}

@@ -23,3 +23,8 @@ A step of the phmmsr_native implementation. Called by \code{phmmsr_search_pipeli
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+phmmsr_msv_score(V, V)
+}
+\keyword{internal}

@@ -13,6 +13,14 @@ morie_geron_recurrent_neuron(x_t, h_prev, Wx, Wh, b, activation = "tanh")
 
 \item{activation}{One of tanh/relu/sigmoid/identity.}
 }
+\value{
+A list with \code{h}, \code{h_next}, \code{z}, \code{jacobian}, \code{jacobian_norm}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Recurrent neuron step: h_t = phi(Wx x_t + Wh \verb{h_\{t-1\}} + b) (Geron Ch 13, hmrnn)
 }
+\examples{
+morie_geron_recurrent_neuron(x_t = 5L, h_prev = 5L, Wx = c(1, 2, 3, 4, 5, 6, 7, 8),
+  Wh = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
+}
+\keyword{internal}

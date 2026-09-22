@@ -32,6 +32,7 @@ R_smooth(|D_i|)},
 z = W_n / sqrt(n(n+1)(2n+1)/6) ~ N(0,1).
 }
 \examples{
+set.seed(1)
 fzwlc(x = rnorm(50))
 }
 \keyword{internal}

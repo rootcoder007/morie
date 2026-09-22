@@ -23,3 +23,13 @@ A step of the regmlm_native implementation. Called by \code{morie_regmlm}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(2)
+n <- 30
+G <- matrix(rbinom(n * 20, 2, 0.3), n, 20)
+y <- G[, 1] - G[, 10] + rnorm(n, 0, 0.5)
+blocks <- make_blocks(20, block_size = 10)
+r <- level0_predictors(G, y, blocks, n_ridge = 3)
+str(r, max.level = 1)
+}
+\keyword{internal}

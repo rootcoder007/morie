@@ -25,3 +25,12 @@ Alternation every other beat is a period of exactly two beats, so it
 lands on 0.5 cycles per beat -- the last bin of the beat-series
 spectrum. An EVEN beat count is required or that is not an exact bin.
 }
+\examples{
+set.seed(5)
+base <- exp(-((1:40 - 20) / 8)^2)
+tw <- lapply(1:16, function(k) base * (1 + 0.05 * (-1)^k) +
+                                0.01 * rnorm(40))
+r <- TwaSpectr(tw)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -56,10 +56,18 @@ morie_snm_cox(
 
 \item{ridge}{See Usage.}
 }
+\value{
+A list with \code{estimate}, \code{psi}, \code{time_ratio}, \code{lower}, \code{upper}, \code{score_at_estimate}, \code{z_at_estimate}, \code{n_used}, \code{artificial_censored}, \code{blipped}, \code{propensity}, \code{converged}, \code{grid_psi}, \code{grid_score}, \code{n}, \code{level}, \code{method}, \code{note}.
+}
 \description{
 G-estimate psi in the structural nested failure time model
+}
+\examples{
+morie_snmcox(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0),
+  treatment_history = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Robins, J. M. (1992) Biometrika 79(2), 321-334,
 doi:10.1093/biomet/79.2.321.
 }
+\keyword{internal}

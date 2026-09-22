@@ -17,6 +17,19 @@ morie_tmlcou(
   upper = NULL,
   iters = 100
 )
+
+morie_tmlcountoutcome(
+  y,
+  D,
+  X,
+  offset = NULL,
+  g = NULL,
+  Q1 = NULL,
+  Q0 = NULL,
+  lower = NULL,
+  upper = NULL,
+  iters = 100
+)
 }
 \arguments{
 \item{y}{Outcome vector.}
@@ -51,6 +64,14 @@ A \code{RichResult}-style list with \code{estimate},
 a rate. Nuisance fits may be supplied; otherwise they are fitted by
 logistic and least-squares regression on \code{X}.
 }
+\examples{
+y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
+x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+res <- morie_tmlcou(y = y, D = g, X = x)
+res
+}
 \references{
 Gruber, S. & van der Laan, M. J. (2010).
 }
+\keyword{internal}

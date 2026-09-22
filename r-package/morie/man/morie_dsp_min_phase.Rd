@@ -18,8 +18,9 @@ to produce a minimum-phase sequence with the same magnitude
 spectrum as \code{x} (approximate).
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_dsp_min_phase(V)
+set.seed(1)
+x <- sin(2 * pi * 0.05 * (1:128)) + rnorm(128, 0, 0.1)
+str(morie_dsp_min_phase(x), max.level = 1)
 }
 \references{
 Rangayyan & Krishnan (2015), Ch. 5;

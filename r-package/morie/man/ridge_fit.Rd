@@ -22,3 +22,10 @@ A step of the regmlm_native implementation. Called by \code{level0_predictors},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+X <- matrix(rnorm(60), 20, 3)
+y <- X \%*\% c(1, -0.5, 0.2) + rnorm(20, 0, 0.3)
+str(ridge_fit(X, as.numeric(y), lam = 0.5), max.level = 1)
+}
+\keyword{internal}

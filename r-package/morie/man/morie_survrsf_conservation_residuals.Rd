@@ -17,3 +17,8 @@ The value of \code{out}, as built in the body.
 \description{
 times of a node. Lemma 1 forces M_n = 0.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_survrsf_conservation_residuals(V, V)
+}
+\keyword{internal}

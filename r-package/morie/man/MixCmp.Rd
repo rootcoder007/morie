@@ -25,3 +25,12 @@ the same data -- uncorrelated, independent, nonnegative-parts -- and
 which to use is empirical, so reconstruct with each and measure.  NMF
 runs on the nonnegatively shifted mixture, as eq (9.46) requires.
 }
+\examples{
+set.seed(6)
+S <- rbind(sin(2 * pi * (1:300) / 25), sign(sin(2 * pi * (1:300) / 60)))
+A <- matrix(c(1, 0.5, 0.4, 1), 2, 2)
+X <- A \%*\% S + 0.05 * matrix(rnorm(600), 2, 300)
+r <- MixCmp(X, ncomp = 2, maxiter = 50)
+str(r, max.level = 1)
+}
+\keyword{internal}

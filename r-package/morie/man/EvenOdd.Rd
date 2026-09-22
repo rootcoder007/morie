@@ -17,3 +17,8 @@ A vector, from \code{c}.
 \description{
 error checks the index bookkeeping, not the arithmetic.
 }
+\examples{
+S <- c("a", "b", "c")
+EvenOdd(S)
+}
+\keyword{internal}

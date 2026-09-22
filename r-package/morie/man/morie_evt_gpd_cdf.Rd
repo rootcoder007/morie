@@ -11,6 +11,13 @@ morie_evt_gpd_cdf(y, sigma, xi)
 
 \item{sigma, xi}{GPD scale (> 0) and shape}
 }
+\value{
+The value of \code{out}, as built in the body.
+}
 \description{
 GPD distribution function (Coles 2001 eq. 4.2-4.4)
 }
+\examples{
+morie_evt_gpd_cdf(y = c(1, 2, 3, 4, 5, 6, 7, 8), sigma = 0.5, xi = 5L)
+}
+\keyword{internal}

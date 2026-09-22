@@ -76,16 +76,8 @@ NULL
                      source = "override"))
 )
 
-#' .override_for
-#'
-#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param dataset_name Character; passed to \code{tolower}.
-#' @param col_name Character; passed to \code{trimws}.
-#' @return Nothing; the function is called for its effect.
-#' @export
+#' Internal helper: Override For
+#' @noRd
 .override_for <- function(dataset_name, col_name) {
   ds_lc <- tolower(dataset_name)
   col_lc <- tolower(trimws(col_name))
@@ -114,15 +106,8 @@ NULL
                        c("0", "1"), c("1", "0"))
 
 
-#' .is_boolean_value_set
-#'
-#' A step of the variable_taxonomy implementation. Called by \code{.level_from_spec}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param vv Optional; may be \code{NULL}. A vector; its length is taken.
-#' @return A logical value.
-#' @export
+#' Internal helper: Is Boolean Value Set
+#' @noRd
 .is_boolean_value_set <- function(vv) {
   if (is.null(vv) || length(vv) == 0L) return(FALSE)
   lc <- tolower(trimws(as.character(vv)))
@@ -132,15 +117,8 @@ NULL
   FALSE
 }
 
-#' .cardinality_from_vv
-#'
-#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param vv Optional; may be \code{NULL}. A vector; its length is taken.
-#' @return A character value.
-#' @export
+#' Internal helper: Cardinality From Vv
+#' @noRd
 .cardinality_from_vv <- function(vv) {
   if (is.null(vv) || length(vv) == 0L) return("unknown")
   n <- length(vv)
@@ -150,19 +128,8 @@ NULL
   "discrete_high"
 }
 
-#' .level_from_spec
-#'
-#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param col_name Character; passed to \code{grepl}.
-#' @param dtype One of \code{"bool"}, \code{"date"}, \code{"datetime"}, \code{"float"},
-#' \code{"int"}, \code{"string"}.
-#' @param valid_values Optional; may be \code{NULL}. A vector; its length is taken.
-#' @param dataset_name Accepted by the signature and not used anywhere in the body.
-#' @return A character value.
-#' @export
+#' Internal helper: Level From Spec
+#' @noRd
 .level_from_spec <- function(col_name, dtype, valid_values, dataset_name) {
   dtype <- tolower(dtype %||% "string")
   if (grepl(.RE_IDENTIFIER, col_name, ignore.case = TRUE)) return("identifier")
@@ -185,15 +152,8 @@ NULL
   "nominal"
 }
 
-#' .role_from_name
-#'
-#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param col_name Character; passed to \code{grepl}.
-#' @return A character value.
-#' @export
+#' Internal helper: Role From Name
+#' @noRd
 .role_from_name <- function(col_name) {
   if (grepl(.RE_IDENTIFIER, col_name, ignore.case = TRUE)) return("identifier")
   if (grepl(.RE_OUTCOME,    col_name, ignore.case = TRUE)) return("outcome")
@@ -333,13 +293,15 @@ morie_recommended_pair_test <- function(tax_a, tax_b) {
 #' Print method for taxonomy entries
 #' @param x A \code{morie_variable_taxonomy} object.
 #' @param ... Unused.
-#' @return Invisibly returns \code{x} unchanged.
-#' @export
+#' @return \code{x}, invisibly.
 #' @examples
 #' \donttest{
-#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' morie:::print.morie_variable_taxonomy(D)
+#' t <- morie_classify_variable("RecordID", "string", NULL, "any")
+#' t$level
+#' t$role
+#' print(t)
 #' }
+#' @export
 print.morie_variable_taxonomy <- function(x, ...) {
   cat(sprintf("Variable taxonomy: %s :: %s\n", x$dataset_name, x$column_name))
   cat(sprintf("  level        : %s\n", x$level))

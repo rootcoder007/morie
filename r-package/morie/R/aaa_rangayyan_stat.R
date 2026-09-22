@@ -17,14 +17,20 @@
 #' \code{as.integer}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Rms(V)
+#' @keywords internal
 Rms <- function(x, window = NULL) {
   # eq (3.9): RMS = sqrt((1/N) sum x^2), divisor N.  With a window, the
   # short-time RMS the book uses for EMG activity (Section 5.6).
   xs <- as.numeric(x)
   if (!length(xs)) stop("need at least one sample")
   ms <- .morie_fsum(xs * xs) / length(xs)
-  out <- list(rms = sqrt(ms), ms = ms, n = length(xs),
-              method = "Rangayyan (2024) eq. (3.9)")
+  out <- list(
+    rms = sqrt(ms), ms = ms, n = length(xs),
+    method = "Rangayyan (2024) eq. (3.9)"
+  )
   if (!is.null(window)) {
     w <- as.integer(window)
     if (w < 1L) stop("window must be at least one sample")
@@ -37,10 +43,10 @@ Rms <- function(x, window = NULL) {
   out
 }
 
-#' Eqs (5.25)-(5.26): activity = var(x); mobility = sd(x\')/sd(x);
+#' Eqs (5.25)-(5.26): activity = var(x); mobility = sd(x')/sd(x);
 #'
-#' form factor = mobility(x\')/mobility(x) =
-#' (sd(x\'\')/sd(x\'))/(sd(x\')/sd(x)). The book states a sinusoid has
+#' form factor = mobility(x')/mobility(x) =
+#' (sd(x'')/sd(x'))/(sd(x')/sd(x)). The book states a sinusoid has
 #' complexity 1 and that more variable waveforms give larger values.
 #' Ratios are dimensionless, so no fs.
 #'
@@ -48,14 +54,18 @@ Rms <- function(x, window = NULL) {
 #' @return A list with \code{form_factor}, \code{complexity}, \code{mobility},
 #' \code{activity}, \code{mobility_of_derivative}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' FormFactor(x = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5))
+#' @keywords internal
 FormFactor <- function(x) {
   # eqs (5.25)-(5.26): activity = var(x); mobility = sd(x')/sd(x);
   # form factor = mobility(x')/mobility(x) = (sd(x'')/sd(x'))/(sd(x')/sd(x)).
   # The book states a sinusoid has complexity 1 and that more variable
   # waveforms give larger values.  Ratios are dimensionless, so no fs.
   xs <- as.numeric(x)
-  if (length(xs) < 4L)
+  if (length(xs) < 4L) {
     stop("need at least four samples for a second derivative")
+  }
   pvar <- function(v) {
     mu <- .morie_fsum(v) / length(v)
     .morie_fsum((v - mu)^2) / length(v)
@@ -65,15 +75,19 @@ FormFactor <- function(x) {
   a0 <- pvar(xs)
   a1 <- pvar(d1)
   a2 <- pvar(d2)
-  if (a0 <= 0)
+  if (a0 <= 0) {
     stop("a constant signal has zero activity; mobility and form factor are undefined")
+  }
   mob <- sqrt(a1 / a0)
-  if (a1 <= 0)
+  if (a1 <= 0) {
     stop("the first derivative is constant; the form factor is undefined")
+  }
   mob1 <- sqrt(a2 / a1)
-  list(form_factor = mob1 / mob, complexity = mob1 / mob, mobility = mob,
-       activity = a0, mobility_of_derivative = mob1, n = length(xs),
-       method = "Rangayyan (2024) eqs. (5.25)-(5.26)")
+  list(
+    form_factor = mob1 / mob, complexity = mob1 / mob, mobility = mob,
+    activity = a0, mobility_of_derivative = mob1, n = length(xs),
+    method = "Rangayyan (2024) eqs. (5.25)-(5.26)"
+  )
 }
 
 #' .morie_rg_turns
@@ -87,7 +101,9 @@ FormFactor <- function(x) {
 #' @return A list with \code{turns}, \code{positions}.
 #' @export
 .morie_rg_turns <- function(seg, threshold) {
-  if (length(seg) < 3L) return(list(turns = 0L, positions = integer(0)))
+  if (length(seg) < 3L) {
+    return(list(turns = 0L, positions = integer(0)))
+  }
   turns <- 0L
   idx <- integer(0)
   last <- seg[1]
@@ -96,8 +112,10 @@ FormFactor <- function(x) {
     step <- seg[i] - seg[i - 1L]
     if (step == 0) next
     d <- if (step > 0) 1L else -1L
-    if (direction == 0L) { direction <- d
-    next }
+    if (direction == 0L) {
+      direction <- d
+      next
+    }
     if (d != direction) {
       if (abs(seg[i - 1L] - last) > threshold) {
         turns <- turns + 1L
@@ -123,6 +141,10 @@ FormFactor <- function(x) {
 #' \code{as.integer}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' TurnsCount(V)
+#' @keywords internal
 TurnsCount <- function(x, threshold = 100, window = NULL) {
   # Section 5.6.3, Willison: a turn is a change of slope, counted only
   # when the swing since the LAST COUNTED TURN exceeds the threshold
@@ -133,15 +155,20 @@ TurnsCount <- function(x, threshold = 100, window = NULL) {
   if (length(xs) < 3L) stop("need at least three samples to have a turn")
   if (threshold < 0) stop("threshold must be nonnegative")
   r <- .morie_rg_turns(xs, threshold)
-  out <- list(turns = r$turns, positions = r$positions,
-              threshold = threshold, n = length(xs),
-              method = "Rangayyan (2024) Section 5.6.3")
+  out <- list(
+    turns = r$turns, positions = r$positions,
+    threshold = threshold, n = length(xs),
+    method = "Rangayyan (2024) Section 5.6.3"
+  )
   if (!is.null(window)) {
     w <- as.integer(window)
     if (w < 3L) stop("window must hold at least three samples")
-    out$short_time <- vapply(seq_along(xs), function(i)
-      .morie_rg_turns(xs[max(1L, i - w + 1L):i], threshold)$turns,
-      integer(1))
+    out$short_time <- vapply(
+      seq_along(xs), function(i) {
+        .morie_rg_turns(xs[max(1L, i - w + 1L):i], threshold)$turns
+      },
+      integer(1)
+    )
     out$window <- w
     out$rate <- r$turns / length(xs)
   }
@@ -161,6 +188,10 @@ TurnsCount <- function(x, threshold = 100, window = NULL) {
 #' \code{signal_power}, \code{noise_power}, \code{noise_rms}, \code{definition},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Snr(V, V)
+#' @keywords internal
 Snr <- function(signal, noise, definition = "power") {
   # Section 3.2.1 gives two definitions in one sentence, and they are not
   # interchangeable: the power ratio (10 log10) and the peak-to-peak
@@ -168,21 +199,28 @@ Snr <- function(signal, noise, definition = "power") {
   # sinusoid).  Both are returned; snr_db is the one named.
   s <- as.numeric(signal)
   e <- as.numeric(noise)
-  if (!length(s) || !length(e))
+  if (!length(s) || !length(e)) {
     stop("both signal and noise need at least one sample")
-  if (!definition %in% c("power", "peak"))
+  }
+  if (!definition %in% c("power", "peak")) {
     stop("definition must be 'power' or 'peak'")
+  }
   ps <- .morie_fsum(s * s) / length(s)
   pn <- .morie_fsum(e * e) / length(e)
   if (pn <= 0) stop("noise power is zero; the SNR is unbounded")
   power_db <- 10 * log10(ps / pn)
-  peak_db <- if (max(s) > min(s))
-    20 * log10((max(s) - min(s)) / sqrt(pn)) else -Inf
-  list(snr_db = if (definition == "power") power_db else peak_db,
-       snr_power_db = power_db, snr_peak_db = peak_db,
-       signal_power = ps, noise_power = pn, noise_rms = sqrt(pn),
-       definition = definition,
-       method = "Rangayyan (2024) Section 3.2.1")
+  peak_db <- if (max(s) > min(s)) {
+    20 * log10((max(s) - min(s)) / sqrt(pn))
+  } else {
+    -Inf
+  }
+  list(
+    snr_db = if (definition == "power") power_db else peak_db,
+    snr_power_db = power_db, snr_peak_db = peak_db,
+    signal_power = ps, noise_power = pn, noise_rms = sqrt(pn),
+    definition = definition,
+    method = "Rangayyan (2024) Section 3.2.1"
+  )
 }
 
 #' The power form of Section 3.2.1 applied to the residual against a
@@ -196,6 +234,10 @@ Snr <- function(signal, noise, definition = "power") {
 #' @return A list with \code{snr_db}, \code{residual_power}, \code{signal_power},
 #' \code{residual}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' SnrFilt(V, V)
+#' @keywords internal
 SnrFilt <- function(clean, filtered) {
   # The power form of Section 3.2.1 applied to the residual against a
   # known clean reference.  This penalises distortion as well as leftover
@@ -203,15 +245,18 @@ SnrFilt <- function(clean, filtered) {
   # filter.
   cc <- as.numeric(clean)
   ff <- as.numeric(filtered)
-  if (length(cc) != length(ff))
+  if (length(cc) != length(ff)) {
     stop("clean and filtered must have the same length")
+  }
   if (!length(cc)) stop("need at least one sample")
   resid <- ff - cc
   ps <- .morie_fsum(cc * cc)
   pr <- .morie_fsum(resid * resid)
-  list(snr_db = if (pr <= 0) Inf else 10 * log10(ps / pr),
-       residual_power = pr, signal_power = ps, residual = resid,
-       n = length(cc), method = "Rangayyan (2024) Section 3.2.1")
+  list(
+    snr_db = if (pr <= 0) Inf else 10 * log10(ps / pr),
+    residual_power = pr, signal_power = ps, residual = resid,
+    n = length(cc), method = "Rangayyan (2024) Section 3.2.1"
+  )
 }
 
 #' Eqs (3.95)-(3.96): y_k = x_k + eta_k, and the sum over k separates
@@ -224,6 +269,10 @@ SnrFilt <- function(clean, filtered) {
 #' @return A list with \code{average}, \code{sd}, \code{m}, \code{n}, \code{se},
 #' \code{snr_gain}, \code{snr_gain_db}, \code{alignment_note}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' SyncAvg(V)
+#' @keywords internal
 SyncAvg <- function(observations) {
   # eqs (3.95)-(3.96): y_k = x_k + eta_k, and the sum over k separates
   # into a signal sum that grows as M and a zero-mean noise sum that
@@ -234,32 +283,45 @@ SyncAvg <- function(observations) {
   if (!m) stop("need at least one observation")
   n <- length(recs[[1]])
   if (!n) stop("records must be nonempty")
-  if (any(vapply(recs, length, integer(1)) != n))
-    stop("all realizations must have the same length; averaging ragged ",
-         "records would average a different number of traces at ",
-         "different instants")
+  if (any(vapply(recs, length, integer(1)) != n)) {
+    stop(
+      "all realizations must have the same length; averaging ragged ",
+      "records would average a different number of traces at ",
+      "different instants"
+    )
+  }
   mat <- matrix(unlist(recs), nrow = m, byrow = TRUE)
   avg <- vapply(seq_len(n), function(i) .morie_fsum(mat[, i]) / m, numeric(1))
-  sd <- vapply(seq_len(n),
-               function(i) sqrt(.morie_fsum((mat[, i] - avg[i])^2) / m),
-               numeric(1))
-  list(average = avg, sd = sd, m = m, n = n, se = sd / sqrt(m),
-       snr_gain = sqrt(m), snr_gain_db = 10 * log10(m),
-       alignment_note = paste("eqs. (3.95)-(3.96) assume the realizations",
-                              "are already aligned; misalignment smears",
-                              "the average"),
-       method = "Rangayyan (2024) eqs. (3.95)-(3.96)")
+  sd <- vapply(
+    seq_len(n),
+    function(i) sqrt(.morie_fsum((mat[, i] - avg[i])^2) / m),
+    numeric(1)
+  )
+  list(
+    average = avg, sd = sd, m = m, n = n, se = sd / sqrt(m),
+    snr_gain = sqrt(m), snr_gain_db = 10 * log10(m),
+    alignment_note = paste(
+      "eqs. (3.95)-(3.96) assume the realizations",
+      "are already aligned; misalignment smears",
+      "the average"
+    ),
+    method = "Rangayyan (2024) eqs. (3.95)-(3.96)"
+  )
 }
 
 #' Eq (3.95): y_k(n) = x_k(n) + eta_k(n), the model that synchronized
 #'
 #' averaging assumes.  A single x is read as the same signal repeated,
-#' which is the book\'s "identical and aligned" case.
+#' which is the book's "identical and aligned" case.
 #'
 #' @param x A list; the body checks with \code{is.list}.
 #' @param eta Iterated over elementwise, with \code{lapply}.
 #' @return A list with \code{y}, \code{m}, \code{n}, \code{identical_repetitions}, \code{method}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' ObsReal(D, D)
+#' @keywords internal
 ObsReal <- function(x, eta) {
   # eq (3.95): y_k(n) = x_k(n) + eta_k(n), the model that synchronized
   # averaging assumes.  A single x is read as the same signal repeated,
@@ -268,22 +330,32 @@ ObsReal <- function(x, eta) {
   m <- length(noises)
   if (!m) stop("need at least one noise realization")
   n <- length(noises[[1]])
-  if (any(vapply(noises, length, integer(1)) != n))
+  if (any(vapply(noises, length, integer(1)) != n)) {
     stop("all noise realizations must have the same length")
-  signals <- if (is.list(x)) lapply(x, as.numeric) else
+  }
+  signals <- if (is.list(x)) {
+    lapply(x, as.numeric)
+  } else {
     rep(list(as.numeric(x)), m)
+  }
   if (length(signals) == 1L) signals <- rep(signals, m)
-  if (length(signals) != m)
+  if (length(signals) != m) {
     stop("give one signal per realization, or one for all")
-  if (any(vapply(signals, length, integer(1)) != n))
+  }
+  if (any(vapply(signals, length, integer(1)) != n)) {
     stop("signal and noise records must have equal length")
+  }
   y <- Map(function(s, e) s + e, signals, noises)
   first <- signals[[1]]
-  identical_reps <- all(vapply(signals,
-                               function(s) all(abs(s - first) < 1e-12),
-                               logical(1)))
-  list(y = y, m = m, n = n, identical_repetitions = identical_reps,
-       method = "Rangayyan (2024) eq. (3.95)")
+  identical_reps <- all(vapply(
+    signals,
+    function(s) all(abs(s - first) < 1e-12),
+    logical(1)
+  ))
+  list(
+    y = y, m = m, n = n, identical_repetitions = identical_reps,
+    method = "Rangayyan (2024) eq. (3.95)"
+  )
 }
 
 #' Eqs (6.50)-(6.52): an fBm signal has PSD ~ 1/f^beta, and for a 1-D
@@ -300,6 +372,10 @@ ObsReal <- function(x, eta) {
 #' \code{intercept}, \code{n_bins}, \code{r_squared}, \code{in_range}, \code{band},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' FdPsd(V, V)
+#' @keywords internal
 FdPsd <- function(psd, freqs, fmin = NULL, fmax = NULL) {
   # eqs (6.50)-(6.52): an fBm signal has PSD ~ 1/f^beta, and for a 1-D
   # signal H = (beta-1)/2, FD = (5-beta)/2.  beta is MINUS the slope of
@@ -311,8 +387,9 @@ FdPsd <- function(psd, freqs, fmin = NULL, fmax = NULL) {
   keep <- f > 0 & p > 0
   if (!is.null(fmin)) keep <- keep & f >= fmin
   if (!is.null(fmax)) keep <- keep & f <= fmax
-  if (sum(keep) < 3L)
+  if (sum(keep) < 3L) {
     stop("need at least three positive-frequency bins in the band to fit a slope")
+  }
   lx <- log10(f[keep])
   ly <- log10(p[keep])
   n <- length(lx)
@@ -325,12 +402,14 @@ FdPsd <- function(psd, freqs, fmin = NULL, fmax = NULL) {
   inter <- my - slope * mx
   ss_tot <- .morie_fsum((ly - my)^2)
   ss_res <- .morie_fsum((ly - (inter + slope * lx))^2)
-  list(fd = (5 - beta) / 2, beta = beta, hurst = (beta - 1) / 2,
-       slope = slope, intercept = inter, n_bins = n,
-       r_squared = if (ss_tot > 0) 1 - ss_res / ss_tot else NA_real_,
-       in_range = beta >= 0.5 && beta <= 1.5,
-       band = c(min(f[keep]), max(f[keep])),
-       method = "Rangayyan (2024) eqs. (6.50)-(6.52)")
+  list(
+    fd = (5 - beta) / 2, beta = beta, hurst = (beta - 1) / 2,
+    slope = slope, intercept = inter, n_bins = n,
+    r_squared = if (ss_tot > 0) 1 - ss_res / ss_tot else NA_real_,
+    in_range = beta >= 0.5 && beta <= 1.5,
+    band = c(min(f[keep]), max(f[keep])),
+    method = "Rangayyan (2024) eqs. (6.50)-(6.52)"
+  )
 }
 
 #' .morie_rg_periodogram
@@ -359,11 +438,11 @@ FdPsd <- function(psd, freqs, fmin = NULL, fmax = NULL) {
   list(psd = p, freqs = k * fs / m)
 }
 
-#' Sections 6.6.2-6.6.3: PSA is the book\'s preferred FD estimator for a
+#' Sections 6.6.2-6.6.3: PSA is the book's preferred FD estimator for a
 #'
 #' self-affine signal, applied to knee-joint VAG signals.  The band is
 #' an argument because it decides the answer -- a band that reaches down
-#' into baseline drift fits the drift\'s slope, not the signal\'s.
+#' into baseline drift fits the drift's slope, not the signal's.
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param fs Coerced to numeric by the body, with \code{as.numeric}.
@@ -373,6 +452,14 @@ FdPsd <- function(psd, freqs, fmin = NULL, fmax = NULL) {
 #' \code{as.integer}.
 #' @return The value of \code{r}, as built in the body.
 #' @export
+#' @examples
+#' sine <- function(n, cycles, amp = 1) amp * sin(2 * pi * cycles *
+#'     (0:(n - 1))/n)
+#' x <- sine(2000, 5)
+#' n <- 64
+#' fs <- 2000
+#' FdVag(x, fs = fs, fmin = 100, fmax = 500)
+#' @keywords internal
 FdVag <- function(x, fs, fmin = 100, fmax = 500, nperseg = NULL) {
   # Sections 6.6.2-6.6.3: PSA is the book's preferred FD estimator for a
   # self-affine signal, applied to knee-joint VAG signals.  The band is
@@ -403,6 +490,10 @@ FdVag <- function(x, fs, fmin = 100, fmax = 500, nperseg = NULL) {
 #' @return A list with \code{fd}, \code{total_length}, \code{max_distance},
 #' \code{mean_step}, \code{n_steps}, \code{n}, \code{scale_sensitive}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' KatzFd(V)
+#' @keywords internal
 KatzFd <- function(x, dt = 1) {
   # Katz (1988): FD = log10(n) / (log10(n) + log10(d/L)), with L the path
   # length, d the greatest distance from the first point, n = L/a.
@@ -423,10 +514,14 @@ KatzFd <- function(x, dt = 1) {
   steps <- total / a
   denom <- log10(steps) + log10(d / total)
   if (denom == 0) stop("the Katz ratio is degenerate for this waveform")
-  list(fd = log10(steps) / denom, total_length = total, max_distance = d,
-       mean_step = a, n_steps = steps, n = n, scale_sensitive = TRUE,
-       method = paste("Katz (1988); Rangayyan (2024) Section 5.13.2 covers",
-                      "the ruler, box-counting and Higuchi methods instead"))
+  list(
+    fd = log10(steps) / denom, total_length = total, max_distance = d,
+    mean_step = a, n_steps = steps, n = n, scale_sensitive = TRUE,
+    method = paste(
+      "Katz (1988); Rangayyan (2024) Section 5.13.2 covers",
+      "the ruler, box-counting and Higuchi methods instead"
+    )
+  )
 }
 
 #' Eq (3.11) applied to the PSD normalized to unit mass.  Rangayyan
@@ -443,6 +538,10 @@ KatzFd <- function(x, dt = 1) {
 #' @return A list with \code{entropy}, \code{units}, \code{max_entropy},
 #' \code{normalized}, \code{n_bins}, \code{probabilities}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' SpecEntropy(V)
+#' @keywords internal
 SpecEntropy <- function(psd, freqs = NULL, fmin = NULL, fmax = NULL) {
   # eq (3.11) applied to the PSD normalized to unit mass.  Rangayyan
   # defines the spectral MOMENTS of Section 6.4.4 but prints no
@@ -453,8 +552,9 @@ SpecEntropy <- function(psd, freqs = NULL, fmin = NULL, fmax = NULL) {
   if (any(p < 0)) stop("a PSD cannot be negative")
   if (!is.null(freqs)) {
     f <- as.numeric(freqs)
-    if (length(f) != length(p))
+    if (length(f) != length(p)) {
       stop("psd and freqs must have the same length")
+    }
     keep <- rep(TRUE, length(p))
     if (!is.null(fmin)) keep <- keep & f >= fmin
     if (!is.null(fmax)) keep <- keep & f <= fmax
@@ -468,10 +568,12 @@ SpecEntropy <- function(psd, freqs = NULL, fmin = NULL, fmax = NULL) {
   h <- -.morie_fsum(nz * log(nz) / log(2))
   k <- length(probs)
   hmax <- if (k > 1L) log(k) / log(2) else 0
-  list(entropy = h, units = "bits", max_entropy = hmax,
-       normalized = if (hmax > 0) h / hmax else 0, n_bins = k,
-       probabilities = probs,
-       method = "Rangayyan (2024) eq. (3.11) applied to the PSD")
+  list(
+    entropy = h, units = "bits", max_entropy = hmax,
+    normalized = if (hmax > 0) h / hmax else 0, n_bins = k,
+    probabilities = probs,
+    method = "Rangayyan (2024) eq. (3.11) applied to the PSD"
+  )
 }
 
 #' MFR = 1/mean(IDI), CV = SD(IDI)/mean(IDI).  MFR is the RECIPROCAL OF
@@ -486,35 +588,43 @@ SpecEntropy <- function(psd, freqs = NULL, fmin = NULL, fmax = NULL) {
 #' \code{idi}, \code{n_discharges}, \code{mean_instantaneous_rate}, \code{duration},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' FiringRate(V)
+#' @keywords internal
 FiringRate <- function(times, fs = NULL) {
   # MFR = 1/mean(IDI), CV = SD(IDI)/mean(IDI).  MFR is the RECIPROCAL OF
   # THE MEAN interval, not the mean of the reciprocals; the two differ
   # whenever the intervals vary, and only the former equals discharges
   # per unit time.  Both are returned.
   ts <- as.numeric(times)
-  if (length(ts) < 2L)
+  if (length(ts) < 2L) {
     stop("need at least two discharges to form an interval")
+  }
   if (!is.null(fs)) {
     if (fs <= 0) stop("fs must be positive")
     ts <- ts / as.numeric(fs)
   }
-  if (any(diff(ts) <= 0))
+  if (any(diff(ts) <= 0)) {
     stop("discharge instants must be strictly increasing")
+  }
   idi <- diff(ts)
   m <- .morie_fsum(idi) / length(idi)
   sd <- sqrt(.morie_fsum((idi - m)^2) / length(idi))
-  list(mfr = 1 / m, mean_idi = m, sd_idi = sd, cv_idi = sd / m, idi = idi,
-       n_discharges = length(ts),
-       mean_instantaneous_rate = .morie_fsum(1 / idi) / length(idi),
-       duration = ts[length(ts)] - ts[1],
-       method = "Rangayyan (2024) Sections 4.2, 5.x (motor-unit discharge statistics)")
+  list(
+    mfr = 1 / m, mean_idi = m, sd_idi = sd, cv_idi = sd / m, idi = idi,
+    n_discharges = length(ts),
+    mean_instantaneous_rate = .morie_fsum(1 / idi) / length(idi),
+    duration = ts[length(ts)] - ts[1],
+    method = "Rangayyan (2024) Sections 4.2, 5.x (motor-unit discharge statistics)"
+  )
 }
 
 #' The descriptors Rangayyan uses across Chapters 3, 5 and 6, each
 #'
 #' computed by the function that owns its definition so the vector
 #' cannot disagree with the individual measures.  threshold defaults to
-#' 0 (every direction change counts); pass the book\'s 100 microvolts
+#' 0 (every direction change counts); pass the book's 100 microvolts
 #' for a real EMG record or the count is dominated by noise.
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
@@ -525,6 +635,9 @@ FiringRate <- function(times, fs = NULL) {
 #' \code{spectral_centroid}, \code{spectral_bandwidth}, \code{spectral_entropy},
 #' \code{n}, \code{fs}, \code{method}.
 #' @export
+#' @examples
+#' SigFeatures(x = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5))
+#' @keywords internal
 SigFeatures <- function(x, fs = 1, threshold = 0) {
   # The descriptors Rangayyan uses across Chapters 3, 5 and 6, each
   # computed by the function that owns its definition so the vector
@@ -543,17 +656,22 @@ SigFeatures <- function(x, fs = 1, threshold = 0) {
   pg <- .morie_rg_periodogram(xs, fsv)
   tot <- .morie_fsum(pg$psd)
   centroid <- if (tot > 0) .morie_fsum(pg$freqs * pg$psd) / tot else 0
-  bw <- if (tot > 0)
-    sqrt(.morie_fsum((pg$freqs - centroid)^2 * pg$psd) / tot) else 0
-  list(mean = mu, sd = sd, rms = sqrt(.morie_fsum(xs * xs) / n),
-       zero_crossings = zc, zcr = zc * fsv / n,
-       turns = TurnsCount(xs, threshold = threshold)$turns,
-       activity = hj$activity, mobility = hj$mobility,
-       form_factor = hj$form_factor,
-       spectral_centroid = centroid, spectral_bandwidth = bw,
-       spectral_entropy = SpecEntropy(pg$psd)$entropy,
-       n = n, fs = fsv,
-       method = "Rangayyan (2024) Chapters 3, 5, 6 feature set")
+  bw <- if (tot > 0) {
+    sqrt(.morie_fsum((pg$freqs - centroid)^2 * pg$psd) / tot)
+  } else {
+    0
+  }
+  list(
+    mean = mu, sd = sd, rms = sqrt(.morie_fsum(xs * xs) / n),
+    zero_crossings = zc, zcr = zc * fsv / n,
+    turns = TurnsCount(xs, threshold = threshold)$turns,
+    activity = hj$activity, mobility = hj$mobility,
+    form_factor = hj$form_factor,
+    spectral_centroid = centroid, spectral_bandwidth = bw,
+    spectral_entropy = SpecEntropy(pg$psd)$entropy,
+    n = n, fs = fsv,
+    method = "Rangayyan (2024) Chapters 3, 5, 6 feature set"
+  )
 }
 
 # pre-policy spellings

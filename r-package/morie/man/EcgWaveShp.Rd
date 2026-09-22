@@ -28,3 +28,7 @@ A step of the rangayyan_qrs implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+EcgWaveShp(qrsdur = 5L, stdev = 5L)
+}
+\keyword{internal}

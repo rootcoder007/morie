@@ -26,3 +26,7 @@ which Rangayyan does not cover.  Learning a dictionary and using one
 are separate steps: here the coefficients, not the signals, are the
 feature vectors.
 }
+\examples{
+DictCode(Y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), sparsity = 5L)
+}
+\keyword{internal}

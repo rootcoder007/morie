@@ -2,17 +2,29 @@
 % Please edit documentation in R/slowdp_native.R
 \name{stick_breaking}
 \alias{stick_breaking}
-\title{Sethuraman stick-breaking weights}
+\title{stick_breaking}
 \usage{
-stick_breaking(alpha, K, seed = 0)
+stick_breaking(alpha, K, rng = NULL, seed = 0)
 }
 \arguments{
-\item{alpha}{See Usage.}
+\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{K}{See Usage.}
+\item{K}{Coerced to integer by the body, with \code{as.integer}.}
 
-\item{seed}{See Usage.}
+\item{rng}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+
+\item{seed}{Passed to \code{.ghc_rng}. Defaults to \code{0}.}
+}
+\value{
+A list with \code{weights}, \code{V}, \code{remaining}, \code{kept_mass},
+\code{K}, \code{alpha}, \code{note}.
 }
 \description{
-Sethuraman stick-breaking weights
+A step of the slowdp_native implementation. Called by \code{truncated_dp}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+stick_breaking(alpha = 0.5, K = 5L)
+}
+\keyword{internal}

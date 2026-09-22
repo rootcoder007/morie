@@ -18,6 +18,9 @@
 #' @param z Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{log1p}.
 #' @export
+#' @examples
+#' softplus(z = 5L)
+#' @keywords internal
 softplus <- function(z) {
   x <- as.numeric(z)
   if (x > 30.0) return(x)
@@ -81,6 +84,14 @@ discretize_zoh <- function(delta, A, B, rule = "zoh") {
 #' @param rule Passed to \code{discretize_zoh}. Defaults to \code{"zoh"}.
 #' @return A list with \code{h}, \code{y}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' N <- 3
+#' r <- selective_ssm_step(x = 0.5, h = rep(0, N),
+#'                         A = -abs(rnorm(N)), B = rnorm(N), C = rnorm(N),
+#'                         delta = 0.1)
+#' str(r, max.level = 1)
+#' @keywords internal
 selective_ssm_step <- function(x, h, A, B, C, delta, rule = "zoh") {
   N <- length(A)
   if (length(h) != N)
@@ -117,7 +128,7 @@ selective_ssm_step <- function(x, h, A, B, C, delta, rule = "zoh") {
   out
 }
 
-#' .mambss_sigmoid
+#' .sigmoid
 #'
 #' A step of the mambss_native implementation. Called by \code{gated_rnn_equivalent}.
 #' See the file header for the source the module follows.
@@ -128,9 +139,9 @@ selective_ssm_step <- function(x, h, A, B, C, delta, rule = "zoh") {
 #' @export
 #' @examples
 #' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
-#' res <- .mambss_sigmoid(z = y)
+#' res <- .sigmoid(z = y)
 #' res
-.mambss_sigmoid <- function(z) 1.0 / (1.0 + exp(-as.numeric(z)))
+.sigmoid <- function(z) 1.0 / (1.0 + exp(-as.numeric(z)))
 
 #' selective_scan
 #'
@@ -154,6 +165,16 @@ selective_ssm_step <- function(x, h, A, B, C, delta, rule = "zoh") {
 #' @return A list with \code{y}, \code{estimate}, \code{state}, \code{delta}, \code{L},
 #' \code{D}, \code{N}, \code{rule}, \code{time_invariant}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(2)
+#' L <- 5; D <- 2; N <- 3
+#' X <- matrix(rnorm(L * D), L, D)
+#' r <- selective_scan(X, A = matrix(-abs(rnorm(D * N)), D, N),
+#'                     W_B = matrix(rnorm(N * D, 0, 0.3), N, D),
+#'                     W_C = matrix(rnorm(N * D, 0, 0.3), N, D),
+#'                     W_delta = matrix(rnorm(D, 0, 0.3), 1, D))
+#' str(r, max.level = 1)
+#' @keywords internal
 selective_scan <- function(X, A, W_B, W_C, W_delta, delta_bias = NULL,
                            b_B = NULL, b_C = NULL, b_delta = 0.0,
                            rule = "zoh", D_skip = NULL) {
@@ -245,6 +266,16 @@ gated_rnn_equivalent <- function(x, w, b = 0.0) {
 #' @param ... Passed through.
 #' @return The value of \code{$}.
 #' @export
+#' @examples
+#' set.seed(2)
+#' L <- 5; D <- 2; N <- 3
+#' X <- matrix(rnorm(L * D), L, D)
+#' r <- s6_layer(X, A = matrix(-abs(rnorm(D * N)), D, N),
+#'               W_B = matrix(rnorm(N * D, 0, 0.3), N, D),
+#'               W_C = matrix(rnorm(N * D, 0, 0.3), N, D),
+#'               W_delta = matrix(rnorm(D, 0, 0.3), 1, D))
+#' str(r, max.level = 1)
+#' @keywords internal
 s6_layer <- function(X, A, W_B, W_C, W_delta, ...) {
   selective_scan(X, A, W_B, W_C, W_delta, ...)$y
 }
@@ -294,6 +325,16 @@ mambassmstep <- selective_ssm_step
 #' @param D_skip Passed to \code{selective_scan}.
 #' @return The value of \code{selective_scan}.
 #' @export
+#' @examples
+#' set.seed(2)
+#' L <- 5; D <- 2; N <- 3
+#' X <- matrix(rnorm(L * D), L, D)
+#' r <- morie_mambss(X, A = matrix(-abs(rnorm(D * N)), D, N),
+#'                   W_B = matrix(rnorm(N * D, 0, 0.3), N, D),
+#'                   W_C = matrix(rnorm(N * D, 0, 0.3), N, D),
+#'                   W_delta = matrix(rnorm(D, 0, 0.3), 1, D))
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_mambss <- function(X, A, W_B, W_C, W_delta, delta_bias = NULL,
                         b_B = NULL, b_C = NULL, b_delta = 0.0,
                         rule = "zoh", D_skip = NULL) {
@@ -301,18 +342,3 @@ morie_mambss <- function(X, A, W_B, W_C, W_delta, delta_bias = NULL,
                  b_B = b_B, b_C = b_C, b_delta = b_delta, rule = rule,
                  D_skip = D_skip)
 }
-
-#' .sigmoid
-#'
-#' A step of the mambss_native implementation. Called by \code{gated_rnn_equivalent}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param z Coerced to numeric by the body, with \code{as.numeric}.
-#' @return A numeric value.
-#' @export
-#' @examples
-#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
-#' res <- .sigmoid(z = y)
-#' res
-.sigmoid <- function(z) 1.0 / (1.0 + exp(-as.numeric(z)))

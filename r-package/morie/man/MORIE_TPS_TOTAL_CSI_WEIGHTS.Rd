@@ -13,5 +13,5 @@ Named numeric vector.
 Total-CSI weights for the 9 TPS open-data categories
 }
 \examples{
-MORIE_TPS_TOTAL_CSI_WEIGHTS()
+MORIE_TPS_TOTAL_CSI_WEIGHTS
 }

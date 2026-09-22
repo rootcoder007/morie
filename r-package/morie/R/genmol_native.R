@@ -68,6 +68,10 @@
 #' @param logvar The posterior log-variances.
 #' @return A non-negative number.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_genmol_kl(V, V)
+#' @keywords internal
 morie_genmol_kl <- function(mu, logvar) {
   if (length(mu) != length(logvar))
     stop("one log-variance per latent dimension")
@@ -88,6 +92,10 @@ morie_genmol_kl <- function(mu, logvar) {
 #' @param beta The weight on the divergence.
 #' @return The bound.
 #' @export
+#' @examples
+#' morie_genmol_elbo(reconstruction = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   logvar = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_genmol_elbo <- function(reconstruction, mu, logvar, beta = 1)
   as.numeric(reconstruction) -
     as.numeric(beta) * morie_genmol_kl(mu, logvar)
@@ -104,6 +112,10 @@ morie_genmol_elbo <- function(reconstruction, mu, logvar, beta = 1)
 #' @param seed The random stream.
 #' @return A list of latent vectors.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_genmol_sample(V, V)
+#' @keywords internal
 morie_genmol_sample <- function(mu, logvar, n = 1L, temperature = 1,
                                 seed = 0) {
   d <- length(mu)
@@ -136,6 +148,10 @@ morie_genmol_sample <- function(mu, logvar, n = 1L, temperature = 1,
 #' @param eps The finite-difference spacing.
 #' @return A list with the endpoint, the trajectory and the values.
 #' @export
+#' @examples
+#' prop <- function(z) -((z[1] - 1)^2 + (z[2] + 0.5)^2)
+#' morie_genmol_optimise(c(-2, 3), prop, 20L, 0.1)
+#' @keywords internal
 morie_genmol_optimise <- function(z0, property_fn, steps = 20L,
                                   lr = 0.1, eps = 1e-4) {
   z <- as.numeric(z0)
@@ -167,6 +183,10 @@ morie_genmol_optimise <- function(z0, property_fn, steps = 20L,
 #' @param smiles_list The decoded strings.
 #' @return A logical vector.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_genmol_validity(V)
+#' @keywords internal
 morie_genmol_validity <- function(smiles_list)
   vapply(as.character(smiles_list), function(s)
     tryCatch({ morie_avalon_parse(s)
@@ -192,6 +212,9 @@ morie_genmol_validity <- function(smiles_list)
 #' @return A list with the latents, the decoded strings, and validity,
 #'   uniqueness and novelty as fractions of the sample.
 #' @export
+#' @examples
+#' morie_genmol(model = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), n_samples = 5L)
+#' @keywords internal
 morie_genmol <- function(model, n_samples, conditions = NULL,
                          route = "vae", temperature = 1, seed = 0,
                          steps = 20L, T = 10L, beta = 1) {
@@ -289,6 +312,9 @@ morie_genmol <- function(model, n_samples, conditions = NULL,
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_genmol_cheatsheet()
+#' @keywords internal
 morie_genmol_cheatsheet <- function()
   paste0("genmol: generative chemistry. Reparameterised latent ",
          "sampling or a latent diffusion, gradient ascent on any ",

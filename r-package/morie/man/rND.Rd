@@ -2,14 +2,14 @@
 % Please edit documentation in R/fairRC_native.R
 \name{rND}
 \alias{rND}
-\title{rND}
+\title{Normalised discounted difference}
 \usage{
-rND(protected, step = 10L, normalize = TRUE)
+rND(protected, step = 10, normalize = TRUE)
 }
 \arguments{
 \item{protected}{Passed to \code{.measure}.}
 
-\item{step}{Passed to \code{.measure}. Defaults to \code{10L}.}
+\item{step}{Passed to \code{.measure}. Defaults to \code{10}.}
 
 \item{normalize}{Passed to \code{.measure}. Defaults to \code{TRUE}.}
 }
@@ -21,3 +21,8 @@ A step of the fairRC_native implementation. Called by \code{morie_fairRC}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+prot <- c(rep(0L, 10), rep(1L, 10), rep(0L, 10), rep(1L, 10))
+rND(prot, step = 10)
+}
+\keyword{internal}

@@ -202,6 +202,7 @@
 #' @param ridge Passed to \code{.wenge_parametric_models}. Defaults to \code{1e-08}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @keywords internal
 morie_wenge_mediation_functional <- function(Y, E, M, X, strategy = "em",
                                              saturated = TRUE, ridge = 1e-8) {
   # theta_0 = E(Y_{1, M_0}) by one of the paper's three strategies.
@@ -323,7 +324,7 @@ morie_wenge_mediation_functional <- function(Y, E, M, X, strategy = "em",
 #' @param saturated A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
-#' @aliases morie_wenge
+#' @keywords internal
 morie_wenge_weight_based_mediation <- function(X, M, C, Y, strategy = "em",
                                                saturated = TRUE) {
   # Natural direct and indirect effects by inverse-odds weighting. The
@@ -386,6 +387,9 @@ morie_wenge_weight_based_mediation <- function(X, M, C, Y, strategy = "em",
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_wenge_cheatsheet()
+#' @keywords internal
 morie_wenge_cheatsheet <- function() {
   paste0(
     "wenge: mediation functional theta = E(Y_1,M_0) three ways ",
@@ -399,5 +403,6 @@ morie_wenge_cheatsheet <- function() {
 # compact alias per ledger/NAMING.md
 morie_wenge_weightbasedmediation <- morie_wenge_weight_based_mediation
 
+#' @rdname morie_wenge_weight_based_mediation
 #' @export
 morie_wenge <- morie_wenge_weight_based_mediation

@@ -2,7 +2,7 @@
 % Please edit documentation in R/toptor_native.R
 \name{.pi_electrons}
 \alias{.pi_electrons}
-\title{Pi-electron count per atom, rounded to an integer}
+\title{.pi_electrons}
 \usage{
 .pi_electrons(n_atoms, bonds)
 }
@@ -15,7 +15,7 @@
 The value of \code{as.integer}.
 }
 \description{
-A step of the toptor_native implementation. Called by \code{morie_topological_torsions}.
+A step of the toptor_native implementation. Called by \code{topological_torsions}.
 See the file header for the source the module follows.
 source it follows.
 }

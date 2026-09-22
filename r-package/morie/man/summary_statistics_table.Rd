@@ -27,16 +27,13 @@ summary_statistics_table(
 \item{title}{Title.}
 }
 \value{
-When \code{output_format = "dataframe"}, a \code{data.frame}
-indexed by variable name with one column per requested statistic
-(e.g. \code{n}, \code{mean}, \code{sd}, \code{median}, ...).
-Otherwise a character string holding the rendered table in the
-requested format.
+A character string.
 }
 \description{
 Descriptive statistics for a set of variables
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-summary_statistics_table(V)
+set.seed(1)
+df <- data.frame(age = rnorm(50, 40, 10), score = rnorm(50))
+summary_statistics_table(df)
 }

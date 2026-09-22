@@ -20,6 +20,14 @@ morie_geron_regression_mlp(
 
 \item{epochs, lr, seed}{Training controls.}
 }
+\value{
+A list with \code{predict}, \code{predictions}, \code{mse}, \code{loss_history}, \code{weights}, \code{biases}, \code{sizes}, \code{n_parameters}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Regression MLP: ReLU hidden layers, linear head, full-batch GD (Geron Ch 9, hmregn)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_regression_mlp(V, V)
+}
+\keyword{internal}

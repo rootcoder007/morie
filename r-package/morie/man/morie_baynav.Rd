@@ -80,3 +80,4 @@ Blei, D. M., Kucukelbir, A. and McAuliffe, J. D. (2017).
 Variational Inference: A Review for Statisticians. JASA
 112(518), 859-877.
 }
+\keyword{internal}

@@ -4,22 +4,23 @@
 \alias{morie_llavx}
 \title{morie_llavx}
 \usage{
-morie_llavx(captions = NULL, boxes = NULL, kind = "conversation", stage = NULL)
+morie_llavx(op, ...)
 }
 \arguments{
-\item{captions}{Passed to \code{symbolic_representation}.}
+\item{op}{A vector; its length is taken.}
 
-\item{boxes}{Passed to \code{symbolic_representation}.}
-
-\item{kind}{Passed to \code{instruction_prompt}. Defaults to \code{"conversation"}.}
-
-\item{stage}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{...}{Passed through.}
 }
 \value{
-The value of \code{instruction_prompt}.
+The value of \code{switch}.
 }
 \description{
 A step of the llavx_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r <- morie_llavx("training_stage", 2)
+r$stage == 2L
+}
+\keyword{internal}

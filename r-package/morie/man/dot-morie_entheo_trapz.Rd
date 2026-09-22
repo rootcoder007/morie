@@ -11,7 +11,14 @@
 
 \item{x}{See Usage.}
 }
+\value{
+A numeric scalar: the trapezoidal integral of \code{y} over \code{x}.
+}
 \description{
 Trapezoidal integration on a 1-D grid
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie:::.morie_entheo_trapz(V, V)
 }
 \keyword{internal}

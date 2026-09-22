@@ -2,7 +2,7 @@
 % Please edit documentation in R/survrsf_native.R
 \name{morie_survrsf_logrank_scores}
 \alias{morie_survrsf_logrank_scores}
-\title{Lausen\'s log-rank scores, Hothorn & Lausen (2003) eq. (13)}
+\title{Lausen's log-rank scores, Hothorn & Lausen (2003) eq. (13)}
 \usage{
 morie_survrsf_logrank_scores(times, events)
 }
@@ -18,3 +18,8 @@ The value of \code{out}, as built in the body.
 Without censoring or ties these are the Savage scores and sum to
 zero.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_survrsf_logrank_scores(V, V)
+}
+\keyword{internal}

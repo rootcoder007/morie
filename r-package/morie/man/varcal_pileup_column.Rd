@@ -21,3 +21,10 @@ A step of the varcal_native implementation. Called by \code{varcal_find_candidat
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+reads <- list(list(pos = 0L, seq = "ACGTACGT"),
+              list(pos = 2L, seq = "GTTCGT"))
+r <- varcal_pileup_column(reads, position = 3L, reference = "ACGTACGTAC")
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -50,3 +50,16 @@ A step of the tmlcic_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(5)
+nc <- 10
+sz <- 4
+cluster <- rep(seq_len(nc), each = sz)
+E <- rep(rep(c(0, 1), nc / 2), each = sz)
+W <- matrix(rnorm(nc * sz * 2), nc * sz, 2)
+A <- E
+y <- plogis(-0.3 + 0.8 * E + 0.4 * W[, 1] + rnorm(nc * sz, 0, 0.5))
+r <- morie_tmlcic_tmle_hierarchical(y, A, E, W, cluster)
+str(r, max.level = 1)
+}
+\keyword{internal}

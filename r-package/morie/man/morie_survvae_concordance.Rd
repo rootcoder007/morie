@@ -27,8 +27,19 @@ Mirrors \code{morie.fn.survrsf.c_index}: pairwise count of
 concordances, discordances and tied risks over the comparable
 pairs.
 }
+\examples{
+\donttest{
+set.seed(2)
+X <- lapply(1:40, function(i) rnorm(2))
+tt <- rexp(40, 0.1)
+ev <- rbinom(40, 1, 0.7)
+fit <- morie_survvae(X, tt, ev, K = 2L, restarts = 2L)
+morie_survvae_concordance(fit, X, tt, ev)
+}
+}
 \references{
 Harrell, F. E., Califf, R. M., Pryor, D. B., Lee,
 K. L. & Rosati, R. A. (1982). Evaluating the yield of medical
 tests. JAMA, 247(18), 2543-2546.
 }
+\keyword{internal}

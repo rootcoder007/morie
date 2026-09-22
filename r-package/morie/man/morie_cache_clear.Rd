@@ -36,3 +36,6 @@ morie_cache_clear("siu", confirm = FALSE)
 }
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+\code{\link{morie_cache_dir}}
+}

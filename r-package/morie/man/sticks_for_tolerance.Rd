@@ -2,15 +2,24 @@
 % Please edit documentation in R/slowdp_native.R
 \name{sticks_for_tolerance}
 \alias{sticks_for_tolerance}
-\title{Smallest K with expected tail below the tolerance}
+\title{sticks_for_tolerance}
 \usage{
 sticks_for_tolerance(alpha, tol = 0.001)
 }
 \arguments{
-\item{alpha}{See Usage.}
+\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{tol}{See Usage.}
+\item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.001}.}
+}
+\value{
+A list with \code{K}, \code{expected_tail}, \code{tolerance}, \code{note}.
 }
 \description{
-Smallest K with expected tail below the tolerance
+A step of the slowdp_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+sticks_for_tolerance(alpha = 0.5)
+}
+\keyword{internal}

@@ -46,3 +46,9 @@ A step of the hiatus_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+\donttest{
+morie_hiatus(beta = 0.5, nu = 0.5, mu = 5L, sigma = 0.5)
+}
+}
+\keyword{internal}

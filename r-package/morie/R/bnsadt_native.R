@@ -124,6 +124,9 @@
 #' @param params The free probabilities, in group order.
 #' @return A single probability.
 #' @export
+#' @examples
+#' morie_bnsadt_p(z = 5L)
+#' @keywords internal
 morie_bnsadt_p <- function(z, family = "symmetric_step", params = numeric(0)) {
   cuts <- .BNSADT_FAMILIES[[family]]$cuts
   betas <- .bnsadt_betas(family, params)
@@ -172,6 +175,13 @@ morie_bnsadt_p <- function(z, family = "symmetric_step", params = numeric(0)) {
 #' @param params The free publication probabilities.
 #' @return The log-likelihood.
 #' @export
+#' @examples
+#' set.seed(1)
+#' x <- rnorm(20, 0.3, 0.1)
+#' sigma <- rep(0.1, 20)
+#' morie_bnsadt_loglik(x, sigma, mu = 0.2, tau = 0.05,
+#'                     family = "symmetric_step", params = 0.3)
+#' @keywords internal
 morie_bnsadt_loglik <- function(x, sigma, mu, tau,
                                 family = "symmetric_step",
                                 params = numeric(0)) {
@@ -203,6 +213,12 @@ morie_bnsadt_loglik <- function(x, sigma, mu, tau,
 #' @param family A name of the selection family.
 #' @return An integer count per free group.
 #' @export
+#' @examples
+#' set.seed(1)
+#' x <- c(rnorm(10, 0.3, 0.1), rnorm(5, -0.05, 0.1))
+#' sigma <- rep(0.1, 15)
+#' morie_bnsadt_group_counts(x, sigma, family = "symmetric_step")
+#' @keywords internal
 morie_bnsadt_group_counts <- function(x, sigma, family) {
   groups <- .BNSADT_FAMILIES[[family]]$groups
   cuts <- .BNSADT_FAMILIES[[family]]$cuts
@@ -219,6 +235,18 @@ morie_bnsadt_group_counts <- function(x, sigma, family) {
 }
 
 #' Maximum likelihood over the selection model, by Nelder-Mead
+#'
+#' tau and every beta are optimised on the log scale, so the simplex cannot step
+#' to a negative variance or a negative probability and the run needs no penalty
+#' term to stay inside the parameter space. Betas are squashed by the logistic,
+#' which bounds them by 1 -- a publication probability above the normalisation
+#' would be the likelihood saying the significant region is SUPPRESSED, which the
+#' family does not describe. Two guards, both statements about identification and
+#' not numerical tape: a group with no observed studies is HELD at 1 and reported
+#' in `unidentified`, because its beta is bounded only from above; and tau is
+#' floored at 1e-6 times the mean standard error, below which the between-study
+#' spread is far under the within-study noise and the likelihood is flat in it.
+#' The floor is reported in `tau_at_floor` rather than hidden.
 #'
 #' tau and every beta are optimised on the log scale, so the simplex
 #' cannot step to a negative variance or a negative probability and the
@@ -246,6 +274,13 @@ morie_bnsadt_group_counts <- function(x, sigma, family) {
 #' @param iters Nelder-Mead iterations.
 #' @return A list with mu, tau, the betas and the log-likelihood.
 #' @export
+#' @examples
+#' \donttest{
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie_bnsadt_fit(M, V)
+#' }
+#' @keywords internal
 morie_bnsadt_fit <- function(x, sigma, family = "symmetric_step",
                              mu0 = NULL, tau0 = NULL, beta0 = 0.5,
                              iters = 600L) {
@@ -343,6 +378,10 @@ morie_bnsadt_fit <- function(x, sigma, family = "symmetric_step",
 #' @param hi Upper end of the bracket.
 #' @return The corrected estimate.
 #' @export
+#' @examples
+#' morie_bnsadt_median_unbiased(x = 0.25, sigma = 0.1,
+#'                              family = "symmetric_step", params = 0.3)
+#' @keywords internal
 morie_bnsadt_median_unbiased <- function(x, sigma,
                                          family = "symmetric_step",
                                          params = numeric(0),
@@ -378,6 +417,12 @@ morie_bnsadt_median_unbiased <- function(x, sigma,
 #'   adversarial interval over the family with the beta attaining each
 #'   end.
 #' @export
+#' @examples
+#' \donttest{
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_bnsadt(V, V)
+#' }
+#' @keywords internal
 morie_bnsadt <- function(y, D, family = "symmetric_step", grid = NULL,
                          target = NULL, target_se = NULL, fit = TRUE,
                          iters = 600L) {
@@ -455,6 +500,9 @@ morie_bnsadt <- function(y, D, family = "symmetric_step", grid = NULL,
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_bnsadt_cheatsheet()
+#' @keywords internal
 morie_bnsadt_cheatsheet <- function()
   paste0("bnsadt: Andrews-Kasy publication-bias correction plus the ",
          "adversarial bound over the selection family. families ",

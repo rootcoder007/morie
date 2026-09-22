@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-#' Bundled reference data samples and dataset fetchers
+#' Included reference data samples and dataset fetchers
 #'
 #' MORIE ships a small set of reference CSVs in `inst/extdata/` so that
 #' the `mrm_otis_*()` and `mrm_tps_*()` callables can be exercised
@@ -21,16 +21,18 @@
 #'   \code{morie_fetch_siu()}) return the file path to the downloaded or
 #'   cached CSV; \code{morie_load_dataset()} returns the loaded
 #'   \code{data.frame}.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @name mrm_samples
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' if (FALSE) {
 #'   b01 <- morie_load_dataset("otisb01")
 #'   head(b01)
 #' }
-#' @name mrm_samples
+#' \dontshow{\}) # examplesIf}
 NULL
 
 
-#' Load a bundled MORIE reference sample by name
+#' Load a included MORIE reference sample by name
 #'
 #' Returns a small CSV that ships with the package, suitable for
 #' running examples and tests of the `mrm_*()` callables without any
@@ -51,7 +53,7 @@ morie_sample <- function(name = c("otis_b01", "otis_b09", "otis_c11", "tps_assau
     otis_c11 = "otis_c11_sample.csv",
     tps_assault = "tps_assault_sample.csv"
   )
-  path <- system.file("extdata", files[[name]], package = "morie")
+  path <- .morie_extdata(files[[name]])
   if ((path == "" || !file.exists(path)) &&
       requireNamespace("rmoriedata", quietly = TRUE)) {
     path <- system.file("extdata", files[[name]], package = "rmoriedata")
@@ -120,7 +122,9 @@ morie_tps_layer_urls <- function() {
 #'   path without re-downloading.
 #' @param max_per_page ArcGIS page size (default `2000`; server caps).
 #' @return Path to the CSV.
-#' @examplesIf requireNamespace("jsonlite", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("jsonlite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
 #' # Network: fetches major-crime indicators from the Toronto Police
 #' # ArcGIS open-data layer.
 #' csv <- morie_fetch_tps(
@@ -130,6 +134,8 @@ morie_tps_layer_urls <- function() {
 #' )
 #' tps <- utils::read.csv(csv)
 #' nrow(tps)
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_fetch_tps <- function(
   category,

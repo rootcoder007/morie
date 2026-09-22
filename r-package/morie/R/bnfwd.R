@@ -14,10 +14,11 @@
 #' @return Named list \code{(y, estimate, x_hat, mu, var, eps, method)}.
 #' @references Ioffe & Szegedy (2015), ICML.
 #' @examples
+#' set.seed(1)
 #' morie_bnfwd_batch_norm_forward(x = rnorm(50))
 #' @export
 morie_bnfwd_batch_norm_forward <- function(x, gamma = NULL, beta = NULL,
-                                     eps = 1e-5) {
+                                           eps = 1e-5) {
   x <- as.matrix(x)
   # axis=0 (batch) -> per-feature stats
   mu <- colMeans(x)

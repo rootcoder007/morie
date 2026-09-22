@@ -35,8 +35,12 @@
 #' res <- .gpmat(A = A)
 #' res
 .gpmat <- function(A) {
-  if (is.matrix(A)) return(matrix(as.numeric(A), nrow(A), ncol(A)))
-  if (is.list(A)) return(do.call(rbind, lapply(A, as.numeric)))
+  if (is.matrix(A)) {
+    return(matrix(as.numeric(A), nrow(A), ncol(A)))
+  }
+  if (is.list(A)) {
+    return(do.call(rbind, lapply(A, as.numeric)))
+  }
   matrix(as.numeric(A), nrow = 1L)
 }
 
@@ -59,7 +63,9 @@
   A <- .gpmat(A)
   b <- .gpflat(b)
   out <- tryCatch(as.numeric(solve(A, b)), error = function(e) NULL)
-  if (!is.null(out) && all(is.finite(out))) return(out)
+  if (!is.null(out) && all(is.finite(out))) {
+    return(out)
+  }
   as.numeric(.gppinv(A) %*% b)
 }
 
@@ -100,7 +106,9 @@
 .gpinv <- function(A) {
   A <- .gpmat(A)
   out <- tryCatch(solve(A), error = function(e) NULL)
-  if (!is.null(out) && all(is.finite(out))) return(out)
+  if (!is.null(out) && all(is.finite(out))) {
+    return(out)
+  }
   .gppinv(A)
 }
 
@@ -153,14 +161,16 @@
   ms_within <- ss_within / (n - a)
   sigma2_b <- max((ms_between - ms_within) / r, 0)
   denom <- sigma2_b + ms_within
-  list(grand_mean = grand,
-       sd_single_mean = sqrt((ss_between + ss_within) / (n - 1)),
-       group_means = means,
-       sd_residual = sqrt(ms_within),
-       deviations = means - grand,
-       sigma2_b = sigma2_b,
-       icc = if (denom > 0) sigma2_b / denom else 0,
-       ms_between = ms_between, ms_within = ms_within)
+  list(
+    grand_mean = grand,
+    sd_single_mean = sqrt((ss_between + ss_within) / (n - 1)),
+    group_means = means,
+    sd_residual = sqrt(ms_within),
+    deviations = means - grand,
+    sigma2_b = sigma2_b,
+    icc = if (denom > 0) sigma2_b / denom else 0,
+    ms_between = ms_between, ms_within = ms_within
+  )
 }
 
 # --- chapter 4: confusion matrix and metrics, eqs (4.5)-(4.14) -------------
@@ -205,11 +215,13 @@
   ttn <- sum(conf[-ii, -ii])
   ttp <- sum(diag(conf))
   total <- sum(conf)
-  list(TFN = tfn, TFP = tfp, TTN = ttn, TTP_all = ttp,
-       precision = if (ttp + tfp) ttp / (ttp + tfp) else 0,
-       sensitivity = if (ttp + tfn) ttp / (ttp + tfn) else 0,
-       specificity = if (ttn + tfp) ttn / (ttn + tfp) else 0,
-       pCCC = if (total) ttp / total else 0)
+  list(
+    TFN = tfn, TFP = tfp, TTN = ttn, TTP_all = ttp,
+    precision = if (ttp + tfp) ttp / (ttp + tfp) else 0,
+    sensitivity = if (ttp + tfn) ttp / (ttp + tfn) else 0,
+    specificity = if (ttn + tfp) ttn / (ttn + tfp) else 0,
+    pCCC = if (total) ttp / total else 0
+  )
 }
 
 #' .gpbrier
@@ -328,8 +340,10 @@
   }
   r <- y - as.numeric(Xm %*% beta)
   quad <- sum(r * as.numeric(Vi %*% r))
-  list(value = -0.5 * n * log(2 * pi) - 0.5 * .gplogdet(V) - 0.5 * quad,
-       beta = beta)
+  list(
+    value = -0.5 * n * log(2 * pi) - 0.5 * .gplogdet(V) - 0.5 * quad,
+    beta = beta
+  )
 }
 
 #' .gpremlloglik
@@ -355,8 +369,10 @@
   beta <- .gpsolve(A, as.numeric(XtVi %*% y))
   r <- y - as.numeric(Xm %*% beta)
   quad <- sum(r * as.numeric(Vi %*% r))
-  list(value = -0.5 * .gplogdet(A) - 0.5 * .gplogdet(V) - 0.5 * quad,
-       beta = beta)
+  list(
+    value = -0.5 * .gplogdet(A) - 0.5 * .gplogdet(V) - 0.5 * quad,
+    beta = beta
+  )
 }
 
 # --- chapter 3: least squares, eq (3.1) -----------------------------------
@@ -373,8 +389,7 @@
 #' \code{sigma2}, \code{sigma2_ml}, \code{var_beta}, \code{se_beta}.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
 #' res <- .gpolsfit(X = X, y = y)
 #' res
@@ -392,10 +407,12 @@
   dof <- n - p1
   sigma2 <- if (dof > 0) rss / dof else NaN
   XtXi <- .gpinv(XtX)
-  list(beta = beta, fitted = fitted, residuals = resid, rss = rss,
-       sigma2 = sigma2, sigma2_ml = rss / n,
-       var_beta = sigma2 * XtXi,
-       se_beta = sqrt(sigma2 * diag(XtXi)))
+  list(
+    beta = beta, fitted = fitted, residuals = resid, rss = rss,
+    sigma2 = sigma2, sigma2_ml = rss / n,
+    var_beta = sigma2 * XtXi,
+    se_beta = sqrt(sigma2 * diag(XtXi))
+  )
 }
 
 # --- chapter 5: Kronecker products and the multi-trait model, eq (5.5) -----
@@ -434,7 +451,7 @@
   Ym <- .gpmat(Y)
   J <- nrow(Ym)
   nT <- ncol(Ym)
-  y <- as.numeric(t(Ym))                      # stacked line-by-line
+  y <- as.numeric(t(Ym)) # stacked line-by-line
   I_nT <- diag(nT)
   Xm <- .gpkron(matrix(1, J, 1), I_nT)
   if (!is.null(X)) Xm <- cbind(Xm, .gpmat(X))
@@ -443,9 +460,13 @@
   R <- .gpkron(diag(J), R_T)
   bb <- .gpblueblup(Xm, Zm, y, Sigma, R)
   b <- bb$u
-  list(mu = bb$beta[seq_len(nT)], beta = bb$beta, b = b,
-       b_by_line = lapply(seq_len(length(b) %/% nT),
-                          function(i) b[((i - 1L) * nT + 1L):(i * nT)]))
+  list(
+    mu = bb$beta[seq_len(nT)], beta = bb$beta, b = b,
+    b_by_line = lapply(
+      seq_len(length(b) %/% nT),
+      function(i) b[((i - 1L) * nT + 1L):(i * nT)]
+    )
+  )
 }
 
 # --- chapter 7: multinomial logistic model, eqs (7.6)-(7.10) ---------------
@@ -465,8 +486,10 @@
   Xm <- .gpmat(X)
   b0 <- .gpflat(beta0)
   B <- .gpmat(beta)
-  if (baseline_last) { b0 <- c(b0, 0)
-  B <- rbind(B, rep(0, ncol(Xm))) }
+  if (baseline_last) {
+    b0 <- c(b0, 0)
+    B <- rbind(B, rep(0, ncol(Xm)))
+  }
   t(apply(Xm, 1L, function(row) {
     eta <- b0 + as.numeric(B %*% row)
     ex <- exp(eta - max(eta))
@@ -513,8 +536,10 @@
   ll <- .gpmnloglik(X, y, beta0, beta, baseline_last)
   B <- .gpmat(beta)
   pen <- if (identical(penalty, "lasso")) sum(abs(B)) else sum(B^2)
-  list(loglik = ll, penalty = as.numeric(lam) * pen,
-       penalized_loglik = ll - as.numeric(lam) * pen)
+  list(
+    loglik = ll, penalty = as.numeric(lam) * pen,
+    penalized_loglik = ll - as.numeric(lam) * pen
+  )
 }
 
 # --- chapter 10: ANN loss, eq (10.5) --------------------------------------
@@ -560,9 +585,12 @@
 #' @param theta_pred Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{mu}, \code{theta}.
 #' @export
-.gpzaplink <- function(mu_pred, theta_pred)
-  list(mu = exp(min(as.numeric(mu_pred), 700)),
-       theta = 1 / (1 + exp(-as.numeric(theta_pred))))
+.gpzaplink <- function(mu_pred, theta_pred) {
+  list(
+    mu = exp(min(as.numeric(mu_pred), 700)),
+    theta = 1 / (1 + exp(-as.numeric(theta_pred)))
+  )
+}
 
 # Book erratum: eq. (15.3) as printed drops the mu from the numerator. The
 # ZAP pmf printed above it, the Var(Y) line below it, and the p.652
@@ -598,8 +626,9 @@
 #' @param threshold Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.5}.
 #' @return One of two values, depending on the branch taken.
 #' @export
-.gpzapcpredict <- function(theta_hat, mu_hat, threshold = 0.5)
+.gpzapcpredict <- function(theta_hat, mu_hat, threshold = 0.5) {
   if (as.numeric(theta_hat) > as.numeric(threshold)) 0 else as.numeric(mu_hat)
+}
 
 #' .gpztploglik
 #'
@@ -615,7 +644,9 @@
   ys <- .gpflat(y_positive)
   n <- length(ys)
   mu <- as.numeric(mu)
-  if (mu <= 0 || n == 0L) return(-Inf)
+  if (mu <= 0 || n == 0L) {
+    return(-Inf)
+  }
   -n * log(1 - exp(-mu)) + log(mu) * sum(ys) - n * mu - sum(lgamma(ys + 1))
 }
 
@@ -635,15 +666,21 @@
   n <- length(ys)
   if (n == 0L) stop("need at least one positive observation")
   target <- sum(ys) / n
-  if (target <= 1) return(0)
+  if (target <= 1) {
+    return(0)
+  }
   lo <- 1e-9
   hi <- 1
-  while (hi / (1 - exp(-hi)) < target) { hi <- hi * 2
-  if (hi > 1e6) break }
+  while (hi / (1 - exp(-hi)) < target) {
+    hi <- hi * 2
+    if (hi > 1e6) break
+  }
   for (k in seq_len(as.integer(max_iter))) {
     mid <- 0.5 * (lo + hi)
     v <- mid / (1 - exp(-mid))
-    if (abs(v - target) < tol) return(mid)
+    if (abs(v - target) < tol) {
+      return(mid)
+    }
     if (v < target) lo <- mid else hi <- mid
   }
   0.5 * (lo + hi)
@@ -676,8 +713,10 @@
     R <- ys[xs > v & ys > 0]
     if (!length(L) || !length(R)) next
     ll <- .gpztploglik(L, .gpztpmle(L)) + .gpztploglik(R, .gpztpmle(R))
-    if (is.null(bt) || ll > bl) { bt <- v
-    bl <- ll }
+    if (is.null(bt) || ll > bl) {
+      bt <- v
+      bl <- ll
+    }
   }
   list(threshold = bt, loglik = if (is.null(bt)) -Inf else bl)
 }
@@ -701,13 +740,19 @@
                          Z_L = NULL, L_g = NULL) {
   blocks <- list()
   nm <- character(0)
-  add <- function(name, M) { blocks[[length(blocks) + 1L]] <<- .gpmat(M)
-  nm <<- c(nm, name) }
+  add <- function(name, M) {
+    blocks[[length(blocks) + 1L]] <<- .gpmat(M)
+    nm <<- c(nm, name)
+  }
   if (!is.null(X_E)) add("environments", X_E)
   if (!is.null(X)) add("markers", X)
   if (!is.null(X_EM)) add("env_x_marker", X_EM)
-  if (!is.null(Z_L)) add("genetic",
-    if (!is.null(L_g)) .gpmat(Z_L) %*% .gpmat(L_g) else .gpmat(Z_L))
+  if (!is.null(Z_L)) {
+    add(
+      "genetic",
+      if (!is.null(L_g)) .gpmat(Z_L) %*% .gpmat(L_g) else .gpmat(Z_L)
+    )
+  }
   if (!length(blocks)) stop("the predictor needs at least one block")
   design <- do.call(cbind, lapply(blocks, function(M) M[seq_len(n), , drop = FALSE]))
   w <- as.list(vapply(blocks, ncol, 1L))
@@ -742,8 +787,9 @@
 #' @param eta0 Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @return A numeric value.
 #' @export
-.gprkhspredict <- function(K_new, beta, eta0 = 0)
+.gprkhspredict <- function(K_new, beta, eta0 = 0) {
   as.numeric(eta0) + as.numeric(.gpmat(K_new) %*% .gpflat(beta))
+}
 
 #' .gprkhsfitsq
 #'
@@ -782,6 +828,8 @@
   resid <- ys - fitted
   loss <- sum(resid^2) / n
   pen <- 0.5 * as.numeric(lam) * .gprkhsnorm(beta, Km)
-  list(eta0 = eta0, beta = beta, fitted = fitted, residuals = resid,
-       loss = loss, penalty = pen, objective = loss + pen)
+  list(
+    eta0 = eta0, beta = beta, fitted = fitted, residuals = resid,
+    loss = loss, penalty = pen, objective = loss + pen
+  )
 }

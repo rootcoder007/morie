@@ -24,7 +24,9 @@
 #' @export
 Rootnoise <- function(p, alpha = 0.3, eps = 0.25, eta = NULL) {
   gamma_lower_reg <- function(a, x, iters = 400L) {
-    if (x <= 0) return(0)
+    if (x <= 0) {
+      return(0)
+    }
     if (x < a + 1) {
       term <- 1 / a
       s <- term
@@ -82,7 +84,9 @@ Rootnoise <- function(p, alpha = 0.3, eps = 0.25, eta = NULL) {
   mixed <- (1 - e) * pr + e * et
   h <- 0
   for (x in mixed) if (x > 0) h <- h - x * log(x)
-  list(estimate = if (m > 0L) mixed[1] else NaN, p_noisy = mixed, eta = et,
-       entropy = h, alpha = a, eps = e,
-       method = "Dirichlet exploration noise at the MCTS root")
+  list(
+    estimate = if (m > 0L) mixed[1] else NaN, p_noisy = mixed, eta = et,
+    entropy = h, alpha = a, eps = e,
+    method = "Dirichlet exploration noise at the MCTS root"
+  )
 }

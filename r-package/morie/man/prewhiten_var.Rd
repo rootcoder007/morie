@@ -2,19 +2,29 @@
 % Please edit documentation in R/andmnh_native.R
 \name{prewhiten_var}
 \alias{prewhiten_var}
-\title{VAR prewhitening, equation 2.2}
+\title{prewhiten_var}
 \usage{
-prewhiten_var(v, order = 1L, cap = .EIGENVALUE_CAP, adjust = TRUE)
+prewhiten_var(v, order = 1, cap = 0.97, adjust = TRUE)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{A matrix; passed to \code{as.matrix}.}
 
-\item{order}{See Usage.}
+\item{order}{A count; the body uses it as \code{vector(...)}. Defaults to \code{1}.}
 
-\item{cap}{See Usage.}
+\item{cap}{Numeric; combined arithmetically in the body. Defaults to \code{0.97}.}
 
-\item{adjust}{See Usage.}
+\item{adjust}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+}
+\value{
+A list with \code{A}, \code{residuals}, \code{D}.
 }
 \description{
-VAR prewhitening, equation 2.2
+A step of the andmnh_native implementation. Called by \code{andrews_monahan_hac}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+prewhiten_var(V)
+}
+\keyword{internal}

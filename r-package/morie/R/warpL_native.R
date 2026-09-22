@@ -233,6 +233,9 @@
 #' @param scheme Passed to \code{.warpL_alpha_weights}. Defaults to \code{"reciprocal"}.
 #' @return The value of \code{.warpL_alpha_weights}.
 #' @export
+#' @examples
+#' morie_warpL_alpha_weights(n = 5L)
+#' @keywords internal
 morie_warpL_alpha_weights <- function(n, scheme = "reciprocal") {
   .warpL_alpha_weights(n, scheme)
 }
@@ -247,6 +250,9 @@ morie_warpL_alpha_weights <- function(n, scheme = "reciprocal") {
 #' @param alphas Passed to \code{.warpL_rank_weight}.
 #' @return The value of \code{.warpL_rank_weight}.
 #' @export
+#' @examples
+#' morie_warpL_rank_weight(rank = 5L, alphas = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_warpL_rank_weight <- function(rank, alphas) {
   .warpL_rank_weight(rank, alphas)
 }
@@ -261,6 +267,9 @@ morie_warpL_rank_weight <- function(rank, alphas) {
 #' @param n_labels Passed to \code{.warpL_estimate_rank}.
 #' @return The value of \code{.warpL_estimate_rank}.
 #' @export
+#' @examples
+#' morie_warpL_estimate_rank(n_draws = 5L, n_labels = 5L)
+#' @keywords internal
 morie_warpL_estimate_rank <- function(n_draws, n_labels) {
   .warpL_estimate_rank(n_draws, n_labels)
 }
@@ -279,6 +288,7 @@ morie_warpL_estimate_rank <- function(n_draws, n_labels) {
 #' @param max_draws Passed to \code{.warpL_sample_violation}.
 #' @return The value of \code{.warpL_sample_violation}.
 #' @export
+#' @keywords internal
 morie_warpL_sample_violation <- function(score_positive, negative_scorer, n_labels,
                                           rng, margin = 1.0, max_draws = NULL) {
   .warpL_sample_violation(score_positive, negative_scorer, n_labels, rng, margin, max_draws)
@@ -297,6 +307,12 @@ morie_warpL_sample_violation <- function(score_positive, negative_scorer, n_labe
 #' @param margin Passed to \code{.warpL_warp_loss}. Defaults to \code{1}.
 #' @return The value of \code{.warpL_warp_loss}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' r <- morie_warpL_warp_loss(score_positive = rnorm(10), score_negative = rnorm(10),
+#'   estimated_rank = 8L, alphas = 0.5)
+#' TRUE
+#' @keywords internal
 morie_warpL_warp_loss <- function(score_positive, score_negative, estimated_rank,
                                    alphas, margin = 1.0) {
   .warpL_warp_loss(score_positive, score_negative, estimated_rank, alphas, margin)
@@ -319,6 +335,7 @@ morie_warpL_warp_loss <- function(score_positive, score_negative, estimated_rank
 #' \code{draws}, \code{estimated_rank}, \code{rank_weight}, \code{negative},
 #' \code{method}, \code{note}.
 #' @export
+#' @keywords internal
 morie_warpL_warp_step <- function(positive, negatives, embed_user, rng, alphas,
                                    lr = 0.05, margin = 1.0) {
   u <- .warpL_vec(embed_user)
@@ -372,6 +389,9 @@ morie_warpL_warp_step <- function(positive, negatives, embed_user, rng, alphas,
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_warpL_cheatsheet()
+#' @keywords internal
 morie_warpL_cheatsheet <- function() {
   paste0(
     "warpL: with tens of thousands of labels what matters is prec",

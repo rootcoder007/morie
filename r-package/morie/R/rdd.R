@@ -14,8 +14,7 @@
 #
 # Public R names mirror the Python module under the `morie_rdd_*` prefix.
 
-#' @importFrom stats lm coef vcov pnorm pt pf pchisq qnorm qt sd var model.matrix predict
-#' quantile complete.cases approx
+#' @importFrom stats lm coef vcov pnorm pt pf pchisq qnorm qt sd var model.matrix predict quantile complete.cases approx
 NULL
 
 
@@ -116,23 +115,29 @@ NULL
 #' @return Numeric vector of kernel weights, same length as `u`.
 #' @name morie_rdd_kernels
 #' @rdname morie_rdd_kernels
-#' @export
 #' @examples
-#' u <- seq(-1, 1, by = 0.25)
-#' w <- morie_rdd_kernel_triangular(u)
-#' c(length(w), all(w >= 0))
+#' morie_rdd_kernel_epanechnikov(seq(-1, 1, by = 0.5))
+#' morie_rdd_kernel_uniform(seq(-2, 2, by = 1))
+#' morie_rdd_kernel_gaussian(seq(-1, 1, by = 0.5))
+#' @export
 morie_rdd_kernel_triangular  <- function(u) pmax(1 - abs(u), 0)
 #' @rdname morie_rdd_kernels
 #' @return A \code{function} of one argument returning Epanechnikov kernel weights.
+#' @examples
+#' morie_rdd_kernel_epanechnikov(seq(-1, 1, by = 0.5))
 #' @export
 morie_rdd_kernel_epanechnikov <- function(u)
   ifelse(abs(u) <= 1, 0.75 * (1 - u^2), 0)
 #' @rdname morie_rdd_kernels
 #' @return A \code{function} of one argument returning uniform kernel weights.
+#' @examples
+#' morie_rdd_kernel_uniform(seq(-2, 2, by = 1))
 #' @export
 morie_rdd_kernel_uniform <- function(u) ifelse(abs(u) <= 1, 0.5, 0)
 #' @rdname morie_rdd_kernels
 #' @return A \code{function} of one argument returning Gaussian kernel weights.
+#' @examples
+#' morie_rdd_kernel_gaussian(seq(-1, 1, by = 0.5))
 #' @export
 morie_rdd_kernel_gaussian <- function(u) stats::dnorm(u)
 
@@ -254,7 +259,7 @@ morie_rdd_local_polynomial <- function(x, y, eval_points, h, p = 1,
 morie_rdd_bandwidth_ik <- function(x, y, cutoff = 0,
                                    kernel = "triangular") {
   ik <- .morie_rdd_ik_native(x, y, cutoff, kernel)
-  .morie_rdd_bw_result(ik$bandwidth, "IK 2012 plug-in (morie native)",
+  .morie_rdd_bw_result(ik$bandwidth, "IK 2012 plug-in (rmorie native)",
                        details = ik$details %||% list())
 }
 
@@ -463,7 +468,7 @@ morie_rdd_sharp <- function(data, outcome, running, cutoff = 0,
     bandwidth <- .morie_rdd_ik_native(x, y, cutoff, kernel)$bandwidth
   fit <- .morie_rdd_jump_native(x, y, cutoff, bandwidth, p, kernel)
   .morie_rdd_result(fit$estimate, fit$se, fit$n,
-                    method = "sharp RDD (morie native)",
+                    method = "sharp RDD (rmorie native)",
                     alpha = alpha,
                     details = list(left = fit$left, right = fit$right,
                                    bandwidth = bandwidth))
@@ -499,7 +504,7 @@ morie_rdd_fuzzy <- function(data, outcome, running, treatment,
   se  <- sqrt((num$std_error / den$estimate)^2 +
               (num$estimate * den$std_error / den$estimate^2)^2)
   .morie_rdd_result(est, se, num$n_obs,
-                    method = "fuzzy RDD (morie native Wald ratio)",
+                    method = "fuzzy RDD (rmorie native Wald ratio)",
                     alpha = alpha,
                     details = list(numerator = num, denominator = den))
 }
@@ -528,7 +533,7 @@ morie_rdd_bias_corrected <- function(data, outcome, running, cutoff = 0,
   b <- bandwidth / rho
   fit_q <- .morie_rdd_jump_native(x, y, cutoff, b, p + 1L, kernel)
   .morie_rdd_result(fit_q$estimate, fit_q$se, fit_q$n,
-                    method = "CCT bias-corrected RDD (morie native)",
+                    method = "CCT bias-corrected RDD (rmorie native)",
                     alpha = alpha,
                     details = list(fit = fit_q, h = bandwidth, b = b,
                                    rho = rho))
@@ -554,7 +559,7 @@ morie_rdd_mccrary <- function(x, cutoff = 0, n_bins = 50,
   list(statistic = fit$statistic,
        p_value   = fit$p_value,
        theta     = fit$theta,
-       name = "McCrary (morie native)", details = fit)
+       name = "McCrary (rmorie native)", details = fit)
 }
 
 #' Cattaneo-Jansson-Ma (2020) local-polynomial density test
@@ -781,7 +786,7 @@ morie_rdd_kink <- function(data, outcome, running, cutoff = 0,
   fit <- .morie_rdd_jump_native(x, y, cutoff, bandwidth, p = 2L,
                                 kernel = kernel, deriv = 1L)
   .morie_rdd_result(fit$estimate, fit$se, fit$n,
-                    method = "kink RDD (morie native deriv=1)",
+                    method = "kink RDD (rmorie native deriv=1)",
                     alpha = alpha,
                     details = list(fit = fit, bandwidth = bandwidth))
 }

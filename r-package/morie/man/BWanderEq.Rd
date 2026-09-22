@@ -28,3 +28,8 @@ equation (3.68). Taking the sign from equation (3.68) instead puts the
 pole at minus the radius -- a highpass at Nyquist rather than at
 direct current, which is the opposite of what the filter is for.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+BWanderEq(V)
+}
+\keyword{internal}

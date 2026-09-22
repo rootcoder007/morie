@@ -7,9 +7,9 @@
 sdid(Y, treated, t_post, method = "sdid", zeta = NULL)
 }
 \arguments{
-\item{Y}{A matrix; indexed by row and column.}
+\item{Y}{Passed to \code{.causscd_grid}.}
 
-\item{treated}{Passed to \code{.causscd_check_grid}.}
+\item{treated}{Passed to \code{.causscd_grid}.}
 
 \item{t_post}{A count; the body uses it as \code{seq_len(...)}.}
 
@@ -24,7 +24,16 @@ A list with \code{estimate}, \code{tau}, \code{unit_weights},
 \code{method}, \code{note}.
 }
 \description{
-A step of the causscd_native implementation. Called by \code{morie_causscd}.
+A step of the causscd_native implementation. Called by \code{causscd}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(2)
+Y <- lapply(1:8, function(i) rnorm(10, 10))
+for (i in 7:8) Y[[i]][7:10] <- Y[[i]][7:10] + 3
+treated <- c(rep(0L, 6), 1L, 1L)
+r <- sdid(Y, treated, t_post = 6)
+str(r, max.level = 1)
+}
+\keyword{internal}

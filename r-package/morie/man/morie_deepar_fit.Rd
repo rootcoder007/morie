@@ -30,3 +30,8 @@ A linear autoregression stands in for the recurrent network: the
 scaling, the likelihood and the sampling are what this module is
 about, and they are identical either way.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_deepar_fit(V)
+}
+\keyword{internal}

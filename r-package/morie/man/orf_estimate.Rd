@@ -44,3 +44,4 @@ nuisances under the same kernel weights used for the second stage --
 the ORF proposal. "global" fits them once on the whole sample, the
 "local centering" benchmark.
 }
+\keyword{internal}

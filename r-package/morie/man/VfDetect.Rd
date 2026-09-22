@@ -30,3 +30,12 @@ complexes (so the integrator crest factor is small) and
 quasi-sinusoidal 4-7 Hz activity (so the spectral concentration is
 high).
 }
+\examples{
+set.seed(6)
+fs <- 250
+tv <- seq(0, 8, by = 1 / fs)
+vf <- sin(2 * pi * 5 * tv + 2 * sin(2 * pi * 0.3 * tv))
+r <- VfDetect(vf, fs = fs)
+str(r, max.level = 1)
+}
+\keyword{internal}

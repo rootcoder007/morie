@@ -29,7 +29,12 @@ neighbours form a cluster and are removed. Ties are broken by
 ascending index. Clusters are returned sorted by descending size
 then ascending centroid.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_clusmd_butina_clusters(V)
+}
 \references{
 Butina, D. (1999) J. Chem. Inf. Comput. Sci. 39(4),
 747-750. doi:10.1021/ci9803381.
 }
+\keyword{internal}

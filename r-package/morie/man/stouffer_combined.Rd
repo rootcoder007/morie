@@ -12,11 +12,11 @@ stouffer_combined(p_values, weights = NULL)
 \item{weights}{Optional non-negative weights (any scale).}
 }
 \value{
-A \code{morie_rich_result} list with elements \code{method},
-\code{statistic} (combined Z), and \code{p_value} (combined p).
+An object of class \code{"morie_multiple_testing_result"}.
 }
 \description{
-Stouffer's z-score method
+Delegates to \code{poolr::stouffer} when installed and no weights
+are supplied; otherwise computes the weighted z-sum inline.
 }
 \examples{
 if (requireNamespace("poolr", quietly = TRUE)) {

@@ -20,6 +20,6 @@ A \code{morie_test_result}.
 One-sample Student's t-test
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-one_sample_ttest(V)
+set.seed(1)
+one_sample_ttest(rnorm(20, 0.3), mu0 = 0)
 }

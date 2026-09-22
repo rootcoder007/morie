@@ -44,3 +44,13 @@ A step of the bnshrt_native implementation. Called by \code{morie_identified_set
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+x <- matrix(c(0.5, -0.2, 0.1, 0.4), 2, 2)
+Y <- matrix(rbinom(60, 1, 0.5), 30, 2)
+freq <- morie_sequence_frequencies(Y)
+r <- morie_in_identified_set(freq, beta = c(0.5, -0.3), gamma = 0.8,
+                             x = x, alpha_grid = c(-0.5, 0, 0.5))
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -22,7 +22,11 @@ Equation (1.3) of Christiano & Fitzgerald (2003): \code{B_0 = (b-a)/pi}
 and \code{B_j = (sin(jb) - sin(ja)) / (pi j)} for \code{j >= 1}, with
 \code{a = 2 pi / p_u} and \code{b = 2 pi / p_l}.
 }
+\examples{
+morie_crfflt_ideal_weights(p_low = 3, p_high = 6, n = 100)
+}
 \references{
 Christiano, L. J. & Fitzgerald, T. J. (2003). The Band
 Pass Filter. International Economic Review, 44(2), 435-465.
 }
+\keyword{internal}

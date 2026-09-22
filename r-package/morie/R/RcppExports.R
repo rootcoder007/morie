@@ -25,35 +25,35 @@
     .Call(`_morie_morie_crypto_argon2_native`, password, salt, memory, passes, parallelism, tag_length, variant, secret, associated)
 }
 
-.morie_crypto_liboqs_available <- function() {
+.morie_liboqs_available_impl <- function() {
     .Call(`_morie_morie_crypto_liboqs_available`)
 }
 
-.morie_crypto_liboqs_version <- function() {
+.morie_liboqs_version_impl <- function() {
     .Call(`_morie_morie_crypto_liboqs_version`)
 }
 
-.morie_crypto_mlkem768_keygen <- function() {
+.morie_mlkem768_keygen_impl <- function() {
     .Call(`_morie_morie_crypto_mlkem768_keygen`)
 }
 
-.morie_crypto_mlkem768_encaps <- function(pk_sxp) {
+.morie_mlkem768_encaps_impl <- function(pk_sxp) {
     .Call(`_morie_morie_crypto_mlkem768_encaps`, pk_sxp)
 }
 
-.morie_crypto_mlkem768_decaps <- function(sk_sxp, ct_sxp) {
+.morie_mlkem768_decaps_impl <- function(sk_sxp, ct_sxp) {
     .Call(`_morie_morie_crypto_mlkem768_decaps`, sk_sxp, ct_sxp)
 }
 
-.morie_crypto_mldsa65_keygen <- function() {
+.morie_mldsa65_keygen_impl <- function() {
     .Call(`_morie_morie_crypto_mldsa65_keygen`)
 }
 
-.morie_crypto_mldsa65_sign <- function(sk_sxp, message_sxp) {
+.morie_mldsa65_sign_impl <- function(sk_sxp, message_sxp) {
     .Call(`_morie_morie_crypto_mldsa65_sign`, sk_sxp, message_sxp)
 }
 
-.morie_crypto_mldsa65_verify <- function(pk_sxp, message_sxp, signature_sxp) {
+.morie_mldsa65_verify_impl <- function(pk_sxp, message_sxp, signature_sxp) {
     .Call(`_morie_morie_crypto_mldsa65_verify`, pk_sxp, message_sxp, signature_sxp)
 }
 
@@ -81,11 +81,11 @@
     .Call(`_morie_morie_crypto_hqc128_decaps`, sk_sxp, ct_sxp)
 }
 
-.morie_crypto_sodium_available <- function() {
+.morie_sodium_available_impl <- function() {
     .Call(`_morie_morie_crypto_sodium_available`)
 }
 
-.morie_crypto_sodium_version <- function() {
+.morie_sodium_version_impl <- function() {
     .Call(`_morie_morie_crypto_sodium_version`)
 }
 
@@ -97,11 +97,11 @@
     .Call(`_morie_morie_crypto_chacha20poly1305_decrypt`, key_sxp, nonce_sxp, ct_with_tag_sxp, aad_sxp)
 }
 
-.morie_crypto_hkdf_sha256 <- function(ikm_sxp, length_sxp, salt_sxp, info_sxp) {
+.morie_hkdf_sha256_impl <- function(ikm_sxp, length_sxp, salt_sxp, info_sxp) {
     .Call(`_morie_morie_crypto_hkdf_sha256`, ikm_sxp, length_sxp, salt_sxp, info_sxp)
 }
 
-.morie_crypto_random_bytes <- function(n) {
+.morie_random_bytes_impl <- function(n) {
     .Call(`_morie_morie_crypto_random_bytes`, n)
 }
 

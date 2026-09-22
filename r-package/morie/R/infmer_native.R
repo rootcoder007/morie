@@ -243,6 +243,9 @@ morie_infmer <- function(q, k, v, c = 5) {
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_infmer_cheatsheet()
+#' @keywords internal
 morie_infmer_cheatsheet <- function() {
   paste("infmer: the same ledger method as `informer` -- one paper,",
         "one implementation, re-exported so the two entries cannot drift.",

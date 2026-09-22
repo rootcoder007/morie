@@ -2,15 +2,25 @@
 % Please edit documentation in R/slvgrf_native.R
 \name{qini_coefficient}
 \alias{qini_coefficient}
-\title{Qini coefficient (RATE with alpha(u) = u)}
+\title{qini_coefficient}
 \usage{
 qini_coefficient(scores, priority)
 }
 \arguments{
-\item{scores}{See Usage.}
+\item{scores}{Passed to \code{rate}.}
 
-\item{priority}{See Usage.}
+\item{priority}{Passed to \code{rate}.}
+}
+\value{
+The value of \code{$}.
 }
 \description{
-Qini coefficient (RATE with alpha(u) = u)
+A step of the slvgrf_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+qini_coefficient(V, V)
+}
+\keyword{internal}

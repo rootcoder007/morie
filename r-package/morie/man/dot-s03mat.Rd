@@ -14,7 +14,7 @@ A matrix, from \code{matrix}.
 }
 \description{
 A step of the helpers_s03 implementation. Called by \code{.bkw_influence},
-\code{.cfa_cov}, \code{.ch_ols_se} and 241 others in the module.
+\code{.cfa_cov}, \code{.ch_ols_se} and 236 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

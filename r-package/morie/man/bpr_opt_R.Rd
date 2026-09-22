@@ -25,3 +25,8 @@ A list with \code{bpr_opt}, \code{loglik}, \code{penalty},
 \eqn{\sum_{(u,i,j) in D_S} \ln \sigma(\hat x_{uij}) - \lambda \|\Theta\|^2}.
 Mirrors morie.fn.bprMF.bpr_opt.
 }
+\examples{
+bpr_opt_R(W = c(1, 2, 3, 4, 5, 6, 7, 8), H = 0.5, pos = c(1, 2, 3, 4, 5, 6, 7, 8),
+  n_items = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

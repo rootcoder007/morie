@@ -17,3 +17,9 @@ A list with \code{codes}, \code{n}, \code{note}.
 \description{
 vectors. Indices are 0-based, matching the Python implementation.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+morie_vqgdec_decode_indices(M, V)
+}
+\keyword{internal}

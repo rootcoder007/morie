@@ -18,7 +18,7 @@
 \item{tol}{Passed to \code{<}. Defaults to \code{1e-12}.}
 }
 \value{
-A list with \code{w}, \code{icept}.
+A list with \code{w}, \code{intercept}.
 }
 \description{
 A step of the causscd_native implementation. Called by \code{time_weights}, \code{unit_weights}.

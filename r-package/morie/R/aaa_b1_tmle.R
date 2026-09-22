@@ -55,8 +55,11 @@ NULL
 #' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
 #' res <- .b1_expit(x = x)
 #' res
-.b1_expit <- function(x) ifelse(x >= 0, 1 / (1 + exp(-x)),
-                                exp(x) / (1 + exp(x)))
+.b1_expit <- function(x) {
+  ifelse(x >= 0, 1 / (1 + exp(-x)),
+    exp(x) / (1 + exp(x))
+  )
+}
 
 #' .b1_target
 #'
@@ -92,17 +95,21 @@ NULL
     r <- Y - mu
     w <- mu * (1 - mu)
     gr <- c(sum(H0 * r), sum(H1 * r))
-    Hm <- matrix(c(sum(H0 * H0 * w) + 1e-10, sum(H0 * H1 * w),
-                   sum(H0 * H1 * w), sum(H1 * H1 * w) + 1e-10), 2, 2)
+    Hm <- matrix(c(
+      sum(H0 * H0 * w) + 1e-10, sum(H0 * H1 * w),
+      sum(H0 * H1 * w), sum(H1 * H1 * w) + 1e-10
+    ), 2, 2)
     st <- as.numeric(solve(Hm, gr))
     e <- e + st
     if (max(abs(st)) < tol) break
   }
-  list(epsilon = e,
-       QAstar = .b1_expit(off + e[1] * H0 + e[2] * H1),
-       Q1star = .b1_expit(.b1_logit(Q1W) + e[2] / g1),
-       Q0star = .b1_expit(.b1_logit(Q0W) + e[1] / g0),
-       g1 = g1, g0 = g0, H1 = H1, H0 = H0)
+  list(
+    epsilon = e,
+    QAstar = .b1_expit(off + e[1] * H0 + e[2] * H1),
+    Q1star = .b1_expit(.b1_logit(Q1W) + e[2] / g1),
+    Q0star = .b1_expit(.b1_logit(Q0W) + e[1] / g0),
+    g1 = g1, g0 = g0, H1 = H1, H0 = H0
+  )
 }
 
 #' .b1_curves

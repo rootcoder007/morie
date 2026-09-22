@@ -14,7 +14,7 @@
 #' @return The value of \code{.Call}.
 #' @export
 #' @name .morie_sha256_impl
-#' @rdname dot-morie_sha256_impl
+#' @rdname dot-rmorie_sha256_impl
 NULL
 
 #' .morie_sha256_hex_impl
@@ -29,13 +29,12 @@ NULL
 #' @return The value of \code{.Call}.
 #' @export
 #' @name .morie_sha256_hex_impl
-#' @rdname dot-morie_sha256_hex_impl
+#' @rdname dot-rmorie_sha256_hex_impl
 NULL
 
 #' .morie_hmac_sha256_impl
 #'
-#' A step of the RcppExports implementation. Called by \code{.morie_hkdf_sha256},
-#' \code{chain_entry}, \code{expand} and 1 others in the module.
+#' A step of the RcppExports implementation. Called by \code{.morie_hkdf_sha256}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -44,7 +43,7 @@ NULL
 #' @return The value of \code{.Call}.
 #' @export
 #' @name .morie_hmac_sha256_impl
-#' @rdname dot-morie_hmac_sha256_impl
+#' @rdname dot-rmorie_hmac_sha256_impl
 NULL
 
 #' .morie_pbkdf2_sha256_impl
@@ -60,7 +59,7 @@ NULL
 #' @return The value of \code{.Call}.
 #' @export
 #' @name .morie_pbkdf2_sha256_impl
-#' @rdname dot-morie_pbkdf2_sha256_impl
+#' @rdname dot-rmorie_pbkdf2_sha256_impl
 NULL
 
 #' .morie_blake2b_impl
@@ -100,7 +99,7 @@ NULL
 #' @rdname dot-morie_argon2_impl
 NULL
 
-#' .morie_crypto_liboqs_available
+#' .morie_liboqs_available_impl
 #'
 #' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -108,14 +107,29 @@ NULL
 #'
 #' @return The value of \code{.Call}.
 #' @examples
-#' res <- .morie_crypto_liboqs_available()
+#' res <- .morie_liboqs_available_impl()
 #' res
 #' @export
-#' @name .morie_crypto_liboqs_available
-#' @rdname dot-morie_crypto_liboqs_available
+#' @name .morie_liboqs_available_impl
+#' @rdname dot-rmorie_liboqs_available_impl
 NULL
 
-#' .morie_crypto_liboqs_version
+#' .morie_liboqs_version_impl
+#'
+#' A step of the RcppExports implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @return The value of \code{.Call}.
+#' @examples
+#' res <- .morie_liboqs_version_impl()
+#' res
+#' @export
+#' @name .morie_liboqs_version_impl
+#' @rdname dot-rmorie_liboqs_version_impl
+NULL
+
+#' .morie_mlkem768_keygen_impl
 #'
 #' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -124,32 +138,15 @@ NULL
 #' @return The value of \code{.Call}.
 #' @examples
 #' if (morie_crypto_liboqs_available()) {
-#'   res <- .morie_crypto_liboqs_version()
+#'   res <- .morie_mlkem768_keygen_impl()
 #'   res
 #' }
 #' @export
-#' @name .morie_crypto_liboqs_version
-#' @rdname dot-morie_crypto_liboqs_version
+#' @name .morie_mlkem768_keygen_impl
+#' @rdname dot-rmorie_mlkem768_keygen_impl
 NULL
 
-#' .morie_crypto_mlkem768_keygen
-#'
-#' A step of the RcppExports implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @return The value of \code{.Call}.
-#' @examples
-#' if (morie_crypto_liboqs_available()) {
-#'   res <- .morie_crypto_mlkem768_keygen()
-#'   res
-#' }
-#' @export
-#' @name .morie_crypto_mlkem768_keygen
-#' @rdname dot-morie_crypto_mlkem768_keygen
-NULL
-
-#' .morie_crypto_mlkem768_encaps
+#' .morie_mlkem768_encaps_impl
 #'
 #' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -158,11 +155,11 @@ NULL
 #' @param pk_sxp Passed to \code{.Call}.
 #' @return The value of \code{.Call}.
 #' @export
-#' @name .morie_crypto_mlkem768_encaps
-#' @rdname dot-morie_crypto_mlkem768_encaps
+#' @name .morie_mlkem768_encaps_impl
+#' @rdname dot-rmorie_mlkem768_encaps_impl
 NULL
 
-#' .morie_crypto_mlkem768_decaps
+#' .morie_mlkem768_decaps_impl
 #'
 #' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -172,11 +169,11 @@ NULL
 #' @param ct_sxp Passed to \code{.Call}.
 #' @return The value of \code{.Call}.
 #' @export
-#' @name .morie_crypto_mlkem768_decaps
-#' @rdname dot-morie_crypto_mlkem768_decaps
+#' @name .morie_mlkem768_decaps_impl
+#' @rdname dot-rmorie_mlkem768_decaps_impl
 NULL
 
-#' .morie_crypto_mldsa65_keygen
+#' .morie_mldsa65_keygen_impl
 #'
 #' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -185,15 +182,15 @@ NULL
 #' @return The value of \code{.Call}.
 #' @examples
 #' if (morie_crypto_liboqs_available()) {
-#'   res <- .morie_crypto_mldsa65_keygen()
+#'   res <- .morie_mldsa65_keygen_impl()
 #'   res
 #' }
 #' @export
-#' @name .morie_crypto_mldsa65_keygen
-#' @rdname dot-morie_crypto_mldsa65_keygen
+#' @name .morie_mldsa65_keygen_impl
+#' @rdname dot-rmorie_mldsa65_keygen_impl
 NULL
 
-#' .morie_crypto_mldsa65_sign
+#' .morie_mldsa65_sign_impl
 #'
 #' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -203,11 +200,11 @@ NULL
 #' @param message_sxp Passed to \code{.Call}.
 #' @return The value of \code{.Call}.
 #' @export
-#' @name .morie_crypto_mldsa65_sign
-#' @rdname dot-morie_crypto_mldsa65_sign
+#' @name .morie_mldsa65_sign_impl
+#' @rdname dot-rmorie_mldsa65_sign_impl
 NULL
 
-#' .morie_crypto_mldsa65_verify
+#' .morie_mldsa65_verify_impl
 #'
 #' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -218,13 +215,13 @@ NULL
 #' @param signature_sxp Passed to \code{.Call}.
 #' @return The value of \code{.Call}.
 #' @export
-#' @name .morie_crypto_mldsa65_verify
-#' @rdname dot-morie_crypto_mldsa65_verify
+#' @name .morie_mldsa65_verify_impl
+#' @rdname dot-rmorie_mldsa65_verify_impl
 NULL
 
 #' .morie_slhdsa128s_keygen_impl
 #'
-#' A step of the RcppExports implementation. Called by \code{morie_crypto_slhdsa_keygen}.
+#' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -236,12 +233,12 @@ NULL
 #' }
 #' @export
 #' @name .morie_slhdsa128s_keygen_impl
-#' @rdname dot-morie_slhdsa128s_keygen_impl
+#' @rdname dot-rmorie_slhdsa128s_keygen_impl
 NULL
 
 #' .morie_slhdsa128s_sign_impl
 #'
-#' A step of the RcppExports implementation. Called by \code{morie_crypto_slhdsa_sign}.
+#' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -250,12 +247,12 @@ NULL
 #' @return The value of \code{.Call}.
 #' @export
 #' @name .morie_slhdsa128s_sign_impl
-#' @rdname dot-morie_slhdsa128s_sign_impl
+#' @rdname dot-rmorie_slhdsa128s_sign_impl
 NULL
 
 #' .morie_slhdsa128s_verify_impl
 #'
-#' A step of the RcppExports implementation. Called by \code{morie_crypto_slhdsa_verify}.
+#' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -265,12 +262,12 @@ NULL
 #' @return The value of \code{.Call}.
 #' @export
 #' @name .morie_slhdsa128s_verify_impl
-#' @rdname dot-morie_slhdsa128s_verify_impl
+#' @rdname dot-rmorie_slhdsa128s_verify_impl
 NULL
 
 #' .morie_hqc128_keygen_impl
 #'
-#' A step of the RcppExports implementation. Called by \code{morie_crypto_hqc_keygen}.
+#' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -282,12 +279,12 @@ NULL
 #' }
 #' @export
 #' @name .morie_hqc128_keygen_impl
-#' @rdname dot-morie_hqc128_keygen_impl
+#' @rdname dot-rmorie_hqc128_keygen_impl
 NULL
 
 #' .morie_hqc128_encaps_impl
 #'
-#' A step of the RcppExports implementation. Called by \code{morie_crypto_hqc_encaps}.
+#' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -295,12 +292,12 @@ NULL
 #' @return The value of \code{.Call}.
 #' @export
 #' @name .morie_hqc128_encaps_impl
-#' @rdname dot-morie_hqc128_encaps_impl
+#' @rdname dot-rmorie_hqc128_encaps_impl
 NULL
 
 #' .morie_hqc128_decaps_impl
 #'
-#' A step of the RcppExports implementation. Called by \code{morie_crypto_hqc_decaps}.
+#' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -309,10 +306,10 @@ NULL
 #' @return The value of \code{.Call}.
 #' @export
 #' @name .morie_hqc128_decaps_impl
-#' @rdname dot-morie_hqc128_decaps_impl
+#' @rdname dot-rmorie_hqc128_decaps_impl
 NULL
 
-#' .morie_crypto_sodium_available
+#' .morie_sodium_available_impl
 #'
 #' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -320,14 +317,14 @@ NULL
 #'
 #' @return The value of \code{.Call}.
 #' @examples
-#' res <- .morie_crypto_sodium_available()
+#' res <- .morie_sodium_available_impl()
 #' res
 #' @export
-#' @name .morie_crypto_sodium_available
-#' @rdname dot-morie_crypto_sodium_available
+#' @name .morie_sodium_available_impl
+#' @rdname dot-rmorie_sodium_available_impl
 NULL
 
-#' .morie_crypto_sodium_version
+#' .morie_sodium_version_impl
 #'
 #' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -335,13 +332,11 @@ NULL
 #'
 #' @return The value of \code{.Call}.
 #' @examples
-#' if (morie_crypto_sodium_available()) {
-#'   res <- .morie_crypto_sodium_version()
-#'   res
-#' }
+#' res <- .morie_sodium_version_impl()
+#' res
 #' @export
-#' @name .morie_crypto_sodium_version
-#' @rdname dot-morie_crypto_sodium_version
+#' @name .morie_sodium_version_impl
+#' @rdname dot-rmorie_sodium_version_impl
 NULL
 
 #' .morie_chacha20poly1305_encrypt_impl
@@ -357,7 +352,7 @@ NULL
 #' @return The value of \code{.Call}.
 #' @export
 #' @name .morie_chacha20poly1305_encrypt_impl
-#' @rdname dot-morie_chacha20poly1305_encrypt_impl
+#' @rdname dot-rmorie_chacha20poly1305_encrypt_impl
 NULL
 
 #' .morie_chacha20poly1305_decrypt_impl
@@ -373,10 +368,10 @@ NULL
 #' @return The value of \code{.Call}.
 #' @export
 #' @name .morie_chacha20poly1305_decrypt_impl
-#' @rdname dot-morie_chacha20poly1305_decrypt_impl
+#' @rdname dot-rmorie_chacha20poly1305_decrypt_impl
 NULL
 
-#' .morie_crypto_hkdf_sha256
+#' .morie_hkdf_sha256_impl
 #'
 #' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -388,11 +383,11 @@ NULL
 #' @param info_sxp Passed to \code{.Call}.
 #' @return The value of \code{.Call}.
 #' @export
-#' @name .morie_crypto_hkdf_sha256
-#' @rdname dot-morie_crypto_hkdf_sha256
+#' @name .morie_hkdf_sha256_impl
+#' @rdname dot-rmorie_hkdf_sha256_impl
 NULL
 
-#' .morie_crypto_random_bytes
+#' .morie_random_bytes_impl
 #'
 #' A step of the RcppExports implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -402,12 +397,12 @@ NULL
 #' @return The value of \code{.Call}.
 #' @examples
 #' if (morie_crypto_sodium_available()) {
-#'   res <- .morie_crypto_random_bytes(n = 3L)
+#'   res <- .morie_random_bytes_impl(n = 3L)
 #'   res
 #' }
 #' @export
-#' @name .morie_crypto_random_bytes
-#' @rdname dot-morie_crypto_random_bytes
+#' @name .morie_random_bytes_impl
+#' @rdname dot-rmorie_random_bytes_impl
 NULL
 
 #' .morie_twfe_demean_cpp
@@ -531,7 +526,7 @@ NULL
 #'
 #' @param x Passed to \code{.Call}.
 #' @param shared Use the rmoriebricklayer kernel (\code{TRUE}) or the
-#'   identical kernel morie vendors (\code{FALSE}). Defaults to \code{TRUE}.
+#'   identical kernel rmorie vendors (\code{FALSE}). Defaults to \code{TRUE}.
 #' @return The value of \code{.Call}.
 #' @examples
 #' x <- c(2, 4, 4, 4, 5, 5, 7, 9)
@@ -553,7 +548,7 @@ NULL
 #' @param x Passed to \code{.Call}.
 #' @param ddof Passed to \code{.Call}. Defaults to \code{1L}.
 #' @param shared Use the rmoriebricklayer kernel (\code{TRUE}) or the
-#'   identical kernel morie vendors (\code{FALSE}). Defaults to \code{TRUE}.
+#'   identical kernel rmorie vendors (\code{FALSE}). Defaults to \code{TRUE}.
 #' @return The value of \code{.Call}.
 #' @examples
 #' x <- c(2, 4, 4, 4, 5, 5, 7, 9)
@@ -1122,31 +1117,26 @@ NULL
 NULL
 
 #' Binary C-SVC via SMO (compiled)
-#' @noRd
 #' @name morie_svc_train_cpp
 #' @rdname morie_svc_train_cpp
 NULL
 
 #' eps-SVR via SMO (compiled)
-#' @noRd
 #' @name morie_svr_train_cpp
 #' @rdname morie_svr_train_cpp
 NULL
 
 #' Decision values for new data given fitted SVM coefficients (compiled)
-#' @noRd
 #' @name morie_svm_decision_cpp
 #' @rdname morie_svm_decision_cpp
 NULL
 
 #' Grow one regression / second-order tree (compiled)
-#' @noRd
 #' @name morie_tree_fit_cpp
 #' @rdname morie_tree_fit_cpp
 NULL
 
 #' Predict from a flattened tree (compiled)
-#' @noRd
 #' @name morie_tree_predict_cpp
 #' @rdname morie_tree_predict_cpp
 NULL

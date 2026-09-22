@@ -19,6 +19,10 @@ gflops(tokens, depth, width, mlp_ratio = 4)
 list with gflops, tokens, depth, width, attention_share, note.
 }
 \description{
-attention: 4\emph{T}d^2 + 2\emph{T^2}d. mlp: 2\emph{mlp_ratio}T*d^2. Per block
+attention: 4*T*d^2 + 2*T^2*d. mlp: 2*mlp_ratio*T*d^2. Per block
 doubled (multiply-adds), scaled by depth L, in Gflops.
 }
+\examples{
+gflops(tokens = c(1, 2, 3, 4, 5, 6, 7, 8), depth = c(1, 2, 3, 4, 5, 6, 7, 8), width = 5L)
+}
+\keyword{internal}

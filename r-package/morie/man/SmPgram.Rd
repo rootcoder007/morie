@@ -23,3 +23,8 @@ density instead.  See Bloomfield (2000), Fourier Analysis of Time
 Series, 2nd edn, Ch. 8.  The window is CIRCULAR; a truncating window
 would bias both ends.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+SmPgram(V)
+}
+\keyword{internal}

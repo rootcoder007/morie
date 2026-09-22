@@ -9,7 +9,7 @@
 #' ground cost is the closed-form Gaussian \code{W_2^2}. The restriction
 #' can only raise the cost, so \code{MW_2 >= W_2} always.
 #'
-#' Formula: \code{MW_2^2 = min_{w in Pi(p,q)} sum_kl w_kl W_2^2(N(m_k,S_k),
+#' Formula: \eqn{MW_2^2 = min_{w in Pi(p,q)} sum_kl w_kl W_2^2(N(m_k,S_k),
 #' N(m'_l,S'_l))} -- Delon and Desolneux (2020) Definition 4.1.
 #'
 #' @param mus1 Component means of the first mixture, K1 by d.
@@ -22,9 +22,9 @@
 #'   Sciences 13(2):936-970. \doi{10.1137/19M1301047}.
 #' @export
 #' @examples
-#' Otmxh(mus1 = c(1, 2, 3, 4, 5, 6, 7, 8), Sigmas1 = c(1, 2, 3, 4, 5, 6, 7, 8), w1 = c(1,
-#' 2, 3, 4, 5, 6, 7, 8), mus2 = c(1, 2, 3, 4, 5, 6, 7, 8), Sigmas2 = c(1, 2, 3, 4, 5, 6,
-#' 7, 8), w2 = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' Otmxh(mus1 = c(1, 2, 3, 4, 5, 6, 7, 8), Sigmas1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   w1 = c(1, 2, 3, 4, 5, 6, 7, 8), mus2 = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   Sigmas2 = c(1, 2, 3, 4, 5, 6, 7, 8), w2 = c(1, 2, 3, 4, 5, 6, 7, 8))
 Otmxh <- function(mus1, Sigmas1, w1, mus2, Sigmas2, w2) {
   M1 <- as.matrix(mus1)
   M2 <- as.matrix(mus2)

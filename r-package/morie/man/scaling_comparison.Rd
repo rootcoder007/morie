@@ -17,3 +17,9 @@ Each entry is c(name, latent, patch, depth, width). Three axes
 (depth, width, token count) all move Gflops; only the first two
 move parameters.
 }
+\examples{
+configs <- list(list("small", 224, 16, 6, 384),
+                list("base", 224, 16, 12, 768))
+scaling_comparison(configs)
+}
+\keyword{internal}

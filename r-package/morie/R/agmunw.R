@@ -32,7 +32,9 @@ Mznstep <- function(rewards, values, n = 5, gamma = 0.997) {
     if (t + n <= T) s <- s + g^n * v[t + n]
     z[t] <- s
   }
-  .t1_result(target = z, T = T, n = n, gamma = g,
-             mean = if (T > 0) sum(z) / T else NA_real_,
-             method = "MuZero n-step value target (Schrittwieser et al. 2020)")
+  .t1_result(
+    target = z, T = T, n = n, gamma = g,
+    mean = if (T > 0) sum(z) / T else NA_real_,
+    method = "MuZero n-step value target (Schrittwieser et al. 2020)"
+  )
 }

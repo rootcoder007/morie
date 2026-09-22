@@ -30,6 +30,11 @@ A list with the curve and \code{info} (bandwidth, coef).
 the boundary, and \code{polynomial} a global cubic for when the
 curve is genuinely smooth and the sample is small.
 }
+\examples{
+effect_curve(xi = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8),
+  grid = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
 \references{
 Kennedy, E. H. et al. (2017). Sec. 3.2-3.3.
 }
+\keyword{internal}

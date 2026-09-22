@@ -28,3 +28,9 @@ A step of the rangayyan_class2 implementation. No other function in the package 
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+BmiDec(D, M)
+}
+\keyword{internal}

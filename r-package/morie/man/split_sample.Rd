@@ -22,3 +22,7 @@ A step of the tldapar_native implementation. Called by \code{data_adaptive_param
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+str(split_sample(30, V = 5), max.level = 1)
+}
+\keyword{internal}

@@ -16,7 +16,7 @@
 #   4. Pass the local zip path to morie_datasets_vpd_crime().
 #
 # morie ships a stratified 550-row sample (50/TYPE x 11 categories)
-# for offline introspection + tests. The bundled
+# for offline introspection + tests. The included
 # vpd_legal_disclaimer.txt surfaces VPD's terms verbatim so callers
 # can read them programmatically.
 #
@@ -29,7 +29,7 @@
 # For Person-against incidents the address is randomized to several
 # blocks + offset to an intersection per VPD's privacy guarantee.
 
-#' Read VPD's legal disclaimer (bundled verbatim from the zip)
+#' Read VPD's legal disclaimer (included verbatim from the zip)
 #'
 #' Phase 3DDD2. Returns the legal disclaimer text shipped with
 #' VPD's open crime data download. Useful in headless or
@@ -37,18 +37,20 @@
 #' web UI is not the same as the script user.
 #'
 #' @return A character vector (one element per line).
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' d <- morie_datasets_vpd_legal_disclaimer()
 #' head(d)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_vpd_legal_disclaimer <- function() {
-  path <- system.file("extdata", "vpd_legal_disclaimer.txt",
-                      package = "morie")
+  path <- .morie_extdata("vpd_legal_disclaimer.txt")
   if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
     path <- system.file("extdata", "vpd_legal_disclaimer.txt", package = "rmoriedata")
   }
-  if (!nzchar(path))
+  if (!nzchar(path)) {
     stop("bundled VPD legal disclaimer missing", call. = FALSE)
+  }
   readLines(path, warn = FALSE)
 }
 
@@ -58,7 +60,7 @@ morie_datasets_vpd_legal_disclaimer <- function() {
 #' source modes:
 #'
 #' \describe{
-#'   \item{`offline = TRUE` (default)}{Reads a bundled stratified
+#'   \item{`offline = TRUE` (default)}{Reads a included stratified
 #'     550-row sample (50 rows per `TYPE` x 11 categories) covering
 #'     years 2003-2026 and all 25 VPD-defined neighbourhoods.
 #'     Intended for tests + intro examples -- NOT for analysis.}
@@ -71,7 +73,7 @@ morie_datasets_vpd_legal_disclaimer <- function() {
 #'     (skip the zip if the caller already has the CSV on disk).}
 #' }
 #'
-#' The bundled sample is open-licensed under VPD's GeoDASH terms;
+#' The included sample is open-licensed under VPD's GeoDASH terms;
 #' the full feed requires manual T&C acceptance per VPD policy and
 #' there is no automation-friendly API. See
 #' [morie_datasets_vpd_legal_disclaimer()] for the full text.
@@ -105,7 +107,7 @@ morie_datasets_vpd_legal_disclaimer <- function() {
 #'         with the BC Freedom of Information & Protection of Privacy
 #'         Act (BC FIPPA).
 #'   \item \strong{`Offence Against a Person` is INTENTIONALLY aggregated}
-#'         to reduce re-identification risk. It bundles robbery,
+#'         to reduce re-identification risk. It capsules robbery,
 #'         assault (incl. sexual assault, domestic assault), and
 #'         other violent incidents EXCEPT `Assaults Against Police`.
 #'         Sub-categories are deliberately NOT exposed; do not
@@ -142,7 +144,7 @@ morie_datasets_vpd_legal_disclaimer <- function() {
 #' }
 #'
 #' @param offline If `TRUE` (default) and `zip_path`/`csv_path` are
-#'   `NULL`, reads the bundled 550-row sample.
+#'   `NULL`, reads the included 550-row sample.
 #' @param zip_path Optional path to a user-downloaded
 #'   `crimedata_csv_AllNeighbourhoods_AllYears.zip`. Mutually
 #'   exclusive with `csv_path`.
@@ -155,79 +157,90 @@ morie_datasets_vpd_legal_disclaimer <- function() {
 #' @return A `data.frame` with 10 columns.
 #' @references VPD GeoDASH Open Data,
 #'   \url{https://geodash.vpd.ca/opendata/}.
-#' @examplesIf nzchar(system.file("extdata", "vpd_crime_sample.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (nzchar(system.file("extdata", "vpd_crime_sample.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_vpd_crime(offline = TRUE)
-#' nrow(df)              # 550
+#' nrow(df) # 550
 #' table(df$TYPE)
 #' table(df$NEIGHBOURHOOD)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_vpd_crime <- function(offline = TRUE,
-                                       zip_path = NULL,
-                                       csv_path = NULL,
-                                       max_features = NULL,
-                                       accept_terms = FALSE) {
-  if (!is.null(zip_path) && !is.null(csv_path))
+                                     zip_path = NULL,
+                                     csv_path = NULL,
+                                     max_features = NULL,
+                                     accept_terms = FALSE) {
+  if (!is.null(zip_path) && !is.null(csv_path)) {
     stop("pass only one of zip_path / csv_path", call. = FALSE)
+  }
 
   if (!is.null(zip_path)) {
-    if (!file.exists(zip_path))
+    if (!file.exists(zip_path)) {
       stop(sprintf("VPD zip not found: %s", zip_path), call. = FALSE)
+    }
     .morie_vpd_terms_warning(accept_terms)
     tmp <- tempfile(fileext = ".csv")
     on.exit(unlink(tmp), add = TRUE)
     res <- system2("unzip",
-                    args = c("-p", shQuote(zip_path),
-                              "crimedata_csv_AllNeighbourhoods_AllYears.csv"),
-                    stdout = tmp)
-    if (!file.exists(tmp) || file.size(tmp) == 0L)
+      args = c(
+        "-p", shQuote(zip_path),
+        "crimedata_csv_AllNeighbourhoods_AllYears.csv"
+      ),
+      stdout = tmp
+    )
+    if (!file.exists(tmp) || file.size(tmp) == 0L) {
       stop("VPD zip extract failed -- ensure unzip is installed",
-           call. = FALSE)
+        call. = FALSE
+      )
+    }
     df <- utils::read.csv(tmp, stringsAsFactors = FALSE)
   } else if (!is.null(csv_path)) {
-    if (!file.exists(csv_path))
+    if (!file.exists(csv_path)) {
       stop(sprintf("VPD CSV not found: %s", csv_path), call. = FALSE)
+    }
     .morie_vpd_terms_warning(accept_terms)
     df <- utils::read.csv(csv_path, stringsAsFactors = FALSE)
   } else if (offline) {
-    path <- system.file("extdata", "vpd_crime_sample.csv",
-                        package = "morie")
+    path <- .morie_extdata("vpd_crime_sample.csv")
     if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
       path <- system.file("extdata", "vpd_crime_sample.csv",
-                          package = "rmoriedata")
+        package = "rmoriedata"
+      )
     }
-    if (!nzchar(path))
+    if (!nzchar(path)) {
       stop("bundled VPD crime sample missing", call. = FALSE)
+    }
     df <- utils::read.csv(path, stringsAsFactors = FALSE)
   } else {
     stop("VPD provides no automation API. Either set offline = TRUE ",
-         "(bundled sample) or download the zip manually from ",
-         "https://geodash.vpd.ca/opendata/ and pass zip_path = '...'.",
-         call. = FALSE)
+      "(bundled sample) or download the zip manually from ",
+      "https://geodash.vpd.ca/opendata/ and pass zip_path = '...'.",
+      call. = FALSE
+    )
   }
 
-  if (!is.null(max_features))
+  if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
+  }
   df
 }
 
 .MORIE_VPD_TERMS_WARNED <- new.env(parent = emptyenv())
 
-#' .morie_vpd_terms_warning
-#'
-#' A step of the datasets_vpd implementation. Called by \code{morie_datasets_vpd_crime}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param accept_terms A flag; the body branches on it.
-#' @return Invisibly,nothing; the function is called for its effect.
-#' @export
+#' Internal helper: Morie Vpd Terms Warning
+#' @noRd
 .morie_vpd_terms_warning <- function(accept_terms) {
-  if (isTRUE(accept_terms)) return(invisible())
-  if (isTRUE(.MORIE_VPD_TERMS_WARNED$warned)) return(invisible())
+  if (isTRUE(accept_terms)) {
+    return(invisible())
+  }
+  if (isTRUE(.MORIE_VPD_TERMS_WARNED$warned)) {
+    return(invisible())
+  }
   warning(paste0(
     "Loading VPD crime data implies acceptance of VPD's open data ",
     "terms (see morie_datasets_vpd_legal_disclaimer()). Pass ",
-    "accept_terms = TRUE to silence this warning."), call. = FALSE)
+    "accept_terms = TRUE to silence this warning."
+  ), call. = FALSE)
   .MORIE_VPD_TERMS_WARNED$warned <- TRUE
   invisible()
 }

@@ -11,8 +11,16 @@ check_network_assumption(friends, N = NULL)
 
 \item{N}{See Usage.}
 }
+\value{
+A list with \code{max_degree}, \code{max_share}, \code{sparse}, \code{asymmetric_edges}, \code{symmetric}, \code{note}.
+}
 \description{
 Degrees must vanish relative to \eqn{N}, and the network must be
 symmetric -- an asymmetric "friend" relation means influence
 flows somewhere the model does not represent.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie:::check_network_assumption(V)
+}
+\keyword{internal}

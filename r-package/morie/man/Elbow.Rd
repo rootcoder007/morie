@@ -19,8 +19,13 @@ A list with \code{k}, \code{wcss}, \code{knee}, \code{monotonic},
 }
 \description{
 cannot be minimized -- the choice is the KNEE.  Located here as the
-point of maximum distance from the chord joining the curve\'s ends,
+point of maximum distance from the chord joining the curve's ends,
 which is a definite rule rather than an eye judgement.  Still a
 heuristic: on data with no cluster structure the curve is smooth and
 the knee is wherever the arithmetic puts it.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Elbow(V)
+}
+\keyword{internal}

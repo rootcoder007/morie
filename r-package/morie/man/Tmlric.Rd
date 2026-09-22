@@ -33,7 +33,7 @@ mean of \code{Q*(1, X) - Q*(0, X)}.
 }
 \examples{
 Tmlric(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = 5L, X = c(1, 2, 3, 4, 5, 6, 7, 8),
-prevalence = c(1, 2, 3, 4, 5, 6, 7, 8))
+  prevalence = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Tran, L., Petersen, M., Schwab, J. & van der Laan, M. J.

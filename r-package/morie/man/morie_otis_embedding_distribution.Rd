@@ -18,6 +18,7 @@ Fits lognormal, Pareto, and exponential distributions to
 family wins.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_embedding_distribution(V)
+b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+res <- morie_otis_embedding_distribution(b02)
+res$title
 }

@@ -27,3 +27,11 @@ A step of the tlheic_native implementation. Called by \code{morie_tlheic}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+B <- cbind(1, matrix(rnorm(40), 20, 2))
+psi <- function(w) sum(w * B[, 2])
+r <- estimate_eic(psi, B)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -34,6 +34,8 @@ Tempdecay <- function(move_count, threshold = 30L, N = NULL) {
       pi_ <- if (tot > 0) n / tot else rep(0, length(n))
     }
   }
-  list(estimate = tau, tau = tau, greedy = greedy, pi = pi_, threshold = th,
-       method = "AlphaZero temperature schedule (tau = 1 then greedy)")
+  list(
+    estimate = tau, tau = tau, greedy = greedy, pi = pi_, threshold = th,
+    method = "AlphaZero temperature schedule (tau = 1 then greedy)"
+  )
 }

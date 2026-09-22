@@ -19,6 +19,7 @@ both punitive and therapeutic rationales. Detects any
 \code{SegReason_*Medical*} flag.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_disciplinary_medical_overlap(V)
+b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+res <- morie_otis_disciplinary_medical_overlap(b02)
+res$title
 }

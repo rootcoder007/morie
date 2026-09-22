@@ -26,3 +26,8 @@ choice is not cosmetic: on the same data they routinely give
 different partitions, which is why the full merge history is returned
 rather than only a labelling.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+HClust(V)
+}
+\keyword{internal}

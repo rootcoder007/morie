@@ -21,3 +21,7 @@ A step of the phylml_native implementation. Called by \code{.phylml_prune}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+substitution_matrix(t = 5L)
+}
+\keyword{internal}

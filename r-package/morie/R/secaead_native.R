@@ -246,6 +246,13 @@
 #' @param rounds Coerced to integer by the body, with \code{as.integer}. Defaults to \code{20}.
 #' @return The value of \code{.secaead_le_bytes}.
 #' @export
+#' @examples
+#' key <- as.raw(0:31)
+#' nonce <- as.raw(c(0, 0, 0, 9, 0, 0, 0, 0x4a, 0, 0, 0, 0))
+#' ks <- morie_secaead_chacha20_block(key, 1, nonce)
+#' stopifnot(ks[1] == 0x10, ks[2] == 0xf1, ks[3] == 0xe7)
+#' head(ks, 8)
+#' @keywords internal
 morie_secaead_chacha20_block <- function(key, counter, nonce, rounds = 20) {
   # One 64-byte keystream block. The permuted state is ADDED to the
   # original, which is what stops the block function being invertible.
@@ -289,6 +296,15 @@ morie_secaead_chacha20_block <- function(key, counter, nonce, rounds = 20) {
 #' @param data Passed to \code{.secaead_as_bytes}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' key <- as.raw(0:31)
+#' nonce <- as.raw(c(0, 0, 0, 0, 0, 0, 0, 0x4a, 0, 0, 0, 0))
+#' pt <- charToRaw(paste0("Ladies and Gentlemen of the class of \x2799: If I could offer you ",
+#'   "only one tip for the future, sunscreen would be it."))
+#' ct <- morie_secaead_chacha20(key, 1, nonce, pt)
+#' stopifnot(ct[1] == 0x6e, ct[2] == 0x2e, ct[3] == 0x35, ct[4] == 0x9a)
+#' head(ct, 8)
+#' @keywords internal
 morie_secaead_chacha20 <- function(key, counter, nonce, data) {
   # XOR the data with the keystream from counter onward.
   d <- .secaead_as_bytes(data)
@@ -549,6 +565,16 @@ morie_secaead_chacha20 <- function(key, counter, nonce, data) {
 #' @param key Passed to \code{.secaead_as_bytes}.
 #' @return The value of \code{.secaead_bytes_from_limbs}.
 #' @export
+#' @examples
+#' key <- as.raw(c(0x85, 0xd6, 0xbe, 0x78, 0x57, 0x55, 0x6d, 0x33,
+#'                 0x7f, 0x44, 0x52, 0xfe, 0x42, 0xd5, 0x06, 0xa8,
+#'                 0x01, 0x03, 0x80, 0x8a, 0xfb, 0x0d, 0xb2, 0xfd,
+#'                 0x4a, 0xbf, 0xf6, 0xaf, 0x41, 0x49, 0xf5, 0x1b))
+#' msg <- charToRaw("Cryptographic Forum Research Group")
+#' tag <- morie_secaead_poly1305_mac(msg, key)
+#' stopifnot(tag[1] == 0xa8, tag[2] == 0x06, tag[3] == 0x1d, tag[4] == 0xc1)
+#' tag
+#' @keywords internal
 morie_secaead_poly1305_mac <- function(message, key) {
   # The one-time authenticator over 2^130 - 5. key is 32 bytes: the
   # low 16 become r (clamped) and the high 16 become s.
@@ -592,6 +618,13 @@ morie_secaead_poly1305_mac <- function(message, key) {
 #' @param nonce Passed to \code{morie_secaead_chacha20_block}.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' key <- as.raw(c(0x80:0x8f, 0x90:0x9f))
+#' nonce <- as.raw(c(0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7))
+#' otk <- morie_secaead_poly1305_key_gen(key, nonce)
+#' stopifnot(otk[1] == 0x8a, otk[2] == 0xd5)
+#' head(otk, 8)
+#' @keywords internal
 morie_secaead_poly1305_key_gen <- function(key, nonce) {
   # Block 0 gives the one-time key; the message starts at 1.
   morie_secaead_chacha20_block(key, 0, nonce)[1:32]
@@ -657,7 +690,8 @@ morie_secaead_poly1305_key_gen <- function(key, nonce) {
 
 #' Encrypt from counter 1, then authenticate AAD and ciphertext
 #'
-#' A step of the secaead_native implementation. No other function in the package calls it.
+#' A step of the secaead_native implementation. Called by
+#' \code{morie_secrtt_seal_record}, \code{morie_secrtt_wrap_dek}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -669,7 +703,18 @@ morie_secaead_poly1305_key_gen <- function(key, nonce) {
 #' \code{tag}, \code{tag_hex}, \code{onetime_key}, \code{aad_len}, \code{ct_len},
 #' \code{method}, \code{note}.
 #' @export
-#' @aliases morie_secaead
+#' @examples
+#' key <- as.raw(c(0x80:0x8f, 0x90:0x9f))
+#' nonce <- as.raw(c(0x07, 0, 0, 0, 0x40, 0x41, 0x42, 0x43,
+#'                   0x44, 0x45, 0x46, 0x47))
+#' aad <- as.raw(c(0x50, 0x51, 0x52, 0x53, 0xc0, 0xc1, 0xc2, 0xc3,
+#'                 0xc4, 0xc5, 0xc6, 0xc7))
+#' pt <- charToRaw(paste0("Ladies and Gentlemen of the class of \x2799: If I could offer you ",
+#'   "only one tip for the future, sunscreen would be it."))
+#' r <- morie_secaead_aead_encrypt(key, nonce, pt, aad)
+#' stopifnot(substr(r$tag_hex, 1, 8) == "1ae10b59")
+#' r$tag_hex
+#' @keywords internal
 morie_secaead_aead_encrypt <- function(key, nonce, plaintext, aad = NULL) {
   # Encrypt from counter 1, then authenticate AAD and ciphertext.
   otk <- morie_secaead_poly1305_key_gen(key, nonce)
@@ -693,7 +738,8 @@ morie_secaead_aead_encrypt <- function(key, nonce, plaintext, aad = NULL) {
 
 #' morie_secaead_aead_decrypt
 #'
-#' A step of the secaead_native implementation. No other function in the package calls it.
+#' A step of the secaead_native implementation. Called by
+#' \code{morie_secrtt_open_record}, \code{morie_secrtt_unwrap_dek}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -704,6 +750,18 @@ morie_secaead_aead_encrypt <- function(key, nonce, plaintext, aad = NULL) {
 #' @param aad Passed to \code{.secaead_mac_data}.
 #' @return A list with \code{valid}, \code{plaintext}, \code{expected_tag}.
 #' @export
+#' @examples
+#' key <- as.raw(c(0x80:0x8f, 0x90:0x9f))
+#' nonce <- as.raw(c(0x07, 0, 0, 0, 0x40, 0x41, 0x42, 0x43,
+#'                   0x44, 0x45, 0x46, 0x47))
+#' aad <- as.raw(c(0x50, 0x51, 0x52, 0x53, 0xc0, 0xc1, 0xc2, 0xc3,
+#'                 0xc4, 0xc5, 0xc6, 0xc7))
+#' pt <- charToRaw("attack at dawn")
+#' enc <- morie_secaead_aead_encrypt(key, nonce, pt, aad)
+#' dec <- morie_secaead_aead_decrypt(key, nonce, enc$ciphertext, enc$tag, aad)
+#' stopifnot(dec$valid, identical(as.raw(dec$plaintext), pt))
+#' rawToChar(as.raw(dec$plaintext))
+#' @keywords internal
 morie_secaead_aead_decrypt <- function(key, nonce, ciphertext, tag,
                                        aad = NULL) {
   # Verify FIRST, in constant time, and return nothing on failure.
@@ -734,6 +792,9 @@ morie_secaead_aead_decrypt <- function(key, nonce, ciphertext, tag,
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_secaead_cheatsheet()
+#' @keywords internal
 morie_secaead_cheatsheet <- function() {
   paste0(
     "secaead: a stream cipher alone lets an attacker flip a ",
@@ -756,5 +817,6 @@ morie_secaead_chacha20poly1305 <- morie_secaead_aead_encrypt
 # public names resolved by fn/_lazy_map.json
 morie_secaead_aead_chacha20poly1305 <- morie_secaead_aead_encrypt
 
+#' @rdname morie_secaead_aead_encrypt
 #' @export
 morie_secaead <- morie_secaead_aead_encrypt

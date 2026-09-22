@@ -17,19 +17,18 @@ morie_matching_exact(data, treatment, exact_vars)
 A list of class \code{morie_match_result}.
 }
 \description{
-Matches treated and control units that share identical values on every
-variable in \code{exact_vars}.  Delegates to \pkg{MatchIt} when
-available.
+Native rmorie implementation: units are stratified on the exact
+combination of \code{exact_vars}; strata containing both arms are
+retained and controls receive CEM-style stratum weights
+(\code{weights} and \code{subclass} columns on the matched data).
+No MatchIt at runtime.
 }
 \examples{
 \donttest{
 set.seed(1)
-df <- data.frame(
-  y = rnorm(150), d = rbinom(150, 1, 0.4),
-  x1 = rnorm(150), x2 = rnorm(150),
-  region = sample(c("North", "South"), 150, TRUE),
-  year = sample(2020:2022, 150, TRUE),
-  treat3 = sample(0:2, 150, TRUE))
+df <- data.frame(d = rbinom(200, 1, 0.4),
+                 region = sample(c("N", "S", "E", "W"), 200, TRUE),
+                 year = sample(2019:2021, 200, TRUE))
 morie_matching_exact(df, "d", c("region", "year"))
 }
 }

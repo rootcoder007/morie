@@ -7,9 +7,9 @@
 cfconv(X, R, filter_net, cutoff = 5, ...)
 }
 \arguments{
-\item{X}{Iterated over elementwise, with \code{lapply}.}
+\item{X}{Passed to \code{.schn_mat}.}
 
-\item{R}{Iterated over elementwise, with \code{lapply}.}
+\item{R}{Passed to \code{.schn_mat}.}
 
 \item{filter_net}{Accepted by the signature and not used anywhere in the body.}
 
@@ -21,7 +21,17 @@ cfconv(X, R, filter_net, cutoff = 5, ...)
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the schN_native implementation. Called by \code{morie_schN}.
+A step of the schN_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+n <- 5; d <- 4
+X <- matrix(rnorm(n * d), n, d)
+R <- matrix(rnorm(n * 3), n, 3)
+filter_net <- function(g) rep(0.1, d)
+out <- cfconv(X, R, filter_net, cutoff = 5)
+dim(out)
+}
+\keyword{internal}

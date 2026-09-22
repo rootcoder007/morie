@@ -11,6 +11,19 @@
 
 \item{...}{Ignored; accepted for S3 consistency.}
 }
+\value{
+The value of \code{invisible}.
+}
 \description{
 Print method for \code{morie_synth} objects
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie:::print.morie_synth(D)
+}
+\references{
+Abadie, A., Diamond, A., & Hainmueller, J. (2010).
+Synthetic control methods for comparative case studies.
+\emph{JASA}, 105(490), 493--505.
+}
+\keyword{internal}

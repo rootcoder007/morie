@@ -14,6 +14,14 @@ per document.}
 
 \item{min_cluster_size}{Cluster floor.}
 }
+\value{
+A list with \code{labels}, \code{reduced}, \code{topic_top_word}, \code{n_topics}, \code{vocabulary}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 BERTopic pipeline: reduce, cluster, c-TF-IDF (Grootendorst 2022)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_bertopic_pipeline(V, V)
+}
+\keyword{internal}

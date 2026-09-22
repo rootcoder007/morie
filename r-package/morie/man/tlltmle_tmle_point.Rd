@@ -27,3 +27,13 @@ A step of the tlltmle_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(1)
+A <- rbinom(50, 1, 0.5)
+Y <- rbinom(50, 1, 0.4)
+Q1 <- runif(50, 0.3, 0.7)
+Q0 <- runif(50, 0.2, 0.5)
+g <- runif(50, 0.3, 0.7)
+tlltmle_tmle_point(A, Y, Q1, Q0, g)
+}
+\keyword{internal}

@@ -52,9 +52,9 @@
   list(M = M, y = yy, n = n, p = p)
 }
 
-#' CPython\'s builtin sum() switched to Neumaier compensated summation
+#' CPython's builtin sum() switched to Neumaier compensated summation
 #'
-#' for floats in 3.12. R\'s sum() accumulates in long double, and a
+#' for floats in 3.12. R's sum() accumulates in long double, and a
 #' plain loop accumulates in double; neither reproduces it. The forward
 #' search orders residuals that differ in their last digits, so the
 #' summation algorithm decides which row enters next and the two arms
@@ -122,7 +122,7 @@
   vapply(seq_len(p), function(i) Ab[i, p + 1L] / Ab[i, i], numeric(1))
 }
 
-#' R\'s qnorm IS Wichura AS 241 (PPND16); the Python arm implements the
+#' R's qnorm IS Wichura AS 241 (PPND16); the Python arm implements the
 #'
 #' same rational approximation with the same coefficients, and the two
 #' agree bit for bit. Bisecting on erf/pnorm instead lands on different
@@ -166,6 +166,9 @@
 #'   Journal of the Royal Statistical Society Series B 71(2), 447-466,
 #'   doi:10.1111/j.1467-9868.2008.00692.x, equation (12).
 #' @export
+#' @examples
+#' morie_forwsr_consistency_factor(m = 5L, n = 5L)
+#' @keywords internal
 morie_forwsr_consistency_factor <- function(m, n) {
   m <- as.integer(m)
   n <- as.integer(n)
@@ -179,12 +182,28 @@ morie_forwsr_consistency_factor <- function(m, n) {
 
 #' Least squares on a subset
 #'
+#' SPDX-License-Identifier: AGPL-3.0-or-later morie.fn -- function file
+#' (rootcoder007/morie) Sources:   Analysis, Springer, ISBN 978-0-387-95017-5,
+#' least-median-of-squares start, the residual ordering that defines   each
+#' subset, and the monitoring of the deletion residuals.   unknown number of
+#' multivariate outliers", Journal of the Royal   Statistical Society Series B
+#' 71(2), 447-454 -- equation (12), the   consistency factor for a scale
+#' estimated from a truncated sample, Native implementation mirroring Python
+#' morie.fn.forwsr exactly: the same Gauss-Jordan solve with partial pivoting,
+#' the same SplitMix64 draws for the LMS start, the same residual ordering, and
+#' the same consistency correction. Row indices are 0-based here, as they are in
+#' the Python arm; R subscripts add one at the point of use.
+#'
 #' @param X Design matrix; supply your own intercept column.
 #' @param y Response.
 #' @param subset 0-based row indices, all rows when \code{NULL}.
 #' @return List with \code{beta}, \code{residuals} (all rows),
 #'   \code{s2}, \code{sigma}, \code{subset}, \code{df}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_forwsr_ols_fit(V, V)
+#' @keywords internal
 morie_forwsr_ols_fit <- function(X, y, subset = NULL) {
   pr <- .forwsr_prep(X, y)
   M <- pr$M
@@ -216,6 +235,18 @@ morie_forwsr_ols_fit <- function(X, y, subset = NULL) {
 
 #' Least median of squares start
 #'
+#' SPDX-License-Identifier: AGPL-3.0-or-later morie.fn -- function file
+#' (rootcoder007/morie) Sources:   Analysis, Springer, ISBN 978-0-387-95017-5,
+#' least-median-of-squares start, the residual ordering that defines   each
+#' subset, and the monitoring of the deletion residuals.   unknown number of
+#' multivariate outliers", Journal of the Royal   Statistical Society Series B
+#' 71(2), 447-454 -- equation (12), the   consistency factor for a scale
+#' estimated from a truncated sample, Native implementation mirroring Python
+#' morie.fn.forwsr exactly: the same Gauss-Jordan solve with partial pivoting,
+#' the same SplitMix64 draws for the LMS start, the same residual ordering, and
+#' the same consistency correction. Row indices are 0-based here, as they are in
+#' the Python arm; R subscripts add one at the point of use.
+#'
 #' The p-subset whose fit has the smallest median squared residual: a
 #' starting point unlikely to contain an outlier.
 #'
@@ -226,6 +257,10 @@ morie_forwsr_ols_fit <- function(X, y, subset = NULL) {
 #' @return List with \code{subset} (0-based, sorted) and
 #'   \code{median_sq_residual}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_forwsr_lms_start(V, V)
+#' @keywords internal
 morie_forwsr_lms_start <- function(X, y, n_draw = 500L, seed = 1L) {
   pr <- .forwsr_prep(X, y)
   n <- pr$n
@@ -254,6 +289,18 @@ morie_forwsr_lms_start <- function(X, y, n_draw = 500L, seed = 1L) {
 
 #' Run the forward search, monitoring as it goes
 #'
+#' SPDX-License-Identifier: AGPL-3.0-or-later morie.fn -- function file
+#' (rootcoder007/morie) Sources:   Analysis, Springer, ISBN 978-0-387-95017-5,
+#' least-median-of-squares start, the residual ordering that defines   each
+#' subset, and the monitoring of the deletion residuals.   unknown number of
+#' multivariate outliers", Journal of the Royal   Statistical Society Series B
+#' 71(2), 447-454 -- equation (12), the   consistency factor for a scale
+#' estimated from a truncated sample, Native implementation mirroring Python
+#' morie.fn.forwsr exactly: the same Gauss-Jordan solve with partial pivoting,
+#' the same SplitMix64 draws for the LMS start, the same residual ordering, and
+#' the same consistency correction. Row indices are 0-based here, as they are in
+#' the Python arm; R subscripts add one at the point of use.
+#'
 #' @param X Design matrix.
 #' @param y Response.
 #' @param start Starting subset (0-based); the LMS subset when NULL.
@@ -263,6 +310,10 @@ morie_forwsr_lms_start <- function(X, y, n_draw = 500L, seed = 1L) {
 #'   \code{s2}, \code{consistency_factor}, \code{sigma_corrected},
 #'   \code{min_deletion_residual} and \code{subset}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_forwsr_forward_search(V, V)
+#' @keywords internal
 morie_forwsr_forward_search <- function(X, y, start = NULL,
                                         n_draw = 500L, seed = 1L) {
   pr <- .forwsr_prep(X, y)
@@ -301,10 +352,23 @@ morie_forwsr_forward_search <- function(X, y, start = NULL,
 
 #' The monitored series along the search
 #'
+#' SPDX-License-Identifier: AGPL-3.0-or-later morie.fn -- function file
+#' (rootcoder007/morie) Sources:   Analysis, Springer, ISBN 978-0-387-95017-5,
+#' least-median-of-squares start, the residual ordering that defines   each
+#' subset, and the monitoring of the deletion residuals.   unknown number of
+#' multivariate outliers", Journal of the Royal   Statistical Society Series B
+#' 71(2), 447-454 -- equation (12), the   consistency factor for a scale
+#' estimated from a truncated sample, Native implementation mirroring Python
+#' morie.fn.forwsr exactly: the same Gauss-Jordan solve with partial pivoting,
+#' the same SplitMix64 draws for the LMS start, the same residual ordering, and
+#' the same consistency correction. Row indices are 0-based here, as they are in
+#' the Python arm; R subscripts add one at the point of use.
+#'
 #' @param steps Output of \code{morie_forwsr_forward_search}.
 #' @param key Which monitored quantity to return.
 #' @return List with \code{m} and the requested series.
 #' @export
+#' @keywords internal
 morie_forwsr_forward_plot <- function(steps,
                                       key = "min_deletion_residual") {
   if (length(steps) == 0L) stop("forwsr: no steps to monitor")
@@ -318,6 +382,18 @@ morie_forwsr_forward_plot <- function(steps,
 }
 
 #' Forward search regression: run the search and report where it jumps
+#'
+#' SPDX-License-Identifier: AGPL-3.0-or-later morie.fn -- function file
+#' (rootcoder007/morie) Sources:   Analysis, Springer, ISBN 978-0-387-95017-5,
+#' least-median-of-squares start, the residual ordering that defines   each
+#' subset, and the monitoring of the deletion residuals.   unknown number of
+#' multivariate outliers", Journal of the Royal   Statistical Society Series B
+#' 71(2), 447-454 -- equation (12), the   consistency factor for a scale
+#' estimated from a truncated sample, Native implementation mirroring Python
+#' morie.fn.forwsr exactly: the same Gauss-Jordan solve with partial pivoting,
+#' the same SplitMix64 draws for the LMS start, the same residual ordering, and
+#' the same consistency correction. Row indices are 0-based here, as they are in
+#' the Python arm; R subscripts add one at the point of use.
 #'
 #' \code{threshold} is on the minimum deletion residual; the units
 #' flagged are those entering after the first exceedance -- candidates,
@@ -337,6 +413,10 @@ morie_forwsr_forward_plot <- function(steps,
 #' @references Atkinson and Riani (2000); Riani, Atkinson and Cerioli
 #'   (2009) doi:10.1111/j.1467-9868.2008.00692.x.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_forwsr(V, V)
+#' @keywords internal
 morie_forwsr <- function(X, y, start = NULL, n_draw = 500L, seed = 1L,
                          threshold = 3.0, min_df = 5L) {
   pr <- .forwsr_prep(X, y)

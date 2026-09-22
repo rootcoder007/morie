@@ -27,11 +27,7 @@ morie_survey_design(
 \item{nest}{If TRUE, treat cluster IDs as nested within strata.}
 }
 \value{
-A \code{survey::svydesign} object when the \pkg{survey}
-package is installed; otherwise an S3 list of class
-\code{morie_survey_design_fallback} carrying \code{data},
-\code{weights}, optional \code{strata}, and optional
-\code{cluster}.
+An object of class \code{"morie_survey_design_fallback"}.
 }
 \description{
 Returns a \code{survey::svydesign} object when \code{survey} is installed; otherwise
@@ -39,14 +35,10 @@ returns a lightweight list with the same fields the morie helpers consume.
 }
 \examples{
 \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-.make_survey_df <- function(n = 100L, seed = 1L) {
-    set.seed(seed)
-    data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
-        5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"),
-        n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE),
-        fpc = rep(1000L, n))
-}
-df <- .make_survey_df()
-morie_survey_design(df, weights_col = "w")
+set.seed(1)
+df <- data.frame(y = rnorm(40), w = runif(40, 0.5, 2),
+                 s = rep(c("a", "b"), 20))
+d <- morie_survey_design(df, "w", strata_col = "s")
+class(d)
 \dontshow{\}) # examplesIf}
 }

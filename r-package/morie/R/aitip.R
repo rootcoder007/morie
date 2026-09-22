@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #' Aitchison inner product on the simplex
 #'
-#' Formula: <x, y>_a = sum_i clr(x)_i clr(y)_i
-#'                   = (1/D) sum_\{i<j\} log(x_i/x_j) log(y_i/y_j)
+#' Formula: <x, y>_a = sum_i clr(x)_i clr(y)&#95;i
+#'                   = (1/D) sum&#95;\{i<j\} log(x_i/x_j) log(y_i/y_j)
 #'
 #' @param x,y Strictly positive vectors of parts, the same length.
 #' @return List with \code{inner}, \code{inner_pairwise}, \code{cos_angle},
@@ -28,11 +28,18 @@ Compip <- function(x, y) {
   zy <- Ly - sum(Ly) / D
   ip <- sum(zx * zy)
   pw <- 0
-  for (i in seq_len(D)) for (j in seq_len(D)) if (j > i)
-    pw <- pw + (Lx[i] - Lx[j]) * (Ly[i] - Ly[j])
+  for (i in seq_len(D)) {
+    for (j in seq_len(D)) {
+      if (j > i) {
+        pw <- pw + (Lx[i] - Lx[j]) * (Ly[i] - Ly[j])
+      }
+    }
+  }
   nx <- sqrt(sum(zx^2))
   ny <- sqrt(sum(zy^2))
   cosang <- if (nx > 0 && ny > 0) ip / (nx * ny) else NaN
-  .t1_result(inner = ip, inner_pairwise = pw / D, cos_angle = cosang, D = D,
-             method = "Aitchison inner product")
+  .t1_result(
+    inner = ip, inner_pairwise = pw / D, cos_angle = cosang, D = D,
+    method = "Aitchison inner product"
+  )
 }

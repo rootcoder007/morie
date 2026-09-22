@@ -21,3 +21,8 @@ Rangayyan (2024) Section 5.13.2 covers the ruler, box-counting and
 Higuchi methods instead, so this is cited to Katz.  It mixes the
 amplitude and time axes, so rescaling the signal changes the answer.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+KatzFd(V)
+}
+\keyword{internal}

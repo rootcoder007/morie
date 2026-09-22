@@ -4,26 +4,26 @@
 \alias{.fluctuate}
 \title{.fluctuate}
 \usage{
-.fluctuate(outcome, off, H, rows, iters = 100L, tol = 1e-12)
+.fluctuate(outcome, offset_logit, H, rows, iters = 100, tol = 1e-12)
 }
 \arguments{
 \item{outcome}{A vector; indexed elementwise.}
 
-\item{off}{A vector; indexed elementwise.}
+\item{offset_logit}{A vector; indexed elementwise.}
 
 \item{H}{A vector; indexed elementwise.}
 
 \item{rows}{A vector; its length is taken.}
 
-\item{iters}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{100L}.}
+\item{iters}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100}.}
 
 \item{tol}{Passed to \code{<}. Defaults to \code{1e-12}.}
 }
 \value{
-The value of \code{eps}, as built in the body.
+The value of \code{e}, as built in the body.
 }
 \description{
-A step of the tmldyn_native implementation. Called by \code{morie_tmle_dynamic_regime}.
+A step of the tmldyn_native implementation. Called by \code{morie_tmldyn}.
 See the file header for the source the module follows.
 source it follows.
 }

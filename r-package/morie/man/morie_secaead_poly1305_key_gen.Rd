@@ -20,3 +20,11 @@ A step of the secaead_native implementation. Called by
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+key <- as.raw(c(0x80:0x8f, 0x90:0x9f))
+nonce <- as.raw(c(0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7))
+otk <- morie_secaead_poly1305_key_gen(key, nonce)
+stopifnot(otk[1] == 0x8a, otk[2] == 0xd5)
+head(otk, 8)
+}
+\keyword{internal}

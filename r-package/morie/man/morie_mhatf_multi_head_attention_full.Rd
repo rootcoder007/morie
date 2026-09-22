@@ -44,7 +44,7 @@ installed before sampling so Py<->R streams agree.  Overrides
 \code{seed} when set.}
 }
 \value{
-Named list \code{(output, estimate, heads, num_heads, d_k,
+Named list \eqn{(output, estimate, heads, num_heads, d_k,
   d_model, method)}.
 }
 \description{

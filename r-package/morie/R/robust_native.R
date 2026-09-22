@@ -53,7 +53,7 @@
 #' W(u) = psi(u)/u: (1 - (u/c)^2)^2 inside, ZERO outside. The
 #'
 #' redescending part is what buys breakdown -- a gross outlier gets no
-#' vote at all, where Huber\'s psi still gives it a bounded one.
+#' vote at all, where Huber's psi still gives it a bounded one.
 #'
 #' @param u Numeric; combined arithmetically in the body.
 #' @param cc Numeric; combined arithmetically in the body.
@@ -234,6 +234,7 @@
 #'   gaussian_efficiency, location_free, n, method.
 #' @references Rousseeuw and Croux (1993), *JASA* 88:1273-1283.
 #' @examples
+#' set.seed(1)
 #' morie_rob_qn(stats::rnorm(50))$value
 #' @export
 morie_rob_qn <- function(x) {
@@ -277,6 +278,7 @@ morie_rob_qn <- function(x) {
 #' @references Rousseeuw and Croux (1993), *JASA* 88:1273-1283,
 #'   Sec. 2; Croux and Rousseeuw (1992) for the O(n log n) algorithm.
 #' @examples
+#' set.seed(1)
 #' morie_rob_sn(stats::rnorm(50))$value
 #' @export
 morie_rob_sn <- function(x) {
@@ -317,6 +319,7 @@ morie_rob_sn <- function(x) {
 #' @references Huber (1973), *Annals of Statistics* 1:799-821;
 #'   Huber (1964), *Ann. Math. Statist.* 35:73-101.
 #' @examples
+#' set.seed(1)
 #' x <- stats::rnorm(50)
 #' morie_rob_huber(x, 1 + 2 * x + stats::rnorm(50))$beta
 #' @export
@@ -354,6 +357,12 @@ morie_rob_huber <- function(X, y, c = NULL, max_iter = 100L) {
     beta <- beta_new
   }
   r <- yv - as.numeric(A %*% beta)
+  # Recompute the scale from the FINAL residuals.  It was left at the
+  # value from the previous iterate, which also propagated into `se`
+  # below (se = sqrt(diag * kappa * scale^2)).  No MASS-parity contract
+  # here -- this is Huber (1964, 1973) -- so the scale should simply
+  # describe the residuals actually returned.
+  if (scale > 0) scale <- .rob_mad(r)
   u <- if (scale > 0) r / scale else r
   w <- ifelse(abs(u) <= cc, 1, cc / pmax(abs(u), 1e-300))
   psi <- pmin(pmax(u, -cc), cc)
@@ -391,6 +400,7 @@ morie_rob_huber <- function(X, y, c = NULL, max_iter = 100L) {
 #' @references Huber (1973), *Annals of Statistics* 1:799-821;
 #'   Beaton and Tukey (1974), *Technometrics* 16:147-185.
 #' @examples
+#' set.seed(1)
 #' x <- stats::rnorm(50)
 #' morie_rob_m(x, 1 + 2 * x + stats::rnorm(50), psi = "bisquare")$beta
 #' @export
@@ -440,6 +450,9 @@ morie_rob_m <- function(X, y, psi = "huber", c = NULL, max_iter = 100L) {
     beta <- beta_new
   }
   r <- yv - as.numeric(A %*% beta)
+  # Same one-iteration lag as morie_rob_huber above; here it also made
+  # the reported weights inconsistent with the reported scale.
+  if (scale > 0) scale <- .rob_mad(r)
   list(beta = beta, scale = scale, residuals = r,
        weights = if (scale > 0) wfun(r / scale) else rep(1, n),
        psi = psi, c = cc,
@@ -473,6 +486,7 @@ morie_rob_m <- function(X, y, psi = "huber", c = NULL, max_iter = 100L) {
 #' @references Rousseeuw and Yohai (1984), Lecture Notes in
 #'   Statistics 26, Springer, 256-272.
 #' @examples
+#' set.seed(1)
 #' x <- stats::rnorm(60)
 #' morie_rob_s(x, 1 + 2 * x + stats::rnorm(60), n_subsets = 50)$beta
 #' @export
@@ -510,6 +524,7 @@ morie_rob_s <- function(X, y, n_subsets = 200L, seed = 0) {
 #' @references Yohai (1987), *Annals of Statistics* 15:642-656,
 #'   Sec. 2 and Theorem 2.1.
 #' @examples
+#' set.seed(1)
 #' x <- stats::rnorm(60)
 #' morie_rob_mm(x, 1 + 2 * x + stats::rnorm(60), n_subsets = 50)$beta
 #' @export
@@ -551,6 +566,7 @@ morie_rob_mm <- function(X, y, n_subsets = 200L, seed = 0) {
 #' @return the [morie_rob_mm()] list plus `alias_of`.
 #' @references Yohai (1987), *Annals of Statistics* 15:642-656.
 #' @examples
+#' set.seed(1)
 #' x <- stats::rnorm(50)
 #' morie_rob_mm_alias(x, 2 * x + stats::rnorm(50), n_subsets = 50)$alias_of
 #' @export
@@ -580,6 +596,7 @@ morie_rob_mm_alias <- function(X, y, n_subsets = 200L, seed = 0) {
 #' @references Yohai and Zamar (1988), *JASA* 83:406-413, Secs. 2
 #'   and 4.
 #' @examples
+#' set.seed(1)
 #' x <- stats::rnorm(60)
 #' morie_rob_tau(x, 1 + 2 * x + stats::rnorm(60), n_subsets = 50)$beta
 #' @export
@@ -670,6 +687,7 @@ morie_rob_tau <- function(X, y, n_subsets = 200L, seed = 0,
 #' @references Theil (1950), *Proc. KNAW* 53; Sen (1968), *JASA*
 #'   63:1379-1389, Secs. 3 and 5.
 #' @examples
+#' set.seed(1)
 #' x <- stats::rnorm(30)
 #' morie_rob_theil_sen(x, 2 * x + stats::rnorm(30))$slope
 #' @export
@@ -735,6 +753,7 @@ morie_rob_theil_sen <- function(x, y, alpha = 0.05) {
 #' @references Sen (1968), *JASA* 63:1379-1389; Theil (1950);
 #'   Mann (1945), *Econometrica* 13:245-259.
 #' @examples
+#' set.seed(1)
 #' morie_rob_sens_slope(cumsum(stats::rnorm(30, 0.5)))$trend
 #' @export
 morie_rob_sens_slope <- function(y, t = NULL, alpha = 0.05) {

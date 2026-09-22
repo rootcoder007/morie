@@ -23,6 +23,5 @@ intercept slot. Effective df = tr(X (X^T X + alpha A)^-1 X^T) makes
 the shrinkage visible.
 }
 \examples{
-morie_geron_ridge_normal(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
-alpha = 0.5)
+morie_geron_ridge_normal(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5)
 }

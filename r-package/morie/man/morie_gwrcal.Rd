@@ -33,7 +33,7 @@ morie_gwrcal(
 
 \item{n_points}{Number of points for the grid.}
 
-\item{tol}{See Usage.}
+\item{tol}{Convergence tolerance for golden section.}
 }
 \value{
 A list with \code{bandwidth}, \code{score},
@@ -49,3 +49,12 @@ Minimises CV, AIC or AICc over a bandwidth grid. AICc is the
 default: the small-sample correction, and GWR's whole point is
 that local samples are small.
 }
+\examples{
+set.seed(1)
+n <- 30
+X <- cbind(1, rnorm(n))
+coords <- matrix(runif(2 * n), n, 2)
+y <- X \%*\% c(1, 2) + rnorm(n)
+morie_gwrcal(y, X, coords, n_points = 8L)
+}
+\keyword{internal}

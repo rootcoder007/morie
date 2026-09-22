@@ -20,8 +20,8 @@ Precision and recall at each distinct score; AP = sum (R_k - \verb{R_\{k-1\}})
 P_k, with no interpolation. \code{best_f1} picks the first maximum.
 }
 \examples{
-y <- c(1, 1, 0, 0, 1, 0, 1, 1)
-morie_geron_information_gain(y, left_mask = c(TRUE, TRUE, TRUE, FALSE,
-                                              FALSE, FALSE, TRUE, FALSE))
-morie_geron_precision_recall_curve(y_true = y, y_scores = y)
+set.seed(1)
+y <- rbinom(30, 1, 0.5)
+s <- y + rnorm(30, 0, 0.7)
+morie_geron_precision_recall_curve(y, s)
 }

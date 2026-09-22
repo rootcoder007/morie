@@ -21,3 +21,8 @@ A list with \code{y}, \code{h}, \code{s}, \code{equivalent},
 a second time -- the content of the equation is that the cascade IS a
 single filter, not that there are two ways to compute it.
 }
+\examples{
+LsiSerY(x = c(1, 2, 3, 4, 5, 6, 7, 8), h1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+  h2 = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

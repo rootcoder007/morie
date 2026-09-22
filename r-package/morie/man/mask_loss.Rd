@@ -7,18 +7,22 @@
 mask_loss(logits, target, decoupled = TRUE)
 }
 \arguments{
-\item{logits}{A matrix; passed to \code{as.matrix}.}
+\item{logits}{Passed to \code{.masrcn_mat}.}
 
-\item{target}{A matrix; passed to \code{as.matrix}.}
+\item{target}{Passed to \code{.masrcn_mat}.}
 
 \item{decoupled}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \value{
-A list, whose contents depend on the branch taken; across the branches its
-names are \code{loss}, \code{kind}, \code{note}, \code{caveat}.
+A list with \code{loss}, \code{kind}, \code{caveat}.
 }
 \description{
-A step of the masrcn_native implementation. No other function in the package calls it.
+A step of the masrcn_native implementation. Called by \code{morie_masrcn}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+mask_loss(V, V)
+}
+\keyword{internal}

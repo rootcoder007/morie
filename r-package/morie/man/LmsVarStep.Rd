@@ -24,3 +24,8 @@ A step of the rangayyan_adapt implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+LmsVarStep(w = c(1, 2, 3, 4, 5, 6, 7, 8), e = c(1, 2, 3, 4, 5, 6, 7, 8),
+  rvec = c(1, 2, 3, 4, 5, 6, 7, 8), mu_n = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

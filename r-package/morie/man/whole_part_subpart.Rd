@@ -7,7 +7,7 @@
 whole_part_subpart(masks, target_hierarchy = NULL)
 }
 \arguments{
-\item{masks}{A vector; its length is taken.}
+\item{masks}{A vector; its length is taken and its elements indexed.}
 
 \item{target_hierarchy}{Accepted by the signature and not used anywhere in the body.}
 }
@@ -19,3 +19,7 @@ A step of the sammkr_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+whole_part_subpart(list(c(1, 1, 1, 0), c(1, 1, 0, 0), c(1, 0, 0, 0)))
+}
+\keyword{internal}

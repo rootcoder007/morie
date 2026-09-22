@@ -21,3 +21,7 @@ list with tokens, grid, patch, latent_size, note.
 Tokens: T = (I/p)^2. Halving p quadruples T at essentially
 constant parameter count -- the axis a parameter count cannot see.
 }
+\examples{
+patch_grid(latent_size = 5L, patch = 5L)
+}
+\keyword{internal}

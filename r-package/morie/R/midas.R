@@ -4,23 +4,8 @@
 # morie_midas_regression() optimiser closure so the theta-domain guard and the
 # non-finite-SSE guard are directly unit-testable. `X` is the lag-matrix,
 # `Y` the target, `K` the number of high-frequency lags.
-#' Internal: MIDAS sum-of-squared-errors objective. Extracted from the
-#'
-#' morie_midas_regression() optimiser closure so the theta-domain guard
-#' and the non-finite-SSE guard are directly unit-testable. `X` is the
-#' lag-matrix, `Y` the target, `K` the number of high-frequency lags.
-#'
-#' @param p A vector; indexed elementwise.
-#' @param X A matrix; passed to \code{\%*\%}.
-#' @param Y Numeric; combined arithmetically in the body.
-#' @param K Passed to \code{.morie_beta_weights}.
-#' @return One of two values, depending on the branch taken.
-#' @export
-#' @examples
-#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
-#' b <- c(1.5, 2.5, 3.5)
-#' res <- .midas_sse(p = A, X = b, Y = b, K = A)
-#' res
+#' Internal helper: Midas Sse
+#' @noRd
 .midas_sse <- function(p, X, Y, K) {
   b0 <- p[1]
   b1 <- p[2]
@@ -40,7 +25,7 @@
 #' @param x High-frequency regressor matrix (n_t x K) or flat vector.
 #' @param y Low-frequency target (length n_t).
 #' @param K Number of high-frequency lags (required when x is flat).
-#' @return Named list with \code{beta0, beta1, theta1, theta2, weights,
+#' @return Named list with \eqn{beta0, beta1, theta1, theta2, weights,
 #'   r2, n, K, method}.
 #' @examples
 #' # See the package vignettes for usage examples:

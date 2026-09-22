@@ -20,3 +20,8 @@ Scalar cross-entropy.
 \code{-sum_i m_i * log(max(p_i, eps))}, the cross-entropy term of
 \code{D_KL(Phi T_hat Z || Z)}.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+categorical_loss(V, V)
+}
+\keyword{internal}

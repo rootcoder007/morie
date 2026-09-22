@@ -22,3 +22,8 @@ A list with \code{lfhf}, \code{lf}, \code{hf}, \code{lfpct}, \code{hfpct},
 the RR variance alongside it so it can be interpreted rather than
 read bare.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+LfHfRatio(V)
+}
+\keyword{internal}

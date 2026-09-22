@@ -41,7 +41,7 @@
 # that depth, so the caller indexes by depth directly.
 #' Split counts by (depth, feature), depth 1 at the root. Mirrors
 #'
-#' morie.fn.crfsel._depth_counts; element [[depth]] holds the counts at
+#' morie.fn.crfsel._depth_counts; element [\[depth\]] holds the counts at
 #' that depth, so the caller indexes by depth directly.
 #'
 #' @param tree Passed to \code{walk}.
@@ -211,6 +211,7 @@
 #'   Generalized Random Forests. Annals of Statistics, 47(2),
 #'   1148-1178.
 #' @export
+#' @keywords internal
 morie_crfsel <- function(y, W, X, n_trees = 200L, min_leaf = 5L,
                          max_depth = 4L, decay = 2.0, seed = 0L,
                          names = NULL, permutation = FALSE) {

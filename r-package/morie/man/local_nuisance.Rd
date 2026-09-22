@@ -25,3 +25,8 @@ A list with \code{fit}, \code{coef}.
 forest kernel weights alpha_i(x), so the fit is local by
 construction. exclude drops one index for the leave-one-out residual.
 }
+\examples{
+local_nuisance(target = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8),
+  weights = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

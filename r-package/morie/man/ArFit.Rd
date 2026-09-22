@@ -22,3 +22,7 @@ The value of \code{fit}, as built in the body.
 spectrum from P+1 parameters.  That smoothness is also the trap: the
 model can only make P/2 peaks, so extra resonances merge silently.
 }
+\examples{
+ArFit(x = c(1, 2, 3, 4, 5, 6, 7, 8), order = 5L)
+}
+\keyword{internal}

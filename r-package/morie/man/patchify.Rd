@@ -2,12 +2,12 @@
 % Please edit documentation in R/patchT_native.R
 \name{patchify}
 \alias{patchify}
-\title{Cut one univariate series into patches of length P. With stride}
+\title{patchify}
 \usage{
 patchify(x, patch_len, stride = NULL)
 }
 \arguments{
-\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{x}{Passed to \code{.patcht_vec}.}
 
 \item{patch_len}{Coerced to integer by the body, with \code{as.integer}.}
 
@@ -19,7 +19,12 @@ A list with \code{patches}, \code{n_patches}, \code{patch_len}, \code{stride},
 \code{L}, \code{covers}.
 }
 \description{
-equal to patch_len the patches are disjoint; a smaller stride
-overlaps them. The number of patches is N = floor((L-P)/S) + 1, which
-is what makes the attention map shrink.
+A step of the patchT_native implementation. Called by
+\code{channel_independent_tokens}, \code{channel_mixed_tokens}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+patchify(x = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+}
+\keyword{internal}

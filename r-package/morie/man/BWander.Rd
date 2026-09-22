@@ -26,3 +26,8 @@ high-frequency boost that the bare first difference of equation
 (3.123) inflicts. A pole exactly at one would cancel the zero
 outright and is refused.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+BWander(V)
+}
+\keyword{internal}

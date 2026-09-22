@@ -10,14 +10,13 @@ morie_otis_analyze_b06(data)
 \item{data}{b06 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines and reason x year and
-reason x gender crosstabs.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 Reasons for placement x institution x gender (b06)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_b06(V)
+otis_b06 <- morie_synth_otis("b06", n = 120L, seed = 1L)
+res <- morie_otis_analyze_b06(otis_b06)
+class(res)
 }

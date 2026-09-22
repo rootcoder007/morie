@@ -28,3 +28,8 @@ quarter-period phase shift.  Mirrors the Python
 _gp_core.fda_basis_derivative, including its polynomial convention u
 = (t - lo) / span, which differs from morie_fda_basis above.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_fda_basis_deriv(V, V)
+}
+\keyword{internal}

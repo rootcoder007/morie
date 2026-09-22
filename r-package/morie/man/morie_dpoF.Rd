@@ -46,3 +46,8 @@ A step of the dpoF_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_dpoF(logp_w = c(-1, -2), logp_l = c(-3, -4),
+           logp_ref_w = c(-1.5, -2.5), logp_ref_l = c(-2.5, -3.5))
+}
+\keyword{internal}

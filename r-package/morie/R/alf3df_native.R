@@ -71,16 +71,22 @@
 #' @param rho The schedule exponent.
 #' @return The levels, with a zero appended.
 #' @export
+#' @examples
+#' morie_alf3df_schedule(n_steps = 5L)
+#' @keywords internal
 morie_alf3df_schedule <- function(n_steps, sigma_min = 0.002,
                                   sigma_max = 80, rho = 7) {
   n <- as.integer(n_steps)
   if (n < 2L) stop("need at least two noise levels")
-  if (sigma_min <= 0 || sigma_max <= sigma_min)
+  if (sigma_min <= 0 || sigma_max <= sigma_min) {
     stop("need 0 < sigma_min < sigma_max")
+  }
   a <- sigma_max^(1 / rho)
   b <- sigma_min^(1 / rho)
-  c(vapply(0:(n - 1L), function(i) (a + i * (b - a) / (n - 1))^rho,
-           numeric(1)), 0)
+  c(vapply(
+    0:(n - 1L), function(i) (a + i * (b - a) / (n - 1))^rho,
+    numeric(1)
+  ), 0)
 }
 
 #' A uniform random rotation matrix by Shoemake's quaternion method
@@ -92,6 +98,11 @@ morie_alf3df_schedule <- function(n_steps, sigma_min = 0.002,
 #' @param e A random stream from the shared generator.
 #' @return A three by three rotation matrix.
 #' @export
+#' @examples
+#' e <- morie:::.ghc_rng(5)
+#' e <- morie:::.ghc_rng(5)
+#' morie_alf3df_rotation(e)
+#' @keywords internal
 morie_alf3df_rotation <- function(e) {
   u1 <- .ghc_unif(e, 1L)
   u2 <- .ghc_unif(e, 1L)
@@ -104,10 +115,15 @@ morie_alf3df_rotation <- function(e) {
   y <- s1 * cos(t1)
   z <- s2 * sin(t2)
   w <- s2 * cos(t2)
-  matrix(c(1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w),
-           2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w),
-           2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)),
-         3L, 3L, byrow = TRUE)
+  matrix(
+    c(
+      1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w),
+      2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w),
+      2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)
+    ),
+    3L, 3L,
+    byrow = TRUE
+  )
 }
 
 #' Recentre on the centroid, then rotate at random
@@ -121,9 +137,18 @@ morie_alf3df_rotation <- function(e) {
 #' @param e A random stream.
 #' @return A list with the augmented coordinates and the old centroid.
 #' @export
+#' @examples
+#' NA_ <- 6L
+#' TRUEX <- matrix(0, NA_, 3L)
+#' e <- morie:::.ghc_rng(5)
+#' e <- morie:::.ghc_rng(5)
+#' morie_alf3df_augment(TRUEX, e)
+#' @keywords internal
 morie_alf3df_augment <- function(x, e) {
   n <- nrow(x)
-  if (!n) return(list(x = x, centroid = c(0, 0, 0)))
+  if (!n) {
+    return(list(x = x, centroid = c(0, 0, 0)))
+  }
   cen <- vapply(1:3, function(t) .w3_csum(x[, t]) / n, numeric(1))
   R <- morie_alf3df_rotation(e)
   out <- matrix(0, n, 3L)
@@ -153,12 +178,20 @@ morie_alf3df_augment <- function(x, e) {
 #' @return A list with the stepped coordinates, the churned level and
 #'   the direction.
 #' @export
+#' @examples
+#' NA_ <- 6L
+#' TRUEX <- matrix(0, NA_, 3L)
+#' oracle <- function(x, sigma) TRUEX
+#' start <- matrix(0, NA_, 3L)
+#' morie_alf3df_step(start, 4, oracle, 1, order = "euler")
+#' @keywords internal
 morie_alf3df_step <- function(x, t, score_fn, sigma_next = NULL,
                               gamma = 0, noise_scale = 1,
                               step_scale = 1, order = "heun", e = NULL,
                               augment = FALSE) {
-  if (!(order %in% .ALF3DF_ORDERS))
+  if (!(order %in% .ALF3DF_ORDERS)) {
     stop("order must be one of ", paste(.ALF3DF_ORDERS, collapse = ", "))
+  }
   t <- as.numeric(t)
   if (t <= 0) stop("the current noise level must be positive")
   sn <- if (is.null(sigma_next)) 0 else as.numeric(sigma_next)
@@ -174,8 +207,11 @@ morie_alf3df_step <- function(x, t, score_fn, sigma_next = NULL,
   if (gamma > 0) {
     if (is.null(e)) stop("churn needs a random stream")
     amt <- sqrt(that * that - t * t) * as.numeric(noise_scale)
-    for (i in seq_len(nrow(cur))) for (c0 in 1:3)
-      cur[i, c0] <- cur[i, c0] + amt * .ghc_norm(e, 1L)
+    for (i in seq_len(nrow(cur))) {
+      for (c0 in 1:3) {
+        cur[i, c0] <- cur[i, c0] + amt * .ghc_norm(e, 1L)
+      }
+    }
   }
 
   den <- as.matrix(score_fn(cur, that))
@@ -210,6 +246,11 @@ morie_alf3df_step <- function(x, t, score_fn, sigma_next = NULL,
 #' @return A list with the final coordinates, the schedule and the
 #'   churned levels visited.
 #' @export
+#' @examples
+#' NA_ <- 6L
+#' shrink <- function(x, sigma) (1/(1 + sigma)) * x
+#' morie_alf3df_sample(NA_, shrink, 5L, seed = 3)
+#' @keywords internal
 morie_alf3df_sample <- function(shape_n, score_fn, n_steps = 8L,
                                 sigma_min = 0.002, sigma_max = 80,
                                 rho = 7, gamma = 0, noise_scale = 1,
@@ -219,12 +260,17 @@ morie_alf3df_sample <- function(shape_n, score_fn, n_steps = 8L,
   e <- .ghc_rng(seed)
   n <- as.integer(shape_n)
   x <- matrix(0, n, 3L)
-  for (i in seq_len(n)) for (c0 in 1:3)
-    x[i, c0] <- sig[1] * .ghc_norm(e, 1L)
+  for (i in seq_len(n)) {
+    for (c0 in 1:3) {
+      x[i, c0] <- sig[1] * .ghc_norm(e, 1L)
+    }
+  }
   traj <- numeric(0)
   for (i in seq_len(length(sig) - 1L)) {
-    r <- morie_alf3df_step(x, sig[i], score_fn, sig[i + 1L], gamma,
-                           noise_scale, step_scale, order, e, augment)
+    r <- morie_alf3df_step(
+      x, sig[i], score_fn, sig[i + 1L], gamma,
+      noise_scale, step_scale, order, e, augment
+    )
     x <- r$x
     traj <- c(traj, r$sigma_hat)
   }
@@ -239,6 +285,12 @@ morie_alf3df_sample <- function(shape_n, score_fn, n_steps = 8L,
 #' @param ... Passed to the step function.
 #' @return A list with the stepped coordinates and summary geometry.
 #' @export
+#' @examples
+#' NA_ <- 6L
+#' shrink <- function(x, sigma) (1/(1 + sigma)) * x
+#' NOISY <- matrix(0, NA_, 3L)
+#' morie_alf3df(NOISY, 4, shrink, sigma_next = 1)
+#' @keywords internal
 morie_alf3df <- function(x, t, score_fn, ...) {
   r <- morie_alf3df_step(x, t, score_fn, ...)
   nx <- r$x
@@ -249,21 +301,34 @@ morie_alf3df <- function(x, t, score_fn, ...) {
   # then summing those totals groups the arithmetic differently and the
   # two arms would part company in the last bit.
   flat <- numeric(0)
-  if (n) for (i in seq_len(n)) for (c0 in 1:3)
-    flat <- c(flat, (nx[i, c0] - cen[c0]) * (nx[i, c0] - cen[c0]))
+  if (n) {
+    for (i in seq_len(n)) {
+      for (c0 in 1:3) {
+        flat <- c(flat, (nx[i, c0] - cen[c0]) * (nx[i, c0] - cen[c0]))
+      }
+    }
+  }
   rad <- if (n) sqrt(.w3_csum(flat) / n) else NaN
-  list(x = nx, direction = r$direction, sigma_hat = r$sigma_hat,
-       sigma = as.numeric(t), centroid = cen, radius_of_gyration = rad,
-       estimate = rad, se = NaN, n_atoms = n,
-       method = "AlphaFold-3 style diffusion sampling step")
+  list(
+    x = nx, direction = r$direction, sigma_hat = r$sigma_hat,
+    sigma = as.numeric(t), centroid = cen, radius_of_gyration = rad,
+    estimate = rad, se = NaN, n_atoms = n,
+    method = "AlphaFold-3 style diffusion sampling step"
+  )
 }
 
 #' One-line summary of the alf3df module
 #'
 #' @return A character scalar.
 #' @export
-morie_alf3df_cheatsheet <- function()
-  paste0("alf3df: AlphaFold-3 style diffusion step. orders ",
-         paste(.ALF3DF_ORDERS, collapse = ", "),
-         "; Karras schedule and update, centre-random augmentation, ",
-         "AF3 constants supplied by the caller")
+#' @examples
+#' morie_alf3df_cheatsheet()
+#' @keywords internal
+morie_alf3df_cheatsheet <- function() {
+  paste0(
+    "alf3df: AlphaFold-3 style diffusion step. orders ",
+    paste(.ALF3DF_ORDERS, collapse = ", "),
+    "; Karras schedule and update, centre-random augmentation, ",
+    "AF3 constants supplied by the caller"
+  )
+}

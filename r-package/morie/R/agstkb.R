@@ -46,8 +46,10 @@ Elomatch <- function(games, ladder, base = "e", c_elo = 1 / 400) {
       r <- if (!is.na(s) && s <= 0) -Inf else Inf
     }
     per[i] <- r
-    if (!is.na(r) && is.finite(r)) { num <- num + n * r
-    den <- den + n }
+    if (!is.na(r) && is.finite(r)) {
+      num <- num + n * r
+      den <- den + n
+    }
   }
   est <- if (den > 0) num / den else NaN
   wins <- 0
@@ -58,7 +60,9 @@ Elomatch <- function(games, ladder, base = "e", c_elo = 1 / 400) {
     draws <- draws + rows[i, 2]
     losses <- losses + rows[i, 3]
   }
-  list(estimate = est, rating = est, per_rung = per, scores = scores,
-       n_games = ns, wins = wins, draws = draws, losses = losses,
-       method = "Elo anchored to a ladder of baselines, games-weighted")
+  list(
+    estimate = est, rating = est, per_rung = per, scores = scores,
+    n_games = ns, wins = wins, draws = draws, losses = losses,
+    method = "Elo anchored to a ladder of baselines, games-weighted"
+  )
 }

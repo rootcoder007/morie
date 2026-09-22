@@ -18,6 +18,10 @@ string noting the quadratic, exactly tight bound.
 \description{
 Proposition 1.9: groups of size k cost k^2 rho
 }
+\examples{
+group_privacy(rho = 0.5, k = 5L)
+}
 \references{
 Bun, M. & Steinke, T. (2016). Proposition 1.9.
 }
+\keyword{internal}

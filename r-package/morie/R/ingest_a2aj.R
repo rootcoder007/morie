@@ -32,7 +32,7 @@
 
 .MORIE_A2AJ_API <- "https://api.a2aj.ca"
 .MORIE_A2AJ_HF <- "https://huggingface.co/datasets/a2aj"
-.MORIE_A2AJ_DEFAULT_UA <- "morie/r (+https://github.com/rootcoder007/morie)"
+.MORIE_A2AJ_DEFAULT_UA <- "morie/r (+https://github.com/rootcoder007/rmorie)"
 .MORIE_A2AJ_DEFAULT_TIMEOUT <- 60
 
 #' Internal helper: one A2AJ API call, unwrapped to the parsed JSON

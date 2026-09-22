@@ -7,12 +7,12 @@
 .unif_stream(seed, block = 8192L)
 }
 \arguments{
-\item{seed}{Passed to \code{.ghc_rng}.}
+\item{seed}{Coerced to integer by the body, with \code{as.integer}.}
 
-\item{block}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8192L}.}
+\item{block}{Defaults to \code{8192L}.}
 }
 \value{
-The value of \code{function}.
+The value of \code{uni}, as built in the body.
 }
 \description{
 A step of the bayrjmcmc_native implementation. Called by \code{changepoint_rjmcmc},

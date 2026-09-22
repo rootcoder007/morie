@@ -19,7 +19,7 @@ test_that("native IK bandwidth is positive, sane, deterministic", {
   bw <- morie_rdd_bandwidth_ik(df$x, df$y)
   expect_true(is.finite(bw$bandwidth) && bw$bandwidth > 0)
   expect_lt(bw$bandwidth, diff(range(df$x)))
-  expect_match(bw$method, "morie native")
+  expect_match(bw$method, "rmorie native")
   bw2 <- morie_rdd_bandwidth_ik(df$x, df$y)
   expect_identical(bw$bandwidth, bw2$bandwidth)
 })
@@ -27,7 +27,7 @@ test_that("native IK bandwidth is positive, sane, deterministic", {
 test_that("sharp RDD recovers tau with native IK bandwidth", {
   df <- .mk_rdd(tau = 1.2, seed = 41)
   res <- morie_rdd_sharp(df, "y", "x")
-  expect_match(res$method, "morie native")
+  expect_match(res$method, "rmorie native")
   expect_equal(res$estimate, 1.2, tolerance = 0.15)
   expect_true(res$p_value < 0.01)
   # zero effect -> no detection
@@ -40,7 +40,7 @@ test_that("fuzzy RDD recovers the LATE via the Wald ratio", {
   df <- .mk_rdd(tau = 1.5, seed = 43, fuzzy = TRUE)
   res <- morie_rdd_fuzzy(df, "y", "x", "tr")
   expect_equal(res$estimate, 1.5, tolerance = 0.35)
-  expect_match(res$method, "morie native")
+  expect_match(res$method, "rmorie native")
 })
 
 test_that("bias-corrected estimate = order-(p+1) fit at rho = 1", {
@@ -48,7 +48,7 @@ test_that("bias-corrected estimate = order-(p+1) fit at rho = 1", {
   bc <- morie_rdd_bias_corrected(df, "y", "x", bandwidth = 0.5, rho = 1)
   ref <- morie_rdd_sharp(df, "y", "x", bandwidth = 0.5, p = 2)
   expect_equal(bc$estimate, ref$estimate, tolerance = 1e-10)
-  expect_match(bc$method, "morie native")
+  expect_match(bc$method, "rmorie native")
 })
 
 test_that("kink design recovers a slope discontinuity", {
@@ -59,14 +59,14 @@ test_that("kink design recovers a slope discontinuity", {
   df <- data.frame(x = x, y = y)
   res <- morie_rdd_kink(df, "y", "x", bandwidth = 0.6)
   expect_equal(res$estimate, 1.5, tolerance = 0.3)
-  expect_match(res$method, "morie native")
+  expect_match(res$method, "rmorie native")
 })
 
 test_that("native McCrary: null density passes, manipulated fails", {
   set.seed(46)
   x_null <- runif(5000, -1, 1)
   ok <- morie_rdd_mccrary(x_null)
-  expect_match(ok$name, "morie native")
+  expect_match(ok$name, "rmorie native")
   expect_gt(ok$p_value, 0.05)
   # heap mass just right of the cutoff
   x_manip <- c(runif(4000, -1, 1), runif(1200, 0, 0.08))

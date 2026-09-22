@@ -16,5 +16,5 @@ Numeric d.
 Convert Pearson r to Cohen's d
 }
 \examples{
-r_to_d(r = 5L)
+r_to_d(0.3)
 }

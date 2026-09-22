@@ -28,6 +28,10 @@
 #' @param weights Numeric; passed to \code{sum}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' ess(V)
+#' @keywords internal
 ess <- function(weights) {
   tot <- sum(weights)
   if (tot <= 0)
@@ -40,10 +44,10 @@ ess <- function(weights) {
 # findInterval has the same effect but is documented to return the
 # leftmost interval, so we keep our own to mirror the Python
 # arm's hand-written loop.
-#' Binary search over a precomputed cumulative distribution.  R\'s
+#' Binary search over a precomputed cumulative distribution.  R's
 #'
 #' findInterval has the same effect but is documented to return the
-#' leftmost interval, so we keep our own to mirror the Python arm\'s
+#' leftmost interval, so we keep our own to mirror the Python arm's
 #' hand-written loop.
 #'
 #' @param cum A vector; its length is taken and its elements indexed.
@@ -73,6 +77,9 @@ ess <- function(weights) {
 #' \code{"systematic"}. Defaults to \code{"systematic"}.
 #' @return Nothing; this branch always raises.
 #' @export
+#' @examples
+#' resample(weights = 5L, rng = list(a = 1, b = 2))
+#' @keywords internal
 resample <- function(weights, rng, scheme = "systematic") {
   tot <- sum(weights)
   if (tot <= 0)
@@ -138,6 +145,9 @@ resample <- function(weights, rng, scheme = "systematic") {
 #' @param power Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @return Nothing; this branch always raises.
 #' @export
+#' @examples
+#' temperature_ladder(n_steps = 5L)
+#' @keywords internal
 temperature_ladder <- function(n_steps, kind = "geometric", power = 1.0) {
   n <- as.integer(n_steps)
   if (n < 2L)
@@ -159,9 +169,9 @@ temperature_ladder <- function(n_steps, kind = "geometric", power = 1.0) {
 # random_walk_kernel(scale, n_moves), performs n_moves of
 # x' = x + Normal(0, scale^2) and returns the average accept
 # rate over the inner moves.
-#' A Metropolis random walk that, just like the Python arm\'s
+#' A Metropolis random walk that, just like the Python arm's
 #'
-#' random_walk_kernel(scale, n_moves), performs n_moves of x\' = x +
+#' random_walk_kernel(scale, n_moves), performs n_moves of x' = x +
 #' Normal(0, scale^2) and returns the average accept rate over the inner
 #' moves.
 #'
@@ -199,13 +209,16 @@ temperature_ladder <- function(n_steps, kind = "geometric", power = 1.0) {
 #' @param n_moves Passed to \code{.smcsam_rwk}. Defaults to \code{1L}.
 #' @return The value of \code{.smcsam_rwk}.
 #' @export
+#' @examples
+#' random_walk_kernel()
+#' @keywords internal
 random_walk_kernel <- function(scale = 1.0, n_moves = 1L) {
   .smcsam_rwk(scale, n_moves)
 }
 
 #' smcsam
 #'
-#' A step of the smcsam_native implementation. Called by \code{smcopt}.
+#' A step of the smcsam_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -229,6 +242,7 @@ random_walk_kernel <- function(scale = 1.0, n_moves = 1L) {
 #' \code{accept_trace}, \code{ladder}, \code{n_particles}, \code{weight_rule},
 #' \code{method}.
 #' @export
+#' @keywords internal
 smcsam <- function(log_gamma, initial, n_particles = 500L, ladder = NULL,
                    n_steps = 20L, kernel = NULL, ess_threshold = 0.5,
                    scheme = "systematic", seed = 0L, weight_rule = "mcmc",

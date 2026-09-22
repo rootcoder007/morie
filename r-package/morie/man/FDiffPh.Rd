@@ -17,3 +17,8 @@ A list with \code{phase}, \code{omega}, \code{group_delay}, \code{slope},
 quarter turn from the j of eq (3.125).  A half-sample delay cannot be
 undone by shifting samples.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+FDiffPh(V)
+}
+\keyword{internal}

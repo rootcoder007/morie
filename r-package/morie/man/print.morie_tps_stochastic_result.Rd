@@ -19,9 +19,14 @@ Print method for \code{morie_tps_stochastic_result} objects
 }
 \examples{
 \donttest{
-set.seed(1); n <- 200
-df <- data.frame(OCC_DATE = as.Date("2018-01-01") + sample(0:2000, n, TRUE))
-res <- morie_tps_hawkes_temporal_fit(df)
+set.seed(1)
+df <- data.frame(OCC_YEAR = rep(2014:2023, each = 30),
+                 OCC_MONTH = sample(month.name, 300, TRUE),
+                 HOOD_158 = sample(sprintf("\%03d", 1:20), 300, TRUE),
+                 LAT_WGS84 = runif(300, 43.6, 43.8),
+                 LONG_WGS84 = runif(300, -79.5, -79.2))
+res <- try(morie_tps_hawkes_temporal_fit(df, ds_name = "synthetic"))
+if (!inherits(res, "try-error")) str(res, max.level = 1)
 print(res)
 }
 }

@@ -7,13 +7,11 @@
 ARSAU_YEARS()
 }
 \value{
-Character vector of sorted unique year/range identifiers
-(e.g. \code{"2023"}, \code{"2024"}, \code{"2020-2022"}) drawn from
-the ARSAU registry.
+A character vector.
 }
 \description{
 Known ARSAU year/range keys
 }
 \examples{
-ARSAU_YEARS()
+ARSAU_YEARS
 }

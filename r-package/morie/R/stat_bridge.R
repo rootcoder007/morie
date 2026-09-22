@@ -25,10 +25,13 @@ NULL
 #' JSON enumeration of all registered commands
 #'
 #' @return A length-1 character vector containing JSON text.
+#' @examples
+#' \donttest{
+#' \dontshow{if (requireNamespace("jsonlite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' substr(stat_bridge_registry_json(), 1, 200)
+#' \dontshow{\}) # examplesIf}
+#' }
 #' @export
-#' @examplesIf requireNamespace("jsonlite", quietly = TRUE)
-#' res <- stat_bridge_registry_json()
-#' res
 stat_bridge_registry_json <- function() {
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop("jsonlite is required for registry-json output")
@@ -54,9 +57,9 @@ stat_bridge_registry_json <- function() {
 #' Formatted text dump of the command registry
 #'
 #' @return A length-1 character string.
-#' @export
 #' @examples
-#' stat_bridge_help()
+#' cat(stat_bridge_help())
+#' @export
 stat_bridge_help <- function() {
   reg <- .morie_stat_commands$registry
   cats <- list()
@@ -81,17 +84,8 @@ stat_bridge_help <- function() {
 
 
 # Bridge log class used to capture handler output.
-#' Bridge log class used to capture handler output
-#'
-#' A step of the stat_bridge implementation. Called by \code{stat_bridge_exec}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @return A list with \code{write}, \code{call}, \code{getvalue}.
-#' @export
-#' @examples
-#' res <- .bridge_log()
-#' res
+#' Internal helper: Bridge Log
+#' @noRd
 .bridge_log <- function() {
   parts <- character(0)
   list(
@@ -112,10 +106,9 @@ stat_bridge_help <- function() {
 #' @param cmd_str A whitespace-delimited command line, e.g.
 #'   \code{"bonferroni 0.01 0.04 0.05"}.
 #' @return Captured handler output as a single string.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' stat_bridge_exec(V)
+#' cat(stat_bridge_exec("help"))
+#' @export
 stat_bridge_exec <- function(cmd_str) {
   parts <- strsplit(trimws(cmd_str), "\\s+")[[1]]
   if (length(parts) == 0L) {
@@ -150,10 +143,9 @@ stat_bridge_exec <- function(cmd_str) {
 #'
 #' @param name Command name or alias.
 #' @return Multi-line description string or an explanatory error string.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' stat_bridge_fn_info(V)
+#' cat(stat_bridge_fn_info("one_sample_ttest"))
+#' @export
 stat_bridge_fn_info <- function(name) {
   cmd <- resolve_stat_command(name)
   if (is.null(cmd)) {
@@ -180,10 +172,9 @@ stat_bridge_fn_info <- function(name) {
 #'   descriptions, and aliases.
 #' @param max_results Cap on the number of matches returned.
 #' @return Multi-line summary string.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' stat_bridge_fn_search(V)
+#' stat_bridge_fn_search("ttest")
+#' @export
 stat_bridge_fn_search <- function(query, max_results = 20L) {
   q <- tolower(as.character(query))
   reg <- .morie_stat_commands$registry
@@ -254,18 +245,7 @@ stat_bridge_verify <- function(execute = FALSE) {
     } else tryCatch({
       cmd$handler_repl()
       list(ok = TRUE, msg = "")
-    }, error = function(e) {
-      m <- conditionMessage(e)
-      # A bare "argument X is missing, with no default" means the handler is
-      # healthy but simply requires arguments to run -- it is NOT a verification
-      # failure. Report it as ok with a note. Only genuine errors (e.g. the
-      # test_bridge_throw fixture that throws "boom") are flagged as failures.
-      if (grepl("is missing, with no default", m, fixed = TRUE)) {
-        list(ok = TRUE, msg = "requires args")
-      } else {
-        list(ok = FALSE, msg = m)
-      }
-    })
+    }, error = function(e) list(ok = FALSE, msg = conditionMessage(e)))
     rows[[i]] <- data.frame(name = cmd$name, ok = res$ok,
                             message = res$msg, stringsAsFactors = FALSE)
     i <- i + 1L
@@ -286,9 +266,9 @@ stat_bridge_verify <- function(execute = FALSE) {
 #'   When \code{NULL}, defaults to \code{commandArgs(trailingOnly = TRUE)}.
 #' @return Invisibly returns the printed text; primarily called for
 #'   side effects (printing to stdout).
-#' @export
 #' @examples
-#' stat_bridge_main()
+#' res <- try(stat_bridge_main(args = "help"))
+#' @export
 stat_bridge_main <- function(args = NULL) {
   if (is.null(args)) {
     args <- commandArgs(trailingOnly = TRUE)

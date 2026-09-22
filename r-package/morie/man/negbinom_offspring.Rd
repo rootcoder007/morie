@@ -4,20 +4,25 @@
 \alias{negbinom_offspring}
 \title{negbinom_offspring}
 \usage{
-negbinom_offspring(R0, dispersion, rng)
+negbinom_offspring(R0, dispersion, e)
 }
 \arguments{
 \item{R0}{Coerced to numeric by the body, with \code{as.numeric}.}
 
 \item{dispersion}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{rng}{Passed to \code{.tt_gamma_draw}.}
+\item{e}{Passed to \code{.gamma_draw}.}
 }
 \value{
-The value of \code{.tt_poisson_draw}.
+The value of \code{.poisson_draw}.
 }
 \description{
 A step of the ttrace_native implementation. Called by \code{simulate_outbreak}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+e <- morie:::.ghc_rng(1)
+replicate(5, negbinom_offspring(R0 = 2.5, dispersion = 0.16, e))
+}
+\keyword{internal}

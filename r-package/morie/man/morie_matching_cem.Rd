@@ -14,17 +14,21 @@ morie_matching_cem(data, treatment, covariates, n_bins = 5L)
 \item{covariates}{Character vector of covariates.}
 
 \item{n_bins}{Either a single integer (applied to every covariate) or a
-named list mapping covariate name to the number of bins.}
+named list mapping covariate name to the number of bins; list
+entries left \code{NULL}/\code{NA} fall back to Sturges' rule.}
 }
 \value{
-A list of class \code{morie_match_result}; \code{matched_data}
-contains a \code{._cem_weight} column.
+A list of class \code{morie_match_result}.
 }
 \description{
-Coarsens continuous covariates into bins, then performs exact matching
-on the coarsened values.  Returns the matched (uncoarsened) data along
-with stratum weights.  Delegates to \pkg{MatchIt}'s \code{method = "cem"}
-(which itself calls \pkg{cem}) when available.
+Native rmorie implementation of Coarsened Exact Matching (Iacus, King
+& Porro 2012): numeric covariates are coarsened into bins (quantile
+cutpoints; Sturges' rule when \code{n_bins} is \code{NA} for a
+variable), units are exact-matched on the coarsened strata, and
+controls receive CEM stratum weights (\code{weights} and
+\code{subclass} columns on the matched data). The multivariate L1
+imbalance of the stratification is reported in
+\code{details$l1_before}. No MatchIt/cem at runtime.
 }
 \examples{
 if (requireNamespace("MatchIt", quietly = TRUE)) {

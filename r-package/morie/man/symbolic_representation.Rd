@@ -7,7 +7,7 @@
 symbolic_representation(captions, boxes)
 }
 \arguments{
-\item{captions}{Coerced to character by the body, with \code{as.character}.}
+\item{captions}{Coerced to list by the body, with \code{as.list}.}
 
 \item{boxes}{Coerced to list by the body, with \code{as.list}.}
 }
@@ -19,3 +19,9 @@ A step of the llavx_native implementation. Called by \code{morie_llavx}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r <- symbolic_representation(captions = c("a cat on a mat"),
+                             boxes = list(list("cat", 1, 2, 10, 8)))
+is.list(r)
+}
+\keyword{internal}

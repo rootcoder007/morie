@@ -28,3 +28,7 @@ A step of the nbeats_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+nbeats_forecast(y = c(1, 2, 3, 4, 5, 6, 7, 8), horizon = 5L)
+}
+\keyword{internal}

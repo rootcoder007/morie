@@ -9,6 +9,13 @@ morie_burkov_ngram_mle(counts_ngram, counts_prefix)
 \arguments{
 \item{counts_ngram, counts_prefix}{Counts.}
 }
+\value{
+A list with \code{estimate}, \code{count_ngram}, \code{count_prefix}, \code{n}, \code{method}.
+}
 \description{
 N-gram MLE probability (Burkov Ch 2)
 }
+\examples{
+morie_burkov_ngram_mle(counts_ngram = 5L, counts_prefix = 5L)
+}
+\keyword{internal}

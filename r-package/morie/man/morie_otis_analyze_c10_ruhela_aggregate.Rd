@@ -22,7 +22,6 @@ c10 aggregate Ruhela: Female -> median RC days (institution GEE)
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_c10 <- morie_synth_otis("c10", n = 120L, seed = 1L)
 morie_otis_analyze_c10_ruhela_aggregate(otis_c10)
 }

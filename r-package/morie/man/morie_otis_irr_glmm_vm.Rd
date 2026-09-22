@@ -15,7 +15,7 @@ morie_otis_irr_glmm_vm(df)
 \description{
 Builds the (id x fiscal year) cell with outcome
 \code{vm} (number of distinct regions visited) and treatment
-\code{T_high_ac} = 1 if the person-year alert-complexity \code{ac >=
+\code{T_high_ac} = 1 if the person-year alert-complexity \eqn{ac >=
 2}, then fits Poisson and (optionally) negative-binomial GLMs
 adjusting for Year, Gender, and Age. The NB fit uses
 \pkg{MASS::glm.nb} when available; if not, only Poisson is
@@ -26,6 +26,7 @@ No random effect / cluster-robust SE -- for paper-grade inference,
 use the dedicated OTIS DML pipeline.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_irr_glmm_vm(V)
+b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+res <- morie_otis_irr_glmm_vm(b02)
+res$title
 }

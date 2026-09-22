@@ -10,12 +10,13 @@ morie_dcc_multivariate_garch(x)
 \item{x}{Numeric matrix of returns (T x k).}
 }
 \value{
-Named list with \code{a, b, unconditional_correlation,
+Named list with \eqn{a, b, unconditional_correlation,
   conditional_correlation, conditional_variance, loglik, n, k, method}.
 }
 \description{
 Two-step DCC(1,1) on a panel of return series.
 }
 \examples{
+set.seed(1)
 morie_dcc_multivariate_garch(x = matrix(rnorm(150), 50, 3))
 }

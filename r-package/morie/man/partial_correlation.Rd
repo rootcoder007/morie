@@ -14,14 +14,14 @@ partial_correlation(x, y, covariates, confidence = 0.95)
 \item{confidence}{Confidence level.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the partial correlation r as the test statistic and estimate,
-p-value, residual df, Fisher-z CI, and r-squared effect size.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Partial Pearson correlation controlling for covariates
 }
 \examples{
-partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
-covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
+set.seed(1)
+z <- matrix(rnorm(90), nrow = 30)
+x <- rnorm(30); y <- x + rnorm(30)
+partial_correlation(x, y, z)
 }

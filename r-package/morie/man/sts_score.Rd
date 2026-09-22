@@ -16,7 +16,8 @@ A list with \code{estimate}, \code{scores}, \code{embed_calls},
 \code{n_pairs}, \code{cross_encoder_calls}, \code{method}.
 }
 \description{
-A step of the sbert_native implementation. Called by \code{morie_sbert}.
+A step of the sbert_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

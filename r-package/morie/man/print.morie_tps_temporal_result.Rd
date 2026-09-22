@@ -2,26 +2,31 @@
 % Please edit documentation in R/tps_temporal.R
 \name{print.morie_tps_temporal_result}
 \alias{print.morie_tps_temporal_result}
-\title{Print method for TPS temporal-analysis results}
+\title{Print method for \code{morie_tps_temporal_result} objects}
 \usage{
 \method{print}{morie_tps_temporal_result}(x, ...)
 }
 \arguments{
-\item{x}{A \code{morie_tps_temporal_result}.}
+\item{x}{A \code{morie_tps_temporal_result} object.}
 
-\item{...}{Unused.}
+\item{...}{Ignored; accepted for S3 consistency.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
-Print method for TPS temporal-analysis results
+Print method for \code{morie_tps_temporal_result} objects
 }
 \examples{
 \donttest{
 set.seed(1)
-df <- data.frame(OCC_YEAR = sample(2018:2023, 200, TRUE))
-res <- morie_tps_year_over_year_trend(df, year_col = "OCC_YEAR")
+df <- data.frame(OCC_YEAR = rep(2014:2023, each = 30),
+                 OCC_MONTH = sample(month.name, 300, TRUE),
+                 HOOD_158 = sample(sprintf("\%03d", 1:20), 300, TRUE),
+                 LAT_WGS84 = runif(300, 43.6, 43.8),
+                 LONG_WGS84 = runif(300, -79.5, -79.2))
+res <- try(morie_tps_seasonal_pattern(df, ds_name = "synthetic"))
+if (!inherits(res, "try-error")) str(res, max.level = 1)
 print(res)
 }
 }

@@ -18,3 +18,8 @@ The value of \code{repeat}.
 Strict: the SAME uniform draws in the SAME order as the Python
 implementation, so both arms agree on every variate.
 }
+\examples{
+e <- morie:::.ghc_rng(1)
+poltrx_gamma(e, shape = 2.5)
+}
+\keyword{internal}

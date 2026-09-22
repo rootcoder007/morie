@@ -2,21 +2,20 @@
 % Please edit documentation in R/otis_analyze.R
 \name{format.morie_otis_result}
 \alias{format.morie_otis_result}
-\title{Format method for OTIS results}
+\title{Format method for \code{morie_otis_result} objects}
 \usage{
 \method{format}{morie_otis_result}(x, ...)
 }
 \arguments{
-\item{x}{A \code{morie_otis_result}.}
+\item{x}{A \code{morie_otis_result} object.}
 
-\item{...}{Unused.}
+\item{...}{Ignored; accepted for S3 consistency.}
 }
 \value{
-A single character string (newline-joined) representing the
-formatted result, suitable for \code{cat()} or \code{print()}.
+A character string.
 }
 \description{
-Format method for OTIS results
+Format method for \code{morie_otis_result} objects
 }
 \examples{
 if (requireNamespace("readr", quietly = TRUE)) {

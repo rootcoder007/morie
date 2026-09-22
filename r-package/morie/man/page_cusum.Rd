@@ -27,3 +27,10 @@ A step of the glm_native implementation. No other function in the package calls 
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+x <- c(rbinom(50, 1, 0.2), rbinom(50, 1, 0.75))
+res <- page_cusum(x, p0 = 0.2, p1 = 0.75, threshold = 5)
+c(res$detected, res$stop_index >= 0)
+}
+\keyword{internal}

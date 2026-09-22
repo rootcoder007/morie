@@ -31,7 +31,7 @@
 #'       \item Debian/Ubuntu: \code{sudo apt-get install libcurl4-openssl-dev}
 #'       \item Fedora/RHEL:   \code{sudo dnf install libcurl-devel}
 #'       \item macOS:         pre-installed (Apple's libcurl); or \code{brew install curl}
-#'       \item Windows:       bundled with Rtools
+#'       \item Windows:       included with Rtools
 #'     }
 #'   \item \strong{libsodium} (required for ChaCha20-Poly1305 + HKDF-SHA256)
 #'     \itemize{
@@ -68,6 +68,11 @@
 #'
 #' @examples
 #' \dontrun{
+#' # \dontrun (not \donttest) deliberately: this installs packages into the
+#' # user library -- never proper to execute under R CMD check or pkgdown,
+#' # which runs \donttest examples (a run of this one compiled rstan from
+#' # source for 50 minutes and timed out the whole site build, 2026-07-21).
+#' \dontrun{
 #'   # Interactive: install whichever Suggests are missing
 #'   morie_install_extras()
 #'
@@ -76,7 +81,7 @@
 #'
 #'   # Just one family
 #'   morie_install_extras(which = c("hawkes", "sf", "spdep"))
-#'
+#' }
 #' }
 #' @export
 morie_install_extras <- function(which = "missing",
@@ -182,17 +187,8 @@ morie_install_extras <- function(which = "missing",
 
 
 # Internal: read this package's Suggests field from its DESCRIPTION.
-#' Internal: read this package\'s Suggests field from its DESCRIPTION
-#'
-#' A step of the install_extras implementation. Called by \code{morie_install_extras}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @return The value of \code{[}.
-#' @export
-#' @examples
-#' res <- .morie_get_suggests()
-#' res
+#' Internal helper: Morie Get Suggests
+#' @noRd
 .morie_get_suggests <- function() {
   desc_path <- system.file("DESCRIPTION", package = "morie")
   if (!nzchar(desc_path)) {
@@ -211,16 +207,8 @@ morie_install_extras <- function(which = "missing",
 
 
 # Internal: is a CRAN package installed locally?
-#' Internal: is a CRAN package installed locally?
-#'
-#' A step of the install_extras implementation. Called by
-#' \code{.morie_check_system_libs}, \code{morie_install_extras}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param pkg Passed to \code{requireNamespace}.
-#' @return A logical value.
-#' @export
+#' Internal helper: Morie Pkg Installed
+#' @noRd
 .morie_pkg_installed <- function(pkg) {
   isTRUE(requireNamespace(pkg, quietly = TRUE))
 }
@@ -270,11 +258,16 @@ morie_install_extras <- function(which = "missing",
 #'   otherwise.
 #'
 #' @examples
+#' # \dontrun (not \donttest) deliberately: this is an interactive installer
+#' # prompt -- it errors by design wherever the packages are absent and
+#' # ask = TRUE cannot prompt (CI, R CMD check), so it is env-dependent.
+#' \dontrun{
 #'   # Interactive (RStudio / R console): prompts to install if needed
 #'   morie_ensure_extras(c("DoubleML", "ranger"))
 #'
 #'   # CI / Rscript: errors with install-hint instead of installing
 #'   morie_ensure_extras(c("DoubleML"), ask = FALSE)
+#' }
 #'
 #' @seealso [morie_install_extras()] for the user-facing bulk installer.
 #' @export
@@ -330,17 +323,8 @@ morie_ensure_extras <- function(pkgs, ask = interactive(), repos = NULL) {
 # Uses configure-time flags written into DESCRIPTION at install
 # (Phase 3JJJ1/2: MORIE_HAVE_SODIUM / MORIE_HAVE_LIBOQS), with
 # library-load fallback for libcurl (Imports R-side).
-#' Internal: probe whether the C system libraries are available
-#'
-#' Uses configure-time flags written into DESCRIPTION at install (Phase
-#' 3JJJ1/2: MORIE_HAVE_SODIUM / MORIE_HAVE_LIBOQS), with library-load
-#' fallback for libcurl (Imports R-side).
-#'
-#' @return A list with \code{libcurl}, \code{libsodium}, \code{liboqs}.
-#' @export
-#' @examples
-#' res <- .morie_check_system_libs()
-#' res
+#' Internal helper: Morie Check System Libs
+#' @noRd
 .morie_check_system_libs <- function() {
   list(
     libcurl   = .morie_pkg_installed("curl") || .morie_pkg_installed("httr2"),

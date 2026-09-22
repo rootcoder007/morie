@@ -50,7 +50,7 @@
     n_treated         = sum(ok),
     n_matched_control = length(unique(idx_c[mm[ok]])),
     match_pairs       = pairs_df,
-    method            = "optimal_pair (morie native)",
+    method            = "optimal_pair (rmorie native)",
     details           = list(
       engine         = if (distance == "mahalanobis")
         "native-optimal-assignment" else "native-optimal-1d-dp",

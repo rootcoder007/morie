@@ -24,3 +24,15 @@ A list with \code{hr}, \code{rms}, \code{meanfreq}, \code{rrms}, \code{rmnf},
 Section 2.2.5 (rate rises with effort).  Both series are sampled on
 the same beat grid so the correlation between them is well defined.
 }
+\examples{
+set.seed(2)
+fs <- 200
+n <- fs * 4
+ecg <- rep(0, n)
+qrs <- round(seq(0.4, 3.8, by = 0.4) * fs)
+for (i in qrs) ecg[i:(i + 4)] <- c(0.3, 1.2, -0.4, 0.1, 0)
+emg <- rnorm(n, 0, seq(0.5, 2, length.out = n))
+r <- EcgEmgCpl(ecg, emg, qrs = qrs, fs = fs)
+str(r, max.level = 1)
+}
+\keyword{internal}

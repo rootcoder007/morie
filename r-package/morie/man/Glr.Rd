@@ -25,3 +25,10 @@ A list with \code{d}, \code{h_pooled}, \code{h_reference}, \code{h_test},
 GROWS from the start of the segment -- that is what separates GLR
 from the SEM and ACF methods.
 }
+\examples{
+sine <- function(n, cycles_hz, fs = 100, amp = 1, phase = 0) {
+    amp * sin(2 * pi * cycles_hz * (seq_len(n) - 1L)/fs + phase)
+}
+Glr(sine(400, 5), 201, order = 4)
+}
+\keyword{internal}

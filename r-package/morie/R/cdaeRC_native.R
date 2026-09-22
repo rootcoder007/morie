@@ -1,24 +1,17 @@
-# Collaborative denoising auto-encoder for top-N recommendation.
-# Sources: Wu, Y., DuBois, C., Zheng, A. X. & Ester, M. (2016)
-# "Collaborative Denoising Auto-Encoders for Top-N Recommender
-# Systems", *Proceedings of the Ninth ACM International Conference
-# on Web Search and Data Mining (WSDM '16)*, 153-162,
-# doi:10.1145/2835776.2835837, for Sec. 2's point-wise and
-# pair-wise objective framework, the four loss functions of Table 1
-# and the warning that log and hinge losses need y = -1 for
-# negatives, and the need to augment positives with sampled
-# negatives; Sec. 2.3 for the auto-encoder, the tied weights and
-# the mask-out/drop-out corruption scaled by 1/(1-q) so it stays
-# unbiased; Sec. 3 (eqs. (9)-(13)) for the CDAE with the
-# user-specific node V_u, and Algorithm 1 for the SGD with
-# negative sampling. Vincent, P., Larochelle, H., Bengio, Y. &
-# Manzagol, P.-A. (2008) "Extracting and composing robust
-# features with denoising autoencoders", *ICML 2008*, 1096-1103,
-# doi:10.1145/1390156.1390294, for the denoising auto-encoder.
-# Rendle, S., Freudenthaler, C., Gantner, Z. & Schmidt-Thieme, L.
-# (2009) "BPR: Bayesian Personalized Ranking from Implicit
-# Feedback", *UAI 2009*, 452-461, arXiv:1205.2618, for the
-# pair-wise objective in Table 1.
+# Sources:
+#   Wu, Y., DuBois, C., Zheng, A. X. & Ester, M. (2016) "Collaborative
+#   Denoising Auto-Encoders for Top-N Recommender Systems", WSDM '16,
+#   153-162, doi:10.1145/2835776.2835837.
+#   Vincent, P., Larochelle, H., Bengio, Y. & Manzagol, P.-A. (2008)
+#   "Extracting and composing robust features with denoising
+#   autoencoders", ICML 2008, 1096-1103.
+#   Rendle, S., Freudenthaler, C., Gantner, Z. & Schmidt-Thieme, L.
+#   (2009) "BPR: Bayesian Personalized Ranking from Implicit Feedback",
+#   UAI 2009, 452-461.
+
+.cdae_acts <- c("sigmoid", "identity", "tanh")
+.cdae_losses <- c("square", "log", "hinge", "cross_entropy")
+.cdae_eps <- 1e-12
 
 #' .cdae_act
 #'
@@ -112,32 +105,29 @@ encode <- function(y_tilde, W, V_u, b, activation = "sigmoid") {
   z
 }
 
-#' morie_cdaeRC_decode
+#' decode
 #'
-#' A step of the cdaeRC_native implementation. No other function in the package calls it.
+#' A step of the cdaeRC_native implementation. Called by \code{fit_cdae}, \code{recommend}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param z A vector; its length is taken and its elements indexed.
-#' @param Wp A matrix; indexed by row and column.
+#' @param z Numeric; combined arithmetically in the body.
+#' @param Wp A vector; indexed elementwise.
 #' @param bp A vector; its length is taken and its elements indexed.
 #' @param items Optional; may be \code{NULL}. Coerced to integer by the body, with
 #' \code{as.integer}.
 #' @param activation Passed to \code{.cdae_act}. Defaults to \code{"sigmoid"}.
-#' @return The value of \code{out}, as built in the body.
+#' @return A vector, from \code{sapply}.
 #' @export
-morie_cdaeRC_decode <- function(z, Wp, bp, items = NULL, activation = "sigmoid") {
-  idx <- if (is.null(items)) seq_along(bp) else as.integer(items)
-  out <- numeric(length(idx))
-  names(out) <- as.character(idx)
-  for (j in seq_along(idx)) {
-    i <- idx[j]
-    s <- bp[i]
-    for (f in seq_along(z))
-      s <- s + Wp[i, f] * z[f]
-    out[j] <- .cdae_act(activation, s)
-  }
-  out
+#' @examples
+#' decode(z = c(1, 2, 3, 4, 5, 6, 7, 8), Wp = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   bp = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
+decode <- function(z, Wp, bp, items = NULL, activation = "sigmoid") {
+  if (is.null(items)) idx <- seq_along(bp) else idx <- as.integer(items)
+  sapply(idx, function(i) {
+    .cdae_act(activation, bp[i] + sum(Wp[[i]] * z))
+  })
 }
 
 #' loss
@@ -350,64 +340,16 @@ recommend <- function(model, pos, u, n_items, top_k = 5L,
 #' @param init_scale Passed to \code{fit_cdae}. Defaults to \code{0.1}.
 #' @return The value of \code{fit_cdae}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' pos <- list(c(0L, 1L), c(1L, 2L), c(0L, 2L), c(2L, 3L))
+#' r <- morie_cdaeRC(pos, n_users = 4, n_items = 4, k_dim = 3, iters = 5)
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_cdaeRC <- function(pos, n_users, n_items, k_dim = 8L, q = 0.2,
                          alpha = 0.05, lam = 0.01, iters = 30L,
                          n_neg = 5L, seed = 0, activation = "sigmoid",
                          init_scale = 0.1) {
-  fit_cdae(pos, n_users, n_items, k_dim, q, alpha, lam, iters,
-           n_neg, seed, activation, init_scale)
-}
-
-#' .cdaeRC_cheatsheet
-#'
-#' A step of the cdaeRC_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @return A character value.
-#' @export
-#' @examples
-#' res <- .cdaeRC_cheatsheet()
-#' res
-.cdaeRC_cheatsheet <- function() {
-  paste("cdaeRC: a denoising auto-encoder over a user's BINARY",
-        "preference vector, plus a USER-SPECIFIC input node V_u --",
-        "that node is what separates it from a plain DAE and makes",
-        "W_i, V_u item and user embeddings. Corruption is",
-        "mask-out with probability q, survivors scaled by",
-        "1/(1-q) so the corruption is UNBIASED. Positives only",
-        "would train the all-ones model, so negatives are SAMPLED.",
-        "Four losses offered; log and hinge need the negative",
-        "label to be -1, not 0.")
-}
-
-.cdae_acts <- c("sigmoid", "identity", "tanh")
-
-.cdae_losses <- c("square", "log", "hinge", "cross_entropy")
-
-.cdae_eps <- 1e-12
-
-#' decode
-#'
-#' A step of the cdaeRC_native implementation. Called by \code{fit_cdae}, \code{recommend}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param z Numeric; combined arithmetically in the body.
-#' @param Wp A vector; indexed elementwise.
-#' @param bp A vector; its length is taken and its elements indexed.
-#' @param items Optional; may be \code{NULL}. Coerced to integer by the body, with
-#' \code{as.integer}.
-#' @param activation Passed to \code{.cdae_act}. Defaults to \code{"sigmoid"}.
-#' @return A vector, from \code{sapply}.
-#' @export
-#' @examples
-#' decode(z = c(1, 2, 3, 4, 5, 6, 7, 8), Wp = c(1, 2, 3, 4, 5, 6, 7, 8),
-#'   bp = c(1, 2, 3, 4, 5, 6, 7, 8))
-#' @keywords internal
-decode <- function(z, Wp, bp, items = NULL, activation = "sigmoid") {
-  if (is.null(items)) idx <- seq_along(bp) else idx <- as.integer(items)
-  sapply(idx, function(i) {
-    .cdae_act(activation, bp[i] + sum(Wp[[i]] * z))
-  })
+  fit_cdae(pos, n_users, n_items, k_dim, q, alpha, lam, iters, n_neg,
+           seed, activation, init_scale)
 }

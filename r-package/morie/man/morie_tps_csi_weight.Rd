@@ -21,5 +21,5 @@ Numeric scalar (0 if unknown).
 Return the CSI weight for a TPS open-data category
 }
 \examples{
-morie_tps_csi_weight(category = 5L)
+morie_tps_csi_weight("Assault")
 }

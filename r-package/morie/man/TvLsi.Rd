@@ -21,3 +21,8 @@ instant by instant, but the kernel is no longer shift-invariant, so
 no single transfer function describes it -- the contrast with eq
 (3.36) is the point.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+TvLsi(V, V)
+}
+\keyword{internal}

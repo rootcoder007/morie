@@ -45,7 +45,17 @@ reports its inverse-probability value on the observed data. The
 return is a named list whose names match the Python RichResult
 payload keys.
 }
+\examples{
+set.seed(2)
+n <- 40
+H <- matrix(rnorm(n * 2), n, 2)
+A <- sample(c(-1, 1), n, replace = TRUE)
+R <- 1 + A * H[, 1] + rnorm(n, 0, 0.3)
+r <- fit_aol(R, A, H)
+str(r, max.level = 1)
+}
 \references{
 Liu, Y., Wang, Y., Kosorok, M. R., Zhao, Y. & Zeng,
 D. (2018), Statistics in Medicine, doi:10.1002/sim.7844.
 }
+\keyword{internal}

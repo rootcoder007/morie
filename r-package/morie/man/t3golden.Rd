@@ -23,3 +23,7 @@ A step of the t3util implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+t3golden(function(x) (x - 2)^2, 0, 5)
+}
+\keyword{internal}

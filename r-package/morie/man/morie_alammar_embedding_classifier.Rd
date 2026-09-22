@@ -20,6 +20,27 @@ morie_alammar_setfit_twostep(embeddings, labels)
 
 \item{n_steps, learning_rate, l2}{Training settings.}
 }
+\value{
+A list with \code{weights}, \code{bias}, \code{train_accuracy}, \code{cross_entropy}, \code{predictions}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Softmax head on frozen embeddings; SetFit pair generation
 }
+\examples{
+if (morie_crypto_sodium_available()) {
+  img <- matrix(0:15, 4, 4, byrow = TRUE)
+  v <- morie_alammar_vit_patch_embedding(img, 2, diag(4))
+  y <- c(0, 0, 0, 1, 1, 1)
+  morie_alammar_chain_prompting("3", list(function(y, x) paste("double",
+      x), function(y, x) paste("add one to", y)), function(p) {
+      v <- as.integer(sub(".* ", "", p))
+      if (grepl("double", p))
+          as.character(v * 2)
+      else as.character(v + 1)
+  })
+  morie_alammar_embedding_classifier(embeddings = y, labels = y)
+}
+morie_alammar_setfit_twostep(rbind(c(0, 0), c(0.1, 0), c(5, 5),
+    c(5.1, 5)), c(0, 0, 1, 1))
+}
+\keyword{internal}

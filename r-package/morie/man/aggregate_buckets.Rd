@@ -23,3 +23,7 @@ history is retained; overlapping produces one bucket per starting
 position and the resulting aggregates are autocorrelated, as the
 paper notes.
 }
+\examples{
+aggregate_buckets(y = c(1, 2, 3, 4, 5, 6, 7, 8), m = 5L)
+}
+\keyword{internal}

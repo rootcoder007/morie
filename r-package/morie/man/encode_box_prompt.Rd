@@ -7,7 +7,7 @@
 encode_box_prompt(box, dim = 8, type_embeddings = NULL)
 }
 \arguments{
-\item{box}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{box}{The body requires: samseg: the box is empty or inverted.}
 
 \item{dim}{Passed to \code{.samseg_pos_enc}. Defaults to \code{8}.}
 
@@ -21,3 +21,8 @@ A step of the samseg_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+encode_box_prompt(V)
+}
+\keyword{internal}

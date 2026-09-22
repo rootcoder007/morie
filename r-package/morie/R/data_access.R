@@ -14,18 +14,8 @@
 # --- internal helpers ------------------------------------------------------
 
 # Append a named list of query parameters to a URL, URL-encoding values.
-#' Append a named list of query parameters to a URL, URL-encoding values
-#'
-#' A step of the data_access implementation. Called by \code{morie_ckan_search},
-#' \code{morie_fetch}, \code{morie_fetch_arcgis}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param url Character; passed to \code{grepl}.
-#' @param params Optional; may be \code{NULL}. A vector; its length is taken and its
-#' elements indexed.
-#' @return A character value.
-#' @export
+#' Internal helper: Morie Url With Params
+#' @noRd
 .morie_url_with_params <- function(url, params = NULL) {
   if (is.null(params) || length(params) == 0L) {
     return(url)
@@ -52,16 +42,8 @@
     "https://ckan0.cf.opendata.inter.prod-toronto.ca"
 )
 
-#' .morie_ckan_portal
-#'
-#' A step of the data_access implementation. Called by \code{.morie_ckan_call},
-#' \code{morie_ckan_search}, \code{morie_ingest_ckan_search_packages}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param portal Character; passed to \code{grepl}.
-#' @return Nothing; this branch always raises.
-#' @export
+#' Internal helper: Morie Ckan Portal
+#' @noRd
 .morie_ckan_portal <- function(portal) {
   if (grepl("^https?://", portal)) {
     return(sub("/+$", "", portal))
@@ -77,50 +59,62 @@
 }
 
 # Read text from a URL (used for JSON/XML/HTML API responses).
-#' Read text from a URL (used for JSON/XML/HTML API responses)
-#'
-#' A step of the data_access implementation. Called by \code{morie_ckan_search},
-#' \code{morie_fetch}, \code{morie_fetch_arcgis}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param url Passed to \code{url}.
-#' @return A character value.
-#' @export
+# Falls back to a Wayback Machine snapshot (via rmoriebricklayer) if the
+# live source is unreachable.
+#' Internal helper: Morie Read Text
+#' @noRd
 .morie_read_text <- function(url) {
-  con <- url(url)
-  on.exit(close(con), add = TRUE)
-  paste(readLines(con, warn = FALSE), collapse = "\n")
+  read_one <- function(u) {
+    con <- base::url(u)
+    on.exit(close(con), add = TRUE)
+    paste(readLines(con, warn = FALSE), collapse = "\n")
+  }
+  tryCatch(read_one(url), error = function(e) {
+    wb <- tryCatch(rmoriebricklayer::wayback_snapshot_url(url),
+      error = function(e2) NULL
+    )
+    if (is.null(wb)) {
+      stop("Read failed and no Wayback snapshot is available for: ", url,
+        call. = FALSE
+      )
+    }
+    read_one(wb)
+  })
 }
 
 # Download a URL to a temp file, returning the local path.
-#' Download a URL to a temp file, returning the local path
-#'
-#' A step of the data_access implementation. Called by \code{morie_fetch}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param url Character; passed to \code{sub}.
-#' @param ext Passed to \code{nzchar}. Defaults to \code{""}.
-#' @return The value of \code{tmp}, as built in the body.
-#' @export
+# Falls back to a Wayback Machine snapshot (via rmoriebricklayer) if the
+# live source is unreachable.
+#' Internal helper: Morie Download
+#' @noRd
 .morie_download <- function(url, ext = "") {
   if (!nzchar(ext)) ext <- tools::file_ext(sub("\\?.*$", "", url))
   tmp <- tempfile(fileext = if (nzchar(ext)) paste0(".", ext) else "")
-  utils::download.file(url, tmp, mode = "wb", quiet = TRUE)
+  ok <- tryCatch(
+    {
+      utils::download.file(url, tmp, mode = "wb", quiet = TRUE)
+      TRUE
+    },
+    error = function(e) FALSE
+  )
+  if (!ok) {
+    wb <- tryCatch(rmoriebricklayer::wayback_snapshot_url(url),
+      error = function(e) NULL
+    )
+    if (is.null(wb)) {
+      stop("Download failed and no Wayback snapshot is available for: ", url,
+        call. = FALSE
+      )
+    }
+    utils::download.file(wb, tmp, mode = "wb", quiet = TRUE)
+  }
   tmp
 }
 
 # Detect the format of a URL from its HTTP Content-Type header, falling
 # back to the URL file extension. Returns one of the morie_fetch formats.
-#' Detect the format of a URL from its HTTP Content-Type header, falling
-#'
-#' back to the URL file extension. Returns one of the morie_fetch
-#' formats.
-#'
-#' @param url Character; passed to \code{sub}.
-#' @return The value of \code{switch}.
-#' @export
+#' Internal helper: Morie Detect Format
+#' @noRd
 .morie_detect_format <- function(url) {
   ct <- tryCatch(
     {
@@ -169,19 +163,8 @@
 }
 
 # Parse a downloaded local file according to a known format.
-#' Parse a downloaded local file according to a known format
-#'
-#' A step of the data_access implementation. Called by \code{morie_fetch}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param path Passed to \code{.morie_from_json}.
-#' @param format One of \code{"csv"}, \code{"html"}, \code{"json"}, \code{"tsv"},
-#' \code{"xlsx"}, \code{"xml"}.
-#' @param simplify A flag; the body branches on it.
-#' @param ... Passed through.
-#' @return Nothing; this branch always raises.
-#' @export
+#' Internal helper: Morie Parse File
+#' @noRd
 .morie_parse_file <- function(path, format, simplify, ...) {
   if (format %in% c("xlsx")) {
     if (!requireNamespace("readxl", quietly = TRUE)) {
@@ -212,13 +195,15 @@
     }
     # Module 23: native SAX-built tree fallback.
     return(morie_fetch_xml(paste(readLines(path, warn = FALSE),
-                                 collapse = "\n")))
+      collapse = "\n"
+    )))
   }
   if (format == "html") {
     if (!requireNamespace("xml2", quietly = TRUE)) {
       # Module 23: native tolerant HTML tree fallback.
       return(morie_fetch_html(paste(readLines(path, warn = FALSE),
-                                    collapse = "\n")))
+        collapse = "\n"
+      )))
     }
     doc <- xml2::read_html(path)
     if (simplify && requireNamespace("rvest", quietly = TRUE)) {
@@ -357,7 +342,8 @@ morie_fetch <- function(url,
 #' @examples
 #' \donttest{
 #' hits <- try(morie_ckan_search("cannabis survey",
-#'                               portal = "open.canada.ca"))
+#'   portal = "open.canada.ca"
+#' ))
 #' if (is.data.frame(hits)) {
 #'   head(hits[, c("dataset_title", "resource_id", "format")])
 #' }
@@ -410,19 +396,8 @@ morie_ckan_search <- function(query, portal = "open.canada.ca",
 }
 
 # Small helper: first non-empty scalar, else "".
-#' Small helper: first non-empty scalar, else ""
-#'
-#' A step of the data_access implementation. Called by \code{morie_ckan_search},
-#' \code{morie_fetch_arcgis}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param ... Passed through.
-#' @return A character value.
-#' @export
-#' @examples
-#' res <- .nz()
-#' res
+#' Internal helper: Nz
+#' @noRd
 .nz <- function(...) {
   for (x in list(...)) {
     if (!is.null(x) && length(x) >= 1L && !is.na(x[[1L]]) &&

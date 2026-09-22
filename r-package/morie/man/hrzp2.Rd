@@ -23,7 +23,8 @@ Named list with estimate (h), n, sigma, c, method.
 Silverman bandwidth selector for PLR
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-hrzp2(V, V)
+set.seed(1)
+x <- rnorm(100); y <- x + rnorm(100)
+morie_horowitz_plr_bandwidth(x, y)
 }
 \keyword{internal}

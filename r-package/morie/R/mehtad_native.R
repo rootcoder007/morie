@@ -1,58 +1,115 @@
 # Mehrotra's predictor-corrector: two solves, one factorisation.
-# Sources: Mehrotra, S. (1992) "On the Implementation of a
-# Primal-Dual Interior Point Method", SIAM Journal on Optimization
-# 2(4), 575-601, doi:10.1137/0802028 -- the second-order
-# predictor-corrector with the centring heuristic of Sec. 5
-# (Exhibit 5.1, Heuristic CENPAR), the reported ~40% / 50% / 35%
-# iteration-count reductions against Lustig-Marsten-Shanno and
-# the dual affine scaling methods, with the second-derivative
-# contribution identified as the most significant, and Table 5.1
-# showing only moderate variation in iteration count for the
-# exponent between 2 and 4. Wright, S. J. (1997) Primal-Dual
-# Interior-Point Methods, SIAM,
-# doi:10.1137/1.9781611971453 -- Chapter 10 for the
-# sigma = (mu_aff/mu)^3 form. Boyd, S. & Vandenberghe, L. (2004)
-# Convex Optimization, Cambridge University Press,
-# doi:10.1017/CBO9780511804441 -- Sec. 11.7 for the primal-dual
-# framework and the residual formulation.
+# Sources: Mehrotra, S. (1992) "On the Implementation of a Primal-Dual
+# Interior Point Method", *SIAM Journal on Optimization* 2(4), 575-601,
+# doi:10.1137/0802028. The abstract and Sec. 1: the second-order
+# primal-dual method using a Taylor polynomial of second order to
+# approximate the primal-dual trajectory, with the computations for
+# the second derivative combined with those for the centering
+# direction, and not requiring primal or dual feasibility; the adaptive
+# heuristic for estimating the centering parameter and the adaptive
+# step length; and the reported reductions of about 40%, 50% and 35%
+# in iteration count against the implementations of Lustig, Marsten
+# and Shanno and the dual affine scaling methods, with the contribution
+# due to the second derivative identified as the most significant.
+# Sec. 5 and Exhibit 5.1 (Heuristic CENPAR): the centering parameter
+# targeting the point on the central path whose duality gap is the
+# minimum achievable along the affine directions, the ratio of that
+# gap to x^T s as an indication of how well the affine trajectory is
+# locally approximated -- near 1 meaning the approximation is poor
+# and near 0 that it is good -- and Table 5.1 showing only moderate
+# variation in iteration count for the exponent between 2 and 4.
 #
-# Native implementation mirroring Python morie.fn.mehtad exactly:
-# same primal/dual/complementarity residuals with the
-# infeasible-start residuals not required to be zero initially,
-# same fraction-to-boundary step, same adaptive centring
-# sigma = (mu_aff/mu)^nu with the same nu range check, same
-# reduced (normal-equation) Newton system with a small Tikhonov
-# ridge so the Cholesky stays positive definite, same
-# predictor-corrector with the same x + dx * dx_aff * ds_aff
-# cross term, and the same positivity guard.
+# Wright, S. J. (1997) *Primal-Dual Interior-Point Methods*, SIAM,
+# doi:10.1137/1.9781611971453. Chapter 10 gives the algorithm in the
+# sigma = (mu_aff/mu)^3 form used here.
+#
+# Boyd, S. & Vandenberghe, L. (2004) *Convex Optimization*, Cambridge
+# University Press, doi:10.1017/CBO9780511804441. Sec. 11.7 for the
+# primal-dual framework and the residual formulation.
 
-.mehtad_eps <- 1e-12
+.MEHTAD_EPS <- 1e-12
 
-#' mehtad_residuals
+#' .mehtad_mat
 #'
-#' A step of the mehtad_native implementation. Called by \code{solve_lp}.
+#' A step of the mehtad_native implementation. Called by \code{mehtad_residuals}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param A A matrix; passed to \code{as.matrix}.
-#' @param b Coerced to numeric by the body, with \code{as.numeric}.
-#' @param c Coerced to numeric by the body, with \code{as.numeric}.
-#' @param x Coerced to numeric by the body, with \code{as.numeric}.
-#' @param y Coerced to numeric by the body, with \code{as.numeric}.
-#' @param s Coerced to numeric by the body, with \code{as.numeric}.
+#' @param X A matrix; the body checks with \code{is.matrix}.
+#' @return One of two values, depending on the branch taken.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .mehtad_mat(X = x)
+#' res
+.mehtad_mat <- function(X) {
+  if (is.matrix(X)) X
+  else do.call(rbind, lapply(X, function(r) as.numeric(unlist(r))))
+}
+
+#' .mehtad_vec
+#'
+#' A step of the mehtad_native implementation. Called by \code{mehtad_residuals}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param v Passed to \code{unlist}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .mehtad_vec(v = x)
+#' res
+.mehtad_vec <- function(v) as.numeric(unlist(v))
+
+#' .mehtad_cholsolve
+#'
+#' A step of the mehtad_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param M A matrix; passed to \code{chol}.
+#' @param rhs A matrix; passed to \code{solve}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' b <- c(1.5, 2.5, 3.5)
+#' res <- .mehtad_cholsolve(M = A, rhs = b)
+#' res
+.mehtad_cholsolve <- function(M, rhs) {
+  L <- chol(M)
+  as.numeric(solve(t(L), solve(L, rhs)))
+}
+
+#' mehtad_residuals
+#'
+#' A step of the mehtad_native implementation. Called by \code{morie_mehtad}, \code{solve_lp}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param A Passed to \code{.mehtad_mat}.
+#' @param b Passed to \code{.mehtad_vec}.
+#' @param c Passed to \code{.mehtad_vec}.
+#' @param x Passed to \code{.mehtad_vec}.
+#' @param y Passed to \code{.mehtad_vec}.
+#' @param s Passed to \code{.mehtad_vec}.
 #' @return A list with \code{primal}, \code{dual}, \code{mu}, \code{primal_norm},
 #' \code{dual_norm}, \code{note}.
 #' @export
+#' @examples
+#' mehtad_residuals(A = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, c = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), s = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 mehtad_residuals <- function(A, b, c, x, y, s) {
-  M <- as.matrix(A)
-  storage.mode(M) <- "double"
+  M <- .mehtad_mat(A)
   m <- nrow(M)
   n <- ncol(M)
-  xv <- as.numeric(x)
-  yv <- as.numeric(y)
-  sv <- as.numeric(s)
-  bv <- as.numeric(b)
-  cv <- as.numeric(c)
+  xv <- .mehtad_vec(x)
+  yv <- .mehtad_vec(y)
+  sv <- .mehtad_vec(s)
+  bv <- .mehtad_vec(b)
+  cv <- .mehtad_vec(c)
   rp <- as.numeric(M %*% xv - bv)
   rd <- as.numeric(t(M) %*% yv + sv - cv)
   mu <- sum(xv * sv) / n
@@ -64,7 +121,7 @@ mehtad_residuals <- function(A, b, c, x, y, s) {
 
 #' max_step
 #'
-#' A step of the mehtad_native implementation. Called by \code{solve_lp}.
+#' A step of the mehtad_native implementation. Called by \code{morie_mehtad}, \code{solve_lp}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -73,18 +130,24 @@ mehtad_residuals <- function(A, b, c, x, y, s) {
 #' @param eta Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.9995}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' max_step(V, V)
+#' @keywords internal
 max_step <- function(v, dv, eta = 0.9995) {
   a <- 1.0
-  for (i in seq_along(v)) if (dv[i] < 0) {
-    r <- -v[i] / dv[i]
-    if (r < a) a <- r
+  for (i in seq_along(v)) {
+    if (dv[i] < 0) {
+      ratio <- -as.numeric(v[i]) / dv[i]
+      if (ratio < a) a <- ratio
+    }
   }
   min(1.0, as.numeric(eta) * a)
 }
 
 #' centering_parameter
 #'
-#' A step of the mehtad_native implementation. Called by \code{solve_lp}.
+#' A step of the mehtad_native implementation. Called by \code{morie_mehtad}, \code{solve_lp}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -93,16 +156,21 @@ max_step <- function(v, dv, eta = 0.9995) {
 #' @param nu Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{3}.
 #' @return A list with \code{sigma}, \code{ratio}, \code{nu}, \code{approximation}, \code{note}.
 #' @export
+#' @examples
+#' centering_parameter(mu = 5L, mu_affine = 5L)
+#' @keywords internal
 centering_parameter <- function(mu, mu_affine, nu = 3.0) {
   m <- as.numeric(mu)
   ma <- as.numeric(mu_affine)
-  if (m <= 0) stop("mehtad: mu must be positive")
-  if (ma < 0) stop("mehtad: the affine mu cannot be negative")
-  nv <- as.numeric(nu)
-  if (nv < 1.0 || nv > 6.0)
+  if (m <= 0)
+    stop("mehtad: mu must be positive")
+  if (ma < 0)
+    stop("mehtad: the affine mu cannot be negative")
+  nu_n <- as.numeric(nu)
+  if (!is.finite(nu_n) || nu_n < 1.0 || nu_n > 6.0)
     stop("mehtad: nu outside the range the paper examined; it tabulates 2 to 4")
   ratio <- ma / m
-  list(sigma = ratio ^ nv, ratio = ratio, nu = nv,
+  list(sigma = ratio^nu_n, ratio = ratio, nu = nu_n,
        approximation = if (ratio > 0.5) "poor" else "good",
        note = "ratio near 1 means the affine trajectory is badly approximated locally, so centre more")
 }
@@ -151,6 +219,10 @@ centering_parameter <- function(mu, mu_affine, nu = 3.0) {
 #' @param rc Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{dx}, \code{dy}, \code{ds}.
 #' @export
+#' @examples
+#' newton_direction(A = c(1, 2, 3, 4, 5, 6, 7, 8), x = 5L, s = 5L, rp = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   rd = c(1, 2, 3, 4, 5, 6, 7, 8), rc = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 newton_direction <- function(A, x, s, rp, rd, rc) {
   M <- as.matrix(A)
   storage.mode(M) <- "double"
@@ -166,6 +238,8 @@ newton_direction <- function(A, x, s, rp, rd, rc) {
   dx <- (-as.numeric(rc) - xv * ds) / sv
   list(dx = dx, dy = dy, ds = ds)
 }
+
+.mehtad_newton <- newton_direction
 
 #' solve_lp
 #'
@@ -186,6 +260,12 @@ newton_direction <- function(A, x, s, rp, rd, rc) {
 #' \code{primal_residual}, \code{dual_residual}, \code{converged}, \code{method},
 #' \code{note}.
 #' @export
+#' @examples
+#' A <- matrix(c(1, 1, 1, 0, 0, 1, 0, 1), 2, 4, byrow = TRUE)
+#' b <- c(4, 2)
+#' cc <- c(-1, -2, 0, 0)
+#' solve_lp(A, b, cc)
+#' @keywords internal
 solve_lp <- function(A, b, c, tol = 1e-9, max_iter = 100L, nu = 3.0,
                      eta = 0.9995, corrector = TRUE) {
   M <- as.matrix(A)
@@ -243,7 +323,7 @@ mehrotras_predictor <- solve_lp
 
 #' .mehtad_cheatsheet
 #'
-#' A step of the mehtad_native implementation. No other function in the package calls it.
+#' A step of the mehtad_native implementation. Called by \code{morie_mehtad}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -274,17 +354,24 @@ mehrotras_predictor <- solve_lp
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param A Passed to \code{solve_lp}.
-#' @param b Passed to \code{solve_lp}.
-#' @param c Passed to \code{solve_lp}.
-#' @param tol Passed to \code{solve_lp}. Defaults to \code{1e-09}.
-#' @param max_iter Passed to \code{solve_lp}. Defaults to \code{100L}.
-#' @param nu Passed to \code{solve_lp}. Defaults to \code{3}.
-#' @param eta Passed to \code{solve_lp}. Defaults to \code{0.9995}.
-#' @param corrector Passed to \code{solve_lp}. Defaults to \code{TRUE}.
-#' @return The value of \code{solve_lp}.
+#' @param op A vector; its length is taken.
+#' @param ... Passed through.
+#' @return The value of \code{switch}.
 #' @export
-morie_mehtad <- function(A, b, c, tol = 1e-9, max_iter = 100L,
-                         nu = 3.0, eta = 0.9995, corrector = TRUE) {
-  solve_lp(A, b, c, tol, max_iter, nu, eta, corrector)
+#' @keywords internal
+morie_mehtad <- function(op, ...) {
+  if (missing(op) || length(op) != 1L)
+    stop("mehtad: op must be one of residuals, max_step, centering_parameter, newton_direction, solve_lp, cheatsheet")
+  op <- as.character(op)
+  switch(op,
+    "residuals" = mehtad_residuals(...),
+    "max_step" = list(max_step = max_step(...)),
+    "centering_parameter" = centering_parameter(...),
+    "newton_direction" = .mehtad_newton(...),
+    "solve_lp" = solve_lp(...),
+    "predictor_corrector" = solve_lp(...),
+    "mehrotras_predictor" = solve_lp(...),
+    "cheatsheet" = list(cheatsheet = .mehtad_cheatsheet()),
+    stop("mehtad: unknown op ", shQuote(op))
+  )
 }

@@ -20,6 +20,14 @@ morie_geron_quantization_aware_training_hm(
 
 \item{epochs, lr, bits}{Controls.}
 }
+\value{
+A list with \code{weights}, \code{quantized_weights}, \code{scale}, \code{loss}, \code{fp_loss}, \code{loss_history}, \code{bits}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Quantization-aware training with a straight-through estimator (Geron App B, hmqat)
 }
+\examples{
+morie_geron_quantization_aware_training_hm(model = 5L, X = c(1, 2, 3, 4, 5, 6, 7, 8),
+  y = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

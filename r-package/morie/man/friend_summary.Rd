@@ -13,6 +13,14 @@ friend_summary(values, friends, kind = "fraction")
 
 \item{kind}{See Usage.}
 }
+\value{
+The value of \code{out}, as built in the body.
+}
 \description{
 Summarise a quantity over \eqn{F_i}
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie:::friend_summary(V, V)
+}
+\keyword{internal}

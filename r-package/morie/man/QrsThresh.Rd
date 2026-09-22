@@ -25,3 +25,8 @@ average, so the estimates track slow drift without being thrown by
 one artifact.  I1 sits a quarter of the way from noise up to signal;
 I2 is half of I1 and is reserved for search-back.
 }
+\examples{
+QrsThresh(peaki = c(1, 2, 3, 4, 5, 6, 7, 8), spki = c(1, 2, 3, 4, 5, 6, 7, 8),
+  npki = c(1, 2, 3, 4, 5, 6, 7, 8), issignal = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

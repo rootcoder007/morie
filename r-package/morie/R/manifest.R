@@ -7,6 +7,10 @@
 #' @param x Character; passed to \code{gsub}.
 #' @return The value of \code{gsub}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' escape_regex(V)
+#' @keywords internal
 escape_regex <- function(x) {
   gsub("([][{}()+*^$.|\\\\?])", "\\\\\\1", x)
 }
@@ -70,7 +74,7 @@ morie_validate_outputs_manifest <- function(manifest, strict = TRUE) {
 #' @export
 morie_read_outputs_manifest <- function(project_root = NULL, manifest_path = NULL, validate = TRUE) {
   # When an explicit manifest_path is supplied, do not require a project
-  # root (morie_find_project_root() fails under R CMD check / covr where the
+  # root (.morie_project_root() fails under R CMD check / covr where the
   # working directory is a temporary install tree).  `%||%` is lazy, so
   # morie_paths() is only consulted when manifest_path is NULL.
   path <- manifest_path %||% morie_paths(project_root)$outputs_manifest

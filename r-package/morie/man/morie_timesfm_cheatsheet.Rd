@@ -14,3 +14,7 @@ A step of the timesfm_native implementation. Called by \code{.timesf_cheatsheet}
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_timesfm_cheatsheet()
+}
+\keyword{internal}

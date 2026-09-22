@@ -20,5 +20,10 @@ PdfKurt(pdf = NULL, x = NULL, lower = -Inf, upper = Inf)
 A vector, from \code{c}.
 }
 \description{
-gives 3 for a Gaussian and defines the excess K\' = K - 3.
+gives 3 for a Gaussian and defines the excess K' = K - 3.
 }
+\examples{
+xg <- seq(-6, 6, by = 0.01)
+PdfKurt(x = xg, p = dnorm(xg))
+}
+\keyword{internal}

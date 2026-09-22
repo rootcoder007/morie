@@ -21,3 +21,12 @@ A step of the hybRC_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r <- switching(list(content = c(a = 0.9, b = 0.2),
+                    collab = c(a = 0.1, b = 0.8)),
+               criterion = function(ctx)
+                 if (ctx$n_ratings < 5) 0L else 1L,
+               context = list(n_ratings = 2))
+str(r, max.level = 1)
+}
+\keyword{internal}

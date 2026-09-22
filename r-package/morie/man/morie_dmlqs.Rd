@@ -19,3 +19,4 @@ Nothing; this branch always raises.
 module-level functions. Defaults to the message pass to match the
 "deepml_qsar" / "directedmpnn" aliases.
 }
+\keyword{internal}

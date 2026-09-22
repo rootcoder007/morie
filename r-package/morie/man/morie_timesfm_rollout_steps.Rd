@@ -20,3 +20,7 @@ A step of the timesfm_native implementation. Called by \code{morie_timesfm},
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_timesfm_rollout_steps(horizon = 5L, output_patch_len = 5L)
+}
+\keyword{internal}

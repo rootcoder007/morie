@@ -31,3 +31,11 @@ method; a model that is not detectable has no stabilizing solution
 and will not converge, which \code{converged} reports instead of returning
 whatever P happened to be at the iteration limit.
 }
+\examples{
+F <- matrix(0.9)
+H <- matrix(1)
+Q <- matrix(0.1)
+R <- matrix(1)
+Riccati(F, H, Q, R)
+}
+\keyword{internal}

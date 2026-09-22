@@ -18,6 +18,6 @@ A \code{morie_effect_size}.
 Vargha-Delaney A statistic
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-vargha_delaney_a(V, V)
+set.seed(1)
+vargha_delaney_a(rnorm(15), rnorm(15, 1))
 }

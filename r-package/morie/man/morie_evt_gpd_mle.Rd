@@ -9,6 +9,14 @@ morie_evt_gpd_mle(y)
 \arguments{
 \item{y}{threshold excesses}
 }
+\value{
+A list with \code{sigma}, \code{xi}, \code{loglik}, \code{cov}, \code{n}, \code{converged}.
+}
 \description{
 GPD maximum-likelihood fit (Coles 2001 sec. 4.3.2)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_evt_gpd_mle(V)
+}
+\keyword{internal}

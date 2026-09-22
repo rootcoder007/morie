@@ -24,3 +24,10 @@ equation, so none is attributed to the book.  Window range and window
 activity are both compared against their MEDIANS, because the mean is
 dragged upward by the very segments being detected.
 }
+\examples{
+set.seed(7)
+fs <- 100
+x <- c(rnorm(fs * 2, 0, 0.5), rnorm(fs, 0, 4), rnorm(fs * 2, 0, 0.5))
+MotionArt(x, fs = fs)
+}
+\keyword{internal}

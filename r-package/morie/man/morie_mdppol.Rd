@@ -38,3 +38,10 @@ A step of the mdppol_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+P <- list(matrix(c(0.7, 0.3, 0.4, 0.6), nrow = 2, byrow = TRUE),
+          matrix(c(0.2, 0.8, 0.5, 0.5), nrow = 2, byrow = TRUE))
+R <- matrix(c(1, 0, 0, 2), nrow = 2)
+morie_mdppol(P = P, R = R, gamma = 0.9)
+}
+\keyword{internal}

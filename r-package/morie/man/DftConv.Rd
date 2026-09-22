@@ -21,3 +21,8 @@ PERIODIC: multiplying N-point DFTs gives the circular convolution of
 eq (3.90), and the linear one needs L >= Nx + Nh - 1 with both
 sequences zero-padded.  Both are returned so the wrap is visible.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+DftConv(V, V)
+}
+\keyword{internal}

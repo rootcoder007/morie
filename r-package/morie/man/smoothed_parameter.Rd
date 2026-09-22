@@ -25,3 +25,7 @@ A step of the tlcvnp_native implementation. Called by \code{cv_tmle_smoothed},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+smoothed_parameter(X = c(1, 2, 3, 4, 5, 6, 7, 8), x0 = 5L, h = 0.5)
+}
+\keyword{internal}

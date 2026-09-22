@@ -17,3 +17,8 @@ The value of \code{r}, as built in the body.
 \description{
 highpass character is visible.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Diff1(V)
+}
+\keyword{internal}

@@ -1,18 +1,76 @@
-# SCCS design matrix, Poisson fit, sample size, power and efficiency.
-# Sources: Whitaker, H. J., Farrington, C. P., Spiessens, B. & Musonda,
-# P. (2006) "Tutorial in biostatistics: The self-controlled case
-# series method", Statistics in Medicine 25, 1768-1797,
-# doi:10.1002/sim.2302; Farrington, C. P. (1995) "Relative Incidence
-# Estimation from Case Series for Vaccine Safety Evaluation",
-# Biometrics 51(1), 228-235; Musonda, P., Farrington, C. P. &
-# Whitaker, H. J. (2006) "Sample sizes for self-controlled case series
-# studies", Statistics in Medicine 25(15), 2618-2631.
-#
-# Native implementation mirroring morie.fn.smatch exactly: the same
-# Sec. 4 design (n, log offset, per-individual factor columns), the
-# same IRLS Poisson fit and the same Sec. 7.6 sample-size expression.
+# morie.fn -- function file (rootcoder007/morie)
+# R arm of smatch (poisson_design, sccs_poisson_fit, sample_size, power,
+# relative_efficiency).
+# Sources:
+#   Whitaker, H. J., Farrington, C. P., Spiessens, B. & Musonda, P.
+#   (2006) "Tutorial in biostatistics: The self-controlled case series
+#   method", Statistics in Medicine 25, 1768-1797, doi:10.1002/sim.2302.
+#   Sec. 4 (the associated Poisson model with an individual factor and
+#   a log-time offset), Sec. 7.3-7.5 (risk-period choice, covariates,
+#   relative efficiency) and Sec. 7.6 (the sample size expression
+#   implemented here).
+#   Farrington, C. P. (1995) "Relative Incidence Estimation from Case
+#   Series for Vaccine Safety Evaluation", Biometrics 51(1), 228-235,
+#   JSTOR https://www.jstor.org/stable/2533328. The conditional
+#   likelihood the Poisson form reproduces.
+#   Musonda, P., Farrington, C. P. & Whitaker, H. J. (2006) "Sample
+#   sizes for self-controlled case series studies", Statistics in
+#   Medicine 25(15), 2618-2631. The age-varying case (not implemented).
 
 .smatch_EPS <- 1e-12
+
+#' Symmetric positive-definite solve via base R's chol
+#'
+#' A step of the smatch_native implementation. Called by \code{morie_smatch_sccs_poisson_fit}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param M A matrix; passed to \code{chol}.
+#' @param b Passed to \code{forwardsolve}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' b <- c(1.5, 2.5, 3.5)
+#' res <- .smatch_cholsolve(M = A, b = b)
+#' res
+.smatch_cholsolve <- function(M, b) {
+  # Symmetric positive-definite solve via base R's chol.
+  L <- chol(M)
+  y <- forwardsolve(t(L), b)
+  as.numeric(backsolve(L, y))
+}
+
+#' .smatch_build_intervals
+#'
+#' A step of the smatch_native implementation. Called by \code{morie_smatch_poisson_design}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param start Passed to \code{morie_sccsno_build_intervals}.
+#' @param end Passed to \code{morie_sccsno_build_intervals}.
+#' @param exposure Passed to \code{morie_sccsno_build_intervals}.
+#' @param events Passed to \code{morie_sccsno_build_intervals}.
+#' @param rp Passed to \code{morie_sccsno_build_intervals}.
+#' @param ab Passed to \code{morie_sccsno_build_intervals}.
+#' @return The value of \code{lapply}.
+#' @export
+.smatch_build_intervals <- function(start, end, exposure, events, rp,
+                                    ab) {
+  # Python's smatch imports build_intervals from sccsno rather than defining
+  # one; delegating keeps the two in step instead of drifting apart again.
+  cells <- morie_sccsno_build_intervals(start, end, exposure, events, rp, ab)
+  as_cell <- function(band, risk, e, n) {
+    list(age = as.integer(band), risk = as.integer(risk),
+         exposure = as.numeric(e), n = as.numeric(n))
+  }
+  if (is.matrix(cells)) {
+    return(lapply(seq_len(nrow(cells)), function(q)
+      as_cell(cells[q, 1L], cells[q, 2L], cells[q, 3L], cells[q, 4L])))
+  }
+  lapply(cells, function(cl)
+    as_cell(cl[[1L]], cl[[2L]], cl[[3L]], cl[[4L]]))
+}
 
 #' morie_smatch_poisson_design
 #'
@@ -77,26 +135,6 @@ morie_smatch_poisson_design <- function(cases, risk_periods, age_breaks = numeri
   Xm <- do.call(rbind, X)
   list(y = y, offset = off, X = Xm, n_risk = n_risk, n_age = n_age,
        n_people = P, n_rows = length(y))
-}
-
-#' Build (age, risk, exposure_time, n) cells for one case
-#' @keywords internal
-#' @noRd
-.smatch_build_intervals <- function(start, end, exposure, events, rp,
-                                    ab) {
-  # Python's smatch imports build_intervals from sccsno rather than defining
-  # one; delegating keeps the two in step instead of drifting apart again.
-  cells <- morie_sccsno_build_intervals(start, end, exposure, events, rp, ab)
-  as_cell <- function(band, risk, e, n) {
-    list(age = as.integer(band), risk = as.integer(risk),
-         exposure = as.numeric(e), n = as.numeric(n))
-  }
-  if (is.matrix(cells)) {
-    return(lapply(seq_len(nrow(cells)), function(q)
-      as_cell(cells[q, 1L], cells[q, 2L], cells[q, 3L], cells[q, 4L])))
-  }
-  lapply(cells, function(cl)
-    as_cell(cl[[1L]], cl[[2L]], cl[[3L]], cl[[4L]]))
 }
 
 #' morie_smatch_sccs_poisson_fit
@@ -166,6 +204,35 @@ morie_smatch_sccs_poisson_fit <- function(cases, risk_periods, age_breaks = nume
                        "(2006) Sec. 4"),
        identical_to = "the conditional multinomial fit of sccsno")
 }
+
+#' .smatch_qnorm
+#'
+#' A step of the smatch_native implementation. Called by \code{morie_smatch_sample_size}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param p Passed to \code{qnorm}.
+#' @return The value of \code{qnorm}.
+#' @export
+#' @examples
+#' res <- .smatch_qnorm(p = 0.5)
+#' res
+.smatch_qnorm <- function(p) qnorm(p)
+
+#' .smatch_pnorm
+#'
+#' A step of the smatch_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param z Passed to \code{pnorm}.
+#' @return The value of \code{pnorm}.
+#' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .smatch_pnorm(z = y)
+#' res
+.smatch_pnorm <- function(z) pnorm(z)
 
 #' morie_smatch_sample_size
 #'
@@ -282,68 +349,6 @@ morie_smatch_relative_efficiency <- function(r, log_ri) {
                                "high (Sec. 7.5)"))
 }
 
-# Beasley-Springer-Moro inverse normal CDF
-#' .smatch_qnorm
-#'
-#' A step of the smatch_native implementation. Called by \code{morie_smatch_sample_size}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param p Passed to \code{qnorm}.
-#' @return The value of \code{qnorm}.
-#' @export
-#' @examples
-#' res <- .smatch_qnorm(p = 0.5)
-#' res
-.smatch_qnorm <- function(p) qnorm(p)
-
-`%||%` <- function(x, y) if (is.null(x)) y else x
-
-# house entry point: the package exports one morie_<module>
-# Python declares these three as aliases of sccs_poisson_fit.
-morie_smatch_selfcontrolledcaseseries <- morie_smatch_sccs_poisson_fit
-morie_smatch_sccs_design <- morie_smatch_sccs_poisson_fit
-morie_smatch_sccsdesign <- morie_smatch_sccs_poisson_fit
-
-morie_smatch <- morie_smatch_poisson_design
-
-#' Symmetric positive-definite solve via base R's chol
-#'
-#' A step of the smatch_native implementation. Called by \code{morie_smatch_sccs_poisson_fit}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param M A matrix; passed to \code{chol}.
-#' @param b Passed to \code{forwardsolve}.
-#' @return A vector, from \code{as.numeric}.
-#' @export
-#' @examples
-#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
-#' b <- c(1.5, 2.5, 3.5)
-#' res <- .smatch_cholsolve(M = A, b = b)
-#' res
-.smatch_cholsolve <- function(M, b) {
-  # Symmetric positive-definite solve via base R's chol.
-  L <- chol(M)
-  y <- forwardsolve(t(L), b)
-  as.numeric(backsolve(L, y))
-}
-
-#' .smatch_pnorm
-#'
-#' A step of the smatch_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param z Passed to \code{pnorm}.
-#' @return The value of \code{pnorm}.
-#' @export
-#' @examples
-#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
-#' res <- .smatch_pnorm(z = y)
-#' res
-.smatch_pnorm <- function(z) pnorm(z)
-
 #' .smatch_cheatsheet
 #'
 #' A step of the smatch_native implementation. No other function in the package calls it.
@@ -368,3 +373,10 @@ morie_smatch <- morie_smatch_poisson_design
          "B)^2. p is the POPULATION exposed fraction, not the ",
          "cases.")
 }
+
+# ledger/NAMING.md compact alias
+morie_smatch_selfcontrolledcaseseries <- morie_smatch_sccs_poisson_fit
+morie_smatch_sccs_design <- morie_smatch_sccs_poisson_fit
+morie_smatch_sccsdesign <- morie_smatch_sccs_poisson_fit
+
+morie_smatch <- morie_smatch_poisson_design

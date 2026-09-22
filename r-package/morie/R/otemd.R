@@ -7,7 +7,7 @@
 #' polytope, so at most \code{n + m - 1} of its entries are non-zero.
 #'
 #' Formula: \code{min_T <T, C>} subject to \code{T 1 = a},
-#' \eqn{T prime 1 = b}, \code{T >= 0} -- Kantorovich's problem, eq. (2.11) of
+#' \eqn{T' 1 = b}, \code{T >= 0} -- Kantorovich's problem, eq. (2.11) of
 #' Peyre and Cuturi (2019). Solved by the transportation simplex:
 #' north-west-corner start, potentials from the basis tree, MODI pivoting.
 #'
@@ -22,8 +22,7 @@
 #'   Computational Optimal Transport, eq. (2.11).
 #' @export
 #' @examples
-#' Otemd(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = c(1, 2, 3, 4, 5, 6, 7, 8), C = c(1, 2, 3, 4,
-#' 5, 6, 7, 8))
+#' Otemd(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = c(1, 2, 3, 4, 5, 6, 7, 8), C = c(1, 2, 3, 4, 5, 6, 7, 8))
 Otemd <- function(a, b, C) {
   aa <- .ot_hist(a)
   bb <- .ot_hist(b)

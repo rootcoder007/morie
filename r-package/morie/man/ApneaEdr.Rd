@@ -28,3 +28,15 @@ algorithm, so none is attributed to it.  Requiring BOTH a respiratory
 pause and an SpO2 desaturation is what keeps a motion-induced flat
 stretch of EDR from being scored as an apnea.
 }
+\examples{
+set.seed(4)
+fs <- 4
+n <- fs * 600
+edr <- sin(2 * pi * 0.25 * (1:n) / fs)
+edr[800:1000] <- 0.02 * rnorm(201)
+spo2 <- rep(97, n)
+spo2[850:1100] <- 92
+r <- ApneaEdr(edr, spo2, fs = fs)
+str(r, max.level = 1)
+}
+\keyword{internal}

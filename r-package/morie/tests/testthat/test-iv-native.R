@@ -19,7 +19,7 @@ test_that("native 2SLS beats OLS on an endogenous DGP", {
   df <- .mk_iv(seed = 51)
   iv <- morie_iv_tsls(df, "y", "d", c("z1", "z2"), exogenous = "x")
   ols <- stats::coef(stats::lm(y ~ d + x, data = df))[["d"]]
-  expect_match(iv$method, "morie native")
+  expect_match(iv$method, "rmorie native")
   expect_equal(unname(iv$coefficients[["d"]]), 0.8, tolerance = 0.1)
   expect_gt(abs(ols - 0.8), abs(iv$coefficients[["d"]] - 0.8))
   # robust and classical SEs both finite
@@ -33,7 +33,7 @@ test_that("native 2SLS beats OLS on an endogenous DGP", {
 test_that("native LIML: kappa >= 1, close to 2SLS when strongly identified", {
   df <- .mk_iv(seed = 52)
   li <- morie_iv_liml(df, "y", "d", c("z1", "z2"), exogenous = "x")
-  expect_match(li$method, "morie native")
+  expect_match(li$method, "rmorie native")
   expect_gte(li$details$kappa, 1 - 1e-8)
   expect_equal(unname(li$coefficients[["d"]]), 0.8, tolerance = 0.1)
   # just-identified: LIML == 2SLS exactly
@@ -47,13 +47,13 @@ test_that("native LIML: kappa >= 1, close to 2SLS when strongly identified", {
 test_that("native GMM two-step + CUE + Hansen J behave", {
   df <- .mk_iv(seed = 54)
   gm <- morie_iv_gmm(df, "y", "d", c("z1", "z2"), exogenous = "x")
-  expect_match(gm$method, "morie native")
+  expect_match(gm$method, "rmorie native")
   expect_equal(unname(gm$coefficients[["d"]]), 0.8, tolerance = 0.1)
   cue <- morie_iv_cue_gmm(df, "y", "d", c("z1", "z2"), exogenous = "x")
   expect_equal(unname(cue$coefficients[["d"]]),
                unname(gm$coefficients[["d"]]), tolerance = 0.05)
   j <- morie_iv_hansen_j(df, "y", "d", c("z1", "z2"), exogenous = "x")
-  expect_match(j$name, "morie native")
+  expect_match(j$name, "rmorie native")
   expect_equal(j$df, 1L)
   expect_gt(j$p_value, 0.01)  # instruments are valid by construction
 })

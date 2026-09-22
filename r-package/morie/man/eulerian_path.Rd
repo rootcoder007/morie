@@ -2,7 +2,7 @@
 % Please edit documentation in R/asmnvr_native.R
 \name{eulerian_path}
 \alias{eulerian_path}
-\title{Hierholzer\'s algorithm with the exact existence condition checked:}
+\title{Hierholzer's algorithm with the exact existence condition checked:}
 \usage{
 eulerian_path(edges, indeg, outdeg)
 }
@@ -22,3 +22,4 @@ with out - in = 1 (start) and one with in - out = 1 (end). Returns
 NULL when no Eulerian path exists -- ambiguous or disconnected graphs
 are reported, not guessed at.
 }
+\keyword{internal}

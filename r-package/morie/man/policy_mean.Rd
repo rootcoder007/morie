@@ -19,9 +19,13 @@ policy_mean(Q_fn, W, friends, own_prob, seed = 0, draws = 200)
 
 \item{draws}{See Usage.}
 }
+\value{
+A list with \code{psi}, \code{policy_prob}, \code{draws}, \code{N}.
+}
 \description{
 Treatments are drawn independently with probability
 \code{own_prob}, then the neighbourhood summary follows -- so the
 estimand is a property of the POLICY, which is the only thing
 well defined under interference.
 }
+\keyword{internal}

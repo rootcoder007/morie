@@ -18,6 +18,5 @@ are omitted from the returned named character vector. Use this
 to discover which formats a given category actually exports.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_tps_list_formats(V)
+res <- try(morie_tps_list_formats(morie_tps_list_categories()[1]))
 }

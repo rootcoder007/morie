@@ -97,6 +97,11 @@
 #' @param codebook Passed to \code{.vqgdec_to_matrix}.
 #' @return A list with \code{codes}, \code{n}, \code{note}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie_vqgdec_decode_indices(M, V)
+#' @keywords internal
 morie_vqgdec_decode_indices <- function(indices, codebook) {
     Z <- .vqgdec_to_matrix(codebook)
     n_code <- nrow(Z)
@@ -166,6 +171,7 @@ morie_vqgdec_adaptive_weight <- function(grad_rec, grad_gan,
 #' @param scorer Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{scores}, \code{n_patches}, \code{mean}, \code{note}.
 #' @export
+#' @keywords internal
 morie_vqgdec_patch_discriminator <- function(image, patch = 4,
                                               scorer = NULL) {
     I <- .vqgdec_to_matrix(image)
@@ -211,7 +217,7 @@ morie_vqgdec_patch_discriminator <- function(image, patch = 4,
 # transformer's context.
 #' Sliding_windows: generate windows for images larger than the
 #'
-#' transformer\'s context.
+#' transformer's context.
 #'
 #' @param height Coerced to integer by the body, with \code{as.integer}.
 #' @param width Coerced to integer by the body, with \code{as.integer}.
@@ -221,6 +227,9 @@ morie_vqgdec_patch_discriminator <- function(image, patch = 4,
 #' @return A list with \code{windows}, \code{n_windows}, \code{covers_everything},
 #' \code{context}, \code{note}.
 #' @export
+#' @examples
+#' morie_vqgdec_sliding_windows(height = 5L, width = 5L, window = 5L)
+#' @keywords internal
 morie_vqgdec_sliding_windows <- function(height, width, window,
                                           stride = NULL) {
     H <- as.integer(height)
@@ -306,6 +315,11 @@ morie_vqgdec_sliding_windows <- function(height, width, window,
 #' @return A list with \code{estimate}, \code{image}, \code{codes}, \code{n_tokens},
 #' \code{adaptive_lambda}, \code{method}, \code{note}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie_vqgdec_decode(M, V)
+#' @keywords internal
 morie_vqgdec_decode <- function(indices, codebook, generator = NULL,
                                  grad_rec = NULL, grad_gan = NULL) {
     d <- morie_vqgdec_decode_indices(indices, codebook)
@@ -338,6 +352,9 @@ morie_vqgdec_decode <- function(indices, codebook, generator = NULL,
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_vqgdec_cheatsheet()
+#' @keywords internal
 morie_vqgdec_cheatsheet <- function() {
     paste(
         "vqgdec: at compression 16 an L2 loss returns the conditional",

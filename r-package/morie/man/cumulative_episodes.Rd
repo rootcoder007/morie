@@ -20,3 +20,7 @@ A step of the bhltmsm_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+cumulative_episodes(histories = list(a = 1, b = 2))
+}
+\keyword{internal}

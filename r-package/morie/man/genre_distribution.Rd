@@ -29,6 +29,10 @@ memberships, weighted either by user-supplied weights (recency of
 the play, say) or by rank (when called from the reranker with a
 rank_weights argument).
 }
+\examples{
+genre_distribution(items = list(a = 1, b = 2), p_g_given_i = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2))
+}
 \references{
 Steck (2018), RecSys '18, eqs. (2)-(3).
 }
+\keyword{internal}

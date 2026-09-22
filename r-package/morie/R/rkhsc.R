@@ -2,18 +2,19 @@
 #' RKHS kernel ridge regression (Wahba 1990)
 #'
 #' Solves min_f  (1/n) ||y - f(x)||^2 + lambda ||f||_H^2 in a Gaussian
-#' RKHS.  Closed form alpha = solve(K + n*lambda*I) %*% y.
+#' RKHS.  Closed form alpha = solve(K + n&#42;lambda&#42;I) %*% y.
 #'
 #' @param x numeric vector or matrix of predictors.
 #' @param y numeric outcome vector.
 #' @param sigma kernel bandwidth (default: median heuristic).
 #' @param lam ridge penalty (default 1e-3).
 #' @return list: alpha, fitted, residuals, sigma, lambda, sse, r2, n, method.
+#' @examples
+#' set.seed(1)
+#' x <- sort(runif(80)); y <- sin(2 * pi * x) + rnorm(80, 0, 0.1)
+#' morie_rkhs_kernel_regression(x, y)
 #' @keywords internal
 #' @export
-#' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rkhsc(V, V)
 rkhsc <- function(x, y, sigma = NULL, lam = 1e-3) {
   if (!is.matrix(x)) x <- matrix(x, ncol = 1)
   y <- as.numeric(y)

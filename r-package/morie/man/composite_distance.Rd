@@ -15,11 +15,11 @@ composite_distance(
 )
 }
 \arguments{
-\item{tnf_a}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{tnf_a}{Passed to \code{.metabd_vec}.}
 
-\item{tnf_b}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{tnf_b}{Passed to \code{.metabd_vec}.}
 
-\item{cov_a}{Optional; may be \code{NULL}. A vector; its length is taken.}
+\item{cov_a}{Optional; may be \code{NULL}. Passed to \code{.metabd_vec}.}
 
 \item{cov_b}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 
@@ -35,7 +35,12 @@ A list with \code{distance}, \code{composition}, \code{abundance},
 \code{abundance_usable}, \code{confidence}, \code{effective_weight}, \code{note}.
 }
 \description{
-A step of the metabd_native implementation. Called by \code{bin_contigs}.
+A step of the metabd_native implementation. Called by \code{bin_contigs}, \code{morie_metabd}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+composite_distance(V, V)
+}
+\keyword{internal}

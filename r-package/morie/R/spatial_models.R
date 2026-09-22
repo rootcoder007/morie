@@ -6,7 +6,15 @@
 # checked against spatialreg::lagsarlm and spatialreg::errorsarlm --
 # note those live in *spatialreg*, not *spdep*, since spdep was split.
 
-#' @noRd
+#' morie_logdet_I_minus
+#'
+#' @param rho Argument `rho`; see Usage.
+#' @param W Argument `W`; see Usage.
+#' @return The value of `[`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_logdet_I_minus(V, V)
+#' @keywords internal
 morie_logdet_I_minus <- function(rho, W) {
   determinant(diag(nrow(W)) - rho * W, logarithm = TRUE)$modulus[1]
 }
@@ -145,6 +153,10 @@ morie_ripley_k <- function(coords, r_grid, area = NULL,
 #' @param model direct variogram function of distance
 #' @return list with `prediction`, `variance`, `lambda` and `mu`
 #' @export
+#' @examples
+#' morie_cokrig(coords = c(1, 2, 3, 4, 5, 6, 7, 8), z1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   z2 = c(1, 2, 3, 4, 5, 6, 7, 8), s0 = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_cokrig <- function(coords, z1, z2, s0, cross_vario = NULL,
                             model = NULL) {
   P <- as.matrix(coords)
@@ -237,6 +249,7 @@ morie_local_dp_randomised_response <- function(truth, k, epsilon,
 #' @param ... Arguments for \code{morie_cokrig()} or \code{cokrg()}.
 #' @return Whatever the selected routine returns.
 #' @examples
+#' set.seed(1)
 #' pts <- rbind(c(0, 0), c(1, 0), c(0, 1), c(1, 1))
 #' morie_cokriging(pts, c(1, 2, 3, 4), rep(9, 4), c(0.5, 0.5),
 #'                 cross_vario = function(h) 0 * h)$prediction

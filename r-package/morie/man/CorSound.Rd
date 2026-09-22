@@ -36,3 +36,7 @@ A list with \code{freq_hz}, \code{psd_Pa2_per_Hz}, \code{D_normal_m},
 \description{
 Rangayyan (2024) eqs. (7.135)-(7.136), Section 7.7.2.
 }
+\examples{
+CorSound(diameter = 5L, flow_velocity = 5L)
+}
+\keyword{internal}

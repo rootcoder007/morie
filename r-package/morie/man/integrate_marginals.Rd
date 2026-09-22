@@ -22,3 +22,10 @@ A step of the inlasm_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+xs <- seq(-4, 6, by = 0.1)
+cm <- list(dnorm(xs, 0, 1), dnorm(xs, 3, 1))
+im <- integrate_marginals(cm, log_weights = c(log(0.5), log(0.5)), x_grid = xs)
+abs(im$mean - 1.5) < 0.05
+}
+\keyword{internal}

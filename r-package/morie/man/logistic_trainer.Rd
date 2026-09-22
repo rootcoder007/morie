@@ -16,10 +16,14 @@ logistic_trainer(l2 = 0.001, epochs = 300L, lr = 0.5, seed = 0)
 \item{seed}{Accepted by the signature and not used anywhere in the body. Defaults to \code{0}.}
 }
 \value{
-The value of \code{function}.
+The value of \code{train}, as built in the body.
 }
 \description{
-A step of the memb_native implementation. Called by \code{memb}.
+A step of the memb_native implementation. Called by \code{memb}, \code{morie_memb}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+logistic_trainer()
+}
+\keyword{internal}

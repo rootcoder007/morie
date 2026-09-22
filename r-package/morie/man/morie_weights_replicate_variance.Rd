@@ -27,14 +27,14 @@ Allowed values depend on the caller.}
 \code{weights}.}
 }
 \value{
-A named list with elements \code{variance}, \code{se}
-(\eqn{\sqrt{variance}}), \code{ci_lower}, \code{ci_upper}
-(\code{full_estimate +/- 1.96 * se}).
+A named \code{list} (see Details).
 }
 \description{
 \code{method} selects the rescaling: "JK1", "JKn", "BRR", "Fay", "bootstrap", "SDR".
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_weights_replicate_variance(V, V)
+set.seed(1)
+reps <- rnorm(50, 1.2, 0.05)
+res <- morie_weights_replicate_variance(1.2, reps, method = "bootstrap")
+str(res, max.level = 1)
 }

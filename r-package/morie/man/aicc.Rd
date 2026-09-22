@@ -21,3 +21,7 @@ A step of the sarimax_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+aicc(loglik = c(1, 2, 3, 4, 5, 6, 7, 8), n_par = 5L, n = 5L)
+}
+\keyword{internal}

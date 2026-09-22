@@ -15,7 +15,7 @@
 A list with \code{value}, \code{extrapolation_decades}, \code{interpolated}, \code{note}.
 }
 \description{
-A step of the opnclp_native implementation. Called by \code{morie_opnclp}.
+A step of the opnclp_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }

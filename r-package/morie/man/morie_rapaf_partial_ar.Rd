@@ -27,3 +27,4 @@ Bruzzi, P. et al. (1985). Estimating the Population
 Attributable Risk for Multiple Risk Factors Using Case-Control
 Data. American Journal of Epidemiology, 122(5), 904-914.
 }
+\keyword{internal}

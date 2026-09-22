@@ -89,7 +89,7 @@
 #' Internal helper: LIML kappa via the eigenvalue problem
 #'
 #' kappa = smallest eigenvalue of (W' M_1 W)(W' M_Z W)^\{-1\} where
-#' W = [y, endogenous], M_1 annihilates the exogenous block (incl.
+#' W = \[y, endogenous\], M_1 annihilates the exogenous block (incl.
 #' intercept) and M_Z annihilates the full instrument set.
 #' @noRd
 .morie_iv_liml_kappa <- function(y, X_endo, Z_full, X_exo) {
@@ -236,6 +236,7 @@
 #'   Interrupted time series regression for the evaluation of public
 #'   health interventions. \emph{IJE}, 46(1), 348--355.
 #' @examples
+#' set.seed(1)
 #' df <- data.frame(t = 1:60,
 #'                  y = 10 + 0.2 * (1:60) + ifelse(1:60 >= 40, 5, 0) +
 #'                    rnorm(60))
@@ -290,6 +291,6 @@ morie_its <- function(data, outcome, time, interruption_time,
     n_pre = sum(D == 0), n_post = sum(D == 1),
     hac_lag = if (is.null(lag)) floor(4 * (length(y) / 100)^(2 / 9))
               else lag,
-    method = "interrupted time series (morie native, Newey-West HAC)"
+    method = "interrupted time series (rmorie native, Newey-West HAC)"
   )
 }

@@ -12,8 +12,17 @@
 \item{...}{Ignored; accepted for S3 consistency.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
 Print method for \code{morie_hawkes_fit} objects
+}
+\examples{
+\donttest{
+set.seed(1)
+ev <- cumsum(rexp(200, rate = 2))
+fit <- morie_hawkes_fit(ev, kernel = "exponential")
+print(fit)
+print(fit)
+}
 }

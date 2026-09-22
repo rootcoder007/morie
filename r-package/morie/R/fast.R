@@ -31,7 +31,7 @@ morie_normal_pdf <- function(x, mean = 0, sd = 1) {
 }
 
 # The mean and variance kernels live in rmoriebricklayer (the shared
-# core). morie vendors the same kernel and uses it whenever bricklayer
+# core). rmorie vendors the same kernel and uses it whenever bricklayer
 # does not resolve at 0.5.1 or newer: older builds summed naively and
 # overflowed on rep(1e308, 3). Decided once per session.
 .morie_shared_core_state <- new.env(parent = emptyenv())
@@ -50,6 +50,7 @@ morie_normal_pdf <- function(x, mean = 0, sd = 1) {
 #' Single-pass C++ kernel.  Equivalent to \code{mean(x)}.
 #' @param x See Usage.
 #' @keywords internal
+#' @return A numeric scalar: the mean of \code{x}.
 #' @examples
 #' morie:::morie_mean(1:10)
 morie_mean <- function(x) {
@@ -66,6 +67,9 @@ morie_mean <- function(x) {
 #' @param x numeric vector
 #' @param ddof integer; default 1 (sample variance)
 #' @keywords internal
+#' @return A numeric scalar: the variance of \code{x}.
+#' @examples
+#' abs(morie:::morie_var(c(1, 2, 3, 4, 5), ddof = 1) - 2.5) < 1e-9
 morie_var <- function(x, ddof = 1) {
   if (.cpp_available()) {
     morie_var_cpp(as.numeric(x), as.integer(ddof), .morie_shared_core())
@@ -85,6 +89,7 @@ morie_var <- function(x, ddof = 1) {
 #' @param x See Usage.
 #' @param y See Usage.
 #' @keywords internal
+#' @return A numeric scalar: the Pearson correlation between \code{x} and \code{y}.
 #' @examples
 #' morie:::morie_cor_pearson(1:10, 1:10)
 morie_cor_pearson <- function(x, y) {
@@ -96,18 +101,8 @@ morie_cor_pearson <- function(x, y) {
 }
 
 # Internal: detect whether the Rcpp .so was successfully built.
-#' Internal: detect whether the Rcpp .so was successfully built
-#'
-#' A step of the fast implementation. Called by \code{morie_cor_pearson},
-#' \code{morie_fast_available}, \code{morie_hawkes_fit} and 3 others in the module.
-#' See the file header for the source the module follows.
-#' it follows.
-#'
-#' @return The value of \code{tryCatch}.
-#' @export
-#' @examples
-#' res <- .cpp_available()
-#' res
+#' Internal helper: Cpp Available
+#' @noRd
 .cpp_available <- function() {
   tryCatch(
     {

@@ -45,7 +45,7 @@
 #' A decoder is a plain environment so the position advances by
 #' reference
 #'
-#' the way the Python reader\'s self.pos does; passing it around by
+#' the way the Python reader's self.pos does; passing it around by
 #' value would need every helper to return (value, pos) pairs.
 #'
 #' @param buf See Usage.
@@ -91,7 +91,9 @@
   repeat {
     b <- .pq_byte(e)
     result <- result + bitwAnd(b, 127L) * 2^shift
-    if (bitwAnd(b, 128L) == 0L) return(result)
+    if (bitwAnd(b, 128L) == 0L) {
+      return(result)
+    }
     shift <- shift + 7
   }
 }
@@ -139,7 +141,8 @@
 #' @export
 .pq_double <- function(e) {
   v <- readBin(e$buf[seq.int(e$pos, length.out = 8L)], "double",
-               n = 1L, size = 8L, endian = "little")
+    n = 1L, size = 8L, endian = "little"
+  )
   e$pos <- e$pos + 8L
   v
 }
@@ -156,21 +159,37 @@
 #' @return Nothing; this branch always raises.
 #' @export
 .pq_scalar <- function(e, ttype) {
-  if (ttype == .pqTTrue) return(TRUE)
-  if (ttype == .pqTFalse) return(FALSE)
+  if (ttype == .pqTTrue) {
+    return(TRUE)
+  }
+  if (ttype == .pqTFalse) {
+    return(FALSE)
+  }
   if (ttype == .pqTByte) {
     b <- .pq_byte(e)
     return(if (b > 127L) b - 256L else b)
   }
-  if (ttype == .pqTI16 || ttype == .pqTI32 || ttype == .pqTI64)
+  if (ttype == .pqTI16 || ttype == .pqTI32 || ttype == .pqTI64) {
     return(.pq_zigzag(e))
-  if (ttype == .pqTDouble) return(.pq_double(e))
-  if (ttype == .pqTBinary) return(.pq_binary(e))
-  if (ttype == .pqTList || ttype == .pqTSet) return(.pq_list(e))
-  if (ttype == .pqTMap) return(.pq_map(e))
-  if (ttype == .pqTStruct) return(.pq_struct(e))
+  }
+  if (ttype == .pqTDouble) {
+    return(.pq_double(e))
+  }
+  if (ttype == .pqTBinary) {
+    return(.pq_binary(e))
+  }
+  if (ttype == .pqTList || ttype == .pqTSet) {
+    return(.pq_list(e))
+  }
+  if (ttype == .pqTMap) {
+    return(.pq_map(e))
+  }
+  if (ttype == .pqTStruct) {
+    return(.pq_struct(e))
+  }
   stop("unknown thrift compact type ", ttype, " at byte ", e$pos,
-       call. = FALSE)
+    call. = FALSE
+  )
 }
 
 #' .pq_list
@@ -187,7 +206,9 @@
   size <- bitwShiftR(h, 4L)
   etype <- bitwAnd(h, 15L)
   if (size == 15L) size <- .pq_varint(e)
-  if (size == 0) return(list())
+  if (size == 0) {
+    return(list())
+  }
   lapply(seq_len(size), function(i) .pq_scalar(e, etype))
 }
 
@@ -202,7 +223,9 @@
 #' @export
 .pq_map <- function(e) {
   size <- .pq_varint(e)
-  if (size == 0) return(list())
+  if (size == 0) {
+    return(list())
+  }
   kv <- .pq_byte(e)
   ktype <- bitwShiftR(kv, 4L)
   vtype <- bitwAnd(kv, 15L)
@@ -229,7 +252,9 @@
   fid <- 0L
   repeat {
     h <- .pq_byte(e)
-    if (h == .pqTStop) return(out)
+    if (h == .pqTStop) {
+      return(out)
+    }
     delta <- bitwShiftR(h, 4L)
     ttype <- bitwAnd(h, 15L)
     fid <- if (delta != 0L) fid + delta else as.integer(.pq_zigzag(e))
@@ -562,12 +587,12 @@
     tag <- as.integer(data[pos])
     pos <- pos + 1L
     kind <- bitwAnd(tag, 3L)
-    if (kind == 0L) {                                   # literal
+    if (kind == 0L) { # literal
       ln <- bitwShiftR(tag, 2L)
       if (ln >= 60L) {
         extra <- ln - 59L
         ln <- sum(as.integer(data[seq.int(pos, length.out = extra)]) *
-                    256^(seq_len(extra) - 1L))
+          256^(seq_len(extra) - 1L))
         pos <- pos + extra
       }
       ln <- ln + 1L
@@ -577,22 +602,23 @@
       o <- o + ln
       next
     }
-    if (kind == 1L) {                                   # 1-byte offset
+    if (kind == 1L) { # 1-byte offset
       ln <- 4L + bitwAnd(bitwShiftR(tag, 2L), 7L)
       off <- bitwShiftL(bitwShiftR(tag, 5L), 8L) + as.integer(data[pos])
       pos <- pos + 1L
-    } else if (kind == 2L) {                            # 2-byte offset
+    } else if (kind == 2L) { # 2-byte offset
       ln <- bitwShiftR(tag, 2L) + 1L
       off <- as.integer(data[pos]) + 256L * as.integer(data[pos + 1L])
       pos <- pos + 2L
-    } else {                                            # 4-byte offset
+    } else { # 4-byte offset
       ln <- bitwShiftR(tag, 2L) + 1L
       off <- sum(as.integer(data[seq.int(pos, length.out = 4L)]) *
-                   256^(0:3))
+        256^(0:3))
       pos <- pos + 4L
     }
-    if (off <= 0 || off > o)
+    if (off <= 0 || off > o) {
       stop("snappy: bad copy offset ", off, call. = FALSE)
+    }
     start <- o - off
     if (off >= ln) {
       # Non-overlapping: one vectorised move.
@@ -605,8 +631,9 @@
     }
     o <- o + ln
   }
-  if (o != n)
+  if (o != n) {
     stop("snappy: expected ", n, " bytes, decoded ", o, call. = FALSE)
+  }
   out
 }
 
@@ -630,8 +657,10 @@
   hdr <- raw(0)
   m <- n
   repeat {
-    if (m < 128) { hdr <- c(hdr, as.raw(m))
-    break }
+    if (m < 128) {
+      hdr <- c(hdr, as.raw(m))
+      break
+    }
     hdr <- c(hdr, as.raw(bitwOr(as.integer(m %% 128), 128L)))
     m <- m %/% 128
   }
@@ -702,8 +731,10 @@
 #' @return The value of \code{ifelse}.
 #' @export
 .pq_u32 <- function(r) {
-  v <- readBin(r, "integer", n = length(r) %/% 4L, size = 4L,
-               endian = "little")
+  v <- readBin(r, "integer",
+    n = length(r) %/% 4L, size = 4L,
+    endian = "little"
+  )
   ifelse(v < 0, v + 2^32, v)
 }
 
@@ -721,8 +752,10 @@
 #' res
 .pq_bit_width <- function(n) {
   w <- 0L
-  while (n > 0) { w <- w + 1L
-  n <- bitwShiftR(n, 1L) }
+  while (n > 0) {
+    w <- w + 1L
+    n <- bitwShiftR(n, 1L)
+  }
   w
 }
 
@@ -740,7 +773,9 @@
 #' @return A list with \code{values}, \code{pos}.
 #' @export
 .pq_read_rle <- function(buf, pos, width, count, end) {
-  if (width == 0L) return(list(values = rep(0L, count), pos = pos))
+  if (width == 0L) {
+    return(list(values = rep(0L, count), pos = pos))
+  }
   out <- integer(count)
   o <- 0L
   nbytes <- (width + 7L) %/% 8L
@@ -754,7 +789,7 @@
       if (bitwAnd(b, 128L) == 0L) break
       shift <- shift + 7
     }
-    if (header %% 2 == 1) {                              # bit-packed
+    if (header %% 2 == 1) { # bit-packed
       groups <- (header - 1) / 2
       nvals <- groups * 8
       need <- groups * width
@@ -768,17 +803,21 @@
         sum(bits[(b0 + 1L):(b0 + width)] * 2L^(seq_len(width) - 1L))
       }, numeric(1))
       take <- min(length(vals), count - o)
-      if (take > 0L) out[seq.int(o + 1L, length.out = take)] <-
-        as.integer(vals[seq_len(take)])
+      if (take > 0L) {
+        out[seq.int(o + 1L, length.out = take)] <-
+          as.integer(vals[seq_len(take)])
+      }
       o <- o + take
-    } else {                                             # RLE run
+    } else { # RLE run
       run <- header / 2
       val <- sum(as.integer(buf[seq.int(pos, length.out = nbytes)]) *
-                   256^(seq_len(nbytes) - 1L))
+        256^(seq_len(nbytes) - 1L))
       pos <- pos + nbytes
       take <- min(run, count - o)
-      if (take > 0L) out[seq.int(o + 1L, length.out = take)] <-
-        as.integer(val)
+      if (take > 0L) {
+        out[seq.int(o + 1L, length.out = take)] <-
+          as.integer(val)
+      }
       o <- o + take
     }
   }
@@ -797,8 +836,10 @@
   # readBin has no 64-bit integer, so recombine two 32-bit halves. Exact
   # to 2^53, which covers every count, offset and epoch value here.
   lo <- .pq_u32(raw_bytes)[seq(1L, by = 2L, length.out = count)]
-  hi <- readBin(raw_bytes, "integer", n = count * 2L, size = 4L,
-                endian = "little")[seq(2L, by = 2L, length.out = count)]
+  hi <- readBin(raw_bytes, "integer",
+    n = count * 2L, size = 4L,
+    endian = "little"
+  )[seq(2L, by = 2L, length.out = count)]
   hi * 2^32 + lo
 }
 
@@ -816,16 +857,21 @@
 #' @return Nothing; this branch always raises.
 #' @export
 .pq_decode_plain <- function(buf, pos, ptype, count, type_length = NULL) {
-  if (count == 0L) return(list(values = list(), pos = pos))
+  if (count == 0L) {
+    return(list(values = list(), pos = pos))
+  }
   if (ptype == .pqBoolean) {
     nb <- (count + 7L) %/% 8L
     bits <- as.integer(rawToBits(buf[seq.int(pos, length.out = nb)]))
-    return(list(values = as.logical(bits[seq_len(count)]),
-                pos = pos + nb))
+    return(list(
+      values = as.logical(bits[seq_len(count)]),
+      pos = pos + nb
+    ))
   }
   if (ptype == .pqInt32) {
     v <- readBin(buf[seq.int(pos, length.out = count * 4L)], "integer",
-                 n = count, size = 4L, endian = "little")
+      n = count, size = 4L, endian = "little"
+    )
     return(list(values = v, pos = pos + count * 4L))
   }
   if (ptype == .pqInt64) {
@@ -834,12 +880,14 @@
   }
   if (ptype == .pqFloat) {
     v <- readBin(buf[seq.int(pos, length.out = count * 4L)], "double",
-                 n = count, size = 4L, endian = "little")
+      n = count, size = 4L, endian = "little"
+    )
     return(list(values = v, pos = pos + count * 4L))
   }
   if (ptype == .pqDouble) {
     v <- readBin(buf[seq.int(pos, length.out = count * 8L)], "double",
-                 n = count, size = 8L, endian = "little")
+      n = count, size = 8L, endian = "little"
+    )
     return(list(values = v, pos = pos + count * 8L))
   }
   if (ptype == .pqByteArray) {
@@ -847,17 +895,22 @@
     for (i in seq_len(count)) {
       n <- .pq_u32(buf[seq.int(pos, length.out = 4L)])
       pos <- pos + 4L
-      vals[[i]] <- if (n == 0L) raw(0) else
+      vals[[i]] <- if (n == 0L) {
+        raw(0)
+      } else {
         buf[seq.int(pos, length.out = n)]
+      }
       pos <- pos + n
     }
     return(list(values = vals, pos = pos))
   }
   if (ptype == .pqFlba) {
-    if (is.null(type_length))
+    if (is.null(type_length)) {
       stop("FIXED_LEN_BYTE_ARRAY without type_length", call. = FALSE)
-    vals <- lapply(seq_len(count), function(i)
-      buf[seq.int(pos + (i - 1L) * type_length, length.out = type_length)])
+    }
+    vals <- lapply(seq_len(count), function(i) {
+      buf[seq.int(pos + (i - 1L) * type_length, length.out = type_length)]
+    })
     return(list(values = vals, pos = pos + count * type_length))
   }
   if (ptype == .pqInt96) {
@@ -887,8 +940,12 @@
 .pq_convert <- function(vals, ptype, converted) {
   if (ptype == .pqByteArray) {
     return(vapply(vals, function(v) {
-      if (is.null(v)) return(NA_character_)
-      if (length(v) == 0L) return("")
+      if (is.null(v)) {
+        return(NA_character_)
+      }
+      if (length(v) == 0L) {
+        return("")
+      }
       s <- rawToChar(v)
       Encoding(s) <- "UTF-8"
       s
@@ -914,13 +971,18 @@
 #' @return The value of \code{v}, as built in the body.
 #' @export
 .pq_apply_logical <- function(v, ptype, converted) {
-  if (is.null(converted)) return(v)
-  if (converted == .pqCtDate && ptype == .pqInt32)
+  if (is.null(converted)) {
+    return(v)
+  }
+  if (converted == .pqCtDate && ptype == .pqInt32) {
     return(structure(as.numeric(v), class = "Date"))
-  if (converted == .pqCtTsMillis)
+  }
+  if (converted == .pqCtTsMillis) {
     return(as.POSIXct(v / 1e3, origin = "1970-01-01", tz = "UTC"))
-  if (converted == .pqCtTsMicros)
+  }
+  if (converted == .pqCtTsMicros) {
     return(as.POSIXct(v / 1e6, origin = "1970-01-01", tz = "UTC"))
+  }
   v
 }
 
@@ -938,12 +1000,14 @@
 #' @export
 .pq_read_footer <- function(con, size) {
   seek(con, 0L)
-  if (!identical(readBin(con, "raw", 4L), charToRaw("PAR1")))
+  if (!identical(readBin(con, "raw", 4L), charToRaw("PAR1"))) {
     stop("not a parquet file: missing leading PAR1", call. = FALSE)
+  }
   seek(con, size - 8L)
   tail <- readBin(con, "raw", 8L)
-  if (!identical(tail[5:8], charToRaw("PAR1")))
+  if (!identical(tail[5:8], charToRaw("PAR1"))) {
     stop("not a parquet file: missing trailing PAR1", call. = FALSE)
+  }
   n <- .pq_u32(tail[1:4])
   seek(con, size - 8L - n)
   .pq_struct(.pq_reader(readBin(con, "raw", n)))
@@ -1356,13 +1420,21 @@ morie_read_parquet <- function(path, columns = NULL) {
   # Without this a column read as TIMESTAMP_MICROS was written back as a
   # bare DOUBLE of seconds: readable, but no longer a timestamp to any
   # other engine, and off by a factor of 1e6 from where it started.
-  if (inherits(v, "Date"))
+  if (inherits(v, "Date")) {
     return(list(type = .pqInt32, converted = .pqCtDate))
-  if (inherits(v, "POSIXct"))
+  }
+  if (inherits(v, "POSIXct")) {
     return(list(type = .pqInt64, converted = .pqCtTsMillis))
-  if (is.logical(v)) return(list(type = .pqBoolean, converted = NULL))
-  if (is.integer(v)) return(list(type = .pqInt32, converted = NULL))
-  if (is.numeric(v)) return(list(type = .pqDouble, converted = NULL))
+  }
+  if (is.logical(v)) {
+    return(list(type = .pqBoolean, converted = NULL))
+  }
+  if (is.integer(v)) {
+    return(list(type = .pqInt32, converted = NULL))
+  }
+  if (is.numeric(v)) {
+    return(list(type = .pqDouble, converted = NULL))
+  }
   list(type = .pqByteArray, converted = .pqCtUtf8)
 }
 
@@ -1377,8 +1449,12 @@ morie_read_parquet <- function(path, columns = NULL) {
 #' @return The value of \code{v}, as built in the body.
 #' @export
 .pq_prep_write <- function(v, inf) {
-  if (inherits(v, "Date")) return(as.integer(unclass(v)))
-  if (inherits(v, "POSIXct")) return(round(as.numeric(v) * 1000))
+  if (inherits(v, "Date")) {
+    return(as.integer(unclass(v)))
+  }
+  if (inherits(v, "POSIXct")) {
+    return(round(as.numeric(v) * 1000))
+  }
   v
 }
 
@@ -1417,26 +1493,38 @@ morie_read_parquet <- function(path, columns = NULL) {
 #' @return Nothing; this branch always raises.
 #' @export
 .pq_encode_plain <- function(values, ptype) {
-  if (length(values) == 0L) return(raw(0))
+  if (length(values) == 0L) {
+    return(raw(0))
+  }
   if (ptype == .pqBoolean) {
     n <- length(values)
     pad <- (8L - n %% 8L) %% 8L
     bits <- as.raw(c(as.integer(values), rep(0L, pad)))
     return(packBits(as.logical(bits), "raw"))
   }
-  if (ptype == .pqInt32)
-    return(writeBin(as.integer(values), raw(), size = 4L,
-                    endian = "little"))
-  if (ptype == .pqInt64) return(.pq_encode_i64(values))
-  if (ptype == .pqDouble)
-    return(writeBin(as.numeric(values), raw(), size = 8L,
-                    endian = "little"))
+  if (ptype == .pqInt32) {
+    return(writeBin(as.integer(values), raw(),
+      size = 4L,
+      endian = "little"
+    ))
+  }
+  if (ptype == .pqInt64) {
+    return(.pq_encode_i64(values))
+  }
+  if (ptype == .pqDouble) {
+    return(writeBin(as.numeric(values), raw(),
+      size = 8L,
+      endian = "little"
+    ))
+  }
   if (ptype == .pqByteArray) {
     parts <- vector("list", length(values) * 2L)
     for (i in seq_along(values)) {
       b <- charToRaw(enc2utf8(as.character(values[[i]])))
-      parts[[2L * i - 1L]] <- writeBin(length(b), raw(), size = 4L,
-                                       endian = "little")
+      parts[[2L * i - 1L]] <- writeBin(length(b), raw(),
+        size = 4L,
+        endian = "little"
+      )
       parts[[2L * i]] <- b
     }
     return(do.call(base::c, parts))
@@ -1455,22 +1543,28 @@ morie_read_parquet <- function(path, columns = NULL) {
 #' @return A vector, from \code{c}.
 #' @export
 .pq_encode_levels <- function(levels, width) {
-  if (width == 0L) return(raw(0))
+  if (width == 0L) {
+    return(raw(0))
+  }
   groups <- (length(levels) + 7L) %/% 8L
   padded <- c(as.integer(levels != 0L), rep(0L, groups * 8L -
-                                              length(levels)))
+    length(levels)))
   body <- packBits(as.logical(padded), "raw")
   h <- groups * 2 + 1
   header <- raw(0)
   repeat {
-    if (h < 128) { header <- c(header, as.raw(h))
-    break }
+    if (h < 128) {
+      header <- c(header, as.raw(h))
+      break
+    }
     header <- c(header, as.raw(bitwOr(as.integer(h %% 128), 128L)))
     h <- h %/% 128
   }
   payload <- c(header, body)
-  c(writeBin(length(payload), raw(), size = 4L, endian = "little"),
-    payload)
+  c(
+    writeBin(length(payload), raw(), size = 4L, endian = "little"),
+    payload
+  )
 }
 
 #' Write a data frame to Parquet
@@ -1488,9 +1582,12 @@ morie_read_parquet <- function(path, columns = NULL) {
 #' p <- tempfile(fileext = ".parquet")
 #' morie_write_parquet(df, p)
 morie_write_parquet <- function(df, path, compression = "snappy") {
-  if (!is.null(compression) && !identical(compression, "snappy"))
+  if (!is.null(compression) && !identical(compression, "snappy")) {
     stop("compression must be \"snappy\" or NULL; got ",
-         sQuote(compression), call. = FALSE)
+      sQuote(compression),
+      call. = FALSE
+    )
+  }
   codec <- if (is.null(compression)) .pqCUncompressed else .pqCSnappy
 
   nrows <- nrow(df)
@@ -1507,8 +1604,10 @@ morie_write_parquet <- function(df, path, compression = "snappy") {
     defs <- as.integer(!is.na(v))
     present <- .pq_prep_write(v[!is.na(v)], inf)
 
-    body <- c(.pq_encode_levels(defs, 1L),
-              .pq_encode_plain(present, inf$type))
+    body <- c(
+      .pq_encode_levels(defs, 1L),
+      .pq_encode_plain(present, inf$type)
+    )
     payload <- if (codec == .pqCSnappy) .pq_snappy_compress(body) else body
 
     dph <- .pq_writer()
@@ -1557,15 +1656,18 @@ morie_write_parquet <- function(df, path, compression = "snappy") {
     last <- .pq_wi32(se, 1L, chunks[[k]]$inf$type, 0L)
     last <- .pq_wi32(se, 3L, .pqOptional, last)
     last <- .pq_wbytes(se, 4L, names_[k], last)
-    if (!is.null(chunks[[k]]$inf$converted))
+    if (!is.null(chunks[[k]]$inf$converted)) {
       last <- .pq_wi32(se, 6L, chunks[[k]]$inf$converted, last)
+    }
     schema_structs[[k + 1L]] <- .pq_wstop(se)
   }
 
   rg <- .pq_writer()
   last <- .pq_wliststruct(rg, 1L, lapply(chunks, `[[`, "body"), 0L)
-  last <- .pq_wi64(rg, 2L, sum(vapply(chunks, `[[`, numeric(1),
-                                      "total")), last)
+  last <- .pq_wi64(rg, 2L, sum(vapply(
+    chunks, `[[`, numeric(1),
+    "total"
+  )), last)
   last <- .pq_wi64(rg, 3L, nrows, last)
   rg_body <- .pq_wstop(rg)
 
@@ -1578,8 +1680,10 @@ morie_write_parquet <- function(df, path, compression = "snappy") {
   footer <- .pq_wstop(fm)
 
   writeBin(footer, con)
-  writeBin(writeBin(length(footer), raw(), size = 4L,
-                    endian = "little"), con)
+  writeBin(writeBin(length(footer), raw(),
+    size = 4L,
+    endian = "little"
+  ), con)
   writeBin(charToRaw("PAR1"), con)
   invisible(path)
 }

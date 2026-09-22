@@ -27,3 +27,8 @@ A step of the surxgb_native implementation. Called by \code{.surxgb_build}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_surxgb_split_gain(GL = c(1, 2, 3, 4, 5, 6, 7, 8), HL = c(1, 2, 3, 4, 5, 6, 7, 8),
+  GR = c(1, 2, 3, 4, 5, 6, 7, 8), HR = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -22,3 +22,9 @@ A list with \code{x}, \code{t}, \code{variable}, \code{scale}, \code{method}.
 \description{
 factor wrong scales the synthesis by 6.28, so the branch is explicit.
 }
+\examples{
+grid <- seq(-1, 1, length.out = 401)
+X <- rep(complex(real = 1, imaginary = 0), 401)
+Ictft(X, t = 0, omega = grid)
+}
+\keyword{internal}

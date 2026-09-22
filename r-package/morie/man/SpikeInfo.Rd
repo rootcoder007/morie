@@ -25,3 +25,8 @@ equal-width: on a skewed count distribution equal-width bins report I
 near 0 regardless of the truth.  Strong et al. (1998); biased upward
 at small n, no correction applied.  NOT in Schabenberger & Gotway.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+SpikeInfo(V, V)
+}
+\keyword{internal}

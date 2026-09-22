@@ -19,6 +19,21 @@ morie_tmlcic_tmle_cluster_ic(
   ridge = 1e-08,
   level = 0.95
 )
+
+morie_tmlcic(
+  y,
+  D,
+  X,
+  cluster = NULL,
+  target = "SATE",
+  design = NULL,
+  library = NULL,
+  g_library = NULL,
+  n_folds = NULL,
+  adapt = TRUE,
+  ridge = 1e-08,
+  level = 0.95
+)
 }
 \arguments{
 \item{y}{Passed to \code{.s03vec}.}
@@ -58,3 +73,13 @@ A step of the tmlcic_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(4)
+n <- 40
+X <- matrix(rnorm(n * 2), n, 2)
+D <- rep(c(0, 1), 20)
+y <- plogis(-0.3 + 0.8 * D + 0.5 * X[, 1] + rnorm(n, 0, 0.5))
+r <- morie_tmlcic_tmle_cluster_ic(y, D, X)
+str(r, max.level = 1)
+}
+\keyword{internal}

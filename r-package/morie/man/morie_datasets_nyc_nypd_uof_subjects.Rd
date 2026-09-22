@@ -22,7 +22,7 @@ morie_datasets_nyc_nypd_uof_subjects(
 \item{max_features}{Optional row cap. When \code{paginate = TRUE} this
 is the total cap across walked pages.}
 
-\item{offline}{If \code{TRUE} (default), read the bundled fixture.}
+\item{offline}{If \code{TRUE} (default), read the included fixture.}
 
 \item{resource_id}{Optional Socrata resource id override.}
 
@@ -44,12 +44,7 @@ up to 200,000 rows without an app_token).}
 limits; passed as the \code{X-App-Token} header.}
 }
 \value{
-A \code{data.frame} of NYPD Use-of-Force subject-level
-records (one row per civilian subject), either the bundled
-\code{nypd_uof_subjects_sample.csv} fixture when \code{offline = TRUE}
-or the live Socrata pull (SODA2 / SODA3) when
-\code{offline = FALSE}. Columns mirror NYC OpenData resource
-\code{dufe-vxb7}.
+A \code{data.frame}.
 }
 \description{
 NYPD Use of Force: Subjects

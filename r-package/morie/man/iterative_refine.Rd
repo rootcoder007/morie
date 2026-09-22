@@ -16,7 +16,7 @@ iterative_refine(
 )
 }
 \arguments{
-\item{alignment}{Passed to \code{unlist}.}
+\item{alignment}{Iterated over elementwise, with \code{vapply}.}
 
 \item{scoring}{Passed to \code{wsp_score}.}
 
@@ -36,7 +36,15 @@ iterative_refine(
 A list with \code{aln}, \code{score}, \code{rounds}.
 }
 \description{
-A step of the mafft_native implementation. Called by \code{mafft_alignment}.
+A step of the mafft_native implementation. Called by \code{mafft_alignment}, \code{morie_mafft}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+sc <- normalized_similarity_matrix(seq_type = "aa")
+aln <- progressive_align(c("MKVLATLLPLAA", "MKVLATLLPLAG",
+                           "MRVLATGLPLAA"), sc, use_fft = FALSE)
+r <- iterative_refine(aln, sc, max_iterate = 2L)
+str(r, max.level = 1)
+}
+\keyword{internal}

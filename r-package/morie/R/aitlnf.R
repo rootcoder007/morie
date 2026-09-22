@@ -47,7 +47,9 @@ Lgtnfit <- function(X, ddof = 1) {
     ll <- ll - 0.5 * p * log(2 * pi) - 0.5 * logdet -
       sum(log(X[k, ])) - 0.5 * q
   }
-  .t1_result(mu = mu, Sigma = S, center = cen, loglik = ll,
-             n = as.numeric(n), D = as.numeric(D),
-             method = "Logistic-normal MLE via the alr transform")
+  .t1_result(
+    mu = mu, Sigma = S, center = cen, loglik = ll,
+    n = as.numeric(n), D = as.numeric(D),
+    method = "Logistic-normal MLE via the alr transform"
+  )
 }

@@ -23,7 +23,12 @@ compare_scaling(x_a, y_a, x_b, y_b, label_a = "A", label_b = "B")
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the opnclp_native implementation. Called by \code{morie_opnclp}.
+A step of the opnclp_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+compare_scaling(x_a = c(1, 2, 3, 4, 5, 6, 7, 8), y_a = c(1, 2, 3, 4, 5, 6, 7, 8),
+  x_b = c(1, 2, 3, 4, 5, 6, 7, 8), y_b = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

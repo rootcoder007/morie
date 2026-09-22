@@ -30,6 +30,7 @@
 #' @references Horowitz, J. L. Semiparametric and Nonparametric
 #'   Methods in Econometrics. Springer. Appendix (pp. 233-255, KDE).
 #' @examples
+#' set.seed(1)
 #' morie_kde_h(rnorm(200))$bandwidth
 #' @export
 morie_kde_h <- function(x, grid = NULL, h = NULL) {
@@ -38,11 +39,16 @@ morie_kde_h <- function(x, grid = NULL, h = NULL) {
   if (n < 2L) stop("need at least 2 observations.", call. = FALSE)
   hh <- if (is.null(h)) .hrz_silverman(x) else as.numeric(h)
   if (hh <= 0) stop("bandwidth must be positive.", call. = FALSE)
-  g <- if (is.null(grid)) seq(min(x) - 3 * hh, max(x) + 3 * hh, length.out = 512L)
-       else as.numeric(grid)
+  g <- if (is.null(grid)) {
+    seq(min(x) - 3 * hh, max(x) + 3 * hh, length.out = 512L)
+  } else {
+    as.numeric(grid)
+  }
   dens <- vapply(g, function(pt) sum(.hrz_gauss_kernel((pt - x) / hh)), 0) / (n * hh)
-  list(grid = g, density = dens, bandwidth = hh, rate_exponent = -0.4, n = n,
-       method = "KDE with n^{-1/5} bandwidth; rate n^{-2/5}")
+  list(
+    grid = g, density = dens, bandwidth = hh, rate_exponent = -0.4, n = n,
+    method = "KDE with n^{-1/5} bandwidth; rate n^{-2/5}"
+  )
 }
 
 #' MISE-optimal bandwidth
@@ -58,6 +64,7 @@ morie_kde_h <- function(x, grid = NULL, h = NULL) {
 #' @return list: h_opt, R_K, mu2_K, f2_l2, normal_reference_used.
 #' @references Horowitz, Ch. 2.
 #' @examples
+#' set.seed(1)
 #' morie_bandwidth_mise(rnorm(200))$h_opt
 #' @export
 morie_bandwidth_mise <- function(x, f_second_deriv_l2 = NULL) {
@@ -75,9 +82,11 @@ morie_bandwidth_mise <- function(x, f_second_deriv_l2 = NULL) {
     f2 <- as.numeric(f_second_deriv_l2)
     if (f2 <= 0) stop("f_second_deriv_l2 must be positive.", call. = FALSE)
   }
-  list(h_opt = (R_K / (mu2^2 * f2 * n))^0.2, R_K = R_K, mu2_K = mu2,
-       f2_l2 = f2, normal_reference_used = ref, n = n,
-       method = "h_opt = [R(K)/(mu2^2 int(f'')^2 n)]^{1/5}")
+  list(
+    h_opt = (R_K / (mu2^2 * f2 * n))^0.2, R_K = R_K, mu2_K = mu2,
+    f2_l2 = f2, normal_reference_used = ref, n = n,
+    method = "h_opt = [R(K)/(mu2^2 int(f'')^2 n)]^{1/5}"
+  )
 }
 
 #' Nadaraya-Watson kernel regression
@@ -91,6 +100,7 @@ morie_bandwidth_mise <- function(x, f_second_deriv_l2 = NULL) {
 #' @return list: grid, fitted, bandwidth, n.
 #' @references Horowitz, Ch. 2.
 #' @examples
+#' set.seed(1)
 #' morie_nw_regression(rnorm(100), rnorm(100))$bandwidth
 #' @export
 morie_nw_regression <- function(x, y, grid = NULL, h = NULL) {
@@ -105,8 +115,10 @@ morie_nw_regression <- function(x, y, grid = NULL, h = NULL) {
     s <- sum(w)
     if (s > 0) sum(w * y) / s else NA_real_
   }, 0)
-  list(grid = g, fitted = fitted, bandwidth = hh, n = length(x),
-       method = "NW local constant; O(h) boundary bias")
+  list(
+    grid = g, fitted = fitted, bandwidth = hh, n = length(x),
+    method = "NW local constant; O(h) boundary bias"
+  )
 }
 
 #' Local linear regression
@@ -122,6 +134,7 @@ morie_nw_regression <- function(x, y, grid = NULL, h = NULL) {
 #' @return list: grid, fitted, slope, bandwidth, n.
 #' @references Horowitz, Ch. 2.
 #' @examples
+#' set.seed(1)
 #' morie_local_linear(runif(200), runif(200))$bandwidth
 #' @export
 morie_local_linear <- function(x, y, grid = NULL, h = NULL) {
@@ -141,12 +154,15 @@ morie_local_linear <- function(x, y, grid = NULL, h = NULL) {
     X <- cbind(1, x - g[i])
     WX <- X * w
     coef <- tryCatch(solve(t(X) %*% WX, t(WX) %*% y),
-                     error = function(e) qr.solve(t(X) %*% WX, t(WX) %*% y))
+      error = function(e) qr.solve(t(X) %*% WX, t(WX) %*% y)
+    )
     fit[i] <- coef[1]
     slp[i] <- coef[2]
   }
-  list(grid = g, fitted = fit, slope = slp, bandwidth = hh, n = length(x),
-       method = "Local linear; O(h^2) bias including at the boundary")
+  list(
+    grid = g, fitted = fit, slope = slp, bandwidth = hh, n = length(x),
+    method = "Local linear; O(h^2) bias including at the boundary"
+  )
 }
 
 #' Series (sieve) regression
@@ -162,6 +178,7 @@ morie_local_linear <- function(x, y, grid = NULL, h = NULL) {
 #' @return list: fitted, coefficients, K, r_squared, df_ratio.
 #' @references Horowitz, Ch. 2.
 #' @examples
+#' set.seed(1)
 #' morie_series_regression(runif(100), runif(100), K = 4)$K
 #' @export
 morie_series_regression <- function(x, y, K = 5L, kind = "poly") {
@@ -175,10 +192,12 @@ morie_series_regression <- function(x, y, K = 5L, kind = "poly") {
   fit <- as.numeric(P %*% a)
   ss_res <- sum((y - fit)^2)
   ss_tot <- sum((y - mean(y))^2)
-  list(fitted = fit, coefficients = a, K = K,
-       r_squared = if (ss_tot > 0) 1 - ss_res / ss_tot else NA_real_,
-       df_ratio = K / length(x),
-       method = "Series regression; K must grow with n, like 1/h")
+  list(
+    fitted = fit, coefficients = a, K = K,
+    r_squared = if (ss_tot > 0) 1 - ss_res / ss_tot else NA_real_,
+    df_ratio = K / length(x),
+    method = "Series regression; K must grow with n, like 1/h"
+  )
 }
 
 #' Sieve basis
@@ -192,6 +211,7 @@ morie_series_regression <- function(x, y, K = 5L, kind = "poly") {
 #' @return numeric matrix (length(x) x K).
 #' @references Horowitz, Ch. 2.
 #' @examples
+#' set.seed(1)
 #' dim(morie_sieve_basis(runif(20), 4))
 #' @export
 morie_sieve_basis <- function(x, K = 5L, kind = "poly") {
@@ -231,6 +251,7 @@ morie_sieve_basis <- function(x, K = 5L, kind = "poly") {
 #' @return list: index_grid, G, index, bandwidth, rate_exponent, d.
 #' @references Horowitz, Ch. 2.
 #' @examples
+#' set.seed(1)
 #' X <- matrix(rnorm(200), ncol = 2)
 #' morie_index_regression(X, rnorm(100), c(1, -0.5))$rate_exponent
 #' @export
@@ -243,9 +264,11 @@ morie_index_regression <- function(X, y, beta, h = NULL, grid = NULL) {
   if (length(b) != ncol(X)) stop("beta must match the columns of X.", call. = FALSE)
   v <- as.numeric(X %*% b)
   out <- morie_nw_regression(v, y, grid = grid, h = h)
-  list(index_grid = out$grid, G = out$fitted, index = v,
-       bandwidth = out$bandwidth, rate_exponent = -0.4, d = ncol(X),
-       method = "NW on X'beta; n^{-2/5} rate regardless of d")
+  list(
+    index_grid = out$grid, G = out$fitted, index = v,
+    bandwidth = out$bandwidth, rate_exponent = -0.4, d = ncol(X),
+    method = "NW on X'beta; n^{-2/5} rate regardless of d"
+  )
 }
 
 #' Ichimura semiparametric least squares
@@ -264,6 +287,7 @@ morie_index_regression <- function(X, y, beta, h = NULL, grid = NULL) {
 #' @return list: beta, sse, converged, root_n, n, d.
 #' @references Horowitz, Ch. 2 (Ichimura 1993).
 #' @examples
+#' set.seed(1)
 #' X <- matrix(rnorm(200), ncol = 2)
 #' morie_ichimura(X, tanh(X %*% c(1, -0.6)))$beta[1]
 #' @export
@@ -289,12 +313,16 @@ morie_ichimura <- function(X, y, h = NULL) {
     o <- stats::optimize(function(b) sse(b), interval = c(-20, 20), tol = 1e-8)
     res <- list(par = o$minimum, value = o$objective, convergence = 0L)
   } else {
-    res <- stats::optim(rep(0, d - 1L), sse, method = "Nelder-Mead",
-                        control = list(maxit = 2000))
+    res <- stats::optim(rep(0, d - 1L), sse,
+      method = "Nelder-Mead",
+      control = list(maxit = 2000)
+    )
   }
-  list(beta = c(1, res$par), sse = res$value, converged = res$convergence == 0,
-       root_n = TRUE, n = nrow(X), d = d,
-       method = "Ichimura SLS; |b1|=1 and leave-one-out are both required")
+  list(
+    beta = c(1, res$par), sse = res$value, converged = res$convergence == 0,
+    root_n = TRUE, n = nrow(X), d = d,
+    method = "Ichimura SLS; |b1|=1 and leave-one-out are both required"
+  )
 }
 
 #' Manski maximum score and Horowitz's smoothed version
@@ -316,6 +344,7 @@ morie_ichimura <- function(X, y, h = NULL) {
 #'   standard_errors_valid.
 #' @references Horowitz, Ch. 3.
 #' @examples
+#' set.seed(1)
 #' X <- matrix(rnorm(200), ncol = 2)
 #' morie_maximum_score(X, as.numeric(X %*% c(1, -0.8) > 0))$rate_exponent
 #' @export
@@ -338,11 +367,13 @@ morie_maximum_score <- function(X, y, smoothed = FALSE, h = NULL, r = 2L) {
     } else {
       stats::optim(rep(0, d - 1L), neg, method = "BFGS")
     }
-    return(list(beta = c(1, res$par), objective = -res$value, bandwidth = hh,
-                rate_exponent = -r / (2 * r + 1),
-                limit_distribution = "normal", standard_errors_valid = TRUE,
-                n = n, d = d,
-                method = "Smoothed max score; normality restored"))
+    return(list(
+      beta = c(1, res$par), objective = -res$value, bandwidth = hh,
+      rate_exponent = -r / (2 * r + 1),
+      limit_distribution = "normal", standard_errors_valid = TRUE,
+      n = n, d = d,
+      method = "Smoothed max score; normality restored"
+    ))
   }
   neg <- function(rest) -sum(s * (as.numeric(X %*% c(1, rest)) > 0))
   best <- NULL
@@ -359,18 +390,22 @@ morie_maximum_score <- function(X, y, smoothed = FALSE, h = NULL, r = 2L) {
   } else {
     for (i in 0:8) {
       st <- if (i == 0) rep(0, d - 1L) else stats::rnorm(d - 1L)
-      rr <- stats::optim(st, neg, method = "Nelder-Mead",
-                         control = list(maxit = 3000))
+      rr <- stats::optim(st, neg,
+        method = "Nelder-Mead",
+        control = list(maxit = 3000)
+      )
       if (rr$value < bestv) {
         bestv <- rr$value
         best <- rr$par
       }
     }
   }
-  list(beta = c(1, best), score = -bestv, rate_exponent = -1 / 3,
-       limit_distribution = "Chernoff, non-normal",
-       standard_errors_valid = FALSE, n = n, d = d,
-       method = "Manski max score; median restriction only, n^{-1/3}")
+  list(
+    beta = c(1, best), score = -bestv, rate_exponent = -1 / 3,
+    limit_distribution = "Chernoff, non-normal",
+    standard_errors_valid = FALSE, n = n, d = d,
+    method = "Manski max score; median restriction only, n^{-1/3}"
+  )
 }
 
 #' Robinson's partially linear model
@@ -388,7 +423,9 @@ morie_maximum_score <- function(X, y, smoothed = FALSE, h = NULL, r = 2L) {
 #' @return list: beta, se, residuals, root_n, n, p.
 #' @references Horowitz, Ch. 2 (Robinson 1988).
 #' @examples
-#' Z <- runif(200); X <- matrix(rnorm(400), ncol = 2)
+#' set.seed(1)
+#' Z <- runif(200)
+#' X <- matrix(rnorm(400), ncol = 2)
 #' morie_partially_linear(X, Z, X %*% c(1.5, -0.7) + sin(2 * Z))$root_n
 #' @export
 morie_partially_linear <- function(X, Z, y, h = NULL) {
@@ -414,9 +451,11 @@ morie_partially_linear <- function(X, Z, y, h = NULL) {
   beta <- as.numeric(solve(A, t(Xt[ok, , drop = FALSE]) %*% yt[ok]))
   resid <- yt[ok] - Xt[ok, , drop = FALSE] %*% beta
   s2 <- sum(resid^2) / max(sum(ok) - p, 1)
-  list(beta = beta, se = sqrt(diag(s2 * solve(A))), residuals = as.numeric(resid),
-       bandwidth = hh, root_n = TRUE, n = n, p = p,
-       method = "Robinson partialling-out; beta root-n despite slow g")
+  list(
+    beta = beta, se = sqrt(diag(s2 * solve(A))), residuals = as.numeric(resid),
+    bandwidth = hh, root_n = TRUE, n = n, p = p,
+    method = "Robinson partialling-out; beta root-n despite slow g"
+  )
 }
 
 #' Backfitting for additive models
@@ -434,6 +473,7 @@ morie_partially_linear <- function(X, Z, y, h = NULL) {
 #' @return list: mu, components, fitted, n_iter, converged.
 #' @references Horowitz, Ch. 2.
 #' @examples
+#' set.seed(1)
 #' X <- matrix(runif(200), ncol = 2)
 #' morie_backfitting(X, X[, 1]^2 + sin(3 * X[, 2]))$converged
 #' @export
@@ -462,9 +502,11 @@ morie_backfitting <- function(X, y, h = NULL, max_iter = 50L, tol = 1e-6) {
       break
     }
   }
-  list(mu = mu, components = G, fitted = mu + rowSums(G), n_iter = it,
-       converged = conv, rate_exponent = -0.4, d = d, n = n,
-       method = "Backfitting; additivity restores n^{-2/5} in any d")
+  list(
+    mu = mu, components = G, fitted = mu + rowSums(G), n_iter = it,
+    converged = conv, rate_exponent = -0.4, d = d, n = n,
+    method = "Backfitting; additivity restores n^{-2/5} in any d"
+  )
 }
 
 #' Conditional quantile by inverting a kernel CDF
@@ -481,6 +523,7 @@ morie_backfitting <- function(X, y, h = NULL, max_iter = 50L, tol = 1e-6) {
 #' @return list: grid, quantile, tau, bandwidth, monotone_in_tau.
 #' @references Horowitz, Ch. 3.
 #' @examples
+#' set.seed(1)
 #' morie_kernel_quantile(runif(200), rnorm(200), tau = c(0.1, 0.9))$monotone_in_tau
 #' @export
 morie_kernel_quantile <- function(x, y, tau = 0.5, grid = NULL, h = NULL) {
@@ -506,9 +549,11 @@ morie_kernel_quantile <- function(x, y, tau = 0.5, grid = NULL, h = NULL) {
       out[i, j] <- ys[if (is.na(k)) length(ys) else k]
     }
   }
-  list(grid = g, quantile = if (length(taus) == 1L) as.numeric(out) else out,
-       tau = taus, bandwidth = hh, monotone_in_tau = TRUE,
-       method = "Invert a kernel conditional CDF; no quantile crossing")
+  list(
+    grid = g, quantile = if (length(taus) == 1L) as.numeric(out) else out,
+    tau = taus, bandwidth = hh, monotone_in_tau = TRUE,
+    method = "Invert a kernel conditional CDF; no quantile crossing"
+  )
 }
 
 #' Measure a convergence exponent
@@ -539,8 +584,10 @@ morie_rate_check <- function(errors, n_grid, expected_exponent) {
   }
   fit <- stats::lm(log(e) ~ log(n))
   slope <- unname(stats::coef(fit)[2])
-  list(observed_exponent = slope, expected_exponent = expected_exponent,
-       intercept = unname(stats::coef(fit)[1]),
-       consistent = abs(slope - expected_exponent) < 0.15,
-       method = "log-log slope of error against n")
+  list(
+    observed_exponent = slope, expected_exponent = expected_exponent,
+    intercept = unname(stats::coef(fit)[1]),
+    consistent = abs(slope - expected_exponent) < 0.15,
+    method = "log-log slope of error against n"
+  )
 }

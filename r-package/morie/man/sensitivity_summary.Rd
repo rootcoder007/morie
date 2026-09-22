@@ -30,5 +30,6 @@ Produces a tidy data.frame with the estimate, CI, p-value,
 applicable E-values (RR / OR / HR), and a tipping-point delta.
 }
 \examples{
-sensitivity_summary(estimate = 5L, se = c(1, 2, 3, 4, 5, 6, 7, 8))
+str(sensitivity_summary(0.5, 0.15, rr = 1.8, prevalence = 0.2),
+    max.level = 1)
 }

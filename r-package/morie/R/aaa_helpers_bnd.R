@@ -5,8 +5,8 @@
 
 #' .bnd_yd
 #'
-#' A step of the helpers_bnd implementation. Called by \code{Bndlgt}, \code{Bndmoq},
-#' \code{Bndngt} and 9 others in the module.
+#' A step of the helpers_bnd implementation. Called by \code{Bndmoq}, \code{Bndngt},
+#' \code{Bndnpr} and 6 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -25,16 +25,17 @@
   yv <- as.numeric(unlist(y))
   dv <- as.numeric(unlist(D))
   if (length(yv) == 0L) stop(paste0(name, ": y is empty"))
-  if (length(dv) != length(yv))
+  if (length(dv) != length(yv)) {
     stop(paste0(name, ": y and D must have the same length"))
+  }
   if (any(dv != 0 & dv != 1)) stop(paste0(name, ": D must be coded 0/1"))
   list(y = yv, d = dv)
 }
 
 #' .bnd_cellmeans
 #'
-#' A step of the helpers_bnd implementation. Called by \code{.bnd_wc_ate},
-#' \code{.bnd_wc_intersect}, \code{Bndlgt} and 6 others in the module.
+#' A step of the helpers_bnd implementation. Called by \code{.bnd_wc_ate}, \code{Bndngt},
+#' \code{Bndnvg} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -53,8 +54,8 @@
 
 #' .bnd_wc_arm
 #'
-#' A step of the helpers_bnd implementation. Called by \code{.bnd_wc_ate},
-#' \code{.bnd_wc_intersect}, \code{Bndlgt} and 3 others in the module.
+#' A step of the helpers_bnd implementation. Called by \code{.bnd_wc_ate}, \code{Bndnpr},
+#' \code{Bnssel} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -70,7 +71,7 @@
 
 #' .bnd_wc_ate
 #'
-#' A step of the helpers_bnd implementation. Called by \code{Bndsdo}, \code{Bndtfm}, \code{Bnscbo}.
+#' A step of the helpers_bnd implementation. Called by \code{Bndtfm}, \code{Bnscbo}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -127,10 +128,12 @@
 .bnd_interval <- function(moments, name) {
   M <- as.matrix(moments)
   if (nrow(M) < 2L) stop(paste0(name, ": need at least two observations"))
-  if (ncol(M) != 2L)
+  if (ncol(M) != 2L) {
     stop(paste0(name, ": moments must have two columns, yL and yU"))
-  if (any(M[, 2] < M[, 1]))
+  }
+  if (any(M[, 2] < M[, 1])) {
     stop(paste0(name, ": yU is below yL at some observation"))
+  }
   list(yl = as.numeric(M[, 1]), yu = as.numeric(M[, 2]))
 }
 

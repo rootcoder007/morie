@@ -45,11 +45,12 @@ uniform base measure, smaller \code{alpha} follows the empirical
 histogram, and both limits are tested.
 }
 \examples{
+set.seed(1)
 morie_bnd_polya_tree(stats::rnorm(100), grid = c(-1, 0, 1))$density
 }
 \references{
 Lavine (1992), \emph{Annals of Statistics} 20:1222-1235;
 Ferguson (1974), \emph{Annals of Statistics} 2:615-629; Kraft (1964),
-\emph{J. Applied Probability} 1:385-388; Hanson (2006), \emph{JASA}
+\emph{J. Applied Probability} 1:385-388; Hanson (2006), *JASA*
 101:1548-1565.
 }

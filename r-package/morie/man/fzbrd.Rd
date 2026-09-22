@@ -27,6 +27,7 @@ Richardson-style extrapolation cancels the O(h^2) bias of the KDFE:
 hat F_h(t) - hat F_ch(t))/(c^2-1).}
 }
 \examples{
+set.seed(1)
 fzbrd(x = rnorm(50))
 }
 \keyword{internal}

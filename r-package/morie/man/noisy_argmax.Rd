@@ -2,20 +2,26 @@
 % Please edit documentation in R/pate_native.R
 \name{noisy_argmax}
 \alias{noisy_argmax}
-\title{Equation 1: argmax_j \{n_j + Lap(1/gamma)\}. One independent}
+\title{noisy_argmax}
 \usage{
 noisy_argmax(counts, gamma, seed = 0)
 }
 \arguments{
-\item{counts}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{counts}{A vector; its length is taken and its elements indexed.}
 
-\item{gamma}{Numeric; combined arithmetically in the body.}
+\item{gamma}{Passed to \code{.pate_lap_draw}.}
 
 \item{seed}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 }
 \value{
-A numeric value.
+The value of \code{arg}, as built in the body.
 }
 \description{
-Laplace draw per class with scale 1/gamma.
+A step of the pate_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+noisy_argmax(counts = c(1, 2, 3, 4, 5, 6, 7, 8), gamma = 0.5)
+}
+\keyword{internal}

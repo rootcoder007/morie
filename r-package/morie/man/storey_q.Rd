@@ -11,18 +11,20 @@ storey_q(p_values, alpha = 0.05, lambda_param = 0.5, labels = NULL)
 
 \item{alpha}{Significance level.}
 
-\item{lambda_param}{Tuning parameter in (0, 1) for the pi0 estimator.}
+\item{lambda_param}{Tuning parameter in (0, 1) for the pi0
+estimator.}
 
 \item{labels}{Optional character vector of test labels.}
 }
 \value{
-A \code{morie_rich_result} list with adjusted q-values plus the
-estimated \code{pi0} and \code{lambda_param} (see
-\code{morie_multiple_testing}).
+An object of class \code{"morie_multiple_testing_result"}.
 }
 \description{
 Estimates the proportion of true null hypotheses (pi0) and
-tightens the BH thresholds by that factor.
+tightens the BH thresholds by that factor. Delegates to
+\code{qvalue::qvalue} (Bioconductor) when installed; otherwise
+falls back to an inline Storey-style cutoff so the wrapper keeps
+working on CRAN-only installs.
 }
 \examples{
 if (requireNamespace("qvalue", quietly = TRUE)) {

@@ -18,5 +18,6 @@ A \code{morie_specification_test}.
 Score (Lagrange multiplier) test
 }
 \examples{
-score_test(score_vector = 5L, information_matrix = 5L)
+set.seed(1)
+str(score_test(c(0.5, -0.2), diag(2) * 10), max.level = 1)
 }

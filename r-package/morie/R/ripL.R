@@ -19,7 +19,17 @@
 # that an undefined K -- the border correction retaining no events at that
 # distance -- stays NA instead of being clamped to zero by max(K, 0).
 
-#' @noRd
+#' morie_ripley_l_function
+#'
+#' @param points Argument `points`; see Usage.
+#' @param window Argument `window`; see Usage.
+#' @param r Argument `r`; see Usage.
+#' @param correction Argument `correction`; see Usage.
+#' @return A list with `r`, `l`, `l_uncentred`, `k`, `lambda_est`, `method`.
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie:::morie_ripley_l_function(M)
+#' @keywords internal
 morie_ripley_l_function <- function(points, window = NULL, r = NULL,
                                     correction = "border") {
   p <- as.matrix(points)

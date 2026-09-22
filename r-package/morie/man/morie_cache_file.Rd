@@ -24,10 +24,13 @@ environments (which may lack the original files) can still run tests.
 }
 \examples{
 \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-tdir <- tempfile("morie-cache-")
-dir.create(tdir)
-f <- file.path(tdir, "demo.csv")
-write.csv(data.frame(x = 1:3, y = 4:6), f, row.names = FALSE)
-morie_cache_file(f, "demo", db_path = file.path(tdir, "cache.db"))
+# The SQLite backend needs the optional 'RSQLite' package.
+if (requireNamespace("RSQLite", quietly = TRUE)) {
+  tdir <- tempfile("morie-cache-")
+  dir.create(tdir)
+  f <- file.path(tdir, "demo.csv")
+  write.csv(data.frame(x = 1:3, y = 4:6), f, row.names = FALSE)
+  morie_cache_file(f, "demo", db_path = file.path(tdir, "cache.db"))
+}
 \dontshow{\}) # examplesIf}
 }

@@ -24,3 +24,8 @@ both branches plus the baroreflex.  The components are returned
 individually and in normalized units so no interpretation has to rest
 on the ratio alone.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+HrvRatio(V)
+}
+\keyword{internal}

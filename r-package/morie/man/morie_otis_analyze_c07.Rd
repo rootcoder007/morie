@@ -10,14 +10,13 @@ morie_otis_analyze_c07(data)
 \item{data}{c07 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines and alert x gender and
-alert x year crosstabs of restrictive-confinement and segregation counts.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 Individuals x alerts x gender (c07)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_c07(V)
+otis_c07 <- morie_synth_otis("c07", n = 120L, seed = 1L)
+res <- morie_otis_analyze_c07(otis_c07)
+class(res)
 }

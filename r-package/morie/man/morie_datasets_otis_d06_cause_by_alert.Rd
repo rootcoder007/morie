@@ -11,22 +11,20 @@ morie_datasets_otis_d06_cause_by_alert(
 )
 }
 \arguments{
-\item{offline}{If \code{TRUE} (default), read the bundled synthetic
+\item{offline}{If \code{TRUE} (default), read the included synthetic
 fixture. If \code{FALSE}, hit Ontario CKAN (\code{resource_id} required).}
 
 \item{resource_id}{Optional CKAN resource id (required for live).}
 
 \item{source}{One of \code{NULL} (default, ships an empty 0-row frame
-with the documented schema when no real CKAN row is bundled),
-\code{"real"} (force the real CKAN sample bundled in \verb{inst/extdata/},
+with the documented schema when no real CKAN row is included),
+\code{"real"} (force the real CKAN sample included in \verb{inst/extdata/},
 error if absent), or \code{"synth"} (return a deterministic
 \code{set.seed()} synthetic for didactic examples).}
 }
 \value{
-A \code{data.frame} of OTIS d06 Deaths-in-Custody cause-by-alert
-rows resolved through the shared OTIS dispatcher (bundled
-sample, live Ontario CKAN, synthetic, or empty schema per
-\code{source}). Columns mirror the upstream resource.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 }
 \description{
 OTIS d06 -- Deaths in custody by alert type x institution

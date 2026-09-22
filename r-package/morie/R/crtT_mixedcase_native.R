@@ -6,7 +6,7 @@
 # Programming, Vol. 2, Sec. 4.3.2 (CRT in computer arithmetic, as
 # cited by the stub).
 
-#' Extended Euclid: returns (g, c, d) with c*a + d*b = g
+#' Extended Euclid: returns (g, c, d) with c&#42;a + d&#42;b = g
 #'
 #' A step of the crtT_mixedcase_native implementation. Called by \code{crtT}.
 #' See the file header for the source the module follows.
@@ -50,6 +50,9 @@
 #' @return A list with \code{estimate}, \code{modulus}, \code{residues}, \code{moduli},
 #' \code{method}.
 #' @export
+#' @examples
+#' crtT(residues = 5L, moduli = 5L)
+#' @keywords internal
 crtT <- function(residues, moduli) {
   a <- as.integer(residues)
   m <- as.integer(moduli)
@@ -93,6 +96,9 @@ morie_crtT <- crtT
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' crtT_cheatsheet()
+#' @keywords internal
 crtT_cheatsheet <- function() {
   "crtT: fold pairs via x + (b-x)*c*m with cm+dn=1 (ext. Euclid)"
 }

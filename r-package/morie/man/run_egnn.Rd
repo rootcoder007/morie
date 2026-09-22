@@ -7,9 +7,9 @@
 run_egnn(H, X, layers, phi_e, phi_x, phi_h, A = NULL, C = NULL)
 }
 \arguments{
-\item{H}{A matrix; passed to \code{as.matrix}.}
+\item{H}{Iterated over elementwise, with \code{lapply}.}
 
-\item{X}{A matrix; passed to \code{as.matrix}.}
+\item{X}{Iterated over elementwise, with \code{lapply}.}
 
 \item{layers}{Coerced to integer by the body, with \code{as.integer}.}
 
@@ -28,8 +28,19 @@ A list with \code{estimate}, \code{H}, \code{X}, \code{layers}, \code{method},
 \code{note}.
 }
 \description{
-A step of the egnnL_native implementation. Called by \code{egnn_layer},
-\code{egnnlayer}, \code{equivariantgnn} and 2 others in the module.
+A step of the egnnL_native implementation. Called by \code{e_gcn}, \code{egnn_layer},
+\code{egnnlayer} and 5 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+H <- lapply(1:4, function(i) rnorm(2))
+X <- lapply(1:4, function(i) rnorm(3))
+phi_e <- function(hi, hj, d2, a) c(hi + hj, d2)
+phi_x <- function(m) sum(m) * 0.01
+phi_h <- function(hi, agg) hi + 0.1 * agg[seq_along(hi)]
+r <- run_egnn(H, X, 2L, phi_e, phi_x, phi_h)
+str(r, max.level = 1)
+}
+\keyword{internal}

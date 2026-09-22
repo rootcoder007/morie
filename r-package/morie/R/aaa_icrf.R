@@ -26,13 +26,25 @@
     return(rep(v, n))
   }
   if (length(v) != n) {
-    stop(sprintf("%s has length %d; expected 1 or %d to match theta",
-                 name, length(v), n), call. = FALSE)
+    stop(sprintf(
+      "%s has length %d; expected 1 or %d to match theta",
+      name, length(v), n
+    ), call. = FALSE)
   }
   v
 }
 
-#' @noRd
+#' morie_item_characteristic_curve
+#'
+#' @param theta Argument `theta`; see Usage.
+#' @param a Argument `a`; see Usage.
+#' @param b Argument `b`; see Usage.
+#' @param c Argument `c`; see Usage.
+#' @return A list with `p`, `logit`, `theta`, `a`, `b`, `c`, `n`, `method`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_item_characteristic_curve(V)
+#' @keywords internal
 morie_item_characteristic_curve <- function(theta, a = 1, b = 0, c = 0) {
   th <- as.numeric(theta)
   n <- length(th)
@@ -51,8 +63,10 @@ morie_item_characteristic_curve <- function(theta, a = 1, b = 0, c = 0) {
   logit <- av * (th - bv)
   p <- cv + (1 - cv) * .icrf_expit(logit)
 
-  list(p = p, logit = logit, theta = th, a = av, b = bv, c = cv, n = n,
-       method = "Item characteristic curve, 3PL (Birnbaum 1968)")
+  list(
+    p = p, logit = logit, theta = th, a = av, b = bv, c = cv, n = n,
+    method = "Item characteristic curve, 3PL (Birnbaum 1968)"
+  )
 }
 
 #' @noRd

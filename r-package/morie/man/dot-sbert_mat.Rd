@@ -7,7 +7,7 @@
 .sbert_mat(x)
 }
 \arguments{
-\item{x}{A matrix; passed to \code{as.matrix}.}
+\item{x}{A matrix; the body checks with \code{is.matrix}.}
 }
 \value{
 Nothing; this branch always raises.

@@ -28,3 +28,8 @@ A step of the rangayyan_ccf implementation. Called by \code{CorrConv}, \code{XCo
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+XCorr(V, V)
+}
+\keyword{internal}

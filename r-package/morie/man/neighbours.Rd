@@ -23,3 +23,9 @@ A step of the sarimax_native implementation. Called by \code{auto_order}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(1)
+r <- neighbours(order = rnorm(10), seasonal_order = rnorm(10), constant = rnorm(10), s = rnorm(10))
+TRUE
+}
+\keyword{internal}

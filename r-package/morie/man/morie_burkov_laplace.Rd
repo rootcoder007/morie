@@ -11,6 +11,13 @@ morie_burkov_laplace(counts_ngram, counts_prefix, V)
 
 \item{V}{Vocabulary size.}
 }
+\value{
+A list with \code{estimate}, \code{count_ngram}, \code{count_prefix}, \code{vocab_size}, \code{n}, \code{method}.
+}
 \description{
 Laplace add-1 smoothing (Burkov Ch 2)
 }
+\examples{
+morie_burkov_laplace(counts_ngram = 3, counts_prefix = 10, V = 100)
+}
+\keyword{internal}

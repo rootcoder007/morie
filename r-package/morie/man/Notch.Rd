@@ -29,3 +29,7 @@ A step of the rangayyan_filt2 implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+Notch(notch_freq = 60, bandwidth = 5, fs = 1000)
+}
+\keyword{internal}

@@ -12,9 +12,9 @@
 # R's own d/p/q/r at 1e-13 or better in tests/testthat/test-dist-native.R.
 
 
-#' Neumaier compensated summation: the R-side counterpart of Python\'s
+#' Neumaier compensated summation: the R-side counterpart of Python's
 #'
-#' math.fsum (Shewchuk).  On ARM64 R\'s long double IS double, so base
+#' math.fsum (Shewchuk).  On ARM64 R's long double IS double, so base
 #' sum() accumulates rounding error this does not; the two language arms
 #' then agree to the last bit instead of to the platform.
 #'
@@ -51,7 +51,9 @@
 .morie_gammainc_q <- function(a, x) {
   # regularized UPPER incomplete gamma Q(a, x), computed directly so the
   # far tail never passes through 1 - P and lose its digits.
-  if (x <= 0) return(1)
+  if (x <= 0) {
+    return(1)
+  }
   if (x < a + 1) {
     1 - .morie_gammainc_p(a, x)
   } else {
@@ -93,8 +95,11 @@
   # fraction of its own, and the tail comes straight from the CF branch
   # of the incomplete gamma, which computes Q without forming 1 - P.
   vapply(x, function(v) {
-    if (v < 0) 2 - .morie_erfc(-v)
-    else .morie_gammainc_q(0.5, v * v)
+    if (v < 0) {
+      2 - .morie_erfc(-v)
+    } else {
+      .morie_gammainc_q(0.5, v * v)
+    }
   }, numeric(1))
 }
 
@@ -113,7 +118,9 @@
 #' res
 .morie_erf <- function(x) {
   vapply(x, function(v) {
-    if (v < 0) return(-.morie_erf(-v))
+    if (v < 0) {
+      return(-.morie_erf(-v))
+    }
     .morie_gammainc_p(0.5, v * v)
   }, numeric(1))
 }
@@ -129,7 +136,9 @@
 .morie_gammainc_p <- function(a, x) {
   # regularized lower incomplete gamma P(a, x): series for x < a + 1,
   # Lentz continued fraction for the complement otherwise.
-  if (x <= 0) return(0)
+  if (x <= 0) {
+    return(0)
+  }
   if (x < a + 1) {
     ap <- a
     term <- 1 / a
@@ -220,8 +229,12 @@
 #' @export
 .morie_betainc <- function(a, b, x) {
   # regularized incomplete beta I_x(a, b)
-  if (x <= 0) return(0)
-  if (x >= 1) return(1)
+  if (x <= 0) {
+    return(0)
+  }
+  if (x >= 1) {
+    return(1)
+  }
   lbeta_ <- lgamma(a + b) - lgamma(a) - lgamma(b)
   front <- exp(lbeta_ + a * log(x) + b * log1p(-x))
   if (x < (a + 1) / (a + b + 2)) {
@@ -247,8 +260,12 @@
 #' @return The value of \code{x}, as built in the body.
 #' @export
 .morie_bisect_q <- function(cdf, p, lo, hi, tol = 1e-13) {
-  if (p <= 0) return(lo)
-  if (p >= 1) return(hi)
+  if (p <= 0) {
+    return(lo)
+  }
+  if (p >= 1) {
+    return(hi)
+  }
   while (cdf(hi) < p) hi <- hi * 2 + 1
   while (cdf(lo) > p) lo <- lo * 2 - 1
   for (i in 1:200) {
@@ -283,6 +300,10 @@
 #' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Dnorm(V)
+#' @keywords internal
 Dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
   if (sd <= 0) stop("sd must be positive")
   z <- (x - mean) / sd
@@ -302,13 +323,20 @@ Dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Pnorm(V)
+#' @keywords internal
 Pnorm <- function(q, mean = 0, sd = 1, lower_tail = TRUE) {
   if (sd <= 0) stop("sd must be positive")
   z <- (q - mean) / sd
   # the tail comes from erfc directly: 1 - cdf has no digits left once
   # the cdf rounds to 1
-  if (lower_tail) 0.5 * .morie_erfc(-z / sqrt(2))
-  else 0.5 * .morie_erfc(z / sqrt(2))
+  if (lower_tail) {
+    0.5 * .morie_erfc(-z / sqrt(2))
+  } else {
+    0.5 * .morie_erfc(z / sqrt(2))
+  }
 }
 
 #' Qnorm
@@ -323,6 +351,9 @@ Pnorm <- function(q, mean = 0, sd = 1, lower_tail = TRUE) {
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' Qnorm(p = 0.5)
+#' @keywords internal
 Qnorm <- function(p, mean = 0, sd = 1, lower_tail = TRUE) {
   if (sd <= 0) stop("sd must be positive")
   pp <- if (lower_tail) p else 1 - p
@@ -341,6 +372,9 @@ Qnorm <- function(p, mean = 0, sd = 1, lower_tail = TRUE) {
 #' @param stream Passed to \code{.morie_random_uniform}. Defaults to \code{0}.
 #' @return The value of \code{Qnorm}.
 #' @export
+#' @examples
+#' Rnorm(n = 5L)
+#' @keywords internal
 Rnorm <- function(n, mean = 0, sd = 1, seed = 0, stream = 0) {
   # inversion of the Philox uniform stream: draw k depends only on
   # uniform k, so the stream is stable when n changes
@@ -362,6 +396,10 @@ Rnorm <- function(n, mean = 0, sd = 1, seed = 0, stream = 0) {
 #' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Dexp(V)
+#' @keywords internal
 Dexp <- function(x, rate = 1, log = FALSE) {
   if (rate <= 0) stop("rate must be positive")
   lg <- ifelse(x < 0, -Inf, log(rate) - rate * x)
@@ -379,6 +417,10 @@ Dexp <- function(x, rate = 1, log = FALSE) {
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Pexp(V)
+#' @keywords internal
 Pexp <- function(q, rate = 1, lower_tail = TRUE) {
   if (rate <= 0) stop("rate must be positive")
   p <- ifelse(q < 0, 0, -expm1(-rate * q))
@@ -395,6 +437,9 @@ Pexp <- function(q, rate = 1, lower_tail = TRUE) {
 #' @param rate Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' Qexp(p = 0.5)
+#' @keywords internal
 Qexp <- function(p, rate = 1) {
   if (rate <= 0) stop("rate must be positive")
   if (any(p < 0 | p >= 1)) stop("p must lie in [0, 1)")
@@ -413,6 +458,9 @@ Qexp <- function(p, rate = 1) {
 #' @param stream Passed to \code{.morie_random_uniform}. Defaults to \code{0}.
 #' @return The value of \code{Qexp}.
 #' @export
+#' @examples
+#' Rexp(n = 5L)
+#' @keywords internal
 Rexp <- function(n, rate = 1, seed = 0, stream = 0) {
   u <- .morie_random_uniform(n, seed = seed, stream = stream)
   Qexp(pmin(u, 1 - 1e-16), rate)
@@ -432,11 +480,15 @@ Rexp <- function(n, rate = 1, seed = 0, stream = 0) {
 #' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' Dgamma(x = c(1, 2, 3, 4, 5, 6, 7, 8), shape = 5L)
+#' @keywords internal
 Dgamma <- function(x, shape, rate = 1, log = FALSE) {
   if (shape <= 0 || rate <= 0) stop("shape and rate must be positive")
   lg <- ifelse(x <= 0, -Inf,
-               shape * log(rate) + (shape - 1) * log(x) - rate * x -
-                 lgamma(shape))
+    shape * log(rate) + (shape - 1) * log(x) - rate * x -
+      lgamma(shape)
+  )
   if (log) lg else exp(lg)
 }
 
@@ -452,6 +504,9 @@ Dgamma <- function(x, shape, rate = 1, log = FALSE) {
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' Pgamma(q = 0.5, shape = 5L)
+#' @keywords internal
 Pgamma <- function(q, shape, rate = 1, lower_tail = TRUE) {
   p <- vapply(q, function(v) {
     if (v <= 0) 0 else .morie_gammainc_p(shape, rate * v)
@@ -470,10 +525,17 @@ Pgamma <- function(q, shape, rate = 1, lower_tail = TRUE) {
 #' @param rate Passed to \code{Pgamma}. Defaults to \code{1}.
 #' @return A vector, from \code{vapply}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Qgamma(V, V)
+#' @keywords internal
 Qgamma <- function(p, shape, rate = 1) {
-  vapply(p, function(pp)
-    .morie_bisect_q(function(v) Pgamma(v, shape, rate), pp, 0, 1),
-    numeric(1))
+  vapply(
+    p, function(pp) {
+      .morie_bisect_q(function(v) Pgamma(v, shape, rate), pp, 0, 1)
+    },
+    numeric(1)
+  )
 }
 
 #' Dchisq
@@ -487,6 +549,9 @@ Qgamma <- function(p, shape, rate = 1) {
 #' @param log Passed to \code{Dgamma}. Defaults to \code{FALSE}.
 #' @return The value of \code{Dgamma}.
 #' @export
+#' @examples
+#' Dchisq(3, df = 2)
+#' @keywords internal
 Dchisq <- function(x, df, log = FALSE) Dgamma(x, df / 2, 0.5, log)
 #' Pchisq
 #'
@@ -499,8 +564,12 @@ Dchisq <- function(x, df, log = FALSE) Dgamma(x, df / 2, 0.5, log)
 #' @param lower_tail Passed to \code{Pgamma}. Defaults to \code{TRUE}.
 #' @return The value of \code{Pgamma}.
 #' @export
-Pchisq <- function(q, df, lower_tail = TRUE)
+#' @examples
+#' Pchisq(3.84, 1)
+#' @keywords internal
+Pchisq <- function(q, df, lower_tail = TRUE) {
   Pgamma(q, df / 2, 0.5, lower_tail)
+}
 #' Qchisq
 #'
 #' A step of the dist_native implementation. Called by \code{.rsconsistency}.
@@ -511,6 +580,10 @@ Pchisq <- function(q, df, lower_tail = TRUE)
 #' @param df Numeric; combined arithmetically in the body.
 #' @return The value of \code{Qgamma}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Qchisq(V, V)
+#' @keywords internal
 Qchisq <- function(p, df) Qgamma(p, df / 2, 0.5)
 
 # ---- Poisson / binomial ---------------------------------------------
@@ -526,12 +599,19 @@ Qchisq <- function(p, df) Qgamma(p, df / 2, 0.5)
 #' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' Dpois(x = c(1, 2, 3, 4, 5, 6, 7, 8), lambda = 0.5)
+#' @keywords internal
 Dpois <- function(x, lambda, log = FALSE) {
   if (lambda < 0) stop("lambda must be non-negative")
   k <- round(x)
   lg <- ifelse(k < 0, -Inf,
-               if (lambda > 0) k * log(lambda) - lambda - lgamma(k + 1)
-               else ifelse(k == 0, 0, -Inf))
+    if (lambda > 0) {
+      k * log(lambda) - lambda - lgamma(k + 1)
+    } else {
+      ifelse(k == 0, 0, -Inf)
+    }
+  )
   if (log) lg else exp(lg)
 }
 
@@ -546,6 +626,9 @@ Dpois <- function(x, lambda, log = FALSE) {
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' Ppois(q = 0.5, lambda = 0.5)
+#' @keywords internal
 Ppois <- function(q, lambda, lower_tail = TRUE) {
   # P(X <= k) = Q(k+1, lambda), the UPPER regularized incomplete gamma
   p <- vapply(q, function(v) {
@@ -565,6 +648,9 @@ Ppois <- function(q, lambda, lower_tail = TRUE) {
 #' @param lambda Passed to \code{Ppois}.
 #' @return A vector, from \code{vapply}.
 #' @export
+#' @examples
+#' Qpois(p = 0.5, lambda = 0.5)
+#' @keywords internal
 Qpois <- function(p, lambda) {
   # smallest k with cdf(k) >= p, as R defines it
   vapply(p, function(pp) {
@@ -587,13 +673,22 @@ Qpois <- function(p, lambda) {
 #' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' Dbinom(x = c(1, 2, 3, 4, 5, 6, 7, 8), size = 5L, prob = 0.5)
+#' @keywords internal
 Dbinom <- function(x, size, prob, log = FALSE) {
   if (prob < 0 || prob > 1) stop("prob must lie in [0, 1]")
   k <- round(x)
   lg <- vapply(k, function(kk) {
-    if (kk < 0 || kk > size) return(-Inf)
-    if (prob == 0) return(if (kk == 0) 0 else -Inf)
-    if (prob == 1) return(if (kk == size) 0 else -Inf)
+    if (kk < 0 || kk > size) {
+      return(-Inf)
+    }
+    if (prob == 0) {
+      return(if (kk == 0) 0 else -Inf)
+    }
+    if (prob == 1) {
+      return(if (kk == size) 0 else -Inf)
+    }
     lgamma(size + 1) - lgamma(kk + 1) - lgamma(size - kk + 1) +
       kk * log(prob) + (size - kk) * log1p(-prob)
   }, numeric(1))
@@ -612,13 +707,20 @@ Dbinom <- function(x, size, prob, log = FALSE) {
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' Pbinom(q = 0.5, size = 5L, prob = 0.5)
+#' @keywords internal
 Pbinom <- function(q, size, prob, lower_tail = TRUE) {
   # P(X <= k) = I_{1-p}(n - k, k + 1)
   p <- vapply(q, function(v) {
     k <- floor(v)
-    if (k < 0) 0
-    else if (k >= size) 1
-    else .morie_betainc(size - k, k + 1, 1 - prob)
+    if (k < 0) {
+      0
+    } else if (k >= size) {
+      1
+    } else {
+      .morie_betainc(size - k, k + 1, 1 - prob)
+    }
   }, numeric(1))
   if (lower_tail) p else 1 - p
 }
@@ -634,6 +736,9 @@ Pbinom <- function(q, size, prob, lower_tail = TRUE) {
 #' @param prob Passed to \code{Pbinom}.
 #' @return A vector, from \code{vapply}.
 #' @export
+#' @examples
+#' Qbinom(p = 0.5, size = 5L, prob = 0.5)
+#' @keywords internal
 Qbinom <- function(p, size, prob) {
   vapply(p, function(pp) {
     if (pp < 0 || pp > 1) stop("p must lie in [0, 1]")
@@ -657,11 +762,15 @@ Qbinom <- function(p, size, prob) {
 #' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' Dbeta(0.5, 2, 3)
+#' @keywords internal
 Dbeta <- function(x, shape1, shape2, log = FALSE) {
   if (shape1 <= 0 || shape2 <= 0) stop("shape parameters must be positive")
   lg <- ifelse(x <= 0 | x >= 1, -Inf,
-               (shape1 - 1) * log(x) + (shape2 - 1) * log1p(-x) +
-                 lgamma(shape1 + shape2) - lgamma(shape1) - lgamma(shape2))
+    (shape1 - 1) * log(x) + (shape2 - 1) * log1p(-x) +
+      lgamma(shape1 + shape2) - lgamma(shape1) - lgamma(shape2)
+  )
   if (log) lg else exp(lg)
 }
 
@@ -677,6 +786,9 @@ Dbeta <- function(x, shape1, shape2, log = FALSE) {
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' Pbeta(q = 1, shape1 = c(1, 2, 3, 4, 5, 6, 7, 8), shape2 = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 Pbeta <- function(q, shape1, shape2, lower_tail = TRUE) {
   p <- vapply(q, function(v) .morie_betainc(shape1, shape2, v), numeric(1))
   if (lower_tail) p else 1 - p
@@ -693,11 +805,18 @@ Pbeta <- function(q, shape1, shape2, lower_tail = TRUE) {
 #' @param shape2 Passed to \code{Pbeta}.
 #' @return A vector, from \code{vapply}.
 #' @export
+#' @examples
+#' Qbeta(p = 1, shape1 = c(1, 2, 3, 4, 5, 6, 7, 8), shape2 = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 Qbeta <- function(p, shape1, shape2) {
-  vapply(p, function(pp)
-    .morie_bisect_q(function(v)
-      Pbeta(min(max(v, 0), 1), shape1, shape2), pp, 0, 1),
-    numeric(1))
+  vapply(
+    p, function(pp) {
+      .morie_bisect_q(function(v) {
+        Pbeta(min(max(v, 0), 1), shape1, shape2)
+      }, pp, 0, 1)
+    },
+    numeric(1)
+  )
 }
 
 #' Dt
@@ -711,6 +830,9 @@ Qbeta <- function(p, shape1, shape2) {
 #' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' Dt(0, 5)
+#' @keywords internal
 Dt <- function(x, df, log = FALSE) {
   if (df <= 0) stop("df must be positive")
   lg <- lgamma((df + 1) / 2) - lgamma(df / 2) - 0.5 * log(df * pi) -
@@ -729,6 +851,9 @@ Dt <- function(x, df, log = FALSE) {
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' Pt(2.015, 5)
+#' @keywords internal
 Pt <- function(q, df, lower_tail = TRUE) {
   p <- vapply(q, function(v) {
     xb <- df / (df + v * v)
@@ -741,22 +866,29 @@ Pt <- function(q, df, lower_tail = TRUE) {
 #' The t is symmetric: qt(p) = -qt(1 - p) and qt(0.5) = 0 exactly
 #'
 #' Without this, bisection lands on the cdf plateau around zero --
-#' betainc\'s 1 - xb underflows for |v| < ~1e-8, the cdf sits at exactly
+#' betainc's 1 - xb underflows for |v| < ~1e-8, the cdf sits at exactly
 #' 0.5 there, and both bisection and Newton are blind inside it.
 #'
 #' @param p Iterated over elementwise, with \code{vapply}.
 #' @param df Passed to \code{Pt}.
 #' @return A vector, from \code{vapply}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Qt(V, V)
+#' @keywords internal
 Qt <- function(p, df) {
   # The t is symmetric: qt(p) = -qt(1 - p) and qt(0.5) = 0 exactly.
   # Without this, bisection lands on the cdf plateau around zero --
   # betainc's 1 - xb underflows for |v| < ~1e-8, the cdf sits at exactly
   # 0.5 there, and both bisection and Newton are blind inside it.
   vapply(p, function(pp) {
-    if (pp == 0.5) return(0)
-    if (pp < 0.5)
+    if (pp == 0.5) {
+      return(0)
+    }
+    if (pp < 0.5) {
       return(-.morie_bisect_q(function(v) Pt(v, df), 1 - pp, -1, 1))
+    }
     .morie_bisect_q(function(v) Pt(v, df), pp, -1, 1)
   }, numeric(1))
 }
@@ -773,10 +905,16 @@ Qt <- function(p, df) {
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' Pf(4.26, 3, 10)
+#' @keywords internal
 Pf <- function(q, df1, df2, lower_tail = TRUE) {
   p <- vapply(q, function(v) {
-    if (v <= 0) 0
-    else .morie_betainc(df1 / 2, df2 / 2, df1 * v / (df1 * v + df2))
+    if (v <= 0) {
+      0
+    } else {
+      .morie_betainc(df1 / 2, df2 / 2, df1 * v / (df1 * v + df2))
+    }
   }, numeric(1))
   if (lower_tail) p else 1 - p
 }
@@ -792,39 +930,43 @@ Pf <- function(q, df1, df2, lower_tail = TRUE) {
 #' @param df2 Passed to \code{Pf}.
 #' @return A vector, from \code{vapply}.
 #' @export
+#' @examples
+#' Qf(p = 1, df1 = c(1, 2, 3, 4, 5, 6, 7, 8), df2 = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 Qf <- function(p, df1, df2) {
-  vapply(p, function(pp)
-    .morie_bisect_q(function(v) Pf(v, df1, df2), pp, 0, 1), numeric(1))
+  vapply(p, function(pp) {
+    .morie_bisect_q(function(v) Pf(v, df1, df2), pp, 0, 1)
+  }, numeric(1))
 }
 
 # canonical names are capitalized so library(morie) never masks
 # stats:: -- morie::Dnorm, or bare Dnorm after attach.  The old
 # morie_ spellings stay as aliases per ledger/NAMING.md.
-morie_dbeta <- Dbeta  # alias: pre-policy spelling
-morie_dbinom <- Dbinom  # alias: pre-policy spelling
-morie_dchisq <- Dchisq  # alias: pre-policy spelling
-morie_dexp <- Dexp  # alias: pre-policy spelling
-morie_dgamma <- Dgamma  # alias: pre-policy spelling
-morie_dnorm <- Dnorm  # alias: pre-policy spelling
-morie_dpois <- Dpois  # alias: pre-policy spelling
-morie_dt <- Dt  # alias: pre-policy spelling
-morie_pbeta <- Pbeta  # alias: pre-policy spelling
-morie_pbinom <- Pbinom  # alias: pre-policy spelling
-morie_pchisq <- Pchisq  # alias: pre-policy spelling
-morie_pexp <- Pexp  # alias: pre-policy spelling
-morie_pf <- Pf  # alias: pre-policy spelling
-morie_pgamma <- Pgamma  # alias: pre-policy spelling
-morie_pnorm <- Pnorm  # alias: pre-policy spelling
-morie_ppois <- Ppois  # alias: pre-policy spelling
-morie_pt <- Pt  # alias: pre-policy spelling
-morie_qbeta <- Qbeta  # alias: pre-policy spelling
-morie_qbinom <- Qbinom  # alias: pre-policy spelling
-morie_qchisq <- Qchisq  # alias: pre-policy spelling
-morie_qexp <- Qexp  # alias: pre-policy spelling
-morie_qf <- Qf  # alias: pre-policy spelling
-morie_qgamma <- Qgamma  # alias: pre-policy spelling
-morie_qnorm <- Qnorm  # alias: pre-policy spelling
-morie_qpois <- Qpois  # alias: pre-policy spelling
-morie_qt <- Qt  # alias: pre-policy spelling
-morie_rexp <- Rexp  # alias: pre-policy spelling
-morie_rnorm <- Rnorm  # alias: pre-policy spelling
+morie_dbeta <- Dbeta # alias: pre-policy spelling
+morie_dbinom <- Dbinom # alias: pre-policy spelling
+morie_dchisq <- Dchisq # alias: pre-policy spelling
+morie_dexp <- Dexp # alias: pre-policy spelling
+morie_dgamma <- Dgamma # alias: pre-policy spelling
+morie_dnorm <- Dnorm # alias: pre-policy spelling
+morie_dpois <- Dpois # alias: pre-policy spelling
+morie_dt <- Dt # alias: pre-policy spelling
+morie_pbeta <- Pbeta # alias: pre-policy spelling
+morie_pbinom <- Pbinom # alias: pre-policy spelling
+morie_pchisq <- Pchisq # alias: pre-policy spelling
+morie_pexp <- Pexp # alias: pre-policy spelling
+morie_pf <- Pf # alias: pre-policy spelling
+morie_pgamma <- Pgamma # alias: pre-policy spelling
+morie_pnorm <- Pnorm # alias: pre-policy spelling
+morie_ppois <- Ppois # alias: pre-policy spelling
+morie_pt <- Pt # alias: pre-policy spelling
+morie_qbeta <- Qbeta # alias: pre-policy spelling
+morie_qbinom <- Qbinom # alias: pre-policy spelling
+morie_qchisq <- Qchisq # alias: pre-policy spelling
+morie_qexp <- Qexp # alias: pre-policy spelling
+morie_qf <- Qf # alias: pre-policy spelling
+morie_qgamma <- Qgamma # alias: pre-policy spelling
+morie_qnorm <- Qnorm # alias: pre-policy spelling
+morie_qpois <- Qpois # alias: pre-policy spelling
+morie_qt <- Qt # alias: pre-policy spelling
+morie_rexp <- Rexp # alias: pre-policy spelling
+morie_rnorm <- Rnorm # alias: pre-policy spelling

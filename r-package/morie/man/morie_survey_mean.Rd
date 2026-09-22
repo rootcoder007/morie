@@ -14,24 +14,16 @@ the \code{survey} package directly).}
 the \code{design} object (\code{morie_survey_mean}).}
 }
 \value{
-A named list with elements \code{mean} and \code{se} (and,
-in the fallback path, also \code{ci_lower}, \code{ci_upper}).
+A named \code{list} (see Details).
 }
 \description{
 Survey-weighted mean (delegates to \code{survey::svymean} when available)
 }
 \examples{
 \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-.make_survey_df <- function(n = 100L, seed = 1L) {
-    set.seed(seed)
-    data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
-        5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"),
-        n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE),
-        fpc = rep(1000L, n))
-}
-df <- .make_survey_df()
-w <- rep(1, 4)
-design_fb <- structure(list(data = df, weights = df$w), class = "morie_survey_design_fallback")
-morie_survey_mean(design_fb, "y")
+set.seed(1)
+df <- data.frame(y = rnorm(40), w = runif(40, 0.5, 2))
+d <- morie_survey_design(df, "w")
+str(morie_survey_mean(d, "y"), max.level = 1)
 \dontshow{\}) # examplesIf}
 }

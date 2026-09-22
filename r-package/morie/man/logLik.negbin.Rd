@@ -11,6 +11,20 @@
 
 \item{...}{Ignored; accepted for S3 consistency.}
 }
+\value{
+The value of \code{val}, as built in the body.
+}
 \description{
 Log-likelihood of method for \code{negbin} objects
 }
+\examples{
+if (requireNamespace("MASS", quietly = TRUE)) {
+  D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+  morie:::logLik.negbin(D)
+}
+}
+\references{
+Venables, W. N., & Ripley, B. D. (2002). \emph{Modern
+Applied Statistics with S}. Springer.
+}
+\keyword{internal}

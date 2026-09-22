@@ -33,7 +33,7 @@ List with \code{estimate} (predictions), \code{predictions},
 }
 \description{
 Solves the ordinary-kriging system
-\eqn{[[Gamma, 1], [1 prime, 0]] [lambda; mu] = [gamma_0; 1]} at each
+\eqn{[[Gamma, 1], [1', 0]] [lambda; mu] = [gamma_0; 1]} at each
 prediction location, where \code{Gamma_ij} is the semivariance between
 observed locations and \code{gamma_0} the semivariance between the
 observed locations and the target.  The unbiasedness constraint
@@ -44,8 +44,8 @@ Formula: gamma(h) = 0 for h = 0; nugget + (sill - nugget) *
 (1.5 h/a - 0.5 (h/a)^3) for 0 < h <= a; sill for h > a.
 }
 \examples{
-Krig(known_coords = c(1, 2, 3, 4, 5, 6, 7, 8), known_values = c(1, 2, 3, 4, 5, 6, 7,
-8), predict_coords = c(1, 2, 3, 4, 5, 6, 7, 8))
+Krig(known_coords = c(1, 2, 3, 4, 5, 6, 7, 8), known_values = c(1, 2, 3, 4, 5, 6, 7, 8),
+  predict_coords = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Matheron (1963), Principles of geostatistics, Economic

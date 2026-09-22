@@ -24,3 +24,11 @@ A step of the informer_native implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(2)
+Q <- matrix(rnorm(16), 4, 4)
+K <- matrix(rnorm(16), 4, 4)
+V <- matrix(rnorm(16), 4, 4)
+str(morie_informer_full_attention(Q, K, V), max.level = 1)
+}
+\keyword{internal}

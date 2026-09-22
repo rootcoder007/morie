@@ -22,3 +22,10 @@ identical, note.
 \description{
 region is a predicate on an atom.
 }
+\examples{
+G <- morie_ddpest_single_atoms(xs = c(0, 1), alpha = 1, K = 5,
+                               weight_fn = function(x, h)
+                                 exp(-abs(h - 2 * x)))$G
+morie_ddpest_correlation(G, 0, 1, region = function(a) a <= 2)
+}
+\keyword{internal}

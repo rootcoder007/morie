@@ -19,3 +19,7 @@ A numeric value.
 \description{
 capped at 1.
 }
+\examples{
+glove_weight(x = 5L)
+}
+\keyword{internal}

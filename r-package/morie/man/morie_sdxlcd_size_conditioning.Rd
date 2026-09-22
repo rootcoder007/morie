@@ -21,3 +21,7 @@ A step of the sdxlcd_native implementation. Called by \code{morie_sdxlcd_conditi
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_sdxlcd_size_conditioning(h_original = 5L, w_original = 5L)
+}
+\keyword{internal}

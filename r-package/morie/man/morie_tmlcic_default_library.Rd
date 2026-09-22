@@ -2,7 +2,7 @@
 % Please edit documentation in R/tmlcic_native.R
 \name{morie_tmlcic_default_library}
 \alias{morie_tmlcic_default_library}
-\title{The chapter\'s example library: the unadjusted model, one main term}
+\title{The chapter's example library: the unadjusted model, one main term}
 \usage{
 morie_tmlcic_default_library(p, interactions = TRUE)
 }
@@ -18,3 +18,8 @@ The value of \code{lib}, as built in the body.
 per covariate, and optionally one treatment interaction each. cols
 are 0-based covariate indices.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_tmlcic_default_library(V)
+}
+\keyword{internal}

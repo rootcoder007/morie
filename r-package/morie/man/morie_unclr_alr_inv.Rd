@@ -19,3 +19,8 @@ A step of the unclr implementation. Called by \code{morie_unclr_lr_impute}.
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_unclr_alr_inv(V, V)
+}
+\keyword{internal}

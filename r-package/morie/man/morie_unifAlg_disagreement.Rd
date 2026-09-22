@@ -19,3 +19,9 @@ A step of the unifAlg_native implementation. Called by \code{morie_unifAlg_unify
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+a <- morie_unifAlg_app("f", morie_unifAlg_var("x"), morie_unifAlg_const("b"))
+b <- morie_unifAlg_app("f", morie_unifAlg_const("a"), morie_unifAlg_const("b"))
+morie_unifAlg_disagreement(a, b)
+}
+\keyword{internal}

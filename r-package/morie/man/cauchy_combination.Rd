@@ -12,12 +12,12 @@ cauchy_combination(p_values, weights = NULL)
 \item{weights}{Optional non-negative weights summing to 1.}
 }
 \value{
-A \code{morie_rich_result} list with elements \code{method},
-\code{statistic} (Cauchy combination statistic), and \code{p_value}
-(combined p).
+An object of class \code{"morie_multiple_testing_result"}.
 }
 \description{
-Robust to arbitrary correlation structure.
+Robust to arbitrary correlation structure. No clean CRAN
+equivalent (the ACAT package is GitHub-only); kept as an in-house
+implementation.
 }
 \examples{
 res <- cauchy_combination(c(0.01, 0.3, 0.5))

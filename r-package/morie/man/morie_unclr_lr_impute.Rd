@@ -23,3 +23,7 @@ A step of the unclr implementation. Called by \code{Lrda}, \code{Lrem}.
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+morie_unclr_lr_impute(X = c(1, 2, 3, 4, 5, 6, 7, 8), dl = 5L, n_iter = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

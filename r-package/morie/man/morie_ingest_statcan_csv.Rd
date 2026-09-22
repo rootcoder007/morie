@@ -8,7 +8,7 @@ morie_ingest_statcan_csv(
   url,
   member = NULL,
   timeout = 600,
-  user_agent = "morie/r (+https://github.com/rootcoder007/morie)",
+  user_agent = "morie/r (+https://github.com/rootcoder007/rmorie)",
   ...
 )
 }
@@ -58,4 +58,8 @@ df <- morie_ingest_statcan_csv(url)
 head(df)
 }
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+\code{\link{morie_ingest_statcan_cansim}},
+\code{\link{morie_cache_dir}}
 }

@@ -143,6 +143,12 @@ varcal_CHANNEL_SETS <- c("base_quality_strand")
 #' @param reference A vector; its length is taken and its elements indexed.
 #' @return A list with \code{observations}, \code{reference}, \code{depth}.
 #' @export
+#' @examples
+#' reads <- list(list(pos = 0L, seq = "ACGTACGT"),
+#'               list(pos = 2L, seq = "GTTCGT"))
+#' r <- varcal_pileup_column(reads, position = 3L, reference = "ACGTACGTAC")
+#' str(r, max.level = 1)
+#' @keywords internal
 varcal_pileup_column <- function(reads, position, reference) {
   reads <- .varcal_norm_reads(reads)
   reference <- .varcal_chars(reference)
@@ -257,6 +263,15 @@ varcal_find_candidates <- function(reads, reference, min_alt_count = 2,
 #' @return A list with \code{reference_row}, \code{read_rows}, \code{n_reads},
 #' \code{width}, \code{centre}, \code{channels}, \code{channel_set}, \code{note}.
 #' @export
+#' @examples
+#' reads <- c(
+#'   lapply(1:3, function(i) list(pos = 0L, seq = "ACGTTCGT")),
+#'   lapply(1:3, function(i) list(pos = 0L, seq = "ACGTACGT")))
+#' cands <- varcal_find_candidates(reads, reference = "ACGTACGTAC")
+#' enc <- varcal_encode_pileup(reads, "ACGTACGTAC", cands[[1]], width = 7,
+#'                             height = 8)
+#' str(enc, max.level = 1)
+#' @keywords internal
 varcal_encode_pileup <- function(reads, reference, candidate, width = 21,
                                  height = 100,
                                  channels = "base_quality_strand") {
@@ -334,6 +349,10 @@ varcal_encode_pileup <- function(reads, reference, candidate, width = 21,
 #' @param prior Optional; may be \code{NULL}. A vector; its length is taken.
 #' @return A list with \code{posterior}, \code{call}, \code{quality}, \code{scores}, \code{source}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' varcal_genotype_posterior(D)
+#' @keywords internal
 varcal_genotype_posterior <- function(image, scorer = NULL, prior = NULL) {
   if (is.null(prior)) {
     prior <- c(0.9985, 0.001, 0.0005)
@@ -400,6 +419,13 @@ varcal_genotype_posterior <- function(image, scorer = NULL, prior = NULL) {
 #' @return A list with \code{estimate}, \code{candidates}, \code{n_candidates},
 #' \code{calls}, \code{n_called}, \code{method}.
 #' @export
+#' @examples
+#' reads <- c(
+#'   lapply(1:3, function(i) list(pos = 0L, seq = "ACGTTCGT")),
+#'   lapply(1:3, function(i) list(pos = 0L, seq = "ACGTACGT")))
+#' r <- morie_varcal(reads, reference = "ACGTACGTAC")
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_varcal <- function(reads, reference, scorer = NULL, min_quality = 10.0,
                          ...) {
   reads <- .varcal_norm_reads(reads)
@@ -440,6 +466,12 @@ morie_varcal <- function(reads, reference, scorer = NULL, min_quality = 10.0,
 #' @param candidates Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' called <- list(list(position = 4L, alternate = "T"))
+#' truth <- list(list(position = 4L, alternate = "T"),
+#'               list(position = 7L, alternate = "G"))
+#' varcal_evaluate(called, truth)
+#' @keywords internal
 varcal_evaluate <- function(called, truth, candidates = NULL) {
   tset <- character(0)
   for (t in truth) {
@@ -493,6 +525,9 @@ varcal_evaluate <- function(called, truth, candidates = NULL) {
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' varcal_cheatsheet()
+#' @keywords internal
 varcal_cheatsheet <- function() {
   paste0(
     "varcal: candidates are generated with HIGH sensitivity and l",

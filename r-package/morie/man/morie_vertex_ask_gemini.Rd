@@ -39,6 +39,10 @@ the first candidate.
 }
 \examples{
 \dontrun{
-ans <- morie_vertex_ask_gemini("Summarize recent assault trends in Toronto.")
+\dontshow{if (morie:::.vertex_examples_ok()) withAutoprint(\{ # examplesIf}
+# Runs only when a Google Cloud project is configured; Vertex is an
+# OPTIONAL fallback -- the default LLM path is local Ollama.
+morie_vertex_ask_gemini("Summarize the MRM framework in one line.")
+\dontshow{\}) # examplesIf}
 }
 }

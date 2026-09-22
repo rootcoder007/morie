@@ -24,6 +24,12 @@ Eq. (1)-(2): segment each dimension, then embed each segment. The
 output is a 3D array indexed as \code{H[[i, d]]} for the i-th
 segment of dimension d.
 }
+\examples{
+set.seed(1)
+X <- matrix(rnorm(40), 20, 2)
+morie_crsfmr_dsw_embed(X, seg_len = 4)
+}
 \references{
 Zhang, Y. & Yan, J. (2023). Crossformer. ICLR 2023.
 }
+\keyword{internal}

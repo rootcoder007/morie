@@ -19,3 +19,8 @@ A list with \code{X}, \code{omega}, \code{dt}, \code{n}, \code{method}.
 \description{
 so it carries the sampling interval.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+MfInput(V, V)
+}
+\keyword{internal}

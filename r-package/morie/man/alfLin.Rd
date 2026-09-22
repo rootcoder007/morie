@@ -22,3 +22,8 @@ A step of the alf_core implementation. Called by \code{Alfbkb}, \code{Alfdgram},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+alfLin(V, V)
+}
+\keyword{internal}

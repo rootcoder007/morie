@@ -26,3 +26,19 @@ ternarised at 50\% and 75\% of the interval maximum, and matched
 against a ternary template.  Matching a TERNARY version is what makes
 it tolerant of P-wave amplitude and shape variation.
 }
+\examples{
+set.seed(4)
+fs <- 250
+n <- fs * 3
+x <- rep(0, n)
+qrs <- round(seq(0.5, 2.7, by = 0.75) * fs)
+for (i in qrs) {
+  x[(i - round(0.15 * fs)):(i - round(0.15 * fs) + 8)] <-
+    0.15 * exp(-((0:8 - 4) / 2)^2)
+  x[i:(i + 5)] <- c(0.2, 1.2, -0.5, 0.1, 0.05, 0)
+}
+x <- x + 0.005 * rnorm(n)
+r <- PWaveDet(x, qrs = qrs, fs = fs)
+str(r, max.level = 1)
+}
+\keyword{internal}

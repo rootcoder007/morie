@@ -20,3 +20,8 @@ A list with \code{lhs}, \code{sxd}, \code{max_difference}, \code{holds},
 \description{
 no information about W and are listed, not silently satisfied.
 }
+\examples{
+WienerFreqR(W = c(1, 2, 3, 4, 5, 6, 7, 8), sxx = c(1, 2, 3, 4, 5, 6, 7, 8),
+  sxd = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

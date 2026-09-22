@@ -21,3 +21,7 @@ lower sidelobes.  The rectangular window is included because it is
 the default -- doing nothing is choosing it -- and naming it makes
 that choice explicit.
 }
+\examples{
+WindowFn(N = 5L)
+}
+\keyword{internal}

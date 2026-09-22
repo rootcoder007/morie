@@ -22,7 +22,6 @@ c01 aggregate Ruhela: Female -> RC count
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_c01 <- morie_synth_otis("c01", n = 120L, seed = 1L)
 morie_otis_analyze_c01_ruhela_aggregate(otis_c01)
 }

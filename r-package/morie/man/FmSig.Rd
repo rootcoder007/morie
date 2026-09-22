@@ -28,3 +28,7 @@ said so: y = A cos(2 pi fc t + 2 pi kf integral m), f_inst = fc + kf
 m. The phase integral is trapezoidal; a plain running sum biases it
 by half a sample of m at each end, which drifts over a long record.
 }
+\examples{
+FmSig(c(rep(0, 10), rep(50, 10)), fc = 100, fs = 1000, kf = 1)
+}
+\keyword{internal}

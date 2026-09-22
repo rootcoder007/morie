@@ -23,6 +23,10 @@ penalty_path(
 
 \item{contrast}{See Usage.}
 }
+\value{
+The value of \code{$}.
+}
 \description{
 Just the penalty path, for sensitivity-only questions
 }
+\keyword{internal}

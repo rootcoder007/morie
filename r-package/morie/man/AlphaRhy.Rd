@@ -26,3 +26,7 @@ so the band is an argument, not a constant.  Both the band AND the
 amplitude have to be satisfied -- a lag in band with a tiny peak is
 not a rhythm.
 }
+\examples{
+AlphaRhy(x = c(1, 2, 3, 4, 5, 6, 7, 8), fs = 5L)
+}
+\keyword{internal}

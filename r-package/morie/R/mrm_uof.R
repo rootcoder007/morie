@@ -39,19 +39,8 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
-#' .uof_gini
-#'
-#' A step of the mrm_uof implementation. Called by \code{mrm_uof_force_concentration}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param x A vector; its length is taken.
-#' @return A numeric value.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .uof_gini(x = x)
-#' res
+#' Internal helper: Uof Gini
+#' @noRd
 .uof_gini <- function(x) {
   x <- sort(as.numeric(x))
   n <- length(x)
@@ -62,20 +51,8 @@ NULL
   (2 * sum(seq_len(n) * x) - (n + 1L) * s) / (n * s)
 }
 
-#' .uof_hill_alpha
-#'
-#' A step of the mrm_uof implementation. Called by \code{mrm_uof_force_concentration}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param x A vector; its length is taken and its elements indexed.
-#' @param x_min Numeric; combined arithmetically in the body. Defaults to \code{1}.
-#' @return A numeric value.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .uof_hill_alpha(x = x)
-#' res
+#' Internal helper: Uof Hill Alpha
+#' @noRd
 .uof_hill_alpha <- function(x, x_min = 1.0) {
   x <- as.numeric(x)
   x <- x[!is.na(x) & x >= x_min]
@@ -89,20 +66,8 @@ NULL
   1.0 + length(x) / denom
 }
 
-#' .uof_topk_share
-#'
-#' A step of the mrm_uof implementation. Called by \code{mrm_uof_force_concentration}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param x A vector; its length is taken.
-#' @param k A count; the body uses it as \code{seq_len(...)}.
-#' @return A numeric value.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .uof_topk_share(x = x, k = 3L)
-#' res
+#' Internal helper: Uof Topk Share
+#' @noRd
 .uof_topk_share <- function(x, k) {
   x <- as.numeric(x)
   s <- sum(x, na.rm = TRUE)
@@ -113,20 +78,8 @@ NULL
   sum(sort(x, decreasing = TRUE)[seq_len(k)]) / s
 }
 
-#' .uof_wilson_ci
-#'
-#' A step of the mrm_uof implementation. Called by \code{mrm_uof_demographic_disparity}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param k Numeric; combined arithmetically in the body.
-#' @param n Numeric; combined arithmetically in the body.
-#' @param z Numeric; combined arithmetically in the body. Defaults to \code{1.95996398454005}.
-#' @return A vector, from \code{c}.
-#' @export
-#' @examples
-#' res <- .uof_wilson_ci(k = 3L, n = 3L)
-#' res
+#' Internal helper: Uof Wilson Ci
+#' @noRd
 .uof_wilson_ci <- function(k, n, z = 1.959963984540054) {
   if (n == 0L) {
     return(c(NA_real_, NA_real_))
@@ -143,19 +96,8 @@ NULL
   c(max(0.0, centre - margin), min(1.0, centre + margin))
 }
 
-#' .uof_cramers_v
-#'
-#' A step of the mrm_uof implementation. Called by \code{mrm_uof_region_locality},
-#' \code{mrm_uof_weapon_diversity}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param chi2 Numeric; combined arithmetically in the body.
-#' @param n Numeric; combined arithmetically in the body.
-#' @param r Numeric; combined arithmetically in the body.
-#' @param c Numeric; combined arithmetically in the body.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Uof Cramers V
+#' @noRd
 .uof_cramers_v <- function(chi2, n, r, c) {
   k <- min(r - 1L, c - 1L)
   if (k <= 0L || n == 0L) {
@@ -164,19 +106,8 @@ NULL
   sqrt(chi2 / (n * k))
 }
 
-#' .uof_fmt_pct
-#'
-#' A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit},
-#' \code{mrm_uof_force_concentration}, \code{mrm_uof_region_locality}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param p Numeric; combined arithmetically in the body.
-#' @return A character value.
-#' @export
-#' @examples
-#' res <- .uof_fmt_pct(p = 0.5)
-#' res
+#' Internal helper: Uof Fmt Pct
+#' @noRd
 .uof_fmt_pct <- function(p) {
   if (!is.finite(p)) {
     return("n/a")
@@ -184,22 +115,8 @@ NULL
   sprintf("%.2f%%", 100 * p)
 }
 
-#' .uof_result
-#'
-#' A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit},
-#' \code{mrm_uof_demographic_disparity}, \code{mrm_uof_force_concentration} and 3 others
-#' in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param title Carried through into a list the body builds.
-#' @param call Carried through into a list the body builds.
-#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
-#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
-#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
-#' @param ... Passed through.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Uof Result
+#' @noRd
 .uof_result <- function(title, call, summary_lines = list(),
                          warnings = character(0),
                          interpretation = "",
@@ -373,10 +290,13 @@ mrm_uof_force_concentration <- function(df, force_col, count_col = NULL) {
 #' @return A named list with \code{chi2}, \code{pvalue}, \code{df},
 #'   \code{cramers_v}, \code{top_residuals} (list-of-lists), and an
 #'   \code{interpretation} paragraph.
-#' @export
 #' @examples
-#' df <- data.frame(f = character(0), cnt = integer(0))
-#' mrm_uof_weapon_diversity(df, "w", "f")
+#' set.seed(1)
+#' df <- data.frame(weapon = sample(c("OC", "baton", "none"), 40, TRUE),
+#'                  force = sample(c("low", "high"), 40, TRUE))
+#' res <- mrm_uof_weapon_diversity(df, "weapon", "force")
+#' res$title
+#' @export
 mrm_uof_weapon_diversity <- function(df, weapon_col, force_col) {
   stopifnot(is.data.frame(df), is.character(weapon_col), is.character(force_col))
 
@@ -507,9 +427,10 @@ mrm_uof_weapon_diversity <- function(df, weapon_col, force_col) {
 #'   counted otherwise).
 #' @return Named list with \code{years}, \code{counts}, \code{yoy_pct},
 #'   \code{change_point_year}, \code{mean_abs_yoy_pct}.
-#' @export
 #' @examples
-#' mrm_uof_yoy_change()
+#' inc <- morie_datasets_corrections_uof_incidents()
+#' str(mrm_uof_yoy_change(df = inc, year_col = "year"), max.level = 1)
+#' @export
 mrm_uof_yoy_change <- function(dfs_by_year = NULL, df = NULL,
                                 year_col = NULL, count_col = NULL) {
   warnings <- character(0)
@@ -655,10 +576,13 @@ mrm_uof_yoy_change <- function(dfs_by_year = NULL, df = NULL,
 #' @param region_now_col Most-recent region.
 #' @return Named list with \code{diagonal_share}, \code{chi2},
 #'   \code{pvalue}, \code{df}, \code{cramers_v}.
-#' @export
 #' @examples
-#' mrm_uof_region_locality(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)),
-#' region_at_col = c(1, 2, 3, 4, 5, 6, 7, 8), region_now_col = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' set.seed(1)
+#' df <- data.frame(region_at = sample(c("ON", "QC"), 40, TRUE),
+#'                  region_now = sample(c("ON", "QC"), 40, TRUE))
+#' res <- mrm_uof_region_locality(df, "region_at", "region_now")
+#' res$title
+#' @export
 mrm_uof_region_locality <- function(df, region_at_col, region_now_col) {
   stopifnot(is.data.frame(df))
   warnings <- character(0)
@@ -780,14 +704,11 @@ mrm_uof_region_locality <- function(df, region_at_col, region_now_col) {
 #'   CI. Set to 0 (default) to skip.
 #' @return Named list with \code{baseline}, \code{baseline_rate},
 #'   \code{per_category} (list of lists), \code{risk_ratios}.
-#' @export
 #' @examples
-#' incidents <- data.frame(
-#'   race = c("A", "A", "B", "B", "A", "B", "A", "B"),
-#'   force_used = c(0, 1, 1, 1, 0, 1, 0, 0)
-#' )
-#' mrm_uof_demographic_disparity(incidents, demo_col = "race",
-#'                               outcome_col = "force_used")
+#' eth <- morie_datasets_corrections_uof_ethnic_origin()
+#' res <- mrm_uof_demographic_disparity(eth, names(eth)[2], names(eth)[3])
+#' res$title
+#' @export
 mrm_uof_demographic_disparity <- function(df, demo_col, outcome_col,
                                            baseline = NULL,
                                            bootstrap_reps = 0L) {
@@ -989,10 +910,10 @@ mrm_uof_demographic_disparity <- function(df, demo_col, outcome_col,
 #'   carrying named entries with \code{name} and \code{dtype}.
 #' @return Named list with \code{per_column}, \code{missing_columns},
 #'   \code{extra_columns}, \code{dtype_mismatches}, \code{suspect_flags}.
-#' @export
 #' @examples
-#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' mrm_uof_data_quality_audit(D)
+#' inc <- morie_datasets_corrections_uof_incidents()
+#' str(mrm_uof_data_quality_audit(inc), max.level = 1)
+#' @export
 mrm_uof_data_quality_audit <- function(df, sidecar = NULL, expected_schema = NULL) {
   stopifnot(is.data.frame(df))
   warnings <- character(0)
@@ -1138,11 +1059,11 @@ mrm_uof_data_quality_audit <- function(df, sidecar = NULL, expected_schema = NUL
 #'
 #' @param x A \code{morie_mrm_uof_result} object.
 #' @param ... Ignored; accepted for S3 consistency.
-#' @return Invisibly returns \code{x} unchanged.
-#' @export
+#' @return \code{x}, invisibly.
 #' @examples
 #' inc <- morie_datasets_corrections_uof_incidents()
 #' print(mrm_uof_data_quality_audit(inc))
+#' @export
 print.morie_mrm_uof_result <- function(x, ...) {
   cat(x$title, "\n", strrep("=", nchar(x$title)), "\n", sep = "")
   if (!is.null(x$call) && length(x$call) == 1L && nzchar(x$call)) {

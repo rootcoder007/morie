@@ -23,3 +23,8 @@ microvolts in the book).  Measuring against the last counted turn
 rather than the previous sample is what makes it robust in noise, and
 what separates it from counting turning points.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+TurnsCount(V)
+}
+\keyword{internal}

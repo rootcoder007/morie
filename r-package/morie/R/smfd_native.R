@@ -24,7 +24,7 @@
 
 # Internal: evenly spaced knots, extended by 'degree' at each end.
 # Mirrors Python knot_sequence(xmin, xmax, nseg, degree) in smfd.
-#' Internal: evenly spaced knots, extended by \'degree\' at each end
+#' Internal: evenly spaced knots, extended by 'degree' at each end
 #'
 #' Mirrors Python knot_sequence(xmin, xmax, nseg, degree) in smfd.
 #'
@@ -34,6 +34,9 @@
 #' @param degree Numeric; combined arithmetically in the body. Defaults to \code{3L}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' smfd_knot_sequence(0, 1, nseg = 10L, degree = 3L)
+#' @keywords internal
 smfd_knot_sequence <- function(xmin, xmax, nseg = 10L, degree = 3L) {
   nseg   <- as.integer(nseg)
   degree <- as.integer(degree)
@@ -45,12 +48,12 @@ smfd_knot_sequence <- function(xmin, xmax, nseg = 10L, degree = 3L) {
 }
 
 # Internal: Cox-de Boor recursion for one B-spline. k is 1-based
-# (Python k-1 in 0-based). Mirrors Python _bspline(x, k, degree,
+# (Python k-1 in 0-based). Mirrors Python .bspline(x, k, degree,
 # knots) in smfd, including the half-open support, the special
 # right-closed last interval, and the strict-positive denominators.
 #' Internal: Cox-de Boor recursion for one B-spline. k is 1-based
 #'
-#' (Python k-1 in 0-based). Mirrors Python _bspline(x, k, degree, knots)
+#' (Python k-1 in 0-based). Mirrors Python .bspline(x, k, degree, knots)
 #' in smfd, including the half-open support, the special right-closed
 #' last interval, and the strict-positive denominators.
 #'
@@ -60,6 +63,9 @@ smfd_knot_sequence <- function(xmin, xmax, nseg = 10L, degree = 3L) {
 #' @param knots A vector; its length is taken and its elements indexed.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' smfd_bspline_one(x = 5L, k = 3L, degree = 3L, knots = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 smfd_bspline_one <- function(x, k, degree, knots) {
   if (degree == 0L) {
     last <- k == length(knots) - 1L
@@ -90,6 +96,10 @@ smfd_bspline_one <- function(x, k, degree, knots) {
 #' @param degree Numeric; combined arithmetically in the body. Defaults to \code{3L}.
 #' @return The value of \code{B}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' smfd_bspline_basis(V, V)
+#' @keywords internal
 smfd_bspline_basis <- function(x, knots, degree = 3L) {
   degree <- as.integer(degree)
   p <- length(knots) - degree - 1L
@@ -116,6 +126,9 @@ smfd_bspline_basis <- function(x, knots, degree = 3L) {
 #' @param order A count; the body uses it as \code{seq_len(...)}. Defaults to \code{2L}.
 #' @return The value of \code{D}, as built in the body.
 #' @export
+#' @examples
+#' smfd_difference_matrix(10L, order = 2L)
+#' @keywords internal
 smfd_difference_matrix <- function(p, order = 2L) {
   p     <- as.integer(p)
   order <- as.integer(order)
@@ -132,13 +145,13 @@ smfd_difference_matrix <- function(p, order = 2L) {
 #'
 #' Penalised least squares on a B-spline basis with a difference
 #' penalty on the coefficients (Eilers & Marx 1996). The normal
-#' equations are \code{(B\'B + lambda D\'D) a = B\'y} with \code{B}
+#' equations are \eqn{(B'B + lambda D'D) a = B'y} with \code{B}
 #' the B-spline design matrix and \code{D} the \code{order}-th
 #' difference matrix. The penalty order fixes the limit: as
 #' \code{lam} tends to infinity the fit becomes a polynomial of
 #' degree \code{order - 1} exactly, with \code{order = 2} giving
 #' the OLS line. The effective dimension is the trace of the
-#' smoother matrix \code{H = B (B\'B + lambda D\'D)^{-1} B\'}, and
+#' smoother matrix \eqn{H = B (B'B + lambda D'D)^{-1} B'}, and
 #' the leave-one-out deletion residual is \code{e_i / (1 - h_ii)}
 #' from the hat diagonal.
 #'
@@ -160,6 +173,10 @@ smfd_difference_matrix <- function(p, order = 2L) {
 #'   smoothing with B-splines and penalties. Statistical Science,
 #'   11(2), 89-121.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_smfd(V, V)
+#' @keywords internal
 morie_smfd <- function(x, y, nseg = 10L, degree = 3L, lam = 1.0,
                        order = 2L, weights = NULL) {
   x <- as.numeric(x)

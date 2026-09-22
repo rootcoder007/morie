@@ -24,3 +24,4 @@ A step of the tlgcmp_native implementation. Called by \code{morie_tlgcmp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

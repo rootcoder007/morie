@@ -27,8 +27,14 @@ A list with \code{rate_ratios}, \code{coef}, \code{note}.
 Fits a logistic regression to the case / control design matrix
 and returns the odds ratio of each stratum against the baseline.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_rapaf_population_attributable_risk(V, V)
+morie_rapaf_rate_ratios_from_logit(case_counts = V, control_counts = V, design = V)
+}
 \references{
 Bruzzi, P. et al. (1985). Estimating the Population
 Attributable Risk for Multiple Risk Factors Using Case-Control
 Data. American Journal of Epidemiology, 122(5), 904-914.
 }
+\keyword{internal}

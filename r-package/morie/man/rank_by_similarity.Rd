@@ -11,7 +11,7 @@ rank_by_similarity(query, corpus_embeddings, top_k = 5)
 
 \item{corpus_embeddings}{Passed to \code{.sbert_mat}.}
 
-\item{top_k}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.}
+\item{top_k}{Numeric; passed to \code{min}. Defaults to \code{5}.}
 }
 \value{
 A list with \code{ranking}, \code{n_corpus}, \code{forward_passes}, \code{note}.
@@ -21,3 +21,8 @@ A step of the sbert_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+rank_by_similarity(V, V)
+}
+\keyword{internal}

@@ -20,3 +20,8 @@ A list with \code{y}, \code{h}, \code{s1}, \code{s2}, \code{equivalent},
 \description{
 impulse responses ADD where a cascade convolves them.
 }
+\examples{
+LsiParY(x = c(1, 2, 3, 4, 5, 6, 7, 8), h1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+  h2 = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

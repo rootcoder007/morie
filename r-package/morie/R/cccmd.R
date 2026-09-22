@@ -27,6 +27,7 @@
 #'   \emph{Review of Economics and Statistics}, 72(3), 498-505.
 #' @seealso \code{\link{morie_dcc_multivariate_garch}}
 #' @examples
+#' set.seed(1)
 #' morie_ccc_multivariate_garch(x = matrix(rnorm(150), 50, 3))
 #' @export
 morie_ccc_multivariate_garch <- function(x) {
@@ -58,7 +59,7 @@ morie_ccc_multivariate_garch <- function(x) {
   # with log|H_t| = log|R| + sum_j log h_jt and the quadratic form in z.
   quad <- rowSums((Z %*% Rinv) * Z)
   ll <- -0.5 * sum(k * log(2 * pi) + as.numeric(ld$modulus) +
-                     rowSums(log(H)) + quad)
+    rowSums(log(H)) + quad)
 
   list(
     R = R,

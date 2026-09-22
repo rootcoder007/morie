@@ -16,8 +16,12 @@ Recombination fraction in \code{[0, 0.5)}.
 Maps a distance in Morgans to a recombination fraction via the
 Haldane (1919) formula \code{0.5 * (1 - exp(-2d))}.
 }
+\examples{
+morie_haldane(distance = 5L)
+}
 \references{
 Haldane, J. B. S. (1919). The combination of linkage
 values, and the calculation of distances between the loci of
 linked factors. Journal of Genetics, 8(4), 299-309.
 }
+\keyword{internal}

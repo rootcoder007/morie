@@ -18,3 +18,8 @@ widths differ or either vector is the zero vector.
 \description{
 Cosine similarity in the common semantic space
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_dssm_cosine_similarity(V, V)
+}
+\keyword{internal}

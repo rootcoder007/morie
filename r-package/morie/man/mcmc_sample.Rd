@@ -19,6 +19,16 @@ mcmc_sample(logpdf, x0, n, burn = 100L, step = 0.5, seed = 0L)
 
 \item{seed}{See Usage.}
 }
+\value{
+A list with \code{samples}, \code{acceptance}.
+}
 \description{
 Random-walk Metropolis, used to draw from the current posterior
 }
+\examples{
+# a standard normal target
+lp <- function(x) -0.5 * sum(x^2)
+mc <- mcmc_sample(lp, 0, 2000L, burn = 200L, step = 1.5, seed = 1L)
+round(c(mean = mean(mc$samples[, 1]), sd = sd(mc$samples[, 1])), 2)
+}
+\keyword{internal}

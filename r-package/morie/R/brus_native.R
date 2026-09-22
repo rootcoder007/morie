@@ -13,12 +13,16 @@
 #' @return List with total, mean, weights.
 #' @export
 #' @examples
-#' morie_ht_estimators(z = c(10, 20, 15), pi = c(0.1, 0.2, 0.15), n_population = 100)
+#' # equations 2.2 to 2.4: t_hat = sum z_k / pi_k
+#' morie_ht_estimators(z = c(10, 20, 30), pi = c(0.5, 0.25, 0.2),
+#'                     n_population = 100)
 morie_ht_estimators <- function(z, pi, n_population) {
   z <- as.numeric(z)
   pi <- as.numeric(pi)
-  stopifnot(length(z) == length(pi), all(pi > 0), all(pi <= 1),
-            n_population > 0)
+  stopifnot(
+    length(z) == length(pi), all(pi > 0), all(pi <= 1),
+    n_population > 0
+  )
   total <- sum(z / pi)
   list(total = total, mean = total / n_population, weights = 1 / pi)
 }
@@ -186,8 +190,10 @@ morie_twostage_design <- function(s_w, s_b, c1, c2, v_max = NA,
 #' @return Numeric variance estimate.
 #' @export
 #' @examples
-#' morie_pps_variance(z = c(1, 2, 3, 4, 5, 6, 7, 8), p = c(1, 2, 3, 4, 5, 6, 7, 8), t_hat
-#' = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' z <- c(12, 9, 15); p <- c(0.2, 0.3, 0.5)
+#' t_hat <- sum(z / p) / length(z)
+#' # the Hansen-Hurwitz variance estimator from the sample
+#' morie_pps_variance(z, p, t_hat)
 morie_pps_variance <- function(z, p, t_hat) {
   z <- as.numeric(z)
   p <- as.numeric(p)

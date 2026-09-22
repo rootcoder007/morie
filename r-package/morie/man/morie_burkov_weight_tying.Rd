@@ -11,6 +11,15 @@ morie_burkov_weight_tying(h_last, E)
 
 \item{E}{Embedding matrix, V x d.}
 }
+\value{
+A list with \code{logits}, \code{estimate}, \code{vocab_size}, \code{hidden_size}, \code{n}, \code{method}.
+}
 \description{
 Weight tying: logits through the shared embedding (Burkov Ch 4)
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+S <- c("a", "b", "c")
+morie_burkov_weight_tying(S, M)
+}
+\keyword{internal}

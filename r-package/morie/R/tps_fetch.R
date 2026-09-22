@@ -54,9 +54,9 @@ MORIE_TPS_LAYER_URLS <- c(
 #'
 #' @return Character vector of category names, sorted.
 #'
-#' @export
 #' @examples
 #' morie_tps_list_categories()
+#' @export
 morie_tps_list_categories <- function() {
   sort(names(MORIE_TPS_LAYER_URLS))
 }
@@ -64,18 +64,8 @@ morie_tps_list_categories <- function() {
 
 # Internal: one ArcGIS REST /query GET. Returns the parsed GeoJSON
 # list (raises on HTTP / JSON failure).
-#' Internal: one ArcGIS REST /query GET. Returns the parsed GeoJSON
-#'
-#' list (raises on HTTP / JSON failure).
-#'
-#' @param base_url Passed to \code{paste0}.
-#' @param where See Usage.
-#' @param offset Coerced to integer by the body, with \code{as.integer}.
-#' @param max_records Coerced to integer by the body, with \code{as.integer}. Defaults to
-#' \code{2000L}.
-#' @param timeout Defaults to \code{120}.
-#' @return The value of \code{.morie_from_json}.
-#' @export
+#' Internal helper: Morie Tps Fetch Arcgis Query
+#' @noRd
 .morie_tps_fetch_arcgis_query <- function(base_url, where, offset,
                                     max_records = 2000L,
                                     timeout = 120) {
@@ -129,12 +119,15 @@ morie_tps_list_categories <- function() {
 #'
 #' @return Path to the written CSV file.
 #'
-#' @export
 #' @examples
-#' \donttest{
-#' cat <- morie_tps_list_categories()[1]
-#' df <- morie_tps_fetch_category(cat)
+#' # The layers this can fetch -- a local lookup, no network.
+#' morie_tps_list_categories()
+#' \dontrun{
+#' # Each fetch is a live ArcGIS query paged 2000 records at a time.
+#' res <- morie_tps_fetch_category(morie_tps_list_categories()[1],
+#'                                 cache_dir = tempdir())
 #' }
+#' @export
 morie_tps_fetch_category <- function(category,
                                      cache_dir = NULL,
                                      where = "1=1",
@@ -221,11 +214,16 @@ morie_tps_fetch_category <- function(category,
 #'
 #' @return A `data.frame`.
 #'
-#' @export
 #' @examples
-#' \donttest{
+#' # The layers this can fetch -- a local lookup, no network.
+#' morie_tps_list_categories()
+#' \dontrun{
+#' # Fetching one is a live ArcGIS query; it ran for nine minutes in the
+#' # docs build, so it is shown rather than executed.
 #' df <- morie_tps_fetch_dataframe(morie_tps_list_categories()[1])
+#' head(df)
 #' }
+#' @export
 morie_tps_fetch_dataframe <- function(category, ...) {
   p <- morie_tps_fetch_category(category, ...)
   utils::read.csv(p, stringsAsFactors = FALSE, check.names = FALSE)

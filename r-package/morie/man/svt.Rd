@@ -7,9 +7,9 @@
 svt(M, observed, tau = NULL, step = 1.9, iters = 200L, tol = 1e-06)
 }
 \arguments{
-\item{M}{A matrix; passed to \code{as.matrix}.}
+\item{M}{Passed to \code{.meglt_mat}.}
 
-\item{observed}{A matrix; indexed by row and column.}
+\item{observed}{Iterated over elementwise, with \code{sapply}.}
 
 \item{tau}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 
@@ -29,3 +29,15 @@ A step of the meglt_native implementation. Called by \code{morie_meglt}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(2)
+U <- matrix(rnorm(10), 5, 2)
+V <- matrix(rnorm(8), 4, 2)
+M <- U \%*\% t(V)
+obs <- list()
+for (i in 0:4) for (j in 0:3) if (runif(1) < 0.7)
+  obs[[length(obs) + 1]] <- c(i, j)
+r <- svt(M, obs, tau = 1, iters = 100)
+str(r, max.level = 1)
+}
+\keyword{internal}

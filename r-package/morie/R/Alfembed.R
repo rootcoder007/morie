@@ -25,6 +25,7 @@
 #'   position contribution \code{pos}, \code{estimate}, \code{n} and
 #'   \code{method}.
 #' @references Jumper et al (2021) Nature 596:583-589, Suppl. Algorithms 3-5
+#' @export
 Alfembed <- function(target_feat, residue_index, msa_feat, wa, wb, wrel,
                      wmsa, wtgt, bins = NULL) {
   if (is.null(bins)) bins <- -32:32
@@ -35,18 +36,25 @@ Alfembed <- function(target_feat, residue_index, msa_feat, wa, wb, wrel,
 
   pos <- array(0, c(n, n, cz))
   z <- array(0, c(n, n, cz))
-  for (i in seq_len(n)) for (j in seq_len(n)) {
-    p <- alfLin(alfOnehot(residue_index[i] - residue_index[j], bins), wrel)
-    pos[i, j, ] <- p
-    z[i, j, ] <- a[i, ] + b[j, ] + p
+  for (i in seq_len(n)) {
+    for (j in seq_len(n)) {
+      p <- alfLin(alfOnehot(residue_index[i] - residue_index[j], bins), wrel)
+      pos[i, j, ] <- p
+      z[i, j, ] <- a[i, ] + b[j, ] + p
+    }
   }
 
   s <- dim(msa_feat)[1]
   cm <- nrow(wmsa)
   m <- array(0, c(s, n, cm))
-  for (si in seq_len(s)) for (i in seq_len(n))
-    m[si, i, ] <- alfLin(msa_feat[si, i, ], wmsa) + alfLin(target_feat[i, ], wtgt)
+  for (si in seq_len(s)) {
+    for (i in seq_len(n)) {
+      m[si, i, ] <- alfLin(msa_feat[si, i, ], wmsa) + alfLin(target_feat[i, ], wtgt)
+    }
+  }
 
-  list(z = z, m = m, pos = pos, estimate = mean(z), n = n,
-       method = "AlphaFold initial representation embeddings")
+  list(
+    z = z, m = m, pos = pos, estimate = mean(z), n = n,
+    method = "AlphaFold initial representation embeddings"
+  )
 }

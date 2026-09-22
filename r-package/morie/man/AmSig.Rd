@@ -28,3 +28,7 @@ carrier -- with synchronous demodulation x_d = y cos(wc t) = 0.5 x +
 large-carrier form A(1 + m) cos(wc t), which is a different model; it
 is available under conventional=TRUE rather than substituted.
 }
+\examples{
+AmSig(rep(1, 8), fc = 1, fs = 8)
+}
+\keyword{internal}

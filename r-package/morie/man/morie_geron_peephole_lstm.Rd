@@ -11,6 +11,15 @@ morie_geron_peephole_lstm(x_t, h_prev, c_prev, weights)
 
 \item{weights}{List with W_x, W_h, b, p_i, p_f, p_o.}
 }
+\value{
+A list with \code{h}, \code{c}, \code{i}, \code{f}, \code{g}, \code{o}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Peephole LSTM cell forward step: gates also see the cell state (Geron Ch 13, hmphp)
 }
+\examples{
+W <- list(W_x = matrix(c(0, 0, 1, 0), ncol = 1), W_h = matrix(0,
+    4, 1), b = rep(0, 4))
+morie_geron_peephole_lstm(1, 0, 0, W)
+}
+\keyword{internal}

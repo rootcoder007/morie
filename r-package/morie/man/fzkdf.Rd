@@ -30,6 +30,7 @@ f'(t), Var=F(t)(1-F(t))/n - 2 h r(K) f(t)/n.}
 For the Gaussian kernel \eqn{\mu_2=1, r(K)=1/(2\sqrt\pi)}{mu_2=1, r(K)=1/(2sqrtpi)}.
 }
 \examples{
+set.seed(1)
 fzkdf(x = rnorm(50))
 }
 \keyword{internal}

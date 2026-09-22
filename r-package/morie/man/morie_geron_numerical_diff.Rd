@@ -13,6 +13,14 @@ morie_geron_numerical_diff(f, x, h = 1e-05)
 
 \item{h}{Step size.}
 }
+\value{
+A list with \code{derivative}, \code{richardson}, \code{error_estimate}, \code{n_evals}, \code{h}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Numerical differentiation via central finite differences, Richardson-checked (Geron App A, hmnmd)
 }
+\examples{
+x <- matrix(c(1, 0, 0, 1, 1, 1), ncol = 2, byrow = TRUE)
+morie_geron_numerical_diff(function(x) x^3, 2)
+}
+\keyword{internal}

@@ -1,15 +1,62 @@
-# morie.fn -- function file (rootcoder007/morie)
-# Sources:
-#   Schutt, K. T., Kindermans, P.-J., Sauceda, H. E., Chmiela, S.,
-#   Tkatchenko, A. & Muller, K.-R. (2017) "SchNet: A continuous-filter
-#   convolutional neural network for modeling quantum interactions",
-#   Advances in Neural Information Processing Systems 30 (NeurIPS
-#   2017), 991-1001, arXiv:1706.08566.
-#   Gilmer, J., Schoenholz, S. S., Riley, P. F., Vinyals, O. & Dahl,
-#   G. E. (2017) "Neural Message Passing for Quantum Chemistry",
-#   ICML 2017, PMLR 70, 1263-1272, arXiv:1704.01212.
+# SchNet: continuous-filter convolutions for atoms.
+# Sources: Schutt, K. T., Kindermans, P.-J., Sauceda, H. E.,
+# Chmiela, S., Tkatchenko, A. & Muller, K.-R. (2017) "SchNet: A
+# continuous-filter convolutional neural network for modeling
+# quantum interactions", *Advances in Neural Information Processing
+# Systems 30 (NeurIPS 2017)*, 991-1001, arXiv:1706.08566. The key
+# contributions as stated: the continuous-filter convolutional
+# (cfconv) layer as a means to move beyond grid-bound data such as
+# images or audio towards objects with arbitrary positions such as
+# atoms in molecules and materials; and SchNet as a network designed
+# to respect essential quantum-chemical constraints, using cfconv
+# layers in R^3 to model interactions of atoms at arbitrary positions,
+# delivering rotationally INVARIANT energy predictions and
+# rotationally EQUIVARIANT force predictions. Gilmer, J., Schoenholz,
+# S. S., Riley, P. F., Vinyals, O. & Dahl, G. E. (2017) "Neural
+# Message Passing for Quantum Chemistry", *ICML 2017*, PMLR 70,
+# 1263-1272, arXiv:1704.01212. The framework this instantiates;
+# implemented in mpfn.
 
-.schN_EPS <- 1e-12
+.SCHN_EPS <- 1e-12
+
+#' .schn_mat
+#'
+#' A step of the schN_native implementation. Called by \code{cfconv},
+#' \code{forces_from_energy}, \code{invariance_error}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x A matrix; the body checks with \code{is.matrix}.
+#' @return Nothing; this branch always raises.
+#' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
+#' res <- .schn_mat(x = X)
+#' res
+.schn_mat <- function(x) {
+  if (is.list(x) && !is.matrix(x)) return(do.call(rbind, x))
+  if (is.matrix(x)) { storage.mode(x) <- "double"
+  return(x) }
+  stop("schn: expected a matrix or list of rows")
+}
+
+#' .schn_vec
+#'
+#' A step of the schN_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x A list; the body checks with \code{is.list}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .schn_vec(x = x)
+#' res
+.schn_vec <- function(x) {
+  if (is.list(x)) return(as.numeric(unlist(x)))
+  as.numeric(x)
+}
 
 #' gaussian_expansion
 #'
@@ -25,18 +72,22 @@
 #' \code{as.numeric}.
 #' @return A numeric value.
 #' @export
-gaussian_expansion <- function(r, mu_min = 0.0, mu_max = 6.0,
-                               n_gaussians = 25, gamma = NULL) {
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' gaussian_expansion(V)
+#' @keywords internal
+gaussian_expansion <- function(r, mu_min = 0.0, mu_max = 6.0, n_gaussians = 25,
+                                gamma = NULL) {
   n <- as.integer(n_gaussians)
-  if (n < 2L) stop("schN: at least 2 Gaussians are needed")
+  if (n < 2L) stop("schn: at least 2 Gaussians are needed")
   lo <- as.numeric(mu_min)
   hi <- as.numeric(mu_max)
-  if (hi <= lo) stop("schN: mu_max must exceed mu_min")
+  if (hi <= lo) stop("schn: mu_max must exceed mu_min")
   step <- (hi - lo) / (n - 1L)
-  g <- if (is.null(gamma)) 1.0 / (2.0 * step ^ 2) else as.numeric(gamma)
-  mus <- lo + step * seq(0, n - 1L)
-  v <- as.numeric(r)
-  exp(-g * (v - mus) ^ 2)
+  g <- if (is.null(gamma)) 1 / (2 * step^2) else as.numeric(gamma)
+  mus <- lo + step * (0:(n - 1L))
+  diff <- as.numeric(r) - mus
+  exp(-g * diff^2)
 }
 
 #' cosine_cutoff
@@ -49,50 +100,57 @@ gaussian_expansion <- function(r, mu_min = 0.0, mu_max = 6.0,
 #' @param cutoff Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{5}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' cosine_cutoff(r = 5L)
+#' @keywords internal
 cosine_cutoff <- function(r, cutoff = 5.0) {
   rc <- as.numeric(cutoff)
-  if (rc <= 0.0) stop("schN: the cutoff must be positive")
+  if (rc <= 0) stop("schn: the cutoff must be positive")
   v <- as.numeric(r)
-  if (v < rc) 0.5 * (cos(pi * v / rc) + 1.0) else 0.0
+  if (v < rc) 0.5 * (cos(pi * v / rc) + 1) else 0
 }
 
 #' cfconv
 #'
-#' A step of the schN_native implementation. Called by \code{morie_schN}.
+#' A step of the schN_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X Iterated over elementwise, with \code{lapply}.
-#' @param R Iterated over elementwise, with \code{lapply}.
+#' @param X Passed to \code{.schn_mat}.
+#' @param R Passed to \code{.schn_mat}.
 #' @param filter_net Accepted by the signature and not used anywhere in the body.
 #' @param cutoff Passed to \code{cosine_cutoff}. Defaults to \code{5}.
 #' @param ... Passed through.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' set.seed(1)
+#' n <- 5; d <- 4
+#' X <- matrix(rnorm(n * d), n, d)
+#' R <- matrix(rnorm(n * 3), n, 3)
+#' filter_net <- function(g) rep(0.1, d)
+#' out <- cfconv(X, R, filter_net, cutoff = 5)
+#' dim(out)
+#' @keywords internal
 cfconv <- function(X, R, filter_net, cutoff = 5.0, ...) {
-  feats <- lapply(X, function(r) as.numeric(r))
-  pos <- lapply(R, function(r) as.numeric(r))
-  n <- length(feats)
-  d <- length(feats[[1L]])
-  if (length(pos) != n) {
-    stop(sprintf("schN: %d feature rows but %d positions", n, length(pos)))
-  }
-  out <- list()
-  for (i in seq_len(n)) {
-    acc <- rep(0.0, d)
-    for (j in seq_len(n)) {
+  feats <- .schn_mat(X)
+  pos <- .schn_mat(R)
+  n <- nrow(feats)
+  d <- ncol(feats)
+  if (nrow(pos) != n) stop(sprintf("schn: %d feature rows but %d positions", n, nrow(pos)))
+  out <- matrix(0, n, d)
+  for (i in 1:n) {
+    acc <- numeric(d)
+    for (j in 1:n) {
       if (i == j) next
-      diff_ <- pos[[i]] - pos[[j]]
-      r <- sqrt(sum(diff_ * diff_))
+      diff <- pos[i, ] - pos[j, ]
+      r <- sqrt(sum(diff^2))
       w <- as.numeric(filter_net(gaussian_expansion(r, ...)))
       fc <- cosine_cutoff(r, cutoff)
-      if (length(w) != d) {
-        stop(sprintf("schN: the filter is %d-dimensional but the features are %d",
-                     length(w), d))
-      }
-      acc <- acc + feats[[j]] * w * fc
+      if (length(w) != d) stop(sprintf("schn: the filter is %d-dimensional but the features are %d", length(w), d))
+      for (a in 1:d) acc[a] <- acc[a] + feats[j, a] * w[a] * fc
     }
-    out[[length(out) + 1L]] <- acc
+    out[i, ] <- acc
   }
   out
 }
@@ -104,29 +162,32 @@ cfconv <- function(X, R, filter_net, cutoff = 5.0, ...) {
 #' source it follows.
 #'
 #' @param energy_fn Accepted by the signature and not used anywhere in the body.
-#' @param R Iterated over elementwise, with \code{lapply}.
+#' @param R Passed to \code{.schn_mat}.
 #' @param h Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.
 #' @return A list with \code{estimate}, \code{forces}, \code{net_force}, \code{method}, \code{note}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' R <- matrix(rnorm(4 * 3), 4, 3)
+#' energy_fn <- function(R) sum(R^2)
+#' Fm <- forces_from_energy(energy_fn, R)
+#' c(nrow(Fm$forces), max(abs(Fm$forces + 2 * R)) < 1e-3)
+#' @keywords internal
 forces_from_energy <- function(energy_fn, R, h = 1e-5) {
-  pos <- lapply(R, function(r) as.numeric(r))
-  n <- length(pos)
-  d <- length(pos[[1L]])
-  F <- list()
-  for (i in seq_len(n)) {
-    row <- numeric(d)
-    for (a in seq_len(d)) {
-      up <- lapply(pos, function(p) as.numeric(p))
-      dn <- lapply(pos, function(p) as.numeric(p))
-      up[[i]][a] <- up[[i]][a] + h
-      dn[[i]][a] <- dn[[i]][a] - h
-      row[a] <- -(as.numeric(energy_fn(up)) - as.numeric(energy_fn(dn))) / (2.0 * h)
-    }
-    F[[length(F) + 1L]] <- row
+  pos <- .schn_mat(R)
+  n <- nrow(pos)
+  d <- ncol(pos)
+  F <- matrix(0, n, d)
+  for (i in 1:n) for (a in 1:d) {
+    up <- pos
+    dn <- pos
+    up[i, a] <- up[i, a] + h
+    dn[i, a] <- dn[i, a] - h
+    F[i, a] <- -(as.numeric(energy_fn(up)) - as.numeric(energy_fn(dn))) / (2 * h)
   }
-  nf <- numeric(d)
-  for (i in seq_len(n)) for (a in seq_len(d)) nf[a] <- nf[a] + F[[i]][a]
-  list(estimate = F, forces = F, net_force = nf,
+  net <- numeric(d)
+  for (a in 1:d) net[a] <- sum(F[, a])
+  list(estimate = F, forces = F, net_force = net,
        method = "forces as the negative gradient of the energy; Schutt et al. (2017)",
        note = "conservative and equivariant by construction; a separate force head would be neither")
 }
@@ -138,30 +199,33 @@ forces_from_energy <- function(energy_fn, R, h = 1e-5) {
 #' source it follows.
 #'
 #' @param energy_fn Passed to \code{forces_from_energy}.
-#' @param R Iterated over elementwise, with \code{lapply}.
-#' @param Q A matrix; passed to \code{as.matrix}.
-#' @param g Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param R Passed to \code{.schn_mat}.
+#' @param Q Passed to \code{.schn_mat}.
+#' @param g Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{energy_error}, \code{force_error}, \code{energy_invariant},
 #' \code{forces_equivariant}, \code{note}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' R <- matrix(rnorm(4 * 3), 4, 3)
+#' energy_fn <- function(R) sum(rowSums(as.matrix(R)^2))
+#' th <- pi / 4
+#' Q <- matrix(c(cos(th), -sin(th), 0, sin(th), cos(th), 0, 0, 0, 1), 3, 3)
+#' ie <- invariance_error(energy_fn, R, Q)
+#' is.numeric(ie) || is.list(ie)
+#' @keywords internal
 invariance_error <- function(energy_fn, R, Q, g = NULL) {
-  pos <- lapply(R, function(r) as.numeric(r))
-  d <- length(pos[[1L]])
-  gv <- if (is.null(g)) rep(0.0, d) else as.numeric(g)
-  Qm <- as.matrix(Q)
-  rot <- lapply(pos, function(p) as.numeric(Qm %*% p) + gv)
+  pos <- .schn_mat(R)
+  d <- ncol(pos)
+  gv <- if (is.null(g)) rep(0, d) else as.numeric(unlist(g))
+  Qm <- .schn_mat(Q)
+  rot <- t(Qm %*% t(pos)) + matrix(gv, nrow = nrow(pos), ncol = d, byrow = TRUE)
   e0 <- as.numeric(energy_fn(pos))
   e1 <- as.numeric(energy_fn(rot))
   F0 <- forces_from_energy(energy_fn, pos)$forces
   F1 <- forces_from_energy(energy_fn, rot)$forces
-  want <- lapply(F0, function(f) as.numeric(Qm %*% f))
-  fe <- 0
-  for (i in seq_along(F1)) {
-    for (a in seq_len(d)) {
-      v <- abs(F1[[i]][a] - want[[i]][a])
-      if (v > fe) fe <- v
-    }
-  }
+  want <- t(Qm %*% t(F0))
+  fe <- max(abs(F1 - want))
   list(energy_error = abs(e1 - e0), force_error = fe,
        energy_invariant = abs(e1 - e0) < 1e-8,
        forces_equivariant = fe < 1e-5,
@@ -180,29 +244,18 @@ invariance_error <- function(energy_fn, R, Q, g = NULL) {
 #' res <- .schN_cheatsheet()
 #' res
 .schN_cheatsheet <- function() {
-  paste("schN: a convolution needs a grid and atoms have none, so",
-        "make the filter a FUNCTION of interatomic distance -- a",
-        "continuous-filter convolution, generated by a small",
-        "network from the distance. Positions enter only as",
-        "||r_i - r_j||, so the energy is rotationally INVARIANT;",
-        "forces come from -dE/dr, so they are EQUIVARIANT and the",
-        "field is conservative, which a separate force head would",
-        "not be. Expand the distance in GAUSSIANS or the filter",
-        "varies too sharply for molecular dynamics; a cosine",
-        "cutoff keeps neighbourhood changes continuous.")
-}
-
-#' morie_schN
-#'
-#' A step of the schN_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param ... Passed through.
-#' @return The value of \code{cfconv}.
-#' @export
-morie_schN <- function(...) {
-  cfconv(...)
+  paste("schn: a convolution needs a grid and atoms have none, so ",
+        "make the filter a FUNCTION of interatomic distance -- a ",
+        "continuous-filter convolution, generated by a small network ",
+        "from the distance. Positions enter only as ||r_i - r_j||, ",
+        "so the energy is rotationally INVARIANT; forces come from ",
+        "-dE/dr, so they are EQUIVARIANT and the field is ",
+        "conservative, which a separate force head would not be. ",
+        "Expand the distance in GAUSSIANS or the filter varies too ",
+        "sharply for molecular dynamics; a cosine cutoff keeps ",
+        "neighbourhood changes continuous.", sep = "")
 }
 
 schnet <- cfconv
+
+morie_schN <- cfconv

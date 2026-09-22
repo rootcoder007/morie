@@ -42,3 +42,14 @@ A step of the trnsfr_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(3)
+n <- 100
+H <- matrix(rnorm(n * 2), n, 2)
+A <- rbinom(n, 1, 0.5)
+cohort <- rbinom(n, 1, plogis(0.3 * H[, 1]))
+Y <- 1 + 0.8 * A + H[, 1] + rnorm(n, 0, 0.3)
+r <- morie_trnsfr_transfer_msm(Y, A, H, cohort, target = 0)
+str(r, max.level = 1)
+}
+\keyword{internal}

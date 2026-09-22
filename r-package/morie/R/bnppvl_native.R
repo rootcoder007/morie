@@ -72,7 +72,7 @@
 # is absolutely continuous. "constant" holds a_m fixed, which does NOT:
 # the limit is continuous but singular, and it is here because a reader
 # who wants to see that happen should be able to.
-#' The Beta concentration a_m at a given level. "cubic" is the paper\'s
+#' The Beta concentration a_m at a given level. "cubic" is the paper's
 #'
 #' a_m = c m^3, for which the sum of 1/sqrt(a_m) converges and the limit
 #' is absolutely continuous. "constant" holds a_m fixed, which does NOT:
@@ -97,7 +97,7 @@
 #' The mean of V that centres the pyramid on a prior guess: the fraction
 #'
 #' of the parent interval that the guess assigns to the left child,
-#' which is the paper\'s equation (6). A guess that is flat over the
+#' which is the paper's equation (6). A guess that is flat over the
 #' parent gives exactly a half, the symmetric case.
 #'
 #' @param nullq Accepted by the signature and not used anywhere in the body.
@@ -157,6 +157,7 @@
 #' @return The full dyadic grid of length 2^m + 1, with 0 and 1 at the
 #'   ends.
 #' @export
+#' @keywords internal
 morie_bnppvl_draw <- function(e, m, c = 2.5, schedule = "cubic",
                               centring = "uniform", nullq = NULL) {
   m <- as.integer(m)
@@ -210,6 +211,10 @@ morie_bnppvl_draw <- function(e, m, c = 2.5, schedule = "cubic",
 #' @param nullq The centring quantile function, or NULL.
 #' @return The log prior density.
 #' @export
+#' @examples
+#' set.seed(1)
+#' r <- morie_bnppvl_log_prior(q = matrix(rnorm(20), 5, 4), m = matrix(rnorm(20), 5, 4)); TRUE
+#' @keywords internal
 morie_bnppvl_log_prior <- function(q, m, c = 2.5, schedule = "cubic",
                                    centring = "uniform", nullq = NULL) {
   m <- as.integer(m)
@@ -257,6 +262,10 @@ morie_bnppvl_log_prior <- function(q, m, c = 2.5, schedule = "cubic",
 #' @param q The dyadic grid.
 #' @return An integer vector of length k.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_bnppvl_counts(V, V)
+#' @keywords internal
 morie_bnppvl_counts <- function(u, q) {
   k <- length(q) - 1L
   n <- integer(k)
@@ -280,6 +289,10 @@ morie_bnppvl_counts <- function(u, q) {
 #' @param kind A member of the likelihood list.
 #' @return The log likelihood.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_bnppvl_loglik(V, V)
+#' @keywords internal
 morie_bnppvl_loglik <- function(u, q, kind = "exact") {
   if (!(kind %in% .BNPPVL_LIKELIHOODS))
     stop("kind must be one of ", paste(.BNPPVL_LIKELIHOODS, collapse = ", "))
@@ -443,6 +456,14 @@ morie_bnppvl_loglik <- function(u, q, kind = "exact") {
 #'   predictive density and distribution function on the grid, the
 #'   predictive quantiles, and the acceptance rate.
 #' @export
+#' @examples
+#' X <- vapply(0:39, function(i) {
+#'     v <- ((i * 37)%%101)/100
+#'     v * v
+#' }, numeric(1))
+#' morie_bnppvl(X, m = 3L, c = 2.5, likelihood = "exact", sweeps = 400L,
+#'     burn = 100L, thin = 4L, seed = 7, init = "empirical")
+#' @keywords internal
 morie_bnppvl <- function(x, m = 4L, c = 2.5, schedule = "cubic",
                          centring = "uniform", nullq = NULL,
                          likelihood = "exact", lo = 0, hi = 1,
@@ -603,6 +624,9 @@ morie_bnppvl <- function(x, m = 4L, c = 2.5, schedule = "cubic",
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_bnppvl_cheatsheet()
+#' @keywords internal
 morie_bnppvl_cheatsheet <- function()
   paste0("bnppvl: quantile-pyramid predictive for a new observation. ",
          "likelihoods ", paste(.BNPPVL_LIKELIHOODS, collapse = ", "),

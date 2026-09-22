@@ -22,8 +22,11 @@ For each QRS index, searches \verb{[loc + 0.2 * fs, loc + 0.5 * fs]} for
 the absolute maximum and records its global index.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_dsp_t_wave(V, V)
+set.seed(1)
+beat <- c(rep(0, 130), 0.1, 0.4, 1.2, -0.3, rep(0, 40), 0.25, rep(0, 185))
+ecg <- rep(beat, 5) + rnorm(1800, 0, 0.02)
+qrs <- which(ecg > 1)[c(TRUE, diff(which(ecg > 1)) > 100)]
+str(morie_dsp_t_wave(ecg, qrs_locs = qrs, fs = 360), max.level = 1)
 }
 \references{
 Rangayyan & Krishnan (2015), Ch. 4, sec. 4.8.

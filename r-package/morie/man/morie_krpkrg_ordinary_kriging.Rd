@@ -39,3 +39,8 @@ A step of the krpkrg_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_krpkrg_ordinary_kriging(coords = c(1, 2, 3, 4, 5, 6, 7, 8),
+  values = c(1, 2, 3, 4, 5, 6, 7, 8), targets = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

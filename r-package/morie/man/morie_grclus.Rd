@@ -55,8 +55,16 @@ Karypis & Kumar (1998) the graph is coarsened by matching
 the cut is carried back up and refined with KL or BKL at every
 level. \code{k} parts are obtained by recursive bisection.
 }
+\examples{
+set.seed(1)
+A <- matrix(rbinom(900, 1, 0.2), 30, 30)
+A <- (A + t(A) > 0) * 1
+diag(A) <- 0
+morie_grclus(A, k = 2L)
+}
 \references{
 Karypis, G. & Kumar, V. (1998). A Fast and High Quality
 Multilevel Scheme for Partitioning Irregular Graphs. SIAM Journal
 on Scientific Computing, 20(1), 359-392.
 }
+\keyword{internal}

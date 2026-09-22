@@ -19,3 +19,8 @@ pure delay of 7/2 samples.  The book states it "is equivalent to that
 in Equation 3.111", and both are recomputed and compared.  The delay
 is not an integer -- the price of an even-length filter.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Ma8Sinc(V)
+}
+\keyword{internal}

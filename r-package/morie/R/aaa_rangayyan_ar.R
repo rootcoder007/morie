@@ -39,9 +39,12 @@ Levinson <- function(acf, order = NULL) {
   if (length(r) < 2L) stop("need phi(0) and at least one lag")
   p <- if (is.null(order)) length(r) - 1L else as.integer(order)
   if (p < 1L) stop("order must be at least 1")
-  if (p > length(r) - 1L)
-    stop(sprintf("order %d needs %d ACF lags, got %d", p, p + 1L,
-                 length(r) - 1L))
+  if (p > length(r) - 1L) {
+    stop(sprintf(
+      "order %d needs %d ACF lags, got %d", p, p + 1L,
+      length(r) - 1L
+    ))
+  }
   if (r[1] <= 0) stop("phi(0) must be positive")
   a <- numeric(0)
   eps <- r[1]
@@ -57,13 +60,15 @@ Levinson <- function(acf, order = NULL) {
     eps <- (1 - g * g) * eps
     errors <- c(errors, eps)
   }
-  list(a = a, reflection = gammas, error = eps, errors = errors,
-       gain = if (eps > 0) sqrt(eps) else 0, order = p,
-       stable = all(abs(gammas) < 1),
-       monotone = all(diff(errors) <= 1e-12),
-       normalized_error = eps / r[1],
-       sign_convention = "A(z) = 1 + sum a_k z^-k, per eq. (7.18)",
-       method = "Rangayyan (2024) eqs. (7.37)-(7.39)")
+  list(
+    a = a, reflection = gammas, error = eps, errors = errors,
+    gain = if (eps > 0) sqrt(eps) else 0, order = p,
+    stable = all(abs(gammas) < 1),
+    monotone = all(diff(errors) <= 1e-12),
+    normalized_error = eps / r[1],
+    sign_convention = "A(z) = 1 + sum a_k z^-k, per eq. (7.18)",
+    method = "Rangayyan (2024) eqs. (7.37)-(7.39)"
+  )
 }
 
 #' Eqs (7.17)-(7.18), (7.25), (7.35).  The ACF is the BIASED estimator
@@ -78,6 +83,9 @@ Levinson <- function(acf, order = NULL) {
 #' \code{acf}, \code{order}, \code{residual}, \code{residual_energy}, \code{stable},
 #' \code{normalized_error}, \code{sign_convention}, \code{method}.
 #' @export
+#' @examples
+#' Lpc(x = c(1, 2, 3, 4, 5, 6, 7, 8), order = 5L)
+#' @keywords internal
 Lpc <- function(x, order, method = "autocorrelation") {
   # eqs (7.17)-(7.18), (7.25), (7.35).  The ACF is the BIASED estimator
   # (divide by N): that is what makes the Toeplitz system
@@ -87,11 +95,15 @@ Lpc <- function(x, order, method = "autocorrelation") {
   p <- as.integer(order)
   if (p < 1L) stop("order must be at least 1")
   if (n <= p) stop(sprintf("need more samples (%d) than the order (%d)", n, p))
-  if (method != "autocorrelation")
-    stop("only the autocorrelation method is implemented; eq. (7.40)'s ",
-         "covariance method is not")
-  acf <- vapply(0:p, function(m)
-    .morie_fsum(xs[seq_len(n - m)] * xs[seq_len(n - m) + m]) / n, numeric(1))
+  if (method != "autocorrelation") {
+    stop(
+      "only the autocorrelation method is implemented; eq. (7.40)'s ",
+      "covariance method is not"
+    )
+  }
+  acf <- vapply(0:p, function(m) {
+    .morie_fsum(xs[seq_len(n - m)] * xs[seq_len(n - m) + m]) / n
+  }, numeric(1))
   if (acf[1] <= 0) stop("the signal has zero energy")
   lev <- Levinson(acf, order = p)
   a <- lev$a
@@ -100,12 +112,14 @@ Lpc <- function(x, order, method = "autocorrelation") {
     for (k in seq_len(p)) if (i - k >= 1L) acc <- acc + a[k] * xs[i - k]
     acc
   }, numeric(1))
-  list(a = a, gain = lev$gain, error = lev$error,
-       reflection = lev$reflection, acf = acf, order = p, residual = resid,
-       residual_energy = .morie_fsum(resid[(p + 1L):n]^2),
-       stable = lev$stable, normalized_error = lev$normalized_error,
-       sign_convention = "A(z) = 1 + sum a_k z^-k, per eq. (7.18)",
-       method = "Rangayyan (2024) eqs. (7.17)-(7.18), (7.25), (7.35)")
+  list(
+    a = a, gain = lev$gain, error = lev$error,
+    reflection = lev$reflection, acf = acf, order = p, residual = resid,
+    residual_energy = .morie_fsum(resid[(p + 1L):n]^2),
+    stable = lev$stable, normalized_error = lev$normalized_error,
+    sign_convention = "A(z) = 1 + sum a_k z^-k, per eq. (7.18)",
+    method = "Rangayyan (2024) eqs. (7.17)-(7.18), (7.25), (7.35)"
+  )
 }
 
 #' Inverting eq (7.18): y(n) = G e(n) - sum a_k y(n-k).  The minus
@@ -122,6 +136,10 @@ Lpc <- function(x, order, method = "autocorrelation") {
 #' @return A list with \code{y}, \code{n}, \code{order}, \code{gain}, \code{diverged},
 #' \code{sign_convention}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' LpcSynth(V, V)
+#' @keywords internal
 LpcSynth <- function(a, excitation, gain = 1, initial = NULL) {
   # Inverting eq (7.18): y(n) = G e(n) - sum a_k y(n-k).  The minus
   # follows from A(z) = 1 + sum a_k z^-k.  Coefficients from the other
@@ -147,10 +165,12 @@ LpcSynth <- function(a, excitation, gain = 1, initial = NULL) {
     y <- c(y, acc)
     hist <- c(acc, hist[-p])
   }
-  list(y = y, n = length(y), order = p, gain = as.numeric(gain),
-       diverged = diverged,
-       sign_convention = "y(n) = G e(n) - sum a_k y(n-k)",
-       method = "Rangayyan (2024) Section 7.5 (all-pole synthesis)")
+  list(
+    y = y, n = length(y), order = p, gain = as.numeric(gain),
+    diverged = diverged,
+    sign_convention = "y(n) = G e(n) - sum a_k y(n-k)",
+    method = "Rangayyan (2024) Section 7.5 (all-pole synthesis)"
+  )
 }
 
 #' Section 7.5: S(f) = G^2 / |A(exp(-j 2 pi f / fs))|^2, a smooth
@@ -164,6 +184,9 @@ LpcSynth <- function(a, excitation, gain = 1, initial = NULL) {
 #' @param nfreq Coerced to integer by the body, with \code{as.integer}. Defaults to \code{256}.
 #' @return The value of \code{fit}, as built in the body.
 #' @export
+#' @examples
+#' ArFit(x = c(1, 2, 3, 4, 5, 6, 7, 8), order = 5L)
+#' @keywords internal
 ArFit <- function(x, order, fs = 1, nfreq = 256) {
   # Section 7.5: S(f) = G^2 / |A(exp(-j 2 pi f / fs))|^2, a smooth
   # spectrum from P+1 parameters.  That smoothness is also the trap: the
@@ -202,6 +225,9 @@ ArFit <- function(x, order, fs = 1, nfreq = 256) {
 #' @param n_samples Coerced to integer by the body, with \code{as.integer}.
 #' @return A list with \code{order}, \code{criterion}, \code{n}, \code{start_order}, \code{method}.
 #' @export
+#' @examples
+#' FpeOrder(errors = 5L, n_samples = 5L)
+#' @keywords internal
 FpeOrder <- function(errors, n_samples) {
   # Akaike (1970): FPE(p) = sigma_p^2 (N+p+1)/(N-p-1).  The residual
   # variance falls monotonically with p (eq 7.39), so without a penalty
@@ -211,18 +237,23 @@ FpeOrder <- function(errors, n_samples) {
   if (!length(eps)) stop("need at least one error value")
   if (any(eps <= 0)) stop("residual variances must be positive")
   n <- as.integer(n_samples)
-  if (n <= length(eps) + 1L)
+  if (n <= length(eps) + 1L) {
     stop("N must exceed the largest order by more than 1")
+  }
   i <- seq_along(eps)
   crit <- eps * (n + i + 1) / (n - i - 1)
-  list(order = which.min(crit), criterion = crit, n = n, start_order = 1L,
-       method = paste("Akaike (1970) FPE; Rangayyan (2024) Section 7.5.2",
-                      "gives AIC at eq. (7.60) instead"))
+  list(
+    order = which.min(crit), criterion = crit, n = n, start_order = 1L,
+    method = paste(
+      "Akaike (1970) FPE; Rangayyan (2024) Section 7.5.2",
+      "gives AIC at eq. (7.60) instead"
+    )
+  )
 }
 
 #' Rissanen (1978): MDL(p) = N log(sigma_p^2) + p log(N).  The penalty
 #'
-#' per parameter is log(N), larger than AIC\'s 2 for any N > 7, so MDL
+#' per parameter is log(N), larger than AIC's 2 for any N > 7, so MDL
 #' picks the same order or a lower one -- and unlike AIC it is
 #' consistent.  AIC is returned alongside for comparison.
 #'
@@ -232,6 +263,9 @@ FpeOrder <- function(errors, n_samples) {
 #' \code{n}, \code{start_order}, \code{penalty_per_parameter}, \code{stricter_than_aic},
 #' \code{method}.
 #' @export
+#' @examples
+#' MdlOrder(errors = c(1, 2, 3, 4, 5, 6, 7, 8), n_samples = 5L)
+#' @keywords internal
 MdlOrder <- function(errors, n_samples) {
   # Rissanen (1978): MDL(p) = N log(sigma_p^2) + p log(N).  The penalty
   # per parameter is log(N), larger than AIC's 2 for any N > 7, so MDL
@@ -245,11 +279,15 @@ MdlOrder <- function(errors, n_samples) {
   i <- seq_along(eps)
   mdl <- n * log(eps) + i * log(n)
   aic <- n * log(eps) + 2 * i
-  list(order = which.min(mdl), criterion = mdl, aic = aic,
-       aic_order = which.min(aic), n = n, start_order = 1L,
-       penalty_per_parameter = log(n), stricter_than_aic = log(n) > 2,
-       method = paste("Rissanen (1978) MDL; Rangayyan (2024) Section 7.5.2",
-                      "gives AIC at eq. (7.60) instead"))
+  list(
+    order = which.min(mdl), criterion = mdl, aic = aic,
+    aic_order = which.min(aic), n = n, start_order = 1L,
+    penalty_per_parameter = log(n), stricter_than_aic = log(n) > 2,
+    method = paste(
+      "Rissanen (1978) MDL; Rangayyan (2024) Section 7.5.2",
+      "gives AIC at eq. (7.60) instead"
+    )
+  )
 }
 
 #' Eq (3.69): H(z) = prod (1 - z_k z^-1) / prod (1 - p_k z^-1).  A pole
@@ -263,22 +301,31 @@ MdlOrder <- function(errors, n_samples) {
 #' @param gain Coerced to complex by the body, with \code{as.complex}. Defaults to \code{1}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' PzForm(V, V)
+#' @keywords internal
 PzForm <- function(zeros, poles, z = NULL, gain = 1) {
   # eq (3.69): H(z) = prod (1 - z_k z^-1) / prod (1 - p_k z^-1).  A pole
   # on the unit circle makes H undefined there; outside it, a causal
   # system is unstable.  Both are reported.
   zs <- as.complex(zeros)
   ps <- as.complex(poles)
-  out <- list(zeros = zs, poles = ps, n_zeros = length(zs),
-              n_poles = length(ps), gain = as.complex(gain),
-              stable = all(Mod(ps) < 1),
-              poles_on_unit_circle = ps[abs(Mod(ps) - 1) < 1e-12],
-              method = "Rangayyan (2024) eq. (3.69)")
-  if (is.null(z)) { out$H <- NULL
-  return(out) }
+  out <- list(
+    zeros = zs, poles = ps, n_zeros = length(zs),
+    n_poles = length(ps), gain = as.complex(gain),
+    stable = all(Mod(ps) < 1),
+    poles_on_unit_circle = ps[abs(Mod(ps) - 1) < 1e-12],
+    method = "Rangayyan (2024) eq. (3.69)"
+  )
+  if (is.null(z)) {
+    out$H <- NULL
+    return(out)
+  }
   pts <- as.complex(z)
-  if (any(pts == 0))
+  if (any(pts == 0)) {
     stop("the z^-1 form of eq. (3.69) is undefined at z = 0; use PzFormZ")
+  }
   vals <- vapply(pts, function(zv) {
     num <- as.complex(gain)
     for (zk in zs) num <- num * (1 - zk / zv)
@@ -305,6 +352,10 @@ PzForm <- function(zeros, poles, z = NULL, gain = 1) {
 #' @param gain Coerced to complex by the body, with \code{as.complex}. Defaults to \code{1}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' PzFormZ(V, V)
+#' @keywords internal
 PzFormZ <- function(zeros, poles, z = NULL, gain = 1) {
   # eq (3.70): H(z) = z^(M-N) prod (z - z_k) / prod (z - p_k), the same
   # function as eq (3.69) rewritten in z.  The z^(M-N) factor is exactly
@@ -314,11 +365,15 @@ PzFormZ <- function(zeros, poles, z = NULL, gain = 1) {
   ps <- as.complex(poles)
   n <- length(zs)
   m <- length(ps)
-  out <- list(zeros = zs, poles = ps, exponent = m - n,
-              gain = as.complex(gain), stable = all(Mod(ps) < 1),
-              method = "Rangayyan (2024) eq. (3.70)")
-  if (is.null(z)) { out$H <- NULL
-  return(out) }
+  out <- list(
+    zeros = zs, poles = ps, exponent = m - n,
+    gain = as.complex(gain), stable = all(Mod(ps) < 1),
+    method = "Rangayyan (2024) eq. (3.70)"
+  )
+  if (is.null(z)) {
+    out$H <- NULL
+    return(out)
+  }
   pts <- as.complex(z)
   vals <- vapply(pts, function(zv) {
     num <- as.complex(gain) * zv^(m - n)
@@ -328,8 +383,10 @@ PzFormZ <- function(zeros, poles, z = NULL, gain = 1) {
     if (den == 0) stop("z coincides with a pole of H")
     num / den
   }, complex(1))
-  other <- vapply(pts, function(zv) PzForm(zs, ps, z = zv, gain = gain)$H,
-                  complex(1))
+  other <- vapply(
+    pts, function(zv) PzForm(zs, ps, z = zv, gain = gain)$H,
+    complex(1)
+  )
   gap <- max(Mod(vals - other))
   scale <- max(Mod(vals))
   if (scale == 0) scale <- 1
@@ -357,6 +414,10 @@ PzFormZ <- function(zeros, poles, z = NULL, gain = 1) {
 #' @return A list with \code{H}, \code{magnitude}, \code{phase}, \code{zero_distances},
 #' \code{pole_distances}, \code{omega}, \code{magnitude_matches_product}, \code{method}.
 #' @export
+#' @examples
+#' PzResp(zeros = c(1, 2, 3, 4, 5, 6, 7, 8), poles = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   omega = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 PzResp <- function(zeros, poles, omega, gain = 1) {
   # eqs (3.71)-(3.73): on the unit circle the magnitude is the product
   # of distances to the zeros over the product of distances to the
@@ -391,19 +452,21 @@ PzResp <- function(zeros, poles, omega, gain = 1) {
   }
   gap <- max(abs(Mod(H) - mags))
   one <- length(ws) == 1L
-  list(H = if (one) H[[1]] else H,
-       magnitude = if (one) mags[[1]] else mags,
-       phase = if (one) phases[[1]] else phases,
-       zero_distances = if (one) dist_z[[1]] else dist_z,
-       pole_distances = if (one) dist_p[[1]] else dist_p,
-       omega = if (one) ws[[1]] else ws,
-       magnitude_matches_product = gap <= 1e-9 * (1 + max(mags)),
-       method = "Rangayyan (2024) eqs. (3.71)-(3.73)")
+  list(
+    H = if (one) H[[1]] else H,
+    magnitude = if (one) mags[[1]] else mags,
+    phase = if (one) phases[[1]] else phases,
+    zero_distances = if (one) dist_z[[1]] else dist_z,
+    pole_distances = if (one) dist_p[[1]] else dist_p,
+    omega = if (one) ws[[1]] else ws,
+    magnitude_matches_product = gap <= 1e-9 * (1 + max(mags)),
+    method = "Rangayyan (2024) eqs. (3.71)-(3.73)"
+  )
 }
 
 #' Eqs (3.67), (3.69): zeros are the roots of the numerator, poles the
 #'
-#' roots of the denominator.  The denominator is in the book\'s
+#' roots of the denominator.  The denominator is in the book's
 #' normalized form, so pass `a` WITHOUT the leading 1.
 #'
 #' @param b Coerced to numeric by the body, with \code{as.numeric}.
@@ -411,6 +474,10 @@ PzResp <- function(zeros, poles, omega, gain = 1) {
 #' @return A list with \code{zeros}, \code{poles}, \code{n_zeros}, \code{n_poles},
 #' \code{stable}, \code{minimum_phase}, \code{zeros_on_unit_circle}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' PoleZero(V)
+#' @keywords internal
 PoleZero <- function(b, a = NULL) {
   # eqs (3.67), (3.69): zeros are the roots of the numerator, poles the
   # roots of the denominator.  The denominator is in the book's
@@ -421,18 +488,22 @@ PoleZero <- function(b, a = NULL) {
   roots_of <- function(coeffs) {
     cc <- coeffs
     while (length(cc) > 1L && cc[length(cc)] == 0) cc <- cc[-length(cc)]
-    if (length(cc) < 2L) return(complex(0))
+    if (length(cc) < 2L) {
+      return(complex(0))
+    }
     # sum_k c_k z^-k = 0  <=>  sum_k c_k z^(deg-k) = 0; polyroot takes
     # ascending powers of z, so the coefficient vector is reversed
     polyroot(rev(cc))
   }
   zeros <- roots_of(bs)
   poles <- roots_of(c(1, as_))
-  list(zeros = zeros, poles = poles, n_zeros = length(zeros),
-       n_poles = length(poles), stable = all(Mod(poles) < 1),
-       minimum_phase = all(Mod(zeros) < 1),
-       zeros_on_unit_circle = zeros[abs(Mod(zeros) - 1) < 1e-9],
-       method = "Rangayyan (2024) eqs. (3.67), (3.69)")
+  list(
+    zeros = zeros, poles = poles, n_zeros = length(zeros),
+    n_poles = length(poles), stable = all(Mod(poles) < 1),
+    minimum_phase = all(Mod(zeros) < 1),
+    zeros_on_unit_circle = zeros[abs(Mod(zeros) - 1) < 1e-9],
+    method = "Rangayyan (2024) eqs. (3.67), (3.69)"
+  )
 }
 
 #' Section 7.7: H(z) = B(z)/A(z), needed when the signal has spectral
@@ -450,6 +521,9 @@ PoleZero <- function(b, a = NULL) {
 #' @return A list with \code{a}, \code{b}, \code{p}, \code{q}, \code{gain}, \code{poles},
 #' \code{zeros}, \code{stable}, \code{ar_error}, \code{two_stage}, \code{method}.
 #' @export
+#' @examples
+#' ArmaFit(x = c(1, 2, 3, 4, 5, 6, 7, 8), p = 1, q = 0.5)
+#' @keywords internal
 ArmaFit <- function(x, p, q, fs = 1) {
   # Section 7.7: H(z) = B(z)/A(z), needed when the signal has spectral
   # nulls as well as resonances -- an all-pole model can only make
@@ -465,24 +539,35 @@ ArmaFit <- function(x, p, q, fs = 1) {
   ar <- Lpc(xs, pi_)
   resid <- ar$residual[(pi_ + 1L):length(ar$residual)]
   n <- length(resid)
-  if (n <= qi) stop(sprintf("too few residual samples (%d) for MA order %d",
-                            n, qi))
+  if (n <= qi) {
+    stop(sprintf(
+      "too few residual samples (%d) for MA order %d",
+      n, qi
+    ))
+  }
   if (qi == 0L) {
     b <- ar$gain
   } else {
     long_order <- min(4L * qi, n - 1L)
-    acf_long <- vapply(0:long_order, function(m)
-      .morie_fsum(resid[seq_len(n - m)] * resid[seq_len(n - m) + m]) / n,
-      numeric(1))
+    acf_long <- vapply(
+      0:long_order, function(m) {
+        .morie_fsum(resid[seq_len(n - m)] * resid[seq_len(n - m) + m]) / n
+      },
+      numeric(1)
+    )
     inner <- Levinson(acf_long, order = long_order)
     b <- c(ar$gain, Levinson(c(1, inner$a[seq_len(qi)]), order = qi)$a)
   }
   pz <- PoleZero(b, ar$a)
-  list(a = ar$a, b = b, p = pi_, q = qi, gain = ar$gain,
-       poles = pz$poles, zeros = pz$zeros, stable = pz$stable,
-       ar_error = ar$error, two_stage = TRUE,
-       method = paste("Rangayyan (2024) Section 7.7 (pole-zero model),",
-                      "fitted AR-then-MA rather than jointly"))
+  list(
+    a = ar$a, b = b, p = pi_, q = qi, gain = ar$gain,
+    poles = pz$poles, zeros = pz$zeros, stable = pz$stable,
+    ar_error = ar$error, two_stage = TRUE,
+    method = paste(
+      "Rangayyan (2024) Section 7.7 (pole-zero model),",
+      "fitted AR-then-MA rather than jointly"
+    )
+  )
 }
 
 #' Chapter 7: the poles of an all-pole PCG model track the resonances
@@ -499,6 +584,11 @@ ArmaFit <- function(x, p, q, fs = 1) {
 #' @param segment Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @return The value of \code{fit}, as built in the body.
 #' @export
+#' @examples
+#' set.seed(1)
+#' x <- sin(2 * pi * 40 * (1:500) / 1000) + rnorm(500) * 0.1
+#' PcgAr(x, fs = 1000)
+#' @keywords internal
 PcgAr <- function(x, fs, order = NULL, segment = NULL) {
   # Chapter 7: the poles of an all-pole PCG model track the resonances
   # of S1 and S2.  A pole p gives a resonance at (fs/2pi) Arg(p) with
@@ -510,15 +600,21 @@ PcgAr <- function(x, fs, order = NULL, segment = NULL) {
   if (fsv <= 0) stop("fs must be positive")
   if (!is.null(segment)) xs <- xs[(segment[1] + 1L):segment[2]]
   if (length(xs) < 16L) stop("need at least sixteen samples in the segment")
-  p <- if (!is.null(order)) as.integer(order) else
+  p <- if (!is.null(order)) {
+    as.integer(order)
+  } else {
     max(4L, as.integer(round(2 + fsv / 1000)))
+  }
   fit <- ArFit(xs, p, fs = fsv)
   pz <- PoleZero(1, fit$a)
   keep <- Arg(pz$poles) > 0 & Mod(pz$poles) > 0
-  res <- lapply(pz$poles[keep], function(pole)
-    list(frequency = fsv * Arg(pole) / (2 * pi),
-         bandwidth = -fsv * log(Mod(pole)) / pi,
-         radius = Mod(pole), pole = pole))
+  res <- lapply(pz$poles[keep], function(pole) {
+    list(
+      frequency = fsv * Arg(pole) / (2 * pi),
+      bandwidth = -fsv * log(Mod(pole)) / pi,
+      radius = Mod(pole), pole = pole
+    )
+  })
   res <- res[order(vapply(res, function(d) d$frequency, numeric(1)))]
   fit$poles <- pz$poles
   fit$resonances <- res
@@ -544,6 +640,10 @@ PcgAr <- function(x, fs, order = NULL, segment = NULL) {
 #' @param nfreq Coerced to integer by the body, with \code{as.integer}. Defaults to \code{512}.
 #' @return The value of \code{fit}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' HrvAr(V)
+#' @keywords internal
 HrvAr <- function(rr, order = 16, fs = 4, nfreq = 512) {
   # The RR series is unevenly sampled by construction, so it is
   # resampled onto a uniform grid (4 Hz, comfortably above the 0.4 Hz
@@ -569,8 +669,9 @@ HrvAr <- function(rr, order = 16, fs = 4, nfreq = 512) {
   fit <- ArFit(series, p, fs = fsv, nfreq = as.integer(nfreq))
   bands <- list(vlf = c(0.003, 0.04), lf = c(0.04, 0.15), hf = c(0.15, 0.40))
   df <- if (length(fit$freqs) > 1L) fit$freqs[2] - fit$freqs[1] else 0
-  power <- lapply(bands, function(b)
-    .morie_fsum(fit$psd[fit$freqs >= b[1] & fit$freqs < b[2]] * df))
+  power <- lapply(bands, function(b) {
+    .morie_fsum(fit$psd[fit$freqs >= b[1] & fit$freqs < b[2]] * df)
+  })
   total <- power$vlf + power$lf + power$hf
   fit$mean_rr <- mu
   fit$resampled <- series
@@ -580,12 +681,17 @@ HrvAr <- function(rr, order = 16, fs = 4, nfreq = 512) {
   fit$hf <- power$hf
   fit$total_power <- total
   fit$lf_hf_ratio <- if (power$hf > 0) power$lf / power$hf else NULL
-  fit$lf_nu <- if ((power$lf + power$hf) > 0)
-    100 * power$lf / (power$lf + power$hf) else NULL
+  fit$lf_nu <- if ((power$lf + power$hf) > 0) {
+    100 * power$lf / (power$lf + power$hf)
+  } else {
+    NULL
+  }
   fit$bands <- bands
   fit$order <- p
-  fit$method <- paste("Rangayyan (2024) Section 7.5 AR model; bands per",
-                      "Task Force of the ESC and NASPE (1996)")
+  fit$method <- paste(
+    "Rangayyan (2024) Section 7.5 AR model; bands per",
+    "Task Force of the ESC and NASPE (1996)"
+  )
   fit
 }
 
@@ -598,6 +704,10 @@ HrvAr <- function(rr, order = 16, fs = 4, nfreq = 512) {
 #' @param grid A vector; its length is taken and its elements indexed.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' stats_free_interp(beats = c(1, 2, 3, 4, 5, 6, 7, 8), values = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   grid = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 stats_free_interp <- function(beats, values, grid) {
   # piecewise-linear interpolation onto `grid`, written out rather than
   # delegated so the R and Python arms resample identically
@@ -631,6 +741,10 @@ stats_free_interp <- function(beats, values, grid) {
 #' \code{total_power}, \code{lf_nu}, \code{hf_nu}, \code{order}, \code{bands},
 #' \code{interpretation_caveat}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' HrvRatio(V)
+#' @keywords internal
 HrvRatio <- function(rr, order = 16, fs = 4) {
   # LF/HF from the AR model PSD.  Often called a sympathovagal balance;
   # that reading is contested -- HF is reasonably vagal, but LF reflects
@@ -638,14 +752,18 @@ HrvRatio <- function(rr, order = 16, fs = 4) {
   # individually and in normalized units so no interpretation has to
   # rest on the ratio alone.
   r <- HrvAr(rr, order = order, fs = fs)
-  list(lf_hf_ratio = r$lf_hf_ratio, lf = r$lf, hf = r$hf, vlf = r$vlf,
-       total_power = r$total_power, lf_nu = r$lf_nu,
-       hf_nu = if (!is.null(r$lf_nu)) 100 - r$lf_nu else NULL,
-       order = r$order, bands = r$bands,
-       interpretation_caveat = paste("LF reflects both autonomic branches",
-                                     "and the baroreflex; the ratio is not",
-                                     "a clean index of sympathovagal balance"),
-       method = r$method)
+  list(
+    lf_hf_ratio = r$lf_hf_ratio, lf = r$lf, hf = r$hf, vlf = r$vlf,
+    total_power = r$total_power, lf_nu = r$lf_nu,
+    hf_nu = if (!is.null(r$lf_nu)) 100 - r$lf_nu else NULL,
+    order = r$order, bands = r$bands,
+    interpretation_caveat = paste(
+      "LF reflects both autonomic branches",
+      "and the baroreflex; the ratio is not",
+      "a clean index of sympathovagal balance"
+    ),
+    method = r$method
+  )
 }
 
 # pre-policy spellings

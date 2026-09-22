@@ -35,3 +35,7 @@ A step of the nbeats_native implementation. Called by \code{nbeats_stack}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+nbeats_block(window = 5L, horizon = 5L)
+}
+\keyword{internal}

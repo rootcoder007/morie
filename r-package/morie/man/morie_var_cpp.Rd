@@ -9,7 +9,7 @@
 \item{ddof}{Passed to \code{.Call}. Defaults to \code{1L}.}
 
 \item{shared}{Use the rmoriebricklayer kernel (\code{TRUE}) or the
-identical kernel morie vendors (\code{FALSE}). Defaults to \code{TRUE}.}
+identical kernel rmorie vendors (\code{FALSE}). Defaults to \code{TRUE}.}
 }
 \value{
 The value of \code{.Call}.

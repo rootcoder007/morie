@@ -27,3 +27,7 @@ it restores the gain to roughly unity by about 0.5 Hz so the QRS
 survives. The 1/T factor is applied as written, so the output is
 scaled by fs.
 }
+\examples{
+BlWander(ecg = c(1, 2, 3, 4, 5, 6, 7, 8), fs = 5L)
+}
+\keyword{internal}

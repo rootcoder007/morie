@@ -27,3 +27,12 @@ A step of the bats_native implementation. Called by \code{.fit_spec},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+z <- as.numeric(arima.sim(list(ar = 0.5), 40)) + 10
+spec <- BatsSpec()
+theta <- rep(0.1, n_free(spec))
+r <- bats_filter(z, spec, theta, x0 = rep(0, n_states(spec)))
+str(r, max.level = 1)
+}
+\keyword{internal}

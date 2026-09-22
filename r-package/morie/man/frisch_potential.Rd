@@ -16,6 +16,11 @@ Scalar potential, or \code{-Inf} if any entry is <= 0.
 Frisch equation 5.1: \code{V = sum log(x_k)} over the slacks.
 Returns \code{-Inf} outside the strict interior.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+frisch_potential(V)
+}
 \references{
 Frisch, R. (1956).
 }
+\keyword{internal}

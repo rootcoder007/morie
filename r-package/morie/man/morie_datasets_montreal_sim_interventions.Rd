@@ -11,7 +11,7 @@ morie_datasets_montreal_sim_interventions(
 )
 }
 \arguments{
-\item{offline}{If \code{TRUE} (default), reads the bundled sample.}
+\item{offline}{If \code{TRUE} (default), reads the included sample.}
 
 \item{csv_path}{Optional path to a user-downloaded full CSV.}
 
@@ -21,7 +21,7 @@ morie_datasets_montreal_sim_interventions(
 A \code{data.frame} with the 13 SIM columns.
 }
 \description{
-Phase 3EEE1. Bundled stratified 349-row sample (50 rows per
+Phase 3EEE1. Included stratified 349-row sample (50 rows per
 DESCRIPTION_GROUPE category) of SIM (Service de securite
 incendie de Montreal) interventions, drawn from the full
 172,899-row open feed for years 2005-2026.
@@ -30,7 +30,7 @@ incendie de Montreal) interventions, drawn from the full
 Three source modes:
 
 \describe{
-\item{\code{offline = TRUE} (default)}{Bundled 349-row sample for
+\item{\code{offline = TRUE} (default)}{Included 349-row sample for
 tests + intro examples.}
 \item{\code{csv_path = "..."}}{Reads a user-downloaded
 \code{donneesouvertes-interventions-sim.csv} (or yearly variant)
@@ -46,9 +46,9 @@ MTM zone 8 NAD83 / EPSG:32188), LONGITUDE, LATITUDE (WGS84,
 obfuscated to intersections per privacy policy).
 }
 \examples{
-\dontshow{if (nzchar(system.file("extdata", "montreal_sim_interventions_sample.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (nzchar(system.file("extdata", "montreal_sim_interventions_sample.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_montreal_sim_interventions(offline = TRUE)
-nrow(df)              # 349
+nrow(df) # 349
 table(df$DESCRIPTION_GROUPE)
 \dontshow{\}) # examplesIf}
 }

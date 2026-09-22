@@ -59,7 +59,7 @@
 # unfaithful in the same way.
 #' Compensated accumulation, so both language arms agree bit for bit
 #'
-#' Neither language\'s sum() is a plain double loop -- R accumulates in
+#' Neither language's sum() is a plain double loop -- R accumulates in
 #' long double, CPython 3.12 and later compensate -- and they are not
 #' unfaithful in the same way.
 #'
@@ -256,6 +256,9 @@
 #' @param TD0 initial deep anomaly.
 #' @return a list with temperature, deep_temperature and imbalance.
 #' @export
+#' @examples
+#' morie_ecsTCR_integrate(forcing = c(1, 2, 3, 4, 5, 6, 7, 8), lam = 5L)
+#' @keywords internal
 morie_ecsTCR_integrate <- function(forcing, lam, gamma = 0.7,
                                    epsilon = 1, C = 8, C_deep = 100,
                                    solver = "analytic", dt = 1, T0 = 0,
@@ -291,6 +294,9 @@ morie_ecsTCR_integrate <- function(forcing, lam, gamma = 0.7,
 #' @param f2x forcing from doubling; defaults to AR6's 3.93 W m-2.
 #' @return the forcing in W m-2.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_ecsTCR_co2_forcing(V)
 # The grouping matters. Written as f2x * log(r) / log(2) the division
 # happens after the multiplication and a doubling comes back as
 # 3.9299999999999997 rather than 3.93 -- close enough for climate, not
@@ -355,6 +361,7 @@ morie_ecsTCR_co2_forcing <- function(ratio, f2x = .ECSTCR_F2X)
 #'   deep_temperature, imbalance, fitted, charney_range, within_charney,
 #'   route, solver and method.
 #' @export
+#' @keywords internal
 morie_ecsTCR <- function(model_run = NULL, CO2_traj = NULL,
                          route = "parameters", lam = NULL, gamma = 0.7,
                          epsilon = 1, C = 8, C_deep = 100,

@@ -19,6 +19,14 @@ morie_geron_randomized_pca(
 
 \item{seed, n_oversamples, n_power_iter}{Sketch controls.}
 }
+\value{
+A list with \code{components}, \code{scores}, \code{singular_values}, \code{explained_variance}, \code{explained_variance_ratio}, \code{spectral_gap}, \code{sketch_width}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Randomized PCA via a power-iterated random projection sketch (Geron Ch 7, hmrpca)
 }
+\examples{
+morie_geron_randomized_pca(matrix(c(1, 2, 3, 1, 2, 3), ncol = 2),
+    1)
+}
+\keyword{internal}

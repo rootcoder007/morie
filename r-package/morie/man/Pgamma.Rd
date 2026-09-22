@@ -23,3 +23,7 @@ A step of the dist_native implementation. Called by \code{Pchisq}, \code{Qgamma}
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+Pgamma(q = 0.5, shape = 5L)
+}
+\keyword{internal}

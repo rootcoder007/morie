@@ -11,9 +11,14 @@ jsonlite_toJSON_or_stub(x)
 \item{x}{Passed to \code{.s03json_toJSON}.}
 }
 \value{
-The value of \code{.s03json_toJSON}.
+One of two values, depending on the branch taken.
 }
 \description{
 actually given, and fall back to a minimal deparse so the optional
 side effect never hard-fails.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+jsonlite_toJSON_or_stub(V)
+}
+\keyword{internal}

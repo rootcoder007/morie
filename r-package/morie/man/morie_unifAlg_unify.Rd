@@ -21,3 +21,10 @@ A step of the unifAlg_native implementation. Called by \code{.trmRew_overlap}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+a <- morie_unifAlg_app("f", morie_unifAlg_var("x"), morie_unifAlg_const("b"))
+b <- morie_unifAlg_app("f", morie_unifAlg_const("a"), morie_unifAlg_var("y"))
+r <- morie_unifAlg_unify(a, b)
+c(r$unified, r$n_bindings)
+}
+\keyword{internal}

@@ -19,7 +19,7 @@ morie_egnnL_equivariance_error(
 \arguments{
 \item{H}{Passed to \code{run_egnn}.}
 
-\item{X}{A matrix; passed to \code{nrow}.}
+\item{X}{A vector; its length is taken and its elements indexed.}
 
 \item{phi_e}{Passed to \code{run_egnn}.}
 
@@ -27,9 +27,9 @@ morie_egnnL_equivariance_error(
 
 \item{phi_h}{Passed to \code{run_egnn}.}
 
-\item{Q}{A matrix; passed to \code{\%*\%}.}
+\item{Q}{A vector; indexed elementwise.}
 
-\item{g}{Numeric; combined arithmetically in the body.}
+\item{g}{A vector; indexed elementwise.}
 
 \item{layers}{Passed to \code{run_egnn}. Defaults to \code{2}.}
 
@@ -44,3 +44,19 @@ A step of the egnnL_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+H <- lapply(1:4, function(i) rnorm(2))
+X <- lapply(1:4, function(i) rnorm(3))
+phi_e <- function(hi, hj, d2, a) c(hi + hj, d2)
+phi_x <- function(m) sum(m) * 0.01
+phi_h <- function(hi, agg) hi + 0.1 * agg[seq_along(hi)]
+th <- pi / 5
+Qm <- matrix(c(cos(th), -sin(th), 0, sin(th), cos(th), 0, 0, 0, 1), 3, 3)
+Q <- lapply(seq_len(3), function(i) Qm[i, ])
+g <- c(0.5, -0.2, 0.1)
+r <- morie_egnnL_equivariance_error(H, X, phi_e, phi_x, phi_h, Q, g,
+                                    layers = 2L)
+c(r$equivariant, r$invariant)
+}
+\keyword{internal}

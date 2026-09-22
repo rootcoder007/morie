@@ -18,6 +18,7 @@ each person-year, with stationary distribution and off-diagonal
 Theil-T concentration.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_intra_year_transition_matrix(V)
+b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+res <- morie_otis_intra_year_transition_matrix(b02)
+res$title
 }

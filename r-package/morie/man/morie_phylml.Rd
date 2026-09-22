@@ -24,3 +24,7 @@ A step of the phylml_native implementation. Called by \code{.phylby_log_posterio
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_phylml(tree = list(a = 1, b = 2), seqs = c("a", "b", "c"))
+}
+\keyword{internal}

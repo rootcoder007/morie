@@ -28,6 +28,5 @@ interval in \code{extra}.
 Random-effects (DerSimonian-Laird) meta-analytic pooling
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-random_effects_meta(V, V)
+random_effects_meta(c(0.20, 0.35, 0.15), c(0.08, 0.10, 0.07))
 }

@@ -15,8 +15,10 @@ hybrid KEM-DEM scheme. Requires the liboqs backend
 (\code{\link[=morie_crypto_liboqs_available]{morie_crypto_liboqs_available()}}).
 }
 \examples{
-if (morie_crypto_liboqs_available()) {
-  kp <- morie_crypto_hybrid_keygen()
-  c(pk = length(kp$pk), sk = length(kp$sk))
+if (morie_crypto_sodium_available()) {
+  if (morie_crypto_liboqs_available()) {
+    kp <- morie_crypto_hybrid_keygen()
+    c(pk = length(kp$pk), sk = length(kp$sk))
+  }
 }
 }

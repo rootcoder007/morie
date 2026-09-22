@@ -22,9 +22,11 @@
 #' @return An object of class \code{morie_mrm_dataset}: list with
 #'   \code{data}, \code{provenance} (name, path, n_rows, n_cols,
 #'   sha256, loaded_at).
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' d <- morie_mrm_load_si_dataset("otis_b01")
 #' d$provenance$n_rows
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_mrm_load_si_dataset <- function(name = "otis_b01") {
   data <- morie_sample(name)
@@ -136,7 +138,12 @@ morie_mrm_reconcile <- function(primary, secondary, keys,
 #'
 #' @param x A \code{morie_mrm_reconciliation} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `invisible`.
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie:::print.morie_mrm_reconciliation(D)
 #' @export
+#' @keywords internal
 print.morie_mrm_reconciliation <- function(x, ...) {
   cat("MRM reconciliation\n")
   cat(sprintf("  keys       : %s\n", paste(x$schema$keys,
@@ -161,7 +168,7 @@ print.morie_mrm_reconciliation <- function(x, ...) {
 #'   \code{morie_mrm_reconciliation}, whose matched rows are used).
 #' @param treatment,outcome Column names (binary 0/1 treatment).
 #' @param covariates Character vector of adjustment covariates.
-#' @param methods Subset of \code{c("matching", "ate", "aipw",
+#' @param methods Subset of \eqn{c("matching", "ate", "aipw",
 #'   "dml")} (default all four).
 #' @param correction Multiple-testing correction passed to
 #'   \code{stats::p.adjust} (default \code{"holm"}).
@@ -224,7 +231,7 @@ morie_mrm_estimate_causal_effect <- function(data, treatment, outcome,
            se = unname(tt$stderr), p = tt$p.value,
            diag = list(n_pairs = nrow(m$match_pairs)))
     })
-    rows[["matching (morie native)"]] <- r
+    rows[["matching (rmorie native)"]] <- r
   }
   if ("ate" %in% methods) {
     r <- run(function() {
@@ -233,7 +240,7 @@ morie_mrm_estimate_causal_effect <- function(data, treatment, outcome,
            p = 2 * stats::pnorm(-abs(a$ate / a$se)),
            diag = list(n = nrow(data)))
     })
-    rows[["ipw ate (morie native)"]] <- r
+    rows[["ipw ate (rmorie native)"]] <- r
   }
   if ("aipw" %in% methods) {
     r <- run(function() {
@@ -242,7 +249,7 @@ morie_mrm_estimate_causal_effect <- function(data, treatment, outcome,
            p = 2 * stats::pnorm(-abs(a$ate / a$se)),
            diag = list(n = nrow(data)))
     })
-    rows[["aipw (morie native)"]] <- r
+    rows[["aipw (rmorie native)"]] <- r
   }
   if ("dml" %in% methods) {
     r <- run(function() {
@@ -254,7 +261,7 @@ morie_mrm_estimate_causal_effect <- function(data, treatment, outcome,
            p = 2 * stats::pnorm(-abs((a$estimate %||% a$ate) / se)),
            diag = list(n = nrow(data)))
     })
-    rows[["dml plr (morie native)"]] <- r
+    rows[["dml plr (rmorie native)"]] <- r
   }
   ok <- !vapply(rows, inherits, logical(1), "error")
   if (!any(ok)) {
@@ -296,7 +303,12 @@ morie_mrm_estimate_causal_effect <- function(data, treatment, outcome,
 #'
 #' @param x A \code{morie_mrm_effect} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `invisible`.
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie:::print.morie_mrm_effect(D)
 #' @export
+#' @keywords internal
 print.morie_mrm_effect <- function(x, ...) {
   cat(morie_mrm_report(x, format = "text"), sep = "\n")
   invisible(x)

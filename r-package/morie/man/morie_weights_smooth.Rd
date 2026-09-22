@@ -20,14 +20,13 @@ Allowed values depend on the caller.}
 mean factor.}
 }
 \value{
-Numeric vector of smoothed weights, same length as
-\code{weights}; under \code{"log_transform"} the result is
-rescaled to preserve the original weight sum.
+A numeric value.
 }
 \description{
 Smooth survey weights via shrinkage toward the mean (or log-mean)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_weights_smooth(V)
+set.seed(1)
+res <- morie_weights_smooth(runif(30, 0.5, 5))
+str(res, max.level = 1)
 }

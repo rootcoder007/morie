@@ -10,14 +10,13 @@ morie_otis_analyze_b04(data)
 \item{data}{b04 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines and a region x measure
-crosstab of placement durations.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 Placement durations by region & gender (b04)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_b04(V)
+otis_b04 <- morie_synth_otis("b04", n = 120L, seed = 1L)
+res <- morie_otis_analyze_b04(otis_b04)
+class(res)
 }

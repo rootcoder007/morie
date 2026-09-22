@@ -2,7 +2,7 @@
 % Please edit documentation in R/pate_native.R
 \name{moments_accountant}
 \alias{moments_accountant}
-\title{Compose the per-query moment bounds and convert to (eps, delta)}
+\title{moments_accountant}
 \usage{
 moments_accountant(
   vote_counts,
@@ -33,3 +33,7 @@ A step of the pate_native implementation. Called by \code{pate}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+moments_accountant(vote_counts = c(1, 2, 3, 4, 5, 6, 7, 8), gamma = 0.5, delta = 0.5)
+}
+\keyword{internal}

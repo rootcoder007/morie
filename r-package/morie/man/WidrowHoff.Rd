@@ -21,7 +21,12 @@ A list with \code{w_next}, \code{mu}, \code{e}, \code{order},
 \code{method}.
 }
 \description{
-the book\'s equation and is kept; folding it into mu silently halves
+the book's equation and is kept; folding it into mu silently halves
 every step size a reader transcribes from the text.  The stability
 bound 0 < mu < 1/lambda_max is reported against the input power.
 }
+\examples{
+WidrowHoff(w = c(1, 2, 3, 4, 5, 6, 7, 8), e = c(1, 2, 3, 4, 5, 6, 7, 8),
+  rvec = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -22,6 +22,14 @@ morie_geron_perceiver(
 
 \item{W_q, W_k, W_v}{Optional projections.}
 }
+\value{
+A list with \code{latents}, \code{attention}, \code{attention_cost}, \code{self_attention_cost}, \code{n_iter}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Perceiver: iterated latent-to-input scaled dot-product cross-attention (Geron Ch 16, hmprcv)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_perceiver(V, V)
+}
+\keyword{internal}

@@ -2,21 +2,41 @@
 % Please edit documentation in R/slowdp_native.R
 \name{truncated_dp}
 \alias{truncated_dp}
-\title{Truncated Dirichlet process draw}
+\title{truncated_dp}
 \usage{
-truncated_dp(alpha, K, base_sampler = NULL, seed = 0, renormalise = TRUE)
+truncated_dp(
+  alpha,
+  K,
+  base_sampler = NULL,
+  rng = NULL,
+  seed = 0,
+  renormalise = TRUE
+)
 }
 \arguments{
-\item{alpha}{See Usage.}
+\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{K}{See Usage.}
+\item{K}{Coerced to integer by the body, with \code{as.integer}.}
 
-\item{base_sampler}{See Usage.}
+\item{base_sampler}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 
-\item{seed}{See Usage.}
+\item{rng}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 
-\item{renormalise}{See Usage.}
+\item{seed}{Passed to \code{.ghc_rng}. Defaults to \code{0}.}
+
+\item{renormalise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+}
+\value{
+A list with \code{estimate}, \code{weights}, \code{atoms},
+\code{discarded_mass}, \code{expected_discarded}, \code{renormalised}, \code{K},
+\code{alpha}, \code{method}, \code{note}.
 }
 \description{
-Truncated Dirichlet process draw
+A step of the slowdp_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+truncated_dp(alpha = 0.5, K = 5L)
+}
+\keyword{internal}

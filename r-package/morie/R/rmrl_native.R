@@ -99,6 +99,11 @@
 #' to \code{c()}.
 #' @return The value of \code{m}, as built in the body.
 #' @export
+#' @examples
+#' edges <- list(list(0L, "a", 1L, 0), list(1L, "b", 2L, 1))
+#' m <- morie_rmrl_reward_machine(edges, u0 = 0, terminal = c(2L))
+#' str(m, max.level = 1)
+#' @keywords internal
 morie_rmrl_reward_machine <- function(edges, u0 = 0, terminal = c()) {
   # A simple reward machine <U, u0, delta_u, delta_r> (Defs 3.1-3.2).
   # Edges are list(u, formula, u_next, reward). formula is either the
@@ -143,6 +148,10 @@ morie_rmrl_reward_machine <- function(edges, u0 = 0, terminal = c()) {
 #' @param sigma See Usage.
 #' @return A list with \code{u}, \code{reward}.
 #' @export
+#' @examples
+#' morie_rmrl_machine_step(machine = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), u = 5L,
+#'   sigma = 0.5)
+#' @keywords internal
 morie_rmrl_machine_step <- function(machine, u, sigma) {
   # (delta_u(u, sigma), delta_r(u, delta_u(u, sigma))).
   if (as.character(u) %in% machine$terminal) {
@@ -166,6 +175,12 @@ morie_rmrl_machine_step <- function(machine, u, sigma) {
 #' @return A list with \code{estimate}, \code{states}, \code{rewards},
 #' \code{total_reward}, \code{final_state}, \code{accepted}, \code{method}.
 #' @export
+#' @examples
+#' edges <- list(list(0L, "a", 1L, 0), list(1L, "b", 2L, 1))
+#' m <- morie_rmrl_reward_machine(edges, u0 = 0, terminal = c(2L))
+#' r <- morie_rmrl_reward_machine_run(m, c("a", "b"))
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_rmrl_reward_machine_run <- function(machine, labels) {
   # Drive a machine over a sequence of truth assignments. labels is
   # sigma_0, sigma_1, ..., i.e. L(s) for each visited state. Returns
@@ -254,6 +269,7 @@ morie_rmrl_reward_machine_run <- function(machine, labels) {
 #' \code{mean_return_last}, \code{mean_return_first}, \code{n_qfunctions},
 #' \code{episodes}, \code{method}.
 #' @export
+#' @keywords internal
 morie_rmrl <- function(machines, states, actions, step, label, gamma = 0.9,
                        alpha = 0.5, epsilon = 0.1, episodes = 500, horizon = 100,
                        start = NULL, dead_end = NULL, seed = 0,
@@ -418,6 +434,7 @@ morie_rmrl <- function(machines, states, actions, step, label, gamma = 0.9,
 #' @return A list with \code{estimate}, \code{q}, \code{returns},
 #' \code{mean_return_last}, \code{mean_return_first}, \code{method}.
 #' @export
+#' @keywords internal
 morie_rmrl_qlearn_flat <- function(machine, states, actions, step, label,
                                    gamma = 0.9, alpha = 0.5, epsilon = 0.1,
                                    episodes = 500, horizon = 100, start = NULL,
@@ -506,6 +523,9 @@ morie_rmrl_qlearn_flat <- function(machine, states, actions, step, label,
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_rmrl_cheatsheet()
+#' @keywords internal
 morie_rmrl_cheatsheet <- function() {
   paste0(
     "rmrl: reward machine <U, u0, delta_u, delta_r> (Icarte ",

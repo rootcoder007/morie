@@ -26,6 +26,11 @@ reproduces the two-way fixed effects estimates \strong{exactly}.  The
 design is far smaller: three blocks of width \eqn{p}{p} rather
 than \eqn{N + T}{N+T} dummies.
 }
+\examples{
+morie_two_way_mundlak(Y = c(1, 2, 3, 4, 5, 6, 7, 8), unit = c(1, 2, 3, 4, 5, 6, 7, 8),
+  period = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
 \references{
 Wooldridge (2025) Sec. 3.
 }
+\keyword{internal}

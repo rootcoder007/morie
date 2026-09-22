@@ -27,3 +27,8 @@ A step of the blstn_native implementation. Called by \code{morie_blstn}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_blast_pvalue(score = 35, m = 1000, n = 1e6, lam = 0.192,
+                   K = 0.176)
+}
+\keyword{internal}

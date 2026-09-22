@@ -25,3 +25,8 @@ sides are formed and compared.  Its value in RLS is that with k = 1
 the only inverse left is of a SCALAR, which turns an O(M^3) inversion
 per sample into O(M^2).
 }
+\examples{
+AbcdLemma(matrix(c(4, 1, 1, 3), 2, 2), matrix(c(1, 2), 2, 1),
+    matrix(1, 1, 1), matrix(c(1, 2), 1, 2))
+}
+\keyword{internal}

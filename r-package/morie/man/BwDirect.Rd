@@ -23,3 +23,7 @@ there is no warping to prewarp for.  The filter so defined has zero
 phase, which is only usable with the whole record in hand -- it is
 not causal and cannot be run sample by sample.
 }
+\examples{
+BwDirect(omega = c(1, 2, 3, 4, 5, 6, 7, 8), omega_c = 5L, N = 5L)
+}
+\keyword{internal}

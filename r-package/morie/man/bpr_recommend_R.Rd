@@ -28,3 +28,7 @@ List with \code{ranking} (list of \code{list(i=, s=)} up to
 \description{
 Mirrors morie.fn.bprMF.recommend.
 }
+\examples{
+bpr_recommend_R(W = c(1, 2, 3, 4, 5, 6, 7, 8), H = 0.5, u = 5L, n_items = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -6,7 +6,15 @@
 # (3.1) p.71 + OLS pp.72-73; EPE p.80; ridge p.81; (4.5)-(4.14)
 # pp.131-136.
 
-#' @noRd
+#' morie_pinv
+#'
+#' @param A Argument `A`; see Usage.
+#' @param rcond Argument `rcond`; see Usage.
+#' @return The value of `%*%`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_pinv(V)
+#' @keywords internal
 morie_pinv <- function(A, rcond = 1e-15) {
   A <- as.matrix(A)
   s <- svd(A)
@@ -15,7 +23,15 @@ morie_pinv <- function(A, rcond = 1e-15) {
   s$v %*% diag(di, nrow = length(di)) %*% t(s$u)
 }
 
-#' @noRd
+#' morie_solve
+#'
+#' @param A Argument `A`; see Usage.
+#' @param b Argument `b`; see Usage.
+#' @return The value of `out`, as built in the body.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_solve(V)
+#' @keywords internal
 morie_solve <- function(A, b = NULL) {
   # Rank-deficient systems are legitimate here (intercept-only design
   # blocks, zero covariate columns, a genomic relationship matrix with
@@ -23,15 +39,20 @@ morie_solve <- function(A, b = NULL) {
   # pseudo-inverse rather than failing.
   if (is.null(b)) {
     out <- try(solve(A), silent = TRUE)
-    if (inherits(out, "try-error")) return(morie_pinv(A))
+    if (inherits(out, "try-error")) {
+      return(morie_pinv(A))
+    }
     return(out)
   }
   out <- try(solve(A, b), silent = TRUE)
-  if (inherits(out, "try-error")) return(morie_pinv(A) %*% b)
+  if (inherits(out, "try-error")) {
+    return(morie_pinv(A) %*% b)
+  }
   out
 }
 
 #' @noRd
+#' @export
 morie_one_way <- function(groups) {
   G <- lapply(groups, as.numeric)
   r <- length(G[[1]])
@@ -47,17 +68,20 @@ morie_one_way <- function(groups) {
   ms_b <- ss_b / (a - 1)
   ms_w <- ss_w / (n - a)
   s2b <- max((ms_b - ms_w) / r, 0)
-  list(grand_mean = grand,
-       sd_single_mean = sqrt((ss_b + ss_w) / (n - 1)),
-       group_means = means,
-       sd_residual = sqrt(ms_w),
-       deviations = means - grand,
-       sigma2_b = s2b,
-       icc = if (s2b + ms_w > 0) s2b / (s2b + ms_w) else 0,
-       ms_between = ms_b, ms_within = ms_w)
+  list(
+    grand_mean = grand,
+    sd_single_mean = sqrt((ss_b + ss_w) / (n - 1)),
+    group_means = means,
+    sd_residual = sqrt(ms_w),
+    deviations = means - grand,
+    sigma2_b = s2b,
+    icc = if (s2b + ms_w > 0) s2b / (s2b + ms_w) else 0,
+    ms_between = ms_b, ms_within = ms_w
+  )
 }
 
 #' @noRd
+#' @export
 morie_mme <- function(X, Z, y, Sigma_inv, R_inv = NULL) {
   X <- as.matrix(X)
   Z <- as.matrix(Z)
@@ -68,15 +92,20 @@ morie_mme <- function(X, Z, y, Sigma_inv, R_inv = NULL) {
   if (is.null(R_inv)) R_inv <- diag(n)
   XtRi <- t(X) %*% R_inv
   ZtRi <- t(Z) %*% R_inv
-  LHS <- rbind(cbind(XtRi %*% X, XtRi %*% Z),
-               cbind(ZtRi %*% X, ZtRi %*% Z + as.matrix(Sigma_inv)))
+  LHS <- rbind(
+    cbind(XtRi %*% X, XtRi %*% Z),
+    cbind(ZtRi %*% X, ZtRi %*% Z + as.matrix(Sigma_inv))
+  )
   RHS <- rbind(XtRi %*% y, ZtRi %*% y)
   sol <- morie_solve(LHS, RHS)
-  list(blue = as.numeric(sol[seq_len(p)]),
-       blup = as.numeric(sol[p + seq_len(q)]))
+  list(
+    blue = as.numeric(sol[seq_len(p)]),
+    blup = as.numeric(sol[p + seq_len(q)])
+  )
 }
 
 #' @noRd
+#' @export
 morie_blue_blup_v <- function(X, Z, y, Sigma, R = NULL) {
   X <- as.matrix(X)
   Z <- as.matrix(Z)
@@ -91,32 +120,42 @@ morie_blue_blup_v <- function(X, Z, y, Sigma, R = NULL) {
 }
 
 #' @noRd
+#' @export
 morie_grm <- function(M) {
   Xs <- scale(as.matrix(M))
   tcrossprod(Xs) / ncol(Xs)
 }
 
 #' @noRd
+#' @export
 morie_gblup <- function(X, y, G, sigma2_g, sigma2_e = 1) {
   q <- nrow(G)
   n <- length(y)
   Z <- diag(n)[, seq_len(q), drop = FALSE]
-  morie_blue_blup_v(X, Z, y, sigma2_g * G,
-                          diag(sigma2_e, n))$blup
+  morie_blue_blup_v(
+    X, Z, y, sigma2_g * G,
+    diag(sigma2_e, n)
+  )$blup
 }
 
 #' @noRd
+#' @export
 morie_snp_blup <- function(X, y, M, sigma2_m, sigma2_e = 1) {
   M <- as.matrix(M)
   p <- ncol(M)
   n <- length(y)
-  fit <- morie_blue_blup_v(X, M, y, diag(sigma2_m, p),
-                                 diag(sigma2_e, n))
-  list(marker_effects = fit$blup,
-       gebv = as.numeric(M %*% fit$blup))
+  fit <- morie_blue_blup_v(
+    X, M, y, diag(sigma2_m, p),
+    diag(sigma2_e, n)
+  )
+  list(
+    marker_effects = fit$blup,
+    gebv = as.numeric(M %*% fit$blup)
+  )
 }
 
 #' @noRd
+#' @export
 morie_pca <- function(X, k = NULL) {
   Xs <- scale(as.matrix(X))
   n <- nrow(Xs)
@@ -136,15 +175,18 @@ morie_pca <- function(X, k = NULL) {
   e$vectors <- V
   PC <- Xs %*% V
   k <- if (is.null(k)) ncol(Xs) else k
-  list(eigenvalues = lam, sd_pc = sqrt(pmax(lam, 0)),
-       loadings = e$vectors, scores = PC,
-       compressed = PC[, seq_len(k), drop = FALSE],
-       prop_variance = lam / sum(lam),
-       cum_variance = cumsum(lam) / sum(lam))
+  list(
+    eigenvalues = lam, sd_pc = sqrt(pmax(lam, 0)),
+    loadings = e$vectors, scores = PC,
+    compressed = PC[, seq_len(k), drop = FALSE],
+    prop_variance = lam / sum(lam),
+    cum_variance = cumsum(lam) / sum(lam)
+  )
 }
 
 
 #' @noRd
+#' @export
 morie_ridge <- function(X, y, lambda, add_intercept = TRUE) {
   X <- as.matrix(X)
   if (add_intercept) X <- cbind(1, X)
@@ -152,22 +194,36 @@ morie_ridge <- function(X, y, lambda, add_intercept = TRUE) {
   p <- ncol(X)
   D <- diag(p)
   if (add_intercept) D[1, 1] <- 0
-  beta <- as.numeric(morie_solve(t(X) %*% X + lambda * D,
-                                      t(X) %*% y))
+  beta <- as.numeric(morie_solve(
+    t(X) %*% X + lambda * D,
+    t(X) %*% y
+  ))
   fitted <- as.numeric(X %*% beta)
   rss <- sum((y - fitted)^2)
   pen <- lambda * sum((beta^2)[diag(D) == 1])
-  list(beta = beta, fitted = fitted, rss = rss, penalty = pen,
-       prss = rss + pen)
+  list(
+    beta = beta, fitted = fitted, rss = rss, penalty = pen,
+    prss = rss + pen
+  )
 }
 
-#' @noRd
+#' morie_epe
+#'
+#' @param sigma2 Argument `sigma2`; see Usage.
+#' @param x_star Argument `x_star`; see Usage.
+#' @param eigenvalues Argument `eigenvalues`; see Usage.
+#' @return A numeric value.
+#' @examples
+#' morie:::morie_epe(sigma2 = c(1, 2, 3, 4, 5, 6, 7, 8), x_star = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   eigenvalues = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_epe <- function(sigma2, x_star, eigenvalues) {
   if (any(eigenvalues <= 0)) stop("eigenvalues must be positive")
   sigma2 * (1 + sum(x_star^2 / eigenvalues))
 }
 
 #' @noRd
+#' @export
 morie_binary_metrics <- function(y_true, y_pred, positive = 1) {
   yt <- as.integer(y_true)
   yp <- as.integer(y_pred)
@@ -180,25 +236,31 @@ morie_binary_metrics <- function(y_true, y_pred, positive = 1) {
   pe <- (tp + fn) / n * (tp + fp) / n + (fp + tn) / n * (fn + tn) / n
   se <- if (tp + fn > 0) tp / (tp + fn) else 0
   sp <- if (tn + fp > 0) tn / (tn + fp) else 0
-  list(tp = tp, fp = fp, tn = tn, fn = fn, pccc = p0,
-       sensitivity = se, specificity = sp,
-       precision = if (tp + fp > 0) tp / (tp + fp) else 0,
-       neg_pred_value = if (tn + fn > 0) tn / (tn + fn) else 0,
-       prevalence = (tp + fn) / n, detection_rate = tp / n,
-       balanced_accuracy = (se + sp) / 2,
-       kappa = if (pe < 1) (p0 - pe) / (1 - pe) else 0)
+  list(
+    tp = tp, fp = fp, tn = tn, fn = fn, pccc = p0,
+    sensitivity = se, specificity = sp,
+    precision = if (tp + fp > 0) tp / (tp + fp) else 0,
+    neg_pred_value = if (tn + fn > 0) tn / (tn + fn) else 0,
+    prevalence = (tp + fn) / n, detection_rate = tp / n,
+    balanced_accuracy = (se + sp) / 2,
+    kappa = if (pe < 1) (p0 - pe) / (1 - pe) else 0
+  )
 }
 
 #' @noRd
+#' @export
 morie_mcc <- function(y_true, y_pred, positive = 1) {
   m <- morie_binary_metrics(y_true, y_pred, positive)
   den <- (m$tp + m$fp) * (m$tp + m$fn) * (m$tn + m$fp) *
     (m$tn + m$fn)
-  if (den == 0) return(0)
+  if (den == 0) {
+    return(0)
+  }
   (m$tp * m$tn - m$fp * m$fn) / sqrt(den)
 }
 
 #' @noRd
+#' @export
 morie_class_metrics <- function(conf, i) {
   C <- nrow(conf)
   tfn <- sum(conf[i, -i])
@@ -206,14 +268,17 @@ morie_class_metrics <- function(conf, i) {
   ttn <- sum(conf[-i, -i])
   ttp <- sum(diag(conf))
   total <- sum(conf)
-  list(TFN = tfn, TFP = tfp, TTN = ttn, TTP_all = ttp,
-       precision = if (ttp + tfp > 0) ttp / (ttp + tfp) else 0,
-       sensitivity = if (ttp + tfn > 0) ttp / (ttp + tfn) else 0,
-       specificity = if (ttn + tfp > 0) ttn / (ttn + tfp) else 0,
-       pCCC = if (total > 0) ttp / total else 0)
+  list(
+    TFN = tfn, TFP = tfp, TTN = ttn, TTP_all = ttp,
+    precision = if (ttp + tfp > 0) ttp / (ttp + tfp) else 0,
+    sensitivity = if (ttp + tfn > 0) ttp / (ttp + tfn) else 0,
+    specificity = if (ttn + tfp > 0) ttn / (ttn + tfp) else 0,
+    pCCC = if (total > 0) ttp / total else 0
+  )
 }
 
 #' @noRd
+#' @export
 morie_brier <- function(probs, y_true, halved = FALSE) {
   P <- as.matrix(probs)
   yt <- as.integer(y_true)
@@ -223,7 +288,16 @@ morie_brier <- function(probs, y_true, halved = FALSE) {
   if (halved) bs / 2 else bs
 }
 
-#' @noRd
+#' morie_mll
+#'
+#' @param probs Argument `probs`; see Usage.
+#' @param y_true Argument `y_true`; see Usage.
+#' @return A numeric value.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' S <- c("a", "b", "c")
+#' morie:::morie_mll(V, S)
+#' @keywords internal
 morie_mll <- function(probs, y_true) {
   P <- as.matrix(probs)
   yt <- as.integer(y_true)
@@ -232,10 +306,26 @@ morie_mll <- function(probs, y_true) {
 
 # ---- chapter 5: linear mixed models (MVSML 2022 pp.142-155) ----
 
-#' @noRd
+#' morie_kron
+#'
+#' @param A Argument `A`; see Usage.
+#' @param B Argument `B`; see Usage.
+#' @return The value of `kronecker`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_kron(V, V)
+#' @keywords internal
 morie_kron <- function(A, B) kronecker(as.matrix(A), as.matrix(B))
 
-#' @noRd
+#' morie_lmm_v
+#'
+#' @param Z Argument `Z`; see Usage.
+#' @param D Argument `D`; see Usage.
+#' @param R Argument `R`; see Usage.
+#' @return A numeric value.
+#' @examples
+#' morie:::morie_lmm_v(Z = c(1, 2, 3, 4, 5, 6, 7, 8), D = 5L)
+#' @keywords internal
 morie_lmm_v <- function(Z, D, R = NULL) {
   Z <- as.matrix(Z)
   if (is.null(R)) R <- diag(nrow(Z))
@@ -278,6 +368,7 @@ morie_reml_loglik <- function(X, Z, y, D, R = NULL) {
   list(loglik = ll, beta = as.numeric(beta))
 }
 
+#' @export
 morie_lmm_loglik <- function(X, Z, y, D, R = NULL, beta = NULL) {
   X <- as.matrix(X)
   y <- as.numeric(y)
@@ -295,8 +386,9 @@ morie_lmm_loglik <- function(X, Z, y, D, R = NULL, beta = NULL) {
 }
 
 #' @noRd
+#' @export
 morie_em_lmm <- function(X, Z, y, D0 = NULL, sigma2_0 = 1,
-                               n_iter = 200L, tol = 1e-10) {
+                         n_iter = 200L, tol = 1e-10) {
   X <- as.matrix(X)
   Z <- as.matrix(Z)
   y <- as.numeric(y)
@@ -324,29 +416,37 @@ morie_em_lmm <- function(X, Z, y, D0 = NULL, sigma2_0 = 1,
     D <- D_new
     if (gap < tol) break
   }
-  list(beta = as.numeric(beta), sigma2 = s2, D = D, b = bt,
-       iterations = it)
+  list(
+    beta = as.numeric(beta), sigma2 = s2, D = D, b = bt,
+    iterations = it
+  )
 }
 
 #' @noRd
+#' @export
 morie_gblup_model <- function(y, Z_L, G, sigma2_g,
-                                    sigma2_e = 1) {
+                              sigma2_e = 1) {
   y <- as.numeric(y)
   n <- length(y)
   X <- matrix(1, nrow = n, ncol = 1)
-  fit <- morie_blue_blup_v(X, Z_L, y, sigma2_g * as.matrix(G),
-                                 diag(sigma2_e, n))
+  fit <- morie_blue_blup_v(
+    X, Z_L, y, sigma2_g * as.matrix(G),
+    diag(sigma2_e, n)
+  )
   list(mu = fit$blue[1], b = fit$blup)
 }
 
 #' @noRd
+#' @export
 morie_gxe_blup <- function(y, X_E, Z_L, Z_EL, G, sigma2_g,
-                                 Sigma_E, sigma2_e = 1) {
+                           Sigma_E, sigma2_e = 1) {
   y <- as.numeric(y)
   n <- length(y)
   X <- if (is.null(X_E) || length(X_E) == 0) {
     matrix(1, nrow = n, ncol = 1)
-  } else cbind(1, as.matrix(X_E))
+  } else {
+    cbind(1, as.matrix(X_E))
+  }
   ZL <- as.matrix(Z_L)
   ZEL <- as.matrix(Z_EL)
   q1 <- ncol(ZL)
@@ -357,11 +457,21 @@ morie_gxe_blup <- function(y, X_E, Z_L, Z_EL, G, sigma2_g,
   Sigma[seq_len(q1), seq_len(q1)] <- sigma2_g * as.matrix(G)
   Sigma[q1 + seq_len(q2), q1 + seq_len(q2)] <- S2
   fit <- morie_blue_blup_v(X, Z, y, Sigma, diag(sigma2_e, n))
-  list(beta = fit$blue, b_lines = fit$blup[seq_len(q1)],
-       b_gxe = fit$blup[q1 + seq_len(q2)])
+  list(
+    beta = fit$blue, b_lines = fit$blup[seq_len(q1)],
+    b_gxe = fit$blup[q1 + seq_len(q2)]
+  )
 }
 
 #' @noRd
+#' @export
+#' @examples
+#' set.seed(1)
+#' n <- 12
+#' A <- matrix(rnorm(n * 6), nrow = n)
+#' G <- morie_grm(A) + diag(0.3, n)
+#' morie:::morie_chol_lower(G)
+#' morie_multitrait(Y = G, Z = G, G = G, Sigma_T = G, R_T = G)
 morie_multitrait <- function(Y, Z, G, Sigma_T, R_T, X = NULL) {
   Ym <- as.matrix(Y)
   J <- nrow(Ym)
@@ -373,16 +483,22 @@ morie_multitrait <- function(Y, Z, G, Sigma_T, R_T, X = NULL) {
   Sigma <- morie_kron(G, Sigma_T)
   R <- morie_kron(diag(J), R_T)
   fit <- morie_blue_blup_v(Xm, Zm, y, Sigma, R)
-  list(mu = fit$blue[seq_len(nT)], beta = fit$blue, b = fit$blup,
-       b_by_line = split(fit$blup,
-                         rep(seq_len(length(fit$blup) / nT),
-                             each = nT)))
+  list(
+    mu = fit$blue[seq_len(nT)], beta = fit$blue, b = fit$blup,
+    b_by_line = split(
+      fit$blup,
+      rep(seq_len(length(fit$blup) / nT),
+        each = nT
+      )
+    )
+  )
 }
 
 #' @noRd
+#' @export
 morie_gxe_multitrait <- function(Y, Z_L, Z_EL, G, Sigma_T,
-                                       Sigma_E, Sigma_2T, R_T,
-                                       X = NULL) {
+                                 Sigma_E, Sigma_2T, R_T,
+                                 X = NULL) {
   Ym <- as.matrix(Y)
   rows <- nrow(Ym)
   nT <- ncol(Ym)
@@ -401,36 +517,71 @@ morie_gxe_multitrait <- function(Y, Z_L, Z_EL, G, Sigma_T,
   Sigma[q1 + seq_len(q2), q1 + seq_len(q2)] <- S2
   R <- morie_kron(diag(rows), R_T)
   fit <- morie_blue_blup_v(Xm, Z, y, Sigma, R)
-  list(mu = fit$blue[seq_len(nT)], beta = fit$blue,
-       b_lines = fit$blup[seq_len(q1)],
-       b_gxe = fit$blup[q1 + seq_len(q2)])
+  list(
+    mu = fit$blue[seq_len(nT)], beta = fit$blue,
+    b_lines = fit$blup[seq_len(q1)],
+    b_gxe = fit$blup[q1 + seq_len(q2)]
+  )
 }
 
 # ---- chapter 6: Bayesian genomic linear regression (pp.171-186) ----
 
-#' @noRd
+#' morie_scaled_inv_chisq
+#'
+#' @param nu Argument `nu`; see Usage.
+#' @param S Argument `S`; see Usage.
+#' @param n Argument `n`; see Usage.
+#' @return A numeric value.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_scaled_inv_chisq(V, V)
+#' @keywords internal
 morie_scaled_inv_chisq <- function(nu, S, n = 1L) {
   S / rchisq(n, df = nu)
 }
 
-#' @noRd
+#' morie_brr_hyper
+#'
+#' @param y Argument `y`; see Usage.
+#' @param R2 Argument `R2`; see Usage.
+#' @param nu Argument `nu`; see Usage.
+#' @param nu_beta Argument `nu_beta`; see Usage.
+#' @param sum_var_x Argument `sum_var_x`; see Usage.
+#' @return A list with `S`, `S_beta`, `nu`, `nu_beta`, `var_y`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_brr_hyper(V)
+#' @keywords internal
 morie_brr_hyper <- function(y, R2 = 0.5, nu = 5, nu_beta = 5,
-                                  sum_var_x = NULL) {
+                            sum_var_x = NULL) {
   var_y <- var(as.numeric(y))
   S_beta <- var_y * R2 * (nu_beta + 2)
   if (!is.null(sum_var_x)) S_beta <- S_beta / sum_var_x
-  list(S = var_y * (1 - R2) * (nu + 2), S_beta = S_beta,
-       nu = nu, nu_beta = nu_beta, var_y = var_y)
+  list(
+    S = var_y * (1 - R2) * (nu + 2), S_beta = S_beta,
+    nu = nu, nu_beta = nu_beta, var_y = var_y
+  )
 }
 
-#' @noRd
+#' morie_chol_lower
+#'
+#' @param G Argument `G`; see Usage.
+#' @return A matrix, from `t`.
+#' @examples
+#' set.seed(1)
+#' n <- 12
+#' A <- matrix(rnorm(n * 6), nrow = n)
+#' G <- morie_grm(A) + diag(0.3, n)
+#' morie:::morie_chol_lower(G)
+#' @keywords internal
 morie_chol_lower <- function(G) t(chol(as.matrix(G)))
 
 #' @noRd
+#' @export
 morie_brr_gibbs <- function(y, X, n_iter = 2000L,
-                                  burn_in = 500L, nu = 5,
-                                  nu_beta = 5, R2 = 0.5,
-                                  seed = 42L) {
+                            burn_in = 500L, nu = 5,
+                            nu_beta = 5, R2 = 0.5,
+                            seed = 42L) {
   .morie_local_seed(seed)
   y <- as.numeric(y)
   X <- as.matrix(X)
@@ -444,8 +595,10 @@ morie_brr_gibbs <- function(y, X, n_iter = 2000L,
   XtX <- t(X) %*% X
   acc <- list(mu = 0, beta = rep(0, p), s2 = 0, s2b = 0, k = 0L)
   for (it in seq_len(n_iter)) {
-    s2b <- morie_scaled_inv_chisq(nu_beta + p,
-                                        hp$S_beta + sum(beta^2))
+    s2b <- morie_scaled_inv_chisq(
+      nu_beta + p,
+      hp$S_beta + sum(beta^2)
+    )
     A <- XtX / s2 + diag(1 / s2b, p)
     rhs <- t(X) %*% (y - mu) / s2
     Ai <- morie_pinv(A)
@@ -464,26 +617,47 @@ morie_brr_gibbs <- function(y, X, n_iter = 2000L,
       acc$s2b <- acc$s2b + s2b
     }
   }
-  list(mu = acc$mu / acc$k, beta = acc$beta / acc$k,
-       sigma2 = acc$s2 / acc$k, sigma2_beta = acc$s2b / acc$k,
-       n_kept = acc$k, hyper = hp)
+  list(
+    mu = acc$mu / acc$k, beta = acc$beta / acc$k,
+    sigma2 = acc$s2 / acc$k, sigma2_beta = acc$s2b / acc$k,
+    n_kept = acc$k, hyper = hp
+  )
 }
 
 #' @noRd
+#' @export
 morie_bayes_gblup <- function(y, G, n_iter = 2000L,
-                                    burn_in = 500L, seed = 42L,
-                                    ...) {
+                              burn_in = 500L, seed = 42L,
+                              ...) {
   L <- morie_chol_lower(G)
-  fit <- morie_brr_gibbs(y, L, n_iter = n_iter,
-                               burn_in = burn_in, seed = seed, ...)
+  fit <- morie_brr_gibbs(y, L,
+    n_iter = n_iter,
+    burn_in = burn_in, seed = seed, ...
+  )
   fit$g <- as.numeric(L %*% fit$beta)
   fit$sigma2_g <- fit$sigma2_beta
   fit
 }
 
-#' @noRd
+#' morie_rkhs_cov
+#'
+#' @param Z_L Argument `Z_L`; see Usage.
+#' @param G Argument `G`; see Usage.
+#' @param Z_LE Argument `Z_LE`; see Usage.
+#' @param I_env Argument `I_env`; see Usage.
+#' @param sigma2_g Argument `sigma2_g`; see Usage.
+#' @param sigma2_ge Argument `sigma2_ge`; see Usage.
+#' @return The value of `out`, as built in the body.
+#' @examples
+#' set.seed(1)
+#' n <- 12
+#' A <- matrix(rnorm(n * 6), nrow = n)
+#' G <- morie_grm(A) + diag(0.3, n)
+#' morie:::morie_chol_lower(G)
+#' morie:::morie_rkhs_cov(Z_L = G, G = G)
+#' @keywords internal
 morie_rkhs_cov <- function(Z_L, G, Z_LE = NULL, I_env = NULL,
-                                 sigma2_g = 1, sigma2_ge = 1) {
+                           sigma2_g = 1, sigma2_ge = 1) {
   ZL <- as.matrix(Z_L)
   out <- list(K_L = sigma2_g * (ZL %*% as.matrix(G) %*% t(ZL)))
   if (!is.null(Z_LE) && !is.null(I_env)) {
@@ -494,14 +668,27 @@ morie_rkhs_cov <- function(Z_L, G, Z_LE = NULL, I_env = NULL,
   out
 }
 
-#' @noRd
+#' morie_extended_predictor
+#'
+#' @param n Argument `n`; see Usage.
+#' @param X_E Argument `X_E`; see Usage.
+#' @param X Argument `X`; see Usage.
+#' @param X_EM Argument `X_EM`; see Usage.
+#' @return A list with `design`, `widths`, `n_columns`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_extended_predictor(V)
+#' @keywords internal
 morie_extended_predictor <- function(n, X_E = NULL, X = NULL,
-                                           X_EM = NULL) {
+                                     X_EM = NULL) {
   design <- matrix(1, nrow = n, ncol = 1)
   widths <- c(intercept = 1L)
   for (nm in c("environments", "markers", "env_x_marker")) {
-    B <- switch(nm, environments = X_E, markers = X,
-                env_x_marker = X_EM)
+    B <- switch(nm,
+      environments = X_E,
+      markers = X,
+      env_x_marker = X_EM
+    )
     if (!is.null(B)) {
       B <- as.matrix(B)
       design <- cbind(design, B)
@@ -513,7 +700,14 @@ morie_extended_predictor <- function(n, X_E = NULL, X = NULL,
 
 # ---- chapter 6b: multi-trait Bayesian / BMTME (pp.190-196) ----
 
-#' @noRd
+#' morie_inv_wishart
+#'
+#' @param nu Argument `nu`; see Usage.
+#' @param S Argument `S`; see Usage.
+#' @return The value of `morie_pinv`.
+#' @examples
+#' morie:::morie_inv_wishart(nu = 0.5, S = 5L)
+#' @keywords internal
 morie_inv_wishart <- function(nu, S) {
   S <- as.matrix(S)
   p <- nrow(S)
@@ -528,17 +722,19 @@ morie_inv_wishart <- function(nu, S) {
 }
 
 #' @noRd
+#' @export
 morie_multitrait_ridge <- function(Z1, G) {
   L <- morie_chol_lower(G)
   list(X1 = as.matrix(Z1) %*% L, L_G = L)
 }
 
 #' @noRd
+#' @export
 morie_bmtme_conditionals <- function(Y, Z1, Z2, G, Sigma_T,
-                                           Sigma_E, R, b1 = NULL,
-                                           b2 = NULL, nu_T = NULL,
-                                           S_T = NULL, nu_E = NULL,
-                                           S_E = NULL) {
+                                     Sigma_E, R, b1 = NULL,
+                                     b2 = NULL, nu_T = NULL,
+                                     S_T = NULL, nu_E = NULL,
+                                     S_E = NULL) {
   Y <- as.matrix(Y)
   nT <- ncol(Y)
   G <- as.matrix(G)
@@ -562,22 +758,27 @@ morie_bmtme_conditionals <- function(Y, Z1, Z2, G, Sigma_T,
   b2s <- matrix(0, I, J * nT)
   for (e in seq_len(I)) {
     idx <- 0L
-    for (t in seq_len(nT)) for (a in seq_len(J)) {
-      idx <- idx + 1L
-      row <- (e - 1L) * J + a
-      b2s[e, idx] <- if (row <= nrow(b2)) b2[row, t] else 0
+    for (t in seq_len(nT)) {
+      for (a in seq_len(J)) {
+        idx <- idx + 1L
+        row <- (e - 1L) * J + a
+        b2s[e, idx] <- if (row <= nrow(b2)) b2[row, t] else 0
+      }
     }
   }
   inner <- b2s %*% morie_kron(Ginv, STinv) %*% t(b2s)
-  list(nu_T_post = nu_T + J + nrow(b2), scale_T = scale_T,
-       nu_E_post = nu_E + J * I, scale_E = inner + S_E)
+  list(
+    nu_T_post = nu_T + J + nrow(b2), scale_T = scale_T,
+    nu_E_post = nu_E + J * I, scale_E = inner + S_E
+  )
 }
 
 # ---- chapter 7: ordinal / categorical models (pp.209-215) ----
 
 #' @noRd
+#' @export
 morie_ordinal_probs <- function(eta, thresholds,
-                                      link = "probit") {
+                                link = "probit") {
   F <- if (link == "probit") pnorm else plogis
   t(vapply(as.numeric(eta), function(e) {
     cuts <- c(0, F(thresholds + e), 1)
@@ -585,21 +786,33 @@ morie_ordinal_probs <- function(eta, thresholds,
   }, numeric(length(thresholds) + 1L)))
 }
 
-#' @noRd
+#' morie_rtruncnorm
+#'
+#' @param mean Argument `mean`; see Usage.
+#' @param sd Argument `sd`; see Usage.
+#' @param lo Argument `lo`; see Usage.
+#' @param hi Argument `hi`; see Usage.
+#' @return A numeric value.
+#' @examples
+#' morie:::morie_rtruncnorm(0, 1, 0.5, 1.5)
+#' @keywords internal
 morie_rtruncnorm <- function(mean, sd, lo, hi) {
   a <- if (is.finite(lo)) pnorm((lo - mean) / sd) else 0
   b <- if (is.finite(hi)) pnorm((hi - mean) / sd) else 1
-  if (b <= a) return(mean)
+  if (b <= a) {
+    return(mean)
+  }
   u <- min(max(a + (b - a) * runif(1), 1e-12), 1 - 1e-12)
   mean + sd * qnorm(u)
 }
 
 #' @noRd
+#' @export
 morie_ordinal_probit_gibbs <- function(y, X, n_iter = 1500L,
-                                             burn_in = 400L,
-                                             nu_beta = 5,
-                                             S_beta = 1,
-                                             seed = 42L) {
+                                       burn_in = 400L,
+                                       nu_beta = 5,
+                                       S_beta = 1,
+                                       seed = 42L) {
   .morie_local_seed(seed)
   y <- as.integer(y)
   X <- as.matrix(X)
@@ -639,8 +852,10 @@ morie_ordinal_probit_gibbs <- function(y, X, n_iter = 1500L,
         gamma[c_] <- lo + (hi - lo) * runif(1)
       }
     }
-    s2b <- morie_scaled_inv_chisq(nu_beta + p,
-                                        S_beta + sum(beta^2))
+    s2b <- morie_scaled_inv_chisq(
+      nu_beta + p,
+      S_beta + sum(beta^2)
+    )
     if (it > burn_in) {
       kept <- kept + 1L
       acc_beta <- acc_beta + beta
@@ -648,16 +863,19 @@ morie_ordinal_probit_gibbs <- function(y, X, n_iter = 1500L,
       acc_s2b <- acc_s2b + s2b
     }
   }
-  list(beta = acc_beta / kept, gamma = acc_gamma / kept,
-       sigma2_beta = acc_s2b / kept, n_kept = kept,
-       n_categories = C)
+  list(
+    beta = acc_beta / kept, gamma = acc_gamma / kept,
+    sigma2_beta = acc_s2b / kept, n_kept = kept,
+    n_categories = C
+  )
 }
 
 # ---- chapter 7b: multinomial and Poisson (pp.225-233) ----
 
 #' @noRd
+#' @export
 morie_multinomial_probs <- function(X, beta0, beta,
-                                          baseline_last = TRUE) {
+                                    baseline_last = TRUE) {
   X <- as.matrix(X)
   B <- as.matrix(beta)
   b0 <- as.numeric(beta0)
@@ -672,29 +890,55 @@ morie_multinomial_probs <- function(X, beta0, beta,
 }
 
 #' @noRd
+#' @export
 morie_multinomial_loglik <- function(X, y, beta0, beta,
-                                           baseline_last = TRUE) {
+                                     baseline_last = TRUE) {
   P <- morie_multinomial_probs(X, beta0, beta, baseline_last)
   sum(log(pmax(P[cbind(seq_along(y), as.integer(y) + 1L)], 1e-300)))
 }
 
 #' @noRd
+#' @export
 morie_penalized_multinomial <- function(X, y, beta0, beta,
-                                              lambda,
-                                              penalty = "ridge",
-                                              baseline_last = TRUE) {
-  ll <- morie_multinomial_loglik(X, y, beta0, beta,
-                                       baseline_last)
-  pen <- if (penalty == "lasso") sum(abs(as.matrix(beta))) else
+                                        lambda,
+                                        penalty = "ridge",
+                                        baseline_last = TRUE) {
+  ll <- morie_multinomial_loglik(
+    X, y, beta0, beta,
+    baseline_last
+  )
+  pen <- if (penalty == "lasso") {
+    sum(abs(as.matrix(beta)))
+  } else {
     sum(as.matrix(beta)^2)
-  list(loglik = ll, penalty = lambda * pen,
-       penalized_loglik = ll - lambda * pen)
+  }
+  list(
+    loglik = ll, penalty = lambda * pen,
+    penalized_loglik = ll - lambda * pen
+  )
 }
 
-#' @noRd
+#' morie_multinomial_block
+#'
+#' @param X Argument `X`; see Usage.
+#' @param y Argument `y`; see Usage.
+#' @param beta0 Argument `beta0`; see Usage.
+#' @param beta Argument `beta`; see Usage.
+#' @param lambda Argument `lambda`; see Usage.
+#' @param cls Argument `cls`; see Usage.
+#' @param baseline_last Argument `baseline_last`; see Usage.
+#' @return A list with `beta0`, `beta`, `weights`, `working_response`.
+#' @examples
+#' set.seed(7)
+#' X <- matrix(rnorm(60), 30, 2)
+#' y <- sample(0:2, 30, replace = TRUE)
+#' beta0 <- rep(0, 3)
+#' beta <- matrix(0, 3, 2)
+#' morie:::morie_multinomial_block(X, y, beta0, beta, lambda = 0.1, cls = 0L)
+#' @keywords internal
 morie_multinomial_block <- function(X, y, beta0, beta, lambda,
-                                          cls,
-                                          baseline_last = TRUE) {
+                                    cls,
+                                    baseline_last = TRUE) {
   X <- as.matrix(X)
   n <- nrow(X)
   p <- ncol(X)
@@ -710,21 +954,32 @@ morie_multinomial_block <- function(X, y, beta0, beta, lambda,
   D[1, 1] <- 0
   A <- t(Xs) %*% (Xs * w) + lambda * D
   sol <- as.numeric(morie_solve(A, t(Xs) %*% (w * ystar)))
-  list(beta0 = sol[1], beta = sol[-1], weights = w,
-       working_response = ystar)
+  list(
+    beta0 = sol[1], beta = sol[-1], weights = w,
+    working_response = ystar
+  )
 }
 
-#' @noRd
+#' morie_poisson_pmf
+#'
+#' @param y Argument `y`; see Usage.
+#' @param lambda Argument `lambda`; see Usage.
+#' @return A numeric value.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_poisson_pmf(V, V)
+#' @keywords internal
 morie_poisson_pmf <- function(y, lambda) {
   exp(y * log(lambda) - lambda - lgamma(y + 1))
 }
 
 #' @noRd
+#' @export
 morie_penalized_poisson <- function(X, y, lambda = 1,
-                                          penalty = "ridge",
-                                          n_iter = 100L,
-                                          tol = 1e-10,
-                                          add_intercept = TRUE) {
+                                    penalty = "ridge",
+                                    n_iter = 100L,
+                                    tol = 1e-10,
+                                    add_intercept = TRUE) {
   X <- as.matrix(X)
   if (add_intercept) X <- cbind(1, X)
   y <- as.numeric(y)
@@ -755,49 +1010,79 @@ morie_penalized_poisson <- function(X, y, lambda = 1,
   mu <- exp(pmin(eta, 700))
   ll <- sum(y * eta - mu - lgamma(y + 1))
   pen <- lambda * sum((beta^2)[diag(D) == 1]) / 2
-  list(beta = beta, fitted = mu, loglik = ll,
-       penalized_loglik = ll - pen, iterations = it)
+  list(
+    beta = beta, fitted = mu, loglik = ll,
+    penalized_loglik = ll - pen, iterations = it
+  )
 }
 
 # ---- chapter 8: RKHS regression and kernels (pp.252-266) ----
 
 #' @noRd
+#' @export
 morie_kernel_matrix <- function(X, kernel = "linear",
-                                      gamma = NULL, degree = 2,
-                                      coef0 = 1, Z = NULL) {
+                                gamma = NULL, degree = 2,
+                                coef0 = 1, Z = NULL) {
   A <- as.matrix(X)
   B <- if (is.null(Z)) A else as.matrix(Z)
   if (is.null(gamma)) gamma <- 1 / ncol(A)
   G <- A %*% t(B)
-  if (kernel == "linear") return(G)
-  if (kernel == "polynomial") return((gamma * G + coef0)^degree)
-  if (kernel == "sigmoid") return(tanh(gamma * G + coef0))
+  if (kernel == "linear") {
+    return(G)
+  }
+  if (kernel == "polynomial") {
+    return((gamma * G + coef0)^degree)
+  }
+  if (kernel == "sigmoid") {
+    return(tanh(gamma * G + coef0))
+  }
   d2 <- outer(rowSums(A^2), rowSums(B^2), "+") - 2 * G
   d2[d2 < 0] <- 0
-  if (kernel == "gaussian") return(exp(-gamma * d2))
-  if (kernel == "exponential") return(exp(-gamma * sqrt(d2)))
+  if (kernel == "gaussian") {
+    return(exp(-gamma * d2))
+  }
+  if (kernel == "exponential") {
+    return(exp(-gamma * sqrt(d2)))
+  }
   stop("unknown kernel: ", kernel)
 }
 
-#' @noRd
+#' morie_is_psd
+#'
+#' @param K Argument `K`; see Usage.
+#' @param tol Argument `tol`; see Usage.
+#' @return A list with `psd`, `eigenvalues`.
+#' @examples
+#' morie:::morie_is_psd(K = 5L)
+#' @keywords internal
 morie_is_psd <- function(K, tol = 1e-9) {
   S <- (as.matrix(K) + t(as.matrix(K))) / 2
   lam <- eigen(S, symmetric = TRUE, only.values = TRUE)$values
   list(psd = min(lam) >= -tol, eigenvalues = lam)
 }
 
-#' @noRd
+#' morie_rkhs_norm
+#'
+#' @param beta Argument `beta`; see Usage.
+#' @param K Argument `K`; see Usage.
+#' @return A vector.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_rkhs_norm(V, V)
+#' @keywords internal
 morie_rkhs_norm <- function(beta, K) {
   b <- as.numeric(beta)
   as.numeric(t(b) %*% as.matrix(K) %*% b)
 }
 
 #' @noRd
+#' @export
 morie_rkhs_predict <- function(K_new, beta, eta0 = 0) {
   as.numeric(eta0 + as.matrix(K_new) %*% as.numeric(beta))
 }
 
 #' @noRd
+#' @export
 morie_rkhs_fit <- function(K, y, lambda = 1) {
   K <- as.matrix(K)
   y <- as.numeric(y)
@@ -818,14 +1103,17 @@ morie_rkhs_fit <- function(K, y, lambda = 1) {
   resid <- y - fitted
   loss <- mean(resid^2)
   pen <- 0.5 * lambda * morie_rkhs_norm(beta, K)
-  list(eta0 = eta0, beta = beta, fitted = fitted,
-       residuals = resid, loss = loss, penalty = pen,
-       objective = loss + pen)
+  list(
+    eta0 = eta0, beta = beta, fitted = fitted,
+    residuals = resid, loss = loss, penalty = pen,
+    objective = loss + pen
+  )
 }
 
 #' @noRd
+#' @export
 morie_arccos_kernel <- function(X, Z = NULL, depth = 1L,
-                                      normalize_median = FALSE) {
+                                normalize_median = FALSE) {
   A <- as.matrix(X)
   same <- is.null(Z)
   B <- if (same) A else as.matrix(Z)
@@ -838,14 +1126,16 @@ morie_arccos_kernel <- function(X, Z = NULL, depth = 1L,
   K <- outer(na, nb) * Jf(acos(cosang)) / pi
   dA <- if (same) diag(K) else na^2
   dB <- if (same) dA else nb^2
-  if (depth > 1L) for (l in seq_len(depth - 1L)) {
-    den <- sqrt(outer(dA, dB))
-    cs <- K / den
-    cs[cs > 1] <- 1
-    cs[cs < -1] <- -1
-    K <- den * Jf(acos(cs)) / pi
-    dA <- dA * Jf(0) / pi
-    dB <- dB * Jf(0) / pi
+  if (depth > 1L) {
+    for (l in seq_len(depth - 1L)) {
+      den <- sqrt(outer(dA, dB))
+      cs <- K / den
+      cs[cs > 1] <- 1
+      cs[cs < -1] <- -1
+      K <- den * Jf(acos(cs)) / pi
+      dA <- dA * Jf(0) / pi
+      dB <- dB * Jf(0) / pi
+    }
   }
   if (normalize_median) K <- K / median(K)
   K
@@ -853,13 +1143,22 @@ morie_arccos_kernel <- function(X, Z = NULL, depth = 1L,
 
 # ---- chapter 8c: Bayesian kernel BLUP (pp.281-285) ----
 
-#' @noRd
+#' morie_hadamard
+#'
+#' @param A Argument `A`; see Usage.
+#' @param B Argument `B`; see Usage.
+#' @return A numeric value.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_hadamard(V, V)
+#' @keywords internal
 morie_hadamard <- function(A, B) as.matrix(A) * as.matrix(B)
 
 #' @noRd
+#' @export
 morie_bayesian_kernel_blup <- function(y, K, sigma2_u = 1,
-                                             sigma2_e = 1,
-                                             mu = NULL) {
+                                       sigma2_e = 1,
+                                       mu = NULL) {
   y <- as.numeric(y)
   K <- as.matrix(K)
   n <- length(y)
@@ -868,45 +1167,55 @@ morie_bayesian_kernel_blup <- function(y, K, sigma2_u = 1,
   A <- Kinv / sigma2_u + diag(1 / sigma2_e, n)
   Kt <- morie_pinv(A)
   u <- as.numeric(Kt %*% (y - mu)) / sigma2_e
-  list(mu = mu, u = u, K_tilde = Kt,
-       sigma2_u = sigma2_u, sigma2_e = sigma2_e)
+  list(
+    mu = mu, u = u, K_tilde = Kt,
+    sigma2_u = sigma2_u, sigma2_e = sigma2_e
+  )
 }
 
 #' @noRd
+#' @export
 morie_kernel_blup_replicated <- function(Z, K,
-                                               sigma2_u = 1) {
+                                         sigma2_u = 1) {
   Z <- as.matrix(Z)
   sigma2_u * (Z %*% as.matrix(K) %*% t(Z))
 }
 
 #' @noRd
+#' @export
 morie_kernel_blup_gxe <- function(Z_u1, K, Z_E,
-                                        sigma2_u1 = 1,
-                                        sigma2_u2 = 1) {
+                                  sigma2_u1 = 1,
+                                  sigma2_u2 = 1) {
   Zu <- as.matrix(Z_u1)
   ZE <- as.matrix(Z_E)
   K1 <- Zu %*% as.matrix(K) %*% t(Zu)
   KE <- ZE %*% t(ZE)
-  list(K1 = sigma2_u1 * K1,
-       K2 = sigma2_u2 * morie_hadamard(K1, KE),
-       K_env = KE)
+  list(
+    K1 = sigma2_u1 * K1,
+    K2 = sigma2_u2 * morie_hadamard(K1, KE),
+    K_env = KE
+  )
 }
 
 # ---- chapter 8d/8e: kernel compression + RKHS equations ----
 
 #' @noRd
+#' @export
 morie_kernel_eigen_design <- function(K, tol = 1e-10) {
   S <- (as.matrix(K) + t(as.matrix(K))) / 2
   e <- eigen(S, symmetric = TRUE)
   keep <- which(e$values > tol)
-  list(P = e$vectors[, keep, drop = FALSE] %*%
-         diag(sqrt(e$values[keep]), length(keep)),
-       rank = length(keep), eigenvalues = e$values[keep])
+  list(
+    P = e$vectors[, keep, drop = FALSE] %*%
+      diag(sqrt(e$values[keep]), length(keep)),
+    rank = length(keep), eigenvalues = e$values[keep]
+  )
 }
 
 #' @noRd
+#' @export
 morie_nystrom <- function(X, m_index, kernel = "linear",
-                                gamma = NULL) {
+                          gamma = NULL) {
   A <- as.matrix(X)
   p <- ncol(A)
   Xm <- A[m_index, , drop = FALSE]
@@ -917,63 +1226,80 @@ morie_nystrom <- function(X, m_index, kernel = "linear",
     Kmm <- morie_kernel_matrix(Xm, kernel, gamma)
     Knm <- morie_kernel_matrix(A, kernel, gamma, Z = Xm)
   }
-  list(Q = Knm %*% morie_pinv(Kmm) %*% t(Knm),
-       K_mm = Kmm, K_nm = Knm, rank = length(m_index))
+  list(
+    Q = Knm %*% morie_pinv(Kmm) %*% t(Knm),
+    K_mm = Kmm, K_nm = Knm, rank = length(m_index)
+  )
 }
 
 #' @noRd
+#' @export
 morie_sparse_kernel_design <- function(X, m_index,
-                                             kernel = "linear",
-                                             gamma = NULL,
-                                             tol = 1e-10) {
+                                       kernel = "linear",
+                                       gamma = NULL,
+                                       tol = 1e-10) {
   ny <- morie_nystrom(X, m_index, kernel, gamma)
   e <- eigen((ny$K_mm + t(ny$K_mm)) / 2, symmetric = TRUE)
   keep <- which(e$values > tol)
   US <- e$vectors[, keep, drop = FALSE] %*%
     diag(1 / sqrt(e$values[keep]), length(keep))
-  list(P = ny$K_nm %*% US, Q = ny$Q, rank = length(keep),
-       K_mm = ny$K_mm, K_nm = ny$K_nm)
+  list(
+    P = ny$K_nm %*% US, Q = ny$Q, rank = length(keep),
+    K_mm = ny$K_mm, K_nm = ny$K_nm
+  )
 }
 
 #' @noRd
+#' @export
 morie_rkhs_mixed_equations <- function(C, K, y, lambda = 1,
-                                             sigma2_e = 1,
-                                             form = "direct") {
+                                       sigma2_e = 1,
+                                       form = "direct") {
   C <- as.matrix(C)
   K <- as.matrix(K)
   y <- as.numeric(y)
   n <- length(y)
   q <- ncol(C)
   if (form == "direct") {
-    A <- rbind(cbind(t(C) %*% C, t(C) %*% K),
-               cbind(t(K) %*% C,
-                     t(K) %*% K + lambda * K * sigma2_e))
+    A <- rbind(
+      cbind(t(C) %*% C, t(C) %*% K),
+      cbind(
+        t(K) %*% C,
+        t(K) %*% K + lambda * K * sigma2_e
+      )
+    )
     rhs <- c(t(C) %*% y, t(K) %*% y)
   } else {
-    A <- rbind(cbind(t(C) %*% C, t(C) %*% K),
-               cbind(C, K + diag(lambda * sigma2_e, n)))
+    A <- rbind(
+      cbind(t(C) %*% C, t(C) %*% K),
+      cbind(C, K + diag(lambda * sigma2_e, n))
+    )
     rhs <- c(t(C) %*% y, y)
   }
   sol <- as.numeric(morie_solve(A, rhs))
   theta <- sol[seq_len(q)]
   beta <- sol[-seq_len(q)]
   u <- as.numeric(K %*% beta)
-  list(theta = theta, beta = beta, u = u,
-       fitted = as.numeric(C %*% theta) + u,
-       sigma2_beta = 1 / lambda)
+  list(
+    theta = theta, beta = beta, u = u,
+    fitted = as.numeric(C %*% theta) + u,
+    sigma2_beta = 1 / lambda
+  )
 }
 
 # ---- chapter 9: support vector machines (pp.339-350) ----
 
 #' @noRd
+#' @export
 morie_svm_label_matrix <- function(X, y) as.matrix(X) * as.numeric(y)
 
 #' @noRd
+#' @export
 morie_svm_decision <- function(X, beta0, beta) {
   as.numeric(beta0 + as.matrix(X) %*% as.numeric(beta))
 }
 
 #' @noRd
+#' @export
 morie_svm_dual_objective <- function(alpha, X, y, K = NULL) {
   a <- as.numeric(alpha)
   ys <- as.numeric(y)
@@ -982,24 +1308,29 @@ morie_svm_dual_objective <- function(alpha, X, y, K = NULL) {
 }
 
 #' @noRd
+#' @export
 morie_svm_beta <- function(alpha, X, y) {
   as.numeric(t(as.matrix(X)) %*% (as.numeric(alpha) * as.numeric(y)))
 }
 
 #' @noRd
+#' @export
 morie_svm_intercept <- function(alpha, X, y, K = NULL,
-                                      tol = 1e-8) {
+                                tol = 1e-8) {
   a <- as.numeric(alpha)
   ys <- as.numeric(y)
   G <- if (is.null(K)) as.matrix(X) %*% t(as.matrix(X)) else as.matrix(K)
   S <- which(a > tol)
-  if (!length(S)) return(0)
+  if (!length(S)) {
+    return(0)
+  }
   mean(vapply(S, function(i) ys[i] - sum(a[S] * ys[S] * G[i, S]), 0))
 }
 
 #' @noRd
+#' @export
 morie_svm_fit_dual <- function(X, y, C = NULL, n_iter = 4000L,
-                                     tol = 1e-9, K = NULL) {
+                               tol = 1e-9, K = NULL) {
   X <- as.matrix(X)
   ys <- as.numeric(y)
   n <- length(ys)
@@ -1010,55 +1341,91 @@ morie_svm_fit_dual <- function(X, y, C = NULL, n_iter = 4000L,
   yy <- sum(ys^2)
   for (it in seq_len(n_iter)) {
     g <- 1 - as.numeric(H %*% a)
-    g <- g - sum(g * ys) / yy * ys          # project onto g . y = 0
+    g <- g - sum(g * ys) / yy * ys # project onto g . y = 0
     new <- a + step * g
     new <- pmax(0, if (is.null(C)) new else pmin(new, C))
-    if (max(abs(new - a)) < tol) { a <- new
-    break }
+    if (max(abs(new - a)) < tol) {
+      a <- new
+      break
+    }
     a <- new
   }
-  list(alpha = a, beta = morie_svm_beta(a, X, ys),
-       beta0 = morie_svm_intercept(a, X, ys, K),
-       support_vectors = which(a > 1e-6),
-       objective = morie_svm_dual_objective(a, X, ys, K))
+  list(
+    alpha = a, beta = morie_svm_beta(a, X, ys),
+    beta0 = morie_svm_intercept(a, X, ys, K),
+    support_vectors = which(a > 1e-6),
+    objective = morie_svm_dual_objective(a, X, ys, K)
+  )
 }
 
 # ---- chapter 10: ANN and backpropagation (pp.385, 409-412) ----
 
-#' @noRd
+#' morie_act
+#'
+#' @param name Argument `name`; see Usage.
+#' @param z Argument `z`; see Usage.
+#' @param deriv Argument `deriv`; see Usage.
+#' @return The value of `stop`.
+#' @examples
+#' morie:::morie_act("relu", c(-1, 0.5))
+#' @keywords internal
 morie_act <- function(name, z, deriv = FALSE) {
-  if (name == "identity") return(if (deriv) rep(1, length(z)) else z)
-  if (name == "logistic") { s <- 1 / (1 + exp(-pmax(pmin(z, 700), -700)))
-    return(if (deriv) s * (1 - s) else s) }
-  if (name == "tanh") { t <- tanh(z)
-  return(if (deriv) 1 - t^2 else t) }
-  if (name == "relu") return(if (deriv) as.numeric(z > 0) else pmax(0, z))
+  if (name == "identity") {
+    return(if (deriv) rep(1, length(z)) else z)
+  }
+  if (name == "logistic") {
+    s <- 1 / (1 + exp(-pmax(pmin(z, 700), -700)))
+    return(if (deriv) s * (1 - s) else s)
+  }
+  if (name == "tanh") {
+    t <- tanh(z)
+    return(if (deriv) 1 - t^2 else t)
+  }
+  if (name == "relu") {
+    return(if (deriv) as.numeric(z > 0) else pmax(0, z))
+  }
   stop("unknown activation: ", name)
 }
 
 #' @noRd
+#' @export
 morie_ann_forward <- function(X, W, activations = NULL) {
   A <- as.matrix(X)
-  acts <- if (is.null(activations))
-    c(rep("logistic", length(W) - 1), "identity") else activations
+  acts <- if (is.null(activations)) {
+    c(rep("logistic", length(W) - 1), "identity")
+  } else {
+    activations
+  }
   layers <- list(A)
   nets <- list()
   for (li in seq_along(W)) {
     z <- layers[[li]] %*% t(as.matrix(W[[li]]))
     nets[[li]] <- z
     layers[[li + 1]] <- matrix(morie_act(acts[li], as.numeric(z)),
-                               nrow = nrow(z))
+      nrow = nrow(z)
+    )
   }
-  list(output = layers[[length(layers)]], layers = layers,
-       nets = nets, activations = acts)
+  list(
+    output = layers[[length(layers)]], layers = layers,
+    nets = nets, activations = acts
+  )
 }
 
-#' @noRd
+#' morie_ann_sse
+#'
+#' @param y_hat Argument `y_hat`; see Usage.
+#' @param y Argument `y`; see Usage.
+#' @return A numeric value.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_ann_sse(V, V)
+#' @keywords internal
 morie_ann_sse <- function(y_hat, y) {
   0.5 * sum((as.matrix(y_hat) - as.matrix(y))^2)
 }
 
 #' @noRd
+#' @export
 morie_ann_gradients <- function(X, y, W, activations = NULL) {
   f <- morie_ann_forward(X, W, activations)
   Y <- as.matrix(y)
@@ -1066,23 +1433,29 @@ morie_ann_gradients <- function(X, y, W, activations = NULL) {
   acts <- f$activations
   d <- (f$layers[[L + 1]] - Y) *
     matrix(morie_act(acts[L], as.numeric(f$nets[[L]]), TRUE),
-           nrow = nrow(Y))
+      nrow = nrow(Y)
+    )
   grads <- vector("list", L)
   for (li in seq(L, 1)) {
     grads[[li]] <- t(d) %*% f$layers[[li]]
     if (li > 1) {
       d <- (d %*% as.matrix(W[[li]])) *
-        matrix(morie_act(acts[li - 1],
-                               as.numeric(f$nets[[li - 1]]), TRUE),
-               nrow = nrow(Y))
+        matrix(
+          morie_act(
+            acts[li - 1],
+            as.numeric(f$nets[[li - 1]]), TRUE
+          ),
+          nrow = nrow(Y)
+        )
     }
   }
   list(gradients = grads, loss = morie_ann_sse(f$layers[[L + 1]], Y))
 }
 
 #' @noRd
+#' @export
 morie_ann_train <- function(X, y, W, eta = 0.1, n_iter = 500L,
-                                  activations = NULL, tol = 1e-12) {
+                            activations = NULL, tol = 1e-12) {
   Wc <- lapply(W, as.matrix)
   hist <- numeric(0)
   for (it in seq_len(n_iter)) {
@@ -1095,22 +1468,36 @@ morie_ann_train <- function(X, y, W, eta = 0.1, n_iter = 500L,
   list(W = Wc, loss = f$loss, history = hist, iterations = length(hist))
 }
 
-#' @noRd
+#' morie_ann_numeric_gradient
+#'
+#' @param X Argument `X`; see Usage.
+#' @param y Argument `y`; see Usage.
+#' @param W Argument `W`; see Usage.
+#' @param activations Argument `activations`; see Usage.
+#' @param eps Argument `eps`; see Usage.
+#' @return The value of `lapply`.
+#' @examples
+#' morie:::morie_ann_numeric_gradient(X = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   y = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_ann_numeric_gradient <- function(X, y, W,
-                                             activations = NULL,
-                                             eps = 1e-6) {
+                                       activations = NULL,
+                                       eps = 1e-6) {
   lapply(seq_along(W), function(li) {
     Wm <- as.matrix(W[[li]])
     G <- matrix(0, nrow(Wm), ncol(Wm))
-    for (u in seq_len(nrow(Wm))) for (v in seq_len(ncol(Wm))) {
-      acc <- 0
-      for (s in c(1, -1)) {
-        Wp <- lapply(W, as.matrix)
-        Wp[[li]][u, v] <- Wp[[li]][u, v] + s * eps
-        acc <- acc + s * morie_ann_sse(
-          morie_ann_forward(X, Wp, activations)$output, y)
+    for (u in seq_len(nrow(Wm))) {
+      for (v in seq_len(ncol(Wm))) {
+        acc <- 0
+        for (s in c(1, -1)) {
+          Wp <- lapply(W, as.matrix)
+          Wp[[li]][u, v] <- Wp[[li]][u, v] + s * eps
+          acc <- acc + s * morie_ann_sse(
+            morie_ann_forward(X, Wp, activations)$output, y
+          )
+        }
+        G[u, v] <- acc / (2 * eps)
       }
-      G[u, v] <- acc / (2 * eps)
     }
     G
   })

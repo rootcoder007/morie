@@ -17,3 +17,8 @@ A list with \code{states}, \code{prefix}, \code{depth}, \code{work}, \code{note}
 \description{
 Same states as sequential_scan, O(log L) depth.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+parallel_scan(V)
+}
+\keyword{internal}

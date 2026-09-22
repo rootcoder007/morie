@@ -11,6 +11,21 @@
 
 \item{...}{Ignored; accepted for S3 consistency.}
 }
+\value{
+The value of \code{invisible}.
+}
 \description{
 Print method for \code{morie_mv_hawkes} objects
 }
+\examples{
+set.seed(1)
+times <- sort(runif(60, 0, 200))
+marks <- sample(c("A", "B"), 60, replace = TRUE)
+fit <- morie_crim_hawkes_multivariate(times, marks)
+out <- capture.output(print(fit))
+any(grepl("Hawkes", out))
+}
+\references{
+Hawkes (1971) Biometrika 58(1).
+}
+\keyword{internal}

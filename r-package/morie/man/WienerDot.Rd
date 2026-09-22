@@ -20,3 +20,8 @@ BACKWARDS in time, its first entry being the current sample; getting
 that order wrong reverses the filter without any error being raised,
 which is why the length check is not the only thing recorded.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+WienerDot(V, V)
+}
+\keyword{internal}

@@ -2,7 +2,7 @@
 #' Ordinary kriging with a spherical variogram
 #'
 #' Solves the ordinary-kriging system
-#' \eqn{[[Gamma, 1], [1 prime, 0]] [lambda; mu] = [gamma_0; 1]} at each
+#' \eqn{[[Gamma, 1], [1', 0]] [lambda; mu] = [gamma_0; 1]} at each
 #' prediction location, where \code{Gamma_ij} is the semivariance between
 #' observed locations and \code{gamma_0} the semivariance between the
 #' observed locations and the target.  The unbiasedness constraint
@@ -25,8 +25,8 @@
 #'   Cressie (1993), Statistics for Spatial Data, rev. ed., Wiley.
 #' @export
 #' @examples
-#' Krig(known_coords = c(1, 2, 3, 4, 5, 6, 7, 8), known_values = c(1, 2, 3, 4, 5, 6, 7,
-#' 8), predict_coords = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' Krig(known_coords = c(1, 2, 3, 4, 5, 6, 7, 8), known_values = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   predict_coords = c(1, 2, 3, 4, 5, 6, 7, 8))
 Krig <- function(known_coords, known_values, predict_coords,
                  nugget = 0, sill = 1, range_ = 1) {
   K <- .s03mat(known_coords)

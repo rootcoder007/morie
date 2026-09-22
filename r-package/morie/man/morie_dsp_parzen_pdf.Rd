@@ -21,8 +21,8 @@ Gaussian-kernel KDE on a uniform grid. Bandwidth defaults to
 Silverman's \code{1.06 * sd(x) * n^{-1/5}}.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_dsp_parzen_pdf(V)
+set.seed(1)
+str(morie_dsp_parzen_pdf(rnorm(200)), max.level = 1)
 }
 \references{
 Rangayyan & Krishnan (2015), Ch. 5, sec. 5.6;

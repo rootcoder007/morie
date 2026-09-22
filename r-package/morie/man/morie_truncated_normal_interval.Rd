@@ -22,3 +22,7 @@ A step of the bndpcb_native implementation. Called by \code{morie_bet_proof_inte
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_truncated_normal_interval(x = 5L)
+}
+\keyword{internal}

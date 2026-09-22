@@ -13,6 +13,14 @@ morie_geron_roc_curve_hm(y_true, scores, pos_label = 1)
 
 \item{pos_label}{Positive label.}
 }
+\value{
+A list with \code{fpr}, \code{tpr}, \code{thresholds}, \code{auc}, \code{auc_trapezoid}, \code{youden_j}, \code{best_threshold}, \code{n_pos}, \code{n_neg}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 ROC curve: FPR vs TPR over thresholds, trapezoid area cross-check (Geron Ch 3, hmroc)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_roc_curve_hm(V, V)
+}
+\keyword{internal}

@@ -23,3 +23,9 @@ string "true" or list(positive, negative) of proposition names. Edges
 are tested in the order given and the first match wins; if none
 matches, the machine stays in u and pays 0.
 }
+\examples{
+edges <- list(list(0L, "a", 1L, 0), list(1L, "b", 2L, 1))
+m <- morie_rmrl_reward_machine(edges, u0 = 0, terminal = c(2L))
+str(m, max.level = 1)
+}
+\keyword{internal}

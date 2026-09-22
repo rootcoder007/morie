@@ -2,7 +2,7 @@
 % Please edit documentation in R/egnnL_native.R
 \name{edge_message}
 \alias{edge_message}
-\title{edge_message}
+\title{Eq. (3). Positions enter ONLY as ||x_i - x_j||^2, which is what}
 \usage{
 edge_message(h_i, h_j, x_i, x_j, phi_e, a_ij = NULL)
 }
@@ -11,9 +11,9 @@ edge_message(h_i, h_j, x_i, x_j, phi_e, a_ij = NULL)
 
 \item{h_j}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{x_i}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{x_i}{Passed to \code{.sqdist}.}
 
-\item{x_j}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{x_j}{Passed to \code{.sqdist}.}
 
 \item{phi_e}{Accepted by the signature and not used anywhere in the body.}
 
@@ -23,7 +23,10 @@ edge_message(h_i, h_j, x_i, x_j, phi_e, a_ij = NULL)
 The value of \code{phi_e}.
 }
 \description{
-A step of the egnnL_native implementation. Called by \code{egcl}.
-See the file header for the source the module follows.
-source it follows.
+makes the message invariant.
 }
+\examples{
+phi_e <- function(hi, hj, d2, a) c(hi + hj, d2)
+edge_message(c(0.2, -0.1), c(0.4, 0.3), c(1, 0, 0), c(0, 1, 0), phi_e)
+}
+\keyword{internal}

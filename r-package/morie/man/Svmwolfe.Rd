@@ -22,8 +22,8 @@ List with \code{dual}, \code{linear_term}, \code{quadratic_term}, \code{constrai
 Formula: L(alpha) = sum_i alpha_i - 0.5 sum_i sum_j alpha_i alpha_j y_i y_j K(x_i, x_j)
 }
 \examples{
-Svmwolfe(alpha = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2,
-3, 4, 5, 6, 7, 8))
+Svmwolfe(alpha = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+  y = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate

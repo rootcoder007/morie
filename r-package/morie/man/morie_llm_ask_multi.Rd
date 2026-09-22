@@ -28,14 +28,14 @@ port -- this always returns a single character scalar.
 }
 \details{
 Provider fall-through order mirrors :func:\code{morie_llm_detect_provider}:
-ollama -> freeapi -> gemini -> api -> openai -> local.
+ollama -> gemini -> api -> openai -> local.
 }
 \examples{
 \donttest{
-options(morie.llm.ollama_cached = FALSE, morie.llm.freeapi_cached = FALSE)
+old <- options(morie.llm.ollama_cached = FALSE)
 msgs <- list(list(role = "user", content = "hello"))
 out <- try(morie_llm_ask_multi(msgs))
 print(out)
-options(morie.llm.ollama_cached = NULL, morie.llm.freeapi_cached = NULL)
+options(old)
 }
 }

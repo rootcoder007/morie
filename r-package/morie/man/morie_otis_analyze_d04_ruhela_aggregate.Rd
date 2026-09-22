@@ -22,7 +22,6 @@ d04 aggregate Ruhela: non-majority religion -> custodial deaths
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_d04 <- morie_synth_otis("d04", n = 120L, seed = 1L)
 morie_otis_analyze_d04_ruhela_aggregate(otis_d04)
 }

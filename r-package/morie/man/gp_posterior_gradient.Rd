@@ -16,7 +16,7 @@ gp_posterior_gradient(
 )
 }
 \arguments{
-\item{X}{Iterated over elementwise, with \code{lapply}.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 
 \item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 
@@ -40,3 +40,7 @@ A step of the bayopt_native implementation. Called by \code{maximise_acquisition
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+gp_posterior_gradient(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), xs = 5L)
+}
+\keyword{internal}

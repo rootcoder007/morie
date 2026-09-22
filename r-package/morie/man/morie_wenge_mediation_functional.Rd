@@ -38,3 +38,4 @@ A step of the wenge_native implementation. Called by \code{morie_wenge_weight_ba
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

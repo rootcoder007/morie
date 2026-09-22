@@ -23,9 +23,8 @@ in \code{df}.}
 variable in \code{df}.}
 }
 \value{
-A named list with elements \code{mean}, \code{se},
-\code{ci_lower}, \code{ci_upper} (95\\% Wald confidence interval),
-and \code{n_domain} (number of sample units in the subpopulation).
+A named list with elements \code{mean}, \code{se}, \code{ci_lower},
+\code{ci_upper}, \code{n_domain}.
 }
 \description{
 Subpopulation (domain) mean with Woodruff linearised SE
@@ -33,9 +32,8 @@ Subpopulation (domain) mean with Woodruff linearised SE
 \examples{
 \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 set.seed(1)
-df <- data.frame(region = sample(c("N", "S"), 60, replace = TRUE),
-                 y = rnorm(60, 5), w = rep(2, 60))
-r <- morie_survey_subpop(df, "region", "N", "y", "w")
-is.list(r)
+df <- data.frame(y = rnorm(40), g = rep(c("a", "b"), 20),
+                 w = runif(40, 0.5, 2))
+str(morie_survey_subpop(df, "g", "a", "y", "w"), max.level = 1)
 \dontshow{\}) # examplesIf}
 }

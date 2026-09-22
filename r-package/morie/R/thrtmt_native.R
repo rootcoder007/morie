@@ -77,7 +77,7 @@
 
 #' Z: n x p, y: length n
 #'
-#' Returns b solving (Z\'Z + ridge I) b = Z\' y
+#' Returns b solving (Z'Z + ridge I) b = Z' y
 #'
 #' @param Z A matrix; passed to \code{ncol}.
 #' @param y A matrix; passed to \code{crossprod}.
@@ -134,6 +134,7 @@
 #' @param ridge Passed to \code{.thrtmt_lstsq}. Defaults to \code{1e-08}.
 #' @return A list with \code{blip}, \code{info}.
 #' @export
+#' @keywords internal
 thrtmt_blip_function <- function(y, A, W, V = NULL, ridge = 1e-8) {
   yv <- .thrtmt_vec(y)
   av <- .thrtmt_vec(A)

@@ -19,33 +19,40 @@ morie_cgnonl(
 )
 }
 \arguments{
-\item{f}{Passed to \code{cgnonl_nonlinear_cg}.}
+\item{f}{Passed to \code{nonlinear_cg}.}
 
-\item{grad}{Passed to \code{cgnonl_nonlinear_cg}.}
+\item{grad}{Passed to \code{nonlinear_cg}.}
 
-\item{x0}{Passed to \code{cgnonl_nonlinear_cg}.}
+\item{x0}{Passed to \code{nonlinear_cg}.}
 
-\item{beta}{Passed to \code{cgnonl_nonlinear_cg}. Defaults to \code{"fletcher-reeves"}.}
+\item{beta}{Passed to \code{nonlinear_cg}. Defaults to \code{"fletcher-reeves"}.}
 
-\item{restart}{Passed to \code{cgnonl_nonlinear_cg}.}
+\item{restart}{Passed to \code{nonlinear_cg}.}
 
-\item{max_iter}{Passed to \code{cgnonl_nonlinear_cg}.}
+\item{max_iter}{Passed to \code{nonlinear_cg}.}
 
-\item{tol}{Passed to \code{cgnonl_nonlinear_cg}. Defaults to \code{1e-10}.}
+\item{tol}{Passed to \code{nonlinear_cg}. Defaults to \code{1e-10}.}
 
-\item{est}{Passed to \code{cgnonl_nonlinear_cg}.}
+\item{est}{Passed to \code{nonlinear_cg}.}
 
-\item{line_search}{Passed to \code{cgnonl_nonlinear_cg}. Defaults to \code{"fletcher-reeves"}.}
+\item{line_search}{Passed to \code{nonlinear_cg}. Defaults to \code{"fletcher-reeves"}.}
 
-\item{hess_vec}{Passed to \code{cgnonl_nonlinear_cg}.}
+\item{hess_vec}{Passed to \code{nonlinear_cg}.}
 
-\item{keep_path}{Passed to \code{cgnonl_nonlinear_cg}. Defaults to \code{FALSE}.}
+\item{keep_path}{Passed to \code{nonlinear_cg}. Defaults to \code{FALSE}.}
 }
 \value{
-The value of \code{cgnonl_nonlinear_cg}.
+The value of \code{nonlinear_cg}.
 }
 \description{
 A step of the cgnonl_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+f <- function(x) sum((x - c(1, 2))^2)
+g <- function(x) 2 * (x - c(1, 2))
+r <- morie_cgnonl(f, g, x0 = c(0, 0))
+str(r, max.level = 1)
+}
+\keyword{internal}

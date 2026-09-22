@@ -18,3 +18,8 @@ A list with \code{u}, \code{n}, \code{shift}, \code{first_difference},
 \description{
 u(0) = 1 -- the opposite of eq (3.27).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+StepSeq(V)
+}
+\keyword{internal}

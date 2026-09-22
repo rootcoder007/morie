@@ -19,3 +19,7 @@ A step of the bats_native implementation. Called by \code{.fit_spec}, \code{mori
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+box_cox(y = c(1, 2, 3, 4, 5, 6, 7, 8), omega = 5L)
+}
+\keyword{internal}

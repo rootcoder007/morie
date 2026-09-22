@@ -24,3 +24,14 @@ A step of the survrsf_native implementation. Called by
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(1)
+n <- 120
+X <- matrix(rnorm(n * 3), n, 3)
+times <- rexp(n, exp(0.3 * (X[, 1] - 0.5 * X[, 2])))
+events <- rbinom(n, 1, 0.75)
+tree <- morie_survrsf_grow_tree(X, times, events, min_deaths = 5, seed = 1)
+p <- morie_survrsf_predict_tree(tree, X[1, ])
+is.list(p) || is.numeric(p)
+}
+\keyword{internal}

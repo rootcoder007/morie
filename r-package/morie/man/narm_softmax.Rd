@@ -18,3 +18,8 @@ A step of the narm_native implementation. Called by \code{narm_attention_weights
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+narm_softmax(V)
+}
+\keyword{internal}

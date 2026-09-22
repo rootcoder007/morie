@@ -19,3 +19,10 @@ A step of the alf_core implementation. Called by \code{Alfbkb}, \code{Alfschn}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+A <- list(R = diag(2), t = c(1, 0))
+B <- list(R = diag(2), t = c(0, 2))
+C <- alfRcomp(A, B)
+alfRap(C, c(0, 0))
+}
+\keyword{internal}

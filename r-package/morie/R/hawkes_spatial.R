@@ -23,17 +23,8 @@
 #'   83(401), 9--27. \doi{10.1080/01621459.1988.10478560}
 NULL
 
-#' .hst_check_params
-#'
-#' A step of the hawkes_spatial implementation. Called by
-#' \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik},
-#' \code{morie_hawkes_st_simulate}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param p A list; the body reads \code{$alpha}, \code{$beta}, \code{$mu}, \code{$sigma} from it.
-#' @return Invisibly,the value of \code{p}, as built in the body.
-#' @export
+#' Internal helper: Hst Check Params
+#' @noRd
 .hst_check_params <- function(p) {
   need <- c("mu", "alpha", "beta", "sigma")
   if (!all(need %in% names(p))) {
@@ -46,17 +37,8 @@ NULL
 }
 
 # Gaussian spatial density evaluated at squared distances.
-#' Gaussian spatial density evaluated at squared distances
-#'
-#' A step of the hawkes_spatial implementation. Called by
-#' \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param d2 Numeric; combined arithmetically in the body.
-#' @param sigma Numeric; combined arithmetically in the body.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Hst Spatial
+#' @noRd
 .hst_spatial <- function(d2, sigma) {
   exp(-d2 / (2 * sigma^2)) / (2 * pi * sigma^2)
 }
@@ -70,8 +52,10 @@ NULL
 #' @return The intensity \eqn{\lambda(t_q, x_q, y_q)} (a non-negative scalar).
 #' @examples
 #' ev <- data.frame(t = c(0.1, 0.5), x = c(0, 1), y = c(0, 1))
-#' morie_hawkes_st_intensity(ev, 0.6, 0.1, 0.1,
-#'                           list(mu = 0.2, alpha = 0.5, beta = 1, sigma = 0.5))
+#' morie_hawkes_st_intensity(
+#'   ev, 0.6, 0.1, 0.1,
+#'   list(mu = 0.2, alpha = 0.5, beta = 1, sigma = 0.5)
+#' )
 #' @export
 morie_hawkes_st_intensity <- function(events, t_q, x_q, y_q, params) {
   .hst_check_params(params)
@@ -162,7 +146,8 @@ morie_hawkes_st_loglik <- function(events, params, end_time = NULL, area = 1) {
 #'   (generation: 0 = immigrant), sorted by \code{t}.
 #' @examples
 #' morie_hawkes_st_simulate(list(mu = 0.1, alpha = 0.4, beta = 1, sigma = 0.5),
-#'                          end_time = 10, region = c(0, 5, 0, 5), seed = 42)
+#'   end_time = 10, region = c(0, 5, 0, 5), seed = 42
+#' )
 #' @export
 morie_hawkes_st_simulate <- function(params, end_time, region, seed = NULL,
                                      max_events = 1e5L) {
@@ -292,13 +277,29 @@ morie_hawkes_st_fit <- function(events, end_time = NULL, area = 1,
 #'
 #' @param x A \code{morie_hawkes_st_fit} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return \code{x}, invisibly.
+#' @examples
+#' \donttest{
+#' # A short window keeps the fit under CRAN's 5s example budget; use
+#' # longer horizons (e.g. end_time = 40) for real analyses.
+#' ev <- morie_hawkes_st_simulate(
+#'   list(mu = 0.2, alpha = 0.5, beta = 1, sigma = 0.4),
+#'   end_time = 12, region = c(0, 10, 0, 10), seed = 7
+#' )
+#' obj <- morie_hawkes_st_fit(ev, end_time = 12, area = 100)$params
+#' print(obj)
+#' }
 #' @export
 print.morie_hawkes_st_fit <- function(x, ...) {
   p <- x$params
-  cat(sprintf("Spatiotemporal Hawkes fit (n = %d, logLik = %.2f)\n",
-              x$n, x$loglik))
-  cat(sprintf("  mu = %.4g  alpha = %.4g%s  beta = %.4g  sigma = %.4g\n",
-              p$mu, p$alpha, if (p$alpha >= 1) " (UNSTABLE, >=1)" else "",
-              p$beta, p$sigma))
+  cat(sprintf(
+    "Spatiotemporal Hawkes fit (n = %d, logLik = %.2f)\n",
+    x$n, x$loglik
+  ))
+  cat(sprintf(
+    "  mu = %.4g  alpha = %.4g%s  beta = %.4g  sigma = %.4g\n",
+    p$mu, p$alpha, if (p$alpha >= 1) " (UNSTABLE, >=1)" else "",
+    p$beta, p$sigma
+  ))
   invisible(x)
 }

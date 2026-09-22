@@ -136,6 +136,10 @@
 #' @param hierarchical A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' morie_wrd2v_training_complexity(architecture = "skip-gram", D = 100L,
+#'                                 V = 10000L, C = 5L)
+#' @keywords internal
 morie_wrd2v_training_complexity <- function(architecture, D, V, N = NULL,
                                             C = NULL, hierarchical = TRUE) {
   # The paper's Q for one training example (eqs. 4-5).
@@ -168,6 +172,10 @@ morie_wrd2v_training_complexity <- function(architecture, D, V, N = NULL,
 #' @param power Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.75}.
 #' @return The value of \code{stats::setNames}.
 #' @export
+#' @examples
+#' morie_wrd2v_noise_distribution(counts = c(the = 100, cat = 20, sat = 5),
+#'                                power = 0.75)
+#' @keywords internal
 morie_wrd2v_noise_distribution <- function(counts, power = 0.75) {
   # Pn(w) = U(w)^{3/4} / Z of Mikolov et al. (2013b) 2.2.
   ws <- sort(names(counts))
@@ -192,6 +200,10 @@ morie_wrd2v_noise_distribution <- function(counts, power = 0.75) {
 #' @param t Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_wrd2v_subsample_probability(V)
+#' @keywords internal
 morie_wrd2v_subsample_probability <- function(counts, t = 1e-5) {
   # Discard probability 1 - sqrt(t / f(w)) (2013b eq. 5). Clamped at 0.
   total <- sum(unlist(counts))
@@ -344,7 +356,10 @@ morie_wrd2v_subsample_probability <- function(counts, t = 1e-5) {
 #' \code{most_similar}, \code{size}, \code{window}, \code{architecture}, \code{loss},
 #' \code{negative}, \code{noise}, \code{method}.
 #' @export
-#' @aliases morie_wrd2v
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_wrd2v_wrd2v(V)
+#' @keywords internal
 morie_wrd2v_wrd2v <- function(corpus, size = 16, window = 5,
                               architecture = "skip-gram", lr = 0.05, epochs = 20,
                               min_count = 1, dynamic_window = TRUE,
@@ -525,7 +540,7 @@ morie_wrd2v_wrd2v <- function(corpus, size = 16, window = 5,
   )
 }
 
-#' Section 4\'s offset query: b - a + c. The three question words are
+#' Section 4's offset query: b - a + c. The three question words are
 #'
 #' excluded from the answer.
 #'
@@ -536,6 +551,12 @@ morie_wrd2v_wrd2v <- function(corpus, size = 16, window = 5,
 #' @param topn Numeric; passed to \code{min}. Defaults to \code{1}.
 #' @return The value of \code{lapply}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' vecs <- list(king = rnorm(5), man = rnorm(5), woman = rnorm(5),
+#'              queen = rnorm(5))
+#' morie_wrd2v_analogy(vecs, a = "king", b = "man", c = "woman")
+#' @keywords internal
 morie_wrd2v_analogy <- function(vectors, a, b, c, topn = 1) {
   # Section 4's offset query: b - a + c. The three question words are
   # excluded from the answer.
@@ -565,6 +586,9 @@ morie_wrd2v_analogy <- function(vectors, a, b, c, topn = 1) {
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_wrd2v_cheatsheet()
+#' @keywords internal
 morie_wrd2v_cheatsheet <- function() {
   paste0(
     "wrd2v: log-linear word vectors (Mikolov 2013a). CBOW ",
@@ -582,5 +606,6 @@ morie_wrd2v_cheatsheet <- function() {
 # compact alias per ledger/NAMING.md
 morie_wrd2v_word2vec <- morie_wrd2v_wrd2v
 
+#' @rdname morie_wrd2v_wrd2v
 #' @export
 morie_wrd2v <- morie_wrd2v_wrd2v

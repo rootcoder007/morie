@@ -2,21 +2,30 @@
 % Please edit documentation in R/andmnh_native.R
 \name{kernel_hac}
 \alias{kernel_hac}
-\title{Equation 2.3, kernel HAC on already-prewhitened vectors}
+\title{kernel_hac}
 \usage{
-kernel_hac(v, bandwidth, kernel = "qs", n_params = 0L, n = NULL)
+kernel_hac(v, bandwidth, kernel = "qs", n_params = 0, n = NULL)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{A matrix; passed to \code{as.matrix}.}
 
-\item{bandwidth}{See Usage.}
+\item{bandwidth}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{kernel}{See Usage.}
+\item{kernel}{Passed to \code{.check_kernel}. Defaults to \code{"qs"}.}
 
-\item{n_params}{See Usage.}
+\item{n_params}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
 
-\item{n}{See Usage.}
+\item{n}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
+}
+\value{
+A numeric value.
 }
 \description{
-Equation 2.3, kernel HAC on already-prewhitened vectors
+A step of the andmnh_native implementation. Called by \code{andrews_monahan_hac}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+kernel_hac(v = c(1, 2, 3, 4, 5, 6, 7, 8), bandwidth = 0.5)
+}
+\keyword{internal}

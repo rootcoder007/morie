@@ -1,51 +1,61 @@
+# Conservative Q-Learning for offline RL.
 # Sources: Kumar, A., Zhou, A., Tucker, G. & Levine, S. (2020)
-# "Conservative Q-Learning for Offline Reinforcement Learning", NeurIPS,
-# arXiv:2006.04779 (eqs. 1-4: the CQL penalty with the asymmetry
-# between pushing Q DOWN under mu and UP under pi_beta, the three
-# variants H/rho/mu, and Theorems 3.1-3.2 distinguishing the pointwise
-# and the weaker expected-value lower bound).
-#
-# Native implementation mirroring Python morie.fn.offlrl exactly: the
-# same dataset checks (transitions of length 4 or 5, with done
-# defaults to FALSE), the same empirical behaviour policy read off the
-# data, the same Bellman target under max or under pi, the same
-# gradient split into a CQL term that pushes Q down under mu and up
-# under pi_beta and a Bellman term on the data, the same final
-# penalty and Bellman error, and the same exit condition on the
-# largest Q update.
+# "Conservative Q-Learning for Offline Reinforcement Learning",
+# NeurIPS, arXiv:2006.04779. Eq. 2 (the CQL objective with the
+# push-down-on-mu, push-up-on-pi_beta asymmetry), Eq. 3 (the
+# min_Q max_mu family regularised by R(mu)), Eq. 4 (the CQL(H)
+# variant with rho = Unif, whose closed form is the logsumexp
+# penalty), Theorems 3.1 and 3.2 (pointwise lower bound and the
+# weaker expected-value lower bound under pi), the variant rho
+# (mu proportional to pi^{k-1}) and the backup-mode distinction
+# between B* (Q-learning) and B^pi (policy evaluation).
 
-#' offlrl_logsumexp
+# Base R only, faithful translation of offlrl_python_reference.py.
+
+.OFFLRL_VARIANTS <- c("H", "rho", "mu")
+.OFFLRL_BACKUPS <- c("max", "pi")
+
+#' .offlrl_logsumexp
 #'
-#' A step of the offlrl_native implementation. Called by \code{morie_offlrl}.
+#' A step of the offlrl_native implementation. Called by \code{offlrl}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param v Numeric; passed to \code{max}.
 #' @return A numeric value.
 #' @export
-offlrl_logsumexp <- function(v) {
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .offlrl_logsumexp(v = x)
+#' res
+.offlrl_logsumexp <- function(v) {
   m <- max(v)
   m + log(sum(exp(v - m)))
 }
 
-#' offlrl_softmax
+#' .offlrl_softmax
 #'
-#' A step of the offlrl_native implementation. Called by \code{morie_offlrl}.
+#' A step of the offlrl_native implementation. Called by \code{offlrl}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param v Numeric; passed to \code{max}.
 #' @return A numeric value.
 #' @export
-offlrl_softmax <- function(v) {
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .offlrl_softmax(v = x)
+#' res
+.offlrl_softmax <- function(v) {
   m <- max(v)
   e <- exp(v - m)
-  e / sum(e)
+  s <- sum(e)
+  e / s
 }
 
-#' offlrl_as_dist
+#' .offlrl_as_dist
 #'
-#' A step of the offlrl_native implementation. Called by \code{morie_offlrl}.
+#' A step of the offlrl_native implementation. Called by \code{offlrl}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -53,68 +63,47 @@ offlrl_softmax <- function(v) {
 #' @param S See Usage.
 #' @param A See Usage.
 #' @param name Passed to \code{stop}.
-#' @return A list with \code{matrix}, \code{lookup}.
+#' @return The value of \code{out}, as built in the body.
 #' @export
-offlrl_as_dist <- function(d, S, A, name) {
+.offlrl_as_dist <- function(d, S, A, name) {
   if (is.null(d)) return(NULL)
-  out <- list()
-  for (s in S) {
-    for (a in A) {
-      if (is.function(d)) {
-        out[[paste0(s, "|", a)]] <- as.numeric(d(s, a))
-      } else {
-        out[[paste0(s, "|", a)]] <- as.numeric(d[[paste0(s, "|", a)]])
-      }
+  if (is.function(d)) {
+    out <- list()
+    for (s in S) for (a in A) {
+      key <- paste0(s, "\r", a)
+      out[[key]] <- as.numeric(d(s, a))
     }
+  } else if (is.list(d)) {
+    out <- list()
+    for (s in S) for (a in A) {
+      key <- paste0(s, "\r", a)
+      v <- d[[key]]
+      out[[key]] <- if (is.null(v)) 0.0 else as.numeric(v)
+    }
+  } else {
+    stop("offlrl: ", name, " must be a function or a list")
   }
   for (s in S) {
-    tot <- 0
-    for (a in A) tot <- tot + out[[paste0(s, "|", a)]]
-    if (abs(tot - 1) > 1e-6)
-      stop("offlrl: ", name, "(.|", deparse(s), ") sums to ", tot,
+    tot <- 0.0
+    for (a in A) tot <- tot + out[[paste0(s, "\r", a)]]
+    if (abs(tot - 1.0) > 1e-6)
+      stop("offlrl: ", name, "(.|", s, ") sums to ", format(tot),
            ", not 1")
   }
-  list(matrix = out, lookup = function(s, a) {
-    out[[paste0(s, "|", a)]]
-  })
+  out
 }
 
-#' offlrl_lookup
+#' .offlrl_key
 #'
-#' A step of the offlrl_native implementation. No other function in the package calls it.
+#' A step of the offlrl_native implementation. Called by \code{offlrl}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param mat A vector; indexed elementwise.
 #' @param s Passed to \code{paste0}.
 #' @param a Passed to \code{paste0}.
-#' @return The value of \code{[[}.
+#' @return A character value.
 #' @export
-offlrl_lookup <- function(mat, s, a) {
-  mat[[paste0(s, "|", a)]]
-}
-
-#' offlrl_safe_max_key
-#'
-#' A step of the offlrl_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param qmap A vector; indexed elementwise.
-#' @param s Passed to \code{paste0}.
-#' @param A A vector; indexed elementwise.
-#' @return The value of \code{best_a}, as built in the body.
-#' @export
-offlrl_safe_max_key <- function(qmap, s, A) {
-  best_v <- -Inf
-  best_a <- A[1]
-  for (a in A) {
-    v <- qmap[[paste0(s, "|", a)]]
-    if (v > best_v) { best_v <- v
-    best_a <- a }
-  }
-  best_a
-}
+.offlrl_key <- function(s, a) paste0(s, "\r", a)
 
 #' offlrl
 #'
@@ -369,121 +358,11 @@ offlrl <- function(dataset, states = NULL, actions = NULL, alpha = 1.0,
                     if (variant %in% c("H", "rho")) "4" else "2", ")")
   )
 }
+
+# compact aliases per ledger/NAMING.md
 offline_rl_cql <- offlrl
 offlinerlcql <- offlrl
 conservative_q_learning <- offlrl
-
-#' offlrl_cheatsheet
-#'
-#' A step of the offlrl_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @return A character value.
-#' @export
-offlrl_cheatsheet <- function() {
-  paste("offlrl: CQL (Kumar 2020). Fitted Q plus alpha*(push DOWN ",
-        "E_mu[Q] - push UP E_pi_beta[Q]) so the Q-function LOWER ",
-        "BOUNDS the truth and OOD actions stop being over-estimated. ",
-        "variant='H' is eq. 4's logsumexp (rho=Unif); 'rho' uses ",
-        "pi^{k-1}; 'mu' is eq. 2 directly. Thm 3.2 bounds the ",
-        "EXPECTED value under pi, not pointwise. alpha=0 is plain ",
-        "fitted Q.")
-}
-
-.OFFLRL_VARIANTS <- c("H", "rho", "mu")
-
-.OFFLRL_BACKUPS <- c("max", "pi")
-
-#' .offlrl_logsumexp
-#'
-#' A step of the offlrl_native implementation. Called by \code{offlrl}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param v Numeric; passed to \code{max}.
-#' @return A numeric value.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .offlrl_logsumexp(v = x)
-#' res
-.offlrl_logsumexp <- function(v) {
-  m <- max(v)
-  m + log(sum(exp(v - m)))
-}
-
-#' .offlrl_softmax
-#'
-#' A step of the offlrl_native implementation. Called by \code{offlrl}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param v Numeric; passed to \code{max}.
-#' @return A numeric value.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .offlrl_softmax(v = x)
-#' res
-.offlrl_softmax <- function(v) {
-  m <- max(v)
-  e <- exp(v - m)
-  s <- sum(e)
-  e / s
-}
-
-#' .offlrl_as_dist
-#'
-#' A step of the offlrl_native implementation. Called by \code{offlrl}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param d Optional; may be \code{NULL}. A vector; indexed elementwise.
-#' @param S See Usage.
-#' @param A See Usage.
-#' @param name Passed to \code{stop}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
-.offlrl_as_dist <- function(d, S, A, name) {
-  if (is.null(d)) return(NULL)
-  if (is.function(d)) {
-    out <- list()
-    for (s in S) for (a in A) {
-      key <- paste0(s, "\r", a)
-      out[[key]] <- as.numeric(d(s, a))
-    }
-  } else if (is.list(d)) {
-    out <- list()
-    for (s in S) for (a in A) {
-      key <- paste0(s, "\r", a)
-      v <- d[[key]]
-      out[[key]] <- if (is.null(v)) 0.0 else as.numeric(v)
-    }
-  } else {
-    stop("offlrl: ", name, " must be a function or a list")
-  }
-  for (s in S) {
-    tot <- 0.0
-    for (a in A) tot <- tot + out[[paste0(s, "\r", a)]]
-    if (abs(tot - 1.0) > 1e-6)
-      stop("offlrl: ", name, "(.|", s, ") sums to ", format(tot),
-           ", not 1")
-  }
-  out
-}
-
-#' .offlrl_key
-#'
-#' A step of the offlrl_native implementation. Called by \code{offlrl}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param s Passed to \code{paste0}.
-#' @param a Passed to \code{paste0}.
-#' @return A character value.
-#' @export
-.offlrl_key <- function(s, a) paste0(s, "\r", a)
 
 #' .offlrl_cheatsheet
 #'

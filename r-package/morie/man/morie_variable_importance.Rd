@@ -2,7 +2,7 @@
 % Please edit documentation in R/tmldta_native.R
 \name{morie_variable_importance}
 \alias{morie_variable_importance}
-\title{Rank the columns of X by data-adaptive importance}
+\title{Loop the contrast over every column of X in turn}
 \usage{
 morie_variable_importance(
   y,
@@ -15,26 +15,36 @@ morie_variable_importance(
 )
 }
 \arguments{
-\item{y}{Numeric outcome.}
+\item{y}{Outcome vector.}
 
-\item{X}{Numeric matrix of predictors.}
+\item{X}{Covariate matrix.}
 
-\item{candidate_strata}{Optional levels to search over.}
+\item{candidate_strata}{Candidate levels.}
 
-\item{method}{One of the three honest methods.}
+\item{method}{One of \code{"cv-tmle"}, \code{"sample-split"},
+\code{"naive"}.}
 
-\item{n_folds}{Number of V-fold splits.}
+\item{n_folds}{Number of folds.}
 
-\item{names}{Optional variable names; defaults to \code{"X1"},
-\code{"X2"}, ...}
+\item{names}{Optional column names.}
 
-\item{...}{Forwarded to \code{morie_tmle_data_adaptive}.}
+\item{...}{Passed through to \code{tmle_data_adaptive}.}
 }
 \value{
-A list of per-variable results sorted by absolute estimate.
+A list of per-variable results, sorted by absolute estimate.
 }
 \description{
-For each column the contrast is estimated with that column as the
-exposure and everything else as the covariate, and the results are
-sorted by absolute estimate.
+Loop the contrast over every column of X in turn
 }
+\examples{
+set.seed(2)
+n <- 120
+X <- cbind(rbinom(n, 2, 0.5), rbinom(n, 1, 0.5), rbinom(n, 2, 0.4))
+y <- plogis(0.6 * X[, 1] + 0.4 * X[, 2] + rnorm(n, 0, 0.5))
+r <- morie_variable_importance(y, X, method = "naive")
+str(r, max.level = 1)
+}
+\references{
+Hubbard, A. E. et al. (2018).
+}
+\keyword{internal}

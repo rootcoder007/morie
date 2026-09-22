@@ -22,3 +22,18 @@ A step of the sccsno_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+cases <- lapply(1:12, function(i) {
+  expo <- runif(1, 60, 300)
+  n_ev <- 1 + rbinom(1, 2, 0.5)
+  ev <- sort(c(runif(max(n_ev - 1, 0), 0, 365),
+               expo + runif(1, 0, 30)))
+  list(start = 0, end = 365, exposure = expo, events = ev)
+})
+fit <- morie_sccsno_fit(cases,
+                        risk_periods = list(c(-30, 0), c(0, 30)))
+r <- morie_sccsno_check_assumptions(fit, pre_index = 0)
+str(r, max.level = 1)
+}
+\keyword{internal}

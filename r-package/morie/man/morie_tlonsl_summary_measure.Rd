@@ -17,3 +17,8 @@ The value of \code{z}, as built in the body.
 \description{
 summary, which is exactly the i.i.d. case.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_tlonsl_summary_measure(V)
+}
+\keyword{internal}

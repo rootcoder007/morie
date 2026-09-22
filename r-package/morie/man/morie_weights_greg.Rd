@@ -20,10 +20,8 @@ calibrate to.}
 \item{tol}{Convergence tolerance for calibration.}
 }
 \value{
-A named list with elements \code{weights} (calibrated
-numeric vector, same length as input), \code{converged},
-\code{iterations}, \code{max_adjustment}, and \code{diagnostics}
-(from \code{\link{morie_weights_diagnostics}}).
+A named list with elements \code{weights}, \code{converged},
+\code{iterations}, \code{max_adjustment}, \code{diagnostics}.
 }
 \description{
 Closed-form linear calibration to match population totals on auxiliary X.
@@ -31,6 +29,8 @@ When \code{survey} is installed, defers to \code{survey::calibrate()} for a full
 design-aware result; otherwise computes the linear adjustment in base R.
 }
 \examples{
-morie_weights_greg(weights = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
-population_totals = 5L)
+set.seed(1)
+X <- cbind(intercept = 1, x = runif(30))
+res <- morie_weights_greg(rep(1, 30), X, c(intercept = 35, x = 18))
+str(res, max.level = 1)
 }

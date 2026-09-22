@@ -2,43 +2,54 @@
 % Please edit documentation in R/andmnh_native.R
 \name{andrews_monahan_hac}
 \alias{andrews_monahan_hac}
-\alias{andmnh}
-\title{The full VAR prewhitened kernel HAC estimator, eq. 2.4}
+\title{andrews_monahan_hac}
 \usage{
 andrews_monahan_hac(
   e,
   X = NULL,
   prewhiten = TRUE,
-  var_order = 1L,
+  var_order = 1,
   kernel = "qs",
   bandwidth = NULL,
   weights = NULL,
   n_params = NULL,
-  cap = .EIGENVALUE_CAP,
+  cap = 0.97,
   adjust = TRUE
 )
 }
 \arguments{
-\item{e}{See Usage.}
+\item{e}{A matrix; passed to \code{as.matrix}.}
 
-\item{X}{See Usage.}
+\item{X}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 
-\item{prewhiten}{See Usage.}
+\item{prewhiten}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 
-\item{var_order}{See Usage.}
+\item{var_order}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.}
 
-\item{kernel}{See Usage.}
+\item{kernel}{Carried through into a list the body builds. Defaults to \code{"qs"}.}
 
-\item{bandwidth}{See Usage.}
+\item{bandwidth}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
+\code{as.numeric}.}
 
-\item{weights}{See Usage.}
+\item{weights}{Passed to \code{automatic_bandwidth}.}
 
-\item{n_params}{See Usage.}
+\item{n_params}{Optional; may be \code{NULL}. Coerced to integer by the body, with
+\code{as.integer}.}
 
-\item{cap}{See Usage.}
+\item{cap}{Numeric; combined arithmetically in the body. Defaults to \code{0.97}.}
 
-\item{adjust}{See Usage.}
+\item{adjust}{Passed to \code{prewhiten_var}. Defaults to \code{TRUE}.}
+}
+\value{
+The value of \code{structure}.
 }
 \description{
-The full VAR prewhitened kernel HAC estimator, eq. 2.4
+A step of the andmnh_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+andrews_monahan_hac(V)
+}
+\keyword{internal}

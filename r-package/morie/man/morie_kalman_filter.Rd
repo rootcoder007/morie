@@ -30,12 +30,13 @@ morie_kalman_filter(
 \item{P0}{Initial state covariance.}
 }
 \value{
-Named list with \code{state, state_cov, innovations,
+Named list with \eqn{state, state_cov, innovations,
   innovation_variance, loglik, n, method}.
 }
 \description{
 Defaults to a univariate local-level model when matrices are omitted.
 }
 \examples{
+set.seed(1)
 morie_kalman_filter(x = rnorm(50))
 }

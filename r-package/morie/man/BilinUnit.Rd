@@ -23,3 +23,8 @@ imaginary axis. The residual real part is computed and returned rather
 than assumed away, because it is the check that the mapping is doing
 what it claims.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+BilinUnit(V)
+}
+\keyword{internal}

@@ -19,3 +19,8 @@ The value on the original scale.
 \description{
 Invert the affine map -- the influence curve scales with it
 }
+\examples{
+unscale(value = c(1, 2, 3, 4, 5, 6, 7, 8), lower = c(1, 2, 3, 4, 5, 6, 7, 8),
+  upper = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

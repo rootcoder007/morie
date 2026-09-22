@@ -13,3 +13,7 @@ A character string.
 One-paragraph summary of the construction and why the extra
 parameter fattens the tail.
 }
+\examples{
+morie_pmpfit_cheatsheet()
+}
+\keyword{internal}

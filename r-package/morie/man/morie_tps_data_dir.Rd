@@ -7,8 +7,7 @@
 morie_tps_data_dir()
 }
 \value{
-A length-1 character string -- the resolved (possibly
-non-existent) filesystem path to the TPS data directory.
+A logical scalar.
 }
 \description{
 Resolves to \verb{<repo>/data/datasets/TPS/} when \code{morie} is loaded out

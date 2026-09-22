@@ -22,3 +22,7 @@ A list with \code{y}, \code{n}, \code{tau}, \code{clipped_windows},
 window is clipped at the start of the record, and how many windows
 that affects is reported rather than left to be discovered.
 }
+\examples{
+RunInt(x = c(1, 2, 3, 4, 5, 6, 7, 8), t = c(1, 2, 3, 4, 5, 6, 7, 8), tau = 0.5)
+}
+\keyword{internal}

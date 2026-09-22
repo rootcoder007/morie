@@ -19,3 +19,7 @@ A list with \code{xi}, \code{weights}, \code{lam}, \code{n}, \code{memory},
 errors, giving an effective memory of 1/(1-lambda) samples; lambda =
 1 is the growing window, which never forgets and so cannot track.
 }
+\examples{
+RlsObj(c(1, 1, 1), 0.5)
+}
+\keyword{internal}

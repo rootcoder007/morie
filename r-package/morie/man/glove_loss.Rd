@@ -29,3 +29,13 @@ A step of the glove_native implementation. Called by \code{morie_glove}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+X <- data.frame(i = c(1, 2, 1), j = c(2, 1, 3), count = c(5, 3, 2))
+W <- matrix(rnorm(6), 3, 2)
+Wt <- matrix(rnorm(6), 3, 2)
+b <- rnorm(3)
+bt <- rnorm(3)
+glove_loss(X, W, Wt, b, bt)
+}
+\keyword{internal}

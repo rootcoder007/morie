@@ -24,3 +24,8 @@ way to leave one out, so unlike 5-fold it gives the same answer every
 time.  The cost is N fits and a high variance: the training sets
 differ by a single sample, so the errors are heavily correlated.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+LooCv(V, V)
+}
+\keyword{internal}

@@ -19,8 +19,12 @@ Both Achlioptas distributions have mean \code{0} and variance
 \code{1} exactly, which is what Theorem 1.1 needs and what this
 function verifies in closed form rather than by simulation.
 }
+\examples{
+moments()
+}
 \references{
 Achlioptas, D. (2003). Database-friendly random
 projections. Journal of Computer and System Sciences, 66(4),
 671-687, Lemma 5.1.
 }
+\keyword{internal}

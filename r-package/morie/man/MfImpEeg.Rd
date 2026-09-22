@@ -21,3 +21,8 @@ The value of \code{r}, as built in the body.
 \description{
 is a reversed reference, the filtering is equivalent to correlation.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+MfImpEeg(V)
+}
+\keyword{internal}

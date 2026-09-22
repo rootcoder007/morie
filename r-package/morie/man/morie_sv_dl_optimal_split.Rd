@@ -17,3 +17,8 @@ A list with \code{i}, \code{j}, \code{score}.
 \description{
 Indices are 1-based over the consensus, as in the paper.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_sv_dl_optimal_split(V, V)
+}
+\keyword{internal}

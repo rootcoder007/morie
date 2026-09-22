@@ -24,7 +24,12 @@ keys match the Python \code{RichResult} payload:
 \code{n_clusters}, \code{sizes}, \code{n_singletons},
 \code{assignment}, \code{centroids}, \code{method}.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_clusmd_butina_clustering(V)
+}
 \references{
 Butina, D. (1999) J. Chem. Inf. Comput. Sci. 39(4),
 747-750. doi:10.1021/ci9803381.
 }
+\keyword{internal}

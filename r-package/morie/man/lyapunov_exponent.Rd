@@ -48,3 +48,10 @@ A step of the lyapun_native implementation. Called by \code{morie_lyapun}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r0 <- 3.9; x <- numeric(400); x[1] <- 0.4
+for (i in 2:400) x[i] <- r0 * x[i - 1] * (1 - x[i - 1])
+r <- lyapunov_exponent(x, embedding = 3, tau = 1)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -71,7 +71,9 @@ NULL
 .s4_median <- function(x) {
   x <- sort(as.numeric(unlist(x)))
   n <- length(x)
-  if (n == 0L) return(NaN)
+  if (n == 0L) {
+    return(NaN)
+  }
   m <- n %/% 2L
   if (n %% 2L == 1L) x[m + 1L] else 0.5 * (x[m] + x[m + 1L])
 }
@@ -94,8 +96,12 @@ NULL
 .s4_quantile7 <- function(x, p) {
   x <- sort(as.numeric(unlist(x)))
   n <- length(x)
-  if (n == 0L) return(NaN)
-  if (n == 1L) return(x[1L])
+  if (n == 0L) {
+    return(NaN)
+  }
+  if (n == 1L) {
+    return(x[1L])
+  }
   h <- (n - 1) * p
   lo <- floor(h)
   hi <- min(lo + 1, n - 1)
@@ -337,9 +343,11 @@ NULL
   Q <- A
   R <- matrix(0, p, p)
   for (j in seq_len(p)) {
-    if (j > 1L) for (i in seq_len(j - 1L)) {
-      R[i, j] <- sum(Q[, i] * Q[, j])
-      Q[, j] <- Q[, j] - R[i, j] * Q[, i]
+    if (j > 1L) {
+      for (i in seq_len(j - 1L)) {
+        R[i, j] <- sum(Q[, i] * Q[, j])
+        Q[, j] <- Q[, j] - R[i, j] * Q[, i]
+      }
     }
     R[j, j] <- sqrt(sum(Q[, j]^2))
     d <- if (R[j, j] > 1e-300) R[j, j] else 1e-300
@@ -371,10 +379,10 @@ NULL
 
 ## Outcome model Y = th0 + th1 a + th2 m + th3 a m + th4'c and mediator
 ## model M = b0 + b1 a + b2'c; cbar is where the decomposition is read.
-#' Outcome model Y = th0 + th1 a + th2 m + th3 a m + th4\'c and
+#' Outcome model Y = th0 + th1 a + th2 m + th3 a m + th4'c and
 #' mediator
 #'
-#' # model M = b0 + b1 a + b2\'c; cbar is where the decomposition is
+#' # model M = b0 + b1 a + b2'c; cbar is where the decomposition is
 #' read.
 #'
 #' @param Y A vector; its length is taken.
@@ -421,8 +429,10 @@ NULL
   intref <- theta[4] * (bc - m) * d
   intmed <- theta[4] * beta[2] * d * d
   pie <- (theta[3] * beta[2] + theta[4] * beta[2] * astar) * d
-  list(cde = cde, intref = intref, intmed = intmed, pie = pie,
-       te = cde + intref + intmed + pie)
+  list(
+    cde = cde, intref = intref, intmed = intmed, pie = pie,
+    te = cde + intref + intmed + pie
+  )
 }
 
 ## One TMLE pass for a binary point treatment. W carries its intercept.
@@ -466,8 +476,10 @@ NULL
   psi <- sum(Q1s - Q0s) / n
   ic <- H * (y - Qs) + Q1s - Q0s - psi
   se <- if (n > 1) sqrt(sum((ic - mean(ic))^2) / (n - 1) / n) else NaN
-  list(psi = psi, se = se, eps = eps, g = g, H = H, Q1 = Q1s, Q0 = Q0s,
-       ic = ic, n = n)
+  list(
+    psi = psi, se = se, eps = eps, g = g, H = H, Q1 = Q1s, Q0 = Q0s,
+    ic = ic, n = n
+  )
 }
 
 ## Least squares by the SAME modified Gram-Schmidt in both arms. The
@@ -507,8 +519,10 @@ NULL
   }
   fitted <- as.numeric(X %*% beta)
   rinv <- .s4_triinv(R, p)
-  list(beta = beta, fitted = fitted, resid = y - fitted,
-       xtxinv = rinv %*% t(rinv))
+  list(
+    beta = beta, fitted = fitted, resid = y - fitted,
+    xtxinv = rinv %*% t(rinv)
+  )
 }
 
 ## Upper-triangular inverse by back substitution. Floors the pivot rather
@@ -570,17 +584,23 @@ NULL
       for (j in seq_len(n)) {
         if (!used[j + 1L]) {
           cur <- Cst[i0, j] - u[i0 + 1L] - v[j + 1L]
-          if (cur < minv[j + 1L]) { minv[j + 1L] <- cur
-          way[j + 1L] <- j0 }
-          if (minv[j + 1L] < delta) { delta <- minv[j + 1L]
-          j1 <- j }
+          if (cur < minv[j + 1L]) {
+            minv[j + 1L] <- cur
+            way[j + 1L] <- j0
+          }
+          if (minv[j + 1L] < delta) {
+            delta <- minv[j + 1L]
+            j1 <- j
+          }
         }
       }
       for (j in 0:n) {
         if (used[j + 1L]) {
           u[p[j + 1L] + 1L] <- u[p[j + 1L] + 1L] + delta
           v[j + 1L] <- v[j + 1L] - delta
-        } else minv[j + 1L] <- minv[j + 1L] - delta
+        } else {
+          minv[j + 1L] <- minv[j + 1L] - delta
+        }
       }
       j0 <- j1
       if (p[j0 + 1L] == 0L) break
@@ -624,10 +644,12 @@ NULL
   ss_c <- n * sum((cm_ - grand)^2)
   ss_t <- sum((yv - grand)^2)
   ss_e <- ss_t - ss_r - ss_c
-  list(ms_r = if (n > 1) ss_r / (n - 1) else NaN,
-       ms_c = if (k > 1) ss_c / (k - 1) else NaN,
-       ms_e = if (n > 1 && k > 1) ss_e / ((n - 1) * (k - 1)) else NaN,
-       k = as.numeric(k), n = as.numeric(n))
+  list(
+    ms_r = if (n > 1) ss_r / (n - 1) else NaN,
+    ms_c = if (k > 1) ss_c / (k - 1) else NaN,
+    ms_e = if (n > 1 && k > 1) ss_e / ((n - 1) * (k - 1)) else NaN,
+    k = as.numeric(k), n = as.numeric(n)
+  )
 }
 
 ## Zhang-Stephens empirical-Bayes generalised Pareto fit. Fixed grid of
@@ -648,7 +670,9 @@ NULL
 #' res
 .s4_gpdfit <- function(x) {
   N <- length(x)
-  if (N < 5L) return(list(k = NaN, sigma = NaN))
+  if (N < 5L) {
+    return(list(k = NaN, sigma = NaN))
+  }
   M <- 30L + as.integer(floor(sqrt(N)))
   xstar <- x[as.integer(floor(N / 4 + 0.5))]
   jj <- seq_len(M)
@@ -682,13 +706,17 @@ NULL
   Sn <- length(lw)
   lw <- lw - max(lw)
   M <- as.integer(min(0.2 * Sn, 3 * sqrt(Sn)))
-  if (M < 5L) return(list(lw = lw, k = NaN))
+  if (M < 5L) {
+    return(list(lw = lw, k = NaN))
+  }
   o <- order(lw, seq_along(lw))
   tail <- o[(Sn - M + 1L):Sn]
   cut <- lw[o[Sn - M]]
   ecut <- exp(cut)
   x <- sort(exp(lw[tail]) - ecut)
-  if (x[length(x)] <= 0) return(list(lw = lw, k = NaN))
+  if (x[length(x)] <= 0) {
+    return(list(lw = lw, k = NaN))
+  }
   g <- .s4_gpdfit(x)
   if (!is.nan(g$k) && !is.nan(g$sigma)) {
     for (z in seq_len(M)) {

@@ -7,21 +7,27 @@
 morie_chronos(x, bins, context = NULL, add_eos = TRUE, pad_to = NULL)
 }
 \arguments{
-\item{x}{Passed to \code{chronos_tokenize}.}
+\item{x}{Passed to \code{tokenize}.}
 
-\item{bins}{Passed to \code{chronos_tokenize}.}
+\item{bins}{Passed to \code{tokenize}.}
 
-\item{context}{Passed to \code{chronos_tokenize}.}
+\item{context}{Passed to \code{tokenize}.}
 
-\item{add_eos}{Passed to \code{chronos_tokenize}. Defaults to \code{TRUE}.}
+\item{add_eos}{Passed to \code{tokenize}. Defaults to \code{TRUE}.}
 
-\item{pad_to}{Passed to \code{chronos_tokenize}.}
+\item{pad_to}{Passed to \code{tokenize}.}
 }
 \value{
-The value of \code{chronos_tokenize}.
+The value of \code{tokenize}.
 }
 \description{
 A step of the chronos_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(3)
+r <- morie_chronos(rnorm(20), uniform_bins(-3, 3, n_bins = 16L))
+str(r, max.level = 1)
+}
+\keyword{internal}

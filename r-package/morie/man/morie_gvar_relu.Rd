@@ -9,6 +9,13 @@ morie_gvar_relu(x)
 \arguments{
 \item{x}{A tape node. @return A tape node.}
 }
+\value{
+The value of \code{.morie_gvar}.
+}
 \description{
 ReLU on a reverse-mode tape node
 }
+\examples{
+morie_gvar_relu(.morie_gvar(-1.5))$value
+}
+\keyword{internal}

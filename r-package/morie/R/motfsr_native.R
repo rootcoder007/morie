@@ -1,177 +1,107 @@
-# motfsr -- motif discovery by fitting a two-component mixture model with EM (MEME/MM)
-# References:
-#   Bailey & Elkan (1994) ISMB-94, 28-36.
-#   Bailey & Elkan (1995) ISMB-95, 21-29.
-# Base R only.
+# Motif discovery by fitting a two-component mixture model with EM
+# (MM/MEME).  Sources: Bailey, T. L. & Elkan, C. (1994), "Fitting a
+# mixture model by expectation maximization to discover motifs in
+# biopolymers", ISMB-94, 28-36; Bailey, T. L. & Elkan, C. (1995),
+# "The value of prior knowledge in discovering motifs with MEME",
+# ISMB-95, 21-29.
+#
+# Native implementation mirroring Python morie.fn.motfsr exactly: the
+# same two-component mixture, the same E-step (eq. 4) and M-step
+# (eqs. 5, 9-13), the same overlap normalisation, the same erasing
+# step, the same Bayes-optimal threshold and the same output layout.
 
-#' motfsr_alphabet_of
-#'
-#' A step of the motfsr_native implementation. Called by \code{motfsr_prepare}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param seqs Passed to \code{unlist}.
-#' @param alphabet Optional; may be \code{NULL}. Coerced to character by the body, with
-#' \code{as.character}.
-#' @return A vector, from \code{sort}.
-#' @export
-motfsr_alphabet_of <- function(seqs, alphabet) {
+.GHC_MOT_NEG_INF <- -Inf
+
+#' @keywords internal
+#' @noRd
+.ghc_mot_alphabet <- function(seqs, alphabet) {
   if (!is.null(alphabet)) {
-    a <- as.character(alphabet)
-    if (length(unique(a)) != length(a)) {
+    alpha <- as.character(alphabet)
+    if (any(duplicated(alpha)))
       stop("motfsr: alphabet has repeated letters")
-    }
-    return(a)
+    return(alpha)
   }
-  seen <- unlist(strsplit(unlist(seqs), ""))
+  seen <- unique(unlist(lapply(seqs, function(s) strsplit(s, "")[[1]])))
   if (length(seen) == 0L) stop("motfsr: the sequences contain no letters")
-  sort(unique(seen))
+  sort(seen)
 }
 
-#' motfsr_prepare
-#'
-#' A step of the motfsr_native implementation. Called by \code{motfsr_mm_fit}, \code{motfsr_run}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param sequences Coerced to character by the body, with \code{as.character}.
-#' @param w Numeric; combined arithmetically in the body.
-#' @param alphabet Passed to \code{motfsr_alphabet_of}.
-#' @return A list with \code{coded}, \code{alpha}, \code{starts}.
-#' @export
-motfsr_prepare <- function(sequences, w, alphabet) {
+#' @keywords internal
+#' @noRd
+.ghc_mot_prepare <- function(sequences, w, alphabet) {
   seqs <- as.character(sequences)
   if (length(seqs) == 0L) stop("motfsr: sequences must be non-empty")
   w <- as.integer(w)
   if (w < 1L) stop("motfsr: w (motif width) must be >= 1")
-  alpha <- motfsr_alphabet_of(seqs, alphabet)
+  alpha <- .ghc_mot_alphabet(seqs, alphabet)
   idx <- setNames(seq_along(alpha) - 1L, alpha)
   coded <- lapply(seqs, function(s) {
-    r <- integer(nchar(s))
-    for (k in seq_len(nchar(s))) {
-      ch <- substr(s, k, k)
-      if (!ch %in% names(idx)) {
-        stop(sprintf("motfsr: letter %s is not in the alphabet %s", ch, paste(alpha, collapse = "")))
-      }
-      r[k] <- unname(idx[ch])
-    }
-    r
+    ch <- strsplit(s, "")[[1]]
+    if (!all(ch %in% alpha))
+      stop(paste0("motfsr: letter '", ch[!ch %in% alpha][1],
+                  "' is not in the alphabet '",
+                  paste(alpha, collapse = ""), "'"))
+    unname(idx[ch])
   })
   starts <- list()
   for (i in seq_along(coded)) {
-    if (length(coded[[i]]) >= w) {
-      for (j in seq_len(length(coded[[i]]) - w + 1L)) {
-        starts[[length(starts) + 1L]] <- c(i, j)
-      }
-    }
+    row <- coded[[i]]
+    for (j in seq_len(length(row) - w + 1L) - 1L)
+      starts[[length(starts) + 1L]] <- c(i, j)
   }
-  if (length(starts) == 0L) {
-    stop(sprintf("motfsr: no sequence is at least w = %d long", w))
-  }
+  if (length(starts) == 0L)
+    stop(paste0("motfsr: no sequence is at least w = ", w, " long"))
   list(coded = coded, alpha = alpha, starts = starts)
 }
 
-#' motfsr_mu
-#'
-#' A step of the motfsr_native implementation. Called by \code{motfsr_mm_fit}, \code{motfsr_run}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param coded See Usage.
-#' @param L A count; the body uses it as \code{numeric(...)}.
-#' @return A numeric value.
-#' @export
-motfsr_mu <- function(coded, L) {
-  c_ <- numeric(L)
-  for (row in coded) for (k in row) c_[k + 1L] <- c_[k + 1L] + 1
-  tot <- sum(c_)
-  c_ / tot
+#' @keywords internal
+#' @noRd
+.ghc_mot_mu <- function(coded, L) {
+  c <- rep(0, L)
+  for (row in coded) c[row + 1L] <- c[row + 1L] + 1
+  c / sum(c)
 }
 
-#' motfsr_uniform_theta
-#'
-#' A step of the motfsr_native implementation. Called by \code{motfsr_run}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param w A count; the body uses it as \code{seq_len(...)}.
-#' @param L Accepted by the signature and not used anywhere in the body.
-#' @param mu Coerced to numeric by the body, with \code{as.numeric}.
-#' @return The value of \code{theta}, as built in the body.
-#' @export
-motfsr_uniform_theta <- function(w, L, mu) {
-  theta <- vector("list", w + 1L)
-  theta[[1L]] <- as.numeric(mu)
-  for (t in seq_len(w)) theta[[t + 1L]] <- as.numeric(mu)
-  theta
+#' @keywords internal
+#' @noRd
+.ghc_mot_uniform_theta <- function(w, L, mu) {
+  out <- vector("list", w + 1L)
+  for (i in seq_len(w + 1L)) out[[i]] <- as.numeric(mu)
+  out
 }
 
-#' motfsr_theta_from_subsequence
-#'
-#' A step of the motfsr_native implementation. Called by \code{motfsr_mm_fit}, \code{motfsr_run}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param coded A vector; indexed elementwise.
-#' @param i See Usage.
-#' @param j Numeric; combined arithmetically in the body.
-#' @param w A count; the body uses it as \code{seq_len(...)}.
-#' @param L A count; the body uses it as \code{rep(...)}.
-#' @param mu Coerced to numeric by the body, with \code{as.numeric}.
-#' @param weight Numeric; combined arithmetically in the body.
-#' @return The value of \code{theta}, as built in the body.
-#' @export
-motfsr_theta_from_subsequence <- function(coded, i, j, w, L, mu, weight) {
+#' @keywords internal
+#' @noRd
+.ghc_mot_theta_from_subsequence <- function(coded, i, j, w, L, mu, weight) {
   theta <- list(as.numeric(mu))
   for (t in seq_len(w)) {
-    k <- coded[[i]][j + t - 1L] + 1L
+    k <- coded[[i]][j + t]
     rest <- if (L > 1L) (1 - weight) / (L - 1) else 0
     row <- rep(rest, L)
-    row[k] <- if (L > 1L) weight else 1
-    theta[[t + 1L]] <- row
+    row[k + 1L] <- if (L > 1L) weight else 1
+    theta[[length(theta) + 1L]] <- row
   }
   theta
 }
 
-#' motfsr_log_component
-#'
-#' A step of the motfsr_native implementation. Called by \code{motfsr_mm_fit}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param theta A vector; indexed elementwise.
-#' @param coded A vector; indexed elementwise.
-#' @param i See Usage.
-#' @param j Numeric; combined arithmetically in the body.
-#' @param w A count; the body uses it as \code{seq_len(...)}.
-#' @param comp Passed to \code{==}.
-#' @return The value of \code{tot}, as built in the body.
-#' @export
-motfsr_log_component <- function(theta, coded, i, j, w, comp) {
+#' @keywords internal
+#' @noRd
+.ghc_mot_log_component <- function(theta, coded, i, j, w, comp) {
   tot <- 0
   for (t in seq_len(w)) {
-    k <- coded[[i]][j + t - 1L] + 1L
-    f <- if (comp == 1L) theta[[t + 1L]][k] else theta[[1L]][k]
-    if (f <= 0) return(-Inf)
+    k <- coded[[i]][j + t]
+    f <- if (comp == 1L) theta[[t + 1L]][k + 1L] else theta[[1L]][k + 1L]
+    if (f <= 0) return(.GHC_MOT_NEG_INF)
     tot <- tot + log(f)
   }
   tot
 }
 
-#' motfsr_normalise_windows
-#'
-#' A step of the motfsr_native implementation. Called by \code{motfsr_mm_fit}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param z A vector; its length is taken and its elements indexed.
-#' @param w A count; the body uses it as \code{seq_len(...)}.
-#' @param max_sweeps A count; the body uses it as \code{seq_len(...)}. Defaults to \code{100}.
-#' @return The value of \code{z}, as built in the body.
-#' @export
-motfsr_normalise_windows <- function(z, w, max_sweeps = 100) {
+#' @keywords internal
+#' @noRd
+.ghc_mot_normalise_windows <- function(z, w, max_sweeps = 100) {
   if (w < 2L) return(z)
-  for (iter in seq_len(max_sweeps)) {
+  for (s in seq_len(max_sweeps)) {
     worst <- 1 + 1e-12
     wi <- -1L
     wj <- -1L
@@ -189,7 +119,7 @@ motfsr_normalise_windows <- function(z, w, max_sweeps = 100) {
       if (run > worst) { worst <- run
       wi <- i
       wj <- 0L }
-      for (j in seq.int(2L, m - w + 1L)) {
+      for (j in 2:(m - w + 1L)) {
         run <- run + row[j + w - 1L] - row[j - 1L]
         if (run > worst) { worst <- run
         wi <- i
@@ -198,38 +128,40 @@ motfsr_normalise_windows <- function(z, w, max_sweeps = 100) {
     }
     if (wi < 0L) break
     hi <- min(wj + w, length(z[[wi]]))
-    for (j_ in (wj + 1L):hi) z[[wi]][j_] <- z[[wi]][j_] / worst
+    for (j in (wj + 1L):hi) z[[wi]][j] <- z[[wi]][j] / worst
   }
   z
 }
 
-#' motfsr_mm_fit
+#' One pass of MM: fit the two-component mixture by EM
 #'
-#' A step of the motfsr_native implementation. Called by \code{motfsr_run}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param sequences Passed to \code{motfsr_prepare}.
-#' @param w A count; the body uses it as \code{seq_len(...)}.
-#' @param alphabet Passed to \code{motfsr_prepare}.
-#' @param theta0 Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.
-#' @param lambda0 Optional; may be \code{NULL}. Coerced to numeric by the body, with
-#' \code{as.numeric}.
-#' @param beta Numeric; combined arithmetically in the body. Defaults to \code{0.01}.
-#' @param erasing Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.
-#' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{1000}.
-#' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-06}.
-#' @param normalize_overlaps A flag; the body branches on it. Defaults to \code{TRUE}.
-#' @param erase_by One of \code{"letter"}, \code{"start"}. Defaults to \code{"letter"}.
-#' @return A list with \code{theta}, \code{motif}, \code{background}, \code{lambda1},
-#' \code{z}, \code{log_likelihood}, \code{log_likelihood_trace}, \code{n_iter},
-#' \code{converged}, \code{alphabet}, \code{w}.
+#' @param sequences Dataset.
+#' @param w Motif width.
+#' @param alphabet Optional alphabet.
+#' @param theta0,lambda0 Starting point.
+#' @param beta Pseudo-count total of eq. 13.
+#' @param erasing Optional erasing factors.
+#' @param max_iter,tol EM stopping rule.
+#' @param normalize_overlaps Apply the window constraint.
+#' @param erase_by "letter" or "start".
+#' @return A list with theta, motif, background, lambda1, z,
+#'   log_likelihood, log_likelihood_trace, n_iter, converged, alphabet,
+#'   w.
 #' @export
-motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
-                          lambda0 = NULL, beta = 0.01, erasing = NULL,
-                          max_iter = 1000, tol = 1e-6,
-                          normalize_overlaps = TRUE, erase_by = "letter") {
-  prep <- motfsr_prepare(sequences, w, alphabet)
+#' @examples
+#' set.seed(1)
+#' seqs <- c("ACGTACGTAC", "TGCAACGTTG", "ACGTTGCAAC", "GGACGTACGT",
+#'           "ACGTAACCGG", "TTACGTACGT")
+#' fit <- morie_motfsr_mm_fit(seqs, w = 4)
+#' is.list(fit)
+#' @keywords internal
+morie_motfsr_mm_fit <- function(sequences, w, alphabet = NULL,
+                                 theta0 = NULL, lambda0 = NULL,
+                                 beta = 0.01, erasing = NULL,
+                                 max_iter = 1000, tol = 1e-6,
+                                 normalize_overlaps = TRUE,
+                                 erase_by = "letter") {
+  prep <- .ghc_mot_prepare(sequences, w, alphabet)
   coded <- prep$coded
   alpha <- prep$alpha
   starts <- prep$starts
@@ -242,201 +174,185 @@ motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
   max_iter <- as.integer(max_iter)
   if (max_iter < 1L) stop("motfsr: max_iter must be >= 1")
   n <- length(starts)
-  mu <- motfsr_mu(coded, L)
-
+  mu <- .ghc_mot_mu(coded, L)
   if (is.null(theta0)) {
-    theta <- motfsr_theta_from_subsequence(coded, starts[[1]][1], starts[[1]][2],
-                                           w, L, mu, 0.5)
+    theta <- .ghc_mot_theta_from_subsequence(coded, starts[[1]][1],
+                                              starts[[1]][2], w, L, mu, 0.5)
   } else {
     theta <- lapply(theta0, function(r) as.numeric(r))
-    if (length(theta) != w + 1L || any(sapply(theta, length) != L)) {
+    if (length(theta) != w + 1L || any(vapply(theta, length, integer(1)) != L))
       stop("motfsr: theta0 must be (w + 1) x L")
-    }
   }
   lam1 <- if (is.null(lambda0)) 1 / (2 * w) else as.numeric(lambda0)
-  if (!(lam1 > 0 && lam1 < 1)) stop("motfsr: lambda0 must lie in (0, 1)")
-
-  if (!(erase_by %in% c("letter", "start"))) {
+  if (lam1 <= 0 || lam1 >= 1) stop("motfsr: lambda0 must lie in (0, 1)")
+  if (!(erase_by %in% c("letter", "start")))
     stop("motfsr: erase_by must be 'letter' or 'start'")
-  }
   eps <- if (is.null(erasing)) NULL else lapply(erasing, as.numeric)
-
   trace <- c()
   converged <- FALSE
-  it <- 0L
   z_by_seq <- NULL
+  it_done <- 0L
   for (it in seq_len(max_iter)) {
+    it_done <- it
     z_by_seq <- lapply(coded, function(row) rep(0, max(0L, length(row) - w + 1L)))
     loglik <- 0
     log_l1 <- log(lam1)
     log_l2 <- log(1 - lam1)
-    for (s in seq_along(starts)) {
-      i <- starts[[s]][1]
-      j <- starts[[s]][2]
-      a <- log_l1 + motfsr_log_component(theta, coded, i, j, w, 1L)
-      b <- log_l2 + motfsr_log_component(theta, coded, i, j, w, 2L)
-      m <- max(a, b)
-      if (is.infinite(m) && m < 0) { z_by_seq[[i]][j] <- 0
+    for (sj in seq_along(starts)) {
+      i <- starts[[sj]][1]
+      j <- starts[[sj]][2]
+      a <- log_l1 + .ghc_mot_log_component(theta, coded, i, j, w, 1L)
+      b <- log_l2 + .ghc_mot_log_component(theta, coded, i, j, w, 2L)
+      m <- if (a > b) a else b
+      if (m == .GHC_MOT_NEG_INF) { z_by_seq[[i]][j + 1L] <- 0
       next }
       ea <- exp(a - m)
       eb <- exp(b - m)
-      z_by_seq[[i]][j] <- ea / (ea + eb)
+      z_by_seq[[i]][j + 1L] <- ea / (ea + eb)
       loglik <- loglik + m + log(ea + eb)
     }
     trace <- c(trace, loglik)
-    if (normalize_overlaps) z_by_seq <- motfsr_normalise_windows(z_by_seq, w)
-
+    if (normalize_overlaps)
+      z_by_seq <- .ghc_mot_normalise_windows(z_by_seq, w)
     z_sum <- 0
-    for (s in seq_along(starts)) {
-      i <- starts[[s]][1]
-      j <- starts[[s]][2]
-      z_sum <- z_sum + z_by_seq[[i]][j]
+    for (sj in seq_along(starts)) {
+      i <- starts[[sj]][1]
+      j <- starts[[sj]][2]
+      z_sum <- z_sum + z_by_seq[[i]][j + 1L]
     }
     lam1 <- min(max(z_sum / n, 1e-12), 1 - 1e-12)
-
-    c_mat <- matrix(0, nrow = w + 1L, ncol = L)
-    for (s in seq_along(starts)) {
-      i <- starts[[s]][1]
-      j <- starts[[s]][2]
-      z1 <- z_by_seq[[i]][j]
+    ccount <- vector("list", w + 1L)
+    for (r in seq_len(w + 1L)) ccount[[r]] <- rep(0, L)
+    for (sj in seq_along(starts)) {
+      i <- starts[[sj]][1]
+      j <- starts[[sj]][2]
+      z1 <- z_by_seq[[i]][j + 1L]
       z2 <- 1 - z1
-      e_start <- if (is.null(eps)) 1 else (if (erase_by == "start") eps[[i]][j] else NA)
+      e <- if (is.null(eps)) 1
+           else if (erase_by == "start") eps[[i]][j + 1L] else NA
       for (t in seq_len(w)) {
-        k <- coded[[i]][j + t - 1L] + 1L
-        e_letter <- if (is.null(eps)) 1 else eps[[i]][j + t - 1L]
-        e <- if (is.null(eps)) 1 else (if (erase_by == "start") e_start else e_letter)
-        c_mat[t + 1L, k] <- c_mat[t + 1L, k] + e * z1
-        c_mat[1L, k] <- c_mat[1L, k] + z2
+        k <- coded[[i]][j + t]
+        if (!is.null(eps) && erase_by == "letter") e <- eps[[i]][j + t]
+        ccount[[t + 1L]][k + 1L] <- ccount[[t + 1L]][k + 1L] + e * z1
+        ccount[[1L]][k + 1L] <- ccount[[1L]][k + 1L] + z2
       }
     }
-    new_theta <- vector("list", w + 1L)
+    new <- vector("list", w + 1L)
     for (r in seq_len(w + 1L)) {
-      denom <- sum(c_mat[r, ]) + beta
-      if (denom <= 0) { new_theta[[r]] <- as.numeric(mu)
+      denom <- sum(ccount[[r]]) + beta
+      if (denom <= 0) { new[[r]] <- as.numeric(mu)
       next }
-      new_theta[[r]] <- (c_mat[r, ] + beta * mu) / denom
+      new[[r]] <- (ccount[[r]] + beta * mu) / denom
     }
     delta <- 0
-    for (r in seq_len(w + 1L)) for (k in seq_len(L)) {
-      d <- new_theta[[r]][k] - theta[[r]][k]
-      delta <- delta + d * d
-    }
+    for (r in seq_len(w + 1L)) for (k in seq_len(L))
+      delta <- delta + (new[[r]][k] - theta[[r]][k])^2
     delta <- sqrt(delta)
-    theta <- new_theta
+    theta <- new
     if (delta < tol) { converged <- TRUE
     break }
   }
-
   list(theta = theta,
-       motif = lapply(theta[-1L], as.numeric),
+       motif = lapply(theta[seq.int(2L, w + 1L)], function(r) as.numeric(r)),
        background = as.numeric(theta[[1L]]),
-       lambda1 = lam1,
-       z = z_by_seq,
-       log_likelihood = if (length(trace)) tail(trace, 1) else NaN,
+       lambda1 = lam1, z = z_by_seq,
+       log_likelihood = if (length(trace) > 0L) trace[length(trace)]
+                        else NaN,
        log_likelihood_trace = trace,
-       n_iter = it,
-       converged = converged,
-       alphabet = alpha,
-       w = w)
+       n_iter = it_done, converged = converged,
+       alphabet = alpha, w = w)
 }
 
-#' motfsr_log_odds_matrix
+#' Log-odds classifier matrix
 #'
-#' A step of the motfsr_native implementation. Called by \code{motfsr_run}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param motif Iterated over elementwise, with \code{lapply}.
-#' @param background A vector; indexed elementwise.
-#' @return The value of \code{out}, as built in the body.
+#' @param motif,background Frequency matrices.
+#' @return spec with spec\[i\]\[k\] = log(motif[i]\[k\] / background\[k\]).
 #' @export
-motfsr_log_odds_matrix <- function(motif, background) {
-  out <- lapply(motif, function(row) {
-    sapply(seq_along(row), function(k) {
-      f <- row[k]
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_motfsr_log_odds_matrix(V, V)
+#' @keywords internal
+morie_motfsr_log_odds_matrix <- function(motif, background) {
+  out <- vector("list", length(motif))
+  for (i in seq_along(motif)) {
+    r <- numeric(length(motif[[i]]))
+    for (k in seq_along(motif[[i]])) {
+      f <- motif[[i]][k]
       b <- background[k]
-      if (f <= 0) -Inf else if (b <= 0) Inf else log(f / b)
-    })
-  })
+      r[k] <- if (f <= 0) .GHC_MOT_NEG_INF
+              else if (b <= 0) Inf
+              else log(f / b)
+    }
+    out[[i]] <- r
+  }
   out
 }
 
-#' motfsr_bayes_threshold
+#' Bayes-optimal threshold
 #'
-#' A step of the motfsr_native implementation. Called by \code{motfsr_run}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param lambda1 Numeric; combined arithmetically in the body.
-#' @param loss Optional; may be \code{NULL}. A vector; indexed elementwise.
-#' @return A numeric value.
+#' @param lambda1 Component 1 weight.
+#' @param loss Optional 2x2 loss matrix.
+#' @return The threshold t.
 #' @export
-motfsr_bayes_threshold <- function(lambda1, loss = NULL) {
+#' @examples
+#' morie_motfsr_bayes_threshold(lambda1 = 0.3)
+#' @keywords internal
+morie_motfsr_bayes_threshold <- function(lambda1, loss = NULL) {
   lambda1 <- as.numeric(lambda1)
-  if (!(lambda1 > 0 && lambda1 < 1)) {
+  if (lambda1 <= 0 || lambda1 >= 1)
     stop("motfsr: lambda1 must lie in (0, 1)")
-  }
-  t_ <- log((1 - lambda1) / lambda1)
-  if (is.null(loss)) return(t_)
-  r11 <- loss[[1]][1]
-  r12 <- loss[[1]][2]
-  r21 <- loss[[2]][1]
-  r22 <- loss[[2]][2]
-  num <- r12 - r22
-  den <- r21 - r11
-  if (num <= 0 || den <= 0) {
-    stop("motfsr: the loss matrix must have r12 > r22 and r21 > r11 for the threshold to be defined")
-  }
-  t_ + log(num / den)
+  t <- log((1 - lambda1) / lambda1)
+  if (is.null(loss)) return(t)
+  r11 <- loss[[1]][[1]]
+  r12 <- loss[[1]][[2]]
+  r21 <- loss[[2]][[1]]
+  r22 <- loss[[2]][[2]]
+  num <- as.numeric(r12) - as.numeric(r22)
+  den <- as.numeric(r21) - as.numeric(r11)
+  if (num <= 0 || den <= 0)
+    stop(paste0("motfsr: the loss matrix must have r12 > r22 and ",
+                "r21 > r11 for the threshold to be defined"))
+  t + log(num / den)
 }
 
-#' motfsr_score_sequence
+#' Score every W-mer of a sequence
 #'
-#' A step of the motfsr_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param spec A vector; its length is taken and its elements indexed.
-#' @param sequence Coerced to character by the body, with \code{as.character}.
-#' @param alphabet A vector; its length is taken.
-#' @param threshold Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @return A list with \code{scores}, \code{hits}.
+#' @param spec Log-odds matrix.
+#' @param sequence Sequence string.
+#' @param alphabet Alphabet.
+#' @param threshold Optional threshold; if given, also returns hits.
+#' @return Vector of scores, or list(scores, hits).
 #' @export
-motfsr_score_sequence <- function(spec, sequence, alphabet, threshold = NULL) {
-  idx <- setNames(seq_along(alphabet) - 1L, alphabet)
+#' @examples
+#' morie_motfsr_score_sequence(spec = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   sequence = c(1, 2, 3, 4, 5, 6, 7, 8), alphabet = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
+morie_motfsr_score_sequence <- function(spec, sequence, alphabet,
+                                         threshold = NULL) {
+  alpha <- as.character(alphabet)
+  idx <- setNames(seq_along(alpha) - 1L, alpha)
   w <- length(spec)
   s <- as.character(sequence)
-  scores <- numeric(nchar(s) - w + 1L)
-  for (j_ in seq_along(scores)) {
+  ch <- strsplit(s, "")[[1]]
+  scores <- numeric(max(0L, length(ch) - w + 1L))
+  for (j in seq_along(scores)) {
     tot <- 0
     for (t in seq_len(w)) {
-      ch <- substr(s, j_ + t - 1L, j_ + t - 1L)
-      if (!ch %in% names(idx)) {
-        stop(sprintf("motfsr: letter %s is not in the alphabet", ch))
-      }
-      tot <- tot + spec[[t]][unname(idx[ch]) + 1L]
+      cj <- ch[j + t - 1L]
+      if (!(cj %in% alpha))
+        stop(paste0("motfsr: letter '", cj, "' is not in the alphabet"))
+      tot <- tot + spec[[t]][idx[cj] + 1L]
     }
-    scores[j_] <- tot
+    scores[j] <- tot
   }
   if (is.null(threshold)) return(scores)
-  hits <- which(scores >= threshold)
+  hits <- which(scores >= as.numeric(threshold))
   list(scores = scores, hits = hits - 1L)
 }
 
-#' motfsr_lambda_grid
-#'
-#' A step of the motfsr_native implementation. Called by \code{motfsr_run}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n_starts_total Numeric; combined arithmetically in the body.
-#' @param n_seqs Numeric; passed to \code{sqrt}.
-#' @param w Numeric; combined arithmetically in the body.
-#' @param lambda0 Optional; may be \code{NULL}. Coerced to numeric by the body, with
-#' \code{as.numeric}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
-motfsr_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
+#' @keywords internal
+#' @noRd
+.ghc_mot_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
   if (!is.null(lambda0)) return(as.numeric(lambda0))
   lo <- sqrt(n_seqs) / n_starts_total
   hi <- 1 / (2 * w)
@@ -446,170 +362,137 @@ motfsr_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
   v <- lo
   while (v < hi) { out <- c(out, v)
   v <- v * 2 }
-  out <- c(out, hi)
-  out
+  c(out, hi)
 }
 
-#' motfsr_run
+#' Discover motifs by fitting the MM mixture model
 #'
-#' A step of the motfsr_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param sequences Passed to \code{motfsr_prepare}.
-#' @param w A count; the body uses it as \code{seq_len(...)}.
-#' @param alphabet Passed to \code{motfsr_prepare}.
-#' @param n_motifs A count; the body uses it as \code{seq_len(...)}. Defaults to \code{1}.
-#' @param beta Passed to \code{motfsr_mm_fit}. Defaults to \code{0.01}.
-#' @param lambda0 Passed to \code{motfsr_lambda_grid}.
-#' @param max_iter Passed to \code{motfsr_mm_fit}. Defaults to \code{1000}.
-#' @param tol Passed to \code{motfsr_mm_fit}. Defaults to \code{1e-06}.
-#' @param normalize_overlaps Passed to \code{motfsr_mm_fit}. Defaults to \code{TRUE}.
-#' @param starts One of \code{"subsequences"}, \code{"uniform"}. Defaults to \code{"subsequences"}.
-#' @param start_weight Coerced to numeric by the body, with \code{as.numeric}. Defaults
-#' to \code{0.5}.
-#' @param max_starts Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.
-#' @param start_scoring One of \code{"none"}, \code{"one_step"}. Defaults to \code{"one_step"}.
-#' @param erase_by Passed to \code{motfsr_mm_fit}. Defaults to \code{"letter"}.
-#' @param loss Passed to \code{motfsr_bayes_threshold}.
-#' @return A list with \code{estimate}, \code{motifs}, \code{alphabet}, \code{w},
-#' \code{n_subsequences}, \code{erasing}, \code{method}.
+#' @param sequences Dataset.
+#' @param w Motif width.
+#' @param alphabet Optional alphabet.
+#' @param n_motifs Number of passes.
+#' @param beta Pseudo-count total.
+#' @param lambda0 Optional fixed lambda0.
+#' @param max_iter,tol EM stopping rule.
+#' @param normalize_overlaps Apply the window constraint.
+#' @param starts "subsequences" or "uniform".
+#' @param start_weight Probability on the observed letter when seeding
+#'   from a subsequence.
+#' @param max_starts Cap on subsequence starts tried.
+#' @param start_scoring "one_step" or "none".
+#' @param erase_by "letter" or "start".
+#' @param loss Optional loss matrix.
+#' @return A list with estimate / motifs, alphabet, w, n_subsequences,
+#'   erasing, method.
 #' @export
-motfsr_run <- function(sequences, w, alphabet = NULL, n_motifs = 1,
-                       beta = 0.01, lambda0 = NULL, max_iter = 1000,
-                       tol = 1e-6, normalize_overlaps = TRUE,
-                       starts = "subsequences", start_weight = 0.5,
-                       max_starts = 200, start_scoring = "one_step",
-                       erase_by = "letter", loss = NULL) {
-  if (!(starts %in% c("subsequences", "uniform"))) {
+#' @examples
+#' set.seed(1)
+#' seqs <- c("ACGTACGTAC", "TGCAACGTTG", "ACGTTGCAAC", "GGACGTACGT",
+#'           "ACGTAACCGG", "TTACGTACGT")
+#' r <- morie_motfsr(seqs, w = 4, n_motifs = 1)
+#' is.list(r)
+#' @keywords internal
+morie_motfsr <- function(sequences, w, alphabet = NULL, n_motifs = 1,
+                          beta = 0.01, lambda0 = NULL,
+                          max_iter = 1000, tol = 1e-6,
+                          normalize_overlaps = TRUE,
+                          starts = "subsequences",
+                          start_weight = 0.5, max_starts = 200,
+                          start_scoring = "one_step",
+                          erase_by = "letter", loss = NULL) {
+  if (!(starts %in% c("subsequences", "uniform")))
     stop("motfsr: starts must be 'subsequences' or 'uniform'")
-  }
-  if (!(start_scoring %in% c("one_step", "none"))) {
+  if (!(start_scoring %in% c("one_step", "none")))
     stop("motfsr: start_scoring must be 'one_step' or 'none'")
-  }
   n_motifs <- as.integer(n_motifs)
   if (n_motifs < 1L) stop("motfsr: n_motifs must be >= 1")
   start_weight <- as.numeric(start_weight)
-  if (!(start_weight > 0 && start_weight < 1)) {
+  if (start_weight <= 0 || start_weight >= 1)
     stop("motfsr: start_weight must lie in (0, 1)")
-  }
-  prep <- motfsr_prepare(sequences, w, alphabet)
+  prep <- .ghc_mot_prepare(sequences, w, alphabet)
   coded <- prep$coded
   alpha <- prep$alpha
   all_starts <- prep$starts
   L <- length(alpha)
   w <- as.integer(w)
-  mu <- motfsr_mu(coded, L)
+  mu <- .ghc_mot_mu(coded, L)
   n <- length(all_starts)
   erasing <- lapply(coded, function(row) rep(1, length(row)))
-
   if (starts == "uniform") {
-    cand <- list(motfsr_uniform_theta(w, L, mu))
+    cand <- list(.ghc_mot_uniform_theta(w, L, mu))
   } else {
     step <- max(1L, as.integer(ceiling(n / max(1L, as.integer(max_starts)))))
-    sel <- seq(1L, n, by = step)
-    cand <- lapply(sel, function(s) {
-      motfsr_theta_from_subsequence(coded, all_starts[[s]][1],
-                                    all_starts[[s]][2], w, L, mu, start_weight)
-    })
+    cand <- lapply(all_starts[seq(1L, n, by = step)],
+                   function(sj)
+                     .ghc_mot_theta_from_subsequence(coded, sj[1], sj[2],
+                                                      w, L, mu, start_weight))
   }
-  lam_grid <- motfsr_lambda_grid(n, length(coded), w, lambda0)
-
+  lam_grid <- .ghc_mot_lambda_grid(n, length(coded), w, lambda0)
   motifs <- list()
   for (pass in seq_len(n_motifs)) {
     best <- NULL
     for (th0 in cand) {
       for (lam in lam_grid) {
-        if (start_scoring == "one_step") {
-          probe <- motfsr_mm_fit(sequences, w, alpha, th0, lam, beta,
-                                 erasing, 1L, tol, normalize_overlaps, erase_by)
-        } else {
-          probe <- motfsr_mm_fit(sequences, w, alpha, th0, lam, beta,
-                                 erasing, max_iter, tol, normalize_overlaps, erase_by)
-        }
+        probe <- if (start_scoring == "one_step")
+                   morie_motfsr_mm_fit(sequences, w, alpha, th0, lam,
+                                        beta, erasing, 1L, tol,
+                                        normalize_overlaps, erase_by)
+                 else
+                   morie_motfsr_mm_fit(sequences, w, alpha, th0, lam,
+                                        beta, erasing, max_iter, tol,
+                                        normalize_overlaps, erase_by)
         key <- probe$log_likelihood
-        if (is.null(best) || key > best[[1]]) {
-          best <- list(key, th0, lam, probe)
-        }
+        if (is.null(best) || key > best$key)
+          best <- list(key = key, th0 = th0, lam = lam, probe = probe)
       }
     }
-    th0 <- best[[2]]
-    lam <- best[[3]]
-    probe <- best[[4]]
-    fit <- if (start_scoring == "none") probe else
-      motfsr_mm_fit(sequences, w, alpha, th0, lam, beta, erasing,
-                    max_iter, tol, normalize_overlaps, erase_by)
-    spec <- motfsr_log_odds_matrix(fit$motif, fit$background)
-    t_ <- motfsr_bayes_threshold(fit$lambda1, loss)
+    fit <- if (start_scoring == "none") best$probe
+           else morie_motfsr_mm_fit(sequences, w, alpha, best$th0,
+                                     best$lam, beta, erasing, max_iter,
+                                     tol, normalize_overlaps, erase_by)
+    spec <- morie_motfsr_log_odds_matrix(fit$motif, fit$background)
+    t <- morie_motfsr_bayes_threshold(fit$lambda1, loss)
     sites <- list()
     for (i in seq_along(fit$z)) {
-      for (j in seq_along(fit$z[[i]])) {
-        s_ <- 0
-        for (q in seq_len(w)) s_ <- s_ + spec[[q]][coded[[i]][j + q - 1L] + 1L]
-        if (s_ >= t_) sites[[length(sites) + 1L]] <- c(i, j, s_)
+      row <- fit$z[[i]]
+      for (j in seq_along(row)) {
+        sc <- 0
+        for (q in seq_len(w)) sc <- sc + spec[[q]][coded[[i]][j + q - 1L] + 1L]
+        if (sc >= t) sites[[length(sites) + 1L]] <- c(i - 1L, j - 1L, sc)
       }
     }
-    sites <- if (length(sites)) do.call(rbind, sites) else matrix(0, 0, 3)
-    if (nrow(sites) > 1L) sites <- sites[order(-sites[, 3]), , drop = FALSE]
-    consensus <- paste(sapply(fit$motif, function(row) {
-      alpha[which.max(row)]
-    }), collapse = "")
+    if (length(sites) > 0L) {
+      scv <- vapply(sites, function(s) s[3], numeric(1))
+      sites <- sites[order(-scv)]
+    }
+    consensus <- vapply(fit$motif, function(row) {
+      k <- which.max(row)
+      if (length(k) == 0L) "" else alpha[k]
+    }, character(1))
+    consensus <- paste(consensus, collapse = "")
     motifs[[length(motifs) + 1L]] <- list(
-      motif = fit$motif,
-      background = fit$background,
-      lambda1 = fit$lambda1,
-      log_odds = spec,
-      threshold = t_,
-      sites = sites,
-      n_sites = nrow(sites),
-      consensus = consensus,
-      log_likelihood = fit$log_likelihood,
-      n_iter = fit$n_iter,
-      converged = fit$converged,
-      z = fit$z)
-
+      motif = fit$motif, background = fit$background,
+      lambda1 = fit$lambda1, log_odds = spec, threshold = t,
+      sites = sites, n_sites = length(sites), consensus = consensus,
+      log_likelihood = fit$log_likelihood, n_iter = fit$n_iter,
+      converged = fit$converged, z = fit$z)
     if (pass < n_motifs) {
       z <- fit$z
       for (i in seq_along(erasing)) {
-        for (j_ in seq_along(erasing[[i]])) {
+        for (j in seq_along(erasing[[i]])) {
           f <- 1
-          lo_ <- max(1L, j_ - w + 1L)
-          hi_ <- min(j_, length(z[[i]]))
-          for (k in lo_:hi_) f <- f * (1 - z[[i]][k])
-          erasing[[i]][j_] <- erasing[[i]][j_] * f
+          lo_ <- max(0L, j - w)
+          hi_ <- min(j, length(z[[i]]))
+          for (k in (lo_ + 1L):hi_) f <- f * (1 - z[[i]][k])
+          erasing[[i]][j] <- erasing[[i]][j] * f
         }
       }
     }
   }
-
   list(estimate = motifs, motifs = motifs, alphabet = alpha, w = w,
        n_subsequences = n, erasing = erasing,
        method = "MM two-component mixture EM (Bailey & Elkan 1994)")
 }
 
-#' motfsr_cheatsheet
-#'
-#' A step of the motfsr_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @return A character value.
-#' @export
-motfsr_cheatsheet <- function() {
-  paste(paste0(
-    "motfsr: MEME/MM motif discovery (Bailey & Elkan 1994). Break",
-    " the sequences into ALL overlapping W-mers and fit a two-com",
-    "ponent mixture -- motif vs background -- by EM, so a sequenc",
-    "e may contain zero, one or many occurrences and lambda1 esti",
-    "mates how often. E-step eq.4; M-step eq.5 for lambda and eq.",
-    "13 for the letter frequencies, whose pseudo-counts exist bec",
-    "ause a frequency that hits 0 can never leave. z is normalise",
-    "d to sum to <= 1 over any W-window or EM collapses onto 'AAA",
-    "AAA'. Multiple motifs come from erasing. Output is a Bayes-o",
-    "ptimal classifier: log-odds matrix plus t = log((1 - lambda1",
-    ")/lambda1)."
-  ))
-}
-
-# house entry point: the package exports one morie_<module>
-morie_motfsr <- motfsr_alphabet_of
+morie_motfsr_motif_meme <- morie_motfsr
+morie_motfsr_motifmeme <- morie_motfsr

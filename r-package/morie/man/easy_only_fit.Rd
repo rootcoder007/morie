@@ -45,3 +45,9 @@ A step of the prgrl_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+easy_only_fit(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+  difficulty = c(1, 2, 3, 4, 5, 6, 7, 8), X_test = c(1, 2, 3, 4, 5, 6, 7, 8),
+  y_test = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

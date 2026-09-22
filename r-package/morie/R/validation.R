@@ -105,11 +105,12 @@ column_rule <- function(name, dtype = NULL, required = TRUE,
 #' @param rules List of \code{column_rule} objects.
 #' @param raise_on_error If TRUE, throw on first error.
 #' @return An object of class \code{"class_name"}.
-#' @export
 #' @examples
-#' d <- data.frame(x = 1:5, y = letters[1:5], stringsAsFactors = FALSE)
-#' validate_schema(d, list(column_rule("x", dtype = "numeric"),
-#'     column_rule("y", dtype = "character")))
+#' df <- data.frame(age = c(20, 30, -1))
+#' rules <- list(age = list(type = "numeric", min = 0))
+#' res <- try(validate_schema(df, rules))
+#' if (!inherits(res, "try-error")) str(res, max.level = 1)
+#' @export
 validate_schema <- function(data, rules, raise_on_error = FALSE) {
   errors <- character(0)
   warnings_ <- character(0)
@@ -271,10 +272,11 @@ check_referential_integrity <- function(child, parent, child_key, parent_key) {
 #' @param key_cols Columns that should be unique together.
 #' @param consistency_rules List of functions \code{(df) -> logical(1)}.
 #' @return An object of class \code{"class_name"}.
-#' @export
 #' @examples
-#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
-#' score_data_quality(M)
+#' set.seed(1)
+#' df <- data.frame(id = 1:20, v = c(rnorm(18), NA, NA))
+#' str(score_data_quality(df, key_cols = "id"), max.level = 1)
+#' @export
 score_data_quality <- function(data, date_cols = NULL, freshness_days = 365L,
                                 key_cols = NULL, consistency_rules = NULL) {
   details <- list()
@@ -436,7 +438,7 @@ cross_validate <- function(fit_fn, predict_fn, X, y,
 #' supported for backward compatibility:
 #'
 #' \itemize{
-#'   \item \strong{Legacy stub form:} \code{nested_cross_validate(tune_fn,
+#'   \item \strong{Legacy stub form:} \eqn{nested_cross_validate(tune_fn,
 #'         predict_fn, X, y, outer_folds, scoring, random_state)} where
 #'         \code{tune_fn(X, y)} returns a fitted model (no grid argument).
 #'         In this mode no inner search is run.
@@ -865,7 +867,6 @@ detect_overfitting <- function(fit_fn, predict_fn, X, y,
 #' @param split_quantile Quantile of dates (if \code{split_date} is NULL).
 #' @param scoring Scoring metric.
 #' @return An object of class \code{"class_name"}.
-#' @export
 #' @examples
 #' set.seed(1)
 #' X <- data.frame(x = rnorm(60), date = seq.Date(as.Date("2020-01-01"),
@@ -876,6 +877,7 @@ detect_overfitting <- function(fit_fn, predict_fn, X, y,
 #'   predict_fn = function(m, Xt) stats::predict(m, Xt),
 #'   X = X, y = y, date_col = "date"))
 #' if (!inherits(res, "try-error")) str(res, max.level = 1)
+#' @export
 temporal_validate <- function(fit_fn, predict_fn, X, y, date_col,
                                split_date = NULL,
                                split_quantile = 0.7,

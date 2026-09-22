@@ -23,3 +23,7 @@ so it notches DC and every harmonic of fs/N at once -- which is what
 powerline interference is.  The zero at DC is not optional, so a comb
 removes the mean along with the interference.
 }
+\examples{
+Comb(period_samples = 5L)
+}
+\keyword{internal}

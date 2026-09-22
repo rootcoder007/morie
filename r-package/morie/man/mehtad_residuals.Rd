@@ -7,24 +7,29 @@
 mehtad_residuals(A, b, c, x, y, s)
 }
 \arguments{
-\item{A}{A matrix; passed to \code{as.matrix}.}
+\item{A}{Passed to \code{.mehtad_mat}.}
 
-\item{b}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{b}{Passed to \code{.mehtad_vec}.}
 
-\item{c}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{c}{Passed to \code{.mehtad_vec}.}
 
-\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{x}{Passed to \code{.mehtad_vec}.}
 
-\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{y}{Passed to \code{.mehtad_vec}.}
 
-\item{s}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{s}{Passed to \code{.mehtad_vec}.}
 }
 \value{
 A list with \code{primal}, \code{dual}, \code{mu}, \code{primal_norm},
 \code{dual_norm}, \code{note}.
 }
 \description{
-A step of the mehtad_native implementation. Called by \code{solve_lp}.
+A step of the mehtad_native implementation. Called by \code{morie_mehtad}, \code{solve_lp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+mehtad_residuals(A = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, c = c(1, 2, 3, 4, 5, 6, 7, 8),
+  x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), s = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

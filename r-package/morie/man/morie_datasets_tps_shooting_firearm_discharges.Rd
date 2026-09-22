@@ -18,7 +18,7 @@ morie_datasets_tps_shooting_firearm_discharges(
 \item{max_features}{Optional cap on returned rows
 (\code{offline = FALSE} only).}
 
-\item{offline}{If \code{TRUE} (default), read the bundled synthetic
+\item{offline}{If \code{TRUE} (default), read the included synthetic
 fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 (5 rows in the canonical TPS PSDP 22-column schema). If
 \code{FALSE}, hit the TPS PSDP ArcGIS FeatureServer.}
@@ -26,13 +26,7 @@ fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 \item{layer_url}{Optional ArcGIS layer URL override.}
 }
 \value{
-A \code{data.frame} of TPS Public Safety Data Portal
-Shooting and Firearm Discharges records, either the bundled
-\code{tps_psdp_shooting_firearm_discharges_sample.csv} fixture when
-\code{offline = TRUE} or a live TPS Hub / FeatureServer query when
-\code{offline = FALSE}. Columns mirror the upstream 22-column
-Cluster-F schema (OCC_TIME_RANGE + DEATH + INJURIES +
-EVENT_TYPE) with HOOD_158 + HOOD_140 attached.
+A \code{data.frame}.
 }
 \description{
 TPS PSDP -- Shooting and Firearm Discharges

@@ -21,3 +21,9 @@ A step of the rangayyan_tf implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(6)
+x <- sin(2 * pi * (1:128) / 16) + rnorm(128, 0, 0.1)
+WtMoment(x, wavelet = "db4", levels = 3)
+}
+\keyword{internal}

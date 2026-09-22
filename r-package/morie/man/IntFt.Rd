@@ -23,3 +23,8 @@ the DC content, which 1/(jw) cannot represent because it blows up
 there.  It is returned as its WEIGHT, pi X(0); a delta has no value
 at a point.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+IntFt(V, V)
+}
+\keyword{internal}

@@ -17,3 +17,8 @@ A list with \code{H}, \code{omega}, \code{lowpass}, \code{dc_term_set_aside},
 book does.  The gain falls as frequency rises, so it is a lowpass,
 and it is unbounded at w = 0 -- refused rather than returned as Inf.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+IntFr(V)
+}
+\keyword{internal}

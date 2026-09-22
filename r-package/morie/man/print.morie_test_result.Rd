@@ -12,7 +12,7 @@
 \item{...}{Ignored; accepted for S3 consistency.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
 Print method for \code{morie_test_result} objects

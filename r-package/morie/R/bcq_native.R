@@ -244,4 +244,5 @@ batch_constrained_q <- bcq
 #' @param ... Passed through.
 #' @return The value of \code{bcq}.
 #' @export
+#' @keywords internal
 morie_bcq <- function(...) bcq(...)

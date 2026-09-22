@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_filt2.R
 \name{BwLp}
 \alias{BwLp}
-\title{The book\'s route end to end: prewarp by eq (3.141), place poles by}
+\title{The book's route end to end: prewarp by eq (3.141), place poles by}
 \usage{
 BwLp(cutoff_hz, order = 4, fs = 1000, z = NULL)
 }
@@ -23,3 +23,7 @@ eq (3.137), keep the left-half-plane ones by eq (3.138), apply the
 bilinear transform of eq (3.139) to reach eq (3.143).  Prewarping is
 done here; without it the realized cutoff sits below the request.
 }
+\examples{
+BwLp(cutoff_hz = 5L)
+}
+\keyword{internal}

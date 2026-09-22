@@ -33,8 +33,10 @@
   i2 <- as.integer(as.factor(f2))
   # Fused Armadillo alternating-projection sweep (0-based codes). Same
   # unique within-projection as the R rowsum path, to `tol`.
-  out <- .morie_twfe_demean_cpp(M, i1 - 1L, i2 - 1L,
-                                max(i1), max(i2), tol, max_iter)
+  out <- .morie_twfe_demean_cpp(
+    M, i1 - 1L, i2 - 1L,
+    max(i1), max(i2), tol, max_iter
+  )
   dimnames(out) <- dimnames(M)
   out
 }
@@ -121,7 +123,8 @@
 #' @noRd
 .morie_did_ps_fit <- function(D, X) {
   fit <- suppressWarnings(stats::glm.fit(X, D,
-                                         family = stats::binomial()))
+    family = stats::binomial()
+  ))
   ps <- as.numeric(fit$fitted.values)
   ps <- pmin(ps, 1 - 1e-16)
   score <- (D - ps) * X
@@ -252,46 +255,46 @@
   mu_c <- post * mu_c1 + (1 - post) * mu_c0
   lam <- mean(post)
   # Weights (DRDID::drdid_rc)
-  w_treat_pre  <- D * (1 - post)
+  w_treat_pre <- D * (1 - post)
   w_treat_post <- D * post
-  w_cont_pre  <- ps * (1 - D) * (1 - post) / (1 - ps)
+  w_cont_pre <- ps * (1 - D) * (1 - post) / (1 - ps)
   w_cont_post <- ps * (1 - D) * post / (1 - ps)
   w_d <- D
   w_dt1 <- D * post
   w_dt0 <- D * (1 - post)
-  eta_treat_pre  <- w_treat_pre  * (y - mu_c) / mean(w_treat_pre)
+  eta_treat_pre <- w_treat_pre * (y - mu_c) / mean(w_treat_pre)
   eta_treat_post <- w_treat_post * (y - mu_c) / mean(w_treat_post)
-  eta_cont_pre   <- w_cont_pre   * (y - mu_c) / mean(w_cont_pre)
-  eta_cont_post  <- w_cont_post  * (y - mu_c) / mean(w_cont_post)
+  eta_cont_pre <- w_cont_pre * (y - mu_c) / mean(w_cont_pre)
+  eta_cont_post <- w_cont_post * (y - mu_c) / mean(w_cont_post)
   # Local-efficiency adjustment terms
-  eta_d_post  <- w_d   * (mu_t1 - mu_c1) / mean(w_d)
+  eta_d_post <- w_d * (mu_t1 - mu_c1) / mean(w_d)
   eta_dt1_post <- w_dt1 * (mu_t1 - mu_c1) / mean(w_dt1)
-  eta_d_pre  <- w_d   * (mu_t0 - mu_c0) / mean(w_d)
+  eta_d_pre <- w_d * (mu_t0 - mu_c0) / mean(w_d)
   eta_dt0_pre <- w_dt0 * (mu_t0 - mu_c0) / mean(w_dt0)
-  att_treat_pre  <- mean(eta_treat_pre)
+  att_treat_pre <- mean(eta_treat_pre)
   att_treat_post <- mean(eta_treat_post)
-  att_cont_pre   <- mean(eta_cont_pre)
-  att_cont_post  <- mean(eta_cont_post)
-  att_d_post  <- mean(eta_d_post)
+  att_cont_pre <- mean(eta_cont_pre)
+  att_cont_post <- mean(eta_cont_post)
+  att_d_post <- mean(eta_d_post)
   att_dt1_post <- mean(eta_dt1_post)
-  att_d_pre  <- mean(eta_d_pre)
+  att_d_pre <- mean(eta_d_pre)
   att_dt0_pre <- mean(eta_dt0_pre)
   att <- (att_treat_post - att_treat_pre) -
     (att_cont_post - att_cont_pre) +
     (att_d_post - att_dt1_post) - (att_d_pre - att_dt0_pre)
   # --- Influence function (verbatim structure of DRDID::drdid_rc) ---
-  inf_treat_pre  <- eta_treat_pre - w_treat_pre * att_treat_pre /
+  inf_treat_pre <- eta_treat_pre - w_treat_pre * att_treat_pre /
     mean(w_treat_pre)
   inf_treat_post <- eta_treat_post - w_treat_post * att_treat_post /
     mean(w_treat_post)
   M1_post <- -colMeans(w_treat_post * X) / mean(w_treat_post)
-  M1_pre  <- -colMeans(w_treat_pre * X) / mean(w_treat_pre)
+  M1_pre <- -colMeans(w_treat_pre * X) / mean(w_treat_pre)
   inf_treat_or_post <- as.numeric(or_c1$lin_rep %*% M1_post)
-  inf_treat_or_pre  <- as.numeric(or_c0$lin_rep %*% M1_pre)
+  inf_treat_or_pre <- as.numeric(or_c0$lin_rep %*% M1_pre)
   inf_treat_or <- inf_treat_or_post + inf_treat_or_pre
   inf_treat <- inf_treat_post - inf_treat_pre + inf_treat_or
   # Control components (estimation effects of ps and mu_c)
-  inf_cont_pre  <- eta_cont_pre - w_cont_pre * att_cont_pre /
+  inf_cont_pre <- eta_cont_pre - w_cont_pre * att_cont_pre /
     mean(w_cont_pre)
   inf_cont_post <- eta_cont_post - w_cont_post * att_cont_post /
     mean(w_cont_post)
@@ -301,7 +304,7 @@
     mean(w_cont_post)
   inf_cont_ps <- as.numeric(psf$lin_rep %*% (M2_post - M2_pre))
   M3_post <- -colMeans(w_cont_post * X) / mean(w_cont_post)
-  M3_pre  <- -colMeans(w_cont_pre * X) / mean(w_cont_pre)
+  M3_pre <- -colMeans(w_cont_pre * X) / mean(w_cont_pre)
   inf_cont_or <- as.numeric(or_c1$lin_rep %*% M3_post) +
     as.numeric(or_c0$lin_rep %*% M3_pre)
   inf_cont <- inf_cont_post - inf_cont_pre + inf_cont_ps + inf_cont_or
@@ -312,7 +315,7 @@
   inf_eff4 <- eta_dt0_pre - w_dt0 * att_dt0_pre / mean(w_dt0)
   inf_eff <- (inf_eff1 - inf_eff2) - (inf_eff3 - inf_eff4)
   mom_post <- colMeans((w_d / mean(w_d) - w_dt1 / mean(w_dt1)) * X)
-  mom_pre  <- colMeans((w_d / mean(w_d) - w_dt0 / mean(w_dt0)) * X)
+  mom_pre <- colMeans((w_d / mean(w_d) - w_dt0 / mean(w_dt0)) * X)
   inf_or <- as.numeric((or_t1$lin_rep - or_c1$lin_rep) %*% mom_post) -
     as.numeric((or_t0$lin_rep - or_c0$lin_rep) %*% mom_pre)
   IF <- inf_treat - inf_cont + inf_eff + inf_or
@@ -350,7 +353,7 @@
   }
   se <- apply(boot, 2L, function(z) {
     (stats::quantile(z, 0.75, na.rm = TRUE, names = FALSE) -
-       stats::quantile(z, 0.25, na.rm = TRUE, names = FALSE)) /
+      stats::quantile(z, 0.25, na.rm = TRUE, names = FALSE)) /
       (stats::qnorm(0.75) - stats::qnorm(0.25))
   }) / sqrt(n)
   list(se = as.numeric(se), boot = boot)
@@ -702,11 +705,13 @@
 #' @noRd
 .morie_twfe_weights_native <- function(df, group, time, treatment) {
   cell <- stats::aggregate(df[, treatment, drop = FALSE],
-                           by = list(.g = df[[group]], .t = df[[time]]),
-                           FUN = mean)
+    by = list(.g = df[[group]], .t = df[[time]]),
+    FUN = mean
+  )
   cnt <- stats::aggregate(list(.n = rep(1L, nrow(df))),
-                          by = list(.g = df[[group]], .t = df[[time]]),
-                          FUN = sum)
+    by = list(.g = df[[group]], .t = df[[time]]),
+    FUN = sum
+  )
   cell <- merge(cell, cnt, by = c(".g", ".t"))
   d <- cell[[treatment]]
   # N-weighted two-way demeaning of D on group + time FE
@@ -726,6 +731,8 @@
   denom <- sum(w[treated] * d[treated] * dm[treated])
   weights <- rep(NA_real_, nrow(cell))
   weights[treated] <- (w[treated] * d[treated] * dm[treated]) / denom
-  data.frame(group = cell$.g, time = cell$.t,
-             treatment = d, n = cell$.n, weight = weights)
+  data.frame(
+    group = cell$.g, time = cell$.t,
+    treatment = d, n = cell$.n, weight = weights
+  )
 }

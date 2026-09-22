@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_adapt.R
 \name{AncOut}
 \alias{AncOut}
-\title{Eq. (3.196): e = x - y, and the ERROR is the canceller\'s output.
+\title{Eq. (3.196): e = x - y, and the ERROR is the canceller's output.
 This}
 \usage{
 AncOut(x, y)
@@ -22,3 +22,8 @@ is the step that surprises: the quantity being minimized is the thing
 you keep, because minimizing it drives y toward the interference and
 leaves the signal behind in e.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+AncOut(V, V)
+}
+\keyword{internal}

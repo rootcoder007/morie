@@ -37,3 +37,13 @@ A step of the hierF_native implementation. Called by \code{morie_hierF}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+S <- summing_matrix(list(c(0L, 1L)), 2L)
+res <- matrix(rnorm(30), 10, 3)
+base <- c(10.5, 4.9, 5.4)
+r <- mint_reconcile(base, S, residuals = res)
+stopifnot(r$coherent)
+r$reconciled
+}
+\keyword{internal}

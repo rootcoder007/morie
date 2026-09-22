@@ -2,7 +2,7 @@
 % Please edit documentation in R/egnnL_native.R
 \name{morie_egnnL}
 \alias{morie_egnnL}
-\title{morie_egnnL}
+\title{Morie entry point: matches the Python payload keys}
 \usage{
 morie_egnnL(H, X, layers, phi_e, phi_x, phi_h, A = NULL, C = NULL)
 }
@@ -27,7 +27,18 @@ morie_egnnL(H, X, layers, phi_e, phi_x, phi_h, A = NULL, C = NULL)
 The value of \code{run_egnn}.
 }
 \description{
-A step of the egnnL_native implementation. Called by \code{morie_egcn}.
+A step of the egnnL_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+H <- lapply(1:4, function(i) rnorm(2))
+X <- lapply(1:4, function(i) rnorm(3))
+phi_e <- function(hi, hj, d2, a) c(hi + hj, d2)
+phi_x <- function(m) sum(m) * 0.01
+phi_h <- function(hi, agg) hi + 0.1 * agg[seq_along(hi)]
+r <- morie_egnnL(H, X, layers = 2L, phi_e, phi_x, phi_h)
+length(r$H)
+}
+\keyword{internal}

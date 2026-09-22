@@ -56,6 +56,7 @@ R parity for \code{morie.fn.grucl.gru_cell}.  Gates stacked as
 r odot U_n h); h = (1 - z) odot n + z odot h_prev}
 }
 \examples{
+set.seed(1)
 morie_grucl_gru_cell(x = rnorm(50))
 }
 \references{

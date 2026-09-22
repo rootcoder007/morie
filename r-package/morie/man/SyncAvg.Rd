@@ -18,3 +18,8 @@ into a signal sum that grows as M and a zero-mean noise sum that
 grows only as sqrt(M).  Dividing by M therefore shrinks the noise SD
 by 1/sqrt(M): an SNR gain of sqrt(M), or 10 log10(M) dB.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+SyncAvg(V)
+}
+\keyword{internal}

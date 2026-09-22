@@ -23,3 +23,7 @@ supplied profile is normalised to sum to one so the disaggregated
 periods reconstitute the aggregate exactly; a profile that did not
 sum to one would silently change the total.
 }
+\examples{
+disaggregate(aggregate_value = c(1, 2, 3, 4, 5, 6, 7, 8), m = 5L)
+}
+\keyword{internal}

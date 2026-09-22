@@ -15,15 +15,15 @@ morie_weights_propensity_nonresponse(weights, responded, X)
 (one row per unit) used by GREG / nonresponse propensity models.}
 }
 \value{
-Numeric vector of propensity-adjusted weights, same length
-as \code{weights}; respondent weights are divided by the fitted
-response probability and non-respondents receive weight 0.
+A numeric value (scalar).
 }
 \description{
 Propensity-score non-response weights (logistic)
 }
 \examples{
-p <- c(0.1, 0.2, 0.5, 1)
-morie_weights_design(p)
-morie_weights_propensity_nonresponse(weights = p, responded = p, X = p)
+set.seed(1)
+X <- cbind(1, runif(30))
+res <- morie_weights_propensity_nonresponse(rep(1, 30),
+                                            rbinom(30, 1, 0.7) == 1, X)
+str(res, max.level = 1)
 }

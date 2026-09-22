@@ -14,19 +14,12 @@ point_biserial_correlation(binary, continuous, confidence = 0.95)
 \item{confidence}{Confidence level.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the point-biserial r as the test statistic and estimate, p-value,
-df, Fisher-z CI, and r-squared effect size.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Point-biserial correlation
 }
 \examples{
 set.seed(1)
-v1 <- rbinom(30, 1, 0.4)
-v2 <- rbinom(30, 1, 0.5)
-v3 <- rbinom(30, 1, 0.6)
-res <- cochrans_q(v1, v2, v3)
-res$p_value
-point_biserial_correlation(binary = v1, continuous = v1)
+point_biserial_correlation(rbinom(30, 1, 0.5), rnorm(30))
 }

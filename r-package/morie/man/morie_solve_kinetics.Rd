@@ -27,3 +27,7 @@ phase switch. The gamma = beta branch is the limit of the (e^-gt -
 e^-bt)/(g - b) term, which is t*e^-bt at g = b, not a genuine
 singularity.
 }
+\examples{
+morie_solve_kinetics(tau = 0.5, alpha = 0.5, beta = 0.5, gamma = 0.5)
+}
+\keyword{internal}

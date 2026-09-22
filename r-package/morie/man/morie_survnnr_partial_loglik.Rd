@@ -21,3 +21,8 @@ A step of the survnnr_native implementation. Called by \code{morie_survnnr_fit}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_survnnr_partial_loglik(times = c(1, 2, 3, 4, 5, 6, 7, 8),
+  events = c(1, 2, 3, 4, 5, 6, 7, 8), risk = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

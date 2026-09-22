@@ -60,6 +60,7 @@ nuisance learners) is the canonical CRAN counterpart.
 }
 \examples{
 set.seed(1)
-df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
-morie_estimate_aipw(df, "t", "y", "x")
+df <- data.frame(t = rbinom(60, 1, 0.4), x = rnorm(60))
+morie_estimate_aipw(df, "t", "y", "x", outcome_model = "linear")
 }
+\keyword{internal}

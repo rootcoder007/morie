@@ -2,17 +2,27 @@
 % Please edit documentation in R/andmnh_native.R
 \name{alpha_ar1}
 \alias{alpha_ar1}
-\title{Andrews (1991) eq. 6.4, alpha(q) from p AR(1) fits}
+\title{alpha_ar1}
 \usage{
-alpha_ar1(v, q = 2L, weights = NULL)
+alpha_ar1(v, q = 2, weights = NULL)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{A matrix; passed to \code{as.matrix}.}
 
-\item{q}{See Usage.}
+\item{q}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2}.}
 
-\item{weights}{See Usage.}
+\item{weights}{Optional; may be \code{NULL}. Compared against \code{"drop_first"}.}
+}
+\value{
+A list with \code{alpha}, \code{fits}.
 }
 \description{
-Andrews (1991) eq. 6.4, alpha(q) from p AR(1) fits
+A step of the andmnh_native implementation. Called by \code{automatic_bandwidth}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+alpha_ar1(V)
+}
+\keyword{internal}

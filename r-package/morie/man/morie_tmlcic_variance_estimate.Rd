@@ -29,3 +29,15 @@ A step of the tmlcic_native implementation. Called by \code{morie_tmlcic_tmle_cl
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(2)
+n <- 40
+D <- rnorm(n, 0, 0.6)
+y <- runif(n)
+qa <- runif(n)
+groups <- split(seq_len(n), rep(1:8, each = 5))
+r <- morie_tmlcic_variance_estimate(D, y, qa, groups, n,
+                                    design = "unmatched", target = "SATE")
+str(r, max.level = 1)
+}
+\keyword{internal}

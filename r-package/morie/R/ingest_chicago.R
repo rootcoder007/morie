@@ -19,7 +19,7 @@
 # `morie_ingest_bigquery_table()` for analysts who prefer SQL on the
 # full historical mirror; see ingest_bigquery.R.
 
-.MORIE_CHICAGO_DEFAULT_UA <- "morie/r (+https://github.com/rootcoder007/morie)"
+.MORIE_CHICAGO_DEFAULT_UA <- "morie/r (+https://github.com/rootcoder007/rmorie)"
 .MORIE_CHICAGO_DEFAULT_TIMEOUT <- 60
 
 # Socrata server-side cap is 50,000 rows per response.
@@ -51,23 +51,8 @@ morie_ingest_chicago_resources <- function() {
 }
 
 # Internal: a single Socrata SoQL GET against `resource_url`.
-#' Internal: a single Socrata SoQL GET against `resource_url`
-#'
-#' A step of the ingest_chicago implementation. Called by \code{morie_ingest_chicago_socrata}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param resource_url Passed to \code{.morie_dataset_http_text}.
-#' @param where Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param select Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param order Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param limit Coerced to integer by the body, with \code{as.integer}.
-#' @param offset Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.
-#' @param app_token Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param user_agent Accepted by the signature and not used anywhere in the body.
-#' @param timeout Coerced to integer by the body, with \code{as.integer}.
-#' @return The value of \code{payload}, as built in the body.
-#' @export
+#' Internal helper: Morie Chicago Socrata Get
+#' @noRd
 .morie_chicago_socrata_get <- function(resource_url,
                                        where = NULL,
                                        select = NULL,
@@ -136,13 +121,8 @@ morie_ingest_chicago_resources <- function() {
 
 # Internal: bind a list-of-row-lists to a data.frame, tolerating
 # heterogeneous JSON shapes (missing columns become NA).
-#' Internal: bind a list-of-row-lists to a data.frame, tolerating
-#'
-#' heterogeneous JSON shapes (missing columns become NA).
-#'
-#' @param rows A vector; its length is taken.
-#' @return The value of \code{do.call}.
-#' @export
+#' Internal helper: Morie Chicago Rows To Df
+#' @noRd
 .morie_chicago_rows_to_df <- function(rows) {
   if (length(rows) == 0L) {
     return(data.frame())
@@ -266,6 +246,9 @@ morie_ingest_chicago_socrata <- function(resource_url,
 #'   limits.
 #' @param user_agent,timeout Standard request knobs.
 #' @return A base R \code{data.frame}.
+#' @seealso \code{\link{morie_ingest_chicago_socrata}},
+#'   \code{\link{morie_ingest_bigquery_table}} for the BigQuery
+#'   public-data mirror (\code{bigquery-public-data.chicago_crime}).
 #' @examples
 #' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
@@ -348,6 +331,25 @@ morie_ingest_chicago_crime_bigquery <- function(where = NULL,
       stop("`year` must be coercible to integer.", call. = FALSE)
     }
     clause <- sprintf("year = %d", yr)
+  }
+  # Open-path fallback: with no billing project anywhere, the BigQuery
+  # call cannot succeed -- route the same request through the keyless
+  # Socrata portal instead of erroring.
+  bill <- billing_project
+  if (is.null(bill) || !nzchar(bill)) bill <- Sys.getenv("GCP_PROJECT", "")
+  if (!nzchar(bill)) {
+    message(
+      "morie_ingest_chicago_crime_bigquery: no billing project ",
+      "(billing_project=/GCP_PROJECT); fetching the same data from the ",
+      "keyless Chicago Socrata portal instead."
+    )
+    lim <- if (is.null(limit)) {
+      if (is.finite(max_rows)) as.integer(max_rows) else 1000L
+    } else {
+      as.integer(limit)
+    }
+    return(morie_ingest_chicago_crime(year = year, where = where,
+                                      max_features = lim))
   }
   morie_ingest_bigquery_table(
     project = "bigquery-public-data",

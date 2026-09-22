@@ -72,9 +72,16 @@ Boyd Algorithm 11.1, the logarithmic barrier method of Frisch
 (Boyd eq. 11.10-11.12), so the returned \code{gap = m/t} is an
 exact duality gap, not an estimate.
 }
+\examples{
+f0 <- function(x) sum(x^2)
+cons <- list(function(x) 1 - x[1])
+r <- barrier_method(f0, cons, x0 = c(2, 0))
+r$x
+}
 \references{
 Frisch, R. (1956). La resolution des problemes de
 programme lineaire par la methode du potentiel logarithmique.
 Cahiers du Seminaire d'Econometrie, 4, 7-23. Boyd, S. and
 Vandenberghe, L. (2004). Convex Optimization, ch. 11.
 }
+\keyword{internal}

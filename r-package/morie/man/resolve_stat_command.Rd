@@ -16,6 +16,9 @@ A \code{morie_stat_command} or \code{NULL}.
 Resolve a command by canonical name or alias
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-resolve_stat_command(V)
+cmd <- stat_command("demo_echo", "misc", "demo_echo",
+                    "Echo demo command",
+                    handler_repl = function(...) "ok")
+register_stat_command(cmd)
+resolve_stat_command("demo_echo")$usage
 }

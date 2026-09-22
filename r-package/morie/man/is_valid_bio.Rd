@@ -4,12 +4,10 @@
 \alias{is_valid_bio}
 \title{is_valid_bio}
 \usage{
-is_valid_bio(path, labels = NULL)
+is_valid_bio(path)
 }
 \arguments{
 \item{path}{See Usage.}
-
-\item{labels}{Accepted by the signature and not used anywhere in the body.}
 }
 \value{
 A logical value.
@@ -19,3 +17,8 @@ A step of the benRea_native implementation. Called by \code{ner_decode}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+is_valid_bio(V)
+}
+\keyword{internal}

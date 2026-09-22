@@ -2,7 +2,7 @@
 % Please edit documentation in R/toptor_native.R
 \name{.neighbours}
 \alias{.neighbours}
-\title{Neighbour list and degree from a bond list}
+\title{.neighbours}
 \usage{
 .neighbours(n_atoms, bonds)
 }
@@ -15,7 +15,7 @@
 The value of \code{adj}, as built in the body.
 }
 \description{
-A step of the toptor_native implementation. Called by \code{morie_topological_torsions}.
+A step of the toptor_native implementation. Called by \code{topological_torsions}.
 See the file header for the source the module follows.
 source it follows.
 }

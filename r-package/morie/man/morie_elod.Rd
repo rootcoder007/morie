@@ -21,6 +21,10 @@ expected LOD and the small-effect Taylor approximation, with
 the gap between them rather than one silently substituted for
 the other.
 }
+\examples{
+morie_elod(var_qtl = 5L, var_residual = 5L)
+}
 \references{
 Lander, E. S. & Botstein, D. (1989), eqs (5a)-(5c).
 }
+\keyword{internal}

@@ -15,8 +15,19 @@ morie_alammar_multi_head_attention(Q, K, V, Wq, Wk, Wv, Wo, heads)
 
 \item{heads}{Head count.}
 }
+\value{
+A list with \code{output}, \code{heads}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Concat(head_1..head_h) W_O; Wq, Wk, Wv are LISTS of per-head
 projections -- one per head, refused otherwise, since broadcasting
 one matrix would compute h copies of the same head.
 }
+\examples{
+set.seed(1)
+X <- matrix(stats::rnorm(6), 3, 2)
+I2 <- diag(2)
+morie_alammar_multi_head_attention(X, X, X, list(I2), list(I2),
+    list(I2), I2, 1)
+}
+\keyword{internal}

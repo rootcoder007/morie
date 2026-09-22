@@ -24,10 +24,13 @@
 #' morie_evt_gev_cdf(6, 5, 1.5, 0.1)
 morie_evt_gev_cdf <- function(x, mu, sigma, xi) {
   t <- (x - mu) / sigma
-  if (abs(xi) < .evt_xi_tiny) return(exp(-exp(-t)))
+  if (abs(xi) < .evt_xi_tiny) {
+    return(exp(-exp(-t)))
+  }
   arg <- 1 + xi * t
   out <- ifelse(arg <= 0, ifelse(xi > 0, 0, 1),
-                exp(-pmax(arg, 1e-300)^(-1 / xi)))
+    exp(-pmax(arg, 1e-300)^(-1 / xi))
+  )
   out
 }
 
@@ -38,9 +41,13 @@ morie_evt_gev_cdf <- function(x, mu, sigma, xi) {
 #' @examples
 #' morie_evt_gev_logpdf(x = c(1, 2, 3), mu = 0, sigma = 1, xi = 0.1)
 morie_evt_gev_logpdf <- function(x, mu, sigma, xi) {
-  if (sigma <= 0) return(rep(-Inf, length(x)))
+  if (sigma <= 0) {
+    return(rep(-Inf, length(x)))
+  }
   t <- (x - mu) / sigma
-  if (abs(xi) < .evt_xi_tiny) return(-log(sigma) - t - exp(-t))
+  if (abs(xi) < .evt_xi_tiny) {
+    return(-log(sigma) - t - exp(-t))
+  }
   arg <- 1 + xi * t
   out <- rep(-Inf, length(x))
   ok <- arg > 0
@@ -65,11 +72,17 @@ morie_evt_gev_loglik <- function(x, mu, sigma, xi) {
 #' GEV quantile (Coles 2001 eq. 3.4, non-exceedance p)
 #' @param p probability in (0, 1)
 #' @inheritParams morie_evt_gev_cdf
+#' @return A numeric value.
 #' @export
+#' @examples
+#' morie_evt_gev_quantile(0.9, 5, 1.5, 0.1)
+#' @keywords internal
 morie_evt_gev_quantile <- function(p, mu, sigma, xi) {
   stopifnot(all(p > 0), all(p < 1))
   yp <- -log(p)
-  if (abs(xi) < .evt_xi_tiny) return(mu - sigma * log(yp))
+  if (abs(xi) < .evt_xi_tiny) {
+    return(mu - sigma * log(yp))
+  }
   mu + (sigma / xi) * (yp^(-xi) - 1)
 }
 
@@ -89,16 +102,19 @@ morie_evt_gev_mle <- function(x) {
   mu0 <- mean(x) - 0.5772156649015329 * sigma0
   nll <- function(th) -morie_evt_gev_loglik(x, th[1], exp(th[2]), th[3])
   fit <- stats::optim(c(mu0, log(sigma0), 0.1), nll,
-                      method = "Nelder-Mead",
-                      control = list(maxit = 4000))
+    method = "Nelder-Mead",
+    control = list(maxit = 4000)
+  )
   mu <- fit$par[1]
   sigma <- exp(fit$par[2])
   xi <- fit$par[3]
   nll_nat <- function(th) -morie_evt_gev_loglik(x, th[1], th[2], th[3])
   H <- .evt_num_hessian(nll_nat, c(mu, sigma, xi))
   covm <- tryCatch(solve(H), error = function(e) MASS_ginv_fallback(H))
-  list(mu = mu, sigma = sigma, xi = xi, loglik = -fit$value,
-       cov = covm, n = n, converged = fit$convergence == 0L)
+  list(
+    mu = mu, sigma = sigma, xi = xi, loglik = -fit$value,
+    cov = covm, n = n, converged = fit$convergence == 0L
+  )
 }
 
 # central-difference observed information (the numeric-differencing
@@ -120,20 +136,22 @@ morie_evt_gev_mle <- function(x) {
 .evt_num_hessian <- function(f, theta, h = 1e-4) {
   k <- length(theta)
   H <- matrix(0, k, k)
-  for (i in seq_len(k)) for (j in i:k) {
-    hi <- h * max(1, abs(theta[i]))
-    hj <- h * max(1, abs(theta[j]))
-    tpp <- tpm <- tmp <- tmm <- theta
-    tpp[i] <- tpp[i] + hi
-    tpp[j] <- tpp[j] + hj
-    tpm[i] <- tpm[i] + hi
-    tpm[j] <- tpm[j] - hj
-    tmp[i] <- tmp[i] - hi
-    tmp[j] <- tmp[j] + hj
-    tmm[i] <- tmm[i] - hi
-    tmm[j] <- tmm[j] - hj
-    H[i, j] <- H[j, i] <- (f(tpp) - f(tpm) - f(tmp) + f(tmm)) /
-      (4 * hi * hj)
+  for (i in seq_len(k)) {
+    for (j in i:k) {
+      hi <- h * max(1, abs(theta[i]))
+      hj <- h * max(1, abs(theta[j]))
+      tpp <- tpm <- tmp <- tmm <- theta
+      tpp[i] <- tpp[i] + hi
+      tpp[j] <- tpp[j] + hj
+      tpm[i] <- tpm[i] + hi
+      tpm[j] <- tpm[j] - hj
+      tmp[i] <- tmp[i] - hi
+      tmp[j] <- tmp[j] + hj
+      tmm[i] <- tmm[i] - hi
+      tmm[j] <- tmm[j] - hj
+      H[i, j] <- H[j, i] <- (f(tpp) - f(tpm) - f(tmp) + f(tmm)) /
+        (4 * hi * hj)
+    }
   }
   H
 }
@@ -149,6 +167,9 @@ morie_evt_gev_mle <- function(x) {
 #' @param H Passed to \code{eigen}.
 #' @return The value of \code{%*%}.
 #' @export
+#' @examples
+#' MASS_ginv_fallback(H = 0.5)
+#' @keywords internal
 MASS_ginv_fallback <- function(H) {
   e <- eigen(H, symmetric = TRUE)
   pos <- e$values > max(e$values) * 1e-12
@@ -160,7 +181,11 @@ MASS_ginv_fallback <- function(H) {
 #' GPD distribution function (Coles 2001 eq. 4.2-4.4)
 #' @param y excess(es) over the threshold, y >= 0
 #' @param sigma,xi GPD scale (> 0) and shape
+#' @return The value of `out`, as built in the body.
 #' @export
+#' @examples
+#' morie_evt_gpd_cdf(y = c(1, 2, 3, 4, 5, 6, 7, 8), sigma = 0.5, xi = 5L)
+#' @keywords internal
 morie_evt_gpd_cdf <- function(y, sigma, xi) {
   out <- numeric(length(y))
   neg <- y < 0
@@ -176,30 +201,49 @@ morie_evt_gpd_cdf <- function(y, sigma, xi) {
 
 #' GPD log-likelihood over excesses (Coles 2001 eq. 4.10)
 #' @inheritParams morie_evt_gpd_cdf
+#' @return A numeric value.
 #' @export
+#' @examples
+#' morie_evt_gpd_loglik(y = c(1, 2, 3, 4, 5, 6, 7, 8), sigma = 0.5, xi = 5L)
+#' @keywords internal
 morie_evt_gpd_loglik <- function(y, sigma, xi) {
-  if (sigma <= 0 || any(y < 0)) return(-Inf)
+  if (sigma <= 0 || any(y < 0)) {
+    return(-Inf)
+  }
   if (abs(xi) < .evt_xi_tiny) {
     return(sum(-log(sigma) - y / sigma))
   }
   arg <- 1 + xi * y / sigma
-  if (any(arg <= 0)) return(-Inf)
+  if (any(arg <= 0)) {
+    return(-Inf)
+  }
   sum(-log(sigma) - (1 + 1 / xi) * log(arg))
 }
 
 #' GPD quantile (inverse of Coles 2001 eq. 4.2)
 #' @param p probability in [0, 1)
 #' @inheritParams morie_evt_gpd_cdf
+#' @return A numeric value.
 #' @export
+#' @examples
+#' morie_evt_gpd_quantile(p = 0.5, sigma = 0.5, xi = 5L)
+#' @keywords internal
 morie_evt_gpd_quantile <- function(p, sigma, xi) {
   stopifnot(all(p >= 0), all(p < 1))
-  if (abs(xi) < .evt_xi_tiny) return(-sigma * log(1 - p))
+  if (abs(xi) < .evt_xi_tiny) {
+    return(-sigma * log(1 - p))
+  }
   (sigma / xi) * ((1 - p)^(-xi) - 1)
 }
 
 #' GPD maximum-likelihood fit (Coles 2001 sec. 4.3.2)
 #' @param y threshold excesses
+#' @return A list with `sigma`, `xi`, `loglik`, `cov`, `n`, `converged`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_evt_gpd_mle(V)
+#' @keywords internal
 morie_evt_gpd_mle <- function(y) {
   y <- as.numeric(y)
   n <- length(y)
@@ -209,23 +253,34 @@ morie_evt_gpd_mle <- function(y) {
   xi0 <- 0.5 * (1 - ybar^2 / s2)
   sigma0 <- max(if (xi0 < 1) ybar * (1 - xi0) else ybar, 1e-8)
   nll <- function(th) -morie_evt_gpd_loglik(y, exp(th[1]), th[2])
-  fit <- stats::optim(c(log(sigma0),
-                        if (abs(xi0) < 0.9) xi0 else 0.1),
-                      nll, method = "Nelder-Mead",
-                      control = list(maxit = 4000))
+  fit <- stats::optim(
+    c(
+      log(sigma0),
+      if (abs(xi0) < 0.9) xi0 else 0.1
+    ),
+    nll,
+    method = "Nelder-Mead",
+    control = list(maxit = 4000)
+  )
   sigma <- exp(fit$par[1])
   xi <- fit$par[2]
   nll_nat <- function(th) -morie_evt_gpd_loglik(y, th[1], th[2])
   H <- .evt_num_hessian(nll_nat, c(sigma, xi))
   covm <- tryCatch(solve(H), error = function(e) MASS_ginv_fallback(H))
-  list(sigma = sigma, xi = xi, loglik = -fit$value, cov = covm,
-       n = n, converged = fit$convergence == 0L)
+  list(
+    sigma = sigma, xi = xi, loglik = -fit$value, cov = covm,
+    n = n, converged = fit$convergence == 0L
+  )
 }
 
 #' GEV T-period return level (Coles 2001 eq. 3.4/3.10)
 #' @param T return period (> 1)
 #' @inheritParams morie_evt_gev_cdf
+#' @return The value of `morie_evt_gev_quantile`.
 #' @export
+#' @examples
+#' morie_evt_return_level(5, 1.5, 0.1, 100)
+#' @keywords internal
 morie_evt_return_level <- function(mu, sigma, xi, T) {
   stopifnot(T > 1)
   morie_evt_gev_quantile(1 - 1 / T, mu, sigma, xi)
@@ -235,7 +290,11 @@ morie_evt_return_level <- function(mu, sigma, xi, T) {
 #' @param x block maxima to fit
 #' @param T return period
 #' @param alpha 1 - confidence level
+#' @return A list with `z_T`, `ci_lo`, `ci_hi`, `se`.
 #' @export
+#' @examples
+#' morie_evt_return_level_ci(x = c(1, 2, 3, 4, 5, 6, 7, 8), T = 5L)
+#' @keywords internal
 morie_evt_return_level_ci <- function(x, T, alpha = 0.05) {
   f <- morie_evt_gev_mle(x)
   z <- morie_evt_return_level(f$mu, f$sigma, f$xi, T)
@@ -243,10 +302,12 @@ morie_evt_return_level_ci <- function(x, T, alpha = 0.05) {
   g <- if (abs(f$xi) < .evt_xi_tiny) {
     c(1, -log(yp), 0)
   } else {
-    c(1,
+    c(
+      1,
       -(1 / f$xi) * (1 - yp^(-f$xi)),
       f$sigma * f$xi^(-2) * (1 - yp^(-f$xi)) -
-        (f$sigma / f$xi) * yp^(-f$xi) * log(yp))
+        (f$sigma / f$xi) * yp^(-f$xi) * log(yp)
+    )
   }
   se <- sqrt(max(drop(t(g) %*% f$cov %*% g), 0))
   zc <- stats::qnorm(1 - alpha / 2)
@@ -260,17 +321,29 @@ morie_evt_return_level_ci <- function(x, T, alpha = 0.05) {
 #' @param xi See Usage.
 #' @param zeta_u See Usage.
 #' @param m See Usage.
+#' @return A numeric value.
 #' @export
+#' @examples
+#' morie_evt_return_level_pot(u = c(1, 2, 3, 4, 5, 6, 7, 8), sigma = 0.5, xi = 5L,
+#'   zeta_u = c(1, 2, 3, 4, 5, 6, 7, 8), m = 5L)
+#' @keywords internal
 morie_evt_return_level_pot <- function(u, sigma, xi, zeta_u, m) {
   stopifnot(m * zeta_u > 1)
-  if (abs(xi) < .evt_xi_tiny) return(u + sigma * log(m * zeta_u))
+  if (abs(xi) < .evt_xi_tiny) {
+    return(u + sigma * log(m * zeta_u))
+  }
   u + (sigma / xi) * ((m * zeta_u)^xi - 1)
 }
 
 #' Empirical chi(u) tail dependence (Coles 2001 sec. 8.4 p.164)
 #' @param x,y equal-length series; u quantile level
 #' @param u See Usage.
+#' @return A numeric value.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_evt_chi(V, V)
+#' @keywords internal
 morie_evt_chi <- function(x, y, u = 0.95) {
   n <- length(x)
   stopifnot(length(y) == n, n >= 4)
@@ -284,9 +357,15 @@ morie_evt_chi <- function(x, y, u = 0.95) {
 #' Empirical chibar(u) (Coles 2001 sec. 8.4 p.164)
 #' @inheritParams morie_evt_chi
 #' @param u_grid quantile grid
+#' @return A vector.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_evt_chibar(V, V)
+#' @keywords internal
 morie_evt_chibar <- function(x, y, u_grid = seq(0.5, 0.95,
-                                                length.out = 20)) {
+                               length.out = 20
+                             )) {
   n <- length(x)
   stopifnot(length(y) == n, n >= 4)
   rx <- rank(x) / (n + 1)
@@ -302,25 +381,39 @@ morie_evt_chibar <- function(x, y, u_grid = seq(0.5, 0.95,
 #' @param x data (block maxima or excesses); model "gev" or "gpd"
 #' @param alpha 1 - confidence level
 #' @param model See Usage.
+#' @return A list with `ci_lo`, `ci_hi`, `xi_hat`.
 #' @export
+#' @examples
+#' set.seed(1)
+#' u <- runif(600)
+#' x <- morie_evt_gev_quantile(u, 10, 2, 0.1)
+#' morie_evt_xi_ci_profile(x)
+#' @keywords internal
 morie_evt_xi_ci_profile <- function(x, alpha = 0.05, model = "gev") {
   crit <- stats::qchisq(1 - alpha, 1) / 2
   if (model == "gev") {
     fit <- morie_evt_gev_mle(x)
     prof <- function(xi) {
-      nll <- function(th) -morie_evt_gev_loglik(x, th[1],
-                                                exp(th[2]), xi)
+      nll <- function(th) {
+        -morie_evt_gev_loglik(
+          x, th[1],
+          exp(th[2]), xi
+        )
+      }
       -stats::optim(c(fit$mu, log(fit$sigma)), nll,
-                    method = "Nelder-Mead",
-                    control = list(maxit = 2000))$value
+        method = "Nelder-Mead",
+        control = list(maxit = 2000)
+      )$value
     }
   } else {
     fit <- morie_evt_gpd_mle(x)
     prof <- function(xi) {
       nll <- function(th) -morie_evt_gpd_loglik(x, exp(th[1]), xi)
-      -stats::optim(log(fit$sigma), nll, method = "Brent",
-                    lower = log(fit$sigma) - 6,
-                    upper = log(fit$sigma) + 6)$value
+      -stats::optim(log(fit$sigma), nll,
+        method = "Brent",
+        lower = log(fit$sigma) - 6,
+        upper = log(fit$sigma) + 6
+      )$value
     }
   }
   l_hat <- fit$loglik
@@ -353,7 +446,12 @@ morie_evt_xi_ci_profile <- function(x, alpha = 0.05, model = "gev") {
 #' @param prior_sd prior standard deviations for (mu, log sigma, xi)
 #' @param n_draws See Usage.
 #' @param seed See Usage.
+#' @return A list with `draws`, `accept_rate`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_evt_bayes_gev(V)
+#' @keywords internal
 morie_evt_bayes_gev <- function(x, n_draws = 2000, seed = 42,
                                 prior_sd = c(100, 10, 1)) {
   .morie_local_seed(seed)
@@ -397,7 +495,12 @@ morie_evt_bayes_gev <- function(x, n_draws = 2000, seed = 42,
 #' (Coles 2001 sec. 6.2)
 #' @param x series of maxima; t optional time index
 #' @param t See Usage.
+#' @return A list with `beta0`, `beta1`, `sigma`, `xi`, `loglik`, `lr_vs_stationary`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_evt_gev_trend(V)
+#' @keywords internal
 morie_evt_gev_trend <- function(x, t = seq_along(x) - 1) {
   n <- length(x)
   tz <- (t - mean(t)) / max(stats::sd(t) * sqrt((n - 1) / n), 1e-12)
@@ -407,12 +510,15 @@ morie_evt_gev_trend <- function(x, t = seq_along(x) - 1) {
     -sum(morie_evt_gev_logpdf(x, th[1] + th[2] * tz, s, th[4]))
   }
   fit <- stats::optim(c(f0$mu, 0, log(f0$sigma), f0$xi), nll,
-                      method = "Nelder-Mead",
-                      control = list(maxit = 6000))
+    method = "Nelder-Mead",
+    control = list(maxit = 6000)
+  )
   tsd <- max(stats::sd(t) * sqrt((n - 1) / n), 1e-12)
   beta1 <- fit$par[2] / tsd
-  list(beta0 = fit$par[1], beta1 = beta1,
-       sigma = exp(fit$par[3]), xi = fit$par[4],
-       loglik = -fit$value,
-       lr_vs_stationary = 2 * (-fit$value - f0$loglik))
+  list(
+    beta0 = fit$par[1], beta1 = beta1,
+    sigma = exp(fit$par[3]), xi = fit$par[4],
+    loglik = -fit$value,
+    lr_vs_stationary = 2 * (-fit$value - f0$loglik)
+  )
 }

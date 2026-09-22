@@ -136,24 +136,14 @@ preprocess_fmri <- function(record,
 # Internal filter helpers
 # ---------------------------------------------------------------------------
 
-#' .entheo_bandpass
-#'
-#' A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param x A matrix; indexed by row and column.
-#' @param sfreq Numeric; combined arithmetically in the body.
-#' @param low Numeric; combined arithmetically in the body.
-#' @param high Numeric; combined arithmetically in the body.
-#' @param order Passed to \code{.morie_dsp_butter}. Defaults to \code{4L}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Entheo Bandpass
+#' @noRd
 .entheo_bandpass <- function(x, sfreq, low, high, order = 4L) {
   ny <- sfreq / 2
   bf <- .morie_dsp_butter(order, c(low / ny, high / ny), type = "pass")
-  return(t(apply(x, 1, function(row)
-    .morie_dsp_filtfilt(bf$b, bf$a, row))))
+  return(t(apply(x, 1, function(row) {
+    .morie_dsp_filtfilt(bf$b, bf$a, row)
+  })))
   # (FFT-mask variant retained below for reference paths.)
   n <- ncol(x)
   freqs <- seq(0, sfreq / 2, length.out = n %/% 2 + 1)
@@ -167,18 +157,8 @@ preprocess_fmri <- function(record,
   out
 }
 
-#' .entheo_notch
-#'
-#' A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param x A matrix; indexed by row and column.
-#' @param sfreq Numeric; combined arithmetically in the body.
-#' @param freq Numeric; combined arithmetically in the body.
-#' @param q Numeric; combined arithmetically in the body. Defaults to \code{30}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Entheo Notch
+#' @noRd
 .entheo_notch <- function(x, sfreq, freq, q = 30) {
   bw <- freq / q
   bf <- .morie_dsp_butter(2, c(
@@ -187,8 +167,9 @@ preprocess_fmri <- function(record,
   ),
   type = "stop"
   )
-  return(t(apply(x, 1, function(row)
-    .morie_dsp_filtfilt(bf$b, bf$a, row))))
+  return(t(apply(x, 1, function(row) {
+    .morie_dsp_filtfilt(bf$b, bf$a, row)
+  })))
   n <- ncol(x)
   freqs <- seq(0, sfreq / 2, length.out = n %/% 2 + 1)
   bw <- freq / q
@@ -202,21 +183,8 @@ preprocess_fmri <- function(record,
   out
 }
 
-#' .entheo_asr_trim
-#'
-#' A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param x A vector; indexed elementwise.
-#' @param threshold Passed to \code{>}.
-#' @return A list with \code{arr}, \code{n_bad}.
-#' @export
-#' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
-#' res <- .entheo_asr_trim(x = X, threshold = 0.5)
-#' res
+#' Internal helper: Entheo Asr Trim
+#' @noRd
 .entheo_asr_trim <- function(x, threshold) {
   mu <- rowMeans(x)
   sd <- apply(x, 1, stats::sd) + 1e-9

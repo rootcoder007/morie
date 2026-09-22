@@ -12,15 +12,14 @@ morie_survey_hajek_mean(y, weights)
 \item{weights}{Numeric vector of design weights aligned with \code{y}.}
 }
 \value{
-A named list with elements \code{mean}, \code{se},
-\code{ci_lower}, \code{ci_upper} (95\\% Wald confidence interval).
+A named list with elements \code{mean}, \code{se}, \code{ci_lower}, \code{ci_upper}.
 }
 \description{
 Hajek (ratio) estimator of a population mean
 }
 \examples{
 \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_survey_hajek_mean(V, V)
+set.seed(1)
+morie_survey_hajek_mean(rnorm(30, 5), runif(30, 0.5, 2))
 \dontshow{\}) # examplesIf}
 }

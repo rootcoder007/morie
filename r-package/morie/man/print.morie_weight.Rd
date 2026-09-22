@@ -11,6 +11,14 @@
 
 \item{...}{Ignored; accepted for S3 consistency.}
 }
+\value{
+The value of \code{invisible}.
+}
 \description{
 Print method for \code{morie_weight} objects
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie:::print.morie_weight(D)
+}
+\keyword{internal}

@@ -43,8 +43,49 @@
 #' b <- c(1.5, 2.5, 3.5)
 #' res <- .lbfgsm_dot(a = A, b = b)
 #' res
+
 .lbfgsm_dot <- function(a, b) {
   sum(a * b)
+}
+
+# Diagonal preconditioner for H0.
+#
+# `precond` is NULL for none, a numeric vector giving the diagonal of
+# the Hessian (its inverse becomes the scaling), or "auto" to estimate
+# that diagonal from the most recent curvature pair. The estimate is
+# elementwise |y_j| / |s_j|, which is a secant approximation to the
+# jth diagonal entry, clamped against a zero or runaway component and
+# normalised to a geometric mean of one so that it rescales directions
+# relative to one another without fighting the scalar gamma.
+.lbfgsm_precond <- function(precond, S, Y, n) {
+  if (is.null(precond)) return(NULL)
+  if (is.character(precond)) {
+    if (!identical(precond, "auto")) {
+      stop("`precond` must be NULL, \"auto\", or a numeric vector",
+           call. = FALSE)
+    }
+    nS <- length(S)
+    if (nS == 0L) return(NULL)
+    s <- S[[nS]]
+    y <- Y[[nS]]
+    d <- abs(y) / pmax(abs(s), .Machine$double.eps)
+    d[!is.finite(d) | d <= 0] <- 1
+    # a geometric mean of one: the scalar part of the model stays with
+    # gamma, and this carries only the relative scaling
+    lg <- mean(log(d))
+    if (!is.finite(lg)) return(NULL)
+    d <- d / exp(lg)
+    return(pmin(pmax(d, 1e-8), 1e8))
+  }
+  d <- as.numeric(precond)
+  if (length(d) != n) {
+    stop(sprintf("`precond` must have one entry per parameter (%d), got %d",
+                 n, length(d)), call. = FALSE)
+  }
+  if (any(!is.finite(d)) || any(d <= 0)) {
+    stop("`precond` must be positive and finite", call. = FALSE)
+  }
+  d
 }
 
 #' morie_lbfgsm
@@ -350,35 +391,4 @@ lbfgsm <- morie_lbfgsm
 #' res
 .lbfgsm_cheatsheet <- function() {
   "lbfgsm: L-BFGS two-loop recursion, H0 = (s'y/y'y) I, curvature pairs with y's <= 0 skipped, Armijo backtracking."
-}
-
-.lbfgsm_precond <- function(precond, S, Y, n) {
-  if (is.null(precond)) return(NULL)
-  if (is.character(precond)) {
-    if (!identical(precond, "auto")) {
-      stop("`precond` must be NULL, \"auto\", or a numeric vector",
-           call. = FALSE)
-    }
-    nS <- length(S)
-    if (nS == 0L) return(NULL)
-    s <- S[[nS]]
-    y <- Y[[nS]]
-    d <- abs(y) / pmax(abs(s), .Machine$double.eps)
-    d[!is.finite(d) | d <= 0] <- 1
-    # a geometric mean of one: the scalar part of the model stays with
-    # gamma, and this carries only the relative scaling
-    lg <- mean(log(d))
-    if (!is.finite(lg)) return(NULL)
-    d <- d / exp(lg)
-    return(pmin(pmax(d, 1e-8), 1e8))
-  }
-  d <- as.numeric(precond)
-  if (length(d) != n) {
-    stop(sprintf("`precond` must have one entry per parameter (%d), got %d",
-                 n, length(d)), call. = FALSE)
-  }
-  if (any(!is.finite(d)) || any(d <= 0)) {
-    stop("`precond` must be positive and finite", call. = FALSE)
-  }
-  d
 }

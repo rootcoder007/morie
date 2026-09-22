@@ -24,3 +24,7 @@ A step of the sortP_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+wl_colours(adj = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), n = 5L)
+}
+\keyword{internal}

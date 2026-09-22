@@ -19,11 +19,11 @@ NOTE: school/council/community/NTA boundaries are NOT directly
 row-key joinable to NYPD CJ data -- the CJ rows carry lat/long
 (or just precinct/borough), not a district ID. Use these loaders
 standalone for geographic context, or pair with a spatial join
-via the \code{sf} package on \code{the_geom} (not bundled to keep morie
+via the \code{sf} package on \code{the_geom} (not included to keep morie
 lightweight).
 }
 \examples{
-\dontshow{if (nzchar(system.file("extdata", "nyc_boundaries_catalog.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (nzchar(system.file("extdata", "nyc_boundaries_catalog.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 morie_datasets_nyc_boundaries_catalog()
 \dontshow{\}) # examplesIf}
 }

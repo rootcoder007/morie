@@ -20,8 +20,7 @@ Horvitz-Thompson estimator of a population total
 }
 \examples{
 \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-y <- c(1, 2, 3, 4, 5)
-pi <- rep(0.5, 5)
-morie_survey_ht_total(y, pi)
+set.seed(1)
+str(morie_survey_ht_total(rnorm(30, 5), runif(30, 0.05, 0.2)), max.level = 1)
 \dontshow{\}) # examplesIf}
 }

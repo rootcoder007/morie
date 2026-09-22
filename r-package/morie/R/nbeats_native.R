@@ -15,6 +15,9 @@
 #' \code{as.numeric}.
 #' @return A matrix, from \code{t}.
 #' @export
+#' @examples
+#' nbeats_trend_basis(length = 5L, degree = 5L)
+#' @keywords internal
 nbeats_trend_basis <- function(length, degree, offset = 0, scale = NULL) {
   if (degree < 0L) stop(sprintf("nbeats: degree must be non-negative, got %d", degree))
   sc <- if (is.null(scale)) as.numeric(length) else as.numeric(scale)
@@ -40,6 +43,9 @@ nbeats_trend_basis <- function(length, degree, offset = 0, scale = NULL) {
 #' \code{as.numeric}.
 #' @return The value of \code{do.call}.
 #' @export
+#' @examples
+#' nbeats_seasonality_basis(length = 5L, harmonics = 5L)
+#' @keywords internal
 nbeats_seasonality_basis <- function(length, harmonics, offset = 0, period = NULL) {
   if (harmonics < 1L) stop(sprintf("nbeats: need at least 1 harmonic, got %d", harmonics))
   per <- if (is.null(period)) as.numeric(length) else as.numeric(period)
@@ -63,6 +69,10 @@ nbeats_seasonality_basis <- function(length, harmonics, offset = 0, period = NUL
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' nbeats_lstsq(V, V)
+#' @keywords internal
 nbeats_lstsq <- function(X, y, ridge = 1e-8) {
   # X is L x P, y is length L; return theta
   p <- ncol(X)
@@ -87,6 +97,9 @@ nbeats_lstsq <- function(X, y, ridge = 1e-8) {
 #' @param ridge Passed to \code{nbeats_lstsq}. Defaults to \code{1e-08}.
 #' @return A list with \code{backcast}, \code{forecast}, \code{theta}.
 #' @export
+#' @examples
+#' nbeats_block(window = 5L, horizon = 5L)
+#' @keywords internal
 nbeats_block <- function(window, horizon, kind = "generic", degree = 2,
                          harmonics = 3, ridge = 1e-8) {
   if (!(kind %in% c("generic", "trend", "seasonality"))) {
@@ -126,6 +139,7 @@ nbeats_block <- function(window, horizon, kind = "generic", degree = 2,
 #' @param ridge Passed to \code{nbeats_block}. Defaults to \code{1e-08}.
 #' @return A list with \code{forecast}, \code{residual}, \code{trace}.
 #' @export
+#' @keywords internal
 nbeats_stack <- function(window, horizon, blocks, ridge = 1e-8) {
   resid <- as.numeric(window)
   total <- rep(0, as.integer(horizon))
@@ -161,6 +175,9 @@ nbeats_stack <- function(window, horizon, blocks, ridge = 1e-8) {
 #' \code{backcast}, \code{blocks}, \code{lookback}, \code{horizon}, \code{n},
 #' \code{residual_norm}, \code{window_norm}, \code{n_blocks}, \code{method}.
 #' @export
+#' @examples
+#' nbeats_forecast(y = c(1, 2, 3, 4, 5, 6, 7, 8), horizon = 5L)
+#' @keywords internal
 nbeats_forecast <- function(y, horizon, lookback = NULL, blocks = NULL, ridge = 1e-8) {
   yv <- as.numeric(y)
   n <- length(yv)
@@ -189,6 +206,9 @@ nbeats_forecast <- function(y, horizon, lookback = NULL, blocks = NULL, ridge = 
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' nbeats_cheatsheet()
+#' @keywords internal
 nbeats_cheatsheet <- function() {
   paste(paste0(
     "nbeats: each block emits a BACKCAST and a forecast from one ",

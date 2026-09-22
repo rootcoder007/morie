@@ -20,7 +20,11 @@ closed form falls straight out of the urn at \code{n=1} and
 is the anchor that fails if the two mixture weights in
 \code{urn_weights} are ever swapped.
 }
+\examples{
+tie_probability(alpha = 0.5)
+}
 \references{
 Muller, P. & Quintana, F. A. (2004). Statistical
 Science, 19(1), 95-110.
 }
+\keyword{internal}

@@ -30,8 +30,12 @@ membership under a Dirichlet-process mixture prior on the areal
 random effects, NOT a thresholded difference of continuous values,
 which is the whole point of using a DP rather than a plain CAR.
 }
+\examples{
+morie_dpgrf(W = 5L, label_draws = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
 \references{
 Li, P. et al. (2015). Bayesian Models for Detecting
 Difference Boundaries in Areal Data. Statistica Sinica, 25(1),
 385-402.
 }
+\keyword{internal}

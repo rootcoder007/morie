@@ -2,7 +2,7 @@
 % Please edit documentation in R/bayhmc_native.R
 \name{build_tree}
 \alias{build_tree}
-\title{The recursion of Algorithm 3, returning the paper\'s nine values:}
+\title{The recursion of Algorithm 3, returning the paper's nine values:}
 \usage{
 build_tree(theta, r, logu, v, j, eps, logp, grad, rnd, joint0)
 }
@@ -34,6 +34,18 @@ names are \code{tm}, \code{rm}, \code{tp}, \code{rp}, \code{t_p}, \code{n}, \cod
 }
 \description{
 the new trajectory ends (theta_minus, r_minus, theta_plus, r_plus),
-the candidate sample t_p, and the tree\'s bookkeeping (count,
+the candidate sample t_p, and the tree's bookkeeping (count,
 indicator, summed alpha, alpha normaliser).
 }
+\examples{
+logp <- function(t) -0.5 * sum(t^2)
+grad <- function(t) -t
+e <- morie:::.ghc_rng(1)
+rnd <- function() morie:::.ghc_unif(e, 1L)
+th <- c(1, -1); rr <- c(0.2, 0.1)
+j0 <- .joint(logp, th, rr)
+r <- build_tree(th, rr, logu = j0 - 1, v = 1L, j = 2L, eps = 0.1,
+                logp, grad, rnd, j0)
+str(r, max.level = 1)
+}
+\keyword{internal}

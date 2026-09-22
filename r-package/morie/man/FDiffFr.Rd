@@ -20,3 +20,8 @@ A list with \code{H}, \code{omega}, \code{T}, \code{split_form},
 gain; the factor of j is what puts the phase a quarter turn ahead,
 the +pi/2 of eq (3.127).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+FDiffFr(V)
+}
+\keyword{internal}

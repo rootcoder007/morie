@@ -6,11 +6,12 @@
 #' @param y Numeric vector (unused; kept for API parity).
 #' @param c Silverman multiplier (default 1.06).
 #' @return Named list with estimate (h), n, sigma, c, method.
+#' @examples
+#' set.seed(1)
+#' x <- rnorm(100); y <- x + rnorm(100)
+#' morie_horowitz_plr_bandwidth(x, y)
 #' @keywords internal
 #' @export
-#' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' hrzp2(V, V)
 hrzp2 <- function(x, y, c = 1.06) {
   x <- as.numeric(x)
   n <- length(x)

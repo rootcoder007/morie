@@ -16,7 +16,12 @@ List with \code{loss}, \code{nearest_distances},
 \description{
 Kozachenko-Leonenko spread regulariser
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+koleo(M)
+}
 \references{
 Oquab et al. (2024), DINOv2, TMLR 2024, Sec. 4;
 Sablayrolles et al. (2019), ICLR 2019.
 }
+\keyword{internal}

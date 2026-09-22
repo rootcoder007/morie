@@ -18,3 +18,8 @@ A list with \code{phase}, \code{omega}, \code{constant}, \code{group_delay},
 A constant phase is NOT a constant delay: the group delay is the
 derivative, which is zero, so the integrator delays nothing.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+IntPh(V)
+}
+\keyword{internal}

@@ -28,3 +28,12 @@ lagged model of eq (6.38).  Whitening by A = I - rho W profiles beta
 and sigma^2 out, so only a ONE-dimensional search in rho remains; the
 -2 log|A| Jacobian is what makes naive OLS-in-rho wrong.
 }
+\examples{
+set.seed(3)
+W <- matrix(0, 12, 12)
+W[abs(row(W) - col(W)) == 1] <- 1
+x <- rnorm(12)
+y <- 1 + 2 * x + rnorm(12, 0, 0.3)
+str(SpErrMod(x, y, W), max.level = 1)
+}
+\keyword{internal}

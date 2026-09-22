@@ -4,23 +4,22 @@
 \alias{smo_platt}
 \title{smo_platt}
 \usage{
-smo_platt(y, K, C = 1, tol = 0.001, eps = 1e-05, max_passes = 200L, seed = 0L)
+smo_platt(y, K, C = 1, tol = 0.001, eps = 1e-05, max_passes = 200, seed = 0)
 }
 \arguments{
 \item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{K}{Passed to \code{.smoopt_K}.}
+\item{K}{A matrix; indexed by row and column.}
 
-\item{C}{Passed to \code{.smoopt_bounds}. Defaults to \code{1}.}
+\item{C}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 
 \item{tol}{Passed to \code{violates_kkt}. Defaults to \code{0.001}.}
 
 \item{eps}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-05}.}
 
-\item{max_passes}{Coerced to integer by the body, with \code{as.integer}. Defaults to
-\code{200L}.}
+\item{max_passes}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.}
 
-\item{seed}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0L}.}
+\item{seed}{Passed to \code{.smoopt_make_rng}. Defaults to \code{0}.}
 }
 \value{
 A list with \code{estimate}, \code{alpha}, \code{b}, \code{passes},
@@ -33,3 +32,11 @@ A step of the smoopt_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+X <- matrix(rnorm(20), 10, 2)
+y <- sign(X[, 1])
+K <- X \%*\% t(X)
+smo_platt(y, K, C = 1.0)
+}
+\keyword{internal}

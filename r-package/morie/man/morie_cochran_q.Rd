@@ -2,7 +2,7 @@
 % Please edit documentation in R/k05_tranche2.R
 \name{morie_cochran_q}
 \alias{morie_cochran_q}
-\title{Cochran\'s Q: the R arm already lives in aaa_macn.R as}
+\title{Cochran's Q: the R arm already lives in aaa_macn.R as}
 \usage{
 morie_cochran_q(yi, vi)
 }
@@ -22,3 +22,8 @@ so rather than ship a second copy that can silently drift,
 morie_cochran_q is an alias of it. See aaa_macn.R for the references
 and the derivation.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_cochran_q(V, V)
+}
+\keyword{internal}

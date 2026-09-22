@@ -29,3 +29,11 @@ A step of the blstn_native implementation. Called by \code{morie_blstn}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+q <- strsplit("ACGTACGT", "")[[1]]
+s <- strsplit("TTACGTAA", "")[[1]]
+sc <- function(a, b) if (a == b) 5 else -4
+r <- extend_one(q, s, qi = 0L, si = 2L, w = 4L, sc, X = 20)
+str(r, max.level = 1)
+}
+\keyword{internal}

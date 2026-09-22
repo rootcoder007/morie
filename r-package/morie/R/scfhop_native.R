@@ -77,6 +77,9 @@
 #' @param smiles The molecule.
 #' @return A list of character vectors, one per atom.
 #' @export
+#' @examples
+#' morie_scfhop_types("c1ccccc1O")
+#' @keywords internal
 morie_scfhop_types <- function(smiles) {
   g <- morie_avalon_parse(smiles)
   el <- g$el
@@ -147,6 +150,16 @@ morie_scfhop_types <- function(smiles) {
 
 #' The CATS correlation vector: type pairs by topological distance
 #'
+#' Laid out pair-major, distance-minor, so entry `p * (maxdist + 1) + d` is the
+#' count of pairs of the p-th type combination exactly d bonds apart. Distance
+#' zero is an atom with itself, which is how an atom carrying two types registers
+#' at all. Scaling routes, all three defensible and all giving different answers,
+#' so the choice is the caller's. `type` divides each entry by the number of
+#' atoms carrying the two types, which is Schneider's scaling and stops a large
+#' molecule dominating simply by being large. `count` divides by the total pairs
+#' counted. `none` leaves raw counts, which is what you want if you intend to
+#' compare absolute frequencies.
+#'
 #' Laid out pair-major, distance-minor, so entry
 #' \code{p * (maxdist + 1) + d} is the count of pairs of the p-th type
 #' combination exactly d bonds apart. Distance zero is an atom with
@@ -165,6 +178,10 @@ morie_scfhop_types <- function(smiles) {
 #' @param scaling One of type, count or none.
 #' @return A numeric vector.
 #' @export
+#' @examples
+#' r <- morie_scfhop_cats("c1ccccc1CCN")
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_scfhop_cats <- function(smiles, maxdist = 9L, scaling = "type") {
   if (!(scaling %in% .scfhop_scalings))
     stop("the scaling is type, count or none")
@@ -215,6 +232,10 @@ morie_scfhop_cats <- function(smiles, maxdist = 9L, scaling = "type") {
 #' @param metric One of tanimoto, euclidean or cosine.
 #' @return A number, larger meaning closer.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_scfhop_similarity(V, V)
+#' @keywords internal
 morie_scfhop_similarity <- function(a, b, metric = "tanimoto") {
   if (length(a) != length(b))
     stop("two descriptors of different lengths cannot be compared")
@@ -247,6 +268,10 @@ morie_scfhop_similarity <- function(a, b, metric = "tanimoto") {
 #' @return A list with the surviving zero-based atom indices and the
 #'   surviving bonds.
 #' @export
+#' @examples
+#' r <- morie_scfhop_murcko("c1ccccc1CCN")
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_scfhop_murcko <- function(smiles) {
   g <- morie_avalon_parse(smiles)
   n <- length(g$el)
@@ -289,6 +314,9 @@ morie_scfhop_murcko <- function(smiles) {
 #' @param rounds The refinement depth.
 #' @return A sorted numeric vector, empty for an acyclic molecule.
 #' @export
+#' @examples
+#' morie_scfhop_signature("c1ccccc1CCc1ccccc1")
+#' @keywords internal
 morie_scfhop_signature <- function(smiles, rounds = 3L) {
   g <- morie_avalon_parse(smiles)
   mk <- morie_scfhop_murcko(smiles)
@@ -340,6 +368,12 @@ morie_scfhop_signature <- function(smiles, rounds = 3L) {
 #'   whether its scaffold differs from the lead's, and whether it is a
 #'   hop.
 #' @export
+#' @examples
+#' LEAD <- "OCCc1ccccc1"
+#' DB <- c("OCCc1ccccc1", "OCCc1ccncc1", "OCCC1CCCCC1", "OCCCCCC",
+#'     "Cc1ccccc1", "CC(=O)O")
+#' morie_scfhop(LEAD, DB)
+#' @keywords internal
 morie_scfhop <- function(lead_smiles, scaffold_db, maxdist = 9L,
                          scaling = "type", metric = "tanimoto",
                          rounds = 3L, threshold = 0) {
@@ -384,6 +418,9 @@ morie_scfhop <- function(lead_smiles, scaffold_db, maxdist = 9L,
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_scfhop_cheatsheet()
+#' @keywords internal
 morie_scfhop_cheatsheet <- function()
   paste0("scfhop: scaffold hopping. CATS pharmacophore correlation ",
          "vector for what to keep, Bemis-Murcko framework for what to ",

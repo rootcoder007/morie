@@ -26,3 +26,9 @@ list with modulated, gate, identity_at_init, note.
 Regresses gamma, beta and alpha from the conditioning vector.
 With W_alpha = 0 every block is the identity at initialisation.
 }
+\examples{
+adaln_zero(cond = c(1, 2, 3, 4, 5, 6, 7, 8), hidden = c(1, 2, 3, 4, 5, 6, 7, 8),
+  W_scale = c(1, 2, 3, 4, 5, 6, 7, 8), W_shift = c(1, 2, 3, 4, 5, 6, 7, 8),
+  W_alpha = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

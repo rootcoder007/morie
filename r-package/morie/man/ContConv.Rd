@@ -24,3 +24,8 @@ uniform grid this is the discrete convolution SCALED BY dt; dropping
 the dt is how a continuous-time convolution comes out wrong by a
 factor of the sampling interval.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+ContConv(V, V)
+}
+\keyword{internal}

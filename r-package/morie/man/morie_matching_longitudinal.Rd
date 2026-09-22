@@ -38,18 +38,16 @@ A list of class \code{morie_match_result}.
 }
 \description{
 Matches treated and control units on the basis of their pre-treatment
-covariate values.  Mirrors Python
-\code{morie.matching.match_longitudinal}.
+covariate values.
 }
 \examples{
 \donttest{
 set.seed(1)
-panel <- expand.grid(id = 1:40, t = 1:5)
-panel$t0 <- ifelse(panel$id <= 20, 4, Inf)
-panel$d <- as.integer(panel$t >= panel$t0)
-panel$x1 <- rnorm(nrow(panel))
-m <- morie_matching_longitudinal(panel, "d", "x1", unit = "id",
-                                 time = "t", treatment_time = "t0")
-str(m, max.level = 1)
+panel <- data.frame(id = rep(1:40, each = 3), t = rep(1:3, 40),
+                    x1 = rnorm(120),
+                    d = rep(rbinom(40, 1, 0.5), each = 3))
+panel$t0 <- ifelse(panel$d == 1, 3, NA)
+morie_matching_longitudinal(panel, "d", "x1", unit = "id",
+                            time = "t", treatment_time = "t0")
 }
 }

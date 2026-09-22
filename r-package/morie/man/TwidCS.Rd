@@ -21,3 +21,7 @@ A list with \code{W}, \code{cos}, \code{sin}, \code{angle}, \code{N},
 the DFT projects onto the conjugated exponential, and that sign is
 the commonest transcription error in a hand-written DFT.
 }
+\examples{
+TwidCS(npoints = 5L, n = 5L, k = 5L)
+}
+\keyword{internal}

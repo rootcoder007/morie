@@ -43,8 +43,10 @@ head(nypd$dataset_key)
 # Full catalog: bulk portals (NYC OpenData, Chicago, Toronto Hub,
 # etc.) prefer the rmoriedata companion when installed, otherwise
 # contribute zero rows with a one-time warning per portal.
-cat_df <- morie_dataset_portal_catalog()
+\donttest{
+cat_df <- morie_dataset_portal_catalog()   # builds every portal, ~6 s
 table(cat_df$source)
+}
 \dontshow{\}) # examplesIf}
 }
 \seealso{

@@ -273,14 +273,6 @@ NULL
 #'   (default 5).
 #' @param lat_col,lon_col WGS84 column names (default
 #'   \code{"LAT_WGS84"} / \code{"LONG_WGS84"}).
-#' @param randomisation Null hypothesis for the variance. \code{TRUE}
-#'   (default) treats the observed values as fixed and only their
-#'   assignment to locations as random, so the sample kurtosis enters;
-#'   \code{FALSE} assumes the values are normal draws. Randomisation is
-#'   the default because these are skewed, non-negative counts, for
-#'   which normality is the stronger and less plausible assumption.
-#'   Matches the \code{randomisation} argument of
-#'   \code{spdep::moran.test()}.
 #' @param randomisation Null hypothesis for the variance of Moran's I.
 #'   \code{TRUE} (default) fixes the observed values and randomises only
 #'   their assignment to locations, so the sample kurtosis enters;
@@ -292,8 +284,7 @@ NULL
 #' @return A named list with classes \code{morie_tps_spatial_result},
 #'   \code{morie_rich_result}, \code{list}. Numeric outputs include
 #'   \code{moran_I}, \code{expected_I}, \code{var_I}, \code{z_score},
-#'   \code{p_value}, \code{n}, plus \code{assumption} and (under
-#'   randomisation) the sample \code{kurtosis} that entered it.
+#'   \code{p_value}, \code{n}.
 #' @examples
 #' set.seed(2026)
 #' n_inc <- 400
@@ -431,10 +422,9 @@ morie_tps_morans_i_neighbourhood <- function(df,
       `Variance(I)` = var_I,
       `z-score` = z_I,
       `p-value (two-sided)` = p,
-      `Null for Var(I)` = vres$assumption,
       `Backend` = backend
     ),
-    warnings = if (is.null(var_warn)) character(0) else var_warn,
+    warnings = character(0),
     interpretation = interp,
     n = as.integer(n),
     moran_I = I_val,
@@ -442,8 +432,6 @@ morie_tps_morans_i_neighbourhood <- function(df,
     var_I = var_I,
     z_score = z_I,
     p_value = p,
-    assumption = vres$assumption,
-    kurtosis = vres$kurtosis,
     backend = backend
   )
 }
@@ -716,16 +704,17 @@ morie_tps_kde_density <- function(df,
 #' @param x A \code{morie_tps_spatial_result} object.
 #' @param ... Ignored; accepted for S3 consistency.
 #' @return \code{x}, invisibly.
-#' @export
 #' @examples
 #' \donttest{
-#' set.seed(1); n <- 200
-#' df <- data.frame(HOOD_158 = sample(sprintf("%03d", 1:20), n, TRUE),
-#'                  LAT_WGS84 = 43.65 + rnorm(n, 0, 0.05),
-#'                  LONG_WGS84 = -79.38 + rnorm(n, 0, 0.05))
-#' res <- morie_tps_morans_i_neighbourhood(df)
-#' print(res)
+#' set.seed(2026)
+#' df <- data.frame(
+#'   LAT_WGS84 = 43.6 + rnorm(120, 0, 0.05),
+#'   LONG_WGS84 = -79.4 + rnorm(120, 0, 0.05)
+#' )
+#' obj <- morie_tps_kde_density(df, bandwidth = 0.01)
+#' print(obj)
 #' }
+#' @export
 print.morie_tps_spatial_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\

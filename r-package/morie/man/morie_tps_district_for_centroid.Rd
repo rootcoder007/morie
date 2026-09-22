@@ -21,5 +21,5 @@ North York, Scarborough, York, Old Toronto, East York) are still in
 common use for district-level reporting and are bbox-defined here.
 }
 \examples{
-morie_tps_district_for_centroid(lat = 5L, lon = 5L)
+morie_tps_district_for_centroid(43.76, -79.41)
 }

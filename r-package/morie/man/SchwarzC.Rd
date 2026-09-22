@@ -20,3 +20,8 @@ A list with \code{lhs}, \code{rhs}, \code{holds}, \code{ratio},
 \description{
 A = H and B = X exp(+j2 pi f t0), IS the matched-filter derivation.
 }
+\examples{
+SchwarzC(A = c(1, 2, 3, 4, 5, 6, 7, 8), B = c(1, 2, 3, 4, 5, 6, 7, 8),
+  grid = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

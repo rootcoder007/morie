@@ -16,3 +16,8 @@ The fraction of periods with no positive demand.
 The zero share that aggregation is meant to reduce; this is the
 quantity the paper calls the self-improving mechanism.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+zero_fraction(V)
+}
+\keyword{internal}

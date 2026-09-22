@@ -2,21 +2,24 @@
 % Please edit documentation in R/gwasem_native.R
 \name{morie_gwasem_gc}
 \alias{morie_gwasem_gc}
-\title{Genomic control inflation factor}
+\title{Genomic-control inflation factor}
 \usage{
 morie_gwasem_gc(stats, df = 1)
 }
 \arguments{
-\item{stats}{Numeric vector of test statistics.}
+\item{stats}{Numeric vector of chi-square statistics.}
 
-\item{df}{Degrees of freedom (1 for chi-square, k for F).}
+\item{df}{Degrees of freedom.}
 }
 \value{
-Scalar lambda.
+Scalar.
 }
 \description{
-The ratio of the median test statistic to its null median.
+Median observed chi-square divided by its null median. A
+well-calibrated analysis sits at 1.
 }
-\references{
-Devlin, B. and Roeder, K. (1999).
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_gwasem_gc(V)
 }
+\keyword{internal}

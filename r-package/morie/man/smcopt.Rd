@@ -7,27 +7,27 @@
 smcopt(
   objective,
   initial,
-  n_particles = 200L,
-  n_steps = 30L,
+  n_particles = 200,
+  n_steps = 30,
   phi_max = 50,
   phi_min = 0.1,
   kind = "geometric",
   kernel = NULL,
   ess_threshold = 0.5,
   scheme = "systematic",
-  seed = 0L,
+  seed = 0,
   maximise = TRUE
 )
 }
 \arguments{
 \item{objective}{The body requires: smcopt: the objective was never evaluated.}
 
-\item{initial}{Passed to \code{smcsam}.}
+\item{initial}{See Usage.}
 
 \item{n_particles}{Coerced to integer by the body, with \code{as.integer}. Defaults to
-\code{200L}.}
+\code{200}.}
 
-\item{n_steps}{Passed to \code{annealing_ladder}. Defaults to \code{30L}.}
+\item{n_steps}{Passed to \code{annealing_ladder}. Defaults to \code{30}.}
 
 \item{phi_max}{Passed to \code{annealing_ladder}. Defaults to \code{50}.}
 
@@ -35,13 +35,13 @@ smcopt(
 
 \item{kind}{Passed to \code{annealing_ladder}. Defaults to \code{"geometric"}.}
 
-\item{kernel}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{kernel}{Defaults to \code{NULL}.}
 
-\item{ess_threshold}{Passed to \code{smcsam}. Defaults to \code{0.5}.}
+\item{ess_threshold}{Defaults to \code{0.5}.}
 
-\item{scheme}{Passed to \code{smcsam}. Defaults to \code{"systematic"}.}
+\item{scheme}{Defaults to \code{"systematic"}.}
 
-\item{seed}{Passed to \code{smcsam}. Defaults to \code{0L}.}
+\item{seed}{Defaults to \code{0}.}
 
 \item{maximise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
@@ -56,3 +56,4 @@ A step of the smcopt_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

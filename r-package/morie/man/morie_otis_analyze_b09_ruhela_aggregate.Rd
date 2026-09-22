@@ -22,7 +22,6 @@ b09 aggregate Ruhela: Female -> individuals in segregation
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_b09 <- morie_synth_otis("b09", n = 120L, seed = 1L)
 morie_otis_analyze_b09_ruhela_aggregate(otis_b09)
 }

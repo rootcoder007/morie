@@ -33,3 +33,7 @@ A step of the clrnt_native implementation. Called by \code{clrnt}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+observed_clint_u(cl_h = 12, fu_blood = 0.1, species = "human")
+}
+\keyword{internal}

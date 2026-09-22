@@ -23,3 +23,7 @@ cross-correlation vector from data and solve for the tap weights.
 The biased (1/N) ACF estimate is used, which is what makes Phi
 nonnegative-definite and so keeps the system solvable.
 }
+\examples{
+Whopf(x = c(1, 2, 3, 4, 5, 6, 7, 8), d = c(1, 2, 3, 4, 5, 6, 7, 8), order = 5L)
+}
+\keyword{internal}

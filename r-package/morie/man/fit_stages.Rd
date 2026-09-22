@@ -28,3 +28,16 @@ prediction from a fresh AOL prognostic fit. That augmentation is
 what stops the sample from shrinking stage by stage: every
 subject contributes at every stage.
 }
+\examples{
+set.seed(3)
+n <- 40
+H1 <- matrix(rnorm(n * 2), n, 2)
+A1 <- sample(c(-1, 1), n, replace = TRUE)
+R1 <- 1 + A1 * H1[, 1] + rnorm(n, 0, 0.3)
+H2 <- matrix(rnorm(n * 2), n, 2)
+A2 <- sample(c(-1, 1), n, replace = TRUE)
+R2 <- 1 + A2 * H2[, 1] + rnorm(n, 0, 0.3)
+r <- fit_stages(list(list(R1, A1, H1), list(R2, A2, H2)))
+str(r, max.level = 1)
+}
+\keyword{internal}

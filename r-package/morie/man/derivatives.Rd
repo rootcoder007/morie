@@ -27,3 +27,4 @@ A step of the hiatus_native implementation. Called by \code{.hiatus_simulate}.
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

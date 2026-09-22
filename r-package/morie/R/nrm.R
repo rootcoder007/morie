@@ -11,7 +11,16 @@
 #
 # Helpers live in aaa_helpers_irt.R.
 
-#' @noRd
+#' morie_nominal_response_bock
+#'
+#' @param theta Argument `theta`; see Usage.
+#' @param a_k Argument `a_k`; see Usage.
+#' @param c_k Argument `c_k`; see Usage.
+#' @return A list with `p`, `eta`, `expected`, `info`, `theta`, `a_k`, `c_k`, `ncat`, `n`, `method`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_nominal_response_bock(V)
+#' @keywords internal
 morie_nominal_response_bock <- function(theta, a_k = c(0, 1), c_k = c(0, 0)) {
   th <- as.numeric(theta)
   n <- length(th)

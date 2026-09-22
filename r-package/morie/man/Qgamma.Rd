@@ -21,3 +21,8 @@ A step of the dist_native implementation. Called by \code{Qchisq}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Qgamma(V, V)
+}
+\keyword{internal}

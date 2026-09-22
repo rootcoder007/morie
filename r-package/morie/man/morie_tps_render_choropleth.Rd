@@ -52,11 +52,22 @@ Renders a sequential-colour choropleth from a polygon data.frame
 carrying one row per neighbourhood with a list-column of WGS84
 (lon, lat) rings (\code{geometry}) and a numeric \code{rate_col}.
 This signature deliberately matches what
-\code{morie::morie_fetch("https://.../NeighbourhoodCrimeRates...",
+\eqn{morie::morie_fetch("https://.../NeighbourhoodCrimeRates...",
 format = "geojson")} returns once unrolled.
 }
 \details{
 When \pkg{ggplot2} is available the render uses
 \code{geom_polygon} + \code{scale_fill_distiller}; otherwise the
 base R \code{polygon()} primitive is used.
+}
+\examples{
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+ring <- lapply(seq(0, 2 * pi, length.out = 8), function(a) {
+  list(-79.40 + 0.02 * cos(a), 43.70 + 0.01 * sin(a))
+})
+polys <- data.frame(HOOD_ID = 1, RATE = 5)
+polys$geometry <- list(ring)
+out <- morie_tps_render_choropleth(polys, rate_col = "RATE",
+                                   outfile = tempfile(fileext = ".png"))
+\dontshow{\}) # examplesIf}
 }

@@ -19,3 +19,10 @@ A step of the sarimax_native implementation. Called by \code{aicc}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+if (requireNamespace("MASS", quietly = TRUE)) {
+  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+  aic(V, V)
+}
+}
+\keyword{internal}

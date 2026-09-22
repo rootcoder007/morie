@@ -23,11 +23,23 @@ A named list mirroring the RichResult payload: \code{estimate},
 \code{method}, \code{identical_to}.
 }
 \description{
-Fit the two-way model on \strong{untreated} observations only, impute
+Fit the two-way model on \emph{*untreated*} observations only, impute
 the untreated potential outcome everywhere, and average the
 residual within each \eqn{(g, t)}{(g, t)} cell.  Sec. 5 proves
 this is numerically identical to \code{morie_etwfe}.
 }
+\examples{
+set.seed(1)
+nu <- 4; T <- 5
+unit <- rep(1:nu, each = T)
+period <- rep(1:T, nu)
+ft_unit <- c(NA, NA, 4, 4)
+first_treated <- rep(ft_unit, each = T)
+treated_now <- !is.na(first_treated) & period >= first_treated
+Y <- rnorm(nu * T) + treated_now * 2
+morie_imputation(Y, unit, period, first_treated)
+}
 \references{
 Wooldridge (2025) Sec. 4.
 }
+\keyword{internal}

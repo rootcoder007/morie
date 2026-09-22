@@ -24,3 +24,7 @@ product, which eq (4.63) then turns into a sum.  The convolution is
 scaled by dt as in eq (3.30), so the identity holds in the
 continuous-time sense rather than up to a sampling-interval factor.
 }
+\examples{
+FtConv(x = c(1, 2, 3, 4, 5, 6, 7, 8), h = 0.5, omega = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

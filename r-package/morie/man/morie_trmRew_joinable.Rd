@@ -23,3 +23,7 @@ A step of the trmRew_native implementation. Called by \code{morie_trmRew_is_loca
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_trmRew_joinable(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, rules = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

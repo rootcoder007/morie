@@ -2,16 +2,23 @@
 % Please edit documentation in R/patchT_native.R
 \name{instance_norm}
 \alias{instance_norm}
-\title{Standardise one series to zero mean and unit variance. Applied}
+\title{instance_norm}
 \usage{
 instance_norm(x)
 }
 \arguments{
-\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{x}{Passed to \code{.patcht_vec}.}
 }
 \value{
 A list with \code{normalised}, \code{mean}, \code{sd}, \code{degenerate}.
 }
 \description{
-per instance before patching and reversed afterwards.
+A step of the patchT_native implementation. Called by \code{patchtst_encode}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+instance_norm(V)
+}
+\keyword{internal}

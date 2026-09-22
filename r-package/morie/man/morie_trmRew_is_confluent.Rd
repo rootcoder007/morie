@@ -2,7 +2,7 @@
 % Please edit documentation in R/trmRew_native.R
 \name{morie_trmRew_is_confluent}
 \alias{morie_trmRew_is_confluent}
-\title{Confluence via Newman\'s lemma: terminating and locally confluent}
+\title{Confluence via Newman's lemma: terminating and locally confluent}
 \usage{
 morie_trmRew_is_confluent(rules, precedence, max_steps = 10000)
 }
@@ -22,3 +22,12 @@ A step of the trmRew_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+x <- morie_unifAlg_var("x")
+zero <- morie_unifAlg_const("0")
+r1 <- morie_trmRew_rule(morie_unifAlg_app("plus", zero, x), x)
+r2 <- morie_trmRew_rule(morie_unifAlg_app("plus", x, zero), x)
+morie_trmRew_is_confluent(list(r1, r2),
+                          precedence = c(plus = 2, "0" = 1))
+}
+\keyword{internal}

@@ -14,14 +14,15 @@
 #' @return list(estimate, y_hat, train_loss, se, n, method).
 #' @references Friedman (2001); Montesinos Lopez Ch 9.
 #' @examples
+#' set.seed(1)
 #' morie_gradient_boosting_genomic(
 #'   x = rnorm(50), y = rnorm(50),
 #'   markers = matrix(sample(0:2, 200, TRUE), 50, 4)
 #' )
 #' @export
 morie_gradient_boosting_genomic <- function(x, y, markers, n_estimators = 100,
-                                      learning_rate = 0.1, max_depth = 3,
-                                      seed = 0) {
+                                            learning_rate = 0.1, max_depth = 3,
+                                            seed = 0) {
   .morie_local_seed(seed)
   y <- as.numeric(y)
   n <- length(y)
@@ -38,7 +39,8 @@ morie_gradient_boosting_genomic <- function(x, y, markers, n_estimators = 100,
     if (any(keep) && !all(keep)) feats <- feats[, keep, drop = FALSE]
   }
   fit <- .morie_gb_fit(
-    feats, y, task = "regression", n_estimators = as.integer(n_estimators),
+    feats, y,
+    task = "regression", n_estimators = as.integer(n_estimators),
     learning_rate = learning_rate, max_depth = as.integer(max_depth),
     min_node = 2L
   )

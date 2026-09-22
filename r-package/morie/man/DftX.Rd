@@ -17,3 +17,8 @@ The value of \code{r}, as built in the body.
 \description{
 the folding frequency fs/2 are the two real-valued bins.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+DftX(V)
+}
+\keyword{internal}

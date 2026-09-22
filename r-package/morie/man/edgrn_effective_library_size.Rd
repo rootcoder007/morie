@@ -19,3 +19,7 @@ A step of the edgrn_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+edgrn_effective_library_size(library_size = 5L, factor = 5L)
+}
+\keyword{internal}

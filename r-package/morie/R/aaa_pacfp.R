@@ -13,7 +13,14 @@
 # Box, Jenkins, Reinsel & Ljung (2015) sec. 3.2.6; Durbin (1960),
 # Revue de l'Institut International de Statistique 28(3):233-244.
 
-#' @noRd
+#' morie_partial_autocorrelation
+#'
+#' @param y Argument `y`; see Usage.
+#' @param lag_max Argument `lag_max`; see Usage.
+#' @return A list with `pacf`, `acf`, `phi`, `lag_max`, `n`, `method`.
+#' @examples
+#' morie:::morie_partial_autocorrelation(y = c(1, 2, 3, 4, 5, 6, 7, 8), lag_max = 5L)
+#' @keywords internal
 morie_partial_autocorrelation <- function(y, lag_max) {
   v <- as.numeric(y)
   n <- length(v)
@@ -53,7 +60,8 @@ morie_partial_autocorrelation <- function(y, lag_max) {
       if (abs(den) < 1e-300) {
         stop(sprintf(
           "Levinson-Durbin denominator vanished at lag %d; series is degenerate.",
-          k), call. = FALSE)
+          k
+        ), call. = FALSE)
       }
       phi_kk <- num / den
       phi_cur <- numeric(k)

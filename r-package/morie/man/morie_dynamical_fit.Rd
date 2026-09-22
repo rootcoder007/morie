@@ -45,3 +45,8 @@ grid search on alpha, beta, gamma, t_switch. The loop stops as soon
 as no candidate improves the residual, so the rss_history is the
 visible monotone sequence.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_dynamical_fit(V, V)
+}
+\keyword{internal}

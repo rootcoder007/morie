@@ -270,8 +270,8 @@ Rmstdiff <- function(time, event, group, tau = NULL,
 #' Martingale-based residuals for survival models. Biometrika 77(1), 147-160.
 #' @export
 #' @examples
-#' Martingale(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0), X =
-#' c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5)
+#' Martingale(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0),
+#'   X = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5)
 Martingale <- function(time, event, X, beta) {
   # M_i = delta_i - H0(t_i) exp(x_i' beta): observed events minus
   # expected.  They sum to zero at the fitted beta, which is returned as
@@ -352,8 +352,8 @@ Devresid <- function(time, event, X, beta) {
 #' JRSS-B 30(2), 248-275.
 #' @export
 #' @examples
-#' Coxsnell(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0), X = c(1,
-#' 2, 3, 4, 5, 6, 7, 8), beta = 0.5)
+#' Coxsnell(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0),
+#'   X = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5)
 Coxsnell <- function(time, event, X, beta) {
   # r_i = H0(t_i) exp(x_i' beta) = delta_i - M_i, the fitted cumulative
   # hazard.  If the model is right these behave like a censored unit
@@ -593,8 +593,11 @@ Cif <- function(time, cause, code = 1, alpha = 0.05) {
 #' subdistribution of a competing risk. JASA 94(446), 496-509.
 #' @export
 #' @examples
-#' Finegray(time = c(1, 2, 3, 4, 5, 6, 7, 8), cause = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1,
-#' 2, 3, 4, 5, 6, 7, 8))
+#' # cause: 1 is the event of interest, 2 a competing event, 0 censored.
+#' time  <- c(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)
+#' cause <- c(1, 2, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0)
+#' X     <- c(0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0)
+#' Finegray(time = time, cause = cause, X = X)$coef
 Finegray <- function(time, cause, X, code = 1,
                                     max_iter = 50L, tol = 1e-9) {
   # Fine and Gray (1999, JASA 94:496-509).  A Cox model on the
@@ -1041,8 +1044,8 @@ Parasurv <- function(time, event, dist = "weibull") {
 #' Failure Time Data, 2nd ed., Wiley, Chapter 3.
 #' @export
 #' @examples
-#' Aftfit(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0), X = c(1,
-#' 2, 3, 4, 5, 6, 7, 8))
+#' Aftfit(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0),
+#'   X = c(1, 2, 3, 4, 5, 6, 7, 8))
 Aftfit <- function(time, event, X, dist = "weibull",
                                alpha = 0.05) {
   # log T = x'beta + sigma W.  Coefficients act MULTIPLICATIVELY ON TIME:

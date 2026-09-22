@@ -21,3 +21,7 @@ Cross-time is \code{O(D L^2)}. Cross-dimension is \code{O(c D L)}
 through the router against \code{O(D^2 L)} all-pairs. Flattening
 the whole array would be \code{O(D^2 L^2)}.
 }
+\examples{
+morie_crsfmr_complexity(L = c(1, 2, 3, 4, 5, 6, 7, 8), D = 5L, c = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

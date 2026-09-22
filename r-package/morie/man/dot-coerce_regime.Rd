@@ -7,7 +7,7 @@
 .coerce_regime(regime, n)
 }
 \arguments{
-\item{regime}{Optional; may be \code{NULL}. Character; passed to \code{tolower}.}
+\item{regime}{Optional; may be \code{NULL}. A matrix; indexed by row and column.}
 
 \item{n}{Passed to \code{==}.}
 }
@@ -15,7 +15,7 @@
 Nothing; this branch always raises.
 }
 \description{
-A step of the tmldyn_native implementation. Called by \code{morie_tmle_dynamic_regime}.
+A step of the tmldyn_native implementation. Called by \code{morie_tmldyn}.
 See the file header for the source the module follows.
 source it follows.
 }

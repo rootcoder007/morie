@@ -18,11 +18,7 @@ intraclass_correlation(data, targets, raters, ratings, icc_type = "ICC3k")
 \item{icc_type}{One of "ICC1", "ICC1k", "ICC2", "ICC2k", "ICC3", "ICC3k".}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the between-subjects F statistic, p-value, df, the chosen ICC as
-both \code{effect_size} and \code{estimate}, n (subjects), and
-\code{extra} list with \code{icc_type}, \code{n_raters}, \code{ms_rows}
-and \code{ms_error}.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Intraclass correlation coefficient (Shrout & Fleiss 1979)

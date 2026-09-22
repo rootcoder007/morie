@@ -26,3 +26,7 @@ A list with \code{squared_magnitude}, \code{magnitude}, \code{half_spectrum},
 H(k) = H(K-k).  The book defines kc = ceil(K wc/ws) and that CEILING
 matters: rounding down puts the realized cutoff below the request.
 }
+\examples{
+BwLpDft(16, kc = 4, N = 2)
+}
+\keyword{internal}

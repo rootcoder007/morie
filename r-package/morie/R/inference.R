@@ -56,6 +56,7 @@ morie_two_sample_t_test <- function(x1, x2,
 #' @param alternative `"two.sided"`, `"greater"`, or `"less"`.
 #' @return Named list: `t`, `df`, `p_value`, `ci`.
 #' @examples
+#' set.seed(1)
 #' morie_one_sample_t_test(x = rnorm(50))
 #' @export
 morie_one_sample_t_test <- function(x, mu0 = 0,
@@ -248,6 +249,7 @@ morie_wilcoxon_signed_rank_test <- function(x1, x2,
 #' @param alpha Significance level for the `is_normal` flag (default 0.05).
 #' @return Named list: `W`, `p_value`, `is_normal`.
 #' @examples
+#' set.seed(1)
 #' morie_shapiro_wilk_test(x = rnorm(50))
 #' @export
 morie_shapiro_wilk_test <- function(x, alpha = 0.05) {
@@ -467,78 +469,11 @@ morie_risk_difference_ci <- function(table_2x2, alpha = 0.05) {
 # Effect sizes
 # ---------------------------------------------------------------------------
 
-#' Cohen's d effect size
-#'
-#' @param x1 Numeric vector (group 1).
-#' @param x2 Numeric vector (group 2).
-#' @param pooled Use pooled SD (default `TRUE`). If `FALSE`, uses `sd(x2)`.
-#' @return Numeric Cohen's d.
-#' @examples
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' @export
-morie_cohens_d <- function(x1, x2, pooled = TRUE) {
-  m1 <- mean(x1, na.rm = TRUE)
-  m2 <- mean(x2, na.rm = TRUE)
-  n1 <- sum(!is.na(x1))
-  n2 <- sum(!is.na(x2))
-  s1 <- stats::sd(x1, na.rm = TRUE)
-  s2 <- stats::sd(x2, na.rm = TRUE)
-  sd_denom <- if (pooled) {
-    sqrt(((n1 - 1) * s1^2 + (n2 - 1) * s2^2) / (n1 + n2 - 2))
-  } else {
-    s2
-  }
-  d <- (m1 - m2) / sd_denom
-  if (!is.finite(d)) {
-    warning("Cohen's d is undefined here: the standard deviation in the ",
-            "denominator is zero or missing (fewer than two observations, ",
-            "or no within-group variation).", call. = FALSE)
-  }
-  d
-}
-
-#' Hedges' g (bias-corrected Cohen's d)
-#'
-#' @inheritParams morie_cohens_d
-#' @return Numeric Hedges' g.
-#' @examples
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' @export
-morie_hedges_g <- function(x1, x2) {
-  d <- morie_cohens_d(x1, x2, pooled = TRUE)
-  n1 <- sum(!is.na(x1))
-  n2 <- sum(!is.na(x2))
-  m <- n1 + n2 - 2  # degrees of freedom
-  if (m <= 0) return(d)
-  # Exact gamma-based small-sample correction (Hedges 1981):
-  # J(m) = Gamma(m/2) / (sqrt(m/2) * Gamma((m-1)/2))
-  # Matches Python inference.py:hedges_g; the older 1 - 3/(4m-1)
-  # approximation diverged from this at small m.
-  log_J <- lgamma(m / 2) - 0.5 * log(m / 2) - lgamma((m - 1) / 2)
-  d * exp(log_J)
-}
-
-#' Eta-squared from F-statistic
+#' Omega-squared (less biased than eta-squared)
 #'
 #' @param f_stat F statistic.
 #' @param df_between Degrees of freedom (numerator).
 #' @param df_within Degrees of freedom (denominator).
-#' @return Numeric eta-squared.
-#' @examples
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' @export
-morie_eta_squared <- function(f_stat, df_between, df_within) {
-  ss_between <- f_stat * df_between
-  ss_total <- ss_between + df_within
-  ss_between / ss_total
-}
-
-#' Omega-squared (less biased than eta-squared)
-#'
-#' @inheritParams morie_eta_squared
 #' @param n Total sample size.
 #' @return Numeric omega-squared.
 #' @export
@@ -548,28 +483,13 @@ morie_omega_squared <- function(f_stat, df_between, df_within, n) {
   (df_between * (f_stat - 1)) / (df_between * (f_stat - 1) + n)
 }
 
-#' Cramer's V for categorical association
-#'
-#' @param contingency_table A numeric matrix of observed counts.
-#' @return Numeric Cramer's V in the interval \[0, 1\].
-#' @examples
-#' morie_cramers_v(matrix(c(10, 20, 30, 40), nrow = 2))
-#' @export
-morie_cramers_v <- function(contingency_table) {
-  m <- as.matrix(contingency_table)
-  result <- stats::chisq.test(m, correct = FALSE)
-  chi2 <- as.numeric(result$statistic)
-  n <- sum(m)
-  k <- min(nrow(m), ncol(m))
-  sqrt(chi2 / (n * (k - 1)))
-}
-
 #' Spearman rank correlation
 #'
 #' @param x Numeric vector.
 #' @param y Numeric vector.
 #' @return Named list: `rho`, `p_value`.
 #' @examples
+#' set.seed(1)
 #' morie_spearman_rho(x = rnorm(50), y = rnorm(50))
 #' @export
 morie_spearman_rho <- function(x, y) {
@@ -583,6 +503,7 @@ morie_spearman_rho <- function(x, y) {
 #' @param y Numeric vector.
 #' @return Named list: `tau`, `p_value`.
 #' @examples
+#' set.seed(1)
 #' morie_kendall_tau(x = rnorm(50), y = rnorm(50))
 #' @export
 morie_kendall_tau <- function(x, y) {
@@ -691,4 +612,51 @@ morie_sample_size_logistic <- function(p0, or, alpha = 0.05, power = 0.80,
   p_bar <- (p0 + p1) / 2
   n <- as.integer(ceiling((z_a + z_b)^2 / (p_bar * (1 - p_bar) * (log(or))^2)))
   n
+}
+
+#' Cohen's d effect size
+#'
+#' @param x1 Numeric vector (group 1).
+#' @param x2 Numeric vector (group 2).
+#' @param pooled Use pooled SD (default `TRUE`). If `FALSE`, uses `sd(x2)`.
+#' @return Numeric Cohen's d.
+#' @examples
+#' set.seed(1)
+#' morie_cohens_d(rnorm(50, mean = 1), rnorm(50, mean = 0))
+#' @export
+morie_cohens_d <- function(x1, x2, pooled = TRUE) {
+  m1 <- mean(x1, na.rm = TRUE)
+  m2 <- mean(x2, na.rm = TRUE)
+  n1 <- sum(!is.na(x1))
+  n2 <- sum(!is.na(x2))
+  s1 <- stats::sd(x1, na.rm = TRUE)
+  s2 <- stats::sd(x2, na.rm = TRUE)
+  sd_denom <- if (pooled) {
+    sqrt(((n1 - 1) * s1^2 + (n2 - 1) * s2^2) / (n1 + n2 - 2))
+  } else {
+    s2
+  }
+  d <- (m1 - m2) / sd_denom
+  if (!is.finite(d)) {
+    warning("Cohen's d is undefined here: the standard deviation in the ",
+            "denominator is zero or missing (fewer than two observations, ",
+            "or no within-group variation).", call. = FALSE)
+  }
+  d
+}
+
+#' Cramer's V for categorical association
+#'
+#' @param contingency_table A numeric matrix of observed counts.
+#' @return Numeric Cramer's V in the interval \[0, 1\].
+#' @examples
+#' morie_cramers_v(matrix(c(10, 20, 30, 40), nrow = 2))
+#' @export
+morie_cramers_v <- function(contingency_table) {
+  m <- as.matrix(contingency_table)
+  result <- stats::chisq.test(m, correct = FALSE)
+  chi2 <- as.numeric(result$statistic)
+  n <- sum(m)
+  k <- min(nrow(m), ncol(m))
+  sqrt(chi2 / (n * (k - 1)))
 }

@@ -21,3 +21,8 @@ A list with \code{y}, \code{mean_signal}, \code{mean_noise},
 uncorrelated, so the sample correlation is measured and both the
 observed and the additive variance are returned side by side.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+NoiseModel(V, V)
+}
+\keyword{internal}

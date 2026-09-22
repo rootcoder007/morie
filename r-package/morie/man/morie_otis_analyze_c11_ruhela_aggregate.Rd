@@ -22,7 +22,6 @@ c11 aggregate Ruhela: long-duration bin (>=16 days) -> RC
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_c11 <- morie_synth_otis("c11", n = 120L, seed = 1L)
 morie_otis_analyze_c11_ruhela_aggregate(otis_c11)
 }

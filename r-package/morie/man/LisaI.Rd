@@ -18,3 +18,10 @@ A list with \code{local}, \code{expectation}, \code{lagged}, \code{global_i},
 \description{
 a non-zero gap means the weights or the scaling are wrong.
 }
+\examples{
+set.seed(1)
+W <- matrix(0, 5, 5)
+W[abs(row(W) - col(W)) == 1] <- 1
+LisaI(rnorm(5), W)
+}
+\keyword{internal}

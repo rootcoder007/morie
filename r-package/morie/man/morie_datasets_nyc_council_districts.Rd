@@ -7,7 +7,7 @@
 morie_datasets_nyc_council_districts(offline = TRUE, max_features = NULL)
 }
 \arguments{
-\item{offline}{If \code{TRUE} (default), reads the bundled CSV.}
+\item{offline}{If \code{TRUE} (default), reads the included CSV.}
 
 \item{max_features}{Optional row cap.}
 }
@@ -15,10 +15,10 @@ morie_datasets_nyc_council_districts(offline = TRUE, max_features = NULL)
 A \code{data.frame} with \code{coundist}, \code{shape_leng}, \code{shape_area}.
 }
 \description{
-Phase 3CCC2. Bundled snapshot of NYC OpenData
+Phase 3CCC2. Included snapshot of NYC OpenData
 \verb{872g-cjhh} (51 districts).
 }
 \examples{
 df <- morie_datasets_nyc_council_districts(offline = TRUE)
-range(as.integer(df$coundist))  # districts 1 through 51
+range(as.integer(df$coundist)) # districts 1 through 51
 }

@@ -42,6 +42,14 @@ Each coordinate is updated in turn through one slice transition on
 its full conditional. This is the Damien-Wakefield-Walker construction:
 a non-conjugate conditional is replaced by an auxiliary uniform draw.
 }
+\examples{
+lcs <- list(
+  function(x, others) -0.5 * (x - 0.5 * others[1])^2,
+  function(x, others) -0.5 * (x - 0.5 * others[1])^2)
+r <- morie_gibbs_slice(lcs, x0 = c(0, 0), n = 300L, seed = 1)
+str(r, max.level = 1)
+}
 \references{
 Damien, P., Wakefield, J. & Walker, S. (1999).
 }
+\keyword{internal}

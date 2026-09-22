@@ -22,3 +22,8 @@ A list with \code{lhs}, \code{rhs}, \code{holds}, \code{equality}, \code{k},
 \description{
 functions collinear as vectors in function space.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+SchwarzR(V, V)
+}
+\keyword{internal}

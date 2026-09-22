@@ -17,3 +17,7 @@ A step of the timesfm_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_timesfm_causal_mask(n_patches = 5L)
+}
+\keyword{internal}

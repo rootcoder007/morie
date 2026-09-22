@@ -1,26 +1,23 @@
-# Lloyd-Max optimal scalar quantiser. Sources: Lloyd, S. P. (1982)
-# "Least squares quantization in PCM", IEEE Trans. Inf. Theory 28(2),
-# 129-137 (the alternating nearest-neighbour and centroid conditions
-# and the monotone-distortion convergence); Max, J. (1960)
-# "Quantizing for minimum distortion", IRE Trans. Inf. Theory 6(1),
-# 7-12 (the published version of the same iteration and Max's Table
-# I of N(0,1) codebooks).
+# Lloyd-Max optimal scalar quantiser.
+# Sources: Lloyd, S. P. (1982) Least squares quantization in PCM, IEEE
+# Transactions on Information Theory 28(2), 129-137 (written 1957);
+# Max, J. (1960) Quantizing for minimum distortion, IRE Transactions
+# on Information Theory 6(1), 7-12. The two conditions -- decision
+# boundary midway between codewords, codeword equal to the conditional
+# mean of its cell -- give the Lloyd-Max algorithm, with monotonic
+# distortion decrease.
 #
 # Native implementation mirroring Python morie.fn.tqlld exactly: the
-# same alternating step (boundaries midway between codewords, then
-# codewords as cell centroids), the same three sources (N(0,1) by
-# midpoint quadrature on a fine grid, empirical 1-D k-means on
-# supplied samples, and the closed-form uniform case), the same
-# monotonicity in `distortion_history', the same empty-cell guard
-# that keeps the old codeword rather than collapsing to NaN, and the
-# same Gaussian distortion 1 - sum(m_k * y_k) by the overall
-# E[X^2] = 1 identity.
+# same three sources (gaussian, empirical, uniform), the same closed
+# form for the uniform case, the same empirical cell assignment by a
+# single index advance, the same gaussian-cell mass/moment by
+# midpoint quadrature, the same validation messages.
 
-# --- helpers --------------------------------------------------------
+.SOURCES <- c("gaussian", "empirical", "uniform")
 
 #' .tqlld_phi
 #'
-#' A step of the tqlld_native implementation. Called by \code{.tqlld_gaussian_cells}.
+#' A step of the tqlld_native implementation. Called by \code{.gaussian_cells}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -33,10 +30,9 @@
 #' res
 .tqlld_phi <- function(x) exp(-0.5 * x * x) / sqrt(2 * pi)
 
-# Midpoint-quadrature mass and first moment of N(0,1) on each cell.
-#' Midpoint-quadrature mass and first moment of N(0,1) on each cell
+#' .gaussian_cells
 #'
-#' A step of the tqlld_native implementation. Called by \code{morie_tqlld_lloyd_max_codebook}.
+#' A step of the tqlld_native implementation. Called by \code{morie_tqlld}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -46,75 +42,68 @@
 #' @param n_grid Numeric; combined arithmetically in the body.
 #' @return A list with \code{mass}, \code{mom}.
 #' @export
-.tqlld_gaussian_cells <- function(bounds, lo, hi, n_grid) {
+.gaussian_cells <- function(bounds, lo, hi, n_grid) {
   edges <- c(lo, bounds, hi)
-  m <- length(edges) - 1L
-  mass <- numeric(m)
-  mom <- numeric(m)
-  for (k in seq_len(m)) {
+  mass <- mom <- numeric(length(edges) - 1L)
+  for (k in seq_len(length(edges) - 1L)) {
     a <- edges[k]
     b <- edges[k + 1L]
     if (b <= a) next
-    cells <- max(2L, as.integer(n_grid * (b - a) / (hi - lo)) + 2L)
-    h <- (b - a) / cells
-    for (i in seq_len(cells)) {
+    m <- max(2L, as.integer(n_grid * (b - a) / (hi - lo)) + 2L)
+    h <- (b - a) / m
+    for (i in seq_len(m)) {
       x <- a + (i - 0.5) * h
       w <- .tqlld_phi(x) * h
       mass[k] <- mass[k] + w
-      mom[k]  <- mom[k]  + x * w
+      mom[k] <- mom[k] + x * w
     }
   }
   list(mass = mass, mom = mom)
 }
 
-#' Lloyd-Max optimal scalar codebook
-#'
-#' Returns a list with \code{codebook}, \code{boundaries},
-#' \code{distortion}, \code{distortion_history}, \code{iterations},
-#' \code{converged}, \code{source}, \code{levels} and \code{method}.
-#' The uniform source has a closed form; the Gaussian and empirical
-#' sources iterate the nearest-neighbour and centroid conditions
-#' until both hold.
+#' Optimal levels-point scalar codebook
 #'
 #' @param levels Number of codewords.
 #' @param source One of \code{"gaussian"}, \code{"empirical"},
 #'   \code{"uniform"}.
-#' @param data Empirical samples for \code{source = "empirical"}.
-#' @param lo,hi Range for the uniform source.
-#' @param max_iter Maximum alternations.
-#' @param tol Convergence tolerance on codeword shift and distortion
-#'   change.
-#' @param n_grid Number of quadrature points for the Gaussian source.
+#' @param data Samples for the empirical source.
+#' @param lo Lower bound for the uniform source.
+#' @param hi Upper bound for the uniform source.
+#' @param max_iter Maximum iterations.
+#' @param tol Convergence tolerance.
+#' @param n_grid Quadrature grid size for the Gaussian source.
+#' @return A list with \code{estimate}, \code{codebook},
+#'   \code{boundaries}, \code{distortion},
+#'   \code{distortion_history}, \code{iterations}, \code{converged},
+#'   \code{source}, \code{levels}, \code{lo}, \code{hi} (uniform
+#'   only), \code{method}.
+#' @references Lloyd, S. P. (1982); Max, J. (1960).
 #' @export
-#' @aliases morie_tqlld_tqlld morie_tqlld_turboquant_lloyd_max_codebook
-morie_tqlld_lloyd_max_codebook <- function(levels = 4L,
-                                           source = "gaussian",
-                                           data = NULL,
-                                           lo = NULL, hi = NULL,
-                                           max_iter = 200L,
-                                           tol = 1e-12,
-                                           n_grid = 20000L) {
+#' @examples
+#' morie_tqlld()
+#' @keywords internal
+morie_tqlld <- function(levels = 4, source = "gaussian", data = NULL,
+                         lo = NULL, hi = NULL, max_iter = 200,
+                         tol = 1e-12, n_grid = 20000) {
   N <- as.integer(levels)
   if (N < 1L) stop("lloyd_max_codebook: levels must be >= 1")
   src <- tolower(as.character(source))
-  if (!(src %in% c("gaussian", "empirical", "uniform")))
-    stop("lloyd_max_codebook: source must be one of gaussian/empirical/uniform")
-
+  if (!src %in% .SOURCES)
+    stop("lloyd_max_codebook: source must be one of gaussian, empirical, uniform")
   if (src == "uniform") {
     a <- if (is.null(lo)) -1 else as.numeric(lo)
-    b <- if (is.null(hi))  1 else as.numeric(hi)
+    b <- if (is.null(hi)) 1 else as.numeric(hi)
     if (b <= a) stop("lloyd_max_codebook: need hi > lo")
     w <- (b - a) / N
-    cb <- a + (seq_len(N) - 0.5) * w
+    cb <- a + ((seq_len(N)) - 0.5) * w
     bnd <- a + (seq_len(N - 1L)) * w
-    dist <- w * w / 12
+    dist <- w^2 / 12
     return(list(estimate = cb, codebook = cb, boundaries = bnd,
-                distortion = dist, distortion_history = dist,
+                distortion = dist, distortion_history = c(dist),
                 iterations = 0L, converged = TRUE, source = src,
                 levels = N, lo = a, hi = b,
                 method = "Uniform-source Lloyd-Max, closed form (Lloyd 1982; Max 1960)"))
   }
-
   if (src == "empirical") {
     if (is.null(data))
       stop("lloyd_max_codebook: empirical source needs data")
@@ -122,16 +111,15 @@ morie_tqlld_lloyd_max_codebook <- function(levels = 4L,
     if (length(xs) == 0L)
       stop("lloyd_max_codebook: empirical source needs data")
     if (length(xs) < N)
-      stop("lloyd_max_codebook: not enough samples for the requested levels")
-    cb <- vapply(seq_len(N) - 1L, function(k)
-      xs[min(length(xs), as.integer((k + 0.5) * length(xs) / N) + 1L)],
+      stop("lloyd_max_codebook: fewer samples than levels")
+    cb <- vapply(seq_len(N), function(k)
+      xs[min(length(xs), as.integer((k - 0.5) * length(xs) / N) + 1L)],
       numeric(1))
   } else {
     LO <- -8
     HI <- 8
     cb <- -3 + 6 * (seq_len(N) - 0.5) / N
   }
-
   hist <- numeric(0)
   it <- 0L
   converged <- FALSE
@@ -139,7 +127,6 @@ morie_tqlld_lloyd_max_codebook <- function(levels = 4L,
   for (it in seq_len(as.integer(max_iter))) {
     cb <- sort(cb)
     bnd <- 0.5 * (cb[seq_len(N - 1L)] + cb[seq_len(N - 1L) + 1L])
-
     if (src == "empirical") {
       cells <- vector("list", N)
       j <- 1L
@@ -147,20 +134,20 @@ morie_tqlld_lloyd_max_codebook <- function(levels = 4L,
         while (j < N && x > bnd[j]) j <- j + 1L
         cells[[j]] <- c(cells[[j]], x)
       }
-      new <- vapply(seq_len(N), function(k) {
-        if (length(cells[[k]]) == 0L) cb[k]
-        else mean(cells[[k]])
-      }, numeric(1))
-      dist <- sum(vapply(seq_along(cells), function(k)
-        sum((cells[[k]] - new[k])^2), numeric(1))) / length(xs)
-    } else {
-      q <- .tqlld_gaussian_cells(bnd, LO, HI, n_grid)
       new <- vapply(seq_len(N), function(k)
-        if (q$mass[k] > 1e-300) q$mom[k] / q$mass[k] else cb[k],
+        if (length(cells[[k]]) > 0L) mean(cells[[k]]) else cb[k],
         numeric(1))
-      dist <- 1 - sum(q$mom * new)
+      dist <- sum(sapply(seq_len(N), function(k)
+        sum((cells[[k]] - new[k])^2))) / length(xs)
+    } else {
+      mc <- .gaussian_cells(bnd, LO, HI, n_grid)
+      mass <- mc$mass
+      mom <- mc$mom
+      new <- vapply(seq_len(N), function(k)
+        if (mass[k] > 1e-300) mom[k] / mass[k] else cb[k],
+        numeric(1))
+      dist <- 1 - sum(mom * new)
     }
-
     hist <- c(hist, dist)
     shift <- max(abs(new - cb))
     cb <- new
@@ -171,19 +158,24 @@ morie_tqlld_lloyd_max_codebook <- function(levels = 4L,
   cb <- sort(cb)
   bnd <- 0.5 * (cb[seq_len(N - 1L)] + cb[seq_len(N - 1L) + 1L])
   list(estimate = cb, codebook = cb, boundaries = bnd,
-       distortion = if (length(hist) == 0L) 0 else tail(hist, 1),
-       distortion_history = hist,
-       iterations = it, converged = converged, source = src, levels = N,
+       distortion = if (length(hist) > 0L) hist[length(hist)] else 0,
+       distortion_history = hist, iterations = it,
+       converged = converged, source = src, levels = N,
        method = "Lloyd-Max alternating nearest-neighbour and centroid conditions (Lloyd 1982; Max 1960)")
 }
 
-#' Quantise samples with a fixed codebook
-#' @param x See Usage.
-#' @param codebook See Usage.
+#' Map each sample to its nearest codeword
+#'
+#' @param x Samples.
+#' @param codebook Codebook.
 #' @return A list with \code{estimate}, \code{indices}, \code{values},
 #'   \code{mse}, \code{levels}, \code{method}.
 #' @export
-morie_tqlld_quantize_with_codebook <- function(x, codebook) {
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_quantize_with_codebook(V, V)
+#' @keywords internal
+morie_quantize_with_codebook <- function(x, codebook) {
   cb <- as.numeric(codebook)
   if (length(cb) == 0L) stop("quantize_with_codebook: codebook is empty")
   xv <- as.numeric(x)
@@ -193,7 +185,7 @@ morie_tqlld_quantize_with_codebook <- function(x, codebook) {
     v <- xv[i]
     best <- 1L
     bd <- abs(v - cb[1L])
-    for (k in seq_along(cb)[-1L]) {
+    for (k in 2:length(cb)) {
       d <- abs(v - cb[k])
       if (d < bd) { bd <- d
       best <- k }
@@ -201,30 +193,13 @@ morie_tqlld_quantize_with_codebook <- function(x, codebook) {
     idx[i] <- best - 1L
     val[i] <- cb[best]
   }
-  mse <- if (length(xv) > 0L) mean((xv - val)^2) else 0
+  mse <- mean((xv - val)^2)
   list(estimate = val, indices = idx, values = val, mse = mse,
        levels = length(cb),
        method = "Nearest-codeword quantisation")
 }
 
-#' Compact alias \code{tqlld}
+#' Public alias resolved by fn/_lazy_map.json
+#' @rdname morie_tqlld
 #' @export
-#' @noRd
-morie_tqlld_tqlld <- morie_tqlld_lloyd_max_codebook
-
-#' Backward-compatible alias for the generated stub
-#' @export
-#' @noRd
-morie_tqlld_turboquant_lloyd_max_codebook <- morie_tqlld_lloyd_max_codebook
-
-#' One-line rationale mirroring the Python cheatsheet
-#' @return Character.
-#' @export
-morie_tqlld_cheatsheet <- function() {
-  paste0("tqlld: Lloyd-Max, boundaries b_k = (y_k + y_k+1)/2 and ",
-         "codewords y_k = E[X | cell k]; distortion is monotone ",
-         "non-increasing; sources gaussian / empirical / uniform.")
-}
-
-# house entry point: the package exports one morie_<module>
-morie_tqlld <- morie_tqlld_lloyd_max_codebook
+morie_lloyd_max_codebook <- morie_tqlld

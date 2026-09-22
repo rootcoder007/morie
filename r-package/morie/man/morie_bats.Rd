@@ -49,7 +49,7 @@ converges to this rather than to zero.}
 }
 \value{
 A named list matching the Python payload keys:
-\code{model, omega, phi, alpha, beta, gamma, ar, ma, seed_state,
+\eqn{model, omega, phi, alpha, beta, gamma, ar, ma, seed_state,
   fitted, fitted_transformed, residuals, loglik, aic, n_par,
   sigma2, spectral_radius, forecastable, forecast,
   forecast_transformed, candidates, spec, method, note}.
@@ -62,9 +62,16 @@ concentrated log-likelihood carries the Box-Cox Jacobian, and the
 optimiser is constrained to the forecastability region of Hyndman
 et al. (2007).
 }
+\examples{
+\donttest{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_bats(V)
+}
+}
 \references{
 De Livera, A. M., Hyndman, R. J., & Snyder, R. D.
 (2010). Forecasting time series with complex seasonal patterns
 using exponential smoothing. Monash University Department of
 Econometrics and Business Statistics Working Paper 15/10.
 }
+\keyword{internal}

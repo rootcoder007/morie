@@ -1,153 +1,208 @@
-# morie.fn -- function file (rootcoder007/morie)
 # PatchTST: subseries patches and channel independence.
-#
 # Sources: Nie, Y., Nguyen, N. H., Sinthong, P. & Kalagnanam, J.
 # (2023) "A Time Series is Worth 64 Words: Long-term Forecasting
-# with Transformers", ICLR 2023, arXiv:2211.14730. The abstract's
-# two components (subseries-level patches as input tokens, and
-# channel independence with shared embedding and Transformer
-# weights), the three-fold benefit of patching (local semantics
-# retained, attention maps quadratically reduced, longer history
-# attendable), and Sec. 1's contrast between channel-mixing and
-# channel-independent token designs.
-#
-# Zeng, A., Chen, M., Zhang, L. & Xu, Q. (2023) "Are Transformers
-# Effective for Time Series Forecasting?", AAAI 2023, 37(9),
-# 11121-11128, arXiv:2205.13504. The linear baseline that
-# outperformed prior Transformer variants and motivated this
-# design.
-#
-# Vaswani, A. et al. (2017) "Attention is all you need", NeurIPS
-# 2017, arXiv:1706.03762.
+# with Transformers", ICLR 2023, arXiv:2211.14730. Subseries-level
+# patches as input tokens, channel independence with shared embedding
+# and Transformer weights; the three-fold benefit (local semantics,
+# quadratically reduced attention, longer history). Zeng, A., Chen,
+# M., Zhang, L. & Xu, Q. (2023) "Are Transformers Effective for Time
+# Series Forecasting?", AAAI 2023, arXiv:2205.13504, the linear
+# baseline that outperformed prior Transformer variants. Vaswani, A.
+# et al. (2017) "Attention is all you need", NeurIPS 2017,
+# arXiv:1706.03762.
 
-.patchT_EPS <- 1e-12
+# Base R only, faithful translation of patchT_python_reference.py.
 
-# Cut one univariate series into patches of length P. With stride
-# equal to patch_len the patches are disjoint; a smaller stride
-# overlaps them. The number of patches is N = floor((L-P)/S) + 1,
-# which is what makes the attention map shrink.
-#' Cut one univariate series into patches of length P. With stride
+.PATCHT_EPS <- 1e-12
+
+#' .patcht_vec
 #'
-#' equal to patch_len the patches are disjoint; a smaller stride
-#' overlaps them. The number of patches is N = floor((L-P)/S) + 1, which
-#' is what makes the attention map shrink.
+#' A step of the patchT_native implementation. Called by \code{instance_norm}, \code{patchify}.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
-#' @param x Coerced to numeric by the body, with \code{as.numeric}.
+#' @param v Passed to \code{unlist}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .patcht_vec(v = x)
+#' res
+.patcht_vec <- function(v) as.numeric(unlist(v))
+
+#' .patcht_mat
+#'
+#' A step of the patchT_native implementation. Called by
+#' \code{channel_independent_tokens}, \code{channel_mixed_tokens},
+#' \code{patchtst_encode}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param M A matrix; the body checks with \code{is.matrix}.
+#' @return One of two values, depending on the branch taken.
+#' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
+#' res <- .patcht_mat(M = X)
+#' res
+.patcht_mat <- function(M) {
+  if (is.matrix(M)) {
+    storage.mode(M) <- "double"
+    M
+  } else {
+    do.call(rbind, lapply(M, function(r) as.numeric(r)))
+  }
+}
+
+#' patchify
+#'
+#' A step of the patchT_native implementation. Called by
+#' \code{channel_independent_tokens}, \code{channel_mixed_tokens}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x Passed to \code{.patcht_vec}.
 #' @param patch_len Coerced to integer by the body, with \code{as.integer}.
 #' @param stride Optional; may be \code{NULL}. Coerced to integer by the body, with
 #' \code{as.integer}.
 #' @return A list with \code{patches}, \code{n_patches}, \code{patch_len}, \code{stride},
 #' \code{L}, \code{covers}.
 #' @export
+#' @examples
+#' patchify(x = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+#' @keywords internal
 patchify <- function(x, patch_len, stride = NULL) {
-  v <- as.numeric(x)
+  v <- .patcht_vec(x)
   L <- length(v)
   P <- as.integer(patch_len)
   S <- if (is.null(stride)) P else as.integer(stride)
-  if (P < 1L) stop("patchT: patch_len must be at least 1")
-  if (S < 1L) stop("patchT: the stride must be at least 1")
+  if (P < 1L)
+    stop("patchT: patch_len must be at least 1")
+  if (S < 1L)
+    stop("patchT: the stride must be at least 1")
   if (L < P)
-    stop("patchT: the series has ", L, " points but the patch length ",
-         "is ", P)
+    stop("patchT: the series has ", L, " points but the patch length is ",
+         P)
   n <- (L - P) %/% S + 1L
-  patches <- list()
-  for (i in seq_len(n) - 1L)
-    patches[[length(patches) + 1L]] <- v[(i * S + 1L):(i * S + P)]
-  list(patches = patches, n_patches = n, patch_len = P, stride = S,
-       L = L,
-       covers = min(L, (n - 1L) * S + P))
+  patches <- vector("list", n)
+  for (i in seq_len(n) - 1L) {
+    start <- i * S + 1L
+    patches[[i + 1L]] <- v[start:(start + P - 1L)]
+  }
+  list(
+    patches = patches,
+    n_patches = n,
+    patch_len = P,
+    stride = S,
+    L = L,
+    covers = min(L, (n - 1L) * S + P)
+  )
 }
 
-# One token stream per channel, weights shared across channels.
-# Nothing is mixed across channels, so the channel identity
-# survives -- and because the downstream weights are shared, the
-# whole model is equivariant to permuting them.
-#' One token stream per channel, weights shared across channels
+#' channel_independent_tokens
 #'
-#' Nothing is mixed across channels, so the channel identity survives --
-#' and because the downstream weights are shared, the whole model is
-#' equivariant to permuting them.
+#' A step of the patchT_native implementation. Called by \code{patchtst_encode}.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
-#' @param X A matrix; passed to \code{as.matrix}.
+#' @param X Passed to \code{.patcht_mat}.
 #' @param patch_len Coerced to integer by the body, with \code{as.integer}.
 #' @param stride Passed to \code{patchify}.
 #' @return A list with \code{tokens}, \code{D}, \code{n_patches}, \code{patch_len},
 #' \code{n_tokens_total}, \code{design}, \code{note}.
 #' @export
+#' @examples
+#' channel_independent_tokens(X = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+#' @keywords internal
 channel_independent_tokens <- function(X, patch_len, stride = NULL) {
-  Xm <- as.matrix(X)
-  if (nrow(Xm) == 0L) stop("patchT: the input series is empty")
+  Xm <- .patcht_mat(X)
+  if (nrow(Xm) == 0L)
+    stop("patchT: the input series is empty")
   D <- ncol(Xm)
-  out <- list()
+  out <- vector("list", D)
   for (d in seq_len(D)) {
     col <- Xm[, d]
-    out[[length(out) + 1L]] <- patchify(col, patch_len, stride)$patches
+    out[[d]] <- patchify(col, patch_len, stride)$patches
   }
   n <- length(out[[1L]])
-  list(tokens = out, D = D, n_patches = n, patch_len = as.integer(patch_len),
-       n_tokens_total = D * n, design = "channel-independent",
-       note = paste("each token holds ONE channel's subseries; the ",
-                    "embedding and Transformer weights are shared ",
-                    "across channels", sep = ""))
+  list(
+    tokens = out,
+    D = D,
+    n_patches = n,
+    patch_len = as.integer(patch_len),
+    n_tokens_total = D * n,
+    design = "channel-independent",
+    note = "each token holds ONE channel's subseries; the embedding and Transformer weights are shared across channels"
+  )
 }
 
-# The alternative: one token per time position, all channels
-# blended. Provided for contrast. Summing across channels at the
-# first projection is what makes such a model
-# permutation-invariant and so unable to say which channel a
-# signal came from.
-#' The alternative: one token per time position, all channels
+#' channel_mixed_tokens
 #'
-#' blended. Provided for contrast. Summing across channels at the first
-#' projection is what makes such a model permutation-invariant and so
-#' unable to say which channel a signal came from.
+#' A step of the patchT_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
-#' @param X A matrix; passed to \code{as.matrix}.
+#' @param X Passed to \code{.patcht_mat}.
 #' @param patch_len Passed to \code{patchify}.
 #' @param stride Passed to \code{patchify}.
 #' @return A list with \code{tokens}, \code{n_patches}, \code{n_tokens_total},
 #' \code{design}, \code{note}.
 #' @export
+#' @examples
+#' channel_mixed_tokens(X = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+#' @keywords internal
 channel_mixed_tokens <- function(X, patch_len, stride = NULL) {
-  Xm <- as.matrix(X)
-  if (nrow(Xm) == 0L) stop("patchT: the input series is empty")
+  Xm <- .patcht_mat(X)
+  if (nrow(Xm) == 0L)
+    stop("patchT: the input series is empty")
   mixed <- rowSums(Xm)
   p <- patchify(mixed, patch_len, stride)
-  list(tokens = p$patches, n_patches = p$n_patches,
-       n_tokens_total = p$n_patches, design = "channel-mixing",
-       note = paste("channels are blended before attention, so the ",
-                    "channel identity is gone", sep = ""))
+  list(
+    tokens = p$patches,
+    n_patches = p$n_patches,
+    n_tokens_total = p$n_patches,
+    design = "channel-mixing",
+    note = "channels are blended before attention, so the channel identity is gone"
+  )
 }
 
-# Standardise one series to zero mean and unit variance. Applied
-# per instance before patching and reversed afterwards.
-#' Standardise one series to zero mean and unit variance. Applied
+#' instance_norm
 #'
-#' per instance before patching and reversed afterwards.
+#' A step of the patchT_native implementation. Called by \code{patchtst_encode}.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
-#' @param x Coerced to numeric by the body, with \code{as.numeric}.
+#' @param x Passed to \code{.patcht_vec}.
 #' @return A list with \code{normalised}, \code{mean}, \code{sd}, \code{degenerate}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' instance_norm(V)
+#' @keywords internal
 instance_norm <- function(x) {
-  v <- as.numeric(x)
+  v <- .patcht_vec(x)
   if (length(v) < 2L)
     stop("patchT: need at least 2 points to normalise")
-  m <- mean(v)
-  sd <- sqrt(sum((v - m) ^ 2) / (length(v) - 1L))
-  if (sd <= .patchT_EPS)
+  m <- sum(v) / length(v)
+  acc <- 0.0
+  for (q in v) acc <- acc + (q - m)^2
+  sd <- sqrt(acc / (length(v) - 1L))
+  if (sd <= .PATCHT_EPS)
     return(list(normalised = rep(0.0, length(v)), mean = m, sd = 0.0,
                 degenerate = TRUE))
-  list(normalised = (v - m) / sd, mean = m, sd = sd,
-       degenerate = FALSE)
+  list(
+    normalised = as.numeric((v - m) / sd),
+    mean = m,
+    sd = sd,
+    degenerate = FALSE
+  )
 }
 
-# Attention-map size, patched against point-wise. Point-wise
-# attention over a look-back of L costs L^2 per channel. Patching
-# reduces the sequence to N tokens, so the cost falls to N^2.
-#' Attention-map size, patched against point-wise. Point-wise
+#' attention_cost
 #'
-#' attention over a look-back of L costs L^2 per channel. Patching
-#' reduces the sequence to N tokens, so the cost falls to N^2.
+#' A step of the patchT_native implementation. Called by \code{patchtst_encode}.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
 #' @param L Coerced to integer by the body, with \code{as.integer}.
 #' @param patch_len Coerced to integer by the body, with \code{as.integer}.
@@ -158,8 +213,11 @@ instance_norm <- function(x) {
 #' @return A list with \code{n_patches}, \code{pointwise}, \code{patched},
 #' \code{reduction}, \code{stride}, \code{patch_len}, \code{note}.
 #' @export
+#' @examples
+#' attention_cost(L = 5L, patch_len = 5L)
+#' @keywords internal
 attention_cost <- function(L, patch_len, stride = NULL, D = 1,
-                           channel_independent = TRUE) {
+                            channel_independent = TRUE) {
   P <- as.integer(patch_len)
   S <- if (is.null(stride)) P else as.integer(stride)
   Lv <- as.integer(L)
@@ -168,23 +226,24 @@ attention_cost <- function(L, patch_len, stride = NULL, D = 1,
   n <- (Lv - P) %/% S + 1L
   per_channel <- n * n
   dmult <- if (isTRUE(channel_independent)) as.integer(D) else 1L
-  list(n_patches = n, pointwise = Lv * Lv * dmult,
-       patched = per_channel * dmult,
-       reduction = (Lv * Lv) / max(per_channel, 1),
-       stride = S, patch_len = P,
-       note = paste("the reduction is about S^2 for the same ",
-                    "look-back, which is what lets the model attend ",
-                    "a LONGER history at equal cost", sep = ""))
+  list(
+    n_patches = n,
+    pointwise = Lv * Lv * dmult,
+    patched = per_channel * dmult,
+    reduction = (Lv * Lv) / max(per_channel, 1),
+    stride = S,
+    patch_len = P,
+    note = "the reduction is about S^2 for the same look-back, which is what lets the model attend a LONGER history at equal cost"
+  )
 }
 
-# The full front end: instance norm, patch, per-channel tokens.
-#' The full front end: instance norm, patch, per-channel tokens
+#' patchtst_encode
 #'
 #' A step of the patchT_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X A matrix; passed to \code{as.matrix}.
+#' @param X Passed to \code{.patcht_mat}.
 #' @param patch_len Passed to \code{channel_independent_tokens}.
 #' @param stride Passed to \code{channel_independent_tokens}.
 #' @param normalise A flag; the body branches on it. Defaults to \code{TRUE}.
@@ -192,35 +251,41 @@ attention_cost <- function(L, patch_len, stride = NULL, D = 1,
 #' \code{n_tokens_total}, \code{norm_stats}, \code{normalised}, \code{cost},
 #' \code{method}.
 #' @export
+#' @examples
+#' patchtst_encode(X = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+#' @keywords internal
 patchtst_encode <- function(X, patch_len, stride = NULL,
                             normalise = TRUE) {
-  Xm <- as.matrix(X)
-  if (nrow(Xm) == 0L) stop("patchT: the input series is empty")
+  Xm <- .patcht_mat(X)
+  if (nrow(Xm) == 0L)
+    stop("patchT: the input series is empty")
   D <- ncol(Xm)
-  Lr <- nrow(Xm)
-  stats <- list()
-  cols <- list()
+  L <- nrow(Xm)
+  stats <- vector("list", D)
+  cols <- matrix(0.0, L, D)
   for (d in seq_len(D)) {
     col <- Xm[, d]
     if (isTRUE(normalise)) {
       nz <- instance_norm(col)
-      stats[[length(stats) + 1L]] <- list(mean = nz$mean, sd = nz$sd)
+      stats[[d]] <- list(mean = nz$mean, sd = nz$sd)
       col <- nz$normalised
     } else {
-      stats[[length(stats) + 1L]] <- list(mean = 0.0, sd = 1.0)
+      stats[[d]] <- list(mean = 0.0, sd = 1.0)
     }
-    cols[[length(cols) + 1L]] <- col
+    cols[, d] <- col
   }
-  Xn <- matrix(0, nrow = Lr, ncol = D)
-  for (d in seq_len(D)) Xn[, d] <- cols[[d]]
-  tok <- channel_independent_tokens(Xn, patch_len, stride)
-  list(estimate = tok$tokens, tokens = tok$tokens,
-       D = D, n_patches = tok$n_patches,
-       n_tokens_total = tok$n_tokens_total,
-       norm_stats = stats, normalised = isTRUE(normalise),
-       cost = attention_cost(Lr, patch_len, stride, D),
-       method = paste("PatchTST front end; Nie, Nguyen, Sinthong & ",
-                      "Kalagnanam (2023)", sep = ""))
+  tok <- channel_independent_tokens(cols, patch_len, stride)
+  list(
+    estimate = tok$tokens,
+    tokens = tok$tokens,
+    D = D,
+    n_patches = tok$n_patches,
+    n_tokens_total = tok$n_tokens_total,
+    norm_stats = stats,
+    normalised = isTRUE(normalise),
+    cost = attention_cost(L, patch_len, stride, D),
+    method = "PatchTST front end; Nie, Nguyen, Sinthong & Kalagnanam (2023)"
+  )
 }
 
 #' .patchT_cheatsheet
@@ -236,14 +301,19 @@ patchtst_encode <- function(X, patch_len, stride = NULL,
 #' res
 .patchT_cheatsheet <- function() {
   paste("patchT: PatchTST. A single time step is not a word, so ",
-        "tokenise SUBSERIES: patches of length P, stride S, ",
-        "giving N = (L-P)/S + 1 tokens instead of L -- attention ",
-        "shrinks by about S^2, which buys a longer look-back at ",
-        "the same cost. CHANNEL-INDEPENDENT: one token stream per ",
-        "channel with SHARED weights, so the model is equivariant ",
-        "to permuting channels. Channel-mixing blends them at the ",
-        "first projection and is permutation-INVARIANT instead.",
-        sep = "")
+        "tokenise SUBSERIES: patches of length P, stride S, giving ",
+        "N = (L-P)/S + 1 tokens instead of L -- attention shrinks by ",
+        "about S^2, which buys a longer look-back at the same cost. ",
+        "CHANNEL-INDEPENDENT: one token stream per channel with ",
+        "SHARED weights, so the model is equivariant to permuting ",
+        "channels. Channel-mixing blends them at the first ",
+        "projection and is permutation-INVARIANT instead.", sep = "")
 }
+
+# compact alias per ledger/NAMING.md
+patchtst <- patchtst_encode
+
+# public names resolved by fn/_lazy_map.json
+patch_tst <- patchtst_encode
 
 morie_patchT <- patchtst_encode

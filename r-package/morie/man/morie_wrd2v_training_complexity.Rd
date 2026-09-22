@@ -34,3 +34,8 @@ A step of the wrd2v_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_wrd2v_training_complexity(architecture = "skip-gram", D = 100L,
+                                V = 10000L, C = 5L)
+}
+\keyword{internal}

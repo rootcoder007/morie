@@ -22,3 +22,8 @@ The value of \code{x}, as built in the body.
 One indicator for the user, one for the item. The only non-zero
 interaction is then <v_u, v_i>.
 }
+\examples{
+r <- design_mf(u = 0L, i = 1L, n_users = 3, n_items = 4)
+r
+}
+\keyword{internal}

@@ -6,6 +6,8 @@
 \title{LOD scan along an interval}
 \usage{
 morie_scan_interval(y, left, right, length, step = 0.01, ...)
+
+morie_interval_mapping(y, left, right, length, step = 0.01, ...)
 }
 \arguments{
 \item{y}{Numeric phenotype vector.}
@@ -31,6 +33,16 @@ Walks a putative QTL along the interval between the two flanking
 markers and reports the LOD at every position, the position with
 the maximum LOD, and the fit at that position.
 }
+\examples{
+set.seed(1)
+n <- 50
+g1 <- rbinom(n, 1, 0.5)
+g2 <- ifelse(runif(n) < 0.85, g1, 1 - g1)
+y <- 1 + 0.9 * g1 + rnorm(n, 0, 0.5)
+r <- morie_scan_interval(y, g1, g2, length = 0.15, step = 0.05)
+str(r, max.level = 1)
+}
 \references{
 Lander, E. S. & Botstein, D. (1989).
 }
+\keyword{internal}

@@ -43,8 +43,7 @@ Cliff-Ord computation is always used). Default \code{FALSE}.}
 A named list with classes \code{morie_tps_spatial_result},
 \code{morie_rich_result}, \code{list}. Numeric outputs include
 \code{moran_I}, \code{expected_I}, \code{var_I}, \code{z_score},
-\code{p_value}, \code{n}, plus \code{assumption} and (under
-randomisation) the sample \code{kurtosis} that entered it.
+\code{p_value}, \code{n}.
 }
 \description{
 Builds a k-NN spatial weights matrix from neighbourhood centroids

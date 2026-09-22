@@ -17,6 +17,9 @@
 #' @return A list with \code{lower}, \code{upper}, \code{width}, \code{empty}, \code{z},
 #' \code{level}, \code{note}.
 #' @export
+#' @examples
+#' morie_truncated_normal_interval(x = 5L)
+#' @keywords internal
 morie_truncated_normal_interval <- function(x, level = 0.95,
                                              lower_bound = 0) {
   z <- qnorm(0.5 + as.numeric(level) / 2)
@@ -46,6 +49,11 @@ morie_truncated_normal_interval <- function(x, level = 0.95,
 #' \code{subset_share}, \code{mean_width}, \code{p_empty}, \code{split}, \code{theta},
 #' \code{draws}.
 #' @export
+#' @examples
+#' \donttest{
+#' morie_coverage_by_region(theta = 0.5)
+#' }
+#' @keywords internal
 morie_coverage_by_region <- function(theta, level = 0.95, lower_bound = 0,
                                      draws = 20000L, seed = 0,
                                      split = NULL) {
@@ -95,6 +103,11 @@ morie_coverage_by_region <- function(theta, level = 0.95, lower_bound = 0,
 #' @return A list with \code{max_shortfall}, \code{at_cut}, \code{subset_coverage},
 #' \code{subset_share}, \code{bet_proof}, \code{level}, \code{note}.
 #' @export
+#' @examples
+#' \donttest{
+#' morie_bet_violation(theta = 0.3, draws = 2000L)
+#' }
+#' @keywords internal
 morie_bet_violation <- function(theta, level = 0.95, lower_bound = 0,
                                 draws = 20000L, seed = 0, grid = NULL) {
   cuts <- if (is.null(grid))
@@ -134,6 +147,9 @@ morie_bet_violation <- function(theta, level = 0.95, lower_bound = 0,
 #' \code{min_width}, \code{naive_width}, \code{naive_empty}, \code{widened},
 #' \code{method}.
 #' @export
+#' @examples
+#' morie_bet_proof_interval(x = 5L)
+#' @keywords internal
 morie_bet_proof_interval <- function(x, level = 0.95, lower_bound = 0,
                                      min_width = NULL) {
   z <- qnorm(0.5 + as.numeric(level) / 2)

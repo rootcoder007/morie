@@ -44,3 +44,10 @@ A step of the ttrace_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r <- effective_reproduction_number(R0 = 2.5, si_mean = 5, si_sd = 1.9,
+                                   delay_mean = 2, delay_sd = 1,
+                                   trace_prob = 0.7, draws = 2000)
+str(r, max.level = 1)
+}
+\keyword{internal}

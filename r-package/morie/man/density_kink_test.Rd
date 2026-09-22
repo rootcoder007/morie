@@ -27,3 +27,10 @@ A step of the bnskt2_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(2)
+v <- runif(400, -1, 1)
+r <- density_kink_test(v, kink = 0, bandwidth = 0.5)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -24,7 +24,7 @@ test_that("morie_did_twoway_fe_weights returns TWFE diagnostics shape", {
   expect_true(all(c("n_negative_weights", "sum_weights",
                     "sum_negative_weights", "share_negative_weights",
                     "method", "raw") %in% names(out)))
-  expect_true(grepl("morie native", out$method))
+  expect_true(grepl("rmorie native", out$method))
 })
 
 test_that("morie_did_twoway_fe_weights rejects unsupported weight types", {
@@ -61,7 +61,7 @@ test_that("morie_did_synthdid_estimate returns synthdid result shape", {
                     "n_control", "n_pre", "n_post", "method", "raw")
                   %in% names(out)))
   expect_true(is.finite(out$att))
-  expect_true(grepl("morie native", out$method))
+  expect_true(grepl("rmorie native", out$method))
 })
 
 test_that("morie_did_synthdid_estimate is native (no coresynth needed)", {
@@ -72,5 +72,5 @@ test_that("morie_did_synthdid_estimate is native (no coresynth needed)", {
   out <- morie_did_synthdid_estimate(df, unit = "unit", time = "time",
                                      treatment = "w01", outcome = "y")
   expect_true(is.finite(out$att))
-  expect_identical(out$method, "sdid (morie native)")
+  expect_identical(out$method, "sdid (rmorie native)")
 })

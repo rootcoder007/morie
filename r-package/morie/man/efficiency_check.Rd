@@ -27,3 +27,7 @@ A step of the tlhaltm_native implementation. Called by \code{morie_tlhaltm}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+efficiency_check(err_Q = 5L, err_g = 5L, delta = 0.5, n = 5L)
+}
+\keyword{internal}

@@ -20,3 +20,10 @@ A step of the unifAlg_native implementation. Called by
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+pat <- morie_unifAlg_app("f", morie_unifAlg_var("x"))
+sub <- morie_unifAlg_app("f", morie_unifAlg_const("a"))
+r <- morie_unifAlg_match(pat, sub)
+str(r, max.level = 1)
+}
+\keyword{internal}

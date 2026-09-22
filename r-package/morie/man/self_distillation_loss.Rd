@@ -31,7 +31,12 @@ Named list mirroring the RichResult payload: \code{estimate},
 \description{
 DINO self-distillation loss (image- or patch-level)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+self_distillation_loss(V, V)
+}
 \references{
 Oquab et al. (2024), DINOv2, TMLR 2024; Caron et al.
 (2021), DINO, ICCV 2021; Zhou et al. (2022), iBOT, ICLR 2022.
 }
+\keyword{internal}

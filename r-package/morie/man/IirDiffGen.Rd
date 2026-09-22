@@ -22,3 +22,8 @@ The value of \code{IirDiff}.
 filter is actually run over data.  The feedback is SUBTRACTED, as in
 eq (3.68), and a_k is a_1..a_N without the leading a_0 = 1.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+IirDiffGen(V, V)
+}
+\keyword{internal}

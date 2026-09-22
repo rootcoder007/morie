@@ -21,3 +21,7 @@ A step of the tlseqsl_native implementation. Called by \code{morie_tlseqsl_cv_ri
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_tlseqsl_cv_folds(50, V = 5, seed = 1)
+}
+\keyword{internal}

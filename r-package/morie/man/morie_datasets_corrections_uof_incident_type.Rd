@@ -11,27 +11,25 @@ morie_datasets_corrections_uof_incident_type(
 )
 }
 \arguments{
-\item{offline}{Logical; \code{TRUE} (default) reads the bundled
+\item{offline}{Logical; \code{TRUE} (default) reads the included
 real CKAN sample at
 \code{inst/extdata/corrections_uof_incidents_sample.csv}.
 \code{FALSE} hits the live CKAN endpoint.}
 
 \item{resource_id}{Optional CKAN resource id override.}
 
-\item{source}{One of \code{"auto"}, \code{"live"}, \code{"bundled"},
+\item{source}{One of \code{"auto"}, \code{"live"}, \code{"included"},
 \code{"synthetic"}, \code{"empty"}; takes precedence over
 \code{offline} when supplied.}
 }
 \value{
-A \code{data.frame} of incident-type lookup rows from the
-Ontario Corrections Use-of-Force CKAN resource (or the bundled
-sample / synthetic fallback per \code{source}). Columns mirror the
-upstream schema described in
-\code{inst/extdata/corrections_uof_dictionary.json}.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 }
 \description{
 Incident-type lookup
 }
 \examples{
-morie_datasets_corrections_uof_incident_type()
+df <- morie_datasets_corrections_uof_incident_type()
+head(df)
 }

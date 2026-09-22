@@ -11,9 +11,17 @@ morie_kamath_rrf_score(r, k = 60)
 
 \item{k}{Damping constant.}
 }
+\value{
+A list with \code{estimate}, \code{scores}, \code{ranks}, \code{k}, \code{n}, \code{method}.
+}
 \description{
 Score_RRF = 1/(r + k) per 1-based rank, SUMMED across rankings,
 with Cormack et al.'s damping k = 60 as the book's default.
 Mirrors morie.fn.km110 (ported by the lead; the agent shard missed
 this module and kmfait).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_rrf_score(V)
+}
+\keyword{internal}

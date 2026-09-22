@@ -45,3 +45,4 @@ list with output, identity_at_init.
 Each sub-layer is gated by a learned alpha (initialised to zero)
 so the whole block starts as the identity.
 }
+\keyword{internal}

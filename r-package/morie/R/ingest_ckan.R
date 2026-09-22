@@ -24,7 +24,7 @@
 # Parquet needs `arrow` (Suggests).  Each optional dep errors cleanly
 # with an install hint when missing.
 
-.MORIE_CKAN_DEFAULT_UA <- "morie/r (+https://github.com/rootcoder007/morie)"
+.MORIE_CKAN_DEFAULT_UA <- "morie/r (+https://github.com/rootcoder007/rmorie)"
 .MORIE_CKAN_DEFAULT_TIMEOUT <- 30
 
 # NOTE: canonical .morie_ckan_portal lives in data_access.R; that one
@@ -36,21 +36,8 @@
 # 3YY: collapsed .morie_ckan_build_req + _call into a single
 # function that routes through .morie_dataset_http_text (libcurl
 # with httr2 fallback) + .morie_from_json(simplifyVector=FALSE).
-#' Internal: perform a CKAN Action-API call and unwrap `result`
-#'
-#' 3YY: collapsed .morie_ckan_build_req + _call into a single function
-#' that routes through .morie_dataset_http_text (libcurl with httr2
-#' fallback) + .morie_from_json(simplifyVector=FALSE).
-#'
-#' @param portal Passed to \code{.morie_ckan_portal}.
-#' @param action Passed to \code{sprintf}.
-#' @param params Passed to \code{.morie_dataset_http_text}.
-#' @param api_key Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param user_agent Accepted by the signature and not used anywhere in the body.
-#' Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.
-#' @param timeout Coerced to integer by the body, with \code{as.integer}.
-#' @return The value of \code{$}.
-#' @export
+#' Internal helper: Morie Ckan Call
+#' @noRd
 .morie_ckan_call <- function(portal,
                              action,
                              params = NULL,
@@ -96,16 +83,8 @@
 }
 
 # Internal: sniff a resource format from URL extension when unset.
-#' Internal: sniff a resource format from URL extension when unset
-#'
-#' A step of the ingest_ckan implementation. Called by \code{morie_ingest_ckan_read_resource}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param url Character; passed to \code{sub}.
-#' @param as_format Optional; may be \code{NULL}. Character; passed to \code{tolower}.
-#' @return The value of \code{tolower}.
-#' @export
+#' Internal helper: Morie Ckan Sniff Format
+#' @noRd
 .morie_ckan_sniff_format <- function(url, as_format = NULL) {
   if (!is.null(as_format) && nzchar(as_format)) {
     return(tolower(as_format))
@@ -118,17 +97,8 @@
 }
 
 # Internal: read a downloaded resource path into a data.frame by format.
-#' Internal: read a downloaded resource path into a data.frame by format
-#'
-#' A step of the ingest_ckan implementation. Called by \code{morie_ingest_ckan_read_resource}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param path Passed to \code{.morie_from_json}.
-#' @param fmt One of \code{"csv"}, \code{"json"}, \code{"parquet"}, \code{"tab"},
-#' \code{"tsv"}, \code{"xls"}, \code{"xlsx"}.
-#' @return The value of \code{utils::read.csv}.
-#' @export
+#' Internal helper: Morie Ckan Read Path
+#' @noRd
 .morie_ckan_read_path <- function(path, fmt) {
   fmt <- tolower(fmt)
   if (fmt %in% c("csv")) {

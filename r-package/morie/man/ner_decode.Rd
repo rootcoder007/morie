@@ -13,7 +13,7 @@ ner_decode(
 )
 }
 \arguments{
-\item{emissions}{A vector; its length is taken and its elements indexed.}
+\item{emissions}{A matrix; passed to \code{as.matrix}.}
 
 \item{types}{Passed to \code{bio_labels}.}
 
@@ -21,13 +21,18 @@ ner_decode(
 
 \item{transition_scores}{Passed to \code{viterbi_decode}.}
 
-\item{gold}{Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.}
+\item{gold}{Optional; may be \code{NULL}. Coerced to character by the body, with
+\code{as.character}.}
 }
 \value{
-The value of \code{payload}, as built in the body.
+The value of \code{out}, as built in the body.
 }
 \description{
-A step of the benRea_native implementation. Called by \code{morie_benRea}.
+A step of the benRea_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+ner_decode(emissions = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), types = 5L)
+}
+\keyword{internal}

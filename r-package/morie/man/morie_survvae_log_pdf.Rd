@@ -22,6 +22,10 @@ Numeric scalar, the log density.
 Closed-form log density of the chosen primitive, used by
 \code{morie_survvae_elbo} for uncensored observations.
 }
+\examples{
+morie_survvae_log_pdf(t = 5L, shape = 5L, scale = TRUE)
+}
 \references{
 Nagpal et al. (2021), Sec. III.
 }
+\keyword{internal}

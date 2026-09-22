@@ -22,7 +22,7 @@ morie_datasets_chicago_crime_resolved(
 \item{max_features}{Integer or \code{NULL}; cap on returned rows. When
 \code{paginate = TRUE} this is the total cap across all walked pages.}
 
-\item{offline}{Logical; if \code{TRUE}, return the bundled synthetic frame.}
+\item{offline}{Logical; if \code{TRUE}, return the included synthetic frame.}
 
 \item{mode}{One of \code{"soda2"} (default) or \code{"soda3"}. Selects the
 API path for live mode:
@@ -76,7 +76,7 @@ the matching resolver dataset shipped in morie:
 \code{iucr}                   \tab \code{\link[=morie_datasets_chicago_iucr_codes]{morie_datasets_chicago_iucr_codes()}}   \tab \code{iucr == iucr}           \cr
 }
 
-The resolvers are loaded in offline mode (they're all bundled +
+The resolvers are loaded in offline mode (they're all included +
 small), so this analyzer only touches the network for the crime
 pull itself. Resolver columns are prefixed with the source name
 (\verb{ward_*}, \verb{community_*}, \verb{beat_*}, \verb{district_*}, \verb{iucr_*}) to
@@ -86,11 +86,12 @@ Both \code{mode = "soda2"} and \code{mode = "soda3"} are honoured for the
 crime fetch, matching the dual-API design from 3VV+.
 }
 \examples{
-\dontshow{if (nzchar(system.file("extdata", "chicago_iucr_codes.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (nzchar(system.file("extdata", "chicago_iucr_codes.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_chicago_crime_resolved(
   offline = TRUE,
   max_features = 5L,
-  resolvers = c("ward", "iucr"))
+  resolvers = c("ward", "iucr")
+)
 names(df)
 \dontshow{\}) # examplesIf}
 }

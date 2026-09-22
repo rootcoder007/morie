@@ -7,7 +7,7 @@
 morie_datasets_tps_arcgis_hub_layers(offline = TRUE)
 }
 \arguments{
-\item{offline}{If \code{TRUE} (default), read the bundled 71-row
+\item{offline}{If \code{TRUE} (default), read the included 71-row
 catalog fixture (\code{inst/extdata/tps_arcgis_hub_catalog.csv}).
 Live mode hits the TPS Hub search API.}
 }
@@ -54,9 +54,9 @@ Calls for Service Attended.}
 }
 }
 \examples{
-\dontshow{if (nzchar(system.file("extdata", "tps_arcgis_hub_catalog.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (nzchar(system.file("extdata", "tps_arcgis_hub_catalog.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 cat <- morie_datasets_tps_arcgis_hub_layers()
-nrow(cat)        # 71
+nrow(cat) # 71
 head(cat$title)
 \dontshow{\}) # examplesIf}
 }

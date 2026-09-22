@@ -24,3 +24,11 @@ H(1) = 2 - 2 cos(wo) so the passband gain at DC is unity.  Extra
 zeros at n fo / fs make it a comb for the harmonics of a
 non-sinusoidal mains waveform.
 }
+\examples{
+set.seed(7)
+fs <- 360
+tv <- seq(0, 2, by = 1 / fs)
+x <- sin(2 * pi * 5 * tv) + 0.5 * sin(2 * pi * 60 * tv)
+PLineNotch(x, fs = fs, f0 = 60)
+}
+\keyword{internal}

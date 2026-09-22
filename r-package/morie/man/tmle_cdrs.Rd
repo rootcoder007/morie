@@ -48,9 +48,17 @@ morie_tmlcds(
 
 \item{q_covariates}{See Usage.}
 }
+\value{
+The value of \code{.RichResult}.
+}
 \description{
 Builds a nested sequence of treatment mechanisms and selects by the
 cross-validated loss of the targeted outcome fit, so an instrument
 stays out of the propensity model. van der Laan & Rose (2018) Ch. 10
 Example 10.3.
 }
+\examples{
+set.seed(1)
+r <- tmle_cdrs(y = rnorm(10), D = rbinom(10, 1, 0.5), X = rnorm(10)); TRUE
+}
+\keyword{internal}

@@ -65,3 +65,21 @@ representation determines the meta-classifier: \code{"baseline"}
 and \code{"sorting"} feed a flat vector MLP; \code{"set"} feeds
 the DeepSets form of Algorithm 2.
 }
+\examples{
+# six shadow models, half trained where the property holds
+set.seed(11)
+nets <- list(); labs <- numeric(0)
+for (i in 1:6) {
+  prop <- i \%\% 2L
+  X <- cbind(runif(40, -1, 1), runif(40, -1, 1))
+  y <- as.numeric(X[, prop + 1L] > 0)
+  nets[[i]] <- morie_propinf_train_fcnn(X, y, hidden = c(4L), epochs = 30L,
+                                        lr = 0.3, seed = as.integer(i))
+  labs <- c(labs, prop)
+}
+res <- morie_propinf_property_inference(nets, labs, representation = "set",
+                                        epochs = 20L, seed = 3L)
+res$train_accuracy
+res$representation
+}
+\keyword{internal}

@@ -24,3 +24,8 @@ plus the nugget of Sec. 4.3.6; covariance eq (4.14).  gamma(0) = 0
 ALWAYS -- the discontinuity at the origin IS the nugget, and dropping
 the h = 0 case is the usual way to lose it.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+SphVario(V)
+}
+\keyword{internal}

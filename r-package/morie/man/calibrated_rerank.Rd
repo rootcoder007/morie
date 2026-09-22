@@ -2,12 +2,45 @@
 % Please edit documentation in R/caltbR_native.R
 \name{calibrated_rerank}
 \alias{calibrated_rerank}
+\alias{calibratedrecommendations}
 \alias{calibrated_rec}
 \alias{calibratedrec}
-\alias{calibratedrecommendations}
 \title{Greedy maximum-marginal-relevance re-ranking for calibration}
 \usage{
 calibrated_rerank(
+  scores,
+  p_g_given_i,
+  p_target,
+  N = 10,
+  lam = 0.5,
+  metric = "kl",
+  alpha = 0.01,
+  rank_weights = NULL
+)
+
+calibratedrecommendations(
+  scores,
+  p_g_given_i,
+  p_target,
+  N = 10,
+  lam = 0.5,
+  metric = "kl",
+  alpha = 0.01,
+  rank_weights = NULL
+)
+
+calibrated_rec(
+  scores,
+  p_g_given_i,
+  p_target,
+  N = 10,
+  lam = 0.5,
+  metric = "kl",
+  alpha = 0.01,
+  rank_weights = NULL
+)
+
+calibratedrec(
   scores,
   p_g_given_i,
   p_target,

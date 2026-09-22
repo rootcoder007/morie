@@ -31,6 +31,8 @@ Alr <- function(x, ref = NULL) {
   k <- if (is.null(ref)) D else as.integer(ref)
   if (k < 1L || k > D) stop("ref must be a 1-based part index")
   idx <- setdiff(seq_len(D), k)
-  .t1_result(alr = log(x[idx]) - log(x[k]), ref = k, parts = idx, D = D,
-             method = "Additive log-ratio transform")
+  .t1_result(
+    alr = log(x[idx]) - log(x[k]), ref = k, parts = idx, D = D,
+    method = "Additive log-ratio transform"
+  )
 }

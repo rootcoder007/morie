@@ -18,3 +18,8 @@ The value of \code{p}, as built in the body.
 \description{
 index, matching arg min in the pseudocode and which.min here.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+alfOnehot(V, V)
+}
+\keyword{internal}

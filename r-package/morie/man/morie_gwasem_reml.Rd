@@ -2,29 +2,26 @@
 % Please edit documentation in R/gwasem_native.R
 \name{morie_gwasem_reml}
 \alias{morie_gwasem_reml}
-\title{REML estimation of the variance components}
+\title{REML variance component estimation (step 2)}
 \usage{
-morie_gwasem_reml(y, Kinship, covariates = NULL, ml = FALSE)
+morie_gwasem_reml(y, kinship, covariates = NULL, ml = FALSE)
 }
 \arguments{
 \item{y}{Phenotype vector.}
 
-\item{Kinship}{Relatedness matrix.}
+\item{kinship}{n x n relatedness matrix.}
 
-\item{covariates}{Optional covariate matrix.}
+\item{covariates}{Optional n x q covariate matrix.}
 
-\item{ml}{Use maximum likelihood.}
+\item{ml}{Use ML rather than REML.}
 }
 \value{
-List with \code{sigma_a2}, \code{sigma_e2}, \code{delta},
-\code{pseudo_heritability}, \code{loglik}, \code{loglik_null},
-\code{lrt}, \code{evals}, \code{evecs}, \code{kinship_normalized}
-and \code{shift}.
+A list with the components and supporting quantities.
 }
 \description{
-Step 2: estimate \eqn{\sigma_a^2, \sigma_e^2} on the spectral
-basis of \eqn{\hat S_N}, plus a null comparison.
+Estimates \code{sigma_a^2} and \code{sigma_e^2} in equation 6.
+Returns the components, the pseudo-heritability, the restricted
+log-likelihood, the null log-likelihood (at \code{sigma_a^2 = 0})
+and the LRT statistic for \code{H_0: sigma_a^2 = 0}.
 }
-\references{
-Kang, H. M. et al. (2010); Kang, H. M. et al. (2008).
-}
+\keyword{internal}

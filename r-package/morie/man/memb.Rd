@@ -19,7 +19,7 @@ memb(
 \arguments{
 \item{target_predict}{Accepted by the signature and not used anywhere in the body.}
 
-\item{shadow_data}{Coerced to list by the body, with \code{as.list}.}
+\item{shadow_data}{See Usage.}
 
 \item{eval_in}{A vector; indexed elementwise.}
 
@@ -47,3 +47,4 @@ A step of the memb_native implementation. Called by \code{morie_memb}.
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

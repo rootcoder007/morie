@@ -2,15 +2,25 @@
 % Please edit documentation in R/slowdp_native.R
 \name{decay_diagnostics}
 \alias{decay_diagnostics}
-\title{Realised tail vs the expected geometric tail}
+\title{decay_diagnostics}
 \usage{
 decay_diagnostics(weights, alpha)
 }
 \arguments{
-\item{weights}{See Usage.}
+\item{weights}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{alpha}{See Usage.}
+\item{alpha}{Passed to \code{truncation_error}.}
+}
+\value{
+A list with \code{realised_tail}, \code{expected_tail}, \code{ratio},
+\code{largest_index}, \code{monotone}, \code{note}.
 }
 \description{
-Realised tail vs the expected geometric tail
+A step of the slowdp_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+decay_diagnostics(weights = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5)
+}
+\keyword{internal}

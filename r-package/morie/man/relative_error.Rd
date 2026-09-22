@@ -7,9 +7,9 @@
 relative_error(X, M)
 }
 \arguments{
-\item{X}{Numeric; combined arithmetically in the body.}
+\item{X}{A vector; indexed elementwise.}
 
-\item{M}{A matrix; passed to \code{as.matrix}.}
+\item{M}{Passed to \code{.meglt_mat}.}
 }
 \value{
 A numeric value.
@@ -19,3 +19,8 @@ A step of the meglt_native implementation. Called by \code{morie_meglt}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+relative_error(V, V)
+}
+\keyword{internal}

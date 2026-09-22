@@ -17,7 +17,12 @@ max_step(v, dv, eta = 0.9995)
 A numeric value.
 }
 \description{
-A step of the mehtad_native implementation. Called by \code{solve_lp}.
+A step of the mehtad_native implementation. Called by \code{morie_mehtad}, \code{solve_lp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+max_step(V, V)
+}
+\keyword{internal}

@@ -40,3 +40,12 @@ A step of the crkbsg_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+coords <- matrix(runif(20), 10, 2)
+y <- rnorm(10)
+z <- rnorm(10)
+s_predict <- matrix(runif(4), 2, 2)
+morie_crkbsg_cokriging(coords, y, z, s_predict)
+}
+\keyword{internal}

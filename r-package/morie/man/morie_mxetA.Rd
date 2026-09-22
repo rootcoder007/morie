@@ -24,3 +24,8 @@ A list with \code{fields}, \code{scales}, \code{n_points},
 Part of the mxetA_mixedcase_native implementation; see the file
 header for the source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_mxetA(V)
+}
+\keyword{internal}

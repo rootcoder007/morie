@@ -23,3 +23,7 @@ A step of the yolovx_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_yolovx_decoupled_head(channels = 5L)
+}
+\keyword{internal}

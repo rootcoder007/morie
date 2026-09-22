@@ -21,3 +21,7 @@ A step of the dist_native implementation. Called by \code{.rsconsistency}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+Pchisq(3.84, 1)
+}
+\keyword{internal}

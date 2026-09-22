@@ -45,8 +45,10 @@ coloured by DBSCAN cluster label.
 }
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-df <- data.frame(LAT_WGS84 = 43.65 + rnorm(60, 0, 0.01), LONG_WGS84 = -79.4 +
-    rnorm(60, 0, 0.01))
-morie_tps_render_points(df, category = "Synth")
+set.seed(1)
+df <- data.frame(LAT_WGS84 = runif(60, 43.60, 43.85),
+                 LONG_WGS84 = runif(60, -79.60, -79.15))
+out <- morie_tps_render_points(df, min_samples = 5L,
+                               outfile = tempfile(fileext = ".png"))
 \dontshow{\}) # examplesIf}
 }

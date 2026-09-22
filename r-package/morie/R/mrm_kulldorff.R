@@ -19,27 +19,19 @@
 #'   the most likely cluster, its Poisson log-likelihood-ratio statistic,
 #'   the Monte-Carlo permutation p-value, and a plain-language
 #'   \code{interpretation}.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @name mrm_kulldorff
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' if (FALSE) {
 #'   tps <- morie_sample("tps_assault")
 #'   mrm_tps_kulldorff_scan(tps, n_permutations = 49)
 #' }
-#' @name mrm_kulldorff
+#' \dontshow{\}) # examplesIf}
 NULL
 
 
-#' .haversine_km_mat
-#'
-#' A step of the mrm_kulldorff implementation. Called by \code{mrm_tps_kulldorff_scan}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param lat1 Numeric; combined arithmetically in the body.
-#' @param lon1 Numeric; combined arithmetically in the body.
-#' @param lat2 Numeric; combined arithmetically in the body.
-#' @param lon2 Numeric; combined arithmetically in the body.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Haversine Km Mat
+#' @noRd
 .haversine_km_mat <- function(lat1, lon1, lat2, lon2) {
   R <- 6371
   rad <- pi / 180
@@ -50,18 +42,8 @@ NULL
 }
 
 
-#' .poisson_lrt
-#'
-#' A step of the mrm_kulldorff implementation. Called by \code{mrm_tps_kulldorff_scan}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param n_obs Numeric; combined arithmetically in the body.
-#' @param n_in Passed to \code{==}.
-#' @param n_exp Numeric; combined arithmetically in the body.
-#' @param n_tot Numeric; combined arithmetically in the body.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Poisson Lrt
+#' @noRd
 .poisson_lrt <- function(n_obs, n_in, n_exp, n_tot) {
   if (n_in == 0 || n_obs == 0 || n_obs <= n_exp) {
     return(0.0)

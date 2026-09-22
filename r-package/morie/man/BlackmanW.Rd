@@ -22,3 +22,7 @@ A third cosine term buys much deeper sidelobes than the Hamming window
 again as wide. Resolution against leakage is the trade every window
 makes and none escapes; this one sits at the leakage end of it.
 }
+\examples{
+BlackmanW(N = 5L)
+}
+\keyword{internal}

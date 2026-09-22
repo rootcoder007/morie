@@ -33,7 +33,12 @@ A list mirroring the Python arm's payload.
 \description{
 Extract the band by one of three routes
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_crfflt_cf_filter(V)
+}
 \references{
 Christiano, L. J. & Fitzgerald, T. J. (2003). The Band
 Pass Filter. International Economic Review, 44(2), 435-465.
 }
+\keyword{internal}

@@ -13,8 +13,9 @@ A length-1 character vector containing JSON text.
 JSON enumeration of all registered commands
 }
 \examples{
+\donttest{
 \dontshow{if (requireNamespace("jsonlite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-res <- stat_bridge_registry_json()
-res
+substr(stat_bridge_registry_json(), 1, 200)
 \dontshow{\}) # examplesIf}
+}
 }

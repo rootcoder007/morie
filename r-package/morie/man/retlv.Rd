@@ -24,7 +24,7 @@ else z_T = mu - sigma log(-log(1 - 1/T)).  Delta-method SE uses the
 diagonal of the observed information returned by \code{extvm}.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-retlv(V)
+set.seed(1)
+morie_return_level(rexp(200), return_period = 100)
 }
 \keyword{internal}

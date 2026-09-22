@@ -23,3 +23,8 @@ function as eq (3.69) rewritten in z.  The z^(M-N) factor is exactly
 what the change of variable produces; dropping it multiplies H by a
 pure delay, invisible in the magnitude and fatal to the phase.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+PzFormZ(V, V)
+}
+\keyword{internal}

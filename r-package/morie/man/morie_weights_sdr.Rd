@@ -14,14 +14,13 @@ morie_weights_sdr(weights, n_replicates = 100, seed = 42)
 \item{seed}{Integer RNG seed.}
 }
 \value{
-A numeric matrix of SDR replicate weights with
-\code{length(weights)} rows and \code{n_replicates} columns
-(negative values clipped to 0).
+A numeric \code{matrix}.
 }
 \description{
 Successive Difference Replication (SDR) weights
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_weights_sdr(V)
+set.seed(1)
+res <- morie_weights_sdr(runif(20, 0.5, 2), n_replicates = 16)
+str(res, max.level = 1)
 }

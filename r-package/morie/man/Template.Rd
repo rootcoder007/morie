@@ -25,3 +25,8 @@ the template, which is what makes it a correlation rather than a
 convolution -- a large low-frequency excursion cannot produce a
 spurious match because the normalization divides the amplitude out.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Template(V, V)
+}
+\keyword{internal}

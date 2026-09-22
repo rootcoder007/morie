@@ -20,3 +20,7 @@ SNR.  The matched filter maximizes the output at ONE INSTANT, which
 is the right criterion for a known transient and the wrong one for a
 continuous signal.
 }
+\examples{
+MfSnr(my = 5L, noise_power = 5L)
+}
+\keyword{internal}

@@ -65,9 +65,21 @@ off-diagonal does not, so the difference identifies it. Pairs with
 \code{a == b} are excluded from the covariance fit for exactly that
 reason.
 }
+\examples{
+set.seed(1)
+Y <- list(); argvals <- list()
+for (i in 1:25) {
+  ti <- sort(runif(7))
+  Y[[i]] <- sin(2 * pi * ti) + rnorm(7, 0, 0.2)
+  argvals[[i]] <- ti
+}
+r <- morie_pace(Y, argvals, K = 2L, n_grid = 15L)
+length(r$mu) == 15L
+}
 \references{
 Yao, F., Muller, H.-G. and Wang, J.-L. (2005) "Functional data
 analysis for sparse longitudinal data." Journal of the American
 Statistical Association 100(470), 577-590.
 doi:10.1198/016214504000001745.
 }
+\keyword{internal}

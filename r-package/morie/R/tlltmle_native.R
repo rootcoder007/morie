@@ -27,7 +27,7 @@
 #' \eqn{P_n D^* = 0}.
 #'
 #' **Double robustness, stated exactly.** The estimator is consistent if
-#' *either* the sequential outcome regressions *or* the treatment
+#' &#42;either&#42; the sequential outcome regressions &#42;or&#42; the treatment
 #' mechanism are consistently estimated -- not both. The anchor exploits
 #' that: it breaks each arm separately and requires the estimate to
 #' survive, then breaks both and requires it to fail. Two wrong arms are
@@ -107,6 +107,12 @@
 #' @param rule Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @return A list with \code{H}, \code{max}, \code{mean}, \code{note}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' A <- rbinom(50, 1, 0.5)
+#' g <- runif(50, 0.2, 0.8)
+#' tlltmle_clever_covariate(A, g)
+#' @keywords internal
 tlltmle_clever_covariate <- function(A, g, rule = 1.0) {
   a <- as.numeric(A)
   gg <- as.numeric(g)
@@ -137,6 +143,10 @@ tlltmle_clever_covariate <- function(A, g, rule = 1.0) {
 #' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-10}.
 #' @return A list with \code{epsilon}, \code{Q_star}, \code{score}.
 #' @export
+#' @examples
+#' tlltmle_fluctuate(Q = c(1, 2, 3, 4, 5, 6, 7, 8), H = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   Y = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 tlltmle_fluctuate <- function(Q, H, Y, iters = 100, tol = 1e-10) {
   q <- as.numeric(Q)
   h <- as.numeric(H)
@@ -176,6 +186,15 @@ tlltmle_fluctuate <- function(Q, H, Y, iters = 100, tol = 1e-10) {
 #' \code{mean_eic}, \code{solves_eic}, \code{max_clever_covariate},
 #' \code{initial_plugin}, \code{method}, \code{note}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' A <- rbinom(50, 1, 0.5)
+#' Y <- rbinom(50, 1, 0.4)
+#' Q1 <- runif(50, 0.3, 0.7)
+#' Q0 <- runif(50, 0.2, 0.5)
+#' g <- runif(50, 0.3, 0.7)
+#' tlltmle_tmle_point(A, Y, Q1, Q0, g)
+#' @keywords internal
 tlltmle_tmle_point <- function(A, Y, Q1, Q0, g) {
   a <- as.numeric(A)
   y <- as.numeric(Y)
@@ -215,6 +234,10 @@ tlltmle_tmle_point <- function(A, Y, Q1, Q0, g) {
 #' @return A list with \code{estimate}, \code{psi}, \code{epsilons}, \code{Q_star},
 #' \code{T}, \code{method}.
 #' @export
+#' @examples
+#' tlltmle_ltmle(Q_seq = c(1, 2, 3, 4, 5, 6, 7, 8), H_seq = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   Y_seq = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 tlltmle_ltmle <- function(Q_seq, H_seq, Y_seq) {
   T_ <- length(Q_seq)
   if (T_ < 1) stop("ltmle: the sequence is empty")
@@ -246,6 +269,10 @@ tlltmle_ltmle <- function(Q_seq, H_seq, Y_seq) {
 #' @param d Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' tlltmle_influence_curve_se(V)
+#' @keywords internal
 tlltmle_influence_curve_se <- function(d) {
   v <- as.numeric(d)
   n <- length(v)
@@ -262,6 +289,9 @@ tlltmle_influence_curve_se <- function(d) {
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' tlltmle_cheatsheet()
+#' @keywords internal
 tlltmle_cheatsheet <- function() {
   paste0(
     "tlltmle: write the g-formula as ITERATED conditional expecta",

@@ -20,6 +20,5 @@ drop) or logical (TRUE keep). Rows of the attention matrix sum to
 1 by construction, and the parity tests assert it.
 }
 \examples{
-morie_alammar_sdp_attention(Q = 0.5, K = c(1, 2, 3, 4, 5, 6, 7, 8), V = c(1, 2, 3, 4,
-5, 6, 7, 8))
+morie_alammar_sdp_attention(Q = 0.5, K = c(1, 2, 3, 4, 5, 6, 7, 8), V = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

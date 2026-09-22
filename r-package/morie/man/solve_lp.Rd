@@ -43,3 +43,10 @@ A step of the mehtad_native implementation. Called by \code{morie_mehtad}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+A <- matrix(c(1, 1, 1, 0, 0, 1, 0, 1), 2, 4, byrow = TRUE)
+b <- c(4, 2)
+cc <- c(-1, -2, 0, 0)
+solve_lp(A, b, cc)
+}
+\keyword{internal}

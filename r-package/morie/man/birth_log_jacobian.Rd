@@ -21,3 +21,8 @@ A step of the bayrjmcmc_native implementation. Called by \code{changepoint_rjmcm
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+birth_log_jacobian(h_j = c(1, 2, 3, 4, 5, 6, 7, 8), h_new_left = c(1, 2, 3, 4, 5, 6, 7, 8),
+  h_new_right = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

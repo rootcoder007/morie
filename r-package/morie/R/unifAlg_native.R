@@ -151,6 +151,10 @@
 #' @param name Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{list}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_unifAlg_var(V)
+#' @keywords internal
 morie_unifAlg_var <- function(name) {
   list(.VAR, as.character(name))
 }
@@ -165,6 +169,10 @@ morie_unifAlg_var <- function(name) {
 #' @param ... Passed through.
 #' @return The value of \code{list}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_unifAlg_app(V)
+#' @keywords internal
 morie_unifAlg_app <- function(symbol, ...) {
   args <- list(...)
   list(.APP, as.character(symbol), args)
@@ -179,6 +187,10 @@ morie_unifAlg_app <- function(symbol, ...) {
 #' @param symbol Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{list}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_unifAlg_const(V)
+#' @keywords internal
 morie_unifAlg_const <- function(symbol) {
   list(.APP, as.character(symbol), list())
 }
@@ -192,6 +204,10 @@ morie_unifAlg_const <- function(symbol) {
 #' @param t Passed to \code{.unifAlg_is_var}.
 #' @return The value of \code{.unifAlg_is_var}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_unifAlg_is_var(V)
+#' @keywords internal
 morie_unifAlg_is_var <- function(t) {
   .unifAlg_is_var(t)
 }
@@ -206,6 +222,11 @@ morie_unifAlg_is_var <- function(t) {
 #' @param t Passed to \code{.unifAlg_check}.
 #' @return The value of \code{$}.
 #' @export
+#' @examples
+#' x <- morie_unifAlg_var("x")
+#' t <- morie_unifAlg_app("f", x, morie_unifAlg_var("y"))
+#' morie_unifAlg_variables(t)
+#' @keywords internal
 morie_unifAlg_variables <- function(t) {
   t <- .unifAlg_check(t)
   env <- new.env()
@@ -240,6 +261,11 @@ morie_unifAlg_variables <- function(t) {
 #' @param t Passed to \code{morie_unifAlg_variables}.
 #' @return The value of \code{%in%}.
 #' @export
+#' @examples
+#' x <- morie_unifAlg_var("x")
+#' t <- morie_unifAlg_app("f", x)
+#' c(morie_unifAlg_occurs("x", t), morie_unifAlg_occurs("z", t))
+#' @keywords internal
 morie_unifAlg_occurs <- function(name, t) {
   as.character(name) %in% morie_unifAlg_variables(t)
 }
@@ -255,6 +281,11 @@ morie_unifAlg_occurs <- function(name, t) {
 #' @param subst Passed to \code{.unifAlg_apply_once}.
 #' @return Nothing; this branch always raises.
 #' @export
+#' @examples
+#' x <- morie_unifAlg_var("x")
+#' t <- morie_unifAlg_app("f", x)
+#' morie_unifAlg_apply_subst(t, list(x = morie_unifAlg_const("a")))
+#' @keywords internal
 morie_unifAlg_apply_subst <- function(t, subst) {
   cur <- .unifAlg_check(t)
   for (i in seq_len(64L)) {
@@ -279,6 +310,11 @@ morie_unifAlg_apply_subst <- function(t, subst) {
 #' @param subst Passed to \code{.unifAlg_apply_once}.
 #' @return The value of \code{.unifAlg_apply_once}.
 #' @export
+#' @examples
+#' x <- morie_unifAlg_var("x")
+#' t <- morie_unifAlg_app("f", x)
+#' morie_unifAlg_substitute(t, list(x = morie_unifAlg_const("a")))
+#' @keywords internal
 morie_unifAlg_substitute <- function(t, subst) {
   .unifAlg_apply_once(.unifAlg_check(t), subst)
 }
@@ -293,6 +329,10 @@ morie_unifAlg_substitute <- function(t, subst) {
 #' @param inner A vector; indexed elementwise.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_unifAlg_compose(V, V)
+#' @keywords internal
 morie_unifAlg_compose <- function(outer, inner) {
   out <- list()
   for (nm in names(inner)) {
@@ -321,6 +361,11 @@ morie_unifAlg_compose <- function(outer, inner) {
 #' @param t2 Passed to \code{.unifAlg_check}.
 #' @return Nothing; the function is called for its effect.
 #' @export
+#' @examples
+#' a <- morie_unifAlg_app("f", morie_unifAlg_var("x"), morie_unifAlg_const("b"))
+#' b <- morie_unifAlg_app("f", morie_unifAlg_const("a"), morie_unifAlg_const("b"))
+#' morie_unifAlg_disagreement(a, b)
+#' @keywords internal
 morie_unifAlg_disagreement <- function(t1, t2) {
   a <- .unifAlg_check(t1)
   b <- .unifAlg_check(t2)
@@ -353,6 +398,12 @@ morie_unifAlg_disagreement <- function(t1, t2) {
 #' @param occurs_check A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return Nothing; this branch always raises.
 #' @export
+#' @examples
+#' a <- morie_unifAlg_app("f", morie_unifAlg_var("x"), morie_unifAlg_const("b"))
+#' b <- morie_unifAlg_app("f", morie_unifAlg_const("a"), morie_unifAlg_var("y"))
+#' r <- morie_unifAlg_unify(a, b)
+#' c(r$unified, r$n_bindings)
+#' @keywords internal
 morie_unifAlg_unify <- function(t1, t2, occurs_check = TRUE) {
   a <- .unifAlg_check(t1)
   b <- .unifAlg_check(t2)
@@ -420,6 +471,12 @@ morie_unifAlg_unify <- function(t1, t2, occurs_check = TRUE) {
 #' @param subject Passed to \code{.unifAlg_check}.
 #' @return The value of \code{sub}, as built in the body.
 #' @export
+#' @examples
+#' pat <- morie_unifAlg_app("f", morie_unifAlg_var("x"))
+#' sub <- morie_unifAlg_app("f", morie_unifAlg_const("a"))
+#' r <- morie_unifAlg_match(pat, sub)
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_unifAlg_match <- function(pattern, subject) {
   p <- .unifAlg_check(pattern)
   s <- .unifAlg_check(subject)
@@ -464,6 +521,10 @@ morie_unifAlg_match <- function(pattern, subject) {
 #' @param over See Usage.
 #' @return The value of \code{delta}, as built in the body.
 #' @export
+#' @examples
+#' morie_unifAlg_factor_through(general = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   other = c(1, 2, 3, 4, 5, 6, 7, 8), over = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_unifAlg_factor_through <- function(general, other, over) {
   delta <- list()
   for (name in over) {

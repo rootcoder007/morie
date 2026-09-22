@@ -18,7 +18,11 @@ A list with \code{frequency}, \code{vector}, \code{kmers}, \code{n_kmers},
 \code{canonical}.
 }
 \description{
-A step of the metabd_native implementation. No other function in the package calls it.
+A step of the metabd_native implementation. Called by \code{morie_metabd}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+tetranucleotide_frequency("ACGTACGTACGTTGCAACGT")
+}
+\keyword{internal}

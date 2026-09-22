@@ -5,71 +5,22 @@
 # doi:10.1109/ICDM.2018.00035, arXiv:1808.09781. The abstract: Markov
 # chains assume the next action is predictable from the last few,
 # while RNNs allow longer-term semantics; MC-based methods perform
-# best in extremely sparse datasets where parsimony is critical,
-# RNNs in denser datasets where complexity is affordable; SASRec
-# balances these by capturing long-term semantics like an RNN while
-# making predictions from relatively few actions like an MC,
-# identifying at each step which items are relevant; outperforming
-# MC/CNN/RNN baselines on both sparse and dense datasets; being an
-# order of magnitude more efficient; and attention-weight
-# visualisations showing adaptive handling of datasets of various
-# density. Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J.,
-# Jones, L., Gomez, A. N., Kaiser, L. & Polosukhin, I. (2017)
-# "Attention Is All You Need", *NIPS 2017*, 5998-6008,
-# arXiv:1706.03762. Hidasi, B., Karatzoglou, A., Baltrunas, L. &
-# Tikk, D. (2016) "Session-based Recommendations with Recurrent
-# Neural Networks", *ICLR 2016*, arXiv:1511.06939. The RNN baseline;
-# implemented in gru4r.
+# best in extremely sparse datasets where parsimony is critical, RNNs
+# in denser datasets where complexity is affordable; SASRec balances
+# these by capturing long-term semantics like an RNN while making
+# predictions from relatively few actions like an MC, identifying at
+# each step which items are relevant; outperforming MC/CNN/RNN
+# baselines on both sparse and dense datasets; being an order of
+# magnitude more efficient; and attention-weight visualisations
+# showing adaptive handling of datasets of various density. Vaswani,
+# A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N.,
+# Kaiser, L. & Polosukhin, I. (2017) "Attention Is All You Need",
+# *NIPS 2017*, 5998-6008, arXiv:1706.03762. Hidasi, B., Karatzoglou,
+# A., Baltrunas, L. & Tikk, D. (2016) "Session-based Recommendations
+# with Recurrent Neural Networks", *ICLR 2016*, arXiv:1511.06939.
+# The RNN baseline; implemented in gru4r.
 
 .SASREC_EPS <- 1e-12
-
-#' .sasrec_mat
-#'
-#' A step of the sasRec_native implementation. Called by \code{attention_span},
-#' \code{predict_next}, \code{self_attention}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param x A matrix; passed to \code{as.matrix}.
-#' @return Nothing; this branch always raises.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .sasrec_mat(x = x)
-#' res
-.sasrec_mat <- function(x) {
-  if (is.matrix(x)) return(x)
-  if (is.numeric(x)) return(as.matrix(x))
-  if (is.list(x)) {
-    n <- length(x)
-    d <- length(x[[1]])
-    M <- matrix(0, n, d)
-    for (i in seq_len(n)) M[i, ] <- as.numeric(x[[i]])
-    return(M)
-  }
-  stop("sasRec: expected a matrix-like input")
-}
-
-#' .sasrec_vec
-#'
-#' A step of the sasRec_native implementation. Called by \code{predict_next}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param x A matrix; indexed by row and column.
-#' @return A vector, from \code{as.numeric}.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .sasrec_vec(x = x)
-#' res
-.sasrec_vec <- function(x) {
-  if (is.matrix(x)) {
-    if (nrow(x) == 1L) return(as.numeric(x[1, ]))
-    if (ncol(x) == 1L) return(as.numeric(x[, 1]))
-  }
-  as.numeric(x)
-}
 
 #' causal_mask
 #'
@@ -78,56 +29,67 @@
 #' source it follows.
 #'
 #' @param n Coerced to integer by the body, with \code{as.integer}.
-#' @return The value of \code{M}, as built in the body.
+#' @return The value of \code{mask}, as built in the body.
 #' @export
+#' @examples
+#' causal_mask(n = 5L)
+#' @keywords internal
 causal_mask <- function(n) {
   m <- as.integer(n)
-  if (m < 1L)
-    stop("sasRec: the sequence must be non-empty")
-  M <- matrix(0, m, m)
-  for (i in seq_len(m)) for (j in seq_len(m))
-    M[i, j] <- if (j <= i) 1.0 else 0.0
-  M
+  if (m < 1L) stop("sasRec: the sequence must be non-empty")
+  mask <- matrix(0, nrow = m, ncol = m)
+  for (i in 1:m) for (j in 1:m) mask[i, j] <- if (j <= i) 1.0 else 0.0
+  mask
 }
 
 #' self_attention
 #'
-#' A step of the sasRec_native implementation. Called by \code{morie_sasRec}.
+#' A step of the sasRec_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param E Passed to \code{.sasrec_mat}.
-#' @param WQ A matrix; passed to \code{nrow}.
-#' @param WK A matrix; passed to \code{ncol}.
-#' @param WV A matrix; passed to \code{ncol}.
+#' @param E See Usage.
+#' @param WQ See Usage.
+#' @param WK See Usage.
+#' @param WV See Usage.
 #' @param mask Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{output}, \code{weights}, \code{note}.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' attention_span(M)
+#' self_attention(E = M, WQ = M, WK = M, WV = M)
+#' @keywords internal
 self_attention <- function(E, WQ, WK, WV, mask = NULL) {
-  X <- .sasrec_mat(E)
+  X <- E
+  if (is.list(X) && !is.matrix(X)) X <- do.call(rbind, X)
+  storage.mode(X) <- "double"
   n <- nrow(X)
   d <- ncol(X)
   M <- if (is.null(mask)) causal_mask(n) else mask
-  WQ <- as.matrix(WQ)
-  WK <- as.matrix(WK)
-  WV <- as.matrix(WV)
-  dk <- ncol(WQ)
-  if (ncol(WK) != dk || nrow(WQ) != dk)
-    stop("sasRec: WQ/WK must share the key dimension")
-  if (ncol(WV) != d)
-    stop("sasRec: WV must map to the value dimension")
-  Q <- X %*% t(WQ)
-  K <- X %*% t(WK)
-  V <- X %*% t(WV)
+  WQm <- WQ
+  if (is.list(WQm) && !is.matrix(WQm)) WQm <- do.call(rbind, WQm)
+  WKm <- WK
+  if (is.list(WKm) && !is.matrix(WKm)) WKm <- do.call(rbind, WKm)
+  WVm <- WV
+  if (is.list(WVm) && !is.matrix(WVm)) WVm <- do.call(rbind, WVm)
+  storage.mode(WQm) <- "double"
+  storage.mode(WKm) <- "double"
+  storage.mode(WVm) <- "double"
+  dk <- nrow(WQm)
+  Q <- X %*% t(WQm)
+  K <- X %*% t(WKm)
+  V <- X %*% t(WVm)
   sc <- Q %*% t(K) / sqrt(dk)
-  sc[!as.logical(M)] <- -1e30
+  sc[M == 0] <- -1e30
   mx <- apply(sc, 1, max)
   e <- exp(sc - mx)
+  e[M == 0] <- 0
   z <- rowSums(e)
   z[z == 0] <- 1
-  W <- e / z
-  out <- W %*% V
-  list(output = out, weights = W,
+  w <- e / z
+  out <- w %*% V
+  list(output = out, weights = w,
        note = "the mask is a correctness condition, not an optimisation")
 }
 
@@ -137,23 +99,28 @@ self_attention <- function(E, WQ, WK, WV, mask = NULL) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param weights Passed to \code{.sasrec_mat}.
+#' @param weights See Usage.
 #' @param position Optional; may be \code{NULL}. Coerced to integer by the body, with
 #' \code{as.integer}.
 #' @return A list with \code{mean_lookback}, \code{mass_on_last}, \code{effective_order},
 #' \code{note}.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' attention_span(M)
+#' @keywords internal
 attention_span <- function(weights, position = NULL) {
-  W <- .sasrec_mat(weights)
+  W <- weights
+  if (is.list(W) && !is.matrix(W)) W <- do.call(rbind, W)
+  storage.mode(W) <- "double"
   i <- if (is.null(position)) nrow(W) else as.integer(position) + 1L
   row <- W[i, ]
-  tot <- sum(row[seq_len(i)])
-  if (tot <= .SASREC_EPS)
-    stop("sasRec: the attention row has no mass")
-  span <- sum((i - seq_len(i)) * row[seq_len(i)]) / tot
-  list(mean_lookback = span,
-       mass_on_last = row[i] / tot,
-       effective_order = span + 1,
+  tot <- sum(row[1:i])
+  if (tot <= .SASREC_EPS) stop("sasRec: the attention row has no mass")
+  idx <- 1:i
+  span <- sum((i - idx) * row[1:i]) / tot
+  list(mean_lookback = span, mass_on_last = row[i] / tot,
+       effective_order = span + 1.0,
        note = "a short span IS Markov behaviour; a long one is RNN behaviour, chosen per sequence")
 }
 
@@ -163,27 +130,31 @@ attention_span <- function(weights, position = NULL) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param state Passed to \code{.sasrec_vec}.
-#' @param item_embeddings Passed to \code{.sasrec_mat}.
-#' @param top_k Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.
-#' @param exclude Passed to \code{unlist}. Defaults to \code{list()}.
+#' @param state Coerced to numeric by the body, with \code{as.numeric}.
+#' @param item_embeddings See Usage.
+#' @param top_k Numeric; passed to \code{min}. Defaults to \code{5}.
+#' @param exclude Passed to \code{unlist}. Defaults to \code{numeric(0)}.
 #' @return A list with \code{estimate}, \code{ranking}, \code{n_scored}, \code{method}.
 #' @export
-predict_next <- function(state, item_embeddings, top_k = 5,
-                         exclude = list()) {
-  s <- .sasrec_vec(state)
-  E <- .sasrec_mat(item_embeddings)
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' predict_next(V, M)
+#' @keywords internal
+predict_next <- function(state, item_embeddings, top_k = 5, exclude = numeric(0)) {
+  s <- as.numeric(state)
+  E <- item_embeddings
+  if (is.list(E) && !is.matrix(E)) E <- do.call(rbind, E)
+  storage.mode(E) <- "double"
   ex <- as.integer(unlist(exclude))
   sc <- numeric(nrow(E))
-  for (i in seq_len(nrow(E))) {
-    if (i %in% ex) { sc[i] <- -Inf
-    next }
-    sc[i] <- sum(s * E[i, ])
-  }
-  ord <- order(-sc, seq_along(sc))
-  ranking <- ord[seq_len(min(as.integer(top_k), length(ord)))]
-  list(estimate = ranking, ranking = ranking,
-       n_scored = sum(is.finite(sc)),
+  for (i in seq_len(nrow(E))) sc[i] <- sum(s * E[i, ])
+  if (length(ex) > 0) sc[ex + 1L] <- NA
+  ord <- order(-sc, na.last = TRUE)
+  keep <- ord[!is.na(sc[ord])][seq_len(min(top_k, length(ord)))]
+  rk <- cbind(keep, sc[keep])
+  colnames(rk) <- c("index", "score")
+  list(estimate = rk, ranking = rk, n_scored = sum(!is.na(sc)),
        method = "self-attentive sequential recommendation; Kang & McAuley (2018)")
 }
 
@@ -198,35 +169,17 @@ predict_next <- function(state, item_embeddings, top_k = 5,
 #' @return A list with \code{attention_ops}, \code{rnn_ops},
 #' \code{attention_sequential_steps}, \code{rnn_sequential_steps}, \code{note}.
 #' @export
+#' @examples
+#' complexity(n = 5L, d = 5L)
+#' @keywords internal
 complexity <- function(n, d) {
   nn <- as.integer(n)
   dd <- as.integer(d)
-  if (nn < 1L || dd < 1L)
-    stop("sasRec: n and d must be positive")
+  if (nn < 1 || dd < 1) stop("sasRec: n and d must be positive")
   list(attention_ops = nn * nn * dd, rnn_ops = nn * dd * dd,
-       attention_sequential_steps = 1L, rnn_sequential_steps = nn,
+       attention_sequential_steps = 1, rnn_sequential_steps = nn,
        note = "the parallelism, not the operation count, is where the order-of-magnitude speed-up comes from")
 }
-
-#' morie_sasRec
-#'
-#' A step of the sasRec_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param E Passed to \code{self_attention}.
-#' @param WQ Passed to \code{self_attention}.
-#' @param WK Passed to \code{self_attention}.
-#' @param WV Passed to \code{self_attention}.
-#' @param mask Passed to \code{self_attention}.
-#' @return The value of \code{self_attention}.
-#' @export
-morie_sasRec <- function(E, WQ, WK, WV, mask = NULL) {
-  self_attention(E, WQ, WK, WV, mask = mask)
-}
-
-sasrec <- self_attention
-selfattentivesequential <- self_attention
 
 #' .sasRec_cheatsheet
 #'
@@ -240,14 +193,19 @@ selfattentivesequential <- self_attention
 #' res <- .sasRec_cheatsheet()
 #' res
 .sasRec_cheatsheet <- function() {
-  paste("sasRec: Markov chains win where data are SPARSE (parsimony",
-        "is critical), RNNs where they are DENSE (complexity is",
-        "affordable) -- and the choice is normally made once for a",
-        "whole dataset. Self-attention picks per sequence: it can",
-        "reach far back like an RNN while predicting from FEW",
-        "actions like an MC, and the attention weights show it",
-        "adapting to density. Causal masking is a CORRECTNESS",
-        "condition -- attending forward leaks the target. O(n^2 d)",
-        "but fully parallel against an RNN's inherently sequential",
-        "O(n d^2).")
+  paste("sasRec: Markov chains win where data are SPARSE (parsimony ",
+        "is critical), RNNs where they are DENSE (complexity is ",
+        "affordable) -- and the choice is normally made once for a ",
+        "whole dataset. Self-attention picks per sequence: it can ",
+        "reach far back like an RNN while predicting from FEW actions ",
+        "like an MC, and the attention weights show it adapting to ",
+        "density. Causal masking is a CORRECTNESS condition -- ",
+        "attending forward leaks the target. O(n^2 d) but fully ",
+        "parallel against an RNN's inherently sequential O(n d^2).",
+        sep = "")
 }
+
+selfattentivesequential <- self_attention
+sasrec <- self_attention
+
+morie_sasRec <- self_attention

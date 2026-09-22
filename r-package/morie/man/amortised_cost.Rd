@@ -22,3 +22,8 @@ A step of the samseg_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r <- amortised_cost(encoder_ms = 100, decoder_ms = 5, n_prompts = 50)
+is.list(r) || is.numeric(r)
+}
+\keyword{internal}

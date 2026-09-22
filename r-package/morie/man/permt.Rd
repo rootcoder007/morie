@@ -43,7 +43,7 @@ p-value uses (1 + count of permutation statistics at least T_obs)
 divided by (B+1), per Phipson and Smyth 2010.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-permt(V, V)
+set.seed(1)
+morie_permutation_test_general(rnorm(30), rnorm(30, mean = 0.6), B = 500L)
 }
 \keyword{internal}

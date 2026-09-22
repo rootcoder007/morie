@@ -223,6 +223,12 @@ identified_set <- function(beta, n_pre, n_post, M = 0.0, family = "SD",
 #' @param l_vec Passed to \code{identified_set}.
 #' @return A list with \code{curve}, \code{family}, \code{M}, \code{width}.
 #' @export
+#' @examples
+#' beta <- c(-0.05, 0.02, 0.5, 0.55, 0.6)
+#' r <- sensitivity_curve(beta, n_pre = 2, n_post = 3,
+#'                        Ms = c(0, 0.05, 0.1))
+#' str(r, max.level = 1)
+#' @keywords internal
 sensitivity_curve <- function(beta, n_pre, n_post, Ms, family = "SD",
                               l_vec = NULL) {
   curve <- lapply(Ms, function(M) {

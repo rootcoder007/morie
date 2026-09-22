@@ -19,3 +19,8 @@ A step of the attrInf_native implementation. Called by \code{morie_attrInf}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+err <- confusion_error(rbind(c(40, 10), c(5, 45)))
+err(0L, 1L)
+}
+\keyword{internal}

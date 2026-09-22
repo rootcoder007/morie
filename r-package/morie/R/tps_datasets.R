@@ -14,26 +14,30 @@
 #' of a source checkout. Users can override per-call via the `path`
 #' argument of [morie_tps_load_dataset()].
 #'
-#' @return A length-1 character string -- the resolved (possibly
-#'   non-existent) filesystem path to the TPS data directory.
-#' @export
+#' @return A logical scalar.
 #' @examples
 #' morie_tps_data_dir()
+#' @export
 morie_tps_data_dir <- function() {
-  # Mirror Python's `Path(__file__).resolve().parents[5] / data/datasets/TPS`
-  # but tolerant of the installed-package layout: prefer an env override.
+  # Env override wins.
   env <- Sys.getenv("MORIE_TPS_DATA_DIR", unset = NA_character_)
   if (!is.na(env) && nzchar(env)) {
     return(normalizePath(env, mustWork = FALSE))
   }
-  # Walk up from the package install (or source) directory.
-  pkg_dir <- tryCatch(
-    find.package("morie"),
-    error = function(e) getwd()
-  )
-  candidate <- file.path(pkg_dir, "..", "..", "..", "..", "..",
-                         "data", "datasets", "TPS")
-  normalizePath(candidate, mustWork = FALSE)
+  # Resolve from the project root (robust: here::here() / a DESCRIPTION or
+  # pyproject.toml marker walk) rather than a fixed number of parent hops
+  # from the install directory -- a hop count does not hold across install
+  # layouts (the same class of bug the Python side carried).
+  root <- tryCatch(.morie_project_root(), error = function(e) NA_character_)
+  if (!is.na(root) && nzchar(root)) {
+    return(normalizePath(file.path(root, "data", "datasets", "TPS"),
+                         winslash = "/", mustWork = FALSE))
+  }
+  # Fallback: relative to the working directory (the analyst runs from the
+  # data root). mustWork = FALSE so callers can file.exists()-check and
+  # fall back to an explicit path.
+  normalizePath(file.path("data", "datasets", "TPS"),
+                winslash = "/", mustWork = FALSE)
 }
 
 
@@ -112,7 +116,7 @@ MORIE_TPS_REGISTRY <- list(
 )
 
 # Internal: bundled-sample fallback for a fresh box with no local TPS
-# cache. Looks for tps_<category>_sample.csv in morie, then in the
+# cache. Looks for tps_<category>_sample.csv in rmorie, then in the
 # rmoriedata companion package (the canonical data holder).
 #' Internal helper: Morie Tps Sample Fallback
 #' @noRd
@@ -122,7 +126,7 @@ MORIE_TPS_REGISTRY <- list(
               sprintf("tps_psdp_%s_sample.csv", key))
   smp <- ""
   for (fname in fnames) {
-    smp <- system.file("extdata", fname, package = "morie")
+    smp <- .morie_extdata(fname)
     if (nzchar(smp)) break
     if (requireNamespace("rmoriedata", quietly = TRUE)) {
       smp <- system.file("extdata", fname, package = "rmoriedata")

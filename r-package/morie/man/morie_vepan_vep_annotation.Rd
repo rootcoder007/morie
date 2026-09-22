@@ -14,6 +14,16 @@ morie_vepan_vep_annotation(
   mode = "all",
   no_intergenic = FALSE
 )
+
+morie_vepan(
+  variants,
+  transcripts,
+  genome,
+  upstream = 5000,
+  downstream = 5000,
+  mode = "all",
+  no_intergenic = FALSE
+)
 }
 \arguments{
 \item{variants}{Iterated over elementwise, with \code{lapply}.}
@@ -40,3 +50,13 @@ A step of the vepan_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+genome <- "AATGGCCTAGGCTTAA"
+tr <- list(id = "tx1", gene = "g1", chrom = "chr1",
+           exons = rbind(c(3L, 8L), c(11L, 14L)), strand = "+",
+           cds = c(3L, 14L))
+v <- list(chrom = "chr1", pos = 5L, ref = "G", alt = "A")
+r <- morie_vepan_vep_annotation(list(v), list(tr), genome)
+str(r, max.level = 1)
+}
+\keyword{internal}

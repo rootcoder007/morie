@@ -18,7 +18,7 @@ morie_datasets_nist_rds(
 
 \item{max_features}{Integer or \code{NULL}; cap on returned rows.}
 
-\item{offline}{Logical; if \code{TRUE}, return a bundled synthetic frame.}
+\item{offline}{Logical; if \code{TRUE}, return a included synthetic frame.}
 }
 \value{
 A \code{data.frame} with the NIST RDS catalog schema.
@@ -27,7 +27,7 @@ A \code{data.frame} with the NIST RDS catalog schema.
 NIST Reference Datasets (RDS) catalog metadata
 }
 \examples{
-\dontshow{if (nzchar(system.file("extdata", "nist_rds_synthetic.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (nzchar(system.file("extdata", "nist_rds_synthetic.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_nist_rds(offline = TRUE)
 head(df)
 \dontshow{\}) # examplesIf}

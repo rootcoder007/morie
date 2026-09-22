@@ -19,6 +19,6 @@ Convenience helper: given a data.frame just-loaded by
 audit functions.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_specs_from_df(V)
+df <- data.frame(age = c(21, 34, NA), city = c("a", "b", "b"))
+str(morie_specs_from_df(df), max.level = 1)
 }

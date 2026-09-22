@@ -15,11 +15,12 @@
 #' @return Named list with estimate, weights, atoms, effective_K,
 #'   trunc_err_bound, n, method.
 #' @examples
+#' set.seed(1)
 #' morie_ghosal_stick_breaking_trunc(x = rnorm(50))
 #' @export
 morie_ghosal_stick_breaking_trunc <- function(x, alpha = 1.0, K = 50, seed = 0,
-                                        base_mean = NULL, base_sd = NULL,
-                                        deterministic_seed = NULL) {
+                                              base_mean = NULL, base_sd = NULL,
+                                              deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
     .morie_local_det_rng("ghstk", deterministic_seed)
   } else {

@@ -38,3 +38,11 @@ A step of the causal implementation. Called by \code{morie_estimate_aipw},
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+set.seed(1)
+if (requireNamespace("WeightIt", quietly = TRUE)) {
+  df <- data.frame(t = rbinom(60, 1, 0.4), x = rnorm(60))
+  morie_estimate_propensity_scores(df, "t", "x")
+}
+}
+\keyword{internal}

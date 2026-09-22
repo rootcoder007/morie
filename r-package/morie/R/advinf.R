@@ -32,7 +32,9 @@ Advielbo <- function(mu, omega, eta, logjoint) {
   }
   ent <- sum(omega) + 0.5 * K * (1 + log(2 * pi))
   mlj <- sum(lj) / S
-  .t1_result(elbo = mlj + ent, entropy = ent, meanlogjoint = mlj,
-             logjoints = lj, K = K, S = S,
-             method = "Mean-field ADVI ELBO (Kucukelbir et al. 2017 eq. 5)")
+  .t1_result(
+    elbo = mlj + ent, entropy = ent, meanlogjoint = mlj,
+    logjoints = lj, K = K, S = S,
+    method = "Mean-field ADVI ELBO (Kucukelbir et al. 2017 eq. 5)"
+  )
 }

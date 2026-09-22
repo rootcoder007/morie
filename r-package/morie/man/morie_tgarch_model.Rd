@@ -10,7 +10,7 @@ morie_tgarch_model(x)
 \item{x}{Numeric return series.}
 }
 \value{
-Named list with \code{omega, alpha, gamma, beta, persistence,
+Named list with \eqn{omega, alpha, gamma, beta, persistence,
   loglik, conditional_variance, n, method}.
 }
 \description{
@@ -27,6 +27,7 @@ Native Gaussian quasi-maximum-likelihood fit; no GARCH package is
 loaded or called.
 }
 \examples{
+set.seed(1)
 morie_tgarch_model(x = rnorm(50))
 }
 \references{

@@ -13,6 +13,15 @@ morie_snmcox_blip_down(time, treat_times, psi)
 
 \item{psi}{See Usage.}
 }
+\value{
+A numeric value.
+}
 \description{
 The blipped-down (untreated) time U(psi) = int_0^T exp(psi A(u)) du
 }
+\examples{
+morie_snmcox_blip_down(time = 5L,
+  treat_times = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)),
+  psi = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

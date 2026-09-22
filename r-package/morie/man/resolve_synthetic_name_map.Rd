@@ -19,3 +19,4 @@ A step of the synthetic implementation. Called by \code{morie_generate_synthetic
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

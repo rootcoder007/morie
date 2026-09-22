@@ -4,14 +4,13 @@
 # test files don't exercise.
 #
 #   * morie_arsau_read_xlsx_dictionary — runs against the bundled
-#     authoritative Solicitor General OTIS XLSX dictionary (uses the same row
+#     authoritative MCSCS OTIS XLSX dictionary (uses the same row
 #     layout that ARSAU XLSXes follow).
 #   * morie_arsau_read_markdown_dictionary — runs against the bundled
 #     OTIS_DATA_DICTIONARY.md.
 
 test_that("morie_arsau_read_markdown_dictionary parses without crashing", {
-  path <- system.file("extdata", "OTIS_DATA_DICTIONARY.md",
-                      package = "morie")
+  path <- .morie_extdata("OTIS_DATA_DICTIONARY.md")
   skip_if(!nzchar(path) || !file.exists(path),
           "bundled OTIS markdown dictionary missing")
   # The OTIS markdown follows a slightly different table convention than

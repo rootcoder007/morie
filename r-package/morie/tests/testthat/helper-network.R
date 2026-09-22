@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # curl-free network gate: testthat::skip_if_offline() requires the curl
-# package, which is not an morie runtime dependency. This helper skips
+# package, which is not an rmorie runtime dependency. This helper skips
 # on a plain TCP probe instead, so network-gated tests degrade the same
 # way on machines without curl.
 skip_if_no_network <- function(host = "8.8.8.8", port = 53, timeout = 2) {

@@ -236,20 +236,20 @@
 
 # LearnBPR: bootstrap-sampled stochastic gradient ascent over triples
 # drawn from D_S. Mirrors morie.fn.bprMF.learn_bpr step for step, with
-# the same draw order from the shared SplitMix64 stream: U*K uniforms
-# fill W, I*K uniforms fill H, then per iteration three uniforms (user
+# the same draw order from the shared SplitMix64 stream: U&#42;K uniforms
+# fill W, I&#42;K uniforms fill H, then per iteration three uniforms (user
 # index, positive item, negative item) plus up to 100 negative-item
 # rejection-guard uniforms.  regularizer_sign="paper" reproduces the
-# printed Figure 4 update whose +lambda*Theta term diverges; the
+# printed Figure 4 update whose +lambda&#42;Theta term diverges; the
 # default is the sign that actually ascends BPR-Opt.
 #' LearnBPR: bootstrap-sampled stochastic gradient ascent over triples
 #'
 #' drawn from D_S. Mirrors morie.fn.bprMF.learn_bpr step for step, with
-#' the same draw order from the shared SplitMix64 stream: U*K uniforms
-#' fill W, I*K uniforms fill H, then per iteration three uniforms (user
+#' the same draw order from the shared SplitMix64 stream: U\*K uniforms
+#' fill W, I&#42;K uniforms fill H, then per iteration three uniforms (user
 #' index, positive item, negative item) plus up to 100 negative-item
 #' rejection-guard uniforms.  regularizer_sign="paper" reproduces the
-#' printed Figure 4 update whose +lambda*Theta term diverges; the
+#' printed Figure 4 update whose +lambda&#42;Theta term diverges; the
 #' default is the sign that actually ascends BPR-Opt.
 #'
 #' @param pos A vector; indexed elementwise.
@@ -401,6 +401,9 @@
 #' @references Rendle, S. et al. (2009) UAI 2009, 452-461,
 #'   arXiv:1205.2618, Sec. 4.1.
 #' @export
+#' @examples
+#' bpr_sigmoid(x = 5L)
+#' @keywords internal
 bpr_sigmoid <- function(x) .bprMF_sigmoid(x)
 
 #' Predict x_hat_ui = <w_u, h_i>
@@ -415,6 +418,12 @@ bpr_sigmoid <- function(x) .bprMF_sigmoid(x)
 #' @param i 0-based item index.
 #' @return Scalar inner product.
 #' @export
+#' @examples
+#' set.seed(1)
+#' W <- lapply(1:4, function(i) rnorm(3, 0, 0.3))
+#' H <- lapply(1:5, function(i) rnorm(3, 0, 0.3))
+#' bpr_predict(W, H, u = 0L, i = 2L)
+#' @keywords internal
 bpr_predict <- function(W, H, u, i) .bprMF_predict(W, H, u, i)
 
 #' BPR-Opt and its loglik / penalty pieces
@@ -430,6 +439,10 @@ bpr_predict <- function(W, H, u, i) .bprMF_predict(W, H, u, i)
 #' @return A list with \code{bpr_opt}, \code{loglik}, \code{penalty},
 #'   \code{n_triples}.
 #' @export
+#' @examples
+#' bpr_opt_R(W = c(1, 2, 3, 4, 5, 6, 7, 8), H = 0.5, pos = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   n_items = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 bpr_opt_R <- function(W, H, pos, n_items, lam = 0.01)
   .bprMF_bpr_opt(W, H, pos, n_items, lam)
 
@@ -441,6 +454,15 @@ bpr_opt_R <- function(W, H, pos, n_items, lam = 0.01)
 #' @inheritParams bpr_opt_R
 #' @return List with \code{auc}, \code{per_user}, \code{note}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' W <- lapply(1:4, function(i) rnorm(3, 0, 0.3))
+#' H <- lapply(1:5, function(i) rnorm(3, 0, 0.3))
+#' pos <- list("0" = c(0L, 1L), "1" = c(1L, 2L), "2" = c(0L, 3L),
+#'             "3" = c(2L, 4L))
+#' r <- bpr_auc_R(W, H, pos, n_items = 5)
+#' str(r, max.level = 1)
+#' @keywords internal
 bpr_auc_R <- function(W, H, pos, n_items)
   .bprMF_auc(W, H, pos, n_items)
 
@@ -494,6 +516,9 @@ bpr_learn_bpr_R <- function(pos, n_users, n_items, k_dim = 8L,
 #' @return List with \code{ranking} (list of \code{list(i=, s=)} up to
 #'   \code{top_k}) and \code{n_scored}.
 #' @export
+#' @examples
+#' bpr_recommend_R(W = c(1, 2, 3, 4, 5, 6, 7, 8), H = 0.5, u = 5L, n_items = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 bpr_recommend_R <- function(W, H, u, n_items, top_k = 5L,
                             exclude = integer(0))
   .bprMF_recommend(W, H, u, n_items, top_k, exclude)

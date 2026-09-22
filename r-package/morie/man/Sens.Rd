@@ -20,3 +20,7 @@ capability to DETECT and says nothing about false alarms -- a test
 calling everyone positive scores 1, which is why the book always
 reports it beside the specificity.
 }
+\examples{
+Sens(45, 5)
+}
+\keyword{internal}

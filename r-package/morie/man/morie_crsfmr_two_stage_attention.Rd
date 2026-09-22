@@ -20,3 +20,7 @@ operation counts.
 \description{
 Cross-time then cross-dimension.
 }
+\examples{
+morie_crsfmr_two_stage_attention(Z = 5L)
+}
+\keyword{internal}

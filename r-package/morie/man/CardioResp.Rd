@@ -27,3 +27,13 @@ A step of the rangayyan_corr implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+\donttest{
+n <- 1024
+fs <- 128
+resp <- sin(2 * pi * 0.25 * (0:(n - 1))/fs)
+ecg <- sin(2 * pi * 0.25 * (0:(n - 1))/fs + 0.7)
+CardioResp(ecg, resp, fs = fs)
+}
+}
+\keyword{internal}

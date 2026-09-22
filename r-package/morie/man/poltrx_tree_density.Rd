@@ -25,7 +25,12 @@ A list with \code{estimate}, \code{density},
 The probabilities at a level sum to 1 by construction, whatever
 the branch draws were.
 }
+\examples{
+tr <- poltrx_finite_tree(levels = 3, seed = 1)
+str(poltrx_tree_density(tr, level = 2), max.level = 1)
+}
 \references{
 Muller, P. & Quintana, F. A. (2004). Sec. 2.3, after
 Lavine (1992, 1994).
 }
+\keyword{internal}

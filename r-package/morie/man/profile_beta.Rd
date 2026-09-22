@@ -26,3 +26,7 @@ A step of the sarimax_native implementation. Called by \code{.sarimax_fit}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+profile_beta(wy = 5L, wX = 5L)
+}
+\keyword{internal}

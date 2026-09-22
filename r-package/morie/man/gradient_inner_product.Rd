@@ -23,3 +23,8 @@ A step of the tlheic_native implementation. Called by \code{morie_tlheic},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+gradient_inner_product(V, V)
+}
+\keyword{internal}

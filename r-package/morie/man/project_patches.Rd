@@ -9,15 +9,20 @@ project_patches(patch_features, W, b = NULL)
 \arguments{
 \item{patch_features}{Iterated over elementwise, with \code{lapply}.}
 
-\item{W}{A matrix; indexed by row and column.}
+\item{W}{A vector; its length is taken and its elements indexed.}
 
 \item{b}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \value{
-The value of \code{out}, as built in the body.
+The value of \code{lapply}.
 }
 \description{
-A step of the llavx_native implementation. No other function in the package calls it.
+A step of the llavx_native implementation. Called by \code{morie_llavx}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+project_patches(V, V)
+}
+\keyword{internal}

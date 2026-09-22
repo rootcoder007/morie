@@ -28,7 +28,11 @@ Draws the branch probabilities \code{Y_eps ~ Beta(a, a)} down to
 a stated level by two Gamma draws per node. Truncated and honest
 about it: the partition depth is part of the model.
 }
+\examples{
+poltrx_finite_tree(levels = 5L)
+}
 \references{
 Muller, P. & Quintana, F. A. (2004). Sec. 2.3;
 Lavine, M. (1992, 1994).
 }
+\keyword{internal}

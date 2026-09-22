@@ -16,12 +16,11 @@ fallback_procedure(p_values, weights, alpha = 0.05, labels = NULL)
 \item{labels}{Optional character vector of test labels.}
 }
 \value{
-A \code{morie_rich_result} list with logical \code{rejected},
-integer \code{n_rejected}, and the input \code{weights}
-(see \code{morie_multiple_testing}).
+An object of class \code{"morie_multiple_testing_result"}.
 }
 \description{
-Fallback (fixed-sequence with alpha spending)
+Wiens-Dmitrienko fallback; \pkg{gMCP} can express the same
+procedure as a graphical multiple-comparison transition.
 }
 \examples{
 res <- fallback_procedure(c(0.01, 0.04, 0.30, 0.02),

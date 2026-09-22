@@ -23,3 +23,4 @@ The gather-then-broadcast construction of Zhang & Yan (2023) Sec.
 dimensions, then broadcasts back, at cost \code{O(cD)} rather than
 the \code{O(D^2)} of direct all-pairs attention.
 }
+\keyword{internal}

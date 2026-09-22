@@ -36,3 +36,7 @@ A step of the sdxlcd_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_sdxlcd_condition_vector(h_original = 5L, w_original = 5L)
+}
+\keyword{internal}

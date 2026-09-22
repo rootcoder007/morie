@@ -27,3 +27,12 @@ for "coherence" returns nothing.  AVERAGING IS NOT OPTIONAL: on a
 single segment the coherence of ANY two records is exactly 1, so
 fewer than two segments raises.
 }
+\examples{
+set.seed(5)
+n <- 512
+s <- sin(2 * pi * 0.1 * (1:n))
+x <- s + 0.3 * rnorm(n)
+y <- s + 0.3 * rnorm(n)
+str(MsCoh(x, y, nperseg = 128), max.level = 1)
+}
+\keyword{internal}

@@ -2,14 +2,14 @@
 % Please edit documentation in R/pate_native.R
 \name{teacher_votes}
 \alias{teacher_votes}
-\title{The vote histogram n_j(x) for each record. teacher_predicts is a}
+\title{teacher_votes}
 \usage{
 teacher_votes(teacher_predicts, rows, n_classes = NULL)
 }
 \arguments{
 \item{teacher_predicts}{Coerced to list by the body, with \code{as.list}.}
 
-\item{rows}{A vector; its length is taken.}
+\item{rows}{Passed to \code{predict}.}
 
 \item{n_classes}{Defaults to \code{NULL}.}
 }
@@ -17,6 +17,8 @@ teacher_votes(teacher_predicts, rows, n_classes = NULL)
 The value of \code{split}.
 }
 \description{
-list of callables mapping rows to labels (or to probability vectors,
-in which case the argmax is the vote).
+A step of the pate_native implementation. Called by \code{pate}.
+See the file header for the source the module follows.
+source it follows.
 }
+\keyword{internal}

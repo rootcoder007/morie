@@ -4,16 +4,16 @@
 \alias{predict_next}
 \title{predict_next}
 \usage{
-predict_next(state, item_embeddings, top_k = 5, exclude = list())
+predict_next(state, item_embeddings, top_k = 5, exclude = numeric(0))
 }
 \arguments{
-\item{state}{Passed to \code{.sasrec_vec}.}
+\item{state}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{item_embeddings}{Passed to \code{.sasrec_mat}.}
+\item{item_embeddings}{See Usage.}
 
-\item{top_k}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.}
+\item{top_k}{Numeric; passed to \code{min}. Defaults to \code{5}.}
 
-\item{exclude}{Passed to \code{unlist}. Defaults to \code{list()}.}
+\item{exclude}{Passed to \code{unlist}. Defaults to \code{numeric(0)}.}
 }
 \value{
 A list with \code{estimate}, \code{ranking}, \code{n_scored}, \code{method}.
@@ -23,3 +23,9 @@ A step of the sasRec_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+predict_next(V, M)
+}
+\keyword{internal}

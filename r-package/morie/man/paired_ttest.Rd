@@ -12,14 +12,13 @@ paired_ttest(x, y, confidence = 0.95)
 \item{confidence}{Confidence level.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the paired t statistic, p-value, df, mean-difference CI,
-Cohen's d on the differences, and n (number of pairs).
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Paired-sample t-test
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-paired_ttest(V, V)
+set.seed(1)
+x <- rnorm(20)
+paired_ttest(x, x + rnorm(20, 0.2))
 }

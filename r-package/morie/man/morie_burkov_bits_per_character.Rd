@@ -11,6 +11,13 @@ morie_burkov_bits_per_character(ce_loss, n_tokens, n_characters)
 
 \item{n_tokens, n_characters}{Counts.}
 }
+\value{
+A list with \code{estimate}, \code{bits_per_token}, \code{chars_per_token}, \code{n}, \code{method}.
+}
 \description{
 Bits per character from cross-entropy (Burkov Ch 2)
 }
+\examples{
+morie_burkov_bits_per_character(2, 100, 400)
+}
+\keyword{internal}

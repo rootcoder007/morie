@@ -25,6 +25,19 @@ morie_alammar_contextualized_embedding(layer_outputs, layer_idx, position)
 
 \item{layer_idx, position}{0-based indices, negatives from the end.}
 }
+\value{
+A list with \code{embeddings}, \code{estimate}, \code{vocab_size}, \code{dim}, \code{n}, \code{method}.
+}
 \description{
 Token lookup, masked pooling, contextual extraction (Alammar Ch 2/8)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+morie_alammar_token_embedding_lookup(M, V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_document_embedding_pool(V)
+L <- array(0, dim = c(2, 2, 2))
+morie_alammar_contextualized_embedding(L, -1, 1)
+}
+\keyword{internal}

@@ -16,3 +16,8 @@ A list with \code{p}, \code{n}, \code{delayms}, \code{fsnote}, \code{method}.
 (1/32) x(n-32).  Eqs (4.9)-(4.12) folded into one recursion: four
 adds per sample and a single state variable.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+QrsHPassIo(V)
+}
+\keyword{internal}

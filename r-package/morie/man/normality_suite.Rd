@@ -13,9 +13,12 @@ normality_suite(x)
 A list of \code{morie_test_result}.
 }
 \description{
-Run a suite of normality tests
+Internal Shapiro-Wilk and Jarque-Bera helpers were removed in v0.9.6;
+the suite now calls \code{stats::shapiro.test} directly and computes
+the Jarque-Bera statistic inline. Users wanting a stand-alone
+Jarque-Bera test should call \code{tseries::jarque.bera.test}.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-normality_suite(V)
+set.seed(1)
+str(normality_suite(rnorm(50)), max.level = 1)
 }

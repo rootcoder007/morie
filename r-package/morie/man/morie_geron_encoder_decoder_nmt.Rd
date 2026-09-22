@@ -15,6 +15,15 @@ morie_geron_encoder_decoder_nmt(src, tgt, model, max_len = NULL, eos = NULL)
 
 \item{max_len, eos}{Greedy decode cap and stop id.}
 }
+\value{
+A list with \code{loss}, \code{mean_loss}, \code{token_losses}, \code{perplexity}, \code{greedy}, \code{exact_match}, \code{z}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Encoder-decoder seq2seq: teacher-forced loss and greedy decode (Geron Ch 14, hmnmt)
 }
+\examples{
+model <- list(encode = function(s) length(s), decode = function(z,
+    prefix) c(0.2, 0.5, 0.3))
+morie_geron_encoder_decoder_nmt(c(9, 9), c(1, 1), model)
+}
+\keyword{internal}

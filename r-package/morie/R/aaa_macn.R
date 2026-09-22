@@ -10,7 +10,15 @@
 # Controlled Clinical Trials 7(3):177-188; Higgins & Thompson (2002)
 # Statistics in Medicine 21(11):1539-1558.
 
-#' @noRd
+#' morie_ma_cochran_q
+#'
+#' @param yi Argument `yi`; see Usage.
+#' @param vi Argument `vi`; see Usage.
+#' @return A list with `statistic`, `pvalue`, `df`, `k`, `theta_fe`, `se_fe`, `tau2`, `i2`, `h2`, `weights`, `c_constant`, `method`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_ma_cochran_q(V, V)
+#' @keywords internal
 morie_ma_cochran_q <- function(yi, vi) {
   y <- as.numeric(yi)
   v <- as.numeric(vi)

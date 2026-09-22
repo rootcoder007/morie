@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# test-batch14.R: coverage for mnpbt.R, modules.R, moeml.R, morie-package.R,
+# test-batch14.R: coverage for mnpbt.R, modules.R, moeml.R, rrmorie-package.R,
 #   mrkvr.R, mrm_kulldorff.R, mrm_lisa.R, mrm_mandela_spectrum.R, mrm_otis.R,
 #   mrm_samples.R, mrm_siu.R (rOpenSci #770 coverage campaign)
 
@@ -53,6 +53,7 @@ test_that("morie_list_morie_modules() returns the documented module surface", {
   expect_s3_class(mods, "data.frame")
   expect_named(mods, c("name", "description"))
   expect_equal(nrow(mods), 23L)
+  expect_true(all(c("otis-analysis", "mapq-psychometrics") %in% mods$name))
   expect_type(mods$name, "character")
   expect_type(mods$description, "character")
   expect_true(all(nchar(mods$name) > 0))

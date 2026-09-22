@@ -30,3 +30,7 @@ known, so the cross-term double sum of eq (9.15) is simply left out
 -- that omission is what makes the TFD adaptive rather than smoothed.
 Features EP (9.79), ESP (9.80), FP (9.81), FSP (9.82).
 }
+\examples{
+VagTfd(x = c(1, 2, 3, 4, 5, 6, 7, 8), fs = 5L)
+}
+\keyword{internal}

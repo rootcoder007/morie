@@ -25,7 +25,7 @@
 #                              File Geodatabase exports at
 #                              `https://hub.arcgis.com/api/v3/datasets/<hub_id>_0/downloads/data?format=<fmt>`.
 #
-# 3SS bundles the full 71-row catalog as a CSV fixture so discovery
+# 3SS capsules the full 71-row catalog as a CSV fixture so discovery
 # works offline. By-id loading dispatches to FeatureServer (JSON /
 # GeoJSON) or the Hub downloads API (CSV / Shapefile / FGDB) based on
 # `format`.
@@ -72,59 +72,68 @@
 #'     Calls for Service Attended.}
 #' }
 #'
-#' @param offline If `TRUE` (default), read the bundled 71-row
+#' @param offline If `TRUE` (default), read the included 71-row
 #'   catalog fixture (`inst/extdata/tps_arcgis_hub_catalog.csv`).
 #'   Live mode hits the TPS Hub search API.
 #' @return A `data.frame` with columns `hub_id`, `title`, `type`,
 #'   `feature_server_url`, `owner`, `tags`, `snippet`.
 #' @references TPS Public Safety Data Portal,
 #'   \url{https://data.tps.ca/search?collection=dataset}.
-#' @examplesIf nzchar(system.file("extdata", "tps_arcgis_hub_catalog.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (nzchar(system.file("extdata", "tps_arcgis_hub_catalog.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' cat <- morie_datasets_tps_arcgis_hub_layers()
-#' nrow(cat)        # 71
+#' nrow(cat) # 71
 #' head(cat$title)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_tps_arcgis_hub_layers <- function(offline = TRUE) {
   if (isTRUE(offline)) {
     # Look in rmorie first, then rmoriedata (companion ships this one).
     # Return empty data.frame on miss so morie_dataset_portal_catalog()
     # and other downstream consumers can still build successfully.
-    path <- system.file("extdata", "tps_arcgis_hub_catalog.csv",
-                        package = "morie")
+    path <- .morie_extdata("tps_arcgis_hub_catalog.csv")
     if (!nzchar(path) &&
-        requireNamespace("rmoriedata", quietly = TRUE)) {
+      requireNamespace("rmoriedata", quietly = TRUE)) {
       path <- system.file("extdata", "tps_arcgis_hub_catalog.csv",
-                          package = "rmoriedata")
+        package = "rmoriedata"
+      )
     }
     if (!nzchar(path)) {
       warning("TPS ArcGIS Hub catalog fixture not bundled; ",
-              "returning empty data.frame. Install the rmoriedata ",
-              "companion: ",
-              "remotes::install_github('rootcoder007/rmoriedata')",
-              call. = FALSE)
+        "returning empty data.frame. Install the rmoriedata ",
+        "companion: ",
+        "remotes::install_github('rootcoder007/rmoriedata')",
+        call. = FALSE
+      )
       return(data.frame())
     }
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE)
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    )
     return(df)
   }
   # Live mode -- hit the TPS Hub OGC-API-Features search endpoint.
   body <- .morie_dataset_http_json(
     "https://data.tps.ca/api/search/v1/collections/dataset/items",
-    query = list(limit = 100L))
+    query = list(limit = 100L)
+  )
   feats <- body$features
-  if (is.null(feats) || length(feats) == 0L) return(data.frame())
+  if (is.null(feats) || length(feats) == 0L) {
+    return(data.frame())
+  }
   rows <- lapply(feats, function(f) {
     p <- f$properties
     data.frame(
       hub_id = f$id,
-      title  = p$title %||% "",
-      type   = p$type  %||% "Feature Service",
+      title = p$title %||% "",
+      type = p$type %||% "Feature Service",
       feature_server_url = p$url %||% "",
-      owner  = p$owner %||% "TorontoPoliceService",
-      tags   = paste(unlist(p$tags) %||% character(), collapse = "; "),
+      owner = p$owner %||% "TorontoPoliceService",
+      tags = paste(unlist(p$tags) %||% character(), collapse = "; "),
       snippet = substr(p$snippet %||% "", 1L, 300L),
-      stringsAsFactors = FALSE)
+      stringsAsFactors = FALSE
+    )
   })
   out <- do.call(rbind, rows)
   out[order(out$title), , drop = FALSE]
@@ -141,29 +150,38 @@ morie_datasets_tps_arcgis_hub_layers <- function(offline = TRUE) {
 #' @noRd
 .morie_dataset_tps_hub_resolve <- function(hub_id, offline = TRUE) {
   if (!grepl("^[a-f0-9]{32}$", hub_id)) {
-    stop(sprintf(paste0("morie TPS hub_id must be a 32-char hex GUID; ",
-                         "got '%s'"), hub_id), call. = FALSE)
+    stop(sprintf(paste0(
+      "morie TPS hub_id must be a 32-char hex GUID; ",
+      "got '%s'"
+    ), hub_id), call. = FALSE)
   }
   if (isTRUE(offline)) {
     cat <- morie_datasets_tps_arcgis_hub_layers(offline = TRUE)
     hit <- cat[cat$hub_id == hub_id, , drop = FALSE]
     if (nrow(hit) == 0L) {
-      stop(sprintf(paste0(
-        "morie TPS hub_id '%s' not in the bundled catalog ",
-        "(71 datasets verified 2026-05-24). Pass offline = FALSE ",
-        "to resolve via the live ArcGIS Online items API."),
-        hub_id), call. = FALSE)
+      stop(sprintf(
+        paste0(
+          "morie TPS hub_id '%s' not in the bundled catalog ",
+          "(71 datasets verified 2026-05-24). Pass offline = FALSE ",
+          "to resolve via the live ArcGIS Online items API."
+        ),
+        hub_id
+      ), call. = FALSE)
     }
     return(hit$feature_server_url[[1L]])
   }
   body <- .morie_dataset_http_json(
-    sprintf("https://www.arcgis.com/sharing/rest/content/items/%s",
-            hub_id),
-    query = list(f = "json"))
+    sprintf(
+      "https://www.arcgis.com/sharing/rest/content/items/%s",
+      hub_id
+    ),
+    query = list(f = "json")
+  )
   if (is.null(body$url) || !nzchar(body$url)) {
     stop(sprintf(paste0(
       "morie TPS hub_id '%s' did not return a FeatureServer url ",
-      "from the ArcGIS Online items API."), hub_id), call. = FALSE)
+      "from the ArcGIS Online items API."
+    ), hub_id), call. = FALSE)
   }
   body$url
 }
@@ -172,8 +190,10 @@ morie_datasets_tps_arcgis_hub_layers <- function(offline = TRUE) {
 # Generic by-id loader (multi-format aware)
 # ---------------------------------------------------------------------------
 
-.MORIE_TPS_HUB_FORMATS <- c("json", "geojson", "csv",
-                             "shapefile", "fgdb")
+.MORIE_TPS_HUB_FORMATS <- c(
+  "json", "geojson", "csv",
+  "shapefile", "fgdb"
+)
 
 #' Generic TPS ArcGIS Hub dataset loader by hub_id
 #'
@@ -214,7 +234,7 @@ morie_datasets_tps_arcgis_hub_layers <- function(offline = TRUE) {
 #' @param layer_idx Integer index of the FeatureServer layer to pull
 #'   (default `0L`, the first layer).
 #' @param offline Logical; if `TRUE`, the hub_id is resolved via the
-#'   bundled catalog (no network needed for the resolution step).
+#'   included catalog (no network needed for the resolution step).
 #'   Default `TRUE` -- you can run this against the 71 catalog
 #'   entries without network. Live data fetches always hit the
 #'   network regardless of this argument; "offline" here only
@@ -239,24 +259,28 @@ morie_datasets_tps_arcgis_hub_layers <- function(offline = TRUE) {
 #' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_tps_arcgis_hub_by_id <- function(hub_id,
-                                                  format = "json",
-                                                  where = "1=1",
-                                                  max_features = NULL,
-                                                  layer_idx = 0L,
-                                                  offline = TRUE,
-                                                  dest = NULL) {
+                                                format = "json",
+                                                where = "1=1",
+                                                max_features = NULL,
+                                                layer_idx = 0L,
+                                                offline = TRUE,
+                                                dest = NULL) {
   format <- match.arg(format, choices = .MORIE_TPS_HUB_FORMATS)
   fs_url <- .morie_dataset_tps_hub_resolve(hub_id, offline = offline)
   if (format == "json") {
     layer_url <- sprintf("%s/%d/query", fs_url, as.integer(layer_idx))
-    query <- list(where = where, outFields = "*", f = "json",
-                  returnGeometry = "false")
+    query <- list(
+      where = where, outFields = "*", f = "json",
+      returnGeometry = "false"
+    )
     if (!is.null(max_features)) {
       query$resultRecordCount <- as.integer(max_features)
     }
     body <- .morie_dataset_http_json(layer_url, query = query)
     feats <- body$features
-    if (is.null(feats) || length(feats) == 0L) return(data.frame())
+    if (is.null(feats) || length(feats) == 0L) {
+      return(data.frame())
+    }
     attrs <- lapply(feats, function(f) f$attributes)
     return(.morie_dataset_records_to_df(attrs))
   }
@@ -269,25 +293,38 @@ morie_datasets_tps_arcgis_hub_by_id <- function(hub_id,
     return(.morie_dataset_http_json(layer_url, query = query))
   }
   if (format == "csv") {
-    csv_url <- sprintf(paste0(
-      "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
-      "downloads/data"),
-      hub_id, as.integer(layer_idx))
+    csv_url <- sprintf(
+      paste0(
+        "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
+        "downloads/data"
+      ),
+      hub_id, as.integer(layer_idx)
+    )
     raw <- .morie_dataset_http_text(csv_url,
-                                     query = list(format = "csv"))
-    return(utils::read.csv(text = raw, stringsAsFactors = FALSE,
-                            check.names = FALSE))
+      query = list(format = "csv")
+    )
+    return(utils::read.csv(
+      text = raw, stringsAsFactors = FALSE,
+      check.names = FALSE
+    ))
   }
   # Binary formats: download to dest.
   fmt_token <- switch(format,
-                      shapefile = "shp",
-                      fgdb      = "fgdb")
-  bin_url <- sprintf(paste0(
-    "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
-    "downloads/data?format=%s"),
-    hub_id, as.integer(layer_idx), fmt_token)
+    shapefile = "shp",
+    fgdb      = "fgdb"
+  )
+  bin_url <- sprintf(
+    paste0(
+      "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
+      "downloads/data?format=%s"
+    ),
+    hub_id, as.integer(layer_idx), fmt_token
+  )
   if (is.null(dest)) {
-    suffix <- switch(format, shapefile = ".shp.zip", fgdb = ".fgdb.zip")
+    suffix <- switch(format,
+      shapefile = ".shp.zip",
+      fgdb = ".fgdb.zip"
+    )
     dest <- tempfile(fileext = suffix)
   }
   # 3XX: routes through .morie_dataset_http_bytes (libcurl-backed
@@ -325,26 +362,34 @@ morie_datasets_tps_arcgis_hub_by_id <- function(hub_id,
 #' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_tps_arcgis_hub_download <- function(hub_id,
-                                                     format = "csv",
-                                                     layer_idx = 0L,
-                                                     dest = NULL) {
+                                                   format = "csv",
+                                                   layer_idx = 0L,
+                                                   dest = NULL) {
   format <- match.arg(format,
-                       choices = c("csv", "geojson",
-                                    "shapefile", "fgdb"))
+    choices = c(
+      "csv", "geojson",
+      "shapefile", "fgdb"
+    )
+  )
   fmt_token <- switch(format,
-                      csv = "csv",
-                      geojson = "geojson",
-                      shapefile = "shp",
-                      fgdb = "fgdb")
+    csv = "csv",
+    geojson = "geojson",
+    shapefile = "shp",
+    fgdb = "fgdb"
+  )
   suffix <- switch(format,
-                   csv = ".csv",
-                   geojson = ".geojson",
-                   shapefile = ".shp.zip",
-                   fgdb = ".fgdb.zip")
-  url <- sprintf(paste0(
-    "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
-    "downloads/data?format=%s"),
-    hub_id, as.integer(layer_idx), fmt_token)
+    csv = ".csv",
+    geojson = ".geojson",
+    shapefile = ".shp.zip",
+    fgdb = ".fgdb.zip"
+  )
+  url <- sprintf(
+    paste0(
+      "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
+      "downloads/data?format=%s"
+    ),
+    hub_id, as.integer(layer_idx), fmt_token
+  )
   if (is.null(dest)) dest <- tempfile(fileext = suffix)
   # 3XX: libcurl-backed + httr2 fallback.
   bytes <- .morie_dataset_http_bytes(url)
@@ -370,7 +415,7 @@ morie_datasets_tps_arcgis_hub_download <- function(hub_id,
 #' returns a single-row data.frame with the same columns the TPS Hub
 #' catalog (\code{\link{morie_datasets_tps_arcgis_hub_layers}})
 #' returns: `hub_id`, `title`, `type`, `feature_server_url`, `owner`,
-#' `tags`, `snippet`. Use this when the item is NOT in the bundled
+#' `tags`, `snippet`. Use this when the item is NOT in the included
 #' TPS catalog (any non-TorontoPoliceService item).
 #'
 #' @param item_id 32-char hex GUID for an ArcGIS Online item.
@@ -383,22 +428,28 @@ morie_datasets_tps_arcgis_hub_download <- function(hub_id,
 #' @export
 morie_datasets_arcgis_item_metadata <- function(item_id) {
   if (!grepl("^[a-f0-9]{32}$", item_id)) {
-    stop(sprintf(paste0("morie ArcGIS item_id must be a 32-char hex ",
-                         "GUID; got '%s'"), item_id), call. = FALSE)
+    stop(sprintf(paste0(
+      "morie ArcGIS item_id must be a 32-char hex ",
+      "GUID; got '%s'"
+    ), item_id), call. = FALSE)
   }
   body <- .morie_dataset_http_json(
-    sprintf("https://www.arcgis.com/sharing/rest/content/items/%s",
-            item_id),
-    query = list(f = "json"))
+    sprintf(
+      "https://www.arcgis.com/sharing/rest/content/items/%s",
+      item_id
+    ),
+    query = list(f = "json")
+  )
   data.frame(
     hub_id = item_id,
-    title  = body$title %||% "",
-    type   = body$type  %||% "",
+    title = body$title %||% "",
+    type = body$type %||% "",
     feature_server_url = body$url %||% "",
-    owner  = body$owner %||% "",
-    tags   = paste(unlist(body$tags) %||% character(), collapse = "; "),
+    owner = body$owner %||% "",
+    tags = paste(unlist(body$tags) %||% character(), collapse = "; "),
     snippet = substr(body$snippet %||% "", 1L, 300L),
-    stringsAsFactors = FALSE)
+    stringsAsFactors = FALSE
+  )
 }
 
 #' Generic by-id loader for any ArcGIS Online Feature Service item
@@ -409,12 +460,12 @@ morie_datasets_arcgis_item_metadata <- function(item_id) {
 #' format paths (json / geojson / csv / shapefile / fgdb).
 #'
 #' The hub_id is ALWAYS resolved live (via the items API) because
-#' there's no bundled catalog for non-TPS items. If you find
+#' there's no included catalog for non-TPS items. If you find
 #' yourself calling this against the same item repeatedly, consider
 #' adding a named wrapper (e.g. the shipped
 #' \code{\link{morie_datasets_toronto_zoning_per_neighbourhood}}
 #' wraps EsriCanadaEducation's `af06159170914808983959df6163fc86`
-#' with bundled fixtures for offline use).
+#' with included fixtures for offline use).
 #'
 #' @param item_id 32-char hex GUID.
 #' @param format One of `"json"` (default), `"geojson"`, `"csv"`,
@@ -429,29 +480,35 @@ morie_datasets_arcgis_item_metadata <- function(item_id) {
 #' @examples
 #' \donttest{
 #' df <- try(morie_datasets_arcgis_item_by_id(
-#'   "af06159170914808983959df6163fc86", format = "json"))
+#'   "af06159170914808983959df6163fc86",
+#'   format = "json"
+#' ))
 #' if (!inherits(df, "try-error")) head(df)
 #' }
 #' @export
 morie_datasets_arcgis_item_by_id <- function(item_id,
-                                               format = "json",
-                                               where = "1=1",
-                                               max_features = NULL,
-                                               layer_idx = 0L,
-                                               dest = NULL) {
+                                             format = "json",
+                                             where = "1=1",
+                                             max_features = NULL,
+                                             layer_idx = 0L,
+                                             dest = NULL) {
   format <- match.arg(format, choices = .MORIE_TPS_HUB_FORMATS)
   # Always live-resolve -- there's no portal-agnostic offline catalog.
   fs_url <- .morie_dataset_tps_hub_resolve(item_id, offline = FALSE)
   if (format == "json") {
     layer_url <- sprintf("%s/%d/query", fs_url, as.integer(layer_idx))
-    query <- list(where = where, outFields = "*", f = "json",
-                  returnGeometry = "false")
+    query <- list(
+      where = where, outFields = "*", f = "json",
+      returnGeometry = "false"
+    )
     if (!is.null(max_features)) {
       query$resultRecordCount <- as.integer(max_features)
     }
     body <- .morie_dataset_http_json(layer_url, query = query)
     feats <- body$features
-    if (is.null(feats) || length(feats) == 0L) return(data.frame())
+    if (is.null(feats) || length(feats) == 0L) {
+      return(data.frame())
+    }
     return(.morie_dataset_records_to_df(lapply(feats, function(f) f$attributes)))
   }
   if (format == "geojson") {
@@ -463,22 +520,37 @@ morie_datasets_arcgis_item_by_id <- function(item_id,
     return(.morie_dataset_http_json(layer_url, query = query))
   }
   if (format == "csv") {
-    csv_url <- sprintf(paste0(
-      "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
-      "downloads/data"),
-      item_id, as.integer(layer_idx))
+    csv_url <- sprintf(
+      paste0(
+        "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
+        "downloads/data"
+      ),
+      item_id, as.integer(layer_idx)
+    )
     raw <- .morie_dataset_http_text(csv_url,
-                                     query = list(format = "csv"))
-    return(utils::read.csv(text = raw, stringsAsFactors = FALSE,
-                            check.names = FALSE))
+      query = list(format = "csv")
+    )
+    return(utils::read.csv(
+      text = raw, stringsAsFactors = FALSE,
+      check.names = FALSE
+    ))
   }
-  fmt_token <- switch(format, shapefile = "shp", fgdb = "fgdb")
-  bin_url <- sprintf(paste0(
-    "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
-    "downloads/data?format=%s"),
-    item_id, as.integer(layer_idx), fmt_token)
+  fmt_token <- switch(format,
+    shapefile = "shp",
+    fgdb = "fgdb"
+  )
+  bin_url <- sprintf(
+    paste0(
+      "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
+      "downloads/data?format=%s"
+    ),
+    item_id, as.integer(layer_idx), fmt_token
+  )
   if (is.null(dest)) {
-    suffix <- switch(format, shapefile = ".shp.zip", fgdb = ".fgdb.zip")
+    suffix <- switch(format,
+      shapefile = ".shp.zip",
+      fgdb = ".fgdb.zip"
+    )
     dest <- tempfile(fileext = suffix)
   }
   # 3XX: libcurl-backed + httr2 fallback.
@@ -517,7 +589,7 @@ morie_datasets_arcgis_item_by_id <- function(item_id,
 #'     Industrial, etc.).}
 #' }
 #'
-#' Offline mode reads bundled 5-row synthetic fixtures
+#' Offline mode reads included 5-row synthetic fixtures
 #' (`toronto_zoning_neighbourhoods_sample.csv` /
 #' `toronto_zoning_stats_sample.csv`) -- SYNTH-stamped, not
 #' attributable to actual Toronto neighbourhoods. Live mode hits
@@ -530,22 +602,25 @@ morie_datasets_arcgis_item_by_id <- function(item_id,
 #'   `"shapefile"`, `"fgdb"`. Only honoured when `offline = FALSE`.
 #' @param where Optional FeatureServer WHERE filter (live mode).
 #' @param max_features Optional row cap.
-#' @param offline Logical; if `TRUE` (default), read the bundled
+#' @param offline Logical; if `TRUE` (default), read the included
 #'   synthetic fixture.
 #' @return A `data.frame` (json / csv / offline), parsed GeoJSON
 #'   list, or file path (binary).
 #' @references Esri Canada Education -- ArcGIS Online item
 #'   `af06159170914808983959df6163fc86`.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_toronto_zoning_per_neighbourhood(offline = TRUE)
 #' head(df[, c("Neighbourhood", "Total_Population", "Seniors65andover")])
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_toronto_zoning_per_neighbourhood <- function(
-    layer = c("neighbourhoods", "zoning_stats"),
-    format = "json",
-    where = "1=1",
-    max_features = NULL,
-    offline = TRUE) {
+  layer = c("neighbourhoods", "zoning_stats"),
+  format = "json",
+  where = "1=1",
+  max_features = NULL,
+  offline = TRUE
+) {
   layer <- match.arg(layer)
   layer_idx <- if (layer == "neighbourhoods") 0L else 1L
   if (isTRUE(offline)) {
@@ -554,16 +629,20 @@ morie_datasets_toronto_zoning_per_neighbourhood <- function(
     } else {
       "toronto_zoning_stats_sample.csv"
     }
-    path <- system.file("extdata", fixture, package = "morie")
+    path <- .morie_extdata(fixture)
     if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
       path <- system.file("extdata", fixture, package = "rmoriedata")
     }
     if (!nzchar(path)) {
-      stop(sprintf("bundled Toronto Zoning fixture %s missing",
-                   fixture), call. = FALSE)
+      stop(sprintf(
+        "bundled Toronto Zoning fixture %s missing",
+        fixture
+      ), call. = FALSE)
     }
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE)
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    )
     if (!is.null(max_features)) {
       df <- utils::head(df, as.integer(max_features))
     }
@@ -574,5 +653,6 @@ morie_datasets_toronto_zoning_per_neighbourhood <- function(
     format = format,
     where = where,
     max_features = max_features,
-    layer_idx = layer_idx)
+    layer_idx = layer_idx
+  )
 }

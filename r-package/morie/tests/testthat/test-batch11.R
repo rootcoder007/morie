@@ -1,10 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Batch 11 tests: irm, irtsp, isotn, jkest, johsn, kalmn, kmnsc, ksr01-08
 
-test_that("morie_estimate_irm returns a valid native IRM estimate", {
-  # module 10: IRM is estimated by the native cross-fitting engine, so it
-  # no longer depends on DoubleML/mlr3 and does not error when they are
-  # absent. Method label is "IRM (morie native)".
+test_that("morie_estimate_irm returns a valid native result", {
   set.seed(1)
   n <- 60
   X <- matrix(rnorm(n * 3), n, 3)
@@ -12,6 +9,7 @@ test_that("morie_estimate_irm returns a valid native IRM estimate", {
   Tr <- rbinom(n, 1, ps)
   Y <- 0.5 * Tr + X[, 1] + rnorm(n)
   df <- data.frame(Y = Y, T = Tr, X1 = X[, 1], X2 = X[, 2], X3 = X[, 3])
+
   res <- morie_estimate_irm(df,
     treatment = "T", outcome = "Y",
     covariates = c("X1", "X2", "X3"),
@@ -23,7 +21,7 @@ test_that("morie_estimate_irm returns a valid native IRM estimate", {
   expect_true(is.finite(res$se) && res$se >= 0)
   expect_true(res$ci_lower <= res$ci_upper)
   expect_equal(res$n, nrow(df))
-  expect_identical(res$method, "IRM (morie native)")
+  expect_identical(res$method, "IRM (rmorie native)")
 })
 
 test_that("irtsp fits a 2PL spatial model and returns expected structure", {

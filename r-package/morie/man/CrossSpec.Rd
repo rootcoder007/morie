@@ -21,3 +21,8 @@ MEAN-REMOVED records (Brillinger 2001, Ch. 7).  NOT in Schabenberger
 & Gotway -- a fixed-string search for "cross-spectr" finds one
 bibliography entry and no method.  Zero frequency dropped.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+CrossSpec(V, V)
+}
+\keyword{internal}

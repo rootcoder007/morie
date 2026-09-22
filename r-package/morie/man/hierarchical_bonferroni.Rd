@@ -29,7 +29,9 @@ family and an \code{overall_rejected} logical vector.
 }
 \description{
 Families are tested in order; if a family produces no rejections,
-subsequent families are blocked from testing.
+subsequent families are blocked from testing. rmorie-specific
+stage-list return shape; no drop-in CRAN equivalent (\pkg{gMCP}
+covers the concept but with a different graphical API).
 }
 \examples{
 if (requireNamespace("qvalue", quietly = TRUE)) {

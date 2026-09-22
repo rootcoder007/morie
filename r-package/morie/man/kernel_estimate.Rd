@@ -23,3 +23,8 @@ A step of the perfat_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+kernel_estimate(x = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+  omegas = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2))
+}
+\keyword{internal}

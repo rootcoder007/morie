@@ -22,3 +22,7 @@ A step of the rangayyan_adapt implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+RlsUpdate(w_prev = 5L, k = 5L, alpha = 0.5)
+}
+\keyword{internal}

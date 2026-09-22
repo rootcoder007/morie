@@ -14,7 +14,7 @@ flow_log_density(z0, log_q0, layers)
 \item{layers}{List of \code{list(u, w, b)} triples.}
 }
 \value{
-A list with \code{estimate, log_q, z, log_dets, depth,
+A list with \eqn{estimate, log_q, z, log_dets, depth,
   method, note}.
 }
 \description{
@@ -22,3 +22,10 @@ A list with \code{estimate, log_q, z, log_dets, depth,
 is the whole content of the change of variables. Depth 0 leaves
 the density untouched, which is the mean-field case.
 }
+\examples{
+layers <- list(list(u = c(0.3, 0.1), w = c(0.2, -0.4), b = 0.1),
+               list(u = c(-0.1, 0.2), w = c(0.3, 0.1), b = 0))
+r <- flow_log_density(z0 = c(0.5, -0.2), log_q0 = -1.5, layers)
+str(r, max.level = 1)
+}
+\keyword{internal}

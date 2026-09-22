@@ -16,6 +16,8 @@ A \code{morie_effect_size}.
 Coefficient of determination R^2
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-r_squared(V, V)
+set.seed(1)
+x <- rnorm(30)
+y <- x + rnorm(30)
+r_squared(x, y)
 }

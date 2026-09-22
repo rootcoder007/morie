@@ -14,3 +14,7 @@ A step of the narm_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+narm_cheatsheet()
+}
+\keyword{internal}

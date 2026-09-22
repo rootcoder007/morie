@@ -48,6 +48,7 @@ Named list: estimate, se, n, method.
 1end{bmatrix}}
 }
 \examples{
+set.seed(1)
 okrig(x = rnorm(50), coords = matrix(runif(100), 50, 2), target = rnorm(50))
 }
 \references{

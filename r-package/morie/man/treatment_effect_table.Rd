@@ -23,16 +23,13 @@ and \code{p_value}.}
 \item{title}{Title.}
 }
 \value{
-When \code{output_format = "dataframe"}, a \code{data.frame}
-indexed by estimator name with columns \code{Estimate}, \code{SE},
-\code{95\% CI}, \code{p-value}, and a star column. Otherwise a
-character string holding the rendered table in the requested
-format.
+A character string.
 }
 \description{
 Summary table of causal effect estimates from multiple estimators
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-treatment_effect_table(V)
+res <- try(treatment_effect_table(list(
+  ols = list(estimate = 0.5, se = 0.1, p_value = 0.01))))
+if (!inherits(res, "try-error")) head(res)
 }

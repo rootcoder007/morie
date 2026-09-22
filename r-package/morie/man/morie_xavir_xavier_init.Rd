@@ -19,7 +19,7 @@ morie_xavier_initialization(fan_in, fan_out, seed = 42L, uniform = TRUE)
 \item{uniform}{Use uniform (TRUE, default) or normal (FALSE).}
 }
 \value{
-Named list \code{(weights, value, fan_in, fan_out, mean, std,
+Named list \eqn{(weights, value, fan_in, fan_out, mean, std,
   shape, method)}.
 }
 \description{

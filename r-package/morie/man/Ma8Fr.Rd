@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_filt2.R
 \name{Ma8Fr}
 \alias{Ma8Fr}
-\title{Eq (3.111).  The book\'s factored form is EXACT: the bracket is the
+\title{Eq (3.111).  The book's factored form is EXACT: the bracket is the
 sum}
 \usage{
 Ma8Fr(omega)
@@ -21,3 +21,8 @@ the leading 1 is the whole sum.  Rendering it as a product of two
 brackets -- as the placeholder docstring did -- is a different and
 wrong function.  Both forms are computed and compared.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Ma8Fr(V)
+}
+\keyword{internal}

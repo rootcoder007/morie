@@ -78,7 +78,9 @@ morie_lcg_normal <- function(shape, seed) {
   z[seq(1, m, by = 2)] <- r * cos(2 * pi * u2)
   z[seq(2, m, by = 2)] <- r * sin(2 * pi * u2)
   z <- z[seq_len(n)]
-  if (length(shape) <= 1L) return(z)
+  if (length(shape) <= 1L) {
+    return(z)
+  }
   array(aperm(array(z, dim = rev(shape)), rev(seq_along(shape))), dim = shape)
 }
 
@@ -93,7 +95,9 @@ morie_lcg_normal <- function(shape, seed) {
 #' morie_beta_schedule_values(V)
 morie_beta_schedule_values <- function(T, beta_schedule = "linear", beta_start = 1e-4, beta_end = 0.02) {
   if (is.character(beta_schedule)) {
-    if (beta_schedule == "linear") return(seq(beta_start, beta_end, length.out = T))
+    if (beta_schedule == "linear") {
+      return(seq(beta_start, beta_end, length.out = T))
+    }
     if (beta_schedule == "cosine") {
       s <- 0.008
       t <- (0:T) / T
@@ -158,12 +162,14 @@ morie_geron_diffusion_forward <- function(x0, T, beta_schedule = "linear", t = N
   }
   chain_var <- mean((chain[[ti + 1L]] - sig * x)^2)
 
-  list(x_t = xt, x_chain = chain, betas = betas, alphas = alphas,
-       alpha_bar = abar, alpha_bar_t = ab_t, signal_scale = sig, noise_scale = noi,
-       noise = eps, snr = if (ab_t < 1) ab_t / (1 - ab_t) else Inf,
-       variance_check = list(chain_mse_from_signal = chain_var, closed_form_variance = 1 - ab_t),
-       t = ti, T = Ti, estimate = sig, n = length(x),
-       method = "forward diffusion, chain and closed form, deterministic LCG/Box-Muller noise")
+  list(
+    x_t = xt, x_chain = chain, betas = betas, alphas = alphas,
+    alpha_bar = abar, alpha_bar_t = ab_t, signal_scale = sig, noise_scale = noi,
+    noise = eps, snr = if (ab_t < 1) ab_t / (1 - ab_t) else Inf,
+    variance_check = list(chain_mse_from_signal = chain_var, closed_form_variance = 1 - ab_t),
+    t = ti, T = Ti, estimate = sig, n = length(x),
+    method = "forward diffusion, chain and closed form, deterministic LCG/Box-Muller noise"
+  )
 }
 
 #' Contrastive learning with in-batch negatives (hmcst)
@@ -200,11 +206,13 @@ morie_geron_contrastive_learning <- function(embeddings, positives, tau = 0.1, n
   for (i in seq_len(B)) N[i, , ] <- E[neg_idx[[i]] + 1L, , drop = FALSE]
 
   base <- morie_geron_contrastive_infonce(E, P, N, tau = tau, normalize = normalize)
-  list(loss = base$loss, per_anchor_loss = base$per_anchor_loss, pos_sim = base$pos_sim,
-       neg_sim = base$neg_sim, hardest_negative = base$hardest_negative, accuracy = base$accuracy,
-       chance_loss = base$chance_loss, n_negatives = n_neg, negative_indices = neg_idx,
-       tau = as.numeric(tau), estimate = base$loss, n = B,
-       method = "InfoNCE with in-batch negatives; loss delegated to grctr")
+  list(
+    loss = base$loss, per_anchor_loss = base$per_anchor_loss, pos_sim = base$pos_sim,
+    neg_sim = base$neg_sim, hardest_negative = base$hardest_negative, accuracy = base$accuracy,
+    chance_loss = base$chance_loss, n_negatives = n_neg, negative_indices = neg_idx,
+    tau = as.numeric(tau), estimate = base$loss, n = B,
+    method = "InfoNCE with in-batch negatives; loss delegated to grctr"
+  )
 }
 
 #' Denoising autoencoder, trained (hmdae)
@@ -224,7 +232,7 @@ morie_geron_contrastive_learning <- function(embeddings, positives, tau = 0.1, n
 #' @examples
 #' morie_geron_denoising_autoencoder_train(X = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5))
 morie_geron_denoising_autoencoder_train <- function(X, noise_std = 0.3, epochs = 300, lr = 0.05,
-                                                     hidden = NULL, seed = 0) {
+                                                    hidden = NULL, seed = 0) {
   A <- .morie_gr_mat(X, "X")
   m <- nrow(A)
   d <- ncol(A)
@@ -268,11 +276,13 @@ morie_geron_denoising_autoencoder_train <- function(X, noise_std = 0.3, epochs =
   final <- mean((rec - A)^2)
   ev <- morie_geron_denoising_autoencoder(A, noise, rec, corruption = "additive")
 
-  list(loss_history = hist, final_loss = final, encoder = Wenc, decoder = Vdec,
-       reconstruction = rec, corrupted = Xt, noise = noise, clean_loss = ev$loss,
-       denoising_gain = ev$denoising_gain, snr_db = ev$snr_db, noise_energy = ev$noise_energy,
-       passthrough_loss = mean(noise^2), hidden = h, noise_std = sd_, estimate = final, n = m,
-       method = "linear denoising autoencoder trained on corrupted inputs; evaluation delegated to grdae")
+  list(
+    loss_history = hist, final_loss = final, encoder = Wenc, decoder = Vdec,
+    reconstruction = rec, corrupted = Xt, noise = noise, clean_loss = ev$loss,
+    denoising_gain = ev$denoising_gain, snr_db = ev$snr_db, noise_energy = ev$noise_energy,
+    passthrough_loss = mean(noise^2), hidden = h, noise_std = sd_, estimate = final, n = m,
+    method = "linear denoising autoencoder trained on corrupted inputs; evaluation delegated to grdae"
+  )
 }
 
 #' Decision boundary for logistic regression theta^T x = 0 (hmdbd)
@@ -309,9 +319,11 @@ morie_geron_decision_boundary <- function(theta, X_grid, fit_intercept = TRUE) {
   if (length(w) == 2L) {
     line <- if (w[2] != 0) c(-w[1] / w[2], -b / w[2]) else c(Inf, -b / w[1])
   }
-  list(scores = scores, signed_distance = dist, labels = labels, probabilities = probs,
-       on_boundary = on, normal = w / nw, bias = b, margin = min(abs(dist)), line = line,
-       estimate = min(abs(dist)), n = nrow(G), method = "hyperplane theta^T x = 0 with signed distances")
+  list(
+    scores = scores, signed_distance = dist, labels = labels, probabilities = probs,
+    on_boundary = on, normal = w / nw, bias = b, margin = min(abs(dist)), line = line,
+    estimate = min(abs(dist)), n = nrow(G), method = "hyperplane theta^T x = 0 with signed distances"
+  )
 }
 
 #' DistilBERT triple-loss distillation (hmdbrt)
@@ -343,7 +355,9 @@ morie_geron_distilbert <- function(teacher, student, X, temperature = 2.0,
   unpack <- function(v) {
     if (is.list(v) && !is.data.frame(v) && length(v) == 2 && is.null(dim(v[[1]]))) {
       list(logits = .morie_gr_mat(v[[1]], "logits"), hidden = .morie_gr_mat(v[[2]], "hidden"))
-    } else list(logits = .morie_gr_mat(v, "logits"), hidden = NULL)
+    } else {
+      list(logits = .morie_gr_mat(v, "logits"), hidden = NULL)
+    }
   }
   Zt <- unpack(teacher)
   Zs <- unpack(student)
@@ -386,11 +400,13 @@ morie_geron_distilbert <- function(teacher, student, X, temperature = 2.0,
   tp <- teach$total_params
   sp <- stud$total_params
 
-  list(loss = total, loss_ce = loss_ce, loss_mlm = loss_mlm, loss_cos = loss_cos,
-       teacher_params = tp, student_params = sp, param_reduction = 1 - sp / tp,
-       agreement = mean(max.col(Zt$logits) == max.col(Zs$logits)), temperature = T_,
-       weights = list(ce = a_ce, mlm = a_mlm, cos = a_cos), estimate = total, n = B,
-       method = "DistilBERT triple loss with T^2-scaled KL; architectures resolved through hmencox")
+  list(
+    loss = total, loss_ce = loss_ce, loss_mlm = loss_mlm, loss_cos = loss_cos,
+    teacher_params = tp, student_params = sp, param_reduction = 1 - sp / tp,
+    agreement = mean(max.col(Zt$logits) == max.col(Zs$logits)), temperature = T_,
+    weights = list(ce = a_ce, mlm = a_mlm, cos = a_cos), estimate = total, n = B,
+    method = "DistilBERT triple loss with T^2-scaled KL; architectures resolved through hmencox"
+  )
 }
 
 #' DBSCAN clustering, BFS over density-connected cores (hmdbs)
@@ -433,11 +449,13 @@ morie_geron_dbscan <- function(X, eps, min_samples, metric = "euclidean") {
   }
   sizes <- vapply(seq_len(cid) - 1L, function(c) sum(labels == c), 0L)
   n_border <- sum(labels >= 0 & !is_core)
-  list(labels = labels, n_clusters = cid, n_noise = sum(labels == -1L), n_core = base$n_core,
-       n_border = n_border, core_indices = which(is_core) - 1L, cluster_sizes = sizes,
-       is_core = is_core, neighbor_counts = base$neighbor_counts, eps = as.numeric(eps),
-       min_samples = as.integer(min_samples), metric = metric, estimate = cid, n = m,
-       method = "DBSCAN by BFS over density-connected cores; core detection delegated to grdbs")
+  list(
+    labels = labels, n_clusters = cid, n_noise = sum(labels == -1L), n_core = base$n_core,
+    n_border = n_border, core_indices = which(is_core) - 1L, cluster_sizes = sizes,
+    is_core = is_core, neighbor_counts = base$neighbor_counts, eps = as.numeric(eps),
+    min_samples = as.integer(min_samples), metric = metric, estimate = cid, n = m,
+    method = "DBSCAN by BFS over density-connected cores; core detection delegated to grdbs"
+  )
 }
 
 #' DCGAN generator/discriminator resolved to concrete shapes (hmdcg)
@@ -471,22 +489,28 @@ morie_geron_dcgan <- function(X, z_dim = 100, filters = 64, epochs = 50, lr = 0.
   w0 <- as.integer(seed_shape[2])
   ratio <- H / h0
   L <- if (ratio >= 1) as.integer(round(log(ratio) / log(st))) else -1L
-  .w4a_need(L >= 1L && h0 * st^L == H,
-            sprintf("image side %d is not %d times a power of %d.", H, h0, st))
+  .w4a_need(
+    L >= 1L && h0 * st^L == H,
+    sprintf("image side %d is not %d times a power of %d.", H, h0, st)
+  )
 
   kern <- 4L
   ch0 <- f * st^(L - 1L)
-  gen <- list(list(kind = "project", `in` = k, out = h0, channels = ch0,
-                    params = as.integer(k * (h0 * w0 * ch0) + h0 * w0 * ch0)))
+  gen <- list(list(
+    kind = "project", `in` = k, out = h0, channels = ch0,
+    params = as.integer(k * (h0 * w0 * ch0) + h0 * w0 * ch0)
+  ))
   size <- h0
   ch <- ch0
   for (i in seq_len(L)) {
     out_ch <- if (i == L) 1L else ch %/% st
     size <- size * st
-    gen[[length(gen) + 1L]] <- list(kind = "deconv", in_channels = ch, channels = out_ch,
-                                     kernel = kern, stride = st, out = as.integer(size),
-                                     params = as.integer(out_ch * (kern * kern * ch) + out_ch),
-                                     batch_norm = i < L, activation = if (i == L) "tanh" else "relu")
+    gen[[length(gen) + 1L]] <- list(
+      kind = "deconv", in_channels = ch, channels = out_ch,
+      kernel = kern, stride = st, out = as.integer(size),
+      params = as.integer(out_ch * (kern * kern * ch) + out_ch),
+      batch_norm = i < L, activation = if (i == L) "tanh" else "relu"
+    )
     ch <- out_ch
   }
   dis <- list()
@@ -495,10 +519,12 @@ morie_geron_dcgan <- function(X, z_dim = 100, filters = 64, epochs = 50, lr = 0.
   for (i in seq_len(L)) {
     out_ch <- if (i == 1L) f else ch * st
     size <- size %/% st
-    dis[[length(dis) + 1L]] <- list(kind = "conv", in_channels = ch, channels = out_ch,
-                                     kernel = kern, stride = st, out = as.integer(size),
-                                     params = as.integer(out_ch * (kern * kern * ch) + out_ch),
-                                     batch_norm = i > 1L, activation = "leaky_relu")
+    dis[[length(dis) + 1L]] <- list(
+      kind = "conv", in_channels = ch, channels = out_ch,
+      kernel = kern, stride = st, out = as.integer(size),
+      params = as.integer(out_ch * (kern * kern * ch) + out_ch),
+      batch_norm = i > 1L, activation = "leaky_relu"
+    )
     ch <- out_ch
   }
   flat <- as.integer(size * size * ch)
@@ -511,12 +537,14 @@ morie_geron_dcgan <- function(X, z_dim = 100, filters = 64, epochs = 50, lr = 0.
   kernels <- rep(list(matrix(1, st, st)), L)
   demo <- morie_geron_dcgan_generator(rep(1, k), c(list(Wproj), kernels), seed_shape = c(h0, w0), stride = st)
 
-  list(generator_layers = gen, discriminator_layers = dis, generator_params = g_params,
-       discriminator_params = d_params, total_params = g_params + d_params,
-       image_shape = c(H, W), n_layers = L, z_dim = k, sample_shape = demo$image_shape,
-       training_config = list(epochs = as.integer(epochs), lr = as.numeric(lr), adam_beta1 = 0.5),
-       estimate = g_params + d_params, n = m,
-       method = "DCGAN generator/discriminator resolved to concrete shapes; forward pass delegated to grdcgan")
+  list(
+    generator_layers = gen, discriminator_layers = dis, generator_params = g_params,
+    discriminator_params = d_params, total_params = g_params + d_params,
+    image_shape = c(H, W), n_layers = L, z_dim = k, sample_shape = demo$image_shape,
+    training_config = list(epochs = as.integer(epochs), lr = as.numeric(lr), adam_beta1 = 0.5),
+    estimate = g_params + d_params, n = m,
+    method = "DCGAN generator/discriminator resolved to concrete shapes; forward pass delegated to grdcgan"
+  )
 }
 
 #' Exact transformer block parameter count, itemised (hmdctr)
@@ -537,8 +565,10 @@ morie_geron_block_params <- function(d_model, d_ff = NULL, cross_attention = FAL
   ffn <- 2L * d * ff + ff + d
   norms <- 2L * (2L * d)
   out <- list(self_attention = attn, ffn = ffn, layer_norms = norms)
-  if (cross_attention) { out$cross_attention <- attn
-  out$layer_norms <- norms + 2L * d }
+  if (cross_attention) {
+    out$cross_attention <- attn
+    out$layer_norms <- norms + 2L * d
+  }
   out$total <- sum(unlist(out))
   out
 }
@@ -586,12 +616,14 @@ morie_geron_decoder_only <- function(X, n_layers = 12, n_heads = 12, d_model = 7
   head <- if (tie_embeddings) 0L else V * d + V
   final_norm <- 2L * d
   total <- emb + L * per$total + final_norm + head
-  list(total_params = total, block_params = per$total, per_block = per, embedding_params = emb,
-       output_head_params = head, d_head = d %/% Hh, mask = morie_geron_causal_mask(T_), seq_len = T_,
-       n_layers = L, n_heads = Hh, d_model = d, d_ff = if (is.null(d_ff)) 4L * d else as.integer(d_ff),
-       vocab_size = V, max_len = M, tie_embeddings = as.logical(tie_embeddings),
-       flops_per_token = 2 * total, estimate = total, n = L,
-       method = "decoder-only transformer resolved to exact parameter counts and a causal mask")
+  list(
+    total_params = total, block_params = per$total, per_block = per, embedding_params = emb,
+    output_head_params = head, d_head = d %/% Hh, mask = morie_geron_causal_mask(T_), seq_len = T_,
+    n_layers = L, n_heads = Hh, d_model = d, d_ff = if (is.null(d_ff)) 4L * d else as.integer(d_ff),
+    vocab_size = V, max_len = M, tie_embeddings = as.logical(tie_embeddings),
+    flops_per_token = 2 * total, estimate = total, n = L,
+    method = "decoder-only transformer resolved to exact parameter counts and a causal mask"
+  )
 }
 
 #' Encoder-only transformer (BERT-family), resolved to exact param counts (hmencox)
@@ -623,16 +655,22 @@ morie_geron_encoder_only <- function(X, n_layers = 12, n_heads = 12, d_model = 7
   .w4a_need(T_ <= M, "sequence exceeds max_len with CLS/SEP added.")
   per <- morie_geron_block_params(d, d_ff = d_ff, cross_attention = FALSE)
   emb <- V * d + M * d + S * d
-  head <- if (is.null(n_classes)) 0L else { .w4a_need(as.integer(n_classes) >= 2L, "n_classes must be >= 2.")
-  as.integer(n_classes) * d + as.integer(n_classes) }
+  head <- if (is.null(n_classes)) {
+    0L
+  } else {
+    .w4a_need(as.integer(n_classes) >= 2L, "n_classes must be >= 2.")
+    as.integer(n_classes) * d + as.integer(n_classes)
+  }
   final_norm <- 2L * d
   total <- emb + L * per$total + final_norm + head
-  list(total_params = total, block_params = per$total, per_block = per, embedding_params = emb,
-       head_params = head, attention_mask = matrix(FALSE, T_, T_), seq_len = T_, raw_len = raw,
-       cls_index = 0L, sep_index = T_ - 1L, is_bidirectional = TRUE, d_head = d %/% Hh,
-       n_layers = L, n_heads = Hh, d_model = d, vocab_size = V, max_len = M,
-       estimate = total, n = L,
-       method = "encoder-only transformer resolved to exact parameter counts; block cost delegated to hmdctr")
+  list(
+    total_params = total, block_params = per$total, per_block = per, embedding_params = emb,
+    head_params = head, attention_mask = matrix(FALSE, T_, T_), seq_len = T_, raw_len = raw,
+    cls_index = 0L, sep_index = T_ - 1L, is_bidirectional = TRUE, d_head = d %/% Hh,
+    n_layers = L, n_heads = Hh, d_model = d, vocab_size = V, max_len = M,
+    estimate = total, n = L,
+    method = "encoder-only transformer resolved to exact parameter counts; block cost delegated to hmdctr"
+  )
 }
 
 #' DALL-E autoregressive image-token generation (hmdale)
@@ -666,8 +704,11 @@ morie_geron_dalle <- function(text, model, n_image_tokens = 4, temperature = 1.0
   for (step in seq_len(N)) {
     ctx <- c(prompt, tokens)
     logits <- as.numeric(model(ctx))
-    if (is.null(V0)) V0 <- length(logits) else
+    if (is.null(V0)) {
+      V0 <- length(logits)
+    } else {
       .w4a_need(length(logits) == V0, "model vocabulary must be constant across steps.")
+    }
     step_res <- morie_geron_dalle_autoregressive_token(prompt, tokens, model, temperature = temperature, top_k = top_k)
     probs <- as.numeric(step_res$next_token_probs)
     nxt <- which.max(probs) - 1L
@@ -688,11 +729,13 @@ morie_geron_dalle <- function(text, model, n_image_tokens = 4, temperature = 1.0
     .w4a_need(gr[1] * gr[2] == N, "grid does not hold n_image_tokens.")
   }
   ll <- sum(logprobs)
-  list(image_tokens = tokens, token_grid = matrix(tokens, gr[1], gr[2], byrow = TRUE),
-       log_likelihood = ll, token_logprobs = logprobs, perplexity = exp(-ll / N),
-       context = c(prompt, tokens), prompt = prompt, n_steps = N, vocab_size = vocab, grid = gr,
-       temperature = as.numeric(temperature), estimate = ll, n = N,
-       method = "autoregressive image-token generation; per-step scoring delegated to grdal")
+  list(
+    image_tokens = tokens, token_grid = matrix(tokens, gr[1], gr[2], byrow = TRUE),
+    log_likelihood = ll, token_logprobs = logprobs, perplexity = exp(-ll / N),
+    context = c(prompt, tokens), prompt = prompt, n_steps = N, vocab_size = vocab, grid = gr,
+    temperature = as.numeric(temperature), estimate = ll, n = N,
+    method = "autoregressive image-token generation; per-step scoring delegated to grdal"
+  )
 }
 
 #' DDIM deterministic sub-sequence sampling (hmddim)
@@ -720,7 +763,7 @@ morie_geron_ddim <- function(x_T, model, T, n_steps, beta_schedule = "linear", c
   .w4a_need(K >= 1L && K <= Ti, "n_steps must lie in 1..T.")
   betas <- morie_beta_schedule_values(Ti, beta_schedule)
   .w4a_need(!any(betas <= 0 | betas >= 1), "every beta must lie strictly in (0, 1).")
-  abar <- c(1.0, cumprod(1 - betas))  # abar[1] = t=0 (clean), abar[k+1] = t=k
+  abar <- c(1.0, cumprod(1 - betas)) # abar[1] = t=0 (clean), abar[k+1] = t=k
 
   steps <- sort(unique(as.integer(round(seq(Ti, 1, length.out = K)))), decreasing = TRUE)
   seq_t <- c(steps, 0L)
@@ -739,10 +782,12 @@ morie_geron_ddim <- function(x_T, model, T, n_steps, beta_schedule = "linear", c
     cur <- as.numeric(step$x_prev)
     traj[[length(traj) + 1L]] <- cur
   }
-  list(x_0 = cur, trajectory = traj, timesteps = steps, x0_preds = x0s, model_calls = calls,
-       speedup = Ti / length(steps), alpha_bar = abar, T = Ti, n_steps = length(steps),
-       estimate = mean(cur), n = length(x),
-       method = "DDIM sub-sequence sampling; each step delegated to grddim")
+  list(
+    x_0 = cur, trajectory = traj, timesteps = steps, x0_preds = x0s, model_calls = calls,
+    speedup = Ti / length(steps), alpha_bar = abar, T = Ti, n_steps = length(steps),
+    estimate = mean(cur), n = length(x),
+    method = "DDIM sub-sequence sampling; each step delegated to grddim"
+  )
 }
 
 #' Validate a DQN replay buffer of (s, a, r, s2\[, done\]) rows (hmdqn)
@@ -822,13 +867,17 @@ morie_geron_dqn <- function(env, Q, Q_target, buffer, epochs = 10, lr = 0.1, gam
     }
     hist <- c(hist, mean(td^2))
     td_last <- td
-    if (ep %% sync == 0L) { Qt <- Qa
-    syncs <- c(syncs, ep) }
+    if (ep %% sync == 0L) {
+      Qt <- Qa
+      syncs <- c(syncs, ep)
+    }
   }
-  list(Q = Qa, Q_target = Qt, loss_history = hist, td_errors = td_last,
-       greedy_policy = apply(Qa, 1, which.max) - 1L, state_values = apply(Qa, 1, max),
-       sync_epochs = syncs, n_updates = updates, gamma = g, lr = eta, estimate = hist[length(hist)], n = N,
-       method = "tabular DQN with replay mini-batches and a periodically synced target network")
+  list(
+    Q = Qa, Q_target = Qt, loss_history = hist, td_errors = td_last,
+    greedy_policy = apply(Qa, 1, which.max) - 1L, state_values = apply(Qa, 1, max),
+    sync_epochs = syncs, n_updates = updates, gamma = g, lr = eta, estimate = hist[length(hist)], n = N,
+    method = "tabular DQN with replay mini-batches and a periodically synced target network"
+  )
 }
 
 #' Log density of a multivariate normal at every row of X (hmgmm)
@@ -843,7 +892,7 @@ morie_geron_dqn <- function(env, Q, Q_target, buffer, epochs = 10, lr = 0.1, gam
 #' morie_gmm_log_pdf(X, mu = c(0, 0), Sigma = diag(2))
 morie_gmm_log_pdf <- function(X, mu, Sigma) {
   d <- ncol(X)
-  ch <- chol(Sigma)  # errors if not PD, matching Python's slogdet sign check
+  ch <- chol(Sigma) # errors if not PD, matching Python's slogdet sign check
   logdet <- 2 * sum(log(diag(ch)))
   diff <- sweep(X, 2, mu, "-")
   sol <- t(solve(Sigma, t(diff)))
@@ -923,10 +972,12 @@ morie_geron_gaussian_mixture <- function(X, n_components = 2, seed = 0, max_iter
     }
   }
   mono <- all(diff(ll_hist) >= -1e-8)
-  list(weights = pi_, means = mu, covariances = Sig, responsibilities = R,
-       labels = max.col(R) - 1L, log_likelihood = ll_hist[length(ll_hist)], ll_history = ll_hist,
-       n_iter = it, converged = converged, monotone = mono, n_components = K,
-       estimate = ll_hist[length(ll_hist)], n = m, method = "Gaussian mixture fitted by EM with log-space responsibilities")
+  list(
+    weights = pi_, means = mu, covariances = Sig, responsibilities = R,
+    labels = max.col(R) - 1L, log_likelihood = ll_hist[length(ll_hist)], ll_history = ll_hist,
+    n_iter = it, converged = converged, monotone = mono, n_components = K,
+    estimate = ll_hist[length(ll_hist)], n = m, method = "Gaussian mixture fitted by EM with log-space responsibilities"
+  )
 }
 
 #' Inverted dropout: y = mask * x / (1 - p) (hmdrp)
@@ -944,18 +995,22 @@ morie_geron_dropout_alt <- function(x, p, training = TRUE, seed = 0) {
   pr <- as.numeric(p)
   .w4a_need(pr >= 0 && pr < 1, "p must lie in [0, 1).")
   if (!training) {
-    return(list(y = a, mask = rep(1, length(a)), scale = 1.0, n_dropped = 0L, drop_fraction = 0.0,
-                p = pr, training = FALSE, expectation_ok = TRUE, estimate = mean(a), n = length(a),
-                method = "inverted dropout, inference pass-through"))
+    return(list(
+      y = a, mask = rep(1, length(a)), scale = 1.0, n_dropped = 0L, drop_fraction = 0.0,
+      p = pr, training = FALSE, expectation_ok = TRUE, estimate = mean(a), n = length(a),
+      method = "inverted dropout, inference pass-through"
+    ))
   }
   u <- .w4a_lcg_u(length(a), seed)
   mask <- as.numeric(u >= pr)
   scale <- 1 / (1 - pr)
   y <- mask * a * scale
   dropped <- as.integer(length(a) - sum(mask))
-  list(y = y, mask = mask, scale = scale, n_dropped = dropped, drop_fraction = dropped / length(a),
-       p = pr, training = TRUE, expectation_ok = TRUE, estimate = mean(y), n = length(a),
-       method = "inverted dropout y = mask * x / (1 - p)")
+  list(
+    y = y, mask = mask, scale = scale, n_dropped = dropped, drop_fraction = dropped / length(a),
+    p = pr, training = TRUE, expectation_ok = TRUE, estimate = mean(y), n = length(a),
+    method = "inverted dropout y = mask * x / (1 - p)"
+  )
 }
 
 #' FlashAttention: tiled online-softmax, exact (hmfa)
@@ -965,8 +1020,7 @@ morie_geron_dropout_alt <- function(x, p, training = TRUE, seed = 0) {
 #' @return List with `output`, `direct_output`, `max_abs_error`, `n_blocks`, `peak_score_memory`.
 #' @export
 #' @examples
-#' morie_geron_flash_attention(Q = 0.5, K = c(1, 2, 3, 4, 5, 6, 7, 8), V = c(1, 2, 3, 4,
-#' 5, 6, 7, 8))
+#' morie_geron_flash_attention(Q = 0.5, K = c(1, 2, 3, 4, 5, 6, 7, 8), V = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_flash_attention <- function(Q, K, V, block_size = 2, causal = FALSE) {
   Qa <- .morie_gr_mat(Q, "Q")
   Ka <- .morie_gr_mat(K, "K")
@@ -1020,18 +1074,22 @@ morie_geron_flash_attention <- function(Q, K, V, block_size = 2, causal = FALSE)
     row_l[(i0 + 1L):i1] <- l_i
   }
   S <- (Qa %*% t(Ka)) * scale
-  if (causal) { mask <- outer(seq_len(N), seq_len(M), function(a, b) b > a)
-  S[mask] <- -Inf }
+  if (causal) {
+    mask <- outer(seq_len(N), seq_len(M), function(a, b) b > a)
+    S[mask] <- -Inf
+  }
   Sm <- S - apply(S, 1, max)
   Ex <- exp(Sm)
   direct <- (Ex / rowSums(Ex)) %*% Va
   err <- max(abs(out - direct))
   peak <- min(B, N) * min(B, M)
 
-  list(output = out, direct_output = direct, max_abs_error = err, row_max = row_m, row_sum = row_l,
-       n_blocks = n_blocks, block_size = B, peak_score_memory = peak, naive_score_memory = N * M,
-       memory_ratio = (N * M) / peak, causal = causal, estimate = err, n = N,
-       method = "tiled online-softmax attention (FlashAttention), exact")
+  list(
+    output = out, direct_output = direct, max_abs_error = err, row_max = row_m, row_sum = row_l,
+    n_blocks = n_blocks, block_size = B, peak_score_memory = peak, naive_score_memory = N * M,
+    memory_ratio = (N * M) / peak, causal = causal, estimate = err, n = N,
+    method = "tiled online-softmax attention (FlashAttention), exact"
+  )
 }
 
 #' Linear DDPG: TD critic, deterministic-policy-gradient actor, Polyak targets (hmddpg)
@@ -1100,10 +1158,12 @@ morie_geron_ddpg <- function(env, actor, critic, epochs = 20, lr = 0.01, gamma =
     qs[ep] <- q
     if (!done) s <- s2
   }
-  list(actor = th, critic = w, actor_target = th_t, critic_target = w_t, critic_losses = losses,
-       rewards = rewards, actions = actions, ou_noise = noises, q_values = qs, gamma = g, tau = tt,
-       estimate = mean(rewards), n = E,
-       method = "linear DDPG: TD critic, deterministic policy gradient actor, Polyak targets, OU exploration")
+  list(
+    actor = th, critic = w, actor_target = th_t, critic_target = w_t, critic_losses = losses,
+    rewards = rewards, actions = actions, ou_noise = noises, q_values = qs, gamma = g, tau = tt,
+    estimate = mean(rewards), n = E,
+    method = "linear DDPG: TD critic, deterministic policy gradient actor, Polyak targets, OU exploration"
+  )
 }
 
 #' DDPM: per-timestep affine eps-model trained on the noise-prediction objective (hmddpm)
@@ -1167,9 +1227,11 @@ morie_geron_ddpm <- function(X, T = 10, beta_schedule = "linear", epochs = 200, 
     x <- if (t > 1) mu + sqrt(b_) * matrix(morie_lcg_normal(d, seed + 500 + t), 1, d) else mu
   }
   mono <- all(diff(hist) <= 1e-9)
-  list(loss_history = hist, final_loss = final, loss_by_t = loss_by_t, A = Aw, b = bw,
-       alpha_bar = abar, betas = betas, sample = x, monotone = mono, T = Ti, estimate = final, n = m,
-       method = "DDPM with a per-timestep affine eps-model trained on the noise-prediction objective")
+  list(
+    loss_history = hist, final_loss = final, loss_by_t = loss_by_t, A = Aw, b = bw,
+    alpha_bar = abar, betas = betas, sample = x, monotone = mono, T = Ti, estimate = final, n = m,
+    method = "DDPM with a per-timestep affine eps-model trained on the noise-prediction objective"
+  )
 }
 
 #' Double DQN training loop; target computed by the online/target argmax split (hmddqn)
@@ -1222,13 +1284,17 @@ morie_geron_double_dqn <- function(env, Q, Q_target, buffer, epochs = 10, lr = 0
     targets <- tgt
     vanilla <- as.numeric(step$vanilla_target)
     gaps <- as.numeric(step$overestimation_gap)
-    if (ep %% sync == 0L) { Qt <- Qa
-    syncs <- c(syncs, ep) }
+    if (ep %% sync == 0L) {
+      Qt <- Qa
+      syncs <- c(syncs, ep)
+    }
   }
-  list(Q = Qa, Q_target = Qt, loss_history = hist, targets = targets, vanilla_targets = vanilla,
-       overestimation_gap = gaps, greedy_policy = apply(Qa, 1, which.max) - 1L, sync_epochs = syncs,
-       gamma = g, lr = eta, estimate = hist[length(hist)], n = N,
-       method = "double DQN training loop; target computation delegated to grddqn")
+  list(
+    Q = Qa, Q_target = Qt, loss_history = hist, targets = targets, vanilla_targets = vanilla,
+    overestimation_gap = gaps, greedy_policy = apply(Qa, 1, which.max) - 1L, sync_epochs = syncs,
+    gamma = g, lr = eta, estimate = hist[length(hist)], n = N,
+    method = "double DQN training loop; target computation delegated to grddqn"
+  )
 }
 
 #' DeiT: ViT architecture + distillation token, resolved concretely (hmdeit)
@@ -1274,8 +1340,10 @@ morie_geron_deit <- function(image, patch_size = 16, n_layers = 12, teacher = NU
 
   loss <- lcls <- ldist <- agree <- NULL
   if (!is.null(logits_cls) || !is.null(logits_dist)) {
-    .w4a_need(!is.null(logits_cls) && !is.null(logits_dist) && !is.null(y) && !is.null(teacher),
-              "computing the loss needs logits_cls, logits_dist, y and teacher together.")
+    .w4a_need(
+      !is.null(logits_cls) && !is.null(logits_dist) && !is.null(y) && !is.null(teacher),
+      "computing the loss needs logits_cls, logits_dist, y and teacher together."
+    )
     t_ <- if (is.function(teacher)) teacher(image) else teacher
     base <- morie_geron_deit_distillation_loss(logits_cls, logits_dist, y, t_, alpha = alpha)
     loss <- base$loss
@@ -1283,12 +1351,14 @@ morie_geron_deit <- function(image, patch_size = 16, n_layers = 12, teacher = NU
     ldist <- base$loss_dist
     agree <- base$teacher_agreement
   }
-  list(n_patches = n_patches, n_tokens = n_tokens, patch_grid = c(grid_h, grid_w), total_params = total,
-       patch_embed_params = patch_embed, position_params = pos, block_params = per$total,
-       head_params = heads, distillation_overhead = overhead, d_head = d %/% Hh, loss = loss,
-       loss_cls = lcls, loss_dist = ldist, teacher_agreement = agree, alpha = as.numeric(alpha),
-       estimate = if (is.null(loss)) total else loss, n = n_tokens,
-       method = "DeiT architecture resolved concretely; blocks via hmdctr, distillation loss via grdeit")
+  list(
+    n_patches = n_patches, n_tokens = n_tokens, patch_grid = c(grid_h, grid_w), total_params = total,
+    patch_embed_params = patch_embed, position_params = pos, block_params = per$total,
+    head_params = heads, distillation_overhead = overhead, d_head = d %/% Hh, loss = loss,
+    loss_cls = lcls, loss_dist = ldist, teacher_agreement = agree, alpha = as.numeric(alpha),
+    estimate = if (is.null(loss)) total else loss, n = n_tokens,
+    method = "DeiT architecture resolved concretely; blocks via hmdctr, distillation loss via grdeit"
+  )
 }
 
 #' DETR: CNN-transformer pipeline resolved concretely; matching via Hungarian (hmdetr)
@@ -1331,8 +1401,10 @@ morie_geron_detr <- function(image, n_queries = 100, n_layers = 6, d_model = 256
   match <- loss <- lbox <- lcls <- NULL
   any_supplied <- !is.null(pred_boxes) || !is.null(pred_classes) || !is.null(gt_boxes) || !is.null(gt_classes)
   if (any_supplied) {
-    .w4a_need(!is.null(pred_boxes) && !is.null(pred_classes) && !is.null(gt_boxes) && !is.null(gt_classes),
-              "matching needs pred_boxes, pred_classes, gt_boxes and gt_classes together.")
+    .w4a_need(
+      !is.null(pred_boxes) && !is.null(pred_classes) && !is.null(gt_boxes) && !is.null(gt_classes),
+      "matching needs pred_boxes, pred_classes, gt_boxes and gt_classes together."
+    )
     P <- .morie_gr_mat(pred_boxes, "pred_boxes")
     .w4a_need(nrow(P) <= Q, "more predictions than n_queries.")
     G <- .morie_gr_mat(gt_boxes, "gt_boxes")
@@ -1343,12 +1415,14 @@ morie_geron_detr <- function(image, n_queries = 100, n_layers = 6, d_model = 256
     lbox <- base$loss_bbox
     lcls <- base$loss_class
   }
-  list(feature_shape = c(fh, fw), n_tokens = tokens, n_queries = Q, total_params = total,
-       encoder_params = L * enc$total, decoder_params = L * dec$total, projection_params = proj,
-       query_params = queries, head_params = heads, encoder_attention_cost = tokens * tokens,
-       max_detections = Q, matching = match, loss = loss, loss_bbox = lbox, loss_class = lcls,
-       estimate = if (is.null(loss)) total else loss, n = tokens,
-       method = "DETR pipeline resolved concretely; blocks via hmdctr, set matching via grdetr")
+  list(
+    feature_shape = c(fh, fw), n_tokens = tokens, n_queries = Q, total_params = total,
+    encoder_params = L * enc$total, decoder_params = L * dec$total, projection_params = proj,
+    query_params = queries, head_params = heads, encoder_attention_cost = tokens * tokens,
+    max_detections = Q, matching = match, loss = loss, loss_bbox = lbox, loss_class = lcls,
+    estimate = if (is.null(loss)) total else loss, n = tokens,
+    method = "DETR pipeline resolved concretely; blocks via hmdctr, set matching via grdetr"
+  )
 }
 
 #' DINO cross-view self-distillation with centering, sharpening, momentum teacher (hmdino)
@@ -1360,8 +1434,8 @@ morie_geron_detr <- function(image, n_queries = 100, n_layers = 6, d_model = 256
 #' @return List with `loss`, `teacher_probs`, `student_probs`, `teacher_entropy`, `teacher_next`.
 #' @export
 #' @examples
-#' morie_geron_dino(images = c(1, 2, 3, 4, 5, 6, 7, 8), student = c(1, 2, 3, 4, 5, 6, 7,
-#' 8), teacher = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_geron_dino(images = c(1, 2, 3, 4, 5, 6, 7, 8), student = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   teacher = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_dino <- function(images, student, teacher, center = NULL, tau_s = 0.1, tau_t = 0.04,
                              momentum = 0.996, center_momentum = 0.9) {
   S <- .morie_gr_mat(if (is.function(student)) student(images) else student, "student")
@@ -1377,9 +1451,11 @@ morie_geron_dino <- function(images, student, teacher, center = NULL, tau_s = 0.
   cmom <- as.numeric(center_momentum)
   c_ <- if (is.null(center)) rep(0, K) else as.numeric(center)
 
-  softmax <- function(Z) { Z <- Z - apply(Z, 1, max)
-  E <- exp(Z)
-  E / rowSums(E) }
+  softmax <- function(Z) {
+    Z <- Z - apply(Z, 1, max)
+    E <- exp(Z)
+    E / rowSums(E)
+  }
   Pt <- softmax(sweep(Tt, 2, c_, "-") / tt)
   Ps <- softmax(S / ts)
   logPs <- log(pmax(Ps, 1e-30))
@@ -1392,11 +1468,13 @@ morie_geron_dino <- function(images, student, teacher, center = NULL, tau_s = 0.
   c_next <- cmom * c_ + (1 - cmom) * colMeans(Tt)
   t_next <- mom * Tt + (1 - mom) * S
 
-  list(loss = loss, per_pair_loss = pairs, teacher_probs = Pt, student_probs = Ps,
-       teacher_entropy = ent, max_entropy = log(K), kl_to_uniform = kl_unif, center_next = c_next,
-       teacher_next = t_next, n_views = V, n_pairs = length(pairs), tau_s = ts, tau_t = tt,
-       momentum = mom, estimate = loss, n = V,
-       method = "DINO cross-view self-distillation with centering, sharpening and a momentum teacher")
+  list(
+    loss = loss, per_pair_loss = pairs, teacher_probs = Pt, student_probs = Ps,
+    teacher_entropy = ent, max_entropy = log(K), kl_to_uniform = kl_unif, center_next = c_next,
+    teacher_next = t_next, n_views = V, n_pairs = length(pairs), tau_s = ts, tau_t = tt,
+    momentum = mom, estimate = loss, n = V,
+    method = "DINO cross-view self-distillation with centering, sharpening and a momentum teacher"
+  )
 }
 
 #' Mini-batch index plan with deterministic Fisher-Yates shuffling (hmdld)
@@ -1408,8 +1486,7 @@ morie_geron_dino <- function(images, student, teacher, center = NULL, tau_s = 0.
 #' @return List with `batches` (0-based indices), `order`, `n_batches`, `dropped`.
 #' @export
 #' @examples
-#' morie_geron_dataloader(dataset = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)),
-#' batch_size = 5L)
+#' morie_geron_dataloader(dataset = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), batch_size = 5L)
 morie_geron_dataloader <- function(dataset, batch_size, shuffle = FALSE, drop_last = FALSE,
                                    seed = 0, num_workers = 0) {
   bs <- as.integer(batch_size)
@@ -1448,11 +1525,13 @@ morie_geron_dataloader <- function(dataset, batch_size, shuffle = FALSE, drop_la
   }
   assign <- if (nw > 0L) (seq_along(batches) - 1L) %% nw else rep(0L, length(batches))
 
-  list(batches = batches, order = order, n_batches = length(batches),
-       last_batch_size = if (length(batches)) length(batches[[length(batches)]]) else 0L,
-       dropped = dropped, batch_size = bs, shuffle = shuffle, drop_last = drop_last,
-       worker_assignment = assign, num_workers = nw, batch_data = batch_data,
-       estimate = length(batches), n = m, method = "mini-batch index plan with deterministic Fisher-Yates shuffling")
+  list(
+    batches = batches, order = order, n_batches = length(batches),
+    last_batch_size = if (length(batches)) length(batches[[length(batches)]]) else 0L,
+    dropped = dropped, batch_size = bs, shuffle = shuffle, drop_last = drop_last,
+    worker_assignment = assign, num_workers = nw, batch_data = batch_data,
+    estimate = length(batches), n = m, method = "mini-batch index plan with deterministic Fisher-Yates shuffling"
+  )
 }
 
 #' Combine value + advantage streams: Q = V + A - mean_a A (hmdldqn)
@@ -1499,9 +1578,11 @@ morie_geron_dpo <- function(pi, pi_ref, preferences = NULL, beta = 0.1) {
   per <- -logsigmoid(margin)
   loss <- mean(per)
   prob <- 1 / (1 + exp(-margin))
-  list(loss = loss, per_pair_loss = per, margin = margin, reward_chosen = rw, reward_rejected = rl,
-       prob_preferred = prob, accuracy = mean(margin > 0), beta = b, estimate = loss, n = B,
-       method = "DPO loss -log sigmoid(beta*(log pi/pi_ref)_w - beta*(log pi/pi_ref)_l)")
+  list(
+    loss = loss, per_pair_loss = per, margin = margin, reward_chosen = rw, reward_rejected = rl,
+    prob_preferred = prob, accuracy = mean(margin > 0), beta = b, estimate = loss, n = B,
+    method = "DPO loss -log sigmoid(beta*(log pi/pi_ref)_w - beta*(log pi/pi_ref)_l)"
+  )
 }
 
 #' Dynamic quantization: static per-tensor weights, dynamic per-batch activations (hmdqnt)
@@ -1560,10 +1641,12 @@ morie_geron_dynamic_quantization_alt <- function(model, dtype = "int8", activati
     act <- list(scale = sa, quantized = qa, dequantized = qa * sa, max_abs_error = max(abs(qa * sa - A)))
   }
   n_params <- sum(vapply(tensors, length, 0L))
-  list(quantized = q, scales = scales, zero_points = zps, dequantized = deq, max_abs_error = errs,
-       compression = 32 / bits, bits = bits, dtype = dtype, symmetric = symmetric, activation = act,
-       estimate = max(unlist(errs)), n = n_params,
-       method = "per-tensor affine weight quantization with per-batch dynamic activation scaling")
+  list(
+    quantized = q, scales = scales, zero_points = zps, dequantized = deq, max_abs_error = errs,
+    compression = 32 / bits, bits = bits, dtype = dtype, symmetric = symmetric, activation = act,
+    estimate = max(unlist(errs)), n = n_params,
+    method = "per-tensor affine weight quantization with per-batch dynamic activation scaling"
+  )
 }
 
 #' Deep (stacked) RNN forward pass, bottom-up per time step (hmdrnn)
@@ -1597,12 +1680,16 @@ morie_geron_deep_rnn <- function(X, hidden_sizes = 4, n_layers = NULL, weights =
     if (length(hidden_sizes) == 1L) {
       L <- if (is.null(n_layers)) 1L else as.integer(n_layers)
       sizes <- rep(as.integer(hidden_sizes), L)
-    } else sizes <- as.integer(hidden_sizes)
+    } else {
+      sizes <- as.integer(hidden_sizes)
+    }
     s <- as.integer(seed) %% 2^32
     draw <- function(n, sd) {
       u <- numeric(n)
-      for (i in seq_len(n)) { s <<- (1664525 * s + 1013904223) %% 2^32
-      u[i] <- (s + 0.5) / 2^32 }
+      for (i in seq_len(n)) {
+        s <<- (1664525 * s + 1013904223) %% 2^32
+        u[i] <- (s + 0.5) / 2^32
+      }
       (2 * u - 1) * sqrt(3) * sd
     }
     layers <- list()
@@ -1632,10 +1719,12 @@ morie_geron_deep_rnn <- function(X, hidden_sizes = 4, n_layers = NULL, weights =
   }
   n_params <- sum(vapply(layers, function(ly) length(ly$Wx) + length(ly$Wh) + length(ly$b), 0L))
   norms <- lapply(states, function(layer) vapply(layer, function(h) sqrt(sum(h^2)), 0))
-  list(outputs = outputs, states = states, final_states = h_prev,
-       layer_sizes = vapply(layers, function(ly) ncol(ly$Wx), 0L), n_layers = L, n_params = n_params,
-       state_norms = norms, activation = activation, estimate = mean(unlist(outputs)), n = Tn,
-       method = "stacked RNN forward pass, bottom-up per time step")
+  list(
+    outputs = outputs, states = states, final_states = h_prev,
+    layer_sizes = vapply(layers, function(ly) ncol(ly$Wx), 0L), n_layers = L, n_params = n_params,
+    state_norms = norms, activation = activation, estimate = mean(unlist(outputs)), n = Tn,
+    method = "stacked RNN forward pass, bottom-up per time step"
+  )
 }
 
 #' Ancestral DDPM reverse sampling from x_T to x_0 (hmdrv)
@@ -1684,12 +1773,16 @@ morie_geron_diffusion_reverse <- function(x_T, model, T, beta_schedule = "linear
     if (t > 1) {
       z <- morie_lcg_normal(length(cur), seed + t)
       cur <- mu + sqrt(b) * z
-    } else cur <- mu
+    } else {
+      cur <- mu
+    }
     traj[[length(traj) + 1L]] <- cur
   }
-  list(x_0 = cur, trajectory = traj, means = means, betas = betas, alphas = alphas, alpha_bar = abar,
-       n_steps = Ti, model_calls = calls, estimate = mean(cur), n = length(x),
-       method = "ancestral DDPM reverse sampling with an enforced model(x_t, t) -> eps contract")
+  list(
+    x_0 = cur, trajectory = traj, means = means, betas = betas, alphas = alphas, alpha_bar = abar,
+    n_steps = Ti, model_calls = calls, estimate = mean(cur), n = length(x),
+    method = "ancestral DDPM reverse sampling with an enforced model(x_t, t) -> eps contract"
+  )
 }
 
 #' Decision-tree variance via bootstrap resampling of CART trees (hmdthv)
@@ -1719,8 +1812,10 @@ morie_geron_tree_high_variance <- function(X, y, n_resamples = 20, seed = 0, cri
   roots <- list()
   for (b in seq_len(B)) {
     idx <- integer(m)
-    for (i in seq_len(m)) { s <- (1664525 * s + 1013904223) %% 2^32
-    idx[i] <- as.integer(((s + 0.5) / 2^32) * m) }
+    for (i in seq_len(m)) {
+      s <- (1664525 * s + 1013904223) %% 2^32
+      idx[i] <- as.integer(((s + 0.5) / 2^32) * m)
+    }
     idx <- pmin(idx, m - 1L)
     yb <- ya[idx + 1L]
     if (criterion != "mse" && length(unique(yb)) < 2L) {
@@ -1754,11 +1849,13 @@ morie_geron_tree_high_variance <- function(X, y, n_resamples = 20, seed = 0, cri
   }
   same <- function(rk) if (is.null(rk) && is.null(root_key)) TRUE else if (is.null(rk) || is.null(root_key)) FALSE else all(rk == root_key)
   instability <- mean(!vapply(roots, same, TRUE))
-  list(variance = mean(per_var), bias2 = bias2, per_point_variance = per_var, root_splits = roots,
-       reference_root = root_key, structural_instability = instability, ensemble_prediction = ens,
-       ensemble_score = ens_score, single_tree_score = single, n_resamples = B, criterion = criterion,
-       estimate = mean(per_var), n = m,
-       method = "bootstrap resampling of CART trees to measure prediction variance and root instability")
+  list(
+    variance = mean(per_var), bias2 = bias2, per_point_variance = per_var, root_splits = roots,
+    reference_root = root_key, structural_instability = instability, ensemble_prediction = ens,
+    ensemble_score = ens_score, single_tree_score = single, n_resamples = B, criterion = criterion,
+    estimate = mean(per_var), n = m,
+    method = "bootstrap resampling of CART trees to measure prediction variance and root instability"
+  )
 }
 
 #' Tree regularization: constrained vs unconstrained CART (hmdtr)
@@ -1772,21 +1869,27 @@ morie_geron_tree_high_variance <- function(X, y, n_resamples = 20, seed = 0, cri
 #' morie_geron_tree_regularization(V, V)
 morie_geron_tree_regularization <- function(X, y, max_depth = NULL, min_samples_leaf = 1,
                                             min_samples_split = 2, criterion = "gini") {
-  constrained <- morie_geron_cart_algorithm(X, y, criterion = criterion, max_depth = max_depth,
-                                            min_samples_split = min_samples_split, min_samples_leaf = min_samples_leaf)
+  constrained <- morie_geron_cart_algorithm(X, y,
+    criterion = criterion, max_depth = max_depth,
+    min_samples_split = min_samples_split, min_samples_leaf = min_samples_leaf
+  )
   baseline <- morie_geron_cart_algorithm(X, y, criterion = criterion)
   key <- if (criterion == "mse") "train_mse" else "train_accuracy"
   score <- constrained[[key]]
   base_score <- baseline[[key]]
   cost <- if (criterion != "mse") (base_score - score) else (score - base_score)
-  list(tree = constrained$tree, predictions = constrained$predictions, n_leaves = constrained$n_leaves,
-       depth = constrained$depth, baseline_leaves = baseline$n_leaves, baseline_depth = baseline$depth,
-       leaves_saved = baseline$n_leaves - constrained$n_leaves, train_score = score,
-       baseline_train_score = base_score, train_score_cost = cost,
-       constraints = list(max_depth = max_depth, min_samples_split = as.integer(min_samples_split),
-                          min_samples_leaf = as.integer(min_samples_leaf)),
-       criterion = criterion, estimate = score, n = constrained$n,
-       method = "constrained vs unconstrained CART, both grown via hmcart")
+  list(
+    tree = constrained$tree, predictions = constrained$predictions, n_leaves = constrained$n_leaves,
+    depth = constrained$depth, baseline_leaves = baseline$n_leaves, baseline_depth = baseline$depth,
+    leaves_saved = baseline$n_leaves - constrained$n_leaves, train_score = score,
+    baseline_train_score = base_score, train_score_cost = cost,
+    constraints = list(
+      max_depth = max_depth, min_samples_split = as.integer(min_samples_split),
+      min_samples_leaf = as.integer(min_samples_leaf)
+    ),
+    criterion = criterion, estimate = score, n = constrained$n,
+    method = "constrained vs unconstrained CART, both grown via hmcart"
+  )
 }
 
 #' Decision-tree scale invariance: CART thresholds under x' = a*x + b (hmdtst)
@@ -1815,7 +1918,9 @@ morie_geron_tree_sensitivity_scale <- function(X, y, a = 100.0, b = -7.0, featur
   scaled <- morie_geron_cart_algorithm(Xs, ya, criterion = criterion, max_depth = max_depth)
 
   thresholds <- function(node, out) {
-    if (node$leaf) return(out)
+    if (node$leaf) {
+      return(out)
+    }
     out[[length(out) + 1L]] <- c(node$feature, node$threshold)
     out <- thresholds(node$left, out)
     out <- thresholds(node$right, out)
@@ -1843,12 +1948,14 @@ morie_geron_tree_sensitivity_scale <- function(X, y, a = 100.0, b = -7.0, featur
   k0 <- knn(Xa)
   k1 <- knn(Xs)
 
-  list(predictions_match = p_match, predictions = base$predictions, scaled_predictions = scaled$predictions,
-       thresholds = vapply(t0, `[`, 0, 2), scaled_thresholds = vapply(t1, `[`, 0, 2),
-       expected_thresholds = vapply(expected, `[`, 0, 2), thresholds_match = t_match,
-       knn_predictions = k0, knn_scaled_predictions = k1, knn_match = identical(k0, k1),
-       transform = list(a = af, b = bf, columns = cols - 1L), estimate = if (p_match) 1.0 else 0.0, n = nrow(Xa),
-       method = "affine rescaling experiment on CART vs a 1-NN control")
+  list(
+    predictions_match = p_match, predictions = base$predictions, scaled_predictions = scaled$predictions,
+    thresholds = vapply(t0, `[`, 0, 2), scaled_thresholds = vapply(t1, `[`, 0, 2),
+    expected_thresholds = vapply(expected, `[`, 0, 2), thresholds_match = t_match,
+    knn_predictions = k0, knn_scaled_predictions = k1, knn_match = identical(k0, k1),
+    transform = list(a = af, b = bf, columns = cols - 1L), estimate = if (p_match) 1.0 else 0.0, n = nrow(Xa),
+    method = "affine rescaling experiment on CART vs a 1-NN control"
+  )
 }
 
 #' Error analysis via row-normalised confusion matrix, diagonal removed (hmeaf)
@@ -1870,23 +1977,31 @@ morie_geron_error_analysis <- function(y_true, y_pred, top_k = 5) {
   .w4a_need(!any(row_tot == 0), "some classes never occur in y_true.")
   norm <- cm / row_tot
   colnorm <- ifelse(matrix(col_tot, nrow(cm), ncol(cm), byrow = TRUE) > 0,
-                     cm / matrix(ifelse(col_tot == 0, 1, col_tot), nrow(cm), ncol(cm), byrow = TRUE), 0)
+    cm / matrix(ifelse(col_tot == 0, 1, col_tot), nrow(cm), ncol(cm), byrow = TRUE), 0
+  )
   err <- norm
   diag(err) <- 0
 
   pairs <- list()
-  for (i in seq_len(nrow(err))) for (j in seq_len(ncol(err))) if (err[i, j] > 0)
-    pairs[[length(pairs) + 1L]] <- c(i - 1L, j - 1L, err[i, j])
+  for (i in seq_len(nrow(err))) {
+    for (j in seq_len(ncol(err))) {
+      if (err[i, j] > 0) {
+        pairs[[length(pairs) + 1L]] <- c(i - 1L, j - 1L, err[i, j])
+      }
+    }
+  }
   ord <- order(-vapply(pairs, `[`, 0, 3), vapply(pairs, `[`, 0, 1), vapply(pairs, `[`, 0, 2))
   pairs <- pairs[ord]
   top <- pairs[seq_len(min(k, length(pairs)))]
   per_class_err <- rowSums(err)
   worst <- which.max(per_class_err) - 1L
 
-  list(normalized = norm, error_matrix = err, column_normalized = colnorm, top_confusions = top,
-       per_class_error_rate = per_class_err, worst_class = worst, labels = labels,
-       error_rate = 1 - base$accuracy, accuracy = base$accuracy, estimate = 1 - base$accuracy, n = base$n,
-       method = "row-normalised confusion matrix with the diagonal removed; counting delegated to hmcfm")
+  list(
+    normalized = norm, error_matrix = err, column_normalized = colnorm, top_confusions = top,
+    per_class_error_rate = per_class_err, worst_class = worst, labels = labels,
+    error_rate = 1 - base$accuracy, accuracy = base$accuracy, estimate = 1 - base$accuracy, n = base$n,
+    method = "row-normalised confusion matrix with the diagonal removed; counting delegated to hmcfm"
+  )
 }
 
 #' Early stopping: batch GD keeping the best validation snapshot (hmearl)
@@ -1896,11 +2011,11 @@ morie_geron_error_analysis <- function(y_true, y_pred, top_k = 5) {
 #' @return List with `theta`, `best_iter`, `best_val_rmse`, `stopped_iter`, `is_u_shaped`.
 #' @export
 #' @examples
-#' morie_geron_early_stopping_alt(X_train = c(1, 2, 3, 4, 5, 6, 7, 8), y_train = c(1, 2,
-#' 3, 4, 5, 6, 7, 8), X_val = c(1, 2, 3, 4, 5, 6, 7, 8), y_val = c(1, 2, 3, 4, 5, 6, 7,
-#' 8))
+#' morie_geron_early_stopping_alt(X_train = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   y_train = c(1, 2, 3, 4, 5, 6, 7, 8), X_val = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   y_val = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_early_stopping_alt <- function(X_train, y_train, X_val, y_val, n_iter = 100, eta = 0.01,
-                                       patience = NULL, fit_intercept = TRUE) {
+                                           patience = NULL, fit_intercept = TRUE) {
   Xt <- .morie_gr_mat(X_train, "X_train")
   yt <- as.numeric(y_train)
   Xv <- .morie_gr_mat(X_val, "X_val")
@@ -1924,17 +2039,22 @@ morie_geron_early_stopping_alt <- function(X_train, y_train, X_val, y_val, n_ite
     tr_hist <- c(tr_hist, rmse(A, theta, yt))
     v <- rmse(Bm, theta, yv)
     va_hist <- c(va_hist, v)
-    if (v < best$val - 1e-15) { best <- list(val = v, iter = it, theta = theta)
-    since <- 0L }
-    else { since <- since + 1L
-    if (!is.null(pat) && since >= pat && is.null(stopped)) stopped <- it }
+    if (v < best$val - 1e-15) {
+      best <- list(val = v, iter = it, theta = theta)
+      since <- 0L
+    } else {
+      since <- since + 1L
+      if (!is.null(pat) && since >= pat && is.null(stopped)) stopped <- it
+    }
   }
   if (!is.null(pat) && is.null(stopped)) stopped <- T_
   u_shaped <- best$iter < T_
-  list(theta = best$theta, best_iter = best$iter, best_val_rmse = best$val, stopped_iter = stopped,
-       val_rmse = va_hist, train_rmse = tr_hist, final_theta = theta, final_val_rmse = va_hist[length(va_hist)],
-       is_u_shaped = u_shaped, patience = pat, eta = lr, estimate = best$val, n = m,
-       method = "batch gradient descent with best-snapshot early stopping")
+  list(
+    theta = best$theta, best_iter = best$iter, best_val_rmse = best$val, stopped_iter = stopped,
+    val_rmse = va_hist, train_rmse = tr_hist, final_theta = theta, final_val_rmse = va_hist[length(va_hist)],
+    is_u_shaped = u_shaped, patience = pat, eta = lr, estimate = best$val, n = m,
+    method = "batch gradient descent with best-snapshot early stopping"
+  )
 }
 
 #' Epsilon-greedy action distribution, deterministic LCG draw (hmeg)
@@ -1959,9 +2079,11 @@ morie_geron_epsilon_greedy_alt <- function(Q, s, epsilon, seed = 0) {
   st <- (as.integer(seed) * 1664525 + 1013904223) %% 2^32
   u <- (st + 0.5) / 2^32
   a <- min(sum(cumsum(p) < u) + 1L, A)
-  list(action = a - 1L, probabilities = p, greedy_action = best[1] - 1L, greedy_actions = best - 1L,
-       q_values = q, is_exploratory = !((a) %in% best), epsilon = eps, estimate = max(p), n = A,
-       method = "epsilon-greedy action distribution with deterministic LCG sampling")
+  list(
+    action = a - 1L, probabilities = p, greedy_action = best[1] - 1L, greedy_actions = best - 1L,
+    q_values = q, is_exploratory = !((a) %in% best), epsilon = eps, estimate = max(p), n = A,
+    method = "epsilon-greedy action distribution with deterministic LCG sampling"
+  )
 }
 
 #' VAE evidence lower bound with closed-form Gaussian KL (hmelb)
@@ -1974,7 +2096,7 @@ morie_geron_epsilon_greedy_alt <- function(Q, s, epsilon, seed = 0) {
 #' @export
 #' @examples
 #' morie_geron_elbo(x = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8),
-#' log_sigma = c(1, 2, 3, 4, 5, 6, 7, 8))
+#'   log_sigma = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_elbo <- function(x, mu, log_sigma, x_recon = NULL, likelihood = "gaussian", sigma_x = 1.0) {
   X <- .morie_gr_mat(x, "x")
   M <- .morie_gr_mat(mu, "mu")
@@ -1993,9 +2115,11 @@ morie_geron_elbo <- function(x, mu, log_sigma, x_recon = NULL, likelihood = "gau
   elbo <- mean(elbo_i)
   kl <- mean(kl_i)
   rec <- mean(rec_i)
-  list(elbo = elbo, loss = -elbo, kl = kl, reconstruction_log_lik = rec, per_sample_kl = kl_i,
-       per_sample_elbo = elbo_i, latent_dim = ncol(M), likelihood = likelihood, estimate = elbo, n = nrow(X),
-       method = "ELBO = E_q[log p(x|z)] - KL(q||p) with closed-form Gaussian KL")
+  list(
+    elbo = elbo, loss = -elbo, kl = kl, reconstruction_log_lik = rec, per_sample_kl = kl_i,
+    per_sample_elbo = elbo_i, latent_dim = ncol(M), likelihood = likelihood, estimate = elbo, n = nrow(X),
+    method = "ELBO = E_q[log p(x|z)] - KL(q||p) with closed-form Gaussian KL"
+  )
 }
 
 #' Original encoder-decoder transformer, resolved to exact params + 3 masks (hmencd)
@@ -2012,8 +2136,8 @@ morie_geron_elbo <- function(x, mu, log_sigma, x_recon = NULL, likelihood = "gau
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_encoder_decoder_transformer(V, V)
 morie_geron_encoder_decoder_transformer <- function(src, tgt, n_layers = 6, n_heads = 8, d_model = 512,
-                                                     vocab_size = 37000, max_len = 512, d_ff = 2048,
-                                                     share_embeddings = TRUE) {
+                                                    vocab_size = 37000, max_len = 512, d_ff = 2048,
+                                                    share_embeddings = TRUE) {
   Ts <- length(src)
   Tt <- length(tgt)
   L <- as.integer(n_layers)
@@ -2029,13 +2153,15 @@ morie_geron_encoder_decoder_transformer <- function(src, tgt, n_layers = 6, n_he
   out_head <- V * d + V
   norms <- 2L * (2L * d)
   total <- emb + L * enc$total + L * dec$total + norms + out_head
-  list(total_params = total, encoder_params = L * enc$total, decoder_params = L * dec$total,
-       encoder_block_params = enc$total, decoder_block_params = dec$total,
-       extra_per_decoder_block = dec$total - enc$total, embedding_params = emb, output_head_params = out_head,
-       src_mask = matrix(FALSE, Ts, Ts), tgt_mask = morie_geron_causal_mask(Tt), cross_mask = matrix(FALSE, Tt, Ts),
-       src_len = Ts, tgt_len = Tt, d_head = d %/% Hh, n_layers = L, n_heads = Hh, d_model = d,
-       d_ff = as.integer(d_ff), share_embeddings = share_embeddings, estimate = total, n = 2L * L,
-       method = "original encoder-decoder transformer resolved to exact parameter counts and its three masks")
+  list(
+    total_params = total, encoder_params = L * enc$total, decoder_params = L * dec$total,
+    encoder_block_params = enc$total, decoder_block_params = dec$total,
+    extra_per_decoder_block = dec$total - enc$total, embedding_params = emb, output_head_params = out_head,
+    src_mask = matrix(FALSE, Ts, Ts), tgt_mask = morie_geron_causal_mask(Tt), cross_mask = matrix(FALSE, Tt, Ts),
+    src_len = Ts, tgt_len = Tt, d_head = d %/% Hh, n_layers = L, n_heads = Hh, d_model = d,
+    d_ff = as.integer(d_ff), share_embeddings = share_embeddings, estimate = total, n = 2L * L,
+    method = "original encoder-decoder transformer resolved to exact parameter counts and its three masks"
+  )
 }
 
 #' Elastic net cost: MSE + r\*alpha\*L1 + (1-r)/2\*alpha\*L2 (hmenet)
@@ -2065,9 +2191,11 @@ morie_geron_elastic_net <- function(X, y, theta, alpha, r, fit_intercept = TRUE)
   l2 <- 0.5 * (1 - ratio) * a * sum(pen^2)
   cost <- mse + l1 + l2
   grad <- (2 / m) * as.numeric(t(Xd) %*% resid) + ratio * a * sign(pen) + (1 - ratio) * a * pen
-  list(cost = cost, mse = mse, l1_penalty = l1, l2_penalty = l2, penalty = l1 + l2, gradient = grad,
-       alpha = a, r = ratio, estimate = cost, n = m,
-       method = "elastic net J = MSE + r*alpha*L1 + (1-r)/2*alpha*L2")
+  list(
+    cost = cost, mse = mse, l1_penalty = l1, l2_penalty = l2, penalty = l1 + l2, gradient = grad,
+    alpha = a, r = ratio, estimate = cost, n = m,
+    method = "elastic net J = MSE + r*alpha*L1 + (1-r)/2*alpha*L2"
+  )
 }
 
 #' Explained variance ratio from the SVD of the centred data matrix (hmevr)
@@ -2091,10 +2219,12 @@ morie_geron_explained_variance_ratio_alt <- function(X, n_components = NULL, cen
   evr <- var_ / total
   cum <- cumsum(evr)
   k <- if (is.null(n_components)) length(evr) else as.integer(n_components)
-  list(explained_variance_ratio = evr[seq_len(k)], explained_variance = var_[seq_len(k)],
-       singular_values = sv$d[seq_len(k)], cumulative = cum[seq_len(k)], total_variance = total,
-       n_for_95 = sum(cum < 0.95) + 1L, components = t(sv$v[, seq_len(k), drop = FALSE]), centered = center,
-       estimate = evr[1], n = m, method = "EVR from the SVD of the centred data matrix")
+  list(
+    explained_variance_ratio = evr[seq_len(k)], explained_variance = var_[seq_len(k)],
+    singular_values = sv$d[seq_len(k)], cumulative = cum[seq_len(k)], total_variance = total,
+    n_for_95 = sum(cum < 0.95) + 1L, components = t(sv$v[, seq_len(k), drop = FALSE]), centered = center,
+    estimate = evr[1], n = m, method = "EVR from the SVD of the centred data matrix"
+  )
 }
 
 #' Extra-trees: uniformly random per-feature split thresholds (hmext)
@@ -2118,17 +2248,25 @@ morie_geron_extra_trees <- function(X, y, n_estimators = 10, max_features = NULL
   mf <- if (is.null(max_features)) (if (criterion == "mse") n_feat else max(1L, as.integer(sqrt(n_feat)))) else as.integer(max_features)
   msl <- as.integer(min_samples_leaf)
   st <- as.integer(seed) %% 2^32
-  unif <- function(n) { u <- numeric(n)
-  for (i in seq_len(n)) { st <<- (1664525 * st + 1013904223) %% 2^32
-  u[i] <- (st + 0.5) / 2^32 }
-  u }
+  unif <- function(n) {
+    u <- numeric(n)
+    for (i in seq_len(n)) {
+      st <<- (1664525 * st + 1013904223) %% 2^32
+      u[i] <- (st + 0.5) / 2^32
+    }
+    u
+  }
 
   grow <- function(Xs, ys, depth) {
     n_classes <- length(unique(ys))
     pure <- if (criterion != "mse") n_classes < 2L else all(ys == ys[1])
     if (pure || (!is.null(max_depth) && depth >= max_depth) || length(ys) < 2L * msl) {
-      val <- if (criterion == "mse") mean(ys) else { tb <- table(ys)
-      as.numeric(names(tb)[which.max(tb)]) }
+      val <- if (criterion == "mse") {
+        mean(ys)
+      } else {
+        tb <- table(ys)
+        as.numeric(names(tb)[which.max(tb)])
+      }
       return(list(leaf = TRUE, value = val, n = length(ys), depth = depth))
     }
     k <- min(mf, n_feat)
@@ -2146,14 +2284,20 @@ morie_geron_extra_trees <- function(X, y, n_estimators = 10, max_features = NULL
       if (is.null(best) || cost < best$cost) best <- list(cost = cost, f = f, t = tt)
     }
     if (is.null(best)) {
-      val <- if (criterion == "mse") mean(ys) else { tb <- table(ys)
-      as.numeric(names(tb)[which.max(tb)]) }
+      val <- if (criterion == "mse") {
+        mean(ys)
+      } else {
+        tb <- table(ys)
+        as.numeric(names(tb)[which.max(tb)])
+      }
       return(list(leaf = TRUE, value = val, n = length(ys), depth = depth))
     }
     mask <- Xs[, best$f] <= best$t
-    list(leaf = FALSE, feature = best$f - 1L, threshold = best$t, n = length(ys), depth = depth,
-         left = grow(Xs[mask, , drop = FALSE], ys[mask], depth + 1L),
-         right = grow(Xs[!mask, , drop = FALSE], ys[!mask], depth + 1L))
+    list(
+      leaf = FALSE, feature = best$f - 1L, threshold = best$t, n = length(ys), depth = depth,
+      left = grow(Xs[mask, , drop = FALSE], ys[mask], depth + 1L),
+      right = grow(Xs[!mask, , drop = FALSE], ys[!mask], depth + 1L)
+    )
   }
 
   trees <- list()
@@ -2165,9 +2309,11 @@ morie_geron_extra_trees <- function(X, y, n_estimators = 10, max_features = NULL
   }
   P <- do.call(rbind, tree_preds)
   single <- morie_geron_cart_algorithm(Xa, ya, criterion = criterion, max_depth = max_depth)
-  out <- list(trees = trees, tree_predictions = tree_preds, n_estimators = B, max_features = mf,
-              criterion = criterion, n = nrow(Xa),
-              method = "extra-trees with uniformly random per-feature thresholds; split cost delegated to grcart")
+  out <- list(
+    trees = trees, tree_predictions = tree_preds, n_estimators = B, max_features = mf,
+    criterion = criterion, n = nrow(Xa),
+    method = "extra-trees with uniformly random per-feature thresholds; split cost delegated to grcart"
+  )
   if (criterion == "mse") {
     pred <- colMeans(P)
     mse <- mean((pred - ya)^2)
@@ -2234,9 +2380,11 @@ morie_geron_f1_score_alt <- function(y_true, y_pred, pos_label = 1, average = "b
     fp <- fn <- sum(cm) - tp
   }
   scalar <- if (length(f1) > 1) mean(f1, na.rm = TRUE) else f1
-  list(f1 = f1, precision = prec, recall = rec, tp = tp, fp = fp, fn = fn, per_class_f1 = per_class,
-       labels = labels, average = average, estimate = scalar, n = cm_res$n,
-       method = "F1 = 2PR/(P+R) from a confusion matrix delegated to hmcfm")
+  list(
+    f1 = f1, precision = prec, recall = rec, tp = tp, fp = fp, fn = fn, per_class_f1 = per_class,
+    labels = labels, average = average, estimate = scalar, n = cm_res$n,
+    method = "F1 = 2PR/(P+R) from a confusion matrix delegated to hmcfm"
+  )
 }
 
 #' Forward-mode automatic differentiation via dual numbers (hmfad)
@@ -2284,8 +2432,10 @@ morie_geron_forward_autodiff <- function(f, x) {
     fd[i] <- (plain(up) - plain(dn)) / (2 * h)
   }
   gap <- max(abs(fd - grad))
-  list(value = value, grad = grad, gradient = grad, n_passes = n, fd_check = fd, max_fd_gap = gap,
-       estimate = sqrt(sum(grad^2)), n = n, method = "forward-mode autodiff with dual numbers (exact chain rule)")
+  list(
+    value = value, grad = grad, gradient = grad, n_passes = n, fd_check = fd, max_fd_gap = gap,
+    estimate = sqrt(sum(grad^2)), n = n, method = "forward-mode autodiff with dual numbers (exact chain rule)"
+  )
 }
 
 #' Fully convolutional network forward pass, dense per-pixel prediction (hmfcn)
@@ -2311,12 +2461,15 @@ morie_geron_fcn <- function(image, model, upsample = 1, activation = "relu") {
   stride_total <- 1L
   for (li in seq_along(model)) {
     layer <- model[[li]]
-    if (is.list(layer) && length(layer) == 3) { K <- layer[[1]]
-    bias <- layer[[2]]
-    stride <- layer[[3]] }
-    else { K <- layer
-    bias <- 0
-    stride <- 1 }
+    if (is.list(layer) && length(layer) == 3) {
+      K <- layer[[1]]
+      bias <- layer[[2]]
+      stride <- layer[[3]]
+    } else {
+      K <- layer
+      bias <- 0
+      stride <- 1
+    }
     Kd <- if (length(dim(K)) == 3) dim(K) else dim(K)
     nF <- Kd[1]
     b <- as.numeric(bias)
@@ -2338,13 +2491,19 @@ morie_geron_fcn <- function(image, model, upsample = 1, activation = "relu") {
   }
   scores <- cur
   seg <- apply(scores, c(2, 3), which.max) - 1L
-  up_map <- if (up > 1) { a <- scores[, rep(seq_len(dim(scores)[2]), each = up), , drop = FALSE]
-  a[, , rep(seq_len(dim(scores)[3]), each = up), drop = FALSE] } else scores
+  up_map <- if (up > 1) {
+    a <- scores[, rep(seq_len(dim(scores)[2]), each = up), , drop = FALSE]
+    a[, , rep(seq_len(dim(scores)[3]), each = up), drop = FALSE]
+  } else {
+    scores
+  }
   up_seg <- apply(up_map, c(2, 3), which.max) - 1L
-  list(class_map = scores, scores = scores, segmentation = up_seg, coarse_segmentation = seg,
-       out_shape = dim(scores), upsampled_shape = dim(up_map), n_classes = dim(scores)[1],
-       receptive_field = rf, stride_total = stride_total, upsample = up, estimate = mean(scores), n = length(scores[1, , ]),
-       method = "fully convolutional forward pass; each convolution delegated to grcvf")
+  list(
+    class_map = scores, scores = scores, segmentation = up_seg, coarse_segmentation = seg,
+    out_shape = dim(scores), upsampled_shape = dim(up_map), n_classes = dim(scores)[1],
+    receptive_field = rf, stride_total = stride_total, upsample = up, estimate = mean(scores), n = length(scores[1, , ]),
+    method = "fully convolutional forward pass; each convolution delegated to grcvf"
+  )
 }
 
 #' Flamingo: perceiver resampler + tanh-gated cross-attention (hmflmg)
@@ -2387,11 +2546,13 @@ morie_geron_flamingo <- function(images, text, latents = NULL, W_Q = NULL, W_K =
   }
   out <- Hs + tanh(g) * X
   identity <- isTRUE(all.equal(out, Hs, tolerance = 1e-8))
-  list(output = out, visual_tokens = visual, cross_attention = X, attention_weights = xattn$attention_weights,
-       resampler_weights = resample$attention_weights, gate_value = tanh(g), gate = g,
-       is_identity_at_init = identity, n_visual_tokens = nrow(visual), n_image_features = nrow(V),
-       delta_norm = sqrt(sum((out - Hs)^2)), estimate = sqrt(sum((out - Hs)^2)), n = T_,
-       method = "perceiver resampler plus tanh-gated cross-attention; attention delegated to grca")
+  list(
+    output = out, visual_tokens = visual, cross_attention = X, attention_weights = xattn$attention_weights,
+    resampler_weights = resample$attention_weights, gate_value = tanh(g), gate = g,
+    is_identity_at_init = identity, n_visual_tokens = nrow(visual), n_image_features = nrow(V),
+    delta_norm = sqrt(sum((out - Hs)^2)), estimate = sqrt(sum((out - Hs)^2)), n = T_,
+    method = "perceiver resampler plus tanh-gated cross-attention; attention delegated to grca"
+  )
 }
 
 #' Feature map: activation(conv(x, K) + b), convolution delegated to hmfmap's core (hmfmap)
@@ -2406,13 +2567,18 @@ morie_geron_flamingo <- function(images, text, latents = NULL, W_Q = NULL, W_K =
 #' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
 #' morie_geron_feature_map(M, M)
 morie_geron_feature_map <- function(x, K, b = 0.0, activation = "relu", stride = 1, padding = 0) {
-  acts <- list(relu = function(z) pmax(z, 0), identity = function(z) z, tanh = tanh,
-               sigmoid = function(z) 1 / (1 + exp(-z)))
+  acts <- list(
+    relu = function(z) pmax(z, 0), identity = function(z) z, tanh = tanh,
+    sigmoid = function(z) 1 / (1 + exp(-z))
+  )
   Xa <- if (length(dim(x)) == 2) array(as.numeric(x), dim = c(1, dim(x))) else array(as.numeric(x), dim = dim(x))
   Ka <- K
   Kdim <- if (is.matrix(K)) c(1L, dim(K)) else dim(K)
-  filters <- if (is.matrix(K) || (length(Kdim) == 3 && dim(Xa)[1] > 1 && Kdim[1] == dim(Xa)[1])) list(array(as.numeric(K), dim = if (is.matrix(K)) c(1, dim(K)) else dim(K)))
-             else lapply(seq_len(Kdim[1]), function(i) if (length(Kdim) == 4) array(K[i, , , ], dim = Kdim[2:4]) else array(K[i, , ], dim = c(1, Kdim[2], Kdim[3])))
+  filters <- if (is.matrix(K) || (length(Kdim) == 3 && dim(Xa)[1] > 1 && Kdim[1] == dim(Xa)[1])) {
+    list(array(as.numeric(K), dim = if (is.matrix(K)) c(1, dim(K)) else dim(K)))
+  } else {
+    lapply(seq_len(Kdim[1]), function(i) if (length(Kdim) == 4) array(K[i, , , ], dim = Kdim[2:4]) else array(K[i, , ], dim = c(1, Kdim[2], Kdim[3])))
+  }
   Fn <- length(filters)
   bias <- as.numeric(b)
   if (length(bias) == 1) bias <- rep(bias, Fn)
@@ -2426,9 +2592,11 @@ morie_geron_feature_map <- function(x, K, b = 0.0, activation = "relu", stride =
   out <- if (single) array(A_[1, , ], dim = c(oh, ow)) else A_
   pre <- if (single) array(Z[1, , ], dim = c(oh, ow)) else Z
   flat_arg <- which.max(A_)
-  list(feature_map = out, pre_activation = pre, out_shape = dim(out), n_filters = Fn, activation = activation,
-       sparsity = mean(A_ == 0), max_response = max(A_), argmax = arrayInd(flat_arg, dim(A_)),
-       estimate = mean(A_), n = length(A_), method = "F = phi(conv(x, K) + b); convolution delegated to grcvf")
+  list(
+    feature_map = out, pre_activation = pre, out_shape = dim(out), n_filters = Fn, activation = activation,
+    sparsity = mean(A_ == 0), max_response = max(A_), argmax = arrayInd(flat_arg, dim(A_)),
+    estimate = mean(A_), n = length(A_), method = "F = phi(conv(x, K) + b); convolution delegated to grcvf"
+  )
 }
 
 #' FashionMNIST CNN architecture resolved to concrete shapes (hmfmn)
@@ -2442,8 +2610,10 @@ morie_geron_feature_map <- function(x, K, b = 0.0, activation = "relu", stride =
 #' morie_geron_fashion_mnist()
 morie_geron_fashion_mnist <- function(epochs = 10, lr = 0.001, batch_size = 32, n_classes = 10,
                                       input_size = 28, filters = c(32, 64)) {
-  classes_ <- c("T-shirt/top", "Trouser", "Pullover", "Dress", "Coat",
-                "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot")
+  classes_ <- c(
+    "T-shirt/top", "Trouser", "Pullover", "Dress", "Coat",
+    "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot"
+  )
   E <- as.integer(epochs)
   eta <- as.numeric(lr)
   bs <- as.integer(batch_size)
@@ -2469,12 +2639,14 @@ morie_geron_fashion_mnist <- function(epochs = 10, lr = 0.001, batch_size = 32, 
   layers[[length(layers) + 1L]] <- list(kind = "fc", out = C, channels = C, params = dense * C + C, activation = "softmax")
   total <- sum(vapply(layers, function(l) l$params, 0))
   fc_params <- sum(vapply(layers, function(l) if (l$kind == "fc") l$params else 0, 0))
-  list(layers = layers, total_params = total, conv_params = sum(vapply(layers, function(l) if (l$kind == "conv") l$params else 0, 0)),
-       fc_params = fc_params, fc_share = fc_params / total, flatten_dim = flat,
-       class_names = if (C <= length(classes_)) classes_[seq_len(C)] else paste0("class_", seq_len(C) - 1L),
-       output_shape = C, training_config = list(epochs = E, lr = eta, batch_size = bs), steps_per_epoch = ceiling(60000 / bs),
-       estimate = total, n = length(layers),
-       method = "FashionMNIST CNN resolved to concrete shapes; output sizes delegated to grcos")
+  list(
+    layers = layers, total_params = total, conv_params = sum(vapply(layers, function(l) if (l$kind == "conv") l$params else 0, 0)),
+    fc_params = fc_params, fc_share = fc_params / total, flatten_dim = flat,
+    class_names = if (C <= length(classes_)) classes_[seq_len(C)] else paste0("class_", seq_len(C) - 1L),
+    output_shape = C, training_config = list(epochs = E, lr = eta, batch_size = bs), steps_per_epoch = ceiling(60000 / bs),
+    estimate = total, n = length(layers),
+    method = "FashionMNIST CNN resolved to concrete shapes; output sizes delegated to grcos"
+  )
 }
 
 #' IEEE-754 binary16 round-trip with field decomposition (hmfp16)
@@ -2502,52 +2674,69 @@ morie_geron_fp16_quant <- function(x) {
     v <- a[i]
     s <- if (v < 0 || (v == 0 && 1 / v < 0)) 1L else 0L
     av <- abs(v)
-    if (av == 0) { ef[i] <- 0L
-    mf[i] <- 0L
-    back[i] <- if (s) -0 else 0
-    sign[i] <- s
-    next }
-    if (!is.finite(av)) { ef[i] <- 31L
-    mf[i] <- 0L
-    back[i] <- if (s) -Inf else Inf
-    sign[i] <- s
-    next }
+    if (av == 0) {
+      ef[i] <- 0L
+      mf[i] <- 0L
+      back[i] <- if (s) -0 else 0
+      sign[i] <- s
+      next
+    }
+    if (!is.finite(av)) {
+      ef[i] <- 31L
+      mf[i] <- 0L
+      back[i] <- if (s) -Inf else Inf
+      sign[i] <- s
+      next
+    }
     e <- floor(log2(av))
     # normalize mantissa to [1, 2)
     mant <- av / 2^e
-    if (mant >= 2) { mant <- mant / 2
-    e <- e + 1 }
-    if (mant < 1) { mant <- mant * 2
-    e <- e - 1 }
+    if (mant >= 2) {
+      mant <- mant / 2
+      e <- e + 1
+    }
+    if (mant < 1) {
+      mant <- mant * 2
+      e <- e - 1
+    }
     eb <- e + 15L
-    if (eb >= 31L) { ef[i] <- 31L
-    mf[i] <- 0L
-    back[i] <- if (s) -Inf else Inf
-    sign[i] <- s
-    next }
+    if (eb >= 31L) {
+      ef[i] <- 31L
+      mf[i] <- 0L
+      back[i] <- if (s) -Inf else Inf
+      sign[i] <- s
+      next
+    }
     if (eb < 1L) {
       # subnormal: fixed exponent field 0, scale = 2^-14
       scaled <- av / 2^-14
       m10 <- round(scaled * 1024) / 1024
       mf_val <- round(m10 * 1024)
-      if (mf_val >= 1024L) { ef[i] <- 1L
-      mf[i] <- 0L
-      back[i] <- (if (s) -1 else 1) * 2^-14 }
-      else { ef[i] <- 0L
-      mf[i] <- as.integer(mf_val)
-      back[i] <- (if (s) -1 else 1) * (mf_val / 1024) * 2^-14 }
+      if (mf_val >= 1024L) {
+        ef[i] <- 1L
+        mf[i] <- 0L
+        back[i] <- (if (s) -1 else 1) * 2^-14
+      } else {
+        ef[i] <- 0L
+        mf[i] <- as.integer(mf_val)
+        back[i] <- (if (s) -1 else 1) * (mf_val / 1024) * 2^-14
+      }
       sign[i] <- s
       next
     }
     frac <- mant - 1
     mval <- round(frac * 1024)
-    if (mval >= 1024L) { mval <- 0L
-    eb <- eb + 1L
-    if (eb >= 31L) { ef[i] <- 31L
-    mf[i] <- 0L
-    back[i] <- if (s) -Inf else Inf
-    sign[i] <- s
-    next } }
+    if (mval >= 1024L) {
+      mval <- 0L
+      eb <- eb + 1L
+      if (eb >= 31L) {
+        ef[i] <- 31L
+        mf[i] <- 0L
+        back[i] <- if (s) -Inf else Inf
+        sign[i] <- s
+        next
+      }
+    }
     ef[i] <- as.integer(eb)
     mf[i] <- as.integer(mval)
     sign[i] <- s
@@ -2557,11 +2746,13 @@ morie_geron_fp16_quant <- function(x) {
   over <- is.finite(a) & !is.finite(back)
   under <- (a != 0) & (back == 0 | (ef == 0 & mf != 0))
   finite_rel <- rel[is.finite(rel)]
-  list(value = back, sign = sign, exponent = ef - 15L, exponent_field = ef, mantissa_field = mf, rel_error = rel,
-       max_rel_error = if (length(finite_rel)) max(finite_rel) else Inf, overflowed = over, underflowed = under,
-       eps = 2^-10, max_normal = 65504.0, min_normal = 2^-14, bits_total = 16,
-       estimate = if (length(finite_rel)) max(finite_rel) else Inf, n = n,
-       method = "IEEE-754 binary16 round-trip with field decomposition and range diagnostics")
+  list(
+    value = back, sign = sign, exponent = ef - 15L, exponent_field = ef, mantissa_field = mf, rel_error = rel,
+    max_rel_error = if (length(finite_rel)) max(finite_rel) else Inf, overflowed = over, underflowed = under,
+    eps = 2^-10, max_normal = 65504.0, min_normal = 2^-14, bits_total = 16,
+    estimate = if (length(finite_rel)) max(finite_rel) else Inf, n = n,
+    method = "IEEE-754 binary16 round-trip with field decomposition and range diagnostics"
+  )
 }
 
 #' IEEE-754 binary32 field decomposition, reconstructed exactly (hmfp32)
@@ -2584,43 +2775,56 @@ morie_geron_fp32 <- function(x) {
     v <- a[i]
     s <- if (v < 0 || (v == 0 && 1 / v < 0)) 1L else 0L
     av <- abs(v)
-    if (av == 0) { ef[i] <- 0L
-    mf[i] <- 0L
-    kind[i] <- "zero"
-    recon[i] <- if (s) -0 else 0
-    sign[i] <- s
-    val[i] <- recon[i]
-    next }
-    if (!is.finite(av)) { ef[i] <- 255L
-    mf[i] <- 0L
-    kind[i] <- "inf"
-    recon[i] <- if (s) -Inf else Inf
-    sign[i] <- s
-    val[i] <- recon[i]
-    next }
+    if (av == 0) {
+      ef[i] <- 0L
+      mf[i] <- 0L
+      kind[i] <- "zero"
+      recon[i] <- if (s) -0 else 0
+      sign[i] <- s
+      val[i] <- recon[i]
+      next
+    }
+    if (!is.finite(av)) {
+      ef[i] <- 255L
+      mf[i] <- 0L
+      kind[i] <- "inf"
+      recon[i] <- if (s) -Inf else Inf
+      sign[i] <- s
+      val[i] <- recon[i]
+      next
+    }
     e <- floor(log2(av))
     mant <- av / 2^e
-    if (mant >= 2) { mant <- mant / 2
-    e <- e + 1 }
-    if (mant < 1) { mant <- mant * 2
-    e <- e - 1 }
+    if (mant >= 2) {
+      mant <- mant / 2
+      e <- e + 1
+    }
+    if (mant < 1) {
+      mant <- mant * 2
+      e <- e - 1
+    }
     eb <- e + 127L
-    if (eb >= 255L) { ef[i] <- 255L
-    mf[i] <- 0L
-    kind[i] <- "inf"
-    recon[i] <- if (s) -Inf else Inf
-    sign[i] <- s
-    val[i] <- recon[i]
-    next }
+    if (eb >= 255L) {
+      ef[i] <- 255L
+      mf[i] <- 0L
+      kind[i] <- "inf"
+      recon[i] <- if (s) -Inf else Inf
+      sign[i] <- s
+      val[i] <- recon[i]
+      next
+    }
     if (eb < 1L) {
       scaled <- av / 2^-126
       mval <- round(scaled * 2^23)
-      if (mval >= 2^23) { ef[i] <- 1L
-      mf[i] <- 0L
-      recon[i] <- (if (s) -1 else 1) * 2^-126 }
-      else { ef[i] <- 0L
-      mf[i] <- as.integer(mval)
-      recon[i] <- (if (s) -1 else 1) * (mval / 2^23) * 2^-126 }
+      if (mval >= 2^23) {
+        ef[i] <- 1L
+        mf[i] <- 0L
+        recon[i] <- (if (s) -1 else 1) * 2^-126
+      } else {
+        ef[i] <- 0L
+        mf[i] <- as.integer(mval)
+        recon[i] <- (if (s) -1 else 1) * (mval / 2^23) * 2^-126
+      }
       kind[i] <- if (mf[i] == 0L && ef[i] == 0L) "zero" else "subnormal"
       sign[i] <- s
       val[i] <- recon[i]
@@ -2628,8 +2832,10 @@ morie_geron_fp32 <- function(x) {
     }
     frac <- mant - 1
     mval <- round(frac * 2^23)
-    if (mval >= 2^23) { mval <- 0L
-    eb <- eb + 1L }
+    if (mval >= 2^23) {
+      mval <- 0L
+      eb <- eb + 1L
+    }
     ef[i] <- as.integer(eb)
     mf[i] <- as.integer(mval)
     kind[i] <- "normal"
@@ -2639,10 +2845,12 @@ morie_geron_fp32 <- function(x) {
   }
   rel <- ifelse(a != 0, abs(val - a) / abs(ifelse(a == 0, 1, a)), 0)
   rel <- ifelse(is.finite(rel), rel, Inf)
-  list(value = val, sign = sign, exponent = ef - 127L, exponent_field = ef, mantissa = mf / 2^23, mantissa_field = mf,
-       reconstructed = recon, rel_error = rel, eps = 2^-23, max_normal = (2 - 2^-23) * 2^127, min_normal = 2^-126,
-       kind = kind, bits_total = 32, estimate = if (any(is.finite(rel))) max(rel[is.finite(rel)]) else Inf, n = n,
-       method = "IEEE-754 binary32 field decomposition via a uint32 bit view")
+  list(
+    value = val, sign = sign, exponent = ef - 127L, exponent_field = ef, mantissa = mf / 2^23, mantissa_field = mf,
+    reconstructed = recon, rel_error = rel, eps = 2^-23, max_normal = (2 - 2^-23) * 2^127, min_normal = 2^-126,
+    kind = kind, bits_total = 32, estimate = if (any(is.finite(rel))) max(rel[is.finite(rel)]) else Inf, n = n,
+    method = "IEEE-754 binary32 field decomposition via a uint32 bit view"
+  )
 }
 
 #' Few-shot in-context prompt construction with a zero-shot control (hmfsf)
@@ -2664,8 +2872,10 @@ morie_geron_few_shot <- function(model, examples, query, k = NULL, separator = "
   n_avail <- length(examples)
   kk <- if (is.null(k)) n_avail else as.integer(k)
   .w4a_need(kk >= 0L && kk <= n_avail, "k out of range.")
-  fmt <- function(xx, yy) { s <- sub("\\{x\\}", xx, template)
-  sub("\\{y\\}", yy, s) }
+  fmt <- function(xx, yy) {
+    s <- sub("\\{x\\}", xx, template)
+    sub("\\{y\\}", yy, s)
+  }
   shots <- if (kk > 0) examples[seq_len(kk)] else list()
   prefix <- paste(vapply(shots, function(e) fmt(e[[1]], e[[2]]), ""), collapse = separator)
   tail_ <- paste0(trimws(fmt(query, ""), which = "right"), " ")
@@ -2677,10 +2887,12 @@ morie_geron_few_shot <- function(model, examples, query, k = NULL, separator = "
   }
   pred <- model(prompt)
   zero <- model(zero_prompt)
-  list(prediction = pred, zero_shot_prediction = zero, prompt = prompt, zero_shot_prompt = zero_prompt,
-       shots = shots, k = kk, n_available = n_avail, changed_by_context = !identical(pred, zero),
-       prompt_length = nchar(prompt), template = template, estimate = kk, n = kk,
-       method = "in-context few-shot prompt construction with a zero-shot control")
+  list(
+    prediction = pred, zero_shot_prediction = zero, prompt = prompt, zero_shot_prompt = zero_prompt,
+    shots = shots, k = kk, n_available = n_avail, changed_by_context = !identical(pred, zero),
+    prompt_length = nchar(prompt), template = template, estimate = kk, n = kk,
+    method = "in-context few-shot prompt construction with a zero-shot control"
+  )
 }
 
 #' Native SGD fine-tuning with frozen params, warmup and weight decay (hmfth)
@@ -2725,10 +2937,12 @@ morie_geron_finetune_lm <- function(model, dataset, epochs = 10, lr = 0.01, thet
     sched <- c(sched, cur_lr)
     gnorms <- c(gnorms, sqrt(sum(g^2)))
   }
-  list(theta = th, theta_init = init, loss_history = hist, grad_norms = gnorms, lr_schedule = sched,
-       drift = sqrt(sum((th - init)^2)), n_steps = step, frozen = mask, n_frozen = sum(mask),
-       weight_decay = wd, warmup = W, estimate = hist[length(hist)], n = N,
-       method = "native SGD fine-tuning loop with frozen parameters, warmup and weight decay")
+  list(
+    theta = th, theta_init = init, loss_history = hist, grad_norms = gnorms, lr_schedule = sched,
+    drift = sqrt(sum((th - init)^2)), n_steps = step, frozen = mask, n_frozen = sum(mask),
+    weight_decay = wd, warmup = W, estimate = hist[length(hist)], n = N,
+    method = "native SGD fine-tuning loop with frozen parameters, warmup and weight decay"
+  )
 }
 
 #' GAN minimax training: linear generator vs logistic discriminator (hmgan)
@@ -2749,12 +2963,20 @@ morie_geron_gan <- function(X, G = NULL, D = NULL, z_dim = 1, epochs = 200, lr =
   E <- as.integer(epochs)
   eta <- as.numeric(lr)
   sigmoid <- function(z) ifelse(z >= 0, 1 / (1 + exp(-abs(z))), exp(-abs(z)) / (1 + exp(-abs(z))))
-  if (is.null(G)) { Wg <- matrix(0, k, d)
-  bg <- rep(0, d) } else { Wg <- .morie_gr_mat(G[[1]], "Wg")
-  bg <- as.numeric(G[[2]]) }
-  if (is.null(D)) { wd_ <- rep(0, d)
-  bd <- 0.0 } else { wd_ <- as.numeric(D[[1]])
-  bd <- as.numeric(D[[2]]) }
+  if (is.null(G)) {
+    Wg <- matrix(0, k, d)
+    bg <- rep(0, d)
+  } else {
+    Wg <- .morie_gr_mat(G[[1]], "Wg")
+    bg <- as.numeric(G[[2]])
+  }
+  if (is.null(D)) {
+    wd_ <- rep(0, d)
+    bd <- 0.0
+  } else {
+    wd_ <- as.numeric(D[[1]])
+    bd <- as.numeric(D[[2]])
+  }
   Z <- matrix(morie_lcg_normal(m * k, seed + 1), m, k, byrow = TRUE)
   initial_gap <- abs(mean(Z %*% Wg + matrix(bg, m, d, byrow = TRUE)) - mean(A))
   vals <- numeric(E)
@@ -2787,10 +3009,12 @@ morie_geron_gan <- function(X, G = NULL, D = NULL, z_dim = 1, epochs = 200, lr =
   d_real <- sigmoid(as.numeric(A %*% wd_) + bd)
   d_fake <- sigmoid(as.numeric(fake %*% wd_) + bd)
   gap <- abs(mean(fake) - mean(A))
-  list(G = list(W = Wg, b = bg), D = list(w = wd_, b = bd), value_history = vals, d_loss = dls, g_loss = gls,
-       samples = fake, real_scores = d_real, fake_scores = d_fake, equilibrium_value = 2 * log(0.5), mean_gap = gap,
-       initial_mean_gap = initial_gap, g_grad_norm = g_grad_norm, non_saturating = non_saturating,
-       estimate = vals[E], n = m, method = "linear GAN trained by alternating exact gradient steps on the minimax value function")
+  list(
+    G = list(W = Wg, b = bg), D = list(w = wd_, b = bd), value_history = vals, d_loss = dls, g_loss = gls,
+    samples = fake, real_scores = d_real, fake_scores = d_fake, equilibrium_value = 2 * log(0.5), mean_gap = gap,
+    initial_mean_gap = initial_gap, g_grad_norm = g_grad_norm, non_saturating = non_saturating,
+    estimate = vals[E], n = m, method = "linear GAN trained by alternating exact gradient steps on the minimax value function"
+  )
 }
 
 #' GMM-based anomaly detection: log-density thresholding (hmgand)
@@ -2832,11 +3056,13 @@ morie_geron_anomaly_gmm <- function(X, n_components = 2, threshold = NULL, conta
     new_ld <- log_density(Z)
     new_flag <- new_ld < log_thr
   }
-  list(is_anomaly = flag, density = exp(ld), log_density = ld, threshold = thr, log_threshold = log_thr,
-       n_anomalies = sum(flag), anomaly_indices = which(flag) - 1L,
-       new_density = if (is.null(new_ld)) NULL else exp(new_ld), new_log_density = new_ld, new_is_anomaly = new_flag,
-       contamination = c_, gmm = list(weights = pi_, means = mu, log_likelihood = fit$log_likelihood),
-       estimate = mean(flag), n = nrow(A), method = "GMM density thresholding in log space; mixture fitted by hmgmm")
+  list(
+    is_anomaly = flag, density = exp(ld), log_density = ld, threshold = thr, log_threshold = log_thr,
+    n_anomalies = sum(flag), anomaly_indices = which(flag) - 1L,
+    new_density = if (is.null(new_ld)) NULL else exp(new_ld), new_log_density = new_ld, new_is_anomaly = new_flag,
+    contamination = c_, gmm = list(weights = pi_, means = mu, log_likelihood = fit$log_likelihood),
+    estimate = mean(flag), n = nrow(A), method = "GMM density thresholding in log space; mixture fitted by hmgmm"
+  )
 }
 
 #' Gradient boosted regression trees: fit residuals sequentially (hmgbrt)
@@ -2876,11 +3102,13 @@ morie_geron_gradient_boosting <- function(X, y, n_estimators = 10, learning_rate
     hist <- c(hist, cur_loss(Fv))
   }
   mono <- all(diff(hist) <= 1e-12)
-  list(predictions = Fv, init = init, trees = trees, n_trees = length(trees), loss_history = hist,
-       residual_history = res_hist, staged_predictions = staged, train_mse = mean((ya - Fv)^2),
-       train_mae = mean(abs(ya - Fv)), monotone = mono, learning_rate = eta, loss = loss,
-       estimate = mean((ya - Fv)^2), n = nrow(Xa),
-       method = "GBRT fitting trees to negative gradients; trees delegated to hmcart (criterion='mse')")
+  list(
+    predictions = Fv, init = init, trees = trees, n_trees = length(trees), loss_history = hist,
+    residual_history = res_hist, staged_predictions = staged, train_mse = mean((ya - Fv)^2),
+    train_mae = mean(abs(ya - Fv)), monotone = mono, learning_rate = eta, loss = loss,
+    estimate = mean((ya - Fv)^2), n = nrow(Xa),
+    method = "GBRT fitting trees to negative gradients; trees delegated to hmcart (criterion='mse')"
+  )
 }
 
 #' GoogLeNet/Inception parameter count, module by module (hmgoog)
@@ -2898,8 +3126,10 @@ morie_inception_module <- function(in_ch, o1, r3, o3, r5, o5, pp) {
   b5 <- (in_ch * r5 + r5) + (25 * r5 * o5 + o5)
   bp <- in_ch * pp + pp
   naive5 <- 25 * in_ch * o5 + o5
-  list(branch_1x1 = b1, branch_3x3 = b3, branch_5x5 = b5, branch_pool = bp, out_channels = o1 + o3 + o5 + pp,
-       params = b1 + b3 + b5 + bp, naive_5x5_params = naive5, reduction_saving = naive5 - b5)
+  list(
+    branch_1x1 = b1, branch_3x3 = b3, branch_5x5 = b5, branch_pool = bp, out_channels = o1 + o3 + o5 + pp,
+    params = b1 + b3 + b5 + bp, naive_5x5_params = naive5, reduction_saving = naive5 - b5
+  )
 }
 
 #' GoogLeNet architecture resolved to concrete shapes and exact params (hmgoog)
@@ -2913,7 +3143,8 @@ morie_geron_googlenet <- function(n_classes = 1000, input_size = 224, in_channel
   incep <- list(
     c(64, 96, 128, 16, 32, 32), c(128, 128, 192, 32, 96, 64), c(192, 96, 208, 16, 48, 64),
     c(160, 112, 224, 24, 64, 64), c(128, 128, 256, 24, 64, 64), c(112, 144, 288, 32, 64, 64),
-    c(256, 160, 320, 32, 128, 128), c(256, 160, 320, 32, 128, 128), c(384, 192, 384, 48, 128, 128))
+    c(256, 160, 320, 32, 128, 128), c(256, 160, 320, 32, 128, 128), c(384, 192, 384, 48, 128, 128)
+  )
   names_ <- c("3a", "3b", "4a", "4b", "4c", "4d", "4e", "5a", "5b")
   pool_after <- c("3b", "4e")
   C <- as.integer(n_classes)
@@ -2961,12 +3192,14 @@ morie_geron_googlenet <- function(n_classes = 1000, input_size = 224, in_channel
   layers[[length(layers) + 1L]] <- list(kind = "fc", name = "classifier", out = C, channels = C, params = fc_params, dropout = p_drop)
   total <- sum(vapply(layers, function(l) l$params, 0))
   saving <- sum(vapply(modules, function(m) m$reduction_saving, 0))
-  list(layers = layers, modules = modules, total_params = total,
-       conv_params = sum(vapply(layers, function(l) if (l$kind == "conv") l$params else 0, 0)),
-       inception_params = sum(vapply(layers, function(l) if (l$kind == "inception") l$params else 0, 0)),
-       fc_params = fc_params, output_shape = C, final_feature_map = c(ch, size, size),
-       total_reduction_saving = saving, dropout = p_drop, estimate = total, n = length(layers),
-       method = "GoogLeNet architecture resolved to concrete shapes and exact per-branch parameter counts")
+  list(
+    layers = layers, modules = modules, total_params = total,
+    conv_params = sum(vapply(layers, function(l) if (l$kind == "conv") l$params else 0, 0)),
+    inception_params = sum(vapply(layers, function(l) if (l$kind == "inception") l$params else 0, 0)),
+    fc_params = fc_params, output_shape = C, final_feature_map = c(ch, size, size),
+    total_reduction_saving = saving, dropout = p_drop, estimate = total, n = length(layers),
+    method = "GoogLeNet architecture resolved to concrete shapes and exact per-branch parameter counts"
+  )
 }
 
 #' GPT-1 architecture (delegated to hmdctr) plus the causal LM objective (hmgpt1)
@@ -3001,11 +3234,13 @@ morie_geron_gpt1 <- function(X, n_layers = NULL, n_heads = NULL, logits = NULL, 
     loss <- mean(tok)
     ppl <- exp(loss)
   }
-  list(total_params = arch$total_params, config = cfg, block_params = arch$block_params,
-       embedding_params = arch$embedding_params, d_head = arch$d_head, mask = arch$mask, loss = loss,
-       perplexity = ppl, token_losses = tok, n_predicted = n_pred,
-       estimate = if (is.null(loss)) arch$total_params else loss, n = length(A),
-       method = "GPT-1 architecture delegated to hmdctr, plus the causal LM objective")
+  list(
+    total_params = arch$total_params, config = cfg, block_params = arch$block_params,
+    embedding_params = arch$embedding_params, d_head = arch$d_head, mask = arch$mask, loss = loss,
+    perplexity = ppl, token_losses = tok, n_predicted = n_pred,
+    estimate = if (is.null(loss)) arch$total_params else loss, n = length(A),
+    method = "GPT-1 architecture delegated to hmdctr, plus the causal LM objective"
+  )
 }
 
 #' GPT-2 released configurations resolved through hmdctr (hmgpt2)
@@ -3020,10 +3255,12 @@ morie_geron_gpt1 <- function(X, n_layers = NULL, n_heads = NULL, logits = NULL, 
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_gpt2(V)
 morie_geron_gpt2 <- function(X, n_layers = NULL, n_heads = NULL, size = "small", ...) {
-  sizes <- list(small = list(n_layers = 12L, n_heads = 12L, d_model = 768L),
-                medium = list(n_layers = 24L, n_heads = 16L, d_model = 1024L),
-                large = list(n_layers = 36L, n_heads = 20L, d_model = 1280L),
-                xl = list(n_layers = 48L, n_heads = 25L, d_model = 1600L))
+  sizes <- list(
+    small = list(n_layers = 12L, n_heads = 12L, d_model = 768L),
+    medium = list(n_layers = 24L, n_heads = 16L, d_model = 1024L),
+    large = list(n_layers = 36L, n_heads = 20L, d_model = 1280L),
+    xl = list(n_layers = 48L, n_heads = 25L, d_model = 1600L)
+  )
   .w4a_need(size %in% names(sizes), "size must be small/medium/large/xl.")
   base <- list(vocab_size = 50257L, max_len = 1024L)
   cfg <- c(base, sizes[[size]])
@@ -3039,10 +3276,12 @@ morie_geron_gpt2 <- function(X, n_layers = NULL, n_heads = NULL, size = "small",
     c_ <- c(base, sizes[[nm]])
     all_sizes[[nm]] <- do.call(morie_geron_decoder_only, c(list(X = 1), c_))$total_params
   }
-  list(total_params = total, non_embedding_params = non_emb, embedding_params = arch$embedding_params,
-       block_params = arch$block_params, config = cfg, size = size, d_head = arch$d_head,
-       params_vs_small = total / all_sizes$small, all_sizes = all_sizes, mask = arch$mask,
-       estimate = total, n = cfg$n_layers, method = "GPT-2 released configurations resolved through hmdctr, with scaling comparisons")
+  list(
+    total_params = total, non_embedding_params = non_emb, embedding_params = arch$embedding_params,
+    block_params = arch$block_params, config = cfg, size = size, d_head = arch$d_head,
+    params_vs_small = total / all_sizes$small, all_sizes = all_sizes, mask = arch$mask,
+    estimate = total, n = cfg$n_layers, method = "GPT-2 released configurations resolved through hmdctr, with scaling comparisons"
+  )
 }
 
 #' GPT-3 175B architecture accounting: exact params, shape trace, KV-cache (hmgpt3)
@@ -3078,10 +3317,12 @@ morie_geron_gpt3 <- function(prompt, n_tokens, n_layers = 96, d_model = 12288, n
   ln_per_layer <- 2 * (2 * d_model)
   per_layer <- attn_w + attn_b + mlp_w + mlp_b + ln_per_layer
 
-  breakdown <- list(token_embedding = vocab_size * d_model, position_embedding = n_ctx * d_model,
-                     attention_weights = n_layers * attn_w, attention_biases = n_layers * attn_b,
-                     feedforward_weights = n_layers * mlp_w, feedforward_biases = n_layers * mlp_b,
-                     layer_norms = n_layers * ln_per_layer + 2 * d_model, output_head = 0)
+  breakdown <- list(
+    token_embedding = vocab_size * d_model, position_embedding = n_ctx * d_model,
+    attention_weights = n_layers * attn_w, attention_biases = n_layers * attn_b,
+    feedforward_weights = n_layers * mlp_w, feedforward_biases = n_layers * mlp_b,
+    layer_norms = n_layers * ln_per_layer + 2 * d_model, output_head = 0
+  )
   total <- Reduce(`+`, breakdown)
 
   shape_trace <- list(
@@ -3089,14 +3330,17 @@ morie_geron_gpt3 <- function(prompt, n_tokens, n_layers = 96, d_model = 12288, n
     list("q_per_head", c(n_heads, n_prompt, d_head)), list("attention_scores", c(n_heads, n_prompt, n_prompt)),
     list("attention_out", c(n_prompt, d_model)), list("ffn_hidden", c(n_prompt, d_ff)),
     list("block_out", c(n_prompt, d_model)),
-    list("logits", if (n_new > 0) c(n_new, vocab_size) else c(n_prompt, vocab_size)))
+    list("logits", if (n_new > 0) c(n_new, vocab_size) else c(n_prompt, vocab_size))
+  )
 
   kv_cache_bytes <- 2 * n_layers * total_len * d_model * dtype_bytes
   flops_per_token <- 2 * total
-  list(total_parameters = total, parameters_per_layer = per_layer, breakdown = breakdown, shape_trace = shape_trace,
-       d_head = d_head, n_prompt_tokens = n_prompt, n_generated = n_new, context_used = total_len,
-       kv_cache_bytes = kv_cache_bytes, flops_per_token = flops_per_token, estimate = total, n = n_prompt,
-       method = "GPT-3 decoder-only architecture accounting")
+  list(
+    total_parameters = total, parameters_per_layer = per_layer, breakdown = breakdown, shape_trace = shape_trace,
+    d_head = d_head, n_prompt_tokens = n_prompt, n_generated = n_new, context_used = total_len,
+    kv_cache_bytes = kv_cache_bytes, flops_per_token = flops_per_token, estimate = total, n = n_prompt,
+    method = "GPT-3 decoder-only architecture accounting"
+  )
 }
 
 #' Gaussian random projection X' = X R, R_ij ~ N(0, 1/d') (hmgrp)
@@ -3125,10 +3369,16 @@ morie_geron_gaussian_rand_projection <- function(X, d_out, seed = 0) {
       ratio <- d_after[keep] / d_before[keep]
       max_dist <- max(abs(ratio - 1))
       mean_dist <- mean(abs(ratio - 1))
-    } else max_dist <- mean_dist <- 0
-  } else max_dist <- mean_dist <- NA_real_
-  list(X_projected = Z, R = R, d_in = d_in, d_out = k, max_distortion = max_dist, mean_distortion = mean_dist,
-       estimate = mean_dist, n = m, method = "Gaussian random projection")
+    } else {
+      max_dist <- mean_dist <- 0
+    }
+  } else {
+    max_dist <- mean_dist <- NA_real_
+  }
+  list(
+    X_projected = Z, R = R, d_in = d_in, d_out = k, max_distortion = max_dist, mean_distortion = mean_dist,
+    estimate = mean_dist, n = m, method = "Gaussian random projection"
+  )
 }
 
 #' Ridge regression closed form, the grid-search default estimator (hmgrs)
@@ -3179,9 +3429,11 @@ morie_geron_grid_search <- function(param_grid, X, y, estimator = NULL, K = 3, s
     if (is.null(best) || s > best$cv_score) best <- results[[i]]
   }
   n_cand <- length(results)
-  list(best_params = best$params, best_score = best$cv_score, results = results, n_candidates = n_cand,
-       n_fits = n_cand * as.integer(K), estimate = best$cv_score, n = nrow(.morie_gr_mat(X, "X")),
-       method = "Exhaustive grid search with K-fold cross-validation")
+  list(
+    best_params = best$params, best_score = best$cv_score, results = results, n_candidates = n_cand,
+    n_fits = n_cand * as.integer(K), estimate = best$cv_score, n = nrow(.morie_gr_mat(X, "X")),
+    method = "Exhaustive grid search with K-fold cross-validation"
+  )
 }
 
 #' Dueling DQN: exact gradients through Q = V + A - mean(A) (hmdldqn)
@@ -3228,16 +3480,20 @@ morie_geron_dueling_dqn_alt <- function(env, V, A, buffer, epochs = 10, lr = 0.1
       grad[j] <- grad[j] + 1
       Av[i, ] <- Av[i, ] + eta * e * grad
     }
-    if (ep %% sync == 0L) { Qt <- morie_dueling_q(Vv, Av)
-    syncs <- c(syncs, ep) }
+    if (ep %% sync == 0L) {
+      Qt <- morie_dueling_q(Vv, Av)
+      syncs <- c(syncs, ep)
+    }
   }
   Q <- morie_dueling_q(Vv, Av)
   denom <- mean(abs(Q))
   share <- if (denom > 0) mean(abs(matrix(Vv, S, nA))) / denom else 1.0
 
-  list(Q = Q, V = Vv, A = Av, loss_history = hist,
-       advantage_mean = mean(Av - rowMeans(Av)), value_share = share,
-       greedy_policy = apply(Q, 1, which.max) - 1L, sync_epochs = syncs, gamma = g, lr = eta,
-       estimate = hist[length(hist)], n = length(s),
-       method = "dueling DQN with exact gradients through Q = V + A - mean(A)")
+  list(
+    Q = Q, V = Vv, A = Av, loss_history = hist,
+    advantage_mean = mean(Av - rowMeans(Av)), value_share = share,
+    greedy_policy = apply(Q, 1, which.max) - 1L, sync_epochs = syncs, gamma = g, lr = eta,
+    estimate = hist[length(hist)], n = length(s),
+    method = "dueling DQN with exact gradients through Q = V + A - mean(A)"
+  )
 }

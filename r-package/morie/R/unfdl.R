@@ -21,7 +21,7 @@
 #'   `method`.
 #' @examples
 #' # See the package vignettes for usage examples:
-#' #   vignette(package = "rmorie")
+#' #   vignette(package = "morie")
 #' @export
 unfdl <- function(x, k = 2L, n_iter = 5000L, tol = 1e-6) {
   P <- if (is.matrix(x)) x else stop("x must be a matrix")

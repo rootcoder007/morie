@@ -93,8 +93,10 @@
   slack <- (1 - as.numeric(t(ones) %*% ginv %*% g0)) / denom
   lam <- as.numeric(ginv %*% (g0 + ones * slack))
   m <- -slack
-  list(prediction = sum(lam * z), variance = sum(lam * g0) + m,
-       weights = lam, lagrange = m)
+  list(
+    prediction = sum(lam * z), variance = sum(lam * g0) + m,
+    weights = lam, lagrange = m
+  )
 }
 
 #' Internal: Moore-Penrose pseudo-inverse via SVD, so the kriging system

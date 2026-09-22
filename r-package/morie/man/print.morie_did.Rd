@@ -11,6 +11,17 @@
 
 \item{...}{Ignored; accepted for S3 consistency.}
 }
+\value{
+The value of \code{invisible}.
+}
 \description{
 Print method for \code{morie_did} objects
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie:::print.morie_did(D)
+}
+\references{
+Borusyak, Jaravel & Spiess (2024) REStud 91(6).
+}
+\keyword{internal}

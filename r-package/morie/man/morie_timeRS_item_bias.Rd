@@ -25,3 +25,7 @@ A step of the timeRS_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_timeRS_item_bias(b_i = c(1, 2, 3, 4, 5, 6, 7, 8), bins = 5L, t = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

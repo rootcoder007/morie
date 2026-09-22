@@ -34,3 +34,8 @@ A step of the tmlcmp_native implementation. Called by \code{morie_tmlcmp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+cause_specific_hazards(time = c(1, 2, 3, 4, 5, 6, 7, 8),
+  event_type = c(1, 2, 3, 4, 5, 6, 7, 8), times = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

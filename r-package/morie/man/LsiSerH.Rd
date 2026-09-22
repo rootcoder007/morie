@@ -21,3 +21,8 @@ A list with \code{h}, \code{n_taps}, \code{value}, \code{index},
 responses.  Convolution commutes, so a filter chain may be reordered,
 and the result is len(h1) + len(h2) - 1 long.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+LsiSerH(V, V)
+}
+\keyword{internal}

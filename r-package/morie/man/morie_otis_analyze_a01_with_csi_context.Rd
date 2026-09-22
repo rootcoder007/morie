@@ -32,8 +32,6 @@ otherwise returns a "not yet ported" stub.
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
-otis_a01 <- morie_synth_otis("a01", n = 120L, seed = 1L)
 morie_otis_analyze_a01_with_csi_context(otis_a01)
 }
 }

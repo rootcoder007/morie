@@ -44,3 +44,11 @@ reward is resampled from \code{(reward_atoms, reward_probs)} each
 step. The projected operator is a Cramer-contraction (Rowland et al.
 2018), so this converges to the stationary value distribution.
 }
+\examples{
+r <- value_distribution_iteration(reward_atoms = c(0, 1),
+                                  reward_probs = c(0.5, 0.5),
+                                  gamma = 0.9, v_min = 0, v_max = 15,
+                                  n_atoms = 21)
+str(r, max.level = 1)
+}
+\keyword{internal}

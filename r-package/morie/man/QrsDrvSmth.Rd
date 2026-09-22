@@ -17,3 +17,8 @@ A list with \code{g}, \code{mwin}, \code{n}, \code{method}.
 \description{
 derivative peaks across the Q-R-S swings into one pulse per beat.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+QrsDrvSmth(V)
+}
+\keyword{internal}

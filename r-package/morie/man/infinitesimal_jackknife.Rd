@@ -25,3 +25,12 @@ A step of the hntfst_native implementation. Called by \code{honest_forest}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(3)
+B <- 12; n <- 30
+preds <- rnorm(B, 1, 0.1)
+in_bag <- matrix(rbinom(B * n, 1, 0.5), B, n)
+r <- infinitesimal_jackknife(preds, in_bag, n = n, s = 15)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -2,21 +2,27 @@
 % Please edit documentation in R/painn_native.R
 \name{dipole_moment}
 \alias{dipole_moment}
-\title{Mu = sum_i q_i (r_i - r_c). A tensorial (here vector) property,}
+\title{dipole_moment}
 \usage{
 dipole_moment(charges, R, centre = NULL)
 }
 \arguments{
-\item{charges}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{charges}{Passed to \code{.painn_vec}.}
 
-\item{R}{A matrix; passed to \code{as.matrix}.}
+\item{R}{Passed to \code{.painn_mat}.}
 
-\item{centre}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
-\code{as.numeric}.}
+\item{centre}{Optional; may be \code{NULL}. Passed to \code{.painn_vec}.}
 }
 \value{
 A list with \code{dipole}, \code{magnitude}, \code{note}.
 }
 \description{
-read off directly from equivariant atomwise quantities.
+A step of the painn_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+dipole_moment(V, V)
+}
+\keyword{internal}

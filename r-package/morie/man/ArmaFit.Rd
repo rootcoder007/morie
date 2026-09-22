@@ -26,3 +26,7 @@ which is NOT joint maximum likelihood and is biased when the zeros
 sit close to the poles.  The stage structure is stated, not presented
 as an optimal fit.
 }
+\examples{
+ArmaFit(x = c(1, 2, 3, 4, 5, 6, 7, 8), p = 1, q = 0.5)
+}
+\keyword{internal}

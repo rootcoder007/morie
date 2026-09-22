@@ -18,5 +18,5 @@ A \code{morie_effect_size}.
 Partial eta-squared
 }
 \examples{
-partial_eta_squared(ss_effect = 5L, ss_error = 5L)
+partial_eta_squared(40, 60)
 }

@@ -196,6 +196,13 @@ honest_tree <- function(X, y, W = NULL, kind = "double-sample",
 #' @param x A vector; indexed elementwise.
 #' @return A list with \code{node}, \code{path}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' X <- matrix(rnorm(80), 40, 2)
+#' y <- as.numeric(X[, 1] > 0) + rnorm(40, 0, 0.1)
+#' tr <- honest_tree(X, y)
+#' str(leaf_of(tr$tree, X[1, ]), max.level = 1)
+#' @keywords internal
 leaf_of <- function(tree, x) {
   node <- tree
   path <- list()
@@ -235,6 +242,14 @@ leaf_of <- function(tree, x) {
 #' @param correction A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{total}, as built in the body.
 #' @export
+#' @examples
+#' set.seed(3)
+#' B <- 12; n <- 30
+#' preds <- rnorm(B, 1, 0.1)
+#' in_bag <- matrix(rbinom(B * n, 1, 0.5), B, n)
+#' r <- infinitesimal_jackknife(preds, in_bag, n = n, s = 15)
+#' str(r, max.level = 1)
+#' @keywords internal
 infinitesimal_jackknife <- function(preds, in_bag, n, s,
                                     correction = TRUE) {
   B <- length(preds)
@@ -395,6 +410,13 @@ honest_forest <- function(X, y, W = NULL, kind = "double-sample",
 #' \code{as.character}.
 #' @return A list with \code{trees}, \code{bags}, \code{s}.
 #' @export
+#' @examples
+#' set.seed(2)
+#' X <- matrix(rnorm(120), 60, 2)
+#' y <- X[, 1] + rnorm(60, 0, 0.3)
+#' f <- grow_forest(X, y, n_trees = 10L)
+#' length(f$trees)
+#' @keywords internal
 grow_forest <- function(X, y, W = NULL, kind = "double-sample",
                         n_trees = 200L, subsample_frac = 0.5,
                         min_leaf = 5L, alpha = 0.05, pi = 0.5,
@@ -449,6 +471,14 @@ grow_forest <- function(X, y, W = NULL, kind = "double-sample",
 #' @param x Passed to \code{leaf_of}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' set.seed(2)
+#' X <- matrix(rnorm(120), 60, 2)
+#' y <- X[, 1] + rnorm(60, 0, 0.3)
+#' f <- grow_forest(X, y, n_trees = 10L)
+#' w <- forest_weights(f$trees, X, X[1, ])
+#' sum(w)
+#' @keywords internal
 forest_weights <- function(trees, X, x) {
   n <- nrow(as.matrix(X))
   w <- numeric(n)
@@ -495,6 +525,13 @@ honest_random_forest <- honest_forest
 #' @param correction Passed to \code{honest_forest}. Defaults to \code{TRUE}.
 #' @return The value of \code{honest_forest}.
 #' @export
+#' @examples
+#' set.seed(3)
+#' X <- matrix(rnorm(120), 60, 2)
+#' y <- X[, 1] + rnorm(60, 0, 0.3)
+#' r <- morie_hntfst(X, y, n_trees = 10L)
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_hntfst <- function(X, y, W = NULL, kind = "double-sample",
                          n_trees = 200L, subsample_frac = 0.5,
                          min_leaf = 5L, alpha = 0.05, pi = 0.5,

@@ -25,13 +25,13 @@ morie_weights_fay_brr(
 \item{seed}{Integer RNG seed.}
 }
 \value{
-A numeric matrix of Fay-perturbed replicate weights with
-\code{length(weights)} rows and \code{n_replicates} columns.
+A numeric \code{matrix}.
 }
 \description{
 Fay's BRR weights with perturbation coefficient \code{fay_coefficient} in [0,1)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_weights_fay_brr(V, V)
+set.seed(1)
+res <- morie_weights_fay_brr(runif(16, 0.5, 2), rep(1:8, each = 2))
+str(res, max.level = 1)
 }

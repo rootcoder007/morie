@@ -3,7 +3,7 @@
 #'
 #' FISTA with the proximal map of a box indicator, i.e. the component-wise
 #' clamp: x_k = clamp(y_k - grad f(y_k)/L),
-#' t_\{k+1\} = (1 + sqrt(1 + 4 t_k^2))/2,
+#' t&#95;\{k+1\} = (1 + sqrt(1 + 4 t&#95;k^2))/2,
 #' y_\{k+1\} = x_k + ((t_k-1)/t_\{k+1\})(x_k - x_\{k-1\}).
 #'
 #' @param X Design matrix.
@@ -29,9 +29,13 @@ Agdproj <- function(X, y, lower = NULL, upper = NULL, steps = 100,
   p <- ncol(Xm)
   if (n != length(y)) stop("X must have one row per entry of y")
   bnd <- function(b, d) {
-    if (is.null(b)) return(rep(d, p))
+    if (is.null(b)) {
+      return(rep(d, p))
+    }
     v <- .t1_vec(b)
-    if (length(v) == 1L) return(rep(v, p))
+    if (length(v) == 1L) {
+      return(rep(v, p))
+    }
     if (length(v) != p) stop("bound must be scalar or of length p")
     v
   }
@@ -53,7 +57,9 @@ Agdproj <- function(X, y, lower = NULL, upper = NULL, steps = 100,
     t <- tn
   }
   res <- as.numeric(Xm %*% x) - y
-  .t1_result(beta = x, objective = 0.5 * sum(res^2), lipschitz = L,
-             steps = steps, nactive = sum(x == lo | x == hi), n = n, p = p,
-             method = "Accelerated projected gradient on a box (Beck-Teboulle 2009)")
+  .t1_result(
+    beta = x, objective = 0.5 * sum(res^2), lipschitz = L,
+    steps = steps, nactive = sum(x == lo | x == hi), n = n, p = p,
+    method = "Accelerated projected gradient on a box (Beck-Teboulle 2009)"
+  )
 }

@@ -19,7 +19,15 @@ morie_geron_regression_mlp_pytorch(
 
 \item{hidden, epochs, lr, seed}{Passed to \code{morie_geron_regression_mlp}.}
 }
+\value{
+A list with \code{layers}, \code{sizes}, \code{n_parameters}, \code{predict}, \code{predictions}, \code{mse}, \code{loss_history}, \code{weights}, \code{biases}, \code{uses_torch}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Regression MLP as an nn.Sequential architecture (numpy/R-trained, no torch call)
 (Geron Ch 10, hmrgpt)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_regression_mlp_pytorch(V, V)
+}
+\keyword{internal}

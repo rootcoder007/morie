@@ -18,3 +18,7 @@ The value of \code{r}, as built in the body.
 exponentially weighted correlations.  Solving it outright each sample
 is what the matrix inversion lemma exists to avoid.
 }
+\examples{
+RlsNormal(phi = 0.5, theta = 0.5)
+}
+\keyword{internal}

@@ -14,11 +14,12 @@
 #' @return Named list with estimate (alpha post mean), alpha_se,
 #'   alpha_draws, K_n, n, method.
 #' @examples
+#' set.seed(1)
 #' morie_ghosal_hierarchical_bayes(x = rnorm(50))
 #' @export
 morie_ghosal_hierarchical_bayes <- function(x, a_prior = 1.0, b_prior = 1.0,
-                                      M = 400, seed = 0,
-                                      deterministic_seed = NULL) {
+                                            M = 400, seed = 0,
+                                            deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
     .morie_local_det_rng("ghhbp", deterministic_seed)
   } else {

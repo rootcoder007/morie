@@ -30,6 +30,7 @@ squares finds a LOCAL solution -- for high-breakdown behaviour use
 \code{\link[=morie_rob_mm]{morie_rob_mm()}}, and the output says so.
 }
 \examples{
+set.seed(1)
 x <- stats::rnorm(50)
 morie_rob_m(x, 1 + 2 * x + stats::rnorm(50), psi = "bisquare")$beta
 }

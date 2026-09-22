@@ -21,6 +21,8 @@ A \code{morie_specification_test}.
 Ramsey RESET test for functional-form misspecification
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-ramsey_reset_test(V, V)
+set.seed(1)
+X <- cbind(1, rnorm(60))
+y <- drop(X \%*\% c(1, 2)) + rnorm(60)
+str(ramsey_reset_test(y, X), max.level = 1)
 }

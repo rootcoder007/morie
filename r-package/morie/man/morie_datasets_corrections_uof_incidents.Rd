@@ -11,14 +11,14 @@ morie_datasets_corrections_uof_incidents(
 )
 }
 \arguments{
-\item{offline}{Logical; \code{TRUE} (default) reads the bundled
+\item{offline}{Logical; \code{TRUE} (default) reads the included
 real CKAN sample at
 \code{inst/extdata/corrections_uof_incidents_sample.csv}.
 \code{FALSE} hits the live CKAN endpoint.}
 
 \item{resource_id}{Optional CKAN resource id override.}
 
-\item{source}{One of \code{"auto"}, \code{"live"}, \code{"bundled"},
+\item{source}{One of \code{"auto"}, \code{"live"}, \code{"included"},
 \code{"synthetic"}, \code{"empty"}; takes precedence over
 \code{offline} when supplied.}
 }
@@ -29,7 +29,8 @@ real CKAN sample at
 Use-of-force incidents (head dataset)
 }
 \examples{
-morie_datasets_corrections_uof_incidents()
+df <- morie_datasets_corrections_uof_incidents()
+head(df)
 }
 \references{
 \url{https://data.ontario.ca/dataset/use-of-force-in-correctional-institutions};

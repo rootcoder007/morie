@@ -7,13 +7,13 @@
 self_attention(E, WQ, WK, WV, mask = NULL)
 }
 \arguments{
-\item{E}{Passed to \code{.sasrec_mat}.}
+\item{E}{See Usage.}
 
-\item{WQ}{A matrix; passed to \code{nrow}.}
+\item{WQ}{See Usage.}
 
-\item{WK}{A matrix; passed to \code{ncol}.}
+\item{WK}{See Usage.}
 
-\item{WV}{A matrix; passed to \code{ncol}.}
+\item{WV}{See Usage.}
 
 \item{mask}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
@@ -21,7 +21,13 @@ self_attention(E, WQ, WK, WV, mask = NULL)
 A list with \code{output}, \code{weights}, \code{note}.
 }
 \description{
-A step of the sasRec_native implementation. Called by \code{morie_sasRec}.
+A step of the sasRec_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+attention_span(M)
+self_attention(E = M, WQ = M, WK = M, WV = M)
+}
+\keyword{internal}

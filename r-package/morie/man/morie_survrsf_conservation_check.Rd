@@ -17,3 +17,8 @@ A list with \code{sum_chf}, \code{deaths}, \code{difference}, \code{conserved}.
 \description{
 Censored times count too.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_survrsf_conservation_check(V, V)
+}
+\keyword{internal}

@@ -22,3 +22,8 @@ A step of the genemt_native implementation. Called by \code{morie_genemt_conditi
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_genemt_gene_set_regression(V, V)
+}
+\keyword{internal}

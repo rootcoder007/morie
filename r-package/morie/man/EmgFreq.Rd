@@ -25,3 +25,7 @@ sensitive to the high-frequency tail, where an EMG record carries
 mostly instrumentation noise, so it is the more stable fatigue index
 and the two diverge exactly when the tail is contaminated.
 }
+\examples{
+EmgFreq(x = c(1, 2, 3, 4, 5, 6, 7, 8), fs = 5L)
+}
+\keyword{internal}

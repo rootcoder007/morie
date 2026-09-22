@@ -33,8 +33,13 @@ branching graph is reported ambiguous and only the unambiguous
 unitigs are returned, matching the Python arm's honesty about
 the boundary.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_asmnvr(D)
+}
 \references{
 Pevzner, P. A., Tang, H. & Waterman, M. S. (2001).
 An Eulerian path approach to DNA fragment assembly. PNAS,
 98(17), 9748-9753.
 }
+\keyword{internal}

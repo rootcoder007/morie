@@ -3,18 +3,8 @@
 # Internal: parametric variogram model value at distance h. Extracted
 # from the vrgft() optimiser closure so the model switch (including the
 # unknown-model stop) is directly unit-testable.
-#' Internal: parametric variogram model value at distance h. Extracted
-#'
-#' from the vrgft() optimiser closure so the model switch (including the
-#' unknown-model stop) is directly unit-testable.
-#'
-#' @param h Numeric; combined arithmetically in the body.
-#' @param c0 Numeric; combined arithmetically in the body.
-#' @param c1 Numeric; combined arithmetically in the body.
-#' @param a Numeric; combined arithmetically in the body.
-#' @param model The body requires: unknown model.
-#' @return The value of \code{switch}.
-#' @export
+#' Internal helper: Vrgft Model
+#' @noRd
 .vrgft_model <- function(h, c0, c1, a, model) {
   switch(model,
     exponential = c0 + c1 * (1 - exp(-h / a)),
@@ -28,19 +18,8 @@
 }
 
 # Internal: variogram weighted-least-squares objective.
-#' Internal: variogram weighted-least-squares objective
-#'
-#' A step of the vrgft implementation. Called by \code{vrgft}.
-#' See the file header for the source the module follows.
-#' it follows.
-#'
-#' @param p A vector; indexed elementwise.
-#' @param mids Passed to \code{.vrgft_model}.
-#' @param gammas Numeric; combined arithmetically in the body.
-#' @param weights Numeric; combined arithmetically in the body.
-#' @param model Passed to \code{.vrgft_model}.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Vrgft Obj
+#' @noRd
 .vrgft_obj <- function(p, mids, gammas, weights, model) {
   pred <- .vrgft_model(mids, p[1], p[2], p[3], model)
   sum(weights * (gammas - pred)^2)
@@ -60,6 +39,7 @@
 #'   converged, model), n, method.
 #' @references Cressie (1985); Schabenberger & Gotway (2005), Ch 3.
 #' @examples
+#' set.seed(1)
 #' vrgft(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 #' @export
 vrgft <- function(x, coords, model = "exponential",

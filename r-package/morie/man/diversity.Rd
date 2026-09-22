@@ -22,3 +22,8 @@ A step of the tncomp_native implementation. Called by \code{morie_tncomp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+diversity(V, V)
+}
+\keyword{internal}

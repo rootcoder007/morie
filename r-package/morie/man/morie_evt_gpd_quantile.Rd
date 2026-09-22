@@ -11,6 +11,13 @@ morie_evt_gpd_quantile(p, sigma, xi)
 
 \item{sigma, xi}{GPD scale (> 0) and shape}
 }
+\value{
+A numeric value.
+}
 \description{
 GPD quantile (inverse of Coles 2001 eq. 4.2)
 }
+\examples{
+morie_evt_gpd_quantile(p = 0.5, sigma = 0.5, xi = 5L)
+}
+\keyword{internal}

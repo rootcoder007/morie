@@ -2,13 +2,22 @@
 % Please edit documentation in R/andmnh_native.R
 \name{parzen_kernel}
 \alias{parzen_kernel}
-\title{Parzen kernel}
+\title{parzen_kernel}
 \usage{
 parzen_kernel(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+}
+\value{
+A numeric value.
 }
 \description{
-Parzen kernel
+A step of the andmnh_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+parzen_kernel(x = 5L)
+}
+\keyword{internal}

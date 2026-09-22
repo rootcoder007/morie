@@ -12,14 +12,20 @@
 \item{...}{Unused.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
 Print method for audit results
 }
 \examples{
 \donttest{
-D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-morie:::print.morie_audit_result(D)
+spec <- function(nm, dt, vv = NULL) list(name = nm, dtype = dt, valid_values = vv)
+specs <- list(v1 = list(
+  spec("UniqueIndividual_ID", "string"),
+  spec("NumberConsecutiveDays_Segregation", "int")
+))
+res <- morie_audit_otis_variables(specs)
+res$domain
+print(res)
 }
 }

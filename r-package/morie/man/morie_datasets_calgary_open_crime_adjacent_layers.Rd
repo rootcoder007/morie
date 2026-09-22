@@ -13,24 +13,20 @@ morie_datasets_edmonton_open_crime_adjacent_layers(offline = TRUE)
 morie_datasets_ottawa_open_crime_adjacent_layers(offline = TRUE)
 }
 \arguments{
-\item{offline}{If \code{TRUE} (default), reads the bundled CSV.}
+\item{offline}{If \code{TRUE} (default), reads the included CSV.}
 }
 \value{
 A \code{data.frame} with \code{soda_id}, \code{title}, \code{type},
 \code{search_keyword}.
 
-A \code{data.frame} of City-of-Edmonton Socrata datasets
-matched on crime-adjacent keywords, loaded from
-\code{inst/extdata/edmonton_opendata_crime_adjacent_catalog.csv}.
-Columns: \code{soda_id}, \code{title}, \code{type}, \code{search_keyword}.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 
-A \code{data.frame} of City-of-Ottawa ArcGIS Hub datasets
-matched on crime-adjacent keywords, loaded from
-\code{inst/extdata/ottawa_opendata_crime_adjacent_catalog.csv}.
-Columns: \code{soda_id}, \code{title}, \code{type}, \code{search_keyword}.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 }
 \description{
-Phase 3FFF3. Bundled snapshot of 157 City-of-Calgary Socrata
+Phase 3FFF3. Included snapshot of 157 City-of-Calgary Socrata
 datasets matched on crime-adjacent keywords (crime, police,
 fire, ambulance, traffic, incident, collision, bylaw, 311).
 }
@@ -38,5 +34,21 @@ fire, ambulance, traffic, incident, collision, bylaw, 311).
 \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 d <- morie_datasets_calgary_open_crime_adjacent_layers(offline = TRUE)
 head(d)
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cat_df <- morie_datasets_edmonton_open_crime_adjacent_layers()
+head(cat_df)
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cat_df <- morie_datasets_ottawa_open_crime_adjacent_layers()
+head(cat_df)
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cat_df <- morie_datasets_edmonton_open_crime_adjacent_layers()
+head(cat_df)
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cat_df <- morie_datasets_ottawa_open_crime_adjacent_layers()
+head(cat_df)
 \dontshow{\}) # examplesIf}
 }

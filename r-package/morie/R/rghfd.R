@@ -1,14 +1,11 @@
-#' Higuchi fractal dimension -- Rangayyan Sec. 5.13.2, eqs (5.39)-(5.41)
+#' Higuchi fractal dimension -- Rangayyan Sec. 5.13.2, eqs (5.39)-(5.41), p.304
 #'
 #' Higuchi (1988) fractal dimension via curve-length scaling.
 #'
 #' @param x Numeric vector.
 #' @param kmax Maximum lag (default 10).
 #' @return Named list `HFD`, `log_L`, `log_inv_k`, `kmax`.
-#' @references Rangayyan, R. M. & Krishnan, S. Biomedical Signal Analysis, 3rd ed.
-#'   (IEEE Press / Wiley, 2024),
-#'   Sec. 5.13.2 "Higuchi's method", p. 304, eqs (5.39)-(5.41).
-#'   Higuchi, T. (1988). Physica D 31:277-283.
+#' @references Higuchi (1988), Physica D 31:277. Rangayyan Sec. 5.13.2, eqs (5.39)-(5.41), p.304.
 #' @export
 #' @examples
 #' set.seed(0)
@@ -30,8 +27,7 @@ rghfd <- function(x, kmax = 10L) {
       ## The previous code looped m over 0:(k-1) and passed that 0-based index
       ## here, so the denominator was floor((N - m + 1)/k) while the numerator
       ## still had floor((N - m)/k) terms. Deriving it from length(idx) keeps
-      ## the two identical by construction. Mirrors the Python fix in
-      ## src/morie/fn/rghfd.py.
+      ## the two identical by construction.
       n_terms <- length(idx) - 1L
       norm <- (N - 1) / (k * n_terms)
       lk <- c(lk, (diffs / k) * norm)

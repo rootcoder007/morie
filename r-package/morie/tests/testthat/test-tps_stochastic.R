@@ -110,7 +110,6 @@ test_that("stochastic callables accept OCC_DATE fallback", {
   rr <- morie_tps_hawkes_temporal_fit(df, ds_name = "DateOnly")
   expect_s3_class(rr, "morie_tps_stochastic_result")
 })
-
 test_that(".tps_stoch_date_series handles TPS month names and epoch-ms OCC_DATE", {
   # TPS publishes OCC_MONTH as month names.
   df_names <- data.frame(

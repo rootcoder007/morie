@@ -7,7 +7,7 @@
 .masrcn_bilinear(F, y, x)
 }
 \arguments{
-\item{F}{A matrix; indexed by row and column.}
+\item{F}{A vector; its length is taken and its elements indexed.}
 
 \item{y}{Numeric; combined arithmetically in the body.}
 

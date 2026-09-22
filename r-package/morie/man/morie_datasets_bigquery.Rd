@@ -38,7 +38,7 @@ Requires the \code{bigrquery} package and Application Default Credentials.
 \examples{
 \dontshow{if (nzchar(Sys.getenv("GCP_PROJECT")) && requireNamespace("bigrquery", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Runs when the caller has bigrquery + a GCP_PROJECT billing project.
-# Keyless alternatives: the bundled samples in 'moriedata' and the
+# Keyless alternatives: the bundled samples in 'rmoriedata' and the
 # morie_datasets_*() open-data fetchers (Socrata / CKAN, no account).
 df <- morie_datasets_bigquery("bigquery-public-data", "chicago_crime",
   "crime",

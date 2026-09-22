@@ -102,17 +102,8 @@ san_score <- function(eeg, fmri = NULL) {
 # Internal: theoretical-framework helpers (parity with _theory.py)
 # ---------------------------------------------------------------------------
 
-#' .entheo_extract_pair
-#'
-#' A step of the entheo_analysis implementation. Called by \code{beautiful_loop_metric},
-#' \code{san_score}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param record_or_eeg A list; the body reads \code{$fmri} from it.
-#' @param fmri Carried through into a list the body builds.
-#' @return A list with \code{e_dmt}, \code{f_dmt}, \code{e_pcb}, \code{f_pcb}.
-#' @export
+#' Internal helper: Entheo Extract Pair
+#' @noRd
 .entheo_extract_pair <- function(record_or_eeg, fmri) {
   if (is.list(record_or_eeg) && !is.null(record_or_eeg$fmri)) {
     rec <- record_or_eeg
@@ -124,19 +115,8 @@ san_score <- function(eeg, fmri = NULL) {
   list(e_dmt = record_or_eeg, f_dmt = fmri, e_pcb = NULL, f_pcb = NULL)
 }
 
-#' .entheo_envelope
-#'
-#' A step of the entheo_analysis implementation. Called by \code{.entheo_binding_per_frame}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param x Numeric; passed to \code{abs}.
-#' @return One of two values, depending on the branch taken.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .entheo_envelope(x = x)
-#' res
+#' Internal helper: Entheo Envelope
+#' @noRd
 .entheo_envelope <- function(x) {
   kern <- rep(1 / 5, 5)
   abs_x <- abs(x)
@@ -147,22 +127,8 @@ san_score <- function(eeg, fmri = NULL) {
   }
 }
 
-#' .entheo_align
-#'
-#' A step of the entheo_analysis implementation. Called by
-#' \code{.entheo_binding_per_frame}, \code{.entheo_san_per_frame}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param e A matrix; the body checks with \code{is.matrix}.
-#' @param f A matrix; the body checks with \code{is.matrix}.
-#' @return A list with \code{e}, \code{f}.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' fn <- function(v) sum(v^2)
-#' res <- .entheo_align(e = x, f = fn)
-#' res
+#' Internal helper: Entheo Align
+#' @noRd
 .entheo_align <- function(e, f) {
   e_tc <- if (is.matrix(e)) colMeans(e) else e
   f_tc <- if (is.matrix(f)) colMeans(f) else f
@@ -184,16 +150,8 @@ san_score <- function(eeg, fmri = NULL) {
   list(e = .bin(e_tc), f = .bin(f_tc))
 }
 
-#' .entheo_binding_per_frame
-#'
-#' A step of the entheo_analysis implementation. Called by \code{beautiful_loop_metric}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param eeg Passed to \code{.entheo_envelope}.
-#' @param fmri Passed to \code{.entheo_align}.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Entheo Binding Per Frame
+#' @noRd
 .entheo_binding_per_frame <- function(eeg, fmri) {
   env <- .entheo_envelope(eeg)
   al <- .entheo_align(env, fmri)
@@ -222,16 +180,8 @@ san_score <- function(eeg, fmri = NULL) {
   out / sd_o
 }
 
-#' .entheo_san_per_frame
-#'
-#' A step of the entheo_analysis implementation. Called by \code{san_score}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param eeg Passed to \code{.entheo_align}.
-#' @param fmri Passed to \code{.entheo_align}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Entheo San Per Frame
+#' @noRd
 .entheo_san_per_frame <- function(eeg, fmri) {
   al <- .entheo_align(eeg, fmri)
   e_tc <- al$e

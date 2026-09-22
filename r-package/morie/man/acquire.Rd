@@ -13,7 +13,7 @@ acquire(mu, sd, best, acq = "ei", kappa = 2, xi = 0)
 
 \item{best}{Passed to \code{expected_improvement}.}
 
-\item{acq}{One of \code{"ei"}, \code{"pi"}. Defaults to \code{"ei"}.}
+\item{acq}{One of \code{"ei"}, \code{"lcb"}, \code{"pi"}. Defaults to \code{"ei"}.}
 
 \item{kappa}{Passed to \code{lower_confidence_bound}. Defaults to \code{2}.}
 
@@ -27,3 +27,7 @@ A step of the bayopt_native implementation. Called by \code{bayopt}, \code{maxim
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+acquire(mu = c(1, 2, 3, 4, 5, 6, 7, 8), sd = 5L, best = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

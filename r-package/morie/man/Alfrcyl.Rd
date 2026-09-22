@@ -19,20 +19,20 @@ A list with \code{estimate}, the equation (48) \code{average},
 Algorithm 31 and equation (48) of the Supplementary Information to
 Jumper et al. (2021), pp. 42-43.  The objective is the average loss over
 all recycling iterations.  Training never evaluates that average; it
-samples one iteration \code{N\'} uniformly and trains only that one,
+samples one iteration \eqn{N'} uniformly and trains only that one,
 stopping gradients into the earlier iterations and skipping the later
 ones entirely.
 }
 \details{
 The sampled estimate is unbiased, which is the whole justification for
 the scheme: averaging the single-iteration estimate over every possible
-\code{N\'} returns equation (48) exactly.  Nothing is sampled here --
+\eqn{N'} returns equation (48) exactly.  Nothing is sampled here --
 pass \code{nprime} for one iteration's estimate, or omit it for the
 average.
 }
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie:::Alfrcyl(V)
+Alfrcyl(V)
 }
 \references{
 Jumper et al (2021) Nature 596:583-589, Suppl. Algorithm 31,

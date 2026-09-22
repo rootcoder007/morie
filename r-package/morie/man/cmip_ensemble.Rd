@@ -18,3 +18,8 @@ A list with \code{estimate}, \code{n}, \code{method}.
 Part of the caCMIP_mixedcase_native implementation; see the file
 header for the source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+cmip_ensemble(V, V)
+}
+\keyword{internal}

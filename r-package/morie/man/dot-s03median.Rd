@@ -14,7 +14,7 @@ One of two values, depending on the branch taken.
 }
 \description{
 A step of the helpers_s03 implementation. Called by \code{.dnnheadweights},
-\code{.s03mad}, \code{DepthP} and 5 others in the module.
+\code{.s03mad}, \code{Epicur} and 4 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

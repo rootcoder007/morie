@@ -19,3 +19,8 @@ The value of \code{out}, as built in the body.
 \description{
 delegated so the R and Python arms resample identically
 }
+\examples{
+stats_free_interp(beats = c(1, 2, 3, 4, 5, 6, 7, 8), values = c(1, 2, 3, 4, 5, 6, 7, 8),
+  grid = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -93,6 +93,11 @@
 #' @param kind A member of the kernel list.
 #' @return The covariance matrix.
 #' @export
+#' @examples
+#' set.seed(1)
+#' X <- matrix(rnorm(6), 3, 2)
+#' morie_hyper2_kernel(X, X, log_ls = 0, log_sf = 0)
+#' @keywords internal
 morie_hyper2_kernel <- function(X, Z, log_ls, log_sf,
                                 kind = "squared_exponential") {
   if (!(kind %in% .HYPER2_KERNELS))
@@ -147,6 +152,7 @@ morie_hyper2_kernel <- function(X, Z, log_ls, log_sf,
 #' @param kind Kernel name.
 #' @return The log marginal likelihood.
 #' @export
+#' @keywords internal
 morie_hyper2_logml <- function(y, X, log_ls, log_sf, log_sn, kind) {
   n <- length(y)
   K <- .hyper2_jit(morie_hyper2_kernel(X, X, log_ls, log_sf, kind),
@@ -193,6 +199,15 @@ morie_hyper2_logml <- function(y, X, log_ls, log_sf, log_sn, kind) {
 #' @param m Maximum stepping-out steps.
 #' @return The next value.
 #' @export
+#' @examples
+#' e <- morie:::.ghc_rng(11)
+#' xs <- 3
+#' e <- morie:::.ghc_rng(11)
+#' xs <- 3
+#' e <- morie:::.ghc_rng(11)
+#' v <- 0
+#' morie_hyper2_slice(function(v) -0.5 * v * v, xs, e, 1, 10L)
+#' @keywords internal
 morie_hyper2_slice <- function(logf, x0, e, w = 1, m = 10L) {
   ly <- logf(x0) + log(.ghc_unif(e, 1L))
   u <- .ghc_unif(e, 1L)
@@ -216,7 +231,7 @@ morie_hyper2_slice <- function(logf, x0, e, w = 1, m = 10L) {
 # proposal is an exact ellipse through the current point and a fresh
 # prior draw, so the prior term cancels and only the likelihood enters
 # the acceptance test. No rejection and no step size.
-#' Elliptical slice sampling for a latent with prior N(0, L L\'). The
+#' Elliptical slice sampling for a latent with prior N(0, L L'). The
 #'
 #' proposal is an exact ellipse through the current point and a fresh
 #' prior draw, so the prior term cancels and only the likelihood enters
@@ -270,6 +285,11 @@ morie_hyper2_slice <- function(logf, x0, e, w = 1, m = 10L) {
 #'   and standard deviations, and the predictive mean and standard
 #'   deviation at Xstar averaged over the draws.
 #' @export
+#' @examples
+#' X <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 3)
+#' y <- c(1.5, 2.1, 2.9)
+#' morie_hyper2(X, y)
+#' @keywords internal
 morie_hyper2 <- function(X, y, prior = NULL, kind = "squared_exponential",
                          route = "marginal", n_iter = 200L, burn = NULL,
                          thin = 1L, seed = 1, Xstar = NULL, w = 1,
@@ -476,6 +496,9 @@ morie_hyper2 <- function(X, y, prior = NULL, kind = "squared_exponential",
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_hyper2_cheatsheet()
+#' @keywords internal
 morie_hyper2_cheatsheet <- function()
   paste0("hyper2: GP hyperparameter MCMC. kernels ",
          paste(.HYPER2_KERNELS, collapse = ", "), "; routes ",

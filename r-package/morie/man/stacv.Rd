@@ -46,6 +46,7 @@ n, method.
 u)|) sum_(i,j) in N(h,u) (Z_i - bar Z)(Z_j - bar Z)}.
 }
 \examples{
+set.seed(1)
 stacv(x = rnorm(50), coords = matrix(runif(100), 50, 2), times = sort(cumsum(rexp(50))))
 }
 \references{

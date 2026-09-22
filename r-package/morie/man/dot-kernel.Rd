@@ -7,7 +7,7 @@
 .kernel(name)
 }
 \arguments{
-\item{name}{Compared against \code{"matern52"}.}
+\item{name}{One of \code{"matern52"}, \code{"se"}.}
 }
 \value{
 One of two values, depending on the branch taken.

@@ -15,11 +15,18 @@ Laplc(y, sensitivity = 1, epsilon = 1, seed = NULL)
 
 \item{seed}{See Usage.}
 }
+\value{
+The value of \code{morie_dp_laplace_mechanism}.
+}
 \description{
 Alias of \code{morie_dp_laplace_mechanism}: releases
 \eqn{f(D) + Lap(\Delta f / \epsilon)}. The generated stub for module
 laplc described exactly the mechanism already shipped, so this is an
 alias, not a second implementation.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Laplc(V)
 }
 \references{
 Dwork, C., McSherry, F., Nissim, K., and Smith, A. (2006).
@@ -35,3 +42,4 @@ Delegating wrapper (not a bare assignment) so that source collation
 order does not matter at load time; the body is a single call to the
 target, so outputs are exactly identical.
 }
+\keyword{internal}

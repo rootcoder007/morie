@@ -22,3 +22,8 @@ Squared-error loss with an additive fluctuation is unbounded: the
 updated fit can leave the outcome's range, and then so can the
 substitution estimator.
 }
+\examples{
+linear_fluctuation_unsafe(Q = c(1, 2, 3, 4, 5, 6, 7, 8), H = c(1, 2, 3, 4, 5, 6, 7, 8),
+  Y = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -3,7 +3,7 @@
 \name{morie_coarsen_interval}
 \alias{morie_coarsen_interval}
 \alias{morie_tmlcen}
-\title{Coarsen_interval: the interval (L, R] implied by one subject\'s}
+\title{Coarsen_interval: the interval (L, R] implied by one subject's}
 \usage{
 morie_coarsen_interval(times, deltas)
 
@@ -20,3 +20,9 @@ A list with \code{L}, \code{R}.
 \description{
 monitoring, Sec. 8.5.
 }
+\examples{
+times <- c(1.2, 3.4, 2.1, 5.0)
+deltas <- c(1, 0, 1, 1)
+morie_coarsen_interval(times, deltas)
+}
+\keyword{internal}

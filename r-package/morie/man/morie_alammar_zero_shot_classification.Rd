@@ -51,6 +51,39 @@ morie_alammar_output_verification(response, criteria, verifier_model)
 
 \item{verifier_model}{function(response, criterion) -> "PASS"|"FAIL".}
 }
+\value{
+A list with \code{probabilities}, \code{predicted_label}, \code{entailment_scores}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Zero-shot, T5 and judge orchestration around caller functions
 }
+\examples{
+h <- morie_alammar_classification_head(c(1, 2), rbind(c(1, 0),
+    c(0, 1)), c(0, 0))
+nli <- function(p, h) if (grepl("sport", h) && grepl("goal",
+    p)) 5 else 0
+morie_alammar_zero_shot_classification("a late goal won it",
+    c("sport", "finance"), nli)
+i <- morie_alammar_infonce_loss(c(1, 0), c(1, 0), rbind(c(0,
+    1), c(-1, 0)), 0.1)
+morie_alammar_t5_classify("good film", c("positive", "negative"),
+    function(i, l) {
+        if (l == "positive" && grepl("good", i))
+            0
+        else -3
+    })
+s <- morie_alammar_sampling_decoding(matrix(rep(c(1, 0), 10),
+    10, 2, byrow = TRUE), seed = 7)
+judge <- function(r, resp, s) {
+    if (resp == "a")
+        c(1, 3)[s + 1]
+    else c(2, 2)[s + 1]
+}
+morie_alammar_llm_as_judge(c("a", "b"), "rubric", judge, n_samples = 2)
+verifier <- function(response, criterion)
+  if (grepl(criterion, response, fixed = TRUE)) "PASS" else "FAIL"
+r <- morie_alammar_output_verification("The answer is 42.",
+                                       c("42", "answer"), verifier)
+str(r, max.level = 1)
+}
+\keyword{internal}

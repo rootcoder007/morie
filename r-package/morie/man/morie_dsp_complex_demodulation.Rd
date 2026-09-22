@@ -21,8 +21,10 @@ Multiplies \code{x} by \verb{exp(-j 2 pi fc t)}, low-passes via Butterworth
 (requires \code{signal}), and returns envelope and unwrapped phase.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_dsp_complex_demodulation(V, V)
+set.seed(1)
+t <- seq(0, 2, by = 1 / 200)
+x <- sin(2 * pi * 10 * t) * (1 + 0.5 * sin(2 * pi * 0.5 * t))
+str(morie_dsp_complex_demodulation(x, fc = 10, fs = 200), max.level = 1)
 }
 \references{
 Rangayyan & Krishnan (2015), Ch. 5, sec. 5.8.

@@ -23,7 +23,7 @@ total, a, b, k, n.
 Each mediator is regressed on the exposure,
 \code{M_k = alpha_0k + a_k X + ...}, and the outcome on the exposure
 and ALL mediators at once,
-\eqn{Y = beta_0 + c prime X + sum_k b_k M_k + ...}. The specific indirect
+\eqn{Y = beta_0 + c' X + sum_k b_k M_k + ...}. The specific indirect
 effect through mediator \code{k} is \code{a_k b_k} and the joint
 indirect effect is \code{sum_k a_k b_k}.
 }
@@ -37,8 +37,8 @@ longer decomposes the total effect. This routine computes the
 parallel-model quantities; it does not test the assumption.
 }
 \examples{
-MultM(Y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), M_list = c(1, 2,
-3, 4, 5, 6, 7, 8))
+MultM(Y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+  M_list = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Daniel, De Stavola, Cousens and Vansteelandt (2015),

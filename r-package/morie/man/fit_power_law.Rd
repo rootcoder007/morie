@@ -7,17 +7,21 @@
 fit_power_law(x, y)
 }
 \arguments{
-\item{x}{Passed to \code{.as_num_vec}.}
+\item{x}{Passed to \code{.opnclp_vec}.}
 
-\item{y}{Passed to \code{.as_num_vec}.}
+\item{y}{Passed to \code{.opnclp_vec}.}
 }
 \value{
 A list with \code{alpha}, \code{beta}, \code{slope}, \code{r_squared},
 \code{range}, \code{n}.
 }
 \description{
-A step of the opnclp_native implementation. Called by \code{compare_scaling},
-\code{morie_opnclp}.
+A step of the opnclp_native implementation. Called by \code{compare_scaling}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+fit_power_law(V, V)
+}
+\keyword{internal}

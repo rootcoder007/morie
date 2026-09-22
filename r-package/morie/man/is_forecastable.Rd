@@ -21,3 +21,9 @@ A step of the bats_native implementation. Called by \code{morie_bats}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+spec <- BatsSpec()
+theta <- rep(0.1, n_free(spec))
+is_forecastable(spec, theta)
+}
+\keyword{internal}

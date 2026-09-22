@@ -25,7 +25,7 @@ estimate_pliv(
 
 \item{covariates}{Exogenous covariate column names.}
 
-\item{n_folds}{Cross-fitting folds. Default 5.}
+\item{n_folds}{Cross-fitting folds (DoubleML path). Default 5.}
 
 \item{random_state}{RNG seed. Default 42.}
 }
@@ -34,8 +34,9 @@ Named list with \code{late}, \code{se}, \code{ci_lower}, \code{ci_upper},
 \code{pval}, \code{n_obs}, \code{method}.
 }
 \description{
-Native cross-fit partialled-out IV estimator (the DoubleMLPLIV
-estimand, Chernozhukov et al. 2018) with SVD-ridge nuisances.
+Native 2SLS in base R: first stage \code{D ~ Z + X}, second stage
+\code{Y ~ D_hat + X}. Cross-validated against \pkg{DoubleML} in the
+package's cross tests but not calling it at runtime.
 }
 \examples{
 if (requireNamespace("stdReg", quietly = TRUE)) {

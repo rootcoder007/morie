@@ -26,10 +26,15 @@ A named list mirroring the RichResult payload: \code{estimate},
 }
 \description{
 Every \eqn{(g, t)}{(g, t)} cell with \eqn{t \ge g}{t >= g} gets
-its own coefficient, so the fitted coefficients \strong{are} the
+its own coefficient, so the fitted coefficients \emph{*are*} the
 \eqn{ATT(g, t)}{ATT(g, t)}.  Nothing is averaged, so nothing can
 be averaged with a negative weight.
+}
+\examples{
+morie_etwfe(Y = c(1, 2, 3, 4, 5, 6, 7, 8), unit = c(1, 2, 3, 4, 5, 6, 7, 8),
+  period = c(1, 2, 3, 4, 5, 6, 7, 8), first_treated = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Wooldridge (2025) Sec. 5.
 }
+\keyword{internal}

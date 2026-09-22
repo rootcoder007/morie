@@ -214,7 +214,7 @@ morie_copula_tau <- function(family, theta = NULL, nu = NULL) {
 # form Czado's Table 3.2 does not give.
 #' Tau = 4 int int C dC - 1 on a grid; used for families whose closed
 #'
-#' form Czado\'s Table 3.2 does not give.
+#' form Czado's Table 3.2 does not give.
 #'
 #' @param family Passed to \code{morie_copula_cdf}.
 #' @param theta Passed to \code{morie_copula_cdf}.
@@ -475,7 +475,8 @@ morie_extreme_value_copula <- function(u, v, A = "gumbel", theta = 2) {
 #'   Sklar, A. (1959). Publ. Inst. Statist. Univ. Paris 8, 229-231.
 #' @examples
 #' set.seed(1)
-#' t1 <- rexp(30); t2 <- t1 + rexp(30, 5)
+#' t1 <- rexp(30)
+#' t2 <- t1 + rexp(30, 5)
 #' morie_copula_survival(t1, rep(1, 30), t2, rep(1, 30))$tau_sample
 #' @export
 morie_copula_survival <- function(time1, event1, time2, event2,

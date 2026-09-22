@@ -13,10 +13,11 @@
 #' @return Named list: statistic, p_value, p_adjusted, n, k, control_n.
 #' @importFrom stats wilcox.test p.adjust
 #' @examples
+#' set.seed(1)
 #' morie_control_comparison(groups = list(rnorm(20), rnorm(20), rnorm(20)))
 #' @export
 morie_control_comparison <- function(groups, control_index = 1L,
-                               adjust = c("bonferroni", "none")) {
+                                     adjust = c("bonferroni", "none")) {
   adjust <- match.arg(adjust)
   if (!is.list(groups) || length(groups) < 2L) {
     return(list(

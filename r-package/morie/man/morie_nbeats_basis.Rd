@@ -18,12 +18,13 @@ morie_nbeats_basis(x, horizon = 1, n_trend = 3, n_season = 5, period = 12)
 \item{period}{Seasonal period. Default 12.}
 }
 \value{
-Named list with \code{forecast, fitted, trend, seasonal,
+Named list with \eqn{forecast, fitted, trend, seasonal,
   theta_trend, theta_seasonal, r2, n, horizon, method}.
 }
 \description{
 N-BEATS-style polynomial + Fourier basis-expansion forecasting
 }
 \examples{
+set.seed(1)
 morie_nbeats_basis(x = rnorm(50))
 }

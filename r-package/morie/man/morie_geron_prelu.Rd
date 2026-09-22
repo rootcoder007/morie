@@ -13,6 +13,14 @@ morie_geron_prelu(z, alpha = 0.25, upstream = NULL)
 
 \item{upstream}{Optional dL/da from the next layer.}
 }
+\value{
+A list with \code{a}, \code{output}, \code{grad_z}, \code{grad_alpha}, \code{alpha}, \code{negative_fraction}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Parametric ReLU: per-channel learnable negative slope (Geron Ch 11, hmprel)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_prelu(V)
+}
+\keyword{internal}

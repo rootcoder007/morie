@@ -19,3 +19,9 @@ A step of the unifAlg_native implementation. Called by \code{morie_unifAlg_unify
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+x <- morie_unifAlg_var("x")
+t <- morie_unifAlg_app("f", x)
+c(morie_unifAlg_occurs("x", t), morie_unifAlg_occurs("z", t))
+}
+\keyword{internal}

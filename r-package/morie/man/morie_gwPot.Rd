@@ -20,3 +20,7 @@ A list with \code{estimate}, \code{agwp}, \code{agwp_co2},
 Part of the gwPot_mixedcase_native implementation; see the file
 header for the source it follows.
 }
+\examples{
+morie_gwPot("CO2")
+}
+\keyword{internal}

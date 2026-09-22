@@ -24,3 +24,16 @@ maximum-normalised ECG.  Six of eight successive samples must pass,
 which is what makes the decision robust to single-sample derivative
 spikes.
 }
+\examples{
+set.seed(6)
+fs <- 200
+tv <- seq(0, 4, by = 1 / fs)
+ecg <- rep(0, length(tv))
+for (b in seq(0.4, 3.8, by = 0.8)) {
+  i <- round(b * fs)
+  ecg[i:(i + 6)] <- c(0.1, 0.4, 1.2, -0.5, 0.1, 0.05, 0)
+}
+ecg <- ecg + rnorm(length(tv), 0, 0.02)
+QrsDeriv(ecg, fs = fs)
+}
+\keyword{internal}

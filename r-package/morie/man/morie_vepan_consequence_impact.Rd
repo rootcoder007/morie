@@ -17,3 +17,7 @@ A step of the vepan_native implementation. Called by \code{morie_vepan_annotate}
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_vepan_consequence_impact(term = 5L)
+}
+\keyword{internal}

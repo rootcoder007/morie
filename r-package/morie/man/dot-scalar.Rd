@@ -7,13 +7,13 @@
 .scalar(state)
 }
 \arguments{
-\item{state}{A vector; indexed elementwise.}
+\item{state}{A vector; its length is taken and its elements indexed.}
 }
 \value{
-A vector, from \code{as.numeric}.
+One of two values, depending on the branch taken.
 }
 \description{
-A step of the prtcl_native implementation. No other function in the package calls it.
+A step of the prtcl_native implementation. Called by \code{morie_prtcl_particle_filter}.
 See the file header for the source the module follows.
 source it follows.
 }

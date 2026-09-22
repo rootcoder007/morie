@@ -16,6 +16,7 @@ RichResult with summary + medical-cause-by-alert crosstab.
 Custodial deaths by alert x medical cause (d06)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_d06(V)
+otis_d06 <- morie_synth_otis("d06", n = 120L, seed = 1L)
+res <- morie_otis_analyze_d06(otis_d06)
+class(res)
 }

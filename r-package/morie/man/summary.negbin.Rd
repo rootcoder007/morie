@@ -13,6 +13,22 @@
 
 \item{...}{Ignored; accepted for S3 consistency.}
 }
+\value{
+The value of \code{s}, as built in the body.
+}
 \description{
 Summarise method for \code{negbin} objects
 }
+\examples{
+set.seed(1)
+x <- rnorm(60)
+y <- rpois(60, exp(0.4 + 0.3 * x))
+fit <- suppressWarnings(morie_glm_nb(y ~ x, data = data.frame(y, x)))
+s <- summary(fit)
+!is.null(s$theta)
+}
+\references{
+Venables, W. N., & Ripley, B. D. (2002). \emph{Modern
+Applied Statistics with S}. Springer.
+}
+\keyword{internal}

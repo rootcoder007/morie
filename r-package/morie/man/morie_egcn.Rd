@@ -2,32 +2,44 @@
 % Please edit documentation in R/egcn_native.R
 \name{morie_egcn}
 \alias{morie_egcn}
-\title{Re-export from egnnL}
+\title{Morie entry point: matches the Python payload keys}
 \usage{
 morie_egcn(H, X, layers, phi_e, phi_x, phi_h, A = NULL, C = NULL)
 }
 \arguments{
-\item{H}{Passed to \code{morie_egnnL}.}
+\item{H}{Carried through into a list the body builds.}
 
-\item{X}{Passed to \code{morie_egnnL}.}
+\item{X}{Carried through into a list the body builds.}
 
-\item{layers}{Passed to \code{morie_egnnL}.}
+\item{layers}{Coerced to integer by the body, with \code{as.integer}.}
 
-\item{phi_e}{Passed to \code{morie_egnnL}.}
+\item{phi_e}{Passed to \code{run_egnn}.}
 
-\item{phi_x}{Passed to \code{morie_egnnL}.}
+\item{phi_x}{Passed to \code{run_egnn}.}
 
-\item{phi_h}{Passed to \code{morie_egnnL}.}
+\item{phi_h}{Passed to \code{run_egnn}.}
 
-\item{A}{Passed to \code{morie_egnnL}.}
+\item{A}{Passed to \code{run_egnn}.}
 
-\item{C}{Passed to \code{morie_egnnL}.}
+\item{C}{Passed to \code{run_egnn}.}
 }
 \value{
-The value of \code{morie_egnnL}.
+A list with \code{estimate}, \code{H}, \code{X}, \code{layers}, \code{method},
+\code{note}.
 }
 \description{
 A step of the egcn_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+H <- lapply(1:4, function(i) rnorm(2))
+X <- lapply(1:4, function(i) rnorm(3))
+phi_e <- function(hi, hj, d2, a) c(hi + hj, d2)
+phi_x <- function(m) sum(m) * 0.01
+phi_h <- function(hi, agg) hi + 0.1 * agg[seq_along(hi)]
+r <- morie_egcn(H, X, layers = 2L, phi_e, phi_x, phi_h)
+str(r, max.level = 1)
+}
+\keyword{internal}

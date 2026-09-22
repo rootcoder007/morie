@@ -14,14 +14,12 @@ wilcoxon_signed_rank(x, y = NULL, alternative = "two.sided")
 \item{alternative}{One of "two.sided", "less", "greater".}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the signed-rank V statistic, p-value, an r effect size derived
-from the normal approximation, and n.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Wilcoxon signed-rank test (one-sample or paired)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-wilcoxon_signed_rank(V)
+set.seed(1)
+wilcoxon_signed_rank(rnorm(20, 0.3))
 }

@@ -25,10 +25,14 @@ rosenbaum_bounds(
 A \code{morie_rosenbaum_bounds} named-list.
 }
 \description{
-Native base-R implementation using the normal approximation to the
-Wilcoxon signed-rank statistic under the Rosenbaum Gamma model.
+Phase 1.g delegates to \pkg{rbounds} when installed and the
+\code{wilcoxon} or \code{sign} method is requested; otherwise
+falls back to the base-R normal-approximation implementation
+originally shipped with rmorie.  The \code{mcnemar} path is always
+served by the inline binomial formula (rbounds does not expose a
+McNemar entry point on CRAN).
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-rosenbaum_bounds(V, V)
+set.seed(1)
+str(rosenbaum_bounds(rnorm(30, 0.5), rnorm(30)), max.level = 1)
 }

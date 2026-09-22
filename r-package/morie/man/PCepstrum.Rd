@@ -21,3 +21,8 @@ definitions, and that it matters: WITH the square, eq (4.82) holds
 only when the cross-term is negligible; WITHOUT it, no cross-term
 arises and eq (4.82) is exact.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+PCepstrum(V)
+}
+\keyword{internal}

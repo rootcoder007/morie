@@ -22,3 +22,9 @@ A step of the bats_native implementation. Called by \code{.fit_spec},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+spec <- BatsSpec()
+theta <- rep(0.1, n_free(spec))
+spectral_radius(spec, theta)
+}
+\keyword{internal}

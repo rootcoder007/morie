@@ -60,6 +60,7 @@
 #'   equivalent moment-generating form (2), and the remark after
 #'   Proposition 1.6.
 #' @export
+#' @keywords internal
 renyi_divergence_gaussian <- function(mu0, mu1, sigma, alpha) {
   sigma <- as.numeric(sigma)
   if (sigma <= 0)
@@ -78,6 +79,9 @@ renyi_divergence_gaussian <- function(mu0, mu1, sigma, alpha) {
 #' @return A scalar numeric: the zCDP parameter rho.
 #' @references Bun, M. & Steinke, T. (2016). Proposition 1.6.
 #' @export
+#' @examples
+#' zcdp_of_gaussian(sensitivity = 5L, sigma = 0.5)
+#' @keywords internal
 zcdp_of_gaussian <- function(sensitivity, sigma) {
   sigma <- as.numeric(sigma)
   if (sigma <= 0)
@@ -99,6 +103,9 @@ zero_concentrated_dp <- zcdp_of_gaussian
 #' @return A scalar numeric: the Gaussian standard deviation sigma.
 #' @references Bun, M. & Steinke, T. (2016). Proposition 1.6.
 #' @export
+#' @examples
+#' sigma_for_rho(sensitivity = 5L, rho = 0.5)
+#' @keywords internal
 sigma_for_rho <- function(sensitivity, rho) {
   rho <- .zfmech_check_rho(rho)
   sensitivity <- as.numeric(sensitivity)
@@ -125,6 +132,9 @@ sigma_for_rho <- function(sensitivity, rho) {
 #' @references Bun, M. & Steinke, T. (2016). Proposition 1.6;
 #'   Dwork et al. (2006) for the Gaussian mechanism itself.
 #' @export
+#' @examples
+#' morie_zfmech(value = c(1, 2, 3, 4, 5, 6, 7, 8), sensitivity = 5L, rho = 0.5)
+#' @keywords internal
 morie_zfmech <- function(value, sensitivity, rho, seed = 0, n = 1L) {
   sigma <- sigma_for_rho(sensitivity, rho)
   n <- as.integer(n)
@@ -167,6 +177,9 @@ gaussian_mechanism <- morie_zfmech
 #'   string noting the quadratic, exactly tight bound.
 #' @references Bun, M. & Steinke, T. (2016). Proposition 1.9.
 #' @export
+#' @examples
+#' group_privacy(rho = 0.5, k = 5L)
+#' @keywords internal
 group_privacy <- function(rho, k) {
   rho <- .zfmech_check_rho(rho)
   k <- as.integer(k)
@@ -183,6 +196,9 @@ group_privacy <- function(rho, k) {
 #' @return A list with \code{epsilon}, \code{delta}, \code{rho}.
 #' @references Bun, M. & Steinke, T. (2016). Proposition 1.3.
 #' @export
+#' @examples
+#' to_approx_dp(rho = 0.5, delta = 0.5)
+#' @keywords internal
 to_approx_dp <- function(rho, delta) {
   rho <- .zfmech_check_rho(rho)
   delta <- as.numeric(delta)
@@ -198,6 +214,9 @@ to_approx_dp <- function(rho, delta) {
 #' @return A list with \code{rho} and \code{epsilon}.
 #' @references Bun, M. & Steinke, T. (2016). Proposition 1.4.
 #' @export
+#' @examples
+#' from_pure_dp(epsilon = 5L)
+#' @keywords internal
 from_pure_dp <- function(epsilon) {
   epsilon <- as.numeric(epsilon)
   if (epsilon < 0)
@@ -207,7 +226,7 @@ from_pure_dp <- function(epsilon) {
 
 #' What the two conversions cost when chained
 #'
-#' \code{epsilon -> rho -> (epsilon\', delta)} does not return
+#' \eqn{epsilon -> rho -> (epsilon', delta)} does not return
 #' \code{epsilon}; the gap is reported as \code{inflation} rather
 #' than quietly absorbed. When the input is \code{epsilon = 0} the
 #' \code{to_approx_dp} step is skipped (it would refuse rho = 0) and
@@ -219,6 +238,9 @@ from_pure_dp <- function(epsilon) {
 #'   \code{epsilon_out}, \code{inflation}, \code{delta}.
 #' @references Bun, M. & Steinke, T. (2016). Propositions 1.3 and 1.4.
 #' @export
+#' @examples
+#' round_trip(epsilon = 5L, delta = 0.5)
+#' @keywords internal
 round_trip <- function(epsilon, delta) {
   rho <- from_pure_dp(epsilon)$rho
   if (rho > 0)
@@ -240,6 +262,9 @@ round_trip <- function(epsilon, delta) {
 #'   post-processing.
 #' @references Bun, M. & Steinke, T. (2016). Lemma 1.8.
 #' @export
+#' @examples
+#' postprocessing(rho = 0.5)
+#' @keywords internal
 postprocessing <- function(rho) {
   rho <- .zfmech_check_rho(rho)
   list(rho = rho,

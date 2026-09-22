@@ -27,3 +27,9 @@ A step of the strec_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+strec_attention_weights(embeddings = 5L, W1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+  W2 = c(1, 2, 3, 4, 5, 6, 7, 8), W3 = c(1, 2, 3, 4, 5, 6, 7, 8),
+  W0 = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -21,3 +21,8 @@ generalized function has no pointwise value at the origin, so NA is
 returned there.  With width= the unit-area rectangle of Figure 3.10
 is returned instead -- the approximating family, not the delta.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+DiracDelta(V)
+}
+\keyword{internal}

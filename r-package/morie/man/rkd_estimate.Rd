@@ -47,3 +47,12 @@ A step of the bnskt2_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+v <- runif(300, -1, 1)
+y <- 1 + 0.5 * v + 0.8 * pmax(v, 0) + rnorm(300, 0, 0.1)
+r <- rkd_estimate(v, y, kink = 0, bandwidth = 0.5,
+                  policy_slope_change = 1)
+str(r, max.level = 1)
+}
+\keyword{internal}

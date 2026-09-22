@@ -22,3 +22,8 @@ The value of \code{out}, as built in the body.
 on the unit circle makes H undefined there; outside it, a causal
 system is unstable.  Both are reported.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+PzForm(V, V)
+}
+\keyword{internal}

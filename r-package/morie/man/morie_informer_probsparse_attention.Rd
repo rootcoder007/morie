@@ -42,3 +42,12 @@ A step of the informer_native implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(3)
+Q <- matrix(rnorm(32), 8, 4)
+K <- matrix(rnorm(32), 8, 4)
+V <- matrix(rnorm(32), 8, 4)
+r <- morie_informer_probsparse_attention(Q, K, V, factor = 2)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -72,6 +72,9 @@
 #' @param match,mismatch,gap The scoring.
 #' @return A list with the score and the two gapped sequences.
 #' @export
+#' @examples
+#' morie_longrd_align("ACGTACGT", "ACGAACGT")
+#' @keywords internal
 morie_longrd_align <- function(a, b, match = 1, mismatch = -1,
                                gap = -2) {
   av <- if (nchar(a)) strsplit(a, "")[[1]] else character(0)
@@ -124,6 +127,9 @@ morie_longrd_align <- function(a, b, match = 1, mismatch = -1,
 #' @param seq A sequence.
 #' @return A list of base and count pairs.
 #' @export
+#' @examples
+#' morie_longrd_rle("AAACCGTT")
+#' @keywords internal
 morie_longrd_rle <- function(seq) {
   if (!nchar(seq)) return(list())
   v <- strsplit(seq, "")[[1]]
@@ -144,6 +150,10 @@ morie_longrd_rle <- function(seq) {
 #' @param runs A list of base and count pairs.
 #' @return A character scalar.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_longrd_unrle(D)
+#' @keywords internal
 morie_longrd_unrle <- function(runs) {
   if (!length(runs)) return("")
   paste(vapply(runs, function(r)
@@ -164,6 +174,12 @@ morie_longrd_unrle <- function(runs) {
 #' @param match,mismatch,gap The scoring.
 #' @return A list with the columns and the insertion counts.
 #' @export
+#' @examples
+#' TRUTH <- "ACGTTTTGACCA"
+#' DRAFT <- "ACGTTTGACCA"
+#' READS <- c(TRUTH, TRUTH, TRUTH, "ACGTTTTGACGA", TRUTH)
+#' morie_longrd_pileup(DRAFT, READS)
+#' @keywords internal
 morie_longrd_pileup <- function(draft, reads, match = 1, mismatch = -1,
                                 gap = -2) {
   n <- nchar(draft)
@@ -239,6 +255,16 @@ morie_longrd_pileup <- function(draft, reads, match = 1, mismatch = -1,
 #' Progressive partial-order consensus: the heaviest path
 #'
 #' The first read is the seed. Each later read is aligned to the current
+#' consensus and every aligned column votes; the consensus is recomputed as the
+#' column-wise majority, which for a partial order graph built this way IS the
+#' heaviest path, because every node's weight is the number of reads passing
+#' through it. Progressive construction depends on the order the reads arrive.
+#' That is a property of the method and not an accident, so the reads are sorted
+#' first by default -- which does not make the answer order-INDEPENDENT, it makes
+#' it a function of the SET rather than of the sequence, and those are different
+#' guarantees.
+#'
+#' The first read is the seed. Each later read is aligned to the current
 #' consensus and every aligned column votes; the consensus is recomputed
 #' as the column-wise majority, which for a partial order graph built
 #' this way IS the heaviest path, because every node's weight is the
@@ -255,6 +281,10 @@ morie_longrd_pileup <- function(draft, reads, match = 1, mismatch = -1,
 #' @param sort_reads Whether to sort first.
 #' @return The consensus sequence.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_longrd_poa(V)
+#' @keywords internal
 morie_longrd_poa <- function(reads, match = 1, mismatch = -1, gap = -2,
                              sort_reads = TRUE) {
   rs <- as.character(reads)
@@ -291,6 +321,9 @@ morie_longrd_poa <- function(reads, match = 1, mismatch = -1, gap = -2,
 #'   support, the run-length view of both sequences, and how much
 #'   changed.
 #' @export
+#' @examples
+#' morie_longrd(assembly = 5L, reads = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_longrd <- function(assembly, reads, method = "pileup",
                          min_depth = 3L, min_frac = 0.5,
                          ins_frac = 0.5, match = 1, mismatch = -1,
@@ -364,6 +397,9 @@ morie_longrd <- function(assembly, reads, method = "pileup",
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_longrd_cheatsheet()
+#' @keywords internal
 morie_longrd_cheatsheet <- function()
   paste0("longrd: long-read consensus polishing. Needleman-Wunsch ",
          "pileup with a column majority, or a progressive ",

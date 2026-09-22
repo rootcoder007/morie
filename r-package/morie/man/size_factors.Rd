@@ -18,3 +18,8 @@ and \code{s_j = median_i K_ij / K_i^R} over genes with a positive
 reference. Genes with any zero count drop out, which is what makes
 the estimator robust to genes present in only some samples.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+size_factors(V)
+}
+\keyword{internal}

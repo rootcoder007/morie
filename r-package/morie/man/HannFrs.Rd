@@ -18,3 +18,8 @@ A list with \code{H}, \code{omega}, \code{envelope},
 That factorization is the point -- it proves the filter has exactly
 linear phase, so the waveform is shifted, not distorted.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+HannFrs(V)
+}
+\keyword{internal}

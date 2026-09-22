@@ -29,3 +29,7 @@ poles at the origin that balance the orders; dropping it is easy,
 since it vanishes when N = M, and leaves the phase wrong by a
 multiple of angle(z_0) whenever they differ.
 }
+\examples{
+PzPhase(z_0 = 5L, alpha_k = c(1, 2, 3, 4, 5, 6, 7, 8), beta_k = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

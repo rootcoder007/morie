@@ -13,6 +13,9 @@
 #' @param window Character; passed to \code{tolower}. Defaults to \code{"hamming"}.
 #' @return A list with \code{order}, \code{criterion}, \code{n_effective}, \code{method}.
 #' @export
+#' @examples
+#' AICorder(prediction_errors = c(1, 2, 3, 4, 5, 6, 7, 8), n_samples = 5L)
+#' @keywords internal
 AICorder <- function(prediction_errors, n_samples, window = "hamming") {
   # Rangayyan eq. (7.60):  I(P) = log(eps_P) + 2P/Ne,  Ne = 0.4 N for a
   # Hamming window -- the EFFECTIVE sample count after windowing, which
@@ -23,8 +26,12 @@ AICorder <- function(prediction_errors, n_samples, window = "hamming") {
   n <- as.integer(n_samples)
   if (n <= 0) stop("n_samples must be positive")
   frac <- if (is.character(window)) {
-    switch(tolower(window), hamming = 0.4, rectangular = 1, none = 1,
-           stop("unknown window: ", window))
+    switch(tolower(window),
+      hamming = 0.4,
+      rectangular = 1,
+      none = 1,
+      stop("unknown window: ", window)
+    )
   } else {
     f <- as.numeric(window)
     if (f <= 0 || f > 1) stop("effective-sample fraction must be in (0, 1]")
@@ -32,8 +39,10 @@ AICorder <- function(prediction_errors, n_samples, window = "hamming") {
   }
   n_eff <- frac * n
   crit <- log(eps) + 2 * seq_along(eps) / n_eff
-  list(order = which.min(crit), criterion = crit, n_effective = n_eff,
-       method = "Rangayyan (2024) eq. (7.60)")
+  list(
+    order = which.min(crit), criterion = crit, n_effective = n_eff,
+    method = "Rangayyan (2024) eq. (7.60)"
+  )
 }
 
 #' |DFT|^2 per bin by direct evaluation: exact at any M, no padding
@@ -71,6 +80,13 @@ AICorder <- function(prediction_errors, n_samples, window = "hamming") {
 #' @return A list with \code{psd}, \code{freqs}, \code{n_segments},
 #' \code{segment_length}, \code{method}.
 #' @export
+#' @examples
+#' n <- 100
+#' fs <- 64
+#' f0 <- 8
+#' x <- sin(2 * pi * f0 * (0:(n - 1))/fs)
+#' BartlettPSD(x, fs = fs, n_segments = 4)
+#' @keywords internal
 BartlettPSD <- function(x, fs = 1, n_segments = NULL,
                         segment_length = NULL) {
   # Rangayyan eqs. (6.14)-(6.16): split into K DISJOINT segments of M
@@ -81,8 +97,9 @@ BartlettPSD <- function(x, fs = 1, n_segments = NULL,
   xs <- as.numeric(x)
   n <- length(xs)
   if (n < 2) stop("need at least two samples")
-  if (is.null(n_segments) == is.null(segment_length))
+  if (is.null(n_segments) == is.null(segment_length)) {
     stop("give exactly one of n_segments, segment_length")
+  }
   if (!is.null(n_segments)) {
     k <- as.integer(n_segments)
     if (k < 1) stop("n_segments must be positive")
@@ -100,9 +117,11 @@ BartlettPSD <- function(x, fs = 1, n_segments = NULL,
     acc <- if (is.null(acc)) p else acc + p
   }
   psd <- acc / k
-  list(psd = psd, freqs = (seq_along(psd) - 1) * fs / m,
-       n_segments = k, segment_length = m,
-       method = "Rangayyan (2024) eqs. (6.14)-(6.16)")
+  list(
+    psd = psd, freqs = (seq_along(psd) - 1) * fs / m,
+    n_segments = k, segment_length = m,
+    method = "Rangayyan (2024) eqs. (6.14)-(6.16)"
+  )
 }
 
 #' Rangayyan eq. (7.65):
@@ -115,6 +134,10 @@ BartlettPSD <- function(x, fs = 1, n_segments = NULL,
 #' @param gain Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{cepstrum}, \code{c0}, \code{order}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' ARtoCepstrum(V)
+#' @keywords internal
 ARtoCepstrum <- function(a_coeffs, gain = NULL) {
   # Rangayyan eq. (7.65):
   #   h(1) = -a1;  h(n) = -a_n - sum_{k=1}^{n-1} (1 - k/n) a_k h(n-k)
@@ -138,8 +161,10 @@ ARtoCepstrum <- function(a_coeffs, gain = NULL) {
     if (g <= 0) stop("gain must be positive")
     c0 <- log(g)
   }
-  list(cepstrum = h[-1], c0 = c0, order = p,
-       method = "Rangayyan (2024) eq. (7.65)")
+  list(
+    cepstrum = h[-1], c0 = c0, order = p,
+    method = "Rangayyan (2024) eq. (7.65)"
+  )
 }
 
 # pre-policy spellings

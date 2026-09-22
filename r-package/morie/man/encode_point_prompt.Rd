@@ -9,7 +9,7 @@ encode_point_prompt(points, labels, dim = 8, type_embeddings = NULL)
 \arguments{
 \item{points}{Iterated over elementwise, with \code{lapply}.}
 
-\item{labels}{Coerced to integer by the body, with \code{as.integer}.}
+\item{labels}{Passed to \code{unlist}.}
 
 \item{dim}{Passed to \code{.samseg_pos_enc}. Defaults to \code{8}.}
 
@@ -23,3 +23,9 @@ A step of the samseg_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+e <- encode_point_prompt(points = list(c(10, 20), c(30, 40)),
+                         labels = c(1, 0), dim = 8)
+is.list(e) || is.matrix(e) || is.numeric(e)
+}
+\keyword{internal}

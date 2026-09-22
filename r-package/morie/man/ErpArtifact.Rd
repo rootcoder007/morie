@@ -23,3 +23,8 @@ it does not average away at any M; the remedy is to reject those
 epochs first.  Averaging without rejection and quoting the sqrt(M)
 gain overstates the result by exactly the artifact that survived.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+ErpArtifact(V)
+}
+\keyword{internal}

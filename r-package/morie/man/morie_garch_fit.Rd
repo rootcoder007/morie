@@ -10,7 +10,7 @@ morie_garch_fit(x)
 \item{x}{Numeric return series.}
 }
 \value{
-Named list with \code{omega, alpha, beta, persistence, loglik,
+Named list with \eqn{omega, alpha, beta, persistence, loglik,
   conditional_variance, n, method}.
 }
 \description{
@@ -24,6 +24,7 @@ which the likelihood enforces by returning a large penalty outside the
 admissible region.
 }
 \examples{
+set.seed(1)
 morie_garch_fit(x = rnorm(50))
 }
 \references{

@@ -24,3 +24,11 @@ A step of the bnskmt_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+X <- matrix(runif(60), 30, 2)
+inst <- hypercube_instruments(X, n_levels = 2L)
+r <- compare_forms(X[, 1] - 0.4, inst)
+str(r, max.level = 1)
+}
+\keyword{internal}

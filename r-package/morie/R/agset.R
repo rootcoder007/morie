@@ -17,7 +17,7 @@
 #'   `reversion`, `win_set_size`, `win_set_bounds`, `method`.
 #' @examples
 #' # See the package vignettes for usage examples:
-#' #   vignette(package = "rmorie")
+#' #   vignette(package = "morie")
 #' @export
 agset <- function(options, setter_ideal, reversion) {
   options <- as.numeric(options)

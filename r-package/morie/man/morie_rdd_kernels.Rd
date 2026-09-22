@@ -45,7 +45,10 @@ standard normal density
 }
 }
 \examples{
-u <- seq(-1, 1, by = 0.25)
-w <- morie_rdd_kernel_triangular(u)
-c(length(w), all(w >= 0))
+morie_rdd_kernel_epanechnikov(seq(-1, 1, by = 0.5))
+morie_rdd_kernel_uniform(seq(-2, 2, by = 1))
+morie_rdd_kernel_gaussian(seq(-1, 1, by = 0.5))
+morie_rdd_kernel_epanechnikov(seq(-1, 1, by = 0.5))
+morie_rdd_kernel_uniform(seq(-2, 2, by = 1))
+morie_rdd_kernel_gaussian(seq(-1, 1, by = 0.5))
 }

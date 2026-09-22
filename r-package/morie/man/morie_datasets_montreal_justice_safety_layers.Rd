@@ -7,7 +7,7 @@
 morie_datasets_montreal_justice_safety_layers(offline = TRUE)
 }
 \arguments{
-\item{offline}{If \code{TRUE} (default), reads the bundled CSV; if
+\item{offline}{If \code{TRUE} (default), reads the included CSV; if
 \code{FALSE}, hits \verb{/action/package_search} live.}
 }
 \value{
@@ -15,7 +15,7 @@ A \code{data.frame} with \code{package_name}, \code{title},
 \code{num_resources}, \code{metadata_modified}, \code{language}, \code{license}.
 }
 \description{
-Phase 3EEE1. Bundled 23-row snapshot of every CKAN package in
+Phase 3EEE1. Included 23-row snapshot of every CKAN package in
 the Law / Justice / Public Safety group on donnees.montreal.ca.
 Includes the SIM fire/EMS interventions dataset, SPVM police
 station boundaries, municipal regulations, traffic collisions,
@@ -24,7 +24,7 @@ and ~20 others.
 \examples{
 \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 cat_df <- morie_datasets_montreal_justice_safety_layers()
-nrow(cat_df)  # 23
+nrow(cat_df) # 23
 head(cat_df$title)
 \dontshow{\}) # examplesIf}
 }

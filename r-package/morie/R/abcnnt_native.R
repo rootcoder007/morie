@@ -118,7 +118,14 @@
 #' @param flow See Usage.
 #' @param x See Usage.
 #' @param t See Usage.
+#' @return A list with `u`, `total`.
 #' @export
+#' @examples
+#' flow <- MAF(dim_x = 2L, dim_t = 2L, n_layers = 2L, hidden = 4L, seed = 1L)
+#' fw <- flow_forward(flow, x = c(0.4, -0.7), t = c(0.1, 0.2))
+#' fw$u        # the latent point x maps to
+#' fw$total    # the log-Jacobian of the map
+#' @keywords internal
 flow_forward <- function(flow, x, t) {
   u <- as.numeric(x)
   total <- 0
@@ -134,11 +141,21 @@ flow_forward <- function(flow, x, t) {
 #' @param flow See Usage.
 #' @param x See Usage.
 #' @param t See Usage.
+#' @return A numeric value.
 #' @export
+#' @examples
+#' flow <- MAF(dim_x = 2L, dim_t = 2L, n_layers = 2L, hidden = 4L, seed = 1L)
+#' flow_logprob(flow, x = c(0.4, -0.7), t = c(0.1, 0.2))
+#' # for one dimension the density integrates to one
+#' f1 <- MAF(dim_x = 1L, dim_t = 1L, n_layers = 3L, hidden = 5L, seed = 4L)
+#' g <- seq(-12, 12, length.out = 2001)
+#' d <- vapply(g, function(x) exp(flow_logprob(f1, x, 0.3)), numeric(1))
+#' round(sum((d[-1] + d[-length(d)]) / 2) * (g[2] - g[1]), 3)
+#' @keywords internal
 flow_logprob <- function(flow, x, t) {
   fw <- flow_forward(flow, x, t)
   d <- length(fw$u)
-  -0.5 * sum(fw$u ^ 2) - 0.5 * d * log(2 * pi) - fw$total
+  -0.5 * sum(fw$u^2) - 0.5 * d * log(2 * pi) - fw$total
 }
 
 #' Build a Masked Autoregressive Flow
@@ -218,6 +235,40 @@ MAF <- function(dim_x, dim_t, n_layers = 5L, hidden = 20L, seed = 0L) {
   out
 }
 
+#' Read the parameter an address points at
+#' @param flow A flow as built by \code{MAF}.
+#' @param a An address from \code{.abcnnt_params}.
+#' @return The scalar parameter value.
+#' @export
+#' @examples
+#' flow <- MAF(dim_x = 2L, dim_t = 2L, n_layers = 2L, hidden = 4L, seed = 1L)
+#' a <- .abcnnt_params(flow)[[1]]
+#' .abcnnt_param_get(flow, a)
+.abcnnt_param_get <- function(flow, a) {
+  x <- flow$layers[[a$layer]][[a$field]]
+  if (length(a$index) == 2L) x[a$index[1L], a$index[2L]] else x[a$index[1L]]
+}
+
+#' Write the parameter an address points at
+#' @param flow A flow as built by \code{MAF}.
+#' @param a An address from \code{.abcnnt_params}.
+#' @param v The replacement value.
+#' @return The flow, with that one parameter replaced.
+#' @export
+#' @examples
+#' flow <- MAF(dim_x = 2L, dim_t = 2L, n_layers = 2L, hidden = 4L, seed = 1L)
+#' a <- .abcnnt_params(flow)[[1]]
+#' moved <- .abcnnt_param_set(flow, a, 0.5)
+#' .abcnnt_param_get(moved, a)
+.abcnnt_param_set <- function(flow, a, v) {
+  if (length(a$index) == 2L) {
+    flow$layers[[a$layer]][[a$field]][a$index[1L], a$index[2L]] <- v
+  } else {
+    flow$layers[[a$layer]][[a$field]][a$index[1L]] <- v
+  }
+  flow
+}
+
 #' Train a MAF by central-difference SGD
 #'
 #' The paper backpropagates through autograd; we run central
@@ -284,7 +335,14 @@ train_flow <- function(flow, D, epochs = 40L, lr = 0.01, seed = 0L,
 #' @param burn See Usage.
 #' @param step See Usage.
 #' @param seed See Usage.
+#' @return A list with `samples`, `acceptance`.
 #' @export
+#' @examples
+#' # a standard normal target
+#' lp <- function(x) -0.5 * sum(x^2)
+#' mc <- mcmc_sample(lp, 0, 2000L, burn = 200L, step = 1.5, seed = 1L)
+#' round(c(mean = mean(mc$samples[, 1]), sd = sd(mc$samples[, 1])), 2)
+#' @keywords internal
 mcmc_sample <- function(logpdf, x0, n, burn = 100L, step = 0.5,
                         seed = 0L) {
   if (n < 1L) stop("abcnnt: n must be positive")
@@ -335,7 +393,6 @@ mcmc_sample <- function(logpdf, x0, n, burn = 100L, step = 0.5,
 #' names(res)
 #' }
 #' @keywords internal
-#' @aliases sequential_neural_likelihood
 abcnnt <- function(simulator, x_o, log_prior, theta0, n_rounds = 3L,
                    n_per_round = 50L, n_layers = 5L, hidden = 20L,
                    epochs = 40L, lr = 0.01, mcmc_burn = 100L,
@@ -409,43 +466,9 @@ abcnnt <- function(simulator, x_o, log_prior, theta0, n_rounds = 3L,
 }
 
 #' Compact alias for abcnnt
+#' @rdname abcnnt
 #' @export
-#' @noRd
 sequential_neural_likelihood <- abcnnt
 
 # house entry point: the package exports one morie_<module>
 morie_abcnnt <- abcnnt
-
-#' Read the parameter an address points at
-#' @param flow A flow as built by \code{MAF}.
-#' @param a An address from \code{.abcnnt_params}.
-#' @return The scalar parameter value.
-#' @export
-#' @examples
-#' flow <- MAF(dim_x = 2L, dim_t = 2L, n_layers = 2L, hidden = 4L, seed = 1L)
-#' a <- .abcnnt_params(flow)[[1]]
-#' .abcnnt_param_get(flow, a)
-.abcnnt_param_get <- function(flow, a) {
-  x <- flow$layers[[a$layer]][[a$field]]
-  if (length(a$index) == 2L) x[a$index[1L], a$index[2L]] else x[a$index[1L]]
-}
-
-#' Write the parameter an address points at
-#' @param flow A flow as built by \code{MAF}.
-#' @param a An address from \code{.abcnnt_params}.
-#' @param v The replacement value.
-#' @return The flow, with that one parameter replaced.
-#' @export
-#' @examples
-#' flow <- MAF(dim_x = 2L, dim_t = 2L, n_layers = 2L, hidden = 4L, seed = 1L)
-#' a <- .abcnnt_params(flow)[[1]]
-#' moved <- .abcnnt_param_set(flow, a, 0.5)
-#' .abcnnt_param_get(moved, a)
-.abcnnt_param_set <- function(flow, a, v) {
-  if (length(a$index) == 2L) {
-    flow$layers[[a$layer]][[a$field]][a$index[1L], a$index[2L]] <- v
-  } else {
-    flow$layers[[a$layer]][[a$field]][a$index[1L]] <- v
-  }
-  flow
-}

@@ -36,7 +36,13 @@ Returns the draw, the number of log-density evaluations, and the
 final slice interval. The chain stays in distribution regardless of
 the choice of \code{w}; what \code{w} affects is only the cost.
 }
+\examples{
+e <- morie:::.ghc_rng(1)
+logf <- function(x) -0.5 * x^2
+morie_slice_sample_1d(logf, x0 = 0.5, e)
+}
 \references{
 Neal, R. M. (2003). Slice sampling. Annals of Statistics
 31(3), 705-767.
 }
+\keyword{internal}

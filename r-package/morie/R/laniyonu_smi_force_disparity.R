@@ -68,24 +68,8 @@ NULL
 # Helpers
 # ---------------------------------------------------------------------------
 
-#' .lan_smi_result
-#'
-#' Part of the laniyonu_smi_force_disparity implementation; see the file
-#' header for the source it follows.
-#'
-#' @param alpha_v A list; the body reads \code{$estimate}, \code{$std_error} from it.
-#' @param intercept Carried through into a list the body builds.
-#' @param year_effects Carried through into a list the body builds.
-#' @param area_random_effect_sd Carried through into a list the body builds.
-#' @param dispersion Carried through into a list the body builds.
-#' @param n_events Carried through into a list the body builds.
-#' @param n_area_years Carried through into a list the body builds.
-#' @param log_likelihood Carried through into a list the body builds.
-#' @param converged A flag; the body branches on it.
-#' @param exposure_summary Carried through into a list the body builds. Defaults to \code{list()}.
-#' @param note Carried through into a list the body builds. Defaults to \code{""}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Lan Smi Result
+#' @noRd
 .lan_smi_result <- function(alpha_v, intercept, year_effects,
                               area_random_effect_sd, dispersion,
                               n_events, n_area_years, log_likelihood,
@@ -137,16 +121,8 @@ NULL
 }
 
 
-#' .lan_smi_coef
-#'
-#' Part of the laniyonu_smi_force_disparity implementation; see the file
-#' header for the source it follows.
-#'
-#' @param name Carried through into a list the body builds.
-#' @param estimate Coerced to numeric by the body, with \code{as.numeric}.
-#' @param std_error Coerced to numeric by the body, with \code{as.numeric}.
-#' @return A list with \code{name}, \code{estimate}, \code{std_error}.
-#' @export
+#' Internal helper: Lan Smi Coef
+#' @noRd
 .lan_smi_coef <- function(name, estimate, std_error) {
   list(name = name,
        estimate = as.numeric(estimate),
@@ -158,18 +134,8 @@ NULL
 # Synthetic Area Exposure (SAE) -- base-R logistic + tract scoring
 # ---------------------------------------------------------------------------
 
-#' .lan_smi_sae
-#'
-#' Part of the laniyonu_smi_force_disparity implementation; see the file
-#' header for the source it follows.
-#'
-#' @param survey_df The body requires: survey_df missing columns:.
-#' @param survey_trait_col Passed to \code{c}.
-#' @param survey_covariate_cols Passed to \code{c}.
-#' @param area_df A vector; indexed elementwise.
-#' @param area_population_col Passed to \code{c}.
-#' @return The value of \code{setNames}.
-#' @export
+#' Internal helper: Lan Smi Sae
+#' @noRd
 .lan_smi_sae <- function(survey_df, survey_trait_col, survey_covariate_cols,
                           area_df, area_population_col) {
   needed_s <- c(survey_trait_col, survey_covariate_cols)
@@ -197,18 +163,8 @@ NULL
 # Negative-binomial fitter
 # ---------------------------------------------------------------------------
 
-#' Native NB GLM (morie_glm_nb); fall back to optim-based MLE on error
-#'
-#' Part of the laniyonu_smi_force_disparity implementation; see the file
-#' header for the source it follows.
-#'
-#' @param X A matrix; passed to \code{ncol}.
-#' @param y Numeric; combined arithmetically in the body.
-#' @param offset_vec Numeric; combined arithmetically in the body.
-#' @param max_iter Carried through into a list the body builds.
-#' @param tol Carried through into a list the body builds.
-#' @return A list with \code{coef}, \code{se}, \code{loglik}, \code{phi}, \code{converged}.
-#' @export
+#' Internal helper: Lan Smi Fit Nb
+#' @noRd
 .lan_smi_fit_nb <- function(X, y, offset_vec, max_iter, tol) {
   # Native NB GLM (morie_glm_nb); fall back to optim-based MLE on error.
   {
@@ -510,7 +466,29 @@ morie_laniyonu_smi_force_disparity <- function(
 #'
 #' @param x A \code{morie_laniyonu_smi_result} object.
 #' @param ... Ignored; accepted for S3 consistency.
-#' @return Invisibly returns \code{x} unchanged.
+#' @return \code{x}, invisibly.
+#' @examples
+#' \donttest{
+#' set.seed(1)
+#' g <- expand.grid(tract_id = sprintf("T%02d", 1:30), year = 2020:2023,
+#'                  stringsAsFactors = FALSE)
+#' g$pop_18plus <- sample(500:5000, nrow(g), TRUE)
+#' g$poverty_rate <- runif(nrow(g), 0.05, 0.45)
+#' g$nonwhite_share <- runif(nrow(g), 0.1, 0.8)
+#' g$force_events <- rpois(nrow(g), 2)
+#' g$total_force_events <- g$force_events + rpois(nrow(g), 15)
+#' survey <- data.frame(smi = rbinom(500, 1, 0.08),
+#'                      poverty_rate = runif(500), nonwhite_share = runif(500))
+#' res <- suppressWarnings(morie_laniyonu_smi_force_disparity(
+#'   df = g, survey_df = survey, survey_trait_col = "smi",
+#'   survey_covariate_cols = c("poverty_rate", "nonwhite_share"), max_iter = 50L))
+#' res$alpha_v
+#' print(res)
+#' }
+#' @references
+#'   Laniyonu, A., & Goff, P. A. (2021).  Measuring disparities in
+#'   police use of force and injury among persons with serious mental
+#'   illness.  BMC Psychiatry, 21(1), 500.
 #' @export
 print.morie_laniyonu_smi_result <- function(x, ...) {
   cat(x$title, "\

@@ -24,3 +24,8 @@ request.  The RR series is a series of EVENTS, so it is interpolated
 onto a uniform grid before the periodogram; the mean is removed first
 so DC does not leak into VLF.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+HrvFreq(V)
+}
+\keyword{internal}

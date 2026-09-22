@@ -11,7 +11,7 @@
 \alias{morie_datasets_vancouver_community_food_markets}
 \alias{morie_datasets_vancouver_disability_parking}
 \alias{morie_datasets_vancouver_public_art}
-\title{Bundled Vancouver Open Data crime-adjacent civic datasets}
+\title{Included Vancouver Open Data crime-adjacent civic datasets}
 \usage{
 morie_datasets_vancouver_graffiti(offline = TRUE, max_features = NULL)
 
@@ -44,61 +44,38 @@ morie_datasets_vancouver_disability_parking(
 morie_datasets_vancouver_public_art(offline = TRUE, max_features = NULL)
 }
 \arguments{
-\item{offline}{If \code{TRUE} (default), reads the bundled CSV; if
+\item{offline}{If \code{TRUE} (default), reads the included CSV; if
 \code{FALSE}, paginates the live catalog endpoint.}
 
 \item{max_features}{Optional row cap.}
 }
 \value{
-A \code{data.frame} of City-of-Vancouver graffiti incident
-records (Opendatasoft slug \code{graffiti}); the bundled 100-row
-sample under \verb{inst/extdata/} when \code{offline = TRUE}, otherwise
-the live \verb{/records} pull (geometry flattened to \code{lon}/\code{lat}).
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 
-A \code{data.frame} of City-of-Vancouver noise-control-area
-bylaw zone rows (Opendatasoft slug \code{noise-control-areas});
-the bundled fixture under \verb{inst/extdata/} when
-\code{offline = TRUE}, otherwise the live \verb{/records} pull.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 
-A \code{data.frame} of City-of-Vancouver homeless-shelter
-location records (Opendatasoft slug
-\code{homeless-shelter-locations}); the bundled fixture under
-\verb{inst/extdata/} when \code{offline = TRUE}, otherwise the live
-\verb{/records} pull.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 
-A \code{data.frame} of City-of-Vancouver property-use
-inspection district rows (Opendatasoft slug
-\code{property-use-inspection-districts}); the bundled fixture
-under \verb{inst/extdata/} when \code{offline = TRUE}, otherwise the
-live \verb{/records} pull.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 
-A \code{data.frame} of City-of-Vancouver fire-hall location
-records (Opendatasoft slug \code{fire-halls}); the bundled fixture
-under \verb{inst/extdata/} when \code{offline = TRUE}, otherwise the
-live \verb{/records} pull.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 
-A \code{data.frame} of City-of-Vancouver community-centre
-location records (Opendatasoft slug \code{community-centres}); the
-bundled 27-row fixture under \verb{inst/extdata/} when
-\code{offline = TRUE}, otherwise the live \verb{/records} pull.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 
-A \code{data.frame} of City-of-Vancouver community + farmers
-market location records (Opendatasoft slug
-\code{community-food-markets-and-farmers-markets}); the bundled
-91-row fixture under \verb{inst/extdata/} when \code{offline = TRUE},
-otherwise the live \verb{/records} pull.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 
-A \code{data.frame} of City-of-Vancouver designated
-disability-parking-space records (Opendatasoft slug
-\code{disability-parking}); the bundled 100-row fixture under
-\verb{inst/extdata/} when \code{offline = TRUE}, otherwise the live
-\verb{/records} pull.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 
-A \code{data.frame} of City-of-Vancouver public-art registry
-records (Opendatasoft slug \code{public-art}); the bundled 100-row
-fixture under \verb{inst/extdata/} when \code{offline = TRUE},
-otherwise the live \verb{/records} pull. Columns include artist,
-install year, neighbourhood, and primary material.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 }
 \description{
 Phase 3DDD1. Five small fixtures harvested live from
@@ -107,18 +84,18 @@ surface neighbourhood-level civic context useful in carceral /
 policing analysis even though VPD itself publishes crime data
 separately (see \code{\link[=morie_datasets_vpd_crime]{morie_datasets_vpd_crime()}}).
 
-Phase 3EEE3. Bundled 27-row snapshot of City-run community
+Phase 3EEE3. Included 27-row snapshot of City-run community
 centres. Useful as an "anchor institutions" overlay for analyses
 of neighbourhood-level crime + social-service access.
 
-Phase 3EEE3. Bundled 91-row snapshot of community + farmers
+Phase 3EEE3. Included 91-row snapshot of community + farmers
 markets across Vancouver. Useful for food-access / quality-of-life
 overlays.
 
-Phase 3EEE3. Bundled 100-row sample of designated disability
+Phase 3EEE3. Included 100-row sample of designated disability
 parking locations across Vancouver (out of 159 total).
 
-Phase 3EEE3. Bundled 100-row sample of Vancouver's public art
+Phase 3EEE3. Included 100-row sample of Vancouver's public art
 registry (out of 747 total) -- artist, install year,
 neighbourhood, primary material. Useful as a CPTED-style
 "place-making" overlay variable.
@@ -138,6 +115,32 @@ All loaders accept the same \code{offline = TRUE} (default) /
 \code{max_features} interface as the other morie dataset wrappers.
 }
 \examples{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+df <- morie_datasets_vancouver_graffiti()
+head(df)
+\dontshow{\}) # examplesIf}
+df <- morie_datasets_vancouver_noise_control_areas()
+head(df)
+df <- morie_datasets_vancouver_homeless_shelters()
+head(df)
+df <- morie_datasets_vancouver_property_use_inspection_districts()
+head(df)
+df <- morie_datasets_vancouver_fire_halls()
+head(df)
+df <- morie_datasets_vancouver_community_centres()
+head(df)
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+df <- morie_datasets_vancouver_community_food_markets()
+head(df)
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+df <- morie_datasets_vancouver_disability_parking()
+head(df)
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+df <- morie_datasets_vancouver_public_art()
+head(df)
+\dontshow{\}) # examplesIf}
 \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_vancouver_graffiti()
 head(df)

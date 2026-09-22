@@ -9,11 +9,11 @@ invariance_error(energy_fn, R, Q, g = NULL)
 \arguments{
 \item{energy_fn}{Passed to \code{forces_from_energy}.}
 
-\item{R}{Iterated over elementwise, with \code{lapply}.}
+\item{R}{Passed to \code{.schn_mat}.}
 
-\item{Q}{A matrix; passed to \code{as.matrix}.}
+\item{Q}{Passed to \code{.schn_mat}.}
 
-\item{g}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{g}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \value{
 A list with \code{energy_error}, \code{force_error}, \code{energy_invariant},
@@ -24,3 +24,13 @@ A step of the schN_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+R <- matrix(rnorm(4 * 3), 4, 3)
+energy_fn <- function(R) sum(rowSums(as.matrix(R)^2))
+th <- pi / 4
+Q <- matrix(c(cos(th), -sin(th), 0, sin(th), cos(th), 0, 0, 0, 1), 3, 3)
+ie <- invariance_error(energy_fn, R, Q)
+is.numeric(ie) || is.list(ie)
+}
+\keyword{internal}

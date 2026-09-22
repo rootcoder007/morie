@@ -12,7 +12,15 @@ morie_evt_gev_trend(x, t = seq_along(x) - 1)
 
 \item{t}{See Usage.}
 }
+\value{
+A list with \code{beta0}, \code{beta1}, \code{sigma}, \code{xi}, \code{loglik}, \code{lr_vs_stationary}.
+}
 \description{
 Nonstationary GEV with a linear trend in location
 (Coles 2001 sec. 6.2)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_evt_gev_trend(V)
+}
+\keyword{internal}

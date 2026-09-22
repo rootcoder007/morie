@@ -25,3 +25,12 @@ adaptive noise canceller whose primary input is the abdominal lead,
 so the residual error is the fetal ECG.  Normalised LMS, weights
 start at zero, no random initialisation.
 }
+\examples{
+set.seed(8)
+n <- 800
+mecg <- sin(2 * pi * 2 * (1:n) / 200)
+thor <- sin(2 * pi * 1.2 * (1:n) / 200)
+abd <- 0.6 * thor + 0.3 * mecg + rnorm(n, 0, 0.05)
+MEcgFilt(abd, thor)
+}
+\keyword{internal}

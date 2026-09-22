@@ -43,3 +43,8 @@ Recursively finds the (i, j) maximising Z_C and tests against a
 permutation reference with early stopping. Ternary splits are
 undone if either change-point is not viable as a binary split.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+copynm(V)
+}
+\keyword{internal}

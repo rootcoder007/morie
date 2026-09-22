@@ -18,3 +18,8 @@ A list with \code{phase}, \code{omega}, \code{group_delay}, \code{slope},
 half sample of the plain difference.  An integer delay can be undone
 by shifting the output back.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+CDiff3Ph(V)
+}
+\keyword{internal}

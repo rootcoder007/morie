@@ -12,14 +12,18 @@
 \item{...}{Ignored; accepted for S3 consistency.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
 Print method for \code{morie_arsau_result} objects
 }
 \examples{
 \donttest{
-res <- morie_arsau_describe("main_records", "2023")
-print(res)
+res <- try(morie_arsau_analyze_probe_cycle_records(year = "2024"))
+if (!inherits(res, "try-error")) print(res)
 }
+}
+\references{
+Ontario Ministry of the Solicitor General, ARSAU
+probe_cycle_records technical notes (2023 and 2024).
 }

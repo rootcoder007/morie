@@ -20,8 +20,13 @@ A list with \code{overall}, \code{row}, \code{col}, \code{residuals},
 }
 \description{
 Gotway -- a fixed-string search for "polish" returns nothing; the
-book\'s trend removal is the OLS trend surface of Sec. 5.3.1.  Median
+book's trend removal is the OLS trend surface of Sec. 5.3.1.  Median
 polish is resistant to outliers, which is why the geostatistical
 literature reaches for it first.  A sweep must run row-then-column in
 a FIXED order; median polish is not order-invariant.
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+MedPolish(M)
+}
+\keyword{internal}

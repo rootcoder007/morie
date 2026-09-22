@@ -29,3 +29,9 @@ A step of the rangayyan_cep implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+CCepClosed(gain = 5L, zeros_in = c(1, 2, 3, 4, 5, 6, 7, 8),
+  zeros_out = c(1, 2, 3, 4, 5, 6, 7, 8), poles_in = c(1, 2, 3, 4, 5, 6, 7, 8),
+  poles_out = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

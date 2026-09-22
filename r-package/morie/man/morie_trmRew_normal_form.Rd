@@ -25,3 +25,13 @@ A step of the trmRew_native implementation. Called by \code{.trmRew_interreduce}
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+x <- morie_unifAlg_var("x")
+zero <- morie_unifAlg_const("0")
+r1 <- morie_trmRew_rule(morie_unifAlg_app("plus", zero, x), x)
+t <- morie_unifAlg_app("plus", zero,
+                       morie_unifAlg_app("plus", zero,
+                                         morie_unifAlg_const("a")))
+morie_trmRew_normal_form(t, list(r1))
+}
+\keyword{internal}

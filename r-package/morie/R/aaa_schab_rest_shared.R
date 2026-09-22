@@ -64,9 +64,11 @@
   w <- .schab_moran_check_w(w)
   s0 <- sum(w)
   if (s0 <= 0) stop("total weight w.. must be positive")
-  list(S0 = s0,
-       S1 = 0.5 * sum((w + t(w))^2),
-       S2 = sum((rowSums(w) + colSums(w))^2))
+  list(
+    S0 = s0,
+    S1 = 0.5 * sum((w + t(w))^2),
+    S2 = sum((rowSums(w) + colSums(w))^2)
+  )
 }
 
 #' .schab_moran_i
@@ -164,13 +166,15 @@
   e_i2 <- (first - second) / ((n - 1) * (n - 2) * (n - 3) * s0 * s0)
   var_rand <- e_i2 - e_i * e_i
   zstat <- function(v) if (v > 0) (i_obs - e_i) / sqrt(v) else NA_real_
-  list(I = i_obs, expectation = e_i,
-       variance_normal = var_norm, variance_randomization = var_rand,
-       sd_normal = if (var_norm > 0) sqrt(var_norm) else NA_real_,
-       sd_randomization = if (var_rand > 0) sqrt(var_rand) else NA_real_,
-       z_normal = zstat(var_norm), z_randomization = zstat(var_rand),
-       kurtosis_b = b, S0 = s0, S1 = s1, S2 = s2, n = n,
-       geary_c = .schab_geary_c(z, w), geary_expectation = 1)
+  list(
+    I = i_obs, expectation = e_i,
+    variance_normal = var_norm, variance_randomization = var_rand,
+    sd_normal = if (var_norm > 0) sqrt(var_norm) else NA_real_,
+    sd_randomization = if (var_rand > 0) sqrt(var_rand) else NA_real_,
+    z_normal = zstat(var_norm), z_randomization = zstat(var_rand),
+    kurtosis_b = b, S0 = s0, S1 = s1, S2 = s2, n = n,
+    geary_c = .schab_geary_c(z, w), geary_expectation = 1
+  )
 }
 
 # --- Ch 3: cross-K ----------------------------------------------------------
@@ -202,7 +206,7 @@
   dym <- p[, 2] - ymin
   dyp <- ymax - p[, 2]
 
-  tt <- ifelse(t_ > 0, t_, 1)                 # avoid 0/0; fixed up below
+  tt <- ifelse(t_ > 0, t_, 1) # avoid 0/0; fixed up below
   cos_b <- cbind(-dxm / tt, dxp / tt)
   sin_b <- cbind(-dym / tt, dyp / tt)
 
@@ -263,7 +267,9 @@
   } else {
     pts <- p1[rep(seq_len(n1), each = n2), , drop = FALSE]
     w <- matrix(.schab_ripley_weights(pts, region, as.numeric(t(d))),
-                n1, n2, byrow = TRUE)
+      n1, n2,
+      byrow = TRUE
+    )
     winv <- ifelse(w > 0, 1 / ifelse(w > 0, w, 1), 0)
   }
   vapply(r, function(h) sum(winv[d <= h]) / (lam1 * lam2 * area), numeric(1))
@@ -293,9 +299,11 @@
   k21 <- .schab_cross_k(p2, p1, region, r, correction)
   kstar <- (lam2 * k12 + lam1 * k21) / (lam1 + lam2)
   lstar <- sqrt(pmax(kstar, 0) / pi)
-  list(K_star = kstar, K_12 = k12, K_21 = k21, L_star = lstar,
-       L_minus_h = lstar - r, K_independence = pi * r^2, r = r,
-       lambda_1 = lam1, lambda_2 = lam2)
+  list(
+    K_star = kstar, K_12 = k12, K_21 = k21, L_star = lstar,
+    L_minus_h = lstar - r, K_independence = pi * r^2, r = r,
+    lambda_1 = lam1, lambda_2 = lam2
+  )
 }
 
 # Single-pattern K with the border ("reduced sample") correction, as in the
@@ -303,7 +311,7 @@
 #' Single-pattern K with the border ("reduced sample") correction, as in
 #' the
 #'
-#' Python arm\'s k_function; needed by Diggle-Chetwynd\'s D(h).
+#' Python arm's k_function; needed by Diggle-Chetwynd's D(h).
 #'
 #' @param p A matrix; indexed by row and column.
 #' @param region A vector; indexed elementwise.
@@ -317,12 +325,16 @@
   lam <- n / area
   d <- sqrt(outer(p[, 1], p[, 1], "-")^2 + outer(p[, 2], p[, 2], "-")^2)
   diag(d) <- Inf
-  db <- pmin(pmin(p[, 1] - region[1], region[3] - p[, 1]),
-             pmin(p[, 2] - region[2], region[4] - p[, 2]))
+  db <- pmin(
+    pmin(p[, 1] - region[1], region[3] - p[, 1]),
+    pmin(p[, 2] - region[2], region[4] - p[, 2])
+  )
   vapply(r, function(h) {
     keep <- db > h
     m <- sum(keep)
-    if (m == 0L) return(NA_real_)
+    if (m == 0L) {
+      return(NA_real_)
+    }
     sum(d[keep, , drop = FALSE] <= h) / m / lam
   }, numeric(1))
 }
@@ -358,8 +370,7 @@
 #' @return The value of \code{z}, as built in the body.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .schab_lattice_check(z = X)
 #' res
 .schab_lattice_check <- function(z) {
@@ -397,8 +408,7 @@
 #' @return A list with \code{cov}, \code{lags_j}, \code{lags_k}.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .schab_sample_cov2d(z = X)
 #' res
 .schab_sample_cov2d <- function(z) {
@@ -420,7 +430,8 @@
       if (u1 <= u0 || v1 <= v0) next
       left <- d[(u0 + 1):u1, (v0 + 1):v1, drop = FALSE]
       right <- d[(u0 + jj + 1):(u1 + jj), (v0 + kk + 1):(v1 + kk),
-                 drop = FALSE]
+        drop = FALSE
+      ]
       out[a, b] <- sum(left * right) / (r * c_)
     }
   }
@@ -440,8 +451,7 @@
 #' \code{c}.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .schab_periodogram(z = X)
 #' res
 .schab_periodogram <- function(z, omit_zero_frequency = TRUE) {
@@ -465,10 +475,12 @@
   mask[zj, ] <- FALSE
   mask[, zk] <- FALSE
   invariant <- isTRUE(all.equal(inten[mask], inten_c[mask], tolerance = 1e-9))
-  list(periodogram = if (omit_zero_frequency) inten_c else inten,
-       omega1 = f$w1, omega2 = f$w2, j = f$j, k = f$k,
-       zero_index = c(zj, zk), nonzero_mask = mask,
-       mean_invariant = invariant, r = r, c = c_)
+  list(
+    periodogram = if (omit_zero_frequency) inten_c else inten,
+    omega1 = f$w1, omega2 = f$w2, j = f$j, k = f$k,
+    zero_index = c(zj, zk), nonzero_mask = mask,
+    mean_invariant = invariant, r = r, c = c_
+  )
 }
 
 #' .schab_periodogram_from_cov
@@ -482,8 +494,7 @@
 #' \code{covariance}, \code{lags_j}, \code{lags_k}.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .schab_periodogram_from_cov(z = X)
 #' res
 .schab_periodogram_from_cov <- function(z) {
@@ -497,8 +508,10 @@
       out[a, b] <- sum(sc$cov * cos(ang)) / (2 * pi)^2
     }
   }
-  list(periodogram = out, omega1 = f$w1, omega2 = f$w2,
-       covariance = sc$cov, lags_j = sc$lags_j, lags_k = sc$lags_k)
+  list(
+    periodogram = out, omega1 = f$w1, omega2 = f$w2,
+    covariance = sc$cov, lags_j = sc$lags_j, lags_k = sc$lags_k
+  )
 }
 
 # --- Ch 8: point source + moving windows ------------------------------------
@@ -541,19 +554,24 @@
   }
   ci <- sqrt(rowSums(dc^2))
   inflate <- exp(theta2 * abs(outer(ci, ci, "-")) +
-                 theta3 * outer(ci, ci, pmin))
+    theta3 * outer(ci, ci, pmin))
   corr <- exp(-theta1 * h * inflate)
   diag(corr) <- 1
-  eig <- min(eigen(0.5 * (corr + t(corr)), symmetric = TRUE,
-                   only.values = TRUE)$values)
-  out <- list(correlation = corr, source_distance = ci, separation = h,
-              min_eigenvalue = eig, valid = eig >= -1e-10,
-              theta = c(theta1, theta2, theta3))
+  eig <- min(eigen(0.5 * (corr + t(corr)),
+    symmetric = TRUE,
+    only.values = TRUE
+  )$values)
+  out <- list(
+    correlation = corr, source_distance = ci, separation = h,
+    min_eigenvalue = eig, valid = eig >= -1e-10,
+    theta = c(theta1, theta2, theta3)
+  )
   if (!out$valid) {
     out$warning <- paste0(
       "the correlation matrix is not positive semi-definite (minimum ",
       sprintf("eigenvalue %.3e", eig), "). Sec. 8.2.1 notes that the ",
-      "parameter constraints are necessary but not sufficient")
+      "parameter constraints are necessary but not sufficient"
+    )
   }
   out
 }
@@ -574,7 +592,9 @@
 .schab_practical_range <- function(theta1, theta2 = 0, theta3 = 0,
                                    ci = NULL, cj = NULL) {
   if (theta1 <= 0) stop("theta1 must be positive")
-  if (is.null(ci) && is.null(cj)) return(3 / theta1)
+  if (is.null(ci) && is.null(cj)) {
+    return(3 / theta1)
+  }
   3 * exp(-theta2 * abs(ci - cj) - theta3 * pmin(ci, cj)) / theta1
 }
 
@@ -616,16 +636,19 @@
     if (length(h) && max(h) > 0) {
       edges <- seq(0, max(h), length.out = nlag + 1L)
       counts <- tabulate(findInterval(h, edges, rightmost.closed = TRUE),
-                         nbins = nlag)
+        nbins = nlag
+      )
       filled <- all(counts > 0)
     } else {
       counts <- integer(nlag)
       filled <- FALSE
     }
     if (filled || k >= cap) {
-      return(list(index = idx, n_sites = k, radius = radius,
-                  lag_counts = counts, all_lag_classes_filled = filled,
-                  reached_cap = (k >= cap && !filled)))
+      return(list(
+        index = idx, n_sites = k, radius = radius,
+        lag_counts = counts, all_lag_classes_filled = filled,
+        reached_cap = (k >= cap && !filled)
+      ))
     }
     k <- min(cap, k + as.integer(step))
   }
@@ -703,8 +726,10 @@
     if (sill <= 0) next
     resid <- g - sill * basis
     val <- sum(w * resid * resid)
-    if (val < loss) { loss <- val
-    best <- c(sill, rng) }
+    if (val < loss) {
+      loss <- val
+      best <- c(sill, rng)
+    }
   }
   if (is.null(best)) {
     return(list(sill = NA_real_, range = NA_real_, converged = FALSE))
@@ -733,7 +758,8 @@
   covm <- sill * exp(-3 * d / rng)
   c0 <- sill * exp(-3 * sqrt(rowSums(sweep(s, 2L, as.numeric(target))^2)) / rng)
   sol <- tryCatch(solve(covm + 1e-10 * diag(nrow(s)), z - mu),
-                  error = function(e) qr.solve(covm, z - mu))
+    error = function(e) qr.solve(covm, z - mu)
+  )
   mu + sum(c0 * sol)
 }
 
@@ -779,19 +805,24 @@
       fit <- global_fit
     }
     mu <- if (local_mean) mean(z[idx]) else mean(z)
-    preds[i] <- .schab_krige_at(s[idx, , drop = FALSE], z[idx], tg[i, ],
-                                fit$sill, fit$range, mu)
+    preds[i] <- .schab_krige_at(
+      s[idx, , drop = FALSE], z[idx], tg[i, ],
+      fit$sill, fit$range, mu
+    )
     sills[i] <- fit$sill
     ranges[i] <- fit$range
     sizes[i] <- win$n_sites
     conv[i] <- isTRUE(fit$converged)
   }
-  list(prediction = preds, local_sill = sills, local_range = ranges,
-       window_sizes = sizes, converged = conv,
-       theta_is_global = !local_variogram,
-       global_sill = global_fit$sill, global_range = global_fit$range,
-       caveats = paste0(
-         "a predictor that excludes observed sites is no longer best; ",
-         "windows that change with prediction location can introduce ",
-         "spurious discontinuities (Sec. 8.3.1)"))
+  list(
+    prediction = preds, local_sill = sills, local_range = ranges,
+    window_sizes = sizes, converged = conv,
+    theta_is_global = !local_variogram,
+    global_sill = global_fit$sill, global_range = global_fit$range,
+    caveats = paste0(
+      "a predictor that excludes observed sites is no longer best; ",
+      "windows that change with prediction location can introduce ",
+      "spurious discontinuities (Sec. 8.3.1)"
+    )
+  )
 }

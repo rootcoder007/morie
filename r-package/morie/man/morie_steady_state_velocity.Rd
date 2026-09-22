@@ -22,3 +22,8 @@ cells assumed to be at steady state, and call the residual the
 velocity. It needs the steady states to be present in the data, which
 is the assumption the dynamical model removes.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_steady_state_velocity(V, V)
+}
+\keyword{internal}

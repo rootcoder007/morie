@@ -22,3 +22,7 @@ A list with \code{a}, \code{gain}, \code{error}, \code{reflection},
 (divide by N): that is what makes the Toeplitz system
 positive-definite and hence the model stable; 1/(N-m) does not.
 }
+\examples{
+Lpc(x = c(1, 2, 3, 4, 5, 6, 7, 8), order = 5L)
+}
+\keyword{internal}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_adapt.R
 \name{WienerMin}
 \alias{WienerMin}
-\title{Eq. (3.172): J_min = var(d) - Theta\' w_o.  A negative J_min cannot}
+\title{Eq. (3.172): J_min = var(d) - Theta' w_o.  A negative J_min cannot}
 \usage{
 WienerMin(phi, theta, var_d)
 }
@@ -22,3 +22,7 @@ happen for consistent statistics, so it is reported rather than
 clamped: it means the supplied variance and covariances do not come
 from the same process.
 }
+\examples{
+WienerMin(phi = 0.5, theta = 0.5, var_d = 5L)
+}
+\keyword{internal}

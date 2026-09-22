@@ -20,20 +20,8 @@
 # refreshes, and the `default` fallback (used only when the discovery
 # endpoint is unreachable) is set to 6000 so cold-start sweeps still
 # capture everything currently published.
-#' As of 2026-05 the live max sits around drid ~5100; the default margin
-#'
-#' of 300 gives substantial headroom for reports added between manifest
-#' refreshes, and the `default` fallback (used only when the discovery
-#' endpoint is unreachable) is set to 6000 so cold-start sweeps still
-#' capture everything currently published.
-#'
-#' @param default Coerced to integer by the body, with \code{as.integer}. Defaults to \code{6000L}.
-#' @param margin Coerced to integer by the body, with \code{as.integer}. Defaults to \code{300L}.
-#' @return One of two values, depending on the branch taken.
-#' @export
-#' @examples
-#' res <- .siu_discover_max_drid()
-#' res
+#' Internal helper: Siu Discover Max Drid
+#' @noRd
 .siu_discover_max_drid <- function(default = 6000L, margin = 300L) {
   html <- tryCatch(
     .siu_http_get(paste0(
@@ -109,9 +97,11 @@
 #' @return Path to the written \code{SIU.csv}.
 #' @examples
 #' \donttest{
-#' # Network: parses the full Ontario SIU corpus (~15-25 min at the
-#' # default polite rate of 4 RPS).
-#' csv <- morie_fetch_siu(cache_dir = tempdir())
+#' # Corpus-first: with rmoriedata installed this materializes the
+#' # panel-reviewed corpus in seconds; a live sweep of the SIU site
+#' # requires an explicit opt-in via
+#' # options(morie.siu.allow_fetch = TRUE).
+#' csv <- morie_fetch_siu(cache_dir = file.path(tempdir(), "siu_demo"))
 #' siu <- utils::read.csv(csv)
 #' nrow(siu)
 #' }
@@ -164,7 +154,7 @@ morie_fetch_siu <- function(cache_dir = file.path(tempdir(), "morie", "siu"),
   }
 
   # Under R CMD check without the corpus package, never start a live
-  # multi-thousand-page sweep.
+  # multi-thousand-page sweep (same guard as morie_siu_fetch_cases).
   if (nzchar(Sys.getenv("_R_CHECK_PACKAGE_NAME_")) &&
       !isTRUE(getOption("morie.siu.allow_fetch"))) {
     writeLines("case_number", out_path)  # 0-row placeholder
@@ -627,18 +617,8 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 # for any match, overwrite df[[field]] at the row whose case_number
 # matches. Silent on misses (override for a case not in the parse,
 # or field not in the schema).
-#' Internal: apply a canonical-overrides table to a parsed SIU data
-#'
-#' frame. Each row of `overrides` is (case_number, field,
-#' verified_value); for any match, overwrite df\[\[field\]\] at the row
-#' whose case_number matches. Silent on misses (override for a case not
-#' in the parse, or field not in the schema).
-#'
-#' @param df A list; the body reads \code{$case_number} from it.
-#' @param overrides Optional; may be \code{NULL}. A list; the body reads
-#' \code{$case_number}, \code{$field}, \code{$verified_value} from it.
-#' @return The value of \code{df}, as built in the body.
-#' @export
+#' Internal helper: Siu Apply Canonical Overrides
+#' @noRd
 .siu_apply_canonical_overrides <- function(df, overrides) {
   if (is.null(overrides) || !nrow(overrides)) {
     return(df)
@@ -794,9 +774,12 @@ morie_siu_record_correction <- function(case_number, field,
 #'   including misses), parallel to what was written to \code{out_path}.
 #' @examples
 #' \donttest{
-#' # Network: refreshes the manifest by probing the SIU site
-#' # (~25-40 min at the default polite rate of 4 RPS for ~6000 ids).
-#' df <- morie_siu_refresh_manifest(out_path = tempfile(fileext = ".csv.gz"))
+#' # Bounded probe of 11 report ids (seconds at the polite default
+#' # rate); a full refresh omits min_drid/max_drid and takes ~25-40 min.
+#' df <- morie_siu_refresh_manifest(
+#'   out_path = tempfile(fileext = ".csv.gz"),
+#'   min_drid = 5150, max_drid = 5160
+#' )
 #' table(df$http_code)
 #' }
 #' @export
@@ -873,15 +856,8 @@ morie_siu_refresh_manifest <- function(
 
 # Internal: write one HTML page to <html_dir>/<name>, gzipped. Called
 # from morie_fetch_siu() when cache_html = TRUE.
-#' Internal: write one HTML page to <html_dir>/<name>, gzipped. Called
-#'
-#' from morie_fetch_siu() when cache_html = TRUE.
-#'
-#' @param html_dir Passed to \code{file.path}.
-#' @param name Passed to \code{file.path}.
-#' @param html Passed to \code{writeChar}.
-#' @return The value of \code{writeChar}.
-#' @export
+#' Internal helper: Siu Write Html Cache
+#' @noRd
 .siu_write_html_cache <- function(html_dir, name, html) {
   con <- gzfile(file.path(html_dir, name), "w")
   on.exit(close(con), add = TRUE)
@@ -889,16 +865,8 @@ morie_siu_refresh_manifest <- function(
 }
 
 # Internal: read a gzipped cached HTML page if it exists, else "".
-#' Internal: read a gzipped cached HTML page if it exists, else ""
-#'
-#' A step of the siu implementation. Called by \code{morie_siu_audit_case}.
-#' See the file header for the source the module follows.
-#' follows.
-#'
-#' @param html_dir A vector; its length is taken and its elements indexed.
-#' @param name A vector; its length is taken and its elements indexed.
-#' @return The value of \code{rawToChar}.
-#' @export
+#' Internal helper: Siu Read Html Cache
+#' @noRd
 .siu_read_html_cache <- function(html_dir, name) {
   if (!length(html_dir) || !length(name) ||
       !nzchar(html_dir[1L]) || !nzchar(name[1L])) {
@@ -1039,18 +1007,8 @@ morie_siu_audit_case <- function(case_number,
 # most common entities so reports + news releases can be displayed
 # as plain text. Mirrors the C++ html_to_text() but with the safer
 # linear single-pass approach (no std::regex backtracking risk).
-#' Internal: R-side HTML-to-text helper. Strips tags + decodes the
-#'
-#' most common entities so reports + news releases can be displayed as
-#' plain text. Mirrors the C++ html_to_text() but with the safer linear
-#' single-pass approach (no std::regex backtracking risk).
-#'
-#' @param h Character; passed to \code{trimws}.
-#' @return The value of \code{trimws}.
-#' @export
-#' @examples
-#' res <- .siu_html_to_text(h = 0.5)
-#' res
+#' Internal helper: Siu Html To Text
+#' @noRd
 .siu_html_to_text <- function(h) {
   if (!nzchar(h)) {
     return("")
@@ -1263,28 +1221,14 @@ morie_siu_compare <- function(case_number, external,
 #   ollama  -- open-weight models   env: OLLAMA_HOST (e.g.
 #              over a local or self-       "http://localhost:11434"
 #              hosted REST endpoint;       or any hosted Ollama-
-#              free/OllamaFreeAPI-         compatible base URL),
+#              OpenAI-API-                 compatible base URL),
 #              compatible.                 optional OLLAMA_MODEL
-#                                          (default "llama3.2:3b")
+#                                          (else first served model)
 # Internal: default LLM HTTP timeout in seconds. 600s (10 min)
 # accommodates slow CPU-only local inference on a Raspberry Pi.
 # Override globally via MORIE_LLM_TIMEOUT_S env var.
-#' Providers:
-#'
-#' gemini -- closed, paid, fast.  env: GOOGLE_API_KEY claude -- closed,
-#' paid, fast.  env: ANTHROPIC_API_KEY ollama -- open-weight models env:
-#' OLLAMA_HOST (e.g. over a local or self- "http://localhost:11434"
-#' hosted REST endpoint; or any hosted Ollama- free/OllamaFreeAPI-
-#' compatible base URL), compatible.  optional OLLAMA_MODEL (default
-#' "llama3.2:3b") Internal: default LLM HTTP timeout in seconds. 600s
-#' (10 min) accommodates slow CPU-only local inference on a Raspberry
-#' Pi. Override globally via MORIE_LLM_TIMEOUT_S env var.
-#'
-#' @return One of two values, depending on the branch taken.
-#' @export
-#' @examples
-#' res <- .siu_llm_default_timeout()
-#' res
+#' Internal helper: Siu Llm Default Timeout
+#' @noRd
 .siu_llm_default_timeout <- function() {
   v <- Sys.getenv("MORIE_LLM_TIMEOUT_S", unset = "")
   t <- suppressWarnings(as.integer(v))
@@ -1648,15 +1592,8 @@ morie_siu_compare <- function(case_number, external,
 
 # The canonical 64-column SIU schema. Hard-coded so the LLM gets the
 # exact field list and order the C++ parser emits.
-#' The canonical 64-column SIU schema. Hard-coded so the LLM gets the
-#'
-#' exact field list and order the C++ parser emits.
-#'
-#' @return A vector, from \code{c}.
-#' @export
-#' @examples
-#' res <- .siu_field_list()
-#' res
+#' Internal helper: Siu Field List
+#' @noRd
 .siu_field_list <- function() {
   c(
     "case_number", "drid", "nrid", "source_url_report", "source_url_news",
@@ -1685,6 +1622,103 @@ morie_siu_compare <- function(case_number, external,
     "news_release_title", "news_release_date_iso", "news_release_date_raw",
     "news_release_summary", "directors_name"
   )
+}
+
+
+# Session-scoped mutable state for SIU helpers (server-list cache).
+.morie_siu_state <- new.env(parent = emptyenv())
+
+#' Resolve an SIU case number to its report drid
+#'
+#' Manifest first (fast, offline); when the case is newer than the
+#' bundled manifest (or fell into an over-probed placeholder drid), a
+#' polite live search of the directors-reports index resolves it, so
+#' self-serve callers work for ANY published case with no cache and no
+#' keys. Newest reports render first, so the live search usually hits
+#' within the first page.
+#'
+#' @keywords internal
+#' @noRd
+.siu_resolve_drid <- function(case_number) {
+  man <- tryCatch(.siu_load_manifest(), error = function(e) NULL)
+  if (!is.null(man)) {
+    lang_col <- intersect(c("X_language", "_language"), names(man))
+    lang <- if (length(lang_col)) man[[lang_col[1L]]] else "en"
+    hit <- man[man$case_number == case_number &
+                 lang %in% c("en", "unknown"), , drop = FALSE]
+    if (nrow(hit)) return(hit$drid[1L])
+  }
+  # Live fallback: consult the session-cached case->drid table built
+  # from the online index (newest first). New reports sit in the first
+  # page or two, so we page lazily: check the cache, extend it only as
+  # far as needed, and remember everything fetched so an exhaustive
+  # miss is paid at most once per session.
+  lookup <- function() {
+    tab <- .morie_siu_state$live_index
+    if (!is.null(tab)) tab[[case_number]] else NULL
+  }
+  hit <- lookup()
+  if (!is.null(hit)) return(hit)
+  if (isTRUE(.morie_siu_state$live_index_complete)) return(NA_integer_)
+  # An exhaustive miss pages the WHOLE live index: about ninety requests
+  # at the rate limit, which is 209 of test-siu.R's 215 seconds spent
+  # resolving a case number that does not exist. CRAN's machines must
+  # not reach external services either, so under R CMD check report the
+  # miss rather than sweeping. Opt in with the switches the harvest
+  # paths already use.
+  if (!.siu_live_fetch_allowed()) return(NA_integer_)
+  if (is.null(.morie_siu_state$live_index)) {
+    .morie_siu_state$live_index <- new.env(parent = emptyenv())
+  }
+  tab <- .morie_siu_state$live_index
+  index_url <- morie_siu_index_url()
+  absorb <- function(chunk) {
+    links <- tryCatch(
+      .siu_fetch_extract_links(chunk, base_url = index_url),
+      error = function(e) NULL)
+    if (is.null(links) || !nrow(links)) return(0L)
+    for (i in seq_len(nrow(links))) {
+      dm <- regmatches(links[i, "url"],
+                       regexec("drid=([0-9]+)", links[i, "url"]))[[1L]]
+      if (length(dm) == 2L) {
+        tab[[links[i, "case_number"]]] <- as.integer(dm[2L])
+      }
+    }
+    nrow(links)
+  }
+  got <- .morie_siu_state$live_index_count %||% 0L
+  if (got == 0L) {
+    html <- tryCatch(.siu_fetch_http_get(index_url), error = function(e) "")
+    if (!nzchar(html)) return(NA_integer_)
+    tm <- regmatches(html, regexec(
+      'id="total_drs"[^>]*value="([0-9]+)"', html))[[1L]]
+    .morie_siu_state$live_index_total <-
+      if (length(tm) == 2L) as.integer(tm[2L]) else NA_integer_
+    got <- absorb(html)
+    .morie_siu_state$live_index_count <- got
+    hit <- lookup()
+    if (!is.null(hit)) return(hit)
+  }
+  total <- .morie_siu_state$live_index_total
+  more_base <- sub("/en/directors_reports\\.php$",
+                   "/ssi/get_more_drs.php", index_url)
+  while (!is.na(total) && got < total) {
+    chunk <- tryCatch(.siu_fetch_http_get(
+      paste0(more_base, "?lang=en&lastCount=", got)),
+      error = function(e) "")
+    if (!nzchar(chunk)) break
+    n <- absorb(chunk)
+    if (n == 0L) break
+    got <- got + n
+    .morie_siu_state$live_index_count <- got
+    hit <- lookup()
+    if (!is.null(hit)) return(hit)
+    Sys.sleep(.siu_fetch_rate_seconds)
+  }
+  if (!is.na(total) && got >= total) {
+    .morie_siu_state$live_index_complete <- TRUE
+  }
+  NA_integer_
 }
 
 #' Extract SIU report fields with an LLM (Gemini or Claude)
@@ -1837,6 +1871,17 @@ morie_siu_llm_extract <- function(case_number,
     tz = "UTC"
   )
   out
+}
+
+# Internal: may this session open a live connection to siu.on.ca?
+# The opt-ins are the ones the harvest paths already use, so a
+# deliberate network test still reaches the network.
+#' Internal helper: Siu Live Fetch Allowed
+#' @noRd
+.siu_live_fetch_allowed <- function() {
+  !nzchar(Sys.getenv("_R_CHECK_PACKAGE_NAME_")) ||
+    isTRUE(getOption("morie.siu.allow_fetch")) ||
+    nzchar(Sys.getenv("RMORIE_NETWORK_TESTS"))
 }
 
 #' Per-field anomaly check: does the parser's extraction match the HTML?
@@ -2266,9 +2311,13 @@ morie_siu_translate <- function(
 #' @description \code{morie_siu_translate_fr_to_en} is a thin
 #'   back-compat wrapper that calls \code{morie_siu_translate}
 #'   with \code{target_lang = "en", source_lang = "fr"}.
-#' @return The same value as \code{\link{morie_siu_translate}}: invisibly,
-#'   the updated SIU \code{data.frame} (cached translations written to
-#'   \code{cache_dir}).
+#' @return The input, invisibly.
+#' @examples
+#' \donttest{
+#' # Needs the SIU HTML cache plus a configured LLM provider (e.g. local
+#' # ollama); translates the French-only directors reports field-by-field.
+#' res <- morie_siu_translate_fr_to_en(case_numbers = "26-OCI-168")
+#' }
 #' @export
 morie_siu_translate_fr_to_en <- function(
   case_numbers = NULL, model = "ollama",
@@ -2478,20 +2527,18 @@ morie_siu_translate_fr_to_en <- function(
 #'   most-broken fields land at the top. The \code{"examples"}
 #'   attribute holds nested data frames of flagged cases per field.
 #' @examples
-#' \donttest{
-#' Sys.setenv(
-#'   OLLAMA_HOST = "http://localhost:11434",
-#'   OLLAMA_MODEL = "gemma3:4b"
-#' )
-#' csv <- morie_fetch_siu(cache_html = TRUE)
+#' \dontshow{if (morie_llm_probe_ollama()) withAutoprint(\{ # examplesIf}
+#' # Uses the local Ollama server (OLLAMA_HOST / OLLAMA_MODEL).
+#' csv <- morie_fetch_siu(cache_dir = file.path(tempdir(), "morie", "siu"))
 #' df <- utils::read.csv(csv, colClasses = "character")
-#' sample <- sample(df$case_number[nzchar(df$case_number)], 50L)
+#' # 4 cases keeps the audit example fast; scale up for a real audit.
+#' sample <- utils::head(df$case_number[nzchar(df$case_number)], 4L)
 #' audit <- morie_siu_audit_columns(sample, model = "ollama")
 #' # Worst 8 fields, ripe for parser fixes:
 #' head(audit, 8)
 #' # See concrete disagreements for the worst field:
 #' attr(audit, "examples")[[audit$field[1L]]]
-#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_siu_audit_columns <- function(case_numbers, model = c("ollama", "gemini"),
                                     cache_dir = file.path(tempdir(), "morie", "siu"),
@@ -2579,107 +2626,4 @@ morie_siu_audit_columns <- function(case_numbers, model = c("ollama", "gemini"),
     vapply(per_field, function(x) x$field, character(1))
   )
   out
-}
-
-.morie_siu_state <- new.env(parent = emptyenv())
-
-#' Resolve an SIU case number to its report drid
-#'
-#' Manifest first (fast, offline); when the case is newer than the
-#' bundled manifest (or fell into an over-probed placeholder drid), a
-#' polite live search of the directors-reports index resolves it, so
-#' self-serve callers work for ANY published case with no cache and no
-#' keys. Newest reports render first, so the live search usually hits
-#' within the first page.
-#'
-#' @keywords internal
-#' @noRd
-.siu_resolve_drid <- function(case_number) {
-  man <- tryCatch(.siu_load_manifest(), error = function(e) NULL)
-  if (!is.null(man)) {
-    lang_col <- intersect(c("X_language", "_language"), names(man))
-    lang <- if (length(lang_col)) man[[lang_col[1L]]] else "en"
-    hit <- man[man$case_number == case_number &
-                 lang %in% c("en", "unknown"), , drop = FALSE]
-    if (nrow(hit)) return(hit$drid[1L])
-  }
-  # Live fallback: consult the session-cached case->drid table built
-  # from the online index (newest first). New reports sit in the first
-  # page or two, so we page lazily: check the cache, extend it only as
-  # far as needed, and remember everything fetched so an exhaustive
-  # miss is paid at most once per session.
-  lookup <- function() {
-    tab <- .morie_siu_state$live_index
-    if (!is.null(tab)) tab[[case_number]] else NULL
-  }
-  hit <- lookup()
-  if (!is.null(hit)) return(hit)
-  if (isTRUE(.morie_siu_state$live_index_complete)) return(NA_integer_)
-  # An exhaustive miss pages the WHOLE live index: about ninety requests
-  # at the rate limit, which is 209 of test-siu.R's 215 seconds spent
-  # resolving a case number that does not exist. CRAN's machines must
-  # not reach external services either, so under R CMD check report the
-  # miss rather than sweeping. Opt in with the switches the harvest
-  # paths already use.
-  if (!.siu_live_fetch_allowed()) return(NA_integer_)
-  if (is.null(.morie_siu_state$live_index)) {
-    .morie_siu_state$live_index <- new.env(parent = emptyenv())
-  }
-  tab <- .morie_siu_state$live_index
-  index_url <- morie_siu_index_url()
-  absorb <- function(chunk) {
-    links <- tryCatch(
-      .siu_fetch_extract_links(chunk, base_url = index_url),
-      error = function(e) NULL)
-    if (is.null(links) || !nrow(links)) return(0L)
-    for (i in seq_len(nrow(links))) {
-      dm <- regmatches(links[i, "url"],
-                       regexec("drid=([0-9]+)", links[i, "url"]))[[1L]]
-      if (length(dm) == 2L) {
-        tab[[links[i, "case_number"]]] <- as.integer(dm[2L])
-      }
-    }
-    nrow(links)
-  }
-  got <- .morie_siu_state$live_index_count %||% 0L
-  if (got == 0L) {
-    html <- tryCatch(.siu_fetch_http_get(index_url), error = function(e) "")
-    if (!nzchar(html)) return(NA_integer_)
-    tm <- regmatches(html, regexec(
-      'id="total_drs"[^>]*value="([0-9]+)"', html))[[1L]]
-    .morie_siu_state$live_index_total <-
-      if (length(tm) == 2L) as.integer(tm[2L]) else NA_integer_
-    got <- absorb(html)
-    .morie_siu_state$live_index_count <- got
-    hit <- lookup()
-    if (!is.null(hit)) return(hit)
-  }
-  total <- .morie_siu_state$live_index_total
-  more_base <- sub("/en/directors_reports\\.php$",
-                   "/ssi/get_more_drs.php", index_url)
-  while (!is.na(total) && got < total) {
-    chunk <- tryCatch(.siu_fetch_http_get(
-      paste0(more_base, "?lang=en&lastCount=", got)),
-      error = function(e) "")
-    if (!nzchar(chunk)) break
-    n <- absorb(chunk)
-    if (n == 0L) break
-    got <- got + n
-    .morie_siu_state$live_index_count <- got
-    hit <- lookup()
-    if (!is.null(hit)) return(hit)
-    Sys.sleep(.siu_fetch_rate_seconds)
-  }
-  if (!is.na(total) && got >= total) {
-    .morie_siu_state$live_index_complete <- TRUE
-  }
-  NA_integer_
-}
-
-#' Internal helper: Siu Live Fetch Allowed
-#' @noRd
-.siu_live_fetch_allowed <- function() {
-  !nzchar(Sys.getenv("_R_CHECK_PACKAGE_NAME_")) ||
-    isTRUE(getOption("morie.siu.allow_fetch")) ||
-    nzchar(Sys.getenv("RMORIE_NETWORK_TESTS"))
 }

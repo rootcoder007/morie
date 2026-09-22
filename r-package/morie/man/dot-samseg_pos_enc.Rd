@@ -11,7 +11,7 @@
 
 \item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{dim}{A count; the body uses it as \code{numeric(...)}. Defaults to \code{8}.}
+\item{dim}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8}.}
 
 \item{scale}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }

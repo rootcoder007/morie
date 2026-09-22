@@ -19,3 +19,8 @@ reflects every root outside the unit circle to its reciprocal inside,
 leaving the magnitude spectrum untouched -- which is what
 "correspondent" means, and is the check returned.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+MinPhase(V)
+}
+\keyword{internal}

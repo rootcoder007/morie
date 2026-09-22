@@ -46,6 +46,13 @@ treating \code{lab} as the event of interest and every other
 non-zero cause as independent censoring (cause 0 is already
 censored).
 }
+\examples{
+\donttest{
+morie_survvae_fit_competing(X = c(1, 2, 3, 4, 5, 6, 7, 8), times = c(1, 2, 3, 4, 5, 6, 7, 8),
+  causes = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+}
 \references{
 Nagpal et al. (2021), Sec. III-D.
 }
+\keyword{internal}

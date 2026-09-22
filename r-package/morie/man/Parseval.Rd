@@ -19,3 +19,8 @@ unnormalized forward transform of eq (3.80) the spectral sum is N
 times the time-domain energy, so omitting the 1/N inflates it by the
 record length.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Parseval(V)
+}
+\keyword{internal}

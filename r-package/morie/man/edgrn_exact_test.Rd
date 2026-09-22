@@ -25,3 +25,7 @@ A step of the edgrn_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+edgrn_exact_test(10, 25, 1000, 1000, 0.1)
+}
+\keyword{internal}

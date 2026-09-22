@@ -53,6 +53,7 @@ morie_att_weights <- function(treat, ps) {
 #'   quantile treatment effects. *Econometrica* 75(1), 259-276.
 #' @export
 #' @examples
+#' set.seed(1)
 #' n <- 3000
 #' x <- stats::rnorm(n)
 #' e <- pmin(pmax(1/(1 + exp(-x)), 0.05), 0.95)
@@ -96,6 +97,7 @@ morie_qte_firpo <- function(y, treat, ps, tau = 0.5) {
 #' @references Robins JM (1986). *Mathematical Modelling* 7, 1393-1512.
 #' @export
 #' @examples
+#' set.seed(1)
 #' n <- 3000
 #' x <- stats::rnorm(n)
 #' e <- pmin(pmax(1/(1 + exp(-x)), 0.05), 0.95)
@@ -150,7 +152,8 @@ morie_granger_test <- function(x, y, p = 1L) {
   dof2 <- m - 2L * p - 1L
   if (dof2 < 1L) {
     stop(sprintf("need at least %d observations for p = %d.", 3L * p + 2L, p),
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   lagmat <- function(v) {
     do.call(cbind, lapply(seq_len(p), function(j) v[(p - j + 1L):(n - j)]))
@@ -223,7 +226,7 @@ morie_transfer_entropy_gaussian <- function(x, y, lag = 1L) {
 #' @export
 #' @examples
 #' morie_serial_mediation(x = c(1, 2, 3, 4, 5, 6, 7, 8), m1 = c(1, 2, 3, 4, 5, 6, 7, 8),
-#' m2 = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
+#'   m2 = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_serial_mediation <- function(x, m1, m2, y) {
   x <- as.numeric(x)
   m1 <- as.numeric(m1)
@@ -264,6 +267,7 @@ morie_serial_mediation <- function(x, m1, m2, y) {
 #'   Resources* 50(2), 317-372.
 #' @export
 #' @examples
+#' set.seed(1)
 #' n <- 3000
 #' x <- stats::rnorm(n)
 #' e <- pmin(pmax(1/(1 + exp(-x)), 0.05), 0.95)
@@ -319,8 +323,8 @@ morie_cluster_robust_effect <- function(y, d, cluster) {
 #'   Statistical Inference*, 5th ed., Sec. 12.5.
 #' @export
 #' @examples
-#' morie_partial_tau(x = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5), y = c(2.5, 1.0, 3.5,
-#' 4.0, 2.0, 5.5, 3.0, 6.5), z = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_partial_tau(x = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5),
+#'   y = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5), z = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_partial_tau <- function(x, y, z) {
   x <- as.numeric(x)
   y <- as.numeric(y)

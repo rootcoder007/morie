@@ -24,3 +24,9 @@ A step of the tlonts_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+A <- rnorm(10)
+stochastic_intervention(A, nodes = c(0, 1, 2), shift = 0.5)
+}
+\keyword{internal}

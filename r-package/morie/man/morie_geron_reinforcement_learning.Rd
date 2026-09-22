@@ -20,6 +20,16 @@ morie_geron_reinforcement_learning(
 
 \item{gamma, n_episodes, max_steps, seed}{Controls.}
 }
+\value{
+A list with \code{mean_return}, \code{returns}, \code{lengths}, \code{se}, \code{effective_horizon}, \code{truncated}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Reinforcement learning: Monte-Carlo policy evaluation by rollout (Geron Ch 1, hmrl)
 }
+\examples{
+reset <- function() 0
+step <- function(a) list(0, as.numeric(a), TRUE)
+morie_geron_reinforcement_learning(list(reset = reset, step = step),
+    function(s) 0, gamma = 0.5)
+}
+\keyword{internal}

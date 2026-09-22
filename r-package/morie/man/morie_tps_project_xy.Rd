@@ -38,6 +38,5 @@ so a line that previously sloped up-right slopes less (or
 down-right).
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_tps_project_xy(V, V)
+morie_tps_project_xy(c(43.70, 43.76), c(-79.40, -79.41))
 }

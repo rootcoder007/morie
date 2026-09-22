@@ -32,6 +32,9 @@ pairwise squared distances land in \code{1 +/- epsilon} with
 probability at least \code{1 - n^-beta} -- this is what
 \code{distortion} checks on a given \code{E}.
 }
+\examples{
+morie_qjlcrn(A = c(1, 2, 3, 4, 5, 6, 7, 8), k = 5L)
+}
 \references{
 Achlioptas, D. (2003). Database-friendly random
 projections. Journal of Computer and System Sciences, 66(4),
@@ -39,3 +42,4 @@ projections. Journal of Computer and System Sciences, 66(4),
 Lindenstrauss, J. (1984). Extensions of Lipschitz mappings
 into a Hilbert space. Contemporary Mathematics, 26, 189-206.
 }
+\keyword{internal}

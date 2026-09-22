@@ -22,7 +22,6 @@ d05 aggregate Ruhela: Age 50+ -> custodial deaths
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_d05 <- morie_synth_otis("d05", n = 120L, seed = 1L)
 morie_otis_analyze_d05_ruhela_aggregate(otis_d05)
 }

@@ -26,3 +26,9 @@ of Chernoff or Hellinger.  The book gives the KLD of eq (5.33) and
 the divergence of eqs (10.115)-(10.117), which is the symmetric sum
 of the two KLDs, and cites Swain for them.
 }
+\examples{
+CC1 <- matrix(c(2, 0.3, 0.3, 1), 2, 2)
+CC2 <- matrix(c(1, -0.2, -0.2, 3), 2, 2)
+GaussOverlap(c(0, 1), c(2, -1), CC1, CC2)
+}
+\keyword{internal}

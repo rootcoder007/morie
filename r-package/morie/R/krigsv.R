@@ -74,7 +74,18 @@
   c(c0 = c0, c = cc, wss = sum(w * (y - c0 - cc * x)^2))
 }
 
-#' @noRd
+#' morie_variogram_fit
+#'
+#' @param coords Argument `coords`; see Usage.
+#' @param values Argument `values`; see Usage.
+#' @param model Argument `model`; see Usage.
+#' @param n_bins Argument `n_bins`; see Usage.
+#' @param max_dist Argument `max_dist`; see Usage.
+#' @return A list with `c0`, `c`, `a`, `sill`, `model`, `lag`, `gamma_hat`, `counts`, `fitted`, `wss`, `range_at_bound`, `grid_lo`, `grid_hi`, `n_bins_used`, `method`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_variogram_fit(V, V)
+#' @keywords internal
 morie_variogram_fit <- function(coords, values, model = "exponential",
                                 n_bins = 15, max_dist = NULL) {
   ev <- .sp_empirical_variogram(coords, values, n_bins, max_dist)

@@ -13,6 +13,9 @@ morie_kamath_ragas_faithfulness(answer, context, entails = NULL)
 
 \item{entails}{Optional judge.}
 }
+\value{
+A list with \code{estimate}, \code{supported}, \code{n_claims}, \code{claims}, \code{claim_supported}, \code{judge}, \code{n}, \code{method}.
+}
 \description{
 faithfulness = supported claims / total claims. \code{answer} is a
 character vector of claims or one string split on sentence
@@ -22,3 +25,8 @@ Python uses (every content token of the claim present in the
 context) -- under-reports rather than hallucinating support, and
 the judge used is named in the payload. Mirrors morie.fn.kmfait.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_ragas_faithfulness(V, V)
+}
+\keyword{internal}

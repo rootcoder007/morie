@@ -19,3 +19,8 @@ A step of the unclr implementation. Called by \code{Lgcnprop}, \code{Sgcprop}.
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+A <- rbind(c(0, 1, 0), c(1, 0, 1), c(0, 1, 0))
+morie_unclr_sym_norm(A, self_loops = TRUE)
+}
+\keyword{internal}

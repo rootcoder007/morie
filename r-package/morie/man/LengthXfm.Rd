@@ -24,3 +24,16 @@ window.  Summing the squared derivative across channels before
 integrating is the whole point: a wave well defined in only one lead
 still contributes.
 }
+\examples{
+set.seed(7)
+fs <- 200
+n <- fs * 2
+x1 <- rep(0, n)
+for (b in seq(0.4, 1.8, by = 0.7)) {
+  i <- round(b * fs); x1[i:(i + 4)] <- c(0.3, 1.2, -0.4, 0.1, 0)
+}
+x2 <- 0.5 * x1 + 0.01 * rnorm(n)
+r <- LengthXfm(list(x1, x2), wwin = 0.12, fs = fs)
+str(r, max.level = 1)
+}
+\keyword{internal}

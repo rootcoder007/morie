@@ -11,8 +11,15 @@ morie_funBand_influence_matrix(x, lam)
 
 \item{lam}{See Usage.}
 }
+\value{
+A numeric value.
+}
 \description{
 K = U diag(d) U', so A = U diag(1/(1 + lambda d)) U'. Factorising
 I + lambda K directly loses positive definiteness once lambda * ||K||
 reaches about 1e12, which is exactly the limit the anchors probe.
 }
+\examples{
+morie_funBand_influence_matrix(x = c(1, 2, 3, 4, 5, 6, 7, 8), lam = 5L)
+}
+\keyword{internal}

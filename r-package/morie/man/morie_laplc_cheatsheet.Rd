@@ -6,6 +6,13 @@
 \usage{
 morie_laplc_cheatsheet()
 }
+\value{
+The terminal expression of the body.
+}
 \description{
 Cheatsheet
 }
+\examples{
+morie:::morie_laplc_cheatsheet()
+}
+\keyword{internal}

@@ -37,6 +37,9 @@
 #' @references Muller, P. & Quintana, F. A. (2004). Statistical
 #'   Science, 19(1), 95-110.
 #' @export
+#' @examples
+#' urn_weights(counts = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5)
+#' @keywords internal
 urn_weights <- function(counts, alpha) {
   if (length(counts) == 0L) c <- numeric(0) else c <- as.numeric(counts)
   a <- as.numeric(alpha)
@@ -71,7 +74,9 @@ urn_weights <- function(counts, alpha) {
 #' @references Muller, P. & Quintana, F. A. (2004). Statistical
 #'   Science, 19(1), 95-110.
 #' @export
-#' @aliases sample_urn
+#' @examples
+#' morie_posspr(n = 5L, alpha = 0.5)
+#' @keywords internal
 morie_posspr <- function(n, alpha, seed = 0) {
   a <- as.numeric(alpha)
   N <- as.integer(n)
@@ -111,8 +116,8 @@ morie_posspr <- function(n, alpha, seed = 0) {
 }
 
 #' Python name for \code{morie_posspr}
+#' @rdname morie_posspr
 #' @export
-#' @noRd
 sample_urn <- morie_posspr
 
 #' Predictive density
@@ -142,6 +147,7 @@ sample_urn <- morie_posspr
 #' @references Muller, P. & Quintana, F. A. (2004). Statistical
 #'   Science, 19(1), 95-110.
 #' @export
+#' @keywords internal
 predictive_density <- function(grid, cluster_params, counts, alpha,
                                kernel, base_predictive) {
   w <- urn_weights(counts, alpha)
@@ -188,6 +194,9 @@ predictive_density <- function(grid, cluster_params, counts, alpha,
 #' @references Muller, P. & Quintana, F. A. (2004). Statistical
 #'   Science, 19(1), 95-110.
 #' @export
+#' @examples
+#' expected_clusters(n = 5L, alpha = 0.5)
+#' @keywords internal
 expected_clusters <- function(n, alpha) {
   a <- as.numeric(alpha)
   N <- as.integer(n)
@@ -215,6 +224,9 @@ expected_clusters <- function(n, alpha) {
 #' @references Muller, P. & Quintana, F. A. (2004). Statistical
 #'   Science, 19(1), 95-110.
 #' @export
+#' @examples
+#' tie_probability(alpha = 0.5)
+#' @keywords internal
 tie_probability <- function(alpha) {
   a <- as.numeric(alpha)
   if (a <= 0)

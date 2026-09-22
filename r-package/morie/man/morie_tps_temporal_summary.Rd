@@ -21,7 +21,10 @@ fields actually present.
 }
 \examples{
 \donttest{
-D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-morie_tps_temporal_summary(D)
+df <- try(morie_datasets_tps_assault(max_features = 200L))
+if (!inherits(df, "try-error")) {
+  res <- try(morie_tps_temporal_summary(df, ds_name = "assault"))
+  if (!inherits(res, "try-error")) str(res, max.level = 1)
+}
 }
 }

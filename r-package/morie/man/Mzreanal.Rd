@@ -41,7 +41,7 @@ P(i) = p_i^alpha / sum_k p_k^alpha; w_i = ((1/N)(1/P(i)))^beta.
 }
 \examples{
 Mzreanal(rewards = c(1, 2, 3, 4, 5, 6, 7, 8), freshvalues = c(1, 2, 3, 4, 5, 6, 7, 8),
-visits = c(1, 2, 3, 4, 5, 6, 7, 8))
+  visits = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Schrittwieser et al. (2020), arXiv:1911.08265, Appendix H

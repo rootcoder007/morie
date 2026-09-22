@@ -19,6 +19,11 @@ List with \code{keep}, \code{dropped}, \code{n_before},
 Walks the rows of an embedding matrix and drops any whose cosine
 similarity to an already-kept row is at least the threshold.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+deduplicate(V)
+}
 \references{
 Oquab et al. (2024), DINOv2, TMLR 2024, Sec. 2.
 }
+\keyword{internal}

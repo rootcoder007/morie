@@ -21,3 +21,7 @@ A step of the hiatus_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+linear_strain_space(n = 5L)
+}
+\keyword{internal}

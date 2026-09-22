@@ -450,7 +450,7 @@ morie_bicdag <- function(data, dag, names = NULL) {
 #' @export
 #' @examples
 #' morie_bowarc(dag = c(1, 2, 3, 4, 5, 6, 7, 8), bidirected = c(1, 2, 3, 4, 5, 6, 7, 8),
-#' x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
+#'   x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_bowarc <- function(dag, bidirected, x, y) {
   edges <- .morie_ml_edges(dag)
   bid <- as.matrix(bidirected)

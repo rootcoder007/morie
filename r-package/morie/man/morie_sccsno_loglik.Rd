@@ -22,3 +22,13 @@ The value of \code{ll}, as built in the body.
 (beta_1..beta_s, alpha_1..alpha_\{m-1\}) with beta_0 = alpha_0 = 0. The
 individual effects phi_i do not appear -- that is the point.
 }
+\examples{
+cases <- list(
+  list(start = 0, end = 365, exposure = 100, events = c(110, 250)),
+  list(start = 0, end = 365, exposure = 200, events = c(215)))
+cbp <- lapply(cases, function(c)
+  morie_sccsno_build_intervals(c$start, c$end, c$exposure, c$events,
+                               list(c(0, 30)), c()))
+morie_sccsno_loglik(c(0.5), cbp, n_risk = 1L, n_age = 1L)
+}
+\keyword{internal}

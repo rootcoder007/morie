@@ -48,6 +48,11 @@
 #' @param temp Numeric; combined arithmetically in the body.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 0, 0, 0), nrow = 2, byrow = TRUE)
+#' .alfesf_softmax_rows(M, temp = 1)
+#' # a higher temperature flattens the distribution
+#' .alfesf_softmax_rows(M, temp = 5)
 .alfesf_softmax_rows <- function(M, temp) {
   out <- M
   for (i in seq_len(nrow(M))) {
@@ -68,6 +73,10 @@
 #' @param nb A count; the body uses it as \code{seq_len(...)}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' # bin midpoints on the 0..100 pLDDT scale
+#' .alfesf_lddt_centres(5L)
+#' range(.alfesf_lddt_centres(50L))
 .alfesf_lddt_centres <- function(nb) ((seq_len(nb) - 1L) + 0.5) * 100.0 / nb
 
 #' .alfesf_pae_centres
@@ -80,6 +89,9 @@
 #' @param width Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' # bin midpoints in angstroms, at the given bin width
+#' .alfesf_pae_centres(4L, 0.5)
 .alfesf_pae_centres <- function(nb, width) ((seq_len(nb) - 1L) + 0.5) * width
 
 # Zhang-Skolnick normalisation. Below 16 residues the cube-root term goes
@@ -125,6 +137,16 @@
 #' @param lr Numeric; combined arithmetically in the body.
 #' @return A list with \code{W}, \code{b}.
 #' @export
+#' @examples
+#' set.seed(7)
+#' n <- 80L
+#' X <- cbind(1, matrix(rnorm(n), n, 1))
+#' y <- pmin(as.integer((X[, 2] - min(X[, 2])) /
+#'                        (diff(range(X[, 2])) + 1e-9) * 10), 9L)
+#' fit <- .alfesf_fit_multinomial(X, y, n_bins = 10L, l2 = 1e-3,
+#'                                iters = 50L, lr = 0.5)
+#' dim(fit$W)
+#' length(fit$b)
 .alfesf_fit_multinomial <- function(X, y, n_bins, l2, iters, lr) {
   n <- nrow(X)
   d <- ncol(X)
@@ -169,6 +191,13 @@
 #' @param lr Numeric; combined arithmetically in the body. Defaults to \code{0.5}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' # Guo et al. (2017) temperature scaling on overconfident logits
+#' set.seed(6)
+#' L <- matrix(rnorm(200 * 5, 0, 4), 200, 5)
+#' y <- apply(L, 1L, which.max) - 1L
+#' y[1:40] <- sample(0:4, 40L, TRUE)
+#' round(.alfesf_fit_temperature(L, y, iters = 200L), 3)
 .alfesf_fit_temperature <- function(L, y, iters = 200L, lr = 0.5) {
   logt <- 0.0
   n <- nrow(L)
@@ -437,9 +466,11 @@ morie_alfesf_esmfold_confidence <- function(lddt_logits = NULL,
 #' res <- .alfesf_cheatsheet()
 #' res
 .alfesf_cheatsheet <- function() {
-  paste0("alfesf: morie_alfesf_esmfold_confidence(lddt_logits, pae_logits) ",
-         "-> pLDDT, pTM, ipTM; or features+weights to run, features+lddt to ",
-         "fit (Lin et al. 2023 Science 379:1123; Jumper et al. 2021 SI 1.9)")
+  paste0(
+    "alfesf: morie_alfesf_esmfold_confidence(lddt_logits, pae_logits) ",
+    "-> pLDDT, pTM, ipTM; or features+weights to run, features+lddt to ",
+    "fit (Lin et al. 2023 Science 379:1123; Jumper et al. 2021 SI 1.9)"
+  )
 }
 
 morie_alfesf <- morie_alfesf_esmfold_confidence

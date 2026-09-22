@@ -18,3 +18,7 @@ A step of the mambss_native implementation. Called by \code{morie_geron_blip_itm
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+softplus(z = 5L)
+}
+\keyword{internal}

@@ -11,6 +11,14 @@ morie_funBand_gcv_score(y, A)
 
 \item{A}{See Usage.}
 }
+\value{
+A numeric value.
+}
 \description{
 GCV, Wahba (1983) eq. (2.16)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_funBand_gcv_score(V, V)
+}
+\keyword{internal}

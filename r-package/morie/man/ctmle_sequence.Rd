@@ -40,3 +40,8 @@ A list with \code{steps}, \code{info}.
 \description{
 q_covariates uses 0-based indices, matching the Python arm exactly.
 }
+\examples{
+set.seed(1)
+r <- ctmle_sequence(y = rnorm(10), D = rbinom(10, 1, 0.5), X = rnorm(10)); TRUE
+}
+\keyword{internal}

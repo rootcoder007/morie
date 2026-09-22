@@ -21,7 +21,7 @@ morie_vae_elbo(x, x_recon, mu, log_var, reduction = "mean")
 \item{reduction}{\code{"mean"} (default) or \code{"sum"}.}
 }
 \value{
-Named list \code{(elbo, estimate, loss, recon_loss,
+Named list \eqn{(elbo, estimate, loss, recon_loss,
   kl_divergence, method)}.
 }
 \description{

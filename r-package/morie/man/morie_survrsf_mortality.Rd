@@ -25,3 +25,9 @@ A step of the survrsf_native implementation. Called by \code{morie_survrsf_vimp}
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_survrsf_mortality(D, V)
+}
+\keyword{internal}

@@ -15,7 +15,13 @@ mean_period(y, dt = 1)
 A numeric value.
 }
 \description{
-A step of the lyapun_native implementation. Called by \code{divergence_curve}.
+A step of the lyapun_native implementation. Called by \code{divergence_curve},
+\code{morie_lyapun}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+y <- sin(2 * pi * (1:400) / 25)
+mean_period(y)
+}
+\keyword{internal}

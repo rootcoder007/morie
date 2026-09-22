@@ -2,15 +2,25 @@
 % Please edit documentation in R/slvgrf_native.R
 \name{autoc}
 \alias{autoc}
-\title{Area under the TOC (RATE with a flat weight)}
+\title{autoc}
 \usage{
 autoc(scores, priority)
 }
 \arguments{
-\item{scores}{See Usage.}
+\item{scores}{Passed to \code{rate}.}
 
-\item{priority}{See Usage.}
+\item{priority}{Passed to \code{rate}.}
+}
+\value{
+The value of \code{$}.
 }
 \description{
-Area under the TOC (RATE with a flat weight)
+A step of the slvgrf_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+autoc(V, V)
+}
+\keyword{internal}

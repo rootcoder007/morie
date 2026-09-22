@@ -6,9 +6,10 @@
 #' @param p AR order in each regime. Default 1.
 #' @param d Delay parameter for the threshold variable. Default 1.
 #' @param n_grid Grid size for threshold search. Default 50.
-#' @return Named list with \code{threshold, phi_lower, phi_upper, p, d,
+#' @return Named list with \eqn{threshold, phi_lower, phi_upper, p, d,
 #'   regime_sizes, sse, n, method}.
 #' @examples
+#' set.seed(1)
 #' morie_threshold_autoregression(x = rnorm(50))
 #' @export
 morie_threshold_autoregression <- function(x, p = 1, d = 1, n_grid = 50) {

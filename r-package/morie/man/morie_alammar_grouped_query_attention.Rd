@@ -25,7 +25,24 @@ morie_alammar_multi_query_attention(Q_heads, K_shared, V_shared, n_query_heads)
 
 \item{K_shared, V_shared}{Single shared K and V matrices.}
 }
+\value{
+A list with \code{output}, \code{group_assignment}, \code{kv_cache_ratio}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 head_i = Attn(Q_i, \verb{K_\{g(i)\}, V_\{g(i)\}}) with g(i) = i mod G. G = 1
 recovers MQA; G = H full multi-head. H must divide by G.
 }
+\examples{
+set.seed(1)
+Qh <- lapply(1:4, function(i) matrix(stats::rnorm(6), 3, 2))
+Ks <- matrix(stats::rnorm(6), 3, 2)
+Vs <- matrix(stats::rnorm(6), 3, 2)
+morie_alammar_grouped_query_attention(Qh, list(Ks), list(Vs),
+    4, 1)
+set.seed(1)
+Qh <- lapply(1:4, function(i) matrix(stats::rnorm(6), 3, 2))
+Ks <- matrix(stats::rnorm(6), 3, 2)
+Vs <- matrix(stats::rnorm(6), 3, 2)
+morie_alammar_multi_query_attention(Qh, Ks, Vs, 4)
+}
+\keyword{internal}

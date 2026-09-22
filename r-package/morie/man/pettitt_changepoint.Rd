@@ -19,8 +19,8 @@ Returns the change-point index, the test statistic, and an
 approximate p-value.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-pettitt_changepoint(V)
+set.seed(1)
+str(pettitt_changepoint(c(rnorm(30), rnorm(30, 2))), max.level = 1)
 }
 \references{
 Pettitt (1979). A non-parametric approach to the

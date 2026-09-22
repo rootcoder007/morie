@@ -19,6 +19,8 @@ Standardises X and y to zero mean and unit variance before OLS via
 \code{stats::lm}.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-standardized_coefficients(V, V)
+set.seed(1)
+X <- matrix(rnorm(60), nrow = 20)
+y <- X \%*\% c(0.5, -0.3, 0.2) + rnorm(20)
+standardized_coefficients(X, drop(y))
 }

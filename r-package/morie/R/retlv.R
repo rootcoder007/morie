@@ -9,11 +9,11 @@
 #' @param x numeric vector of block maxima.
 #' @param return_period numeric T (default 100).
 #' @return list: z, se, return_period, mu, sigma, xi, n, method.
+#' @examples
+#' set.seed(1)
+#' morie_return_level(rexp(200), return_period = 100)
 #' @keywords internal
 #' @export
-#' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' retlv(V)
 retlv <- function(x, return_period = 100) {
   fit <- extvm(x)
   if (!is.finite(fit$mu %||% NA_real_)) {

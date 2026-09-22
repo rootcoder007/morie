@@ -45,8 +45,7 @@ admissible and the update reduces to its exact limit.
 }
 \examples{
 set.seed(1)
-r <- Emaxr(y = rnorm(10), X = rnorm(10), cluster = rnorm(10), sigma2_u = 0.5, sigma2_e
-= 0.5); TRUE
+r <- Emaxr(y = rnorm(10), X = rnorm(10), cluster = rnorm(10), sigma2_u = 0.5, sigma2_e = 0.5); TRUE
 }
 \references{
 Dempster, Laird & Rubin (1977), JRSS-B 39(1):1-38;

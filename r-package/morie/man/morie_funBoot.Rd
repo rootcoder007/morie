@@ -38,3 +38,8 @@ A list with \code{center}, \code{radius}, \code{estimate}, \code{distances},
 Part of the funBoot_mixedcase_native implementation; see the file
 header for the source it follows.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_funBoot(D)
+}
+\keyword{internal}

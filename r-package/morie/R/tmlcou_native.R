@@ -84,6 +84,10 @@ rescale <- function(y, lower = NULL, upper = NULL) {
 #' @param upper Original upper bound.
 #' @return The value on the original scale.
 #' @export
+#' @examples
+#' unscale(value = c(1, 2, 3, 4, 5, 6, 7, 8), lower = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   upper = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 unscale <- function(value, lower, upper) {
   as.numeric(value) * (as.numeric(upper) - as.numeric(lower)) +
     as.numeric(lower)
@@ -101,6 +105,10 @@ unscale <- function(value, lower, upper) {
 #' @return A list with \code{epsilon}, \code{Q_star},
 #'   \code{out_of_range}, \code{caveat}.
 #' @export
+#' @examples
+#' linear_fluctuation_unsafe(Q = c(1, 2, 3, 4, 5, 6, 7, 8), H = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   Y = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 linear_fluctuation_unsafe <- function(Q, H, Y) {
   q <- as.numeric(Q)
   h <- as.numeric(H)
@@ -140,7 +148,13 @@ linear_fluctuation_unsafe <- function(Q, H, Y) {
 #'   \code{rate_scale}, \code{method}, \code{note}.
 #' @references Gruber, S. & van der Laan, M. J. (2010).
 #' @export
-#' @aliases morie_tmlcountoutcome
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- morie_tmlcou(y = y, D = g, X = x)
+#' res
+#' @keywords internal
 morie_tmlcou <- function(y, D, X, offset = NULL, g = NULL,
                          Q1 = NULL, Q0 = NULL,
                          lower = NULL, upper = NULL, iters = 100) {
@@ -222,6 +236,6 @@ morie_tmlcou <- function(y, D, X, offset = NULL, g = NULL,
 }
 
 #' Compact alias per ledger/NAMING.md
+#' @rdname morie_tmlcou
 #' @export
-#' @noRd
 morie_tmlcountoutcome <- morie_tmlcou

@@ -28,3 +28,7 @@ Bracketing matters: it distinguishes a prefix from the same letters
 inside a word. With \code{boundary = "#"} and \code{n = 3} the word
 "good" becomes the trigrams of \code{"#good#"}.
 }
+\examples{
+morie_dssm_letter_ngrams(word = 5L)
+}
+\keyword{internal}

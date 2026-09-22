@@ -2,7 +2,7 @@
 % Please edit documentation in R/trnsfr_native.R
 \name{morie_trnsfr_balancing_weights}
 \alias{morie_trnsfr_balancing_weights}
-\title{Minimum-variance weights that match the target\'s X means: solve}
+\title{Minimum-variance weights that match the target's X means: solve}
 \usage{
 morie_trnsfr_balancing_weights(X, S, ridge = 1e-08)
 }
@@ -22,3 +22,12 @@ min sum w_i^2 over source units subject to sum w_i Xtilde_i =
 Xbar_target with Xtilde = (1, X). Weights may go negative, which is
 reported.
 }
+\examples{
+set.seed(1)
+n <- 60
+X <- matrix(rnorm(n * 2), n, 2)
+S <- rbinom(n, 1, plogis(0.3 * X[, 1]))
+r <- morie_trnsfr_balancing_weights(X, S)
+str(r, max.level = 1)
+}
+\keyword{internal}

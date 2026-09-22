@@ -15,5 +15,5 @@ Each entry is itself a named list with \code{year_or_range},
 row / column counts, \code{is_valid}, and bilingual descriptions.
 }
 \examples{
-ARSAU_REGISTRY()
+str(ARSAU_REGISTRY)
 }

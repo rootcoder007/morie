@@ -30,3 +30,8 @@ A step of the edgrn_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+edgrn_moderate_dispersion(V)
+}
+\keyword{internal}

@@ -23,24 +23,23 @@ morie_otis_descriptives(...)
 morie_otis_dml(...)
 }
 \arguments{
-\item{...}{Arguments forwarded verbatim to the canonical
-short-named OTIS primitive (e.g. \code{morie_otis_rplace},
-\code{morie_otis_astcmb}, \code{morie_otis_volat}, \code{morie_otis_rctrnd},
-\code{morie_otis_otdesc}). See those functions for full
-per-primitive argument lists.}
+\item{...}{Arguments forwarded verbatim to the canonical short-named
+OTIS primitive (e.g. \code{morie_otis_rplace}, \code{morie_otis_astcmb},
+\code{morie_otis_volat}, \code{morie_otis_rctrnd}, \code{morie_otis_otdesc}). See
+those functions for full per-primitive argument lists.}
 }
 \value{
-A \code{morie_otis_result} object (see \code{morie_otis_rplace}).
+An object of class \code{"morie_otis_result"}.
 
-A \code{morie_otis_result} object (see \code{morie_otis_astcmb}).
+An object of class \code{"morie_otis_result"}.
 
-A \code{morie_otis_result} object (see \code{morie_otis_volat}).
+An object of class \code{"morie_otis_result"}.
 
-A \code{morie_otis_result} object (see \code{morie_otis_rctrnd}).
+An object of class \code{"morie_otis_result"}.
 
-A \code{morie_otis_result} object (see \code{morie_otis_otdesc}).
+An object of class \code{"morie_otis_result"}.
 
-A \code{morie_otis_result} object (see \code{morie_otis_otdml}).
+An object of class \code{"morie_otis_result"}.
 }
 \description{
 Six lightweight callables mirroring the Python module
@@ -61,8 +60,8 @@ Authorship chain: authored by the Service Management and Oversight
 Branch; maintained by the Ministry of the Solicitor General
 (maintainer branch: Business Intelligence and Insights Branch);
 source system: the Offender Tracking Information System (OTIS) --
-OTIS names the upstream system, not the download. The
-canonical table has 76,934 rows (FY 2022/23 -- 2024/25). See
+OTIS names the upstream system, not the download. The canonical
+table has 76,934 rows (FY 2022/23 -- 2024/25). See
 \code{\link{morie_otis_load}} in \code{otis_analyze.R} for the
 canonical loader.
 
@@ -73,6 +72,68 @@ file even within a year. The \code{variable_taxonomy.R} registry
 enforces \code{cross_year_safe = FALSE} for this column. Every
 aggregation below operates within \code{EndFiscalYear}; cross-year
 joins on the ID are forbidden by design.
+}
+\examples{
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_regional_placement(b01))
+class(res)
+}
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_alert_state_combo(b01))
+class(res)
+}
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_volatility(b01))
+class(res)
+}
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_rc_trends(b01))
+class(res)
+}
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_descriptives(b01))
+class(res)
+}
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_dml(b01))
+class(res)
+}
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_regional_placement(b01))
+class(res)
+}
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_alert_state_combo(b01))
+class(res)
+}
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_volatility(b01))
+class(res)
+}
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_rc_trends(b01))
+class(res)
+}
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_descriptives(b01))
+class(res)
+}
+\donttest{
+b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+res <- try(morie_otis_dml(b01))
+class(res)
+}
 }
 \references{
 Ontario Ministry of the Solicitor General (2025). Restrictive

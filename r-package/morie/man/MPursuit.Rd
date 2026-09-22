@@ -28,3 +28,8 @@ A step of the rangayyan_class2 implementation. Called by \code{VagTfd}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+MPursuit(V)
+}
+\keyword{internal}

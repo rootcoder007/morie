@@ -51,18 +51,16 @@ factor / logical if NULL).}
 \item{title}{Table title.}
 }
 \value{
-When \code{output_format = "dataframe"}, a \code{data.frame}
-with one row per variable (N row first, then continuous summaries,
-then categorical levels) and columns named by group plus optional
-\code{p-value}, \code{SMD}, and \code{Missing}. Otherwise a
-character string holding the rendered table in the requested
-format (\pkg{knitr::kable} output for latex / html / markdown /
-text; CSV text for "csv").
+A vector of the computed values.
 }
 \description{
 Table 1 (baseline characteristics) stratified by group
 }
 \examples{
-M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
-table1(M)
+set.seed(1)
+df <- data.frame(g = rep(c("a", "b"), 25), age = rnorm(50, 40, 10),
+                 sex = sample(c("m", "f"), 50, TRUE))
+res <- try(table1(df, group_col = "g", continuous_vars = "age",
+                  categorical_vars = "sex"))
+if (!inherits(res, "try-error")) head(res)
 }

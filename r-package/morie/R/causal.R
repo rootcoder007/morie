@@ -157,8 +157,7 @@ NULL
 #' @return The value of \code{X}, as built in the body.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .mor_ps_standardize(X = X)
 #' res
 .mor_ps_standardize <- function(X) {
@@ -186,8 +185,7 @@ NULL
 #' @return A numeric value.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
 #' res <- .mor_ps_irls(X = X, y = y)
 #' res
@@ -211,8 +209,7 @@ NULL
 #' @return The value of \code{beta}, as built in the body.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
 #' res <- .mor_ps_irls_beta(X = X, y = y)
 #' res
@@ -294,7 +291,7 @@ NULL
 
 #' Estimate propensity scores via logistic regression
 #'
-#' Thin wrapper over \code{WeightIt::weightit(method = "glm",
+#' Thin wrapper over \eqn{WeightIt::weightit(method = "glm",
 #' estimand = "ATE")} when \pkg{WeightIt} is installed; falls back
 #' to \code{stats::glm(family = binomial())} otherwise.
 #'
@@ -307,6 +304,7 @@ NULL
 #'   \code{nrow(data)}).
 #' @export
 #' @examples
+#' set.seed(1)
 #' df <- data.frame(t = c(0, 1, 0, 1, 0, 1), x = rnorm(6))
 #' ps <- morie_estimate_propensity_scores(df, "t", "x")
 # Trim propensity scores.  BOTH routes in use are available and the
@@ -492,6 +490,13 @@ NULL
 #' @param ridge_lambda Passed to \code{.fit_propensity}. Defaults to \code{1}.
 #' @return The value of \code{.mor_trim_ps}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' if (requireNamespace("WeightIt", quietly = TRUE)) {
+#'   df <- data.frame(t = rbinom(60, 1, 0.4), x = rnorm(60))
+#'   morie_estimate_propensity_scores(df, "t", "x")
+#' }
+#' @keywords internal
 morie_estimate_propensity_scores <- function(data, treatment, covariates,
                                              trim = c(0.01, 0.99),
                                              trim_type = "value",
@@ -808,9 +813,10 @@ morie_estimate_atc <- function(data, treatment, outcome, covariates,
 #' @return Named list: `ate`, `se`, `ci_lower`, `ci_upper`, `n`.
 #' @examples
 #' set.seed(1)
-#' df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
-#' morie_estimate_aipw(df, "t", "y", "x")
+#' df <- data.frame(t = rbinom(60, 1, 0.4), x = rnorm(60))
+#' morie_estimate_aipw(df, "t", "y", "x", outcome_model = "linear")
 #' @export
+#' @keywords internal
 morie_estimate_aipw <- function(data, treatment, outcome, covariates,
                                 propensity_col = NULL,
                                 outcome_model = c("linear", "logistic"),
@@ -1002,6 +1008,7 @@ morie_estimate_gate <- function(data, treatment, outcome, covariates,
 #'   native; `outcome_model` applies to the T/S-learners only.
 #' @return Numeric vector of per-unit CATE estimates.
 #' @examples
+#' set.seed(1)
 #' morie_estimate_cate(
 #'   data = data.frame(
 #'     t = stats::rbinom(100, 1, 0.4),
@@ -1447,7 +1454,7 @@ morie_estimate_double_ml <- function(data, outcome, treatment, covariates,
     ate = out$theta, se = out$se,
     ci_lower = out$theta - z * out$se,
     ci_upper = out$theta + z * out$se,
-    n = n, method = "PLR (morie native)"
+    n = n, method = "PLR (rmorie native)"
   )
 }
 
@@ -1661,6 +1668,7 @@ morie_causal_weighting <- function(data, treatment, covariates,
 #'   An Object-Oriented Implementation of Clustered Covariances in R.
 #'   \emph{Journal of Statistical Software}, 95(1), 1-36.
 #' @examples
+#' set.seed(1)
 #' d <- data.frame(x = rnorm(30), y = rnorm(30))
 #' m <- stats::lm(y ~ x, data = d)
 #' n <- 80L

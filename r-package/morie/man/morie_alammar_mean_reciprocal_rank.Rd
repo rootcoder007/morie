@@ -33,6 +33,19 @@ morie_alammar_mteb_benchmark_score(task_scores, category_map)
 \item{category_map}{Named map
 task -> category.}
 }
+\value{
+A list with \code{estimate}, \code{reciprocal_ranks}, \code{queries_missed}, \code{n}, \code{method}.
+}
 \description{
 Retrieval metrics: MRR, recall@k, NDCG@k, MTEB aggregation
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_mean_reciprocal_rank(V, V)
+morie_alammar_recall_at_k(retrieved = c(1, 2, 3, 4, 5, 6, 7, 8),
+  relevant = c(1, 2, 3, 4, 5, 6, 7, 8), k = 5L)
+morie_alammar_ndcg_at_k(relevances = c(1, 2, 3, 4, 5, 6, 7, 8), k = 5L)
+morie_alammar_mteb_benchmark_score(task_scores = list(a = 1, b = 2),
+  category_map = list(a = 1, b = 2))
+}
+\keyword{internal}

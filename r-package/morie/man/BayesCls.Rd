@@ -23,3 +23,8 @@ likelihood, a different classifier, and they differ whenever the
 classes are unequally common: for a rare disease the prior is
 precisely what stops the classifier calling everything positive.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+BayesCls(V)
+}
+\keyword{internal}

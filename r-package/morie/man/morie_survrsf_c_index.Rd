@@ -2,7 +2,7 @@
 % Please edit documentation in R/survrsf_native.R
 \name{morie_survrsf_c_index}
 \alias{morie_survrsf_c_index}
-\title{Harrell\'s C by the paper\'s four steps. predicted is a}
+\title{Harrell's C by the paper's four steps. predicted is a}
 \usage{
 morie_survrsf_c_index(times, events, predicted)
 }
@@ -21,3 +21,8 @@ A list with \code{c_index}, \code{concordance}, \code{permissible},
 worse-outcome score: larger means the case is expected to fail
 sooner.
 }
+\examples{
+morie_survrsf_c_index(times = c(1, 2, 3, 4, 5, 6, 7, 8), events = c(1, 2, 3, 4, 5, 6, 7, 8),
+  predicted = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

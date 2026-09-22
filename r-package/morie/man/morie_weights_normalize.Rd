@@ -19,14 +19,13 @@ morie_weights_normalize(
 \code{normalize} (target sum = population_size when supplied).}
 }
 \value{
-Numeric vector of normalised weights, same length as
-\code{weights}, scaled to sum to either \code{length(weights)}
-or \code{population_size}.
+A logical scalar.
 }
 \description{
 Normalise weights so they sum to n (sample) or N (population)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_weights_normalize(V)
+set.seed(1)
+res <- morie_weights_normalize(runif(30, 0.5, 2))
+str(res, max.level = 1)
 }

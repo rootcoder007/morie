@@ -2,7 +2,7 @@
 % Please edit documentation in R/pate_native.R
 \name{theorem3_moment}
 \alias{theorem3_moment}
-\title{Theorem 3\'s data-dependent moment bound, or NA when its}
+\title{theorem3_moment}
 \usage{
 theorem3_moment(q, gamma, l)
 }
@@ -17,6 +17,11 @@ theorem3_moment(q, gamma, l)
 A numeric value.
 }
 \description{
-condition fails. The accountant must fall back on Theorem 2 outside
-that range.
+A step of the pate_native implementation. Called by \code{moments_accountant}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+theorem3_moment(q = 0.5, gamma = 0.5, l = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

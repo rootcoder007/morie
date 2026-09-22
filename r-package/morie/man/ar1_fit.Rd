@@ -2,13 +2,23 @@
 % Please edit documentation in R/andmnh_native.R
 \name{ar1_fit}
 \alias{ar1_fit}
-\title{AR(1) by least squares (no intercept)}
+\title{ar1_fit}
 \usage{
 ar1_fit(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; its length is taken and its elements indexed.}
+}
+\value{
+A vector, from \code{c}.
 }
 \description{
-AR(1) by least squares (no intercept)
+A step of the andmnh_native implementation. Called by \code{alpha_ar1}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+ar1_fit(V)
+}
+\keyword{internal}

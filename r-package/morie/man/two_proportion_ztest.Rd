@@ -14,13 +14,11 @@ two_proportion_ztest(count1, nobs1, count2, nobs2, confidence = 0.95)
 \item{confidence}{Confidence level.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the z statistic, two-sided p-value, Wald CI for the difference,
-the proportion difference as \code{estimate}, and combined n.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Two-sample z-test for the difference in proportions
 }
 \examples{
-two_proportion_ztest(40, 100, 25, 100)
+two_proportion_ztest(45, 100, 30, 100)
 }

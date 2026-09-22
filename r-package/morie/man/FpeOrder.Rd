@@ -19,3 +19,7 @@ variance falls monotonically with p (eq 7.39), so without a penalty
 the criterion would always pick the largest order offered. Rangayyan
 gives AIC at eq (7.60); FPE is not printed in the book.
 }
+\examples{
+FpeOrder(errors = 5L, n_samples = 5L)
+}
+\keyword{internal}

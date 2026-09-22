@@ -29,3 +29,12 @@ A step of the rangayyan_class2 implementation. No other function in the package 
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(7)
+D <- matrix(rnorm(16 * 8), 16, 8)
+D <- sweep(D, 1, sqrt(rowSums(D^2)), "/")
+x <- D[3, ] * 1.5 - D[10, ] * 0.7
+r <- SparseCode(x, D, sparsity = 2)
+str(r, max.level = 1)
+}
+\keyword{internal}

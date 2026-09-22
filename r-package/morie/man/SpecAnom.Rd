@@ -22,3 +22,8 @@ Gotway.  THE PHASE IS KEPT: rebuilding from the residual amplitude
 with the ORIGINAL phase is the whole mechanism.  The moving average
 is circular, matching the periodicity of the DFT.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+SpecAnom(V)
+}
+\keyword{internal}

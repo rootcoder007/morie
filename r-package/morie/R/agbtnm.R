@@ -35,9 +35,11 @@ Bnrunstat <- function(x, runmean = 0, runvar = 1, momentum = 0.1,
   g <- as.numeric(gamma)
   b <- as.numeric(beta)
   eps <- as.numeric(eps)
-  .t1_result(runmean = rm, runvar = rv, batchmean = mu, batchvar = vb,
-             batchvarunb = vu,
-             normalized = g * (x - rm) / sqrt(rv + eps) + b,
-             trainnorm = g * (x - mu) / sqrt(vb + eps) + b, m = m,
-             method = "Batch-norm running statistics (Ioffe-Szegedy 2015 Sect. 3.1)")
+  .t1_result(
+    runmean = rm, runvar = rv, batchmean = mu, batchvar = vb,
+    batchvarunb = vu,
+    normalized = g * (x - rm) / sqrt(rv + eps) + b,
+    trainnorm = g * (x - mu) / sqrt(vb + eps) + b, m = m,
+    method = "Batch-norm running statistics (Ioffe-Szegedy 2015 Sect. 3.1)"
+  )
 }

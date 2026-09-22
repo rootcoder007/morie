@@ -35,3 +35,12 @@ A step of the sccsno_native implementation. Called by \code{.smatch_build_interv
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+cells <- morie_sccsno_build_intervals(start = 0, end = 365,
+                                      exposure = 100,
+                                      event_times = c(110, 250),
+                                      risk_periods = list(c(0, 30)),
+                                      age_breaks = c(180))
+cells
+}
+\keyword{internal}

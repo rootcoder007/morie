@@ -27,3 +27,10 @@ A step of the glm_native implementation. No other function in the package calls 
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(2)
+x <- c(rpois(40, 1), rpois(40, 4))
+res <- glrtest(x, p0 = 1, p1 = 4, family = "poisson")
+res$changepoint >= 0
+}
+\keyword{internal}

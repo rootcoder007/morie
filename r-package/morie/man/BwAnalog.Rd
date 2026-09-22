@@ -34,3 +34,7 @@ The denominator coefficients are real to rounding because the poles
 arrive in conjugate pairs; the largest imaginary residue is returned
 so that claim can be checked rather than trusted.
 }
+\examples{
+BwAnalog(Omega_c = 5L, N = 5L)
+}
+\keyword{internal}

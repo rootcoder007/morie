@@ -46,3 +46,6 @@ df <- try(morie_load_dataset("ocp21", refresh = TRUE)) # force re-fetch
 \dontshow{\}) # examplesIf}
 }
 }
+\seealso{
+\code{\link{morie_fetch}}, \code{\link{morie_ckan_search}}
+}

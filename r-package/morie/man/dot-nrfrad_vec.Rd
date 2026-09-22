@@ -2,23 +2,24 @@
 % Please edit documentation in R/nrfrad_native.R
 \name{.nrfrad_vec}
 \alias{.nrfrad_vec}
-\title{.nrfrad_vec}
+\title{S3 helper: ensure a numeric vector (k.vec)}
 \usage{
-.nrfrad_vec(x)
+.nrfrad_vec(p)
 }
 \arguments{
-\item{x}{Optional; may be \code{NULL}. A list; the body reads \code{$sigma} from it.}
+\item{p}{Numeric; the body checks with \code{is.numeric}.}
 }
 \value{
-A vector, from \code{as.numeric}.
+One of two values, depending on the branch taken.
 }
 \description{
-A step of the nrfrad_native implementation. No other function in the package calls it.
+A step of the nrfrad_native implementation. Called by
+\code{density_is_view_independent}, \code{positional_encoding}, \code{ray_points} and
+2 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }
 \examples{
-x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-res <- .nrfrad_vec(x = x)
+res <- .nrfrad_vec(p = 0.5)
 res
 }

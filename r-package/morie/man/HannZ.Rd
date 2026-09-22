@@ -20,3 +20,7 @@ filter is one factor multiplying the input transform.  Dividing out
 X(z) gives eq (3.103) -- which is why the transfer function does not
 depend on the input.
 }
+\examples{
+HannZ(X = c(1, 2, 3, 4, 5, 6, 7, 8), z = 5L)
+}
+\keyword{internal}

@@ -9,6 +9,10 @@
 \arguments{
 \item{path}{See Usage.}
 }
+\value{
+A named \code{list} of the variables loaded from the MATLAB \code{.mat} file
+at \code{path}.
+}
 \description{
 Lightweight .mat loader (delegates to R.matlab)
 }

@@ -17,3 +17,7 @@ A step of the prsPEG_native implementation. Called by \code{morie_prsPEG_plus}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_prsPEG_seq()
+}
+\keyword{internal}

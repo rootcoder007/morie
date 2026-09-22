@@ -23,3 +23,10 @@ A step of the plsa_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+n_dw <- matrix(rpois(30, 3), 6, 5)
+fit <- morie_plsa(n_dw, K = 2, iters = 10)
+perplexity(n_dw, fit$P_z, fit$P_d_given_z, fit$P_w_given_z)
+}
+\keyword{internal}

@@ -19,6 +19,15 @@ morie_alammar_tokenization_pipeline(
 
 \item{unk_token, lowercase, specials}{Pipeline settings.}
 }
+\value{
+A list with \code{tokens}, \code{n_unk}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 WordPiece tokenisation pipeline (Alammar Ch 2)
 }
+\examples{
+vocab <- c("[CLS]", "[SEP]", "[UNK]", "the", "cat", "sat")
+r <- morie_alammar_tokenization_pipeline("The cat sat down", vocab)
+str(r, max.level = 1)
+}
+\keyword{internal}

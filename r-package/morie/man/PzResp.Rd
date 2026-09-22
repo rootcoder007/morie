@@ -26,3 +26,8 @@ angles.  A zero ON the circle sends one distance to zero -- a
 spectral null; a pole near it makes one distance small -- a
 resonance.  The distances are returned so that reading can be made.
 }
+\examples{
+PzResp(zeros = c(1, 2, 3, 4, 5, 6, 7, 8), poles = c(1, 2, 3, 4, 5, 6, 7, 8),
+  omega = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

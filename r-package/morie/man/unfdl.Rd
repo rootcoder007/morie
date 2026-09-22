@@ -40,6 +40,6 @@ centred squared-distance matrix, followed by SMACOF-lite refinement.
 }
 \examples{
 # See the package vignettes for usage examples:
-#   vignette(package = "rmorie")
+#   vignette(package = "morie")
 }
 \keyword{internal}

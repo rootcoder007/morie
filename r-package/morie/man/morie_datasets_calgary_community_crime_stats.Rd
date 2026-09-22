@@ -16,7 +16,7 @@ morie_datasets_calgary_fire_response_calls(offline = TRUE, max_features = NULL)
 morie_datasets_calgary_fire_stations(offline = TRUE, max_features = NULL)
 }
 \arguments{
-\item{offline}{If \code{TRUE} (default), reads bundled CSV.}
+\item{offline}{If \code{TRUE} (default), reads included CSV.}
 
 \item{max_features}{Optional row cap.}
 }
@@ -24,27 +24,39 @@ morie_datasets_calgary_fire_stations(offline = TRUE, max_features = NULL)
 A \code{data.frame} with \code{community}, \code{category}, \code{crime_count},
 \code{year}, \code{month}.
 
-A \code{data.frame} of Calgary fire response call records
-(Socrata id \code{bdez-pds9}); the bundled 200-row sample under
-\verb{inst/extdata/} when \code{offline = TRUE}, otherwise the live
-SODA2 pull. Columns mirror the upstream Socrata schema.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 
-A \code{data.frame} of Calgary fire-station locations
-(Socrata id \verb{cqsb-2hhg}); the bundled fixture when
-\code{offline = TRUE}, otherwise the live SODA2 pull. Columns
-mirror the upstream Socrata schema.
+A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+data is unavailable offline).
 }
 \description{
-Phase 3FFF3. Bundled 200-row sample of Calgary's per-community
+Phase 3FFF3. Included 200-row sample of Calgary's per-community
 per-month crime counts (Socrata id \verb{78gh-n26t}). Covers all 8
 canonical CPS categories.
 
-Phase 3FFF3. Bundled 200-row sample of Calgary fire response
+Phase 3FFF3. Included 200-row sample of Calgary fire response
 calls (Socrata id \code{bdez-pds9}).
 }
 \examples{
 \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-df <- morie_datasets_calgary_community_crime_stats(offline = TRUE)
+df <- morie_datasets_calgary_community_crime_stats()
+head(df)
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+df <- morie_datasets_calgary_fire_response_calls()
+head(df)
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+df <- morie_datasets_calgary_fire_stations()
+head(df)
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+df <- morie_datasets_calgary_fire_response_calls()
+head(df)
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+df <- morie_datasets_calgary_fire_stations()
 head(df)
 \dontshow{\}) # examplesIf}
 }

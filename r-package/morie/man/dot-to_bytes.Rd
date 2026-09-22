@@ -7,10 +7,10 @@
 .to_bytes(ws)
 }
 \arguments{
-\item{ws}{Iterated over elementwise, with \code{lapply}.}
+\item{ws}{A vector; its length is taken and its elements indexed.}
 }
 \value{
-The value of \code{do.call}.
+The value of \code{out}, as built in the body.
 }
 \description{
 A step of the secarg_native implementation. No other function in the package calls it.

@@ -19,3 +19,7 @@ A step of the dist_native implementation. Called by \code{Rexp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+Qexp(p = 0.5)
+}
+\keyword{internal}

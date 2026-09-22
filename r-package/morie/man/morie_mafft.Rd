@@ -4,36 +4,25 @@
 \alias{morie_mafft}
 \title{morie_mafft}
 \usage{
-morie_mafft(
-  sequences,
-  method = "FFT-NS-2",
-  seq_type = NULL,
-  s_a = 0.06,
-  s_op = 2.4,
-  matrix = "normalized",
-  max_iterate = 16L
-)
+morie_mafft(op, ...)
 }
 \arguments{
-\item{sequences}{Passed to \code{mafft_alignment}.}
+\item{op}{A vector; its length is taken.}
 
-\item{method}{Passed to \code{mafft_alignment}. Defaults to \code{"FFT-NS-2"}.}
-
-\item{seq_type}{Passed to \code{mafft_alignment}.}
-
-\item{s_a}{Passed to \code{mafft_alignment}. Defaults to \code{0.06}.}
-
-\item{s_op}{Passed to \code{mafft_alignment}. Defaults to \code{2.4}.}
-
-\item{matrix}{Passed to \code{mafft_alignment}. Defaults to \code{"normalized"}.}
-
-\item{max_iterate}{Passed to \code{mafft_alignment}. Defaults to \code{16L}.}
+\item{...}{Passed through.}
 }
 \value{
-The value of \code{mafft_alignment}.
+The value of \code{switch}.
 }
 \description{
 A step of the mafft_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r <- morie_mafft("guide_tree",
+                 sixtuple_distance(c("MKVLATLLPLAA", "MKVLATLLPLAG",
+                                     "MRVLATGLPLAA")))
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -11,6 +11,14 @@ morie_geron_regression_tree(X, y, max_depth = 3, min_samples_leaf = 1)
 
 \item{max_depth, min_samples_leaf}{Regularisation.}
 }
+\value{
+A list with \code{tree}, \code{predict}, \code{predictions}, \code{mse}, \code{n_leaves}, \code{depth}, \code{feature_importance}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 CART regression tree minimising per-leaf MSE (Geron Ch 5, hmrdt)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_regression_tree(V, V)
+}
+\keyword{internal}

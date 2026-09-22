@@ -9,6 +9,13 @@ morie_gvar_sigmoid(x)
 \arguments{
 \item{x}{A tape node. @return A tape node.}
 }
+\value{
+The value of \code{.morie_gvar}.
+}
 \description{
 Logistic sigmoid on a reverse-mode tape node
 }
+\examples{
+morie_gvar_sigmoid(.morie_gvar(0))$value
+}
+\keyword{internal}

@@ -21,3 +21,8 @@ A list with \code{j}, \code{means}, \code{variances},
 the same measure: that divides |m1 - m2| by (s1 + s2).  They rank
 features identically only when the dispersions are equal.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+FishCrit(V, V)
+}
+\keyword{internal}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tmlcen_native.R
 \name{morie_ipcw_interval}
 \alias{morie_ipcw_interval}
-\title{Ipcw_interval: Sec. 8.5\'s IPCW estimator of Psi_a = int r(t)
+\title{Ipcw_interval: Sec. 8.5's IPCW estimator of Psi_a = int r(t)
 Fbar_a(t) dt}
 \usage{
 morie_ipcw_interval(
@@ -44,3 +44,4 @@ A step of the tmlcen_native implementation. Called by \code{morie_tmle_censoring
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

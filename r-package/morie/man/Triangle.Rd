@@ -20,3 +20,8 @@ It is the statement that no combination of two signals carries more
 amplitude than their amplitudes sum to -- the reason uncorrelated
 noise adds in POWER, not in amplitude.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Triangle(V, V)
+}
+\keyword{internal}

@@ -10,12 +10,11 @@ morie_effective_sample_size(weights)
 \item{weights}{Numeric vector of sampling weights.}
 }
 \value{
-Numeric ESS.
+Numeric effective sample size (Kish's formula).
 }
 \description{
 Kish effective sample size
 }
 \examples{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
+morie_effective_sample_size(c(1, 1, 2, 3, 5))
 }

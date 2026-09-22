@@ -24,3 +24,7 @@ resolution -- the commonest misreading of a smoother-looking plot.
 Every window that suppresses leakage widens the main lobe, so a
 window buys dynamic range with resolution.
 }
+\examples{
+SpecRes(n = 5L)
+}
+\keyword{internal}

@@ -7,7 +7,7 @@
 coherence(A, rank = NULL)
 }
 \arguments{
-\item{A}{A matrix; passed to \code{as.matrix}.}
+\item{A}{Passed to \code{.meglt_mat}.}
 
 \item{rank}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
@@ -15,7 +15,13 @@ coherence(A, rank = NULL)
 A list with \code{mu_row}, \code{mu_col}, \code{mu}, \code{rank}, \code{note}.
 }
 \description{
-A step of the meglt_native implementation. No other function in the package calls it.
+A step of the meglt_native implementation. Called by \code{morie_meglt}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+r <- coherence(matrix(rnorm(20), 5, 4), rank = 2)
+str(r, max.level = 1)
+}
+\keyword{internal}

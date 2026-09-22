@@ -2,18 +2,23 @@
 % Please edit documentation in R/painn_native.R
 \name{vector_norm}
 \alias{vector_norm}
-\title{||v|| -- an invariant built from an equivariant}
+\title{vector_norm}
 \usage{
 vector_norm(v)
 }
 \arguments{
-\item{v}{A matrix; passed to \code{as.matrix}.}
+\item{v}{Passed to \code{.painn_mat}.}
 }
 \value{
-One of two values, depending on the branch taken.
+The value of \code{out}, as built in the body.
 }
 \description{
 A step of the painn_native implementation. Called by \code{gated_update}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+vector_norm(V)
+}
+\keyword{internal}

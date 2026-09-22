@@ -27,7 +27,7 @@ morie_datasets_tps_killed_and_seriously_injured(
 (default \code{0L}, the first layer).}
 
 \item{offline}{Logical; if \code{TRUE}, the hub_id is resolved via the
-bundled catalog (no network needed for the resolution step).
+included catalog (no network needed for the resolution step).
 Default \code{TRUE} -- you can run this against the 71 catalog
 entries without network. Live data fetches always hit the
 network regardless of this argument; "offline" here only
@@ -53,6 +53,7 @@ Tags: Killed or Seriously Injured; KSI; MVC; Traffic; Collision; Traffic Collisi
 }
 \examples{
 \donttest{
-morie_datasets_tps_killed_and_seriously_injured()
+df <- try(morie_datasets_tps_killed_and_seriously_injured(max_features = 5L))
+if (!inherits(df, "try-error")) head(df)
 }
 }

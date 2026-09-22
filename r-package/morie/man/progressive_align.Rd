@@ -30,10 +30,16 @@ progressive_align(
 \item{...}{Passed through.}
 }
 \value{
-The value of \code{out}, as built in the body.
+A vector, from \code{unlist}.
 }
 \description{
-A step of the mafft_native implementation. Called by \code{mafft_alignment}.
+A step of the mafft_native implementation. Called by \code{mafft_alignment}, \code{morie_mafft}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+sc <- normalized_similarity_matrix(seq_type = "aa")
+progressive_align(c("MKVLATLLPLAA", "MKVLATLLPLAG", "MRVLATGLPLAA"),
+                  sc, use_fft = FALSE)
+}
+\keyword{internal}

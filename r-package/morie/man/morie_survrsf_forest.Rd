@@ -15,6 +15,17 @@ morie_survrsf_forest(
   rule = "logrank",
   seed = 0
 )
+
+morie_survrsf(
+  X,
+  times,
+  events,
+  n_trees = 50,
+  mtry = NULL,
+  min_deaths = 3,
+  rule = "logrank",
+  seed = 0
+)
 }
 \arguments{
 \item{X}{A matrix; indexed by row and column.}
@@ -42,3 +53,8 @@ A step of the survrsf_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_survrsf_forest(X = c(1, 2, 3, 4, 5, 6, 7, 8), times = c(1, 2, 3, 4, 5, 6, 7, 8),
+  events = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

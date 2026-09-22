@@ -13,6 +13,14 @@ morie_geron_policy(state, pi, seed = 0)
 
 \item{seed}{Integer-LCG seed for the sampled action.}
 }
+\value{
+A list with \code{probabilities}, \code{action}, \code{greedy_action}, \code{entropy}, \code{deterministic}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Policy pi(a|s): probabilities, entropy and a reproducible sampled action (Geron Ch 19, hmpol)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_policy(V, V)
+}
+\keyword{internal}

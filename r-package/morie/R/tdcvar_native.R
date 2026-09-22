@@ -140,8 +140,7 @@
 #' @return The value of \code{beta}, as built in the body.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
 #' res <- .tdcvar_logreg(X = X, y = y)
 #' res
@@ -290,6 +289,7 @@
 #' @param trim Passed to \code{.tdcvar_ip_weights_history}.
 #' @return The value of \code{result}, as built in the body.
 #' @export
+#' @keywords internal
 morie_tdcvar <- function(y, A, L_t, time = NULL, contrast = "cumulative",
                          kind = "binary", stabilize = TRUE, trim = NULL) {
   if (!contrast %in% c("cumulative", "final", "everexposed")) {
@@ -422,6 +422,9 @@ morie_tdcvar <- function(y, A, L_t, time = NULL, contrast = "cumulative",
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_tdcvar_cheatsheet()
+#' @keywords internal
 morie_tdcvar_cheatsheet <- function() {
   "tdcvar: time-varying IPTW MSM (H&R Ch.21). Returns the weighted MSM plus the two biased comparators -- adjusting for a treatment-affected confounder over-adjusts, omitting it under-adjusts, and Ch.20 says they straddle the truth."
 }

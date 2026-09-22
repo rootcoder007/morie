@@ -31,9 +31,14 @@ Compdist <- function(x, y) {
   lx <- log(x)
   ly <- log(y)
   tot <- 0
-  for (i in seq_len(D - 1L)) for (j in (i + 1L):D)
-    tot <- tot + ((lx[i] - lx[j]) - (ly[i] - ly[j]))^2
+  for (i in seq_len(D - 1L)) {
+    for (j in (i + 1L):D) {
+      tot <- tot + ((lx[i] - lx[j]) - (ly[i] - ly[j]))^2
+    }
+  }
   d2 <- tot / D
-  .t1_result(distance = sqrt(d2), distance2 = d2, D = D,
-             method = "Aitchison distance")
+  .t1_result(
+    distance = sqrt(d2), distance2 = d2, D = D,
+    method = "Aitchison distance"
+  )
 }

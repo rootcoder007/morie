@@ -24,24 +24,23 @@ morie_matching_balance(
 \item{threshold}{Absolute-SMD threshold for the \code{balanced} flag.}
 }
 \value{
-A list with \code{balance_table} (a data frame), and scalar
-summaries \code{overall_balance}, \code{max_smd}, \code{balanced}.
+A list of class \code{morie_balance_result} with
+\code{balance_table} (a data frame) and scalar summaries
+\code{overall_balance}, \code{max_smd}, \code{balanced}.
 }
 \description{
 Reports standardised mean differences (SMD), variance ratios, and
-Kolmogorov-Smirnov statistics for each covariate.  When \pkg{cobalt}
-is installed it is used to compute the balance table; otherwise a
-base-R implementation is used.
+Kolmogorov-Smirnov statistics for each covariate.  For a richer
+covariate-balance report (including continuous + categorical handling
+and Love-plot rendering), see
+\code{\link[cobalt:bal.tab]{cobalt::bal.tab}} /
+\code{\link[cobalt:love.plot]{cobalt::love.plot}}.
 }
 \examples{
 \donttest{
 set.seed(1)
-df <- data.frame(
-  y = rnorm(150), d = rbinom(150, 1, 0.4),
-  x1 = rnorm(150), x2 = rnorm(150),
-  region = sample(c("North", "South"), 150, TRUE),
-  year = sample(2020:2022, 150, TRUE),
-  treat3 = sample(0:2, 150, TRUE))
+df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+                 x1 = rnorm(200), x2 = rnorm(200))
 morie_matching_balance(df, "d", c("x1", "x2"))
 }
 }

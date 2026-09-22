@@ -33,3 +33,9 @@ A step of the bhltmsm_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+histories <- list(c(1, 0, 1), c(0, 1, 1))
+propensities <- list(c(0.5, 0.5, 0.5), c(0.4, 0.6, 0.5))
+treatment_weights(histories, propensities, stabilise = FALSE)
+}
+\keyword{internal}

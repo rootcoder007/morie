@@ -26,13 +26,13 @@ over the bins in proportion to \code{a}, or as a per-bin vector when a
 vector is supplied.
 }
 \details{
-Formula: solve \code{min_T <T,C>} with \code{a\' = a - delta} and total
-transported mass \code{sum(a\')}, the partial-transport problem of
+Formula: solve \code{min_T <T,C>} with \eqn{a' = a - delta} and total
+transported mass \eqn{sum(a')}, the partial-transport problem of
 Caffarelli and McCann (2010).
 }
 \examples{
-Otmarsh(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, C = c(1, 2, 3, 4, 5, 6, 7, 8), delta =
-c(1, 2, 3, 4, 5, 6, 7, 8))
+Otmarsh(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, C = c(1, 2, 3, 4, 5, 6, 7, 8),
+  delta = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Caffarelli, L. A. and McCann, R. J. (2010). Annals of

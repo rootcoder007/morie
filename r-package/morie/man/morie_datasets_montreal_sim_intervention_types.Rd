@@ -11,13 +11,13 @@ A \code{data.frame} with \code{INCIDENT_TYPE_DESCRIPTION} +
 \code{Description}.
 }
 \description{
-Phase 3EEE1. Bundled lookup table mapping the
+Phase 3EEE1. Included lookup table mapping the
 \code{INCIDENT_TYPE_DESC} codes used in SIM interventions to their
 canonical French descriptions (from the dataset's own
 \code{type-interventions-descriptions20161122.csv} sidecar).
 }
 \examples{
-\dontshow{if (nzchar(system.file("extdata", "montreal_sim_intervention_types.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (nzchar(system.file("extdata", "montreal_sim_intervention_types.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 d <- morie_datasets_montreal_sim_intervention_types()
 nrow(d)
 head(d)

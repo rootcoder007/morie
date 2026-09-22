@@ -22,3 +22,8 @@ aspect".  The cost is that error accumulates -- the recursion never
 forgets, where the direct form flushes a perturbation after 8
 samples.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Ma8Rec(V)
+}
+\keyword{internal}

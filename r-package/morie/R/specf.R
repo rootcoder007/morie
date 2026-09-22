@@ -5,9 +5,10 @@
 #' @param x Numeric univariate series.
 #' @param fs Sampling frequency. Default 1.
 #' @param nperseg Segment length. Default max(n/4, 8).
-#' @return Named list with \code{frequencies, psd, n_segments, nperseg,
+#' @return Named list with \eqn{frequencies, psd, n_segments, nperseg,
 #'   fs, n, method}.
 #' @examples
+#' set.seed(1)
 #' morie_spectral_density(x = rnorm(50))
 #' @export
 morie_spectral_density <- function(x, fs = 1, nperseg = NULL) {

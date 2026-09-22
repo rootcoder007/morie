@@ -9,7 +9,7 @@
 \arguments{
 \item{protected}{Coerced to logical by the body, with \code{as.logical}.}
 
-\item{measure}{One of \code{"rKL"}, \code{"rND"}, \code{"rRD"}.}
+\item{measure}{Passed to \code{.raw}.}
 
 \item{step}{Passed to \code{.raw}.}
 

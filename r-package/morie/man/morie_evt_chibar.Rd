@@ -11,6 +11,14 @@ morie_evt_chibar(x, y, u_grid = seq(0.5, 0.95, length.out = 20))
 
 \item{u_grid}{quantile grid}
 }
+\value{
+A vector.
+}
 \description{
 Empirical chibar(u) (Coles 2001 sec. 8.4 p.164)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_evt_chibar(V, V)
+}
+\keyword{internal}

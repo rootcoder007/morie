@@ -22,3 +22,7 @@ A step of the timesfm_native implementation. Called by \code{morie_timesfm}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_timesfm_input_patches(x = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+}
+\keyword{internal}

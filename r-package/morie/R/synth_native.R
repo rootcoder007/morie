@@ -153,12 +153,15 @@
 #'   Synthetic control methods for comparative case studies.
 #'   \emph{JASA}, 105(490), 493--505.
 #' @examples
+#' \donttest{
+#' set.seed(1)
 #' pan <- expand.grid(unit = letters[1:6], time = 1:10)
 #' pan$y <- rnorm(nrow(pan)) + as.integer(pan$time) * 0.2 +
 #'   ifelse(pan$unit == "a" & pan$time >= 7, 2, 0)
 #' fit <- morie_synth_control(pan, "y", "unit", "time",
 #'                            treated_unit = "a", treatment_time = 7)
 #' fit$att
+#' }
 #' @export
 morie_synth_control <- function(data, outcome, unit, time,
                                 treated_unit, treatment_time,
@@ -232,7 +235,7 @@ morie_synth_control <- function(data, outcome, unit, time,
       placebo_pvalue = pval,
       placebo_ratios = stats::setNames(placebo_ratios, donors),
       v_weights = main$v,
-      method = "synthetic_control (morie native)"
+      method = "synthetic_control (rmorie native)"
     ),
     class = c("morie_synth", "list")
   )
@@ -242,9 +245,18 @@ morie_synth_control <- function(data, outcome, unit, time,
 #'
 #' @param x A \code{morie_synth} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `invisible`.
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie:::print.morie_synth(D)
+#' @references
+#'   Abadie, A., Diamond, A., & Hainmueller, J. (2010).
+#'   Synthetic control methods for comparative case studies.
+#'   \emph{JASA}, 105(490), 493--505.
 #' @export
+#' @keywords internal
 print.morie_synth <- function(x, ...) {
-  cat("Synthetic control (morie native)\n")
+  cat("Synthetic control (rmorie native)\n")
   cat("  treated unit :", as.character(x$treated_unit), "\n")
   w <- sort(x$weights[x$weights > 1e-3], decreasing = TRUE)
   cat("  donors (w>0.001):",

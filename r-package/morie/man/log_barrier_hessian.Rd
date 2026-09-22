@@ -22,3 +22,8 @@ Square numeric matrix.
 (Boyd p. 564). The second term is omitted when \code{hess} is
 \code{NULL}, which is the affine case.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+log_barrier_hessian(V, V)
+}
+\keyword{internal}

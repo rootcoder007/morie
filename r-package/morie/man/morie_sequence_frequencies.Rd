@@ -17,3 +17,9 @@ A step of the bnshrt_native implementation. Called by \code{morie_identified_set
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+Y <- matrix(rbinom(40, 1, 0.5), 20, 2)
+morie_sequence_frequencies(Y)
+}
+\keyword{internal}

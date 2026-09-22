@@ -31,8 +31,9 @@ here a simple rank-match).}
 Data frame with \code{Gamma}, \code{p_lower}, \code{p_upper}.
 }
 \description{
-Computes normal-approximation Wilcoxon signed-rank bounds natively
-in base R.
+Native base R rank-matched-pair signed-rank bounds across a Gamma
+grid, via the normal approximation to the Wilcoxon signed-rank
+statistic.
 }
 \examples{
 if (requireNamespace("EValue", quietly = TRUE) && requireNamespace("rbounds", quietly = TRUE)) {

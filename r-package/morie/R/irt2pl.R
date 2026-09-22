@@ -13,7 +13,16 @@
 #
 # Helpers live in aaa_helpers_irt.R.
 
-#' @noRd
+#' morie_two_parameter_logistic
+#'
+#' @param theta Argument `theta`; see Usage.
+#' @param a Argument `a`; see Usage.
+#' @param b Argument `b`; see Usage.
+#' @return A list with `p`, `logit`, `theta`, `a`, `b`, `n`, `method`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_two_parameter_logistic(V)
+#' @keywords internal
 morie_two_parameter_logistic <- function(theta, a = 1, b = 0) {
   th <- as.numeric(theta)
   n <- length(th)

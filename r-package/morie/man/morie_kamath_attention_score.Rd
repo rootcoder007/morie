@@ -58,6 +58,31 @@ morie_kamath_masked_attention(Q, K, V, M, d_k = NULL)
 \item{M}{Additive mask, applied INSIDE the scaling (the book's
 convention; differs from Vaswani's for finite masks).}
 }
+\value{
+A list with \code{estimate}, \code{alpha}, \code{n}, \code{method}.
+}
 \description{
 Kamath Ch 2 attention chain (Eq 2.7-2.12, 2.15-2.16, 2.19)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_attention_score(V, V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_attention_softmax(V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_softmax_element(V, V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_attention_output(V, V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_scaled_dot_score(V, V)
+morie_kamath_scaled_dot_attention(Q = 0.5, K = c(1, 2, 3, 4, 5, 6, 7, 8),
+  V = c(1, 2, 3, 4, 5, 6, 7, 8))
+set.seed(1)
+X <- matrix(stats::rnorm(6), 3, 2)
+W <- lapply(1:3, function(i) matrix(stats::rnorm(4), 2, 2))
+morie_kamath_multihead_head_i(X, X, X, W[[1]], W[[2]], W[[3]])
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_multihead_concat(V, V)
+morie_kamath_masked_attention(Q = 0.5, K = 5L, V = 5L, M = 5L)
+}
+\keyword{internal}

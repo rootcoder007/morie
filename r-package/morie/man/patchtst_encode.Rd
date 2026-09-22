@@ -2,12 +2,12 @@
 % Please edit documentation in R/patchT_native.R
 \name{patchtst_encode}
 \alias{patchtst_encode}
-\title{The full front end: instance norm, patch, per-channel tokens}
+\title{patchtst_encode}
 \usage{
 patchtst_encode(X, patch_len, stride = NULL, normalise = TRUE)
 }
 \arguments{
-\item{X}{A matrix; passed to \code{as.matrix}.}
+\item{X}{Passed to \code{.patcht_mat}.}
 
 \item{patch_len}{Passed to \code{channel_independent_tokens}.}
 
@@ -25,3 +25,7 @@ A step of the patchT_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+patchtst_encode(X = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+}
+\keyword{internal}

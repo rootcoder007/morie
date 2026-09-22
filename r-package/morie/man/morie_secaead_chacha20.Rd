@@ -24,3 +24,13 @@ A step of the secaead_native implementation. Called by
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+key <- as.raw(0:31)
+nonce <- as.raw(c(0, 0, 0, 0, 0, 0, 0, 0x4a, 0, 0, 0, 0))
+pt <- charToRaw(paste0("Ladies and Gentlemen of the class of \x2799: If I could offer you ",
+  "only one tip for the future, sunscreen would be it."))
+ct <- morie_secaead_chacha20(key, 1, nonce, pt)
+stopifnot(ct[1] == 0x6e, ct[2] == 0x2e, ct[3] == 0x35, ct[4] == 0x9a)
+head(ct, 8)
+}
+\keyword{internal}

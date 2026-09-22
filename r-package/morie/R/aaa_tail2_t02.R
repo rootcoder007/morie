@@ -34,32 +34,43 @@
 #' @examples
 #' OddsRat(10, 20, 15, 25)
 OddsRat <- function(a, b, c, d, conf_level = 0.95, correction = 0) {
-  if (!(conf_level > 0 && conf_level < 1))
+  if (!(conf_level > 0 && conf_level < 1)) {
     stop("conf_level must lie strictly between 0 and 1")
+  }
   aa <- a + correction
   bb <- b + correction
   cc <- c + correction
   dd <- d + correction
-  if (any(c(aa, bb, cc, dd) < 0))
+  if (any(c(aa, bb, cc, dd) < 0)) {
     stop("2 x 2 cell counts must be non-negative")
+  }
   n <- a + b + c + d
   est <- if (bb == 0 || cc == 0) Inf else (aa * dd) / (bb * cc)
-  if (aa == 0 || bb == 0 || cc == 0 || dd == 0)
-    return(list(estimate = est, log_estimate = NaN, se_log = NaN,
-                ci_lower = NaN, ci_upper = NaN, z = NaN, p_value = NaN,
-                n = n, conf_level = conf_level,
-                method = paste("Cornfield (1951) cross-product odds ratio;",
-                               "a zero cell leaves the Woolf variance undefined")))
+  if (aa == 0 || bb == 0 || cc == 0 || dd == 0) {
+    return(list(
+      estimate = est, log_estimate = NaN, se_log = NaN,
+      ci_lower = NaN, ci_upper = NaN, z = NaN, p_value = NaN,
+      n = n, conf_level = conf_level,
+      method = paste(
+        "Cornfield (1951) cross-product odds ratio;",
+        "a zero cell leaves the Woolf variance undefined"
+      )
+    ))
+  }
   log_or <- log(est)
   se <- sqrt(1 / aa + 1 / bb + 1 / cc + 1 / dd)
   zq <- qnorm(0.5 + 0.5 * conf_level)
   z <- log_or / se
   p <- 2 * (1 - pnorm(abs(z)))
-  list(estimate = est, log_estimate = log_or, se_log = se,
-       ci_lower = exp(log_or - zq * se), ci_upper = exp(log_or + zq * se),
-       z = z, p_value = p, n = n, conf_level = conf_level,
-       method = paste("Cornfield (1951) cross-product odds ratio,",
-                      "Woolf (1955) log-scale variance 1/a+1/b+1/c+1/d"))
+  list(
+    estimate = est, log_estimate = log_or, se_log = se,
+    ci_lower = exp(log_or - zq * se), ci_upper = exp(log_or + zq * se),
+    z = z, p_value = p, n = n, conf_level = conf_level,
+    method = paste(
+      "Cornfield (1951) cross-product odds ratio,",
+      "Woolf (1955) log-scale variance 1/a+1/b+1/c+1/d"
+    )
+  )
 }
 
 # ---- Cronbach (1951) alpha ------------------------------------------
@@ -138,9 +149,11 @@ CttAlpha <- function(X) {
   tv <- sum((tot - m)^2) / (n - 1)
   if (tv <= 0) stop("total score has zero variance; alpha is undefined")
   alpha <- (k / (k - 1)) * (1 - sv / tv)
-  list(alpha = alpha, estimate = alpha, item_var = iv, sum_item_var = sv,
-       total_var = tv, n_items = k, n = n,
-       method = "Cronbach (1951) alpha = k/(k-1) (1 - sum V_i / V_t)")
+  list(
+    alpha = alpha, estimate = alpha, item_var = iv, sum_item_var = sv,
+    total_var = tv, n_items = k, n = n,
+    method = "Cronbach (1951) alpha = k/(k-1) (1 - sum V_i / V_t)"
+  )
 }
 
 #' Cronbach (1951) alpha with each item deleted in turn
@@ -161,18 +174,22 @@ CttAlphaMax <- function(X) {
   for (j in seq_len(k)) drop[j] <- .t2_alpha_on(X, setdiff(seq_len(k), j))
   best <- 1L
   for (j in seq_len(k)) if (drop[j] > drop[best]) best <- j
-  list(alpha_full = full, alpha_dropped = drop, delta = drop - full,
-       max_alpha = drop[best], argmax_alpha = best - 1L,
-       estimate = drop[best], n_items = k, n = n,
-       method = "Cronbach (1951) alpha recomputed with each item deleted")
+  list(
+    alpha_full = full, alpha_dropped = drop, delta = drop - full,
+    max_alpha = drop[best], argmax_alpha = best - 1L,
+    estimate = drop[best], n_items = k, n = n,
+    method = "Cronbach (1951) alpha recomputed with each item deleted"
+  )
 }
 
 # ---- Rousseeuw & Croux (1993) Qn and Sn -----------------------------
 # Definitions and both correction blocks are quoted verbatim from
 # robustbase R/qnsn.R; see the Python docstrings for the quotations.
 
-.T2_QN_SMALL <- c(.399356, .99365, .51321, .84401, .61220,
-                  .85877, .66993, .87344, .72014, .88906, .75743)
+.T2_QN_SMALL <- c(
+  .399356, .99365, .51321, .84401, .61220,
+  .85877, .66993, .87344, .72014, .88906, .75743
+)
 .T2_SN_SMALL <- c(0.743, 1.851, 0.954, 1.351, 0.993, 1.198, 1.005, 1.131)
 
 #' .t2_qn_finite_c
@@ -188,8 +205,11 @@ CttAlphaMax <- function(X) {
 #' res <- .t2_qn_finite_c(n = 3L)
 #' res
 .t2_qn_finite_c <- function(n) {
-  inner <- if (n %% 2L)  1.60188 + (-2.1284 - 5.172 / n) / n
-           else          3.67561 + (1.9654 + (6.987 - 77 / n) / n) / n
+  inner <- if (n %% 2L) {
+    1.60188 + (-2.1284 - 5.172 / n) / n
+  } else {
+    3.67561 + (1.9654 + (6.987 - 77 / n) / n) / n
+  }
   inner / n + 1
 }
 
@@ -207,22 +227,30 @@ QnScale <- function(y, constant = 2.21914, finite_corr = TRUE) {
   n <- length(x)
   if (n < 2L) stop("Qn needs at least two observations")
   h <- n %/% 2L + 1L
-  k <- (h * (h - 1L)) %/% 2L          # %/% binds tighter than *; parens matter
+  k <- (h * (h - 1L)) %/% 2L # %/% binds tighter than *; parens matter
   d <- numeric((n * (n - 1L)) %/% 2L)
   p <- 0L
-  for (i in seq_len(n - 1L)) for (j in (i + 1L):n) {
-    p <- p + 1L
-    d[p] <- abs(x[i] - x[j])
+  for (i in seq_len(n - 1L)) {
+    for (j in (i + 1L):n) {
+      p <- p + 1L
+      d[p] <- abs(x[i] - x[j])
+    }
   }
   d <- sort(d)
   raw <- d[k]
-  corr <- if (!finite_corr) 1
-          else if (n <= 12L) .T2_QN_SMALL[n - 1L]
-          else 1 / .t2_qn_finite_c(n)
-  list(estimate = constant * raw * corr, raw = raw, k = k, h = h,
-       n_pairs = (n * (n - 1L)) %/% 2L, correction = corr,
-       constant = constant, n = n,
-       method = "Rousseeuw & Croux (1993) Qn, robustbase qnsn.R definition")
+  corr <- if (!finite_corr) {
+    1
+  } else if (n <= 12L) {
+    .T2_QN_SMALL[n - 1L]
+  } else {
+    1 / .t2_qn_finite_c(n)
+  }
+  list(
+    estimate = constant * raw * corr, raw = raw, k = k, h = h,
+    n_pairs = (n * (n - 1L)) %/% 2L, correction = corr,
+    constant = constant, n = n,
+    method = "Rousseeuw & Croux (1993) Qn, robustbase qnsn.R definition"
+  )
 }
 
 #' Rousseeuw & Croux (1993) Sn robust scale
@@ -241,17 +269,24 @@ SnScale <- function(y, constant = 1.1926, finite_corr = TRUE) {
   inner <- numeric(n)
   for (i in seq_len(n)) {
     row <- sort(abs(x[i] - x))
-    inner[i] <- row[n %/% 2L + 1L]          # himed
+    inner[i] <- row[n %/% 2L + 1L] # himed
   }
   srt <- sort(inner)
-  raw <- srt[(n + 1L) %/% 2L]               # lomed
-  corr <- if (!finite_corr) 1
-          else if (n <= 9L) .T2_SN_SMALL[n - 1L]
-          else if (n %% 2L) n / (n - 0.9)
-          else 1
-  list(estimate = constant * raw * corr, raw = raw, inner = inner,
-       correction = corr, constant = constant, n = n,
-       method = "Rousseeuw & Croux (1993) Sn, robustbase qnsn.R definition")
+  raw <- srt[(n + 1L) %/% 2L] # lomed
+  corr <- if (!finite_corr) {
+    1
+  } else if (n <= 9L) {
+    .T2_SN_SMALL[n - 1L]
+  } else if (n %% 2L) {
+    n / (n - 0.9)
+  } else {
+    1
+  }
+  list(
+    estimate = constant * raw * corr, raw = raw, inner = inner,
+    correction = corr, constant = constant, n = n,
+    method = "Rousseeuw & Croux (1993) Sn, robustbase qnsn.R definition"
+  )
 }
 
 # ---- Bray & Curtis (1957) -------------------------------------------
@@ -268,15 +303,18 @@ BrayCurt <- function(x, y, close = TRUE) {
   a <- as.numeric(x)
   b <- as.numeric(y)
   n <- length(a)
-  if (n == 0L || length(b) != n)
+  if (n == 0L || length(b) != n) {
     stop("x and y must be non-empty and of equal length")
-  if (any(a < 0) || any(b < 0))
+  }
+  if (any(a < 0) || any(b < 0)) {
     stop("Bray-Curtis is defined for non-negative parts")
+  }
   if (close) {
     sa <- sum(a)
     sb <- sum(b)
-    if (sa <= 0 || sb <= 0)
+    if (sa <= 0 || sb <= 0) {
       stop("a composition cannot be closed to a zero total")
+    }
     a <- a / sa
     b <- b / sb
   }
@@ -284,10 +322,14 @@ BrayCurt <- function(x, y, close = TRUE) {
   den <- sum(a + b)
   if (den <= 0) stop("both vectors are zero; Bray-Curtis is undefined")
   bc <- num / den
-  list(bc = bc, estimate = bc, numerator = num, denominator = den,
-       similarity = 1 - bc, closed = close, n = n,
-       method = paste("Bray & Curtis (1957) dissimilarity,",
-                      "sum|x-y| / sum(x+y); a dissimilarity, not a metric"))
+  list(
+    bc = bc, estimate = bc, numerator = num, denominator = den,
+    similarity = 1 - bc, closed = close, n = n,
+    method = paste(
+      "Bray & Curtis (1957) dissimilarity,",
+      "sum|x-y| / sum(x+y); a dissimilarity, not a metric"
+    )
+  )
 }
 
 # ---- Csiszar (1967) f-divergence ------------------------------------
@@ -301,15 +343,20 @@ BrayCurt <- function(x, y, close = TRUE) {
 #' @param key Passed to \code{switch}.
 #' @return The value of \code{switch}.
 #' @export
-.t2_named_f <- function(key) switch(key,
-  kl        = function(t) if (t > 0) t * log(t) else 0,
-  rkl       = function(t) if (t > 0) -log(t) else Inf,
-  tv        = function(t) 0.5 * abs(t - 1),
-  chi2      = function(t) (t - 1)^2,
-  hellinger = function(t) (sqrt(t) - 1)^2,
-  js        = function(t) (if (t > 0) t * log(t) else 0) -
-                          (t + 1) * log((t + 1) / 2),
-  stop(sprintf("unknown generator '%s'", key)))
+.t2_named_f <- function(key) {
+  switch(key,
+    kl = function(t) if (t > 0) t * log(t) else 0,
+    rkl = function(t) if (t > 0) -log(t) else Inf,
+    tv = function(t) 0.5 * abs(t - 1),
+    chi2 = function(t) (t - 1)^2,
+    hellinger = function(t) (sqrt(t) - 1)^2,
+    js = function(t) {
+      (if (t > 0) t * log(t) else 0) -
+        (t + 1) * log((t + 1) / 2)
+    },
+    stop(sprintf("unknown generator '%s'", key))
+  )
+}
 
 #' .t2_named_inf
 #'
@@ -320,9 +367,17 @@ BrayCurt <- function(x, y, close = TRUE) {
 #' @param key Passed to \code{switch}.
 #' @return The value of \code{switch}.
 #' @export
-.t2_named_inf <- function(key) switch(key,
-  kl = Inf, rkl = 0, tv = 0.5, chi2 = Inf, hellinger = 1, js = log(2),
-  stop(sprintf("unknown generator '%s'", key)))
+.t2_named_inf <- function(key) {
+  switch(key,
+    kl = Inf,
+    rkl = 0,
+    tv = 0.5,
+    chi2 = Inf,
+    hellinger = 1,
+    js = log(2),
+    stop(sprintf("unknown generator '%s'", key))
+  )
+}
 
 #' Csiszar (1967) f-divergence D_f(p || q) = sum q f(p/q)
 #' @param p,q non-negative weights of equal length
@@ -340,8 +395,9 @@ FDiverg <- function(p, q, f = "kl", f_inf = NULL, normalise = TRUE) {
   a <- as.numeric(p)
   b <- as.numeric(q)
   n <- length(a)
-  if (n == 0L || length(b) != n)
+  if (n == 0L || length(b) != n) {
     stop("p and q must be non-empty and of equal length")
+  }
   if (any(a < 0) || any(b < 0)) stop("p and q must be non-negative")
   if (is.character(f)) {
     key <- tolower(f)
@@ -357,20 +413,27 @@ FDiverg <- function(p, q, f = "kl", f_inf = NULL, normalise = TRUE) {
   if (normalise) {
     sa <- sum(a)
     sb <- sum(b)
-    if (sa <= 0 || sb <= 0)
+    if (sa <= 0 || sb <= 0) {
       stop("p and q must each carry positive total mass")
+    }
     a <- a / sa
     b <- b / sb
   }
   terms <- numeric(n)
   for (i in seq_len(n)) {
-    terms[i] <- if (b[i] > 0) fn(a[i] / b[i]) * b[i]
-                else if (a[i] > 0) a[i] * f_inf
-                else 0
+    terms[i] <- if (b[i] > 0) {
+      fn(a[i] / b[i]) * b[i]
+    } else if (a[i] > 0) {
+      a[i] * f_inf
+    } else {
+      0
+    }
   }
-  list(divergence = sum(terms), estimate = sum(terms), terms = terms,
-       support = sum(terms != 0), generator = nm, f_inf = f_inf, n = n,
-       method = "Csiszar (1967) f-divergence, sum q f(p/q)")
+  list(
+    divergence = sum(terms), estimate = sum(terms), terms = terms,
+    support = sum(terms != 0), generator = nm, f_inf = f_inf, n = n,
+    method = "Csiszar (1967) f-divergence, sum q f(p/q)"
+  )
 }
 
 # ---- Davison & Smith (1990) mean excess -----------------------------
@@ -389,12 +452,14 @@ MeanExc <- function(x, u_grid = NULL, conf_level = 0.95) {
   xs <- as.numeric(x)
   n <- length(xs)
   if (n < 2L) stop("mean excess needs at least two observations")
-  if (!(conf_level > 0 && conf_level < 1))
+  if (!(conf_level > 0 && conf_level < 1)) {
     stop("conf_level must lie strictly between 0 and 1")
+  }
   if (is.null(u_grid)) {
     uniq <- sort(unique(xs))
-    if (length(uniq) < 2L)
+    if (length(uniq) < 2L) {
       stop("x is constant; no threshold leaves an exceedance")
+    }
     grid <- uniq[-length(uniq)]
   } else {
     grid <- as.numeric(u_grid)
@@ -422,10 +487,14 @@ MeanExc <- function(x, u_grid = NULL, conf_level = 0.95) {
     lo[g] <- mu - zq * se[g]
     hi[g] <- mu + zq * se[g]
   }
-  list(u = grid, e = e, se = se, sd_excess = sd, ci_lower = lo,
-       ci_upper = hi, n_exceed = cnt, conf_level = conf_level, n = n,
-       method = paste("Davison & Smith (1990) mean excess e(u)=E[X-u|X>u];",
-                      "linear in u above a generalised Pareto threshold"))
+  list(
+    u = grid, e = e, se = se, sd_excess = sd, ci_lower = lo,
+    ci_upper = hi, n_exceed = cnt, conf_level = conf_level, n = n,
+    method = paste(
+      "Davison & Smith (1990) mean excess e(u)=E[X-u|X>u];",
+      "linear in u above a generalised Pareto threshold"
+    )
+  )
 }
 
 # ---- Grubbs (1969) --------------------------------------------------
@@ -446,8 +515,9 @@ GrubbsT <- function(x, alpha = 0.05, opposite = FALSE) {
   xs <- as.numeric(x)
   n <- length(xs)
   if (n < 3L) stop("Grubbs' test needs at least three observations")
-  if (!(alpha > 0 && alpha < 1))
+  if (!(alpha > 0 && alpha < 1)) {
     stop("alpha must lie strictly between 0 and 1")
+  }
   m <- sum(xs) / n
   sd <- sqrt(sum((xs - m)^2) / (n - 1))
   if (sd <= 0) stop("x is constant; Grubbs' statistic is undefined")
@@ -475,24 +545,34 @@ GrubbsT <- function(x, alpha = 0.05, opposite = FALSE) {
   ta <- qt(alpha / n, n - 2)
   ta2 <- ta * ta
   crit <- ((n - 1) / sqrt(n)) * sqrt(ta2 / (n - 2 + ta2))
-  list(statistic = g, p_value = p, critical_value = crit,
-       reject = g > crit, outlier = xs[idx], index = idx - 1L,
-       side = side, mean = m, sd = sd, alpha = alpha, n = n,
-       method = paste("Grubbs (1969) single-outlier test,",
-                      "outliers::grubbs.test type 10;",
-                      "p = n (1 - pt(t, n-2)), one-sided"))
+  list(
+    statistic = g, p_value = p, critical_value = crit,
+    reject = g > crit, outlier = xs[idx], index = idx - 1L,
+    side = side, mean = m, sd = sd, alpha = alpha, n = n,
+    method = paste(
+      "Grubbs (1969) single-outlier test,",
+      "outliers::grubbs.test type 10;",
+      "p = n (1 - pt(t, n-2)), one-sided"
+    )
+  )
 }
 
 # ---- Dixon (1953) ---------------------------------------------------
 # Ratios transcribed from outliers::dixon.test.  No p-value: the null
 # distribution is a stored table there, not a formula.
 
-.T2_DIX_NUM <- c("10" = 1L, "11" = 1L, "12" = 1L,
-                 "20" = 2L, "21" = 2L, "22" = 2L)
-.T2_DIX_DEN <- c("10" = 0L, "11" = 1L, "12" = 2L,
-                 "20" = 0L, "21" = 1L, "22" = 2L)
-.T2_DIX_MIN <- c("10" = 3L, "11" = 4L, "12" = 5L,
-                 "20" = 4L, "21" = 5L, "22" = 6L)
+.T2_DIX_NUM <- c(
+  "10" = 1L, "11" = 1L, "12" = 1L,
+  "20" = 2L, "21" = 2L, "22" = 2L
+)
+.T2_DIX_DEN <- c(
+  "10" = 0L, "11" = 1L, "12" = 2L,
+  "20" = 0L, "21" = 1L, "22" = 2L
+)
+.T2_DIX_MIN <- c(
+  "10" = 3L, "11" = 4L, "12" = 5L,
+  "20" = 4L, "21" = 5L, "22" = 6L
+)
 
 #' Dixon (1953) ratio for the most extreme observation
 #' @param x numeric sample
@@ -505,13 +585,17 @@ GrubbsT <- function(x, alpha = 0.05, opposite = FALSE) {
 #' DixonQ(V)
 DixonQ <- function(x, type = 10, opposite = FALSE) {
   key <- as.character(as.integer(type))
-  if (!(key %in% names(.T2_DIX_NUM)))
+  if (!(key %in% names(.T2_DIX_NUM))) {
     stop("type must be one of 10, 11, 12, 20, 21, 22")
+  }
   xs <- sort(as.numeric(x))
   n <- length(xs)
-  if (n < .T2_DIX_MIN[[key]])
-    stop(sprintf("Dixon type %s needs at least %d observations",
-                 key, .T2_DIX_MIN[[key]]))
+  if (n < .T2_DIX_MIN[[key]]) {
+    stop(sprintf(
+      "Dixon type %s needs at least %d observations",
+      key, .T2_DIX_MIN[[key]]
+    ))
+  }
   num_off <- .T2_DIX_NUM[[key]]
   den_off <- .T2_DIX_DEN[[key]]
   m <- sum(xs) / n
@@ -529,11 +613,17 @@ DixonQ <- function(x, type = 10, opposite = FALSE) {
     side <- "min"
   }
   if (den == 0) stop("Dixon's denominator is zero; the ratio is undefined")
-  list(statistic = num / den, type = as.integer(type),
-       outlier = xs[idx], side = side, numerator = num,
-       denominator = den, n = n,
-       method = sprintf(paste("Dixon (1953) ratio type %d,",
-                              "outliers::dixon.test; no p-value,",
-                              "the null distribution is tabulated only"),
-                        as.integer(type)))
+  list(
+    statistic = num / den, type = as.integer(type),
+    outlier = xs[idx], side = side, numerator = num,
+    denominator = den, n = n,
+    method = sprintf(
+      paste(
+        "Dixon (1953) ratio type %d,",
+        "outliers::dixon.test; no p-value,",
+        "the null distribution is tabulated only"
+      ),
+      as.integer(type)
+    )
+  )
 }

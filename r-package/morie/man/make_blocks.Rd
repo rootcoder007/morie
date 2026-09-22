@@ -23,3 +23,7 @@ A step of the regmlm_native implementation. Called by \code{morie_regmlm}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+make_blocks(n_markers = 5L)
+}
+\keyword{internal}

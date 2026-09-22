@@ -23,3 +23,7 @@ A step of the twoT_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_twoT_tower_embedding(features = 5L, W = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

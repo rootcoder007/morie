@@ -21,8 +21,13 @@ distances of \code{A}, over every pair, rather than reporting a
 probabilistic promise. Pairs whose original squared distance is
 zero (coincident points) are skipped, mirroring the Python arm.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+distortion(V, V)
+}
 \references{
 Achlioptas, D. (2003). Theorem 1.1. Johnson, W. B.
 & Lindenstrauss, J. (1984). Contemporary Mathematics, 26,
 189-206.
 }
+\keyword{internal}

@@ -19,3 +19,8 @@ A list with \code{delta}, \code{n}, \code{shift}, \code{amplitude}, \code{method
 \description{
 is an ordinary sequence, evaluable at the origin.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+KDelta(V)
+}
+\keyword{internal}

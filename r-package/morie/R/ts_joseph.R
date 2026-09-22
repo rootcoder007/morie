@@ -137,10 +137,12 @@
 #' @return The value of \code{.morie_jo_solve}.
 #' @export
 #' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
-#' res <- .morie_jo_ols(x = x, y = y)
-#' res
+#' if (morie_crypto_liboqs_available()) {
+#'   x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#'   y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#'   res <- .morie_jo_ols(x = x, y = y)
+#'   res
+#' }
 .morie_jo_ols <- function(x, y) {
   x <- as.matrix(x)
   n <- nrow(x)
@@ -162,8 +164,10 @@
 #' @return list(rmse, mse, mae, bias, n)
 #' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_rmse(V, V)
+#' if (morie_crypto_liboqs_available()) {
+#'   V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#'   morie_rmse(V, V)
+#' }
 morie_rmse <- function(y, yhat) {
   p <- .morie_jo_pair(y, yhat)
   e <- p$a - p$b
@@ -182,8 +186,10 @@ morie_rmse <- function(y, yhat) {
 #' @return list(mape, mdape, maxape, n)
 #' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_mapets(V, V)
+#' if (morie_crypto_liboqs_available()) {
+#'   V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#'   morie_mapets(V, V)
+#' }
 morie_mapets <- function(y, yhat) {
   p <- .morie_jo_pair(y, yhat)
   if (any(p$a == 0)) {
@@ -204,8 +210,10 @@ morie_mapets <- function(y, yhat) {
 #' @return list(smape, smdape, n)
 #' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_smape(V, V)
+#' if (morie_crypto_liboqs_available()) {
+#'   V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#'   morie_smape(V, V)
+#' }
 morie_smape <- function(y, yhat) {
   p <- .morie_jo_pair(y, yhat)
   den <- abs(p$a) + abs(p$b)
@@ -228,8 +236,8 @@ morie_smape <- function(y, yhat) {
 #' @return list(rmsse, scale, mase, n)
 #' @export
 #' @examples
-#' morie_rmsse(y = c(1, 2, 3, 4, 5, 6, 7, 8), yhat = c(1, 2, 3, 4, 5, 6, 7, 8), insample
-#' = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_rmsse(y = c(1, 2, 3, 4, 5, 6, 7, 8), yhat = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   insample = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_rmsse <- function(y, yhat, insample, season = 1L) {
   p <- .morie_jo_pair(y, yhat)
   ins <- .morie_jo_vec(insample, "insample")
@@ -253,8 +261,8 @@ morie_rmsse <- function(y, yhat, insample, season = 1L) {
 #' @return list(relmae, mae, benchmae, better, n)
 #' @export
 #' @examples
-#' morie_relmae(y = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5), yhat = c(1, 2, 3, 4, 5, 6,
-#' 7, 8), benchmark = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_relmae(y = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5), yhat = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   benchmark = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_relmae <- function(y, yhat, benchmark) {
   p <- .morie_jo_pair(y, yhat)
   cb <- .morie_jo_vec(benchmark, "benchmark")
@@ -272,7 +280,7 @@ morie_relmae <- function(y, yhat, benchmark) {
 #'
 #' The book points at the quantile loss for probabilistic forecasts.
 #' The canonical statement is TFT eq. (25): QL(y, yhat, q) =
-#' q (y - yhat)_+ + (1 - q)(yhat - y)_+ -- Lim, Arik, Loeff and
+#' q (y - yhat)&#95;+ + (1 - q)(yhat - y)&#95;+ -- Lim, Arik, Loeff and
 #' Pfister, arXiv:1912.09363.
 #' @param y observed values
 #' @param qhat forecast quantiles
@@ -305,8 +313,8 @@ morie_pinball <- function(y, qhat, q) {
 #' @return list(score, total, coverage, meanwidth, n)
 #' @export
 #' @examples
-#' morie_winkler(y = c(1, 2, 3, 4, 5, 6, 7, 8), lower = c(1, 2, 3, 4, 5, 6, 7, 8), upper
-#' = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_winkler(y = c(1, 2, 3, 4, 5, 6, 7, 8), lower = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   upper = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_winkler <- function(y, lower, upper, alpha = 0.1) {
   a <- .morie_jo_vec(y, "y")
   lo <- .morie_jo_vec(lower, "lower")
@@ -725,7 +733,7 @@ morie_pacfts <- function(x, maxlag = 20L) {
 
 #' Augmented Dickey-Fuller unit-root test (ch. 6 p. 149)
 #'
-#' Regresses diff(x)_t on a constant, x_\{t-1\} and lags lagged
+#' Regresses diff(x)&#95;t on a constant, x&#95;\{t-1\} and lags lagged
 #' differences; the statistic is the t-ratio on x_\{t-1\}. The null is a
 #' unit root, so a statistic BELOW the critical value rejects
 #' non-stationarity. Critical values are MacKinnon's (1991) response
@@ -1195,9 +1203,9 @@ morie_quantreg <- function(x, y, q, iters = 25L) {
 #' @return list(qhat, lower, upper, k, n, meanwidth, widening)
 #' @export
 #' @examples
-#' morie_cqr(callo = c(1, 2, 3, 4, 5, 6, 7, 8), calhi = c(1, 2, 3, 4, 5, 6, 7, 8), caly =
-#' c(1, 2, 3, 4, 5, 6, 7, 8), lo = c(1, 2, 3, 4, 5, 6, 7, 8), hi = c(1, 2, 3, 4, 5, 6, 7,
-#' 8))
+#' morie_cqr(callo = c(1, 2, 3, 4, 5, 6, 7, 8), calhi = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   caly = c(1, 2, 3, 4, 5, 6, 7, 8), lo = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   hi = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_cqr <- function(callo, calhi, caly, lo, hi, alpha = 0.1) {
   cl <- .morie_jo_vec(callo, "callo")
   ch <- .morie_jo_vec(calhi, "calhi")
@@ -1449,8 +1457,8 @@ morie_seriesdecomp <- function(x, kernel) {
 #'   trendmean, seasrange)
 #' @export
 #' @examples
-#' morie_autoform(q = c(1, 2, 3, 4, 5, 6, 7, 8), k = c(1, 2, 3, 4, 5, 6, 7, 8), v = c(1,
-#' 2, 3, 4, 5, 6, 7, 8))
+#' morie_autoform(q = c(1, 2, 3, 4, 5, 6, 7, 8), k = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   v = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_autoform <- function(q, k, v, kernel = 3L, c = 1) {
   qv <- .morie_jo_vec(q, "q")
   kv <- .morie_jo_vec(k, "k")
@@ -1622,8 +1630,8 @@ morie_nhitsnet <- function(y, horizon, kernels, ratios, wf, wb) {
 #' GLU_omega(eta_1))" with eta_2 = ELU(W_2 a + W_3 c + b_2); (5)
 #' "GLU_omega(gamma) = sigma(W_4 gamma + b_4) * (W_5 gamma + b_5)";
 #' (6) "v_chi_t = Softmax(GRN_v_chi(Xi_t, c_s))"; (23) "yhat(q,t,tau)
-#' = W_q psitilde(t,tau) + b_q"; (25) "QL(y, yhat, q) = q(y - yhat)_+ +
-#' (1 - q)(yhat - y)_+" -- Lim, B., Arik, S. O., Loeff, N. and
+#' = W_q psitilde(t,tau) + b_q"; (25) "QL(y, yhat, q) = q(y - yhat)&#95;+ +
+#' (1 - q)(yhat - y)&#95;+" -- Lim, B., Arik, S. O., Loeff, N. and
 #' Pfister, T., Temporal Fusion Transformers, International Journal of
 #' Forecasting 37(4):1748-1764 (arXiv:1912.09363). All weights are
 #' caller-supplied.
@@ -1761,8 +1769,8 @@ morie_tide <- function(y, feats, fproj, enc, dec, tdec, wglobal, horizon) {
 
 #' TSMixer time-mixing and feature-mixing, all-MLP
 #'
-#' Quoted from the paper: (4) "TP_\{L->T\}(X)_\{*,i\} = W_1 X_\{*,i\} + b_1";
-#' (5) "TM(X)_\{*,i\} = Norm(X_\{*,i\} + Drop(sigma(TP_\{L->L\}(X)_\{*,i\})))"
+#' Quoted from the paper: (4) "TP_\{L->T\}(X)_\{&#42;,i\} = W_1 X_\{&#42;,i\} + b_1";
+#' (5) "TM(X)_\{&#42;,i\} = Norm(X_\{&#42;,i\} + Drop(sigma(TP_\{L->L\}(X)_\{&#42;,i\})))"
 #' -- Chen, S.-A., Li, C.-L., Yoder, N. C., Arik, S. O. and Pfister,
 #' T., TSMixer: An All-MLP Architecture for Time Series Forecasting,
 #' TMLR 2023 (arXiv:2303.06053), Appendix B.3.1. Feature mixing and

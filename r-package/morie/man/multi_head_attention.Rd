@@ -27,3 +27,12 @@ A step of the berte_native implementation. Called by \code{encoder_block}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+Q <- matrix(rnorm(12), 3, 4)
+K <- matrix(rnorm(12), 3, 4)
+V <- matrix(rnorm(12), 3, 4)
+r <- multi_head_attention(Q, K, V, n_heads = 2)
+str(r, max.level = 1)
+}
+\keyword{internal}

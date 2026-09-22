@@ -18,5 +18,6 @@ Scores a_i = qnorm(R_i / (N + 1)); statistic = sum over the
 first sample.
 }
 \examples{
+set.seed(1)
 morie_van_der_waerden_test(x = rnorm(50), y = rnorm(50))
 }

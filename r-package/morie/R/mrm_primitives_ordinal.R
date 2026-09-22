@@ -41,15 +41,8 @@ NULL
 # mrm_primitives_gentrification.R and are reused (not redefined) here.
 
 
-#' Log-likelihood of a single binary logit with linear predictor `eta`
-#'
-#' (intercept already folded in).  Uses log1p(exp(-|eta|)) for
-#' stability.
-#'
-#' @param eta Numeric; passed to \code{exp}.
-#' @param y Numeric; combined arithmetically in the body.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Tso Logit Ll
+#' @noRd
 .tso_logit_ll <- function(eta, y) {
   # log-likelihood of a single binary logit with linear predictor `eta`
   # (intercept already folded in).  Uses log1p(exp(-|eta|)) for stability.
@@ -57,18 +50,8 @@ NULL
 }
 
 
-#' Fallback proportional-odds fit (no MASS): stack the K-1 cutpoint
-#'
-#' binary problems and constrain beta to be shared while letting
-#' cutpoint intercepts differ.  Mirrors _logit_fit_no_intercept().
-#'
-#' @param X A matrix; passed to \code{nrow}.
-#' @param y Passed to \code{<=}.
-#' @param K Numeric; combined arithmetically in the body.
-#' @param max_iter Carried through into a list the body builds.
-#' @param tol Carried through into a list the body builds.
-#' @return A list with \code{intercepts}, \code{beta}.
-#' @export
+#' Internal helper: Tso Fit Po Stacked
+#' @noRd
 .tso_fit_po_stacked <- function(X, y, K, max_iter, tol) {
   # Fallback proportional-odds fit (no MASS): stack the K-1 cutpoint
   # binary problems and constrain beta to be shared while letting
@@ -116,7 +99,7 @@ NULL
 #'   the proportional-odds baseline is fit and an LR test against the
 #'   threshold-specific model is reported.
 #' @param max_iter,tol IRLS / GLM control passed to \code{\link[stats]{glm.fit}}.
-#' @return An object of class \code{c("mrm_threshold_specific_ordinal",
+#' @return An object of class \eqn{c("mrm_threshold_specific_ordinal",
 #'   "morie_mrm_result", "list")} with elements
 #'   \code{threshold_labels}, \code{covariate_names},
 #'   \code{coefficients} (a (K-1) x p matrix), \code{cutpoints},
@@ -125,6 +108,7 @@ NULL
 #'   \code{proportional_odds_p}.
 #' @export
 #' @examples
+#' set.seed(1)
 #' if (FALSE) {
 #'   df <- data.frame(
 #'     y = sample(c("low", "med", "high"), 200, replace = TRUE),
@@ -308,7 +292,6 @@ mrm_threshold_specific_ordinal <- function(
 #' @param x A result from \code{\link{mrm_threshold_specific_ordinal}}.
 #' @param covariate Character, name of one covariate.
 #' @return A named numeric vector keyed by threshold label.
-#' @export
 #' @examples
 #' set.seed(1)
 #' df <- data.frame(
@@ -322,6 +305,7 @@ mrm_threshold_specific_ordinal <- function(
 #'   ordinal_levels = c("low", "med", "high")
 #' )
 #' str(mrm_threshold_coefficient(fit, "race"), max.level = 1)
+#' @export
 mrm_threshold_coefficient <- function(x, covariate) {
   stopifnot(inherits(x, "mrm_threshold_specific_ordinal"),
             is.character(covariate), length(covariate) == 1L,

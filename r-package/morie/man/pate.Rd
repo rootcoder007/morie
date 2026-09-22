@@ -2,7 +2,7 @@
 % Please edit documentation in R/pate_native.R
 \name{pate}
 \alias{pate}
-\title{Label \code{queries} by noisy teacher aggregation and account for the}
+\title{pate}
 \usage{
 pate(
   teacher_predicts,
@@ -17,7 +17,7 @@ pate(
 )
 }
 \arguments{
-\item{teacher_predicts}{Coerced to list by the body, with \code{as.list}.}
+\item{teacher_predicts}{A vector; its length is taken.}
 
 \item{queries}{Coerced to list by the body, with \code{as.list}.}
 
@@ -43,5 +43,8 @@ A list with \code{estimate}, \code{labels}, \code{clean_labels}, \code{votes},
 \code{n_teachers}, \code{n_queries}, \code{student}, \code{note}, \code{method}.
 }
 \description{
-privacy cost.
+A step of the pate_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\keyword{internal}

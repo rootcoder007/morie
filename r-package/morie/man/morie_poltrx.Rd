@@ -27,7 +27,11 @@ The main entry point builds a finite tree, the level parameter
 rule and the implied density in one call, and reports the same
 payload the Python arm returns.
 }
+\examples{
+morie_poltrx(levels = 5L)
+}
 \references{
 Muller, P. & Quintana, F. A. (2004). Nonparametric
 Bayesian Data Analysis. Statistical Science, 19(1), 95-110.
 }
+\keyword{internal}

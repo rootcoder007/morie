@@ -19,3 +19,8 @@ A step of the barerp_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+f <- .Fun(function(x) sum(x^2))
+val.Fun(f, c(1, 2))
+}
+\keyword{internal}

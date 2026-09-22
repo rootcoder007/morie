@@ -12,10 +12,7 @@ repeated_measures_anova(data, outcome, subject, within)
 \item{outcome, subject, within}{Column names.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the within-subjects F statistic, p-value, df, partial eta-squared,
-and \code{extra} list carrying \code{df_error}, \code{ss_cond} and
-\code{ss_error}.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Sphericity assumption is left to the user; this routine computes the

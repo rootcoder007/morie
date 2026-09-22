@@ -31,3 +31,7 @@ A step of the rangayyan_filt2 implementation. Called by \code{BwHp}, \code{BwLp}
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+BwDigital(N = 4, fc = 100, fs = 1000)
+}
+\keyword{internal}

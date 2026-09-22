@@ -11,13 +11,13 @@ morie_weights_design(selection_probs)
 for \code{design}.}
 }
 \value{
-Numeric vector of design weights, same length as
-\code{selection_probs}.
+A numeric vector of design (inverse-probability) weights.
 }
 \description{
 \eqn{w_i = 1 / \pi_i}{w_i = 1 / pi_i}.
 }
 \examples{
-p <- c(0.1, 0.2, 0.5, 1)
-morie_weights_design(p)
+set.seed(1)
+res <- morie_weights_design(runif(20, 0.05, 0.2))
+str(res, max.level = 1)
 }

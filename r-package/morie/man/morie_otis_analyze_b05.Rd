@@ -10,14 +10,13 @@ morie_otis_analyze_b05(data)
 \item{data}{b05 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines and a duration-bin x
-fiscal-year crosstab of placement counts.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 Distribution of placements by binned duration (b05)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_b05(V)
+otis_b05 <- morie_synth_otis("b05", n = 120L, seed = 1L)
+res <- morie_otis_analyze_b05(otis_b05)
+class(res)
 }

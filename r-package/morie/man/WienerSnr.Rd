@@ -21,3 +21,8 @@ stresses and this checks: zero where the signal is absent (nothing to
 restore), unity where the noise is absent (nothing to suppress), and
 falling monotonically with the SNR in between.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+WienerSnr(V, V)
+}
+\keyword{internal}

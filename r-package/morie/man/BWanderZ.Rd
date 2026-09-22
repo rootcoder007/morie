@@ -24,3 +24,8 @@ this form because the graphical method reads it directly -- numerator
 is the distance to the zero at 1, denominator the distance to the
 pole.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+BWanderZ(V)
+}
+\keyword{internal}

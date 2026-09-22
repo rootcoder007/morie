@@ -68,6 +68,7 @@
 #'   Variational Inference: A Review for Statisticians. JASA
 #'   112(518), 859-877.
 #' @export
+#' @keywords internal
 morie_baynav <- function(u, w, b, value, support, eps,
                          z0, log_q0, layers,
                          log_joint, log_q, samples) {
@@ -81,7 +82,7 @@ morie_baynav <- function(u, w, b, value, support, eps,
        "directly")
 }
 
-#' Project \code{u} so that \code{u\'w >= -1}
+#' Project \code{u} so that \eqn{u'w >= -1}
 #'
 #' Outside this region the planar flow is not invertible and the
 #' change-of-variables formula is simply wrong, so the reported bound
@@ -90,6 +91,10 @@ morie_baynav <- function(u, w, b, value, support, eps,
 #' @param u,w Numeric vectors of equal length.
 #' @return A list with \code{u, adjusted, u_dot_w, u_dot_w_after, note}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' enforce_invertibility(V, V)
+#' @keywords internal
 enforce_invertibility <- function(u, w) {
   uv <- as.numeric(u)
   wv <- as.numeric(w)
@@ -109,16 +114,20 @@ enforce_invertibility <- function(u, w) {
        note = "u'w >= -1 is required for invertibility")
 }
 
-#' Planar flow \code{z + u*tanh(w\'z + b)} with its log-determinant
+#' Planar flow \eqn{z + u*tanh(w'z + b)} with its log-determinant
 #'
 #' The Jacobian is rank-one, so the matrix determinant lemma gives
-#' \code{|1 + u\'psi(z)|} in O(d) rather than O(d^3).
+#' \eqn{|1 + u'psi(z)|} in O(d) rather than O(d^3).
 #'
 #' @param z,u,w Numeric vectors of equal length.
 #' @param b Numeric scalar.
-#' @return A list with \code{z, log_det, det, invertibility_adjusted,
+#' @return A list with \eqn{z, log_det, det, invertibility_adjusted,
 #'   note}.
 #' @export
+#' @examples
+#' planar_flow(z = c(1, 2, 3, 4, 5, 6, 7, 8), u = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   w = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
+#' @keywords internal
 planar_flow <- function(z, u, w, b) {
   zv <- as.numeric(z)
   fixed <- enforce_invertibility(u, w)
@@ -144,9 +153,15 @@ planar_flow <- function(z, u, w, b) {
 #' @param z0 Numeric vector; the base sample.
 #' @param log_q0 Numeric scalar; the base log-density at \code{z0}.
 #' @param layers List of \code{list(u, w, b)} triples.
-#' @return A list with \code{estimate, log_q, z, log_dets, depth,
+#' @return A list with \eqn{estimate, log_q, z, log_dets, depth,
 #'   method, note}.
 #' @export
+#' @examples
+#' layers <- list(list(u = c(0.3, 0.1), w = c(0.2, -0.4), b = 0.1),
+#'                list(u = c(-0.1, 0.2), w = c(0.3, 0.1), b = 0))
+#' r <- flow_log_density(z0 = c(0.5, -0.2), log_q0 = -1.5, layers)
+#' str(r, max.level = 1)
+#' @keywords internal
 flow_log_density <- function(z0, log_q0, layers) {
   z <- as.numeric(z0)
   lq <- as.numeric(log_q0)
@@ -177,6 +192,9 @@ flow_log_density <- function(z0, log_q0, layers) {
 #'   knob for the R arm.
 #' @return A list with \code{real, log_jacobian, inverse}.
 #' @export
+#' @examples
+#' transform_to_real(value = 5L)
+#' @keywords internal
 transform_to_real <- function(value, support = "positive", eps = 1e-10) {
   # The Python arm's `eps` is accepted but only used to guard
   # against log(0) for positive parameters; the R guard is
@@ -218,6 +236,12 @@ transform_to_real <- function(value, support = "positive", eps = 1e-10) {
 #' @param samples List of samples.
 #' @return A list with \code{elbo, se, n_samples, note}.
 #' @export
+#' @examples
+#' lj <- function(s) -0.5 * s^2 - 1
+#' lq <- function(s) -0.5 * (s - 0.2)^2 - 0.9
+#' r <- elbo(lj, lq, samples = c(-0.5, 0, 0.5, 1))
+#' str(r, max.level = 1)
+#' @keywords internal
 elbo <- function(log_joint, log_q, samples) {
   if (length(samples) == 0L)
     stop("baynav: no samples given")

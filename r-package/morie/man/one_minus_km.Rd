@@ -21,3 +21,8 @@ A step of the tmlcmp_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+hazards <- list("1" = c(0.10, 0.15, 0.20), "2" = c(0.05, 0.05, 0.10))
+one_minus_km(hazards, times = c(1, 2, 3), cause = 1)
+}
+\keyword{internal}

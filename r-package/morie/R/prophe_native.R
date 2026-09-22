@@ -24,8 +24,8 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param t Passed to \code{morie_prphet}.
-#' @param y Passed to \code{morie_prphet}.
+#' @param t Passed to \code{morie_prphet_fit}.
+#' @param y Passed to \code{morie_prphet_fit}.
 #' @param seasonalities Optional; may be \code{NULL}. A vector; its length is taken.
 #' @param holidays Optional; may be \code{NULL}. A vector; its length is taken.
 #' @param holiday_window A vector; indexed elementwise. Defaults to \code{c(0, 0)}.
@@ -34,10 +34,16 @@
 #' \code{residual}, \code{reconstruction_error}, \code{reconstructs}, \code{coef},
 #' \code{changepoints}, \code{sigma}, \code{n}, \code{component_names}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' t <- 1:60
+#' y <- sin(2 * pi * t / 12) + 0.05 * t + rnorm(60) * 0.1
+#' prophe_additive_components(t, y)
+#' @keywords internal
 prophe_additive_components <- function(t, y, seasonalities = NULL,
                                        holidays = NULL,
                                        holiday_window = c(0, 0), ...) {
-  fit <- morie_prphet(t, y, seasonalities = seasonalities,
+  fit <- morie_prphet_fit(t, y, seasonalities = seasonalities,
                             holidays = holidays,
                             holiday_window = holiday_window, ...)
   tv <- fit$t
@@ -51,7 +57,7 @@ prophe_additive_components <- function(t, y, seasonalities = NULL,
       name <- s[[1L]]
       period <- s[[2L]]
       order <- as.integer(s[[3L]])
-      Fmat <- fourier_terms(tv, period, order)
+      Fmat <- morie_prphet_fourier_terms(tv, period, order)
       vals <- numeric(n)
       for (i in seq_len(n)) {
         acc <- 0.0
@@ -59,8 +65,8 @@ prophe_additive_components <- function(t, y, seasonalities = NULL,
           cos_key <- paste0(name, "_cos", nn)
           sin_key <- paste0(name, "_sin", nn)
           # Python indexes F[i][2*nn - 2] and [2*nn - 1] 0-based
-          acc <- acc + (coef[[cos_key]] * Fmat[[i]][2L * nn - 1L]
-                        + coef[[sin_key]] * Fmat[[i]][2L * nn])
+          acc <- acc + (coef[[cos_key]] * Fmat[i, 2L * nn - 1L]
+                        + coef[[sin_key]] * Fmat[i, 2L * nn])
         }
         vals[i] <- acc
       }
@@ -68,16 +74,16 @@ prophe_additive_components <- function(t, y, seasonalities = NULL,
     }
   }
   if (!is.null(holidays) && length(holidays) > 0L) {
-    H <- holiday_matrix(tv, holidays, holiday_window[1L],
+    H <- morie_prphet_holiday_matrix(tv, holidays, holiday_window[1L],
                                holiday_window[2L])
-    Hmat <- H$matrix
+    Hmat <- H$rows
     names <- H$names
     vals <- numeric(n)
     for (i in seq_len(n)) {
       acc <- 0.0
       for (j in seq_along(names)) {
         key <- paste0("holiday_", names[j])
-        acc <- acc + coef[[key]] * Hmat[[i]][j]
+        acc <- acc + coef[[key]] * Hmat[i, j]
       }
       vals[i] <- acc
     }
@@ -112,6 +118,10 @@ prophe_additive_components <- function(t, y, seasonalities = NULL,
 #' @param components A vector; indexed elementwise.
 #' @return A list with \code{sd}, \code{relative}, \code{ranked}, \code{note}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' prophe_component_shares(D)
+#' @keywords internal
 prophe_component_shares <- function(components) {
   out <- list()
   for (nm in names(components)) {
@@ -142,6 +152,9 @@ prophe_component_shares <- function(components) {
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' prophe_cheatsheet()
+#' @keywords internal
 prophe_cheatsheet <- function() {
   paste0("prophe: same model and source as prphet (Taylor & Letham ",
          "2018 eq. 1) -- this is the DECOMPOSITION view. Fit once, ",
@@ -165,6 +178,12 @@ prophe_cheatsheet <- function() {
 #' @param ... Passed through.
 #' @return The value of \code{prophe_additive_components}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' t <- 1:60
+#' y <- sin(2 * pi * t / 12) + 0.05 * t + rnorm(60) * 0.1
+#' morie_prophe(t, y)
+#' @keywords internal
 morie_prophe <- function(t, y, seasonalities = NULL, holidays = NULL,
                          holiday_window = c(0, 0), ...) {
   prophe_additive_components(t, y, seasonalities = seasonalities,

@@ -29,9 +29,13 @@ decompose_effects(
 
 \item{draws}{See Usage.}
 }
+\value{
+A list with \code{estimate}, \code{direct}, \code{spillover}, \code{total}, \code{method}, \code{note}.
+}
 \description{
 Direct: own exposure varies with the neighbourhood held at
 \code{p_low}. Spillover: own held at \code{p_low} while the
 neighbourhood varies. Reporting only the total hides which
 mechanism produced it.
 }
+\keyword{internal}

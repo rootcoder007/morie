@@ -19,3 +19,9 @@ A step of the vidgen_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+S <- c("a", "b", "c")
+morie_vidgen_space_only_conv(D, S)
+}
+\keyword{internal}

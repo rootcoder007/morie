@@ -12,14 +12,14 @@ semi_partial_correlation(x, y, covariates)
 \item{covariates}{Matrix or data frame of covariates.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the semi-partial correlation r as the test statistic and estimate,
-p-value, and r-squared effect size.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Semi-partial (part) correlation
 }
 \examples{
-semi_partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
-covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
+set.seed(1)
+z <- matrix(rnorm(90), nrow = 30)
+x <- rnorm(30); y <- x + rnorm(30)
+semi_partial_correlation(x, y, z)
 }

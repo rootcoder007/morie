@@ -12,10 +12,11 @@
 #' @return named list with `estimate`, `cdf_grid`, `cdf_post`,
 #'   `cdf_var`, `alpha_post`, `n`, `method`.
 #' @examples
+#' set.seed(1)
 #' morie_ghosal_dirichlet_posterior(x = rnorm(50))
 #' @export
 morie_ghosal_dirichlet_posterior <- function(x, alpha = 1.0, base_mean = 0,
-                                       base_sd = 1, grid = NULL) {
+                                             base_sd = 1, grid = NULL) {
   x <- as.numeric(x)
   n <- length(x)
   if (is.null(grid)) {

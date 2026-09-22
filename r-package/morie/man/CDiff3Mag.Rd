@@ -19,3 +19,8 @@ A list with \code{magnitude}, \code{omega}, \code{T}, \code{dc_gain},
 highpass factor, at Nyquist from the moving-average factor -- peaking
 at w = pi/2.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+CDiff3Mag(V)
+}
+\keyword{internal}

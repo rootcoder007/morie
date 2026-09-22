@@ -26,6 +26,8 @@ Mzrecur <- function(state, action, dynamics, prediction = NULL) {
     p <- pv[[1]]
     v <- as.numeric(pv[[2]])
   }
-  .t1_result(state = s, reward = as.numeric(r), policy = p, value = v,
-             method = "MuZero recurrent inference (Schrittwieser et al. 2020)")
+  .t1_result(
+    state = s, reward = as.numeric(r), policy = p, value = v,
+    method = "MuZero recurrent inference (Schrittwieser et al. 2020)"
+  )
 }

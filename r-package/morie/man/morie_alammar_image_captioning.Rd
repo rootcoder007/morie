@@ -77,7 +77,28 @@ step) -> loss.}
 \item{reconstruction_logprob}{Optional
 per-ORIGINAL-token log-probs.}
 }
+\value{
+A list with \code{caption}, \code{projected}, \code{feature_dim}, \code{projected_dim}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Captioning projection, unfreezing, continued pretraining,
 augmentation, TSDAE
 }
+\examples{
+morie_alammar_image_captioning("img", function(im) c(1, 2), rbind(c(1,
+    0)), function(z, p) "cap")
+morie_alammar_layer_freezing(n_layers = 5L)
+s <- morie_alammar_sampling_decoding(matrix(rep(c(1, 0), 10),
+    10, 2, byrow = TRUE), seed = 7)
+morie_alammar_continued_pretraining("doc", function(docs, s) 1/(s +
+    1), 5)
+b <- morie_alammar_bag_of_words(c("a", "b", "a", "z"), c("a",
+    "b", "c"))
+morie_alammar_augmented_sbert(list(c("x", "x"), c("x", "y")),
+    function(a, b) if (a == b) 1 else 0, gold_pairs = list(c("p",
+        "p"), c("p", "q"), c("r", "r"), c("r", "s")), gold_labels = c(1,
+        0, 1, 0))
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_tsdae_objective(V)
+}
+\keyword{internal}

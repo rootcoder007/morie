@@ -12,14 +12,14 @@
 #' @param dx Spatial step (default 0.1).
 #' @param dt Time step (default 0.01).
 #' @param n_steps Number of time steps (default 100).
-#' @return Named list \code{(value, T_final, T_initial, history,
+#' @return Named list \eqn{(value, T_final, T_initial, history,
 #'   r_stability, n_steps, alpha, method)}.
 #' @references Crank (1975), Mathematics of Diffusion.
 #' @examples
 #' morie_diffu_heat_diffusion(T0 = rep(0, 10))
 #' @export
 morie_diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
-                                 n_steps = 100L) {
+                                       n_steps = 100L) {
   T0 <- as.numeric(T0)
   if (length(T0) < 3L) stop("T0 must have at least 3 points.")
   r <- alpha * dt / (dx^2)
@@ -68,7 +68,7 @@ morie_diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
 #' #   vignette(package = "morie")
 #' @export
 morie_diffu_diffusion_forward <- function(x0, t, betas = NULL, num_steps = 1000L,
-                                    noise = NULL, seed = 0L) {
+                                          noise = NULL, seed = 0L) {
   x0 <- as.numeric(x0)
   if (is.null(betas)) betas <- seq(1e-4, 0.02, length.out = num_steps)
   betas <- as.numeric(betas)

@@ -20,7 +20,7 @@ maximise_acquisition(
   n_starts = 8,
   max_iter = 60,
   tol = 1e-08,
-  rnd = NULL
+  seed = 0
 )
 }
 \arguments{
@@ -54,7 +54,7 @@ maximise_acquisition(
 
 \item{tol}{Passed to \code{<}. Defaults to \code{1e-08}.}
 
-\item{rnd}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{seed}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0}.}
 }
 \value{
 A list with \code{x}, \code{acq}, \code{n_starts}, \code{evaluations}.
@@ -64,3 +64,13 @@ A step of the bayopt_native implementation. Called by \code{bayopt}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+X <- matrix(runif(20), 10, 2)
+y <- sin(3 * X[, 1]) + X[, 2]
+r <- maximise_acquisition(X, y, best = max(y),
+                          box = list(c(0, 1), c(0, 1)),
+                          acq = "ei", n_starts = 3, max_iter = 20)
+str(r, max.level = 1)
+}
+\keyword{internal}

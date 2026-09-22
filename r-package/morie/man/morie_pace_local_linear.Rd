@@ -25,3 +25,12 @@ one distinct point inside the bandwidth -- the fit falls back to the
 weighted mean, which is the local CONSTANT fit and the only thing
 identified there.
 }
+\examples{
+set.seed(1)
+t <- sort(runif(80))
+y <- sin(2 * pi * t) + rnorm(80, 0, 0.1)
+at <- seq(0.05, 0.95, length.out = 11)
+fit <- morie_pace_local_linear(t, y, at, bw = 0.12)
+c(length(fit), max(abs(fit - sin(2 * pi * at))) < 0.3)
+}
+\keyword{internal}

@@ -25,8 +25,12 @@ residuals \code{v = 1}, and with \code{psi = Phi^-1{(n+m)/2n}} the
 denominator is \code{m/n - 2 psi phi(psi)}, so the reciprocal is
 exactly \code{1 - (2n/m) psi phi(psi)}. Multiply \code{s^2} by it.
 }
+\examples{
+morie_forwsr_consistency_factor(m = 5L, n = 5L)
+}
 \references{
 Riani, M., Atkinson, A. C. and Cerioli, A. (2009)
 Journal of the Royal Statistical Society Series B 71(2), 447-466,
 doi:10.1111/j.1467-9868.2008.00692.x, equation (12).
 }
+\keyword{internal}

@@ -13,3 +13,7 @@ Character scalar.
 Returns the Python arm's \code{cheatsheet()} string, so both arms
 carry the same compact description.
 }
+\examples{
+morie_survvae_cheatsheet()
+}
+\keyword{internal}

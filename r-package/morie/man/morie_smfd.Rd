@@ -33,18 +33,23 @@ A list with \code{estimate} (the effective dimension),
 \description{
 Penalised least squares on a B-spline basis with a difference
 penalty on the coefficients (Eilers & Marx 1996). The normal
-equations are \code{(B\'B + lambda D\'D) a = B\'y} with \code{B}
+equations are \eqn{(B'B + lambda D'D) a = B'y} with \code{B}
 the B-spline design matrix and \code{D} the \code{order}-th
 difference matrix. The penalty order fixes the limit: as
 \code{lam} tends to infinity the fit becomes a polynomial of
 degree \code{order - 1} exactly, with \code{order = 2} giving
 the OLS line. The effective dimension is the trace of the
-smoother matrix \code{H = B (B\'B + lambda D\'D)^{-1} B\'}, and
+smoother matrix \eqn{H = B (B'B + lambda D'D)^{-1} B'}, and
 the leave-one-out deletion residual is \code{e_i / (1 - h_ii)}
 from the hat diagonal.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_smfd(V, V)
 }
 \references{
 Eilers, P. H. C. & Marx, B. D. (1996). Flexible
 smoothing with B-splines and penalties. Statistical Science,
 11(2), 89-121.
 }
+\keyword{internal}

@@ -35,5 +35,6 @@ Change-point detection is the manual largest-absolute-difference
 heuristic (the R port does not require \pkg{changepoint}).
 }
 \examples{
-mrm_uof_yoy_change()
+inc <- morie_datasets_corrections_uof_incidents()
+str(mrm_uof_yoy_change(df = inc, year_col = "year"), max.level = 1)
 }

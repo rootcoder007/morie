@@ -10,7 +10,7 @@ morie_state_space_model(x)
 \item{x}{Numeric univariate series.}
 }
 \value{
-Named list with \code{filtered_state, filtered_state_variance,
+Named list with \eqn{filtered_state, filtered_state_variance,
   smoothed_state, loglik, Q, R, n, method}.
 }
 \description{
@@ -22,5 +22,6 @@ smoothed (Rauch-Tung-Striebel). Equivalent to the
 \code{dlmSmooth} pipeline it replaces, cross-validated in tests.
 }
 \examples{
+set.seed(1)
 morie_state_space_model(x = rnorm(50))
 }

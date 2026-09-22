@@ -13,12 +13,11 @@ bin_contigs(
 )
 }
 \arguments{
-\item{tnfs}{A matrix; passed to \code{as.matrix}.}
+\item{tnfs}{Passed to \code{.metabd_mat}.}
 
 \item{coverages}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 
-\item{lengths}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
-\code{as.numeric}.}
+\item{lengths}{Optional; may be \code{NULL}. Passed to \code{.metabd_vec}.}
 
 \item{threshold}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.15}.}
 
@@ -34,3 +33,8 @@ A step of the metabd_native implementation. Called by \code{morie_metabd}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+bin_contigs(V)
+}
+\keyword{internal}

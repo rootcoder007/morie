@@ -20,3 +20,8 @@ A beat found only by search-back was missed by the primary threshold,
 so the running estimate is too high and the heavier weight pulls it
 down.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+QrsSpkiUpd(V, V)
+}
+\keyword{internal}

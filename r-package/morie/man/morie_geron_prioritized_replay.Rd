@@ -20,6 +20,14 @@ morie_geron_prioritized_replay(
 
 \item{batch_size, seed}{Optional draw.}
 }
+\value{
+A list with \code{priorities}, \code{probabilities}, \code{weights}, \code{indices}, \code{alpha}, \code{beta}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Prioritized experience replay: TD-error priority sampling, IS weights (Geron Ch 19, hmper)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_prioritized_replay(V)
+}
+\keyword{internal}

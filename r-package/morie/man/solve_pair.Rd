@@ -30,3 +30,14 @@ A step of the svmopt_native implementation. Called by \code{smo}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+X <- rbind(matrix(rnorm(10, -1), 5, 2), matrix(rnorm(10, 1), 5, 2))
+y <- rep(c(-1, 1), each = 5)
+K <- X \%*\% t(X)
+a <- rep(0, 10)
+grad <- rep(-1, 10)
+r <- solve_pair(1L, 6L, a, y, K, grad, C = 1)
+str(r, max.level = 1)
+}
+\keyword{internal}

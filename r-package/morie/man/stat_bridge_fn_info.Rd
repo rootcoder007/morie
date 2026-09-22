@@ -16,6 +16,5 @@ Multi-line description string or an explanatory error string.
 Inspect a single command by name
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-stat_bridge_fn_info(V)
+cat(stat_bridge_fn_info("one_sample_ttest"))
 }

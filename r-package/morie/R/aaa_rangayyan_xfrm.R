@@ -15,14 +15,20 @@
 #' @param n0 Numeric; combined arithmetically in the body. Defaults to \code{0}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Ztrans(V)
+#' @keywords internal
 Ztrans <- function(x, z = NULL, n0 = 0) {
   # eq (3.54): X(z) = sum_n x(n) z^-n; eq (3.55) is the causal FIR case.
   xs <- as.numeric(x)
   if (!length(xs)) stop("need at least one sample")
   idx <- n0 + seq_along(xs) - 1L
-  out <- list(coefficients = xs, n = idx, causal = n0 >= 0,
-              degree = length(xs) - 1L,
-              method = "Rangayyan (2024) eqs. (3.54)-(3.55)")
+  out <- list(
+    coefficients = xs, n = idx, causal = n0 >= 0,
+    degree = length(xs) - 1L,
+    method = "Rangayyan (2024) eqs. (3.54)-(3.55)"
+  )
   if (is.null(z)) {
     out$X <- NULL
     out$z <- NULL
@@ -30,8 +36,10 @@ Ztrans <- function(x, z = NULL, n0 = 0) {
   }
   zs <- as.complex(z)
   if (any(zs == 0) && any(idx > 0)) stop("z = 0 is a pole of this sequence")
-  vals <- vapply(zs, function(zv) sum(as.complex(xs) * zv^(-idx)),
-                 complex(1))
+  vals <- vapply(
+    zs, function(zv) sum(as.complex(xs) * zv^(-idx)),
+    complex(1)
+  )
   out$X <- if (length(vals) == 1L) vals[[1]] else vals
   out$z <- if (length(zs) == 1L) zs[[1]] else zs
   out
@@ -69,13 +77,17 @@ Ztrans <- function(x, z = NULL, n0 = 0) {
 #' @return A list with \code{y}, \code{Y}, \code{XH}, \code{z}, \code{max_difference},
 #' \code{holds}, \code{method}.
 #' @export
+#' @examples
+#' ZtConv(x = c(1, 2, 3, 4, 5, 6, 7, 8), h = 0.5, z = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 ZtConv <- function(x, h, z) {
   # eq (3.56): y = x * h  =>  Y(z) = X(z) H(z).  Both sides computed
   # separately so the property is demonstrated, not assumed.
   xs <- as.numeric(x)
   hs <- as.numeric(h)
-  if (!length(xs) || !length(hs))
+  if (!length(xs) || !length(hs)) {
     stop("both sequences need at least one sample")
+  }
   zs <- as.complex(z)
   if (any(zs == 0)) stop("z = 0 is a pole of a causal sequence")
   y <- .morie_rg_conv(xs, hs)
@@ -85,11 +97,13 @@ ZtConv <- function(x, h, z) {
   gap <- max(Mod(lhs - rhs))
   scale <- max(Mod(rhs))
   if (scale == 0) scale <- 1
-  list(y = y, Y = if (length(lhs) == 1L) lhs[[1]] else lhs,
-       XH = if (length(rhs) == 1L) rhs[[1]] else rhs,
-       z = if (length(zs) == 1L) zs[[1]] else zs,
-       max_difference = gap, holds = gap <= 1e-9 * scale,
-       method = "Rangayyan (2024) eq. (3.56)")
+  list(
+    y = y, Y = if (length(lhs) == 1L) lhs[[1]] else lhs,
+    XH = if (length(rhs) == 1L) rhs[[1]] else rhs,
+    z = if (length(zs) == 1L) zs[[1]] else zs,
+    max_difference = gap, holds = gap <= 1e-9 * scale,
+    method = "Rangayyan (2024) eq. (3.56)"
+  )
 }
 
 #' Eq (3.66): the Fourier transform is the z-transform on the unit
@@ -102,6 +116,10 @@ ZtConv <- function(x, h, z) {
 #' @return A list with \code{X}, \code{z}, \code{omega}, \code{T}, \code{n},
 #' \code{on_unit_circle}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' DtftZ(V, V)
+#' @keywords internal
 DtftZ <- function(x, omega, fs = NULL) {
   # eq (3.66): the Fourier transform is the z-transform on the unit
   # circle, z = exp(j omega T).  fs = NULL reads omega as normalized.
@@ -113,10 +131,12 @@ DtftZ <- function(x, omega, fs = NULL) {
   idx <- seq_along(xs) - 1L
   vals <- vapply(zs, function(zv) sum(as.complex(xs) * zv^(-idx)), complex(1))
   one <- length(ws) == 1L
-  list(X = if (one) vals[[1]] else vals, z = if (one) zs[[1]] else zs,
-       omega = if (one) ws[[1]] else ws, T = t_s, n = length(xs),
-       on_unit_circle = all(abs(Mod(zs) - 1) < 1e-12),
-       method = "Rangayyan (2024) eq. (3.66)")
+  list(
+    X = if (one) vals[[1]] else vals, z = if (one) zs[[1]] else zs,
+    omega = if (one) ws[[1]] else ws, T = t_s, n = length(xs),
+    on_unit_circle = all(abs(Mod(zs) - 1) < 1e-12),
+    method = "Rangayyan (2024) eq. (3.66)"
+  )
 }
 
 #' Eq (3.74): exp(j omega t) = cos(omega t) + j sin(omega t)
@@ -130,22 +150,29 @@ DtftZ <- function(x, omega, fs = NULL) {
 #' @return A list with \code{value}, \code{real}, \code{imag}, \code{angle},
 #' \code{unit_modulus}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Euler(V)
+#' @keywords internal
 Euler <- function(omega, t = 0) {
   # eq (3.74): exp(j omega t) = cos(omega t) + j sin(omega t)
   ws <- as.numeric(omega)
   ts <- as.numeric(t)
-  if (length(ws) > 1L && length(ts) > 1L && length(ws) != length(ts))
+  if (length(ws) > 1L && length(ts) > 1L && length(ws) != length(ts)) {
     stop("omega and t must broadcast: equal lengths or one of them scalar")
+  }
   ang <- ws * ts
   re <- cos(ang)
   im <- sin(ang)
   vals <- complex(real = re, imaginary = im)
   one <- length(vals) == 1L
-  list(value = if (one) vals[[1]] else vals,
-       real = if (one) re[[1]] else re, imag = if (one) im[[1]] else im,
-       angle = if (one) ang[[1]] else ang,
-       unit_modulus = all(abs(Mod(vals) - 1) < 1e-15),
-       method = "Rangayyan (2024) eq. (3.74)")
+  list(
+    value = if (one) vals[[1]] else vals,
+    real = if (one) re[[1]] else re, imag = if (one) im[[1]] else im,
+    angle = if (one) ang[[1]] else ang,
+    unit_modulus = all(abs(Mod(vals) - 1) < 1e-15),
+    method = "Rangayyan (2024) eq. (3.74)"
+  )
 }
 
 #' Eqs (3.75)-(3.76): one transform in two frequency variables,
@@ -162,6 +189,11 @@ Euler <- function(omega, t = 0) {
 #' @return A list with \code{X}, \code{omega}, \code{f}, \code{variable},
 #' \code{duration}, \code{method}.
 #' @export
+#' @examples
+#' x <- rep(1, 201)
+#' t <- seq(0, 2, length.out = 201)
+#' Ctft(x, t = t, omega = 0)
+#' @keywords internal
 Ctft <- function(x, t = NULL, omega = NULL, f = NULL, dt = NULL) {
   # eqs (3.75)-(3.76): one transform in two frequency variables,
   # omega = 2 pi f.  Integrated over the supplied samples, so the limits
@@ -182,14 +214,18 @@ Ctft <- function(x, t = NULL, omega = NULL, f = NULL, dt = NULL) {
     variable <- "f"
   }
   vals <- vapply(ws, function(w) {
-    complex(real = .morie_rg_gridint(xs * cos(-w * ts), ts),
-            imaginary = .morie_rg_gridint(xs * sin(-w * ts), ts))
+    complex(
+      real = .morie_rg_gridint(xs * cos(-w * ts), ts),
+      imaginary = .morie_rg_gridint(xs * sin(-w * ts), ts)
+    )
   }, complex(1))
   one <- length(ws) == 1L
-  list(X = if (one) vals[[1]] else vals,
-       omega = if (one) ws[[1]] else ws, f = if (one) fs_[[1]] else fs_,
-       variable = variable, duration = ts[length(ts)] - ts[1],
-       method = "Rangayyan (2024) eqs. (3.75)-(3.76)")
+  list(
+    X = if (one) vals[[1]] else vals,
+    omega = if (one) ws[[1]] else ws, f = if (one) fs_[[1]] else fs_,
+    variable = variable, duration = ts[length(ts)] - ts[1],
+    method = "Rangayyan (2024) eqs. (3.75)-(3.76)"
+  )
 }
 
 #' Eq (3.76), the Hz spelling of eq (3.75); one implementation so the
@@ -202,6 +238,10 @@ Ctft <- function(x, t = NULL, omega = NULL, f = NULL, dt = NULL) {
 #' @param dt Passed to \code{Ctft}.
 #' @return The value of \code{Ctft}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' CtftF(V, V)
+#' @keywords internal
 CtftF <- function(x, f, t = NULL, dt = NULL) {
   # eq (3.76), the Hz spelling of eq (3.75); one implementation so the
   # two can never drift apart.
@@ -221,6 +261,12 @@ CtftF <- function(x, f, t = NULL, dt = NULL) {
 #' @param dt Passed to \code{Ctft}.
 #' @return The value of \code{Ctft}.
 #' @export
+#' @examples
+#' xs <- c(1, 0.5, -0.25, 0.75, 0)
+#' ts <- c(0, 0.25, 0.5, 0.75, 1)
+#' f0 <- 0.7
+#' Fourier(xs, t = ts, f = f0)
+#' @keywords internal
 Fourier <- function(x, t = NULL, omega = NULL, f = NULL, dt = NULL) {
   # eqs (3.75)-(3.76); the name Section 3.4.4 uses.
   Ctft(x, t = t, omega = omega, f = f, dt = dt)
@@ -237,6 +283,11 @@ Fourier <- function(x, t = NULL, omega = NULL, f = NULL, dt = NULL) {
 #' @param f Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{x}, \code{t}, \code{variable}, \code{scale}, \code{method}.
 #' @export
+#' @examples
+#' grid <- seq(-1, 1, length.out = 401)
+#' X <- rep(complex(real = 1, imaginary = 0), 401)
+#' Ictft(X, t = 0, omega = grid)
+#' @keywords internal
 Ictft <- function(X, t, omega = NULL, f = NULL) {
   # eq (3.77): the 1/(2 pi) belongs to the omega form only.  Getting that
   # factor wrong scales the synthesis by 6.28, so the branch is explicit.
@@ -253,22 +304,28 @@ Ictft <- function(X, t, omega = NULL, f = NULL) {
     k <- 2 * pi
     variable <- "f"
   }
-  if (length(grid) != length(Xs))
+  if (length(grid) != length(Xs)) {
     stop("X and the frequency grid must have equal length")
-  if (length(grid) < 2L)
+  }
+  if (length(grid) < 2L) {
     stop("need at least two frequency points to integrate")
+  }
   ts <- as.numeric(t)
   out <- vapply(ts, function(tv) {
     ang <- k * grid * tv
     re <- Re(Xs) * cos(ang) - Im(Xs) * sin(ang)
     im <- Re(Xs) * sin(ang) + Im(Xs) * cos(ang)
-    complex(real = scale * .morie_rg_gridint(re, grid),
-            imaginary = scale * .morie_rg_gridint(im, grid))
+    complex(
+      real = scale * .morie_rg_gridint(re, grid),
+      imaginary = scale * .morie_rg_gridint(im, grid)
+    )
   }, complex(1))
   one <- length(ts) == 1L
-  list(x = if (one) out[[1]] else out, t = if (one) ts[[1]] else ts,
-       variable = variable, scale = scale,
-       method = "Rangayyan (2024) eq. (3.77)")
+  list(
+    x = if (one) out[[1]] else out, t = if (one) ts[[1]] else ts,
+    variable = variable, scale = scale,
+    method = "Rangayyan (2024) eq. (3.77)"
+  )
 }
 
 #' Eq (3.78): discrete signal, CONTINUOUS frequency -- that is the whole
@@ -281,6 +338,10 @@ Ictft <- function(X, t, omega = NULL, f = NULL) {
 #' @param n0 Numeric; combined arithmetically in the body. Defaults to \code{0}.
 #' @return A list with \code{X}, \code{omega}, \code{n0}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Dtft(V, V)
+#' @keywords internal
 Dtft <- function(x, omega, n0 = 0) {
   # eq (3.78): discrete signal, CONTINUOUS frequency -- that is the whole
   # distinction from the DFT of eq (3.80), which samples this at N points.
@@ -288,13 +349,18 @@ Dtft <- function(x, omega, n0 = 0) {
   if (!length(xs)) stop("need at least one sample")
   ws <- as.numeric(omega)
   idx <- n0 + seq_along(xs) - 1L
-  vals <- vapply(ws, function(w)
-    complex(real = .morie_fsum(xs * cos(-w * idx)),
-            imaginary = .morie_fsum(xs * sin(-w * idx))), complex(1))
+  vals <- vapply(ws, function(w) {
+    complex(
+      real = .morie_fsum(xs * cos(-w * idx)),
+      imaginary = .morie_fsum(xs * sin(-w * idx))
+    )
+  }, complex(1))
   one <- length(ws) == 1L
-  list(X = if (one) vals[[1]] else vals, omega = if (one) ws[[1]] else ws,
-       n0 = as.integer(n0), n = length(xs),
-       method = "Rangayyan (2024) eq. (3.78)")
+  list(
+    X = if (one) vals[[1]] else vals, omega = if (one) ws[[1]] else ws,
+    n0 = as.integer(n0), n = length(xs),
+    method = "Rangayyan (2024) eq. (3.78)"
+  )
 }
 
 #' Eq (3.79): K need not equal N.  K > N samples the same DTFT more
@@ -305,6 +371,9 @@ Dtft <- function(x, omega, n0 = 0) {
 #' @param k_points Coerced to integer by the body, with \code{as.integer}.
 #' @return A list with \code{X}, \code{K}, \code{n}, \code{aliased}, \code{method}.
 #' @export
+#' @examples
+#' DftK(x = c(1, 2, 3, 4, 5, 6, 7, 8), k_points = 5L)
+#' @keywords internal
 DftK <- function(x, k_points) {
   # eq (3.79): K need not equal N.  K > N samples the same DTFT more
   # finely; K < N folds and the signal cannot be recovered.
@@ -314,11 +383,16 @@ DftK <- function(x, k_points) {
   if (kk < 1L) stop("K must be positive")
   step <- 2 * pi / kk
   idx <- seq_along(xs) - 1L
-  X <- vapply(0:(kk - 1L), function(k)
-    complex(real = .morie_fsum(xs * cos(-step * idx * k)),
-            imaginary = .morie_fsum(xs * sin(-step * idx * k))), complex(1))
-  list(X = X, K = kk, n = length(xs), aliased = kk < length(xs),
-       method = "Rangayyan (2024) eq. (3.79)")
+  X <- vapply(0:(kk - 1L), function(k) {
+    complex(
+      real = .morie_fsum(xs * cos(-step * idx * k)),
+      imaginary = .morie_fsum(xs * sin(-step * idx * k))
+    )
+  }, complex(1))
+  list(
+    X = X, K = kk, n = length(xs), aliased = kk < length(xs),
+    method = "Rangayyan (2024) eq. (3.79)"
+  )
 }
 
 #' Eq (3.80), evaluated straight from the definition: exact at any N,
@@ -330,6 +404,10 @@ DftK <- function(x, k_points) {
 #' @return A list with \code{X}, \code{real}, \code{imag}, \code{n}, \code{magnitude},
 #' \code{conjugate_symmetric}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Dft(V)
+#' @keywords internal
 Dft <- function(x) {
   # eq (3.80), evaluated straight from the definition: exact at any N,
   # with no power-of-two requirement.  eq (3.85) is the same sum split
@@ -339,15 +417,21 @@ Dft <- function(x) {
   if (!n) stop("need at least one sample")
   step <- 2 * pi / n
   idx <- seq_len(n) - 1L
-  re <- vapply(idx, function(k) .morie_fsum(xs * cos(-step * idx * k)),
-               numeric(1))
-  im <- vapply(idx, function(k) .morie_fsum(xs * sin(-step * idx * k)),
-               numeric(1))
+  re <- vapply(
+    idx, function(k) .morie_fsum(xs * cos(-step * idx * k)),
+    numeric(1)
+  )
+  im <- vapply(
+    idx, function(k) .morie_fsum(xs * sin(-step * idx * k)),
+    numeric(1)
+  )
   X <- complex(real = re, imaginary = im)
   mirror <- X[((n - idx) %% n) + 1L]
   sym <- all(Mod(X - Conj(mirror)) < 1e-9 * (1 + Mod(X)))
-  list(X = X, real = re, imag = im, n = n, magnitude = Mod(X),
-       conjugate_symmetric = sym, method = "Rangayyan (2024) eq. (3.80)")
+  list(
+    X = X, real = re, imag = im, n = n, magnitude = Mod(X),
+    conjugate_symmetric = sym, method = "Rangayyan (2024) eq. (3.80)"
+  )
 }
 
 #' Eq (3.80) with bin k at k fs / N.  Figure 3.38: for even N, DC and
@@ -358,6 +442,10 @@ Dft <- function(x) {
 #' @param fs Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @return The value of \code{r}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' DftX(V)
+#' @keywords internal
 DftX <- function(x, fs = 1) {
   # eq (3.80) with bin k at k fs / N.  Figure 3.38: for even N, DC and
   # the folding frequency fs/2 are the two real-valued bins.
@@ -380,18 +468,25 @@ DftX <- function(x, fs = 1) {
 #' @param power Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.
 #' @return A list with \code{W}, \code{N}, \code{power}, \code{root_of_unity}, \code{method}.
 #' @export
+#' @examples
+#' Twiddle(npoints = 5L)
+#' @keywords internal
 Twiddle <- function(npoints, power = 1) {
   # eq (3.82): W_N = exp(-j 2 pi / N), the N-th root of unity.
   n <- as.integer(npoints)
   if (n < 1L) stop("N must be positive")
   ps <- as.integer(power)
-  vals <- complex(real = cos(-2 * pi * ps / n),
-                  imaginary = sin(-2 * pi * ps / n))
+  vals <- complex(
+    real = cos(-2 * pi * ps / n),
+    imaginary = sin(-2 * pi * ps / n)
+  )
   one <- length(ps) == 1L
-  list(W = if (one) vals[[1]] else vals, N = n,
-       power = if (one) ps[[1]] else ps,
-       root_of_unity = if (one) Mod(vals[[1]]^n - 1) < 1e-9 else NULL,
-       method = "Rangayyan (2024) eq. (3.82)")
+  list(
+    W = if (one) vals[[1]] else vals, N = n,
+    power = if (one) ps[[1]] else ps,
+    root_of_unity = if (one) Mod(vals[[1]]^n - 1) < 1e-9 else NULL,
+    method = "Rangayyan (2024) eq. (3.82)"
+  )
 }
 
 #' Eq (3.83): the same transform written with twiddle factors, which is
@@ -403,6 +498,10 @@ Twiddle <- function(npoints, power = 1) {
 #' @return A list with \code{X}, \code{W}, \code{n}, \code{max_difference},
 #' \code{agrees_with_definition}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' DftTw(V)
+#' @keywords internal
 DftTw <- function(x) {
   # eq (3.83): the same transform written with twiddle factors, which is
   # the structure the FFT exploits via eqs (3.88)-(3.89).  Checked
@@ -415,15 +514,19 @@ DftTw <- function(x) {
     acc <- complex(real = 0, imaginary = 0)
     wk <- complex(real = 1, imaginary = 0)
     step <- w^k
-    for (v in xs) { acc <- acc + v * wk
-    wk <- wk * step }
+    for (v in xs) {
+      acc <- acc + v * wk
+      wk <- wk * step
+    }
     acc
   }, complex(1))
   direct <- Dft(xs)$X
   gap <- max(Mod(X - direct))
-  list(X = X, W = w, n = n, max_difference = gap,
-       agrees_with_definition = gap <= 1e-8 * (1 + max(Mod(direct))),
-       method = "Rangayyan (2024) eq. (3.83)")
+  list(
+    X = X, W = w, n = n, max_difference = gap,
+    agrees_with_definition = gap <= 1e-8 * (1 + max(Mod(direct))),
+    method = "Rangayyan (2024) eq. (3.83)"
+  )
 }
 
 #' Eq (3.84): W_N^(nk) = cos(.) - j sin(.).  Note the MINUS on the sine:
@@ -437,6 +540,9 @@ DftTw <- function(x) {
 #' @return A list with \code{W}, \code{cos}, \code{sin}, \code{angle}, \code{N},
 #' \code{n}, \code{k}, \code{method}.
 #' @export
+#' @examples
+#' TwidCS(npoints = 5L, n = 5L, k = 5L)
+#' @keywords internal
 TwidCS <- function(npoints, n, k) {
   # eq (3.84): W_N^(nk) = cos(.) - j sin(.).  Note the MINUS on the sine:
   # the DFT projects onto the conjugated exponential, and that sign is
@@ -446,9 +552,11 @@ TwidCS <- function(npoints, n, k) {
   ang <- 2 * pi * as.integer(n) * as.integer(k) / nn
   cc <- cos(ang)
   ss <- sin(ang)
-  list(W = complex(real = cc, imaginary = -ss), cos = cc, sin = ss,
-       angle = ang, N = nn, n = as.integer(n), k = as.integer(k),
-       method = "Rangayyan (2024) eq. (3.84)")
+  list(
+    W = complex(real = cc, imaginary = -ss), cos = cc, sin = ss,
+    angle = ang, N = nn, n = as.integer(n), k = as.integer(k),
+    method = "Rangayyan (2024) eq. (3.84)"
+  )
 }
 
 #' Eq (3.85): the real part is the projection onto the k-th cosine, the
@@ -459,6 +567,10 @@ TwidCS <- function(npoints, n, k) {
 #' @return A list with \code{X}, \code{cos_projection}, \code{sin_projection},
 #' \code{real}, \code{imag}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' DftRI(V)
+#' @keywords internal
 DftRI <- function(x) {
   # eq (3.85): the real part is the projection onto the k-th cosine, the
   # imaginary part is MINUS the projection onto the corresponding sine.
@@ -467,13 +579,19 @@ DftRI <- function(x) {
   if (!n) stop("need at least one sample")
   step <- 2 * pi / n
   idx <- seq_len(n) - 1L
-  cp <- vapply(idx, function(k) .morie_fsum(xs * cos(step * idx * k)),
-               numeric(1))
-  sp <- vapply(idx, function(k) .morie_fsum(xs * sin(step * idx * k)),
-               numeric(1))
-  list(X = complex(real = cp, imaginary = -sp), cos_projection = cp,
-       sin_projection = sp, real = cp, imag = -sp, n = n,
-       method = "Rangayyan (2024) eq. (3.85)")
+  cp <- vapply(
+    idx, function(k) .morie_fsum(xs * cos(step * idx * k)),
+    numeric(1)
+  )
+  sp <- vapply(
+    idx, function(k) .morie_fsum(xs * sin(step * idx * k)),
+    numeric(1)
+  )
+  list(
+    X = complex(real = cp, imaginary = -sp), cos_projection = cp,
+    sin_projection = sp, real = cp, imag = -sp, n = n,
+    method = "Rangayyan (2024) eq. (3.85)"
+  )
 }
 
 #' Eq (3.86): synthesis as a weighted sum of sinusoids.  The imaginary
@@ -484,6 +602,10 @@ DftRI <- function(x) {
 #' @param X Coerced to complex by the body, with \code{as.complex}.
 #' @return A list with \code{x}, \code{complex}, \code{n}, \code{max_imaginary}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' IdftRI(V)
+#' @keywords internal
 IdftRI <- function(X) {
   # eq (3.86): synthesis as a weighted sum of sinusoids.  The imaginary
   # residue is reported, not discarded -- a large one means the spectrum
@@ -497,8 +619,10 @@ IdftRI <- function(X) {
     ang <- step * i * idx
     sum(Xs * complex(real = cos(ang), imaginary = sin(ang))) / n
   }, complex(1))
-  list(x = Re(out), complex = out, n = n, max_imaginary = max(abs(Im(out))),
-       method = "Rangayyan (2024) eq. (3.86)")
+  list(
+    x = Re(out), complex = out, n = n, max_imaginary = max(abs(Im(out))),
+    method = "Rangayyan (2024) eq. (3.86)"
+  )
 }
 
 #' Eq (3.87).  The book is explicit that the convolution here is
@@ -513,6 +637,10 @@ IdftRI <- function(X) {
 #' \code{padded_length}, \code{n_linear}, \code{n_circular}, \code{max_difference},
 #' \code{holds}, \code{wraps_if_unpadded}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' DftConv(V, V)
+#' @keywords internal
 DftConv <- function(x, h) {
   # eq (3.87).  The book is explicit that the convolution here is
   # PERIODIC: multiplying N-point DFTs gives the circular convolution of
@@ -520,8 +648,9 @@ DftConv <- function(x, h) {
   # sequences zero-padded.  Both are returned so the wrap is visible.
   xs <- as.numeric(x)
   hs <- as.numeric(h)
-  if (!length(xs) || !length(hs))
+  if (!length(xs) || !length(hs)) {
     stop("both sequences need at least one sample")
+  }
   nx <- length(xs)
   nh <- length(hs)
   lin <- .morie_rg_conv(xs, hs)
@@ -532,14 +661,17 @@ DftConv <- function(x, h) {
   n <- max(nx, nh)
   xc <- c(xs, numeric(n - nx))
   hc <- c(hs, numeric(n - nh))
-  circ <- vapply(seq_len(n) - 1L, function(k)
-    .morie_fsum(xc * hc[((k - (seq_len(n) - 1L)) %% n) + 1L]), numeric(1))
+  circ <- vapply(seq_len(n) - 1L, function(k) {
+    .morie_fsum(xc * hc[((k - (seq_len(n) - 1L)) %% n) + 1L])
+  }, numeric(1))
   gap <- max(abs(rec - lin))
-  list(linear = lin, circular = circ, from_dft = rec, padded_length = L,
-       n_linear = L, n_circular = n, max_difference = gap,
-       holds = gap <= 1e-8 * (1 + max(abs(lin))),
-       wraps_if_unpadded = n < L,
-       method = "Rangayyan (2024) eq. (3.87)")
+  list(
+    linear = lin, circular = circ, from_dft = rec, padded_length = L,
+    n_linear = L, n_circular = n, max_difference = gap,
+    holds = gap <= 1e-8 * (1 + max(abs(lin))),
+    wraps_if_unpadded = n < L,
+    method = "Rangayyan (2024) eq. (3.87)"
+  )
 }
 
 #' Eq (3.88): W_N^(-nk) = conj(W_N^(nk)) -- a negative power costs only
@@ -552,6 +684,9 @@ DftConv <- function(x, h) {
 #' @return A list with \code{negative_power}, \code{conjugate}, \code{difference},
 #' \code{holds}, \code{N}, \code{n}, \code{k}, \code{method}.
 #' @export
+#' @examples
+#' TwidConj(npoints = 5L, n = 5L, k = 5L)
+#' @keywords internal
 TwidConj <- function(npoints, n, k) {
   # eq (3.88): W_N^(-nk) = conj(W_N^(nk)) -- a negative power costs only
   # a sign flip, one of the two properties the FFT is built on.
@@ -559,11 +694,15 @@ TwidConj <- function(npoints, n, k) {
   if (nn < 1L) stop("N must be positive")
   p <- as.integer(n) * as.integer(k)
   lhs <- complex(real = cos(2 * pi * p / nn), imaginary = sin(2 * pi * p / nn))
-  rhs <- Conj(complex(real = cos(-2 * pi * p / nn),
-                      imaginary = sin(-2 * pi * p / nn)))
-  list(negative_power = lhs, conjugate = rhs, difference = Mod(lhs - rhs),
-       holds = Mod(lhs - rhs) < 1e-12, N = nn, n = as.integer(n),
-       k = as.integer(k), method = "Rangayyan (2024) eq. (3.88)")
+  rhs <- Conj(complex(
+    real = cos(-2 * pi * p / nn),
+    imaginary = sin(-2 * pi * p / nn)
+  ))
+  list(
+    negative_power = lhs, conjugate = rhs, difference = Mod(lhs - rhs),
+    holds = Mod(lhs - rhs) < 1e-12, N = nn, n = as.integer(n),
+    k = as.integer(k), method = "Rangayyan (2024) eq. (3.88)"
+  )
 }
 
 #' Eq (3.89): indices reduce modulo N -- why the same roots of unity are
@@ -576,6 +715,9 @@ TwidConj <- function(npoints, n, k) {
 #' @return A list with \code{base}, \code{shift_k}, \code{shift_n},
 #' \code{max_difference}, \code{holds}, \code{N}, \code{n}, \code{k}, \code{method}.
 #' @export
+#' @examples
+#' TwidPer(npoints = 5L, n = 5L, k = 5L)
+#' @keywords internal
 TwidPer <- function(npoints, n, k) {
   # eq (3.89): indices reduce modulo N -- why the same roots of unity are
   # reused at every FFT stage, and why every DFT relation is periodic.
@@ -583,15 +725,21 @@ TwidPer <- function(npoints, n, k) {
   if (nn < 1L) stop("N must be positive")
   ni <- as.integer(n)
   ki <- as.integer(k)
-  w <- function(p) complex(real = cos(-2 * pi * p / nn),
-                           imaginary = sin(-2 * pi * p / nn))
+  w <- function(p) {
+    complex(
+      real = cos(-2 * pi * p / nn),
+      imaginary = sin(-2 * pi * p / nn)
+    )
+  }
   base <- w(ni * ki)
   sk <- w(ni * (ki + nn))
   sn <- w((ni + nn) * ki)
   gap <- max(Mod(base - sk), Mod(base - sn))
-  list(base = base, shift_k = sk, shift_n = sn, max_difference = gap,
-       holds = gap < 1e-9, N = nn, n = ni, k = ki,
-       method = "Rangayyan (2024) eq. (3.89)")
+  list(
+    base = base, shift_k = sk, shift_n = sn, max_difference = gap,
+    holds = gap < 1e-9, N = nn, n = ni, k = ki,
+    method = "Rangayyan (2024) eq. (3.89)"
+  )
 }
 
 #' Eq (3.90): y_p(n) = sum_k x_p(k) h_p\[(n-k) mod N\], defined only for
@@ -616,24 +764,32 @@ CircConv <- function(x, h, npoints = NULL) {
   # X(k)H(k) -- are computed; their agreement is eq (3.87) at equal N.
   xs <- as.numeric(x)
   hs <- as.numeric(h)
-  if (!length(xs) || !length(hs))
+  if (!length(xs) || !length(hs)) {
     stop("both signals need at least one sample")
-  n <- if (is.null(npoints)) max(length(xs), length(hs)) else
+  }
+  n <- if (is.null(npoints)) {
+    max(length(xs), length(hs))
+  } else {
     as.integer(npoints)
-  if (n < max(length(xs), length(hs)))
+  }
+  if (n < max(length(xs), length(hs))) {
     stop("N must be at least the length of both signals")
+  }
   xp <- c(xs, numeric(n - length(xs)))
   hp <- c(hs, numeric(n - length(hs)))
   k0 <- seq_len(n) - 1L
-  direct <- vapply(k0, function(i)
-    .morie_fsum(xp * hp[((i - k0) %% n) + 1L]), numeric(1))
+  direct <- vapply(k0, function(i) {
+    .morie_fsum(xp * hp[((i - k0) %% n) + 1L])
+  }, numeric(1))
   via <- IdftRI(Dft(xp)$X * Dft(hp)$X)$x
   gap <- max(abs(direct - via))
   lin_len <- length(xs) + length(hs) - 1L
-  list(y = direct, via_dft = via, N = n, max_difference = gap,
-       agrees = gap <= 1e-8 * (1 + max(abs(direct))),
-       equals_linear = n >= lin_len, linear_length = lin_len,
-       method = "Rangayyan (2024) eq. (3.90)")
+  list(
+    y = direct, via_dft = via, N = n, max_difference = gap,
+    agrees = gap <= 1e-8 * (1 + max(abs(direct))),
+    equals_linear = n >= lin_len, linear_length = lin_len,
+    method = "Rangayyan (2024) eq. (3.90)"
+  )
 }
 
 #' .morie_rg_evenodd
@@ -656,22 +812,30 @@ CircConv <- function(x, h, npoints = NULL) {
   m <- length(xs)
   if (!m) stop("need at least one sample")
   if (is.null(n)) {
-    if (m %% 2L == 0L)
-      stop("with no index grid the sequence must have an odd length so ",
-           "that n = 0 is a sample; pass n=")
+    if (m %% 2L == 0L) {
+      stop(
+        "with no index grid the sequence must have an odd length so ",
+        "that n = 0 is a sample; pass n="
+      )
+    }
     idx <- seq_len(m) - 1L - (m %/% 2L)
   } else {
     idx <- as.integer(n)
     if (length(idx) != m) stop("n and x must have the same length")
   }
   pos <- match(-idx, idx)
-  if (anyNA(pos))
-    stop("index grid is not symmetric: x(-n) is unavailable for n = ",
-         paste(idx[is.na(pos)][1:min(5, sum(is.na(pos)))], collapse = ", "))
+  if (anyNA(pos)) {
+    stop(
+      "index grid is not symmetric: x(-n) is unavailable for n = ",
+      paste(idx[is.na(pos)][1:min(5, sum(is.na(pos)))], collapse = ", ")
+    )
+  }
   ev <- 0.5 * (xs + xs[pos])
   od <- 0.5 * (xs - xs[pos])
-  list(n = idx, even = ev, odd = od, x = xs,
-       reconstruction_error = max(abs(ev + od - xs)))
+  list(
+    n = idx, even = ev, odd = od, x = xs,
+    reconstruction_error = max(abs(ev + od - xs))
+  )
 }
 
 #' Eq (3.92): x_e(n) = 0.5 \[x(n) + x(-n)\].  x(-n) must exist, so the
@@ -721,11 +885,16 @@ OddPart <- function(x, n = NULL) {
 #' @param n Passed to \code{.morie_rg_evenodd}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' S <- c("a", "b", "c")
+#' EvenOdd(S)
+#' @keywords internal
 EvenOdd <- function(x, n = NULL) {
   # eqs (3.92)-(3.94).  Eq (3.94) is an identity, so the reconstruction
   # error checks the index bookkeeping, not the arithmetic.
   c(.morie_rg_evenodd(x, n),
-    method = "Rangayyan (2024) eqs. (3.92)-(3.94)")
+    method = "Rangayyan (2024) eqs. (3.92)-(3.94)"
+  )
 }
 
 #' Eqs (4.58)-(4.60): y = x p, log y = log x + log p, and so
@@ -741,6 +910,10 @@ EvenOdd <- function(x, n = NULL) {
 #' @return A list with \code{y}, \code{Yl}, \code{Xl}, \code{Pl}, \code{max_difference},
 #' \code{additive}, \code{method}.
 #' @export
+#' @examples
+#' LogFT(x = c(1, 2, 3, 4, 5, 6, 7, 8), p = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   omega = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 LogFT <- function(x, p, omega, t = NULL, dt = NULL) {
   # eqs (4.58)-(4.60): y = x p, log y = log x + log p, and so
   # Y_l(omega) = X_l(omega) + P_l(omega).  Eq (4.59) needs both factors
@@ -748,19 +921,25 @@ LogFT <- function(x, p, omega, t = NULL, dt = NULL) {
   xs <- as.numeric(x)
   ps <- as.numeric(p)
   if (length(xs) != length(ps)) stop("x and p must have the same length")
-  if (any(xs == 0) || any(ps == 0))
+  if (any(xs == 0) || any(ps == 0)) {
     stop("eq. (4.59) needs x(t) != 0 and p(t) != 0 for all t")
-  if (any(xs < 0) || any(ps < 0))
-    stop("real logarithm needs positive signals; take the complex ",
-         "cepstrum route for signed data")
+  }
+  if (any(xs < 0) || any(ps < 0)) {
+    stop(
+      "real logarithm needs positive signals; take the complex ",
+      "cepstrum route for signed data"
+    )
+  }
   y <- xs * ps
   Yl <- Ctft(log(y), t = t, omega = omega, dt = dt)$X
   Xl <- Ctft(log(xs), t = t, omega = omega, dt = dt)$X
   Pl <- Ctft(log(ps), t = t, omega = omega, dt = dt)$X
   gap <- max(Mod(Yl - (Xl + Pl)))
-  list(y = y, Yl = Yl, Xl = Xl, Pl = Pl, max_difference = gap,
-       additive = gap <= 1e-8 * (1 + max(Mod(Yl))),
-       method = "Rangayyan (2024) eqs. (4.58)-(4.60)")
+  list(
+    y = y, Yl = Yl, Xl = Xl, Pl = Pl, max_difference = gap,
+    additive = gap <= 1e-8 * (1 + max(Mod(Yl))),
+    method = "Rangayyan (2024) eqs. (4.58)-(4.60)"
+  )
 }
 
 #' Eqs (4.61)-(4.62): the Fourier transform turns the convolution into a
@@ -776,6 +955,9 @@ LogFT <- function(x, p, omega, t = NULL, dt = NULL) {
 #' @return A list with \code{y}, \code{Y}, \code{X}, \code{H}, \code{XH},
 #' \code{max_difference}, \code{holds}, \code{method}.
 #' @export
+#' @examples
+#' FtConv(x = c(1, 2, 3, 4, 5, 6, 7, 8), h = 0.5, omega = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 FtConv <- function(x, h, omega, dt = 1) {
   # eqs (4.61)-(4.62): the Fourier transform turns the convolution into a
   # product, which eq (4.63) then turns into a sum.  The convolution is
@@ -783,18 +965,24 @@ FtConv <- function(x, h, omega, dt = 1) {
   # continuous-time sense rather than up to a sampling-interval factor.
   xs <- as.numeric(x)
   hs <- as.numeric(h)
-  if (!length(xs) || !length(hs))
+  if (!length(xs) || !length(hs)) {
     stop("both signals need at least one sample")
+  }
   step <- as.numeric(dt)
   if (step <= 0) stop("dt must be positive")
   y <- .morie_rg_conv(xs, hs) * step
   ws <- as.numeric(omega)
   tf <- function(sig) {
     idx <- seq_along(sig) - 1L
-    vapply(ws, function(w)
-      complex(real = .morie_fsum(sig * cos(-w * idx * step)),
-              imaginary = .morie_fsum(sig * sin(-w * idx * step))) * step,
-      complex(1))
+    vapply(
+      ws, function(w) {
+        complex(
+          real = .morie_fsum(sig * cos(-w * idx * step)),
+          imaginary = .morie_fsum(sig * sin(-w * idx * step))
+        ) * step
+      },
+      complex(1)
+    )
   }
   Y <- tf(y)
   X <- tf(xs)
@@ -802,10 +990,12 @@ FtConv <- function(x, h, omega, dt = 1) {
   prod <- X * H
   gap <- max(Mod(Y - prod))
   one <- length(ws) == 1L
-  list(y = y, Y = if (one) Y[[1]] else Y, X = if (one) X[[1]] else X,
-       H = if (one) H[[1]] else H, XH = if (one) prod[[1]] else prod,
-       max_difference = gap, holds = gap <= 1e-8 * (1 + max(Mod(prod))),
-       method = "Rangayyan (2024) eqs. (4.61)-(4.62)")
+  list(
+    y = y, Y = if (one) Y[[1]] else Y, X = if (one) X[[1]] else X,
+    H = if (one) H[[1]] else H, XH = if (one) prod[[1]] else prod,
+    max_difference = gap, holds = gap <= 1e-8 * (1 + max(Mod(prod))),
+    method = "Rangayyan (2024) eqs. (4.61)-(4.62)"
+  )
 }
 
 #' Eqs (4.63), (4.65): complex logs of the z-transforms add.  Arg() is a
@@ -821,6 +1011,9 @@ FtConv <- function(x, h, omega, dt = 1) {
 #' \code{magnitude_difference}, \code{branch_offset}, \code{holds_up_to_branch},
 #' \code{method}.
 #' @export
+#' @examples
+#' ClogSum(x = c(1, 2, 3, 4, 5, 6, 7, 8), h = 0.5, z = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 ClogSum <- function(x, h, z) {
   # eqs (4.63), (4.65): complex logs of the z-transforms add.  Arg() is a
   # principal value in (-pi, pi], so the two sides can differ by an
@@ -828,8 +1021,9 @@ ClogSum <- function(x, h, z) {
   # than papered over -- it is the phase-unwrapping problem itself.
   xs <- as.numeric(x)
   hs <- as.numeric(h)
-  if (!length(xs) || !length(hs))
+  if (!length(xs) || !length(hs)) {
     stop("both sequences need at least one sample")
+  }
   y <- .morie_rg_conv(xs, hs)
   zs <- as.complex(z)
   if (any(zs == 0)) stop("z = 0 is a pole of a causal sequence")
@@ -841,8 +1035,9 @@ ClogSum <- function(x, h, z) {
     Y <- zt(y, zs[i])
     X <- zt(xs, zs[i])
     H <- zt(hs, zs[i])
-    if (Y == 0 || X == 0 || H == 0)
+    if (Y == 0 || X == 0 || H == 0) {
       stop("the complex log needs X(z) != 0 and H(z) != 0")
+    }
     Yh[i] <- clog(Y)
     Xh[i] <- clog(X)
     Hh[i] <- clog(H)
@@ -851,12 +1046,14 @@ ClogSum <- function(x, h, z) {
   mag_gap <- max(abs(Re(Yh) - Re(Xh) - Re(Hh)))
   wrap <- max(abs(off - round(off)))
   one <- length(zs) == 1L
-  list(y = y, Y_hat = if (one) Yh[[1]] else Yh,
-       X_hat = if (one) Xh[[1]] else Xh, H_hat = if (one) Hh[[1]] else Hh,
-       magnitude_difference = mag_gap,
-       branch_offset = if (one) off[[1]] else off,
-       holds_up_to_branch = mag_gap < 1e-9 && wrap < 1e-9,
-       method = "Rangayyan (2024) eqs. (4.63), (4.65)")
+  list(
+    y = y, Y_hat = if (one) Yh[[1]] else Yh,
+    X_hat = if (one) Xh[[1]] else Xh, H_hat = if (one) Hh[[1]] else Hh,
+    magnitude_difference = mag_gap,
+    branch_offset = if (one) off[[1]] else off,
+    holds_up_to_branch = mag_gap < 1e-9 && wrap < 1e-9,
+    method = "Rangayyan (2024) eqs. (4.63), (4.65)"
+  )
 }
 
 #' Eq (4.69): log(1 + x) = x - x^2/2 + x^3/3 - ..., |x| < 1.  The radius
@@ -868,29 +1065,37 @@ ClogSum <- function(x, h, z) {
 #' @return A list with \code{value}, \code{exact}, \code{error}, \code{error_bound},
 #' \code{terms}, \code{method}.
 #' @export
+#' @examples
+#' LogSeries(0.5, terms = 60)
+#' @keywords internal
 LogSeries <- function(x, terms = 20) {
   # eq (4.69): log(1 + x) = x - x^2/2 + x^3/3 - ..., |x| < 1.  The radius
   # is exactly 1, so |x| >= 1 is refused instead of diverging quietly.
   xs <- as.complex(x)
   k <- as.integer(terms)
   if (k < 1L) stop("terms must be positive")
-  if (any(Mod(xs) >= 1))
+  if (any(Mod(xs) >= 1)) {
     stop("the series converges only for |x| < 1")
+  }
   res <- vapply(xs, function(v) {
     s <- complex(real = 0, imaginary = 0)
     p <- complex(real = 1)
-    for (n in seq_len(k)) { p <- p * v
-    s <- s + (-1)^(n + 1) * p / n }
+    for (n in seq_len(k)) {
+      p <- p * v
+      s <- s + (-1)^(n + 1) * p / n
+    }
     s
   }, complex(1))
   bound <- vapply(xs, function(v) Mod(v)^(k + 1) / (k + 1), numeric(1))
   exact <- log(1 + xs)
   one <- length(xs) == 1L
-  list(value = if (one) res[[1]] else res,
-       exact = if (one) exact[[1]] else exact,
-       error = max(Mod(res - exact)),
-       error_bound = if (one) bound[[1]] else bound, terms = k,
-       method = "Rangayyan (2024) eq. (4.69)")
+  list(
+    value = if (one) res[[1]] else res,
+    exact = if (one) exact[[1]] else exact,
+    error = max(Mod(res - exact)),
+    error_bound = if (one) bound[[1]] else bound, terms = k,
+    method = "Rangayyan (2024) eq. (4.69)"
+  )
 }
 
 #' Eq (4.70): log(1 - alpha z^-1) = -sum alpha^n/n z^-n, |z| > |alpha|
@@ -903,6 +1108,10 @@ LogSeries <- function(x, terms = 20) {
 #' @param z Optional; may be \code{NULL}. Coerced to complex by the body, with \code{as.complex}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' LogMinPh(V)
+#' @keywords internal
 LogMinPh <- function(alpha, terms = 20, z = NULL) {
   # eq (4.70): log(1 - alpha z^-1) = -sum alpha^n/n z^-n, |z| > |alpha|.
   # The coefficients sit at POSITIVE quefrency and decay at least as fast
@@ -912,8 +1121,10 @@ LogMinPh <- function(alpha, terms = 20, z = NULL) {
   if (k < 1L) stop("terms must be positive")
   ns <- seq_len(k)
   coeffs <- -(a^ns) / ns
-  out <- list(coefficients = coeffs, quefrency = ns, causal = TRUE,
-              alpha = a, method = "Rangayyan (2024) eq. (4.70)")
+  out <- list(
+    coefficients = coeffs, quefrency = ns, causal = TRUE,
+    alpha = a, method = "Rangayyan (2024) eq. (4.70)"
+  )
   if (!is.null(z)) {
     zv <- as.complex(z)
     if (Mod(zv) <= Mod(a)) stop("the expansion needs |z| > |alpha|")
@@ -938,6 +1149,10 @@ LogMinPh <- function(alpha, terms = 20, z = NULL) {
 #' @param z Optional; may be \code{NULL}. Coerced to complex by the body, with \code{as.complex}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' LogMaxPh(V)
+#' @keywords internal
 LogMaxPh <- function(beta, terms = 20, z = NULL) {
   # eq (4.71): log(1 - beta z) = -sum beta^n/n z^n, |z| < 1/|beta|.  The
   # mirror of eq (4.70): positive powers of z, so the maximum-phase part
@@ -948,12 +1163,15 @@ LogMaxPh <- function(beta, terms = 20, z = NULL) {
   if (k < 1L) stop("terms must be positive")
   ns <- seq_len(k)
   coeffs <- -(b^ns) / ns
-  out <- list(coefficients = coeffs, quefrency = -ns, causal = FALSE,
-              beta = b, method = "Rangayyan (2024) eq. (4.71)")
+  out <- list(
+    coefficients = coeffs, quefrency = -ns, causal = FALSE,
+    beta = b, method = "Rangayyan (2024) eq. (4.71)"
+  )
   if (!is.null(z)) {
     zv <- as.complex(z)
-    if (Mod(b) != 0 && Mod(zv) >= 1 / Mod(b))
+    if (Mod(b) != 0 && Mod(zv) >= 1 / Mod(b)) {
       stop("the expansion needs |z| < 1/|beta|")
+    }
     s <- sum(coeffs * zv^ns)
     exact <- log(1 - b * zv)
     out$value <- s

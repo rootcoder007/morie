@@ -56,3 +56,7 @@ df <- morie_ingest_bigquery_query(
 head(df)
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+\code{\link{morie_ingest_bigquery_table}},
+\code{\link{morie_ingest_bigquery_build_sql}}
+}

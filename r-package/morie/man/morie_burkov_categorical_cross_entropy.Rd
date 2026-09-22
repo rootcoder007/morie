@@ -12,6 +12,13 @@ morie_burkov_categorical_cross_entropy(y_hat, c)
 \item{c}{Correct class,
 0-based to match the Python mirror.}
 }
+\value{
+A list with \code{estimate}, \code{p_correct}, \code{n_classes}, \code{n}, \code{method}.
+}
 \description{
 Categorical cross-entropy with a one-hot target (Burkov Eq 2.1)
 }
+\examples{
+morie_burkov_categorical_cross_entropy(c(0.7, 0.2, 0.1), 0)
+}
+\keyword{internal}

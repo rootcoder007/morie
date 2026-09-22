@@ -30,3 +30,12 @@ A step of the fmFM_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+n <- 40
+X <- matrix(rbinom(n * 6, 1, 0.3), n, 6)
+y <- X[, 1] + X[, 3] - X[, 5] + rnorm(n, 0, 0.2)
+r <- fit_fm(X, y, k_dim = 2, iters = 100)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -68,11 +68,15 @@
 #' @param beta_end The last variance.
 #' @return A list with betas, alphas and abar.
 #' @export
+#' @examples
+#' morie_alfrf2_schedule(T = 5L)
+#' @keywords internal
 morie_alfrf2_schedule <- function(T, beta_start = 1e-4, beta_end = 0.02) {
   T <- as.integer(T)
   if (T < 1L) stop("a diffusion needs at least one step")
-  if (!(beta_start > 0 && beta_start <= beta_end && beta_end < 1))
+  if (!(beta_start > 0 && beta_start <= beta_end && beta_end < 1)) {
     stop("the variance schedule must rise through the open unit interval")
+  }
   betas <- numeric(T + 1L)
   alphas <- rep(1, T + 1L)
   abar <- rep(1, T + 1L)
@@ -96,6 +100,9 @@ morie_alfrf2_schedule <- function(T, beta_start = 1e-4, beta_end = 0.02) {
 #' @param eps Standard normal deviates of the same shape.
 #' @return The noised structure.
 #' @export
+#' @examples
+#' morie_alfrf2_noise(x0 = c(1, 2, 3, 4, 5, 6, 7, 8), abar_t = c(1, 2, 3, 4, 5, 6, 7, 8), eps = 0.5)
+#' @keywords internal
 morie_alfrf2_noise <- function(x0, abar_t, eps) {
   a <- sqrt(abar_t)
   b <- sqrt(1 - abar_t)
@@ -131,14 +138,14 @@ morie_alfrf2_noise <- function(x0, abar_t, eps) {
 #' @return A numeric value.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .alfrf2_det3(M = X)
 #' res
-.alfrf2_det3 <- function(M)
+.alfrf2_det3 <- function(M) {
   M[1, 1] * (M[2, 2] * M[3, 3] - M[2, 3] * M[3, 2]) -
-  M[1, 2] * (M[2, 1] * M[3, 3] - M[2, 3] * M[3, 1]) +
-  M[1, 3] * (M[2, 1] * M[3, 2] - M[2, 2] * M[3, 1])
+    M[1, 2] * (M[2, 1] * M[3, 3] - M[2, 3] * M[3, 1]) +
+    M[1, 3] * (M[2, 1] * M[3, 2] - M[2, 2] * M[3, 1])
+}
 
 #' The rigid motion that best takes P onto Q, and the residual
 #'
@@ -154,53 +161,91 @@ morie_alfrf2_noise <- function(x0, abar_t, eps) {
 #' @return A list with the rotation, the translation, the root-mean-
 #'   square deviation and the moved points.
 #' @export
+#' @examples
+#' set.seed(1)
+#' P <- matrix(rnorm(15), 5, 3)
+#' Q <- P %*% matrix(c(0,-1,0, 1,0,0, 0,0,1), 3, 3) + 0.05
+#' morie_alfrf2_kabsch(P, Q)
+#' @keywords internal
 morie_alfrf2_kabsch <- function(P, Q) {
   P <- as.matrix(P)
   Q <- as.matrix(Q)
   n <- nrow(P)
-  if (n != nrow(Q))
+  if (n != nrow(Q)) {
     stop("superposition needs the same number of points on both sides")
+  }
   if (n < 3L) stop("three points are the fewest that fix a rotation")
   cp <- .alfrf2_centre(P)
   cq <- .alfrf2_centre(Q)
   p <- cp$P
   q <- cq$P
   C <- matrix(0, 3, 3)
-  for (a in 1:3) for (b in 1:3)
-    C[a, b] <- .w3_csum(q[, a] * p[, b])
+  for (a in 1:3) {
+    for (b in 1:3) {
+      C[a, b] <- .w3_csum(q[, a] * p[, b])
+    }
+  }
   S <- matrix(0, 3, 3)
-  for (a in 1:3) for (b in 1:3)
-    S[a, b] <- .w3_csum(vapply(1:3, function(k) C[k, a] * C[k, b],
-                               numeric(1)))
+  for (a in 1:3) {
+    for (b in 1:3) {
+      S[a, b] <- .w3_csum(vapply(
+        1:3, function(k) C[k, a] * C[k, b],
+        numeric(1)
+      ))
+    }
+  }
   je <- morie_manfd_jacobi(S)
   lam <- je$values
   V <- je$vectors
-  if (lam[3] <= 1e-12 * (if (lam[1] > 0) lam[1] else 1))
-    stop("the points do not span three dimensions, so the polar factor ",
-         "does not determine a rotation")
+  if (lam[3] <= 1e-12 * (if (lam[1] > 0) lam[1] else 1)) {
+    stop(
+      "the points do not span three dimensions, so the polar factor ",
+      "does not determine a rotation"
+    )
+  }
   inv <- 1 / sqrt(lam)
   build <- function(inv) {
     M <- matrix(0, 3, 3)
-    for (a in 1:3) for (b in 1:3)
-      M[a, b] <- .w3_csum(vapply(1:3, function(k)
-        V[a, k] * inv[k] * V[b, k], numeric(1)))
+    for (a in 1:3) {
+      for (b in 1:3) {
+        M[a, b] <- .w3_csum(vapply(1:3, function(k) {
+          V[a, k] * inv[k] * V[b, k]
+        }, numeric(1)))
+      }
+    }
     R <- matrix(0, 3, 3)
-    for (a in 1:3) for (b in 1:3)
-      R[a, b] <- .w3_csum(vapply(1:3, function(k) C[a, k] * M[k, b],
-                                 numeric(1)))
+    for (a in 1:3) {
+      for (b in 1:3) {
+        R[a, b] <- .w3_csum(vapply(
+          1:3, function(k) C[a, k] * M[k, b],
+          numeric(1)
+        ))
+      }
+    }
     R
   }
   R <- build(inv)
-  if (.alfrf2_det3(R) < 0) { inv[3] <- -inv[3]
-  R <- build(inv) }
+  if (.alfrf2_det3(R) < 0) {
+    inv[3] <- -inv[3]
+    R <- build(inv)
+  }
   moved <- matrix(0, n, 3)
-  for (i in seq_len(n)) for (a in 1:3)
-    moved[i, a] <- .w3_csum(vapply(1:3, function(b) R[a, b] * p[i, b],
-                                   numeric(1))) + cq$c[a]
+  for (i in seq_len(n)) {
+    for (a in 1:3) {
+      moved[i, a] <- .w3_csum(vapply(
+        1:3, function(b) R[a, b] * p[i, b],
+        numeric(1)
+      )) + cq$c[a]
+    }
+  }
   sq <- .w3_csum(as.numeric(t((moved - Q) * (moved - Q))))
-  tr <- vapply(1:3, function(a) cq$c[a] -
-                 .w3_csum(vapply(1:3, function(b) R[a, b] * cp$c[b],
-                                 numeric(1))), numeric(1))
+  tr <- vapply(1:3, function(a) {
+    cq$c[a] -
+      .w3_csum(vapply(
+        1:3, function(b) R[a, b] * cp$c[b],
+        numeric(1)
+      ))
+  }, numeric(1))
   list(R = R, t = tr, rmsd = sqrt(sq / n), moved = moved)
 }
 
@@ -210,6 +255,12 @@ morie_alfrf2_kabsch <- function(P, Q) {
 #' @param Q The reference points.
 #' @return A numeric scalar.
 #' @export
+#' @examples
+#' set.seed(1)
+#' P <- matrix(rnorm(15), 5, 3)
+#' Q <- P + 0.1
+#' morie_alfrf2_rmsd(P, Q)
+#' @keywords internal
 morie_alfrf2_rmsd <- function(P, Q) morie_alfrf2_kabsch(P, Q)$rmsd
 
 #' Relax consecutive alpha carbons toward the backbone spacing
@@ -229,6 +280,10 @@ morie_alfrf2_rmsd <- function(P, Q) morie_alfrf2_kabsch(P, Q)$rmsd
 #' @param passes How many relaxation passes.
 #' @return The relaxed structure.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_alfrf2_ideal(V, V)
+#' @keywords internal
 morie_alfrf2_ideal <- function(x, fixed, spacing = .alfrf2_ca_spacing,
                                passes = 8L) {
   y <- as.matrix(x)
@@ -269,10 +324,15 @@ morie_alfrf2_ideal <- function(x, fixed, spacing = .alfrf2_ca_spacing,
 #' @export
 .alfrf2_denoise <- function(route, denoiser, x, t, fixed, spacing,
                             passes) {
-  if (!is.null(denoiser)) return(as.matrix(denoiser(x, t)))
-  if (identical(route, "prior")) return(matrix(0, nrow(x), 3))
-  if (identical(route, "ideal"))
+  if (!is.null(denoiser)) {
+    return(as.matrix(denoiser(x, t)))
+  }
+  if (identical(route, "prior")) {
+    return(matrix(0, nrow(x), 3))
+  }
+  if (identical(route, "ideal")) {
     return(morie_alfrf2_ideal(x, fixed, spacing, passes))
+  }
   stop("the denoiser route is prior or ideal")
 }
 
@@ -297,6 +357,9 @@ morie_alfrf2_ideal <- function(x, fixed, spacing = .alfrf2_ca_spacing,
 #'   around, the motif RMSD -- which must be zero -- and the chain
 #'   geometry it came out with.
 #' @export
+#' @examples
+#' morie_alfrf2(target_motif = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), scaffold = 5L)
+#' @keywords internal
 morie_alfrf2 <- function(target_motif, scaffold, T = 20L,
                          denoise = "ideal", denoiser = NULL,
                          beta_start = 1e-4, beta_end = 0.02,
@@ -305,20 +368,25 @@ morie_alfrf2 <- function(target_motif, scaffold, T = 20L,
   idx <- vapply(target_motif, function(p) as.integer(p[[1]]), integer(1))
   pos <- lapply(target_motif, function(p) as.numeric(p[[2]]))
   if (length(scaffold) == 1L && is.numeric(scaffold) &&
-      scaffold == round(scaffold)) {
+    scaffold == round(scaffold)) {
     n <- as.integer(scaffold)
     start <- NULL
   } else {
     start <- as.matrix(scaffold)
     n <- nrow(start)
   }
-  if (n < 3L)
-    stop("a backbone of fewer than three residues has no geometry to ",
-         "design")
-  if (any(idx < 0L | idx >= n))
+  if (n < 3L) {
+    stop(
+      "a backbone of fewer than three residues has no geometry to ",
+      "design"
+    )
+  }
+  if (any(idx < 0L | idx >= n)) {
     stop("a motif residue falls outside the design")
-  if (length(unique(idx)) != length(idx))
+  }
+  if (length(unique(idx)) != length(idx)) {
     stop("a residue cannot be pinned to two places")
+  }
   fixed <- idx
 
   sc <- morie_alfrf2_schedule(T, beta_start, beta_end)
@@ -371,29 +439,43 @@ morie_alfrf2 <- function(target_motif, scaffold, T = 20L,
   # Three or fewer motif residues, or coplanar ones, do not pin a
   # rotation, and the superposition says so rather than returning a
   # number it cannot justify.
-  mr <- if (length(idx) >= 3L)
-    tryCatch(morie_alfrf2_rmsd(got, want), error = function(e) NaN) else 0
+  mr <- if (length(idx) >= 3L) {
+    tryCatch(morie_alfrf2_rmsd(got, want), error = function(e) NaN)
+  } else {
+    0
+  }
   cen <- vapply(1:3, function(d) .w3_csum(x[, d]) / n, numeric(1))
   ct <- sweep(x, 2, cen, "-")
   rg <- sqrt(.w3_csum(as.numeric(t(ct * ct))) / n)
-  list(backbone = x, motif_index = idx, motif_target = want,
-       motif_placed = got, motif_max_deviation = mdev,
-       motif_rmsd = mr,
-       spacing = spac,
-       mean_spacing = if (length(spac)) .w3_csum(spac) / length(spac)
-                      else 0,
-       radius_of_gyration = rg, trace = traj, n = n,
-       n_motif = length(idx), T = T,
-       denoise = if (is.null(denoiser)) denoise else "callable",
-       noise_scale = as.numeric(noise_scale), seed = seed,
-       method = "RFdiffusion motif-scaffolding reverse diffusion")
+  list(
+    backbone = x, motif_index = idx, motif_target = want,
+    motif_placed = got, motif_max_deviation = mdev,
+    motif_rmsd = mr,
+    spacing = spac,
+    mean_spacing = if (length(spac)) {
+      .w3_csum(spac) / length(spac)
+    } else {
+      0
+    },
+    radius_of_gyration = rg, trace = traj, n = n,
+    n_motif = length(idx), T = T,
+    denoise = if (is.null(denoiser)) denoise else "callable",
+    noise_scale = as.numeric(noise_scale), seed = seed,
+    method = "RFdiffusion motif-scaffolding reverse diffusion"
+  )
 }
 
 #' One-line summary of the alfrf2 module
 #'
 #' @return A character scalar.
 #' @export
-morie_alfrf2_cheatsheet <- function()
-  paste0("alfrf2: RFdiffusion motif scaffolding. Reverse DDPM over ",
-         "backbone coordinates with the motif replaced at every step, ",
-         "so it lands exactly; denoiser routes are prior or ideal")
+#' @examples
+#' morie_alfrf2_cheatsheet()
+#' @keywords internal
+morie_alfrf2_cheatsheet <- function() {
+  paste0(
+    "alfrf2: RFdiffusion motif scaffolding. Reverse DDPM over ",
+    "backbone coordinates with the motif replaced at every step, ",
+    "so it lands exactly; denoiser routes are prior or ideal"
+  )
+}

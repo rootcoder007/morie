@@ -23,3 +23,10 @@ A step of the snpqc1_native implementation. Called by \code{morie_snpqc1}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+if (morie_crypto_sodium_available()) {
+  set.seed(1)
+  r <- morie_snpqc1_hwe_pvalue(n_hom_minor = 8L, n_het = 8L, n_hom_major = 8L); TRUE
+}
+}
+\keyword{internal}

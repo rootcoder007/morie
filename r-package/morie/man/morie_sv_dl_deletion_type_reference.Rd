@@ -18,3 +18,7 @@ A character value.
 tandem duplication has its two halves swapped, an inversion has its
 second half reverse complemented, a translocation gets both.
 }
+\examples{
+morie_sv_dl_deletion_type_reference("ACGTACGTAA", "INV")
+}
+\keyword{internal}

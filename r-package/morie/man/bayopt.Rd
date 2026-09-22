@@ -25,7 +25,7 @@ bayopt(
 )
 }
 \arguments{
-\item{f}{Iterated over elementwise, with \code{sapply}.}
+\item{f}{Accepted by the signature and not used anywhere in the body.}
 
 \item{bounds}{Iterated over elementwise, with \code{lapply}.}
 
@@ -33,7 +33,7 @@ bayopt(
 
 \item{n_init}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.}
 
-\item{acq}{Carried through into a list the body builds. Defaults to \code{"ei"}.}
+\item{acq}{One of \code{"ei"}, \code{"lcb"}, \code{"pi"}. Defaults to \code{"ei"}.}
 
 \item{kernel}{Carried through into a list the body builds. Defaults to \code{"matern52"}.}
 
@@ -52,7 +52,7 @@ to \code{200}.}
 
 \item{seed}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0}.}
 
-\item{X0}{Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.}
+\item{X0}{Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.}
 
 \item{y0}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 
@@ -66,7 +66,15 @@ A list with \code{estimate}, \code{x_best}, \code{y_best}, \code{X}, \code{y},
 \code{note}.
 }
 \description{
-A step of the bayopt_native implementation. Called by \code{morie_bayopt}.
+A step of the bayopt_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(2)
+f <- function(x) -sum((x - c(0.3, 0.7))^2)
+r <- bayopt(f, bounds = list(c(0, 1), c(0, 1)), n_iter = 5,
+            n_init = 4, seed = 1)
+str(r, max.level = 1)
+}
+\keyword{internal}

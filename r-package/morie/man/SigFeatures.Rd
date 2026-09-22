@@ -22,6 +22,10 @@ A list with \code{mean}, \code{sd}, \code{rms}, \code{zero_crossings},
 \description{
 computed by the function that owns its definition so the vector
 cannot disagree with the individual measures.  threshold defaults to
-0 (every direction change counts); pass the book\'s 100 microvolts
+0 (every direction change counts); pass the book's 100 microvolts
 for a real EMG record or the count is dominated by noise.
 }
+\examples{
+SigFeatures(x = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5))
+}
+\keyword{internal}

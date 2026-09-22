@@ -73,6 +73,11 @@ constant; supply \code{grad} or fall back to a central-
 difference numerical gradient. Set \code{sampler = "hmc"} for
 the fixed-length Algorithm 1 baseline.
 }
+\examples{
+logp <- function(t) -0.5 * sum(t^2)
+r <- morie_bayhmc(logp, c(1, -1), n_iter = 200L, seed = 1)
+str(r, max.level = 1)
+}
 \references{
 Hoffman, M. D. and Gelman, A. (2014). The No-U-Turn
 Sampler. Journal of Machine Learning Research, 15, 1593-1623.
@@ -81,3 +86,4 @@ Metropolis, N. et al. (1953). Equation of State
 Calculations by Fast Computing Machines. Journal of Chemical
 Physics, 21(6), 1087-1092.
 }
+\keyword{internal}

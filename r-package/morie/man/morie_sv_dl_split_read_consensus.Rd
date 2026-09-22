@@ -18,3 +18,8 @@ A list with \code{consensus}, \code{start}.
 \description{
 places each read in a common frame. Returns list(consensus, start).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_sv_dl_split_read_consensus(V)
+}
+\keyword{internal}

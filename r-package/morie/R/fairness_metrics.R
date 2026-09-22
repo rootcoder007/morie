@@ -34,7 +34,7 @@
 NULL
 
 
-.MORIE_FAIRNESS_FOUR_FIFTHS <- 0.8  # EEOC four-fifths threshold
+.MORIE_FAIRNESS_FOUR_FIFTHS <- 0.8 # EEOC four-fifths threshold
 
 
 # ---------------------------------------------------------------------------
@@ -84,8 +84,6 @@ NULL
 }
 
 
-
-
 # ---------------------------------------------------------------------------
 # print
 # ---------------------------------------------------------------------------
@@ -95,6 +93,12 @@ NULL
 #' @param x A \code{morie_fairness_result} object.
 #' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
+#' @examples
+#' \donttest{
+#' d <- morie_fairness_simulate_biased_crime_data(n = 100L, seed = 1L)
+#' head(d)
+#' print(d)
+#' }
 #' @export
 print.morie_fairness_result <- function(x, ...) {
   cat(x$title, "\

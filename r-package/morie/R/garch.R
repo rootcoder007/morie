@@ -37,12 +37,13 @@
 #' admissible region.
 #'
 #' @param x Numeric return series.
-#' @return Named list with \code{omega, alpha, beta, persistence, loglik,
+#' @return Named list with \eqn{omega, alpha, beta, persistence, loglik,
 #'   conditional_variance, n, method}.
 #' @references
 #' Bollerslev, T. (1986). Generalized autoregressive conditional
 #' heteroskedasticity. \emph{Journal of Econometrics}, 31(3), 307-327.
 #' @examples
+#' set.seed(1)
 #' morie_garch_fit(x = rnorm(50))
 #' @export
 morie_garch_fit <- function(x) {

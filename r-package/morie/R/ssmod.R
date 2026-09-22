@@ -10,9 +10,10 @@
 #' \code{dlmSmooth} pipeline it replaces, cross-validated in tests.
 #'
 #' @param x Numeric univariate series.
-#' @return Named list with \code{filtered_state, filtered_state_variance,
+#' @return Named list with \eqn{filtered_state, filtered_state_variance,
 #'   smoothed_state, loglik, Q, R, n, method}.
 #' @examples
+#' set.seed(1)
 #' morie_state_space_model(x = rnorm(50))
 #' @export
 morie_state_space_model <- function(x) {

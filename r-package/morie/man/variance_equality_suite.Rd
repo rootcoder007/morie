@@ -10,12 +10,12 @@ variance_equality_suite(...)
 \item{...}{Two or more numeric vectors.}
 }
 \value{
-A length-2 list of \code{morie_test_result} objects:
-the Levene (Brown-Forsythe) test followed by Bartlett's test.
+A named list (see Description).
 }
 \description{
 Run a suite of homogeneity-of-variance tests
 }
 \examples{
-variance_equality_suite(rnorm(40), rnorm(40, sd = 2))
+set.seed(1)
+str(variance_equality_suite(rnorm(20), rnorm(20, 0, 1.5)), max.level = 1)
 }

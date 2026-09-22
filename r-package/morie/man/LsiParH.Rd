@@ -21,3 +21,8 @@ A list with \code{h}, \code{n_taps}, \code{value}, \code{index},
 result is as long as the LONGER branch -- not longer, the contrast
 with the series case where the lengths add.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+LsiParH(V, V)
+}
+\keyword{internal}

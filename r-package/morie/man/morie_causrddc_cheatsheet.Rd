@@ -14,3 +14,7 @@ A step of the causrddc_native implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_causrddc_cheatsheet()
+}
+\keyword{internal}

@@ -22,7 +22,7 @@ morie_datasets_nyc_nypd_complaint_historic(
 \item{max_features}{Optional row cap. When \code{paginate = TRUE} this
 is the total cap across walked pages.}
 
-\item{offline}{If \code{TRUE} (default), read the bundled fixture.}
+\item{offline}{If \code{TRUE} (default), read the included fixture.}
 
 \item{resource_id}{Optional Socrata resource id override.}
 
@@ -44,12 +44,7 @@ up to 200,000 rows without an app_token).}
 limits; passed as the \code{X-App-Token} header.}
 }
 \value{
-A \code{data.frame} of NYPD historic complaint (felony /
-misdemeanor / violation) records, either the bundled
-\code{nypd_complaint_historic_sample.csv} fixture when
-\code{offline = TRUE} or the live Socrata pull (SODA2 / SODA3)
-when \code{offline = FALSE}. Columns mirror NYC OpenData resource
-\code{qgea-i56i}.
+A \code{data.frame}.
 }
 \description{
 NYPD Complaint Data Historic

@@ -99,7 +99,7 @@ test_that("rgwav denoises and preserves shape natively", {
   expect_length(out$signal, n)
   expect_lt(mean((out$signal - clean)^2), mean((noisy - clean)^2))
   wt <- morie_wavelet_time_series(rnorm(64), wavelet = "haar", level = 3)
-  expect_match(wt$method, "morie native")
+  expect_match(wt$method, "rmorie native")
   expect_length(wt$details, 3)
 })
 

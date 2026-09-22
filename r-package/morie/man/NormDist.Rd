@@ -26,3 +26,7 @@ Fisher criterion.  The book states the limitation: d_n = 0 whenever
 m1 = m2, however different the dispersions, so classes separated only
 by variance score zero.  The divergence has no such blind spot.
 }
+\examples{
+NormDist(0, 2, 1, 1)
+}
+\keyword{internal}

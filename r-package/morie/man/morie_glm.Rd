@@ -47,3 +47,14 @@ A step of the glm implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 follows.
 }
+\examples{
+n <- 40
+x1 <- sapply(0:(n - 1), function(i) ((i * 7)\%\%11)/5 - 1)
+x2 <- sapply(0:(n - 1), function(i) ((i * 5)\%\%7)/3 - 1)
+X <- cbind(x1, x2)
+yb <- c(0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1,
+    0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1,
+    0, 1, 1)
+morie_glm(yb, X, "binomial")
+}
+\keyword{internal}

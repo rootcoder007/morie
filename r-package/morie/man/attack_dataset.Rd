@@ -7,7 +7,7 @@
 attack_dataset(model_predict, in_X, in_y, out_X, out_y)
 }
 \arguments{
-\item{model_predict}{Numeric; the body checks with \code{is.numeric}.}
+\item{model_predict}{Accepted by the signature and not used anywhere in the body.}
 
 \item{in_X}{A vector; its length is taken.}
 
@@ -21,7 +21,18 @@ attack_dataset(model_predict, in_X, in_y, out_X, out_y)
 A list with \code{rows}, \code{labels}, \code{classes}.
 }
 \description{
-A step of the memb_native implementation. Called by \code{memb}.
+A step of the memb_native implementation. Called by \code{memb}, \code{morie_memb}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+model_predict <- function(rows) lapply(rows, function(r)
+  {p <- exp(r); p / sum(p)})
+in_X <- lapply(1:5, function(i) rnorm(3))
+out_X <- lapply(1:5, function(i) rnorm(3))
+r <- attack_dataset(model_predict, in_X, as.list(rep(0, 5)),
+                    out_X, as.list(rep(1, 5)))
+str(r, max.level = 1)
+}
+\keyword{internal}

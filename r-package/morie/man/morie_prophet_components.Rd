@@ -12,12 +12,13 @@ morie_prophet_components(x, period = 12)
 \item{period}{Seasonal period. Default 12.}
 }
 \value{
-Named list with \code{trend, seasonal, residual, slope,
+Named list with \eqn{trend, seasonal, residual, slope,
   intercept, fourier_terms, period, n, method}.
 }
 \description{
 Prophet-style additive decomposition (linear trend + Fourier seasonality)
 }
 \examples{
+set.seed(1)
 morie_prophet_components(x = rnorm(50))
 }

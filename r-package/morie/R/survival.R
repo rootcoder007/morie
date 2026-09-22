@@ -271,8 +271,8 @@ morie_cox_partial_loglik <- function(time, event, X, beta,
 #' @return list with `c_index` and the pair counts
 #' @export
 #' @examples
-#' morie_concordance_index(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0,
-#' 1, 0), predicted_risk = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_concordance_index(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0),
+#'   predicted_risk = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_concordance_index <- function(time, event, predicted_risk) {
   n <- length(time)
   conc <- disc <- tied <- 0

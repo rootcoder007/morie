@@ -21,3 +21,7 @@ A step of the dist_native implementation. Called by \code{Qpois}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+Ppois(q = 0.5, lambda = 0.5)
+}
+\keyword{internal}

@@ -14,3 +14,7 @@ A step of the survrsf_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_survrsf_cheatsheet()
+}
+\keyword{internal}

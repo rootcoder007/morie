@@ -19,3 +19,8 @@ A step of the gp_mvsml_ch9_14 implementation. Called by \code{Apxkern}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_khatri_rao_rows(V, V)
+}
+\keyword{internal}

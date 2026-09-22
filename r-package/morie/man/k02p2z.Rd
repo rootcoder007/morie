@@ -17,3 +17,8 @@ A step of the k02util implementation. Called by \code{mafix}, \code{marndm}, \co
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+k02p2z(V)
+}
+\keyword{internal}

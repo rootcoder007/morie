@@ -25,3 +25,8 @@ one-sided response, since for real coefficients the other half is the
 conjugate mirror.  \code{a} follows the eq (3.67) convention with a_0 = 1
 included, the form BwLp and BwHp return.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+FreqResp(V)
+}
+\keyword{internal}

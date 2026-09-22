@@ -23,3 +23,8 @@ than asserted. Every finite analog frequency lands strictly inside the
 open interval from minus pi to pi, which is what makes the inverse
 well defined.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+BilinUnwarp(V)
+}
+\keyword{internal}

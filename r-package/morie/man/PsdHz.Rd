@@ -23,3 +23,7 @@ its bins times the bin width fs/N.  The bin width turns a density
 into a power; omitting it leaves a quantity that changes with the
 record length, so two band powers at different N are not comparable.
 }
+\examples{
+PsdHz(psd = c(1, 2, 3, 4, 5, 6, 7, 8), fs = 5L)
+}
+\keyword{internal}

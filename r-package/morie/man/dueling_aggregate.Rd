@@ -27,9 +27,14 @@ mean of the advantage vector; Eq. (8) subtracts the max; the naive
 form \code{Q = V + A} is unidentifiable and is exposed under
 \code{mode = "naive"} only so its failure can be demonstrated.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+dueling_aggregate(V, V)
+}
 \references{
 Wang, Z., Schaul, T., Hessel, M., van Hasselt, H.,
 Lanctot, M. & de Freitas, N. (2016). Dueling Network Architectures
 for Deep Reinforcement Learning. ICML / PMLR 48, 1995-2003,
 arXiv:1511.06581, eq. (7)-(9).
 }
+\keyword{internal}

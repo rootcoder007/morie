@@ -12,7 +12,7 @@
 
 # Private helper (mirrors Python's _leaf: a node is a leaf exactly when
 # it is a dict that carries a "label" key).
-#' Private helper (mirrors Python\'s _leaf: a node is a leaf exactly
+#' Private helper (mirrors Python's _leaf: a node is a leaf exactly
 #' when
 #'
 #' it is a dict that carries a "label" key).
@@ -27,7 +27,7 @@
 # Match Python's str() for the tie-breaking sort. Python's str(1.0) is
 # "1.0" not "1", str(True) is "True" not "TRUE", str(None) is "None";
 # reproducing those quirks keeps the sort identical to the Python arm.
-#' Match Python\'s str() for the tie-breaking sort. Python\'s str(1.0)
+#' Match Python's str() for the tie-breaking sort. Python's str(1.0)
 #' is
 #'
 #' "1.0" not "1", str(True) is "True" not "TRUE", str(None) is "None";
@@ -68,7 +68,7 @@
 
 # Mirror Python's max(sorted(scores, key=str), key=scores.__getitem__):
 # among ties, the key whose str() sorts earliest wins.
-#' Mirror Python\'s max(sorted(scores, key=str),
+#' Mirror Python's max(sorted(scores, key=str),
 #' key=scores.__getitem__):
 #'
 #' among ties, the key whose str() sorts earliest wins.
@@ -91,7 +91,7 @@
 # 1 == "1" is False, and isTRUE(1 == "1") is FALSE in R).
 #' Python-style == for the accuracy block: bool <-> int, int <-> float
 #'
-#' all match (R\'s == coerces); int vs str does not (mirrors Python: 1
+#' all match (R's == coerces); int vs str does not (mirrors Python: 1
 #' == "1" is False, and isTRUE(1 == "1") is FALSE in R).
 #'
 #' @param a Optional; may be \code{NULL}. Passed to \code{is.null}.
@@ -115,7 +115,7 @@
 #' every candidate value of the sensitive feature, multiplies the
 #' error-model probability by the marginal priors, and returns the
 #' maximum a posteriori estimate. The black-box route uses
-#' \code{err(y, y\')} from a confusion matrix; the white-box route
+#' \eqn{err(y, y')} from a confusion matrix; the white-box route
 #' additionally weights each root-to-leaf path by its training
 #' count, which carries joint-distribution information the marginals
 #' cannot reach on their own.
@@ -151,6 +151,15 @@
 #'   basic countermeasures. In CCS '15 (pp. 1322-1333).
 #'   doi:10.1145/2810103.2813677.
 #' @export
+#' @examples
+#' tree <- list(feature = 0L, branches = list(
+#'   "0" = list(label = 0L, count = 30),
+#'   "1" = list(label = 1L, count = 20)))
+#' priors <- list("0" = list("0" = 0.6, "1" = 0.4))
+#' r <- morie_attrInf(tree, targets = list(list(known = list(), y = 1L)),
+#'                    priors = priors, mode = "whitebox")
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_attrInf <- function(tree, targets, priors,
                           confusion = NULL, labels = NULL,
                           sensitive = 0L, mode = "blackbox",
@@ -299,6 +308,14 @@ morie_attrInf <- function(tree, targets, priors,
 #' @param tree The body requires: attrInf: the tree has no paths.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' tree <- list(feature = 0L, branches = list(
+#'   "0" = list(label = 0L, count = 30),
+#'   "1" = list(feature = 1L, branches = list(
+#'     "0" = list(label = 0L, count = 10),
+#'     "1" = list(label = 1L, count = 20)))))
+#' str(tree_paths(tree), max.level = 1)
+#' @keywords internal
 tree_paths <- function(tree) {
   out <- list()
   walk <- function(node, cons) {
@@ -341,6 +358,10 @@ tree_paths <- function(tree) {
 #' @param labels Optional; may be \code{NULL}. A vector; its length is taken.
 #' @return The value of \code{err}, as built in the body.
 #' @export
+#' @examples
+#' err <- confusion_error(rbind(c(40, 10), c(5, 45)))
+#' err(0L, 1L)
+#' @keywords internal
 confusion_error <- function(C, labels = NULL) {
   if (is.matrix(C)) {
     if (nrow(C) == 0L || ncol(C) == 0L)
@@ -397,6 +418,15 @@ confusion_error <- function(C, labels = NULL) {
 #' to \code{0L}.
 #' @return A list with \code{estimate}, \code{scores}.
 #' @export
+#' @examples
+#' model <- function(x) if (identical(x[["0"]], "1")) 1L else 0L
+#' priors <- list("0" = list("0" = 0.6, "1" = 0.4))
+#' r <- map_invert(model, y = 1L, known = list("1" = "a"),
+#'                 candidates = list("0", "1"),
+#'                 err = function(y, yp) if (identical(y, yp)) 1 else 0,
+#'                 priors = priors)
+#' str(r, max.level = 1)
+#' @keywords internal
 map_invert <- function(model, y, known, candidates, err, priors,
                        sensitive = 0L) {
   if (length(candidates) == 0L)
@@ -437,6 +467,15 @@ map_invert <- function(model, y, known, candidates, err, priors,
 #' \code{as.integer}.
 #' @return A list with \code{estimate}, \code{scores}, \code{n_paths}, \code{N}.
 #' @export
+#' @examples
+#' tree <- list(feature = 0L, branches = list(
+#'   "0" = list(label = 0L, count = 30),
+#'   "1" = list(label = 1L, count = 20)))
+#' priors <- list("0" = list("0" = 0.6, "1" = 0.4))
+#' r <- wbwc_invert(tree, known = list(), candidates = list("0", "1"),
+#'                  priors = priors)
+#' str(r, max.level = 1)
+#' @keywords internal
 wbwc_invert <- function(tree, known, candidates, priors,
                         sensitive = 0L, unknown = NULL) {
   if (length(candidates) == 0L)

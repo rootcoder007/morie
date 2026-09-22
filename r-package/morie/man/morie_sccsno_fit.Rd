@@ -13,6 +13,15 @@ morie_sccsno_fit(
   tol = 1e-10,
   ridge = 1e-10
 )
+
+morie_sccsno(
+  cases,
+  risk_periods,
+  age_breaks = c(),
+  iters = 100,
+  tol = 1e-10,
+  ridge = 1e-10
+)
 }
 \arguments{
 \item{cases}{See Usage.}
@@ -38,3 +47,16 @@ A step of the sccsno_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+cases <- lapply(1:12, function(i) {
+  expo <- runif(1, 60, 300)
+  n_ev <- 1 + rbinom(1, 2, 0.5)
+  ev <- sort(c(runif(max(n_ev - 1, 0), 0, 365),
+               expo + runif(1, 0, 30)))
+  list(start = 0, end = 365, exposure = expo, events = ev)
+})
+r <- morie_sccsno_fit(cases, risk_periods = list(c(0, 30)))
+str(r, max.level = 1)
+}
+\keyword{internal}

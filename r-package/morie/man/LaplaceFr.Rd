@@ -23,3 +23,9 @@ A list with \code{H}, \code{omega}, \code{magnitude}, \code{phase},
 imaginary axis lies inside the region of convergence, which holds for
 a causal stable system and fails for an unstable one.
 }
+\examples{
+t <- (0:200)/200
+h <- rep(1, 201)
+LaplaceFr(h, 3, t = t)
+}
+\keyword{internal}

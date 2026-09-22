@@ -23,3 +23,8 @@ A step of the hetgnn_native implementation. Called by \code{han_forward}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+semantic_attention(Z_per_metapath = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), W = 5L,
+  b = 5L, q = 0.5)
+}
+\keyword{internal}

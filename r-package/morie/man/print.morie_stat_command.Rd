@@ -2,20 +2,20 @@
 % Please edit documentation in R/stat_commands.R
 \name{print.morie_stat_command}
 \alias{print.morie_stat_command}
-\title{Print method for stat-command registry entries}
+\title{Print method for \code{morie_stat_command} objects}
 \usage{
 \method{print}{morie_stat_command}(x, ...)
 }
 \arguments{
-\item{x}{A \code{morie_stat_command}.}
+\item{x}{A \code{morie_stat_command} object.}
 
-\item{...}{Unused.}
+\item{...}{Ignored; accepted for S3 consistency.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
-Print method for stat-command registry entries
+Print method for \code{morie_stat_command} objects
 }
 \examples{
 cmd <- stat_command("demo_echo", "misc", "demo_echo",

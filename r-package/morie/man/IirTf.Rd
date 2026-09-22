@@ -26,3 +26,8 @@ so a_k is a_1..a_M WITHOUT it; passing a vector that already carries
 a leading 1 silently doubles the order, so the denominator actually
 used comes back for checking.
 }
+\examples{
+IirTf(b_k = c(1, 2, 3, 4, 5, 6, 7, 8), a_k = c(1, 2, 3, 4, 5, 6, 7, 8),
+  z = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -17,8 +17,8 @@ If no matching describe entry is found, returns \code{NULL}
 and prints a helpful diagnostic.
 }
 \description{
-Loads the describe_\if{html}{\out{<name>}}.md narrative shipped in the package's
-\code{inst/extdata/describe_corpus.Rds} bundle and prints it to
+Loads the \verb{describe_<name>.md} narrative shipped in the package's
+\code{inst/extdata/describe_corpus.Rds} capsule and prints it to
 the console. This is the R-side mirror of the Python
 \code{morie.describe()} function (closing the v0.9.5.4 parity
 gap; shipped in v0.9.5.5).
@@ -31,13 +31,16 @@ callable name is stripped automatically, so
 narrative.
 }
 \examples{
-morie_describe("aalen")
-morie_describe("morie_aalen")  # leading prefix stripped
-# Function-object form: pass any morie callable unquoted
-# (btsrp is the bootstrap primitive; its narrative ships in
-# the bundled describe corpus).
-morie_describe(btsrp)
+# The corpus is data shipped by rmoriedata (>= 0.3.2).
+if (morie:::.morie_describe_corpus_available()) {
+  morie_describe("aalen")
+  morie_describe("morie_aalen") # leading prefix stripped
+  # Function-object form: pass any morie callable unquoted
+  # (btsrp is the bootstrap primitive; its narrative ships in
+  # the bundled describe corpus).
+  morie_describe(btsrp)
 
+}
 }
 \seealso{
 \code{\link{morie_describe_by_name}} for the

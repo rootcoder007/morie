@@ -21,3 +21,8 @@ A list with \code{magnitude}, \code{omega}, \code{T}, \code{dc_gain},
 it.  Largest at Nyquist, which is why the operator amplifies
 high-frequency noise.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+FDiffMag(V)
+}
+\keyword{internal}

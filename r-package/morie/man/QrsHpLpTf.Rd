@@ -18,3 +18,8 @@ A list with \code{freq}, \code{mag}, \code{phase}, \code{b}, \code{fs}, \code{me
 \description{
 Evaluated as sum_\{k=0\}^\{31\} z^-k so the z = 1 point is exact.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+QrsHpLpTf(V)
+}
+\keyword{internal}

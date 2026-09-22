@@ -47,3 +47,10 @@ A step of the frfgrf_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+y <- rnorm(50)
+X <- matrix(rnorm(100), 50, 2)
+morie_frfgrf(y, X, n_trees = 20)
+}
+\keyword{internal}

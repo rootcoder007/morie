@@ -10,13 +10,12 @@ morie_weights_deff(weights)
 \item{weights}{Numeric vector of unit-level design weights.}
 }
 \value{
-Length-1 numeric: \code{n / ESS} (or \code{Inf} when ESS is
-zero).
+A numeric value.
 }
 \description{
 Kish design effect (n / ESS)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_weights_deff(V)
+set.seed(1)
+morie_weights_deff(runif(30, 0.5, 2))
 }

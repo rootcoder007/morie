@@ -22,3 +22,8 @@ instant IS this sum, so its peak locates the pattern.  Neither XCorr
 mode gives it (biased divides by n, unbiased by the overlap count),
 so it is computed here rather than delegated.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+XCorrDisc(V, V)
+}
+\keyword{internal}

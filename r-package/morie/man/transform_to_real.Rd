@@ -23,3 +23,7 @@ Fitting a Gaussian to a positive parameter directly puts mass on
 impossible values; transforming first is what makes one automatic
 recipe cover every model.
 }
+\examples{
+transform_to_real(value = 5L)
+}
+\keyword{internal}

@@ -20,6 +20,10 @@ error function, then reports \code{T = (1/2) log10(e) z^2}.
 The Python arm notes that this threshold applies to a single
 marker only -- a genome scan needs a permutation threshold.
 }
+\examples{
+morie_threshold()
+}
 \references{
 Lander, E. S. & Botstein, D. (1989).
 }
+\keyword{internal}

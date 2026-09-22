@@ -38,3 +38,7 @@ A step of the sp_fill implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+SparseVector(queries = c(1, 2, 3, 4, 5, 6, 7, 8), threshold = 0.5)
+}
+\keyword{internal}

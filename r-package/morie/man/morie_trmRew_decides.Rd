@@ -21,3 +21,11 @@ A list with \code{equal}, \code{left}, \code{right}.
 \description{
 only for a convergent system.
 }
+\examples{
+x <- morie_unifAlg_var("x")
+zero <- morie_unifAlg_const("0")
+r1 <- morie_trmRew_rule(morie_unifAlg_app("plus", zero, x), x)
+a <- morie_unifAlg_app("plus", zero, morie_unifAlg_const("a"))
+morie_trmRew_decides(a, morie_unifAlg_const("a"), list(r1))$equal
+}
+\keyword{internal}

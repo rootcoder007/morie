@@ -24,3 +24,8 @@ A list with \code{lags}, \code{centres}, \code{cov}, \code{acf}, \code{c0},
 \description{
 Sec. 1.4.2 and Chapter problem 1.14.  C(0) uses the 1/n divisor.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+SpAcf(V, V)
+}
+\keyword{internal}

@@ -9,15 +9,19 @@ synthesize_marginals(X, n, seed = 0)
 \arguments{
 \item{X}{A vector; its length is taken and its elements indexed.}
 
-\item{n}{Coerced to integer by the body, with \code{as.integer}.}
+\item{n}{A count; the body uses it as \code{seq_len(...)}.}
 
-\item{seed}{Passed to \code{.memb_rng}. Defaults to \code{0}.}
+\item{seed}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 }
 \value{
-The value of \code{split}.
+The value of \code{out}, as built in the body.
 }
 \description{
-A step of the memb_native implementation. No other function in the package calls it.
+A step of the memb_native implementation. Called by \code{morie_memb}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+synthesize_marginals(X = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L)
+}
+\keyword{internal}

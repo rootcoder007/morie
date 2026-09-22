@@ -22,3 +22,8 @@ A list with \code{a1}, \code{a0} and \code{fitted}.
 Gamma-family GLM with an identity link, iterating with genes whose
 dispersion/fit ratio falls outside \code{[1e-4, 15]} excluded.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+dispersion_trend(V, V)
+}
+\keyword{internal}

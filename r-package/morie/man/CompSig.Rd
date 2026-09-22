@@ -26,3 +26,8 @@ A list with \code{x}, \code{n}, \code{shifts}, \code{scales},
 together than the pattern is long OVERLAP, and the count is reported
 because an overlap is what breaks a peak-picking detector.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+CompSig(V, V)
+}
+\keyword{internal}

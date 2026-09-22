@@ -24,3 +24,8 @@ delay must be at least the reference duration or the filter is not
 causal; the book notes an N-point DFT of an N-sample template gives
 only N-1, one sample short.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+MfImpulse(V)
+}
+\keyword{internal}

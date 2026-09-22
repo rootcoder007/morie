@@ -60,17 +60,8 @@ morie_list_morie_modules <- function() {
   )
 }
 
-#' Primary: built-in SQLite DB. Fallback: raw CSV in datasets/
-#'
-#' A step of the modules implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @return The value of \code{[}.
-#' @export
-#' @examples
-#' res <- .cpads_default_csv()
-#' res
+#' Internal helper: Cpads Default Csv
+#' @noRd
 .cpads_default_csv <- function() {
   # Primary: built-in SQLite DB. Fallback: raw CSV in datasets/.
   candidates <- c(
@@ -85,30 +76,25 @@ morie_list_morie_modules <- function() {
   candidates[1L]
 }
 
-#' The Python bridge passes an absolute path (see modules.py, finding
-#' N1);
-#'
-#' a direct Rscript caller is responsible for a path valid from its own
-#' cwd. No parent-directory walk: it only ever "worked" when the output
-#' dir happened to sit inside the repo, and silently surprised everyone
-#' else.
-#'
-#' @param cpads_csv Passed to \code{file.exists}.
-#' @return Nothing; this branch always raises.
-#' @export
+#' Internal helper: Resolve Cpads Csv
+#' @noRd
 .resolve_cpads_csv <- function(cpads_csv) {
-  # The Python bridge passes an absolute path (see modules.py, finding N1);
-  # a direct Rscript caller is responsible for a path valid from its own cwd.
-  # No parent-directory walk: it only ever "worked" when the output dir
-  # happened to sit inside the repo, and silently surprised everyone else.
   if (file.exists(cpads_csv)) {
     return(normalizePath(cpads_csv, mustWork = TRUE))
   }
-  stop(
-    "CPADS CSV not found: ", cpads_csv,
-    "\n  Pass an absolute path (or one valid from the current working directory).",
-    call. = FALSE
-  )
+  current <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  for (i in seq_len(10L)) {
+    candidate <- file.path(current, cpads_csv)
+    if (file.exists(candidate)) {
+      return(normalizePath(candidate, mustWork = TRUE))
+    }
+    parent <- dirname(current)
+    if (identical(parent, current)) {
+      break
+    }
+    current <- parent
+  }
+  stop("CPADS CSV not found: ", cpads_csv, call. = FALSE)
 }
 
 #' Canonicalize raw CPADS PUMF columns
@@ -163,28 +149,24 @@ morie_canonicalize_cpads_data <- function(data) {
 #'
 #' @param cpads_csv Path to the CPADS CSV.
 #' @return Canonicalized CPADS data frame.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
 #' # Reads and canonicalises the CPADS PUMF CSV. The default CSV lives in
 #' # a morie project tree; the CKAN-fetched PUMF works identically (see
 #' # morie_load_dataset("ocp21")). The tryCatch guard lets the example
 #' # render cleanly on machines without the CSV checked out locally.
 #' tryCatch(morie_load_cpads_data(), error = function(e) message(conditionMessage(e)))
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
   cpads_csv <- .resolve_cpads_csv(cpads_csv)
   morie_canonicalize_cpads_data(utils::read.csv(cpads_csv, stringsAsFactors = FALSE))
 }
 
-#' .write_module_outputs
-#'
-#' A step of the modules implementation. Called by \code{morie_run_morie_module}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param outputs A vector; indexed elementwise.
-#' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @return The value of \code{outputs}, as built in the body.
-#' @export
+#' Internal helper: Write Module Outputs
+#' @noRd
 .write_module_outputs <- function(outputs, output_dir = NULL) {
   if (is.null(output_dir)) {
     return(outputs)
@@ -209,7 +191,9 @@ morie_load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
 #' @param cpads_csv Path to the CPADS CSV.
 #' @param output_dir Optional directory for CSV outputs.
 #' @return Named list of data-frame outputs.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
 #' # Dispatch one MORIE module against the canonical CPADS CSV. The CSV
 #' # ships with a morie project tree, or is fetched via the CKAN endpoint
 #' # (morie_load_dataset("ocp21")). Wrapped in tryCatch so the example
@@ -218,6 +202,8 @@ morie_load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
 #'   morie_run_morie_module("descriptive-statistics"),
 #'   error = function(e) message(conditionMessage(e))
 #' )
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_run_morie_module <- function(module_name, cpads_csv = .cpads_default_csv(), output_dir = NULL) {
   data <- morie_load_cpads_data(cpads_csv)

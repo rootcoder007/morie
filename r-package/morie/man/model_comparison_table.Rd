@@ -25,12 +25,7 @@ model_comparison_table(
 \item{title}{Title.}
 }
 \value{
-When \code{output_format = "dataframe"}, a \code{data.frame}
-with one row per model (indexed by model name) and columns
-\code{N}, \code{df}, \code{Log-Lik}, \code{AIC}, \code{BIC}, and
-optionally \code{R-sq}, \code{LR stat}, \code{LR p}. Otherwise a
-character string holding the rendered table in the requested
-format.
+A character string.
 }
 \description{
 Compare multiple model fits on AIC, BIC, log-likelihood and (optional)

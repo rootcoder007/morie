@@ -17,8 +17,9 @@ List with \code{cepstrum} and \code{quefrency}.
 quefrency indices.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_dsp_complex_cepstrum(V)
+set.seed(1)
+x <- sin(2 * pi * 0.05 * (1:256)) + rnorm(256, 0, 0.1)
+str(morie_dsp_complex_cepstrum(x), max.level = 1)
 }
 \references{
 Rangayyan & Krishnan (2015), Ch. 4, sec. 4.10;

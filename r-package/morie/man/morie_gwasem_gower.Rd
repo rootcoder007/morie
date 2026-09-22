@@ -2,21 +2,22 @@
 % Please edit documentation in R/gwasem_native.R
 \name{morie_gwasem_gower}
 \alias{morie_gwasem_gower}
-\title{Gower normalisation of a relatedness matrix}
+\title{Gower centring (equation 5)}
 \usage{
 morie_gwasem_gower(S)
 }
 \arguments{
-\item{S}{n x n relatedness matrix.}
+\item{S}{n x n matrix.}
 }
 \value{
-Normalised matrix.
+Centred matrix.
 }
 \description{
-Equation 5: \eqn{\hat S_N = (n-1)\hat S / \mathrm{Tr}(P\hat S P)}
-with \eqn{P = I - \mathbf{1}\mathbf{1}'/n}, so \eqn{\sigma_a^2} is
-on the scale of the phenotypic variance.
+Scales the relatedness matrix to sample variance 1 so that
+\code{sigma_a^2} is on the scale of the phenotypic variance.
 }
-\references{
-Kang, H. M. et al. (2010).
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+morie_gwasem_gower(M)
 }
+\keyword{internal}

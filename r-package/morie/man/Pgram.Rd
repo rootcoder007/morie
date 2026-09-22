@@ -19,3 +19,8 @@ covariance form of eq (4.58).  THE ZERO FREQUENCY IS EXCLUDED: the
 derivation of (4.58) turns on sum_u cos(w_j u) = 0, true at every
 Fourier frequency EXCEPT w = 0.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Pgram(V)
+}
+\keyword{internal}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/patchT_native.R
 \name{attention_cost}
 \alias{attention_cost}
-\title{Attention-map size, patched against point-wise. Point-wise}
+\title{attention_cost}
 \usage{
 attention_cost(L, patch_len, stride = NULL, D = 1, channel_independent = TRUE)
 }
@@ -23,6 +23,11 @@ A list with \code{n_patches}, \code{pointwise}, \code{patched},
 \code{reduction}, \code{stride}, \code{patch_len}, \code{note}.
 }
 \description{
-attention over a look-back of L costs L^2 per channel. Patching
-reduces the sequence to N tokens, so the cost falls to N^2.
+A step of the patchT_native implementation. Called by \code{patchtst_encode}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+attention_cost(L = 5L, patch_len = 5L)
+}
+\keyword{internal}

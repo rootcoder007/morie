@@ -25,8 +25,12 @@ chosen Achlioptas distribution using the shared SplitMix64
 generator, one uniform per cell in row-major order, so the R arm
 and the Python arm consume the same stream in the same order.
 }
+\examples{
+projection_matrix(d = 5L, k = 5L)
+}
 \references{
 Achlioptas, D. (2003). Database-friendly random
 projections. Journal of Computer and System Sciences, 66(4),
 671-687, Theorem 1.1.
 }
+\keyword{internal}

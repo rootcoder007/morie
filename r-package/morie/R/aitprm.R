@@ -47,8 +47,10 @@ Permanova <- function(X, group, aitchison = TRUE) {
   ssa <- sst - ssw
   df1 <- a - 1L
   df2 <- N - a
-  .t1_result(F = if (ssw > 0) (ssa / df1) / (ssw / df2) else Inf,
-             SSA = ssa, SSW = ssw, SST = sst, df1 = df1, df2 = df2,
-             N = N, a = a, sizes = as.numeric(size[labs]),
-             method = "PERMANOVA pseudo-F on Aitchison distances (Anderson 2001)")
+  .t1_result(
+    F = if (ssw > 0) (ssa / df1) / (ssw / df2) else Inf,
+    SSA = ssa, SSW = ssw, SST = sst, df1 = df1, df2 = df2,
+    N = N, a = a, sizes = as.numeric(size[labs]),
+    method = "PERMANOVA pseudo-F on Aitchison distances (Anderson 2001)"
+  )
 }

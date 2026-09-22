@@ -32,7 +32,9 @@ Clrpca <- function(X, k = 2) {
   tot <- sum(e$values[e$values > 0])
   load <- e$vectors[, seq_len(k), drop = FALSE]
   prop <- e$values[seq_len(k)] / tot
-  .t1_result(values = e$values, loadings = load, scores = Zc %*% load,
-             prop_var = prop, cum_prop = cumsum(prop), k = k, n = n, D = D,
-             method = "Compositional (clr) principal components")
+  .t1_result(
+    values = e$values, loadings = load, scores = Zc %*% load,
+    prop_var = prop, cum_prop = cumsum(prop), k = k, n = n, D = D,
+    method = "Compositional (clr) principal components"
+  )
 }

@@ -13,7 +13,16 @@
 # Besag, J. (1977). Discussion of "Modelling spatial patterns" by B. D.
 # Ripley. JRSS B 39(2):193-195. Baddeley & Turner (2005) JSS 12(6) p. 17.
 
-#' @noRd
+#' morie_ripley_l
+#'
+#' @param coords Argument `coords`; see Usage.
+#' @param r_grid Argument `r_grid`; see Usage.
+#' @param correction Argument `correction`; see Usage.
+#' @return A list with `r`, `l`, `l_uncentred`, `k`, `lambda_est`, `method`.
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie:::morie_ripley_l(M)
+#' @keywords internal
 morie_ripley_l <- function(coords, r_grid = NULL, correction = "border") {
   res <- morie_ripley_l_function(coords, NULL, r_grid, correction)
   list(r = res$r, l = res$l, l_uncentred = res$l_uncentred, k = res$k,

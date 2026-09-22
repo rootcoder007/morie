@@ -1,15 +1,14 @@
-# smcopt_native.R -- mirror of smcopt_python_reference.py
-
-# SMC for global optimisation (annealed sequence of targets).
-# Sources: Del Moral, P., Doucet, A. & Jasra, A. (2006) "Sequential
-# Monte Carlo samplers", *JRSS-B* 68(3), 411-436, section 2.3.1(c).
-#
-# Native implementation mirroring Python morie.fn.smcopt exactly:
-# the same increasing phi_n ladder in either geometric or linear
-# flavour, the same smcsam front end with the random-walk kernel
-# whose scale shrinks as phi grows, the same "best point seen"
-# tracking that the resampling step does NOT overwrite, and the
-# same payload keys.
+# morie.fn -- function file (rootcoder007/morie)
+# R arm of smcopt (smcopt, sequential_mc, smc_optimise,
+# annealing_ladder).
+# Sources:
+#   Del Moral, P., Doucet, A. & Jasra, A. (2006) "Sequential Monte Carlo
+#   samplers", JRSS-B 68(3), 411-436, section 2.3.1(c). The
+#   optimisation route is one of the three sequences the paper lists
+#   for {pi_n}: pi_n = pi^{phi_n} with phi_n increasing. The
+#   particles anneal together and are resampled; the sampler,
+#   incremental weights of equation 31, the ESS criterion and the
+#   resampling schemes all live in smcsam.
 
 #' annealing_ladder
 #'
@@ -17,60 +16,34 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n_steps Coerced to integer by the body, with \code{as.integer}.
+#' @param n_steps A count; the body uses it as \code{seq_len(...)}.
 #' @param phi_max Numeric; combined arithmetically in the body. Defaults to \code{50}.
 #' @param phi_min Numeric; combined arithmetically in the body. Defaults to \code{0.1}.
 #' @param kind One of \code{"geometric"}, \code{"linear"}. Defaults to \code{"geometric"}.
 #' @return Nothing; this branch always raises.
 #' @export
+#' @examples
+#' annealing_ladder(n_steps = 5L)
+#' @keywords internal
 annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
                              kind = "geometric") {
-  n <- as.integer(n_steps)
-  if (n < 2L)
-    stop("smcopt: need at least two steps, got ", n)
+  n_steps <- as.integer(n_steps)
+  if (n_steps < 2L)
+    stop("smcopt: need at least two steps")
   if (phi_min <= 0 || phi_max <= phi_min)
     stop("smcopt: need 0 < phi_min < phi_max")
   if (kind == "geometric") {
-    r <- (phi_max / phi_min) ^ (1 / (n - 1))
-    return(phi_min * r ^ (seq_len(n) - 1L))
+    r <- (phi_max / phi_min) ^ (1.0 / (n_steps - 1L))
+    return(vapply(seq_len(n_steps) - 1L,
+                  function(t) phi_min * r ^ t, numeric(1)))
   }
-  if (kind == "linear")
-    return(phi_min + (phi_max - phi_min) * (seq_len(n) - 1L) / (n - 1L))
-  stop("smcopt: kind must be 'geometric' or 'linear', got ",
-       deparse(kind))
-}
-
-# Bare random-walk kernel with a caller-chosen scale.  Mirrors
-# the Python arm's random_walk_kernel(scale=1.0): propose
-# x' = x + Normal(0, scale^2) and accept with the standard
-# Metropolis-Hastings ratio.  No library calls; uses .ghc_norm
-# so the run is reproducible from the seed.
-#' Bare random-walk kernel with a caller-chosen scale.  Mirrors
-#'
-#' the Python arm\'s random_walk_kernel(scale=1.0): propose x\' = x +
-#' Normal(0, scale^2) and accept with the standard Metropolis-Hastings
-#' ratio.  No library calls; uses .ghc_norm so the run is reproducible
-#' from the seed.
-#'
-#' @param scale Numeric; combined arithmetically in the body.
-#' @return The value of \code{function}.
-#' @export
-#' @examples
-#' res <- .smcopt_rwk(scale = TRUE)
-#' res
-.smcopt_rwk <- function(scale) {
-  function(x, log_target, rng) {
-    n <- length(x)
-    prop <- as.numeric(x) + scale * .ghc_norm(rng, n)
-    lp <- log_target(prop)
-    if (!is.finite(lp))
-      return(list(x = x, accept = 0L))
-    cur <- log_target(x)
-    log_alpha <- lp - cur
-    if (log(runif(1, 0, 1)) < log_alpha)
-      return(list(x = prop, accept = 1L))
-    list(x = x, accept = 0L)
+  if (kind == "linear") {
+    return(vapply(seq_len(n_steps) - 1L,
+                  function(t) phi_min + (phi_max - phi_min) *
+                    t / (n_steps - 1L),
+                  numeric(1)))
   }
+  stop("smcopt: kind must be 'geometric' or 'linear'")
 }
 
 #' smcopt
@@ -80,31 +53,32 @@ annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
 #' source it follows.
 #'
 #' @param objective The body requires: smcopt: the objective was never evaluated.
-#' @param initial Passed to \code{smcsam}.
+#' @param initial See Usage.
 #' @param n_particles Coerced to integer by the body, with \code{as.integer}. Defaults to
-#' \code{200L}.
-#' @param n_steps Passed to \code{annealing_ladder}. Defaults to \code{30L}.
+#' \code{200}.
+#' @param n_steps Passed to \code{annealing_ladder}. Defaults to \code{30}.
 #' @param phi_max Passed to \code{annealing_ladder}. Defaults to \code{50}.
 #' @param phi_min Passed to \code{annealing_ladder}. Defaults to \code{0.1}.
 #' @param kind Passed to \code{annealing_ladder}. Defaults to \code{"geometric"}.
-#' @param kernel Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param ess_threshold Passed to \code{smcsam}. Defaults to \code{0.5}.
-#' @param scheme Passed to \code{smcsam}. Defaults to \code{"systematic"}.
-#' @param seed Passed to \code{smcsam}. Defaults to \code{0L}.
+#' @param kernel Defaults to \code{NULL}.
+#' @param ess_threshold Defaults to \code{0.5}.
+#' @param scheme Defaults to \code{"systematic"}.
+#' @param seed Defaults to \code{0}.
 #' @param maximise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{estimate}, \code{best_x}, \code{best_value},
 #' \code{particles}, \code{weights}, \code{particle_mean}, \code{ladder},
 #' \code{ess_trace}, \code{resampled}, \code{accept_trace}, \code{n_particles},
 #' \code{maximise}, \code{note}, \code{method}.
 #' @export
-smcopt <- function(objective, initial, n_particles = 200L, n_steps = 30L,
+#' @keywords internal
+smcopt <- function(objective, initial, n_particles = 200, n_steps = 30,
                    phi_max = 50.0, phi_min = 0.1, kind = "geometric",
-                   kernel = NULL, ess_threshold = 0.5, scheme = "systematic",
-                   seed = 0L, maximise = TRUE) {
+                   kernel = NULL, ess_threshold = 0.5,
+                   scheme = "systematic", seed = 0, maximise = TRUE) {
   sign <- if (isTRUE(maximise)) 1.0 else -1.0
   ladder <- annealing_ladder(n_steps, phi_max, phi_min, kind)
-  best_x <- NULL
   best_v <- -Inf
+  best_x <- NULL
 
   log_gamma <- function(x, phi) {
     v <- sign * as.numeric(objective(x))
@@ -115,17 +89,11 @@ smcopt <- function(objective, initial, n_particles = 200L, n_steps = 30L,
     phi * v
   }
 
-  if (is.null(kernel)) {
-    base <- .smcopt_rwk(1.0)
-    kern <- function(x, log_target, rng) base(x, log_target, rng)
-  } else {
-    kern <- kernel
-  }
-
-  fit <- smcsam(log_gamma, initial, n_particles = n_particles,
-                ladder = ladder, kernel = kern,
-                ess_threshold = ess_threshold, scheme = scheme,
-                seed = seed)
+  fit <- morie_smcsam$smcsam(log_gamma, initial,
+                             n_particles = n_particles,
+                             ladder = ladder, kernel = kernel,
+                             ess_threshold = ess_threshold,
+                             scheme = scheme, seed = seed)
   if (is.null(best_x))
     stop("smcopt: the objective was never evaluated")
   list(estimate = best_x,
@@ -140,11 +108,11 @@ smcopt <- function(objective, initial, n_particles = 200L, n_steps = 30L,
        accept_trace = fit$accept_trace,
        n_particles = as.integer(n_particles),
        maximise = isTRUE(maximise),
-       note = paste("annealing concentrates on the modes but cannot ",
-                    "find one no particle visits; widen `initial` ",
-                    "before raising phi_max", sep = ""),
-       method = paste("annealed SMC optimisation (Del Moral, Doucet ",
-                      "& Jasra 2006, section 2.3.1c)", sep = ""))
+       note = paste0("annealing concentrates on the modes but cannot ",
+                     "find one no particle visits; widen `initial` ",
+                     "before raising phi_max"),
+       method = paste0("annealed SMC optimisation (Del Moral, Doucet ",
+                       "& Jasra 2006, section 2.3.1c)"))
 }
 
 #' .smcopt_cheatsheet
@@ -159,18 +127,22 @@ smcopt <- function(objective, initial, n_particles = 200L, n_steps = 30L,
 #' res <- .smcopt_cheatsheet()
 #' res
 .smcopt_cheatsheet <- function() {
-  paste("smcopt: SMC as a global optimiser (Del Moral, Doucet & Jasra ",
-        "2006, sec 2.3.1c). Anneal pi_n = pi^phi_n with phi rising, so ",
-        "the target concentrates on the modes. Unlike single-chain ",
-        "simulated annealing the particles INTERACT: resampling kills ",
-        "the ones in poor modes and copies the ones in good modes. ",
-        "Shares the sampler, weights and resampling with smcsam.",
-        sep = "")
+  paste0("smcopt: SMC as a global optimiser (Del Moral, Doucet & Jasra ",
+         "2006, sec 2.3.1c). Anneal pi_n = pi^phi_n with phi rising, so ",
+         "the target concentrates on the modes. Unlike single-chain ",
+         "simulated annealing the particles INTERACT: resampling kills ",
+         "the ones in poor modes and copies the ones in good modes. ",
+         "Shares the sampler, weights and resampling with smcsam.")
 }
 
+# carried-over names / compact aliases
 smc_optimise <- smcopt
 sequential_mc <- smcopt
 sequentialmc <- smcopt
 
-# Native entry point.
-morie_smcopt <- smcopt
+morie_smcopt <- list(smcopt = smcopt,
+                     sequential_mc = sequential_mc,
+                     smc_optimise = smc_optimise,
+                     annealing_ladder = annealing_ladder,
+                     cheatsheet = .smcopt_cheatsheet,
+                     sequentialmc = sequentialmc)

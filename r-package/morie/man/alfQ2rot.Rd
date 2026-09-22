@@ -21,3 +21,7 @@ lines 2-3.  Fixing the leading component to 1 before normalisation
 both guarantees a unit quaternion and makes zero input the identity
 rotation.
 }
+\examples{
+alfQ2rot(b = 0.2, c = 0.3, d = 0.4)
+}
+\keyword{internal}

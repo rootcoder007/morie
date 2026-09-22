@@ -18,3 +18,7 @@ The value of \code{out}, as built in the body.
 convention: integrating the flat density over all f returns P, not
 twice it.  Getting it wrong is a factor of two in every SNR below.
 }
+\examples{
+MfNoiseIn(power = 5L)
+}
+\keyword{internal}

@@ -40,7 +40,9 @@ Mctsexpand <- function(state, policy_net, legal = NULL, logits = FALSE) {
     for (x in mask) live <- live + x
     p <- if (live > 0) mask / live else rep(0, m)
   }
-  list(estimate = v, value = v, p = p, n = numeric(m), w = numeric(m),
-       q = numeric(m), state = state,
-       method = "AlphaZero MCTS expansion via the policy network")
+  list(
+    estimate = v, value = v, p = p, n = numeric(m), w = numeric(m),
+    q = numeric(m), state = state,
+    method = "AlphaZero MCTS expansion via the policy network"
+  )
 }

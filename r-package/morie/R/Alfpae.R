@@ -18,17 +18,22 @@
 #' @return A list with the \code{pae} matrix, the distributions \code{p},
 #'   \code{estimate}, \code{n} and \code{method}.
 #' @references Jumper et al (2021) Nature 596:583-589, Suppl. section 1.9.7
+#' @export
 Alfpae <- function(z, w, bins = NULL) {
   if (is.null(bins)) bins <- 0.25 + 0.5 * (seq_len(64) - 1)
   n <- dim(z)[1]
   nb <- length(bins)
   pae <- matrix(0, n, n)
   ps <- array(0, c(n, n, nb))
-  for (i in seq_len(n)) for (j in seq_len(n)) {
-    p <- alfSmax(alfLin(z[i, j, ], w))
-    ps[i, j, ] <- p
-    pae[i, j] <- sum(p * bins)
+  for (i in seq_len(n)) {
+    for (j in seq_len(n)) {
+      p <- alfSmax(alfLin(z[i, j, ], w))
+      ps[i, j, ] <- p
+      pae[i, j] <- sum(p * bins)
+    }
   }
-  list(pae = pae, p = ps, estimate = mean(pae), n = n,
-       method = "AlphaFold predicted aligned error")
+  list(
+    pae = pae, p = ps, estimate = mean(pae), n = n,
+    method = "AlphaFold predicted aligned error"
+  )
 }

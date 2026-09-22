@@ -20,3 +20,8 @@ The value of \code{out}, as built in the body.
 The coefficients sit at POSITIVE quefrency and decay at least as fast
 as 1/n: the minimum-phase cepstrum is causal.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+LogMinPh(V)
+}
+\keyword{internal}

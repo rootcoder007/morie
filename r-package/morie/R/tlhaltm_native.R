@@ -40,6 +40,7 @@
 #' @param mode One of \code{"rate"}, \code{"remainder"}, \code{"split"}.
 #' @return The value of \code{efficiency_check}.
 #' @export
+#' @keywords internal
 morie_tlhaltm <- function(rate_Q = NULL, rate_g = NULL, n = NULL,
                           err_Q = NULL, err_g = NULL, delta = NULL,
                           donsker = TRUE,
@@ -65,6 +66,9 @@ morie_tlhaltm <- function(rate_Q = NULL, rate_g = NULL, n = NULL,
 #' @return A list with \code{sum}, \code{required}, \code{satisfied},
 #' \code{product_order}, \code{root_n_order}, \code{note}.
 #' @export
+#' @examples
+#' rate_condition(rate_Q = 5L, rate_g = 5L, n = 5L)
+#' @keywords internal
 rate_condition <- function(rate_Q, rate_g, n) {
   a <- as.numeric(rate_Q)
   b <- as.numeric(rate_g)
@@ -88,6 +92,9 @@ rate_condition <- function(rate_Q, rate_g, n) {
 #' @param delta Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{bound}, \code{delta}, \code{err_Q}, \code{err_g}, \code{note}.
 #' @export
+#' @examples
+#' remainder_bound(err_Q = c(1, 2, 3, 4, 5, 6, 7, 8), err_g = c(1, 2, 3, 4, 5, 6, 7, 8), delta = 0.5)
+#' @keywords internal
 remainder_bound <- function(err_Q, err_g, delta) {
   d <- as.numeric(delta)
   if (!(0 < d && d <= 1))
@@ -114,6 +121,9 @@ remainder_bound <- function(err_Q, err_g, delta) {
 #' \code{remainder_negligible}, \code{donsker_satisfied}, \code{efficient},
 #' \code{positivity_delta}, \code{method}, \code{note}.
 #' @export
+#' @examples
+#' efficiency_check(err_Q = 5L, err_g = 5L, delta = 0.5, n = 5L)
+#' @keywords internal
 efficiency_check <- function(err_Q, err_g, delta, n, donsker = TRUE) {
   r <- remainder_bound(err_Q, err_g, delta)
   root_n <- 1 / sqrt(as.integer(n))
@@ -138,6 +148,9 @@ efficiency_check <- function(err_Q, err_g, delta, n, donsker = TRUE) {
 #' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0L}.
 #' @return A list with \code{folds}, \code{training}, \code{V}, \code{note}.
 #' @export
+#' @examples
+#' cv_tmle_split(50, V = 5, seed = 1L)
+#' @keywords internal
 cv_tmle_split <- function(n, V = 10L, seed = 0L) {
   n <- as.integer(n)
   V <- as.integer(V)

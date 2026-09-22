@@ -28,7 +28,9 @@
 .morie_cf_tau <- function(y, d) {
   tr <- d == 1
   co <- d == 0
-  if (!any(tr) || !any(co)) return(NA_real_)
+  if (!any(tr) || !any(co)) {
+    return(NA_real_)
+  }
   mean(y[tr]) - mean(y[co])
 }
 
@@ -52,14 +54,18 @@
 #' @export
 .morie_cf_grow <- function(X, y, d, split_rows, est_rows, depth, max_depth,
                            min_leaf, mtry, imbalance_penalty = 0) {
-  node <- list(feature = NA_integer_, threshold = NA_real_,
-               left = NULL, right = NULL,
-               tau = .morie_cf_tau(y[est_rows], d[est_rows]),
-               n = length(est_rows))
+  node <- list(
+    feature = NA_integer_, threshold = NA_real_,
+    left = NULL, right = NULL,
+    tau = .morie_cf_tau(y[est_rows], d[est_rows]),
+    n = length(est_rows)
+  )
   if (is.na(node$tau)) node$tau <- .morie_cf_tau(y[split_rows], d[split_rows])
   if (is.na(node$tau)) node$tau <- 0
 
-  if (depth >= max_depth || length(split_rows) < 4L * min_leaf) return(node)
+  if (depth >= max_depth || length(split_rows) < 4L * min_leaf) {
+    return(node)
+  }
 
   p <- ncol(X)
   feats <- sample.int(p, min(mtry, p))
@@ -68,7 +74,8 @@
   best_thr <- NA_real_
   for (f in feats) {
     cuts <- unique(stats::quantile(X[split_rows, f], seq(0.1, 0.9, by = 0.1),
-                                   names = FALSE, type = 7))
+      names = FALSE, type = 7
+    ))
     for (thr in cuts) {
       lm_ <- X[split_rows, f] <= thr
       lsp <- split_rows[lm_]
@@ -92,7 +99,9 @@
       }
     }
   }
-  if (is.na(best_f)) return(node)
+  if (is.na(best_f)) {
+    return(node)
+  }
 
   node$feature <- best_f
   node$threshold <- best_thr
@@ -186,7 +195,8 @@ morie_causal_forest <- function(y, d, x, n_trees = 200L, min_leaf = 10L,
   if (!all(d %in% c(0, 1))) stop("d must be binary 0/1.", call. = FALSE)
   if (n < 8L * min_leaf) {
     stop(sprintf("need at least %d observations, got %d.", 8L * min_leaf, n),
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (subsample <= 0 || subsample > 1) {
     stop("subsample must lie in (0, 1].", call. = FALSE)
@@ -200,10 +210,12 @@ morie_causal_forest <- function(y, d, x, n_trees = 200L, min_leaf = 10L,
   for (b in seq_len(n_trees)) {
     idx <- sample.int(n, min(m, n))
     half <- length(idx) %/% 2L
-    trees[[b]] <- .morie_cf_grow(X, y, d, idx[seq_len(half)],
-                                 idx[(half + 1L):length(idx)],
-                                 0L, max_depth, min_leaf, mtry,
-                                 imbalance_penalty)
+    trees[[b]] <- .morie_cf_grow(
+      X, y, d, idx[seq_len(half)],
+      idx[(half + 1L):length(idx)],
+      0L, max_depth, min_leaf, mtry,
+      imbalance_penalty
+    )
     in_bag[b, idx] <- TRUE
   }
 
@@ -212,7 +224,9 @@ morie_causal_forest <- function(y, d, x, n_trees = 200L, min_leaf = 10L,
   }, numeric(1))
   oob <- vapply(seq_len(n), function(i) {
     keep <- !in_bag[, i]
-    if (!any(keep)) return(NA_real_)
+    if (!any(keep)) {
+      return(NA_real_)
+    }
     mean(vapply(trees[keep], .morie_cf_walk, numeric(1), xrow = X[i, ]))
   }, numeric(1))
 
@@ -245,7 +259,8 @@ morie_causal_forest_predict <- function(forest, newx) {
   storage.mode(Xq) <- "double"
   if (ncol(Xq) != ncol(forest$X)) {
     stop("newx must have the same number of columns as the training X.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   vapply(seq_len(nrow(Xq)), function(i) {
     mean(vapply(forest$trees, .morie_cf_walk, numeric(1), xrow = Xq[i, ]))
@@ -294,8 +309,9 @@ morie_causal_forest_bootstrap <- function(y, d, x, B = 40L, n_trees = 60L,
     .morie_local_seed(seed + b)
     idx <- sample.int(n, n, replace = TRUE)
     fit <- morie_causal_forest(y[idx], d[idx], X[idx, , drop = FALSE],
-                               n_trees = n_trees, min_leaf = min_leaf,
-                               seed = seed + b)
+      n_trees = n_trees, min_leaf = min_leaf,
+      seed = seed + b
+    )
     draws[b, ] <- morie_causal_forest_predict(fit$forest, X)
   }
   probs <- c(alpha / 2, 1 - alpha / 2)
@@ -361,8 +377,10 @@ morie_hte_blp_test <- function(y, d, cate_predictions, propensity = NULL) {
   beta <- unname(co[3, 1])
   se <- unname(co[3, 2])
   p <- stats::pt(beta / se, df = m - 3L, lower.tail = FALSE)
-  list(alpha = unname(co[2, 1]), beta = beta, se_beta = se,
-       p_value = p, heterogeneous = p < 0.05, n = m)
+  list(
+    alpha = unname(co[2, 1]), beta = beta, se_beta = se,
+    p_value = p, heterogeneous = p < 0.05, n = m
+  )
 }
 
 #' Causal survival forest on IPCW restricted-mean-survival pseudo outcomes
@@ -410,14 +428,20 @@ morie_causal_survival_forest <- function(time, event, d, x, horizon = NULL,
   if (!all(d %in% c(0, 1))) stop("d must be binary 0/1.", call. = FALSE)
   tau <- if (is.null(horizon)) {
     stats::quantile(time, 0.9, names = FALSE)
-  } else as.numeric(horizon)
+  } else {
+    as.numeric(horizon)
+  }
   if (tau <= 0) stop("horizon must be positive.", call. = FALSE)
 
   pseudo <- .morie_cf_rmst_pseudo(time, event, tau)
-  fit <- morie_causal_forest(pseudo, d, x, n_trees = n_trees,
-                             min_leaf = min_leaf, seed = seed)
-  c(fit[c("cate", "cate_oob", "ate", "n", "forest")],
-    list(horizon = tau, pseudo_outcome = pseudo))
+  fit <- morie_causal_forest(pseudo, d, x,
+    n_trees = n_trees,
+    min_leaf = min_leaf, seed = seed
+  )
+  c(
+    fit[c("cate", "cate_oob", "ate", "n", "forest")],
+    list(horizon = tau, pseudo_outcome = pseudo)
+  )
 }
 
 #' Best linear predictor for the causal survival forest CATE
@@ -449,12 +473,16 @@ morie_causal_survival_forest <- function(time, event, d, x, horizon = NULL,
 morie_causal_survival_blp <- function(time, event, d, x, horizon = NULL,
                                       n_trees = 200L, min_leaf = 15L,
                                       seed = 0L) {
-  f <- morie_causal_survival_forest(time, event, d, x, horizon = horizon,
-                                    n_trees = n_trees, min_leaf = min_leaf,
-                                    seed = seed)
+  f <- morie_causal_survival_forest(time, event, d, x,
+    horizon = horizon,
+    n_trees = n_trees, min_leaf = min_leaf,
+    seed = seed
+  )
   blp <- morie_hte_blp_test(f$pseudo_outcome, d, f$cate_oob)
-  c(blp[c("alpha", "beta", "se_beta", "p_value", "heterogeneous", "n")],
-    list(ate = f$ate, horizon = f$horizon))
+  c(
+    blp[c("alpha", "beta", "se_beta", "p_value", "heterogeneous", "n")],
+    list(ate = f$ate, horizon = f$horizon)
+  )
 }
 
 #' Quantile-balanced causal forest for distributional treatment effects
@@ -492,10 +520,14 @@ morie_quantile_causal_forest <- function(y, d, x, quantile = 0.5,
   }
   thr <- stats::quantile(y, q, names = FALSE)
   ind <- as.numeric(y <= thr)
-  fit <- morie_causal_forest(ind, d, x, n_trees = n_trees,
-                             min_leaf = min_leaf, seed = seed)
-  list(cdf_effect = fit$cate, shift_effect = -fit$cate, threshold = thr,
-       quantile = q, ate_cdf = fit$ate, n = fit$n, forest = fit$forest)
+  fit <- morie_causal_forest(ind, d, x,
+    n_trees = n_trees,
+    min_leaf = min_leaf, seed = seed
+  )
+  list(
+    cdf_effect = fit$cate, shift_effect = -fit$cate, threshold = thr,
+    quantile = q, ate_cdf = fit$ate, n = fit$n, forest = fit$forest
+  )
 }
 
 #' Causal forest with an isotonic monotonicity constraint on the CATE
@@ -529,18 +561,24 @@ morie_monotone_causal_forest <- function(y, d, x, monotone_feature = NULL,
                                          min_leaf = 10L, seed = 0L) {
   X <- as.matrix(x)
   storage.mode(X) <- "double"
-  fit <- morie_causal_forest(y, d, X, n_trees = n_trees,
-                             min_leaf = min_leaf, seed = seed)
+  fit <- morie_causal_forest(y, d, X,
+    n_trees = n_trees,
+    min_leaf = min_leaf, seed = seed
+  )
   raw <- fit$cate
   if (is.null(monotone_feature)) {
-    return(list(cate = raw, cate_raw = raw, monotone_feature = NULL,
-                direction = direction, violations_before = 0L,
-                violations_after = 0L, n = fit$n))
+    return(list(
+      cate = raw, cate_raw = raw, monotone_feature = NULL,
+      direction = direction, violations_before = 0L,
+      violations_after = 0L, n = fit$n
+    ))
   }
   j <- as.integer(monotone_feature)
   if (j < 1L || j > ncol(X)) {
-    stop(sprintf("monotone_feature must index a column of x (1..%d).",
-                 ncol(X)), call. = FALSE)
+    stop(sprintf(
+      "monotone_feature must index a column of x (1..%d).",
+      ncol(X)
+    ), call. = FALSE)
   }
   if (!direction %in% c(1L, -1L, 1, -1)) {
     stop("direction must be 1 or -1.", call. = FALSE)
@@ -548,13 +586,15 @@ morie_monotone_causal_forest <- function(y, d, x, monotone_feature = NULL,
   o <- order(X[, j])
   v <- raw[o] * direction
   before <- sum(diff(v) < -1e-12)
-  fitted <- stats::isoreg(v)$yf          # PAVA
+  fitted <- stats::isoreg(v)$yf # PAVA
   after <- sum(diff(fitted) < -1e-9)
   cate <- numeric(length(raw))
   cate[o] <- fitted * direction
-  list(cate = cate, cate_raw = raw, monotone_feature = j,
-       direction = direction, violations_before = before,
-       violations_after = after, n = fit$n)
+  list(
+    cate = cate, cate_raw = raw, monotone_feature = j,
+    direction = direction, violations_before = before,
+    violations_after = after, n = fit$n
+  )
 }
 
 #' DR-learner: doubly robust meta-learner for the CATE
@@ -615,9 +655,9 @@ morie_dr_learner <- function(y, t, x, n_folds = 5L, seed = 0L, trunc = 0.01) {
       stop("a fold lacks one treatment arm; reduce n_folds.", call. = FALSE)
     }
     m1 <- as.vector(cbind(1, X[te, , drop = FALSE]) %*%
-                      .morie_ridge_fit(X[tr1, , drop = FALSE], y[tr1]))
+      .morie_ridge_fit(X[tr1, , drop = FALSE], y[tr1]))
     m0 <- as.vector(cbind(1, X[te, , drop = FALSE]) %*%
-                      .morie_ridge_fit(X[tr0, , drop = FALSE], y[tr0]))
+      .morie_ridge_fit(X[tr0, , drop = FALSE], y[tr0]))
     e <- e_all[te]
     psi[te] <- m1 - m0 + t[te] * (y[te] - m1) / e -
       (1 - t[te]) * (y[te] - m0) / (1 - e)
@@ -625,9 +665,11 @@ morie_dr_learner <- function(y, t, x, n_folds = 5L, seed = 0L, trunc = 0.01) {
   D <- cbind(1, X)
   b <- qr.coef(qr(D), psi)
   b[is.na(b)] <- 0
-  list(cate = as.vector(D %*% b), ate = mean(psi),
-       se_ate = stats::sd(psi) / sqrt(n), pseudo_outcome = psi,
-       coefficients = b, n_folds = k, n = n)
+  list(
+    cate = as.vector(D %*% b), ate = mean(psi),
+    se_ate = stats::sd(psi) / sqrt(n), pseudo_outcome = psi,
+    coefficients = b, n_folds = k, n = n
+  )
 }
 
 #' Interventional (randomised-mediator) direct and indirect effects
@@ -695,7 +737,9 @@ morie_interventional_effects <- function(y, x, m, c = NULL, n_draws = 2000L,
   predict_y <- function(xv, mv) {
     Cmat <- if (ncol(C)) {
       matrix(cbar, nrow = length(mv), ncol = ncol(C), byrow = TRUE)
-    } else matrix(numeric(0), nrow = length(mv), ncol = 0)
+    } else {
+      matrix(numeric(0), nrow = length(mv), ncol = 0)
+    }
     as.vector(cbind(1, xv, mv, xv * mv, Cmat) %*% by)
   }
   g0 <- draw(0)

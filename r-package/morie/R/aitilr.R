@@ -4,9 +4,9 @@
 #' Source consulted as a rendered page image, not the OCR text layer:
 #' Mateu-Figueras, Pawlowsky-Glahn and Egozcue, "The normal distribution in
 #' some constrained sample spaces", pp. 10-11, which prints the Aitchison
-#' inner product <x, x*>_a = (1/D) sum_\{i<j\} ln(x_i/x_j) ln(x*_i/x*_j),
+#' inner product <x, x*>&#95;a = (1/D) sum&#95;\{i<j\} ln(x_i/x_j) ln(x*_i/x*&#95;j),
 #' equation (10), and the default orthonormal basis of Egozcue et al. (2003),
-#' y_i = 1/sqrt(i(i+1)) * ln((x_1 x_2 ... x_i) / x_\{i+1\}^i), i = 1..D-1,
+#' y_i = 1/sqrt(i(i+1)) * ln((x_1 x_2 ... x_i) / x&#95;\{i+1\}^i), i = 1..D-1,
 #' equation (11).
 #'
 #' Primary reference verified against Crossref: Egozcue, Pawlowsky-Glahn,
@@ -34,8 +34,13 @@ Aitilr <- function(x, V = NULL) {
   if (length(xx) < 2L) stop("aitchison_ilr: a composition needs at least 2 parts")
   if (any(!(xx > 0))) stop("aitchison_ilr: every part must be strictly positive")
   D <- length(xx)
-  Vm <- if (is.null(V)) .aitilr_basis(D) else matrix(as.numeric(as.matrix(V)),
-                                                     nrow = nrow(as.matrix(V)))
+  Vm <- if (is.null(V)) {
+    .aitilr_basis(D)
+  } else {
+    matrix(as.numeric(as.matrix(V)),
+      nrow = nrow(as.matrix(V))
+    )
+  }
   if (nrow(Vm) != D) stop("aitchison_ilr: V has the wrong number of rows")
   p <- ncol(Vm)
   lg <- log(xx)
@@ -59,9 +64,11 @@ Aitilr <- function(x, V = NULL) {
     }
   }
   a2 <- a2 / D
-  list(y = y, estimate = if (p > 0L) y[1] else NA_real_, clr = z, norm = nrm,
-       aitchison_norm = sqrt(a2), D = D,
-       method = "ilr(x) = V' clr(x), V the Egozcue et al. (2003) SBP basis, eq. (11)")
+  list(
+    y = y, estimate = if (p > 0L) y[1] else NA_real_, clr = z, norm = nrm,
+    aitchison_norm = sqrt(a2), D = D,
+    method = "ilr(x) = V' clr(x), V the Egozcue et al. (2003) SBP basis, eq. (11)"
+  )
 }
 
 #' Contrast matrix of the default Egozcue (2003) sequential binary partition

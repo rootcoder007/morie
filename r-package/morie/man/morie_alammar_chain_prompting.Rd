@@ -32,6 +32,42 @@ function(previous_output, original_input) -> prompt.}
 
 \item{max_steps}{Budget.}
 }
+\value{
+A list with \code{final_output}, \code{steps}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Prompt chains, multi-query retrieval, the ReAct loop
 }
+\examples{
+if (morie_crypto_sodium_available()) {
+  img <- matrix(0:15, 4, 4, byrow = TRUE)
+  v <- morie_alammar_vit_patch_embedding(img, 2, diag(4))
+  y <- c(0, 0, 0, 1, 1, 1)
+  morie_alammar_chain_prompting("3", list(function(y, x) paste("double",
+      x), function(y, x) paste("add one to", y)), function(p) {
+      v <- as.integer(sub(".* ", "", p))
+      if (grepl("double", p))
+          as.character(v * 2)
+      else as.character(v + 1)
+  })
+}
+set.seed(1)
+q <- matrix(stats::rnorm(3), 1, 3)
+i <- morie_alammar_infonce_loss(c(1, 0), c(1, 0), rbind(c(0,
+    1), c(-1, 0)), 0.1)
+corpus <- list(q = c(1, 2), q0 = c(2, 3), q1 = 4)
+morie_alammar_multi_query_retrieval("q", 2, function(q) corpus[[q]],
+    function(q, i) paste0(q, i))
+calc <- function(x) as.character(eval(parse(text = x)))
+model <- function(ctx) {
+  if (length(ctx) == 1L) {
+    list(thought = "need arithmetic", tool = "calc", input = "6 * 7")
+  } else {
+    list(final = "42")
+  }
+}
+r <- morie_alammar_react_agent_loop("what is 6 times 7?",
+                                    list(calc = calc), model)
+str(r, max.level = 1)
+}
+\keyword{internal}

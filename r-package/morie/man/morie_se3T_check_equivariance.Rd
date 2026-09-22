@@ -43,3 +43,11 @@ A step of the se3T_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+positions <- matrix(rnorm(12), 4, 3)
+type0 <- rnorm(4)
+type1 <- matrix(rnorm(12), 4, 3)
+morie_se3T_check_equivariance(positions, type0, type1)
+}
+\keyword{internal}

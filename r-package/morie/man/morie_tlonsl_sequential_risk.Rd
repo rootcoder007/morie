@@ -31,3 +31,4 @@ A step of the tlonsl_native implementation. Called by \code{morie_tlonsl_online_
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

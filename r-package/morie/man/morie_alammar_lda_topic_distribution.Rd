@@ -21,7 +21,14 @@ morie_alammar_lda_topic_distribution(
 
 \item{alpha, beta, n_iter, seed}{Settings.}
 }
+\value{
+A list with \code{theta}, \code{phi}, \code{vocabulary}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 LDA by collapsed Gibbs on the shared LCG (Griffiths and Steyvers
 2004, Eq 5)
 }
+\examples{
+morie_alammar_lda_topic_distribution(documents = c(1, 2, 3, 4, 5, 6, 7, 8), n_topics = 5L)
+}
+\keyword{internal}

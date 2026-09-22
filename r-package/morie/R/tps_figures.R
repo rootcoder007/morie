@@ -56,7 +56,8 @@ morie_tps_figures <- function(out_dir,
       if (is.finite(fit$mu %||% NA_real_)) {
         p <- file.path(out_dir, sprintf("hawkes_%s.png", cat_name))
         grDevices::png(p, width = 1140, height = 820, res = 110)
-        graphics::par(mfrow = c(2, 1), mar = c(3.5, 4, 2.5, 1))
+        # CRAN: restore par() before this private device is closed.
+        oldpar <- graphics::par(mfrow = c(2, 1), mar = c(3.5, 4, 2.5, 1))
         mo <- table(format(dt, "%Y-%m"))
         mo_x <- as.Date(paste0(names(mo), "-01"))
         graphics::plot(mo_x, as.integer(mo), type = "l",
@@ -77,6 +78,7 @@ morie_tps_figures <- function(out_dir,
                        main = sprintf(
                          "residual interarrivals -- KS p = %.3f",
                          ks$p.value))
+        graphics::par(oldpar)
         grDevices::dev.off()
         written <- c(written, p)
       }
@@ -159,16 +161,8 @@ morie_tps_figures <- function(out_dir,
 
 # Time-rescaling residuals for the exponential-kernel Hawkes fit;
 # Exp(1)-distributed when the model is correct (Ogata 1988).
-#' Time-rescaling residuals for the exponential-kernel Hawkes fit;
-#'
-#' Exp(1)-distributed when the model is correct (Ogata 1988).
-#'
-#' @param dt Numeric; passed to \code{min}.
-#' @param mu Numeric; combined arithmetically in the body.
-#' @param kappa Numeric; combined arithmetically in the body.
-#' @param omega Numeric; combined arithmetically in the body.
-#' @return The value of \code{res}, as built in the body.
-#' @export
+#' Internal helper: Tps Stoch Hawkes Residuals
+#' @noRd
 .tps_stoch_hawkes_residuals <- function(dt, mu, kappa, omega) {
   t <- sort(as.numeric(difftime(dt, min(dt), units = "days")))
   n <- length(t)

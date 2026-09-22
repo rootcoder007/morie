@@ -19,3 +19,8 @@ A single numeric.
 away from zero for a series that is all zeros, which intermittent
 series often are.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_deepar_scale_factor(V)
+}
+\keyword{internal}

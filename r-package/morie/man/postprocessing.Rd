@@ -18,6 +18,10 @@ post-processing.
 \description{
 Lemma 1.8: any function of the output keeps the same rho
 }
+\examples{
+postprocessing(rho = 0.5)
+}
 \references{
 Bun, M. & Steinke, T. (2016). Lemma 1.8.
 }
+\keyword{internal}

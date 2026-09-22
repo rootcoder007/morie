@@ -17,7 +17,7 @@ second_choice(i1, alpha, y, E, C, rng, tol = 0.001)
 
 \item{C}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{rng}{Passed to \code{.ghc_unif}.}
+\item{rng}{A list; the body reads \code{$uniform} from it.}
 
 \item{tol}{Accepted by the signature and not used anywhere in the body. Defaults to \code{0.001}.}
 }
@@ -29,3 +29,9 @@ A step of the smoopt_native implementation. Called by \code{smo_platt}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+second_choice(i1 = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), alpha = 0.5,
+  y = c(1, 2, 3, 4, 5, 6, 7, 8), E = c(1, 2, 3, 4, 5, 6, 7, 8), C = c(1, 2, 3, 4, 5, 6, 7, 8),
+  rng = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

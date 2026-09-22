@@ -44,3 +44,11 @@ A step of the bnskmt_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(3)
+X <- matrix(runif(40), 20, 2)
+mfn <- function(theta) X[, 1] - theta
+r <- ks_confidence_set(mfn, theta_grid = seq(0.2, 0.8, by = 0.1), X)
+str(r, max.level = 1)
+}
+\keyword{internal}

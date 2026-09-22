@@ -25,3 +25,11 @@ because the PPG pulse shape mirrors the carotid pulse.  The perfusion
 index says how much of the reading is pulsatile blood volume rather
 than static tissue absorption.
 }
+\examples{
+set.seed(8)
+fs <- 100
+tv <- seq(0, 5, by = 1 / fs)
+ppg <- sin(2 * pi * 1.2 * tv) + 0.1 * rnorm(length(tv))
+PpgFeat(ppg, fs = fs)
+}
+\keyword{internal}

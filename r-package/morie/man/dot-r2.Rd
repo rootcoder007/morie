@@ -7,14 +7,14 @@
 .r2(a, b, ls)
 }
 \arguments{
-\item{a}{Numeric; combined arithmetically in the body.}
+\item{a}{A vector; its length is taken and its elements indexed.}
 
-\item{b}{Numeric; combined arithmetically in the body.}
+\item{b}{A vector; indexed elementwise.}
 
-\item{ls}{Numeric; combined arithmetically in the body.}
+\item{ls}{A vector; indexed elementwise.}
 }
 \value{
-A numeric value.
+The value of \code{s}, as built in the body.
 }
 \description{
 A step of the bayopt_native implementation. Called by \code{gp_posterior_gradient},

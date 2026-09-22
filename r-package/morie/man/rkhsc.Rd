@@ -23,10 +23,11 @@ list: alpha, fitted, residuals, sigma, lambda, sse, r2, n, method.
 }
 \description{
 Solves min_f  (1/n) ||y - f(x)||^2 + lambda ||f||_H^2 in a Gaussian
-RKHS.  Closed form alpha = solve(K + n\emph{lambda}I) \%*\% y.
+RKHS.  Closed form alpha = solve(K + n*lambda*I) \%*\% y.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-rkhsc(V, V)
+set.seed(1)
+x <- sort(runif(80)); y <- sin(2 * pi * x) + rnorm(80, 0, 0.1)
+morie_rkhs_kernel_regression(x, y)
 }
 \keyword{internal}

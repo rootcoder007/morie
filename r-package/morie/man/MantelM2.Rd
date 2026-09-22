@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_sp_fill.R
 \name{MantelM2}
 \alias{MantelM2}
-\title{Eqs (1.4) and (1.5) with the book\'s own default choices,}
+\title{Eqs (1.4) and (1.5) with the book's own default choices,}
 \usage{
 MantelM2(coords, x, w = NULL, u = NULL)
 }
@@ -23,3 +23,8 @@ A list with \code{m1}, \code{m2}, \code{beta}, \code{sw2}, \code{s0},
 W_ij = ||s_i - s_j|| and U_ij = |Z_i - Z_j|, plus the regression
 slope beta = M2 / sum sum W_ij^2 displayed in Sec. 1.3.1.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+MantelM2(V, V)
+}
+\keyword{internal}

@@ -60,3 +60,9 @@ A step of the orfgrf_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+orthogonal_random_forest(Y = c(1, 2, 3, 4, 5, 6, 7, 8),
+  T = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+  W = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -18,3 +18,8 @@ A step of the strec_native implementation. Called by \code{strec_attention_weigh
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+strec_session_average(V)
+}
+\keyword{internal}

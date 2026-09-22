@@ -12,12 +12,13 @@ morie_ewma_volatility(x, lambda = 0.94)
 \item{lambda}{Decay factor in (0,1). Default 0.94 (daily RiskMetrics).}
 }
 \value{
-Named list with \code{conditional_variance, conditional_volatility,
+Named list with \eqn{conditional_variance, conditional_volatility,
   lambda, n, last_variance, last_volatility, method}.
 }
 \description{
 EWMA volatility (RiskMetrics 1996)
 }
 \examples{
+set.seed(1)
 morie_ewma_volatility(x = rnorm(50))
 }

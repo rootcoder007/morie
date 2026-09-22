@@ -10,15 +10,13 @@ morie_otis_analyze_c03(data)
 \item{data}{c03 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines, an interpretation
-paragraph, and a per-race table of custody / RC / segregation totals
-plus RC/custody and Seg/custody ratios.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 Individuals x race x gender (c03)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_c03(V)
+otis_c03 <- morie_synth_otis("c03", n = 120L, seed = 1L)
+res <- morie_otis_analyze_c03(otis_c03)
+class(res)
 }

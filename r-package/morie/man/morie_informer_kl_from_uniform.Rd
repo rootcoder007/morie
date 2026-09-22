@@ -21,3 +21,10 @@ A step of the informer_native implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(1)
+q <- rnorm(4)
+K <- matrix(rnorm(24), 6, 4)
+morie_informer_kl_from_uniform(q, K)
+}
+\keyword{internal}

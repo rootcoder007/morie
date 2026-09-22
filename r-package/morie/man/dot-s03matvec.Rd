@@ -16,7 +16,7 @@ The value of \code{out}, as built in the body.
 }
 \description{
 A step of the helpers_s03 implementation. Called by \code{.bkw_influence},
-\code{.ch_ols_se}, \code{.jnt_lmm_ri} and 37 others in the module.
+\code{.ch_ols_se}, \code{.jnt_lmm_ri} and 36 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

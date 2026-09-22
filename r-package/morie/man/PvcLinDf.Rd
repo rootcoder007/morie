@@ -22,3 +22,8 @@ A list with \code{labels}, \code{discriminant}, \code{coefficients},
 interval and a more complex waveshape, and the form factor of eq
 (5.26) turns the qualitative half of the clinical rule into a number.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+PvcLinDf(V, V)
+}
+\keyword{internal}

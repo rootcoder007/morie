@@ -16,7 +16,15 @@ morie_evt_bayes_gev(x, n_draws = 2000, seed = 42, prior_sd = c(100, 10, 1))
 
 \item{prior_sd}{prior standard deviations for (mu, log sigma, xi)}
 }
+\value{
+A list with \code{draws}, \code{accept_rate}.
+}
 \description{
 Bayesian GEV posterior via random-walk Metropolis
 (Coles 2001 sec. 9.1.3 vague-normal-prior recipe)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_evt_bayes_gev(V)
+}
+\keyword{internal}

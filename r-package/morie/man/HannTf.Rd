@@ -17,3 +17,8 @@ A list with \code{H}, \code{z}, \code{zeros}, \code{zero_multiplicity},
 Nyquist.  The double zero is why the response reaches nought there
 smoothly and why the attenuation nearby is second order.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+HannTf(V)
+}
+\keyword{internal}

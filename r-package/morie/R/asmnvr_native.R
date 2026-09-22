@@ -40,6 +40,10 @@
 #'   An Eulerian path approach to DNA fragment assembly. PNAS,
 #'   98(17), 9748-9753.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_asmnvr(D)
+#' @keywords internal
 morie_asmnvr <- function(reads, k = NULL, multiplicity = "set") {
   rs <- as.character(reads)
   if (length(rs) == 0L)
@@ -115,6 +119,9 @@ morie_asmnvr <- function(reads, k = NULL, multiplicity = "set") {
 #' @param multiplicity One of \code{"count"}, \code{"set"}. Defaults to \code{"set"}.
 #' @return A list with \code{edges}, \code{indeg}, \code{outdeg}.
 #' @export
+#' @examples
+#' de_bruijn_graph(reads = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), k = 5L)
+#' @keywords internal
 de_bruijn_graph <- function(reads, k, multiplicity = "set") {
   if (!(multiplicity %in% c("set", "count")))
     stop(sprintf("asmnvr: multiplicity must be 'set' or 'count', got '%s'",
@@ -214,7 +221,7 @@ de_bruijn_graph <- function(reads, k, multiplicity = "set") {
 # vertex with out - in = 1 (start) and one with in - out = 1 (end).
 # Returns NULL when no Eulerian path exists -- ambiguous or
 # disconnected graphs are reported, not guessed at.
-#' Hierholzer\'s algorithm with the exact existence condition checked:
+#' Hierholzer's algorithm with the exact existence condition checked:
 #'
 #' connected, and either all in/out degrees equal, or exactly one vertex
 #' with out - in = 1 (start) and one with in - out = 1 (end). Returns
@@ -226,6 +233,7 @@ de_bruijn_graph <- function(reads, k, multiplicity = "set") {
 #' @param outdeg A vector; indexed elementwise.
 #' @return The value of \code{path}, as built in the body.
 #' @export
+#' @keywords internal
 eulerian_path <- function(edges, indeg, outdeg) {
   verts <- unique(c(ls(indeg, all.names = TRUE),
                     ls(outdeg, all.names = TRUE)))

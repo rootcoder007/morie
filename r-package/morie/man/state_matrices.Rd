@@ -20,3 +20,9 @@ A step of the bats_native implementation. Called by \code{all_eigenvalues},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+spec <- BatsSpec()
+theta <- rep(0.1, n_free(spec))
+state_matrices(spec, theta)
+}
+\keyword{internal}

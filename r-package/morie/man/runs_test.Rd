@@ -12,15 +12,12 @@ runs_test(x, cutoff = NULL)
 \item{cutoff}{Cut-off (median by default).}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the normal-approximation z statistic, two-sided p-value, sample
-size n, and \code{extra} list carrying \code{n_runs} and
-\code{expected_runs}.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Wald-Wolfowitz runs test for randomness
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-runs_test(V)
+set.seed(1)
+runs_test(rbinom(30, 1, 0.5))
 }

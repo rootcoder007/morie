@@ -25,3 +25,7 @@ The value of \code{out}, as built in the body.
 for the role it plays here -- E_x is constant for a given signal, so
 maximizing eq (4.41) is equivalent to maximizing eq (4.39).
 }
+\examples{
+SigEnergy(c(4, 0, 0, 0), dt = 1)
+}
+\keyword{internal}

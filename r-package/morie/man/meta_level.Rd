@@ -21,3 +21,12 @@ A step of the hybRC_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+mb <- function(data) lm(y ~ x, data = data)
+cons <- function(model) unname(coef(model)[2])
+d <- data.frame(x = 1:10, y = 2 * (1:10) + rnorm(10, 0, 0.1))
+r <- meta_level(mb, cons, d)
+str(r, max.level = 1)
+}
+\keyword{internal}

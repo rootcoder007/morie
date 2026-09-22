@@ -27,3 +27,8 @@ A step of the mehtad_native implementation. Called by \code{solve_lp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+newton_direction(A = c(1, 2, 3, 4, 5, 6, 7, 8), x = 5L, s = 5L, rp = c(1, 2, 3, 4, 5, 6, 7, 8),
+  rd = c(1, 2, 3, 4, 5, 6, 7, 8), rc = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

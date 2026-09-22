@@ -30,3 +30,7 @@ A step of the rangayyan_ccf implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+SinCosTest()
+}
+\keyword{internal}

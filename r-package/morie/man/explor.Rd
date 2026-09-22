@@ -9,14 +9,14 @@ explor(
   actions,
   next_states,
   n_actions = NULL,
-  n_features = 8L,
+  n_features = 8,
   eta = 1,
   beta = 0.2,
   lr = 0.05,
-  epochs = 1L,
+  epochs = 1,
   features = "inverse",
   discrete = TRUE,
-  seed = 0L
+  seed = 0
 )
 }
 \arguments{
@@ -29,7 +29,7 @@ explor(
 \item{n_actions}{Optional; may be \code{NULL}. Coerced to integer by the body, with
 \code{as.integer}.}
 
-\item{n_features}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8L}.}
+\item{n_features}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8}.}
 
 \item{eta}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
 
@@ -37,13 +37,13 @@ explor(
 
 \item{lr}{Numeric; combined arithmetically in the body. Defaults to \code{0.05}.}
 
-\item{epochs}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1L}.}
+\item{epochs}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.}
 
-\item{features}{One of \code{"identity"}, \code{"inverse"}. Defaults to \code{"inverse"}.}
+\item{features}{Compared against \code{"identity"}. Defaults to \code{"inverse"}.}
 
 \item{discrete}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 
-\item{seed}{Passed to \code{.ghc_rng}. Defaults to \code{0L}.}
+\item{seed}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 }
 \value{
 The value of \code{payload}, as built in the body.
@@ -53,3 +53,8 @@ A step of the explor_native implementation. Called by \code{morie_explor}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+explor(states = c(1, 2, 3, 4, 5, 6, 7, 8), actions = c(1, 2, 3, 4, 5, 6, 7, 8),
+  next_states = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

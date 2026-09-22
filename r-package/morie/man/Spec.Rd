@@ -20,3 +20,7 @@ A step of the rangayyan_class implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+Spec(40, 10)
+}
+\keyword{internal}

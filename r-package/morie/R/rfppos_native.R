@@ -101,6 +101,10 @@
 #' @param a,b Coordinate triples.
 #' @return A numeric scalar.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_rfppos_distance(V, V)
+#' @keywords internal
 morie_rfppos_distance <- function(a, b) .rfppos_norm(a - b)
 
 #' The angle at b, in degrees, subtended by a and c
@@ -113,6 +117,9 @@ morie_rfppos_distance <- function(a, b) .rfppos_norm(a - b)
 #' @param a,b,c Coordinate triples; b is the vertex.
 #' @return Degrees.
 #' @export
+#' @examples
+#' morie_rfppos_angle(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, c = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_rfppos_angle <- function(a, b, c) {
   u <- a - b
   v <- c - b
@@ -135,6 +142,9 @@ morie_rfppos_angle <- function(a, b, c) {
 #' @param a,b,c,d Four coordinate triples.
 #' @return Degrees, signed.
 #' @export
+#' @examples
+#' morie_rfppos_dihedral(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, c = c(1, 2, 3, 4, 5, 6, 7, 8), d = 5L)
+#' @keywords internal
 morie_rfppos_dihedral <- function(a, b, c, d) {
   b1 <- b - a
   b2 <- c - b
@@ -150,6 +160,15 @@ morie_rfppos_dihedral <- function(a, b, c, d) {
 }
 
 #' Locate the electrophilic carbon and the atom that orients it
+#'
+#' For the Buergi-Dunitz route: a carbon holding a double bond to oxygen or
+#' nitrogen, or a triple bond to nitrogen. The electrophile is that carbon and
+#' the reference is the heteroatom, because the approach angle is measured to the
+#' carbon-heteroatom axis. For the Michael route: a carbon-carbon double bond
+#' with one end attached to a carbonyl carbon. The electrophile is the FAR end --
+#' the beta carbon, which is where the sulfur adds -- and the reference is the
+#' alpha carbon it is doubly bonded to. Getting these two the wrong way round
+#' would measure a real angle at the wrong atom.
 #'
 #' For the Buergi-Dunitz route: a carbon holding a double bond to oxygen
 #' or nitrogen, or a triple bond to nitrogen. The electrophile is that
@@ -167,6 +186,9 @@ morie_rfppos_dihedral <- function(a, b, c, d) {
 #' @return A zero-based triple of electrophile, reference and torsion
 #'   atom, or NULL when the molecule carries no such warhead.
 #' @export
+#' @examples
+#' morie_rfppos_warhead("C=CC(=O)N", mode = "michael")
+#' @keywords internal
 morie_rfppos_warhead <- function(smiles, mode = "burgi_dunitz") {
   if (!(mode %in% .rfppos_modes))
     stop("the mode is burgi_dunitz or michael")
@@ -232,6 +254,7 @@ morie_rfppos_warhead <- function(smiles, mode = "burgi_dunitz") {
 #' @return A list with the measured geometry, each criterion separately,
 #'   and whether the pose passes all of them.
 #' @export
+#' @keywords internal
 morie_rfppos <- function(pose, cys_residue, mode = "burgi_dunitz",
                          d_min = 1.5, d_max = 3.5, ideal = NULL,
                          angle_tol = 15, warhead = NULL) {
@@ -296,6 +319,9 @@ morie_rfppos <- function(pose, cys_residue, mode = "burgi_dunitz",
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_rfppos_cheatsheet()
+#' @keywords internal
 morie_rfppos_cheatsheet <- function()
   paste0("rfppos: covalent pose filter. Sulfur-to-electrophile ",
          "distance, Buergi-Dunitz or perpendicular attack angle, and ",

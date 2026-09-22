@@ -22,3 +22,8 @@ of the LOG spectra.  Taking logs is what makes it scale-free -- a
 pure gain change shifts every log bin by the same constant, so it
 lands entirely in mean_offset and leaves shape_only at zero.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Sem(V, V)
+}
+\keyword{internal}

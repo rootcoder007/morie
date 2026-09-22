@@ -16,13 +16,13 @@ divergence_curve(
 \arguments{
 \item{y}{A vector; its length is taken.}
 
-\item{m}{Optional; may be \code{NULL}. Passed to \code{.lyapun_embed}.}
+\item{m}{Optional; may be \code{NULL}. Passed to \code{morie_lyapun_embed}.}
 
-\item{tau}{Optional; may be \code{NULL}. Passed to \code{.lyapun_embed}.}
+\item{tau}{Optional; may be \code{NULL}. Passed to \code{morie_lyapun_embed}.}
 
 \item{dt}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
 
-\item{min_sep}{Optional; may be \code{NULL}. Passed to \code{.nearest_neighbours}.}
+\item{min_sep}{Optional; may be \code{NULL}. Passed to \code{.lyapun_nearest_neighbours}.}
 
 \item{max_steps}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
 }
@@ -32,7 +32,14 @@ A list with \code{time}, \code{log_divergence}, \code{log_ratio},
 \code{min_sep}, \code{n_points}, \code{n_obs}.
 }
 \description{
-A step of the lyapun_native implementation. Called by \code{lyapunov_exponent}.
+A step of the lyapun_native implementation. Called by \code{lyapunov_exponent},
+\code{morie_lyapun}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r0 <- 3.9; x <- numeric(300); x[1] <- 0.4
+for (i in 2:300) x[i] <- r0 * x[i - 1] * (1 - x[i - 1])
+str(divergence_curve(x, m = 3, tau = 1), max.level = 1)
+}
+\keyword{internal}

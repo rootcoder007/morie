@@ -23,3 +23,13 @@ A step of the tlboot_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+if (requireNamespace("ranger", quietly = TRUE)) {
+  set.seed(2)
+  sampler <- function(e) rnorm(30, morie:::.ghc_norm(e, 1L))
+  r <- targeted_bootstrap(sampler, estimator = function(s) mean(s),
+                          B = 100L)
+  str(r, max.level = 1)
+}
+}
+\keyword{internal}

@@ -18,3 +18,8 @@ and a zero-mean noise sum growing only as sqrt(M).  The SUM is
 returned, because that is the equation; the average is beside it so
 the division by M is explicit.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+SyncSum(V)
+}
+\keyword{internal}

@@ -20,7 +20,7 @@ List with \code{s_giant}, \code{mean_fragment}, \code{diameter}, \code{removed},
 \code{n_components}, \code{n}.
 }
 \description{
-Formula: remove f N nodes, then report S = |largest cluster| / N, \if{html}{\out{<s>}} = mean size of
+Formula: remove f N nodes, then report S = |largest cluster| / N, mean_s = mean size of
 the remaining fragments, and d = mean shortest path
 }
 \examples{
@@ -30,5 +30,5 @@ Netattack(M)
 \references{
 Albert, Jeong and Barabasi (2000), Error and attack tolerance of complex
 networks, Nature 406:378-382, arXiv:cond-mat/0008064. Verified against the paper for
-the definitions of d, S and \if{html}{\out{<s>}}.
+the definitions of d, S and mean_s.
 }

@@ -28,3 +28,8 @@ of n-grams that were not in the supplied vocabulary), and
 The input layer's width becomes the number of n-grams, not the
 size of the vocabulary -- and an unseen word still has a vector.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_dssm_word_hash(V)
+}
+\keyword{internal}

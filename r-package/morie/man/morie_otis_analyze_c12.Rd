@@ -10,14 +10,13 @@ morie_otis_analyze_c12(data)
 \item{data}{c12 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines and a region x measure
-crosstab of restrictive-confinement aggregate durations.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 RC/seg aggregate durations by region & gender (c12)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_c12(V)
+otis_c12 <- morie_synth_otis("c12", n = 120L, seed = 1L)
+res <- morie_otis_analyze_c12(otis_c12)
+class(res)
 }

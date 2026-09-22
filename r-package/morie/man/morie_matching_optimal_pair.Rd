@@ -21,17 +21,19 @@ morie_matching_optimal_pair(
 
 \item{distance}{One of \code{"propensity"} or \code{"mahalanobis"}.}
 
-\item{ps}{Optional propensity scores. When supplied they REPLACE
-the fitted model and become the matching distance directly,
-aligned to the rows that survive the NA drop.}
+\item{ps}{Optional pre-computed propensity scores (ignored; retained
+for back-compat).}
 }
 \value{
 A list of class \code{morie_match_result}.
 }
 \description{
-Optimal 1:1 pair matching that minimises the total within-pair distance.
-Delegates to \pkg{MatchIt}'s \code{method = "optimal"} (which calls
-\pkg{optmatch}); otherwise uses a greedy approximation.
+Native rmorie implementation of optimal 1:1 pair matching: globally
+minimizes the total matched distance (Rosenbaum 1989), unlike greedy
+nearest-neighbour. Propensity distance uses an exact non-crossing
+dynamic program on the logit score; Mahalanobis distance uses an
+exact shortest-augmenting-path assignment on whitened covariates.
+No MatchIt/optmatch at runtime.
 }
 \examples{
 if (requireNamespace("MatchIt", quietly = TRUE)) {

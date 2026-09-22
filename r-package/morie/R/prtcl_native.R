@@ -1,232 +1,216 @@
 # Sequential Monte Carlo: the bootstrap particle filter.
 # Sources: King, A. A., Nguyen, D. & Ionides, E. L. (2016) "Statistical
 # Inference for Partially Observed Markov Processes: The R Package
-# pomp", J. Statistical Software 69(12), 1-43, doi:10.18637/jss.v069.i12
-# (Algorithm 1: SMC, Algorithm 2: systematic resampling);
-# Gordon, N. J., Salmond, D. J. & Smith, A. F. M. (1993) "Novel approach
-# to nonlinear/non-Gaussian Bayesian state estimation", IEE Proc. F 140(2),
-# 107-113, doi:10.1049/ip-f-2.1993.0015; Doucet, A. & Johansen, A. M.
-# (2011) in The Oxford Handbook of Nonlinear Filtering; Kalman, R. E.
-# (1960) for the linear-Gaussian check.
-#
-# Native implementation mirroring morie.fn.prtcl exactly: Algorithm 1
-# (propagate, weight, resample), Algorithm 2 (one uniform, J evenly
-# spaced points) for systematic resampling, the same ESS formula, and
-# the same log of the unbiased one-step predictive density (downward
-# Jensen bias, not corrected here).
+# pomp", Journal of Statistical Software 69(12), 1-43,
+# doi:10.18637/jss.v069.i12 (Algorithm 1 and Algorithm 2, systematic
+# resampling). Doucet & Johansen (2011) Handbook of Nonlinear
+# Filtering, Ch. 1. Kalman (1960) J. Basic Eng. 82(1) (the closed
+# form the filter must reproduce on a linear-Gaussian model). Mirroring
+# morie.fn.prtcl: same Algorithm 1 / Algorithm 2 with the same ESS rule
+# and the same downward bias in log mean weight.
 
-#' Effective sample size
+.prtcl_EPS <- 1e-300
+
+#' morie_prtcl_effective_sample_size
 #'
-#' \code{(sum w)^2 / sum w^2}: how many particles are really
-#' contributing.
+#' A step of the prtcl_native implementation. Called by \code{morie_prtcl_particle_filter}.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
-#' @param weights Numeric vector of positive weights.
-#' @return Numeric scalar.
+#' @param weights Numeric; passed to \code{sum}.
+#' @return A numeric value.
 #' @export
-effective_sample_size <- function(weights) {
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_prtcl_effective_sample_size(V)
+#' @keywords internal
+morie_prtcl_effective_sample_size <- function(weights) {
   s1 <- sum(weights)
   s2 <- sum(weights^2)
   if (s2 <= 0) return(0)
   s1 * s1 / s2
 }
 
-#' Systematic resampling
+#' morie_prtcl_systematic_resample
 #'
-#' One uniform, J evenly spaced points through the cumulative weights;
-#' the count particle j receives differs from \code{J * w_j} by less
-#' than one, deterministically.
+#' A step of the prtcl_native implementation. Called by \code{morie_prtcl_particle_filter}.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
-#' @param weights Numeric vector of positive weights.
-#' @param u Optional fixed offset in \code{[0, 1)}; if \code{NULL} one
-#'   uniform is drawn from the shared generator.
-#' @return Integer vector of indices.
+#' @param weights A vector; its length is taken.
+#' @param u Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.
+#' @param e Optional; may be \code{NULL}. Passed to \code{.ghc_unif}.
+#' @return The value of \code{idx}, as built in the body.
 #' @export
-systematic_resample <- function(weights, u = NULL) {
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_prtcl_systematic_resample(V)
+#' @keywords internal
+morie_prtcl_systematic_resample <- function(weights, u = NULL, e = NULL) {
   J <- length(weights)
   tot <- sum(weights)
-  if (tot <= 0)
-    stop("prtcl: all particle weights are zero; the filter has lost ",
-         "the signal")
-  w <- as.numeric(weights) / tot
-  if (is.null(u)) u <- .ghc_unif(.ghc_rng(0L), 1L)
-  if (u < 0 || u >= 1)
-    stop(sprintf("prtcl: the offset must lie in [0, 1), got %r", u))
+  if (tot <= 0) stop("prtcl: all particle weights are zero; the filter has lost the signal")
+  w <- weights / tot
+  if (is.null(u)) {
+    u <- if (is.null(e)) 0.5 else .ghc_unif(e, 1L)
+  }
+  if (!(u >= 0 && u < 1))
+    stop(paste0("prtcl: the offset must lie in [0, 1), got ", u))
   idx <- integer(J)
-  cum_ <- w[1L]
+  cum <- w[1]
   j <- 1L
   for (m in seq_len(J)) {
     pos <- (m - 1L + u) / J
-    while (pos > cum_ && j < J) {
+    while (pos > cum && j < J) {
       j <- j + 1L
-      cum_ <- cum_ + w[j]
+      cum <- cum + w[j]
     }
     idx[m] <- j
   }
   idx
 }
 
-# Internal multinomial resampler used when systematic=FALSE
-#' Internal multinomial resampler used when systematic=FALSE
+#' .scalar
 #'
-#' A step of the prtcl_native implementation. Called by \code{morie_prtcl}.
+#' A step of the prtcl_native implementation. Called by \code{morie_prtcl_particle_filter}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param weights A vector; its length is taken.
-#' @return The value of \code{idx}, as built in the body.
+#' @param state A vector; its length is taken and its elements indexed.
+#' @return One of two values, depending on the branch taken.
 #' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .multinomial_resample(weights = x)
-#' res
-.multinomial_resample <- function(weights) {
-  J <- length(weights)
-  w <- as.numeric(weights) / sum(weights)
-  e <- .ghc_rng(0L)
-  u <- .ghc_unif(e, J)
-  ord <- order(u)
-  rU <- u[ord]
-  cw <- cumsum(w)
-  cw[J] <- 1.0
-  idx <- rep(0L, J)
-  i <- 1L
-  for (k in seq_len(J)) {
-    while (i < J && cw[i] < rU[k]) i <- i + 1L
-    idx[ord[k]] <- i
-  }
-  idx
+.scalar <- function(state) {
+  if (is.list(state)) state[[1]] else if (length(state) > 1L) state[1] else as.numeric(state)
 }
 
-#' .scalar
+#' .multinomial
+#'
+#' A step of the prtcl_native implementation. Called by \code{morie_prtcl_particle_filter}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param w A vector; its length is taken.
+#' @param e Passed to \code{.ghc_unif}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
+.multinomial <- function(w, e) {
+  tot <- sum(w)
+  J <- length(w)
+  cum <- cumsum(w / tot)
+  out <- integer(J)
+  for (k in seq_len(J)) {
+    u <- .ghc_unif(e, 1L)
+    j <- 1L
+    while (j < J && u > cum[j]) j <- j + 1L
+    out[k] <- j
+  }
+  out
+}
+
+#' morie_prtcl_particle_filter
 #'
 #' A step of the prtcl_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param state A vector; indexed elementwise.
-#' @return A vector, from \code{as.numeric}.
+#' @param y Coerced to numeric by the body, with \code{as.numeric}.
+#' @param n.particles Coerced to integer by the body, with \code{as.integer}.
+#' @param init Accepted by the signature and not used anywhere in the body.
+#' @param step Accepted by the signature and not used anywhere in the body.
+#' @param loglik Accepted by the signature and not used anywhere in the body.
+#' @param seed Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.
+#' @param resample.threshold Numeric; combined arithmetically in the body. Defaults to \code{1}.
+#' @param systematic A flag; the body branches on it. Defaults to \code{TRUE}.
+#' @return A list with \code{estimate}, \code{filtered.mean}, \code{loglik}, \code{ess},
+#' \code{min.ess}, \code{resampled}, \code{n.particles}, \code{n.obs}, \code{systematic},
+#' \code{particles}, \code{method}.
 #' @export
-.scalar <- function(state) {
-  if (is.list(state)) return(as.numeric(state[[1L]]))
-  as.numeric(state)
-}
-
-#' Bootstrap particle filter (Algorithm 1 of King, Nguyen & Ionides 2016)
-#'
-#' Propagate each particle, weight by the measurement density, resample
-#' when the ESS falls below \code{resample_threshold * J}.
-#'
-#' @param y Numeric vector of observations.
-#' @param n_particles Integer, number of particles.
-#' @param init Function \code{(rng) -> state} for one particle.
-#' @param step Function \code{(state, t, rng) -> state} for the process.
-#' @param loglik Function \code{(state, obs, t) -> float} for the
-#'   measurement density.
-#' @param seed Seed for the shared generator.
-#' @param resample_threshold Resample when ESS drops below this
-#'   fraction of \code{n_particles}; default 1.0 (every step).
-#' @param systematic If \code{TRUE} use systematic resampling
-#'   (Algorithm 2); otherwise multinomial.
-#' @return A list with \code{estimate}, \code{filtered_mean},
-#'   \code{loglik}, \code{ess}, \code{min_ess}, \code{resampled},
-#'   \code{n_particles}, \code{n_obs}, \code{systematic},
-#'   \code{particles}, \code{method}.
-#' @export
-#' @aliases particlefilter
-morie_prtcl <- function(y, n_particles, init, step, loglik, seed = 0L,
-                        resample_threshold = 1.0,
-                        systematic = TRUE) {
+#' @keywords internal
+morie_prtcl_particle_filter <- function(y, n.particles, init, step, loglik,
+                                       seed = 0L, resample.threshold = 1.0,
+                                       systematic = TRUE) {
   obs <- as.numeric(y)
   N <- length(obs)
-  J <- as.integer(n_particles)
-  if (J < 2L)
-    stop(sprintf("prtcl: need at least 2 particles, got %d", J))
+  J <- as.integer(n.particles)
+  if (J < 2L) stop(paste0("prtcl: need at least 2 particles, got ", J))
   if (N == 0L) stop("prtcl: no observations")
-  if (resample_threshold <= 0 || resample_threshold > 1)
-    stop(sprintf("prtcl: resample_threshold must be in (0, 1], got %r",
-                 resample_threshold))
-  e <- .ghc_rng(seed)
-  parts <- lapply(seq_len(J), function(i) init(e))
-  ll <- 0.0
+  if (!(resample.threshold > 0 && resample.threshold <= 1))
+    stop(paste0("prtcl: resample_threshold must be in (0, 1], got ",
+                resample.threshold))
+  e <- .ghc_rng(as.integer(seed))
+  parts <- vector("list", J)
+  for (j in seq_len(J)) parts[[j]] <- init(e)
+  ll <- 0
   means <- numeric(N)
   esss <- numeric(N)
   resampled <- logical(N)
   for (n in seq_len(N)) {
-    parts <- lapply(seq_along(parts), function(j) step(parts[[j]], n - 1L, e))
-    lw <- vapply(seq_along(parts), function(j)
-      loglik(parts[[j]], obs[n], n - 1L), numeric(1))
+    for (j in seq_len(J)) parts[[j]] <- step(parts[[j]], n - 1L, e)
+    lw <- vapply(seq_len(J), function(j) loglik(parts[[j]], obs[n], n - 1L),
+                 numeric(1))
     mx <- max(lw)
     if (mx == -Inf)
-      stop(sprintf("prtcl: every particle has zero likelihood at ",
-                   "observation %d", n - 1L))
+      stop(paste0("prtcl: every particle has zero likelihood at observation ",
+                  n - 1L))
     w <- exp(lw - mx)
     tot <- sum(w)
     ll <- ll + mx + log(tot / J)
-    ess <- effective_sample_size(w)
+    ess <- morie_prtcl_effective_sample_size(w)
     esss[n] <- ess
-    means[n] <- sum(w * vapply(parts, .scalar, numeric(1))) / tot
-    if (ess < resample_threshold * J) {
-      idx <- if (systematic) systematic_resample(w)
-             else .multinomial_resample(w)
+    means[n] <- sum(vapply(seq_len(J), function(j) w[j] * .scalar(parts[[j]]),
+                           numeric(1))) / tot
+    if (ess < resample.threshold * J) {
+      idx <- if (systematic) morie_prtcl_systematic_resample(w, e = e)
+             else .multinomial(w, e)
       parts <- parts[idx]
       resampled[n] <- TRUE
-    } else {
-      resampled[n] <- FALSE
-    }
+    } else resampled[n] <- FALSE
   }
-  list(estimate = means, filtered_mean = means, loglik = ll,
-       ess = esss, min_ess = min(esss), resampled = resampled,
-       n_particles = J, n_obs = N, systematic = isTRUE(systematic),
+  list(estimate = means, filtered.mean = means, loglik = ll,
+       ess = esss, min.ess = min(esss), resampled = resampled,
+       n.particles = J, n.obs = N, systematic = systematic,
        particles = parts,
-       method = paste0("bootstrap particle filter, ",
-                       "King, Nguyen & Ionides (2016) Algorithm 1 ",
-                       "with systematic resampling (Algorithm 2)"))
+       method = ("bootstrap particle filter, King, Nguyen & Ionides (2016) Algorithm 1 with systematic resampling (Algorithm 2)"))
 }
 
-#' Kalman filter for the scalar linear-Gaussian state-space model
+#' morie_prtcl_kalman_filter_1d
 #'
-#' \code{x_n = a x_{n-1} + N(0, q)}, \code{y_n = c x_n + N(0, r)},
-#' starting at \code{(m0, p0)}. Provided so the particle filter can
-#' be checked against the exact answer.
+#' A step of the prtcl_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
-#' @param y Numeric vector of observations.
-#' @param a Process coefficient.
-#' @param q Process variance.
-#' @param c Measurement coefficient.
-#' @param r Measurement variance.
-#' @param m0 Initial state mean.
-#' @param p0 Initial state variance.
-#' @return A list with \code{filtered_mean} and \code{loglik}.
+#' @param y A vector; its length is taken and its elements indexed.
+#' @param a Numeric; combined arithmetically in the body.
+#' @param q Numeric; combined arithmetically in the body.
+#' @param c Numeric; combined arithmetically in the body.
+#' @param r Numeric; combined arithmetically in the body.
+#' @param m0 Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
+#' @param p0 Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
+#' @return A list with \code{means}, \code{loglik}.
 #' @export
-kalman_filter_1d <- function(y, a, q, c, r, m0 = 0.0, p0 = 1.0) {
+#' @examples
+#' morie_prtcl_kalman_filter_1d(y = c(1, 2, 3, 4, 5, 6, 7, 8), a = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   q = 0.5, c = c(1, 2, 3, 4, 5, 6, 7, 8), r = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
+morie_prtcl_kalman_filter_1d <- function(y, a, q, c, r, m0 = 0, p0 = 1) {
   m <- as.numeric(m0)
   p <- as.numeric(p0)
-  means <- numeric(length(y))
-  ll <- 0.0
-  for (i in seq_along(y)) {
+  N <- length(y)
+  means <- numeric(N)
+  ll <- 0
+  for (n in seq_len(N)) {
     m <- a * m
     p <- a * a * p + q
     s <- c * c * p + r
-    v <- y[i] - c * m
+    v <- y[n] - c * m
     ll <- ll - 0.5 * (log(2 * pi * s) + v * v / s)
     gain <- p * c / s
     m <- m + gain * v
-    p <- (1.0 - gain * c) * p
-    means[i] <- m
+    p <- (1 - gain * c) * p
+    means[n] <- m
   }
-  list(filtered_mean = means, loglik = ll)
+  list(means = means, loglik = ll)
 }
 
-#' @export
-particlefilter <- morie_prtcl
-
-#' @export
-prtcl_cheatsheet <- function() {
-  paste0("prtcl: propagate, weight by the measurement density, ",
-         "resample (pomp Alg. 1). Mean weight per step gives an ",
-         "UNBIASED likelihood -- so its LOG is biased DOWNWARD by ",
-         "Jensen, and comparing models at different particle counts ",
-         "compares the counts. Systematic resampling (Alg. 2) gives ",
-         "each particle a count within 1 of J*w_j deterministically. ",
-         "Watch ESS: a degenerate filter still returns numbers.")
-}
+# house entry point: the package exports one morie_<module>
+morie_prtcl <- morie_prtcl_effective_sample_size

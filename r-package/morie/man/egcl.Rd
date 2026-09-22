@@ -19,9 +19,9 @@ egcl(
 )
 }
 \arguments{
-\item{H}{A matrix; indexed by row and column.}
+\item{H}{A vector; its length is taken and its elements indexed.}
 
-\item{X}{A matrix; indexed by row and column.}
+\item{X}{A vector; indexed elementwise.}
 
 \item{phi_e}{Passed to \code{edge_message}.}
 
@@ -49,3 +49,14 @@ A step of the egnnL_native implementation. Called by \code{run_egnn}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+H <- lapply(1:4, function(i) rnorm(2))
+X <- lapply(1:4, function(i) rnorm(3))
+phi_e <- function(hi, hj, d2, a) c(hi + hj, d2)
+phi_x <- function(m) sum(m) * 0.01
+phi_h <- function(hi, agg) hi + 0.1 * agg[seq_along(hi)]
+r <- egcl(H, X, phi_e, phi_x, phi_h)
+names(r)
+}
+\keyword{internal}

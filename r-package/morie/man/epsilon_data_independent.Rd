@@ -2,7 +2,7 @@
 % Please edit documentation in R/pate_native.R
 \name{epsilon_data_independent}
 \alias{epsilon_data_independent}
-\title{Section 3.2: 4 T gamma^2 + 2 gamma sqrt(2 T ln(1/delta)). The}
+\title{epsilon_data_independent}
 \usage{
 epsilon_data_independent(T, gamma, delta)
 }
@@ -17,6 +17,11 @@ epsilon_data_independent(T, gamma, delta)
 A numeric value.
 }
 \description{
-composition of T queries, each (2 gamma, 0)-DP, without looking at
-the votes.
+A step of the pate_native implementation. Called by \code{pate}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+epsilon_data_independent(T = 5L, gamma = 0.5, delta = 0.5)
+}
+\keyword{internal}

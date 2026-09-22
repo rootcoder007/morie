@@ -44,7 +44,14 @@ by iterating between the mixture posterior and a weighted
 regression. With an empty cofactor set it is exactly interval
 mapping, to machine precision.
 }
+\examples{
+set.seed(1)
+r <- morie_cqtmpl(y = rnorm(10), left = rnorm(10), right = rnorm(10), r_left = rnorm(10),
+  r_right = rnorm(10))
+TRUE
+}
 \references{
 Zeng, Z.-B. (1994). Precision mapping of quantitative
 trait loci. Genetics, 136(4), 1457-1468.
 }
+\keyword{internal}

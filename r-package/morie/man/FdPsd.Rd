@@ -25,3 +25,8 @@ signal H = (beta-1)/2, FD = (5-beta)/2.  beta is MINUS the slope of
 log10 P against log10 f.  The DC bin is dropped: log(0) is undefined
 and DC carries the mean, not the scaling.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+FdPsd(V, V)
+}
+\keyword{internal}

@@ -26,3 +26,11 @@ A step of the blip2v_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+Q <- matrix(rnorm(8), 2, 4)
+Im <- matrix(rnorm(12), 3, 4)
+W <- matrix(rnorm(16), 4, 4)
+qformer_attend(Q, Im, W, W, W)
+}
+\keyword{internal}

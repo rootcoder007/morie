@@ -7,17 +7,17 @@
 Dffitsols(X, y, intercept = TRUE)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{Design matrix.}
 
-\item{y}{See Usage.}
+\item{y}{Response.}
 
-\item{intercept}{See Usage.}
+\item{intercept}{Prepend a column of ones.}
 }
 \value{
 List with \code{dffits}, \code{cutoff}, \code{leverage}, \code{student}, \code{n}, \code{p}.
 }
 \description{
-Formula: DFFITS_i = t*_i sqrt(h_ii/(1-h_ii)), t*\emph{i = e_i / (s}(i) sqrt(1-h_ii))
+Formula: \verb{DFFITS_i = t*_i sqrt(h_ii/(1-h_ii))}, \verb{t*_i = e_i / (s_(i) sqrt(1-h_ii))}
 }
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)

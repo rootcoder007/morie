@@ -91,6 +91,14 @@ acquisition selects the next point; the trade-off between
 exploration and exploitation is governed by the acquisition
 choice and its \code{kappa} / \code{xi}.
 }
+\examples{
+\donttest{
+f <- function(x) -sum((x - c(0.3, 0.7))^2)
+morie_bayoptr(f, bounds = list(c(0, 1), c(0, 1)), n_iter = 8L, n_init = 5L,
+              seed = 1L)
+}
+}
 \references{
 Mockus (1975); Snoek, Larochelle & Adams (2012).
 }
+\keyword{internal}

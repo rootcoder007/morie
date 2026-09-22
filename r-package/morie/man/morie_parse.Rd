@@ -23,3 +23,12 @@ A step of the prsLR_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+g <- list(rules = list(list("E", list("E", "+", "T")),
+                       list("E", list("T")),
+                       list("T", list("id"))),
+          start = "E")
+r <- morie_parse(g, c("id", "+", "id"))
+str(r, max.level = 1)
+}
+\keyword{internal}

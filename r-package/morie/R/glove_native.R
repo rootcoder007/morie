@@ -95,6 +95,9 @@
 #' @param alpha Numeric; combined arithmetically in the body. Defaults to \code{0.75}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' glove_weight(x = 5L)
+#' @keywords internal
 glove_weight <- function(x, x_max = 100.0, alpha = 0.75) {
   x <- as.numeric(x)
   x_max <- as.numeric(x_max)
@@ -193,6 +196,15 @@ cooccurrence <- function(corpus, window = 10, harmonic = TRUE, min_count = 1) {
 #' @param alpha Passed to \code{glove_weight}. Defaults to \code{0.75}.
 #' @return The value of \code{total}, as built in the body.
 #' @export
+#' @examples
+#' set.seed(1)
+#' X <- data.frame(i = c(1, 2, 1), j = c(2, 1, 3), count = c(5, 3, 2))
+#' W <- matrix(rnorm(6), 3, 2)
+#' Wt <- matrix(rnorm(6), 3, 2)
+#' b <- rnorm(3)
+#' bt <- rnorm(3)
+#' glove_loss(X, W, Wt, b, bt)
+#' @keywords internal
 glove_loss <- function(X, W, Wt, b, bt, x_max = 100.0, alpha = 0.75) {
   total <- 0.0
   n <- nrow(X)

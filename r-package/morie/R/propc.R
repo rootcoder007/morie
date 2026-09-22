@@ -4,9 +4,10 @@
 #'
 #' @param x Numeric univariate series.
 #' @param period Seasonal period. Default 12.
-#' @return Named list with \code{trend, seasonal, residual, slope,
+#' @return Named list with \eqn{trend, seasonal, residual, slope,
 #'   intercept, fourier_terms, period, n, method}.
 #' @examples
+#' set.seed(1)
 #' morie_prophet_components(x = rnorm(50))
 #' @export
 morie_prophet_components <- function(x, period = 12) {

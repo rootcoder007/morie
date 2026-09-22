@@ -3,7 +3,7 @@
 \name{morie_se3T_rotation_matrix}
 \alias{morie_se3T_rotation_matrix}
 \alias{morie_se3T}
-\title{Rodrigues\' formula -- a genuine element of SO(3)}
+\title{Rodrigues' formula -- a genuine element of SO(3)}
 \usage{
 morie_se3T_rotation_matrix(axis, angle)
 
@@ -22,3 +22,7 @@ A step of the se3T_native implementation. Called by \code{morie_se3T_check_equiv
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_se3T_rotation_matrix(axis = c(0, 0, 1), angle = pi / 4)
+}
+\keyword{internal}

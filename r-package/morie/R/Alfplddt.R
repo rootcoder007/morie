@@ -20,6 +20,7 @@
 #' @return A list with \code{plddt}, the bin distributions \code{p}, the
 #'   \code{loss}, \code{estimate}, \code{n} and \code{method}.
 #' @references Jumper et al (2021) Nature 596:583-589, Suppl. Algorithm 29
+#' @export
 Alfplddt <- function(s, w1, w2, w3, bins = NULL, rtrue = NULL) {
   if (is.null(bins)) bins <- 1 + 2 * (seq_len(50) - 1)
   n <- nrow(s)
@@ -34,10 +35,15 @@ Alfplddt <- function(s, w1, w2, w3, bins = NULL, rtrue = NULL) {
     r[i] <- sum(p * bins)
   }
   loss <- NULL
-  if (!is.null(rtrue))
-    loss <- mean(vapply(seq_len(n),
-                        function(i) alfXent(alfOnehot(rtrue[i], bins), ps[i, ]),
-                        numeric(1)))
-  list(plddt = r, p = ps, loss = loss, estimate = mean(r), n = n,
-       method = "AlphaFold per-residue confidence (pLDDT)")
+  if (!is.null(rtrue)) {
+    loss <- mean(vapply(
+      seq_len(n),
+      function(i) alfXent(alfOnehot(rtrue[i], bins), ps[i, ]),
+      numeric(1)
+    ))
+  }
+  list(
+    plddt = r, p = ps, loss = loss, estimate = mean(r), n = n,
+    method = "AlphaFold per-residue confidence (pLDDT)"
+  )
 }

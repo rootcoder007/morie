@@ -11,6 +11,23 @@
 
 \item{...}{Ignored; accepted for S3 consistency.}
 }
+\value{
+The value of \code{invisible}.
+}
 \description{
 Print method for \code{morie_dag} objects
 }
+\examples{
+\donttest{
+g <- morie_dag(
+  c(
+    "race -> placement", "race -> outcome",
+    "placement -> outcome"
+  ),
+  exposure = "placement", outcome = "outcome"
+)
+morie_dag_identify(g)
+print(g)
+}
+}
+\keyword{internal}

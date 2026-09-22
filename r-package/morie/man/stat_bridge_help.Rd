@@ -13,5 +13,5 @@ A length-1 character string.
 Formatted text dump of the command registry
 }
 \examples{
-stat_bridge_help()
+cat(stat_bridge_help())
 }

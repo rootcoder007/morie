@@ -21,3 +21,8 @@ A step of the narm_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+narm_decoder_parameters(n_items = c(1, 2, 3, 4, 5, 6, 7, 8),
+  hidden = c(1, 2, 3, 4, 5, 6, 7, 8), emb_dim = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

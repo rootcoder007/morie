@@ -11,12 +11,19 @@ Locdp(bit, epsilon = 1)
 
 \item{epsilon}{See Usage.}
 }
+\value{
+The value of \code{Rrand}.
+}
 \description{
 Alias of \code{Rrand}. The generated stub for module locdp described
 the local model of differential privacy (each user randomizes before
 collection, Kasiviswanathan et al. 2011); the canonical local-DP
 mechanism is Warner randomized response with flip probability
 \eqn{1/(1 + e^{\epsilon})}, already shipped as \code{Rrand}.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Locdp(V)
 }
 \references{
 Kasiviswanathan, S. P., Lee, H. K., Nissim, K.,
@@ -33,3 +40,4 @@ Delegating wrapper (not a bare assignment) so that source collation
 order does not matter at load time; the body is a single call to the
 target, so outputs are exactly identical.
 }
+\keyword{internal}

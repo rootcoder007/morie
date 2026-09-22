@@ -14,6 +14,16 @@ morie_tmlcps(
   bandwidth = NULL,
   n_folds = 5
 )
+
+morie_tmlcontinuoustreatment(
+  y,
+  A,
+  X,
+  a_grid = NULL,
+  fit = "kernel",
+  bandwidth = NULL,
+  n_folds = 5
+)
 }
 \arguments{
 \item{y}{Outcome vector.}
@@ -38,7 +48,14 @@ A list with \code{estimate}, \code{se}, \code{curve},
 }
 \description{
 The effect curve theta(a) = E(Y^a) for a continuous treatment
+
+Compact alias per ledger/NAMING.md
+}
+\examples{
+morie_tmlcps(y = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8),
+  X = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Kennedy, E. H. et al. (2017).
 }
+\keyword{internal}

@@ -20,3 +20,8 @@ weight smooths while keeping the response prompt at the newest
 sample.  s(n) has two peaks per cycle: the upstroke onset, then the
 dicrotic notch.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+DNotchSmth(V)
+}
+\keyword{internal}

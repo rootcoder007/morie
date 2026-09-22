@@ -23,3 +23,9 @@ A step of the fmFM_native implementation. Called by \code{fit_fm}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+V <- matrix(rnorm(12, 0, 0.3), 6, 2)
+gradient(x = c(1, 0, 1, 0, 0, 0), V, f = 1, i = 1)
+}
+\keyword{internal}

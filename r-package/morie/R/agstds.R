@@ -40,6 +40,8 @@ Agestd <- function(rates, standard_pop, person_time = NULL) {
     lo <- asr - z * se
     hi <- asr + z * se
   }
-  .t1_result(asr = asr, variance = var, se = se, ci_lower = lo, ci_upper = hi,
-             weights = w / sw, k = k, method = "Directly age-standardised rate")
+  .t1_result(
+    asr = asr, variance = var, se = se, ci_lower = lo, ci_upper = hi,
+    weights = w / sw, k = k, method = "Directly age-standardised rate"
+  )
 }

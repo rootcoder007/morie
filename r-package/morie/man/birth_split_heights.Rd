@@ -25,3 +25,8 @@ A step of the bayrjmcmc_native implementation. Called by \code{changepoint_rjmcm
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+birth_split_heights(h_j = 2, u = 0.6, s_left = 0, s_star = 0.5,
+                    s_right = 1)
+}
+\keyword{internal}

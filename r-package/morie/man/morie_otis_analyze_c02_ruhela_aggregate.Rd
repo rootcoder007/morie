@@ -22,7 +22,6 @@ c02 aggregate Ruhela: Female -> RC (institution GEE)
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_c02 <- morie_synth_otis("c02", n = 120L, seed = 1L)
 morie_otis_analyze_c02_ruhela_aggregate(otis_c02)
 }

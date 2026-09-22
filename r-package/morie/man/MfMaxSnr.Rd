@@ -24,3 +24,7 @@ A list with \code{snr}, \code{snr_db}, \code{energy}, \code{noise_power},
 detectability from a short loud transient as from a long quiet one of
 equal energy.  That is the substantive content of the theorem.
 }
+\examples{
+MfMaxSnr(x = c(1, 2, 3, 4, 5, 6, 7, 8), noise_power = 5L)
+}
+\keyword{internal}

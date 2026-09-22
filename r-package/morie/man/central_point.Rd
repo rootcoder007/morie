@@ -50,3 +50,10 @@ uses Newton's method with backtracking line search and stops on the
 Newton decrement; \code{"gradient"} takes Frisch's compromise as a
 plain descent step on the same function.
 }
+\examples{
+f0 <- function(x) sum(x^2)
+cons <- list(function(x) 1 - x[1], function(x) x[1] - 5)
+r <- central_point(f0, cons, x = c(2, 0), t = 10)
+str(r, max.level = 1)
+}
+\keyword{internal}

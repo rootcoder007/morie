@@ -20,6 +20,14 @@ morie_geron_policy_gradient(
 
 \item{baseline}{Subtract the mean return.}
 }
+\value{
+A list with \code{gradient}, \code{returns}, \code{mean_return}, \code{n_steps}, \code{n_episodes}, \code{baseline_value}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Policy gradient (REINFORCE) estimator over discounted returns (Geron Ch 19, hmpg)
 }
+\examples{
+g <- function(s, a) c(1, 0)
+morie_geron_policy_gradient(list(list(list(0, 0, 2))), g, gamma = 1)
+}
+\keyword{internal}

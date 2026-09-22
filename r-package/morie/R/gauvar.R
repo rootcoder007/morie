@@ -19,7 +19,17 @@
 #
 # Cressie (1993), Statistics for Spatial Data, rev. edn., sec. 2.3.1.
 
-#' @noRd
+#' morie_gaussian_variogram_model
+#'
+#' @param h Argument `h`; see Usage.
+#' @param c0 Argument `c0`; see Usage.
+#' @param c Argument `c`; see Usage.
+#' @param a Argument `a`; see Usage.
+#' @return A list with `gamma`, `covariance`, `h`, `c0`, `c`, `a`, `sill`, `practical_range`, `n`, `method`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_gaussian_variogram_model(V)
+#' @keywords internal
 morie_gaussian_variogram_model <- function(h, c0 = 0, c = 1, a = 1) {
   hs <- .expvar_lags(h)
   c0 <- as.numeric(c0)[1L]

@@ -18,3 +18,7 @@ The value of \code{r}, as built in the body.
 computed here by solving the system -- the inverse is never formed,
 which is both faster and better conditioned.
 }
+\examples{
+WienerOpt(phi = 0.5, theta = 0.5)
+}
+\keyword{internal}

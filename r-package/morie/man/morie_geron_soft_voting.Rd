@@ -20,9 +20,9 @@ List with \code{y_hat} (0-based), \code{mean_probabilities},
 y_hat = argmax of the weight-averaged class probabilities.
 }
 \examples{
-Q <- matrix(0.5, 4, 2)
-Qt <- matrix(0.5, 4, 2)
-batch <- list(c(0L, 0L, 1, 1L, 0L), c(1L, 1L, 0, 2L, 1L))
-morie_geron_dqn_loss(Q, Qt, batch, gamma = 0.9)
-morie_geron_soft_voting(probabilities = Q)
+P <- array(0, c(2, 2, 2))
+P[1, , ] <- rbind(c(0.7, 0.3), c(0.6, 0.4))
+P[2, , ] <- rbind(c(0.2, 0.8), c(0.4, 0.6))
+r <- morie_geron_soft_voting(P)
+str(r, max.level = 1)
 }

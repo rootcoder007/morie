@@ -145,8 +145,7 @@
 #' @export
 #' @examples
 #' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .mfovsm_logreg_fit(y = y, X = X)
 #' res
 .mfovsm_logreg_fit <- function(y, X, max_iter = 25, tol = 1e-8) {
@@ -321,6 +320,7 @@
 #' \code{effective_sample_size}, \code{exposure}, \code{v_in_numerator}, \code{n},
 #' \code{n_times}, \code{contrast}, \code{method}.
 #' @export
+#' @keywords internal
 morie_mfovsm <- function(y, feature, A, H, v_in_numerator = TRUE,
                           contrast = "cumulative", trim = NULL) {
   A_hist <- .mfovsm_hist(A)
@@ -453,6 +453,9 @@ mfovsm <- morie_mfovsm
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_mfovsm_cheatsheet()
+#' @keywords internal
 morie_mfovsm_cheatsheet <- function() {
   paste0("mfovsm: V-conditional MSM E[Y^abar|V] = b0 + b1 abar + ",
          "b2 V + b3 abar V (Robins-Hernan 2009; H&R Sec.12.5). ",

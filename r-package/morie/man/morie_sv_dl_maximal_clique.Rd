@@ -18,3 +18,9 @@ A vector, from \code{sort}.
 is e_min; then repeatedly the lowest-weight edge with exactly one
 endpoint inside, whose other endpoint is adjacent to every member.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+morie_sv_dl_maximal_clique(V, M)
+}
+\keyword{internal}

@@ -23,3 +23,9 @@ A step of the sam2vd_native implementation. Called by \code{morie_sam2vd_memory_
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_sam2vd_temporal_embedding(D, V)
+}
+\keyword{internal}

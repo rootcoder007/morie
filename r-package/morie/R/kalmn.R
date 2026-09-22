@@ -11,9 +11,10 @@
 #' @param R Observation covariance (default sigma^2 I).
 #' @param x0 Initial state mean.
 #' @param P0 Initial state covariance.
-#' @return Named list with \code{state, state_cov, innovations,
+#' @return Named list with \eqn{state, state_cov, innovations,
 #'   innovation_variance, loglik, n, method}.
 #' @examples
+#' set.seed(1)
 #' morie_kalman_filter(x = rnorm(50))
 #' @export
 morie_kalman_filter <- function(x, transition = NULL, H = NULL, Q = NULL, R = NULL,

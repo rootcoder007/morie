@@ -23,3 +23,7 @@ A step of the dist_native implementation. Called by \code{Qbinom}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+Pbinom(q = 0.5, size = 5L, prob = 0.5)
+}
+\keyword{internal}

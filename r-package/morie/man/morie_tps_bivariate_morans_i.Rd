@@ -28,17 +28,13 @@ latitude/longitude.  Reports Pearson r alongside as a non-spatial
 baseline.
 }
 \examples{
-.mk_tps_cat <- function(n = 120L, seed = 1L, n_hoods = 15L) {
-    set.seed(seed)
-    data.frame(OCC_YEAR = sample(2018:2024, n, replace = TRUE),
-        HOOD_158 = sample(letters[1:n_hoods], n, replace = TRUE),
-        LAT_WGS84 = 43.6 + runif(n, 0, 0.2), LONG_WGS84 = -79.4 +
-            runif(n, 0, 0.2), stringsAsFactors = FALSE)
-}
-.mk_dfs <- function() {
-    list(Assault = .mk_tps_cat(seed = 2L), Robbery = .mk_tps_cat(seed = 3L),
-        AutoTheft = .mk_tps_cat(seed = 4L))
-}
-morie_tps_bivariate_morans_i(.mk_dfs(), "Assault", "Robbery",
-    k_neighbours = 3L)
+set.seed(1)
+df <- data.frame(OCC_YEAR = rep(2014:2023, each = 30),
+                 OCC_MONTH = sample(month.name, 300, TRUE),
+                 HOOD_158 = sample(sprintf("\%03d", 1:20), 300, TRUE),
+                 LAT_WGS84 = runif(300, 43.6, 43.8),
+                 LONG_WGS84 = runif(300, -79.5, -79.2))
+dfs <- list(a = df, b = df)
+res <- try(morie_tps_bivariate_morans_i(dfs, "a", "b"))
+if (!inherits(res, "try-error")) str(res, max.level = 1)
 }

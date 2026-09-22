@@ -2,21 +2,21 @@
 % Please edit documentation in R/explor_native.R
 \name{morie_explor}
 \alias{morie_explor}
-\title{morie_explor}
+\title{Morie entry point}
 \usage{
 morie_explor(
   states,
   actions,
   next_states,
   n_actions = NULL,
-  n_features = 8L,
+  n_features = 8,
   eta = 1,
   beta = 0.2,
   lr = 0.05,
-  epochs = 1L,
+  epochs = 1,
   features = "inverse",
   discrete = TRUE,
-  seed = 0L
+  seed = 0
 )
 }
 \arguments{
@@ -28,7 +28,7 @@ morie_explor(
 
 \item{n_actions}{Passed to \code{explor}.}
 
-\item{n_features}{Passed to \code{explor}. Defaults to \code{8L}.}
+\item{n_features}{Passed to \code{explor}. Defaults to \code{8}.}
 
 \item{eta}{Passed to \code{explor}. Defaults to \code{1}.}
 
@@ -36,13 +36,13 @@ morie_explor(
 
 \item{lr}{Passed to \code{explor}. Defaults to \code{0.05}.}
 
-\item{epochs}{Passed to \code{explor}. Defaults to \code{1L}.}
+\item{epochs}{Passed to \code{explor}. Defaults to \code{1}.}
 
 \item{features}{Passed to \code{explor}. Defaults to \code{"inverse"}.}
 
 \item{discrete}{Passed to \code{explor}. Defaults to \code{TRUE}.}
 
-\item{seed}{Passed to \code{explor}. Defaults to \code{0L}.}
+\item{seed}{Passed to \code{explor}. Defaults to \code{0}.}
 }
 \value{
 The value of \code{explor}.
@@ -52,3 +52,8 @@ A step of the explor_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_explor(states = c(1, 2, 3, 4, 5, 6, 7, 8), actions = c(1, 2, 3, 4, 5, 6, 7, 8),
+  next_states = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -21,6 +21,14 @@ morie_alammar_vit_patch_embedding(
 
 \item{cls_token, E_pos}{Optional class token and positional table.}
 }
+\value{
+A list with \code{sequence}, \code{n_patches}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 ViT patch embedding (Dosovitskiy et al. 2021)
 }
+\examples{
+img <- matrix(0:15, 4, 4, byrow = TRUE)
+morie_alammar_vit_patch_embedding(img, 2, diag(4))
+}
+\keyword{internal}

@@ -10,11 +10,15 @@ training_stage(stage)
 \item{stage}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \value{
-A list, whose contents depend on the branch taken; across the branches its
-names are \code{stage}, \code{trainable}, \code{frozen}, \code{data}, \code{note}.
+A list with \code{stage}, \code{trainable}, \code{frozen}, \code{data}, \code{note}.
 }
 \description{
 A step of the llavx_native implementation. Called by \code{morie_llavx}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+s <- training_stage(1)
+s$stage == 1L
+}
+\keyword{internal}

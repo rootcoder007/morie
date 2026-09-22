@@ -7,10 +7,10 @@
 .le64(n)
 }
 \arguments{
-\item{n}{Numeric; combined arithmetically in the body.}
+\item{n}{Passed to \code{bitwAnd}.}
 }
 \value{
-The value of \code{as.raw}.
+The value of \code{writeBin}.
 }
 \description{
 A step of the secarg_native implementation. No other function in the package calls it.

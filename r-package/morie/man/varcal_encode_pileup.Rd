@@ -36,3 +36,13 @@ A step of the varcal_native implementation. Called by \code{morie_varcal}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+reads <- c(
+  lapply(1:3, function(i) list(pos = 0L, seq = "ACGTTCGT")),
+  lapply(1:3, function(i) list(pos = 0L, seq = "ACGTACGT")))
+cands <- varcal_find_candidates(reads, reference = "ACGTACGTAC")
+enc <- varcal_encode_pileup(reads, "ACGTACGTAC", cands[[1]], width = 7,
+                            height = 8)
+str(enc, max.level = 1)
+}
+\keyword{internal}

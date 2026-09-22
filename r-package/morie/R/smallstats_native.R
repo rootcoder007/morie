@@ -144,7 +144,7 @@ NULL
 #'
 #' Entropy balancing (Hainmueller 2012), ATT flavour: reweight controls
 #' so their covariate means equal the treated means. Solves the convex
-#' dual min_l log(sum_c exp(-Xc l)) + mbar\' l via BFGS with an analytic
+#' dual min_l log(sum_c exp(-Xc l)) + mbar' l via BFGS with an analytic
 #' gradient; weights are the softmax of -Xc l, rescaled to sum to the
 #' number of controls (the ebal::ebalance convention).
 #'
@@ -375,7 +375,7 @@ NULL
 #'
 #' Sobol low-discrepancy sequence via gray-code construction with
 #' Joe-Kuo direction numbers (dims 1-10) -- replaces randtoolbox::sobol
-#' for the QMC helper. Unscrambled; matches randtoolbox\'s unscrambled
+#' for the QMC helper. Unscrambled; matches randtoolbox's unscrambled
 #' output (same standard direction numbers), cross-validated in tests.
 #'
 #' @param n Passed to \code{.morie_sobol_cpp}.

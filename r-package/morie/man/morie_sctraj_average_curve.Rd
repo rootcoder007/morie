@@ -21,3 +21,10 @@ A step of the sctraj_native implementation. Called by \code{morie_sctraj}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+c1 <- cbind(seq(0, 1, length.out = 20), seq(0, 2, length.out = 20))
+c2 <- cbind(seq(0, 1, length.out = 20), seq(0, 2.2, length.out = 20))
+r <- morie_sctraj_average_curve(list(c1, c2), n_points = 10)
+dim(r)
+}
+\keyword{internal}

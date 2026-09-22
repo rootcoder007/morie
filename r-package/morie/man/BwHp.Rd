@@ -26,3 +26,7 @@ pole radius -- and the N zeros move from z = -1 to z = +1.  The gain
 is renormalized at NYQUIST, since a highpass has no DC gain to
 normalize against and dividing there would be division by zero.
 }
+\examples{
+BwHp(cutoff_hz = 5L)
+}
+\keyword{internal}

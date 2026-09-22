@@ -20,3 +20,8 @@ A list with \code{H}, \code{z}, \code{b}, \code{N}, \code{dc_gain},
 \description{
 so an FIR filter is stable whatever its coefficients.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+MaTf(V, V)
+}
+\keyword{internal}

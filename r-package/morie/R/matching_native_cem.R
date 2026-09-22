@@ -63,7 +63,7 @@
     n_treated         = sum(md[[treatment]] == 1),
     n_matched_control = sum(md[[treatment]] == 0),
     match_pairs       = .morie_matching_empty_pairs(),
-    method            = "exact (morie native)",
+    method            = "exact (rmorie native)",
     details           = list(
       engine     = "native-exact",
       exact_vars = exact_vars,
@@ -112,7 +112,7 @@
     n_treated         = sum(md[[treatment]] == 1),
     n_matched_control = sum(md[[treatment]] == 0),
     match_pairs       = .morie_matching_empty_pairs(),
-    method            = "cem (morie native)",
+    method            = "cem (rmorie native)",
     details           = list(
       engine    = "native-cem",
       n_bins    = n_bins,

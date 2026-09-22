@@ -26,3 +26,8 @@ A step of the bhltmsm_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+fit_msm(V, V)
+}
+\keyword{internal}

@@ -53,8 +53,11 @@ A list with \code{controlled}, \code{total_cases}, \code{weekly},
 \code{hit_cap}, \code{extinct}.
 }
 \description{
-A step of the ttrace_native implementation. Called by \code{morie_ttrace},
-\code{probability_of_control}.
+A step of the ttrace_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+simulate_outbreak()
+}
+\keyword{internal}

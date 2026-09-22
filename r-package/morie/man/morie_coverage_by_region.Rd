@@ -37,3 +37,9 @@ A step of the bndpcb_native implementation. Called by \code{morie_bet_violation}
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+\donttest{
+morie_coverage_by_region(theta = 0.5)
+}
+}
+\keyword{internal}

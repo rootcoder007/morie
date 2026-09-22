@@ -11,6 +11,14 @@
 
 \item{...}{Ignored; accepted for S3 consistency.}
 }
+\value{
+The value of \code{invisible}.
+}
 \description{
 Print method for \code{morie_bigint} objects
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie:::print.morie_bigint(V)
+}
+\keyword{internal}

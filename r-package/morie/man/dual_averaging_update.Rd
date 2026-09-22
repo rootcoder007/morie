@@ -39,3 +39,9 @@ A list with \code{eps}, \code{h_bar}, \code{log_eps_bar}.
 for the log step size. Returns the new step size and the running
 averages carried between calls.
 }
+\examples{
+dual_averaging_update(t = 5L, h_bar = c(1, 2, 3, 4, 5, 6, 7, 8),
+  log_eps_bar = c(1, 2, 3, 4, 5, 6, 7, 8), h_new = c(1, 2, 3, 4, 5, 6, 7, 8),
+  mu = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -13,6 +13,16 @@ flow_forward(flow, x, t)
 
 \item{t}{See Usage.}
 }
+\value{
+A list with \code{u}, \code{total}.
+}
 \description{
 Push x through every MAF layer; returns (u, total_alpha)
 }
+\examples{
+flow <- MAF(dim_x = 2L, dim_t = 2L, n_layers = 2L, hidden = 4L, seed = 1L)
+fw <- flow_forward(flow, x = c(0.4, -0.7), t = c(0.1, 0.2))
+fw$u        # the latent point x maps to
+fw$total    # the log-Jacobian of the map
+}
+\keyword{internal}

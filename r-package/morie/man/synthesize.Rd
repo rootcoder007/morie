@@ -33,17 +33,27 @@ synthesize(
 
 \item{conf_min}{The body requires: memb: conf_min must lie in (0, 1). Defaults to \code{0.8}.}
 
-\item{iter_max}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1000L}.}
+\item{iter_max}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{1000L}.}
 
 \item{rej_max}{Passed to \code{>}. Defaults to \code{10L}.}
 
-\item{seed}{Passed to \code{.memb_rng}. Defaults to \code{0}.}
+\item{seed}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 }
 \value{
 Nothing; the function is called for its effect.
 }
 \description{
-A step of the memb_native implementation. No other function in the package calls it.
+A step of the memb_native implementation. Called by \code{morie_memb}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+target <- function(rows) lapply(rows, function(r)
+  {z <- c(sum(r), -sum(r)); p <- exp(z - max(z)); p / sum(p)})
+r <- synthesize(target, c = 0L, n_features = 3,
+                feature_values = list(c(-1, 0, 1), c(-1, 0, 1),
+                                      c(-1, 0, 1)))
+str(r, max.level = 1)
+}
+\keyword{internal}

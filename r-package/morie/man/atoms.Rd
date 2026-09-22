@@ -24,3 +24,7 @@ A list with \code{z} (the atom positions) and \code{dz}
 Atoms on \code{[v_min, v_max]} at equal intervals:
 \code{z_i = v_min + (i-1) * dz}, \code{dz = (v_max - v_min) / (N - 1)}.
 }
+\examples{
+atoms(v_min = -10, v_max = 10, n_atoms = 5)
+}
+\keyword{internal}

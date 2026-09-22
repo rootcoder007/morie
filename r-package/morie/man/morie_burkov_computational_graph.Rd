@@ -11,6 +11,9 @@ morie_burkov_computational_graph(graph, inputs)
 
 \item{inputs}{Named leaf values.}
 }
+\value{
+A list with \code{output}, \code{estimate}, \code{gradients}, \code{values}, \code{n}, \code{method}.
+}
 \description{
 \code{graph} is a topologically ordered list of nodes
 \code{list(name =, op =, args = c(...))}; \code{inputs} a named list of leaf
@@ -18,3 +21,13 @@ values. Gradients of the last node with respect to every leaf come
 back exactly; the parity tests pin them against Python's autodiff
 and against central finite differences.
 }
+\examples{
+g <- list(list(name = "wx", op = "mul", args = c("w", "x")),
+    list(name = "z", op = "add", args = c("wx", "b")), list(name = "a",
+        op = "sigmoid", args = "z"), list(name = "d", op = "sub",
+        args = c("a", "y")), list(name = "loss", op = "square",
+        args = "d"))
+inputs <- list(w = 0.7, x = 1.3, b = -0.2, y = 1)
+morie_burkov_computational_graph(g, inputs)
+}
+\keyword{internal}

@@ -21,3 +21,7 @@ A step of the tlhaltm_native implementation. Called by \code{morie_tlhaltm}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+cv_tmle_split(50, V = 5, seed = 1L)
+}
+\keyword{internal}

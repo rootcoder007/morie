@@ -7,13 +7,18 @@
 start_allowed(labels)
 }
 \arguments{
-\item{labels}{Iterated over elementwise, with \code{sapply}.}
+\item{labels}{Character; passed to \code{substr}.}
 }
 \value{
-A vector, from \code{sapply}.
+The value of \code{!=}.
 }
 \description{
 A step of the benRea_native implementation. Called by \code{viterbi_decode}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+start_allowed(V)
+}
+\keyword{internal}

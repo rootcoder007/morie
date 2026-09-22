@@ -2,20 +2,20 @@
 % Please edit documentation in R/otis_all_analyze.R
 \name{print.morie_otis_analysis_result}
 \alias{print.morie_otis_analysis_result}
-\title{Print method for OTIS analysis results}
+\title{Print method for \code{morie_otis_analysis_result} objects}
 \usage{
 \method{print}{morie_otis_analysis_result}(x, ...)
 }
 \arguments{
-\item{x}{A \code{morie_otis_analysis_result}.}
+\item{x}{A \code{morie_otis_analysis_result} object.}
 
-\item{...}{Unused.}
+\item{...}{Ignored; accepted for S3 consistency.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
-Print method for OTIS analysis results
+Print method for \code{morie_otis_analysis_result} objects
 }
 \examples{
 otis_b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)

@@ -10,11 +10,16 @@ guide_tree(D)
 \item{D}{A matrix; indexed by row and column.}
 }
 \value{
-The value of \code{merges}, as built in the body.
+The value of \code{lapply}.
 }
 \description{
 A step of the mafft_native implementation. Called by \code{iterative_refine},
-\code{mafft_alignment}, \code{progressive_align}.
+\code{mafft_alignment}, \code{morie_mafft} and 1 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+seqs <- c("MKVLATLLPLAA", "MKVLATLLPLAG", "MRVLATGLPLAA")
+guide_tree(sixtuple_distance(seqs))
+}
+\keyword{internal}

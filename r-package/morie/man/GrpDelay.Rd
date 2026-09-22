@@ -28,3 +28,8 @@ unwrapping (which removes multiples of 2 pi) leaves it and the
 derivative spikes.  A three-point mean has such a zero at w = 2pi/3
 and its phase-differentiated delay comes out near 0 instead of 1.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+GrpDelay(V)
+}
+\keyword{internal}

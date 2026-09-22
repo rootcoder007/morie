@@ -159,6 +159,9 @@ morie_vepan_PICK_ORDER <- c(
 #' @param term See Usage.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' morie_vepan_consequence_rank(term = 5L)
+#' @keywords internal
 morie_vepan_consequence_rank <- function(term) {
   # Severity rank of an SO term; 1 is worst. Unknown terms sort last.
   r <- morie_vepan_CONSEQUENCE_RANK[[term]]
@@ -174,6 +177,9 @@ morie_vepan_consequence_rank <- function(term) {
 #' @param term See Usage.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' morie_vepan_consequence_impact(term = 5L)
+#' @keywords internal
 morie_vepan_consequence_impact <- function(term) {
   # HIGH/MODERATE/LOW/MODIFIER for an SO term.
   i <- morie_vepan_CONSEQUENCE_IMPACT[[term]]
@@ -189,6 +195,10 @@ morie_vepan_consequence_impact <- function(term) {
 #' @param terms Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' morie_vepan_most_severe_consequence(c("missense_variant",
+#'                                       "synonymous_variant"))
+#' @keywords internal
 morie_vepan_most_severe_consequence <- function(terms) {
   # The lowest-ranked (worst) term.
   ts <- as.character(terms)
@@ -311,7 +321,7 @@ morie_vepan_most_severe_consequence <- function(terms) {
   )
 }
 
-#' The spliced transcript, 5\' to 3\', and the genomic position of each
+#' The spliced transcript, 5' to 3', and the genomic position of each
 #'
 #' of its bases (returns list(seq, gpos)).
 #'
@@ -319,6 +329,11 @@ morie_vepan_most_severe_consequence <- function(terms) {
 #' @param genome Coerced to character by the body, with \code{as.character}.
 #' @return A list with \code{seq}, \code{gpos}.
 #' @export
+#' @examples
+#' genome <- "AATGGCCTAGGCTTAA"
+#' tr <- list(exons = rbind(c(3L, 8L), c(11L, 14L)), strand = "+")
+#' morie_vepan_transcript_sequence(tr, genome)
+#' @keywords internal
 morie_vepan_transcript_sequence <- function(tr, genome) {
   # The spliced transcript, 5' to 3', and the genomic position of each
   # of its bases (returns list(seq, gpos)).
@@ -681,7 +696,7 @@ morie_vepan_transcript_sequence <- function(tr, genome) {
   list(terms = unique(terms), info = info)
 }
 
-#' C. notation, with an indel shifted to its most 3\' position
+#' C. notation, with an indel shifted to its most 3' position
 #'
 #' A step of the vepan_native implementation. Called by \code{morie_vepan_annotate}.
 #' See the file header for the source the module follows.
@@ -807,6 +822,15 @@ morie_vepan_transcript_sequence <- function(tr, genome) {
 #' @param downstream Passed to \code{<}. Defaults to \code{5000}.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' genome <- "AATGGCCTAGGCTTAA"
+#' tr <- list(id = "tx1", gene = "g1", chrom = "chr1",
+#'            exons = rbind(c(3L, 8L), c(11L, 14L)), strand = "+",
+#'            cds = c(3L, 14L))
+#' v <- list(chrom = "chr1", pos = 5L, ref = "G", alt = "A")
+#' r <- morie_vepan_annotate(v, list(tr), genome)
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_vepan_annotate <- function(variant, transcripts, genome,
                                  upstream = 5000, downstream = 5000) {
   # One record per (variant, transcript) overlap, as the VEP emits. A
@@ -971,7 +995,7 @@ morie_vepan_annotate <- function(variant, transcripts, genome,
   out[order(keys_rank, keys_tr)]
 }
 
-#' Table 7\'s order: canonical, then protein coding, then severity
+#' Table 7's order: canonical, then protein coding, then severity
 #'
 #' A step of the vepan_native implementation. Called by \code{morie_vepan_pick}.
 #' See the file header for the source the module follows.
@@ -1025,6 +1049,15 @@ morie_vepan_annotate <- function(variant, transcripts, genome,
 #' @param per_gene A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{unname}.
 #' @export
+#' @examples
+#' genome <- "AATGGCCTAGGCTTAA"
+#' tr <- list(id = "tx1", gene = "g1", chrom = "chr1",
+#'            exons = rbind(c(3L, 8L), c(11L, 14L)), strand = "+",
+#'            cds = c(3L, 14L))
+#' v <- list(chrom = "chr1", pos = 5L, ref = "G", alt = "A")
+#' recs <- morie_vepan_annotate(v, list(tr), genome)
+#' str(morie_vepan_pick(recs), max.level = 1)
+#' @keywords internal
 morie_vepan_pick <- function(records, per_gene = FALSE) {
   # --pick (one record) or --per_gene (one per gene).
   rs <- records
@@ -1074,7 +1107,15 @@ morie_vepan_pick <- function(records, per_gene = FALSE) {
 #' \code{n_annotations}, \code{consequence_counts}, \code{mode}, \code{method},
 #' \code{note}.
 #' @export
-#' @aliases morie_vepan
+#' @examples
+#' genome <- "AATGGCCTAGGCTTAA"
+#' tr <- list(id = "tx1", gene = "g1", chrom = "chr1",
+#'            exons = rbind(c(3L, 8L), c(11L, 14L)), strand = "+",
+#'            cds = c(3L, 14L))
+#' v <- list(chrom = "chr1", pos = 5L, ref = "G", alt = "A")
+#' r <- morie_vepan_vep_annotation(list(v), list(tr), genome)
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_vepan_vep_annotation <- function(variants, transcripts, genome,
                                        upstream = 5000, downstream = 5000,
                                        mode = "all", no_intergenic = FALSE) {
@@ -1138,6 +1179,9 @@ morie_vepan_vep_annotation <- function(variants, transcripts, genome,
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_vepan_cheatsheet()
+#' @keywords internal
 morie_vepan_cheatsheet <- function() {
   paste0(
     "vepan: Ensembl VEP (McLaren et al. 2016). One record per ",
@@ -1155,5 +1199,6 @@ morie_vepan_cheatsheet <- function() {
 # compact alias per ledger/NAMING.md
 morie_vepan_vepannotation <- morie_vepan_vep_annotation
 
+#' @rdname morie_vepan_vep_annotation
 #' @export
 morie_vepan <- morie_vepan_vep_annotation

@@ -19,3 +19,7 @@ A list with \code{hr}, \code{nbeats}, \code{duration}, \code{method}.
 window, so unlike the beat-to-beat form of eq (4.20) it is
 insensitive to a single mis-detected interval.
 }
+\examples{
+HrFromCnt(nbeats = 5L, duration = 5L)
+}
+\keyword{internal}

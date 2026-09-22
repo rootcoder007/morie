@@ -20,3 +20,8 @@ A list with \code{freq}, \code{mag}, \code{phase}, \code{fs}, \code{fsnote},
 delay) minus a scaled lowpass, so it shares the running sum already
 computed.  fc = 5 Hz and 80 ms delay hold at fs = 200 Hz.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+QrsHPassTf(V)
+}
+\keyword{internal}

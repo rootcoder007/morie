@@ -17,6 +17,7 @@ Counts concurrent alert flags per placement and tests independence
 of MentalHealth vs SuicideRisk via chi-square + Cramer's V.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_mortification_cooccurrence(V)
+b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+res <- morie_otis_mortification_cooccurrence(b02)
+res$title
 }

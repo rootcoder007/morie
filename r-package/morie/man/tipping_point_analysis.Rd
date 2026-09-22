@@ -33,8 +33,11 @@ A \code{morie_tipping_point} named-list.
 \description{
 How much would unobserved outcomes need to differ from observed
 ones for the treatment effect to become non-significant?
+Phase 1.g cross-references \pkg{tipr} for the unmeasured-confounder
+family of tipping-point calculations
+(see also \code{\link{morie_sensitivity_tipping_point}}).
 }
 \examples{
-tipping_point_analysis(estimate = 5L, se = c(1, 2, 3, 4, 5, 6, 7, 8), n_treated = c(1,
-2, 3, 4, 5, 6, 7, 8), n_control = c(1, 2, 3, 4, 5, 6, 7, 8))
+str(tipping_point_analysis(0.5, 0.15, n_treated = 100, n_control = 100),
+    max.level = 1)
 }

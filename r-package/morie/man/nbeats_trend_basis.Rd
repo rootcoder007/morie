@@ -24,3 +24,7 @@ A step of the nbeats_native implementation. Called by \code{nbeats_block}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+nbeats_trend_basis(length = 5L, degree = 5L)
+}
+\keyword{internal}

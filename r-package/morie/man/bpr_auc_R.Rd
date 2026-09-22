@@ -22,3 +22,13 @@ List with \code{auc}, \code{per_user}, \code{note}.
 Eq. (1) of Rendle et al. (2009): \eqn{\sum z_u \delta(\hat x_{uij} > 0)}.
 The indicator is strict, so a tie scores zero.
 }
+\examples{
+set.seed(1)
+W <- lapply(1:4, function(i) rnorm(3, 0, 0.3))
+H <- lapply(1:5, function(i) rnorm(3, 0, 0.3))
+pos <- list("0" = c(0L, 1L), "1" = c(1L, 2L), "2" = c(0L, 3L),
+            "3" = c(2L, 4L))
+r <- bpr_auc_R(W, H, pos, n_items = 5)
+str(r, max.level = 1)
+}
+\keyword{internal}

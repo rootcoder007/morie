@@ -18,6 +18,14 @@ morie_geron_principal_components(
 
 \item{center, scale}{Preprocessing flags.}
 }
+\value{
+A list with \code{components}, \code{scores}, \code{explained_variance}, \code{explained_variance_ratio}, \code{reconstruction_error}, \code{n_components}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Principal components via SVD, sign-fixed, reconstruction error reported (Geron Ch 7, hmpcac)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_principal_components(V)
+}
+\keyword{internal}

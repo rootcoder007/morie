@@ -33,8 +33,8 @@ Formula: \code{E[Y(d) | H_t] = g0 + g1 t}, fitted with weights
 }
 \examples{
 Hmstrn(y = c(1, 2, 3, 4, 5, 6, 7, 8), treatment_history = c(1, 2, 3, 4, 5, 6, 7, 8),
-covariate_history = c(1, 2, 3, 4, 5, 6, 7, 8), time = c(1, 2, 3, 4, 5, 6, 7, 8),
-regime = c(1, 2, 3, 4, 5, 6, 7, 8))
+  covariate_history = c(1, 2, 3, 4, 5, 6, 7, 8), time = c(1, 2, 3, 4, 5, 6, 7, 8),
+  regime = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 van der Laan, M. J. & Petersen, M. L. (2007). IJB 3(1):3;

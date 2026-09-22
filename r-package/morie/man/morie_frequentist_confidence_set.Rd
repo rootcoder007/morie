@@ -29,3 +29,8 @@ A step of the bndbye_native implementation. Called by \code{morie_compare_sets}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_frequentist_confidence_set(theta_set = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)),
+  se_phi = 5L)
+}
+\keyword{internal}

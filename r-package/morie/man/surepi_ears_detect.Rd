@@ -26,3 +26,9 @@ A step of the surepi_native implementation. Called by \code{surepi_c1_mild},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+counts <- c(rpois(20, 5), rpois(6, 20))
+surepi_ears_detect(counts, method = "C2")
+}
+\keyword{internal}

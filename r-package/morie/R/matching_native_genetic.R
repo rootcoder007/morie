@@ -130,7 +130,7 @@
     n_treated         = length(unique(ti_ok)),
     n_matched_control = length(unique(ci_ok)),
     match_pairs       = pairs_df,
-    method            = "genetic (morie native)",
+    method            = "genetic (rmorie native)",
     details           = list(
       engine        = "native-genetic-ga",
       best_weights  = stats::setNames(w_best, covariates),

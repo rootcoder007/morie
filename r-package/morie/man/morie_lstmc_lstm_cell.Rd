@@ -59,6 +59,7 @@ R parity for \code{morie.fn.lstmc.lstm_cell}.  Gates stacked as
 odot g; h = o odot tanh(c)}
 }
 \examples{
+set.seed(1)
 morie_lstmc_lstm_cell(x = rnorm(50))
 }
 \references{

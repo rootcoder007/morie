@@ -11,6 +11,22 @@
 
 \item{...}{Ignored; accepted for S3 consistency.}
 }
+\value{
+The value of \code{invisible}.
+}
 \description{
 Print method for \code{morie_rtm} objects
 }
+\examples{
+set.seed(1)
+incidents <- cbind(runif(50), runif(50))
+layers <- list(schools = cbind(runif(8), runif(8)),
+               bars = cbind(runif(6), runif(6)))
+fit <- morie_crim_risk_terrain(incidents, layers, n_grid = 10L)
+out <- capture.output(print(fit))
+any(grepl("Risk terrain", out))
+}
+\references{
+Caplan, Kennedy & Miller (2011) Justice Quarterly 28(2).
+}
+\keyword{internal}

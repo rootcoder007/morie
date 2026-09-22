@@ -70,6 +70,10 @@
 #' @param v The beta variates.
 #' @return A list with the weights and the unbroken remainder.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_slbpdg_weights(V)
+#' @keywords internal
 morie_slbpdg_weights <- function(v) {
   n <- length(v)
   w <- numeric(n)
@@ -106,6 +110,14 @@ morie_slbpdg_weights <- function(v) {
 #' @param s2 Component variances.
 #' @return The density value.
 #' @export
+#' @examples
+#' V <- c(0.3, 0.5, 0.2, 0.8, 0.1)
+#' sw <- morie_slbpdg_weights(V)
+#' w <- sw$w
+#' x <- -12
+#' morie_slbpdg_density(x, w, c(-2, 0, 1, 3, 5), c(0.5, 1, 0.25,
+#'     2, 0.75))
+#' @keywords internal
 morie_slbpdg_density <- function(x, w, mu, s2)
   .w3_csum(vapply(seq_along(w), function(k)
     w[k] * .slbpdg_dnorm(x, mu[k], s2[k]), numeric(1)))
@@ -187,8 +199,8 @@ morie_slbpdg_density <- function(x, w, mu, s2)
 # xi_k > u_i decides how many components to carry.
 #' The deterministic bound xi_k = (1 - kappa) kappa^(k-1), built by
 #'
-#' repeated multiplication rather than kappa^(k-1): R\'s `^` on an
-#' integer exponent is repeated squaring and Python\'s `**` calls pow(),
+#' repeated multiplication rather than kappa^(k-1): R's `^` on an
+#' integer exponent is repeated squaring and Python's `**` calls pow(),
 #' and the two part company in the last bit exactly where the comparison
 #' xi_k > u_i decides how many components to carry.
 #'
@@ -265,6 +277,16 @@ morie_slbpdg_density <- function(x, w, mu, s2)
 #'   the distribution of the number of occupied clusters, the retained
 #'   alpha draws and per-sweep diagnostics.
 #' @export
+#' @examples
+#' \donttest{
+#' N <- 50L
+#' ii <- 0:(N - 1L)
+#' Y <- ifelse(ii%%2L == 0L, -2, 3) + 0.6 * sin(2.1 * ii) + 0.25 *
+#'     cos(0.9 * ii)
+#' morie_slbpdg(Y, alpha = 1, n_iter = 100L, burn = 40L, route = "walker",
+#'     seed = 7)
+#' }
+#' @keywords internal
 morie_slbpdg <- function(y, alpha = 1, n_iter = 500L, burn = NULL,
                          thin = 1L, route = "walker", kappa = 0.5,
                          m0 = NULL, kappa0 = 0.01, a0 = 2, b0 = NULL,
@@ -440,6 +462,9 @@ morie_slbpdg <- function(y, alpha = 1, n_iter = 500L, burn = NULL,
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_slbpdg_cheatsheet()
+#' @keywords internal
 morie_slbpdg_cheatsheet <- function()
   paste0("slbpdg: slice-sampled Dirichlet-process mixture. routes ",
          paste(.SLBPDG_ROUTES, collapse = ", "))

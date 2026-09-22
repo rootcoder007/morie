@@ -26,8 +26,13 @@ Computes the Double-DQN target: the online net's argmax selects the
 action, and the target net values that action. When \code{done} is
 \code{TRUE} the target collapses to the immediate reward.
 }
+\examples{
+double_q_target(reward = c(1, 2, 3, 4, 5, 6, 7, 8), gamma = 0.5,
+  q_online_next = c(1, 2, 3, 4, 5, 6, 7, 8), q_target_next = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
 \references{
 van Hasselt, H., Guez, A. & Silver, D. (2016). Deep
 Reinforcement Learning with Double Q-learning. AAAI 30(1),
 arXiv:1509.06461.
 }
+\keyword{internal}

@@ -30,10 +30,16 @@ rj_log_acceptance(
 \item{log_jacobian}{Numeric; combined arithmetically in the body.}
 }
 \value{
-The value of \code{(}.
+A numeric value.
 }
 \description{
 A step of the bayrjmcmc_native implementation. Called by \code{reversible_jump_mcmc}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+rj_log_acceptance(logpost_from = -4.2, logpost_to = -3.1,
+                  log_j_from = log(0.5), log_j_to = log(0.5),
+                  logq_u = -0.9, logq_u_rev = 0, log_jacobian = 0)
+}
+\keyword{internal}

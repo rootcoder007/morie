@@ -19,3 +19,8 @@ Legendre polynomials in \code{cos(alpha)}, evaluated by the
 standard three-term recurrence. The \code{m = 0} spherical
 harmonics, orthogonal on the sphere.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_dimNet_spherical_harmonic_basis(V)
+}
+\keyword{internal}

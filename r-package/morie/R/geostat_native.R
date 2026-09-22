@@ -12,10 +12,12 @@
 .morie_vgm_gamma <- function(h, model, nugget, psill, range_) {
   s <- switch(model,
     spherical = ifelse(h >= range_, 1,
-                       1.5 * h / range_ - 0.5 * (h / range_)^3),
+      1.5 * h / range_ - 0.5 * (h / range_)^3
+    ),
     exponential = 1 - exp(-h / range_),
     gaussian = 1 - exp(-(h / range_)^2),
-    stop("Unknown variogram model: ", model))
+    stop("Unknown variogram model: ", model)
+  )
   out <- nugget + psill * s
   out[h == 0] <- 0
   out
@@ -35,10 +37,12 @@
 #'   (semivariance), and \code{np} (pair count per bin).
 #' @references Matheron, G. (1963). Principles of geostatistics.
 #'   \emph{Economic Geology}, 58(8), 1246--1266.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_spatial_variogram(V, V)
+#' set.seed(1)
+#' coords <- cbind(runif(60, 0, 10), runif(60, 0, 10))
+#' values <- coords[, 1] * 0.5 + rnorm(60, 0, 0.3)
+#' str(morie_spatial_variogram(coords, values), max.level = 1)
+#' @export
 morie_spatial_variogram <- function(coords, values, n_bins = 15L,
                                     cutoff = NULL) {
   coords <- as.matrix(coords)
@@ -55,8 +59,10 @@ morie_spatial_variogram <- function(coords, values, n_bins = 15L,
   gamma <- tapply(sq, bin, mean)
   np <- tapply(sq, bin, length)
   mid <- (breaks[-1L] + breaks[-length(breaks)]) / 2
-  out <- data.frame(dist = mid, gamma = as.numeric(gamma),
-                    np = as.integer(ifelse(is.na(np), 0L, np)))
+  out <- data.frame(
+    dist = mid, gamma = as.numeric(gamma),
+    np = as.integer(ifelse(is.na(np), 0L, np))
+  )
   out[!is.na(out$gamma), , drop = FALSE]
 }
 
@@ -74,10 +80,12 @@ morie_spatial_variogram <- function(coords, values, n_bins = 15L,
 #'   \code{range}, \code{loglik}, \code{converged}, \code{method}.
 #' @srrstats {G1.0} ML covariance estimation per Mardia & Marshall
 #'   (1984), Biometrika 71(1).
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_spatial_variogram_fit(V, V)
+#' set.seed(1)
+#' coords <- cbind(runif(60, 0, 10), runif(60, 0, 10))
+#' values <- coords[, 1] * 0.5 + rnorm(60, 0, 0.3)
+#' str(morie_spatial_variogram_fit(coords, values), max.level = 1)
+#' @export
 morie_spatial_variogram_fit <- function(coords, values,
                                         model = "exponential") {
   coords <- as.matrix(coords)
@@ -93,19 +101,25 @@ morie_spatial_variogram_fit <- function(coords, values,
     # covariance = (nug+ps) - gamma(h)
     C <- (nug + ps) - .morie_vgm_gamma(D, model, nug, ps, rg)
     ch <- tryCatch(chol(C + diag(1e-8 * v0, n)),
-                   error = function(e) NULL)
-    if (is.null(ch)) return(1e10)
+      error = function(e) NULL
+    )
+    if (is.null(ch)) {
+      return(1e10)
+    }
     mu <- mean(y)
     a <- backsolve(ch, forwardsolve(t(ch), y - mu))
     sum(log(diag(ch))) + 0.5 * sum(a^2)
   }
   opt <- stats::optim(log(c(v0 * 0.1, v0 * 0.9, r0)), negll,
-                      method = "Nelder-Mead",
-                      control = list(maxit = 800L))
+    method = "Nelder-Mead",
+    control = list(maxit = 800L)
+  )
   p <- exp(opt$par)
-  list(model = model, nugget = p[1], psill = p[2], range = p[3],
-       loglik = -opt$value, converged = opt$convergence == 0,
-       method = "variogram ML (rmorie native)")
+  list(
+    model = model, nugget = p[1], psill = p[2], range = p[3],
+    loglik = -opt$value, converged = opt$convergence == 0,
+    method = "variogram ML (rmorie native)"
+  )
 }
 
 # Fast WLS fit of a variogram model on the binned empirical variogram
@@ -140,13 +154,19 @@ morie_spatial_variogram_fit <- function(coords, values,
     fit <- .morie_vgm_gamma(h, model, nug, ps, rg)
     sum(w * (g - fit)^2)
   }
-  opt <- stats::optim(log(c(v0 * 0.1 + 1e-8, v0 * 0.9 + 1e-8,
-                            max(h) / 3)), obj,
-                      method = "Nelder-Mead",
-                      control = list(maxit = 500L))
-  list(model = model, nugget = exp(opt$par[1]),
-       psill = exp(opt$par[2]), range = exp(opt$par[3]),
-       method = "WLS (Cressie weights)")
+  opt <- stats::optim(
+    log(c(
+      v0 * 0.1 + 1e-8, v0 * 0.9 + 1e-8,
+      max(h) / 3
+    )), obj,
+    method = "Nelder-Mead",
+    control = list(maxit = 500L)
+  )
+  list(
+    model = model, nugget = exp(opt$par[1]),
+    psill = exp(opt$par[2]), range = exp(opt$par[3]),
+    method = "WLS (Cressie weights)"
+  )
 }
 
 #' Ordinary kriging predictions at new locations
@@ -189,16 +209,20 @@ morie_spatial_krige <- function(coords, values, new_coords,
     # Gaussian-likelihood MLE (slower, higher quality).
     vgm <- .morie_vgm_wls_fit(coords, y)
   }
-  G <- .morie_vgm_gamma(as.matrix(stats::dist(coords)),
-                        vgm$model, vgm$nugget, vgm$psill, vgm$range)
+  G <- .morie_vgm_gamma(
+    as.matrix(stats::dist(coords)),
+    vgm$model, vgm$nugget, vgm$psill, vgm$range
+  )
   A <- rbind(cbind(G, 1), c(rep(1, n), 0))
   A_inv <- tryCatch(solve(A), error = function(e) .morie_ginv(A))
   # cross-distances obs x new
   cross2 <- outer(rowSums(coords^2), rowSums(new_coords^2), "+") -
     2 * coords %*% t(new_coords)
   cross <- sqrt(pmax(cross2, 0))
-  g_new <- .morie_vgm_gamma(cross, vgm$model, vgm$nugget, vgm$psill,
-                            vgm$range)
+  g_new <- .morie_vgm_gamma(
+    cross, vgm$model, vgm$nugget, vgm$psill,
+    vgm$range
+  )
   B <- rbind(g_new, 1)
   W <- A_inv %*% B
   pred <- as.numeric(t(W[seq_len(n), , drop = FALSE]) %*% y)

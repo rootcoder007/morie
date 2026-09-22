@@ -6,46 +6,46 @@
 \usage{
 fasttext(
   corpus,
-  dim = 50L,
-  n_min = 3L,
-  n_max = 6L,
-  window = 5L,
-  epochs = 5L,
+  dim = 50,
+  n_min = 3,
+  n_max = 6,
+  window = 5,
+  epochs = 5,
   lr = 0.05,
-  negative = 5L,
-  min_count = 1L,
+  negative = 5,
+  min_count = 1,
   boundary = TRUE,
   whole_word = TRUE,
   hash_buckets = NULL,
-  seed = 0L
+  seed = 0
 )
 }
 \arguments{
 \item{corpus}{Passed to \code{.as_docs}.}
 
-\item{dim}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{50L}.}
+\item{dim}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{50}.}
 
-\item{n_min}{Passed to \code{.subwords}. Defaults to \code{3L}.}
+\item{n_min}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{3}.}
 
-\item{n_max}{Passed to \code{.subwords}. Defaults to \code{6L}.}
+\item{n_max}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{6}.}
 
-\item{window}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.}
+\item{window}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.}
 
-\item{epochs}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.}
+\item{epochs}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.}
 
 \item{lr}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.05}.}
 
-\item{negative}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.}
+\item{negative}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.}
 
-\item{min_count}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1L}.}
+\item{min_count}{The body requires: word(s) above min_count=. Defaults to \code{1}.}
 
-\item{boundary}{Passed to \code{.subwords}. Defaults to \code{TRUE}.}
+\item{boundary}{Passed to \code{subwords}. Defaults to \code{TRUE}.}
 
-\item{whole_word}{Passed to \code{.subwords}. Defaults to \code{TRUE}.}
+\item{whole_word}{Passed to \code{subwords}. Defaults to \code{TRUE}.}
 
 \item{hash_buckets}{Optional; may be \code{NULL}. Passed to \code{.gram_slot}.}
 
-\item{seed}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.}
+\item{seed}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 }
 \value{
 A list with \code{estimate}, \code{vectors}, \code{vocab}, \code{index},
@@ -58,3 +58,8 @@ A step of the fastxt_native implementation. Called by \code{morie_fastxt}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+fasttext(V)
+}
+\keyword{internal}

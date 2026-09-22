@@ -25,3 +25,8 @@ A list with \code{ccf}, \code{lags}, \code{means}, \code{mean_product},
 \description{
 legitimate under joint stationarity and ergodicity.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+XCorrProc(V, V)
+}
+\keyword{internal}

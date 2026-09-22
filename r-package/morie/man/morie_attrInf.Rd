@@ -60,10 +60,19 @@ over a set of targets and scores it. For each target it scores
 every candidate value of the sensitive feature, multiplies the
 error-model probability by the marginal priors, and returns the
 maximum a posteriori estimate. The black-box route uses
-\code{err(y, y\')} from a confusion matrix; the white-box route
+\eqn{err(y, y')} from a confusion matrix; the white-box route
 additionally weights each root-to-leaf path by its training
 count, which carries joint-distribution information the marginals
 cannot reach on their own.
+}
+\examples{
+tree <- list(feature = 0L, branches = list(
+  "0" = list(label = 0L, count = 30),
+  "1" = list(label = 1L, count = 20)))
+priors <- list("0" = list("0" = 0.6, "1" = 0.4))
+r <- morie_attrInf(tree, targets = list(list(known = list(), y = 1L)),
+                   priors = priors, mode = "whitebox")
+str(r, max.level = 1)
 }
 \references{
 Fredrikson, M., Jha, S., & Ristenpart, T. (2015).
@@ -71,3 +80,4 @@ Model inversion attacks that exploit confidence information and
 basic countermeasures. In CCS '15 (pp. 1322-1333).
 doi:10.1145/2810103.2813677.
 }
+\keyword{internal}

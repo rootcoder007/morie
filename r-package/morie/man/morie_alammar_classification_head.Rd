@@ -20,6 +20,14 @@ morie_alammar_ner_token_head(h_tokens, W, b, tags = NULL)
 
 \item{W, tags}{Weight matrix and 0-based tag targets (or NULL).}
 }
+\value{
+A list with \code{logits}, \code{probabilities}, \code{predicted_class}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Classification and NER heads (Alammar Ch 4)
 }
+\examples{
+morie_alammar_classification_head(h_cls = 5L, W_cls = 5L, b = 5L)
+morie_alammar_ner_token_head(h_tokens = c(1, 2, 3, 4, 5, 6, 7, 8), W = 5L, b = 5L)
+}
+\keyword{internal}

@@ -26,16 +26,19 @@
     eps[t] <- y[t] - mu - delta * sqrt(s2[t])
   }
   ll <- 0.5 * sum(log(2 * pi * s2) + eps^2 / s2)
-  if (!is.finite(ll)) return(1e10)
+  if (!is.finite(ll)) {
+    return(1e10)
+  }
   ll
 }
 
 #' ARCH(1)-in-mean model
 #'
 #' @inheritParams morie_garch_fit
-#' @return Named list with \code{mu, delta, omega, alpha, loglik,
+#' @return Named list with \eqn{mu, delta, omega, alpha, loglik,
 #'   conditional_variance, n, method}.
 #' @examples
+#' set.seed(1)
 #' morie_arch_in_mean(x = rnorm(50))
 #' @export
 morie_arch_in_mean <- function(x) {

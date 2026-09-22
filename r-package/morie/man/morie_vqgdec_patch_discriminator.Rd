@@ -19,3 +19,4 @@ A list with \code{scores}, \code{n_patches}, \code{mean}, \code{note}.
 \description{
 dense signal about local texture.
 }
+\keyword{internal}

@@ -20,3 +20,8 @@ signal and the interference statistically independent; the sample
 correlation between them is returned so that premise is testable
 instead of assumed.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+AncInput(V, V)
+}
+\keyword{internal}

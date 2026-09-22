@@ -17,12 +17,19 @@ if (!exists("%||%", mode = "function")) {
   `%||%` <- function(a, b) if (is.null(a)) b else a
 }
 
+## Examples run only where a Vertex project is configured. Kept as a
+## function so the examplesIf line stays under the Rd width limit.
+.vertex_examples_ok <- function() {
+  nzchar(Sys.getenv("GOOGLE_CLOUD_PROJECT")) ||
+    nzchar(Sys.getenv("MORIE_EE_PROJECT"))
+}
+
 #' Resolve Vertex AI configuration from environment variables
 #' @return Named list: project / location / model / token_ttl_s / gcloud_path.
-#' @export
 #' @examples
 #' cfg <- try(morie_vertex_resolve_config())
 #' class(cfg)
+#' @export
 morie_vertex_resolve_config <- function() {
   project <- Sys.getenv("GOOGLE_CLOUD_PROJECT", unset = "")
   if (!nzchar(project)) project <- Sys.getenv("MORIE_EE_PROJECT", unset = "")
@@ -108,11 +115,15 @@ morie_vertex_access_token <- function(cfg = NULL) {
 #' @param timeout_s Numeric HTTP timeout. Default 120.
 #' @param cfg Pre-resolved config list, or NULL to auto-resolve.
 #' @return Character scalar -- trimmed generated text.
-#' @export
 #' @examples
 #' \dontrun{
-#' ans <- morie_vertex_ask_gemini("Summarize recent assault trends in Toronto.")
+#' \dontshow{if (morie:::.vertex_examples_ok()) withAutoprint(\{ # examplesIf}
+#' # Runs only when a Google Cloud project is configured; Vertex is an
+#' # OPTIONAL fallback -- the default LLM path is local Ollama.
+#' morie_vertex_ask_gemini("Summarize the MRM framework in one line.")
+#' \dontshow{\}) # examplesIf}
 #' }
+#' @export
 morie_vertex_ask_gemini <- function(prompt, model = NULL, system = NULL,
                                     temperature = 0.1,
                                     max_output_tokens = 2048L,
@@ -172,9 +183,12 @@ morie_vertex_ask_gemini <- function(prompt, model = NULL, system = NULL,
 
 #' Tiny smoke test for the Vertex AI client
 #' @return Named list (ok / error / model / project / location / reply).
-#' @export
-#' @examplesIf nzchar(Sys.getenv("GOOGLE_CLOUD_PROJECT")) || nzchar(Sys.getenv("MORIE_EE_PROJECT"))
+#' @examples
+#' \dontshow{if (morie:::.vertex_examples_ok()) withAutoprint(\{ # examplesIf}
+#' # Runs only when a Google Cloud project is configured.
 #' morie_vertex_health_check()
+#' \dontshow{\}) # examplesIf}
+#' @export
 morie_vertex_health_check <- function() {
   out <- list(ok = FALSE, error = NULL, model = NULL)
   tryCatch({
@@ -191,9 +205,4 @@ morie_vertex_health_check <- function() {
     out$error <<- sprintf("%s: %s", class(e)[1], conditionMessage(e))
   })
   out
-}
-
-.vertex_examples_ok <- function() {
-  nzchar(Sys.getenv("GOOGLE_CLOUD_PROJECT")) ||
-    nzchar(Sys.getenv("MORIE_EE_PROJECT"))
 }

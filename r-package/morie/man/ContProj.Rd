@@ -24,3 +24,8 @@ the discrete inner product SCALED BY dt; dropping the dt turns an
 integral into a sum and leaves the answer wrong by a factor of the
 sampling interval.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+ContProj(V, V)
+}
+\keyword{internal}

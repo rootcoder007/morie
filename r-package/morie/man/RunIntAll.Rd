@@ -22,3 +22,8 @@ so any mass before it is unobserved and the constant of integration
 is arbitrary.  The discrete counterpart has a pole ON the unit circle
 at DC, which is why the book says it is seldom used for filtering.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+RunIntAll(V, V)
+}
+\keyword{internal}

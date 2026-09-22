@@ -34,6 +34,10 @@ method is implemented here; the default and the one the ADIDA
 cheatsheet references. Other methods are not ported because they
 are not needed to mirror the Python arm's defaults.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie:::intermittent_forecast(V)
+}
 \references{
 Teunter, R. H., Syntetos, A. A. & Babai, M. Z. (2011).
 }

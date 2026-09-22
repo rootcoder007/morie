@@ -26,3 +26,4 @@ A step of the mienco_native implementation. Called by \code{.mienco_global_objec
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

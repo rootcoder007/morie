@@ -20,3 +20,7 @@ A list with \code{base}, \code{shift_k}, \code{shift_n},
 \description{
 reused at every FFT stage, and why every DFT relation is periodic.
 }
+\examples{
+TwidPer(npoints = 5L, n = 5L, k = 5L)
+}
+\keyword{internal}

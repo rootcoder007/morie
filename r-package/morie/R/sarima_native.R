@@ -1,25 +1,40 @@
 # Seasonal ARIMA: the multiplicative (p,d,q)x(P,D,Q)_s model.
-# Sources: Box, G. E. P., Jenkins, G. M., Reinsel, G. C. & Ljung,
-# G. M. (2016) *Time Series Analysis: Forecasting and Control*, 5th
-# edn, Wiley, ISBN 978-1-118-67502-1. Chapter 9 throughout: Sec.
-# 9.1.3 for the general multiplicative model (9.1.7) and the order
-# notation (p,d,q)x(P,D,Q)_s; Sec. 9.2.1 for the airline model
-# (9.2.1)-(9.2.2) and its invertibility region; Sec. 9.2.2 for the
-# difference-equation forecasts (9.2.3)-(9.2.6); Sec. 9.2.3 for the
-# autocovariances (9.2.18), the closed forms for rho_1 and rho_12,
-# Bartlett's variance (9.2.19) and the preliminary estimates
-# theta ~ 0.39, Theta ~ 0.48 from r_1 = -0.34, r_12 = -0.39; Sec.
-# 9.2.4 for the conditional recursion (9.2.20), the least-squares
-# estimates 0.40 +/- 0.08 and 0.61 +/- 0.07 with sigma^2 = 1.34e-3,
-# the large-sample variances (9.2.21), and the R output quoted
-# above; and Part Five, Series G, for the 144 monthly airline
-# passenger totals reproduced in series_g. Harvey, A. C. (1989)
-# *Forecasting, Structural Time Series Models and the Kalman Filter*,
-# Cambridge University Press, doi:10.1017/CBO9781107049994, Sec. 3.3,
-# for the state-space form of an ARMA process used by loglik and for
-# the stationary initial state covariance.
+# Sources: Box, G. E. P., Jenkins, G. M., Reinsel, G. C. & Ljung, G.
+# M. (2016) *Time Series Analysis: Forecasting and Control*, 5th edn,
+# Wiley, ISBN 978-1-118-67502-1. Chapter 9 throughout: Sec. 9.1.3
+# for the general multiplicative model (9.1.7) and the order notation
+# (p,d,q)x(P,D,Q)_s; Sec. 9.2.1 for the airline model (9.2.1)-(9.2.2)
+# and its invertibility region; Sec. 9.2.2 for the difference-equation
+# forecasts (9.2.3)-(9.2.6); Sec. 9.2.3 for the autocovariances
+# (9.2.18), the closed forms for rho_1 and rho_12, Bartlett's variance
+# (9.2.19) and the preliminary estimates theta ~= 0.39, Theta ~= 0.48
+# from r_1 = -0.34, r_12 = -0.39; Sec. 9.2.4 for the conditional
+# recursion (9.2.20), the least-squares estimates 0.40 +/- 0.08 and
+# 0.61 +/- 0.07 with sigma_a^2 = 1.34e-3, the large-sample variances
+# (9.2.21), and the R output quoted above; and Part Five, Series G,
+# for the 144 monthly airline passenger totals reproduced in
+# series_g. Harvey, A. C. (1989) *Forecasting, Structural Time Series
+# Models and the Kalman Filter*, Cambridge University Press,
+# doi:10.1017/CBO9781107049994, Sec. 3.3, for the state-space form of
+# an ARMA process used by loglik and for the stationary initial state
+# covariance.
 
 .SARIMA_METHODS <- c("ml", "uls", "css", "moment")
+
+.SARIMA_SERIES_G_BY_MONTH <- list(
+  c(112, 115, 145, 171, 196, 204, 242, 284, 315, 340, 360, 417),
+  c(118, 126, 150, 180, 196, 188, 233, 277, 301, 318, 342, 391),
+  c(132, 141, 178, 193, 236, 235, 267, 317, 356, 362, 406, 419),
+  c(129, 135, 163, 181, 235, 227, 269, 313, 348, 348, 396, 461),
+  c(121, 125, 172, 183, 229, 234, 270, 318, 355, 363, 420, 472),
+  c(135, 149, 178, 218, 243, 264, 315, 374, 422, 435, 472, 535),
+  c(148, 170, 199, 230, 264, 302, 364, 413, 465, 491, 548, 622),
+  c(148, 170, 199, 242, 272, 293, 347, 405, 467, 505, 559, 606),
+  c(136, 158, 184, 209, 237, 259, 312, 355, 404, 404, 463, 508),
+  c(119, 133, 162, 191, 211, 229, 274, 306, 347, 359, 407, 461),
+  c(104, 114, 146, 172, 180, 203, 237, 271, 305, 310, 362, 390),
+  c(118, 140, 166, 194, 201, 229, 278, 306, 336, 337, 405, 432)
+)
 
 #' series_g
 #'
@@ -431,7 +446,7 @@ loglik <- function(w, ar = numeric(0), ma = numeric(0)) {
 
 #' Small Nelder-Mead simplex minimiser in base R, with the same
 #'
-#' restart-until-stuck shape as the Python arm\'s call to
+#' restart-until-stuck shape as the Python arm's call to
 #' _sci_core.minimize(method="Nelder-Mead").
 #'
 #' @param fn Passed to \code{apply}.
@@ -854,19 +869,16 @@ bartlett_se <- function(rho, n) {
 #' @return A list with \code{ma}, \code{sma}, \code{ar}, \code{sar}, \code{sigma2},
 #' \code{loglik}, \code{aic}, \code{note}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' r_convention(D)
+#' @keywords internal
 r_convention <- function(fitted) {
-  list(ma = -as.numeric(fitted$theta),
-       sma = -as.numeric(fitted$Theta),
-       ar = as.numeric(fitted$phi),
-       sar = as.numeric(fitted$Phi),
-       sigma2 = fitted$sigma2, loglik = fitted$loglik,
-       aic = fitted$aic,
+  list(ma = -as.numeric(fitted$theta), sma = -as.numeric(fitted$Theta),
+       ar = as.numeric(fitted$phi), sar = as.numeric(fitted$Phi),
+       sigma2 = fitted$sigma2, loglik = fitted$loglik, aic = fitted$aic,
        note = "R writes (1 + theta B); the book writes (1 - theta B)")
 }
-
-morie_sarima <- .sarima_fit
-
-seasonal_arima <- .sarima_fit
 
 #' .sarima_cheatsheet
 #'
@@ -889,17 +901,6 @@ seasonal_arima <- .sarima_fit
         "sigma^2 0.001348, loglik 244.7, aic -483.4.", sep = "")
 }
 
-.SARIMA_SERIES_G_BY_MONTH <- list(
-  c(112, 115, 145, 171, 196, 204, 242, 284, 315, 340, 360, 417),
-  c(118, 126, 150, 180, 196, 188, 233, 277, 301, 318, 342, 391),
-  c(132, 141, 178, 193, 236, 235, 267, 317, 356, 362, 406, 419),
-  c(129, 135, 163, 181, 235, 227, 269, 313, 348, 348, 396, 461),
-  c(121, 125, 172, 183, 229, 234, 270, 318, 355, 363, 420, 472),
-  c(135, 149, 178, 218, 243, 264, 315, 374, 422, 435, 472, 535),
-  c(148, 170, 199, 230, 264, 302, 364, 413, 465, 491, 548, 622),
-  c(148, 170, 199, 242, 272, 293, 347, 405, 467, 505, 559, 606),
-  c(136, 158, 184, 209, 237, 259, 312, 355, 404, 404, 463, 508),
-  c(119, 133, 162, 191, 211, 229, 274, 306, 347, 359, 407, 461),
-  c(104, 114, 146, 172, 180, 203, 237, 271, 305, 310, 362, 390),
-  c(118, 140, 166, 194, 201, 229, 278, 306, 336, 337, 405, 432)
-)
+seasonal_arima <- .sarima_fit
+
+morie_sarima <- .sarima_fit

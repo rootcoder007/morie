@@ -22,3 +22,4 @@ A step of the survnnr_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\keyword{internal}

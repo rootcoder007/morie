@@ -22,3 +22,8 @@ CSD -- the transform of the CCF and the product -- are computed and
 compared; they agree only for the full CIRCULAR lag range, since a
 truncated CCF gives a smoothed CSD, a different estimator.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Csd(V, V)
+}
+\keyword{internal}

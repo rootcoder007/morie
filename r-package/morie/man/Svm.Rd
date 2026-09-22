@@ -31,3 +31,8 @@ point near the boundary, which C controls: small C tolerates
 violations, large C insists on separating and contorts around an
 outlier.
 }
+\examples{
+Svm(matrix(c(1, 1, 2, 2, 4, 4, 5, 5), ncol = 2, byrow = TRUE),
+    c(-1, -1, 1, 1))
+}
+\keyword{internal}

@@ -9,11 +9,11 @@ violates_kkt(i, alpha, y, E, C, tol = 0.001)
 \arguments{
 \item{i}{See Usage.}
 
-\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{alpha}{A vector; indexed elementwise.}
 
-\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{y}{A vector; indexed elementwise.}
 
-\item{E}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{E}{A vector; indexed elementwise.}
 
 \item{C}{Coerced to numeric by the body, with \code{as.numeric}.}
 
@@ -27,3 +27,8 @@ A step of the smoopt_native implementation. Called by \code{smo_platt}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+violates_kkt(i = 5L, alpha = 0.5, y = c(1, 2, 3, 4, 5, 6, 7, 8), E = c(1, 2, 3, 4, 5, 6, 7, 8),
+  C = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

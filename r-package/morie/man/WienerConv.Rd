@@ -23,3 +23,7 @@ the tap weights with the ACF.  It holds only for a stationary
 process; that premise is recorded because nothing in the arithmetic
 checks it.
 }
+\examples{
+WienerConv(w = 5L, phi = 0.5, theta = 0.5)
+}
+\keyword{internal}

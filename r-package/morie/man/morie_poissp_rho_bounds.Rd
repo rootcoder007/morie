@@ -9,6 +9,14 @@ morie_poissp_rho_bounds(W)
 \arguments{
 \item{W}{See Usage.}
 }
+\value{
+A list with \code{lower}, \code{upper}, \code{eigenvalues}.
+}
 \description{
 The propriety interval for rho
 }
+\examples{
+W <- matrix(c(0, 1, 0, 1, 0, 1, 0, 1, 0), 3, 3)
+morie_poissp_rho_bounds(W)
+}
+\keyword{internal}

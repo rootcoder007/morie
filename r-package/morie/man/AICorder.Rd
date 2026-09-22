@@ -20,3 +20,7 @@ A list with \code{order}, \code{criterion}, \code{n_effective}, \code{method}.
 Hamming window -- the EFFECTIVE sample count after windowing, which
 is what distinguishes this from the textbook N log(sigma^2) + 2p.
 }
+\examples{
+AICorder(prediction_errors = c(1, 2, 3, 4, 5, 6, 7, 8), n_samples = 5L)
+}
+\keyword{internal}

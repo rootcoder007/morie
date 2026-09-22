@@ -25,3 +25,12 @@ A step of the grace_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+rng <- morie:::.ghc_rng(2L)
+X <- matrix(runif(12), 4, 3)
+edges <- list(c(0, 1), c(1, 2), c(2, 3), c(3, 0))
+v <- morie_generate_view(X, edges, p_edge = 0.2, p_feature = 0.2, rng)
+names(v)
+}
+\keyword{internal}

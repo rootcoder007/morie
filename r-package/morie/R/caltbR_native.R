@@ -108,6 +108,9 @@
 #'   average.
 #' @references Steck (2018), RecSys '18, eqs. (2)-(3).
 #' @export
+#' @examples
+#' genre_distribution(items = list(a = 1, b = 2), p_g_given_i = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2))
+#' @keywords internal
 genre_distribution <- function(items, p_g_given_i, weights = NULL) {
   it <- as.integer(items)
   if (length(it) == 0L)
@@ -187,6 +190,10 @@ calibration_kl <- function(p, q, alpha = 0.01) {
 #' @return Numeric scalar, the Hellinger distance.
 #' @references Steck (2018), RecSys '18, sec. 3.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' calibration_hellinger(V, V)
+#' @keywords internal
 calibration_hellinger <- function(p, q) {
   pp <- .caltbR_norm(p)
   qq <- .caltbR_norm(q)
@@ -256,7 +263,6 @@ diversity_prior <- function(p_u, p0, beta) {
 #' @references Steck (2018), RecSys '18, eq. (6).
 #' @export
 #' @keywords internal
-#' @aliases calibrated_rec calibratedrec calibratedrecommendations
 calibrated_rerank <- function(scores, p_g_given_i, p_target, N = 10,
                               lam = 0.5, metric = "kl",
                               alpha = 0.01, rank_weights = NULL) {
@@ -342,20 +348,20 @@ calibrated_rerank <- function(scores, p_g_given_i, p_target, N = 10,
 
 #' Convenience alias matching the Python \code{calibratedrecommendations}
 #' export
+#' @rdname calibrated_rerank
 #' @export
-#' @noRd
 calibratedrecommendations <- calibrated_rerank
 
 
 #' Convenience alias matching the Python \code{calibrated_rec} export
+#' @rdname calibrated_rerank
 #' @export
-#' @noRd
 calibrated_rec <- calibrated_rerank
 
 
 #' Convenience alias matching the Python \code{calibratedrec} export
+#' @rdname calibrated_rerank
 #' @export
-#' @noRd
 calibratedrec <- calibrated_rerank
 
 

@@ -44,6 +44,24 @@ morie_kamath_seq2seq_cross_entropy(y, c, U = NULL)
 
 \item{U}{Optional length pin.}
 }
+\value{
+A list with \code{h}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Kamath Ch 2 encoder-decoder scaffolding (Eq 2.1-2.6)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_encoder_state(V, V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_context_vector(V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_context_simplest(V)
+morie_kamath_decoder_state(s_t_1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+  y_t_1 = c(1, 2, 3, 4, 5, 6, 7, 8), c = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_kamath_decoder_token_distribution(s_t_1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+  y_t_1 = c(1, 2, 3, 4, 5, 6, 7, 8), c = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_kamath_seq2seq_cross_entropy(c(0, 1), rbind(c(0.5, 0.5),
+    c(0.25, 0.75)))
+}
+\keyword{internal}

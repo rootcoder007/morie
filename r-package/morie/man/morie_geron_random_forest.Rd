@@ -20,6 +20,14 @@ morie_geron_random_forest(
 
 \item{n_estimators, max_features, seed, max_depth, min_samples_leaf, task}{Controls.}
 }
+\value{
+The value of \code{out}, as built in the body.
+}
 \description{
 Random forest: bagged CART trees with random per-split feature subsets (Geron Ch 6, hmrfc)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_random_forest(V, V)
+}
+\keyword{internal}

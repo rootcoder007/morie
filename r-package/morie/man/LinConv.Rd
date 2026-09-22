@@ -22,3 +22,8 @@ causality assumed as the book states under eq (3.37).  eq (3.39)
 reads the same sum as delayed, weighted copies of h; those copies are
 returned so the overlap of Figure 3.19 is visible.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+LinConv(V, V)
+}
+\keyword{internal}

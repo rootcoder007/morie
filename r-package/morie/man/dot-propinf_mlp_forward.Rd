@@ -25,3 +25,8 @@ A step of the propinf_native implementation. Called by
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+net <- .propinf_mlp_init(c(3L, 4L, 1L), .propinf_rng(1L))
+fp <- .propinf_mlp_forward(net, c(0.3, -0.7, 1.1), final = "sigmoid")
+fp$acts[[length(fp$acts)]]
+}

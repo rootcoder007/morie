@@ -11,7 +11,13 @@ morie_var(x, ddof = 1)
 
 \item{ddof}{integer; default 1 (sample variance)}
 }
+\value{
+A numeric scalar: the variance of \code{x}.
+}
 \description{
 Single-pass two-step C++ kernel with optional ddof correction.
+}
+\examples{
+abs(morie:::morie_var(c(1, 2, 3, 4, 5), ddof = 1) - 2.5) < 1e-9
 }
 \keyword{internal}

@@ -2,13 +2,22 @@
 % Please edit documentation in R/andmnh_native.R
 \name{tukey_hanning_kernel}
 \alias{tukey_hanning_kernel}
-\title{Tukey-Hanning kernel}
+\title{tukey_hanning_kernel}
 \usage{
 tukey_hanning_kernel(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+}
+\value{
+One of two values, depending on the branch taken.
 }
 \description{
-Tukey-Hanning kernel
+A step of the andmnh_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+tukey_hanning_kernel(x = 5L)
+}
+\keyword{internal}

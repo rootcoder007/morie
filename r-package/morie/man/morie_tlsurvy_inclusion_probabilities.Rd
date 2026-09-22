@@ -34,3 +34,10 @@ which minimises the variance for a fixed n. A floor keeps every unit
 reachable -- a zero inclusion probability makes the estimand
 unidentifiable for that stratum.
 }
+\examples{
+set.seed(1)
+morie_tlsurvy_inclusion_probabilities(V = runif(20), n = 10,
+                                      design = "adaptive",
+                                      influence = abs(rnorm(20)))
+}
+\keyword{internal}

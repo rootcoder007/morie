@@ -22,7 +22,6 @@ c08 aggregate Ruhela: non-majority religion x gender -> RC
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_c08 <- morie_synth_otis("c08", n = 120L, seed = 1L)
 morie_otis_analyze_c08_ruhela_aggregate(otis_c08)
 }

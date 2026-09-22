@@ -25,3 +25,7 @@ normalized rho are returned: rho is what a threshold can be set on,
 phi is what the equation says, and conflating them makes any
 threshold depend on the signal amplitude.
 }
+\examples{
+EegAcf(x = c(1, 2, 3, 4, 5, 6, 7, 8), fs = 5L)
+}
+\keyword{internal}

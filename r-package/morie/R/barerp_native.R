@@ -24,6 +24,10 @@
 #' @references Boyd, S. and Vandenberghe, L. (2004). Convex
 #'   Optimization. Cambridge University Press, ch. 11.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' log_barrier(V)
+#' @keywords internal
 log_barrier <- function(fvals) {
   fvals <- as.numeric(fvals)
   out <- 0.0
@@ -43,6 +47,10 @@ log_barrier <- function(fvals) {
 #' @return Scalar potential, or \code{-Inf} if any entry is <= 0.
 #' @references Frisch, R. (1956).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' frisch_potential(V)
+#' @keywords internal
 frisch_potential <- function(slacks) {
   slacks <- as.numeric(slacks)
   out <- 0.0
@@ -62,6 +70,10 @@ frisch_potential <- function(slacks) {
 #'   constraint).
 #' @return Numeric vector of length \code{ncol(jac)}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' log_barrier_gradient(V, V)
+#' @keywords internal
 log_barrier_gradient <- function(fvals, jac) {
   fvals <- as.numeric(fvals)
   jac <- as.matrix(jac)
@@ -88,6 +100,10 @@ log_barrier_gradient <- function(fvals, jac) {
 #'   constraint; \code{NULL} entries are skipped (use for affine).
 #' @return Square numeric matrix.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' log_barrier_hessian(V, V)
+#' @keywords internal
 log_barrier_hessian <- function(fvals, jac, hess = NULL) {
   fvals <- as.numeric(fvals)
   jac <- as.matrix(jac)
@@ -116,6 +132,9 @@ log_barrier_hessian <- function(fvals, jac, hess = NULL) {
 #' @param t Positive scalar.
 #' @return Numeric vector of dual multipliers.
 #' @export
+#' @examples
+#' central_path_dual(fvals = c(1, 2, 3, 4, 5, 6, 7, 8), t = 5L)
+#' @keywords internal
 central_path_dual <- function(fvals, t) {
   t <- as.numeric(t)
   if (t <= 0.0) stop("barerp: t must be positive")
@@ -135,6 +154,9 @@ central_path_dual <- function(fvals, t) {
 #' @param mu Growth factor, > 1.
 #' @return Non-negative integer.
 #' @export
+#' @examples
+#' centering_steps(m = 4, eps = 1e-8, t0 = 1, mu = 10)
+#' @keywords internal
 centering_steps <- function(m, eps, t0, mu) {
   m <- as.numeric(m)
   eps <- as.numeric(eps)
@@ -262,6 +284,10 @@ centering_steps <- function(m, eps, t0, mu) {
 #' @param x See Usage.
 #' @return A vector, from \code{as.numeric}.
 #' @export
+#' @examples
+#' f <- .Fun(function(x) sum(x^2))
+#' val.Fun(f, c(1, 2))
+#' @keywords internal
 val.Fun <- function(self, x) as.numeric(self$f(x))
 #' grad.Fun
 #'
@@ -273,6 +299,10 @@ val.Fun <- function(self, x) as.numeric(self$f(x))
 #' @param x Passed to \code{.barerp_num_grad}.
 #' @return The value of \code{.barerp_num_grad}.
 #' @export
+#' @examples
+#' f <- .Fun(function(x) sum(x^2))
+#' grad.Fun(f, c(1, 2))
+#' @keywords internal
 grad.Fun <- function(self, x) {
   if (!is.null(self$.g)) {
     v <- self$.g(x)
@@ -290,6 +320,10 @@ grad.Fun <- function(self, x) {
 #' @param x A vector; its length is taken.
 #' @return The value of \code{.num_hess}.
 #' @export
+#' @examples
+#' f <- .Fun(function(x) sum(x^2))
+#' hess.Fun(f, c(1, 2))
+#' @keywords internal
 hess.Fun <- function(self, x) {
   if (!is.null(self$.h)) {
     M <- self$.h(x)
@@ -411,6 +445,12 @@ hess.Fun <- function(self, x) {
 #' @param step0 Initial line-search step.
 #' @return List with \code{x}, \code{iters}, \code{decrement}.
 #' @export
+#' @examples
+#' f0 <- function(x) sum(x^2)
+#' cons <- list(function(x) 1 - x[1], function(x) x[1] - 5)
+#' r <- central_point(f0, cons, x = c(2, 0), t = 10)
+#' str(r, max.level = 1)
+#' @keywords internal
 central_point <- function(f0, cons, x, t,
                           aeq = NULL, centering = "newton",
                           tol = 1e-10, max_iter = 200L,
@@ -500,6 +540,11 @@ central_point <- function(f0, cons, x, t,
 #' @return List with \code{x}, \code{s}, \code{feasible}, \code{outer},
 #'   \code{newton}.
 #' @export
+#' @examples
+#' cons <- list(function(x) 1 - x[1], function(x) x[1] - 5)
+#' r <- phase1(cons, x0 = c(0.5, 0))
+#' str(r, max.level = 1)
+#' @keywords internal
 phase1 <- function(cons, x0, aeq = NULL, beq = NULL,
                     max_outer = 60L, ...) {
   cons <- lapply(cons, .as_fun)
@@ -569,6 +614,12 @@ phase1 <- function(cons, x0, aeq = NULL, beq = NULL,
 #'   Cahiers du Seminaire d'Econometrie, 4, 7-23. Boyd, S. and
 #'   Vandenberghe, L. (2004). Convex Optimization, ch. 11.
 #' @export
+#' @examples
+#' f0 <- function(x) sum(x^2)
+#' cons <- list(function(x) 1 - x[1])
+#' r <- barrier_method(f0, cons, x0 = c(2, 0))
+#' r$x
+#' @keywords internal
 barrier_method <- function(f0, constraints, x0,
                            t0 = 1.0, mu = 10.0, eps = 1e-8,
                            aeq = NULL, beq = NULL,
@@ -678,6 +729,11 @@ barrier_method <- function(f0, constraints, x0,
 #' @param ... Forwarded to \code{barrier_method}.
 #' @return A list, see \code{barrier_method}.
 #' @export
+#' @examples
+#' r <- barrier_lp(c = c(1, 1), A_ub = rbind(c(-1, 0), c(0, -1)),
+#'                 b_ub = c(-1, -1))
+#' r$x
+#' @keywords internal
 barrier_lp <- function(c, A_ub, b_ub, A_eq = NULL, b_eq = NULL,
                        x0 = NULL, ...) {
   c <- as.numeric(c)
@@ -747,6 +803,8 @@ barriermethod <- barrier_method
 
 # Dispatcher: the TASK.md main entry point. Same signature and return
 # shape as the Python reference's barerp/barrier_method.
+#' morie_barerp
+#'
 #' @param f0 See Usage.
 #' @param constraints See Usage.
 #' @param x0 See Usage.
@@ -762,7 +820,14 @@ barriermethod <- barrier_method
 #' @param grad See Usage.
 #' @param hess See Usage.
 #' @param affine See Usage.
+#' @return The value of `barrier_method`.
 #' @export
+#' @examples
+#' f0 <- function(x) sum(x^2)
+#' cons <- list(function(x) 1 - x[1])
+#' r <- morie_barerp(f0, cons, x0 = c(2, 0))
+#' r$x
+#' @keywords internal
 morie_barerp <- function(f0, constraints, x0,
                          t0 = 1.0, mu = 10.0, eps = 1e-8,
                          aeq = NULL, beq = NULL,

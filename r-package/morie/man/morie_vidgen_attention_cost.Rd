@@ -19,3 +19,7 @@ A step of the vidgen_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_vidgen_attention_cost(frames = 5L, spatial_positions = 5L)
+}
+\keyword{internal}

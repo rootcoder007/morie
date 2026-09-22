@@ -14,7 +14,7 @@ morie_psymet_parallel(data, nsim = 100, seed = 42)
 \item{seed}{Integer; RNG seed for reproducibility.}
 }
 \value{
-Single integer >= 1: the suggested number of factors / components.
+An integer scalar: the number of components to retain by parallel analysis.
 }
 \description{
 Native Horn's parallel analysis: observed eigenvalues vs the 95th

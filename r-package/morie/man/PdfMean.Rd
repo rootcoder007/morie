@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_ch3.R
 \name{PdfMean}
 \alias{PdfMean}
-\title{Eq (3.1): mu = E\link[pracma:eta]{eta} = integral eta p(eta) d eta}
+\title{Eq (3.1): mu = E[eta] = integral eta p(eta) d eta}
 \usage{
 PdfMean(pdf = NULL, x = NULL, lower = -Inf, upper = Inf)
 }
@@ -23,3 +23,7 @@ A step of the rangayyan_ch3 implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+PdfMean(x = seq(-4, 4, by = 0.01), p = dnorm(seq(-4, 4, by = 0.01)))
+}
+\keyword{internal}

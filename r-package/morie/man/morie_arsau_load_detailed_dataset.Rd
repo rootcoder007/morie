@@ -18,11 +18,7 @@ morie_arsau_load_detailed_dataset(
 \item{data_dir}{Optional explicit ARSAU root.}
 }
 \value{
-A \code{morie_arsau_result} object (subclass of
-\code{morie_rich_result}) carrying the detailed incident-level
-data.frame (167-column wide layout) plus sidecar and the standard
-rich-result metadata fields described in
-\code{\link{morie_arsau_load_main_records}}.
+An object of class \code{"morie_arsau_result"}.
 }
 \description{
 Load ARSAU detailed-incident-level CSV (2020-2022 only)

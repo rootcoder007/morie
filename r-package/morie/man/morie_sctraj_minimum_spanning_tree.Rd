@@ -2,7 +2,7 @@
 % Please edit documentation in R/sctraj_native.R
 \name{morie_sctraj_minimum_spanning_tree}
 \alias{morie_sctraj_minimum_spanning_tree}
-\title{Prim\'s MST, with the paper\'s optional terminal-state constraint}
+\title{Prim's MST, with the paper's optional terminal-state constraint}
 \usage{
 morie_sctraj_minimum_spanning_tree(D, clusters, ends = NULL)
 }
@@ -20,3 +20,8 @@ A list with \code{edges}, \code{adjacency}, \code{nodes}.
 With ends given, the tree is built on the non-terminal clusters and
 each terminal is attached to its nearest non-terminal neighbour.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_sctraj_minimum_spanning_tree(D, D)
+}
+\keyword{internal}

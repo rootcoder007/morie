@@ -20,7 +20,12 @@ List with \code{Q} (matrix), \code{iterations},
 \description{
 Sinkhorn-Knopp centering (SwAV style)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+sinkhorn_knopp(V)
+}
 \references{
 Caron et al. (2021), DINO, ICCV 2021; Oquab et al.
 (2024), DINOv2, TMLR 2024, Sec. 4.
 }
+\keyword{internal}

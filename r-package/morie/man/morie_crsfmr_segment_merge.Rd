@@ -18,3 +18,8 @@ A length-(L/factor) list.
 The encoder's upper layer sees half as many segments, each
 covering twice the span.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_crsfmr_segment_merge(V)
+}
+\keyword{internal}

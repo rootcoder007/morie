@@ -13,6 +13,13 @@ morie_geron_weight_pruning_hm(model, sparsity, n_rounds = 1)
 
 \item{n_rounds}{Rounds in the returned schedule.}
 }
+\value{
+A list with \code{pruned}, \code{mask}, \code{threshold}, \code{achieved_sparsity}, \code{n_pruned}, \code{n_weights}, \code{schedule}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Global magnitude weight pruning to an exact sparsity, cubic ramp schedule (Geron Ch 17, hmpru)
 }
+\examples{
+morie_geron_weight_pruning_hm(model = c(1, 2, 3, 4, 5, 6, 7, 8), sparsity = 5L)
+}
+\keyword{internal}

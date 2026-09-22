@@ -20,6 +20,14 @@ morie_geron_static_quantization_ptq(
 
 \item{percentile}{Range-clipping percentile in (0, 100].}
 }
+\value{
+A list with \code{quantized_weights}, \code{dequantized_weights}, \code{weight_scale}, \code{activation_scale}, \code{zero_point}, \code{activation_range}, \code{max_weight_error}, \code{compression}, \code{bits}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Static post-training quantization (PTQ) from calibration ranges (Geron App B, hmptq)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_static_quantization_ptq(V, V)
+}
+\keyword{internal}

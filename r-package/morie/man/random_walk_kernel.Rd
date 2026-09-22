@@ -19,3 +19,7 @@ A step of the smcsam_native implementation. Called by \code{smcsam}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+random_walk_kernel()
+}
+\keyword{internal}

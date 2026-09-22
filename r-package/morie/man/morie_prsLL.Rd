@@ -22,3 +22,26 @@ A step of the prsLL_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+# The expression grammar of Aho, Lam, Sethi & Ullman (2nd ed., 4.4.2):
+#   E -> T E';  E' -> + T E' | eps;  T -> F T';  T' -> * F T' | eps;
+#   F -> ( E ) | id
+rules <- list(
+  list("E",  c("T", "Ep")),
+  list("Ep", c("+", "T", "Ep")),
+  list("Ep", character(0)),
+  list("T",  c("F", "Tp")),
+  list("Tp", c("*", "F", "Tp")),
+  list("Tp", character(0)),
+  list("F",  c("(", "E", ")")),
+  list("F",  "id")
+)
+g <- .prsLL_grammar(rules, start = "E")
+res <- morie_prsLL(g, c("id", "+", "id", "*", "id"))
+res$yield
+# the table-driven and recursive-descent routes must agree
+rd <- morie_prsLL(g, c("id", "+", "id", "*", "id"),
+                  route = "recursive_descent")
+identical(res$tree, rd$tree)
+}
+\keyword{internal}

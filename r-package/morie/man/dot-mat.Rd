@@ -7,12 +7,12 @@
 .mat(x, name)
 }
 \arguments{
-\item{x}{A matrix; passed to \code{nrow}.}
+\item{x}{A matrix; passed to \code{as.matrix}.}
 
-\item{name}{Passed to \code{sprintf}.}
+\item{name}{Passed to \code{stop}.}
 }
 \value{
-The value of \code{X}, as built in the body.
+The value of \code{lapply}.
 }
 \description{
 A step of the explor_native implementation. Called by \code{explor}.

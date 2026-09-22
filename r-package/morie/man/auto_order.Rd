@@ -31,3 +31,11 @@ A step of the sarimax_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+\donttest{
+set.seed(3)
+y <- as.numeric(stats::arima.sim(list(ar = 0.6), n = 60))
+auto_order(y, max_steps = 4)$order
+}
+}
+\keyword{internal}

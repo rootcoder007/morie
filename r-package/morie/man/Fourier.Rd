@@ -25,3 +25,10 @@ A step of the rangayyan_xfrm implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+xs <- c(1, 0.5, -0.25, 0.75, 0)
+ts <- c(0, 0.25, 0.5, 0.75, 1)
+f0 <- 0.7
+Fourier(xs, t = ts, f = f0)
+}
+\keyword{internal}

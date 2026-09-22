@@ -28,7 +28,9 @@ Hillq <- function(x, q = 1) {
   si <- sum(pos^2)
   q <- as.numeric(q)
   h <- if (abs(q - 1) < 1e-12) exp(sh) else sum(pos^q)^(1 / (1 - q))
-  .t1_result(hill = h, q = q, prop = p, richness = length(pos),
-             shannon = sh, simpson = si, D = D,
-             method = "Hill number of order q (Hill 1973 eq. 2)")
+  .t1_result(
+    hill = h, q = q, prop = p, richness = length(pos),
+    shannon = sh, simpson = si, D = D,
+    method = "Hill number of order q (Hill 1973 eq. 2)"
+  )
 }

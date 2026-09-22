@@ -17,7 +17,7 @@ morie_datasets_load_by_key(
 \item{dataset_key}{A \code{dataset_key} from
 \code{\link[=morie_dataset_portal_catalog]{morie_dataset_portal_catalog()}}.}
 
-\item{offline}{If \code{TRUE} (default), prefer bundled fixtures.
+\item{offline}{If \code{TRUE} (default), prefer included fixtures.
 \code{FALSE} forces live mode for loaders that support it.}
 
 \item{max_features}{Optional row cap forwarded to the underlying
@@ -55,7 +55,7 @@ remembering whether the relevant loader is
 Resolution rules:
 
 \describe{
-\item{Bundled-fixture loaders}{If the catalog's \code{loader}
+\item{Included-fixture loaders}{If the catalog's \code{loader}
 column names a function that takes no required arguments
 beyond optionally \code{offline}/\code{max_features}, that function is
 called directly with \code{offline = offline} + \code{max_features}.}
@@ -70,7 +70,7 @@ to \code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_h
 \item{StatCan WDS}{For statcan_ccjs entries, returns the cube
 metadata via \code{\link[=morie_datasets_statcan_cube_metadata]{morie_datasets_statcan_cube_metadata()}}.}
 \item{Vancouver Opendatasoft}{For vancouver_opendata entries
-beyond the 9 bundled fixtures, dispatches to
+beyond the 9 included fixtures, dispatches to
 \code{\link[=morie_datasets_vancouver_opendata_by_id]{morie_datasets_vancouver_opendata_by_id()}}.}
 }
 
@@ -80,12 +80,13 @@ raises a clear error pointing at the right live-mode dispatcher.
 }
 \examples{
 \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-# All three calls below resolve to bundled offline fixtures (no
-# network). The first call warms the cross-portal catalog cache
+# All three calls below resolve to offline fixtures from the
+# rmoriedata companion package (no network). The first call warms
+# the cross-portal catalog cache
 # (~2.8s); subsequent calls reuse it (<0.1s each).
-df1 <- morie_datasets_load_by_key("vpd_crime")           # 550 rows
-df2 <- morie_datasets_load_by_key("nypd_arrests_ytd")    # 5 rows
-df3 <- morie_datasets_load_by_key("assault")             # 5 rows
+df1 <- morie_datasets_load_by_key("vpd_crime") # 550 rows
+df2 <- morie_datasets_load_by_key("nypd_arrests_ytd") # 5 rows
+df3 <- morie_datasets_load_by_key("assault") # 5 rows
 c(vpd = nrow(df1), nypd = nrow(df2), tps_assault = nrow(df3))
 \dontshow{\}) # examplesIf}
 }

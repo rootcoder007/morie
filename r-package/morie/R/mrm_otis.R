@@ -41,22 +41,8 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-#' .gini_int
-#'
-#' A step of the mrm_otis implementation. Called by
-#' \code{morie_otis_path_complexity_gini},
-#' \code{morie_otis_repeat_placement_concentration},
-#' \code{morie_otis_within_year_placement_count} and 1 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param x A vector; its length is taken.
-#' @return A numeric value.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .gini_int(x = x)
-#' res
+#' Internal helper: Gini Int
+#' @noRd
 .gini_int <- function(x) {
   x <- sort(as.numeric(x))
   n <- length(x)
@@ -117,16 +103,8 @@ NULL
   opt$minimum
 }
 
-#' .cramer_v
-#'
-#' A step of the mrm_otis implementation. Called by
-#' \code{mrm_otis_mortification_cooccurrence}, \code{mrm_otis_region_locality}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param tbl A matrix; passed to \code{dim}.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Cramer V
+#' @noRd
 .cramer_v <- function(tbl) {
   if (any(dim(tbl) < 2L)) {
     return(NA_real_)

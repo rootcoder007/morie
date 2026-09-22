@@ -21,3 +21,8 @@ A step of the surepi_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+surepi_c3_ultra(c(rpois(20, 5), rpois(6, 20)))
+}
+\keyword{internal}

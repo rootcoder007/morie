@@ -18,3 +18,7 @@ Returns a description of which part of the stick-breaking form
 G_x(.) = sum_h w_h(x) delta_\{theta_h(x)\}(.) is allowed to vary with
 the covariate, and the qualitative effect that has on clustering.
 }
+\examples{
+morie_ddpest_dependence_kind("single_weights")
+}
+\keyword{internal}

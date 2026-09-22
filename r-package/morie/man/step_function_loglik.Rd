@@ -23,3 +23,8 @@ A step of the bayrjmcmc_native implementation. Called by \code{changepoint_rjmcm
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+y <- c(0.1, 0.15, 0.2, 0.7, 0.75, 0.85)
+step_function_loglik(y, s = 0.5, h = c(3, 4), L = 1)
+}
+\keyword{internal}

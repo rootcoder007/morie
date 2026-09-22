@@ -4,14 +4,14 @@
 \alias{serial_interval_draw}
 \title{serial_interval_draw}
 \usage{
-serial_interval_draw(mean, sd, rng, allow_presymptomatic = TRUE)
+serial_interval_draw(mean, sd, e, allow_presymptomatic = TRUE)
 }
 \arguments{
 \item{mean}{Coerced to numeric by the body, with \code{as.numeric}.}
 
 \item{sd}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{rng}{Passed to \code{.ghc_norm}.}
+\item{e}{Passed to \code{.ghc_norm}.}
 
 \item{allow_presymptomatic}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
@@ -23,3 +23,8 @@ A step of the ttrace_native implementation. Called by \code{simulate_outbreak}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+e <- morie:::.ghc_rng(1)
+replicate(3, serial_interval_draw(mean = 5, sd = 1.9, e))
+}
+\keyword{internal}

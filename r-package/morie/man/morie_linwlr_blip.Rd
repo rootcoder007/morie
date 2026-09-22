@@ -21,3 +21,8 @@ A step of the linwlr_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_linwlr_blip(a = c(1, 2, 3, 4, 5, 6, 7, 8), w = c(1, 2, 3, 4, 5, 6, 7, 8),
+  psi = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -17,6 +17,14 @@ row per example.}
 \item{j}{Optional
 0-based coordinate for \code{estimate} (matching the Python mirror).}
 }
+\value{
+A list with \code{grad_w}, \code{grad_b}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Closed-form BCE gradients for logistic regression (Burkov Eq 1.11)
 }
+\examples{
+morie_burkov_bce_gradients(y_hat = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+  x = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

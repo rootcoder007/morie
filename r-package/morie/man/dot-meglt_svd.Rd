@@ -4,21 +4,22 @@
 \alias{.meglt_svd}
 \title{.meglt_svd}
 \usage{
-.meglt_svd(A)
+.meglt_svd(M)
 }
 \arguments{
-\item{A}{A matrix; passed to \code{nrow}.}
+\item{M}{A matrix; passed to \code{nrow}.}
 }
 \value{
-A list with \code{u}, \code{d}, \code{vt}.
+A list with \code{U}, \code{s}, \code{Vt}.
 }
 \description{
-A step of the meglt_native implementation. Called by \code{svt}.
+A step of the meglt_native implementation. Called by \code{coherence},
+\code{nuclear_norm}, \code{svt}.
 See the file header for the source the module follows.
 source it follows.
 }
 \examples{
-A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
-res <- .meglt_svd(A = A)
+X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
+res <- .meglt_svd(M = X)
 res
 }

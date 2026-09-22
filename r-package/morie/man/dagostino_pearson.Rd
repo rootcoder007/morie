@@ -10,8 +10,7 @@ dagostino_pearson(x)
 \item{x}{Numeric vector.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the K^2 omnibus statistic, p-value, df = 2, and sample size n.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 API stub: implemented via the K2 statistic = Z(skew)^2 + Z(kurt)^2

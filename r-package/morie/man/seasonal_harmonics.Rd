@@ -20,3 +20,7 @@ A step of the bats_native implementation. Called by \code{bats_filter},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+seasonal_harmonics(m = 5L)
+}
+\keyword{internal}

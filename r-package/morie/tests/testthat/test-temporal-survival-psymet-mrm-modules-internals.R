@@ -220,7 +220,6 @@ test_that(".morie_require_sodium silent / errors based on availability", {
   }
 })
 
-
 test_that(".morie_wrapping_key returns 32-byte raw via HKDF when openssl present", {
   skip_if_not_installed("openssl")
   if (!requireNamespace("openssl", quietly = TRUE)) {

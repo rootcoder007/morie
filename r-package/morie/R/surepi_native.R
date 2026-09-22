@@ -104,6 +104,10 @@
 #' @param sigma_floor Passed to \code{surepi_ears_detect}. Defaults to \code{1}.
 #' @return The value of \code{surepi_ears_detect}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' surepi_c1_mild(V)
+#' @keywords internal
 surepi_c1_mild <- function(counts, threshold = 3.0, sigma_floor = 1.0) {
   surepi_ears_detect(counts, method = "C1", threshold = threshold,
                      sigma_floor = sigma_floor)
@@ -120,6 +124,10 @@ surepi_c1_mild <- function(counts, threshold = 3.0, sigma_floor = 1.0) {
 #' @param sigma_floor Passed to \code{surepi_ears_detect}. Defaults to \code{1}.
 #' @return The value of \code{surepi_ears_detect}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' surepi_c2_medium(c(rpois(20, 5), rpois(6, 20)))
+#' @keywords internal
 surepi_c2_medium <- function(counts, threshold = 3.0, sigma_floor = 1.0) {
   surepi_ears_detect(counts, method = "C2", threshold = threshold,
                      sigma_floor = sigma_floor)
@@ -136,6 +144,10 @@ surepi_c2_medium <- function(counts, threshold = 3.0, sigma_floor = 1.0) {
 #' @param sigma_floor Passed to \code{surepi_ears_detect}. Defaults to \code{1}.
 #' @return The value of \code{surepi_ears_detect}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' surepi_c3_ultra(c(rpois(20, 5), rpois(6, 20)))
+#' @keywords internal
 surepi_c3_ultra <- function(counts, threshold = 2.0, sigma_floor = 1.0) {
   surepi_ears_detect(counts, method = "C3", threshold = threshold,
                      sigma_floor = sigma_floor)
@@ -156,6 +168,11 @@ surepi_c3_ultra <- function(counts, threshold = 2.0, sigma_floor = 1.0) {
 #' \code{method}, \code{threshold}, \code{baseline_lag}, \code{baseline_width},
 #' \code{sigma_floor}, \code{n}, \code{n_evaluable}, \code{reference}, \code{caveat}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' counts <- c(rpois(20, 5), rpois(6, 20))
+#' surepi_ears_detect(counts, method = "C2")
+#' @keywords internal
 surepi_ears_detect <- function(counts, method = "C2", threshold = 3.0,
                                sigma_floor = 1.0) {
   if (!(method %in% .surepi_methods)) {
@@ -228,6 +245,10 @@ surepi_ears_detect <- function(counts, method = "C2", threshold = 3.0,
 #' @return A list with \code{cusum}, \code{flag}, \code{estimate}, \code{n_flagged},
 #' \code{decision}, \code{k}, \code{min_count}, \code{method}.
 #' @export
+#' @examples
+#' surepi_salmonella_cusum(counts = c(1, 2, 3, 4, 5, 6, 7, 8), mu0 = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   sigma = 0.5)
+#' @keywords internal
 surepi_salmonella_cusum <- function(counts, mu0, sigma, k_shift = 1.0,
                                     decision = 0.5, min_count = 5) {
   cv <- as.numeric(counts)
@@ -287,6 +308,10 @@ surepi_salmonella_cusum <- function(counts, mu0, sigma, k_shift = 1.0,
 #' @return A list with \code{smoothed}, \code{baseline}, \code{sigma}, \code{threshold},
 #' \code{flag}, \code{current}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' surepi_compound_smoothing(V, V)
+#' @keywords internal
 surepi_compound_smoothing <- function(values, current,
                                       passes = c(4, 2, 5, 3),
                                       multiplier = 2.0) {
@@ -368,6 +393,9 @@ surepi_compound_smoothing <- function(values, current,
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' surepi_cheatsheet()
+#' @keywords internal
 surepi_cheatsheet <- function() {
   paste("surepi: EARS. C1 baseline = days t-7..t-1, C2 = t-9..t-3,",
         "C3 = sum of three consecutive C2s. S_{t-1} = 0 for C1 and",

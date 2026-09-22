@@ -34,6 +34,18 @@ morie_kamath_layer_norm(h_i, mu = NULL, sigma = NULL, g = 1, eps = 1e-12)
 
 \item{eps}{Unused stabiliser kept for the signature.}
 }
+\value{
+A list with \code{estimate}, \code{wavelength}, \code{n}, \code{method}.
+}
 \description{
 Positional encodings, FFN, layer norm (Eq 2.13-2.14, 2.17-2.18)
 }
+\examples{
+morie_kamath_positional_sin(5, 0, 16)
+morie_kamath_positional_cos(5, 1, 16)
+morie_kamath_ffn_relu(rbind(c(1, -1)), rbind(c(1, 0), c(0, 1)),
+    rbind(1, 1), c(0, 0), 0.5)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_layer_norm(V)
+}
+\keyword{internal}

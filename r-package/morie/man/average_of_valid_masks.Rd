@@ -7,7 +7,7 @@
 average_of_valid_masks(masks)
 }
 \arguments{
-\item{masks}{Iterated over elementwise, with \code{lapply}.}
+\item{masks}{A vector; its length is taken.}
 }
 \value{
 A list with \code{mask}, \code{ambiguous_fraction}, \code{n_averaged}, \code{note}.
@@ -17,3 +17,8 @@ A step of the sammkr_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+average_of_valid_masks(V)
+}
+\keyword{internal}

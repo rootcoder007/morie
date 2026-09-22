@@ -20,3 +20,8 @@ equivalent finite form (sum_\{k=0\}^\{5\} z^-k)^2 / 32 so the apparent
 pole at z = 1 is removed exactly rather than numerically.  fc = 11
 Hz, 5-sample delay, >35 dB at 60 Hz -- all tied to fs = 200 Hz.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+QrsLPassTf(V)
+}
+\keyword{internal}

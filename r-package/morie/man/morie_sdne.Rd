@@ -39,3 +39,9 @@ A step of the sdne_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_sdne(adjacency = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2),
+  reconstruction = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2),
+  embeddings = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2))
+}
+\keyword{internal}

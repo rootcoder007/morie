@@ -22,7 +22,8 @@ morie_matching_nearest_neighbor(
 
 \item{covariates}{Character vector of covariates for the propensity model.}
 
-\item{n_neighbors}{Number of matches per treated unit.}
+\item{n_neighbors}{Number of matches per treated unit
+(forwarded as \code{ratio}).}
 
 \item{caliper}{Maximum logit-propensity distance for a valid match,
 expressed in SD units of the logit (or \code{NULL} for no caliper).}
@@ -30,32 +31,27 @@ expressed in SD units of the logit (or \code{NULL} for no caliper).}
 \item{replace}{If \code{TRUE}, controls may be re-used.}
 
 \item{ps}{Optional propensity scores. When supplied they REPLACE
-the fitted model and become the matching distance directly,
-aligned to the rows that survive the NA drop.}
+the fitted model: matching is done on the score you pass, aligned
+to the rows that survive the NA drop -- by name when the vector is
+named, by position when it is one per retained row. A mis-sized
+vector is refused rather than recycled.}
 
 \item{alpha}{Significance level (carried through to \code{details}).}
 }
 \value{
-A list with class \code{morie_match_result} carrying
-\code{matched_data}, \code{n_treated}, \code{n_matched_control},
-\code{match_pairs}, \code{method}, and \code{details}.
+A list of class \code{morie_match_result}.
 }
 \description{
-For each treated unit, finds the \code{n_neighbors} closest control units
-by logit-propensity-score distance.  Delegates to \pkg{MatchIt} when
-installed; otherwise uses a base-R implementation.
+Native greedy nearest-neighbour matching on the logit propensity
+score (Rosenbaum & Rubin 1985; caliper per Cochran & Rubin 1973).
+The propensity model is base \code{stats::glm}; no MatchIt at
+runtime. Returns the same \code{morie_match_result} shape as
+always; cross-validated against MatchIt in \code{tests/cross/}.
 }
 \examples{
 \donttest{
 set.seed(1)
-df <- data.frame(
-  y = rnorm(150), d = rbinom(150, 1, 0.4),
-  x1 = rnorm(150), x2 = rnorm(150),
-  region = sample(c("North", "South"), 150, TRUE),
-  year = sample(2020:2022, 150, TRUE),
-  treat3 = sample(0:2, 150, TRUE))
-set.seed(1)
-df <- data.frame(d = rbinom(200, 1, 0.4),
+df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
                  x1 = rnorm(200), x2 = rnorm(200))
 res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"),
                                        caliper = 0.2)

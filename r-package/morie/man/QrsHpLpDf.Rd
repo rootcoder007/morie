@@ -16,3 +16,8 @@ A list with \code{y}, \code{n}, \code{method}.
 \description{
 sample regardless of window length.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+QrsHpLpDf(V)
+}
+\keyword{internal}

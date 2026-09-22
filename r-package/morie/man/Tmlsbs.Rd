@@ -36,8 +36,7 @@ error; it does not shrink by using the selection rows, and that is the
 price of an honest interval.
 }
 \examples{
-Tmlsbs(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4,
-5, 6, 7, 8))
+Tmlsbs(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Hubbard, A. E., Kherad-Pajouh, S. & van der Laan, M. J.

@@ -128,6 +128,8 @@ test_that("morie_datasets_siu_director_reports returns df with case_number + url
     "</body></html>", sep = ""))
   testthat::local_mocked_bindings(
     read_html = function(url, ...) {
+      # Verify the function calls the canonical URL; if it ever
+      # changes to a different endpoint, the test should fail loudly.
       expect_match(url, "siu\\.on\\.ca/en/directors_reports\\.php")
       fake_html
     },

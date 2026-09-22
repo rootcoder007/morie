@@ -2,7 +2,7 @@
 % Please edit documentation in R/survrsf_native.R
 \name{morie_survrsf_rule_status}
 \alias{morie_survrsf_rule_status}
-\title{Which of the paper\'s four splitting rules are implemented}
+\title{Which of the paper's four splitting rules are implemented}
 \usage{
 morie_survrsf_rule_status(rule = NULL)
 }
@@ -17,3 +17,7 @@ A step of the survrsf_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_survrsf_rule_status()
+}
+\keyword{internal}

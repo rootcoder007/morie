@@ -18,3 +18,8 @@ Numeric vector of length \code{ncol(jac)}.
 \description{
 \code{grad phi = sum grad f_i / (-f_i)} (Boyd p. 564).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+log_barrier_gradient(V, V)
+}
+\keyword{internal}

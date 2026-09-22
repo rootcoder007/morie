@@ -24,12 +24,18 @@ Compvar <- function(X) {
   L <- log(X)
   tau <- matrix(0, D, D)
   tot <- 0
-  for (i in seq_len(D)) for (j in seq_len(D)) if (j > i) {
-    v <- stats::var(L[, i] - L[, j])
-    tau[i, j] <- v
-    tau[j, i] <- v
-    tot <- tot + v
+  for (i in seq_len(D)) {
+    for (j in seq_len(D)) {
+      if (j > i) {
+        v <- stats::var(L[, i] - L[, j])
+        tau[i, j] <- v
+        tau[j, i] <- v
+        tot <- tot + v
+      }
+    }
   }
-  .t1_result(variation = tau, totvar = tot / D, n = n, D = D,
-             method = "Compositional variation matrix")
+  .t1_result(
+    variation = tau, totvar = tot / D, n = n, D = D,
+    method = "Compositional variation matrix"
+  )
 }

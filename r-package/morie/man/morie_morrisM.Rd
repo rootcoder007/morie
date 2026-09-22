@@ -29,3 +29,9 @@ A list with \code{estimate}, \code{mu}, \code{mu_star}, \code{sigma},
 Part of the morrisM_mixedcase_native implementation; see the file
 header for the source it follows.
 }
+\examples{
+fn <- function(v) sum(v^2)
+res <- morie_morrisM(fun = fn, k = 3L)
+res
+}
+\keyword{internal}

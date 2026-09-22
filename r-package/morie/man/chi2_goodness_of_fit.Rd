@@ -12,9 +12,7 @@ chi2_goodness_of_fit(observed, expected = NULL)
 \item{expected}{Expected counts or NULL for uniform.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the chi-square statistic, p-value, df, Cohen's w effect size,
-and total count n.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Chi-squared goodness-of-fit test

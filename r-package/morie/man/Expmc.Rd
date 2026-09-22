@@ -17,12 +17,19 @@ Expmc(candidates, utility, epsilon = 1, sensitivity = 1, seed = NULL)
 
 \item{seed}{See Usage.}
 }
+\value{
+The value of \code{morie_dp_exponential_mechanism}.
+}
 \description{
 Alias of \code{morie_dp_exponential_mechanism}: selects candidate r
 with probability proportional to
 \eqn{\exp(\epsilon u(D, r) / (2 \Delta u))}. The generated stub for
 module expmc described exactly the mechanism already shipped, so this
 is an alias.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Expmc(V, V)
 }
 \references{
 McSherry, F., and Talwar, K. (2007). Mechanism design via
@@ -36,3 +43,4 @@ Delegating wrapper (not a bare assignment) so that source collation
 order does not matter at load time; the body is a single call to the
 target, so outputs are exactly identical.
 }
+\keyword{internal}

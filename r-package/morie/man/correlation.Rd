@@ -30,7 +30,13 @@ correlation(
 A list with \code{lags}, \code{c}, \code{size}.
 }
 \description{
-A step of the mafft_native implementation. Called by \code{find_homologous_segments}.
+A step of the mafft_native implementation. Called by \code{find_homologous_segments},
+\code{morie_mafft}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+correlation(V, V)
+}
+\keyword{internal}

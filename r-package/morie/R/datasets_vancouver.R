@@ -26,46 +26,55 @@
 
 #' Vancouver Open Data full dataset catalog (Opendatasoft v2.1)
 #'
-#' Phase 3CCC4. Bundled snapshot of every City-of-Vancouver dataset
+#' Phase 3CCC4. Included snapshot of every City-of-Vancouver dataset
 #' published on opendata.vancouver.ca (190 datasets as of
 #' 2026-05-24). Each row identifies a dataset by its Opendatasoft
 #' `dataset_id` slug (used as the URL path segment for records /
 #' exports endpoints).
 #'
-#' @param offline If `TRUE` (default), reads the bundled CSV; if
+#' @param offline If `TRUE` (default), reads the included CSV; if
 #'   `FALSE`, paginates the live catalog endpoint.
 #' @param max_features Optional row cap.
 #' @return A `data.frame` with `dataset_id`, `title`, `publisher`,
 #'   `records_count`.
 #' @references Opendatasoft Explore API v2.1,
 #'   \url{https://opendata.vancouver.ca/api-console/explore/v2.1/}.
-#' @examplesIf nzchar(system.file("extdata", "vancouver_opendata_catalog.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (nzchar(system.file("extdata", "vancouver_opendata_catalog.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' cat_df <- morie_datasets_vancouver_opendata_layers(offline = TRUE)
-#' nrow(cat_df)  # 190
+#' nrow(cat_df) # 190
 #' head(cat_df$title)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_vancouver_opendata_layers <- function(offline = TRUE,
-                                                       max_features = NULL) {
+                                                     max_features = NULL) {
   if (isTRUE(offline)) {
-    path <- system.file("extdata", "vancouver_opendata_catalog.csv",
-                        package = "morie")
+    path <- .morie_extdata("vancouver_opendata_catalog.csv")
     if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
       path <- system.file("extdata", "vancouver_opendata_catalog.csv", package = "rmoriedata")
     }
-    if (!nzchar(path))
+    if (!nzchar(path)) {
       stop("bundled Vancouver Open Data catalog fixture missing",
-           call. = FALSE)
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE)
+        call. = FALSE
+      )
+    }
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    )
   } else {
     # Paginate via offset (Opendatasoft max limit=100/req).
     all_rows <- list()
     offset <- 0L
     repeat {
-      url <- sprintf(paste0("%s/catalog/datasets?limit=100",
-                              "&select=dataset_id,title,publisher,records_count",
-                              "&offset=%d&order_by=dataset_id"),
-                       .MORIE_VANCOUVER_OPENDATA_BASE, offset)
+      url <- sprintf(
+        paste0(
+          "%s/catalog/datasets?limit=100",
+          "&select=dataset_id,title,publisher,records_count",
+          "&offset=%d&order_by=dataset_id"
+        ),
+        .MORIE_VANCOUVER_OPENDATA_BASE, offset
+      )
       r <- .morie_dataset_http_json(url)
       if (is.null(r$results) || length(r$results) == 0L) break
       all_rows[[length(all_rows) + 1L]] <- r$results
@@ -74,12 +83,13 @@ morie_datasets_vancouver_opendata_layers <- function(offline = TRUE,
     }
     df <- if (length(all_rows)) do.call(rbind, all_rows) else data.frame()
   }
-  if (!is.null(max_features))
+  if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
+  }
   df
 }
 
-#' Bundled Vancouver Open Data crime-adjacent civic datasets
+#' Included Vancouver Open Data crime-adjacent civic datasets
 #'
 #' Phase 3DDD1. Five small fixtures harvested live from
 #' opendata.vancouver.ca for offline reproducibility -- chosen to
@@ -130,45 +140,39 @@ morie_datasets_vancouver_opendata_layers <- function(offline = TRUE,
 #' \dontshow{\}) # examplesIf}
 NULL
 
-#' .morie_vancouver_fixture
-#'
-#' A step of the datasets_vancouver implementation. Called by
-#' \code{morie_datasets_vancouver_community_centres},
-#' \code{morie_datasets_vancouver_community_food_markets},
-#' \code{morie_datasets_vancouver_disability_parking} and 6 others in the module.
-#' See the file header for the source the module follows.
-#' for the source it follows.
-#'
-#' @param fname Passed to \code{system.file}.
-#' @return The value of \code{utils::read.csv}.
-#' @export
+#' Internal helper: Morie Vancouver Fixture
+#' @noRd
 .morie_vancouver_fixture <- function(fname) {
-  path <- system.file("extdata", fname, package = "morie")
+  path <- .morie_extdata(fname)
   if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
     path <- system.file("extdata", fname, package = "rmoriedata")
   }
-  if (!nzchar(path))
+  if (!nzchar(path)) {
     stop(sprintf("bundled Vancouver fixture missing: %s", fname),
-         call. = FALSE)
+      call. = FALSE
+    )
+  }
   utils::read.csv(path, stringsAsFactors = FALSE, check.names = FALSE)
 }
 
 #' Vancouver graffiti incident records (sample)
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
-#' @return A `data.frame` of City-of-Vancouver graffiti incident
-#'   records (Opendatasoft slug `graffiti`); the bundled 100-row
-#'   sample under `inst/extdata/` when `offline = TRUE`, otherwise
-#'   the live `/records` pull (geometry flattened to `lon`/`lat`).
+#' @return A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+#' data is unavailable offline).
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' df <- morie_datasets_vancouver_graffiti()
+#' head(df)
 #' @export
 morie_datasets_vancouver_graffiti <- function(offline = TRUE,
-                                                max_features = NULL) {
+                                              max_features = NULL) {
   if (offline) {
     df <- .morie_vancouver_fixture("vancouver_graffiti_sample.csv")
   } else {
     df <- morie_datasets_vancouver_opendata_by_id("graffiti",
-                                                    limit = 100L,
-                                                    format = "json")
+      limit = 100L,
+      format = "json"
+    )
     if ("geo_point_2d" %in% names(df)) {
       df$lon <- df$geo_point_2d$lon
       df$lat <- df$geo_point_2d$lat
@@ -176,190 +180,230 @@ morie_datasets_vancouver_graffiti <- function(offline = TRUE,
     }
     df$geom <- NULL
   }
-  if (!is.null(max_features))
+  if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
+  }
   df
 }
 
 #' Vancouver noise control areas (bylaw zones)
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
-#' @return A `data.frame` of City-of-Vancouver noise-control-area
-#'   bylaw zone rows (Opendatasoft slug `noise-control-areas`);
-#'   the bundled fixture under `inst/extdata/` when
-#'   `offline = TRUE`, otherwise the live `/records` pull.
+#' @return A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+#' data is unavailable offline).
+#' @examples
+#' df <- morie_datasets_vancouver_noise_control_areas()
+#' head(df)
 #' @export
 morie_datasets_vancouver_noise_control_areas <- function(offline = TRUE,
-                                                            max_features = NULL) {
-  df <- if (offline)
+                                                         max_features = NULL) {
+  df <- if (offline) {
     .morie_vancouver_fixture("vancouver_noise_control_areas.csv")
-  else morie_datasets_vancouver_opendata_by_id("noise-control-areas",
-                                                  limit = 10L)
-  if (!is.null(max_features))
+  } else {
+    morie_datasets_vancouver_opendata_by_id("noise-control-areas",
+      limit = 10L
+    )
+  }
+  if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
+  }
   df
 }
 
 #' Vancouver homeless shelter locations
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
-#' @return A `data.frame` of City-of-Vancouver homeless-shelter
-#'   location records (Opendatasoft slug
-#'   `homeless-shelter-locations`); the bundled fixture under
-#'   `inst/extdata/` when `offline = TRUE`, otherwise the live
-#'   `/records` pull.
+#' @return A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+#' data is unavailable offline).
+#' @examples
+#' df <- morie_datasets_vancouver_homeless_shelters()
+#' head(df)
 #' @export
 morie_datasets_vancouver_homeless_shelters <- function(offline = TRUE,
-                                                         max_features = NULL) {
-  df <- if (offline)
+                                                       max_features = NULL) {
+  df <- if (offline) {
     .morie_vancouver_fixture("vancouver_homeless_shelters.csv")
-  else morie_datasets_vancouver_opendata_by_id("homeless-shelter-locations",
-                                                  limit = 50L)
-  if (!is.null(max_features))
+  } else {
+    morie_datasets_vancouver_opendata_by_id("homeless-shelter-locations",
+      limit = 50L
+    )
+  }
+  if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
+  }
   df
 }
 
 #' Vancouver property use inspection districts
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
-#' @return A `data.frame` of City-of-Vancouver property-use
-#'   inspection district rows (Opendatasoft slug
-#'   `property-use-inspection-districts`); the bundled fixture
-#'   under `inst/extdata/` when `offline = TRUE`, otherwise the
-#'   live `/records` pull.
+#' @return A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+#' data is unavailable offline).
+#' @examples
+#' df <- morie_datasets_vancouver_property_use_inspection_districts()
+#' head(df)
 #' @export
 morie_datasets_vancouver_property_use_inspection_districts <- function(
-    offline = TRUE, max_features = NULL) {
-  df <- if (offline)
+  offline = TRUE, max_features = NULL
+) {
+  df <- if (offline) {
     .morie_vancouver_fixture(
-      "vancouver_property_use_inspection_districts.csv")
-  else morie_datasets_vancouver_opendata_by_id(
-    "property-use-inspection-districts", limit = 50L)
-  if (!is.null(max_features))
+      "vancouver_property_use_inspection_districts.csv"
+    )
+  } else {
+    morie_datasets_vancouver_opendata_by_id(
+      "property-use-inspection-districts",
+      limit = 50L
+    )
+  }
+  if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
+  }
   df
 }
 
 #' Vancouver fire hall locations
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
-#' @return A `data.frame` of City-of-Vancouver fire-hall location
-#'   records (Opendatasoft slug `fire-halls`); the bundled fixture
-#'   under `inst/extdata/` when `offline = TRUE`, otherwise the
-#'   live `/records` pull.
+#' @return A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+#' data is unavailable offline).
+#' @examples
+#' df <- morie_datasets_vancouver_fire_halls()
+#' head(df)
 #' @export
 morie_datasets_vancouver_fire_halls <- function(offline = TRUE,
-                                                  max_features = NULL) {
-  df <- if (offline)
+                                                max_features = NULL) {
+  df <- if (offline) {
     .morie_vancouver_fixture("vancouver_fire_halls.csv")
-  else morie_datasets_vancouver_opendata_by_id("fire-halls",
-                                                  limit = 50L)
-  if (!is.null(max_features))
+  } else {
+    morie_datasets_vancouver_opendata_by_id("fire-halls",
+      limit = 50L
+    )
+  }
+  if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
+  }
   df
 }
 
 # ---------------------------------------------------------------------------
-# Phase 3EEE3 -- 4 more bundled Vancouver fixtures
+# Phase 3EEE3 -- 4 more included Vancouver fixtures
 # ---------------------------------------------------------------------------
 
 #' Vancouver community centre locations
 #'
-#' Phase 3EEE3. Bundled 27-row snapshot of City-run community
+#' Phase 3EEE3. Included 27-row snapshot of City-run community
 #' centres. Useful as an "anchor institutions" overlay for analyses
 #' of neighbourhood-level crime + social-service access.
 #'
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
-#' @return A `data.frame` of City-of-Vancouver community-centre
-#'   location records (Opendatasoft slug `community-centres`); the
-#'   bundled 27-row fixture under `inst/extdata/` when
-#'   `offline = TRUE`, otherwise the live `/records` pull.
+#' @return A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+#' data is unavailable offline).
+#' @examples
+#' df <- morie_datasets_vancouver_community_centres()
+#' head(df)
 #' @export
 morie_datasets_vancouver_community_centres <- function(offline = TRUE,
-                                                         max_features = NULL) {
-  df <- if (offline)
+                                                       max_features = NULL) {
+  df <- if (offline) {
     .morie_vancouver_fixture("vancouver_community_centres.csv")
-  else morie_datasets_vancouver_opendata_by_id("community-centres",
-                                                  limit = 50L)
-  if (!is.null(max_features))
+  } else {
+    morie_datasets_vancouver_opendata_by_id("community-centres",
+      limit = 50L
+    )
+  }
+  if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
+  }
   df
 }
 
 #' Vancouver community food markets and farmers markets
 #'
-#' Phase 3EEE3. Bundled 91-row snapshot of community + farmers
+#' Phase 3EEE3. Included 91-row snapshot of community + farmers
 #' markets across Vancouver. Useful for food-access / quality-of-life
 #' overlays.
 #'
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
-#' @return A `data.frame` of City-of-Vancouver community + farmers
-#'   market location records (Opendatasoft slug
-#'   `community-food-markets-and-farmers-markets`); the bundled
-#'   91-row fixture under `inst/extdata/` when `offline = TRUE`,
-#'   otherwise the live `/records` pull.
+#' @return A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+#' data is unavailable offline).
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' df <- morie_datasets_vancouver_community_food_markets()
+#' head(df)
 #' @export
 morie_datasets_vancouver_community_food_markets <- function(offline = TRUE,
-                                                              max_features = NULL) {
-  df <- if (offline)
+                                                            max_features = NULL) {
+  df <- if (offline) {
     .morie_vancouver_fixture("vancouver_community_food_markets.csv")
-  else morie_datasets_vancouver_opendata_by_id(
-    "community-food-markets-and-farmers-markets", limit = 100L)
-  if (!is.null(max_features))
+  } else {
+    morie_datasets_vancouver_opendata_by_id(
+      "community-food-markets-and-farmers-markets",
+      limit = 100L
+    )
+  }
+  if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
+  }
   df
 }
 
 #' Vancouver designated disability parking spaces
 #'
-#' Phase 3EEE3. Bundled 100-row sample of designated disability
+#' Phase 3EEE3. Included 100-row sample of designated disability
 #' parking locations across Vancouver (out of 159 total).
 #'
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
-#' @return A `data.frame` of City-of-Vancouver designated
-#'   disability-parking-space records (Opendatasoft slug
-#'   `disability-parking`); the bundled 100-row fixture under
-#'   `inst/extdata/` when `offline = TRUE`, otherwise the live
-#'   `/records` pull.
+#' @return A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+#' data is unavailable offline).
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' df <- morie_datasets_vancouver_disability_parking()
+#' head(df)
 #' @export
 morie_datasets_vancouver_disability_parking <- function(offline = TRUE,
-                                                          max_features = NULL) {
-  df <- if (offline)
+                                                        max_features = NULL) {
+  df <- if (offline) {
     .morie_vancouver_fixture("vancouver_disability_parking.csv")
-  else morie_datasets_vancouver_opendata_by_id("disability-parking",
-                                                  limit = 100L)
-  if (!is.null(max_features))
+  } else {
+    morie_datasets_vancouver_opendata_by_id("disability-parking",
+      limit = 100L
+    )
+  }
+  if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
+  }
   df
 }
 
 #' Vancouver public art registry
 #'
-#' Phase 3EEE3. Bundled 100-row sample of Vancouver's public art
+#' Phase 3EEE3. Included 100-row sample of Vancouver's public art
 #' registry (out of 747 total) -- artist, install year,
 #' neighbourhood, primary material. Useful as a CPTED-style
 #' "place-making" overlay variable.
 #'
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
-#' @return A `data.frame` of City-of-Vancouver public-art registry
-#'   records (Opendatasoft slug `public-art`); the bundled 100-row
-#'   fixture under `inst/extdata/` when `offline = TRUE`,
-#'   otherwise the live `/records` pull. Columns include artist,
-#'   install year, neighbourhood, and primary material.
+#' @return A \code{data.frame} of the requested dataset (a 0-row typed frame when the
+#' data is unavailable offline).
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' df <- morie_datasets_vancouver_public_art()
+#' head(df)
 #' @export
 morie_datasets_vancouver_public_art <- function(offline = TRUE,
-                                                  max_features = NULL) {
-  df <- if (offline)
+                                                max_features = NULL) {
+  df <- if (offline) {
     .morie_vancouver_fixture("vancouver_public_art.csv")
-  else morie_datasets_vancouver_opendata_by_id("public-art",
-                                                  limit = 100L)
-  if (!is.null(max_features))
+  } else {
+    morie_datasets_vancouver_opendata_by_id("public-art",
+      limit = 100L
+    )
+  }
+  if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
+  }
   df
 }
 
@@ -379,26 +423,35 @@ morie_datasets_vancouver_public_art <- function(offline = TRUE,
 #' @examples
 #' \donttest{
 #' df <- morie_datasets_vancouver_opendata_by_id("non-market-housing",
-#'                                                  limit = 50)
+#'   limit = 50
+#' )
 #' nrow(df)
 #' }
 #' @export
 morie_datasets_vancouver_opendata_by_id <- function(dataset_id,
-                                                      limit = 100L,
-                                                      format = c("json", "csv")) {
+                                                    limit = 100L,
+                                                    format = c("json", "csv")) {
   format <- match.arg(format)
   if (format == "json") {
-    url <- sprintf("%s/catalog/datasets/%s/records?limit=%d",
-                    .MORIE_VANCOUVER_OPENDATA_BASE,
-                    dataset_id, as.integer(limit))
+    url <- sprintf(
+      "%s/catalog/datasets/%s/records?limit=%d",
+      .MORIE_VANCOUVER_OPENDATA_BASE,
+      dataset_id, as.integer(limit)
+    )
     r <- .morie_dataset_http_json(url)
-    if (is.null(r$results)) return(data.frame())
+    if (is.null(r$results)) {
+      return(data.frame())
+    }
     return(r$results)
   }
   # CSV export
-  url <- sprintf("%s/catalog/datasets/%s/exports/csv",
-                  .MORIE_VANCOUVER_OPENDATA_BASE, dataset_id)
+  url <- sprintf(
+    "%s/catalog/datasets/%s/exports/csv",
+    .MORIE_VANCOUVER_OPENDATA_BASE, dataset_id
+  )
   text <- .morie_dataset_http_text(url)
-  utils::read.csv(text = text, sep = ";", stringsAsFactors = FALSE,
-                  check.names = FALSE)
+  utils::read.csv(
+    text = text, sep = ";", stringsAsFactors = FALSE,
+    check.names = FALSE
+  )
 }

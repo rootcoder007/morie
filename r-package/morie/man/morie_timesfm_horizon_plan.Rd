@@ -23,3 +23,7 @@ A step of the timesfm_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_timesfm_horizon_plan(24, 32, 8)
+}
+\keyword{internal}

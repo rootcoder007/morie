@@ -85,13 +85,17 @@ morie_km_native <- function(time, event, alpha = 0.05,
     edges <- c(0, times)
     heights <- c(1, surv)[-(length(surv) + 1L)]
     sum(diff(edges) * heights)
-  } else 0
-  list(times = times, survival = surv, se = ses,
-       ci_lower = lo, ci_upper = hi, at_risk = risk, events = evs,
-       median = med, rmst = rmst, tail_reliable = risk >= 10L,
-       conf_type = conf_type,
-       n_events = sum(e), n_censored = sum(1 - e), n = n,
-       method = "Kaplan-Meier product-limit estimator (native)")
+  } else {
+    0
+  }
+  list(
+    times = times, survival = surv, se = ses,
+    ci_lower = lo, ci_upper = hi, at_risk = risk, events = evs,
+    median = med, rmst = rmst, tail_reliable = risk >= 10L,
+    conf_type = conf_type,
+    n_events = sum(e), n_censored = sum(1 - e), n = n,
+    method = "Kaplan-Meier product-limit estimator (native)"
+  )
 }
 
 #' Difference-in-coefficients mediation estimator
@@ -122,11 +126,13 @@ morie_mediation_difference <- function(c, c_prime, a = NULL, b = NULL) {
   ind <- cv - cp
   prod <- if (is.null(a) || is.null(b)) NULL else as.numeric(a) * as.numeric(b)
   resid <- if (is.null(prod)) NULL else abs(ind - prod)
-  list(indirect = ind, total = cv, direct = cp,
-       proportion_mediated = if (cv != 0) ind / cv else NA_real_,
-       product = prod, identity_residual = resid,
-       matches_product = if (is.null(resid)) NULL else resid < 1e-8,
-       method = "Difference-in-coefficients indirect effect")
+  list(
+    indirect = ind, total = cv, direct = cp,
+    proportion_mediated = if (cv != 0) ind / cv else NA_real_,
+    product = prod, identity_residual = resid,
+    matches_product = if (is.null(resid)) NULL else resid < 1e-8,
+    method = "Difference-in-coefficients indirect effect"
+  )
 }
 
 #' Product-of-coefficients mediation estimator
@@ -161,9 +167,11 @@ morie_mediation_product <- function(a, b, se_a = NULL, se_b = NULL,
     z <- stats::qnorm(1 - alpha / 2)
     ci <- c(ind - z * se, ind + z * se)
   }
-  list(indirect = ind, a = av, b = bv, sobel_se = se, sobel_ci = ci,
-       sobel_symmetric = !is.null(ci),
-       method = "Product-of-coefficients indirect effect")
+  list(
+    indirect = ind, a = av, b = bv, sobel_se = se, sobel_ci = ci,
+    sobel_symmetric = !is.null(ci),
+    method = "Product-of-coefficients indirect effect"
+  )
 }
 
 #' Kozachenko-Leonenko k-nearest-neighbour differential entropy
@@ -199,7 +207,8 @@ morie_knn_entropy <- function(x, k = 3L) {
   if (k < 1L) stop("k must be at least 1.", call. = FALSE)
   if (n <= k) {
     stop(sprintf("need more than k = %d observations, got %d.", k, n),
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   D <- as.matrix(stats::dist(X))
   diag(D) <- Inf
@@ -212,11 +221,13 @@ morie_knn_entropy <- function(x, k = 3L) {
   cov <- stats::var(X)
   ld <- determinant(as.matrix(cov) + diag(1e-12, d), logarithm = TRUE)
   gauss <- if (ld$sign > 0) 0.5 * (d * log(2 * pi * exp(1)) + ld$modulus) else NA_real_
-  list(entropy = H, k = k, dimension = d,
-       neighbour_distances = eps,
-       distance_concentration = stats::sd(eps) / mean(eps),
-       gaussian_reference = as.numeric(gauss),
-       negentropy = as.numeric(gauss) - H,
-       n = n,
-       method = "Kozachenko-Leonenko k-NN differential entropy")
+  list(
+    entropy = H, k = k, dimension = d,
+    neighbour_distances = eps,
+    distance_concentration = stats::sd(eps) / mean(eps),
+    gaussian_reference = as.numeric(gauss),
+    negentropy = as.numeric(gauss) - H,
+    n = n,
+    method = "Kozachenko-Leonenko k-NN differential entropy"
+  )
 }

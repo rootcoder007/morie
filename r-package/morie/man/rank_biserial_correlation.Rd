@@ -18,6 +18,6 @@ A \code{morie_effect_size}.
 Rank-biserial correlation (matched rank version)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-rank_biserial_correlation(V, V)
+set.seed(1)
+rank_biserial_correlation(rnorm(15), rnorm(15, 1))
 }

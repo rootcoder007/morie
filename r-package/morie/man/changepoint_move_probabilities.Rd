@@ -9,7 +9,7 @@ changepoint_move_probabilities(lam, k_max, cap = 0.9)
 \arguments{
 \item{lam}{Numeric; combined arithmetically in the body.}
 
-\item{k_max}{A count; the body uses it as \code{seq_len(...)}.}
+\item{k_max}{Numeric; combined arithmetically in the body.}
 
 \item{cap}{Numeric; combined arithmetically in the body. Defaults to \code{0.9}.}
 }
@@ -21,3 +21,7 @@ A step of the bayrjmcmc_native implementation. Called by \code{changepoint_rjmcm
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+changepoint_move_probabilities(lam = 5L, k_max = 5L)
+}
+\keyword{internal}

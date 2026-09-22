@@ -74,6 +74,9 @@ LOG10E <- log10(exp(1))
 #'   values, and the calculation of distances between the loci of
 #'   linked factors. Journal of Genetics, 8(4), 299-309.
 #' @export
+#' @examples
+#' morie_haldane(distance = 5L)
+#' @keywords internal
 morie_haldane <- function(distance) {
   d <- as.numeric(distance)
   if (d < 0) stop("rqtmpl: map distance cannot be negative")
@@ -164,6 +167,10 @@ morie_genotype_probabilities <- function(left, right, r_left, r_right) {
 #'   \code{rss}, \code{rss_null}, \code{n}, \code{method}.
 #' @references Lander, E. S. & Botstein, D. (1989), eq (4).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_single_marker(V, V)
+#' @keywords internal
 morie_single_marker <- function(y, g) {
   y <- as.numeric(y)
   g <- as.numeric(g)
@@ -219,6 +226,15 @@ morie_single_marker <- function(y, g) {
 #' @references Lander, E. S. & Botstein, D. (1989), eq (7);
 #'   Dempster, A. P., Laird, N. M. & Rubin, D. B. (1977).
 #' @export
+#' @examples
+#' set.seed(1)
+#' n <- 50
+#' g1 <- rbinom(n, 1, 0.5)
+#' g2 <- ifelse(runif(n) < 0.85, g1, 1 - g1)
+#' y <- 1 + 0.9 * g1 + rnorm(n, 0, 0.5)
+#' r <- morie_interval_map(y, g1, g2, r_left = 0.075, r_right = 0.075)
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_interval_map <- function(y, left, right, r_left, r_right,
                                max_iter = 200L, tol = 1e-10) {
   y <- as.numeric(y)
@@ -296,7 +312,15 @@ morie_interval_map <- function(y, left, right, r_left, r_right,
 #'   \code{method}.
 #' @references Lander, E. S. & Botstein, D. (1989).
 #' @export
-#' @aliases morie_interval_mapping
+#' @examples
+#' set.seed(1)
+#' n <- 50
+#' g1 <- rbinom(n, 1, 0.5)
+#' g2 <- ifelse(runif(n) < 0.85, g1, 1 - g1)
+#' y <- 1 + 0.9 * g1 + rnorm(n, 0, 0.5)
+#' r <- morie_scan_interval(y, g1, g2, length = 0.15, step = 0.05)
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_scan_interval <- function(y, left, right, length, step = 0.01, ...) {
   length <- as.numeric(length)
   if (length <= 0)
@@ -334,6 +358,9 @@ morie_scan_interval <- function(y, left, right, length, step = 0.01, ...) {
 #'   \code{gap}, \code{ratio}, \code{note}.
 #' @references Lander, E. S. & Botstein, D. (1989), eqs (5a)-(5c).
 #' @export
+#' @examples
+#' morie_elod(var_qtl = 5L, var_residual = 5L)
+#' @keywords internal
 morie_elod <- function(var_qtl, var_residual) {
   vq <- as.numeric(var_qtl)
   vr <- as.numeric(var_residual)
@@ -361,6 +388,9 @@ morie_elod <- function(var_qtl, var_residual) {
 #'   \code{alpha}, \code{note}.
 #' @references Lander, E. S. & Botstein, D. (1989).
 #' @export
+#' @examples
+#' morie_threshold()
+#' @keywords internal
 morie_threshold <- function(alpha = 0.05) {
   a <- as.numeric(alpha)
   if (a <= 0 || a >= 1)
@@ -390,6 +420,9 @@ morie_threshold <- function(alpha = 0.05) {
 #'   \code{elod}.
 #' @references Lander, E. S. & Botstein (1989), eq (6).
 #' @export
+#' @examples
+#' morie_progeny_required(var_qtl = 5L, var_residual = 5L)
+#' @keywords internal
 morie_progeny_required <- function(var_qtl, var_residual, alpha = 0.05) {
   t <- morie_threshold(alpha)$threshold
   e <- morie_elod(var_qtl, var_residual)$elod
@@ -423,6 +456,7 @@ morie_progeny_required <- function(var_qtl, var_residual, alpha = 0.05) {
 
 # Compact alias mirroring interval_mapping = scan_interval.
 # Exported under the same name as the Python arm's ledger alias.
+#' @rdname morie_scan_interval
 #' @export
 morie_interval_mapping <- morie_scan_interval
 
@@ -432,7 +466,13 @@ morie_interval_mapping <- morie_scan_interval
 # collection -- element names match the Python attribute names --
 # without inventing dispatch behaviour that is not in the Python
 # file.
+#' morie_rqtmpl
+#'
+#' @return A list with `haldane`, `inverse_haldane`, `genotype_probabilities`, `single_marker`, `interval_map`, `scan_interval`, `interval_mapping`, `elod`, `threshold`, `progeny_required`, `cheatsheet`, `LOG10E`.
 #' @export
+#' @examples
+#' morie_rqtmpl()
+#' @keywords internal
 morie_rqtmpl <- function() {
   list(haldane = morie_haldane,
        inverse_haldane = morie_inverse_haldane,

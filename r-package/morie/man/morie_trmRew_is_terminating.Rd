@@ -17,3 +17,10 @@ A list with \code{terminating}, \code{unoriented}, \code{method}.
 \description{
 necessary. Returns 0-based indices of unoriented rules.
 }
+\examples{
+x <- morie_unifAlg_var("x")
+zero <- morie_unifAlg_const("0")
+r1 <- morie_trmRew_rule(morie_unifAlg_app("plus", zero, x), x)
+morie_trmRew_is_terminating(list(r1), precedence = c(plus = 2, "0" = 1))
+}
+\keyword{internal}

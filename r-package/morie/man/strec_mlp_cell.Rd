@@ -23,3 +23,9 @@ A step of the strec_native implementation. Called by \code{strec_stamp_scores}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+S <- c("a", "b", "c")
+strec_mlp_cell(S, M)
+}
+\keyword{internal}

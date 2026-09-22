@@ -15,15 +15,15 @@ morie_weights_nonresponse(weights, responded, adjustment_cells = NULL)
 \code{nonresponse} adjustment.}
 }
 \value{
-Numeric vector of adjusted weights, same length as
-\code{weights}; non-respondents receive weight 0 and respondents
-are scaled up so each cell's weighted total is preserved.
+A numeric value (scalar).
 }
 \description{
 Within each cell, scales respondent weights up by total/responder ratio.
 Non-respondents end up with weight 0.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_weights_nonresponse(V, V)
+set.seed(1)
+res <- morie_weights_nonresponse(rep(1, 30), rbinom(30, 1, 0.7) == 1,
+                                 adjustment_cells = rep(c("a", "b"), 15))
+str(res, max.level = 1)
 }

@@ -2,20 +2,20 @@
 % Please edit documentation in R/tps_spatial_advanced.R
 \name{print.morie_tps_spatial_advanced_result}
 \alias{print.morie_tps_spatial_advanced_result}
-\title{Print method for advanced TPS spatial-analysis results}
+\title{Print method for \code{morie_tps_spatial_advanced_result} objects}
 \usage{
 \method{print}{morie_tps_spatial_advanced_result}(x, ...)
 }
 \arguments{
-\item{x}{A \code{morie_tps_spatial_advanced_result}.}
+\item{x}{A \code{morie_tps_spatial_advanced_result} object.}
 
-\item{...}{Unused.}
+\item{...}{Ignored; accepted for S3 consistency.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
-Print method for advanced TPS spatial-analysis results
+Print method for \code{morie_tps_spatial_advanced_result} objects
 }
 \examples{
 \donttest{

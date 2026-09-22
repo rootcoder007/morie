@@ -24,3 +24,7 @@ multiplicities. Returns a list (edges, indeg, outdeg);
 edges/indeg/outdeg are environments keyed by vertex (string),
 paralleling the Python dict-of-lists + counter-dicts.
 }
+\examples{
+de_bruijn_graph(reads = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), k = 5L)
+}
+\keyword{internal}

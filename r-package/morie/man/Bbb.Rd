@@ -20,3 +20,7 @@ contraction and shows as a wider-than-normal QRS; the published logic
 is a conjunction of duration and amplitude measurements on named
 leads, so a program applies it once those measurements exist.
 }
+\examples{
+Bbb(qrsdur = 5L)
+}
+\keyword{internal}

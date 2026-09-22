@@ -22,6 +22,10 @@ A list with \code{y}, \code{value}, \code{index}, \code{b}, \code{N},
 }
 \description{
 used.  Equal weights are the worst choice for stopband attenuation --
-a rectangle\'s sidelobes fall off slowly -- which is what the window
+a rectangle's sidelobes fall off slowly -- which is what the window
 functions of Section 3.4 exist to fix.
 }
+\examples{
+MaFir(c(1, 2, 3, 4), N = 1)
+}
+\keyword{internal}

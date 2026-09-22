@@ -276,6 +276,10 @@
 #' \code{cross_lag_x_to_y}, \code{cross_lag_y_to_x}, \code{parametrization},
 #' \code{caveat}.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie_clpm_coefficients(M, M)
+#' @keywords internal
 morie_clpm_coefficients <- function(X, Y) {
   xs <- .tmlcll_mat(X)
   ys <- .tmlcll_mat(Y)
@@ -328,6 +332,10 @@ morie_clpm_coefficients <- function(X, Y) {
 #' @return A list with \code{person_means}, \code{within}, \code{between_variance},
 #' \code{within_variance}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_within_between_decomposition(V)
+#' @keywords internal
 morie_within_between_decomposition <- function(P) {
   rows <- .tmlcll_mat(P)
   n <- nrow(rows)
@@ -355,6 +363,10 @@ morie_within_between_decomposition <- function(P) {
 #' \code{cross_lag_x_to_y}, \code{cross_lag_y_to_x}, \code{between_variance_x},
 #' \code{between_variance_y}, \code{parametrization}, \code{note}.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie_ri_clpm_coefficients(M, M)
+#' @keywords internal
 morie_ri_clpm_coefficients <- function(X, Y) {
   dx <- morie_within_between_decomposition(X)
   dy <- morie_within_between_decomposition(Y)
@@ -388,6 +400,10 @@ morie_ri_clpm_coefficients <- function(X, Y) {
 #' @return A list with \code{estimate}, \code{psi}, \code{epsilon}, \code{se}, \code{ci},
 #' \code{mean_eic}, \code{solves_eic}, \code{n_waves}, \code{method}, \code{note}.
 #' @export
+#' @examples
+#' morie_tmle_cross_lagged(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   X = c(1, 2, 3, 4, 5, 6, 7, 8), time = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_tmle_cross_lagged <- function(y, D, X, time, g = NULL, bounds = NULL) {
   yv <- .tmlcll_vec(y)
   a <- .tmlcll_vec(D)

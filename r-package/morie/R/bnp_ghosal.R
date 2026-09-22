@@ -86,8 +86,8 @@ morie_gh_discrete_hazard <- function(p) {
 #'   Cambridge University Press.
 #' @export
 #' @examples
-#' morie_gh_dp_posterior(G0_A = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5, n_in_A = c(1, 2,
-#' 3, 4, 5, 6, 7, 8), n = 5L)
+#' morie_gh_dp_posterior(G0_A = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5,
+#'   n_in_A = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L)
 morie_gh_dp_posterior <- function(G0_A, alpha, n_in_A, n) {
   pn <- if (n > 0) n_in_A / n else 0
   m <- alpha / (alpha + n) * G0_A + n / (alpha + n) * pn
@@ -115,8 +115,10 @@ morie_gh_dp_posterior <- function(G0_A, alpha, n_in_A, n) {
 #' morie_gh_dp_ndistinct(V, V)
 morie_gh_dp_ndistinct <- function(n, alpha) {
   i <- seq_len(n)
-  list(mean = sum(alpha / (alpha + i - 1)),
-       var = sum(alpha * (i - 1) / (alpha + i - 1)^2))
+  list(
+    mean = sum(alpha / (alpha + i - 1)),
+    var = sum(alpha * (i - 1) / (alpha + i - 1)^2)
+  )
 }
 
 #' Stick-breaking truncation level for a given residual tolerance
@@ -169,7 +171,7 @@ morie_gh_dp_median_cdf <- function(G_x, alpha, n_grid = 4000L) {
   u <- 0.5 + (seq_len(n_grid) - 0.5) * h
   u <- u[u < 1]
   sum(exp(lgamma(a + b) - lgamma(a) - lgamma(b) +
-            (a - 1) * log(u) + (b - 1) * log(1 - u))) * h
+    (a - 1) * log(u) + (b - 1) * log(1 - u))) * h
 }
 
 #' Log Ewens sampling formula for a partition given by multiplicities
@@ -249,8 +251,7 @@ morie_gh_py_eppf_log <- function(sizes, d, theta) {
 #'   Cambridge University Press.
 #' @export
 #' @examples
-#' morie_gh_wn_posterior(X = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L, prior_var = c(1, 2, 3, 4,
-#' 5, 6, 7, 8))
+#' morie_gh_wn_posterior(X = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L, prior_var = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_gh_wn_posterior <- function(X, n, prior_var) {
   lam <- prior_var
   list(mean = n * X / (n + 1 / lam), var = 1 / (n + 1 / lam))
@@ -411,8 +412,8 @@ morie_gh_renyi <- function(p, q, alpha = 0.5) {
 #'   Cambridge University Press.
 #' @export
 #' @examples
-#' morie_gh_dirichlet_moments(alpha = 0.5, j = c(1, 2, 3, 4, 5, 6, 7, 8), jp = c(1, 2, 3,
-#' 4, 5, 6, 7, 8))
+#' morie_gh_dirichlet_moments(alpha = 0.5, j = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   jp = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_gh_dirichlet_moments <- function(alpha, j, jp) {
   A <- sum(alpha)
   vr <- alpha[j] * (A - alpha[j]) / (A^2 * (A + 1))
@@ -510,6 +511,8 @@ morie_gh_ibp_expected_dishes <- function(n, alpha) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_gh_dp_predictive(V, V)
 morie_gh_dp_predictive <- function(alpha, n) {
-  list(weight_fresh = alpha / (alpha + n),
-       weight_per_obs = 1 / (alpha + n))
+  list(
+    weight_fresh = alpha / (alpha + n),
+    weight_per_obs = 1 / (alpha + n)
+  )
 }

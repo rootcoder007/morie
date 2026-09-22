@@ -36,22 +36,8 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-#' .tps_adv_result
-#'
-#' A step of the tps_spatial_advanced implementation. Called by
-#' \code{morie_tps_bivariate_moran}, \code{morie_tps_dbscan_clusters},
-#' \code{morie_tps_getis_ord_g_star} and 3 others in the module.
-#' See the file header for the source the module follows.
-#' for the source it follows.
-#'
-#' @param title Carried through into a list the body builds.
-#' @param call Carried through into a list the body builds.
-#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
-#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
-#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
-#' @param ... Passed through.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Tps Adv Result
+#' @noRd
 .tps_adv_result <- function(title, call,
                              summary_lines = list(),
                              warnings = character(0),
@@ -71,18 +57,8 @@ NULL
 }
 
 
-#' .tps_coords
-#'
-#' A step of the tps_spatial_advanced implementation. Called by
-#' \code{morie_tps_dbscan_clusters}, \code{morie_tps_ripley_k}.
-#' See the file header for the source the module follows.
-#' for the source it follows.
-#'
-#' @param df A matrix; indexed by row and column.
-#' @param lat_col Passed to \code{c}.
-#' @param lon_col Passed to \code{c}.
-#' @return A matrix, from \code{as.matrix}.
-#' @export
+#' Internal helper: Tps Coords
+#' @noRd
 .tps_coords <- function(df, lat_col, lon_col) {
   if (!all(c(lat_col, lon_col) %in% names(df))) {
     return(matrix(numeric(0), 0L, 2L))
@@ -94,18 +70,8 @@ NULL
 }
 
 
-#' .tps_haversine_km
-#'
-#' A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_bivariate_moran}.
-#' See the file header for the source the module follows.
-#' for the source it follows.
-#'
-#' @param lat1 Numeric; combined arithmetically in the body.
-#' @param lon1 Numeric; combined arithmetically in the body.
-#' @param lat2 Numeric; combined arithmetically in the body.
-#' @param lon2 Numeric; combined arithmetically in the body.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Tps Haversine Km
+#' @noRd
 .tps_haversine_km <- function(lat1, lon1, lat2, lon2) {
   Rk <- 6371
   rad <- pi / 180
@@ -116,17 +82,8 @@ NULL
 }
 
 
-#' .tps_knn_idx
-#'
-#' A step of the tps_spatial_advanced implementation. Called by
-#' \code{morie_tps_getis_ord_g_star}, \code{morie_tps_polygon_morans_i}.
-#' See the file header for the source the module follows.
-#' for the source it follows.
-#'
-#' @param coords A matrix; indexed by row and column.
-#' @param k A count; the body uses it as \code{seq_len(...)}.
-#' @return The value of \code{idx}, as built in the body.
-#' @export
+#' Internal helper: Tps Knn Idx
+#' @noRd
 .tps_knn_idx <- function(coords, k) {
   n <- nrow(coords)
   k <- min(as.integer(k), n - 1L)
@@ -560,17 +517,8 @@ morie_tps_dbscan_clusters <- function(df,
 # 4. Polygon-based Moran's I
 # ---------------------------------------------------------------------------
 
-#' `polygons` is an sf object with a geometry column. Use sf if
-#' available
-#'
-#' A step of the tps_spatial_advanced implementation. Called by
-#' \code{morie_tps_bivariate_moran}, \code{morie_tps_polygon_morans_i}.
-#' See the file header for the source the module follows.
-#' for the source it follows.
-#'
-#' @param polygons Passed to \code{inherits}.
-#' @return Nothing; the function is called for its effect.
-#' @export
+#' Internal helper: Tps Polygon Centroids
+#' @noRd
 .tps_polygon_centroids <- function(polygons) {
   # `polygons` is an sf object with a geometry column. Use sf if available
   if (requireNamespace("sf", quietly = TRUE) && inherits(polygons, "sf")) {
@@ -1040,11 +988,11 @@ morie_tps_moran_sweep_heatmap <- function(polygons,
 # Print method
 # ---------------------------------------------------------------------------
 
-#' Print method for advanced TPS spatial-analysis results
-#' @param x A \code{morie_tps_spatial_advanced_result}.
-#' @param ... Unused.
-#' @return Invisibly returns \code{x} unchanged.
-#' @export
+#' Print method for \code{morie_tps_spatial_advanced_result} objects
+#'
+#' @param x A \code{morie_tps_spatial_advanced_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
+#' @return \code{x}, invisibly.
 #' @examples
 #' \donttest{
 #' if (requireNamespace("dbscan", quietly = TRUE)) {

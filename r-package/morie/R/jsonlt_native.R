@@ -593,13 +593,20 @@ morie_jsonlt_base64url_dec <- function(input) {
 #'
 #' @param x the object to encode.
 #' @param
-#' dataframe,matrix,Date,POSIXt,factor,complex,raw,null,na,auto_unbox,digits,pretty,force,...
+#' dataframe,matrix,Date,POSIXt,factor,complex,raw,null,na,auto_unbox,digits,force
 #' as in jsonlite.
 #' @return a length-one character vector of class `json`.
+#' @param pretty FALSE, TRUE, or an indent width.
+#' @param ... toJSON options: dataframe (rows, columns, values), matrix
+#'   (rowmajor, columnmajor), Date (ISO8601, epoch), POSIXt (string,
+#'   ISO8601, epoch, mongo), factor (string, integer), complex (string,
+#'   list), raw (base64, hex, int, mongo), null (list, null), na (NULL,
+#'   null, string), auto_unbox, digits, force.
 #' @examples
-#' morie_jsonlt_to_json(list(a = 1:3, b = "x"), auto_unbox = TRUE)
-#' morie_jsonlt_to_json(data.frame(id = 1:2, v = c(1.5, NA)), pretty = TRUE)
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_jsonlt_to_json(V)
 #' @export
+#' @keywords internal
 morie_jsonlt_to_json <- function(x, dataframe = c("rows", "columns", "values"),
                                  matrix = c("rowmajor", "columnmajor"),
                                  Date = c("ISO8601", "epoch"),
@@ -629,10 +636,15 @@ morie_jsonlt_to_json <- function(x, dataframe = c("rows", "columns", "values"),
 
 #' Mark a value as a JSON scalar (jsonlite's unbox)
 #'
+#' R has no scalars, so a length-one vector is ambiguous. This resolves it for one value without turning auto_unbox on for the whole document.
+#'
 #' @param x an atomic vector of length one, a one-row data.frame, or a
 #'   length-one POSIXt.
 #' @return `x` with class `scalar`, so it is written without brackets.
 #' @export
+#' @examples
+#' morie_jsonlt_unbox(x = 5L)
+#' @keywords internal
 morie_jsonlt_unbox <- function(x) {
   if (is.null(x)) return(x)
   if (is.data.frame(x)) {
@@ -1017,6 +1029,7 @@ print.json <- function(x, ...) {
 #' morie_jsonlt_from_json('[{"a":1,"b":"x"},{"a":2,"b":"y"}]')
 #' morie_jsonlt_from_json('[[1,2],[3,4]]')
 #' @export
+#' @keywords internal
 morie_jsonlt_from_json <- function(txt, simplifyVector = TRUE,
                                    simplifyDataFrame = simplifyVector,
                                    simplifyMatrix = simplifyVector,
@@ -1292,10 +1305,15 @@ morie_jsonlt_validate <- function(txt) {
 
 #' Indent JSON text (jsonlite's prettify)
 #'
+#' Structure only: a comma inside a string stays a comma, which is why this walks characters rather than running a regular expression over the text.
+#'
 #' @param txt JSON text.
 #' @param indent spaces per level (negative = tabs).
 #' @return the same JSON, indented, with a trailing newline.
 #' @export
+#' @examples
+#' cat(morie_jsonlt_prettify('{"a":[1,2,{"b":null}]}'))
+#' @keywords internal
 morie_jsonlt_prettify <- function(txt, indent = 4) {
   stopifnot(is.numeric(indent))
   indent_string <- strrep(if (indent > 0) " " else "\t", as.integer(abs(indent)))
@@ -1307,6 +1325,9 @@ morie_jsonlt_prettify <- function(txt, indent = 4) {
 #' @param txt JSON text.
 #' @return the same JSON with no whitespace outside strings.
 #' @export
+#' @examples
+#' morie_jsonlt_minify('{ "a" : [ 1 , 2 ] }')
+#' @keywords internal
 morie_jsonlt_minify <- function(txt) .jsonlt_reformat(txt, FALSE)
 
 #' Expand nested data.frame columns (jsonlite's flatten)
@@ -1315,6 +1336,10 @@ morie_jsonlt_minify <- function(txt) .jsonlt_reformat(txt, FALSE)
 #' @param recursive expand nested frames all the way down.
 #' @return a data.frame whose nested columns became outer.inner columns.
 #' @export
+#' @examples
+#' df <- morie_jsonlt_from_json('[{"a":{"b":1,"c":{"d":2}}},{"a":{"b":3,"c":{"d":4}}}]')
+#' morie_jsonlt_flatten(df)
+#' @keywords internal
 morie_jsonlt_flatten <- function(x, recursive = TRUE) {
   stopifnot(is.data.frame(x))
   nr <- nrow(x)
@@ -1539,6 +1564,10 @@ morie_jsonlt_rbind_pages <- function(pages) {
 #' @param pretty indent the output.
 #' @return a length-one character vector of class `json`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_jsonlt_serialize(V)
+#' @keywords internal
 morie_jsonlt_serialize <- function(x, digits = 8, pretty = FALSE) {
   morie_jsonlt_to_json(.jsonlt_pack(x), digits = digits, pretty = pretty)
 }
@@ -1548,11 +1577,14 @@ morie_jsonlt_serialize <- function(x, digits = 8, pretty = FALSE) {
 #' @param txt JSON produced by [morie_jsonlt_serialize()].
 #' @return the original R object.
 #' @export
+#' @keywords internal
 morie_jsonlt_unserialize <- function(txt) .jsonlt_unpack(.jsonlt_parse(txt))
 
 # ================================================================ route
 
 #' jsonlite's JSON mapping, natively
+#'
+#' One entry point over every route, so the module can be driven the same way from either language arm.
 #'
 #' @param x the value or JSON text the route acts on.
 #' @param route one of to_json, from_json, prettify, minify, validate,
@@ -1560,6 +1592,9 @@ morie_jsonlt_unserialize <- function(txt) .jsonlt_unpack(.jsonlt_parse(txt))
 #' @param ... options for the chosen route.
 #' @return a list with route, result and method.
 #' @export
+#' @examples
+#' morie_jsonlt()
+#' @keywords internal
 morie_jsonlt <- function(x = NULL, route = "to_json", ...) {
   routes <- c("to_json", "from_json", "prettify", "minify", "validate", "flatten",
               "serialize", "unserialize", "base64_enc", "base64_dec")

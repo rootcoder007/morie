@@ -8,11 +8,28 @@
 #   becomes. Impact grades are the paper's own four: HIGH, MODERATE,
 #   LOW and MODIFIER. Translation uses NCBI genetic code table 1.
 
+.BASES <- "TCAG"
 .AA <- paste0("FFLLSSSSYY**CC*W",
               "LLLLPPPPHHQQRRRR",
               "IIIMTTTTNNKKSSRR",
               "VVVVAAAADDEEGGGG")
 
+.SNPEFF_CODONS <- local({
+  tbl <- list()
+  for (i in 1:4) {
+    for (j in 1:4) {
+      for (k in 1:4) {
+        b1 <- substr(.BASES, i, i)
+        b2 <- substr(.BASES, j, j)
+        b3 <- substr(.BASES, k, k)
+        tbl[[paste0(b1, b2, b3)]] <-
+          substr(.AA, (i - 1L) * 16L + (j - 1L) * 4L + k,
+                 (i - 1L) * 16L + (j - 1L) * 4L + k)
+      }
+    }
+  }
+  tbl
+})
 
 .SNPEFF_HIGH <- c("stop_gained", "stop_lost", "start_lost",
                   "frameshift_variant")
@@ -28,6 +45,9 @@
 #'
 #' @return The value of \code{.SNPEFF_CODONS}, as built in the body.
 #' @export
+#' @examples
+#' codon_table()
+#' @keywords internal
 codon_table <- function() .SNPEFF_CODONS
 
 #' translate
@@ -232,6 +252,7 @@ annotate_variant <- function(cds, pos, ref, alt, cds_start = 0,
 #' @return A list with \code{estimate}, \code{annotations}, \code{effect_counts},
 #' \code{impact_counts}, \code{n_variants}, \code{protein}, \code{method}, \code{note}.
 #' @export
+#' @keywords internal
 snpeff <- function(cds, variants, cds_start = 0, upstream = 5000,
                    downstream = 5000, transcript_len = NULL) {
   if (length(variants) == 0L)
@@ -314,22 +335,3 @@ morie_snpeff <- list(snpeff = snpeff,
                      cheatsheet = .snpeff_cheatsheet,
                      variant_effect = variant_effect,
                      varianteffect = varianteffect)
-
-.BASES <- "TCAG"
-
-.SNPEFF_CODONS <- local({
-  tbl <- list()
-  for (i in 1:4) {
-    for (j in 1:4) {
-      for (k in 1:4) {
-        b1 <- substr(.BASES, i, i)
-        b2 <- substr(.BASES, j, j)
-        b3 <- substr(.BASES, k, k)
-        tbl[[paste0(b1, b2, b3)]] <-
-          substr(.AA, (i - 1L) * 16L + (j - 1L) * 4L + k,
-                 (i - 1L) * 16L + (j - 1L) * 4L + k)
-      }
-    }
-  }
-  tbl
-})

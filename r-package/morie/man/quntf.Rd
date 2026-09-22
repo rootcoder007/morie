@@ -23,7 +23,7 @@ se(Q(tau)) ~~ sqrt(tau(1-tau) / (n f(Q(tau))^2)),
 with f estimated by a Gaussian kernel (Silverman's rule bandwidth).
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-quntf(V)
+set.seed(1)
+morie_quantile_function(rnorm(100))
 }
 \keyword{internal}

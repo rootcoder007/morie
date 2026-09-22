@@ -40,8 +40,12 @@ Searchhoriz <- function(depth_limit, state, rewards = NULL, values = NULL,
   boot <- if (length(v)) {
     idx <- if (l < length(v)) l else length(v) - 1L
     (g^(l - kk)) * v[idx + 1L]
-  } else 0
-  list(estimate = part + boot, bootstrap = boot, reward_part = part,
-       depth = l, state = state,
-       method = "Truncated search return: discounted rewards + bootstrapped value")
+  } else {
+    0
+  }
+  list(
+    estimate = part + boot, bootstrap = boot, reward_part = part,
+    depth = l, state = state,
+    method = "Truncated search return: discounted rewards + bootstrapped value"
+  )
 }

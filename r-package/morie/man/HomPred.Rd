@@ -23,3 +23,7 @@ add (eq 4.66), exponentiating the sum gives the CIRCULAR convolution
 of the components -- reconstructing linearly leaves a wrap-around
 error that looks like a failure of the separation.
 }
+\examples{
+HomPred(y = c(1, 2, 3, 4, 5, 6, 7, 8), cutoff = 1)
+}
+\keyword{internal}

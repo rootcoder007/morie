@@ -40,3 +40,8 @@ A step of the survrsf_native implementation. Called by \code{morie_survrsf_fores
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_survrsf_grow_tree(X = c(1, 2, 3, 4, 5, 6, 7, 8), times = c(1, 2, 3, 4, 5, 6, 7, 8),
+  events = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

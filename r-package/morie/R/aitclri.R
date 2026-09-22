@@ -27,6 +27,8 @@ Clrinv <- function(z, total = 1) {
   e <- exp(z - max(z))
   s <- sum(e)
   k <- as.numeric(total)
-  .t1_result(composition = k * e / s, total = k, D = length(z),
-             method = "Inverse centred log-ratio transform")
+  .t1_result(
+    composition = k * e / s, total = k, D = length(z),
+    method = "Inverse centred log-ratio transform"
+  )
 }

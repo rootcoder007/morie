@@ -35,6 +35,8 @@ Coslrate <- function(t, T, lr_0 = 0.2, kind = "cosine", floor = 0) {
     lr <- as.numeric(floor) + (as.numeric(lr_0) - as.numeric(floor)) * 0.5 *
       (1 + cos(pi * frac))
   }
-  list(estimate = lr, lr = lr, frac = frac, kind = kind,
-       method = "Cosine annealing (default) or AlphaZero's printed step schedule")
+  list(
+    estimate = lr, lr = lr, frac = frac, kind = kind,
+    method = "Cosine annealing (default) or AlphaZero's printed step schedule"
+  )
 }

@@ -23,3 +23,7 @@ A step of the scumap_native implementation. Called by \code{morie_scumap_umap_si
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_scumap_fit_ab()
+}
+\keyword{internal}

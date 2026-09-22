@@ -23,3 +23,8 @@ A step of the yolovx_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_yolovx_decode_box(ltrb = c(1, 2, 3, 4, 5, 6, 7, 8), cx = c(1, 2, 3, 4, 5, 6, 7, 8),
+  cy = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

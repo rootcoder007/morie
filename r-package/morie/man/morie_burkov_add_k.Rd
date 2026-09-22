@@ -13,6 +13,13 @@ morie_burkov_add_k(counts_ngram, counts_prefix, V, k = 0.5)
 
 \item{k}{Pseudo-count, positive.}
 }
+\value{
+A list with \code{estimate}, \code{count_ngram}, \code{count_prefix}, \code{vocab_size}, \code{k}, \code{n}, \code{method}.
+}
 \description{
 Add-k smoothing (Burkov Ch 2)
 }
+\examples{
+morie_burkov_add_k(counts_ngram = 3, counts_prefix = 10, V = 100, k = 0.5)
+}
+\keyword{internal}

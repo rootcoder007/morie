@@ -17,3 +17,8 @@ A list with \code{magnitude}, \code{omega}, \code{book_prints_one_over_omega},
 the response is plotted; a magnitude cannot be negative, so the
 absolute value is taken here.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+IntMag(V)
+}
+\keyword{internal}

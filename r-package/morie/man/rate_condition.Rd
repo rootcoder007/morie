@@ -22,3 +22,7 @@ A step of the tlhaltm_native implementation. Called by \code{morie_tlhaltm}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+rate_condition(rate_Q = 5L, rate_g = 5L, n = 5L)
+}
+\keyword{internal}

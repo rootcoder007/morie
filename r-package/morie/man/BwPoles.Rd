@@ -24,3 +24,7 @@ apart, symmetric about the imaginary axis and never on it.  For odd N
 a pole falls on the real axis.  Complex poles come in conjugate
 pairs, which keeps the filter coefficients real.
 }
+\examples{
+BwPoles(Omega_c = 5L, N = 5L)
+}
+\keyword{internal}

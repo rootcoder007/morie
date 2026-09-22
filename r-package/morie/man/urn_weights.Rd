@@ -21,7 +21,11 @@ The new-cluster weight is \code{alpha/(alpha+n)} exactly,
 and is returned separately because it IS the model's answer
 to "how likely is something new".
 }
+\examples{
+urn_weights(counts = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5)
+}
 \references{
 Muller, P. & Quintana, F. A. (2004). Statistical
 Science, 19(1), 95-110.
 }
+\keyword{internal}

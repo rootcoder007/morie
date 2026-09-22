@@ -42,3 +42,12 @@ Update is the paper's own:
 \code{z_j = log(mu_j / s_j) + (K_j - mu_j) / mu_j} and
 \code{w_jj = 1 / (1/mu_j + alpha)}.
 }
+\examples{
+set.seed(1)
+m <- 6
+X <- cbind(1, rep(c(0, 1), each = 3))
+K <- c(rpois(3, 50), rpois(3, 90))
+r <- nb_glm_fit(K, X, alpha = 0.1)
+str(r, max.level = 1)
+}
+\keyword{internal}

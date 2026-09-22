@@ -14,10 +14,13 @@ sidak(p_values, alpha = 0.05, labels = NULL)
 \item{labels}{Optional character vector of test labels.}
 }
 \value{
-A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
+An object of class \code{"morie_multiple_testing_result"}.
 }
 \description{
 Slightly less conservative than Bonferroni under independence.
+Computes \eqn{1 - (1 - p)^m} directly (closed form); the
+\pkg{mutoss} package offers an equivalent step-down variant via
+\code{mutoss::SidakSD}.
 }
 \examples{
 if (requireNamespace("mutoss", quietly = TRUE)) {

@@ -24,3 +24,7 @@ realised cutoff BELOW the one asked for, and increasingly so towards
 Nyquist. A digital frequency of pi maps to an infinite analog
 frequency and is refused rather than clipped.
 }
+\examples{
+BilinWarp(omega = list(a = 1, b = 2))
+}
+\keyword{internal}

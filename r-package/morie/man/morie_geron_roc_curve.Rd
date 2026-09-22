@@ -19,8 +19,8 @@ TPR against FPR over the distinct scores (ties collapsed into one
 point), AUC by the trapezoid rule.
 }
 \examples{
-y <- c(1, 1, 0, 0, 1, 0, 1, 1)
-morie_geron_information_gain(y, left_mask = c(TRUE, TRUE, TRUE, FALSE,
-                                              FALSE, FALSE, TRUE, FALSE))
-morie_geron_roc_curve(y_true = y, y_scores = y)
+set.seed(1)
+y <- rbinom(30, 1, 0.5)
+s <- y + rnorm(30, 0, 0.7)
+morie_geron_roc_curve(y, s)
 }

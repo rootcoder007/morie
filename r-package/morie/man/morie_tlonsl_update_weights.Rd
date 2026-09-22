@@ -17,3 +17,8 @@ A numeric value.
 \description{
 cumulative losses are sufficient, so the update is O(1) in memory.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_tlonsl_update_weights(V)
+}
+\keyword{internal}

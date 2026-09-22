@@ -23,3 +23,10 @@ in Section 10.2.3.  The clinical question -- is there an alpha rhythm
 -- is answered by the fraction of power in that band, not by the
 power.
 }
+\examples{
+set.seed(3)
+fs <- 100
+eeg <- sin(2 * pi * 10 * seq(0, 4, by = 1 / fs)) + 0.3 * rnorm(401)
+EegBands(eeg, fs = fs)
+}
+\keyword{internal}

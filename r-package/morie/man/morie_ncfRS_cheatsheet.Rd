@@ -14,3 +14,7 @@ A step of the ncfRS_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_ncfRS_cheatsheet()
+}
+\keyword{internal}

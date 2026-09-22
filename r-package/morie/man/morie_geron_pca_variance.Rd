@@ -21,6 +21,14 @@ morie_geron_pca_variance(
 
 \item{n_probes, seed}{Random-direction check controls.}
 }
+\value{
+A list with \code{explained_variance}, \code{explained_variance_ratio}, \code{cumulative}, \code{n_components_for_threshold}, \code{top_variance}, \code{probe_max}, \code{covariance}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 PCA variance accounting: cumulative ratio, threshold cut, probe check (Geron Ch 7, hmpcav)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_pca_variance(V)
+}
+\keyword{internal}

@@ -19,7 +19,7 @@
 # maximum weight) along a path of penalties that runs from the
 # unpenalized fit to the unadjusted limit.
 
-#' .shdsmw_vec
+#' .vec
 #'
 #' A step of the shdsmw_native implementation. Called by \code{.shdsmw_wls}, \code{shrinkage_msm}.
 #' See the file header for the source the module follows.
@@ -30,9 +30,9 @@
 #' @export
 #' @examples
 #' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .shdsmw_vec(x = x)
+#' res <- .vec(x = x)
 #' res
-.shdsmw_vec <- function(x) as.numeric(as.matrix(x))
+.vec <- function(x) as.numeric(as.matrix(x))
 
 #' .hist
 #'
@@ -231,7 +231,9 @@ shrinkage_msm <- function(y, treatment_history, covariate_history,
 #' @param covariate_history See Usage.
 #' @param path See Usage.
 #' @param contrast See Usage.
+#' @return The value of `$`.
 #' @export
+#' @keywords internal
 penalty_path <- function(y, treatment_history, covariate_history,
                          path = NULL, contrast = "cumulative") {
   r <- shrinkage_msm(y, treatment_history, covariate_history, lam = 0.0,
@@ -241,18 +243,3 @@ penalty_path <- function(y, treatment_history, covariate_history,
 
 # house entry point: the package exports one morie_<module>
 morie_shdsmw <- shrinkage_msm
-
-#' .vec
-#'
-#' A step of the shdsmw_native implementation. Called by \code{.shdsmw_wls}, \code{shrinkage_msm}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param x A matrix; passed to \code{as.matrix}.
-#' @return A vector, from \code{as.numeric}.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .vec(x = x)
-#' res
-.vec <- function(x) as.numeric(as.matrix(x))

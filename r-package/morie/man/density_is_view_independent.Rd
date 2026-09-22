@@ -9,9 +9,9 @@ density_is_view_independent(model, point, directions, tol = 1e-09)
 \arguments{
 \item{model}{Accepted by the signature and not used anywhere in the body.}
 
-\item{point}{Passed to \code{.as_numeric_vec}.}
+\item{point}{Passed to \code{.nrfrad_vec}.}
 
-\item{directions}{A vector; its length is taken and its elements indexed.}
+\item{directions}{Iterated over elementwise, with \code{vapply}.}
 
 \item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.}
 }
@@ -19,7 +19,15 @@ density_is_view_independent(model, point, directions, tol = 1e-09)
 A list with \code{sigmas}, \code{max_deviation}, \code{view_independent}, \code{note}.
 }
 \description{
-A step of the nrfrad_native implementation. Called by \code{morie_nrfrad}.
+A step of the nrfrad_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+model <- function(p, d) list(sigma = sum(p^2), rgb = c(0.5, 0.5, 0.5))
+r <- density_is_view_independent(model, point = c(1, 2, 3),
+                                 directions = list(c(1, 0, 0), c(0, 1, 0),
+                                                   c(0, 0, 1)))
+r$max_deviation < 1e-9
+}
+\keyword{internal}

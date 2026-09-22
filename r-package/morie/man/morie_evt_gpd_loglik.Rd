@@ -11,6 +11,13 @@ morie_evt_gpd_loglik(y, sigma, xi)
 
 \item{sigma, xi}{GPD scale (> 0) and shape}
 }
+\value{
+A numeric value.
+}
 \description{
 GPD log-likelihood over excesses (Coles 2001 eq. 4.10)
 }
+\examples{
+morie_evt_gpd_loglik(y = c(1, 2, 3, 4, 5, 6, 7, 8), sigma = 0.5, xi = 5L)
+}
+\keyword{internal}

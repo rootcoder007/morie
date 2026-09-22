@@ -23,3 +23,9 @@ A step of the phylby_native implementation. Called by \code{morie_phylby}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_phylby_swap_acceptance(beta_j = c(1, 2, 3, 4, 5, 6, 7, 8),
+  beta_k = c(1, 2, 3, 4, 5, 6, 7, 8), logp_j = c(1, 2, 3, 4, 5, 6, 7, 8),
+  logp_k = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -7,15 +7,20 @@
 greedy_decode(emissions, labels)
 }
 \arguments{
-\item{emissions}{A vector; its length is taken and its elements indexed.}
+\item{emissions}{A matrix; passed to \code{as.matrix}.}
 
 \item{labels}{A vector; indexed elementwise.}
 }
 \value{
-A vector, from \code{sapply}.
+The value of \code{apply}.
 }
 \description{
 A step of the benRea_native implementation. Called by \code{ner_decode}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+greedy_decode(V, V)
+}
+\keyword{internal}

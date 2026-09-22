@@ -17,6 +17,9 @@ Ldiff(X, quasi_ids, sensitive, l, c = 1)
 
 \item{c}{See Usage.}
 }
+\value{
+The value of \code{Dpld}.
+}
 \description{
 Alias of \code{Dpld}, which implements distinct, entropy and
 recursive (c, l)-diversity of Machanavajjhala et al. (2007). The
@@ -33,3 +36,4 @@ Delegating wrapper (not a bare assignment) so that source collation
 order does not matter at load time; the body is a single call to the
 target, so outputs are exactly identical.
 }
+\keyword{internal}

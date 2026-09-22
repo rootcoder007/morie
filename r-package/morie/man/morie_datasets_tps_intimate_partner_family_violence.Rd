@@ -18,7 +18,7 @@ morie_datasets_tps_intimate_partner_family_violence(
 \item{max_features}{Optional cap on returned rows
 (\code{offline = FALSE} only).}
 
-\item{offline}{If \code{TRUE} (default), read the bundled synthetic
+\item{offline}{If \code{TRUE} (default), read the included synthetic
 fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 (5 rows in the canonical TPS PSDP 22-column schema). If
 \code{FALSE}, hit the TPS PSDP ArcGIS FeatureServer.}
@@ -26,19 +26,15 @@ fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 \item{layer_url}{Optional ArcGIS layer URL override.}
 }
 \value{
-A \code{data.frame} of TPS Public Safety Data Portal Intimate
-Partner and Family Violence records, either the bundled
-\code{tps_psdp_intimate_partner_family_violence_sample.csv} fixture
-when \code{offline = TRUE} or a live TPS Hub / FeatureServer query
-when \code{offline = FALSE}. Columns mirror the upstream 15-column
-Cluster-E schema (INDEX + HISTORICAL + FAMILY_VIOLENCE_FLAG +
-RELATION + COUNT) with HOOD_158 + HOOD_140 attached.
+A \code{data.frame}.
 }
 \description{
 TPS PSDP -- Intimate Partner and Family Violence
 }
 \examples{
 df <- morie_datasets_tps_intimate_partner_family_violence(offline = TRUE)
-head(df[, c("INDEX", "FAMILY_VIOLENCE_FLAG",
-            "FAMILY_VIOLENCE_RELATION", "COUNT")])
+head(df[, c(
+  "INDEX", "FAMILY_VIOLENCE_FLAG",
+  "FAMILY_VIOLENCE_RELATION", "COUNT"
+)])
 }

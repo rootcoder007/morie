@@ -9,7 +9,7 @@ morie_tps_load(name, format = "csv", nrows = NULL)
 \arguments{
 \item{name}{TPS category. Case-insensitive.}
 
-\item{format}{One of \link{MORIE_TPS_SUPPORTED_FORMATS}.}
+\item{format}{One of [MORIE_TPS_SUPPORTED_FORMATS].}
 
 \item{nrows}{Optional integer cap on rows.}
 }
@@ -27,6 +27,7 @@ the dependency is missing.
 }
 \examples{
 \donttest{
-morie_tps_load("Assault", format = "csv", nrows = 2L)
+# Reads from the local TPS cache dir (populate via morie_tps_fetch_category):
+df <- morie_tps_load("Assault", format = "csv", nrows = 100L)
 }
 }

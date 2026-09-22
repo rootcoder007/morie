@@ -87,101 +87,38 @@ KERNEL_BIWEIGHT <- 4L
 # Internal kernel functions
 # ---------------------------------------------------------------------------
 
-#' .kernel_gaussian
-#'
-#' A step of the semipar_bridge implementation. Called by \code{kernel_cond_moments},
-#' \code{local_linear}, \code{loocv_bandwidth} and 1 others in the module.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param u Numeric; combined arithmetically in the body.
-#' @return A numeric value.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .kernel_gaussian(u = x)
-#' res
+#' Internal helper: Kernel Gaussian
+#' @noRd
 .kernel_gaussian <- function(u) {
   (1.0 / sqrt(2.0 * pi)) * exp(-0.5 * u * u)
 }
 
-#' .kernel_epanechnikov
-#'
-#' A step of the semipar_bridge implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param u Numeric; passed to \code{abs}.
-#' @return The value of \code{ifelse}.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .kernel_epanechnikov(u = x)
-#' res
+#' Internal helper: Kernel Epanechnikov
+#' @noRd
 .kernel_epanechnikov <- function(u) {
   ifelse(abs(u) <= 1.0, 0.75 * (1.0 - u * u), 0.0)
 }
 
-#' .kernel_uniform
-#'
-#' A step of the semipar_bridge implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param u Numeric; passed to \code{abs}.
-#' @return The value of \code{ifelse}.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .kernel_uniform(u = x)
-#' res
+#' Internal helper: Kernel Uniform
+#' @noRd
 .kernel_uniform <- function(u) {
   ifelse(abs(u) <= 1.0, 0.5, 0.0)
 }
 
-#' .kernel_triangular
-#'
-#' A step of the semipar_bridge implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param u Numeric; passed to \code{abs}.
-#' @return The value of \code{ifelse}.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .kernel_triangular(u = x)
-#' res
+#' Internal helper: Kernel Triangular
+#' @noRd
 .kernel_triangular <- function(u) {
   ifelse(abs(u) <= 1.0, 1.0 - abs(u), 0.0)
 }
 
-#' .kernel_biweight
-#'
-#' A step of the semipar_bridge implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param u Numeric; passed to \code{abs}.
-#' @return The value of \code{ifelse}.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .kernel_biweight(u = x)
-#' res
+#' Internal helper: Kernel Biweight
+#' @noRd
 .kernel_biweight <- function(u) {
   ifelse(abs(u) <= 1.0, (15.0 / 16.0) * (1.0 - u * u) ^ 2, 0.0)
 }
 
-#' .kernel_fn
-#'
-#' A step of the semipar_bridge implementation. Called by \code{kde}, \code{kernel_eval}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param kernel_type Numeric; combined arithmetically in the body.
-#' @return The value of \code{switch}.
-#' @export
+#' Internal helper: Kernel Fn
+#' @noRd
 .kernel_fn <- function(kernel_type) {
   switch(kernel_type + 1L,
          .kernel_gaussian,
@@ -192,16 +129,8 @@ KERNEL_BIWEIGHT <- 4L
          .kernel_gaussian)
 }
 
-#' .resolve_kernel
-#'
-#' A step of the semipar_bridge implementation. Called by \code{kde}, \code{kernel_eval},
-#' \code{SemiparKernels}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param kernel Character; passed to \code{tolower}.
-#' @return Nothing; this branch always raises.
-#' @export
+#' Internal helper: Resolve Kernel
+#' @noRd
 .resolve_kernel <- function(kernel) {
   if (is.numeric(kernel)) return(as.integer(kernel))
   if (is.character(kernel)) {
@@ -256,10 +185,11 @@ kernel_eval <- function(u, kernel_type = KERNEL_GAUSSIAN) {
 #' @return Numeric vector of fitted values at \code{x_eval}.
 #' @references Nadaraya, E. A. (1964). On Estimating Regression.
 #'   \emph{Theory of Probability and Its Applications}, 9(1), 141-142.
-#' @export
 #' @examples
-#' nw_regression(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), x_eval =
-#' c(1, 2, 3, 4, 5, 6, 7, 8), bandwidth = 0.5)
+#' set.seed(1)
+#' x <- runif(80); y <- sin(2 * pi * x) + rnorm(80, 0, 0.2)
+#' head(nw_regression(x, y, x_eval = seq(0, 1, 0.25), bandwidth = 0.1))
+#' @export
 nw_regression <- function(x, y, x_eval, bandwidth) {
   x <- as.numeric(x)
   y <- as.numeric(y)
@@ -392,10 +322,10 @@ kde <- function(x, x_eval, bandwidth, kernel_type = KERNEL_GAUSSIAN) {
 #' @param x Numeric data vector.
 #' @return Bandwidth (numeric scalar).
 #' @references Silverman, B. W. (1986), p. 48.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' silverman_bandwidth(V)
+#' set.seed(1)
+#' silverman_bandwidth(rnorm(100))
+#' @export
 silverman_bandwidth <- function(x) {
   x <- as.numeric(x)
   n <- length(x)
@@ -587,9 +517,9 @@ gam_smoother <- function(x, y, x_eval = NULL, k = 10, family = stats::gaussian()
 #'   methods \code{nw_regression}, \code{local_linear}, \code{kde},
 #'   \code{silverman_bandwidth}, \code{loocv_bandwidth},
 #'   \code{kernel_cond_moments}, plus a \code{backend} string.
-#' @export
 #' @examples
-#' SemiparKernels()
+#' str(SemiparKernels(), max.level = 1)
+#' @export
 SemiparKernels <- function() {
   obj <- list(
     backend = "r",
@@ -621,13 +551,13 @@ SemiparKernels <- function() {
 #'
 #' @param x A \code{morie_semipar_kernels} object.
 #' @param ... Ignored; accepted for S3 consistency.
-#' @return Invisibly returns \code{x} unchanged.
-#' @export
+#' @return \code{x}, invisibly.
 #' @examples
 #' \donttest{
-#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' morie:::print.morie_semipar_kernels(D)
+#' obj <- str(SemiparKernels(), max.level = 1)
+#' print(obj)
 #' }
+#' @export
 print.morie_semipar_kernels <- function(x, ...) {
   cat("morie SemiparKernels\
 ")

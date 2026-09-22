@@ -1,13 +1,24 @@
-# morie.fn -- function file (rootcoder007/morie)
 # Intrinsic Curiosity Module: curiosity as forward-model error in a
 # learned, action-relevant feature space.
+# Sources: Pathak, D., Agrawal, P., Efros, A. A., & Darrell, T.
+# (2017) "Curiosity-driven Exploration by Self-supervised
+# Prediction", *ICML*, arXiv:1705.05363. Eq. (2)-(3) for the inverse
+# model, eq. (4)-(5) for the forward model, eq. (6) for the
+# intrinsic reward, eq. (7) for the joint policy/inverse/forward
+# objective with beta in [0, 1] and lambda > 0.
 #
-# References
-# Pathak, D., Agrawal, P., Efros, A. A., & Darrell, T. (2017)
-# "Curiosity-driven Exploration by Self-supervised Prediction", ICML,
-# arXiv:1705.05363. Eqs. 2-7.
+# Native implementation mirroring Python morie.fn.explor exactly: the
+# same ICM structure (feature map phi trained ONLY through the
+# inverse model, inverse dynamics g(phi(s), phi(s')) -> a, forward
+# dynamics f(phi(s), a) -> phi(s')), the same softmax inverse model
+# for discrete actions and squared-error inverse model for continuous
+# actions, the same intrinsic reward r^i = eta * L_F (so the eta/2
+# factor is absorbed into L_F as the Python code does), the same
+# 0.1/sqrt(d) tanh-friendly small init for the feature encoder, the
+# same (1-beta) L_I + beta L_F training signal, and the same
+# features="identity" baseline that falls for the noisy TV.
 
-.explor_EPS <- 1e-300
+.EXPLOR_FEATURES <- c("inverse", "identity")
 
 #' .mat
 #'
@@ -15,9 +26,9 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x A matrix; passed to \code{nrow}.
-#' @param name Passed to \code{sprintf}.
-#' @return The value of \code{X}, as built in the body.
+#' @param x A matrix; passed to \code{as.matrix}.
+#' @param name Passed to \code{stop}.
+#' @return The value of \code{lapply}.
 #' @export
 #' @examples
 #' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
@@ -25,11 +36,10 @@
 #' res <- .mat(x = x, name = txt)
 #' res
 .mat <- function(x, name) {
-  if (is.data.frame(x)) x <- as.matrix(x)
-  x <- as.matrix(x)
-  if (nrow(x) == 0L || ncol(x) == 0L) stop(sprintf("explor: %s must be non-empty", name))
-  X <- matrix(as.numeric(x), nrow = nrow(x))
-  X
+  X <- as.matrix(x)
+  if (nrow(X) == 0L || ncol(X) == 0L)
+    stop("explor: ", name, " must be non-empty")
+  lapply(seq_len(nrow(X)), function(i) as.numeric(X[i, ]))
 }
 
 #' .matvec
@@ -38,20 +48,17 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param W A matrix; indexed by row and column.
-#' @param x A vector; its length is taken and its elements indexed.
-#' @return The value of \code{out}, as built in the body.
+#' @param W A matrix; passed to \code{\%*\%}.
+#' @param x Coerced to vector by the body, with \code{as.vector}.
+#' @return A vector, from \code{as.numeric}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .matvec(W = x, x = x)
+#' res
 .matvec <- function(W, x) {
-  n_out <- ncol(W)
-  out <- rep(0, n_out)
-  for (j in seq_along(x)) {
-    xj <- x[j]
-    if (xj == 0) next
-    row <- W[j, ]
-    for (o in seq_len(n_out)) out[o] <- out[o] + row[o] * xj
-  }
-  out
+  W <- as.matrix(W)
+  as.numeric(as.vector(x) %*% W)
 }
 
 #' .explor_softmax
@@ -70,8 +77,7 @@
 .explor_softmax <- function(z) {
   m <- max(z)
   e <- exp(z - m)
-  s <- sum(e)
-  e / s
+  e / sum(e)
 }
 
 #' explor
@@ -85,136 +91,154 @@
 #' @param next_states Passed to \code{.mat}.
 #' @param n_actions Optional; may be \code{NULL}. Coerced to integer by the body, with
 #' \code{as.integer}.
-#' @param n_features Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8L}.
+#' @param n_features Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8}.
 #' @param eta Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @param beta Numeric; combined arithmetically in the body. Defaults to \code{0.2}.
 #' @param lr Numeric; combined arithmetically in the body. Defaults to \code{0.05}.
-#' @param epochs Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1L}.
-#' @param features One of \code{"identity"}, \code{"inverse"}. Defaults to \code{"inverse"}.
+#' @param epochs Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.
+#' @param features Compared against \code{"identity"}. Defaults to \code{"inverse"}.
 #' @param discrete A flag; the body branches on it. Defaults to \code{TRUE}.
-#' @param seed Passed to \code{.ghc_rng}. Defaults to \code{0L}.
+#' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @return The value of \code{payload}, as built in the body.
 #' @export
+#' @examples
+#' explor(states = c(1, 2, 3, 4, 5, 6, 7, 8), actions = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   next_states = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 explor <- function(states, actions, next_states, n_actions = NULL,
-                   n_features = 8L, eta = 1.0, beta = 0.2, lr = 0.05,
-                   epochs = 1L, features = "inverse", discrete = TRUE,
-                   seed = 0L) {
-  if (!(features %in% c("inverse", "identity"))) {
-    stop(sprintf("explor: features must be one of %s, got %s",
-                 paste(sQuote(c("inverse", "identity")), collapse = ", "),
-                 sQuote(features)))
-  }
+                   n_features = 8, eta = 1, beta = 0.2, lr = 0.05,
+                   epochs = 1, features = "inverse", discrete = TRUE,
+                   seed = 0) {
+  if (!(features %in% .EXPLOR_FEATURES))
+    stop("explor: features must be one of ",
+         paste(sQuote(.EXPLOR_FEATURES), collapse = ", "), ", got ",
+         deparse(features))
   eta <- as.numeric(eta)
-  if (!(eta > 0)) stop("explor: eta must be > 0")
+  if (!(eta > 0))
+    stop("explor: eta must be > 0")
   beta <- as.numeric(beta)
-  if (beta < 0 || beta > 1) stop("explor: beta must lie in [0, 1]")
-
+  if (!(beta >= 0 && beta <= 1))
+    stop("explor: beta must lie in [0, 1]")
   S <- .mat(states, "states")
   S1 <- .mat(next_states, "next_states")
-  if (nrow(S) != nrow(S1)) {
+  if (length(S) != length(S1))
     stop("explor: states and next_states must have the same length")
-  }
-  if (ncol(S) != ncol(S1)) {
+  if (length(S[[1]]) != length(S1[[1]]))
     stop("explor: states and next_states must have the same width")
-  }
-  T <- nrow(S)
-  d <- ncol(S)
+  T <- length(S)
+  d <- length(S[[1]])
 
-  if (isTRUE(discrete)) {
-    Avec <- as.integer(as.vector(actions))
-    if (length(Avec) != T) {
-      stop(sprintf("explor: got %d actions for %d transitions",
-                   length(Avec), T))
-    }
-    nA <- if (is.null(n_actions)) max(Avec) + 1L else as.integer(n_actions)
-    if (nA < 2L) stop("explor: need at least 2 discrete actions")
-    if (min(Avec) < 0L || max(Avec) >= nA) {
+  if (discrete) {
+    A <- as.integer(as.numeric(actions))
+    if (length(A) != T)
+      stop("explor: got ", length(A), " actions for ", T, " transitions")
+    nA <- if (is.null(n_actions)) max(A) + 1L else as.integer(n_actions)
+    if (nA < 2L)
+      stop("explor: need at least 2 discrete actions")
+    if (min(A) < 0L || max(A) >= nA)
       stop("explor: action index out of range")
-    }
     a_dim <- nA
   } else {
     Ac <- .mat(actions, "actions")
-    if (nrow(Ac) != T) {
-      stop(sprintf("explor: got %d actions for %d transitions",
-                   nrow(Ac), T))
-    }
-    a_dim <- ncol(Ac)
+    if (length(Ac) != T)
+      stop("explor: got ", length(Ac), " actions for ", T, " transitions")
+    a_dim <- length(Ac[[1]])
   }
 
-  rng <- .ghc_rng(seed)
+  e <- .ghc_rng(as.numeric(seed))
   if (features == "identity") {
     k <- d
     Wphi <- NULL
   } else {
     k <- as.integer(n_features)
-    if (k < 1L) stop("explor: n_features must be >= 1")
+    if (k < 1L)
+      stop("explor: n_features must be >= 1")
+    # Small init: tanh saturated at initialisation has no gradient,
+    # and phi is trained, so it must start in its linear regime.
     s <- 0.1 / sqrt(d)
-    raw <- .ghc_unif(rng, d * k)
-    Wphi <- matrix(raw * 2 * s - s, nrow = d, ncol = k)
+    u <- .ghc_unif(e, d * k, low = -1, high = 1)
+    Wphi <- matrix(u * s, nrow = d, ncol = k)
   }
 
   phi <- function(x) {
     if (is.null(Wphi)) return(as.numeric(x))
-    v <- .matvec(Wphi, as.numeric(x))
-    tanh(v)
+    tanh(.matvec(Wphi, x))
   }
 
+  # Inverse model g: (phi(s), phi(s')) -> action.  Forward model f:
+  # (phi(s), a) -> phi(s').  Both linear in their inputs.
   Winv <- matrix(0, nrow = 2L * k, ncol = a_dim)
   Wfwd <- matrix(0, nrow = k + a_dim, ncol = k)
 
   curve <- numeric(0)
+  rewards <- numeric(0)
+  lf_tot <- 0
+  li_tot <- 0
+  n_correct <- 0
   for (ep in seq_len(max(1L, as.integer(epochs)))) {
     rewards <- numeric(T)
     lf_tot <- 0
     li_tot <- 0
-    n_correct <- 0L
+    n_correct <- 0
     for (t in seq_len(T)) {
-      p <- phi(S[t, ])
-      p1 <- phi(S1[t, ])
-      if (isTRUE(discrete)) {
+      p <- phi(S[[t]])
+      p1 <- phi(S1[[t]])
+      if (discrete) {
         avec <- rep(0, a_dim)
-        avec[Avec[t] + 1L] <- 1
+        avec[A[t] + 1L] <- 1
       } else {
-        avec <- Ac[t, ]
+        avec <- as.numeric(Ac[[t]])
       }
 
+      # --- inverse model, eqs. 2-3
       inp_i <- c(p, p1)
       zi <- .matvec(Winv, inp_i)
-      if (isTRUE(discrete)) {
+      if (discrete) {
         pr <- .explor_softmax(zi)
-        li <- -log(max(pr[Avec[t] + 1L], .explor_EPS))
+        li <- -log(max(pr[A[t] + 1L], 1e-300))
         gi <- pr - avec
-        if (which.max(pr) - 1L == Avec[t]) n_correct <- n_correct + 1L
+        if (which.max(pr) - 1L == A[t]) n_correct <- n_correct + 1L
       } else {
-        li <- 0.5 * sum((zi - avec) ^ 2)
+        li <- 0.5 * sum((zi - avec)^2)
         gi <- zi - avec
       }
       li_tot <- li_tot + li
 
+      # --- forward model, eqs. 4-5
       inp_f <- c(p, avec)
       ph <- .matvec(Wfwd, inp_f)
       ef <- ph - p1
       lf <- 0.5 * sum(ef * ef)
       lf_tot <- lf_tot + lf
-      rewards[t] <- eta * lf
+      rewards[t] <- eta * lf     # eq. 6: (eta/2)||.||^2 == eta*L_F
 
+      # --- SGD on (1-beta) L_I + beta L_F  (the eq. 7 terms that do
+      #     not involve the policy).
+      #
+      # phi's parameters belong to theta_I: the feature encoder is
+      # trained through the INVERSE loss only. That is not an
+      # implementation shortcut, it is the mechanism -- phi is never
+      # asked to reconstruct anything, only to support predicting the
+      # agent's own action, so dimensions the agent cannot influence
+      # carry no gradient and fall out of the representation. Letting
+      # L_F train phi as well would give it an incentive to collapse
+      # phi to a constant, which drives the curiosity reward to zero
+      # while learning nothing.
       if (!is.null(Wphi)) {
         dphi <- rep(0, 2L * k)
         for (j in seq_len(2L * k)) {
-          acc <- 0
-          row <- Winv[j, ]
-          for (o in seq_len(a_dim)) acc <- acc + row[o] * gi[o]
-          dphi[j] <- acc
+          dphi[j] <- sum(Winv[j, ] * gi)
         }
-        for (half in c(0L, 1L)) {
-          xin <- if (half == 0L) S[t, ] else S1[t, ]
+        for (half in 0:1) {
           ph_ <- if (half == 0L) p else p1
+          xin <- if (half == 0L) S[[t]] else S1[[t]]
           for (j in seq_len(k)) {
             g <- dphi[half * k + j] * (1 - ph_[j] * ph_[j])
             if (g == 0) next
             step <- lr * (1 - beta) * g
             for (dd in seq_len(d)) {
-              if (xin[dd] != 0) Wphi[dd, j] <- Wphi[dd, j] - step * xin[dd]
+              if (xin[dd] != 0)
+                Wphi[dd, j] <- Wphi[dd, j] - step * xin[dd]
             }
           }
         }
@@ -222,16 +246,14 @@ explor <- function(states, actions, next_states, n_actions = NULL,
       for (j in seq_len(2L * k)) {
         xj <- inp_i[j]
         if (xj == 0) next
-        for (o in seq_len(a_dim)) {
+        for (o in seq_len(a_dim))
           Winv[j, o] <- Winv[j, o] - lr * (1 - beta) * gi[o] * xj
-        }
       }
       for (j in seq_len(k + a_dim)) {
         xj <- inp_f[j]
         if (xj == 0) next
-        for (o in seq_len(k)) {
+        for (o in seq_len(k))
           Wfwd[j, o] <- Wfwd[j, o] - lr * beta * ef[o] * xj
-        }
       }
     }
     curve <- c(curve, ((1 - beta) * li_tot + beta * lf_tot) / T)
@@ -246,20 +268,47 @@ explor <- function(states, actions, next_states, n_actions = NULL,
     inverse_loss = as.numeric(li_tot / T),
     objective = as.numeric(curve[length(curve)]),
     loss_curve = curve,
-    phi = t(apply(S, 1, phi)),
-    phi_next = t(apply(S1, 1, phi)),
+    phi = lapply(S, phi),
+    phi_next = lapply(S1, phi),
     mean_first = as.numeric(sum(rewards[seq_len(tenth)]) / tenth),
-    mean_last = as.numeric(sum(rewards[(n - tenth + 1L):n]) / tenth),
-    eta = eta, beta = beta, n = n, features = features,
+    mean_last = as.numeric(sum(rewards[seq(tenth + 1L, n)]) / (n - tenth)),
+    eta = eta,
+    beta = beta,
+    n = n,
+    features = features,
     method = "ICM (Pathak et al. 2017, eqs. 2-7)"
   )
-  if (isTRUE(discrete)) {
+  if (discrete)
     payload$inverse_accuracy <- as.numeric(n_correct) / T
-  }
   payload
 }
 
-#' morie_explor
+#' .explor_cheatsheet
+#'
+#' A step of the explor_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
+#' @examples
+#' res <- .explor_cheatsheet()
+#' res
+.explor_cheatsheet <- function() {
+  paste0("explor: ICM (Pathak 2017). phi learned via the INVERSE model ",
+         "(eqs. 2-3) so it encodes only what the agent can affect; ",
+         "forward model f(phi(s),a) (eq. 4); curiosity r^i = ",
+         "(eta/2)||phihat(s') - phi(s')||^2 (eq. 6); joint loss ",
+         "(1-beta)L_I + beta L_F (eq. 7). features='identity' is the ",
+         "raw-observation baseline that the noisy TV fools.")
+}
+
+# compact aliases per ledger/NAMING.md
+intrinsic_motivation <- explor
+icm <- explor
+
+# morie entry point
+#' Morie entry point
 #'
 #' A step of the explor_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -269,22 +318,24 @@ explor <- function(states, actions, next_states, n_actions = NULL,
 #' @param actions Passed to \code{explor}.
 #' @param next_states Passed to \code{explor}.
 #' @param n_actions Passed to \code{explor}.
-#' @param n_features Passed to \code{explor}. Defaults to \code{8L}.
+#' @param n_features Passed to \code{explor}. Defaults to \code{8}.
 #' @param eta Passed to \code{explor}. Defaults to \code{1}.
 #' @param beta Passed to \code{explor}. Defaults to \code{0.2}.
 #' @param lr Passed to \code{explor}. Defaults to \code{0.05}.
-#' @param epochs Passed to \code{explor}. Defaults to \code{1L}.
+#' @param epochs Passed to \code{explor}. Defaults to \code{1}.
 #' @param features Passed to \code{explor}. Defaults to \code{"inverse"}.
 #' @param discrete Passed to \code{explor}. Defaults to \code{TRUE}.
-#' @param seed Passed to \code{explor}. Defaults to \code{0L}.
+#' @param seed Passed to \code{explor}. Defaults to \code{0}.
 #' @return The value of \code{explor}.
 #' @export
+#' @examples
+#' morie_explor(states = c(1, 2, 3, 4, 5, 6, 7, 8), actions = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   next_states = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_explor <- function(states, actions, next_states, n_actions = NULL,
-                         n_features = 8L, eta = 1.0, beta = 0.2,
-                         lr = 0.05, epochs = 1L, features = "inverse",
-                         discrete = TRUE, seed = 0L) {
-  explor(states = states, actions = actions, next_states = next_states,
-         n_actions = n_actions, n_features = n_features, eta = eta,
-         beta = beta, lr = lr, epochs = epochs, features = features,
-         discrete = discrete, seed = seed)
+                         n_features = 8, eta = 1, beta = 0.2,
+                         lr = 0.05, epochs = 1, features = "inverse",
+                         discrete = TRUE, seed = 0) {
+  explor(states, actions, next_states, n_actions, n_features, eta,
+         beta, lr, epochs, features, discrete, seed)
 }

@@ -39,3 +39,12 @@ A step of the regmlm_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(2)
+n <- 30
+G <- matrix(rbinom(n * 20, 2, 0.3), n, 20)
+y <- G[, 1] - G[, 10] + rnorm(n, 0, 0.5)
+r <- morie_regmlm(G, y, block_size = 10, n_ridge = 3)
+str(r, max.level = 1)
+}
+\keyword{internal}

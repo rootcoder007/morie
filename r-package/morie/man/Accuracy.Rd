@@ -45,3 +45,7 @@ A step of the rangayyan_class implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+Accuracy(tp = 45, tn = 40, fp = 10, fn = 5)
+}
+\keyword{internal}

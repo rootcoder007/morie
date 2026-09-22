@@ -57,7 +57,7 @@ NULL
 #' @param W Numeric matrix of shape (N, N). Row-standardised spatial
 #'   weight matrix.
 #' @param coefficient_names Optional character vector of length K with
-#'   human-readable covariate names; defaults to \code{c("x1", ...,
+#'   human-readable covariate names; defaults to \eqn{c("x1", ...,
 #'   "xK")}.
 #' @return A named list with classes \code{morie_mrm_result},
 #'   \code{morie_rich_result}, \code{list}. Carries
@@ -229,7 +229,7 @@ mrm_spatial_spillover_decomposition <- function(rho,
 #'   \frac{e^\top W e}{e^\top e}, \quad e = r - \bar r.}{I = frac{n}{sum_ij w_ij} *
 #' (e^top W e)/(e^top e), e = r - bar r.}
 #'
-#' \eqn{I \in `[-1, 1]`}{I in `[-1, 1]`}. Positive -> clustering, negative ->
+#' \eqn{-1 \le I \le 1}{-1 <= I <= 1}. Positive -> clustering, negative ->
 #' dispersion, ~0 -> spatial randomness.
 #'
 #' @param residuals Numeric vector of length N (e.g. OLS residuals).

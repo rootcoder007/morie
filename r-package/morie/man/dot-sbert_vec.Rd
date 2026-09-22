@@ -7,14 +7,14 @@
 .sbert_vec(x)
 }
 \arguments{
-\item{x}{A matrix; indexed by row and column.}
+\item{x}{A list; the body checks with \code{is.list}.}
 }
 \value{
 A vector, from \code{as.numeric}.
 }
 \description{
 A step of the sbert_native implementation. Called by \code{classification_features},
-\code{cosine_similarity}, \code{sts_score}.
+\code{cosine_similarity}.
 See the file header for the source the module follows.
 source it follows.
 }

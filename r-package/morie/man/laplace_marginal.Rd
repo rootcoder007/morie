@@ -21,3 +21,10 @@ A step of the inlasm_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+lm <- laplace_marginal(
+  log_joint = function(x, theta) -0.5 * (x - theta)^2,
+  x_grid = seq(-4, 6, by = 0.05), theta = 2)
+abs(lm$mean - 2) < 0.01
+}
+\keyword{internal}

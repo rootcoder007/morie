@@ -4,28 +4,30 @@
 \alias{morie_meglt}
 \title{morie_meglt}
 \usage{
-morie_meglt(M, observed, tau = NULL, step = 1.9, iters = 200L, tol = 1e-06)
+morie_meglt(op, ...)
 }
 \arguments{
-\item{M}{Passed to \code{svt}.}
+\item{op}{A vector; its length is taken.}
 
-\item{observed}{Passed to \code{svt}.}
-
-\item{tau}{Passed to \code{svt}.}
-
-\item{step}{Passed to \code{svt}. Defaults to \code{1.9}.}
-
-\item{iters}{Passed to \code{svt}. Defaults to \code{200L}.}
-
-\item{tol}{Passed to \code{svt}. Defaults to \code{1e-06}.}
+\item{...}{Passed through.}
 }
 \value{
-A list with \code{estimate}, \code{X}, \code{residual_history},
-\code{final_residual}, \code{tau}, \code{n_observed}, \code{nuclear_norm},
-\code{relative_error}, \code{method}.
+The value of \code{switch}.
 }
 \description{
 A step of the meglt_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(2)
+U <- matrix(rnorm(10), 5, 2)
+V <- matrix(rnorm(8), 4, 2)
+M <- U \%*\% t(V)
+obs <- list()
+for (i in 0:4) for (j in 0:3) if (runif(1) < 0.7)
+  obs[[length(obs) + 1]] <- c(i, j)
+r <- morie_meglt("svt", M, obs, tau = 1, iters = 100)
+str(r, max.level = 1)
+}
+\keyword{internal}

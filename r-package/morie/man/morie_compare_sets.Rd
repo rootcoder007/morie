@@ -37,3 +37,8 @@ A step of the bndbye_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r <- morie_compare_sets(phi_hat = 0.5, half_width = 0.2, se_phi = 0.1)
+str(r, max.level = 1)
+}
+\keyword{internal}

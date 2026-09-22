@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_sp_fill.R
 \name{SpatialPca}
 \alias{SpatialPca}
-\title{MULTISPATI: diagonalise H = (1/n) X\' ((W + W\')/2) X on the centred,}
+\title{MULTISPATI: diagonalise H = (1/n) X' ((W + W')/2) X on the centred,}
 \usage{
 SpatialPca(x, w, naxes = 2L)
 }
@@ -26,3 +26,11 @@ is symmetrised first: a row-standardised W is ASYMMETRIC and a
 symmetric eigensolver would read one triangle only.  Dray, Said &
 Debias (2008).  NOT in Schabenberger & Gotway.
 }
+\examples{
+set.seed(6)
+W <- matrix(0, 10, 10)
+W[abs(row(W) - col(W)) == 1] <- 1
+X <- matrix(rnorm(30), 10, 3)
+str(SpatialPca(X, W), max.level = 1)
+}
+\keyword{internal}

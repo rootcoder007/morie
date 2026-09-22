@@ -18,7 +18,11 @@ Numeric attributable risk.
 Computes Levin's p(R - 1) / (1 + p(R - 1)) from the population
 exposure prevalence and the rate ratio.
 }
+\examples{
+morie_rapaf_levin_ar(0.2, 2.5)
+}
 \references{
 Levin, M. L. (1953). The occurrence of lung cancer in
 man. Acta Unio Internationalis Contra Cancrum, 9(3), 531-541.
 }
+\keyword{internal}

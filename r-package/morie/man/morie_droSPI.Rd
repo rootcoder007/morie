@@ -21,3 +21,4 @@ A list with \code{spi}, \code{totals}, \code{params}, \code{scale},
 Part of the droSPI_mixedcase_native implementation; see the file
 header for the source it follows.
 }
+\keyword{internal}

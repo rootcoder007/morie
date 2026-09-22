@@ -22,3 +22,7 @@ A step of the tlhaltm_native implementation. Called by \code{efficiency_check},
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+remainder_bound(err_Q = c(1, 2, 3, 4, 5, 6, 7, 8), err_g = c(1, 2, 3, 4, 5, 6, 7, 8), delta = 0.5)
+}
+\keyword{internal}

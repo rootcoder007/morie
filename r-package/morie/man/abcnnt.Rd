@@ -21,6 +21,23 @@ abcnnt(
   seed = 0L,
   n_posterior = 200L
 )
+
+sequential_neural_likelihood(
+  simulator,
+  x_o,
+  log_prior,
+  theta0,
+  n_rounds = 3L,
+  n_per_round = 50L,
+  n_layers = 5L,
+  hidden = 20L,
+  epochs = 40L,
+  lr = 0.01,
+  mcmc_burn = 100L,
+  mcmc_step = 0.5,
+  seed = 0L,
+  n_posterior = 200L
+)
 }
 \arguments{
 \item{simulator}{See Usage.}
@@ -56,6 +73,8 @@ A list with \code{estimate}, \code{posterior_mean}, \code{posterior_sd}, \code{p
 }
 \description{
 Algorithm 1: Sequential Neural Likelihood
+
+Compact alias for abcnnt
 }
 \examples{
 \donttest{

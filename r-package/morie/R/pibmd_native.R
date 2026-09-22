@@ -70,7 +70,7 @@
 }
 
 # Silverman's rule of thumb, robustified by the interquartile range.
-#' Silverman\'s rule of thumb, robustified by the interquartile range
+#' Silverman's rule of thumb, robustified by the interquartile range
 #'
 #' A step of the pibmd_native implementation. Called by \code{.pibmd_kl_kde}.
 #' See the file header for the source the module follows.
@@ -178,6 +178,10 @@
 #' \code{moments_only}, \code{verdict}, \code{informativeness}, \code{method},
 #' \code{note}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_pibmd_prior_informativeness_bias_diagnostic(V, V)
+#' @keywords internal
 morie_pibmd_prior_informativeness_bias_diagnostic <- function(samples, prior,
                                                               n_grid = 512L) {
   q <- as.numeric(samples)

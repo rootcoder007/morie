@@ -24,7 +24,7 @@
 #' to resample cases with replacement, recompute \code{ab} in each
 #' resample and read the interval off the empirical percentiles.  The
 #' fitted equations are \code{M = i1 + a X} and
-#' \code{Y = i2 + c\' X + b M}, so the total effect \code{c = c\' + ab} is
+#' \eqn{Y = i2 + c' X + b M}, so the total effect \eqn{c = c' + ab} is
 #' an exact least-squares identity in the single-mediator case.  The
 #' resampling stream is a deterministic linear congruential generator,
 #' not a system RNG, so both language arms draw the same case indices.
@@ -44,8 +44,7 @@
 #'   879-891.
 #' @export
 #' @examples
-#' Dssoot(Y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), M = c(1, 2, 3, 4,
-#' 5, 6, 7, 8))
+#' Dssoot(Y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), M = c(1, 2, 3, 4, 5, 6, 7, 8))
 Dssoot <- function(Y, X, M, n_boot = 1000L, alpha = 0.05, seed = 42L) {
   yv <- .s03vec(Y)
   xv <- .s03vec(X)

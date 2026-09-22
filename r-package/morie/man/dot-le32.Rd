@@ -2,15 +2,15 @@
 % Please edit documentation in R/secarg_native.R
 \name{.le32}
 \alias{.le32}
-\title{Little-endian 32-bit pack of an integer (returns raw bytes)}
+\title{.le32}
 \usage{
 .le32(n)
 }
 \arguments{
-\item{n}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{n}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \value{
-The value of \code{as.raw}.
+The value of \code{writeBin}.
 }
 \description{
 A step of the secarg_native implementation. Called by \code{morie_secarg_prehash},

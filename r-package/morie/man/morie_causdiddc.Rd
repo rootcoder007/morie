@@ -28,8 +28,18 @@ weights that show the gap.  \code{beta_fe} can take the wrong sign
 under heterogeneity; \code{DID_M} is unbiased for the average
 effect among switchers under common trends.
 }
+\examples{
+set.seed(3)
+n_g <- 6; n_t <- 4
+grid <- expand.grid(g = seq_len(n_g), t = seq_len(n_t))
+D <- as.numeric(grid$g <= 2 & grid$t >= 3)
+Y <- 1 + 0.5 * grid$t + 2 * D + rnorm(nrow(grid), 0, 0.2)
+r <- morie_causdiddc(Y, D, grid$g, grid$t)
+str(r, max.level = 1)
+}
 \references{
 de Chaisemartin, C. & D'Haultfoeuille, X. (2020).
 Two-Way Fixed Effects Estimators with Heterogeneous Treatment
 Effects. American Economic Review 110(9), 2964-2996.
 }
+\keyword{internal}

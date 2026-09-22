@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_adapt.R
 \name{RlsApriori}
 \alias{RlsApriori}
-\title{Eq. (3.225): alpha(n) = x(n) - w\'(n-1) r(n).  The A PRIORI error,
+\title{Eq. (3.225): alpha(n) = x(n) - w'(n-1) r(n).  The A PRIORI error,
 made}
 \usage{
 RlsApriori(x, rvec, w_prev)
@@ -23,3 +23,8 @@ with the PREVIOUS weights.  Using the updated weights gives the a
 posteriori error, a different and always smaller quantity, and the
 recursion is not valid with it.
 }
+\examples{
+RlsApriori(x = c(1, 2, 3, 4, 5, 6, 7, 8), rvec = c(1, 2, 3, 4, 5, 6, 7, 8),
+  w_prev = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

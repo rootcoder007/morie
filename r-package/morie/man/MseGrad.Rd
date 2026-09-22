@@ -21,3 +21,7 @@ A list with \code{gradient}, \code{norm}, \code{at_optimum}, \code{order},
 with a single minimum, so a vanishing gradient is the optimum and not
 merely a stationary point.
 }
+\examples{
+MseGrad(phi = 0.5, theta = 0.5, w = 5L)
+}
+\keyword{internal}

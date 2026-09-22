@@ -23,3 +23,12 @@ exactly backwards.  Ng, Jordan & Weiss (2001).  NOT in Schabenberger
 & Gotway.  A zero-degree node RAISES rather than being quietly
 assigned.
 }
+\examples{
+A <- matrix(0, 6, 6)
+A[1, 2] <- A[2, 3] <- A[1, 3] <- 1
+A[4, 5] <- A[5, 6] <- A[4, 6] <- 1
+A[3, 4] <- 0.05
+A <- A + t(A)
+SpecClust(A, k = 2L)
+}
+\keyword{internal}

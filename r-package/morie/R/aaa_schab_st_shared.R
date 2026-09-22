@@ -92,7 +92,8 @@
     # De Cesare, Myers and Posa (2001); the text calls it generally
     # nonseparable even though it appears in the separable section
     product_sum = cs * ct + cs + ct,
-    stop("`form` must be 'product', 'sum' or 'product_sum'", call. = FALSE))
+    stop("`form` must be 'product', 'sum' or 'product_sum'", call. = FALSE)
+  )
 }
 
 #' .schab_st_is_separable
@@ -132,7 +133,7 @@
   if (theta_s <= 0 || theta_t <= 0) {
     stop("anisotropy parameters must be positive", call. = FALSE)
   }
-  as.numeric(corr_fn(theta_s * lg$h^2 + theta_t * lg$k^2))   # eq (9.3)
+  as.numeric(corr_fn(theta_s * lg$h^2 + theta_t * lg$k^2)) # eq (9.3)
 }
 
 #' .schab_st_exponential_separable
@@ -148,7 +149,7 @@
 #' @return A numeric value.
 #' @export
 .schab_st_exponential_separable <- function(h, k, theta_s, theta_t) {
-  lg <- .schab_st_as_lags(h, k)                              # eq (9.4)
+  lg <- .schab_st_as_lags(h, k) # eq (9.4)
   if (theta_s <= 0 || theta_t <= 0) {
     stop("`theta_s` and `theta_t` must be positive", call. = FALSE)
   }
@@ -185,7 +186,7 @@
   if (!(alpha > 0 && alpha <= 1)) stop("`alpha` must lie in (0, 1]", call. = FALSE)
   if (!(beta >= 0 && beta <= 1)) stop("`beta` must lie in [0, 1]", call. = FALSE)
   if (sigma2 < 0) stop("`sigma2` must be non-negative", call. = FALSE)
-  psi <- a * lg$k^(2 * alpha) + 1                            # eq (9.8)
+  psi <- a * lg$k^(2 * alpha) + 1 # eq (9.8)
   (sigma2 / psi^(beta * d / 2)) * exp(-c * lg$h^(2 * gamma) / psi^(beta * gamma))
 }
 
@@ -217,10 +218,10 @@
   if (beta_t < 0) stop("`beta_t` must be non-negative", call. = FALSE)
   if (a <= 0 || c <= 0) stop("`a` and `c` must be positive", call. = FALSE)
   if (!(gamma > 0 && gamma <= 1) || !(alpha > 0 && alpha <= 1) ||
-      !(beta >= 0 && beta <= 1)) {
+    !(beta >= 0 && beta <= 1)) {
     stop("Gneiting parameter bounds violated", call. = FALSE)
   }
-  psi <- a * lg$k^(2 * alpha) + 1                            # eq (9.9)
+  psi <- a * lg$k^(2 * alpha) + 1 # eq (9.9)
   (sigma2 / psi^(beta_t + beta * d / 2)) *
     exp(-c * lg$h^(2 * gamma) / psi^(beta * gamma))
 }
@@ -243,9 +244,11 @@
   # 1987; Littell, Milliken, Stroup and Wolfinger, 1996).
   stat <- max(0, as.numeric(neg2_separable) - as.numeric(neg2_unrestricted))
   p_naive <- .schab_st_chi2_sf(stat, 1)
-  list(statistic = stat, p_value = 0.5 * p_naive,
-       p_value_naive_chi2_1 = p_naive,
-       reference = "0.5 chi^2_0 + 0.5 chi^2_1 (Self and Liang, 1987)")
+  list(
+    statistic = stat, p_value = 0.5 * p_naive,
+    p_value_naive_chi2_1 = p_naive,
+    reference = "0.5 chi^2_0 + 0.5 chi^2_1 (Self and Liang, 1987)"
+  )
 }
 
 # --- Sec. 9.3.3, Ma's mixtures ---------------------------------------------
@@ -270,7 +273,7 @@
   if (any(abs(rs) > 1 + 1e-12) || any(abs(rt) > 1 + 1e-12)) {
     stop("`rs` and `rt` must be correlations in [-1, 1]", call. = FALSE)
   }
-  w <- rs * rt          # eq (9.14): the pgf evaluated at w = Rs(h) Rt(k)
+  w <- rs * rt # eq (9.14): the pgf evaluated at w = Rs(h) Rt(k)
   if (identical(distribution, "poisson")) {
     lam <- if (is.null(p$lam)) 1 else as.numeric(p$lam)
     if (lam <= 0) stop("`lam` must be positive", call. = FALSE)
@@ -309,7 +312,7 @@
   n <- max(length(rs), length(rt))
   rs <- rep_len(rs, n)
   rt <- rep_len(rt, n)
-  out <- numeric(n)                                          # eq (9.13)
+  out <- numeric(n) # eq (9.13)
   for (i in seq_len(nrow(pmf))) {
     for (j in seq_len(ncol(pmf))) {
       if (pmf[i, j] == 0) next
@@ -346,7 +349,7 @@
     stop(sprintf("`weights` must sum to 1 (got %.12g)", sum(w)), call. = FALSE)
   }
   if (any(u < 0)) stop("scale `nodes` must be non-negative", call. = FALSE)
-  out <- numeric(length(lg$h))                               # eq (9.16)
+  out <- numeric(length(lg$h)) # eq (9.16)
   for (i in seq_along(u)) {
     out <- out + w[i] * as.numeric(cov_spatial(lg$h * u[i])) *
       as.numeric(cov_temporal(lg$k * u[i]))
@@ -355,6 +358,9 @@
 }
 
 # --- Sec. 9.3.4, the differential equation approach ------------------------
+
+## Session cache for Gauss-Legendre rules, keyed by n (see .schab_gauss_legendre).
+.schab_gl_cache <- new.env(parent = emptyenv())
 
 #' Golub and Welsch (1969), Math. Comp. 23(106):221-230 -- NOT a
 #'
@@ -432,7 +438,7 @@
 #' is
 #'
 #' smooth and periodic so the trapezoid rule converges geometrically;
-#' base R\'s besselJ() is deliberately not used, see the file header.
+#' base R's besselJ() is deliberately not used, see the file header.
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param n_quad Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.
@@ -494,7 +500,7 @@
 #' res <- .schab_whittle_covariance(h = 0.5)
 #' res
 .schab_whittle_covariance <- function(h, sigma2 = 1, theta = 1) {
-  h <- as.numeric(h)                                  # Whittle (1954)
+  h <- as.numeric(h) # Whittle (1954)
   if (any(h < 0)) stop("lag `h` must be non-negative", call. = FALSE)
   if (theta <= 0) stop("`theta` must be positive", call. = FALSE)
   z <- theta * h
@@ -575,8 +581,10 @@
     quiet <- if (last_rel < rtol) quiet + 1L else 0L
     if (quiet >= quiet_runs) break
   }
-  list(value = acc, upper = t, last_rel = last_rel,
-       tail_bound = .schab_st_tail_bound_j0(t, hval, p))
+  list(
+    value = acc, upper = t, last_rel = last_rel,
+    tail_bound = .schab_st_tail_bound_j0(t, hval, p)
+  )
 }
 
 #' .schab_st_jones_zhang
@@ -600,14 +608,18 @@
 #' res
 .schab_st_jones_zhang <- function(h, k, sigma2 = 1, theta = 1, c = 1, p = 1.5,
                                   d = 2, n_quad = 40L) {
-  lg <- .schab_st_as_lags(h, k)                              # eq (9.17)
+  lg <- .schab_st_as_lags(h, k) # eq (9.17)
   if (theta <= 0 || c <= 0 || sigma2 < 0) {
     stop("`theta` and `c` must be positive, `sigma2` >= 0", call. = FALSE)
   }
   if (p <= max(1, d / 2)) {
-    stop(sprintf(paste0("`p` must exceed max(1, d/2) = %g for the integral in ",
-                        "eq (9.17) to converge (got p = %g)"),
-                 max(1, d / 2), p), call. = FALSE)
+    stop(sprintf(
+      paste0(
+        "`p` must exceed max(1, d/2) = %g for the integral in ",
+        "eq (9.17) to converge (got p = %g)"
+      ),
+      max(1, d / 2), p
+    ), call. = FALSE)
   }
   vals <- numeric(length(lg$h))
   reach <- rels <- bnds <- numeric(length(lg$h))
@@ -619,10 +631,14 @@
     bnds[i] <- r$tail_bound
   }
   scale <- sigma2 / (4 * c * pi)
-  list(covariance = vals * scale,
-       quadrature = list(upper_reached = max(reach), n_quad = as.integer(n_quad),
-                         last_panel_rel = max(rels),
-                         tail_bound = max(bnds) * scale))
+  list(
+    covariance = vals * scale,
+    quadrature = list(
+      upper_reached = max(reach), n_quad = as.integer(n_quad),
+      last_panel_rel = max(rels),
+      tail_bound = max(bnds) * scale
+    )
+  )
 }
 
 # --- eq (9.5), validity ----------------------------------------------------
@@ -668,16 +684,20 @@
   # so construction alone is not proof.
   sigma <- .schab_st_covariance_matrix(coords, times, cov_fn)
   if (!isTRUE(all.equal(sigma, t(sigma), tolerance = 1e-10))) {
-    return(list(valid = FALSE, min_eigenvalue = NA_real_,
-                reason = "covariance matrix is not symmetric"))
+    return(list(
+      valid = FALSE, min_eigenvalue = NA_real_,
+      reason = "covariance matrix is not symmetric"
+    ))
   }
   vals <- eigen(sigma, symmetric = TRUE, only.values = TRUE)$values
   lo <- min(vals)
   scale <- max(abs(vals))
   if (is.null(tol)) tol <- -1e-10 * max(scale, 1)
-  list(valid = lo >= tol, min_eigenvalue = lo, max_eigenvalue = max(vals),
-       tolerance = tol,
-       reason = if (lo >= tol) "" else "minimum eigenvalue is negative")
+  list(
+    valid = lo >= tol, min_eigenvalue = lo, max_eigenvalue = max(vals),
+    tolerance = tol,
+    reason = if (lo >= tol) "" else "minimum eigenvalue is negative"
+  )
 }
 
 # --- Sec. 9.4, the spatio-temporal semivariogram ---------------------------
@@ -694,7 +714,7 @@
 #' @return A numeric value.
 #' @export
 .schab_st_semivariogram_from_cov <- function(h, k, cov_fn) {
-  lg <- .schab_st_as_lags(h, k)                 # gamma = C(0,0) - C(h,k)
+  lg <- .schab_st_as_lags(h, k) # gamma = C(0,0) - C(h,k)
   c0 <- as.numeric(cov_fn(0, 0))[1]
   c0 - as.numeric(cov_fn(lg$h, lg$k))
 }
@@ -756,13 +776,15 @@
     counts[di[m], ui[m]] <- counts[di[m], ui[m]] + 1L
     total[di[m], ui[m]] <- total[di[m], ui[m]] + sq[m]
   }
-  gamma <- matrix(NA_real_, ns, nt)          # eq (9.18); empty cells stay NA
+  gamma <- matrix(NA_real_, ns, nt) # eq (9.18); empty cells stay NA
   nz <- counts > 0L
   gamma[nz] <- total[nz] / (2 * counts[nz])
-  list(gamma = gamma, counts = counts,
-       space_lags = 0.5 * (d_edges[-1] + d_edges[-length(d_edges)]),
-       time_lags = 0.5 * (u_edges[-1] + u_edges[-length(u_edges)]),
-       space_edges = d_edges, time_edges = u_edges)
+  list(
+    gamma = gamma, counts = counts,
+    space_lags = 0.5 * (d_edges[-1] + d_edges[-length(d_edges)]),
+    time_lags = 0.5 * (u_edges[-1] + u_edges[-length(u_edges)]),
+    space_edges = d_edges, time_edges = u_edges
+  )
 }
 
 #' .schab_st_conditional_semivariogram
@@ -797,7 +819,7 @@
   i <- idx[, 1]
   j <- idx[, 2]
   d <- sqrt(rowSums((cc[i, , drop = FALSE] - cc[j, , drop = FALSE])^2))
-  sq <- (y[i] - y[j])^2                                      # eq (9.19)
+  sq <- (y[i] - y[j])^2 # eq (9.19)
   if (is.null(max_dist)) max_dist <- max(d) / 2
   keep <- d <= max_dist
   d <- d[keep]
@@ -814,8 +836,10 @@
   gamma <- rep(NA_real_, nb)
   nz <- counts > 0L
   gamma[nz] <- total[nz] / (2 * counts[nz])
-  list(gamma = gamma, counts = counts, n_at_time = sum(sel),
-       lags = 0.5 * (edges[-1] + edges[-length(edges)]), edges = edges)
+  list(
+    gamma = gamma, counts = counts, n_at_time = sum(sel),
+    lags = 0.5 * (edges[-1] + edges[-length(edges)]), edges = edges
+  )
 }
 
 #' .schab_st_wls_objective
@@ -888,8 +912,10 @@
   area <- (r[2] - r[1]) * (r[4] - r[3])
   span <- as.numeric(time_interval[2]) - as.numeric(time_interval[1])
   if (span <= 0) stop("`time_interval` must have positive length", call. = FALSE)
-  list(intensity = length(t) / (area * span), n = length(t),   # eq (9.20)
-       area = area, duration = span, volume = area * span)
+  list(
+    intensity = length(t) / (area * span), n = length(t), # eq (9.20)
+    area = area, duration = span, volume = area * span
+  )
 }
 
 #' .schab_st_marginal_intensities
@@ -931,10 +957,12 @@
     spatial[xi[m], yi[m]] <- spatial[xi[m], yi[m]] + 1
     temporal[ti[m]] <- temporal[ti[m]] + 1
   }
-  list(marginal_spatial = spatial / cell_area,          # eqs (9.21), (9.22)
-       marginal_temporal = temporal / bin_width,
-       cell_area = cell_area, bin_width = bin_width,
-       x_edges = xe, y_edges = ye, t_edges = te)
+  list(
+    marginal_spatial = spatial / cell_area, # eqs (9.21), (9.22)
+    marginal_temporal = temporal / bin_width,
+    cell_area = cell_area, bin_width = bin_width,
+    x_edges = xe, y_edges = ye, t_edges = te
+  )
 }
 
 #' .schab_cstr_reference
@@ -956,9 +984,11 @@
   if (area <= 0 || duration <= 0 || lam < 0) {
     stop("`area`, `duration` must be positive and `lam` >= 0", call. = FALSE)
   }
-  mean_ <- lam * area * duration       # N(A,T) ~ Poisson(lambda |A x T|)
-  list(expected_count = mean_, variance = mean_, intensity = lam,
-       second_order_intensity = lam^2, volume = area * duration)
+  mean_ <- lam * area * duration # N(A,T) ~ Poisson(lambda |A x T|)
+  list(
+    expected_count = mean_, variance = mean_, intensity = lam,
+    second_order_intensity = lam^2, volume = area * duration
+  )
 }
 
 #' .schab_cstr_test
@@ -1005,14 +1035,18 @@
   m <- length(flat)
   mean_ <- mean(flat)
   if (mean_ <= 0) {
-    return(list(index_of_dispersion = NA_real_, df = m - 1L, p_value = NA_real_,
-                counts = counts, mean_count = mean_))
+    return(list(
+      index_of_dispersion = NA_real_, df = m - 1L, p_value = NA_real_,
+      counts = counts, mean_count = mean_
+    ))
   }
-  v <- var(flat)                                   # sample variance, ddof = 1
+  v <- var(flat) # sample variance, ddof = 1
   idx <- (m - 1) * v / mean_
-  list(index_of_dispersion = idx, df = m - 1L,
-       p_value = .schab_st_chi2_sf(idx, m - 1L),
-       counts = counts, mean_count = mean_, var_count = v)
+  list(
+    index_of_dispersion = idx, df = m - 1L,
+    p_value = .schab_st_chi2_sf(idx, m - 1L),
+    counts = counts, mean_count = mean_, var_count = v
+  )
 }
 
 #' P(chi^2_df > x) = Q(df/2, x/2). The HALVING of x is the whole content
@@ -1065,5 +1099,3 @@
   }
   exp(-x + a * log(x) - lgamma(a)) * hh
 }
-
-.schab_gl_cache <- new.env(parent = emptyenv())

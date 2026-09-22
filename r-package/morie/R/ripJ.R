@@ -19,7 +19,17 @@
 # 12(6) p. 16 states J = (1 - G)/(1 - F) and p. 17 attributes it to
 # van Lieshout & Baddeley (1996).
 
-#' @noRd
+#' morie_ripley_j_function
+#'
+#' @param points Argument `points`; see Usage.
+#' @param window Argument `window`; see Usage.
+#' @param r Argument `r`; see Usage.
+#' @param n_grid Argument `n_grid`; see Usage.
+#' @return A list with `r`, `j`, `g`, `f`, `j_csr`, `lambda_est`, `n_defined`, `method`.
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie:::morie_ripley_j_function(M)
+#' @keywords internal
 morie_ripley_j_function <- function(points, window = NULL, r = NULL,
                                     n_grid = 40) {
   p <- as.matrix(points)

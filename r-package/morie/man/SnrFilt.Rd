@@ -20,3 +20,8 @@ known clean reference.  This penalises distortion as well as leftover
 noise -- comparing only noise power would flatter an over-smoothing
 filter.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+SnrFilt(V, V)
+}
+\keyword{internal}

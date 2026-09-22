@@ -10,9 +10,7 @@ kendall_correlation(x, y)
 \item{x, y}{Numeric vectors.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with Kendall's tau-b as the test statistic and estimate, p-value,
-and sample size n.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Kendall's tau-b correlation

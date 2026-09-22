@@ -21,3 +21,8 @@ A list with \code{gamma}, \code{shifts}, \code{peak}, \code{peak_shift},
 -- that is the whole reason to normalize rather than take the raw
 CCF.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+NccfTpl(V, V)
+}
+\keyword{internal}

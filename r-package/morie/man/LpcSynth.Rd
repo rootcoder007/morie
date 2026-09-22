@@ -25,3 +25,8 @@ follows from A(z) = 1 + sum a_k z^-k.  Coefficients from the other
 convention give a filter with different poles, usually unstable, so
 divergence is reported rather than a wall of infinities returned.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+LpcSynth(V, V)
+}
+\keyword{internal}

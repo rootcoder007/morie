@@ -24,7 +24,12 @@ For each compound, return the integer vector of indices of the
 other compounds whose Tanimoto similarity to it is at least
 \code{threshold}. Mirrors \code{morie.fn.clusmd.neighbour_lists}.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_clusmd_neighbour_lists(V)
+}
 \references{
 Butina, D. (1999) J. Chem. Inf. Comput. Sci. 39(4),
 747-750. doi:10.1021/ci9803381.
 }
+\keyword{internal}

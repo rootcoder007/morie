@@ -1,9 +1,9 @@
 #' Run a weighted logistic-regression analysis
 #'
 #' Mirrors the Python `morie.run_weighted_logistic_analysis()`. Fits a
-#' binary-outcome model using survey weights via `survey::svyglm()` if the
-#' suggested `survey` package is available, otherwise falls back to base
-#' `glm()` with case weights.
+#' binary-outcome model with design-based (Binder-linearized) standard
+#' errors via rmorie's native weighted GLM -- numerically identical to
+#' `survey::svyglm(ids = ~1)` but with no survey dependency.
 #'
 #' @param data A `data.frame` containing outcome, predictors, and (optionally)
 #'   a weights column.
@@ -157,18 +157,8 @@ morie_compare_nested_logistic_models <- function(data, outcome,
 }
 
 # Internal: fit a logistic propensity model and clip to [0.01, 0.99].
-#' Internal: fit a logistic propensity model and clip to \[0.01, 0.99\]
-#'
-#' A step of the investigation implementation. Called by
-#' \code{morie_run_treatment_effects_analysis}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param data See Usage.
-#' @param treatment Passed to \code{paste}.
-#' @param covariates Passed to \code{paste}.
-#' @return The value of \code{pmin}.
-#' @export
+#' Internal helper: Morie Fit Propensity
+#' @noRd
 .morie_fit_propensity <- function(data, treatment, covariates) {
   fml <- stats::as.formula(paste(treatment, "~",
                                   paste(covariates, collapse = " + ")))
@@ -199,7 +189,6 @@ morie_compare_nested_logistic_models <- function(data, outcome,
 #' @param outcome Outcome column name.
 #' @param covariates Character vector of covariate column names.
 #' @return Named list as described above.
-#' @export
 #' @examples
 #' set.seed(1)
 #' df <- data.frame(d = rbinom(80, 1, 0.4), x1 = rnorm(80), x2 = rnorm(80))
@@ -207,6 +196,7 @@ morie_compare_nested_logistic_models <- function(data, outcome,
 #' res <- try(morie_run_treatment_effects_analysis(df, "d", "y",
 #'                                                 c("x1", "x2")))
 #' if (!inherits(res, "try-error")) str(res, max.level = 1)
+#' @export
 morie_run_treatment_effects_analysis <- function(data, treatment, outcome,
                                                   covariates) {
   required <- unique(c(treatment, outcome, covariates))

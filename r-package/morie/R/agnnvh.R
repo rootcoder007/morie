@@ -33,7 +33,9 @@ Azloss <- function(z, v, pi, p, theta = NULL, c = 1e-4) {
   sq <- 0
   if (!is.null(theta)) for (x in .s03vec(theta)) sq <- sq + x * x
   l2 <- as.numeric(c) * sq
-  list(estimate = vloss + ploss + l2, value_loss = vloss, policy_loss = ploss,
-       l2 = l2, sq_norm = sq,
-       method = "AlphaZero loss (z - v)^2 - pi' log p + c ||theta||^2")
+  list(
+    estimate = vloss + ploss + l2, value_loss = vloss, policy_loss = ploss,
+    l2 = l2, sq_norm = sq,
+    method = "AlphaZero loss (z - v)^2 - pi' log p + c ||theta||^2"
+  )
 }

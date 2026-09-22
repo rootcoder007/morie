@@ -27,16 +27,16 @@ Allowed values depend on the caller.}
 \item{...}{Additional method-specific arguments.}
 }
 \value{
-A named list with elements \code{weights} (calibrated
-numeric vector, same length as input), \code{converged},
-\code{iterations}, \code{max_adjustment}, and \code{diagnostics}
-(passed through from \code{\link{morie_weights_rake}} or
-\code{\link{morie_weights_greg}}).
+A named list with elements \code{weights}, \code{converged},
+\code{iterations}, \code{max_adjustment}, \code{diagnostics}.
 }
 \description{
 Dispatch helper -- calibrate to totals via "raking" or "greg"
 }
 \examples{
-morie_weights_calibrate_to_totals(weights = c(1, 2, 3, 4, 5, 6, 7, 8), df =
-data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), totals = c(1, 2, 3, 4, 5, 6, 7, 8))
+set.seed(1)
+df <- data.frame(g = rep(c("m", "f"), 15))
+res <- morie_weights_calibrate_to_totals(rep(1, 30), df,
+                                         list(g = c(m = 50, f = 50)))
+str(res, max.level = 1)
 }

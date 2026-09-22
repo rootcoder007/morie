@@ -21,3 +21,8 @@ THE MEAN interval, not the mean of the reciprocals; the two differ
 whenever the intervals vary, and only the former equals discharges
 per unit time.  Both are returned.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+FiringRate(V)
+}
+\keyword{internal}

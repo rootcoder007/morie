@@ -11,8 +11,8 @@
 
 # -- shared helpers for the biophysical signal-generation blocks --------------
 
-.BSA_R_GAS <- 8.314462618        # J/(mol K), CODATA 2018
-.BSA_FARADAY <- 96485.33212      # C/mol,     CODATA 2018
+.BSA_R_GAS <- 8.314462618 # J/(mol K), CODATA 2018
+.BSA_FARADAY <- 96485.33212 # C/mol,     CODATA 2018
 
 
 #' In-place iterative radix-2 Cooley-Tukey FFT; len must be a power of 2
@@ -104,8 +104,10 @@
   ft <- .bsafft(c(xs * w, rep(0, nfft - n)), rep(0, nfft))
   m <- nfft %/% 2L + 1L
   idx <- seq_len(m)
-  list(freqs = (idx - 1L) * fs / nfft,
-       power = (ft$re[idx] * ft$re[idx] + ft$im[idx] * ft$im[idx]) / wsum2)
+  list(
+    freqs = (idx - 1L) * fs / nfft,
+    power = (ft$re[idx] * ft$re[idx] + ft$im[idx] * ft$im[idx]) / wsum2
+  )
 }
 
 
@@ -184,9 +186,11 @@
   if (n < 2L) stop("need at least 2 samples")
   xs <- xs - .morie_fsum(xs) / n
   maxlag <- min(maxlag, n - 1L)
-  vapply(0:maxlag,
-         function(k) .morie_fsum(xs[seq_len(n - k)] * xs[seq_len(n - k) + k]) / n,
-         numeric(1))
+  vapply(
+    0:maxlag,
+    function(k) .morie_fsum(xs[seq_len(n - k)] * xs[seq_len(n - k) + k]) / n,
+    numeric(1)
+  )
 }
 
 
@@ -288,10 +292,12 @@
   fm2 <- .morie_fsum(d * d * power) / Ep
   fm3 <- .morie_fsum(d * d * d * power) / Ep
   fm4 <- .morie_fsum(d * d * d * d * power) / Ep
-  list(total_power = Ep, mean_freq_hz = fmean, median_freq_hz = fmed,
-       fm2_hz2 = fm2, spread_hz = sqrt(fm2),
-       spectral_skewness = if (fm2 > 0) fm3 / fm2^1.5 else 0,
-       spectral_kurtosis = if (fm2 > 0) fm4 / (fm2 * fm2) else 0)
+  list(
+    total_power = Ep, mean_freq_hz = fmean, median_freq_hz = fmed,
+    fm2_hz2 = fm2, spread_hz = sqrt(fm2),
+    spectral_skewness = if (fm2 > 0) fm3 / fm2^1.5 else 0,
+    spectral_kurtosis = if (fm2 > 0) fm4 / (fm2 * fm2) else 0
+  )
 }
 
 
@@ -692,6 +698,9 @@ Nernst <- function(T = 310.15, z = 1, conc_out = 5, conc_in = 140,
 #' \code{n}, \code{m_inf}, \code{h_inf}, \code{n_inf}, \code{tau_m_ms}, \code{tau_h_ms},
 #' \code{tau_n_ms}, \code{alpha_per_ms}, \code{beta_per_ms}, \code{units}, \code{method}.
 #' @export
+#' @examples
+#' HhGate(V = 5L)
+#' @keywords internal
 HhGate <- function(V, dt = 0.01, m = NULL, h = NULL, n = NULL, steps = 1L) {
   V <- as.numeric(V)
   dt <- as.numeric(dt)
@@ -700,9 +709,11 @@ HhGate <- function(V, dt = 0.01, m = NULL, h = NULL, n = NULL, steps = 1L) {
   if (steps < 1L) stop("steps must be at least 1")
   rt <- .bsahhrates(V)
   out <- list()
-  spec <- list(list("m", rt[["am"]], rt[["bm"]], m),
-               list("h", rt[["ah"]], rt[["bh"]], h),
-               list("n", rt[["an"]], rt[["bn"]], n))
+  spec <- list(
+    list("m", rt[["am"]], rt[["bm"]], m),
+    list("h", rt[["ah"]], rt[["bh"]], h),
+    list("n", rt[["an"]], rt[["bn"]], n)
+  )
   for (s in spec) {
     nm <- s[[1L]]
     a <- s[[2L]]
@@ -723,18 +734,24 @@ HhGate <- function(V, dt = 0.01, m = NULL, h = NULL, n = NULL, steps = 1L) {
     out[[paste0(nm, "_inf")]] <- xinf
     out[[paste0("tau_", nm, "_ms")]] <- tau
   }
-  list(V_mV = V, dt_ms = dt, steps = steps,
-       m = out$m, h = out$h, n = out$n,
-       m_inf = out$m_inf, h_inf = out$h_inf, n_inf = out$n_inf,
-       tau_m_ms = out$tau_m_ms, tau_h_ms = out$tau_h_ms,
-       tau_n_ms = out$tau_n_ms,
-       alpha_per_ms = list(m = rt[["am"]], h = rt[["ah"]], n = rt[["an"]]),
-       beta_per_ms = list(m = rt[["bm"]], h = rt[["bh"]], n = rt[["bn"]]),
-       units = list(V = "mV", time = "ms", rates = "1/ms",
-                    gates = "dimensionless"),
-       method = paste("Hodgkin & Huxley (1952) J Physiol 117(4):500-544",
-                      "gating kinetics; rates not printed in",
-                      "Rangayyan (2024)"))
+  list(
+    V_mV = V, dt_ms = dt, steps = steps,
+    m = out$m, h = out$h, n = out$n,
+    m_inf = out$m_inf, h_inf = out$h_inf, n_inf = out$n_inf,
+    tau_m_ms = out$tau_m_ms, tau_h_ms = out$tau_h_ms,
+    tau_n_ms = out$tau_n_ms,
+    alpha_per_ms = list(m = rt[["am"]], h = rt[["ah"]], n = rt[["an"]]),
+    beta_per_ms = list(m = rt[["bm"]], h = rt[["bh"]], n = rt[["bn"]]),
+    units = list(
+      V = "mV", time = "ms", rates = "1/ms",
+      gates = "dimensionless"
+    ),
+    method = paste(
+      "Hodgkin & Huxley (1952) J Physiol 117(4):500-544",
+      "gating kinetics; rates not printed in",
+      "Rangayyan (2024)"
+    )
+  )
 }
 
 
@@ -1286,6 +1303,9 @@ CadAcou <- function(coronary_sound, fs, order = 8, hf_band = c(300, 900),
 #' \code{corner_freq_hz}, \code{reynolds_param_x}, \code{reynolds_number},
 #' \code{total_power_Pa2}, \code{units}, \code{method}.
 #' @export
+#' @examples
+#' CorSound(diameter = 5L, flow_velocity = 5L)
+#' @keywords internal
 CorSound <- function(diameter, flow_velocity, stenosis_pct = 0, p2max = 1,
                      freqs = NULL, nu = 3.5e-6) {
   D <- as.numeric(diameter)
@@ -1307,22 +1327,28 @@ CorSound <- function(diameter, flow_velocity, stenosis_pct = 0, p2max = 1,
     fs_hz <- as.numeric(freqs)
     if (any(fs_hz < 0)) stop("frequencies must be non-negative (Hz)")
   }
-  tau <- d / U                      # seconds
+  tau <- d / U # seconds
   psd <- 0.7 * tau * p2max / (1 + 0.5 * fs_hz * tau)^(10 / 3)
   x <- 1e-3 * (u * d / nu) * (D / d)^0.75
-  list(freq_hz = fs_hz, psd_Pa2_per_Hz = psd,
-       D_normal_m = D, d_stenotic_m = d,
-       U_normal_m_s = U, u_stenotic_m_s = u,
-       stenosis_pct = s,
-       corner_freq_hz = 2 / tau,
-       reynolds_param_x = x,
-       reynolds_number = u * d / nu,
-       total_power_Pa2 = .morie_fsum(psd) *
-         (if (length(fs_hz) > 1L) fs_hz[2L] - fs_hz[1L] else 1),
-       units = list(freq = "Hz", psd = "Pa^2/Hz", diameter = "m",
-                    velocity = "m/s", nu = "m^2/s"),
-       method = paste("Rangayyan (2024) eqs. (7.135) and (7.136),",
-                      "Section 7.7.2, after Wang et al. (1990) and Fredberg"))
+  list(
+    freq_hz = fs_hz, psd_Pa2_per_Hz = psd,
+    D_normal_m = D, d_stenotic_m = d,
+    U_normal_m_s = U, u_stenotic_m_s = u,
+    stenosis_pct = s,
+    corner_freq_hz = 2 / tau,
+    reynolds_param_x = x,
+    reynolds_number = u * d / nu,
+    total_power_Pa2 = .morie_fsum(psd) *
+      (if (length(fs_hz) > 1L) fs_hz[2L] - fs_hz[1L] else 1),
+    units = list(
+      freq = "Hz", psd = "Pa^2/Hz", diameter = "m",
+      velocity = "m/s", nu = "m^2/s"
+    ),
+    method = paste(
+      "Rangayyan (2024) eqs. (7.135) and (7.136),",
+      "Section 7.7.2, after Wang et al. (1990) and Fredberg"
+    )
+  )
 }
 
 

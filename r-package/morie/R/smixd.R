@@ -4,20 +4,8 @@
 # Extracted from the smixd() optimiser closure so the non-positive-
 # -definite-covariance, singular-information and non-positive-variance
 # guards are all directly unit-testable. `theta` = c(log phi, log nu).
-#' Internal: spatial-mixed-model REML negative log-likelihood
-#'
-#' Extracted from the smixd() optimiser closure so the non-positive-
-#' -definite-covariance, singular-information and non-positive-variance
-#' guards are all directly unit-testable. `theta` = c(log phi, log nu).
-#'
-#' @param theta A vector; indexed elementwise.
-#' @param D Numeric; combined arithmetically in the body.
-#' @param n A matrix; passed to \code{diag}.
-#' @param X Passed to \code{backsolve}.
-#' @param y Passed to \code{backsolve}.
-#' @param p Numeric; combined arithmetically in the body.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Smixd Negreml
+#' @noRd
 .smixd_negreml <- function(theta, D, n, X, y, p) {
   phi <- exp(theta[1])
   nu <- exp(theta[2])
@@ -61,6 +49,7 @@
 #' @return Named list: estimate, se, sigma2, tau2, phi, n, method.
 #' @references Patterson & Thompson (1971); Schabenberger & Gotway (2005), Ch 5.
 #' @examples
+#' set.seed(1)
 #' smixd(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100), 50, 2))
 #' @export
 smixd <- function(x, y, coords) {

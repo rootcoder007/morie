@@ -15,6 +15,8 @@ morie_trnsfr_transport_ate(
   trim = 0.001,
   ridge = 1e-06
 )
+
+morie_trnsfr(Y, W, X, S, method = "dr", e = NULL, trim = 0.001, ridge = 1e-06)
 }
 \arguments{
 \item{Y}{Passed to \code{.s03vec}.}
@@ -43,3 +45,14 @@ A step of the trnsfr_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(2)
+n <- 100
+X <- matrix(rnorm(n * 2), n, 2)
+S <- rbinom(n, 1, plogis(0.3 * X[, 1]))
+W <- rbinom(n, 1, 0.5)
+Y <- 1 + 0.8 * W + X[, 1] + rnorm(n, 0, 0.3)
+r <- morie_trnsfr_transport_ate(Y, W, X, S)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -65,6 +65,10 @@ clpopt_pivots <- c("bland", "dantzig")
 #' @return A list with \code{A}, \code{b}, \code{c}, \code{n_original}, \code{n_slack},
 #' \code{row_kinds}.
 #' @export
+#' @examples
+#' sf <- standard_form(c = c(1, 2), A_ub = rbind(c(1, 1)), b_ub = 4)
+#' str(sf, max.level = 1)
+#' @keywords internal
 standard_form <- function(c, A_ub = NULL, b_ub = NULL, A_eq = NULL,
                           b_eq = NULL, upper = NULL) {
   cv <- as.numeric(c)
@@ -448,6 +452,12 @@ simplex <- function(c, A, b, rule = "bland", max_iter = 10000,
 #' @param max_iter Passed to \code{simplex}. Defaults to \code{10000}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' r <- morie_clpopt(c = c(3, 5), A_ub = rbind(c(1, 0), c(0, 2), c(3, 2)),
+#'                   b_ub = c(4, 12, 18), maximise = TRUE)
+#' stopifnot(abs(r$fun - 36) < 1e-6)
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_clpopt <- function(c, A_ub = NULL, b_ub = NULL, A_eq = NULL,
                          b_eq = NULL, upper = NULL, rule = "bland",
                          maximise = FALSE, max_iter = 10000) {

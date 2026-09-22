@@ -18,6 +18,10 @@ A list with \code{alpha}, \code{theta}, \code{is_dirichlet}, \code{note}.
 Validates 0 <= alpha < 1 and theta > -alpha. The range is dictated
 by Proposition 4, not a convention.
 }
+\examples{
+morie_pmpfit_check(alpha = 0.5, theta = 0.5)
+}
 \references{
 Pitman, J. & Yor, M. (1997). Proposition 4.
 }
+\keyword{internal}

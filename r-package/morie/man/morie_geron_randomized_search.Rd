@@ -22,6 +22,14 @@ INTERVAL (Python's \verb{(lo, hi)} tuple); a plain vector is a discrete CHOICE l
 
 \item{n_iter, X, y, estimator, K, seed, score}{Controls; \code{estimator(params) -> list(fit=, predict=)}.}
 }
+\value{
+A list with \code{best_params}, \code{best_score}, \code{best_index}, \code{candidates}, \code{scores}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Randomized hyperparameter search, scored by K-fold CV (Geron Ch 2, hmrsc)
 }
+\examples{
+morie_geron_randomized_search(param_dist = c(1, 2, 3, 4, 5, 6, 7, 8), n_iter = 5L,
+  X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

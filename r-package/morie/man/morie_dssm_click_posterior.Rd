@@ -35,3 +35,8 @@ Softmax over the clicked document and a sample of unclicked ones.
 \eqn{\gamma \to 0} every document is equally likely whatever the
 model learned.
 }
+\examples{
+morie_dssm_click_posterior(query_vector = 5L, clicked_vector = 5L,
+  unclicked_vectors = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

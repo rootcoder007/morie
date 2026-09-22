@@ -10,15 +10,13 @@ morie_otis_analyze_b07(data)
 \item{data}{b07 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines and an
-alert x gender x year table including with/without-alert counts and
-the rate of placements with an alert.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 Alerts x gender (b07)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_b07(V)
+otis_b07 <- morie_synth_otis("b07", n = 120L, seed = 1L)
+res <- morie_otis_analyze_b07(otis_b07)
+class(res)
 }

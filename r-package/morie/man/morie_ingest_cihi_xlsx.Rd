@@ -8,18 +8,26 @@ morie_ingest_cihi_xlsx(
   url,
   sheet = NULL,
   timeout = 120,
-  user_agent = "morie/r (+https://github.com/rootcoder007/morie)",
+  user_agent = "morie/r (+https://github.com/rootcoder007/rmorie)",
+  wayback_url = NULL,
   ...
 )
 }
 \arguments{
-\item{url}{Direct URL of the CIHI .xlsx data table.}
+\item{url}{Direct URL of the CIHI .xlsx data table. See
+\code{\link{morie_datasets_cihi_data_tables}} for the published catalogue.}
 
 \item{sheet}{Worksheet name or 1-based index. NULL = largest sheet.}
 
 \item{timeout}{HTTP timeout in seconds (default 120).}
 
 \item{user_agent}{User-Agent string.}
+
+\item{wayback_url}{Optional Internet Archive snapshot URL used as a
+fallback if the live \code{url} download fails (CIHI rotates files).
+\code{NULL} (default) auto-resolves one via
+\code{rmoriebricklayer::wayback_snapshot_url()} when that package is
+installed; \code{""} disables the fallback.}
 
 \item{...}{forwarded to readxl::read_excel.}
 }
@@ -28,4 +36,13 @@ base R data.frame.
 }
 \description{
 Download a CIHI indicator .xlsx data table
+}
+\examples{
+\dontshow{if (requireNamespace("httr2", quietly = TRUE) && requireNamespace("readxl", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\donttest{
+# Any table from the catalogue, e.g. the injury/trauma ED table:
+u <- morie_datasets_cihi_data_tables()$url[1]
+df <- morie_ingest_cihi_xlsx(u)
+}
+\dontshow{\}) # examplesIf}
 }

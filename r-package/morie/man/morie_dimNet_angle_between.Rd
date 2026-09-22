@@ -21,3 +21,8 @@ Two configurations can share every pairwise distance in the
 message's own pair and differ here -- which is precisely what a
 distance-only model cannot see.
 }
+\examples{
+morie_dimNet_angle_between(r_k = c(1, 2, 3, 4, 5, 6, 7, 8),
+  r_j = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), r_i = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

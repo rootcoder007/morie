@@ -2,7 +2,7 @@
 % Please edit documentation in R/tps_all_analyze.R
 \name{morie_tps_analyze_one}
 \alias{morie_tps_analyze_one}
-\title{Run the standard TPS analysis bundle on one data.frame}
+\title{Run the standard TPS analysis capsule on one data.frame}
 \usage{
 morie_tps_analyze_one(df, name = "?")
 }
@@ -22,7 +22,10 @@ nested result.  This is the function the 13 convenience aliases
 }
 \examples{
 \donttest{
-D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-morie_tps_analyze_one(D)
+df <- try(morie_datasets_tps_assault(max_features = 200L))
+if (!inherits(df, "try-error")) {
+  res <- try(morie_tps_analyze_one(df, name = "assault"))
+  if (!inherits(res, "try-error")) names(res)
+}
 }
 }

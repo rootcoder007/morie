@@ -10,8 +10,7 @@ bartlett_test(...)
 \item{...}{Two or more numeric vectors.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with Bartlett's K-squared statistic, p-value, df, and total n.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Bartlett's test for equality of variances

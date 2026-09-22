@@ -22,8 +22,15 @@ A list with \code{clusters}, \code{shrunk}, \code{raw}, \code{lambda},
 }
 \description{
 lambda_j = sigma2_e / (sigma2_e + n_j sigma2_u).  lambda depends on
-the CLUSTER\'S OWN SIZE; a common lambda over-shrinks the large
+the CLUSTER'S OWN SIZE; a common lambda over-shrinks the large
 clusters. Stein (1956); Morris (1983) JASA 78:47-55.  NOT in
 Schabenberger & Gotway -- a fixed-string search for "shrinkage"
 returns nothing.
 }
+\examples{
+set.seed(4)
+y <- c(rnorm(5, 1), rnorm(8, 2), rnorm(3, 0))
+cl <- c(rep(0, 5), rep(1, 8), rep(2, 3))
+ShrinkPred(y, cl, sigma2_u = 0.5, sigma2_e = 1)
+}
+\keyword{internal}

@@ -17,3 +17,11 @@ A step of the trmRew_native implementation. Called by \code{morie_trmRew_is_loca
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+x <- morie_unifAlg_var("x")
+zero <- morie_unifAlg_const("0")
+r1 <- morie_trmRew_rule(morie_unifAlg_app("plus", zero, x), x)
+r2 <- morie_trmRew_rule(morie_unifAlg_app("plus", x, zero), x)
+morie_trmRew_critical_pairs(list(r1, r2))
+}
+\keyword{internal}

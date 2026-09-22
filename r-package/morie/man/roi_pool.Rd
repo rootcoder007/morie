@@ -7,7 +7,7 @@
 roi_pool(features, box, out_size = 2L, stride = 1)
 }
 \arguments{
-\item{features}{A matrix; passed to \code{as.matrix}.}
+\item{features}{Passed to \code{.masrcn_mat}.}
 
 \item{box}{A vector; indexed elementwise.}
 
@@ -20,7 +20,14 @@ A list with \code{pooled}, \code{quantised_box}, \code{quantisation_shift},
 \code{caveat}.
 }
 \description{
-A step of the masrcn_native implementation. Called by \code{alignment_error}.
+A step of the masrcn_native implementation. Called by \code{alignment_error},
+\code{morie_masrcn}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+features <- matrix(as.numeric(1:36), 6, 6)
+p <- roi_pool(features, box = c(0, 0, 4, 4), out_size = 2L)
+is.list(p)
+}
+\keyword{internal}

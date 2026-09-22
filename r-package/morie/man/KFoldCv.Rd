@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_class.R
 \name{KFoldCv}
 \alias{KFoldCv}
-\title{Section 10.10.3.  The book\'s point is that the training and test}
+\title{Section 10.10.3.  The book's point is that the training and test}
 \usage{
 KFoldCv(X, y, k = 5, classifier = NULL, stratified = TRUE)
 }
@@ -30,3 +30,8 @@ all.  Folds are stratified by default; unstratified folds on
 unbalanced data can leave a class absent from a training fold, which
 measures luck rather than generalization.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+KFoldCv(V, V)
+}
+\keyword{internal}

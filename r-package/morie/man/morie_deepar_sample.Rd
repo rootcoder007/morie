@@ -26,3 +26,4 @@ Multi-step uncertainty has no closed form once the model consumes
 its own output, which is why the intervals widen with horizon
 without being told to.
 }
+\keyword{internal}

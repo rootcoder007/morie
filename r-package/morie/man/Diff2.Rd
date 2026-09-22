@@ -23,3 +23,8 @@ A list with \code{y}, \code{value}, \code{index}, \code{T},
 with frequency, and the book notes it "may be realized as a cascade
 of two" first differences.  Both are computed and compared.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Diff2(V)
+}
+\keyword{internal}

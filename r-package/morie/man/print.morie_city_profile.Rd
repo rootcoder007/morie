@@ -12,8 +12,19 @@
 \item{...}{Ignored; accepted for S3 consistency.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
 Print method for \code{morie_city_profile} objects
+}
+\examples{
+\donttest{
+p <- morie_fairness_city_profile(
+  "chicago",
+  area_col = "community_area",
+  risk_col = "rti", group_col = "majority_race"
+)
+p$name
+print(p)
+}
 }

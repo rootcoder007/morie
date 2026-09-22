@@ -19,31 +19,28 @@ morie_matching_subclassify(
 
 \item{covariates}{Character vector of covariates.}
 
-\item{ps}{Optional propensity scores. When supplied they REPLACE
-the fitted model and become the matching distance directly,
-aligned to the rows that survive the NA drop.}
+\item{ps}{Optional pre-computed propensity scores (ignored; retained
+for back-compat).}
 
 \item{n_strata}{Number of quantile-based strata (default 5).}
 }
 \value{
-A list with components \code{data_with_strata} (the original
-data with a \code{._stratum} column appended) and
+A list with components \code{data_with_strata} (the matched
+data augmented with \code{._stratum} and \code{._ps} columns) and
 \code{stratum_effects} (per-stratum sample sizes and PS ranges).
 }
 \description{
-Divides observations into propensity-score strata and reports within-
-stratum sample sizes and PS ranges.  Mirrors Python
-\code{morie.matching.subclassify}.
+Thin wrapper around \code{MatchIt::matchit(method = "subclass")} that
+reports within-stratum sample sizes and PS ranges, preserving the
+rmorie return shape (\code{data_with_strata} + \code{stratum_effects}).
 }
 \examples{
 \dontshow{if (requireNamespace("MatchIt", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\donttest{
 set.seed(1)
-df <- data.frame(
-  y = rnorm(150), d = rbinom(150, 1, 0.4),
-  x1 = rnorm(150), x2 = rnorm(150),
-  region = sample(c("North", "South"), 150, TRUE),
-  year = sample(2020:2022, 150, TRUE),
-  treat3 = sample(0:2, 150, TRUE))
+df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+                 x1 = rnorm(200), x2 = rnorm(200))
 morie_matching_subclassify(df, "d", c("x1", "x2"), n_strata = 5)
+}
 \dontshow{\}) # examplesIf}
 }

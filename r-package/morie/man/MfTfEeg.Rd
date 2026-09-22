@@ -22,3 +22,8 @@ The value of \code{r}, as built in the body.
 \description{
 so it delegates.  What is specific here is the DFT caveat.
 }
+\examples{
+MfTfEeg(X = c(1, 2, 3, 4, 5, 6, 7, 8), freqs = c(1, 2, 3, 4, 5, 6, 7, 8),
+  t0 = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

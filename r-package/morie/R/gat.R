@@ -6,9 +6,9 @@
 #' of the two endpoints, computed per edge from node features alone, so
 #' the layer never needs the whole graph and transfers to unseen graphs.
 #'
-#' Formula: \code{e_ij = LeakyReLU(a\'[W h_i || W h_j])},
+#' Formula: \eqn{e_ij = LeakyReLU(a'[W h_i || W h_j])},
 #' \code{alpha_ij = softmax_j(e_ij)},
-#' \code{h_i\' = sum_j alpha_ij W h_j}.
+#' \eqn{h_i' = sum_j alpha_ij W h_j}.
 #'
 #' @param A Adjacency; self-loops are added.
 #' @param X Node features.
@@ -20,8 +20,8 @@
 #'   2018, equations (1)-(4).
 #' @export
 #' @examples
-#' Gat(A = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), W = 5L, a = c(1, 2,
-#' 3, 4, 5, 6, 7, 8))
+#' Gat(A = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), W = 5L,
+#'   a = c(1, 2, 3, 4, 5, 6, 7, 8))
 Gat <- function(A, X, W, a, alpha_leaky = 0.2) {
   Am <- as.matrix(A)
   Xm <- as.matrix(X)

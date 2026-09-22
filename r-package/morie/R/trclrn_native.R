@@ -366,6 +366,7 @@ trclrn_fit_tree <- function(Y, A, X, propensity = NULL, method = "ipw",
 #' @param X A matrix; passed to \code{as.matrix}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @keywords internal
 trclrn_predict_rule <- function(tree, X) {
   if (is.data.frame(X)) {
     Xm <- as.matrix(X)
@@ -402,6 +403,7 @@ trclrn_predict_rule <- function(tree, X) {
 #' @param indent A count; the body uses it as \code{rep(...)}. Defaults to \code{0}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @keywords internal
 trclrn_tree_rules <- function(tree, names = NULL, indent = 0) {
   pad <- paste(rep(" ", indent), collapse = "")
   if (tree$leaf) {
@@ -425,6 +427,9 @@ trclrn_tree_rules <- function(tree, names = NULL, indent = 0) {
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' trclrn_cheatsheet()
+#' @keywords internal
 trclrn_cheatsheet <- function() {
   return(paste0(
     "trclrn: tree-based ITR. Value V(pi) = mean of Y * ",

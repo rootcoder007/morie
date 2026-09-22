@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 #' Internal guard for DoubleML cross-fitting via \{future\}
 #'
 #' DoubleML cross-fits through \pkg{future}. Three failure modes are
@@ -39,7 +41,6 @@
 #' @rdname dot-morie_dml_guard_begin
 #' @param st State list returned by `.morie_dml_guard_begin`.
 #' @keywords internal
-#' @noRd
 .morie_dml_guard_end <- function(st) {
   options(st$opts)
   if (!is.null(st$plan)) {

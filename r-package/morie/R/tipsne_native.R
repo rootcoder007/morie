@@ -75,7 +75,7 @@
 # comparison at the twelfth digit finds the difference.
 #' Neumaier-compensated sum. Written out rather than left to sum():
 #'
-#' CPython 3.12+ compensates a run of floats and R\'s sum() accumulates
+#' CPython 3.12+ compensates a run of floats and R's sum() accumulates
 #' in long double, so the two built-ins are different functions and a
 #' comparison at the twelfth digit finds the difference.
 #'
@@ -125,7 +125,7 @@
 
 # Cholesky factor L with A = L L', lower triangular. Explicit rather than
 # chol() so the Python arm can match it element by element.
-#' Cholesky factor L with A = L L\', lower triangular. Explicit rather
+#' Cholesky factor L with A = L L', lower triangular. Explicit rather
 #' than
 #'
 #' chol() so the Python arm can match it element by element.
@@ -154,7 +154,7 @@
 }
 
 # Solve L L' x = b by forward then back substitution.
-#' Solve L L\' x = b by forward then back substitution
+#' Solve L L' x = b by forward then back substitution
 #'
 #' A step of the tipsne_native implementation. Called by \code{.tipsne_inv_from_chol},
 #' \code{morie_tipsne_ancova}.
@@ -182,7 +182,7 @@
 }
 
 # (L L')^-1, formed column by column from the factor.
-#' (L L\')^-1, formed column by column from the factor
+#' (L L')^-1, formed column by column from the factor
 #'
 #' A step of the tipsne_native implementation. Called by \code{morie_tipsne_ancova}.
 #' See the file header for the source the module follows.
@@ -212,6 +212,18 @@
 #'   degrees of freedom, sigma2, the unscaled covariance and the fitted
 #'   values.
 #' @keywords internal
+#' @examples
+#' N <- 60L
+#' ii <- 0:(N - 1L)
+#' ARM <- ifelse(ii%%2L == 0L, 1, 0)
+#' COV <- cbind((ii%%5L) - 2, cos(0.7 * ii))
+#' BASE <- 2 + 0.8 * COV[, 1] + 0.4 * COV[, 2] + 0.9 * ARM + 0.5 *
+#'     sin(3 * ii) + 0.3 * cos(7 * ii)
+#' MISS <- as.integer((ARM == 1 & ii%%7L == 3L) | (ARM == 0 & ii%%11L ==
+#'     5L))
+#' DES <- cbind(1, ARM, COV[, 1], COV[, 2])[MISS == 0L, , drop = FALSE]
+#' YO <- BASE[MISS == 0L]
+#' morie:::morie_tipsne_ancova(YO, DES)
 morie_tipsne_ancova <- function(y, design) {
   n <- length(y)
   p <- ncol(design)
@@ -251,7 +263,7 @@ morie_tipsne_ancova <- function(y, design) {
 # beta* ~ N(betahat, sigma2 (X'X)^-1) via the Cholesky of the covariance.
 # The draw is coordinate by coordinate so the stream position matches the
 # Python arm term for term.
-#' Beta* ~ N(betahat, sigma2 (X\'X)^-1) via the Cholesky of the
+#' Beta* ~ N(betahat, sigma2 (X'X)^-1) via the Cholesky of the
 #' covariance
 #'
 #' The draw is coordinate by coordinate so the stream position matches
@@ -341,7 +353,7 @@ morie_tipsne_impute <- function(e, y, arm, X, miss, fit, mi) {
 }
 
 # Lentz's algorithm for the beta continued fraction.
-#' Lentz\'s algorithm for the beta continued fraction
+#' Lentz's algorithm for the beta continued fraction
 #'
 #' A step of the tipsne_native implementation. Called by \code{.tipsne_betainc}.
 #' See the file header for the source the module follows.
@@ -412,7 +424,7 @@ morie_tipsne_impute <- function(e, y, arm, X, miss, fit, mi) {
 # Upper tail of Student's t, from the regularised incomplete beta.
 # Written out because pt() and the Python arm are separate
 # implementations and would disagree in the last digits.
-#' Upper tail of Student\'s t, from the regularised incomplete beta
+#' Upper tail of Student's t, from the regularised incomplete beta
 #'
 #' Written out because pt() and the Python arm are separate
 #' implementations and would disagree in the last digits.
@@ -433,6 +445,9 @@ morie_tipsne_impute <- function(e, y, arm, X, miss, fit, mi) {
 #' @return A list with the pooled estimate, standard error, degrees of
 #'   freedom, t statistic, p-value and the variance decomposition.
 #' @keywords internal
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_tipsne_pool(V, V)
 morie_tipsne_pool <- function(ests, vars, pooling = "rubin1987",
                               df_complete = NULL) {
   m <- length(ests)
@@ -506,6 +521,11 @@ morie_tipsne_pool <- function(ests, vars, pooling = "rubin1987",
 #' @return A list with the MAR analysis, the grid, the tipping point for
 #'   each control-arm delta, and whether the result tipped at all.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie_tipsne(V, M)
+#' @keywords internal
 morie_tipsne <- function(y, D, missing_indicator = NULL, X = NULL,
                          delta_treat = NULL, delta_control = NULL,
                          n_imputations = 20L, seed = 1, alpha = 0.05,
@@ -608,6 +628,9 @@ morie_tipsne <- function(y, D, missing_indicator = NULL, X = NULL,
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_tipsne_cheatsheet()
+#' @keywords internal
 morie_tipsne_cheatsheet <- function()
   paste0("tipsne: delta-adjusted tipping-point sensitivity analysis for ",
          "MNAR missingness. mi routes ", paste(.TIPSNE_MI, collapse = ", "),

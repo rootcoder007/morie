@@ -22,6 +22,10 @@ Computes the expected number of clusters at the same theta for a
 sequence of discounts, so the log-vs-power growth is measured
 rather than quoted.
 }
+\examples{
+morie_pmpfit_tail(n = 5L)
+}
 \references{
 Pitman, J. & Yor (1997). Definition 1.
 }
+\keyword{internal}

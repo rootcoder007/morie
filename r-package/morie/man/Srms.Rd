@@ -16,3 +16,8 @@ A list with \code{rms}, \code{ms}, \code{sd}, \code{mean}, \code{n},
 \description{
 (3.10) is the population SD, not the N-1 unbiased one.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Srms(V)
+}
+\keyword{internal}

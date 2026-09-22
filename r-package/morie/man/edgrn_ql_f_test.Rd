@@ -27,3 +27,7 @@ A step of the edgrn_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+edgrn_ql_f_test(5.0, 1, 1.2, 10)
+}
+\keyword{internal}

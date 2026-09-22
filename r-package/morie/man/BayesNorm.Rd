@@ -32,3 +32,7 @@ unchanged while the arithmetic stops underflowing.  It then drops the
 density, so both forms are returned.  The surfaces are hyperquadrics
 and reduce to hyperplanes exactly when the covariances are equal.
 }
+\examples{
+BayesNorm(x = 5L, means = c(1, 2, 3, 4, 5, 6, 7, 8), covs = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

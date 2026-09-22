@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #' FISTA for the LASSO
 #'
-#' Minimises F(b) = 0.5 ||X b - y||^2 + lam ||b||_1 by the accelerated
+#' Minimises F(b) = 0.5 ||X b - y||^2 + lam ||b||&#95;1 by the accelerated
 #' proximal-gradient scheme of Beck and Teboulle (2009, Sect. 4):
 #' x_k = soft(y_k - grad f(y_k)/L, lam/L),
-#' t_\{k+1\} = (1 + sqrt(1 + 4 t_k^2))/2,
+#' t&#95;\{k+1\} = (1 + sqrt(1 + 4 t&#95;k^2))/2,
 #' y_\{k+1\} = x_k + ((t_k - 1)/t_\{k+1\})(x_k - x_\{k-1\}).
 #'
 #' @param X Design matrix, one record per row.
@@ -50,10 +50,12 @@ Fistalasso <- function(X, y, lam, steps = 100, lipschitz = NULL) {
   res <- as.numeric(Xm %*% x) - y
   rss <- 0.5 * sum(res^2)
   l1 <- sum(abs(x))
-  .t1_result(beta = x, objective = rss + lam * l1, rss = rss, l1 = l1,
-             lipschitz = L, steps = steps, nonzero = sum(x != 0),
-             n = n, p = p,
-             method = "FISTA for the LASSO (Beck-Teboulle 2009 Sect. 4)")
+  .t1_result(
+    beta = x, objective = rss + lam * l1, rss = rss, l1 = l1,
+    lipschitz = L, steps = steps, nonzero = sum(x != 0),
+    n = n, p = p,
+    method = "FISTA for the LASSO (Beck-Teboulle 2009 Sect. 4)"
+  )
 }
 
 #' .k01_soft
@@ -85,7 +87,9 @@ Fistalasso <- function(X, y, lam, steps = 100, lipschitz = NULL) {
   for (i in seq_len(iters)) {
     w <- as.numeric(t(Xm) %*% (Xm %*% v))
     nw <- sqrt(sum(w^2))
-    if (nw == 0) return(0)
+    if (nw == 0) {
+      return(0)
+    }
     v <- w / nw
     lam <- nw
   }

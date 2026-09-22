@@ -22,3 +22,9 @@ A step of the trmRew_native implementation. Called by \code{.trmRew_overlap},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+x <- morie_unifAlg_var("x")
+t <- morie_unifAlg_app("plus", morie_unifAlg_const("0"), x)
+morie_trmRew_replace_at(t, 0L, morie_unifAlg_const("1"))
+}
+\keyword{internal}

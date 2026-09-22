@@ -18,6 +18,14 @@ m observations}
 
 \item{m}{See Usage.}
 }
+\value{
+A numeric value.
+}
 \description{
 POT m-observation return level (Coles 2001 eq. 4.12-4.14)
 }
+\examples{
+morie_evt_return_level_pot(u = c(1, 2, 3, 4, 5, 6, 7, 8), sigma = 0.5, xi = 5L,
+  zeta_u = c(1, 2, 3, 4, 5, 6, 7, 8), m = 5L)
+}
+\keyword{internal}

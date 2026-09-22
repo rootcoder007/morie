@@ -31,3 +31,8 @@ rather than the best a.  Every a gives a valid bound P_e <= P1^a
 P2^(1-a) rho_a; the minimum gives the best of them. NOT FROM
 RANGAYYAN (2024).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Chernoff(V, V)
+}
+\keyword{internal}

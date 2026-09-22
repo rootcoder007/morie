@@ -30,11 +30,7 @@ correlation_table(
 \item{title}{Title.}
 }
 \value{
-When \code{output_format = "dataframe"}, a square
-\code{data.frame} of formatted correlation strings (with optional
-significance stars) indexed by the numeric column names of
-\code{data}. Otherwise a character string holding the rendered
-table in the requested format.
+A character string.
 }
 \description{
 Pairwise correlation matrix with significance stars

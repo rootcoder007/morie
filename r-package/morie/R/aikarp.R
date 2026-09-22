@@ -42,7 +42,9 @@ Aicar <- function(x, max_p = 10, demean = TRUE) {
   p <- 0:P
   aic <- ifelse(sig > 0, log(sig) + 2 * (p + 1) / T, Inf)
   unn <- ifelse(sig > 0, T * log(sig) + 2 * (p + 1), Inf)
-  .t1_result(p = which.min(aic) - 1L, aic = aic, aic_unnormalised = unn,
-             sigma2 = sig, pacf = pacf, n = T,
-             method = "AIC order selection for AR(p)")
+  .t1_result(
+    p = which.min(aic) - 1L, aic = aic, aic_unnormalised = unn,
+    sigma2 = sig, pacf = pacf, n = T,
+    method = "AIC order selection for AR(p)"
+  )
 }

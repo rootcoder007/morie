@@ -47,3 +47,12 @@ A step of the flxipt_native implementation. Called by \code{flexible_iptw}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+n <- 40
+X <- matrix(rnorm(n * 2), n, 2)
+y <- 1 + X[, 1] - 0.5 * X[, 2] + rnorm(n, 0, 0.3)
+r <- super_learner(y, X, n_folds = 4)
+str(r, max.level = 1)
+}
+\keyword{internal}

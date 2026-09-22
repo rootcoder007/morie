@@ -2,19 +2,29 @@
 % Please edit documentation in R/andmnh_native.R
 \name{automatic_bandwidth}
 \alias{automatic_bandwidth}
-\title{Andrews (1991) eq. 6.1, automatic plug-in bandwidth}
+\title{automatic_bandwidth}
 \usage{
 automatic_bandwidth(v, kernel = "qs", weights = NULL, n = NULL)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{A matrix; passed to \code{as.matrix}.}
 
-\item{kernel}{See Usage.}
+\item{kernel}{Passed to \code{.check_kernel}. Defaults to \code{"qs"}.}
 
-\item{weights}{See Usage.}
+\item{weights}{Passed to \code{alpha_ar1}.}
 
-\item{n}{See Usage.}
+\item{n}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
+}
+\value{
+A list with \code{bandwidth}, \code{alpha}, \code{fits}.
 }
 \description{
-Andrews (1991) eq. 6.1, automatic plug-in bandwidth
+A step of the andmnh_native implementation. Called by \code{andrews_monahan_hac}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+automatic_bandwidth(V)
+}
+\keyword{internal}

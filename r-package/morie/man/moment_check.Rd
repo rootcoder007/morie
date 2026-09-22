@@ -24,3 +24,10 @@ A step of the tlboot_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(3)
+reps <- rnorm(500, 2, 0.3)
+r <- moment_check(reps, target_mean = 2, target_se = 0.3)
+str(r, max.level = 1)
+}
+\keyword{internal}

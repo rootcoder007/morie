@@ -21,3 +21,11 @@ The value of \code{.secaead_le_bytes}.
 \description{
 original, which is what stops the block function being invertible.
 }
+\examples{
+key <- as.raw(0:31)
+nonce <- as.raw(c(0, 0, 0, 9, 0, 0, 0, 0x4a, 0, 0, 0, 0))
+ks <- morie_secaead_chacha20_block(key, 1, nonce)
+stopifnot(ks[1] == 0x10, ks[2] == 0xf1, ks[3] == 0xe7)
+head(ks, 8)
+}
+\keyword{internal}

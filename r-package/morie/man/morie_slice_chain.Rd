@@ -41,6 +41,12 @@ List with \code{draws}, \code{n_eval}, \code{w},
 Runs \code{burn + n * thin} slice transitions and records every
 \code{thin}-th draw from \code{burn} onwards.
 }
+\examples{
+r <- morie_slice_chain(function(x) -0.5 * x^2, x0 = 0, n = 400L,
+                       seed = 1)
+str(r, max.level = 1)
+}
 \references{
 Neal, R. M. (2003). Damien, P. et al. (1999).
 }
+\keyword{internal}

@@ -26,3 +26,8 @@ A step of the tlltmle_native implementation. Called by \code{tlltmle_ltmle},
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+tlltmle_fluctuate(Q = c(1, 2, 3, 4, 5, 6, 7, 8), H = c(1, 2, 3, 4, 5, 6, 7, 8),
+  Y = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

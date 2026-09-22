@@ -19,3 +19,9 @@ A numeric value.
 \description{
 Returns the transform 1/(1 + Conserve).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_survrsf_nelson_aalen(V, V)
+morie_survrsf_conserve_statistic(times = V, events = V, group = V)
+}
+\keyword{internal}

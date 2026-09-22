@@ -19,3 +19,9 @@ A step of the bats_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+spec <- BatsSpec()
+theta <- rep(0.1, n_free(spec))
+all_eigenvalues(spec, theta)
+}
+\keyword{internal}

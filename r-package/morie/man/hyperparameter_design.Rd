@@ -23,3 +23,9 @@ A step of the inlasm_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+hyperparameter_design(M, V)
+}
+\keyword{internal}

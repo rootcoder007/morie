@@ -18,10 +18,11 @@
 #' @return Named list \code{(y, estimate, mask, p, kept_fraction, method)}.
 #' @references Srivastava et al. (2014), JMLR 15:1929-1958.
 #' @examples
+#' set.seed(1)
 #' morie_drpfw_dropout_forward(x = rnorm(50))
 #' @export
 morie_drpfw_dropout_forward <- function(x, p = 0.5, seed = 0L, training = TRUE,
-                                  deterministic_seed = NULL) {
+                                        deterministic_seed = NULL) {
   if (p < 0 || p >= 1) stop(sprintf("p must be in [0, 1), got %g", p))
   x <- as.array(x)
   if (!training || p == 0) {

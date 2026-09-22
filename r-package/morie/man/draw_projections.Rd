@@ -23,3 +23,7 @@ A step of the perfat_native implementation. Called by \code{favor_attention}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+draw_projections(m = 5L, d = 5L)
+}
+\keyword{internal}

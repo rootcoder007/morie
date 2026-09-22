@@ -22,3 +22,7 @@ A step of the hiatus_native implementation. Called by \code{.hiatus_simulate},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+basic_reproduction_numbers(beta = 0.5, nu = 0.5, mu = 5L)
+}
+\keyword{internal}

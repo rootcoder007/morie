@@ -21,3 +21,10 @@ A step of the grace_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+rng <- morie:::.ghc_rng(1L)
+edges <- list(c(0, 1), c(1, 2), c(2, 3), c(3, 0))
+kept <- morie_drop_edges(edges, p = 0.3, rng)
+length(kept) <= length(edges)
+}
+\keyword{internal}

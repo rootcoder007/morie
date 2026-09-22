@@ -77,6 +77,9 @@
 #' @param Q Inter-compartmental clearance.
 #' @return A list with alpha, beta and the micro rate constants.
 #' @export
+#' @examples
+#' morie_halft_rates(V1 = 50, V2 = 30, CL = 5, Q = 2)
+#' @keywords internal
 morie_halft_rates <- function(V1, V2, CL, Q) {
   if (V1 <= 0 || V2 <= 0 || CL <= 0 || Q <= 0)
     stop("volumes and clearances must be positive")
@@ -114,6 +117,9 @@ morie_halft_rates <- function(V1, V2, CL, Q) {
 #'   half-lives, the fraction of area in each and the effective
 #'   half-life.
 #' @export
+#' @examples
+#' morie_halft(Vd = 50, Cl = 5)
+#' @keywords internal
 morie_halft <- function(smiles = NULL, Vd = NULL, Cl = NULL,
                         route = "one_compartment", V1 = NULL, V2 = NULL,
                         Q = NULL, dose = NULL) {
@@ -194,6 +200,9 @@ morie_halft <- function(smiles = NULL, Vd = NULL, Cl = NULL,
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_halft_cheatsheet()
+#' @keywords internal
 morie_halft_cheatsheet <- function()
   paste0("halft: plasma half-life. routes ",
          paste(.HALFT_ROUTES, collapse = ", "))

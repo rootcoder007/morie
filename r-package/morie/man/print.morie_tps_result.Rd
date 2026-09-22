@@ -12,14 +12,22 @@
 \item{...}{Ignored.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
 Pretty-print method for \code{morie_tps_result} objects
 }
 \examples{
 \donttest{
-D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-morie:::print.morie_tps_result(D)
+set.seed(1)
+df <- data.frame(OCC_YEAR = rep(2014:2023, each = 30),
+                 OCC_MONTH = sample(month.name, 300, TRUE),
+                 HOOD_158 = sample(sprintf("\%03d", 1:20), 300, TRUE),
+                 LAT_WGS84 = runif(300, 43.6, 43.8),
+                 LONG_WGS84 = runif(300, -79.5, -79.2))
+dfs <- list(a = df, b = df)
+res <- try(morie_tps_composite_index(dfs))
+if (!inherits(res, "try-error")) str(res, max.level = 1)
+print(res)
 }
 }

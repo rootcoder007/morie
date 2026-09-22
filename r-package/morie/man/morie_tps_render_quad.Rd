@@ -26,7 +26,10 @@ base graphics with \code{par(mfrow = c(2, 2))} when ggplot2 is absent.
 }
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-morie_tps_render_quad(D)
+set.seed(1)
+df <- data.frame(LAT_WGS84 = runif(60, 43.60, 43.85),
+                 LONG_WGS84 = runif(60, -79.60, -79.15))
+out <- morie_tps_render_quad(list(points = df),
+                             outfile = tempfile(fileext = ".png"))
 \dontshow{\}) # examplesIf}
 }

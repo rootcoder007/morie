@@ -16,7 +16,12 @@ Scalar barrier value, or \code{Inf} if any entry is >= 0.
 Boyd equation 11.5: \code{phi(x) = -sum log(-f_i(x))}.
 Returns \code{+Inf} outside the strict interior.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+log_barrier(V)
+}
 \references{
 Boyd, S. and Vandenberghe, L. (2004). Convex
 Optimization. Cambridge University Press, ch. 11.
 }
+\keyword{internal}

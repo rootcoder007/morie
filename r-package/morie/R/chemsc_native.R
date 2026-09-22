@@ -103,6 +103,9 @@
 #' @param d_max The maximum deviation.
 #' @return A value in the unit interval.
 #' @export
+#' @examples
+#' morie_chemsc_block(2.5, 2.0, 4.0)
+#' @keywords internal
 morie_chemsc_block <- function(d, d_ideal, d_max) {
   d <- abs(as.numeric(d))
   if (d_max <= d_ideal)
@@ -128,6 +131,9 @@ morie_chemsc_block <- function(d, d_ideal, d_max) {
 #' @param sigma The Gaussian smearing width.
 #' @return A value in the unit interval.
 #' @export
+#' @examples
+#' morie_chemsc_smooth_block(2.5, 2.0, 4.0, 0.5)
+#' @keywords internal
 morie_chemsc_smooth_block <- function(d, d_ideal, d_max, sigma) {
   if (sigma <= 0) return(morie_chemsc_block(d, d_ideal, d_max))
   d <- abs(as.numeric(d))
@@ -200,6 +206,9 @@ morie_chemsc_smooth_block <- function(d, d_ideal, d_max, sigma) {
 #' @param par Overrides for the hydrogen-bond parameters, or NULL.
 #' @return A value in the unit interval.
 #' @export
+#' @examples
+#' morie_chemsc_hbond(r = 5L, alpha = 0.5, betas = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_chemsc_hbond <- function(r, alpha, betas, smoothing = "gaussian",
                                par = NULL) {
   p <- .chemsc_par(.CHEMSC_HBOND, par)
@@ -230,7 +239,7 @@ morie_chemsc_hbond <- function(r, alpha, betas, smoothing = "gaussian",
 #' a binding interaction", so anything at or inside R1 is fully ideal
 #' and only the far side ramps down. Folding this about zero the way the
 #' hydrogen-bond deviations are folded would penalise a contact for
-#' being too close, which is the clash term\'s job and not this one\'s
+#' being too close, which is the clash term's job and not this one's
 #' -- and it would also make a contact sitting exactly on R1 score a
 #' hair under one whenever the coordinate arithmetic put it a single bit
 #' on the wrong side.
@@ -251,6 +260,9 @@ morie_chemsc_hbond <- function(r, alpha, betas, smoothing = "gaussian",
 #' @param par Overrides for the metal parameters, or NULL.
 #' @return A value in the unit interval.
 #' @export
+#' @examples
+#' morie_chemsc_metal(r = 5L)
+#' @keywords internal
 morie_chemsc_metal <- function(r, smoothing = "gaussian", par = NULL) {
   p <- .chemsc_par(.CHEMSC_METAL, par)
   .chemsc_B(.chemsc_over(r, p$METAL_R1), 0, p$METAL_R2 - p$METAL_R1,
@@ -264,6 +276,9 @@ morie_chemsc_metal <- function(r, smoothing = "gaussian", par = NULL) {
 #' @param par Overrides for the lipophilic parameters, or NULL.
 #' @return A value in the unit interval.
 #' @export
+#' @examples
+#' morie_chemsc_lipophilic(r = 5L)
+#' @keywords internal
 morie_chemsc_lipophilic <- function(r, smoothing = "gaussian",
                                     par = NULL) {
   p <- .chemsc_par(.CHEMSC_LIPO, par)
@@ -284,6 +299,10 @@ morie_chemsc_lipophilic <- function(r, smoothing = "gaussian",
 #'   fractions on the two sides of each FROZEN rotatable bond.
 #' @return The entropy term.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_chemsc_rot(D)
+#' @keywords internal
 morie_chemsc_rot <- function(fractions) {
   n <- length(fractions)
   if (n == 0L) return(0)
@@ -309,6 +328,9 @@ morie_chemsc_rot <- function(fractions) {
 #' @param par Overrides for the clash radii, or NULL.
 #' @return The penalty, zero at or beyond the radius.
 #' @export
+#' @examples
+#' morie_chemsc_clash(r = 5L)
+#' @keywords internal
 morie_chemsc_clash <- function(r, kind = "general", slope = 1,
                                par = NULL) {
   p <- .chemsc_par(.CHEMSC_CLASH, par)
@@ -334,6 +356,10 @@ morie_chemsc_clash <- function(r, kind = "general", slope = 1,
 #' @param phi0 The phase, in radians.
 #' @return The strain contribution.
 #' @export
+#' @examples
+#' morie_chemsc_torsion(phi = 0.5, A = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L,
+#'   phi0 = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_chemsc_torsion <- function(phi, A, n, phi0)
   as.numeric(A) * (1 + cos(as.numeric(n) * as.numeric(phi) * pi / 180 -
                              as.numeric(phi0)))
@@ -361,6 +387,9 @@ morie_chemsc_torsion <- function(phi, A, n, phi0)
 #' @return A list with the free energy estimate, the fitness and every
 #'   term separately so the total can be checked against its parts.
 #' @export
+#' @examples
+#' morie_chemsc_score()
+#' @keywords internal
 morie_chemsc_score <- function(hbonds = list(), metals = numeric(0),
                                lipophilic = numeric(0),
                                rotatable = list(), clashes = list(),
@@ -474,6 +503,10 @@ morie_chemsc_score <- function(hbonds = list(), metals = numeric(0),
 #' @param par Overrides for the geometry parameters.
 #' @return As the score function, with the contact lists it built.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_chemsc(D, D)
+#' @keywords internal
 morie_chemsc <- function(receptor, ligand, smoothing = "gaussian",
                          dg0 = 0, clash_slope = 1, intra_coefficient = 1,
                          rotatable = list(), torsions = list(),
@@ -538,6 +571,9 @@ morie_chemsc <- function(receptor, ligand, smoothing = "gaussian",
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_chemsc_cheatsheet()
+#' @keywords internal
 morie_chemsc_cheatsheet <- function()
   paste0("chemsc: ChemScore empirical docking. smoothings ",
          paste(.CHEMSC_SMOOTHINGS, collapse = ", "),

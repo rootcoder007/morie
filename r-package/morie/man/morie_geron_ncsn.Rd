@@ -23,6 +23,14 @@ morie_geron_ncsn(
 
 \item{epochs, lr, n_noise, seed, n_samples, langevin_steps, step_eps}{Training/sampling controls.}
 }
+\value{
+A list with \code{models}, \code{analytic}, \code{max_deviation}, \code{loss_history}, \code{samples}, \code{sigmas}, \code{mean}, \code{covariance}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Noise conditional score network: affine score models per noise level (Geron Ch 18, hmncsn)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_ncsn(V)
+}
+\keyword{internal}

@@ -16,3 +16,8 @@ The value of \code{r}, as built in the body.
 important consideration": a 2-pi jump at nearly every bin means the
 spectrum is too coarsely sampled to track the phase.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+CCepX(V)
+}
+\keyword{internal}

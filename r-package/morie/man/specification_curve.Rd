@@ -40,10 +40,17 @@ A \code{morie_spec_curve} named-list.
 \description{
 Estimates the treatment effect across many reasonable model
 specifications to assess robustness. Combines covariate sets x
-sample filters x model families.
+sample filters x model families.  Cross-references \pkg{specr}
+(\code{specr::specr}) as the canonical modern implementation with
+built-in plotting; use \pkg{specr} directly when you want the
+published specification-curve plot.
 }
 \examples{
-specification_curve(data = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), outcome =
-c(1, 2, 3, 4, 5, 6, 7, 8), treatment = c(0, 1, 0, 1, 1, 0, 1, 0), covariate_sets =
-c(1, 2, 3, 4, 5, 6, 7, 8))
+set.seed(1)
+df <- data.frame(d = rnorm(80), x1 = rnorm(80), x2 = rnorm(80))
+df$y <- 0.4 * df$d + 0.3 * df$x1 + rnorm(80)
+res <- specification_curve(df, "y", "d",
+                           covariate_sets = list(character(0), "x1",
+                                                 c("x1", "x2")))
+str(res, max.level = 1)
 }

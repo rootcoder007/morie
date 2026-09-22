@@ -25,3 +25,8 @@ A step of the gan_an_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+anomaly_score(x = c(1, 2, 3, 4, 5, 6, 7, 8), g_z = c(1, 2, 3, 4, 5, 6, 7, 8),
+  f_x = c(1, 2, 3, 4, 5, 6, 7, 8), f_gz = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

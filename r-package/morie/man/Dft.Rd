@@ -17,3 +17,8 @@ A list with \code{X}, \code{real}, \code{imag}, \code{n}, \code{magnitude},
 with no power-of-two requirement.  eq (3.85) is the same sum split
 into cos and sin parts, returned here so the two cannot disagree.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Dft(V)
+}
+\keyword{internal}

@@ -22,15 +22,14 @@ morie_weights_trim(
 Allowed values depend on the caller.}
 }
 \value{
-Numeric vector of trimmed weights, same length as
-\code{weights}, with values clipped (or winsorised) to the
-percentile interval.
+A numeric vector of trimmed weights.
 }
 \description{
 \code{method = "percentile"} clips at the specified percentiles;
 \code{method = "winsorize"} replaces outliers with the boundary values.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_weights_trim(V)
+set.seed(1)
+res <- morie_weights_trim(runif(30, 0.5, 5))
+str(res, max.level = 1)
 }

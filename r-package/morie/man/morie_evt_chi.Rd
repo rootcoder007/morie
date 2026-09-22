@@ -11,6 +11,14 @@ morie_evt_chi(x, y, u = 0.95)
 
 \item{u}{See Usage.}
 }
+\value{
+A numeric value.
+}
 \description{
 Empirical chi(u) tail dependence (Coles 2001 sec. 8.4 p.164)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_evt_chi(V, V)
+}
+\keyword{internal}

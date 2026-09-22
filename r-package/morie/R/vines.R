@@ -8,11 +8,11 @@
 #' @param x matrix (n x d) of continuous variables.
 #' @return list: partial_corr, R, loglik, estimate (mean abs off-diag of
 #'   partial_corr), n, d, method.
+#' @examples
+#' set.seed(1)
+#' morie_vine_copula(matrix(rnorm(300), ncol = 3))
 #' @keywords internal
 #' @export
-#' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' vines(V)
 vines <- function(x) {
   x <- as.matrix(x)
   if (nrow(x) < 3L || ncol(x) < 2L) {

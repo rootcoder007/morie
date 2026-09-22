@@ -7,10 +7,10 @@
 .fnv1a(s)
 }
 \arguments{
-\item{s}{Passed to \code{charToRaw}.}
+\item{s}{A vector; its length is taken and its elements indexed.}
 }
 \value{
-The value of \code{h}, as built in the body.
+The value of \code{as.integer}.
 }
 \description{
 A step of the fastxt_native implementation. Called by \code{.gram_slot}.

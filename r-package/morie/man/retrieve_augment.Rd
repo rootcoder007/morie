@@ -23,6 +23,11 @@ List with \code{retrieved}, \code{per_query},
 \description{
 Retrieve uncurated nearest neighbours for each curated query
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+retrieve_augment(V, V)
+}
 \references{
 Oquab et al. (2024), DINOv2, TMLR 2024, Sec. 2.
 }
+\keyword{internal}

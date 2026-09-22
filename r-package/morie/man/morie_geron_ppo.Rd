@@ -24,6 +24,16 @@ morie_geron_ppo(
 
 \item{epochs, lr, clip_eps, gamma, n_episodes, max_steps, n_updates, seed}{Training controls.}
 }
+\value{
+A list with \code{theta}, \code{probabilities}, \code{return_history}, \code{surrogate_history}, \code{clip_fraction}, \code{clip_eps}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 PPO clipped-surrogate policy optimisation over a tabular softmax policy (Geron Ch 19, hmppo)
 }
+\examples{
+reset <- function() 0
+step <- function(a) list(0, as.numeric(a), TRUE)
+morie_geron_ppo(list(reset = reset, step = step), matrix(c(0,
+    0), nrow = 1), epochs = 30, lr = 0.5, seed = 1)
+}
+\keyword{internal}

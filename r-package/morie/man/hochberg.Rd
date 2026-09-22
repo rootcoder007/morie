@@ -14,13 +14,22 @@ hochberg(p_values, alpha = 0.05, labels = NULL)
 \item{labels}{Optional character vector of test labels.}
 }
 \value{
-A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
+An object of class \code{"morie_multiple_testing_result"}.
 }
 \description{
-Wraps \code{stats::p.adjust(method = "hochberg")}.
+Thin wrapper over \code{stats::p.adjust(method = "hochberg")}.
 }
 \examples{
 set.seed(1)
 p <- c(runif(30), runif(5, 0, 0.005))
-hochberg(p)$adjusted
+
+res <- hochberg(p)
+res$n_rejected
+head(res$adjusted)
+
+# Hochberg is a step-up procedure: at least as powerful as Holm under
+# independence / positive dependence.
+c(hochberg = hochberg(p)$n_rejected, holm = holm(p)$n_rejected)
+
+hochberg(c(0.001, 0.01, 0.04), labels = c("A", "B", "C"))$rejected
 }

@@ -23,3 +23,7 @@ principal value in (-pi, pi], so the two sides can differ by an
 integer multiple of 2 pi j; that is reported as branch_offset rather
 than papered over -- it is the phase-unwrapping problem itself.
 }
+\examples{
+ClogSum(x = c(1, 2, 3, 4, 5, 6, 7, 8), h = 0.5, z = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -1,200 +1,231 @@
-# Sources: Grover, A. & Leskovec, J. (2016) "node2vec: Scalable Feature
-# Learning for Networks", KDD '16, 855-864, doi:10.1145/2939672.2939754,
-# arXiv:1607.00653 (Sec. 2; Sec. 3 eq. (1); Sec. 3.2.2 second-order walk
-# with alpha_pq keyed on d_tx); Mikolov, T., Sutskever, I., Chen, K.,
-# Corrado, G. & Dean, J. (2013) "Distributed Representations of Words
-# and Phrases and their Compositionality", NIPS 2013, 3111-3119,
-# arXiv:1310.4546 (skip-gram with negative sampling); Perozzi, B.,
-# Al-Rfou, R. & Skiena, S. (2014) "DeepWalk: Online Learning of Social
-# Representations", KDD '14, 701-710, doi:10.1145/2623330.2623732
-# (the uniform random walk node2vec generalises).
-#
-# Native implementation mirroring Python morie.fn.node2v exactly: the
-# same alpha_pq tabulated from d_tx in {0,1,2}, the same first-order
-# step (uniform/weight-proportional) when the previous node is NULL,
-# the same inverse-CDF draw on the normalised transition probabilities,
-# the same num_walks walks from every node, and the same skip-gram
-# pairs within the window.
+# node2vec: the neighbourhood definition is the model.
+# Sources: Grover, A. & Leskovec, J. (2016) "node2vec: Scalable
+# Feature Learning for Networks", KDD '16, 855-864,
+# doi:10.1145/2939672.2939754, arXiv:1607.00653. Sec. 2 (the
+# document/sentence analogy and the observation that no single
+# sampling strategy wins across networks and tasks). Sec. 3 (the
+# maximum likelihood objective of eq. (1) under conditional
+# independence and a softmax over the dot product; Sec. 3.1 on BFS
+# giving a low-variance microscopic view versus DFS giving a
+# macroscopic community view, and that real networks mix both; Sec.
+# 3.2.2's second-order walk with alpha_pq keyed on the shortest-path
+# distance d_tx from the previous node). Mikolov, T., Sutskever, I.,
+# Chen, K., Corrado, G. & Dean, J. (2013) "Distributed Representations
+# of Words and Phrases and their Compositionality", NIPS 2013, for
+# skip-gram with negative sampling. Perozzi, B., Al-Rfou, R. & Skiena,
+# S. (2014) "DeepWalk: Online Learning of Social Representations",
+# KDD '14, for the uniform random walk node2vec generalises.
 
-#' node2v_alpha_pq
+# Base R only, faithful translation of node2v_python_reference.py.
+
+#' node2v_check_pq
 #'
-#' A step of the node2v_native implementation. Called by \code{node2v_transition_probabilities}.
+#' A step of the node2v_native implementation. Called by \code{alpha_pq}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param p Coerced to numeric by the body, with \code{as.numeric}.
+#' @param q Coerced to numeric by the body, with \code{as.numeric}.
+#' @return A list with \code{p}, \code{q}.
+#' @export
+#' @examples
+#' node2v_check_pq(p = 0.5, q = 0.5)
+#' @keywords internal
+node2v_check_pq <- function(p, q) {
+  p <- as.numeric(p)
+  q <- as.numeric(q)
+  if (!is.finite(p) || !is.finite(q) || p <= 0 || q <= 0)
+    stop("node2v: p and q must be positive")
+  list(p = p, q = q)
+}
+
+#' alpha_pq
+#'
+#' A step of the node2v_native implementation. Called by \code{transition_probabilities}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param d_tx Coerced to integer by the body, with \code{as.integer}.
-#' @param p Coerced to numeric by the body, with \code{as.numeric}.
-#' @param q Coerced to numeric by the body, with \code{as.numeric}.
+#' @param p Passed to \code{node2v_check_pq}.
+#' @param q Passed to \code{node2v_check_pq}.
 #' @return Nothing; this branch always raises.
 #' @export
-node2v_alpha_pq <- function(d_tx, p, q) {
+#' @examples
+#' c(alpha_pq(0L, 1, 1), alpha_pq(1L, 1, 2), alpha_pq(2L, 1, 0.5))
+#' @keywords internal
+alpha_pq <- function(d_tx, p, q) {
   d <- as.integer(d_tx)
-  pp <- as.numeric(p)
-  qq <- as.numeric(q)
-  if (!is.finite(pp) || pp <= 0 || !is.finite(qq) || qq <= 0)
-    stop("node2v: p and q must be positive")
-  if (d == 0L) return(1 / pp)
-  if (d == 1L) return(1)
-  if (d == 2L) return(1 / qq)
+  pq <- node2v_check_pq(p, q)
+  if (d == 0L) return(1.0 / pq$p)
+  if (d == 1L) return(1.0)
+  if (d == 2L) return(1.0 / pq$q)
   stop("node2v: d_tx must be 0, 1 or 2 for a second-order walk, got ",
-       d)
+       format(d))
 }
 
-#' node2v_dist
+# Internal helper: shortest-path distance from t to x in the unweighted
+# adjacency dict, restricted to 0/1/2.
+#' Internal helper: shortest-path distance from t to x in the unweighted
 #'
-#' A step of the node2v_native implementation. Called by \code{node2v_transition_probabilities}.
-#' See the file header for the source the module follows.
-#' source it follows.
+#' adjacency dict, restricted to 0/1/2.
 #'
 #' @param adj A vector; indexed elementwise.
-#' @param t Coerced to character by the body, with \code{as.character}.
-#' @param x Passed to \code{==}.
+#' @param t Passed to \code{identical}.
+#' @param x Coerced to character by the body, with \code{as.character}.
 #' @return A numeric value.
 #' @export
-node2v_dist <- function(adj, t, x) {
-  if (isTRUE(t == x)) return(0L)
-  nb_t <- adj[[as.character(t)]]
-  if (is.null(nb_t)) nb_t <- adj[[t]]
-  if (!is.null(nb_t) && x %in% nb_t) return(1L)
+.node2v_dist <- function(adj, t, x) {
+  if (identical(t, x)) return(0L)
+  nb_t <- adj[[t]]
+  if (is.null(nb_t)) nb_t <- list()
+  if (!is.null(nb_t[[as.character(x)]])) return(1L)
   2L
 }
 
-#' node2v_transition_probabilities
+#' transition_probabilities
 #'
-#' A step of the node2v_native implementation. Called by \code{node2v_walk}.
+#' A step of the node2v_native implementation. Called by \code{walk}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param adj A vector; indexed elementwise.
-#' @param t Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param v Coerced to character by the body, with \code{as.character}.
-#' @param p Passed to \code{node2v_alpha_pq}.
-#' @param q Passed to \code{node2v_alpha_pq}.
+#' @param t Optional; may be \code{NULL}. Passed to \code{.node2v_dist}.
+#' @param v Passed to \code{stop}.
+#' @param p Passed to \code{alpha_pq}.
+#' @param q Passed to \code{alpha_pq}.
 #' @param weights Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @return A list with \code{nodes}, \code{probabilities}, \code{unnormalized}, \code{Z}.
 #' @export
-node2v_transition_probabilities <- function(adj, t, v, p, q,
-                                            weights = NULL) {
-  v_key <- v
-  nb <- adj[[v_key]]
-  if (is.null(nb)) nb <- adj[[as.character(v)]]
-  if (is.null(nb)) nb <- character(0)
-  nb <- sort(unique(nb))
-  if (length(nb) == 0L)
-    stop("node2v: node ", deparse(v), " has no neighbours")
-  pi <- numeric(length(nb))
-  for (i in seq_along(nb)) {
-    x <- nb[i]
-    w <- 1
-    if (!is.null(weights)) {
-      key <- paste0(as.character(v), "\r", as.character(x))
-      wkey1 <- paste0(as.character(v), "|", as.character(x))
-      if (!is.null(weights[[key]])) w <- as.numeric(weights[[key]])
-      else if (!is.null(weights[[wkey1]])) w <- as.numeric(weights[[wkey1]])
-      else if (!is.null(weights[[paste0(as.character(v), ",", as.character(x))]]))
-        w <- as.numeric(weights[[paste0(as.character(v), ",", as.character(x))]])
-    }
-    if (is.null(t)) {
-      a <- 1
-    } else {
-      a <- node2v_alpha_pq(node2v_dist(adj, t, x), p, q)
-    }
-    pi[i] <- a * w
+#' @examples
+#' transition_probabilities(adj = c(1, 2, 3, 4, 5, 6, 7, 8), t = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   v = 5L, p = 0.5, q = 0.5)
+#' @keywords internal
+transition_probabilities <- function(adj, t, v, p, q, weights = NULL) {
+  nb <- adj[[v]]
+  if (is.null(nb) || length(nb) == 0L) {
+    stop("node2v: node ", v, " has no neighbours")
   }
-  Z <- sum(pi)
-  list(nodes = nb,
-       probabilities = pi / Z,
-       unnormalized = pi, Z = Z)
+  nb_names <- sort(names(nb))
+  if (is.null(weights)) {
+    ws <- rep(1.0, length(nb_names))
+  } else {
+    ws <- vapply(nb_names, function(x) {
+      key <- paste(v, x, sep = "\r")
+      wv <- weights[[key]]
+      if (is.null(wv)) 1.0 else as.numeric(wv)
+    }, numeric(1L))
+  }
+  if (is.null(t)) {
+    a_vals <- rep(1.0, length(nb_names))
+  } else {
+    a_vals <- vapply(nb_names, function(x) {
+      alpha_pq(.node2v_dist(adj, t, x), p, q)
+    }, numeric(1L))
+  }
+  pi_vals <- as.numeric(ws) * a_vals
+  Z <- sum(pi_vals)
+  list(
+    nodes = nb_names,
+    probabilities = as.numeric(pi_vals / Z),
+    unnormalized = as.numeric(pi_vals),
+    Z = Z
+  )
 }
 
-#' node2v_walk
+#' walk
 #'
-#' A step of the node2v_native implementation. Called by \code{morie_node2v}.
+#' A step of the node2v_native implementation. Called by \code{.avalon_paths},
+#' \code{.depth_counts}, \code{.dmlqs_count_totters} and 13 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param adj Passed to \code{node2v_transition_probabilities}.
-#' @param start Passed to \code{c}.
+#' @param adj Passed to \code{transition_probabilities}.
+#' @param start Coerced to character by the body, with \code{as.character}.
 #' @param length Coerced to integer by the body, with \code{as.integer}.
-#' @param p Passed to \code{node2v_transition_probabilities}. Defaults to \code{1}.
-#' @param q Passed to \code{node2v_transition_probabilities}. Defaults to \code{1}.
-#' @param rng Optional; may be \code{NULL}. Passed to \code{.ghc_unif}.
-#' @param weights Passed to \code{node2v_transition_probabilities}.
+#' @param p Passed to \code{transition_probabilities}. Defaults to \code{1}.
+#' @param q Passed to \code{transition_probabilities}. Defaults to \code{1}.
+#' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
+#' @param weights Passed to \code{transition_probabilities}.
 #' @return The value of \code{path}, as built in the body.
 #' @export
-node2v_walk <- function(adj, start, length, p = 1, q = 1, rng = NULL,
-                        weights = NULL) {
-  if (is.null(rng)) {
-    rng <- .ghc_rng(0)
-    own <- TRUE
-  } else {
-    own <- FALSE
-  }
-  path <- c(start)
+#' @keywords internal
+walk <- function(adj, start, length, p = 1.0, q = 1.0, seed = 0,
+                 weights = NULL) {
+  len <- as.integer(length)
+  e <- .ghc_rng(as.numeric(seed))
+  path <- as.character(start)
   prev <- NULL
-  for (step in seq_len(as.integer(length) - 1L)) {
-    tp <- node2v_transition_probabilities(adj, prev, path[length(path)],
-                                          p, q, weights)
-    u <- .ghc_unif(rng, 1L)
-    acc <- 0
-    nxt <- tp$nodes[length(tp$nodes)]
-    for (i in seq_along(tp$nodes)) {
-      acc <- acc + tp$probabilities[i]
-      if (u <= acc) { nxt <- tp$nodes[i]
-      break }
+  if (len > 1L) {
+    for (k in seq_len(len - 1L)) {
+      tp <- transition_probabilities(adj, prev, path[length(path)],
+                                     p, q, weights)
+      u <- .ghc_unif(e, 1L)
+      acc <- 0.0
+      nxt <- tp$nodes[length(tp$nodes)]
+      for (i in seq_along(tp$nodes)) {
+        acc <- acc + tp$probabilities[i]
+        if (u <= acc) {
+          nxt <- tp$nodes[i]
+          break
+        }
+      }
+      prev <- path[length(path)]
+      path <- c(path, nxt)
     }
-    prev <- path[length(path)]
-    path <- c(path, nxt)
   }
   path
 }
 
-#' morie_node2v
+#' generate_walks
 #'
 #' A step of the node2v_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param adj A vector; its length is taken.
+#' @param adj Passed to \code{names}.
 #' @param num_walks Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10}.
 #' @param length Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10}.
 #' @param p Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @param q Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
-#' @param weights Passed to \code{node2v_walk}.
+#' @param weights Passed to \code{walk}.
 #' @return A list with \code{estimate}, \code{walks}, \code{p}, \code{q}, \code{n_walks},
 #' \code{length}, \code{method}, \code{note}.
 #' @export
-morie_node2v <- function(adj, num_walks = 10, length = 10, p = 1, q = 1,
-                         seed = 0, weights = NULL) {
-  rng <- .ghc_rng(as.numeric(seed))
-  out <- list()
-  for (w in seq_len(as.integer(num_walks))) {
-    nodes <- names(adj)
-    if (is.null(nodes)) {
-      if (is.list(adj)) {
-        nm <- vapply(adj, function(e) is.character(e) || is.numeric(e),
-                     logical(1))
-        nodes <- if (any(nm)) names(adj)[nm] else names(adj)
-      } else {
-        nodes <- names(adj)
-      }
-    }
-    if (is.null(nodes)) nodes <- as.character(seq_along(adj))
-    for (v in nodes) {
-      out[[length(out) + 1L]] <-
-        node2v_walk(adj, v, length, p, q, rng, weights)
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' generate_walks(V)
+#' @keywords internal
+generate_walks <- function(adj, num_walks = 10, length = 10, p = 1.0,
+                           q = 1.0, seed = 0, weights = NULL) {
+  nw <- as.integer(num_walks)
+  len <- as.integer(length)
+  rng_seed <- as.numeric(seed)
+  adj_names <- sort(names(adj))
+  out <- vector("list", nw * length(adj_names))
+  idx <- 0L
+  for (j in seq_len(nw)) {
+    for (v in adj_names) {
+      idx <- idx + 1L
+      out[[idx]] <- walk(adj, v, len, p, q, rng_seed, weights)
     }
   }
-  list(estimate = out, walks = out, p = as.numeric(p), q = as.numeric(q),
-       n_walks = length(out), length = as.integer(length),
-       method = "second-order biased random walk; Grover & Leskovec (2016) Sec. 3.2.2",
-       note = "large q keeps the walk local (BFS-like), small q pushes it outward (DFS-like); p prices returning")
+  list(
+    estimate = out,
+    walks = out,
+    p = as.numeric(p),
+    q = as.numeric(q),
+    n_walks = length(out),
+    length = len,
+    method = "second-order biased random walk; Grover & Leskovec (2016) Sec. 3.2.2",
+    note = "large q keeps the walk local (BFS-like), small q pushes it outward (DFS-like); p prices returning"
+  )
 }
 
-node2v_generate_walks <- morie_node2v
+# compact alias per ledger/NAMING.md
+node2vec <- generate_walks
 
-#' node2v_skipgram_pairs
+#' skipgram_pairs
 #'
 #' A step of the node2v_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -202,9 +233,13 @@ node2v_generate_walks <- morie_node2v
 #'
 #' @param walks See Usage.
 #' @param window Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2}.
-#' @return The value of \code{pairs}, as built in the body.
+#' @return The value of \code{do.call}.
 #' @export
-node2v_skipgram_pairs <- function(walks, window = 2) {
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' skipgram_pairs(V)
+#' @keywords internal
+skipgram_pairs <- function(walks, window = 2) {
   w <- as.integer(window)
   if (w < 1L)
     stop("node2v: the window must be at least 1")
@@ -215,14 +250,17 @@ node2v_skipgram_pairs <- function(walks, window = 2) {
       lo <- max(1L, i - w)
       hi <- min(n, i + w)
       for (j in lo:hi) {
-        if (j != i) pairs[[length(pairs) + 1L]] <- c(path[i], path[j])
+        if (j != i) {
+          pairs[[length(pairs) + 1L]] <- c(path[i], path[j])
+        }
       }
     }
   }
-  pairs
+  if (length(pairs) == 0L) return(list())
+  do.call(rbind, pairs)
 }
 
-#' node2v_cheatsheet
+#' .node2v_cheatsheet
 #'
 #' A step of the node2v_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -230,7 +268,10 @@ node2v_skipgram_pairs <- function(walks, window = 2) {
 #'
 #' @return A character value.
 #' @export
-node2v_cheatsheet <- function() {
+#' @examples
+#' res <- .node2v_cheatsheet()
+#' res
+.node2v_cheatsheet <- function() {
   paste("node2v: graph as document, walk as sentence, skip-gram on ",
         "top. The point is that NO sampling strategy wins everywhere: ",
         "BFS gives a low-variance local structural view, DFS a ",
@@ -238,7 +279,7 @@ node2v_cheatsheet <- function() {
         "SECOND-ORDER walk interpolates -- having come from t, the ",
         "bias to x is 1/p if returning, 1 if x neighbours t, 1/q ",
         "otherwise. Large q stays local, small q roams. A first-order ",
-        "walk cannot express this.")
+        "walk cannot express this.", sep = "")
 }
 
-node2vec <- morie_node2v
+morie_node2v <- generate_walks

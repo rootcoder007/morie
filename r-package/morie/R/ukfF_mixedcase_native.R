@@ -159,6 +159,7 @@
 #' @return A list with \code{states}, \code{covariances}, \code{innovations},
 #' \code{kappa}, \code{method}.
 #' @export
+#' @keywords internal
 morie_ukfF <- function(f, h, Q, R, x0, P0, measurements, kappa = NULL) {
   x <- as.numeric(x0)
   n <- length(x)
@@ -248,6 +249,9 @@ morie_unscented_kalman <- morie_ukfF
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_ukfF_cheatsheet()
+#' @keywords internal
 morie_ukfF_cheatsheet <- function() {
   "ukfF: 2n+1 sigma points, UT predict + Kalman gain update"
 }

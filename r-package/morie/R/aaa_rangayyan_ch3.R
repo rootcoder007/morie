@@ -19,7 +19,9 @@
 #' res <- .morie_rg_aslist(x = x)
 #' res
 .morie_rg_aslist <- function(x) {
-  if (is.null(x)) return(numeric(0))
+  if (is.null(x)) {
+    return(numeric(0))
+  }
   as.numeric(x)
 }
 
@@ -51,14 +53,16 @@
   if (uniform && (n - 1L) %% 2L == 0L) {
     odd <- seq(2L, n - 1L, by = 2L)
     even <- if (n >= 4L) seq(3L, n - 1L, by = 2L) else integer(0)
-    s <- .morie_fsum(c(y[1], y[n], 4 * y[odd],
-                       if (length(even)) 2 * y[even] else numeric(0)))
+    s <- .morie_fsum(c(
+      y[1], y[n], 4 * y[odd],
+      if (length(even)) 2 * y[even] else numeric(0)
+    ))
     return(s * h[1] / 3)
   }
   .morie_fsum(0.5 * (y[-n] + y[-1]) * h)
 }
 
-#' Adaptive Simpson, the same rule the Python arm\'s quad() uses, so the
+#' Adaptive Simpson, the same rule the Python arm's quad() uses, so the
 #'
 #' two languages agree to their shared tolerance rather than to whatever
 #' a black-box integrator happens to do.
@@ -83,8 +87,9 @@
     frm <- f(rm)
     left <- simp(fa, flm, fm, a, m)
     right <- simp(fm, frm, fb, m, b)
-    if (depth >= maxdepth || abs(left + right - whole) <= 15 * tol)
+    if (depth >= maxdepth || abs(left + right - whole) <= 15 * tol) {
       return(left + right + (left + right - whole) / 15)
+    }
     rec(a, m, fa, flm, fm, left, tol / 2, depth + 1L) +
       rec(m, b, fm, frm, fb, right, tol / 2, depth + 1L)
   }
@@ -113,13 +118,22 @@
                              lower = -Inf, upper = Inf) {
   if (!is.null(x)) {
     xs <- as.numeric(x)
-    ps <- if (is.function(pdf)) vapply(xs, function(v) as.numeric(pdf(v)),
-                                       numeric(1)) else as.numeric(pdf)
-    if (length(ps) != length(xs))
+    ps <- if (is.function(pdf)) {
+      vapply(
+        xs, function(v) as.numeric(pdf(v)),
+        numeric(1)
+      )
+    } else {
+      as.numeric(pdf)
+    }
+    if (length(ps) != length(xs)) {
       stop("pdf and x must have the same length")
-    return(.morie_rg_gridint(vapply(seq_along(xs),
-                                    function(i) f(xs[i]) * ps[i],
-                                    numeric(1)), xs))
+    }
+    return(.morie_rg_gridint(vapply(
+      seq_along(xs),
+      function(i) f(xs[i]) * ps[i],
+      numeric(1)
+    ), xs))
   }
   if (!is.function(pdf)) stop("give either a grid (x=) or a callable pdf")
   lo <- if (is.finite(lower)) lower else -40
@@ -144,7 +158,7 @@
 
 # ------------------------------------------------------------- eqs 3.1-3.6
 
-#' Eq (3.1): mu = E[eta] = integral eta p(eta) d eta
+#' Eq (3.1): mu = E\[eta\] = integral eta p(eta) d eta
 #'
 #' A step of the rangayyan_ch3 implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -156,12 +170,17 @@
 #' @param upper Passed to \code{.morie_rg_pdfint}. Defaults to \code{Inf}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' PdfMean(x = seq(-4, 4, by = 0.01), p = dnorm(seq(-4, 4, by = 0.01)))
+#' @keywords internal
 PdfMean <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
   # eq (3.1): mu = E[eta] = integral eta p(eta) d eta
   mass <- .morie_rg_pdfint(function(v) 1, pdf, x, lower, upper)
   mu <- .morie_rg_pdfint(function(v) v, pdf, x, lower, upper)
-  c(list(mean = as.numeric(mu), method = "Rangayyan (2024) eq. (3.1)"),
-    .morie_rg_checkpdf(mass))
+  c(
+    list(mean = as.numeric(mu), method = "Rangayyan (2024) eq. (3.1)"),
+    .morie_rg_checkpdf(mass)
+  )
 }
 
 #' Eq (3.2): E\[eta^2\].  Equal to the variance only when mu = 0, so both
@@ -183,10 +202,14 @@ PdfMS <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
   mass <- .morie_rg_pdfint(function(v) 1, pdf, x, lower, upper)
   mu <- .morie_rg_pdfint(function(v) v, pdf, x, lower, upper)
   ms <- .morie_rg_pdfint(function(v) v * v, pdf, x, lower, upper)
-  c(list(ms = as.numeric(ms), mean = as.numeric(mu),
-         variance_from_identity = as.numeric(ms - mu * mu),
-         method = "Rangayyan (2024) eq. (3.2)"),
-    .morie_rg_checkpdf(mass))
+  c(
+    list(
+      ms = as.numeric(ms), mean = as.numeric(mu),
+      variance_from_identity = as.numeric(ms - mu * mu),
+      method = "Rangayyan (2024) eq. (3.2)"
+    ),
+    .morie_rg_checkpdf(mass)
+  )
 }
 
 #' Eq (3.3): sigma^2 = integral (eta - mu)^2 p(eta) d eta.  CV =
@@ -201,6 +224,11 @@ PdfMS <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
 #' @param upper Passed to \code{.morie_rg_pdfint}. Defaults to \code{Inf}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' unif01 <- function(v) if (v >= 0 && v <= 1) 1 else 0
+#' UGRID <- seq(0, 1, length.out = 4001)
+#' PdfVar(unif01, x = UGRID)
+#' @keywords internal
 PdfVar <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
   # eq (3.3): sigma^2 = integral (eta - mu)^2 p(eta) d eta.  CV = sigma/mu
   # is left NULL once mu is negligible against sigma; the book warns it
@@ -210,10 +238,14 @@ PdfVar <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
   v <- .morie_rg_pdfint(function(z) (z - mu)^2, pdf, x, lower, upper)
   sd <- if (v > 0) sqrt(v) else 0
   cv <- if (abs(mu) > 1e-9 * max(sd, 1)) as.numeric(sd / mu) else NULL
-  c(list(variance = as.numeric(v), sd = as.numeric(sd),
-         mean = as.numeric(mu), cv = cv,
-         method = "Rangayyan (2024) eq. (3.3)"),
-    .morie_rg_checkpdf(mass))
+  c(
+    list(
+      variance = as.numeric(v), sd = as.numeric(sd),
+      mean = as.numeric(mu), cv = cv,
+      method = "Rangayyan (2024) eq. (3.3)"
+    ),
+    .morie_rg_checkpdf(mass)
+  )
 }
 
 #' Eq (3.4): S = (1/sigma^3) integral (eta - mu)^3 p(eta) d eta
@@ -228,6 +260,10 @@ PdfVar <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
 #' @param upper Passed to \code{.morie_rg_pdfint}. Defaults to \code{Inf}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' xg <- seq(0, 20, by = 0.01)
+#' PdfSkew(x = xg, p = dgamma(xg, shape = 2))
+#' @keywords internal
 PdfSkew <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
   # eq (3.4): S = (1/sigma^3) integral (eta - mu)^3 p(eta) d eta
   mass <- .morie_rg_pdfint(function(v) 1, pdf, x, lower, upper)
@@ -236,16 +272,20 @@ PdfSkew <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
   sd <- sqrt(v)
   if (sd <= 0) stop("skewness is undefined for a degenerate density")
   m3 <- .morie_rg_pdfint(function(z) (z - mu)^3, pdf, x, lower, upper)
-  c(list(skewness = as.numeric(m3 / sd^3), m3 = as.numeric(m3),
-         sd = as.numeric(sd), mean = as.numeric(mu),
-         method = "Rangayyan (2024) eq. (3.4)"),
-    .morie_rg_checkpdf(mass))
+  c(
+    list(
+      skewness = as.numeric(m3 / sd^3), m3 = as.numeric(m3),
+      sd = as.numeric(sd), mean = as.numeric(mu),
+      method = "Rangayyan (2024) eq. (3.4)"
+    ),
+    .morie_rg_checkpdf(mass)
+  )
 }
 
 #' Eq (3.5): K = (1/sigma^4) integral (eta - mu)^4 p(eta) d eta.  The
 #' book
 #'
-#' gives 3 for a Gaussian and defines the excess K\' = K - 3.
+#' gives 3 for a Gaussian and defines the excess K' = K - 3.
 #'
 #' @param pdf Passed to \code{.morie_rg_pdfint}.
 #' @param x Passed to \code{.morie_rg_pdfint}.
@@ -253,6 +293,10 @@ PdfSkew <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
 #' @param upper Passed to \code{.morie_rg_pdfint}. Defaults to \code{Inf}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' xg <- seq(-6, 6, by = 0.01)
+#' PdfKurt(x = xg, p = dnorm(xg))
+#' @keywords internal
 PdfKurt <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
   # eq (3.5): K = (1/sigma^4) integral (eta - mu)^4 p(eta) d eta.  The book
   # gives 3 for a Gaussian and defines the excess K' = K - 3.
@@ -263,10 +307,14 @@ PdfKurt <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
   if (sd <= 0) stop("kurtosis is undefined for a degenerate density")
   m4 <- .morie_rg_pdfint(function(z) (z - mu)^4, pdf, x, lower, upper)
   k <- as.numeric(m4 / sd^4)
-  c(list(kurtosis = k, excess = k - 3, m4 = as.numeric(m4),
-         sd = as.numeric(sd), mean = as.numeric(mu),
-         method = "Rangayyan (2024) eq. (3.5)"),
-    .morie_rg_checkpdf(mass))
+  c(
+    list(
+      kurtosis = k, excess = k - 3, m4 = as.numeric(m4),
+      sd = as.numeric(sd), mean = as.numeric(mu),
+      method = "Rangayyan (2024) eq. (3.5)"
+    ),
+    .morie_rg_checkpdf(mass)
+  )
 }
 
 #' Eq (3.6): H = - integral p log2(p) d eta, in bits.  p log p -> 0 as
@@ -280,6 +328,10 @@ PdfKurt <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
 #' @param upper Passed to \code{.morie_rg_pdfint}. Defaults to \code{Inf}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' xg <- seq(-6, 6, by = 0.01)
+#' DiffEnt(x = xg, p = dnorm(xg))
+#' @keywords internal
 DiffEnt <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
   # eq (3.6): H = - integral p log2(p) d eta, in bits.  p log p -> 0 as
   # p -> 0, so zero-density points contribute nothing.  This is a density
@@ -287,19 +339,31 @@ DiffEnt <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
   term <- function(p) if (p <= 0) 0 else -p * log(p) / log(2)
   if (!is.null(x)) {
     xs <- as.numeric(x)
-    ps <- if (is.function(pdf)) vapply(xs, function(v) as.numeric(pdf(v)),
-                                       numeric(1)) else as.numeric(pdf)
+    ps <- if (is.function(pdf)) {
+      vapply(
+        xs, function(v) as.numeric(pdf(v)),
+        numeric(1)
+      )
+    } else {
+      as.numeric(pdf)
+    }
     h <- .morie_rg_gridint(vapply(ps, term, numeric(1)), xs)
     mass <- .morie_rg_gridint(ps, xs)
   } else {
-    h <- .morie_rg_pdfint(function(v) 1,
-                          function(v) term(as.numeric(pdf(v))),
-                          NULL, lower, upper)
+    h <- .morie_rg_pdfint(
+      function(v) 1,
+      function(v) term(as.numeric(pdf(v))),
+      NULL, lower, upper
+    )
     mass <- .morie_rg_pdfint(function(v) 1, pdf, NULL, lower, upper)
   }
-  c(list(entropy = as.numeric(h), units = "bits",
-         method = "Rangayyan (2024) eq. (3.6)"),
-    .morie_rg_checkpdf(mass))
+  c(
+    list(
+      entropy = as.numeric(h), units = "bits",
+      method = "Rangayyan (2024) eq. (3.6)"
+    ),
+    .morie_rg_checkpdf(mass)
+  )
 }
 
 # ----------------------------------------------------------- eqs 3.7-3.11
@@ -313,12 +377,18 @@ DiffEnt <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
 #' @param x Passed to \code{.morie_rg_aslist}.
 #' @return A list with \code{mean}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Smean(V)
+#' @keywords internal
 Smean <- function(x) {
   # eq (3.7): mu = (1/N) sum eta(n) -- the DC component of the signal
   xs <- .morie_rg_aslist(x)
   if (!length(xs)) stop("need at least one sample")
-  list(mean = .morie_fsum(xs) / length(xs), n = length(xs),
-       method = "Rangayyan (2024) eq. (3.7)")
+  list(
+    mean = .morie_fsum(xs) / length(xs), n = length(xs),
+    method = "Rangayyan (2024) eq. (3.7)"
+  )
 }
 
 #' Eqs (3.8)-(3.10): MS, RMS, SD.  The divisor is N in all three; eq
@@ -329,6 +399,10 @@ Smean <- function(x) {
 #' @return A list with \code{rms}, \code{ms}, \code{sd}, \code{mean}, \code{n},
 #' \code{ddof}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Srms(V)
+#' @keywords internal
 Srms <- function(x) {
   # eqs (3.8)-(3.10): MS, RMS, SD.  The divisor is N in all three; eq
   # (3.10) is the population SD, not the N-1 unbiased one.
@@ -338,8 +412,10 @@ Srms <- function(x) {
   mu <- .morie_fsum(xs) / n
   ms <- .morie_fsum(xs * xs) / n
   v <- .morie_fsum((xs - mu)^2) / n
-  list(rms = sqrt(ms), ms = ms, sd = sqrt(v), mean = mu, n = n, ddof = 0L,
-       method = "Rangayyan (2024) eqs. (3.8)-(3.10)")
+  list(
+    rms = sqrt(ms), ms = ms, sd = sqrt(v), mean = mu, n = n, ddof = 0L,
+    method = "Rangayyan (2024) eqs. (3.8)-(3.10)"
+  )
 }
 
 #' Eq (3.11): H = - sum p(eta_l) log2 p(eta_l), over L quantized values
@@ -354,6 +430,10 @@ Srms <- function(x) {
 #' @return A list with \code{entropy}, \code{units}, \code{levels}, \code{max_entropy},
 #' \code{probabilities}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Shannon(V)
+#' @keywords internal
 Shannon <- function(p, levels = NULL) {
   # eq (3.11): H = - sum p(eta_l) log2 p(eta_l), over L quantized values
   vals <- .morie_rg_aslist(p)
@@ -379,9 +459,11 @@ Shannon <- function(p, levels = NULL) {
   nz <- probs[probs > 0]
   h <- -.morie_fsum(nz * log(nz) / log(2))
   lv <- length(probs)
-  list(entropy = as.numeric(h), units = "bits", levels = lv,
-       max_entropy = if (lv > 1) log(lv) / log(2) else 0,
-       probabilities = probs, method = "Rangayyan (2024) eq. (3.11)")
+  list(
+    entropy = as.numeric(h), units = "bits", levels = lv,
+    max_entropy = if (lv > 1) log(lv) / log(2) else 0,
+    probabilities = probs, method = "Rangayyan (2024) eq. (3.11)"
+  )
 }
 
 # ---------------------------------------------------------- eqs 3.12-3.22
@@ -398,14 +480,19 @@ Shannon <- function(p, levels = NULL) {
 #' \code{variance_additive}, \code{covariance}, \code{correlation}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' NoiseModel(V, V)
+#' @keywords internal
 NoiseModel <- function(x, eta) {
   # eqs (3.12)-(3.14).  Eq (3.14) holds only if x and eta are
   # uncorrelated, so the sample correlation is measured and both the
   # observed and the additive variance are returned side by side.
   xs <- .morie_rg_aslist(x)
   es <- .morie_rg_aslist(eta)
-  if (length(xs) != length(es))
+  if (length(xs) != length(es)) {
     stop("signal and noise must have the same length")
+  }
   n <- length(xs)
   if (!n) stop("need at least one sample")
   y <- xs + es
@@ -417,10 +504,12 @@ NoiseModel <- function(x, eta) {
   vy <- .morie_fsum((y - my)^2) / n
   cov <- .morie_fsum((xs - mx) * (es - me)) / n
   rho <- if (vx > 0 && ve > 0) cov / sqrt(vx * ve) else 0
-  list(y = y, mean_signal = mx, mean_noise = me, mean_observed = my,
-       mean_additive = mx + me, variance_observed = vy,
-       variance_additive = vx + ve, covariance = cov, correlation = rho,
-       n = n, method = "Rangayyan (2024) eqs. (3.12)-(3.14)")
+  list(
+    y = y, mean_signal = mx, mean_noise = me, mean_observed = my,
+    mean_additive = mx + me, variance_observed = vy,
+    variance_additive = vx + ve, covariance = cov, correlation = rho,
+    n = n, method = "Rangayyan (2024) eqs. (3.12)-(3.14)"
+  )
 }
 
 #' Eq (3.13): mu_y = mu_x + mu_eta.  Linearity of expectation needs no
@@ -430,6 +519,9 @@ NoiseModel <- function(x, eta) {
 #' @param ... Passed through.
 #' @return A list with \code{mean}, \code{component_means}, \code{n_processes}, \code{method}.
 #' @export
+#' @examples
+#' MeanSum(c(1, 3), c(10, 20), 0.5)
+#' @keywords internal
 MeanSum <- function(...) {
   # eq (3.13): mu_y = mu_x + mu_eta.  Linearity of expectation needs no
   # independence -- that is what separates it from eq (3.14).
@@ -440,8 +532,10 @@ MeanSum <- function(...) {
     if (!length(v)) stop("every process needs at least one sample")
     .morie_fsum(v) / length(v)
   }, numeric(1))
-  list(mean = .morie_fsum(means), component_means = means,
-       n_processes = length(means), method = "Rangayyan (2024) eq. (3.13)")
+  list(
+    mean = .morie_fsum(means), component_means = means,
+    n_processes = length(means), method = "Rangayyan (2024) eq. (3.13)"
+  )
 }
 
 #' Eq (3.15): mu_x(t1) = (1/M) sum_k x_k(t1)
@@ -455,6 +549,10 @@ MeanSum <- function(...) {
 #' \code{as.integer}.
 #' @return A list with \code{mean}, \code{m}, \code{sd}, \code{se}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' EnsMean(V)
+#' @keywords internal
 EnsMean <- function(observations, index = NULL) {
   # eq (3.15): mu_x(t1) = (1/M) sum_k x_k(t1)
   if (is.null(index)) {
@@ -463,8 +561,9 @@ EnsMean <- function(observations, index = NULL) {
     i <- as.integer(index)
     vals <- vapply(observations, function(rec) {
       r <- .morie_rg_aslist(rec)
-      if (i < 1L || i > length(r))
+      if (i < 1L || i > length(r)) {
         stop(sprintf("index %d outside a record of length %d", i, length(r)))
+      }
       r[i]
     }, numeric(1))
   }
@@ -472,8 +571,10 @@ EnsMean <- function(observations, index = NULL) {
   if (!m) stop("need at least one observation")
   mu <- .morie_fsum(vals) / m
   v <- .morie_fsum((vals - mu)^2) / m
-  list(mean = mu, m = m, sd = sqrt(v), se = sqrt(v / m),
-       method = "Rangayyan (2024) eq. (3.15)")
+  list(
+    mean = mu, m = m, sd = sqrt(v), se = sqrt(v / m),
+    method = "Rangayyan (2024) eq. (3.15)"
+  )
 }
 
 #' Eq (3.18): x_bar(t) = (1/M) sum_k x_k(t) for all t -- the prototype
@@ -483,6 +584,10 @@ EnsMean <- function(observations, index = NULL) {
 #' @param observations Iterated over elementwise, with \code{lapply}.
 #' @return A list with \code{average}, \code{sd}, \code{m}, \code{n}, \code{se}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' EnsAvg(V)
+#' @keywords internal
 EnsAvg <- function(observations) {
   # eq (3.18): x_bar(t) = (1/M) sum_k x_k(t) for all t -- the prototype
   # signal, a filtered version of the M observations.
@@ -491,15 +596,20 @@ EnsAvg <- function(observations) {
   if (!m) stop("need at least one observation")
   n <- length(recs[[1]])
   if (!n) stop("records must be nonempty")
-  if (any(vapply(recs, length, integer(1)) != n))
+  if (any(vapply(recs, length, integer(1)) != n)) {
     stop("all records must have the same length")
+  }
   mat <- matrix(unlist(recs), nrow = m, byrow = TRUE)
   avg <- vapply(seq_len(n), function(i) .morie_fsum(mat[, i]) / m, numeric(1))
-  sd <- vapply(seq_len(n),
-               function(i) sqrt(.morie_fsum((mat[, i] - avg[i])^2) / m),
-               numeric(1))
-  list(average = avg, sd = sd, m = m, n = n, se = sd / sqrt(m),
-       method = "Rangayyan (2024) eq. (3.18)")
+  sd <- vapply(
+    seq_len(n),
+    function(i) sqrt(.morie_fsum((mat[, i] - avg[i])^2) / m),
+    numeric(1)
+  )
+  list(
+    average = avg, sd = sd, m = m, n = n, se = sd / sqrt(m),
+    method = "Rangayyan (2024) eq. (3.18)"
+  )
 }
 
 #' Eqs (3.21)-(3.22): C_xy and rho = C_xy / (sigma_x sigma_y)
@@ -514,6 +624,10 @@ EnsAvg <- function(observations) {
 #' @return A list with \code{covariance}, \code{correlation}, \code{sd_x}, \code{sd_y},
 #' \code{mean_x}, \code{mean_y}, \code{n}, \code{ddof}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' CovXY(V, V)
+#' @keywords internal
 CovXY <- function(x, y, ddof = 0) {
   # eqs (3.21)-(3.22): C_xy and rho = C_xy / (sigma_x sigma_y)
   xs <- .morie_rg_aslist(x)
@@ -528,9 +642,11 @@ CovXY <- function(x, y, ddof = 0) {
   vx <- .morie_fsum((xs - mx)^2) / d
   vy <- .morie_fsum((ys - my)^2) / d
   rho <- if (vx > 0 && vy > 0) cov / sqrt(vx * vy) else NULL
-  list(covariance = cov, correlation = rho, sd_x = sqrt(vx), sd_y = sqrt(vy),
-       mean_x = mx, mean_y = my, n = n, ddof = as.integer(ddof),
-       method = "Rangayyan (2024) eqs. (3.21)-(3.22)")
+  list(
+    covariance = cov, correlation = rho, sd_x = sqrt(vx), sd_y = sqrt(vy),
+    mean_x = mx, mean_y = my, n = n, ddof = as.integer(ddof),
+    method = "Rangayyan (2024) eqs. (3.21)-(3.22)"
+  )
 }
 
 # ---------------------------------------------------------- eqs 3.24-3.35
@@ -547,6 +663,10 @@ CovXY <- function(x, y, ddof = 0) {
 #' @return A list with \code{delta}, \code{t}, \code{width}, \code{height},
 #' \code{undefined_at_zero}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' DiracDelta(V)
+#' @keywords internal
 DiracDelta <- function(t, width = NULL) {
   # eq (3.24): delta(t) is undefined at t = 0 and 0 elsewhere.  A
   # generalized function has no pointwise value at the origin, so NA is
@@ -555,15 +675,19 @@ DiracDelta <- function(t, width = NULL) {
   ts <- .morie_rg_aslist(t)
   if (is.null(width)) {
     v <- ifelse(ts == 0, NA_real_, 0)
-    return(list(delta = v, t = ts, undefined_at_zero = TRUE,
-                method = "Rangayyan (2024) eq. (3.24)"))
+    return(list(
+      delta = v, t = ts, undefined_at_zero = TRUE,
+      method = "Rangayyan (2024) eq. (3.24)"
+    ))
   }
   w <- as.numeric(width)
   if (w <= 0) stop("width must be positive")
   h <- 1 / w
-  list(delta = ifelse(abs(ts) <= w / 2, h, 0), t = ts, width = w, height = h,
-       undefined_at_zero = FALSE,
-       method = "Rangayyan (2024) eq. (3.24), rectangular approximation")
+  list(
+    delta = ifelse(abs(ts) <= w / 2, h, 0), t = ts, width = w, height = h,
+    undefined_at_zero = FALSE,
+    method = "Rangayyan (2024) eq. (3.24), rectangular approximation"
+  )
 }
 
 #' Eq (3.25): integral delta(t) dt = 1.  The property defines the delta,
@@ -576,14 +700,19 @@ DiracDelta <- function(t, width = NULL) {
 #' \code{as.numeric}.
 #' @return A list with \code{area}, \code{unit_area}, \code{method}.
 #' @export
+#' @examples
+#' DeltaArea()
+#' @keywords internal
 DeltaArea <- function(t = NULL, values = NULL, width = NULL) {
   # eq (3.25): integral delta(t) dt = 1.  The property defines the delta,
   # so the useful computation is the check on a candidate approximation.
   if (!is.null(values)) {
     if (is.null(t)) stop("give the grid t alongside values")
     area <- .morie_rg_gridint(values, t)
-    return(list(area = as.numeric(area), unit_area = abs(area - 1) <= 1e-6,
-                method = "Rangayyan (2024) eq. (3.25)"))
+    return(list(
+      area = as.numeric(area), unit_area = abs(area - 1) <= 1e-6,
+      method = "Rangayyan (2024) eq. (3.25)"
+    ))
   }
   if (!is.null(width)) {
     w <- as.numeric(width)
@@ -591,13 +720,17 @@ DeltaArea <- function(t = NULL, values = NULL, width = NULL) {
     # panel edges placed on +/- w/2 so no panel straddles the jump; the
     # midpoint rule is then exact for a piecewise-constant pulse.
     span <- 2 * w
-    edges <- sort(unique(c(seq(-span, span, length.out = 801L),
-                           -w / 2, w / 2)))
+    edges <- sort(unique(c(
+      seq(-span, span, length.out = 801L),
+      -w / 2, w / 2
+    )))
     mid <- 0.5 * (edges[-length(edges)] + edges[-1])
     area <- .morie_fsum(diff(edges) * ifelse(abs(mid) <= w / 2, 1 / w, 0))
-    return(list(area = as.numeric(area), width = w,
-                unit_area = abs(area - 1) <= 1e-9,
-                method = "Rangayyan (2024) eq. (3.25)"))
+    return(list(
+      area = as.numeric(area), width = w,
+      unit_area = abs(area - 1) <= 1e-9,
+      method = "Rangayyan (2024) eq. (3.25)"
+    ))
   }
   list(area = 1, unit_area = TRUE, method = "Rangayyan (2024) eq. (3.25)")
 }
@@ -627,8 +760,10 @@ DeltaLim <- function(t, a) {
   v <- ifelse(ts == 0, NA_real_, 0.5 * av * abs(ts)^(av - 1))
   lim <- if (length(ts)) max(abs(ts)) else 1
   if (lim == 0) lim <- 1
-  list(values = v, t = ts, a = av, area_symmetric = lim^av,
-       half_width = lim, method = "Rangayyan (2024) eq. (3.26)")
+  list(
+    values = v, t = ts, a = av, area_symmetric = lim^av,
+    half_width = lim, method = "Rangayyan (2024) eq. (3.26)"
+  )
 }
 
 #' Eq (3.27): u(t) = 1 for t > 0, 0 otherwise.  Strict: u(0) = 0 here,
@@ -640,14 +775,20 @@ DeltaLim <- function(t, a) {
 #' @param shift Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @return A list with \code{u}, \code{t}, \code{shift}, \code{value_at_origin}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Ustep(V)
+#' @keywords internal
 Ustep <- function(t, shift = 0) {
   # eq (3.27): u(t) = 1 for t > 0, 0 otherwise.  Strict: u(0) = 0 here,
   # whereas the discrete step of eq (3.35) has u(0) = 1.  They are
   # separate definitions, not one sampled from the other.
   ts <- .morie_rg_aslist(t)
   s <- as.numeric(shift)
-  list(u = ifelse(ts - s > 0, 1, 0), t = ts, shift = s,
-       value_at_origin = 0, method = "Rangayyan (2024) eq. (3.27)")
+  list(
+    u = ifelse(ts - s > 0, 1, 0), t = ts, shift = s,
+    value_at_origin = 0, method = "Rangayyan (2024) eq. (3.27)"
+  )
 }
 
 #' Eq (3.28): integral_\{T1\}^\{T2\} x(t) delta(t - to) dt = x(to) if
@@ -662,6 +803,9 @@ Ustep <- function(t, shift = 0) {
 #' @return A list with \code{value}, \code{inside}, \code{t0}, \code{lower},
 #' \code{upper}, \code{method}.
 #' @export
+#' @examples
+#' Sifting(function(t) t^2 + 1, 2, 0, 5)
+#' @keywords internal
 Sifting <- function(x, t0, lower, upper) {
   # eq (3.28): integral_{T1}^{T2} x(t) delta(t - to) dt = x(to) if
   # T1 < to < T2, else 0.  Both inequalities are strict, so an impulse
@@ -672,9 +816,11 @@ Sifting <- function(x, t0, lower, upper) {
   tt <- as.numeric(t0)
   if (hi <= lo) stop("upper must exceed lower")
   inside <- lo < tt && tt < hi
-  list(value = if (inside) as.numeric(x(tt)) else 0, inside = inside,
-       t0 = tt, lower = lo, upper = hi,
-       method = "Rangayyan (2024) eq. (3.28)")
+  list(
+    value = if (inside) as.numeric(x(tt)) else 0, inside = inside,
+    t0 = tt, lower = lo, upper = hi,
+    method = "Rangayyan (2024) eq. (3.28)"
+  )
 }
 
 #' Eq (3.29): x(t) = integral x(alpha) delta(t - alpha) d alpha.  The
@@ -687,6 +833,10 @@ Sifting <- function(x, t0, lower, upper) {
 #' @return A list with \code{locations}, \code{weights}, \code{amplitudes},
 #' \code{total_weight}, \code{integral}, \code{reconstruction_error}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' DeltaDecomp(V)
+#' @keywords internal
 DeltaDecomp <- function(x, t = NULL) {
   # eq (3.29): x(t) = integral x(alpha) delta(t - alpha) d alpha.  The
   # weight at alpha_i is x(alpha_i) times a trapezoidal spacing, so the
@@ -707,11 +857,13 @@ DeltaDecomp <- function(x, t = NULL) {
   }
   weights <- xs * dt
   recon <- ifelse(dt != 0, weights / dt, xs)
-  list(locations = ts, weights = weights, amplitudes = xs,
-       total_weight = sum(weights),
-       integral = if (n > 1L) .morie_rg_gridint(xs, ts) else 0,
-       reconstruction_error = max(abs(recon - xs)),
-       method = "Rangayyan (2024) eq. (3.29)")
+  list(
+    locations = ts, weights = weights, amplitudes = xs,
+    total_weight = sum(weights),
+    integral = if (n > 1L) .morie_rg_gridint(xs, ts) else 0,
+    reconstruction_error = max(abs(recon - xs)),
+    method = "Rangayyan (2024) eq. (3.29)"
+  )
 }
 
 #' Eq (3.30): y(t) = integral x(tau) h(t - tau) d tau.  Tabulated on a
@@ -727,6 +879,10 @@ DeltaDecomp <- function(x, t = NULL) {
 #' @return A list with \code{y}, \code{t}, \code{dt}, \code{n}, \code{m},
 #' \code{integral}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' ContConv(V, V)
+#' @keywords internal
 ContConv <- function(x, h, dt = 1, t = NULL) {
   # eq (3.30): y(t) = integral x(tau) h(t - tau) d tau.  Tabulated on a
   # uniform grid this is the discrete convolution SCALED BY dt; dropping
@@ -734,8 +890,9 @@ ContConv <- function(x, h, dt = 1, t = NULL) {
   # factor of the sampling interval.
   xs <- .morie_rg_aslist(x)
   hs <- .morie_rg_aslist(h)
-  if (!length(xs) || !length(hs))
+  if (!length(xs) || !length(hs)) {
     stop("both signals need at least one sample")
+  }
   step <- as.numeric(dt)
   ts <- NULL
   if (!is.null(t)) {
@@ -755,9 +912,11 @@ ContConv <- function(x, h, dt = 1, t = NULL) {
   }
   t_out <- (seq_along(y) - 1) * step
   if (!is.null(ts) && length(ts)) t_out <- ts[1] + (seq_along(y) - 1) * step
-  list(y = y, t = t_out, dt = step, n = n, m = m,
-       integral = if (length(y) > 1L) .morie_rg_gridint(y, t_out) else 0,
-       method = "Rangayyan (2024) eq. (3.30)")
+  list(
+    y = y, t = t_out, dt = step, n = n, m = m,
+    integral = if (length(y) > 1L) .morie_rg_gridint(y, t_out) else 0,
+    method = "Rangayyan (2024) eq. (3.30)"
+  )
 }
 
 #' Eq (3.31): y(t) = integral h(tau) x(t - tau) d tau, given by the book
@@ -771,6 +930,10 @@ ContConv <- function(x, h, dt = 1, t = NULL) {
 #' @param t Passed to \code{ContConv}.
 #' @return The value of \code{swapped}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' ContConvAlt(V, V)
+#' @keywords internal
 ContConvAlt <- function(x, h, dt = 1, t = NULL) {
   # eq (3.31): y(t) = integral h(tau) x(t - tau) d tau, given by the book
   # as an equivalent result.  Computed the other way round and compared
@@ -793,15 +956,24 @@ ContConvAlt <- function(x, h, dt = 1, t = NULL) {
 #' @param amplitude Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @return A list with \code{delta}, \code{n}, \code{shift}, \code{amplitude}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' KDelta(V)
+#' @keywords internal
 KDelta <- function(n, shift = 0, amplitude = 1) {
   # eq (3.34): delta(n) = 1 if n = 0, 0 otherwise.  Unlike eq (3.24) this
   # is an ordinary sequence, evaluable at the origin.
-  idx <- if (length(n) == 1L && n == as.integer(n) && n > 1L)
-    seq.int(0L, as.integer(n) - 1L) else as.integer(n)
+  idx <- if (length(n) == 1L && n == as.integer(n) && n > 1L) {
+    seq.int(0L, as.integer(n) - 1L)
+  } else {
+    as.integer(n)
+  }
   s <- as.integer(shift)
   a <- as.numeric(amplitude)
-  list(delta = ifelse(idx == s, a, 0), n = idx, shift = s, amplitude = a,
-       method = "Rangayyan (2024) eq. (3.34)")
+  list(
+    delta = ifelse(idx == s, a, 0), n = idx, shift = s, amplitude = a,
+    method = "Rangayyan (2024) eq. (3.34)"
+  )
 }
 
 #' Eq (3.35): u(n) = 1 for n >= 0, 0 otherwise.  Non-strict, so
@@ -813,16 +985,25 @@ KDelta <- function(n, shift = 0, amplitude = 1) {
 #' @return A list with \code{u}, \code{n}, \code{shift}, \code{first_difference},
 #' \code{value_at_origin}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' StepSeq(V)
+#' @keywords internal
 StepSeq <- function(n, shift = 0) {
   # eq (3.35): u(n) = 1 for n >= 0, 0 otherwise.  Non-strict, so
   # u(0) = 1 -- the opposite of eq (3.27).
-  idx <- if (length(n) == 1L && n == as.integer(n) && n > 1L)
-    seq.int(0L, as.integer(n) - 1L) else as.integer(n)
+  idx <- if (length(n) == 1L && n == as.integer(n) && n > 1L) {
+    seq.int(0L, as.integer(n) - 1L)
+  } else {
+    as.integer(n)
+  }
   s <- as.integer(shift)
   u <- ifelse(idx - s >= 0L, 1, 0)
   d <- c(u[1], if (length(u) > 1L) diff(u) else numeric(0))
-  list(u = u, n = idx, shift = s, first_difference = d,
-       value_at_origin = 1, method = "Rangayyan (2024) eq. (3.35)")
+  list(
+    u = u, n = idx, shift = s, first_difference = d,
+    value_at_origin = 1, method = "Rangayyan (2024) eq. (3.35)"
+  )
 }
 
 #' Eq (3.42): h(t) = 10 (0.25 - t), 0 <= t <= 0.25 s, at fs = 2 kHz.
@@ -830,7 +1011,7 @@ StepSeq <- function(n, shift = 0) {
 #'
 #' text immediately after states the output was divided by the sum of
 #' all values of h(n) -- the normalization is part of the method; the
-#' raw taps sum to 626.25 for the book\'s constants.
+#' raw taps sum to 626.25 for the book's constants.
 #'
 #' @param x Optional; may be \code{NULL}. Passed to \code{.morie_rg_aslist}.
 #' @param fs Numeric; combined arithmetically in the body. Defaults to \code{2000}.
@@ -838,6 +1019,9 @@ StepSeq <- function(n, shift = 0) {
 #' @param slope Numeric; combined arithmetically in the body. Defaults to \code{10}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' RampFilt()
+#' @keywords internal
 RampFilt <- function(x = NULL, fs = 2000, duration = 0.25, slope = 10) {
   # eq (3.42): h(t) = 10 (0.25 - t), 0 <= t <= 0.25 s, at fs = 2 kHz.  The
   # text immediately after states the output was divided by the sum of
@@ -849,9 +1033,11 @@ RampFilt <- function(x = NULL, fs = 2000, duration = 0.25, slope = 10) {
   gain <- .morie_fsum(h)
   if (gain <= 0) stop("ramp has nonpositive total weight")
   hn <- h / gain
-  out <- list(h = h, h_normalized = hn, gain = gain, n_taps = n_taps,
-              fs = as.numeric(fs), duration = as.numeric(duration),
-              method = "Rangayyan (2024) eq. (3.42)")
+  out <- list(
+    h = h, h_normalized = hn, gain = gain, n_taps = n_taps,
+    fs = as.numeric(fs), duration = as.numeric(duration),
+    method = "Rangayyan (2024) eq. (3.42)"
+  )
   if (!is.null(x)) {
     xs <- .morie_rg_aslist(x)
     y <- vapply(seq_along(xs), function(k) {

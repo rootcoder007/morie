@@ -22,7 +22,6 @@ c09 aggregate Ruhela: Age 50+ x gender -> RC
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_c09 <- morie_synth_otis("c09", n = 120L, seed = 1L)
 morie_otis_analyze_c09_ruhela_aggregate(otis_c09)
 }

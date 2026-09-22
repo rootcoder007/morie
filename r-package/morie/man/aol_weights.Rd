@@ -36,7 +36,16 @@ is omitted it is fitted by least squares on H alone -- deliberately
 without treatment, since the point is to remove the part of the
 outcome common to both arms.
 }
+\examples{
+set.seed(1)
+n <- 40
+H <- matrix(rnorm(n * 2), n, 2)
+A <- sample(c(-1, 1), n, replace = TRUE)
+R <- 1 + A * H[, 1] + rnorm(n, 0, 0.3)
+aol_weights(R, A, H)
+}
 \references{
 Liu, Y., Wang, Y., Kosorok, M. R., Zhao, Y. & Zeng,
 D. (2018), Statistics in Medicine, doi:10.1002/sim.7844.
 }
+\keyword{internal}

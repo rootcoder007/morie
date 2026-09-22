@@ -16,11 +16,11 @@ gp_posterior(
 )
 }
 \arguments{
-\item{X}{Iterated over elementwise, with \code{lapply}.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 
 \item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{Xs}{A vector; its length is taken and its elements indexed.}
+\item{Xs}{A matrix; passed to \code{as.matrix}.}
 
 \item{kernel}{Passed to \code{.kernel}. Defaults to \code{"matern52"}.}
 
@@ -40,3 +40,8 @@ A step of the bayopt_native implementation. Called by \code{bayopt}, \code{maxim
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+gp_posterior(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+  Xs = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

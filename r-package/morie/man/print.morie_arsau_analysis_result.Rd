@@ -19,7 +19,12 @@ Print method for \code{morie_arsau_analysis_result} objects
 }
 \examples{
 \donttest{
-D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-morie:::print.morie_arsau_analysis_result(D)
+res <- try(morie_arsau_analyze_main_records(year = "2024"))
+if (!inherits(res, "try-error")) print(res)
+print(res)
 }
+}
+\references{
+Ontario Ministry of the Solicitor General, ARSAU 2023
+and 2024 main_records technical release notes.
 }

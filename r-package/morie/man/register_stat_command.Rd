@@ -16,7 +16,9 @@ The command name, invisibly.
 Register a stat_command in the package-level registry
 }
 \examples{
-cmd <- stat_command("test_bridge_throw", "T", "u", "d", handler_repl = function(...)
-stop("boom"))
+cmd <- stat_command("demo_echo", "misc", "demo_echo",
+                    "Echo demo command",
+                    handler_repl = function(...) "ok")
 register_stat_command(cmd)
+!is.null(resolve_stat_command("demo_echo"))
 }

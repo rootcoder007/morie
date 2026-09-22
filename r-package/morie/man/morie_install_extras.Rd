@@ -59,7 +59,7 @@ them up.
 \item Debian/Ubuntu: \code{sudo apt-get install libcurl4-openssl-dev}
 \item Fedora/RHEL:   \code{sudo dnf install libcurl-devel}
 \item macOS:         pre-installed (Apple's libcurl); or \code{brew install curl}
-\item Windows:       bundled with Rtools
+\item Windows:       included with Rtools
 }
 \item \strong{libsodium} (required for ChaCha20-Poly1305 + HKDF-SHA256)
 \itemize{
@@ -79,6 +79,11 @@ them up.
 
 \examples{
 \dontrun{
+# \dontrun (not \donttest) deliberately: this installs packages into the
+# user library -- never proper to execute under R CMD check or pkgdown,
+# which runs \donttest examples (a run of this one compiled rstan from
+# source for 50 minutes and timed out the whole site build, 2026-07-21).
+\dontrun{
   # Interactive: install whichever Suggests are missing
   morie_install_extras()
 
@@ -87,6 +92,6 @@ them up.
 
   # Just one family
   morie_install_extras(which = c("hawkes", "sf", "spdep"))
-
+}
 }
 }

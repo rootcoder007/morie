@@ -27,3 +27,15 @@ A step of the funkM_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+n_users <- 20L; n_items <- 15L
+u <- sample.int(n_users, 300, TRUE) - 1L
+i <- sample.int(n_items, 300, TRUE) - 1L
+r <- 3 + 0.4 * (u \%\% 3) - 0.3 * (i \%\% 4) + rnorm(300, 0, 0.1)
+ratings <- data.frame(u = u, i = i, r = r)
+fit <- morie_funkM(ratings, n_users, n_items, factors = 3,
+                   epochs = 20, lr = 0.02, seed = 1)
+morie_funkM_rmse(ratings, fit$mu, fit$b_user, fit$b_item, fit$P, fit$Q)
+}
+\keyword{internal}

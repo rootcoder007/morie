@@ -9,6 +9,13 @@ morie_geron_center_gram(K)
 \arguments{
 \item{K}{Gram matrix. @return Centred Gram matrix.}
 }
+\value{
+A numeric value.
+}
 \description{
 Centre a Gram matrix in feature space (Geron Ch 7, morie.fn hmkprbf helper)
 }
+\examples{
+morie_geron_center_gram(K = 5L)
+}
+\keyword{internal}

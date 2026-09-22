@@ -28,3 +28,10 @@ A step of the rangayyan_class2 implementation. No other function in the package 
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(5)
+Y <- matrix(rnorm(16 * 30), 16, 30)
+r <- KsvdFit(Y, natoms = 8, sparsity = 3, maxiter = 4)
+str(r, max.level = 1)
+}
+\keyword{internal}

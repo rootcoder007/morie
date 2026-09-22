@@ -27,3 +27,7 @@ A step of the cgmth_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+cgmth(function(x) sum(x^2), function(x) 2 * x, x0 = c(1, 1))
+}
+\keyword{internal}

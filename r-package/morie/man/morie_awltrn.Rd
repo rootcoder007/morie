@@ -46,9 +46,19 @@ Native R arm of \code{morie.fn.awltrn}. Dispatches to
 shared generator is not touched and the two arms are
 deterministic given the same inputs.
 }
+\examples{
+set.seed(3)
+n <- 40
+H <- matrix(rnorm(n * 2), n, 2)
+A <- sample(c(-1, 1), n, replace = TRUE)
+R <- 1 + A * H[, 1] + rnorm(n, 0, 0.3)
+r <- morie_awltrn(R, A, H, method = "aol")
+str(r, max.level = 1)
+}
 \references{
 Liu, Y., Wang, Y., Kosorok, M. R., Zhao, Y. & Zeng,
 D. (2018); Zhao, Y., Zeng, D., Rush, A. J. & Kosorok, M. R.
 (2012); Zhao, Y.-Q., Zeng, D., Laber, E. B. & Kosorok, M. R.
 (2015).
 }
+\keyword{internal}

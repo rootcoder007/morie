@@ -15,3 +15,7 @@ A 3D array indexed as \code{out[[i]][[d]]}.
 \description{
 Multi-head self-attention within each dimension, weights shared.
 }
+\examples{
+morie_crsfmr_cross_time_stage(Z = 5L)
+}
+\keyword{internal}

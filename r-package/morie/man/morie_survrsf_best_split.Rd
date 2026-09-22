@@ -38,3 +38,14 @@ A step of the survrsf_native implementation. Called by \code{morie_survrsf_grow_
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(1)
+n <- 120
+X <- matrix(rnorm(n * 3), n, 3)
+times <- rexp(n, exp(0.3 * (X[, 1] - 0.5 * X[, 2])))
+events <- rbinom(n, 1, 0.75)
+sp <- morie_survrsf_best_split(X, times, events, features = 0:2,
+                               min_deaths = 3)
+is.list(sp)
+}
+\keyword{internal}

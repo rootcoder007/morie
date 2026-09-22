@@ -31,7 +31,7 @@
 # HTTP: routes via .morie_dataset_http_text_with_status + .morie_dataset_http_post_json_with_status (3ZZ -> libcurl C++ backend with httr2 fallback). JSON: .morie_from_json(simplifyVector=FALSE). HTTP status codes inspected for NamUs 401/403 + 4xx
 # custom error formatting.
 
-.MORIE_FORENSICS_DEFAULT_UA <- "morie/r (+https://github.com/rootcoder007/morie)"
+.MORIE_FORENSICS_DEFAULT_UA <- "morie/r (+https://github.com/rootcoder007/rmorie)"
 .MORIE_FORENSICS_DEFAULT_TIMEOUT <- 60
 
 # Endpoints (verified 2026-05-13; subject to federal-portal reorg).
@@ -60,15 +60,8 @@
 )
 
 # Internal: resolve FBI CDE API key from arg -> env, or stop.
-#' Internal: resolve FBI CDE API key from arg -> env, or stop
-#'
-#' A step of the ingest_forensics implementation. Called by \code{morie_ingest_forensics_nibrs}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param api_key The body requires: and either pass api_key=... or export.
-#' @return The value of \code{key}, as built in the body.
-#' @export
+#' Internal helper: Morie Forensics Require Fbi Key
+#' @noRd
 .morie_forensics_require_fbi_key <- function(api_key = NULL) {
   key <- if (!is.null(api_key) && nzchar(api_key)) {
     api_key
@@ -90,14 +83,8 @@
 # Internal: flatten one nested NIBRS JSON record to a single row.
 # Nested dicts become dotted keys; scalar lists are ";"-joined;
 # nested lists are JSON-serialised.
-#' Internal: flatten one nested NIBRS JSON record to a single row
-#'
-#' Nested dicts become dotted keys; scalar lists are ";"-joined; nested
-#' lists are JSON-serialised.
-#'
-#' @param rec A vector; indexed elementwise.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Morie Forensics Flatten Nibrs
+#' @noRd
 .morie_forensics_flatten_nibrs <- function(rec) {
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop(
@@ -142,21 +129,8 @@
 # 3ZZ: routes through .morie_dataset_http_text_with_status (libcurl
 # backend with httr2 fallback), inspects HTTP status code for
 # 401/403 (auth) + 4xx (generic) custom error formatting.
-#' Internal: shared GET + JSON parse with explicit auth checks
-#'
-#' 3ZZ: routes through .morie_dataset_http_text_with_status (libcurl
-#' backend with httr2 fallback), inspects HTTP status code for 401/403
-#' (auth) + 4xx (generic) custom error formatting.
-#'
-#' @param url Passed to \code{.morie_dataset_http_text_with_status}.
-#' @param params Passed to \code{.morie_dataset_http_text_with_status}. Defaults to \code{list()}.
-#' @param headers A vector; its length is taken. Defaults to \code{list()}.
-#' @param timeout Coerced to integer by the body, with \code{as.integer}.
-#' @param user_agent Accepted by the signature and not used anywhere in the body.
-#' @param auth_signup_url Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param label Passed to \code{stop}. Defaults to \code{"forensics"}.
-#' @return The value of \code{.morie_from_json}.
-#' @export
+#' Internal helper: Morie Forensics Get Json
+#' @noRd
 .morie_forensics_get_json <- function(url,
                                       params = list(),
                                       headers = list(),
@@ -203,14 +177,8 @@
 
 # Internal: rbind a list of named-list rows into a data.frame,
 # tolerating heterogeneous columns (missing -> NA).
-#' Internal: rbind a list of named-list rows into a data.frame,
-#'
-#' tolerating heterogeneous columns (missing -> NA).
-#'
-#' @param rows A vector; its length is taken.
-#' @param columns Optional; may be \code{NULL}. A vector; its length is taken.
-#' @return The value of \code{do.call}.
-#' @export
+#' Internal helper: Morie Forensics Rows To Df
+#' @noRd
 .morie_forensics_rows_to_df <- function(rows, columns = NULL) {
   if (length(rows) == 0L) {
     if (is.null(columns)) {
@@ -265,6 +233,10 @@
 #' @param page_size CDE page size; server-side cap varies by endpoint.
 #' @param timeout HTTP timeout in seconds.
 #' @return A base R \code{data.frame}, one row per offence-event.
+#' Without a key the function falls back to the bundled synthetic
+#' NIBRS sample (documented schema, toy values) so the open path
+#' always works; with a key it queries the live CDE endpoint.
+#'
 #' @examples
 #' \dontshow{if (requireNamespace("httr2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \dontrun{
@@ -361,22 +333,8 @@ morie_ingest_forensics_nibrs <- function(year,
 }
 
 # Internal: pull morie's documented columns out of one NamUs record.
-#' Internal: pull morie\'s documented columns out of one NamUs record
-#'
-#' A step of the ingest_forensics implementation. Called by
-#' \code{morie_ingest_forensics_namus_missing}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param rec A list; the body reads \code{$caseNumber}, \code{$circumstances},
-#' \code{$circumstancesOfDisappearance}, \code{$county}, \code{$namUsCaseNumber},
-#' \code{$sighting}, \code{$state}, \code{$subjectDescription},
-#' \code{$subjectIdentification} from it.
-#' @return A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date},
-#' \code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min},
-#' \code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name},
-#' \code{last_name}, \code{city}, \code{circumstances}.
-#' @export
+#' Internal helper: Morie Forensics Flatten Namus
+#' @noRd
 .morie_forensics_flatten_namus <- function(rec) {
   sub_id <- rec$subjectIdentification
   if (is.null(sub_id)) sub_id <- list()
@@ -474,11 +432,11 @@ morie_ingest_forensics_namus_missing <- function(
     )
   }
   page_size <- as.integer(page_size)
-  # The Search endpoint returns ONLY projected fields (empty
-  # projections -> empty results even when count > 0). This projection
-  # set was validated against the live API 2026-07.
   body <- list(
     take = page_size, skip = 0L,
+    # The Search endpoint returns ONLY projected fields (empty
+    # projections -> empty results even when count > 0). This
+    # projection set was validated against the live API 2026-07.
     projections = list(
       "namus2Number", "dateOfLastContact", "lastName", "firstName",
       "cityOfLastContact", "stateDisplayNameOfLastContact",
@@ -592,20 +550,8 @@ morie_ingest_forensics_namus_missing <- function(
 }
 
 # Internal: pull morie's documented columns out of one NIST RDS record.
-#' Internal: pull morie\'s documented columns out of one NIST RDS record
-#'
-#' A step of the ingest_forensics implementation. Called by \code{morie_ingest_forensics_nist_rds}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param rec A list; the body reads \code{$@id}, \code{$byteSize}, \code{$description},
-#' \code{$ediid}, \code{$identifier}, \code{$issued}, \code{$keyword},
-#' \code{$landing_page}, \code{$landingPage}, \code{$license}, \code{$modified},
-#' \code{$publisher}, \code{$rights}, \code{$size}, \code{$theme}, \code{$title} from it.
-#' @return A list with \code{dataset_id}, \code{title}, \code{description},
-#' \code{publisher}, \code{issued}, \code{modified}, \code{keyword}, \code{landing_page},
-#' \code{size_bytes}, \code{license}.
-#' @export
+#' Internal helper: Morie Forensics Flatten Nist
+#' @noRd
 .morie_forensics_flatten_nist <- function(rec) {
   keyword <- rec$keyword
   if (is.null(keyword)) keyword <- rec$theme
@@ -696,12 +642,18 @@ morie_ingest_forensics_nist_rds <- function(
   rows <- list()
   offset <- 0L
   repeat {
-    params <- list(size = page_size, from = offset)
+    # NIST RMM quirks (verified live 2026-07-21): the search term must
+    # be the FIRST query parameter ("searchphrase must be the first
+    # parameter", HTTP 400), and combining `from=` with a search
+    # silently returns zero results -- paginate with `page=` instead.
+    params <- list()
     if (!is.null(dataset_id) && nzchar(dataset_id)) {
       params[["@id"]] <- dataset_id
     } else if (!is.null(query) && nzchar(query)) {
       params$searchphrase <- query
     }
+    params$size <- page_size
+    params$page <- offset %/% page_size + 1L
     payload <- .morie_forensics_get_json(
       url = .MORIE_NIST_RDS_BASE,
       params = params,

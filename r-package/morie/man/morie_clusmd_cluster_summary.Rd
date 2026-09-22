@@ -20,3 +20,4 @@ Reduce a cluster list (as returned by
 flat \code{assignment} vector of length \code{n_compounds} giving
 each compound's 0-indexed cluster index.
 }
+\keyword{internal}

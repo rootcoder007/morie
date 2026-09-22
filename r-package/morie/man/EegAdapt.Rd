@@ -32,3 +32,10 @@ A step of the rangayyan_ccf implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+sine <- function(n, cycles_hz, fs = 100, amp = 1, phase = 0) {
+    amp * sin(2 * pi * cycles_hz * (seq_len(n) - 1L)/fs + phase)
+}
+EegAdapt(c(sine(200, 5), sine(200, 40)), 100, window = 60, step = 20)
+}
+\keyword{internal}

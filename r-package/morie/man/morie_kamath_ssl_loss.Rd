@@ -43,6 +43,21 @@ morie_kamath_span_loss(x, xhat, i, j)
 
 \item{i, j}{0-based inclusive span bounds.}
 }
+\value{
+A list with \code{estimate}, \code{components}, \code{lambdas}, \code{n}, \code{method}.
+}
 \description{
 The Kamath Ch 2 pretraining loss family (Eq 2.20-2.33)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_ssl_loss(V)
+morie_kamath_clm_loss(c(0.5, 0.25))
+p <- c(0.5, 1, 0.25, 1)
+morie_kamath_mlm_loss(p, c(0, 2))
+morie_kamath_rtd_loss(c(0.9, 0.9), c(1, 0))
+morie_kamath_tlm_loss(c(0.5, 1), 0.25, 0, 0)
+morie_kamath_nsp_loss(0.8, "y", 0)
+morie_kamath_span_loss(c(1e-09, 0.5, 0.25, 1e-09), "x", 1, 2)
+}
+\keyword{internal}

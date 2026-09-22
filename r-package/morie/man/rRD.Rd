@@ -2,14 +2,14 @@
 % Please edit documentation in R/fairRC_native.R
 \name{rRD}
 \alias{rRD}
-\title{rRD}
+\title{Normalised discounted ratio. Only meaningful when the protected}
 \usage{
-rRD(protected, step = 10L, normalize = TRUE)
+rRD(protected, step = 10, normalize = TRUE)
 }
 \arguments{
 \item{protected}{Coerced to logical by the body, with \code{as.logical}.}
 
-\item{step}{Passed to \code{.measure}. Defaults to \code{10L}.}
+\item{step}{Passed to \code{.measure}. Defaults to \code{10}.}
 
 \item{normalize}{Passed to \code{.measure}. Defaults to \code{TRUE}.}
 }
@@ -17,7 +17,11 @@ rRD(protected, step = 10L, normalize = TRUE)
 The value of \code{.measure}.
 }
 \description{
-A step of the fairRC_native implementation. No other function in the package calls it.
-See the file header for the source the module follows.
-source it follows.
+group is the minority -- it does not treat the two groups
+symmetrically.
 }
+\examples{
+prot <- c(rep(0L, 10), rep(1L, 10), rep(0L, 10), rep(1L, 10))
+rRD(prot, step = 10)
+}
+\keyword{internal}

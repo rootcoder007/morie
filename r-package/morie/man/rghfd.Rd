@@ -3,7 +3,7 @@
 \name{rghfd}
 \alias{rghfd}
 \alias{morie_rangayyan_higuchi_fd}
-\title{Higuchi fractal dimension -- Rangayyan Sec. 5.13.2, eqs (5.39)-(5.41)}
+\title{Higuchi fractal dimension -- Rangayyan Sec. 5.13.2, eqs (5.39)-(5.41), p.304}
 \usage{
 rghfd(x, kmax = 10L)
 
@@ -25,9 +25,6 @@ set.seed(0)
 rghfd(rnorm(500), kmax = 8)$HFD
 }
 \references{
-Rangayyan, R. M. & Krishnan, S. Biomedical Signal Analysis, 3rd ed.
-(IEEE Press / Wiley, 2024),
-Sec. 5.13.2 "Higuchi's method", p. 304, eqs (5.39)-(5.41).
-Higuchi, T. (1988). Physica D 31:277-283.
+Higuchi (1988), Physica D 31:277. Rangayyan Sec. 5.13.2, eqs (5.39)-(5.41), p.304.
 }
 \keyword{internal}

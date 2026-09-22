@@ -27,3 +27,12 @@ A step of the rangayyan_class2 implementation. No other function in the package 
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(3)
+S <- rbind(matrix(rnorm(4 * 64, 0, 1), 4, 64),
+           matrix(rnorm(4 * 64, 0, 3), 4, 64))
+y <- rep(c(0L, 1L), each = 4)
+r <- SeizDict(S, y, iterations = 3)
+str(r, max.level = 1)
+}
+\keyword{internal}

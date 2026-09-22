@@ -101,9 +101,11 @@ Aitdrr <- function(X_cov, Y_comp, ref = NULL, max_iter = 400L, step0 = 0.05, tol
   phi <- 0
   for (v in a0s) phi <- phi + v
   phi <- phi / N
-  list(beta = B, phi = phi, ll = ll, estimate = ll, alpha = A, precision = a0s,
-       score_max_abs = gmax, iterations = it, N = N, p = p, D = D,
-       method = "alpha_ij = exp(x_i' beta_j); ML by score ascent with backtracking")
+  list(
+    beta = B, phi = phi, ll = ll, estimate = ll, alpha = A, precision = a0s,
+    score_max_abs = gmax, iterations = it, N = N, p = p, D = D,
+    method = "alpha_ij = exp(x_i' beta_j); ML by score ascent with backtracking"
+  )
 }
 
 #' @noRd

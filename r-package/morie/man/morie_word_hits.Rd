@@ -43,3 +43,8 @@ A step of the blstn_native implementation. Called by \code{morie_blstn}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r <- morie_word_hits("ACGTACGT", "TTACGTAA", w = 4)
+str(r, max.level = 1)
+}
+\keyword{internal}

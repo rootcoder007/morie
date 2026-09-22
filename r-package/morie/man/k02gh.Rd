@@ -17,3 +17,7 @@ A step of the k02util implementation. Called by \code{magpa}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+k02gh(n = 5L)
+}
+\keyword{internal}

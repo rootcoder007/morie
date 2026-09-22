@@ -18,6 +18,8 @@ A \code{morie_effect_size}.
 Pearson r as an effect size with Fisher-z CI
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-r_effect_size(V, V)
+set.seed(1)
+x <- rnorm(30)
+y <- x + rnorm(30)
+r_effect_size(x, y)
 }

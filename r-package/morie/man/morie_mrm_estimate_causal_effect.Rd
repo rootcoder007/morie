@@ -22,7 +22,7 @@ morie_mrm_estimate_causal_effect(
 
 \item{covariates}{Character vector of adjustment covariates.}
 
-\item{methods}{Subset of \code{c("matching", "ate", "aipw",
+\item{methods}{Subset of \eqn{c("matching", "ate", "aipw",
 "dml")} (default all four).}
 
 \item{correction}{Multiple-testing correction passed to

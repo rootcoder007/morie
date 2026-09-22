@@ -18,10 +18,8 @@ in ratio estimation).}
 variable \code{x} (ratio estimator).}
 }
 \value{
-A named list with elements \code{ratio} (estimated ratio
-\eqn{r = Y_{HT}/X_{HT}}), \code{total_estimate} (ratio-estimated
-population total), \code{se}, \code{ci_lower}, \code{ci_upper}
-(95\\% Wald confidence interval).
+A named list with elements \code{ratio}, \code{total_estimate}, \code{se},
+\code{ci_lower}, \code{ci_upper}.
 }
 \description{
 Ratio estimator of a population total using known X_pop
@@ -29,10 +27,8 @@ Ratio estimator of a population total using known X_pop
 \examples{
 \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 set.seed(1)
-x <- runif(50, 1, 10)
-y <- 2 * x + rnorm(50, 0, 0.5)
-w <- rep(2, 50)
-r <- morie_survey_ratio(y, x, w, X_population_total = sum(x) * 2)
-abs(r$ratio - 2) < 0.3
+x <- runif(30, 1, 3); y <- 2 * x + rnorm(30, 0, 0.2)
+str(morie_survey_ratio(y, x, rep(1, 30), X_population_total = 60),
+    max.level = 1)
 \dontshow{\}) # examplesIf}
 }

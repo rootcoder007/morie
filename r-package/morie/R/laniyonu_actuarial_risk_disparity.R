@@ -75,18 +75,8 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-#' .lan_ard_result
-#'
-#' Part of the laniyonu_actuarial_risk_disparity implementation; see the
-#' file header for the source it follows.
-#'
-#' @param title Carried through into a list the body builds.
-#' @param call Carried through into a list the body builds.
-#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
-#' @param warnings_ Carried through into a list the body builds. Defaults to \code{character(0)}.
-#' @param ... Passed through.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Lan Ard Result
+#' @noRd
 .lan_ard_result <- function(title, call, interpretation = "",
                              warnings_ = character(0), ...) {
   out <- list(
@@ -101,14 +91,8 @@ NULL
 }
 
 
-#' Binary logit at a single ordinal threshold (P(Y > k))
-#'
-#' Returns coefficients (with intercept), SEs, log-lik.
-#'
-#' @param yk A vector; its length is taken.
-#' @param X A matrix; passed to \code{ncol}.
-#' @return A list with \code{coef}, \code{se}, \code{loglik}, \code{n}, \code{converged}.
-#' @export
+#' Internal helper: Lan Threshold Logit
+#' @noRd
 .lan_threshold_logit <- function(yk, X) {
   # Binary logit at a single ordinal threshold (P(Y > k)).
   # Returns coefficients (with intercept), SEs, log-lik.
@@ -142,15 +126,8 @@ NULL
 }
 
 
-#' .lan_ord_levels_to_int
-#'
-#' Part of the laniyonu_actuarial_risk_disparity implementation; see the
-#' file header for the source it follows.
-#'
-#' @param y Coerced to character by the body, with \code{as.character}.
-#' @param levels_ Passed to \code{match}.
-#' @return The value of \code{m}, as built in the body.
-#' @export
+#' Internal helper: Lan Ord Levels To Int
+#' @noRd
 .lan_ord_levels_to_int <- function(y, levels_) {
   m <- match(as.character(y), levels_)
   if (any(is.na(m))) {
@@ -166,20 +143,8 @@ NULL
 # Stage 1 -- threshold-specific ordinal logit
 # ---------------------------------------------------------------------------
 
-#' .lan_run_ordinal
-#'
-#' Part of the laniyonu_actuarial_risk_disparity implementation; see the
-#' file header for the source it follows.
-#'
-#' @param df A matrix; indexed by row and column.
-#' @param outcome_col Passed to \code{.lan_ard_result}.
-#' @param race_cols Passed to \code{.lan_ard_result}.
-#' @param gender_col Passed to \code{.lan_ard_result}.
-#' @param control_cols Passed to \code{c}.
-#' @param ordinal_levels A vector; its length is taken and its elements indexed.
-#' @param split_by_gender A flag; the body branches on it.
-#' @return The value of \code{.lan_ard_result}.
-#' @export
+#' Internal helper: Lan Run Ordinal
+#' @noRd
 .lan_run_ordinal <- function(df, outcome_col, race_cols, gender_col,
                               control_cols, ordinal_levels,
                               split_by_gender) {
@@ -364,21 +329,8 @@ NULL
 # Stage 2 -- score-net-residual logit
 # ---------------------------------------------------------------------------
 
-#' .lan_score_net_residual
-#'
-#' Part of the laniyonu_actuarial_risk_disparity implementation; see the
-#' file header for the source it follows.
-#'
-#' @param sub A matrix; indexed by row and column.
-#' @param score_col Passed to \code{c}.
-#' @param outcome_col Passed to \code{c}.
-#' @param race_cols A vector; its length is taken.
-#' @param control_cols Passed to \code{c}.
-#' @param bootstrap_replicates A count; the body uses it as \code{seq_len(...)}.
-#' @param random_state Passed to \code{set.seed}.
-#' @return A list with \code{coefficients}, \code{std_errors}, \code{bootstrap_se},
-#' \code{score_coefficient}, \code{n_obs}.
-#' @export
+#' Internal helper: Lan Score Net Residual
+#' @noRd
 .lan_score_net_residual <- function(sub, score_col, outcome_col,
                                      race_cols, control_cols,
                                      bootstrap_replicates,
@@ -436,23 +388,8 @@ NULL
 }
 
 
-#' .lan_run_residual
-#'
-#' Part of the laniyonu_actuarial_risk_disparity implementation; see the
-#' file header for the source it follows.
-#'
-#' @param df A matrix; indexed by row and column.
-#' @param outcome Passed to \code{.lan_ard_result}.
-#' @param outcome_col Passed to \code{.lan_score_net_residual}.
-#' @param score_col Passed to \code{.lan_score_net_residual}.
-#' @param race_cols Passed to \code{.lan_score_net_residual}.
-#' @param gender_col Passed to \code{.lan_ard_result}.
-#' @param control_cols Passed to \code{.lan_score_net_residual}.
-#' @param split_by_gender A flag; the body branches on it.
-#' @param bootstrap_replicates Passed to \code{.lan_score_net_residual}.
-#' @param random_state Passed to \code{.lan_score_net_residual}.
-#' @return The value of \code{.lan_ard_result}.
-#' @export
+#' Internal helper: Lan Run Residual
+#' @noRd
 .lan_run_residual <- function(df, outcome, outcome_col, score_col,
                                race_cols, gender_col, control_cols,
                                split_by_gender, bootstrap_replicates,
@@ -650,13 +587,31 @@ morie_laniyonu_actuarial_risk_disparity <- function(
 #'
 #' @param x A \code{morie_laniyonu_ard_result} object.
 #' @param ... Ignored; accepted for S3 consistency.
-#' @return Invisibly returns \code{x} unchanged.
-#' @export
+#' @return \code{x}, invisibly.
 #' @examples
 #' \donttest{
-#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' morie:::print.morie_laniyonu_ard_result(D)
+#' set.seed(1)
+#' n <- 200
+#' black <- rbinom(n, 1, 0.3); asian <- rbinom(n, 1, 0.2)
+#' gender <- sample(c("M", "F"), n, replace = TRUE); age <- rnorm(n)
+#' zsc <- 0.5 * black + 0.3 * asian + 0.2 * age + rnorm(n)
+#' lvl <- cut(zsc, quantile(zsc, c(0, .33, .66, 1)), include.lowest = TRUE,
+#'            labels = c("low", "medium", "high"))
+#' df <- data.frame(static_score = as.character(lvl), black, asian, gender, age)
+#' res <- suppressWarnings(morie_laniyonu_actuarial_risk_disparity(
+#'   df, outcome = "static", race_cols = c("black", "asian"),
+#'   gender_col = "gender", control_cols = "age"))
+#' res$outcome_kind
+#' print(res)
 #' }
+#' @references
+#'   O'Connell, C., & Laniyonu, A. (2025).  Race, gender, and risk
+#'   assessments in Canadian federal prison.  Race & Justice, 15(3),
+#'   428-453.
+#'   Goel, S., Shroff, R., Skeem, J., & Slobogin, C. (2021).  The
+#'   accuracy, equity, and jurisprudence of criminal risk assessment.
+#'   In Research Handbook on Big Data Law (pp. 9-28).
+#' @export
 print.morie_laniyonu_ard_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\

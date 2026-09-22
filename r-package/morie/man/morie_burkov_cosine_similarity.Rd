@@ -9,6 +9,14 @@ morie_burkov_cosine_similarity(x, y)
 \arguments{
 \item{x, y}{Vectors; neither may be zero.}
 }
+\value{
+A list with \code{estimate}, \code{angle_radians}, \code{n}, \code{method}.
+}
 \description{
 Cosine similarity (Burkov Eq 1.5)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_burkov_cosine_similarity(V, V)
+}
+\keyword{internal}

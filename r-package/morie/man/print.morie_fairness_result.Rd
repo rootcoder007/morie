@@ -17,3 +17,10 @@ Invisibly returns \code{x} unchanged.
 \description{
 Print method for \code{morie_fairness_result} objects
 }
+\examples{
+\donttest{
+d <- morie_fairness_simulate_biased_crime_data(n = 100L, seed = 1L)
+head(d)
+print(d)
+}
+}

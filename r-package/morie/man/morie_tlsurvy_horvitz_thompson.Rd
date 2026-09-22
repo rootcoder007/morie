@@ -23,3 +23,8 @@ A list with \code{estimate}, \code{se}, \code{n_used}, \code{N}.
 Unbiased for the FULL-data mean, which is the quantity of interest --
 the sample is a computational device, not the population.
 }
+\examples{
+morie_tlsurvy_horvitz_thompson(values = c(1, 2, 3, 4, 5, 6, 7, 8),
+  pi = c(1, 2, 3, 4, 5, 6, 7, 8), selected = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -54,6 +54,13 @@ objective by more than \code{1e-9} the new point becomes the
 start of the next call, exactly mirroring the Python arm's
 \code{"for _ in range(6)"} loop in \code{fit()}.
 }
+\examples{
+\donttest{
+morie_survvae(X = c(1, 2, 3, 4, 5, 6, 7, 8), times = c(1, 2, 3, 4, 5, 6, 7, 8),
+  events = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+}
 \references{
 Nagpal et al. (2021), Sec. III and III-C.
 }
+\keyword{internal}

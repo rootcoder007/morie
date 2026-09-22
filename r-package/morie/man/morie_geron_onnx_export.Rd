@@ -13,6 +13,15 @@ morie_geron_onnx_export(model, args, file = NULL)
 
 \item{file}{Optional path for the traced graph (written as JSON).}
 }
+\value{
+A list with \code{nodes}, \code{graph}, \code{input_shape}, \code{output_shape}, \code{n_parameters}, \code{file}, \code{is_protobuf}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 ONNX export trace: shape-traced graph validated on a concrete input (Geron App B, hmonnx)
 }
+\examples{
+m <- list(list(op = "Gemm", in_features = 3, out_features = 2),
+    list(op = "Relu"))
+morie_geron_onnx_export(m, matrix(0, 1, 3))
+}
+\keyword{internal}

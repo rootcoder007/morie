@@ -30,8 +30,9 @@
 #' res
 .morie_rg_acf <- function(x, lags) {
   n <- length(x)
-  vapply(seq_len(lags) - 1L, function(m)
-    .morie_fsum(x[seq_len(n - m)] * x[seq_len(n - m) + m]) / n, numeric(1))
+  vapply(seq_len(lags) - 1L, function(m) {
+    .morie_fsum(x[seq_len(n - m)] * x[seq_len(n - m) + m]) / n
+  }, numeric(1))
 }
 
 #' Theta(k) = E\[x(n-k) d(n)\], the right-hand side of eq. (3.168)
@@ -76,9 +77,12 @@
 #' res
 .morie_rg_solve <- function(A, b) {
   out <- tryCatch(as.numeric(solve(A, b)), error = function(e) NULL)
-  if (is.null(out) || any(!is.finite(out)))
-    stop("the correlation matrix is singular; the Wiener-Hopf system of ",
-         "eq. (3.168) has no unique solution")
+  if (is.null(out) || any(!is.finite(out))) {
+    stop(
+      "the correlation matrix is singular; the Wiener-Hopf system of ",
+      "eq. (3.168) has no unique solution"
+    )
+  }
   out
 }
 
@@ -109,20 +113,28 @@
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{d_hat}, \code{n}, \code{order}, \code{settled_from}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' WienerOut(V, V)
+#' @keywords internal
 WienerOut <- function(w, x) {
   # eq. (3.154): the estimate is the convolution of the tap weights with
   # the input.  The first M-1 outputs run on a partly empty delay line and
   # are reported as unsettled rather than trimmed away.
   ws <- as.numeric(w)
   xs <- as.numeric(x)
-  if (!length(ws) || !length(xs))
+  if (!length(ws) || !length(xs)) {
     stop("both the tap weights and the input need samples")
+  }
   m <- length(ws)
   n <- length(xs)
-  out <- vapply(seq_len(n), function(i)
-    .morie_fsum(ws * .morie_rg_lagvec(xs, i, m)), numeric(1))
-  list(d_hat = out, n = n, order = m, settled_from = m - 1L,
-       method = "Rangayyan (2024) eq. (3.154)")
+  out <- vapply(seq_len(n), function(i) {
+    .morie_fsum(ws * .morie_rg_lagvec(xs, i, m))
+  }, numeric(1))
+  list(
+    d_hat = out, n = n, order = m, settled_from = m - 1L,
+    method = "Rangayyan (2024) eq. (3.154)"
+  )
 }
 
 #' Eq. (3.155): the same estimate written as an inner product.  x(n)
@@ -136,6 +148,10 @@ WienerOut <- function(w, x) {
 #' @param xvec Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{d_hat}, \code{order}, \code{vector_is_time_reversed}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' WienerDot(V, V)
+#' @keywords internal
 WienerDot <- function(w, xvec) {
   # eq. (3.155): the same estimate written as an inner product.  x(n) runs
   # BACKWARDS in time, its first entry being the current sample; getting
@@ -143,13 +159,18 @@ WienerDot <- function(w, xvec) {
   # which is why the length check is not the only thing recorded.
   ws <- as.numeric(w)
   xv <- as.numeric(xvec)
-  if (length(ws) != length(xv))
-    stop("w and x(n) must have the same length; x(n) runs backwards in ",
-         "time, x[1] being the current sample")
+  if (length(ws) != length(xv)) {
+    stop(
+      "w and x(n) must have the same length; x(n) runs backwards in ",
+      "time, x[1] being the current sample"
+    )
+  }
   if (!length(ws)) stop("need at least one tap")
-  list(d_hat = .morie_fsum(ws * xv), order = length(ws),
-       vector_is_time_reversed = TRUE,
-       method = "Rangayyan (2024) eq. (3.155)")
+  list(
+    d_hat = .morie_fsum(ws * xv), order = length(ws),
+    vector_is_time_reversed = TRUE,
+    method = "Rangayyan (2024) eq. (3.155)"
+  )
 }
 
 #' Eq. (3.167): grad J = -2 Theta + 2 Phi w.  The surface is quadratic
@@ -163,6 +184,9 @@ WienerDot <- function(w, xvec) {
 #' @return A list with \code{gradient}, \code{norm}, \code{at_optimum}, \code{order},
 #' \code{surface}, \code{method}.
 #' @export
+#' @examples
+#' MseGrad(phi = 0.5, theta = 0.5, w = 5L)
+#' @keywords internal
 MseGrad <- function(phi, theta, w) {
   # eq. (3.167): grad J = -2 Theta + 2 Phi w.  The surface is quadratic
   # with a single minimum, so a vanishing gradient is the optimum and not
@@ -171,14 +195,18 @@ MseGrad <- function(phi, theta, w) {
   t <- as.numeric(theta)
   ws <- as.numeric(w)
   m <- length(ws)
-  if (length(t) != m || nrow(P) != m || ncol(P) != m)
+  if (length(t) != m || nrow(P) != m || ncol(P) != m) {
     stop("Phi must be M x M and Theta, w of length M")
-  g <- vapply(seq_len(m), function(i)
-    2 * (.morie_fsum(P[i, ] * ws) - t[i]), numeric(1))
-  list(gradient = g, norm = sqrt(.morie_fsum(g * g)),
-       at_optimum = all(abs(g) < 1e-9), order = m,
-       surface = "quadratic, single minimum",
-       method = "Rangayyan (2024) eq. (3.167)")
+  }
+  g <- vapply(seq_len(m), function(i) {
+    2 * (.morie_fsum(P[i, ] * ws) - t[i])
+  }, numeric(1))
+  list(
+    gradient = g, norm = sqrt(.morie_fsum(g * g)),
+    at_optimum = all(abs(g) < 1e-9), order = m,
+    surface = "quadratic, single minimum",
+    method = "Rangayyan (2024) eq. (3.167)"
+  )
 }
 
 #' Eq. (3.168): Phi w = Theta.  At the solution the input vector and the
@@ -191,6 +219,9 @@ MseGrad <- function(phi, theta, w) {
 #' @return A list with \code{w}, \code{residual}, \code{max_residual}, \code{order},
 #' \code{condition}, \code{orthogonality}, \code{method}.
 #' @export
+#' @examples
+#' WienerHopf(phi = 0.5, theta = 0.5)
+#' @keywords internal
 WienerHopf <- function(phi, theta) {
   # eq. (3.168): Phi w = Theta.  At the solution the input vector and the
   # error are orthogonal, and so are the output and the error -- the
@@ -198,18 +229,24 @@ WienerHopf <- function(phi, theta) {
   P <- as.matrix(phi)
   t <- as.numeric(theta)
   m <- length(t)
-  if (nrow(P) != m || ncol(P) != m)
+  if (nrow(P) != m || ncol(P) != m) {
     stop("Phi must be M x M and Theta of length M")
+  }
   w <- .morie_rg_solve(P, t)
-  resid <- vapply(seq_len(m), function(i)
-    .morie_fsum(P[i, ] * w) - t[i], numeric(1))
+  resid <- vapply(seq_len(m), function(i) {
+    .morie_fsum(P[i, ] * w) - t[i]
+  }, numeric(1))
   diag_p <- abs(diag(P))
-  list(w = w, residual = resid, max_residual = max(abs(resid)), order = m,
-       condition = if (min(diag_p) > 0) max(diag_p) / min(diag_p) else Inf,
-       orthogonality = paste("at w_o the input vector and the error are",
-                             "orthogonal, and so are the output and the",
-                             "error"),
-       method = "Rangayyan (2024) eq. (3.168)")
+  list(
+    w = w, residual = resid, max_residual = max(abs(resid)), order = m,
+    condition = if (min(diag_p) > 0) max(diag_p) / min(diag_p) else Inf,
+    orthogonality = paste(
+      "at w_o the input vector and the error are",
+      "orthogonal, and so are the output and the",
+      "error"
+    ),
+    method = "Rangayyan (2024) eq. (3.168)"
+  )
 }
 
 #' Eq. (3.169): w_o = Phi^-1 Theta.  Written as an inverse in the book,
@@ -221,6 +258,9 @@ WienerHopf <- function(phi, theta) {
 #' @param theta Passed to \code{WienerHopf}.
 #' @return The value of \code{r}, as built in the body.
 #' @export
+#' @examples
+#' WienerOpt(phi = 0.5, theta = 0.5)
+#' @keywords internal
 WienerOpt <- function(phi, theta) {
   # eq. (3.169): w_o = Phi^-1 Theta.  Written as an inverse in the book,
   # computed here by solving the system -- the inverse is never formed,
@@ -232,7 +272,7 @@ WienerOpt <- function(phi, theta) {
   r
 }
 
-#' Eq. (3.172): J_min = var(d) - Theta\' w_o.  A negative J_min cannot
+#' Eq. (3.172): J_min = var(d) - Theta' w_o.  A negative J_min cannot
 #'
 #' happen for consistent statistics, so it is reported rather than
 #' clamped: it means the supplied variance and covariances do not come
@@ -244,6 +284,9 @@ WienerOpt <- function(phi, theta) {
 #' @return A list with \code{j_min}, \code{w_o}, \code{var_d}, \code{explained},
 #' \code{consistent}, \code{fraction_explained}, \code{method}.
 #' @export
+#' @examples
+#' WienerMin(phi = 0.5, theta = 0.5, var_d = 5L)
+#' @keywords internal
 WienerMin <- function(phi, theta, var_d) {
   # eq. (3.172): J_min = var(d) - Theta' w_o.  A negative J_min cannot
   # happen for consistent statistics, so it is reported rather than
@@ -253,12 +296,17 @@ WienerMin <- function(phi, theta, var_d) {
   t <- as.numeric(theta)
   explained <- .morie_fsum(t * r$w)
   jmin <- as.numeric(var_d) - explained
-  list(j_min = jmin, w_o = r$w, var_d = as.numeric(var_d),
-       explained = explained,
-       consistent = jmin >= -1e-9 * max(abs(as.numeric(var_d)), 1),
-       fraction_explained = if (var_d != 0) 1 - jmin / as.numeric(var_d)
-         else NULL,
-       method = "Rangayyan (2024) eq. (3.172)")
+  list(
+    j_min = jmin, w_o = r$w, var_d = as.numeric(var_d),
+    explained = explained,
+    consistent = jmin >= -1e-9 * max(abs(as.numeric(var_d)), 1),
+    fraction_explained = if (var_d != 0) {
+      1 - jmin / as.numeric(var_d)
+    } else {
+      NULL
+    },
+    method = "Rangayyan (2024) eq. (3.172)"
+  )
 }
 
 #' Eqs. (3.173)-(3.174): the normal equations written as a convolution
@@ -274,6 +322,9 @@ WienerMin <- function(phi, theta, var_d) {
 #' @return A list with \code{lhs}, \code{theta}, \code{max_difference}, \code{holds},
 #' \code{order}, \code{requires_stationarity}, \code{method}.
 #' @export
+#' @examples
+#' WienerConv(w = 5L, phi = 0.5, theta = 0.5)
+#' @keywords internal
 WienerConv <- function(w, phi, theta) {
   # eqs. (3.173)-(3.174): the normal equations written as a convolution of
   # the tap weights with the ACF.  It holds only for a stationary process;
@@ -282,17 +333,21 @@ WienerConv <- function(w, phi, theta) {
   p <- as.numeric(phi)
   t <- as.numeric(theta)
   m <- length(ws)
-  if (length(p) < m || length(t) < m)
+  if (length(p) < m || length(t) < m) {
     stop("need at least M lags of phi and theta")
-  lhs <- vapply(seq_len(m) - 1L, function(k)
-    .morie_fsum(ws * p[abs(k - (seq_len(m) - 1L)) + 1L]), numeric(1))
+  }
+  lhs <- vapply(seq_len(m) - 1L, function(k) {
+    .morie_fsum(ws * p[abs(k - (seq_len(m) - 1L)) + 1L])
+  }, numeric(1))
   gap <- max(abs(lhs - t[seq_len(m)]))
   scale <- max(abs(t[seq_len(m)]))
   if (!scale) scale <- 1
-  list(lhs = lhs, theta = t[seq_len(m)], max_difference = gap,
-       holds = gap <= 1e-8 * scale, order = m,
-       requires_stationarity = TRUE,
-       method = "Rangayyan (2024) eqs. (3.173)-(3.174)")
+  list(
+    lhs = lhs, theta = t[seq_len(m)], max_difference = gap,
+    holds = gap <= 1e-8 * scale, order = m,
+    requires_stationarity = TRUE,
+    method = "Rangayyan (2024) eqs. (3.173)-(3.174)"
+  )
 }
 
 #' Eq. (3.175): W(w) S_xx(w) = S_xd(w).  Bins where S_xx vanishes carry
@@ -305,23 +360,30 @@ WienerConv <- function(w, phi, theta) {
 #' @return A list with \code{lhs}, \code{sxd}, \code{max_difference}, \code{holds},
 #' \code{undetermined_bins}, \code{n_undetermined}, \code{method}.
 #' @export
+#' @examples
+#' WienerFreqR(W = c(1, 2, 3, 4, 5, 6, 7, 8), sxx = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   sxd = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 WienerFreqR <- function(W, sxx, sxd) {
   # eq. (3.175): W(w) S_xx(w) = S_xd(w).  Bins where S_xx vanishes carry
   # no information about W and are listed, not silently satisfied.
   Ws <- as.complex(W)
   a <- as.complex(sxx)
   b <- as.complex(sxd)
-  if (length(Ws) != length(a) || length(a) != length(b))
+  if (length(Ws) != length(a) || length(a) != length(b)) {
     stop("W, S_xx and S_xd must have the same length")
+  }
   lhs <- Ws * a
   gap <- max(Mod(lhs - b))
   scale <- max(Mod(b))
   if (!scale) scale <- 1
   und <- which(Mod(a) <= 1e-300) - 1L
-  list(lhs = lhs, sxd = b, max_difference = gap,
-       holds = gap <= 1e-8 * scale,
-       undetermined_bins = und, n_undetermined = length(und),
-       method = "Rangayyan (2024) eq. (3.175)")
+  list(
+    lhs = lhs, sxd = b, max_difference = gap,
+    holds = gap <= 1e-8 * scale,
+    undetermined_bins = und, n_undetermined = length(und),
+    method = "Rangayyan (2024) eq. (3.175)"
+  )
 }
 
 #' Eq. (3.176): W(w) = S_xd(w) / S_xx(w).  Where the denominator
@@ -335,20 +397,27 @@ WienerFreqR <- function(W, sxx, sxd) {
 #' @return A list with \code{W}, \code{magnitude}, \code{undetermined_bins},
 #' \code{n_undetermined}, \code{zero_where_undetermined}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' WienerFreq(V, V)
+#' @keywords internal
 WienerFreq <- function(sxx, sxd) {
   # eq. (3.176): W(w) = S_xd(w) / S_xx(w).  Where the denominator vanishes
   # the ratio is undefined; returning zero there is a choice, and it is
   # flagged so a caller can tell it apart from a genuine zero response.
   a <- as.complex(sxx)
   b <- as.complex(sxd)
-  if (length(a) != length(b))
+  if (length(a) != length(b)) {
     stop("S_xx and S_xd must have the same length")
+  }
   if (!length(a)) stop("need at least one bin")
   und <- which(Mod(a) <= 1e-300)
   W <- ifelse(Mod(a) <= 1e-300, complex(real = 0, imaginary = 0), b / a)
-  list(W = W, magnitude = Mod(W), undetermined_bins = und - 1L,
-       n_undetermined = length(und), zero_where_undetermined = TRUE,
-       n = length(W), method = "Rangayyan (2024) eq. (3.176)")
+  list(
+    W = W, magnitude = Mod(W), undetermined_bins = und - 1L,
+    n_undetermined = length(und), zero_where_undetermined = TRUE,
+    n = length(W), method = "Rangayyan (2024) eq. (3.176)"
+  )
 }
 
 #' Eq. (3.186): W = S_d / (S_d + S_eta).  Three properties the book
@@ -363,6 +432,10 @@ WienerFreq <- function(sxx, sxd) {
 #' \code{zero_where_signal_absent}, \code{unity_where_noise_absent}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' WienerSnr(V, V)
+#' @keywords internal
 WienerSnr <- function(sd, seta) {
   # eq. (3.186): W = S_d / (S_d + S_eta).  Three properties the book
   # stresses and this checks: zero where the signal is absent (nothing to
@@ -370,18 +443,21 @@ WienerSnr <- function(sd, seta) {
   # falling monotonically with the SNR in between.
   d <- as.numeric(sd)
   e <- as.numeric(seta)
-  if (length(d) != length(e))
+  if (length(d) != length(e)) {
     stop("S_d and S_eta must have the same length")
+  }
   if (!length(d)) stop("need at least one bin")
   if (any(d < 0) || any(e < 0)) stop("a PSD cannot be negative")
   tot <- d + e
   W <- ifelse(tot <= 0, 0, d / tot)
   und <- which(tot <= 0) - 1L
   snr <- ifelse(e > 0, d / e, Inf)
-  list(W = W, snr = snr, undetermined_bins = und,
-       zero_where_signal_absent = all(W[d == 0] == 0),
-       unity_where_noise_absent = all(W[e == 0 & d > 0] == 1),
-       n = length(W), method = "Rangayyan (2024) eq. (3.186)")
+  list(
+    W = W, snr = snr, undetermined_bins = und,
+    zero_where_signal_absent = all(W[d == 0] == 0),
+    unity_where_noise_absent = all(W[e == 0 & d > 0] == 1),
+    n = length(W), method = "Rangayyan (2024) eq. (3.186)"
+  )
 }
 
 #' Eqs. (3.168), (3.171): build the Toeplitz correlation matrix and the
@@ -397,6 +473,9 @@ WienerSnr <- function(sd, seta) {
 #' \code{j_min}, \code{var_d}, \code{toeplitz}, \code{acf_biased}, \code{condition},
 #' \code{method}.
 #' @export
+#' @examples
+#' Whopf(x = c(1, 2, 3, 4, 5, 6, 7, 8), d = c(1, 2, 3, 4, 5, 6, 7, 8), order = 5L)
+#' @keywords internal
 Whopf <- function(x, d, order) {
   # eqs. (3.168), (3.171): build the Toeplitz correlation matrix and the
   # cross-correlation vector from data and solve for the tap weights.  The
@@ -404,8 +483,9 @@ Whopf <- function(x, d, order) {
   # nonnegative-definite and so keeps the system solvable.
   xs <- as.numeric(x)
   ds <- as.numeric(d)
-  if (length(xs) != length(ds))
+  if (length(xs) != length(ds)) {
     stop("input and desired response must have equal length")
+  }
   m <- as.integer(order)
   if (m < 1L) stop("order must be at least 1")
   if (length(xs) <= m) stop("need more samples than taps")
@@ -417,10 +497,12 @@ Whopf <- function(x, d, order) {
   n <- length(ds)
   var_d <- .morie_fsum(ds * ds) / n - (.morie_fsum(ds) / n)^2
   jm <- WienerMin(Phi, theta, var_d)
-  list(w = r$w, phi = phi, theta = theta, Phi = Phi, order = m,
-       j_min = jm$j_min, var_d = var_d, toeplitz = TRUE, acf_biased = TRUE,
-       condition = r$condition,
-       method = "Rangayyan (2024) eqs. (3.168), (3.171)")
+  list(
+    w = r$w, phi = phi, theta = theta, Phi = Phi, order = m,
+    j_min = jm$j_min, var_d = var_d, toeplitz = TRUE, acf_biased = TRUE,
+    condition = r$condition,
+    method = "Rangayyan (2024) eqs. (3.168), (3.171)"
+  )
 }
 
 #' WienerFilt
@@ -437,6 +519,12 @@ Whopf <- function(x, d, order) {
 #' @param fs Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @return A list with \code{y}, \code{W}, \code{route}, \code{fs}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' s <- sin(2 * pi * (1:200) / 20)
+#' x <- s + rnorm(200) * 0.3
+#' WienerFilt(x, desired = s, order = 8)
+#' @keywords internal
 WienerFilt <- function(x, desired = NULL, order = 8, sd = NULL,
                        seta = NULL, fs = 1) {
   # The two routes to the same filter.  The time route estimates the
@@ -448,31 +536,42 @@ WienerFilt <- function(x, desired = NULL, order = 8, sd = NULL,
   if (!length(xs)) stop("need at least one sample")
   have_time <- !is.null(desired)
   have_freq <- !is.null(sd) || !is.null(seta)
-  if (have_time == have_freq)
-    stop("give either a desired signal (time-domain route, ",
-         "eqs. 3.168-3.169) or both PSDs (frequency route, eq. 3.186), ",
-         "not both and not neither")
+  if (have_time == have_freq) {
+    stop(
+      "give either a desired signal (time-domain route, ",
+      "eqs. 3.168-3.169) or both PSDs (frequency route, eq. 3.186), ",
+      "not both and not neither"
+    )
+  }
   if (have_time) {
     r <- Whopf(xs, desired, order)
     y <- WienerOut(r$w, xs)$d_hat
-    return(list(y = y, w = r$w, order = r$order, j_min = r$j_min,
-                route = "time",
-                method = "Rangayyan (2024) eqs. (3.168)-(3.169)"))
+    return(list(
+      y = y, w = r$w, order = r$order, j_min = r$j_min,
+      route = "time",
+      method = "Rangayyan (2024) eqs. (3.168)-(3.169)"
+    ))
   }
-  if (is.null(sd) || is.null(seta))
+  if (is.null(sd) || is.null(seta)) {
     stop("the frequency route needs BOTH S_d and S_eta")
+  }
   n <- length(xs)
   W <- WienerSnr(sd, seta)$W
   half <- n %/% 2L + 1L
-  if (length(W) != half)
-    stop(sprintf(paste("the PSDs need one value per one-sided DFT bin",
-                       "(%d for %d samples), got %d"), half, n, length(W)))
+  if (length(W) != half) {
+    stop(sprintf(paste(
+      "the PSDs need one value per one-sided DFT bin",
+      "(%d for %d samples), got %d"
+    ), half, n, length(W)))
+  }
   step <- 2 * pi / n
   k <- seq_len(n) - 1L
-  re <- vapply(k, function(kk)
-    .morie_fsum(xs * cos(-step * (seq_len(n) - 1L) * kk)), numeric(1))
-  im <- vapply(k, function(kk)
-    .morie_fsum(xs * sin(-step * (seq_len(n) - 1L) * kk)), numeric(1))
+  re <- vapply(k, function(kk) {
+    .morie_fsum(xs * cos(-step * (seq_len(n) - 1L) * kk))
+  }, numeric(1))
+  im <- vapply(k, function(kk) {
+    .morie_fsum(xs * sin(-step * (seq_len(n) - 1L) * kk))
+  }, numeric(1))
   g <- ifelse(k < half, W[pmin(k, half - 1L) + 1L], W[n - k + 1L])
   re <- re * g
   im <- im * g
@@ -480,8 +579,10 @@ WienerFilt <- function(x, desired = NULL, order = 8, sd = NULL,
     ang <- step * i * k
     .morie_fsum(re * cos(ang) - im * sin(ang)) / n
   }, numeric(1))
-  list(y = y, W = W, route = "frequency", fs = as.numeric(fs), n = n,
-       method = "Rangayyan (2024) eq. (3.186)")
+  list(
+    y = y, W = W, route = "frequency", fs = as.numeric(fs), n = n,
+    method = "Rangayyan (2024) eq. (3.186)"
+  )
 }
 
 # ------------------------------------------- noise canceller, 3.187-3.205
@@ -497,6 +598,10 @@ WienerFilt <- function(x, desired = NULL, order = 8, sd = NULL,
 #' @return A list with \code{x}, \code{v}, \code{m}, \code{n}, \code{correlation},
 #' \code{independent}, \code{assumption}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' AncInput(V, V)
+#' @keywords internal
 AncInput <- function(v, m) {
   # Section 3.10.1: the primary input is x = v + m.  The method needs the
   # signal and the interference statistically independent; the sample
@@ -504,8 +609,9 @@ AncInput <- function(v, m) {
   # instead of assumed.
   vs <- as.numeric(v)
   ms <- as.numeric(m)
-  if (length(vs) != length(ms))
+  if (length(vs) != length(ms)) {
     stop("signal and noise must have the same length")
+  }
   n <- length(vs)
   if (!n) stop("need at least one sample")
   mv <- .morie_fsum(vs) / n
@@ -514,15 +620,19 @@ AncInput <- function(v, m) {
   sv <- sqrt(.morie_fsum((vs - mv)^2) / n)
   sm <- sqrt(.morie_fsum((ms - mm)^2) / n)
   rho <- if (sv > 0 && sm > 0) cov / (sv * sm) else 0
-  list(x = vs + ms, v = vs, m = ms, n = n, correlation = rho,
-       independent = abs(rho) < 0.1,
-       assumption = paste("the method needs v and m statistically",
-                          "independent, and the reference correlated with",
-                          "m but not with v"),
-       method = "Rangayyan (2024) Section 3.10.1")
+  list(
+    x = vs + ms, v = vs, m = ms, n = n, correlation = rho,
+    independent = abs(rho) < 0.1,
+    assumption = paste(
+      "the method needs v and m statistically",
+      "independent, and the reference correlated with",
+      "m but not with v"
+    ),
+    method = "Rangayyan (2024) Section 3.10.1"
+  )
 }
 
-#' Eq. (3.196): e = x - y, and the ERROR is the canceller\'s output.
+#' Eq. (3.196): e = x - y, and the ERROR is the canceller's output.
 #' This
 #'
 #' is the step that surprises: the quantity being minimized is the thing
@@ -535,6 +645,10 @@ AncInput <- function(v, m) {
 #' \code{output_power}, \code{power_reduction}, \code{error_is_the_output},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' AncOut(V, V)
+#' @keywords internal
 AncOut <- function(x, y) {
   # eq. (3.196): e = x - y, and the ERROR is the canceller's output.  This
   # is the step that surprises: the quantity being minimized is the thing
@@ -542,17 +656,20 @@ AncOut <- function(x, y) {
   # leaves the signal behind in e.
   xs <- as.numeric(x)
   ys <- as.numeric(y)
-  if (length(xs) != length(ys))
+  if (length(xs) != length(ys)) {
     stop("primary input and filter output must have the same length")
+  }
   if (!length(xs)) stop("need at least one sample")
   e <- xs - ys
   px <- .morie_fsum(xs * xs)
   pe <- .morie_fsum(e * e)
-  list(e = e, v_hat = e, n = length(e), input_power = px,
-       output_power = pe,
-       power_reduction = if (px > 0) pe / px else NULL,
-       error_is_the_output = TRUE,
-       method = "Rangayyan (2024) eq. (3.196)")
+  list(
+    e = e, v_hat = e, n = length(e), input_power = px,
+    output_power = pe,
+    power_reduction = if (px > 0) pe / px else NULL,
+    error_is_the_output = TRUE,
+    method = "Rangayyan (2024) eq. (3.196)"
+  )
 }
 
 #' Eq. (3.195): the adaptive filter runs on the REFERENCE, not on the
@@ -564,22 +681,30 @@ AncOut <- function(x, y) {
 #' @return A list with \code{y}, \code{n}, \code{order}, \code{settled_from},
 #' \code{filters_the_reference}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' LmsOut(V, V)
+#' @keywords internal
 LmsOut <- function(w, r) {
   # eq. (3.195): the adaptive filter runs on the REFERENCE, not on the
   # primary input.  Filtering the primary would cancel the signal too.
   ws <- as.numeric(w)
   rs <- as.numeric(r)
-  if (!length(ws) || !length(rs))
+  if (!length(ws) || !length(rs)) {
     stop("both the tap weights and the reference need samples")
+  }
   m <- length(ws)
-  y <- vapply(seq_along(rs), function(i)
-    .morie_fsum(ws * .morie_rg_lagvec(rs, i, m)), numeric(1))
-  list(y = y, n = length(y), order = m, settled_from = m - 1L,
-       filters_the_reference = TRUE,
-       method = "Rangayyan (2024) eq. (3.195)")
+  y <- vapply(seq_along(rs), function(i) {
+    .morie_fsum(ws * .morie_rg_lagvec(rs, i, m))
+  }, numeric(1))
+  list(
+    y = y, n = length(y), order = m, settled_from = m - 1L,
+    filters_the_reference = TRUE,
+    method = "Rangayyan (2024) eq. (3.195)"
+  )
 }
 
-#' Eq. (3.200): e^2 = x^2 - 2 x r\'w + (r\'w)^2.  The expansion is
+#' Eq. (3.200): e^2 = x^2 - 2 x r'w + (r'w)^2.  The expansion is
 #' checked
 #'
 #' against the square itself.  This is the INSTANTANEOUS squared error
@@ -593,6 +718,10 @@ LmsOut <- function(w, r) {
 #' \code{max_difference}, \code{agrees}, \code{nonnegative},
 #' \code{instantaneous_not_expected}, \code{method}.
 #' @export
+#' @examples
+#' LmsSqErr(x = c(1, 2, 3, 4, 5, 6, 7, 8), rvec = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   w = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 LmsSqErr <- function(x, rvec, w) {
   # eq. (3.200): e^2 = x^2 - 2 x r'w + (r'w)^2.  The expansion is checked
   # against the square itself.  This is the INSTANTANEOUS squared error
@@ -600,19 +729,22 @@ LmsSqErr <- function(x, rvec, w) {
   # LMS, and the reason the algorithm converges only in the mean.
   rv <- as.numeric(rvec)
   ws <- as.numeric(w)
-  if (length(rv) != length(ws))
+  if (length(rv) != length(ws)) {
     stop("r(n) and w must have the same length")
+  }
   if (!length(rv)) stop("need at least one tap")
   xv <- as.numeric(x)
   rw <- .morie_fsum(rv * ws)
   expanded <- xv * xv - 2 * xv * rw + rw * rw
   e <- xv - rw
-  list(e = e, e_squared = e * e, expanded = expanded,
-       max_difference = abs(expanded - e * e),
-       agrees = abs(expanded - e * e) <= 1e-9 * (1 + abs(e * e)),
-       nonnegative = expanded >= -1e-12,
-       instantaneous_not_expected = TRUE,
-       method = "Rangayyan (2024) eq. (3.200)")
+  list(
+    e = e, e_squared = e * e, expanded = expanded,
+    max_difference = abs(expanded - e * e),
+    agrees = abs(expanded - e * e) <= 1e-9 * (1 + abs(e * e)),
+    nonnegative = expanded >= -1e-12,
+    instantaneous_not_expected = TRUE,
+    method = "Rangayyan (2024) eq. (3.200)"
+  )
 }
 
 #' Eqs. (3.201)-(3.202): the instantaneous gradient is -2 e r, so
@@ -626,25 +758,32 @@ LmsSqErr <- function(x, rvec, w) {
 #' @return A list with \code{gradient}, \code{w_next}, \code{mu}, \code{e}, \code{order},
 #' \code{equals_widrow_hoff}, \code{method}.
 #' @export
+#' @examples
+#' LmsDescent(w = c(1, 2, 3, 4, 5, 6, 7, 8), e = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   rvec = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 LmsDescent <- function(w, e, rvec, mu) {
   # eqs. (3.201)-(3.202): the instantaneous gradient is -2 e r, so
   # steepest descent gives w - mu grad, which is exactly Widrow-Hoff.
   ws <- as.numeric(w)
   rv <- as.numeric(rvec)
-  if (length(ws) != length(rv))
+  if (length(ws) != length(rv)) {
     stop("w and r(n) must have the same length")
+  }
   if (!length(ws)) stop("need at least one tap")
   ev <- as.numeric(e)
   grad <- -2 * ev * rv
-  list(gradient = grad, w_next = ws - as.numeric(mu) * grad,
-       mu = as.numeric(mu), e = ev, order = length(ws),
-       equals_widrow_hoff = TRUE,
-       method = "Rangayyan (2024) eqs. (3.201)-(3.202)")
+  list(
+    gradient = grad, w_next = ws - as.numeric(mu) * grad,
+    mu = as.numeric(mu), e = ev, order = length(ws),
+    equals_widrow_hoff = TRUE,
+    method = "Rangayyan (2024) eqs. (3.201)-(3.202)"
+  )
 }
 
 #' Eq. (3.203): w(n+1) = w(n) + 2 mu e(n) r(n).  The factor of two is in
 #'
-#' the book\'s equation and is kept; folding it into mu silently halves
+#' the book's equation and is kept; folding it into mu silently halves
 #' every step size a reader transcribes from the text.  The stability
 #' bound 0 < mu < 1/lambda_max is reported against the input power.
 #'
@@ -656,6 +795,10 @@ LmsDescent <- function(w, e, rvec, mu) {
 #' \code{factor_of_two_is_in_the_equation}, \code{stable_bound}, \code{within_bound},
 #' \code{method}.
 #' @export
+#' @examples
+#' WidrowHoff(w = c(1, 2, 3, 4, 5, 6, 7, 8), e = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   rvec = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 WidrowHoff <- function(w, e, rvec, mu) {
   # eq. (3.203): w(n+1) = w(n) + 2 mu e(n) r(n).  The factor of two is in
   # the book's equation and is kept; folding it into mu silently halves
@@ -663,17 +806,20 @@ WidrowHoff <- function(w, e, rvec, mu) {
   # bound 0 < mu < 1/lambda_max is reported against the input power.
   ws <- as.numeric(w)
   rv <- as.numeric(rvec)
-  if (length(ws) != length(rv))
+  if (length(ws) != length(rv)) {
     stop("w and r(n) must have the same length")
+  }
   if (!length(ws)) stop("need at least one tap")
   mv <- as.numeric(mu)
   ev <- as.numeric(e)
   power <- .morie_fsum(rv * rv)
   bound <- if (power > 0) 1 / power else Inf
-  list(w_next = ws + 2 * mv * ev * rv, mu = mv, e = ev, order = length(ws),
-       factor_of_two_is_in_the_equation = TRUE,
-       stable_bound = bound, within_bound = mv < bound,
-       method = "Rangayyan (2024) eq. (3.203)")
+  list(
+    w_next = ws + 2 * mv * ev * rv, mu = mv, e = ev, order = length(ws),
+    factor_of_two_is_in_the_equation = TRUE,
+    stable_bound = bound, within_bound = mv < bound,
+    method = "Rangayyan (2024) eq. (3.203)"
+  )
 }
 
 #' Eq. (3.204): eq. (3.203) with a step size that changes each sample
@@ -689,18 +835,25 @@ WidrowHoff <- function(w, e, rvec, mu) {
 #' @return A list with \code{w_next}, \code{mu}, \code{e}, \code{order},
 #' \code{time_varying}, \code{method}.
 #' @export
+#' @examples
+#' LmsVarStep(w = c(1, 2, 3, 4, 5, 6, 7, 8), e = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   rvec = c(1, 2, 3, 4, 5, 6, 7, 8), mu_n = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 LmsVarStep <- function(w, e, rvec, mu_n) {
   # eq. (3.204): eq. (3.203) with a step size that changes each sample.
   ws <- as.numeric(w)
   rv <- as.numeric(rvec)
-  if (length(ws) != length(rv))
+  if (length(ws) != length(rv)) {
     stop("w and r(n) must have the same length")
+  }
   if (!length(ws)) stop("need at least one tap")
   mv <- as.numeric(mu_n)
   ev <- as.numeric(e)
-  list(w_next = ws + 2 * mv * ev * rv, mu = mv, e = ev,
-       order = length(ws), time_varying = TRUE,
-       method = "Rangayyan (2024) eq. (3.204)")
+  list(
+    w_next = ws + 2 * mv * ev * rv, mu = mv, e = ev,
+    order = length(ws), time_varying = TRUE,
+    method = "Rangayyan (2024) eq. (3.204)"
+  )
 }
 
 #' Eq. (3.205), after Zhang et al.: mu(n) = mu / ((M+1) xbar^2(n)) with
@@ -708,7 +861,7 @@ LmsVarStep <- function(w, e, rvec, mu_n) {
 #' xbar^2(n) = alpha r^2(n) + (1-alpha) xbar^2(n-1).  Normalizing by the
 #' running power is what makes the step scale-free, so one mu works
 #' across a record whose amplitude varies by an order of magnitude --
-#' the book\'s motivation for VAG signals.  alpha must be small: near 1
+#' the book's motivation for VAG signals.  alpha must be small: near 1
 #' it tracks the instantaneous sample and reintroduces the very jitter
 #' the averaging removes, so a value above 0.5 is refused.
 #'
@@ -721,6 +874,9 @@ LmsVarStep <- function(w, e, rvec, mu_n) {
 #' @return A list with \code{mu}, \code{power}, \code{power_prev}, \code{alpha},
 #' \code{order}, \code{base_mu}, \code{method}.
 #' @export
+#' @examples
+#' LmsZhang(0.5, 4, 2, alpha = 0.02)
+#' @keywords internal
 LmsZhang <- function(mu, order, r, alpha = 0.02, power_prev = NULL) {
   # eq. (3.205), after Zhang et al.: mu(n) = mu / ((M+1) xbar^2(n)) with
   # xbar^2(n) = alpha r^2(n) + (1-alpha) xbar^2(n-1).  Normalizing by the
@@ -734,17 +890,23 @@ LmsZhang <- function(mu, order, r, alpha = 0.02, power_prev = NULL) {
   mv <- as.numeric(mu)
   if (!(mv > 0 && mv < 1)) stop("eq. (3.205) needs 0 < mu < 1")
   av <- as.numeric(alpha)
-  if (!(av >= 0 && av <= 0.5))
-    stop("the book writes 0 <= alpha << 1; alpha above 0.5 tracks the ",
-         "instantaneous sample instead of averaging, got ", av)
+  if (!(av >= 0 && av <= 0.5)) {
+    stop(
+      "the book writes 0 <= alpha << 1; alpha above 0.5 tracks the ",
+      "instantaneous sample instead of averaging, got ", av
+    )
+  }
   rv <- as.numeric(r)
   prev <- if (is.null(power_prev)) rv * rv else as.numeric(power_prev)
   power <- av * rv * rv + (1 - av) * prev
-  if (power <= 0)
+  if (power <= 0) {
     stop("the running power estimate vanished; mu(n) is unbounded")
-  list(mu = mv / ((m + 1) * power), power = power, power_prev = prev,
-       alpha = av, order = m, base_mu = mv,
-       method = "Rangayyan (2024) eq. (3.205), after Zhang et al.")
+  }
+  list(
+    mu = mv / ((m + 1) * power), power = power, power_prev = prev,
+    alpha = av, order = m, base_mu = mv,
+    method = "Rangayyan (2024) eq. (3.205), after Zhang et al."
+  )
 }
 
 #' LmsFilt
@@ -764,6 +926,15 @@ LmsZhang <- function(mu, order, r, alpha = 0.02, power_prev = NULL) {
 #' \code{stable_bound}, \code{within_bound}, \code{input_power}, \code{output_power},
 #' \code{power_reduction}, \code{converges_in_the_mean_only}, \code{method}.
 #' @export
+#' @examples
+#' sine_a <- function(n, cycles, amp = 1, phase = 0) amp * sin(2 *
+#'     pi * cycles * (0:(n - 1))/n + phase)
+#' n <- 400
+#' v <- sine_a(256, 3)
+#' ref <- sine_a(n, 61)
+#' Anc(v + 0.8 * ref, ref, order = 4, mu = 0.005)
+#' LmsFilt(primary = ref, reference = ref)
+#' @keywords internal
 LmsFilt <- function(primary, reference, order = 8, mu = 0.01,
                     variable = FALSE, alpha = 0.02) {
   # Section 3.10.2: run the canceller, eqs. (3.195)-(3.196), (3.203).
@@ -772,8 +943,9 @@ LmsFilt <- function(primary, reference, order = 8, mu = 0.01,
   # final_weights is one sample of that jitter and not a converged answer.
   xs <- as.numeric(primary)
   rs <- as.numeric(reference)
-  if (length(xs) != length(rs))
+  if (length(xs) != length(rs)) {
     stop("primary and reference must have the same length")
+  }
   m <- as.integer(order)
   if (m < 1L) stop("order must be at least 1")
   n <- length(xs)
@@ -794,8 +966,10 @@ LmsFilt <- function(primary, reference, order = 8, mu = 0.01,
     yi <- .morie_fsum(w * rv)
     ei <- xs[i] - yi
     if (variable) {
-      step <- LmsZhang(min(mv, 0.999), m, rs[i], alpha = alpha,
-                       power_prev = power_prev)
+      step <- LmsZhang(min(mv, 0.999), m, rs[i],
+        alpha = alpha,
+        power_prev = power_prev
+      )
       power_prev <- step$power
       mu_i <- step$mu
     } else {
@@ -808,14 +982,16 @@ LmsFilt <- function(primary, reference, order = 8, mu = 0.01,
   }
   px <- .morie_fsum(xs * xs)
   pe <- .morie_fsum(e * e)
-  list(e = e, output = e, y = y, final_weights = w, order = m, mu = mv,
-       variable_step = isTRUE(variable),
-       step_history = if (variable) hist else NULL,
-       stable_bound = bound, within_bound = mv < bound,
-       input_power = px, output_power = pe,
-       power_reduction = if (px > 0) pe / px else NULL,
-       converges_in_the_mean_only = TRUE,
-       method = "Rangayyan (2024) Section 3.10.2, eq. (3.203)")
+  list(
+    e = e, output = e, y = y, final_weights = w, order = m, mu = mv,
+    variable_step = isTRUE(variable),
+    step_history = if (variable) hist else NULL,
+    stable_bound = bound, within_bound = mv < bound,
+    input_power = px, output_power = pe,
+    power_reduction = if (px > 0) pe / px else NULL,
+    converges_in_the_mean_only = TRUE,
+    method = "Rangayyan (2024) Section 3.10.2, eq. (3.203)"
+  )
 }
 
 # --------------------------------------------------------- RLS, 3.206-3.225
@@ -830,6 +1006,9 @@ LmsFilt <- function(primary, reference, order = 8, mu = 0.01,
 #' @return A list with \code{xi}, \code{weights}, \code{lam}, \code{n}, \code{memory},
 #' \code{growing_window}, \code{method}.
 #' @export
+#' @examples
+#' RlsObj(c(1, 1, 1), 0.5)
+#' @keywords internal
 RlsObj <- function(errors, lam) {
   # eq. (3.206): xi = sum lambda^(n-i) e^2(i).  lambda < 1 discounts old
   # errors, giving an effective memory of 1/(1-lambda) samples; lambda = 1
@@ -840,10 +1019,12 @@ RlsObj <- function(errors, lam) {
   if (!(lv > 0 && lv <= 1)) stop("eq. (3.206) needs 0 < lambda <= 1")
   n <- length(e)
   weights <- lv^(n - seq_len(n))
-  list(xi = .morie_fsum(weights * e * e), weights = weights, lam = lv,
-       n = n, memory = if (lv < 1) 1 / (1 - lv) else Inf,
-       growing_window = lv == 1,
-       method = "Rangayyan (2024) eq. (3.206)")
+  list(
+    xi = .morie_fsum(weights * e * e), weights = weights, lam = lv,
+    n = n, memory = if (lv < 1) 1 / (1 - lv) else Inf,
+    growing_window = lv == 1,
+    method = "Rangayyan (2024) eq. (3.206)"
+  )
 }
 
 #' Eq. (3.207): the same form as Wiener-Hopf, but with time-averaged and
@@ -855,6 +1036,9 @@ RlsObj <- function(errors, lam) {
 #' @param theta Passed to \code{WienerHopf}.
 #' @return The value of \code{r}, as built in the body.
 #' @export
+#' @examples
+#' RlsNormal(phi = 0.5, theta = 0.5)
+#' @keywords internal
 RlsNormal <- function(phi, theta) {
   # eq. (3.207): the same form as Wiener-Hopf, but with time-averaged and
   # exponentially weighted correlations.  Solving it outright each sample
@@ -881,6 +1065,10 @@ RlsNormal <- function(phi, theta) {
 #' @return A list with \code{direct}, \code{lemma}, \code{max_difference}, \code{holds},
 #' \code{n}, \code{k}, \code{scalar_when_k_is_one}, \code{method}.
 #' @export
+#' @examples
+#' AbcdLemma(matrix(c(4, 1, 1, 3), 2, 2), matrix(c(1, 2), 2, 1),
+#'     matrix(1, 1, 1), matrix(c(1, 2), 1, 2))
+#' @keywords internal
 AbcdLemma <- function(A, B, C, D) {
   # eq. (3.213), the matrix inversion lemma:
   #   (A + B C D)^-1 = A^-1 - A^-1 B (D A^-1 B + C^-1)^-1 D A^-1.
@@ -909,10 +1097,12 @@ AbcdLemma <- function(A, B, C, D) {
   gap <- max(abs(direct - lemma))
   scale <- max(abs(direct))
   if (!scale) scale <- 1
-  list(direct = direct, lemma = lemma, max_difference = gap,
-       holds = gap <= 1e-6 * scale, n = n, k = k,
-       scalar_when_k_is_one = k == 1L,
-       method = "Rangayyan (2024) eq. (3.213)")
+  list(
+    direct = direct, lemma = lemma, max_difference = gap,
+    holds = gap <= 1e-6 * scale, n = n, k = k,
+    scalar_when_k_is_one = k == 1L,
+    method = "Rangayyan (2024) eq. (3.213)"
+  )
 }
 
 #' Eq. (3.224): w(n) = w(n-1) + k(n) alpha(n)
@@ -927,6 +1117,9 @@ AbcdLemma <- function(A, B, C, D) {
 #' @return A list with \code{w_next}, \code{correction}, \code{alpha}, \code{order},
 #' \code{sign}, \code{erratum}, \code{method}.
 #' @export
+#' @examples
+#' RlsUpdate(w_prev = 5L, k = 5L, alpha = 0.5)
+#' @keywords internal
 RlsUpdate <- function(w_prev, k, alpha) {
   # eq. (3.224): w(n) = w(n-1) + k(n) alpha(n).
   #
@@ -939,15 +1132,19 @@ RlsUpdate <- function(w_prev, k, alpha) {
   if (length(ws) != length(kv)) stop("w and k must have the same length")
   if (!length(ws)) stop("need at least one tap")
   a <- as.numeric(alpha)
-  list(w_next = ws + kv * a, correction = kv * a, alpha = a,
-       order = length(ws), sign = "+",
-       erratum = paste("eq. (3.224) line 1 prints a minus sign that",
-                       "contradicts its own line 2 and eq. (3.225); the",
-                       "plus form is correct"),
-       method = "Rangayyan (2024) eq. (3.224)")
+  list(
+    w_next = ws + kv * a, correction = kv * a, alpha = a,
+    order = length(ws), sign = "+",
+    erratum = paste(
+      "eq. (3.224) line 1 prints a minus sign that",
+      "contradicts its own line 2 and eq. (3.225); the",
+      "plus form is correct"
+    ),
+    method = "Rangayyan (2024) eq. (3.224)"
+  )
 }
 
-#' Eq. (3.225): alpha(n) = x(n) - w\'(n-1) r(n).  The A PRIORI error,
+#' Eq. (3.225): alpha(n) = x(n) - w'(n-1) r(n).  The A PRIORI error,
 #' made
 #'
 #' with the PREVIOUS weights.  Using the updated weights gives the a
@@ -960,6 +1157,10 @@ RlsUpdate <- function(w_prev, k, alpha) {
 #' @return A list with \code{alpha}, \code{prediction}, \code{order},
 #' \code{uses_previous_weights}, \code{not_the_a_posteriori_error}, \code{method}.
 #' @export
+#' @examples
+#' RlsApriori(x = c(1, 2, 3, 4, 5, 6, 7, 8), rvec = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   w_prev = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 RlsApriori <- function(x, rvec, w_prev) {
   # eq. (3.225): alpha(n) = x(n) - w'(n-1) r(n).  The A PRIORI error, made
   # with the PREVIOUS weights.  Using the updated weights gives the a
@@ -967,13 +1168,16 @@ RlsApriori <- function(x, rvec, w_prev) {
   # recursion is not valid with it.
   rv <- as.numeric(rvec)
   ws <- as.numeric(w_prev)
-  if (length(rv) != length(ws))
+  if (length(rv) != length(ws)) {
     stop("r(n) and w must have the same length")
+  }
   if (!length(rv)) stop("need at least one tap")
   pred <- .morie_fsum(rv * ws)
-  list(alpha = as.numeric(x) - pred, prediction = pred, order = length(rv),
-       uses_previous_weights = TRUE, not_the_a_posteriori_error = TRUE,
-       method = "Rangayyan (2024) eq. (3.225)")
+  list(
+    alpha = as.numeric(x) - pred, prediction = pred, order = length(rv),
+    uses_previous_weights = TRUE, not_the_a_posteriori_error = TRUE,
+    method = "Rangayyan (2024) eq. (3.225)"
+  )
 }
 
 #' Section 3.10.3, eqs. (3.215), (3.221), (3.224)-(3.225).  P is
@@ -993,6 +1197,15 @@ RlsApriori <- function(x, rvec, w_prev) {
 #' \code{p_symmetrized}, \code{input_power}, \code{output_power}, \code{power_reduction},
 #' \code{method}.
 #' @export
+#' @examples
+#' sine_a <- function(n, cycles, amp = 1, phase = 0) amp * sin(2 *
+#'     pi * cycles * (0:(n - 1))/n + phase)
+#' n <- 400
+#' v <- sine_a(256, 3)
+#' ref <- sine_a(n, 61)
+#' Anc(v + 0.8 * ref, ref, order = 4, mu = 0.005)
+#' RlsFilt(primary = ref, reference = ref)
+#' @keywords internal
 RlsFilt <- function(primary, reference, order = 8, lam = 0.98, delta = 1) {
   # Section 3.10.3, eqs. (3.215), (3.221), (3.224)-(3.225).  P is
   # symmetrized every sample: in exact arithmetic the update preserves
@@ -1001,8 +1214,9 @@ RlsFilt <- function(primary, reference, order = 8, lam = 0.98, delta = 1) {
   # that drift is returned rather than hidden.
   xs <- as.numeric(primary)
   rs <- as.numeric(reference)
-  if (length(xs) != length(rs))
+  if (length(xs) != length(rs)) {
     stop("primary and reference must have the same length")
+  }
   m <- as.integer(order)
   if (m < 1L) stop("order must be at least 1")
   n <- length(xs)
@@ -1022,12 +1236,17 @@ RlsFilt <- function(primary, reference, order = 8, lam = 0.98, delta = 1) {
     alpha <- xs[i] - pred
     # compensated, to match the Python arm bit for bit: with a plain
     # BLAS product the two arms drift apart once P is ill conditioned
-    Pr <- vapply(seq_len(m), function(a) .morie_fsum(P[a, ] * rv),
-                 numeric(1))
+    Pr <- vapply(
+      seq_len(m), function(a) .morie_fsum(P[a, ] * rv),
+      numeric(1)
+    )
     den <- lv + .morie_fsum(rv * Pr)
-    if (den <= 0)
-      stop("the RLS denominator vanished at sample ", i,
-           "; P has lost positive definiteness")
+    if (den <= 0) {
+      stop(
+        "the RLS denominator vanished at sample ", i,
+        "; P has lost positive definiteness"
+      )
+    }
     kg <- Pr / den
     newP <- (P - outer(kg, Pr)) / lv
     asym <- max(asym, max(abs(newP - t(newP))))
@@ -1038,20 +1257,24 @@ RlsFilt <- function(primary, reference, order = 8, lam = 0.98, delta = 1) {
   }
   px <- .morie_fsum(xs * xs)
   pe <- .morie_fsum(e * e)
-  list(e = e, output = e, y = y, final_weights = w, P = P, order = m,
-       lam = lv, delta = dv,
-       memory = if (lv < 1) 1 / (1 - lv) else Inf,
-       p_symmetry_error = asym, p_symmetrized = TRUE,
-       input_power = px, output_power = pe,
-       power_reduction = if (px > 0) pe / px else NULL,
-       method = paste("Rangayyan (2024) Section 3.10.3, eqs. (3.215),",
-                      "(3.221), (3.224)-(3.225)"))
+  list(
+    e = e, output = e, y = y, final_weights = w, P = P, order = m,
+    lam = lv, delta = dv,
+    memory = if (lv < 1) 1 / (1 - lv) else Inf,
+    p_symmetry_error = asym, p_symmetrized = TRUE,
+    input_power = px, output_power = pe,
+    power_reduction = if (px > 0) pe / px else NULL,
+    method = paste(
+      "Rangayyan (2024) Section 3.10.3, eqs. (3.215),",
+      "(3.221), (3.224)-(3.225)"
+    )
+  )
 }
 
 #' Section 8.6.2.  Every stage is itself a predictor, so one run gives
 #'
 #' the fit at EVERY order up to the one requested -- an order need not
-#' be chosen in advance, which is the lattice\'s advantage over the
+#' be chosen in advance, which is the lattice's advantage over the
 #' direct form.  |gamma| < 1 at every stage is the stability condition,
 #' the same one as eq. (7.39).
 #'
@@ -1063,6 +1286,10 @@ RlsFilt <- function(primary, reference, order = 8, lam = 0.98, delta = 1) {
 #' \code{all_orders_forward}, \code{order}, \code{lam}, \code{stable},
 #' \code{every_stage_is_a_predictor}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' RlsLattice(V)
+#' @keywords internal
 RlsLattice <- function(x, order = 4, lam = 0.98, delta = 0.01) {
   # Section 8.6.2.  Every stage is itself a predictor, so one run gives
   # the fit at EVERY order up to the one requested -- an order need not be
@@ -1105,12 +1332,16 @@ RlsLattice <- function(x, order = 4, lam = 0.98, delta = 0.01) {
     bprev <- b
   }
   refl <- gam[-1]
-  list(reflection = refl, forward_error = ferr[, m + 1L],
-       backward_error = berr[, m + 1L], all_orders_forward = ferr,
-       order = m, lam = lv, stable = all(abs(refl) < 1),
-       every_stage_is_a_predictor = TRUE,
-       method = paste("RLS lattice; the |gamma| < 1 stability condition",
-                      "is the same as Rangayyan (2024) eq. (7.39)"))
+  list(
+    reflection = refl, forward_error = ferr[, m + 1L],
+    backward_error = berr[, m + 1L], all_orders_forward = ferr,
+    order = m, lam = lv, stable = all(abs(refl) < 1),
+    every_stage_is_a_predictor = TRUE,
+    method = paste(
+      "RLS lattice; the |gamma| < 1 stability condition",
+      "is the same as Rangayyan (2024) eq. (7.39)"
+    )
+  )
 }
 
 #' RlsMonitor
@@ -1133,6 +1364,15 @@ RlsLattice <- function(x, order = 4, lam = 0.98, delta = 0.01) {
 #' \code{n_boundaries}, \code{threshold}, \code{baseline}, \code{baseline_sd},
 #' \code{settle}, \code{window}, \code{order}, \code{transient_excluded}, \code{method}.
 #' @export
+#' @examples
+#' sine_a <- function(n, cycles, amp = 1, phase = 0) amp * sin(2 *
+#'     pi * cycles * (0:(n - 1))/n + phase)
+#' n <- 400
+#' v <- sine_a(256, 3)
+#' ref <- sine_a(n, 61)
+#' Anc(v + 0.8 * ref, ref, order = 4, mu = 0.005)
+#' RlsMonitor(x = ref)
+#' @keywords internal
 RlsMonitor <- function(x, reference = NULL, order = 8, lam = 0.98,
                        settle = NULL, threshold = 3, window = NULL) {
   # Section 8.6.1: watch the RLS error power and mark a boundary where it
@@ -1147,8 +1387,9 @@ RlsMonitor <- function(x, reference = NULL, order = 8, lam = 0.98,
   r <- RlsFilt(xs, ref, order = m, lam = lam)
   e <- r$e
   s <- if (is.null(settle)) min(n %/% 4L, 10L * m) else as.integer(settle)
-  if (s >= n - m)
+  if (s >= n - m) {
     stop("the settling period leaves no samples to monitor")
+  }
   w <- if (is.null(window)) max(m, (n - s) %/% 20L) else as.integer(window)
   if (w < 1L) stop("the window must hold at least one sample")
   power <- vapply(seq_len(n), function(i) {
@@ -1167,13 +1408,17 @@ RlsMonitor <- function(x, reference = NULL, order = 8, lam = 0.98,
       while (j < n && power[j + 1L] > thr) j <- j + 1L
       hits <- c(hits, (i:j)[which.max(power[i:j])] - 1L)
       i <- j + 1L
-    } else i <- i + 1L
+    } else {
+      i <- i + 1L
+    }
   }
-  list(error = e, error_power = power, boundaries = hits,
-       n_boundaries = length(hits), threshold = thr, baseline = mu,
-       baseline_sd = sdv, settle = s, window = w, order = m,
-       transient_excluded = TRUE,
-       method = "Rangayyan (2024) Section 8.5 (adaptive segmentation)")
+  list(
+    error = e, error_power = power, boundaries = hits,
+    n_boundaries = length(hits), threshold = thr, baseline = mu,
+    baseline_sd = sdv, settle = s, window = w, order = m,
+    transient_excluded = TRUE,
+    method = "Rangayyan (2024) Section 8.5 (adaptive segmentation)"
+  )
 }
 
 # ------------------------------------------------------ Kalman and Riccati
@@ -1197,6 +1442,14 @@ RlsMonitor <- function(x, reference = NULL, order = 8, lam = 0.98,
 #' \code{innovations}, \code{n}, \code{state_dim}, \code{obs_dim},
 #' \code{p_symmetry_error}, \code{p_symmetrized}, \code{joseph_form}, \code{method}.
 #' @export
+#' @examples
+#' F <- matrix(0.9)
+#' H <- matrix(1)
+#' Q <- matrix(0.1)
+#' R <- matrix(1)
+#' Riccati(F, H, Q, R)
+#' Kalman(z = F, F = F, H = H, Q = Q, R = R)
+#' @keywords internal
 Kalman <- function(z, F, H, Q, R, x0 = NULL, P0 = NULL) {
   # The recursive counterpart of the Wiener filter: it tracks a state
   # through a model instead of filtering a stationary record.  P is
@@ -1210,8 +1463,9 @@ Kalman <- function(z, F, H, Q, R, x0 = NULL, P0 = NULL) {
   Rm <- as.matrix(R)
   ns <- nrow(Fm)
   p <- nrow(Hm)
-  if (ncol(Fm) != ns || ncol(Hm) != ns)
+  if (ncol(Fm) != ns || ncol(Hm) != ns) {
     stop("F must be n x n and H must be p x n")
+  }
   if (nrow(Qm) != ns || ncol(Qm) != ns) stop("Q must be n x n")
   if (nrow(Rm) != p || ncol(Rm) != p) stop("R must be p x p")
   x <- if (is.null(x0)) numeric(ns) else as.numeric(x0)
@@ -1224,8 +1478,9 @@ Kalman <- function(z, F, H, Q, R, x0 = NULL, P0 = NULL) {
   asym <- 0
   for (t in seq_along(zl)) {
     zv <- as.numeric(zl[[t]])
-    if (length(zv) != p)
+    if (length(zv) != p) {
       stop("every measurement must have length ", p)
+    }
     xp <- as.numeric(Fm %*% x)
     Pp <- Fm %*% P %*% t(Fm) + Qm
     S <- Hm %*% Pp %*% t(Hm) + Rm
@@ -1240,12 +1495,16 @@ Kalman <- function(z, F, H, Q, R, x0 = NULL, P0 = NULL) {
     gains[[t]] <- K
     innov[[t]] <- y
   }
-  list(states = states, covariances = covs, gains = gains,
-       innovations = innov, n = length(states), state_dim = ns,
-       obs_dim = p, p_symmetry_error = asym, p_symmetrized = TRUE,
-       joseph_form = FALSE,
-       method = paste("Kalman (1960); the recursive counterpart of the",
-                      "Wiener filter of Rangayyan (2024) Section 3.9"))
+  list(
+    states = states, covariances = covs, gains = gains,
+    innovations = innov, n = length(states), state_dim = ns,
+    obs_dim = p, p_symmetry_error = asym, p_symmetrized = TRUE,
+    joseph_form = FALSE,
+    method = paste(
+      "Kalman (1960); the recursive counterpart of the",
+      "Wiener filter of Rangayyan (2024) Section 3.9"
+    )
+  )
 }
 
 #' The fixed point of the Kalman covariance recursion.  Once P settles
@@ -1266,6 +1525,13 @@ Kalman <- function(z, F, H, Q, R, x0 = NULL, P0 = NULL) {
 #' @return A list with \code{P}, \code{K}, \code{iterations}, \code{change},
 #' \code{converged}, \code{n}, \code{steady_state_is_the_wiener_solution}, \code{method}.
 #' @export
+#' @examples
+#' F <- matrix(0.9)
+#' H <- matrix(1)
+#' Q <- matrix(0.1)
+#' R <- matrix(1)
+#' Riccati(F, H, Q, R)
+#' @keywords internal
 Riccati <- function(F, H, Q, R, maxiter = 1000L, tol = 1e-12) {
   # The fixed point of the Kalman covariance recursion.  Once P settles
   # the gain is constant and the filter is a fixed linear filter -- which
@@ -1296,11 +1562,15 @@ Riccati <- function(F, H, Q, R, maxiter = 1000L, tol = 1e-12) {
   }
   S <- Hm %*% P %*% t(Hm) + Rm
   K <- P %*% t(Hm) %*% solve(S)
-  list(P = P, K = K, iterations = it, change = change,
-       converged = change < tol, n = n,
-       steady_state_is_the_wiener_solution = TRUE,
-       method = paste("discrete algebraic Riccati equation; the fixed",
-                      "point of the Kalman covariance recursion"))
+  list(
+    P = P, K = K, iterations = it, change = change,
+    converged = change < tol, n = n,
+    steady_state_is_the_wiener_solution = TRUE,
+    method = paste(
+      "discrete algebraic Riccati equation; the fixed",
+      "point of the Kalman covariance recursion"
+    )
+  )
 }
 
 # ------------------------------------------------- segmentation, 8.27-8.29
@@ -1318,6 +1588,10 @@ Riccati <- function(F, H, Q, R, maxiter = 1000L, tol = 1e-12) {
 #' \code{mean_offset}, \code{shape_only}, \code{gain_change_only}, \code{zero_bins},
 #' \code{scale_free}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Sem(V, V)
+#' @keywords internal
 Sem <- function(psd, reference) {
   # Section 8.5.1, the spectral error measure: the mean squared difference
   # of the LOG spectra.  Taking logs is what makes it scale-free -- a pure
@@ -1325,8 +1599,9 @@ Sem <- function(psd, reference) {
   # entirely in mean_offset and leaves shape_only at zero.
   a <- as.numeric(psd)
   b <- as.numeric(reference)
-  if (length(a) != length(b))
+  if (length(a) != length(b)) {
     stop("the two PSDs must have the same length")
+  }
   if (!length(a)) stop("need at least one bin")
   if (any(a < 0) || any(b < 0)) stop("a PSD cannot be negative")
   floor_v <- 1e-300
@@ -1335,11 +1610,13 @@ Sem <- function(psd, reference) {
   value <- .morie_fsum(d * d) / length(d)
   offset <- .morie_fsum(d) / length(d)
   shape <- .morie_fsum((d - offset)^2) / length(d)
-  list(sem = value, log_difference = d, n_bins = length(d),
-       mean_offset = offset, shape_only = shape,
-       gain_change_only = abs(value - offset * offset) < 1e-9,
-       zero_bins = zeros, scale_free = TRUE,
-       method = "Rangayyan (2024) Section 8.5 (spectral error measure)")
+  list(
+    sem = value, log_difference = d, n_bins = length(d),
+    mean_offset = offset, shape_only = shape,
+    gain_change_only = abs(value - offset * offset) < 1e-9,
+    zero_bins = zeros, scale_free = TRUE,
+    method = "Rangayyan (2024) Section 8.5 (spectral error measure)"
+  )
 }
 
 #' Section 8.5.2, eqs. (8.27)-(8.29), after Michael and Houchin
@@ -1358,6 +1635,10 @@ Sem <- function(psd, reference) {
 #' \code{power_test}, \code{power_reference}, \code{boundary}, \code{th_power},
 #' \code{th_spectral}, \code{amplitude_invariant}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Acfseg(V, V)
+#' @keywords internal
 Acfseg <- function(test, reference, lags = NULL, thp = 1, thf = 1) {
   # Section 8.5.2, eqs. (8.27)-(8.29), after Michael and Houchin.
   #
@@ -1377,8 +1658,9 @@ Acfseg <- function(test, reference, lags = NULL, thp = 1, thf = 1) {
   # shape, d_F when the shape changes at the same power.
   a <- as.numeric(test)
   b <- as.numeric(reference)
-  if (length(a) < 2L || length(b) < 2L)
+  if (length(a) < 2L || length(b) < 2L) {
     stop("each window needs at least two samples")
+  }
   if (as.numeric(thp) <= 0) stop("Th_P must be positive")
   if (as.numeric(thf) <= 0) stop("Th_F must be positive")
   nmax <- min(length(a), length(b))
@@ -1395,12 +1677,16 @@ Acfseg <- function(test, reference, lags = NULL, thp = 1, thf = 1) {
   } else {
     q <- as.integer(lags)
     if (q < 1L) stop("need at least one lag")
-    if (q > auto)
-      stop("eq. (8.28) needs the ACFs nonnegative out to lag q; they turn ",
-           "negative at lag ", auto + 1L)
+    if (q > auto) {
+      stop(
+        "eq. (8.28) needs the ACFs nonnegative out to lag q; they turn ",
+        "negative at lag ", auto + 1L
+      )
+    }
   }
-  if (q < 1L)
+  if (q < 1L) {
     stop("both ACFs turn negative at lag 1; no lags to compare")
+  }
   st <- sqrt(rt[1])
   sr <- sqrt(rr[1])
   dp <- abs(st - sr) / min(st, sr)
@@ -1409,14 +1695,18 @@ Acfseg <- function(test, reference, lags = NULL, thp = 1, thf = 1) {
   den <- 0.5 + .morie_fsum(pmin(sqrt(rt[k]), sqrt(rr[k])))
   df <- num / den
   d <- dp / as.numeric(thp) + df / as.numeric(thf)
-  list(distance = d, power_distance = dp, spectral_distance = df,
-       lags = q, lags_auto = is.null(lags), acf_test = rt[seq_len(q + 1L)],
-       acf_reference = rr[seq_len(q + 1L)], power_test = rt[1],
-       power_reference = rr[1], boundary = d > 1,
-       th_power = as.numeric(thp), th_spectral = as.numeric(thf),
-       amplitude_invariant = FALSE,
-       method = paste("Rangayyan (2024) eqs. (8.27)-(8.29), after Michael",
-                      "and Houchin"))
+  list(
+    distance = d, power_distance = dp, spectral_distance = df,
+    lags = q, lags_auto = is.null(lags), acf_test = rt[seq_len(q + 1L)],
+    acf_reference = rr[seq_len(q + 1L)], power_test = rt[1],
+    power_reference = rr[1], boundary = d > 1,
+    th_power = as.numeric(thp), th_spectral = as.numeric(thf),
+    amplitude_invariant = FALSE,
+    method = paste(
+      "Rangayyan (2024) eqs. (8.27)-(8.29), after Michael",
+      "and Houchin"
+    )
+  )
 }
 
 #' PcgSeg
@@ -1438,6 +1728,15 @@ Acfseg <- function(test, reference, lags = NULL, thp = 1, thf = 1) {
 #' \code{window}, \code{step}, \code{order}, \code{fs},
 #' \code{reference_restarted_at_boundaries}, \code{robust_threshold}, \code{method}.
 #' @export
+#' @examples
+#' sine_a <- function(n, cycles, amp = 1, phase = 0) amp * sin(2 *
+#'     pi * cycles * (0:(n - 1))/n + phase)
+#' n <- 400
+#' v <- sine_a(256, 3)
+#' ref <- sine_a(n, 61)
+#' Anc(v + 0.8 * ref, ref, order = 4, mu = 0.005)
+#' PcgSeg(x = ref, fs = n)
+#' @keywords internal
 PcgSeg <- function(x, fs, window = NULL, step = NULL, order = 6,
                    threshold = NULL) {
   # Section 8.5: adaptive segmentation of the PCG by the spectral error
@@ -1451,8 +1750,11 @@ PcgSeg <- function(x, fs, window = NULL, step = NULL, order = 6,
   fsv <- as.numeric(fs)
   if (fsv <= 0) stop("fs must be positive")
   n <- length(xs)
-  w <- if (is.null(window)) max(32L, as.integer(0.05 * fsv))
-       else as.integer(window)
+  w <- if (is.null(window)) {
+    max(32L, as.integer(0.05 * fsv))
+  } else {
+    as.integer(window)
+  }
   if (w > n) stop("the window is longer than the record")
   hop <- if (is.null(step)) w %/% 2L else as.integer(step)
   if (hop < 1L) stop("step must be at least one sample")
@@ -1460,12 +1762,17 @@ PcgSeg <- function(x, fs, window = NULL, step = NULL, order = 6,
   if (w <= p) stop("the window must hold more samples than the order")
   spectrum <- function(seg) {
     acf <- .morie_rg_acf(seg, p + 1L)
-    if (acf[1] <= 0) return(NULL)
+    if (acf[1] <= 0) {
+      return(NULL)
+    }
     idx <- outer(seq_len(p), seq_len(p), function(i, j) abs(i - j) + 1L)
     Phi <- matrix(acf[idx], p, p)
     a <- tryCatch(.morie_rg_solve(Phi, -acf[seq_len(p) + 1L]),
-                  error = function(e) NULL)
-    if (is.null(a)) return(NULL)
+      error = function(e) NULL
+    )
+    if (is.null(a)) {
+      return(NULL)
+    }
     vapply(seq_len(32L), function(kk) {
       om <- pi * kk / 33
       j <- seq_len(p)
@@ -1484,8 +1791,11 @@ PcgSeg <- function(x, fs, window = NULL, step = NULL, order = 6,
   }, numeric(1))
   med <- sort(values)[length(values) %/% 2L + 1L]
   mad <- sort(abs(values - med))[length(values) %/% 2L + 1L]
-  thr <- if (is.null(threshold)) med + 3 * 1.4826 * mad
-         else as.numeric(threshold)
+  thr <- if (is.null(threshold)) {
+    med + 3 * 1.4826 * mad
+  } else {
+    as.numeric(threshold)
+  }
   ref <- ref0
   bounds <- integer(0)
   adaptive <- numeric(length(starts))
@@ -1499,14 +1809,18 @@ PcgSeg <- function(x, fs, window = NULL, step = NULL, order = 6,
       ref <- sp
     }
   }
-  list(sem = adaptive, sem_fixed_reference = values,
-       times = (starts - 1L) / fsv, boundaries = bounds,
-       n_boundaries = length(bounds), threshold = thr, median = med,
-       mad = mad, window = w, step = hop, order = p, fs = fsv,
-       reference_restarted_at_boundaries = TRUE,
-       robust_threshold = is.null(threshold),
-       method = paste("Rangayyan (2024) Section 8.5 (adaptive",
-                      "segmentation of the PCG)"))
+  list(
+    sem = adaptive, sem_fixed_reference = values,
+    times = (starts - 1L) / fsv, boundaries = bounds,
+    n_boundaries = length(bounds), threshold = thr, median = med,
+    mad = mad, window = w, step = hop, order = p, fs = fsv,
+    reference_restarted_at_boundaries = TRUE,
+    robust_threshold = is.null(threshold),
+    method = paste(
+      "Rangayyan (2024) Section 8.5 (adaptive",
+      "segmentation of the PCG)"
+    )
+  )
 }
 
 #' Eq. (4.30): the PSD is the DFT of the ACF.  It holds exactly for the
@@ -1520,6 +1834,10 @@ PcgSeg <- function(x, fs, window = NULL, step = NULL, order = 6,
 #' \code{acf_linear}, \code{max_difference}, \code{holds}, \code{linear_difference},
 #' \code{linear_acf_is_smoothed}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' PsdAcf(V)
+#' @keywords internal
 PsdAcf <- function(x) {
   # eq. (4.30): the PSD is the DFT of the ACF.  It holds exactly for the
   # CIRCULAR autocorrelation.  The linear (biased) ACF gives a smoothed
@@ -1530,27 +1848,38 @@ PsdAcf <- function(x) {
   if (n < 2L) stop("need at least two samples")
   step <- 2 * pi / n
   i0 <- seq_len(n) - 1L
-  re <- vapply(i0, function(k) .morie_fsum(xs * cos(-step * i0 * k)),
-               numeric(1))
-  im <- vapply(i0, function(k) .morie_fsum(xs * sin(-step * i0 * k)),
-               numeric(1))
+  re <- vapply(
+    i0, function(k) .morie_fsum(xs * cos(-step * i0 * k)),
+    numeric(1)
+  )
+  im <- vapply(
+    i0, function(k) .morie_fsum(xs * sin(-step * i0 * k)),
+    numeric(1)
+  )
   direct <- re * re + im * im
-  circ <- vapply(i0, function(m)
-    .morie_fsum(xs * xs[(i0 + m) %% n + 1L]), numeric(1))
-  cr <- vapply(i0, function(k) .morie_fsum(circ * cos(-step * i0 * k)),
-               numeric(1))
+  circ <- vapply(i0, function(m) {
+    .morie_fsum(xs * xs[(i0 + m) %% n + 1L])
+  }, numeric(1))
+  cr <- vapply(
+    i0, function(k) .morie_fsum(circ * cos(-step * i0 * k)),
+    numeric(1)
+  )
   gap <- max(abs(direct - cr))
   lin <- .morie_rg_acf(xs, n)
-  lr <- vapply(i0, function(k) .morie_fsum(lin * cos(-step * i0 * k)),
-               numeric(1))
+  lr <- vapply(
+    i0, function(k) .morie_fsum(lin * cos(-step * i0 * k)),
+    numeric(1)
+  )
   scale <- max(direct)
   if (!scale) scale <- 1
-  list(psd = direct, via_circular_acf = cr, acf_circular = circ,
-       acf_linear = lin, max_difference = gap,
-       holds = gap <= 1e-6 * scale,
-       linear_difference = max(abs(direct - lr * n)),
-       linear_acf_is_smoothed = TRUE, n = n,
-       method = "Rangayyan (2024) eq. (4.30)")
+  list(
+    psd = direct, via_circular_acf = cr, acf_circular = circ,
+    acf_linear = lin, max_difference = gap,
+    holds = gap <= 1e-6 * scale,
+    linear_difference = max(abs(direct - lr * n)),
+    linear_acf_is_smoothed = TRUE, n = n,
+    method = "Rangayyan (2024) eq. (4.30)"
+  )
 }
 
 # --------------------------------------------------------- applications
@@ -1570,6 +1899,14 @@ PsdAcf <- function(x) {
 #' @param delta Passed to \code{RlsFilt}. Defaults to \code{1}.
 #' @return The value of \code{r}, as built in the body.
 #' @export
+#' @examples
+#' sine_a <- function(n, cycles, amp = 1, phase = 0) amp * sin(2 *
+#'     pi * cycles * (0:(n - 1))/n + phase)
+#' n <- 400
+#' v <- sine_a(256, 3)
+#' ref <- sine_a(n, 61)
+#' Anc(v + 0.8 * ref, ref, order = 4, mu = 0.005)
+#' @keywords internal
 Anc <- function(primary, reference, order = 8, mu = 0.01,
                 method = "lms", lam = 0.98, delta = 1) {
   # Section 3.10, eqs. (3.195)-(3.196): the canceller with either
@@ -1577,12 +1914,14 @@ Anc <- function(primary, reference, order = 8, mu = 0.01,
   # is returned as reference_leakage: if the reference is not clean of the
   # signal, the canceller removes part of the signal along with the
   # interference, and this is what shows it.
-  if (!method %in% c("lms", "rls"))
+  if (!method %in% c("lms", "rls")) {
     stop("method must be 'lms' or 'rls'")
-  r <- if (method == "lms")
+  }
+  r <- if (method == "lms") {
     LmsFilt(primary, reference, order = order, mu = mu)
-  else
+  } else {
     RlsFilt(primary, reference, order = order, lam = lam, delta = delta)
+  }
   e <- r$e
   rs <- as.numeric(reference)
   n <- length(e)
@@ -1595,8 +1934,10 @@ Anc <- function(primary, reference, order = 8, mu = 0.01,
   r$reference_leakage <- leak
   r$well_separated <- abs(leak) < 0.2
   r$adaptation <- method
-  r$method <- paste("Rangayyan (2024) Section 3.10,",
-                    "eqs. (3.195)-(3.196)")
+  r$method <- paste(
+    "Rangayyan (2024) Section 3.10,",
+    "eqs. (3.195)-(3.196)"
+  )
   r
 }
 
@@ -1616,6 +1957,14 @@ Anc <- function(primary, reference, order = 8, mu = 0.01,
 #' \code{reference_leakage}, \code{single_reference},
 #' \code{widrow_used_multiple_references}, \code{method}.
 #' @export
+#' @examples
+#' sine_a <- function(n, cycles, amp = 1, phase = 0) amp * sin(2 *
+#'     pi * cycles * (0:(n - 1))/n + phase)
+#' n <- 400
+#' v <- sine_a(256, 3)
+#' ref <- sine_a(n, 61)
+#' FetalEcg(v + 0.8 * ref, ref, order = 4, mu = 0.005)
+#' @keywords internal
 FetalEcg <- function(abdominal, chest, order = 32, mu = 0.005,
                      method = "lms") {
   # Section 3.14, after Widrow et al.: cancel the maternal ECG from an
@@ -1625,16 +1974,19 @@ FetalEcg <- function(abdominal, chest, order = 32, mu = 0.005,
   # recorded rather than left implied.
   abd <- as.numeric(abdominal)
   ref <- as.numeric(chest)
-  if (length(abd) != length(ref))
+  if (length(abd) != length(ref)) {
     stop("the abdominal and chest leads must have the same length")
+  }
   r <- Anc(abd, ref, order = order, mu = mu, method = method)
   px <- r$input_power
   pe <- r$output_power
-  list(fetal = r$e, maternal_estimate = r$y, order = order,
-       input_power = px, output_power = pe,
-       suppression_db = if (pe > 0 && px > 0) 10 * log10(px / pe) else NULL,
-       reference_leakage = r$reference_leakage,
-       single_reference = TRUE,
-       widrow_used_multiple_references = TRUE,
-       method = "Rangayyan (2024) Section 3.14, after Widrow et al.")
+  list(
+    fetal = r$e, maternal_estimate = r$y, order = order,
+    input_power = px, output_power = pe,
+    suppression_db = if (pe > 0 && px > 0) 10 * log10(px / pe) else NULL,
+    reference_leakage = r$reference_leakage,
+    single_reference = TRUE,
+    widrow_used_multiple_references = TRUE,
+    method = "Rangayyan (2024) Section 3.14, after Widrow et al."
+  )
 }

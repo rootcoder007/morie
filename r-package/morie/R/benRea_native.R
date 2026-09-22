@@ -1,22 +1,6 @@
-# Named-entity recognition with BIO tagging.
-# Sources: Ramshaw, L. A. & Marcus, M. P. (1995) "Text Chunking using
-# Transformation-Based Learning", *Proceedings of the Third Workshop on
-# Very Large Corpora*, 82-94, arXiv:cmp-lg/9505040, for the IOB/BIO
-# tagging scheme. Tjong Kim Sang, E. F. & De Meulder, F. (2003)
-# "Introduction to the CoNLL-2003 Shared Task: Language-Independent
-# Named Entity Recognition", *Proceedings of CoNLL-2003*, 142-147,
-# for the span-level evaluation. Lample, G., Ballesteros, M.,
-# Subramanian, S., Kawakami, K. & Dyer, C. (2016) "Neural Architectures
-# for Named Entity Recognition", *Proceedings of NAACL-HLT 2016*,
-# 260-270, doi:10.18653/v1/N16-1030, arXiv:1603.01360, for the BiLSTM-CRF
-# whose constrained decoding this implements. Viterbi, A. J. (1967)
-# "Error bounds for convolutional codes and an asymptotically optimum
-# decoding algorithm", *IEEE Transactions on Information Theory* 13(2),
-# 260-269, doi:10.1109/TIT.1967.1054010. Devlin, J., Chang, M.-W.,
-# Lee, K. & Toutanova, K. (2019) "BERT: Pre-training of Deep
-# Bidirectional Transformers for Language Understanding",
-# *Proceedings of NAACL-HLT 2019*, 4171-4186,
-# doi:10.18653/v1/N19-1423.
+# benRea -- Named-entity recognition with BIO tagging.
+# Ramshaw & Marcus (1995); Tjong Kim Sang & De Meulder (2003); Viterbi (1967).
+# Base R only.
 
 .benRea_NEG <- -Inf
 
@@ -26,34 +10,51 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param types Coerced to list by the body, with \code{as.list}.
+#' @param types Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' bio_labels(V)
+#' @keywords internal
 bio_labels <- function(types) {
-  ts <- as.list(types)
-  if (length(ts) == 0L) stop("benRea: no entity types given")
+  ts <- as.character(types)
+  if (length(ts) == 0) stop("benRea: no entity types given")
   if (any(duplicated(ts))) stop("benRea: duplicate entity types")
-  out <- list("O")
+  out <- c("O")
   for (t in ts) {
-    out[[length(out) + 1L]] <- paste0("B-", t)
-    out[[length(out) + 1L]] <- paste0("I-", t)
+    out <- c(out, paste("B-", t, sep = ""))
+    out <- c(out, paste("I-", t, sep = ""))
   }
   out
 }
 
 #' .parts
 #'
-#' A step of the benRea_native implementation. Called by \code{extract_spans},
-#' \code{is_valid_bio}, \code{start_allowed} and 1 others in the module.
+#' A step of the benRea_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param label Compared against \code{"O"}.
-#' @return The value of \code{[[}.
+#' @return The value of \code{substr}.
 #' @export
 .parts <- function(label) {
-  if (label == "O") return(list("O", NA))
-  strsplit(label, "-", fixed = TRUE)[[1]]
+  if (label == "O") return(c("O", NA))
+  substr(label, 1, 1)
+}
+
+#' .parts_full
+#'
+#' A step of the benRea_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param label Compared against \code{"O"}.
+#' @return A list with \code{p}, \code{t}.
+#' @export
+.parts_full <- function(label) {
+  if (label == "O") return(list(p = "O", t = NA))
+  list(p = substr(label, 1, 1), t = substr(label, 3, nchar(label)))
 }
 
 #' valid_transitions
@@ -65,17 +66,21 @@ bio_labels <- function(types) {
 #' @param labels A vector; its length is taken and its elements indexed.
 #' @return The value of \code{T}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' valid_transitions(V)
+#' @keywords internal
 valid_transitions <- function(labels) {
   n <- length(labels)
   T <- matrix(TRUE, n, n)
-  for (a in seq_len(n)) {
-    pa <- .parts(labels[[a]])[[1]]
-    ta <- .parts(labels[[a]])[[2]]
-    for (b in seq_len(n)) {
-      pb <- .parts(labels[[b]])[[1]]
-      tb <- .parts(labels[[b]])[[2]]
-      if (pb == "I")
-        T[a, b] <- (pa %in% c("B", "I")) && ta == tb
+  for (a in 1:n) {
+    pa <- substr(labels[a], 1, 1)
+    ta <- if (pa == "O") NA else substr(labels[a], 3, nchar(labels[a]))
+    for (b in 1:n) {
+      pb <- substr(labels[b], 1, 1)
+      tb <- if (pb == "O") NA else substr(labels[b], 3, nchar(labels[b]))
+      if (pb == "I") T[a, b] <- (pa %in% c("B", "I")) && !is.na(ta) &&
+                                  !is.na(tb) && ta == tb
     }
   }
   T
@@ -87,11 +92,15 @@ valid_transitions <- function(labels) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param labels Iterated over elementwise, with \code{sapply}.
-#' @return A vector, from \code{sapply}.
+#' @param labels Character; passed to \code{substr}.
+#' @return The value of \code{!=}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' start_allowed(V)
+#' @keywords internal
 start_allowed <- function(labels) {
-  sapply(labels, function(v) .parts(v)[[1]] != "I")
+  substr(labels, 1, 1) != "I"
 }
 
 #' is_valid_bio
@@ -101,19 +110,22 @@ start_allowed <- function(labels) {
 #' source it follows.
 #'
 #' @param path See Usage.
-#' @param labels Accepted by the signature and not used anywhere in the body.
 #' @return A logical value.
 #' @export
-is_valid_bio <- function(path, labels = NULL) {
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' is_valid_bio(V)
+#' @keywords internal
+is_valid_bio <- function(path) {
   prev <- "O"
   prev_t <- NA
   for (lab in path) {
-    p <- .parts(lab)[[1]]
-    t <- .parts(lab)[[2]]
-    if (p == "I" && !(prev %in% c("B", "I") && prev_t == t))
-      return(FALSE)
+    p <- substr(lab, 1, 1)
+    t_ <- if (p == "O") NA else substr(lab, 3, nchar(lab))
+    if (p == "I" && !(prev %in% c("B", "I") && !is.na(prev_t) &&
+                      !is.na(t_) && prev_t == t_)) return(FALSE)
     prev <- p
-    prev_t <- t
+    prev_t <- t_
   }
   TRUE
 }
@@ -124,15 +136,18 @@ is_valid_bio <- function(path, labels = NULL) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param emissions A vector; its length is taken and its elements indexed.
+#' @param emissions A matrix; passed to \code{as.matrix}.
 #' @param labels A vector; indexed elementwise.
-#' @return A vector, from \code{sapply}.
+#' @return The value of \code{apply}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' greedy_decode(V, V)
+#' @keywords internal
 greedy_decode <- function(emissions, labels) {
-  sapply(seq_along(emissions), function(t) {
-    row <- emissions[[t]]
-    labels[[which.max(row)]]
-  })
+  em <- as.matrix(emissions)
+  storage.mode(em) <- "double"
+  apply(em, 1, function(r) labels[which.max(r)])
 }
 
 #' viterbi_decode
@@ -141,39 +156,44 @@ greedy_decode <- function(emissions, labels) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param emissions A vector; its length is taken and its elements indexed.
+#' @param emissions A matrix; passed to \code{as.matrix}.
 #' @param labels A vector; its length is taken and its elements indexed.
 #' @param transitions Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param transition_scores Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{path}, \code{score}.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' S <- c("a", "b", "c")
+#' viterbi_decode(M, S)
+#' @keywords internal
 viterbi_decode <- function(emissions, labels, transitions = NULL,
                            transition_scores = NULL) {
-  L <- length(emissions)
-  n <- length(labels)
-  if (L == 0L) stop("benRea: empty emission sequence")
-  if (any(sapply(emissions, length) != n))
+  em <- as.matrix(emissions)
+  storage.mode(em) <- "double"
+  L <- nrow(em)
+  n <- ncol(em)
+  if (L == 0) stop("benRea: empty emission sequence")
+  if (n != length(labels))
     stop("benRea: emissions must have one score per label")
-  T_mat <- if (is.null(transitions)) valid_transitions(labels) else transitions
-  S <- if (is.null(transition_scores)) matrix(0.0, n, n) else transition_scores
+  T <- if (is.null(transitions)) valid_transitions(labels) else transitions
+  S <- if (is.null(transition_scores)) matrix(0, n, n) else transition_scores
   ok0 <- start_allowed(labels)
   dp <- matrix(.benRea_NEG, L, n)
   bk <- matrix(-1L, L, n)
-  for (j in seq_len(n)) {
-    if (ok0[j]) dp[1L, j] <- emissions[[1L]][j]
-  }
+  for (j in 1:n) if (ok0[j]) dp[1, j] <- em[1, j]
   for (t in 2:L) {
-    for (j in seq_len(n)) {
+    for (j in 1:n) {
       best <- .benRea_NEG
       arg <- -1L
-      for (i in seq_len(n)) {
-        if (!T_mat[i, j] || dp[t - 1L, i] == .benRea_NEG) next
-        v <- dp[t - 1L, i] + S[i, j]
+      for (i in 1:n) {
+        if (!T[i, j] || dp[t - 1, i] == .benRea_NEG) next
+        v <- dp[t - 1, i] + S[i, j]
         if (v > best) { best <- v
         arg <- i }
       }
-      if (arg >= 1L) {
-        dp[t, j] <- best + emissions[[t]][j]
+      if (arg >= 0) {
+        dp[t, j] <- best + em[t, j]
         bk[t, j] <- arg
       }
     }
@@ -182,10 +202,9 @@ viterbi_decode <- function(emissions, labels, transitions = NULL,
   if (dp[L, end] == .benRea_NEG) stop("benRea: no valid path exists")
   path_idx <- end
   for (t in L:2) {
-    path_idx <- c(bk[t, path_idx[1L]], path_idx)
+    path_idx <- c(bk[t, path_idx[1]], path_idx)
   }
-  rev_idx <- rev(path_idx)
-  list(path = labels[rev_idx], score = dp[L, end])
+  list(path = labels[path_idx], score = dp[L, end])
 }
 
 #' extract_spans
@@ -197,35 +216,43 @@ viterbi_decode <- function(emissions, labels, transitions = NULL,
 #' @param path A vector; its length is taken and its elements indexed.
 #' @return The value of \code{spans}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' extract_spans(V)
+#' @keywords internal
 extract_spans <- function(path) {
   spans <- list()
-  cur_t <- NULL
-  cur_s <- NULL
-  for (i in seq_along(path)) {
-    lab <- path[[i]]
-    p <- .parts(lab)[[1]]
-    ty <- .parts(lab)[[2]]
+  cur_t <- NA
+  cur_s <- NA
+  for (t in seq_along(path)) {
+    lab <- path[t]
+    p <- substr(lab, 1, 1)
+    ty <- if (p == "O") NA else substr(lab, 3, nchar(lab))
     if (p == "B") {
-      if (!is.null(cur_t))
-        spans[[length(spans) + 1L]] <- list(type = cur_t, start = cur_s, end = i - 1L)
+      if (!is.na(cur_t))
+        spans[[length(spans) + 1L]] <- c(type = cur_t, start = cur_s,
+                                          end = t - 1)
       cur_t <- ty
-      cur_s <- i
+      cur_s <- t
     } else if (p == "I") {
-      if (!identical(cur_t, ty)) {
-        if (!is.null(cur_t))
-          spans[[length(spans) + 1L]] <- list(type = cur_t, start = cur_s, end = i - 1L)
+      if (is.na(cur_t) || !is.na(cur_t) && cur_t != ty) {
+        if (!is.na(cur_t))
+          spans[[length(spans) + 1L]] <- c(type = cur_t, start = cur_s,
+                                            end = t - 1)
         cur_t <- ty
-        cur_s <- i
+        cur_s <- t
       }
     } else {
-      if (!is.null(cur_t))
-        spans[[length(spans) + 1L]] <- list(type = cur_t, start = cur_s, end = i - 1L)
-      cur_t <- NULL
-      cur_s <- NULL
+      if (!is.na(cur_t))
+        spans[[length(spans) + 1L]] <- c(type = cur_t, start = cur_s,
+                                          end = t - 1)
+      cur_t <- NA
+      cur_s <- NA
     }
   }
-  if (!is.null(cur_t))
-    spans[[length(spans) + 1L]] <- list(type = cur_t, start = cur_s, end = length(path))
+  if (!is.na(cur_t))
+    spans[[length(spans) + 1L]] <- c(type = cur_t, start = cur_s,
+                                      end = length(path))
   spans
 }
 
@@ -240,70 +267,71 @@ extract_spans <- function(path) {
 #' @return A list with \code{precision}, \code{recall}, \code{f1}, \code{true_positives},
 #' \code{n_pred}, \code{n_gold}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' span_f1(V, V)
+#' @keywords internal
 span_f1 <- function(pred, gold) {
   p <- extract_spans(pred)
   g <- extract_spans(gold)
-  sp <- function(spans) {
-    sapply(spans, function(s) paste0(s$type, "|", s$start, "|", s$end))
-  }
-  pset <- sp(p)
-  gset <- sp(g)
-  tp <- length(intersect(pset, gset))
-  prec <- if (length(pset) > 0L) tp / length(pset) else 0.0
-  rec <- if (length(gset) > 0L) tp / length(gset) else 0.0
-  f1 <- if ((prec + rec) > 0) 2 * prec * rec / (prec + rec) else 0.0
+  pk <- sapply(p, function(s) paste(s, collapse = ":"))
+  gk <- sapply(g, function(s) paste(s, collapse = ":"))
+  tp <- length(intersect(pk, gk))
+  prec <- if (length(p) > 0) tp / length(p) else 0
+  rec  <- if (length(g) > 0) tp / length(g) else 0
+  f1 <- if ((prec + rec) > 0) 2 * prec * rec / (prec + rec) else 0
   list(precision = prec, recall = rec, f1 = f1,
-       true_positives = tp, n_pred = length(pset), n_gold = length(gset))
+       true_positives = tp, n_pred = length(p), n_gold = length(g))
 }
 
 #' ner_decode
 #'
-#' A step of the benRea_native implementation. Called by \code{morie_benRea}.
+#' A step of the benRea_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param emissions A vector; its length is taken and its elements indexed.
+#' @param emissions A matrix; passed to \code{as.matrix}.
 #' @param types Passed to \code{bio_labels}.
 #' @param decoder One of \code{"greedy"}, \code{"viterbi"}. Defaults to \code{"viterbi"}.
 #' @param transition_scores Passed to \code{viterbi_decode}.
-#' @param gold Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.
-#' @return The value of \code{payload}, as built in the body.
+#' @param gold Optional; may be \code{NULL}. Coerced to character by the body, with
+#' \code{as.character}.
+#' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' ner_decode(emissions = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), types = 5L)
+#' @keywords internal
 ner_decode <- function(emissions, types, decoder = "viterbi",
                        transition_scores = NULL, gold = NULL) {
   if (!(decoder %in% c("viterbi", "greedy")))
-    stop(sprintf("benRea: decoder must be viterbi or greedy, got %r", decoder))
+    stop("benRea: decoder must be viterbi or greedy")
   labels <- bio_labels(types)
   if (decoder == "viterbi") {
-    res <- viterbi_decode(emissions, labels, transition_scores = transition_scores)
-    path <- res$path
-    score <- res$score
+    vd <- viterbi_decode(emissions, labels, transition_scores = transition_scores)
+    path <- vd$path
+    score <- vd$score
   } else {
     path <- greedy_decode(emissions, labels)
-    score <- sum(sapply(seq_along(path), function(t) emissions[[t]][match(path[[t]], labels)]))
+    score <- sum(vapply(seq_along(path), function(t) {
+      emissions[[t]][match(path[t], labels)]
+    }, numeric(1)))
   }
   spans <- extract_spans(path)
-  payload <- list(estimate = path, path = path, score = score,
-                  spans = spans, valid = is_valid_bio(path),
-                  labels = labels, decoder = decoder,
-                  n_tokens = length(emissions), n_spans = length(spans),
-                  method = "BIO named-entity decoding, Ramshaw & Marcus (1995) scheme, Viterbi (1967) constrained decoding")
+  out <- list(estimate = path, path = path, score = score, spans = spans,
+              valid = is_valid_bio(path), labels = labels, decoder = decoder,
+              n_tokens = nrow(as.matrix(emissions)),
+              n_spans = length(spans),
+              method = paste("BIO named-entity decoding, Ramshaw & Marcus",
+                             "(1995) scheme, Viterbi (1967) constrained",
+                             "decoding"))
   if (!is.null(gold))
-    payload <- c(payload, span_f1(path, as.list(gold)))
-  payload
+    out <- c(out, span_f1(path, as.character(gold)))
+  out
 }
 
 nerdecode <- ner_decode
 named_entity <- ner_decode
 namedentity <- ner_decode
 
-#' morie_benRea
-#'
-#' A step of the benRea_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param ... Passed through.
-#' @return The value of \code{ner_decode}.
-#' @export
-morie_benRea <- function(...) ner_decode(...)
+# house entry point: the package exports one morie_<module>
+morie_benRea <- ner_decode

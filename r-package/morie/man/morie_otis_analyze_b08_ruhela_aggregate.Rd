@@ -22,7 +22,6 @@ b08 aggregate Ruhela: Female -> median seg duration (institution-clustered)
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_b08 <- morie_synth_otis("b08", n = 120L, seed = 1L)
 morie_otis_analyze_b08_ruhela_aggregate(otis_b08)
 }

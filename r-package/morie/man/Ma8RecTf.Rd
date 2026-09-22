@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_filt2.R
 \name{Ma8RecTf}
 \alias{Ma8RecTf}
-\title{Eq (3.121): a pole at z = 1 cancelled by one of the numerator\'s
+\title{Eq (3.121): a pole at z = 1 cancelled by one of the numerator's
 zeros,}
 \usage{
 Ma8RecTf(z)
@@ -19,3 +19,8 @@ A list with \code{H}, \code{z}, \code{pole_at_dc_cancelled_by_a_zero},
 so the filter is still FIR despite the recursive implementation.  At
 z = 1 the ratio is 0/0 and the limit is the DC gain, 1.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Ma8RecTf(V)
+}
+\keyword{internal}

@@ -10,15 +10,13 @@ morie_otis_analyze_c11(data)
 \item{data}{c11 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines and an
-aggregate-duration x year crosstab of restrictive-confinement
-individual counts.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 Individuals by aggregate-duration bin (c11)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_c11(V)
+otis_c11 <- morie_synth_otis("c11", n = 120L, seed = 1L)
+res <- morie_otis_analyze_c11(otis_c11)
+class(res)
 }

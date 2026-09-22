@@ -22,3 +22,8 @@ A list with \code{my}, \code{y}, \code{t0}, \code{phase}, \code{method}.
 maximizes.  It is a MAGNITUDE, so the phase of X H at t0 is what the
 optimal filter of eq (4.48) is chosen to align.
 }
+\examples{
+MfPeak(X = c(1, 2, 3, 4, 5, 6, 7, 8), H = c(1, 2, 3, 4, 5, 6, 7, 8),
+  freqs = c(1, 2, 3, 4, 5, 6, 7, 8), t0 = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

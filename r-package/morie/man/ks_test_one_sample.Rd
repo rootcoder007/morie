@@ -15,8 +15,7 @@ ks_test_one_sample(x, cdf = "pnorm", args = list())
 \item{args}{List of extra arguments to pass to \code{cdf}.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the KS D statistic, p-value, and sample size n.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 One-sample Kolmogorov-Smirnov test

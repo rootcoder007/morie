@@ -40,3 +40,9 @@ A step of the fwxF_mixedcase_native implementation. No other function in the pac
 See the file header for the source the module follows.
 for the source it follows.
 }
+\examples{
+morie_fwxF(temp = c(1, 2, 3, 4, 5, 6, 7, 8), rh = c(1, 2, 3, 4, 5, 6, 7, 8),
+  wind = c(1, 2, 3, 4, 5, 6, 7, 8), rain = c(1, 2, 3, 4, 5, 6, 7, 8),
+  month = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

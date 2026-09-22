@@ -21,3 +21,8 @@ A step of the tlgcmp_native implementation. Called by \code{morie_tlgcmp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+g_computation(list("a", "b"), outcome_means = c(0.3, 0.7),
+              covariate_probs = c(0.4, 0.6))
+}
+\keyword{internal}

@@ -25,3 +25,8 @@ have that property -- it aliases -- and the price paid here instead is
 the frequency warping of equations (3.141) and (3.142). The point
 z = -1 maps to an infinite analog frequency and is refused.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Bilinear(V)
+}
+\keyword{internal}

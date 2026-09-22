@@ -28,3 +28,8 @@ A step of the droPDSI_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_droPDSI_palmer_pdsi(V, V)
+}
+\keyword{internal}

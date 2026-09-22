@@ -9,6 +9,14 @@ morie_geron_pairwise_distances(X)
 \arguments{
 \item{X}{Data matrix. @return Distance matrix.}
 }
+\value{
+The value of \code{.morie_gr_w4b_pairwise_distances}.
+}
 \description{
 Euclidean pairwise distance matrix (Geron Ch 7, morie.fn hmmds helper)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_pairwise_distances(V)
+}
+\keyword{internal}

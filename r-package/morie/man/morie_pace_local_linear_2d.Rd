@@ -26,3 +26,12 @@ so each fit touches only the neighbouring cells -- the Epanechnikov
 kernel vanishes past one bandwidth, the Gaussian is truncated at
 four, which is the reach the Python arm uses.
 }
+\examples{
+set.seed(1)
+s <- runif(150); t <- runif(150)
+z <- sin(2 * s) + cos(2 * t) + rnorm(150, 0, 0.1)
+grid <- seq(0.2, 0.8, length.out = 4)
+fit <- morie_pace_local_linear_2d(s, t, z, grid, grid, bw = 0.35)
+length(fit)
+}
+\keyword{internal}

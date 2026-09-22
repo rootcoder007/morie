@@ -33,3 +33,12 @@ and the asymmetry it removed is returned.  The plain covariance
 update is used rather than the Joseph form, which is recorded because
 the Joseph form is the numerically safer one when R is small.
 }
+\examples{
+F <- matrix(0.9)
+H <- matrix(1)
+Q <- matrix(0.1)
+R <- matrix(1)
+Riccati(F, H, Q, R)
+Kalman(z = F, F = F, H = H, Q = Q, R = R)
+}
+\keyword{internal}

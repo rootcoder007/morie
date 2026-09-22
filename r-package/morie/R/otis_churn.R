@@ -50,19 +50,8 @@ NULL
 # Result constructor shared with otis.R (.otis_result lives there but
 # we define a thin alias here to avoid load-order coupling). We name it
 # `.churn_result` so it can co-exist if file load order changes.
-#' Result constructor shared with otis.R (.otis_result lives there but
-#'
-#' we define a thin alias here to avoid load-order coupling). We name it
-#' `.churn_result` so it can co-exist if file load order changes.
-#'
-#' @param title Carried through into a list the body builds.
-#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
-#' @param tables Carried through into a list the body builds. Defaults to \code{list()}.
-#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
-#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
-#' @param payload Carried through into a list the body builds. Defaults to \code{list()}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Churn Result
+#' @noRd
 .churn_result <- function(title,
                            summary_lines = list(),
                            tables = list(),
@@ -87,14 +76,8 @@ NULL
 #   "2 placements"         -> 2
 #   "6 to 10 placements"   -> 8 (midpoint)
 #   "Greater than 40"      -> 50 (boundary + 10)
-#' Parse OTIS b09 placement-count bin labels:
-#'
-#' "1 placement" -> 1 "2 placements" -> 2 "6 to 10 placements" -> 8
-#' (midpoint) "Greater than 40" -> 50 (boundary + 10)
-#'
-#' @param label Coerced to character by the body, with \code{as.character}.
-#' @return One of two values, depending on the branch taken.
-#' @export
+#' Internal helper: Churn Parse Placement Bin
+#' @noRd
 .churn_parse_placement_bin <- function(label) {
   s <- tolower(trimws(as.character(label)))
   if (grepl("greater than", s)) {
@@ -112,20 +95,8 @@ NULL
 
 
 # Yes/No/T/F/1/0 -> integer 0/1
-#' Yes/No/T/F/1/0 -> integer 0/1
-#'
-#' A step of the otis_churn implementation. Called by \code{morie_otis_irr_glmm_vm},
-#' \code{morie_otis_region_alert_state_richness}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param s A vector; indexed elementwise.
-#' @return The value of \code{as.integer}.
-#' @export
-#' @examples
-#' txt <- c('alpha', 'beta', 'gamma', 'delta')
-#' res <- .churn_yn(s = txt)
-#' res
+#' Internal helper: Churn Yn
+#' @noRd
 .churn_yn <- function(s) {
   if (is.logical(s)) return(as.integer(s))
   if (is.numeric(s)) {
@@ -139,14 +110,8 @@ NULL
 
 # chi-square + Cramer's V on a 2x2-or-larger crosstab. Returns list
 # (chi2, p, v) with NA entries when the table is too sparse.
-#' Chi-square + Cramer\'s V on a 2x2-or-larger crosstab. Returns list
-#'
-#' (chi2, p, v) with NA entries when the table is too sparse.
-#'
-#' @param tbl A matrix; passed to \code{dim}.
-#' @param min_cell Passed to \code{<}. Defaults to \code{5L}.
-#' @return A list with \code{chi2}, \code{p}, \code{v}.
-#' @export
+#' Internal helper: Churn Chi2 V
+#' @noRd
 .churn_chi2_v <- function(tbl, min_cell = 5L) {
   if (any(dim(tbl) < 2L)) {
     return(list(chi2 = NA_real_, p = NA_real_, v = NA_real_))
@@ -329,10 +294,11 @@ morie_otis_within_year_placement_count <- function(df) {
 #'
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_otis_within_year_region_diversity(V)
+#' b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+#' res <- morie_otis_within_year_region_diversity(b02)
+#' res$title
+#' @export
 morie_otis_within_year_region_diversity <- function(df) {
   needed <- c("UniqueIndividual_ID", "Region_AtTimeOfPlacement")
   if (!all(needed %in% names(df))) {
@@ -393,10 +359,11 @@ morie_otis_within_year_region_diversity <- function(df) {
 #'
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_otis_mortification_cooccurrence(V)
+#' b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+#' res <- morie_otis_mortification_cooccurrence(b02)
+#' res$title
+#' @export
 morie_otis_mortification_cooccurrence <- function(df) {
   cols <- c("MentalHealth_Alert", "SuicideRisk_Alert", "SuicideWatch_Alert")
   have <- intersect(cols, names(df))
@@ -467,10 +434,11 @@ morie_otis_mortification_cooccurrence <- function(df) {
 #'
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_otis_disciplinary_medical_overlap(V)
+#' b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+#' res <- morie_otis_disciplinary_medical_overlap(b02)
+#' res$title
+#' @export
 morie_otis_disciplinary_medical_overlap <- function(df) {
   disc_cols <- grep("^SegReason_Disciplinary", names(df), value = TRUE)
   med_cols  <- grep("^SegReason_.*Medical", names(df), value = TRUE)
@@ -528,10 +496,11 @@ morie_otis_disciplinary_medical_overlap <- function(df) {
 #'
 #' @param df b02 data.frame.
 #' @return \code{morie_otis_result}.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_otis_embedding_distribution(V)
+#' b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+#' res <- morie_otis_embedding_distribution(b02)
+#' res$title
+#' @export
 morie_otis_embedding_distribution <- function(df) {
   if (!"TotalAggregatedDays_Segregation" %in% names(df)) {
     return(.churn_result(title = "Embedding distribution",
@@ -610,10 +579,11 @@ morie_otis_embedding_distribution <- function(df) {
 #'
 #' @param df a01 data.frame.
 #' @return \code{morie_otis_result}.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_otis_intra_year_transition_matrix(V)
+#' b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+#' res <- morie_otis_intra_year_transition_matrix(b02)
+#' res$title
+#' @export
 morie_otis_intra_year_transition_matrix <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear",
               "Region_AtTimeOfPlacement")
@@ -718,10 +688,11 @@ morie_otis_intra_year_transition_matrix <- function(df) {
 #'
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_otis_path_complexity_gini(V)
+#' b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+#' res <- morie_otis_path_complexity_gini(b02)
+#' res$title
+#' @export
 morie_otis_path_complexity_gini <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear",
               "Region_AtTimeOfPlacement")
@@ -796,10 +767,11 @@ morie_otis_path_complexity_gini <- function(df) {
 #'
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_otis_region_alert_state_richness(V)
+#' b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+#' res <- morie_otis_region_alert_state_richness(b02)
+#' res$title
+#' @export
 morie_otis_region_alert_state_richness <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear",
               "Region_AtTimeOfPlacement", "MentalHealth_Alert",
@@ -862,7 +834,6 @@ morie_otis_region_alert_state_richness <- function(df) {
 #'
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
-#' @export
 #' @examples
 #' if (requireNamespace("MASS", quietly = TRUE)) {
 #'   b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
@@ -957,7 +928,7 @@ morie_otis_regC_demog_contingency <- function(df) {
 #'
 #' Builds the (id x fiscal year) cell with outcome
 #' \code{vm} (number of distinct regions visited) and treatment
-#' \code{T_high_ac} = 1 if the person-year alert-complexity \code{ac >=
+#' \code{T_high_ac} = 1 if the person-year alert-complexity \eqn{ac >=
 #' 2}, then fits Poisson and (optionally) negative-binomial GLMs
 #' adjusting for Year, Gender, and Age. The NB fit uses
 #' \pkg{MASS::glm.nb} when available; if not, only Poisson is
@@ -968,10 +939,11 @@ morie_otis_regC_demog_contingency <- function(df) {
 #'
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
-#' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_otis_irr_glmm_vm(V)
+#' b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
+#' res <- morie_otis_irr_glmm_vm(b02)
+#' res$title
+#' @export
 morie_otis_irr_glmm_vm <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear",
               "Region_AtTimeOfPlacement", "MentalHealth_Alert",

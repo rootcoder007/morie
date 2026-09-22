@@ -17,7 +17,11 @@ centering_parameter(mu, mu_affine, nu = 3)
 A list with \code{sigma}, \code{ratio}, \code{nu}, \code{approximation}, \code{note}.
 }
 \description{
-A step of the mehtad_native implementation. Called by \code{solve_lp}.
+A step of the mehtad_native implementation. Called by \code{morie_mehtad}, \code{solve_lp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+centering_parameter(mu = 5L, mu_affine = 5L)
+}
+\keyword{internal}

@@ -7,7 +7,7 @@
 roi_align(features, box, out_size = 2L, stride = 1, samples = 2L)
 }
 \arguments{
-\item{features}{A matrix; passed to \code{as.matrix}.}
+\item{features}{Passed to \code{.masrcn_mat}.}
 
 \item{box}{A vector; indexed elementwise.}
 
@@ -25,3 +25,8 @@ A step of the masrcn_native implementation. Called by \code{morie_masrcn}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+roi_align(V, V)
+}
+\keyword{internal}

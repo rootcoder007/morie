@@ -27,3 +27,8 @@ one, ties counted as half.  Summing rectangles instead biases the
 area whenever scores tie, which they do whenever a classifier emits a
 class rather than a probability.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Roc(V, V)
+}
+\keyword{internal}

@@ -26,3 +26,8 @@ A step of the sse4r_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_sse4r(sequence = c(1, 2, 3, 4, 5, 6, 7, 8), user_embedding = TRUE,
+  item_table = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

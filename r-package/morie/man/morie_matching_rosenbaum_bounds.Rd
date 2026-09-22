@@ -29,19 +29,15 @@ A data frame with columns \code{gamma}, \code{p_lower},
 Computes bounds on the p-value for the treatment effect over a grid of
 values of \code{gamma} (the maximum odds ratio of differential treatment
 assignment due to an unobserved confounder).  Uses the Wilcoxon
-signed-rank approach.  When \pkg{sensitivitymv} is installed, callers
-should prefer it for exact bounds; this function provides a base-R
-implementation parallel to the Python version.
+signed-rank approach.  For exact bounds, see
+\code{\link[sensitivitymv:senmv]{sensitivitymv::senmv}} or the
+\pkg{rbounds} package.
 }
 \examples{
 \donttest{
 set.seed(1)
-df <- data.frame(
-  y = rnorm(150), d = rbinom(150, 1, 0.4),
-  x1 = rnorm(150), x2 = rnorm(150),
-  region = sample(c("North", "South"), 150, TRUE),
-  year = sample(2020:2022, 150, TRUE),
-  treat3 = sample(0:2, 150, TRUE))
+df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+                 x1 = rnorm(200), x2 = rnorm(200))
 res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 morie_matching_rosenbaum_bounds(df, "y", "d", res$match_pairs)
 }

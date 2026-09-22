@@ -28,3 +28,12 @@ A step of the rangayyan_class2 implementation. No other function in the package 
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(4)
+S <- rbind(sin(2 * pi * (1:300) / 25), rnorm(300))
+A <- matrix(c(1, 0.5, 0.4, 1), 2, 2)
+X <- A \%*\% S
+r <- IcaClean(X)
+str(r, max.level = 1)
+}
+\keyword{internal}

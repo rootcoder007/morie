@@ -27,7 +27,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x A matrix; passed to \code{as.matrix}.
+#' @param x A matrix; the body checks with \code{is.matrix}.
 #' @return Nothing; this branch always raises.
 #' @export
 #' @examples
@@ -35,26 +35,21 @@
 #' res <- .sbert_mat(x = x)
 #' res
 .sbert_mat <- function(x) {
-  if (is.matrix(x)) return(x)
-  if (is.numeric(x)) return(as.matrix(x))
-  if (is.list(x)) {
-    n <- length(x)
-    d <- length(x[[1]])
-    M <- matrix(0, n, d)
-    for (i in seq_len(n)) M[i, ] <- as.numeric(x[[i]])
-    return(M)
-  }
-  stop("sbert: expected a matrix-like input")
+  if (is.list(x) && !is.matrix(x)) return(do.call(rbind, x))
+  if (is.matrix(x)) { storage.mode(x) <- "double"
+  return(x) }
+  if (is.vector(x)) return(matrix(as.numeric(x), nrow = 1))
+  stop("sbert: expected a matrix or list of rows")
 }
 
 #' .sbert_vec
 #'
 #' A step of the sbert_native implementation. Called by \code{classification_features},
-#' \code{cosine_similarity}, \code{sts_score}.
+#' \code{cosine_similarity}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x A matrix; indexed by row and column.
+#' @param x A list; the body checks with \code{is.list}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 #' @examples
@@ -62,10 +57,7 @@
 #' res <- .sbert_vec(x = x)
 #' res
 .sbert_vec <- function(x) {
-  if (is.matrix(x)) {
-    if (nrow(x) == 1L) return(as.numeric(x[1, ]))
-    if (ncol(x) == 1L) return(as.numeric(x[, 1]))
-  }
+  if (is.list(x)) return(as.numeric(unlist(x)))
   as.numeric(x)
 }
 
@@ -77,31 +69,34 @@
 #'
 #' @param token_vectors Passed to \code{.sbert_mat}.
 #' @param mode One of \code{"cls"}, \code{"max"}. Defaults to \code{"mean"}.
-#' @param mask Optional; may be \code{NULL}. Coerced to logical by the body, with \code{as.logical}.
-#' @return A numeric value.
+#' @param mask The body requires: sbert: the mask excludes every token.
+#' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' pool(V)
+#' @keywords internal
 pool <- function(token_vectors, mode = "mean", mask = NULL) {
   if (!(mode %in% .SBERT_POOLING))
-    stop("sbert: pooling must be one of mean, cls, max, got ", format(mode))
+    stop(sprintf("sbert: pooling must be one of %s, got '%s'",
+                 paste(.SBERT_POOLING, collapse = ", "), mode))
   T <- .sbert_mat(token_vectors)
-  if (nrow(T) == 0L)
-    stop("sbert: no token vectors given")
+  if (nrow(T) == 0) stop("sbert: no token vectors given")
   d <- ncol(T)
-  m <- if (is.null(mask)) rep(TRUE, nrow(T)) else as.logical(mask)
+  m <- if (is.null(mask)) rep(TRUE, nrow(T)) else as.logical(unlist(mask))
   if (length(m) != nrow(T))
-    stop("sbert: ", length(m), " mask entries for ", nrow(T), " tokens")
+    stop(sprintf("sbert: %d mask entries for %d tokens", length(m), nrow(T)))
   keep <- which(m)
-  if (length(keep) == 0L)
-    stop("sbert: the mask excludes every token")
-  if (mode == "cls") return(as.numeric(T[keep[1L], ]))
+  if (length(keep) == 0) stop("sbert: the mask excludes every token")
+  if (mode == "cls") return(as.numeric(T[keep[1], ]))
   if (mode == "max") {
     out <- numeric(d)
-    for (j in seq_len(d)) out[j] <- max(T[keep, j])
+    for (j in 1:d) out[j] <- max(T[keep, j])
     return(out)
   }
   out <- numeric(d)
-  for (j in seq_len(d)) out[j] <- sum(T[keep, j])
-  out / length(keep)
+  for (j in 1:d) out[j] <- mean(T[keep, j])
+  out
 }
 
 #' cosine_similarity
@@ -114,13 +109,17 @@ pool <- function(token_vectors, mode = "mean", mask = NULL) {
 #' @param v Passed to \code{.sbert_vec}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' cosine_similarity(V, V)
+#' @keywords internal
 cosine_similarity <- function(u, v) {
-  a <- as.numeric(.sbert_vec(u))
-  b <- as.numeric(.sbert_vec(v))
+  a <- .sbert_vec(u)
+  b <- .sbert_vec(v)
   if (length(a) != length(b))
-    stop("sbert: vectors differ in length (", length(a), ", ", length(b), ")")
-  na <- sqrt(sum(a^2))
-  nb <- sqrt(sum(b^2))
+    stop(sprintf("sbert: vectors differ in length (%d, %d)", length(a), length(b)))
+  na <- sqrt(sum(a * a))
+  nb <- sqrt(sum(b * b))
   if (na <= .SBERT_EPS || nb <= .SBERT_EPS)
     stop("sbert: cosine similarity is undefined for a zero vector")
   sum(a * b) / (na * nb)
@@ -137,14 +136,18 @@ cosine_similarity <- function(u, v) {
 #' @return A list with \code{features}, \code{u}, \code{v}, \code{abs_diff}, \code{dim},
 #' \code{note}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' classification_features(V, V)
+#' @keywords internal
 classification_features <- function(u, v) {
-  a <- as.numeric(.sbert_vec(u))
-  b <- as.numeric(.sbert_vec(v))
+  a <- .sbert_vec(u)
+  b <- .sbert_vec(v)
   if (length(a) != length(b))
-    stop("sbert: vectors differ in length (", length(a), ", ", length(b), ")")
+    stop(sprintf("sbert: vectors differ in length (%d, %d)", length(a), length(b)))
   diff <- abs(a - b)
-  list(features = c(a, b, diff), u = a, v = b,
-       abs_diff = diff, dim = 3 * length(a),
+  list(features = c(a, b, diff), u = a, v = b, abs_diff = diff,
+       dim = 3 * length(a),
        note = "|u - v| is the term neither u nor v supplies")
 }
 
@@ -160,13 +163,15 @@ classification_features <- function(u, v) {
 #' @return A list with \code{forward_passes}, \code{cross_encoder}, \code{bi_encoder},
 #' \code{speedup}, \code{n}, \code{note}.
 #' @export
+#' @examples
+#' pair_cost(n = 5L)
+#' @keywords internal
 pair_cost <- function(n, mode = "cross-encoder") {
   N <- as.integer(n)
-  if (N < 2L)
-    stop("sbert: need at least 2 sentences")
+  if (N < 2L) stop("sbert: need at least 2 sentences")
   if (!(mode %in% c("cross-encoder", "bi-encoder")))
-    stop("sbert: mode must be cross-encoder or bi-encoder, got ", format(mode))
-  cross <- (N * (N - 1L)) %/% 2L
+    stop(sprintf("sbert: mode must be cross-encoder or bi-encoder, got '%s'", mode))
+  cross <- N * (N - 1L) / 2L
   list(forward_passes = if (mode == "cross-encoder") cross else N,
        cross_encoder = cross, bi_encoder = N,
        speedup = cross / N, n = N,
@@ -181,26 +186,29 @@ pair_cost <- function(n, mode = "cross-encoder") {
 #'
 #' @param query Passed to \code{cosine_similarity}.
 #' @param corpus_embeddings Passed to \code{.sbert_mat}.
-#' @param top_k Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.
+#' @param top_k Numeric; passed to \code{min}. Defaults to \code{5}.
 #' @return A list with \code{ranking}, \code{n_corpus}, \code{forward_passes}, \code{note}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' rank_by_similarity(V, V)
+#' @keywords internal
 rank_by_similarity <- function(query, corpus_embeddings, top_k = 5) {
   E <- .sbert_mat(corpus_embeddings)
-  if (nrow(E) == 0L)
-    stop("sbert: the corpus is empty")
-  scores <- lapply(seq_len(nrow(E)), function(i) {
-    c(i, cosine_similarity(query, E[i, , drop = FALSE]))
-  })
-  ord <- order(-sapply(scores, function(s) s[2]))
-  top <- ord[seq_len(min(as.integer(top_k), length(ord)))]
-  list(ranking = scores[top], n_corpus = nrow(E),
-       forward_passes = 0,
+  if (nrow(E) == 0) stop("sbert: the corpus is empty")
+  scores <- numeric(nrow(E))
+  for (i in seq_len(nrow(E))) scores[i] <- cosine_similarity(query, E[i, ])
+  ord <- order(-scores)
+  keep <- ord[seq_len(min(top_k, length(ord)))]
+  rk <- cbind(keep, scores[keep])
+  colnames(rk) <- c("index", "score")
+  list(ranking = rk, n_corpus = nrow(E), forward_passes = 0,
        note = "no network passes at query time -- the corpus was embedded once")
 }
 
 #' sts_score
 #'
-#' A step of the sbert_native implementation. Called by \code{morie_sbert}.
+#' A step of the sbert_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -209,45 +217,29 @@ rank_by_similarity <- function(query, corpus_embeddings, top_k = 5) {
 #' @return A list with \code{estimate}, \code{scores}, \code{embed_calls},
 #' \code{n_pairs}, \code{cross_encoder_calls}, \code{method}.
 #' @export
+#' @keywords internal
 sts_score <- function(pairs, embed) {
-  cache <- list()
+  cache <- new.env(hash = TRUE)
   out <- numeric(length(pairs))
   calls <- 0L
   for (i in seq_along(pairs)) {
-    a <- pairs[[i]][1]
-    b <- pairs[[i]][2]
-    for (s in c(a, b)) {
-      key <- as.character(s)
-      if (is.null(cache[[key]])) {
-        cache[[key]] <- as.numeric(.sbert_vec(embed(s)))
-        calls <- calls + 1L
-      }
+    pr <- pairs[[i]]
+    a <- pr[1]
+    b <- pr[2]
+    if (!exists(a, envir = cache, inherits = FALSE)) {
+      assign(a, as.numeric(embed(a)), envir = cache)
+      calls <- calls + 1L
     }
-    out[i] <- cosine_similarity(cache[[as.character(a)]],
-                                cache[[as.character(b)]])
+    if (!exists(b, envir = cache, inherits = FALSE)) {
+      assign(b, as.numeric(embed(b)), envir = cache)
+      calls <- calls + 1L
+    }
+    out[i] <- cosine_similarity(get(a, envir = cache), get(b, envir = cache))
   }
   list(estimate = out, scores = out, embed_calls = calls,
-       n_pairs = length(pairs),
-       cross_encoder_calls = length(pairs),
+       n_pairs = length(pairs), cross_encoder_calls = length(pairs),
        method = "siamese bi-encoder scored by cosine; Reimers & Gurevych (2019)")
 }
-
-#' morie_sbert
-#'
-#' A step of the sbert_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param pairs Passed to \code{sts_score}.
-#' @param embed Passed to \code{sts_score}.
-#' @return The value of \code{sts_score}.
-#' @export
-morie_sbert <- function(pairs, embed) {
-  sts_score(pairs, embed)
-}
-
-sbert <- sts_score
-sentencebert <- sts_score
 
 #' .sbert_cheatsheet
 #'
@@ -261,13 +253,18 @@ sentencebert <- sts_score
 #' res <- .sbert_cheatsheet()
 #' res
 .sbert_cheatsheet <- function() {
-  paste("sbert: BERT scores a PAIR, so comparing n sentences needs",
-        "C(n,2) forward passes -- 10k sentences is ~50M. A SIAMESE",
-        "network embeds each sentence ONCE with shared weights, so",
-        "it is n passes plus dot products. Classification",
-        "objective: softmax over (u, v, |u-v|) -- the difference",
-        "term is what locates the disagreement. Regression",
-        "objective: cosine directly, and only that one trains the",
-        "cosine geometry. Pooling (mean/CLS/max) is a real choice,",
-        "all three ablated.")
+  paste("sbert: BERT scores a PAIR, so comparing n sentences needs ",
+        "C(n,2) forward passes -- 10k sentences is ~50M. A SIAMESE ",
+        "network embeds each sentence ONCE with shared weights, so it ",
+        "is n passes plus dot products. Classification objective: ",
+        "softmax over (u, v, |u-v|) -- the difference term is what ",
+        "locates the disagreement. Regression objective: cosine ",
+        "directly, and only that one trains the cosine geometry. ",
+        "Pooling (mean/CLS/max) is a real choice, all three ablated.",
+        sep = "")
 }
+
+sentencebert <- sts_score
+sbert <- sts_score
+
+morie_sbert <- sts_score

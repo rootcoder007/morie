@@ -5,7 +5,7 @@
 #
 # Ported from src/morie/datasets.py.  Each function is a thin, stable
 # wrapper that resolves to either a live HTTP fetch (httr2) or a
-# bundled-in-package synthetic frame.  Synthetic frames are CSVs under
+# included-in-package synthetic frame.  Synthetic frames are CSVs under
 # `inst/extdata/` of the morie R package; absence of a synthetic CSV is
 # surfaced as a clean `FileNotFoundError`-style condition.
 
@@ -29,7 +29,7 @@
   path
 }
 
-#' Read a bundled synthetic frame, warning the user it's a toy dataset
+#' Read a included synthetic frame, warning the user it's a toy dataset
 #' @keywords internal
 #' @noRd
 .morie_dataset_read_synthetic <- function(name, kind, columns = NULL) {
@@ -106,8 +106,9 @@
 #' @noRd
 .morie_dataset_http_backend_cpp <- function() {
   exists(".morie_http_get",
-         where = asNamespace("morie"),
-         mode = "function")
+    where = asNamespace("morie"),
+    mode = "function"
+  )
 }
 
 #' GET that returns the response body as a UTF-8 character string.
@@ -116,17 +117,21 @@
 #' @keywords internal
 #' @noRd
 .morie_dataset_http_text <- function(url, query = NULL,
-                                       headers = character(),
-                                       timeout_s = 60L) {
+                                     headers = character(),
+                                     timeout_s = 60L) {
   full_url <- .morie_dataset_build_url(url, query)
   if (.morie_dataset_http_backend_cpp()) {
-    return(.morie_http_get(full_url, timeout_s = as.integer(timeout_s),
-                            headers = as.character(headers)))
+    return(.morie_http_get(full_url,
+      timeout_s = as.integer(timeout_s),
+      headers = as.character(headers)
+    ))
   }
   if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie datasets HTTP fetch needs either the libcurl-backed ",
-         "C++ backend (built into morie.so via src/morie_http.cpp) ",
-         "or the 'httr2' R package.")
+    stop(
+      "morie datasets HTTP fetch needs either the libcurl-backed ",
+      "C++ backend (built into morie.so via src/morie_http.cpp) ",
+      "or the 'httr2' R package."
+    )
   }
   req <- httr2::request(full_url)
   if (length(headers) > 0L) {
@@ -134,8 +139,10 @@
     kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
-      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
-                                vapply(kv, `[[`, character(1L), 1L))
+      named <- stats::setNames(
+        vapply(kv, `[[`, character(1L), 2L),
+        vapply(kv, `[[`, character(1L), 1L)
+      )
       req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
     }
   }
@@ -149,59 +156,75 @@
 #' @keywords internal
 #' @noRd
 .morie_dataset_http_text_with_status <- function(url, query = NULL,
-                                                    headers = character(),
-                                                    timeout_s = 60L) {
+                                                 headers = character(),
+                                                 timeout_s = 60L) {
   full_url <- .morie_dataset_build_url(url, query)
   if (exists(".morie_http_get_with_status",
-              where = asNamespace("morie"),
-              mode = "function")) {
+    where = asNamespace("morie"),
+    mode = "function"
+  )) {
     return(.morie_http_get_with_status(
-      full_url, timeout_s = as.integer(timeout_s),
-      headers = as.character(headers)))
+      full_url,
+      timeout_s = as.integer(timeout_s),
+      headers = as.character(headers)
+    ))
   }
   if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie datasets HTTP fetch needs either the libcurl-backed ",
-         "C++ backend or the 'httr2' R package.")
+    stop(
+      "morie datasets HTTP fetch needs either the libcurl-backed ",
+      "C++ backend or the 'httr2' R package."
+    )
   }
   req <- httr2::request(full_url)
   if (length(headers) > 0L) {
     kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
-      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
-                                vapply(kv, `[[`, character(1L), 1L))
+      named <- stats::setNames(
+        vapply(kv, `[[`, character(1L), 2L),
+        vapply(kv, `[[`, character(1L), 1L)
+      )
       req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
     }
   }
   req <- httr2::req_error(req, is_error = function(resp) FALSE)
   resp <- httr2::req_perform(req)
-  list(body = httr2::resp_body_string(resp),
-       status_code = as.integer(httr2::resp_status(resp)))
+  list(
+    body = httr2::resp_body_string(resp),
+    status_code = as.integer(httr2::resp_status(resp))
+  )
 }
 
 #' Status-aware POST + JSON body. 3ZZ
 #' @keywords internal
 #' @noRd
 .morie_dataset_http_post_json_with_status <- function(url, body,
-                                                         query = NULL,
-                                                         headers = character(),
-                                                         timeout_s = 60L,
-                                                         auto_unbox = TRUE) {
+                                                      query = NULL,
+                                                      headers = character(),
+                                                      timeout_s = 60L,
+                                                      auto_unbox = TRUE) {
   full_url <- .morie_dataset_build_url(url, query)
-  body_str <- .morie_to_json(body, auto_unbox = auto_unbox,
-                                 null = "null")
+  body_str <- .morie_to_json(body,
+    auto_unbox = auto_unbox,
+    null = "null"
+  )
   if (exists(".morie_http_post_with_status",
-              where = asNamespace("morie"),
-              mode = "function")) {
+    where = asNamespace("morie"),
+    mode = "function"
+  )) {
     return(.morie_http_post_with_status(
-      full_url, body = as.character(body_str),
+      full_url,
+      body = as.character(body_str),
       content_type = "application/json",
       timeout_s = as.integer(timeout_s),
-      headers = as.character(headers)))
+      headers = as.character(headers)
+    ))
   }
   if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie datasets HTTP POST needs either the libcurl-backed ",
-         "C++ backend or the 'httr2' R package.")
+    stop(
+      "morie datasets HTTP POST needs either the libcurl-backed ",
+      "C++ backend or the 'httr2' R package."
+    )
   }
   req <- httr2::request(full_url)
   req <- httr2::req_body_json(req, body, auto_unbox = auto_unbox)
@@ -209,15 +232,19 @@
     kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
-      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
-                                vapply(kv, `[[`, character(1L), 1L))
+      named <- stats::setNames(
+        vapply(kv, `[[`, character(1L), 2L),
+        vapply(kv, `[[`, character(1L), 1L)
+      )
       req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
     }
   }
   req <- httr2::req_error(req, is_error = function(resp) FALSE)
   resp <- httr2::req_perform(req)
-  list(body = httr2::resp_body_string(resp),
-       status_code = as.integer(httr2::resp_status(resp)))
+  list(
+    body = httr2::resp_body_string(resp),
+    status_code = as.integer(httr2::resp_status(resp))
+  )
 }
 
 #' Synchronous POST + parse JSON. 3YY: routes through morie's C++
@@ -227,36 +254,49 @@
 #' @keywords internal
 #' @noRd
 .morie_dataset_http_post_json <- function(url, body, query = NULL,
-                                            headers = character(),
-                                            timeout_s = 60L,
-                                            auto_unbox = TRUE) {
+                                          headers = character(),
+                                          timeout_s = 60L,
+                                          auto_unbox = TRUE) {
   full_url <- .morie_dataset_build_url(url, query)
-  body_str <- .morie_to_json(body, auto_unbox = auto_unbox,
-                                 null = "null")
+  body_str <- .morie_to_json(body,
+    auto_unbox = auto_unbox,
+    null = "null"
+  )
   if (exists(".morie_http_post",
-              where = asNamespace("morie"),
-              mode = "function")) {
+    where = asNamespace("morie"),
+    mode = "function"
+  )) {
     resp <- .morie_http_post(full_url,
-                              body = as.character(body_str),
-                              content_type = "application/json",
-                              timeout_s = as.integer(timeout_s),
-                              headers = as.character(headers))
+      body = as.character(body_str),
+      content_type = "application/json",
+      timeout_s = as.integer(timeout_s),
+      headers = as.character(headers)
+    )
     if (!nzchar(resp)) {
-      stop(sprintf("morie HTTP POST failed (libcurl returned empty body): %s",
-                   full_url), call. = FALSE)
+      stop(sprintf(
+        "morie HTTP POST failed (libcurl returned empty body): %s",
+        full_url
+      ), call. = FALSE)
     }
     parsed <- tryCatch(.morie_from_json(resp, simplifyVector = FALSE),
-                       error = function(e) {
-      snippet <- substr(gsub("\\s+", " ", resp), 1L, 120L)
-      stop(sprintf(paste0("morie HTTP POST returned non-JSON (service ",
-                          "error page?) from %s: %s"),
-                   full_url, snippet), call. = FALSE)
-    })
+      error = function(e) {
+        snippet <- substr(gsub("\\s+", " ", resp), 1L, 120L)
+        stop(sprintf(
+          paste0(
+            "morie HTTP POST returned non-JSON (service ",
+            "error page?) from %s: %s"
+          ),
+          full_url, snippet
+        ), call. = FALSE)
+      }
+    )
     return(parsed)
   }
   if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie datasets POST needs either the libcurl-backed C++ ",
-         "backend or the 'httr2' R package.")
+    stop(
+      "morie datasets POST needs either the libcurl-backed C++ ",
+      "backend or the 'httr2' R package."
+    )
   }
   req <- httr2::request(full_url)
   req <- httr2::req_body_json(req, body, auto_unbox = auto_unbox)
@@ -264,8 +304,10 @@
     kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
-      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
-                                vapply(kv, `[[`, character(1L), 1L))
+      named <- stats::setNames(
+        vapply(kv, `[[`, character(1L), 2L),
+        vapply(kv, `[[`, character(1L), 1L)
+      )
       req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
     }
   }
@@ -281,28 +323,34 @@
 #' @keywords internal
 #' @noRd
 .morie_dataset_http_bytes <- function(url, query = NULL,
-                                        headers = character(),
-                                        timeout_s = 60L) {
+                                      headers = character(),
+                                      timeout_s = 60L) {
   full_url <- .morie_dataset_build_url(url, query)
   if (exists(".morie_http_get_bytes",
-              where = asNamespace("morie"),
-              mode = "function")) {
+    where = asNamespace("morie"),
+    mode = "function"
+  )) {
     return(.morie_http_get_bytes(full_url,
-                                  timeout_s = as.integer(timeout_s),
-                                  headers = as.character(headers)))
+      timeout_s = as.integer(timeout_s),
+      headers = as.character(headers)
+    ))
   }
   if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie datasets binary fetch needs either the libcurl-backed ",
-         "C++ backend (built into morie.so via src/morie_http.cpp) ",
-         "or the 'httr2' R package.")
+    stop(
+      "morie datasets binary fetch needs either the libcurl-backed ",
+      "C++ backend (built into morie.so via src/morie_http.cpp) ",
+      "or the 'httr2' R package."
+    )
   }
   req <- httr2::request(full_url)
   if (length(headers) > 0L) {
     kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
-      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
-                                vapply(kv, `[[`, character(1L), 1L))
+      named <- stats::setNames(
+        vapply(kv, `[[`, character(1L), 2L),
+        vapply(kv, `[[`, character(1L), 1L)
+      )
       req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
     }
   }
@@ -378,7 +426,8 @@
   }
   do.call(rbind, lapply(records, function(r) {
     as.data.frame(lapply(r, function(v) if (is.null(v)) NA else v),
-                  stringsAsFactors = FALSE)
+      stringsAsFactors = FALSE
+    )
   }))
 }
 
@@ -413,10 +462,14 @@
   df <- .morie_dataset_records_to_df(attrs)
   if (isTRUE(return_geometry)) {
     geoms <- lapply(features, function(f) f$geometry)
-    df$geom_x <- vapply(geoms, function(g) if (is.null(g$x)) NA_real_ else g$x,
-                       numeric(1))
-    df$geom_y <- vapply(geoms, function(g) if (is.null(g$y)) NA_real_ else g$y,
-                       numeric(1))
+    df$geom_x <- vapply(
+      geoms, function(g) if (is.null(g$x)) NA_real_ else g$x,
+      numeric(1)
+    )
+    df$geom_y <- vapply(
+      geoms, function(g) if (is.null(g$y)) NA_real_ else g$y,
+      numeric(1)
+    )
   }
   df
 }
@@ -427,7 +480,7 @@
 #'   server-side.
 #' @param max_features Integer or `NULL`; cap on returned rows.
 #' @param include_geometry Logical; include `geom_x` / `geom_y`.
-#' @param offline Logical; return the bundled synthetic frame instead
+#' @param offline Logical; return the included synthetic frame instead
 #'   of hitting the live ArcGIS endpoint.
 #' @return A `data.frame` with the documented TPS schema.
 #' @examples
@@ -493,12 +546,14 @@ morie_datasets_tps_homicide <- function(year = NULL, max_features = NULL) {
   )
 }
 
-#' List the TPS open-data layers bundled with morie
+#' List the TPS open-data layers included with morie
 #'
 #' @return A `data.frame` with columns `name` and `url`.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_tps_layers()
 #' df$name
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_tps_layers <- function() {
   data.frame(
@@ -519,7 +574,7 @@ morie_datasets_tps_layers <- function() {
 #' \enumerate{
 #'   \item A pre-wrangled local RDS at `morie_cpads_contract()$expected_wrangled_path`
 #'         (only useful if you've already produced one), OR
-#'   \item the bundled 30-row real PUMF sample at
+#'   \item the included 30-row real PUMF sample at
 #'         `inst/extdata/cpads_pumf_synthetic.csv` (when `offline = TRUE`,
 #'         the default; carries all 394 raw PUMF columns plus the 11
 #'         morie canonical analysis aliases), OR
@@ -539,7 +594,7 @@ morie_datasets_tps_layers <- function() {
 #' Sister surveys (CSADS, CSUS, CTADS) are at
 #' \url{https://health-infobase.canada.ca/substance-use/}.
 #'
-#' @param offline Logical. `TRUE` (default) prefers the bundled fixture
+#' @param offline Logical. `TRUE` (default) prefers the included fixture
 #'   for fast/CRAN-safe runs; `FALSE` fetches the live PUMF.
 #' @param mode Character; one of `"datastore_search"` (default;
 #'   queryable CKAN datastore endpoint, supports `limit`/`q`) or
@@ -558,9 +613,13 @@ morie_datasets_tps_layers <- function() {
 #' @seealso [morie_cpads_contract()] for the canonical schema +
 #'   column map; [morie_datasets_load_by_key()] for catalog-wide
 #'   dispatch.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
 #' df <- try(suppressWarnings(morie_datasets_cpads()))
 #' if (!inherits(df, "try-error")) head(df)
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_cpads <- function(offline = TRUE,
                                  mode = c("datastore_search", "csv"),
@@ -614,7 +673,7 @@ morie_datasets_cpads <- function(offline = TRUE,
 #' Earlier morie versions wrongly claimed this data was FOI-only;
 #' that was incorrect and has been retracted as of 3MMM.
 #'
-#' @param offline Logical. `TRUE` (default) reads the bundled
+#' @param offline Logical. `TRUE` (default) reads the included
 #'   `otis_a01_restrictive_confinement_sample.csv` fixture. `FALSE`
 #'   fetches the live CKAN dataset.
 #' @param ... Forwarded to
@@ -650,21 +709,26 @@ morie_datasets_otis_a01 <- function(offline = TRUE, ...) {
 #' @export
 morie_datasets_siu_director_reports <- function() {
   if (!requireNamespace("rvest", quietly = TRUE) ||
-      !requireNamespace("xml2", quietly = TRUE)) {
+    !requireNamespace("xml2", quietly = TRUE)) {
     warning("morie_datasets_siu_director_reports: 'rvest' + 'xml2' required for live scrape.",
-            call. = FALSE)
-    return(data.frame(case_number = character(),
-                      url = character(),
-                      posted_date = as.Date(character()),
-                      stringsAsFactors = FALSE))
+      call. = FALSE
+    )
+    return(data.frame(
+      case_number = character(),
+      url = character(),
+      posted_date = as.Date(character()),
+      stringsAsFactors = FALSE
+    ))
   }
   page <- xml2::read_html("https://www.siu.on.ca/en/directors_reports.php")
   anchors <- rvest::html_elements(page, "a[href$='.pdf']")
   urls <- rvest::html_attr(anchors, "href")
   if (length(urls) == 0L) {
-    return(data.frame(case_number = character(),
-                      url = character(),
-                      stringsAsFactors = FALSE))
+    return(data.frame(
+      case_number = character(),
+      url = character(),
+      stringsAsFactors = FALSE
+    ))
   }
   case_re <- "([0-9]{2}-[A-Z]{2,4}-[0-9]{3,4})"
   m <- regmatches(urls, regexpr(case_re, urls))
@@ -1119,7 +1183,7 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
 #' @param year Integer or `NULL`; server-side year filter.
 #' @param max_features Integer or `NULL`; cap on returned rows. When
 #'   `paginate = TRUE` this is the total cap across all walked pages.
-#' @param offline Logical; if `TRUE`, return the bundled synthetic frame.
+#' @param offline Logical; if `TRUE`, return the included synthetic frame.
 #' @param mode One of `"soda2"` (default) or `"soda3"`. Selects the
 #'   API path for live mode:
 #'   * `"soda2"` -> `/resource/<id>.json?$where=...` via
@@ -1175,7 +1239,8 @@ morie_datasets_chicago_crime <- function(year = NULL,
       max_features = max_features,
       paginate = paginate,
       page_size = page_size,
-      max_pages = max_pages))
+      max_pages = max_pages
+    ))
   }
   # mode == "soda3": route via SoQL passthrough.
   soql <- if (is.null(year)) {
@@ -1184,12 +1249,14 @@ morie_datasets_chicago_crime <- function(year = NULL,
     sprintf("SELECT * WHERE year=%d", as.integer(year))
   }
   .morie_dataset_soda3_query(
-    "ijzp-q8t2", soql = soql,
+    "ijzp-q8t2",
+    soql = soql,
     app_token = app_token,
     paginate = paginate,
     page_size = page_size,
     max_pages = max_pages,
-    max_features = max_features)
+    max_features = max_features
+  )
 }
 
 #' NYC OpenData SQF resource map (verified 2026-05)
@@ -1207,7 +1274,7 @@ morie_datasets_chicago_crime <- function(year = NULL,
 #'   `NULL` defaults to the most-recent registered year.
 #' @param max_features Integer or `NULL`; cap on returned rows. When
 #'   `paginate = TRUE` this is the total cap across all walked pages.
-#' @param offline Logical; if `TRUE`, return the bundled synthetic frame.
+#' @param offline Logical; if `TRUE`, return the included synthetic frame.
 #' @param paginate Logical; if `TRUE` and `offline = FALSE`, walk
 #'   SODA2 `$offset` in `page_size` chunks. Default `FALSE`.
 #' @param page_size Integer; per-page row count when paginating
@@ -1270,7 +1337,7 @@ morie_datasets_nyc_stop_and_frisk <- function(year = NULL,
 #' @examples
 #' \dontshow{if (nzchar(Sys.getenv("GCP_PROJECT")) && requireNamespace("bigrquery", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' # Runs when the caller has bigrquery + a GCP_PROJECT billing project.
-#' # Keyless alternatives: the bundled samples in 'moriedata' and the
+#' # Keyless alternatives: the bundled samples in 'rmoriedata' and the
 #' # morie_datasets_*() open-data fetchers (Socrata / CKAN, no account).
 #' df <- morie_datasets_bigquery("bigquery-public-data", "chicago_crime",
 #'   "crime",
@@ -1316,7 +1383,8 @@ morie_datasets_bigquery <- function(project, dataset, table,
 #' \donttest{
 #' out <- try(morie_datasets_ckan_search(
 #'   portal = "https://open.canada.ca/data",
-#'   query = "policing", rows = 3L))
+#'   query = "policing", rows = 3L
+#' ))
 #' if (!inherits(out, "try-error")) head(out)
 #' }
 #' @export
@@ -1340,8 +1408,10 @@ morie_datasets_ckan_search <- function(portal, query, rows = 50L) {
 #' @return Named list mapping `resource_name -> data.frame`.
 #' @examples
 #' \donttest{
-#' res <- try(morie_datasets_ckan_package("https://open.canada.ca/data",
-#'                                        "public-safety-canada-grants-and-contributions"))
+#' res <- try(morie_datasets_ckan_package(
+#'   "https://open.canada.ca/data",
+#'   "public-safety-canada-grants-and-contributions"
+#' ))
 #' if (!inherits(res, "try-error")) str(res, max.level = 1)
 #' }
 #' @export
@@ -1382,11 +1452,13 @@ morie_datasets_ckan_package <- function(portal, package_id) {
 #' @param state Character; two-letter US state code, or `NULL` for national.
 #' @param offense Character; NIBRS offence slug, or `NULL` for all.
 #' @param api_key Character; FBI CDE API key (or `NULL` -> env var).
-#' @param offline Logical; if `TRUE`, return a bundled synthetic frame.
+#' @param offline Logical; if `TRUE`, return a included synthetic frame.
 #' @return A `data.frame`.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_nibrs(year = 2023L, offline = TRUE)
 #' head(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_nibrs <- function(year = NULL, max_features = NULL,
                                  state = NULL, offense = NULL,
@@ -1394,8 +1466,10 @@ morie_datasets_nibrs <- function(year = NULL, max_features = NULL,
   if (isTRUE(offline)) {
     df <- .morie_dataset_read_synthetic(
       "nibrs_synthetic", "nibrs",
-      columns = c("ori", "state_abbr", "offense_code", "offense_name",
-                  "data_year", "incident_count")
+      columns = c(
+        "ori", "state_abbr", "offense_code", "offense_name",
+        "data_year", "incident_count"
+      )
     )
     if (!is.null(max_features) && nrow(df) > 0L) {
       df <- utils::head(df, as.integer(max_features))
@@ -1423,11 +1497,13 @@ morie_datasets_nibrs <- function(year = NULL, max_features = NULL,
 #'
 #' @param state Character; two-letter US state code or `NULL` (national).
 #' @param max_features Integer or `NULL`; cap on returned rows.
-#' @param offline Logical; if `TRUE`, return a bundled synthetic frame.
+#' @param offline Logical; if `TRUE`, return a included synthetic frame.
 #' @return A `data.frame`.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_namus_missing_persons(state = "CA", offline = TRUE)
 #' head(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_namus_missing_persons <- function(state = NULL,
                                                  max_features = NULL,
@@ -1435,9 +1511,11 @@ morie_datasets_namus_missing_persons <- function(state = NULL,
   if (isTRUE(offline)) {
     df <- .morie_dataset_read_synthetic(
       "namus_missing_persons_synthetic", "namus_missing_persons",
-      columns = c("caseNumber", "firstName", "lastName", "state",
-                  "city", "county", "ageFrom", "ageTo", "sex",
-                  "race", "dateOfLastContact")
+      columns = c(
+        "caseNumber", "firstName", "lastName", "state",
+        "city", "county", "ageFrom", "ageTo", "sex",
+        "race", "dateOfLastContact"
+      )
     )
     if (!is.null(state) && "state" %in% colnames(df)) {
       df <- df[toupper(as.character(df$state)) == toupper(state), , drop = FALSE]
@@ -1450,8 +1528,11 @@ morie_datasets_namus_missing_persons <- function(state = NULL,
   }
   url <- "https://www.namus.gov/api/CaseSets/NamUs/MissingPersons/Search"
   body <- .morie_dataset_http_json(
-    url, query = c(list(take = max_features %||% 200L),
-                   if (!is.null(state)) list(state = state) else NULL)
+    url,
+    query = c(
+      list(take = max_features %||% 200L),
+      if (!is.null(state)) list(state = state) else NULL
+    )
   )
   .morie_dataset_records_to_df(body$results %||% body)
 }
@@ -1461,11 +1542,13 @@ morie_datasets_namus_missing_persons <- function(state = NULL,
 #' @param dataset_id Character or `NULL`; specific NIST RDS id.
 #' @param query Character or `NULL`; free-text search.
 #' @param max_features Integer or `NULL`; cap on returned rows.
-#' @param offline Logical; if `TRUE`, return a bundled synthetic frame.
+#' @param offline Logical; if `TRUE`, return a included synthetic frame.
 #' @return A `data.frame` with the NIST RDS catalog schema.
-#' @examplesIf nzchar(system.file("extdata", "nist_rds_synthetic.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (nzchar(system.file("extdata", "nist_rds_synthetic.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_nist_rds(offline = TRUE)
 #' head(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_nist_rds <- function(dataset_id = NULL, query = NULL,
                                     max_features = NULL, offline = FALSE) {
@@ -1645,7 +1728,7 @@ morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
 #' @param top Optional per-request row count (= `$top`).
 #' @param skip Optional start offset (= `$skip`).
 #' @param max_features Optional total row cap across pages.
-#' @param offline Logical; default `TRUE` reads the bundled 22-col
+#' @param offline Logical; default `TRUE` reads the included 22-col
 #'   `chicago_crime_synthetic.csv` fixture.
 #' @param resource_id Optional view id override (default
 #'   `"ijzp-q8t2"`; pass `"crimes"` for the publisher alias).
@@ -1660,20 +1743,21 @@ morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
 #' nrow(df)
 #' @export
 morie_datasets_chicago_crime_odata <- function(filter = NULL,
-                                                 select = NULL,
-                                                 orderby = NULL,
-                                                 top = NULL,
-                                                 skip = NULL,
-                                                 max_features = NULL,
-                                                 offline = TRUE,
-                                                 resource_id = NULL,
-                                                 paginate = FALSE,
-                                                 max_pages = 200L,
-                                                 app_token = NULL) {
+                                               select = NULL,
+                                               orderby = NULL,
+                                               top = NULL,
+                                               skip = NULL,
+                                               max_features = NULL,
+                                               offline = TRUE,
+                                               resource_id = NULL,
+                                               paginate = FALSE,
+                                               max_pages = 200L,
+                                               app_token = NULL) {
   if (isTRUE(offline)) {
     df <- .morie_dataset_read_synthetic(
       "chicago_crime_synthetic", "chicago_crime_odata",
-      columns = .MORIE_CHICAGO_CRIME_COLUMNS)
+      columns = .MORIE_CHICAGO_CRIME_COLUMNS
+    )
     if (!is.null(max_features)) {
       df <- utils::head(df, as.integer(max_features))
     }
@@ -1681,15 +1765,16 @@ morie_datasets_chicago_crime_odata <- function(filter = NULL,
   }
   if (is.null(resource_id)) resource_id <- "ijzp-q8t2"
   .morie_dataset_odata_fetch(resource_id,
-                              filter = filter,
-                              select = select,
-                              orderby = orderby,
-                              top = top,
-                              skip = skip,
-                              app_token = app_token,
-                              paginate = paginate,
-                              max_pages = max_pages,
-                              max_features = max_features)
+    filter = filter,
+    select = select,
+    orderby = orderby,
+    top = top,
+    skip = skip,
+    app_token = app_token,
+    paginate = paginate,
+    max_pages = max_pages,
+    max_features = max_features
+  )
 }
 
 # ---------------------------------------------------------------------------
@@ -1840,19 +1925,20 @@ morie_datasets_chicago_crime_map <- function(date_from = NULL,
 #' nrow(df)
 #' @export
 morie_datasets_chicago_crime_soql <- function(where = NULL,
-                                                select = "*",
-                                                order = NULL,
-                                                max_features = NULL,
-                                                offline = TRUE,
-                                                resource_id = NULL,
-                                                paginate = FALSE,
-                                                page_size = 1000L,
-                                                max_pages = 200L,
-                                                app_token = NULL) {
+                                              select = "*",
+                                              order = NULL,
+                                              max_features = NULL,
+                                              offline = TRUE,
+                                              resource_id = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L,
+                                              app_token = NULL) {
   if (isTRUE(offline)) {
     df <- .morie_dataset_read_synthetic(
       "chicago_crime_synthetic", "chicago_crime_soql",
-      columns = .MORIE_CHICAGO_CRIME_COLUMNS)
+      columns = .MORIE_CHICAGO_CRIME_COLUMNS
+    )
     if (!is.null(max_features)) {
       df <- utils::head(df, as.integer(max_features))
     }
@@ -1866,12 +1952,14 @@ morie_datasets_chicago_crime_soql <- function(where = NULL,
     parts <- paste(parts, sprintf("ORDER BY %s", order))
   }
   if (is.null(resource_id)) resource_id <- "ijzp-q8t2"
-  .morie_dataset_soda3_query(resource_id, soql = parts,
-                              app_token = app_token,
-                              paginate = paginate,
-                              page_size = page_size,
-                              max_pages = max_pages,
-                              max_features = max_features)
+  .morie_dataset_soda3_query(resource_id,
+    soql = parts,
+    app_token = app_token,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages,
+    max_features = max_features
+  )
 }
 
 # ---------------------------------------------------------------------------
@@ -2133,7 +2221,7 @@ morie_datasets_chicago_police_districts <- function(offline = TRUE,
 #' iucr`           \cr
 #' }
 #'
-#' The resolvers are loaded in offline mode (they're all bundled +
+#' The resolvers are loaded in offline mode (they're all included +
 #' small), so this analyzer only touches the network for the crime
 #' pull itself. Resolver columns are prefixed with the source name
 #' (`ward_*`, `community_*`, `beat_*`, `district_*`, `iucr_*`) to
@@ -2148,29 +2236,38 @@ morie_datasets_chicago_police_districts <- function(offline = TRUE,
 #'   specific joins (e.g. `"iucr"` only).
 #' @return A wide `data.frame`: crime columns first, then the
 #'   joined resolver columns with their canonical prefixes.
-#' @examplesIf nzchar(system.file("extdata", "chicago_iucr_codes.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (nzchar(system.file("extdata", "chicago_iucr_codes.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_crime_resolved(
 #'   offline = TRUE,
 #'   max_features = 5L,
-#'   resolvers = c("ward", "iucr"))
+#'   resolvers = c("ward", "iucr")
+#' )
 #' names(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_chicago_crime_resolved <- function(
-    year = NULL,
-    max_features = NULL,
-    offline = TRUE,
-    mode = c("soda2", "soda3"),
-    paginate = FALSE,
-    page_size = 1000L,
-    max_pages = 200L,
-    app_token = NULL,
-    resolvers = c("ward", "community_area", "beat",
-                  "district", "iucr")) {
+  year = NULL,
+  max_features = NULL,
+  offline = TRUE,
+  mode = c("soda2", "soda3"),
+  paginate = FALSE,
+  page_size = 1000L,
+  max_pages = 200L,
+  app_token = NULL,
+  resolvers = c(
+    "ward", "community_area", "beat",
+    "district", "iucr"
+  )
+) {
   mode <- match.arg(mode)
   resolvers <- match.arg(resolvers,
-                          choices = c("ward", "community_area",
-                                       "beat", "district", "iucr"),
-                          several.ok = TRUE)
+    choices = c(
+      "ward", "community_area",
+      "beat", "district", "iucr"
+    ),
+    several.ok = TRUE
+  )
   crime <- morie_datasets_chicago_crime(
     year = year,
     max_features = max_features,
@@ -2179,7 +2276,8 @@ morie_datasets_chicago_crime_resolved <- function(
     paginate = paginate,
     page_size = page_size,
     max_pages = max_pages,
-    app_token = app_token)
+    app_token = app_token
+  )
   out <- crime
 
   # Helper: prefix a resolver's non-join columns to avoid collisions.
@@ -2194,20 +2292,26 @@ morie_datasets_chicago_crime_resolved <- function(
     w <- morie_datasets_chicago_wards(offline = TRUE)
     w <- prefix_cols(w, drop = "ward", prefix = "ward")
     out$ward <- as.character(out$ward)
-    out <- merge(out, w, by = "ward",
-                  all.x = TRUE, sort = FALSE)
+    out <- merge(out, w,
+      by = "ward",
+      all.x = TRUE, sort = FALSE
+    )
   }
 
   # community_area (crime$community_area vs areas$area_numbe)
   if ("community_area" %in% resolvers &&
-      "community_area" %in% names(out)) {
+    "community_area" %in% names(out)) {
     ca <- morie_datasets_chicago_community_areas(offline = TRUE)
     names(ca)[names(ca) == "area_numbe"] <- "community_area"
-    ca <- prefix_cols(ca, drop = "community_area",
-                       prefix = "community")
+    ca <- prefix_cols(ca,
+      drop = "community_area",
+      prefix = "community"
+    )
     out$community_area <- as.character(out$community_area)
-    out <- merge(out, ca, by = "community_area",
-                  all.x = TRUE, sort = FALSE)
+    out <- merge(out, ca,
+      by = "community_area",
+      all.x = TRUE, sort = FALSE
+    )
   }
 
   # beat (crime$beat matches beats$beat_num -- the 4-digit form).
@@ -2216,12 +2320,14 @@ morie_datasets_chicago_crime_resolved <- function(
   # rename below; drop it first.
   if ("beat" %in% resolvers && "beat" %in% names(out)) {
     b <- morie_datasets_chicago_police_beats(offline = TRUE)
-    b$beat <- NULL  # the within-sector beat int; not the join key
+    b$beat <- NULL # the within-sector beat int; not the join key
     names(b)[names(b) == "beat_num"] <- "beat"
     b <- prefix_cols(b, drop = "beat", prefix = "beat")
     out$beat <- as.character(out$beat)
-    out <- merge(out, b, by = "beat",
-                  all.x = TRUE, sort = FALSE)
+    out <- merge(out, b,
+      by = "beat",
+      all.x = TRUE, sort = FALSE
+    )
   }
 
   # district (crime$district vs districts$dist_num)
@@ -2230,8 +2336,10 @@ morie_datasets_chicago_crime_resolved <- function(
     names(d)[names(d) == "dist_num"] <- "district"
     d <- prefix_cols(d, drop = "district", prefix = "district")
     out$district <- as.character(out$district)
-    out <- merge(out, d, by = "district",
-                  all.x = TRUE, sort = FALSE)
+    out <- merge(out, d,
+      by = "district",
+      all.x = TRUE, sort = FALSE
+    )
   }
 
   # iucr (crime$iucr vs codes$iucr). The upstream Chicago Crime feed
@@ -2245,14 +2353,17 @@ morie_datasets_chicago_crime_resolved <- function(
     pad4 <- function(x) {
       x <- as.character(x)
       ifelse(nchar(x) < 4L,
-              paste0(strrep("0", pmax(0L, 4L - nchar(x))), x),
-              x)
+        paste0(strrep("0", pmax(0L, 4L - nchar(x))), x),
+        x
+      )
     }
     i$iucr <- pad4(i$iucr)
     i <- prefix_cols(i, drop = "iucr", prefix = "iucr")
     out$iucr <- pad4(out$iucr)
-    out <- merge(out, i, by = "iucr",
-                  all.x = TRUE, sort = FALSE)
+    out <- merge(out, i,
+      by = "iucr",
+      all.x = TRUE, sort = FALSE
+    )
   }
 
   rownames(out) <- NULL
@@ -2794,69 +2905,95 @@ morie_datasets_cpd_public_arrests <- function(url = NULL,
 #'
 #' @return A `data.frame` with columns `dataset_key`, `label`,
 #'   `portal`, `resource_url`, `fixture`.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' reg <- morie_datasets_external_socrata_layers()
 #' reg[, c("dataset_key", "resource_url")]
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_external_socrata_layers <- function() {
   rows <- list(
-    list(dataset_key = "chicago_crime",
-         label = "City of Chicago -- Crimes (2001 to Present)",
-         portal = "data.cityofchicago.org",
-         resource_url = "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
-         fixture = "chicago_crime_synthetic.csv"),
-    list(dataset_key = "chicago_arrests",
-         label = "City of Chicago -- Arrests",
-         portal = "data.cityofchicago.org",
-         resource_url = "https://data.cityofchicago.org/resource/dpt3-jri9.json",
-         fixture = "chicago_arrests_dpt3_jri9_sample.csv"),
-    list(dataset_key = "chicago_neighborhoods",
-         label = "City of Chicago -- Boundaries-Neighborhoods (Office of Tourism)",
-         portal = "data.cityofchicago.org",
-         resource_url = "https://data.cityofchicago.org/resource/y6yq-dbs2.json",
-         fixture = "chicago_neighborhoods.csv"),
-    list(dataset_key = "chicago_police_beats",
-         label = "City of Chicago -- Boundaries-Police-Beats (current)",
-         portal = "data.cityofchicago.org",
-         resource_url = "https://data.cityofchicago.org/resource/n9it-hstw.json",
-         fixture = "chicago_police_beats.csv"),
-    list(dataset_key = "chicago_police_districts",
-         label = "City of Chicago -- Boundaries-Police-Districts (current)",
-         portal = "data.cityofchicago.org",
-         resource_url = "https://data.cityofchicago.org/resource/24zt-jpfn.json",
-         fixture = "chicago_police_districts.csv"),
-    list(dataset_key = "chicago_wards",
-         label = "City of Chicago -- Boundaries-Wards (2023-)",
-         portal = "data.cityofchicago.org",
-         resource_url = "https://data.cityofchicago.org/resource/sp34-6z76.json",
-         fixture = "chicago_wards.csv"),
-    list(dataset_key = "chicago_community_areas",
-         label = "City of Chicago -- Boundaries-Community-Areas (current)",
-         portal = "data.cityofchicago.org",
-         resource_url = "https://data.cityofchicago.org/resource/cauq-8yn6.json",
-         fixture = "chicago_community_areas.csv"),
-    list(dataset_key = "chicago_iucr_codes",
-         label = "City of Chicago -- IUCR Code Dictionary",
-         portal = "data.cityofchicago.org",
-         resource_url = "https://data.cityofchicago.org/resource/c7ck-438e.json",
-         fixture = "chicago_iucr_codes.csv"),
-    list(dataset_key = "nyc_sqf_2024",
-         label = "NYPD Stop, Question and Frisk -- 2024",
-         portal = "data.cityofnewyork.us",
-         resource_url = "https://data.cityofnewyork.us/resource/7v9w-k82r.json",
-         fixture = "nyc_sqf_synthetic.csv"),
-    list(dataset_key = "nyc_sqf_2023",
-         label = "NYPD Stop, Question and Frisk -- 2023",
-         portal = "data.cityofnewyork.us",
-         resource_url = "https://data.cityofnewyork.us/resource/rbed-zzin.json",
-         fixture = "nyc_sqf_synthetic.csv"),
-    list(dataset_key = "nyc_sqf_2022",
-         label = "NYPD Stop, Question and Frisk -- 2022",
-         portal = "data.cityofnewyork.us",
-         resource_url = "https://data.cityofnewyork.us/resource/e4yi-bvqr.json",
-         fixture = "nyc_sqf_synthetic.csv"))
+    list(
+      dataset_key = "chicago_crime",
+      label = "City of Chicago -- Crimes (2001 to Present)",
+      portal = "data.cityofchicago.org",
+      resource_url = "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
+      fixture = "chicago_crime_synthetic.csv"
+    ),
+    list(
+      dataset_key = "chicago_arrests",
+      label = "City of Chicago -- Arrests",
+      portal = "data.cityofchicago.org",
+      resource_url = "https://data.cityofchicago.org/resource/dpt3-jri9.json",
+      fixture = "chicago_arrests_dpt3_jri9_sample.csv"
+    ),
+    list(
+      dataset_key = "chicago_neighborhoods",
+      label = "City of Chicago -- Boundaries-Neighborhoods (Office of Tourism)",
+      portal = "data.cityofchicago.org",
+      resource_url = "https://data.cityofchicago.org/resource/y6yq-dbs2.json",
+      fixture = "chicago_neighborhoods.csv"
+    ),
+    list(
+      dataset_key = "chicago_police_beats",
+      label = "City of Chicago -- Boundaries-Police-Beats (current)",
+      portal = "data.cityofchicago.org",
+      resource_url = "https://data.cityofchicago.org/resource/n9it-hstw.json",
+      fixture = "chicago_police_beats.csv"
+    ),
+    list(
+      dataset_key = "chicago_police_districts",
+      label = "City of Chicago -- Boundaries-Police-Districts (current)",
+      portal = "data.cityofchicago.org",
+      resource_url = "https://data.cityofchicago.org/resource/24zt-jpfn.json",
+      fixture = "chicago_police_districts.csv"
+    ),
+    list(
+      dataset_key = "chicago_wards",
+      label = "City of Chicago -- Boundaries-Wards (2023-)",
+      portal = "data.cityofchicago.org",
+      resource_url = "https://data.cityofchicago.org/resource/sp34-6z76.json",
+      fixture = "chicago_wards.csv"
+    ),
+    list(
+      dataset_key = "chicago_community_areas",
+      label = "City of Chicago -- Boundaries-Community-Areas (current)",
+      portal = "data.cityofchicago.org",
+      resource_url = "https://data.cityofchicago.org/resource/cauq-8yn6.json",
+      fixture = "chicago_community_areas.csv"
+    ),
+    list(
+      dataset_key = "chicago_iucr_codes",
+      label = "City of Chicago -- IUCR Code Dictionary",
+      portal = "data.cityofchicago.org",
+      resource_url = "https://data.cityofchicago.org/resource/c7ck-438e.json",
+      fixture = "chicago_iucr_codes.csv"
+    ),
+    list(
+      dataset_key = "nyc_sqf_2024",
+      label = "NYPD Stop, Question and Frisk -- 2024",
+      portal = "data.cityofnewyork.us",
+      resource_url = "https://data.cityofnewyork.us/resource/7v9w-k82r.json",
+      fixture = "nyc_sqf_synthetic.csv"
+    ),
+    list(
+      dataset_key = "nyc_sqf_2023",
+      label = "NYPD Stop, Question and Frisk -- 2023",
+      portal = "data.cityofnewyork.us",
+      resource_url = "https://data.cityofnewyork.us/resource/rbed-zzin.json",
+      fixture = "nyc_sqf_synthetic.csv"
+    ),
+    list(
+      dataset_key = "nyc_sqf_2022",
+      label = "NYPD Stop, Question and Frisk -- 2022",
+      portal = "data.cityofnewyork.us",
+      resource_url = "https://data.cityofnewyork.us/resource/e4yi-bvqr.json",
+      fixture = "nyc_sqf_synthetic.csv"
+    )
+  )
   out <- do.call(rbind, lapply(rows, as.data.frame,
-                                stringsAsFactors = FALSE))
+    stringsAsFactors = FALSE
+  ))
   rownames(out) <- NULL
   out
 }

@@ -49,6 +49,10 @@
 #' @param protein Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' fu_microsomes(V)
+#' @keywords internal
 fu_microsomes <- function(log_pd, protein = 1.0) {
   if (as.numeric(protein) <= 0)
     stop("clrnt: microsomal protein concentration must be positive")
@@ -66,6 +70,10 @@ fu_microsomes <- function(log_pd, protein = 1.0) {
 #' to \code{0.005}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' fu_hepatocytes(V)
+#' @keywords internal
 fu_hepatocytes <- function(log_pd, volume_ratio = 0.005) {
   if (as.numeric(volume_ratio) <= 0)
     stop("clrnt: the volume ratio must be positive")
@@ -87,6 +95,10 @@ fu_hepatocytes <- function(log_pd, volume_ratio = 0.005) {
 #' \code{"neutral"}.
 #' @return A list with \code{cl_blood}, \code{fu_blood}, \code{rb}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' blood_from_plasma(V, V)
+#' @keywords internal
 blood_from_plasma <- function(cl_plasma, fu_plasma,
                                blood_plasma_ratio = NULL,
                                charge = "neutral") {
@@ -117,6 +129,10 @@ blood_from_plasma <- function(cl_plasma, fu_plasma,
 #' \code{as.numeric}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' scale_to_liver(clint_in_vitro = 15, fu_incubation = 0.8,
+#'                system = "hepatocytes", species = "human")
+#' @keywords internal
 scale_to_liver <- function(clint_in_vitro, fu_incubation,
                            system = "hepatocytes", species = "human",
                            pbsf = NULL, liver_weight = NULL) {
@@ -153,6 +169,9 @@ scale_to_liver <- function(clint_in_vitro, fu_incubation,
 #' \code{"well_stirred"}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' observed_clint_u(cl_h = 12, fu_blood = 0.1, species = "human")
+#' @keywords internal
 observed_clint_u <- function(cl_h, fu_blood, species = "human",
                              qh = NULL,
                              liver_model = "well_stirred") {
@@ -188,6 +207,10 @@ observed_clint_u <- function(cl_h, fu_blood, species = "human",
 #' @return A list with \code{afe}, \code{fold_underprediction}, \code{rmse}, \code{esf},
 #' \code{average_esf}, \code{within_fold}, \code{beyond_fold}, \code{n}, \code{fold}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' prediction_accuracy(V, V)
+#' @keywords internal
 prediction_accuracy <- function(predicted, observed, fold = 2.0) {
   p <- as.numeric(predicted)
   o <- as.numeric(observed)
@@ -233,6 +256,11 @@ prediction_accuracy <- function(predicted, observed, fold = 2.0) {
 #' @param fold Passed to \code{prediction_accuracy}. Defaults to \code{2}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' r <- clrnt(clint_in_vitro = 15, cl_h = 12, fu_blood = 0.1,
+#'            fu_incubation = 0.8)
+#' str(r, max.level = 1)
+#' @keywords internal
 clrnt <- function(clint_in_vitro, cl_h = NULL, fu_blood = NULL,
                   log_pd = NULL, fu_incubation = NULL,
                   system = "hepatocytes", species = "human",
@@ -345,6 +373,11 @@ clearance_intrinsic <- clrnt
 #' @param fold Passed to \code{clrnt}. Defaults to \code{2}.
 #' @return The value of \code{clrnt}.
 #' @export
+#' @examples
+#' r <- morie_clrnt(clint_in_vitro = 15, cl_h = 12, fu_blood = 0.1,
+#'                  fu_incubation = 0.8)
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_clrnt <- function(clint_in_vitro, cl_h = NULL, fu_blood = NULL,
                        log_pd = NULL, fu_incubation = NULL,
                        system = "hepatocytes", species = "human",

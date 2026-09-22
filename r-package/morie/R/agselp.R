@@ -47,12 +47,16 @@ Evalgate <- function(new_net, old_net = NULL, n_games = 100, wins = NULL,
     tail <- 0
     for (i in seq(kk, dec)) {
       tail <- tail + exp(lgamma(dec + 1) - lgamma(i + 1) -
-                           lgamma(dec - i + 1) - dec * log(2))
+        lgamma(dec - i + 1) - dec * log(2))
     }
     p <- tail
   }
-  list(estimate = score, score = score, replace = score > as.numeric(threshold),
-       p_value = p, wins = w, draws = d, losses = l, n = n,
-       method = paste0("AlphaGo Zero self-play evaluation gate (55%); AlphaZero ",
-                       "itself omits this step and updates continually"))
+  list(
+    estimate = score, score = score, replace = score > as.numeric(threshold),
+    p_value = p, wins = w, draws = d, losses = l, n = n,
+    method = paste0(
+      "AlphaGo Zero self-play evaluation gate (55%); AlphaZero ",
+      "itself omits this step and updates continually"
+    )
+  )
 }

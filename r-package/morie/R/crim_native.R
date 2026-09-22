@@ -46,7 +46,9 @@ morie_crim_etas <- function(times, magnitudes = NULL, m0 = NULL,
   negll <- function(par) {
     # Bounded transforms keep every intermediate finite (optim
     # aborts outright on a non-finite objective).
-    if (any(!is.finite(par))) return(1e10)
+    if (any(!is.finite(par))) {
+      return(1e10)
+    }
     mu <- exp(min(par[1], 20))
     K <- exp(min(par[2], 20))
     alpha <- if (alpha_free) max(min(par[3], 10), -10) else 0
@@ -55,12 +57,16 @@ morie_crim_etas <- function(times, magnitudes = NULL, m0 = NULL,
     prod_m <- exp(pmin(alpha * dm, 30))
     lam <- numeric(n)
     for (i in seq_len(n)) {
-      if (i == 1L) { lam[i] <- mu
-      next }
+      if (i == 1L) {
+        lam[i] <- mu
+        next
+      }
       dt <- t[i] - t[seq_len(i - 1L)]
       lam[i] <- mu + K * sum(prod_m[seq_len(i - 1L)] * (dt + cc)^(-p))
     }
-    if (any(lam <= 0) || any(!is.finite(lam))) return(1e10)
+    if (any(lam <= 0) || any(!is.finite(lam))) {
+      return(1e10)
+    }
     # Integral of the triggering kernel over [t_i, t_max]:
     # K e^{a dm_i} [c^{1-p} - (t_max - t_i + c)^{1-p}] / (p - 1)
     integ <- mu * t_max + K * sum(prod_m *
@@ -71,10 +77,14 @@ morie_crim_etas <- function(times, magnitudes = NULL, m0 = NULL,
   init <- c(log(n / (2 * t_max)), log(0.2), 0.5, log(0.01), log(0.1))
   # Nelder-Mead with one restart from the first optimum -- the
   # standard remedy for premature simplex collapse in 5 parameters.
-  opt <- stats::optim(init, negll, method = "Nelder-Mead",
-                      control = list(maxit = 2000L))
-  opt <- stats::optim(opt$par, negll, method = "Nelder-Mead",
-                      control = list(maxit = 2000L))
+  opt <- stats::optim(init, negll,
+    method = "Nelder-Mead",
+    control = list(maxit = 2000L)
+  )
+  opt <- stats::optim(opt$par, negll,
+    method = "Nelder-Mead",
+    control = list(maxit = 2000L)
+  )
   mu <- exp(opt$par[1])
   K <- exp(opt$par[2])
   alpha <- if (alpha_free) opt$par[3] else 0
@@ -82,10 +92,12 @@ morie_crim_etas <- function(times, magnitudes = NULL, m0 = NULL,
   p <- 1 + exp(opt$par[5])
   # Branching ratio: E[offspring] = K E[e^{a dm}] c^{1-p} / (p-1).
   br <- K * mean(exp(alpha * dm)) * cc^(1 - p) / (p - 1)
-  out <- list(par = c(mu = mu, K = K, alpha = alpha, c = cc, p = p),
-              loglik = -opt$value, branching_ratio = br,
-              n = n, converged = opt$convergence == 0L,
-              call = match.call())
+  out <- list(
+    par = c(mu = mu, K = K, alpha = alpha, c = cc, p = p),
+    loglik = -opt$value, branching_ratio = br,
+    n = n, converged = opt$convergence == 0L,
+    call = match.call()
+  )
   class(out) <- "morie_etas"
   out
 }
@@ -94,13 +106,25 @@ morie_crim_etas <- function(times, magnitudes = NULL, m0 = NULL,
 #'
 #' @param x A \code{morie_etas} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `invisible`.
+#' @examples
+#' set.seed(1)
+#' times <- sort(runif(80, 0, 200))
+#' fit <- morie_crim_etas(times)
+#' out <- capture.output(print(fit))
+#' any(grepl("ETAS", out))
+#' @references
+#'   Ogata (1988) JASA 83(401).
 #' @export
+#' @keywords internal
 print.morie_etas <- function(x, ...) {
   cat("ETAS (Ogata 1988), n =", x$n, "\n")
   print(round(x$par, 4))
-  cat(sprintf("  loglik = %.2f  branching ratio = %.3f%s\n",
-              x$loglik, x$branching_ratio,
-              if (x$branching_ratio >= 1) "  ** supercritical **" else ""))
+  cat(sprintf(
+    "  loglik = %.2f  branching ratio = %.3f%s\n",
+    x$loglik, x$branching_ratio,
+    if (x$branching_ratio >= 1) "  ** supercritical **" else ""
+  ))
   invisible(x)
 }
 
@@ -122,7 +146,8 @@ print.morie_etas <- function(x, ...) {
 #' @references Hawkes (1971) Biometrika 58(1).
 #' @examples
 #' set.seed(2)
-#' tt <- sort(runif(150, 0, 100)); mk <- sample(1:2, 150, TRUE)
+#' tt <- sort(runif(150, 0, 100))
+#' mk <- sample(1:2, 150, TRUE)
 #' morie_crim_hawkes_multivariate(tt, mk, beta = 1)
 #' @export
 morie_crim_hawkes_multivariate <- function(times, marks, t_max = NULL,
@@ -144,7 +169,9 @@ morie_crim_hawkes_multivariate <- function(times, marks, t_max = NULL,
       R[i, k_lab[i - 1]] <- R[i, k_lab[i - 1]] + dec
     }
     lam <- mu[k_lab] + rowSums(A[k_lab, , drop = FALSE] * R) * b
-    if (any(lam <= 0)) return(-Inf)
+    if (any(lam <= 0)) {
+      return(-Inf)
+    }
     comp <- sum(mu) * t_max
     surv <- 1 - exp(-b * (t_max - t))
     for (j in seq_len(K)) {
@@ -160,8 +187,10 @@ morie_crim_hawkes_multivariate <- function(times, marks, t_max = NULL,
       v <- ll_at(mu, A, b)
       if (!is.finite(v)) 1e10 else -v
     }
-    stats::optim(par0, negll, method = "L-BFGS-B",
-                 control = list(maxit = 400L))
+    stats::optim(par0, negll,
+      method = "L-BFGS-B",
+      control = list(maxit = 400L)
+    )
   }
   if (is.null(beta)) {
     grid <- c(0.25, 0.5, 1, 2, 4)
@@ -175,9 +204,11 @@ morie_crim_hawkes_multivariate <- function(times, marks, t_max = NULL,
   mu <- exp(opt$par[seq_len(K)])
   A <- matrix(exp(opt$par[-seq_len(K)]), K, K)
   sr <- max(Mod(eigen(A, only.values = TRUE)$values))
-  out <- list(mu = mu, A = A, beta = beta, loglik = -opt$value,
-              spectral_radius = sr, n = n, K = K,
-              converged = opt$convergence == 0L, call = match.call())
+  out <- list(
+    mu = mu, A = A, beta = beta, loglik = -opt$value,
+    spectral_radius = sr, n = n, K = K,
+    converged = opt$convergence == 0L, call = match.call()
+  )
   class(out) <- "morie_mv_hawkes"
   out
 }
@@ -186,14 +217,29 @@ morie_crim_hawkes_multivariate <- function(times, marks, t_max = NULL,
 #'
 #' @param x A \code{morie_mv_hawkes} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `invisible`.
+#' @examples
+#' set.seed(1)
+#' times <- sort(runif(60, 0, 200))
+#' marks <- sample(c("A", "B"), 60, replace = TRUE)
+#' fit <- morie_crim_hawkes_multivariate(times, marks)
+#' out <- capture.output(print(fit))
+#' any(grepl("Hawkes", out))
+#' @references
+#'   Hawkes (1971) Biometrika 58(1).
 #' @export
+#' @keywords internal
 print.morie_mv_hawkes <- function(x, ...) {
-  cat(sprintf("Multivariate Hawkes (K = %d, beta = %.3g), n = %d\n",
-              x$K, x$beta, x$n))
+  cat(sprintf(
+    "Multivariate Hawkes (K = %d, beta = %.3g), n = %d\n",
+    x$K, x$beta, x$n
+  ))
   cat("  mu:", round(x$mu, 4), "\n  A:\n")
   print(round(x$A, 4))
-  cat(sprintf("  spectral radius = %.3f%s\n", x$spectral_radius,
-              if (x$spectral_radius >= 1) "  ** unstable **" else ""))
+  cat(sprintf(
+    "  spectral radius = %.3f%s\n", x$spectral_radius,
+    if (x$spectral_radius >= 1) "  ** unstable **" else ""
+  ))
   invisible(x)
 }
 
@@ -217,7 +263,8 @@ print.morie_mv_hawkes <- function(x, ...) {
 #' @examples
 #' set.seed(3)
 #' morie_crim_near_repeat(runif(60), runif(60), runif(60, 0, 30),
-#'                        s_threshold = 0.1, t_threshold = 3)
+#'   s_threshold = 0.1, t_threshold = 3
+#' )
 #' @export
 morie_crim_near_repeat <- function(x, y, times, s_threshold,
                                    t_threshold, n_perm = 499L,
@@ -236,13 +283,17 @@ morie_crim_near_repeat <- function(x, y, times, s_threshold,
   }
   obs <- knox_stat(tt)
   .morie_local_seed(seed)
-  perm <- vapply(seq_len(n_perm), function(b) knox_stat(sample(tt)),
-                 numeric(1))
+  perm <- vapply(
+    seq_len(n_perm), function(b) knox_stat(sample(tt)),
+    numeric(1)
+  )
   expected <- mean(perm)
   p <- (1 + sum(perm >= obs)) / (n_perm + 1)
-  out <- list(statistic = obs, expected = expected,
-              ratio = obs / max(expected, 1e-12), p.value = p,
-              n = n, n_perm = n_perm, call = match.call())
+  out <- list(
+    statistic = obs, expected = expected,
+    ratio = obs / max(expected, 1e-12), p.value = p,
+    n = n, n_perm = n_perm, call = match.call()
+  )
   class(out) <- "morie_knox"
   out
 }
@@ -251,13 +302,24 @@ morie_crim_near_repeat <- function(x, y, times, s_threshold,
 #'
 #' @param x A \code{morie_knox} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `invisible`.
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie:::print.morie_knox(D)
+#' @references
+#'   Knox (1964); Townsley, Homel & Chaseling (2003).
 #' @export
+#' @keywords internal
 print.morie_knox <- function(x, ...) {
   cat("Knox near-repeat test\n")
-  cat(sprintf("  close pairs: %d observed vs %.1f expected (ratio %.2f)\n",
-              x$statistic, x$expected, x$ratio))
-  cat(sprintf("  permutation p = %.4f (%d permutations)\n",
-              x$p.value, x$n_perm))
+  cat(sprintf(
+    "  close pairs: %d observed vs %.1f expected (ratio %.2f)\n",
+    x$statistic, x$expected, x$ratio
+  ))
+  cat(sprintf(
+    "  permutation p = %.4f (%d permutations)\n",
+    x$p.value, x$n_perm
+  ))
   invisible(x)
 }
 
@@ -296,15 +358,19 @@ morie_crim_risk_terrain <- function(incidents, layers, n_grid = 25L,
   gy <- seq(min(inc[, 2]), max(inc[, 2]), length.out = n_grid)
   cell_x <- findInterval(inc[, 1], gx, all.inside = TRUE)
   cell_y <- findInterval(inc[, 2], gy, all.inside = TRUE)
-  counts <- table(factor(cell_x, levels = seq_len(n_grid)),
-                  factor(cell_y, levels = seq_len(n_grid)))
+  counts <- table(
+    factor(cell_x, levels = seq_len(n_grid)),
+    factor(cell_y, levels = seq_len(n_grid))
+  )
   y <- as.numeric(counts)
   grid_pts <- as.matrix(expand.grid(x = gx, y = gy))
   dens <- vapply(layers, function(L) {
     L <- as.matrix(L)
     h <- if (is.null(bandwidth)) {
       1.06 * mean(apply(L, 2, stats::sd)) * nrow(L)^(-1 / 5)
-    } else bandwidth
+    } else {
+      bandwidth
+    }
     h <- max(h, 1e-6)
     v <- vapply(seq_len(nrow(grid_pts)), function(i) {
       du <- (grid_pts[i, 1] - L[, 1]) / h
@@ -317,10 +383,12 @@ morie_crim_risk_terrain <- function(incidents, layers, n_grid = 25L,
   fit <- stats::glm(y ~ ., data = df, family = stats::poisson())
   risk <- matrix(stats::fitted(fit), n_grid, n_grid)
   dev_ratio <- 1 - fit$deviance / fit$null.deviance
-  out <- list(coefficients = stats::coef(fit)[-1L],
-              risk_surface = risk, grid_x = gx, grid_y = gy,
-              deviance_ratio = dev_ratio, n = nrow(inc),
-              call = match.call())
+  out <- list(
+    coefficients = stats::coef(fit)[-1L],
+    risk_surface = risk, grid_x = gx, grid_y = gy,
+    deviance_ratio = dev_ratio, n = nrow(inc),
+    call = match.call()
+  )
   class(out) <- "morie_rtm"
   out
 }
@@ -329,7 +397,19 @@ morie_crim_risk_terrain <- function(incidents, layers, n_grid = 25L,
 #'
 #' @param x A \code{morie_rtm} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `invisible`.
+#' @examples
+#' set.seed(1)
+#' incidents <- cbind(runif(50), runif(50))
+#' layers <- list(schools = cbind(runif(8), runif(8)),
+#'                bars = cbind(runif(6), runif(6)))
+#' fit <- morie_crim_risk_terrain(incidents, layers, n_grid = 10L)
+#' out <- capture.output(print(fit))
+#' any(grepl("Risk terrain", out))
+#' @references
+#'   Caplan, Kennedy & Miller (2011) Justice Quarterly 28(2).
 #' @export
+#' @keywords internal
 print.morie_rtm <- function(x, ...) {
   cat("Risk terrain model,", x$n, "incidents\n")
   cat("  log relative risk per layer (standardized densities):\n")

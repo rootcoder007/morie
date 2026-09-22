@@ -23,3 +23,4 @@ A step of the infmax_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

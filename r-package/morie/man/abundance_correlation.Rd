@@ -7,15 +7,21 @@
 abundance_correlation(cov_a, cov_b)
 }
 \arguments{
-\item{cov_a}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{cov_a}{Passed to \code{.metabd_vec}.}
 
-\item{cov_b}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{cov_b}{Passed to \code{.metabd_vec}.}
 }
 \value{
 A list with \code{correlation}, \code{n_samples}.
 }
 \description{
-A step of the metabd_native implementation. Called by \code{composite_distance}.
+A step of the metabd_native implementation. Called by \code{composite_distance},
+\code{morie_metabd}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+abundance_correlation(V, V)
+}
+\keyword{internal}

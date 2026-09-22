@@ -50,7 +50,8 @@
   if (skip < 0L) stop("draw: skip must be non-negative")
   d <- .s03normdraws(skip + nr * nc, 2L)
   matrix(as.numeric(scale) * d[skip + seq_len(nr * nc)],
-         nrow = nr, ncol = nc, byrow = TRUE)
+    nrow = nr, ncol = nc, byrow = TRUE
+  )
 }
 
 # LN(v) = (v - mean v) / sqrt(pop.var v + eps), gamma = 1, beta = 0.
@@ -119,7 +120,7 @@
 }
 
 # Index of the first maximum; R's which.max already has this tie rule.
-#' Index of the first maximum; R\'s which.max already has this tie rule
+#' Index of the first maximum; R's which.max already has this tie rule
 #'
 #' A step of the helpers_vit implementation. Called by \code{Vitfsv}.
 #' See the file header for the source the module follows.

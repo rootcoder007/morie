@@ -13,5 +13,5 @@ A \code{morie_siu_result}.
 Sprott-Doob-Iftene (May 2021) Table 9: IEDM review outcomes
 }
 \examples{
-morie_siu_sprott_doob_iftene_table9()
+head(morie_siu_sprott_doob_iftene_table9())
 }

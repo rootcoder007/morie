@@ -37,3 +37,10 @@ A step of the informer_native implementation. Called by
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(2)
+Q <- matrix(rnorm(32), 8, 4)
+K <- matrix(rnorm(32), 8, 4)
+str(morie_informer_select_queries(Q, K, factor = 2), max.level = 1)
+}
+\keyword{internal}

@@ -35,6 +35,8 @@ Alrinv <- function(y, ref = NULL, total = 1) {
   e <- exp(full - max(full))
   s <- sum(e)
   t <- as.numeric(total)
-  .t1_result(composition = t * e / s, ref = k, total = t, D = D,
-             method = "Inverse additive log-ratio transform")
+  .t1_result(
+    composition = t * e / s, ref = k, total = t, D = D,
+    method = "Inverse additive log-ratio transform"
+  )
 }

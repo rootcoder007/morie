@@ -107,7 +107,9 @@
 #' res
 .ot_lse <- function(v) {
   mx <- max(v)
-  if (!is.finite(mx)) return(mx)
+  if (!is.finite(mx)) {
+    return(mx)
+  }
   mx + log(sum(exp(v - mx)))
 }
 
@@ -135,13 +137,17 @@
   g <- numeric(m)
   for (it in seq_len(as.integer(n_iter))) {
     for (i in seq_len(n)) {
-      if (!is.finite(la[i])) { f[i] <- -Inf
-      next }
+      if (!is.finite(la[i])) {
+        f[i] <- -Inf
+        next
+      }
       f[i] <- eps * (la[i] - .ot_lse((g - C[i, ]) / eps))
     }
     for (j in seq_len(m)) {
-      if (!is.finite(lb[j])) { g[j] <- -Inf
-      next }
+      if (!is.finite(lb[j])) {
+        g[j] <- -Inf
+        next
+      }
       g[j] <- eps * (lb[j] - .ot_lse((f - C[, j]) / eps))
     }
   }
@@ -219,9 +225,13 @@
     ra[i] <- ra[i] - t
     rb[j] <- rb[j] - t
     if (i == n && j == m) break
-    if (ra[i] <= 1e-15 && i < n) i <- i + 1L
-    else if (j < m) j <- j + 1L
-    else i <- i + 1L
+    if (ra[i] <= 1e-15 && i < n) {
+      i <- i + 1L
+    } else if (j < m) {
+      j <- j + 1L
+    } else {
+      i <- i + 1L
+    }
   }
   list(T = T, basis = basis)
 }
@@ -239,9 +249,13 @@
 #' @export
 .ot_complete_tree <- function(basis, n, m) {
   parent <- seq_len(n + m)
-  fnd <- function(x) { while (parent[x] != x) { parent[x] <<- parent[parent[x]]
-  x <- parent[x] }
-  x }
+  fnd <- function(x) {
+    while (parent[x] != x) {
+      parent[x] <<- parent[parent[x]]
+      x <- parent[x]
+    }
+    x
+  }
   edges <- list()
   have <- character(0)
   for (e in basis) {
@@ -253,15 +267,17 @@
       have <- c(have, paste(e[1], e[2]))
     }
   }
-  for (i in seq_len(n)) for (j in seq_len(m)) {
-    if (length(edges) >= n + m - 1L) break
-    if (paste(i, j) %in% have) next
-    ri <- fnd(i)
-    rj <- fnd(n + j)
-    if (ri != rj) {
-      parent[ri] <- rj
-      edges[[length(edges) + 1L]] <- c(i, j)
-      have <- c(have, paste(i, j))
+  for (i in seq_len(n)) {
+    for (j in seq_len(m)) {
+      if (length(edges) >= n + m - 1L) break
+      if (paste(i, j) %in% have) next
+      ri <- fnd(i)
+      rj <- fnd(n + j)
+      if (ri != rj) {
+        parent[ri] <- rj
+        edges[[length(edges) + 1L]] <- c(i, j)
+        have <- c(have, paste(i, j))
+      }
     }
   }
   .ot_sortbasis(edges)
@@ -277,7 +293,9 @@
 #' @return The value of \code{[}.
 #' @export
 .ot_sortbasis <- function(edges) {
-  if (!length(edges)) return(edges)
+  if (!length(edges)) {
+    return(edges)
+  }
   key <- vapply(edges, function(e) e[1] * 1e6 + e[2], 0)
   edges[order(key)]
 }
@@ -357,13 +375,17 @@
   while (length(stack)) {
     st <- stack[[length(stack)]]
     stack[[length(stack)]] <- NULL
-    if (st$node == goal) return(st$path)
+    if (st$node == goal) {
+      return(st$path)
+    }
     for (e in adj[[st$node]]) {
       nb <- e[1]
       if (nb %in% st$seen) next
-      stack[[length(stack) + 1L]] <- list(node = nb,
-                                          path = c(st$path, list(c(e[2], e[3]))),
-                                          seen = c(st$seen, nb))
+      stack[[length(stack) + 1L]] <- list(
+        node = nb,
+        path = c(st$path, list(c(e[2], e[3]))),
+        seen = c(st$seen, nb)
+      )
     }
   }
   NULL
@@ -391,8 +413,9 @@
   if (nrow(C) != n || ncol(C) != m) stop("emd: cost matrix does not match the marginals")
   sa <- sum(a)
   sb <- sum(b)
-  if (abs(sa - sb) > 1e-9 * max(1, abs(sa)))
+  if (abs(sa - sb) > 1e-9 * max(1, abs(sa))) {
     stop("emd: marginals must have equal total mass")
+  }
   nw <- .ot_nwcorner(a, b)
   T <- nw$T
   basis <- .ot_complete_tree(nw$basis, n, m)
@@ -403,8 +426,10 @@
     D <- C - outer(pot$u, pot$v, "+")
     D[cbind(vapply(basis, function(e) e[1], 0L), vapply(basis, function(e) e[2], 0L))] <- Inf
     best <- min(D)
-    if (!(best < -1e-11)) { done <- TRUE
-    break }
+    if (!(best < -1e-11)) {
+      done <- TRUE
+      break
+    }
     # Row-major scan, so the tie-break matches the Python arm exactly;
     # degenerate transport problems have several optimal vertices and
     # column-major order picks a different one.
@@ -450,8 +475,9 @@
   sa <- sum(a)
   sb <- sum(b)
   m <- as.numeric(m)
-  if (m < 0 || m > min(sa, sb) + 1e-12)
+  if (m < 0 || m > min(sa, sb) + 1e-12) {
     stop("the transported mass must lie in [0, min(|a|,|b|)]")
+  }
   big <- 2 * max(C) + 1
   sup <- c(a, sb - m)
   dem <- c(b, sa - m)
@@ -496,8 +522,9 @@
   A <- as.matrix(S1)
   B <- as.matrix(S2)
   d <- length(a)
-  if (length(b) != d || nrow(A) != d || nrow(B) != d)
+  if (length(b) != d || nrow(A) != d || nrow(B) != d) {
     stop("w2gauss: dimension mismatch")
+  }
   R <- .ot_sqrtm(A)
   Msq <- .ot_sqrtm(R %*% B %*% R)
   bures <- sum(diag(A)) + sum(diag(B)) - 2 * sum(diag(Msq))
@@ -560,7 +587,9 @@
 .ot_directions <- function(d, n_proj) {
   if (d < 1 || n_proj < 1) stop("directions: d and n_proj must be positive")
   n_proj <- as.integer(n_proj)
-  if (d == 1) return(matrix(1, n_proj, 1))
+  if (d == 1) {
+    return(matrix(1, n_proj, 1))
+  }
   z <- .s03normdraws(d * n_proj)
   M <- matrix(z, nrow = n_proj, ncol = d, byrow = TRUE)
   nrm <- sqrt(rowSums(M^2))

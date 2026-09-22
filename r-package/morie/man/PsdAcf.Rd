@@ -19,3 +19,8 @@ CIRCULAR autocorrelation.  The linear (biased) ACF gives a smoothed
 version instead, and the size of that difference is returned -- the
 distinction is the reason the periodogram is inconsistent.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+PsdAcf(V)
+}
+\keyword{internal}

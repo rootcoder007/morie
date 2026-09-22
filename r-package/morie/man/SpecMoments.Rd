@@ -25,3 +25,8 @@ for a real signal S(k) is even-symmetric about fs/2, so summing the
 whole period double-counts every frequency and pins the mean at fs/2
 regardless of the signal.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+SpecMoments(V)
+}
+\keyword{internal}

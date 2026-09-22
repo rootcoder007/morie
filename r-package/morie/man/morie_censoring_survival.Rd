@@ -39,3 +39,8 @@ A step of the tmlcen_native implementation. Called by \code{morie_tmle_censoring
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_censoring_survival(V, V)
+}
+\keyword{internal}

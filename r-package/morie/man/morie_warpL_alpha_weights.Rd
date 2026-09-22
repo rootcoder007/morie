@@ -19,3 +19,7 @@ A step of the warpL_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_warpL_alpha_weights(n = 5L)
+}
+\keyword{internal}

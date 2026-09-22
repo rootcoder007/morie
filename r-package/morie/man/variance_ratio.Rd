@@ -18,6 +18,6 @@ A \code{morie_effect_size}.
 Variance ratio (F-test for equality of variances)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-variance_ratio(V, V)
+set.seed(1)
+variance_ratio(rnorm(20), rnorm(20, 0, 2))
 }

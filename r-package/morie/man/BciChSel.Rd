@@ -28,3 +28,11 @@ A step of the rangayyan_class2 implementation. No other function in the package 
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(1)
+trials <- matrix(rnorm(6 * 200), 6, 200)
+trials[2, ] <- trials[2, ] + sin(2 * pi * (1:200) / 20)
+r <- BciChSel(trials, nselect = 3, rank = 3)
+r$selected
+}
+\keyword{internal}

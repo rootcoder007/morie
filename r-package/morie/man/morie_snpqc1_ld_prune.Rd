@@ -21,3 +21,10 @@ The value of \code{keep}, as built in the body.
 \description{
 threshold. Returns kept SNP indices (1-based).
 }
+\examples{
+if (morie_crypto_sodium_available()) {
+  S <- c("a", "b", "c")
+  morie_snpqc1_ld_prune(S)
+}
+}
+\keyword{internal}

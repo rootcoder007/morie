@@ -16,12 +16,16 @@ A list with \code{epsilon_in}, \code{rho},
 \code{epsilon_out}, \code{inflation}, \code{delta}.
 }
 \description{
-\code{epsilon -> rho -> (epsilon\', delta)} does not return
+\eqn{epsilon -> rho -> (epsilon', delta)} does not return
 \code{epsilon}; the gap is reported as \code{inflation} rather
 than quietly absorbed. When the input is \code{epsilon = 0} the
 \code{to_approx_dp} step is skipped (it would refuse rho = 0) and
 \code{epsilon_out} is set to 0.
 }
+\examples{
+round_trip(epsilon = 5L, delta = 0.5)
+}
 \references{
 Bun, M. & Steinke, T. (2016). Propositions 1.3 and 1.4.
 }
+\keyword{internal}

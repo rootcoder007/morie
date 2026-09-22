@@ -19,3 +19,8 @@ A step of the alf_core implementation. Called by \code{Alfipa}, \code{alfRcomp},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+Tf <- list(R = diag(2), t = c(1, -1))
+alfRap(Tf, c(2, 3))
+}
+\keyword{internal}

@@ -23,8 +23,13 @@ rho_j is the proportion of cases in stratum j and R_j the adjusted
 rate ratio of stratum j against the baseline. The control
 distribution is not used.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_rapaf_population_attributable_risk(V, V)
+}
 \references{
 Bruzzi, P. et al. (1985). Estimating the Population
 Attributable Risk for Multiple Risk Factors Using Case-Control
 Data. American Journal of Epidemiology, 122(5), 904-914.
 }
+\keyword{internal}

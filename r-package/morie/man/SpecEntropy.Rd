@@ -25,3 +25,8 @@ defines the spectral MOMENTS of Section 6.4.4 but prints no
 spectral-entropy equation, so this is said to be eq (3.11) applied to
 the PSD rather than quoted from the book.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+SpecEntropy(V)
+}
+\keyword{internal}

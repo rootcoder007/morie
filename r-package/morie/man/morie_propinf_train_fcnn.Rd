@@ -38,3 +38,12 @@ Fisher-Yates shuffle on the LCG every epoch (Section 4 of the
 paper: shadow classifiers are ordinary fully connected networks
 trained by the same procedure the victim was).
 }
+\examples{
+set.seed(1)
+X <- cbind(runif(60, -1, 1), runif(60, -1, 1))
+y <- as.numeric(X[, 1] + X[, 2] > 0)
+net <- morie_propinf_train_fcnn(X, y, hidden = c(6L), epochs = 60L,
+                                lr = 0.3, seed = 1L)
+mean((morie_propinf_fcnn_predict(net, X) >= 0.5) == (y == 1))
+}
+\keyword{internal}

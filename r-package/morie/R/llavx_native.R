@@ -1,12 +1,26 @@
+# LLaVA: visual instruction tuning.
 # Sources: Liu, H., Li, C., Wu, Q. & Lee, Y. J. (2023) "Visual Instruction
-# Tuning", NeurIPS 2023, arXiv:2304.08485.
+# Tuning", *Advances in Neural Information Processing Systems 36
+# (NeurIPS 2023)*, arXiv:2304.08485. The abstract: instruction tuning
+# improves zero-shot capabilities on new tasks but is less explored in
+# the multimodal field; the first attempt to use LANGUAGE-ONLY GPT-4 to
+# generate multimodal language-image instruction-following data; LLaVA
+# as an end-to-end trained large multimodal model connecting a vision
+# encoder and an LLM for general-purpose visual and language
+# understanding; two evaluation benchmarks constructed for visual
+# instruction following; a 85.1% relative score compared with GPT-4 on a
+# synthetic multimodal instruction-following dataset; and 92.53%
+# accuracy on Science QA from the synergy of LLaVA and GPT-4.
+#
 # Radford, A. et al. (2021) "Learning Transferable Visual Models From
-# Natural Language Supervision", ICML 2021, PMLR 139, 8748-8763,
-# arXiv:2103.00020.
-# Li, J., Li, D., Savarese, S. & Hoi, S. (2023) "BLIP-2", ICML 2023,
-# PMLR 202, 19730-19742, arXiv:2301.12597.
+# Natural Language Supervision", *ICML 2021*, PMLR 139, 8748-8763,
+# arXiv:2103.00020. The vision encoder.
+#
+# Li, J., Li, D., Savarese, S. & Hoi, S. (2023) "BLIP-2", *ICML 2023*,
+# PMLR 202, 19730-19742, arXiv:2301.12597. The alternative bridge, a
+# Q-Former rather than a projection; implemented in blip2v.
 
-.KINDS <- c("conversation", "detailed_description", "complex_reasoning")
+.LLAVX_KINDS <- c("conversation", "detailed_description", "complex_reasoning")
 
 #' symbolic_representation
 #'
@@ -14,25 +28,33 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param captions Coerced to character by the body, with \code{as.character}.
+#' @param captions Coerced to list by the body, with \code{as.list}.
 #' @param boxes Coerced to list by the body, with \code{as.list}.
 #' @return A list with \code{text}, \code{n_captions}, \code{n_boxes}, \code{note}.
 #' @export
+#' @examples
+#' r <- symbolic_representation(captions = c("a cat on a mat"),
+#'                              boxes = list(list("cat", 1, 2, 10, 8)))
+#' is.list(r)
+#' @keywords internal
 symbolic_representation <- function(captions, boxes) {
-  caps <- as.character(captions)
+  caps <- vapply(as.list(captions), as.character, character(1))
   bx <- as.list(boxes)
   if (length(caps) == 0L && length(bx) == 0L)
     stop("llavx: an image with no captions and no boxes has no symbolic representation")
-  lines <- as.list(caps)
+  lines <- as.character(caps)
   for (rec in bx) {
-    name <- as.character(rec[[1]])
-    x <- as.numeric(rec[[2]])
-    y <- as.numeric(rec[[3]])
-    w <- as.numeric(rec[[4]])
-    h <- as.numeric(rec[[5]])
-    lines[[length(lines) + 1L]] <- sprintf("%s: [%.3f, %.3f, %.3f, %.3f]", name, x, y, w, h)
+    rec <- as.list(rec)
+    name <- as.character(rec[[1L]])
+    x <- as.numeric(rec[[2L]])
+    y <- as.numeric(rec[[3L]])
+    w <- as.numeric(rec[[4L]])
+    h <- as.numeric(rec[[5L]])
+    lines <- c(lines, paste0(name, ": [", sprintf("%.3f", x), ", ",
+                             sprintf("%.3f", y), ", ", sprintf("%.3f", w),
+                             ", ", sprintf("%.3f", h), "]"))
   }
-  list(text = paste(unlist(lines), collapse = "\n"),
+  list(text = paste(lines, collapse = "\n"),
        n_captions = length(caps),
        n_boxes = length(bx),
        note = "the generator is LANGUAGE-ONLY; the image itself never reaches it")
@@ -48,54 +70,60 @@ symbolic_representation <- function(captions, boxes) {
 #' @param kind Carried through into a list the body builds. Defaults to \code{"conversation"}.
 #' @return A list with \code{prompt}, \code{kind}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' instruction_prompt(D)
+#' @keywords internal
 instruction_prompt <- function(symbolic, kind = "conversation") {
-  if (!(kind %in% .KINDS))
-    stop(sprintf("llavx: kind must be one of %s, got %r",
-                 paste(.KINDS, collapse = ", "), kind))
+  if (!(kind %in% .LLAVX_KINDS))
+    stop("llavx: kind must be one of ",
+         paste(.LLAVX_KINDS, collapse = ", "), ", got ", shQuote(kind))
   ask <- switch(kind,
-    conversation = "Ask and answer questions about this image as if you can see it.",
-    detailed_description = "Describe this image in detail.",
-    complex_reasoning = "Give a question requiring step-by-step reasoning about this image, and answer it."
+    "conversation" = "Ask and answer questions about this image as if you can see it.",
+    "detailed_description" = "Describe this image in detail.",
+    "complex_reasoning" = "Give a question requiring step-by-step reasoning about this image, and answer it.",
+    stop("llavx: kind must be one of ",
+         paste(.LLAVX_KINDS, collapse = ", "), ", got ", shQuote(kind))
   )
   list(prompt = paste0(symbolic[["text"]], "\n\n", ask), kind = kind)
 }
 
 #' project_patches
 #'
-#' A step of the llavx_native implementation. No other function in the package calls it.
+#' A step of the llavx_native implementation. Called by \code{morie_llavx}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param patch_features Iterated over elementwise, with \code{lapply}.
-#' @param W A matrix; indexed by row and column.
+#' @param W A vector; its length is taken and its elements indexed.
 #' @param b Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
-#' @return The value of \code{out}, as built in the body.
+#' @return The value of \code{lapply}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' project_patches(V, V)
+#' @keywords internal
 project_patches <- function(patch_features, W, b = NULL) {
-  F <- lapply(patch_features, function(r) as.numeric(r))
-  d_out <- nrow(W)
-  if (ncol(W) != length(F[[1]]))
-    stop(sprintf("llavx: the projection expects %d features but got %d",
-                 ncol(W), length(F[[1]])))
-  bb <- if (is.null(b)) rep(0.0, d_out) else as.numeric(b)
-  out <- vector("list", length(F))
-  for (i in seq_along(F)) {
-    f <- F[[i]]
-    row <- numeric(d_out)
-    for (o in seq_len(d_out)) {
-      s <- bb[o]
-      wrow <- as.numeric(W[o, ])
-      for (j in seq_along(f)) s <- s + wrow[j] * f[j]
-      row[o] <- s
-    }
-    out[[i]] <- row
+  Fmat <- lapply(patch_features, function(r) as.numeric(r))
+  d_in <- length(Fmat[[1L]])
+  d_out <- length(W)
+  if (length(W[[1L]]) != d_in)
+    stop("llavx: the projection expects ", length(W[[1L]]),
+         " features but got ", d_in)
+  Wmat <- do.call(rbind, lapply(W, as.numeric))
+  if (is.null(b)) {
+    bvec <- rep(0, d_out)
+  } else {
+    bvec <- as.numeric(b)
   }
-  out
+  out <- tcrossprod(Wmat, do.call(rbind, Fmat))
+  out <- sweep(out, 1L, bvec, "+")
+  lapply(seq_len(nrow(out)), function(i) out[i, ])
 }
 
 #' build_sequence
 #'
-#' A step of the llavx_native implementation. No other function in the package calls it.
+#' A step of the llavx_native implementation. Called by \code{morie_llavx}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -104,18 +132,26 @@ project_patches <- function(patch_features, W, b = NULL) {
 #' @return A list with \code{estimate}, \code{sequence}, \code{n_visual}, \code{n_text},
 #' \code{method}, \code{note}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' build_sequence(V, V)
+#' @keywords internal
 build_sequence <- function(visual_tokens, text_embeddings) {
   V <- lapply(visual_tokens, function(r) as.numeric(r))
   T <- lapply(text_embeddings, function(r) as.numeric(r))
-  if (length(V) > 0L && length(T) > 0L && length(V[[1]]) != length(T[[1]]))
-    stop(sprintf("llavx: visual tokens are %d-dimensional but text embeddings are %d -- the projection target is wrong",
-                 length(V[[1]]), length(T[[1]])))
-  estimate <- c(V, T)
-  list(estimate = estimate, sequence = estimate,
+  if (length(V) > 0L && length(T) > 0L && length(V[[1L]]) != length(T[[1L]]))
+    stop("llavx: visual tokens are ", length(V[[1L]]),
+         "-dimensional but text embeddings are ", length(T[[1L]]),
+         " -- the projection target is wrong")
+  est <- c(V, T)
+  list(estimate = est, sequence = est,
        n_visual = length(V), n_text = length(T),
        method = "visual instruction tuning; Liu, Li, Wu & Lee (2023)",
        note = "projected patches ARE tokens -- no cross-attention layers are introduced")
 }
+
+visualinstruction <- build_sequence
+llava_visual_chat <- build_sequence
 
 #' training_stage
 #'
@@ -124,29 +160,30 @@ build_sequence <- function(visual_tokens, text_embeddings) {
 #' source it follows.
 #'
 #' @param stage Coerced to integer by the body, with \code{as.integer}.
-#' @return A list, whose contents depend on the branch taken; across the branches its
-#' names are \code{stage}, \code{trainable}, \code{frozen}, \code{data}, \code{note}.
+#' @return A list with \code{stage}, \code{trainable}, \code{frozen}, \code{data}, \code{note}.
 #' @export
+#' @examples
+#' s <- training_stage(1)
+#' s$stage == 1L
+#' @keywords internal
 training_stage <- function(stage) {
   s <- as.integer(stage)
   if (!(s %in% c(1L, 2L)))
-    stop(sprintf("llavx: the stage must be 1 or 2, got %r", stage))
-  if (s == 1L) {
-    list(stage = 1L, trainable = list("projection"),
-         frozen = list("vision_encoder", "language_model"),
-         data = "image-caption pairs",
-         note = "align the spaces before tuning anything on them")
-  } else {
-    list(stage = 2L, trainable = list("projection", "language_model"),
-         frozen = list("vision_encoder"),
-         data = "GPT-4 generated instruction-following data",
-         note = "tuning the language model first would tune it against features that do not yet mean anything")
-  }
+    stop("llavx: the stage must be 1 or 2, got ", format(stage))
+  if (s == 1L)
+    return(list(stage = 1L, trainable = list("projection"),
+                frozen = list("vision_encoder", "language_model"),
+                data = "image-caption pairs",
+                note = "align the spaces before tuning anything on them"))
+  list(stage = 2L, trainable = list("projection", "language_model"),
+       frozen = list("vision_encoder"),
+       data = "GPT-4 generated instruction-following data",
+       note = "tuning the language model first would tune it against features that do not yet mean anything")
 }
 
 #' .llavx_cheatsheet
 #'
-#' A step of the llavx_native implementation. No other function in the package calls it.
+#' A step of the llavx_native implementation. Called by \code{morie_llavx}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -156,21 +193,17 @@ training_stage <- function(stage) {
 #' res <- .llavx_cheatsheet()
 #' res
 .llavx_cheatsheet <- function() {
-  paste0(
-    "llavx: instruction tuning works in language and lacked MULTI",
-    "MODAL data, so generate it with a LANGUAGE-ONLY GPT-4 fed a ",
-    "SYMBOLIC image -- captions and boxes. The image never reache",
-    "s the generator, which is what makes the pipeline possible a",
-    "nd also caps it: what the captions omit cannot be asked abou",
-    "t. Architecture is deliberately thin: ONE projection matrix ",
-    "into the word-embedding space, projected patches used as tok",
-    "ens, no cross-attention. Stage 1 trains only the projection;",
-    " stage 2 adds the language model."
-  )
+  paste("llavx: instruction tuning works in language and lacked ",
+        "MULTIMODAL data, so generate it with a LANGUAGE-ONLY ",
+        "GPT-4 fed a SYMBOLIC image -- captions and boxes. The ",
+        "image never reaches the generator, which is what makes ",
+        "the pipeline possible and also caps it: what the captions ",
+        "omit cannot be asked about. Architecture is deliberately ",
+        "thin: ONE projection matrix into the word-embedding ",
+        "space, projected patches used as tokens, no ",
+        "cross-attention. Stage 1 trains only the projection; ",
+        "stage 2 adds the language model.", sep = "")
 }
-
-visualinstruction <- build_sequence
-llava_visual_chat <- build_sequence
 
 #' morie_llavx
 #'
@@ -178,15 +211,27 @@ llava_visual_chat <- build_sequence
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param captions Passed to \code{symbolic_representation}.
-#' @param boxes Passed to \code{symbolic_representation}.
-#' @param kind Passed to \code{instruction_prompt}. Defaults to \code{"conversation"}.
-#' @param stage Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @return The value of \code{instruction_prompt}.
+#' @param op A vector; its length is taken.
+#' @param ... Passed through.
+#' @return The value of \code{switch}.
 #' @export
-morie_llavx <- function(captions = NULL, boxes = NULL, kind = "conversation",
-                       stage = NULL) {
-  if (!is.null(stage)) return(training_stage(stage))
-  sym <- symbolic_representation(captions, boxes)
-  instruction_prompt(sym, kind = kind)
+#' @examples
+#' r <- morie_llavx("training_stage", 2)
+#' r$stage == 2L
+#' @keywords internal
+morie_llavx <- function(op, ...) {
+  if (missing(op) || length(op) != 1L)
+    stop("llavx: op must be one of symbolic_representation, instruction_prompt, project_patches, build_sequence, training_stage, cheatsheet")
+  op <- as.character(op)
+  switch(op,
+    "symbolic_representation" = symbolic_representation(...),
+    "instruction_prompt" = instruction_prompt(...),
+    "project_patches" = project_patches(...),
+    "build_sequence" = build_sequence(...),
+    "visualinstruction" = build_sequence(...),
+    "llava_visual_chat" = build_sequence(...),
+    "training_stage" = training_stage(...),
+    "cheatsheet" = list(cheatsheet = .llavx_cheatsheet()),
+    stop("llavx: unknown op ", shQuote(op))
+  )
 }

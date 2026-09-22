@@ -16,5 +16,5 @@ Numeric r.
 Convert OR to Pearson r via d
 }
 \examples{
-or_to_r(or_val = 5L)
+or_to_r(2.5)
 }

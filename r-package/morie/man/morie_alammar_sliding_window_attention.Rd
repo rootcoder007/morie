@@ -11,6 +11,15 @@ morie_alammar_sliding_window_attention(Q, K, V, window_size)
 
 \item{window_size}{W.}
 }
+\value{
+A list with \code{output}, \code{attention}, \code{window}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Sliding-window causal attention (Beltagy et al. 2020)
 }
+\examples{
+set.seed(1)
+X <- matrix(stats::rnorm(6), 3, 2)
+morie_alammar_sliding_window_attention(X, X, X, 2)
+}
+\keyword{internal}

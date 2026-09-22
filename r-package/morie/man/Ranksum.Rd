@@ -23,8 +23,8 @@ mean.
 }
 \details{
 Formula: W = sum of the ranks of x in the pooled sample;
-E\link[dlm:W]{W} = n1(n1 + n2 + 1)/2;
-Var\link[dlm:W]{W} = n1 n2 (N + 1)/12 - n1 n2 sum(t^3 - t)/(12 N (N - 1));
+E[W] = n1(n1 + n2 + 1)/2;
+Var[W] = n1 n2 (N + 1)/12 - n1 n2 sum(t^3 - t)/(12 N (N - 1));
 z = (W - E\link[dlm:W]{W} -+ 1/2) / sd
 }
 \examples{

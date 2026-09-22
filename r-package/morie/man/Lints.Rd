@@ -38,7 +38,7 @@ argmax_i b_i' mutilde
 }
 \examples{
 Lints(contexts = c(1, 2, 3, 4, 5, 6, 7, 8), played = c(1, 2, 3, 4, 5, 6, 7, 8),
-rewards = c(1, 2, 3, 4, 5, 6, 7, 8))
+  rewards = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Agrawal and Goyal (2013), Thompson Sampling for Contextual Bandits with

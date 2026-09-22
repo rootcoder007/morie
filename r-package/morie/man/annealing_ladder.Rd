@@ -7,7 +7,7 @@
 annealing_ladder(n_steps, phi_max = 50, phi_min = 0.1, kind = "geometric")
 }
 \arguments{
-\item{n_steps}{Coerced to integer by the body, with \code{as.integer}.}
+\item{n_steps}{A count; the body uses it as \code{seq_len(...)}.}
 
 \item{phi_max}{Numeric; combined arithmetically in the body. Defaults to \code{50}.}
 
@@ -23,3 +23,7 @@ A step of the smcopt_native implementation. Called by \code{smcopt}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+annealing_ladder(n_steps = 5L)
+}
+\keyword{internal}

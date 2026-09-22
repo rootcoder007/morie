@@ -22,7 +22,6 @@ c03 aggregate Ruhela: Indigenous -> RC
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_c03 <- morie_synth_otis("c03", n = 120L, seed = 1L)
 morie_otis_analyze_c03_ruhela_aggregate(otis_c03)
 }

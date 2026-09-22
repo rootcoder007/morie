@@ -21,6 +21,11 @@ Regression of the phenotype on one marker genotype; returns the
 LOD both from the likelihood ratio and from the closed form
 \code{(n/2) log10(RSS0 / RSS1)}.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_single_marker(V, V)
+}
 \references{
 Lander, E. S. & Botstein, D. (1989), eq (4).
 }
+\keyword{internal}

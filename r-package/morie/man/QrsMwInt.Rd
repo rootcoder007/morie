@@ -20,3 +20,8 @@ A list with \code{y}, \code{nwin}, \code{widthsec}, \code{n}, \code{method}.
 multiple peaks.  The book found N = 30 at fs = 200 Hz, i.e. 150 ms,
 and supplying fs preserves the 150 ms window at any rate.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+QrsMwInt(V)
+}
+\keyword{internal}

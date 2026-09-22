@@ -23,12 +23,17 @@
 #' @param B A matrix; indexed by row and column.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_khatri_rao_rows(V, V)
+#' @keywords internal
 morie_khatri_rao_rows <- function(A, B) {
   A <- as.matrix(A)
   B <- as.matrix(B)
   out <- matrix(0, nrow(A), ncol(A) * ncol(B))
-  for (i in seq_len(nrow(A)))
+  for (i in seq_len(nrow(A))) {
     out[i, ] <- as.numeric(t(outer(A[i, ], B[i, ])))
+  }
   out
 }
 
@@ -39,7 +44,15 @@ morie_khatri_rao_rows <- function(A, B) {
 #' (8.12) built from m of the L lines, P_u1 = Z_u1 P expands it to the n
 #' records, and P_u2 = P_u1 : Z_E is the row-wise Kronecker interaction
 #' with the environment design.
-#' @noRd
+#' @keywords internal
+#' @param X Argument `X`; see Usage.
+#' @param m_index Argument `m_index`; see Usage.
+#' @param Z_u1 Argument `Z_u1`; see Usage.
+#' @param Z_E Argument `Z_E`; see Usage.
+#' @param kernel Argument `kernel`; see Usage.
+#' @param gamma Argument `gamma`; see Usage.
+#' @param tol Argument `tol`; see Usage.
+#' @return A list with `P`, `P_u1`, `P_u2`, `design`, `widths`, `rank`.
 Apxkern <- function(X, m_index, Z_u1, Z_E, kernel = "linear",
                     gamma = NULL, tol = 1e-10) {
   sk <- morie_sparse_kernel_design(X, m_index, kernel, gamma, tol)
@@ -47,11 +60,15 @@ Apxkern <- function(X, m_index, Z_u1, Z_E, kernel = "linear",
   ZE <- as.matrix(Z_E)
   Pu1 <- Zu1 %*% sk$P
   Pu2 <- morie_khatri_rao_rows(Pu1, ZE)
-  list(P = sk$P, P_u1 = Pu1, P_u2 = Pu2,
-       design = cbind(1, ZE, Pu1, Pu2),
-       widths = c(intercept = 1L, environments = ncol(ZE),
-                  lines = ncol(Pu1), line_x_env = ncol(Pu2)),
-       rank = sk$rank)
+  list(
+    P = sk$P, P_u1 = Pu1, P_u2 = Pu2,
+    design = cbind(1, ZE, Pu1, Pu2),
+    widths = c(
+      intercept = 1L, environments = ncol(ZE),
+      lines = ncol(Pu1), line_x_env = ncol(Pu2)
+    ),
+    rank = sk$rank
+  )
 }
 
 # --- eqs. (9.1)-(9.4) pp.339-340 -------------------------------------
@@ -62,16 +79,24 @@ Apxkern <- function(X, m_index, Z_u1, Z_E, kernel = "linear",
 #' flat subspace (eq. 9.1 for p = 3, eq. 9.2 in general).  A left-hand
 #' side < 0 satisfies (9.3) and puts the point on one side, > 0 satisfies
 #' (9.4) and puts it on the other.
-#' @noRd
+#' @param X Argument `X`; see Usage.
+#' @param beta0 Argument `beta0`; see Usage.
+#' @param beta Argument `beta`; see Usage.
+#' @return A list with `value`, `side`, `below`, `above`, `on_plane`, `distance`, `norm_beta`.
+#' @examples
+#' morie:::Hyperpl(X = c(1, 2, 3, 4, 5, 6, 7, 8), beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5)
+#' @keywords internal
 Hyperpl <- function(X, beta0, beta) {
   X <- as.matrix(X)
   b <- as.numeric(beta)
   nb <- sqrt(sum(b^2))
   v <- as.numeric(beta0) + as.numeric(X %*% b)
-  list(value = v, side = sign(v), below = v < 0, above = v > 0,
-       on_plane = abs(v) <= 1e-12,
-       distance = if (nb > 0) abs(v) / nb else rep(Inf, length(v)),
-       norm_beta = nb)
+  list(
+    value = v, side = sign(v), below = v < 0, above = v > 0,
+    on_plane = abs(v) <= 1e-12,
+    distance = if (nb > 0) abs(v) / nb else rep(Inf, length(v)),
+    norm_beta = nb
+  )
 }
 
 # --- eqs. (9.6)-(9.8) pp.344-346 -------------------------------------
@@ -82,7 +107,13 @@ Hyperpl <- function(X, beta0, beta) {
 #' y_i(beta_0 + x_i beta) >= M.  Since M = 1 / ||beta|| once the scale is
 #' fixed, that is equivalent to minimizing (1/2)||beta||^2 (9.7) subject
 #' to y_i(beta_0 + x_i beta) >= 1 (9.8); the street is 2 / ||beta||.
-#' @noRd
+#' @param X Argument `X`; see Usage.
+#' @param y Argument `y`; see Usage.
+#' @return A list with `beta`, `beta0`, `norm_beta`, `margin`, `street_width`, `objective`, `functional_margin`, `min_functional_margin`, `constraint_ok`, `alpha`, `support_vectors`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::Hardsvm(V, V)
+#' @keywords internal
 Hardsvm <- function(X, y, ...) {
   fit <- morie_svm_fit_dual(X, y, C = NULL, ...)
   X <- as.matrix(X)
@@ -90,13 +121,15 @@ Hardsvm <- function(X, y, ...) {
   nb <- sqrt(sum(fit$beta^2))
   f <- fit$beta0 + as.numeric(X %*% fit$beta)
   fm <- ys * f
-  list(beta = fit$beta, beta0 = fit$beta0, norm_beta = nb,
-       margin = if (nb > 0) 1 / nb else Inf,
-       street_width = if (nb > 0) 2 / nb else Inf,
-       objective = 0.5 * nb^2, functional_margin = fm,
-       min_functional_margin = min(fm),
-       constraint_ok = min(fm) >= 1 - 1e-6,
-       alpha = fit$alpha, support_vectors = fit$support_vectors)
+  list(
+    beta = fit$beta, beta0 = fit$beta0, norm_beta = nb,
+    margin = if (nb > 0) 1 / nb else Inf,
+    street_width = if (nb > 0) 2 / nb else Inf,
+    objective = 0.5 * nb^2, functional_margin = fm,
+    min_functional_margin = min(fm),
+    constraint_ok = min(fm) >= 1 - 1e-6,
+    alpha = fit$alpha, support_vectors = fit$support_vectors
+  )
 }
 
 # --- eqs. (9.9)-(9.14) pp.346-347 ------------------------------------
@@ -109,7 +142,19 @@ Hardsvm <- function(X, y, ...) {
 #' alpha_i >= 0 (9.14).  The book warns under (9.14) that the sign of
 #' the inequality term is crucial; its own worked examples supply the
 #' constraint in the >= form and subtract it, the convention used here.
-#' @noRd
+#' @param f Argument `f`; see Usage.
+#' @param grad_f Argument `grad_f`; see Usage.
+#' @param h Argument `h`; see Usage.
+#' @param grad_h Argument `grad_h`; see Usage.
+#' @param g Argument `g`; see Usage.
+#' @param grad_g Argument `grad_g`; see Usage.
+#' @param lam Argument `lam`; see Usage.
+#' @param alpha Argument `alpha`; see Usage.
+#' @return A list with `L`, `stationarity`, `max_stationarity`, `alpha_nonnegative`, `n_equality`, `n_inequality`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::Wolfedual(V, V)
+#' @keywords internal
 Wolfedual <- function(f, grad_f, h = NULL, grad_h = NULL, g = NULL,
                       grad_g = NULL, lam = NULL, alpha = NULL) {
   hv <- if (is.null(h)) numeric(0) else as.numeric(h)
@@ -117,20 +162,32 @@ Wolfedual <- function(f, grad_f, h = NULL, grad_h = NULL, g = NULL,
   lm_ <- if (is.null(lam)) rep(0, length(hv)) else as.numeric(lam)
   al <- if (is.null(alpha)) rep(0, length(gv)) else as.numeric(alpha)
   gf <- as.numeric(grad_f)
-  Gh <- if (is.null(grad_h)) NULL else matrix(unlist(grad_h),
-                                              nrow = length(hv),
-                                              byrow = TRUE)
-  Gg <- if (is.null(grad_g)) NULL else matrix(unlist(grad_g),
-                                              nrow = length(gv),
-                                              byrow = TRUE)
+  Gh <- if (is.null(grad_h)) {
+    NULL
+  } else {
+    matrix(unlist(grad_h),
+      nrow = length(hv),
+      byrow = TRUE
+    )
+  }
+  Gg <- if (is.null(grad_g)) {
+    NULL
+  } else {
+    matrix(unlist(grad_g),
+      nrow = length(gv),
+      byrow = TRUE
+    )
+  }
   L <- as.numeric(f) - sum(lm_ * hv) - sum(al * gv)
   stat <- gf
   if (!is.null(Gh) && length(hv)) stat <- stat - as.numeric(lm_ %*% Gh)
   if (!is.null(Gg) && length(gv)) stat <- stat - as.numeric(al %*% Gg)
-  list(L = L, stationarity = stat,
-       max_stationarity = if (length(stat)) max(abs(stat)) else 0,
-       alpha_nonnegative = all(al >= -1e-12),
-       n_equality = length(hv), n_inequality = length(gv))
+  list(
+    L = L, stationarity = stat,
+    max_stationarity = if (length(stat)) max(abs(stat)) else 0,
+    alpha_nonnegative = all(al >= -1e-12),
+    n_equality = length(hv), n_inequality = length(gv)
+  )
 }
 
 # --- eqs. (9.15)-(9.26) pp.346-347 -----------------------------------
@@ -143,28 +200,45 @@ Wolfedual <- function(f, grad_f, h = NULL, grad_h = NULL, g = NULL,
 #' (9.19), maximized at alpha = c / (a'a) >= 0 (9.20).  Illustrative
 #' Example 9.1 is a = 1, c = 1; Illustrative Example 9.2 is a = (1, 1),
 #' c = 2.  The two are the same problem, so one routine answers both.
-#' @noRd
+#' @param a Argument `a`; see Usage.
+#' @param c Argument `c`; see Usage.
+#' @return A list with `x`, `alpha`, `dual_quadratic`, `dual_linear`, `dual_value`, `primal_value`, `constraint`, `active`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::Qplincon(V, V)
+#' @keywords internal
 Qplincon <- function(a, c) {
   av <- as.numeric(a)
   aa <- sum(av^2)
   if (aa <= 0) stop("constraint vector a must be nonzero")
   alpha <- as.numeric(c) / aa
   z <- alpha * av
-  list(x = z, alpha = alpha, dual_quadratic = -aa,
-       dual_linear = 2 * as.numeric(c),
-       dual_value = -aa * alpha^2 + 2 * as.numeric(c) * alpha,
-       primal_value = sum(z^2), constraint = sum(av * z),
-       active = TRUE)
+  list(
+    x = z, alpha = alpha, dual_quadratic = -aa,
+    dual_linear = 2 * as.numeric(c),
+    dual_value = -aa * alpha^2 + 2 * as.numeric(c) * alpha,
+    primal_value = sum(z^2), constraint = sum(av * z),
+    active = TRUE
+  )
 }
 
 # --- eq. (9.27) p.348 ------------------------------------------------
 
 #' Wolfe primal of the maximum margin problem (MVSML eq. 9.27)
 #'
-#' L = (1/2)||beta||^2 - sum_i alpha_i [ y_i(beta_0 + x_i beta) - 1 ].
+#' L = (1/2)||beta||^2 - sum_i alpha_i \[ y_i(beta_0 + x_i beta) - 1 \].
 #' Its derivatives with respect to beta and beta_0 are (9.28) and (9.29),
 #' both zero at the optimum.
-#' @noRd
+#' @param X Argument `X`; see Usage.
+#' @param y Argument `y`; see Usage.
+#' @param beta0 Argument `beta0`; see Usage.
+#' @param beta Argument `beta`; see Usage.
+#' @param alpha Argument `alpha`; see Usage.
+#' @return A list with `L`, `quadratic_term`, `slack`, `grad_beta`, `grad_beta0`.
+#' @examples
+#' morie:::Svmlagr(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5, alpha = 0.5)
+#' @keywords internal
 Svmlagr <- function(X, y, beta0, beta, alpha) {
   X <- as.matrix(X)
   b <- as.numeric(beta)
@@ -172,10 +246,12 @@ Svmlagr <- function(X, y, beta0, beta, alpha) {
   al <- as.numeric(alpha)
   f <- as.numeric(beta0) + as.numeric(X %*% b)
   slack <- ys * f - 1
-  list(L = 0.5 * sum(b^2) - sum(al * slack),
-       quadratic_term = 0.5 * sum(b^2), slack = slack,
-       grad_beta = b - as.numeric(t(X) %*% (al * ys)),
-       grad_beta0 = -sum(al * ys))
+  list(
+    L = 0.5 * sum(b^2) - sum(al * slack),
+    quadratic_term = 0.5 * sum(b^2), slack = slack,
+    grad_beta = b - as.numeric(t(X) %*% (al * ys)),
+    grad_beta0 = -sum(al * ys)
+  )
 }
 
 # --- eqs. (9.34)-(9.37) pp.354-355 -----------------------------------
@@ -188,7 +264,14 @@ Svmlagr <- function(X, y, beta0, beta, alpha) {
 #' that slack budget and for the box bound on the multipliers in (9.45);
 #' only (9.45) is directly solvable, so T is the box bound here and the
 #' realized sum of slacks is returned as slack_sum.
-#' @noRd
+#' @param X Argument `X`; see Usage.
+#' @param y Argument `y`; see Usage.
+#' @param T Argument `T`; see Usage.
+#' @return A list with `beta`, `beta0`, `norm_beta`, `margin`, `zeta`, `slack_sum`, `n_violating`, `n_misclassified`, `alpha`, `support_vectors`, `objective`.
+#' @examples
+#' morie:::Softsvm(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   T = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 Softsvm <- function(X, y, T, ...) {
   fit <- morie_svm_fit_dual(X, y, C = as.numeric(T), ...)
   X <- as.matrix(X)
@@ -196,13 +279,15 @@ Softsvm <- function(X, y, T, ...) {
   nb <- sqrt(sum(fit$beta^2))
   f <- fit$beta0 + as.numeric(X %*% fit$beta)
   zeta <- pmax(0, 1 - ys * f)
-  list(beta = fit$beta, beta0 = fit$beta0, norm_beta = nb,
-       margin = if (nb > 0) 1 / nb else Inf,
-       zeta = zeta, slack_sum = sum(zeta),
-       n_violating = sum(zeta > 1e-9),
-       n_misclassified = sum(zeta > 1),
-       alpha = fit$alpha, support_vectors = fit$support_vectors,
-       objective = fit$objective)
+  list(
+    beta = fit$beta, beta0 = fit$beta0, norm_beta = nb,
+    margin = if (nb > 0) 1 / nb else Inf,
+    zeta = zeta, slack_sum = sum(zeta),
+    n_violating = sum(zeta > 1e-9),
+    n_misclassified = sum(zeta > 1),
+    alpha = fit$alpha, support_vectors = fit$support_vectors,
+    objective = fit$objective
+  )
 }
 
 # --- eqs. (9.38)-(9.43) pp.356-357 -----------------------------------
@@ -210,16 +295,30 @@ Softsvm <- function(X, y, T, ...) {
 #' KKT conditions of the support vector classifier (MVSML eqs. 9.38-9.43)
 #'
 #' (9.38) L = (1/2)||beta||^2 + T sum_i zeta_i
-#' - sum_i alpha_i [ y_i(beta_0 + x_i beta) - 1 + zeta_i ]
+#' - sum_i alpha_i \[ y_i(beta_0 + x_i beta) - 1 + zeta_i \]
 #' - sum_i delta_i zeta_i, with residuals (9.39) beta - sum alpha_i y_i
 #' x_i, (9.40) sum alpha_i y_i, (9.41) alpha_i + delta_i - T, (9.42)
-#' alpha_i [ y_i(beta_0 + x_i beta) - 1 + zeta_i ] and (9.43) delta_i
+#' alpha_i \[ y_i(beta_0 + x_i beta) - 1 + zeta_i \] and (9.43) delta_i
 #' zeta_i.
 #'
 #' The printed sign of the delta term on p.356 is inconsistent with the
 #' book's own (9.41), which states dL/dzeta_i = T - alpha_i - delta_i;
 #' that requires the term to enter with a minus, and it does so here.
-#' @noRd
+#' @param X Argument `X`; see Usage.
+#' @param y Argument `y`; see Usage.
+#' @param beta0 Argument `beta0`; see Usage.
+#' @param beta Argument `beta`; see Usage.
+#' @param alpha Argument `alpha`; see Usage.
+#' @param delta Argument `delta`; see Usage.
+#' @param zeta Argument `zeta`; see Usage.
+#' @param T Argument `T`; see Usage.
+#' @return A list with `L`, `stationarity_beta`, `balance`, `multiplier_sum`, `complementary_alpha`, `complementary_delta`, `max_residual`, `kkt_satisfied`.
+#' @examples
+#' set.seed(1)
+#' r <- morie:::Svmkkt(X = rnorm(10), y = rnorm(10), beta0 = 0.5, beta = 0.5, alpha = 0.5,
+#'   delta = rnorm(10), zeta = rnorm(10), T = rnorm(10))
+#' TRUE
+#' @keywords internal
 Svmkkt <- function(X, y, beta0, beta, alpha, delta, zeta, T) {
   X <- as.matrix(X)
   b <- as.numeric(beta)
@@ -237,10 +336,12 @@ Svmkkt <- function(X, y, beta0, beta, alpha, delta, zeta, T) {
   r42 <- al * inner
   r43 <- dl * zt
   worst <- max(abs(c(r39, r40, r41, r42, r43)))
-  list(L = L, stationarity_beta = r39, balance = r40,
-       multiplier_sum = r41, complementary_alpha = r42,
-       complementary_delta = r43, max_residual = worst,
-       kkt_satisfied = worst < 1e-6)
+  list(
+    L = L, stationarity_beta = r39, balance = r40,
+    multiplier_sum = r41, complementary_alpha = r42,
+    complementary_delta = r43, max_residual = worst,
+    kkt_satisfied = worst < 1e-6
+  )
 }
 
 # --- eqs. (9.44)-(9.45) p.357 ----------------------------------------
@@ -251,17 +352,27 @@ Svmkkt <- function(X, y, beta0, beta, alpha, delta, zeta, T) {
 #' - (1/2) sum_i sum_j alpha_i alpha_j y_i y_j (x_i . x_j) subject to
 #' 0 <= alpha_i <= T and sum_i alpha_i y_i = 0.  It differs from the hard
 #' margin dual (9.32)-(9.33) only by the upper bound T.
-#' @noRd
+#' @param X Argument `X`; see Usage.
+#' @param y Argument `y`; see Usage.
+#' @param T Argument `T`; see Usage.
+#' @param K Argument `K`; see Usage.
+#' @return A list with `alpha`, `beta`, `beta0`, `objective`, `support_vectors`, `balance`, `bounded`, `at_bound`.
+#' @examples
+#' morie:::Svmsdual(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   T = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 Svmsdual <- function(X, y, T, K = NULL, ...) {
   Tv <- as.numeric(T)
   fit <- morie_svm_fit_dual(X, y, C = Tv, K = K, ...)
   ys <- as.numeric(y)
-  list(alpha = fit$alpha, beta = fit$beta, beta0 = fit$beta0,
-       objective = fit$objective,
-       support_vectors = fit$support_vectors,
-       balance = sum(fit$alpha * ys),
-       bounded = all(fit$alpha >= -1e-9 & fit$alpha <= Tv + 1e-9),
-       at_bound = which(fit$alpha > Tv - 1e-6))
+  list(
+    alpha = fit$alpha, beta = fit$beta, beta0 = fit$beta0,
+    objective = fit$objective,
+    support_vectors = fit$support_vectors,
+    balance = sum(fit$alpha * ys),
+    bounded = all(fit$alpha >= -1e-9 & fit$alpha <= Tv + 1e-9),
+    at_bound = which(fit$alpha > Tv - 1e-6)
+  )
 }
 
 # --- eqs. (9.46)-(9.47) p.360 ----------------------------------------
@@ -273,11 +384,24 @@ Svmsdual <- function(X, y, T, K = NULL, ...) {
 #' kernel K(x_i, x_j), which implicitly defines an inner product in an
 #' enlarged feature space.  That substitution is the whole difference
 #' between (9.44) and (9.46); the constraints (9.47) are unchanged.
-#' @noRd
+#' @param X Argument `X`; see Usage.
+#' @param y Argument `y`; see Usage.
+#' @param T Argument `T`; see Usage.
+#' @param kernel Argument `kernel`; see Usage.
+#' @param gamma Argument `gamma`; see Usage.
+#' @param K Argument `K`; see Usage.
+#' @return The value of `out`, as built in the body.
+#' @examples
+#' morie:::Ksvmdual(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   T = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 Ksvmdual <- function(X, y, T, kernel = "linear", gamma = NULL,
                      K = NULL, ...) {
-  Km <- if (is.null(K)) morie_kernel_matrix(X, kernel, gamma) else
+  Km <- if (is.null(K)) {
+    morie_kernel_matrix(X, kernel, gamma)
+  } else {
     as.matrix(K)
+  }
   out <- Svmsdual(X, y, T, K = Km, ...)
   out$K <- Km
   out$kernel <- if (is.null(K)) kernel else "precomputed"
@@ -292,15 +416,25 @@ Ksvmdual <- function(X, y, T, kernel = "linear", gamma = NULL,
 #' the centered covariate curve and the coefficient function is taken by
 #' the trapezoid rule on the observation grid, the same quadrature the
 #' chapter uses for its inner products on p.581.
-#' @noRd
+#' @param t Argument `t`; see Usage.
+#' @param x_values Argument `x_values`; see Usage.
+#' @param beta_values Argument `beta_values`; see Usage.
+#' @param mu Argument `mu`; see Usage.
+#' @return A list with `integral`, `fitted`, `mu`, `n_points`.
+#' @examples
+#' morie:::Flmint(t = c(1, 2, 3, 4, 5, 6, 7, 8), x_values = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   beta_values = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 Flmint <- function(t, x_values, beta_values, mu = 0) {
   tt <- as.numeric(t)
   xs <- as.numeric(x_values)
   bs <- as.numeric(beta_values)
   m <- length(tt)
   s <- sum(0.5 * diff(tt) * (xs[-m] * bs[-m] + xs[-1] * bs[-1]))
-  list(integral = s, fitted = as.numeric(mu) + s,
-       mu = as.numeric(mu), n_points = m)
+  list(
+    integral = s, fitted = as.numeric(mu) + s,
+    mu = as.numeric(mu), n_points = m
+  )
 }
 
 # --- eq. (14.2) p.579 ------------------------------------------------
@@ -310,11 +444,21 @@ Flmint <- function(t, x_values, beta_values, mu = 0) {
 #' beta(t) = sum_\{l=1\}^\{L1\} beta_l phi_l(t), the device that makes (14.1)
 #' estimable: an infinite-dimensional unknown function is replaced by L1
 #' scalars, after which (14.1) collapses to the linear model (14.3).
-#' @noRd
+#' @param t Argument `t`; see Usage.
+#' @param beta_coef Argument `beta_coef`; see Usage.
+#' @param kind Argument `kind`; see Usage.
+#' @param period Argument `period`; see Usage.
+#' @return A list with `beta_t`, `t`, `n_basis`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::Basexp(V, V)
+#' @keywords internal
 Basexp <- function(t, beta_coef, kind = "fourier", period = NULL) {
   coefs <- as.numeric(beta_coef)
-  list(beta_t = morie_fda_beta_function(t, coefs, length(coefs), kind),
-       t = as.numeric(t), n_basis = length(coefs))
+  list(
+    beta_t = morie_fda_beta_function(t, coefs, length(coefs), kind),
+    t = as.numeric(t), n_basis = length(coefs)
+  )
 }
 
 # --- eq. (14.8) p.581 ------------------------------------------------
@@ -325,11 +469,20 @@ Basexp <- function(t, beta_coef, kind = "fourier", period = NULL) {
 #' are the times at which the covariate curve was observed, columns the
 #' L2 basis functions.  It is what turns a discretely sampled curve into
 #' basis coefficients through (14.7).
-#' @noRd
+#' @param t Argument `t`; see Usage.
+#' @param n_basis Argument `n_basis`; see Usage.
+#' @param kind Argument `kind`; see Usage.
+#' @param period Argument `period`; see Usage.
+#' @return A list with `Psi`, `m`, `L2`, `PsiTPsi`.
+#' @examples
+#' morie:::Basmat(t = c(1, 2, 3, 4, 5, 6, 7, 8), n_basis = 5L)
+#' @keywords internal
 Basmat <- function(t, n_basis, kind = "fourier", period = NULL) {
   Psi <- morie_fda_basis(t, n_basis, kind, period)
-  list(Psi = Psi, m = nrow(Psi), L2 = ncol(Psi),
-       PsiTPsi = t(Psi) %*% Psi)
+  list(
+    Psi = Psi, m = nrow(Psi), L2 = ncol(Psi),
+    PsiTPsi = t(Psi) %*% Psi
+  )
 }
 
 # --- eq. (14.11) p.601 -----------------------------------------------
@@ -356,6 +509,10 @@ Basmat <- function(t, n_basis, kind = "fourier", period = NULL) {
 #' \code{as.numeric}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_fda_basis_deriv(V, V)
+#' @keywords internal
 morie_fda_basis_deriv <- function(t, n_basis, p = 1L, kind = "fourier",
                                   period = NULL) {
   tt <- as.numeric(t)
@@ -369,16 +526,23 @@ morie_fda_basis_deriv <- function(t, n_basis, p = 1L, kind = "fourier",
   out <- matrix(0, length(tt), L)
   for (l in seq_len(L) - 1L) {
     if (identical(kind, "fourier")) {
-      if (l == 0L) { out[, 1L] <- if (p == 0L) 1 else 0
-      next }
+      if (l == 0L) {
+        out[, 1L] <- if (p == 0L) 1 else 0
+        next
+      }
       k <- if (l %% 2L == 1L) (l + 1L) %/% 2L else l %/% 2L
       w <- 2 * pi * k / P
       phase <- w * tt + 0.5 * pi * p
-      out[, l + 1L] <- (w^p) * (if (l %% 2L == 1L) sin(phase) else
-        cos(phase))
+      out[, l + 1L] <- (w^p) * (if (l %% 2L == 1L) {
+        sin(phase)
+      } else {
+        cos(phase)
+      })
     } else {
-      if (p > l) { out[, l + 1L] <- 0
-      next }
+      if (p > l) {
+        out[, l + 1L] <- 0
+        next
+      }
       cf <- 1
       if (p > 0L) for (j in seq_len(p) - 1L) cf <- cf * (l - j)
       out[, l + 1L] <- cf * (((tt - lo) / span)^(l - p)) / span^p
@@ -389,11 +553,21 @@ morie_fda_basis_deriv <- function(t, n_basis, p = 1L, kind = "fourier",
 
 #' Roughness penalty matrix (MVSML eq. 14.11)
 #'
-#' J_beta = int_0^T [ d^p beta(t) / dt^p ]^2 dt.  Under the basis
+#' J_beta = int_0^T \[ d^p beta(t) / dt^p \]^2 dt.  Under the basis
 #' expansion (14.2) the book writes J_beta = beta' P beta with
 #' P_ij = int_0^T phi_i^(p)(t) phi_j^(p)(t) dt.  The chapter says p is
 #' typically 1 or 2.  Integrals by the trapezoid rule on the grid t.
-#' @noRd
+#' @param t Argument `t`; see Usage.
+#' @param L1 Argument `L1`; see Usage.
+#' @param p Argument `p`; see Usage.
+#' @param kind Argument `kind`; see Usage.
+#' @param period Argument `period`; see Usage.
+#' @param beta Argument `beta`; see Usage.
+#' @return The value of `out`, as built in the body.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::Penmat(V, V)
+#' @keywords internal
 Penmat <- function(t, L1, p = 2L, kind = "fourier", period = NULL,
                    beta = NULL) {
   tt <- as.numeric(t)
@@ -402,10 +576,12 @@ Penmat <- function(t, L1, p = 2L, kind = "fourier", period = NULL,
   m <- length(tt)
   dt <- diff(tt)
   P <- matrix(0, L, L)
-  for (i in seq_len(L)) for (j in i:L) {
-    s <- sum(0.5 * dt * (D[-m, i] * D[-m, j] + D[-1, i] * D[-1, j]))
-    P[i, j] <- s
-    P[j, i] <- s
+  for (i in seq_len(L)) {
+    for (j in i:L) {
+      s <- sum(0.5 * dt * (D[-m, i] * D[-m, j] + D[-1, i] * D[-1, j]))
+      P[i, j] <- s
+      P[j, i] <- s
+    }
   }
   out <- list(P = P, order = p, L1 = L)
   if (!is.null(beta)) {
@@ -423,7 +599,17 @@ Penmat <- function(t, L1, p = 2L, kind = "fourier", period = NULL,
 #' + lambda J_beta, with J_beta the penalty (14.11).  lambda trades fit
 #' against smoothness: at lambda = 0 it is least squares, and as lambda
 #' grows beta(t) is driven towards a constant.
-#' @noRd
+#' @param y Argument `y`; see Usage.
+#' @param X Argument `X`; see Usage.
+#' @param beta Argument `beta`; see Usage.
+#' @param lam Argument `lam`; see Usage.
+#' @param P Argument `P`; see Usage.
+#' @param mu Argument `mu`; see Usage.
+#' @return A list with `sse`, `penalty`, `lambda`, `objective`, `fitted`, `residuals`.
+#' @examples
+#' morie:::Pensse(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5,
+#'   lam = c(1, 2, 3, 4, 5, 6, 7, 8), P = 0.5)
+#' @keywords internal
 Pensse <- function(y, X, beta, lam, P, mu = 0) {
   ys <- as.numeric(y)
   X <- as.matrix(X)
@@ -433,9 +619,11 @@ Pensse <- function(y, X, beta, lam, P, mu = 0) {
   resid <- ys - fitted
   J <- as.numeric(t(b) %*% P %*% b)
   sse <- sum(resid^2)
-  list(sse = sse, penalty = J, lambda = as.numeric(lam),
-       objective = sse + as.numeric(lam) * J,
-       fitted = fitted, residuals = resid)
+  list(
+    sse = sse, penalty = J, lambda = as.numeric(lam),
+    objective = sse + as.numeric(lam) * J,
+    fitted = fitted, residuals = resid
+  )
 }
 
 # --- eq. (14.12) p.601 -----------------------------------------------
@@ -448,7 +636,17 @@ Pensse <- function(y, X, beta, lam, P, mu = 0) {
 #' beta*, minimized at beta* = (X*'X* + lambda D)^-1 X*'(y - 1_n mu),
 #' with beta = Gamma beta*.  Zero eigenvalues of a rank-deficient P
 #' contribute nothing, the reduction the book notes.
-#' @noRd
+#' @param y Argument `y`; see Usage.
+#' @param X Argument `X`; see Usage.
+#' @param P Argument `P`; see Usage.
+#' @param lam Argument `lam`; see Usage.
+#' @param mu Argument `mu`; see Usage.
+#' @param tol Argument `tol`; see Usage.
+#' @return A list with `beta`, `beta_star`, `Gamma`, `eigenvalues`, `X_star`, `mu`, `fitted`, `residuals`, `sse`, `penalty`, `objective`, `rank`.
+#' @examples
+#' morie:::Penfreg(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), P = 0.5,
+#'   lam = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 Penfreg <- function(y, X, P, lam, mu = NULL, tol = 1e-10) {
   ys <- as.numeric(y)
   X <- as.matrix(X)
@@ -467,10 +665,12 @@ Penfreg <- function(y, X, P, lam, mu = NULL, tol = 1e-10) {
   resid <- ys - fitted
   sse <- sum(resid^2)
   pen <- sum(as.numeric(lam) * d * bstar^2)
-  list(beta = beta, beta_star = bstar, Gamma = G, eigenvalues = d,
-       X_star = Xs, mu = m, fitted = fitted, residuals = resid,
-       sse = sse, penalty = pen, objective = sse + pen,
-       rank = sum(d > tol))
+  list(
+    beta = beta, beta_star = bstar, Gamma = G, eigenvalues = d,
+    X_star = Xs, mu = m, fitted = fitted, residuals = resid,
+    sse = sse, penalty = pen, objective = sse + pen,
+    rank = sum(d > tol)
+  )
 }
 
 # --- eqs. (14.13) p.607 and (14.14) p.610 ----------------------------
@@ -520,8 +720,10 @@ morie_fda_env_interaction <- function(X, env, reference = TRUE) {
     k <- match(env[i], keep)
     if (!is.na(k)) out[i, (k - 1L) * L + seq_len(L)] <- X[i, ]
   }
-  list(X_EF = out, levels = levels_, kept_levels = keep,
-       reference = reference, n_columns = ncol(out))
+  list(
+    X_EF = out, levels = levels_, kept_levels = keep,
+    reference = reference, n_columns = ncol(out)
+  )
 }
 
 #' Functional regression with environment effects (MVSML eqs. 14.13-14.14)
@@ -532,15 +734,27 @@ morie_fda_env_interaction <- function(X, env, reference = TRUE) {
 #' carries the L1 functional scores of (14.4)-(14.5).  Passing X_EF =
 #' NULL gives (14.13) and passing it gives (14.14); the two differ by
 #' that block alone, which is why one routine covers both.
-#' @noRd
+#' @param y Argument `y`; see Usage.
+#' @param X Argument `X`; see Usage.
+#' @param X_E Argument `X_E`; see Usage.
+#' @param X_EF Argument `X_EF`; see Usage.
+#' @param lam Argument `lam`; see Usage.
+#' @param P Argument `P`; see Usage.
+#' @return A list with `coef`, `mu`, `beta_E`, `beta`, `beta_EF`, `widths`, `design`, `fitted`, `residuals`, `sse`, `n_columns`, `has_interaction`.
+#' @examples
+#' morie:::Fregenv(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   X_E = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 Fregenv <- function(y, X, X_E, X_EF = NULL, lam = 0, P = NULL) {
   ys <- as.numeric(y)
   X <- as.matrix(X)
   XE <- as.matrix(X_E)
   n <- length(ys)
   D <- cbind(1, XE, X)
-  widths <- c(intercept = 1L, environments = ncol(XE),
-              functional = ncol(X))
+  widths <- c(
+    intercept = 1L, environments = ncol(XE),
+    functional = ncol(X)
+  )
   if (!is.null(X_EF)) {
     XF <- as.matrix(X_EF)
     widths <- c(widths, env_x_functional = ncol(XF))
@@ -563,10 +777,12 @@ Fregenv <- function(y, X, X_E, X_EF = NULL, lam = 0, P = NULL) {
   beta <- coef[off + seq_len(widths[["functional"]])]
   off <- off + widths[["functional"]]
   beta_EF <- if (is.null(X_EF)) numeric(0) else coef[-seq_len(off)]
-  list(coef = coef, mu = coef[1], beta_E = beta_E, beta = beta,
-       beta_EF = beta_EF, widths = widths, design = D,
-       fitted = fitted, residuals = resid, sse = sum(resid^2),
-       n_columns = ncol(D), has_interaction = !is.null(X_EF))
+  list(
+    coef = coef, mu = coef[1], beta_E = beta_E, beta = beta,
+    beta_EF = beta_EF, widths = widths, design = D,
+    fitted = fitted, residuals = resid, sse = sum(resid^2),
+    n_columns = ncol(D), has_interaction = !is.null(X_EF)
+  )
 }
 
 #' Functional regression with environment interaction (MVSML eq. 14.14)
@@ -575,11 +791,24 @@ Fregenv <- function(y, X, X_E, X_EF = NULL, lam = 0, P = NULL) {
 #' (14.13) the environment-by-reflectance interaction.  Pass env, the
 #' environment label of each record, to have the block-diagonal X_EF of
 #' p.610 built, or pass X_EF directly.
-#' @noRd
+#' @param y Argument `y`; see Usage.
+#' @param X Argument `X`; see Usage.
+#' @param X_E Argument `X_E`; see Usage.
+#' @param X_EF Argument `X_EF`; see Usage.
+#' @param env Argument `env`; see Usage.
+#' @param lam Argument `lam`; see Usage.
+#' @param P Argument `P`; see Usage.
+#' @param reference Argument `reference`; see Usage.
+#' @return The value of `out`, as built in the body.
+#' @examples
+#' morie:::Fregint(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   X_E = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 Fregint <- function(y, X, X_E, X_EF = NULL, env = NULL, lam = 0,
                     P = NULL, reference = TRUE) {
-  if (is.null(X_EF) && !is.null(env))
+  if (is.null(X_EF) && !is.null(env)) {
     X_EF <- morie_fda_env_interaction(X, env, reference)$X_EF
+  }
   out <- Fregenv(y, X, X_E, X_EF = X_EF, lam = lam, P = P)
   out$X_EF <- X_EF
   out

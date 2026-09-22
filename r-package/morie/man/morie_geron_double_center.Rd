@@ -9,6 +9,13 @@ morie_geron_double_center(D)
 \arguments{
 \item{D}{Distance matrix. @return Gram matrix B.}
 }
+\value{
+The value of \code{.morie_gr_w4b_double_center}.
+}
 \description{
 Double-centre a squared-distance matrix (Geron Ch 7, morie.fn hmmds helper)
 }
+\examples{
+morie_geron_double_center(D = 5L)
+}
+\keyword{internal}

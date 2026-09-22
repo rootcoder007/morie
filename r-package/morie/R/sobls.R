@@ -17,10 +17,10 @@
 #' @return list: sample, estimate (if f given), se, N, d,
 #'   \code{scrambled} (always \code{FALSE} in this arm) and method.
 #' @importFrom utils getFromNamespace
-#' @keywords internal
-#' @export
 #' @examples
 #' morie_sobol_sequence(N = 128L, d = 2L)
+#' @keywords internal
+#' @export
 sobls <- function(N = 128L, d = 1L, f = NULL, scramble = TRUE, seed = 42L) {
   # Native gray-code Sobol with Joe-Kuo direction numbers (d <= 10);
   # matches randtoolbox's unscrambled sequence (cross-validated in

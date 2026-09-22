@@ -27,3 +27,10 @@ A step of the survroc_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(1)
+tt <- rexp(40); ev <- rbinom(40, 1, 0.7)
+mk <- -log(tt) + rnorm(40, 0, 0.3)
+str(morie_survroc(tt, ev, mk, t = 1), max.level = 1)
+}
+\keyword{internal}

@@ -23,3 +23,8 @@ Adaptation can only help when the influence is unevenly spread; where
 it is flat the two coincide, and claiming otherwise would be claiming
 something for nothing.
 }
+\examples{
+morie_tlsurvy_design_efficiency(values = c(1, 2, 3, 4, 5, 6, 7, 8),
+  influence = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L)
+}
+\keyword{internal}

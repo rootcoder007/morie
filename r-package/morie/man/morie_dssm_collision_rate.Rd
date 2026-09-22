@@ -25,3 +25,8 @@ Two words collide only if they share EVERY n-gram. Not a hash
 function's arbitrary collision -- the cost is real but measurable,
 and the paper finds it negligible.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_dssm_collision_rate(V)
+}
+\keyword{internal}

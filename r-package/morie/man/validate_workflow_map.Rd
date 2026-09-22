@@ -18,3 +18,4 @@ A step of the workflow implementation. Called by \code{morie_run_pipeline},
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

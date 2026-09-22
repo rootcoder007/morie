@@ -20,22 +20,8 @@
 NULL
 
 
-#' .xai_result
-#'
-#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
-#' \code{morie_fairness_xai_ceteris_paribus},
-#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param title Carried through into a list the body builds.
-#' @param call Carried through into a list the body builds.
-#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
-#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
-#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
-#' @param ... Passed through.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Xai Result
+#' @noRd
 .xai_result <- function(title, call, summary_lines = list(),
                         warnings = character(0),
                         interpretation = "", ...) {
@@ -47,21 +33,8 @@ NULL
   out
 }
 
-#' .xai_as_2d
-#'
-#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
-#' \code{morie_fairness_xai_ceteris_paribus},
-#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param X A matrix; passed to \code{as.matrix}.
-#' @return The value of \code{m}, as built in the body.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .xai_as_2d(X = x)
-#' res
+#' Internal helper: Xai As 2d
+#' @noRd
 .xai_as_2d <- function(X) {
   m <- as.matrix(X)
   if (!is.numeric(m)) storage.mode(m) <- "double"
@@ -70,41 +43,24 @@ NULL
   m
 }
 
-#' .xai_names
-#'
-#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
-#' \code{morie_fairness_xai_ceteris_paribus},
-#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param feature_names Optional; may be \code{NULL}. Coerced to character by the body,
-#' with \code{as.character}.
-#' @param d A count; the body uses it as \code{seq_len(...)}.
-#' @return The value of \code{nm}, as built in the body.
-#' @export
+#' Internal helper: Xai Names
+#' @noRd
 .xai_names <- function(feature_names, d) {
-  if (is.null(feature_names)) return(sprintf("x%d", seq_len(d) - 1L))
+  if (is.null(feature_names)) {
+    return(sprintf("x%d", seq_len(d) - 1L))
+  }
   nm <- as.character(feature_names)
   if (length(nm) != d) {
-    stop(sprintf("feature_names has %d entries; X has %d columns",
-                 length(nm), d))
+    stop(sprintf(
+      "feature_names has %d entries; X has %d columns",
+      length(nm), d
+    ))
   }
   nm
 }
 
-#' .xai_resolve
-#'
-#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
-#' \code{morie_fairness_xai_ceteris_paribus},
-#' \code{morie_fairness_xai_partial_dependence}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param feature Character; the body checks with \code{is.character}.
-#' @param names A vector; its length is taken.
-#' @return The value of \code{idx}, as built in the body.
-#' @export
+#' Internal helper: Xai Resolve
+#' @noRd
 .xai_resolve <- function(feature, names) {
   if (is.character(feature)) {
     if (!(feature %in% names)) {
@@ -119,18 +75,8 @@ NULL
   idx
 }
 
-#' .xai_predict
-#'
-#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
-#' \code{morie_fairness_xai_ceteris_paribus},
-#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param predict_fn The body requires: predict_fn must return one prediction per row of X.
-#' @param X A matrix; passed to \code{nrow}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Xai Predict
+#' @noRd
 .xai_predict <- function(predict_fn, X) {
   out <- as.numeric(predict_fn(X))
   if (length(out) != nrow(X)) {
@@ -139,18 +85,8 @@ NULL
   out
 }
 
-#' .xai_have_iml
-#'
-#' A step of the fairness_xai implementation. Called by
-#' \code{morie_fairness_xai_permutation_importance}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @return The value of \code{requireNamespace}.
-#' @export
-#' @examples
-#' res <- .xai_have_iml()
-#' res
+#' Internal helper: Xai Have Iml
+#' @noRd
 .xai_have_iml <- function() {
   requireNamespace("iml", quietly = TRUE)
 }
@@ -174,16 +110,18 @@ NULL
 #'   importance.
 #' @examples
 #' set.seed(1)
-#' X <- matrix(rnorm(400), 100, 4); colnames(X) <- paste0("f", 1:4)
+#' X <- matrix(rnorm(400), 100, 4)
+#' colnames(X) <- paste0("f", 1:4)
 #' predict_fn <- function(M) as.numeric(M %*% c(1.5, -0.7, 0, 0.3))
 #' morie_fairness_xai_permutation_importance(predict_fn, X,
-#'   feature_names = colnames(X), n_repeats = 3L, seed = 1L)
+#'   feature_names = colnames(X), n_repeats = 3L, seed = 1L
+#' )
 #' @export
 morie_fairness_xai_permutation_importance <- function(predict_fn, X,
-                                                       feature_names = NULL,
-                                                       n_repeats = 10L,
-                                                       protected = NULL,
-                                                       seed = 0L) {
+                                                      feature_names = NULL,
+                                                      n_repeats = 10L,
+                                                      protected = NULL,
+                                                      seed = 0L) {
   X <- .xai_as_2d(X)
   n <- nrow(X)
   d <- ncol(X)
@@ -228,15 +166,19 @@ morie_fairness_xai_permutation_importance <- function(predict_fn, X,
   interp <- sprintf(
     "The model relies most on '%s' (importance %.4f). %s",
     ranking[1L], top,
-    if (length(warnings) > 0L)
+    if (length(warnings) > 0L) {
       "Protected attributes appear high in the ranking \u2014 see the warning above."
-    else "No protected attribute ranks in the top third."
+    } else {
+      "No protected attribute ranks in the top third."
+    }
   )
 
   .xai_result(
     "Permutation Feature Importance",
-    sprintf("morie_fairness_xai_permutation_importance(n=%d, d=%d, n_repeats=%d)",
-            n, d, as.integer(n_repeats)),
+    sprintf(
+      "morie_fairness_xai_permutation_importance(n=%d, d=%d, n_repeats=%d)",
+      n, d, as.integer(n_repeats)
+    ),
     summary_lines = list(
       `Top feature` = ranking[1L],
       `Top importance` = top,
@@ -263,14 +205,17 @@ morie_fairness_xai_permutation_importance <- function(predict_fn, X,
 #' @return \code{morie_fairness_result}; \code{$value} is the PD range.
 #' @examples
 #' set.seed(4)
-#' X <- matrix(rnorm(400), 100, 4); colnames(X) <- paste0("f", 1:4)
+#' X <- matrix(rnorm(400), 100, 4)
+#' colnames(X) <- paste0("f", 1:4)
 #' predict_fn <- function(M) as.numeric(M %*% c(1.5, -0.7, 0, 0.3))
-#' morie_fairness_xai_partial_dependence(predict_fn, X, feature = "f1",
-#'   feature_names = colnames(X), grid_size = 10L)
+#' morie_fairness_xai_partial_dependence(predict_fn, X,
+#'   feature = "f1",
+#'   feature_names = colnames(X), grid_size = 10L
+#' )
 #' @export
 morie_fairness_xai_partial_dependence <- function(predict_fn, X, feature,
-                                                   feature_names = NULL,
-                                                   grid_size = 20L) {
+                                                  feature_names = NULL,
+                                                  grid_size = 20L) {
   X <- .xai_as_2d(X)
   nm <- .xai_names(feature_names, ncol(X))
   j <- .xai_resolve(feature, nm)
@@ -287,8 +232,10 @@ morie_fairness_xai_partial_dependence <- function(predict_fn, X, feature,
 
   .xai_result(
     sprintf("Partial Dependence \u2014 %s", nm[j]),
-    sprintf("morie_fairness_xai_partial_dependence(feature='%s', grid_size=%d)",
-            nm[j], as.integer(grid_size)),
+    sprintf(
+      "morie_fairness_xai_partial_dependence(feature='%s', grid_size=%d)",
+      nm[j], as.integer(grid_size)
+    ),
     summary_lines = list(
       Feature = nm[j],
       `PD range` = rng_val,
@@ -317,14 +264,17 @@ morie_fairness_xai_partial_dependence <- function(predict_fn, X, feature,
 #' @return \code{morie_fairness_result}; \code{$value} is the ALE range.
 #' @examples
 #' set.seed(7)
-#' X <- matrix(rnorm(400), 100, 4); colnames(X) <- paste0("f", 1:4)
+#' X <- matrix(rnorm(400), 100, 4)
+#' colnames(X) <- paste0("f", 1:4)
 #' predict_fn <- function(M) as.numeric(M %*% c(1.5, -0.7, 0, 0.3))
-#' morie_fairness_xai_ale(predict_fn, X, feature = "f2",
-#'   feature_names = colnames(X), n_bins = 5L)
+#' morie_fairness_xai_ale(predict_fn, X,
+#'   feature = "f2",
+#'   feature_names = colnames(X), n_bins = 5L
+#' )
 #' @export
 morie_fairness_xai_ale <- function(predict_fn, X, feature,
-                                    feature_names = NULL,
-                                    n_bins = 10L) {
+                                   feature_names = NULL,
+                                   n_bins = 10L) {
   X <- .xai_as_2d(X)
   nm <- .xai_names(feature_names, ncol(X))
   j <- .xai_resolve(feature, nm)
@@ -339,8 +289,10 @@ morie_fairness_xai_ale <- function(predict_fn, X, feature,
   local_eff <- numeric(k)
   counts <- integer(k)
   # Match Python np.searchsorted(side='left') - 1, then clip.
-  bin_idx <- findInterval(col, edges, rightmost.closed = FALSE,
-                          all.inside = TRUE)
+  bin_idx <- findInterval(col, edges,
+    rightmost.closed = FALSE,
+    all.inside = TRUE
+  )
   for (b in seq_len(k)) {
     rows <- X[bin_idx == b, , drop = FALSE]
     if (nrow(rows) == 0L) next
@@ -349,7 +301,7 @@ morie_fairness_xai_ale <- function(predict_fn, X, feature,
     hi_rows <- rows
     hi_rows[, j] <- edges[b + 1L]
     diff <- .xai_predict(predict_fn, hi_rows) -
-            .xai_predict(predict_fn, lo_rows)
+      .xai_predict(predict_fn, lo_rows)
     local_eff[b] <- mean(diff)
     counts[b] <- nrow(rows)
   }
@@ -362,8 +314,10 @@ morie_fairness_xai_ale <- function(predict_fn, X, feature,
 
   .xai_result(
     sprintf("Accumulated Local Effects \u2014 %s", nm[j]),
-    sprintf("morie_fairness_xai_ale(feature='%s', n_bins=%d)",
-            nm[j], as.integer(n_bins)),
+    sprintf(
+      "morie_fairness_xai_ale(feature='%s', n_bins=%d)",
+      nm[j], as.integer(n_bins)
+    ),
     summary_lines = list(
       Feature = nm[j], Bins = k, `ALE range` = rng_val
     ),
@@ -398,15 +352,18 @@ morie_fairness_xai_ale <- function(predict_fn, X, feature,
 #'   profile's swing (max - min).
 #' @examples
 #' set.seed(9)
-#' X <- matrix(rnorm(400), 100, 4); colnames(X) <- paste0("f", 1:4)
+#' X <- matrix(rnorm(400), 100, 4)
+#' colnames(X) <- paste0("f", 1:4)
 #' predict_fn <- function(M) as.numeric(M %*% c(1.5, -0.7, 0, 0.3))
-#' morie_fairness_xai_ceteris_paribus(predict_fn, X[1L, ], feature = "f1",
-#'   X_ref = X, feature_names = colnames(X), grid_size = 8L)
+#' morie_fairness_xai_ceteris_paribus(predict_fn, X[1L, ],
+#'   feature = "f1",
+#'   X_ref = X, feature_names = colnames(X), grid_size = 8L
+#' )
 #' @export
 morie_fairness_xai_ceteris_paribus <- function(predict_fn, x, feature,
-                                                X_ref,
-                                                feature_names = NULL,
-                                                grid_size = 20L) {
+                                               X_ref,
+                                               feature_names = NULL,
+                                               grid_size = 20L) {
   X_ref <- .xai_as_2d(X_ref)
   nm <- .xai_names(feature_names, ncol(X_ref))
   j <- .xai_resolve(feature, nm)
@@ -418,20 +375,25 @@ morie_fairness_xai_ceteris_paribus <- function(predict_fn, x, feature,
   hi <- max(X_ref[, j])
   grid <- seq(lo, hi, length.out = as.integer(grid_size))
   rows <- matrix(rep(x, each = length(grid)),
-                 nrow = length(grid), ncol = length(x), byrow = FALSE)
+    nrow = length(grid), ncol = length(x), byrow = FALSE
+  )
   # Above tile is column-major already (each col repeats one value of
   # x); fix shape to row-major: use matrix(x, byrow = TRUE).
   rows <- matrix(x, nrow = length(grid), ncol = length(x), byrow = TRUE)
   rows[, j] <- grid
   profile <- .xai_predict(predict_fn, rows)
-  base <- as.numeric(.xai_predict(predict_fn,
-                                  matrix(x, nrow = 1L)))
+  base <- as.numeric(.xai_predict(
+    predict_fn,
+    matrix(x, nrow = 1L)
+  ))
   swing <- max(profile) - min(profile)
 
   .xai_result(
     sprintf("Ceteris-Paribus Profile \u2014 %s", nm[j]),
-    sprintf("morie_fairness_xai_ceteris_paribus(feature='%s', grid_size=%d)",
-            nm[j], as.integer(grid_size)),
+    sprintf(
+      "morie_fairness_xai_ceteris_paribus(feature='%s', grid_size=%d)",
+      nm[j], as.integer(grid_size)
+    ),
     summary_lines = list(
       Feature = nm[j],
       `Instance prediction` = base,
@@ -464,15 +426,18 @@ morie_fairness_xai_ceteris_paribus <- function(predict_fn, x, feature,
 #'   largest-magnitude SHAP value.
 #' @examples
 #' set.seed(11)
-#' X <- matrix(rnorm(120), 30, 4); colnames(X) <- paste0("f", 1:4)
+#' X <- matrix(rnorm(120), 30, 4)
+#' colnames(X) <- paste0("f", 1:4)
 #' predict_fn <- function(M) as.numeric(M %*% c(1.5, -0.7, 0, 0.3))
-#' morie_fairness_xai_shap_values(predict_fn, X[1L, ], background = X,
-#'   feature_names = colnames(X), n_samples = 10L, seed = 1L)
+#' morie_fairness_xai_shap_values(predict_fn, X[1L, ],
+#'   background = X,
+#'   feature_names = colnames(X), n_samples = 10L, seed = 1L
+#' )
 #' @export
 morie_fairness_xai_shap_values <- function(predict_fn, x, background,
-                                            feature_names = NULL,
-                                            n_samples = 200L,
-                                            seed = 0L) {
+                                           feature_names = NULL,
+                                           n_samples = 200L,
+                                           seed = 0L) {
   background <- .xai_as_2d(background)
   d <- ncol(background)
   nm <- .xai_names(feature_names, d)
@@ -488,7 +453,7 @@ morie_fairness_xai_shap_values <- function(predict_fn, x, background,
     # equals coalition k with feature perm[k] switched on (set to x).
     # We compute marginal contributions in a streaming fashion to
     # avoid materialising the full (nb, d+1, d) tile.
-    cur <- background  # (nb, d)
+    cur <- background # (nb, d)
     prev_pred <- .xai_predict(predict_fn, cur)
     for (k in seq_len(d)) {
       cur[, perm[k]] <- x[perm[k]]
@@ -502,14 +467,18 @@ morie_fairness_xai_shap_values <- function(predict_fn, x, background,
   order_idx <- order(abs(shap), decreasing = TRUE)
   ranking <- nm[order_idx]
   top <- shap[order_idx[1L]]
-  fx <- as.numeric(.xai_predict(predict_fn,
-                                matrix(x, nrow = 1L)))
+  fx <- as.numeric(.xai_predict(
+    predict_fn,
+    matrix(x, nrow = 1L)
+  ))
   base_mean <- mean(.xai_predict(predict_fn, background))
 
   .xai_result(
     "SHAP Feature Attributions (sampling estimator)",
-    sprintf("morie_fairness_xai_shap_values(d=%d, n_bg=%d, n_samples=%d)",
-            d, nb, as.integer(n_samples)),
+    sprintf(
+      "morie_fairness_xai_shap_values(d=%d, n_bg=%d, n_samples=%d)",
+      d, nb, as.integer(n_samples)
+    ),
     summary_lines = list(
       `Most influential feature` = ranking[1L],
       `Its SHAP value` = top,

@@ -13,5 +13,5 @@ A \code{morie_siu_result}.
 Sprott-Doob (Feb 2021) Table 12: regional over-/under-representation
 }
 \examples{
-morie_siu_sprott_doob_table12()
+head(morie_siu_sprott_doob_table12())
 }

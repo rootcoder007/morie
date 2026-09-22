@@ -23,3 +23,12 @@ A step of the tlboot_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+if (requireNamespace("ranger", quietly = TRUE)) {
+  set.seed(1)
+  d <- rnorm(50, 1)
+  r <- naive_bootstrap(d, estimator = function(s) mean(unlist(s)), B = 200L)
+  str(r, max.level = 1)
+}
+}
+\keyword{internal}

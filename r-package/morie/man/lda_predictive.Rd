@@ -23,3 +23,7 @@ A step of the bigtm_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+lda_predictive(N_ik = c(1, 2, 3, 4, 5, 6, 7, 8), N_k = 5L, beta = 0.5, m = 5L)
+}
+\keyword{internal}

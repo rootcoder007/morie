@@ -37,3 +37,12 @@ A step of the rangayyan_adapt implementation. Called by \code{FetalEcg}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+sine_a <- function(n, cycles, amp = 1, phase = 0) amp * sin(2 *
+    pi * cycles * (0:(n - 1))/n + phase)
+n <- 400
+v <- sine_a(256, 3)
+ref <- sine_a(n, 61)
+Anc(v + 0.8 * ref, ref, order = 4, mu = 0.005)
+}
+\keyword{internal}

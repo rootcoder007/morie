@@ -49,7 +49,7 @@
 
 # Box-Muller normals from the integer LCG, draw for draw with Python's
 # morie.fn._lcg_normal (hmncsn / hmpemb-style helpers).
-#' Box-Muller normals from the integer LCG, draw for draw with Python\'s
+#' Box-Muller normals from the integer LCG, draw for draw with Python's
 #'
 #' morie.fn._lcg_normal (hmncsn / hmpemb-style helpers).
 #'
@@ -156,8 +156,10 @@
   }
   lp <- best$lp
   rp <- best$rp
-  if (classify) { lp <- if (lp >= 0.5) 1 else 0
-  rp <- if (rp >= 0.5) 1 else 0 }
+  if (classify) {
+    lp <- if (lp >= 0.5) 1 else 0
+    rp <- if (rp >= 0.5) 1 else 0
+  }
   j <- best$j
   thr <- best$thr
   function(Anew) {
@@ -181,8 +183,7 @@
 #' \code{explained_variance_ratio}, \code{singular_values}, \code{Xc}.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .morie_w4c_pca_svd(X = X, k = 3L)
 #' res
 .morie_w4c_pca_svd <- function(X, k, center = TRUE, scale = FALSE) {
@@ -199,10 +200,12 @@
   scores <- Xc %*% comps
   var_ <- (sv$d^2) / (m - 1)
   total <- sum(var_)
-  list(components = comps, scores = scores,
-       explained_variance = var_[seq_len(k)],
-       explained_variance_ratio = var_[seq_len(k)] / total,
-       singular_values = s, Xc = Xc)
+  list(
+    components = comps, scores = scores,
+    explained_variance = var_[seq_len(k)],
+    explained_variance_ratio = var_[seq_len(k)] / total,
+    singular_values = s, Xc = Xc
+  )
 }
 
 # Lee-Seung multiplicative-update NMF; LCG-seeded uniform(0, 1) init.
@@ -295,8 +298,10 @@
     loads[stage] <- loads[stage] + sizes[i]
     acc <- acc + sizes[i]
   }
-  list(assignment = assign, device_loads = loads, max_load = max(loads),
-       imbalance = max(loads) / (total / n_stages))
+  list(
+    assignment = assign, device_loads = loads, max_load = max(loads),
+    imbalance = max(loads) / (total / n_stages)
+  )
 }
 
 # ============================================================ hmmxp2
@@ -310,7 +315,12 @@
 #' @param model Numeric vector or named list of numeric vectors (weights).
 #' @param loss_scale Positive finite scale.
 #' @param grads Optional gradients matching `model`.
+#' @return A list with `fp16_weights`, `overflow`, `weight_overflow`, `n_underflow`, `loss_scale`, `max_safe_loss_scale`, `recommended_loss_scale`, `memory_bytes_fp32`, `memory_bytes_fp16`, `fp16_max`, `fp16_min_normal`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_mixed_precision(V)
+#' @keywords internal
 morie_geron_mixed_precision <- function(model, loss_scale = 1024.0, grads = NULL) {
   FP16_MAX <- 65504.0
   FP16_MIN_NORMAL <- 6.103515625e-05
@@ -341,11 +351,13 @@ morie_geron_mixed_precision <- function(model, loss_scale = 1024.0, grads = NULL
   rec <- if (is.finite(max_safe) && max_safe >= 1.0) 2^floor(log2(max_safe)) else if (is.finite(max_safe)) max_safe else scale
   nbytes <- sum(vapply(tensors, length, integer(1)))
   fp16_out <- if (is_map) stats::setNames(tensors, keys) else tensors[[1]]
-  list(fp16_weights = fp16_out, overflow = overflow, weight_overflow = w_over,
-       n_underflow = as.integer(n_under), loss_scale = scale, max_safe_loss_scale = max_safe,
-       recommended_loss_scale = rec, memory_bytes_fp32 = nbytes * 4L, memory_bytes_fp16 = nbytes * 2L,
-       fp16_max = FP16_MAX, fp16_min_normal = FP16_MIN_NORMAL, estimate = rec, n = nbytes,
-       method = "Mixed-precision cast with loss-scaling range analysis")
+  list(
+    fp16_weights = fp16_out, overflow = overflow, weight_overflow = w_over,
+    n_underflow = as.integer(n_under), loss_scale = scale, max_safe_loss_scale = max_safe,
+    recommended_loss_scale = rec, memory_bytes_fp32 = nbytes * 4L, memory_bytes_fp16 = nbytes * 2L,
+    fp16_max = FP16_MAX, fp16_min_normal = FP16_MIN_NORMAL, estimate = rec, n = nbytes,
+    method = "Mixed-precision cast with loss-scaling range analysis"
+  )
 }
 
 # ============================================================ hmncsn
@@ -354,7 +366,12 @@ morie_geron_mixed_precision <- function(model, loss_scale = 1024.0, grads = NULL
 #' @param X Training data (m, d).
 #' @param sigmas Noise ladder.
 #' @param epochs,lr,n_noise,seed,n_samples,langevin_steps,step_eps Training/sampling controls.
+#' @return A list with `models`, `analytic`, `max_deviation`, `loss_history`, `samples`, `sigmas`, `mean`, `covariance`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_ncsn(V)
+#' @keywords internal
 morie_geron_ncsn <- function(X, sigmas = 1.0, epochs = 400, lr = 0.5, n_noise = 32, seed = 0,
                              n_samples = 0, langevin_steps = 20, step_eps = 0.05) {
   A <- .morie_gr_mat(X, "X")
@@ -423,9 +440,11 @@ morie_geron_ncsn <- function(X, sigmas = 1.0, epochs = 400, lr = 0.5, n_noise = 
     }
     samples <- x
   }
-  list(models = models, analytic = analytic, max_deviation = dev, loss_history = hists,
-       samples = samples, sigmas = sg, mean = mu, covariance = Cov, estimate = models,
-       n = m, method = "NCSN: affine score models fitted by denoising score matching, with annealed Langevin sampling")
+  list(
+    models = models, analytic = analytic, max_deviation = dev, loss_history = hists,
+    samples = samples, sigmas = sg, mean = mu, covariance = Cov, estimate = models,
+    n = m, method = "NCSN: affine score models fitted by denoising score matching, with annealed Langevin sampling"
+  )
 }
 
 # ============================================================ hmnmd
@@ -434,7 +453,12 @@ morie_geron_ncsn <- function(X, sigmas = 1.0, epochs = 400, lr = 0.5, n_noise = 
 #' @param f Function `f(x) -> scalar`.
 #' @param x Point (scalar or vector).
 #' @param h Step size.
+#' @return A list with `derivative`, `richardson`, `error_estimate`, `n_evals`, `h`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' x <- matrix(c(1, 0, 0, 1, 1, 1), ncol = 2, byrow = TRUE)
+#' morie_geron_numerical_diff(function(x) x^3, 2)
+#' @keywords internal
 morie_geron_numerical_diff <- function(f, x, h = 1e-5) {
   .morie_gr_need(is.function(f), "geron_numerical_diff: f must be callable")
   step <- as.numeric(h)
@@ -466,9 +490,11 @@ morie_geron_numerical_diff <- function(f, x, h = 1e-5) {
   err <- abs(rich - d1)
   out <- if (scalar) d1[1] else d1
   rout <- if (scalar) rich[1] else rich
-  list(derivative = out, richardson = rout, error_estimate = if (scalar) err[1] else err,
-       n_evals = calls, h = step, estimate = out, n = length(xv),
-       method = "Central difference with Richardson error estimate")
+  list(
+    derivative = out, richardson = rout, error_estimate = if (scalar) err[1] else err,
+    n_evals = calls, h = step, estimate = out, n = length(xv),
+    method = "Central difference with Richardson error estimate"
+  )
 }
 
 # ============================================================ hmnmf
@@ -477,7 +503,12 @@ morie_geron_numerical_diff <- function(f, x, h = 1e-5) {
 #' @param X Non-negative matrix (m, p).
 #' @param n_components Inner rank k.
 #' @param max_iter,tol,seed Fit controls.
+#' @return A list with `W`, `H`, `reconstruction`, `reconstruction_error`, `relative_error`, `n_iter`, `n_components`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie_geron_nmf(M)
+#' @keywords internal
 morie_geron_nmf <- function(X, n_components = 2, max_iter = 400, tol = 1e-6, seed = 42) {
   A <- .morie_gr_mat(X, "X")
   .morie_gr_need(all(A >= 0), "geron_nmf: X must be non-negative")
@@ -488,9 +519,11 @@ morie_geron_nmf <- function(X, n_components = 2, max_iter = 400, tol = 1e-6, see
   err <- sqrt(sum((A - recon)^2))
   denom <- sqrt(sum(A^2))
   rel <- if (denom > 0) err / denom else err
-  list(W = fit$W, H = fit$H, reconstruction = recon, reconstruction_error = err,
-       relative_error = rel, n_iter = fit$n_iter, n_components = k, estimate = err, n = nrow(A),
-       method = "NMF by multiplicative updates (Lee-Seung), LCG-seeded init")
+  list(
+    W = fit$W, H = fit$H, reconstruction = recon, reconstruction_error = err,
+    relative_error = rel, n_iter = fit$n_iter, n_components = k, estimate = err, n = nrow(A),
+    method = "NMF by multiplicative updates (Lee-Seung), LCG-seeded init"
+  )
 }
 
 # ============================================================ hmnmt
@@ -500,7 +533,13 @@ morie_geron_nmf <- function(X, n_components = 2, max_iter = 400, tol = 1e-6, see
 #' @param tgt Target token ids (reference).
 #' @param model List with `encode(src)` and `decode(z, prefix)` functions.
 #' @param max_len,eos Greedy decode cap and stop id.
+#' @return A list with `loss`, `mean_loss`, `token_losses`, `perplexity`, `greedy`, `exact_match`, `z`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' model <- list(encode = function(s) length(s), decode = function(z,
+#'     prefix) c(0.2, 0.5, 0.3))
+#' morie_geron_encoder_decoder_nmt(c(9, 9), c(1, 1), model)
+#' @keywords internal
 morie_geron_encoder_decoder_nmt <- function(src, tgt, model, max_len = NULL, eos = NULL) {
   .morie_gr_need(is.function(model$encode) && is.function(model$decode), "geron_encoder_decoder_nmt: model needs encode/decode")
   s <- src
@@ -527,10 +566,12 @@ morie_geron_encoder_decoder_nmt <- function(src, tgt, model, max_len = NULL, eos
   }
   total <- sum(losses)
   meanl <- total / length(t_)
-  list(loss = total, mean_loss = meanl, token_losses = losses, perplexity = exp(meanl),
-       greedy = greedy, exact_match = identical(as.integer(utils::head(greedy, length(t_))), t_), z = z,
-       estimate = total, n = length(t_),
-       method = "Teacher-forced cross-entropy plus greedy decoding through a supplied seq2seq model")
+  list(
+    loss = total, mean_loss = meanl, token_losses = losses, perplexity = exp(meanl),
+    greedy = greedy, exact_match = identical(as.integer(utils::head(greedy, length(t_))), t_), z = z,
+    estimate = total, n = length(t_),
+    method = "Teacher-forced cross-entropy plus greedy decoding through a supplied seq2seq model"
+  )
 }
 
 # ============================================================ hmnov
@@ -539,7 +580,12 @@ morie_geron_encoder_decoder_nmt <- function(src, tgt, model, max_len = NULL, eos
 #' @param model Callable log-density, list with `log_density`/`reference`, or clean training matrix.
 #' @param X_new Points to test.
 #' @param reference Optional log reference density override.
+#' @return A list with `ratio`, `log_ratio`, `is_novel`, `log_density`, `reference`, `novel_fraction`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_novelty_detection(V, V)
+#' @keywords internal
 morie_geron_novelty_detection <- function(model, X_new, reference = NULL) {
   B <- .morie_gr_mat(X_new, "X_new")
   ref <- if (is.null(reference)) NULL else as.numeric(reference)
@@ -570,9 +616,11 @@ morie_geron_novelty_detection <- function(model, X_new, reference = NULL) {
   log_ratio <- ld - ref
   ratio <- exp(pmin(pmax(log_ratio, -700), 700))
   novel <- log_ratio < 0
-  list(ratio = ratio, log_ratio = log_ratio, is_novel = novel, log_density = ld, reference = ref,
-       novel_fraction = mean(novel), estimate = ratio, n = nrow(B),
-       method = "Density-ratio novelty test against a typical-set reference")
+  list(
+    ratio = ratio, log_ratio = log_ratio, is_novel = novel, log_density = ld, reference = ref,
+    novel_fraction = mean(novel), estimate = ratio, n = nrow(B),
+    method = "Density-ratio novelty test against a typical-set reference"
+  )
 }
 
 # ============================================================ hmnsp
@@ -616,9 +664,11 @@ morie_geron_next_sentence_prediction <- function(sent_A, sent_B, encoder = NULL,
     p <- min(max(prob, 1e-15), 1 - 1e-15)
     loss <- -(y * log(p) + (1 - y) * log(1 - p))
   }
-  list(tokens = tokens, segment_ids = segments, cls_vector = h, logit = logit, probability = prob,
-       prediction = pred, loss = loss, estimate = prob, n = length(tokens),
-       method = "NSP input assembly with a linear [CLS] head")
+  list(
+    tokens = tokens, segment_ids = segments, cls_vector = h, logit = logit, probability = prob,
+    prediction = pred, loss = loss, estimate = prob, n = length(tokens),
+    method = "NSP input assembly with a linear [CLS] head"
+  )
 }
 
 # ============================================================ hmocsv
@@ -644,7 +694,12 @@ morie_geron_next_sentence_prediction <- function(sent_A, sent_B, encoder = NULL,
 #' @param nu Outlier-fraction knob in (0, 1].
 #' @param gamma RBF width.
 #' @param max_iter,tol SMO controls.
+#' @return A list with `alpha`, `rho`, `decision`, `is_outlier`, `support_vectors`, `outlier_fraction`, `decision_function`, `n_iter`, `C`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_one_class_svm(V)
+#' @keywords internal
 morie_geron_one_class_svm <- function(X, nu = 0.5, gamma = 1.0, max_iter = 2000, tol = 1e-9) {
   A <- .morie_gr_mat(X, "X")
   n <- nrow(A)
@@ -689,10 +744,12 @@ morie_geron_one_class_svm <- function(X, nu = 0.5, gamma = 1.0, max_iter = 2000,
   decision <- grad - rho
   outlier <- decision < 0
   decision_function <- function(Xnew) as.numeric(.morie_w4c_rbf(.morie_gr_mat(Xnew, "Xnew"), A, g) %*% alpha - rho)
-  list(alpha = alpha, rho = rho, decision = decision, is_outlier = outlier,
-       support_vectors = which(alpha > 1e-9) - 1L, outlier_fraction = mean(outlier),
-       decision_function = decision_function, n_iter = n_iter, C = C, estimate = decision, n = n,
-       method = "One-class SVM dual solved by SMO with an RBF kernel")
+  list(
+    alpha = alpha, rho = rho, decision = decision, is_outlier = outlier,
+    support_vectors = which(alpha > 1e-9) - 1L, outlier_fraction = mean(outlier),
+    decision_function = decision_function, n_iter = n_iter, C = C, estimate = decision, n = n,
+    method = "One-class SVM dual solved by SMO with an RBF kernel"
+  )
 }
 
 # ============================================================ hmonl
@@ -702,7 +759,12 @@ morie_geron_one_class_svm <- function(X, nu = 0.5, gamma = 1.0, max_iter = 2000,
 #' @param eta Base learning rate.
 #' @param theta Optional start (default zeros).
 #' @param decay Robbins-Monro decay.
+#' @return A list with `theta`, `trajectory`, `losses`, `cumulative_loss`, `mean_loss`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_online_learning(V, V)
+#' @keywords internal
 morie_geron_online_learning <- function(X_stream, y_stream, eta = 0.1, theta = NULL, decay = 0.0) {
   A <- .morie_gr_mat(X_stream, "X_stream")
   yv <- as.numeric(y_stream)
@@ -721,9 +783,11 @@ morie_geron_online_learning <- function(X_stream, y_stream, eta = 0.1, theta = N
     th <- th - rate * 2.0 * err * A[t_, ]
     traj[t_ + 1L, ] <- th
   }
-  list(theta = th, trajectory = traj, losses = losses, cumulative_loss = sum(losses),
-       mean_loss = mean(losses), estimate = th, n = Tt,
-       method = "Online SGD on squared loss with an optional Robbins-Monro decay")
+  list(
+    theta = th, trajectory = traj, losses = losses, cumulative_loss = sum(losses),
+    mean_loss = mean(losses), estimate = th, n = Tt,
+    method = "Online SGD on squared loss with an optional Robbins-Monro decay"
+  )
 }
 
 # ============================================================ hmonnx
@@ -732,7 +796,13 @@ morie_geron_online_learning <- function(X_stream, y_stream, eta = 0.1, theta = N
 #' @param model List of layer specs (`op`, `in_features`, `out_features`, ...).
 #' @param args Example input.
 #' @param file Optional path for the traced graph (written as JSON).
+#' @return A list with `nodes`, `graph`, `input_shape`, `output_shape`, `n_parameters`, `file`, `is_protobuf`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' m <- list(list(op = "Gemm", in_features = 3, out_features = 2),
+#'     list(op = "Relu"))
+#' morie_geron_onnx_export(m, matrix(0, 1, 3))
+#' @keywords internal
 morie_geron_onnx_export <- function(model, args, file = NULL) {
   shape_preserving <- c("relu", "tanh", "sigmoid", "softmax", "dropout", "identity", "erf", "gelu")
   layers <- model
@@ -763,12 +833,16 @@ morie_geron_onnx_export <- function(model, args, file = NULL) {
     }
     nodes[[i]] <- list(index = i - 1L, op = op, input_shape = before, output_shape = shape)
   }
-  graph <- list(ir_format = "traced-graph-json", input = list(name = "input", shape = as.list(in_shape)),
-                output = list(name = "output", shape = as.list(shape)), nodes = nodes, n_parameters = as.integer(params))
+  graph <- list(
+    ir_format = "traced-graph-json", input = list(name = "input", shape = as.list(in_shape)),
+    output = list(name = "output", shape = as.list(shape)), nodes = nodes, n_parameters = as.integer(params)
+  )
   if (!is.null(file)) writeLines(jsonlite_toJSON_or_stub(graph), file)
-  list(nodes = nodes, graph = graph, input_shape = in_shape, output_shape = shape,
-       n_parameters = as.integer(params), file = file, is_protobuf = FALSE, estimate = shape, n = length(nodes),
-       method = "Shape-tracing ONNX export plan validated against a concrete example input")
+  list(
+    nodes = nodes, graph = graph, input_shape = in_shape, output_shape = shape,
+    n_parameters = as.integer(params), file = file, is_protobuf = FALSE, estimate = shape, n = length(nodes),
+    method = "Shape-tracing ONNX export plan validated against a concrete example input"
+  )
 }
 # ponytail: no jsonlite dependency declared for this package; write() only when a file path is
 # actually given, and fall back to a minimal deparse so the optional side effect never hard-fails.
@@ -779,15 +853,18 @@ morie_geron_onnx_export <- function(model, args, file = NULL) {
 #' side effect never hard-fails.
 #'
 #' @param x Passed to \code{.s03json_toJSON}.
-#' @return The value of \code{.s03json_toJSON}.
+#' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' jsonlite_toJSON_or_stub(V)
+#' @keywords internal
 jsonlite_toJSON_or_stub <- function(x) {
-  # The fallback existed because jsonlite was optional. The codec is now
-  # part of this package and always present, so there is nothing to fall
-  # back from -- and the `if (requireNamespace("jsonlite"))` that used to
-  # guard this would now disable our OWN serialiser when the package it
-  # replaced is absent.
-  .s03json_toJSON(x, auto_unbox = TRUE, pretty = TRUE)
+  if (requireNamespace("jsonlite", quietly = TRUE)) {
+    .s03json_toJSON(x, auto_unbox = TRUE, pretty = TRUE)
+  } else {
+    paste(utils::capture.output(str(x)), collapse = "\n")
+  }
 }
 
 # ============================================================ hmoob
@@ -796,7 +873,13 @@ jsonlite_toJSON_or_stub <- function(x) {
 #' @param X,y Data and targets.
 #' @param models List of `(predict, in_bag)` pairs or lists with those names.
 #' @param task "auto", "classification" or "regression".
+#' @return A list with `oob_score`, `oob_predictions`, `covered`, `votes`, `mean_oob_votes`, `task`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' f <- function(A) as.numeric(A[, 1])
+#' morie_geron_oob_score(matrix(c(0, 1), ncol = 1), c(0, 1), list(list(f,
+#'     c(TRUE, FALSE)), list(f, c(FALSE, TRUE))))
+#' @keywords internal
 morie_geron_oob_score <- function(X, y, models, task = "auto") {
   A <- .morie_gr_mat(X, "X")
   yv <- as.numeric(y)
@@ -831,9 +914,11 @@ morie_geron_oob_score <- function(X, y, models, task = "auto") {
   } else {
     score <- mean((oob_pred[covered] - yv[covered])^2)
   }
-  list(oob_score = score, oob_predictions = oob_pred, covered = covered, votes = votes,
-       mean_oob_votes = mean(votes[covered]), task = if (classify) "classification" else "regression",
-       estimate = score, n = n, method = "Out-of-bag score over per-estimator bag masks")
+  list(
+    oob_score = score, oob_predictions = oob_pred, covered = covered, votes = votes,
+    mean_oob_votes = mean(votes[covered]), task = if (classify) "classification" else "regression",
+    estimate = score, n = n, method = "Out-of-bag score over per-estimator bag masks"
+  )
 }
 
 # ============================================================ hmopt
@@ -843,7 +928,12 @@ morie_geron_oob_score <- function(X, y, models, task = "auto") {
 #' @param min_samples Core-distance neighbourhood size.
 #' @param max_eps Largest radius considered.
 #' @param eps_cluster Cut for extracting labels.
+#' @return A list with `ordering`, `reachability`, `reachability_plot`, `core_distances`, `labels`, `n_clusters`, `eps_cluster`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_optics(V)
+#' @keywords internal
 morie_geron_optics <- function(X, min_samples = 5, max_eps = Inf, eps_cluster = NULL) {
   A <- .morie_gr_mat(X, "X")
   n <- nrow(A)
@@ -854,8 +944,10 @@ morie_geron_optics <- function(X, min_samples = 5, max_eps = Inf, eps_cluster = 
   core <- rep(Inf, n)
   for (i in seq_len(n)) {
     d_ <- sort(D[i, ])
-    if (k <= n) { c_ <- d_[k]
-    if (c_ <= me) core[i] <- c_ }
+    if (k <= n) {
+      c_ <- d_[k]
+      if (c_ <= me) core[i] <- c_
+    }
   }
   reach <- rep(Inf, n)
   processed <- rep(FALSE, n)
@@ -873,9 +965,10 @@ morie_geron_optics <- function(X, min_samples = 5, max_eps = Inf, eps_cluster = 
       for (q in seq_len(n)) {
         if (processed[q] || D[p, q] > me) next
         nr <- max(core[p], D[p, q])
-        if (nr < reach[q]) { reach[q] <- nr
-        seeds[as.character(q)] <- nr }
-        else if (!(as.character(q) %in% names(seeds)) && is.finite(reach[q])) seeds[as.character(q)] <- reach[q]
+        if (nr < reach[q]) {
+          reach[q] <- nr
+          seeds[as.character(q)] <- nr
+        } else if (!(as.character(q) %in% names(seeds)) && is.finite(reach[q])) seeds[as.character(q)] <- reach[q]
       }
     }
   }
@@ -886,8 +979,12 @@ morie_geron_optics <- function(X, min_samples = 5, max_eps = Inf, eps_cluster = 
     cid <- -1L
     for (p in order_) {
       if (reach[p] > cut) {
-        if (core[p] <= cut) { cid <- cid + 1L
-        labels[p] <- cid } else labels[p] <- -1L
+        if (core[p] <= cut) {
+          cid <- cid + 1L
+          labels[p] <- cid
+        } else {
+          labels[p] <- -1L
+        }
       } else {
         labels[p] <- if (cid >= 0L) cid else -1L
       }
@@ -899,9 +996,11 @@ morie_geron_optics <- function(X, min_samples = 5, max_eps = Inf, eps_cluster = 
     labels <- vapply(labels, function(v) if (v == -1L) -1L else as.integer(remap[as.character(v)]), integer(1))
     n_clusters <- length(remaining)
   }
-  list(ordering = order_ - 1L, reachability = reach, reachability_plot = reach[order_], core_distances = core,
-       labels = labels, n_clusters = n_clusters, eps_cluster = cut, estimate = labels, n = n,
-       method = "OPTICS ordering with reachability, cut to labels at eps_cluster")
+  list(
+    ordering = order_ - 1L, reachability = reach, reachability_plot = reach[order_], core_distances = core,
+    labels = labels, n_clusters = n_clusters, eps_cluster = cut, estimate = labels, n = n,
+    method = "OPTICS ordering with reachability, cut to labels at eps_cluster"
+  )
 }
 
 # ============================================================ hmosf
@@ -911,7 +1010,12 @@ morie_geron_optics <- function(X, min_samples = 5, max_eps = Inf, eps_cluster = 
 #' @param example `(x1, y1)` pair or list.
 #' @param query Input to label.
 #' @param verbalizer Optional `verbalizer(label) -> str`.
+#' @return A list with `prediction`, `prompt`, `prompt_text`, `shots`, `demo_label`, `query`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' copy <- function(prompt) prompt[[1]][[2]]
+#' morie_geron_one_shot(copy, list("hello", "greeting"), "goodbye")
+#' @keywords internal
 morie_geron_one_shot <- function(model, example, query, verbalizer = NULL) {
   .morie_gr_need(is.function(model), "geron_one_shot: model must be callable")
   if (!is.null(names(example)) && all(c("input", "label") %in% names(example))) {
@@ -927,8 +1031,10 @@ morie_geron_one_shot <- function(model, example, query, verbalizer = NULL) {
   text <- paste0(x1, " -> ", verb(y1), "\n", query, " ->")
   pred <- model(prompt)
   .morie_gr_need(!is.null(pred), "geron_one_shot: model returned NULL")
-  list(prediction = pred, prompt = prompt, prompt_text = text, shots = 1L, demo_label = y1,
-       query = query, estimate = pred, n = 1L, method = "One-shot in-context prompt assembly and model call")
+  list(
+    prediction = pred, prompt = prompt, prompt_text = text, shots = 1L, demo_label = y1,
+    query = query, estimate = pred, n = 1L, method = "One-shot in-context prompt assembly and model call"
+  )
 }
 
 # ============================================================ hmovo / hmovr
@@ -946,17 +1052,24 @@ morie_geron_one_shot <- function(model, example, query, verbalizer = NULL) {
 .morie_w4c_centroid_pair <- function(Xp, yp) {
   c0 <- colMeans(Xp[yp == 0, , drop = FALSE])
   c1 <- colMeans(Xp[yp == 1, , drop = FALSE])
-  function(A) { B <- .morie_gr_mat(A, "A")
-  d0 <- rowSums(sweep(B, 2, c0)^2)
-  d1 <- rowSums(sweep(B, 2, c1)^2)
-  as.numeric(d1 <= d0) }
+  function(A) {
+    B <- .morie_gr_mat(A, "A")
+    d0 <- rowSums(sweep(B, 2, c0)^2)
+    d1 <- rowSums(sweep(B, 2, c1)^2)
+    as.numeric(d1 <= d0)
+  }
 }
 
 #' One-vs-one multiclass: K(K-1)/2 pairwise classifiers with voting (Geron Ch 3, hmovo)
 #' @param X,y Data and class labels.
 #' @param base_estimator Optional `base_estimator(Xp, yp) -> predict`.
 #' @param X_new Optional rows to classify (default `X`).
+#' @return A list with `predict`, `predictions`, `classes`, `pairs`, `n_classifiers`, `votes`, `accuracy`, `tie_fraction`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_one_vs_one_hm(V, V)
+#' @keywords internal
 morie_geron_one_vs_one_hm <- function(X, y, base_estimator = NULL, X_new = NULL) {
   A <- .morie_gr_mat(X, "X")
   yv <- as.vector(y)
@@ -966,12 +1079,14 @@ morie_geron_one_vs_one_hm <- function(X, y, base_estimator = NULL, X_new = NULL)
   est <- if (is.null(base_estimator)) .morie_w4c_centroid_pair else base_estimator
   pairs <- list()
   models <- list()
-  for (i in seq_len(K - 1L)) for (j in (i + 1L):K) {
-    mask <- yv == classes[i] | yv == classes[j]
-    yb <- as.numeric(yv[mask] == classes[j])
-    f <- est(A[mask, , drop = FALSE], yb)
-    pairs[[length(pairs) + 1L]] <- c(i, j)
-    models[[length(models) + 1L]] <- f
+  for (i in seq_len(K - 1L)) {
+    for (j in (i + 1L):K) {
+      mask <- yv == classes[i] | yv == classes[j]
+      yb <- as.numeric(yv[mask] == classes[j])
+      f <- est(A[mask, , drop = FALSE], yb)
+      pairs[[length(pairs) + 1L]] <- c(i, j)
+      models[[length(models) + 1L]] <- f
+    }
   }
   vote <- function(B) {
     B <- .morie_gr_mat(B, "B")
@@ -985,16 +1100,20 @@ morie_geron_one_vs_one_hm <- function(X, y, base_estimator = NULL, X_new = NULL)
     }
     tally
   }
-  predict_fn <- function(Xnew) { B <- .morie_gr_mat(Xnew, "Xnew")
-  classes[apply(vote(B), 1, which.max)] }
+  predict_fn <- function(Xnew) {
+    B <- .morie_gr_mat(Xnew, "Xnew")
+    classes[apply(vote(B), 1, which.max)]
+  }
   target <- if (is.null(X_new)) A else .morie_gr_mat(X_new, "X_new")
   votes <- vote(target)
   pred <- classes[apply(votes, 1, which.max)]
   ties <- mean(rowSums(votes == apply(votes, 1, max)) > 1)
   acc <- if (is.null(X_new)) mean(pred == yv) else NA_real_
-  list(predict = predict_fn, predictions = pred, classes = classes, pairs = pairs, n_classifiers = length(models),
-       votes = votes, accuracy = acc, tie_fraction = ties, estimate = pred, n = nrow(A),
-       method = "One-vs-one voting over K(K-1)/2 pairwise classifiers")
+  list(
+    predict = predict_fn, predictions = pred, classes = classes, pairs = pairs, n_classifiers = length(models),
+    votes = votes, accuracy = acc, tie_fraction = ties, estimate = pred, n = nrow(A),
+    method = "One-vs-one voting over K(K-1)/2 pairwise classifiers"
+  )
 }
 
 #' .morie_w4c_centroid_score
@@ -1014,15 +1133,22 @@ morie_geron_one_vs_one_hm <- function(X, y, base_estimator = NULL, X_new = NULL)
   nw <- sqrt(sum(w^2))
   if (nw > 0) w <- w / nw
   b <- -sum(w * (c0 + c1) / 2.0)
-  function(A) { B <- .morie_gr_mat(A, "A")
-  as.numeric(B %*% w + b) }
+  function(A) {
+    B <- .morie_gr_mat(A, "A")
+    as.numeric(B %*% w + b)
+  }
 }
 
 #' One-vs-rest multiclass: K binary classifiers, argmax over scores (Geron Ch 3, hmovr)
 #' @param X,y Data and class labels.
 #' @param base_estimator Optional `base_estimator(X, yb) -> score fn`.
 #' @param X_new Optional rows to classify.
+#' @return A list with `predict`, `predictions`, `classes`, `n_classifiers`, `scores`, `margin`, `positive_rate`, `accuracy`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_one_vs_rest_hm(V, V)
+#' @keywords internal
 morie_geron_one_vs_rest_hm <- function(X, y, base_estimator = NULL, X_new = NULL) {
   A <- .morie_gr_mat(X, "X")
   yv <- as.vector(y)
@@ -1037,10 +1163,14 @@ morie_geron_one_vs_rest_hm <- function(X, y, base_estimator = NULL, X_new = NULL
     rates[k] <- mean(yb)
     models[[k]] <- est(A, yb)
   }
-  scores_fn <- function(B) { B <- .morie_gr_mat(B, "B")
-  sapply(models, function(f) as.numeric(f(B))) }
-  predict_fn <- function(Xnew) { B <- .morie_gr_mat(Xnew, "Xnew")
-  classes[apply(scores_fn(B), 1, which.max)] }
+  scores_fn <- function(B) {
+    B <- .morie_gr_mat(B, "B")
+    sapply(models, function(f) as.numeric(f(B)))
+  }
+  predict_fn <- function(Xnew) {
+    B <- .morie_gr_mat(Xnew, "Xnew")
+    classes[apply(scores_fn(B), 1, which.max)]
+  }
   target <- if (is.null(X_new)) A else .morie_gr_mat(X_new, "X_new")
   S <- scores_fn(target)
   if (is.null(dim(S))) S <- matrix(S, nrow = 1)
@@ -1048,9 +1178,11 @@ morie_geron_one_vs_rest_hm <- function(X, y, base_estimator = NULL, X_new = NULL
   part <- t(apply(S, 1, sort))
   margin <- part[, K] - part[, K - 1L]
   acc <- if (is.null(X_new)) mean(pred == yv) else NA_real_
-  list(predict = predict_fn, predictions = pred, classes = classes, n_classifiers = K, scores = S,
-       margin = margin, positive_rate = rates, accuracy = acc, estimate = pred, n = nrow(A),
-       method = "One-vs-rest argmax over K binary decision functions")
+  list(
+    predict = predict_fn, predictions = pred, classes = classes, n_classifiers = K, scores = S,
+    margin = margin, positive_rate = rates, accuracy = acc, estimate = pred, n = nrow(A),
+    method = "One-vs-rest argmax over K binary decision functions"
+  )
 }
 
 # ============================================================ hmpas
@@ -1062,16 +1194,25 @@ morie_geron_one_vs_rest_hm <- function(X, y, base_estimator = NULL, X_new = NULL
 #' @param sample_size Rows per model (int or fraction).
 #' @param seed Integer-LCG seed.
 #' @param task "auto", "regression" or "classification".
+#' @return A list with `predict`, `train_pred`, `train_mse`, `oob_pred`, `oob_mse`, `samples`, `estimators`, `sample_size`, `task`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_pasting(V, V)
+#' @keywords internal
 morie_geron_pasting <- function(X, y, base_estimator = NULL, n_estimators = 10, sample_size = NULL,
                                 seed = 0, task = "auto") {
   A <- .morie_gr_mat(X, "X")
   yv <- as.numeric(y)
   n <- nrow(A)
   M <- as.integer(n_estimators)
-  s <- if (is.null(sample_size)) max(1L, n %/% 2L)
-       else if (is.numeric(sample_size) && sample_size > 0 && sample_size <= 1.0 && sample_size != as.integer(sample_size)) max(1L, round(sample_size * n))
-       else as.integer(sample_size)
+  s <- if (is.null(sample_size)) {
+    max(1L, n %/% 2L)
+  } else if (is.numeric(sample_size) && sample_size > 0 && sample_size <= 1.0 && sample_size != as.integer(sample_size)) {
+    max(1L, round(sample_size * n))
+  } else {
+    as.integer(sample_size)
+  }
   classify <- task == "classification" || (task == "auto" && all(unique(yv) %in% c(0, 1)))
   models <- list()
   samples <- list()
@@ -1087,22 +1228,28 @@ morie_geron_pasting <- function(X, y, base_estimator = NULL, n_estimators = 10, 
     samples[[mi]] <- idx0
     stack[mi, ] <- pm
     oob <- setdiff(seq_len(n), idx)
-    if (length(oob)) { oob_sum[oob] <- oob_sum[oob] + pm[oob]
-    oob_cnt[oob] <- oob_cnt[oob] + 1 }
+    if (length(oob)) {
+      oob_sum[oob] <- oob_sum[oob] + pm[oob]
+      oob_cnt[oob] <- oob_cnt[oob] + 1
+    }
   }
   aggregate <- function(P) if (classify) as.numeric(colMeans(P) >= 0.5) else colMeans(P)
-  predict_fn <- function(Xnew) { B <- .morie_gr_mat(Xnew, "Xnew")
-  aggregate(do.call(rbind, lapply(models, function(f) as.numeric(f(B))))) }
+  predict_fn <- function(Xnew) {
+    B <- .morie_gr_mat(Xnew, "Xnew")
+    aggregate(do.call(rbind, lapply(models, function(f) as.numeric(f(B)))))
+  }
   train_pred <- aggregate(stack)
   train_mse <- mean((train_pred - yv)^2)
   has <- oob_cnt > 0
   oob_pred <- rep(NA_real_, n)
   oob_pred[has] <- oob_sum[has] / oob_cnt[has]
   oob_mse <- if (any(has)) mean((oob_pred[has] - yv[has])^2) else NA_real_
-  list(predict = predict_fn, train_pred = train_pred, train_mse = train_mse, oob_pred = oob_pred,
-       oob_mse = oob_mse, samples = samples, estimators = models, sample_size = s,
-       task = if (classify) "classification" else "regression", estimate = train_mse, n = n,
-       method = "Pasting over LCG-seeded samples drawn without replacement")
+  list(
+    predict = predict_fn, train_pred = train_pred, train_mse = train_mse, oob_pred = oob_pred,
+    oob_mse = oob_mse, samples = samples, estimators = models, sample_size = s,
+    task = if (classify) "classification" else "regression", estimate = train_mse, n = n,
+    method = "Pasting over LCG-seeded samples drawn without replacement"
+  )
 }
 
 # ============================================================ hmpcac
@@ -1111,7 +1258,12 @@ morie_geron_pasting <- function(X, y, base_estimator = NULL, n_estimators = 10, 
 #' @param X Data (m, p).
 #' @param n_components Components to keep (default all).
 #' @param center,scale Preprocessing flags.
+#' @return A list with `components`, `scores`, `explained_variance`, `explained_variance_ratio`, `reconstruction_error`, `n_components`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_principal_components(V)
+#' @keywords internal
 morie_geron_principal_components <- function(X, n_components = NULL, center = TRUE, scale = FALSE) {
   A <- .morie_gr_mat(X, "X")
   m <- nrow(A)
@@ -1120,13 +1272,19 @@ morie_geron_principal_components <- function(X, n_components = NULL, center = TR
   res <- .morie_w4c_pca_svd(A, k, center, scale)
   comps <- res$components
   scores <- res$scores
-  for (j in seq_len(ncol(comps))) if (comps[which.max(abs(comps[, j])), j] < 0) { comps[, j] <- -comps[, j]
-  scores[, j] <- -scores[, j] }
+  for (j in seq_len(ncol(comps))) {
+    if (comps[which.max(abs(comps[, j])), j] < 0) {
+      comps[, j] <- -comps[, j]
+      scores[, j] <- -scores[, j]
+    }
+  }
   Xc <- res$Xc
   err <- sqrt(sum((Xc - scores %*% t(comps))^2))
-  list(components = comps, scores = scores, explained_variance = res$explained_variance,
-       explained_variance_ratio = res$explained_variance_ratio, reconstruction_error = err,
-       n_components = k, estimate = comps, n = m, method = "PCA by SVD of the centred data matrix")
+  list(
+    components = comps, scores = scores, explained_variance = res$explained_variance,
+    explained_variance_ratio = res$explained_variance_ratio, reconstruction_error = err,
+    n_components = k, estimate = comps, n = m, method = "PCA by SVD of the centred data matrix"
+  )
 }
 
 # ============================================================ hmpcav
@@ -1136,7 +1294,12 @@ morie_geron_principal_components <- function(X, n_components = NULL, center = TR
 #' @param n_components Optional cap passed through to PCA.
 #' @param threshold Variance fraction to reach.
 #' @param n_probes,seed Random-direction check controls.
+#' @return A list with `explained_variance`, `explained_variance_ratio`, `cumulative`, `n_components_for_threshold`, `top_variance`, `probe_max`, `covariance`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_pca_variance(V)
+#' @keywords internal
 morie_geron_pca_variance <- function(X, n_components = NULL, threshold = 0.95, n_probes = 64, seed = 0) {
   A <- .morie_gr_mat(X, "X")
   base <- morie_geron_principal_components(A, n_components = n_components)
@@ -1152,16 +1315,20 @@ morie_geron_pca_variance <- function(X, n_components = NULL, threshold = 0.95, n
   best <- -Inf
   for (rep_ in seq_len(npr)) {
     w <- numeric(p)
-    for (jc in seq_len(p)) { s <- .morie_al_lcg(s)
-    w[jc] <- (s + 0.5) / 2^32 * 2 - 1 }
+    for (jc in seq_len(p)) {
+      s <- .morie_al_lcg(s)
+      w[jc] <- (s + 0.5) / 2^32 * 2 - 1
+    }
     nw <- sqrt(sum(w^2))
     if (nw == 0) next
     w <- w / nw
     best <- max(best, as.numeric(t(w) %*% Sigma %*% w))
   }
-  list(explained_variance = var_, explained_variance_ratio = ratio, cumulative = cum,
-       n_components_for_threshold = reach, top_variance = var_[1], probe_max = best, covariance = Sigma,
-       estimate = ratio, n = nrow(A), method = "Variance accounting over principal components with a random-direction check")
+  list(
+    explained_variance = var_, explained_variance_ratio = ratio, cumulative = cum,
+    n_components_for_threshold = reach, top_variance = var_[1], probe_max = best, covariance = Sigma,
+    estimate = ratio, n = nrow(A), method = "Variance accounting over principal components with a random-direction check"
+  )
 }
 
 # ============================================================ hmpd
@@ -1171,7 +1338,12 @@ morie_geron_pca_variance <- function(X, n_components = NULL, threshold = 0.95, n
 #' @param pad_h,pad_w Explicit padding.
 #' @param kernel_size Compute same-padding from a kernel instead.
 #' @param stride Output-size bookkeeping.
+#' @return A list with `padded`, `pad_h`, `pad_w`, `output_shape`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie_geron_padding(M)
+#' @keywords internal
 morie_geron_padding <- function(x, pad_h = NULL, pad_w = NULL, kernel_size = NULL, stride = 1) {
   a <- x
   nd <- length(dim(a))
@@ -1180,7 +1352,9 @@ morie_geron_padding <- function(x, pad_h = NULL, pad_w = NULL, kernel_size = NUL
   dims <- if (is.null(dim(a))) length(a) else dim(a)
   H <- dims[hax]
   W <- dims[hax + 1L]
-  pair <- function(v) { if (length(v) == 1L) c(as.integer(v), as.integer(v)) else as.integer(v) }
+  pair <- function(v) {
+    if (length(v) == 1L) c(as.integer(v), as.integer(v)) else as.integer(v)
+  }
   if (!is.null(kernel_size)) {
     kv <- pair(kernel_size)
     kh <- kv[1]
@@ -1196,16 +1370,22 @@ morie_geron_padding <- function(x, pad_h = NULL, pad_w = NULL, kernel_size = NUL
     o <- matrix(0, H + ph[1] + ph[2], W + pw[1] + pw[2])
     o[(ph[1] + 1L):(ph[1] + H), (pw[1] + 1L):(pw[1] + W)] <- a
     o
-  } else stop("geron_padding: only 2-D input ported in this shard", call. = FALSE)
+  } else {
+    stop("geron_padding: only 2-D input ported in this shard", call. = FALSE)
+  }
   s_ <- as.integer(stride)
   if (!is.null(kernel_size)) {
     kv <- pair(kernel_size)
     oh <- (H + ph[1] + ph[2] - kv[1]) %/% s_ + 1L
     ow <- (W + pw[1] + pw[2] - kv[2]) %/% s_ + 1L
-  } else { oh <- nrow(out)
-  ow <- ncol(out) }
-  list(padded = out, pad_h = ph, pad_w = pw, output_shape = c(oh, ow), estimate = out, n = length(a),
-       method = "Zero padding with explicit or same-convolution widths")
+  } else {
+    oh <- nrow(out)
+    ow <- ncol(out)
+  }
+  list(
+    padded = out, pad_h = ph, pad_w = pw, output_shape = c(oh, ow), estimate = out, n = length(a),
+    method = "Zero padding with explicit or same-convolution widths"
+  )
 }
 
 # ============================================================ hmpemb
@@ -1215,7 +1395,13 @@ morie_geron_padding <- function(x, pad_h = NULL, pad_w = NULL, kernel_size = NUL
 #' @param pretrained Named list token -> vector.
 #' @param freeze Whether the table is held fixed.
 #' @param seed,oov_scale OOV row controls.
+#' @return A list with `embeddings`, `coverage`, `oov`, `oov_indices`, `dim`, `freeze`, `trainable`, `n_parameters`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_geron_pretrained_embeddings(V, D)
+#' @keywords internal
 morie_geron_pretrained_embeddings <- function(vocab, pretrained, freeze = TRUE, seed = 0, oov_scale = 0.05) {
   words <- as.character(vocab)
   dims <- unique(vapply(pretrained, function(v) length(as.numeric(v)), integer(1)))
@@ -1230,18 +1416,24 @@ morie_geron_pretrained_embeddings <- function(vocab, pretrained, freeze = TRUE, 
     if (is.null(vec)) {
       s <- as.numeric(seed) + 7919 * (i - 1L) + 1
       row <- numeric(dim_)
-      for (jc in seq_len(dim_)) { s <- .morie_al_lcg(s)
-      row[jc] <- ((s + 0.5) / 2^32 * 2 - 1) * sc }
+      for (jc in seq_len(dim_)) {
+        s <- .morie_al_lcg(s)
+        row[jc] <- ((s + 0.5) / 2^32 * 2 - 1) * sc
+      }
       E[i, ] <- row
       oov <- c(oov, words[i])
       oov_idx <- c(oov_idx, i - 1L)
-    } else E[i, ] <- as.numeric(vec)
+    } else {
+      E[i, ] <- as.numeric(vec)
+    }
   }
   cover <- 1.0 - length(oov) / length(words)
   total <- length(E)
-  list(embeddings = E, coverage = cover, oov = oov, oov_indices = oov_idx, dim = dim_,
-       freeze = isTRUE(freeze), trainable = if (isTRUE(freeze)) 0L else total, n_parameters = total,
-       estimate = E, n = length(words), method = "Embedding table from pretrained vectors with LCG-initialised OOV rows")
+  list(
+    embeddings = E, coverage = cover, oov = oov, oov_indices = oov_idx, dim = dim_,
+    freeze = isTRUE(freeze), trainable = if (isTRUE(freeze)) 0L else total, n_parameters = total,
+    estimate = E, n = length(words), method = "Embedding table from pretrained vectors with LCG-initialised OOV rows"
+  )
 }
 
 # ============================================================ hmper
@@ -1250,7 +1442,12 @@ morie_geron_pretrained_embeddings <- function(vocab, pretrained, freeze = TRUE, 
 #' @param buffer TD errors, or a list of transitions with a `td_error` field.
 #' @param alpha,beta,eps Prioritisation, IS and floor controls.
 #' @param batch_size,seed Optional draw.
+#' @return A list with `priorities`, `probabilities`, `weights`, `indices`, `alpha`, `beta`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_prioritized_replay(V)
+#' @keywords internal
 morie_geron_prioritized_replay <- function(buffer, alpha = 0.6, beta = 0.4, eps = 1e-6, batch_size = NULL, seed = 0) {
   items <- buffer
   deltas <- vapply(items, function(it) {
@@ -1280,8 +1477,10 @@ morie_geron_prioritized_replay <- function(buffer, alpha = 0.6, beta = 0.4, eps 
     }
     idx <- draw
   }
-  list(priorities = pri, probabilities = prob, weights = w, indices = idx, alpha = a, beta = b,
-       estimate = prob, n = N, method = "Proportional prioritized replay with importance-sampling weights")
+  list(
+    priorities = pri, probabilities = prob, weights = w, indices = idx, alpha = a, beta = b,
+    estimate = prob, n = N, method = "Proportional prioritized replay with importance-sampling weights"
+  )
 }
 
 # ============================================================ hmpg
@@ -1291,21 +1490,31 @@ morie_geron_prioritized_replay <- function(buffer, alpha = 0.6, beta = 0.4, eps 
 #' @param policy Function `policy(state, action) -> grad log pi` (or `(logp, grad)`).
 #' @param gamma Discount.
 #' @param baseline Subtract the mean return.
+#' @return A list with `gradient`, `returns`, `mean_return`, `n_steps`, `n_episodes`, `baseline_value`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' g <- function(s, a) c(1, 0)
+#' morie_geron_policy_gradient(list(list(list(0, 0, 2))), g, gamma = 1)
+#' @keywords internal
 morie_geron_policy_gradient <- function(trajectories, policy, gamma = 0.99, baseline = FALSE) {
   g <- as.numeric(gamma)
   all_steps <- list()
   all_returns <- list()
   for (ep in trajectories) {
     steps <- lapply(ep, function(st) {
-      if (!is.null(names(st)) && all(c("action", "reward") %in% names(st))) list(st$state, st$action, as.numeric(st$reward))
-      else list(st[[1]], st[[2]], as.numeric(st[[3]]))
+      if (!is.null(names(st)) && all(c("action", "reward") %in% names(st))) {
+        list(st$state, st$action, as.numeric(st$reward))
+      } else {
+        list(st[[1]], st[[2]], as.numeric(st[[3]]))
+      }
     })
     .morie_gr_need(length(steps) > 0L, "geron_policy_gradient: an episode has no steps")
     G <- 0.0
     rets <- numeric(length(steps))
-    for (t_ in rev(seq_along(steps))) { G <- steps[[t_]][[3]] + g * G
-    rets[t_] <- G }
+    for (t_ in rev(seq_along(steps))) {
+      G <- steps[[t_]][[3]] + g * G
+      rets[t_] <- G
+    }
     all_steps <- c(all_steps, steps)
     all_returns[[length(all_returns) + 1L]] <- rets
   }
@@ -1322,9 +1531,11 @@ morie_geron_policy_gradient <- function(trajectories, policy, gamma = 0.99, base
     grad <- grad + gv * (Gr - b)
   }
   grad <- grad / length(trajectories)
-  list(gradient = grad, returns = returns, mean_return = mean(returns), n_steps = length(returns),
-       n_episodes = length(trajectories), baseline_value = b, estimate = grad, n = length(returns),
-       method = "REINFORCE gradient with discounted returns")
+  list(
+    gradient = grad, returns = returns, mean_return = mean(returns), n_steps = length(returns),
+    n_episodes = length(trajectories), baseline_value = b, estimate = grad, n = length(returns),
+    method = "REINFORCE gradient with discounted returns"
+  )
 }
 
 # ============================================================ hmphp
@@ -1347,7 +1558,13 @@ morie_geron_policy_gradient <- function(trajectories, policy, gamma = 0.99, base
 #' Peephole LSTM cell forward step: gates also see the cell state (Geron Ch 13, hmphp)
 #' @param x_t,h_prev,c_prev Input and previous state.
 #' @param weights List with W_x, W_h, b, p_i, p_f, p_o.
+#' @return A list with `h`, `c`, `i`, `f`, `g`, `o`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' W <- list(W_x = matrix(c(0, 0, 1, 0), ncol = 1), W_h = matrix(0,
+#'     4, 1), b = rep(0, 4))
+#' morie_geron_peephole_lstm(1, 0, 0, W)
+#' @keywords internal
 morie_geron_peephole_lstm <- function(x_t, h_prev, c_prev, weights) {
   x <- as.numeric(x_t)
   h <- as.numeric(h_prev)
@@ -1356,8 +1573,10 @@ morie_geron_peephole_lstm <- function(x_t, h_prev, c_prev, weights) {
   Wx <- .morie_gr_mat(weights$W_x, "W_x")
   Wh <- .morie_gr_mat(weights$W_h, "W_h")
   b <- as.numeric(weights$b)
-  peep <- function(nm) { v <- weights[[nm]]
-  if (is.null(v)) numeric(H) else as.numeric(v) }
+  peep <- function(nm) {
+    v <- weights[[nm]]
+    if (is.null(v)) numeric(H) else as.numeric(v)
+  }
   p_i <- peep("p_i")
   p_f <- peep("p_f")
   p_o <- peep("p_o")
@@ -1368,8 +1587,10 @@ morie_geron_peephole_lstm <- function(x_t, h_prev, c_prev, weights) {
   c_new <- f * c_ + i * gg
   o <- .morie_w4c_sigmoid(z[(3 * H + 1):(4 * H)] + p_o * c_new)
   h_new <- o * tanh(c_new)
-  list(h = h_new, c = c_new, i = i, f = f, g = gg, o = o, estimate = h_new, n = H,
-       method = "Peephole LSTM cell forward step")
+  list(
+    h = h_new, c = c_new, i = i, f = f, g = gg, o = o, estimate = h_new, n = H,
+    method = "Peephole LSTM cell forward step"
+  )
 }
 
 # ============================================================ hmplf
@@ -1378,7 +1599,12 @@ morie_geron_peephole_lstm <- function(x_t, h_prev, c_prev, weights) {
 #' @param X Data (m, n) or (m,).
 #' @param degree Max total degree.
 #' @param include_bias,interaction_only Expansion flags.
+#' @return A list with `features`, `powers`, `names`, `n_output_features`, `degree`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_polynomial_features_hm(V, V)
+#' @keywords internal
 morie_geron_polynomial_features_hm <- function(X, degree, include_bias = TRUE, interaction_only = FALSE) {
   A <- .morie_gr_mat(X, "X")
   n <- ncol(A)
@@ -1404,12 +1630,16 @@ morie_geron_polynomial_features_hm <- function(X, degree, include_bias = TRUE, i
   }
   names_ <- vapply(seq_len(nrow(powers)), function(i) {
     row <- powers[i, ]
-    if (sum(row) == 0) return("1")
+    if (sum(row) == 0) {
+      return("1")
+    }
     parts <- vapply(which(row > 0), function(j) if (row[j] == 1L) sprintf("x%d", j - 1L) else sprintf("x%d^%d", j - 1L, row[j]), character(1))
     paste(parts, collapse = " ")
   }, character(1))
-  list(features = feats, powers = powers, names = names_, n_output_features = length(combos), degree = d,
-       estimate = feats, n = nrow(A), method = "Monomial expansion of total degree <= d")
+  list(
+    features = feats, powers = powers, names = names_, n_output_features = length(combos), degree = d,
+    estimate = feats, n = nrow(A), method = "Monomial expansion of total degree <= d"
+  )
 }
 
 #' 1-based column indices, combinations with replacement, itertools
@@ -1431,8 +1661,10 @@ morie_geron_polynomial_features_hm <- function(X, degree, include_bias = TRUE, i
   # 1-based column indices, combinations with replacement, itertools order.
   out <- list()
   rec <- function(start, chosen) {
-    if (length(chosen) == k) { out[[length(out) + 1L]] <<- chosen
-    return(invisible()) }
+    if (length(chosen) == k) {
+      out[[length(out) + 1L]] <<- chosen
+      return(invisible())
+    }
     for (v in start:n) rec(v, c(chosen, v))
   }
   rec(1L, integer(0))
@@ -1444,7 +1676,12 @@ morie_geron_polynomial_features_hm <- function(X, degree, include_bias = TRUE, i
 #' Apple MPS placement plan: dtype demotion cost, no Metal call made (Geron Ch 10, hmpmps)
 #' @param tensor Data.
 #' @param dtype Optional forced target dtype name.
+#' @return A list with `tensor`, `source_dtype`, `dtype_on_device`, `downcast`, `max_abs_error`, `relative_error`, `overflow`, `unified_memory`, `nbytes`, `executes_on_metal`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_mps_acceleration(V)
+#' @keywords internal
 morie_geron_mps_acceleration <- function(tensor, dtype = NULL) {
   a <- tensor
   is_int <- is.integer(a) || (is.numeric(a) && !is.null(attr(a, "int64")))
@@ -1452,7 +1689,7 @@ morie_geron_mps_acceleration <- function(tensor, dtype = NULL) {
   target <- if (!is.null(dtype)) dtype else if (src == "float64") "float32" else src
   av <- as.numeric(a)
   if (target == "float32") {
-    out <- av  # ponytail: no native float32 storage in R; error is measured via round-trip below
+    out <- av # ponytail: no native float32 storage in R; error is measured via round-trip below
     err <- 0.0
     rel <- 0.0
     overflow <- FALSE
@@ -1469,10 +1706,12 @@ morie_geron_mps_acceleration <- function(tensor, dtype = NULL) {
     overflow <- any(back != av)
     err <- if (overflow) max(abs(back - av)) else 0.0
   }
-  list(tensor = out, source_dtype = src, dtype_on_device = target, downcast = downcast,
-       max_abs_error = err, relative_error = rel, overflow = overflow, unified_memory = TRUE,
-       nbytes = length(out) * 4L, executes_on_metal = FALSE, estimate = out, n = length(av),
-       method = "MPS dtype placement plan with demotion error measured on the CPU")
+  list(
+    tensor = out, source_dtype = src, dtype_on_device = target, downcast = downcast,
+    max_abs_error = err, relative_error = rel, overflow = overflow, unified_memory = TRUE,
+    nbytes = length(out) * 4L, executes_on_metal = FALSE, estimate = out, n = length(av),
+    method = "MPS dtype placement plan with demotion error measured on the CPU"
+  )
 }
 
 # ============================================================ hmpol
@@ -1481,7 +1720,12 @@ morie_geron_mps_acceleration <- function(tensor, dtype = NULL) {
 #' @param state Current state (0-based).
 #' @param pi Function, matrix, vector or named list.
 #' @param seed Integer-LCG seed for the sampled action.
+#' @return A list with `probabilities`, `action`, `greedy_action`, `entropy`, `deterministic`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_policy(V, V)
+#' @keywords internal
 morie_geron_policy <- function(state, pi, seed = 0) {
   if (is.function(pi)) {
     raw <- pi(state)
@@ -1513,9 +1757,11 @@ morie_geron_policy <- function(state, pi, seed = 0) {
     u <- (s + 0.5) / 2^32
     action <- min(sum(cumsum(probs) < u * sum(probs)), length(probs) - 1L)
   }
-  list(probabilities = probs, action = as.integer(action), greedy_action = greedy, entropy = entropy,
-       deterministic = deterministic, estimate = as.integer(action), n = length(probs),
-       method = "Policy evaluation with entropy and a reproducible sampled action")
+  list(
+    probabilities = probs, action = as.integer(action), greedy_action = greedy, entropy = entropy,
+    deterministic = deterministic, estimate = as.integer(action), n = length(probs),
+    method = "Policy evaluation with entropy and a reproducible sampled action"
+  )
 }
 
 # ============================================================ hmppo
@@ -1541,7 +1787,14 @@ morie_geron_policy <- function(state, pi, seed = 0) {
 #' @param env List with `reset()` / `step(a)`.
 #' @param policy Initial (n_states, n_actions) logits.
 #' @param epochs,lr,clip_eps,gamma,n_episodes,max_steps,n_updates,seed Training controls.
+#' @return A list with `theta`, `probabilities`, `return_history`, `surrogate_history`, `clip_fraction`, `clip_eps`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' reset <- function() 0
+#' step <- function(a) list(0, as.numeric(a), TRUE)
+#' morie_geron_ppo(list(reset = reset, step = step), matrix(c(0,
+#'     0), nrow = 1), epochs = 30, lr = 0.5, seed = 1)
+#' @keywords internal
 morie_geron_ppo <- function(env, policy, epochs = 20, lr = 0.1, clip_eps = 0.2, gamma = 0.99,
                             n_episodes = 8, max_steps = 50, n_updates = 4, seed = 0) {
   eb <- .morie_w4c_bind_env(env)
@@ -1589,8 +1842,12 @@ morie_geron_ppo <- function(env, policy, epochs = 20, lr = 0.1, clip_eps = 0.2, 
       }
       Gc <- 0.0
       gs <- numeric(length(traj_r))
-      if (length(traj_r)) for (k in rev(seq_along(traj_r))) { Gc <- traj_r[k] + g * Gc
-      gs[k] <- Gc }
+      if (length(traj_r)) {
+        for (k in rev(seq_along(traj_r))) {
+          Gc <- traj_r[k] + g * Gc
+          gs[k] <- Gc
+        }
+      }
       states <- c(states, traj_s)
       actions <- c(actions, traj_a)
       rets <- c(rets, gs)
@@ -1617,7 +1874,9 @@ morie_geron_ppo <- function(env, policy, epochs = 20, lr = 0.1, clip_eps = 0.2, 
           dlog <- -p
           dlog[Aa[i] + 1L] <- dlog[Aa[i] + 1L] + 1.0
           grad[S[i] + 1L, ] <- grad[S[i] + 1L, ] + adv[i] * ratio * dlog
-        } else clipped_total <- clipped_total + 1L
+        } else {
+          clipped_total <- clipped_total + 1L
+        }
       }
       Z <- Z + eta * grad / max(length(S), 1)
       if (uu == 1L) sur_hist <- c(sur_hist, sur / max(length(S), 1))
@@ -1625,9 +1884,11 @@ morie_geron_ppo <- function(env, policy, epochs = 20, lr = 0.1, clip_eps = 0.2, 
     ret_hist <- c(ret_hist, mean(ep_returns))
   }
   probs <- t(apply(Z, 1, .morie_gr_softmax))
-  list(theta = Z, probabilities = probs, return_history = ret_hist, surrogate_history = sur_hist,
-       clip_fraction = clipped_total / max(seen_total, 1L), clip_eps = eps, estimate = probs, n = E * Bn,
-       method = "PPO with a clipped surrogate on a tabular softmax policy")
+  list(
+    theta = Z, probabilities = probs, return_history = ret_hist, surrogate_history = sur_hist,
+    clip_fraction = clipped_total / max(seen_total, 1L), clip_eps = eps, estimate = probs, n = E * Bn,
+    method = "PPO with a clipped surrogate on a tabular softmax policy"
+  )
 }
 
 # ============================================================ hmppp
@@ -1636,7 +1897,11 @@ morie_geron_ppo <- function(env, policy, epochs = 20, lr = 0.1, clip_eps = 0.2, 
 #' @param model Sequence of layer sizes (or weight arrays; lengths are used).
 #' @param n_stages Pipeline stages.
 #' @param n_microbatches Microbatches per batch.
+#' @return A list with `assignment`, `stage_loads`, `max_load`, `imbalance`, `bubble_fraction`, `utilisation`, `schedule`, `n_slots`, `n_microbatches`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' morie_geron_pipeline_parallelism(model = c(1, 2, 3, 4, 5, 6, 7, 8), n_stages = 5L)
+#' @keywords internal
 morie_geron_pipeline_parallelism <- function(model, n_stages, n_microbatches = 4) {
   sizes <- vapply(model, function(v) length(as.numeric(v)), numeric(1))
   base <- .morie_w4c_model_parallel(sizes, as.integer(n_stages))
@@ -1646,10 +1911,12 @@ morie_geron_pipeline_parallelism <- function(model, n_stages, n_microbatches = 4
   bubble <- (S - 1L) / slots
   sched <- matrix(-1L, S, slots)
   for (s_ in seq_len(S)) for (m_ in seq_len(M)) sched[s_, s_ + m_ - 1L] <- m_ - 1L
-  list(assignment = base$assignment, stage_loads = base$device_loads, max_load = base$max_load,
-       imbalance = base$imbalance, bubble_fraction = bubble, utilisation = 1.0 - bubble, schedule = sched,
-       n_slots = slots, n_microbatches = M, estimate = bubble, n = length(sizes),
-       method = "Pipeline schedule over a contiguous stage partition")
+  list(
+    assignment = base$assignment, stage_loads = base$device_loads, max_load = base$max_load,
+    imbalance = base$imbalance, bubble_fraction = bubble, utilisation = 1.0 - bubble, schedule = sched,
+    n_slots = slots, n_microbatches = M, estimate = bubble, n = length(sizes),
+    method = "Pipeline schedule over a contiguous stage partition"
+  )
 }
 
 # ============================================================ hmprc
@@ -1658,7 +1925,12 @@ morie_geron_pipeline_parallelism <- function(model, n_stages, n_microbatches = 4
 #' @param y_true Binary labels.
 #' @param scores Decision scores.
 #' @param pos_label Positive label.
+#' @return A list with `precision`, `recall`, `thresholds`, `average_precision`, `f1`, `best_f1`, `best_threshold`, `recall_at_90_precision`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_precision_recall_curve_hm(V, V)
+#' @keywords internal
 morie_geron_precision_recall_curve_hm <- function(y_true, scores, pos_label = 1) {
   yt <- as.vector(y_true)
   s <- as.numeric(scores)
@@ -1672,10 +1944,12 @@ morie_geron_precision_recall_curve_hm <- function(y_true, scores, pos_label = 1)
   k <- which.max(f1)
   ok <- curv$precision >= 0.9
   rec90 <- if (any(ok)) max(curv$recall[ok]) else 0.0
-  list(precision = curv$precision, recall = curv$recall, thresholds = thr,
-       average_precision = curv$average_precision, f1 = f1, best_f1 = f1[k], best_threshold = thr[k],
-       recall_at_90_precision = rec90, estimate = curv$average_precision, n = length(yt),
-       method = "PR curve, best-F1 point and recall at 90% precision")
+  list(
+    precision = curv$precision, recall = curv$recall, thresholds = thr,
+    average_precision = curv$average_precision, f1 = f1, best_f1 = f1[k], best_threshold = thr[k],
+    recall_at_90_precision = rec90, estimate = curv$average_precision, n = length(yt),
+    method = "PR curve, best-F1 point and recall at 90% precision"
+  )
 }
 
 # ============================================================ hmprcv / hmprio / hmpvt
@@ -1685,7 +1959,12 @@ morie_geron_precision_recall_curve_hm <- function(y_true, scores, pos_label = 1)
 #' @param latents Learned latents (L, D_lat).
 #' @param n_iter Cross-attention rounds.
 #' @param W_q,W_k,W_v Optional projections.
+#' @return A list with `latents`, `attention`, `attention_cost`, `self_attention_cost`, `n_iter`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_perceiver(V, V)
+#' @keywords internal
 morie_geron_perceiver <- function(x, latents, n_iter = 2, W_q = NULL, W_k = NULL, W_v = NULL) {
   X <- .morie_gr_mat(x, "x")
   L <- .morie_gr_mat(latents, "latents")
@@ -1705,15 +1984,22 @@ morie_geron_perceiver <- function(x, latents, n_iter = 2, W_q = NULL, W_k = NULL
     attn <- t(apply(scores, 1, .morie_gr_softmax))
     L <- L + attn %*% V
   }
-  list(latents = L, attention = attn, attention_cost = nrow(latents) * nrow(X),
-       self_attention_cost = nrow(X) * nrow(X), n_iter = Tt, estimate = L, n = nrow(X),
-       method = "Perceiver: iterated latent-to-input scaled dot-product cross-attention")
+  list(
+    latents = L, attention = attn, attention_cost = nrow(latents) * nrow(X),
+    self_attention_cost = nrow(X) * nrow(X), n_iter = Tt, estimate = L, n = nrow(X),
+    method = "Perceiver: iterated latent-to-input scaled dot-product cross-attention"
+  )
 }
 
 #' Perceiver IO: adds a cross-attention output decoder (Geron Ch 16, hmprio)
 #' @param x,latents,queries Input, latents and output queries.
 #' @param n_iter,W_q,W_k,W_v Encoder controls.
+#' @return A list with `outputs`, `decoder_attention`, `latents`, `encoder_attention`, `decoder_cost`, `encoder_cost`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' morie_geron_perceiver_io_hm(x = c(1, 2, 3, 4, 5, 6, 7, 8), latents = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   queries = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_geron_perceiver_io_hm <- function(x, latents, queries, n_iter = 2, W_q = NULL, W_k = NULL, W_v = NULL) {
   enc <- morie_geron_perceiver(x, latents, n_iter = n_iter, W_q = W_q, W_k = W_k, W_v = W_v)
   Z <- enc$latents
@@ -1722,16 +2008,27 @@ morie_geron_perceiver_io_hm <- function(x, latents, queries, n_iter = 2, W_q = N
   scores <- (Q %*% t(Z)) / sqrt(dk)
   attn <- t(apply(scores, 1, .morie_gr_softmax))
   out <- attn %*% Z
-  list(outputs = out, decoder_attention = attn, latents = Z, encoder_attention = enc$attention,
-       decoder_cost = nrow(Q) * nrow(Z), encoder_cost = enc$attention_cost, estimate = out, n = nrow(Q),
-       method = "Perceiver IO: encoder plus query cross-attention decoder")
+  list(
+    outputs = out, decoder_attention = attn, latents = Z, encoder_attention = enc$attention,
+    decoder_cost = nrow(Q) * nrow(Z), encoder_cost = enc$attention_cost, estimate = out, n = nrow(Q),
+    method = "Perceiver IO: encoder plus query cross-attention decoder"
+  )
 }
 
 #' Pyramid Vision Transformer: hierarchical multi-scale patch-embedding stages (Geron Ch 16, hmpvt)
 #' @param image Array (H, W, C) or (H, W).
 #' @param stage_cfgs List of stage specs.
 #' @param seed LCG seed for default projections.
+#' @return A list with `tokens`, `stages`, `output_shape`, `n_parameters`, `attention_cost`, `full_attention_cost`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' img <- array(0:47, dim = c(3, 4, 4))
+#' img <- aperm(img, c(3, 2, 1))  # numpy arange(48).reshape(4,4,3), row-major
+#' Wm <- matrix(1 / 12, 12, 1)
+#' r <- morie_geron_pvt(img, list(list(patch_size = 2, dim = 1, W = Wm)))
+#' r$output_shape
+#' r$tokens[1, 1, 1]
+#' @keywords internal
 morie_geron_pvt <- function(image, stage_cfgs, seed = 0) {
   img <- image
   if (length(dim(img)) == 2L) img <- array(img, dim = c(dim(img), 1L))
@@ -1756,34 +2053,46 @@ morie_geron_pvt <- function(image, stage_cfgs, seed = 0) {
     if (is.null(Wm)) {
       Wm <- matrix(.morie_w4c_lcgvec(fan * dim_, as.numeric(seed) + 7919 * (i - 1L) + 1), nrow = fan, ncol = dim_, byrow = TRUE)
       Wm <- (Wm * 2 - 1) / sqrt(fan)
-    } else Wm <- .morie_gr_mat(Wm, "W")
+    } else {
+      Wm <- .morie_gr_mat(Wm, "W")
+    }
     # Extract patches in numpy's row-major (p, p, C) flatten order: patch-row
     # slowest, patch-col next, channel fastest -- matches
     # x.reshape(gh,p,gw,p,C).transpose(0,2,1,3,4).reshape(gh,gw,fan) exactly.
     patches <- array(0, dim = c(gh, gw, fan))
-    for (bi in seq_len(gh)) for (bj in seq_len(gw)) {
-      vec <- numeric(fan)
-      idx <- 1L
-      for (pi in seq_len(p)) for (pj in seq_len(p)) for (cc in seq_len(C)) {
-        vec[idx] <- x[(bi - 1L) * p + pi, (bj - 1L) * p + pj, cc]
-        idx <- idx + 1L
+    for (bi in seq_len(gh)) {
+      for (bj in seq_len(gw)) {
+        vec <- numeric(fan)
+        idx <- 1L
+        for (pi in seq_len(p)) {
+          for (pj in seq_len(p)) {
+            for (cc in seq_len(C)) {
+              vec[idx] <- x[(bi - 1L) * p + pi, (bj - 1L) * p + pj, cc]
+              idx <- idx + 1L
+            }
+          }
+        }
+        patches[bi, bj, ] <- vec
       }
-      patches[bi, bj, ] <- vec
     }
     Xnew <- array(0, dim = c(gh, gw, dim_))
     for (bi in seq_len(gh)) for (bj in seq_len(gw)) Xnew[bi, bj, ] <- as.numeric(patches[bi, bj, ] %*% Wm)
     x <- Xnew
     n_tok <- gh * gw
     cst <- n_tok * max(n_tok %/% (r * r), 1L)
-    stages[[i]] <- list(index = i - 1L, grid = c(gh, gw), tokens = n_tok, dim = dim_, heads = heads,
-                        sr_ratio = r, parameters = fan * dim_, attention_cost = cst, full_attention_cost = n_tok * n_tok)
+    stages[[i]] <- list(
+      index = i - 1L, grid = c(gh, gw), tokens = n_tok, dim = dim_, heads = heads,
+      sr_ratio = r, parameters = fan * dim_, attention_cost = cst, full_attention_cost = n_tok * n_tok
+    )
     params <- params + fan * dim_
     cost <- cost + cst
     full <- full + n_tok * n_tok
   }
-  list(tokens = x, stages = stages, output_shape = dim(x), n_parameters = params, attention_cost = cost,
-       full_attention_cost = full, estimate = x, n = length(img),
-       method = "PVT patch-embedding pyramid with spatial-reduction attention costs")
+  list(
+    tokens = x, stages = stages, output_shape = dim(x), n_parameters = params, attention_cost = cost,
+    full_attention_cost = full, estimate = x, n = length(img),
+    method = "PVT patch-embedding pyramid with spatial-reduction attention costs"
+  )
 }
 
 # ============================================================ hmpre
@@ -1791,7 +2100,12 @@ morie_geron_pvt <- function(image, stage_cfgs, seed = 0) {
 #' Precision = TP / (TP + FP) (Geron Ch 3, hmpre)
 #' @param y_true,y_pred Labels, same length.
 #' @param pos_label Positive label.
+#' @return A list with `precision`, `tp`, `fp`, `fn`, `f1`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_precision_hm(V, V)
+#' @keywords internal
 morie_geron_precision_hm <- function(y_true, y_pred, pos_label = 1) {
   yt <- as.vector(y_true)
   yp <- as.vector(y_pred)
@@ -1803,8 +2117,10 @@ morie_geron_precision_hm <- function(y_true, y_pred, pos_label = 1) {
   prec <- tp / (tp + fp)
   rec <- if (tp + fn > 0) tp / (tp + fn) else NA_real_
   f1 <- if (tp + fn > 0 && (prec + rec) > 0) 2 * prec * rec / (prec + rec) else 0.0
-  list(precision = prec, tp = as.integer(tp), fp = as.integer(fp), fn = as.integer(fn), f1 = f1,
-       estimate = prec, n = length(yt), method = "Precision TP/(TP+FP)")
+  list(
+    precision = prec, tp = as.integer(tp), fp = as.integer(fp), fn = as.integer(fn), f1 = f1,
+    estimate = prec, n = length(yt), method = "Precision TP/(TP+FP)"
+  )
 }
 
 # ============================================================ hmprel
@@ -1813,10 +2129,15 @@ morie_geron_precision_hm <- function(y_true, y_pred, pos_label = 1) {
 #' @param z Pre-activations, channels on last axis.
 #' @param alpha Scalar or per-channel slope.
 #' @param upstream Optional dL/da from the next layer.
+#' @return A list with `a`, `output`, `grad_z`, `grad_alpha`, `alpha`, `negative_fraction`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_prelu(V)
+#' @keywords internal
 morie_geron_prelu <- function(z, alpha = 0.25, upstream = NULL) {
   a <- as.numeric(z)
-  C <- length(a)  # 1-D case; matches the doctest shapes exercised here
+  C <- length(a) # 1-D case; matches the doctest shapes exercised here
   al <- as.numeric(alpha)
   alv <- if (length(al) == 1L) rep(al, C) else al
   up <- if (is.null(upstream)) rep(1.0, C) else as.numeric(upstream)
@@ -1825,9 +2146,11 @@ morie_geron_prelu <- function(z, alpha = 0.25, upstream = NULL) {
   grad_z <- ifelse(neg, alv, 1.0) * up
   contrib <- ifelse(neg, a * up, 0.0)
   grad_alpha <- if (length(al) == 1L) sum(contrib) else contrib
-  list(a = out, output = out, grad_z = grad_z, grad_alpha = grad_alpha,
-       alpha = if (length(al) == 1L) al else alv, negative_fraction = mean(neg), estimate = out, n = C,
-       method = "PReLU forward with gradients w.r.t. z and alpha")
+  list(
+    a = out, output = out, grad_z = grad_z, grad_alpha = grad_alpha,
+    alpha = if (length(al) == 1L) al else alv, negative_fraction = mean(neg), estimate = out, n = C,
+    method = "PReLU forward with gradients w.r.t. z and alpha"
+  )
 }
 
 # ============================================================ hmpru
@@ -1836,7 +2159,11 @@ morie_geron_prelu <- function(z, alpha = 0.25, upstream = NULL) {
 #' @param model Numeric vector or named list.
 #' @param sparsity Target fraction of zeros in [0, 1).
 #' @param n_rounds Rounds in the returned schedule.
+#' @return A list with `pruned`, `mask`, `threshold`, `achieved_sparsity`, `n_pruned`, `n_weights`, `schedule`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' morie_geron_weight_pruning_hm(model = c(1, 2, 3, 4, 5, 6, 7, 8), sparsity = 5L)
+#' @keywords internal
 morie_geron_weight_pruning_hm <- function(model, sparsity, n_rounds = 1) {
   sp <- as.numeric(sparsity)
   Rr <- as.integer(n_rounds)
@@ -1860,14 +2187,19 @@ morie_geron_weight_pruning_hm <- function(model, sparsity, n_rounds = 1) {
     out[[length(out) + 1L]] <- ifelse(m, t, 0.0)
     pos <- pos + len
   }
-  if (is_map) { pruned <- stats::setNames(out, keys)
-  mask <- stats::setNames(masks, keys) }
-  else { pruned <- out[[1]]
-  mask <- masks[[1]] }
+  if (is_map) {
+    pruned <- stats::setNames(out, keys)
+    mask <- stats::setNames(masks, keys)
+  } else {
+    pruned <- out[[1]]
+    mask <- masks[[1]]
+  }
   sched <- vapply(seq_len(Rr), function(i) sp * (1.0 - (1.0 - i / Rr)^3), numeric(1))
-  list(pruned = pruned, mask = mask, threshold = thr, achieved_sparsity = k / N, n_pruned = as.integer(k),
-       n_weights = as.integer(N), schedule = sched, estimate = k / N, n = N,
-       method = "Global magnitude pruning to an exact sparsity, with a cubic ramp schedule")
+  list(
+    pruned = pruned, mask = mask, threshold = thr, achieved_sparsity = k / N, n_pruned = as.integer(k),
+    n_weights = as.integer(N), schedule = sched, estimate = k / N, n = N,
+    method = "Global magnitude pruning to an exact sparsity, with a cubic ramp schedule"
+  )
 }
 
 # ============================================================ hmptq
@@ -1877,7 +2209,12 @@ morie_geron_weight_pruning_hm <- function(model, sparsity, n_rounds = 1) {
 #' @param calibration_data Representative activations.
 #' @param bits Bit width, 2 to 16.
 #' @param percentile Range-clipping percentile in (0, 100].
+#' @return A list with `quantized_weights`, `dequantized_weights`, `weight_scale`, `activation_scale`, `zero_point`, `activation_range`, `max_weight_error`, `compression`, `bits`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_static_quantization_ptq(V, V)
+#' @keywords internal
 morie_geron_static_quantization_ptq <- function(model, calibration_data, bits = 8, percentile = 100.0) {
   b <- as.integer(bits)
   pct <- as.numeric(percentile)
@@ -1904,28 +2241,40 @@ morie_geron_static_quantization_ptq <- function(model, calibration_data, bits = 
     dqw[[length(dqw) + 1L]] <- d_
     errs <- c(errs, max(abs(d_ - t)))
   }
-  if (is_map) { qout <- stats::setNames(qw, keys)
-  dout <- stats::setNames(dqw, keys) }
-  else { qout <- qw[[1]]
-  dout <- dqw[[1]] }
-  list(quantized_weights = qout, dequantized_weights = dout, weight_scale = w_scale,
-       activation_scale = a_scale, zero_point = zero_point, activation_range = c(lo, hi),
-       max_weight_error = max(errs), compression = 32.0 / b, bits = b, estimate = qout,
-       n = sum(vapply(tensors, length, integer(1))), method = "PTQ: symmetric weight grid, affine activation grid")
+  if (is_map) {
+    qout <- stats::setNames(qw, keys)
+    dout <- stats::setNames(dqw, keys)
+  } else {
+    qout <- qw[[1]]
+    dout <- dqw[[1]]
+  }
+  list(
+    quantized_weights = qout, dequantized_weights = dout, weight_scale = w_scale,
+    activation_scale = a_scale, zero_point = zero_point, activation_range = c(lo, hi),
+    max_weight_error = max(errs), compression = 32.0 / b, bits = b, estimate = qout,
+    n = sum(vapply(tensors, length, integer(1))), method = "PTQ: symmetric weight grid, affine activation grid"
+  )
 }
 
 # ============================================================ hmpttn
 
-.morie_w4c_dtypes <- c(float64 = "double", double = "double", float32 = "float", float = "float",
-                       float16 = "half", half = "half", bfloat16 = "float", int64 = "long", long = "long",
-                       int32 = "integer", int = "integer", int16 = "short", short = "short", int8 = "byte",
-                       uint8 = "ubyte", bool = "bool")
+.morie_w4c_dtypes <- c(
+  float64 = "double", double = "double", float32 = "float", float = "float",
+  float16 = "half", half = "half", bfloat16 = "float", int64 = "long", long = "long",
+  int32 = "integer", int = "integer", int16 = "short", short = "short", int8 = "byte",
+  uint8 = "ubyte", bool = "bool"
+)
 
 #' Torch-style tensor construction (numpy/R-backed, no torch call) (Geron Ch 10, hmpttn)
 #' @param x Data.
 #' @param device "cpu", "cuda" or "mps".
 #' @param dtype Optional torch dtype name.
+#' @return A list with `tensor`, `dtype`, `numpy_dtype`, `device`, `shape`, `ndim`, `itemsize`, `nbytes`, `strides`, `dtype_changed`, `on_device`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_pytorch_tensor(V)
+#' @keywords internal
 morie_geron_pytorch_tensor <- function(x, device = "cpu", dtype = NULL) {
   dev <- tolower(strsplit(as.character(device), ":")[[1]][1])
   .morie_gr_need(dev %in% c("cpu", "cuda", "mps"), "geron_pytorch_tensor: unknown device")
@@ -1935,10 +2284,12 @@ morie_geron_pytorch_tensor <- function(x, device = "cpu", dtype = NULL) {
   .morie_gr_need(name %in% names(.morie_w4c_dtypes), "geron_pytorch_tensor: unknown dtype")
   itemsize <- c(double = 8L, float = 4L, half = 2L, long = 8L, integer = 4L, short = 2L, byte = 1L, ubyte = 1L, bool = 1L)[[.morie_w4c_dtypes[[name]]]]
   shp <- if (is.null(dim(a))) length(a) else dim(a)
-  list(tensor = a, dtype = name, numpy_dtype = .morie_w4c_dtypes[[name]], device = dev, shape = shp,
-       ndim = length(shp), itemsize = itemsize, nbytes = length(a) * itemsize, strides = NULL,
-       dtype_changed = is.null(dtype) && src_float, on_device = dev == "cpu", estimate = a, n = length(a),
-       method = "Tensor construction with torch dtype/device semantics")
+  list(
+    tensor = a, dtype = name, numpy_dtype = .morie_w4c_dtypes[[name]], device = dev, shape = shp,
+    ndim = length(shp), itemsize = itemsize, nbytes = length(a) * itemsize, strides = NULL,
+    dtype_changed = is.null(dtype) && src_float, on_device = dev == "cpu", estimate = a, n = length(a),
+    method = "Tensor construction with torch dtype/device semantics"
+  )
 }
 
 # ============================================================ hmqat
@@ -1957,7 +2308,9 @@ morie_geron_pytorch_tensor <- function(x, device = "cpu", dtype = NULL) {
 .morie_w4c_fake_quant <- function(w, bits) {
   qmax <- 2^(bits - 1) - 1
   scale <- max(abs(w)) / qmax
-  if (scale == 0) return(list(w, 0.0))
+  if (scale == 0) {
+    return(list(w, 0.0))
+  }
   q <- pmin(pmax(round(w / scale), -qmax), qmax)
   list(q * scale, scale)
 }
@@ -1966,7 +2319,12 @@ morie_geron_pytorch_tensor <- function(x, device = "cpu", dtype = NULL) {
 #' @param model Initial full-precision weights.
 #' @param X,y Data.
 #' @param epochs,lr,bits Controls.
+#' @return A list with `weights`, `quantized_weights`, `scale`, `loss`, `fp_loss`, `loss_history`, `bits`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' morie_geron_quantization_aware_training_hm(model = 5L, X = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   y = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_geron_quantization_aware_training_hm <- function(model, X, y, epochs = 200, lr = 0.1, bits = 8) {
   w <- as.numeric(model)
   A <- .morie_gr_mat(X, "X")
@@ -1994,9 +2352,11 @@ morie_geron_quantization_aware_training_hm <- function(model, X, y, epochs = 200
   hist <- c(hist, loss)
   fp_resid <- as.numeric(A %*% w) - yv
   fp_loss <- mean(fp_resid^2)
-  list(weights = w, quantized_weights = wq, scale = scale, loss = loss, fp_loss = fp_loss,
-       loss_history = hist, bits = b, estimate = wq, n = m,
-       method = "QAT on a linear model: fake-quant forward, straight-through backward")
+  list(
+    weights = w, quantized_weights = wq, scale = scale, loss = loss, fp_loss = fp_loss,
+    loss_history = hist, bits = b, estimate = wq, n = m,
+    method = "QAT on a linear model: fake-quant forward, straight-through backward"
+  )
 }
 
 # ============================================================ hmrad (wraps morie_geron_autograd)
@@ -2004,12 +2364,19 @@ morie_geron_quantization_aware_training_hm <- function(model, X, y, epochs = 200
 #' Reverse-mode automatic differentiation, delegated to morie_geron_autograd (Geron App A, hmrad)
 #' @param f Function `f(vars) -> tape node` (built from the supplied leaves).
 #' @param x Point.
+#' @return A list with `gradient`, `grad`, `value`, `tape_size`, `n_passes`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' morie_geron_reverse_autodiff(function(v) v[[1]] * v[[2]], c(3,
+#'     4))
+#' @keywords internal
 morie_geron_reverse_autodiff <- function(f, x) {
   base <- morie_geron_autograd(f, x)
   grad <- as.numeric(base$grad)
-  list(gradient = grad, grad = grad, value = base$value, tape_size = base$tape_size, n_passes = 2L,
-       estimate = grad, n = length(grad), method = "Reverse-mode AD delegated to morie_geron_autograd")
+  list(
+    gradient = grad, grad = grad, value = base$value, tape_size = base$tape_size, n_passes = 2L,
+    estimate = grad, n = length(grad), method = "Reverse-mode AD delegated to morie_geron_autograd"
+  )
 }
 
 # ============================================================ hmrdt (wraps morie_geron_cart_split_cost)
@@ -2025,7 +2392,9 @@ morie_geron_reverse_autodiff <- function(f, x) {
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .morie_w4c_leaf_value <- function(y, criterion) {
-  if (criterion == "mse") return(mean(y))
+  if (criterion == "mse") {
+    return(mean(y))
+  }
   tb <- table(y)
   as.numeric(names(tb)[which.max(tb)])
 }
@@ -2077,14 +2446,19 @@ morie_geron_reverse_autodiff <- function(f, x) {
 #' \code{left}, \code{right}.
 #' @export
 .morie_w4c_grow <- function(X, y, depth, max_depth, min_leaf, criterion, columns_fn) {
-  if (depth >= max_depth || length(y) < 2 * min_leaf || length(unique(y)) == 1L)
+  if (depth >= max_depth || length(y) < 2 * min_leaf || length(unique(y)) == 1L) {
     return(list(leaf = TRUE, value = .morie_w4c_leaf_value(y, criterion), n = length(y)))
+  }
   best <- .morie_w4c_best_split(X, y, criterion, columns_fn(depth), min_leaf)
-  if (is.null(best)) return(list(leaf = TRUE, value = .morie_w4c_leaf_value(y, criterion), n = length(y)))
+  if (is.null(best)) {
+    return(list(leaf = TRUE, value = .morie_w4c_leaf_value(y, criterion), n = length(y)))
+  }
   left <- X[, best$j + 1L] <= best$thr
-  list(leaf = FALSE, feature = best$j, threshold = best$thr, n = length(y),
-       left = .morie_w4c_grow(X[left, , drop = FALSE], y[left], depth + 1L, max_depth, min_leaf, criterion, columns_fn),
-       right = .morie_w4c_grow(X[!left, , drop = FALSE], y[!left], depth + 1L, max_depth, min_leaf, criterion, columns_fn))
+  list(
+    leaf = FALSE, feature = best$j, threshold = best$thr, n = length(y),
+    left = .morie_w4c_grow(X[left, , drop = FALSE], y[left], depth + 1L, max_depth, min_leaf, criterion, columns_fn),
+    right = .morie_w4c_grow(X[!left, , drop = FALSE], y[!left], depth + 1L, max_depth, min_leaf, criterion, columns_fn)
+  )
 }
 
 #' .morie_w4c_predict_tree
@@ -2132,7 +2506,12 @@ morie_geron_reverse_autodiff <- function(f, x) {
 #' CART regression tree minimising per-leaf MSE (Geron Ch 5, hmrdt)
 #' @param X,y Data and targets.
 #' @param max_depth,min_samples_leaf Regularisation.
+#' @return A list with `tree`, `predict`, `predictions`, `mse`, `n_leaves`, `depth`, `feature_importance`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_regression_tree(V, V)
+#' @keywords internal
 morie_geron_regression_tree <- function(X, y, max_depth = 3, min_samples_leaf = 1) {
   A <- .morie_gr_mat(X, "X")
   yv <- as.numeric(y)
@@ -2144,7 +2523,9 @@ morie_geron_regression_tree <- function(X, y, max_depth = 3, min_samples_leaf = 
   mse <- mean((pred - yv)^2)
   imp <- numeric(ncol(A))
   acc_fn <- function(node, Xs, ys) {
-    if (node$leaf) return(invisible())
+    if (node$leaf) {
+      return(invisible())
+    }
     mtot <- length(ys)
     lm <- Xs[, node$feature + 1L] <= node$threshold
     gain <- .morie_gr_pvar(ys) - (sum(lm) / mtot) * .morie_gr_pvar(ys[lm]) - (sum(!lm) / mtot) * .morie_gr_pvar(ys[!lm])
@@ -2155,9 +2536,11 @@ morie_geron_regression_tree <- function(X, y, max_depth = 3, min_samples_leaf = 
   acc_fn(tree, A, yv)
   if (sum(imp) > 0) imp <- imp / sum(imp)
   predict_fn <- function(Xnew) .morie_w4c_predict_tree(tree, .morie_gr_mat(Xnew, "Xnew"))
-  list(tree = tree, predict = predict_fn, predictions = pred, mse = mse,
-       n_leaves = .morie_w4c_count_leaves(tree), depth = .morie_w4c_tree_depth(tree), feature_importance = imp,
-       estimate = pred, n = nrow(A), method = "CART regression tree, split cost delegated to morie_geron_cart_split_cost")
+  list(
+    tree = tree, predict = predict_fn, predictions = pred, mse = mse,
+    n_leaves = .morie_w4c_count_leaves(tree), depth = .morie_w4c_tree_depth(tree), feature_importance = imp,
+    estimate = pred, n = nrow(A), method = "CART regression tree, split cost delegated to morie_geron_cart_split_cost"
+  )
 }
 
 # ============================================================ hmrec
@@ -2165,7 +2548,12 @@ morie_geron_regression_tree <- function(X, y, max_depth = 3, min_samples_leaf = 
 #' Recall (true positive rate) = TP / (TP + FN) (Geron Ch 3, hmrec)
 #' @param y_true,y_pred Labels, same length.
 #' @param pos_label Positive label.
+#' @return A list with `recall`, `tp`, `fn`, `fp`, `f1`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_recall_hm(V, V)
+#' @keywords internal
 morie_geron_recall_hm <- function(y_true, y_pred, pos_label = 1) {
   yt <- as.vector(y_true)
   yp <- as.vector(y_pred)
@@ -2177,8 +2565,10 @@ morie_geron_recall_hm <- function(y_true, y_pred, pos_label = 1) {
   rec <- tp / (tp + fn)
   prec <- if (tp + fp > 0) tp / (tp + fp) else NA_real_
   f1 <- if (tp + fp > 0 && (prec + rec) > 0) 2 * prec * rec / (prec + rec) else 0.0
-  list(recall = rec, tp = as.integer(tp), fn = as.integer(fn), fp = as.integer(fp), f1 = f1,
-       estimate = rec, n = length(yt), method = "Recall TP/(TP+FN)")
+  list(
+    recall = rec, tp = as.integer(tp), fn = as.integer(fn), fp = as.integer(fp), f1 = f1,
+    estimate = rec, n = length(yt), method = "Recall TP/(TP+FN)"
+  )
 }
 
 # ============================================================ hmregn
@@ -2187,7 +2577,12 @@ morie_geron_recall_hm <- function(y_true, y_pred, pos_label = 1) {
 #' @param X,y Data and targets.
 #' @param hidden_sizes Hidden widths.
 #' @param epochs,lr,seed Training controls.
+#' @return A list with `predict`, `predictions`, `mse`, `loss_history`, `weights`, `biases`, `sizes`, `n_parameters`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_regression_mlp(V, V)
+#' @keywords internal
 morie_geron_regression_mlp <- function(X, y, hidden_sizes = 8, epochs = 400, lr = 0.05, seed = 0) {
   A <- .morie_gr_mat(X, "X")
   Y <- if (is.matrix(y)) y else matrix(as.numeric(y), ncol = 1)
@@ -2237,10 +2632,12 @@ morie_geron_regression_mlp <- function(X, y, hidden_sizes = 8, epochs = 400, lr 
     if (ncol(Y) == 1L) as.numeric(o) else o
   }
   nparams <- sum(vapply(Ws, length, integer(1))) + sum(vapply(bs, length, integer(1)))
-  list(predict = predict_fn, predictions = if (ncol(Y) == 1L) as.numeric(pred) else pred, mse = mse,
-       loss_history = hist, weights = Ws, biases = bs, sizes = sizes, n_parameters = nparams,
-       estimate = if (ncol(Y) == 1L) as.numeric(pred) else pred, n = m,
-       method = "Regression MLP (ReLU hidden, linear head) trained by full-batch gradient descent")
+  list(
+    predict = predict_fn, predictions = if (ncol(Y) == 1L) as.numeric(pred) else pred, mse = mse,
+    loss_history = hist, weights = Ws, biases = bs, sizes = sizes, n_parameters = nparams,
+    estimate = if (ncol(Y) == 1L) as.numeric(pred) else pred, n = m,
+    method = "Regression MLP (ReLU hidden, linear head) trained by full-batch gradient descent"
+  )
 }
 
 # ============================================================ hmrelu
@@ -2249,15 +2646,22 @@ morie_geron_regression_mlp <- function(X, y, hidden_sizes = 8, epochs = 400, lr 
 #' diagnostic (Geron Ch 9, hmrelu)
 #' @param z Pre-activations.
 #' @param leaky Negative slope; 0 is plain ReLU.
+#' @return A list with `a`, `output`, `gradient`, `dead_fraction`, `leaky`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_relu(V)
+#' @keywords internal
 morie_geron_relu <- function(z, leaky = 0.0) {
   a <- as.numeric(z)
   slope <- as.numeric(leaky)
   out <- ifelse(a >= 0, a, slope * a) + 0.0
-  grad <- ifelse(a > 0, 1.0, slope)  # derivative at exactly 0 is taken to be `slope`
+  grad <- ifelse(a > 0, 1.0, slope) # derivative at exactly 0 is taken to be `slope`
   dead <- mean(a <= 0)
-  list(a = out, output = out, gradient = grad, dead_fraction = dead, leaky = slope, estimate = out, n = length(a),
-       method = "ReLU activation")
+  list(
+    a = out, output = out, gradient = grad, dead_fraction = dead, leaky = slope, estimate = out, n = length(a),
+    method = "ReLU activation"
+  )
 }
 
 # ============================================================ hmrfc (reuses hmrdt's grow/predict)
@@ -2278,15 +2682,22 @@ morie_geron_relu <- function(z, leaky = 0.0) {
 .morie_w4c_bootstrap <- function(n, seed) {
   s <- as.numeric(seed) %% 2^32
   out <- integer(n)
-  for (i in seq_len(n)) { s <- .morie_al_lcg(s)
-  out[i] <- as.integer((s * n) %/% 2^32) }
+  for (i in seq_len(n)) {
+    s <- .morie_al_lcg(s)
+    out[i] <- as.integer((s * n) %/% 2^32)
+  }
   out
 }
 
 #' Random forest: bagged CART trees with random per-split feature subsets (Geron Ch 6, hmrfc)
 #' @param X,y Data and targets.
 #' @param n_estimators,max_features,seed,max_depth,min_samples_leaf,task Controls.
+#' @return The value of `out`, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_random_forest(V, V)
+#' @keywords internal
 morie_geron_random_forest <- function(X, y, n_estimators = 10, max_features = "sqrt", seed = 0,
                                       max_depth = 4, min_samples_leaf = 1, task = "auto") {
   A <- .morie_gr_mat(X, "X")
@@ -2295,11 +2706,17 @@ morie_geron_random_forest <- function(X, y, n_estimators = 10, max_features = "s
   d <- ncol(A)
   M <- as.integer(n_estimators)
   classify <- task == "classification" || (task == "auto" && length(unique(yv)) <= max(2, floor(sqrt(n))) && all(yv == round(yv)))
-  k <- if (identical(max_features, "sqrt")) as.integer(ceiling(sqrt(d)))
-       else if (identical(max_features, "log2")) max(1L, as.integer(ceiling(log2(d))))
-       else if (identical(max_features, "all")) d
-       else if (is.numeric(max_features) && max_features <= 1.0 && max_features != as.integer(max_features)) max(1L, round(max_features * d))
-       else as.integer(max_features)
+  k <- if (identical(max_features, "sqrt")) {
+    as.integer(ceiling(sqrt(d)))
+  } else if (identical(max_features, "log2")) {
+    max(1L, as.integer(ceiling(log2(d))))
+  } else if (identical(max_features, "all")) {
+    d
+  } else if (is.numeric(max_features) && max_features <= 1.0 && max_features != as.integer(max_features)) {
+    max(1L, round(max_features * d))
+  } else {
+    as.integer(max_features)
+  }
   criterion <- if (classify) "gini" else "mse"
   trees <- list()
   oob_sum <- numeric(n)
@@ -2316,35 +2733,52 @@ morie_geron_random_forest <- function(X, y, n_estimators = 10, max_features = "s
     trees[[mi]] <- t_
     votes[mi, ] <- .morie_w4c_predict_tree(t_, A)
     oob <- setdiff(seq_len(n), unique(rows))
-    if (length(oob)) { oob_sum[oob] <- oob_sum[oob] + votes[mi, oob]
-    oob_cnt[oob] <- oob_cnt[oob] + 1 }
+    if (length(oob)) {
+      oob_sum[oob] <- oob_sum[oob] + votes[mi, oob]
+      oob_cnt[oob] <- oob_cnt[oob] + 1
+    }
   }
   aggregate <- function(P) {
-    if (!classify) return(colMeans(P))
-    apply(P, 2, function(col) { tb <- table(col)
-    as.numeric(names(tb)[which.max(tb)]) })
+    if (!classify) {
+      return(colMeans(P))
+    }
+    apply(P, 2, function(col) {
+      tb <- table(col)
+      as.numeric(names(tb)[which.max(tb)])
+    })
   }
-  predict_fn <- function(Xnew) { B <- .morie_gr_mat(Xnew, "Xnew")
-  aggregate(do.call(rbind, lapply(trees, function(t_) .morie_w4c_predict_tree(t_, B)))) }
+  predict_fn <- function(Xnew) {
+    B <- .morie_gr_mat(Xnew, "Xnew")
+    aggregate(do.call(rbind, lapply(trees, function(t_) .morie_w4c_predict_tree(t_, B))))
+  }
   pred <- aggregate(votes)
   has <- oob_cnt > 0
   oob_pred <- ifelse(has, oob_sum / pmax(oob_cnt, 1), NA_real_)
-  if (classify) { score <- mean(pred == yv)
-  oob_score <- if (any(has)) mean(as.numeric(oob_pred[has] >= 0.5) == yv[has]) else NA_real_
-  key <- "accuracy" }
-  else { score <- mean((pred - yv)^2)
-  oob_score <- if (any(has)) mean((oob_pred[has] - yv[has])^2) else NA_real_
-  key <- "mse" }
+  if (classify) {
+    score <- mean(pred == yv)
+    oob_score <- if (any(has)) mean(as.numeric(oob_pred[has] >= 0.5) == yv[has]) else NA_real_
+    key <- "accuracy"
+  } else {
+    score <- mean((pred - yv)^2)
+    oob_score <- if (any(has)) mean((oob_pred[has] - yv[has])^2) else NA_real_
+    key <- "mse"
+  }
   imp <- numeric(d)
-  acc_imp <- function(node) { if (node$leaf) return(invisible())
-  imp[node$feature + 1L] <<- imp[node$feature + 1L] + node$n
-  acc_imp(node$left)
-  acc_imp(node$right) }
+  acc_imp <- function(node) {
+    if (node$leaf) {
+      return(invisible())
+    }
+    imp[node$feature + 1L] <<- imp[node$feature + 1L] + node$n
+    acc_imp(node$left)
+    acc_imp(node$right)
+  }
   for (t_ in trees) acc_imp(t_)
   if (sum(imp) > 0) imp <- imp / sum(imp)
-  out <- list(predict = predict_fn, predictions = pred, oob_score = oob_score, trees = trees,
-              feature_importance = imp, max_features = k, task = if (classify) "classification" else "regression",
-              estimate = pred, n = n, method = "Random forest over LCG bootstraps with per-split column sampling")
+  out <- list(
+    predict = predict_fn, predictions = pred, oob_score = oob_score, trees = trees,
+    feature_importance = imp, max_features = k, task = if (classify) "classification" else "regression",
+    estimate = pred, n = n, method = "Random forest over LCG bootstraps with per-split column sampling"
+  )
   out[[key]] <- score
   out
 }
@@ -2355,7 +2789,12 @@ morie_geron_random_forest <- function(X, y, n_estimators = 10, max_features = "s
 #' (Geron Ch 10, hmrgpt)
 #' @param X,y Data and targets.
 #' @param hidden,epochs,lr,seed Passed to `morie_geron_regression_mlp`.
+#' @return A list with `layers`, `sizes`, `n_parameters`, `predict`, `predictions`, `mse`, `loss_history`, `weights`, `biases`, `uses_torch`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_regression_mlp_pytorch(V, V)
+#' @keywords internal
 morie_geron_regression_mlp_pytorch <- function(X, y, hidden = 8, epochs = 400, lr = 0.05, seed = 0) {
   base <- morie_geron_regression_mlp(X, y, hidden_sizes = hidden, epochs = epochs, lr = lr, seed = seed)
   sizes <- base$sizes
@@ -2364,10 +2803,12 @@ morie_geron_regression_mlp_pytorch <- function(X, y, hidden = 8, epochs = 400, l
     layers <- c(layers, sprintf("Linear(in_features=%d, out_features=%d)", sizes[i], sizes[i + 1L]))
     if (i < length(sizes) - 1L) layers <- c(layers, "ReLU()")
   }
-  list(layers = layers, sizes = sizes, n_parameters = base$n_parameters, predict = base$predict,
-       predictions = base$predictions, mse = base$mse, loss_history = base$loss_history,
-       weights = base$weights, biases = base$biases, uses_torch = FALSE, estimate = base$predictions,
-       n = base$n, method = "nn.Sequential architecture resolved on the data; training via morie_geron_regression_mlp")
+  list(
+    layers = layers, sizes = sizes, n_parameters = base$n_parameters, predict = base$predict,
+    predictions = base$predictions, mse = base$mse, loss_history = base$loss_history,
+    weights = base$weights, biases = base$biases, uses_torch = FALSE, estimate = base$predictions,
+    n = base$n, method = "nn.Sequential architecture resolved on the data; training via morie_geron_regression_mlp"
+  )
 }
 
 # ============================================================ hmrl
@@ -2376,7 +2817,14 @@ morie_geron_regression_mlp_pytorch <- function(X, y, hidden = 8, epochs = 400, l
 #' @param env List with `reset()` / `step(action)`.
 #' @param pi Function `pi(state) -> action or probs`.
 #' @param gamma,n_episodes,max_steps,seed Controls.
+#' @return A list with `mean_return`, `returns`, `lengths`, `se`, `effective_horizon`, `truncated`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' reset <- function() 0
+#' step <- function(a) list(0, as.numeric(a), TRUE)
+#' morie_geron_reinforcement_learning(list(reset = reset, step = step),
+#'     function(s) 0, gamma = 0.5)
+#' @keywords internal
 morie_geron_reinforcement_learning <- function(env, pi, gamma = 0.99, n_episodes = 1, max_steps = 1000, seed = 0) {
   eb <- .morie_w4c_bind_env(env)
   g <- as.numeric(gamma)
@@ -2415,10 +2863,12 @@ morie_geron_reinforcement_learning <- function(env, pi, gamma = 0.99, n_episodes
     lengths[e] <- t_
   }
   horizon <- if (g >= 1.0) Inf else 1.0 / (1.0 - g)
-  list(mean_return = mean(returns), returns = returns, lengths = lengths,
-       se = if (E > 1) stats::sd(returns) / sqrt(E) else NA_real_, effective_horizon = horizon,
-       truncated = truncated, estimate = mean(returns), n = E,
-       method = "Monte-Carlo policy evaluation of the discounted return")
+  list(
+    mean_return = mean(returns), returns = returns, lengths = lengths,
+    se = if (E > 1) stats::sd(returns) / sqrt(E) else NA_real_, effective_horizon = horizon,
+    truncated = truncated, estimate = mean(returns), n = E,
+    method = "Monte-Carlo policy evaluation of the discounted return"
+  )
 }
 
 # ============================================================ hmrlhf
@@ -2429,7 +2879,12 @@ morie_geron_reinforcement_learning <- function(env, pi, gamma = 0.99, n_episodes
 #' @param reward_model Function or matrix.
 #' @param prompts Optional prompt identifiers.
 #' @param beta,lr,epochs Controls.
+#' @return A list with `policy`, `reference_policy`, `optimal_policy`, `max_deviation`, `objective`, `objective_history`, `mean_reward`, `kl`, `beta`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie_geron_rlhf(M, M)
+#' @keywords internal
 morie_geron_rlhf <- function(policy, reward_model, prompts = NULL, beta = 0.1, lr = 0.5, epochs = 500) {
   Z0 <- .morie_gr_mat(policy, "policy")
   Pn <- nrow(Z0)
@@ -2441,7 +2896,9 @@ morie_geron_rlhf <- function(policy, reward_model, prompts = NULL, beta = 0.1, l
   if (is.function(reward_model)) {
     rew <- matrix(0, Pn, R)
     for (i in seq_len(Pn)) for (j in seq_len(R)) rew[i, j] <- as.numeric(reward_model(keys[i], j - 1L))
-  } else rew <- .morie_gr_mat(reward_model, "reward_model")
+  } else {
+    rew <- .morie_gr_mat(reward_model, "reward_model")
+  }
   ref <- t(apply(Z0, 1, .morie_gr_softmax))
   Z <- Z0
   hist <- numeric(0)
@@ -2460,9 +2917,11 @@ morie_geron_rlhf <- function(policy, reward_model, prompts = NULL, beta = 0.1, l
   mean_r <- mean(rowSums(pi * rew))
   obj <- mean_r - b * kl
   hist <- c(hist, obj)
-  list(policy = pi, reference_policy = ref, optimal_policy = opt, max_deviation = max(abs(pi - opt)),
-       objective = obj, objective_history = hist, mean_reward = mean_r, kl = kl, beta = b, estimate = pi,
-       n = Pn, method = "RLHF objective E[r] - beta KL(pi||pi_ref) maximised by gradient ascent")
+  list(
+    policy = pi, reference_policy = ref, optimal_policy = opt, max_deviation = max(abs(pi - opt)),
+    objective = obj, objective_history = hist, mean_reward = mean_r, kl = kl, beta = b, estimate = pi,
+    n = Pn, method = "RLHF objective E[r] - beta KL(pi||pi_ref) maximised by gradient ascent"
+  )
 }
 
 # ============================================================ hmrnfc (wraps hmpg)
@@ -2472,7 +2931,13 @@ morie_geron_rlhf <- function(policy, reward_model, prompts = NULL, beta = 0.1, l
 #' @param episodes List of episodes.
 #' @param policy Function `policy(state, action) -> grad log pi`.
 #' @param gamma,eta,theta,baseline Controls.
+#' @return A list with `theta`, `theta_next`, `step`, `gradient`, `returns`, `mean_return`, `baseline_value`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' gs <- function(s, a) if (a == 0) c(1, 0) else c(0, 1)
+#' morie_geron_reinforce(list(list(list(0, 0, 1), list(1, 1, 1))),
+#'     gs, gamma = 0.5, eta = 0.1)
+#' @keywords internal
 morie_geron_reinforce <- function(episodes, policy, gamma = 0.99, eta = 0.01, theta = NULL, baseline = TRUE) {
   lr <- as.numeric(eta)
   base <- morie_geron_policy_gradient(episodes, policy, gamma = gamma, baseline = baseline)
@@ -2480,9 +2945,11 @@ morie_geron_reinforce <- function(episodes, policy, gamma = 0.99, eta = 0.01, th
   th <- if (is.null(theta)) numeric(length(grad)) else as.numeric(theta)
   step <- lr * grad
   theta_next <- th + step
-  list(theta = theta_next, theta_next = theta_next, step = step, gradient = grad, returns = base$returns,
-       mean_return = base$mean_return, baseline_value = base$baseline_value, estimate = theta_next,
-       n = base$n, method = "REINFORCE ascent step on the gradient from morie_geron_policy_gradient")
+  list(
+    theta = theta_next, theta_next = theta_next, step = step, gradient = grad, returns = base$returns,
+    mean_return = base$mean_return, baseline_value = base$baseline_value, estimate = theta_next,
+    n = base$n, method = "REINFORCE ascent step on the gradient from morie_geron_policy_gradient"
+  )
 }
 
 # ============================================================ hmrnn
@@ -2491,7 +2958,12 @@ morie_geron_reinforce <- function(episodes, policy, gamma = 0.99, eta = 0.01, th
 #' @param x_t,h_prev Input and previous state.
 #' @param Wx,Wh,b Weights.
 #' @param activation One of tanh/relu/sigmoid/identity.
+#' @return A list with `h`, `h_next`, `z`, `jacobian`, `jacobian_norm`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' morie_geron_recurrent_neuron(x_t = 5L, h_prev = 5L, Wx = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   Wh = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
+#' @keywords internal
 morie_geron_recurrent_neuron <- function(x_t, h_prev, Wx, Wh, b, activation = "tanh") {
   x <- as.numeric(x_t)
   h <- as.numeric(h_prev)
@@ -2508,8 +2980,10 @@ morie_geron_recurrent_neuron <- function(x_t, h_prev, Wx, Wh, b, activation = "t
   z <- as.numeric(A %*% x + Bm %*% h + bb)
   hn <- ac$phi(z)
   jac <- ac$dphi(hn) * Bm
-  list(h = hn, h_next = hn, z = z, jacobian = jac, jacobian_norm = norm(jac, "2"), estimate = hn, n = length(h),
-       method = sprintf("Recurrent step h_t = %s(Wx x + Wh h + b)", activation))
+  list(
+    h = hn, h_next = hn, z = z, jacobian = jac, jacobian_norm = norm(jac, "2"), estimate = hn, n = length(h),
+    method = sprintf("Recurrent step h_t = %s(Wx x + Wh h + b)", activation)
+  )
 }
 
 # ============================================================ hmroc (wraps morie_geron_auc_roc)
@@ -2518,7 +2992,12 @@ morie_geron_recurrent_neuron <- function(x_t, h_prev, Wx, Wh, b, activation = "t
 #' @param y_true Binary labels.
 #' @param scores Decision scores.
 #' @param pos_label Positive label.
+#' @return A list with `fpr`, `tpr`, `thresholds`, `auc`, `auc_trapezoid`, `youden_j`, `best_threshold`, `n_pos`, `n_neg`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_roc_curve_hm(V, V)
+#' @keywords internal
 morie_geron_roc_curve_hm <- function(y_true, scores, pos_label = 1) {
   base <- morie_geron_auc_roc(y_true, scores, pos_label = pos_label)
   fpr <- base$fpr
@@ -2526,9 +3005,11 @@ morie_geron_roc_curve_hm <- function(y_true, scores, pos_label = 1) {
   auc_trap <- sum(diff(fpr) * (utils::head(tpr, -1) + utils::tail(tpr, -1)) / 2)
   j <- tpr - fpr
   k <- which.max(j)
-  list(fpr = fpr, tpr = tpr, thresholds = base$thresholds, auc = base$auc, auc_trapezoid = auc_trap,
-       youden_j = j[k], best_threshold = base$thresholds[k], n_pos = base$n_pos, n_neg = base$n_neg,
-       estimate = base$auc, n = length(y_true), method = "ROC sweep via morie_geron_auc_roc, area re-checked by trapezoid")
+  list(
+    fpr = fpr, tpr = tpr, thresholds = base$thresholds, auc = base$auc, auc_trapezoid = auc_trap,
+    youden_j = j[k], best_threshold = base$thresholds[k], n_pos = base$n_pos, n_neg = base$n_neg,
+    estimate = base$auc, n = length(y_true), method = "ROC sweep via morie_geron_auc_roc, area re-checked by trapezoid"
+  )
 }
 
 # ============================================================ hmrpca
@@ -2537,7 +3018,12 @@ morie_geron_roc_curve_hm <- function(y_true, scores, pos_label = 1) {
 #' @param X Data (m, p).
 #' @param n_components Components to recover.
 #' @param seed,n_oversamples,n_power_iter Sketch controls.
+#' @return A list with `components`, `scores`, `singular_values`, `explained_variance`, `explained_variance_ratio`, `spectral_gap`, `sketch_width`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' morie_geron_randomized_pca(matrix(c(1, 2, 3, 1, 2, 3), ncol = 2),
+#'     1)
+#' @keywords internal
 morie_geron_randomized_pca <- function(X, n_components, seed = 0, n_oversamples = 10, n_power_iter = 2) {
   A <- .morie_gr_mat(X, "X")
   m <- nrow(A)
@@ -2550,8 +3036,10 @@ morie_geron_randomized_pca <- function(X, n_components, seed = 0, n_oversamples 
   Omega <- matrix((.morie_w4c_lcgvec(p * ell, seed) * 2 - 1), nrow = p, ncol = ell, byrow = TRUE)
   Y <- Xc %*% Omega
   Qd <- qr.Q(qr(Y))
-  for (it in seq_len(q)) { Qd <- qr.Q(qr(t(Xc) %*% Qd))
-  Qd <- qr.Q(qr(Xc %*% Qd)) }
+  for (it in seq_len(q)) {
+    Qd <- qr.Q(qr(t(Xc) %*% Qd))
+    Qd <- qr.Q(qr(Xc %*% Qd))
+  }
   Bm <- t(Qd) %*% Xc
   sv <- svd(Bm)
   comps <- sv$v[, seq_len(k), drop = FALSE]
@@ -2562,20 +3050,27 @@ morie_geron_randomized_pca <- function(X, n_components, seed = 0, n_oversamples 
   total <- sum(Xc^2) / (m - 1)
   ratio <- if (total > 0) var_[seq_len(k)] / total else numeric(k)
   gap <- if (length(sv$d) > k && sv$d[k + 1L] > 0) sv$d[k] / sv$d[k + 1L] else Inf
-  list(components = comps, scores = scores, singular_values = s, explained_variance = var_[seq_len(k)],
-       explained_variance_ratio = ratio, spectral_gap = gap, sketch_width = ell, estimate = comps, n = m,
-       method = "Randomized range finder (LCG sketch) plus SVD of the projected matrix")
+  list(
+    components = comps, scores = scores, singular_values = s, explained_variance = var_[seq_len(k)],
+    explained_variance_ratio = ratio, spectral_gap = gap, sketch_width = ell, estimate = comps, n = m,
+    method = "Randomized range finder (LCG sketch) plus SVD of the projected matrix"
+  )
 }
 
 # ============================================================ hmrpt (uses hmpas/hmrsp samplers + stump)
 
-.morie_w4c_lcg_features <- .morie_w4c_lcg_sample  # identical Fisher-Yates draw, reused for column sampling
+.morie_w4c_lcg_features <- .morie_w4c_lcg_sample # identical Fisher-Yates draw, reused for column sampling
 
 #' Random patches: subsample BOTH rows and features per base model (Geron Ch 6, hmrpt)
 #' @param X,y Data and targets.
 #' @param base_estimator Optional `base_estimator(Xp, yp) -> predict`.
 #' @param n_estimators,max_samples,max_features,seed,task,bootstrap Controls.
+#' @return A list with `predict`, `train_pred`, `train_mse`, `patches`, `feature_usage`, `row_usage`, `estimators`, `max_samples`, `max_features`, `task`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_random_patches(V, V)
+#' @keywords internal
 morie_geron_random_patches <- function(X, y, base_estimator = NULL, n_estimators = 10, max_samples = NULL,
                                        max_features = NULL, seed = 0, task = "auto", bootstrap = FALSE) {
   A <- .morie_gr_mat(X, "X")
@@ -2583,12 +3078,20 @@ morie_geron_random_patches <- function(X, y, base_estimator = NULL, n_estimators
   n <- nrow(A)
   d <- ncol(A)
   M <- as.integer(n_estimators)
-  s <- if (is.null(max_samples)) max(1L, n %/% 2L)
-       else if (is.numeric(max_samples) && max_samples > 0 && max_samples <= 1.0 && max_samples != as.integer(max_samples)) max(1L, round(max_samples * n))
-       else as.integer(max_samples)
-  k <- if (is.null(max_features)) as.integer(ceiling(sqrt(d)))
-       else if (is.numeric(max_features) && max_features > 0 && max_features <= 1.0 && max_features != as.integer(max_features)) max(1L, round(max_features * d))
-       else as.integer(max_features)
+  s <- if (is.null(max_samples)) {
+    max(1L, n %/% 2L)
+  } else if (is.numeric(max_samples) && max_samples > 0 && max_samples <= 1.0 && max_samples != as.integer(max_samples)) {
+    max(1L, round(max_samples * n))
+  } else {
+    as.integer(max_samples)
+  }
+  k <- if (is.null(max_features)) {
+    as.integer(ceiling(sqrt(d)))
+  } else if (is.numeric(max_features) && max_features > 0 && max_features <= 1.0 && max_features != as.integer(max_features)) {
+    max(1L, round(max_features * d))
+  } else {
+    as.integer(max_features)
+  }
   classify <- task == "classification" || (task == "auto" && all(unique(yv) %in% c(0, 1)))
   models <- list()
   patches <- list()
@@ -2599,9 +3102,13 @@ morie_geron_random_patches <- function(X, y, base_estimator = NULL, n_estimators
     if (isTRUE(bootstrap)) {
       st <- (seed + 7919 * (mi - 1L)) %% 2^32
       rows0 <- integer(s)
-      for (i in seq_len(s)) { st <- .morie_al_lcg(st)
-      rows0[i] <- as.integer((st * n) %/% 2^32) }
-    } else rows0 <- .morie_w4c_lcg_sample(n, s, seed + 7919 * (mi - 1L))
+      for (i in seq_len(s)) {
+        st <- .morie_al_lcg(st)
+        rows0[i] <- as.integer((st * n) %/% 2^32)
+      }
+    } else {
+      rows0 <- .morie_w4c_lcg_sample(n, s, seed + 7919 * (mi - 1L))
+    }
     cols0 <- .morie_w4c_lcg_features(d, k, seed + 104729 * (mi - 1L) + 13)
     rows <- rows0 + 1L
     cols <- cols0 + 1L
@@ -2621,10 +3128,12 @@ morie_geron_random_patches <- function(X, y, base_estimator = NULL, n_estimators
   }
   train_pred <- aggregate(stack)
   train_mse <- mean((train_pred - yv)^2)
-  list(predict = predict_fn, train_pred = train_pred, train_mse = train_mse, patches = patches,
-       feature_usage = fuse, row_usage = ruse, estimators = models, max_samples = s, max_features = k,
-       task = if (classify) "classification" else "regression", estimate = train_mse, n = n,
-       method = "Random patches: LCG-drawn row and column subsets per estimator")
+  list(
+    predict = predict_fn, train_pred = train_pred, train_mse = train_mse, patches = patches,
+    feature_usage = fuse, row_usage = ruse, estimators = models, max_samples = s, max_features = k,
+    task = if (classify) "classification" else "regression", estimate = train_mse, n = n,
+    method = "Random patches: LCG-drawn row and column subsets per estimator"
+  )
 }
 
 # ============================================================ hmrsc (wraps morie_geron_cross_validation_score)
@@ -2650,23 +3159,34 @@ morie_geron_random_patches <- function(X, y, base_estimator = NULL, n_estimators
 #'   INTERVAL (Python's `(lo, hi)` tuple); a plain vector is a discrete CHOICE list (Python's
 #'   `[...]`), matching Python's own tuple-vs-list distinction. A function is `f(u)`.
 #' @param n_iter,X,y,estimator,K,seed,score Controls; `estimator(params) -> list(fit=, predict=)`.
+#' @return A list with `best_params`, `best_score`, `best_index`, `candidates`, `scores`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' morie_geron_randomized_search(param_dist = c(1, 2, 3, 4, 5, 6, 7, 8), n_iter = 5L,
+#'   X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_geron_randomized_search <- function(param_dist, n_iter, X, y, estimator = NULL, K = 3, seed = 0, score = NULL) {
   N <- as.integer(n_iter)
   est <- if (is.null(estimator)) .morie_w4c_ridge_estimator else estimator
   s <- as.numeric(seed) %% 2^32
-  draw_u <- function() { s <<- .morie_al_lcg(s)
-  (s + 0.5) / 2^32 }
+  draw_u <- function() {
+    s <<- .morie_al_lcg(s)
+    (s + 0.5) / 2^32
+  }
   candidates <- list()
   for (it in seq_len(N)) {
     params <- list()
     for (nm in names(param_dist)) {
       spec <- param_dist[[nm]]
       u <- draw_u()
-      if (is.function(spec)) params[[nm]] <- spec(u)
-      else if (is.list(spec) && length(spec) == 2L) params[[nm]] <- spec[[1]] + u * (spec[[2]] - spec[[1]])
-      else { opts <- spec
-      params[[nm]] <- opts[[min(as.integer(u * length(opts)) + 1L, length(opts))]] }
+      if (is.function(spec)) {
+        params[[nm]] <- spec(u)
+      } else if (is.list(spec) && length(spec) == 2L) {
+        params[[nm]] <- spec[[1]] + u * (spec[[2]] - spec[[1]])
+      } else {
+        opts <- spec
+        params[[nm]] <- opts[[min(as.integer(u * length(opts)) + 1L, length(opts))]]
+      }
     }
     candidates[[it]] <- params
   }
@@ -2677,9 +3197,11 @@ morie_geron_randomized_search <- function(param_dist, n_iter, X, y, estimator = 
     scores[i] <- cv$cv_score
   }
   best <- which.max(scores)
-  list(best_params = candidates[[best]], best_score = scores[best], best_index = best - 1L,
-       candidates = candidates, scores = scores, estimate = scores[best], n = length(as.numeric(y)),
-       method = "Randomized search scored by K-fold CV via morie_geron_cross_validation_score")
+  list(
+    best_params = candidates[[best]], best_score = scores[best], best_index = best - 1L,
+    candidates = candidates, scores = scores, estimate = scores[best], n = length(as.numeric(y)),
+    method = "Randomized search scored by K-fold CV via morie_geron_cross_validation_score"
+  )
 }
 
 # ============================================================ hmrsp
@@ -2688,7 +3210,12 @@ morie_geron_randomized_search <- function(param_dist, n_iter, X, y, estimator = 
 #' @param X,y Data and targets.
 #' @param base_estimator Optional `base_estimator(X_sub, y) -> predict`.
 #' @param n_estimators,max_features,seed,task Controls.
+#' @return A list with `predict`, `train_pred`, `train_mse`, `feature_sets`, `feature_usage`, `estimators`, `max_features`, `task`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_random_subspaces(V, V)
+#' @keywords internal
 morie_geron_random_subspaces <- function(X, y, base_estimator = NULL, n_estimators = 10, max_features = NULL,
                                          seed = 0, task = "auto") {
   A <- .morie_gr_mat(X, "X")
@@ -2696,9 +3223,13 @@ morie_geron_random_subspaces <- function(X, y, base_estimator = NULL, n_estimato
   n <- nrow(A)
   d <- ncol(A)
   M <- as.integer(n_estimators)
-  k <- if (is.null(max_features)) as.integer(ceiling(sqrt(d)))
-       else if (is.numeric(max_features) && max_features > 0 && max_features <= 1.0 && max_features != as.integer(max_features)) max(1L, round(max_features * d))
-       else as.integer(max_features)
+  k <- if (is.null(max_features)) {
+    as.integer(ceiling(sqrt(d)))
+  } else if (is.numeric(max_features) && max_features > 0 && max_features <= 1.0 && max_features != as.integer(max_features)) {
+    max(1L, round(max_features * d))
+  } else {
+    as.integer(max_features)
+  }
   classify <- task == "classification" || (task == "auto" && all(unique(yv) %in% c(0, 1)))
   models <- list()
   sets <- list()
@@ -2721,9 +3252,11 @@ morie_geron_random_subspaces <- function(X, y, base_estimator = NULL, n_estimato
   }
   train_pred <- aggregate(stack)
   train_mse <- mean((train_pred - yv)^2)
-  list(predict = predict_fn, train_pred = train_pred, train_mse = train_mse, feature_sets = sets,
-       feature_usage = usage, estimators = models, max_features = k, task = if (classify) "classification" else "regression",
-       estimate = train_mse, n = n, method = "Random subspaces: all rows, an LCG-drawn column subset per model")
+  list(
+    predict = predict_fn, train_pred = train_pred, train_mse = train_mse, feature_sets = sets,
+    feature_usage = usage, estimators = models, max_features = k, task = if (classify) "classification" else "regression",
+    estimate = train_mse, n = n, method = "Random subspaces: all rows, an LCG-drawn column subset per model"
+  )
 }
 
 # ============================================================ hmrvat
@@ -2732,13 +3265,21 @@ morie_geron_random_subspaces <- function(X, y, base_estimator = NULL, n_estimato
 #' @param features Spatial map (H, W, D) or (N, D).
 #' @param h Decoder state.
 #' @param W,U,v Attention parameters.
+#' @return A list with `context`, `alpha`, `alpha_map`, `scores`, `entropy`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' morie_geron_rnn_visual_attention(features = c(1, 2, 3, 4, 5, 6, 7, 8), h = 0.5,
+#'   W = c(1, 2, 3, 4, 5, 6, 7, 8), U = c(1, 2, 3, 4, 5, 6, 7, 8), v = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_geron_rnn_visual_attention <- function(features, h, W, U, v) {
   F_ <- features
   grid <- NULL
-  if (length(dim(F_)) == 3L) { grid <- dim(F_)[1:2]
-  Ff <- matrix(aperm(F_, c(2, 1, 3)), nrow = dim(F_)[1] * dim(F_)[2], byrow = TRUE) }
-  else Ff <- .morie_gr_mat(F_, "features")
+  if (length(dim(F_)) == 3L) {
+    grid <- dim(F_)[1:2]
+    Ff <- matrix(aperm(F_, c(2, 1, 3)), nrow = dim(F_)[1] * dim(F_)[2], byrow = TRUE)
+  } else {
+    Ff <- .morie_gr_mat(F_, "features")
+  }
   hv <- as.numeric(h)
   Wm <- .morie_gr_mat(W, "W")
   Um <- .morie_gr_mat(U, "U")
@@ -2751,9 +3292,11 @@ morie_geron_rnn_visual_attention <- function(features, h, W, U, v) {
   context <- as.numeric(alpha %*% Ff)
   nz <- alpha[alpha > 0]
   entropy <- -sum(nz * log(nz))
-  list(context = context, alpha = alpha, alpha_map = if (!is.null(grid)) matrix(alpha, grid[1], grid[2], byrow = TRUE) else alpha,
-       scores = scores, entropy = entropy, estimate = context, n = nrow(Ff),
-       method = "Additive (Bahdanau-style) attention over a spatial feature map")
+  list(
+    context = context, alpha = alpha, alpha_map = if (!is.null(grid)) matrix(alpha, grid[1], grid[2], byrow = TRUE) else alpha,
+    scores = scores, entropy = entropy, estimate = context, n = nrow(Ff),
+    method = "Additive (Bahdanau-style) attention over a spatial feature map"
+  )
 }
 
 # ============================================================ hmrvn
@@ -2761,15 +3304,22 @@ morie_geron_rnn_visual_attention <- function(features, h, W, U, v) {
 #' RevNet: reversible residual block, verified by explicit inversion (Geron Ch 12, hmrvn)
 #' @param x Input, even width on last axis.
 #' @param F,G Shape-preserving residual functions.
+#' @return A list with `y`, `y1`, `y2`, `x1`, `x2`, `x_reconstructed`, `reconstruction_error`, `reversible`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' morie_geron_revnet(c(1, 2, 3, 4), function(a) 2 * a, function(a) a +
+#'     1)
+#' @keywords internal
 morie_geron_revnet <- function(x, F, G) {
   X <- as.numeric(x)
   half <- length(X) %/% 2L
   x1 <- X[seq_len(half)]
   x2 <- X[(half + 1L):length(X)]
-  apply_fn <- function(fn, arg) { out <- as.numeric(fn(arg))
-  .morie_gr_need(length(out) == length(arg), "geron_revnet: residual function must be shape-preserving")
-  out }
+  apply_fn <- function(fn, arg) {
+    out <- as.numeric(fn(arg))
+    .morie_gr_need(length(out) == length(arg), "geron_revnet: residual function must be shape-preserving")
+    out
+  }
   y1 <- x1 + apply_fn(F, x2)
   y2 <- x2 + apply_fn(G, y1)
   x2_rec <- y2 - apply_fn(G, y1)
@@ -2777,9 +3327,11 @@ morie_geron_revnet <- function(x, F, G) {
   x_rec <- c(x1_rec, x2_rec)
   err <- max(abs(x_rec - X))
   y <- c(y1, y2)
-  list(y = y, y1 = y1, y2 = y2, x1 = x1, x2 = x2, x_reconstructed = x_rec, reconstruction_error = err,
-       reversible = err <= 1e-9 * max(1.0, max(abs(X))), estimate = err, n = length(X),
-       method = "RevNet block y1 = x1 + F(x2), y2 = x2 + G(y1), verified by explicit inversion")
+  list(
+    y = y, y1 = y1, y2 = y2, x1 = x1, x2 = x2, x_reconstructed = x_rec, reconstruction_error = err,
+    reversible = err <= 1e-9 * max(1.0, max(abs(X))), estimate = err, n = length(X),
+    method = "RevNet block y1 = x1 + F(x2), y2 = x2 + G(y1), verified by explicit inversion"
+  )
 }
 
 # ============================================================ hmrwd
@@ -2806,7 +3358,7 @@ morie_geron_reward_function <- function(s, a, s_next, R = NULL, gamma = 1.0) {
   if (is.function(R)) {
     rewards <- vapply(seq_along(sa), function(i) as.numeric(R(sa[i], aa[i], sn[i])), numeric(1))
   } else {
-    Tb <- R  # R array indexed [s, a] or [s, a, s'], matching Python's table order exactly.
+    Tb <- R # R array indexed [s, a] or [s, a, s'], matching Python's table order exactly.
     d3 <- length(dim(Tb)) == 3L
     rewards <- vapply(seq_along(sa), function(i) {
       if (d3) Tb[sa[i] + 1L, aa[i] + 1L, sn[i] + 1L] else Tb[sa[i] + 1L, aa[i] + 1L]
@@ -2814,9 +3366,13 @@ morie_geron_reward_function <- function(s, a, s_next, R = NULL, gamma = 1.0) {
   }
   returns <- numeric(length(rewards))
   acc <- 0.0
-  for (t_ in rev(seq_along(rewards))) { acc <- rewards[t_] + g * acc
-  returns[t_] <- acc }
-  list(rewards = rewards, total_reward = sum(rewards), returns = returns, discounted_return = returns[1],
-       gamma = g, estimate = returns[1], n = length(rewards),
-       method = "R(s, a, s') evaluated per transition with backward discounted returns")
+  for (t_ in rev(seq_along(rewards))) {
+    acc <- rewards[t_] + g * acc
+    returns[t_] <- acc
+  }
+  list(
+    rewards = rewards, total_reward = sum(rewards), returns = returns, discounted_return = returns[1],
+    gamma = g, estimate = returns[1], n = length(rewards),
+    method = "R(s, a, s') evaluated per transition with backward discounted returns"
+  )
 }

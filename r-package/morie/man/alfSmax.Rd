@@ -16,3 +16,8 @@ A numeric value.
 \description{
 the Python arm subtracts the same maximum.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+alfSmax(V)
+}
+\keyword{internal}

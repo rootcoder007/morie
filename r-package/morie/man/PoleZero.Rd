@@ -16,6 +16,11 @@ A list with \code{zeros}, \code{poles}, \code{n_zeros}, \code{n_poles},
 \code{stable}, \code{minimum_phase}, \code{zeros_on_unit_circle}, \code{method}.
 }
 \description{
-roots of the denominator.  The denominator is in the book\'s
+roots of the denominator.  The denominator is in the book's
 normalized form, so pass \code{a} WITHOUT the leading 1.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+PoleZero(V)
+}
+\keyword{internal}

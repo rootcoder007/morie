@@ -24,6 +24,6 @@ Named list with \code{per_column}, \code{missing_columns},
 Schema, null, and suspect-value audit
 }
 \examples{
-D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-mrm_uof_data_quality_audit(D)
+inc <- morie_datasets_corrections_uof_incidents()
+str(mrm_uof_data_quality_audit(inc), max.level = 1)
 }

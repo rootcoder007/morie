@@ -65,3 +65,8 @@ A step of the sgflrt_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_sgflrt_spatial_glmm_fit(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+  coords = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

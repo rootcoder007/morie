@@ -17,7 +17,11 @@ A list with \code{order}, \code{criterion}, \code{aic}, \code{aic_order},
 \code{method}.
 }
 \description{
-per parameter is log(N), larger than AIC\'s 2 for any N > 7, so MDL
+per parameter is log(N), larger than AIC's 2 for any N > 7, so MDL
 picks the same order or a lower one -- and unlike AIC it is
 consistent.  AIC is returned alongside for comparison.
 }
+\examples{
+MdlOrder(errors = c(1, 2, 3, 4, 5, 6, 7, 8), n_samples = 5L)
+}
+\keyword{internal}

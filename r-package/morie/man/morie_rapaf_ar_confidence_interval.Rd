@@ -35,3 +35,8 @@ Resamples the log rate ratios, recomputes the AR, and reports the
 percentiles. A delta-method interval on the AR scale can cross 1,
 which is impossible; this cannot.
 }
+\examples{
+morie_rapaf_ar_confidence_interval(case_counts = c(1, 2, 3, 4, 5, 6, 7, 8),
+  rate_ratios = c(1, 2, 3, 4, 5, 6, 7, 8), log_rr_se = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

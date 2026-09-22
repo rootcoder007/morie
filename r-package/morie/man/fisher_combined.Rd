@@ -10,11 +10,11 @@ fisher_combined(p_values)
 \item{p_values}{Numeric vector of raw p-values.}
 }
 \value{
-A \code{morie_rich_result} list with elements \code{method},
-\code{statistic} (chi-square), and \code{p_value} (combined p).
+An object of class \code{"morie_multiple_testing_result"}.
 }
 \description{
-Fisher's method for combining independent p-values
+Delegates to \code{poolr::fisher} when installed; otherwise
+computes the chi-square statistic inline.
 }
 \examples{
 if (requireNamespace("poolr", quietly = TRUE)) {

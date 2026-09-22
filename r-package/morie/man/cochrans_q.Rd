@@ -10,8 +10,7 @@ cochrans_q(...)
 \item{...}{Three or more matched binary 0/1 vectors.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with Cochran's Q statistic, p-value, df, and per-subject n.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Cochran's Q test

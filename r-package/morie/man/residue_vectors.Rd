@@ -7,7 +7,7 @@
 residue_vectors(group, weights = NULL, seq_type = "aa")
 }
 \arguments{
-\item{group}{The body requires: mafft: sequences in a group must be aligned to the same length.}
+\item{group}{Iterated over elementwise, with \code{vapply}.}
 
 \item{weights}{Optional; may be \code{NULL}. A vector; its length is taken and its
 elements indexed.}
@@ -15,10 +15,15 @@ elements indexed.}
 \item{seq_type}{Compared against \code{"nt"}. Defaults to \code{"aa"}.}
 }
 \value{
-The value of \code{list}.
+A list with \code{vol}, \code{pol}.
 }
 \description{
-A step of the mafft_native implementation. Called by \code{correlation}.
+A step of the mafft_native implementation. Called by \code{correlation}, \code{morie_mafft}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+residue_vectors(V)
+}
+\keyword{internal}

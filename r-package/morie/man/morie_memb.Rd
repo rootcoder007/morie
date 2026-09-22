@@ -4,42 +4,19 @@
 \alias{morie_memb}
 \title{morie_memb}
 \usage{
-morie_memb(
-  target_predict,
-  shadow_data,
-  eval_in,
-  eval_out,
-  train_fn = NULL,
-  attack_train_fn = NULL,
-  n_shadow = NULL,
-  sort_features = FALSE,
-  threshold = 0.5
-)
+morie_memb(op, ...)
 }
 \arguments{
-\item{target_predict}{Passed to \code{memb}.}
+\item{op}{A vector; its length is taken.}
 
-\item{shadow_data}{Passed to \code{memb}.}
-
-\item{eval_in}{Passed to \code{memb}.}
-
-\item{eval_out}{Passed to \code{memb}.}
-
-\item{train_fn}{Passed to \code{memb}.}
-
-\item{attack_train_fn}{Passed to \code{memb}.}
-
-\item{n_shadow}{Passed to \code{memb}.}
-
-\item{sort_features}{Passed to \code{memb}. Defaults to \code{FALSE}.}
-
-\item{threshold}{Passed to \code{memb}. Defaults to \code{0.5}.}
+\item{...}{Passed through.}
 }
 \value{
-The value of \code{memb}.
+The value of \code{switch}.
 }
 \description{
 A step of the memb_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

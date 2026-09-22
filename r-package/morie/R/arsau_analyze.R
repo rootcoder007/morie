@@ -7,7 +7,7 @@
 #' chains the jurisdiction-agnostic MRM Use-of-Force primitives from
 #' \code{R/mrm_uof.R} over it, returning a single named-list result
 #' (classed \code{c("morie_arsau_result", "morie_rich_result", "list")})
-#' that bundles the loaded data, every sub-analysis, and a
+#' that capsules the loaded data, every sub-analysis, and a
 #' multi-paragraph natural-language interpretation.
 #'
 #' These analyzers do NOT invent new statistical methods.  They wire
@@ -57,49 +57,44 @@ NULL
 # Column-name constants for the ARSAU schemas
 # ---------------------------------------------------------------------------
 
-.MORIE_ARSAU_MAIN_FORCE_COL          <- "PoliceService"
-.MORIE_ARSAU_MAIN_FORCE_TYPE_COL     <- "PoliceServiceType"
-.MORIE_ARSAU_MAIN_REGION_COL         <- "OPP_PoliceService_Region"
-.MORIE_ARSAU_MAIN_INCIDENT_TYPE_COL  <- "IncidentType"
-.MORIE_ARSAU_MAIN_LOCATION_PREFIX    <- "LocationType_"
+.MORIE_ARSAU_MAIN_FORCE_COL <- "PoliceService"
+.MORIE_ARSAU_MAIN_FORCE_TYPE_COL <- "PoliceServiceType"
+.MORIE_ARSAU_MAIN_REGION_COL <- "OPP_PoliceService_Region"
+.MORIE_ARSAU_MAIN_INCIDENT_TYPE_COL <- "IncidentType"
+.MORIE_ARSAU_MAIN_LOCATION_PREFIX <- "LocationType_"
 
-.MORIE_ARSAU_INDIV_RACE_COL    <- "Race"
-.MORIE_ARSAU_INDIV_GENDER_COL  <- "Gender"
-.MORIE_ARSAU_INDIV_AGE_COL     <- "AgeCategory"
+.MORIE_ARSAU_INDIV_RACE_COL <- "Race"
+.MORIE_ARSAU_INDIV_GENDER_COL <- "Gender"
+.MORIE_ARSAU_INDIV_AGE_COL <- "AgeCategory"
 .MORIE_ARSAU_INDIV_OUTCOME_COL <- "IndivInjuries_PhysicalInjuries"
-.MORIE_ARSAU_INDIV_KEY_COLS    <- c("BatchFileName", "Indiv_Index")
+.MORIE_ARSAU_INDIV_KEY_COLS <- c("BatchFileName", "Indiv_Index")
 
-.MORIE_ARSAU_WEAPON_WEAPON_COL   <- "Weapon"
+.MORIE_ARSAU_WEAPON_WEAPON_COL <- "Weapon"
 .MORIE_ARSAU_WEAPON_LOCATION_COL <- "Location"
 
 .MORIE_ARSAU_PROBE_CYCLE_COL <- "CEW_CartridgeProbe_CartridgeProbeCycles_Cyc"
 
-.MORIE_ARSAU_AGG_SECTION_COL  <- "SECTION"
+.MORIE_ARSAU_AGG_SECTION_COL <- "SECTION"
 .MORIE_ARSAU_AGG_CATEGORY_COL <- "CATEGORY"
-.MORIE_ARSAU_AGG_UNITS_COL    <- "UNITS OF MEASURE"
-.MORIE_ARSAU_AGG_YEAR_PREFIX  <- "YEAR_"
+.MORIE_ARSAU_AGG_UNITS_COL <- "UNITS OF MEASURE"
+.MORIE_ARSAU_AGG_YEAR_PREFIX <- "YEAR_"
 
 
 # ---------------------------------------------------------------------------
 # Internal: locate a (possibly whitespace-corrupted) outcome column
 # ---------------------------------------------------------------------------
 
-#' .morie_arsau_locate_outcome_col
-#'
-#' A step of the arsau_analyze implementation. Called by
-#' \code{morie_arsau_analyze_individual_records}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param df Passed to \code{names}.
-#' @param target Character; passed to \code{tolower}.
-#' @return The value of \code{[}.
-#' @export
+#' Internal helper: Morie Arsau Locate Outcome Col
+#' @noRd
 .morie_arsau_locate_outcome_col <- function(df, target) {
-  if (target %in% names(df)) return(target)
+  if (target %in% names(df)) {
+    return(target)
+  }
   trimmed <- tolower(trimws(names(df)))
   hit <- which(trimmed == tolower(target))
-  if (length(hit) == 0L) return(NULL)
+  if (length(hit) == 0L) {
+    return(NULL)
+  }
   names(df)[hit[1L]]
 }
 
@@ -111,27 +106,8 @@ NULL
 # the top so they appear in the wrapped result's printed banner.
 # ---------------------------------------------------------------------------
 
-#' .morie_arsau_wrap
-#'
-#' A step of the arsau_analyze implementation. Called by
-#' \code{morie_arsau_analyze_aggregate_summary},
-#' \code{morie_arsau_analyze_detailed_dataset},
-#' \code{morie_arsau_analyze_individual_records} and 3 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param title Carried through into a list the body builds.
-#' @param call Carried through into a list the body builds.
-#' @param sub_results A vector; its length is taken and its elements indexed.
-#' @param data Optional; may be \code{NULL}. A matrix; passed to \code{nrow}.
-#' @param sidecar Carried through into a list the body builds.
-#' @param year_or_range Carried through into a list the body builds.
-#' @param kind Carried through into a list the body builds.
-#' @param language Carried through into a list the body builds.
-#' @param is_valid A flag; the body branches on it.
-#' @param extra_interpretation Passed to \code{paste}. Defaults to \code{""}.
-#' @return The value of \code{payload}, as built in the body.
-#' @export
+#' Internal helper: Morie Arsau Wrap
+#' @noRd
 .morie_arsau_wrap <- function(title, call, sub_results, data, sidecar,
                               year_or_range, kind, language, is_valid,
                               extra_interpretation = "") {
@@ -200,8 +176,10 @@ NULL
 
   # Carry the legacy `morie_arsau_analysis_result` class too so callers that
   # test for either binding (the prior mrm_arsau.R shape) keep working.
-  class(payload) <- c("morie_arsau_result", "morie_arsau_analysis_result",
-                      "morie_rich_result", "list")
+  class(payload) <- c(
+    "morie_arsau_result", "morie_arsau_analysis_result",
+    "morie_rich_result", "list"
+  )
   payload
 }
 
@@ -249,12 +227,13 @@ morie_arsau_analyze_main_records <- function(year, language = "en", data_dir = N
 
   if (.MORIE_ARSAU_MAIN_FORCE_COL %in% names(df)) {
     sub_results$force_concentration <- mrm_uof_force_concentration(
-      df, force_col = .MORIE_ARSAU_MAIN_FORCE_COL
+      df,
+      force_col = .MORIE_ARSAU_MAIN_FORCE_COL
     )
   }
 
   if (.MORIE_ARSAU_MAIN_INCIDENT_TYPE_COL %in% names(df) &&
-      .MORIE_ARSAU_MAIN_FORCE_COL %in% names(df)) {
+    .MORIE_ARSAU_MAIN_FORCE_COL %in% names(df)) {
     sub_results$incident_type_x_force <- mrm_uof_weapon_diversity(
       df,
       weapon_col = .MORIE_ARSAU_MAIN_INCIDENT_TYPE_COL,
@@ -263,7 +242,8 @@ morie_arsau_analyze_main_records <- function(year, language = "en", data_dir = N
   }
 
   sub_results$data_quality <- mrm_uof_data_quality_audit(
-    df, sidecar = loaded$sidecar
+    df,
+    sidecar = loaded$sidecar
   )
 
   .morie_arsau_wrap(
@@ -302,16 +282,20 @@ morie_arsau_analyze_main_records <- function(year, language = "en", data_dir = N
 #'   and 2024 individual_records technical release notes.
 #' @examples
 #' \donttest{
-#' res <- try(morie_arsau_analyze_individual_records(year = "2024",
-#'                                                   bootstrap_reps = 0L))
+#' res <- try(morie_arsau_analyze_individual_records(
+#'   year = "2024",
+#'   bootstrap_reps = 0L
+#' ))
 #' if (!inherits(res, "try-error")) print(res)
 #' }
 #' @export
 morie_arsau_analyze_individual_records <- function(year, language = "en",
                                                    data_dir = NULL,
                                                    bootstrap_reps = 0L) {
-  loaded <- morie_arsau_load_individual_records(year, language = language,
-                                                data_dir = data_dir)
+  loaded <- morie_arsau_load_individual_records(year,
+    language = language,
+    data_dir = data_dir
+  )
   df <- loaded$data
 
   sub_results <- list()
@@ -322,18 +306,19 @@ morie_arsau_analyze_individual_records <- function(year, language = "en",
 
   if (is.null(outcome_col_actual)) {
     sub_results$data_quality <- mrm_uof_data_quality_audit(
-      df, sidecar = loaded$sidecar
+      df,
+      sidecar = loaded$sidecar
     )
     return(.morie_arsau_wrap(
-      title         = sprintf("ARSAU individual_records analysis (%s)", loaded$year),
-      call          = sprintf("morie_arsau_analyze_individual_records(year=%s)", sQuote(year)),
-      sub_results   = sub_results,
-      data          = df,
-      sidecar       = loaded$sidecar,
+      title = sprintf("ARSAU individual_records analysis (%s)", loaded$year),
+      call = sprintf("morie_arsau_analyze_individual_records(year=%s)", sQuote(year)),
+      sub_results = sub_results,
+      data = df,
+      sidecar = loaded$sidecar,
       year_or_range = loaded$year,
-      kind          = "individual_records",
-      language      = language,
-      is_valid      = loaded$is_valid,
+      kind = "individual_records",
+      language = language,
+      is_valid = loaded$is_valid,
       extra_interpretation = sprintf(
         "Disparity analysis skipped: outcome column %s not found in this CSV.",
         sQuote(.MORIE_ARSAU_INDIV_OUTCOME_COL)
@@ -343,8 +328,10 @@ morie_arsau_analyze_individual_records <- function(year, language = "en",
 
   # Robust Yes/No -> 0/1 coercion: stringify, strip, lower, then map.
   outcome_str <- tolower(trimws(as.character(df[[outcome_col_actual]])))
-  coerce_map <- c(yes = 1L, "true" = 1L, "1" = 1L,
-                  no  = 0L, "false" = 0L, "0" = 0L)
+  coerce_map <- c(
+    yes = 1L, "true" = 1L, "1" = 1L,
+    no = 0L, "false" = 0L, "0" = 0L
+  )
   mask <- outcome_str %in% names(coerce_map)
   work <- df[mask, , drop = FALSE]
   work[["_outcome"]] <- unname(coerce_map[outcome_str[mask]])
@@ -367,19 +354,20 @@ morie_arsau_analyze_individual_records <- function(year, language = "en",
   }
 
   sub_results$data_quality <- mrm_uof_data_quality_audit(
-    df, sidecar = loaded$sidecar
+    df,
+    sidecar = loaded$sidecar
   )
 
   .morie_arsau_wrap(
-    title         = sprintf("ARSAU individual_records analysis (%s)", loaded$year),
-    call          = sprintf("morie_arsau_analyze_individual_records(year=%s)", sQuote(year)),
-    sub_results   = sub_results,
-    data          = df,
-    sidecar       = loaded$sidecar,
+    title = sprintf("ARSAU individual_records analysis (%s)", loaded$year),
+    call = sprintf("morie_arsau_analyze_individual_records(year=%s)", sQuote(year)),
+    sub_results = sub_results,
+    data = df,
+    sidecar = loaded$sidecar,
     year_or_range = loaded$year,
-    kind          = "individual_records",
-    language      = language,
-    is_valid      = loaded$is_valid,
+    kind = "individual_records",
+    language = language,
+    is_valid = loaded$is_valid,
     extra_interpretation = sprintf(
       paste0(
         "Outcome variable is %s (coerced from Yes/No strings to 1/0). ",
@@ -419,8 +407,10 @@ morie_arsau_analyze_individual_records <- function(year, language = "en",
 #' @export
 morie_arsau_analyze_probe_cycle_records <- function(year, language = "en",
                                                     data_dir = NULL) {
-  loaded <- morie_arsau_load_probe_cycle_records(year, language = language,
-                                                 data_dir = data_dir)
+  loaded <- morie_arsau_load_probe_cycle_records(year,
+    language = language,
+    data_dir = data_dir
+  )
   df <- loaded$data
 
   sub_results <- list()
@@ -430,7 +420,9 @@ morie_arsau_analyze_probe_cycle_records <- function(year, language = "en",
     raw[is.na(raw)] <- ""
     raw <- as.character(raw)
     cycle_counts <- vapply(raw, function(s) {
-      if (!nzchar(trimws(s))) return(0L)
+      if (!nzchar(trimws(s))) {
+        return(0L)
+      }
       toks <- strsplit(s, ",", fixed = TRUE)[[1]]
       toks <- toks[nzchar(trimws(toks))]
       length(toks)
@@ -439,8 +431,8 @@ morie_arsau_analyze_probe_cycle_records <- function(year, language = "en",
     n_rows <- as.integer(length(cycle_counts))
     n_with <- as.integer(sum(cycle_counts > 0L))
     mean_c <- if (n_rows > 0L) mean(cycle_counts) else NA_real_
-    med_c  <- if (n_rows > 0L) stats::median(cycle_counts) else NA_real_
-    max_c  <- if (n_rows > 0L) max(cycle_counts) else 0L
+    med_c <- if (n_rows > 0L) stats::median(cycle_counts) else NA_real_
+    max_c <- if (n_rows > 0L) max(cycle_counts) else 0L
 
     descriptive <- list(
       n_rows        = n_rows,
@@ -451,11 +443,13 @@ morie_arsau_analyze_probe_cycle_records <- function(year, language = "en",
     )
 
     cycle_summary <- list(
-      title         = "CEW cycle-count distribution",
-      call          = sprintf("(internal) cycle parse of %s",
-                              sQuote(.MORIE_ARSAU_PROBE_CYCLE_COL)),
+      title = "CEW cycle-count distribution",
+      call = sprintf(
+        "(internal) cycle parse of %s",
+        sQuote(.MORIE_ARSAU_PROBE_CYCLE_COL)
+      ),
       summary_lines = descriptive,
-      warnings      = character(0),
+      warnings = character(0),
       interpretation = sprintf(
         paste0(
           "Across %d probe-cycle row(s), the mean number of cycles ",
@@ -463,18 +457,21 @@ morie_arsau_analyze_probe_cycle_records <- function(year, language = "en",
         ),
         n_rows,
         if (is.finite(mean_c)) mean_c else NA_real_,
-        if (is.finite(med_c))  med_c  else NA_real_,
+        if (is.finite(med_c)) med_c else NA_real_,
         as.integer(max_c)
       )
     )
     cycle_summary <- c(cycle_summary, descriptive)
-    class(cycle_summary) <- c("morie_arsau_result",
-                              "morie_rich_result", "list")
+    class(cycle_summary) <- c(
+      "morie_arsau_result",
+      "morie_rich_result", "list"
+    )
     sub_results$cycle_distribution <- cycle_summary
   }
 
   sub_results$data_quality <- mrm_uof_data_quality_audit(
-    df, sidecar = loaded$sidecar
+    df,
+    sidecar = loaded$sidecar
   )
 
   .morie_arsau_wrap(
@@ -534,7 +531,7 @@ morie_arsau_analyze_weapon_records <- function(year, allow_invalid = FALSE,
   sub_results <- list()
 
   if (.MORIE_ARSAU_WEAPON_WEAPON_COL %in% names(df) &&
-      .MORIE_ARSAU_WEAPON_LOCATION_COL %in% names(df)) {
+    .MORIE_ARSAU_WEAPON_LOCATION_COL %in% names(df)) {
     sub_results$weapon_x_location <- mrm_uof_weapon_diversity(
       df,
       weapon_col = .MORIE_ARSAU_WEAPON_WEAPON_COL,
@@ -550,53 +547,60 @@ morie_arsau_analyze_weapon_records <- function(year, allow_invalid = FALSE,
     if (n_distinct > 0L) {
       shares <- as.numeric(wc) / total_n
       top_weapon <- names(wc)[1L]
-      top_share  <- shares[1L]
+      top_share <- shares[1L]
     } else {
       shares <- numeric(0)
       top_weapon <- "-"
-      top_share  <- 0
+      top_share <- 0
     }
 
     rows <- if (n_distinct > 0L) {
       data.frame(
         weapon = names(wc),
-        n      = as.integer(wc),
-        share  = shares,
+        n = as.integer(wc),
+        share = shares,
         stringsAsFactors = FALSE,
         row.names = NULL
       )
     } else {
-      data.frame(weapon = character(0), n = integer(0),
-                 share = numeric(0))
+      data.frame(
+        weapon = character(0), n = integer(0),
+        share = numeric(0)
+      )
     }
 
     weapon_freq <- list(
-      title         = "Weapon frequency distribution",
-      call          = sprintf("(internal) table() on %s",
-                              sQuote(.MORIE_ARSAU_WEAPON_WEAPON_COL)),
+      title = "Weapon frequency distribution",
+      call = sprintf(
+        "(internal) table() on %s",
+        sQuote(.MORIE_ARSAU_WEAPON_WEAPON_COL)
+      ),
       summary_lines = list(
         `Distinct weapons`  = n_distinct,
         `Total weapon rows` = total_n,
         `Top weapon`        = top_weapon,
         `Top weapon share`  = top_share
       ),
-      warnings      = character(0),
+      warnings = character(0),
       interpretation = sprintf(
         "%d distinct weapon type(s) recorded across %d weapon-row(s).",
         n_distinct, total_n
       ),
-      table     = rows,
+      table = rows,
       n_distinct = n_distinct,
-      n_total    = total_n,
-      value      = n_distinct
+      n_total = total_n,
+      value = n_distinct
     )
-    class(weapon_freq) <- c("morie_arsau_result",
-                            "morie_rich_result", "list")
+    class(weapon_freq) <- c(
+      "morie_arsau_result",
+      "morie_rich_result", "list"
+    )
     sub_results$weapon_frequencies <- weapon_freq
   }
 
   sub_results$data_quality <- mrm_uof_data_quality_audit(
-    df, sidecar = loaded$sidecar
+    df,
+    sidecar = loaded$sidecar
   )
 
   extra <- ""
@@ -610,18 +614,18 @@ morie_arsau_analyze_weapon_records <- function(year, allow_invalid = FALSE,
   }
 
   .morie_arsau_wrap(
-    title         = sprintf("ARSAU weapon_records analysis (%s)", loaded$year),
-    call          = sprintf(
+    title = sprintf("ARSAU weapon_records analysis (%s)", loaded$year),
+    call = sprintf(
       "morie_arsau_analyze_weapon_records(year=%s, allow_invalid=%s)",
       sQuote(year), if (isTRUE(allow_invalid)) "TRUE" else "FALSE"
     ),
-    sub_results          = sub_results,
-    data                 = df,
-    sidecar              = loaded$sidecar,
-    year_or_range        = loaded$year,
-    kind                 = "weapon_records",
-    language             = language,
-    is_valid             = loaded$is_valid,
+    sub_results = sub_results,
+    data = df,
+    sidecar = loaded$sidecar,
+    year_or_range = loaded$year,
+    kind = "weapon_records",
+    language = language,
+    is_valid = loaded$is_valid,
     extra_interpretation = extra
   )
 }
@@ -657,14 +661,16 @@ morie_arsau_analyze_aggregate_summary <- function(year_range = "2020-2022",
                                                   language = "en",
                                                   data_dir = NULL) {
   loaded <- morie_arsau_load_aggregate_summary(
-    year_range, language = language, data_dir = data_dir
+    year_range,
+    language = language, data_dir = data_dir
   )
   df <- loaded$data
 
   sub_results <- list()
 
   year_cols <- grep(paste0("^", .MORIE_ARSAU_AGG_YEAR_PREFIX), names(df),
-                    value = TRUE)
+    value = TRUE
+  )
   if (length(year_cols) > 0L) {
     years <- sort(as.integer(sub(
       paste0("^", .MORIE_ARSAU_AGG_YEAR_PREFIX), "", year_cols
@@ -688,8 +694,11 @@ morie_arsau_analyze_aggregate_summary <- function(year_range = "2020-2022",
         count <- suppressWarnings(as.integer(value))
         if (is.na(count) || count < 0L) count <- 0L
         dfs_by_year[[as.character(y)]] <-
-          if (count > 0L) data.frame(row = seq_len(count))
-          else data.frame()
+          if (count > 0L) {
+            data.frame(row = seq_len(count))
+          } else {
+            data.frame()
+          }
       }
 
       sub_results$yoy_change_headline <- mrm_uof_yoy_change(
@@ -699,20 +708,23 @@ morie_arsau_analyze_aggregate_summary <- function(year_range = "2020-2022",
   }
 
   sub_results$data_quality <- mrm_uof_data_quality_audit(
-    df, sidecar = loaded$sidecar
+    df,
+    sidecar = loaded$sidecar
   )
 
   .morie_arsau_wrap(
-    title         = sprintf("ARSAU aggregate_summary analysis (%s)", loaded$year),
-    call          = sprintf("morie_arsau_analyze_aggregate_summary(year_range=%s)",
-                            sQuote(year_range)),
-    sub_results   = sub_results,
-    data          = df,
-    sidecar       = loaded$sidecar,
+    title = sprintf("ARSAU aggregate_summary analysis (%s)", loaded$year),
+    call = sprintf(
+      "morie_arsau_analyze_aggregate_summary(year_range=%s)",
+      sQuote(year_range)
+    ),
+    sub_results = sub_results,
+    data = df,
+    sidecar = loaded$sidecar,
     year_or_range = loaded$year,
-    kind          = "aggregate_summary",
-    language      = language,
-    is_valid      = loaded$is_valid,
+    kind = "aggregate_summary",
+    language = language,
+    is_valid = loaded$is_valid,
     extra_interpretation = paste0(
       "Year-on-year change is computed against the '1 to 3 Subjects - ",
       "Individual Reports' REPORT_SCOPE row, which is the headline ",
@@ -755,24 +767,27 @@ morie_arsau_analyze_detailed_dataset <- function(year_range = "2020-2022",
                                                  language = "en",
                                                  data_dir = NULL) {
   loaded <- morie_arsau_load_detailed_dataset(
-    year_range, language = language, data_dir = data_dir
+    year_range,
+    language = language, data_dir = data_dir
   )
   df <- loaded$data
 
   sub_results <- list()
 
-  force_col      <- if ("POLICE_SERVICE"   %in% names(df)) "POLICE_SERVICE"   else NULL
-  year_col       <- if ("REPORTING_YEAR"   %in% names(df)) "REPORTING_YEAR"   else NULL
-  assignment_col <- if ("ASSIGNMENT_TYPE"  %in% names(df)) "ASSIGNMENT_TYPE"  else NULL
+  force_col <- if ("POLICE_SERVICE" %in% names(df)) "POLICE_SERVICE" else NULL
+  year_col <- if ("REPORTING_YEAR" %in% names(df)) "REPORTING_YEAR" else NULL
+  assignment_col <- if ("ASSIGNMENT_TYPE" %in% names(df)) "ASSIGNMENT_TYPE" else NULL
 
   if (!is.null(force_col)) {
     sub_results$force_concentration <- mrm_uof_force_concentration(
-      df, force_col = force_col
+      df,
+      force_col = force_col
     )
   }
   if (!is.null(force_col) && !is.null(assignment_col)) {
     sub_results$assignment_x_force <- mrm_uof_weapon_diversity(
-      df, weapon_col = assignment_col, force_col = force_col
+      df,
+      weapon_col = assignment_col, force_col = force_col
     )
   }
   if (!is.null(year_col)) {
@@ -780,20 +795,23 @@ morie_arsau_analyze_detailed_dataset <- function(year_range = "2020-2022",
   }
 
   sub_results$data_quality <- mrm_uof_data_quality_audit(
-    df, sidecar = loaded$sidecar
+    df,
+    sidecar = loaded$sidecar
   )
 
   .morie_arsau_wrap(
-    title         = sprintf("ARSAU detailed_dataset analysis (%s)", loaded$year),
-    call          = sprintf("morie_arsau_analyze_detailed_dataset(year_range=%s)",
-                            sQuote(year_range)),
-    sub_results   = sub_results,
-    data          = df,
-    sidecar       = loaded$sidecar,
+    title = sprintf("ARSAU detailed_dataset analysis (%s)", loaded$year),
+    call = sprintf(
+      "morie_arsau_analyze_detailed_dataset(year_range=%s)",
+      sQuote(year_range)
+    ),
+    sub_results = sub_results,
+    data = df,
+    sidecar = loaded$sidecar,
     year_or_range = loaded$year,
-    kind          = "detailed_dataset",
-    language      = language,
-    is_valid      = loaded$is_valid
+    kind = "detailed_dataset",
+    language = language,
+    is_valid = loaded$is_valid
   )
 }
 
@@ -803,12 +821,16 @@ morie_arsau_analyze_detailed_dataset <- function(year_range = "2020-2022",
 #' @param x A \code{morie_arsau_analysis_result} object.
 #' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
-#' @export
 #' @examples
 #' \donttest{
-#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' morie:::print.morie_arsau_analysis_result(D)
+#' res <- try(morie_arsau_analyze_main_records(year = "2024"))
+#' if (!inherits(res, "try-error")) print(res)
+#' print(res)
 #' }
+#' @references
+#'   Ontario Ministry of the Solicitor General, ARSAU 2023
+#'   and 2024 main_records technical release notes.
+#' @export
 print.morie_arsau_analysis_result <- function(x, ...) {
   cat(x$title, "\n", strrep("=", nchar(x$title)), "\n", sep = "")
   if (length(x$summary_lines) > 0L) {

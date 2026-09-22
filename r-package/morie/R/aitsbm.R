@@ -11,8 +11,7 @@
 #' @return A numeric value.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .aitsbm_close(X = X)
 #' res
 .aitsbm_close <- function(X) X / rowSums(X)
@@ -42,7 +41,8 @@
 #' to floating-point error. That is the point: it is the coherent
 #' quantity to report where the raw correlation is not.
 #'
-#' Mirrors \code{morie.fn.aitsbm} on the Python side.
+#' Mirrors \code{morie.fn.aitsbm} on the Python side. See also
+#' \code{\link{morie_taphonomy_clr}} for the centred log-ratio transform.
 #'
 #' @param x Numeric matrix of compositional data (n x D), D >= 3, all
 #'   entries strictly positive. Rows need not already sum to a constant.
@@ -75,12 +75,16 @@ morie_subcompositional_incoherence <- function(x, idx) {
   D <- ncol(X)
   if (D < 3L) {
     stop("Need at least 3 parts to form a proper subcomposition, got D=",
-         D, ".", call. = FALSE)
+      D, ".",
+      call. = FALSE
+    )
   }
   if (n < 3L) stop("Need at least 3 observations, got ", n, ".", call. = FALSE)
   if (!all(X > 0)) {
     stop("Compositional parts must be strictly positive; log-ratios are ",
-         "undefined at zero.", call. = FALSE)
+      "undefined at zero.",
+      call. = FALSE
+    )
   }
 
   sub <- as.integer(idx)
@@ -89,7 +93,9 @@ morie_subcompositional_incoherence <- function(x, idx) {
   }
   if (length(sub) >= D) {
     stop("idx must name fewer than D=", D,
-         " parts, else the subcomposition is the composition.", call. = FALSE)
+      " parts, else the subcomposition is the composition.",
+      call. = FALSE
+    )
   }
   if (any(sub < 1L) || any(sub > D)) {
     stop("idx entries must lie in [1, ", D, "].", call. = FALSE)

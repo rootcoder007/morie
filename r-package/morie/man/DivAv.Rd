@@ -21,3 +21,8 @@ m classes.  Averaging hides a badly separated PAIR behind well
 separated ones, so the minimum is returned too -- that is the pair
 that will actually be confused.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+DivAv(V, V)
+}
+\keyword{internal}

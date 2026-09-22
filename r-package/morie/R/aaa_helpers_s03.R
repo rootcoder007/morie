@@ -17,8 +17,8 @@
 
 #' .s03vec
 #'
-#' A step of the helpers_s03 implementation. Called by \code{.aalen_johansen},
-#' \code{.bkw_influence}, \code{.ch_ols_se} and 349 others in the module.
+#' A step of the helpers_s03 implementation. Called by \code{.bkw_influence},
+#' \code{.ch_ols_se}, \code{.icc_balanced} and 343 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -30,14 +30,16 @@
 #' res <- .s03vec(x = x)
 #' res
 .s03vec <- function(x) {
-  if (is.null(x)) return(numeric(0))
+  if (is.null(x)) {
+    return(numeric(0))
+  }
   as.numeric(unlist(x, use.names = FALSE))
 }
 
 #' .s03mat
 #'
 #' A step of the helpers_s03 implementation. Called by \code{.bkw_influence},
-#' \code{.cfa_cov}, \code{.ch_ols_se} and 241 others in the module.
+#' \code{.cfa_cov}, \code{.ch_ols_se} and 236 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -49,7 +51,9 @@
 #' res <- .s03mat(x = x)
 #' res
 .s03mat <- function(x) {
-  if (is.null(x)) return(matrix(numeric(0), 0, 0))
+  if (is.null(x)) {
+    return(matrix(numeric(0), 0, 0))
+  }
   if (is.matrix(x)) {
     storage.mode(x) <- "double"
     return(x)
@@ -89,7 +93,7 @@
 #' .s03matvec
 #'
 #' A step of the helpers_s03 implementation. Called by \code{.bkw_influence},
-#' \code{.ch_ols_se}, \code{.jnt_lmm_ri} and 37 others in the module.
+#' \code{.ch_ols_se}, \code{.jnt_lmm_ri} and 36 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -116,7 +120,7 @@
 #' .s03crossprod
 #'
 #' A step of the helpers_s03 implementation. Called by \code{.bkw_influence},
-#' \code{.btres_xtxinv}, \code{.ch_ols_se} and 8 others in the module.
+#' \code{.btres_xtxinv}, \code{.ch_ols_se} and 7 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -160,11 +164,15 @@
           # three-way parity passed at 1e-9 because both arms did the same
           # thing. Solve against -H, or ridge the matrix into positive
           # definiteness, but do not accept a wrong answer.
-          stop(sprintf(paste("chol: matrix is not positive definite",
-                             "(pivot %d is %.17g); a Cholesky factor does",
-                             "not exist. If this is a log-likelihood",
-                             "Hessian, solve against -H."), i, d),
-               call. = FALSE)
+          stop(
+            sprintf(paste(
+              "chol: matrix is not positive definite",
+              "(pivot %d is %.17g); a Cholesky factor does",
+              "not exist. If this is a log-likelihood",
+              "Hessian, solve against -H."
+            ), i, d),
+            call. = FALSE
+          )
         }
         L[i, j] <- sqrt(d)
       } else {
@@ -178,7 +186,7 @@
 #' .s03cholsolve
 #'
 #' A step of the helpers_s03 implementation. Called by \code{.bkw_influence},
-#' \code{.cfa_inv}, \code{.ch_ols_se} and 36 others in the module.
+#' \code{.cfa_inv}, \code{.ch_ols_se} and 35 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -246,8 +254,7 @@
 #' @return The value of \code{.s03ridgesolve}.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
 #' res <- .s03lstsq(X = X, y = y)
 #' res
@@ -284,30 +291,32 @@
       if (i < n) for (j in seq(i + 1L, n)) off <- off + M[i, j] * M[i, j]
     }
     if (off <= 1e-30) break
-    if (n > 1L) for (p in seq_len(n - 1L)) {
-      for (q in seq(p + 1L, n)) {
-        if (abs(M[p, q]) <= 1e-300) next
-        theta <- (M[q, q] - M[p, p]) / (2 * M[p, q])
-        tt <- (if (theta >= 0) 1 else -1) / (abs(theta) + sqrt(theta * theta + 1))
-        cc <- 1 / sqrt(tt * tt + 1)
-        ss <- tt * cc
-        for (k in seq_len(n)) {
-          mkp <- M[k, p]
-          mkq <- M[k, q]
-          M[k, p] <- cc * mkp - ss * mkq
-          M[k, q] <- ss * mkp + cc * mkq
-        }
-        for (k in seq_len(n)) {
-          mpk <- M[p, k]
-          mqk <- M[q, k]
-          M[p, k] <- cc * mpk - ss * mqk
-          M[q, k] <- ss * mpk + cc * mqk
-        }
-        for (k in seq_len(n)) {
-          vkp <- V[k, p]
-          vkq <- V[k, q]
-          V[k, p] <- cc * vkp - ss * vkq
-          V[k, q] <- ss * vkp + cc * vkq
+    if (n > 1L) {
+      for (p in seq_len(n - 1L)) {
+        for (q in seq(p + 1L, n)) {
+          if (abs(M[p, q]) <= 1e-300) next
+          theta <- (M[q, q] - M[p, p]) / (2 * M[p, q])
+          tt <- (if (theta >= 0) 1 else -1) / (abs(theta) + sqrt(theta * theta + 1))
+          cc <- 1 / sqrt(tt * tt + 1)
+          ss <- tt * cc
+          for (k in seq_len(n)) {
+            mkp <- M[k, p]
+            mkq <- M[k, q]
+            M[k, p] <- cc * mkp - ss * mkq
+            M[k, q] <- ss * mkp + cc * mkq
+          }
+          for (k in seq_len(n)) {
+            mpk <- M[p, k]
+            mqk <- M[q, k]
+            M[p, k] <- cc * mpk - ss * mqk
+            M[q, k] <- ss * mpk + cc * mqk
+          }
+          for (k in seq_len(n)) {
+            vkp <- V[k, p]
+            vkq <- V[k, q]
+            V[k, p] <- cc * vkp - ss * vkq
+            V[k, q] <- ss * vkp + cc * vkq
+          }
         }
       }
     }
@@ -327,7 +336,7 @@
 #' .s03sigmoid
 #'
 #' A step of the helpers_s03 implementation. Called by \code{.dnnact},
-#' \code{.dw_skipgram}, \code{.rasch_jmle} and 22 others in the module.
+#' \code{.dw_skipgram}, \code{.s03swish} and 21 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -335,8 +344,12 @@
 #' @return One of two values, depending on the branch taken.
 #' @export
 .s03sigmoid <- function(z) {
-  if (z >= 0) 1 / (1 + exp(-z)) else { e <- exp(z)
-  e / (1 + e) }
+  if (z >= 0) {
+    1 / (1 + exp(-z))
+  } else {
+    e <- exp(z)
+    e / (1 + e)
+  }
 }
 
 # Exact GELU, x * Phi(x) (Hendrycks and Gimpel 2016).
@@ -395,7 +408,9 @@
 #' res <- .s03softmax(v = x)
 #' res
 .s03softmax <- function(v) {
-  if (length(v) == 0L) return(numeric(0))
+  if (length(v) == 0L) {
+    return(numeric(0))
+  }
   m <- max(v)
   e <- exp(v - m)
   s <- 0
@@ -418,9 +433,13 @@
 #' res <- .s03logsumexp(v = x)
 #' res
 .s03logsumexp <- function(v) {
-  if (length(v) == 0L) return(-Inf)
+  if (length(v) == 0L) {
+    return(-Inf)
+  }
   m <- max(v)
-  if (m == -Inf) return(m)
+  if (m == -Inf) {
+    return(m)
+  }
   s <- 0
   for (x in v) s <- s + exp(x - m)
   m + log(s)
@@ -442,7 +461,9 @@
 #' res
 .s03mean <- function(v) {
   n <- length(v)
-  if (n == 0L) return(NaN)
+  if (n == 0L) {
+    return(NaN)
+  }
   s <- 0
   for (x in v) s <- s + x
   s / n
@@ -465,7 +486,9 @@
 #' res
 .s03var <- function(v, ddof = 1L) {
   n <- length(v)
-  if (n - ddof <= 0L) return(NaN)
+  if (n - ddof <= 0L) {
+    return(NaN)
+  }
   m <- .s03mean(v)
   s <- 0
   for (x in v) s <- s + (x - m) * (x - m)
@@ -492,7 +515,7 @@
 #' .s03median
 #'
 #' A step of the helpers_s03 implementation. Called by \code{.dnnheadweights},
-#' \code{.s03mad}, \code{DepthP} and 5 others in the module.
+#' \code{.s03mad}, \code{Epicur} and 4 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -506,15 +529,16 @@
 .s03median <- function(v) {
   s <- sort(v)
   n <- length(s)
-  if (n == 0L) return(NaN)
+  if (n == 0L) {
+    return(NaN)
+  }
   h <- n %/% 2L
   if (n %% 2L == 1L) s[h + 1L] else 0.5 * (s[h] + s[h + 1L])
 }
 
 #' .s03mad
 #'
-#' A step of the helpers_s03 implementation. Called by \code{DepthP}, \code{Irlsfn},
-#' \code{Ogkcv} and 1 others in the module.
+#' A step of the helpers_s03 implementation. Called by \code{Irlsfn}, \code{Ogkcv}, \code{Ramsw}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -532,7 +556,7 @@
 }
 
 # Type-7 quantile, the default of R's quantile().
-#' Type-7 quantile, the default of R\'s quantile()
+#' Type-7 quantile, the default of R's quantile()
 #'
 #' A step of the helpers_s03 implementation. Called by \code{.cstat_uno},
 #' \code{.dnnheadweights}, \code{.ot_quantiles} and 38 others in the module.
@@ -550,8 +574,12 @@
 .s03quantile7 <- function(v, p) {
   s <- sort(v)
   n <- length(s)
-  if (n == 0L) return(NaN)
-  if (n == 1L) return(s[1L])
+  if (n == 0L) {
+    return(NaN)
+  }
+  if (n == 1L) {
+    return(s[1L])
+  }
   h <- (n - 1) * p
   lo <- floor(h)
   hi <- if (lo + 1 < n) lo + 1 else n - 1
@@ -605,7 +633,9 @@
 #' res
 .s03corr <- function(x, y) {
   n <- length(x)
-  if (n < 2L) return(NaN)
+  if (n < 2L) {
+    return(NaN)
+  }
   mx <- .s03mean(x)
   my <- .s03mean(y)
   sxy <- 0
@@ -662,10 +692,10 @@
 .s03unif <- function(n, base = 2L) vapply(seq_len(n) - 1L, .s03vdc, 0, base = base)
 
 # R's qnorm IS Wichura AS 241, the same algorithm the Python arm codes.
-#' R\'s qnorm IS Wichura AS 241, the same algorithm the Python arm codes
+#' R's qnorm IS Wichura AS 241, the same algorithm the Python arm codes
 #'
 #' A step of the helpers_s03 implementation. Called by \code{.drbsze_tquant},
-#' \code{Btbca}, \code{Btcicor} and 21 others in the module.
+#' \code{Btbca}, \code{Btcicor} and 20 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -730,7 +760,7 @@
 #' Same recurrence + asymptotic series as the Python arm, so the two
 #' agree
 #'
-#' term for term rather than relying on R\'s digamma matching a Python
+#' term for term rather than relying on R's digamma matching a Python
 #' series.
 #'
 #' @param x A vector; its length is taken.
@@ -745,10 +775,14 @@
   # is an error in modern R), and this helper is SHARED, so every caller
   # that passes a vector -- lda, limmav and anything else using digamma --
   # broke on it.
-  if (length(x) > 1L) return(vapply(x, .s03digamma, numeric(1)))
+  if (length(x) > 1L) {
+    return(vapply(x, .s03digamma, numeric(1)))
+  }
   r <- 0
-  while (x < 6) { r <- r - 1 / x
-  x <- x + 1 }
+  while (x < 6) {
+    r <- r - 1 / x
+    x <- x + 1
+  }
   f <- 1 / (x * x)
   r + log(x) - 0.5 / x +
     f * (-1 / 12 + f * (1 / 120 + f * (-1 / 252 + f * (1 / 240 + f * (-1 / 132)))))
@@ -789,7 +823,9 @@
 #' @return A numeric value.
 #' @export
 .s03besselk <- function(nu, x, terms = 160L) {
-  if (x <= 0) return(Inf)
+  if (x <= 0) {
+    return(Inf)
+  }
   h <- 0.01
   n <- 2500L
   s <- 0
@@ -814,8 +850,8 @@
 # beta <- beta + (X' W X)^-1 X' (y - p), W = diag(p (1 - p)).
 #' Logistic regression by IRLS: Newton-Raphson on the log-likelihood,
 #'
-#' which for the canonical link is exactly IRLS, beta <- beta + (X\' W
-#' X)^-1 X\' (y - p), W = diag(p (1 - p)).
+#' which for the canonical link is exactly IRLS, beta <- beta + (X' W
+#' X)^-1 X' (y - p), W = diag(p (1 - p)).
 #'
 #' @param X A matrix; indexed by row and column.
 #' @param y A vector; indexed elementwise.
@@ -825,8 +861,7 @@
 #' @return The value of \code{beta}, as built in the body.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
 #' res <- .s03logit(X = X, y = y)
 #' res
@@ -874,9 +909,13 @@
 #' res <- .s03design(X = x, n = 3L)
 #' res
 .s03design <- function(X, n) {
-  if (is.null(X)) return(matrix(1, n, 1))
+  if (is.null(X)) {
+    return(matrix(1, n, 1))
+  }
   rows <- .s03mat(X)
-  if (nrow(rows) == 0L) return(matrix(1, n, 1))
+  if (nrow(rows) == 0L) {
+    return(matrix(1, n, 1))
+  }
   cbind(1, rows)
 }
 
@@ -932,13 +971,15 @@
   v <- 0
   for (x in inf) v <- v + x * x
   se <- if (n) sqrt(v / (n * n)) else NaN
-  list(tau = tau, inf = inf, se = se, pi = pi_, mu0 = mu0, w1 = w1, w0 = w0,
-       gamma = gam, beta0 = b0)
+  list(
+    tau = tau, inf = inf, se = se, pi = pi_, mu0 = mu0, w1 = w1, w0 = w0,
+    gamma = gam, beta0 = b0
+  )
 }
 
 # Mammen's two-point multiplier at a van der Corput point: mean 1,
 # variance 1, third moment 1, and deterministic, so both arms agree.
-#' Mammen\'s two-point multiplier at a van der Corput point: mean 1,
+#' Mammen's two-point multiplier at a van der Corput point: mean 1,
 #'
 #' variance 1, third moment 1, and deterministic, so both arms agree.
 #'
@@ -1005,8 +1046,10 @@
     row0 <- c(1, 0, Z[i, -1])
     s1 <- 0
     s0 <- 0
-    for (j in seq_along(bq)) { s1 <- s1 + bq[j] * row1[j]
-    s0 <- s0 + bq[j] * row0[j] }
+    for (j in seq_along(bq)) {
+      s1 <- s1 + bq[j] * row1[j]
+      s0 <- s0 + bq[j] * row0[j]
+    }
     q1[i] <- min(max(s1, 1e-8), 1 - 1e-8)
     q0[i] <- min(max(s0, 1e-8), 1 - 1e-8)
     qa[i] <- if (d[i] > 0.5) q1[i] else q0[i]
@@ -1038,8 +1081,10 @@
   psi <- psi_s * rng
   m1 <- 0
   m0 <- 0
-  for (i in seq_len(n)) { m1 <- m1 + q1s[i] / n
-  m0 <- m0 + q0s[i] / n }
+  for (i in seq_len(n)) {
+    m1 <- m1 + q1s[i] / n
+    m0 <- m0 + q0s[i] / n
+  }
   inf <- numeric(n)
   for (i in seq_len(n)) {
     qas <- if (d[i] > 0.5) q1s[i] else q0s[i]
@@ -1048,8 +1093,10 @@
   v <- 0
   for (x in inf) v <- v + x * x
   se <- if (n) sqrt(v / (n * n)) else NaN
-  list(psi = psi, se = se, eps = eps, g = g, q1 = q1s, q0 = q0s, inf = inf,
-       ey1 = lo + rng * m1, ey0 = lo + rng * m0, scale = rng, shift = lo)
+  list(
+    psi = psi, se = se, eps = eps, g = g, q1 = q1s, q0 = q0s, inf = inf,
+    ey1 = lo + rng * m1, ey0 = lo + rng * m0, scale = rng, shift = lo
+  )
 }
 # ---------------------------------------------------------------- JSON
 # The four functions the package calls, over the full mapping in
@@ -1070,7 +1117,7 @@
 #' .s03json_toJSON
 #'
 #' A step of the helpers_s03 implementation. Called by \code{.morie_to_json},
-#' \code{.s03json_write}, \code{jsonlite_toJSON_or_stub}.
+#' \code{.s03json_write}, \code{jsonlite_toJSON_or_stub} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -1092,9 +1139,13 @@
   dots <- list(...)
   if (is.null(dots$na)) dots$na <- "null"
   if (is.null(dots$null)) dots$null <- "null"
-  do.call(morie_jsonlt_to_json,
-          c(list(x, pretty = pretty, auto_unbox = auto_unbox,
-                 digits = digits), dots))
+  do.call(
+    morie_jsonlt_to_json,
+    c(list(x,
+      pretty = pretty, auto_unbox = auto_unbox,
+      digits = digits
+    ), dots)
+  )
 }
 
 #' .s03json_pretty
@@ -1107,12 +1158,14 @@
 #' @param indent Passed to \code{morie_jsonlt_prettify}. Defaults to \code{2L}.
 #' @return The value of \code{morie_jsonlt_prettify}.
 #' @export
-.s03json_pretty <- function(txt, indent = 2L)
+.s03json_pretty <- function(txt, indent = 2L) {
   morie_jsonlt_prettify(txt, indent)
+}
 
 #' .s03json_fromJSON
 #'
-#' A step of the helpers_s03 implementation. Called by \code{.morie_from_json}.
+#' A step of the helpers_s03 implementation. Called by \code{.morie_datasette_get_json},
+#' \code{.morie_from_json}, \code{.siu_panel_extract} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'

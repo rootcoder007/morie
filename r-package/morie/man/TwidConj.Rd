@@ -20,3 +20,7 @@ A list with \code{negative_power}, \code{conjugate}, \code{difference},
 \description{
 a sign flip, one of the two properties the FFT is built on.
 }
+\examples{
+TwidConj(npoints = 5L, n = 5L, k = 5L)
+}
+\keyword{internal}

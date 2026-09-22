@@ -144,3 +144,9 @@ rOpenSci-770-response.md
 .opencode/
 .windsurf/
 .github/copilot-instructions.md
+
+# submission-only, never committed
+cran-comments.md
+
+# private wrangled data lives outside git at every depth
+**/data/private/

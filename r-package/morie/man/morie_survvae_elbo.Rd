@@ -53,6 +53,18 @@ this bound is less than or equal to the true mixture log-
 likelihood is a built-in sanity check (see
 \code{morie_survvae_exact_loglik}).
 }
+\examples{
+set.seed(1)
+X <- lapply(1:20, function(i) rnorm(3))
+tt <- rexp(20, 0.1)
+ev <- rbinom(20, 1, 0.7)
+W <- matrix(rnorm(9, 0, 0.3), 3, 3)
+bias <- rep(0, 3)
+r <- morie_survvae_elbo(X, tt, ev, W, bias, shapes = c(1, 1.5, 2),
+                        scales = c(5, 10, 15))
+str(r, max.level = 1)
+}
 \references{
 Nagpal et al. (2021), Sec. III-C.
 }
+\keyword{internal}

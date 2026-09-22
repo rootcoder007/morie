@@ -23,3 +23,7 @@ defining Butterworth property.  At the cutoff the squared magnitude
 is exactly 1/2 FOR EVERY ORDER, so raising N steepens the transition
 without moving the half-power point.
 }
+\examples{
+BwSqMag(Omega = c(1, 2, 3, 4, 5, 6, 7, 8), Omega_c = 5L, N = 5L)
+}
+\keyword{internal}

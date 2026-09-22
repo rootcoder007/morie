@@ -6,6 +6,8 @@
 \title{Encrypt from counter 1, then authenticate AAD and ciphertext}
 \usage{
 morie_secaead_aead_encrypt(key, nonce, plaintext, aad = NULL)
+
+morie_secaead(key, nonce, plaintext, aad = NULL)
 }
 \arguments{
 \item{key}{Passed to \code{morie_secaead_poly1305_key_gen}.}
@@ -22,7 +24,21 @@ A list with \code{estimate}, \code{ciphertext}, \code{ciphertext_hex},
 \code{method}, \code{note}.
 }
 \description{
-A step of the secaead_native implementation. No other function in the package calls it.
+A step of the secaead_native implementation. Called by
+\code{morie_secrtt_seal_record}, \code{morie_secrtt_wrap_dek}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+key <- as.raw(c(0x80:0x8f, 0x90:0x9f))
+nonce <- as.raw(c(0x07, 0, 0, 0, 0x40, 0x41, 0x42, 0x43,
+                  0x44, 0x45, 0x46, 0x47))
+aad <- as.raw(c(0x50, 0x51, 0x52, 0x53, 0xc0, 0xc1, 0xc2, 0xc3,
+                0xc4, 0xc5, 0xc6, 0xc7))
+pt <- charToRaw(paste0("Ladies and Gentlemen of the class of \x2799: If I could offer you ",
+  "only one tip for the future, sunscreen would be it."))
+r <- morie_secaead_aead_encrypt(key, nonce, pt, aad)
+stopifnot(substr(r$tag_hex, 1, 8) == "1ae10b59")
+r$tag_hex
+}
+\keyword{internal}

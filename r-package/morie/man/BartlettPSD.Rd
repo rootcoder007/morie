@@ -26,3 +26,11 @@ A step of the rangayyan_sig implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+n <- 100
+fs <- 64
+f0 <- 8
+x <- sin(2 * pi * f0 * (0:(n - 1))/fs)
+BartlettPSD(x, fs = fs, n_segments = 4)
+}
+\keyword{internal}

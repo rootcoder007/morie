@@ -44,8 +44,12 @@ NULL
 #' res <- .t4_mat(X = x)
 #' res
 .t4_mat <- function(X) {
-  if (is.matrix(X)) return(matrix(as.numeric(X), nrow = nrow(X)))
-  if (is.data.frame(X)) return(as.matrix(X))
+  if (is.matrix(X)) {
+    return(matrix(as.numeric(X), nrow = nrow(X)))
+  }
+  if (is.data.frame(X)) {
+    return(as.matrix(X))
+  }
   matrix(as.numeric(X), ncol = 1L)
 }
 
@@ -101,7 +105,7 @@ NULL
 }
 
 # Newey-West long-run variance with Bartlett weights -- tseries' pp_sum.
-#' Newey-West long-run variance with Bartlett weights -- tseries\'
+#' Newey-West long-run variance with Bartlett weights -- tseries'
 #' pp_sum
 #'
 #' A step of the tail4_core implementation. Called by \code{Pptest}.
@@ -171,8 +175,11 @@ NULL
 .t4_kendallS <- function(x, y) {
   n <- length(x)
   S <- 0
-  for (i in seq_len(n - 1)) for (j in (i + 1):n)
-    S <- S + sign(x[j] - x[i]) * sign(y[j] - y[i])
+  for (i in seq_len(n - 1)) {
+    for (j in (i + 1):n) {
+      S <- S + sign(x[j] - x[i]) * sign(y[j] - y[i])
+    }
+  }
   S
 }
 

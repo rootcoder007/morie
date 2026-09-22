@@ -7,15 +7,20 @@
 .matvec(W, x)
 }
 \arguments{
-\item{W}{A matrix; indexed by row and column.}
+\item{W}{A matrix; passed to \code{\%*\%}.}
 
-\item{x}{A vector; its length is taken and its elements indexed.}
+\item{x}{Coerced to vector by the body, with \code{as.vector}.}
 }
 \value{
-The value of \code{out}, as built in the body.
+A vector, from \code{as.numeric}.
 }
 \description{
 A step of the explor_native implementation. Called by \code{explor}.
 See the file header for the source the module follows.
 source it follows.
+}
+\examples{
+x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+res <- .matvec(W = x, x = x)
+res
 }

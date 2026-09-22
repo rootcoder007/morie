@@ -14,6 +14,9 @@ already-generated tokens (matching the Python mirror).}
 
 \item{penalty}{Positive penalty, usually above 1.}
 }
+\value{
+A list with \code{penalised}, \code{estimate}, \code{penalty}, \code{tokens_hit}, \code{n}, \code{method}.
+}
 \description{
 Divide positive logits of seen tokens by the penalty, multiply
 negative ones -- both move the token DOWN in odds against every
@@ -21,3 +24,9 @@ unpenalised token. Note the invariant is the ODDS: with several
 tokens penalised at once, softmax renormalisation can raise one
 penalised token's absolute probability when another falls further.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+morie_burkov_repetition_penalty(V, M)
+}
+\keyword{internal}

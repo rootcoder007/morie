@@ -22,3 +22,7 @@ A list with \code{b}, \code{a}, \code{gain}, \code{zeros}, \code{H},
 there is exactly nought.  With zeros alone the notch is wide, which
 is why the book goes on to add poles just inside them.
 }
+\examples{
+Notch60(1000, 60)
+}
+\keyword{internal}

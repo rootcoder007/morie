@@ -22,3 +22,7 @@ A step of the smcsam_native implementation. Called by \code{smcsam}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+temperature_ladder(n_steps = 5L)
+}
+\keyword{internal}

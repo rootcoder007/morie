@@ -25,6 +25,7 @@
 #' @return A list with the update \code{s}, \code{attn}, the local output
 #'   \code{points}, \code{estimate}, \code{n} and \code{method}.
 #' @references Jumper et al (2021) Nature 596:583-589, Suppl. Algorithm 22
+#' @export
 Alfipa <- function(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb, gamma, wo) {
   n <- nrow(s)
   cz <- dim(z)[3]
@@ -51,12 +52,16 @@ Alfipa <- function(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb, gamma, wo) {
         gq[[h]][i, p, ] <- alfRap(frames[[i]], alfLin(s[i, ], wqp[[h]][[p]]))
         gk[[h]][i, p, ] <- alfRap(frames[[i]], alfLin(s[i, ], wkp[[h]][[p]]))
       }
-      for (p in seq_len(npv))
+      for (p in seq_len(npv)) {
         gv[[h]][i, p, ] <- alfRap(frames[[i]], alfLin(s[i, ], wvp[[h]][[p]]))
+      }
     }
     b[[h]] <- matrix(0, n, n)
-    for (i in seq_len(n)) for (j in seq_len(n))
-      b[[h]][i, j] <- alfVdot(as.numeric(wb[h, ]), z[i, j, ])
+    for (i in seq_len(n)) {
+      for (j in seq_len(n)) {
+        b[[h]][i, j] <- alfVdot(as.numeric(wb[h, ]), z[i, j, ])
+      }
+    }
   }
 
   attn <- vector("list", nh)
@@ -68,10 +73,11 @@ Alfipa <- function(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb, gamma, wo) {
       logits <- numeric(n)
       for (j in seq_len(n)) {
         dsq <- 0
-        for (p in seq_len(nqp))
+        for (p in seq_len(nqp)) {
           dsq <- dsq + alfVn2(gq[[h]][i, p, ] - gk[[h]][j, p, ])
+        }
         logits[j] <- wL * (scale * alfVdot(q[[h]][i, ], k[[h]][j, ]) +
-                             b[[h]][i, j] - 0.5 * gamma[h] * wC * dsq)
+          b[[h]][i, j] - 0.5 * gamma[h] * wC * dsq)
       }
       a <- alfSmax(logits)
       attn[[h]][i, ] <- a
@@ -101,6 +107,8 @@ Alfipa <- function(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb, gamma, wo) {
     out[i, ] <- alfLin(cat_, wo)
   }
 
-  list(s = out, attn = attn, points = pts, estimate = mean(out), n = n,
-       method = "AlphaFold invariant point attention")
+  list(
+    s = out, attn = attn, points = pts, estimate = mean(out), n = n,
+    method = "AlphaFold invariant point attention"
+  )
 }

@@ -23,3 +23,13 @@ A step of the ncfRS_native implementation. Called by \code{morie_ncfRS_neumf}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+p_u <- rnorm(4); q_i <- rnorm(4)
+Ws <- list(matrix(rnorm(4 * 8, 0, 0.3), 4, 8),
+           matrix(rnorm(2 * 4, 0, 0.3), 2, 4))
+bs <- list(rep(0, 4), rep(0, 2))
+z <- morie_ncfRS_mlp_layers(p_u, q_i, Ws, bs)
+length(z) == 2L
+}
+\keyword{internal}

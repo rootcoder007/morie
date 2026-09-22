@@ -14,7 +14,7 @@ normalized_similarity_matrix(
 )
 }
 \arguments{
-\item{raw_matrix}{The body requires: mafft: raw_matrix has no signal (average1 equals average2).}
+\item{raw_matrix}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 
 \item{freqs}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 
@@ -31,7 +31,11 @@ A list with \code{matrix}, \code{s_a}, \code{alphabet}, \code{average1},
 \code{average2}, \code{freqs}, \code{mode}.
 }
 \description{
-A step of the mafft_native implementation. Called by \code{mafft_alignment}.
+A step of the mafft_native implementation. Called by \code{mafft_alignment}, \code{morie_mafft}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+normalized_similarity_matrix()
+}
+\keyword{internal}

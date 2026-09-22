@@ -20,7 +20,8 @@ An object of class \code{"class_name"}.
 Validate a data frame against a list of column rules
 }
 \examples{
-d <- data.frame(x = 1:5, y = letters[1:5], stringsAsFactors = FALSE)
-validate_schema(d, list(column_rule("x", dtype = "numeric"),
-    column_rule("y", dtype = "character")))
+df <- data.frame(age = c(20, 30, -1))
+rules <- list(age = list(type = "numeric", min = 0))
+res <- try(validate_schema(df, rules))
+if (!inherits(res, "try-error")) str(res, max.level = 1)
 }

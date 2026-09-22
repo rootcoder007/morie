@@ -24,3 +24,8 @@ drives the response to nought, approaching a pole drives it up, and a
 pole ON the evaluation point makes it unbounded -- which is why a
 vanishing pole distance is refused rather than returning Inf.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+PzMag(V, V)
+}
+\keyword{internal}

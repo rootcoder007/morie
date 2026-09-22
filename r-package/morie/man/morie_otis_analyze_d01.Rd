@@ -10,14 +10,13 @@ morie_otis_analyze_d01(data)
 \item{data}{d01 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines and tables of deaths by
-region, housing-unit type, medical cause, and means of death.
+A logical scalar.
 }
 \description{
 Person-level custodial deaths (d01)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_d01(V)
+otis_d01 <- morie_synth_otis("d01", n = 120L, seed = 1L)
+res <- morie_otis_analyze_d01(otis_d01)
+class(res)
 }

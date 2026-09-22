@@ -2,11 +2,11 @@
 
 #' srr Bayesian (BS) standards
 #'
-#' morie's Bayesian layer is `morie_taphonomy_bhm()` -- a hierarchical
+#' rmorie's Bayesian layer is `morie_taphonomy_bhm()` -- a hierarchical
 #' preservation model with a conjugate closed-form default and optional
 #' HMC/NUTS backends (`cmdstanr`, `brms`, `rstanarm`) plus the Ghosal
 #' Bayesian-nonparametric helpers. The sampling, seeding, and convergence
-#' machinery is Stan's, which morie exposes and documents; those
+#' machinery is Stan's, which rmorie exposes and documents; those
 #' standards are addressed here. Standards requiring dedicated
 #' convergence-checker frameworks, posterior plot methods, or a Bayesian
 #' recovery test suite are declared NA (with reasons) in

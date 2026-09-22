@@ -23,3 +23,8 @@ iteration for iteration.
 Named with the \code{_ipseq} suffix to avoid clashing with the
 Kish-weights ESS that ships under the same root in this package.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_ess_ipseq(V)
+}
+\keyword{internal}

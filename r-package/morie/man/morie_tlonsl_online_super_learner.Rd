@@ -13,6 +13,8 @@ morie_tlonsl_online_super_learner(
   lags = 1,
   eta = 1
 )
+
+morie_tlonsl(y, library, loss = "squared", burn_in = 5, lags = 1, eta = 1)
 }
 \arguments{
 \item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
@@ -37,3 +39,4 @@ A step of the tlonsl_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

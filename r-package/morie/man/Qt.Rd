@@ -16,6 +16,11 @@ A vector, from \code{vapply}.
 }
 \description{
 Without this, bisection lands on the cdf plateau around zero --
-betainc\'s 1 - xb underflows for |v| < ~1e-8, the cdf sits at exactly
+betainc's 1 - xb underflows for |v| < ~1e-8, the cdf sits at exactly
 0.5 there, and both bisection and Newton are blind inside it.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Qt(V, V)
+}
+\keyword{internal}

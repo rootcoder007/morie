@@ -21,3 +21,9 @@ condition in the PROSE of Sec. 6.2.2.1, p. 336 (1/theta_min < rho <
 is the CAR information matrix.  Anything in this package citing
 (6.48) for the rho interval is miscited.
 }
+\examples{
+W <- matrix(0, 5, 5)
+W[abs(row(W) - col(W)) == 1] <- 1
+SpecRad(W)
+}
+\keyword{internal}

@@ -20,3 +20,7 @@ A step of the sdpwts_native implementation. Called by \code{sdpwts_solve_sdp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+sdpwts_is_psd(M = 5L)
+}
+\keyword{internal}

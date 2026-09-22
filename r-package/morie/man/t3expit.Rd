@@ -17,3 +17,8 @@ A step of the t3util implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+t3expit(V)
+}
+\keyword{internal}

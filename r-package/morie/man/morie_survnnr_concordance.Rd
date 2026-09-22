@@ -23,3 +23,9 @@ A step of the survnnr_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_survnnr_concordance(fit_result = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)),
+  X = c(1, 2, 3, 4, 5, 6, 7, 8), times = c(1, 2, 3, 4, 5, 6, 7, 8),
+  events = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -25,3 +25,10 @@ The linear rule of 10.11.1 commits to a hard boundary; the Bayes rule
 states the posterior odds and lets the prevalence of ectopy enter,
 which matters because a PVC prior is far below one half.
 }
+\examples{
+set.seed(5)
+f <- rbind(matrix(rnorm(40, 0), 20, 2), matrix(rnorm(40, 2), 20, 2))
+lab <- rep(c(0L, 1L), each = 20)
+PvcBayes(f, lab)
+}
+\keyword{internal}

@@ -17,5 +17,5 @@ Returns a list of closures bound to the same backend (always pure R
 in this port; the Python module additionally supports a C backend).
 }
 \examples{
-SemiparKernels()
+str(SemiparKernels(), max.level = 1)
 }

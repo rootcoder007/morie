@@ -60,10 +60,18 @@ morie_poisson_spatial_glm(
 
 \item{level}{See Usage.}
 }
+\value{
+A list with \code{estimate}, \code{beta}, \code{se}, \code{lower}, \code{upper}, \code{u}, \code{eta}, \code{fitted}, \code{relative_risk}, \code{score_beta}, \code{loglik}, \code{deviance}, \code{tau}, \code{rho}, \code{spatial}, \code{constrained}, \code{n}, \code{p}, \code{level}, \code{method}, \code{note}.
+}
 \description{
 Fit the Poisson-CAR areal model
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_poissp(V)
 }
 \references{
 Banerjee, S., Carlin, B. P. and Gelfand, A. E. (2014) Hierarchical
 Modeling and Analysis for Spatial Data, 2nd edn, Chapman and Hall/CRC.
 }
+\keyword{internal}

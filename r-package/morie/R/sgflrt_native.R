@@ -214,8 +214,8 @@
 #' Inner Laplace mode and the approximated log likelihood. The random
 #' effect
 #'
-#' is carried as u = Lv with LL\' = Sigma and v ~ N(0, I), so the
-#' penalty is v\'v/2 and Sigma^-1 is never formed. That is not a nicety:
+#' is carried as u = Lv with LL' = Sigma and v ~ N(0, I), so the
+#' penalty is v'v/2 and Sigma^-1 is never formed. That is not a nicety:
 #' a spatial correlation matrix with any two nearby locations is close
 #' to singular, an explicitly inverted one is dominated by the jitter
 #' that made the inversion possible, and the fitted coefficients then
@@ -348,6 +348,10 @@
 #' \code{p}, \code{d}, \code{min_distance}, \code{max_distance}, \code{method},
 #' \code{note}.
 #' @export
+#' @examples
+#' morie_sgflrt_spatial_glmm_fit(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   coords = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_sgflrt_spatial_glmm_fit <- function(y, X, coords, family = "poisson",
                                           model = "exponential",
                                           sigma2 = NULL, phi = NULL,

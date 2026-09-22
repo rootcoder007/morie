@@ -1,38 +1,115 @@
-# morie.fn -- function file (rootcoder007/morie)
 # E(n)-equivariant graph convolution -- re-export of egnnL.
-# egcn and egnnL are two ledger rows citing the same paper
+# "egcn" and "egnnL" are two ledger rows citing the same paper
 # (Satorras, Hoogeboom & Welling 2021). They are kept as one
 # implementation with a re-export so the two entries cannot drift
-# apart, exactly as timesf re-exports timesfm.
+# apart.
 #
-# References
-# Satorras, V. G., Hoogeboom, E. & Welling, M. (2021) "E(n) Equivariant
-# Graph Neural Networks", Proceedings of the 38th International
-# Conference on Machine Learning (ICML 2021), PMLR 139, 9323-9332,
-# arXiv:2102.09844. Sec. 3 (the EGCL of eqs. (3)-(6), with C = 1/(M-1)).
-# Sec. 3.1 (the equivariance condition Qx + g). Sec. 3.2 (the momentum
-# variant replacing eq. (4)).
-# Thomas, N., Smidt, T., Kearnes, S., Yang, L., Li, L., Kohlhoff, K. &
-# Riley, P. (2018) "Tensor Field Networks", arXiv:1802.08219.
+# Sources: Satorras, V. G., Hoogeboom, E. & Welling, M. (2021)
+# "E(n) Equivariant Graph Neural Networks", *Proceedings of the 38th
+# International Conference on Machine Learning (ICML 2021)*, PMLR
+# 139, 9323-9332, arXiv:2102.09844. See egnnL_native.R for the
+# equations, the equivariance argument and the full references.
+#
+# Native implementation mirroring Python morie.fn.egcn exactly: the
+# same re-exports (edge_message, coord_update, egcl, run_egnn,
+# equivariance_error, cheatsheet) plus the same compact aliases
+# (equivariantgraphconv -> run_egnn, e_gcn -> run_egnn). The actual
+# EGCL implementation lives in egnnL_native.R; this file just
+# forwards to it.
 
-# Re-export from egnnL
-#' Re-export from egnnL
+# compact alias per ledger/NAMING.md
+#' Compact alias per ledger/NAMING.md
 #'
 #' A step of the egcn_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param H Passed to \code{morie_egnnL}.
-#' @param X Passed to \code{morie_egnnL}.
-#' @param layers Passed to \code{morie_egnnL}.
-#' @param phi_e Passed to \code{morie_egnnL}.
-#' @param phi_x Passed to \code{morie_egnnL}.
-#' @param phi_h Passed to \code{morie_egnnL}.
-#' @param A Passed to \code{morie_egnnL}.
-#' @param C Passed to \code{morie_egnnL}.
-#' @return The value of \code{morie_egnnL}.
+#' @param H Passed to \code{run_egnn}.
+#' @param X Passed to \code{run_egnn}.
+#' @param layers Passed to \code{run_egnn}.
+#' @param phi_e Passed to \code{run_egnn}.
+#' @param phi_x Passed to \code{run_egnn}.
+#' @param phi_h Passed to \code{run_egnn}.
+#' @param A Passed to \code{run_egnn}.
+#' @param C Passed to \code{run_egnn}.
+#' @return The value of \code{run_egnn}.
 #' @export
-morie_egcn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL, C = NULL) {
-  morie_egnnL(H = H, X = X, layers = layers, phi_e = phi_e,
-              phi_x = phi_x, phi_h = phi_h, A = A, C = C)
+#' @examples
+#' set.seed(1)
+#' r <- equivariantgraphconv(H = rnorm(10), X = rnorm(10), layers = rnorm(10), phi_e = rnorm(10),
+#'   phi_x = rnorm(10), phi_h = rnorm(10))
+#' TRUE
+#' @keywords internal
+equivariantgraphconv <- function(H, X, layers, phi_e, phi_x, phi_h,
+                                A = NULL, C = NULL) {
+  run_egnn(H, X, layers, phi_e, phi_x, phi_h, A, C)
+}
+
+# public name resolved by fn/_lazy_map.json
+#' Public name resolved by fn/_lazy_map.json
+#'
+#' A step of the egcn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param H Passed to \code{run_egnn}.
+#' @param X Passed to \code{run_egnn}.
+#' @param layers Passed to \code{run_egnn}.
+#' @param phi_e Passed to \code{run_egnn}.
+#' @param phi_x Passed to \code{run_egnn}.
+#' @param phi_h Passed to \code{run_egnn}.
+#' @param A Passed to \code{run_egnn}.
+#' @param C Passed to \code{run_egnn}.
+#' @return The value of \code{run_egnn}.
+#' @export
+#' @examples
+#' set.seed(1)
+#' H <- lapply(1:4, function(i) rnorm(2))
+#' X <- lapply(1:4, function(i) rnorm(3))
+#' phi_e <- function(hi, hj, d2, a) c(hi + hj, d2)
+#' phi_x <- function(m) sum(m) * 0.01
+#' phi_h <- function(hi, agg) hi + 0.1 * agg[seq_along(hi)]
+#' r <- e_gcn(H, X, layers = 2L, phi_e, phi_x, phi_h)
+#' str(r, max.level = 1)
+#' @keywords internal
+e_gcn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
+                  C = NULL) {
+  run_egnn(H, X, layers, phi_e, phi_x, phi_h, A, C)
+}
+
+# morie entry point: matches the Python payload keys
+#' Morie entry point: matches the Python payload keys
+#'
+#' A step of the egcn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param H Carried through into a list the body builds.
+#' @param X Carried through into a list the body builds.
+#' @param layers Coerced to integer by the body, with \code{as.integer}.
+#' @param phi_e Passed to \code{run_egnn}.
+#' @param phi_x Passed to \code{run_egnn}.
+#' @param phi_h Passed to \code{run_egnn}.
+#' @param A Passed to \code{run_egnn}.
+#' @param C Passed to \code{run_egnn}.
+#' @return A list with \code{estimate}, \code{H}, \code{X}, \code{layers}, \code{method},
+#' \code{note}.
+#' @export
+#' @examples
+#' set.seed(1)
+#' H <- lapply(1:4, function(i) rnorm(2))
+#' X <- lapply(1:4, function(i) rnorm(3))
+#' phi_e <- function(hi, hj, d2, a) c(hi + hj, d2)
+#' phi_x <- function(m) sum(m) * 0.01
+#' phi_h <- function(hi, agg) hi + 0.1 * agg[seq_along(hi)]
+#' r <- morie_egcn(H, X, layers = 2L, phi_e, phi_x, phi_h)
+#' str(r, max.level = 1)
+#' @keywords internal
+morie_egcn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
+                       C = NULL) {
+  list(estimate = run_egnn(H, X, layers, phi_e, phi_x, phi_h, A, C),
+       H = H, X = X, layers = as.integer(layers),
+       method = "EGNN; Satorras, Hoogeboom & Welling (2021) eqs. (3)-(6)",
+       note = paste0("h is E(n) INVARIANT, x is E(n) EQUIVARIANT; ",
+                     "see egnnL_native.R for the layer implementation"))
 }

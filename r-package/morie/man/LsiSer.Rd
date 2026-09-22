@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_sig2.R
 \name{LsiSer}
 \alias{LsiSer}
-\title{Eqs (3.43)-(3.45): s = x\emph{h1, y = s}h2 = x\emph{h, h = h1}h2.  One method,}
+\title{Eqs (3.43)-(3.45): s = x*h1, y = s*h2 = x*h, h = h1*h2.  One method,}
 \usage{
 LsiSer(x, h1, h2)
 }
@@ -22,3 +22,8 @@ so one function; the equivalence in eq (3.44) is measured, not
 asserted -- filtering twice is compared against filtering once with
 h.
 }
+\examples{
+LsiSer(x = c(1, 2, 3, 4, 5, 6, 7, 8), h1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+  h2 = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

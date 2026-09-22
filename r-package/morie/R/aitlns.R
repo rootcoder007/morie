@@ -45,7 +45,9 @@ Lgtnsim <- function(mu, Sigma, n, seed = 1, total = 1) {
     Xs[t, ] <- k * e / sum(e)
   }
   e <- c(exp(mu), 1)
-  .t1_result(sample = Xs, alr = Y, center = k * e / sum(e),
-             mean_alr = colMeans(Y), n = as.numeric(n), D = as.numeric(D),
-             method = "Logistic-normal sampling via alr^-1")
+  .t1_result(
+    sample = Xs, alr = Y, center = k * e / sum(e),
+    mean_alr = colMeans(Y), n = as.numeric(n), D = as.numeric(D),
+    method = "Logistic-normal sampling via alr^-1"
+  )
 }

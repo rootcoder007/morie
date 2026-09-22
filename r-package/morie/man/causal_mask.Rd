@@ -10,10 +10,14 @@ causal_mask(n)
 \item{n}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \value{
-The value of \code{M}, as built in the body.
+The value of \code{mask}, as built in the body.
 }
 \description{
 A step of the sasRec_native implementation. Called by \code{self_attention}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+causal_mask(n = 5L)
+}
+\keyword{internal}

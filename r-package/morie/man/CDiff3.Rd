@@ -22,3 +22,8 @@ A list with \code{y}, \code{value}, \code{index}, \code{T},
 controls the noise amplification.  The book warns the price is
 accuracy -- the approximation to d/dt "is poor after about fs/10".
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+CDiff3(V)
+}
+\keyword{internal}

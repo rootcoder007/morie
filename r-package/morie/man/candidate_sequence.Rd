@@ -21,3 +21,8 @@ A step of the tlctmle_native implementation. Called by \code{ctmle}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+candidate_sequence(A = c(1, 2, 3, 4, 5, 6, 7, 8), W = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2),
+  g_models = list(a = 1, b = 2))
+}
+\keyword{internal}

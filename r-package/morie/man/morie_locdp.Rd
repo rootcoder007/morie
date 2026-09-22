@@ -23,3 +23,8 @@ privacy parameter used p : numeric, the flip probability 1 / (1 +
 exp(epsilon)) n : integer, length of x rng : the RNG state returned
 by .ghc_rng / .ghc_unif
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_locdp(V)
+}
+\keyword{internal}

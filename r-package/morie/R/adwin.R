@@ -51,8 +51,10 @@ Adwin <- function(x, delta = 0.05) {
     }
   }
   n <- length(W)
-  .t1_result(mean = if (n > 0) sum(W) / n else NA_real_, width = n,
-             window = W, ndrops = drops, lastcut = last,
-             changepoints = cuts, n = length(x), delta = delta,
-             method = "ADWIN adaptive windowing (Bifet-Gavalda 2007 Sect. 3)")
+  .t1_result(
+    mean = if (n > 0) sum(W) / n else NA_real_, width = n,
+    window = W, ndrops = drops, lastcut = last,
+    changepoints = cuts, n = length(x), delta = delta,
+    method = "ADWIN adaptive windowing (Bifet-Gavalda 2007 Sect. 3)"
+  )
 }

@@ -21,3 +21,9 @@ Dispatches to one of the operations on the DDP collection:
 Each operation mirrors its Python counterpart in morie.fn.ddpest
 in argument names, validation and return-field names.
 }
+\examples{
+r <- morie_ddpest("single_weights", xs = c(0, 1), alpha = 1, K = 5,
+                  atom_fn = function(x, h) h + 0.1 * x)
+str(r, max.level = 1)
+}
+\keyword{internal}

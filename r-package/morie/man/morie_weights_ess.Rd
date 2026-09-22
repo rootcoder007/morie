@@ -10,13 +10,12 @@ morie_weights_ess(weights)
 \item{weights}{Numeric vector of unit-level design weights.}
 }
 \value{
-Length-1 numeric: the Kish effective sample size (0 when
-\code{sum(weights) == 0}).
+A logical scalar.
 }
 \description{
 Kish effective sample size: \eqn{(\sum w_i)^2 / \sum w_i^2}{(sum w_i)^2 / sum w_i^2}
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_weights_ess(V)
+set.seed(1)
+morie_weights_ess(runif(30, 0.5, 2))
 }

@@ -11,6 +11,13 @@ morie_evt_gev_quantile(p, mu, sigma, xi)
 
 \item{mu, sigma, xi}{GEV location, scale (> 0), shape}
 }
+\value{
+A numeric value.
+}
 \description{
 GEV quantile (Coles 2001 eq. 3.4, non-exceedance p)
 }
+\examples{
+morie_evt_gev_quantile(0.9, 5, 1.5, 0.1)
+}
+\keyword{internal}

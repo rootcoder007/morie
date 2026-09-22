@@ -21,3 +21,8 @@ A step of the gnnEx_native implementation. Called by \code{gnnEx_explain_node}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+gnnEx_computation_graph(adj = c(1, 2, 3, 4, 5, 6, 7, 8), v = c(1, 2, 3, 4, 5, 6, 7, 8),
+  L = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

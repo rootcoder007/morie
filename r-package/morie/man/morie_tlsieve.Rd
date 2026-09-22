@@ -24,3 +24,9 @@ A step of the tlsieve_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+morie_tlsieve(F_vac_matched = c(1, 2, 3, 4, 5, 6, 7, 8),
+  F_pla_matched = c(1, 2, 3, 4, 5, 6, 7, 8), F_vac_mismatched = c(1, 2, 3, 4, 5, 6, 7, 8),
+  F_pla_mismatched = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

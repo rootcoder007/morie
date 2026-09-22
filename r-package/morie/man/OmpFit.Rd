@@ -26,3 +26,7 @@ set after every pick keeps the residue orthogonal to it, so each atom
 is chosen at most once and k atoms give the best k-term fit on that
 support.
 }
+\examples{
+OmpFit(x = 5L, D = 5L)
+}
+\keyword{internal}

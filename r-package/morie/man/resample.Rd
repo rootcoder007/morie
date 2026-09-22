@@ -23,3 +23,7 @@ A step of the smcsam_native implementation. Called by \code{morie_btdbl},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+resample(weights = 5L, rng = list(a = 1, b = 2))
+}
+\keyword{internal}

@@ -47,5 +47,9 @@ A list with class \code{morie_stat_command}.
 Construct a stat_command entry
 }
 \examples{
-stat_command("test_bridge_throw", "T", "u", "d", handler_repl = function(...) stop("boom"))
+cmd <- stat_command("demo_echo", "misc", "demo_echo",
+                    "Echo demo command",
+                    handler_repl = function(...) "ok")
+register_stat_command(cmd)
+cmd$name
 }

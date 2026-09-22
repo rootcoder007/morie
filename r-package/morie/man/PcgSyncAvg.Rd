@@ -22,3 +22,8 @@ cycle to cycle -- so waveform averaging as in eq (3.96) would cancel
 exactly the murmur being measured.  Both are computed so the
 difference is visible.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+PcgSyncAvg(D)
+}
+\keyword{internal}

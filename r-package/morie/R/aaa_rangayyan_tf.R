@@ -73,8 +73,10 @@
     w <- -2 * pi * k / n
     cs <- cos(w * i0)
     sn <- sin(w * i0)
-    complex(real = .morie_fsum(a * cs - b * sn),
-            imaginary = .morie_fsum(a * sn + b * cs))
+    complex(
+      real = .morie_fsum(a * cs - b * sn),
+      imaginary = .morie_fsum(a * sn + b * cs)
+    )
   }, complex(1))
 }
 
@@ -102,8 +104,10 @@
     w <- 2 * pi * i / n
     cs <- cos(w * k0)
     sn <- sin(w * k0)
-    complex(real = .morie_fsum(a * cs - b * sn) / n,
-            imaginary = .morie_fsum(b * cs + a * sn) / n)
+    complex(
+      real = .morie_fsum(a * cs - b * sn) / n,
+      imaginary = .morie_fsum(b * cs + a * sn) / n
+    )
   }, complex(1))
 }
 
@@ -178,45 +182,63 @@
 
 .TF_DBTAPS <- list(
   `1` = c(0.7071067811865476, 0.7071067811865476),
-  `2` = c(0.48296291314469025, 0.836516303737469, 0.22414386804185735,
-          -0.12940952255092145),
-  `3` = c(0.3326705529509569, 0.8068915093133388, 0.4598775021193313,
-          -0.13501102001039084, -0.08544127388224149, 0.035226291882100656),
-  `4` = c(0.23037781330885523, 0.7148465705525415, 0.6308807679295904,
-          -0.02798376941698385, -0.18703481171888114, 0.030841381835986965,
-          0.032883011666982945, -0.010597401784997278),
-  `5` = c(0.160102397974125, 0.6038292697974729, 0.7243085284377726,
-          0.13842814590110342, -0.24229488706619015, -0.03224486958502952,
-          0.07757149384006515, -0.006241490213011705, -0.012580751999015526,
-          0.003335725285001549),
-  `6` = c(0.11154074335008017, 0.4946238903983854, 0.7511339080215775,
-          0.3152503517092432, -0.22626469396516913, -0.12976686756709563,
-          0.09750160558707936, 0.02752286553001629, -0.031582039318031156,
-          0.0005538422009938016, 0.004777257511010651, -0.00107730108499558),
-  `7` = c(0.07785205408506236, 0.39653931948230575, 0.7291320908465551,
-          0.4697822874053586, -0.14390600392910627, -0.22403618499416572,
-          0.07130921926705004, 0.0806126091510659, -0.03802993693503463,
-          -0.01657454163101562, 0.012550998556013784, 0.00042957797300470274,
-          -0.0018016407039998328, 0.0003537138000010399),
-  `8` = c(0.05441584224308161, 0.3128715909144659, 0.6756307362980128,
-          0.5853546836548691, -0.015829105256023893, -0.2840155429624281,
-          0.00047248457399797254, 0.128747426620186, -0.017369301002022108,
-          -0.04408825393106472, 0.013981027917015516, 0.008746094047015655,
-          -0.004870352993451574, -0.000391740373376471, 0.0006754494059985568,
-          -0.00011747678400228192),
-  `9` = c(0.03807794736316728, 0.24383467463766728, 0.6048231236767786,
-          0.6572880780366389, 0.13319738582208895, -0.29327378327258685,
-          -0.09684078322087904, 0.14854074933476008, 0.030725681478322865,
-          -0.06763282905952399, 0.000250947114834164, 0.022361662123515244,
-          -0.004723204757894831, -0.004281503681904723, 0.0018476468829611268,
-          0.00023038576399541288, -0.0002519631889981789, 3.934732031627159e-05),
-  `10` = c(0.026670057900950818, 0.18817680007762133, 0.5272011889309198,
-           0.6884590394525921, 0.2811723436604265, -0.24984642432648865,
-           -0.19594627437659665, 0.12736934033574265, 0.09305736460380659,
-           -0.07139414716586077, -0.02945753682194567, 0.03321267405893324,
-           0.0036065535669883944, -0.010733175482979604, 0.0013953517469940798,
-           0.00199240529499085, -0.0006858566950046825, -0.0001164668549943862,
-           9.358867000108985e-05, -1.326420300235487e-05)
+  `2` = c(
+    0.48296291314469025, 0.836516303737469, 0.22414386804185735,
+    -0.12940952255092145
+  ),
+  `3` = c(
+    0.3326705529509569, 0.8068915093133388, 0.4598775021193313,
+    -0.13501102001039084, -0.08544127388224149, 0.035226291882100656
+  ),
+  `4` = c(
+    0.23037781330885523, 0.7148465705525415, 0.6308807679295904,
+    -0.02798376941698385, -0.18703481171888114, 0.030841381835986965,
+    0.032883011666982945, -0.010597401784997278
+  ),
+  `5` = c(
+    0.160102397974125, 0.6038292697974729, 0.7243085284377726,
+    0.13842814590110342, -0.24229488706619015, -0.03224486958502952,
+    0.07757149384006515, -0.006241490213011705, -0.012580751999015526,
+    0.003335725285001549
+  ),
+  `6` = c(
+    0.11154074335008017, 0.4946238903983854, 0.7511339080215775,
+    0.3152503517092432, -0.22626469396516913, -0.12976686756709563,
+    0.09750160558707936, 0.02752286553001629, -0.031582039318031156,
+    0.0005538422009938016, 0.004777257511010651, -0.00107730108499558
+  ),
+  `7` = c(
+    0.07785205408506236, 0.39653931948230575, 0.7291320908465551,
+    0.4697822874053586, -0.14390600392910627, -0.22403618499416572,
+    0.07130921926705004, 0.0806126091510659, -0.03802993693503463,
+    -0.01657454163101562, 0.012550998556013784, 0.00042957797300470274,
+    -0.0018016407039998328, 0.0003537138000010399
+  ),
+  `8` = c(
+    0.05441584224308161, 0.3128715909144659, 0.6756307362980128,
+    0.5853546836548691, -0.015829105256023893, -0.2840155429624281,
+    0.00047248457399797254, 0.128747426620186, -0.017369301002022108,
+    -0.04408825393106472, 0.013981027917015516, 0.008746094047015655,
+    -0.004870352993451574, -0.000391740373376471, 0.0006754494059985568,
+    -0.00011747678400228192
+  ),
+  `9` = c(
+    0.03807794736316728, 0.24383467463766728, 0.6048231236767786,
+    0.6572880780366389, 0.13319738582208895, -0.29327378327258685,
+    -0.09684078322087904, 0.14854074933476008, 0.030725681478322865,
+    -0.06763282905952399, 0.000250947114834164, 0.022361662123515244,
+    -0.004723204757894831, -0.004281503681904723, 0.0018476468829611268,
+    0.00023038576399541288, -0.0002519631889981789, 3.934732031627159e-05
+  ),
+  `10` = c(
+    0.026670057900950818, 0.18817680007762133, 0.5272011889309198,
+    0.6884590394525921, 0.2811723436604265, -0.24984642432648865,
+    -0.19594627437659665, 0.12736934033574265, 0.09305736460380659,
+    -0.07139414716586077, -0.02945753682194567, 0.03321267405893324,
+    0.0036065535669883944, -0.010733175482979604, 0.0013953517469940798,
+    0.00199240529499085, -0.0006858566950046825, -0.0001164668549943862,
+    9.358867000108985e-05, -1.326420300235487e-05
+  )
 )
 
 #' .tf_dbname
@@ -298,8 +320,10 @@
 .tf_dwtstep <- function(a, h, g) {
   a <- as.numeric(a)
   n <- length(a)
-  if (n %% 2L == 1L) { a <- c(a, a[n])
-  n <- n + 1L }
+  if (n %% 2L == 1L) {
+    a <- c(a, a[n])
+    n <- n + 1L
+  }
   half <- n %/% 2L
   j0 <- seq_along(h) - 1
   lo <- numeric(half)
@@ -425,7 +449,7 @@
   approxes <- vector("list", levels)
   j0 <- seq_along(f$h) - 1
   for (lev in seq_len(levels)) {
-    step <- 2 ^ (lev - 1)
+    step <- 2^(lev - 1)
     lo <- numeric(n)
     hi <- numeric(n)
     for (i in seq_len(n)) {
@@ -794,7 +818,7 @@
 #' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
 #' res <- .tf_energy(v = x)
 #' res
-.tf_energy <- function(v) .morie_fsum(Mod(v) ^ 2)
+.tf_energy <- function(v) .morie_fsum(Mod(v)^2)
 
 # --- deterministic 64-bit LCG for the EEMD noise ---------------------------
 # R has no 64-bit integer, so the state is carried as four little-endian
@@ -842,8 +866,8 @@
 #' @export
 .tf_lcg_unif <- function(st) {
   # (state >> 11) is exact in a double: it is at most 2^53 - 1.
-  (floor(st[1] / 2048) + st[2] * 2 ^ 5 + st[3] * 2 ^ 21 + st[4] * 2 ^ 37 + 1) /
-    (2 ^ 53 + 1)
+  (floor(st[1] / 2048) + st[2] * 2^5 + st[3] * 2^21 + st[4] * 2^37 + 1) /
+    (2^53 + 1)
 }
 
 #' .tf_lcg_seed
@@ -875,8 +899,10 @@
 .tf_seed_limbs <- function(seed) {
   s <- as.numeric(seed)
   if (s < 0) stop("seed must be non-negative")
-  c(s %% 65536, floor(s / 65536) %% 65536,
-    floor(s / 2 ^ 32) %% 65536, floor(s / 2 ^ 48) %% 65536)
+  c(
+    s %% 65536, floor(s / 65536) %% 65536,
+    floor(s / 2^32) %% 65536, floor(s / 2^48) %% 65536
+  )
 }
 
 # ===========================================================================
@@ -1064,6 +1090,10 @@ BiorDwt <- function(x, wavelet = "bior2.2", levels = 3) {
 #' @return A list with \code{tfd}, \code{times}, \code{freqs}, \code{sigma},
 #' \code{maxlag}, \code{peak_freq}, \code{crossterm_ratio}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' ExpKerTfd(V)
+#' @keywords internal
 ExpKerTfd <- function(x, fs = 1, sigma = 1, nfreq = NULL, maxlag = NULL) {
   v <- .tf_need(x, "x", 8L)
   fs <- as.numeric(fs)
@@ -1112,12 +1142,16 @@ ExpKerTfd <- function(x, fs = 1, sigma = 1, nfreq = NULL, maxlag = NULL) {
   tot <- .morie_fsum(abs(flat))
   neg <- .morie_fsum(-flat[flat < 0])
   col <- vapply(seq_len(nf), function(k) .morie_fsum(tfd[, k]), numeric(1))
-  list(tfd = tfd, times = (seq_len(n) - 1) / fs, freqs = freqs, sigma = sigma,
-       maxlag = ml, peak_freq = freqs[which.max(col)],
-       crossterm_ratio = if (tot > 0) neg / tot else 0,
-       method = paste("Exponential-kernel (Choi-Williams) TFD, Choi & Williams",
-                      "(1989) IEEE TASSP 37(6):862-871; a member of Cohen's",
-                      "class, Rangayyan & Krishnan (2024) eq (8.124)"))
+  list(
+    tfd = tfd, times = (seq_len(n) - 1) / fs, freqs = freqs, sigma = sigma,
+    maxlag = ml, peak_freq = freqs[which.max(col)],
+    crossterm_ratio = if (tot > 0) neg / tot else 0,
+    method = paste(
+      "Exponential-kernel (Choi-Williams) TFD, Choi & Williams",
+      "(1989) IEEE TASSP 37(6):862-871; a member of Cohen's",
+      "class, Rangayyan & Krishnan (2024) eq (8.124)"
+    )
+  )
 }
 
 # -- Wavelet scale distribution width of a fibrillation waveform, Sec 8.15.
@@ -1225,6 +1259,10 @@ CprWt <- function(ecg, fs = 250, scales = NULL, w0 = 5, band = c(3, 21)) {
 #' @return A list with \code{coeffs}, \code{scales}, \code{freqs}, \code{times},
 #' \code{energy_per_scale}, \code{peak_scale}, \code{wavelet}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Cwt(V)
+#' @keywords internal
 Cwt <- function(x, fs = 1, wavelet = "morlet", scales = NULL, w0 = 5) {
   v <- .tf_need(x, "x", 4L)
   fs <- as.numeric(fs)
@@ -1232,8 +1270,10 @@ Cwt <- function(x, fs = 1, wavelet = "morlet", scales = NULL, w0 = 5) {
   if (is.null(scales)) {
     sc <- numeric(0)
     s <- 1
-    while (s <= max(1, length(v) / 8)) { sc <- c(sc, s)
-    s <- s * 2 }
+    while (s <= max(1, length(v) / 8)) {
+      sc <- c(sc, s)
+      s <- s * 2
+    }
     scales <- if (length(sc)) sc else 1
   }
   sc <- as.numeric(scales)
@@ -1242,16 +1282,25 @@ Cwt <- function(x, fs = 1, wavelet = "morlet", scales = NULL, w0 = 5) {
   co <- .tf_cwt(v, sc, wavelet, as.numeric(w0))
   nm <- tolower(trimws(as.character(wavelet)))
   fc <- switch(nm,
-               morlet = as.numeric(w0) / (2 * pi),
-               mexh = 0.25, mexicanhat = 0.25, sombrero = 0.25, ricker = 0.25,
-               haar = 0.5, db1 = 0.5,
-               stop(sprintf("unknown wavelet '%s'", nm)))
-  epr <- vapply(co, function(r) .morie_fsum(Mod(r) ^ 2), numeric(1))
-  list(coeffs = co, scales = sc, freqs = fc * fs / sc,
-       times = (seq_along(v) - 1) / fs, energy_per_scale = epr,
-       peak_scale = sc[which.max(epr)], wavelet = as.character(wavelet),
-       method = paste("Continuous wavelet transform, Rangayyan & Krishnan",
-                      "(2024) eq (8.107); mother wavelets eqs (8.115)/(8.116)"))
+    morlet = as.numeric(w0) / (2 * pi),
+    mexh = 0.25,
+    mexicanhat = 0.25,
+    sombrero = 0.25,
+    ricker = 0.25,
+    haar = 0.5,
+    db1 = 0.5,
+    stop(sprintf("unknown wavelet '%s'", nm))
+  )
+  epr <- vapply(co, function(r) .morie_fsum(Mod(r)^2), numeric(1))
+  list(
+    coeffs = co, scales = sc, freqs = fc * fs / sc,
+    times = (seq_along(v) - 1) / fs, energy_per_scale = epr,
+    peak_scale = sc[which.max(epr)], wavelet = as.character(wavelet),
+    method = paste(
+      "Continuous wavelet transform, Rangayyan & Krishnan",
+      "(2024) eq (8.107); mother wavelets eqs (8.115)/(8.116)"
+    )
+  )
 }
 
 # -- Cohen's class generalised TFD, eqs (8.124)-(8.127).
@@ -1496,18 +1545,29 @@ AtomTfd <- function(x, fs = 1, dictionary = "gabor", max_atoms = 8,
 #' @return A list with \code{approx}, \code{details}, \code{coeffs}, \code{lengths},
 #' \code{levels}, \code{wavelet}, \code{energy}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' x <- sin(2 * pi * (1:128) / 16) + rnorm(128, 0, 0.1)
+#' str(Dwt(x, wavelet = "db4", levels = 3), max.level = 1)
+#' @keywords internal
 Dwt <- function(x, wavelet = "db4", levels = 3) {
   v <- .tf_need(x, "x", 2L)
   lv <- as.integer(levels)
   r <- .tf_dwt(v, wavelet, lv)
   coeffs <- c(list(r$approx), r$details)
-  list(approx = r$approx, details = r$details, coeffs = coeffs,
-       lengths = r$lengths, levels = lv, wavelet = as.character(wavelet),
-       energy = .morie_fsum(vapply(coeffs, function(c) .morie_fsum(c * c),
-                                   numeric(1))),
-       method = paste("Dyadic DWT via the decimated filter bank, Rangayyan &",
-                      "Krishnan (2024) eqs (8.111)-(8.113); Mallat (1989)",
-                      "algorithm, periodic extension"))
+  list(
+    approx = r$approx, details = r$details, coeffs = coeffs,
+    lengths = r$lengths, levels = lv, wavelet = as.character(wavelet),
+    energy = .morie_fsum(vapply(
+      coeffs, function(c) .morie_fsum(c * c),
+      numeric(1)
+    )),
+    method = paste(
+      "Dyadic DWT via the decimated filter bank, Rangayyan &",
+      "Krishnan (2024) eqs (8.111)-(8.113); Mallat (1989)",
+      "algorithm, periodic extension"
+    )
+  )
 }
 
 # -- Ensemble EMD, Sec 9.4.1 eq (9.13).
@@ -1954,19 +2014,29 @@ WtEntropy <- function(x, wavelet = "db4", levels = 3, base = "e") {
 #' @return A list with \code{approx}, \code{details}, \code{coeffs}, \code{lengths},
 #' \code{levels}, \code{energy}, \code{input_energy}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Dwt2Tap(V)
+#' @keywords internal
 Dwt2Tap <- function(x, levels = 3) {
   v <- .tf_need(x, "x", 2L)
   lv <- as.integer(levels)
   r <- .tf_dwt(v, "db1", lv)
   coeffs <- c(list(r$approx), r$details)
-  list(approx = r$approx, details = r$details, coeffs = coeffs,
-       lengths = r$lengths, levels = lv,
-       energy = .morie_fsum(vapply(coeffs, function(c) .morie_fsum(c * c),
-                                   numeric(1))),
-       input_energy = .morie_fsum(v * v),
-       method = paste("Two-tap (Haar / db1) orthogonal DWT; the L=2 case of",
-                      "Daubechies (1992) Table 6.1, dyadic grid per",
-                      "Rangayyan & Krishnan (2024) eq (8.113)"))
+  list(
+    approx = r$approx, details = r$details, coeffs = coeffs,
+    lengths = r$lengths, levels = lv,
+    energy = .morie_fsum(vapply(
+      coeffs, function(c) .morie_fsum(c * c),
+      numeric(1)
+    )),
+    input_energy = .morie_fsum(v * v),
+    method = paste(
+      "Two-tap (Haar / db1) orthogonal DWT; the L=2 case of",
+      "Daubechies (1992) Table 6.1, dyadic grid per",
+      "Rangayyan & Krishnan (2024) eq (8.113)"
+    )
+  )
 }
 
 # -- EMD-based instantaneous-frequency spectrum, Sec 9.4 eqs (9.8)-(9.12).
@@ -2423,26 +2493,39 @@ PcgEnvAvg <- function(pcg, ecg, fs = 1000, cycle_len = NULL,
 #' \code{artifact_energy}, \code{snr_improvement_db}, \code{approx_energy},
 #' \code{levels}, \code{wavelet}, \code{fs}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(4)
+#' fs <- 100
+#' tv <- seq(0, 5, by = 1 / fs)
+#' ppg <- sin(2 * pi * 1.2 * tv) + 0.2 * rnorm(length(tv))
+#' str(PpgWtDen(ppg, fs = fs), max.level = 1)
+#' @keywords internal
 PpgWtDen <- function(ppg, fs = 100, wavelet = "db4", levels = 4,
                      threshold_type = "soft") {
   v <- .tf_need(ppg, "ppg", 8L)
   fs <- as.numeric(fs)
   if (fs <= 0) stop("fs must be positive")
-  r <- WtThresh(v, wavelet = wavelet, levels = as.integer(levels),
-                threshold_type = threshold_type)
+  r <- WtThresh(v,
+    wavelet = wavelet, levels = as.integer(levels),
+    threshold_type = threshold_type
+  )
   den <- r$denoised
   art <- v - den
   ein <- .morie_fsum(v * v)
   ea <- .morie_fsum(art * art)
   a <- .tf_dwt(v, wavelet, as.integer(levels))$approx
-  list(denoised = den, artifact = art, threshold = r$threshold, sigma = r$sigma,
-       artifact_energy = ea,
-       snr_improvement_db = if (ea > 0) 10 * log(ein / ea) / log(10) else Inf,
-       approx_energy = .morie_fsum(a * a), levels = as.integer(levels),
-       wavelet = as.character(wavelet), fs = fs,
-       method = paste("Wavelet-shrinkage denoising of PPG, Rangayyan & Krishnan",
-                      "(2024) Sec 8.14 (Daubechies wavelets best, per its",
-                      "reference [91]) with eqs (8.103)-(8.105)"))
+  list(
+    denoised = den, artifact = art, threshold = r$threshold, sigma = r$sigma,
+    artifact_energy = ea,
+    snr_improvement_db = if (ea > 0) 10 * log(ein / ea) / log(10) else Inf,
+    approx_energy = .morie_fsum(a * a), levels = as.integer(levels),
+    wavelet = as.character(wavelet), fs = fs,
+    method = paste(
+      "Wavelet-shrinkage denoising of PPG, Rangayyan & Krishnan",
+      "(2024) Sec 8.14 (Daubechies wavelets best, per its",
+      "reference [91]) with eqs (8.103)-(8.105)"
+    )
+  )
 }
 
 # -- Scalogram (|CWT|^2), eq (8.107) and Figure 8.29.
@@ -2460,20 +2543,32 @@ PpgWtDen <- function(ppg, fs = 100, wavelet = "db4", levels = 4,
 #' @return A list with \code{scalogram}, \code{scales}, \code{freqs}, \code{times},
 #' \code{energy_per_scale}, \code{total_energy}, \code{ridge}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Scalogram(V)
+#' @keywords internal
 Scalogram <- function(x, fs = 1, scales = NULL, wavelet = "morlet", w0 = 5) {
   r <- Cwt(x, fs = fs, wavelet = wavelet, scales = scales, w0 = w0)
-  sg <- do.call(rbind, lapply(r$coeffs, function(row) Mod(row) ^ 2))
+  sg <- do.call(rbind, lapply(r$coeffs, function(row) Mod(row)^2))
   n <- ncol(sg)
   ridge <- vapply(seq_len(n), function(i) which.max(sg[, i]), integer(1))
-  list(scalogram = sg, scales = r$scales, freqs = r$freqs, times = r$times,
-       energy_per_scale = vapply(seq_len(nrow(sg)),
-                                 function(s) .morie_fsum(sg[s, ]), numeric(1)),
-       total_energy = .morie_fsum(vapply(seq_len(nrow(sg)),
-                                         function(s) .morie_fsum(sg[s, ]),
-                                         numeric(1))),
-       ridge = ridge,
-       method = paste("Scalogram (|CWT|^2), Rangayyan & Krishnan (2024)",
-                      "eq (8.107) and Figure 8.29"))
+  list(
+    scalogram = sg, scales = r$scales, freqs = r$freqs, times = r$times,
+    energy_per_scale = vapply(
+      seq_len(nrow(sg)),
+      function(s) .morie_fsum(sg[s, ]), numeric(1)
+    ),
+    total_energy = .morie_fsum(vapply(
+      seq_len(nrow(sg)),
+      function(s) .morie_fsum(sg[s, ]),
+      numeric(1)
+    )),
+    ridge = ridge,
+    method = paste(
+      "Scalogram (|CWT|^2), Rangayyan & Krishnan (2024)",
+      "eq (8.107) and Figure 8.29"
+    )
+  )
 }
 
 # -- Fluctuation intensity of DWT coefficients, Sec 8.17 eq (8.132).
@@ -2557,6 +2652,9 @@ SeizWt <- function(eeg, fs = 1, wavelet = "db4", levels = 5,
 #' \code{achieved_t_res}, \code{achieved_f_res}, \code{tf_product},
 #' \code{heisenberg_bound}, \code{feasible}, \code{method}.
 #' @export
+#' @examples
+#' StftParam(fs = 250, desired_t_res = 0.2, desired_f_res = 2)
+#' @keywords internal
 StftParam <- function(fs, desired_t_res, desired_f_res) {
   fs <- as.numeric(fs)
   dt <- as.numeric(desired_t_res)
@@ -2568,11 +2666,15 @@ StftParam <- function(fs, desired_t_res, desired_f_res) {
   m_f <- max(2L, as.integer(trunc(fs / df + 0.5)))
   feasible <- dt * df >= 1
   m <- if (!feasible) m_f else m_t
-  list(nperseg_time = m_t, nperseg_freq = m_f, nperseg = m,
-       achieved_t_res = m / fs, achieved_f_res = fs / m, tf_product = dt * df,
-       heisenberg_bound = 1 / (4 * pi), feasible = feasible,
-       method = paste("STFT window selection under the time-bandwidth limit,",
-                      "Rangayyan & Krishnan (2024) eq (8.10)"))
+  list(
+    nperseg_time = m_t, nperseg_freq = m_f, nperseg = m,
+    achieved_t_res = m / fs, achieved_f_res = fs / m, tf_product = dt * df,
+    heisenberg_bound = 1 / (4 * pi), feasible = feasible,
+    method = paste(
+      "STFT window selection under the time-bandwidth limit,",
+      "Rangayyan & Krishnan (2024) eq (8.10)"
+    )
+  )
 }
 
 # -- STFT spectrogram, eq (8.8); |STFT|^2 per the text after eq (8.9).
@@ -3048,6 +3150,10 @@ WtXcor <- function(x, y, wavelet = "db4", levels = 3, max_lag = 0) {
 #' @return A list with \code{tfd}, \code{times}, \code{freqs}, \code{peak_freq},
 #' \code{total_energy}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' WvDist(V)
+#' @keywords internal
 WvDist <- function(x, fs = 1, nfreq = NULL) {
   v <- .tf_need(x, "x", 4L)
   fs <- as.numeric(fs)
@@ -3056,13 +3162,19 @@ WvDist <- function(x, fs = 1, nfreq = NULL) {
   if (nf < 2L) stop("nfreq must be >= 2")
   r <- .tf_wvd(v, fs, nf)
   col <- vapply(seq_len(nf), function(k) .morie_fsum(r$tfd[, k]), numeric(1))
-  list(tfd = r$tfd, times = (seq_along(v) - 1) / fs, freqs = r$freqs,
-       peak_freq = r$freqs[which.max(col)],
-       total_energy = .morie_fsum(vapply(seq_len(nrow(r$tfd)),
-                                         function(i) .morie_fsum(r$tfd[i, ]),
-                                         numeric(1))),
-       method = paste("Wigner-Ville distribution, Rangayyan & Krishnan (2024)",
-                      "eq (8.123), analytic-signal (Claasen-Mecklenbrauker) form"))
+  list(
+    tfd = r$tfd, times = (seq_along(v) - 1) / fs, freqs = r$freqs,
+    peak_freq = r$freqs[which.max(col)],
+    total_energy = .morie_fsum(vapply(
+      seq_len(nrow(r$tfd)),
+      function(i) .morie_fsum(r$tfd[i, ]),
+      numeric(1)
+    )),
+    method = paste(
+      "Wigner-Ville distribution, Rangayyan & Krishnan (2024)",
+      "eq (8.123), analytic-signal (Claasen-Mecklenbrauker) form"
+    )
+  )
 }
 
 # -- Wavelet subband energy, Sec 8.15.
@@ -3079,6 +3191,11 @@ WvDist <- function(x, fs = 1, nfreq = NULL) {
 #' \code{total_energy}, \code{input_energy}, \code{energy_balance}, \code{dominant_band},
 #' \code{levels}, \code{wavelet}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(6)
+#' x <- sin(2 * pi * (1:128) / 16) + rnorm(128, 0, 0.1)
+#' WtEnergy(x, wavelet = "db4", levels = 3)
+#' @keywords internal
 WtEnergy <- function(x, wavelet = "db4", levels = 3) {
   v <- .tf_need(x, "x", 2L)
   lv <- as.integer(levels)
@@ -3088,14 +3205,18 @@ WtEnergy <- function(x, wavelet = "db4", levels = 3) {
   ener <- vapply(bands, function(c) .morie_fsum(c * c), numeric(1))
   tot <- .morie_fsum(ener)
   ein <- .morie_fsum(v * v)
-  list(energies = ener, relative = if (tot > 0) ener / tot else rep(0, length(ener)),
-       labels = labels, total_energy = tot, input_energy = ein,
-       energy_balance = abs(tot - ein),
-       dominant_band = labels[which.max(ener)], levels = lv,
-       wavelet = as.character(wavelet),
-       method = paste("Wavelet subband energy, Rangayyan & Krishnan (2024)",
-                      "Sec 8.15 (Ex = Es1 + Es2 + ... + EsN) over the",
-                      "eq (8.111)-(8.113) orthonormal DWT"))
+  list(
+    energies = ener, relative = if (tot > 0) ener / tot else rep(0, length(ener)),
+    labels = labels, total_energy = tot, input_energy = ein,
+    energy_balance = abs(tot - ein),
+    dominant_band = labels[which.max(ener)], levels = lv,
+    wavelet = as.character(wavelet),
+    method = paste(
+      "Wavelet subband energy, Rangayyan & Krishnan (2024)",
+      "Sec 8.15 (Ex = Es1 + Es2 + ... + EsN) over the",
+      "eq (8.111)-(8.113) orthonormal DWT"
+    )
+  )
 }
 
 # -- Per-subband sample moments of the DWT coefficients.
@@ -3110,6 +3231,11 @@ WtEnergy <- function(x, wavelet = "db4", levels = 3) {
 #' @param levels Coerced to integer by the body, with \code{as.integer}. Defaults to \code{3}.
 #' @return A list with \code{moments}, \code{labels}, \code{levels}, \code{wavelet}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(6)
+#' x <- sin(2 * pi * (1:128) / 16) + rnorm(128, 0, 0.1)
+#' WtMoment(x, wavelet = "db4", levels = 3)
+#' @keywords internal
 WtMoment <- function(x, wavelet = "db4", levels = 3) {
   v <- .tf_need(x, "x", 2L)
   lv <- as.integer(levels)
@@ -3121,22 +3247,28 @@ WtMoment <- function(x, wavelet = "db4", levels = 3) {
     c <- bands[[q]]
     n <- length(c)
     mu <- .morie_fsum(c) / n
-    var <- .morie_fsum((c - mu) ^ 2) / n
+    var <- .morie_fsum((c - mu)^2) / n
     sdv <- sqrt(var)
     sk <- NULL
     ku <- NULL
     if (n >= 3L && sdv > 0) {
-      sk <- .morie_fsum(((c - mu) / sdv) ^ 3) / n
-      ku <- .morie_fsum(((c - mu) / sdv) ^ 4) / n
+      sk <- .morie_fsum(((c - mu) / sdv)^3) / n
+      ku <- .morie_fsum(((c - mu) / sdv)^4) / n
     }
-    out[[q]] <- list(label = labels[q], n = n, mean = mu, variance = var,
-                     energy = .morie_fsum(c * c), skewness = sk, kurtosis = ku)
+    out[[q]] <- list(
+      label = labels[q], n = n, mean = mu, variance = var,
+      energy = .morie_fsum(c * c), skewness = sk, kurtosis = ku
+    )
   }
-  list(moments = out, labels = labels, levels = lv,
-       wavelet = as.character(wavelet),
-       method = paste("Per-subband sample moments of the Rangayyan & Krishnan",
-                      "(2024) eq (8.111)-(8.113) DWT coefficients; band energy",
-                      "per Sec 8.15"))
+  list(
+    moments = out, labels = labels, levels = lv,
+    wavelet = as.character(wavelet),
+    method = paste(
+      "Per-subband sample moments of the Rangayyan & Krishnan",
+      "(2024) eq (8.111)-(8.113) DWT coefficients; band energy",
+      "per Sec 8.15"
+    )
+  )
 }
 
 # -- Wavelet packet decomposition (full binary tree, natural order).

@@ -21,3 +21,8 @@ A step of the plsa_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+m_step(n_dw = c(1, 2, 3, 4, 5, 6, 7, 8),
+  post = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), K = 5L)
+}
+\keyword{internal}

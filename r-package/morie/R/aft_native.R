@@ -34,17 +34,21 @@
     return(list(logdens = zz - 2 * lae, logsurv = -lae))
   }
   if (identical(family, "lognormal")) {
-    return(list(logdens = stats::dnorm(z, log = TRUE),
-                logsurv = stats::pnorm(z, lower.tail = FALSE, log.p = TRUE)))
+    return(list(
+      logdens = stats::dnorm(z, log = TRUE),
+      logsurv = stats::pnorm(z, lower.tail = FALSE, log.p = TRUE)
+    ))
   }
-  stop(sprintf(paste('family must be "weibull", "loglogistic" or',
-                     '"lognormal", got "%s"'), family), call. = FALSE)
+  stop(sprintf(paste(
+    'family must be "weibull", "loglogistic" or',
+    '"lognormal", got "%s"'
+  ), family), call. = FALSE)
 }
 
 # Inverse of the central-difference Hessian. The optimiser's own
 # inverse-Hessian is a secant approximation accumulated along whatever
 # path it walked, so it is not reproducible across solvers; this is.
-#' Inverse of the central-difference Hessian. The optimiser\'s own
+#' Inverse of the central-difference Hessian. The optimiser's own
 #'
 #' inverse-Hessian is a secant approximation accumulated along whatever
 #' path it walked, so it is not reproducible across solvers; this is.
@@ -114,28 +118,34 @@
     -sum(ifelse(e > 0, ds$logdens - log(sigma), ds$logsurv))
   }
   start <- c(as.vector(qr.solve(A, logt)), 0)
-  res <- stats::optim(start, nll, method = "BFGS",
-                      # the caller's tolerance, not a hard-wired one: tol was accepted
+  res <- stats::optim(start, nll,
+    method = "BFGS",
+    # the caller's tolerance, not a hard-wired one: tol was accepted
     # and ignored, so neither loosening it for a hard fit nor
     # tightening it for a delicate one did anything. The default is
     # set to the value that used to be wired in, so no existing call
     # changes its answer.
-    control = list(maxit = max_iter, reltol = tol))
+    control = list(maxit = max_iter, reltol = tol)
+  )
   # A second pass from the first answer: BFGS stops on a relative
   # criterion, and restarting resets the approximation, which buys the
   # last few digits that the cross-language comparison needs.
-  res <- stats::optim(res$par, nll, method = "BFGS",
-                      # the caller's tolerance, not a hard-wired one: tol was accepted
+  res <- stats::optim(res$par, nll,
+    method = "BFGS",
+    # the caller's tolerance, not a hard-wired one: tol was accepted
     # and ignored, so neither loosening it for a hard fit nor
     # tightening it for a delicate one did anything. The default is
     # set to the value that used to be wired in, so no existing call
     # changes its answer.
-    control = list(maxit = max_iter, reltol = tol))
+    control = list(maxit = max_iter, reltol = tol)
+  )
   theta <- res$par
-  list(beta = theta[seq_len(p)], log_sigma = theta[p + 1L],
-       loglik = -res$value, cov = .morie_numeric_cov(nll, theta),
-       n_iter = as.integer(res$counts[[1L]]),
-       converged = identical(res$convergence, 0L))
+  list(
+    beta = theta[seq_len(p)], log_sigma = theta[p + 1L],
+    loglik = -res$value, cov = .morie_numeric_cov(nll, theta),
+    n_iter = as.integer(res$counts[[1L]]),
+    converged = identical(res$convergence, 0L)
+  )
 }
 
 #' .morie_aft_result
@@ -164,12 +174,14 @@
   } else {
     sqrt(pmax(diag(fit$cov)[seq_len(p)], 0))
   }
-  list(beta = fit$beta, se = se, time_ratio = exp(fit$beta),
-       sigma = exp(fit$log_sigma), log_sigma = fit$log_sigma,
-       loglik = fit$loglik, aic = 2 * (p + 1) - 2 * fit$loglik,
-       family = family, n = length(t), n_events = as.integer(sum(e)),
-       n_iter = fit$n_iter, converged = fit$converged, cov = fit$cov,
-       time = t, event = e, X = X, method = method)
+  list(
+    beta = fit$beta, se = se, time_ratio = exp(fit$beta),
+    sigma = exp(fit$log_sigma), log_sigma = fit$log_sigma,
+    loglik = fit$loglik, aic = 2 * (p + 1) - 2 * fit$loglik,
+    family = family, n = length(t), n_events = as.integer(sum(e)),
+    n_iter = fit$n_iter, converged = fit$converged, cov = fit$cov,
+    time = t, event = e, X = X, method = method
+  )
 }
 
 #' .morie_aft_common
@@ -227,8 +239,10 @@
 #' round(morie_aft_weibull(tt, rep(1, 100), X)$time_ratio, 3)
 #' @export
 morie_aft_weibull <- function(time, event, X, ...) {
-  .morie_aft_common(time, event, X, "weibull", "Weibull AFT model",
-                    "aft_weibull", ...)
+  .morie_aft_common(
+    time, event, X, "weibull", "Weibull AFT model",
+    "aft_weibull", ...
+  )
 }
 
 
@@ -253,8 +267,10 @@ morie_aft_weibull <- function(time, event, X, ...) {
 #' round(morie_aft_log_logistic(tt, rep(1, 100), X)$sigma, 3)
 #' @export
 morie_aft_log_logistic <- function(time, event, X, ...) {
-  .morie_aft_common(time, event, X, "loglogistic", "Log-logistic AFT model",
-                    "aft_log_logistic", ...)
+  .morie_aft_common(
+    time, event, X, "loglogistic", "Log-logistic AFT model",
+    "aft_log_logistic", ...
+  )
 }
 
 
@@ -277,8 +293,10 @@ morie_aft_log_logistic <- function(time, event, X, ...) {
 #' round(morie_aft_generalized_gamma(tt, rep(1, 100), X)$beta, 3)
 #' @export
 morie_aft_generalized_gamma <- function(time, event, X, ...) {
-  .morie_aft_common(time, event, X, "lognormal", "Log-normal AFT model",
-                    "aft_generalized_gamma", ...)
+  .morie_aft_common(
+    time, event, X, "lognormal", "Log-normal AFT model",
+    "aft_generalized_gamma", ...
+  )
 }
 
 
@@ -311,8 +329,10 @@ morie_aft_generalized_gamma <- function(time, event, X, ...) {
 morie_aft_residuals <- function(fit) {
   for (k in c("time", "event", "X", "beta", "log_sigma", "family")) {
     if (is.null(fit[[k]])) {
-      stop(sprintf(paste("fit is missing '%s'; pass a result from one of",
-                         "the AFT fitters"), k), call. = FALSE)
+      stop(sprintf(paste(
+        "fit is missing '%s'; pass a result from one of",
+        "the AFT fitters"
+      ), k), call. = FALSE)
     }
   }
   t <- as.numeric(fit$time)
@@ -328,6 +348,8 @@ morie_aft_residuals <- function(fit) {
   mart <- e - cs
   inner <- -2 * (mart + ifelse(e > 0, e * log(pmax(e - mart, 1e-300)), 0))
   dev <- sign(mart) * sqrt(pmax(inner, 0))
-  list(standardized = z, cox_snell = cs, martingale = mart, deviance = dev,
-       event = e, family = fam, method = "aft_residuals")
+  list(
+    standardized = z, cox_snell = cs, martingale = mart, deviance = dev,
+    event = e, family = fam, method = "aft_residuals"
+  )
 }

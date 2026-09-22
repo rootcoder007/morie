@@ -17,9 +17,7 @@ in \code{df}.}
 by stratum (post-stratification target).}
 }
 \value{
-Numeric vector of post-stratification weights, one per row
-of \code{df}, scaled so each stratum's weighted share matches the
-stratum's share of \code{population_counts}.
+A numeric vector of post-stratification weights.
 }
 \description{
 Delegates to \code{survey::postStratify()} when given a design; otherwise
@@ -28,10 +26,7 @@ computes raw post-stratification factors in base R.
 \examples{
 \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 set.seed(1)
-df <- data.frame(stratum = sample(c("A", "B"), 40, replace = TRUE),
-                 w = rep(1, 40))
-pc <- c(A = 100, B = 150)
-r <- morie_survey_poststratify(df, "stratum", pc)
-is.list(r) || is.data.frame(r) || is.numeric(r)
+df <- data.frame(g = rep(c("a", "b"), 15))
+str(morie_survey_poststratify(df, "g", c(a = 60, b = 40)), max.level = 1)
 \dontshow{\}) # examplesIf}
 }

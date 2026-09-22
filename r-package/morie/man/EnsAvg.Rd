@@ -15,3 +15,8 @@ A list with \code{average}, \code{sd}, \code{m}, \code{n}, \code{se}, \code{meth
 \description{
 signal, a filtered version of the M observations.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+EnsAvg(V)
+}
+\keyword{internal}

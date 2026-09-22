@@ -27,8 +27,13 @@ Any \code{k >= k0} achieves every pairwise squared distance within
 \code{1 +/- epsilon} with probability at least
 \code{1 - n^-beta}.
 }
+\examples{
+set.seed(1)
+r <- target_dimension(n = 8L, epsilon = 0.5); TRUE
+}
 \references{
 Achlioptas, D. (2003). Database-friendly random
 projections. Journal of Computer and System Sciences, 66(4),
 671-687, Theorem 1.1.
 }
+\keyword{internal}

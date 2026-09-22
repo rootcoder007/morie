@@ -11,6 +11,24 @@
 
 \item{...}{Ignored; accepted for S3 consistency.}
 }
+\value{
+The value of \code{invisible}.
+}
 \description{
 Print method for \code{morie_iv} objects
 }
+\examples{
+set.seed(1)
+n <- 200
+z <- rnorm(n)
+xend <- 0.8 * z + rnorm(n)
+yy <- 1 + 2 * xend + rnorm(n)
+df <- data.frame(y = yy, x = xend, z = z)
+fit <- morie_iv_2sls(df, "y", "x", "z")
+print(fit)
+}
+\references{
+Staiger & Stock (1997); Anderson & Rubin (1949);
+Stock & Yogo (2005).
+}
+\keyword{internal}

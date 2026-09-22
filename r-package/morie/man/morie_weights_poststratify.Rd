@@ -16,14 +16,14 @@ morie_weights_poststratify(weights, strata, population_totals)
 calibrate to.}
 }
 \value{
-Numeric vector of post-stratified weights, same length as
-\code{weights}, scaled within each stratum so the weighted sum
-matches \code{population_totals}.
+A numeric value (scalar).
 }
 \description{
 \eqn{w_i^{ps} = w_i \cdot N_h / \hat{N}_h}{w_i^ps = w_i * N_h / N_hat_h}.
 }
 \examples{
-morie_weights_poststratify(weights = c(1, 2, 3, 4, 5, 6, 7, 8), strata = c(1, 2, 3, 4,
-5, 6, 7, 8), population_totals = c(1, 2, 3, 4, 5, 6, 7, 8))
+set.seed(1)
+res <- morie_weights_poststratify(rep(1, 20), rep(c("a", "b"), 10),
+                                  c(a = 60, b = 40))
+str(res, max.level = 1)
 }

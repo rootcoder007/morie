@@ -23,3 +23,7 @@ A step of the unetbk_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+overlap_tiles(height = 100L, width = 100L, tile = 32L, border = 8L)
+}
+\keyword{internal}

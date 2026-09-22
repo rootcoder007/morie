@@ -17,6 +17,5 @@ Character scalar (display label).
 underscores and casing so plot titles look like prose.
 }
 \examples{
-S <- c("a", "b", "c")
-morie_tps_pretty_label(S)
+morie_tps_pretty_label("ASSAULT_RATE_2024")
 }

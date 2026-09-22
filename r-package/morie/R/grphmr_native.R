@@ -1,130 +1,56 @@
-# Graphormer attention: a standard Transformer with structural encodings.
+# Graphormer: making a standard Transformer work on graphs.
 # Sources: Ying, C., Cai, T., Luo, S., Zheng, S., Ke, G., He, D., Shen,
-# Y. & Liu, T.-Y. (2021) Do Transformers Really Perform Bad for Graph
-# Representation?, NeurIPS 2021, 28877-28888, arXiv:2106.05234 -- the
-# three encodings (centrality by degree, spatial bias by shortest-path
-# distance, edge features along the path); Vaswani, A. et al. (2017)
-# Attention Is All You Need, NIPS 2017, 5998-6008 -- the underlying
-# scaled-dot-product attention.
+# Y. and Liu, T.-Y. (2021), Do Transformers Really Perform Bad for
+# Graph Representation?, NeurIPS 2021 (arXiv:2106.05234) -- the
+# centrality, spatial and edge encodings; Vaswani, A. et al. (2017),
+# Attention Is All You Need, NIPS 2017 -- the standard Transformer
+# that Graphormer extends; Dwivedi, V. P. and Bresson, X. (2020), A
+# Generalization of Transformer Networks to Graphs, arXiv:2012.09699
+# -- the neighbour-only alternative.
 #
-# Native R port mirroring morie.fn.grphmr exactly. The Python arm uses
-# python-native dicts and a 1-based BFS over adjacency lists; we keep
-# the same graph convention (vertex keys 0..N-1 stored as the integer
-# indices of the adjacency list vectors) and reproduce the same bias
-# values, the same unreachable default, and the same attention logits.
+# Native implementation mirroring Python morie.fn.grphmr exactly: the
+# same degree-indexed learnable vectors added at the input layer, the
+# same BFS all-pairs shortest-path matrix with UNREACHABLE pairs
+# getting a learnable bias, the same averaged edge feature along the
+# path, and the same QK^T/sqrt(d) + bias + edge_bias attention logits.
 
-#' Graphormer attention with structural encodings
+# Mirrors the constant in the Python arm.
+.GRPHMR_UNREACHABLE <- -1L
+
+#' Learnable vector per degree, added at the input layer
 #'
-#' A standard scaled-dot-product attention layer, augmented with the
-#' three structural encodings of Ying et al. (2021): a per-degree
-#' centrality vector added to the node features; a per-shortest-path
-#' distance bias added inside the softmax; and an edge-feature
-#' contribution along the same paths.
-#'
-#' @param H Node features, an N x d matrix.
-#' @param WQ,WK,WV Projection matrices, each d x d.
-#' @param bias Spatial bias matrix, N x N.
-#' @param edge_bias Optional edge-feature bias as a length-N^2 vector
-#'   indexed row-major, or a named numeric vector keyed by
-#'   \code{"i,j"}.
-#' @return A list with \code{estimate}, \code{output}, \code{weights},
-#'   \code{method}, \code{note}.
-#' @references Ying, C. et al. (2021). Do Transformers Really Perform
-#'   Bad for Graph Representation? NeurIPS 2021, 28877-28888.
+#' @param adj Adjacency list.
+#' @param n Number of vertices.
+#' @param z_in List of degree-indexed learnable vectors (in-degree).
+#' @param z_out Optional list of out-degree vectors.
+#' @param directed If TRUE, combine in- and out-degree vectors.
+#' @return List with encoding, degrees, note.
 #' @export
-morie_grphmr <- function(H, WQ, WK, WV, bias, edge_bias = NULL) {
-  X <- as.matrix(H)
-  storage.mode(X) <- "double"
-  n <- nrow(X)
-  dk <- ncol(X)
-  bias <- as.matrix(bias)
-  storage.mode(bias) <- "double"
-  if (nrow(bias) != n || ncol(bias) != n)
-    stop("grphmr: bias must be N x N")
-
-  WQ <- as.matrix(WQ)
-  storage.mode(WQ) <- "double"
-  WK <- as.matrix(WK)
-  storage.mode(WK) <- "double"
-  WV <- as.matrix(WV)
-  storage.mode(WV) <- "double"
-  if (nrow(WQ) != dk || ncol(WQ) != dk) stop("grphmr: WQ shape")
-  if (nrow(WK) != dk || ncol(WK) != dk) stop("grphmr: WK shape")
-  if (nrow(WV) != dk || ncol(WV) != dk) stop("grphmr: WV shape")
-
-  eb <- NULL
-  if (!is.null(edge_bias)) {
-    eb <- matrix(0, n, n)
-    if (is.matrix(edge_bias) || is.numeric(edge_bias)) {
-      M <- as.matrix(edge_bias)
-      storage.mode(M) <- "double"
-      if (nrow(M) != n || ncol(M) != n) stop("grphmr: edge_bias shape")
-      eb <- M
-    } else {
-      for (k in seq_along(edge_bias)) {
-        key <- names(edge_bias)[k]
-        ij <- strsplit(key, ",", fixed = TRUE)[[1]]
-        i <- as.integer(ij[1])
-        j <- as.integer(ij[2])
-        eb[i + 1L, j + 1L] <- as.numeric(edge_bias[k])
-      }
+#' @examples
+#' centrality_encoding(adj = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), n = 5L,
+#'   z_in = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
+centrality_encoding <- function(adj, n, z_in, z_out = NULL,
+                                 directed = FALSE) {
+  N <- as.integer(n)
+  deg_in <- rep(0L, N)
+  deg_out <- rep(0L, N)
+  for (k in names(adj)) {
+    v <- as.integer(k) + 1L
+    nb <- adj[[k]]
+    for (nk in names(nb)) {
+      w <- as.integer(nk) + 1L
+      if (v == w) next
+      deg_out[v] <- deg_out[v] + 1L
+      deg_in[w] <- deg_in[w] + 1L
     }
   }
-
-  Q <- X %*% WQ
-  K <- X %*% WK
-  V <- X %*% WV
-  sc <- (Q %*% t(K)) / sqrt(dk) + bias
-  if (!is.null(eb)) sc <- sc + eb
-  out <- matrix(0, n, dk)
-  weights <- matrix(0, n, n)
-  for (i in seq_len(n)) {
-    row <- sc[i, ]
-    m <- max(row)
-    e <- exp(row - m)
-    z <- sum(e)
-    w <- e / z
-    weights[i, ] <- w
-    out[i, ] <- as.numeric(t(V) %*% w)
-  }
-  list(estimate = out, output = out, weights = weights,
-       method = paste0("Graphormer attention with centrality, spatial ",
-                       "and edge encodings; Ying et al. (2021)"),
-       note = paste0("the architecture is a STANDARD Transformer; the ",
-                     "structural encodings are what was missing"))
-}
-
-#' Graphormer centrality encoding
-#'
-#' Adds a learnable vector indexed by node degree to the input
-#' features. Attention is computed from features, so without this a hub
-#' and a leaf with identical features are indistinguishable.
-#'
-#' @param adj Adjacency list: list of numeric neighbour vectors.
-#' @param n Number of nodes.
-#' @param z_in Length-(maxdeg+1) list of length-d vectors.
-#' @param z_out Optional separate table for out-degree (directed).
-#' @param directed Logical; if TRUE uses in/out degree separately.
-#' @return A list with \code{encoding}, \code{degrees},
-#'   \code{note}.
-#' @export
-morie_grphmr_centrality <- function(adj, n, z_in, z_out = NULL,
-                                    directed = FALSE) {
-  N <- as.integer(n)
-  deg_in <- integer(N)
-  deg_out <- integer(N)
-  for (v in seq_len(N) - 1L) {
-    nbrs <- unique(adj[[v + 1L]])
-    nbrs <- nbrs[nbrs != v]
-    deg_out[v + 1L] <- length(nbrs)
-  }
-  for (w in seq_len(N) - 1L) {
-    src <- which(vapply(seq_len(N), function(v) w %in% adj[[v]], logical(1)))
-    deg_in[w + 1L] <- length(src) - 1L
-  }
   if (!directed) {
-    deg_in <- vapply(seq_len(N) - 1L, function(v)
-      length(setdiff(unique(adj[[v + 1L]]), v)), integer(1))
+    deg_in <- vapply(seq_len(N), function(v) {
+      nb <- adj[[as.character(v - 1L)]]
+      if (is.null(nb)) 0L
+      else length(setdiff(names(nb), as.character(v - 1L)))
+    }, integer(1))
     deg_out <- deg_in
   }
   out <- vector("list", N)
@@ -137,39 +63,42 @@ morie_grphmr_centrality <- function(adj, n, z_in, z_out = NULL,
     }
     out[[v]] <- vec
   }
-  list(encoding = out, degrees = deg_in,
+  list(encoding = out, degrees = as.integer(deg_in),
        note = "indexed by degree, added at the INPUT layer")
 }
 
-#' All-pairs shortest path distances
+#' All-pairs shortest path lengths by BFS
 #'
-#' BFS from every node; pairs with no path are assigned
-#' \code{UNREACHABLE} so they can take a special bias rather than
-#' producing NaNs downstream.
-#'
-#' @param adj Adjacency list: list of numeric neighbour vectors.
-#' @param n Number of nodes.
-#' @return A list with \code{distance} (N x N integer matrix),
-#'   \code{unreachable}, \code{n_unreachable}.
+#' @param adj Adjacency list.
+#' @param n Number of vertices.
+#' @return List with distance matrix, unreachable, n_unreachable.
 #' @export
-morie_grphmr_sp <- function(adj, n) {
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' shortest_path_matrix(D, V)
+#' @keywords internal
+shortest_path_matrix <- function(adj, n) {
   N <- as.integer(n)
-  D <- matrix(-1L, N, N)
-  for (s in seq_len(N) - 1L) {
-    D[s + 1L, s + 1L] <- 0L
-    seen <- rep(FALSE, N)
-    seen[s + 1L] <- TRUE
+  D <- matrix(.GRPHMR_UNREACHABLE, nrow = N, ncol = N)
+  for (s in seq_len(N)) {
+    D[s, s] <- 0L
     frontier <- s
     d <- 0L
+    seen <- new.env(hash = TRUE, parent = emptyenv())
+    seen[[as.character(s - 1L)]] <- TRUE
     while (length(frontier) > 0L) {
       d <- d + 1L
       nxt <- integer(0)
       for (v in frontier) {
-        nbrs <- setdiff(unique(adj[[v + 1L]]), v)
-        for (w in nbrs) {
-          if (!seen[w + 1L]) {
-            seen[w + 1L] <- TRUE
-            D[s + 1L, w + 1L] <- d
+        nb <- adj[[as.character(v - 1L)]]
+        if (is.null(nb)) next
+        nbks <- sort(setdiff(names(nb), as.character(v - 1L)))
+        for (k in nbks) {
+          if (is.null(seen[[k]])) {
+            seen[[k]] <- TRUE
+            w <- as.integer(k) + 1L
+            D[s, w] <- d
             nxt <- c(nxt, w)
           }
         }
@@ -177,79 +106,140 @@ morie_grphmr_sp <- function(adj, n) {
       frontier <- nxt
     }
   }
-  list(distance = D, unreachable = -1L,
-       n_unreachable = sum(D == -1L))
+  list(distance = D, unreachable = .GRPHMR_UNREACHABLE,
+       n_unreachable = sum(D == .GRPHMR_UNREACHABLE))
 }
 
-#' Spatial bias from the shortest-path distance matrix
+#' Turn the distance matrix into the attention bias
 #'
-#' Looks up \code{b_table[d]} (clipped to the table size) and uses
-#' \code{unreachable_bias} for disconnected pairs.
-#'
-#' @param distance N x N matrix from \code{shortest_path_matrix}.
-#' @param b_table Numeric vector of learnable biases indexed by
-#'   distance.
-#' @param unreachable_bias Bias for disconnected pairs; defaults to
-#'   \code{-10}.
-#' @return A list with \code{bias}, \code{unreachable_bias},
-#'   \code{note}.
+#' @param distance Square integer distance matrix.
+#' @param b_table Learnable bias table indexed by distance.
+#' @param unreachable_bias Bias for unreachable pairs.
+#' @return List with bias, unreachable_bias, note.
 #' @export
-morie_grphmr_spatial <- function(distance, b_table, unreachable_bias = -10) {
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' spatial_bias(M, V)
+#' @keywords internal
+spatial_bias <- function(distance, b_table, unreachable_bias = NULL) {
   D <- matrix(as.integer(distance), nrow = nrow(distance))
-  N <- nrow(D)
-  ub <- as.numeric(unreachable_bias)
-  out <- matrix(0, N, N)
-  for (i in seq_len(N)) {
-    for (j in seq_len(N)) {
-      if (D[i, j] == -1L) out[i, j] <- ub
+  ub <- if (is.null(unreachable_bias)) -10.0 else as.numeric(unreachable_bias)
+  out <- matrix(0, nrow = nrow(D), ncol = ncol(D))
+  for (i in seq_len(nrow(D))) {
+    for (j in seq_len(ncol(D))) {
+      if (D[i, j] == .GRPHMR_UNREACHABLE) out[i, j] <- ub
       else {
-        d <- min(D[i, j], length(b_table) - 1L)
-        out[i, j] <- as.numeric(b_table[d + 1L])
+        k <- min(D[i, j], length(b_table) - 1L)
+        out[i, j] <- as.numeric(b_table[[k + 1L]])
       }
     }
   }
   list(bias = out, unreachable_bias = ub,
-       note = paste0("a bias inside the softmax keeps distant nodes ",
-                     "reachable but discouraged"))
+       note = "a bias inside the softmax keeps distant nodes reachable but discouraged")
 }
 
-#' Edge-feature bias averaged along the shortest path
+#' Average edge features along the shortest path
 #'
-#' For each pair the edge features along the path are weighted by
-#' \code{w_table[step]} and averaged across the path length. Bond
-#' type is a property of neither endpoint, so it has to enter the
-#' model here.
-#'
-#' @param paths Named list of integer vectors, one per (i, j) pair.
-#' @param edge_features Named list of numeric vectors keyed by edge
-#'   \code{"u,v"} (and \code{"v,u"}).
-#' @param w_table Length-K numeric vector of step weights.
-#' @return A list with \code{edge_bias} (named numeric vector),
-#'   \code{note}.
+#' @param paths List of (i, j) -> ordered edge tuples along the path.
+#' @param edge_features Edge feature lookup (e or its reverse).
+#' @param w_table Learnable weight table indexed by step.
+#' @return List with edge_bias and note.
 #' @export
-morie_grphmr_edge <- function(paths, edge_features, w_table) {
+#' @examples
+#' edge_encoding(paths = c(1, 2, 3, 4, 5, 6, 7, 8), edge_features = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   w_table = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
+edge_encoding <- function(paths, edge_features, w_table) {
   out <- list()
   for (key in names(paths)) {
     path <- paths[[key]]
-    if (length(path) == 0L) { out[[key]] <- 0.0
+    if (length(path) == 0L) { out[[key]] <- 0
     next }
-    acc <- 0.0
+    acc <- 0
     for (step in seq_along(path)) {
-      e <- path[step]
-      ek <- paste0(e[1], ",", e[2])
-      rk <- paste0(e[2], ",", e[1])
-      f <- if (!is.null(edge_features[[ek]])) edge_features[[ek]]
-           else if (!is.null(edge_features[[rk]])) edge_features[[rk]]
-           else stop("grphmr: no features for edge ", ek)
+      e <- path[[step]]
+      ekey <- if (is.character(e)) e
+              else paste0("(", e[1], ", ", e[2], ")")
+      f <- edge_features[[ekey]]
+      if (is.null(f)) {
+        rekey <- if (is.character(e)) e
+                 else paste0("(", e[2], ", ", e[1], ")")
+        f <- edge_features[[rekey]]
+      }
+      if (is.null(f))
+        stop(paste0("grphmr: no features for edge ", ekey))
+      w <- w_table[[min(step, length(w_table))]]
       fv <- as.numeric(f)
-      s <- min(step, length(w_table))
-      wv <- as.numeric(w_table[[s]])
-      L <- min(length(fv), length(wv))
-      acc <- acc + sum(fv[seq_len(L)] * wv[seq_len(L)])
+      wv <- as.numeric(w)
+      acc <- acc + sum(fv * wv)
     }
     out[[key]] <- acc / length(path)
   }
   list(edge_bias = out,
-       note = paste0("edge information cannot reach the model through ",
-                     "node features"))
+       note = "edge information cannot reach the model through node features")
 }
+
+#' Full attention with the structural biases added to the logits
+#'
+#' @param H Node feature matrix (n x d).
+#' @param WQ Query projection matrix.
+#' @param WK Key projection matrix.
+#' @param WV Value projection matrix.
+#' @param bias Spatial bias matrix.
+#' @param edge_bias Optional list of edge biases keyed by (i, j).
+#' @return List with output, weights, method, note.
+#' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' spatial_bias(M, V)
+#' graphormer_attention(H = M, WQ = M, WK = M, WV = M, bias = M)
+#' @keywords internal
+graphormer_attention <- function(H, WQ, WK, WV, bias, edge_bias = NULL) {
+  X <- as.matrix(H)
+  storage.mode(X) <- "double"
+  n <- nrow(X)
+  dk <- ncol(WQ)
+  WQ <- as.matrix(WQ)
+  storage.mode(WQ) <- "double"
+  WK <- as.matrix(WK)
+  storage.mode(WK) <- "double"
+  WV <- as.matrix(WV)
+  storage.mode(WV) <- "double"
+  B <- as.matrix(bias)
+  storage.mode(B) <- "double"
+  out <- matrix(0, nrow = n, ncol = nrow(WV))
+  weights <- matrix(0, nrow = n, ncol = n)
+  for (i in seq_len(n)) {
+    q <- as.numeric(WQ %*% X[i, ])
+    sc <- numeric(n)
+    for (j in seq_len(n)) {
+      kj <- as.numeric(WK %*% X[j, ])
+      s <- sum(q * kj) / sqrt(dk) + B[i, j]
+      if (!is.null(edge_bias)) {
+        key <- paste0("(", i - 1L, ", ", j - 1L, ")")
+        s <- s + as.numeric(edge_bias[[key]])
+      }
+      sc[j] <- s
+    }
+    m <- max(sc)
+    e <- exp(sc - m)
+    z <- sum(e)
+    w <- e / z
+    weights[i, ] <- w
+    Vproj <- WV %*% t(X)
+    out[i, ] <- as.numeric(w %*% Vproj)
+  }
+  list(estimate = out, output = out, weights = weights,
+       method = "Graphormer attention with centrality, spatial and edge encodings; Ying et al. (2021)",
+       note = "the architecture is a STANDARD Transformer; the structural encodings are what was missing")
+}
+
+# Compact alias
+#' @rdname graphormer_attention
+#' @export
+graphormer <- graphormer_attention
+
+# house entry point: the package exports one morie_<module>
+morie_grphmr <- graphormer_attention

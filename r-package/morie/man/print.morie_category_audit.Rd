@@ -11,6 +11,20 @@
 
 \item{...}{Ignored; accepted for S3 consistency.}
 }
+\value{
+The value of \code{invisible}.
+}
 \description{
 Print method for \code{morie_category_audit} objects
 }
+\examples{
+\donttest{
+df <- data.frame(
+  race = factor(c("1", "2", "2", "3")),
+  city = c("Toronto", "toronto", "Ottawa", "Ottawa")
+)
+obj <- morie_audit_categories(df)
+print(obj)
+}
+}
+\keyword{internal}

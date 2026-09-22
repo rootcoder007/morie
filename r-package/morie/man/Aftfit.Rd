@@ -30,8 +30,8 @@ Coefficients act MULTIPLICATIVELY ON TIME rather than on the hazard, so exp(beta
 time ratio and not a hazard ratio.
 }
 \examples{
-Aftfit(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0), X = c(1,
-2, 3, 4, 5, 6, 7, 8))
+Aftfit(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0),
+  X = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Kalbfleisch, J. D. and Prentice, R. L. (2002). The Statistical Analysis of

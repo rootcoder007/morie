@@ -10,7 +10,7 @@
 
 # ---------------------------------------------------------------------------
 # Dispatcher: run `body` with the real package when present; otherwise bind
-# the registered mock over the morie-internal binding `real_fn`; otherwise
+# the registered mock over the rmorie-internal binding `real_fn`; otherwise
 # skip. `local_mocked_bindings` scopes the rebinding to the calling test.
 with_mocked_or_real <- function(pkg, real_fn, body, env = parent.frame()) {
   if (requireNamespace(pkg, quietly = TRUE)) {
@@ -30,7 +30,7 @@ with_mocked_or_real <- function(pkg, real_fn, body, env = parent.frame()) {
 }
 
 # ---------------------------------------------------------------------------
-# Transport-layer canned responses. morie's network access goes through the
+# Transport-layer canned responses. rmorie's network access goes through the
 # private wrappers .morie_read_text(url) / .morie_download(url, ext), so
 # rebinding those exercises every parser for real without a socket.
 canned_bodies <- list(

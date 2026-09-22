@@ -27,7 +27,7 @@ morie_diffusion_forward(T0, alpha = 0.01, dx = 0.1, dt = 0.01, n_steps = 100L)
 \item{n_steps}{Number of time steps (default 100).}
 }
 \value{
-Named list \code{(value, T_final, T_initial, history,
+Named list \eqn{(value, T_final, T_initial, history,
   r_stability, n_steps, alpha, method)}.
 }
 \description{

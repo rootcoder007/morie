@@ -26,3 +26,9 @@ A list with \code{X}, \code{omega}, \code{f}, \code{variable},
 omega = 2 pi f.  Integrated over the supplied samples, so the limits
 are the duration of the signal.
 }
+\examples{
+x <- rep(1, 201)
+t <- seq(0, 2, length.out = 201)
+Ctft(x, t = t, omega = 0)
+}
+\keyword{internal}

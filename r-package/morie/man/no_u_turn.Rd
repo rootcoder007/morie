@@ -22,3 +22,8 @@ A logical value.
 True (no U-turn) while (theta+ - theta-).r is non-negative at both
 ends.
 }
+\examples{
+no_u_turn(theta_minus = c(1, 2, 3, 4, 5, 6, 7, 8), theta_plus = c(1, 2, 3, 4, 5, 6, 7, 8),
+  r_minus = c(1, 2, 3, 4, 5, 6, 7, 8), r_plus = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

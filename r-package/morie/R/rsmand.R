@@ -13,7 +13,16 @@
 #
 # Helpers live in aaa_helpers_irt.R.
 
-#' @noRd
+#' morie_rating_scale_andrich
+#'
+#' @param theta Argument `theta`; see Usage.
+#' @param b Argument `b`; see Usage.
+#' @param tau Argument `tau`; see Usage.
+#' @return A list with `p`, `eta`, `expected`, `info`, `theta`, `b`, `tau`, `ncat`, `n`, `method`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::morie_rating_scale_andrich(V)
+#' @keywords internal
 morie_rating_scale_andrich <- function(theta, b = 0, tau = 0) {
   th <- as.numeric(theta)
   n <- length(th)

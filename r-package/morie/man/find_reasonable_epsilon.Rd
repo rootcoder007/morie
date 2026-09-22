@@ -27,3 +27,11 @@ The value of \code{eps}, as built in the body.
 acceptance probability crosses one half. The argument \code{rnd} is the
 single-value normal generator (the closure around the shared RNG).
 }
+\examples{
+logp <- function(t) -0.5 * sum(t^2)
+grad <- function(t) -t
+e <- morie:::.ghc_rng(1)
+find_reasonable_epsilon(c(1, -1), logp, grad,
+                        rnd = function() morie:::.ghc_norm(e, 1L))
+}
+\keyword{internal}

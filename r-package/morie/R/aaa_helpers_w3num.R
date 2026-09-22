@@ -60,7 +60,9 @@
 #' @export
 .w3_dot <- function(a, b) {
   n <- length(a)
-  if (n == 0L) return(0)
+  if (n == 0L) {
+    return(0)
+  }
   s <- 0
   cc <- 0
   for (i in seq_len(n)) {
@@ -88,14 +90,18 @@
 #' res <- .w3_logsumexp(v = x)
 #' res
 .w3_logsumexp <- function(v) {
-  if (length(v) == 0L) return(-Inf)
+  if (length(v) == 0L) {
+    return(-Inf)
+  }
   m <- max(v)
-  if (m == -Inf) return(m)
+  if (m == -Inf) {
+    return(m)
+  }
   m + log(.w3_csum(exp(v - m)))
 }
 
 # Lower Cholesky factor L with A = L L'. Explicit, not chol().
-#' Lower Cholesky factor L with A = L L\'. Explicit, not chol()
+#' Lower Cholesky factor L with A = L L'. Explicit, not chol()
 #'
 #' A step of the helpers_w3num implementation. Called by \code{.w3_ols},
 #' \code{morie_cypin_fit}, \code{morie_hyper2} and 3 others in the module.
@@ -114,19 +120,27 @@
   lo <- matrix(0, p, p)
   for (i in seq_len(p)) {
     for (j in seq_len(i)) {
-      s <- a[i, j] - if (j > 1L) .w3_dot(lo[i, seq_len(j - 1L)],
-                                         lo[j, seq_len(j - 1L)]) else 0
+      s <- a[i, j] - if (j > 1L) {
+        .w3_dot(
+          lo[i, seq_len(j - 1L)],
+          lo[j, seq_len(j - 1L)]
+        )
+      } else {
+        0
+      }
       if (i == j) {
         if (s <= 0) stop("matrix is not positive definite")
         lo[i, j] <- sqrt(s)
-      } else lo[i, j] <- s / lo[j, j]
+      } else {
+        lo[i, j] <- s / lo[j, j]
+      }
     }
   }
   lo
 }
 
 # Solve L L' x = b by forward then back substitution.
-#' Solve L L\' x = b by forward then back substitution
+#' Solve L L' x = b by forward then back substitution
 #'
 #' A step of the helpers_w3num implementation. Called by \code{.w3_inv_from_chol},
 #' \code{.w3_ols}, \code{morie_cypin_fit} and 3 others in the module.
@@ -146,15 +160,21 @@
   }
   x <- numeric(p)
   for (i in seq(p, 1L)) {
-    acc <- if (i < p) .w3_csum(vapply((i + 1L):p, function(k) lo[k, i] * x[k],
-                                      numeric(1))) else 0
+    acc <- if (i < p) {
+      .w3_csum(vapply(
+        (i + 1L):p, function(k) lo[k, i] * x[k],
+        numeric(1)
+      ))
+    } else {
+      0
+    }
     x[i] <- (z[i] - acc) / lo[i, i]
   }
   x
 }
 
 # (L L')^-1, column by column from the factor.
-#' (L L\')^-1, column by column from the factor
+#' (L L')^-1, column by column from the factor
 #'
 #' A step of the helpers_w3num implementation. Called by \code{.w3_ols}.
 #' See the file header for the source the module follows.
@@ -190,32 +210,38 @@
 #' @export
 #' @examples
 #' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .w3_ols(y = y, design = X)
 #' res
 .w3_ols <- function(y, design) {
   n <- length(y)
   p <- ncol(design)
   xtx <- matrix(0, p, p)
-  for (a in seq_len(p)) for (b in seq_len(p))
-    xtx[a, b] <- .w3_csum(design[, a] * design[, b])
+  for (a in seq_len(p)) {
+    for (b in seq_len(p)) {
+      xtx[a, b] <- .w3_csum(design[, a] * design[, b])
+    }
+  }
   xty <- vapply(seq_len(p), function(a) .w3_csum(design[, a] * y), numeric(1))
   lo <- .w3_chol(xtx)
   beta <- .w3_solve_chol(lo, xty)
   fitted <- vapply(seq_len(n), function(i) .w3_dot(design[i, ], beta), numeric(1))
   rss <- .w3_csum((y - fitted) * (y - fitted))
   df <- n - p
-  list(beta = beta, rss = rss, df = df,
-       sigma2 = if (df > 0L) rss / df else NaN,
-       xtx_inv = .w3_inv_from_chol(lo), fitted = fitted, chol = lo)
+  list(
+    beta = beta, rss = rss, df = df,
+    sigma2 = if (df > 0L) rss / df else NaN,
+    xtx_inv = .w3_inv_from_chol(lo), fitted = fitted, chol = lo
+  )
 }
 
-.W3_LG <- c(76.18009172947146, -86.50532032941677, 24.01409824083091,
-            -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5)
+.W3_LG <- c(
+  76.18009172947146, -86.50532032941677, 24.01409824083091,
+  -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5
+)
 
 # Lanczos log-gamma. Not lgamma(): Python's is a different routine.
-#' Lanczos log-gamma. Not lgamma(): Python\'s is a different routine
+#' Lanczos log-gamma. Not lgamma(): Python's is a different routine
 #'
 #' A step of the helpers_w3num implementation. Called by \code{.bnppvl_log_beta},
 #' \code{.w3_betainc}, \code{.w3_gammcf} and 4 others in the module.
@@ -242,7 +268,7 @@
 }
 
 # Q(a, x) by Lentz's continued fraction.
-#' Q(a, x) by Lentz\'s continued fraction
+#' Q(a, x) by Lentz's continued fraction
 #'
 #' A step of the helpers_w3num implementation. Called by \code{.w3_gammp}, \code{.w3_gammq}.
 #' See the file header for the source the module follows.
@@ -289,7 +315,9 @@
 #' @export
 .w3_gammp <- function(a, x) {
   if (x < 0 || a <= 0) stop("gammp: need a > 0 and x >= 0")
-  if (x == 0) return(0)
+  if (x == 0) {
+    return(0)
+  }
   if (x < a + 1) {
     ap <- a
     s <- 1 / a
@@ -319,8 +347,12 @@
 #' @export
 .w3_gammq <- function(a, x) {
   if (x < 0 || a <= 0) stop("gammq: need a > 0 and x >= 0")
-  if (x == 0) return(1)
-  if (x < a + 1) return(1 - .w3_gammp(a, x))
+  if (x == 0) {
+    return(1)
+  }
+  if (x < a + 1) {
+    return(1 - .w3_gammp(a, x))
+  }
   .w3_gammcf(a, x)
 }
 
@@ -332,13 +364,15 @@
 #'
 #' Phi(z) = 1/2 (1 + sign(z) P(1/2, z^2/2)) is an identity, not an
 #' approximation, so this is exactly as accurate as gammp -- and it runs
-#' the same series as the Python arm rather than R\'s own pnorm.
+#' the same series as the Python arm rather than R's own pnorm.
 #'
 #' @param z Numeric; combined arithmetically in the body.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .w3_ncdf <- function(z) {
-  if (z == 0) return(0.5)
+  if (z == 0) {
+    return(0.5)
+  }
   p <- .w3_gammp(0.5, 0.5 * z * z)
   if (z > 0) 0.5 * (1 + p) else 0.5 * (1 - p)
 }
@@ -438,16 +472,22 @@
 #' @return A numeric value.
 #' @export
 .w3_betainc <- function(a, b, x) {
-  if (x <= 0) return(0)
-  if (x >= 1) return(1)
+  if (x <= 0) {
+    return(0)
+  }
+  if (x >= 1) {
+    return(1)
+  }
   lb <- .w3_lgamma(a) + .w3_lgamma(b) - .w3_lgamma(a + b)
   front <- exp(a * log(x) + b * log(1 - x) - lb)
-  if (x < (a + 1) / (a + b + 2)) return(front * .w3_betacf(a, b, x) / a)
+  if (x < (a + 1) / (a + b + 2)) {
+    return(front * .w3_betacf(a, b, x) / a)
+  }
   1 - exp(b * log(1 - x) + a * log(x) - lb) * .w3_betacf(b, a, 1 - x) / b
 }
 
 # Upper tail of Student's t.
-#' Upper tail of Student\'s t
+#' Upper tail of Student's t
 #'
 #' A step of the helpers_w3num implementation. Called by \code{morie_blinkg_scan}.
 #' See the file header for the source the module follows.
@@ -478,16 +518,27 @@
 .w3_bisect <- function(f, lo, hi, iters = 200L) {
   flo <- f(lo)
   fhi <- f(hi)
-  if (flo == 0) return(lo)
-  if (fhi == 0) return(hi)
-  if ((flo > 0) == (fhi > 0))
+  if (flo == 0) {
+    return(lo)
+  }
+  if (fhi == 0) {
+    return(hi)
+  }
+  if ((flo > 0) == (fhi > 0)) {
     stop("bisect: the interval does not bracket a root")
+  }
   for (i in seq_len(iters)) {
     mid <- 0.5 * (lo + hi)
     fm <- f(mid)
-    if (fm == 0) return(mid)
-    if ((fm > 0) == (flo > 0)) { lo <- mid
-    flo <- fm } else hi <- mid
+    if (fm == 0) {
+      return(mid)
+    }
+    if ((fm > 0) == (flo > 0)) {
+      lo <- mid
+      flo <- fm
+    } else {
+      hi <- mid
+    }
   }
   0.5 * (lo + hi)
 }
@@ -565,36 +616,48 @@
     o <- order(vals, seq_len(n + 1L))
     pts <- pts[o]
     vals <- vals[o]
-    cen <- vapply(seq_len(n), function(j)
-      .w3_csum(vapply(seq_len(n), function(i) pts[[i]][j], numeric(1))) / n,
-      numeric(1))
+    cen <- vapply(
+      seq_len(n), function(j) {
+        .w3_csum(vapply(seq_len(n), function(i) pts[[i]][j], numeric(1))) / n
+      },
+      numeric(1)
+    )
     xr <- cen + alpha * (cen - pts[[n + 1L]])
     fr <- f(xr)
     if (fr < vals[1]) {
       xe <- cen + gamma * (xr - cen)
       fe <- f(xe)
-      if (fe < fr) { pts[[n + 1L]] <- xe
-      vals[n + 1L] <- fe }
-      else { pts[[n + 1L]] <- xr
-      vals[n + 1L] <- fr }
+      if (fe < fr) {
+        pts[[n + 1L]] <- xe
+        vals[n + 1L] <- fe
+      } else {
+        pts[[n + 1L]] <- xr
+        vals[n + 1L] <- fr
+      }
       next
     }
-    if (fr < vals[n]) { pts[[n + 1L]] <- xr
-    vals[n + 1L] <- fr
-    next }
+    if (fr < vals[n]) {
+      pts[[n + 1L]] <- xr
+      vals[n + 1L] <- fr
+      next
+    }
     shrink <- TRUE
     if (fr < vals[n + 1L]) {
       xc <- cen + rho * (xr - cen)
       fc <- f(xc)
-      if (fc <= fr) { pts[[n + 1L]] <- xc
-      vals[n + 1L] <- fc
-      shrink <- FALSE }
+      if (fc <= fr) {
+        pts[[n + 1L]] <- xc
+        vals[n + 1L] <- fc
+        shrink <- FALSE
+      }
     } else {
       xc <- cen + rho * (pts[[n + 1L]] - cen)
       fc <- f(xc)
-      if (fc < vals[n + 1L]) { pts[[n + 1L]] <- xc
-      vals[n + 1L] <- fc
-      shrink <- FALSE }
+      if (fc < vals[n + 1L]) {
+        pts[[n + 1L]] <- xc
+        vals[n + 1L] <- fc
+        shrink <- FALSE
+      }
     }
     if (!shrink) next
     for (i in 2:(n + 1L)) {

@@ -22,3 +22,12 @@ A step of the hntfst_native implementation. Called by \code{.center_cate},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(2)
+X <- matrix(rnorm(120), 60, 2)
+y <- X[, 1] + rnorm(60, 0, 0.3)
+f <- grow_forest(X, y, n_trees = 10L)
+w <- forest_weights(f$trees, X, X[1, ])
+sum(w)
+}
+\keyword{internal}

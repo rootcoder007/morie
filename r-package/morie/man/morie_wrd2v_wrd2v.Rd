@@ -20,6 +20,22 @@ morie_wrd2v_wrd2v(
   subsample = NULL,
   seed = 0
 )
+
+morie_wrd2v(
+  corpus,
+  size = 16,
+  window = 5,
+  architecture = "skip-gram",
+  lr = 0.05,
+  epochs = 20,
+  min_count = 1,
+  dynamic_window = TRUE,
+  loss = "softmax",
+  negative = 5,
+  noise_power = 0.75,
+  subsample = NULL,
+  seed = 0
+)
 }
 \arguments{
 \item{corpus}{Iterated over elementwise, with \code{lapply}.}
@@ -60,3 +76,8 @@ A step of the wrd2v_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_wrd2v_wrd2v(V)
+}
+\keyword{internal}

@@ -22,7 +22,6 @@ b07 aggregate Ruhela (pivot to long): With-alert -> seg placements
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_b07 <- morie_synth_otis("b07", n = 120L, seed = 1L)
 morie_otis_analyze_b07_ruhela_aggregate(otis_b07)
 }

@@ -25,3 +25,7 @@ A step of the unetbk_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+valid_output_size(572L, depth = 4L)
+}
+\keyword{internal}

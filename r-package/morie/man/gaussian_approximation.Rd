@@ -41,3 +41,12 @@ A step of the inlasm_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+ga <- gaussian_approximation(
+  log_lik = function(x) -0.5 * (x - 2)^2,
+  log_lik_d1 = function(x) -(x - 2),
+  log_lik_d2 = function(x) -1,
+  prior_mean = 0, prior_precision = 1)
+abs(ga$mode - 1) < 1e-8
+}
+\keyword{internal}

@@ -21,6 +21,11 @@ Numeric vector of length \code{K}, sums to one.
 Numerical-stable softmax of the gate logits
 \eqn{z_k = W_k x + b_k}.
 }
+\examples{
+morie_survvae_gates(x = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8),
+  bias = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
 \references{
 Nagpal et al. (2021), Sec. III.
 }
+\keyword{internal}

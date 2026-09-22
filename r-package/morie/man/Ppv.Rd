@@ -28,3 +28,7 @@ A step of the rangayyan_class implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+Ppv(45, 10)
+}
+\keyword{internal}

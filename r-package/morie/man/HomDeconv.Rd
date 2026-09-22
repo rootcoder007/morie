@@ -22,3 +22,7 @@ A list with \code{y}, \code{cepstrum}, \code{liftered}, \code{cutoff},
 IDFT.  Low quefrency estimates the slowly varying component (the
 vocal tract, the basic wavelet); high quefrency the excitation.
 }
+\examples{
+HomDeconv(y = c(1, 2, 3, 4, 5, 6, 7, 8), cutoff = 0.5)
+}
+\keyword{internal}

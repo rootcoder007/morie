@@ -70,6 +70,10 @@
 #' @param s2 Component variances.
 #' @return sum_k w_k Phi((x - mu_k)/sqrt(s2_k)).
 #' @export
+#' @examples
+#' morie_bnppct_cdf(x = 5L, w = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   s2 = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_bnppct_cdf <- function(x, w, mu, s2)
   .w3_csum(vapply(seq_along(w), function(k)
     w[k] * .w3_ncdf((x - mu[k]) / sqrt(s2[k])), numeric(1)))
@@ -86,6 +90,9 @@ morie_bnppct_cdf <- function(x, w, mu, s2)
 #' @param iters Maximum doublings.
 #' @return A list with the widened lo and hi.
 #' @export
+#' @examples
+#' morie_bnppct_expand(function(x) x - 1, lo = 0, hi = 0.5)
+#' @keywords internal
 morie_bnppct_expand <- function(f, lo, hi, iters = 60L) {
   flo <- f(lo)
   fhi <- f(hi)
@@ -103,6 +110,17 @@ morie_bnppct_expand <- function(f, lo, hi, iters = 60L) {
 }
 
 #' Invert the mixture CDF at q, normalising by the carried mass
+#'
+#' Bisection rather than Newton: the CDF is monotone but its derivative is a
+#' mixture of narrow normals, and a Newton step off a flat stretch between two
+#' well-separated components lands anywhere. The bracket is taken from the
+#' COMPONENTS, not from the data. A slice sampler instantiates components from
+#' the prior to cover the slice, and an inverse-gamma prior draw can be enormous;
+#' such a component leaves the CDF far short of one anywhere near the data, so a
+#' data-width bracket fails to contain the root. That is not a numerical nuisance
+#' -- it is the model saying this draw of F has a very heavy tail -- so the
+#' bracket follows the components and is then widened until it genuinely
+#' brackets.
 #'
 #' Bisection rather than Newton: the CDF is monotone but its derivative
 #' is a mixture of narrow normals, and a Newton step off a flat stretch
@@ -126,6 +144,10 @@ morie_bnppct_expand <- function(f, lo, hi, iters = 60L) {
 #' @param hi Upper end of the bracket, or NULL.
 #' @return The quantile.
 #' @export
+#' @examples
+#' morie_bnppct_quantile(q = 0.5, w = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   s2 = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_bnppct_quantile <- function(q, w, mu, s2, lo = NULL, hi = NULL) {
   mass <- .w3_csum(w)
   if (mass <= 0) return(NaN)
@@ -185,6 +207,17 @@ morie_bnppct_quantile <- function(q, w, mu, s2, lo = NULL, hi = NULL) {
 #' @return A list with, per quantile, the posterior mean, standard
 #'   deviation, median and credible bounds, plus the draws themselves.
 #' @export
+#' @examples
+#' \donttest{
+#' N <- 60L
+#' ii <- 0:(N - 1L)
+#' Y <- exp(0.45 * sin(2.7 * ii) + 0.3 * cos(0.6 * ii)) + 0.15 *
+#'     (ii%%4L)
+#' QS <- c(0.1, 0.5, 0.9)
+#' morie_bnppct(Y, QS, route = "mixture", n_iter = 70L, burn = 50L,
+#'     seed = 7)
+#' }
+#' @keywords internal
 morie_bnppct <- function(y, quantile = 0.5, route = "mixture", alpha = 1,
                          n_iter = 500L, burn = NULL, thin = 1L, seed = 1,
                          cred = 0.9, sampler_route = "walker", kappa = 0.5,
@@ -284,6 +317,9 @@ morie_bnppct <- function(y, quantile = 0.5, route = "mixture", alpha = 1,
 #'
 #' @return A character scalar.
 #' @export
+#' @examples
+#' morie_bnppct_cheatsheet()
+#' @keywords internal
 morie_bnppct_cheatsheet <- function()
   paste0("bnppct: nonparametric Bayes posterior of the quantile ",
          "function. routes ", paste(.BNPPCT_ROUTES, collapse = ", "))

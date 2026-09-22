@@ -56,7 +56,9 @@ Agpuct <- function(P, N, Q, c_puct = 1) {
   }
   best <- 1L
   for (i in seq_len(k)) if (sc[i] > sc[best]) best <- i
-  list(score = sc, estimate = sc[best], U = U, action = best - 1L, n_parent = tot,
-       sqrt_n_parent = rt, c_puct = c, k = k,
-       method = "Q + c_puct P sqrt(sum_b N_b)/(1 + N); Rosin (2011), Silver et al. (2017)")
+  list(
+    score = sc, estimate = sc[best], U = U, action = best - 1L, n_parent = tot,
+    sqrt_n_parent = rt, c_puct = c, k = k,
+    method = "Q + c_puct P sqrt(sum_b N_b)/(1 + N); Rosin (2011), Silver et al. (2017)"
+  )
 }

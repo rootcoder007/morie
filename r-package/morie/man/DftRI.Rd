@@ -16,3 +16,8 @@ A list with \code{X}, \code{cos_projection}, \code{sin_projection},
 \description{
 imaginary part is MINUS the projection onto the corresponding sine.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+DftRI(V)
+}
+\keyword{internal}

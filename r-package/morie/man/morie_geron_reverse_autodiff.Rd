@@ -11,6 +11,14 @@ morie_geron_reverse_autodiff(f, x)
 
 \item{x}{Point.}
 }
+\value{
+A list with \code{gradient}, \code{grad}, \code{value}, \code{tape_size}, \code{n_passes}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Reverse-mode automatic differentiation, delegated to morie_geron_autograd (Geron App A, hmrad)
 }
+\examples{
+morie_geron_reverse_autodiff(function(v) v[[1]] * v[[2]], c(3,
+    4))
+}
+\keyword{internal}

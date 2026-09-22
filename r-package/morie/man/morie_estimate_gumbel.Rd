@@ -46,3 +46,7 @@ A step of the blstn_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_estimate_gumbel(m = 5L, n = 5L, letter_freqs = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

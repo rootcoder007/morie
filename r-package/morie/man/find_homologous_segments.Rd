@@ -19,24 +19,21 @@ find_homologous_segments(
 )
 }
 \arguments{
-\item{group1}{Passed to \code{unlist}.}
+\item{group1}{Iterated over elementwise, with \code{vapply}.}
 
-\item{group2}{Passed to \code{unlist}.}
+\item{group2}{Iterated over elementwise, with \code{vapply}.}
 
 \item{scoring}{A list; the body reads \code{$matrix} from it.}
 
-\item{weights1}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
-\code{as.numeric}.}
+\item{weights1}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 
-\item{weights2}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
-\code{as.numeric}.}
+\item{weights2}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 
 \item{seq_type}{Passed to \code{correlation}. Defaults to \code{"aa"}.}
 
-\item{window}{Numeric; combined arithmetically in the body. Defaults to \code{30L}.}
+\item{window}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{30L}.}
 
-\item{n_peaks}{The body requires: mafft: window, n_peaks and max_len must be positive.
-Defaults to \code{20L}.}
+\item{n_peaks}{Passed to \code{.mafft_peaks}. Defaults to \code{20L}.}
 
 \item{threshold}{Passed to \code{>}. Defaults to \code{0.7}.}
 
@@ -45,11 +42,16 @@ Defaults to \code{20L}.}
 \item{corr_method}{Passed to \code{correlation}. Defaults to \code{"fft"}.}
 }
 \value{
-The value of \code{out}, as built in the body.
+One of two values, depending on the branch taken.
 }
 \description{
 A step of the mafft_native implementation. Called by \code{iterative_refine},
-\code{progressive_align}.
+\code{morie_mafft}, \code{progressive_align}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+find_homologous_segments(group1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+  group2 = c(1, 2, 3, 4, 5, 6, 7, 8), scoring = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

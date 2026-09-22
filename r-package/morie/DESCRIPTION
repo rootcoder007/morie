@@ -181,7 +181,23 @@ Suggests:
   withr,
   writexl,
   xgboost,
-  xml2
+  xml2,
+    broom,
+    cobalt,
+    designmatch,
+    emmeans,
+    gMCP,
+    konfound,
+    lmtest,
+    marginaleffects,
+    mutoss,
+    nanoparquet,
+    poolr,
+    qvalue,
+    rgenoud,
+    rstan,
+    sensemakr,
+    tipr
 VignetteBuilder: knitr
 URL: https://github.com/rootcoder007/morie
 BugReports: https://github.com/rootcoder007/morie/issues

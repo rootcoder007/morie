@@ -4,30 +4,19 @@
 \alias{morie_metabd}
 \title{morie_metabd}
 \usage{
-morie_metabd(
-  tnfs,
-  coverages = NULL,
-  lengths = NULL,
-  threshold = 0.15,
-  min_bin_size = 2e+05
-)
+morie_metabd(op, ...)
 }
 \arguments{
-\item{tnfs}{Passed to \code{bin_contigs}.}
+\item{op}{A vector; its length is taken.}
 
-\item{coverages}{Passed to \code{bin_contigs}.}
-
-\item{lengths}{Passed to \code{bin_contigs}.}
-
-\item{threshold}{Passed to \code{bin_contigs}. Defaults to \code{0.15}.}
-
-\item{min_bin_size}{Passed to \code{bin_contigs}. Defaults to \code{2e+05}.}
+\item{...}{Passed through.}
 }
 \value{
-The value of \code{bin_contigs}.
+The value of \code{switch}.
 }
 \description{
 A step of the metabd_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

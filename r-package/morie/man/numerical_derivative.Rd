@@ -24,3 +24,11 @@ A step of the tlheic_native implementation. Called by \code{estimate_eic},
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+w <- rep(1 / 20, 20)
+score <- rnorm(20)
+psi <- function(wv) sum(wv * (1:20))
+numerical_derivative(psi, w, score)
+}
+\keyword{internal}

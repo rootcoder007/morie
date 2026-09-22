@@ -43,6 +43,8 @@ Mctsq <- function(N, v, unvisited = 0) {
     q <- numeric(length(nn))
     for (a in seq_along(nn)) q[a] <- if (nn[a] > 0) w[a] / nn[a] else as.numeric(unvisited)
   }
-  list(estimate = if (length(q)) q[1] else NaN, q = q, w = w, n = nn,
-       method = "AlphaZero action value Q(s,a) = W(s,a) / N(s,a)")
+  list(
+    estimate = if (length(q)) q[1] else NaN, q = q, w = w, n = nn,
+    method = "AlphaZero action value Q(s,a) = W(s,a) / N(s,a)"
+  )
 }

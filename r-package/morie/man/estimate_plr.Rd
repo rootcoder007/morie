@@ -31,9 +31,10 @@ Named list with \code{ate}, \code{se}, \code{ci_lower}, \code{ci_upper},
 \code{pval}, \code{n_obs}, \code{method}.
 }
 \description{
-Native cross-fit partially-linear-regression estimator
-(Chernozhukov et al. 2018) with SVD-ridge nuisance learners;
-cross-validated against DoubleML.
+Native cross-fitting estimator using ridge regression, following
+Chernozhukov et al. (2018). Cross-validated against \pkg{DoubleML}
+in the package's cross tests but not calling it at runtime; or,
+last-ditch, OLS partialling out.
 }
 \examples{
 \donttest{
@@ -43,8 +44,10 @@ X <- matrix(rnorm(n * 2), n, 2)
 tr <- rbinom(n, 1, plogis(X[, 1]))
 y <- 2 * tr + X[, 1] + rnorm(n)
 df <- data.frame(y = y, d = tr, x1 = X[, 1], x2 = X[, 2])
-res <- suppressWarnings(estimate_plr(df, treatment = "d", outcome = "y",
-                                     covariates = c("x1", "x2")))
+res <- suppressWarnings(estimate_plr(df,
+  treatment = "d", outcome = "y",
+  covariates = c("x1", "x2")
+))
 res$ate
 }
 }

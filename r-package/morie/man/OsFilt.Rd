@@ -31,3 +31,7 @@ A step of the rangayyan_filt implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+OsFilt(x = c(1, 2, 3, 4, 5, 6, 7, 8), window = 5L)
+}
+\keyword{internal}

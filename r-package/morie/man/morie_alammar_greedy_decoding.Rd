@@ -14,6 +14,16 @@ morie_alammar_sampling_decoding(logits, seed = 0)
 
 \item{seed}{LCG seed; the Python mirror draws the same tokens.}
 }
+\value{
+A list with \code{tokens}, \code{had_ties}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Greedy and sampled decoding (Alammar Ch 6)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_greedy_decoding(V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_sampling_decoding(V)
+}
+\keyword{internal}

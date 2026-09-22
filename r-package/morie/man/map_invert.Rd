@@ -30,3 +30,13 @@ A step of the attrInf_native implementation. Called by \code{morie_attrInf}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+model <- function(x) if (identical(x[["0"]], "1")) 1L else 0L
+priors <- list("0" = list("0" = 0.6, "1" = 0.4))
+r <- map_invert(model, y = 1L, known = list("1" = "a"),
+                candidates = list("0", "1"),
+                err = function(y, yp) if (identical(y, yp)) 1 else 0,
+                priors = priors)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -19,3 +19,8 @@ A step of the hierF_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+S <- summing_matrix(list(c(0L, 1L, 2L, 3L), c(0L, 1L), c(2L, 3L)), 4L)
+S
+}
+\keyword{internal}

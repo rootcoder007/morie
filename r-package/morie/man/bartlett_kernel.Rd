@@ -2,13 +2,22 @@
 % Please edit documentation in R/andmnh_native.R
 \name{bartlett_kernel}
 \alias{bartlett_kernel}
-\title{Bartlett (triangular) kernel}
+\title{bartlett_kernel}
 \usage{
 bartlett_kernel(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+}
+\value{
+One of two values, depending on the branch taken.
 }
 \description{
-Bartlett (triangular) kernel
+A step of the andmnh_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+bartlett_kernel(x = 5L)
+}
+\keyword{internal}

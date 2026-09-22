@@ -36,3 +36,13 @@ A step of the tlboot_native implementation. Called by \code{multiplier_bootstrap
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+if (requireNamespace("ranger", quietly = TRUE)) {
+  set.seed(1)
+  d <- rnorm(50, 1)
+  r <- morie_tlboot(d, estimator = function(s) mean(unlist(s)),
+                    B = 200L, method = "naive")
+  str(r, max.level = 1)
+}
+}
+\keyword{internal}

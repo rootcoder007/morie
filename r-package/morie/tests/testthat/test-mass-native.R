@@ -26,6 +26,7 @@ test_that("morie_mvrnorm returns the right shape and recovers moments", {
   expect_error(morie_mvrnorm(1, mu, matrix(c(1, 2, 2, 1), 2)),
                "not positive definite")
 })
+
 # --- Module 31: structural (no MASS reference needed) ----------------
 
 test_that("morie_glm_nb recovers a known NB relationship", {

@@ -27,3 +27,7 @@ is unbounded and the response is exactly nought -- the filter the
 book uses to strip baseline drift, eighth order at 2 Hz.  It leaves
 high-frequency noise untouched; a highpass is not a denoiser.
 }
+\examples{
+BwHpDft(16, kc = 4, N = 2)
+}
+\keyword{internal}

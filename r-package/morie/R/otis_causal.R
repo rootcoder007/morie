@@ -63,20 +63,14 @@ NULL
 # Binarise a column: "Yes"/"No" character (case-insensitive) -> 1/0;
 # numeric NAs -> 0; integer -> as-integer. Mirrors python _binarise.
 # .otis_binarise() is defined once in otis.R (the more robust version:
-# logical/numeric>0/rich string set); shared across the OTIS modules.
+# logical/numeric>0/rich string set with NA preservation); shared across
+# the OTIS modules.
 
 # Build a numeric design matrix (intercept + drop-first dummies) from a
 # data frame and a vector of covariate names. Mirrors python
 # _design_matrix.
-#' Build a numeric design matrix (intercept + drop-first dummies) from a
-#'
-#' data frame and a vector of covariate names. Mirrors python
-#' _design_matrix.
-#'
-#' @param data A matrix; indexed by row and column.
-#' @param covariates A vector; its length is taken.
-#' @return The value of \code{mf}, as built in the body.
-#' @export
+#' Internal helper: Otis Design Matrix
+#' @noRd
 .otis_design_matrix <- function(data, covariates) {
   sub <- data[, covariates, drop = FALSE]
   # Convert character/factor columns to factors with drop-first dummies
@@ -100,26 +94,8 @@ NULL
 }
 
 # Newton-Raphson logistic with ridge penalty.
-#' Newton-Raphson logistic with ridge penalty
-#'
-#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
-#' \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the
-#' module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param X A matrix; passed to \code{nrow}.
-#' @param d Numeric; combined arithmetically in the body.
-#' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{0.001}.
-#' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
-#' @param tol Passed to \code{<}. Defaults to \code{1e-06}.
-#' @return The value of \code{beta}, as built in the body.
-#' @export
-#' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
-#' res <- .otis_logit_fit(X = X, d = 3L)
-#' res
+#' Internal helper: Otis Logit Fit
+#' @noRd
 .otis_logit_fit <- function(X, d, ridge = 1e-3, max_iter = 50L, tol = 1e-6) {
   n <- nrow(X)
   p <- ncol(X)
@@ -141,60 +117,23 @@ NULL
 }
 
 # Clip propensity away from 0/1.
-#' Clip propensity away from 0/1
-#'
-#' A step of the otis_causal implementation. Called by \code{.otis_predict_ps}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param e Passed to \code{pmax}.
-#' @param eps Numeric; combined arithmetically in the body. Defaults to \code{0.02}.
-#' @return The value of \code{pmin}.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .otis_clip_ps(e = x)
-#' res
+#' Internal helper: Otis Clip Ps
+#' @noRd
 .otis_clip_ps <- function(e, eps = 0.02) {
   pmin(pmax(e, eps), 1 - eps)
 }
 
 # Predict propensity from fitted beta on a (possibly new) X.
-#' Predict propensity from fitted beta on a (possibly new) X
-#'
-#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
-#' \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the
-#' module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param X A matrix; passed to \code{\%*\%}.
-#' @param beta A matrix; passed to \code{\%*\%}.
-#' @param eps Passed to \code{.otis_clip_ps}. Defaults to \code{0.02}.
-#' @return The value of \code{.otis_clip_ps}.
-#' @export
+#' Internal helper: Otis Predict Ps
+#' @noRd
 .otis_predict_ps <- function(X, beta, eps = 0.02) {
   eta <- pmin(pmax(as.numeric(X %*% beta), -30), 30)
   .otis_clip_ps(1 / (1 + exp(-eta)), eps = eps)
 }
 
 # Brier + log-loss + observed/predicted prevalence.
-#' Brier + log-loss + observed/predicted prevalence
-#'
-#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
-#' \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param p Numeric; passed to \code{mean}.
-#' @param d Numeric; passed to \code{mean}.
-#' @return A list with \code{brier}, \code{obs_prevalence}, \code{predicted_prevalence},
-#' \code{log_loss}.
-#' @export
-#' @examples
-#' g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
-#' res <- .otis_propensity_diagnostics(p = 0.5, d = g)
-#' res
+#' Internal helper: Otis Propensity Diagnostics
+#' @noRd
 .otis_propensity_diagnostics <- function(p, d) {
   brier <- mean((p - d)^2)
   pc <- pmin(pmax(p, 1e-12), 1 - 1e-12)
@@ -206,35 +145,23 @@ NULL
 }
 
 # Liang-Zeger one-way cluster-robust SE for mean of a score vector.
-#' Liang-Zeger one-way cluster-robust SE for mean of a score vector
-#'
-#' A step of the otis_causal implementation. Called by \code{.otis_multiway_cluster_se}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param scores A vector; its length is taken.
-#' @param cluster Passed to \code{tapply}.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Otis Cluster Se
+#' @noRd
 .otis_cluster_se <- function(scores, cluster) {
   scores <- as.numeric(scores)
   n <- length(scores)
   grp <- tapply(scores, cluster, sum)
-  v <- sum(grp^2) / (n^2)
+  # na.rm: a factor `cluster` may carry levels with no rows in this subset
+  # (e.g. per-year analysis of an individual-clustered panel). tapply emits
+  # NA for those empty clusters; they contribute nothing to the variance, so
+  # drop them rather than poisoning the sum to NA (which produced an NA SE).
+  v <- sum(grp^2, na.rm = TRUE) / (n^2)
   sqrt(max(v, 0))
 }
 
 # Cameron-Gelbach-Miller multi-way cluster-robust SE (up to 2-way).
-#' Cameron-Gelbach-Miller multi-way cluster-robust SE (up to 2-way)
-#'
-#' A step of the otis_causal implementation. Called by \code{morie_otis_irm_dml}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param scores Passed to \code{.otis_cluster_se}.
-#' @param clusters A vector; its length is taken and its elements indexed.
-#' @return The value of \code{.otis_cluster_se}.
-#' @export
+#' Internal helper: Otis Multiway Cluster Se
+#' @noRd
 .otis_multiway_cluster_se <- function(scores, clusters) {
   if (length(clusters) == 1L) {
     return(.otis_cluster_se(scores, clusters[[1]]))
@@ -255,24 +182,8 @@ NULL
 }
 
 # CausalEstimate constructor (R analogue of the python dataclass).
-#' CausalEstimate constructor (R analogue of the python dataclass)
-#'
-#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
-#' \code{morie_otis_aipw_superlearner}, \code{morie_otis_causal_grid} and 4 others in the
-#' module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param estimator Carried through into a list the body builds.
-#' @param ate Numeric; combined arithmetically in the body.
-#' @param ate_se Numeric; combined arithmetically in the body.
-#' @param ate_pval Coerced to numeric by the body, with \code{as.numeric}.
-#' @param n Coerced to integer by the body, with \code{as.integer}.
-#' @param n_treated Coerced to integer by the body, with \code{as.integer}.
-#' @param p_treat Coerced to numeric by the body, with \code{as.numeric}.
-#' @param notes Coerced to list by the body, with \code{as.list}. Defaults to \code{list()}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Otis Causal Estimate
+#' @noRd
 .otis_causal_estimate <- function(estimator, ate, ate_se, ate_pval,
                                   n, n_treated, p_treat, notes = list()) {
   z <- if (ate_se > 0) ate / ate_se else 0
@@ -806,13 +717,8 @@ morie_otis_classify_mandela_combo <- function(mh, sr, sw,
 
 # Aggregate per-(id, year) the count of distinct alert-combos and the
 # sum of within-row + across-row region-change indicators.
-#' Aggregate per-(id, year) the count of distinct alert-combos and the
-#'
-#' sum of within-row + across-row region-change indicators.
-#'
-#' @param df A matrix; indexed by row and column.
-#' @return The value of \code{base}, as built in the body.
-#' @export
+#' Internal helper: Otis Alert Volatility Frame
+#' @noRd
 .otis_alert_volatility_frame <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear", "Gender",
               "Age_Category", "Region_AtTimeOfPlacement",
@@ -1110,9 +1016,11 @@ morie_otis_make_pair_b <- function(df) {
 #' @export
 #' @examples
 #' \donttest{
-#' pair <- morie_otis_make_pair_c(morie_synth_otis("b01", n = 120L,
-#'                                                  seed = 1L))
-#' head(pair)
+#' # b01 (Segregation - Detailed Dataset) carries the full placement-level
+#' # schema, including NumberConsecutiveDays_Segregation (see the bundled
+#' # OTIS data dictionary).
+#' df <- morie_datasets_otis_b01_segregation_detailed(offline = TRUE)
+#' morie_otis_make_pair_c(df)
 #' }
 morie_otis_make_pair_c <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear", "Gender",
@@ -1157,9 +1065,24 @@ morie_otis_make_pair_c <- function(df) {
 #' @export
 #' @examples
 #' \donttest{
-#' df <- morie_synth_otis("b01", n = 200L, seed = 1L)
-#' grid <- morie_otis_causal_grid(df)
-#' names(grid)
+#' # Simulated placement-level rows using the b01 dictionary schema
+#' # (regions, age categories, alerts); large enough for cross-fitting.
+#' set.seed(1)
+#' regions <- c("Central", "Eastern", "Northern", "Toronto", "Western")
+#' df <- data.frame(
+#'   UniqueIndividual_ID = 1:300,
+#'   EndFiscalYear = sample(2018:2021, 300, TRUE),
+#'   Gender = sample(c("Male", "Female"), 300, TRUE),
+#'   Age_Category = sample(c("18 to 24", "25 to 49", "50+"), 300, TRUE),
+#'   Region_AtTimeOfPlacement = sample(regions, 300, TRUE),
+#'   Region_MostRecentPlacement = sample(regions, 300, TRUE),
+#'   MentalHealth_Alert = sample(0:1, 300, TRUE),
+#'   SuicideRisk_Alert = sample(0:1, 300, TRUE),
+#'   SuicideWatch_Alert = sample(0:1, 300, TRUE),
+#'   Number_Of_Placements = sample(1:4, 300, TRUE),
+#'   NumberConsecutiveDays_Segregation = rpois(300, 5)
+#' )
+#' morie_otis_causal_grid(df)
 #' }
 morie_otis_causal_grid <- function(df = NULL, seed = 123L) {
   if (is.null(df)) {
@@ -1253,6 +1176,7 @@ morie_otis_causal_grid <- function(df = NULL, seed = 123L) {
 #'   \code{morie_otis_aipw_ate}).
 #' @export
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' n <- 200
 #' x1 <- rnorm(n); x2 <- rnorm(n)
@@ -1262,6 +1186,7 @@ morie_otis_causal_grid <- function(df = NULL, seed = 123L) {
 #' morie_otis_aipw_superlearner(df, treatment = "d", outcome = "y",
 #'                              covariates = c("x1", "x2"),
 #'                              n_folds = 3L)
+#' }
 morie_otis_aipw_superlearner <- function(df, treatment, outcome,
                                          covariates, n_folds = 5L,
                                          seed = 123L, eps = 0.02) {

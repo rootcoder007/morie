@@ -49,3 +49,7 @@ A step of the tldapar_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+str(morie_tldapar(30, V = 5, mode = "split"), max.level = 1)
+}
+\keyword{internal}

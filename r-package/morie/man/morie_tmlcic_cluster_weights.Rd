@@ -19,3 +19,8 @@ A list with \code{alpha}, \code{groups}.
 et al. (2019) require sum_i alpha_ij = 1 within each cluster. The
 default alpha_ij = 1/N_j is their stated choice.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_tmlcic_cluster_weights(V)
+}
+\keyword{internal}

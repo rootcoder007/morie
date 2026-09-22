@@ -7,7 +7,7 @@
 attention_span(weights, position = NULL)
 }
 \arguments{
-\item{weights}{Passed to \code{.sasrec_mat}.}
+\item{weights}{See Usage.}
 
 \item{position}{Optional; may be \code{NULL}. Coerced to integer by the body, with
 \code{as.integer}.}
@@ -21,3 +21,8 @@ A step of the sasRec_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+attention_span(M)
+}
+\keyword{internal}

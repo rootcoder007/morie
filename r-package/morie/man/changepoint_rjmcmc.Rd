@@ -26,27 +26,27 @@ changepoint_rjmcmc(
 
 \item{L}{Numeric; passed to \code{log}. Defaults to \code{1}.}
 
-\item{n_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{40000}.}
+\item{n_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{40000L}.}
 
-\item{burn_in}{Numeric; combined arithmetically in the body. Defaults to \code{4000}.}
+\item{burn_in}{Numeric; combined arithmetically in the body. Defaults to \code{4000L}.}
 
 \item{lam}{Passed to \code{.log_k_prior_ratio}. Defaults to \code{3}.}
 
-\item{k_max}{Numeric; combined arithmetically in the body. Defaults to \code{30}.}
+\item{k_max}{Numeric; combined arithmetically in the body. Defaults to \code{30L}.}
 
 \item{alpha}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
 
 \item{beta}{Numeric; passed to \code{log}. Defaults to \code{200}.}
 
-\item{seed}{Passed to \code{.unif_stream}. Defaults to \code{0}.}
+\item{seed}{Passed to \code{.unif_stream}. Defaults to \code{0L}.}
 
 \item{cap}{Passed to \code{changepoint_move_probabilities}. Defaults to \code{0.9}.}
 
 \item{use_likelihood}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 
-\item{k_init}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{0}.}
+\item{k_init}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{0L}.}
 
-\item{thin}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
+\item{thin}{Numeric; combined arithmetically in the body. Defaults to \code{1L}.}
 
 \item{keep_chain}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
@@ -61,3 +61,14 @@ A step of the bayrjmcmc_native implementation. No other function in the package 
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+u <- .unif_stream(1L)
+unique(c(u(), u(), u(), u()))
+set.seed(2); y <- sort(c(runif(30, 0, .4), runif(60, .4, 1)))
+r <- changepoint_rjmcmc(y = y, L = 1, n_iter = 4000L, burn_in = 1000L, seed = 1L)
+r$k_mean
+r$k_posterior[1]
+r2 <- changepoint_rjmcmc(y = y, L = 1, n_iter = 4000L, burn_in = 1000L, seed = 1L)
+r$k_posterior
+}
+\keyword{internal}

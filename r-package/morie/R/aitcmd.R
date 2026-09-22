@@ -23,8 +23,9 @@ Clrmedian <- function(X, steps = 100, eps = 1e-12) {
   M <- .t1_mat(X)
   n <- nrow(M)
   D <- ncol(M)
-  if (n == 0 || D < 2)
+  if (n == 0 || D < 2) {
     stop("need at least one composition with two parts")
+  }
   if (any(M <= 0)) stop("compositions must be strictly positive")
   L <- log(M)
   Y <- L - rowMeans(L)
@@ -40,7 +41,9 @@ Clrmedian <- function(X, steps = 100, eps = 1e-12) {
   }
   obj <- sum(sqrt(rowSums((Y - rep(m, each = n))^2)))
   e <- exp(m)
-  .t1_result(median = e / sum(e), clrmed = m, objective = obj,
-             clrmean = cmean, n = n, D = D, steps = as.integer(steps),
-             method = "Spatial median in clr coordinates (Weiszfeld iteration)")
+  .t1_result(
+    median = e / sum(e), clrmed = m, objective = obj,
+    clrmean = cmean, n = n, D = D, steps = as.integer(steps),
+    method = "Spatial median in clr coordinates (Weiszfeld iteration)"
+  )
 }

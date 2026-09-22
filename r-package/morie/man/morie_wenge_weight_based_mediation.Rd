@@ -13,6 +13,8 @@ morie_wenge_weight_based_mediation(
   strategy = "em",
   saturated = TRUE
 )
+
+morie_wenge(X, M, C, Y, strategy = "em", saturated = TRUE)
 }
 \arguments{
 \item{X}{Passed to \code{.s03vec}.}
@@ -35,3 +37,4 @@ A step of the wenge_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

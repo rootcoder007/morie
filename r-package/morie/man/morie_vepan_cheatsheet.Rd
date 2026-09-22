@@ -14,3 +14,7 @@ A step of the vepan_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_vepan_cheatsheet()
+}
+\keyword{internal}

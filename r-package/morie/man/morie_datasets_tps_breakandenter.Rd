@@ -18,7 +18,7 @@ morie_datasets_tps_breakandenter(
 \item{max_features}{Optional cap on returned rows
 (\code{offline = FALSE} only).}
 
-\item{offline}{If \code{TRUE} (default), read the bundled synthetic
+\item{offline}{If \code{TRUE} (default), read the included synthetic
 fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 (5 rows in the canonical TPS PSDP 22-column schema). If
 \code{FALSE}, hit the TPS PSDP ArcGIS FeatureServer.}
@@ -26,18 +26,14 @@ fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 \item{layer_url}{Optional ArcGIS layer URL override.}
 }
 \value{
-A \code{data.frame} of TPS Public Safety Data Portal Break
-and Enter records, either the bundled
-\code{tps_psdp_breakandenter_sample.csv} fixture when
-\code{offline = TRUE} or a live TPS Hub / FeatureServer query when
-\code{offline = FALSE}. Columns mirror the upstream 31-column
-Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
+A \code{data.frame}.
 }
 \description{
 TPS PSDP -- Break and Enter
 }
 \examples{
 \donttest{
-morie_datasets_tps_breakandenter()
+df <- try(morie_datasets_tps_breakandenter(max_features = 5L))
+if (!inherits(df, "try-error")) head(df)
 }
 }

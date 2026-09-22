@@ -19,3 +19,8 @@ The phase is unwrapped over k = 0..N/2 and mirrored by odd symmetry;
 the linear term (the z^r delay of eq 4.68) is r =
 round(phase(pi)/pi).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+CCepstrum(V)
+}
+\keyword{internal}

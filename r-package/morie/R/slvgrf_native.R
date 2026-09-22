@@ -1,60 +1,46 @@
-# Evaluating a treatment prioritization rule: TOC, RATE, Qini.
-# Sources: Yadlowsky, S., Fleming, S., Shah, N., Brunskill, E. &
-# Wager, S. (2025) "Evaluating Treatment Prioritization Rules via
-# Rank-Weighted Average Treatment Effects", JASA 120(549), 38-51,
-# doi:10.1080/01621459.2024.2393466 (Definition 1 prioritization
-# rule, Definition 2 TOC, Definition 3 RATE, Remark 1 the exact
-# null, Sec. 2.2-2.3 the AIPW-score estimator, Theorem 3 and
-# Corollary 5 asymptotic linearity and the half-sample bootstrap);
-# Sverdrup, E., Wu, H., Athey, S. & Wager, S. (2025) JCGS 34(3),
-# 948-960 (the Qini curve under a cost constraint); and Athey, S.,
-# Tibshirani, J. & Wager, S. (2019) Ann. Statist. 47(2), 1148-1178
-# (the forest whose CATE estimates are the usual priority score).
-#
-# Native R arm mirroring the Python arm exactly: the same AIPW
-# doubly-robust score, the same TOC = running mean of scores down
-# the priority ranking minus the grand mean (so TOC(1) is exactly
-# zero by construction), the same Qini / AUTOC / uniform RATE
-# weights, and the same half-sample bootstrap with the 1/sqrt(2)
-# rescale justified by Corollary 5.
+# morie.fn -- function file (rootcoder007/morie)
+# R arm of slvgrf (aipw_scores, toc_curve, rate, qini_coefficient,
+# autoc, qini_curve, rate_test).
+# Sources:
+#   Yadlowsky, S., Fleming, S., Shah, N., Brunskill, E. & Wager, S.
+#   (2025) "Evaluating Treatment Prioritization Rules via Rank-Weighted
+#   Average Treatment Effects", JASA 120(549), 38-51,
+#   doi:10.1080/01621459.2024.2393466. Definition 1 (prioritization
+#   rule), Definition 2 (TOC), Definition 3 (RATE), Remark 1 (the
+#   exact null), Sec. 2.2-2.3 (the AIPW-score estimator), Theorem 3
+#   and Corollary 5 (asymptotic linearity and the half-sample
+#   bootstrap), Sec. 4 and Fig. 2 (Qini vs AUTOC power).
+#   Sverdrup, E., Wu, H., Athey, S. & Wager, S. (2025) "Qini Curves
+#   for Multi-Armed Treatment Rules", JCGS 34(3), 948-960,
+#   doi:10.1080/10618600.2024.2418820. The Qini curve under a cost
+#   constraint and its multi-armed generalisation.
+#   Athey, S., Tibshirani, J. & Wager, S. (2019) "Generalized random
+#   forests", The Annals of Statistics 47(2), 1148-1178,
+#   doi:10.1214/18-AOS1709. The forest whose CATE estimates are the
+#   usual priority score here.
 
-#' .slvgrf_vec
-#'
-#' A step of the slvgrf_native implementation. Called by \code{.check},
-#' \code{aipw_scores}, \code{qini_curve}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param x A matrix; passed to \code{as.matrix}.
-#' @return A vector, from \code{as.numeric}.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .slvgrf_vec(x = x)
-#' res
-.slvgrf_vec <- function(x) as.numeric(as.matrix(x))
+.SLVGRF_EPS <- 1e-12
+.SLVGRF_WEIGHTS <- c("qini", "autoc", "uniform")
 
-#' .check
+#' .slvgrf_check
 #'
 #' A step of the slvgrf_native implementation. Called by \code{qini_curve},
 #' \code{rate_test}, \code{toc_curve}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param scores Passed to \code{.slvgrf_vec}.
-#' @param priority Passed to \code{.slvgrf_vec}.
+#' @param scores Coerced to numeric by the body, with \code{as.numeric}.
+#' @param priority Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{g}, \code{s}.
 #' @export
-.check <- function(scores, priority) {
-  g <- .slvgrf_vec(scores)
-  s <- .slvgrf_vec(priority)
-  if (length(g) != length(s)) {
-    stop("slvgrf: ", length(g), " scores but ", length(s),
-         " priority values")
-  }
-  if (length(g) < 2L) {
-    stop("slvgrf: need at least 2 units, got ", length(g))
-  }
+.slvgrf_check <- function(scores, priority) {
+  g <- as.numeric(scores)
+  s <- as.numeric(priority)
+  if (length(g) != length(s))
+    stop(sprintf("slvgrf: %d scores but %d priority values",
+                 length(g), length(s)))
+  if (length(g) < 2L)
+    stop(sprintf("slvgrf: need at least 2 units, got %d", length(g)))
   list(g = g, s = s)
 }
 
@@ -168,18 +154,38 @@ rate <- function(scores, priority, weight = "autoc") {
   list(estimate = val, weight = weight, curve = c, n = n)
 }
 
-#' Area under the TOC (RATE with a flat weight)
-#' @param scores See Usage.
-#' @param priority See Usage.
+#' autoc
+#'
+#' A step of the slvgrf_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param scores Passed to \code{rate}.
+#' @param priority Passed to \code{rate}.
+#' @return The value of \code{$}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' autoc(V, V)
+#' @keywords internal
 autoc <- function(scores, priority) {
   rate(scores, priority, weight = "autoc")$estimate
 }
 
-#' Qini coefficient (RATE with alpha(u) = u)
-#' @param scores See Usage.
-#' @param priority See Usage.
+#' qini_coefficient
+#'
+#' A step of the slvgrf_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param scores Passed to \code{rate}.
+#' @param priority Passed to \code{rate}.
+#' @return The value of \code{$}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' qini_coefficient(V, V)
+#' @keywords internal
 qini_coefficient <- function(scores, priority) {
   rate(scores, priority, weight = "qini")$estimate
 }
@@ -281,34 +287,6 @@ rate_test <- function(scores, priority, weight = "autoc", reps = 500,
                        "et al. (2025) Corollary 5"))
 }
 
-# house entry point: the package exports one morie_<module>
-
-.SLVGRF_EPS <- 1e-12
-
-.SLVGRF_WEIGHTS <- c("qini", "autoc", "uniform")
-
-#' .slvgrf_check
-#'
-#' A step of the slvgrf_native implementation. Called by \code{qini_curve},
-#' \code{rate_test}, \code{toc_curve}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param scores Coerced to numeric by the body, with \code{as.numeric}.
-#' @param priority Coerced to numeric by the body, with \code{as.numeric}.
-#' @return A list with \code{g}, \code{s}.
-#' @export
-.slvgrf_check <- function(scores, priority) {
-  g <- as.numeric(scores)
-  s <- as.numeric(priority)
-  if (length(g) != length(s))
-    stop(sprintf("slvgrf: %d scores but %d priority values",
-                 length(g), length(s)))
-  if (length(g) < 2L)
-    stop(sprintf("slvgrf: need at least 2 units, got %d", length(g)))
-  list(g = g, s = s)
-}
-
 #' .slvgrf_cheatsheet
 #'
 #' A step of the slvgrf_native implementation. No other function in the package calls it.
@@ -331,8 +309,8 @@ rate_test <- function(scores, priority, weight = "autoc", reps = 500,
          "Estimate off AIPW scores; test by half-sample bootstrap.")
 }
 
+# ledger/NAMING.md compact aliases
 slicedgrf <- rate
-
 sliced_grf <- rate
 
 morie_slvgrf <- list(aipw_scores = aipw_scores,

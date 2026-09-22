@@ -23,3 +23,7 @@ A step of the perfat_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+softmax_attention(Q = 0.5, K = 5L, V = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

@@ -20,7 +20,15 @@ A list with \code{m2}, \code{expectation}, \code{variance}, \code{z},
 \code{p_value}, \code{sigma2}, \code{n}, \code{gaussian_moments_apply}, \code{method}.
 }
 \description{
-the approach but does not print Eg\link[mirt:M2]{M2} or Varg\link[mirt:M2]{M2}; both are derived
+the approach but does not print Eg[M2] or Varg\link[mirt:M2]{M2}; both are derived
 from the quadratic-form moments and are stated in the Python
 docstring.  Only the SYMMETRIC part of W contributes.
 }
+\examples{
+set.seed(1)
+coords <- matrix(runif(10), 5, 2)
+W <- matrix(0, 5, 5)
+W[abs(row(W) - col(W)) == 1] <- 1
+MantelZ(coords, rnorm(5), W)
+}
+\keyword{internal}

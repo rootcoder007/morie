@@ -32,8 +32,9 @@ Centre-West) the result is the historical parent 140-hood.
 }
 \examples{
 \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-df <- data.frame(OCC_YEAR = 2024L, HOOD_158 = "82", HOOD_140 = "82")
-morie_tps_resolve_hood_col(df, prefer = "158")
-morie_tps_add_hood_140_from_158(df = df)
+cw <- morie_to_hood_crosswalk()
+df <- data.frame(HOOD_158 = utils::head(cw$HOOD_158, 5))
+res <- try(morie_tps_add_hood_140_from_158(df))
+if (!inherits(res, "try-error")) head(res)
 \dontshow{\}) # examplesIf}
 }

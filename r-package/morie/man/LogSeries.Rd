@@ -18,3 +18,7 @@ A list with \code{value}, \code{exact}, \code{error}, \code{error_bound},
 \description{
 is exactly 1, so |x| >= 1 is refused instead of diverging quietly.
 }
+\examples{
+LogSeries(0.5, terms = 60)
+}
+\keyword{internal}

@@ -12,7 +12,7 @@ morie_datasets_cpads(
 )
 }
 \arguments{
-\item{offline}{Logical. \code{TRUE} (default) prefers the bundled fixture
+\item{offline}{Logical. \code{TRUE} (default) prefers the included fixture
 for fast/CRAN-safe runs; \code{FALSE} fetches the live PUMF.}
 
 \item{mode}{Character; one of \code{"datastore_search"} (default;
@@ -41,7 +41,7 @@ Resolves a CPADS analysis frame from one of three sources:
 \enumerate{
 \item A pre-wrangled local RDS at \code{morie_cpads_contract()$expected_wrangled_path}
 (only useful if you've already produced one), OR
-\item the bundled 30-row real PUMF sample at
+\item the included 30-row real PUMF sample at
 \code{inst/extdata/cpads_pumf_synthetic.csv} (when \code{offline = TRUE},
 the default; carries all 394 raw PUMF columns plus the 11
 morie canonical analysis aliases), OR
@@ -63,8 +63,10 @@ Sister surveys (CSADS, CSUS, CTADS) are at
 }
 \examples{
 \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\donttest{
 df <- try(suppressWarnings(morie_datasets_cpads()))
 if (!inherits(df, "try-error")) head(df)
+}
 \dontshow{\}) # examplesIf}
 }
 \seealso{

@@ -7,9 +7,9 @@
 encode_mask_prompt(mask, image_embedding, weight = 1)
 }
 \arguments{
-\item{mask}{Passed to \code{.samseg_mat}.}
+\item{mask}{See Usage.}
 
-\item{image_embedding}{Passed to \code{.samseg_mat}.}
+\item{image_embedding}{See Usage.}
 
 \item{weight}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }
@@ -21,3 +21,8 @@ A step of the samseg_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+encode_mask_prompt(M, M)
+}
+\keyword{internal}

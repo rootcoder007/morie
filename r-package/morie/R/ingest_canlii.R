@@ -28,7 +28,7 @@
 # C++ backend with httr2 fallback); JSON through .morie_from_json.
 
 .MORIE_CANLII_API <- "https://api.canlii.org/v1"
-.MORIE_CANLII_DEFAULT_UA <- "morie/r (+https://github.com/rootcoder007/morie)"
+.MORIE_CANLII_DEFAULT_UA <- "morie/r (+https://github.com/rootcoder007/rmorie)"
 .MORIE_CANLII_DEFAULT_TIMEOUT <- 60
 .MORIE_CANLII_MAX_RESULTS <- 10000L
 

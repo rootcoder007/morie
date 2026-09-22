@@ -19,3 +19,7 @@ A step of the edgrn_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+edgrn_nb_variance(mu = 5L, dispersion = 5L)
+}
+\keyword{internal}

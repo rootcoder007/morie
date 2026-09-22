@@ -2,7 +2,7 @@
 % Please edit documentation in R/surxgb_native.R
 \name{morie_surxgb_concordance}
 \alias{morie_surxgb_concordance}
-\title{Harrell\'s C for the fit; a larger prediction is a longer life, so}
+\title{Harrell's C for the fit; a larger prediction is a longer life, so}
 \usage{
 morie_surxgb_concordance(fit, X, times, events)
 }
@@ -21,3 +21,4 @@ The value of \code{morie_survrsf_c_index}.
 \description{
 the score is negated before it is ranked.
 }
+\keyword{internal}

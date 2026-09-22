@@ -17,10 +17,10 @@ by_fdr(p_values, alpha = 0.05, labels = NULL)
 \item{labels}{Optional character vector of test labels.}
 }
 \value{
-A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
+An object of class \code{"morie_multiple_testing_result"}.
 }
 \description{
-Wraps \code{stats::p.adjust(method = "BY")}.
+Thin wrapper over \code{stats::p.adjust(method = "BY")}.
 }
 \examples{
 if (requireNamespace("qvalue", quietly = TRUE)) {

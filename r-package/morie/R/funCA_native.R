@@ -96,6 +96,10 @@
 #' \code{explained_x}, \code{explained_y}, \code{eigenvalues_x}, \code{eigenvalues_y},
 #' \code{n}, \code{method}, \code{note}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_funCA_functional_cca(V, V)
+#' @keywords internal
 morie_funCA_functional_cca <- function(X, Y, p = NULL, q = NULL) {
   Xm <- as.matrix(X)
   storage.mode(Xm) <- "double"

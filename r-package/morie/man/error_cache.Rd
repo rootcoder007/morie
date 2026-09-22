@@ -11,15 +11,23 @@ error_cache(alpha, y, K, b)
 
 \item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{K}{Passed to \code{.smoopt_K}.}
+\item{K}{A matrix; indexed by row and column.}
 
 \item{b}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \value{
-A numeric value.
+The value of \code{out}, as built in the body.
 }
 \description{
 A step of the smoopt_native implementation. Called by \code{smo_platt}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+X <- matrix(rnorm(20), 10, 2)
+y <- sign(X[, 1])
+K <- X \%*\% t(X)
+error_cache(rep(0, 10), y, K, 0)
+}
+\keyword{internal}

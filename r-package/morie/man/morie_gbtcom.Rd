@@ -23,3 +23,14 @@ The signature-compatible mirror of Python \code{morie.fn.gbtcom},
 which takes the four columns as vectors. \code{Gbtcom} keeps the
 data-frame form for R callers who already hold a panel.
 }
+\examples{
+set.seed(1)
+nu <- 6; T <- 5
+unit <- rep(1:nu, each = T)
+time <- rep(1:T, nu)
+ft <- rep(c(NA, NA, NA, 4, 4, 3), each = T)
+D <- as.integer(!is.na(ft) & time >= ft)
+y <- rnorm(nu * T) + D * 1.5
+morie_gbtcom(y, D, unit, time)
+}
+\keyword{internal}

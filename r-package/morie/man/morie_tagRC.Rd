@@ -7,23 +7,27 @@
 morie_tagRC(triples, focus, d = 0.7, weight = 0.9, iters = 200)
 }
 \arguments{
-\item{triples}{Passed to \code{tagRC_tripartite_graph}.}
+\item{triples}{Passed to \code{folkrank}.}
 
-\item{focus}{Passed to \code{tagRC_preference_vector}.}
+\item{focus}{Passed to \code{folkrank}.}
 
-\item{d}{Passed to \code{tagRC_adapted_pagerank}. Defaults to \code{0.7}.}
+\item{d}{Passed to \code{folkrank}. Defaults to \code{0.7}.}
 
-\item{weight}{Passed to \code{tagRC_preference_vector}. Defaults to \code{0.9}.}
+\item{weight}{Passed to \code{folkrank}. Defaults to \code{0.9}.}
 
-\item{iters}{Passed to \code{tagRC_adapted_pagerank}. Defaults to \code{200}.}
+\item{iters}{Passed to \code{folkrank}. Defaults to \code{200}.}
 }
 \value{
-A list with \code{estimate}, \code{ranking}, \code{difference},
-\code{with_preference}, \code{without_preference}, \code{undifferenced_ranking},
-\code{baseline_ranking}, \code{focus}, \code{n_nodes}, \code{method}, \code{note}.
+The value of \code{folkrank}.
 }
 \description{
 A step of the tagRC_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+triples <- list(c("u1", "t1", "r1"), c("u1", "t2", "r2"),
+                c("u2", "t1", "r1"), c("u2", "t3", "r3"))
+morie_tagRC(triples, focus = "t:t1")
+}
+\keyword{internal}

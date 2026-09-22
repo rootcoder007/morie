@@ -32,6 +32,10 @@ morie_snmcox_gest_score(
 
 \item{ridge}{See Usage.}
 }
+\value{
+A list with \code{s}, \code{z}, \code{m}, \code{U}, \code{e}.
+}
 \description{
 The g-estimation score S(psi) and its standardisation
 }
+\keyword{internal}

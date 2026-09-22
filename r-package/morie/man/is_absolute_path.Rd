@@ -17,3 +17,8 @@ A step of the paths implementation. Called by \code{morie_audit_public_outputs}.
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+is_absolute_path(V)
+}
+\keyword{internal}

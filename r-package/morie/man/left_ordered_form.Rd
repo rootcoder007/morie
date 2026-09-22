@@ -17,3 +17,7 @@ A step of the ibpfa_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+left_ordered_form(Z = 5L)
+}
+\keyword{internal}

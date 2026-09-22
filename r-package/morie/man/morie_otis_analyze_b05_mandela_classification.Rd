@@ -21,7 +21,6 @@ duration).
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_b05 <- morie_synth_otis("b05", n = 120L, seed = 1L)
 morie_otis_analyze_b05_mandela_classification(otis_b05)
 }

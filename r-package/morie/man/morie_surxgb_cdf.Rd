@@ -21,3 +21,7 @@ A step of the surxgb_native implementation. Called by
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_surxgb_cdf(z = 5L)
+}
+\keyword{internal}

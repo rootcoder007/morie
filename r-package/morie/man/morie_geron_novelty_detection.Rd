@@ -13,6 +13,14 @@ morie_geron_novelty_detection(model, X_new, reference = NULL)
 
 \item{reference}{Optional log reference density override.}
 }
+\value{
+A list with \code{ratio}, \code{log_ratio}, \code{is_novel}, \code{log_density}, \code{reference}, \code{novel_fraction}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Novelty detection by density ratio against a clean training set (Geron Ch 8, hmnov)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_novelty_detection(V, V)
+}
+\keyword{internal}

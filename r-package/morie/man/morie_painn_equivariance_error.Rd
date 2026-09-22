@@ -2,7 +2,7 @@
 % Please edit documentation in R/painn_native.R
 \name{morie_painn_equivariance_error}
 \alias{morie_painn_equivariance_error}
-\title{Rotate the input; scalars must not move, vectors must rotate}
+\title{morie_painn_equivariance_error}
 \usage{
 morie_painn_equivariance_error(model, s, v, R, Q, tol = 1e-09)
 }
@@ -11,11 +11,11 @@ morie_painn_equivariance_error(model, s, v, R, Q, tol = 1e-09)
 
 \item{s}{Passed to \code{model}.}
 
-\item{v}{A matrix; passed to \code{as.matrix}.}
+\item{v}{Passed to \code{.painn_mat}.}
 
-\item{R}{A matrix; passed to \code{as.matrix}.}
+\item{R}{Passed to \code{.painn_mat}.}
 
-\item{Q}{A matrix; passed to \code{as.matrix}.}
+\item{Q}{Passed to \code{.painn_mat}.}
 
 \item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.}
 }
@@ -24,6 +24,20 @@ A list with \code{scalar_error}, \code{vector_error},
 \code{scalars_invariant}, \code{vectors_equivariant}, \code{note}.
 }
 \description{
-Checking only the scalars would pass a model that has silently lost
-its vector channel.
+A step of the painn_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+set.seed(1)
+F <- 4
+s <- rnorm(F)
+v <- matrix(rnorm(3 * F), 3, F)
+R <- matrix(rnorm(9), 3, 3)
+th <- pi / 5
+Q <- matrix(c(cos(th), -sin(th), 0, sin(th), cos(th), 0, 0, 0, 1), 3, 3)
+model <- function(s, V, pos) list(s = s, v = V)
+e <- morie_painn_equivariance_error(model, s, v, R, Q)
+is.list(e)
+}
+\keyword{internal}

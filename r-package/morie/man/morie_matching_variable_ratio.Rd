@@ -25,27 +25,25 @@ morie_matching_variable_ratio(
 
 \item{caliper}{Caliper on the propensity score (in SD units).}
 
-\item{ps}{Optional propensity scores. When supplied they REPLACE
-the fitted model and become the matching distance directly,
-aligned to the rows that survive the NA drop.}
+\item{ps}{Optional pre-computed propensity scores (ignored; retained
+for back-compat).}
 }
 \value{
 A list of class \code{morie_match_result}.
 }
 \description{
-Matches each treated unit to between \code{min_ratio} and
-\code{max_ratio} controls within a caliper.
+Thin wrapper around \eqn{MatchIt::matchit(method = "nearest",
+ratio = max_ratio, min.controls = min_ratio)} which supports
+variable-ratio nearest-neighbour matching natively.
 }
 \examples{
 \dontshow{if (requireNamespace("MatchIt", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\donttest{
 set.seed(1)
-df <- data.frame(
-  y = rnorm(150), d = rbinom(150, 1, 0.4),
-  x1 = rnorm(150), x2 = rnorm(150),
-  region = sample(c("North", "South"), 150, TRUE),
-  year = sample(2020:2022, 150, TRUE),
-  treat3 = sample(0:2, 150, TRUE))
+df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+                 x1 = rnorm(200), x2 = rnorm(200))
 morie_matching_variable_ratio(df, "d", c("x1", "x2"),
                               min_ratio = 1, max_ratio = 3)
+}
 \dontshow{\}) # examplesIf}
 }

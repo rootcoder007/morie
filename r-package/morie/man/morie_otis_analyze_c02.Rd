@@ -10,14 +10,13 @@ morie_otis_analyze_c02(data)
 \item{data}{c02 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines and an
-institution x year crosstab of restrictive-confinement individual counts.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 Individuals in RC/seg by institution (c02)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_c02(V)
+otis_c02 <- morie_synth_otis("c02", n = 120L, seed = 1L)
+res <- morie_otis_analyze_c02(otis_c02)
+class(res)
 }

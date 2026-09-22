@@ -27,3 +27,8 @@ A step of the pesdol_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_pesdol_ardl_bounds(V, V)
+}
+\keyword{internal}

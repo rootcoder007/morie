@@ -7,7 +7,7 @@
 positional_encoding(p, L = 10, include_input = TRUE)
 }
 \arguments{
-\item{p}{Passed to \code{.as_numeric_vec}.}
+\item{p}{Passed to \code{.nrfrad_vec}.}
 
 \item{L}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10}.}
 
@@ -17,7 +17,12 @@ positional_encoding(p, L = 10, include_input = TRUE)
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the nrfrad_native implementation. Called by \code{morie_nrfrad}.
+A step of the nrfrad_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+positional_encoding(V)
+}
+\keyword{internal}

@@ -38,3 +38,4 @@ A step of the gnnEx_native implementation. Called by \code{gnnEx_explain_node}.
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

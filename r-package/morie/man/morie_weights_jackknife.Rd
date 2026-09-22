@@ -16,10 +16,7 @@ morie_weights_jackknife(weights, strata = NULL, jk_type = c("JK1", "JKn"))
 \code{"jkn"}).}
 }
 \value{
-A numeric matrix of replicate weights with \code{n} rows
-(one per unit) and one column per replicate; for \code{jk_type =
-  "JKn"} the result carries a \code{morie_jkn_strata} attribute
-recording the stratum of each replicate.
+A numeric \code{matrix}.
 }
 \description{
 When the \code{survey} package is installed and \code{strata} is supplied, defers

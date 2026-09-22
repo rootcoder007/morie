@@ -23,3 +23,8 @@ rotating onto the covariance eigenvectors puts most power in a few
 components and makes the truncation error the sum of the DISCARDED
 eigenvalues, which is why decreasing order minimises the MSE.
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+PcaSig(M)
+}
+\keyword{internal}

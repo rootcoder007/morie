@@ -23,3 +23,7 @@ The value of \code{Qnorm}.
 \description{
 uniform k, so the stream is stable when n changes
 }
+\examples{
+Rnorm(n = 5L)
+}
+\keyword{internal}

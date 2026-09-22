@@ -19,3 +19,7 @@ h(n) = d(n) + 2 d(n-1) + 3 d(n-2) -- the same three numbers reversed.
 The book notes the output around the peak reproduces the ACF of g,
 which is checked here rather than asserted.
 }
+\examples{
+RefPattern()
+}
+\keyword{internal}

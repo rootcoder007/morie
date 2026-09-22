@@ -43,8 +43,7 @@ MASS_ginv <- function(X, tol = sqrt(.Machine$double.eps)) {
 #' @return The value of \code{%*%}.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .morie_pinv(M = X)
 #' res
 .morie_pinv <- function(M, rcond = 1e-15) {
@@ -99,8 +98,12 @@ NULL
 #' res <- .t1_mat(X = x)
 #' res
 .t1_mat <- function(X) {
-  if (is.matrix(X)) return(matrix(as.numeric(X), nrow = nrow(X)))
-  if (is.data.frame(X)) return(as.matrix(X))
+  if (is.matrix(X)) {
+    return(matrix(as.numeric(X), nrow = nrow(X)))
+  }
+  if (is.data.frame(X)) {
+    return(as.matrix(X))
+  }
   matrix(as.numeric(X), ncol = 1L)
 }
 
@@ -130,7 +133,7 @@ NULL
 
 #' Minimum-norm least squares via the SVD, matching numpy.linalg.lstsq
 #'
-#' and so the Python arm\'s _lstsq.
+#' and so the Python arm's _lstsq.
 #'
 #' @param X A matrix; passed to \code{nrow}.
 #' @param y A matrix; passed to \code{crossprod}.
@@ -252,7 +255,7 @@ NULL
 #' .t1_result
 #'
 #' A step of the tail1_core implementation. Called by \code{Admixq}, \code{Admmlasso},
-#' \code{Advielbo} and 750 others in the module.
+#' \code{Advielbo} and 735 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'

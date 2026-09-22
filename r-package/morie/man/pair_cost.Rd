@@ -21,3 +21,7 @@ A step of the sbert_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+pair_cost(n = 5L)
+}
+\keyword{internal}

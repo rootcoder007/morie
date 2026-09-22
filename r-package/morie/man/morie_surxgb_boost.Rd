@@ -20,6 +20,22 @@ morie_surxgb_boost(
   base_score = NULL,
   derivatives = "analytic"
 )
+
+morie_surxgb(
+  X,
+  y_lower,
+  y_upper,
+  n_rounds = 50,
+  eta = 0.1,
+  max_depth = 3,
+  lam = 1,
+  gamma = 0,
+  min_child = 5,
+  sigma = 1,
+  dist = "normal",
+  base_score = NULL,
+  derivatives = "analytic"
+)
 }
 \arguments{
 \item{X}{A matrix; indexed by row and column.}
@@ -61,3 +77,8 @@ A step of the surxgb_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_surxgb_boost(X = c(1, 2, 3, 4, 5, 6, 7, 8), y_lower = c(1, 2, 3, 4, 5, 6, 7, 8),
+  y_upper = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

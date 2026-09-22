@@ -7,21 +7,27 @@
 wsp_score(alignment, scoring, s_op = 2.4, weights = NULL)
 }
 \arguments{
-\item{alignment}{The body requires: mafft: an alignment must be rectangular.}
+\item{alignment}{Iterated over elementwise, with \code{vapply}.}
 
 \item{scoring}{A list; the body reads \code{$matrix} from it.}
 
 \item{s_op}{Numeric; combined arithmetically in the body. Defaults to \code{2.4}.}
 
-\item{weights}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
-\code{as.numeric}.}
+\item{weights}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \value{
 The value of \code{total}, as built in the body.
 }
 \description{
 A step of the mafft_native implementation. Called by \code{iterative_refine},
-\code{mafft_alignment}.
+\code{mafft_alignment}, \code{morie_mafft}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+sc <- normalized_similarity_matrix(seq_type = "aa")
+aln <- progressive_align(c("MKVLATLLPLAA", "MKVLATLLPLAG",
+                           "MRVLATGLPLAA"), sc, use_fft = FALSE)
+wsp_score(aln, sc)
+}
+\keyword{internal}

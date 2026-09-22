@@ -9,15 +9,20 @@ length_weight(length, l_min = 2500, l_ref = 1e+05)
 \arguments{
 \item{length}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{l_min}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{2500}.}
+\item{l_min}{Numeric; combined arithmetically in the body. Defaults to \code{2500}.}
 
-\item{l_ref}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e+05}.}
+\item{l_ref}{Numeric; combined arithmetically in the body. Defaults to \code{1e+05}.}
 }
 \value{
 A list with \code{weight}, \code{length}, \code{below_minimum}.
 }
 \description{
-A step of the metabd_native implementation. Called by \code{composite_distance}.
+A step of the metabd_native implementation. Called by \code{composite_distance},
+\code{morie_metabd}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+length_weight(length = 5L)
+}
+\keyword{internal}

@@ -31,3 +31,4 @@ A step of the sam2vd_native implementation. Called by \code{morie_sam2vd_propaga
 See the file header for the source the module follows.
 source it follows.
 }
+\keyword{internal}

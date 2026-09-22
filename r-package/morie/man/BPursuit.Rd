@@ -28,3 +28,7 @@ formulation; Daubechies, Defrise and De Mol, CPAM 57(11):1413-1457,
 2004 for the thresholded-Landweber solver.  Greedy pursuit fixes an
 atom the moment it is chosen; here every coefficient stays free.
 }
+\examples{
+BPursuit(x = 5L, D = 5L)
+}
+\keyword{internal}

@@ -19,8 +19,10 @@ Outcome Y_c = NumberConsecutiveDays_Segregation winsorised at the
 }
 \examples{
 \donttest{
-pair <- morie_otis_make_pair_c(morie_synth_otis("b01", n = 120L,
-                                                 seed = 1L))
-head(pair)
+# b01 (Segregation - Detailed Dataset) carries the full placement-level
+# schema, including NumberConsecutiveDays_Segregation (see the bundled
+# OTIS data dictionary).
+df <- morie_datasets_otis_b01_segregation_detailed(offline = TRUE)
+morie_otis_make_pair_c(df)
 }
 }

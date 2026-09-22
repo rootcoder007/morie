@@ -26,3 +26,7 @@ used here for the weighted 0-1 loss. The sign of the fit is the
 rule. A subject is labelled +1 if the decision function is
 non-negative and -1 otherwise.
 }
+\examples{
+weighted_rule(H = 0.5, labels = 5L, weights = 5L)
+}
+\keyword{internal}

@@ -2,7 +2,7 @@
 
 #' Bayesian ridge regression (RR-BLUP closed form)
 #'
-#' beta_hat = solve(X'X + lambda*I) %*% X'y
+#' beta_hat = solve(X'X + lambda&#42;I) %&#42;% X'y
 #'
 #' @param x (n x p) marker matrix.
 #' @param y Numeric response.
@@ -10,6 +10,7 @@
 #' @return list(estimate, beta, intercept, se, beta_se, lam, n, p, method).
 #' @references Montesinos Lopez Ch 4.
 #' @examples
+#' set.seed(1)
 #' morie_bayesian_ridge_regression(x = rnorm(50), y = rnorm(50))
 #' @export
 morie_bayesian_ridge_regression <- function(x, y, lam = NULL) {

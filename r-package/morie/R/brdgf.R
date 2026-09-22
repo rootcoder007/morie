@@ -18,11 +18,12 @@
 #' @return list(estimate, beta, beta_se, sigma_j2, sigma2, n_iter, n, p, method).
 #' @references Meuwissen-Hayes-Goddard (2001) Genetics 157:1819.
 #' @examples
+#' set.seed(1)
 #' morie_bayes_ridge_gibbs(x = rnorm(50), y = rnorm(50))
 #' @export
 morie_bayes_ridge_gibbs <- function(x, y, n_iter = 200, burn = 50,
-                              df0 = 4, S0 = NULL, seed = 0,
-                              deterministic_seed = NULL) {
+                                    df0 = 4, S0 = NULL, seed = 0,
+                                    deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
     .morie_local_det_rng("brdgf", deterministic_seed)
   } else {

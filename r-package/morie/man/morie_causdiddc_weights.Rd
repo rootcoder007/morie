@@ -26,6 +26,15 @@ fixed effects, scaled to sum to one over the treated cells.  They
 can be NEGATIVE -- the regression everyone runs is not an average
 treatment effect.
 }
+\examples{
+set.seed(3)
+n_g <- 6; n_t <- 4
+grid <- expand.grid(g = seq_len(n_g), t = seq_len(n_t))
+D <- as.numeric(grid$g <= 2 & grid$t >= 3)
+r <- morie_causdiddc_weights(D, grid$g, grid$t)
+str(r, max.level = 1)
+}
 \references{
 de Chaisemartin, C. & D'Haultfoeuille (2020), Theorem 1.
 }
+\keyword{internal}

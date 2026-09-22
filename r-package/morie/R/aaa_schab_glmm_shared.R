@@ -43,13 +43,18 @@
 #' @export
 .schab_link <- function(x, kind, inverse = FALSE) {
   x <- as.numeric(x)
-  if (identical(kind, "log")) return(if (inverse) exp(x) else log(x))
+  if (identical(kind, "log")) {
+    return(if (inverse) exp(x) else log(x))
+  }
   if (identical(kind, "logit")) {
     return(if (inverse) 1 / (1 + exp(-x)) else log(x / (1 - x)))
   }
-  if (identical(kind, "identity")) return(x)
+  if (identical(kind, "identity")) {
+    return(x)
+  }
   stop(sprintf("`link` must be 'log', 'logit' or 'identity', got '%s'", kind),
-       call. = FALSE)
+    call. = FALSE
+  )
 }
 
 #' .schab_link_derivative
@@ -64,14 +69,20 @@
 #' @return Nothing; this branch always raises.
 #' @export
 .schab_link_derivative <- function(mu, kind) {
-  mu <- as.numeric(mu)                       # g'(mu) = d eta / d mu
-  if (identical(kind, "log")) return(1 / mu)
-  if (identical(kind, "logit")) return(1 / (mu * (1 - mu)))
-  if (identical(kind, "identity")) return(rep(1, length(mu)))
+  mu <- as.numeric(mu) # g'(mu) = d eta / d mu
+  if (identical(kind, "log")) {
+    return(1 / mu)
+  }
+  if (identical(kind, "logit")) {
+    return(1 / (mu * (1 - mu)))
+  }
+  if (identical(kind, "identity")) {
+    return(rep(1, length(mu)))
+  }
   stop("unknown link", call. = FALSE)
 }
 
-#' D mu / d eta, the diagonal of Psi; the reciprocal of g\'(mu), as the
+#' D mu / d eta, the diagonal of Psi; the reciprocal of g'(mu), as the
 #' text
 #'
 #' notes when deriving (6.89).
@@ -99,10 +110,16 @@
 #' @return Nothing; this branch always raises.
 #' @export
 .schab_variance_function <- function(mu, family) {
-  mu <- as.numeric(mu)                       # v(mu) in eq (6.74)
-  if (identical(family, "poisson")) return(mu)
-  if (identical(family, "binomial")) return(mu * (1 - mu))
-  if (identical(family, "gaussian")) return(rep(1, length(mu)))
+  mu <- as.numeric(mu) # v(mu) in eq (6.74)
+  if (identical(family, "poisson")) {
+    return(mu)
+  }
+  if (identical(family, "binomial")) {
+    return(mu * (1 - mu))
+  }
+  if (identical(family, "gaussian")) {
+    return(rep(1, length(mu)))
+  }
   stop("`family` must be 'poisson', 'binomial' or 'gaussian'", call. = FALSE)
 }
 
@@ -117,8 +134,12 @@
 #' @return The value of \code{switch}.
 #' @export
 .schab_canonical_link <- function(family) {
-  switch(family, poisson = "log", binomial = "logit", gaussian = "identity",
-         stop("unknown family", call. = FALSE))
+  switch(family,
+    poisson = "log",
+    binomial = "logit",
+    gaussian = "identity",
+    stop("unknown family", call. = FALSE)
+  )
 }
 
 # --- Sec. 6.3.4, the conditional specification ----------------------------
@@ -136,9 +157,11 @@
 #' @return The value of \code{.schab_link}.
 #' @export
 .schab_conditional_mean <- function(X, beta, S, link_kind = "log") {
-  X <- as.matrix(X)                          # eq (6.73)
+  X <- as.matrix(X) # eq (6.73)
   .schab_link(as.numeric(X %*% as.numeric(beta)) + as.numeric(S),
-              link_kind, inverse = TRUE)
+    link_kind,
+    inverse = TRUE
+  )
 }
 
 #' .schab_conditional_variance
@@ -153,7 +176,7 @@
 #' @return A numeric value.
 #' @export
 .schab_conditional_variance <- function(mu, sigma2, family) {
-  as.numeric(sigma2) * .schab_variance_function(mu, family)   # eq (6.74)
+  as.numeric(sigma2) * .schab_variance_function(mu, family) # eq (6.74)
 }
 
 #' .schab_marginal_moments_lognormal
@@ -177,10 +200,12 @@
   X <- as.matrix(X)
   m <- as.numeric(exp(X %*% as.numeric(beta)))
   s2 <- as.numeric(sigma2_S)
-  out <- list(m = m,
-              mean = m * exp(s2 / 2),
-              variance = m * as.numeric(sigma2) * exp(s2 / 2) +
-                m^2 * exp(s2) * (exp(s2) - 1))
+  out <- list(
+    m = m,
+    mean = m * exp(s2 / 2),
+    variance = m * as.numeric(sigma2) * exp(s2 / 2) +
+      m^2 * exp(s2) * (exp(s2) - 1)
+  )
   if (!is.null(rho)) {
     r <- as.matrix(rho)
     out$covariance <- outer(m, m) * exp(s2) * (exp(s2 * r) - 1)
@@ -188,7 +213,7 @@
   out
 }
 
-#' G^-1(x\'beta) -- what the marginal mean is NOT, in a GLMM
+#' G^-1(x'beta) -- what the marginal mean is NOT, in a GLMM
 #'
 #' A step of the schab_glmm_shared implementation. Called by \code{spglmm}.
 #' See the file header for the source the module follows.
@@ -220,7 +245,7 @@
 #' @export
 .schab_pseudo_data <- function(z, mu, link_kind) {
   z <- as.numeric(z)
-  mu <- as.numeric(mu)                    # eq (6.78)
+  mu <- as.numeric(mu) # eq (6.78)
   .schab_link(mu, link_kind) + .schab_link_derivative(mu, link_kind) * (z - mu)
 }
 
@@ -284,11 +309,13 @@
 #' @export
 .schab_gls_beta <- function(X, Sigma_nu, nu) {
   X <- as.matrix(X)
-  nu <- as.numeric(nu)                     # eq (6.80)
+  nu <- as.numeric(nu) # eq (6.80)
   sinv <- solve(as.matrix(Sigma_nu))
   xsx <- t(X) %*% sinv %*% X
-  list(beta = as.numeric(solve(xsx, t(X) %*% sinv %*% nu)),
-       cov_beta = solve(xsx))
+  list(
+    beta = as.numeric(solve(xsx, t(X) %*% sinv %*% nu)),
+    cov_beta = solve(xsx)
+  )
 }
 
 #' .schab_predict_random_field
@@ -306,7 +333,7 @@
 #' @export
 .schab_predict_random_field <- function(Sigma_S, Sigma_nu, nu, X, beta) {
   resid <- as.numeric(nu) - as.numeric(as.matrix(X) %*% as.numeric(beta))
-  as.numeric(as.matrix(Sigma_S) %*% solve(as.matrix(Sigma_nu), resid))  # (6.81)
+  as.numeric(as.matrix(Sigma_S) %*% solve(as.matrix(Sigma_nu), resid)) # (6.81)
 }
 
 #' .schab_reml_objective
@@ -323,19 +350,23 @@
 .schab_reml_objective <- function(X, Sigma_nu, nu) {
   X <- as.matrix(X)
   nu <- as.numeric(nu)
-  S <- as.matrix(Sigma_nu)  # (6.84)
+  S <- as.matrix(Sigma_nu) # (6.84)
   n <- nrow(X)
   k <- ncol(X)
   ds <- determinant(S, logarithm = TRUE)
-  if (ds$sign <= 0) return(Inf)
+  if (ds$sign <= 0) {
+    return(Inf)
+  }
   sinv <- solve(S)
   xsx <- t(X) %*% sinv %*% X
   dx <- determinant(xsx, logarithm = TRUE)
-  if (dx$sign <= 0) return(Inf)
+  if (dx$sign <= 0) {
+    return(Inf)
+  }
   beta <- solve(xsx, t(X) %*% sinv %*% nu)
   r <- nu - as.numeric(X %*% beta)
   as.numeric(ds$modulus + dx$modulus + t(r) %*% sinv %*% r +
-               (n - k) * log(2 * pi))
+    (n - k) * log(2 * pi))
 }
 
 #' .schab_initial_mu
@@ -355,8 +386,12 @@
 #' res
 .schab_initial_mu <- function(z, family) {
   z <- as.numeric(z)
-  if (identical(family, "poisson")) return(pmax(z, 0.25))
-  if (identical(family, "binomial")) return(pmin(pmax(z, 1e-3), 1 - 1e-3))
+  if (identical(family, "poisson")) {
+    return(pmax(z, 0.25))
+  }
+  if (identical(family, "binomial")) {
+    return(pmin(pmax(z, 1e-3), 1 - 1e-3))
+  }
   z
 }
 
@@ -393,36 +428,42 @@
   if (length(z) != n || !all(dim(Sigma_S) == c(n, n))) {
     stop("`z`, `X` and `Sigma_S` must agree on the sample size", call. = FALSE)
   }
-  mu <- .schab_initial_mu(z, family)                       # step 1
+  mu <- .schab_initial_mu(z, family) # step 1
   beta <- rep(0, k)
   S_hat <- rep(0, n)
   converged <- FALSE
   sigma2_hat <- as.numeric(sigma2)
   it <- 0L
   for (it in seq_len(as.integer(max_iter))) {
-    nu <- .schab_pseudo_data(z, mu, link_kind)             # step 2
+    nu <- .schab_pseudo_data(z, mu, link_kind) # step 2
     Sig_mu <- .schab_sigma_mu(mu, sigma2, family, link_kind, R = R)
     Sigma_nu <- Sigma_S + Sig_mu
-    g <- .schab_gls_beta(X, Sigma_nu, nu)                  # step 4
+    g <- .schab_gls_beta(X, Sigma_nu, nu) # step 4
     S_new <- .schab_predict_random_field(Sigma_S, Sigma_nu, nu, X, g$beta)
     resid <- nu - as.numeric(X %*% g$beta)
-    sigma2_hat <- as.numeric(t(resid) %*% solve(Sigma_nu, resid) / n)  # (6.82)
+    sigma2_hat <- as.numeric(t(resid) %*% solve(Sigma_nu, resid) / n) # (6.82)
     mu_new <- .schab_link(as.numeric(X %*% g$beta) + S_new,
-                          link_kind, inverse = TRUE)       # step 5
+      link_kind,
+      inverse = TRUE
+    ) # step 5
     delta <- max(max(abs(g$beta - beta)), max(abs(S_new - S_hat)))
     beta <- g$beta
     S_hat <- S_new
     mu <- mu_new
-    if (delta < tol) { converged <- TRUE
-    break }
+    if (delta < tol) {
+      converged <- TRUE
+      break
+    }
   }
   nu <- .schab_pseudo_data(z, mu, link_kind)
   Sigma_nu <- Sigma_S + .schab_sigma_mu(mu, sigma2, family, link_kind, R = R)
   g <- .schab_gls_beta(X, Sigma_nu, nu)
-  list(beta = beta, S = S_hat, mu = mu, sigma2 = sigma2_hat,
-       cov_beta = g$cov_beta, se_beta = sqrt(diag(g$cov_beta)),
-       Sigma_nu = Sigma_nu, pseudo_data = nu, n_iter = it,
-       converged = converged, link = link_kind, family = family)
+  list(
+    beta = beta, S = S_hat, mu = mu, sigma2 = sigma2_hat,
+    cov_beta = g$cov_beta, se_beta = sqrt(diag(g$cov_beta)),
+    Sigma_nu = Sigma_nu, pseudo_data = nu, n_iter = it,
+    converged = converged, link = link_kind, family = family
+  )
 }
 
 #' .schab_pql_score
@@ -449,12 +490,16 @@
   X <- as.matrix(X)
   S <- as.numeric(S)
   mu <- .schab_link(as.numeric(X %*% as.numeric(beta)) + S,
-                    link_kind, inverse = TRUE)
+    link_kind,
+    inverse = TRUE
+  )
   psi <- .schab_mu_eta(mu, link_kind)
   sig_inv <- solve(.schab_data_covariance(mu, sigma2, family, R = R))
   common <- as.numeric(psi * (sig_inv %*% (z - mu)))
-  list(score_beta = as.numeric(t(X) %*% common),
-       score_S = common - as.numeric(solve(as.matrix(Sigma_S), S)))
+  list(
+    score_beta = as.numeric(t(X) %*% common),
+    score_S = common - as.numeric(solve(as.matrix(Sigma_S), S))
+  )
 }
 
 # --- Sec. 6.3.6, prediction -----------------------------------------------
@@ -481,13 +526,17 @@
   mu0 <- as.numeric(mu0_hat)
   gprime <- .schab_link_derivative(mu0, link_kind)
   dmu_deta <- 1 / gprime
-  list(prediction = mu0 + (nu0 - .schab_link(mu0, link_kind)) / gprime,
-       mspe = dmu_deta^2 * s2,
-       prediction_error = sqrt(dmu_deta^2 * s2),
-       inverse_link_prediction = .schab_link(nu0, link_kind, inverse = TRUE),
-       pseudo_scale_prediction = nu0, pseudo_scale_mspe = s2,
-       mspe_is_for = paste("eq (6.90), the linearised predictor -- NOT the",
-                           "inverse-link predictor of eq (6.87)"))
+  list(
+    prediction = mu0 + (nu0 - .schab_link(mu0, link_kind)) / gprime,
+    mspe = dmu_deta^2 * s2,
+    prediction_error = sqrt(dmu_deta^2 * s2),
+    inverse_link_prediction = .schab_link(nu0, link_kind, inverse = TRUE),
+    pseudo_scale_prediction = nu0, pseudo_scale_mspe = s2,
+    mspe_is_for = paste(
+      "eq (6.90), the linearised predictor -- NOT the",
+      "inverse-link predictor of eq (6.87)"
+    )
+  )
 }
 
 # --- CAR family -----------------------------------------------------------
@@ -503,14 +552,15 @@
 #' @return A numeric value.
 #' @export
 .schab_neighbour_structure <- function(adjacency) {
-  A <- as.matrix(adjacency)                  # R_ii = n_i, R_ij = -1
+  A <- as.matrix(adjacency) # R_ii = n_i, R_ij = -1
   if (nrow(A) != ncol(A)) stop("`adjacency` must be square", call. = FALSE)
   if (!isTRUE(all.equal(A, t(A)))) {
     stop("`adjacency` must be symmetric", call. = FALSE)
   }
   if (any(diag(A) != 0)) {
     stop("`adjacency` must have a zero diagonal (no self-neighbours)",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!all(A %in% c(0, 1))) {
     stop("`adjacency` must be a 0/1 matrix", call. = FALSE)
@@ -550,13 +600,15 @@
 #' @export
 .schab_icar_full_conditional <- function(u, adjacency, sigma2 = 1) {
   u <- as.numeric(u)
-  A <- as.matrix(adjacency)              # eq (5)/(4.3)
+  A <- as.matrix(adjacency) # eq (5)/(4.3)
   n_i <- rowSums(A)
   if (any(n_i == 0)) {
     stop("every area must have at least one neighbour", call. = FALSE)
   }
-  list(mean = as.numeric(A %*% u) / n_i, variance = as.numeric(sigma2) / n_i,
-       n_neighbours = n_i)
+  list(
+    mean = as.numeric(A %*% u) / n_i, variance = as.numeric(sigma2) / n_i,
+    n_neighbours = n_i
+  )
 }
 
 #' .schab_lcar_precision
@@ -572,7 +624,7 @@
 #' @export
 .schab_lcar_precision <- function(R, rho, sigma2 = 1) {
   R <- as.matrix(R)
-  rho <- as.numeric(rho)                  # eq (6)
+  rho <- as.numeric(rho) # eq (6)
   if (rho < 0 || rho > 1) stop("`rho` must lie in [0, 1]", call. = FALSE)
   if (sigma2 <= 0) stop("`sigma2` must be positive", call. = FALSE)
   rho * R + (1 - rho) * diag(nrow(R))
@@ -595,10 +647,12 @@
   A <- as.matrix(adjacency)
   rho <- as.numeric(rho)
   if (rho < 0 || rho > 1) stop("`rho` must lie in [0, 1]", call. = FALSE)
-  n_i <- rowSums(A)                                          # eq (7)
+  n_i <- rowSums(A) # eq (7)
   denom <- (1 - rho) + n_i * rho
-  list(mean = rho * as.numeric(A %*% u) / denom,
-       variance = as.numeric(sigma2) / denom, n_neighbours = n_i)
+  list(
+    mean = rho * as.numeric(A %*% u) / denom,
+    variance = as.numeric(sigma2) / denom, n_neighbours = n_i
+  )
 }
 
 #' .schab_bym_convolution
@@ -636,10 +690,12 @@
 #' res <- .schab_bym_identifiability_note()
 #' res
 .schab_bym_identifiability_note <- function() {
-  paste("only u + v enters the likelihood, so sigma_u^2 and sigma_v^2 are not",
-        "separately identifiable from the data; informative hyperpriors are",
-        "required, or use the Leroux LCAR prior, which nests the exchangeable",
-        "(rho=0) and ICAR (rho=1) cases in one identifiable parameter")
+  paste(
+    "only u + v enters the likelihood, so sigma_u^2 and sigma_v^2 are not",
+    "separately identifiable from the data; informative hyperpriors are",
+    "required, or use the Leroux LCAR prior, which nests the exchangeable",
+    "(rho=0) and ICAR (rho=1) cases in one identifiable parameter"
+  )
 }
 
 #' .schab_smr
@@ -694,7 +750,7 @@
 #' @export
 .schab_bym_icar_log_prior <- function(u, adjacency, kappa) {
   u <- as.numeric(u)
-  R <- .schab_neighbour_structure(adjacency)  # eq (4.2)
+  R <- .schab_neighbour_structure(adjacency) # eq (4.2)
   kappa <- as.numeric(kappa)
   if (kappa <= 0) stop("`kappa` must be positive", call. = FALSE)
   -0.5 * length(u) * log(kappa) - as.numeric(t(u) %*% R %*% u) / (2 * kappa)
@@ -713,7 +769,7 @@
 #' @export
 .schab_bym_median_log_prior <- function(u, adjacency, kappa) {
   u <- as.numeric(u)
-  A <- as.matrix(adjacency)                   # eq (4.4)
+  A <- as.matrix(adjacency) # eq (4.4)
   kappa <- as.numeric(kappa)
   if (kappa <= 0) stop("`kappa` must be positive", call. = FALSE)
   idx <- which(upper.tri(A) & A > 0, arr.ind = TRUE)
@@ -740,7 +796,7 @@
 .schab_bym_log_posterior <- function(y, c_exp, u, v, kappa, lam, adjacency,
                                      epsilon = 0.01) {
   y <- as.numeric(y)
-  cc <- as.numeric(c_exp)                     # eq (4.5)
+  cc <- as.numeric(c_exp) # eq (4.5)
   u <- as.numeric(u)
   v <- as.numeric(v)
   if (length(unique(c(length(y), length(cc), length(u), length(v)))) != 1L) {
@@ -757,7 +813,7 @@
   loglik <- sum(-cc * exp(x) + y * (log(cc) + x))
   loglik + .schab_bym_icar_log_prior(u, adjacency, kappa) -
     0.5 * n * log(lam) - sum(v^2) / (2 * lam) -
-    epsilon / (2 * kappa) - epsilon / (2 * lam)               # (4.6)
+    epsilon / (2 * kappa) - epsilon / (2 * lam) # (4.6)
 }
 
 #' .schab_bym_map
@@ -792,7 +848,8 @@
   n <- length(y)
   if (length(cc) != n || nrow(R) != n) {
     stop("`y`, `c` and `adjacency` must agree on the number of areas",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (any(cc <= 0)) stop("`c` (expected counts) must be positive", call. = FALSE)
   kappa <- as.numeric(kappa)
@@ -809,24 +866,32 @@
     w <- cc * exp(u + v)
     g_u <- y - w - as.numeric(R %*% u) / kappa
     g_v <- y - w - v / lam
-    H <- rbind(cbind(-diag(w) - R / kappa, -diag(w)),
-               cbind(-diag(w), -diag(w) - I / lam))
+    H <- rbind(
+      cbind(-diag(w) - R / kappa, -diag(w)),
+      cbind(-diag(w), -diag(w) - I / lam)
+    )
     step <- solve(H, c(g_u, g_v))
     u_new <- u - step[seq_len(n)]
     v_new <- v - step[n + seq_len(n)]
     delta <- max(abs(c(u_new - u, v_new - v)))
     u <- u_new
     v <- v_new
-    if (delta < tol) { converged <- TRUE
-    break }
+    if (delta < tol) {
+      converged <- TRUE
+      break
+    }
   }
   x <- u + v
   fitted <- cc * exp(x)
-  list(u = u, v = v, x = x, relative_risk = exp(x), fitted = fitted,
-       n_iter = it, converged = converged, sum_v = sum(v),
-       fitted_total = sum(fitted), observed_total = sum(y),
-       log_posterior = .schab_bym_log_posterior(y, cc, u, v, kappa, lam,
-                                                adjacency))
+  list(
+    u = u, v = v, x = x, relative_risk = exp(x), fitted = fitted,
+    n_iter = it, converged = converged, sum_v = sum(v),
+    fitted_total = sum(fitted), observed_total = sum(y),
+    log_posterior = .schab_bym_log_posterior(
+      y, cc, u, v, kappa, lam,
+      adjacency
+    )
+  )
 }
 
 # --- temporal and space-time structures -----------------------------------
@@ -847,7 +912,8 @@
   if (!k %in% c(1L, 2L)) stop("`order` must be 1 or 2", call. = FALSE)
   if (T_ <= k) {
     stop(sprintf("need more than %d time points for an RW%d", k, k),
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   D <- matrix(0, T_ - k, T_)
   row <- if (k == 1L) c(-1, 1) else c(1, -2, 1)
@@ -876,11 +942,17 @@
   Rt <- as.matrix(R_time)
   Is <- diag(nrow(Rs))
   It <- diag(nrow(Rt))
-  M <- switch(kind, I = kronecker(Is, It), II = kronecker(Is, Rt),
-              III = kronecker(Rs, It), IV = kronecker(Rs, Rt))
+  M <- switch(kind,
+    I = kronecker(Is, It),
+    II = kronecker(Is, Rt),
+    III = kronecker(Rs, It),
+    IV = kronecker(Rs, Rt)
+  )
   rk <- qr(M)$rank
-  list(structure = M, kind = kind, rank = rk,
-       rank_deficiency = nrow(M) - rk, n_constraints_required = nrow(M) - rk)
+  list(
+    structure = M, kind = kind, rank = rk,
+    rank_deficiency = nrow(M) - rk, n_constraints_required = nrow(M) - rk
+  )
 }
 
 #' .schab_null_space_constraints
@@ -894,14 +966,16 @@
 #' @return A list with \code{A}, \code{e}, \code{n_constraints}, \code{rank_deficiency}.
 #' @export
 .schab_null_space_constraints <- function(R_delta, tol = NULL) {
-  M <- as.matrix(R_delta)                                     # eq (12)
+  M <- as.matrix(R_delta) # eq (12)
   e <- eigen(M, symmetric = TRUE)
   scale <- max(max(abs(e$values)), 1)
   if (is.null(tol)) tol <- 1e-10 * scale * nrow(M)
   null <- abs(e$values) <= tol
   A <- t(e$vectors[, null, drop = FALSE])
-  list(A = A, e = rep(0, nrow(A)), n_constraints = nrow(A),
-       rank_deficiency = sum(null))
+  list(
+    A = A, e = rep(0, nrow(A)), n_constraints = nrow(A),
+    rank_deficiency = sum(null)
+  )
 }
 
 #' .schab_apply_sum_to_zero
@@ -917,7 +991,9 @@
 .schab_apply_sum_to_zero <- function(delta, A) {
   d <- as.numeric(delta)
   A <- as.matrix(A)
-  if (nrow(A) == 0L) return(d)
+  if (nrow(A) == 0L) {
+    return(d)
+  }
   d - as.numeric(t(A) %*% solve(A %*% t(A), A %*% d))
 }
 
@@ -942,7 +1018,7 @@
     stop("`u` and `delta_i` must have one entry per area", call. = FALSE)
   }
   outer(as.numeric(alpha) + u, rep(1, length(t_))) +
-    outer(as.numeric(beta_t) + d, t_)                          # eq (9)
+    outer(as.numeric(beta_t) + d, t_) # eq (9)
 }
 
 #' .schab_nonparametric_log_risk
@@ -965,12 +1041,13 @@
   if (length(phi) != length(gam)) {
     stop("`phi` and `gamma` must have one entry per time point", call. = FALSE)
   }
-  out <- outer(as.numeric(alpha) + u, phi + gam, "+")          # eq (10)
+  out <- outer(as.numeric(alpha) + u, phi + gam, "+") # eq (10)
   if (!is.null(delta)) {
     D <- as.matrix(delta)
     if (!all(dim(D) == dim(out))) {
       stop(sprintf("`delta` must be %d x %d", nrow(out), ncol(out)),
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     out <- out + D
   }

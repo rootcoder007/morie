@@ -21,3 +21,7 @@ A list with \code{H}, \code{s}, \code{t_min}, \code{t_max}, \code{n},
 is returned is the transform OF THE SAMPLED RECORD over the interval
 it covers, which is why the limits come back with it.
 }
+\examples{
+Laplace(h = c(1, 2, 3, 4, 5, 6, 7, 8), t = c(1, 2, 3, 4, 5, 6, 7, 8), s = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

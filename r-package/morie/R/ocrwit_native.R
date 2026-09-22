@@ -1,88 +1,127 @@
+# LayoutLMv3: one masking recipe for text and image alike.
 # Sources: Huang, Y., Lv, T., Cui, L., Lu, Y. & Wei, F. (2022)
-# "LayoutLMv3: Pre-training for Document AI with Unified Text and Image
-# Masking", ACM MM '22, 4083-4091, doi:10.1145/3503161.3548112,
-# arXiv:2204.08387 (unified masking of text and image patches with
-# discrete visual tokens, word-patch alignment, linear patch embedding);
-# Dosovitskiy, A. et al. (2021) "An Image is Worth 16x16 Words", ICLR
-# 2021, arXiv:2010.11929 (linear patch embedding); Bao, H., Dong, L.,
-# Piao, S. & Wei, F. (2022) "BEiT: BERT Pre-Training of Image
-# Transformers", ICLR 2022, arXiv:2106.08254 (discrete visual tokens as
-# targets).
-#
-# Native implementation mirroring Python morie.fn.ocrwit exactly: the
-# same box normalisation onto a 1000-grid, the same segment-level union
-# of per-word boxes, the same block-masking recipe for text and image
-# units, the same patch-of-box mapping, and the same unmasked-only
-# word-patch alignment labels.
+# "LayoutLMv3: Pre-training for Document AI with Unified Text and
+# Image Masking", MM '22, 4083-4091, doi:10.1145/3503161.3548112,
+# arXiv:2204.08387. Multimodal document models pre-training image and
+# text with different objectives; unification through masked language
+# modelling and masked image modelling with discrete image tokens;
+# word-patch alignment predicting whether the corresponding image
+# patch of an unmasked text word is masked; and linear image patch
+# embeddings in place of a CNN backbone. Dosovitskiy, A. et al.
+# (2021) "An Image is Worth 16x16 Words", ICLR 2021, arXiv:2010.11929,
+# for the linear patch embedding. Bao, H., Dong, L., Piao, S. & Wei,
+# F. (2022) "BEiT: BERT Pre-Training of Image Transformers", ICLR
+# 2022, arXiv:2106.08254, for the discrete visual tokens.
 
-#' ocrwit_normalise_bbox
+# Base R only, faithful translation of ocrwit_python_reference.py.
+
+.OCRWIT_EPS <- 1e-12
+
+#' .ocrwit_clip_int
 #'
-#' A step of the ocrwit_native implementation. Called by \code{ocrwit_patch_of_box},
-#' \code{ocrwit_segment_layout_boxes}.
+#' A step of the ocrwit_native implementation. Called by \code{normalise_bbox}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param box A vector; indexed elementwise.
+#' @param v Passed to \code{round}.
+#' @param lo Coerced to integer by the body, with \code{as.integer}.
+#' @param hi Coerced to integer by the body, with \code{as.integer}.
+#' @return The value of \code{v}, as built in the body.
+#' @export
+.ocrwit_clip_int <- function(v, lo, hi) {
+  v <- as.integer(round(v))
+  if (v < lo) return(as.integer(lo))
+  if (v > hi) return(as.integer(hi))
+  v
+}
+
+#' normalise_bbox
+#'
+#' A step of the ocrwit_native implementation. Called by \code{patch_of_box},
+#' \code{segment_layout_boxes}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param box A vector; its length is taken and its elements indexed.
 #' @param width Coerced to numeric by the body, with \code{as.numeric}.
 #' @param height Coerced to numeric by the body, with \code{as.numeric}.
 #' @param scale Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1000}.
 #' @return A vector, from \code{c}.
 #' @export
-ocrwit_normalise_bbox <- function(box, width, height, scale = 1000) {
-  x0 <- as.numeric(box[[1]])
-  y0 <- as.numeric(box[[2]])
-  x1 <- as.numeric(box[[3]])
-  y1 <- as.numeric(box[[4]])
+#' @examples
+#' normalise_bbox(box = c(1, 2, 3, 4, 5, 6, 7, 8), width = 5L, height = 5L)
+#' @keywords internal
+normalise_bbox <- function(box, width, height, scale = 1000) {
+  if (length(box) < 4L)
+    stop("ocrwit: the box must have four coordinates")
+  x0 <- as.numeric(box[1])
+  y0 <- as.numeric(box[2])
+  x1 <- as.numeric(box[3])
+  y1 <- as.numeric(box[4])
   W <- as.numeric(width)
   H <- as.numeric(height)
-  if (W <= 0 || H <= 0)
+  if (W <= 0.0 || H <= 0.0)
     stop("ocrwit: the page dimensions must be positive")
-  if (x1 < x0 || y1 < y0) stop("ocrwit: the box is inverted")
+  if (x1 < x0 || y1 < y0)
+    stop("ocrwit: the box is inverted")
   s <- as.integer(scale)
-  clamp <- function(v) max(0L, min(s, as.integer(round(v))))
-  c(clamp(x0 / W * s), clamp(y0 / H * s),
-    clamp(x1 / W * s), clamp(y1 / H * s))
+  c(.ocrwit_clip_int(x0 / W * s, 0, s),
+    .ocrwit_clip_int(y0 / H * s, 0, s),
+    .ocrwit_clip_int(x1 / W * s, 0, s),
+    .ocrwit_clip_int(y1 / H * s, 0, s))
 }
 
-#' ocrwit_segment_layout_boxes
+#' segment_layout_boxes
 #'
 #' A step of the ocrwit_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param boxes Coerced to list by the body, with \code{as.list}.
+#' @param boxes A matrix; indexed by row and column.
 #' @param segment_ids Coerced to list by the body, with \code{as.list}.
-#' @param width Passed to \code{ocrwit_normalise_bbox}.
-#' @param height Passed to \code{ocrwit_normalise_bbox}.
-#' @param scale Passed to \code{ocrwit_normalise_bbox}. Defaults to \code{1000}.
+#' @param width Passed to \code{normalise_bbox}.
+#' @param height Passed to \code{normalise_bbox}.
+#' @param scale Passed to \code{normalise_bbox}. Defaults to \code{1000}.
 #' @return A list with \code{segment_boxes}, \code{per_token}, \code{n_segments}, \code{note}.
 #' @export
-ocrwit_segment_layout_boxes <- function(boxes, segment_ids, width, height,
-                                         scale = 1000) {
+#' @examples
+#' boxes <- matrix(c(10, 10, 60, 30, 70, 10, 110, 30), 2, 4, byrow = TRUE)
+#' segment_layout_boxes(boxes, c(0, 1), width = 200, height = 100)
+#' @keywords internal
+segment_layout_boxes <- function(boxes, segment_ids, width, height,
+                                 scale = 1000) {
   segs <- as.list(segment_ids)
-  B <- as.list(boxes)
+  B <- if (is.list(boxes)) boxes else lapply(seq_len(nrow(boxes)),
+                                              function(i) boxes[i, ])
   if (length(segs) != length(B))
     stop("ocrwit: ", length(B), " boxes but ", length(segs),
          " segment ids")
-  nms <- unique(as.character(unlist(segs)))
+  normed <- mapply(function(b, s) normalise_bbox(b, width, height, scale),
+                   B, segs, SIMPLIFY = FALSE)
+  by_seg <- list()
+  for (i in seq_along(segs)) {
+    sk <- as.character(segs[[i]])
+    if (is.null(by_seg[[sk]])) by_seg[[sk]] <- list()
+    by_seg[[sk]][[length(by_seg[[sk]]) + 1L]] <- normed[[i]]
+  }
   seg_box <- list()
-  for (s in nms) {
-    idx <- which(vapply(segs, function(x) identical(as.character(x), s),
-                        logical(1)))
-    nb <- lapply(idx, function(i) ocrwit_normalise_bbox(B[[i]], width,
-                                                       height, scale))
-    seg_box[[s]] <- c(min(vapply(nb, `[`, numeric(1), 1)),
-                      min(vapply(nb, `[`, numeric(1), 2)),
-                      max(vapply(nb, `[`, numeric(1), 3)),
-                      max(vapply(nb, `[`, numeric(1), 4)))
+  for (sk in names(by_seg)) {
+    bs <- by_seg[[sk]]
+    seg_box[[sk]] <- c(min(vapply(bs, function(b) b[1L], numeric(1L))),
+                       min(vapply(bs, function(b) b[2L], numeric(1L))),
+                       max(vapply(bs, function(b) b[3L], numeric(1L))),
+                       max(vapply(bs, function(b) b[4L], numeric(1L))))
   }
   per_token <- lapply(segs, function(s) seg_box[[as.character(s)]])
-  list(segment_boxes = seg_box, per_token = per_token,
-       n_segments = length(seg_box),
-       note = "one box per segment, cheaper than per word and closer to the document's structure")
+  list(
+    segment_boxes = seg_box,
+    per_token = per_token,
+    n_segments = length(seg_box),
+    note = "one box per segment, cheaper than per word and closer to the document's structure"
+  )
 }
 
-#' ocrwit_mask_units
+#' mask_units
 #'
 #' A step of the ocrwit_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -94,63 +133,71 @@ ocrwit_segment_layout_boxes <- function(boxes, segment_ids, width, height,
 #' @param block Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.
 #' @return A list with \code{masked}, \code{kept}, \code{rate}, \code{block}, \code{note}.
 #' @export
-ocrwit_mask_units <- function(n_units, rate = 0.3, seed = 0, block = 1) {
+#' @examples
+#' mask_units(n_units = 5L)
+#' @keywords internal
+mask_units <- function(n_units, rate = 0.3, seed = 0, block = 1) {
   n <- as.integer(n_units)
   r <- as.numeric(rate)
-  if (n < 1L) stop("ocrwit: there is nothing to mask")
-  if (!(r > 0 && r < 1)) stop("ocrwit: the mask rate must lie in (0,1)")
-  rng <- .ghc_rng(as.numeric(seed))
+  if (n < 1L)
+    stop("ocrwit: there is nothing to mask")
+  if (!(r > 0.0 && r < 1.0))
+    stop("ocrwit: the mask rate must lie in (0,1)")
+  e <- .ghc_rng(as.numeric(seed))
   b <- max(1L, as.integer(block))
   masked <- integer(0)
   target <- max(1L, as.integer(round(n * r)))
   guard <- 0L
-  while (length(unique(masked)) < target && guard < 1000L * n) {
-    u <- .ghc_unif(rng, 1L)
-    s <- as.integer(u * n) %% n
-    blk <- seq.int(s, min(n - 1L, s + b - 1L))
-    masked <- c(masked, blk)
+  while (length(masked) < target && guard < 1000L * n) {
+    s <- as.integer(.ghc_unif(e, 1L) * n) %% n
+    hi <- min(n, s + b)
+    if (s < hi) {
+      add <- seq.int(s, hi - 1L)
+      masked <- unique(c(masked, add))
+    }
     guard <- guard + 1L
   }
-  masked <- sort(unique(masked))
-  kept <- sort(setdiff(seq_len(n) - 1L, masked))
-  list(masked = masked, kept = kept,
-       rate = length(masked) / as.numeric(n), block = b,
-       note = "the same recipe for both modalities, which is the unification")
+  all_idx <- seq_len(n) - 1L
+  kept <- setdiff(all_idx, masked)
+  list(
+    masked = as.integer(sort(masked)),
+    kept = as.integer(sort(kept)),
+    rate = length(masked) / as.numeric(n),
+    block = b,
+    note = "the same recipe for both modalities, which is the unification"
+  )
 }
 
-#' ocrwit_patch_of_box
+#' patch_of_box
 #'
-#' A step of the ocrwit_native implementation. Called by \code{morie_ocrwit}.
+#' A step of the ocrwit_native implementation. Called by \code{word_patch_alignment}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param box Passed to \code{ocrwit_normalise_bbox}.
-#' @param width Passed to \code{ocrwit_normalise_bbox}.
-#' @param height Passed to \code{ocrwit_normalise_bbox}.
+#' @param box Passed to \code{normalise_bbox}.
+#' @param width Passed to \code{normalise_bbox}.
+#' @param height Passed to \code{normalise_bbox}.
 #' @param patch_grid Coerced to integer by the body, with \code{as.integer}. Defaults to \code{14}.
 #' @return A vector, from \code{sort}.
 #' @export
-ocrwit_patch_of_box <- function(box, width, height, patch_grid = 14) {
+#' @examples
+#' patch_of_box(box = c(1, 2, 3, 4, 5, 6, 7, 8), width = 5L, height = 5L)
+#' @keywords internal
+patch_of_box <- function(box, width, height, patch_grid = 14) {
   g <- as.integer(patch_grid)
-  bb <- ocrwit_normalise_bbox(box, width, height, g)
-  x0 <- bb[1]
-  y0 <- bb[2]
-  x1 <- bb[3]
-  y1 <- bb[4]
-  r0 <- min(y0, g - 1L)
-  r1 <- min(max(y1, y0 + 1L), g)
-  c0 <- min(x0, g - 1L)
-  c1 <- min(max(x1, x0 + 1L), g)
-  out <- c()
-  for (r in r0:(r1 - 1L)) {
-    for (c in c0:(c1 - 1L)) {
-      out <- c(out, r * g + c)
-    }
-  }
+  nb <- normalise_bbox(box, width, height, g)
+  x0 <- nb[1L]
+  y0 <- nb[2L]
+  x1 <- nb[3L]
+  y1 <- nb[4L]
+  rs <- seq.int(min(y0, g - 1L), min(max(y1, y0 + 1L), g) - 1L)
+  cs <- seq.int(min(x0, g - 1L), min(max(x1, x0 + 1L), g) - 1L)
+  if (length(rs) == 0L || length(cs) == 0L) return(integer(0))
+  out <- as.vector(outer(rs, cs, function(r, c) r * g + c))
   sort(unique(out))
 }
 
-#' morie_ocrwit
+#' word_patch_alignment
 #'
 #' A step of the ocrwit_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -158,41 +205,48 @@ ocrwit_patch_of_box <- function(box, width, height, patch_grid = 14) {
 #'
 #' @param text_boxes A vector; its length is taken and its elements indexed.
 #' @param masked_patches Passed to \code{unlist}.
-#' @param width Passed to \code{ocrwit_patch_of_box}.
-#' @param height Passed to \code{ocrwit_patch_of_box}.
-#' @param patch_grid Passed to \code{ocrwit_patch_of_box}. Defaults to \code{14}.
+#' @param width Passed to \code{patch_of_box}.
+#' @param height Passed to \code{patch_of_box}.
+#' @param patch_grid Passed to \code{patch_of_box}. Defaults to \code{14}.
 #' @param masked_text Passed to \code{unlist}. Defaults to \code{list()}.
 #' @return A list with \code{estimate}, \code{labels}, \code{patches}, \code{n_examples},
 #' \code{positive_rate}, \code{method}, \code{note}.
 #' @export
-morie_ocrwit <- function(text_boxes, masked_patches, width, height,
-                         patch_grid = 14, masked_text = list()) {
-  mp <- as.integer(unlist(masked_patches))
-  mt <- as.integer(unlist(masked_text))
+#' @examples
+#' text_boxes <- list(c(10, 10, 60, 30), c(70, 10, 120, 30))
+#' word_patch_alignment(text_boxes, list(0, 5), width = 200, height = 100)
+#' @keywords internal
+word_patch_alignment <- function(text_boxes, masked_patches, width,
+                                 height, patch_grid = 14,
+                                 masked_text = list()) {
+  mp <- unique(as.integer(unlist(masked_patches)))
+  mt <- unique(as.integer(unlist(masked_text)))
   labels <- list()
   covered <- list()
   for (i in seq_along(text_boxes)) {
     if ((i - 1L) %in% mt) next
-    ps <- ocrwit_patch_of_box(text_boxes[[i]], width, height, patch_grid)
+    b <- text_boxes[[i]]
+    ps <- patch_of_box(b, width, height, patch_grid)
     covered[[as.character(i - 1L)]] <- ps
-    labels[[as.character(i - 1L)]] <- as.integer(any(ps %in% mp))
+    labels[[as.character(i - 1L)]] <-
+      as.integer(any(ps %in% mp))
   }
   if (length(labels) == 0L)
     stop("ocrwit: every text token is masked, so the alignment objective has no examples")
-  lab_vals <- vapply(labels, identity, integer(1))
-  list(estimate = labels, labels = labels, patches = covered,
-       n_examples = length(labels),
-       positive_rate = sum(lab_vals) / as.numeric(length(labels)),
-       method = "word-patch alignment; Huang, Lv, Cui, Lu & Wei (2022)",
-       note = "unmasked words only -- a masked word would leak its own reconstruction target")
+  n_ex <- length(labels)
+  pos <- sum(unlist(labels))
+  list(
+    estimate = labels,
+    labels = labels,
+    patches = covered,
+    n_examples = n_ex,
+    positive_rate = pos / as.numeric(n_ex),
+    method = "word-patch alignment; Huang, Lv, Cui, Lu & Wei (2022)",
+    note = "unmasked words only -- a masked word would leak its own reconstruction target"
+  )
 }
 
-ocrwit_word_patch_alignment <- morie_ocrwit
-layoutlmv3 <- morie_ocrwit
-ocr_wit_layout <- morie_ocrwit
-ocrwitlayout <- morie_ocrwit
-
-#' ocrwit_cheatsheet
+#' .ocrwit_cheatsheet
 #'
 #' A step of the ocrwit_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -200,7 +254,10 @@ ocrwitlayout <- morie_ocrwit
 #'
 #' @return A character value.
 #' @export
-ocrwit_cheatsheet <- function() {
+#' @examples
+#' res <- .ocrwit_cheatsheet()
+#' res
+.ocrwit_cheatsheet <- function() {
   paste("ocrwit: document models pre-trained text and image with ",
         "DIFFERENT objectives, giving two spaces and a bridge. ",
         "LayoutLMv3 makes them symmetric -- mask and reconstruct ",
@@ -210,5 +267,14 @@ ocrwit_cheatsheet <- function() {
         "ALIGNMENT binds them: for an UNMASKED word, predict whether ",
         "its patch was masked, which is the only objective that ",
         "forces the model to know where a word sits. Layout is ",
-        "SEGMENT-level 2D position.")
+        "SEGMENT-level 2D position.", sep = "")
 }
+
+# compact alias per ledger/NAMING.md
+layoutlmv3 <- word_patch_alignment
+
+# public names resolved by fn/_lazy_map.json
+ocr_wit_layout <- word_patch_alignment
+ocrwitlayout <- word_patch_alignment
+
+morie_ocrwit <- word_patch_alignment

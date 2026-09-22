@@ -28,6 +28,7 @@ studentised kernel quantile.  Skewness of the indicator score
 ~= Phi(z) - (gamma_1/6)(z^2-1)phi(z)/sqrt n.}
 }
 \examples{
+set.seed(1)
 fzedg(x = rnorm(50))
 }
 \keyword{internal}

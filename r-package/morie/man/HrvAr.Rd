@@ -26,3 +26,8 @@ follow the Task Force of the ESC and NASPE (1996): VLF 0.003-0.04, LF
 ~0.8 s dwarfs the variability and would leak a huge DC pole into the
 VLF band.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+HrvAr(V)
+}
+\keyword{internal}

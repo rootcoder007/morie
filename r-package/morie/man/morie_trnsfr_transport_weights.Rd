@@ -23,3 +23,12 @@ A list with \code{weights}, \code{pi}, \code{max_weight}, \code{ess},
 logistic regression on the pooled data and returns, for each source
 unit, (1-pi)/pi, normalised to mean 1. Target units get 0.
 }
+\examples{
+set.seed(1)
+n <- 60
+X <- matrix(rnorm(n * 2), n, 2)
+S <- rbinom(n, 1, plogis(0.3 * X[, 1]))
+r <- morie_trnsfr_transport_weights(X, S)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -18,10 +18,11 @@
 #' @return Named list \code{(loss, estimate, dW, db, dx, a, z, method)}.
 #' @references Rumelhart, Hinton & Williams (1986); Goodfellow et al. (2016).
 #' @examples
+#' set.seed(1)
 #' morie_bkprp_backpropagation(x = rnorm(50), y = rnorm(50))
 #' @export
 morie_bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
-                                  activation = "sigmoid") {
+                                        activation = "sigmoid") {
   x <- as.matrix(x)
   y <- as.matrix(y)
   n_in <- ncol(x)
@@ -46,16 +47,8 @@ morie_bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
   )
 }
 
-#' .bkprp_sigma
-#'
-#' A step of the bkprp implementation. Called by \code{morie_bkprp_backpropagation}.
-#' See the file header for the source the module follows.
-#' it follows.
-#'
-#' @param z Numeric; combined arithmetically in the body.
-#' @param activation Passed to \code{switch}.
-#' @return The value of \code{switch}.
-#' @export
+#' Internal helper: Bkprp Sigma
+#' @noRd
 .bkprp_sigma <- function(z, activation) {
   switch(activation,
     "identity" = z,
@@ -68,17 +61,8 @@ morie_bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
   )
 }
 
-#' .bkprp_sigma_prime
-#'
-#' A step of the bkprp implementation. Called by \code{morie_bkprp_backpropagation}.
-#' See the file header for the source the module follows.
-#' it follows.
-#'
-#' @param z A matrix; passed to \code{nrow}.
-#' @param activation Passed to \code{switch}.
-#' @param a Numeric; combined arithmetically in the body.
-#' @return The value of \code{switch}.
-#' @export
+#' Internal helper: Bkprp Sigma Prime
+#' @noRd
 .bkprp_sigma_prime <- function(z, activation, a) {
   switch(activation,
     "identity" = matrix(1, nrow(z), ncol(z)),

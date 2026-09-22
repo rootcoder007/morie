@@ -29,3 +29,10 @@ nonnegativity makes the columns of W basis vectors and the rows of H
 the activations that switch them on.  The book warns the divergence
 form is undefined where V or WH has a zero.
 }
+\examples{
+set.seed(6)
+V <- matrix(runif(48, 0.1, 1), 8, 6)
+r <- NmfMu(V, r = 3, maxiter = 50)
+str(r, max.level = 1)
+}
+\keyword{internal}

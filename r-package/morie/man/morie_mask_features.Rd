@@ -21,3 +21,11 @@ A step of the grace_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+rng <- morie:::.ghc_rng(1L)
+X <- matrix(runif(12), nrow = 4, ncol = 3)
+m <- morie_mask_features(X, p = 0.3, rng)
+c(nrow(m$X), m$n_masked <= 3)
+}
+\keyword{internal}

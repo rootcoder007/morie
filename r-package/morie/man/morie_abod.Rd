@@ -29,8 +29,9 @@ Angles keep working where distances stop: in high dimensions all
 pairwise distances concentrate, and that is what ABOD was built for.
 }
 \examples{
+set.seed(1)
 X <- rbind(matrix(rnorm(60), ncol = 2), c(9, 9))
-which.min(morie_abod(X)$abof)   # the planted point
+which.min(morie_abod(X)$abof) # the planted point
 }
 \references{
 Kriegel, H.-P., Schubert, M. and Zimek, A. (2008).

@@ -10,14 +10,13 @@ morie_otis_analyze_b09(data)
 \item{data}{b09 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines and a
-placement-count x gender crosstab of individual counts.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 Individuals by number of placements x gender (b09)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_otis_analyze_b09(V)
+otis_b09 <- morie_synth_otis("b09", n = 120L, seed = 1L)
+res <- morie_otis_analyze_b09(otis_b09)
+class(res)
 }

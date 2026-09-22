@@ -35,3 +35,13 @@ A step of the dreamr_native implementation. Called by \code{morie_dreamr}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+am <- function(s) 1
+tr <- function(s, a) s * 0.9 + 0.1
+rm <- function(s) sum(s)
+vm <- function(s) sum(s) * 2
+r <- morie_dreamr_imagine(state = c(1, 0.5), am, tr, rm, horizon = 5,
+                          value_model = vm)
+str(r, max.level = 1)
+}
+\keyword{internal}

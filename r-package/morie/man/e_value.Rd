@@ -4,7 +4,7 @@
 \alias{e_value}
 \title{E-value for unmeasured confounding (continuous-ATE scale)}
 \usage{
-e_value(ate, se, null = 0)
+e_value(ate, se, null = 0, sd_y = 1)
 }
 \arguments{
 \item{ate}{Point estimate of the treatment effect.}
@@ -12,13 +12,20 @@ e_value(ate, se, null = 0)
 \item{se}{Standard error of the ATE (must be > 0).}
 
 \item{null}{Null value. Default 0.}
+
+\item{sd_y}{Outcome standard deviation. Default 1 (use the
+closed-form proxy). Pass the empirical sd to route through
+\code{EValue::evalues.OLS()} when installed.}
 }
 \value{
 Scalar E-value (>= 1).
 }
 \description{
-Applies the continuous-scale z-stat -> RR approximation natively,
-matching the Python port.
+Native implementation of the VanderWeele & Ding (2017) OLS E-value.
+Supply an outcome SD via \code{sd_y} for the recommended standardised
+workflow; when \code{sd_y} is left at its default of 1, it
+back to the closed-form continuous-scale RR proxy used by the
+Python port so both ports stay numerically aligned.
 }
 \examples{
 e_value(ate = 0.5, se = 0.1)

@@ -60,6 +60,7 @@ mu^top Z_2}, system
 c_{0s}]}{[C_pp C_ps; C_ps^top C_ss] [lambda; mu] = [c_0p; c_0s]}.
 }
 \examples{
+set.seed(1)
 cokrg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100), 50, 2), target = rnorm(50))
 }
 \references{

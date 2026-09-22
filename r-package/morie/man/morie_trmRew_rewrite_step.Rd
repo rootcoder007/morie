@@ -20,3 +20,11 @@ Nothing; the function is called for its effect.
 reduces arguments before the term above them; outermost the other way
 round.
 }
+\examples{
+x <- morie_unifAlg_var("x")
+zero <- morie_unifAlg_const("0")
+r1 <- morie_trmRew_rule(morie_unifAlg_app("plus", zero, x), x)
+t <- morie_unifAlg_app("plus", zero, morie_unifAlg_const("a"))
+morie_trmRew_rewrite_step(t, list(r1))
+}
+\keyword{internal}

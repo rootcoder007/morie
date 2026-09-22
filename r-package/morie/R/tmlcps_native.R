@@ -116,6 +116,10 @@
 #'   pi_obs).
 #' @references Kennedy, E. H. et al. (2017). Theorem 1.
 #' @export
+#' @examples
+#' pseudo_outcome(y = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   X = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 pseudo_outcome <- function(y, A, X, ridge = 1e-8) {
   yv <- as.numeric(y)
   av <- as.numeric(A)
@@ -193,6 +197,10 @@ pseudo_outcome <- function(y, A, X, ridge = 1e-8) {
 #' @return A list with the curve and \code{info} (bandwidth, coef).
 #' @references Kennedy, E. H. et al. (2017). Sec. 3.2-3.3.
 #' @export
+#' @examples
+#' effect_curve(xi = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   grid = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 effect_curve <- function(xi, A, grid, fit = "kernel",
                          bandwidth = NULL, n_folds = 5) {
   if (!fit %in% .FITS)
@@ -230,7 +238,10 @@ effect_curve <- function(xi, A, grid, fit = "kernel",
 #'   \code{pi_obs}, \code{fit}, \code{n}, \code{method}.
 #' @references Kennedy, E. H. et al. (2017).
 #' @export
-#' @aliases morie_tmlcontinuoustreatment
+#' @examples
+#' morie_tmlcps(y = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   X = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_tmlcps <- function(y, A, X, a_grid = NULL, fit = "kernel",
                          bandwidth = NULL, n_folds = 5) {
   av <- as.numeric(A)
@@ -266,6 +277,6 @@ morie_tmlcps <- function(y, A, X, a_grid = NULL, fit = "kernel",
 }
 
 #' Compact alias per ledger/NAMING.md
+#' @rdname morie_tmlcps
 #' @export
-#' @noRd
 morie_tmlcontinuoustreatment <- morie_tmlcps

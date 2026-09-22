@@ -20,7 +20,7 @@
 #' @export
 #' @examples
 #' Mzreanal(rewards = c(1, 2, 3, 4, 5, 6, 7, 8), freshvalues = c(1, 2, 3, 4, 5, 6, 7, 8),
-#' visits = c(1, 2, 3, 4, 5, 6, 7, 8))
+#'   visits = c(1, 2, 3, 4, 5, 6, 7, 8))
 Mzreanal <- function(rewards, freshvalues, visits, n = 5, gamma = 0.997,
                      alpha = 1, beta = 1, oldvalues = NULL) {
   u <- .t1_vec(rewards)
@@ -50,7 +50,9 @@ Mzreanal <- function(rewards, freshvalues, visits, n = 5, gamma = 0.997,
   sp <- sum(pa)
   prob <- if (sp == 0) rep(1 / T, T) else pa / sp
   w <- (1 / (T * prob))^as.numeric(beta)
-  .t1_result(target = z, policy = pol, priority = pr, prob = prob,
-             weight = w, T = T, A = A, n = n, gamma = g,
-             method = "MuZero Reanalyze targets (Schrittwieser et al. 2020 App. H)")
+  .t1_result(
+    target = z, policy = pol, priority = pr, prob = prob,
+    weight = w, T = T, A = A, n = n, gamma = g,
+    method = "MuZero Reanalyze targets (Schrittwieser et al. 2020 App. H)"
+  )
 }

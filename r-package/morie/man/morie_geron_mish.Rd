@@ -10,6 +10,14 @@ morie_geron_mish(z)
 \item{z}{Pre-activations. @return List with activation, derivative, softplus, minimum,
 estimate, n, method.}
 }
+\value{
+A list with \code{activation}, \code{derivative}, \code{softplus}, \code{minimum}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Mish activation z*tanh(softplus(z)) (Geron Ch 11, morie.fn hmmish)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_mish(V)
+}
+\keyword{internal}

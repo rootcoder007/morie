@@ -2,20 +2,20 @@
 % Please edit documentation in R/otis_analyze.R
 \name{print.morie_otis_result}
 \alias{print.morie_otis_result}
-\title{Print method for OTIS results}
+\title{Print method for \code{morie_otis_result} objects}
 \usage{
 \method{print}{morie_otis_result}(x, ...)
 }
 \arguments{
-\item{x}{A \code{morie_otis_result}.}
+\item{x}{A \code{morie_otis_result} object.}
 
-\item{...}{Passed to \code{format.morie_otis_result()}.}
+\item{...}{Ignored; accepted for S3 consistency.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
-Print method for OTIS results
+Print method for \code{morie_otis_result} objects
 }
 \examples{
 if (requireNamespace("readr", quietly = TRUE)) {

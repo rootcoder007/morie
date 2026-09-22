@@ -21,7 +21,11 @@ which grows like \code{alpha log n} -- so the concentration
 is not a smoothing parameter whose doubling doubles the
 cluster count.
 }
+\examples{
+expected_clusters(n = 5L, alpha = 0.5)
+}
 \references{
 Muller, P. & Quintana, F. A. (2004). Statistical
 Science, 19(1), 95-110.
 }
+\keyword{internal}

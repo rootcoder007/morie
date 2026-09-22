@@ -11,9 +11,16 @@ morie_burkov_next_token(t_next, s)
 
 \item{s}{Token sequence.}
 }
+\value{
+A list with \code{estimate}, \code{context}, \code{distribution}, \code{notations_agree}, \code{n}, \code{method}.
+}
 \description{
 Eq 2.2 DEFINES a language model rather than giving an estimator, so
 the operational content is the simplest one the book builds on:
 count how often the last token of s is followed by t_next within s.
 Eq 2.3's notational equivalence folds in as \code{notations_agree}.
 }
+\examples{
+morie_burkov_next_token("b", c("a", "b", "a", "c", "a", "b"))
+}
+\keyword{internal}

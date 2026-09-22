@@ -19,7 +19,7 @@ applicable" note in \code{warnings}.
 \description{
 OTIS b05 (segregation placements by consecutive duration) does
 not carry a demographic treatment variable -- the published
-schema is just \code{EndFiscalYear, Consecutive_Duration,
+schema is just \eqn{EndFiscalYear, Consecutive_Duration,
 Number_SegregationPlacements}. The "Ruhela formulation" presumes
 a binary treatment column (typically Gender, Race, or alert
 status) for the aggregate RF test, so b05 has no meaningful
@@ -29,7 +29,6 @@ loops over the b03..b09 family stay green.
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_b05 <- morie_synth_otis("b05", n = 120L, seed = 1L)
 morie_otis_analyze_b05_ruhela_aggregate(otis_b05)
 }

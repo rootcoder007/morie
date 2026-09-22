@@ -27,3 +27,8 @@ A step of the remlfn_native implementation. Called by \code{morie_vcomp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+r <- morie_remlfn(y = rnorm(10), group = rbinom(10, 1, 0.5)); TRUE
+}
+\keyword{internal}

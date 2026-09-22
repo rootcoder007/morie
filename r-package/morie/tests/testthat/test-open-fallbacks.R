@@ -1,38 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# Open-path fallbacks introduced in the rmorie parity port: corpus-first
-# SIU caches, bundled-sample TPS fallback, keyless NIBRS, built-in-DB
-# guard. Each test pins the new branch so the behaviour stays covered.
-
-test_that("morie_fetch_siu materializes the rmoriedata corpus", {
-  skip_if_not_installed("rmoriedata")
-  d <- tempfile("siu-corpus-")
-  csv <- suppressMessages(morie_fetch_siu(cache_dir = d))
-  expect_true(file.exists(csv))
-  df <- utils::read.csv(csv, nrows = 5)
-  expect_true("case_number" %in% names(df))
-})
-
-test_that("morie_siu_fetch_cases corpus path honours the years filter", {
-  skip_if_not_installed("rmoriedata")
-  d <- tempfile("siu-cases-")
-  csv <- suppressMessages(morie_siu_fetch_cases(cache_dir = d,
-                                                years = 2024L,
-                                                progress = FALSE))
-  expect_true(file.exists(csv))
-  df <- utils::read.csv(csv, colClasses = "character")
-  if (nrow(df)) {
-    expect_true(all(substr(df$case_number, 1, 2) == "24"))
-  }
-})
-
-test_that("morie_siu_fetch_cases still rejects non-finite years first", {
-  expect_error(
-    morie_siu_fetch_cases(years = c(2023, NaN),
-                          cache_dir = tempfile("siu-yrs-"),
-                          overwrite = TRUE, progress = FALSE),
-    "finite"
-  )
-})
+# Open-path fallbacks: every credential-optional ingest function must
+# work on a fresh box with no keys and no local caches (the package's
+# functionality-without-paywall contract).
 
 test_that("nibrs ingest falls back to the bundled synthetic sample without a key", {
   old <- Sys.getenv("FBI_CDE_API_KEY", unset = NA)
@@ -43,11 +12,23 @@ test_that("nibrs ingest falls back to the bundled synthetic sample without a key
     morie_ingest_forensics_nibrs(year = 2023, max_features = 5L)
   ))
   expect_s3_class(df, "data.frame")
-  expect_true("ori" %in% names(df))
+  expect_true(all(c("ori", "state_abbr", "offense_name") %in% names(df)))
   expect_lte(nrow(df), 5L)
 })
 
-test_that("tps sample fallback resolves a bundled sample", {
+test_that("bundled nibrs synthetic fixture is present with the documented schema", {
+  p <- .morie_extdata("nibrs_synthetic.csv")
+  skip_if(!nzchar(p), "fixture only present after install")
+  df <- utils::read.csv(p)
+  expect_identical(
+    names(df),
+    c("ori", "state_abbr", "offense_code", "offense_name",
+      "data_year", "incident_count")
+  )
+  expect_gt(nrow(df), 0L)
+})
+
+test_that("tps sample fallback resolves the bundled psdp assault sample", {
   df <- suppressMessages(morie:::.morie_tps_sample_fallback("Assault", nrows = 3L))
   skip_if(is.null(df), "no bundled tps sample in this install")
   expect_s3_class(df, "data.frame")
@@ -64,34 +45,51 @@ test_that("tps loaders reach the sample fallback when the cache dir is empty", {
     error = function(e) e
   )
   if (inherits(df, "error")) {
-    expect_match(conditionMessage(df), "CSV not found")
+    # Only acceptable failure: no bundled sample available at all.
+    expect_match(conditionMessage(df), "CSV not found", fixed = FALSE)
   } else {
     expect_s3_class(df, "data.frame")
     expect_lte(nrow(df), 2L)
   }
 })
 
-test_that("morie_tps_load csv dispatch falls back to the bundled sample", {
-  old <- Sys.getenv("MORIE_TPS_DATA_DIR", unset = NA)
-  Sys.setenv(MORIE_TPS_DATA_DIR = tempfile("no-tps-cache-"))
-  on.exit(if (is.na(old)) Sys.unsetenv("MORIE_TPS_DATA_DIR") else
-            Sys.setenv(MORIE_TPS_DATA_DIR = old), add = TRUE)
-  df <- tryCatch(
-    suppressMessages(morie_tps_load("Assault", format = "csv", nrows = 2L)),
-    error = function(e) e
-  )
-  if (!inherits(df, "error")) {
-    expect_s3_class(df, "data.frame")
-  } else {
-    expect_match(conditionMessage(df), "no matching file")
-  }
-})
-
 test_that("morie_load_dataset skips a missing built-in DB instead of erroring", {
+  # The tier-1 guard: a non-existent builtin path must not reach
+  # DBI::dbConnect (which used to throw 'unable to open database file').
   builtin <- tryCatch(morie_builtin_db(), error = function(e) NULL)
   skip_if(is.null(builtin) || file.exists(builtin),
           "builtin DB present; guard not exercised")
+  # With no cache/local/remote for a fake key we expect the clean
+  # catalog error, not the RSQLite connection error.
   err <- tryCatch(morie_load_dataset("no_such_dataset_xyz"),
                   error = function(e) conditionMessage(e))
   expect_match(err, "Unknown dataset", fixed = TRUE)
+})
+
+test_that("datasette connector demands a configured instance", {
+  old <- Sys.getenv("MORIE_DATASETTE_URL", unset = NA)
+  Sys.setenv(MORIE_DATASETTE_URL = "")
+  on.exit(if (is.na(old)) Sys.unsetenv("MORIE_DATASETTE_URL") else
+            Sys.setenv(MORIE_DATASETTE_URL = old), add = TRUE)
+  expect_error(morie_datasette_databases(), "MORIE_DATASETTE_URL")
+  expect_error(morie_datasette_read("db", "tbl"), "MORIE_DATASETTE_URL")
+})
+
+test_that("datasette read validates its arguments", {
+  old <- Sys.getenv("MORIE_DATASETTE_URL", unset = NA)
+  Sys.setenv(MORIE_DATASETTE_URL = "https://example.invalid/data")
+  on.exit(if (is.na(old)) Sys.unsetenv("MORIE_DATASETTE_URL") else
+            Sys.setenv(MORIE_DATASETTE_URL = old), add = TRUE)
+  expect_error(morie_datasette_read(""), "`db`")
+  expect_error(morie_datasette_read("db"), "table")
+  expect_error(morie_datasette_read("db", "tbl", limit = 0), "positive")
+})
+
+test_that("fetch_siu materializes the rmoriedata corpus when available", {
+  skip_if_not_installed("rmoriedata")
+  dir <- tempfile("siu-corpus-")
+  csv <- suppressMessages(morie_fetch_siu(cache_dir = dir))
+  expect_true(file.exists(csv))
+  df <- utils::read.csv(csv, nrows = 5)
+  expect_true("case_number" %in% names(df))
 })

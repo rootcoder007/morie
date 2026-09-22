@@ -8,7 +8,7 @@
 #'
 #' For a composition x with constant sum kappa and zero set Z the
 #' multiplicative replacement puts x'_j = delta_j for j in Z and
-#' x'_j = x_j (1 - (sum_\{k in Z\} delta_k) / kappa) otherwise.  The rule
+#' x'&#95;j = x_j (1 - (sum&#95;\{k in Z\} delta_k) / kappa) otherwise.  The rule
 #' preserves the total exactly and leaves every ratio between two non-zero
 #' parts untouched, which is what makes it a perturbation rather than an
 #' additive fudge that would distort the very log-ratios it protects.  A row
@@ -54,7 +54,9 @@ Aitzmu <- function(X, delta) {
       }
     }
   }
-  list(X_imp = if (was_matrix) out else as.numeric(out[1, ]), estimate = out[1, 1],
-       n_zero = nz, n = nrow(rows), D = D,
-       method = "Martin-Fernandez et al. (2003) multiplicative replacement")
+  list(
+    X_imp = if (was_matrix) out else as.numeric(out[1, ]), estimate = out[1, 1],
+    n_zero = nz, n = nrow(rows), D = D,
+    method = "Martin-Fernandez et al. (2003) multiplicative replacement"
+  )
 }

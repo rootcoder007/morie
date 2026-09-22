@@ -23,3 +23,9 @@ the space into CONVEX regions -- which is why it cannot separate
 classes whose regions are not convex, however many features are
 added.
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+S <- c("a", "b", "c")
+LinDisc(S, M)
+}
+\keyword{internal}

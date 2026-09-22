@@ -24,13 +24,8 @@
 
 # Internal: backtick-quote a BigQuery identifier; refuse anything that
 # isn't a legal project / dataset / table name.
-#' Internal: backtick-quote a BigQuery identifier; refuse anything that
-#'
-#' isn\'t a legal project / dataset / table name.
-#'
-#' @param name A vector; its length is taken.
-#' @return A character value.
-#' @export
+#' Internal helper: Morie Bq Quote Ident
+#' @noRd
 .morie_bq_quote_ident <- function(name) {
   if (!is.character(name) || length(name) != 1L || !nzchar(name)) {
     stop("Illegal BigQuery identifier: ",
@@ -45,15 +40,8 @@
 }
 
 # Internal: resolve the billing project.
-#' Internal: resolve the billing project
-#'
-#' A step of the ingest_bigquery implementation. Called by \code{morie_ingest_bigquery_query}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param billing_project Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @return Nothing; the function is called for its effect.
-#' @export
+#' Internal helper: Morie Bq Billing Project
+#' @noRd
 .morie_bq_billing_project <- function(billing_project = NULL) {
   if (!is.null(billing_project) && nzchar(billing_project)) {
     return(billing_project)
@@ -67,12 +55,8 @@
 
 # Internal: hard-fail with the canonical install hint if bigrquery is
 # missing.
-#' Internal: hard-fail with the canonical install hint if bigrquery is
-#'
-#' missing.
-#'
-#' @return One of two values, depending on the branch taken.
-#' @export
+#' Internal helper: Morie Bq Require
+#' @noRd
 .morie_bq_require <- function() {
   if (!requireNamespace("bigrquery", quietly = TRUE)) {
     stop(
@@ -160,6 +144,8 @@ LIMIT ", format(lim, scientific = FALSE))
 #'   \code{Inf}, i.e. all rows).
 #' @param quiet Suppress \pkg{bigrquery} progress output.
 #' @return A base R \code{data.frame}.
+#' @seealso \code{\link{morie_ingest_bigquery_table}},
+#'   \code{\link{morie_ingest_bigquery_build_sql}}
 #' @examples
 #' \dontshow{if (nzchar(Sys.getenv("GCP_PROJECT")) && requireNamespace("bigrquery", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' # Runs when the caller has bigrquery + a GCP_PROJECT billing project.
@@ -241,6 +227,7 @@ morie_ingest_bigquery_query <- function(sql,
 #' @param max_rows Optional cap on rows downloaded.
 #' @param quiet Suppress \pkg{bigrquery} progress output.
 #' @return A base R \code{data.frame}.
+#' @seealso \code{\link{morie_ingest_bigquery_query}}
 #' @examples
 #' \dontshow{if (nzchar(Sys.getenv("GCP_PROJECT")) && requireNamespace("bigrquery", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' # Runs when the caller has bigrquery + a GCP_PROJECT billing project.

@@ -31,3 +31,7 @@ region.  The Mahalanobis metric is the one to use when features have
 different units, since Euclidean distance is otherwise dominated by
 whichever feature has the largest numbers.
 }
+\examples{
+Knn(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), query = 5L)
+}
+\keyword{internal}

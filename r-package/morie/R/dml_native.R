@@ -62,11 +62,14 @@
     te <- which(folds == k)
     tr <- setdiff(seq_len(n), te)
     dat_tr <- data.frame(d = d[tr], X[tr, , drop = FALSE])
-    fit <- suppressWarnings(stats::glm(d ~ ., data = dat_tr,
-                                       family = stats::binomial()))
+    fit <- suppressWarnings(stats::glm(d ~ .,
+      data = dat_tr,
+      family = stats::binomial()
+    ))
     ps[te] <- stats::predict(fit,
-                             newdata = data.frame(X[te, , drop = FALSE]),
-                             type = "response")
+      newdata = data.frame(X[te, , drop = FALSE]),
+      type = "response"
+    )
   }
   pmin(pmax(ps, 0.01), 0.99)
 }
@@ -80,8 +83,9 @@
   u <- y - ml_y
   v <- d - ml_d
   denom <- sum(v * v)
-  if (denom <= 0)
+  if (denom <= 0) {
     stop("morie_estimate_double_ml: treatment residual variance is zero")
+  }
   theta <- sum(v * u) / denom
   psi <- v * (u - theta * v)
   se <- sqrt(sum(psi^2)) / denom
@@ -99,14 +103,19 @@
 #' @noRd
 .morie_dml_plr_native <- function(X, y, d, n_folds = 5L, n_rep = 1L,
                                   random_state = 42L) {
-  reps <- vapply(seq_len(n_rep), function(r)
-    .morie_dml_plr_once(X, y, d, n_folds,
-                        random_state + (r - 1L) * 1000L),
-    numeric(2))
+  reps <- vapply(
+    seq_len(n_rep), function(r) {
+      .morie_dml_plr_once(
+        X, y, d, n_folds,
+        random_state + (r - 1L) * 1000L
+      )
+    },
+    numeric(2)
+  )
   theta_med <- stats::median(reps["theta", ])
   # DoubleML median aggregation: se^2 = median(se_r^2 + (theta_r - theta_med)^2)
   se <- sqrt(stats::median(reps["se", ]^2 +
-                             (reps["theta", ] - theta_med)^2))
+    (reps["theta", ] - theta_med)^2))
   list(theta = theta_med, se = se)
 }
 
@@ -116,9 +125,11 @@
 #' @noRd
 .morie_dml_irm_native <- function(X, y, d, n_folds = 5L,
                                   random_state = 42L) {
-  if (length(unique(d)) < 2L)
+  if (length(unique(d)) < 2L) {
     stop("morie_estimate_irm: treatment must have both arms present",
-         call. = FALSE)
+      call. = FALSE
+    )
+  }
   n <- nrow(X)
   .morie_local_seed(random_state)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
@@ -130,12 +141,22 @@
     tr <- setdiff(seq_len(n), te)
     tr1 <- tr[d[tr] == 1]
     tr0 <- tr[d[tr] == 0]
-    mu1[te] <- if (length(tr1) >= ncol(X) + 2L)
-      .morie_dml_ridge_predict(X[tr1, , drop = FALSE], y[tr1],
-                               X[te, , drop = FALSE]) else mean(y[tr1])
-    mu0[te] <- if (length(tr0) >= ncol(X) + 2L)
-      .morie_dml_ridge_predict(X[tr0, , drop = FALSE], y[tr0],
-                               X[te, , drop = FALSE]) else mean(y[tr0])
+    mu1[te] <- if (length(tr1) >= ncol(X) + 2L) {
+      .morie_dml_ridge_predict(
+        X[tr1, , drop = FALSE], y[tr1],
+        X[te, , drop = FALSE]
+      )
+    } else {
+      mean(y[tr1])
+    }
+    mu0[te] <- if (length(tr0) >= ncol(X) + 2L) {
+      .morie_dml_ridge_predict(
+        X[tr0, , drop = FALSE], y[tr0],
+        X[te, , drop = FALSE]
+      )
+    } else {
+      mean(y[tr0])
+    }
   }
   psi <- (mu1 - mu0) + d * (y - mu1) / ps - (1 - d) * (y - mu0) / (1 - ps)
   theta <- mean(psi)

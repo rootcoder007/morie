@@ -19,3 +19,8 @@ A list with \code{locations}, \code{weights}, \code{amplitudes},
 weight at alpha_i is x(alpha_i) times a trapezoidal spacing, so the
 weights sum to the integral of x rather than to the sum of samples.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+DeltaDecomp(V)
+}
+\keyword{internal}

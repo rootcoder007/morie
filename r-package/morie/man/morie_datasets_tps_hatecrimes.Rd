@@ -18,7 +18,7 @@ morie_datasets_tps_hatecrimes(
 \item{max_features}{Optional cap on returned rows
 (\code{offline = FALSE} only).}
 
-\item{offline}{If \code{TRUE} (default), read the bundled synthetic
+\item{offline}{If \code{TRUE} (default), read the included synthetic
 fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 (5 rows in the canonical TPS PSDP 22-column schema). If
 \code{FALSE}, hit the TPS PSDP ArcGIS FeatureServer.}
@@ -26,19 +26,15 @@ fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 \item{layer_url}{Optional ArcGIS layer URL override.}
 }
 \value{
-A \code{data.frame} of TPS Public Safety Data Portal Hate
-Crime records, either the bundled
-\code{tps_psdp_hatecrimes_sample.csv} fixture when
-\code{offline = TRUE} or a live TPS Hub / FeatureServer query when
-\code{offline = FALSE}. Columns mirror the upstream 25-column
-Cluster-C bias-attribute schema with HOOD_158 + HOOD_140
-attached.
+A \code{data.frame}.
 }
 \description{
 TPS PSDP -- Hate Crimes
 }
 \examples{
 df <- morie_datasets_tps_hatecrimes(offline = TRUE)
-head(df[, c("OCCURRENCE_YEAR", "PRIMARY_OFFENCE", "RACE_BIAS",
-            "ARREST_MADE")])
+head(df[, c(
+  "OCCURRENCE_YEAR", "PRIMARY_OFFENCE", "RACE_BIAS",
+  "ARREST_MADE"
+)])
 }

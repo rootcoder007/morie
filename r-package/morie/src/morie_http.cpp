@@ -19,13 +19,8 @@
 namespace morie {
 namespace http {
 
-// IMPORTANT: this version literal MUST be bumped in lockstep with
-// DESCRIPTION's Version: field on every release. There is no
-// auto-sync because the User-Agent has to be a compile-time
-// constant. Drift check: `grep ^Version: DESCRIPTION` must equal
-// the version string below.
 const char* kDefaultUserAgent =
-  "morie-R/1.1.7 (+https://github.com/rootcoder007/morie) "
+  "morie-R/1.3.2 (+https://github.com/rootcoder007/morie) "
   "libcurl";
 
 namespace {

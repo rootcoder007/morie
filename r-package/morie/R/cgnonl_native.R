@@ -1,23 +1,20 @@
-# Nonlinear conjugate gradients.
-# Source: Fletcher, R., & Reeves, C. M. (1964) "Function minimization by
-# conjugate gradients", The Computer Journal 7(2), 149-154,
-# doi:10.1093/comjnl/7.2.149.
-# Plus: Polak, E., & Ribiere, G. (1969) "Note sur la convergence de
-# methodes de directions conjuguees", Revue francaise d'informatique
-# et de recherche operationnelle, Serie rouge 3(R1), 35-43,
-# http://www.numdam.org/article/M2AN_1969__3_1_35_0.pdf (eq. 3.20).
-# Plus: Shewchuk, J. R. (1994) "An Introduction to the Conjugate
-# Gradient Method Without the Agonizing Pain", CMU-CS-94-125, sec. 14.1
-# (the max(beta, 0) safeguard).
+# Sources:
+#   Fletcher, R., & Reeves, C. M. (1964) "Function minimization by conjugate
+#   gradients", The Computer Journal 7(2), 149-154.
+#   Polak, E., & Ribiere, G. (1969) "Note sur la convergence de methodes de
+#   directions conjuguees", Revue francaise d'informatique et de recherche
+#   operationnelle, Serie rouge 3(R1), 35-43.
+#   Shewchuk, J. R. (1994) "An Introduction to the Conjugate Gradient Method
+#   Without the Agonizing Pain", Edition 1 1/4, CMU-CS-94-125.
 
-.CGNONL_BETA_RULES <- c("fletcher-reeves", "polak-ribiere", "polak-ribiere-plus")
-.CGNONL_SEARCHES <- c("fletcher-reeves", "exact-quadratic")
+.cgnonl_BETA_RULES <- c("fletcher-reeves", "polak-ribiere", "polak-ribiere-plus")
+.cgnonl_SEARCHES <- c("fletcher-reeves", "exact-quadratic")
 
 #' .cgnonl_dot
 #'
 #' A step of the cgnonl_native implementation. Called by
-#' \code{.cgnonl_exact_quadratic_step}, \code{cgnonl_beta_fletcher_reeves},
-#' \code{cgnonl_beta_polak_ribiere} and 2 others in the module.
+#' \code{.cgnonl_exact_quadratic_step}, \code{beta_fletcher_reeves},
+#' \code{beta_polak_ribiere} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -32,7 +29,7 @@
 #' res
 .cgnonl_dot <- function(a, b) sum(a * b)
 
-#' cgnonl_beta_fletcher_reeves
+#' beta_fletcher_reeves
 #'
 #' A step of the cgnonl_native implementation. Called by \code{.cgnonl_beta}.
 #' See the file header for the source the module follows.
@@ -42,13 +39,17 @@
 #' @param g_old Passed to \code{.cgnonl_dot}.
 #' @return A numeric value.
 #' @export
-cgnonl_beta_fletcher_reeves <- function(g_new, g_old) {
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' beta_fletcher_reeves(V, V)
+#' @keywords internal
+beta_fletcher_reeves <- function(g_new, g_old) {
   den <- .cgnonl_dot(g_old, g_old)
   if (den <= 0.0) return(0.0)
   .cgnonl_dot(g_new, g_new) / den
 }
 
-#' cgnonl_beta_polak_ribiere
+#' beta_polak_ribiere
 #'
 #' A step of the cgnonl_native implementation. Called by \code{.cgnonl_beta}.
 #' See the file header for the source the module follows.
@@ -59,37 +60,40 @@ cgnonl_beta_fletcher_reeves <- function(g_new, g_old) {
 #' @param plus A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
-cgnonl_beta_polak_ribiere <- function(g_new, g_old, plus = FALSE) {
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' beta_polak_ribiere(V, V)
+#' @keywords internal
+beta_polak_ribiere <- function(g_new, g_old, plus = FALSE) {
   den <- .cgnonl_dot(g_old, g_old)
   if (den <= 0.0) return(0.0)
-  diff <- g_new - g_old
-  num <- .cgnonl_dot(g_new, diff)
+  num <- sum(g_new * (g_new - g_old))
   b <- num / den
-  if (plus) max(b, 0.0) else b
+  if (isTRUE(plus)) max(b, 0.0) else b
 }
 
 #' .cgnonl_beta
 #'
-#' A step of the cgnonl_native implementation. Called by \code{cgnonl_nonlinear_cg}.
+#' A step of the cgnonl_native implementation. Called by \code{nonlinear_cg}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param rule One of \code{"fletcher-reeves"}, \code{"polak-ribiere"}, \code{"polak-ribiere-plus"}.
-#' @param g_new Passed to \code{cgnonl_beta_fletcher_reeves}.
-#' @param g_old Passed to \code{cgnonl_beta_fletcher_reeves}.
+#' @param g_new Passed to \code{beta_fletcher_reeves}.
+#' @param g_old Passed to \code{beta_fletcher_reeves}.
 #' @return Nothing; this branch always raises.
 #' @export
 .cgnonl_beta <- function(rule, g_new, g_old) {
-  if (rule == "fletcher-reeves") return(cgnonl_beta_fletcher_reeves(g_new, g_old))
-  if (rule == "polak-ribiere") return(cgnonl_beta_polak_ribiere(g_new, g_old, plus = FALSE))
-  if (rule == "polak-ribiere-plus") return(cgnonl_beta_polak_ribiere(g_new, g_old, plus = TRUE))
+  if (rule == "fletcher-reeves") return(beta_fletcher_reeves(g_new, g_old))
+  if (rule == "polak-ribiere") return(beta_polak_ribiere(g_new, g_old, plus = FALSE))
+  if (rule == "polak-ribiere-plus") return(beta_polak_ribiere(g_new, g_old, plus = TRUE))
   stop(sprintf("cgnonl: beta must be one of %s",
-               paste(.CGNONL_BETA_RULES, collapse = ", ")))
+               paste(.cgnonl_BETA_RULES, collapse = ", ")))
 }
 
-#' cgnonl_cubic_interpolate
+#' cubic_interpolate
 #'
-#' A step of the cgnonl_native implementation. Called by \code{cgnonl_line_search_fr}.
+#' A step of the cgnonl_native implementation. Called by \code{line_search_fr}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -101,7 +105,10 @@ cgnonl_beta_polak_ribiere <- function(g_new, g_old, plus = FALSE) {
 #' @param db Numeric; combined arithmetically in the body.
 #' @return The value of \code{t}, as built in the body.
 #' @export
-cgnonl_cubic_interpolate <- function(ta, fa, da, tb, fb, db) {
+#' @examples
+#' cubic_interpolate(ta = 0, fa = 1, da = -1, tb = 1, fb = 0.5, db = 0.2)
+#' @keywords internal
+cubic_interpolate <- function(ta, fa, da, tb, fb, db) {
   h <- tb - ta
   if (h == 0.0) return(ta)
   z <- 3.0 * (fa - fb) / h + da + db
@@ -111,15 +118,13 @@ cgnonl_cubic_interpolate <- function(ta, fa, da, tb, fb, db) {
   denom <- db - da + 2.0 * w
   if (denom == 0.0) return(0.5 * (ta + tb))
   t <- tb - h * (db + w - z) / denom
-  lo <- min(ta, tb)
-  hi <- max(ta, tb)
-  if (!(lo <= t && t <= hi)) return(0.5 * (ta + tb))
+  if (!(min(ta, tb) <= t && t <= max(ta, tb))) return(0.5 * (ta + tb))
   t
 }
 
-#' cgnonl_line_search_fr
+#' line_search_fr
 #'
-#' A step of the cgnonl_native implementation. Called by \code{cgnonl_nonlinear_cg}.
+#' A step of the cgnonl_native implementation. Called by \code{nonlinear_cg}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -133,18 +138,25 @@ cgnonl_cubic_interpolate <- function(ta, fa, da, tb, fb, db) {
 #' @param max_double A count; the body uses it as \code{seq_len(...)}. Defaults to \code{60L}.
 #' @param max_cubic A count; the body uses it as \code{seq_len(...)}. Defaults to \code{40L}.
 #' @param tol Numeric; combined arithmetically in the body. Defaults to \code{1e-12}.
-#' @return A list with \code{t}, \code{x}, \code{f}, \code{g}, \code{n_eval}.
+#' @return A list with \code{t}, \code{x_new}, \code{f_new}, \code{g_new}, \code{n_eval}.
 #' @export
-cgnonl_line_search_fr <- function(f, grad, x, p, f0, g0, est = NULL,
-                                  max_double = 60L, max_cubic = 40L,
-                                  tol = 1e-12) {
+#' @examples
+#' f <- function(x) sum((x - c(1, 2))^2)
+#' g <- function(x) 2 * (x - c(1, 2))
+#' x0 <- c(0, 0)
+#' r <- line_search_fr(f, g, x0, p = -g(x0), f0 = f(x0), g0 = g(x0))
+#' str(r, max.level = 1)
+#' @keywords internal
+line_search_fr <- function(f, grad, x, p, f0, g0, est = NULL,
+                           max_double = 60L, max_cubic = 40L,
+                           tol = 1e-12) {
   n <- length(x)
   slope0 <- .cgnonl_dot(p, g0)
-  if (slope0 >= 0.0) {
+  if (slope0 >= 0.0)
     stop(sprintf("cgnonl: the search direction is not a descent direction (p'g = %g >= 0)", slope0))
-  }
   pnorm <- sqrt(.cgnonl_dot(p, p))
-  if (pnorm <= 0.0) stop("cgnonl: the search direction is zero")
+  if (pnorm <= 0.0)
+    stop("cgnonl: the search direction is zero")
   unit <- 1.0 / pnorm
   if (is.null(est)) {
     h <- unit
@@ -161,12 +173,9 @@ cgnonl_line_search_fr <- function(f, grad, x, p, f0, g0, est = NULL,
   fa <- f0
   da <- slope0
   t <- h
-  tb <- NULL
-  fb <- NULL
-  db <- NULL
-  xb <- NULL
-  gb <- NULL
-  for (k in seq_len(max_double)) {
+  tb <- fb <- db <- NULL
+  xb <- gb <- NULL
+  for (i in seq_len(max_double)) {
     r <- psi(t)
     evals <- evals + 1L
     dt <- .cgnonl_dot(p, r$gt)
@@ -185,7 +194,7 @@ cgnonl_line_search_fr <- function(f, grad, x, p, f0, g0, est = NULL,
   }
   if (is.null(tb)) {
     r <- psi(ta)
-    return(list(t = ta, x = r$xt, f = r$ft, g = r$gt, n_eval = evals + 1L))
+    return(list(t = ta, x_new = r$xt, f_new = r$ft, g_new = r$gt, n_eval = evals + 1L))
   }
   best_t <- tb
   best_x <- xb
@@ -199,37 +208,36 @@ cgnonl_line_search_fr <- function(f, grad, x, p, f0, g0, est = NULL,
     best_f <- r2$ft
     best_g <- r2$gt
   }
-  for (k in seq_len(max_cubic)) {
+  for (i in seq_len(max_cubic)) {
     if (abs(tb - ta) <= tol * max(1.0, abs(tb))) break
-    tc <- cgnonl_cubic_interpolate(ta, fa, da, tb, fb, db)
-    r3 <- psi(tc)
+    tc <- cubic_interpolate(ta, fa, da, tb, fb, db)
+    rc <- psi(tc)
     evals <- evals + 1L
-    dc <- .cgnonl_dot(p, r3$gt)
-    if (r3$ft < best_f) {
+    dc <- .cgnonl_dot(p, rc$gt)
+    if (rc$ft < best_f) {
       best_t <- tc
-      best_x <- r3$xt
-      best_f <- r3$ft
-      best_g <- r3$gt
+      best_x <- rc$xt
+      best_f <- rc$ft
+      best_g <- rc$gt
     }
-    if (abs(dc) <= tol * max(1.0, abs(slope0))) {
-      return(list(t = tc, x = r3$xt, f = r3$ft, g = r3$gt, n_eval = evals))
-    }
+    if (abs(dc) <= tol * max(1.0, abs(slope0)))
+      return(list(t = tc, x_new = rc$xt, f_new = rc$ft, g_new = rc$gt, n_eval = evals))
     if (dc < 0.0) {
       ta <- tc
-      fa <- r3$ft
+      fa <- rc$ft
       da <- dc
     } else {
       tb <- tc
-      fb <- r3$ft
+      fb <- rc$ft
       db <- dc
     }
   }
-  list(t = best_t, x = best_x, f = best_f, g = best_g, n_eval = evals)
+  list(t = best_t, x_new = best_x, f_new = best_f, g_new = best_g, n_eval = evals)
 }
 
 #' .cgnonl_exact_quadratic_step
 #'
-#' A step of the cgnonl_native implementation. Called by \code{cgnonl_nonlinear_cg}.
+#' A step of the cgnonl_native implementation. Called by \code{nonlinear_cg}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -242,27 +250,26 @@ cgnonl_line_search_fr <- function(f, grad, x, p, f0, g0, est = NULL,
 .cgnonl_exact_quadratic_step <- function(x, p, g, hess_vec) {
   ap <- hess_vec(p)
   den <- .cgnonl_dot(p, ap)
-  if (den <= 0.0) {
+  if (den <= 0.0)
     stop(sprintf("cgnonl: p'Ap = %g is not positive; the exact quadratic step needs a positive definite A", den))
-  }
   -.cgnonl_dot(p, g) / den
 }
 
-#' cgnonl_nonlinear_cg
+#' nonlinear_cg
 #'
 #' A step of the cgnonl_native implementation. Called by \code{morie_cgnonl}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param f Passed to \code{cgnonl_line_search_fr}.
-#' @param grad Passed to \code{cgnonl_line_search_fr}.
+#' @param f Passed to \code{line_search_fr}.
+#' @param grad Passed to \code{line_search_fr}.
 #' @param x0 Coerced to numeric by the body, with \code{as.numeric}.
 #' @param beta Passed to \code{.cgnonl_beta}. Defaults to \code{"fletcher-reeves"}.
 #' @param restart Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.
 #' @param max_iter Optional; may be \code{NULL}. Coerced to integer by the body, with
 #' \code{as.integer}.
 #' @param tol Numeric; combined arithmetically in the body. Defaults to \code{1e-10}.
-#' @param est Passed to \code{cgnonl_line_search_fr}.
+#' @param est Passed to \code{line_search_fr}.
 #' @param line_search Compared against \code{"exact-quadratic"}. Defaults to
 #' \code{"fletcher-reeves"}.
 #' @param hess_vec Optional; may be \code{NULL}. Passed to \code{.cgnonl_exact_quadratic_step}.
@@ -272,22 +279,25 @@ cgnonl_line_search_fr <- function(f, grad, x, p, f0, g0, est = NULL,
 #' \code{beta_rule}, \code{line_search}, \code{restart_every}, \code{method},
 #' \code{note}.
 #' @export
-cgnonl_nonlinear_cg <- function(f, grad, x0, beta = "fletcher-reeves",
-                                restart = NULL, max_iter = NULL,
-                                tol = 1e-10, est = NULL,
-                                line_search = "fletcher-reeves",
-                                hess_vec = NULL, keep_path = FALSE) {
-  if (!(beta %in% .CGNONL_BETA_RULES)) {
+#' @examples
+#' f <- function(x) sum((x - c(1, 2))^2) + 0.5 * x[1]^2 * x[2]^2
+#' g <- function(x) c(2 * (x[1] - 1) + x[1] * x[2]^2,
+#'                    2 * (x[2] - 2) + x[1]^2 * x[2])
+#' r <- nonlinear_cg(f, g, x0 = c(0, 0))
+#' str(r, max.level = 1)
+#' @keywords internal
+nonlinear_cg <- function(f, grad, x0, beta = "fletcher-reeves",
+                         restart = NULL, max_iter = NULL, tol = 1e-10,
+                         est = NULL, line_search = "fletcher-reeves",
+                         hess_vec = NULL, keep_path = FALSE) {
+  if (!(beta %in% .cgnonl_BETA_RULES))
     stop(sprintf("cgnonl: beta must be one of %s",
-                 paste(.CGNONL_BETA_RULES, collapse = ", ")))
-  }
-  if (!(line_search %in% .CGNONL_SEARCHES)) {
+                 paste(.cgnonl_BETA_RULES, collapse = ", ")))
+  if (!(line_search %in% .cgnonl_SEARCHES))
     stop(sprintf("cgnonl: line_search must be one of %s",
-                 paste(.CGNONL_SEARCHES, collapse = ", ")))
-  }
-  if (line_search == "exact-quadratic" && is.null(hess_vec)) {
+                 paste(.cgnonl_SEARCHES, collapse = ", ")))
+  if (line_search == "exact-quadratic" && is.null(hess_vec))
     stop("cgnonl: line_search='exact-quadratic' needs hess_vec, the map p -> Ap")
-  }
   x <- as.numeric(x0)
   n <- length(x)
   if (n == 0L) stop("cgnonl: x0 is empty")
@@ -295,7 +305,8 @@ cgnonl_nonlinear_cg <- function(f, grad, x0, beta = "fletcher-reeves",
   restart <- as.integer(restart)
   if (restart < 0L) stop("cgnonl: restart must not be negative")
   if (is.null(max_iter)) max_iter <- 200L * n
-  if (as.integer(max_iter) < 1L) stop("cgnonl: max_iter must be at least 1")
+  max_iter <- as.integer(max_iter)
+  if (max_iter < 1L) stop("cgnonl: max_iter must be at least 1")
 
   g <- as.numeric(grad(x))
   fx <- as.numeric(f(x))
@@ -307,7 +318,7 @@ cgnonl_nonlinear_cg <- function(f, grad, x0, beta = "fletcher-reeves",
   it <- 0L
   converged <- .cgnonl_dot(g, g) <= tol * tol
 
-  while (!converged && it < as.integer(max_iter)) {
+  while (!converged && it < max_iter) {
     it <- it + 1L
     if (line_search == "exact-quadratic") {
       t <- .cgnonl_exact_quadratic_step(x, p, g, hess_vec)
@@ -316,11 +327,11 @@ cgnonl_nonlinear_cg <- function(f, grad, x0, beta = "fletcher-reeves",
       g_new <- as.numeric(grad(x_new))
       evals <- evals + 1L
     } else {
-      r <- cgnonl_line_search_fr(f, grad, x, p, fx, g, est = est)
+      r <- line_search_fr(f, grad, x, p, fx, g, est = est)
       t <- r$t
-      x_new <- r$x
-      f_new <- r$f
-      g_new <- r$g
+      x_new <- r$x_new
+      f_new <- r$f_new
+      g_new <- r$g_new
       evals <- evals + r$n_eval
     }
     g_old <- g
@@ -328,11 +339,9 @@ cgnonl_nonlinear_cg <- function(f, grad, x0, beta = "fletcher-reeves",
     fx <- f_new
     g <- g_new
     if (isTRUE(keep_path)) path[[length(path) + 1L]] <- as.numeric(x)
-    if (.cgnonl_dot(g, g) <= tol * tol) {
-      converged <- TRUE
-      break
-    }
-    if (restart != 0L && (it %% restart == 0L)) {
+    if (.cgnonl_dot(g, g) <= tol * tol) { converged <- TRUE
+    break }
+    if (restart != 0L && it %% restart == 0L) {
       p <- -g
       restarts <- restarts + 1L
       betas <- c(betas, 0.0)
@@ -362,15 +371,15 @@ cgnonl_nonlinear_cg <- function(f, grad, x0, beta = "fletcher-reeves",
     line_search = line_search,
     restart_every = restart,
     method = "Fletcher & Reeves (1964) eq. 20, nonlinear conjugate gradients",
-    note = paste0(
-      "storage is three vectors -- x, g and p -- which is the paper",
-      "'s stated advantage over Davidon-Fletcher-Powell; restarts t",
-      "o steepest descent every n+1 iterations, which preserves qua",
-      "dratic convergence because they are no more frequent than ev",
-      "ery n"
-    )
+    note = paste0("storage is three vectors -- x, g and p -- which is the ",
+                  "paper's stated advantage over Davidon-Fletcher-Powell; ",
+                  "restarts to steepest descent every n+1 iterations, ",
+                  "which preserves quadratic convergence because they are ",
+                  "no more frequent than every n")
   )
 }
+
+cgnonl <- nonlinear_cg
 
 #' morie_cgnonl
 #'
@@ -378,24 +387,29 @@ cgnonl_nonlinear_cg <- function(f, grad, x0, beta = "fletcher-reeves",
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param f Passed to \code{cgnonl_nonlinear_cg}.
-#' @param grad Passed to \code{cgnonl_nonlinear_cg}.
-#' @param x0 Passed to \code{cgnonl_nonlinear_cg}.
-#' @param beta Passed to \code{cgnonl_nonlinear_cg}. Defaults to \code{"fletcher-reeves"}.
-#' @param restart Passed to \code{cgnonl_nonlinear_cg}.
-#' @param max_iter Passed to \code{cgnonl_nonlinear_cg}.
-#' @param tol Passed to \code{cgnonl_nonlinear_cg}. Defaults to \code{1e-10}.
-#' @param est Passed to \code{cgnonl_nonlinear_cg}.
-#' @param line_search Passed to \code{cgnonl_nonlinear_cg}. Defaults to \code{"fletcher-reeves"}.
-#' @param hess_vec Passed to \code{cgnonl_nonlinear_cg}.
-#' @param keep_path Passed to \code{cgnonl_nonlinear_cg}. Defaults to \code{FALSE}.
-#' @return The value of \code{cgnonl_nonlinear_cg}.
+#' @param f Passed to \code{nonlinear_cg}.
+#' @param grad Passed to \code{nonlinear_cg}.
+#' @param x0 Passed to \code{nonlinear_cg}.
+#' @param beta Passed to \code{nonlinear_cg}. Defaults to \code{"fletcher-reeves"}.
+#' @param restart Passed to \code{nonlinear_cg}.
+#' @param max_iter Passed to \code{nonlinear_cg}.
+#' @param tol Passed to \code{nonlinear_cg}. Defaults to \code{1e-10}.
+#' @param est Passed to \code{nonlinear_cg}.
+#' @param line_search Passed to \code{nonlinear_cg}. Defaults to \code{"fletcher-reeves"}.
+#' @param hess_vec Passed to \code{nonlinear_cg}.
+#' @param keep_path Passed to \code{nonlinear_cg}. Defaults to \code{FALSE}.
+#' @return The value of \code{nonlinear_cg}.
 #' @export
+#' @examples
+#' f <- function(x) sum((x - c(1, 2))^2)
+#' g <- function(x) 2 * (x - c(1, 2))
+#' r <- morie_cgnonl(f, g, x0 = c(0, 0))
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_cgnonl <- function(f, grad, x0, beta = "fletcher-reeves",
-                         restart = NULL, max_iter = NULL,
-                         tol = 1e-10, est = NULL,
-                         line_search = "fletcher-reeves",
+                         restart = NULL, max_iter = NULL, tol = 1e-10,
+                         est = NULL, line_search = "fletcher-reeves",
                          hess_vec = NULL, keep_path = FALSE) {
-  cgnonl_nonlinear_cg(f, grad, x0, beta, restart, max_iter, tol, est,
-                      line_search, hess_vec, keep_path)
+  nonlinear_cg(f, grad, x0, beta, restart, max_iter, tol, est,
+               line_search, hess_vec, keep_path)
 }

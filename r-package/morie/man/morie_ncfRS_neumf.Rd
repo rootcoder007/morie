@@ -29,3 +29,15 @@ A step of the ncfRS_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+p_gmf <- rnorm(4); q_gmf <- rnorm(4)
+p_mlp <- rnorm(4); q_mlp <- rnorm(4)
+Ws <- list(matrix(rnorm(4 * 8, 0, 0.3), 4, 8),
+           matrix(rnorm(2 * 4, 0, 0.3), 2, 4))
+bs <- list(rep(0, 4), rep(0, 2))
+h <- rnorm(6, 0, 0.3)
+s <- morie_ncfRS_neumf(p_gmf, q_gmf, p_mlp, q_mlp, Ws, bs, h)
+is.numeric(s)
+}
+\keyword{internal}

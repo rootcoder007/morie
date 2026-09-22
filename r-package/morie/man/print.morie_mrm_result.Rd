@@ -12,8 +12,26 @@
 \item{...}{Ignored; accepted for S3 consistency.}
 }
 \value{
-Invisibly returns \code{x} unchanged.
+\code{x}, invisibly.
 }
 \description{
 Print method for \code{morie_mrm_result} objects
+}
+\examples{
+set.seed(1)
+\donttest{
+if (FALSE) {
+  df <- data.frame(
+    y = sample(c("low", "med", "high"), 200, replace = TRUE),
+    race = rbinom(200, 1, 0.4),
+    age  = rnorm(200)
+  )
+  obj <- mrm_threshold_specific_ordinal(df,
+    outcome_col = "y",
+    covariate_cols = c("race", "age"),
+    ordinal_levels = c("low", "med", "high")
+  )
+  print(obj)
+}
+}
 }

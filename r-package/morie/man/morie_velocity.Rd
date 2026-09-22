@@ -24,3 +24,8 @@ A step of the scvelo_native implementation. Called by \code{morie_dynamical_fit}
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+morie_velocity(u = c(1, 2, 3, 4, 5, 6, 7, 8), s = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5,
+  gamma = 0.5)
+}
+\keyword{internal}

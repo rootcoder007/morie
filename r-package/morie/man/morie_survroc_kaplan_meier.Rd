@@ -22,3 +22,9 @@ A step of the survroc_native implementation. Called by \code{.survroc_km_pair},
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(1)
+tt <- rexp(40); ev <- rbinom(40, 1, 0.7)
+str(morie_survroc_kaplan_meier(tt, ev), max.level = 1)
+}
+\keyword{internal}

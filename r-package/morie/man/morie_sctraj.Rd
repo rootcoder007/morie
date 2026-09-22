@@ -49,3 +49,13 @@ A step of the sctraj_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(3)
+X <- rbind(matrix(rnorm(40, 0), 20, 2),
+           matrix(rnorm(40, 4), 20, 2),
+           matrix(rnorm(40, c(8, 0)), 20, 2))
+labels <- rep(0:2, each = 20)
+r <- morie_sctraj(X, labels, root = 0L)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -2,12 +2,48 @@
 % Please edit documentation in R/deseq2_native.R
 \name{deseq2}
 \alias{deseq2}
+\alias{differential_expression}
 \alias{deseq2_de}
 \alias{deseq2_differential}
-\alias{differential_expression}
 \title{DESeq2-style differential expression}
 \usage{
 deseq2(
+  counts,
+  design,
+  contrast = NULL,
+  size = NULL,
+  beta_prior = TRUE,
+  quantile_p = 0.05,
+  alpha_init = 0.1,
+  min_disp = 1e-08,
+  log2 = TRUE
+)
+
+differential_expression(
+  counts,
+  design,
+  contrast = NULL,
+  size = NULL,
+  beta_prior = TRUE,
+  quantile_p = 0.05,
+  alpha_init = 0.1,
+  min_disp = 1e-08,
+  log2 = TRUE
+)
+
+deseq2_de(
+  counts,
+  design,
+  contrast = NULL,
+  size = NULL,
+  beta_prior = TRUE,
+  quantile_p = 0.05,
+  alpha_init = 0.1,
+  min_disp = 1e-08,
+  log2 = TRUE
+)
+
+deseq2_differential(
   counts,
   design,
   contrast = NULL,
@@ -47,3 +83,16 @@ Full pipeline: size factors, gene-wise dispersion, trend, MAP
 dispersion (with outliers left unshrunk), ridge-penalised LFC, Wald
 test, BH.
 }
+\examples{
+set.seed(3)
+design <- as.list(rep(c("A", "B"), each = 3))
+counts <- lapply(1:30, function(g) {
+  base <- exp(rnorm(1, 5, 0.4))
+  fc <- if (g <= 8) 2.5 else 1
+  c(rnbinom(3, mu = base, size = 15),
+    rnbinom(3, mu = base * fc, size = 15))
+})
+r <- deseq2(counts, design)
+str(r, max.level = 1)
+}
+\keyword{internal}

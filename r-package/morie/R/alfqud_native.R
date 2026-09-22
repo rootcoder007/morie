@@ -62,13 +62,15 @@
   bank <- loc[[1]]
   idx <- as.integer(loc[[2]])
   if (identical(bank, "M")) {
-    if (idx < 0L || idx >= length(st$mem))
+    if (idx < 0L || idx >= length(st$mem)) {
       stop("the instruction reads outside memory")
+    }
     return(st$mem[idx + 1L])
   }
   if (identical(bank, "R")) {
-    if (idx < 0L || idx >= length(st$reg))
+    if (idx < 0L || idx >= length(st$reg)) {
       stop("the instruction reads a register that is not there")
+    }
     return(st$reg[idx + 1L])
   }
   stop("a location is in memory or in a register, nothing else")
@@ -89,12 +91,14 @@
   bank <- loc[[1]]
   idx <- as.integer(loc[[2]])
   if (identical(bank, "M")) {
-    if (idx < 0L || idx >= length(st$mem))
+    if (idx < 0L || idx >= length(st$mem)) {
       stop("the instruction writes outside memory")
+    }
     st$mem[idx + 1L] <- v
   } else if (identical(bank, "R")) {
-    if (idx < 0L || idx >= length(st$reg))
+    if (idx < 0L || idx >= length(st$reg)) {
       stop("the instruction writes a register that is not there")
+    }
     st$reg[idx + 1L] <- v
   } else {
     stop("a location is in memory or in a register, nothing else")
@@ -118,6 +122,7 @@
 #' @param instr A list of the operation and its two locations.
 #' @return The state after the instruction.
 #' @export
+#' @keywords internal
 morie_alfqud_step <- function(st, instr) {
   op <- instr[[1]]
   if (!(op %in% .alfqud_ops)) stop("unknown instruction: ", op)
@@ -148,9 +153,12 @@ morie_alfqud_step <- function(st, instr) {
 #' @param n_reg How many registers.
 #' @return The memory the program leaves behind.
 #' @export
+#' @keywords internal
 morie_alfqud_run <- function(program, x, n_reg) {
-  st <- list(mem = as.numeric(x), reg = rep(0, as.integer(n_reg)),
-             flag = 0L)
+  st <- list(
+    mem = as.numeric(x), reg = rep(0, as.integer(n_reg)),
+    flag = 0L
+  )
   for (instr in program) st <- morie_alfqud_step(st, instr)
   st$mem
 }
@@ -169,6 +177,17 @@ morie_alfqud_run <- function(program, x, n_reg) {
 #' @param n_reg How many registers.
 #' @return An integer count.
 #' @export
+#' @examples
+#' IN <- list(c(2, 1), c(1, 2), c(5, 3))
+#' TGT <- lapply(IN, sort)
+#' ACTS <- list(list("mov", list("M", 0), list("R", 0)), list("cmp",
+#'     list("M", 1), list("M", 0)), list("cmovl", list("M", 1),
+#'     list("M", 0)), list("cmovl", list("R", 0), list("M", 1)),
+#'     list("mov", list("M", 1), list("R", 0)), list("cmovg", list("M",
+#'         0), list("M", 1)))
+#' SOLN <- ACTS[1:4]
+#' morie_alfqud_correctness(SOLN, IN, TGT, 1L)
+#' @keywords internal
 morie_alfqud_correctness <- function(program, inputs, targets, n_reg) {
   got <- 0L
   for (q in seq_along(inputs)) {
@@ -190,17 +209,29 @@ morie_alfqud_correctness <- function(program, inputs, targets, n_reg) {
 #' @param n_reg How many registers.
 #' @return A list of instructions.
 #' @export
+#' @examples
+#' morie_alfqud_actions(n_mem = c(1, 2, 3, 4, 5, 6, 7, 8), n_reg = 5L)
+#' @keywords internal
 morie_alfqud_actions <- function(n_mem, n_reg) {
   locs <- list()
-  for (i in 0:(as.integer(n_mem) - 1L)) locs[[length(locs) + 1L]] <-
-    list("M", i)
-  if (as.integer(n_reg) > 0L)
-    for (i in 0:(as.integer(n_reg) - 1L)) locs[[length(locs) + 1L]] <-
-      list("R", i)
+  for (i in 0:(as.integer(n_mem) - 1L)) {
+    locs[[length(locs) + 1L]] <-
+      list("M", i)
+  }
+  if (as.integer(n_reg) > 0L) {
+    for (i in 0:(as.integer(n_reg) - 1L)) {
+      locs[[length(locs) + 1L]] <-
+        list("R", i)
+    }
+  }
   out <- list()
-  for (op in .alfqud_ops) for (a in locs) for (b in locs) {
-    if (identical(a[[1]], b[[1]]) && a[[2]] == b[[2]]) next
-    out[[length(out) + 1L]] <- list(op, a, b)
+  for (op in .alfqud_ops) {
+    for (a in locs) {
+      for (b in locs) {
+        if (identical(a[[1]], b[[1]]) && a[[2]] == b[[2]]) next
+        out[[length(out) + 1L]] <- list(op, a, b)
+      }
+    }
   }
   out
 }
@@ -210,12 +241,28 @@ morie_alfqud_actions <- function(n_mem, n_reg) {
 #' @param program A list of instructions.
 #' @return A character scalar.
 #' @export
+#' @examples
+#' ACTS <- list(list("mov", list("M", 0), list("R", 0)), list("cmp",
+#'     list("M", 1), list("M", 0)), list("cmovl", list("M", 1),
+#'     list("M", 0)), list("cmovl", list("R", 0), list("M", 1)),
+#'     list("mov", list("M", 1), list("R", 0)), list("cmovg", list("M",
+#'         0), list("M", 1)))
+#' SOLN <- ACTS[1:4]
+#' morie_alfqud_text(SOLN)
+#' @keywords internal
 morie_alfqud_text <- function(program) {
-  if (!length(program)) return("")
-  paste(vapply(program, function(i)
-    sprintf("%s %s%d %s%d", i[[1]], i[[2]][[1]], as.integer(i[[2]][[2]]),
-            i[[3]][[1]], as.integer(i[[3]][[2]])), character(1)),
-    collapse = "\n")
+  if (!length(program)) {
+    return("")
+  }
+  paste(
+    vapply(program, function(i) {
+      sprintf(
+        "%s %s%d %s%d", i[[1]], i[[2]][[1]], as.integer(i[[2]][[2]]),
+        i[[3]][[1]], as.integer(i[[3]][[2]])
+      )
+    }, character(1)),
+    collapse = "\n"
+  )
 }
 
 #' .alfqud_score
@@ -233,9 +280,14 @@ morie_alfqud_text <- function(program) {
 #' @return A vector, from \code{c}.
 #' @export
 .alfqud_score <- function(program, inputs, targets, n_reg, lw, rf) {
-  cc <- if (is.null(rf)) morie_alfqud_correctness(program, inputs,
-                                                 targets, n_reg)
-        else as.numeric(rf(program, inputs, targets, n_reg))
+  cc <- if (is.null(rf)) {
+    morie_alfqud_correctness(
+      program, inputs,
+      targets, n_reg
+    )
+  } else {
+    as.numeric(rf(program, inputs, targets, n_reg))
+  }
   c(as.numeric(cc) - as.numeric(lw) * length(program), as.numeric(cc))
 }
 
@@ -263,14 +315,18 @@ morie_alfqud_text <- function(program) {
   seen <- 1L
   for (d in seq_len(as.integer(max_len))) {
     nxt <- list()
-    for (prog in frontier) for (act in acts) {
-      cand <- c(prog, list(act))
-      seen <- seen + 1L
-      z <- .alfqud_score(cand, inputs, targets, n_reg, lw, rf)
-      if (z[1] > best_s) { best_s <- z[1]
-      best_c <- z[2]
-      best <- cand }
-      nxt[[length(nxt) + 1L]] <- cand
+    for (prog in frontier) {
+      for (act in acts) {
+        cand <- c(prog, list(act))
+        seen <- seen + 1L
+        z <- .alfqud_score(cand, inputs, targets, n_reg, lw, rf)
+        if (z[1] > best_s) {
+          best_s <- z[1]
+          best_c <- z[2]
+          best <- cand
+        }
+        nxt[[length(nxt) + 1L]] <- cand
+      }
     }
     frontier <- nxt
   }
@@ -331,8 +387,10 @@ morie_alfqud_text <- function(program) {
         nk <- nv[k]
         q <- if (nk > 0) wv[k] / nk else 0
         u <- q + c_puct * (1 / a) * sq / (1 + nk)
-        if (is.null(bv) || u > bv) { bv <- u
-        bi <- k }
+        if (is.null(bv) || u > bv) {
+          bv <- u
+          bi <- k
+        }
       }
       path[[length(path) + 1L]] <- list(k0, bi)
       node <- c(node, bi)
@@ -345,9 +403,11 @@ morie_alfqud_text <- function(program) {
     }
     prog <- if (!length(node)) list() else lapply(node, function(k) acts[[k]])
     z <- .alfqud_score(prog, inputs, targets, n_reg, lw, rf)
-    if (z[1] > best_s) { best_s <- z[1]
-    best_c <- z[2]
-    best <- prog }
+    if (z[1] > best_s) {
+      best_s <- z[1]
+      best_c <- z[2]
+      best <- prog
+    }
     v <- if (full > 0) z[2] / full else 0
     for (pp in path) {
       kk <- pp[[1]]
@@ -386,47 +446,75 @@ morie_alfqud_text <- function(program) {
 #' @return A list with the best program, its score, its correctness, and
 #'   how much of the space was looked at.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_alfqud(V)
+#' @keywords internal
 morie_alfqud <- function(target, action_space = NULL, reward_fn = NULL,
                          n_reg = 2L, max_len = 3L, latency_weight = 0,
                          search = "mcts", n_sim = 400L, c_puct = 1.25,
                          seed = 0) {
   inputs <- lapply(target, as.numeric)
-  if (!length(inputs))
-    stop("a search with no test input cannot tell a sorting routine ",
-         "from any other program")
+  if (!length(inputs)) {
+    stop(
+      "a search with no test input cannot tell a sorting routine ",
+      "from any other program"
+    )
+  }
   n_mem <- length(inputs[[1]])
-  for (x in inputs) if (length(x) != n_mem)
-    stop("every test input must be the same length")
+  for (x in inputs) {
+    if (length(x) != n_mem) {
+      stop("every test input must be the same length")
+    }
+  }
   targets <- lapply(inputs, sort)
   n_reg <- as.integer(n_reg)
-  acts <- if (is.null(action_space)) morie_alfqud_actions(n_mem, n_reg)
-          else action_space
-  if (!length(acts))
+  acts <- if (is.null(action_space)) {
+    morie_alfqud_actions(n_mem, n_reg)
+  } else {
+    action_space
+  }
+  if (!length(acts)) {
     stop("a search with no legal move has nothing to do")
-  r <- if (identical(search, "bfs"))
-    .alfqud_bfs(inputs, targets, acts, n_reg, max_len, latency_weight,
-                reward_fn)
-  else if (identical(search, "mcts"))
-    .alfqud_mcts(inputs, targets, acts, n_reg, max_len, latency_weight,
-                 reward_fn, n_sim, c_puct)
-  else stop("the search is mcts or bfs")
+  }
+  r <- if (identical(search, "bfs")) {
+    .alfqud_bfs(
+      inputs, targets, acts, n_reg, max_len, latency_weight,
+      reward_fn
+    )
+  } else if (identical(search, "mcts")) {
+    .alfqud_mcts(
+      inputs, targets, acts, n_reg, max_len, latency_weight,
+      reward_fn, n_sim, c_puct
+    )
+  } else {
+    stop("the search is mcts or bfs")
+  }
   full <- sum(vapply(targets, length, integer(1)))
   outs <- lapply(inputs, function(x) morie_alfqud_run(r$prog, x, n_reg))
-  list(program = r$prog, text = morie_alfqud_text(r$prog),
-       length = length(r$prog), score = r$s, correct = r$c,
-       max_correct = full, solved = r$c == full,
-       outputs = outs, targets = targets, nodes = r$seen,
-       n_actions = length(acts), n_mem = n_mem, n_reg = n_reg,
-       max_len = as.integer(max_len),
-       latency_weight = as.numeric(latency_weight), search = search,
-       method = "AlphaDev AssemblyGame instruction search")
+  list(
+    program = r$prog, text = morie_alfqud_text(r$prog),
+    length = length(r$prog), score = r$s, correct = r$c,
+    max_correct = full, solved = r$c == full,
+    outputs = outs, targets = targets, nodes = r$seen,
+    n_actions = length(acts), n_mem = n_mem, n_reg = n_reg,
+    max_len = as.integer(max_len),
+    latency_weight = as.numeric(latency_weight), search = search,
+    method = "AlphaDev AssemblyGame instruction search"
+  )
 }
 
 #' One-line summary of the alfqud module
 #'
 #' @return A character scalar.
 #' @export
-morie_alfqud_cheatsheet <- function()
-  paste0("alfqud: AlphaDev AssemblyGame. Programs of mov/cmp/cmovl/",
-         "cmovg searched by PUCT tree search or exhaustively, scored ",
-         "by executing them on test inputs")
+#' @examples
+#' morie_alfqud_cheatsheet()
+#' @keywords internal
+morie_alfqud_cheatsheet <- function() {
+  paste0(
+    "alfqud: AlphaDev AssemblyGame. Programs of mov/cmp/cmovl/",
+    "cmovg searched by PUCT tree search or exhaustively, scored ",
+    "by executing them on test inputs"
+  )
+}

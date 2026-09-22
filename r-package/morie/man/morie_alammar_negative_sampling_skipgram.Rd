@@ -18,6 +18,16 @@ morie_alammar_reward_model_bt(scores_w, scores_l)
 
 \item{scores_w, scores_l}{Winner and loser reward scores.}
 }
+\value{
+A list with \code{estimate}, \code{positive_logsig}, \code{negative_logsigs}, \code{k}, \code{n}, \code{method}.
+}
 \description{
 Skip-gram negative sampling and the Bradley-Terry reward loss
 }
+\examples{
+morie_alammar_negative_sampling_skipgram(center_vec = 5L, context_vec = 5L,
+  negative_vecs = c(1, 2, 3, 4, 5, 6, 7, 8))
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_reward_model_bt(V, V)
+}
+\keyword{internal}

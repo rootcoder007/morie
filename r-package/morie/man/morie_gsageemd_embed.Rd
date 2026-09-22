@@ -2,12 +2,15 @@
 % Please edit documentation in R/gsageemd_native.R
 \name{morie_gsageemd_embed}
 \alias{morie_gsageemd_embed}
-\title{K-hop GraphSAGE embedding}
+\alias{graphsage}
+\title{Inductive node embeddings by K GraphSAGE layers}
 \usage{
 morie_gsageemd_embed(features, adj, Ws, how = "mean", sizes = NULL, seed = 0)
+
+graphsage(features, adj, Ws, how = "mean", sizes = NULL, seed = 0)
 }
 \arguments{
-\item{features}{Node feature matrix (n x d).}
+\item{features}{Node feature matrix.}
 
 \item{adj}{Adjacency list.}
 
@@ -15,20 +18,33 @@ morie_gsageemd_embed(features, adj, Ws, how = "mean", sizes = NULL, seed = 0)
 
 \item{how}{Aggregator.}
 
-\item{sizes}{Optional fixed sample size per layer.}
+\item{sizes}{Optional per-layer sample size.}
 
-\item{seed}{Integer seed for the shared generator.}
+\item{seed}{Seed for the shared generator.}
 }
 \value{
-A list with \code{embeddings}, \code{depth},
-\code{aggregator}, \code{per_batch_bound}, \code{method} and
-\code{note}.
+List with estimate, embeddings, depth, aggregator,
+per_batch_bound, method, note.
 }
 \description{
-Applies K layers, so K hops. Parameters are shared across nodes,
-which is what lets an unseen node be embedded by a forward pass
-rather than by retraining.
+GraphSAGE: embeddings for nodes the model has never seen. Inductive
+Representation Learning on Large Graphs, NeurIPS 2017 (arXiv:1706.02216) --
+Algorithm 1, the three aggregators and Supervised Classification with Graph
+Convolutional Networks, ICLR 2017 (arXiv:1609.02907) -- the transductive
+convolution that GraphSAGE extends. Native implementation mirroring Python
+morie.fn.gsageemd exactly: the same mean, max_pool and lstm_order aggregators,
+the same fixed-size neighbour sampling with replacement when the budget
+exceeds the neighbourhood, the same L2 normalisation after each layer, and the
+same unsupervised graph-based loss.
 }
-\references{
-Hamilton, W. L. et al. (2017).
+\examples{
+set.seed(1)
+adj <- list(`0` = c(`1` = 1, `3` = 1), `1` = c(`0` = 1, `2` = 1),
+            `2` = c(`1` = 1, `3` = 1), `3` = c(`2` = 1, `0` = 1))
+feats <- matrix(runif(12), 4, 3)
+W1 <- matrix(rnorm(6 * 4, 0, 0.3), 4, 6)
+W2 <- matrix(rnorm(8 * 2, 0, 0.3), 2, 8)
+emb <- morie_gsageemd_embed(feats, adj, list(W1, W2), how = "mean", seed = 1)
+dim(emb)
 }
+\keyword{internal}

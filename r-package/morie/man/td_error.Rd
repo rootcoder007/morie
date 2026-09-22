@@ -18,3 +18,8 @@ Scalar difference \code{target - q_sa}.
 Returns \code{target - q_sa}, the scalar residual that the
 squared-error Bellman loss minimises.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+td_error(V, V)
+}
+\keyword{internal}

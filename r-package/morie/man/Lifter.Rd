@@ -25,3 +25,8 @@ applied SYMMETRICALLY about zero quefrency, because the cepstrum of a
 mixed-phase signal is two-sided (eq 4.72) and keeping only the causal
 half would discard the maximum-phase component.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Lifter(V)
+}
+\keyword{internal}

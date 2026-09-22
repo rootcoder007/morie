@@ -26,3 +26,11 @@ quoted for it means nothing unless the test patterns were unseen.
 Prototype discriminant of 10.4.1, partitioning of 10.10.3, scored by
 eqs (10.100)-(10.103).
 }
+\examples{
+set.seed(2)
+F <- rbind(matrix(rnorm(60, 0), 30, 2), matrix(rnorm(60, 1.5), 30, 2))
+y <- rep(c(0L, 1L), each = 30)
+r <- CadPipe(F, y, k = 5)
+str(r, max.level = 1)
+}
+\keyword{internal}

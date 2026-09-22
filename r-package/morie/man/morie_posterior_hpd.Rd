@@ -29,3 +29,8 @@ A step of the bndbye_native implementation. Called by \code{morie_compare_sets}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r <- morie_posterior_hpd(list(lower = 0.2, upper = 0.8), level = 0.9)
+str(r, max.level = 1)
+}
+\keyword{internal}

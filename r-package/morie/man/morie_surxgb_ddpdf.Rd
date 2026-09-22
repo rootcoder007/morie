@@ -2,7 +2,7 @@
 % Please edit documentation in R/surxgb_native.R
 \name{morie_surxgb_ddpdf}
 \alias{morie_surxgb_ddpdf}
-\title{Table 2: f_Z\'\'(z)}
+\title{Table 2: f_Z''(z)}
 \usage{
 morie_surxgb_ddpdf(z, dist = "normal")
 }
@@ -19,3 +19,8 @@ A step of the surxgb_native implementation. Called by \code{morie_surxgb_aft_gra
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_surxgb_ddpdf(V)
+}
+\keyword{internal}

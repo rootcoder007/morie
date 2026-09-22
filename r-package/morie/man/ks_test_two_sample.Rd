@@ -10,8 +10,7 @@ ks_test_two_sample(x, y)
 \item{x, y}{Numeric vectors.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with the two-sample KS D statistic, p-value, and combined sample size.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Two-sample Kolmogorov-Smirnov test

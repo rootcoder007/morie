@@ -33,19 +33,8 @@ NULL
 # Internal helper (shared wrapper for MRM primitives)
 # ---------------------------------------------------------------------------
 
-#' .mrm_result
-#'
-#' Part of the mrm_primitives_gentrification implementation; see the
-#' file header for the source it follows.
-#'
-#' @param title Carried through into a list the body builds.
-#' @param call Carried through into a list the body builds.
-#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
-#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
-#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
-#' @param ... Passed through.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Mrm Result
+#' @noRd
 .mrm_result <- function(title, call, summary_lines = list(),
                         warnings = character(0),
                         interpretation = "",
@@ -292,7 +281,24 @@ mrm_gentrification_panel <- function(df,
 #'
 #' @param x A \code{morie_mrm_result} object.
 #' @param ... Ignored; accepted for S3 consistency.
-#' @return Invisibly returns \code{x} unchanged.
+#' @return \code{x}, invisibly.
+#' @examples
+#' set.seed(1)
+#' \donttest{
+#' if (FALSE) {
+#'   df <- data.frame(
+#'     y = sample(c("low", "med", "high"), 200, replace = TRUE),
+#'     race = rbinom(200, 1, 0.4),
+#'     age  = rnorm(200)
+#'   )
+#'   obj <- mrm_threshold_specific_ordinal(df,
+#'     outcome_col = "y",
+#'     covariate_cols = c("race", "age"),
+#'     ordinal_levels = c("low", "med", "high")
+#'   )
+#'   print(obj)
+#' }
+#' }
 #' @export
 print.morie_mrm_result <- function(x, ...) {
   cat(x$title, "\

@@ -21,3 +21,8 @@ first-order difference in series with a two-point moving average, so
 it may be built as that cascade.  Zeros at z = 1 and z = -1 make it a
 bandpass, and the one at Nyquist is what kills the noise boost.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+CDiff3Tf(V)
+}
+\keyword{internal}

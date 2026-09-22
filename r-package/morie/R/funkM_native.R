@@ -183,6 +183,8 @@ morie_funkM <- function(ratings, n_users, n_items, factors = 8,
 #' @param ratings A list; the body reads \code{$i}, \code{$r}, \code{$u} from it.
 #' @return Nothing; this branch always raises.
 #' @export
+#' @examples
+#' .funkM_as_ratings(data.frame(u = c(0L, 1L), i = c(2L, 3L), r = c(4, 5)))
 .funkM_as_ratings <- function(ratings) {
   if (is.data.frame(ratings)) {
     if (!all(c("u", "i", "r") %in% names(ratings))) {
@@ -225,6 +227,9 @@ morie_funkM <- function(ratings, n_users, n_items, factors = 8,
 #' @param R A list; the body reads \code{$r} from it.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' R <- .funkM_as_ratings(data.frame(u = 0:2, i = 0:2, r = c(1, 2, 6)))
+#' .funkM_global_mean(R)
 .funkM_global_mean <- function(R) {
   if (nrow(R) == 0L) stop("funkM: no ratings given")
   sum(R$r) / as.numeric(nrow(R))
@@ -245,6 +250,10 @@ morie_funkM <- function(ratings, n_users, n_items, factors = 8,
 #' @param q_i A vector; its length is taken.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' # the bias model plus the factor dot product
+#' .funkM_predict(3, 0.5, -0.25, matrix(c(1, 2), nrow = 1),
+#'                matrix(c(0.5, -1), nrow = 1))
 .funkM_predict <- function(mu, b_user, b_item, p_u, q_i) {
   if (length(p_u) != length(q_i)) {
     stop(sprintf("funkM: the factors differ in width (%d, %d)",
@@ -338,6 +347,17 @@ morie_funkM <- function(ratings, n_users, n_items, factors = 8,
 #' @param Q A matrix; indexed by row and column.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' set.seed(1)
+#' n_users <- 20L; n_items <- 15L
+#' u <- sample.int(n_users, 300, TRUE) - 1L
+#' i <- sample.int(n_items, 300, TRUE) - 1L
+#' r <- 3 + 0.4 * (u %% 3) - 0.3 * (i %% 4) + rnorm(300, 0, 0.1)
+#' ratings <- data.frame(u = u, i = i, r = r)
+#' fit <- morie_funkM(ratings, n_users, n_items, factors = 3,
+#'                    epochs = 20, lr = 0.02, seed = 1)
+#' morie_funkM_rmse(ratings, fit$mu, fit$b_user, fit$b_item, fit$P, fit$Q)
+#' @keywords internal
 morie_funkM_rmse <- function(ratings, mu, bu, bi, P, Q) {
   R <- .funkM_as_ratings(ratings)
   if (nrow(R) == 0L) stop("funkM: no ratings to score")
@@ -370,6 +390,13 @@ morie_funkM_rmse <- function(ratings, mu, bu, bi, P, Q) {
 #' @param fill Carried through into a list the body builds. Defaults to \code{"zero"}.
 #' @return A list with \code{rmse_on_observed}, \code{fill}, \code{rank}, \code{note}.
 #' @export
+#' @examples
+#' ratings <- list(c(0, 0, 5), c(0, 1, 3), c(1, 0, 4), c(1, 2, 2),
+#'                 c(2, 1, 5), c(2, 2, 1))
+#' e <- morie_funkM_imputed_svd_error(ratings, n_users = 3, n_items = 3,
+#'                                    rank = 2, fill = "mean")
+#' is.numeric(e) || is.list(e)
+#' @keywords internal
 morie_funkM_imputed_svd_error <- function(ratings, n_users, n_items,
                                           rank = 2, fill = "zero") {
   R  <- .funkM_as_ratings(ratings)

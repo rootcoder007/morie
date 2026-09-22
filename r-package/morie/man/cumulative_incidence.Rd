@@ -19,3 +19,8 @@ A step of the tmlcmp_native implementation. Called by \code{morie_tmlcmp}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+hazards <- list("1" = c(0.10, 0.15, 0.20), "2" = c(0.05, 0.05, 0.10))
+cumulative_incidence(hazards, times = c(1, 2, 3))
+}
+\keyword{internal}

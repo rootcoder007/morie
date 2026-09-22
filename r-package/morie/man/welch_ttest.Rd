@@ -12,14 +12,12 @@ welch_ttest(x, y, confidence = 0.95)
 \item{confidence}{Confidence level.}
 }
 \value{
-A \code{morie_test_result} (subclass of \code{morie_rich_result})
-with Welch's t statistic, p-value, Satterthwaite df, mean-difference CI,
-Cohen's d, and combined sample size.
+An object of class \code{"morie_test_result"}.
 }
 \description{
 Welch's t-test (convenience wrapper)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-welch_ttest(V, V)
+set.seed(1)
+welch_ttest(rnorm(20), rnorm(20, 0.5, 2))
 }

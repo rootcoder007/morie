@@ -2,7 +2,7 @@
 % Please edit documentation in R/dsp_spectral.R
 \name{morie_dsp_psd_welch}
 \alias{morie_dsp_psd_welch}
-\title{Welch PSD estimate (morie native)}
+\title{Welch PSD estimate (rmorie native)}
 \usage{
 morie_dsp_psd_welch(x, fs = 1, nperseg = 256L, noverlap = NULL)
 }

@@ -29,3 +29,11 @@ A step of the counterfactual implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+.pearl_eqs <- list(x = list(parents = "u1", fn = function(u1) u1),
+    y = list(parents = c("x", "u2"), fn = function(x, u2) if (abs(x -
+        u2) < 0.5) 1 else 0))
+Counterfactual(evidence = list(x = 1, y = 1), equations = .pearl_eqs,
+    exogenous = c("u1", "u2"), do = list(x = 0), query = "y")
+}
+\keyword{internal}

@@ -2,15 +2,25 @@
 % Please edit documentation in R/andmnh_native.R
 \name{moment_vectors}
 \alias{moment_vectors}
-\title{Section 3 moment vectors}
+\title{moment_vectors}
 \usage{
 moment_vectors(e, X)
 }
 \arguments{
-\item{e}{See Usage.}
+\item{e}{A vector; its length is taken.}
 
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{nrow}.}
+}
+\value{
+The value of \code{V}, as built in the body.
 }
 \description{
-Section 3 moment vectors
+A step of the andmnh_native implementation. Called by \code{andrews_monahan_hac}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+moment_vectors(V, V)
+}
+\keyword{internal}

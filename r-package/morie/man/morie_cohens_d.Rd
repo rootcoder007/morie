@@ -20,6 +20,6 @@ Numeric Cohen's d.
 Cohen's d effect size
 }
 \examples{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
+set.seed(1)
+morie_cohens_d(rnorm(50, mean = 1), rnorm(50, mean = 0))
 }

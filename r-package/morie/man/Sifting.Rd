@@ -23,3 +23,7 @@ A list with \code{value}, \code{inside}, \code{t0}, \code{lower},
 T1 < to < T2, else 0.  Both inequalities are strict, so an impulse
 sitting on a limit contributes nothing.
 }
+\examples{
+Sifting(function(t) t^2 + 1, 2, 0, 5)
+}
+\keyword{internal}

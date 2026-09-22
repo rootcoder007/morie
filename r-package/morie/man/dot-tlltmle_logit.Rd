@@ -40,7 +40,7 @@ it at every time point, backwards, makes the whole estimator solve
 \eqn{P_n D^* = 0}.
 
 \strong{Double robustness, stated exactly.} The estimator is consistent if
-\emph{either} the sequential outcome regressions \emph{or} the treatment
+*either* the sequential outcome regressions *or* the treatment
 mechanism are consistently estimated -- not both. The anchor exploits
 that: it breaks each arm separately and requires the estimate to
 survive, then breaks both and requires it to fail. Two wrong arms are

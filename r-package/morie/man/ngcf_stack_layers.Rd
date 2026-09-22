@@ -26,3 +26,14 @@ A step of the ngcf_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+d <- 3
+E0 <- matrix(rnorm(12), 4, 3)
+adjacency <- list(c(2, 4), c(1, 3), c(2, 4), c(1, 3))
+mk <- function() matrix(rnorm(d * d, 0, 0.3), d, d)
+Ws <- list(list(mk(), mk()), list(mk(), mk()))
+r <- ngcf_stack_layers(E0, adjacency, Ws)
+c(r$n_layers, ncol(r$final))
+}
+\keyword{internal}

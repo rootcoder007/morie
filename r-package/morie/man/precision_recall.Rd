@@ -7,16 +7,21 @@
 precision_recall(pred, truth)
 }
 \arguments{
-\item{pred}{Passed to \code{==}.}
+\item{pred}{Coerced to integer by the body, with \code{as.integer}.}
 
-\item{truth}{Passed to \code{==}.}
+\item{truth}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \value{
 A list with \code{precision}, \code{recall}, \code{accuracy}, \code{tp},
 \code{fp}, \code{fn}, \code{tn}.
 }
 \description{
-A step of the memb_native implementation. Called by \code{memb}.
+A step of the memb_native implementation. Called by \code{memb}, \code{morie_memb}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+precision_recall(V, V)
+}
+\keyword{internal}

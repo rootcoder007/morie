@@ -2,7 +2,7 @@
 % Please edit documentation in R/pate_native.R
 \name{lemma4_bound}
 \alias{lemma4_bound}
-\title{Lemma 4: sum_\{j != j*\} (2 + gamma (n_j* - n_j)) /}
+\title{lemma4_bound}
 \usage{
 lemma4_bound(counts, gamma)
 }
@@ -12,9 +12,14 @@ lemma4_bound(counts, gamma)
 \item{gamma}{Numeric; combined arithmetically in the body.}
 }
 \value{
-A list with \code{bound}, \code{raw}.
+A vector, from \code{c}.
 }
 \description{
-(4 exp(gamma (n_j* - n_j))), j* the plurality winner. The bound is a
-bound, so the raw value is also returned.
+A step of the pate_native implementation. Called by \code{moments_accountant}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+lemma4_bound(counts = c(1, 2, 3, 4, 5, 6, 7, 8), gamma = 0.5)
+}
+\keyword{internal}

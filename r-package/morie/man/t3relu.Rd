@@ -17,3 +17,8 @@ A step of the t3util implementation. Called by \code{sage}.
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+t3relu(V)
+}
+\keyword{internal}

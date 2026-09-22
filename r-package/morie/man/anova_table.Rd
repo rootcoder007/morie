@@ -24,11 +24,7 @@ anova_table(
 \item{title}{Title.}
 }
 \value{
-When \code{output_format = "dataframe"}, a \code{data.frame}
-of the formatted ANOVA table (degrees of freedom, sums of squares
-/ chi-square statistic, F or LR statistic, formatted p-value, and
-a star column). Otherwise a character string holding the rendered
-table in the requested format.
+A character string.
 }
 \description{
 Uses \code{stats::anova} for sequential (Type-I) tests, or

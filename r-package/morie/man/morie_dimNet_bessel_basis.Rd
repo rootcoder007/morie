@@ -19,3 +19,7 @@ Numeric vector of length \code{n_basis}.
 \description{
 \code{sqrt(2/c) sin(n pi d/c) / d}, orthogonal on \code{[0, c]}.
 }
+\examples{
+morie_dimNet_bessel_basis(d = 5L)
+}
+\keyword{internal}

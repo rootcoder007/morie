@@ -11,6 +11,14 @@ morie_geron_revnet(x, F, G)
 
 \item{F, G}{Shape-preserving residual functions.}
 }
+\value{
+A list with \code{y}, \code{y1}, \code{y2}, \code{x1}, \code{x2}, \code{x_reconstructed}, \code{reconstruction_error}, \code{reversible}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 RevNet: reversible residual block, verified by explicit inversion (Geron Ch 12, hmrvn)
 }
+\examples{
+morie_geron_revnet(c(1, 2, 3, 4), function(a) 2 * a, function(a) a +
+    1)
+}
+\keyword{internal}

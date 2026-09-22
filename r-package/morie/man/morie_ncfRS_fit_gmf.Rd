@@ -44,3 +44,11 @@ A step of the ncfRS_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+pos <- list(`1` = c(1, 2), `2` = c(1, 3), `3` = c(2, 3))
+fit <- morie_ncfRS_fit_gmf(pos, n_users = 3, n_items = 3, k_dim = 4,
+                           iters = 200, seed = 1)
+is.list(fit)
+}
+\keyword{internal}

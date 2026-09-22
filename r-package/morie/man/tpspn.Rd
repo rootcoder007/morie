@@ -25,7 +25,8 @@ basis phi(r) = r^2 log(r).  Solves the augmented saddle-point system.
 For larger problems, prefer \code{mgcv::gam(y ~ s(x, bs="tp"))}.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-tpspn(V, V)
+set.seed(1)
+x <- matrix(runif(60), ncol = 2); y <- rnorm(30)
+morie_thin_plate_spline(x, y)
 }
 \keyword{internal}

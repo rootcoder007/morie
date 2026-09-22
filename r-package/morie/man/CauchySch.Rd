@@ -19,3 +19,8 @@ A list with \code{lhs}, \code{rhs}, \code{holds}, \code{cosine},
 between the vectors, which is exactly the correlation coefficient of
 eq (4.25) on mean-removed signals.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+CauchySch(V, V)
+}
+\keyword{internal}

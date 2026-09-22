@@ -7,7 +7,7 @@
 morie_gsageemd_aggregate(vectors, how = "mean", W = NULL)
 }
 \arguments{
-\item{vectors}{Passed to \code{.gsage_rows}.}
+\item{vectors}{Passed to \code{.gsageemd_mat}.}
 
 \item{how}{One of \code{"max_pool"}, \code{"mean"}. Defaults to \code{"mean"}.}
 
@@ -17,7 +17,12 @@ morie_gsageemd_aggregate(vectors, how = "mean", W = NULL)
 One of two values, depending on the branch taken.
 }
 \description{
-A step of the gsageemd_native implementation. Called by \code{morie_gsageemd_layer}.
+A step of the gsageemd_native implementation. Called by \code{sage_layer}.
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_gsageemd_aggregate(V)
+}
+\keyword{internal}

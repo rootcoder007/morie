@@ -39,3 +39,13 @@ The value of \code{out}, as built in the body.
 closest to it, in Euclidean (u, s) distance, and the transcriptional
 state of the segment it lands on.
 }
+\examples{
+sim <- morie_simulate_gene(alpha = 5, beta = 0.3, gamma = 0.2,
+                           t_switch = 8, times = seq(0, 20, by = 2))
+u <- vapply(sim$observations, function(o) o$u, numeric(1))
+s <- vapply(sim$observations, function(o) o$s, numeric(1))
+at <- morie_assign_latent_time(u, s, alpha = 5, beta = 0.3,
+                               gamma = 0.2, t_switch = 8)
+is.list(at) || is.numeric(at)
+}
+\keyword{internal}

@@ -53,3 +53,15 @@ A step of the agalfsy_native implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+set.seed(4)
+receptor <- matrix(rnorm(36), 12, 3)
+ligand <- matrix(rnorm(15), 5, 3)
+site <- ligand + 3
+res <- morie_agalfsy_rl_pose_search(receptor, ligand, site = site,
+                                    max_steps = 60L, min_steps = 20L,
+                                    window = 10L, seed = 2)
+# the reported pose is a rigid motion of the ligand
+dim(res$pose)
+}
+\keyword{internal}

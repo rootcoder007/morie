@@ -45,7 +45,8 @@ subcomposition containing both parts, so \code{tau_delta} is zero up
 to floating-point error. That is the point: it is the coherent
 quantity to report where the raw correlation is not.
 
-Mirrors \code{morie.fn.aitsbm} on the Python side.
+Mirrors \code{morie.fn.aitsbm} on the Python side. See also
+\code{\link{morie_taphonomy_clr}} for the centred log-ratio transform.
 }
 \examples{
 set.seed(42)

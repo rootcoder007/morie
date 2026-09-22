@@ -21,3 +21,9 @@ A step of the samdec_native implementation. Called by \code{decode_mask}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+S <- c("a", "b", "c")
+dynamic_mask_head(S, M)
+}
+\keyword{internal}

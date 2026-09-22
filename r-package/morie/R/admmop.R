@@ -46,8 +46,10 @@ Admmlasso <- function(X, y, lam, rho = 1, steps = 100) {
   }
   res <- as.numeric(Xm %*% z) - y
   obj <- 0.5 * sum(res^2) + lam * sum(abs(z))
-  .t1_result(x = x, z = z, u = u, objective = obj,
-             primalres = sqrt(sum((x - z)^2)), dualres = dual,
-             rho = rho, steps = steps, n = n, p = p,
-             method = "ADMM for the LASSO, scaled form (Boyd et al. 2011 Sect. 6.4)")
+  .t1_result(
+    x = x, z = z, u = u, objective = obj,
+    primalres = sqrt(sum((x - z)^2)), dualres = dual,
+    rho = rho, steps = steps, n = n, p = p,
+    method = "ADMM for the LASSO, scaled form (Boyd et al. 2011 Sect. 6.4)"
+  )
 }

@@ -19,3 +19,8 @@ A list with \code{Y}, \code{psd}, \code{max_imaginary}, \code{max_difference},
 nonnegative -- the phase has been cancelled exactly, the
 frequency-domain statement of the coherent addition at t0.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+MfPsd(V)
+}
+\keyword{internal}

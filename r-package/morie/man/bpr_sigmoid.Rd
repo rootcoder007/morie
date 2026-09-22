@@ -19,7 +19,11 @@ Numeric of length 1 (or matching length) with \eqn{\sigma(x)}.
 Numerically stable \eqn{\sigma(x) = 1 / (1 + e^{-x})}, mirrored from
 morie.fn.bprMF.sigmoid.
 }
+\examples{
+bpr_sigmoid(x = 5L)
+}
 \references{
 Rendle, S. et al. (2009) UAI 2009, 452-461,
 arXiv:1205.2618, Sec. 4.1.
 }
+\keyword{internal}

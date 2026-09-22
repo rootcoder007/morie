@@ -20,9 +20,9 @@
 #
 # Internal; `aaa_` collates it before its callers.
 
-#' Lower-triangular L with L L\' = Sigma. The book writes the root as an
+#' Lower-triangular L with L L' = Sigma. The book writes the root as an
 #'
-#' upper triangular U with Sigma = U\'U; L is that U\'.
+#' upper triangular U with Sigma = U'U; L is that U'.
 #'
 #' @param cov A matrix; passed to \code{nrow}.
 #' @param jitter Numeric; combined arithmetically in the body. Defaults to \code{1e-10}.
@@ -38,11 +38,12 @@
   cov <- as.matrix(cov)
   if (nrow(cov) != ncol(cov)) stop("`cov` must be square", call. = FALSE)
   u <- tryCatch(chol(cov),
-                error = function(e) chol(cov + jitter * diag(nrow(cov))))
+    error = function(e) chol(cov + jitter * diag(nrow(cov)))
+  )
   t(u)
 }
 
-#' Symmetric square root P Delta^(1/2) P\'. Negative eigenvalues can
+#' Symmetric square root P Delta^(1/2) P'. Negative eigenvalues can
 #' only
 #'
 #' come from rounding on a matrix positive semi-definite in exact
@@ -94,9 +95,10 @@
     stop("`cov` must be square and match `mean`", call. = FALSE)
   }
   root <- switch(method,
-                 cholesky = .schab_cholesky_root(cov),
-                 spectral = .schab_spectral_root(cov),
-                 stop("`method` must be 'cholesky' or 'spectral'", call. = FALSE))
+    cholesky = .schab_cholesky_root(cov),
+    spectral = .schab_spectral_root(cov),
+    stop("`method` must be 'cholesky' or 'spectral'", call. = FALSE)
+  )
   as.numeric(mean + root %*% .morie_random_normal(n, seed = seed, stream = stream))
 }
 
@@ -134,8 +136,10 @@
     stop("`n_obs` must leave at least one target location", call. = FALSE)
   }
   mu <- if (length(mean) == 1L) rep(as.numeric(mean), n) else as.numeric(mean)
-  sim <- .schab_simulate_unconditional(rep(0, n), cov_all, method = method,
-                                       seed = seed, stream = stream)
+  sim <- .schab_simulate_unconditional(rep(0, n), cov_all,
+    method = method,
+    seed = seed, stream = stream
+  )
   sigma_obs <- cov_all[seq_len(n_obs), seq_len(n_obs), drop = FALSE]
   cvec <- cov_all[, seq_len(n_obs), drop = FALSE]
   resid <- (z_obs - mu[seq_len(n_obs)]) - sim[seq_len(n_obs)]

@@ -24,3 +24,8 @@ A step of the exp3_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+r <- morie_exp3(x = rnorm(10), gamma_ = 0.5); TRUE
+}
+\keyword{internal}

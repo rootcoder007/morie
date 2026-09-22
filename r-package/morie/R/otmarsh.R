@@ -8,8 +8,8 @@
 #' over the bins in proportion to \code{a}, or as a per-bin vector when a
 #' vector is supplied.
 #'
-#' Formula: solve \code{min_T <T,C>} with \code{a\' = a - delta} and total
-#' transported mass \code{sum(a\')}, the partial-transport problem of
+#' Formula: solve \code{min_T <T,C>} with \eqn{a' = a - delta} and total
+#' transported mass \eqn{sum(a')}, the partial-transport problem of
 #' Caffarelli and McCann (2010).
 #'
 #' @param a,b Source and target weights.
@@ -21,8 +21,8 @@
 #'   Mathematics 171(2):673-730. \doi{10.4007/annals.2010.171.673}.
 #' @export
 #' @examples
-#' Otmarsh(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, C = c(1, 2, 3, 4, 5, 6, 7, 8), delta =
-#' c(1, 2, 3, 4, 5, 6, 7, 8))
+#' Otmarsh(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, C = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   delta = c(1, 2, 3, 4, 5, 6, 7, 8))
 Otmarsh <- function(a, b, C, delta) {
   aa <- .ot_hist(a)
   bb <- .ot_hist(b)

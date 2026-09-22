@@ -13,32 +13,26 @@ morie_matching_full(data, treatment, covariates, ps = NULL, n_subclasses = 10L)
 
 \item{covariates}{Character vector of covariates.}
 
-\item{ps}{Optional propensity scores. When supplied they REPLACE
-the fitted model and become the matching distance directly,
-aligned to the rows that survive the NA drop.}
+\item{ps}{Optional pre-computed propensity scores (ignored; retained
+for back-compat).}
 
-\item{n_subclasses}{Number of propensity-score strata for the fallback.}
+\item{n_subclasses}{Carried for back-compat (ignored under MatchIt).}
 }
 \value{
-A list of class \code{morie_match_result}; \code{matched_data}
-contains a \code{._full_weight} column.
+A list of class \code{morie_match_result}.
 }
 \description{
-Places every unit into a subclass containing at least one treated and one
-control unit.  Delegates to \pkg{MatchIt}'s \code{method = "full"}
-(which calls \pkg{optmatch}) when available; otherwise approximates
-via quantile-based stratification of the propensity score.
+Thin wrapper around \code{MatchIt::matchit(method = "full")}, which
+calls \pkg{optmatch}.
 }
 \examples{
 \dontshow{if (requireNamespace("MatchIt", quietly = TRUE) && requireNamespace("optmatch", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\donttest{
 set.seed(1)
-df <- data.frame(
-  y = rnorm(150), d = rbinom(150, 1, 0.4),
-  x1 = rnorm(150), x2 = rnorm(150),
-  region = sample(c("North", "South"), 150, TRUE),
-  year = sample(2020:2022, 150, TRUE),
-  treat3 = sample(0:2, 150, TRUE))
+df <- data.frame(y = rnorm(200), d = rbinom(200, 1, 0.4),
+                 x1 = rnorm(200), x2 = rnorm(200))
 morie_matching_full(df, "d", c("x1", "x2"))
+}
 \dontshow{\}) # examplesIf}
 }
 \references{

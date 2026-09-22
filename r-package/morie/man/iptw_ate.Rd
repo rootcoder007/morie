@@ -46,3 +46,13 @@ A step of the flxipt_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(2)
+n <- 60
+H <- matrix(rnorm(n * 2), n, 2)
+A <- rbinom(n, 1, plogis(0.5 * H[, 1]))
+y <- 1 + 0.8 * A + H[, 1] + rnorm(n, 0, 0.3)
+r <- iptw_ate(y, A, H, n_folds = 4)
+str(r, max.level = 1)
+}
+\keyword{internal}

@@ -24,3 +24,9 @@ A step of the potM_mixedcase_native implementation. No other function in the pac
 See the file header for the source the module follows.
 for the source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+morie_potM(V, M)
+}
+\keyword{internal}

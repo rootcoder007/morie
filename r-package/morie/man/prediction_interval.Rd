@@ -20,6 +20,5 @@ Numeric c(lower, upper).
 Prediction interval for a new study (random-effects meta)
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-prediction_interval(V, V)
+prediction_interval(c(0.20, 0.35, 0.15), c(0.08, 0.10, 0.07))
 }

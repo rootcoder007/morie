@@ -4,24 +4,25 @@
 \alias{morie_masrcn}
 \title{morie_masrcn}
 \usage{
-morie_masrcn(features, box, out_size = 2L, stride = 1, samples = 2L)
+morie_masrcn(op, ...)
 }
 \arguments{
-\item{features}{Passed to \code{roi_align}.}
+\item{op}{A vector; its length is taken.}
 
-\item{box}{Passed to \code{roi_align}.}
-
-\item{out_size}{Passed to \code{roi_align}. Defaults to \code{2L}.}
-
-\item{stride}{Passed to \code{roi_align}. Defaults to \code{1}.}
-
-\item{samples}{Passed to \code{roi_align}. Defaults to \code{2L}.}
+\item{...}{Passed through.}
 }
 \value{
-A list with \code{roi}, \code{alignment}.
+The value of \code{switch}.
 }
 \description{
 A step of the masrcn_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+features <- matrix(as.numeric(1:36), 6, 6)
+r <- morie_masrcn("roi_pool", features, box = c(0, 0, 4, 4),
+                  out_size = 2L)
+is.list(r)
+}
+\keyword{internal}

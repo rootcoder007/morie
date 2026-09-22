@@ -22,6 +22,10 @@ Each occupied cluster gets (n_j - alpha) / (theta + n); a new
 cluster gets (theta + K*alpha) / (theta + n). The mass removed by
 discounting every cluster by alpha is exactly the new-cluster term.
 }
+\examples{
+morie_pmpfit_predictive(counts = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5, theta = 0.5)
+}
 \references{
 Pitman, J. & Yor, M. (1997).
 }
+\keyword{internal}

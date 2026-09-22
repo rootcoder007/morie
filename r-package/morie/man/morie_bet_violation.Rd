@@ -35,3 +35,9 @@ A step of the bndpcb_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+\donttest{
+morie_bet_violation(theta = 0.3, draws = 2000L)
+}
+}
+\keyword{internal}

@@ -12,3 +12,7 @@ A character string.
 \description{
 One-paragraph summary of the model
 }
+\examples{
+morie_ddpest_cheatsheet()
+}
+\keyword{internal}

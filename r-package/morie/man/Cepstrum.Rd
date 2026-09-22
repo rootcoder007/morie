@@ -18,3 +18,8 @@ so it discards the phase and is NOT invertible -- the whole
 difference from the complex cepstrum of eq (4.64).  It still shows
 the echo impulses of eq (4.80), which is what it is used for.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Cepstrum(V)
+}
+\keyword{internal}

@@ -33,7 +33,9 @@ min_samples rule -- not every clustered point, which is what the
 previous wrapper reported.
 }
 \examples{
-morie_dbscan_clustering(matrix(c(0, 0, 0.1, 0.1, 5, 5), ncol = 2,
-                               byrow = TRUE),
-                        eps = 1, min_samples = 2L)
+set.seed(1)
+x <- rbind(matrix(rnorm(80, 0, 0.2), ncol = 2), matrix(rnorm(80,
+    5, 0.2), ncol = 2))
+morie_dbscan_clustering(x, eps = 0.6, min_samples = 4L)
 }
+\keyword{internal}

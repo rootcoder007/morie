@@ -21,3 +21,8 @@ A step of the plsa_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+joint_probability(Pz = c(1, 2, 3, 4, 5, 6, 7, 8), Pd_z = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2),
+  Pw_z = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2))
+}
+\keyword{internal}

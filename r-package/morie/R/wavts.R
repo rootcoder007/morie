@@ -5,9 +5,10 @@
 #' @param x Numeric univariate series.
 #' @param wavelet Wavelet family. Default "haar".
 #' @param level Decomposition depth. Default floor(log2 n) capped at 6.
-#' @return Named list with \code{approximation, details, energies, level,
+#' @return Named list with \eqn{approximation, details, energies, level,
 #'   n, wavelet, method}.
 #' @examples
+#' set.seed(1)
 #' morie_wavelet_time_series(x = rnorm(50))
 #' @export
 morie_wavelet_time_series <- function(x, wavelet = "haar", level = NULL) {
@@ -42,7 +43,7 @@ morie_wavelet_time_series <- function(x, wavelet = "haar", level = NULL) {
       energies = energies,
       level = fit$n_levels, n = n, wavelet = wavelet,
       method = sprintf(
-        "DWT (morie native, wavelet=%s, level=%d)",
+        "DWT (rmorie native, wavelet=%s, level=%d)",
         wavelet, fit$n_levels
       )
     ))

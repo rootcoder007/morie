@@ -24,8 +24,8 @@ right, but when both are only approximately right at slow rates it
 does not vanish fast enough for root-n inference.  The residual
 estimator estimates that remainder directly with a U-statistic over
 pairs, using a finite-dimensional projection kernel
-\code{K_k(x, x\') = phi(x)\' Omega^{-1} phi(x\')},
-\code{Omega = n^{-1} sum_i phi(X_i) phi(X_i)\'}, and adds it back:
+\eqn{K_k(x, x') = phi(x)' Omega^{-1} phi(x')},
+\eqn{Omega = n^{-1} sum_i phi(X_i) phi(X_i)'}, and adds it back:
 \code{IF22 = -[n(n-1)]^{-1} sum_{i != j} a_i K_k(X_i, X_j) b_j} with
 \code{a_i = (D_i - g_i)/[g_i(1 - g_i)]} and
 \code{b_j = H_j (y_j - Q*_j)}.
@@ -37,8 +37,7 @@ exactly the residuals are zero and the correction is identically
 zero -- the cheapest check of the sign convention.
 }
 \examples{
-Tmlres(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4,
-5, 6, 7, 8))
+Tmlres(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Robins, J., Li, L., Mukherjee, R., Tchetgen Tchetgen, E.

@@ -2,24 +2,24 @@
 % Please edit documentation in R/prphet_native.R
 \name{.changepoints}
 \alias{.changepoints}
-\title{Place candidate changepoints}
+\title{.changepoints}
 \usage{
-.changepoints(t, n_changepoints, changepoint_range = 0.8, changepoints = NULL)
+.changepoints(t, n.cp, range = 0.8, cps = NULL)
 }
 \arguments{
-\item{t}{Numeric vector of times.}
+\item{t}{A vector; its length is taken and its elements indexed.}
 
-\item{n_changepoints}{Integer, number of candidate changepoints.}
+\item{n.cp}{Coerced to integer by the body, with \code{as.integer}.}
 
-\item{changepoint_range}{Fraction of the time range to span.}
+\item{range}{Numeric; combined arithmetically in the body. Defaults to \code{0.8}.}
 
-\item{changepoints}{Optional explicit vector of changepoints.}
+\item{cps}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \value{
-Numeric vector of changepoints.
+A numeric value.
 }
 \description{
-If \code{changepoints} is supplied it is used as-is; otherwise
-\code{n_changepoints} equally spaced points are placed over the
-first \code{changepoint_range} of the time range.
+A step of the prphet_native implementation. Called by \code{morie_prphet_fit}.
+See the file header for the source the module follows.
+source it follows.
 }

@@ -21,3 +21,10 @@ A step of the varcal_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+called <- list(list(position = 4L, alternate = "T"))
+truth <- list(list(position = 4L, alternate = "T"),
+              list(position = 7L, alternate = "G"))
+varcal_evaluate(called, truth)
+}
+\keyword{internal}

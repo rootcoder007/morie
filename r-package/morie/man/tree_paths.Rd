@@ -17,3 +17,12 @@ A step of the attrInf_native implementation. Called by \code{morie_attrInf}, \co
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+tree <- list(feature = 0L, branches = list(
+  "0" = list(label = 0L, count = 30),
+  "1" = list(feature = 1L, branches = list(
+    "0" = list(label = 0L, count = 10),
+    "1" = list(label = 1L, count = 20)))))
+str(tree_paths(tree), max.level = 1)
+}
+\keyword{internal}

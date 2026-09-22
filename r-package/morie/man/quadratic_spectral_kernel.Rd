@@ -2,13 +2,22 @@
 % Please edit documentation in R/andmnh_native.R
 \name{quadratic_spectral_kernel}
 \alias{quadratic_spectral_kernel}
-\title{Quadratic spectral kernel}
+\title{quadratic_spectral_kernel}
 \usage{
 quadratic_spectral_kernel(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Numeric; combined arithmetically in the body.}
+}
+\value{
+A numeric value.
 }
 \description{
-Quadratic spectral kernel
+A step of the andmnh_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+quadratic_spectral_kernel(x = 5L)
+}
+\keyword{internal}

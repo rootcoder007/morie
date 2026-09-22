@@ -83,6 +83,9 @@
 #' @return A list with \code{z} (the atom positions) and \code{dz}
 #'   (the spacing).
 #' @export
+#' @examples
+#' atoms(v_min = -10, v_max = 10, n_atoms = 5)
+#' @keywords internal
 atoms <- function(v_min, v_max, n_atoms) {
   a <- .distq_atoms(v_min, v_max, n_atoms)
   a$z
@@ -92,7 +95,7 @@ atoms <- function(v_min, v_max, n_atoms) {
 # routines so we don't rebuild the spacing each time.)
 #' (Internal companion returning both z and dz -- used by the other
 #'
-#' routines so we don\'t rebuild the spacing each time.)
+#' routines so we don't rebuild the spacing each time.)
 #'
 #' @param v_min Passed to \code{.distq_atoms}.
 #' @param v_max Passed to \code{.distq_atoms}.
@@ -201,6 +204,10 @@ categorical_projection <- function(reward, gamma, next_probs, v_min, v_max,
 #' @param eps Floor on the log to keep \code{p = 0} finite.
 #' @return Scalar cross-entropy.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' categorical_loss(V, V)
+#' @keywords internal
 categorical_loss <- function(m, probs, eps = 1e-12) {
   mm <- as.numeric(m)
   pp <- as.numeric(probs)
@@ -217,13 +224,16 @@ categorical_loss <- function(m, probs, eps = 1e-12) {
 
 #' Greedy action from per-action next-state distributions
 #'
-#' \code{a* = argmax_a sum_i z_i p_i(x\', a)}.
+#' \eqn{a* = argmax_a sum_i z_i p_i(x', a)}.
 #'
 #' @param next_probs_by_action List of numeric vectors, one per action.
 #' @param z Numeric vector of atom positions.
 #' @return A list with \code{action} (1-based R index) and \code{q_values}
 #'   (the per-action means).
 #' @export
+#' @examples
+#' greedy_action(next_probs_by_action = c(1, 2, 3, 4, 5, 6, 7, 8), z = 5L)
+#' @keywords internal
 greedy_action <- function(next_probs_by_action, z) {
   rows <- as.list(next_probs_by_action)
   if (length(rows) == 0L)
@@ -344,6 +354,13 @@ bernoulli_algorithm <- function(reward, gamma, next_probs, v_min, v_max,
 #'   distribution) and \code{info} (a named list with
 #'   \code{iterations}, \code{converged}, \code{shift}).
 #' @export
+#' @examples
+#' r <- value_distribution_iteration(reward_atoms = c(0, 1),
+#'                                   reward_probs = c(0.5, 0.5),
+#'                                   gamma = 0.9, v_min = 0, v_max = 15,
+#'                                   n_atoms = 21)
+#' str(r, max.level = 1)
+#' @keywords internal
 value_distribution_iteration <- function(reward_atoms, reward_probs, gamma,
                                          v_min, v_max, n_atoms,
                                          iters = 400L, tol = 1e-13) {

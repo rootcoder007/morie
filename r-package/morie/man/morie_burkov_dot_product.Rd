@@ -15,6 +15,18 @@ morie_burkov_unit_vector(a)
 \arguments{
 \item{a, b}{Vectors.}
 }
+\value{
+A list with \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Dot product, L2 norm and unit vector (Burkov Ch 1)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_burkov_dot_product(V, V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_burkov_vector_norm(V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_burkov_unit_vector(V)
+}
+\keyword{internal}

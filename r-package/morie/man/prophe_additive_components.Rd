@@ -14,9 +14,9 @@ prophe_additive_components(
 )
 }
 \arguments{
-\item{t}{Passed to \code{morie_prphet}.}
+\item{t}{Passed to \code{morie_prphet_fit}.}
 
-\item{y}{Passed to \code{morie_prphet}.}
+\item{y}{Passed to \code{morie_prphet_fit}.}
 
 \item{seasonalities}{Optional; may be \code{NULL}. A vector; its length is taken.}
 
@@ -36,3 +36,10 @@ A step of the prophe_native implementation. Called by \code{morie_prophe}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+t <- 1:60
+y <- sin(2 * pi * t / 12) + 0.05 * t + rnorm(60) * 0.1
+prophe_additive_components(t, y)
+}
+\keyword{internal}

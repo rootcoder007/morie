@@ -21,6 +21,14 @@ morie_geron_padding(
 
 \item{stride}{Output-size bookkeeping.}
 }
+\value{
+A list with \code{padded}, \code{pad_h}, \code{pad_w}, \code{output_shape}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Zero-padding for valid/same convolutions (Geron Ch 12, hmpd)
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+morie_geron_padding(M)
+}
+\keyword{internal}

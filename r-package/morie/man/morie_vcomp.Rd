@@ -25,3 +25,8 @@ A step of the vcomp_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+r <- morie_vcomp(y = rnorm(10), group = rbinom(10, 1, 0.5)); TRUE
+}
+\keyword{internal}

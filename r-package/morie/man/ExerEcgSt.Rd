@@ -28,3 +28,15 @@ of the segment that follows (Section 1.2.5).  The 0.1 mV threshold is
 the conventional clinical figure, NOT a book value -- the payload
 says so.
 }
+\examples{
+set.seed(2)
+fs <- 250
+n <- fs * 3
+x <- rep(0, n)
+qrs <- round(seq(0.5, 2.7, by = 0.75) * fs)
+for (i in qrs) x[i:(i + 5)] <- c(0.2, 1.1, -0.5, 0.05, 0.02, 0)
+x <- x + 0.01 * rnorm(n)
+r <- ExerEcgSt(x, qrs = qrs, fs = fs)
+str(r, max.level = 1)
+}
+\keyword{internal}

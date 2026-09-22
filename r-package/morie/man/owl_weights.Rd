@@ -33,7 +33,16 @@ every outcome first. The default is the smallest value that makes
 all weights non-negative. The constant changes the relative
 weights, so the value used is reported back.
 }
+\examples{
+set.seed(1)
+n <- 40
+H <- matrix(rnorm(n * 2), n, 2)
+A <- sample(c(-1, 1), n, replace = TRUE)
+R <- 1 + A * H[, 1] + rnorm(n, 0, 0.3)
+owl_weights(R, A, H)
+}
 \references{
 Zhao, Y., Zeng, D., Rush, A. J. & Kosorok, M. R.
 (2012), JASA 107(499), 1106-1118.
 }
+\keyword{internal}

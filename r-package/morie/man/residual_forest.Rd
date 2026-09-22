@@ -43,3 +43,14 @@ A step of the plrgrf_native implementation. Called by \code{morie_plrgrf}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+n <- 120
+X <- matrix(rnorm(n * 3), n, 3)
+W <- rbinom(n, 1, 0.5)
+y <- W * (1 + X[, 1]) + X[, 2] + rnorm(n, 0, 0.5)
+lc <- local_centering(y, W, X, n_folds = 3, n_trees = 40)
+rf <- residual_forest(y - lc$mh, W - lc$eh, X, n_trees = 40)
+is.list(rf)
+}
+\keyword{internal}

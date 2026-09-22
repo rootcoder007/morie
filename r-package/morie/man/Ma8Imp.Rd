@@ -17,3 +17,7 @@ A list with \code{h}, \code{value}, \code{index}, \code{n_taps}, \code{sum},
 attenuation is poor -- the book notes no more than about -20 dB at
 most frequencies, so a filtered noisy ECG is still visibly noisy.
 }
+\examples{
+Ma8Imp()
+}
+\keyword{internal}

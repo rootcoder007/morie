@@ -19,3 +19,8 @@ The value of \code{B}, as built in the body.
 \description{
 bspline_basis(x, knots, degree) in smfd.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+smfd_bspline_basis(V, V)
+}
+\keyword{internal}

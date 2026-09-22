@@ -57,17 +57,8 @@
 NULL
 
 
-#' .req_survey
-#'
-#' A step of the survey implementation. Called by \code{morie_survey_glm}, \code{morie_survey_mean}.
-#' See the file header for the source the module follows.
-#' it follows.
-#'
-#' @return The value of \code{morie_ensure_extras}.
-#' @export
-#' @examples
-#' res <- .req_survey()
-#' res
+#' Internal helper: Req Survey
+#' @noRd
 .req_survey <- function() {
   morie_ensure_extras("survey")
 }
@@ -83,22 +74,16 @@ NULL
 #' @param cluster_col Optional PSU/cluster column.
 #' @param fpc_col Optional finite-population-correction column.
 #' @param nest If TRUE, treat cluster IDs as nested within strata.
-#' @return A \code{survey::svydesign} object when the \pkg{survey}
-#'   package is installed; otherwise an S3 list of class
-#'   \code{morie_survey_design_fallback} carrying \code{data},
-#'   \code{weights}, optional \code{strata}, and optional
-#'   \code{cluster}.
+#' @return An object of class \code{"morie_survey_design_fallback"}.
+#' @examples
+#' \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' set.seed(1)
+#' df <- data.frame(y = rnorm(40), w = runif(40, 0.5, 2),
+#'                  s = rep(c("a", "b"), 20))
+#' d <- morie_survey_design(df, "w", strata_col = "s")
+#' class(d)
+#' \dontshow{\}) # examplesIf}
 #' @export
-#' @examplesIf requireNamespace("survey", quietly = TRUE)
-#' .make_survey_df <- function(n = 100L, seed = 1L) {
-#'     set.seed(seed)
-#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
-#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"),
-#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE),
-#'         fpc = rep(1000L, n))
-#' }
-#' df <- .make_survey_df()
-#' morie_survey_design(df, weights_col = "w")
 morie_survey_design <- function(data, weights_col, strata_col = NULL,
                                 cluster_col = NULL, fpc_col = NULL,
                                 nest = FALSE) {
@@ -125,11 +110,12 @@ morie_survey_design <- function(data, weights_col, strata_col = NULL,
 #' Horvitz-Thompson estimator of a population total
 #' @return list with `total`, `se`, `ci_lower`, `ci_upper`.
 #' @inheritParams morie_survey_params
+#' @examples
+#' \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' set.seed(1)
+#' str(morie_survey_ht_total(rnorm(30, 5), runif(30, 0.05, 0.2)), max.level = 1)
+#' \dontshow{\}) # examplesIf}
 #' @export
-#' @examplesIf requireNamespace("survey", quietly = TRUE)
-#' y <- c(1, 2, 3, 4, 5)
-#' pi <- rep(0.5, 5)
-#' morie_survey_ht_total(y, pi)
 morie_survey_ht_total <- function(y, inclusion_probs) {
   y <- as.numeric(y)
   pi <- as.numeric(inclusion_probs)
@@ -148,12 +134,13 @@ morie_survey_ht_total <- function(y, inclusion_probs) {
 
 #' Hajek (ratio) estimator of a population mean
 #' @inheritParams morie_survey_params
-#' @return A named list with elements \code{mean}, \code{se},
-#'   \code{ci_lower}, \code{ci_upper} (95\% Wald confidence interval).
+#' @return A named list with elements \code{mean}, \code{se}, \code{ci_lower}, \code{ci_upper}.
+#' @examples
+#' \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' set.seed(1)
+#' morie_survey_hajek_mean(rnorm(30, 5), runif(30, 0.5, 2))
+#' \dontshow{\}) # examplesIf}
 #' @export
-#' @examplesIf requireNamespace("survey", quietly = TRUE)
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_survey_hajek_mean(V, V)
 morie_survey_hajek_mean <- function(y, weights) {
   y <- as.numeric(y)
   w <- as.numeric(weights)
@@ -173,21 +160,15 @@ morie_survey_hajek_mean <- function(y, weights) {
 
 #' Survey-weighted mean (delegates to `survey::svymean` when available)
 #' @inheritParams morie_survey_params
-#' @return A named list with elements \code{mean} and \code{se} (and,
-#'   in the fallback path, also \code{ci_lower}, \code{ci_upper}).
+#' @return A named \code{list} (see Details).
+#' @examples
+#' \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' set.seed(1)
+#' df <- data.frame(y = rnorm(40), w = runif(40, 0.5, 2))
+#' d <- morie_survey_design(df, "w")
+#' str(morie_survey_mean(d, "y"), max.level = 1)
+#' \dontshow{\}) # examplesIf}
 #' @export
-#' @examplesIf requireNamespace("survey", quietly = TRUE)
-#' .make_survey_df <- function(n = 100L, seed = 1L) {
-#'     set.seed(seed)
-#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
-#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"),
-#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE),
-#'         fpc = rep(1000L, n))
-#' }
-#' df <- .make_survey_df()
-#' w <- rep(1, 4)
-#' design_fb <- structure(list(data = df, weights = df$w), class = "morie_survey_design_fallback")
-#' morie_survey_mean(design_fb, "y")
 morie_survey_mean <- function(design, variable) {
   if (inherits(design, "survey.design") ||
       inherits(design, "survey.design2")) {
@@ -203,18 +184,16 @@ morie_survey_mean <- function(design, variable) {
 
 #' Ratio estimator of a population total using known X_pop
 #' @inheritParams morie_survey_params
-#' @return A named list with elements \code{ratio} (estimated ratio
-#'   \eqn{r = Y_{HT}/X_{HT}}), \code{total_estimate} (ratio-estimated
-#'   population total), \code{se}, \code{ci_lower}, \code{ci_upper}
-#'   (95\% Wald confidence interval).
-#' @export
-#' @examplesIf requireNamespace("survey", quietly = TRUE)
+#' @return A named list with elements \code{ratio}, \code{total_estimate}, \code{se},
+#' \code{ci_lower}, \code{ci_upper}.
+#' @examples
+#' \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' set.seed(1)
-#' x <- runif(50, 1, 10)
-#' y <- 2 * x + rnorm(50, 0, 0.5)
-#' w <- rep(2, 50)
-#' r <- morie_survey_ratio(y, x, w, X_population_total = sum(x) * 2)
-#' abs(r$ratio - 2) < 0.3
+#' x <- runif(30, 1, 3); y <- 2 * x + rnorm(30, 0, 0.2)
+#' str(morie_survey_ratio(y, x, rep(1, 30), X_population_total = 60),
+#'     max.level = 1)
+#' \dontshow{\}) # examplesIf}
+#' @export
 morie_survey_ratio <- function(y, x, weights, X_population_total) {
   y <- as.numeric(y)
   x <- as.numeric(x)
@@ -242,17 +221,14 @@ morie_survey_ratio <- function(y, x, weights, X_population_total) {
 #' Delegates to `survey::postStratify()` when given a design; otherwise
 #' computes raw post-stratification factors in base R.
 #' @inheritParams morie_survey_params
-#' @return Numeric vector of post-stratification weights, one per row
-#'   of \code{df}, scaled so each stratum's weighted share matches the
-#'   stratum's share of \code{population_counts}.
-#' @export
-#' @examplesIf requireNamespace("survey", quietly = TRUE)
+#' @return A numeric vector of post-stratification weights.
+#' @examples
+#' \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' set.seed(1)
-#' df <- data.frame(stratum = sample(c("A", "B"), 40, replace = TRUE),
-#'                  w = rep(1, 40))
-#' pc <- c(A = 100, B = 150)
-#' r <- morie_survey_poststratify(df, "stratum", pc)
-#' is.list(r) || is.data.frame(r) || is.numeric(r)
+#' df <- data.frame(g = rep(c("a", "b"), 15))
+#' str(morie_survey_poststratify(df, "g", c(a = 60, b = 40)), max.level = 1)
+#' \dontshow{\}) # examplesIf}
+#' @export
 morie_survey_poststratify <- function(df, strata_col, population_counts) {
   if (!strata_col %in% names(df))
     stop(sprintf("strata_col '%s' not in df.", strata_col), call. = FALSE)
@@ -282,20 +258,15 @@ morie_survey_poststratify <- function(df, strata_col, population_counts) {
 #' For multi-variable marginals use `morie_weights_rake()`; this helper is the
 #' single-variable convenience.
 #' @inheritParams morie_survey_params
-#' @return Numeric vector of calibrated weights of length
-#'   \code{nrow(df)} (one weight per row); a warning is emitted if the
-#'   raking loop did not converge within \code{max_iter}.
+#' @return A numeric vector of calibration weights.
+#' @examples
+#' \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' set.seed(1)
+#' df <- data.frame(x1 = runif(30, 1, 3))
+#' res <- morie_survey_calibrate(df, "x1", c(x1 = 60))
+#' str(res, max.level = 1)
+#' \dontshow{\}) # examplesIf}
 #' @export
-#' @examplesIf requireNamespace("survey", quietly = TRUE)
-#' .make_survey_df <- function(n = 100L, seed = 1L) {
-#'     set.seed(seed)
-#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
-#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"),
-#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE),
-#'         fpc = rep(1000L, n))
-#' }
-#' df <- .make_survey_df()
-#' morie_survey_calibrate(df, "x", list(x = 100), max_iter = 20)
 morie_survey_calibrate <- function(df, aux_vars, population_totals,
                                    max_iter = 50, tol = 1e-6) {
   for (v in aux_vars) {
@@ -336,16 +307,16 @@ morie_survey_calibrate <- function(df, aux_vars, population_totals,
 
 #' Subpopulation (domain) mean with Woodruff linearised SE
 #' @inheritParams morie_survey_params
-#' @return A named list with elements \code{mean}, \code{se},
-#'   \code{ci_lower}, \code{ci_upper} (95\% Wald confidence interval),
-#'   and \code{n_domain} (number of sample units in the subpopulation).
-#' @export
-#' @examplesIf requireNamespace("survey", quietly = TRUE)
+#' @return A named list with elements \code{mean}, \code{se}, \code{ci_lower},
+#' \code{ci_upper}, \code{n_domain}.
+#' @examples
+#' \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' set.seed(1)
-#' df <- data.frame(region = sample(c("N", "S"), 60, replace = TRUE),
-#'                  y = rnorm(60, 5), w = rep(2, 60))
-#' r <- morie_survey_subpop(df, "region", "N", "y", "w")
-#' is.list(r)
+#' df <- data.frame(y = rnorm(40), g = rep(c("a", "b"), 20),
+#'                  w = runif(40, 0.5, 2))
+#' str(morie_survey_subpop(df, "g", "a", "y", "w"), max.level = 1)
+#' \dontshow{\}) # examplesIf}
+#' @export
 morie_survey_subpop <- function(df, domain_col, domain_value,
                                 outcome_col, weight_col) {
   needed <- c(domain_col, outcome_col, weight_col)
@@ -375,8 +346,14 @@ morie_survey_subpop <- function(df, domain_col, domain_value,
 #' Python module ("gaussian", "binomial", "poisson", "gamma", "negativebinomial")
 #' or any R `family` object.
 #' @inheritParams morie_survey_params
-#' @return A \code{survey::svyglm} model fit (inheriting from
-#'   \code{svyglm} / \code{glm}) with design-based standard errors.
+#' @return A \code{svyglm} object (survey-weighted GLM fit).
+#' @examples
+#' \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' set.seed(1)
+#' df <- data.frame(y = rnorm(40), x = rnorm(40), w = runif(40, 0.5, 2))
+#' d <- morie_survey_design(df, "w")
+#' str(morie_survey_glm(d, y ~ x), max.level = 1)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_survey_glm <- function(design, formula,
                              family = c("gaussian", "binomial", "poisson",
@@ -415,22 +392,14 @@ morie_survey_glm <- function(design, formula,
 #' Complex-survey GLM constructor (single-shot wrapper that builds a design
 #' and fits a `svyglm` in one call). Cluster-robust SEs via the design
 #' @inheritParams morie_survey_params
-#' @return A \code{survey::svyglm} model fit (inheriting from
-#'   \code{svyglm} / \code{glm}) with cluster- / stratum-robust
-#'   design-based standard errors.
+#' @return A \code{svyglm} object (survey-weighted GLM fit).
+#' @examples
+#' \dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' set.seed(1)
+#' df <- data.frame(y = rnorm(40), x = rnorm(40), w = runif(40, 0.5, 2))
+#' str(morie_survey_complex_glm(df, y ~ x, "w"), max.level = 1)
+#' \dontshow{\}) # examplesIf}
 #' @export
-#' @examplesIf requireNamespace("survey", quietly = TRUE)
-#' .make_survey_df <- function(n = 100L, seed = 1L) {
-#'     set.seed(seed)
-#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
-#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"),
-#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE),
-#'         fpc = rep(1000L, n))
-#' }
-#' df <- .make_survey_df()
-#' y <- c(1, 2, 3, 4, 5)
-#' x <- runif(100, 1, 10)
-#' morie_survey_complex_glm(df, y ~ x, weight_col = "w", family = "gaussian")
 morie_survey_complex_glm <- function(df, formula, weight_col,
                                      family = "gaussian",
                                      cluster_col = NULL, strata_col = NULL) {

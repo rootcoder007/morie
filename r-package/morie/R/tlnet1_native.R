@@ -150,6 +150,11 @@
 #' @param values See Usage.
 #' @param friends See Usage.
 #' @param kind See Usage.
+#' @return The value of `out`, as built in the body.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::friend_summary(V, V)
+#' @keywords internal
 friend_summary <- function(values, friends, kind = "fraction") {
   v <- .tlnet1_vec(values)
   N <- length(v)
@@ -181,6 +186,11 @@ friend_summary <- function(values, friends, kind = "fraction") {
 #' flows somewhere the model does not represent.
 #' @param friends See Usage.
 #' @param N See Usage.
+#' @return A list with `max_degree`, `max_share`, `sparse`, `asymmetric_edges`, `symmetric`, `note`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::check_network_assumption(V)
+#' @keywords internal
 check_network_assumption <- function(friends, N = NULL) {
   n <- if (is.null(N)) length(friends) else as.integer(N)
   deg <- sapply(seq_along(friends),
@@ -219,6 +229,8 @@ check_network_assumption <- function(friends, N = NULL) {
 #' @param own_prob See Usage.
 #' @param seed See Usage.
 #' @param draws See Usage.
+#' @keywords internal
+#' @return A list with `psi`, `policy_prob`, `draws`, `N`.
 policy_mean <- function(Q_fn, W, friends, own_prob, seed = 0, draws = 200) {
   rows <- .tlnet1_mat(W)
   N <- length(rows)
@@ -256,6 +268,8 @@ policy_mean <- function(Q_fn, W, friends, own_prob, seed = 0, draws = 200) {
 #' @param p_low See Usage.
 #' @param seed See Usage.
 #' @param draws See Usage.
+#' @keywords internal
+#' @return A list with `estimate`, `direct`, `spillover`, `total`, `method`, `note`.
 decompose_effects <- function(Q_fn, W, friends, p_high = 1.0, p_low = 0.0,
                               seed = 0, draws = 200) {
   rows <- .tlnet1_mat(W)
@@ -293,6 +307,11 @@ decompose_effects <- function(Q_fn, W, friends, p_high = 1.0, p_low = 0.0,
 #' Variance with covariance along edges only
 #' @param ic See Usage.
 #' @param friends See Usage.
+#' @return A list with `se`, `se_independent`, `edges_counted`, `note`.
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::network_influence_variance(V, V)
+#' @keywords internal
 network_influence_variance <- function(ic, friends) {
   v <- .tlnet1_vec(ic)
   N <- length(v)

@@ -21,6 +21,14 @@ morie_geron_random_subspaces(
 
 \item{n_estimators, max_features, seed, task}{Controls.}
 }
+\value{
+A list with \code{predict}, \code{train_pred}, \code{train_mse}, \code{feature_sets}, \code{feature_usage}, \code{estimators}, \code{max_features}, \code{task}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Random subspaces: feature bagging without row subsampling (Geron Ch 6, hmrsp)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_random_subspaces(V, V)
+}
+\keyword{internal}

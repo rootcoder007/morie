@@ -6,6 +6,8 @@
 \title{Draw a Polya urn sequence of cluster labels}
 \usage{
 morie_posspr(n, alpha, seed = 0)
+
+sample_urn(n, alpha, seed = 0)
 }
 \arguments{
 \item{n}{Number of draws, at least 1.}
@@ -27,7 +29,11 @@ positive probability, which is what makes the DP a
 clustering prior at all, and why a DP mixture (not a DP) is
 used for continuous data.
 }
+\examples{
+morie_posspr(n = 5L, alpha = 0.5)
+}
 \references{
 Muller, P. & Quintana, F. A. (2004). Statistical
 Science, 19(1), 95-110.
 }
+\keyword{internal}

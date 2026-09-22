@@ -30,7 +30,8 @@ var(y_bar_st) = sum_h W_h^2 s_h^2 / n_h.
 Python parity: \code{morie.fn.strat.stratified_mean}.
 }
 \examples{
-D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-strat(D)
+set.seed(1)
+df <- data.frame(y = rnorm(100), stratum = rep(c("a", "b"), each = 50))
+morie_stratified_sampling(df, y = "y", strata = "stratum")
 }
 \keyword{internal}

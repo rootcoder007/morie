@@ -9,13 +9,18 @@ purity_completeness(bins, truth)
 \arguments{
 \item{bins}{See Usage.}
 
-\item{truth}{Coerced to character by the body, with \code{as.character}.}
+\item{truth}{Passed to \code{unlist}.}
 }
 \value{
 A list with \code{per_bin}, \code{mean_purity}, \code{mean_completeness}, \code{note}.
 }
 \description{
-A step of the metabd_native implementation. No other function in the package calls it.
+A step of the metabd_native implementation. Called by \code{morie_metabd}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+purity_completeness(V, V)
+}
+\keyword{internal}

@@ -27,6 +27,10 @@ one by convention). The Python arm does not validate
 shape/scale here; invalid values propagate as arithmetic errors
 and we mirror that.
 }
+\examples{
+morie_survvae_log_survival(t = 5L, shape = c(1, 2, 3, 4, 5, 6, 7, 8), scale = TRUE)
+}
 \references{
 Nagpal et al. (2021), Sec. III.
 }
+\keyword{internal}

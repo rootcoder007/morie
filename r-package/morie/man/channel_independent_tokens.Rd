@@ -2,12 +2,12 @@
 % Please edit documentation in R/patchT_native.R
 \name{channel_independent_tokens}
 \alias{channel_independent_tokens}
-\title{One token stream per channel, weights shared across channels}
+\title{channel_independent_tokens}
 \usage{
 channel_independent_tokens(X, patch_len, stride = NULL)
 }
 \arguments{
-\item{X}{A matrix; passed to \code{as.matrix}.}
+\item{X}{Passed to \code{.patcht_mat}.}
 
 \item{patch_len}{Coerced to integer by the body, with \code{as.integer}.}
 
@@ -18,7 +18,11 @@ A list with \code{tokens}, \code{D}, \code{n_patches}, \code{patch_len},
 \code{n_tokens_total}, \code{design}, \code{note}.
 }
 \description{
-Nothing is mixed across channels, so the channel identity survives --
-and because the downstream weights are shared, the whole model is
-equivariant to permuting them.
+A step of the patchT_native implementation. Called by \code{patchtst_encode}.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+channel_independent_tokens(X = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+}
+\keyword{internal}

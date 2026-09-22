@@ -11,6 +11,13 @@ morie_evt_return_level(mu, sigma, xi, T)
 
 \item{T}{return period (> 1)}
 }
+\value{
+The value of \code{morie_evt_gev_quantile}.
+}
 \description{
 GEV T-period return level (Coles 2001 eq. 3.4/3.10)
 }
+\examples{
+morie_evt_return_level(5, 1.5, 0.1, 100)
+}
+\keyword{internal}

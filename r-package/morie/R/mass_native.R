@@ -88,6 +88,7 @@ morie_mvrnorm <- function(n = 1, mu, Sigma, tol = 1e-6,
   dimnames(X) <- list(nm, NULL)
   if (n == 1) drop(X) else t(X)
 }
+
 # --- Module 31: negative-binomial GLM + 2-D KDE (native MASS) ---------
 
 # Normal-reference bandwidth (reproduces MASS::bandwidth.nrd).
@@ -306,7 +307,19 @@ morie_glm_nb <- function(formula, data, weights, init.theta = NULL,
 #' @param object A \code{negbin} object.
 #' @param dispersion A \code{negbin} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `s`, as built in the body.
+#' @examples
+#' set.seed(1)
+#' x <- rnorm(60)
+#' y <- rpois(60, exp(0.4 + 0.3 * x))
+#' fit <- suppressWarnings(morie_glm_nb(y ~ x, data = data.frame(y, x)))
+#' s <- summary(fit)
+#' !is.null(s$theta)
+#' @references
+#'   Venables, W. N., & Ripley, B. D. (2002). \emph{Modern
+#'   Applied Statistics with S}. Springer.
 #' @exportS3Method stats::summary negbin
+#' @keywords internal
 summary.negbin <- function(object, dispersion = 1, ...) {
   s <- stats::summary.glm(object, dispersion = dispersion, ...)
   s$theta <- object$theta
@@ -318,7 +331,17 @@ summary.negbin <- function(object, dispersion = 1, ...) {
 #'
 #' @param object A \code{negbin} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `val`, as built in the body.
+#' @examples
+#' if (requireNamespace("MASS", quietly = TRUE)) {
+#'   D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#'   morie:::logLik.negbin(D)
+#' }
+#' @references
+#'   Venables, W. N., & Ripley, B. D. (2002). \emph{Modern
+#'   Applied Statistics with S}. Springer.
 #' @exportS3Method stats::logLik negbin
+#' @keywords internal
 logLik.negbin <- function(object, ...) {
   val <- object$twologlik / 2
   attr(val, "df") <- object$rank + 1L
@@ -340,7 +363,10 @@ logLik.negbin <- function(object, ...) {
 #' @param k Huber tuning constant (default 1.345).
 #' @param maxit Max IRLS iterations.
 #' @param acc Convergence tolerance on the residual change.
-#' @param add_intercept See Usage.
+#' @param add_intercept When the second argument is a design
+#'   matrix rather than a data frame, prepend an intercept column.
+#'   Ignored for the formula interface, where the model frame
+#'   already carries one.
 #' @return A \code{morie_rlm} object.
 #' @references Venables, W. N., & Ripley, B. D. (2002). \emph{Modern
 #'   Applied Statistics with S}. Springer.
@@ -382,10 +408,14 @@ morie_rlm <- function(formula, data, k = 1.345, maxit = 20L,
                  # MASS `w`: the psi weights at the final scale
                  weights = psi(as.numeric(cp$resid) / cp$scale),
                  converged = isTRUE(cp$converged), k2 = k,
+                 # MASS returns the scale from the START of the final
+                 # IRLS iteration, so it does NOT equal
+                 # median(abs(residuals))/0.6745 -- measured relative gap
+                 # ~7e-5 against MASS itself.  `scale` keeps the MASS
+                 # convention because that is this function's contract;
+                 # `scale_final` is the value consistent with the
+                 # residuals actually returned, for callers who want it.
                  scale = cp$scale,
-                 # `scale_final` is the value consistent with the residuals
-                 # actually returned (MASS keeps the scale from the START of
-                 # the final IRLS iteration; see `scale`).
                  scale_final = {
                    m0 <- stats::median(abs(as.numeric(cp$resid)))
                    if (m0 > 0) m0 / 0.6745 else 0
@@ -401,7 +431,20 @@ morie_rlm <- function(formula, data, k = 1.345, maxit = 20L,
 #'
 #' @param object A \code{morie_rlm} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return A list with `coefficients`, `s`, `stddev`.
+#' @examples
+#' set.seed(1)
+#' x <- rnorm(50)
+#' y <- 1 + 2 * x + rnorm(50, 0, 0.5)
+#' y[50] <- 40
+#' fit <- morie_rlm(y ~ x, data = data.frame(y, x))
+#' s <- summary(fit)
+#' nrow(s$coefficients) >= 2L
+#' @references
+#'   Venables, W. N., & Ripley, B. D. (2002). \emph{Modern
+#'   Applied Statistics with S}. Springer.
 #' @exportS3Method stats::summary morie_rlm
+#' @keywords internal
 summary.morie_rlm <- function(object, ...) {
   s <- object$s
   coef <- object$coefficients
@@ -531,7 +574,21 @@ morie_polr <- function(formula, data, weights, method = "logistic") {
 #'
 #' @param object A \code{morie_polr} object.
 #' @param ... Ignored; accepted for S3 consistency.
+#' @return The value of `val`, as built in the body.
+#' @examples
+#' if (requireNamespace("MASS", quietly = TRUE)) {
+#'   set.seed(1)
+#'   x <- rnorm(80)
+#'   y <- factor(cut(1.5 * x + rnorm(80), 3), ordered = TRUE)
+#'   fit <- morie_polr(y ~ x, data = data.frame(y, x))
+#'   ll <- logLik(fit)
+#'   inherits(ll, "logLik")
+#' }
+#' @references
+#'   Venables, W. N., & Ripley, B. D. (2002). \emph{Modern
+#'   Applied Statistics with S}. Springer.
 #' @exportS3Method stats::logLik morie_polr
+#' @keywords internal
 logLik.morie_polr <- function(object, ...) {
   val <- -object$deviance / 2
   attr(val, "df") <- object$edf

@@ -39,6 +39,10 @@ level, forecast at several and combine, which removes the
 level-selection decision and is more robust than any single level
 chosen in advance.
 }
+\examples{
+temporal_combination(y = c(1, 2, 3, 4, 5, 6, 7, 8), levels = factor(c("lo", "hi", "lo", "hi")))
+}
 \references{
 Petropoulos, F. & Kourentzes, N. (2015).
 }
+\keyword{internal}

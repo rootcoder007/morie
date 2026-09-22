@@ -45,6 +45,26 @@ list role -> c(open, close).}
 
 \item{template}{Format string with \code{{instruction}} and \code{{input}}.}
 }
+\value{
+A list with \code{chunks}, \code{n_chunks}, \code{max_chunk_length}, \code{overlap}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 Recursive chunking, buffer memory, templates (Alammar Ch 6-12)
 }
+\examples{
+morie_alammar_recursive_chunking(text = 5L)
+morie_alammar_conversation_buffer_memory(
+  conversation = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), N = 5L)
+morie_alammar_chat_template(list(c("user", "hi")), list(user = c("<u>",
+    "</u>")))
+set.seed(1)
+Qh <- lapply(1:4, function(i) matrix(stats::rnorm(6), 3, 2))
+Ks <- matrix(stats::rnorm(6), 3, 2)
+Vs <- matrix(stats::rnorm(6), 3, 2)
+morie_alammar_grouped_query_attention(Qh, list(Ks), list(Vs),
+    4, 1)
+morie_alammar_chosen_rejected_template(prompts = Ks, chosen = Vs, rejected = Ks)
+morie_alammar_instruction_data_template(list(list(instruction = "add",
+    input = "2 2", output = "four")))
+}
+\keyword{internal}

@@ -19,3 +19,8 @@ A list with \code{theta}, \code{den}.
 \description{
 residualized treatment has no weighted variation left.
 }
+\examples{
+orthogonal_moment(y_res = c(1, 2, 3, 4, 5, 6, 7, 8), t_res = c(1, 2, 3, 4, 5, 6, 7, 8),
+  weights = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

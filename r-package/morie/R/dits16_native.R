@@ -15,6 +15,9 @@
 #' @param patch      integer, patch side p; p must divide I.
 #' @return list with tokens, grid, patch, latent_size, note.
 #' @export
+#' @examples
+#' patch_grid(latent_size = 5L, patch = 5L)
+#' @keywords internal
 patch_grid <- function(latent_size, patch) {
   I <- as.integer(latent_size)
   p <- as.integer(patch)
@@ -31,7 +34,7 @@ patch_grid <- function(latent_size, patch) {
 
 #' Forward-pass Gflops for a DiT stack
 #'
-#' attention: 4*T*d^2 + 2*T^2*d. mlp: 2*mlp_ratio*T*d^2. Per block
+#' attention: 4&#42;T&#42;d^2 + 2&#42;T^2&#42;d. mlp: 2&#42;mlp_ratio&#42;T*d^2. Per block
 #' doubled (multiply-adds), scaled by depth L, in Gflops.
 #'
 #' @param tokens    integer T, number of tokens.
@@ -40,6 +43,9 @@ patch_grid <- function(latent_size, patch) {
 #' @param mlp_ratio numeric, MLP hidden expansion (default 4.0).
 #' @return list with gflops, tokens, depth, width, attention_share, note.
 #' @export
+#' @examples
+#' gflops(tokens = c(1, 2, 3, 4, 5, 6, 7, 8), depth = c(1, 2, 3, 4, 5, 6, 7, 8), width = 5L)
+#' @keywords internal
 gflops <- function(tokens, depth, width, mlp_ratio = 4.0) {
   T <- as.integer(tokens)
   L <- as.integer(depth)
@@ -86,6 +92,11 @@ gflops <- function(tokens, depth, width, mlp_ratio = 4.0) {
 #' @param eps     numeric, variance epsilon.
 #' @return list with modulated, gate, identity_at_init, note.
 #' @export
+#' @examples
+#' adaln_zero(cond = c(1, 2, 3, 4, 5, 6, 7, 8), hidden = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   W_scale = c(1, 2, 3, 4, 5, 6, 7, 8), W_shift = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   W_alpha = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 adaln_zero <- function(cond, hidden, W_scale, W_shift, W_alpha,
                        eps = 1e-6) {
   c <- .dits16_vec(cond)
@@ -131,6 +142,7 @@ adaln_zero <- function(cond, hidden, W_scale, W_shift, W_alpha,
 #' @param W_alpha2  d x |cond| matrix, second adaLN alpha (zero init).
 #' @return list with output, identity_at_init.
 #' @export
+#' @keywords internal
 dit_block <- function(hidden, cond, attn_fn, mlp_fn,
                       W_scale, W_shift, W_alpha,
                       W_scale2, W_shift2, W_alpha2) {
@@ -155,6 +167,11 @@ dit_block <- function(hidden, cond, attn_fn, mlp_fn,
 #' @param configs list of 5-tuples (name, latent, patch, depth, width).
 #' @return list with ranked entries and a note.
 #' @export
+#' @examples
+#' configs <- list(list("small", 224, 16, 6, 384),
+#'                 list("base", 224, 16, 12, 768))
+#' scaling_comparison(configs)
+#' @keywords internal
 scaling_comparison <- function(configs) {
   out <- list()
   for (cfg in configs) {

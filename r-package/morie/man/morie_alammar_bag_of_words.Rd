@@ -29,6 +29,21 @@ exclusive, matching the Python mirror.}
 
 \item{vocab_a, vocab_b}{Token vocabularies.}
 }
+\value{
+A list with \code{bow_vector}, \code{oov_count}, \code{estimate}, \code{vocab_size}, \code{n}, \code{method}.
+}
 \description{
 BoW, c-TF-IDF, BIO tagging, vocabulary overlap (Alammar Ch 1-5)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_bag_of_words(V, V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_c_tfidf(V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_alammar_bio_tagging(V, D)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_tokenizer_vocab_overlap(V, V)
+}
+\keyword{internal}

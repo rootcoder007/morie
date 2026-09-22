@@ -31,3 +31,7 @@ answer.  Starting centroids are the first k distinct patterns, so the
 result is reproducible; random starts would return different
 clusterings from the same call.
 }
+\examples{
+KMeans(X = c(1, 2, 3, 4, 5, 6, 7, 8), k = 5L)
+}
+\keyword{internal}

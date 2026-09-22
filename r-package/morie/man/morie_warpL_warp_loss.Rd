@@ -31,3 +31,10 @@ A step of the warpL_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+r <- morie_warpL_warp_loss(score_positive = rnorm(10), score_negative = rnorm(10),
+  estimated_rank = 8L, alphas = 0.5)
+TRUE
+}
+\keyword{internal}

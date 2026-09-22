@@ -15,3 +15,9 @@ The value of \code{out}, as built in the body.
 \description{
 indices. The empty position is integer(0).
 }
+\examples{
+x <- morie_unifAlg_var("x")
+t <- morie_unifAlg_app("plus", morie_unifAlg_const("0"), x)
+morie_trmRew_positions(t)
+}
+\keyword{internal}

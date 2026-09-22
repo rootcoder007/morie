@@ -19,3 +19,12 @@ A step of the hybRC_native implementation. No other function in the package call
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+if (requireNamespace("ranger", quietly = TRUE)) {
+  base <- function(data) rowMeans(data)
+  consumer <- function(feat) list(score = mean(feat))
+  r <- feature_augmentation(base(matrix(1:6, 3, 2)), consumer)
+  str(r, max.level = 1)
+}
+}
+\keyword{internal}

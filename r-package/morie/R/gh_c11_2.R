@@ -10,7 +10,7 @@
 #' zeroing the rest, so the first term is a finite sum; the small-ball
 #' probability is estimated on the l2 norm by Monte Carlo.
 #'
-#' Formula: ||h||_H^2 = sum_\{i kept\} f0_i^2 / lambda_i;
+#' Formula: ||h||&#95;H^2 = sum&#95;\{i kept\} f0_i^2 / lambda_i;
 #'   small-ball exponent = -log P(sqrt(sum_i lambda_i Z_i^2) < eps).
 #'
 #' @param f0_coefs Coefficients of the target w0.
@@ -24,8 +24,7 @@
 #'   Nonparametric Bayesian Inference, CUP, eq. (11.11).
 #' @export
 #' @examples
-#' Ghosalrkhsnorm(f0_coefs = c(1, 2, 3, 4, 5, 6, 7, 8), lambdas = c(1, 2, 3, 4, 5, 6, 7,
-#' 8), eps = 0.5)
+#' Ghosalrkhsnorm(f0_coefs = c(1, 2, 3, 4, 5, 6, 7, 8), lambdas = c(1, 2, 3, 4, 5, 6, 7, 8), eps = 0.5)
 Ghosalrkhsnorm <- function(f0_coefs, lambdas, eps, n_sim = 3000,
                            seed = 42) {
   f0 <- as.numeric(f0_coefs)

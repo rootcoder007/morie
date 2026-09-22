@@ -23,7 +23,11 @@ Computes \code{alpha_eps} at level \code{m} under a stated rule.
 continuity of the limit; \code{"constant"} reproduces the
 DP-like, atomic behaviour; \code{"linear"} sits between them.
 }
+\examples{
+poltrx_level_parameters(level = 1)
+}
 \references{
 Muller, P. & Quintana, F. A. (2004). Nonparametric
 Bayesian Data Analysis. Statistical Science, 19(1), 95-110.
 }
+\keyword{internal}

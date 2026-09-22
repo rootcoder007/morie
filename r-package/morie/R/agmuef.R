@@ -25,8 +25,9 @@ Mzpuct <- function(Q, N, P, c1 = 1.25, c2 = 19652, qmin = NULL,
   N <- .t1_vec(N)
   P <- .t1_vec(P)
   k <- length(Q)
-  if (length(N) != k || length(P) != k)
+  if (length(N) != k || length(P) != k) {
     stop("Q, N and P must have the same length")
+  }
   if (any(N < 0)) stop("visit counts must be non-negative")
   lo <- if (is.null(qmin)) min(Q) else as.numeric(qmin)
   hi <- if (is.null(qmax)) max(Q) else as.numeric(qmax)
@@ -36,7 +37,9 @@ Mzpuct <- function(Q, N, P, c1 = 1.25, c2 = 19652, qmin = NULL,
   u <- as.numeric(c1) + log((sn + as.numeric(c2) + 1) / as.numeric(c2))
   ex <- P * sqrt(sn) / (1 + N) * u
   sc <- qb + ex
-  .t1_result(score = sc, qbar = qb, exploration = ex,
-             best = which.max(sc) - 1L, sumn = sn, k = k,
-             method = "MuZero pUCT selection (Schrittwieser et al. 2020 eq. 2)")
+  .t1_result(
+    score = sc, qbar = qb, exploration = ex,
+    best = which.max(sc) - 1L, sumn = sn, k = k,
+    method = "MuZero pUCT selection (Schrittwieser et al. 2020 eq. 2)"
+  )
 }

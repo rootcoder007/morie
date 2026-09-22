@@ -61,3 +61,10 @@ A step of the birl_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+T <- list(list(c(0.9, 0.1), c(0.2, 0.8)), list(c(0.5, 0.5), c(0.1, 0.9)))
+obs <- list(c(1L, 1L), c(2L, 2L), c(1L, 1L))
+r <- birl(T, obs, gamma = 0.9, n_iter = 100, seed = 1)
+str(r, max.level = 1)
+}
+\keyword{internal}

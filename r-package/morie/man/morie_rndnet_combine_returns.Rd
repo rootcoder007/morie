@@ -31,3 +31,8 @@ A list with \code{estimate}, \code{return_ext}, \code{return_int},
 stream is episodic (truncated at each \code{done}), the intrinsic stream
 is non-episodic.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_rndnet_combine_returns(V, V)
+}
+\keyword{internal}

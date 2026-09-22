@@ -19,3 +19,7 @@ A list with \code{w}, \code{residual}, \code{max_residual}, \code{order},
 error are orthogonal, and so are the output and the error -- the
 orthogonality principle, which is what makes the solution optimal.
 }
+\examples{
+WienerHopf(phi = 0.5, theta = 0.5)
+}
+\keyword{internal}

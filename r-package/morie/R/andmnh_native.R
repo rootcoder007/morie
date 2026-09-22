@@ -1,297 +1,432 @@
-# VAR prewhitened kernel HAC covariance estimator.
-# Sources: Andrews, D. W. K. & Monahan, J. C. (1992) "An Improved
+# andmnh -- VAR prewhitened kernel HAC covariance matrix estimation
+# Andrews, D. W. K., & Monahan, J. C. (1992) "An Improved
 # Heteroskedasticity and Autocorrelation Consistent Covariance Matrix
-# Estimator", Econometrica 60(4), 953-966 -- eq. 2.2 (the VAR sponge
-# for temporal dependence), eq. 2.3 (the kernel estimator on the
-# residuals with the T/(T-l) correction), eq. 2.4 (the recolouring
-# with D = (I - sum A_r)^{-1}), and the SVD cap of footnote 4 that
-# keeps every eigenvalue of I - sum A_r at least 1 - cap from zero.
-# Andrews, D. W. K. (1991) "Heteroskedasticity and Autocorrelation
-# Consistent Covariance Matrix Estimation", Econometrica 59(3),
-# 817-858 -- eq. 6.1 (the automatic bandwidth with the AR(1) plug-in)
-# and eq. 6.4 (alpha(q) from p univariate AR(1) fits). Bartlett (1950),
-# Parzen (1957), Newey & West (1987), Blackman & Tukey (1958) are the
-# kernel references; their (q, k_q, int k^2) constants are recomputed
-# from the kernel functions rather than transcribed.
-#
-# Native implementation mirroring morie.fn.andmnh exactly. No random
-# draws are made; the function is fully deterministic.
+# Estimator", Econometrica 60(4), 953-966.
+# Base R only.
 
-.EIGENVALUE_CAP <- 0.97
+# --------------------------------------------------------------------------
+# Kernels
+# --------------------------------------------------------------------------
 
-#' Bartlett (triangular) kernel
-#' @param x See Usage.
+#' bartlett_kernel
+#'
+#' A step of the andmnh_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x Coerced to numeric by the body, with \code{as.numeric}.
+#' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' bartlett_kernel(x = 5L)
+#' @keywords internal
 bartlett_kernel <- function(x) {
   ax <- abs(as.numeric(x))
   if (ax <= 1) 1 - ax else 0
 }
 
-#' Parzen kernel
-#' @param x See Usage.
+#' parzen_kernel
+#'
+#' A step of the andmnh_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x Coerced to numeric by the body, with \code{as.numeric}.
+#' @return A numeric value.
 #' @export
+#' @examples
+#' parzen_kernel(x = 5L)
+#' @keywords internal
 parzen_kernel <- function(x) {
   ax <- abs(as.numeric(x))
   if (ax <= 0.5) {
-    return(1 - 6 * ax * ax + 6 * ax^3)
-  }
-  if (ax <= 1) {
+    return(1 - 6 * ax^2 + 6 * ax^3)
+  } else if (ax <= 1) {
     return(2 * (1 - ax)^3)
   }
   0
 }
 
-#' Quadratic spectral kernel
-#' @param x See Usage.
+#' quadratic_spectral_kernel
+#'
+#' A step of the andmnh_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x Numeric; combined arithmetically in the body.
+#' @return A numeric value.
 #' @export
+#' @examples
+#' quadratic_spectral_kernel(x = 5L)
+#' @keywords internal
 quadratic_spectral_kernel <- function(x) {
   x <- as.numeric(x)
   if (x == 0) {
     return(1)
   }
   z <- 6 * pi * x / 5
-  25 / (12 * pi^2 * x * x) * (sin(z) / z - cos(z))
+  (25 / (12 * pi^2 * x^2)) * (sin(z) / z - cos(z))
 }
 
-#' Tukey-Hanning kernel
-#' @param x See Usage.
+#' tukey_hanning_kernel
+#'
+#' A step of the andmnh_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x Coerced to numeric by the body, with \code{as.numeric}.
+#' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' tukey_hanning_kernel(x = 5L)
+#' @keywords internal
 tukey_hanning_kernel <- function(x) {
   ax <- abs(as.numeric(x))
   if (ax <= 1) 0.5 * (1 + cos(pi * ax)) else 0
 }
 
-.MORIE_KERNELS <- list(
+# name -> (q, k_q, integral of k^2, has bounded support)
+.KERNEL_CONSTANTS <- list(
+  bartlett = c(1, 1, 2 / 3, TRUE),
+  parzen = c(2, 6, 0.539285, TRUE),
+  qs = c(2, 1.421223, 1, FALSE),
+  `tukey-hanning` = c(2, pi^2 / 4, 0.75, TRUE)
+)
+
+.KERNELS <- list(
   bartlett = bartlett_kernel,
   parzen = parzen_kernel,
   qs = quadratic_spectral_kernel,
-  "tukey-hanning" = tukey_hanning_kernel
-)
-.MORIE_KERNEL_CONSTANTS <- list(
-  bartlett = c(1, 1.0, 2 / 3, 1),
-  parzen = c(2, 6.0, 0.539285, 1),
-  qs = c(2, 1.421223, 1.0, 0),
-  "tukey-hanning" = c(2, pi^2 / 4, 0.75, 1)
+  `tukey-hanning` = tukey_hanning_kernel
 )
 
-#' .morie_check_kernel
+#' .check_kernel
 #'
 #' A step of the andmnh_native implementation. Called by \code{automatic_bandwidth},
 #' \code{kernel_hac}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param kernel Passed to \code{\%in\%}.
-#' @return A list with \code{fn}, \code{const}.
+#' @param kernel Carried through into a list the body builds.
+#' @return A list with \code{fun}, \code{const}, \code{name}.
 #' @export
-.morie_check_kernel <- function(kernel) {
-  if (!(kernel %in% names(.MORIE_KERNELS))) {
-    stop(
-      "andmnh: kernel must be one of ",
-      paste(names(.MORIE_KERNELS), collapse = ", ")
-    )
+.check_kernel <- function(kernel) {
+  if (!(kernel %in% names(.KERNELS))) {
+    stop(sprintf(
+      "andmnh: kernel must be one of %s, got %s",
+      paste(names(.KERNELS), collapse = ", "), kernel
+    ))
   }
   list(
-    fn = .MORIE_KERNELS[[kernel]],
-    const = .MORIE_KERNEL_CONSTANTS[[kernel]]
+    fun = .KERNELS[[kernel]], const = .KERNEL_CONSTANTS[[kernel]],
+    name = kernel
   )
 }
 
-#' Section 3 moment vectors
-#' @param e See Usage.
-#' @param X See Usage.
-#' @export
-moment_vectors <- function(e, X) {
-  e <- as.numeric(e)
-  rows <- as.matrix(X)
-  storage.mode(rows) <- "double"
-  if (length(e) != nrow(rows)) {
-    stop("andmnh: length(e) must match nrow(X)")
-  }
-  if (nrow(rows) == 0L) stop("andmnh: no observations")
-  p <- ncol(rows)
-  out <- matrix(0, nrow(rows), p)
-  for (t in seq_len(nrow(rows))) {
-    for (j in seq_len(p)) out[t, j] <- rows[t, j] * e[t]
-  }
-  out
-}
+# --------------------------------------------------------------------------
+# moment vectors
+# --------------------------------------------------------------------------
 
-#' .morie_svd
+#' moment_vectors
 #'
-#' A step of the andmnh_native implementation. Called by \code{prewhiten_var},
-#' \code{singular_value_adjust}.
+#' A step of the andmnh_native implementation. Called by \code{andrews_monahan_hac}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param a A matrix; passed to \code{nrow}.
-#' @return A list with \code{u}, \code{s}, \code{vt}.
+#' @param e A vector; its length is taken.
+#' @param X A matrix; passed to \code{nrow}.
+#' @return The value of \code{V}, as built in the body.
+#' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' moment_vectors(V, V)
+#' @keywords internal
+moment_vectors <- function(e, X) {
+  e <- as.numeric(e)
+  X <- as.matrix(X)
+  storage.mode(X) <- "double"
+  if (nrow(X) != length(e)) {
+    stop(sprintf(
+      "andmnh: %d residuals but %d regressor rows",
+      length(e), nrow(X)
+    ))
+  }
+  if (nrow(X) == 0) stop("andmnh: no observations")
+  V <- X * e
+  storage.mode(V) <- "double"
+  V
+}
+
+# --------------------------------------------------------------------------
+# matrix utilities (base R)
+# --------------------------------------------------------------------------
+
+#' Returns U, s, V (V transposed, like np.linalg.svd with full matrices)
+#'
+#' A step of the andmnh_native implementation. Called by \code{.singular_value_adjust}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param a A matrix; passed to \code{as.matrix}.
+#' @return A list with \code{u}, \code{s}, \code{v}.
 #' @export
 #' @examples
 #' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
-#' res <- .morie_svd(a = A)
+#' res <- .svd_r(a = A)
 #' res
-.morie_svd <- function(a) {
+.svd_r <- function(a) {
+  # returns U, s, V (V transposed, like np.linalg.svd with full matrices)
   a <- as.matrix(a)
-  m <- nrow(a)
-  n <- ncol(a)
-  k <- min(m, n)
-  AtA <- crossprod(a)
-  ev <- eigen(AtA, symmetric = TRUE)
-  s <- sqrt(pmax(ev$values, 0))
-  # sort descending
-  ord <- order(s, decreasing = TRUE)[seq_len(k)]
-  s <- s[ord]
-  V <- ev$vectors[, ord, drop = FALSE]
-  # U = A V S^{-1}
-  invs <- ifelse(s > 0, 1 / s, 0)
-  U <- if (m >= n) a %*% (V * rep(invs, each = n)) else matrix(0, m, k)
-  list(u = U, s = s, vt = t(V))
+  storage.mode(a) <- "double"
+  s <- svd(a)
+  list(u = s$u, s = s$d, v = s$v)
 }
 
-#' SVD cap on the prewhitening matrix
-#' @param a See Usage.
-#' @param cap See Usage.
+#' .singular_value_adjust
+#'
+#' A step of the andmnh_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param a Passed to \code{.svd_r}.
+#' @param cap Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.97}.
+#' @return The value of \code{%*%}.
 #' @export
-singular_value_adjust <- function(a, cap = .EIGENVALUE_CAP) {
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' res <- .singular_value_adjust(a = A)
+#' res
+.singular_value_adjust <- function(a, cap = 0.97) {
   cap <- as.numeric(cap)
   if (!(cap > 0 && cap < 1)) {
     stop("andmnh: cap must lie strictly between 0 and 1")
   }
-  s <- .morie_svd(as.matrix(a))
-  s2 <- pmin(s$s, cap)
-  s$u %*% diag(s2, nrow = length(s2)) %*% s$vt
+  sv <- .svd_r(a)
+  s2 <- pmin(pmax(sv$s, 0), cap) # singular values are >= 0
+  # build diag
+  p <- length(s2)
+  Smat <- matrix(0, p, p)
+  diag(Smat) <- s2
+  sv$u %*% Smat %*% t(sv$v)
 }
 
-#' VAR prewhitening, equation 2.2
-#' @param v See Usage.
-#' @param order See Usage.
-#' @param cap See Usage.
-#' @param adjust See Usage.
+# solve a linear system
+#' Solve a linear system
+#'
+#' A step of the andmnh_native implementation. Called by \code{prewhiten_var}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param A A matrix; passed to \code{solve}.
+#' @param b A matrix; passed to \code{solve}.
+#' @return A matrix, from \code{solve}.
 #' @export
-prewhiten_var <- function(v, order = 1L, cap = .EIGENVALUE_CAP,
-                          adjust = TRUE) {
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' b <- c(1.5, 2.5, 3.5)
+#' res <- .solve_safe(A = A, b = b)
+#' res
+.solve_safe <- function(A, b) {
+  A <- as.matrix(A)
+  storage.mode(A) <- "double"
+  b <- as.matrix(b)
+  storage.mode(b) <- "double"
+  solve(A, b)
+}
+
+# --------------------------------------------------------------------------
+# prewhitening VAR
+# --------------------------------------------------------------------------
+
+#' prewhiten_var
+#'
+#' A step of the andmnh_native implementation. Called by \code{andrews_monahan_hac}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param v A matrix; passed to \code{as.matrix}.
+#' @param order A count; the body uses it as \code{vector(...)}. Defaults to \code{1}.
+#' @param cap Numeric; combined arithmetically in the body. Defaults to \code{0.97}.
+#' @param adjust A flag; the body branches on it. Defaults to \code{TRUE}.
+#' @return A list with \code{A}, \code{residuals}, \code{D}.
+#' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' prewhiten_var(V)
+#' @keywords internal
+prewhiten_var <- function(v, order = 1, cap = 0.97, adjust = TRUE) {
   rows <- as.matrix(v)
   storage.mode(rows) <- "double"
   n <- nrow(rows)
-  if (n == 0L) stop("andmnh: no observations")
+  if (n == 0) stop("andmnh: no observations")
   p <- ncol(rows)
   order <- as.integer(order)
-  if (order < 0L) stop("andmnh: VAR order must be non-negative")
-  if (order == 0L) {
-    return(list(a_list = list(), resid = rows, D = diag(p)))
+  if (order < 0) stop("andmnh: VAR order must be non-negative")
+  if (order == 0) {
+    return(list(A = list(), residuals = rows, D = diag(p)))
   }
-  if (n <= order * p + 1L) {
-    stop("andmnh: not enough observations for the requested VAR order")
+  if (n <= order * p + 1) {
+    stop(sprintf(
+      "andmnh: %d observations cannot fit a VAR(%d) in %d variables",
+      n, order, p
+    ))
   }
-  y <- rows[(order + 1L):n, , drop = FALSE]
-  z <- matrix(0, n - order, order * p)
-  for (t in (order + 1L):n) {
-    for (r in seq_len(order)) {
-      z[t - order, ((r - 1L) * p + 1L):(r * p)] <- rows[t - r, ]
+
+  # Y: rows t = order,...,n-1; Z: rows t = order,...,n-1, columns
+  # v_{t-1}, ..., v_{t-order} stacked.
+  Y <- rows[(order + 1):n, , drop = FALSE]
+  Z <- matrix(0, nrow = n - order, ncol = order * p)
+  for (t_idx in (order + 1):n) {
+    cols <- c()
+    for (r in 1:order) {
+      cols <- c(cols, rows[t_idx - r, ])
     }
+    Z[t_idx - order, ] <- cols
   }
-  # lstsq via QR for stability
-  qr_z <- qr(z)
-  Q <- qr.Q(qr_z)
-  R <- qr.R(qr_z)
-  coef <- backsolve(R, crossprod(Q, y))
+  storage.mode(Z) <- "double"
+  storage.mode(Y) <- "double"
+
+  coef <- .solve_safe(crossprod(Z), crossprod(Z, Y)) # (order*p) x p
+  rownames(coef) <- NULL
+  colnames(coef) <- NULL
+
   a_list <- vector("list", order)
-  for (r in seq_len(order)) {
-    block <- matrix(0, p, p)
-    for (i in seq_len(p)) {
-      for (j in seq_len(p)) {
-        block[i, j] <- coef[(r - 1L) * p + j, i]
+  for (r in 1:order) {
+    block <- matrix(coef[((r - 1) * p + 1):(r * p), , drop = FALSE],
+      nrow = p, ncol = p
+    )
+    # coef currently has rows indexed by [var][lag]; we want A[i,j] such
+    # that pred_i += A[i,j] * v_{t-r-1}[j].  Build a_list[[r]] with the
+    # entry [i, j] = coef[r*p_block + j, i] of the LS coefficient matrix.
+    blk <- matrix(0, p, p)
+    for (i in 1:p) {
+      for (j in 1:p) {
+        blk[i, j] <- coef[(r - 1) * p + j, i]
       }
     }
-    a_list[[r]] <- block
+    a_list[[r]] <- blk
   }
+
   if (adjust) {
-    a_list <- lapply(a_list, function(a) singular_value_adjust(a, cap))
-    if (order > 1L) {
-      # For b > 1 capping each A_r is not enough. Shrink together so
-      # the spectral norm of sum A_r is at most cap.
-      for (it in seq_len(200L)) {
+    a_list <- lapply(a_list, .singular_value_adjust, cap = cap)
+    if (order > 1) {
+      for (iter in 1:200) {
         tot <- a_list[[1]]
-        for (k in 2:order) tot <- tot + a_list[[k]]
-        smax <- max(.morie_svd(tot)$s)
+        if (length(a_list) > 1) {
+          for (k in 2:length(a_list)) tot <- tot + a_list[[k]]
+        }
+        smax <- max(svd(tot)$d)
         if (smax <= cap) break
-        a_list <- lapply(a_list, function(a) a * (cap / smax))
+        a_list <- lapply(a_list, function(A) A * (cap / smax))
       }
     }
   }
-  resid <- matrix(0, n - order, p)
-  for (t in (order + 1L):n) {
+
+  resid <- matrix(0, nrow = n - order, ncol = p)
+  for (idx in 1:(n - order)) {
+    t <- idx + order
     pred <- rep(0, p)
-    for (r in seq_len(order)) {
+    for (r in 1:order) {
       ar <- a_list[[r]]
-      for (i in seq_len(p)) {
-        for (j in seq_len(p)) {
+      for (i in 1:p) {
+        for (j in 1:p) {
           pred[i] <- pred[i] + ar[i, j] * rows[t - r, j]
         }
       }
     }
-    resid[t - order, ] <- rows[t, ] - pred
+    for (i in 1:p) {
+      resid[idx, i] <- rows[t, i] - pred[i]
+    }
   }
+  storage.mode(resid) <- "double"
+
   tot <- a_list[[1]]
-  for (k in 2:order) tot <- tot + a_list[[k]]
+  if (length(a_list) > 1) {
+    for (k in 2:length(a_list)) tot <- tot + a_list[[k]]
+  }
   D <- solve(diag(p) - tot)
-  list(a_list = a_list, resid = resid, D = D)
+  list(A = a_list, residuals = resid, D = D)
 }
 
-#' AR(1) by least squares (no intercept)
-#' @param x See Usage.
+# --------------------------------------------------------------------------
+# AR(1) and the alpha(q) plug-in
+# --------------------------------------------------------------------------
+
+#' ar1_fit
+#'
+#' A step of the andmnh_native implementation. Called by \code{alpha_ar1}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x A vector; its length is taken and its elements indexed.
+#' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' ar1_fit(V)
+#' @keywords internal
 ar1_fit <- function(x) {
   x <- as.numeric(x)
   n <- length(x)
-  if (n < 3L) stop("andmnh: an AR(1) needs at least 3 observations")
+  if (n < 3) stop("andmnh: an AR(1) needs at least 3 observations")
   num <- sum(x[2:n] * x[1:(n - 1)])
   den <- sum(x[1:(n - 1)]^2)
   rho <- if (den > 0) num / den else 0
-  s2 <- sum((x[2:n] - rho * x[1:(n - 1)])^2) / (n - 1L)
+  s2 <- sum((x[2:n] - rho * x[1:(n - 1)])^2) / (n - 1)
   c(rho = rho, sigma2 = s2)
 }
 
-#' Andrews (1991) eq. 6.4, alpha(q) from p AR(1) fits
-#' @param v See Usage.
-#' @param q See Usage.
-#' @param weights See Usage.
+#' alpha_ar1
+#'
+#' A step of the andmnh_native implementation. Called by \code{automatic_bandwidth}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param v A matrix; passed to \code{as.matrix}.
+#' @param q Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2}.
+#' @param weights Optional; may be \code{NULL}. Compared against \code{"drop_first"}.
+#' @return A list with \code{alpha}, \code{fits}.
 #' @export
-alpha_ar1 <- function(v, q = 2L, weights = NULL) {
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' alpha_ar1(V)
+#' @keywords internal
+alpha_ar1 <- function(v, q = 2, weights = NULL) {
   rows <- as.matrix(v)
   storage.mode(rows) <- "double"
-  if (nrow(rows) == 0L) stop("andmnh: no observations")
+  if (nrow(rows) == 0) stop("andmnh: no observations")
   p <- ncol(rows)
   if (is.null(weights)) {
     w <- rep(1, p)
-  } else if (identical(weights, "drop_first")) {
+  } else if (is.character(weights) && length(weights) == 1 &&
+    weights == "drop_first") {
     w <- c(0, rep(1, p - 1))
   } else {
     w <- as.numeric(weights)
-    if (length(w) != p) stop("andmnh: weight length mismatch")
+    if (length(w) != p) {
+      stop(sprintf("andmnh: %d weights for %d series", length(w), p))
+    }
   }
   if (any(w < 0) || sum(w) <= 0) {
     stop("andmnh: weights must be non-negative and not all zero")
   }
   q <- as.integer(q)
-  if (!(q %in% c(1L, 2L))) {
-    stop("andmnh: alpha(q) is given for q = 1 or 2")
-  }
+  if (!(q %in% c(1, 2))) stop("andmnh: alpha(q) is given for q = 1 or 2")
+
   num <- 0
   den <- 0
   fits <- list()
-  for (a in seq_len(p)) {
+  for (a in 1:p) {
     fit <- ar1_fit(rows[, a])
-    fits[[a]] <- list(rho = unname(fit["rho"]), sigma2 = unname(fit["sigma2"]))
     rho <- fit["rho"]
     s2 <- fit["sigma2"]
-    s4 <- s2 * s2
+    fits[[a]] <- list(rho = unname(rho), sigma2 = unname(s2))
     if (w[a] == 0) next
-    if (q == 2L) {
-      num <- num + w[a] * 4 * rho * rho * s4 / (1 - rho)^8
+    s4 <- s2^2
+    if (q == 2) {
+      num <- num + w[a] * 4 * rho^2 * s4 / (1 - rho)^8
     } else {
-      num <- num + w[a] * 4 * rho * rho * s4 /
+      num <- num + w[a] * 4 * rho^2 * s4 /
         ((1 - rho)^6 * (1 + rho)^2)
     }
     den <- den + w[a] * s4 / (1 - rho)^4
@@ -300,112 +435,157 @@ alpha_ar1 <- function(v, q = 2L, weights = NULL) {
   list(alpha = num / den, fits = fits)
 }
 
-#' Andrews (1991) eq. 6.1, automatic plug-in bandwidth
-#' @param v See Usage.
-#' @param kernel See Usage.
-#' @param weights See Usage.
-#' @param n See Usage.
+#' automatic_bandwidth
+#'
+#' A step of the andmnh_native implementation. Called by \code{andrews_monahan_hac}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param v A matrix; passed to \code{as.matrix}.
+#' @param kernel Passed to \code{.check_kernel}. Defaults to \code{"qs"}.
+#' @param weights Passed to \code{alpha_ar1}.
+#' @param n Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @return A list with \code{bandwidth}, \code{alpha}, \code{fits}.
 #' @export
-automatic_bandwidth <- function(v, kernel = "qs", weights = NULL,
-                                n = NULL) {
-  ck <- .morie_check_kernel(kernel)
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' automatic_bandwidth(V)
+#' @keywords internal
+automatic_bandwidth <- function(v, kernel = "qs", weights = NULL, n = NULL) {
+  ck <- .check_kernel(kernel)
   q <- ck$const[1]
   kq <- ck$const[2]
   ik2 <- ck$const[3]
-  t <- if (is.null(n)) nrow(v) else as.integer(n)
-  al <- alpha_ar1(v, q = q, weights = weights)
-  s <- (q * kq * kq * al$alpha * t / ik2)^(1 / (2 * q + 1))
-  list(bandwidth = s, alpha = al$alpha, fits = al$fits)
+  rows <- as.matrix(v)
+  storage.mode(rows) <- "double"
+  Tn <- if (is.null(n)) nrow(rows) else as.integer(n)
+  aout <- alpha_ar1(rows, q = q, weights = weights)
+  s <- (q * kq^2 * aout$alpha * Tn / ik2)^(1 / (2 * q + 1))
+  list(bandwidth = s, alpha = aout$alpha, fits = aout$fits)
 }
 
-#' Equation 2.3, kernel HAC on already-prewhitened vectors
-#' @param v See Usage.
-#' @param bandwidth See Usage.
-#' @param kernel See Usage.
-#' @param n_params See Usage.
-#' @param n See Usage.
+# --------------------------------------------------------------------------
+# kernel HAC
+# --------------------------------------------------------------------------
+
+#' kernel_hac
+#'
+#' A step of the andmnh_native implementation. Called by \code{andrews_monahan_hac}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param v A matrix; passed to \code{as.matrix}.
+#' @param bandwidth Coerced to numeric by the body, with \code{as.numeric}.
+#' @param kernel Passed to \code{.check_kernel}. Defaults to \code{"qs"}.
+#' @param n_params Numeric; combined arithmetically in the body. Defaults to \code{0}.
+#' @param n Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @return A numeric value.
 #' @export
-kernel_hac <- function(v, bandwidth, kernel = "qs", n_params = 0L,
-                       n = NULL) {
-  ck <- .morie_check_kernel(kernel)
-  kfun <- ck$fn
-  bounded <- as.logical(ck$const[4])
+#' @examples
+#' kernel_hac(v = c(1, 2, 3, 4, 5, 6, 7, 8), bandwidth = 0.5)
+#' @keywords internal
+kernel_hac <- function(v, bandwidth, kernel = "qs", n_params = 0, n = NULL) {
+  ck <- .check_kernel(kernel)
+  kfun <- ck$fun
+  bounded <- isTRUE(ck$const[4])
   rows <- as.matrix(v)
   storage.mode(rows) <- "double"
   m <- nrow(rows)
-  if (m == 0L) stop("andmnh: no observations")
+  if (m == 0) stop("andmnh: no observations")
   p <- ncol(rows)
-  t <- if (is.null(n)) m else as.integer(n)
-  if (t <= n_params) {
-    stop(
-      "andmnh: T = ", t, " is not larger than the ", n_params,
-      " estimated parameters"
-    )
+  Tn <- if (is.null(n)) m else as.integer(n)
+  if (Tn <= n_params) {
+    stop(sprintf(
+      "andmnh: T = %d is not larger than the %d estimated parameters",
+      Tn, n_params
+    ))
   }
   s <- as.numeric(bandwidth)
   if (s <= 0) stop("andmnh: bandwidth must be positive")
-  jmax <- m - 1L
-  if (bounded) jmax <- min(jmax, as.integer(floor(s)))
+
+  jmax <- m - 1
+  if (bounded) jmax <- min(jmax, floor(s))
+
   out <- matrix(0, p, p)
   for (j in 0:jmax) {
     kj <- kfun(j / s)
     if (kj == 0) next
     gam <- matrix(0, p, p)
-    for (tt in (j + 1L):m) {
+    for (tt in (j + 1):m) {
       a <- rows[tt, ]
       b <- rows[tt - j, ]
-      for (i in seq_len(p)) {
-        if (a[i] != 0) {
-          for (k in seq_len(p)) gam[i, k] <- gam[i, k] + a[i] * b[k]
+      # outer product
+      for (i in 1:p) {
+        ai <- a[i]
+        if (ai == 0) next
+        for (k_ in 1:p) {
+          gam[i, k_] <- gam[i, k_] + ai * b[k_]
         }
       }
     }
-    gam <- gam / t
-    if (j == 0L) {
+    gam <- gam / Tn
+    if (j == 0) {
       out <- out + kj * gam
     } else {
       out <- out + kj * (gam + t(gam))
     }
   }
-  dof <- t / (t - n_params)
+  dof <- Tn / (Tn - n_params)
   dof * out
 }
 
-#' The full VAR prewhitened kernel HAC estimator, eq. 2.4
-#' @param e See Usage.
-#' @param X See Usage.
-#' @param prewhiten See Usage.
-#' @param var_order See Usage.
-#' @param kernel See Usage.
-#' @param bandwidth See Usage.
-#' @param weights See Usage.
-#' @param n_params See Usage.
-#' @param cap See Usage.
-#' @param adjust See Usage.
+# --------------------------------------------------------------------------
+# top-level estimator
+# --------------------------------------------------------------------------
+
+#' andrews_monahan_hac
+#'
+#' A step of the andmnh_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param e A matrix; passed to \code{as.matrix}.
+#' @param X Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param prewhiten A flag; the body branches on it. Defaults to \code{TRUE}.
+#' @param var_order Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.
+#' @param kernel Carried through into a list the body builds. Defaults to \code{"qs"}.
+#' @param bandwidth Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}.
+#' @param weights Passed to \code{automatic_bandwidth}.
+#' @param n_params Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
+#' @param cap Numeric; combined arithmetically in the body. Defaults to \code{0.97}.
+#' @param adjust Passed to \code{prewhiten_var}. Defaults to \code{TRUE}.
+#' @return The value of \code{structure}.
 #' @export
-#' @aliases andmnh
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' andrews_monahan_hac(V)
+#' @keywords internal
 andrews_monahan_hac <- function(e, X = NULL, prewhiten = TRUE,
-                                var_order = 1L, kernel = "qs",
+                                var_order = 1, kernel = "qs",
                                 bandwidth = NULL, weights = NULL,
-                                n_params = NULL, cap = .EIGENVALUE_CAP,
+                                n_params = NULL, cap = 0.97,
                                 adjust = TRUE) {
   if (!is.null(X)) {
-    v <- moment_vectors(e, X)
-    if (is.null(n_params)) n_params <- ncol(v)
+    V <- moment_vectors(e, X)
+    if (is.null(n_params)) n_params <- ncol(V)
   } else {
-    v <- as.matrix(e)
-    storage.mode(v) <- "double"
-    if (is.null(n_params)) n_params <- 0L
+    V <- as.matrix(e)
+    storage.mode(V) <- "double"
+    if (is.null(n_params)) n_params <- 0
   }
-  n <- nrow(v)
-  if (n == 0L) stop("andmnh: no observations")
-  p <- ncol(v)
+  n <- nrow(V)
+  if (n == 0) stop("andmnh: no observations")
+  p <- ncol(V)
   order <- if (prewhiten) as.integer(var_order) else 0L
-  pw <- prewhiten_var(v, order = order, cap = cap, adjust = adjust)
+
+  pw <- prewhiten_var(V, order = order, cap = cap, adjust = adjust)
+
   if (is.null(bandwidth)) {
-    ab <- automatic_bandwidth(pw$resid,
-      kernel = kernel, weights = weights,
-      n = n
+    ab <- automatic_bandwidth(pw$residuals,
+      kernel = kernel,
+      weights = weights, n = n
     )
     s <- ab$bandwidth
     alpha <- ab$alpha
@@ -417,23 +597,85 @@ andrews_monahan_hac <- function(e, X = NULL, prewhiten = TRUE,
     fits <- NULL
     auto <- FALSE
   }
-  jstar <- kernel_hac(pw$resid, s, kernel = kernel, n_params = n_params, n = n)
-  D <- as.matrix(pw$D)
-  j <- D %*% jstar %*% t(D)
-  list(
-    J = j, J_star = jstar, D = D, A = pw$a_list, bandwidth = s,
-    bandwidth_automatic = auto, alpha = alpha, ar1_fits = fits,
-    kernel = kernel, var_order = order, n = n, p = p,
-    n_params = as.integer(n_params), prewhitened = as.logical(order),
-    method = "Andrews & Monahan (1992) VAR prewhitened kernel HAC, eq. 2.2-2.4, with the Andrews (1991) eq. 6.1 automatic bandwidth",
-    note = sprintf("the VAR is a filter, not a model; its coefficients are capped through their SVD at %.2f so that I - sum(A_r) stays %.2f away from singular (footnote 4)", cap, 1 - cap)
+
+  Jstar <- kernel_hac(pw$residuals,
+    bandwidth = s, kernel = kernel,
+    n_params = n_params, n = n
+  )
+  J <- pw$D %*% Jstar %*% t(pw$D)
+
+  structure(
+    list(
+      J = J,
+      J_star = Jstar,
+      D = pw$D,
+      A = pw$A,
+      bandwidth = s,
+      bandwidth_automatic = auto,
+      alpha = alpha,
+      ar1_fits = fits,
+      kernel = kernel,
+      var_order = order,
+      n = n,
+      p = p,
+      n_params = as.integer(n_params),
+      prewhitened = as.logical(order > 0),
+      method = paste(
+        "Andrews & Monahan (1992) VAR prewhitened kernel HAC,",
+        "eq. 2.2-2.4, with the Andrews (1991) eq. 6.1",
+        "automatic bandwidth"
+      ),
+      note = sprintf(
+        paste(
+          "the VAR is a filter, not a model; its",
+          "coefficients are capped through their SVD at",
+          "%.2f so that I - sum(A_r) stays %.2f away from",
+          "singular (footnote 4)"
+        ),
+        cap, 1 - cap
+      )
+    ),
+    class = "andmnh"
   )
 }
 
-#' Compact alias for andrews_monahan_hac
-#' @export
-#' @noRd
 andmnh <- andrews_monahan_hac
+
+#' print.andmnh
+#'
+#' A step of the andmnh_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x A list; the body reads \code{$alpha}, \code{$bandwidth},
+#' \code{$bandwidth_automatic}, \code{$J}, \code{$kernel}, \code{$n}, \code{$n_params},
+#' \code{$p}, \code{$prewhitened}, \code{$var_order} from it.
+#' @param ... Passed through.
+#' @return Invisibly,the value of \code{x}, as built in the body.
+#' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie:::print.andmnh(D)
+#' @keywords internal
+print.andmnh <- function(x, ...) {
+  cat(sprintf("Andrews-Monahan VAR prewhitened kernel HAC\n"))
+  cat(sprintf("  kernel        : %s\n", x$kernel))
+  cat(sprintf(
+    "  bandwidth     : %.6f (automatic = %s)\n",
+    x$bandwidth, x$bandwidth_automatic
+  ))
+  cat(sprintf(
+    "  var_order     : %d (prewhitened = %s)\n",
+    x$var_order, x$prewhitened
+  ))
+  cat(sprintf("  n / p / l     : %d / %d / %d\n", x$n, x$p, x$n_params))
+  if (!is.null(x$alpha)) {
+    cat(sprintf("  alpha(2)      : %.6f\n", x$alpha))
+  }
+  cat("\nJ (recoloured):\n")
+  print(x$J)
+  invisible(x)
+}
 
 # house entry point: the package exports one morie_<module>
 morie_andmnh <- andrews_monahan_hac

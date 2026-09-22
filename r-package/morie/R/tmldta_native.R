@@ -1,27 +1,31 @@
 # Data-adaptive target parameters: honest inference after snooping.
 # Sources: Hubbard, A. E., Kennedy, C. J. & van der Laan, M. J. (2018)
-# "Data-Adaptive Target Parameters", Ch. 9 in van der Laan, M. J. &
-# Rose, S. (eds.) Targeted Learning in Data Science, Springer,
-# doi:10.1007/978-3-319-65304-4_9; Hubbard, A. E., Kherad-Pajouh, S.
-# & van der Laan, M. J. (2016) "Statistical Inference for Data
-# Adaptive Target Parameters", The International Journal of
-# Biostatistics 12(1), 3-19, doi:10.1515/ijb-2015-0013; van der Laan,
-# M. J. & Luedtke, A. R. (2015) "Targeted Learning of the Mean Outcome
-# Under an Optimal Dynamic Treatment Rule", Journal of Causal
-# Inference 3(1), 61-95, doi:10.1515/jci-2013-0022.
+# Data-Adaptive Target Parameters, Ch. 9 in Targeted Learning in Data
+# Science, Springer, pp. 125-142, doi:10.1007/978-3-319-65304-4_9
+# (eq. 9.1-9.16); Hubbard, A. E., Kherad-Pajouh, S. & van der Laan,
+# M. J. (2016) Statistical Inference for Data Adaptive Target
+# Parameters, International Journal of Biostatistics 12(1), 3-19,
+# doi:10.1515/ijb-2015-0013 (sample-splitting theory); van der Laan,
+# M. J. & Luedtke, A. R. (2015) Targeted Learning of the Mean Outcome
+# Under an Optimal Dynamic Treatment Rule, Journal of Causal Inference
+# 3(1), 61-95, doi:10.1515/jci-2013-0022 (CV-TMLE for data-adaptive
+# parameters); Zheng, W. & van der Laan, M. J. (2011) Cross-Validated
+# Targeted Minimum-Loss-Based Estimation, in Targeted Learning, Springer,
+# pp. 459-474.
 #
-# Native implementation mirroring Python morie.fn.tmldta exactly: V-fold
-# parameter-generation / estimation split, logistic Q-surface with
-# level-by-W interactions, three-category g normalised, one scalar
-# epsilon per split, the per-split influence curves averaged into
-# (9.14)-(9.15), and the separation diagnostics.
+# Native implementation mirroring Python morie.fn.tmldta exactly: the
+# same argmin/argmax level discovery on the parameter-generating sample,
+# the same Q(a, W) with level dummies and level-by-W interactions, the
+# same three-category propensity normalisation, the same eq. 9.14 / 9.15
+# aggregation, the same near-tie diagnostics, the same validation
+# messages.
 
 .TMLDTA_METHODS <- c("cv-tmle", "sample-split", "naive")
 .tmldta_EPS <- 1e-9
 
 #' .tmldta_logit
 #'
-#' A step of the tmldta_native implementation. Called by \code{.split_specific_tmle}.
+#' A step of the tmldta_native implementation. Called by \code{split_specific_tmle}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -38,8 +42,8 @@
 
 #' .tmldta_expit
 #'
-#' A step of the tmldta_native implementation. Called by \code{.fit_g_dta},
-#' \code{.fit_q_dta}, \code{.split_specific_tmle} and 1 others in the module.
+#' A step of the tmldta_native implementation. Called by \code{.fit_g}, \code{.fit_q},
+#' \code{split_specific_tmle}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -56,144 +60,103 @@
   1 / (1 + exp(-xc))
 }
 
-#' .tmldta_qnorm
+#' .levels
 #'
-#' A step of the tmldta_native implementation. Called by \code{morie_tmle_data_adaptive}.
+#' A step of the tmldta_native implementation. Called by \code{morie_tmldta}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p Passed to \code{qnorm}.
-#' @return The value of \code{qnorm}.
+#' @param A Coerced to numeric by the body, with \code{as.numeric}.
+#' @param candidate_strata Optional; may be \code{NULL}. Coerced to numeric by the body,
+#' with \code{as.numeric}.
+#' @return The value of \code{lv}, as built in the body.
 #' @export
-#' @examples
-#' res <- .tmldta_qnorm(p = 0.5)
-#' res
-.tmldta_qnorm <- function(p) {
-  qnorm(p, 0, 1)
-}
-
-# Logistic IRLS that returns a coefficient vector for a 0/1 outcome.
-#' Logistic IRLS that returns a coefficient vector for a 0/1 outcome
-#'
-#' A step of the tmldta_native implementation. Called by \code{.fit_g_dta}, \code{.fit_q_dta}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param Z A matrix; the body checks with \code{is.matrix}.
-#' @param a A vector; its length is taken.
-#' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
-#' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
-#' @param tol Passed to \code{<}. Defaults to \code{1e-10}.
-#' @return The value of \code{b}, as built in the body.
-#' @export
-.tmldta_logit_irls <- function(Z, a, ridge = 1e-8, max_iter = 50L,
-                               tol = 1e-10) {
-  n <- length(a)
-  if (is.matrix(Z)) {
-    X <- Z
+.levels <- function(A, candidate_strata) {
+  if (!is.null(candidate_strata)) {
+    lv <- as.numeric(candidate_strata)
+    lv <- lv[!duplicated(lv)]
   } else {
-    X <- do.call(rbind, Z)
+    lv <- sort(unique(as.numeric(A)))
   }
-  p <- ncol(X)
-  b <- rep(0, p)
-  XtWX <- matrix(0, p, p)
-  XtWz <- numeric(p)
-  for (it in seq_len(max_iter)) {
-    eta <- as.numeric(X %*% b)
-    pc <- pmin(pmax(.tmldta_expit(eta), .tmldta_EPS), 1 - .tmldta_EPS)
-    W <- pc * (1 - pc)
-    z <- eta + (a - pc) / W
-    XtWX <- crossprod(X, X * W) + ridge * diag(p)
-    XtWz <- crossprod(X, W * z)
-    b_new <- tryCatch(solve(XtWX, XtWz),
-      error = function(e) solve(XtWX + 1e-8 * diag(p), XtWz)
-    )
-    if (max(abs(b_new - b)) < tol) {
-      b <- b_new
-      break
-    }
-    b <- b_new
-  }
-  b
+  if (length(lv) < 2L) stop("tmldta: need at least 2 exposure levels")
+  lv
 }
 
-# Q surface for the data-adaptive target parameter.
-#' Q surface for the data-adaptive target parameter
+#' .fit_q
 #'
-#' A step of the tmldta_native implementation. Called by \code{.discover_levels},
-#' \code{.split_specific_tmle}.
+#' A step of the tmldta_native implementation. Called by \code{discover_levels},
+#' \code{split_specific_tmle}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param ys A vector; indexed elementwise.
-#' @param A_ A vector; indexed elementwise.
+#' @param y A vector; its length is taken and its elements indexed.
+#' @param A A vector; indexed elementwise.
 #' @param W A matrix; indexed by row and column.
 #' @param levels A vector; indexed elementwise.
 #' @param rows Iterated over elementwise, with \code{lapply}.
-#' @param ridge Numeric; passed to \code{max}.
+#' @param ridge Accepted by the signature and not used anywhere in the body.
 #' @return A list with \code{q}, \code{b}.
 #' @export
-.fit_q_dta <- function(ys, A_, W, levels, rows, ridge) {
+.fit_q <- function(y, A, W, levels, rows, ridge) {
   ref <- levels[1]
   others <- levels[-1]
-  p <- if (is.matrix(W)) ncol(W) else if (length(W) > 0L) length(W[[1L]]) else 0L
-  rowf <- function(a, i) {
-    d <- as.numeric(others == a) * 1.0
-    if (is.matrix(W)) {
-      r <- c(1, d, W[i, ])
-      if (p > 0) {
-        for (t in seq_along(others)) r <- c(r, d[t] * W[i, ])
-      }
+  n <- length(y)
+  p <- ncol(W)
+  design_row <- function(a, i) {
+    d <- as.numeric(levels(factor(rep(0, length(others)),
+      levels = seq_along(others)
+    )) == 0)
+    for (k in seq_along(others)) d[k] <- if (a == others[k]) 1 else 0
+    if (p > 0) {
+      r <- c(1, d, W[i, ], unlist(lapply(seq_along(others), function(k) {
+        d[k] * W[i, ]
+      })))
     } else {
-      r <- c(1, d, W[[i]])
-      if (p > 0) for (t in seq_along(others)) r <- c(r, d[t] * W[[i]])
+      r <- c(1, d)
     }
     r
   }
-  X <- lapply(rows, function(i) rowf(A_[i], i))
-  Xm <- do.call(rbind, X)
-  av <- ys[rows]
-  b <- .tmldta_logit_irls(Xm, av, ridge = max(ridge, 1e-10))
-  qf <- function(a, i) {
-    r <- rowf(a, i)
+  X <- do.call(rbind, lapply(rows, function(i) design_row(A[i], i)))
+  b <- as.numeric(suppressWarnings(
+    coef(glm(y[rows] ~ X - 1, family = binomial()))
+  ))
+  q_fn <- function(a, i) {
+    r <- design_row(a, i)
     .tmldta_expit(sum(r * b))
   }
-  list(q = qf, b = b)
+  list(q = q_fn, b = b)
 }
 
-# Three-category treatment propensity, normalised.
-#' Three-category treatment propensity, normalised
+#' .fit_g
 #'
-#' A step of the tmldta_native implementation. Called by \code{.split_specific_tmle}.
+#' A step of the tmldta_native implementation. Called by \code{split_specific_tmle}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param A_ A vector; its length is taken.
-#' @param W A vector; its length is taken.
+#' @param A A vector; its length is taken.
+#' @param W A matrix; passed to \code{ncol}.
 #' @param aL Passed to \code{==}.
 #' @param aH Passed to \code{==}.
 #' @param rows See Usage.
-#' @param ridge Numeric; passed to \code{max}.
+#' @param ridge Accepted by the signature and not used anywhere in the body.
 #' @param trim Numeric; passed to \code{max}.
 #' @return A list with \code{gH}, \code{gL}.
 #' @export
-.fit_g_dta <- function(A_, W, aL, aH, rows, ridge, trim) {
-  n <- length(A_)
-  if (is.matrix(W)) {
-    X <- cbind(1, W)
-  } else if (length(W) > 0L) {
-    X <- do.call(rbind, lapply(W, function(r) c(1, r)))
-  } else {
-    X <- matrix(1, n, 1)
-  }
-  Xr <- X[rows, , drop = FALSE]
-  catf <- function(mask) {
-    b <- .tmldta_logit_irls(Xr, mask[rows], ridge = max(ridge, 1e-10))
+.fit_g <- function(A, W, aL, aH, rows, ridge, trim) {
+  n <- length(A)
+  X <- if (ncol(W) > 0) cbind(1, W) else matrix(1, nrow = n, ncol = 1)
+  cat_fit <- function(mask) {
+    b <- as.numeric(suppressWarnings(
+      coef(glm(mask[rows] ~ . - 1,
+        data = data.frame(X[rows, , drop = FALSE]),
+        family = binomial()
+      ))
+    ))
     .tmldta_expit(as.numeric(X %*% b))
   }
-  pH <- catf(as.numeric(A_ == aH))
-  pL <- catf(as.numeric(A_ == aL))
-  pO <- catf(as.numeric(!(A_ %in% c(aL, aH))))
+  pH <- cat_fit(ifelse(A == aH, 1, 0))
+  pL <- cat_fit(ifelse(A == aL, 1, 0))
+  pO <- cat_fit(ifelse(!(A %in% c(aH, aL)), 1, 0))
   gH <- gL <- numeric(n)
   for (i in seq_len(n)) {
     tot <- pH[i] + pL[i] + pO[i]
@@ -208,113 +171,127 @@
   list(gH = gH, gL = gL)
 }
 
-# Discover the data-adaptive levels (argmin and argmax of mean Q).
-#' Discover the data-adaptive levels (argmin and argmax of mean Q)
+#' Eq. (9.2)-(9.3): the levels that minimise and maximise the mean
+#' predicted outcome
 #'
-#' A step of the tmldta_native implementation. Called by \code{morie_tmle_data_adaptive}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param ys Passed to \code{.fit_q_dta}.
-#' @param A_ Passed to \code{.fit_q_dta}.
-#' @param W Passed to \code{.fit_q_dta}.
-#' @param levels A vector; indexed elementwise.
-#' @param rows Passed to \code{.fit_q_dta}.
-#' @param eval_rows Iterated over elementwise, with \code{vapply}.
-#' @param ridge Passed to \code{.fit_q_dta}.
-#' @return A list with \code{aL}, \code{aH}, \code{info}.
+#' @param y Outcome vector.
+#' @param A Exposure vector.
+#' @param W Covariate matrix.
+#' @param levels Candidate levels.
+#' @param rows Rows to fit Q on.
+#' @param eval_rows Rows the mean is taken over.
+#' @param ridge Ridge regulariser.
+#' @return \code{aL}, \code{aH}, info with \code{means} and
+#'   \code{spread}.
+#' @references Hubbard, A. E. et al. (2018).
 #' @export
-.discover_levels <- function(ys, A_, W, levels, rows, eval_rows, ridge) {
-  fit <- .fit_q_dta(ys, A_, W, levels, rows, ridge)
-  means <- sapply(levels, function(a) {
-    mean(vapply(eval_rows, function(i) fit$q(a, i), numeric(1)))
-  })
+#' @examples
+#' set.seed(1)
+#' n <- 60
+#' W <- matrix(rnorm(n * 2), n, 2)
+#' A <- sample(0:2, n, replace = TRUE)
+#' y <- plogis(0.5 * A + W[, 1] + rnorm(n, 0, 0.4))
+#' r <- discover_levels(y, A, W, levels = 0:2)
+#' str(r, max.level = 1)
+#' @keywords internal
+discover_levels <- function(y, A, W, levels, rows = NULL,
+                            eval_rows = NULL, ridge = 1e-8) {
+  n <- length(y)
+  if (is.null(rows)) rows <- seq_len(n) else rows <- as.integer(rows)
+  if (is.null(eval_rows)) eval_rows <- rows
+  fq <- .fit_q(y, A, W, levels, rows, ridge)
+  means <- vapply(levels, function(a) {
+    sum(vapply(eval_rows, function(i) fq$q(a, i), numeric(1))) /
+      length(eval_rows)
+  }, numeric(1))
   names(means) <- as.character(levels)
   aL <- levels[which.min(means)]
   aH <- levels[which.max(means)]
-  list(aL = aL, aH = aH, info = list(
-    means = means,
-    spread = max(means) - min(means)
-  ))
+  list(
+    aL = aL, aH = aH,
+    info = list(means = means, spread = max(means) - min(means))
+  )
 }
 
-# Solve the per-split TMLE at fixed levels.
-#' Solve the per-split TMLE at fixed levels
+#' Eq. (9.9)-(9.13): one split's TMLE at fixed levels
 #'
-#' A step of the tmldta_native implementation. Called by \code{morie_tmle_data_adaptive}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param ys A vector; its length is taken and its elements indexed.
-#' @param A_ A vector; indexed elementwise.
-#' @param W Passed to \code{.fit_q_dta}.
-#' @param levels Passed to \code{.fit_q_dta}.
-#' @param aL Passed to \code{.fit_g_dta}.
-#' @param aH Passed to \code{.fit_g_dta}.
-#' @param fit_rows Passed to \code{.fit_q_dta}.
-#' @param est_rows A vector; its length is taken.
-#' @param ridge Passed to \code{.fit_q_dta}.
-#' @param trim Passed to \code{.fit_g_dta}.
-#' @param target A flag; the body branches on it.
-#' @return A list with \code{psi}, \code{D}, \code{info}.
+#' @param y Outcome vector.
+#' @param A Exposure vector.
+#' @param W Covariate matrix.
+#' @param levels Candidate levels.
+#' @param aL Lower level.
+#' @param aH Upper level.
+#' @param fit_rows Rows to fit Q and g on.
+#' @param est_rows Rows to fit the fluctuation and average over.
+#' @param ridge Ridge regulariser.
+#' @param trim Propensity trimming.
+#' @param target Whether to target.
+#' @return \code{psi}, \code{D}, info with \code{eps} and
+#'   \code{max_weight}.
+#' @references Hubbard, A. E. et al. (2018).
 #' @export
-.split_specific_tmle <- function(ys, A_, W, levels, aL, aH,
-                                 fit_rows, est_rows, ridge, trim,
-                                 target) {
-  n <- length(ys)
-  fit <- .fit_q_dta(ys, A_, W, levels, fit_rows, ridge)
-  g <- .fit_g_dta(A_, W, aL, aH, fit_rows, ridge, trim)
-  H <- numeric(n)
-  for (i in seq_len(n)) {
-    H[i] <- (if (A_[i] == aH) 1 / g$gH[i] else 0) -
-      (if (A_[i] == aL) 1 / g$gL[i] else 0)
-  }
+#' @examples
+#' set.seed(1)
+#' n <- 60
+#' W <- matrix(rnorm(n * 2), n, 2)
+#' A <- sample(0:2, n, replace = TRUE)
+#' y <- plogis(0.5 * A + W[, 1] + rnorm(n, 0, 0.4))
+#' r <- split_specific_tmle(y, A, W, levels = 0:2, aL = 0, aH = 2,
+#'                          fit_rows = seq_len(n), est_rows = seq_len(n))
+#' str(r, max.level = 1)
+#' @keywords internal
+split_specific_tmle <- function(y, A, W, levels, aL, aH,
+                                fit_rows, est_rows,
+                                ridge = 1e-8, trim = 0.01,
+                                target = TRUE) {
+  n <- length(y)
+  fq <- .fit_q(y, A, W, levels, fit_rows, ridge)
+  fg <- .fit_g(A, W, aL, aH, fit_rows, ridge, trim)
+  gH <- fg$gH
+  gL <- fg$gL
+  H <- ifelse(A == aH, 1 / gH, 0) - ifelse(A == aL, 1 / gL, 0)
   off <- vapply(
-    seq_len(n), function(i) .tmldta_logit(fit$q(A_[i], i)),
+    seq_len(n), function(i) .tmldta_logit(fq$q(A[i], i)),
     numeric(1)
   )
   eps <- 0
   if (target) {
-    for (it in seq_len(100L)) {
-      num <- den <- 0
-      for (i in est_rows) {
-        p <- .tmldta_expit(off[i] + eps * H[i])
-        num <- num + H[i] * (ys[i] - p)
-        den <- den + H[i] * H[i] * p * (1 - p)
-      }
-      if (den < 1e-12) break
-      step <- num / den
-      eps <- eps + step
+    e <- 0
+    for (it in seq_len(60L)) {
+      p <- .tmldta_expit(off[est_rows] + e * H[est_rows])
+      gr <- sum(H[est_rows] * (y[est_rows] - p))
+      he <- sum(H[est_rows]^2 * p * (1 - p))
+      if (he < 1e-12) break
+      step <- gr / he
+      e <- e + step
       if (abs(step) < 1e-12) break
     }
+    eps <- e
   }
   qstar <- function(a, i) {
-    h <- if (a == aH) 1 / g$gH[i] else -1 / g$gL[i]
-    .tmldta_expit(.tmldta_logit(fit$q(a, i)) + eps * h)
+    h <- if (a == aH) 1 / gH[i] else -1 / gL[i]
+    .tmldta_expit(.tmldta_logit(fq$q(a, i)) + eps * h)
   }
   m <- length(est_rows)
-  psi <- mean(vapply(
-    est_rows, function(i) qstar(aH, i) - qstar(aL, i),
-    numeric(1)
-  ))
-  D <- vapply(est_rows, function(i) {
+  psi <- sum(vapply(est_rows, function(i) {
+    qstar(aH, i) - qstar(aL, i)
+  }, numeric(1))) / m
+  D <- numeric(m)
+  for (k in seq_along(est_rows)) {
+    i <- est_rows[k]
     resid <- .tmldta_expit(off[i] + eps * H[i])
-    H[i] * (ys[i] - resid) + qstar(aH, i) - qstar(aL, i) - psi
-  }, numeric(1))
-  list(psi = psi, D = D, info = list(
-    eps = eps,
-    max_weight = max(vapply(
-      est_rows, function(i) {
-        max(1 / g$gH[i], 1 / g$gL[i])
-      },
-      numeric(1)
-    ))
-  ))
+    D[k] <- H[i] * (y[i] - resid) + qstar(aH, i) - qstar(aL, i) - psi
+  }
+  names(D) <- as.character(est_rows)
+  max_w <- max(vapply(est_rows, function(i) {
+    max(1 / gH[i], 1 / gL[i])
+  }, numeric(1)))
+  list(psi = psi, D = D, info = list(eps = eps, max_weight = max_w))
 }
 
-#' .folds_dta
+#' .tmldta_folds
 #'
-#' A step of the tmldta_native implementation. Called by \code{morie_tmle_data_adaptive}.
+#' A step of the tmldta_native implementation. Called by \code{morie_tmldta}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -322,64 +299,72 @@
 #' @param n_folds Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{lapply}.
 #' @export
-.folds_dta <- function(n, n_folds) {
-  V <- max(2, min(as.integer(n_folds), n))
-  lapply(seq_len(V), function(v) {
-    which(seq_len(n) %% V == v - 1L)
-  })
+.tmldta_folds <- function(n, n_folds) {
+  V <- max(2L, min(as.integer(n_folds), n))
+  lapply(seq_len(V) - 1L, function(v) which(seq_len(n) %% V == v))
 }
 
 #' Contrast between data-discovered exposure levels, done honestly
 #'
-#' @param y,D,X Outcome, exposure, covariates.
-#' @param candidate_strata Optional vector of candidate exposure
-#'   levels; defaults to the sorted distinct exposures.
+#' \code{cv-tmle} fits Q and g on the parameter-generating split and
+#' only the fluctuation on the estimation split. \code{sample-split}
+#' fits everything on the estimation sample. \code{naive} is the
+#' substitution estimator 9.5 with no split at all -- kept because its
+#' bias is the point of the chapter.
+#'
+#' @param y Outcome vector.
+#' @param D Exposure vector.
+#' @param X Covariate matrix W.
+#' @param candidate_strata Candidate levels.
 #' @param method One of \code{"cv-tmle"}, \code{"sample-split"},
 #'   \code{"naive"}.
-#' @param n_folds Number of V-fold splits.
-#' @param trim Positivity trim for the propensity score.
-#' @param ridge Optional ridge for the nuisance fits.
-#' @param level Confidence level for the interval.
-#' @param bounds Optional \code{c(lower, upper)}; defaults to the
-#'   data range.
-#' @return A list with \code{estimate}, \code{se}, \code{ci}, the
-#'   per-split levels and estimates, and the separation diagnostics.
+#' @param n_folds Number of folds.
+#' @param trim Propensity trimming.
+#' @param ridge Ridge regulariser.
+#' @param level Confidence level.
+#' @param bounds Optional \code{c(lo, hi)}; otherwise inferred.
+#' @return A list with \code{estimate}, \code{se}, \code{n},
+#'   \code{ci}, \code{level}, \code{levels_by_split},
+#'   \code{level_counts}, \code{modal_levels}, \code{level_agreement},
+#'   \code{separation}, \code{near_tie}, \code{level_means},
+#'   \code{split_estimates}, \code{n_splits}, \code{epsilon},
+#'   \code{candidate_levels}, \code{method}, \code{sigma},
+#'   \code{algorithm}.
 #' @references Hubbard, A. E. et al. (2018).
 #' @export
-morie_tmle_data_adaptive <- function(y, D, X, candidate_strata = NULL,
-                                     method = "cv-tmle", n_folds = 10,
-                                     trim = 0.01, ridge = 1e-8,
-                                     level = 0.95, bounds = NULL) {
-  if (!(method %in% .TMLDTA_METHODS)) {
-    stop("tmldta: method must be one of cv-tmle/sample-split/naive")
+#' @examples
+#' set.seed(2)
+#' n <- 120
+#' X <- matrix(rnorm(n * 2), n, 2)
+#' D <- rbinom(n, 1, 0.5)
+#' y <- plogis(0.8 * D + X[, 1] + rnorm(n, 0, 0.4))
+#' r <- morie_tmldta(y, D, X, method = "sample-split")
+#' str(r, max.level = 1)
+#' @keywords internal
+morie_tmldta <- function(y, D, X, candidate_strata = NULL,
+                         method = "cv-tmle", n_folds = 10,
+                         trim = 0.01, ridge = 1e-8, level = 0.95,
+                         bounds = NULL) {
+  if (!method %in% .TMLDTA_METHODS) {
+    stop("tmldta: method must be one of cv-tmle, sample-split, naive")
   }
   yv <- as.numeric(y)
   Av <- as.numeric(D)
   n <- length(yv)
-  if (length(Av) != n) stop("tmldta: outcome/exposure length mismatch")
-  Wm <- if (is.null(X)) matrix(0, n, 0) else as.matrix(X)
-  if (nrow(Wm) != n) stop("tmldta: covariate row count mismatch")
-  if (!(trim > 0 && trim < 0.5)) {
-    stop("tmldta: trim must be in (0, 0.5)")
-  }
-  if (n < 8) stop("tmldta: need at least 8 observations")
-  if (is.null(candidate_strata)) {
-    lv <- sort(unique(Av))
-  } else {
-    lv <- unique(as.numeric(candidate_strata))
-  }
-  if (length(lv) < 2L) stop("tmldta: need at least 2 exposure levels")
-  missing_ <- setdiff(lv, Av)
-  if (length(missing_) > 0L) {
+  if (length(Av) != n) stop("tmldta: outcome and exposure differ in length")
+  Wm <- if (is.null(X)) matrix(0, nrow = n, ncol = 0) else as.matrix(X)
+  storage.mode(Wm) <- "double"
+  if (nrow(Wm) != n) stop("tmldta: covariate rows and outcomes differ in length")
+  tr <- as.numeric(trim)
+  if (!(tr > 0 && tr < 0.5)) stop("tmldta: trim must be in (0, 0.5)")
+  if (n < 8L) stop("tmldta: need at least 8 observations")
+  lv <- .levels(Av, candidate_strata)
+  missing <- lv[!vapply(lv, function(a) any(Av == a), logical(1))]
+  if (length(missing) > 0L) {
     stop("tmldta: candidate levels never occur")
   }
-  if (is.null(bounds)) {
-    lo <- min(yv)
-    hi <- max(yv)
-  } else {
-    lo <- as.numeric(bounds[1])
-    hi <- as.numeric(bounds[2])
-  }
+  lo <- if (is.null(bounds)) min(yv) else as.numeric(bounds)[1]
+  hi <- if (is.null(bounds)) max(yv) else as.numeric(bounds)[2]
   rng <- hi - lo
   if (rng <= 0) stop("tmldta: the outcome has no range")
   if (any(yv < lo - 1e-12 | yv > hi + 1e-12)) {
@@ -387,26 +372,24 @@ morie_tmle_data_adaptive <- function(y, D, X, candidate_strata = NULL,
   }
   ys <- pmin(pmax((yv - lo) / rng, 0), 1)
   all_rows <- seq_len(n)
-  Wl <- if (ncol(Wm) == 0L) {
-    list(rep(list(numeric(0)), n))
-  } else {
-    lapply(seq_len(n), function(i) Wm[i, ])
-  }
   if (method == "naive") {
-    dl <- .discover_levels(ys, Av, Wl, lv, all_rows, all_rows, ridge)
-    sp <- .split_specific_tmle(ys, Av, Wl, lv, dl$aL, dl$aH, all_rows,
+    dl <- discover_levels(ys, Av, Wm, lv, all_rows, all_rows, ridge)
+    aL <- dl$aL
+    aH <- dl$aH
+    dinfo <- dl$info
+    ss <- split_specific_tmle(ys, Av, Wm, lv, aL, aH, all_rows,
       all_rows, ridge, trim,
       target = FALSE
     )
     splits <- list(list(
-      aL = dl$aL, aH = dl$aH,
-      estimate = rng * sp$psi, n_est = n
+      aL = aL, aH = aH, estimate = rng * ss$psi,
+      n_est = n
     ))
-    sigma2 <- sum(sp$D^2) / n
-    psi_hat <- sp$psi
+    sigma2 <- sum(ss$D^2) / n
+    psi_hat <- ss$psi
     eps_all <- c(0)
   } else {
-    folds <- .folds_dta(n, n_folds)
+    folds <- .tmldta_folds(n, n_folds)
     splits <- list()
     per_split <- list()
     ics <- list()
@@ -414,129 +397,133 @@ morie_tmle_data_adaptive <- function(y, D, X, candidate_strata = NULL,
     for (est in folds) {
       gen <- setdiff(all_rows, est)
       if (length(gen) == 0L || length(est) == 0L) next
-      dl <- .discover_levels(ys, Av, Wl, lv, gen, gen, ridge)
-      fit_rows <- if (method == "cv-tmle") gen else est
-      sp <- .split_specific_tmle(ys, Av, Wl, lv, dl$aL, dl$aH,
-        fit_rows, est, ridge, trim,
-        target = TRUE
+      dl <- discover_levels(ys, Av, Wm, lv, gen, gen, ridge)
+      aL <- dl$aL
+      aH <- dl$aH
+      fit <- if (method == "cv-tmle") gen else est
+      ss <- split_specific_tmle(
+        ys, Av, Wm, lv, aL, aH, fit, est,
+        ridge, trim
       )
-      per_split[[length(per_split) + 1L]] <- sp$psi
-      eps_all <- c(eps_all, sp$info$eps)
-      ics[[length(ics) + 1L]] <- sp$D
+      per_split[[length(per_split) + 1L]] <- ss$psi
+      eps_all <- c(eps_all, ss$info$eps)
+      ics[[length(ics) + 1L]] <- ss$D
       splits[[length(splits) + 1L]] <- list(
-        aL = dl$aL, aH = dl$aH,
-        estimate = rng * sp$psi,
-        n_est = length(est)
+        aL = aL, aH = aH,
+        estimate = rng * ss$psi, n_est = length(est)
       )
     }
     if (length(per_split) == 0L) stop("tmldta: no usable splits")
     psi_hat <- mean(unlist(per_split))
-    sigma2 <- mean(vapply(
+    sigma2 <- sum(vapply(
       ics, function(ic) sum(ic^2) / length(ic),
       numeric(1)
-    ))
+    )) / length(ics)
   }
   psi <- rng * psi_hat
   se <- rng * sqrt(sigma2 / n)
-  z <- .tmldta_qnorm(0.5 + 0.5 * level)
-  chosen <- table(unlist(lapply(
-    splits,
-    function(s) paste0(s$aL, ",", s$aH)
-  )))
-  modal <- names(which.max(chosen))
-  modal_pair <- as.numeric(strsplit(modal, ",")[[1]])
-  agreement <- max(chosen) / length(splits)
-  # separation: closest gap between the chosen levels' mean and a rival
-  di2 <- .discover_levels(ys, Av, Wl, lv, all_rows, all_rows, ridge)
-  ord <- sort(di2$info$means)
-  sep <- min(ord[2] - ord[1], ord[length(ord)] - ord[length(ord) - 1])
-  separation <- sep * rng
+  z <- qnorm(0.5 + 0.5 * as.numeric(level))
+  chosen <- list()
+  for (sp in splits) {
+    kk <- paste0(sp$aL, "|", sp$aH)
+    chosen[[kk]] <- if (is.null(chosen[[kk]])) {
+      1L
+    } else {
+      chosen[[kk]] + 1L
+    }
+  }
+  modal_kk <- names(which.max(unlist(lapply(chosen, identity))))
+  modal <- as.numeric(strsplit(modal_kk, "|", fixed = TRUE)[[1]])
+  agreement <- chosen[[modal_kk]] / length(splits)
+  dl_all <- discover_levels(ys, Av, Wm, lv, all_rows, all_rows, ridge)
+  ordered_means <- sort(unlist(dl_all$info$means))
+  separation <- min(
+    ordered_means[2] - ordered_means[1],
+    ordered_means[length(ordered_means)] -
+      ordered_means[length(ordered_means) - 1]
+  ) * rng
+  level_means <- dl_all$info$means * rng + lo
   list(
     estimate = psi, se = se, n = n,
-    ci = c(psi - z * se, psi + z * se), level = level,
-    levels_by_split = lapply(splits, function(s) c(s$aL, s$aH)),
-    level_counts = as.list(chosen),
-    modal_levels = modal_pair,
-    level_agreement = agreement,
-    separation = separation,
+    ci = c(psi - z * se, psi + z * se), level = as.numeric(level),
+    levels_by_split = lapply(splits, function(sp) c(sp$aL, sp$aH)),
+    level_counts = chosen, modal_levels = modal,
+    level_agreement = agreement, separation = separation,
     near_tie = (separation < 2 * se) || (agreement < 0.6),
-    level_means = di2$info$means * rng + lo,
-    split_estimates = vapply(splits, function(s) s$estimate, numeric(1)),
+    level_means = level_means,
+    split_estimates = vapply(
+      splits, function(sp) sp$estimate,
+      numeric(1)
+    ),
     n_splits = length(splits), epsilon = eps_all,
     candidate_levels = lv, method = method,
     sigma = sqrt(sigma2) * rng,
-    algorithm = paste(
-      "data-adaptive target parameter, Hubbard,",
-      "Kennedy & van der Laan (2018) Ch. 9",
-      "eq. (9.2)-(9.16)"
+    algorithm = paste0(
+      "data-adaptive target parameter, Hubbard, ",
+      "Kennedy & van der Laan (2018) Ch. 9 eq. ",
+      "(9.2)-(9.16)"
     )
   )
 }
 
-#' Rank the columns of X by data-adaptive importance
+#' Loop the contrast over every column of X in turn
 #'
-#' For each column the contrast is estimated with that column as the
-#' exposure and everything else as the covariate, and the results are
-#' sorted by absolute estimate.
-#'
-#' @param y Numeric outcome.
-#' @param X Numeric matrix of predictors.
-#' @param candidate_strata Optional levels to search over.
-#' @param method One of the three honest methods.
-#' @param n_folds Number of V-fold splits.
-#' @param names Optional variable names; defaults to \code{"X1"},
-#'   \code{"X2"}, ...
-#' @param ... Forwarded to \code{morie_tmle_data_adaptive}.
-#' @return A list of per-variable results sorted by absolute estimate.
+#' @param y Outcome vector.
+#' @param X Covariate matrix.
+#' @param candidate_strata Candidate levels.
+#' @param method One of \code{"cv-tmle"}, \code{"sample-split"},
+#'   \code{"naive"}.
+#' @param n_folds Number of folds.
+#' @param names Optional column names.
+#' @param ... Passed through to \code{tmle_data_adaptive}.
+#' @return A list of per-variable results, sorted by absolute estimate.
+#' @references Hubbard, A. E. et al. (2018).
 #' @export
+#' @examples
+#' set.seed(2)
+#' n <- 120
+#' X <- cbind(rbinom(n, 2, 0.5), rbinom(n, 1, 0.5), rbinom(n, 2, 0.4))
+#' y <- plogis(0.6 * X[, 1] + 0.4 * X[, 2] + rnorm(n, 0, 0.5))
+#' r <- morie_variable_importance(y, X, method = "naive")
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_variable_importance <- function(y, X, candidate_strata = NULL,
-                                      method = "cv-tmle", n_folds = 10,
-                                      names = NULL, ...) {
+                                      method = "cv-tmle",
+                                      n_folds = 10, names = NULL, ...) {
   Xm <- as.matrix(X)
+  storage.mode(Xm) <- "double"
   n <- nrow(Xm)
   p <- ncol(Xm)
   if (p < 2L) stop("variable_importance: need at least 2 columns")
-  nm <- if (is.null(names)) paste0("X", seq_len(p)) else names
+  nm <- if (is.null(names)) paste0("X", seq_len(p)) else as.character(names)
   if (length(nm) != p) {
-    stop("variable_importance: name/column count mismatch")
+    stop("variable_importance: names and columns differ in length")
   }
   out <- list()
   for (j in seq_len(p)) {
-    A_ <- Xm[, j]
-    W <- if (p > 1L) Xm[, -j, drop = FALSE] else matrix(0, n, 0)
-    r <- morie_tmle_data_adaptive(y, A_, W,
+    A <- Xm[, j]
+    W <- if (p > 1L) {
+      Xm[, -j, drop = FALSE]
+    } else {
+      matrix(0, nrow = n, ncol = 0)
+    }
+    r <- morie_tmldta(y, A, W,
       candidate_strata = candidate_strata,
       method = method, n_folds = n_folds, ...
     )
-    out[[j]] <- list(
-      variable = nm[j], index = j - 1L,
-      estimate = r$estimate, se = r$se,
-      ci = r$ci, levels = r$modal_levels
+    out[[length(out) + 1L]] <- list(
+      variable = nm[j], index = j,
+      estimate = r$estimate, se = r$se, ci = r$ci,
+      levels = r$modal_levels
     )
   }
   ord <- order(-abs(vapply(out, function(d) d$estimate, numeric(1))))
   out <- out[ord]
-  for (rank_ in seq_along(out)) out[[rank_]]$rank <- rank_
+  for (rank in seq_along(out)) out[[rank]]$rank <- rank
   out
 }
 
-#' Compact one-line summary of the tmldta recipe
-#'
-#' @return A character string.
+#' Compact alias per ledger/NAMING.md
+#' @rdname morie_tmldta
 #' @export
-morie_tmldta_cheatsheet <- function() {
-  paste(
-    "tmldta: levels found in the data (aL = argmin, aH = argmax",
-    "of mean Q(a,W)) then the contrast estimated -- but NOT on",
-    "the same rows. Naive reuse is structurally >= 0 under the",
-    "null. cv-tmle fits Q and g on the parameter-generating split",
-    "and only epsilon on the estimation split; average the split",
-    "estimates (9.14), variance from the average of the split",
-    "influence curves (9.15)."
-  )
-}
-
-morie_tmledataadaptive <- morie_tmle_data_adaptive
-
-# house entry point: the package exports one morie_<module>
-morie_tmldta <- morie_tmle_data_adaptive
+morie_tmledataadaptive <- morie_tmldta

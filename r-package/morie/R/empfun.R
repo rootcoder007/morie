@@ -18,7 +18,17 @@
 # (contact distribution or 'point-to-event' distribution)". Schabenberger &
 # Gotway (2005) sec. 3.3.4, pp. 97-98.
 
-#' @noRd
+#' morie_empty_space_function
+#'
+#' @param coords Argument `coords`; see Usage.
+#' @param r_grid Argument `r_grid`; see Usage.
+#' @param window Argument `window`; see Usage.
+#' @param n_grid Argument `n_grid`; see Usage.
+#' @return A list with `r`, `f`, `f_csr`, `empty_space_distances`, `lambda_est`, `n_sample`, `method`.
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' morie:::morie_empty_space_function(M)
+#' @keywords internal
 morie_empty_space_function <- function(coords, r_grid = NULL, window = NULL,
                                        n_grid = 40) {
   res <- spffun(coords, window, r_grid, n_grid)

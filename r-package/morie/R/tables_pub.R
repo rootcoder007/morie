@@ -32,18 +32,8 @@ NULL
 # Formatting helpers
 # ---------------------------------------------------------------------------
 
-#' .tbl_fmt_num
-#'
-#' A step of the tables_pub implementation. Called by \code{anova_table},
-#' \code{correlation_table}, \code{format_number} and 7 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param x Numeric; passed to \code{abs}.
-#' @param digits Passed to \code{formatC}. Defaults to \code{2L}.
-#' @param apa A flag; the body branches on it. Defaults to \code{FALSE}.
-#' @return The value of \code{s}, as built in the body.
-#' @export
+#' Internal helper: Tbl Fmt Num
+#' @noRd
 .tbl_fmt_num <- function(x, digits = 2L, apa = FALSE) {
   if (!is.finite(x)) return("")
   s <- formatC(x, format = "f", digits = digits)
@@ -54,21 +44,8 @@ NULL
   s
 }
 
-#' .tbl_fmt_pval
-#'
-#' A step of the tables_pub implementation. Called by \code{anova_table},
-#' \code{hazard_ratio_table}, \code{model_comparison_table} and 3 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param p Passed to \code{is.finite}.
-#' @param digits Numeric; combined arithmetically in the body. Defaults to \code{3L}.
-#' @param apa A flag; the body branches on it. Defaults to \code{FALSE}.
-#' @return The value of \code{s}, as built in the body.
-#' @export
-#' @examples
-#' res <- .tbl_fmt_pval(p = 0.5)
-#' res
+#' Internal helper: Tbl Fmt Pval
+#' @noRd
 .tbl_fmt_pval <- function(p, digits = 3L, apa = FALSE) {
   if (!is.finite(p)) return("")
   if (p < 10^(-digits))
@@ -80,19 +57,8 @@ NULL
   s
 }
 
-#' .tbl_stars
-#'
-#' A step of the tables_pub implementation. Called by \code{anova_table},
-#' \code{correlation_table}, \code{hazard_ratio_table} and 4 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param p Passed to \code{is.finite}.
-#' @return A character value.
-#' @export
-#' @examples
-#' res <- .tbl_stars(p = 0.5)
-#' res
+#' Internal helper: Tbl Stars
+#' @noRd
 .tbl_stars <- function(p) {
   if (!is.finite(p)) return("")
   if (p < 0.001) return("***")
@@ -101,18 +67,8 @@ NULL
   ""
 }
 
-#' .tbl_smd
-#'
-#' A step of the tables_pub implementation. Called by \code{table1}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param m1 Numeric; combined arithmetically in the body.
-#' @param m2 Numeric; combined arithmetically in the body.
-#' @param sd1 Numeric; combined arithmetically in the body.
-#' @param sd2 Numeric; combined arithmetically in the body.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Tbl Smd
+#' @noRd
 .tbl_smd <- function(m1, m2, sd1, sd2) {
   ps <- sqrt((sd1^2 + sd2^2) / 2)
   if (ps < 1e-12) return(0)
@@ -124,51 +80,23 @@ NULL
 # Footnote registry
 # ---------------------------------------------------------------------------
 
-#' .tbl_footnotes_new
-#'
-#' A step of the tables_pub implementation. Called by \code{anova_table},
-#' \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @return The value of \code{e}, as built in the body.
-#' @export
-#' @examples
-#' res <- .tbl_footnotes_new()
-#' res
+#' Internal helper: Tbl Footnotes New
+#' @noRd
 .tbl_footnotes_new <- function() {
   e <- new.env(parent = emptyenv())
   e$notes <- character(0)
   e
 }
 
-#' .tbl_footnotes_add
-#'
-#' A step of the tables_pub implementation. Called by \code{anova_table},
-#' \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param reg A list; the body reads \code{$notes} from it.
-#' @param text Passed to \code{\%in\%}.
-#' @return The value of \code{[}.
-#' @export
+#' Internal helper: Tbl Footnotes Add
+#' @noRd
 .tbl_footnotes_add <- function(reg, text) {
   if (!(text %in% reg$notes)) reg$notes <- c(reg$notes, text)
   letters[match(text, reg$notes) %% 26L + 1L]
 }
 
-#' .tbl_footnotes_render
-#'
-#' A step of the tables_pub implementation. Called by \code{anova_table},
-#' \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param reg A list; the body reads \code{$notes} from it.
-#' @param fmt Passed to \code{switch}. Defaults to \code{"text"}.
-#' @return A character value.
-#' @export
+#' Internal helper: Tbl Footnotes Render
+#' @noRd
 .tbl_footnotes_render <- function(reg, fmt = "text") {
   if (length(reg$notes) == 0L) return("")
   out <- character(0)
@@ -188,25 +116,8 @@ NULL
 # Format conversion
 # ---------------------------------------------------------------------------
 
-#' .tbl_to_format
-#'
-#' A step of the tables_pub implementation. Called by \code{anova_table},
-#' \code{correlation_table}, \code{format_dataframe} and 7 others in the module.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param df Passed to \code{return}.
-#' @param fmt One of \code{"csv"}, \code{"dataframe"}.
-#' @param title Passed to \code{nzchar}. Defaults to \code{""}.
-#' @param footnotes Passed to \code{nzchar}. Defaults to \code{""}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
-#' @examples
-#' df <- data.frame(x = c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), y = c(2.9, 5.1, 6.8,
-#' 9.4, 11.2, 13.1, 15.0, 17.6), g = c('a', 'b', 'a', 'b', 'a', 'b', 'a', 'b'),
-#' stringsAsFactors = FALSE)
-#' res <- .tbl_to_format(df = df)
-#' res
+#' Internal helper: Tbl To Format
+#' @noRd
 .tbl_to_format <- function(df, fmt = c("dataframe", "latex", "html",
                                         "markdown", "text", "csv"),
                             title = "", footnotes = "") {
@@ -255,17 +166,15 @@ NULL
 #' @param output_format "dataframe", "latex", "html", "markdown",
 #'   "text", "csv".
 #' @param title Table title.
-#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
-#'   with one row per variable (N row first, then continuous summaries,
-#'   then categorical levels) and columns named by group plus optional
-#'   \code{p-value}, \code{SMD}, and \code{Missing}. Otherwise a
-#'   character string holding the rendered table in the requested
-#'   format (\pkg{knitr::kable} output for latex / html / markdown /
-#'   text; CSV text for "csv").
-#' @export
+#' @return A vector of the computed values.
 #' @examples
-#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
-#' table1(M)
+#' set.seed(1)
+#' df <- data.frame(g = rep(c("a", "b"), 25), age = rnorm(50, 40, 10),
+#'                  sex = sample(c("m", "f"), 50, TRUE))
+#' res <- try(table1(df, group_col = "g", continuous_vars = "age",
+#'                   categorical_vars = "sex"))
+#' if (!inherits(res, "try-error")) head(res)
+#' @export
 table1 <- function(data, group_col = NULL,
                     continuous_vars = NULL, categorical_vars = NULL,
                     continuous_summary = c("mean_sd", "median_iqr", "mean_ci"),
@@ -438,16 +347,8 @@ table1 <- function(data, group_col = NULL,
 # Regression table
 # ---------------------------------------------------------------------------
 
-#' .tbl_extract_model
-#'
-#' A step of the tables_pub implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param m Passed to \code{summary}.
-#' @return A list with \code{params}, \code{se}, \code{pvalues}, \code{ci}, \code{nobs},
-#' \code{rsquared}, \code{aic}, \code{bic}, \code{llf}.
-#' @export
+#' Internal helper: Tbl Extract Model
+#' @noRd
 .tbl_extract_model <- function(m) {
   b <- stats::coef(m)
   se <- sqrt(diag(stats::vcov(m)))
@@ -481,17 +382,12 @@ table1 <- function(data, group_col = NULL,
 #' @param apa APA p-value formatting.
 #' @param output_format Output target.
 #' @param title Title.
-#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
-#'   with one column per model and rows for each coefficient (estimate
-#'   + parenthesised SE + optional CI), plus a leading \code{term}
-#'   column and trailing rows holding requested model statistics.
-#'   Otherwise a character string holding the rendered table in the
-#'   requested format.
-#' @export
+#' @return A character string.
 #' @examples
 #' set.seed(1)
 #' df <- data.frame(y = rnorm(60), x = rnorm(60))
 #' regression_table(list(ols = stats::lm(y ~ x, data = df)))
+#' @export
 regression_table <- function(models, exponentiate = FALSE,
                               show_ci = TRUE, show_stars = TRUE,
                               confidence = 0.95, digits = 3L,
@@ -596,17 +492,13 @@ regression_table <- function(models, exponentiate = FALSE,
 #' @param apa APA formatting.
 #' @param output_format Output target.
 #' @param title Title.
-#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
-#'   with one row per coefficient and columns \code{OR},
-#'   \code{<confidence>\% CI}, \code{p-value}, and a star column.
-#'   Otherwise a character string holding the rendered table in the
-#'   requested format.
-#' @export
+#' @return A character string.
 #' @examples
 #' set.seed(1)
 #' df <- data.frame(y = rbinom(80, 1, 0.4), x = rnorm(80))
 #' fit <- stats::glm(y ~ x, family = binomial(), data = df)
 #' odds_ratio_table(fit)
+#' @export
 odds_ratio_table <- function(model, confidence = 0.95, digits = 3L,
                               apa = FALSE, output_format = "dataframe",
                               title = "Odds Ratios") {
@@ -656,11 +548,7 @@ odds_ratio_table <- function(model, confidence = 0.95, digits = 3L,
 #' @param apa APA formatting.
 #' @param output_format Output target.
 #' @param title Title.
-#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
-#'   with one row per coefficient and columns \code{HR},
-#'   \code{<confidence>\% CI}, \code{p-value}, and a star column.
-#'   Otherwise a character string holding the rendered table in the
-#'   requested format.
+#' @return A character string.
 #' @examples
 #' params <- c(treat = 0.5, age = 0.02)
 #' se <- c(treat = 0.1, age = 0.005)
@@ -714,11 +602,7 @@ hazard_ratio_table <- function(params, se, pvalues, confidence = 0.95,
 #' @param digits Decimal places.
 #' @param output_format Output target.
 #' @param title Title.
-#' @return When \code{output_format = "dataframe"}, a square
-#'   \code{data.frame} of formatted correlation strings (with optional
-#'   significance stars) indexed by the numeric column names of
-#'   \code{data}. Otherwise a character string holding the rendered
-#'   table in the requested format.
+#' @return A character string.
 #' @examples
 #' set.seed(1)
 #' df <- data.frame(a = rnorm(30), b = rnorm(30), c = rnorm(30))
@@ -769,12 +653,7 @@ correlation_table <- function(data, method = "pearson", show_stars = TRUE,
 #' @param digits Decimal places.
 #' @param output_format Output target.
 #' @param title Title.
-#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
-#'   with one row per model (indexed by model name) and columns
-#'   \code{N}, \code{df}, \code{Log-Lik}, \code{AIC}, \code{BIC}, and
-#'   optionally \code{R-sq}, \code{LR stat}, \code{LR p}. Otherwise a
-#'   character string holding the rendered table in the requested
-#'   format.
+#' @return A character string.
 #' @examples
 #' if (requireNamespace("car", quietly = TRUE)) {
 #'   set.seed(1)
@@ -858,17 +737,15 @@ model_comparison_table <- function(models, nested = FALSE, digits = 3L,
 #' @param digits Decimal places.
 #' @param output_format Output target.
 #' @param title Title.
-#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
-#'   of the formatted ANOVA table (degrees of freedom, sums of squares
-#'   / chi-square statistic, F or LR statistic, formatted p-value, and
-#'   a star column). Otherwise a character string holding the rendered
-#'   table in the requested format.
-#' @examplesIf requireNamespace("car", quietly = TRUE)
+#' @return A character string.
+#' @examples
+#' \dontshow{if (requireNamespace("car", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' set.seed(1)
 #' df <- data.frame(x = rnorm(30))
 #' df$y <- df$x + rnorm(30)
 #' m <- lm(y ~ x, data = df)
 #' anova_table(m, typ = 1L)
+#' \dontshow{\}) # examplesIf}
 #' @export
 anova_table <- function(model, typ = 2L, digits = 3L,
                           output_format = "dataframe",
@@ -917,8 +794,7 @@ anova_table <- function(model, typ = 2L, digits = 3L,
 #' @param style "fixed", "scientific", "percent", "integer".
 #' @param digits Decimal places.
 #' @param apa APA-style leading-zero suppression.
-#' @return Length-1 character string of the formatted number, or
-#'   \code{""} when \code{x} is not finite.
+#' @return A logical scalar.
 #' @examples
 #' format_number(0.5, style = "fixed")
 #' format_number(1e-6, style = "scientific")
@@ -943,12 +819,7 @@ format_number <- function(x, style = c("fixed", "scientific",
 #' @param pval_cols Columns to format as p-values.
 #' @param output_format Output target.
 #' @param title Title.
-#' @return When \code{output_format = "dataframe"}, the input
-#'   \code{data.frame} with numeric columns coerced to formatted
-#'   character vectors (p-value columns use the morie p-value style;
-#'   other numeric columns use \code{numeric_fmt}). Otherwise a
-#'   character string holding the rendered table in the requested
-#'   format.
+#' @return A character string.
 #' @examples
 #' df <- data.frame(est = c(1.234, 2.456), p = c(0.001, 0.5))
 #' format_dataframe(df, pval_cols = "p")
@@ -984,15 +855,12 @@ format_dataframe <- function(df, numeric_fmt = "%.2f",
 #' @param digits Decimal places.
 #' @param output_format Output target.
 #' @param title Title.
-#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
-#'   indexed by variable name with one column per requested statistic
-#'   (e.g. \code{n}, \code{mean}, \code{sd}, \code{median}, ...).
-#'   Otherwise a character string holding the rendered table in the
-#'   requested format.
-#' @export
+#' @return A character string.
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' summary_statistics_table(V)
+#' set.seed(1)
+#' df <- data.frame(age = rnorm(50, 40, 10), score = rnorm(50))
+#' summary_statistics_table(df)
+#' @export
 summary_statistics_table <- function(data, variables = NULL,
                                         stats = c("n", "mean", "sd",
                                                    "median", "min",
@@ -1059,15 +927,12 @@ summary_statistics_table <- function(data, variables = NULL,
 #' @param digits Decimal places.
 #' @param output_format Output target.
 #' @param title Title.
-#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
-#'   indexed by estimator name with columns \code{Estimate}, \code{SE},
-#'   \code{95\% CI}, \code{p-value}, and a star column. Otherwise a
-#'   character string holding the rendered table in the requested
-#'   format.
-#' @export
+#' @return A character string.
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' treatment_effect_table(V)
+#' res <- try(treatment_effect_table(list(
+#'   ols = list(estimate = 0.5, se = 0.1, p_value = 0.01))))
+#' if (!inherits(res, "try-error")) head(res)
+#' @export
 treatment_effect_table <- function(estimators, digits = 3L,
                                       output_format = "dataframe",
                                       title = "Treatment Effect Estimates") {

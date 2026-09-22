@@ -10,14 +10,13 @@ morie_otis_analyze_c01(data)
 \item{data}{c01 data.frame.}
 }
 \value{
-A \code{morie_otis_analysis_result} object (subclass of
-\code{morie_rich_result}) with summary lines and a year x gender
-cohort-size table including RC/custody and Seg/custody ratios.
+An object of class \code{"morie_otis_analysis_result"}.
 }
 \description{
 Total individuals x custody/RC/seg x gender (c01)
 }
 \examples{
-D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-morie_otis_analyze_c01(D)
+otis_c01 <- morie_synth_otis("c01", n = 120L, seed = 1L)
+res <- morie_otis_analyze_c01(otis_c01)
+class(res)
 }

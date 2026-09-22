@@ -13,6 +13,14 @@ morie_geron_one_vs_one_hm(X, y, base_estimator = NULL, X_new = NULL)
 
 \item{X_new}{Optional rows to classify (default \code{X}).}
 }
+\value{
+A list with \code{predict}, \code{predictions}, \code{classes}, \code{pairs}, \code{n_classifiers}, \code{votes}, \code{accuracy}, \code{tie_fraction}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
 One-vs-one multiclass: K(K-1)/2 pairwise classifiers with voting (Geron Ch 3, hmovo)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_one_vs_one_hm(V, V)
+}
+\keyword{internal}

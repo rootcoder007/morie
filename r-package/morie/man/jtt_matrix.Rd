@@ -4,10 +4,10 @@
 \alias{jtt_matrix}
 \title{jtt_matrix}
 \usage{
-jtt_matrix(pam = 200, scale = 10)
+jtt_matrix(pam = 200L, scale = 10)
 }
 \arguments{
-\item{pam}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{200}.}
+\item{pam}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{200L}.}
 
 \item{scale}{Numeric; combined arithmetically in the body. Defaults to \code{10}.}
 }
@@ -15,7 +15,12 @@ jtt_matrix(pam = 200, scale = 10)
 A list with \code{matrix}, \code{freqs}, \code{P}, \code{Q}, \code{pam}, \code{rate}.
 }
 \description{
-A step of the mafft_native implementation. Called by \code{mafft_default_raw}.
+A step of the mafft_native implementation. Called by \code{.mafft_default_raw_matrix},
+\code{morie_mafft}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+jtt_matrix()
+}
+\keyword{internal}

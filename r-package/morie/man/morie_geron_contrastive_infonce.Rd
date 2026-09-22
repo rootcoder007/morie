@@ -30,6 +30,6 @@ Cross-entropy over 1 positive and N negatives; chance loss log(1+N).
 }
 \examples{
 morie_geron_contrastive_infonce(anchors = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2),
-positives = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), negatives = matrix(c(1, 2, 3, 4, 5,
-6), nrow = 2))
+  positives = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2),
+  negatives = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2))
 }

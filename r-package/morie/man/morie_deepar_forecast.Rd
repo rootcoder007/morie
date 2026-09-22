@@ -37,3 +37,9 @@ A list with \code{mean}, \code{quantiles}, \code{paths},
 \description{
 Fit, sample, and read the quantiles off the trajectories
 }
+\examples{
+\donttest{
+morie_deepar_forecast(z = c(1, 2, 3, 4, 5, 6, 7, 8), horizon = 5L)
+}
+}
+\keyword{internal}

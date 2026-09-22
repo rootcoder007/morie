@@ -13,5 +13,5 @@ A \code{morie_siu_result}.
 Sprott-Doob (Feb 2021) Table 11: Region x stay length
 }
 \examples{
-morie_siu_sprott_doob_table11()
+head(morie_siu_sprott_doob_table11())
 }

@@ -12,10 +12,14 @@ knn_trainer(k = 1L, smoothing = 0.001)
 \item{smoothing}{A count; the body uses it as \code{rep(...)}. Defaults to \code{0.001}.}
 }
 \value{
-The value of \code{function}.
+The value of \code{train}, as built in the body.
 }
 \description{
-A step of the memb_native implementation. No other function in the package calls it.
+A step of the memb_native implementation. Called by \code{morie_memb}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+knn_trainer()
+}
+\keyword{internal}

@@ -61,7 +61,7 @@
   M
 }
 
-#' Solve A x = b; singular pooled covariance gets the paper\'s advice
+#' Solve A x = b; singular pooled covariance gets the paper's advice
 #'
 #' A step of the sctraj_native implementation. Called by \code{morie_sctraj_cluster_distances}.
 #' See the file header for the source the module follows.
@@ -116,6 +116,10 @@
 #' elements indexed.
 #' @return A list with \code{distances}, \code{clusters}, \code{centers}, \code{covariances}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_sctraj_cluster_distances(V, V)
+#' @keywords internal
 morie_sctraj_cluster_distances <- function(X, labels, cov = "full",
                                            weights = NULL) {
   # Equation 1: the covariance-scaled distance between clusters.
@@ -197,7 +201,7 @@ morie_sctraj_cluster_distances <- function(X, labels, cov = "full",
   list(distances = D, clusters = nms, centers = centers, covariances = covs)
 }
 
-#' Prim\'s MST, with the paper\'s optional terminal-state constraint
+#' Prim's MST, with the paper's optional terminal-state constraint
 #'
 #' With ends given, the tree is built on the non-terminal clusters and
 #' each terminal is attached to its nearest non-terminal neighbour.
@@ -207,6 +211,10 @@ morie_sctraj_cluster_distances <- function(X, labels, cov = "full",
 #' @param ends Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{edges}, \code{adjacency}, \code{nodes}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_sctraj_minimum_spanning_tree(D, D)
+#' @keywords internal
 morie_sctraj_minimum_spanning_tree <- function(D, clusters, ends = NULL) {
   # Prim's MST, with the paper's optional terminal-state constraint.
   # With ends given, the tree is built on the non-terminal clusters
@@ -266,6 +274,11 @@ morie_sctraj_minimum_spanning_tree <- function(D, clusters, ends = NULL) {
 #' @param root Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' tree <- list(adjacency = list("1" = c("2", "3"), "2" = c("4"),
+#'                               "3" = character(0), "4" = character(0)))
+#' morie_sctraj_lineages_from_tree(tree, root = "1")
+#' @keywords internal
 morie_sctraj_lineages_from_tree <- function(tree, root) {
   # Every path from root to a leaf, in order.
   adj <- tree$adjacency
@@ -406,6 +419,10 @@ morie_sctraj_lineages_from_tree <- function(tree, root) {
 #' @param n_knots Accepted by the signature and not used anywhere in the body.
 #' @return A list with \code{pseudotime}, \code{curve}, \code{distance}, \code{sse}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_sctraj_principal_curve(V, V)
+#' @keywords internal
 morie_sctraj_principal_curve <- function(X, init, weights = NULL,
                                          max_iter = 15, tol = 1e-3, span = 0.4,
                                          n_knots = NULL) {
@@ -519,6 +536,12 @@ morie_sctraj_principal_curve <- function(X, init, weights = NULL,
 #' @param return_grid A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' c1 <- cbind(seq(0, 1, length.out = 20), seq(0, 2, length.out = 20))
+#' c2 <- cbind(seq(0, 1, length.out = 20), seq(0, 2.2, length.out = 20))
+#' r <- morie_sctraj_average_curve(list(c1, c2), n_points = 10)
+#' dim(r)
+#' @keywords internal
 morie_sctraj_average_curve <- function(curves, n_points = 100,
                                        return_grid = FALSE) {
   # Equation 2: c_avg(t) = (1/M) sum_m c_m(t). The common domain is
@@ -585,6 +608,9 @@ morie_sctraj_cosine_cdf <- function(u) {
 #' @param arg One of \code{"as_printed"}, \code{"shifted"}. Defaults to \code{"shifted"}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' morie_sctraj_shrinkage_weight(t = 5, t_min = 0, t_max = 10)
+#' @keywords internal
 morie_sctraj_shrinkage_weight <- function(t, t_min, t_max,
                                           arg = "shifted") {
   # Equation 4's weighting function. arg="shifted" (default) puts
@@ -662,6 +688,15 @@ morie_sctraj_shrinkage_weight <- function(t, t_min, t_max,
 #' \code{centers}, \code{n_lineages}, \code{root}, \code{cov}, \code{shrink},
 #' \code{method}, \code{note}.
 #' @export
+#' @examples
+#' set.seed(3)
+#' X <- rbind(matrix(rnorm(40, 0), 20, 2),
+#'            matrix(rnorm(40, 4), 20, 2),
+#'            matrix(rnorm(40, c(8, 0)), 20, 2))
+#' labels <- rep(0:2, each = 20)
+#' r <- morie_sctraj(X, labels, root = 0L)
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_sctraj <- function(X, labels, root, ends = NULL, cov = "full",
                          max_iter = 15, shrink = TRUE, weight_arg = "shifted",
                          span = 0.4, n_points = 100) {
@@ -810,6 +845,9 @@ morie_sctraj_pseudotime_trajectory <- morie_sctraj
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' morie_sctraj_cheatsheet()
+#' @keywords internal
 morie_sctraj_cheatsheet <- function() {
   paste0(
     "sctraj: Slingshot (Street et al. 2018). Stage 1 draws an ",

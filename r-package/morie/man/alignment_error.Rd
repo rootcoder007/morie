@@ -23,3 +23,9 @@ A step of the masrcn_native implementation. Called by \code{morie_masrcn}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+features <- matrix(as.numeric(1:36), 6, 6)
+a <- alignment_error(features, box = c(0.3, 0.3, 4.7, 4.7))
+is.list(a)
+}
+\keyword{internal}

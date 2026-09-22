@@ -5,6 +5,7 @@
 # paths run when 'signal' / 'pracma' are installed.
 
 test_that("Butterworth + Savitzky-Golay filters run via the signal pkg", {
+  testthat::skip_if_not_installed("signal")
   set.seed(1)
   tt <- seq(0, 1, length.out = 600)
   x <- sin(2 * pi * 5 * tt) + 0.5 * sin(2 * pi * 60 * tt)
@@ -17,6 +18,7 @@ test_that("Butterworth + Savitzky-Golay filters run via the signal pkg", {
 })
 
 test_that("morie_hurst_r estimates the Hurst exponent via pracma", {
+  testthat::skip_if_not_installed("pracma")
   set.seed(2)
   r <- morie_hurst_r(cumsum(stats::rnorm(2048)))
   expect_true(r$interpretation %in%
@@ -24,6 +26,8 @@ test_that("morie_hurst_r estimates the Hurst exponent via pracma", {
 })
 
 test_that(".morie_py_call builds the bridge command and shells out", {
+  skip_if(!exists(".morie_py_call", envir = asNamespace("morie"), inherits = FALSE),
+          "rmorie slim build: no Python bridge")
   captured <- NULL
   testthat::local_mocked_bindings(
     system2 = function(command, args, ...) {
@@ -47,22 +51,34 @@ test_that("hfd returns a structured higuchi_fd list on a deterministic input", {
   expect_length(out$extra$L_k, 5L)
 })
 
-test_that("Butterworth filters run natively without the signal pkg", {
-  # module 20 replaced the signal-package / Python-bridge path with a
-  # native DSP engine, so filtering works even when 'signal' is absent.
+test_that("filters fall back to the Python bridge without the signal pkg", {
+  skip_if(!exists(".morie_py_call", envir = asNamespace("morie"), inherits = FALSE),
+          "rmorie slim build: no Python bridge")
   testthat::local_mocked_bindings(
     requireNamespace = function(package, ...) {
       if (identical(package, "signal")) FALSE else TRUE
     },
     .package = "base"
   )
-  expect_type(buttlp(1:10, 100, 10), "list")
-  expect_type(butthp(1:10, 100, 10), "list")
-  expect_type(buttbp(1:10, 100, 5, 20), "list")
-  expect_type(buttbs(1:10, 100), "list")
-  expect_type(morie_sgolay_smooth(1:20), "list")
+  testthat::local_mocked_bindings(
+    .morie_py_call = function(fn_name, ...) paste0("bridge:", fn_name),
+    .package = "morie"
+  )
+  expect_equal(buttlp(1:10, 100, 10), "bridge:buttlp")
+  expect_equal(butthp(1:10, 100, 10), "bridge:butthp")
+  expect_equal(buttbp(1:10, 100, 5, 20), "bridge:buttbp")
+  expect_equal(buttbs(1:10, 100), "bridge:buttbs")
+  expect_equal(morie_sgolay_smooth(1:20), "bridge:sgolay")
 })
 
-test_that("morie_hurst_r estimates the Hurst exponent", {
-  expect_type(morie_hurst_r(cumsum(stats::rnorm(64))), "list")
+test_that("morie_hurst_r is native: runs without pracma or the bridge", {
+  # Wave A native: no pracma delegation, no Python-bridge fallback.
+  testthat::local_mocked_bindings(
+    requireNamespace = function(package, ...) {
+      if (identical(package, "pracma")) FALSE else TRUE
+    },
+    .package = "base"
+  )
+  r <- morie_hurst_r(cumsum(stats::rnorm(64)))
+  expect_true(is.numeric(r$H))
 })

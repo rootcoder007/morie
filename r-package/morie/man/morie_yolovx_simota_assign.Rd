@@ -6,6 +6,8 @@
 \title{Dynamic top-k, an approximation to optimal transport. k_g is the}
 \usage{
 morie_yolovx_simota_assign(costs, ious, top_q = 10, max_k = NULL)
+
+morie_yolovx(costs, ious, top_q = 10, max_k = NULL)
 }
 \arguments{
 \item{costs}{Passed to \code{.s03mat}.}
@@ -25,3 +27,8 @@ A list with \code{estimate}, \code{assignment}, \code{dynamic_k},
 rounded sum of the q largest IoUs for that ground truth. Returns the
 assignment keyed by 0-based ground-truth index.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_yolovx_simota_assign(V, V)
+}
+\keyword{internal}

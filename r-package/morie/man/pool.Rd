@@ -11,13 +11,18 @@ pool(token_vectors, mode = "mean", mask = NULL)
 
 \item{mode}{One of \code{"cls"}, \code{"max"}. Defaults to \code{"mean"}.}
 
-\item{mask}{Optional; may be \code{NULL}. Coerced to logical by the body, with \code{as.logical}.}
+\item{mask}{The body requires: sbert: the mask excludes every token.}
 }
 \value{
-A numeric value.
+The value of \code{out}, as built in the body.
 }
 \description{
 A step of the sbert_native implementation. Called by \code{morie_geron_lenet5}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+pool(V)
+}
+\keyword{internal}

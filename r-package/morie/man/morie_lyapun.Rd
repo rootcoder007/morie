@@ -4,42 +4,24 @@
 \alias{morie_lyapun}
 \title{morie_lyapun}
 \usage{
-morie_lyapun(
-  y,
-  embedding = NULL,
-  tau = NULL,
-  dt = 1,
-  fit = NULL,
-  min_sep = NULL,
-  max_steps = NULL,
-  method = "rosenstein",
-  k = NULL
-)
+morie_lyapun(op, ...)
 }
 \arguments{
-\item{y}{Passed to \code{lyapunov_exponent}.}
+\item{op}{A vector; its length is taken.}
 
-\item{embedding}{Passed to \code{lyapunov_exponent}.}
-
-\item{tau}{Passed to \code{lyapunov_exponent}.}
-
-\item{dt}{Passed to \code{lyapunov_exponent}. Defaults to \code{1}.}
-
-\item{fit}{Passed to \code{lyapunov_exponent}.}
-
-\item{min_sep}{Passed to \code{lyapunov_exponent}.}
-
-\item{max_steps}{Passed to \code{lyapunov_exponent}.}
-
-\item{method}{Passed to \code{lyapunov_exponent}. Defaults to \code{"rosenstein"}.}
-
-\item{k}{Passed to \code{lyapunov_exponent}.}
+\item{...}{Passed through.}
 }
 \value{
-The value of \code{lyapunov_exponent}.
+The value of \code{switch}.
 }
 \description{
 A step of the lyapun_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+y <- sin(2 * pi * (1:400) / 25)
+r <- morie_lyapun("mean_period", y)
+str(r, max.level = 1)
+}
+\keyword{internal}

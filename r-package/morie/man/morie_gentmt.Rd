@@ -40,3 +40,15 @@ A step of the gentmt_native implementation. No other function in the package cal
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+# A continuous dose that depends on the covariate but is not a
+# deterministic function of it: the treatment model must retain some
+# residual variance, or f(A | X) is a point mass and no
+# inverse-probability weight exists.
+set.seed(1)
+H <- stats::rnorm(50)
+A <- 0.8 * H + stats::rnorm(50)
+y <- 0.5 * A + H + stats::rnorm(50)
+morie_gentmt(y = y, A = A, H = H)$estimate
+}
+\keyword{internal}

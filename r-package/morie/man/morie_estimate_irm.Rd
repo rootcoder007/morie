@@ -28,19 +28,23 @@ morie_estimate_irm(
 }
 \value{
 A list with components: \code{ate}, \code{se}, \code{ci_lower}, \code{ci_upper},
-\code{n}, \code{method} (\code{"IRM (DoubleML)"}).
+\code{n}, \code{method} (\code{"IRM (rmorie native)"}).
 }
 \description{
-Native implementation of the Chernozhukov et al. (2018) interactive
-regression model: cross-fit logistic propensity scores and GCV-ridge
-outcome regressions, combined through the doubly-robust (AIPW) score.
-Mirrors the Python sibling \code{morie.estimate_irm()}.
+Native rmorie implementation of the interactive regression model
+(cross-fit logistic propensity + GCV-ridge outcome regressions,
+AIPW orthogonal score), mirroring the Python sibling
+\code{morie.estimate_irm()}. Cross-validated against \code{DoubleML} in the
+package's cross tests; no DoubleML at runtime.
 }
 \details{
-Nothing beyond \code{stats} is required at runtime. The estimator is
-cross-validated against \pkg{DoubleML} in the package's cross tests,
-but \pkg{DoubleML}, \pkg{mlr3}, and \pkg{mlr3learners} are not
-loaded or called.
+Following the DoubleML R package's own conventions, this uses
+the \code{mlr3} ecosystem for the nuisance learners (\code{ml_g} for
+\eqn{E[Y|T,X]} and \code{ml_m} for \eqn{P(T=1|X)}). Defaults are
+\code{lrn("regr.lm")} and \code{lrn("classif.log_reg")}, which require nothing
+beyond \code{stats}. For higher-capacity defaults, install \code{ranger} and pass
+\code{lrn("regr.ranger")} / \code{lrn("classif.ranger")} via the underlying
+\code{DoubleML::DoubleMLIRM$new()} directly.
 
 Following Chernozhukov et al. (2018), the IRM extends the partially linear
 model by allowing fully heterogeneous treatment effects:
@@ -49,8 +53,7 @@ model by allowing fully heterogeneous treatment effects:
 }
 \section{CRAN \code{Suggests}}{
 
-Requires the suggested packages \code{DoubleML}, \code{mlr3}, and \code{mlr3learners}.
-Install with \code{install.packages(c("DoubleML", "mlr3", "mlr3learners"))}.
+Runs on base R alone -- no suggested packages required.
 If any are unavailable, the function raises an informative error.
 }
 

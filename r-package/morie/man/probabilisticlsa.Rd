@@ -25,3 +25,10 @@ A step of the plsa_native implementation. No other function in the package calls
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+n_dw <- matrix(rpois(30, 3), 6, 5)
+r <- probabilisticlsa(n_dw, K = 2, iters = 40)
+str(r, max.level = 1)
+}
+\keyword{internal}

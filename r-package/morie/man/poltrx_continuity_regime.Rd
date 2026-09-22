@@ -16,6 +16,10 @@ A list with \code{rule}, \code{draws} and \code{reason}.
 \description{
 Names the consequence of a parameter rule for the realised draw.
 }
+\examples{
+poltrx_continuity_regime("m_squared")
+}
 \references{
 Muller, P. & Quintana, F. A. (2004). Sec. 2.3.
 }
+\keyword{internal}

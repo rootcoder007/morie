@@ -38,6 +38,19 @@ morie_kamath_mixtral_moe(x, W_g, expert_weights = NULL)
 \item{expert_weights}{Optional list of (W1, W3, W2) per expert;
 NULL isolates the gate with identity experts.}
 }
+\value{
+A list with \code{estimate}, \code{cross_entropy}, \code{context_size}, \code{n}, \code{method}.
+}
 \description{
 GPT objectives and MoE (Eq 2.34-2.41)
 }
+\examples{
+morie_kamath_gpt_unsupervised(c(0.5, 0.5))
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_kamath_gpt_combined(V, V)
+morie_kamath_moe_output(x = c(1, 2, 3, 4, 5, 6, 7, 8), G = c(1, 2, 3, 4, 5, 6, 7, 8),
+  E_i = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_kamath_moe_topk_gating(1, rbind(c(3, 1, 2, 0.5)), k = 2)
+morie_kamath_mixtral_moe(1, rbind(c(3, 1, 2)))
+}
+\keyword{internal}

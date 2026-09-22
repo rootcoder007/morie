@@ -27,6 +27,8 @@ Clr <- function(x) {
   if (any(x <= 0)) stop("compositions must be strictly positive")
   lg <- mean(log(x))
   z <- log(x) - lg
-  .t1_result(clr = z, geomean = exp(lg), D = length(x), sum_check = sum(z),
-             method = "Centred log-ratio transform")
+  .t1_result(
+    clr = z, geomean = exp(lg), D = length(x), sum_check = sum(z),
+    method = "Centred log-ratio transform"
+  )
 }

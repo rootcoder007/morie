@@ -19,3 +19,8 @@ A step of the rangayyan_class implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie:::as.numeric.morie_frac(D)
+}
+\keyword{internal}

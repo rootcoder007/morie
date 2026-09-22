@@ -17,3 +17,8 @@ arc indices, 0-based).
 The Z_C statistic of Olshen et al. (2004) section 2: splice the
 segment into a circle and test the arc i+1..j against its complement.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+cbs_statistic(V)
+}
+\keyword{internal}

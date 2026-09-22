@@ -19,6 +19,5 @@ Multi-line summary string.
 Search the registry for matching commands
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-stat_bridge_fn_search(V)
+stat_bridge_fn_search("ttest")
 }

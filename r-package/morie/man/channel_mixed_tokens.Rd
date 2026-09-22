@@ -2,12 +2,12 @@
 % Please edit documentation in R/patchT_native.R
 \name{channel_mixed_tokens}
 \alias{channel_mixed_tokens}
-\title{The alternative: one token per time position, all channels}
+\title{channel_mixed_tokens}
 \usage{
 channel_mixed_tokens(X, patch_len, stride = NULL)
 }
 \arguments{
-\item{X}{A matrix; passed to \code{as.matrix}.}
+\item{X}{Passed to \code{.patcht_mat}.}
 
 \item{patch_len}{Passed to \code{patchify}.}
 
@@ -18,7 +18,11 @@ A list with \code{tokens}, \code{n_patches}, \code{n_tokens_total},
 \code{design}, \code{note}.
 }
 \description{
-blended. Provided for contrast. Summing across channels at the first
-projection is what makes such a model permutation-invariant and so
-unable to say which channel a signal came from.
+A step of the patchT_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
 }
+\examples{
+channel_mixed_tokens(X = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+}
+\keyword{internal}

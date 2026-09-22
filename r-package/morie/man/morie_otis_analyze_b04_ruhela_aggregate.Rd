@@ -22,7 +22,6 @@ b04 aggregate Ruhela: Female -> median seg duration
 }
 \examples{
 \donttest{
-# Synthetic OTIS-shaped panel (bundled generator)
 otis_b04 <- morie_synth_otis("b04", n = 120L, seed = 1L)
 morie_otis_analyze_b04_ruhela_aggregate(otis_b04)
 }

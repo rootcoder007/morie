@@ -21,12 +21,12 @@ mafft_alignment(
 )
 }
 \arguments{
-\item{sequences}{The body requires: mafft: at least two sequences are needed.}
+\item{sequences}{Passed to \code{.mafft_clean}.}
 
 \item{method}{One of \code{"FFT-NS-2"}, \code{"FFT-NS-i"}, \code{"NW-NS-2"}. Defaults
 to \code{"FFT-NS-2"}.}
 
-\item{seq_type}{Passed to \code{mafft_clean}.}
+\item{seq_type}{Passed to \code{.mafft_clean}.}
 
 \item{raw_matrix}{Passed to \code{normalized_similarity_matrix}.}
 
@@ -58,3 +58,9 @@ A step of the mafft_native implementation. Called by \code{morie_mafft}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+r <- mafft_alignment(c("MKVLATLLPLAA", "MKVLATLLPLAG", "MRVLATGLPLAA"),
+                     method = "FFT-NS-2")
+str(r, max.level = 1)
+}
+\keyword{internal}

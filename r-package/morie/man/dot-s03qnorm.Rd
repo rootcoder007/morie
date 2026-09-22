@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_helpers_s03.R
 \name{.s03qnorm}
 \alias{.s03qnorm}
-\title{R\'s qnorm IS Wichura AS 241, the same algorithm the Python arm codes}
+\title{R's qnorm IS Wichura AS 241, the same algorithm the Python arm codes}
 \usage{
 .s03qnorm(p)
 }
@@ -14,7 +14,7 @@ The value of \code{qnorm}.
 }
 \description{
 A step of the helpers_s03 implementation. Called by \code{.drbsze_tquant},
-\code{Btbca}, \code{Btcicor} and 21 others in the module.
+\code{Btbca}, \code{Btcicor} and 20 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

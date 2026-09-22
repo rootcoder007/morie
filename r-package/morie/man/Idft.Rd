@@ -17,3 +17,8 @@ forward transform of eq (3.80); getting either wrong scales the
 signal by N or reverses it in time, neither visible on a magnitude
 plot.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Idft(V)
+}
+\keyword{internal}

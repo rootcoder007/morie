@@ -23,7 +23,21 @@
 #
 # Cressie (1993) secs. 3.4.2 and 3.4.5; Schabenberger & Gotway (2005) ch. 5.
 
-#' @noRd
+#' KrigFDA
+#'
+#' @param coords Argument `coords`; see Usage.
+#' @param values Argument `values`; see Usage.
+#' @param new_coords Argument `new_coords`; see Usage.
+#' @param model Argument `model`; see Usage.
+#' @param nugget Argument `nugget`; see Usage.
+#' @param sill Argument `sill`; see Usage.
+#' @param range_ Argument `range_`; see Usage.
+#' @param trend_order Argument `trend_order`; see Usage.
+#' @return A list with `estimate`, `se`, `beta`, `residuals`, `weights`, `n`, `p`, `method`.
+#' @examples
+#' morie:::KrigFDA(coords = c(1, 2, 3, 4, 5, 6, 7, 8), values = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   new_coords = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 KrigFDA <- function(coords, values, new_coords, model = "exponential",
                           nugget = 0, sill = 1, range_ = 1, trend_order = 1) {
   z <- as.numeric(values)

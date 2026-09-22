@@ -21,3 +21,9 @@ A step of the scumap_native implementation. Called by \code{morie_scumap_umap_si
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+set.seed(1)
+X <- matrix(rnorm(60), 30, 2)
+morie_scumap_fuzzy_simplicial_set(X, n_neighbors = 5)
+}
+\keyword{internal}

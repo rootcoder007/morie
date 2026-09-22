@@ -2,21 +2,27 @@
 % Please edit documentation in R/secarg_native.R
 \name{morie_secarg_variable_hash}
 \alias{morie_secarg_variable_hash}
-\title{Argon2's variable-length hash H' (BLAKE2b stretched past 64 bytes)}
+\title{Argon2's variable-length hash H'}
 \usage{
 morie_secarg_variable_hash(data, length)
 }
 \arguments{
-\item{data}{Bytes.}
+\item{data}{Raw vector of bytes.}
 
-\item{length}{Desired output length in bytes.}
+\item{length}{Positive integer target length.}
 }
 \value{
-Raw bytes of that length.
+Raw vector of \code{length} bytes.
 }
 \description{
-Argon2's variable-length hash H' (BLAKE2b stretched past 64 bytes)
+BLAKE2b stretched past 64 bytes; the first 32 bytes of every
+subsequent 64-byte block are kept so the output does not repeat.
+}
+\examples{
+r <- morie_secarg_variable_hash(charToRaw("hello"), 64L)
+length(r)
 }
 \references{
 RFC 9106 Sec. 3.3.
 }
+\keyword{internal}

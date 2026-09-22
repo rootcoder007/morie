@@ -13,6 +13,14 @@ morie_poissp_car_precision(W, tau = 1, rho = 1)
 
 \item{rho}{See Usage.}
 }
+\value{
+A numeric value.
+}
 \description{
 The proper-CAR precision Q = tau (D_w - rho W)
 }
+\examples{
+W <- matrix(c(0, 1, 0, 1, 0, 1, 0, 1, 0), 3, 3)
+morie_poissp_car_precision(W, tau = 1.0, rho = 0.5)
+}
+\keyword{internal}
