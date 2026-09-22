@@ -9,7 +9,7 @@ __all__ = ["tversky_similarity"]
 
 
 def tversky_similarity(fp_a, fp_b, alpha=0.5, beta=0.5):
-    """Asymmetric set similarity with separate penalties per side.
+    r"""Asymmetric set similarity with separate penalties per side.
 
     Tversky argument was that human similarity judgements are not
     symmetric -- a son resembles his father more than the father

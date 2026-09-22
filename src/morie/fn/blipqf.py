@@ -23,3 +23,9 @@ queryingtransformer = qformer_attend
 # public names resolved by fn/_lazy_map.json
 blip_qformer = qformer_attend
 blipqformer = qformer_attend
+
+
+def cheatsheet() -> str:
+    from . import blip2v
+
+    return blip2v.cheatsheet()

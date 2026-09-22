@@ -484,7 +484,7 @@ def spectral_radius(spec, theta, tol=1e-6):
 
 
 def all_eigenvalues(spec, theta):
-    """Every :math:`|\lambda|` of :math:`D`, largest first."""
+    r"""Every :math:`|\lambda|` of :math:`D`, largest first."""
     w, fmat, g = state_matrices(spec, theta)
     ns = len(w)
     d = [[fmat[i][j] - g[i] * w[j] for j in range(ns)] for i in range(ns)]
