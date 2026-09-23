@@ -485,3 +485,19 @@ tagRC_tripartite_graph <- function(triples) {
 
 # -- restored: morie-only objects kept through the rmorie sync --
 .tagRC.EPS <- 1e-12
+
+# -- restored: pre-sync definition (tagRC_folkrank) --
+#' @noRd
+tagRC_folkrank <- morie_tagRC
+
+# -- restored: pre-sync definition (tagRC_folkrank_search) --
+#' @noRd
+tagRC_folkrank_search <- morie_tagRC
+
+# -- restored: pre-sync definition (tagRC_tag_aware_rec) --
+#' @noRd
+tagRC_tag_aware_rec <- morie_tagRC
+
+# -- restored: pre-sync definition (tagRC_tagawarerec) --
+#' @noRd
+tagRC_tagawarerec <- morie_tagRC

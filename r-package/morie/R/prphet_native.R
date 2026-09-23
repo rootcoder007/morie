@@ -486,3 +486,11 @@ trend_matrix <- function(t, cps) {
   }
   rows
 }
+
+# -- restored: pre-sync definition (prophet) --
+#' @noRd
+prophet <- morie_prphet_fit
+
+# -- restored: pre-sync definition (prophetfit) --
+#' @noRd
+prophetfit <- morie_prphet_fit

@@ -439,3 +439,7 @@ ocrwit_segment_layout_boxes <- function(boxes, segment_ids, width, height,
        n_segments = length(seg_box),
        note = "one box per segment, cheaper than per word and closer to the document's structure")
 }
+
+# -- restored: pre-sync definition (ocrwit_word_patch_alignment) --
+#' @noRd
+ocrwit_word_patch_alignment <- morie_ocrwit

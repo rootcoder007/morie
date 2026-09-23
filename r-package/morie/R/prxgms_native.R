@@ -309,3 +309,11 @@ prxgms <- morie_prxgms
          "FISTA (Beck & Teboulle 2009, eq. 4.1-4.3)"
          else "ISTA (Beck & Teboulle 2009, Sec. 2)")
 }
+
+# -- restored: pre-sync definition (prox_gradient) --
+#' @noRd
+prox_gradient <- .morie_prxgms_pgm
+
+# -- restored: pre-sync definition (proximal_gradient_method) --
+#' @noRd
+proximal_gradient_method <- .morie_prxgms_pgm

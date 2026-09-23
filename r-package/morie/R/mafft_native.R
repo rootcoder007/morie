@@ -1958,3 +1958,21 @@ mafft_xcorr_fft <- function(a, b) {
   back <- fft(fa * Conj(fb), inverse = TRUE) / size
   list(c = Re(back), size = size)
 }
+
+# -- restored: pre-sync definition (GRANTHAM_POLARITY) --
+#' @noRd
+GRANTHAM_POLARITY <- list(
+  A = 8.1, R = 10.5, N = 11.6, D = 13.0, C = 5.5,
+  Q = 10.5, E = 12.3, G = 9.0, H = 10.4, I = 5.2,
+  L = 4.9, K = 11.3, M = 5.7, F = 5.2, P = 8.0,
+  S = 9.2, T = 8.6, W = 5.4, Y = 6.2, V = 5.9
+)
+
+# -- restored: pre-sync definition (GRANTHAM_VOLUME) --
+#' @noRd
+GRANTHAM_VOLUME <- list(
+  A = 31.0, R = 124.0, N = 56.0, D = 54.0, C = 55.0,
+  Q = 85.0, E = 83.0, G = 3.0, H = 96.0, I = 111.0,
+  L = 111.0, K = 119.0, M = 105.0, F = 132.0, P = 32.5,
+  S = 32.0, T = 61.0, W = 170.0, Y = 136.0, V = 84.0
+)

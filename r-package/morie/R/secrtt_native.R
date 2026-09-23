@@ -492,3 +492,31 @@ wrap_dek <- function(dek, kek, nonce, kek_id = "kek-1",
        note = paste("the KEK id is authenticated, so a wrapped DEK ",
                     "cannot be replayed under a different KEK"))
 }
+
+# -- restored: pre-sync definition (.secrtt_aead_encrypt) --
+#' @noRd
+.secrtt_aead_encrypt <- function(key, nonce, plaintext, aad = raw(0)) {
+  r <- morie_crypto_chacha20_poly1305_encrypt(as.raw(key), as.raw(nonce),
+                                              as.raw(plaintext), as.raw(aad))
+  list(ciphertext = r$ct, tag = r$tag,
+       ciphertext_hex = .secrtt_hex(r$ct))
+}
+
+# -- restored: pre-sync definition (.secrtt_aead_decrypt) --
+#' @noRd
+.secrtt_aead_decrypt <- function(key, nonce, ciphertext, tag,
+                                 aad = raw(0)) {
+  pt <- tryCatch(
+    morie_crypto_chacha20_poly1305_decrypt(as.raw(key), as.raw(nonce),
+      c(as.raw(ciphertext), as.raw(tag)), as.raw(aad)),
+    error = function(e) NULL)
+  list(valid = !is.null(pt),
+       plaintext = if (is.null(pt)) raw(0) else pt)
+}
+
+# -- restored: pre-sync definition (.secrtt_hex) --
+#' Derive a distinct DEK per record
+#' @param bs See Usage.
+#' @export
+.secrtt_hex <- function(bs) paste(sprintf("%02x", as.integer(bs)),
+                                 collapse = "")

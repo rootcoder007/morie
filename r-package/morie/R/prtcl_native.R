@@ -313,3 +313,7 @@ systematic_resample <- function(weights, u = NULL) {
   }
   idx
 }
+
+# -- restored: pre-sync definition (particlefilter) --
+#' @noRd
+particlefilter <- morie_prtcl_particle_filter

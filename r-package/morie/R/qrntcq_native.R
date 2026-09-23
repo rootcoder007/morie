@@ -496,3 +496,16 @@ utility <- function(efficacy, days_in_quarantine) {
 quarantineefficacy <- quarantine_efficacy
 
 testandrelease <- efficacy_test_and_release
+
+# -- restored: pre-sync definition (.lgamma) --
+#' @noRd
+.lgamma <- function(x) lgamma(x)
+
+# -- restored: pre-sync definition (.trapz) --
+#' @noRd
+.trapz <- function(ts, ys) {
+  tot <- 0.0
+  for (i in seq_len(length(ts) - 1L))
+    tot <- tot + 0.5 * (ys[i] + ys[i + 1L]) * (ts[i + 1L] - ts[i])
+  tot
+}

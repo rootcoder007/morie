@@ -469,3 +469,7 @@ node2v_walk <- function(adj, start, length, p = 1, q = 1, rng = NULL,
   }
   path
 }
+
+# -- restored: pre-sync definition (node2v_generate_walks) --
+#' @noRd
+node2v_generate_walks <- morie_node2v
