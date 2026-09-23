@@ -1945,8 +1945,15 @@ def doubly_robust_matching(
     # Bootstrap SE
     n = len(df)
     boot_ests = []
+    # resample within each arm so every replicate keeps the design's
+    # treated and control counts (the ATT is conditional on who was treated)
+    t_all = np.flatnonzero(np.asarray(df[treatment].values) == 1)
+    c_all = np.flatnonzero(np.asarray(df[treatment].values) == 0)
     for _ in range(n_bootstrap):
-        idx = rng.choice(n, size=n, replace=True)
+        idx = np.concatenate([
+            rng.choice(t_all, size=len(t_all), replace=True),
+            rng.choice(c_all, size=len(c_all), replace=True),
+        ])
         df_b = df.iloc[idx].copy()
         df_b = df_b.reset_index(drop=True)
         try:
