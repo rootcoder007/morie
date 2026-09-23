@@ -16,6 +16,10 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  # env: from the calling workflow does not reach a workflow_call job; covr
+  # under parallel testthat lost a subprocess (readRDS: error reading from
+  # connection), so the serial pin is repeated here
+  TESTTHAT_PARALLEL: "FALSE"
   MAKEFLAGS: "-j4"
 
 permissions:
