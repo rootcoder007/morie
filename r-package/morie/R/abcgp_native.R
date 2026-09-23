@@ -1241,24 +1241,6 @@ design_from_prior <- function(n, prior_ppf, dim = NULL, skip = 1L) {
 #' res
 .gp_basis <- function(theta) c(1, theta, theta * theta)
 
-#' .gp_as_nugget
-#'
-#' A step of the abcgp_native implementation. Called by \code{gp_fit}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param nugget Optional; may be \code{NULL}. Coerced to numeric by the body, with
-#' \code{as.numeric}.
-#' @param n A count; the body uses it as \code{rep(...)}.
-#' @return The value of \code{pmax}.
-#' @export
-.gp_as_nugget <- function(nugget, n) {
-  if (is.null(nugget)) return(rep(1e-8, n))
-  v <- as.numeric(nugget)
-  if (length(v) == 1L) v <- rep(v, n)
-  if (length(v) != n) stop("gp_fit: nugget length mismatch")
-  pmax(v, 1e-12)
-}
 
 # -- restored: morie-only definition kept through the rmorie sync --
 #' .gp_chol

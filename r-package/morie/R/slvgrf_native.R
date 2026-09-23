@@ -365,27 +365,3 @@ morie_slvgrf <- list(aipw_scores = aipw_scores,
 #' res <- .slvgrf_vec(x = x)
 #' res
 .slvgrf_vec <- function(x) as.numeric(as.matrix(x))
-
-#' .check
-#'
-#' A step of the slvgrf_native implementation. Called by \code{qini_curve},
-#' \code{rate_test}, \code{toc_curve}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param scores Passed to \code{.slvgrf_vec}.
-#' @param priority Passed to \code{.slvgrf_vec}.
-#' @return A list with \code{g}, \code{s}.
-#' @export
-.check <- function(scores, priority) {
-  g <- .slvgrf_vec(scores)
-  s <- .slvgrf_vec(priority)
-  if (length(g) != length(s)) {
-    stop("slvgrf: ", length(g), " scores but ", length(s),
-         " priority values")
-  }
-  if (length(g) < 2L) {
-    stop("slvgrf: need at least 2 units, got ", length(g))
-  }
-  list(g = g, s = s)
-}

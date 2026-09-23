@@ -5,8 +5,6 @@
 \title{.gp_as_nugget}
 \usage{
 .gp_as_nugget(nugget, n)
-
-.gp_as_nugget(nugget, n)
 }
 \arguments{
 \item{nugget}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
@@ -16,14 +14,8 @@
 }
 \value{
 The value of \code{pmax}.
-
-The value of \code{pmax}.
 }
 \description{
-A step of the abcgp_native implementation. Called by \code{gp_fit}.
-See the file header for the source the module follows.
-source it follows.
-
 A step of the abcgp_native implementation. Called by \code{gp_fit}.
 See the file header for the source the module follows.
 source it follows.

@@ -521,23 +521,6 @@ morie_elmo <- function(X, layers, raw_weights = NULL, gamma = 1) {
 }
 
 # -- restored: morie-only definition kept through the rmorie sync --
-#' .layer_weights
-#'
-#' A step of the elmo_native implementation. Called by \code{.elmo_mix},
-#' \code{.elmo_representation}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param raw A vector; its length is taken.
-#' @return A vector, from \code{as.numeric}.
-#' @export
-.layer_weights <- function(raw) {
-  if (length(raw) == 0L) stop("elmo: no layer weights given")
-  mx <- max(raw)
-  e <- exp(as.numeric(raw) - mx)
-  tot <- sum(e)
-  as.numeric(e / tot)
-}
 
 # -- restored: morie-only definition kept through the rmorie sync --
 #' .lstm_step

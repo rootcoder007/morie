@@ -640,6 +640,3 @@ morie_llm_probe_freeapi <- function(timeout = 4) {
 # -- restored: morie-only objects kept through the rmorie sync --
 DEFAULT_FREEAPI_MODEL <- "mistral-nemo:custom"
 FREEAPI_BASE_URL      <- "https://ollamafreeapi.duckdns.org"  # community-hosted
-
-
-FREEAPI_BASE_URL      <- "https://ollamafreeapi.duckdns.org"  # community-hosted

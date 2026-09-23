@@ -899,23 +899,6 @@ morie_tmledynamicregime <- morie_tmldyn
 }
 
 # -- restored: morie-only definition kept through the rmorie sync --
-#' .tmldyn_lstsq
-#'
-#' A step of the tmldyn_native implementation. Called by \code{.fit_q1}, \code{.fit_q2},
-#' \code{.project}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param X A matrix; the body checks with \code{is.matrix}.
-#' @param yv A matrix; passed to \code{crossprod}.
-#' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
-#' @return A matrix, from \code{solve}.
-#' @export
-.tmldyn_lstsq <- function(X, yv, ridge = 1e-8) {
-  Xm <- if (is.matrix(X)) X else do.call(rbind, X)
-  p <- ncol(Xm)
-  solve(crossprod(Xm) + ridge * diag(p), crossprod(Xm, yv))
-}
 
 # -- restored: morie-only definition kept through the rmorie sync --
 #' .tmldyn_qnorm
@@ -932,20 +915,6 @@ morie_tmledynamicregime <- morie_tmldyn
 #' res
 .tmldyn_qnorm <- function(p) qnorm(p, 0, 1)
 
-#' .sd
-#'
-#' A step of the tmldyn_native implementation. Called by \code{morie_tmle_dynamic_regime}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param x Numeric; passed to \code{mean}.
-#' @return A numeric value.
-#' @export
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- .sd(x = x)
-#' res
-.sd <- function(x) sqrt(mean((x - mean(x))^2))
 
 # -- restored: morie-only definition kept through the rmorie sync --
 #' Compact one-line summary of the tmldyn recipe

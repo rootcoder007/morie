@@ -582,19 +582,6 @@ airl <- function(expert_states, expert_actions, expert_next,
 #' res
 .airl_log <- function(x, floor = 1e-300) log(max(x, floor))
 
-#' .airl_key
-#'
-#' A step of the airl_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param s A vector; its length is taken.
-#' @return One of two values, depending on the branch taken.
-#' @export
-.airl_key <- function(s) {
-  if (is.numeric(s) && length(s) == 1L) s
-  else as.numeric(s)
-}
 
 # -- restored: morie-only definition kept through the rmorie sync --
 #' .airl_prep
