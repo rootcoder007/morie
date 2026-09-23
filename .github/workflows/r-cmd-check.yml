@@ -57,6 +57,10 @@ jobs:
       # 16 GB runner; every other cell keeps -j4.
       MAKEFLAGS: ${{ matrix.config.r == 'devel' && '-j2' || '-j4' }}
       _R_CHECK_FORCE_SUGGESTS_: false
+      # Config/testthat/parallel is for developer machines; on the 2-core
+      # runners it buys nothing and a Windows worker died mid-file
+      # (test-gibbons-median.R) that serial runs never do
+      TESTTHAT_PARALLEL: "FALSE"
       R_KEEP_PKG_SOURCE: yes
       # CRAN requires \donttest (not \dontrun) for examples a user could
       # run, so the network-fetching examples are \donttest -- and
@@ -250,6 +254,10 @@ jobs:
       # 16 GB runner; every other cell keeps -j4.
       MAKEFLAGS: ${{ matrix.config.r == 'devel' && '-j2' || '-j4' }}
       _R_CHECK_FORCE_SUGGESTS_: false
+      # Config/testthat/parallel is for developer machines; on the 2-core
+      # runners it buys nothing and a Windows worker died mid-file
+      # (test-gibbons-median.R) that serial runs never do
+      TESTTHAT_PARALLEL: "FALSE"
       R_KEEP_PKG_SOURCE: yes
       # CRAN requires \donttest (not \dontrun) for examples a user could
       # run, so the network-fetching examples are \donttest -- and
