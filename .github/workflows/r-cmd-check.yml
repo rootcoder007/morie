@@ -2,6 +2,9 @@ name: R CMD check
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  # Config/testthat/parallel is for developer machines: on the runners a
+  # parallel worker died mid-file on Windows and covr lost a subprocess
+  TESTTHAT_PARALLEL: "FALSE"
   # Parallel compile for source-installed dependencies (notably duckdb,
   # which has ~50 MB of C++ source and otherwise takes 20-25 min single-
   # threaded). GitHub-hosted runners are 4-vCPU / 16 GB RAM so -j4 fits.
