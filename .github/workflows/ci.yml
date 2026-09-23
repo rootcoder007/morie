@@ -246,4 +246,6 @@ jobs:
         # find function". R CMD check runs a package's tests inside
         # its namespace; parent the test env on the namespace so
         # this job matches.
-        run: Rscript -e "library(morie); testthat::test_dir('r-package/morie/tests/testthat', env = new.env(parent = asNamespace('morie')), stop_on_failure = TRUE)"
+        # test_dir() without package= cannot start parallel workers
+        # (Config/testthat/parallel), so this job runs serially.
+        run: Rscript -e "Sys.setenv(TESTTHAT_PARALLEL = 'FALSE'); library(morie); testthat::test_dir('r-package/morie/tests/testthat', env = new.env(parent = asNamespace('morie')), stop_on_failure = TRUE)"
