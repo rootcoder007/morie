@@ -657,8 +657,25 @@ def _friendly_error(exc: BaseException) -> str | None:
     return None
 
 
-def _llm_exit_code(payload) -> int:
-    """0 when an LLM answered; 1 when the static local fallback did.
+def _drain_stream(stream) -> int:
+    """Write a streamed answer to stdout and return how many chunks came.
+
+    The count is the only evidence that a backend answered: a selected
+    backend that prints an error and stops yields nothing, and the
+    payload's ``mode`` was fixed before any bytes arrived.
+    """
+    n = 0
+    for chunk in stream:
+        sys.stdout.write(chunk)
+        sys.stdout.flush()
+        n += 1
+    sys.stdout.write("\n")
+    return n
+
+
+def _llm_exit_code(payload, chunks=None) -> int:
+    """0 when an LLM answered; 1 when the static local fallback did or
+    the selected backend produced no output at all.
 
     `morie agent`/`morie ask` returned 0 unconditionally, so a scripted
     call could not tell an answer from "no backend reachable".
@@ -666,6 +683,14 @@ def _llm_exit_code(payload) -> int:
     if isinstance(payload, dict) and payload.get("mode") == "local_fallback":
         print("no LLM backend was reachable; this is the local fallback text",
               file=sys.stderr)
+        return 1
+    if chunks is not None and chunks == 0:
+        print("the LLM backend produced no output", file=sys.stderr)
+        return 1
+    if chunks is None and isinstance(payload, dict) \
+            and "output_stream" not in payload \
+            and not str(payload.get("output_text") or "").strip():
+        print("the LLM backend produced no output", file=sys.stderr)
         return 1
     return 0
 
@@ -704,13 +729,9 @@ def _main_impl() -> int:
             return 1
         payload = ask_percy(question, stream=sys.stdout.isatty())
         if "output_stream" in payload:
-            for chunk in payload["output_stream"]:
-                sys.stdout.write(chunk)
-                sys.stdout.flush()
-            sys.stdout.write("\n")
-        else:
-            print(payload.get("output_text", ""))
-        return 0
+            return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
+        print(payload.get("output_text", ""))
+        return _llm_exit_code(payload)
 
     parser = build_parser()
     args = parser.parse_args()
@@ -823,17 +844,19 @@ def _main_impl() -> int:
             from .agent import create_agent
 
             agent = create_agent()
+            answered = True
             if use_stream:
-                for chunk in agent.chat_stream(args.question):
-                    sys.stdout.write(chunk)
-                    sys.stdout.flush()
-                sys.stdout.write("\n")
+                answered = _drain_stream(agent.chat_stream(args.question)) > 0
             else:
                 resp = agent.chat(args.question)
                 print(resp.text)
+                answered = bool(str(resp.text or "").strip())
                 if resp.tool_calls_made:
                     print(f"\n[{len(resp.tool_calls_made)} tool calls in {resp.iterations} iterations]")
             agent.close()
+            if not answered:
+                print("the agent produced no output", file=sys.stderr)
+                return 1
         except Exception as exc:
             # the agent needs an LLM backend; say why it stepped aside
             # rather than hiding a real bug in create_agent()
@@ -845,12 +868,8 @@ def _main_impl() -> int:
                 stream=use_stream,
             )
             if use_stream:
-                for chunk in payload["output_stream"]:
-                    sys.stdout.write(chunk)
-                    sys.stdout.flush()
-                sys.stdout.write("\n")
-            else:
-                print(payload["output_text"])
+                return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
+            print(payload["output_text"])
             return _llm_exit_code(payload)
         return 0
 
@@ -863,12 +882,8 @@ def _main_impl() -> int:
             stream=use_stream,
         )
         if use_stream:
-            for chunk in payload["output_stream"]:
-                sys.stdout.write(chunk)
-                sys.stdout.flush()
-            sys.stdout.write("\n")
-        else:
-            print(payload["output_text"])
+            return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
+        print(payload["output_text"])
         return _llm_exit_code(payload)
 
     if args.command == "chat":

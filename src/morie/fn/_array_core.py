@@ -287,6 +287,11 @@ class marr:
 
     def __getitem__(self, idx):
         if isinstance(idx, tuple):
+            if any(isinstance(v, tuple) for v in idx):
+                # numpy reads x[:, (0, 2)] as x[:, [0, 2]]; an
+                # itertools.combinations tuple is what callers pass here
+                idx = tuple(list(v) if isinstance(v, tuple) else v
+                            for v in idx)
             if len(idx) == 0:
                 return self
             if len(idx) == 1:
@@ -1584,12 +1589,17 @@ def full(n, v, dtype=None):
     return _typed(marr([float(v)] * int(n)), dtype)
 
 
-def linspace(a, b, n):
+def linspace(a, b, n=50, endpoint=True, retstep=False, dtype=None):
+    del dtype
     n = int(n)
-    if n == 1:
-        return marr([float(a)])
-    step = (b - a) / (n - 1)
-    return marr([a + i * step for i in range(n)])
+    if n <= 0:
+        out, step = marr([]), _NAN
+    elif n == 1:
+        out, step = marr([float(a)]), float(b - a)
+    else:
+        step = (b - a) / ((n - 1) if endpoint else n)
+        out = marr([a + i * step for i in range(n)])
+    return (out, step) if retstep else out
 
 
 def eye(n, m=None, dtype=None):
@@ -2165,8 +2175,39 @@ def sort(x, axis=-1):
 
 
 def unique(x, return_inverse=False, return_counts=False,
-           return_index=False):
+           return_index=False, axis=None):
     a = asarray(x)
+    if axis is not None:
+        # unique rows (axis=0) or columns (axis=1) of a 2-D array, in
+        # lexicographic order, as numpy does
+        _check_axis(a, axis)
+        if len(a.shape) != 2:
+            raise ValueError("unique(axis=) needs a 2-D array in this core")
+        rows = a.data if int(axis) == 0 else [list(c) for c in zip(*a.data)]
+        keys = [tuple(r) for r in rows]
+        uniq = sorted(set(keys))
+        pos = {k: i for i, k in enumerate(uniq)}
+        u = marr([list(k) for k in uniq]) if int(axis) == 0 \
+            else marr([list(c) for c in zip(*[list(k) for k in uniq])])
+        if not (return_inverse or return_counts or return_index):
+            return u
+        out = [u]
+        if return_index:
+            first = {}
+            for i, k in enumerate(keys):
+                first.setdefault(k, i)
+            ix = marr([float(first[k]) for k in uniq])
+            ix._is_index = True
+            out.append(ix)
+        if return_inverse:
+            inv = marr([float(pos[k]) for k in keys])
+            inv._is_index = True
+            out.append(inv)
+        if return_counts:
+            cnt = marr([float(keys.count(k)) for k in uniq])
+            cnt._dt = "int64"
+            out.append(cnt)
+        return tuple(out)
     if isinstance(a, oarr):
         vals = list(a)
         uniq = sorted(set(vals), key=str)
@@ -2407,6 +2448,21 @@ linalg = _Linalg()
 
 
 # ------------------------------------------------------------------ random
+
+
+class _BitGen:
+    """The raw stream behind a generator (numpy's ``.bit_generator``):
+    ``random_raw()`` gives the next 64-bit word, ``state`` the position."""
+
+    def __init__(self, gen):
+        self._gen = gen
+
+    def random_raw(self, size=None):
+        return self._gen._fill(lambda: int(self._gen._next()), size)
+
+    @property
+    def state(self):
+        return {"bit_generator": "SplitMix64", "state": self._gen.state}
 
 
 def _pack_choice(vals, size=None):
@@ -2804,6 +2860,84 @@ class _SplitMix64:
             rest = 2.0 * self._gamma_variate((df - 1.0) / 2.0) if df > 1.0 else 0.0
             return z * z + rest
         return self._fill(one, size)
+
+    def noncentral_f(self, dfnum, dfden, nonc, size=None):
+        """(noncentral chi2(dfnum, nonc) / dfnum) / (chi2(dfden) / dfden)."""
+        dfnum, dfden, nonc = float(dfnum), float(dfden), float(nonc)
+        if dfnum <= 0 or dfden <= 0 or nonc < 0:
+            raise ValueError("dfnum > 0, dfden > 0 and nonc >= 0 required")
+
+        def one():
+            num = float(self.noncentral_chisquare(dfnum, nonc)) / dfnum
+            den = 2.0 * self._gamma_variate(dfden / 2.0) / dfden
+            return num / den
+        return self._fill(one, size)
+
+    def multivariate_hypergeometric(self, colors, nsample, size=None,
+                                    method="marginals"):
+        """Counts of each colour in ``nsample`` draws without replacement
+        from an urn holding ``colors[k]`` balls of colour k."""
+        del method
+        colors = [int(c) for c in asarray(colors)._flat()]
+        nsample = int(nsample)
+        if nsample < 0 or _bi.any(c < 0 for c in colors) \
+                or nsample > _bi.sum(colors):
+            raise ValueError("nsample must be between 0 and sum(colors)")
+
+        def one():
+            left = colors[:]
+            total = _bi.sum(left)
+            out = [0] * len(left)
+            for _ in range(nsample):
+                u = self._u() * total
+                acc = 0.0
+                for k, c in enumerate(left):
+                    acc += c
+                    if u < acc:
+                        out[k] += 1
+                        left[k] -= 1
+                        total -= 1
+                        break
+            return out
+        if size is None:
+            m = marr([float(v) for v in one()])
+        else:
+            reps = int(size[0]) if isinstance(size, (tuple, list)) else int(size)
+            m = marr([[float(v) for v in one()] for _ in range(reps)])
+        m._dt = "int64"
+        return m
+
+    def permuted(self, x, axis=None, out=None):
+        """A shuffled copy: the whole array when axis is None, otherwise
+        every 1-D slice along ``axis`` shuffled independently."""
+        del out
+        a = asarray(x)
+        if axis is None or len(a.shape) == 1:
+            flat = list(a._flat())
+            self.shuffle(flat)
+            m = marr(flat)
+            if getattr(a, "_dt", None) is not None:
+                m._dt = a._dt
+            return m if len(a.shape) == 1 else reshape(m, a.shape)
+        if len(a.shape) != 2:
+            raise ValueError("permuted(axis=) needs a 1-D or 2-D array in this core")
+        rows = [row[:] for row in a.data]
+        if int(axis) == 1:
+            for row in rows:
+                self.shuffle(row)
+            return marr(rows)
+        cols = [list(c) for c in zip(*rows)]
+        for c in cols:
+            self.shuffle(c)
+        return marr([list(r) for r in zip(*cols)])
+
+    def spawn(self, n_children):
+        """Independent child generators seeded from this stream."""
+        return [type(self)(self._next()) for _ in range(int(n_children))]
+
+    @property
+    def bit_generator(self):
+        return _BitGen(self)
 
     def negative_binomial(self, n, p, size=None):
         n, p = float(n), float(p)
@@ -3203,8 +3337,22 @@ def expand_dims(x, axis):
 
 
 def squeeze(x, axis=None):
-    del axis
     a = asarray(x)
+    if axis is not None:
+        nd = len(a.shape)
+        axes = []
+        for ax in ((axis,) if isinstance(axis, int) else tuple(axis)):
+            ax = int(ax) + nd if int(ax) < 0 else int(ax)
+            if ax < 0 or ax >= nd or a.shape[ax] != 1:
+                # numpy refuses; silently returning the input hid the
+                # caller's mistake
+                raise ValueError("cannot select an axis to squeeze out "
+                                 "which has size not equal to one")
+            axes.append(ax)
+        if nd == 2 and len(axes) == 1:
+            if axes[0] == 0:
+                return marr(a.data[0][:])
+            return marr([row[0] for row in a.data])
     if len(a.shape) == 1 and a.shape[0] == 1:
         return float(a.data[0])
     if len(a.shape) == 2:
@@ -3486,6 +3634,8 @@ def prod(x, axis=None, keepdims=False):
 
 def outer(a, b):
     fa, fb = asarray(a)._flat(), asarray(b)._flat()
+    if not fa or not fb:
+        return _empty2d(len(fa), len(fb))    # numpy: shape (len(a), len(b))
     return marr([[x * y for y in fb] for x in fa])
 
 
@@ -3891,16 +4041,26 @@ def fill_diagonal(a, val, wrap=False):
     # in-place on the caller's 2-D marr (same list objects)
 
 
-def size(x):
+def size(x, axis=None):
     a = asarray(x)
+    if axis is not None:
+        _check_axis(a, axis)
+        return int(a.shape[int(axis)])
     n = 1
     for d in a.shape:
         n *= d
     return n
 
 
-def count_nonzero(x):
-    return int(_bi.sum(1 for v in asarray(x)._flat() if v != 0))
+def count_nonzero(x, axis=None):
+    a = asarray(x)
+    if axis is None:
+        return int(_bi.sum(1 for v in a._flat() if v != 0))
+    _check_axis(a, axis)
+    out = marr(_reduce_axis(a.tolist(), axis,
+                            lambda vs: float(_bi.sum(1 for v in vs if v != 0))))
+    out._dt = "int64"
+    return out
 
 
 def shape(x):
@@ -4403,7 +4563,13 @@ def einsum(spec, *ops):
 
 def block(rows):
     """numpy.block for the 2-D nested-list case: each inner list is a
-    row of blocks joined left-to-right, rows stacked top-to-bottom."""
+    row of blocks joined left-to-right, rows stacked top-to-bottom. A
+    flat list of 1-D blocks concatenates to a 1-D array, as numpy does."""
+    if not any(isinstance(r, (list, tuple)) for r in rows):
+        parts = [asarray(b) for b in rows]
+        if all(len(p_.shape) == 1 for p_ in parts):
+            return marr([v for p_ in parts for v in p_.data])
+        return hstack(parts)
     out = []
     for row in rows:
         mats = [atleast_2d(asarray(b)) for b in row]
@@ -4553,9 +4719,19 @@ def tril(a, k=0):
                   for j in range(m.shape[1])] for i in range(m.shape[0])])
 
 
+def _conv_args(a, v):
+    aa, vv = asarray(a), asarray(v)
+    if len(aa.shape) != 1 or len(vv.shape) != 1:
+        raise ValueError("object too deep for desired array")
+    if aa.shape[0] == 0:
+        raise ValueError("a cannot be empty")
+    if vv.shape[0] == 0:
+        raise ValueError("v cannot be empty")
+    return aa._flat(), vv._flat()
+
+
 def convolve(a, v, mode="full"):
-    x = asarray(a)._flat()
-    y = asarray(v)._flat()
+    x, y = _conv_args(a, v)
     n, m = len(x), len(y)
     full = [0.0] * (n + m - 1)
     for i in range(n):
@@ -4897,11 +5073,10 @@ def nanmedian(x, axis=None, keepdims=False):
     return median(f)
 
 
-def nanargmax(x):
-    f = asarray(x)._flat()
+def _nan_arg(f, better):
     best, bi_ = None, -1
     for i, v in enumerate(f):
-        if v == v and (best is None or v > best):
+        if v == v and (best is None or better(v, best)):
             best, bi_ = v, i
     if bi_ < 0:
         # numpy raises; -1 silently indexed the LAST element
@@ -4909,15 +5084,23 @@ def nanargmax(x):
     return bi_
 
 
-def nanargmin(x):
-    f = asarray(x)._flat()
-    best, bi_ = None, -1
-    for i, v in enumerate(f):
-        if v == v and (best is None or v < best):
-            best, bi_ = v, i
-    if bi_ < 0:
-        raise ValueError("All-NaN slice encountered")
-    return bi_
+def _nan_arg_axis(x, axis, better):
+    a = asarray(x)
+    if axis is None or len(a.shape) == 1:
+        return _nan_arg(a._flat(), better)
+    _check_axis(a, axis)
+    out = marr(_reduce_axis(a.tolist(), axis,
+                            lambda vs: float(_nan_arg(vs, better))))
+    out._dt = "int64"
+    return out
+
+
+def nanargmax(x, axis=None):
+    return _nan_arg_axis(x, axis, lambda v, b: v > b)
+
+
+def nanargmin(x, axis=None):
+    return _nan_arg_axis(x, axis, lambda v, b: v < b)
 
 
 def nanpercentile(x, q):
@@ -5221,7 +5404,28 @@ def issubdtype(a, b):
 
 
 def array_str(x):
-    return repr(asarray(x))
+    """numpy's string form: ``[1. 2.5 nan]`` and ``[[1. 2.]\n [3. 4.]]``."""
+    a = asarray(x)
+
+    def one(v):
+        if isinstance(v, bool):
+            return "True" if v else "False"
+        if isinstance(v, int) or getattr(a, "_dt", None) == "int64":
+            return str(int(v))
+        if isinstance(v, float):
+            if v != v:
+                return "nan"
+            if v in (_math.inf, -_math.inf):
+                return "inf" if v > 0 else "-inf"
+            return "%d." % int(v) if v.is_integer() and _bi.abs(v) < 1e16 \
+                else repr(v)
+        return repr(v)
+    if len(a.shape) == 1:
+        return "[" + " ".join(one(v) for v in a.data) + "]"
+    if len(a.shape) == 2:
+        rows = ["[" + " ".join(one(v) for v in row) + "]" for row in a.data]
+        return "[" + "\n ".join(rows) + "]"
+    return repr(a)
 
 
 def select(conds, choices, default=0.0):
@@ -5855,8 +6059,8 @@ def kaiser(n, beta):
 
 
 def correlate(a, v, mode="valid"):
-    av = list(asarray(a)._flat())
-    vv = list(asarray(v)._flat())
+    av, vv = _conv_args(a, v)
+    av, vv = list(av), list(vv)
     # np.correlate: sum a[k+j] * conj(v[j])
     full = []
     n, m = len(av), len(vv)
@@ -6168,6 +6372,12 @@ def roots(coeffs):
             rs = new
             break
         rs = new
+    tol = 1e-9 * _bi.max(1.0, _bi.max(_bi.abs(z) for z in rs))
+    if all(_bi.abs(z.imag) <= tol for z in rs):
+        # numpy returns real roots as floats, largest first (the
+        # companion-matrix eigenvalue order); a complex array made
+        # max(np.roots(p)) fail on the comparison
+        return marr(sorted((z.real for z in rs), reverse=True))
     return carr(rs)
 
 
@@ -6461,7 +6671,13 @@ def histogramdd(sample, bins=10, range=None, density=False):  # noqa: A002
     Counts come back as a rank-d nested container (marr for d == 2,
     ndlist above that) so the callers' ``.sum()`` / flattening work.
     """
-    a = atleast_2d(sample)
+    if hasattr(sample, "shape"):
+        a = atleast_2d(sample)                 # an (N, D) array
+    else:
+        # numpy: anything without a .shape is a sequence of D coordinate
+        # arrays, i.e. (D, N); [x] is N points in one dimension, not one
+        # point in N dimensions (which allocated bins ** N cells)
+        a = atleast_2d(asarray(sample)).T
     n, d = a.shape
     if isinstance(bins, int):
         bins = [bins] * d

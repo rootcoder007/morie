@@ -7,13 +7,16 @@
 # A failure here means a real regression in morie.fn or in the generator.
 name: fn-sampled
 
-# Manual only, as of 2026-09-08. The nightly schedule ran against main,
-# which is two months behind the native-specializations work, so it failed
-# every night for reasons already fixed on the branch -- a daily red badge
-# that carried no information. Run it deliberately (Actions -> fn-sampled
-# -> Run workflow) once main has caught up, and restore the cron then.
+# Nightly again as of 2026-09-23. It was manual-only from 2026-09-08,
+# when main was two months behind the native-specializations work and the
+# schedule failed every night for reasons already fixed on the branch.
+# Main has caught up (the callable-side failures in the generated suite
+# are gone), so a red badge here means a regression in morie.fn or in
+# the generator again.
 on:
   workflow_dispatch: {}
+  schedule:
+    - cron: "23 5 * * *" # nightly at 05:23 UTC
 
 permissions:
   contents: read

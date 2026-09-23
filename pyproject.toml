@@ -204,9 +204,10 @@ known-first-party = ["morie"]
 #   - test_tui.py: hardcoded sibling-repo path assertion.
 #   - test_causal_canonical.py: still references the IP-named aliases
 #     (mando, yoda_s, sith.synth_control) removed in the cleanup pass;
-#     update once the canonical-name rewrite lands.
-#   - test_parity.py / test_runner.py: require a sibling rtests/
-#     directory not in this repo.
+#     update once the canonical-name rewrite lands. The DML result
+#     contract it covered lives in tests/test_dml_contract.py.
+#   - test_parity.py: requires a sibling rtests/ directory not in this
+#     repo.
 #   - test_cheatsheet.py / test_polyglot.py: content/assertion drift
 #     after the registry rewrite; refresh these in a follow-up.
 testpaths = ["tests"]

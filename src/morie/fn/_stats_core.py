@@ -322,6 +322,41 @@ def _edge_wrap(name, fn):
     return wrapped
 
 
+class _Frozen:
+    """A distribution with its parameters bound (scipy's frozen form) for
+    the classes whose methods take the parameters positionally."""
+
+    _PARAMETRIC = ("mean", "var", "std", "median", "entropy", "support",
+                   "moment", "stats", "interval", "expect")
+
+    def __init__(self, dist, args, kw):
+        self._dist, self._args, self._kw = dist, tuple(args), dict(kw)
+
+    def __repr__(self):
+        return "%s%r frozen" % (type(self._dist).__name__[1:].lower(),
+                                 self._args)
+
+    def __getattr__(self, name):
+        if name.startswith("_"):
+            raise AttributeError(name)
+        fn = getattr(self._dist, name)
+        if not callable(fn):
+            return fn
+        args, kw = self._args, self._kw
+        if name == "rvs":
+            def rvs(size=None, random_state=None):
+                return fn(*args, size=size, random_state=random_state, **kw)
+            return rvs
+        if name in self._PARAMETRIC:
+            def parametric(*a, **k):        # moment(n), interval(alpha)
+                return fn(*a, *args, **kw, **k)
+            return parametric
+
+        def at(x, *a, **k):                  # pdf(x), cdf(x), ppf(q), ...
+            return fn(x, *args, *a, **kw, **k)
+        return at
+
+
 class _Dist:
     """Common frozen/unfrozen scipy-like surface."""
 
@@ -347,7 +382,12 @@ class _Dist:
                 setattr(cls, name, _edge_wrap(name, fn))
 
     def __call__(self, *args, **kw):
-        return self.__class__(*args, **kw)
+        if type(self).__init__ is not object.__init__:
+            return self.__class__(*args, **kw)     # stores loc/scale itself
+        # the classes whose methods take the parameters positionally get
+        # scipy's frozen form through a binder, so st.laplace(0, 2).rvs(3)
+        # works like st.norm(0, 2).rvs(3)
+        return _Frozen(self, args, kw)
 
     def rvs(self, *args, size=None, random_state=None, **kw):
         """Random variates by inverse transform: ppf applied to uniforms.

@@ -50,8 +50,15 @@ def safe_eval_expr(expression: str, namespace: dict[str, Any] | None = None) -> 
             raise ValueError(
                 f"disallowed syntax in expression: {type(node).__name__}"
             )
-        if isinstance(node, ast.Attribute) and node.attr.startswith("_"):
-            raise ValueError(f"underscore attribute '{node.attr}' not allowed")
+        if isinstance(node, ast.Attribute) and (
+            node.attr.startswith("_") or node.attr in ("format", "format_map", "mro")
+        ):
+            raise ValueError(f"attribute '{node.attr}' not allowed")
+        if isinstance(node, ast.Constant) and isinstance(node.value, str) \
+                and "__" in node.value:
+            # closes the str.format dunder-traversal walk,
+            # e.g. "{0.__class__}".format(x), the same check _exec_guard has
+            raise ValueError("string literals containing '__' are not allowed")
         if isinstance(node, ast.Name) and (
             node.id.startswith("__") or node.id in _BLOCKED_NAMES
         ):

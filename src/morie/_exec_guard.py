@@ -151,6 +151,21 @@ _BLOCKED_ATTRS = {
     "format", "format_map", "mro",
     # deserialization / native-load RCE gadgets on whitelisted libs
     "read_pickle", "to_pickle", "load_library", "ctypeslib",
+    # file read/write through the allowed data libraries: the docstring
+    # promises no filesystem access, and a write into a shell rc or a
+    # .pth is one login away from execution. numpy.load stays: it reads
+    # only the .npy/.npz binary layout (no arbitrary text), and the
+    # allow_pickle=True form is refused by the keyword check below.
+    "read_csv", "read_table", "read_fwf", "read_json", "read_excel",
+    "read_parquet", "read_feather", "read_hdf", "read_html", "read_xml",
+    "read_sql", "read_sql_query", "read_sql_table", "read_stata",
+    "read_sas", "read_spss", "read_orc", "read_clipboard",
+    "to_csv", "to_json", "to_excel", "to_parquet", "to_feather", "to_hdf",
+    "to_html", "to_latex", "to_xml", "to_sql", "to_stata", "to_clipboard",
+    "to_markdown", "savetxt", "save", "savez", "savez_compressed",
+    "loadtxt", "genfromtxt", "fromfile", "tofile", "memmap",
+    "open_memmap", "fromregex", "DataSource", "savemat", "loadmat",
+    "mmread", "mmwrite", "netcdf_file", "wavfile", "imread", "imsave",
     # process/shell gadgets (belt-and-braces; the modules aren't importable)
     "system", "popen", "fork", "check_output", "Popen",
     # stdlib modules that library code re-exports as attributes; the

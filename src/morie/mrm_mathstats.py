@@ -23,6 +23,7 @@ Public callables:
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Iterable
 from dataclasses import dataclass
 
@@ -133,8 +134,20 @@ def mrm_twoprop_test(
         raise ValueError("invalid sample sizes / counts")
     p1, p2 = x1 / n1, x2 / n2
     tbl = np.array([[x1, n1 - x1], [x2, n2 - x2]])
-    chi2, p_chi2, dof, _ = stats.chi2_contingency(tbl, correction=False)
-    p_fisher = float(stats.fisher_exact(tbl, alternative="two-sided")[1])
+    if x1 + x2 in (0, n1 + n2):
+        # no events (or nothing but events) in both arms: the pooled
+        # proportion is 0 or 1, so the expected counts have a zero
+        # column. R's prop.test reports chi-square 0 with p = 1 and
+        # warns; zero events in both arms is an ordinary rare-outcome
+        # result, not a malformed call.
+        warnings.warn(
+            "both arms are degenerate (pooled proportion is 0 or 1); the "
+            "chi-square and Fisher tests carry no information",
+            stacklevel=2)
+        chi2, p_chi2, dof, p_fisher = 0.0, 1.0, 1, 1.0
+    else:
+        chi2, p_chi2, dof, _ = stats.chi2_contingency(tbl, correction=False)
+        p_fisher = float(stats.fisher_exact(tbl, alternative="two-sided")[1])
     # Wald CI for p1 - p2
     se = float(np.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2))
     z_w = (p1 - p2) / se if se > 0 else float("nan")
