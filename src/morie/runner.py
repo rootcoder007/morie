@@ -684,6 +684,9 @@ def _llm_exit_code(payload, chunks=None) -> int:
         print("no LLM backend was reachable; this is the local fallback text",
               file=sys.stderr)
         return 1
+    if isinstance(payload, dict) and payload.get("failed"):
+        print("the LLM backend request failed", file=sys.stderr)
+        return 1
     if chunks is not None and chunks == 0:
         print("the LLM backend produced no output", file=sys.stderr)
         return 1
@@ -850,7 +853,8 @@ def _main_impl() -> int:
             else:
                 resp = agent.chat(args.question)
                 print(resp.text)
-                answered = bool(str(resp.text or "").strip())
+                answered = bool(str(resp.text or "").strip()) \
+                    and not getattr(resp, "failed", False)
                 if resp.tool_calls_made:
                     print(f"\n[{len(resp.tool_calls_made)} tool calls in {resp.iterations} iterations]")
             agent.close()

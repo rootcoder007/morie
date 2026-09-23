@@ -366,3 +366,70 @@ def test_hunt_round_four_array_and_ml():
 
     out = MinMaxScaler().fit_transform(np.array([[1.0, 5.0], [2.0, 5.0], [3.0, 5.0]])).tolist()
     assert out == [[0.0, 0.0], [0.5, 0.0], [1.0, 0.0]]
+
+
+# --- round three (2026-09-23, at 4e87add61) ---------------------------------
+
+
+def test_round_three_simod_estimates():
+    from morie.fn.simod import simod
+
+    rng = np.random.default_rng(42)
+    X = rng.standard_normal((200, 2))
+    b = np.array([3.0, -1.0])
+    b = b / np.linalg.norm(b)
+    y = np.sin(X @ b) + rng.normal(0, 0.2, 200)
+    r = simod(y, X, max_iter=200)
+    assert r["n_iter"] > 0
+    assert abs(float(np.array(r["beta"]) @ b)) > 0.95
+
+
+def test_round_three_scalar_in_scalar_out():
+    from morie.fn.gelua import gelua
+    from morie.fn.kmswig import swish
+    from morie.fn.qnorm import qnorm
+
+    assert isinstance(qnorm(0.5), float)
+    assert qnorm(0.5) == pytest.approx(0.0, abs=1e-12)
+    assert isinstance(gelua(0.5), float)
+    assert isinstance(swish(0.5), float)
+    assert len(qnorm([0.5, 0.975])) == 2
+
+
+def test_round_three_correlate_shorter_first():
+    a, v = np.array([1.0, 2.0]), np.array([1.0, 2.0, 3.0, 4.0])
+    assert np.correlate(a, v).tolist() == [11.0, 8.0, 5.0]
+    assert np.correlate(v, a).tolist() == [5.0, 8.0, 11.0]
+    assert np.correlate(np.array([1.0, 2.0, 3.0]),
+                        np.array([0.0, 1.0, 0.5])).tolist() == [3.5]
+
+
+def test_round_three_twoprop_degenerate_is_zero_and_one():
+    import morie
+
+    with pytest.warns(UserWarning, match="degenerate"):
+        r = morie.mrm_twoprop_test(0, 50, 0, 50)
+    assert (r.chi2, r.p_value_chi2, r.p_value_fisher) == (0.0, 1.0, 1.0)
+
+
+def test_round_three_exit_codes_for_failed_backends(monkeypatch):
+    from morie import llm, perseus, runner
+
+    monkeypatch.setattr(perseus, "detect_available_provider", lambda: "ollama")
+    monkeypatch.setattr(perseus, "llm_ask",
+                        lambda *a, **k: llm._FallbackText("nobody home"))
+    payload = perseus.ask_percy("hi", use_agent=False, stream=False)
+    assert payload["mode"] == "local_fallback"
+    assert runner._llm_exit_code(payload) == 1
+
+    monkeypatch.setattr(perseus, "llm_ask",
+                        lambda *a, **k: iter([llm._FallbackText("nobody home")]))
+    payload = perseus.ask_percy("hi", use_agent=False, stream=True)
+    assert payload["mode"] == "local_fallback"
+    assert list(payload["output_stream"]) == ["nobody home"]
+
+    failed = {"mode": "agent", "output_text": "FreeAPI request failed: x",
+              "failed": True}
+    assert runner._llm_exit_code(failed) == 1
+    assert runner._llm_exit_code({"mode": "agent", "output_text": "ok",
+                                  "failed": False}) == 0

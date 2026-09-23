@@ -1205,6 +1205,11 @@ For more information, see: https://github.com/rootcoder007/morie
 """
 
 
+class _FallbackText(str):
+    """The static local-mode answer. A str subclass so callers can tell
+    "no backend answered" apart from a live answer with the same words."""
+
+
 def _local_fallback(prompt: str) -> str:
     """Return a helpful local response when no LLM provider is available.
 
@@ -1241,7 +1246,7 @@ def _local_fallback(prompt: str) -> str:
         names = [spec.name for spec in MODULE_SPECS.values()]
         sections.append("Implemented modules: " + ", ".join(names))
 
-    return "\n\n".join(sections)
+    return _FallbackText("\n\n".join(sections))
 
 
 # ---------------------------------------------------------------------------

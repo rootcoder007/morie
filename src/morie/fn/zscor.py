@@ -13,7 +13,7 @@ def zscor(x: Union[Sequence, np.ndarray]) -> np.ndarray:
     sd = float(a.std(ddof=1))
     if sd == 0:
         raise ValueError("zero variance.")
-    return (a - a.mean()) / sd
+    return np.scalar_out(x, (a - a.mean()) / sd)
 
 
 def cheatsheet() -> str:

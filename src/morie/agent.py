@@ -44,6 +44,7 @@ class AgentResponse:
     tool_calls_made: list[dict] = field(default_factory=list)
     iterations: int = 0
     model: str = ""
+    failed: bool = False
 
 
 @dataclass
@@ -1785,6 +1786,7 @@ class PerseusAgent:
                     tool_calls_made=all_tool_calls,
                     iterations=iteration,
                     model=self._model,
+                    failed=True,
                 )
 
             assistant_msg = data.get("message", {})
@@ -2060,6 +2062,7 @@ class FreeAPIAgent:
                     tool_calls_made=all_tool_calls,
                     iterations=iteration,
                     model=model or "freeapi",
+                    failed=True,
                 )
 
             tool_calls = self._parse_tool_calls(response_text)
@@ -2092,6 +2095,10 @@ class FreeAPIAgent:
     def chat_stream(self, message: str, *, model: str | None = None) -> Iterator[str]:
         """Streaming variant -- yields text, executes tools between rounds."""
         resp = self.chat(message, model=model)
+        if getattr(resp, "failed", False):
+            # surface the failure instead of streaming its text as an
+            # answer, so the caller can fall back and report exit 1
+            raise RuntimeError(resp.text)
         if resp.tool_calls_made:
             yield f"[{len(resp.tool_calls_made)} tools called]\n\n"
         yield resp.text

@@ -30,13 +30,14 @@ def swish(x, derivative=False):
     ndarray
         Output or gradient.
     """
+    x_in = x
     x = np.asarray(x, dtype=float)
     sigmoid = 1.0 / (1.0 + np.exp(-x))
 
     if derivative:
-        return sigmoid * (1.0 + x * (1.0 - sigmoid))
+        return np.scalar_out(x_in, sigmoid * (1.0 + x * (1.0 - sigmoid)))
     else:
-        return x * sigmoid
+        return np.scalar_out(x_in, x * sigmoid)
 
 
 def cheatsheet() -> str:

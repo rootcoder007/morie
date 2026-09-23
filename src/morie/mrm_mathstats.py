@@ -137,9 +137,12 @@ def mrm_twoprop_test(
     if x1 + x2 in (0, n1 + n2):
         # no events (or nothing but events) in both arms: the pooled
         # proportion is 0 or 1, so the expected counts have a zero
-        # column. R's prop.test reports chi-square 0 with p = 1 and
-        # warns; zero events in both arms is an ordinary rare-outcome
-        # result, not a malformed call.
+        # column and the chi-square statistic is 0/0. R's chisq.test and
+        # prop.test return NaN there and scipy refuses the table. morie's
+        # convention, shared with the R arm, is the limit of two
+        # identical arms: chi-square 0 with p = 1, plus a warning. Zero
+        # events in both arms is an ordinary rare-outcome result, not a
+        # malformed call.
         warnings.warn(
             "both arms are degenerate (pooled proportion is 0 or 1); the "
             "chi-square and Fisher tests carry no information",

@@ -84,9 +84,14 @@ def simod(
         nw_result = nwker(z, y, bandwidth=bw, kernel=kernel)
         g_hat = nw_result["y_hat"]
 
-        eps = 1e-8
-        z_plus = z + eps
-        g_plus = nwker(z_plus, y, x_eval=z_plus, bandwidth=bw, kernel=kernel)["y_hat"]
+        # Derivative of the link by a forward difference on the fitted
+        # curve: the training pairs (z, y) stay put and only the
+        # evaluation grid moves. Shifting both by the same step gives an
+        # identically zero difference (Nadaraya-Watson is translation
+        # invariant), which is what left beta at its starting value.
+        # The step is scaled to the bandwidth as in npivr.
+        eps = bw * 0.01
+        g_plus = nwker(z, y, x_eval=z + eps, bandwidth=bw, kernel=kernel)["y_hat"]
         g_prime = (g_plus - g_hat) / eps
 
         gp_X = g_prime[:, None] * X

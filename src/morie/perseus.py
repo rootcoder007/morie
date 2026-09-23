@@ -11,11 +11,13 @@ contains an ``output_stream`` key (an iterator of string chunks) instead of
 
 from __future__ import annotations
 
+import itertools
 import logging
 from typing import Any
 
 from .cpads import cpads_contract
 from .llm import (
+    _FallbackText,
     agent_available,  # noqa: F401 -- re-exported
     build_morie_context,
     detect_available_provider,
@@ -98,6 +100,7 @@ def _try_agent(
             "model": resp.model,
             "output_text": resp.text + suffix,
             "tool_calls": resp.tool_calls_made,
+            "failed": bool(getattr(resp, "failed", False)),
         }
     except Exception as exc:
         logger.debug("Agent path failed: %s", exc)
@@ -157,14 +160,23 @@ def ask_percy(
             system_prompt=system_prompt,
         )
 
+        # llm.ask() has its own static fallback for a provider that fails
+        # mid-request; it returns the same text a local-only session gets.
+        # Report it as such so the exit code says nobody answered.
+        if stream:
+            first = next(output, None)
+            fallback = isinstance(first, _FallbackText)
+            output = itertools.chain([] if first is None else [first], output)
+        else:
+            assert isinstance(output, str)
+            fallback = isinstance(output, _FallbackText)
         result = {
-            "mode": "live_api",
-            "model": model or provider,
+            "mode": "local_fallback" if fallback else "live_api",
+            "model": "local" if fallback else (model or provider),
         }
         if stream:
             result["output_stream"] = output
         else:
-            assert isinstance(output, str)
             result["output_text"] = output
         return result
 

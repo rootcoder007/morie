@@ -6076,8 +6076,10 @@ def correlate(a, v, mode="valid"):
     if mode == "same":
         start = (m - 1) // 2
         return marr(full[start:start + n])
-    lo = m - 1
-    return marr(full[lo:len(full) - (m - 1)])
+    # valid: |n - m| + 1 lags where the shorter input sits fully inside
+    # the longer one; numpy gives the same count whichever is shorter.
+    lo = _bi.min(n, m) - 1
+    return marr(full[lo:lo + abs(n - m) + 1])
 
 
 def unwrap(p, discont=None):
@@ -6292,6 +6294,20 @@ def nan_to_num(x, nan=0.0, posinf=None, neginf=None):
 
 def isscalar(x):
     return isinstance(x, (int, float, complex, bool, str))
+
+
+def scalar_out(x, out):
+    """Hand a float back when the caller passed a scalar.
+
+    This core has no 0-d array: asarray(0.5) is a one-element marr, so a
+    callable that vectorises its input returns marr([v]) where numpy
+    returns a scalar. Callables documented as scalar-in, scalar-out pass
+    their original argument and their result through here.
+    """
+    if isinstance(x, (int, float)) and not isinstance(x, bool) \
+            and isinstance(out, marr) and out.size == 1:
+        return float(out.data[0])
+    return out
 
 
 def isinf(x):

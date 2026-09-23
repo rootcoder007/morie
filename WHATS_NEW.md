@@ -9,6 +9,22 @@ Per-package full changelogs:
 
 ## 1.3.2 (2026-09-21)
 
+- **`mrm_twoprop_test` on degenerate arms.** No events (or nothing but
+  events) in both arms gives chi-square 0 with p = 1 and a warning, in
+  both the Python and R arms. This is morie's convention (the limit of
+  two identical arms); R's `prop.test`/`chisq.test` return NaN and scipy
+  refuses the table.
+- **`simod()` estimates again.** The link derivative shifted the
+  training data and the evaluation grid together, so it was identically
+  zero and beta was returned at its starting value.
+- **Scalar in, scalar out.** `asarray()` of a Python scalar now behaves
+  like numpy's 0-d array under elementwise work: `qnorm(0.5)` is a float,
+  not a one-element array.
+- **`correlate(a, v)`** in valid mode is no longer empty when `a` is the
+  shorter input.
+- **`morie ?question`** exits 1 when no backend answered, like `ask` and
+  `agent`; a failed agent request is reported as such.
+
 - **Exec guard (source tree only).** `import morie` is refused inside
   guarded code: morie's modules re-export `os`, `subprocess`, `ctypes` and
   `importlib` as attributes, so `m.subprocess.run([...])` escaped the

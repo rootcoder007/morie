@@ -16,7 +16,9 @@ def test_sgcar_smoke():
     Z = rng.normal(0, 1, n)
     r = sgcar(Z, W)
     assert r.name == "conditional_autoregressive"
-    assert 0 < r.statistic < 1
+    # iid noise has no spatial dependence, so the sign of rho is a coin
+    # flip; the CAR feasible range is what a smoke test can pin.
+    assert -1 < r.statistic < 1
     assert "beta" in r.extra
     assert "tau2" in r.extra
 

@@ -12,13 +12,14 @@ __all__ = ["kamath_swiglu_activation", "swish"]
 def swish(z, beta=1.0):
     """Swish(z) = z * sigma(beta z), computed branch-stably so a large
     negative z underflows to 0 instead of overflowing exp."""
+    z_in = z
     z = np.asarray(z, dtype=float)
     out = np.empty_like(z)
     pos = (beta * z) >= 0
     out[pos] = z[pos] / (1.0 + np.exp(-beta * z[pos]))
     e = np.exp(beta * z[~pos])
     out[~pos] = z[~pos] * e / (1.0 + e)
-    return out
+    return np.scalar_out(z_in, out)
 
 
 def kamath_swiglu_activation(x, W, V, b=None, c=None):

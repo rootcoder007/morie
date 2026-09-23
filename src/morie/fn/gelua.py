@@ -34,22 +34,23 @@ def gelua(x, approximate=False, derivative=False, cdf=None):
     ndarray
         Output or gradient.
     """
+    x_in = x
     x = np.asarray(x, dtype=float)
 
     if approximate:
         cdf = 0.5 * (1.0 + np.tanh(np.sqrt(2.0 / np.pi) * (x + 0.044715 * x**3)))
         if derivative:
             pdf = np.exp(-0.5 * x**2) / np.sqrt(2 * np.pi)
-            return cdf + x * pdf
+            return np.scalar_out(x_in, cdf + x * pdf)
         else:
-            return x * cdf
+            return np.scalar_out(x_in, x * cdf)
     else:
         cdf = 0.5 * (1.0 + special.erf(x / np.sqrt(2)))
         if derivative:
             pdf = np.exp(-0.5 * x**2) / np.sqrt(2 * np.pi)
-            return cdf + x * pdf
+            return np.scalar_out(x_in, cdf + x * pdf)
         else:
-            return x * cdf
+            return np.scalar_out(x_in, x * cdf)
 
 
 def cheatsheet() -> str:
