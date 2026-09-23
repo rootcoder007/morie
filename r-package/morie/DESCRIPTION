@@ -202,6 +202,7 @@ VignetteBuilder: knitr
 URL: https://github.com/rootcoder007/morie
 BugReports: https://github.com/rootcoder007/morie/issues
 Config/testthat/edition: 3
+Config/testthat/parallel: true
 biocViews:
   Software,
   StatisticalMethod,

@@ -72,6 +72,7 @@ dependencies = [
 # silently installs no extra at all, which is why pytest was missing.
 test = [
   "pytest>=8.0",
+  "pytest-xdist>=3.5",  # -n auto in addopts: the suite fits real models, one core took 9 min
   "numpy>=1.26",
 ]
 interactive = [
@@ -213,6 +214,7 @@ known-first-party = ["morie"]
 testpaths = ["tests"]
 addopts = """\
 -q \
+-n auto \
 --ignore=tests/fn \
 --ignore=tests/parity \
 --ignore=tests/test_siu_federal_aggregate.py \
