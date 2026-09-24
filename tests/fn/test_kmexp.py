@@ -7,8 +7,8 @@ from morie.fn.kmexp import kamath_memorization_exposure
 
 def test_kmexp_basic():
     """Test basic functionality."""
-    canary_ll = np.random.default_rng(42).normal(0, 1, 100)
-    candidate_lls = np.random.default_rng(42).normal(0, 1, 100)
+    canary_ll = -0.1
+    candidate_lls = [-2.0, -3.0, -0.5]
     result = kamath_memorization_exposure(canary_ll, candidate_lls)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_kmexp_basic():
 
 def test_kmexp_edge():
     """Test edge cases."""
-    canary_ll = np.random.default_rng(42).normal(0, 1, 100)
-    candidate_lls = np.random.default_rng(42).normal(0, 1, 100)
+    canary_ll = -0.1
+    candidate_lls = [-2.0, -3.0, -0.5]
     result = kamath_memorization_exposure(canary_ll, candidate_lls)
     assert isinstance(result, dict)

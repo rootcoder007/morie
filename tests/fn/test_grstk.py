@@ -7,8 +7,8 @@ from morie.fn.grstk import geron_stacking_predictor
 
 def test_grstk_basic():
     """Test basic functionality."""
-    base_preds = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
+    base_preds = [[1.5, 0.5], [2.5, 1.5], [3.5, 2.5]]
+    y = [1.0, 2.0, 3.0]
     result = geron_stacking_predictor(base_preds, y)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_grstk_basic():
 
 def test_grstk_edge():
     """Test edge cases."""
-    base_preds = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
+    base_preds = [[1.5, 0.5], [2.5, 1.5], [3.5, 2.5]]
+    y = [1.0, 2.0, 3.0]
     result = geron_stacking_predictor(base_preds, y)
     assert isinstance(result, dict)

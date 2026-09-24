@@ -7,9 +7,9 @@ from morie.fn.grmlpf import geron_mlp_forward
 
 def test_grmlpf_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    biases = np.random.default_rng(42).normal(0, 1, 100)
+    x = [1.0, 2.0]
+    weights = [[[1.0, 1.0], [1.0, -1.0]], [[2.0, 3.0]]]
+    biases = [[0.0, 0.0], [1.0]]
     result = geron_mlp_forward(x, weights, biases)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -17,8 +17,8 @@ def test_grmlpf_basic():
 
 def test_grmlpf_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    biases = np.random.default_rng(42).normal(0, 1, 100)
+    x = [1.0, 2.0]
+    weights = [[[1.0, 1.0], [1.0, -1.0]], [[2.0, 3.0]]]
+    biases = [[0.0, 0.0], [1.0]]
     result = geron_mlp_forward(x, weights, biases)
     assert isinstance(result, dict)

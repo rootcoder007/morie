@@ -7,20 +7,16 @@ from morie.fn.hmsgdc import geron_sgd_classifier
 
 def test_hmsgdc_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    lr = np.random.default_rng(42).normal(0, 1, 100)
-    n_iter = 50
-    result = geron_sgd_classifier(X, y, lr, n_iter)
+    X = [[3.0, 1.0], [2.0, 2.0], [-3.0, -1.0], [-2.0, -2.0]]
+    y = [1, 1, 0, 0]
+    result = geron_sgd_classifier(X, y)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
 
 def test_hmsgdc_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    lr = np.random.default_rng(42).normal(0, 1, 100)
-    n_iter = 50
-    result = geron_sgd_classifier(X, y, lr, n_iter)
+    X = [[3.0, 1.0], [2.0, 2.0], [-3.0, -1.0], [-2.0, -2.0]]
+    y = [1, 1, 0, 0]
+    result = geron_sgd_classifier(X, y)
     assert isinstance(result, dict)

@@ -7,18 +7,14 @@ from morie.fn.kmchin import kamath_chinchilla_compute_optimal
 
 def test_kmchin_basic():
     """Test basic functionality."""
-    compute_budget = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    beta = 0.8
-    result = kamath_chinchilla_compute_optimal(compute_budget, alpha, beta)
+    compute_budget = 12000000000.0
+    result = kamath_chinchilla_compute_optimal(compute_budget)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
 
 def test_kmchin_edge():
     """Test edge cases."""
-    compute_budget = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    beta = 0.8
-    result = kamath_chinchilla_compute_optimal(compute_budget, alpha, beta)
+    compute_budget = 12000000000.0
+    result = kamath_chinchilla_compute_optimal(compute_budget)
     assert isinstance(result, dict)

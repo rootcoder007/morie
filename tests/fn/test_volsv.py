@@ -7,16 +7,14 @@ from morie.fn.volsv import vol_sv_quasi_lik
 
 def test_volsv_basic():
     """Test basic functionality."""
-    r = 10
-    init = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_sv_quasi_lik(r, init)
+    r = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = vol_sv_quasi_lik(r)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "mu" in result
 
 
 def test_volsv_edge():
     """Test edge cases."""
-    r = 10
-    init = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_sv_quasi_lik(r, init)
+    r = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = vol_sv_quasi_lik(r)
     assert isinstance(result, dict)

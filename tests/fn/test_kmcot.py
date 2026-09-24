@@ -7,8 +7,8 @@ from morie.fn.kmcot import kamath_chain_of_thought
 
 def test_kmcot_basic():
     """Test basic functionality."""
-    prompt = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
+    prompt = '2+2?'
+    model = lambda p: 'add. Answer: 4'
     result = kamath_chain_of_thought(prompt, model)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_kmcot_basic():
 
 def test_kmcot_edge():
     """Test edge cases."""
-    prompt = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
+    prompt = '2+2?'
+    model = lambda p: 'add. Answer: 4'
     result = kamath_chain_of_thought(prompt, model)
     assert isinstance(result, dict)

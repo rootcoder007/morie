@@ -7,16 +7,18 @@ from morie.fn.groob import geron_oob_error
 
 def test_groob_basic():
     """Test basic functionality."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    oob_predictions = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_oob_error(y_true, oob_predictions)
+    y = [0.0, 1.0]
+    predictions = [[9.0, 1.0], [0.0, 9.0]]
+    in_bag = [[True, False], [False, True]]
+    result = geron_oob_error(y, predictions, in_bag)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
 
 def test_groob_edge():
     """Test edge cases."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    oob_predictions = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_oob_error(y_true, oob_predictions)
+    y = [0.0, 1.0]
+    predictions = [[9.0, 1.0], [0.0, 9.0]]
+    in_bag = [[True, False], [False, True]]
+    result = geron_oob_error(y, predictions, in_bag)
     assert isinstance(result, dict)

@@ -7,8 +7,8 @@ from morie.fn.grrep import geron_reparameterization_trick
 
 def test_grrep_basic():
     """Test basic functionality."""
-    mu = 0.0
-    logvar = np.random.default_rng(42).normal(0, 1, 100)
+    mu = np.zeros(400)
+    logvar = np.zeros(400)
     result = geron_reparameterization_trick(mu, logvar)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_grrep_basic():
 
 def test_grrep_edge():
     """Test edge cases."""
-    mu = 0.0
-    logvar = np.random.default_rng(42).normal(0, 1, 100)
+    mu = np.zeros(400)
+    logvar = np.zeros(400)
     result = geron_reparameterization_trick(mu, logvar)
     assert isinstance(result, dict)

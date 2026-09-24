@@ -7,9 +7,9 @@ from morie.fn.kmadap import kamath_houlsby_adapter
 
 def test_kmadap_basic():
     """Test basic functionality."""
-    h = 0.3
-    W_down = np.random.default_rng(42).normal(0, 1, 100)
-    W_up = np.random.default_rng(42).normal(0, 1, 100)
+    h = [1.0, 0.0]
+    W_down = [[1.0, 0.0]]
+    W_up = [[1.0], [0.0]]
     result = kamath_houlsby_adapter(h, W_down, W_up)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -17,8 +17,8 @@ def test_kmadap_basic():
 
 def test_kmadap_edge():
     """Test edge cases."""
-    h = 0.3
-    W_down = np.random.default_rng(42).normal(0, 1, 100)
-    W_up = np.random.default_rng(42).normal(0, 1, 100)
+    h = [1.0, 0.0]
+    W_down = [[1.0, 0.0]]
+    W_up = [[1.0], [0.0]]
     result = kamath_houlsby_adapter(h, W_down, W_up)
     assert isinstance(result, dict)

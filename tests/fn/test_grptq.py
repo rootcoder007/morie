@@ -7,8 +7,8 @@ from morie.fn.grptq import geron_static_ptq
 
 def test_grptq_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    calibration_data = np.random.default_rng(42).normal(0, 1, 100)
+    model = [lambda a: 2 * a, lambda a: a + 1]
+    calibration_data = [[1.0], [2.0]]
     result = geron_static_ptq(model, calibration_data)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_grptq_basic():
 
 def test_grptq_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    calibration_data = np.random.default_rng(42).normal(0, 1, 100)
+    model = [lambda a: 2 * a, lambda a: a + 1]
+    calibration_data = [[1.0], [2.0]]
     result = geron_static_ptq(model, calibration_data)
     assert isinstance(result, dict)
