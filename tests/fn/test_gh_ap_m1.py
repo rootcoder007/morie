@@ -7,13 +7,17 @@ from morie.fn.gh_ap_m1 import ghosal_mh_sampler
 
 def test_gh_ap_m1_basic():
     """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = ghosal_mh_sampler(x)
+    result = ghosal_mh_sampler(n_draws=2000, seed=42)
     assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert "mean" in result
+    assert "accept_rate" in result
+    assert isinstance(result["estimate"], float)
+    assert isinstance(result["mean"], float)
+    assert 0.0 <= result["accept_rate"] <= 1.0
 
 
 def test_gh_ap_m1_edge():
     """Test edge cases."""
-    result = ghosal_mh_sampler(np.array([42.0]))
-    assert result["n"] == 1
+    result = ghosal_mh_sampler(n_draws=10, seed=0)
+    assert "estimate" in result
+    assert "method" in result

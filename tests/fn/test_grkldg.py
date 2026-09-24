@@ -1,22 +1,33 @@
-"""Tests for grkldg.geron_kl_divergence_gaussian."""
+"""Verification tests for grkldg.
 
-from morie.fn import _array_core as np
+The module documents its contract with a worked example carrying the
+printed value from the source it cites. These tests execute that
+example and require every printed value to reproduce exactly, so the
+documented contract is enforced here and not only under
+--doctest-modules, which the main suite does not run over tests/fn.
+"""
 
-from morie.fn.grkldg import geron_kl_divergence_gaussian
+import doctest
 
-
-def test_grkldg_basic():
-    """Test basic functionality."""
-    mu = [0.5, -1.0]
-    logvar = [0.2, -0.3]
-    result = geron_kl_divergence_gaussian(mu, logvar)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grkldg as module
 
 
-def test_grkldg_edge():
-    """Test edge cases."""
-    mu = [0.5, -1.0]
-    logvar = [0.2, -0.3]
-    result = geron_kl_divergence_gaussian(mu, logvar)
-    assert isinstance(result, dict)
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = doctest.testmod(module, verbose=False, report=False,
+                          optionflags=doctest.NORMALIZE_WHITESPACE
+                          | doctest.ELLIPSIS)
+    assert res.attempted >= 1
+    assert res.failed == 0
+
+
+def test_the_worked_example_exercises_the_public_function():
+    names = list(getattr(module, "__all__", []) or [])
+    assert names
+    docs = [module.__doc__ or ""]
+    for name in names:
+        docs.append(getattr(module, name).__doc__ or "")
+    assert ">>>" in "\n".join(docs)
+
+
+def test_the_module_carries_its_own_cheatsheet():
+    assert "grkldg" in module.cheatsheet()

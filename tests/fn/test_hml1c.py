@@ -1,26 +1,33 @@
-"""Tests for hml1c.geron_one_cycle."""
+"""Verification tests for hml1c.
 
-from morie.fn import _array_core as np
+The module documents its contract with a worked example carrying the
+printed value from the source it cites. These tests execute that
+example and require every printed value to reproduce exactly, so the
+documented contract is enforced here and not only under
+--doctest-modules, which the main suite does not run over tests/fn.
+"""
 
-from morie.fn.hml1c import geron_one_cycle
+import doctest
 
-
-def test_hml1c_basic():
-    """Test basic functionality."""
-    t = 0.5
-    T = 5
-    lr_max = 5
-    lr_min = 0.5
-    result = geron_one_cycle(t, T, lr_max, lr_min)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "lr" in result
+import morie.fn.hml1c as module
 
 
-def test_hml1c_edge():
-    """Test edge cases."""
-    t = 0.5
-    T = 5
-    lr_max = 5
-    lr_min = 0.5
-    result = geron_one_cycle(t, T, lr_max, lr_min)
-    assert isinstance(result, dict)
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = doctest.testmod(module, verbose=False, report=False,
+                          optionflags=doctest.NORMALIZE_WHITESPACE
+                          | doctest.ELLIPSIS)
+    assert res.attempted >= 1
+    assert res.failed == 0
+
+
+def test_the_worked_example_exercises_the_public_function():
+    names = list(getattr(module, "__all__", []) or [])
+    assert names
+    docs = [module.__doc__ or ""]
+    for name in names:
+        docs.append(getattr(module, name).__doc__ or "")
+    assert ">>>" in "\n".join(docs)
+
+
+def test_the_module_carries_its_own_cheatsheet():
+    assert "hml1c" in module.cheatsheet()

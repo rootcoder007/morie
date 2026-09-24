@@ -1,24 +1,33 @@
-"""Tests for kmcai.kamath_constitutional_ai_loop."""
+"""Verification tests for kmcai.
 
-from morie.fn import _array_core as np
+The module documents its contract with a worked example carrying the
+printed value from the source it cites. These tests execute that
+example and require every printed value to reproduce exactly, so the
+documented contract is enforced here and not only under
+--doctest-modules, which the main suite does not run over tests/fn.
+"""
 
-from morie.fn.kmcai import kamath_constitutional_ai_loop
+import doctest
 
-
-def test_kmcai_basic():
-    """Test basic functionality."""
-    initial_response = np.random.default_rng(42).normal(0, 1, 100)
-    constitution = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_constitutional_ai_loop(initial_response, constitution, model)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.kmcai as module
 
 
-def test_kmcai_edge():
-    """Test edge cases."""
-    initial_response = np.random.default_rng(42).normal(0, 1, 100)
-    constitution = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_constitutional_ai_loop(initial_response, constitution, model)
-    assert isinstance(result, dict)
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = doctest.testmod(module, verbose=False, report=False,
+                          optionflags=doctest.NORMALIZE_WHITESPACE
+                          | doctest.ELLIPSIS)
+    assert res.attempted >= 1
+    assert res.failed == 0
+
+
+def test_the_worked_example_exercises_the_public_function():
+    names = list(getattr(module, "__all__", []) or [])
+    assert names
+    docs = [module.__doc__ or ""]
+    for name in names:
+        docs.append(getattr(module, name).__doc__ or "")
+    assert ">>>" in "\n".join(docs)
+
+
+def test_the_module_carries_its_own_cheatsheet():
+    assert "kmcai" in module.cheatsheet()

@@ -1,22 +1,33 @@
-"""Tests for hmpe.geron_positional_encoding."""
+"""Verification tests for hmpe.
 
-from morie.fn import _array_core as np
+The module documents its contract with a worked example carrying the
+printed value from the source it cites. These tests execute that
+example and require every printed value to reproduce exactly, so the
+documented contract is enforced here and not only under
+--doctest-modules, which the main suite does not run over tests/fn.
+"""
 
-from morie.fn.hmpe import geron_positional_encoding
+import doctest
 
-
-def test_hmpe_basic():
-    """Test basic functionality."""
-    pos = 0.5
-    d_model = 2.0
-    result = geron_positional_encoding(pos, d_model)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "pe" in result
+import morie.fn.hmpe as module
 
 
-def test_hmpe_edge():
-    """Test edge cases."""
-    pos = 0.5
-    d_model = 2.0
-    result = geron_positional_encoding(pos, d_model)
-    assert isinstance(result, dict)
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = doctest.testmod(module, verbose=False, report=False,
+                          optionflags=doctest.NORMALIZE_WHITESPACE
+                          | doctest.ELLIPSIS)
+    assert res.attempted >= 1
+    assert res.failed == 0
+
+
+def test_the_worked_example_exercises_the_public_function():
+    names = list(getattr(module, "__all__", []) or [])
+    assert names
+    docs = [module.__doc__ or ""]
+    for name in names:
+        docs.append(getattr(module, name).__doc__ or "")
+    assert ">>>" in "\n".join(docs)
+
+
+def test_the_module_carries_its_own_cheatsheet():
+    assert "hmpe" in module.cheatsheet()

@@ -1,22 +1,33 @@
-"""Tests for hmmcp.geron_model_context_protocol."""
+"""Verification tests for hmmcp.
 
-from morie.fn import _array_core as np
+The module documents its contract with a worked example carrying the
+printed value from the source it cites. These tests execute that
+example and require every printed value to reproduce exactly, so the
+documented contract is enforced here and not only under
+--doctest-modules, which the main suite does not run over tests/fn.
+"""
 
-from morie.fn.hmmcp import geron_model_context_protocol
+import doctest
 
-
-def test_hmmcp_basic():
-    """Test basic functionality."""
-    server = np.random.default_rng(42).normal(0, 1, 100)
-    client = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_model_context_protocol(server, client)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmmcp as module
 
 
-def test_hmmcp_edge():
-    """Test edge cases."""
-    server = np.random.default_rng(42).normal(0, 1, 100)
-    client = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_model_context_protocol(server, client)
-    assert isinstance(result, dict)
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = doctest.testmod(module, verbose=False, report=False,
+                          optionflags=doctest.NORMALIZE_WHITESPACE
+                          | doctest.ELLIPSIS)
+    assert res.attempted >= 1
+    assert res.failed == 0
+
+
+def test_the_worked_example_exercises_the_public_function():
+    names = list(getattr(module, "__all__", []) or [])
+    assert names
+    docs = [module.__doc__ or ""]
+    for name in names:
+        docs.append(getattr(module, name).__doc__ or "")
+    assert ">>>" in "\n".join(docs)
+
+
+def test_the_module_carries_its_own_cheatsheet():
+    assert "hmmcp" in module.cheatsheet()

@@ -1,24 +1,33 @@
-"""Tests for kmklr.kamath_kl_reward_shaping."""
+"""Verification tests for kmklr.
 
-from morie.fn import _array_core as np
+The module documents its contract with a worked example carrying the
+printed value from the source it cites. These tests execute that
+example and require every printed value to reproduce exactly, so the
+documented contract is enforced here and not only under
+--doctest-modules, which the main suite does not run over tests/fn.
+"""
 
-from morie.fn.kmklr import kamath_kl_reward_shaping
+import doctest
 
-
-def test_kmklr_basic():
-    """Test basic functionality."""
-    r_phi = np.random.default_rng(42).normal(0, 1, 100)
-    kl_divergence = np.random.default_rng(42).normal(0, 1, 100)
-    beta = 0.8
-    result = kamath_kl_reward_shaping(r_phi, kl_divergence, beta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.kmklr as module
 
 
-def test_kmklr_edge():
-    """Test edge cases."""
-    r_phi = np.random.default_rng(42).normal(0, 1, 100)
-    kl_divergence = np.random.default_rng(42).normal(0, 1, 100)
-    beta = 0.8
-    result = kamath_kl_reward_shaping(r_phi, kl_divergence, beta)
-    assert isinstance(result, dict)
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = doctest.testmod(module, verbose=False, report=False,
+                          optionflags=doctest.NORMALIZE_WHITESPACE
+                          | doctest.ELLIPSIS)
+    assert res.attempted >= 1
+    assert res.failed == 0
+
+
+def test_the_worked_example_exercises_the_public_function():
+    names = list(getattr(module, "__all__", []) or [])
+    assert names
+    docs = [module.__doc__ or ""]
+    for name in names:
+        docs.append(getattr(module, name).__doc__ or "")
+    assert ">>>" in "\n".join(docs)
+
+
+def test_the_module_carries_its_own_cheatsheet():
+    assert "kmklr" in module.cheatsheet()

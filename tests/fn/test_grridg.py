@@ -1,26 +1,33 @@
-"""Tests for grridg.geron_ridge_cost."""
+"""Verification tests for grridg.
 
-from morie.fn import _array_core as np
+The module documents its contract with a worked example carrying the
+printed value from the source it cites. These tests execute that
+example and require every printed value to reproduce exactly, so the
+documented contract is enforced here and not only under
+--doctest-modules, which the main suite does not run over tests/fn.
+"""
 
-from morie.fn.grridg import geron_ridge_cost
+import doctest
 
-
-def test_grridg_basic():
-    """Test basic functionality."""
-    X = np.array([[1.0, 0.5], [1.0, -2.0], [1.0, 3.0]])
-    y = np.array([1.0, 0.0, 2.0])
-    theta = np.array([0.2, -0.3])
-    alpha = 0.7
-    result = geron_ridge_cost(X, y, theta, alpha)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grridg as module
 
 
-def test_grridg_edge():
-    """Test edge cases."""
-    X = np.array([[1.0, 0.5], [1.0, -2.0], [1.0, 3.0]])
-    y = np.array([1.0, 0.0, 2.0])
-    theta = np.array([0.2, -0.3])
-    alpha = 0.7
-    result = geron_ridge_cost(X, y, theta, alpha)
-    assert isinstance(result, dict)
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = doctest.testmod(module, verbose=False, report=False,
+                          optionflags=doctest.NORMALIZE_WHITESPACE
+                          | doctest.ELLIPSIS)
+    assert res.attempted >= 1
+    assert res.failed == 0
+
+
+def test_the_worked_example_exercises_the_public_function():
+    names = list(getattr(module, "__all__", []) or [])
+    assert names
+    docs = [module.__doc__ or ""]
+    for name in names:
+        docs.append(getattr(module, name).__doc__ or "")
+    assert ">>>" in "\n".join(docs)
+
+
+def test_the_module_carries_its_own_cheatsheet():
+    assert "grridg" in module.cheatsheet()

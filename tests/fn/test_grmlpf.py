@@ -1,24 +1,33 @@
-"""Tests for grmlpf.geron_mlp_forward."""
+"""Verification tests for grmlpf.
 
-from morie.fn import _array_core as np
+The module documents its contract with a worked example carrying the
+printed value from the source it cites. These tests execute that
+example and require every printed value to reproduce exactly, so the
+documented contract is enforced here and not only under
+--doctest-modules, which the main suite does not run over tests/fn.
+"""
 
-from morie.fn.grmlpf import geron_mlp_forward
+import doctest
 
-
-def test_grmlpf_basic():
-    """Test basic functionality."""
-    x = [1.0, 2.0]
-    weights = [[[1.0, 1.0], [1.0, -1.0]], [[2.0, 3.0]]]
-    biases = [[0.0, 0.0], [1.0]]
-    result = geron_mlp_forward(x, weights, biases)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grmlpf as module
 
 
-def test_grmlpf_edge():
-    """Test edge cases."""
-    x = [1.0, 2.0]
-    weights = [[[1.0, 1.0], [1.0, -1.0]], [[2.0, 3.0]]]
-    biases = [[0.0, 0.0], [1.0]]
-    result = geron_mlp_forward(x, weights, biases)
-    assert isinstance(result, dict)
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = doctest.testmod(module, verbose=False, report=False,
+                          optionflags=doctest.NORMALIZE_WHITESPACE
+                          | doctest.ELLIPSIS)
+    assert res.attempted >= 1
+    assert res.failed == 0
+
+
+def test_the_worked_example_exercises_the_public_function():
+    names = list(getattr(module, "__all__", []) or [])
+    assert names
+    docs = [module.__doc__ or ""]
+    for name in names:
+        docs.append(getattr(module, name).__doc__ or "")
+    assert ">>>" in "\n".join(docs)
+
+
+def test_the_module_carries_its_own_cheatsheet():
+    assert "grmlpf" in module.cheatsheet()

@@ -1,22 +1,33 @@
-"""Tests for grgptl.geron_gpt_autoregressive_loss."""
+"""Verification tests for grgptl.
 
-from morie.fn import _array_core as np
+The module documents its contract with a worked example carrying the
+printed value from the source it cites. These tests execute that
+example and require every printed value to reproduce exactly, so the
+documented contract is enforced here and not only under
+--doctest-modules, which the main suite does not run over tests/fn.
+"""
 
-from morie.fn.grgptl import geron_gpt_autoregressive_loss
+import doctest
 
-
-def test_grgptl_basic():
-    """Test basic functionality."""
-    logits = [[2.0, 0.0, -1.0], [0.0, 1.0, 1.0]]
-    targets = [0, 2]
-    result = geron_gpt_autoregressive_loss(logits, targets)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grgptl as module
 
 
-def test_grgptl_edge():
-    """Test edge cases."""
-    logits = [[2.0, 0.0, -1.0], [0.0, 1.0, 1.0]]
-    targets = [0, 2]
-    result = geron_gpt_autoregressive_loss(logits, targets)
-    assert isinstance(result, dict)
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = doctest.testmod(module, verbose=False, report=False,
+                          optionflags=doctest.NORMALIZE_WHITESPACE
+                          | doctest.ELLIPSIS)
+    assert res.attempted >= 1
+    assert res.failed == 0
+
+
+def test_the_worked_example_exercises_the_public_function():
+    names = list(getattr(module, "__all__", []) or [])
+    assert names
+    docs = [module.__doc__ or ""]
+    for name in names:
+        docs.append(getattr(module, name).__doc__ or "")
+    assert ">>>" in "\n".join(docs)
+
+
+def test_the_module_carries_its_own_cheatsheet():
+    assert "grgptl" in module.cheatsheet()
