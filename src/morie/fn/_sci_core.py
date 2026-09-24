@@ -283,7 +283,7 @@ def _bfgs(fun, x0, args=(), maxiter=None, gtol=1e-6):
                      for j in range(n)] for i in range(n)]
         x, g, f = xn, gn, fn2
     return OptimizeResult(x=_ac.marr(x), fun=f, nit=it + 1, nfev=nfev,
-                          jac=_ac.marr(g),
+                          jac=_ac.marr(g), hess_inv=_ac.marr(hinv),
                           success=max(abs(v) for v in g) < 1e-3,
                           message="bfgs")
 

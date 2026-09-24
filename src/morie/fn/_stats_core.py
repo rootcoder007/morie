@@ -2111,24 +2111,125 @@ def normaltest(a):
     return _TestResult(k2, chi2.sf(k2, 2))
 
 
+def _gumbel_r_fit(v):
+    """MLE of the right-skewed Gumbel: the scale solves
+    mean(x) - sum(x e^{-x/b}) / sum(e^{-x/b}) = b (bisection), then
+    loc = -b log(mean(e^{-x/b}))."""
+    n = len(v)
+    mu = _math.fsum(v) / n
+
+    def h(b):
+        e = [-(u - mu) / b for u in v]
+        m = max(e)
+        w = [_math.exp(t - m) for t in e]
+        sw = _math.fsum(w)
+        return mu - _math.fsum(u * wi for u, wi in zip(v, w)) / sw - b
+    sd = _math.sqrt(_var(v, ddof=1)) or 1e-8
+    lo, hi = sd * 1e-3, sd * 10.0
+    flo, fhi = h(lo), h(hi)
+    for _ in range(60):
+        if flo * fhi > 0:
+            hi *= 2.0
+            fhi = h(hi)
+            continue
+        mid = 0.5 * (lo + hi)
+        fm = h(mid)
+        if flo * fm <= 0:
+            hi, fhi = mid, fm
+        else:
+            lo, flo = mid, fm
+    b = 0.5 * (lo + hi)
+    e = [-(u - mu) / b for u in v]
+    m = max(e)
+    loc = mu - b * (m + _math.log(_math.fsum(_math.exp(t - m) for t in e) / n))
+    return loc, b
+
+
+def _logistic_fit(v):
+    """MLE of the logistic distribution by Newton steps on the score
+    equations sum tanh(z/2) = 0 and sum z tanh(z/2) = n, z = (x-loc)/s."""
+    n = len(v)
+    loc = _math.fsum(v) / n
+    s = _math.sqrt(_var(v, ddof=1)) * _math.sqrt(3.0) / _math.pi or 1e-8
+
+    def score(loc, s):
+        z = [(u - loc) / s for u in v]
+        t = [_math.tanh(zi / 2.0) for zi in z]
+        return (_math.fsum(t), _math.fsum(zi * ti for zi, ti in zip(z, t)) - n)
+    for _ in range(100):
+        f1, f2 = score(loc, s)
+        if abs(f1) < 1e-10 * n and abs(f2) < 1e-10 * n:
+            break
+        h1, h2 = 1e-6 * (abs(loc) + 1.0), 1e-6 * s
+        a11 = (score(loc + h1, s)[0] - f1) / h1
+        a12 = (score(loc, s + h2)[0] - f1) / h2
+        a21 = (score(loc + h1, s)[1] - f2) / h1
+        a22 = (score(loc, s + h2)[1] - f2) / h2
+        det = a11 * a22 - a12 * a21
+        if det == 0:
+            break
+        dl = (f1 * a22 - f2 * a12) / det
+        ds = (a11 * f2 - a21 * f1) / det
+        loc -= dl
+        s = max(s - ds, 1e-12)
+    return loc, s
+
+
 def anderson(x, dist="norm"):
-    if dist != "norm":
-        raise NotImplementedError("anderson: only norm supported")
+    """Anderson-Darling test for a fitted normal, exponential, logistic
+    or Gumbel distribution, with scipy's critical-value tables and
+    finite-sample corrections (Stephens 1974 / D'Agostino-Stephens 1986)."""
     v = sorted(_flatten(x))
     n = len(v)
-    mu, sd = _mean(v), _math.sqrt(_var(v, ddof=1))
-    z = [norm.cdf((u - mu) / sd) for u in v]
+    if n < 2:
+        raise ValueError("anderson needs at least two observations")
+    if dist == "norm":
+        mu, sd = _mean(v), _math.sqrt(_var(v, ddof=1))
+        z = [norm.cdf((u - mu) / sd) for u in v]
+        base = [0.561, 0.631, 0.752, 0.873, 1.035]  # scipy 1.18 table
+        crit = [round(b / (1.0 + 0.75 / n + 2.25 / (n * n)), 3) for b in base]
+        sig = [15.0, 10.0, 5.0, 2.5, 1.0]
+        fit = (mu, sd)
+    elif dist == "expon":
+        scale = _mean(v)
+        z = [-_math.expm1(-u / scale) for u in v]
+        base = [0.916, 1.062, 1.321, 1.591, 1.959]  # scipy 1.18 table
+        crit = [round(b / (1.0 + 0.6 / n), 3) for b in base]
+        sig = [15.0, 10.0, 5.0, 2.5, 1.0]
+        fit = (0.0, scale)
+    elif dist == "logistic":
+        loc, s = _logistic_fit(v)
+        z = [1.0 / (1.0 + _math.exp(-(u - loc) / s)) for u in v]
+        base = [0.426, 0.563, 0.660, 0.769, 0.906, 1.010]
+        crit = [round(b / (1.0 + 0.25 / n), 3) for b in base]
+        sig = [25.0, 10.0, 5.0, 2.5, 1.0, 0.5]
+        fit = (loc, s)
+    elif dist in ("gumbel", "gumbel_l", "extreme1", "gumbel_r"):
+        if dist == "gumbel_r":
+            loc, b = _gumbel_r_fit(v)
+            z = [_math.exp(-_math.exp(-(u - loc) / b)) for u in v]
+        else:
+            loc_n, b = _gumbel_r_fit([-u for u in v])
+            loc = -loc_n
+            z = [-_math.expm1(-_math.exp((u - loc) / b)) for u in v]
+        base = [0.474, 0.637, 0.757, 0.877, 1.038]
+        crit = [round(b_ / (1.0 + 0.2 / _math.sqrt(n)), 3) for b_ in base]
+        sig = [25.0, 10.0, 5.0, 2.5, 1.0]
+        fit = (loc, b)
+    else:
+        raise ValueError("Invalid distribution; dist must be 'norm', "
+                         "'expon', 'gumbel', 'gumbel_l', 'gumbel_r', "
+                         "'extreme1' or 'logistic'.")
+    eps = 1e-300
     a2 = -n - _math.fsum(
-        (2 * (i + 1) - 1) * (_math.log(z[i])
-                             + _math.log1p(-z[n - 1 - i]))
+        (2 * (i + 1) - 1) * (_math.log(max(z[i], eps))
+                             + _math.log(max(1.0 - z[n - 1 - i], eps)))
         for i in range(n)) / n
-    # scipy returns the raw A2 and scales the critical values instead
-    base = [0.576, 0.656, 0.787, 0.918, 1.092]
-    adj = 1.0 + 4.0 / n - 25.0 / (n * n)
-    crit = [round(v / adj, 3) for v in base]
-    sig = [15.0, 10.0, 5.0, 2.5, 1.0]
+    from . import _array_core as _ac
     return _TestResult(a2, None,
-                       critical_values=crit, significance_level=sig)
+                       critical_values=_ac.marr(crit),
+                       significance_level=_ac.marr(sig),
+                       fit_result=fit)
 
 
 # ---------------------------------------------------- KDE + extra dists

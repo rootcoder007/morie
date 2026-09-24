@@ -15,6 +15,12 @@ def _key(v):
     return v.item() if hasattr(v, "item") else v
 
 
+def _stratum_label(v):
+    if isinstance(v, float) and v.is_integer():
+        return str(int(v))
+    return str(v)
+
+
 def backdoor_adjustment_formula(X, Y, Z, x=None):
     r"""Back-door adjustment: the causal effect by stratifying on Z.
 
@@ -82,7 +88,9 @@ def backdoor_adjustment_formula(X, Y, Z, x=None):
     if n == 0:
         raise ValueError("X, Y and Z must not be empty.")
 
-    zlab = np.array(["|".join(map(str, row)) for row in za])
+    # integer-valued strata label as integers ("1", not "1.0"), as a
+    # numpy integer array would
+    zlab = np.array(["|".join(_stratum_label(v) for v in row) for row in za.tolist()])
     z_levels, z_counts = np.unique(zlab, return_counts=True)
     p_z = z_counts / n
 

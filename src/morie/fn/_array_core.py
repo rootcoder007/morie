@@ -179,6 +179,32 @@ def _ix(v):
     return v
 
 
+def _slice_bound(v):
+    """A slice bound: numpy accepts its integer scalars and 0-d arrays;
+    here those arrive as integral floats or one-element marrs."""
+    if v is None or isinstance(v, int):
+        return v
+    if isinstance(v, float):
+        if v.is_integer():
+            return int(v)
+        raise TypeError("slice indices must be integers or None or have "
+                        "an __index__ method")
+    if isinstance(v, marr):
+        f = v._flat()
+        if len(f) == 1:
+            return _slice_bound(f[0])
+    if hasattr(v, "__index__"):
+        return v.__index__()
+    return v
+
+
+def _norm_slice(s):
+    if s.start is None and s.stop is None and s.step is None:
+        return s
+    return slice(_slice_bound(s.start), _slice_bound(s.stop),
+                 _slice_bound(s.step))
+
+
 class marr:
     """Minimal array: nested lists of floats, 1-D or 2-D."""
 
@@ -286,7 +312,12 @@ class marr:
         return iter([marr(row) for row in self.data])
 
     def __getitem__(self, idx):
+        if isinstance(idx, slice):
+            idx = _norm_slice(idx)
         if isinstance(idx, tuple):
+            if any(isinstance(v, slice) for v in idx):
+                idx = tuple(_norm_slice(v) if isinstance(v, slice) else v
+                            for v in idx)
             if any(isinstance(v, tuple) for v in idx):
                 # numpy reads x[:, (0, 2)] as x[:, [0, 2]]; an
                 # itertools.combinations tuple is what callers pass here
@@ -665,6 +696,10 @@ class marr:
 
     def __setitem__(self, idx, value):
         idx = _ix(idx)
+        if isinstance(idx, slice):
+            idx = _norm_slice(idx)
+        elif isinstance(idx, tuple) and any(isinstance(v, slice) for v in idx):
+            idx = tuple(_norm_slice(v) if isinstance(v, slice) else v for v in idx)
         if isinstance(idx, tuple) and len(idx) == 0:
             v = asarray(value)
             f = v._flat() if isinstance(v, marr) else [float(v)]
@@ -1683,6 +1718,8 @@ def concatenate(parts, axis=0):
 
 def _uf(fn):
     def wrapped(x):
+        if isinstance(x, complex):
+            return fn(x)
         if isinstance(x, ndlist):
             return ndlist(wrapped(marr(b)) for b in x)
         if isinstance(x, carr) and x.rows is not None:
@@ -1791,6 +1828,10 @@ class AxisError(ValueError, IndexError):
 
 def _check_axis(a, axis):
     if axis is None:
+        return
+    if isinstance(axis, tuple):
+        for ax in axis:
+            _check_axis(a, ax)
         return
     nd = len(a.shape)
     if not isinstance(axis, int) or axis >= nd or axis < -nd:
@@ -2106,9 +2147,27 @@ def matmul(a, b):
     return marr(out)
 
 
+
+def _axis_arg(x, axis):
+    """A tuple ``axis`` on a rank-1/2 array: all axes is None, one axis
+    is that axis; ndlist keeps the tuple (it reduces several axes)."""
+    if not isinstance(axis, tuple) or isinstance(x, ndlist):
+        return axis
+    nd = len(asarray(x).shape)
+    axes = sorted({ax % nd if -nd <= ax < nd else ax for ax in axis})
+    if any(ax < 0 or ax >= nd for ax in axes):
+        raise AxisError("axis %r is out of bounds for array of dimension %d" % (axis, nd))
+    if len(axes) == nd:
+        return None
+    if len(axes) == 1:
+        return axes[0]
+    raise AxisError("axis %r is not supported on a rank-%d array" % (axis, nd))
+
+
 # --------------------------------------------------------------- reductions
 
 def sum(x, axis=None, dtype=None, keepdims=False):  # noqa: A001
+    axis = _axis_arg(x, axis)
     _check_axis(asarray(x), axis)
     del dtype
     if isinstance(x, ndlist):
@@ -2117,6 +2176,7 @@ def sum(x, axis=None, dtype=None, keepdims=False):  # noqa: A001
 
 
 def mean(x, axis=None, dtype=None, keepdims=False):
+    axis = _axis_arg(x, axis)
     _check_axis(asarray(x), axis)
     del dtype
     if isinstance(x, ndlist):
@@ -2125,6 +2185,7 @@ def mean(x, axis=None, dtype=None, keepdims=False):
 
 
 def std(x, axis=None, ddof=0, dtype=None, keepdims=False):
+    axis = _axis_arg(x, axis)
     _check_axis(asarray(x), axis)
     del dtype
     if isinstance(x, ndlist):
@@ -2133,6 +2194,7 @@ def std(x, axis=None, ddof=0, dtype=None, keepdims=False):
 
 
 def var(x, axis=None, ddof=0, dtype=None, keepdims=False):
+    axis = _axis_arg(x, axis)
     _check_axis(asarray(x), axis)
     del dtype
     if isinstance(x, ndlist):
@@ -2141,6 +2203,7 @@ def var(x, axis=None, ddof=0, dtype=None, keepdims=False):
 
 
 def max(x, axis=None, keepdims=False):  # noqa: A001
+    axis = _axis_arg(x, axis)
     _check_axis(asarray(x), axis)
     if isinstance(x, ndlist):
         return x.max(axis=axis, keepdims=keepdims)
@@ -2148,6 +2211,7 @@ def max(x, axis=None, keepdims=False):  # noqa: A001
 
 
 def min(x, axis=None, keepdims=False):  # noqa: A001
+    axis = _axis_arg(x, axis)
     _check_axis(asarray(x), axis)
     if isinstance(x, ndlist):
         return x.min(axis=axis, keepdims=keepdims)
@@ -2286,14 +2350,25 @@ def _broadcast_flat(a, b, who):
     Previously the length check returned False on any mismatch, which
     made every array-vs-scalar comparison silently false.
     """
-    aa = list(asarray(a)._flat())
-    bb = list(asarray(b)._flat())
+    xa, xb = asarray(a), asarray(b)
+    aa = list(xa._flat())
+    bb = list(xb._flat())
     if len(aa) == len(bb):
         return aa, bb
     if len(bb) == 1:
         return aa, bb * len(aa)
     if len(aa) == 1:
         return aa * len(bb), bb
+    # numpy row / column broadcasting between a matrix and a vector
+    sa, sb = tuple(xa.shape), tuple(xb.shape)
+    if len(sa) == 2 and len(sb) == 1 and sb[0] == sa[1]:
+        return aa, bb * sa[0]
+    if len(sb) == 2 and len(sa) == 1 and sa[0] == sb[1]:
+        return aa * sb[0], bb
+    if len(sa) == 2 and len(sb) == 2 and sb[1] == 1 and sb[0] == sa[0]:
+        return aa, [bb[i] for i in range(sa[0]) for _ in range(sa[1])]
+    if len(sa) == 2 and len(sb) == 2 and sa[1] == 1 and sa[0] == sb[0]:
+        return [aa[i] for i in range(sb[0]) for _ in range(sb[1])], bb
     raise ValueError(
         "%s: operands could not be broadcast together with %d and %d "
         "values" % (who, len(aa), len(bb)))
@@ -3264,6 +3339,10 @@ def logaddexp(a, b):
 
 
 def tile(x, reps):
+    if isinstance(x, (list, tuple, oarr)) and x \
+            and any(isinstance(v, str) for v in x):
+        r = reps[-1] if isinstance(reps, (list, tuple)) else reps
+        return oarr(list(x) * int(r))
     a = asarray(x)
     if not isinstance(reps, (tuple, list)) and len(a.shape) == 2:
         # numpy tiles the LAST axis for a scalar reps: (2, 2) -> (2, 4)
@@ -3389,6 +3468,12 @@ def squeeze(x, axis=None):
 
 
 def repeat(x, reps, axis=None):
+    if isinstance(x, (list, tuple, oarr)) and x \
+            and any(isinstance(v, str) for v in x):
+        # numpy: string / object input stays object dtype
+        rl = ([int(v) for v in asarray(reps)._flat()]
+              if isinstance(reps, (list, tuple, marr)) else [int(reps)] * len(x))
+        return oarr([v for v, r in zip(x, rl) for _ in range(r)])
     if isinstance(reps, (list, tuple, marr)) or (
             hasattr(reps, "tolist") and not isinstance(reps, (int, float))):
         rl = [int(v) for v in
@@ -3640,6 +3725,7 @@ linalg.cond = _LinalgExt.cond
 
 
 def prod(x, axis=None, keepdims=False):
+    axis = _axis_arg(x, axis)
     _check_axis(asarray(x), axis)
     def _p(vals):
         out = 1.0
@@ -4353,11 +4439,58 @@ def _reduce_axis(x, axis, fn):
     return [_reduce_axis(v, axis - 1, fn) for v in x]
 
 
+def _reduce_axes(nested, shape, axes, fn):
+    """Reduce several axes of a nested list at once."""
+    import itertools
+    keep = [d for d in range(len(shape)) if d not in axes]
+
+    def get(idx):
+        v = nested
+        for i in idx:
+            v = v[i]
+        return v
+
+    def build(prefix):
+        if len(prefix) == len(keep):
+            vals = []
+            for red in itertools.product(*[range(shape[d]) for d in axes]):
+                idx = [0] * len(shape)
+                for d, i in zip(keep, prefix):
+                    idx[d] = i
+                for d, i in zip(axes, red):
+                    idx[d] = i
+                vals.append(get(idx))
+            return fn(vals)
+        d = keep[len(prefix)]
+        return [build(prefix + (i,)) for i in range(shape[d])]
+    return build(())
+
+
 def _ndlist_reduce(self, axis, keepdims, fn):
     nested = self.tolist()
     if axis is None:
         return fn(_flatten_nested(nested))
     shape = self.shape
+    if isinstance(axis, tuple):
+        axes = sorted({ax % len(shape) for ax in axis})
+        if len(axes) == len(shape):
+            val = fn(_flatten_nested(nested))
+            if not keepdims:
+                return val
+            red = val
+            for _ in shape:
+                red = [red]
+            return ndlist(red)
+        red = _reduce_axes(nested, shape, axes, fn)
+        if keepdims:
+            for ax in axes:
+                red = _expand_axis(red, ax)
+        depth = _nested_depth(red)
+        if depth >= 3:
+            return ndlist(red)
+        if depth == 0:
+            return red
+        return marr(red)
     if axis < 0:
         axis += len(shape)
     if not 0 <= axis < len(shape):
@@ -4491,18 +4624,33 @@ class ndlist(list):
                 return None
             k = keys[0]
             if isinstance(k, slice):
-                for i in range(len(node))[k]:
+                idxs = list(range(len(node))[k])
+                vals = None
+                if isinstance(value, (list, tuple, marr, ndlist)) \
+                        and len(value) and not isinstance(value, str):
+                    va = value if isinstance(value, (marr, ndlist)) else \
+                        (ndlist(value) if _nested_depth(value) >= 3 else asarray(value))
+                    vshape = tuple(va.shape)
+                    n_sub = len([kk for kk in keys[1:] if isinstance(kk, slice)])
+                    # numpy aligns trailing dims: a value with one more
+                    # dim than the selection below this axis is split
+                    # along it
+                    if vshape and vshape[0] == len(idxs) and (
+                            len(vshape) == 1 + n_sub or len(keys) == 1):
+                        vals = [va[j] for j in range(len(idxs))]
+                for j, i in enumerate(idxs):
+                    v = vals[j] if vals is not None else value
                     if len(keys) == 1:
-                        node[i] = float(value)
+                        node[i] = float(v)
                     else:
                         sub = node[i]
                         if isinstance(sub, list) and not isinstance(sub, ndlist):
                             sub = ndlist(sub)
                             node[i] = sub
                         if isinstance(sub, marr):
-                            sub[tuple(keys[1:]) if len(keys) > 2 else keys[1]] = value
+                            sub[tuple(keys[1:]) if len(keys) > 2 else keys[1]] = v
                         else:
-                            ndlist.__setitem__(sub, tuple(keys[1:]), value)
+                            ndlist.__setitem__(sub, tuple(keys[1:]), v)
                 return None
             if len(keys) == 1:
                 node[int(k)] = float(value)
@@ -5217,6 +5365,7 @@ def _median_of(v):
 
 
 def nanmean(x, axis=None, keepdims=False):
+    axis = _axis_arg(x, axis)
     nd = len(asarray(x).shape)
     if axis is not None and nd == 2:
         return _keepdims_wrap(
@@ -5231,6 +5380,7 @@ def nanmean(x, axis=None, keepdims=False):
 
 
 def nansum(x, axis=None, keepdims=False):
+    axis = _axis_arg(x, axis)
     nd = len(asarray(x).shape)
     if axis is not None and nd == 2:
         return _keepdims_wrap(_nan_axis(x, axis, lambda v: _fsum(v)),
@@ -5264,6 +5414,7 @@ def nanstd(x, axis=None, ddof=0, keepdims=False):
 
 
 def nanmax(x, axis=None, keepdims=False):
+    axis = _axis_arg(x, axis)
     nd = len(asarray(x).shape)
     if axis is not None and nd == 2:
         return _keepdims_wrap(_nan_axis(x, axis, lambda v: _bi.max(v) if v else nan),
@@ -5272,6 +5423,7 @@ def nanmax(x, axis=None, keepdims=False):
 
 
 def nanmin(x, axis=None, keepdims=False):
+    axis = _axis_arg(x, axis)
     nd = len(asarray(x).shape)
     if axis is not None and nd == 2:
         return _keepdims_wrap(_nan_axis(x, axis, lambda v: _bi.min(v) if v else nan),
@@ -6580,44 +6732,65 @@ def _pad_widths(pad_width, nd):
     return [(int(lo), int(hi))] * nd
 
 
-def pad(a, pad_width, mode="constant", constant_values=0.0):
-    arr = asarray(a)
-    if len(arr.shape) == 2:
-        (rlo, rhi), (clo, chi) = _pad_widths(pad_width, 2)
-        if mode == "constant":
-            c = float(constant_values)
-            rows = [[c] * clo + row[:] + [c] * chi for row in arr.data]
-            width = arr.shape[1] + clo + chi
-            return marr([[c] * width] * rlo + rows + [[c] * width] * rhi)
-        if mode == "edge":
-            rows = [[row[0]] * clo + row[:] + [row[-1]] * chi for row in arr.data]
-            return marr([rows[0][:] for _ in range(rlo)] + rows
-                        + [rows[-1][:] for _ in range(rhi)])
-        raise ValueError("pad mode %r is not supported for 2-D input in this core"
-                         % mode)
-    v = list(arr._flat())
-    (lo, hi), = _pad_widths(pad_width, 1)
+def _pad_axis(seq, lo, hi, mode, c, wrap_scalar):
+    """Pad one axis of a nested list (elements are sub-lists or floats)."""
+    n = len(seq)
     if mode == "constant":
-        c = float(constant_values)
-        return marr([c] * lo + v + [c] * hi)
+        return [wrap_scalar(c) for _ in range(lo)] + list(seq) + [wrap_scalar(c) for _ in range(hi)]
+    if n == 0:
+        raise ValueError("cannot pad an empty axis with mode %r" % mode)
     if mode == "edge":
-        return marr([v[0]] * lo + v + [v[-1]] * hi)
-    if mode == "reflect":
-        n = len(v)
-
-        def refl(i):
-            # reflect without repeating the edge, numpy 'reflect'
+        return [seq[0]] * lo + list(seq) + [seq[-1]] * hi
+    if mode in ("symmetric", "reflect", "wrap"):
+        def pick(k):
+            if mode == "wrap":
+                return seq[k % n]
+            if mode == "symmetric":
+                period = 2 * n
+                k %= period
+                return seq[k] if k < n else seq[period - 1 - k]
             if n == 1:
-                return 0
+                return seq[0]
             period = 2 * (n - 1)
-            i %= period
-            return i if i < n else period - i
-        left = [v[refl(-i)] for i in range(lo, 0, -1)]
-        right = [v[refl(n - 1 + i)] for i in range(1, hi + 1)]
-        return marr(left + v + right)
-    if mode == "wrap":
-        return marr(v[-lo:] + v + v[:hi])
-    raise ValueError("unsupported pad mode %r" % mode)
+            k %= period
+            return seq[k] if k < n else seq[period - k]
+        return [pick(k) for k in range(-lo, 0)] + list(seq) + [pick(k) for k in range(n, n + hi)]
+    raise ValueError("unsupported pad mode %r" % (mode,))
+
+
+def _pad_nested(nested, pairs, mode, c, depth=0):
+    if depth == len(pairs) - 1:
+        return _pad_axis(nested, pairs[depth][0], pairs[depth][1], mode, c, lambda v: v)
+    inner = [_pad_nested(sub, pairs, mode, c, depth + 1) for sub in nested]
+    proto = inner[0] if inner else None
+
+    def blank(v):
+        def fill(t):
+            return [fill(u) for u in t] if isinstance(t, list) else v
+        return fill(proto) if proto is not None else v
+    return _pad_axis(inner, pairs[depth][0], pairs[depth][1], mode, c, blank)
+
+
+def pad(a, pad_width, mode="constant", constant_values=0.0, **kw):
+    """numpy.pad for 1-D, 2-D and nested rank-3 input; modes constant,
+    edge, symmetric, reflect, wrap."""
+    del kw
+    if isinstance(a, list) and _nested_depth(a) >= 3:
+        pairs = _pad_widths(pad_width, 3)
+        return ndlist(_pad_nested(a, pairs, mode, float(constant_values)))
+    arr = asarray(a)
+    if isinstance(arr, ndlist) or (hasattr(arr, "shape") and len(arr.shape) == 3):
+        pairs = _pad_widths(pad_width, 3)
+        return ndlist(_pad_nested(arr.tolist(), pairs, mode, float(constant_values)))
+    if len(arr.shape) == 2:
+        pairs = _pad_widths(pad_width, 2)
+        out = _pad_nested([row[:] for row in arr.data], pairs, mode, float(constant_values))
+        if not out or not out[0]:
+            return _empty2d(len(out), len(out[0]) if out else 0)
+        return marr(out)
+    v = list(arr._flat())
+    pairs = _pad_widths(pad_width, 1)
+    return marr(_pad_nested(v, pairs, mode, float(constant_values)))
 
 
 def packbits(a, bitorder="big"):
@@ -7248,9 +7421,9 @@ def vdot(a, b):
     fb = list(asarray(b)._flat())
     if len(fa) != len(fb):
         raise ValueError("vdot: size mismatch")
-    if any(isinstance(v, complex) for v in fa + fb):
-        return sum((v.conjugate() if isinstance(v, complex) else v) * w
-                   for v, w in zip(fa, fb))
+    if _bi.any(isinstance(v, complex) for v in fa + fb):
+        return _bi.sum((v.conjugate() if isinstance(v, complex) else v) * w
+                       for v, w in zip(fa, fb))
     return float(_fsum(v * w for v, w in zip(fa, fb)))
 
 
@@ -7275,7 +7448,7 @@ def apply_along_axis(func1d, axis, arr, *args, **kwargs):
     else:
         slices = [marr(row[:]) for row in a.data]
     outs = [func1d(s, *args, **kwargs) for s in slices]
-    if all(not isinstance(o, (list, tuple, marr)) for o in outs):
+    if _bi.all(not isinstance(o, (list, tuple, marr)) for o in outs):
         return marr([float(o) for o in outs])
     rows = [list(asarray(o)._flat()) for o in outs]
     if axis in (0, -2):

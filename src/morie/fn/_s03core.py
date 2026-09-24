@@ -29,6 +29,8 @@ def vec(x):
     """Flatten any nested sequence (or scalar) to a list of floats."""
     if x is None:
         return []
+    if hasattr(x, "tolist") and not isinstance(x, (list, tuple)):
+        x = x.tolist()
     if isinstance(x, (int, float)):
         return [float(x)]
     out = []
@@ -47,7 +49,9 @@ def mat(x):
     """Coerce to a list-of-rows matrix of floats."""
     if x is None:
         return []
-    rows = list(x)
+    if hasattr(x, "tolist") and not isinstance(x, (list, tuple)):
+        x = x.tolist()
+    rows = [r.tolist() if hasattr(r, "tolist") else r for r in x]
     if not rows:
         return []
     if not isinstance(rows[0], (list, tuple)):

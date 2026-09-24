@@ -50,7 +50,7 @@ def scaled_dot_product_attention(Q, K, V, mask=None):
             raise ValueError(
                 f"mask shape {m.shape} does not match scores "
                 f"{scores.shape}.")
-        if m.dtype == bool:
+        if getattr(m, "_is_mask", False) or m.dtype == bool:
             scores = np.where(m, scores, -np.inf)
         else:
             scores = scores + m

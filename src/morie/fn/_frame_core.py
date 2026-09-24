@@ -2703,6 +2703,22 @@ class _GroupBySeries:
         self._gb = gb
         self._col = col
 
+    def __iter__(self):
+        """(key, Series) pairs in key order, as pandas' SeriesGroupBy."""
+        gb = self._gb
+        for k in sorted(gb._groups):
+            rows = gb._groups[k]
+            yield (k[0] if len(gb._by) == 1 else k), Series(
+                [gb._df._cols[self._col][i] for i in rows],
+                index=[gb._df.index[i] for i in rows], name=self._col)
+
+    def __len__(self):
+        return len(self._gb._groups)
+
+    @property
+    def ngroups(self):
+        return len(self._gb._groups)
+
     def _agg(self, fn):
         gb = self._gb
         keys = sorted(gb._groups)

@@ -16,6 +16,12 @@ def _softmax(z, axis=-1):
     return e / np.sum(e, axis=axis, keepdims=True)
 
 
+def _is_bool_mask(mask):
+    rows = mask.tolist() if hasattr(mask, "tolist") else mask
+    flat = [v for r in rows for v in (r if isinstance(r, (list, tuple)) else [r])]
+    return bool(flat) and all(isinstance(v, bool) for v in flat)
+
+
 def scaled_dot_product_attention(Q, K=None, V=None, mask=None):
     r"""Scaled dot-product attention.
 
@@ -39,8 +45,9 @@ def scaled_dot_product_attention(Q, K=None, V=None, mask=None):
     Returns
     -------
     result : RichResult
-        Keys: ``output`` / ``estimate``, ``attn`` (attention weights),
-        ``logits`` (pre-softmax scores).
+        Keys: ``output`` / ``estimate``, ``attention`` (attention
+        weights; ``attn`` is kept as an alias), ``logits`` (pre-softmax
+        scores).
 
     References
     ----------
@@ -62,7 +69,12 @@ def scaled_dot_product_attention(Q, K=None, V=None, mask=None):
     d_k = K.shape[-1]
     logits = Q @ K.T / np.sqrt(d_k)
     if mask is not None:
-        logits = logits + np.asarray(mask, dtype=float)
+        m = np.asarray(mask)
+        if getattr(mask, "_is_mask", False) or getattr(m, "_is_mask", False) \
+                or _is_bool_mask(mask):
+            # a boolean mask keeps True positions (torch convention)
+            m = np.where(m, 0.0, -np.inf)
+        logits = logits + np.asarray(m, dtype=float)
     attn = _softmax(logits, axis=-1)
     out = attn @ V
     return RichResult(
@@ -71,6 +83,7 @@ def scaled_dot_product_attention(Q, K=None, V=None, mask=None):
         payload={
             "output": out,
             "estimate": out,
+            "attention": attn,
             "attn": attn,
             "logits": logits,
             "d_k": int(d_k),
