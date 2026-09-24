@@ -3594,33 +3594,14 @@ class _LinalgExt:
 
     @staticmethod
     def eigvalsh(a):
-        # cyclic Jacobi for symmetric matrices; fine for the small
-        # covariance matrices morie.fn passes here
-        m = [row[:] for row in atleast_2d(a).tolist()]
-        n = len(m)
-        for _sweep in range(100):
-            off = _math.sqrt(_fsum(m[i][j] ** 2 for i in range(n)
-                                        for j in range(n) if i != j))
-            if off < 1e-14:
-                break
-            for p in range(n - 1):
-                for q in range(p + 1, n):
-                    if _bi.abs(m[p][q]) < 1e-300:
-                        continue
-                    theta = (m[q][q] - m[p][p]) / (2.0 * m[p][q])
-                    t = (1.0 if theta >= 0 else -1.0) / (
-                        _bi.abs(theta) + _math.sqrt(theta * theta + 1.0))
-                    c = 1.0 / _math.sqrt(t * t + 1.0)
-                    s = t * c
-                    for k in range(n):
-                        mkp, mkq = m[k][p], m[k][q]
-                        m[k][p] = c * mkp - s * mkq
-                        m[k][q] = s * mkp + c * mkq
-                    for k in range(n):
-                        mpk, mqk = m[p][k], m[q][k]
-                        m[p][k] = c * mpk - s * mqk
-                        m[q][k] = s * mpk + c * mqk
-        return marr(sorted(m[i][i] for i in range(n)))
+        """Ascending eigenvalues of a symmetric matrix.
+
+        Householder tridiagonalisation plus implicit-shift QL, with no
+        transformation accumulated: a 200x200 covariance matrix takes
+        under a second here where cyclic Jacobi took minutes.
+        """
+        vals, _ = _sym_eigh(atleast_2d(a).tolist(), want_vectors=False)
+        return marr(vals)
 
     @staticmethod
     def cond(a, p=None):
@@ -3692,10 +3673,166 @@ def _matrix_rank(a, tol=None):
     return rank
 
 
+def _tridiag_householder(z, want_vectors):
+    """Householder reduction of a symmetric matrix to tridiagonal form
+    (EISPACK tred2). ``z`` is modified in place; on return d holds the
+    diagonal, e the sub-diagonal, and z the accumulated transformation
+    when vectors were asked for."""
+    n = len(z)
+    d = [0.0] * n
+    e = [0.0] * n
+    for i in range(n - 1, 0, -1):
+        ll = i - 1
+        h = scale = 0.0
+        if ll > 0:
+            for k in range(ll + 1):
+                scale += _bi.abs(z[i][k])
+            if scale == 0.0:
+                e[i] = z[i][ll]
+            else:
+                for k in range(ll + 1):
+                    z[i][k] /= scale
+                    h += z[i][k] * z[i][k]
+                f = z[i][ll]
+                g = -_math.copysign(_math.sqrt(h), f)
+                e[i] = scale * g
+                h -= f * g
+                z[i][ll] = f - g
+                f = 0.0
+                for j in range(ll + 1):
+                    if want_vectors:
+                        z[j][i] = z[i][j] / h
+                    g = 0.0
+                    for k in range(j + 1):
+                        g += z[j][k] * z[i][k]
+                    for k in range(j + 1, ll + 1):
+                        g += z[k][j] * z[i][k]
+                    e[j] = g / h
+                    f += e[j] * z[i][j]
+                hh = f / (h + h)
+                for j in range(ll + 1):
+                    f = z[i][j]
+                    e[j] = g = e[j] - hh * f
+                    for k in range(j + 1):
+                        z[j][k] -= f * e[k] + g * z[i][k]
+        else:
+            e[i] = z[i][ll]
+        d[i] = h
+    if want_vectors:
+        d[0] = 0.0
+    e[0] = 0.0
+    for i in range(n):
+        if want_vectors:
+            if d[i] != 0.0:
+                for j in range(i):
+                    g = 0.0
+                    for k in range(i):
+                        g += z[i][k] * z[k][j]
+                    for k in range(i):
+                        z[k][j] -= g * z[k][i]
+            d[i] = z[i][i]
+            z[i][i] = 1.0
+            for j in range(i):
+                z[j][i] = z[i][j] = 0.0
+        else:
+            d[i] = z[i][i]
+    return d, e
+
+
+def _ql_implicit(d, e, z, want_vectors):
+    """Eigenvalues (and vectors) of a symmetric tridiagonal matrix by
+    the QL algorithm with implicit shifts (EISPACK tql2)."""
+    n = len(d)
+    for i in range(1, n):
+        e[i - 1] = e[i]
+    e[n - 1] = 0.0
+    for l in range(n):
+        it = 0
+        while True:
+            m = l
+            while m < n - 1:
+                dd = _bi.abs(d[m]) + _bi.abs(d[m + 1])
+                if _bi.abs(e[m]) <= 1e-18 * dd:
+                    break
+                m += 1
+            if m == l:
+                break
+            it += 1
+            if it > 60:
+                raise ValueError("eigenvalue iteration did not converge")
+            g = (d[l + 1] - d[l]) / (2.0 * e[l])
+            r = _math.hypot(g, 1.0)
+            g = d[m] - d[l] + e[l] / (g + _math.copysign(r, g))
+            sn = cs = 1.0
+            pp = 0.0
+            broke = False
+            for i in range(m - 1, l - 1, -1):
+                f = sn * e[i]
+                b = cs * e[i]
+                r = _math.hypot(f, g)
+                e[i + 1] = r
+                if r == 0.0:
+                    d[i + 1] -= pp
+                    e[m] = 0.0
+                    broke = True
+                    break
+                sn = f / r
+                cs = g / r
+                g = d[i + 1] - pp
+                r = (d[i] - g) * sn + 2.0 * cs * b
+                pp = sn * r
+                d[i + 1] = g + pp
+                g = cs * r - b
+                if want_vectors:
+                    for k in range(n):
+                        f = z[k][i + 1]
+                        z[k][i + 1] = sn * z[k][i] + cs * f
+                        z[k][i] = cs * z[k][i] - sn * f
+            if broke:
+                continue
+            d[l] -= pp
+            e[l] = g
+            e[m] = 0.0
+    return d, z
+
+
+def _sym_eigh(a, want_vectors=True):
+    """Symmetric eigendecomposition by Householder tridiagonalisation
+    plus implicit-shift QL.
+
+    Cyclic Jacobi costs a full O(n^3) pass per sweep and needs many
+    sweeps, which put a 200x200 matrix at minutes rather than seconds;
+    this is the standard O(n^3)-once reduction instead. Values come
+    back ascending, vectors as columns.
+    """
+    z = [[float(v) for v in row] for row in atleast_2d(a).tolist()]
+    n = len(z)
+    if n == 0:
+        return [], []
+    if n == 1:
+        return [z[0][0]], [[1.0]]
+    d, e = _tridiag_householder(z, want_vectors)
+    d, z = _ql_implicit(d, e, z, want_vectors)
+    order = sorted(range(n), key=lambda i: d[i])
+    vals = [d[i] for i in order]
+    if not want_vectors:
+        return vals, None
+    vecs = [[z[r][i] for i in order] for r in range(n)]
+    return vals, vecs
+
+
 def _jacobi_eigh(a):
-    """Symmetric eigendecomposition (values, vectors) via cyclic Jacobi."""
+    """Symmetric eigendecomposition (values, vectors).
+
+    Cyclic Jacobi below the size where its cost bites; Householder plus
+    implicit-shift QL above it, which is what keeps a few-hundred-row
+    covariance matrix to seconds instead of minutes.
+    """
     m = [row[:] for row in atleast_2d(a).tolist()]
     n = len(m)
+    if n >= 24:
+        vals, vecs = _sym_eigh(m, want_vectors=True)
+        return vals, vecs
     v = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
     for _sweep in range(100):
         off = _math.sqrt(_fsum(m[i][j] ** 2 for i in range(n)
