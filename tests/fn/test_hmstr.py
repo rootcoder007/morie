@@ -1,5 +1,7 @@
 """Tests for hmstr.geron_stratified_sampling."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.hmstr import geron_stratified_sampling
@@ -7,30 +9,38 @@ from morie.fn.hmstr import geron_stratified_sampling
 
 def test_hmstr_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    stratum = np.random.default_rng(42).normal(0, 1, 100)
-    n_total = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_stratified_sampling(X, y, stratum, n_total)
+    rng = np.random.default_rng(42)
+    n, p = 100, 5
+    X = rng.normal(0, 1, (n, p))
+    stratum = list(rng.integers(0, 3, n))
+    n_total = 30
+    result = geron_stratified_sampling(X, stratum=stratum, n_total=n_total)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("indices", "X_sample", "allocation", "max_share_error", "n"):
+        assert key in result
+    assert result["n"] == n_total
+    assert sum(result["allocation"].values()) == n_total
+    assert math.isfinite(result["max_share_error"])
+    assert result["max_share_error"] >= 0.0
 
 
 def test_hmstr_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    stratum = np.random.default_rng(42).normal(0, 1, 100)
-    n_total = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_stratified_sampling(X, y, stratum, n_total)
+    """Test edge cases with small strata from the docstring example."""
+    X = [[0.0], [1.0], [2.0], [3.0], [4.0], [5.0]]
+    y = [0, 0, 0, 0, 1, 1]
+    result = geron_stratified_sampling(X, y=y, n_total=3)
     assert isinstance(result, dict)
+    assert result["n"] == 3
+    assert len(result["indices"]) == 3
+    alloc = result["allocation"]
+    assert sum(alloc.values()) == 3
+    assert max(alloc.values()) == 2
+    assert min(alloc.values()) == 1
+    assert math.isfinite(result["max_share_error"])
+    assert result["max_share_error"] >= 0.0
 
 
 # --- appended: the module's own worked example as a gate -----------
-# The docstring carries the printed value from the source the module
-# cites. Executing it here makes that value a test-suite gate, on top
-# of whatever the tests above already check.
-
 import doctest as _doctest
 
 import morie.fn.hmstr as _doctest_module

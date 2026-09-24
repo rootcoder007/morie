@@ -1,5 +1,9 @@
 """Tests for hmfsf.geron_few_shot."""
 
+import doctest as _doctest
+
+import pytest
+
 from morie.fn import _array_core as np
 
 from morie.fn.hmfsf import geron_few_shot
@@ -7,23 +11,35 @@ from morie.fn.hmfsf import geron_few_shot
 
 def test_hmfsf_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    examples = np.random.default_rng(42).normal(0, 1, 100)
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    result = geron_few_shot(model, examples, query, k)
+    def copycat(prompt):
+        lines = [l for l in prompt.split("\n") if "->" in l and not l.endswith("-> ")]
+        return lines[-1].split("-> ")[1] if lines else "?"
+
+    examples = [("a", "1"), ("b", "2"), ("c", "3"), ("d", "4"), ("e", "5")]
+    query = "f"
+    k = 2
+    result = geron_few_shot(copycat, examples, query, k)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert result["prediction"] == "2"
+    assert result["zero_shot_prediction"] == "?"
+    assert result["k"] == 2
+    assert result["n_available"] == 5
+    assert result["changed_by_context"] is True
+    assert "prompt" in result
+    assert "zero_shot_prompt" in result
+    assert "prompt_length" in result
 
 
 def test_hmfsf_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    examples = np.random.default_rng(42).normal(0, 1, 100)
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    result = geron_few_shot(model, examples, query, k)
-    assert isinstance(result, dict)
+    def copycat(prompt):
+        lines = [l for l in prompt.split("\n") if "->" in l and not l.endswith("-> ")]
+        return lines[-1].split("-> ")[1] if lines else "?"
+
+    examples = [("a", "1")]
+    query = "c"
+    with pytest.raises(ValueError, match="max_context"):
+        geron_few_shot(copycat, examples, query, max_context=3)
 
 
 # --- appended: the module's own worked example as a gate -----------
@@ -31,7 +47,7 @@ def test_hmfsf_edge():
 # cites. Executing it here makes that value a test-suite gate, on top
 # of whatever the tests above already check.
 
-import doctest as _doctest
+
 
 import morie.fn.hmfsf as _doctest_module
 

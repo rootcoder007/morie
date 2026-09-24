@@ -1,5 +1,9 @@
 """Tests for hmhfpi.geron_hf_pipelines."""
 
+import math
+
+import pytest
+
 from morie.fn import _array_core as np
 
 from morie.fn.hmhfpi import geron_hf_pipelines
@@ -7,21 +11,40 @@ from morie.fn.hmhfpi import geron_hf_pipelines
 
 def test_hmhfpi_basic():
     """Test basic functionality."""
-    task = np.random.default_rng(42).normal(0, 1, 100)
-    inputs = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_hf_pipelines(task, inputs, model)
+    task = "sentiment-analysis"
+    inputs = ["good", "bad"]
+    model = lambda xs: [[2.0, 0.0], [0.0, 3.0]]
+    result = geron_hf_pipelines(
+        task, inputs, model, labels=["POSITIVE", "NEGATIVE"]
+    )
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "predictions" in result
+    assert "scores" in result
+    assert "raw" in result
+    assert "task" in result
+    assert result["task"] == task
+    # One prediction per input.
+    assert len(result["predictions"]) == len(inputs)
+    assert len(result["scores"]) == len(inputs)
+    # Each prediction is a dict with a label and a probability score.
+    for pred in result["predictions"]:
+        assert "label" in pred
+        assert "score" in pred
+        assert math.isfinite(float(pred["score"]))
+        assert 0.0 <= float(pred["score"]) <= 1.0
+    # Scores are probabilities per input and sum to 1.
+    row_sum = float(np.sum(result["scores"][0]))
+    assert math.isclose(row_sum, 1.0, rel_tol=1e-9, abs_tol=1e-9)
 
 
 def test_hmhfpi_edge():
     """Test edge cases."""
-    task = np.random.default_rng(42).normal(0, 1, 100)
-    inputs = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_hf_pipelines(task, inputs, model)
-    assert isinstance(result, dict)
+    task = "text-classification"
+    inputs = ["a", "b"]
+    # Model returns one row for two inputs -> documented to raise.
+    model = lambda xs: [[1.0, 0.0]]
+    with pytest.raises(ValueError):
+        geron_hf_pipelines(task, inputs, model)
 
 
 # --- appended: the module's own worked example as a gate -----------

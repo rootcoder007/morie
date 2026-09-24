@@ -1,5 +1,7 @@
 """Tests for hmkd.geron_knowledge_distillation."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.hmkd import geron_knowledge_distillation
@@ -7,27 +9,36 @@ from morie.fn.hmkd import geron_knowledge_distillation
 
 def test_hmkd_basic():
     """Test basic functionality."""
-    teacher = np.random.default_rng(42).normal(0, 1, 100)
-    student = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    alpha = 0.05
-    result = geron_knowledge_distillation(teacher, student, X, y, T, alpha)
+    rng = np.random.default_rng(42)
+    m, C = 40, 3
+    teacher = rng.normal(0.0, 1.0, (m, C))
+    student = rng.normal(0.0, 1.0, (m, C))
+    y = rng.integers(0, C, m)
+    result = geron_knowledge_distillation(teacher, student, y=y, T=2.0, alpha=0.5)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("loss", "ce_loss", "kl_loss", "teacher_probs", "student_probs",
+                "agreement", "estimate", "n", "method"):
+        assert key in result
+    assert math.isfinite(result["loss"])
+    assert math.isfinite(result["ce_loss"])
+    assert math.isfinite(result["kl_loss"])
+    assert result["n"] == m
+    assert len(result["teacher_probs"]) == m
+    assert len(result["student_probs"]) == m
+    assert len(result["teacher_probs"][0]) == C
 
 
 def test_hmkd_edge():
-    """Test edge cases."""
-    teacher = np.random.default_rng(42).normal(0, 1, 100)
-    student = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    alpha = 0.05
-    result = geron_knowledge_distillation(teacher, student, X, y, T, alpha)
+    """Test edge cases: pure distillation with alpha=0 needs no labels."""
+    rng = np.random.default_rng(42)
+    m, C = 40, 3
+    teacher = rng.normal(0.0, 1.0, (m, C))
+    student = rng.normal(0.0, 1.0, (m, C))
+    result = geron_knowledge_distillation(teacher, student, T=1.0, alpha=0.0)
     assert isinstance(result, dict)
+    assert math.isfinite(result["loss"])
+    # alpha=0 means pure distillation: loss equals kl_loss exactly
+    assert abs(result["loss"] - result["kl_loss"]) < 1e-12
 
 
 # --- appended: the module's own worked example as a gate -----------

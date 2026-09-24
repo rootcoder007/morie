@@ -1,24 +1,29 @@
 """Tests for ipfsfa.ipopt_solver."""
 
-from morie.fn import _array_core as np
+import math
+import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ipfsfa import ipopt_solver
 
 
 def test_ipfsfa_basic():
     """Test basic functionality."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    constraints = np.random.default_rng(42).normal(0, 1, 100)
-    x0 = np.random.default_rng(42).normal(0, 1, 100)
-    result = ipopt_solver(f, constraints, x0)
+    rng = np.random.default_rng(42)
+    x0 = rng.normal(0, 1, 5)
+    f = lambda x: sum([xi * xi for xi in x])
+    constraints = [lambda x: -1.0 - sum([xi * xi for xi in x])]
+    result = ipopt_solver(f, constraints, x0, outer=2, inner=5)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result
+    assert math.isfinite(result["estimate"])
 
 
 def test_ipfsfa_edge():
     """Test edge cases."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    constraints = np.random.default_rng(42).normal(0, 1, 100)
-    x0 = np.random.default_rng(42).normal(0, 1, 100)
-    result = ipopt_solver(f, constraints, x0)
-    assert isinstance(result, dict)
+    rng = np.random.default_rng(42)
+    x0 = rng.normal(0, 1, 5)
+    f = lambda x: sum([xi * xi for xi in x])
+    constraints = [lambda x: 1.0 + sum([xi * xi for xi in x])]
+    with pytest.raises(ValueError):
+        ipopt_solver(f, constraints, x0, outer=1, inner=1)

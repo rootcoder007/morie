@@ -7,20 +7,20 @@ from morie.fn.waldr import wald_estimator
 
 def test_waldr_basic():
     """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    result = wald_estimator(Y, X, Z)
+    y = [0, 0, 0, 0, 0, 1, 1, 1]
+    d = [0, 0, 0, 0, 0, 1, 1, 1]
+    z = [0, 0, 0, 0, 1, 1, 1, 1]
+    result = wald_estimator(y, d, z)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
 
 def test_waldr_edge():
     """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    result = wald_estimator(Y, X, Z)
+    y = [0, 0, 0, 0, 0, 1, 1, 1]
+    d = [0, 0, 0, 0, 0, 1, 1, 1]
+    z = [0, 0, 0, 0, 1, 1, 1, 1]
+    result = wald_estimator(y, d, z)
     assert isinstance(result, dict)
 
 

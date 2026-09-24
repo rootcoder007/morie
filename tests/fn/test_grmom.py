@@ -7,24 +7,22 @@ from morie.fn.grmom import geron_momentum_update
 
 def test_grmom_basic():
     """Test basic functionality."""
-    theta = 0.0
-    grad = np.random.default_rng(42).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    beta = 0.8
-    result = geron_momentum_update(theta, grad, v, eta, beta)
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    grad = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    v = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    eta = 0.1
+    result = geron_momentum_update(theta, grad, v, eta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "theta_new" in result
 
 
 def test_grmom_edge():
     """Test edge cases."""
-    theta = 0.0
-    grad = np.random.default_rng(42).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    beta = 0.8
-    result = geron_momentum_update(theta, grad, v, eta, beta)
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    grad = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    v = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    eta = 0.1
+    result = geron_momentum_update(theta, grad, v, eta)
     assert isinstance(result, dict)
 
 

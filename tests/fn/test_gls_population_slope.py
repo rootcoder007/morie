@@ -9,14 +9,18 @@ from morie.fn.gls_population_slope import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e4_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = gls_population_slope(x)
+    x = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    z = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    sigma2 = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = gls_population_slope(x, z, sigma2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "values" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e4_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = gls_population_slope(x)
+    x = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    z = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    sigma2 = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = gls_population_slope(x, z, sigma2)
     assert isinstance(result, dict)

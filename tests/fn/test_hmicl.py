@@ -5,23 +5,39 @@ from morie.fn import _array_core as np
 from morie.fn.hmicl import geron_in_context_learning
 
 
+def _scorer(prompt, cand):
+    """Simple deterministic scorer: log-prob proportional to count of candidate in prompt."""
+    return float(prompt.count(str(cand)))
+
+
 def test_hmicl_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    examples = np.random.default_rng(42).normal(0, 1, 100)
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_in_context_learning(model, examples, query)
+    examples = [("a", "pos"), ("b", "pos"), ("c", "neg")]
+    query = "d"
+    result = geron_in_context_learning(_scorer, examples, query)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("prediction", "prompt", "log_probs", "posterior",
+                "n_shot", "candidates", "estimate", "n", "method"):
+        assert key in result
+    assert result["prediction"] == "pos"
+    assert result["n_shot"] == 3
+    assert sorted(result["candidates"]) == ["neg", "pos"]
+    assert abs(float(np.sum(result["posterior"])) - 1.0) < 1e-9
+    assert result["prompt"].splitlines() == [
+        "a -> pos", "b -> pos", "c -> neg", "d ->"
+    ]
 
 
 def test_hmicl_edge():
-    """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    examples = np.random.default_rng(42).normal(0, 1, 100)
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_in_context_learning(model, examples, query)
+    """Test edge cases (zero-shot with explicit candidates)."""
+    result = geron_in_context_learning(
+        _scorer, [], "d", candidates=["pos", "neg"]
+    )
     assert isinstance(result, dict)
+    assert result["n_shot"] == 0
+    assert result["prompt"] == "d ->"
+    assert sorted(result["candidates"]) == ["neg", "pos"]
+    assert abs(float(np.sum(result["posterior"])) - 1.0) < 1e-9
 
 
 # --- appended: the module's own worked example as a gate -----------

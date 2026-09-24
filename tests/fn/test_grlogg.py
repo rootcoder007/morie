@@ -7,19 +7,19 @@ from morie.fn.grlogg import geron_logistic_cost_gradient
 
 def test_grlogg_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
+    X = 0.5
+    y = 1
+    theta = 0.5
     result = geron_logistic_cost_gradient(X, y, theta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "gradient" in result
 
 
 def test_grlogg_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
+    X = 0.5
+    y = 1
+    theta = 0.5
     result = geron_logistic_cost_gradient(X, y, theta)
     assert isinstance(result, dict)
 

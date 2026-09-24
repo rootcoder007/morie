@@ -7,25 +7,24 @@ from morie.fn.hmkrn import geron_filter_kernel
 
 def test_hmkrn_basic():
     """Test basic functionality."""
-    kh = np.random.default_rng(42).normal(0, 1, 100)
-    kw = np.random.default_rng(42).normal(0, 1, 100)
-    c_in = np.random.default_rng(42).normal(0, 1, 100)
-    c_out = np.random.default_rng(42).normal(0, 1, 100)
-    seed = 42
-    result = geron_filter_kernel(kh, kw, c_in, c_out, seed)
+    kh, kw, c_in, c_out = 3, 3, 4, 5
+    result = geron_filter_kernel(kh, kw, c_in, c_out, seed=42)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert result["shape"] == (kh, kw, c_in, c_out)
+    assert result["fan_in"] == kh * kw * c_in
+    assert int(result["kernel"].size) == kh * kw * c_in * c_out
+    assert int(result["bias"].size) == c_out
+    assert result["n_parameters"] == kh * kw * c_in * c_out + c_out
 
 
 def test_hmkrn_edge():
     """Test edge cases."""
-    kh = np.random.default_rng(42).normal(0, 1, 100)
-    kw = np.random.default_rng(42).normal(0, 1, 100)
-    c_in = np.random.default_rng(42).normal(0, 1, 100)
-    c_out = np.random.default_rng(42).normal(0, 1, 100)
-    seed = 42
-    result = geron_filter_kernel(kh, kw, c_in, c_out, seed)
+    # 1x1 kernel minimal case (matches the docstring example).
+    result = geron_filter_kernel(1, 1, 3, 2)
     assert isinstance(result, dict)
+    assert result["shape"] == (1, 1, 3, 2)
+    assert result["fan_in"] == 3
+    assert result["n_parameters"] == 8
 
 
 # --- appended: the module's own worked example as a gate -----------

@@ -1,5 +1,7 @@
 """Tests for hmspae.geron_sparse_autoencoder."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.hmspae import geron_sparse_autoencoder
@@ -7,25 +9,28 @@ from morie.fn.hmspae import geron_sparse_autoencoder
 
 def test_hmspae_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
+    rng = np.random.default_rng(42)
+    # geron_sparse_autoencoder expects activations (post-sigmoid) in [0, 1].
+    z = rng.normal(0, 1, (40, 3))
+    X = [[1.0 / (1.0 + math.exp(-x)) for x in row] for row in z]
     rho = 0.5
     beta = 0.8
-    epochs = np.random.default_rng(42).normal(0, 1, 100)
-    lr = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_sparse_autoencoder(X, rho, beta, epochs, lr)
+    result = geron_sparse_autoencoder(X, rho, beta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert len(result) > 0
 
 
 def test_hmspae_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    rho = 0.5
-    beta = 0.8
-    epochs = np.random.default_rng(42).normal(0, 1, 100)
-    lr = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_sparse_autoencoder(X, rho, beta, epochs, lr)
+    rng = np.random.default_rng(42)
+    # geron_sparse_autoencoder expects activations (post-sigmoid) in [0, 1].
+    z = rng.normal(0, 1, (20, 2))
+    X = [[1.0 / (1.0 + math.exp(-x)) for x in row] for row in z]
+    rho = 0.1
+    beta = 3.0
+    result = geron_sparse_autoencoder(X, rho, beta)
     assert isinstance(result, dict)
+    assert len(result) > 0
 
 
 # --- appended: the module's own worked example as a gate -----------

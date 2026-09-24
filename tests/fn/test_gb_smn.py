@@ -7,16 +7,18 @@ from morie.fn.gb_smn import gibbons_smirnov_2sided
 
 def test_gb_smn_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = gibbons_smirnov_2sided(x, y)
+    d = 0.1
+    m = 5
+    n = 5
+    result = gibbons_smirnov_2sided(d, m, n)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "sf" in result or "sf" in result
 
 
 def test_gb_smn_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = gibbons_smirnov_2sided(x, y)
+    d = 0.1
+    m = 5
+    n = 5
+    result = gibbons_smirnov_2sided(d, m, n)
     assert isinstance(result, dict)

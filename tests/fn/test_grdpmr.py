@@ -7,25 +7,25 @@ from morie.fn.grdpmr import geron_ddpm_reverse_step
 
 def test_grdpmr_basic():
     """Test basic functionality."""
-    x_t = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    eps_pred = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    alpha_bar = np.random.default_rng(42).normal(0, 1, 100)
-    sigma = 1.0
+    x_t = 0.5
+    t = 0.5
+    eps_pred = 0.5
+    alpha = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    alpha_bar = 0.5
+    sigma = 0.5
     result = geron_ddpm_reverse_step(x_t, t, eps_pred, alpha, alpha_bar, sigma)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "x_prev" in result
 
 
 def test_grdpmr_edge():
     """Test edge cases."""
-    x_t = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    eps_pred = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    alpha_bar = np.random.default_rng(42).normal(0, 1, 100)
-    sigma = 1.0
+    x_t = 0.5
+    t = 0.5
+    eps_pred = 0.5
+    alpha = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    alpha_bar = 0.5
+    sigma = 0.5
     result = geron_ddpm_reverse_step(x_t, t, eps_pred, alpha, alpha_bar, sigma)
     assert isinstance(result, dict)
 

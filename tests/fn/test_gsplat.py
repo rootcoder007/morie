@@ -7,16 +7,16 @@ from morie.fn.gsplat import gaussian_splatting
 
 def test_gsplat_basic():
     """Test basic functionality."""
-    gaussians = np.random.default_rng(42).normal(0, 1, 100)
-    camera = np.random.default_rng(42).normal(0, 1, 100)
-    result = gaussian_splatting(gaussians, camera)
+    colours = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    alphas = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = gaussian_splatting(colours, alphas)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "colour" in result
 
 
 def test_gsplat_edge():
     """Test edge cases."""
-    gaussians = np.random.default_rng(42).normal(0, 1, 100)
-    camera = np.random.default_rng(42).normal(0, 1, 100)
-    result = gaussian_splatting(gaussians, camera)
+    colours = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    alphas = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = gaussian_splatting(colours, alphas)
     assert isinstance(result, dict)

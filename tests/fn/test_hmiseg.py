@@ -1,5 +1,7 @@
 """Tests for hmiseg.geron_image_segmentation."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.hmiseg import geron_image_segmentation
@@ -7,21 +9,39 @@ from morie.fn.hmiseg import geron_image_segmentation
 
 def test_hmiseg_basic():
     """Test basic functionality."""
-    image = np.random.default_rng(42).normal(0, 1, 100)
-    n_clusters = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    image = rng.uniform(0.0, 1.0, (4, 4, 3))
+    n_clusters = 2
     seed = 42
     result = geron_image_segmentation(image, n_clusters, seed)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("segmented", "labels", "palette", "inertia",
+                "compression_ratio", "estimate", "n", "method"):
+        assert key in result
+    assert result["segmented"].shape == (4, 4, 3)
+    assert result["labels"].shape == (4, 4)
+    assert result["palette"].shape == (2, 3)
+    assert result["n"] == 16
+    assert math.isfinite(float(result["inertia"]))
+    assert float(result["compression_ratio"]) >= 0.0
 
 
 def test_hmiseg_edge():
     """Test edge cases."""
-    image = np.random.default_rng(42).normal(0, 1, 100)
-    n_clusters = np.random.default_rng(42).normal(0, 1, 100)
-    seed = 42
+    rng = np.random.default_rng(42)
+    image = rng.uniform(0.0, 1.0, (2, 3, 1))
+    n_clusters = 1
+    seed = 0
     result = geron_image_segmentation(image, n_clusters, seed)
     assert isinstance(result, dict)
+    for key in ("segmented", "labels", "palette", "inertia",
+                "compression_ratio", "estimate", "n", "method"):
+        assert key in result
+    assert result["segmented"].shape == (2, 3, 1)
+    assert result["palette"].shape == (1, 1)
+    assert result["labels"].shape == (2, 3)
+    assert result["n"] == 6
+    assert math.isfinite(float(result["inertia"]))
 
 
 # --- appended: the module's own worked example as a gate -----------

@@ -7,18 +7,16 @@ from morie.fn.fznkc import fauzi_naive_kernel_cvm
 
 def test_fznkc_basic():
     """Test basic functionality."""
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    bandwidth = 0.3
-    cdf = lambda v: 1.0 / (1.0 + np.exp(-v))
-    result = fauzi_naive_kernel_cvm(data, bandwidth, cdf)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    quantile = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    result = fauzi_naive_kernel_cvm(x, quantile)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "statistic" in result or "p_value" in result or "statistic" in result
 
 
 def test_fznkc_edge():
     """Test edge cases."""
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    bandwidth = 0.3
-    cdf = lambda v: 1.0 / (1.0 + np.exp(-v))
-    result = fauzi_naive_kernel_cvm(data, bandwidth, cdf)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    quantile = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    result = fauzi_naive_kernel_cvm(x, quantile)
     assert isinstance(result, dict)

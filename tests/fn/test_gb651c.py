@@ -7,18 +7,16 @@ from morie.fn.gb651c import gibbons_ctrl_median_curtail
 
 def test_gb651c_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    control_median = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    result = gibbons_ctrl_median_curtail(x, control_median, alpha)
+    m = 5
+    n = 5
+    result = gibbons_ctrl_median_curtail(m, n)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "d" in result or "d" in result
 
 
 def test_gb651c_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    control_median = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    result = gibbons_ctrl_median_curtail(x, control_median, alpha)
+    m = 5
+    n = 5
+    result = gibbons_ctrl_median_curtail(m, n)
     assert isinstance(result, dict)

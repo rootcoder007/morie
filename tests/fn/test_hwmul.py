@@ -1,5 +1,9 @@
 """Tests for hwmul.holt_winters_mult."""
 
+import math
+
+import pytest
+
 from morie.fn import _array_core as np
 
 from morie.fn.hwmul import holt_winters_mult
@@ -7,25 +11,20 @@ from morie.fn.hwmul import holt_winters_mult
 
 def test_hwmul_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    period = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    beta = 0.8
-    gamma = 1.0
-    result = holt_winters_mult(y, period, alpha, beta, gamma)
+    rng = np.random.default_rng(43)
+    y = (10.0 + rng.normal(0.0, 1.0, 100)).tolist()
+    result = holt_winters_mult(y, period=12, alpha=0.4, beta=0.1, gamma=0.3)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("forecast", "level", "trend", "seasonal", "fitted", "residuals", "sse"):
+        assert key in result
+    assert math.isfinite(float(result["sse"]))
 
 
 def test_hwmul_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    period = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    beta = 0.8
-    gamma = 1.0
-    result = holt_winters_mult(y, period, alpha, beta, gamma)
-    assert isinstance(result, dict)
+    """Test edge cases: non-positive data is rejected."""
+    y = [1.0] * 23 + [0.0]
+    with pytest.raises(ValueError):
+        holt_winters_mult(y, period=12)
 
 
 # --- appended: the module's own worked example as a gate -----------

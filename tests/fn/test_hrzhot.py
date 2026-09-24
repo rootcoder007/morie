@@ -7,20 +7,42 @@ from morie.fn.hrzhot import horowitz_T_F_estimators
 
 def test_hrzhot_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    n, p = 40, 3
+    x = rng.normal(0, 1, (n, p))
+    y = rng.normal(0, 1, n)
     bandwidth = 0.3
-    beta_hat = np.random.default_rng(42).normal(0, 1, 100)
+    beta_hat = rng.normal(0, 1, p)
     result = horowitz_T_F_estimators(x, y, bandwidth, beta_hat)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "y_grid" in result
+    assert "T_hat" in result
+    assert "u_grid" in result
+    assert "F_hat" in result
+    assert "beta" in result
+    assert "method" in result
+    assert result["d"] == p
+    assert result["n"] == n
 
 
 def test_hrzhot_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    n, p = 40, 3
+    x = rng.normal(0, 1, (n, p))
+    y = rng.normal(0, 1, n)
     bandwidth = 0.3
-    beta_hat = np.random.default_rng(42).normal(0, 1, 100)
-    result = horowitz_T_F_estimators(x, y, bandwidth, beta_hat)
+    beta_hat = rng.normal(0, 1, p)
+    y_grid = np.linspace(-2.0, 2.0, 10)
+    u_grid = np.linspace(-2.0, 2.0, 10)
+    y1 = 1.0
+    y2 = -1.0
+    result = horowitz_T_F_estimators(x, y, bandwidth, beta_hat,
+                                     y_grid=y_grid, u_grid=u_grid,
+                                     y1=y1, y2=y2)
     assert isinstance(result, dict)
+    assert "y_grid" in result
+    assert "T_hat" in result
+    assert "u_grid" in result
+    assert "F_hat" in result
+    assert "window" in result

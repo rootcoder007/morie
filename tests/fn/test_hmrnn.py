@@ -1,5 +1,7 @@
 """Tests for hmrnn.geron_recurrent_neuron."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.hmrnn import geron_recurrent_neuron
@@ -7,25 +9,52 @@ from morie.fn.hmrnn import geron_recurrent_neuron
 
 def test_hmrnn_basic():
     """Test basic functionality."""
-    x_t = np.random.default_rng(42).normal(0, 1, 100)
-    h_prev = np.random.default_rng(42).normal(0, 1, 100)
-    Wx = np.random.default_rng(42).normal(0, 1, 100)
-    Wh = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    n_in = 3
+    n_units = 4
+    x_t = rng.normal(0, 1, n_in)
+    h_prev = rng.normal(0, 1, n_units)
+    Wx = rng.normal(0, 1, (n_units, n_in))
+    Wh = rng.normal(0, 1, (n_units, n_units))
+    b = rng.normal(0, 1, n_units)
     result = geron_recurrent_neuron(x_t, h_prev, Wx, Wh, b)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "h" in result
+    assert "z" in result
+    assert "jacobian_norm" in result
+    assert "estimate" in result
+    assert "n" in result
+    assert "method" in result
+    assert len(result["h"]) == n_units
+    assert len(result["z"]) == n_units
+    assert len(result["estimate"]) == n_units
+    assert int(result["n"]) == n_units
+    assert math.isfinite(float(result["jacobian_norm"]))
+    # Default activation is tanh, so hidden state must be bounded in [-1, 1]
+    for v in result["h"]:
+        assert -1.0 <= float(v) <= 1.0
 
 
 def test_hmrnn_edge():
-    """Test edge cases."""
-    x_t = np.random.default_rng(42).normal(0, 1, 100)
-    h_prev = np.random.default_rng(42).normal(0, 1, 100)
-    Wx = np.random.default_rng(42).normal(0, 1, 100)
-    Wh = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
+    """Test edge case: smallest valid configuration (scalar input, single unit)."""
+    x_t = [1.0]
+    h_prev = [0.0]
+    Wx = [[1.0]]
+    Wh = [[1.0]]
+    b = [0.0]
     result = geron_recurrent_neuron(x_t, h_prev, Wx, Wh, b)
     assert isinstance(result, dict)
+    assert "h" in result
+    assert "z" in result
+    assert "jacobian_norm" in result
+    assert "estimate" in result
+    assert "n" in result
+    assert "method" in result
+    assert len(result["h"]) == 1
+    assert int(result["n"]) == 1
+    assert math.isfinite(float(result["jacobian_norm"]))
+    # tanh(1.0) lies in (-1, 1)
+    assert -1.0 < float(result["h"][0]) < 1.0
 
 
 # --- appended: the module's own worked example as a gate -----------

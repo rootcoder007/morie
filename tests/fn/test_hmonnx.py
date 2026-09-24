@@ -1,5 +1,7 @@
 """Tests for hmonnx.geron_onnx_export."""
 
+import pytest
+
 from morie.fn import _array_core as np
 
 from morie.fn.hmonnx import geron_onnx_export
@@ -7,21 +9,28 @@ from morie.fn.hmonnx import geron_onnx_export
 
 def test_hmonnx_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    args = np.random.default_rng(42).normal(0, 1, 100)
-    file = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_onnx_export(model, args, file)
+    model = [
+        {"op": "Gemm", "in_features": 3, "out_features": 2},
+        {"op": "Relu"},
+    ]
+    args = np.zeros((1, 3))
+    result = geron_onnx_export(model, args)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert result["input_shape"] == (1, 3)
+    assert result["output_shape"] == (1, 2)
+    assert len(result["nodes"]) == 2
+    assert result["is_protobuf"] is False
 
 
 def test_hmonnx_edge():
-    """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    args = np.random.default_rng(42).normal(0, 1, 100)
-    file = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_onnx_export(model, args, file)
-    assert isinstance(result, dict)
+    """Test edge cases: shape mismatch raises ValueError."""
+    model = [
+        {"op": "Gemm", "in_features": 3, "out_features": 2},
+        {"op": "Relu"},
+    ]
+    args = np.zeros((1, 5))
+    with pytest.raises(ValueError):
+        geron_onnx_export(model, args)
 
 
 # --- appended: the module's own worked example as a gate -----------

@@ -1,27 +1,38 @@
 """Tests for hmpd.geron_padding."""
 
 from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.hmpd import geron_padding
 
 
 def test_hmpd_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    pad_h = np.random.default_rng(42).normal(0, 1, 100)
-    pad_w = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_padding(x, pad_h, pad_w)
+    rng = np.random.default_rng(42)
+    x = rng.normal(0, 1, (5, 5))
+    result = geron_padding(x, 1, 1)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "padded" in result
+    assert "pad_h" in result
+    assert "pad_w" in result
+    assert "output_shape" in result
+    assert "estimate" in result
+    assert "n" in result
+    assert "method" in result
+    assert result["padded"].shape == (7, 7)
+    assert result["pad_h"] == (1, 1)
+    assert result["pad_w"] == (1, 1)
+    assert result["output_shape"] == (7, 7)
 
 
 def test_hmpd_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    pad_h = np.random.default_rng(42).normal(0, 1, 100)
-    pad_w = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_padding(x, pad_h, pad_w)
+    rng = np.random.default_rng(42)
+    x = rng.normal(0, 1, (4, 4))
+    result = geron_padding(x, kernel_size=2)
     assert isinstance(result, dict)
+    assert result["pad_h"] == (0, 1)
+    assert result["pad_w"] == (0, 1)
 
 
 # --- appended: the module's own worked example as a gate -----------

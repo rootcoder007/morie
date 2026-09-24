@@ -7,10 +7,10 @@ from morie.fn.tqprod import turboquant_qjl_product_estimator
 
 def test_tqprod_basic():
     """Test basic functionality."""
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    signs_k = np.random.default_rng(42).normal(0, 1, 100)
-    norm_k = np.random.default_rng(42).normal(0, 1, 100)
-    S = np.random.default_rng(42).normal(0, 1, 100)
+    q = np.ones(4)
+    signs_k = [[1, 1, 1, 1]]
+    norm_k = 1.0
+    S = np.eye(4)
     result = turboquant_qjl_product_estimator(q, signs_k, norm_k, S)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -18,10 +18,10 @@ def test_tqprod_basic():
 
 def test_tqprod_edge():
     """Test edge cases."""
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    signs_k = np.random.default_rng(42).normal(0, 1, 100)
-    norm_k = np.random.default_rng(42).normal(0, 1, 100)
-    S = np.random.default_rng(42).normal(0, 1, 100)
+    q = np.ones(4)
+    signs_k = [[1, 1, 1, 1]]
+    norm_k = 1.0
+    S = np.eye(4)
     result = turboquant_qjl_product_estimator(q, signs_k, norm_k, S)
     assert isinstance(result, dict)
 

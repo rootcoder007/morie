@@ -1,5 +1,7 @@
 """Tests for hmvth.geron_voting_hard."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.hmvth import geron_voting_hard
@@ -7,19 +9,55 @@ from morie.fn.hmvth import geron_voting_hard
 
 def test_hmvth_basic():
     """Test basic functionality."""
-    models = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = geron_voting_hard(models, X)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    # Simple models returning labels for 4 rows
+    a = lambda X: [1, 1, 0, 0]
+    b = lambda X: [1, 0, 1, 0]
+    c = lambda X: [1, 1, 0, 1]
+
+    X = [[0.0], [1.0], [2.0], [3.0]]
+    y_true = [1, 0, 1, 0]
+
+    result = geron_voting_hard([a, b, c], X, y_true=y_true)
+
+    # Check all documented keys are present
+    assert "predicted" in result
+    assert "votes" in result
+    assert "member_predictions" in result
+    assert "member_accuracy" in result
+    assert "accuracy" in result
+    assert "agreement" in result
+    assert "estimate" in result
+    assert "n" in result
+    assert "method" in result
+
+    # Check basic shapes
+    assert len(result["predicted"]) == 4
+    assert result["n"] == 4
+    assert len(result["member_accuracy"]) == 3
+    assert len(result["agreement"]) == 3
+    assert len(result["member_predictions"]) == 3
+
+    # Accuracy should be a finite probability
+    acc = float(result["accuracy"])
+    assert math.isfinite(acc)
+    assert 0.0 <= acc <= 1.0
 
 
 def test_hmvth_edge():
-    """Test edge cases."""
-    models = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = geron_voting_hard(models, X)
-    assert isinstance(result, dict)
+    """Test edge cases using the docstring example."""
+    a = lambda X: [1, 1]
+    b = lambda X: [1, 0]
+    c = lambda X: [0, 0]
+
+    X = [[0.0], [1.0]]
+    y_true = [1, 0]
+
+    result = geron_voting_hard([a, b, c], X, y_true=y_true)
+
+    # These values are explicitly given in the docstring
+    assert list(result["predicted"]) == [1, 0]
+    assert float(result["accuracy"]) == 1.0
+    assert list(result["member_accuracy"]) == [0.5, 1.0, 0.5]
 
 
 # --- appended: the module's own worked example as a gate -----------

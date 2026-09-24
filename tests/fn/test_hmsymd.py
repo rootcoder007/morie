@@ -7,19 +7,27 @@ from morie.fn.hmsymd import geron_symbolic_diff
 
 def test_hmsymd_basic():
     """Test basic functionality."""
-    expr = np.random.default_rng(42).normal(0, 1, 100)
-    var = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_symbolic_diff(expr, var)
+    result = geron_symbolic_diff("x^2", "x")
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "derivative" in result
+    assert "tree" in result
+    assert "expression" in result
+    assert "value" in result
+    assert "numeric_check" in result
+    assert "error" in result
+    assert "nodes" in result
+    assert "estimate" in result
+    assert "n" in result
+    assert "method" in result
 
 
 def test_hmsymd_edge():
     """Test edge cases."""
-    expr = np.random.default_rng(42).normal(0, 1, 100)
-    var = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_symbolic_diff(expr, var)
+    # Differentiating a constant (no occurrence of x) yields zero
+    result = geron_symbolic_diff("y^3", "x")
     assert isinstance(result, dict)
+    assert "derivative" in result
+    assert result["derivative"] == "0"
 
 
 # --- appended: the module's own worked example as a gate -----------

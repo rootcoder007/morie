@@ -7,18 +7,22 @@ from morie.fn.blipqf import blip_qformer
 
 def test_blipqf_basic():
     """Test basic functionality."""
-    image_features = np.random.default_rng(42).normal(0, 1, 100)
-    queries = np.random.default_rng(42).normal(0, 1, 100)
-    llm = np.random.default_rng(42).normal(0, 1, 100)
-    result = blip_qformer(image_features, queries, llm)
+    queries = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    image_features = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    WQ = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    WK = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    WV = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = blip_qformer(queries, image_features, WQ, WK, WV)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "output" in result
 
 
 def test_blipqf_edge():
     """Test edge cases."""
-    image_features = np.random.default_rng(42).normal(0, 1, 100)
-    queries = np.random.default_rng(42).normal(0, 1, 100)
-    llm = np.random.default_rng(42).normal(0, 1, 100)
-    result = blip_qformer(image_features, queries, llm)
+    queries = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    image_features = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    WQ = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    WK = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    WV = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = blip_qformer(queries, image_features, WQ, WK, WV)
     assert isinstance(result, dict)

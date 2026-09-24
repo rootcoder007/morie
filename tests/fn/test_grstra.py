@@ -7,18 +7,14 @@ from morie.fn.grstra import geron_stratified_split
 
 def test_grstra_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    test_size = 100
-    result = geron_stratified_split(X, y, test_size)
+    strata = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = geron_stratified_split(strata)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "test" in result or "test" in result
 
 
 def test_grstra_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    test_size = 100
-    result = geron_stratified_split(X, y, test_size)
+    strata = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = geron_stratified_split(strata)
     assert isinstance(result, dict)

@@ -7,21 +7,25 @@ from morie.fn.hmosf import geron_one_shot
 
 def test_hmosf_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    example = np.random.default_rng(42).normal(0, 1, 100)
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_one_shot(model, example, query)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    copy = lambda prompt: prompt[0][1]
+    example = ("hello", "greeting")
+    query = "goodbye"
+    result = geron_one_shot(copy, example, query)
+    assert "prediction" in result
+    assert result["prediction"] == "greeting"
+    assert result["shots"] == 1
+    assert result["prompt"] == [("hello", "greeting"), ("goodbye", None)]
+    assert result["demo_label"] == "greeting"
 
 
 def test_hmosf_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    example = np.random.default_rng(42).normal(0, 1, 100)
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_one_shot(model, example, query)
-    assert isinstance(result, dict)
+    rule = lambda p: "greeting" if "hello" in p[-1][0] else "farewell"
+    example = ("hello there", "greeting")
+    query = "goodbye now"
+    result = geron_one_shot(rule, example, query)
+    assert "prediction" in result
+    assert result["prediction"] == "farewell"
 
 
 # --- appended: the module's own worked example as a gate -----------

@@ -7,19 +7,37 @@ from morie.fn.hmtcmp import geron_torch_compile
 
 def test_hmtcmp_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    mode = "auto"
-    result = geron_torch_compile(model, mode)
+    A = np.eye(2) * 2
+    B = np.eye(2) * 3
+    C = np.eye(2) * 5
+    x = [[1.0, 1.0]]
+    result = geron_torch_compile(
+        [("linear", A), ("linear", B), ("linear", C)],
+        example_inputs=x,
+    )
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "n_ops" in result
+    assert "n_compiled" in result
+    assert "output" in result
+    assert "max_diff" in result
+    assert result["n_ops"] == 3
+    assert result["n_compiled"] == 1
+    assert result["output"][0][0] == 30.0
+    assert result["output"][0][1] == 30.0
+    assert result["max_diff"] < 1e-12
 
 
 def test_hmtcmp_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    mode = "auto"
-    result = geron_torch_compile(model, mode)
+    A = np.eye(2) * 2
+    B = np.eye(2) * 3
+    x = [[1.0, 1.0]]
+    result = geron_torch_compile(
+        [("linear", A), ("relu",), ("linear", B)],
+        example_inputs=x,
+    )
     assert isinstance(result, dict)
+    assert result["n_compiled"] == 3
 
 
 # --- appended: the module's own worked example as a gate -----------

@@ -5,29 +5,49 @@ from morie.fn import _array_core as np
 from morie.fn.hmsac import geron_sac
 
 
+class Bandit:
+    """Trivial 1-state, 2-action bandit used as a test environment."""
+    n_states, n_actions = 1, 2
+
+    def reset(self):
+        return 0
+
+    def step(self, a):
+        return 0, float(a), False
+
+
 def test_hmsac_basic():
     """Test basic functionality."""
-    env = np.random.default_rng(42).normal(0, 1, 100)
-    policy = np.random.default_rng(42).normal(0, 1, 100)
-    critic = np.random.default_rng(42).normal(0, 1, 100)
-    epochs = np.random.default_rng(42).normal(0, 1, 100)
-    lr = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    result = geron_sac(env, policy, critic, epochs, lr, alpha)
+    env = Bandit()
+    result = geron_sac(env)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("policy", "Q", "V", "entropy", "returns", "estimate", "n", "method"):
+        assert key in result
+    assert len(result["policy"]) == env.n_states
+    assert len(result["policy"][0]) == env.n_actions
 
 
 def test_hmsac_edge():
     """Test edge cases."""
-    env = np.random.default_rng(42).normal(0, 1, 100)
-    policy = np.random.default_rng(42).normal(0, 1, 100)
-    critic = np.random.default_rng(42).normal(0, 1, 100)
-    epochs = np.random.default_rng(42).normal(0, 1, 100)
-    lr = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    result = geron_sac(env, policy, critic, epochs, lr, alpha)
+    env = Bandit()
+    policy = [[0.3, 0.7]]
+    critic = [[0.0, 0.0]]
+    result = geron_sac(
+        env,
+        policy=policy,
+        critic=critic,
+        epochs=5,
+        lr=0.5,
+        alpha=0.1,
+        gamma=0.9,
+        steps=5,
+        seed=0,
+    )
     assert isinstance(result, dict)
+    for key in ("policy", "Q", "V", "entropy", "returns", "estimate"):
+        assert key in result
+    assert len(result["policy"]) == env.n_states
+    assert len(result["policy"][0]) == env.n_actions
 
 
 # --- appended: the module's own worked example as a gate -----------

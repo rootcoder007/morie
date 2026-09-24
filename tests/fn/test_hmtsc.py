@@ -1,37 +1,43 @@
 """Tests for hmtsc.geron_torchscript."""
+import doctest as _doctest
+import math
 
-from morie.fn import _array_core as np
-
+import morie.fn.hmtsc as _doctest_module
 from morie.fn.hmtsc import geron_torchscript
 
 
 def test_hmtsc_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    example_inputs = np.random.default_rng(42).normal(0, 1, 100)
+    W = [[1.0, 0.0], [0.0, 1.0]]
+    model = [("linear", W), ("relu",)]
+    example_inputs = [[1.0, -1.0]]
     result = geron_torchscript(model, example_inputs)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("graph", "output", "replay", "max_diff", "n_nodes",
+                "shapes", "estimate", "n", "method"):
+        assert key in result
+    assert result["n_nodes"] == 2
+    assert math.isfinite(float(result["max_diff"]))
+    assert float(result["max_diff"]) == 0.0
+    assert len(result["shapes"]) == 2
 
 
 def test_hmtsc_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    example_inputs = np.random.default_rng(42).normal(0, 1, 100)
+    W = [[1.0], [1.0]]
+    b = [0.5]
+    model = [("linear", W), ("bias", b), ("sigmoid",)]
+    example_inputs = [[1.0, -1.0]]
     result = geron_torchscript(model, example_inputs)
     assert isinstance(result, dict)
+    assert result["n_nodes"] == 3
+    assert math.isfinite(float(result["max_diff"]))
+    assert math.isfinite(float(result["output"][0][0]))
+    out_val = float(result["output"][0][0])
+    assert 0.0 <= out_val <= 1.0
 
 
 # --- appended: the module's own worked example as a gate -----------
-# The docstring carries the printed value from the source the module
-# cites. Executing it here makes that value a test-suite gate, on top
-# of whatever the tests above already check.
-
-import doctest as _doctest
-
-import morie.fn.hmtsc as _doctest_module
-
-
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
         _doctest_module, verbose=False, report=False,

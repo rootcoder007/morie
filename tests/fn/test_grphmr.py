@@ -7,16 +7,22 @@ from morie.fn.grphmr import graphormer
 
 def test_grphmr_basic():
     """Test basic functionality."""
-    G = np.eye(10)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = graphormer(G, X)
+    H = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    WQ = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    WK = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    WV = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    bias = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = graphormer(H, WQ, WK, WV, bias)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_grphmr_edge():
     """Test edge cases."""
-    G = np.eye(10)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = graphormer(G, X)
+    H = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    WQ = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    WK = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    WV = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    bias = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = graphormer(H, WQ, WK, WV, bias)
     assert isinstance(result, dict)

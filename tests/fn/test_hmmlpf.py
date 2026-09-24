@@ -7,23 +7,63 @@ from morie.fn.hmmlpf import geron_mlp
 
 def test_hmmlpf_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    weights = np.random.default_rng(45).exponential(1, 100)
-    biases = np.random.default_rng(42).normal(0, 1, 100)
-    activations = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    n_in = 5
+    hidden = 4
+    n_out = 3
+    m = 40
+
+    X = rng.normal(0, 1, (m, n_in))
+    W0 = rng.normal(0, 1, (n_in, hidden))
+    W1 = rng.normal(0, 1, (hidden, n_out))
+    weights = [W0, W1]
+
+    biases = [np.zeros(hidden), np.zeros(n_out)]
+    activations = ["relu", "softmax"]
+
     result = geron_mlp(X, weights, biases, activations)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "output" in result
+    assert "n_parameters" in result
+    assert "pre_activations" in result
+    assert "activations" in result
+    assert "estimate" in result
+    assert "n" in result
+    assert "method" in result
+
+    output = result["output"]
+    assert len(output) == m
+    for row in output:
+        assert len(row) == n_out
+
+    expected_n_params = n_in * hidden + hidden + hidden * n_out + n_out
+    assert result["n_parameters"] == expected_n_params
+
+    assert result["n"] == m
 
 
 def test_hmmlpf_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    weights = np.random.default_rng(45).exponential(1, 100)
-    biases = np.random.default_rng(42).normal(0, 1, 100)
-    activations = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    n_in = 3
+    n_out = 2
+
+    # Single-sample 1-D input is accepted by the docstring.
+    X = rng.normal(0, 1, n_in)
+    weights = [rng.normal(0, 1, (n_in, n_out))]
+    biases = [np.zeros(n_out)]
+    activations = ["tanh"]
+
     result = geron_mlp(X, weights, biases, activations)
     assert isinstance(result, dict)
+    assert "output" in result
+
+    output = result["output"]
+    assert len(output) == 1
+    assert len(output[0]) == n_out
+
+    expected_n_params = n_in * n_out + n_out
+    assert result["n_parameters"] == expected_n_params
 
 
 # --- appended: the module's own worked example as a gate -----------

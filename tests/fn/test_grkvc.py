@@ -7,24 +7,22 @@ from morie.fn.grkvc import geron_kv_cache_compression
 
 def test_grkvc_basic():
     """Test basic functionality."""
-    seq_len = 100
-    num_layers = np.random.default_rng(42).normal(0, 1, 100)
-    num_heads = np.random.default_rng(42).normal(0, 1, 100)
-    d_head = np.random.default_rng(42).normal(0, 1, 100)
-    bits = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_kv_cache_compression(seq_len, num_layers, num_heads, d_head, bits)
+    seq_len = 5
+    num_layers = 5
+    num_heads = 5
+    d_head = 5
+    result = geron_kv_cache_compression(seq_len, num_layers, num_heads, d_head)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "cache_bytes" in result
 
 
 def test_grkvc_edge():
     """Test edge cases."""
-    seq_len = 100
-    num_layers = np.random.default_rng(42).normal(0, 1, 100)
-    num_heads = np.random.default_rng(42).normal(0, 1, 100)
-    d_head = np.random.default_rng(42).normal(0, 1, 100)
-    bits = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_kv_cache_compression(seq_len, num_layers, num_heads, d_head, bits)
+    seq_len = 5
+    num_layers = 5
+    num_heads = 5
+    d_head = 5
+    result = geron_kv_cache_compression(seq_len, num_layers, num_heads, d_head)
     assert isinstance(result, dict)
 
 

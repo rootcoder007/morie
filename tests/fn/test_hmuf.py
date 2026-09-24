@@ -1,25 +1,30 @@
 """Tests for hmuf.geron_underfitting."""
 
-from morie.fn import _array_core as np
+import math
+
+import pytest
 
 from morie.fn.hmuf import geron_underfitting
 
 
 def test_hmuf_basic():
     """Test basic functionality."""
-    train_err = np.random.default_rng(42).normal(0, 1, 100)
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_underfitting(train_err, threshold)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    # High training error with small gap -> underfitting (bias)
+    result = geron_underfitting(0.40, threshold=0.10, val_err=0.41)
+    assert "diagnosis" in result
+    assert result["diagnosis"] == "underfitting"
+    assert bool(result["underfitting"]) is True
+    assert "gap" in result
+    gap = float(result["gap"])
+    assert math.isfinite(gap)
+    assert abs(gap - 0.01) < 1e-9
 
 
 def test_hmuf_edge():
     """Test edge cases."""
-    train_err = np.random.default_rng(42).normal(0, 1, 100)
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_underfitting(train_err, threshold)
-    assert isinstance(result, dict)
+    # Empty training-error input is rejected by the function.
+    with pytest.raises(ValueError):
+        geron_underfitting([], threshold=0.10)
 
 
 # --- appended: the module's own worked example as a gate -----------

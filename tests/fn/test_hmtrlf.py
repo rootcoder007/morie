@@ -7,21 +7,30 @@ from morie.fn.hmtrlf import geron_trl_finetune
 
 def test_hmtrlf_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    dataset = np.random.default_rng(42).normal(0, 1, 100)
-    method = "auto"
-    result = geron_trl_finetune(model, dataset, method)
+    rng = np.random.default_rng(42)
+    # DPO: dataset items are (x_chosen, x_rejected) feature vectors
+    pairs = [
+        ([1.0, 0.0], [0.0, 1.0]),
+        ([1.0, 1.0], [0.0, 1.0]),
+    ]
+    result = geron_trl_finetune(None, pairs, method="dpo", epochs=50, lr=0.1, beta=1.0)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "loss" in result
+    assert "loss_curve" in result
+    assert "margin" in result
+    assert "theta" in result
+    assert "dpo" in str(result["method"]).lower()
 
 
 def test_hmtrlf_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    dataset = np.random.default_rng(42).normal(0, 1, 100)
-    method = "auto"
-    result = geron_trl_finetune(model, dataset, method)
+    # PPO: items are (x, logp_old, advantage)
+    items = [([1.0], 0.0, 1.0)]
+    result = geron_trl_finetune(None, items, method="ppo", epochs=10, lr=0.1, clip_eps=0.2)
     assert isinstance(result, dict)
+    assert "loss" in result
+    assert "clipped_fraction" in result
+    assert "ppo" in str(result["method"]).lower()
 
 
 # --- appended: the module's own worked example as a gate -----------

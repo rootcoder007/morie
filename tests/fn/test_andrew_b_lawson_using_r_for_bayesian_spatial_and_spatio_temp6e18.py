@@ -9,14 +9,18 @@ from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e18 i
 
 def test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e18_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_18(x)
+    lam0 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta = 0.1
+    S = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_18(lam0, beta, S)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "intensity" in result
 
 
 def test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e18_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_18(x)
+    lam0 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta = 0.1
+    S = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_18(lam0, beta, S)
     assert isinstance(result, dict)

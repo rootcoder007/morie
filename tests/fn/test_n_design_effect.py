@@ -9,14 +9,16 @@ from morie.fn.n_design_effect import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r12e14_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = n_design_effect(x)
+    design_effect = 0.5
+    n_si = 0.5
+    result = n_design_effect(design_effect, n_si)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r12e14_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = n_design_effect(x)
+    design_effect = 0.5
+    n_si = 0.5
+    result = n_design_effect(design_effect, n_si)
     assert isinstance(result, dict)
