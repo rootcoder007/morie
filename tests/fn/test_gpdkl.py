@@ -1,5 +1,7 @@
 """Tests for gpdkl.deep_kernel_gp."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.gpdkl import deep_kernel_gp
@@ -116,5 +118,14 @@ def test_gpdkl_edge():
 
     result = deep_kernel_gp(X, y, X_test, None,
                             lengthscale=2.0, variance=0.5, noise=0.1)
-    # The function returns a RichResult; just make sure the call succeeded.
-    assert result is not None
+
+    mean = result["mean"]
+    variance = result["variance"]
+    assert len(mean) == 4
+    assert len(variance) == 4
+    assert all(math.isfinite(v) for v in mean)
+    # A GP posterior variance is positive and, with noise s2 = 0.1 folded
+    # into the prior variance 0.5, cannot exceed the prior.
+    assert all(0.0 < v <= 0.5 + 1e-9 for v in variance)
+    assert result["n"] == n
+    assert result["features"] == d
