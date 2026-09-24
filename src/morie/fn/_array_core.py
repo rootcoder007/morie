@@ -354,10 +354,17 @@ class marr:
                 r3 = _newaxis_rank3(self, idx)
                 if r3 is not None:
                     return r3
+                gen = _newaxis_general(self, idx)
+                if gen is not None:
+                    return gen
                 raise ValueError(
                     "unsupported 3-element index %r; the rank-2 core "
-                    "supports a single new axis among full slices, as in "
-                    "x[:, None, :]" % (idx,))
+                    "supports new axes among slices and integer indices, "
+                    "as in x[:, None, :] or x[:, None, None]" % (idx,))
+            if len(idx) > 3 and None in idx:
+                gen = _newaxis_general(self, idx)
+                if gen is not None:
+                    return gen
             i, j = idx
             if len(self.shape) == 2 and (i is None or j is None) and                     (i == slice(None) or j == slice(None)):
                 # numpy: on a 2-D array x[:, None] is x[:, None, :] and
@@ -1156,20 +1163,30 @@ class marr:
 
     def sum(self, axis=None, dtype=None, out=None, keepdims=False):
         del dtype, out
+        # numpy: a boolean array sums to an integer count, and callers
+        # feed that count straight to range() / indexing
+        count = getattr(self, "_is_mask", False) or _is_int_typed(self)
+
+        def fin(v):
+            return int(round(v)) if count else float(v)
+
+        def fin_arr(a):
+            return _typed(a, int) if count else a
         if axis is None:
-            v = float(_fsum(self._flat()))
-            return self._kd_all(v) if keepdims else v
+            v = fin(_fsum(self._flat()))
+            return fin_arr(self._kd_all(v)) if keepdims else v
         if len(self.shape) != 2:
             # numpy: axis 0 / -1 on a 1-D array is the full reduction
-            v = float(_fsum(self._flat()))
-            return marr([v]) if keepdims else v
+            v = fin(_fsum(self._flat()))
+            return fin_arr(marr([v])) if keepdims else v
         if axis == 0:
-            out = [_fsum(self.data[i][j]
-                              for i in range(self.shape[0]))
+            out = [fin(_fsum(self.data[i][j]
+                             for i in range(self.shape[0])))
                    for j in range(self.shape[1])]
-            return marr([out]) if keepdims else marr(out)
-        out = [_fsum(row) for row in self.data]
-        return marr([[v] for v in out]) if keepdims else marr(out)
+            return fin_arr(marr([out])) if keepdims else fin_arr(marr(out))
+        out = [fin(_fsum(row)) for row in self.data]
+        return fin_arr(marr([[v] for v in out])) if keepdims \
+            else fin_arr(marr(out))
 
     def mean(self, axis=None, dtype=None, out=None, keepdims=False):
         del dtype, out
@@ -1489,6 +1506,11 @@ def _all_bool_payload(x):
 
 
 def asarray(x, dtype=None):
+    if isinstance(x, (list, tuple)) and x and _bi.all(
+            isinstance(v, (marr, oarr)) and len(getattr(v, "shape", ())) == 2
+            for v in x):
+        # numpy stacks a list of equal-shaped matrices into one array
+        return ndlist([v.tolist() for v in x])
     if isinstance(x, oarr) and dtype is None:
         return x
     if isinstance(x, ndlist):
@@ -3601,16 +3623,40 @@ class _LinalgExt:
         return marr(sorted(m[i][i] for i in range(n)))
 
     @staticmethod
-    def cond(a):
-        # Frobenius-norm condition estimate; morie.fn uses this only as a
-        # near-singularity guard
+    def cond(a, p=None):
+        """numpy.linalg.cond: the default (p=None) and p=2 are the ratio
+        of the largest to smallest singular value; 'fro' and the 1/inf
+        norms multiply the norm of the matrix by the norm of its
+        inverse, as numpy does."""
         aa = atleast_2d(a)
+        if p is None or p == 2 or p == -2:
+            sv = sorted(_svd(aa, compute_uv=False)._flat(), reverse=True)
+            if not sv:
+                return inf
+            big, small = sv[0], sv[-1]
+            if p == -2:
+                return small / big if big else inf
+            return big / small if small else inf
         try:
             ai = _Linalg.inv(aa)
         except ValueError:
             return inf
-        fro = lambda m: _math.sqrt(_fsum(v * v for v in m._flat()))  # noqa: E731
-        return fro(aa) * fro(ai)
+        if p == "fro":
+            fro = lambda m: _math.sqrt(_fsum(v * v for v in m._flat()))  # noqa: E731
+            return fro(aa) * fro(ai)
+        if p in (1, -1, inf, -inf):
+            def nrm(m, which):
+                rows = m.data if len(m.shape) == 2 else [m.data]
+                if which in (1, -1):          # max/min absolute column sum
+                    sums = [_fsum(abs(r[j]) for r in rows) for j in range(len(rows[0]))]
+                else:                          # max/min absolute row sum
+                    sums = [_fsum(abs(v) for v in r) for r in rows]
+                return _bi.max(sums) if which in (1, inf) else _bi.min(sums)
+            key = 1 if p in (1, -1) else inf
+            want = p in (1, inf)
+            return nrm(aa, key if want else key) * nrm(ai, key if want else key) \
+                if want else nrm(aa, -key if key == 1 else -inf) * nrm(ai, -key if key == 1 else -inf)
+        raise ValueError("invalid norm order %r for cond" % (p,))
 
 
 def _matrix_rank(a, tol=None):
@@ -3825,8 +3871,11 @@ def trapezoid(y, x=None, dx=1.0, axis=None):
         fx = [i * dx for i in range(len(fy))]
     else:
         fx = asarray(x)._flat()
-    return float(_fsum((fx[i + 1] - fx[i]) * (fy[i + 1] + fy[i]) / 2.0
-                            for i in range(len(fy) - 1)))
+    terms = [(fx[i + 1] - fx[i]) * (fy[i + 1] + fy[i]) / 2.0
+             for i in range(len(fy) - 1)]
+    if _bi.any(isinstance(v, complex) for v in terms):
+        return _bi.sum(terms)
+    return float(_fsum(terms))
 
 
 def sliding_window_view(x, window):
@@ -4424,6 +4473,63 @@ def cov(x, y=None, rowvar=True, bias=False, ddof=None):
 
 
 
+def _newaxis_general(a, idx):
+    """Any combination of new axes with slices and integer indices.
+
+    Inserting a unit axis never reorders elements, so the result is the
+    base selection reshaped: drop the Nones, index with what is left,
+    then put a 1 where each None was. Returns None when the base
+    selection is not something this core can index.
+    """
+    if None not in idx:
+        return None
+    rest = tuple(v for v in idx if v is not None)
+    try:
+        base = a[rest] if rest else a
+    except (ValueError, TypeError, IndexError):
+        return None
+    if isinstance(base, (int, float, complex)):
+        flat, bshape = [base], []
+    elif isinstance(base, marr):
+        flat, bshape = list(base._flat()), list(base.shape)
+    elif isinstance(base, ndlist):
+        flat, bshape = _flatten_nested(base.tolist()), list(base.shape)
+    else:
+        return None
+    dims = iter(bshape)
+    out_shape = []
+    for v in idx:
+        if v is None:
+            out_shape.append(1)
+        elif isinstance(v, slice):
+            nxt = next(dims, None)
+            if nxt is None:
+                return None
+            out_shape.append(nxt)
+        # an integer index consumed its axis in the base selection
+    out_shape.extend(list(dims))
+    total = 1
+    for d in out_shape:
+        total *= d
+    if total != len(flat):
+        return None
+    if len(out_shape) <= 1:
+        return marr(flat)
+    if len(out_shape) == 2:
+        nc = out_shape[1]
+        return marr([flat[i * nc:(i + 1) * nc] for i in range(out_shape[0])])
+
+    def build(vals, ds):
+        if len(ds) == 1:
+            return list(vals)
+        step = 1
+        for d in ds[1:]:
+            step *= d
+        return [build(vals[i * step:(i + 1) * step], ds[1:])
+                for i in range(ds[0])]
+    return ndlist(build(flat, out_shape))
+
+
 def _newaxis_rank3(a, idx):
     """x[:, None, :] and friends on a 2-D marr -> rank-3 ndlist.
 
@@ -4589,6 +4695,20 @@ def _expand_axis(x, axis):
     return [_expand_axis(v, axis - 1) for v in x]
 
 
+def _wrap_block(b):
+    """A sub-block of a rank>=3 container as the array type numpy would
+    hand back: marr for a matrix or vector, ndlist for rank >= 3."""
+    if isinstance(b, (marr, ndlist)):
+        return b
+    if isinstance(b, list):
+        d = _nested_depth(b)
+        if d >= 3:
+            return ndlist(b)
+        if d >= 1:
+            return marr(b)
+    return b
+
+
 class ndlist(list):
     """Thin rank>=3 container: nested lists with .shape/.tolist and
     elementwise scalar arithmetic. The rank-2 core stays marr; this
@@ -4609,7 +4729,7 @@ class ndlist(list):
             if isinstance(v, list):
                 return [conv(x) for x in v]
             return v
-        return [conv(v) for v in self]
+        return [conv(v) for v in self._blocks()]
 
     def sum(self, axis=None, dtype=None, out=None, keepdims=False):
         """Sum over one axis of a rank>=3 container, or over all of it.
@@ -4648,12 +4768,31 @@ class ndlist(list):
     def min(self, axis=None, keepdims=False):
         return _ndlist_reduce(self, axis, keepdims, _bi.min)
 
+    def _blocks(self):
+        """The raw sub-lists, bypassing the numpy-style __iter__."""
+        return [list.__getitem__(self, i) for i in range(len(self))]
+
+    def __iter__(self):
+        """numpy: iterating a rank-n array yields rank-(n-1) arrays."""
+        for b in self._blocks():
+            yield _wrap_block(b)
+
     def __getitem__(self, key):
         """x[i, j, k] / x[i, :, k] on a rank>=3 container: integers pick,
         full slices keep the axis; the result collapses to marr / float
         when its rank drops to 2 / 0 (numpy semantics for basic
-        indexing)."""
+        indexing). A boolean mask selects the flattened elements it
+        marks, as numpy does."""
+        if isinstance(key, (ndlist, marr)) and (
+                isinstance(key, ndlist) or getattr(key, "_is_mask", False)):
+            flat_v = _flatten_nested(self.tolist())
+            flat_m = _flatten_nested(key.tolist() if hasattr(key, "tolist") else key)
+            if len(flat_m) != len(flat_v):
+                raise IndexError("boolean index did not match the array shape")
+            return marr([v for v, m in zip(flat_v, flat_m) if m])
         if not isinstance(key, tuple):
+            # the raw sub-list, NOT a wrapped copy: __setitem__ and the
+            # module-level loops mutate what they index
             return list.__getitem__(self, key)
 
         def pick(node, keys):
@@ -4784,6 +4923,30 @@ class ndlist(list):
                     for i in range(ds[0])]
         return ndlist(build(flat, dims))
 
+    def _cmp(self, other, fn):
+        """Elementwise comparison, as numpy: a nested mask of bools."""
+        def walk(v, o):
+            if isinstance(v, list):
+                return [walk(x, o) for x in v]
+            if isinstance(v, marr):
+                return [walk(x, o) for x in v._flat()]
+            return bool(fn(v, o))
+        if isinstance(other, (list, tuple, marr, ndlist)):
+            raise ValueError("ndlist comparison supports a scalar operand")
+        return ndlist(walk(self._blocks(), other))
+
+    def __gt__(self, other):
+        return self._cmp(other, lambda a, b: a > b)
+
+    def __ge__(self, other):
+        return self._cmp(other, lambda a, b: a >= b)
+
+    def __lt__(self, other):
+        return self._cmp(other, lambda a, b: a < b)
+
+    def __le__(self, other):
+        return self._cmp(other, lambda a, b: a <= b)
+
     def _ew(self, other, fn):
         if isinstance(other, ndlist):
             # blockwise: marr broadcasting handles the trailing axes
@@ -4791,7 +4954,7 @@ class ndlist(list):
             # This used to be a bare zip(self, other), which TRUNCATES to
             # the shorter operand, so (n,1,k) - (1,n,k) silently returned
             # one block instead of n -- the wrong shape, no error raised.
-            a, b = list(self), list(other)
+            a, b = self._blocks(), other._blocks()
             if len(a) != len(b):
                 if len(a) == 1:
                     a = a * len(b)
@@ -4805,7 +4968,7 @@ class ndlist(list):
                           for x, y in zip(a, b))
         if isinstance(other, (marr, list)) and not isinstance(
                 other, ndlist) and isinstance(other, marr):
-            return ndlist(marr(v)._zip(other, fn) for v in self)
+            return ndlist(marr(v)._zip(other, fn) for v in self._blocks())
 
         def walk(v):
             if isinstance(v, marr):
@@ -4813,7 +4976,7 @@ class ndlist(list):
             if isinstance(v, list):
                 return [walk(x) for x in v]
             return fn(float(v), float(other))
-        return ndlist(walk(v) for v in self)
+        return ndlist(walk(v) for v in self._blocks())
 
     def __truediv__(self, o):
         return self._ew(o, lambda a, b: a / b)
@@ -6211,6 +6374,9 @@ class carr:
         elif dtype is None and getattr(self, "_is_index", False):
             dtype = "int64"
         return _np.asarray(self.tolist(), dtype=dtype)
+
+    def copy(self):
+        return carr(self)
 
     def tolist(self):
         return self.data[:]

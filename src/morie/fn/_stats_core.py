@@ -1627,7 +1627,32 @@ class _Chi2ContingencyResult(tuple):
         return self
 
 
-def chi2_contingency(observed, correction=True):
+_CRESSIE_READ = {"pearson": 1.0, "log-likelihood": 0.0,
+                 "freeman-tukey": -0.5, "mod-log-likelihood": -1.0,
+                 "neyman": -2.0, "cressie-read": 2.0 / 3.0}
+
+
+def _power_divergence_stat(obs, exp, lambda_):
+    """Cressie-Read statistic for one pair of flat sequences."""
+    lam = _CRESSIE_READ[lambda_] if isinstance(lambda_, str) else (
+        1.0 if lambda_ is None else float(lambda_))
+    if lam == 1.0:
+        return _math.fsum((o - e) ** 2 / e for o, e in zip(obs, exp))
+    if lam == 0.0:
+        return 2.0 * _math.fsum(o * _math.log(o / e)
+                                for o, e in zip(obs, exp) if o > 0)
+    if lam == -1.0:
+        return 2.0 * _math.fsum(e * _math.log(e / o)
+                                for o, e in zip(obs, exp) if o > 0)
+    return (2.0 / (lam * (lam + 1.0))) * _math.fsum(
+        o * ((o / e) ** lam - 1.0) for o, e in zip(obs, exp))
+
+
+def chi2_contingency(observed, correction=True, lambda_=None):
+    """Chi-square (or any Cressie-Read power-divergence) test of
+    independence. With ``correction`` and one degree of freedom the
+    observed counts are shifted half a unit toward the expected ones,
+    as scipy does, before the statistic is formed."""
     rows = observed.tolist() if hasattr(observed, "tolist") \
         else [list(r) for r in observed]
     rows = [[float(v) for v in r] for r in rows]
@@ -1637,10 +1662,16 @@ def chi2_contingency(observed, correction=True):
     n = _math.fsum(rt)
     exp = [[rt[i] * ct[j] / n for j in range(c)] for i in range(r)]
     dof = (r - 1) * (c - 1)
-    yates = 0.5 if correction and dof == 1 else 0.0
-    stat = _math.fsum(
-        (_bi.max(abs(rows[i][j] - exp[i][j]) - yates, 0.0)) ** 2
-        / exp[i][j] for i in range(r) for j in range(c))
+    obs = [rows[i][j] for i in range(r) for j in range(c)]
+    e = [exp[i][j] for i in range(r) for j in range(c)]
+    if correction and dof == 1:
+        adj = []
+        for o, ev in zip(obs, e):
+            diff = ev - o
+            mag = _bi.min(0.5, abs(diff))
+            adj.append(o + (mag if diff > 0 else -mag if diff < 0 else 0.0))
+        obs = adj
+    stat = _power_divergence_stat(obs, e, lambda_)
     return _Chi2ContingencyResult(stat, chi2.sf(stat, dof), dof, exp)
 
 
@@ -2939,7 +2970,34 @@ def ranksums(x, y):
     return _TestResult(z, 2.0 * norm.sf(abs(z)))
 
 
-def median_test(*samples):
+def _typed_table(_ac, tt):
+    """A contingency table as an int-typed array, as scipy returns."""
+    return _ac._typed(_ac.marr([[float(v) for v in row] for row in tt]), int)
+
+
+class _MedianTestResult(tuple):
+    """scipy's (statistic, pvalue, median, table) result."""
+
+    def __new__(cls, statistic, pvalue, median, table):
+        obj = super().__new__(cls, (statistic, pvalue, median, table))
+        obj.statistic = statistic
+        obj.pvalue = pvalue
+        obj.median = median
+        obj.table = table
+        return obj
+
+
+def median_test(*samples, ties="below", correction=True, lambda_=1,
+                nan_policy="propagate"):
+    """Mood's median test.
+
+    ``ties`` says where observations exactly equal to the grand median
+    go: "below" (scipy's default), "above", or "ignore" (dropped, which
+    changes the totals).
+    """
+    if ties not in ("below", "above", "ignore"):
+        raise ValueError("ties must be 'below', 'above' or 'ignore'")
+    del nan_policy
     allv = []
     for s in samples:
         allv += _flatten(s)
@@ -2950,13 +3008,20 @@ def median_test(*samples):
     for s in samples:
         v = _flatten(s)
         above = sum(1 for u in v if u > grand)
-        below = sum(1 for u in v if u <= grand)
+        if ties == "below":
+            below = sum(1 for u in v if u <= grand)
+        elif ties == "above":
+            below = sum(1 for u in v if u < grand)
+            above = len(v) - below
+        else:
+            below = sum(1 for u in v if u < grand)
         table.append([above, below])
     tt = [[table[i][j] for i in range(len(samples))]
           for j in range(2)]
-    res = chi2_contingency(tt)
-    return _TestResult(res.statistic, res.pvalue, median=grand,
-                       table=tt)
+    res = chi2_contingency(tt, correction=correction, lambda_=lambda_)
+    from . import _array_core as _ac
+    return _MedianTestResult(res.statistic, res.pvalue, grand,
+                             _typed_table(_ac, tt))
 
 
 class _KSTwoBign:

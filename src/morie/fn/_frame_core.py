@@ -40,6 +40,42 @@ def _to_float(v):
 class Index(list):
     """Row labels with pandas-style boolean-mask selection."""
 
+    def intersection(self, other):
+        """Labels in both, in this index's order (pandas' default)."""
+        seen = set(other.tolist() if hasattr(other, "tolist") else other)
+        out, taken = [], set()
+        for v in self:
+            if v in seen and v not in taken:
+                taken.add(v)
+                out.append(v)
+        return Index(out)
+
+    def union(self, other):
+        """Labels in either, sorted when they are comparable, as pandas."""
+        vals = list(self) + list(other.tolist() if hasattr(other, "tolist") else other)
+        uniq, taken = [], set()
+        for v in vals:
+            if v not in taken:
+                taken.add(v)
+                uniq.append(v)
+        try:
+            return Index(sorted(uniq))
+        except TypeError:
+            return Index(uniq)
+
+    def difference(self, other):
+        """Labels here and not there, sorted when comparable, as pandas."""
+        drop = set(other.tolist() if hasattr(other, "tolist") else other)
+        out, taken = [], set()
+        for v in self:
+            if v not in drop and v not in taken:
+                taken.add(v)
+                out.append(v)
+        try:
+            return Index(sorted(out))
+        except TypeError:
+            return Index(out)
+
     def __getitem__(self, key):
         if isinstance(key, Series):
             key = key.tolist()
@@ -953,7 +989,21 @@ class _SeriesLoc:
         self._s = s
 
     def __getitem__(self, key):
-        return self._s[key]
+        s = self._s
+        if isinstance(key, Index) or (
+                isinstance(key, (list, tuple)) and key
+                and not isinstance(key[0], bool)):
+            # label-based selection, as pandas' .loc with a list of labels
+            labels = list(key)
+            pos = {}
+            for i, lab in enumerate(s.index):
+                pos.setdefault(lab, i)
+            missing = [lab for lab in labels if lab not in pos]
+            if missing:
+                raise KeyError("%r not in index" % (missing[:5],))
+            return Series([s._data[pos[lab]] for lab in labels],
+                          index=labels, name=s.name)
+        return s[key]
 
     def __setitem__(self, key, v):
         self._s[key] = v
@@ -1537,6 +1587,29 @@ class DataFrame:
         return DataFrame({c: [one(v) for v in vals]
                           for c, vals in self._cols.items()},
                          index=list(self.index))
+
+    def nlargest(self, n=5, columns=None, keep="first"):
+        """The n rows with the largest values in ``columns`` (pandas
+        orders them descending and drops NaN keys)."""
+        return self._n_extreme(n, columns, keep, True)
+
+    def nsmallest(self, n=5, columns=None, keep="first"):
+        """The n rows with the smallest values in ``columns``."""
+        return self._n_extreme(n, columns, keep, False)
+
+    def _n_extreme(self, n, columns, keep, largest):
+        if columns is None:
+            raise TypeError("nlargest/nsmallest need the column(s) to rank by")
+        cols = [columns] if not isinstance(columns, (list, tuple)) else list(columns)
+        rows = [i for i in range(self.shape[0])
+                if not any(_isnan(self._cols[c][i]) for c in cols)]
+        rows.sort(key=lambda i: tuple(self._cols[c][i] for c in cols),
+                  reverse=largest)
+        if keep == "last":
+            # pandas keeps the LAST of equal keys: stable-sort the ties back
+            rows.sort(key=lambda i: (tuple(self._cols[c][i] for c in cols), -i),
+                      reverse=largest)
+        return self._take(rows[:int(n)])
 
     def sort_values(self, by, ascending=True, na_position="last"):
         """pandas: NaN keys go last (or first) whichever way the sort runs;
