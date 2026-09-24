@@ -618,6 +618,11 @@ class marr:
             n *= s
         return n
 
+
+    @property
+    def nbytes(self):
+        """numpy.ndarray.nbytes: the element count times the item size."""
+        return self.size * getattr(self.dtype, "itemsize", 8)
     @property
     def ndim(self):
         return len(self.shape)
@@ -1403,6 +1408,9 @@ class _DTypeF64:
     def __repr__(self):
         return "dtype('float64')"
 
+    def __str__(self):
+        return "float64"
+
     name = "float64"
     kind = "f"
     str = "<f8"
@@ -1445,6 +1453,9 @@ class _ObjDType:
     def __repr__(self):
         return "dtype('O')"
 
+    def __str__(self):
+        return "object"
+
 
 class oarr(list):
     """Object-mode array: numpy's dtype=object surface for string /
@@ -1474,6 +1485,11 @@ class oarr(list):
     def size(self):
         return len(self)
 
+
+    @property
+    def nbytes(self):
+        """numpy.ndarray.nbytes: the element count times the item size."""
+        return self.size * getattr(self.dtype, "itemsize", 8)
     def _flat(self):
         return list(self)
 
@@ -4114,6 +4130,9 @@ class _DTypeNarrow:
     def __repr__(self):
         return "dtype(%r)" % self.name
 
+    def __str__(self):
+        return self.name
+
 
 float32 = _DTypeNarrow("float32")
 int64 = int
@@ -4916,6 +4935,24 @@ class ndlist(list):
     @property
     def shape(self):
         return _nested_shape(self)
+
+    @property
+    def dtype(self):
+        """numpy.ndarray.dtype for this container's elements."""
+        return float64
+
+    @property
+    def size(self):
+        """numpy.ndarray.size: the total element count."""
+        n = 1
+        for d in self.shape:
+            n *= d
+        return n
+
+    @property
+    def nbytes(self):
+        """numpy.ndarray.nbytes: the element count times the item size."""
+        return self.size * getattr(self.dtype, "itemsize", 8)
 
     @property
     def ndim(self):
@@ -6600,6 +6637,24 @@ class carr:
         return (len(self.data),)
 
     @property
+    def dtype(self):
+        """numpy.ndarray.dtype for this container's elements."""
+        return _DType("complex128")
+
+    @property
+    def size(self):
+        """numpy.ndarray.size: the total element count."""
+        n = 1
+        for d in self.shape:
+            n *= d
+        return n
+
+    @property
+    def nbytes(self):
+        """numpy.ndarray.nbytes: the element count times the item size."""
+        return self.size * getattr(self.dtype, "itemsize", 8)
+
+    @property
     def T(self):
         if self.rows is None:
             return carr(self.data)
@@ -8008,7 +8063,8 @@ class _DType:
     def __repr__(self):
         return "dtype('%s')" % self.name
 
-    __str__ = __repr__
+    def __str__(self):
+        return self.name
 
 
 dtype = _DType

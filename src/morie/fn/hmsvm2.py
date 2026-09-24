@@ -90,7 +90,14 @@ def geron_save_load_pytorch(model, path, verify=True):
         if v.dtype.kind not in "fiub":
             raise ValueError(f"geron_save_load_pytorch: entry {k!r} has non-numeric dtype {v.dtype}")
 
-    p = str(path)
+    if not isinstance(path, (str, bytes, os.PathLike)):
+        raise TypeError(
+            "geron_save_load_pytorch: path must be a filesystem path, not "
+            f"{type(path).__name__}; coercing one would write a file named "
+            "after the value into the working directory")
+    p = os.fspath(path) if not isinstance(path, str) else path
+    if isinstance(p, bytes):
+        p = p.decode()
     if not p:
         raise ValueError("geron_save_load_pytorch: path is required; nothing is written to a default location")
     directory = os.path.dirname(os.path.abspath(p))
