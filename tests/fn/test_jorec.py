@@ -7,18 +7,17 @@ from morie.fn.jorec import joseph_recursive_multistep
 
 def test_jorec_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    result = joseph_recursive_multistep(y, model, H)
+    rng = np.random.default_rng(43)
+    x = rng.normal(0, 1, 100)
+    result = joseph_recursive_multistep(x, lags=[1, 2, 3, 5], horizon=3)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "forecast" in result or "statistic" in result or "estimate" in result
 
 
 def test_jorec_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    result = joseph_recursive_multistep(y, model, H)
+    rng = np.random.default_rng(43)
+    x = rng.normal(0, 1, 50)
+    result = joseph_recursive_multistep(x, lags=[1, 2], horizon=2)
     assert isinstance(result, dict)
+    assert "forecast" in result or "statistic" in result or "estimate" in result
