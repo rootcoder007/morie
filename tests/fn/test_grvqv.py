@@ -7,24 +7,18 @@ from morie.fn.grvqv import geron_vq_vae_codebook_loss
 
 def test_grvqv_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    z_e = np.random.default_rng(42).normal(0, 1, 100)
-    z_q = np.random.default_rng(42).normal(0, 1, 100)
-    codebook = np.random.default_rng(42).normal(0, 1, 100)
-    beta = 0.8
-    result = geron_vq_vae_codebook_loss(x, z_e, z_q, codebook, beta)
+    z_e = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    codebook = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = geron_vq_vae_codebook_loss(z_e, codebook)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_grvqv_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    z_e = np.random.default_rng(42).normal(0, 1, 100)
-    z_q = np.random.default_rng(42).normal(0, 1, 100)
-    codebook = np.random.default_rng(42).normal(0, 1, 100)
-    beta = 0.8
-    result = geron_vq_vae_codebook_loss(x, z_e, z_q, codebook, beta)
+    z_e = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    codebook = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = geron_vq_vae_codebook_loss(z_e, codebook)
     assert isinstance(result, dict)
 
 
