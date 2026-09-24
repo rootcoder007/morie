@@ -105,6 +105,25 @@ def _butter_zpk(n, wn, btype):
         z = [0j] * n
         p = pn
         k *= bw ** n
+    elif btype in ("bandstop", "stop", "bs"):
+        # scipy lp2bs_zpk on the lowpass prototype (no finite zeros)
+        lo, hi = float(wn[0]), float(wn[1])
+        w1 = 2.0 * fs * _math.tan(_math.pi * lo / fs)
+        w2 = 2.0 * fs * _math.tan(_math.pi * hi / fs)
+        bw = w2 - w1
+        w0 = _math.sqrt(w1 * w2)
+        pn = []
+        for pi in p:
+            pinv = (bw / 2.0) / pi
+            disc = _cmath.sqrt(pinv * pinv - w0 * w0)
+            pn.append(pinv + disc)
+            pn.append(pinv - disc)
+        z = [complex(0.0, w0)] * n + [complex(0.0, -w0)] * n
+        prod = complex(1.0)
+        for pi in p:
+            prod *= -pi
+        k *= (1.0 / prod).real
+        p = pn
     else:
         raise ValueError("unsupported btype %r" % btype)
     return _bilinear_zpk(z, p, k, fs)

@@ -1983,7 +1983,7 @@ def differential_evolution(func, bounds, args=(), maxiter=200,
     np_ = _bi.max(popsize * d, 8)
     pop = [[lo[j] + (hi[j] - lo[j]) * rng.uniform()
             for j in range(d)] for _ in range(np_)]
-    fit = [float(func(p, *args)) for p in pop]
+    fit = [float(func(_ac.marr(p), *args)) for p in pop]
     for _gen in range(maxiter):
         for i in range(np_):
             idxs = [k for k in range(np_) if k != i]
@@ -1998,7 +1998,7 @@ def differential_evolution(func, bounds, args=(), maxiter=200,
                 else:
                     v = pop[i][j]
                 trial.append(_bi.min(hi[j], _bi.max(lo[j], v)))
-            ft = float(func(trial, *args))
+            ft = float(func(_ac.marr(trial), *args))
             if ft < fit[i]:
                 pop[i], fit[i] = trial, ft
         best = min(fit)

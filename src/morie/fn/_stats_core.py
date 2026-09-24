@@ -2418,6 +2418,89 @@ class _LogNorm(_Dist):
 
 class _WeibullMin(_Dist):
     _support = (0.0, _math.inf)
+
+    def fit(self, data, *args, **kw):
+        """Maximum-likelihood (c, loc, scale). With ``floc`` fixed the
+        shape solves the profile equation
+        sum(y^c ln y)/sum(y^c) - 1/c = mean(ln y) by Newton steps and
+        the scale is (mean(y^c))^(1/c); without it the location is
+        profiled out by a golden-section search below min(x)."""
+        x = sorted(_flatten(data))
+        n = len(x)
+        if n < 2:
+            raise ValueError("weibull_min.fit needs at least two observations")
+        floc = kw.get("floc")
+        fscale = kw.get("fscale")
+        fc = kw.get("f0", kw.get("fc"))
+        if len(args) >= 1 and fc is None:
+            fc = args[0]
+
+        def profile(loc):
+            y = [v - loc for v in x]
+            if y[0] <= 0:
+                return None
+            ly = [_math.log(v) for v in y]
+            ml = _math.fsum(ly) / n
+            if fc is not None:
+                c = float(fc)
+            else:
+                sd = _math.sqrt(_var(ly, ddof=1)) or 1e-8
+                c = _math.pi / (sd * _math.sqrt(6.0))
+                for _ in range(200):
+                    yc = [_math.exp(c * l) for l in ly]
+                    s0 = _math.fsum(yc)
+                    s1 = _math.fsum(v * l for v, l in zip(yc, ly))
+                    s2 = _math.fsum(v * l * l for v, l in zip(yc, ly))
+                    g = s1 / s0 - 1.0 / c - ml
+                    dg = (s2 * s0 - s1 * s1) / (s0 * s0) + 1.0 / (c * c)
+                    step = g / dg
+                    c_new = c - step
+                    if c_new <= 0:
+                        c_new = c / 2.0
+                    if abs(c_new - c) < 1e-12 * max(1.0, c):
+                        c = c_new
+                        break
+                    c = c_new
+            if fscale is not None:
+                scale = float(fscale)
+            else:
+                scale = (_math.fsum(v ** c for v in y) / n) ** (1.0 / c)
+            ll = (n * _math.log(c) - n * c * _math.log(scale)
+                  + (c - 1.0) * _math.fsum(ly)
+                  - _math.fsum((v / scale) ** c for v in y))
+            return c, scale, ll
+
+        if floc is not None:
+            r = profile(float(floc))
+            if r is None:
+                raise ValueError("data must exceed floc")
+            return r[0], float(floc), r[1]
+        span = (x[-1] - x[0]) or 1.0
+        lo, hi = x[0] - 10.0 * span, x[0] - 1e-9 * span
+        gr = (_math.sqrt(5.0) - 1.0) / 2.0
+
+        def obj(loc):
+            r = profile(loc)
+            return -_math.inf if r is None else r[2]
+        a_, b_ = lo, hi
+        c1 = b_ - gr * (b_ - a_)
+        c2 = a_ + gr * (b_ - a_)
+        f1, f2 = obj(c1), obj(c2)
+        for _ in range(200):
+            if f1 < f2:
+                a_, c1, f1 = c1, c2, f2
+                c2 = a_ + gr * (b_ - a_)
+                f2 = obj(c2)
+            else:
+                b_, c2, f2 = c2, c1, f1
+                c1 = b_ - gr * (b_ - a_)
+                f1 = obj(c1)
+            if abs(b_ - a_) < 1e-10 * span:
+                break
+        loc = 0.5 * (a_ + b_)
+        r = profile(loc)
+        return r[0], loc, r[1]
+
     def pdf(self, x, c, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale

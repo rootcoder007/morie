@@ -143,6 +143,14 @@ def _store(arr, value):
     the array float (numpy would truncate to int64 -- the modules were
     written against the float-backed core and never expected 2.5 -> 2,
     so silent truncation is the one numpy behaviour this core refuses)."""
+    if isinstance(value, marr):
+        f = value._flat()
+        if len(f) == 1:
+            value = f[0]
+    if isinstance(value, complex):
+        # complex assignment keeps the value (numpy would need a complex
+        # dtype; the float-backed core carries complex elements as-is)
+        return value
     if _is_int_typed(arr):
         v = float(value)
         if v.is_integer():
@@ -159,6 +167,10 @@ def _carry(src, out):
             out._is_mask = True
         elif getattr(src, "_dt", None) is not None:
             out._dt = src._dt
+            if _is_int_typed(src):
+                f = out._flat()
+                if _bi.all(isinstance(v, int) or (isinstance(v, float) and v.is_integer()) for v in f):
+                    _typed(out, int)
     return out
 
 
@@ -310,6 +322,10 @@ class marr:
         if len(self.shape) == 1:
             return iter(self.data)
         return iter([marr(row) for row in self.data])
+
+    def diagonal(self, offset=0, axis1=0, axis2=1):
+        del axis1, axis2
+        return diag(self, k=offset)
 
     def __getitem__(self, idx):
         if isinstance(idx, slice):
@@ -1519,6 +1535,9 @@ def asarray(x, dtype=None):
 
 def array(x, dtype=None, copy=True, ndmin=0):
     del copy
+    if isinstance(x, (list, tuple)) and x and _bi.all(
+            isinstance(v, marr) and len(v.shape) == 2 for v in x):
+        return ndlist([v.tolist() for v in x])
     if ndmin >= 2 and _nested_depth(x) < 2 and not isinstance(x, marr):
         return atleast_2d(array(x, dtype))
     if _is_object_like(x, dtype):
@@ -1646,7 +1665,11 @@ def full(n, v, dtype=None):
 
 
 def linspace(a, b, n=50, endpoint=True, retstep=False, dtype=None):
-    del dtype
+    if dtype is not None and dtype is not float and not _is_float_dtype(dtype):
+        out = linspace(a, b, n, endpoint, retstep)
+        if retstep:
+            return _typed(marr([float(int(v)) for v in out[0]._flat()]), int), out[1]
+        return _typed(marr([float(int(v)) for v in out._flat()]), int)
     n = int(n)
     if n <= 0:
         out, step = marr([]), _NAN
@@ -1664,6 +1687,11 @@ def eye(n, m=None, k=0, dtype=None):
     k = int(k)
     return marr([[1.0 if j - i == k else 0.0 for j in range(m)]
                  for i in range(int(n))])
+
+
+def diagonal(a, offset=0, axis1=0, axis2=1):
+    del axis1, axis2
+    return diag(atleast_2d(asarray(a)), k=offset)
 
 
 def diag(x, k=0):
@@ -1812,7 +1840,7 @@ def clip(x, lo, hi):
         return v
     a = asarray(x)
     if isinstance(a, marr):
-        return a._map(one)
+        return _carry(a, a._map(one))
     if isinstance(x, ndlist) or isinstance(a, ndlist):
         # n-D: recurse and keep the nesting, as numpy.clip does. The
         # scalar store below cannot represent a 3-D right-hand side.
@@ -2108,10 +2136,19 @@ def isfinite(x):
 
 
 def dot(a, b):
+    if isinstance(a, carr) or isinstance(b, carr):
+        fa = list(a.data) if isinstance(a, carr) else list(asarray(a)._flat())
+        fb = list(b.data) if isinstance(b, carr) else list(asarray(b)._flat())
+        if len(fa) != len(fb):
+            raise ValueError("shape mismatch")
+        return _bi.sum(x * y for x, y in zip(fa, fb))
     aa, bb = asarray(a), asarray(b)
     if len(aa.shape) == 1 and len(bb.shape) == 1:
         if aa.shape != bb.shape:
             raise ValueError("shape mismatch")
+        if _bi.any(isinstance(v, complex) for v in aa.data) \
+                or _bi.any(isinstance(v, complex) for v in bb.data):
+            return _bi.sum(x * y for x, y in zip(aa.data, bb.data))
         return float(_fsum(x * y for x, y in zip(aa.data, bb.data)))
     return matmul(aa, bb)
 
@@ -2309,9 +2346,9 @@ def unique(x, return_inverse=False, return_counts=False,
         if _bi.any(v != v for v in vals):
             uniq.append(_NAN)
     if not (return_inverse or return_counts or return_index):
-        return oarr(uniq) if isinstance(a, oarr) else marr(uniq)
+        return oarr(uniq) if isinstance(a, oarr) else _carry(a, marr(uniq))
     pos = {v: i for i, v in enumerate(uniq)}
-    out = [oarr(uniq) if isinstance(a, oarr) else marr(uniq)]
+    out = [oarr(uniq) if isinstance(a, oarr) else _carry(a, marr(uniq))]
     if return_index:
         first = {}
         for i, v in enumerate(vals):
@@ -4405,6 +4442,27 @@ def _newaxis_rank3(a, idx):
         return ndlist([[r[:] for r in rows]])            # (1, n, k)
     if idx == (full, full, None):
         return ndlist([[[v] for v in r] for r in rows])  # (n, k, 1)
+    # one new axis among slices / integer indices: index without it,
+    # then insert the unit axis where numpy puts it
+    if len(idx) == 3 and idx.count(None) == 1 and _bi.all(
+            v is None or isinstance(v, (int, float, slice)) for v in idx):
+        # integer indices consume an axis; the unit axis sits where the
+        # None falls among the axes that remain
+        kinds = ["u" if v is None else "a" for v in idx
+                 if v is None or isinstance(v, slice)]
+        pos = kinds.index("u")
+        rest = tuple(_ix(v) for v in idx if v is not None)
+        sub = a[rest]
+        if not isinstance(sub, marr):
+            sub = marr([sub])
+        if len(sub.shape) == 1:
+            return marr([sub.data[:]]) if pos == 0 else marr([[v] for v in sub.data])
+        srows = sub.data
+        if pos == 0:
+            return ndlist([[r[:] for r in srows]])
+        if pos == 1:
+            return ndlist([[r[:]] for r in srows])
+        return ndlist([[[v] for v in r] for r in srows])
     return None
 
 
@@ -6482,8 +6540,16 @@ def array_split(a, sections, axis=0):
     return out
 
 
+def _is_float_dtype(dtype):
+    name = getattr(dtype, "name", None) or getattr(dtype, "__name__", None) or str(dtype)
+    return str(name).startswith(("float", "f", "complex")) or dtype is float64
+
+
 def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None):
-    del dtype
+    if dtype is not None and dtype is not float and not _is_float_dtype(dtype):
+        out = logspace(start, stop, num, endpoint, base)
+        # numpy casts by truncation toward zero for an integer dtype
+        return _typed(marr([float(int(v)) for v in out._flat()]), int)
     if not endpoint:
         step = (stop - start) / num
         return marr([base ** (start + i * step) for i in range(num)])
@@ -7754,3 +7820,27 @@ class polynomial:  # namespace mirror of numpy.polynomial
     hermite_e = _PolyHermiteE
     legendre = _PolyLegendre
     polynomial = _PolyPolynomial
+
+
+# ------------------------------------------------ ufunc.outer (round four)
+
+def _outer_of(fn):
+    """numpy's ufunc.outer: fn applied to every pair, shape (n, m)."""
+    def outer(a, b):
+        fa = list(asarray(a)._flat())
+        fb = list(asarray(b)._flat())
+        return marr([[fn(x, y) for y in fb] for x in fa])
+    return outer
+
+
+for _name, _op in (("subtract", lambda x, y: x - y), ("multiply", lambda x, y: x * y),
+                   ("divide", _ieee_div), ("maximum", lambda x, y: x if x >= y else y),
+                   ("minimum", lambda x, y: x if x <= y else y), ("power", lambda x, y: x ** y)):
+    _f = globals().get(_name)
+    if _f is not None and not hasattr(_f, "outer"):
+        try:
+            _f.outer = _outer_of(_op)
+        except (AttributeError, TypeError):
+            pass
+if not hasattr(add, "outer"):
+    type(add).outer = staticmethod(_outer_of(lambda x, y: x + y))
