@@ -7,14 +7,14 @@ from morie.fn.t_paired import t_paired
 
 def test_ca9e10_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = t_paired(x)
+    differences = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = t_paired(differences)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "t" in result
 
 
 def test_ca9e10_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = t_paired(x)
+    differences = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = t_paired(differences)
     assert isinstance(result, dict)

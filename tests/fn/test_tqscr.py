@@ -7,18 +7,18 @@ from morie.fn.tqscr import turboquant_score_distortion
 
 def test_tqscr_basic():
     """Test basic functionality."""
-    eps = np.random.default_rng(42).normal(0, 1, 100)
-    r = 10
-    n = 100
+    eps = 0.1
+    r = 0.1
+    n = 0.1
     result = turboquant_score_distortion(eps, r, n)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "m_min" in result
 
 
 def test_tqscr_edge():
     """Test edge cases."""
-    eps = np.random.default_rng(42).normal(0, 1, 100)
-    r = 10
-    n = 100
+    eps = 0.1
+    r = 0.1
+    n = 0.1
     result = turboquant_score_distortion(eps, r, n)
     assert isinstance(result, dict)

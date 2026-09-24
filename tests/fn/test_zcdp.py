@@ -7,16 +7,16 @@ from morie.fn.zcdp import zcdp
 
 def test_zcdp_basic():
     """Test basic functionality."""
-    mech = np.random.default_rng(42).normal(0, 1, 100)
-    rho = 0.5
+    mech = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    rho = 0.1
     result = zcdp(mech, rho)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "rho_total" in result
 
 
 def test_zcdp_edge():
     """Test edge cases."""
-    mech = np.random.default_rng(42).normal(0, 1, 100)
-    rho = 0.5
+    mech = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    rho = 0.1
     result = zcdp(mech, rho)
     assert isinstance(result, dict)

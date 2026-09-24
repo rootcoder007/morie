@@ -7,16 +7,16 @@ from morie.fn.topDn import top_down
 
 def test_topDn_basic():
     """Test basic functionality."""
-    top = np.random.default_rng(42).normal(0, 1, 100)
-    props = np.random.default_rng(42).normal(0, 1, 100)
+    top = 0.1
+    props = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = top_down(top, props)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_topDn_edge():
     """Test edge cases."""
-    top = np.random.default_rng(42).normal(0, 1, 100)
-    props = np.random.default_rng(42).normal(0, 1, 100)
+    top = 0.1
+    props = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = top_down(top, props)
     assert isinstance(result, dict)

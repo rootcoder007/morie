@@ -9,14 +9,14 @@ from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r7e8 import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r7e8_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_8(x)
+    primary_unit_means = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_8(primary_unit_means)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "s2_psu" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r7e8_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_8(x)
+    primary_unit_means = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_8(primary_unit_means)
     assert isinstance(result, dict)

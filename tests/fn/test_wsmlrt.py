@@ -7,18 +7,18 @@ from morie.fn.wsmlrt import wasserman_lrt
 
 def test_wsmlrt_basic():
     """Test basic functionality."""
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    theta0 = 0.0
-    result = wasserman_lrt(data, f, theta0)
+    loglik_full = 0.1
+    loglik_null = 0.1
+    df = 5
+    result = wasserman_lrt(loglik_full, loglik_null, df)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "statistic" in result or "p_value" in result or "statistic" in result
 
 
 def test_wsmlrt_edge():
     """Test edge cases."""
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    theta0 = 0.0
-    result = wasserman_lrt(data, f, theta0)
+    loglik_full = 0.1
+    loglik_null = 0.1
+    df = 5
+    result = wasserman_lrt(loglik_full, loglik_null, df)
     assert isinstance(result, dict)

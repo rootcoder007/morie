@@ -7,18 +7,18 @@ from morie.fn.vidgen import video_diffusion
 
 def test_vidgen_basic():
     """Test basic functionality."""
-    t = np.linspace(0, 10, 100)
-    conditions = np.random.default_rng(42).normal(0, 1, 100)
-    n_frames = np.random.default_rng(42).normal(0, 1, 100)
-    result = video_diffusion(t, conditions, n_frames)
+    x_hat = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    observed = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    index = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = video_diffusion(x_hat, observed, index)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_vidgen_edge():
     """Test edge cases."""
-    t = np.linspace(0, 10, 100)
-    conditions = np.random.default_rng(42).normal(0, 1, 100)
-    n_frames = np.random.default_rng(42).normal(0, 1, 100)
-    result = video_diffusion(t, conditions, n_frames)
+    x_hat = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    observed = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    index = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = video_diffusion(x_hat, observed, index)
     assert isinstance(result, dict)

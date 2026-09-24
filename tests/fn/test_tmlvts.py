@@ -7,18 +7,14 @@ from morie.fn.tmlvts import tmle_var_targeting
 
 def test_tmlvts_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = tmle_var_targeting(y, D, X)
+    ic = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = tmle_var_targeting(ic)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "sigma2" in result
 
 
 def test_tmlvts_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = tmle_var_targeting(y, D, X)
+    ic = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = tmle_var_targeting(ic)
     assert isinstance(result, dict)

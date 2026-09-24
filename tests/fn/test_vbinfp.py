@@ -7,18 +7,16 @@ from morie.fn.vbinfp import variational_bound
 
 def test_vbinfp_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    result = variational_bound(X, Y, q)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    Y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = variational_bound(X, Y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_vbinfp_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    result = variational_bound(X, Y, q)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    Y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = variational_bound(X, Y)
     assert isinstance(result, dict)

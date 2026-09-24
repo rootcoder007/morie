@@ -7,18 +7,18 @@ from morie.fn.wsmdlm import wasserman_delta_method
 
 def test_wsmdlm_basic():
     """Test basic functionality."""
-    theta_hat = np.random.default_rng(42).normal(0, 1, 100)
-    se = np.random.default_rng(42).normal(0, 1, 100)
-    g_prime = np.random.default_rng(42).normal(0, 1, 100)
+    theta_hat = 0.1
+    se = 0.1
+    g_prime = 0.1
     result = wasserman_delta_method(theta_hat, se, g_prime)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_wsmdlm_edge():
     """Test edge cases."""
-    theta_hat = np.random.default_rng(42).normal(0, 1, 100)
-    se = np.random.default_rng(42).normal(0, 1, 100)
-    g_prime = np.random.default_rng(42).normal(0, 1, 100)
+    theta_hat = 0.1
+    se = 0.1
+    g_prime = 0.1
     result = wasserman_delta_method(theta_hat, se, g_prime)
     assert isinstance(result, dict)

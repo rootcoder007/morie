@@ -7,16 +7,14 @@ from morie.fn.timesnet import timesnet
 
 def test_timesnet_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    top_k = np.random.default_rng(42).normal(0, 1, 100)
-    result = timesnet(X, top_k)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = timesnet(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "frequency" in result
 
 
 def test_timesnet_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    top_k = np.random.default_rng(42).normal(0, 1, 100)
-    result = timesnet(X, top_k)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = timesnet(x)
     assert isinstance(result, dict)

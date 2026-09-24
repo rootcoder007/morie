@@ -7,18 +7,18 @@ from morie.fn.wsmbic import wasserman_bic
 
 def test_wsmbic_basic():
     """Test basic functionality."""
-    loglik = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    n = 100
+    loglik = 0.1
+    k = 0.1
+    n = 5
     result = wasserman_bic(loglik, k, n)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_wsmbic_edge():
     """Test edge cases."""
-    loglik = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    n = 100
+    loglik = 0.1
+    k = 0.1
+    n = 5
     result = wasserman_bic(loglik, k, n)
     assert isinstance(result, dict)

@@ -9,14 +9,16 @@ from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r4e1 import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r4e1_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_4_equation_1(x)
+    stratum_means = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    stratum_weights = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_4_equation_1(stratum_means, stratum_weights)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r4e1_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_4_equation_1(x)
+    stratum_means = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    stratum_weights = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_4_equation_1(stratum_means, stratum_weights)
     assert isinstance(result, dict)

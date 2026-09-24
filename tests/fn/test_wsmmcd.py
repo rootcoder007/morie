@@ -7,16 +7,16 @@ from morie.fn.wsmmcd import wasserman_mcdiarmid
 
 def test_wsmmcd_basic():
     """Test basic functionality."""
-    t = np.linspace(0, 10, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
+    t = 0.1
+    c = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = wasserman_mcdiarmid(t, c)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_wsmmcd_edge():
     """Test edge cases."""
-    t = np.linspace(0, 10, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
+    t = 0.1
+    c = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = wasserman_mcdiarmid(t, c)
     assert isinstance(result, dict)

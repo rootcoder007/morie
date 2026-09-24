@@ -7,18 +7,18 @@ from morie.fn.xlrnir import x_learner
 
 def test_xlrnir_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = x_learner(y, D, X)
+    tau1 = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    tau0 = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    g = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = x_learner(tau1, tau0, g)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "tau" in result
 
 
 def test_xlrnir_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = x_learner(y, D, X)
+    tau1 = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    tau0 = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    g = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = x_learner(tau1, tau0, g)
     assert isinstance(result, dict)

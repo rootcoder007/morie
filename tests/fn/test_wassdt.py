@@ -7,18 +7,16 @@ from morie.fn.wassdt import wasserstein_1d
 
 def test_wassdt_basic():
     """Test basic functionality."""
-    p = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    support = np.random.default_rng(42).normal(0, 1, 100)
-    result = wasserstein_1d(p, q, support)
+    p = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    q = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = wasserstein_1d(p, q)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "distance" in result
 
 
 def test_wassdt_edge():
     """Test edge cases."""
-    p = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    support = np.random.default_rng(42).normal(0, 1, 100)
-    result = wasserstein_1d(p, q, support)
+    p = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    q = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = wasserstein_1d(p, q)
     assert isinstance(result, dict)

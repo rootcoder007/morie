@@ -7,16 +7,14 @@ from morie.fn.tqoutl import turboquant_outlier_channel_split
 
 def test_tqoutl_basic():
     """Test basic functionality."""
-    channels = np.random.default_rng(42).normal(0, 1, 100)
-    outlier_threshold = np.random.default_rng(42).normal(0, 1, 100)
-    result = turboquant_outlier_channel_split(channels, outlier_threshold)
+    channels = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = turboquant_outlier_channel_split(channels)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "outlier_idx" in result
 
 
 def test_tqoutl_edge():
     """Test edge cases."""
-    channels = np.random.default_rng(42).normal(0, 1, 100)
-    outlier_threshold = np.random.default_rng(42).normal(0, 1, 100)
-    result = turboquant_outlier_channel_split(channels, outlier_threshold)
+    channels = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = turboquant_outlier_channel_split(channels)
     assert isinstance(result, dict)

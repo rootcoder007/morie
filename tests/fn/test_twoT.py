@@ -7,18 +7,16 @@ from morie.fn.twoT import two_tower
 
 def test_twoT_basic():
     """Test basic functionality."""
-    user_X = np.random.default_rng(42).normal(0, 1, 100)
-    item_X = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = two_tower(user_X, item_X, K)
+    query_embedding = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    item_embeddings = np.random.default_rng(43).normal(0.0, 1.0, (8, 8))
+    result = two_tower(query_embedding, item_embeddings)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_twoT_edge():
     """Test edge cases."""
-    user_X = np.random.default_rng(42).normal(0, 1, 100)
-    item_X = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = two_tower(user_X, item_X, K)
+    query_embedding = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    item_embeddings = np.random.default_rng(43).normal(0.0, 1.0, (8, 8))
+    result = two_tower(query_embedding, item_embeddings)
     assert isinstance(result, dict)

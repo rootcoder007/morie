@@ -7,14 +7,14 @@ from morie.fn.vacthr import vaccination_threshold
 
 def test_vacthr_basic():
     """Test basic functionality."""
-    R0 = np.random.default_rng(42).normal(0, 1, 100)
+    R0 = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = vaccination_threshold(R0)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "threshold" in result
 
 
 def test_vacthr_edge():
     """Test edge cases."""
-    R0 = np.random.default_rng(42).normal(0, 1, 100)
+    R0 = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = vaccination_threshold(R0)
     assert isinstance(result, dict)

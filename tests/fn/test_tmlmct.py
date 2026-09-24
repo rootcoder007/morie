@@ -7,18 +7,18 @@ from morie.fn.tmlmct import tmle_multivariate_treatment
 
 def test_tmlmct_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    A = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     result = tmle_multivariate_treatment(y, A, X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_tmlmct_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    A = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     result = tmle_multivariate_treatment(y, A, X)
     assert isinstance(result, dict)

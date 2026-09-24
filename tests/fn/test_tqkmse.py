@@ -7,18 +7,14 @@ from morie.fn.tqkmse import turboquant_kv_mse
 
 def test_tqkmse_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    bits = np.random.default_rng(42).normal(0, 1, 100)
-    method = "auto"
-    result = turboquant_kv_mse(x, bits, method)
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = turboquant_kv_mse(K)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "mse" in result
 
 
 def test_tqkmse_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    bits = np.random.default_rng(42).normal(0, 1, 100)
-    method = "auto"
-    result = turboquant_kv_mse(x, bits, method)
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = turboquant_kv_mse(K)
     assert isinstance(result, dict)

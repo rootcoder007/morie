@@ -7,16 +7,16 @@ from morie.fn.ttypc import typical_sampling
 
 def test_ttypc_basic():
     """Test basic functionality."""
-    logits = np.random.default_rng(42).normal(0, 1, 100)
+    logits = np.random.default_rng(42).normal(0.0, 1.0, 40)
     tau = 0.1
     result = typical_sampling(logits, tau)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "tensor" in result
 
 
 def test_ttypc_edge():
     """Test edge cases."""
-    logits = np.random.default_rng(42).normal(0, 1, 100)
+    logits = np.random.default_rng(42).normal(0.0, 1.0, 40)
     tau = 0.1
     result = typical_sampling(logits, tau)
     assert isinstance(result, dict)

@@ -7,18 +7,14 @@ from morie.fn.weisz import weiszfeld
 
 def test_weisz_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    tol = 1e-6
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    result = weiszfeld(X, tol, max_iter)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = weiszfeld(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_weisz_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    tol = 1e-6
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    result = weiszfeld(X, tol, max_iter)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = weiszfeld(X)
     assert isinstance(result, dict)

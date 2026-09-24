@@ -7,14 +7,14 @@ from morie.fn.wsmadm import wasserman_admissible
 
 def test_wsmadm_basic():
     """Test basic functionality."""
-    estimator = np.random.default_rng(42).normal(0, 1, 100)
-    result = wasserman_admissible(estimator)
+    risk = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = wasserman_admissible(risk)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "admissible" in result
 
 
 def test_wsmadm_edge():
     """Test edge cases."""
-    estimator = np.random.default_rng(42).normal(0, 1, 100)
-    result = wasserman_admissible(estimator)
+    risk = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = wasserman_admissible(risk)
     assert isinstance(result, dict)

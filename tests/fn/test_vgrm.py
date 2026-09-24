@@ -7,18 +7,16 @@ from morie.fn.vgrm import variogram
 
 def test_vgrm_basic():
     """Test basic functionality."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    values = np.random.default_rng(42).normal(0, 1, 100)
-    bins = np.random.default_rng(42).normal(0, 1, 100)
-    result = variogram(coords, values, bins)
+    coords = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    values = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = variogram(coords, values)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "lag" in result
 
 
 def test_vgrm_edge():
     """Test edge cases."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    values = np.random.default_rng(42).normal(0, 1, 100)
-    bins = np.random.default_rng(42).normal(0, 1, 100)
-    result = variogram(coords, values, bins)
+    coords = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    values = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = variogram(coords, values)
     assert isinstance(result, dict)

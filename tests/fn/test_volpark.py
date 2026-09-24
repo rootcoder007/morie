@@ -7,16 +7,16 @@ from morie.fn.volpark import vol_parkinson_range
 
 def test_volpark_basic():
     """Test basic functionality."""
-    high = np.random.default_rng(42).normal(0, 1, 100)
-    low = np.random.default_rng(42).normal(0, 1, 100)
+    high = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    low = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = vol_parkinson_range(high, low)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "variance" in result
 
 
 def test_volpark_edge():
     """Test edge cases."""
-    high = np.random.default_rng(42).normal(0, 1, 100)
-    low = np.random.default_rng(42).normal(0, 1, 100)
+    high = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    low = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = vol_parkinson_range(high, low)
     assert isinstance(result, dict)

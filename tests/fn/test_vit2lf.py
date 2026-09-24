@@ -7,18 +7,18 @@ from morie.fn.vit2lf import vit2_log_attention
 
 def test_vit2lf_basic():
     """Test basic functionality."""
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    v = np.random.default_rng(44).normal(0, 1, 100)
+    q = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    k = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    v = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     result = vit2_log_attention(q, k, v)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "weights" in result
 
 
 def test_vit2lf_edge():
     """Test edge cases."""
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    v = np.random.default_rng(44).normal(0, 1, 100)
+    q = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    k = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    v = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     result = vit2_log_attention(q, k, v)
     assert isinstance(result, dict)

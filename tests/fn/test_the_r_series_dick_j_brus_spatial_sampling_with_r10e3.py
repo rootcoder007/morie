@@ -9,14 +9,18 @@ from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r10e3 import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e3_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_3(x)
+    x_k = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    eps = 0.1
+    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_3(x_k, beta, eps)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e3_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_3(x)
+    x_k = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    eps = 0.1
+    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_3(x_k, beta, eps)
     assert isinstance(result, dict)

@@ -7,20 +7,16 @@ from morie.fn.tmlnde import tmle_natural_direct
 
 def test_tmlnde_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = tmle_natural_direct(y, D, M, X)
+    y10 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y00 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = tmle_natural_direct(y10, y00)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_tmlnde_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = tmle_natural_direct(y, D, M, X)
+    y10 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y00 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = tmle_natural_direct(y10, y00)
     assert isinstance(result, dict)

@@ -6,8 +6,10 @@ from morie.fn.stpnt import stpnt
 
 
 def test_stpnt_smoke():
-    rng = np.random.default_rng(42)
-    result = stpnt(x=rng.uniform(40, 45, size=20), y=rng.uniform(-80, -75, size=20), t=np.arange(20, dtype=float))
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    t = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = stpnt(x, y, t)
     assert result is not None
     assert hasattr(result, "name")
     assert result.statistic is not None or result.extra is not None

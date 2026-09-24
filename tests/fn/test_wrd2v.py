@@ -7,18 +7,14 @@ from morie.fn.wrd2v import word2vec
 
 def test_wrd2v_basic():
     """Test basic functionality."""
-    corpus = np.random.default_rng(42).normal(0, 1, 100)
-    dim = np.random.default_rng(42).normal(0, 1, 100)
-    window = np.random.default_rng(42).normal(0, 1, 100)
-    result = word2vec(corpus, dim, window)
+    corpus = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = word2vec(corpus)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_wrd2v_edge():
     """Test edge cases."""
-    corpus = np.random.default_rng(42).normal(0, 1, 100)
-    dim = np.random.default_rng(42).normal(0, 1, 100)
-    window = np.random.default_rng(42).normal(0, 1, 100)
-    result = word2vec(corpus, dim, window)
+    corpus = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = word2vec(corpus)
     assert isinstance(result, dict)
