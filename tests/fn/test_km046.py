@@ -7,16 +7,23 @@ from morie.fn.km046 import kamath_ch3_prefix_prompt_template
 
 def test_km046_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    z = np.random.default_rng(44).normal(0, 1, 100)
+    x = "Cannot watch this movie."
+    z = None
     result = kamath_ch3_prefix_prompt_template(x, z)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "prompt" in result
+    assert "slot_filled" in result
+    assert result["prompt"] == "Cannot watch this movie. This movie is [z]"
+    assert result["slot_filled"] is False
 
 
 def test_km046_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    z = np.random.default_rng(44).normal(0, 1, 100)
+    x = "Loved it."
+    z = "great"
     result = kamath_ch3_prefix_prompt_template(x, z)
     assert isinstance(result, dict)
+    assert "prompt" in result
+    assert "slot_filled" in result
+    assert result["prompt"] == "Loved it. This movie is great"
+    assert result["slot_filled"] is True

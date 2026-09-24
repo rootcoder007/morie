@@ -7,16 +7,18 @@ from morie.fn.km048 import kamath_ch3_cloze_prompt_template
 
 def test_km048_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    z = np.random.default_rng(44).normal(0, 1, 100)
-    result = kamath_ch3_cloze_prompt_template(x, z)
+    result = kamath_ch3_cloze_prompt_template("Loved it.", "great")
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "prompt" in result
+    assert isinstance(result["prompt"], str)
+    assert "Loved it." in result["prompt"]
+    assert "great" in result["prompt"]
 
 
 def test_km048_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    z = np.random.default_rng(44).normal(0, 1, 100)
-    result = kamath_ch3_cloze_prompt_template(x, z)
+    result = kamath_ch3_cloze_prompt_template("Cannot watch this.")
     assert isinstance(result, dict)
+    assert "prompt" in result
+    assert isinstance(result["prompt"], str)
+    assert "Cannot watch this." in result["prompt"]

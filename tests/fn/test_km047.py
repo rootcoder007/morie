@@ -1,22 +1,24 @@
 """Tests for km047.kamath_ch3_translate_prefix_prompt."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km047 import kamath_ch3_translate_prefix_prompt
 
 
 def test_km047_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    z = np.random.default_rng(44).normal(0, 1, 100)
+    """Test basic functionality with a string and a slot."""
+    x = "The cat sleeps."
+    z = "Le chat dort."
     result = kamath_ch3_translate_prefix_prompt(x, z)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "prompt" in result
+    assert isinstance(result["prompt"], str)
+    assert x in result["prompt"]
+    assert "slot_filled" in result
+    assert result["slot_filled"] is True
 
 
 def test_km047_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    z = np.random.default_rng(44).normal(0, 1, 100)
-    result = kamath_ch3_translate_prefix_prompt(x, z)
-    assert isinstance(result, dict)
+    """Test that empty string raises ValueError."""
+    with pytest.raises(ValueError):
+        kamath_ch3_translate_prefix_prompt("")

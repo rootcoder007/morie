@@ -7,8 +7,8 @@ from morie.fn.grmcol import geron_gan_mode_collapse_metric
 
 def test_grmcol_basic():
     """Test basic functionality."""
-    samples = np.random.default_rng(42).normal(0, 1, 100)
-    true_modes = np.random.default_rng(42).normal(0, 1, 100)
+    samples = [[0.05], [-0.05], [10.1], [5.0]]
+    true_modes = [[0.0], [10.0], [20.0]]
     result = geron_gan_mode_collapse_metric(samples, true_modes)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_grmcol_basic():
 
 def test_grmcol_edge():
     """Test edge cases."""
-    samples = np.random.default_rng(42).normal(0, 1, 100)
-    true_modes = np.random.default_rng(42).normal(0, 1, 100)
+    samples = [[0.05], [-0.05], [10.1], [5.0]]
+    true_modes = [[0.0], [10.0], [20.0]]
     result = geron_gan_mode_collapse_metric(samples, true_modes)
     assert isinstance(result, dict)

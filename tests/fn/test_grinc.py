@@ -7,8 +7,8 @@ from morie.fn.grinc import geron_in_context_learning
 
 def test_grinc_basic():
     """Test basic functionality."""
-    examples = np.random.default_rng(42).normal(0, 1, 100)
-    query = np.random.default_rng(42).normal(0, 1, 100)
+    examples = [('a', '1'), ('b', '2')]
+    query = 'c'
     result = geron_in_context_learning(examples, query)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_grinc_basic():
 
 def test_grinc_edge():
     """Test edge cases."""
-    examples = np.random.default_rng(42).normal(0, 1, 100)
-    query = np.random.default_rng(42).normal(0, 1, 100)
+    examples = [('a', '1'), ('b', '2')]
+    query = 'c'
     result = geron_in_context_learning(examples, query)
     assert isinstance(result, dict)

@@ -7,9 +7,9 @@ from morie.fn.grfad import geron_forward_mode_autodiff
 
 def test_grfad_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    x_prime = np.random.default_rng(42).normal(0, 1, 100)
-    f = np.random.default_rng(42).normal(0, 1, 100)
+    x = 1.5
+    x_prime = 1.0
+    f = lambda z: z ** 4
     result = geron_forward_mode_autodiff(x, x_prime, f)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -17,8 +17,8 @@ def test_grfad_basic():
 
 def test_grfad_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    x_prime = np.random.default_rng(42).normal(0, 1, 100)
-    f = np.random.default_rng(42).normal(0, 1, 100)
+    x = 1.5
+    x_prime = 1.0
+    f = lambda z: z ** 4
     result = geron_forward_mode_autodiff(x, x_prime, f)
     assert isinstance(result, dict)
