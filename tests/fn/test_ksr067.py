@@ -7,22 +7,16 @@ from morie.fn.ksr067 import kosorok_ch3_z_estimator_consistency_score
 
 def test_ksr067_basic():
     """Test basic functionality."""
-    theta_n = np.random.default_rng(42).normal(0, 1, 100)
-    eta_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    l_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch3_z_estimator_consistency_score(theta_n, eta_n, theta, eta, l_tilde)
+    scores_est = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    scores_true = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = kosorok_ch3_z_estimator_consistency_score(scores_est, scores_true)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "mean_square_difference" in result
 
 
 def test_ksr067_edge():
     """Test edge cases."""
-    theta_n = np.random.default_rng(42).normal(0, 1, 100)
-    eta_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    l_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch3_z_estimator_consistency_score(theta_n, eta_n, theta, eta, l_tilde)
+    scores_est = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    scores_true = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = kosorok_ch3_z_estimator_consistency_score(scores_est, scores_true)
     assert isinstance(result, dict)

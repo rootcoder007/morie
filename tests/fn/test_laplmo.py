@@ -7,14 +7,14 @@ from morie.fn.laplmo import laplacian_eigen
 
 def test_laplmo_basic():
     """Test basic functionality."""
-    G = np.eye(10)
-    result = laplacian_eigen(G)
+    W = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = laplacian_eigen(W)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "values" in result
 
 
 def test_laplmo_edge():
     """Test edge cases."""
-    G = np.eye(10)
-    result = laplacian_eigen(G)
+    W = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = laplacian_eigen(W)
     assert isinstance(result, dict)

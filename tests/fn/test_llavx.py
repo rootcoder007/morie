@@ -7,18 +7,16 @@ from morie.fn.llavx import llava_visual_chat
 
 def test_llavx_basic():
     """Test basic functionality."""
-    image = np.random.default_rng(42).normal(0, 1, 100)
-    instruction = np.random.default_rng(42).normal(0, 1, 100)
-    llm = np.random.default_rng(42).normal(0, 1, 100)
-    result = llava_visual_chat(image, instruction, llm)
+    visual_tokens = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    text_embeddings = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = llava_visual_chat(visual_tokens, text_embeddings)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_llavx_edge():
     """Test edge cases."""
-    image = np.random.default_rng(42).normal(0, 1, 100)
-    instruction = np.random.default_rng(42).normal(0, 1, 100)
-    llm = np.random.default_rng(42).normal(0, 1, 100)
-    result = llava_visual_chat(image, instruction, llm)
+    visual_tokens = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    text_embeddings = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = llava_visual_chat(visual_tokens, text_embeddings)
     assert isinstance(result, dict)

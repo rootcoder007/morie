@@ -7,24 +7,14 @@ from morie.fn.msm003 import mvsml_general_eq_1_3
 
 def test_msm003_basic():
     """Test basic functionality."""
-    environment = np.random.default_rng(42).normal(0, 1, 100)
-    which = np.random.default_rng(42).normal(0, 1, 100)
-    can = np.random.default_rng(42).normal(0, 1, 100)
-    be = np.random.default_rng(42).normal(0, 1, 100)
-    attributed = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_3(environment, which, can, be, attributed, to)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_3(groups)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm003_edge():
     """Test edge cases."""
-    environment = np.random.default_rng(42).normal(0, 1, 100)
-    which = np.random.default_rng(42).normal(0, 1, 100)
-    can = np.random.default_rng(42).normal(0, 1, 100)
-    be = np.random.default_rng(42).normal(0, 1, 100)
-    attributed = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_3(environment, which, can, be, attributed, to)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_3(groups)
     assert isinstance(result, dict)

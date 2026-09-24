@@ -7,16 +7,14 @@ from morie.fn.hmense import geron_ensemble_eval
 
 def test_hmense_basic():
     """Test basic functionality."""
-    models = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = geron_ensemble_eval(models, X)
+    predictions = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = geron_ensemble_eval(predictions)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_hmense_edge():
     """Test edge cases."""
-    models = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = geron_ensemble_eval(models, X)
+    predictions = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = geron_ensemble_eval(predictions)
     assert isinstance(result, dict)

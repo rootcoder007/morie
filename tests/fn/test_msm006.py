@@ -7,24 +7,14 @@ from morie.fn.msm006 import mvsml_general_eq_1_5
 
 def test_msm006_basic():
     """Test basic functionality."""
-    eij = np.random.default_rng(42).normal(0, 1, 100)
-    where = np.random.default_rng(42).normal(0, 1, 100)
-    P5 = np.random.default_rng(42).normal(0, 1, 100)
-    i = np.random.default_rng(42).normal(0, 1, 100)
-    represents = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_5(eij, where, P5, i, represents, the)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_5(groups)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm006_edge():
     """Test edge cases."""
-    eij = np.random.default_rng(42).normal(0, 1, 100)
-    where = np.random.default_rng(42).normal(0, 1, 100)
-    P5 = np.random.default_rng(42).normal(0, 1, 100)
-    i = np.random.default_rng(42).normal(0, 1, 100)
-    represents = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_5(eij, where, P5, i, represents, the)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_5(groups)
     assert isinstance(result, dict)

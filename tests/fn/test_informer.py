@@ -7,16 +7,18 @@ from morie.fn.informer import informer_long_horizon
 
 def test_informer_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    horizon = np.random.default_rng(42).normal(0, 1, 100)
-    result = informer_long_horizon(y, horizon)
+    Q = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    V = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = informer_long_horizon(Q, K, V)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_informer_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    horizon = np.random.default_rng(42).normal(0, 1, 100)
-    result = informer_long_horizon(y, horizon)
+    Q = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    V = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = informer_long_horizon(Q, K, V)
     assert isinstance(result, dict)

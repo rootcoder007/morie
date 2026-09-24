@@ -7,20 +7,14 @@ from morie.fn.hmncsn import geron_ncsn
 
 def test_hmncsn_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    sigmas = np.random.default_rng(42).normal(0, 1, 100)
-    epochs = np.random.default_rng(42).normal(0, 1, 100)
-    lr = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_ncsn(X, sigmas, epochs, lr)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = geron_ncsn(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "models" in result
 
 
 def test_hmncsn_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    sigmas = np.random.default_rng(42).normal(0, 1, 100)
-    epochs = np.random.default_rng(42).normal(0, 1, 100)
-    lr = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_ncsn(X, sigmas, epochs, lr)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = geron_ncsn(X)
     assert isinstance(result, dict)

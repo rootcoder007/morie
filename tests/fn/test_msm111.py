@@ -7,24 +7,20 @@ from morie.fn.msm111 import mvsml_bayesian_regression_pt2_eq_7_7
 
 def test_msm111_basic():
     """Test basic functionality."""
-    l = np.random.default_rng(42).normal(0, 1, 100)
-    When = np.random.default_rng(42).normal(0, 1, 100)
-    p = 5
-    large = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    direct = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_7(l, When, p, large, n, direct)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_pt2_eq_7_7(X, y, beta0, beta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm111_edge():
     """Test edge cases."""
-    l = np.random.default_rng(42).normal(0, 1, 100)
-    When = np.random.default_rng(42).normal(0, 1, 100)
-    p = 5
-    large = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    direct = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_7(l, When, p, large, n, direct)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_pt2_eq_7_7(X, y, beta0, beta)
     assert isinstance(result, dict)

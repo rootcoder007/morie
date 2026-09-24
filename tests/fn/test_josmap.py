@@ -7,16 +7,16 @@ from morie.fn.josmap import joseph_smape
 
 def test_josmap_basic():
     """Test basic functionality."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    y_pred = np.random.default_rng(44).normal(0, 1, 100)
-    result = joseph_smape(y_true, y_pred)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    yhat = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_smape(y, yhat)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "smape" in result
 
 
 def test_josmap_edge():
     """Test edge cases."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    y_pred = np.random.default_rng(44).normal(0, 1, 100)
-    result = joseph_smape(y_true, y_pred)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    yhat = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_smape(y, yhat)
     assert isinstance(result, dict)

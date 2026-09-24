@@ -7,20 +7,14 @@ from morie.fn.hmtfm import geron_transformer
 
 def test_hmtfm_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_heads = np.random.default_rng(42).normal(0, 1, 100)
-    d_model = np.random.default_rng(42).normal(0, 1, 100)
-    n_layers = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_transformer(X, n_heads, d_model, n_layers)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_transformer(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "Y" in result
 
 
 def test_hmtfm_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_heads = np.random.default_rng(42).normal(0, 1, 100)
-    d_model = np.random.default_rng(42).normal(0, 1, 100)
-    n_layers = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_transformer(X, n_heads, d_model, n_layers)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_transformer(X)
     assert isinstance(result, dict)

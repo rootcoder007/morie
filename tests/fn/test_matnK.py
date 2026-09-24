@@ -7,18 +7,18 @@ from morie.fn.matnK import matern_kernel
 
 def test_matnK_basic():
     """Test basic functionality."""
-    d = 5
-    nu = np.random.default_rng(42).normal(0, 1, 100)
-    rho = 0.5
+    d = np.array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1])
+    nu = 0.1
+    rho = 0.1
     result = matern_kernel(d, nu, rho)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_matnK_edge():
     """Test edge cases."""
-    d = 5
-    nu = np.random.default_rng(42).normal(0, 1, 100)
-    rho = 0.5
+    d = np.array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1])
+    nu = 0.1
+    rho = 0.1
     result = matern_kernel(d, nu, rho)
     assert isinstance(result, dict)

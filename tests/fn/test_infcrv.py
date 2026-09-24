@@ -7,18 +7,18 @@ from morie.fn.infcrv import influence_function
 
 def test_infcrv_basic():
     """Test basic functionality."""
-    estimator = np.random.default_rng(42).normal(0, 1, 100)
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
+    estimator = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    F = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    x = 0.1
     result = influence_function(estimator, F, x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_infcrv_edge():
     """Test edge cases."""
-    estimator = np.random.default_rng(42).normal(0, 1, 100)
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
+    estimator = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    F = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    x = 0.1
     result = influence_function(estimator, F, x)
     assert isinstance(result, dict)

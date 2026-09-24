@@ -7,16 +7,14 @@ from morie.fn.mafsn import ma_fail_safe_n
 
 def test_mafsn_basic():
     """Test basic functionality."""
-    z_scores = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    result = ma_fail_safe_n(z_scores, alpha)
+    z_scores = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = ma_fail_safe_n(z_scores)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "Nfs" in result
 
 
 def test_mafsn_edge():
     """Test edge cases."""
-    z_scores = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    result = ma_fail_safe_n(z_scores, alpha)
+    z_scores = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = ma_fail_safe_n(z_scores)
     assert isinstance(result, dict)

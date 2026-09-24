@@ -7,24 +7,14 @@ from morie.fn.msm083 import mvsml_general_eq_1_2
 
 def test_msm083_basic():
     """Test basic functionality."""
-    Appendix = np.random.default_rng(42).normal(0, 1, 100)
-    R = np.random.default_rng(42).normal(0, 1, 100)
-    Code = np.random.default_rng(42).normal(0, 1, 100)
-    Example = np.random.default_rng(42).normal(0, 1, 100)
-    rm = np.random.default_rng(42).normal(0, 1, 100)
-    list = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_2(Appendix, R, Code, Example, rm, list)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_2(groups)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm083_edge():
     """Test edge cases."""
-    Appendix = np.random.default_rng(42).normal(0, 1, 100)
-    R = np.random.default_rng(42).normal(0, 1, 100)
-    Code = np.random.default_rng(42).normal(0, 1, 100)
-    Example = np.random.default_rng(42).normal(0, 1, 100)
-    rm = np.random.default_rng(42).normal(0, 1, 100)
-    list = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_2(Appendix, R, Code, Example, rm, list)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_2(groups)
     assert isinstance(result, dict)

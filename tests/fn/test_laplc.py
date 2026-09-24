@@ -7,18 +7,14 @@ from morie.fn.laplc import laplace_mechanism
 
 def test_laplc_basic():
     """Test basic functionality."""
-    f_value = np.random.default_rng(42).normal(0, 1, 100)
-    sensitivity = np.random.default_rng(42).normal(0, 1, 100)
-    epsilon = 1e-6
-    result = laplace_mechanism(f_value, sensitivity, epsilon)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = laplace_mechanism(y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "release" in result
 
 
 def test_laplc_edge():
     """Test edge cases."""
-    f_value = np.random.default_rng(42).normal(0, 1, 100)
-    sensitivity = np.random.default_rng(42).normal(0, 1, 100)
-    epsilon = 1e-6
-    result = laplace_mechanism(f_value, sensitivity, epsilon)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = laplace_mechanism(y)
     assert isinstance(result, dict)

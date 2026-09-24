@@ -7,26 +7,16 @@ from morie.fn.ksr073 import kosorok_ch3_max_likelihood_efficiency_corollary
 
 def test_ksr073_basic():
     """Test basic functionality."""
-    theta_hat_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta_0 = np.random.default_rng(42).normal(0, 1, 100)
-    eta_hat_n = np.random.default_rng(42).normal(0, 1, 100)
-    eta_0 = np.random.default_rng(42).normal(0, 1, 100)
-    Psi_dot_0 = np.random.default_rng(42).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    n = 100
-    result = kosorok_ch3_max_likelihood_efficiency_corollary(theta_hat_n, theta_0, eta_hat_n, eta_0, Psi_dot_0, Z, n)
+    psi_dot = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    scores = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = kosorok_ch3_max_likelihood_efficiency_corollary(psi_dot, scores)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "avar" in result
 
 
 def test_ksr073_edge():
     """Test edge cases."""
-    theta_hat_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta_0 = np.random.default_rng(42).normal(0, 1, 100)
-    eta_hat_n = np.random.default_rng(42).normal(0, 1, 100)
-    eta_0 = np.random.default_rng(42).normal(0, 1, 100)
-    Psi_dot_0 = np.random.default_rng(42).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    n = 100
-    result = kosorok_ch3_max_likelihood_efficiency_corollary(theta_hat_n, theta_0, eta_hat_n, eta_0, Psi_dot_0, Z, n)
+    psi_dot = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    scores = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = kosorok_ch3_max_likelihood_efficiency_corollary(psi_dot, scores)
     assert isinstance(result, dict)

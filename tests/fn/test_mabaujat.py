@@ -7,16 +7,16 @@ from morie.fn.mabaujat import ma_baujat_plot_data
 
 def test_mabaujat_basic():
     """Test basic functionality."""
-    yi = np.random.default_rng(42).normal(0, 1, 100)
-    vi = np.random.default_rng(42).normal(0, 1, 100)
+    yi = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    vi = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = ma_baujat_plot_data(yi, vi)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "x" in result
 
 
 def test_mabaujat_edge():
     """Test edge cases."""
-    yi = np.random.default_rng(42).normal(0, 1, 100)
-    vi = np.random.default_rng(42).normal(0, 1, 100)
+    yi = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    vi = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = ma_baujat_plot_data(yi, vi)
     assert isinstance(result, dict)

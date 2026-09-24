@@ -7,20 +7,18 @@ from morie.fn.marve import ma_robust_variance_est
 
 def test_marve_basic():
     """Test basic functionality."""
-    yi = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    cluster = np.random.default_rng(42).normal(0, 1, 100)
-    result = ma_robust_variance_est(yi, X, W, cluster)
+    yi = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    cluster = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = ma_robust_variance_est(yi, X, cluster)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "beta" in result
 
 
 def test_marve_edge():
     """Test edge cases."""
-    yi = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    cluster = np.random.default_rng(42).normal(0, 1, 100)
-    result = ma_robust_variance_est(yi, X, W, cluster)
+    yi = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    cluster = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = ma_robust_variance_est(yi, X, cluster)
     assert isinstance(result, dict)

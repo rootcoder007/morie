@@ -7,20 +7,16 @@ from morie.fn.hmsrp import geron_sparse_rand_projection
 
 def test_hmsrp_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    d_out = np.random.default_rng(42).normal(0, 1, 100)
-    density = np.random.default_rng(42).normal(0, 1, 100)
-    seed = 42
-    result = geron_sparse_rand_projection(X, d_out, density, seed)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    d_out = 5
+    result = geron_sparse_rand_projection(X, d_out)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "X_proj" in result
 
 
 def test_hmsrp_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    d_out = np.random.default_rng(42).normal(0, 1, 100)
-    density = np.random.default_rng(42).normal(0, 1, 100)
-    seed = 42
-    result = geron_sparse_rand_projection(X, d_out, density, seed)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    d_out = 5
+    result = geron_sparse_rand_projection(X, d_out)
     assert isinstance(result, dict)

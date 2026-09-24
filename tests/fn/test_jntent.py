@@ -7,16 +7,14 @@ from morie.fn.jntent import joint_entropy
 
 def test_jntent_basic():
     """Test basic functionality."""
-    pxy = np.random.default_rng(42).normal(0, 1, 100)
-    base = np.random.default_rng(42).normal(0, 1, 100)
-    result = joint_entropy(pxy, base)
+    pxy = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = joint_entropy(pxy)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_jntent_edge():
     """Test edge cases."""
-    pxy = np.random.default_rng(42).normal(0, 1, 100)
-    base = np.random.default_rng(42).normal(0, 1, 100)
-    result = joint_entropy(pxy, base)
+    pxy = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = joint_entropy(pxy)
     assert isinstance(result, dict)

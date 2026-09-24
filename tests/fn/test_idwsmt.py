@@ -7,20 +7,16 @@ from morie.fn.idwsmt import inverse_distance_weighting
 
 def test_idwsmt_basic():
     """Test basic functionality."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    values = np.random.default_rng(42).normal(0, 1, 100)
-    s_predict = np.random.default_rng(42).normal(0, 1, 100)
-    power = np.random.default_rng(42).normal(0, 1, 100)
-    result = inverse_distance_weighting(coords, values, s_predict, power)
+    coords = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    values = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = inverse_distance_weighting(coords, values)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_idwsmt_edge():
     """Test edge cases."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    values = np.random.default_rng(42).normal(0, 1, 100)
-    s_predict = np.random.default_rng(42).normal(0, 1, 100)
-    power = np.random.default_rng(42).normal(0, 1, 100)
-    result = inverse_distance_weighting(coords, values, s_predict, power)
+    coords = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    values = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = inverse_distance_weighting(coords, values)
     assert isinstance(result, dict)

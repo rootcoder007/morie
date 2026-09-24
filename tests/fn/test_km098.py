@@ -7,18 +7,16 @@ from morie.fn.km098 import kamath_ch6_log_prob_ratio_attr
 
 def test_km098_basic():
     """Test basic functionality."""
-    a_i = np.random.default_rng(42).normal(0, 1, 100)
-    a_j = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = kamath_ch6_log_prob_ratio_attr(a_i, a_j, K)
+    a_i = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    a_j = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = kamath_ch6_log_prob_ratio_attr(a_i, a_j)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_km098_edge():
     """Test edge cases."""
-    a_i = np.random.default_rng(42).normal(0, 1, 100)
-    a_j = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = kamath_ch6_log_prob_ratio_attr(a_i, a_j, K)
+    a_i = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    a_j = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = kamath_ch6_log_prob_ratio_attr(a_i, a_j)
     assert isinstance(result, dict)

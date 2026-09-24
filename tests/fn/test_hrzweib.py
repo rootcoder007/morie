@@ -7,20 +7,16 @@ from morie.fn.hrzweib import horowitz_weibull_heterogeneity
 
 def test_hrzweib_basic():
     """Test basic functionality."""
-    t = np.linspace(0, 10, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    event = np.random.default_rng(42).normal(0, 1, 100)
-    mixing_dist = np.random.default_rng(42).normal(0, 1, 100)
-    result = horowitz_weibull_heterogeneity(t, x, event, mixing_dist)
+    t = np.array([float(i + 1) for i in range(40)])
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = horowitz_weibull_heterogeneity(t, x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_hrzweib_edge():
     """Test edge cases."""
-    t = np.linspace(0, 10, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    event = np.random.default_rng(42).normal(0, 1, 100)
-    mixing_dist = np.random.default_rng(42).normal(0, 1, 100)
-    result = horowitz_weibull_heterogeneity(t, x, event, mixing_dist)
+    t = np.array([float(i + 1) for i in range(40)])
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = horowitz_weibull_heterogeneity(t, x)
     assert isinstance(result, dict)

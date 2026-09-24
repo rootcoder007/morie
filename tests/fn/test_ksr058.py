@@ -7,8 +7,7 @@ from morie.fn.ksr058 import kosorok_ch2_law_iterated_logarithm
 
 
 def test_ksr058_basic():
-    rng = np.random.default_rng(16)
-    out = kosorok_ch2_law_iterated_logarithm(rng.random(3000))
+    out = kosorok_ch2_law_iterated_logarithm()
     assert out["lil_bound"] == 0.5  # eq. (2.21)
     assert 0 < out["lil_ratio"] < 0.5
 

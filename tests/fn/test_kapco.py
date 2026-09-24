@@ -7,16 +7,20 @@ from morie.fn.kapco import kappa_coefficient
 
 def test_kapco_basic():
     """Test basic functionality."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    y_pred = np.random.default_rng(44).normal(0, 1, 100)
-    result = kappa_coefficient(y_true, y_pred)
+    tp = 0.1
+    fp = 0.1
+    fn = 0.1
+    tn = 0.1
+    result = kappa_coefficient(tp, fp, fn, tn)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "kappa" in result
 
 
 def test_kapco_edge():
     """Test edge cases."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    y_pred = np.random.default_rng(44).normal(0, 1, 100)
-    result = kappa_coefficient(y_true, y_pred)
+    tp = 0.1
+    fp = 0.1
+    fn = 0.1
+    tn = 0.1
+    result = kappa_coefficient(tp, fp, fn, tn)
     assert isinstance(result, dict)

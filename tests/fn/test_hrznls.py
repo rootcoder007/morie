@@ -7,18 +7,16 @@ from morie.fn.hrznls import horowitz_nls_sim
 
 def test_hrznls_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    bandwidth = 0.3
-    result = horowitz_nls_sim(x, y, bandwidth)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = horowitz_nls_sim(X, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "beta" in result
 
 
 def test_hrznls_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    bandwidth = 0.3
-    result = horowitz_nls_sim(x, y, bandwidth)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = horowitz_nls_sim(X, y)
     assert isinstance(result, dict)

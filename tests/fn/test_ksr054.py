@@ -7,20 +7,20 @@ from morie.fn.ksr054 import kosorok_ch2_m_estimator_lipschitz_envelope
 
 def test_ksr054_basic():
     """Test basic functionality."""
-    m = 10
-    theta_1 = np.random.default_rng(42).normal(0, 1, 100)
-    theta_2 = np.random.default_rng(42).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_m_estimator_lipschitz_envelope(m, theta_1, theta_2, x)
+    m = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    m_dot = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    thetas = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = kosorok_ch2_m_estimator_lipschitz_envelope(m, m_dot, thetas, x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "worst_ratio" in result
 
 
 def test_ksr054_edge():
     """Test edge cases."""
-    m = 10
-    theta_1 = np.random.default_rng(42).normal(0, 1, 100)
-    theta_2 = np.random.default_rng(42).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_m_estimator_lipschitz_envelope(m, theta_1, theta_2, x)
+    m = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    m_dot = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    thetas = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = kosorok_ch2_m_estimator_lipschitz_envelope(m, m_dot, thetas, x)
     assert isinstance(result, dict)

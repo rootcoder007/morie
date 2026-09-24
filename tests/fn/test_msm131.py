@@ -7,24 +7,14 @@ from morie.fn.msm131 import mvsml_categorical_count_eq_8_4
 
 def test_msm131_basic():
     """Test basic functionality."""
-    de = np.random.default_rng(42).normal(0, 1, 100)
-    nite = np.random.default_rng(42).normal(0, 1, 100)
-    related = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    an = np.random.default_rng(42).normal(0, 1, 100)
-    ANN = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_4(de, nite, related, to, an, ANN)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_categorical_count_eq_8_4(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm131_edge():
     """Test edge cases."""
-    de = np.random.default_rng(42).normal(0, 1, 100)
-    nite = np.random.default_rng(42).normal(0, 1, 100)
-    related = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    an = np.random.default_rng(42).normal(0, 1, 100)
-    ANN = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_4(de, nite, related, to, an, ANN)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_categorical_count_eq_8_4(X)
     assert isinstance(result, dict)

@@ -7,18 +7,14 @@ from morie.fn.jomimi import joseph_missing_data_imputation_ts
 
 def test_jomimi_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    strategy = np.random.default_rng(42).normal(0, 1, 100)
-    m = 10
-    result = joseph_missing_data_imputation_ts(y, strategy, m)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_missing_data_imputation_ts(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "x" in result
 
 
 def test_jomimi_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    strategy = np.random.default_rng(42).normal(0, 1, 100)
-    m = 10
-    result = joseph_missing_data_imputation_ts(y, strategy, m)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_missing_data_imputation_ts(x)
     assert isinstance(result, dict)

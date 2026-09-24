@@ -7,24 +7,16 @@ from morie.fn.msm091 import mvsml_bayesian_regression_pt2_eq_7_1
 
 def test_msm091_basic():
     """Test basic functionality."""
-    The = np.random.default_rng(42).normal(0, 1, 100)
-    R = np.random.default_rng(42).normal(0, 1, 100)
-    code = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    reproduce = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_1(The, R, code, to, reproduce, the)
+    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_pt2_eq_7_1(y, X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm091_edge():
     """Test edge cases."""
-    The = np.random.default_rng(42).normal(0, 1, 100)
-    R = np.random.default_rng(42).normal(0, 1, 100)
-    code = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    reproduce = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_1(The, R, code, to, reproduce, the)
+    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_pt2_eq_7_1(y, X)
     assert isinstance(result, dict)

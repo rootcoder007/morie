@@ -7,22 +7,16 @@ from morie.fn.hmgbrt import geron_gradient_boosting
 
 def test_hmgbrt_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    n_estimators = np.random.default_rng(42).normal(0, 1, 100)
-    learning_rate = 0.1
-    max_depth = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_gradient_boosting(X, y, n_estimators, learning_rate, max_depth)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_gradient_boosting(X, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "predictions" in result
 
 
 def test_hmgbrt_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    n_estimators = np.random.default_rng(42).normal(0, 1, 100)
-    learning_rate = 0.1
-    max_depth = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_gradient_boosting(X, y, n_estimators, learning_rate, max_depth)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_gradient_boosting(X, y)
     assert isinstance(result, dict)

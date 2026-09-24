@@ -7,20 +7,18 @@ from morie.fn.hmsslc import geron_semisupervised_cluster
 
 def test_hmsslc_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    X_labeled = np.random.default_rng(42).normal(0, 1, 100)
-    y_labeled = np.random.default_rng(42).normal(0, 1, 100)
-    n_clusters = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_semisupervised_cluster(X, X_labeled, y_labeled, n_clusters)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X_labeled = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y_labeled = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_semisupervised_cluster(X, X_labeled, y_labeled)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "labels" in result
 
 
 def test_hmsslc_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    X_labeled = np.random.default_rng(42).normal(0, 1, 100)
-    y_labeled = np.random.default_rng(42).normal(0, 1, 100)
-    n_clusters = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_semisupervised_cluster(X, X_labeled, y_labeled, n_clusters)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X_labeled = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y_labeled = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_semisupervised_cluster(X, X_labeled, y_labeled)
     assert isinstance(result, dict)

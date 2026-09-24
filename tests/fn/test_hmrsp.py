@@ -7,22 +7,16 @@ from morie.fn.hmrsp import geron_random_subspaces
 
 def test_hmrsp_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    base_estimator = np.random.default_rng(42).normal(0, 1, 100)
-    n_estimators = np.random.default_rng(42).normal(0, 1, 100)
-    max_features = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_random_subspaces(X, y, base_estimator, n_estimators, max_features)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_random_subspaces(X, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "predict" in result
 
 
 def test_hmrsp_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    base_estimator = np.random.default_rng(42).normal(0, 1, 100)
-    n_estimators = np.random.default_rng(42).normal(0, 1, 100)
-    max_features = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_random_subspaces(X, y, base_estimator, n_estimators, max_features)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_random_subspaces(X, y)
     assert isinstance(result, dict)

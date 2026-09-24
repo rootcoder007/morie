@@ -7,18 +7,18 @@ from morie.fn.joautf import joseph_autoformer
 
 def test_joautf_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    horizon = np.random.default_rng(42).normal(0, 1, 100)
-    top_k_lags = np.random.default_rng(42).normal(0, 1, 100)
-    result = joseph_autoformer(x, horizon, top_k_lags)
+    q = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    k = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    v = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_autoformer(q, k, v)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "out" in result
 
 
 def test_joautf_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    horizon = np.random.default_rng(42).normal(0, 1, 100)
-    top_k_lags = np.random.default_rng(42).normal(0, 1, 100)
-    result = joseph_autoformer(x, horizon, top_k_lags)
+    q = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    k = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    v = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_autoformer(q, k, v)
     assert isinstance(result, dict)

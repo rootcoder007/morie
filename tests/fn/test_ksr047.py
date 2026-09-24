@@ -7,22 +7,22 @@ from morie.fn.ksr047 import kosorok_ch2_kaplan_meier_self_consistency
 
 def test_ksr047_basic():
     """Test basic functionality."""
-    S = np.random.default_rng(42).normal(0, 1, 100)
-    S_0 = np.random.default_rng(42).normal(0, 1, 100)
-    L = np.random.default_rng(42).normal(0, 1, 100)
-    G = np.eye(10)
-    t = np.linspace(0, 10, 100)
-    result = kosorok_ch2_kaplan_meier_self_consistency(S, S_0, L, G, t)
+    S = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    t_grid = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    S0 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    L = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    G = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = kosorok_ch2_kaplan_meier_self_consistency(S, t_grid, S0, L, G)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "t_grid" in result
 
 
 def test_ksr047_edge():
     """Test edge cases."""
-    S = np.random.default_rng(42).normal(0, 1, 100)
-    S_0 = np.random.default_rng(42).normal(0, 1, 100)
-    L = np.random.default_rng(42).normal(0, 1, 100)
-    G = np.eye(10)
-    t = np.linspace(0, 10, 100)
-    result = kosorok_ch2_kaplan_meier_self_consistency(S, S_0, L, G, t)
+    S = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    t_grid = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    S0 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    L = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    G = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = kosorok_ch2_kaplan_meier_self_consistency(S, t_grid, S0, L, G)
     assert isinstance(result, dict)

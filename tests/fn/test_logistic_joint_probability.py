@@ -9,14 +9,18 @@ from morie.fn.logistic_joint_probability import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e4_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = logistic_joint_probability(x)
+    b = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    x = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = logistic_joint_probability(b, x, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e4_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = logistic_joint_probability(x)
+    b = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    x = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = logistic_joint_probability(b, x, y)
     assert isinstance(result, dict)

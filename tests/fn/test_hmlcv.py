@@ -7,18 +7,16 @@ from morie.fn.hmlcv import geron_learning_curves
 
 def test_hmlcv_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    n_splits = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_learning_curves(X, y, n_splits)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_learning_curves(X, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "train_sizes" in result
 
 
 def test_hmlcv_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    n_splits = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_learning_curves(X, y, n_splits)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_learning_curves(X, y)
     assert isinstance(result, dict)

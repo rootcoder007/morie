@@ -7,24 +7,20 @@ from morie.fn.msm117 import mvsml_bayesian_regression_pt2_eq_7_7
 
 def test_msm117_basic():
     """Test basic functionality."""
-    Like = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    penalized = np.random.default_rng(42).normal(0, 1, 100)
-    logistic = np.random.default_rng(42).normal(0, 1, 100)
-    regression = np.random.default_rng(42).normal(0, 1, 100)
-    studied = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_7(Like, the, penalized, logistic, regression, studied)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_pt2_eq_7_7(X, y, beta0, beta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm117_edge():
     """Test edge cases."""
-    Like = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    penalized = np.random.default_rng(42).normal(0, 1, 100)
-    logistic = np.random.default_rng(42).normal(0, 1, 100)
-    regression = np.random.default_rng(42).normal(0, 1, 100)
-    studied = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_7(Like, the, penalized, logistic, regression, studied)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_pt2_eq_7_7(X, y, beta0, beta)
     assert isinstance(result, dict)

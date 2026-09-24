@@ -7,18 +7,16 @@ from morie.fn.maloo import ma_leave_one_out
 
 def test_maloo_basic():
     """Test basic functionality."""
-    yi = np.random.default_rng(42).normal(0, 1, 100)
-    vi = np.random.default_rng(42).normal(0, 1, 100)
-    method = "auto"
-    result = ma_leave_one_out(yi, vi, method)
+    yi = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    vi = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = ma_leave_one_out(yi, vi)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "mu_full" in result
 
 
 def test_maloo_edge():
     """Test edge cases."""
-    yi = np.random.default_rng(42).normal(0, 1, 100)
-    vi = np.random.default_rng(42).normal(0, 1, 100)
-    method = "auto"
-    result = ma_leave_one_out(yi, vi, method)
+    yi = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    vi = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = ma_leave_one_out(yi, vi)
     assert isinstance(result, dict)

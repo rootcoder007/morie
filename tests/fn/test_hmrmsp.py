@@ -7,22 +7,14 @@ from morie.fn.hmrmsp import geron_rmsprop
 
 def test_hmrmsp_basic():
     """Test basic functionality."""
-    grads = np.random.default_rng(42).normal(0, 1, 100)
-    s = 90
-    beta = 0.8
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    eps = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_rmsprop(grads, s, beta, eta, eps)
+    grads = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_rmsprop(grads)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_hmrmsp_edge():
     """Test edge cases."""
-    grads = np.random.default_rng(42).normal(0, 1, 100)
-    s = 90
-    beta = 0.8
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    eps = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_rmsprop(grads, s, beta, eta, eps)
+    grads = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_rmsprop(grads)
     assert isinstance(result, dict)

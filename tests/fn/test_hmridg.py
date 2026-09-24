@@ -7,20 +7,20 @@ from morie.fn.hmridg import geron_ridge_cost
 
 def test_hmridg_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
-    alpha = 0.05
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    theta = 0.1
+    alpha = 0.1
     result = geron_ridge_cost(X, y, theta, alpha)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "cost" in result
 
 
 def test_hmridg_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
-    alpha = 0.05
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    theta = 0.1
+    alpha = 0.1
     result = geron_ridge_cost(X, y, theta, alpha)
     assert isinstance(result, dict)

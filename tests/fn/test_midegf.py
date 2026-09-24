@@ -7,18 +7,18 @@ from morie.fn.midegf import mi_degrees_of_freedom
 
 def test_midegf_basic():
     """Test basic functionality."""
-    B = np.random.default_rng(43).normal(0, 1, (10, 10))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    m = 10
-    result = mi_degrees_of_freedom(B, W, m)
+    b = 0.1
+    t = 0.1
+    m = 5
+    result = mi_degrees_of_freedom(b, t, m)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "df" in result
 
 
 def test_midegf_edge():
     """Test edge cases."""
-    B = np.random.default_rng(43).normal(0, 1, (10, 10))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    m = 10
-    result = mi_degrees_of_freedom(B, W, m)
+    b = 0.1
+    t = 0.1
+    m = 5
+    result = mi_degrees_of_freedom(b, t, m)
     assert isinstance(result, dict)

@@ -7,16 +7,16 @@ from morie.fn.msebl import mse_loss_continuous
 
 def test_msebl_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    y_hat = np.random.default_rng(42).normal(0, 1, 100)
-    result = mse_loss_continuous(y, y_hat)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Yhat = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mse_loss_continuous(Y, Yhat)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "loss" in result
 
 
 def test_msebl_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    y_hat = np.random.default_rng(42).normal(0, 1, 100)
-    result = mse_loss_continuous(y, y_hat)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Yhat = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mse_loss_continuous(Y, Yhat)
     assert isinstance(result, dict)

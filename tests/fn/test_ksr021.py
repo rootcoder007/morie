@@ -7,22 +7,18 @@ from morie.fn.ksr021 import kosorok_ch1_residual_empirical_distribution
 
 def test_ksr021_basic():
     """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    beta_hat = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    n = 100
-    result = kosorok_ch1_residual_empirical_distribution(Y, Z, beta_hat, t, n)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    z = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta = 0.1
+    result = kosorok_ch1_residual_empirical_distribution(y, z, beta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "t" in result
 
 
 def test_ksr021_edge():
     """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    beta_hat = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    n = 100
-    result = kosorok_ch1_residual_empirical_distribution(Y, Z, beta_hat, t, n)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    z = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta = 0.1
+    result = kosorok_ch1_residual_empirical_distribution(y, z, beta)
     assert isinstance(result, dict)

@@ -9,14 +9,18 @@ from morie.fn.mean_semivariance_stsi_variance import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r13e5_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = mean_semivariance_stsi_variance(x)
+    gamma_bar_h = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    weights = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    n_h = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = mean_semivariance_stsi_variance(gamma_bar_h, weights, n_h)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r13e5_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = mean_semivariance_stsi_variance(x)
+    gamma_bar_h = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    weights = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    n_h = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = mean_semivariance_stsi_variance(gamma_bar_h, weights, n_h)
     assert isinstance(result, dict)

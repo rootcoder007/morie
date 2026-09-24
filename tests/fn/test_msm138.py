@@ -7,24 +7,16 @@ from morie.fn.msm138 import mvsml_categorical_count_eq_8_8
 
 def test_msm138_basic():
     """Test basic functionality."""
-    folds = np.random.default_rng(42).normal(0, 1, 100)
-    Fig = np.random.default_rng(42).normal(0, 1, 100)
-    d = 5
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    optimal = np.random.default_rng(42).normal(0, 1, 100)
-    number = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_8(folds, Fig, d, the, optimal, number)
+    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    K = np.random.default_rng(43).normal(0.0, 1.0, (8, 8))
+    result = mvsml_categorical_count_eq_8_8(y, K)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm138_edge():
     """Test edge cases."""
-    folds = np.random.default_rng(42).normal(0, 1, 100)
-    Fig = np.random.default_rng(42).normal(0, 1, 100)
-    d = 5
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    optimal = np.random.default_rng(42).normal(0, 1, 100)
-    number = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_8(folds, Fig, d, the, optimal, number)
+    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    K = np.random.default_rng(43).normal(0.0, 1.0, (8, 8))
+    result = mvsml_categorical_count_eq_8_8(y, K)
     assert isinstance(result, dict)

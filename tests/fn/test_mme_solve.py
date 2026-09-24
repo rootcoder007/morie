@@ -7,16 +7,20 @@ from morie.fn.mme_solve import mme_solve
 
 def test_msm241_basic():
     """Test basic functionality."""
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    XTR = np.random.default_rng(42).normal(0, 1, 100)
-    result = mme_solve(b, XTR)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    Sigma_inv = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mme_solve(X, Z, y, Sigma_inv)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm241_edge():
     """Test edge cases."""
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    XTR = np.random.default_rng(42).normal(0, 1, 100)
-    result = mme_solve(b, XTR)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    Sigma_inv = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mme_solve(X, Z, y, Sigma_inv)
     assert isinstance(result, dict)

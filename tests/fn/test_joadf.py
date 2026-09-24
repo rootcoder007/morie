@@ -7,16 +7,14 @@ from morie.fn.joadf import joseph_adf_unit_root_test
 
 def test_joadf_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    result = joseph_adf_unit_root_test(y, p)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_adf_unit_root_test(x)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "stat" in result or "stat" in result
 
 
 def test_joadf_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    result = joseph_adf_unit_root_test(y, p)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_adf_unit_root_test(x)
     assert isinstance(result, dict)

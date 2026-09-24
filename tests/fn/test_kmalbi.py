@@ -7,20 +7,20 @@ from morie.fn.kmalbi import kamath_alibi_bias
 
 def test_kmalbi_basic():
     """Test basic functionality."""
-    Q = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    V = np.random.default_rng(42).normal(0, 1, 100)
-    slopes = np.random.default_rng(42).normal(0, 1, 100)
+    Q = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    V = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    slopes = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = kamath_alibi_bias(Q, K, V, slopes)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_kmalbi_edge():
     """Test edge cases."""
-    Q = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    V = np.random.default_rng(42).normal(0, 1, 100)
-    slopes = np.random.default_rng(42).normal(0, 1, 100)
+    Q = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    V = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    slopes = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = kamath_alibi_bias(Q, K, V, slopes)
     assert isinstance(result, dict)

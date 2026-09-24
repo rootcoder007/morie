@@ -7,16 +7,14 @@ from morie.fn.hmmxp2 import geron_mixed_precision
 
 def test_hmmxp2_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    loss_scale = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_mixed_precision(model, loss_scale)
+    model = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_mixed_precision(model)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "fp16_weights" in result
 
 
 def test_hmmxp2_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    loss_scale = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_mixed_precision(model, loss_scale)
+    model = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_mixed_precision(model)
     assert isinstance(result, dict)

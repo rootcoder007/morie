@@ -7,18 +7,18 @@ from morie.fn.kmitc import kamath_image_text_contrastive
 
 def test_kmitc_basic():
     """Test basic functionality."""
-    I_emb = np.random.default_rng(42).normal(0, 1, 100)
-    T_emb = np.random.default_rng(42).normal(0, 1, 100)
+    I_emb = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    T_emb = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     tau = 0.1
     result = kamath_image_text_contrastive(I_emb, T_emb, tau)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_kmitc_edge():
     """Test edge cases."""
-    I_emb = np.random.default_rng(42).normal(0, 1, 100)
-    T_emb = np.random.default_rng(42).normal(0, 1, 100)
+    I_emb = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    T_emb = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     tau = 0.1
     result = kamath_image_text_contrastive(I_emb, T_emb, tau)
     assert isinstance(result, dict)

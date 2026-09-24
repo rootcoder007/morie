@@ -7,24 +7,18 @@ from morie.fn.msm075 import mvsml_bayesian_regression_eq_6_9
 
 def test_msm075_basic():
     """Test basic functionality."""
-    Bayesian = np.random.default_rng(42).normal(0, 1, 100)
-    Genomic = np.random.default_rng(42).normal(0, 1, 100)
-    Multi = np.random.default_rng(42).normal(0, 1, 100)
-    trait = np.random.default_rng(42).normal(0, 1, 100)
-    environment = np.random.default_rng(42).normal(0, 1, 100)
-    Model = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_eq_6_9(Bayesian, Genomic, Multi, trait, environment, Model)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    Z1 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    G = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_eq_6_9(Y, Z1, G)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm075_edge():
     """Test edge cases."""
-    Bayesian = np.random.default_rng(42).normal(0, 1, 100)
-    Genomic = np.random.default_rng(42).normal(0, 1, 100)
-    Multi = np.random.default_rng(42).normal(0, 1, 100)
-    trait = np.random.default_rng(42).normal(0, 1, 100)
-    environment = np.random.default_rng(42).normal(0, 1, 100)
-    Model = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_eq_6_9(Bayesian, Genomic, Multi, trait, environment, Model)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    Z1 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    G = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_eq_6_9(Y, Z1, G)
     assert isinstance(result, dict)

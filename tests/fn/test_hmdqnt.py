@@ -7,16 +7,14 @@ from morie.fn.hmdqnt import geron_dynamic_quantization
 
 def test_hmdqnt_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    dtype = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_dynamic_quantization(model, dtype)
+    model = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_dynamic_quantization(model)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "quantized" in result
 
 
 def test_hmdqnt_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    dtype = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_dynamic_quantization(model, dtype)
+    model = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_dynamic_quantization(model)
     assert isinstance(result, dict)

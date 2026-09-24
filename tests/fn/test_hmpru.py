@@ -7,16 +7,16 @@ from morie.fn.hmpru import geron_weight_pruning
 
 def test_hmpru_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    sparsity = np.random.default_rng(42).normal(0, 1, 100)
+    model = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    sparsity = 0.1
     result = geron_weight_pruning(model, sparsity)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "pruned" in result
 
 
 def test_hmpru_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    sparsity = np.random.default_rng(42).normal(0, 1, 100)
+    model = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    sparsity = 0.1
     result = geron_weight_pruning(model, sparsity)
     assert isinstance(result, dict)

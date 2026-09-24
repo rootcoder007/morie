@@ -7,14 +7,18 @@ from morie.fn.d_probit import d_probit
 
 def test_ca11e20_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = d_probit(x)
+    result = d_probit(0.8, 0.2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    import math
+    assert math.isfinite(result["value"])
+    assert result["value"] > 0
 
 
 def test_ca11e20_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = d_probit(x)
+    result = d_probit(0.5, 0.5)
     assert isinstance(result, dict)
+    import math
+    assert math.isfinite(result["value"])
+    assert math.isclose(result["value"], 0.0, abs_tol=1e-9)

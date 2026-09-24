@@ -7,16 +7,16 @@ from morie.fn.hrzsicd import horowitz_sim_id_discrete_x
 
 def test_hrzsicd_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = horowitz_sim_id_discrete_x(x, y)
+    xs = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    gvals = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = horowitz_sim_id_discrete_x(xs, gvals)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "lower" in result
 
 
 def test_hrzsicd_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = horowitz_sim_id_discrete_x(x, y)
+    xs = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    gvals = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = horowitz_sim_id_discrete_x(xs, gvals)
     assert isinstance(result, dict)

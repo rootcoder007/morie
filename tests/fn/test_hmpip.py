@@ -7,18 +7,14 @@ from morie.fn.hmpip import geron_pipeline
 
 def test_hmpip_basic():
     """Test basic functionality."""
-    steps = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = geron_pipeline(steps, X, y)
+    X_train = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = geron_pipeline(X_train)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_hmpip_edge():
     """Test edge cases."""
-    steps = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = geron_pipeline(steps, X, y)
+    X_train = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = geron_pipeline(X_train)
     assert isinstance(result, dict)

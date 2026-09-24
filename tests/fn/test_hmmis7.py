@@ -7,16 +7,16 @@ from morie.fn.hmmis7 import geron_mistral7b
 
 def test_hmmis7_basic():
     """Test basic functionality."""
-    prompt = np.random.default_rng(42).normal(0, 1, 100)
-    n_tokens = np.random.default_rng(42).normal(0, 1, 100)
+    prompt = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    n_tokens = 5
     result = geron_mistral7b(prompt, n_tokens)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "total_parameters" in result
 
 
 def test_hmmis7_edge():
     """Test edge cases."""
-    prompt = np.random.default_rng(42).normal(0, 1, 100)
-    n_tokens = np.random.default_rng(42).normal(0, 1, 100)
+    prompt = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    n_tokens = 5
     result = geron_mistral7b(prompt, n_tokens)
     assert isinstance(result, dict)

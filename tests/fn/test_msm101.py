@@ -7,24 +7,18 @@ from morie.fn.msm101 import mvsml_bayesian_regression_pt2_eq_7_5
 
 def test_msm101_basic():
     """Test basic functionality."""
-    performance = np.random.default_rng(42).normal(0, 1, 100)
-    prediction = np.random.default_rng(42).normal(0, 1, 100)
-    these = np.random.default_rng(42).normal(0, 1, 100)
-    models = np.random.default_rng(42).normal(0, 1, 100)
-    was = np.random.default_rng(42).normal(0, 1, 100)
-    evaluated = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_5(performance, prediction, these, models, was, evaluated)
+    n = 5
+    X_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z_L = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_pt2_eq_7_5(n, X_E, Z_L)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm101_edge():
     """Test edge cases."""
-    performance = np.random.default_rng(42).normal(0, 1, 100)
-    prediction = np.random.default_rng(42).normal(0, 1, 100)
-    these = np.random.default_rng(42).normal(0, 1, 100)
-    models = np.random.default_rng(42).normal(0, 1, 100)
-    was = np.random.default_rng(42).normal(0, 1, 100)
-    evaluated = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_5(performance, prediction, these, models, was, evaluated)
+    n = 5
+    X_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z_L = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_pt2_eq_7_5(n, X_E, Z_L)
     assert isinstance(result, dict)

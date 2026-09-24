@@ -7,24 +7,14 @@ from morie.fn.ksr072 import kosorok_ch3_z_estimator_efficiency_master
 
 def test_ksr072_basic():
     """Test basic functionality."""
-    theta_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    I_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    n = 100
-    result = kosorok_ch3_z_estimator_efficiency_master(theta_n, theta, eta, I_tilde, Z, n)
+    scores = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = kosorok_ch3_z_estimator_efficiency_master(scores)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "efficient_information" in result
 
 
 def test_ksr072_edge():
     """Test edge cases."""
-    theta_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    I_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    n = 100
-    result = kosorok_ch3_z_estimator_efficiency_master(theta_n, theta, eta, I_tilde, Z, n)
+    scores = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = kosorok_ch3_z_estimator_efficiency_master(scores)
     assert isinstance(result, dict)

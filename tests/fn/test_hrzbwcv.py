@@ -7,18 +7,18 @@ from morie.fn.hrzbwcv import horowitz_bw_cv_sim
 
 def test_hrzbwcv_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    beta_hat = np.random.default_rng(42).normal(0, 1, 100)
-    result = horowitz_bw_cv_sim(x, y, beta_hat)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta = 0.1
+    result = horowitz_bw_cv_sim(x, y, beta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "bandwidth" in result
 
 
 def test_hrzbwcv_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    beta_hat = np.random.default_rng(42).normal(0, 1, 100)
-    result = horowitz_bw_cv_sim(x, y, beta_hat)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta = 0.1
+    result = horowitz_bw_cv_sim(x, y, beta)
     assert isinstance(result, dict)

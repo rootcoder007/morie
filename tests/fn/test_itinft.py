@@ -7,18 +7,18 @@ from morie.fn.itinft import item_information_function
 
 def test_itinft_basic():
     """Test basic functionality."""
-    theta = 0.0
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    a = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    b = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = item_information_function(theta, a, b)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_itinft_edge():
     """Test edge cases."""
-    theta = 0.0
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    a = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    b = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
     result = item_information_function(theta, a, b)
     assert isinstance(result, dict)

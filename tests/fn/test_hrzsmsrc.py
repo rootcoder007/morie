@@ -7,16 +7,14 @@ from morie.fn.hrzsmsrc import horowitz_sms_rate
 
 def test_hrzsmsrc_basic():
     """Test basic functionality."""
-    n = 100
-    smoothness_order = np.random.default_rng(42).normal(0, 1, 100)
-    result = horowitz_sms_rate(n, smoothness_order)
+    n = 5
+    result = horowitz_sms_rate(n)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "rate" in result
 
 
 def test_hrzsmsrc_edge():
     """Test edge cases."""
-    n = 100
-    smoothness_order = np.random.default_rng(42).normal(0, 1, 100)
-    result = horowitz_sms_rate(n, smoothness_order)
+    n = 5
+    result = horowitz_sms_rate(n)
     assert isinstance(result, dict)

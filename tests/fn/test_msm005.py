@@ -7,24 +7,14 @@ from morie.fn.msm005 import mvsml_general_eq_1_4
 
 def test_msm005_basic():
     """Test basic functionality."""
-    mental = np.random.default_rng(42).normal(0, 1, 100)
-    effects = np.random.default_rng(42).normal(0, 1, 100)
-    Two = np.random.default_rng(42).normal(0, 1, 100)
-    drawbacks = np.random.default_rng(42).normal(0, 1, 100)
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_4(mental, effects, Two, drawbacks, of, the)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_4(groups)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm005_edge():
     """Test edge cases."""
-    mental = np.random.default_rng(42).normal(0, 1, 100)
-    effects = np.random.default_rng(42).normal(0, 1, 100)
-    Two = np.random.default_rng(42).normal(0, 1, 100)
-    drawbacks = np.random.default_rng(42).normal(0, 1, 100)
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_4(mental, effects, Two, drawbacks, of, the)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_4(groups)
     assert isinstance(result, dict)

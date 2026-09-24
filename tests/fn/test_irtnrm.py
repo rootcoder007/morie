@@ -7,16 +7,18 @@ from morie.fn.irtnrm import nominal_response
 
 def test_irtnrm_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    ncats = np.random.default_rng(42).normal(0, 1, 100)
-    result = nominal_response(X, ncats)
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    a = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    c = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = nominal_response(theta, a, c)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "p" in result
 
 
 def test_irtnrm_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    ncats = np.random.default_rng(42).normal(0, 1, 100)
-    result = nominal_response(X, ncats)
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    a = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    c = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = nominal_response(theta, a, c)
     assert isinstance(result, dict)

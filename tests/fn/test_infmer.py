@@ -7,18 +7,18 @@ from morie.fn.infmer import informer
 
 def test_infmer_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    seq_len = 100
-    result = informer(X, y, seq_len)
+    Q = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    V = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = informer(Q, K, V)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_infmer_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    seq_len = 100
-    result = informer(X, y, seq_len)
+    Q = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    V = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = informer(Q, K, V)
     assert isinstance(result, dict)

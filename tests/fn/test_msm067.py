@@ -7,24 +7,18 @@ from morie.fn.msm067 import mvsml_bayesian_regression_eq_6_9
 
 def test_msm067_basic():
     """Test basic functionality."""
-    trait = np.random.default_rng(42).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    prior = np.random.default_rng(42).normal(0, 1, 100)
-    multivariate = np.random.default_rng(42).normal(0, 1, 100)
-    normal = np.random.default_rng(42).normal(0, 1, 100)
-    distribution = "normal"
-    result = mvsml_bayesian_regression_eq_6_9(trait, a, prior, multivariate, normal, distribution)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z1 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    G = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_eq_6_9(Y, Z1, G)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm067_edge():
     """Test edge cases."""
-    trait = np.random.default_rng(42).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    prior = np.random.default_rng(42).normal(0, 1, 100)
-    multivariate = np.random.default_rng(42).normal(0, 1, 100)
-    normal = np.random.default_rng(42).normal(0, 1, 100)
-    distribution = "normal"
-    result = mvsml_bayesian_regression_eq_6_9(trait, a, prior, multivariate, normal, distribution)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z1 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    G = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_eq_6_9(Y, Z1, G)
     assert isinstance(result, dict)

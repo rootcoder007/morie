@@ -7,20 +7,20 @@ from morie.fn.konfound import konfound
 
 def test_konfound_basic():
     """Test basic functionality."""
-    est = np.random.default_rng(42).normal(0, 1, 100)
-    se = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
+    est = 0.1
+    se = 0.1
+    n = 5
+    threshold = 0.1
     result = konfound(est, se, n, threshold)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_konfound_edge():
     """Test edge cases."""
-    est = np.random.default_rng(42).normal(0, 1, 100)
-    se = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
+    est = 0.1
+    se = 0.1
+    n = 5
+    threshold = 0.1
     result = konfound(est, se, n, threshold)
     assert isinstance(result, dict)

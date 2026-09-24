@@ -7,20 +7,18 @@ from morie.fn.jormse2 import joseph_rmsse
 
 def test_jormse2_basic():
     """Test basic functionality."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    y_pred = np.random.default_rng(44).normal(0, 1, 100)
-    y_train = np.random.default_rng(43).normal(0, 1, 100)
-    m = 10
-    result = joseph_rmsse(y_true, y_pred, y_train, m)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    yhat = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    insample = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_rmsse(y, yhat, insample)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "rmsse" in result
 
 
 def test_jormse2_edge():
     """Test edge cases."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    y_pred = np.random.default_rng(44).normal(0, 1, 100)
-    y_train = np.random.default_rng(43).normal(0, 1, 100)
-    m = 10
-    result = joseph_rmsse(y_true, y_pred, y_train, m)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    yhat = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    insample = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_rmsse(y, yhat, insample)
     assert isinstance(result, dict)

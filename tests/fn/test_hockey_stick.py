@@ -9,14 +9,16 @@ from morie.fn.hockey_stick import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner1e29_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = hockey_stick(x)
+    n = 5
+    k = 5
+    result = hockey_stick(n, k)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "n" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner1e29_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = hockey_stick(x)
+    n = 5
+    k = 5
+    result = hockey_stick(n, k)
     assert isinstance(result, dict)

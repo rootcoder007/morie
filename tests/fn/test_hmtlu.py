@@ -7,18 +7,16 @@ from morie.fn.hmtlu import geron_tlu
 
 def test_hmtlu_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    w = np.random.default_rng(45).exponential(1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_tlu(x, w, b)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    w = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_tlu(x, w)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "y" in result
 
 
 def test_hmtlu_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    w = np.random.default_rng(45).exponential(1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_tlu(x, w, b)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    w = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_tlu(x, w)
     assert isinstance(result, dict)

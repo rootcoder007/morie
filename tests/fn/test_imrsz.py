@@ -6,8 +6,8 @@ from morie.fn.imrsz import imrsz
 
 
 def test_imrsz_smoke():
-    rng = np.random.default_rng(42)
-    result = imrsz(image=rng.uniform(size=(32, 32)))
+    image = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = imrsz(image)
     assert result is not None
     assert hasattr(result, "name")
     assert result.value is not None or result.extra is not None

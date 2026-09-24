@@ -7,16 +7,16 @@ from morie.fn.msdef import mse_metric
 
 def test_msdef_basic():
     """Test basic functionality."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    y_pred = np.random.default_rng(44).normal(0, 1, 100)
-    result = mse_metric(y_true, y_pred)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    yhat = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = mse_metric(y, yhat)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "mse" in result
 
 
 def test_msdef_edge():
     """Test edge cases."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    y_pred = np.random.default_rng(44).normal(0, 1, 100)
-    result = mse_metric(y_true, y_pred)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    yhat = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = mse_metric(y, yhat)
     assert isinstance(result, dict)

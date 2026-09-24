@@ -7,18 +7,18 @@ from morie.fn.lottosi import lottery_sampling
 
 def test_lottosi_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    N = 100
-    n = 100
-    result = lottery_sampling(y, N, n)
+    z = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    n = 5
+    result = lottery_sampling(z, y, n)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "index" in result
 
 
 def test_lottosi_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    N = 100
-    n = 100
-    result = lottery_sampling(y, N, n)
+    z = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    n = 5
+    result = lottery_sampling(z, y, n)
     assert isinstance(result, dict)

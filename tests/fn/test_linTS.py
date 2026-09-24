@@ -7,18 +7,18 @@ from morie.fn.linTS import lin_thompson
 
 def test_linTS_basic():
     """Test basic functionality."""
-    context = np.random.default_rng(42).normal(0, 1, 100)
-    arms = np.random.default_rng(42).normal(0, 1, 100)
-    beta = 0.8
-    result = lin_thompson(context, arms, beta)
+    contexts = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    played = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    rewards = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = lin_thompson(contexts, played, rewards)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "arm" in result
 
 
 def test_linTS_edge():
     """Test edge cases."""
-    context = np.random.default_rng(42).normal(0, 1, 100)
-    arms = np.random.default_rng(42).normal(0, 1, 100)
-    beta = 0.8
-    result = lin_thompson(context, arms, beta)
+    contexts = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    played = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    rewards = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = lin_thompson(contexts, played, rewards)
     assert isinstance(result, dict)

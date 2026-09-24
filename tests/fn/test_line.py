@@ -7,16 +7,14 @@ from morie.fn.line import line
 
 def test_line_basic():
     """Test basic functionality."""
-    G = np.eye(10)
-    dim = np.random.default_rng(42).normal(0, 1, 100)
-    result = line(G, dim)
+    G = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = line(G)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_line_edge():
     """Test edge cases."""
-    G = np.eye(10)
-    dim = np.random.default_rng(42).normal(0, 1, 100)
-    result = line(G, dim)
+    G = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = line(G)
     assert isinstance(result, dict)

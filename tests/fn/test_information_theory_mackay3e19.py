@@ -7,14 +7,16 @@ from morie.fn.information_theory_mackay3e19 import information_theory_mackay_cha
 
 def test_information_theory_mackay3e19_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_3_equation_19(x)
+    evidences = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    priors = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = information_theory_mackay_chapter_3_equation_19(evidences, priors)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "evidence" in result
 
 
 def test_information_theory_mackay3e19_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_3_equation_19(x)
+    evidences = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    priors = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = information_theory_mackay_chapter_3_equation_19(evidences, priors)
     assert isinstance(result, dict)

@@ -7,18 +7,14 @@ from morie.fn.jodif import joseph_differencing
 
 def test_jodif_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    order = 4
-    seasonal_period = np.random.default_rng(42).normal(0, 1, 100)
-    result = joseph_differencing(y, order, seasonal_period)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_differencing(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "w" in result
 
 
 def test_jodif_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    order = 4
-    seasonal_period = np.random.default_rng(42).normal(0, 1, 100)
-    result = joseph_differencing(y, order, seasonal_period)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = joseph_differencing(x)
     assert isinstance(result, dict)

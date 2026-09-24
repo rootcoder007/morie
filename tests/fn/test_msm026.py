@@ -7,24 +7,22 @@ from morie.fn.msm026 import mvsml_linear_mixed_models_eq_5_5
 
 def test_msm026_basic():
     """Test basic functionality."""
-    j = np.random.default_rng(42).normal(0, 1, 100)
-    J = 20
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    j2 = np.random.default_rng(42).normal(0, 1, 100)
-    g = np.random.default_rng(43).normal(0, 1, 100)
-    E = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_linear_mixed_models_eq_5_5(j, J, Y, j2, g, E)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    G = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Sigma_T = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    R_T = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_linear_mixed_models_eq_5_5(Y, Z, G, Sigma_T, R_T)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm026_edge():
     """Test edge cases."""
-    j = np.random.default_rng(42).normal(0, 1, 100)
-    J = 20
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    j2 = np.random.default_rng(42).normal(0, 1, 100)
-    g = np.random.default_rng(43).normal(0, 1, 100)
-    E = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_linear_mixed_models_eq_5_5(j, J, Y, j2, g, E)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    G = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Sigma_T = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    R_T = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_linear_mixed_models_eq_5_5(Y, Z, G, Sigma_T, R_T)
     assert isinstance(result, dict)

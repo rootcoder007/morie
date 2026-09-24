@@ -9,14 +9,16 @@ from morie.fn.ht_total import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r2e2_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ht_total(x)
+    z = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    pi = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = ht_total(z, pi)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r2e2_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ht_total(x)
+    z = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    pi = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = ht_total(z, pi)
     assert isinstance(result, dict)

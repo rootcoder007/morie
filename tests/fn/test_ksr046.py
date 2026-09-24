@@ -7,20 +7,20 @@ from morie.fn.ksr046 import kosorok_ch2_z_estimator_consistency
 
 def test_ksr046_basic():
     """Test basic functionality."""
-    Psi_n = np.random.default_rng(42).normal(0, 1, 100)
-    Psi = np.random.default_rng(42).normal(0, 1, 100)
-    theta_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta_0 = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_z_estimator_consistency(Psi_n, Psi, theta_n, theta_0)
+    psi_n = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    psi = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    theta_seq = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    theta0 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = kosorok_ch2_z_estimator_consistency(psi_n, psi, theta_seq, theta0)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "sup_differences" in result
 
 
 def test_ksr046_edge():
     """Test edge cases."""
-    Psi_n = np.random.default_rng(42).normal(0, 1, 100)
-    Psi = np.random.default_rng(42).normal(0, 1, 100)
-    theta_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta_0 = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_z_estimator_consistency(Psi_n, Psi, theta_n, theta_0)
+    psi_n = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    psi = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    theta_seq = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    theta0 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = kosorok_ch2_z_estimator_consistency(psi_n, psi, theta_seq, theta0)
     assert isinstance(result, dict)

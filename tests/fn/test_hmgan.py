@@ -7,24 +7,14 @@ from morie.fn.hmgan import geron_gan
 
 def test_hmgan_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    G = np.eye(10)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    z_dim = 2
-    epochs = np.random.default_rng(42).normal(0, 1, 100)
-    lr = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_gan(X, G, D, z_dim, epochs, lr)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_gan(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "G" in result
 
 
 def test_hmgan_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    G = np.eye(10)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    z_dim = 2
-    epochs = np.random.default_rng(42).normal(0, 1, 100)
-    lr = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_gan(X, G, D, z_dim, epochs, lr)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_gan(X)
     assert isinstance(result, dict)

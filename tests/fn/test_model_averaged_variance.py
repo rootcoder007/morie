@@ -9,14 +9,18 @@ from morie.fn.model_averaged_variance import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e4_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = model_averaged_variance(x)
+    taus = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    thetas = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    variances = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = model_averaged_variance(taus, thetas, variances)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e4_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = model_averaged_variance(x)
+    taus = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    thetas = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    variances = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = model_averaged_variance(taus, thetas, variances)
     assert isinstance(result, dict)

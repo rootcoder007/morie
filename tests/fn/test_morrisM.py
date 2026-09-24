@@ -7,18 +7,16 @@ from morie.fn.morrisM import morris_screening
 
 def test_morrisM_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    input_dist = np.random.default_rng(42).normal(0, 1, 100)
-    N = 100
-    result = morris_screening(model, input_dist, N)
+    fun = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    k = 5
+    result = morris_screening(fun, k)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "mu" in result
 
 
 def test_morrisM_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    input_dist = np.random.default_rng(42).normal(0, 1, 100)
-    N = 100
-    result = morris_screening(model, input_dist, N)
+    fun = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+    k = 5
+    result = morris_screening(fun, k)
     assert isinstance(result, dict)

@@ -7,16 +7,14 @@ from morie.fn.hmhei import geron_he_init
 
 def test_hmhei_basic():
     """Test basic functionality."""
-    fan_in = np.random.default_rng(42).normal(0, 1, 100)
-    seed = 42
-    result = geron_he_init(fan_in, seed)
+    fan_in = 5
+    result = geron_he_init(fan_in)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "W" in result
 
 
 def test_hmhei_edge():
     """Test edge cases."""
-    fan_in = np.random.default_rng(42).normal(0, 1, 100)
-    seed = 42
-    result = geron_he_init(fan_in, seed)
+    fan_in = 5
+    result = geron_he_init(fan_in)
     assert isinstance(result, dict)

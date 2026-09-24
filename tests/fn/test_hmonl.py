@@ -7,18 +7,16 @@ from morie.fn.hmonl import geron_online_learning
 
 def test_hmonl_basic():
     """Test basic functionality."""
-    X_stream = np.random.default_rng(42).normal(0, 1, 100)
-    y_stream = np.random.default_rng(42).normal(0, 1, 100)
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_online_learning(X_stream, y_stream, eta)
+    X_stream = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y_stream = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_online_learning(X_stream, y_stream)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "theta" in result
 
 
 def test_hmonl_edge():
     """Test edge cases."""
-    X_stream = np.random.default_rng(42).normal(0, 1, 100)
-    y_stream = np.random.default_rng(42).normal(0, 1, 100)
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_online_learning(X_stream, y_stream, eta)
+    X_stream = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y_stream = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_online_learning(X_stream, y_stream)
     assert isinstance(result, dict)

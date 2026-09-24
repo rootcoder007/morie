@@ -7,18 +7,14 @@ from morie.fn.manfd import manifold_functional
 
 def test_manfd_basic():
     """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    k = 5
-    method = "auto"
-    result = manifold_functional(Y, k, method)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = manifold_functional(Y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "coords" in result
 
 
 def test_manfd_edge():
     """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    k = 5
-    method = "auto"
-    result = manifold_functional(Y, k, method)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = manifold_functional(Y)
     assert isinstance(result, dict)

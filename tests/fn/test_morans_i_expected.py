@@ -7,14 +7,14 @@ from morie.fn.morans_i_expected import morans_i_expected
 
 def test_ca12e2_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = morans_i_expected(x)
+    n = 5
+    result = morans_i_expected(n)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca12e2_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = morans_i_expected(x)
+    n = 5
+    result = morans_i_expected(n)
     assert isinstance(result, dict)
