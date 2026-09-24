@@ -1,5 +1,7 @@
 """Tests for david_j_morin_probability_for_the_enthusiastic_beginner1e71.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_71."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e71 import (
@@ -9,14 +11,17 @@ from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e71 import
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner1e71_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_71(x)
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_71(1.0, 100)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert 'sd_sum' in result
+    assert isinstance(result['sd_sum'], (int, float))
+    assert math.isfinite(result['sd_sum'])
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner1e71_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_71(x)
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_71(0.5, 1)
     assert isinstance(result, dict)
+    assert 'sd_sum' in result
+    assert isinstance(result['sd_sum'], (int, float))
+    assert math.isfinite(result['sd_sum'])
