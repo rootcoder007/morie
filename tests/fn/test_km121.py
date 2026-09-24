@@ -1,35 +1,28 @@
-"""Tests for km121.kamath_ch8_bertscore_f1."""
+"""Verification tests for km121.
+
+Kamath, Keenan, Somers and Sorenson (2024), Large Language Models: A
+Deep Dive, eq. 8.9, the BERTScore F1. Expected values are recomputed in the test body.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km121 import kamath_ch8_bertscore_f1
 
 
-def test_km121_basic():
-    """Test basic functionality."""
-    P_BERT = 0.8
-    R_BERT = 0.6
-    result = kamath_ch8_bertscore_f1(P_BERT, R_BERT)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    expected = 2.0 * 0.8 * 0.6 / (0.8 + 0.6)
-    assert math.isclose(result["estimate"], expected, rel_tol=1e-9, abs_tol=1e-12)
-    assert math.isfinite(result["estimate"])
+def test_bertscore_f1_is_the_harmonic_mean():
+    # Eq 8.9: F = 2 P R / (P + R)
+    for p, r in ((0.8, 0.6), (0.5, 0.5), (0.9, 0.1)):
+        res = kamath_ch8_bertscore_f1(p, r)
+        assert res["estimate"] == pytest.approx(2.0 * p * r / (p + r), rel=1e-12)
 
 
-def test_km121_edge():
-    """Test edge cases with valid boundary values."""
-    # Very small but strictly positive precision and recall
-    P_BERT = 1e-12
-    R_BERT = 1e-12
-    result = kamath_ch8_bertscore_f1(P_BERT, R_BERT)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "precision" in result
-    assert "recall" in result
-    assert "n" in result
-    assert "method" in result
-    assert math.isfinite(result["estimate"])
-    assert 0.0 <= result["estimate"] <= 1.0
+def test_equal_precision_and_recall_give_that_value():
+    assert kamath_ch8_bertscore_f1(0.7, 0.7)["estimate"] == pytest.approx(0.7, rel=1e-12)
+
+
+def test_the_harmonic_mean_never_exceeds_the_arithmetic_mean():
+    p, r = 0.9, 0.2
+    res = kamath_ch8_bertscore_f1(p, r)
+    assert res["estimate"] <= (p + r) / 2.0 + 1e-15

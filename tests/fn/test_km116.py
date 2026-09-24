@@ -1,37 +1,32 @@
-"""Tests for km116.kamath_ch8_brevity_penalty."""
+"""Verification tests for km116.
+
+Kamath, Keenan, Somers and Sorenson (2024), Large Language Models: A
+Deep Dive, eq. 8.4, the BLEU brevity penalty. Expected values are recomputed in the test body.
+"""
 
 import math
 
 import pytest
 
-from morie.fn import _array_core as np
-
 from morie.fn.km116 import kamath_ch8_brevity_penalty
 
 
-def test_km116_basic():
-    """Test basic functionality."""
-    c = 3
-    r = 5
-    result = kamath_ch8_brevity_penalty(c, r)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert math.isfinite(result["estimate"])
-    assert result["estimate"] == pytest.approx(float(np.exp(1.0 - 5 / 3)))
-    assert result["c"] == 3.0
-    assert result["r"] == 5.0
-    assert result["penalized"] is True
+def test_brevity_penalty_both_branches():
+    # Eq 8.4: BP = 1 when c > r, else exp(1 - r/c)
+    long_enough = kamath_ch8_brevity_penalty(12.0, 10.0)
+    assert long_enough["estimate"] == pytest.approx(1.0, rel=1e-12)
+    assert long_enough["penalized"] is False
+    short = kamath_ch8_brevity_penalty(8.0, 10.0)
+    assert short["estimate"] == pytest.approx(math.exp(1.0 - 10.0 / 8.0), rel=1e-12)
+    assert short["penalized"] is True
 
 
-def test_km116_edge():
-    """Test edge cases."""
-    c = 7
-    r = 5
-    result = kamath_ch8_brevity_penalty(c, r)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert result["estimate"] == 1.0
-    assert result["penalized"] is False
-    # also check the c == r boundary
-    out = kamath_ch8_brevity_penalty(5, 5)
-    assert out["estimate"] == 1.0
+def test_equal_lengths_are_not_penalised_below_one():
+    res = kamath_ch8_brevity_penalty(10.0, 10.0)
+    assert res["estimate"] == pytest.approx(1.0, rel=1e-12)
+
+
+def test_the_penalty_deepens_as_the_candidate_shortens():
+    mild = kamath_ch8_brevity_penalty(9.0, 10.0)["estimate"]
+    severe = kamath_ch8_brevity_penalty(4.0, 10.0)["estimate"]
+    assert severe < mild < 1.0

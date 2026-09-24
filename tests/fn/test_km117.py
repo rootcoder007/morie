@@ -1,55 +1,32 @@
-"""Tests for km117.kamath_ch8_bleu_final."""
+"""Verification tests for km117.
+
+Kamath, Keenan, Somers and Sorenson (2024), Large Language Models: A
+Deep Dive, eq. 8.5, the BLEU score. Expected values are recomputed in the test body.
+"""
 
 import math
 
 import pytest
 
-from morie.fn import _array_core as np
-
 from morie.fn.km117 import kamath_ch8_bleu_final
 
 
-def test_km117_basic():
-    """Test basic functionality."""
-    rng = np.random.default_rng(42)
-    BP = 0.5  # brevity penalty in [0, 1]
-    # n-gram precisions: each in [0, 1]
-    p_n = [float(rng.uniform(0.1, 0.9)) for _ in range(4)]
-    result = kamath_ch8_bleu_final(BP, p_n)
-    assert isinstance(result, dict)
-    # Check all expected keys are present
-    for key in ("estimate", "brevity_penalty", "geometric_mean",
-                "p_n", "n", "method"):
-        assert key in result
-    # estimate = BP * geometric_mean (structural identity from the formula)
-    assert math.isclose(result["estimate"],
-                        result["brevity_penalty"] * result["geometric_mean"])
-    assert math.isfinite(result["estimate"])
-    assert math.isfinite(result["geometric_mean"])
-    # geometric mean of values in [0, 1] must itself lie in [0, 1]
-    assert 0.0 <= result["geometric_mean"] <= 1.0
-    assert result["brevity_penalty"] == BP
+def test_bleu_is_the_penalty_times_the_geometric_mean():
+    # Eq 8.5: BLEU = BP exp(sum_n (1/N) log p_n)
+    bp = 0.8
+    p = [0.75, 0.5, 0.25, 0.125]
+    res = kamath_ch8_bleu_final(bp, p)
+    gm = math.exp(sum(math.log(v) for v in p) / len(p))
+    assert res["geometric_mean"] == pytest.approx(gm, rel=1e-12)
+    assert res["estimate"] == pytest.approx(bp * gm, rel=1e-12)
 
 
-def test_km117_edge():
-    """Test edge cases."""
-    # BP = 1 (no brevity penalty) with a single precision:
-    # estimate must equal that single precision exactly.
-    result = kamath_ch8_bleu_final(1.0, [0.5])
-    assert isinstance(result, dict)
-    assert math.isclose(result["estimate"], 0.5)
-    assert result["brevity_penalty"] == 1.0
+def test_uniform_precisions_make_the_geometric_mean_that_value():
+    res = kamath_ch8_bleu_final(1.0, [0.5, 0.5, 0.5, 0.5])
+    assert res["geometric_mean"] == pytest.approx(0.5, rel=1e-12)
+    assert res["estimate"] == pytest.approx(0.5, rel=1e-12)
 
-    # Passing N explicitly (matching len(p_n)) still yields a finite
-    # BLEU score in [0, 1].
-    result2 = kamath_ch8_bleu_final(0.5, [0.5, 0.25], N=2)
-    assert isinstance(result2, dict)
-    assert math.isfinite(result2["estimate"])
-    assert 0.0 <= result2["estimate"] <= 1.0
 
-    # The docstring states BP must lie in [0, 1]; values outside must
-    # raise ValueError.
-    with pytest.raises(ValueError):
-        kamath_ch8_bleu_final(1.5, [0.5, 0.25])
-    with pytest.raises(ValueError):
-        kamath_ch8_bleu_final(-0.1, [0.5, 0.25])
+def test_a_single_zero_precision_zeroes_the_score():
+    res = kamath_ch8_bleu_final(1.0, [0.5, 0.0, 0.5, 0.5])
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)

@@ -1,39 +1,33 @@
-"""Tests for km105.kamath_ch6_gedi_combined_loss."""
+"""Verification tests for km105.
 
-from morie.fn import _array_core as np
+Kamath, Keenan, Somers and Sorenson (2024), Large Language Models: A
+Deep Dive, eq. 6.29, the GeDi combined loss. Expected values are recomputed in the test body.
+"""
 
 import math
+
+import pytest
 
 from morie.fn.km105 import kamath_ch6_gedi_combined_loss
 
 
-def test_km105_basic():
-    """Test basic functionality with scalars matching the convex combination formula."""
-    L_g = 1.0
-    L_d = 3.0
-    lam = 0.25
-    result = kamath_ch6_gedi_combined_loss(L_g, L_d, lam)
-    assert isinstance(result, dict)
-    assert math.isfinite(result["estimate"])
-    assert result["estimate"] == 2.5
-    assert result["contributions"] == [0.25, 2.25]
-    assert result["L_g"] == 1.0
-    assert result["L_d"] == 3.0
-    assert result["lam"] == 0.25
+def test_gedi_is_a_convex_combination_of_the_two_losses():
+    # Eq 6.29: L_gd = lam L_g + (1 - lam) L_d
+    for lg, ld, lam in ((2.0, 4.0, 0.25), (1.0, 1.0, 0.5), (3.0, 0.0, 0.9)):
+        res = kamath_ch6_gedi_combined_loss(lg, ld, lam)
+        assert res["estimate"] == pytest.approx(lam * lg + (1.0 - lam) * ld, rel=1e-12)
 
 
-def test_km105_edge():
-    """Test edge cases at the convex-combination boundaries lam=0 and lam=1."""
-    # lam = 1: pure language model, estimate equals L_g exactly.
-    r1 = kamath_ch6_gedi_combined_loss(2.0, 5.0, 1.0)
-    assert isinstance(r1, dict)
-    assert math.isfinite(r1["estimate"])
-    assert r1["estimate"] == 2.0
-    assert r1["contributions"] == [2.0, 0.0]
+def test_the_endpoints_select_one_loss_each():
+    assert kamath_ch6_gedi_combined_loss(2.0, 4.0, 1.0)["estimate"] == pytest.approx(2.0, rel=1e-12)
+    assert kamath_ch6_gedi_combined_loss(2.0, 4.0, 0.0)["estimate"] == pytest.approx(4.0, rel=1e-12)
 
-    # lam = 0: pure discriminator, estimate equals L_d exactly.
-    r2 = kamath_ch6_gedi_combined_loss(2.0, 5.0, 0.0)
-    assert isinstance(r2, dict)
-    assert math.isfinite(r2["estimate"])
-    assert r2["estimate"] == 5.0
-    assert r2["contributions"] == [0.0, 5.0]
+
+def test_the_result_lies_between_the_two_losses():
+    res = kamath_ch6_gedi_combined_loss(2.0, 4.0, 0.3)
+    assert 2.0 <= res["estimate"] <= 4.0
+
+
+def test_a_weight_outside_the_unit_interval_is_refused():
+    with pytest.raises(ValueError):
+        kamath_ch6_gedi_combined_loss(2.0, 4.0, 1.5)

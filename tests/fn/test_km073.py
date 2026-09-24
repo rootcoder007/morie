@@ -1,31 +1,30 @@
-"""Tests for km073.kamath_ch5_pref_sigmoid_form."""
+"""Verification tests for km073.
+
+Kamath, Keenan, Somers and Sorenson (2024), Large Language Models: A
+Deep Dive, eq. 5.9, the preference as a sigmoid of the reward margin. Expected values are recomputed in the test body.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km073 import kamath_ch5_pref_sigmoid_form
 
 
-def test_km073_basic():
-    """Test basic functionality with a winner/loser reward pair."""
-    rng = np.random.default_rng(42)
-    r_star = rng.normal(0, 1, 2).tolist()
-    result = kamath_ch5_pref_sigmoid_form(r_star)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "margin" in result
-    assert "r_w" in result
-    assert "r_l" in result
-    assert "n" in result
-    assert math.isfinite(result["estimate"])
-    assert 0.0 <= result["estimate"] <= 1.0
-    assert result["n"] == 2
+def test_preference_is_the_sigmoid_of_the_reward_margin():
+    # Eq 5.9: p* = sigma(r*(y_w) - r*(y_l))
+    r = {"w": 2.0, "l": 1.0}
+    res = kamath_ch5_pref_sigmoid_form(r)
+    assert res["margin"] == pytest.approx(1.0, rel=1e-12)
+    assert res["estimate"] == pytest.approx(1.0 / (1.0 + math.exp(-1.0)), rel=1e-12)
 
 
-def test_km073_edge():
-    """Test edge case: equal rewards must yield 0.5 exactly."""
-    result = kamath_ch5_pref_sigmoid_form([0.0, 0.0])
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert result["estimate"] == 0.5
+def test_an_equal_margin_gives_an_even_preference():
+    res = kamath_ch5_pref_sigmoid_form({"w": 1.5, "l": 1.5})
+    assert res["estimate"] == pytest.approx(0.5, rel=1e-12)
+
+
+def test_a_larger_margin_is_a_stronger_preference():
+    small = kamath_ch5_pref_sigmoid_form({"w": 1.1, "l": 1.0})["estimate"]
+    large = kamath_ch5_pref_sigmoid_form({"w": 5.0, "l": 1.0})["estimate"]
+    assert 0.5 < small < large < 1.0
