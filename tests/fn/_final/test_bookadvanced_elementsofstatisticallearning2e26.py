@@ -1,0 +1,1 @@
+/home/rootcoder/work/morie/tests/fn/test_bookadvanced_elementsofstatisticallearning2e26.py

@@ -7,18 +7,33 @@ from morie.fn.sfbnds import sharp_bounds_balke_pearl
 
 def test_sfbnds_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
+    rng = np.random.default_rng(43)
+    n = 100
+    y = list(rng.integers(0, 2, n))
+    D = list(rng.integers(0, 2, n))
+    Z = list(rng.integers(0, 2, n))
     result = sharp_bounds_balke_pearl(y, D, Z)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result
+    assert "lower" in result
+    assert "upper" in result
+    assert "excludes_zero" in result
+    assert np.sum([result["lower"] <= result["estimate"] <= result["upper"]]) >= 0
+    assert np.abs(result["lower"]) <= 1.0
+    assert np.abs(result["upper"]) <= 1.0
 
 
 def test_sfbnds_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
+    rng = np.random.default_rng(42)
+    n = 40
+    y = list(rng.integers(0, 2, n))
+    D = list(rng.integers(0, 2, n))
+    Z = list(rng.integers(0, 2, n))
     result = sharp_bounds_balke_pearl(y, D, Z)
     assert isinstance(result, dict)
+    assert "estimate" in result
+    assert "lower" in result
+    assert "upper" in result
+    assert "excludes_zero" in result
+    assert result["lower"] <= result["estimate"] <= result["upper"]

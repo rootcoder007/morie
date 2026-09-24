@@ -2,25 +2,30 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.secaead import aead_chacha20poly1305
+from morie.fn.secaead import aead_encrypt
 
 
 def test_secaead_basic():
     """Test basic functionality."""
-    key = np.random.default_rng(42).normal(0, 1, 100)
-    nonce = np.random.default_rng(42).normal(0, 1, 100)
-    plaintext = np.random.default_rng(42).normal(0, 1, 100)
-    aad = np.random.default_rng(42).normal(0, 1, 100)
-    result = aead_chacha20poly1305(key, nonce, plaintext, aad)
+    rng = np.random.default_rng(42)
+    key = rng.integers(0, 256, 32)
+    nonce = rng.integers(0, 256, 12)
+    plaintext = rng.integers(0, 256, 64)
+    aad = rng.integers(0, 256, 16)
+    result = aead_encrypt(key, nonce, plaintext, aad)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "ciphertext" in result
+    assert "tag" in result
 
 
 def test_secaead_edge():
     """Test edge cases."""
-    key = np.random.default_rng(42).normal(0, 1, 100)
-    nonce = np.random.default_rng(42).normal(0, 1, 100)
-    plaintext = np.random.default_rng(42).normal(0, 1, 100)
-    aad = np.random.default_rng(42).normal(0, 1, 100)
-    result = aead_chacha20poly1305(key, nonce, plaintext, aad)
+    rng = np.random.default_rng(43)
+    key = rng.integers(0, 256, 32)
+    nonce = rng.integers(0, 256, 12)
+    plaintext = []
+    aad = []
+    result = aead_encrypt(key, nonce, plaintext, aad)
     assert isinstance(result, dict)
+    assert "ciphertext" in result
+    assert "tag" in result

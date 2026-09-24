@@ -7,18 +7,16 @@ from morie.fn.sepst import separation_set
 
 def test_sepst_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    ci_tests = np.random.default_rng(42).normal(0, 1, 100)
-    result = separation_set(X, Y, ci_tests)
+    # DAG: chain 0->1->2->3 plus alternative path 0->4->3
+    dag = [(0, 1), (1, 2), (2, 3), (0, 4), (4, 3)]
+    result = separation_set(dag, 0, 3, maxsize=3)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "sepset" in result or "estimate" in result or "statistic" in result
 
 
 def test_sepst_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    ci_tests = np.random.default_rng(42).normal(0, 1, 100)
-    result = separation_set(X, Y, ci_tests)
+    # Minimal DAG with a single edge
+    dag = [(0, 1)]
+    result = separation_set(dag, 0, 1, maxsize=1)
     assert isinstance(result, dict)
