@@ -1,22 +1,27 @@
-"""Tests for david_j_morin_probability_for_the_enthusiastic_beginner5e17.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_17."""
+"""Verification tests for david_j_morin_probability_for_the_enthusiastic_beginner5e17.
 
-from morie.fn import _array_core as np
+Morin (2016), eq (5.17) -- Poisson-Stirling in centred variables. Expected values are recomputed
+from the identity in the test body.
+"""
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner5e17 import (
-    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_17,
-)
+import math
 
+import pytest
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner5e17_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_17(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner5e17 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_17
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner5e17_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_17(x)
-    assert isinstance(result, dict)
+def test_stirling_form_tracks_the_exact_poisson_probability():
+    # eq (5.17): the Stirling approximation in k = a + x
+    for a, dev in ((100.0, 0.0), (100.0, 5.0), (400.0, -10.0)):
+        res = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_17(dev, a)
+        k = int(round(a + dev))
+        # log form: a^k/k! overflows for k in the hundreds
+        exact = math.exp(-a + k * math.log(a) - math.lgamma(k + 1.0))
+        assert res["exact"] == pytest.approx(exact, rel=1e-9)
+        assert res["approx"] == pytest.approx(exact, rel=0.02)
+
+
+def test_stirling_form_needs_a_positive_count():
+    with pytest.raises(ValueError):
+        david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_17(-10.0, 1.0)

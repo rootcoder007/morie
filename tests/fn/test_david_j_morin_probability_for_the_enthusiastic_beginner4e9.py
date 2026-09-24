@@ -1,29 +1,22 @@
-"""Tests for david_j_morin_probability_for_the_enthusiastic_beginner4e9.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_9."""
+"""Verification tests for david_j_morin_probability_for_the_enthusiastic_beginner4e9.
+
+Morin (2016), eq (4.9) -- the p making P(0) = P(1). Expected values are recomputed
+from the identity in the test body.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e9 import (
-    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_9,
-)
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e9 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_9
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e9_basic():
-    """Test basic functionality."""
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_9(40)
-    p = result.p
-    assert isinstance(p, (int, float))
-    assert math.isfinite(p)
-    assert 0.0 <= p <= 1.0
-    assert math.isclose(p, 1.0 / 41.0)
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e9_edge():
-    """Test edge cases."""
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_9(10)
-    p = result.p
-    assert isinstance(p, (int, float))
-    assert math.isfinite(p)
-    assert 0.0 <= p <= 1.0
-    assert math.isclose(p, 1.0 / 11.0)
+def test_the_p_that_equalises_the_first_two_binomial_terms():
+    # eq (4.9): P(0) = P(1) at p = 1/(n+1)
+    for n in (1, 3, 10, 50):
+        res = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_9(n)
+        assert res["p"] == pytest.approx(1.0 / (n + 1.0), rel=1e-12)
+        p = 1.0 / (n + 1.0)
+        assert res["P0"] == pytest.approx((1.0 - p) ** n, rel=1e-12)
+        assert res["P1"] == pytest.approx(n * p * (1.0 - p) ** (n - 1), rel=1e-12)
+        assert res["P0"] == pytest.approx(res["P1"], rel=1e-12)

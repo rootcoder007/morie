@@ -1,22 +1,27 @@
-"""Tests for david_j_morin_probability_for_the_enthusiastic_beginner1e52.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_52."""
+"""Verification tests for david_j_morin_probability_for_the_enthusiastic_beginner1e52.
 
-from morie.fn import _array_core as np
+Morin (2016), eq (1.52) -- the recursion for general n with N=3. Expected values are recomputed
+from the identity in the test body.
+"""
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e52 import (
-    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_52,
-)
+import math
 
+import pytest
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e52_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_52(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e52 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_52
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e52_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_52(x)
-    assert isinstance(result, dict)
+def test_recursion_equals_the_stars_and_bars_closed_form():
+    # eq (1.54): N_U_n = sum over j of (N-1)_U_(n-j)
+    for n, N in ((4, 3), (6, 4), (2, 2), (0, 5)):
+        res = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_52(n, N)
+        assert res["closed_form"] == pytest.approx(math.comb(n + N - 1, N - 1), rel=1e-12)
+        by_hand = sum(math.comb(j + N - 2, N - 2) for j in range(n + 1))
+        assert res["recursion_sum"] == pytest.approx(by_hand, rel=1e-12)
+        assert res["forms_agree"] == 1.0
+        assert res["n_terms"] == pytest.approx(n + 1.0, rel=1e-12)
+
+
+def test_recursion_needs_at_least_two_types_to_peel_one_off():
+    with pytest.raises(ValueError):
+        david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_52(3, 1)

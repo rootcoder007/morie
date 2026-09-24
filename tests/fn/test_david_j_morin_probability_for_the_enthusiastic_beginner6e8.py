@@ -1,22 +1,24 @@
-"""Tests for david_j_morin_probability_for_the_enthusiastic_beginner6e8.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_8."""
+"""Verification tests for david_j_morin_probability_for_the_enthusiastic_beginner6e8.
 
-from morie.fn import _array_core as np
+Morin (2016), eq (6.8) -- covariance of zero-mean variables. Expected values are recomputed
+from the identity in the test body.
+"""
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e8 import (
-    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_8,
-)
+import math
 
+import pytest
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner6e8_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_8(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e8 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_8
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner6e8_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_8(x)
-    assert isinstance(result, dict)
+def test_zero_mean_covariance_is_the_mean_product():
+    # eq (6.8): with zero means, Cov(X,Y) = E(XY)
+    x = [-2.0, -1.0, 1.0, 2.0]
+    y = [-3.0, 1.0, -1.0, 3.0]
+    assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_8(x, y)["cov"] == pytest.approx(
+        sum(a * b for a, b in zip(x, y)) / len(x), rel=1e-12)
+
+
+def test_zero_mean_form_refuses_data_that_is_not_centred():
+    with pytest.raises(ValueError):
+        david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_8([1.0, 2.0, 3.0], [1.0, 2.0, 3.0])

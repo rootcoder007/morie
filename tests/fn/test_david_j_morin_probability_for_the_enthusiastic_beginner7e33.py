@@ -1,22 +1,28 @@
-"""Tests for david_j_morin_probability_for_the_enthusiastic_beginner7e33.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33."""
+"""Verification tests for david_j_morin_probability_for_the_enthusiastic_beginner7e33.
 
-from morie.fn import _array_core as np
+Morin (2016), eq (7.33) -- the difference quotient of a power. Expected values are recomputed
+from the identity in the test body.
+"""
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e33 import (
-    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33,
-)
+import math
 
+import pytest
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner7e33_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e33 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner7e33_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33(x)
-    assert isinstance(result, dict)
+def test_difference_quotient_approaches_the_power_derivative():
+    # eq (7.33): the quotient tends to n x^(n-1)
+    x, n = 2.0, 3
+    exact = n * x ** (n - 1)
+    coarse = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33(x, n, 1e-2)
+    fine = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33(x, n, 1e-6)
+    assert coarse["derivative"] == pytest.approx(exact, rel=1e-12)
+    assert fine["derivative"] == pytest.approx(exact, rel=1e-12)
+    assert fine["abs_error"] < coarse["abs_error"]
+    assert fine["quotient"] == pytest.approx(exact, rel=1e-5)
+
+
+def test_difference_quotient_rejects_a_zero_step():
+    with pytest.raises(ValueError):
+        david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33(1.0, 2, 0.0)

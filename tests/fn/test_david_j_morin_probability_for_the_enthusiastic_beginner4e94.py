@@ -1,22 +1,27 @@
-"""Tests for david_j_morin_probability_for_the_enthusiastic_beginner4e94.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_94."""
+"""Verification tests for david_j_morin_probability_for_the_enthusiastic_beginner4e94.
 
-from morie.fn import _array_core as np
+Morin (2016), eq (4.94) -- the Poisson variance. Expected values are recomputed
+from the identity in the test body.
+"""
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e94 import (
-    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_94,
-)
+import math
 
+import pytest
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e94_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_94(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e94 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_94
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e94_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_94(x)
-    assert isinstance(result, dict)
+def test_poisson_variance_is_the_rate():
+    # eq (4.94): E(k^2) - a^2 = a
+    for a in (0.5, 1.0, 4.0, 12.5):
+        assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_94(a)["variance"] == pytest.approx(a, rel=1e-9)
+
+
+def test_poisson_variance_matches_a_direct_series_sum():
+    a = 3.0
+    m2, term = 0.0, math.exp(-a)
+    for k in range(200):
+        if k:
+            term *= a / k
+        m2 += k * k * term
+    assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_94(a)["variance"] == pytest.approx(m2 - a ** 2, rel=1e-9)

@@ -1,22 +1,28 @@
-"""Tests for david_j_morin_probability_for_the_enthusiastic_beginner7e14.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_14."""
+"""Verification tests for david_j_morin_probability_for_the_enthusiastic_beginner7e14.
 
-from morie.fn import _array_core as np
+Morin (2016), eq (7.14) -- first-order (1+a)^n = e^(na). Expected values are recomputed
+from the identity in the test body.
+"""
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e14 import (
-    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_14,
-)
+import math
 
+import pytest
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner7e14_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_14(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e14 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_14
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner7e14_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_14(x)
-    assert isinstance(result, dict)
+def test_first_order_exponential_approximation():
+    # eq (7.14): (1+a)^n is about e^(na) when n a^2 is small
+    a, n = 0.001, 50.0
+    res = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_14(a, n)
+    assert res["exact"] == pytest.approx((1.0 + a) ** n, rel=1e-12)
+    assert res["approx"] == pytest.approx(math.exp(n * a), rel=1e-12)
+    assert res["na2"] == pytest.approx(n * a * a, rel=1e-12)
+    assert res["valid"] is True
+    assert res["approx"] == pytest.approx(res["exact"], rel=1e-3)
+
+
+def test_the_validity_flag_turns_off_when_n_a_squared_grows():
+    res = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_14(0.5, 10.0)
+    assert res["na2"] > 0.1
+    assert res["valid"] is False

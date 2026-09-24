@@ -1,22 +1,27 @@
-"""Tests for david_j_morin_probability_for_the_enthusiastic_beginner7e9.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9."""
+"""Verification tests for david_j_morin_probability_for_the_enthusiastic_beginner7e9.
 
-from morie.fn import _array_core as np
+Morin (2016), eq (7.9) -- the linear approximation to e^x. Expected values are recomputed
+from the identity in the test body.
+"""
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e9 import (
-    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9,
-)
+import math
 
+import pytest
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner7e9_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e9 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner7e9_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9(x)
-    assert isinstance(result, dict)
+def test_linear_approximation_to_the_exponential():
+    # eq (7.9): e^x is about 1 + x for small x
+    for x in (0.0, 1e-3, -1e-3):
+        res = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9(x)
+        assert res["exact"] == pytest.approx(math.exp(x), rel=1e-12)
+        assert res["approx"] == pytest.approx(1.0 + x, rel=1e-12)
+        assert res["abs_error"] < 1e-6
+
+
+def test_the_linear_error_grows_quadratically():
+    small = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9(0.01)["abs_error"]
+    big = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9(0.02)["abs_error"]
+    # error is about x^2/2, so doubling x roughly quadruples it
+    assert 3.5 < big / small < 4.5

@@ -1,22 +1,33 @@
-"""Tests for david_j_morin_probability_for_the_enthusiastic_beginner1e38.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_38."""
+"""Verification tests for david_j_morin_probability_for_the_enthusiastic_beginner1e38.
 
-from morie.fn import _array_core as np
+Morin (2016), eq (1.37)-(1.38) -- the multinomial expansion. Expected values are recomputed
+from the identity in the test body.
+"""
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e38 import (
-    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_38,
-)
+import math
 
+import pytest
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e38_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_38(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e38 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_38
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e38_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_38(x)
-    assert isinstance(result, dict)
+def test_multinomial_expansion_sums_to_the_direct_power():
+    # eq (1.38): the expansion over compositions equals (sum x)^N
+    xs = [0.5, 1.5, 2.0]
+    for N in (0, 1, 3, 5):
+        res = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_38(xs, N)
+        assert res["expansion"] == pytest.approx(sum(xs) ** N, rel=1e-10)
+        assert res["direct_power"] == pytest.approx(sum(xs) ** N, rel=1e-10)
+
+
+def test_multinomial_expansion_term_count_is_the_composition_count():
+    # compositions of N into k non-negative parts number C(N+k-1, k-1)
+    for xs, N in (([1.0, 1.0], 4), ([1.0, 2.0, 3.0], 3)):
+        k = len(xs)
+        res = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_38(xs, N)
+        assert res["n_terms"] == pytest.approx(math.comb(N + k - 1, k - 1), rel=1e-12)
+
+
+def test_multinomial_expansion_rejects_empty_input():
+    with pytest.raises(ValueError):
+        david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_38([], 2)

@@ -1,32 +1,27 @@
-"""Tests for david_j_morin_probability_for_the_enthusiastic_beginner1e51.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_51."""
+"""Verification tests for david_j_morin_probability_for_the_enthusiastic_beginner1e51.
 
-import warnings
+Morin (2016), eq (1.51) -- the stars-and-bars recursion at n=4, N=3. Expected values are recomputed
+from the identity in the test body.
+"""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e51 import (
-    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_51,
-)
+import pytest
 
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e51_basic():
-    """Test basic functionality."""
-    rng = np.random.default_rng(42)
-    n = int(rng.integers(0, 10))
-    N = int(rng.integers(2, 10))
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", DeprecationWarning)
-        result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_51(n, N)
-    result_repr = repr(result)
-    assert f"n    {n}" in result_repr
-    assert f"N    {N}" in result_repr
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner1e51 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_51
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e51_edge():
-    """Test edge cases."""
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", DeprecationWarning)
-        result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_51(0, 2)
-    result_repr = repr(result)
-    assert "n    0" in result_repr
-    assert "N    2" in result_repr
+def test_recursion_equals_the_stars_and_bars_closed_form():
+    # eq (1.54): N_U_n = sum over j of (N-1)_U_(n-j)
+    for n, N in ((4, 3), (6, 4), (2, 2), (0, 5)):
+        res = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_51(n, N)
+        assert res["closed_form"] == pytest.approx(math.comb(n + N - 1, N - 1), rel=1e-12)
+        by_hand = sum(math.comb(j + N - 2, N - 2) for j in range(n + 1))
+        assert res["recursion_sum"] == pytest.approx(by_hand, rel=1e-12)
+        assert res["forms_agree"] == 1.0
+        assert res["n_terms"] == pytest.approx(n + 1.0, rel=1e-12)
+
+
+def test_recursion_needs_at_least_two_types_to_peel_one_off():
+    with pytest.raises(ValueError):
+        david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_51(3, 1)
