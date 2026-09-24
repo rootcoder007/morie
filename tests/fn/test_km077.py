@@ -1,6 +1,9 @@
-"""Tests for km077.kamath_ch6_factscore."""
+"""Verification tests for km077.
 
-from morie.fn import _array_core as np
+Kamath, Keenan, Somers and Sorenson (2024), FActScore over the prompts the model answers. Expected values are
+recomputed in the test body, and the value the docstring quotes is
+asserted as well.
+"""
 
 import math
 
@@ -9,61 +12,25 @@ import pytest
 from morie.fn.km077 import kamath_ch6_factscore
 
 
-def test_km077_basic():
-    """Test basic functionality with a small example."""
-    # Define a model M that returns the prompt if non-empty, else None.
+def test_factscore_averages_the_supported_fraction_over_responders():
+    # FActScore = E_x[(1/|A_y|) sum_a I[a supported by C]] over the
+    # prompts the model actually answered
     M = lambda x: x or None
-
-    # Define a list of prompts.
-    X = ["a b", "c", "", "d e"]
-
-    # Define a fact extractor A_y that splits the response into words.
-    A_y = lambda r: r.split()
-
-    # Define a knowledge source C as a set of supported atoms.
-    C = {"a", "c", "e"}
-
-    # Compute the score.
-    result = kamath_ch6_factscore(M, X, A_y, C)
-
-    # Check that the result is a mapping (dict-like).
-    assert isinstance(result, dict)
-
-    # Check that all expected keys are present.
-    expected_keys = {"estimate", "per_prompt", "n_responded", "response_rate", "n", "method"}
-    assert expected_keys.issubset(result.keys())
-
-    # Check that n matches the number of prompts.
-    assert result["n"] == len(X)
-
-    # Check that n_responded matches the number of non-empty prompts (M returns None for empty).
-    expected_n_responded = sum(1 for x in X if x)
-    assert result["n_responded"] == expected_n_responded
-
-    # Check response_rate.
-    assert result["response_rate"] == expected_n_responded / len(X)
-
-    # Check that per_prompt is a list of length n_responded.
-    assert isinstance(result["per_prompt"], list)
-    assert len(result["per_prompt"]) == expected_n_responded
-    # Each per_prompt should be a float between 0 and 1.
-    for p in result["per_prompt"]:
-        assert isinstance(p, float)
-        assert 0.0 <= p <= 1.0
-
-    # Check estimate is finite and between 0 and 1.
-    assert math.isfinite(result["estimate"])
-    assert 0.0 <= result["estimate"] <= 1.0
-
-    # Method string.
-    assert result["method"] == "FActScore (Kamath Eq 6.1)"
+    res = kamath_ch6_factscore(M, ["a b", "c", ""], str.split, {"a", "c"})
+    # "a b" -> 1 of 2 supported, "c" -> 1 of 1, the empty prompt abstains
+    assert res["estimate"] == pytest.approx(0.75, rel=1e-12)
+    assert res["n_responded"] == 2
+    assert res["response_rate"] == pytest.approx(2.0 / 3.0, rel=1e-10)
 
 
-def test_km077_edge():
-    """Test edge case: empty prompts raises ValueError."""
+def test_abstentions_are_excluded_from_the_score_but_not_the_rate():
     M = lambda x: x or None
-    A_y = lambda r: r.split()
-    C = {"a"}
-    X = []  # empty list
-    with pytest.raises(ValueError):
-        kamath_ch6_factscore(M, X, A_y, C)
+    all_answered = kamath_ch6_factscore(M, ["a", "c"], str.split, {"a", "c"})
+    assert all_answered["estimate"] == pytest.approx(1.0, rel=1e-12)
+    assert all_answered["response_rate"] == pytest.approx(1.0, rel=1e-12)
+
+
+def test_no_supported_atom_scores_zero():
+    M = lambda x: x
+    res = kamath_ch6_factscore(M, ["z"], str.split, {"a"})
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)

@@ -1,44 +1,36 @@
-"""Tests for km083.kamath_ch6_ceat_random_effects."""
+"""Verification tests for km083.
+
+Kamath, Keenan, Somers and Sorenson (2024), the CEAT random-effects bias measure. Expected values are
+recomputed in the test body, and the value the docstring quotes is
+asserted as well.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km083 import kamath_ch6_ceat_random_effects
 
 
-def test_km083_basic():
-    """Test basic functionality with several contexts."""
-    rng = np.random.default_rng(42)
-    N_contexts = 5
-    # Each context: a small set of word vectors of dimension 3
-    S_A1 = [rng.normal(0, 1, (4, 3)) for _ in range(N_contexts)]
-    S_A2 = [rng.normal(0, 1, (4, 3)) for _ in range(N_contexts)]
-    S_W1 = [rng.normal(0, 1, (4, 3)) for _ in range(N_contexts)]
-    S_W2 = [rng.normal(0, 1, (4, 3)) for _ in range(N_contexts)]
-    # Positive, finite weights (inverse-variance style)
-    v = [abs(float(x)) for x in rng.normal(0, 1, N_contexts)]
-    result = kamath_ch6_ceat_random_effects(S_A1, S_A2, S_W1, S_W2, v)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert math.isfinite(result["estimate"])
-    assert "weat" in result
-    assert len(result["weat"]) == N_contexts
-    assert result["n"] == N_contexts
+def test_ceat_is_the_variance_weighted_mean_of_the_per_sample_effects():
+    # CEAT = sum_i v_i WEAT_i / sum_i v_i
+    A1 = [[[1.0, 0.0]], [[1.0, 0.0]]]
+    A2 = [[[0.0, 1.0]], [[0.0, 1.0]]]
+    W1 = [[[1.0, 0.0]], [[1.0, 0.0]]]
+    W2 = [[[0.0, 1.0]], [[0.0, 1.0]]]
+    v = [1.0, 3.0]
+    res = kamath_ch6_ceat_random_effects(A1, A2, W1, W2, v)
+    weat = list(res["weat"])
+    expected = sum(w * e for w, e in zip(v, weat)) / sum(v)
+    assert res["estimate"] == pytest.approx(expected, rel=1e-12)
+    assert res["estimate"] == pytest.approx(2.0, rel=1e-12)
 
 
-def test_km083_edge():
-    """Test edge case: equal weights reduce to the plain mean of WEATs."""
-    rng = np.random.default_rng(42)
-    N_contexts = 3
-    S_A1 = [rng.normal(0, 1, (4, 3)) for _ in range(N_contexts)]
-    S_A2 = [rng.normal(0, 1, (4, 3)) for _ in range(N_contexts)]
-    S_W1 = [rng.normal(0, 1, (4, 3)) for _ in range(N_contexts)]
-    S_W2 = [rng.normal(0, 1, (4, 3)) for _ in range(N_contexts)]
-    v = [1.0] * N_contexts  # equal weights
-    result = kamath_ch6_ceat_random_effects(S_A1, S_A2, S_W1, S_W2, v)
-    assert isinstance(result, dict)
-    assert math.isfinite(result["estimate"])
-    # With equal weights, the pooled estimate equals the plain mean
-    expected = sum(result["weat"]) / N_contexts
-    assert abs(result["estimate"] - expected) < 1e-9
+def test_equal_weights_give_the_plain_mean_of_the_effects():
+    A1 = [[[1.0, 0.0]], [[1.0, 0.0]]]
+    A2 = [[[0.0, 1.0]], [[0.0, 1.0]]]
+    W1 = [[[1.0, 0.0]], [[1.0, 0.0]]]
+    W2 = [[[0.0, 1.0]], [[0.0, 1.0]]]
+    res = kamath_ch6_ceat_random_effects(A1, A2, W1, W2, [2.0, 2.0])
+    weat = list(res["weat"])
+    assert res["estimate"] == pytest.approx(sum(weat) / len(weat), rel=1e-12)

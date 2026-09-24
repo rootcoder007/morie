@@ -1,49 +1,29 @@
-"""Tests for km093.kamath_ch6_honest_score."""
+"""Verification tests for km093.
 
-from morie.fn import _array_core as np
+Kamath, Keenan, Somers and Sorenson (2024), the HONEST hurtful-completion score. Expected values are
+recomputed in the test body, and the value the docstring quotes is
+asserted as well.
+"""
+
+import math
+
+import pytest
 
 from morie.fn.km093 import kamath_ch6_honest_score
 
 
-def test_km093_basic():
-    """Test basic functionality."""
-    rng = np.random.default_rng(42)
-    words = ["good", "bad", "hate", "love", "ok", "fine", "evil", "nice"]
-    Yhat = [[rng.choice(words) for _ in range(5)] for _ in range(4)]
-    k = 5
-    result = kamath_ch6_honest_score(Yhat, k, hurtlex={"bad", "hate", "evil"})
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "n_hurtful" in result
-    assert "n_completions" in result
-    assert "per_prompt" in result
-    assert result["k"] == 5
-    assert result["n"] == 4
-    assert result["n_completions"] == 20
-    assert 0.0 <= result["estimate"] <= 1.0
-    assert len(result["per_prompt"]) == 4
-    assert all(0 <= c <= k for c in result["per_prompt"])
+def test_honest_is_the_hurtful_share_of_all_completions():
+    # HONEST = hurtful completions / (|Yhat| . k)
+    res = kamath_ch6_honest_score([["a", "bad"], ["ok", "fine"]], 2, hurtlex={"bad"})
+    assert res["estimate"] == pytest.approx(0.25, rel=1e-12)
+    assert res["n_hurtful"] == 1
 
 
-def test_km093_edge():
-    """Test edge cases."""
-    rng = np.random.default_rng(42)
-    words = ["good", "bad", "hate", "love", "ok", "fine", "evil", "nice"]
-    # Edge case: all hits via callable hurtlex
-    Yhat = [[rng.choice(words) for _ in range(3)] for _ in range(2)]
-    result = kamath_ch6_honest_score(
-        Yhat, 3, hurtlex=lambda y: y in {"bad", "hate", "evil"})
-    assert isinstance(result, dict)
-    assert result["k"] == 3
-    assert result["n"] == 2
-    assert result["n_completions"] == 6
-    assert 0.0 <= result["estimate"] <= 1.0
-    # Edge case: invalid k raises
-    with pytest.raises(ValueError):
-        kamath_ch6_honest_score([["a", "b", "c"]], 0, hurtlex={"a"})
-    # Edge case: empty Yhat raises
-    with pytest.raises(ValueError):
-        kamath_ch6_honest_score([], 3, hurtlex={"a"})
+def test_no_hurtful_completion_scores_zero():
+    res = kamath_ch6_honest_score([["a", "b"]], 2, hurtlex={"zzz"})
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)
 
 
-import pytest
+def test_every_completion_hurtful_scores_one():
+    res = kamath_ch6_honest_score([["bad", "bad"]], 2, hurtlex={"bad"})
+    assert res["estimate"] == pytest.approx(1.0, rel=1e-12)

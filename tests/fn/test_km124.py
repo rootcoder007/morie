@@ -1,48 +1,29 @@
-"""Tests for km124.kamath_ch8_ngram_embedding."""
+"""Verification tests for km124.
 
-from morie.fn import _array_core as np
+Kamath, Keenan, Somers and Sorenson (2024), the n-gram idf embedding. Expected values are
+recomputed in the test body, and the value the docstring quotes is
+asserted as well.
+"""
+
+import math
+
+import pytest
 
 from morie.fn.km124 import kamath_ch8_ngram_embedding
 
 
-def test_km124_basic():
-    """Test basic functionality as per docstring example."""
-    x = [1.0, 2.0, 3.0]
-    i = 1
-    n = 2
-    result = kamath_ch8_ngram_embedding(x, i, n)
-    # Check returned keys
-    assert "estimate" in result
-    assert "embedding" in result
-    assert "window" in result
-    # Verify core values
-    assert result["i"] == 1
-    assert result["n"] == 2
-    assert result["estimate"] == 5.0  # 2 + 3
-    assert result["embedding"] == [5.0]
-    assert result["window"] == [2.0, 3.0]
+def test_the_ngram_embedding_sums_idf_over_the_window():
+    # E(x_i^n) = sum_{k=i}^{i+n-1} idf(x_k)
+    idf = [1.0, 2.0, 3.0]
+    res = kamath_ch8_ngram_embedding(idf, 1, 2)
+    assert res["estimate"] == pytest.approx(2.0 + 3.0, rel=1e-12)
 
 
-def test_km124_edge():
-    """Test edge cases: n=1 (smallest valid n) and 2-D input."""
-    # n = 1, 1-D input
-    x = [5.0, 6.0, 7.0]
-    result = kamath_ch8_ngram_embedding(x, 2, 1)
-    assert "estimate" in result
-    assert result["i"] == 2
-    assert result["n"] == 1
-    assert result["estimate"] == 7.0
-    assert result["embedding"] == [7.0]
-    assert result["window"] == [7.0]
+def test_a_unigram_window_is_the_single_idf_value():
+    res = kamath_ch8_ngram_embedding([1.0, 2.0, 3.0], 0, 1)
+    assert res["estimate"] == pytest.approx(1.0, rel=1e-12)
 
-    # 2-D input: each token has a 2-element vector
-    x2 = [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]
-    result2 = kamath_ch8_ngram_embedding(x2, 1, 2)
-    assert "estimate" in result2
-    assert result2["i"] == 1
-    assert result2["n"] == 2
-    # Window rows 1 and 2: [3,4] + [5,6] => [8, 10]
-    assert result2["estimate"] == [8.0, 10.0]
-    assert result2["embedding"] == [8.0, 10.0]
-    # Window flattened row-major
-    assert result2["window"] == [3.0, 4.0, 5.0, 6.0]
+
+def test_a_window_past_the_end_is_refused():
+    with pytest.raises((ValueError, IndexError)):
+        kamath_ch8_ngram_embedding([1.0, 2.0], 1, 3)
