@@ -1,30 +1,43 @@
-"""Tests for msm220.mvsml_ridge_lasso_elastic_eq_9_36."""
+"""Verification tests for msm220.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments of
+Montesinos Lopez, Montesinos Lopez and Crossa (2022), *Multivariate
+Statistical Machine Learning Methods for Genomic Prediction*, with the
+same function name, so the implementation lives once in msm218 and
+this module re-exports it. Its own contract is that both import paths
+reach the same object; the value below is recomputed here as well, and
+msm218's tests check the equation in full.
+"""
 
-from morie.fn.msm220 import mvsml_ridge_lasso_elastic_eq_9_36
+import math
+
+import pytest
+
+import morie.fn.msm218 as host
+import morie.fn.msm220 as alias
+from morie.fn.msm220 import softsvm
 
 
-def test_msm220_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    p = 5
-    yi = np.random.default_rng(42).normal(0, 1, 100)
-    j1xij = np.random.default_rng(42).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    i = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_36(X, p, yi, j1xij, M, i)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert softsvm is getattr(host, "softsvm")
+    assert alias.softsvm is getattr(host, "softsvm")
 
 
-def test_msm220_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    p = 5
-    yi = np.random.default_rng(42).normal(0, 1, 100)
-    j1xij = np.random.default_rng(42).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    i = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_36(X, p, yi, j1xij, M, i)
-    assert isinstance(result, dict)
+def test_every_exported_name_is_that_same_one_function():
+    # the module also binds the equation-numbered name to it, so both
+    # public names must resolve to the single implementation
+    assert "softsvm" in alias.__all__
+    for name in alias.__all__:
+        assert getattr(alias, name) is getattr(host, "softsvm")
+
+
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "msm220" in alias.cheatsheet()
+
+
+def test_the_soft_margin_through_the_alias_is_the_reciprocal_norm():
+    # eqs 9.34 and 9.35, with beta returned unnormalised
+    res = softsvm([[1.0, 1.0], [-1.0, -1.0]], [1, -1], 1.0)
+    nb = math.sqrt(sum(b * b for b in res["beta"]))
+    assert res["margin"] == pytest.approx(1.0 / nb, rel=1e-12)
+    assert res["n_violating"] == 0

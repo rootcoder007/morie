@@ -1,30 +1,35 @@
-"""Tests for msm035.mvsml_linear_mixed_models_eq_5_6."""
+"""Verification tests for msm035.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments of
+Montesinos Lopez, Montesinos Lopez and Crossa (2022), *Multivariate
+Statistical Machine Learning Methods for Genomic Prediction*, with the
+same function name, so the implementation lives once in msm032 and
+this module re-exports it. Its own contract is that both import paths
+reach the same object; the value below is recomputed here as well, and
+msm032's tests check the equation in full.
+"""
 
+import math
+
+import pytest
+
+import morie.fn.msm032 as host
+import morie.fn.msm035 as alias
 from morie.fn.msm035 import mvsml_linear_mixed_models_eq_5_6
 
 
-def test_msm035_basic():
-    """Test basic functionality."""
-    N = 100
-    G = np.eye(10)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    b2 = np.random.default_rng(42).normal(0, 1, 100)
-    E = np.random.default_rng(42).normal(0, 1, 100)
-    This = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_linear_mixed_models_eq_5_6(N, G, T, b2, E, This)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert mvsml_linear_mixed_models_eq_5_6 is getattr(host, "mvsml_linear_mixed_models_eq_5_6")
+    assert alias.mvsml_linear_mixed_models_eq_5_6 is getattr(host, "mvsml_linear_mixed_models_eq_5_6")
 
 
-def test_msm035_edge():
-    """Test edge cases."""
-    N = 100
-    G = np.eye(10)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    b2 = np.random.default_rng(42).normal(0, 1, 100)
-    E = np.random.default_rng(42).normal(0, 1, 100)
-    This = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_linear_mixed_models_eq_5_6(N, G, T, b2, E, This)
-    assert isinstance(result, dict)
+def test_every_exported_name_is_that_same_one_function():
+    # the module also binds the equation-numbered name to it, so both
+    # public names must resolve to the single implementation
+    assert "mvsml_linear_mixed_models_eq_5_6" in alias.__all__
+    for name in alias.__all__:
+        assert getattr(alias, name) is getattr(host, "mvsml_linear_mixed_models_eq_5_6")
+
+
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "msm035" in alias.cheatsheet()

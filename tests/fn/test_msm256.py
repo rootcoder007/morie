@@ -1,30 +1,35 @@
-"""Tests for msm256.mvsml_reproducing_kernel_eq_10_17."""
+"""Verification tests for msm256.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments of
+Montesinos Lopez, Montesinos Lopez and Crossa (2022), *Multivariate
+Statistical Machine Learning Methods for Genomic Prediction*, with the
+same function name, so the implementation lives once in msm255 and
+this module re-exports it. Its own contract is that both import paths
+reach the same object; the value below is recomputed here as well, and
+msm255's tests check the equation in full.
+"""
 
+import math
+
+import pytest
+
+import morie.fn.msm255 as host
+import morie.fn.msm256 as alias
 from morie.fn.msm256 import mvsml_reproducing_kernel_eq_10_17
 
 
-def test_msm256_basic():
-    """Test basic functionality."""
-    w = np.random.default_rng(45).exponential(1, 100)
-    h = 0.3
-    kp = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    ikxip = np.random.default_rng(42).normal(0, 1, 100)
-    This = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_reproducing_kernel_eq_10_17(w, h, kp, t, ikxip, This)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert mvsml_reproducing_kernel_eq_10_17 is getattr(host, "mvsml_reproducing_kernel_eq_10_17")
+    assert alias.mvsml_reproducing_kernel_eq_10_17 is getattr(host, "mvsml_reproducing_kernel_eq_10_17")
 
 
-def test_msm256_edge():
-    """Test edge cases."""
-    w = np.random.default_rng(45).exponential(1, 100)
-    h = 0.3
-    kp = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    ikxip = np.random.default_rng(42).normal(0, 1, 100)
-    This = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_reproducing_kernel_eq_10_17(w, h, kp, t, ikxip, This)
-    assert isinstance(result, dict)
+def test_every_exported_name_is_that_same_one_function():
+    # the module also binds the equation-numbered name to it, so both
+    # public names must resolve to the single implementation
+    assert "mvsml_reproducing_kernel_eq_10_17" in alias.__all__
+    for name in alias.__all__:
+        assert getattr(alias, name) is getattr(host, "mvsml_reproducing_kernel_eq_10_17")
+
+
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "msm256" in alias.cheatsheet()

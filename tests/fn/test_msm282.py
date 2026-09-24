@@ -1,30 +1,44 @@
-"""Tests for msm282.mvsml_convolutional_nn_eq_14_10."""
+"""Verification tests for msm282.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments of
+Montesinos Lopez, Montesinos Lopez and Crossa (2022), *Multivariate
+Statistical Machine Learning Methods for Genomic Prediction*, with the
+same function name, so the implementation lives once in msm277 and
+this module re-exports it. Its own contract is that both import paths
+reach the same object; the value below is recomputed here as well, and
+msm277's tests check the equation in full.
+"""
 
-from morie.fn.msm282 import mvsml_convolutional_nn_eq_14_10
+import math
+
+import pytest
+
+import morie.fn.msm277 as host
+import morie.fn.msm282 as alias
+from morie.fn.msm282 import pensse
 
 
-def test_msm282_basic():
-    """Test basic functionality."""
-    p = 5
-    t = np.linspace(0, 10, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    derivate = np.random.default_rng(42).normal(0, 1, 100)
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    order = 4
-    result = mvsml_convolutional_nn_eq_14_10(p, t, a, derivate, of, order)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert pensse is getattr(host, "pensse")
+    assert alias.pensse is getattr(host, "pensse")
 
 
-def test_msm282_edge():
-    """Test edge cases."""
-    p = 5
-    t = np.linspace(0, 10, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    derivate = np.random.default_rng(42).normal(0, 1, 100)
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    order = 4
-    result = mvsml_convolutional_nn_eq_14_10(p, t, a, derivate, of, order)
-    assert isinstance(result, dict)
+def test_every_exported_name_is_that_same_one_function():
+    # the module also binds the equation-numbered name to it, so both
+    # public names must resolve to the single implementation
+    assert "pensse" in alias.__all__
+    for name in alias.__all__:
+        assert getattr(alias, name) is getattr(host, "pensse")
+
+
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "msm282" in alias.cheatsheet()
+
+
+def test_the_penalised_criterion_through_the_alias_adds_both_terms():
+    # eq 14.10: SSE + lambda beta' P beta
+    res = pensse([1.0, 2.0], [[1.0, 0.0], [0.0, 1.0]], [1.0, 1.0], 2.0,
+               [[1.0, 0.0], [0.0, 1.0]], mu=0.0)
+    assert res["sse"] == pytest.approx(1.0, rel=1e-12)
+    assert res["penalty"] == pytest.approx(2.0, rel=1e-12)
+    assert res["objective"] == pytest.approx(5.0, rel=1e-12)
