@@ -1,62 +1,34 @@
-"""Tests for km057.kamath_ch4_lora_obj."""
+"""Verification tests for km057.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 4.3, the LoRA objective. Expected values are
+recomputed in the test body.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km057 import kamath_ch4_lora_obj
 
 
-def test_km057_basic():
-    """Test basic functionality."""
-    # Adapted model (Theta) and base model (Phi_0) as constant-probability functions.
-    Theta = lambda xi, y_prefix, y_t: 0.5
-    Phi_0 = lambda xi, y_prefix, y_t: 0.25
-
-    # x: list of contexts; y: list of target token sequences.
-    x = ["doc1", "doc2"]
-    y = [["a", "b"], ["c"]]
-
-    result = kamath_ch4_lora_obj(Theta, Phi_0, x, y)
-
-    # Verify that all documented keys are present in the RichResult.
-    for key in ("estimate", "base_objective", "improvement",
-                "per_pair", "base_per_pair", "n", "method"):
-        assert key in result
-
-    # Numeric outputs must be finite.
-    assert math.isfinite(result["estimate"])
-    assert math.isfinite(result["base_objective"])
-    assert math.isfinite(result["improvement"])
-
-    # n equals the number of (x, y) pairs.
-    assert result["n"] == len(y)
-
-    # Per-pair lists have the correct length.
-    assert len(result["per_pair"]) == len(y)
-    assert len(result["base_per_pair"]) == len(y)
+def test_the_lora_objective_is_the_same_sum_as_full_finetuning():
+    # Eq 4.3: the SAME token log-probability sum as Eq 4.2, taken over
+    # the low-rank parameters instead of every weight
+    theta = lambda x, prefix, y_t: 0.5
+    base = lambda x, prefix, y_t: 0.25
+    res = kamath_ch4_lora_obj(theta, base, ["x1"], [["a", "b"]])
+    assert res["estimate"] == pytest.approx(2.0 * math.log(0.5), rel=1e-12)
 
 
-def test_km057_edge():
-    """Edge case: identical base and adapted models yield zero improvement."""
-    # Both models return the same probability for any token.
-    Theta = lambda xi, y_prefix, y_t: 0.7
-    Phi_0 = lambda xi, y_prefix, y_t: 0.7
+def test_the_frozen_base_does_not_enter_the_objective():
+    # only the adapted model scores the tokens; the base is carried for
+    # reference, so changing it must not move the objective
+    theta = lambda x, prefix, y_t: 0.5
+    a = kamath_ch4_lora_obj(theta, lambda *_: 0.1, ["x1"], [["a", "b"]])["estimate"]
+    b = kamath_ch4_lora_obj(theta, lambda *_: 0.9, ["x1"], [["a", "b"]])["estimate"]
+    assert a == pytest.approx(b, rel=1e-12)
 
-    x = ["doc"]
-    y = [["a", "b", "c"]]
 
-    result = kamath_ch4_lora_obj(Theta, Phi_0, x, y)
-
-    for key in ("estimate", "base_objective", "improvement",
-                "per_pair", "base_per_pair", "n", "method"):
-        assert key in result
-
-    assert math.isfinite(result["estimate"])
-    assert math.isfinite(result["base_objective"])
-
-    # When the two models are identical, the improvement must be zero (up to floating point).
-    assert math.isclose(result["improvement"], 0.0, abs_tol=1e-12)
-
-    assert result["n"] == 1
-    assert len(result["per_pair"]) == 1
+def test_a_certain_adapted_model_reaches_zero():
+    res = kamath_ch4_lora_obj(lambda *_: 1.0, lambda *_: 0.5, ["x1"], [["a"]])
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)

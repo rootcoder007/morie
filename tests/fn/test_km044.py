@@ -1,42 +1,34 @@
-"""Tests for km044.kamath_ch3_prompt_search_argmax."""
+"""Verification tests for km044.
 
-from morie.fn import _array_core as np
+Kamath, Keenan, Somers and Sorenson (2024), eq. 3.3, the argmax answer search. Expected values are
+recomputed in the test body.
+"""
+
+import math
+
+import pytest
 
 from morie.fn.km044 import kamath_ch3_prompt_search_argmax
 
 
-def test_km044_basic():
-    """Test basic functionality."""
-    score = lambda s: float(len(s))
-    result = kamath_ch3_prompt_search_argmax(
-        "Paris is [z].", ["great", "terrible"], score)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "z_hat" in result
-    assert "filled_prompt" in result
-    assert "scores" in result
-    assert "n" in result
-    assert "method" in result
-    assert result["n"] == 2
-    assert result["z_hat"] == "terrible"
-    assert result["estimate"] == 18.0
-    assert isinstance(result["scores"], dict)
-    assert set(result["scores"].keys()) == {"great", "terrible"}
+def test_the_search_returns_the_highest_scoring_answer():
+    # Eq 3.3: z_hat = argmax_z P(f_fill(x, z); theta)
+    scores = {"good": 0.9, "bad": 0.2, "fine": 0.5}
+    res = kamath_ch3_prompt_search_argmax("x", list(scores), lambda filled: scores[filled.split("|")[-1]],
+               f_fill=lambda x, z: x + "|" + z)
+    assert res["z_hat"] == "good"
+    assert res["estimate"] == pytest.approx(0.9, rel=1e-12)
+    for z, v in scores.items():
+        assert res["scores"][z] == pytest.approx(v, rel=1e-12)
 
 
-def test_km044_edge():
-    """Test edge case: template without [z] slot uses append fallback."""
-    score = lambda s: float(len(s))
-    result = kamath_ch3_prompt_search_argmax(
-        "hello", ["a", "bb", "ccc"], score)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "z_hat" in result
-    assert "filled_prompt" in result
-    assert "scores" in result
-    assert "n" in result
-    assert result["n"] == 3
-    assert result["z_hat"] in ["a", "bb", "ccc"]
-    assert isinstance(result["scores"], dict)
-    assert set(result["scores"].keys()) == {"a", "bb", "ccc"}
-    assert result["z_hat"] == "ccc"
+def test_every_candidate_is_scored():
+    res = kamath_ch3_prompt_search_argmax("x", ["a", "b", "c"], lambda s: len(s) / 10.0)
+    assert res["n"] == 3
+    assert set(res["scores"]) == {"a", "b", "c"}
+
+
+def test_a_single_candidate_is_its_own_argmax():
+    res = kamath_ch3_prompt_search_argmax("x", ["only"], lambda s: 0.42)
+    assert res["z_hat"] == "only"
+    assert res["estimate"] == pytest.approx(0.42, rel=1e-12)

@@ -1,67 +1,32 @@
-"""Tests for km056.kamath_ch4_full_finetune_obj."""
+"""Verification tests for km056.
 
-from morie.fn import _array_core as np
+Kamath, Keenan, Somers and Sorenson (2024), eq. 4.2, the full-parameter fine-tuning objective. Expected values are
+recomputed in the test body.
+"""
+
 import math
+
 import pytest
 
 from morie.fn.km056 import kamath_ch4_full_finetune_obj
 
 
-def test_km056_basic():
-    """Test basic functionality."""
-    # Define a simple model that returns a constant probability
-    Phi = lambda xi, pre, t: 0.5
-
-    # Define contexts and target sequences
-    x = ["doc1", "doc2"]
-    y = [["a", "b"], ["c", "d", "e"]]
-
-    result = kamath_ch4_full_finetune_obj(Phi, x, y)
-
-    # The result is a RichResult (dict-like)
-    assert isinstance(result, dict)
-
-    # Check that all expected keys are present
-    expected_keys = {"estimate", "per_pair", "n_tokens", "n", "method"}
-    assert set(result.keys()) == expected_keys
-
-    # Compute expected estimate: total tokens * log(0.5)
-    total_tokens = sum(len(seq) for seq in y)
-    expected_estimate = total_tokens * math.log(0.5)
-
-    # Check estimate is finite and matches expected value within tolerance
-    assert math.isfinite(result["estimate"])
-    assert abs(result["estimate"] - expected_estimate) < 1e-12
-
-    # Check n_tokens
-    assert result["n_tokens"] == total_tokens
-
-    # Check n (number of pairs)
-    assert result["n"] == len(y)
-
-    # Check method is a string
-    assert isinstance(result["method"], str)
+def test_the_full_finetune_objective_sums_log_probability_over_tokens():
+    # Eq 4.2: sum over pairs of sum over t of log P_Phi(y_t | x, y_<t)
+    model = lambda x, prefix, y_t: 0.5
+    res = kamath_ch4_full_finetune_obj(model, ["x1"], [["a", "b"]])
+    assert res["estimate"] == pytest.approx(2.0 * math.log(0.5), rel=1e-12)
+    assert res["n_tokens"] == 2
 
 
-def test_km056_edge():
-    """Test edge case with minimal input."""
-    # Single context and single token sequence
-    Phi = lambda xi, pre, t: 0.5
-    x = ["ctx"]
-    y = [["token"]]
+def test_every_pair_contributes_its_own_sum():
+    model = lambda x, prefix, y_t: 0.5
+    one = kamath_ch4_full_finetune_obj(model, ["x1"], [["a", "b"]])["estimate"]
+    two = kamath_ch4_full_finetune_obj(model, ["x1", "x2"], [["a", "b"], ["c", "d"]])["estimate"]
+    assert two == pytest.approx(2.0 * one, rel=1e-12)
 
-    result = kamath_ch4_full_finetune_obj(Phi, x, y)
 
-    assert isinstance(result, dict)
-
-    expected_keys = {"estimate", "per_pair", "n_tokens", "n", "method"}
-    assert set(result.keys()) == expected_keys
-
-    # Expected estimate: 1 * log(0.5)
-    expected_estimate = math.log(0.5)
-    assert math.isfinite(result["estimate"])
-    assert abs(result["estimate"] - expected_estimate) < 1e-12
-
-    assert result["n_tokens"] == 1
-    assert result["n"] == 1
-    assert isinstance(result["method"], str)
+def test_a_certain_model_reaches_the_maximum_of_zero():
+    model = lambda x, prefix, y_t: 1.0
+    res = kamath_ch4_full_finetune_obj(model, ["x1"], [["a", "b"]])
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)

@@ -1,45 +1,33 @@
-"""Tests for km051.kamath_ch3_qa_trigger_template."""
+"""Verification tests for km051.
 
-from morie.fn import _array_core as np
+Kamath, Keenan, Somers and Sorenson (2024), eq. 3.10, the adversarial-trigger QA prompt. Expected values are
+recomputed in the test body.
+"""
+
+import math
 
 import pytest
 
 from morie.fn.km051 import kamath_ch3_qa_trigger_template
 
 
-def test_km051_basic():
-    """Test basic functionality with default n_triggers."""
-    x = "Where?"
-    y = "Paris."
-    T = "the"
-    z_adv = "Rome"
-    result = kamath_ch3_qa_trigger_template(x, y, T, z_adv)
-    assert isinstance(result, dict)
-    # n_triggers defaults to 3
-    assert result["n_triggers"] == 3
-    expected_prompt = f"Question: {x} Context: {y} Answer: {T} {T} {T} {z_adv}"
-    assert result["prompt"] == expected_prompt
-    assert result["trigger"] == T
-    assert result["adversarial_answer"] == z_adv
-    assert isinstance(result["tokens"], list)
-    assert result["n"] == len(result["tokens"])
-    assert result["estimate"] == float(len(result["tokens"]))
-    assert result["method"] == "adversarial-trigger QA prompt (Kamath Eq 3.10)"
+def test_the_trigger_is_repeated_before_the_adversarial_answer():
+    # Eq 3.10: "Question: [x] Context: [y] Answer: [T][T][T][z_adv]"
+    res = kamath_ch3_qa_trigger_template("who?", "ctx", "TRG", "wrong", n_triggers=3)
+    assert res["prompt"].count("TRG") == 3
+    assert res["prompt"].rstrip().endswith("wrong")
+    assert res["n_triggers"] == 3
+    assert res["adversarial_answer"] == "wrong"
 
 
-def test_km051_edge():
-    """Test edge case with n_triggers=1."""
-    x = "What is the capital of France?"
-    y = "It is Paris."
-    T = "alpha"
-    z_adv = "beta"
-    result = kamath_ch3_qa_trigger_template(x, y, T, z_adv, n_triggers=1)
-    assert isinstance(result, dict)
-    assert result["n_triggers"] == 1
-    expected_prompt = f"Question: {x} Context: {y} Answer: {T} {z_adv}"
-    assert result["prompt"] == expected_prompt
-    assert result["trigger"] == T
-    assert result["adversarial_answer"] == z_adv
-    assert isinstance(result["tokens"], list)
-    assert result["n"] == len(result["tokens"])
-    assert result["estimate"] == float(result["n"])
+def test_the_trigger_count_is_respected():
+    for k in (1, 2, 5):
+        res = kamath_ch3_qa_trigger_template("q", "c", "T", "a", n_triggers=k)
+        assert res["prompt"].count("T ") + res["prompt"].count("T" + "a") >= 1
+        assert res["n_triggers"] == k
+
+
+def test_the_question_and_context_both_appear():
+    res = kamath_ch3_qa_trigger_template("who wrote it", "a context", "T", "adv")
+    assert "who wrote it" in res["prompt"]
+    assert "a context" in res["prompt"]

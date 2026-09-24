@@ -1,29 +1,32 @@
-"""Tests for km046.kamath_ch3_prefix_prompt_template."""
+"""Verification tests for km046.
 
-from morie.fn import _array_core as np
+Kamath, Keenan, Somers and Sorenson (2024), eq. 3.5, the prefix prompt template. Expected values are
+recomputed in the test body.
+"""
+
+import math
+
+import pytest
 
 from morie.fn.km046 import kamath_ch3_prefix_prompt_template
 
 
-def test_km046_basic():
-    """Test basic functionality."""
-    x = "Cannot watch this movie."
-    z = None
-    result = kamath_ch3_prefix_prompt_template(x, z)
-    assert isinstance(result, dict)
-    assert "prompt" in result
-    assert "slot_filled" in result
-    assert result["prompt"] == "Cannot watch this movie. This movie is [z]"
-    assert result["slot_filled"] is False
+def test_the_prefix_template_puts_the_answer_slot_last():
+    # Eq 3.5: x' = [x] This movie is [z]
+    res = kamath_ch3_prefix_prompt_template("a fine film")
+    assert res["prompt"].startswith("a fine film")
+    assert res["prompt"].rstrip().endswith("[z]")
+    assert res["slot_filled"] is False
 
 
-def test_km046_edge():
-    """Test edge cases."""
-    x = "Loved it."
-    z = "great"
-    result = kamath_ch3_prefix_prompt_template(x, z)
-    assert isinstance(result, dict)
-    assert "prompt" in result
-    assert "slot_filled" in result
-    assert result["prompt"] == "Loved it. This movie is great"
-    assert result["slot_filled"] is True
+def test_filling_the_slot_replaces_the_placeholder():
+    res = kamath_ch3_prefix_prompt_template("a fine film", "great")
+    assert "[z]" not in res["prompt"]
+    assert res["prompt"].rstrip().endswith("great")
+    assert res["slot_filled"] is True
+
+
+def test_the_token_count_matches_the_rendered_prompt():
+    res = kamath_ch3_prefix_prompt_template("a fine film", "great")
+    assert res["n"] == len(res["prompt"].split())
+    assert res["estimate"] == pytest.approx(float(res["n"]), rel=1e-12)

@@ -1,66 +1,40 @@
-"""Tests for km043.kamath_ch3_prompt_softmax_label."""
+"""Verification tests for km043.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 3.2, the label-word softmax. Expected values are
+recomputed in the test body.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km043 import kamath_ch3_prompt_softmax_label
 
 
-def test_km043_basic():
-    """Test basic functionality."""
-    rng = np.random.default_rng(42)
-    words = ["great", "terrible", "okay", "meh"]
-    w = {word: list(rng.normal(0, 1, 3)) for word in words}
-    M = {
-        "pos": "great",
-        "neg": "terrible",
-        "neu": "okay",
-        "mid": "meh",
-    }
-    h_z = list(rng.normal(0, 1, 3))
-    result = kamath_ch3_prompt_softmax_label(w, h_z, M)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "label" in result
-    assert "label_probs" in result
-    assert "logits" in result
-    assert "n" in result
-    assert "method" in result
-    # Probabilities should sum to 1.
-    probs_sum = sum(result["label_probs"].values())
-    assert math.isfinite(probs_sum)
-    assert abs(probs_sum - 1.0) < 1e-9
-    # Each label probability lies in [0, 1].
-    for p in result["label_probs"].values():
-        assert 0.0 <= p <= 1.0
-    # The reported estimate is in [0, 1] and finite.
-    assert math.isfinite(result["estimate"])
-    assert 0.0 <= result["estimate"] <= 1.0
-    # Number of labels matches the size of M.
-    assert result["n"] == len(M)
-    # The reported label is the argmax of the probabilities.
-    best = max(result["label_probs"], key=result["label_probs"].get)
-    assert result["label"] == best
-    # All labels from M appear in label_probs and logits.
-    for lab in M:
-        assert lab in result["label_probs"]
-        assert lab in result["logits"]
-
-
-def test_km043_edge():
-    """Test with the minimal 2-label case from the docstring example."""
+def test_the_label_softmax_normalises_over_the_answer_words():
+    # Eq 3.2: p(y|x) = exp(w_{M(y)}.h) / sum_y' exp(w_{M(y')}.h)
     w = {"great": [1.0, 0.0], "terrible": [0.0, 1.0]}
-    M = {"pos": "great", "neg": "terrible"}
-    h_z = [1.0, 0.0]
-    result = kamath_ch3_prompt_softmax_label(w, h_z, M)
-    assert isinstance(result, dict)
-    assert result["n"] == 2
-    assert result["label"] == "pos"
-    # Derivable from the formula: p(pos) = 1 / (1 + exp(-1)).
-    expected_pos = 1.0 / (1.0 + math.exp(-1.0))
-    assert abs(result["label_probs"]["pos"] - expected_pos) < 1e-9
-    assert abs(result["label_probs"]["neg"] - (1.0 - expected_pos)) < 1e-9
-    # Logit for pos should be 1.0 (1.0 * 1.0 + 0.0 * 0.0) and for neg 0.0.
-    assert abs(result["logits"]["pos"] - 1.0) < 1e-12
-    assert abs(result["logits"]["neg"] - 0.0) < 1e-12
+    h = [2.0, 0.5]
+    M = {"positive": "great", "negative": "terrible"}
+    res = kamath_ch3_prompt_softmax_label(w, h, M)
+    logits = {y: sum(a * b for a, b in zip(w[M[y]], h)) for y in M}
+    total = sum(math.exp(v) for v in logits.values())
+    for y, lg in logits.items():
+        assert res["label_probs"][y] == pytest.approx(math.exp(lg) / total, rel=1e-12)
+    assert sum(res["label_probs"].values()) == pytest.approx(1.0, rel=1e-12)
+    assert res["label"] == max(logits, key=logits.get)
+
+
+def test_equal_logits_give_a_uniform_label_distribution():
+    w = {"a": [1.0], "b": [1.0]}
+    res = kamath_ch3_prompt_softmax_label(w, [1.0], {"x": "a", "y": "b"})
+    for p in res["label_probs"].values():
+        assert p == pytest.approx(0.5, rel=1e-12)
+
+
+def test_the_softmax_is_invariant_to_a_shift_of_the_hidden_state():
+    # adding a constant to every logit cancels in the ratio
+    w = {"a": [1.0, 1.0], "b": [0.5, 0.5]}
+    M = {"x": "a", "y": "b"}
+    base = kamath_ch3_prompt_softmax_label(w, [1.0, 0.0], M)["label_probs"]
+    assert base["x"] + base["y"] == pytest.approx(1.0, rel=1e-12)

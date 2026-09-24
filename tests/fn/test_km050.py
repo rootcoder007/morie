@@ -1,52 +1,26 @@
-"""Tests for km050.kamath_ch3_back_translation_prob."""
+"""Verification tests for km050.
 
-from morie.fn import _array_core as np
-
-from morie.fn.km050 import kamath_ch3_back_translation_prob
+Kamath, Keenan, Somers and Sorenson (2024), eq. 3.9, the round-trip back-translation score. Expected values are
+recomputed in the test body.
+"""
 
 import math
 
+import pytest
 
-def test_km050_basic():
-    """Test basic functionality."""
-    t = "[z] is the capital of [x]."
-    thatt = "[z] est la capitale de [x]."
-    p_forward = 0.5
-    p_backward = 0.25
-    result = kamath_ch3_back_translation_prob(t, thatt, p_forward=p_forward, p_backward=p_backward)
-
-    # The estimate must be the product of the two supplied leg probabilities
-    expected_estimate = p_forward * p_backward
-    assert math.isclose(result["estimate"], expected_estimate)
-
-    # The result should preserve the inputs and contain the expected keys
-    assert result["p_forward"] == p_forward
-    assert result["p_backward"] == p_backward
-    assert result["candidate"] == t
-    assert result["pivot"] == thatt
-    assert result["n"] == 2
-
-    # The estimate is a probability and must lie in [0, 1]
-    assert 0.0 <= result["estimate"] <= 1.0
+from morie.fn.km050 import kamath_ch3_back_translation_prob
 
 
-def test_km050_edge():
-    """Test edge cases with extreme probabilities."""
-    t = "prompt"
-    thatt = "pivot"
+def test_the_round_trip_probability_is_the_product_of_both_directions():
+    # Eq 3.9: P(t) = P_forward(t_hat|t) P_backward(t|t_hat)
+    for f, b in ((0.6, 0.5), (1.0, 0.25), (0.1, 0.1)):
+        res = kamath_ch3_back_translation_prob("orig", "para", f, b)
+        assert res["estimate"] == pytest.approx(f * b, rel=1e-12)
 
-    # Both probabilities zero -> estimate should be zero
-    p_forward = 0.0
-    p_backward = 0.0
-    result = kamath_ch3_back_translation_prob(t, thatt, p_forward=p_forward, p_backward=p_backward)
-    assert math.isclose(result["estimate"], 0.0)
-    assert result["p_forward"] == p_forward
-    assert result["p_backward"] == p_backward
 
-    # Both probabilities one -> estimate should be one
-    p_forward = 1.0
-    p_backward = 1.0
-    result = kamath_ch3_back_translation_prob(t, thatt, p_forward=p_forward, p_backward=p_backward)
-    assert math.isclose(result["estimate"], 1.0)
-    assert result["p_forward"] == p_forward
-    assert result["p_backward"] == p_backward
+def test_a_certain_round_trip_scores_one():
+    assert kamath_ch3_back_translation_prob("t", "t", 1.0, 1.0)["estimate"] == pytest.approx(1.0, rel=1e-12)
+
+
+def test_a_broken_direction_kills_the_score():
+    assert kamath_ch3_back_translation_prob("t", "p", 0.9, 0.0)["estimate"] == pytest.approx(0.0, abs=1e-15)

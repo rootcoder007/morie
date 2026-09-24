@@ -1,34 +1,31 @@
-"""Tests for km052.kamath_ch3_t5_template_obj."""
+"""Verification tests for km052.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 3.11, the T5 template-generation objective. Expected values are
+recomputed in the test body.
+"""
 
 import math
 
 import pytest
-from morie.fn import _array_core as np
 
 from morie.fn.km052 import kamath_ch3_t5_template_obj
 
 
-def test_km052_basic():
-    """Test basic functionality."""
-    D_train = [("great movie", "pos"), ("awful movie", "neg"), ("okay film", "neu")]
-    T = "{x} It was {y}"
-    T5 = lambda T, s: 0.5
-    result = kamath_ch3_t5_template_obj(D_train, T, T5)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "per_example" in result
-    assert "filled_inputs" in result
-    assert "n" in result
-    assert "method" in result
-    assert result["n"] == 3
-    assert math.isfinite(result["estimate"])
-    assert result["estimate"] <= 0.0
-    assert len(result["per_example"]) == 3
-    assert len(result["filled_inputs"]) == 3
+def test_the_t5_objective_sums_the_log_probability_of_the_template():
+    # Eq 3.11: sum over the training pairs of log P_T5(T | T(x_in, y))
+    data = [("in1", "y1"), ("in2", "y2")]
+    P = lambda t, filled: 0.5
+    res = kamath_ch3_t5_template_obj(data, "T", P)
+    assert res["estimate"] == pytest.approx(2.0 * math.log(0.5), rel=1e-12)
+    for v in res["per_example"]:
+        assert v == pytest.approx(math.log(0.5), rel=1e-12)
 
 
-def test_km052_edge():
-    """Test edge cases."""
-    # Empty D_train is explicitly invalid per docstring.
+def test_a_certain_template_contributes_no_loss():
+    res = kamath_ch3_t5_template_obj([("a", "b")], "T", lambda t, filled: 1.0)
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)
+
+
+def test_a_probability_outside_the_unit_interval_is_refused():
     with pytest.raises(ValueError):
-        kamath_ch3_t5_template_obj([], "{x} {y}", lambda T, s: 0.5)
+        kamath_ch3_t5_template_obj([("a", "b")], "T", lambda t, filled: 1.5)

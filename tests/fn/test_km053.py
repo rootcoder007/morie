@@ -1,51 +1,33 @@
-"""Tests for km053.kamath_ch3_prefix_tuning_obj."""
+"""Verification tests for km053.
 
-from morie.fn import _array_core as np
+Kamath, Keenan, Somers and Sorenson (2024), eq. 3.12, the prefix-tuning objective. Expected values are
+recomputed in the test body.
+"""
+
 import math
+
+import pytest
 
 from morie.fn.km053 import kamath_ch3_prefix_tuning_obj
 
 
-def test_km053_basic():
-    """Test basic functionality with all target positions scored."""
-    rng = np.random.default_rng(42)
-
-    def phi(z, hp):
-        return 0.5
-
-    x = "summarise:"
-    y = ["a", "b", "c", "d"]
-    h = rng.normal(0, 1, len(y))
-    result = kamath_ch3_prefix_tuning_obj(phi, x, y, h)
-    assert "estimate" in result
-    assert "per_position" in result
-    assert "positions_scored" in result
-    assert "n" in result
-    expected = len(y) * math.log(0.5)
-    assert abs(result["estimate"] - expected) < 1e-12
-    assert len(result["per_position"]) == len(y)
-    assert result["n"] == len(y)
-    assert math.isfinite(result["estimate"])
+def test_the_prefix_tuning_objective_sums_over_the_answer_positions():
+    # Eq 3.12: max_phi log p_phi(y|x) = sum_{i in Y_idx} log p(z_i | h_<i)
+    phi = lambda z, h: 0.5
+    res = kamath_ch3_prefix_tuning_obj(phi, "x", ["a", "b"], [0.1, 0.2])
+    assert res["estimate"] == pytest.approx(2.0 * math.log(0.5), rel=1e-12)
+    assert list(res["positions_scored"]) == [0, 1]
 
 
-def test_km053_edge():
-    """Test edge case with a subset of positions in Y_idx."""
-    rng = np.random.default_rng(42)
+def test_restricting_the_positions_shortens_the_sum():
+    phi = lambda z, h: 0.5
+    res = kamath_ch3_prefix_tuning_obj(phi, "x", ["a", "b", "c"], [0.1, 0.2, 0.3], Y_idx=[1])
+    assert res["estimate"] == pytest.approx(math.log(0.5), rel=1e-12)
+    assert list(res["positions_scored"]) == [1]
 
-    def phi(z, hp):
-        return 0.25
 
-    x = "translate:"
-    y = ["a", "b", "c", "d", "e"]
-    h = rng.normal(0, 1, len(y))
-    Y_idx = [0, 2, 4]
-    result = kamath_ch3_prefix_tuning_obj(phi, x, y, h, Y_idx=Y_idx)
-    assert "estimate" in result
-    assert "per_position" in result
-    assert "positions_scored" in result
-    expected = 3 * math.log(0.25)
-    assert abs(result["estimate"] - expected) < 1e-12
-    assert result["positions_scored"] == Y_idx
-    assert len(result["per_position"]) == len(Y_idx)
-    assert result["n"] == len(y)
-    assert math.isfinite(result["estimate"])
+def test_it_is_a_sum_and_not_a_mean():
+    phi = lambda z, h: 0.5
+    two = kamath_ch3_prefix_tuning_obj(phi, "x", ["a", "b"], [0.1, 0.2])["estimate"]
+    four = kamath_ch3_prefix_tuning_obj(phi, "x", ["a", "b", "c", "d"], [0.1, 0.2, 0.3, 0.4])["estimate"]
+    assert four == pytest.approx(2.0 * two, rel=1e-12)

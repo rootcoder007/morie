@@ -1,32 +1,49 @@
-"""Tests for km049.kamath_ch3_top1_prompt_metric."""
+"""Verification tests for km049.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 3.4, top-one prompt
+accuracy. ``P_LM(x, t)`` returns a label distribution, so the tests
+check the argmax rule and the validation that distribution must pass.
+"""
 
 import pytest
-
-from morie.fn import _array_core as np
 
 from morie.fn.km049 import kamath_ch3_top1_prompt_metric
 
 
-def test_km049_basic():
-    """Test basic functionality."""
-    R = [("a", "pos"), ("b", "neg"), ("c", "pos"), ("d", "pos")]
-    t = "T1"
-
-    def P_LM(x, t):
-        return {"pos": 0.7, "neg": 0.3}
-
-    result = kamath_ch3_top1_prompt_metric(R, t, P_LM)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "n_correct" in result
-    assert "n" in result
-    assert result["n"] == 4
-    assert result["n_correct"] == 3
-    assert 0.0 <= result["estimate"] <= 1.0
+def test_top_one_accuracy_counts_argmax_agreements():
+    # Eq 3.4: A(t) = (1/|R|) sum 1[y = argmax_y' P_LM(y'|x, t)]
+    R = [("a", "pos"), ("b", "neg")]
+    P = lambda x, t: {"pos": 0.9, "neg": 0.1}
+    res = kamath_ch3_top1_prompt_metric(R, "T1", P)
+    # the model always prefers "pos", so it is right on exactly one
+    assert res["estimate"] == pytest.approx(0.5, rel=1e-12)
+    assert res["n_correct"] == 1
+    assert list(res["correct"]) == [1, 0]
 
 
-def test_km049_edge():
-    """Test edge cases."""
+def test_a_model_that_always_names_the_gold_label_scores_one():
+    gold = {"a": "pos", "b": "neg"}
+    P = lambda x, t: {k: (1.0 if k == gold[x] else 0.0) for k in ("pos", "neg")}
+    res = kamath_ch3_top1_prompt_metric([("a", "pos"), ("b", "neg")], "T", P)
+    assert res["estimate"] == pytest.approx(1.0, rel=1e-12)
+
+
+def test_a_model_that_always_names_the_other_label_scores_zero():
+    P = lambda x, t: {"pos": 0.0, "neg": 1.0}
+    res = kamath_ch3_top1_prompt_metric([("a", "pos"), ("b", "pos")], "T", P)
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)
+
+
+def test_a_distribution_that_does_not_sum_to_one_is_refused():
     with pytest.raises(ValueError):
-        kamath_ch3_top1_prompt_metric(
-            [], "T1", lambda x, t: {"pos": 1.0, "neg": 0.0})
+        kamath_ch3_top1_prompt_metric([("a", "pos")], "T", lambda x, t: {"pos": 0.4, "neg": 0.4})
+
+
+def test_a_gold_label_absent_from_the_distribution_is_refused():
+    with pytest.raises(ValueError):
+        kamath_ch3_top1_prompt_metric([("a", "other")], "T", lambda x, t: {"pos": 0.5, "neg": 0.5})
+
+
+def test_accuracy_over_no_examples_is_refused_rather_than_called_zero():
+    with pytest.raises(ValueError):
+        kamath_ch3_top1_prompt_metric([], "T", lambda x, t: {"pos": 1.0})
