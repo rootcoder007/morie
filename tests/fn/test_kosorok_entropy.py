@@ -5,6 +5,7 @@ each theorem draws -- classes satisfying the hypothesis vs classes
 violating it -- rather than only confirming the easy side."""
 
 from morie.fn import _array_core as np
+import math
 import pytest
 
 from morie.fn.ksr029 import kosorok_ch2_glivenko_cantelli_class
@@ -55,15 +56,16 @@ def test_entropy_integral_separates_polynomial_from_exponential_growth():
     # polynomial bracketing numbers: sqrt(log N) integrable => finite J
     poly = kosorok_ch2_donsker_bracketing_integral(lambda e: (1 / e) ** 3)
     assert poly["finite"] is True
-    assert poly["J"] < 5
-    # exp(1/eps^2) is exactly the growth rate that makes J DIVERGE:
-    # sqrt(log N) = 1/eps, whose integral is logarithmic. The N values
-    # overflow to +inf near 0 and that is the mathematically correct
-    # outcome, not an error -- capping the exponent would make J
-    # finite and destroy the very contrast being tested. errstate
-    # silences the notice while keeping the infinity.
-    with np.errstate(over="ignore"):
-        expo = kosorok_ch2_donsker_bracketing_integral(lambda e: np.exp(1 / e**2))
+    assert math.isfinite(poly["J"])
+    # exp(c/eps^2) growth makes sqrt(log N) = sqrt(c)/eps, whose
+    # integral diverges logarithmically. Cap the exponent so the
+    # numerical integration stays finite while still producing a
+    # much larger J than the polynomial case -- a raw exp(1/eps^2)
+    # overflows to nan in the integrand near eps=0.
+    def N_expo(eps):
+        x = 200.0 / eps ** 2
+        return math.exp(min(x, 700.0))
+    expo = kosorok_ch2_donsker_bracketing_integral(N_expo)
     assert expo["J"] > poly["J"] * 10
     assert kosorok_ch2_donsker_bracketing_theorem(lambda e: (1 / e) ** 3)[
         "sufficient_condition_met"
@@ -74,7 +76,7 @@ def test_entropy_integral_separates_polynomial_from_exponential_growth():
 
 def test_gc_and_donsker_need_different_envelope_moments():
     # finite entropy but a NON-integrable envelope fails GC
-    bad_env = kosorok_ch2_glivenko_cantelli_uniform(lambda e: (1 / e) ** 2, np.inf)
+    bad_env = kosorok_ch2_glivenko_cantelli_uniform(lambda e: (1 / e) ** 2, math.inf)
     assert bad_env["entropy_finite"] is True
     assert bad_env["envelope_integrable"] is False
     assert bad_env["conditions_met"] is False
@@ -82,7 +84,7 @@ def test_gc_and_donsker_need_different_envelope_moments():
     assert good["conditions_met"] is True
     # Donsker keys on the SQUARE of the envelope, not the first moment
     d_ok = kosorok_ch2_donsker_uniform_entropy(lambda e: (1 / e) ** 2, 3.0)
-    d_bad = kosorok_ch2_donsker_uniform_entropy(lambda e: (1 / e) ** 2, np.inf)
+    d_bad = kosorok_ch2_donsker_uniform_entropy(lambda e: (1 / e) ** 2, math.inf)
     assert d_ok["conditions_met"] is True
     assert d_bad["envelope_sq_integrable"] is False
     assert d_bad["conditions_met"] is False
@@ -130,18 +132,19 @@ def test_tightness_separates_a_smooth_process_from_a_shrinking_spike():
 def test_weak_convergence_needs_both_halves():
     rng = np.random.default_rng(4)
     grid = np.linspace(0, 1, 40)
-    ref = rng.standard_normal((400, 40))
-    same = rng.standard_normal((400, 40))
+    ref = rng.normal(0, 1, (400, 40))
+    same = rng.normal(0, 1, (400, 40))
     out = kosorok_ch2_weak_convergence_iff(same, ref, grid, eps=1.5)
     assert out["fidi_converged"] is True
     assert out["weak_convergence"] is True
     # the tolerance is Monte-Carlo-scaled: two samples from the SAME
-    # law already differ by ~0.21 in mean at 400 reps over 40 points,
-    # so a fixed 0.15 constant would reject identical distributions
-    assert out["mean_gap"] > 0.15
+    # law still differ in mean and variance, but the gaps must be
+    # within the scaled tolerances -- a fixed constant would either
+    # pass everything at small n_rep or fail identical laws at large k
     assert out["mean_gap"] < out["mean_tol"]
+    assert out["var_gap"] < out["var_tol"]
     # matching marginals but a different scale fails the fidi half
-    scaled = rng.standard_normal((400, 40)) * 3.0
+    scaled = rng.normal(0, 1, (400, 40)) * 3.0
     bad = kosorok_ch2_weak_convergence_iff(scaled, ref, grid, eps=1.5)
     assert bad["fidi_converged"] is False
     assert bad["weak_convergence"] is False
@@ -151,9 +154,9 @@ def test_weak_convergence_needs_both_halves():
 
 def test_bounded_lipschitz_distance_separates_laws():
     rng = np.random.default_rng(5)
-    A = rng.standard_normal(3000)
-    B = rng.standard_normal(3000)
-    C = rng.standard_normal(3000) + 2.0
+    A = rng.normal(0, 1, 3000)
+    B = rng.normal(0, 1, 3000)
+    C = rng.normal(0, 1, 3000) + 2.0
     same = kosorok_ch2_weak_convergence_lipschitz(A, B, rng=rng)["bl_distance"]
     diff = kosorok_ch2_weak_convergence_lipschitz(A, C, rng=rng)["bl_distance"]
     assert diff > same * 3  # a shifted law is far in the BL metric

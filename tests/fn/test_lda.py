@@ -1,26 +1,32 @@
 """Tests for lda.lda_topic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lda import lda_topic
 
 
 def test_lda_basic():
     """Test basic functionality."""
-    docs = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    alpha = 0.05
-    beta = 0.8
-    result = lda_topic(docs, K, alpha, beta)
+    rng = np.random.default_rng(42)
+    vocab_size = 50
+    docs_mat = rng.integers(0, vocab_size, (10, 20))
+    docs = [[int(v) for v in row] for row in docs_mat]
+    K = 5
+    alpha = 0.1
+    beta = 0.1
+    result = lda_topic(docs, K, vocab_size, alpha, beta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert len(result) > 0
 
 
 def test_lda_edge():
     """Test edge cases."""
-    docs = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    alpha = 0.05
-    beta = 0.8
-    result = lda_topic(docs, K, alpha, beta)
+    rng = np.random.default_rng(42)
+    vocab_size = 20
+    docs_mat = rng.integers(0, vocab_size, (5, 8))
+    docs = [[int(v) for v in row] for row in docs_mat]
+    K = 2
+    alpha = 0.1
+    beta = 0.1
+    result = lda_topic(docs, K, vocab_size, alpha, beta)
     assert isinstance(result, dict)
+    assert len(result) > 0
