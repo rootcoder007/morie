@@ -728,6 +728,40 @@ class marr:
         """numpy.ndarray.itemsize: the byte width of one element."""
         return getattr(self.dtype, "itemsize", 8)
 
+    def sort(self, axis=-1, kind=None, order=None):
+        """numpy.ndarray.sort: sorts in place and returns None."""
+        del kind, order
+        if len(self.shape) == 1:
+            self.data.sort()
+            return None
+        ax = -1 if axis is None else int(axis)
+        if ax in (-1, 1):
+            for row in self.data:
+                row.sort()
+        elif ax == 0:
+            cols = [sorted(self.data[i][j]
+                           for i in range(self.shape[0]))
+                    for j in range(self.shape[1])]
+            for i in range(self.shape[0]):
+                for j in range(self.shape[1]):
+                    self.data[i][j] = cols[j][i]
+        else:
+            raise ValueError("axis %r is out of bounds" % (axis,))
+        return None
+
+    def nonzero(self):
+        """numpy.ndarray.nonzero: one index array per dimension."""
+        if len(self.shape) == 1:
+            return (marr([float(i) for i, v in enumerate(self.data)
+                          if v]),)
+        ii, jj = [], []
+        for i, row in enumerate(self.data):
+            for j, v in enumerate(row):
+                if v:
+                    ii.append(float(i))
+                    jj.append(float(j))
+        return _index_pair(ii, jj)
+
     @property
     def flags(self):
         """numpy.ndarray.flags. The list-backed core always owns its
@@ -1705,6 +1739,42 @@ def _all_bool_payload(x):
     if isinstance(x, (list, tuple)):
         return bool(x) and _pyall(_all_bool_payload(v) for v in x)
     return False
+
+
+class _CStack:
+    """numpy.c_: stacks its operands as columns.
+
+    ``c_[a, b]`` treats 1-D operands as columns and concatenates 2-D
+    operands along axis 1, which is how callers build a design matrix
+    with an intercept.
+    """
+
+    def __getitem__(self, key):
+        items = key if isinstance(key, tuple) else (key,)
+        cols = []
+        rows = None
+        for it in items:
+            a = asarray(it, dtype=float) if not isinstance(it, marr) else it
+            if len(a.shape) == 1:
+                block = [[v] for v in a._flat()]
+            elif len(a.shape) == 2:
+                block = [list(r) for r in a.data]
+            else:
+                raise ValueError("c_ takes 1-D or 2-D operands")
+            if rows is None:
+                rows = len(block)
+            elif len(block) != rows:
+                raise ValueError(
+                    "c_ operands disagree on the row count: %d vs %d"
+                    % (rows, len(block)))
+            cols.append(block)
+        if rows is None:
+            raise ValueError("c_ needs at least one operand")
+        return marr([_bi.sum((blk[i] for blk in cols), [])
+                     for i in range(rows)])
+
+
+c_ = _CStack()
 
 
 def asarray(x, dtype=None):
@@ -5177,6 +5247,56 @@ class ndlist(list):
     def transpose(self, axes=None):
         """numpy.ndarray.transpose: reverses the axes by default."""
         return transpose(self, axes)
+
+    @property
+    def data(self):
+        """The nested lists, the same shape marr.data has, so code
+        written against the rank-2 core keeps working at rank 3."""
+        return self._blocks()
+
+    def ravel(self):
+        """numpy.ndarray.ravel: a flat 1-D view."""
+        return marr(_flatten_nested(self.tolist()))
+
+    def flatten(self):
+        """numpy.ndarray.flatten: a flat 1-D copy."""
+        return marr(_flatten_nested(self.tolist()))
+
+    def squeeze(self, axis=None):
+        """numpy.ndarray.squeeze: drops the length-1 axes."""
+        nested = self.tolist()
+        shape = _list_shape(nested)
+        if axis is not None:
+            axes = [int(v) % len(shape) for v in
+                    (axis if isinstance(axis, (list, tuple)) else [axis])]
+            for a in axes:
+                if shape[a] != 1:
+                    raise ValueError(
+                        "cannot select an axis to squeeze out which has "
+                        "size not equal to one")
+        else:
+            axes = [k for k, d in enumerate(shape) if d == 1]
+        keep = [k for k in range(len(shape)) if k not in axes]
+        if not keep:
+            return float(_flatten_nested(nested)[0])
+        out_shape = [shape[k] for k in keep]
+
+        def get(node, idx):
+            for i in idx:
+                node = node[i]
+            return node
+
+        def build(dim, idx):
+            if dim == len(out_shape):
+                full = [0] * len(shape)
+                for pos, k in enumerate(keep):
+                    full[k] = idx[pos]
+                return get(nested, full)
+            return [build(dim + 1, idx + [i])
+                    for i in range(out_shape[dim])]
+
+        res = build(0, [])
+        return ndlist(res) if len(out_shape) >= 3 else marr(res)
 
     @property
     def T(self):
