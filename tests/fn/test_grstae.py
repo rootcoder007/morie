@@ -7,8 +7,8 @@ from morie.fn.grstae import geron_stacked_autoencoder
 
 def test_grstae_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    layer_weights = np.random.default_rng(42).normal(0, 1, 100)
+    x = [[1.0, 2.0]]
+    layer_weights = [W]
     result = geron_stacked_autoencoder(x, layer_weights)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_grstae_basic():
 
 def test_grstae_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    layer_weights = np.random.default_rng(42).normal(0, 1, 100)
+    x = [[1.0, 2.0]]
+    layer_weights = [W]
     result = geron_stacked_autoencoder(x, layer_weights)
     assert isinstance(result, dict)

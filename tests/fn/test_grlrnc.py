@@ -7,8 +7,8 @@ from morie.fn.grlrnc import geron_learning_curves
 
 def test_grlrnc_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = [[1.0, float(i)] for i in range(12)]
+    y = [2.0 * i + 1 for i in range(12)]
     result = geron_learning_curves(X, y)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_grlrnc_basic():
 
 def test_grlrnc_edge():
     """Test edge cases."""
-    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = [[1.0, float(i)] for i in range(12)]
+    y = [2.0 * i + 1 for i in range(12)]
     result = geron_learning_curves(X, y)
     assert isinstance(result, dict)

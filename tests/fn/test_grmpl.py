@@ -7,7 +7,7 @@ from morie.fn.grmpl import geron_max_pooling
 
 def test_grmpl_basic():
     """Test basic functionality."""
-    X = [[-5.0, -2.0], [-9.0, -7.0]]
+    X = [[1.0, 5.0, 2.0], [3.0, 4.0, 0.0], [9.0, 1.0, 1.0]]
     result = geron_max_pooling(X)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -15,6 +15,6 @@ def test_grmpl_basic():
 
 def test_grmpl_edge():
     """Test edge cases."""
-    X = [[-5.0, -2.0], [-9.0, -7.0]]
+    X = [[1.0, 5.0, 2.0], [3.0, 4.0, 0.0], [9.0, 1.0, 1.0]]
     result = geron_max_pooling(X)
     assert isinstance(result, dict)
