@@ -7,27 +7,39 @@ from morie.fn.greast import geron_early_stopping
 
 def test_greast_basic():
     """Test basic functionality."""
-    X_train = np.random.default_rng(42).normal(0, 1, 100)
-    y_train = np.random.default_rng(43).normal(0, 1, 100)
-    X_val = np.random.default_rng(42).normal(0, 1, 100)
-    y_val = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    n, p = 40, 3
+    X_train = rng.normal(0, 1, (n, p))
+    y_train = rng.normal(0, 1, n)
+    X_val = rng.normal(0, 1, (n, p))
+    y_val = rng.normal(0, 1, n)
     n_iter = 50
-    eta = np.random.default_rng(42).normal(0, 1, 100)
+    eta = 0.02
     result = geron_early_stopping(X_train, y_train, X_val, y_val, n_iter, eta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("theta", "best_iteration", "best_val_rmse",
+                "val_rmse_history", "train_rmse_history",
+                "final_val_rmse", "overfitting_detected"):
+        assert key in result
+    assert 0 <= result["best_iteration"] <= n_iter
+    assert len(result["val_rmse_history"]) == n_iter + 1
+    assert len(result["train_rmse_history"]) == n_iter + 1
 
 
 def test_greast_edge():
     """Test edge cases."""
-    X_train = np.random.default_rng(42).normal(0, 1, 100)
-    y_train = np.random.default_rng(43).normal(0, 1, 100)
-    X_val = np.random.default_rng(42).normal(0, 1, 100)
-    y_val = np.random.default_rng(42).normal(0, 1, 100)
+    # Clean linear data from the docstring example: validation error
+    # falls the whole way, so the best snapshot is the last one.
+    X_train = [[1.0, float(i)] for i in range(6)]
+    y_train = [float(i) for i in range(6)]
+    X_val = [[1.0, 10.0], [1.0, 11.0]]
+    y_val = [10.0, 11.0]
     n_iter = 50
-    eta = np.random.default_rng(42).normal(0, 1, 100)
+    eta = 0.02
     result = geron_early_stopping(X_train, y_train, X_val, y_val, n_iter, eta)
     assert isinstance(result, dict)
+    assert result["best_iteration"] == 50
+    assert result["best_val_rmse"] < result["val_rmse_history"][0]
 
 
 # --- appended: the module's own worked example as a gate -----------

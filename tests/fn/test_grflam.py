@@ -4,26 +4,48 @@ from morie.fn import _array_core as np
 
 from morie.fn.grflam import geron_flamingo_cross_modal_attn
 
+import math
+
 
 def test_grflam_basic():
     """Test basic functionality."""
-    h = 0.3
-    visual_features = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    T, Tv, d_model = 3, 4, 2
+    h = rng.normal(0, 1, (T, d_model))
+    visual_features = rng.normal(0, 1, (Tv, d_model))
     alpha = 0.05
-    weights = np.random.default_rng(45).exponential(1, 100)
+    WQ = rng.normal(0, 1, (d_model, d_model))
+    WK = rng.normal(0, 1, (d_model, d_model))
+    WV = rng.normal(0, 1, (d_model, d_model))
+    weights = {"WQ": WQ, "WK": WK, "WV": WV}
     result = geron_flamingo_cross_modal_attn(h, visual_features, alpha, weights)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "h_new" in result
+    assert "gate" in result
+    assert "is_identity" in result
+    assert "delta_norm" in result
+    assert "attention_weights" in result
+    # h_new has the same number of rows (tokens) as h
+    assert len(result["h_new"]) == T
+    # gate is tanh(alpha) by construction
+    assert math.isclose(result["gate"], math.tanh(alpha), rel_tol=1e-10)
+    assert math.isfinite(result["delta_norm"])
 
 
 def test_grflam_edge():
     """Test edge cases."""
-    h = 0.3
-    visual_features = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    weights = np.random.default_rng(45).exponential(1, 100)
-    result = geron_flamingo_cross_modal_attn(h, visual_features, alpha, weights)
+    # Identity at alpha = 0: hidden states must come back unchanged
+    # and the layer must flag itself as the identity mapping.
+    I = [[1.0, 0.0], [0.0, 1.0]]
+    vis = [[5.0, 5.0], [-5.0, 3.0]]
+    h = [[1.0, 0.0]]
+    weights = {"WQ": I, "WK": I, "WV": I}
+    result = geron_flamingo_cross_modal_attn(h, vis, 0.0, weights)
     assert isinstance(result, dict)
+    assert result["is_identity"] is True
+    assert result["gate"] == 0.0
+    assert result["h_new"] == [[1.0, 0.0]]
+    assert result["delta_norm"] == 0.0
 
 
 # --- appended: the module's own worked example as a gate -----------

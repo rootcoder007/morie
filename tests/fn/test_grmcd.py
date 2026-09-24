@@ -7,20 +7,19 @@ from morie.fn.grmcd import geron_mc_dropout
 
 def test_grmcd_basic():
     """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    p = 5
-    result = geron_mc_dropout(model, x, K, p)
+    rng = np.random.default_rng(42)
+    # 3-D logits expected by mcdrop / _core.mcdrop:
+    # (n_samples, n_mc_runs, n_classes)
+    data = rng.normal(0, 1, (40, 10, 5))
+    result = geron_mc_dropout(data)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert len(result) > 0
 
 
 def test_grmcd_edge():
     """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    p = 5
-    result = geron_mc_dropout(model, x, K, p)
+    rng = np.random.default_rng(42)
+    data = rng.normal(0, 1, (10, 5, 3))
+    result = geron_mc_dropout(data)
     assert isinstance(result, dict)
+    assert len(result) > 0

@@ -1,33 +1,56 @@
 """Tests for grmgd.geron_minibatch_gradient_descent."""
 
-from morie.fn import _array_core as np
+import math
 
+import pytest
+
+from morie.fn import _array_core as np
 from morie.fn.grmgd import geron_minibatch_gradient_descent
 
 
 def test_grmgd_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    X = rng.normal(0, 1, (40, 3))
+    y = rng.normal(0, 1, 40)
+    theta = [0.0, 0.0, 0.0]
+    eta = 0.01
+    b = 8
     n_iter = 50
-    result = geron_minibatch_gradient_descent(X, y, theta, eta, b, n_iter)
+    result = geron_minibatch_gradient_descent(
+        X, y, theta, eta, b, n_iter, seed=0
+    )
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "theta" in result
+    assert "final_cost" in result
+    assert "cost_history" in result
+    assert "initial_cost" in result
+    assert "estimate" in result
+    assert len(result["theta"]) == 3
+    assert math.isfinite(result["final_cost"])
+    assert result["final_cost"] >= 0
+    assert len(result["cost_history"]) == n_iter + 1
 
 
 def test_grmgd_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    n_iter = 50
-    result = geron_minibatch_gradient_descent(X, y, theta, eta, b, n_iter)
+    """Test edge cases: full-batch one-step equals a batch-GD step."""
+    rng = np.random.default_rng(42)
+    X = rng.normal(0, 1, (40, 3))
+    y = rng.normal(0, 1, 40)
+    theta = [0.0, 0.0, 0.0]
+    eta = 0.01
+    b = 40  # b == m: full-batch edge
+    n_iter = 1
+    result = geron_minibatch_gradient_descent(
+        X, y, theta, eta, b, n_iter, seed=0
+    )
     assert isinstance(result, dict)
+    assert "theta" in result
+    assert "final_cost" in result
+    assert len(result["theta"]) == 3
+    assert math.isfinite(result["final_cost"])
+    assert result["final_cost"] >= 0
+    assert len(result["cost_history"]) == n_iter + 1
 
 
 # --- appended: the module's own worked example as a gate -----------

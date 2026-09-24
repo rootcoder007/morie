@@ -1,5 +1,7 @@
 """Tests for grgs.geron_grid_search_cv."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.grgs import geron_grid_search_cv
@@ -7,23 +9,45 @@ from morie.fn.grgs import geron_grid_search_cv
 
 def test_grgs_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    param_grid = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = geron_grid_search_cv(X, y, param_grid, K)
+    rng = np.random.default_rng(42)
+    m, p = 40, 3
+    X = rng.normal(0, 1, (m, p))
+    y = rng.normal(0, 1, m)
+    param_grid = {"a": [1, 2, 3], "b": [0, 10]}
+    K = 4
+
+    def fit_score(Xtr, ytr, Xva, yva, params):
+        return -abs(params["a"] - 2) - 0.1 * params["b"]
+
+    result = geron_grid_search_cv(X, y, param_grid, K, fit_score)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("best_params", "best_score", "best_index",
+                "mean_scores", "std_scores", "all_scores",
+                "candidates", "n_fits", "estimate", "n", "method"):
+        assert key in result
+    assert result["best_params"] == {"a": 2, "b": 0}
+    assert math.isfinite(result["best_score"])
 
 
 def test_grgs_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    param_grid = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = geron_grid_search_cv(X, y, param_grid, K)
+    rng = np.random.default_rng(42)
+    m, p = 20, 2
+    X = rng.normal(0, 1, (m, p))
+    y = rng.normal(0, 1, m)
+    param_grid = {"alpha": [0.1, 1.0, 10.0]}
+    K = 2
+
+    def fit_score(Xtr, ytr, Xva, yva, params):
+        return -abs(params["alpha"] - 1.0)
+
+    result = geron_grid_search_cv(X, y, param_grid, K, fit_score)
     assert isinstance(result, dict)
+    assert "best_params" in result
+    assert "best_score" in result
+    assert math.isfinite(result["best_score"])
+    assert len(result["candidates"]) == 3
+    assert result["n_fits"] == 6
 
 
 # --- appended: the module's own worked example as a gate -----------

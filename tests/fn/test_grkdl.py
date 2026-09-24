@@ -1,5 +1,7 @@
 """Tests for grkdl.geron_knowledge_distillation_loss."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.grkdl import geron_knowledge_distillation_loss
@@ -7,25 +9,47 @@ from morie.fn.grkdl import geron_knowledge_distillation_loss
 
 def test_grkdl_basic():
     """Test basic functionality."""
-    student_logits = np.random.default_rng(42).normal(0, 1, 100)
-    teacher_logits = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    alpha = 0.05
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = geron_knowledge_distillation_loss(student_logits, teacher_logits, y, alpha, T)
+    rng = np.random.default_rng(42)
+    m, K = 40, 3
+    student_logits = rng.normal(0, 1, (m, K))
+    teacher_logits = rng.normal(0, 1, (m, K))
+    y = rng.integers(0, K, m)
+    result = geron_knowledge_distillation_loss(
+        student_logits, teacher_logits, y, alpha=0.5, T=2.0
+    )
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("loss", "ce_hard", "kl_soft", "kl_student_teacher",
+                "kl_teacher_student", "soft_targets", "teacher_entropy",
+                "estimate", "n", "method"):
+        assert key in result
+    for key in ("loss", "ce_hard", "kl_soft", "kl_student_teacher",
+                "kl_teacher_student", "teacher_entropy"):
+        assert math.isfinite(result[key])
+    assert result["n"] == m
+    assert len(result["soft_targets"]) == m
 
 
 def test_grkdl_edge():
-    """Test edge cases."""
-    student_logits = np.random.default_rng(42).normal(0, 1, 100)
-    teacher_logits = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    alpha = 0.05
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = geron_knowledge_distillation_loss(student_logits, teacher_logits, y, alpha, T)
+    """Test edge cases with boundary alpha."""
+    rng = np.random.default_rng(7)
+    m, K = 10, 4
+    student_logits = rng.normal(0, 1, (m, K))
+    teacher_logits = rng.normal(0, 1, (m, K))
+    y = rng.integers(0, K, m)
+    result = geron_knowledge_distillation_loss(
+        student_logits, teacher_logits, y, alpha=0.0, T=2.0
+    )
     assert isinstance(result, dict)
+    for key in ("loss", "ce_hard", "kl_soft", "kl_student_teacher",
+                "kl_teacher_student", "soft_targets", "teacher_entropy",
+                "estimate", "n", "method"):
+        assert key in result
+    assert math.isfinite(result["loss"])
+    assert math.isfinite(result["ce_hard"])
+    assert math.isfinite(result["kl_soft"])
+    assert math.isfinite(result["teacher_entropy"])
+    assert result["n"] == m
+    assert len(result["soft_targets"]) == m
 
 
 # --- appended: the module's own worked example as a gate -----------

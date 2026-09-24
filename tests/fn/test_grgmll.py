@@ -1,5 +1,7 @@
 """Tests for grgmll.geron_gmm_log_likelihood."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.grgmll import geron_gmm_log_likelihood
@@ -7,23 +9,46 @@ from morie.fn.grgmll import geron_gmm_log_likelihood
 
 def test_grgmll_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    pi = np.random.default_rng(42).normal(0, 1, 100)
-    means = np.random.default_rng(42).normal(0, 1, 100)
-    covars = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    n, d, K = 40, 3, 2
+    X = rng.normal(0, 1, (n, d))
+    pi = [0.5, 0.5]
+    means = rng.normal(0, 1, (K, d))
+    covars = np.zeros((K, d, d))
+    for k in range(K):
+        diag_vals = rng.uniform(0.5, 2.0, d)
+        for i in range(d):
+            covars[k][i][i] = diag_vals[i]
     result = geron_gmm_log_likelihood(X, pi, means, covars)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "log_likelihood" in result
+    assert "per_sample" in result
+    assert "mean_log_likelihood" in result
+    assert "component_log_densities" in result
+    assert "estimate" in result
+    assert "n" in result
+    assert "method" in result
+    assert math.isfinite(result["log_likelihood"])
+    assert result["n"] == n
 
 
 def test_grgmll_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    pi = np.random.default_rng(42).normal(0, 1, 100)
-    means = np.random.default_rng(42).normal(0, 1, 100)
-    covars = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    n, d, K = 40, 3, 1
+    X = rng.normal(0, 1, (n, d))
+    pi = [1.0]
+    means = rng.normal(0, 1, (K, d))
+    covars = np.zeros((K, d, d))
+    for k in range(K):
+        diag_vals = rng.uniform(0.5, 2.0, d)
+        for i in range(d):
+            covars[k][i][i] = diag_vals[i]
     result = geron_gmm_log_likelihood(X, pi, means, covars)
     assert isinstance(result, dict)
+    assert "log_likelihood" in result
+    assert math.isfinite(result["log_likelihood"])
+    assert result["n"] == n
 
 
 # --- appended: the module's own worked example as a gate -----------
