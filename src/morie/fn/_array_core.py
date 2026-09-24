@@ -1128,8 +1128,21 @@ class marr:
         return _np.asarray(self.tolist(), dtype=dtype)
 
     def tolist(self):
-        return [row[:] for row in self.data] \
+        """As numpy.ndarray.tolist.
+
+        A boolean array yields Python bools, which is what numpy does
+        and what every caller that prints a mask, a predicate or a
+        confusion of True/False expects. The mask is stored as 1.0/0.0
+        internally, so without this it leaked floats.
+        """
+        rows = [row[:] for row in self.data] \
             if len(self.shape) == 2 else self.data[:]
+        if getattr(self, "_is_mask", False) \
+                or getattr(self, "_dt", None) == "bool":
+            if len(self.shape) == 2:
+                return [[bool(v) for v in r] for r in rows]
+            return [bool(v) for v in rows]
+        return rows
 
     def __repr__(self):
         return "marr(%r)" % (self.tolist(),)
@@ -4519,6 +4532,17 @@ def subtract(a, b):
     return asarray(a)._zip(b, lambda x, y: x - y)
 
 
+def _target_cast(a):
+    """numpy accumulates into an array in that array's own dtype, so
+    add.at on an int array must leave ints behind rather than floats."""
+    dt = getattr(a, "_dt", None)
+    if dt and dt.startswith(("int", "uint")):
+        return lambda v: int(v)
+    if getattr(a, "_is_mask", False) or dt == "bool":
+        return lambda v: 1.0 if v else 0.0
+    return float
+
+
 class _AddUfunc:
     """numpy.add as a callable with the two ufunc methods modules use:
     add.at (unbuffered scatter-add, duplicates accumulate) and
@@ -4545,19 +4569,21 @@ class _AddUfunc:
                 else [float(b)] * len(ii)
             if len(bv) == 1:
                 bv = bv * len(ii)
+            cast = _target_cast(a)
             for i, j, v in zip(ii, jj, bv):
-                a.data[i][j] += float(v)
+                a.data[i][j] = cast(a.data[i][j] + float(v))
             return None
         ii = [int(v) for v in asarray(indices)._flat()]
         bv = asarray(b)._flat() if isinstance(b, (list, tuple, marr)) \
             else [float(b)] * len(ii)
         if len(bv) == 1:
             bv = bv * len(ii)
+        cast = _target_cast(a)
         for i, v in zip(ii, bv):
             if len(a.shape) == 2:
-                a.data[i] = [x + float(v) for x in a.data[i]]
+                a.data[i] = [cast(x + float(v)) for x in a.data[i]]
             else:
-                a.data[i] += float(v)
+                a.data[i] = cast(a.data[i] + float(v))
         return None
 
     @staticmethod
@@ -5574,14 +5600,27 @@ def _tri_input(a):
 
 def triu(a, k=0):
     m = _tri_input(a)
-    return marr([[m.data[i][j] if j >= i + k else 0.0
-                  for j in range(m.shape[1])] for i in range(m.shape[0])])
+    out = marr([[m.data[i][j] if j >= i + k else 0.0
+                 for j in range(m.shape[1])] for i in range(m.shape[0])])
+    return _carry_dtype(m, out)
 
 
 def tril(a, k=0):
     m = _tri_input(a)
-    return marr([[m.data[i][j] if j <= i + k else 0.0
-                  for j in range(m.shape[1])] for i in range(m.shape[0])])
+    out = marr([[m.data[i][j] if j <= i + k else 0.0
+                 for j in range(m.shape[1])] for i in range(m.shape[0])])
+    return _carry_dtype(m, out)
+
+
+def _carry_dtype(src, out):
+    """numpy keeps the input's dtype through tril/triu, so a boolean
+    mask stays boolean instead of decaying to floats."""
+    if getattr(src, "_is_mask", False):
+        out._is_mask = True
+    dt = getattr(src, "_dt", None)
+    if dt:
+        out._dt = dt
+    return out
 
 
 def _conv_args(a, v):
