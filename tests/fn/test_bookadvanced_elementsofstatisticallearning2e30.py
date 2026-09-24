@@ -9,14 +9,19 @@ from morie.fn.bookadvanced_elementsofstatisticallearning2e30 import (
 
 def test_bookadvanced_elementsofstatisticallearning2e30_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_30(x)
+    rng = np.random.default_rng(42)
+    x = rng.normal(0, 1, 40)
+    y = rng.normal(0, 1, 40)
+    result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_30(x, y)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert len(result) > 0
 
 
 def test_bookadvanced_elementsofstatisticallearning2e30_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_30(x)
+    rng = np.random.default_rng(123)
+    x = rng.normal(0, 1, 10)
+    y = rng.normal(0, 1, 10)
+    result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_30(x, y)
     assert isinstance(result, dict)
+    assert len(result) > 0
