@@ -46,12 +46,14 @@ def test_eq_6_1_posterior_matches_the_ols_algebra():
 
 def test_eq_6_2_prior_is_improper_and_scale_free():
     r = mvsml_bayesian_regression_eq_6_2(2.0)
-    assert abs(r["density"] - 0.25) < 1e-12
+    # eq. (6.2) is f(beta, sigma^2) proportional to sigma^-2 with sigma
+    # the standard deviation, so in the variance it is 1 / sigma2
+    assert abs(r["density"] - 0.5) < 1e-12
     assert r["proper"] is False
-    assert abs(r["log_density"] + 2.0 * math.log(2.0)) < 1e-12
-    # proportional to sigma^-2: doubling sigma2 quarters the density
+    assert abs(r["log_density"] + math.log(2.0)) < 1e-12
+    # uniform in log(sigma): doubling sigma2 halves the density
     assert abs(mvsml_bayesian_regression_eq_6_2(4.0)["density"]
-               - r["density"] / 4.0) < 1e-12
+               - r["density"] / 2.0) < 1e-12
 
 
 def test_eq_6_3_brr_recovers_the_signal_and_shrinks_the_noise():

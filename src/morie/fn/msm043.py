@@ -15,7 +15,8 @@ __all__ = ["mvsml_bayesian_regression_eq_6_2"]
 
 
 def mvsml_bayesian_regression_eq_6_2(sigma2, beta=None):
-    """f(beta, sigma2) proportional to sigma^-2 (eq. 6.2): flat in
+    """f(beta, sigma2) proportional to sigma^-2 (eq. 6.2), which in terms of
+    the variance argument is 1 / sigma2: flat in
     beta and in log(sigma), improper because it does not integrate to
     one, yet yielding a proper posterior whenever X has full column
     rank (p.172).  Returns the prior density up to its (infinite)
@@ -23,9 +24,9 @@ def mvsml_bayesian_regression_eq_6_2(sigma2, beta=None):
     s2 = float(sigma2)
     if s2 <= 0:
         raise ValueError("sigma2 must be positive")
-    dens = s2 ** -2
+    dens = 1.0 / s2
     res = RichResult(payload={"estimate": dens, "density": dens,
-                              "log_density": -2.0 * math.log(s2),
+                              "log_density": -math.log(s2),
                               "proper": False,
                               "method": "non-informative prior (MVSML 2022 eq. 6.2)"})
     return with_describe_pointer(res, "msm043")
