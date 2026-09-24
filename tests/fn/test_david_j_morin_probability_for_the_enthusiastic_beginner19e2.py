@@ -1,5 +1,7 @@
 """Tests for david_j_morin_probability_for_the_enthusiastic_beginner19e2.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_19_equation_2."""
 
+import pytest
+
 from morie.fn import _array_core as np
 
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner19e2 import (
@@ -9,14 +11,19 @@ from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner19e2 import
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner19e2_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_19_equation_2(x)
+    rng = np.random.default_rng(42)
+    x = rng.normal(0, 1, 40)
+    y = rng.normal(0, 1, 40)
+    with pytest.warns(DeprecationWarning):
+        result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_19_equation_2(x, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner19e2_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_19_equation_2(x)
+    rng = np.random.default_rng(42)
+    x = rng.normal(0, 1, 5)
+    y = rng.normal(0, 1, 5)
+    with pytest.warns(DeprecationWarning):
+        result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_19_equation_2(x, y)
     assert isinstance(result, dict)

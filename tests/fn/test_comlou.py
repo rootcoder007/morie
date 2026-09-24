@@ -1,22 +1,33 @@
 """Tests for comlou.louvain_communities."""
 
-from morie.fn import _array_core as np
+import math
 
+import pytest
+
+from morie.fn import _array_core as np
 from morie.fn.comlou import louvain_communities
 
 
 def test_comlou_basic():
     """Test basic functionality."""
-    G = np.eye(10)
-    resolution = np.random.default_rng(42).normal(0, 1, 100)
-    result = louvain_communities(G, resolution)
+    G = [
+        [0, 1, 1, 0, 0, 0],
+        [1, 0, 1, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 1],
+        [0, 0, 0, 1, 0, 1],
+        [0, 0, 0, 1, 1, 0],
+    ]
+    result = louvain_communities(G, 1.0, 5)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result
+    assert math.isfinite(result["estimate"])
+    assert "z" in result
+    assert len(result["z"]) == 6
 
 
 def test_comlou_edge():
     """Test edge cases."""
-    G = np.eye(10)
-    resolution = np.random.default_rng(42).normal(0, 1, 100)
-    result = louvain_communities(G, resolution)
-    assert isinstance(result, dict)
+    G = [[0, 1, 0], [1, 0, 1]]
+    with pytest.raises(ValueError):
+        louvain_communities(G, 1.0)

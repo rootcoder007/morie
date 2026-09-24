@@ -9,14 +9,24 @@ from morie.fn.analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e3 im
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e3_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_3(x)
+    pi = 0.10
+    se = 0.95
+    sp = 0.90
+    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_3(pi, se, sp)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    import math
+    assert math.isfinite(result["value"])
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e3_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_3(x)
+    pi = 0.05
+    se = 0.99
+    sp = 0.98
+    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_3(pi, se, sp)
     assert isinstance(result, dict)
+    assert "value" in result
+    import math
+    assert math.isfinite(result["value"])
+    assert 0.0 <= result["value"] <= 1.0

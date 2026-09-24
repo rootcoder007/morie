@@ -1,6 +1,6 @@
 """Tests for bayes_rule.bayes_rule."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.bayes_rule import (
     bayes_rule,
@@ -9,14 +9,29 @@ from morie.fn.bayes_rule import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e22_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bayes_rule(x)
+    p_a_given_b = 0.8
+    p_b = 0.4
+    p_a_given_notb = 0.1
+    result = bayes_rule(p_a_given_b, p_b, p_a_given_notb)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    assert "method" in result
+    value = result["value"]
+    assert isinstance(value, float)
+    assert math.isfinite(value)
+    assert 0.0 <= value <= 1.0
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e22_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bayes_rule(x)
+    # When P(A|B) == P(A|~B), Bayes rule should return P(B) unchanged.
+    p_a_given_b = 0.5
+    p_b = 0.3
+    p_a_given_notb = 0.5
+    result = bayes_rule(p_a_given_b, p_b, p_a_given_notb)
     assert isinstance(result, dict)
+    assert "value" in result
+    value = result["value"]
+    assert math.isfinite(value)
+    assert 0.0 <= value <= 1.0
+    assert abs(value - p_b) < 1e-12

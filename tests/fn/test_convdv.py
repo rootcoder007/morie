@@ -7,18 +7,26 @@ from morie.fn.convdv import convex_divergence
 
 def test_convdv_basic():
     """Test basic functionality."""
-    p = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    result = convex_divergence(p, q, f)
+    rng = np.random.default_rng(42)
+    p = rng.uniform(0, 1, 50)
+    q = rng.uniform(0, 1, 50)
+    result = convex_divergence(p, q, "kl")
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("divergence", "estimate", "terms", "support", "n", "generator"):
+        assert key in result
+    assert result["n"] == 50
+    assert len(result["terms"]) == 50
+    assert 0 <= result["support"] <= 50
 
 
 def test_convdv_edge():
     """Test edge cases."""
-    p = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    result = convex_divergence(p, q, f)
+    rng = np.random.default_rng(42)
+    p = rng.uniform(0, 1, 10)
+    q = list(p)
+    result = convex_divergence(p, q, "kl")
     assert isinstance(result, dict)
+    for key in ("divergence", "estimate", "terms", "support", "n", "f_inf"):
+        assert key in result
+    assert result["n"] == 10
+    assert len(result["terms"]) == 10

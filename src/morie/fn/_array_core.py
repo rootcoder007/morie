@@ -245,7 +245,7 @@ class marr:
                 and not isinstance(data[0], marr):
             data = [r.tolist() if hasattr(r, "tolist") else r for r in data]
         if data and isinstance(data[0], (list, tuple, marr)):
-            rows = [list(map(float, (r.data if isinstance(r, marr) else r)))
+            rows = [list(map(_num, (r.data if isinstance(r, marr) else r)))
                     for r in data]
             ncol = len(rows[0])
             if _bi.any(len(r) != ncol for r in rows):

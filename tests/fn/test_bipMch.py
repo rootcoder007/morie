@@ -6,19 +6,26 @@ from morie.fn.bipMch import bipartite_matching
 
 
 def test_bipMch_basic():
-    """Test basic functionality."""
-    U = np.random.default_rng(42).normal(0, 1, 100)
-    V = np.random.default_rng(42).normal(0, 1, 100)
-    E = np.random.default_rng(42).normal(0, 1, 100)
-    result = bipartite_matching(U, V, E)
+    """Test basic functionality with a perfect matching."""
+    edges = [(0, 0), (1, 1), (2, 2)]
+    result = bipartite_matching(edges)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "size" in result
+    assert "is_perfect" in result
+    assert "matching" in result
+    assert "n_unmatched_left" in result
+    assert result["size"] == 3
+    assert bool(result["is_perfect"]) is True
 
 
 def test_bipMch_edge():
-    """Test edge cases."""
-    U = np.random.default_rng(42).normal(0, 1, 100)
-    V = np.random.default_rng(42).normal(0, 1, 100)
-    E = np.random.default_rng(42).normal(0, 1, 100)
-    result = bipartite_matching(U, V, E)
+    """Test edge case with unmatched left vertices."""
+    edges = [(0, 0), (1, 0), (2, 0)]
+    result = bipartite_matching(edges)
     assert isinstance(result, dict)
+    assert "size" in result
+    assert "n_unmatched_left" in result
+    assert "matching" in result
+    assert "is_perfect" in result
+    assert result["size"] == 1
+    assert result["n_unmatched_left"] == 2

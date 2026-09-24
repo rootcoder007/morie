@@ -1,5 +1,7 @@
 """Tests for analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e17.analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_17."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e17 import (
@@ -9,14 +11,21 @@ from morie.fn.analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e17 i
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e17_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_17(x)
+    b0 = 1.5
+    random_intercept = 0.7
+    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_17(b0, random_intercept)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    assert math.isfinite(result["value"])
+    assert math.isclose(result["value"], b0 + random_intercept)
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e17_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_17(x)
+    b0 = 0.0
+    random_intercept = 0.0
+    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_17(b0, random_intercept)
     assert isinstance(result, dict)
+    assert "value" in result
+    assert math.isfinite(result["value"])
+    assert result["value"] == 0.0

@@ -7,14 +7,25 @@ from morie.fn.ca4e5 import ca_chapter_4_equation_5
 
 def test_ca4e5_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ca_chapter_4_equation_5(x)
+    rng = np.random.default_rng(42)
+    b0 = 0.1
+    bs = [0.5, -0.3, 0.2]
+    xs = rng.normal(0, 1, 3)
+    result = ca_chapter_4_equation_5(b0, bs, xs)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
+    import math
+    assert math.isfinite(result["value"])
 
 
 def test_ca4e5_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ca_chapter_4_equation_5(x)
+    b0 = 0.0
+    bs = [1.0]
+    xs = [0.0]
+    result = ca_chapter_4_equation_5(b0, bs, xs)
     assert isinstance(result, dict)
+    assert "value" in result
+    import math
+    assert math.isfinite(result["value"])
+    assert result["value"] == 0.0

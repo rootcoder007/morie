@@ -1,5 +1,7 @@
 """Tests for confidence_interval.confidence_interval."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.confidence_interval import (
@@ -9,14 +11,24 @@ from morie.fn.confidence_interval import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r3e15_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = confidence_interval(x)
+    estimate = 5.0
+    variance = 2.0
+    u_crit = 1.96
+    result = confidence_interval(estimate, variance, u_crit)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "lower" in result
+    assert "value" in result
+    assert "method" in result
+    assert math.isfinite(result["lower"])
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r3e15_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = confidence_interval(x)
+    estimate = 0.0
+    variance = 1.0
+    u_crit = 2.576
+    result = confidence_interval(estimate, variance, u_crit)
     assert isinstance(result, dict)
+    assert "lower" in result
+    assert "value" in result
+    assert math.isfinite(result["lower"])

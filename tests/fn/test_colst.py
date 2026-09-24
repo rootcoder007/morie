@@ -1,26 +1,30 @@
-"""Tests for colst.collider_structure."""
+"""Tests for colst.collider."""
 
 from morie.fn import _array_core as np
 
-from morie.fn.colst import collider_structure
+from morie.fn.colst import collider
 
 
 def test_colst_basic():
     """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    B = np.random.default_rng(43).normal(0, 1, (10, 10))
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    conditioned = np.random.default_rng(42).normal(0, 1, 100)
-    result = collider_structure(A, B, C, conditioned)
+    adj = np.array([
+        [0, 1, 1, 0],
+        [1, 0, 1, 0],
+        [1, 1, 0, 1],
+        [0, 0, 1, 0],
+    ])
+    # Convert adjacency matrix to edgelist of (parent, child) pairs
+    n = len(adj)
+    dag = [(u, v) for u in range(n) for v in range(n) if adj[u][v]]
+    triple = [0, 2, 1]
+    result = collider(dag, triple)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
 
 
 def test_colst_edge():
     """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    B = np.random.default_rng(43).normal(0, 1, (10, 10))
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    conditioned = np.random.default_rng(42).normal(0, 1, 100)
-    result = collider_structure(A, B, C, conditioned)
+    # Simple chain: 0 -> 1 -> 2 (not a collider)
+    dag = [(0, 1), (1, 2)]
+    triple = [0, 1, 2]
+    result = collider(dag, triple)
     assert isinstance(result, dict)
