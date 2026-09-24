@@ -7,9 +7,9 @@ from morie.fn.kmap import kamath_autoprompt_gradient_search
 
 def test_kmap_basic():
     """Test basic functionality."""
-    template = np.random.default_rng(42).normal(0, 1, 100)
-    dataset = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
+    template = [None, 'y']
+    dataset = [1]
+    model = lambda tpl, d: 0.0
     result = kamath_autoprompt_gradient_search(template, dataset, model)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -17,8 +17,8 @@ def test_kmap_basic():
 
 def test_kmap_edge():
     """Test edge cases."""
-    template = np.random.default_rng(42).normal(0, 1, 100)
-    dataset = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
+    template = [None, 'y']
+    dataset = [1]
+    model = lambda tpl, d: 0.0
     result = kamath_autoprompt_gradient_search(template, dataset, model)
     assert isinstance(result, dict)

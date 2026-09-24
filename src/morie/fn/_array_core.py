@@ -111,6 +111,60 @@ def _is_int_typed(a):
     return isinstance(dt, str) and (dt.startswith("int") or dt.startswith("uint"))
 
 
+
+def _paired_gather(arr, i, j):
+    """x[I, J] for integer index arrays, with numpy's broadcasting.
+
+    The two index arrays are broadcast against each other and the
+    result takes the broadcast shape, each element gathered pointwise.
+    Returns None when the shapes do not broadcast, so the caller can
+    fall back.
+    """
+    ia = i if isinstance(i, marr) else asarray(i)
+    ja = j if isinstance(j, marr) else asarray(j)
+    sa, sb = tuple(ia.shape), tuple(ja.shape)
+    nd = _bi.max(len(sa), len(sb))
+    if nd > 2:
+        return None
+    pa = (1,) * (nd - len(sa)) + sa
+    pb = (1,) * (nd - len(sb)) + sb
+    shape = []
+    for da, db in zip(pa, pb):
+        if da == db or db == 1:
+            shape.append(da if da != 1 else db)
+        elif da == 1:
+            shape.append(db)
+        else:
+            return None
+    shape = tuple(shape)
+    if shape == sa == sb and nd == 1:
+        return None                      # the existing pointwise path
+
+    def get(a, padded, pos):
+        """One element of a, read under broadcasting at pos."""
+        if len(a.shape) == 1:
+            k = pos[-1] if padded[-1] != 1 else 0
+            if padded[0] != 1 and len(padded) == 2 and padded[-1] == 1:
+                k = pos[0]
+            return a.data[k]
+        r = pos[0] if padded[0] != 1 else 0
+        c = pos[1] if padded[1] != 1 else 0
+        return a.data[r][c]
+
+    if nd == 1:
+        out = [arr.data[int(get(ia, pa, (k,)))][int(get(ja, pb, (k,)))]
+               for k in range(shape[0])]
+        return marr(out)
+    rows = []
+    for r in range(shape[0]):
+        row = []
+        for c in range(shape[1]):
+            ri = int(get(ia, pa, (r, c)))
+            ci = int(get(ja, pb, (r, c)))
+            row.append(arr.data[ri][ci])
+        rows.append(row)
+    return marr(rows)
+
 def _mask_positions(sel, axis_len):
     """Positions selected by ``sel`` if it is a boolean mask, else None.
 
@@ -394,10 +448,18 @@ class marr:
                           (j._flat() if isinstance(j, marr) else j)]
                     ix_pair = getattr(i, "_ix_outer", False) and \
                         getattr(j, "_ix_outer", False)
+                    if not ix_pair:
+                        # numpy broadcasts integer index arrays against
+                        # each other and gathers pointwise over the
+                        # broadcast shape, so x[rows[:, None], cols]
+                        # with rows (m, 1) and cols (m, k) is (m, k) --
+                        # NOT the (m, m*k) cross product. That idiom is
+                        # how every nearest-neighbour routine gathers a
+                        # distance row per point.
+                        pair = _paired_gather(self, i, j)
+                        if pair is not None:
+                            return pair
                     if not ix_pair and len(iv) == len(jv):
-                        # numpy: paired integer arrays gather pointwise,
-                        # x[[0, 1], [2, 3]] -> [x[0, 2], x[1, 3]]. The
-                        # outer gather is only what np.ix_ asks for.
                         return marr([self.data[r2][c2]
                                      for r2, c2 in zip(iv, jv)])
                     return marr([[self.data[r2][c2] for c2 in jv]

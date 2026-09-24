@@ -7,24 +7,35 @@ from morie.fn.msm034 import mvsml_linear_mixed_models_eq_5_6
 
 def test_msm034_basic():
     """Test basic functionality."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    N = 100
-    IIJ = np.random.default_rng(42).normal(0, 1, 100)
-    RnT = np.random.default_rng(42).normal(0, 1, 100)
-    I = np.random.default_rng(42).normal(0, 1, 100)
-    j = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_linear_mixed_models_eq_5_6(T, N, IIJ, RnT, I, j)
+    rng = np.random.default_rng(42)
+    I, J, T = 4, 2, 2
+    n = I * J
+    Y = rng.normal(0, 1, (n, T))
+    Z_L = rng.normal(0, 1, (n, I))
+    Z_EL = rng.normal(0, 1, (n, I * J))
+    G = rng.normal(0, 1, (I, I))
+    Sigma_T = rng.normal(0, 1, (T, T))
+    Sigma_E = rng.normal(0, 1, (J, J))
+    Sigma_2T = rng.normal(0, 1, (T, T))
+    R_T = rng.normal(0, 1, (T, T))
+    result = mvsml_linear_mixed_models_eq_5_6(Y, Z_L, Z_EL, G, Sigma_T, Sigma_E, Sigma_2T, R_T)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result
 
 
 def test_msm034_edge():
     """Test edge cases."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    N = 100
-    IIJ = np.random.default_rng(42).normal(0, 1, 100)
-    RnT = np.random.default_rng(42).normal(0, 1, 100)
-    I = np.random.default_rng(42).normal(0, 1, 100)
-    j = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_linear_mixed_models_eq_5_6(T, N, IIJ, RnT, I, j)
+    rng = np.random.default_rng(123)
+    I, J, T = 3, 2, 2
+    n = I * J
+    Y = rng.normal(0, 1, (n, T))
+    Z_L = rng.normal(0, 1, (n, I))
+    Z_EL = rng.normal(0, 1, (n, I * J))
+    G = rng.normal(0, 1, (I, I))
+    Sigma_T = rng.normal(0, 1, (T, T))
+    Sigma_E = rng.normal(0, 1, (J, J))
+    Sigma_2T = rng.normal(0, 1, (T, T))
+    R_T = rng.normal(0, 1, (T, T))
+    result = mvsml_linear_mixed_models_eq_5_6(Y, Z_L, Z_EL, G, Sigma_T, Sigma_E, Sigma_2T, R_T)
     assert isinstance(result, dict)
+    assert "estimate" in result

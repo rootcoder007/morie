@@ -1,5 +1,7 @@
 """Tests for km141.kamath_ch9_itm_loss."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.km141 import kamath_ch9_itm_loss
@@ -7,20 +9,30 @@ from morie.fn.km141 import kamath_ch9_itm_loss
 
 def test_km141_basic():
     """Test basic functionality."""
-    theta = 0.0
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = kamath_ch9_itm_loss(theta, v, t, y)
+    rng = np.random.default_rng(42)
+    n = 100
+    s = rng.uniform(0.0, 1.0, n)
+    y = rng.integers(0, 2, n)
+    result = kamath_ch9_itm_loss(s, None, None, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result
+    assert "per_pair" in result
+    assert "scores" in result
+    assert "n" in result
+    assert result["n"] == n
+    assert math.isfinite(result["estimate"])
+    assert len(result["per_pair"]) == n
+    assert len(result["scores"]) == n
 
 
 def test_km141_edge():
-    """Test edge cases."""
-    theta = 0.0
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = kamath_ch9_itm_loss(theta, v, t, y)
+    """Test edge cases with small valid input."""
+    rng = np.random.default_rng(42)
+    n = 3
+    s = rng.uniform(0.0, 1.0, n)
+    y = rng.integers(0, 2, n)
+    result = kamath_ch9_itm_loss(s, None, None, y)
     assert isinstance(result, dict)
+    assert "estimate" in result
+    assert math.isfinite(result["estimate"])
+    assert result["n"] == n

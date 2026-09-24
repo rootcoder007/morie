@@ -7,8 +7,8 @@ from morie.fn.grppo import geron_ppo_clipped_objective
 
 def test_grppo_basic():
     """Test basic functionality."""
-    ratios = [1.0, 1.1]
-    advantages = [3.0, -2.0]
+    ratios = [1.5, 0.5]
+    advantages = [1.0, -1.0]
     result = geron_ppo_clipped_objective(ratios, advantages)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_grppo_basic():
 
 def test_grppo_edge():
     """Test edge cases."""
-    ratios = [1.0, 1.1]
-    advantages = [3.0, -2.0]
+    ratios = [1.5, 0.5]
+    advantages = [1.0, -1.0]
     result = geron_ppo_clipped_objective(ratios, advantages)
     assert isinstance(result, dict)

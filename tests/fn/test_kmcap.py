@@ -9,7 +9,7 @@ def test_kmcap_basic():
     """Test basic functionality."""
     tokens_per_batch = 100
     num_experts = 4
-    C = 0.5
+    C = 1.25
     result = kamath_expert_capacity_factor(tokens_per_batch, num_experts, C)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -19,6 +19,6 @@ def test_kmcap_edge():
     """Test edge cases."""
     tokens_per_batch = 100
     num_experts = 4
-    C = 0.5
+    C = 1.25
     result = kamath_expert_capacity_factor(tokens_per_batch, num_experts, C)
     assert isinstance(result, dict)

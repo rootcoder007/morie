@@ -7,24 +7,23 @@ from morie.fn.msm092 import mvsml_bayesian_regression_pt2_eq_7_3
 
 def test_msm092_basic():
     """Test basic functionality."""
-    can = np.random.default_rng(42).normal(0, 1, 100)
-    be = np.random.default_rng(42).normal(0, 1, 100)
-    taken = np.random.default_rng(42).normal(0, 1, 100)
-    into = np.random.default_rng(42).normal(0, 1, 100)
-    account = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_3(can, be, taken, into, account, to)
+    rng = np.random.default_rng(42)
+    n = 40
+    X_E = rng.normal(0, 1, (n, 3))
+    X = rng.normal(0, 1, (n, 3))
+    X_EM = rng.normal(0, 1, (n, 3))
+    result = mvsml_bayesian_regression_pt2_eq_7_3(n, X_E=X_E, X=X, X_EM=X_EM)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result
 
 
 def test_msm092_edge():
     """Test edge cases."""
-    can = np.random.default_rng(42).normal(0, 1, 100)
-    be = np.random.default_rng(42).normal(0, 1, 100)
-    taken = np.random.default_rng(42).normal(0, 1, 100)
-    into = np.random.default_rng(42).normal(0, 1, 100)
-    account = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_3(can, be, taken, into, account, to)
+    rng = np.random.default_rng(42)
+    n = 5
+    X_E = rng.normal(0, 1, (n, 2))
+    X = rng.normal(0, 1, (n, 2))
+    X_EM = rng.normal(0, 1, (n, 2))
+    result = mvsml_bayesian_regression_pt2_eq_7_3(n, X_E=X_E, X=X, X_EM=X_EM)
     assert isinstance(result, dict)
+    assert "estimate" in result
