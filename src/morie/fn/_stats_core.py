@@ -4122,7 +4122,7 @@ def _bessel_k(v, x):
     t_max = 1.0
     while x * _math.cosh(t_max) - v * t_max < 745.0 and t_max < 60.0:
         t_max += 1.0
-    npan = 4000
+    npan = 800
     h = t_max / npan
 
     def f(t):
@@ -5634,39 +5634,90 @@ class _LevyStable(_LS):
         return _bi.max(0.0, _bi.min(1.0, self._cdf0(self._to_s0(x, alpha, beta), alpha, beta)))
 
 
+def _gauss_legendre(n):
+    """Nodes and weights on [-1, 1] by Newton iteration on Legendre P_n."""
+    cache = _GL_CACHE.get(n)
+    if cache:
+        return cache
+    xs, ws = [], []
+    for i in range(1, n + 1):
+        x = _math.cos(_math.pi * (i - 0.25) / (n + 0.5))
+        for _ in range(100):
+            p0, p1 = 1.0, x
+            for k in range(2, n + 1):
+                p0, p1 = p1, ((2 * k - 1) * x * p1 - (k - 1) * p0) / k
+            dp = n * (x * p1 - p0) / (x * x - 1.0)
+            dx = p1 / dp
+            x -= dx
+            if _bi.abs(dx) < 1e-15:
+                break
+        xs.append(x)
+        ws.append(2.0 / ((1.0 - x * x) * dp * dp))
+    _GL_CACHE[n] = (xs, ws)
+    return xs, ws
+
+
+_GL_CACHE = {}
+
+
+def _gl_integrate(f, a, b, n=64):
+    xs, ws = _gauss_legendre(n)
+    h = 0.5 * (b - a)
+    m = 0.5 * (a + b)
+    return h * _math.fsum(w * f(m + h * x) for x, w in zip(xs, ws))
+
+
 class _StudentizedRange(_LS):
+    """Studentized range: the double integral of Lund & Lund / Harter,
+    inner over the normal location, outer over the scale factor
+    s = sqrt(chi2_df / df), both by Gauss-Legendre quadrature."""
     _shapes = 2
     _support = (0.0, _math.inf)
+
+    def _eff_range(self, *sh):
+        return (1e-6, 40.0)
 
     @staticmethod
     def _s_density(s, df):
         return _math.exp(0.5 * df * _math.log(df) - _math.lgamma(0.5 * df) - (0.5 * df - 1.0) * _math.log(2.0)
                          + (df - 1.0) * _math.log(s) - 0.5 * df * s * s)
 
-    def _cdf(self, q, k, df):
-        def inner(s):
-            qs = q * s
-            if qs > 40.0:
-                return 1.0
-            f = lambda z: _phi(z) * (_norm_cdf(z + qs) - _norm_cdf(z)) ** (k - 1.0)  # noqa: E731
-            return k * _adaptive_simpson(f, -8.0 - qs, 8.0, 1e-10, 25)
+    def _inner_cdf(self, q, s, k):
+        qs = q * s
+        if qs > 40.0:
+            return 1.0
+        # the integrand lives on z in [-8 - qs, 8]; split at the middle so
+        # the two humps each get their own nodes
+        f = lambda z: _phi(z) * (_norm_cdf(z + qs) - _norm_cdf(z)) ** (k - 1.0)  # noqa: E731
+        lo, hi = -8.0 - qs, 8.0
+        mid = 0.5 * (lo + hi)
+        return k * (_gl_integrate(f, lo, mid, 64) + _gl_integrate(f, mid, hi, 64))
+
+    def _inner_pdf(self, q, s, k):
+        qs = q * s
+        if qs > 40.0:
+            return 0.0
+        f = lambda z: _phi(z) * _phi(z + qs) * (_norm_cdf(z + qs) - _norm_cdf(z)) ** (k - 2.0)  # noqa: E731
+        lo, hi = -8.0 - qs, 8.0
+        mid = 0.5 * (lo + hi)
+        return k * (k - 1.0) * s * (_gl_integrate(f, lo, mid, 64) + _gl_integrate(f, mid, hi, 64))
+
+    def _outer(self, q, k, df, inner):
         if df > 1e5:
-            return inner(1.0)
-        s_hi = 1.0 + 12.0 / _math.sqrt(df)
-        return _adaptive_simpson(lambda s: self._s_density(s, df) * inner(s), 1e-6, s_hi, 1e-8, 20)
+            return inner(q, 1.0, k)
+        # s has mean ~1 and sd ~ 1/sqrt(2 df): integrate over +-12 sd
+        sd = 1.0 / _math.sqrt(2.0 * df)
+        lo, hi = _bi.max(1e-6, 1.0 - 12.0 * sd), 1.0 + 12.0 * sd
+        g = lambda s: self._s_density(s, df) * inner(q, s, k)  # noqa: E731
+        pieces = 8
+        step = (hi - lo) / pieces
+        return _math.fsum(_gl_integrate(g, lo + i * step, lo + (i + 1) * step, 32) for i in range(pieces))
+
+    def _cdf(self, q, k, df):
+        return self._outer(q, k, df, self._inner_cdf)
 
     def _pdf(self, q, k, df):
-        def inner(s):
-            qs = q * s
-            if qs > 40.0:
-                return 0.0
-            f = lambda z: _phi(z) * _phi(z + qs) * (_norm_cdf(z + qs) - _norm_cdf(z)) ** (k - 2.0)  # noqa: E731
-            return k * (k - 1.0) * s * _adaptive_simpson(f, -8.0 - qs, 8.0, 1e-10, 25)
-        if df > 1e5:
-            return inner(1.0)
-        s_hi = 1.0 + 12.0 / _math.sqrt(df)
-        return _adaptive_simpson(lambda s: self._s_density(s, df) * inner(s), 1e-6, s_hi, 1e-8, 20)
-
+        return self._outer(q, k, df, self._inner_pdf)
 
 class _DParetoLogNorm(_LS):
     """Reed's double Pareto-lognormal with scipy's (u, s, a, b) shapes."""
