@@ -13,8 +13,6 @@ def test_basic_output():
     y = X[:, 0] + rng.standard_normal(n) * 0.5
     result = oracl(X, y, n_folds=3, seed=7)
     assert "selected_idx" in result
-    assert "selected_idx" in result
-assert "selected_idx" in resultlt
 
 
 def test_ratio_ge_one():

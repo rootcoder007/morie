@@ -420,7 +420,7 @@ class LogisticRegression:
 # ===================================================== trees
 
 class _Tree:
-    __slots__ = ("feat", "thr", "left", "right", "value")
+    __slots__ = ("feat", "thr", "left", "right", "value", "impurity", "n")
 
     def __init__(self, value=None):
         self.feat = -1
@@ -428,23 +428,118 @@ class _Tree:
         self.left = None
         self.right = None
         self.value = value
+        self.impurity = 0.0
+        self.n = 0
+
+
+def _class_impurity(counts, n, criterion):
+    if criterion == "entropy" or criterion == "log_loss":
+        return -_math.fsum((c / n) * _math.log2(c / n)
+                           for c in counts if c > 0)
+    return 1.0 - _math.fsum((c / n) ** 2 for c in counts)
+
+
+class _SkTree:
+    """sklearn's ``tree_`` view of a fitted _Tree: preorder node arrays."""
+
+    def __init__(self, root, n_classes):
+        self.feature, self.threshold, self.children_left = [], [], []
+        self.children_right, self.value, self.impurity = [], [], []
+        self.n_node_samples = []
+        self._depth = 0
+
+        def walk(node, depth):
+            i = len(self.feature)
+            self._depth = max(self._depth, depth)
+            self.feature.append(node.feat if node.feat >= 0 else -2)
+            self.threshold.append(node.thr if node.feat >= 0 else -2.0)
+            self.impurity.append(node.impurity)
+            self.n_node_samples.append(node.n)
+            self.value.append([list(node.value)] if isinstance(node.value, list)
+                              else [[node.value]])
+            self.children_left.append(-1)
+            self.children_right.append(-1)
+            if node.feat >= 0:
+                self.children_left[i] = walk(node.left, depth + 1)
+                self.children_right[i] = walk(node.right, depth + 1)
+            return i
+        walk(root, 0)
+        self.node_count = len(self.feature)
+        self.max_depth = self._depth
+        self.n_leaves = sum(1 for f in self.feature if f == -2)
+        for k in ("feature", "children_left", "children_right", "n_node_samples"):
+            setattr(self, k, _ac._typed(_ac.marr([float(v) for v in getattr(self, k)]), int))
+        self.threshold = _ac.marr(self.threshold)
+        self.impurity = _ac.marr(self.impurity)
+        self.value = _ac.ndlist(self.value) if n_classes > 1 else _ac.marr(
+            [[v[0][0]] for v in self.value]).reshape((self.node_count, 1, 1))
+        self.weighted_n_node_samples = _ac.marr([float(v) for v in self.n_node_samples._flat()])
+
+    def compute_feature_importances(self, n_features):
+        """Total impurity decrease per feature (weighted by node size),
+        normalised to sum 1, as sklearn."""
+        imp = [0.0] * n_features
+        N = float(self.n_node_samples[0])
+        for i in range(self.node_count):
+            f = int(self.feature[i])
+            if f < 0:
+                continue
+            l, r = int(self.children_left[i]), int(self.children_right[i])
+            nt, nl, nr = (float(self.n_node_samples[i]), float(self.n_node_samples[l]),
+                          float(self.n_node_samples[r]))
+            imp[f] += (nt / N) * (float(self.impurity[i])
+                                  - nl / nt * float(self.impurity[l])
+                                  - nr / nt * float(self.impurity[r]))
+        tot = _math.fsum(imp)
+        return _ac.marr([v / tot if tot > 0 else 0.0 for v in imp])
+
+
+class _TreeMixin:
+    @property
+    def tree_(self):
+        return _SkTree(self._root, len(getattr(self, "classes_", [])))
+
+    def get_n_leaves(self):
+        return self.tree_.n_leaves
+
+    def get_depth(self):
+        return self.tree_.max_depth
+
+    @property
+    def feature_importances_(self):
+        return self.tree_.compute_feature_importances(self.n_features_in_)
+
+    def apply(self, X):
+        """Leaf index (preorder numbering) of every row."""
+        t = self.tree_
+        out = []
+        for r in _X2d(X):
+            i = 0
+            while int(t.feature[i]) >= 0:
+                i = int(t.children_left[i]) if r[int(t.feature[i])] <= float(t.threshold[i]) \
+                    else int(t.children_right[i])
+            out.append(float(i))
+        return _ac._typed(_ac.marr(out), int)
 
 
 def _build_tree(Xd, yv, idx, depth, max_depth, min_samples_split,
-                max_features, rng, classify, n_classes):
+                max_features, rng, classify, n_classes, criterion="gini"):
     node = _Tree()
     n = len(idx)
+    node.n = n
     if classify:
         counts = [0.0] * n_classes
         for i in idx:
             counts[int(yv[i])] += 1.0
         node.value = counts
-        impurity = 1.0 - _math.fsum((c / n) ** 2 for c in counts)
+        impurity = _class_impurity(counts, n, criterion)
+        node.impurity = impurity
         pure = impurity <= 0.0
     else:
         m = _math.fsum(yv[i] for i in idx) / n
         node.value = m
         var = _math.fsum((yv[i] - m) ** 2 for i in idx)
+        node.impurity = var / n
         pure = var <= 1e-12
     if (pure or n < min_samples_split
             or (max_depth is not None and depth >= max_depth)):
@@ -517,10 +612,10 @@ def _build_tree(Xd, yv, idx, depth, max_depth, min_samples_split,
     node.thr = thr
     node.left = _build_tree(Xd, yv, li, depth + 1, max_depth,
                             min_samples_split, max_features, rng,
-                            classify, n_classes)
+                            classify, n_classes, criterion)
     node.right = _build_tree(Xd, yv, ri, depth + 1, max_depth,
                              min_samples_split, max_features, rng,
-                             classify, n_classes)
+                             classify, n_classes, criterion)
     return node
 
 
@@ -531,10 +626,11 @@ def _tree_predict(node, row):
     return node.value
 
 
-class DecisionTreeRegressor:
-    def __init__(self, max_depth=None, min_samples_split=2,
-                 random_state=None, **kw):
+class DecisionTreeRegressor(_TreeMixin):
+    def __init__(self, criterion="squared_error", max_depth=None,
+                 min_samples_split=2, random_state=None, **kw):
         del kw
+        self.criterion = criterion
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
         self.random_state = random_state
@@ -542,6 +638,7 @@ class DecisionTreeRegressor:
     def fit(self, X, y):
         Xd = _X2d(X)
         yv = _y1d(y)
+        self.n_features_in_ = len(Xd[0]) if Xd else 0
         self._root = _build_tree(Xd, yv, list(range(len(yv))), 0,
                                  self.max_depth,
                                  self.min_samples_split, None, None,
@@ -553,10 +650,13 @@ class DecisionTreeRegressor:
                          for r in _X2d(X)])
 
 
-class DecisionTreeClassifier:
-    def __init__(self, max_depth=None, min_samples_split=2,
-                 random_state=None, **kw):
+class DecisionTreeClassifier(_TreeMixin):
+    def __init__(self, criterion="gini", max_depth=None,
+                 min_samples_split=2, random_state=None, **kw):
         del kw
+        if criterion not in ("gini", "entropy", "log_loss"):
+            raise ValueError("criterion must be 'gini', 'entropy' or 'log_loss'")
+        self.criterion = criterion
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
         self.random_state = random_state
@@ -565,12 +665,14 @@ class DecisionTreeClassifier:
         Xd = _X2d(X)
         yraw = list(y.tolist() if hasattr(y, "tolist") else y)
         self.classes_ = sorted(set(yraw), key=str)
+        self.n_classes_ = len(self.classes_)
+        self.n_features_in_ = len(Xd[0]) if Xd else 0
         cmap = {c: i for i, c in enumerate(self.classes_)}
         yv = [float(cmap[v]) for v in yraw]
         self._root = _build_tree(Xd, yv, list(range(len(yv))), 0,
                                  self.max_depth,
                                  self.min_samples_split, None, None,
-                                 True, len(self.classes_))
+                                 True, len(self.classes_), self.criterion)
         return self
 
     def predict_proba(self, X):
