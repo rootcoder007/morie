@@ -7,23 +7,48 @@ from morie.fn.hmddim import geron_ddim
 
 def test_hmddim_basic():
     """Test basic functionality."""
-    x_T = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    n_steps = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_ddim(x_T, model, T, n_steps)
+    rng = np.random.default_rng(42)
+    x_T = rng.normal(0, 1, 5)
+
+    def zero_model(x, t):
+        return np.zeros(len(x))
+
+    result = geron_ddim(
+        x_T, zero_model, T=4, n_steps=2,
+        beta_schedule=[0.5, 0.5, 0.5, 0.5],
+    )
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "x_0" in result
+    assert "trajectory" in result
+    assert "timesteps" in result
+    assert "model_calls" in result
+    assert "speedup" in result
+    assert result["model_calls"] == 2
+    assert result["timesteps"] == [4, 1]
+    assert result["speedup"] == 2.0
 
 
 def test_hmddim_edge():
     """Test edge cases."""
-    x_T = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    n_steps = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_ddim(x_T, model, T, n_steps)
+    rng = np.random.default_rng(42)
+    x_T = rng.normal(0, 1, 3)
+
+    def zero_model(x, t):
+        return np.zeros(len(x))
+
+    # smallest valid configuration: T=1, n_steps=1
+    result = geron_ddim(
+        x_T, zero_model, T=1, n_steps=1,
+        beta_schedule=[0.5],
+    )
     assert isinstance(result, dict)
+    assert "x_0" in result
+    assert "trajectory" in result
+    assert "timesteps" in result
+    assert "model_calls" in result
+    assert "speedup" in result
+    assert result["model_calls"] == 1
+    assert result["speedup"] == 1.0
 
 
 # --- appended: the module's own worked example as a gate -----------
