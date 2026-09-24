@@ -1,6 +1,6 @@
 """Tests for david_j_morin_probability_for_the_enthusiastic_beginner4e67.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_67."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e67 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_67,
@@ -9,14 +9,23 @@ from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e67 import
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e67_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_67(x)
+    n = 40
+    p = 0.3
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_67(n, p)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "variance" in result
+    variance = result["variance"]
+    assert math.isfinite(variance)
+    assert 0 <= variance <= n / 4
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e67_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_67(x)
+    n = 10
+    p = 0.5
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_67(n, p)
     assert isinstance(result, dict)
+    assert "variance" in result
+    variance = result["variance"]
+    assert math.isfinite(variance)
+    assert variance == n * p * (1 - p)

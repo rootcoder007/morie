@@ -1,6 +1,6 @@
 """Tests for david_j_morin_probability_for_the_enthusiastic_beginner4e85.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_85."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e85 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_85,
@@ -9,14 +9,28 @@ from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e85 import
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e85_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_85(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_85(2.0)
+    # expmom2 returns exponential moments (mean, second moment, variance) for a scalar tau
+    if isinstance(result, dict):
+        assert len(result) >= 1
+        for v in result.values():
+            assert math.isfinite(float(v))
+    else:
+        values = list(result)
+        assert len(values) == 3
+        for v in values:
+            assert math.isfinite(float(v))
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e85_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_85(x)
-    assert isinstance(result, dict)
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_85(0.5)
+    if isinstance(result, dict):
+        assert len(result) >= 1
+        for v in result.values():
+            assert math.isfinite(float(v))
+    else:
+        values = list(result)
+        assert len(values) == 3
+        for v in values:
+            assert math.isfinite(float(v))

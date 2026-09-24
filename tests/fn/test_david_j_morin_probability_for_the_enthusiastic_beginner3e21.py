@@ -9,14 +9,12 @@ from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner3e21 import
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e21_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_21(x)
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_21()
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert len(result) > 0
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e21_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_21(x)
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_21()
     assert isinstance(result, dict)

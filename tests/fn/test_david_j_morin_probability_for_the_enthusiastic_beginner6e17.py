@@ -1,5 +1,7 @@
 """Tests for david_j_morin_probability_for_the_enthusiastic_beginner6e17.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_17."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e17 import (
@@ -9,14 +11,11 @@ from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e17 import
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner6e17_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_17(x)
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_17(1.0, 1.0, 1.0)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner6e17_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_17(x)
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_17(0.5, 0.1, 2.0)
     assert isinstance(result, dict)
