@@ -20,9 +20,9 @@ class TestQbinom:
         assert 0 <= int(result) <= 10
 
     def test_type(self):
-        """Returns integer or integer-like."""
+        """Returns a numeric type (scalar or array)."""
         result = qbinom(0.5, 10, 0.5)
-        assert isinstance(result, (int, np.integer, float, np.floating))
+        assert isinstance(result, (int, np.integer, np.floating, np.ndarray))
 
     def test_raises_bad_prob(self):
         """Should reject prob outside [0, 1]."""

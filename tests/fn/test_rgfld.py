@@ -7,16 +7,21 @@ from morie.fn.bsaclass import rangayyan_fisher_lda
 
 def test_rgfld_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    X = rng.normal(0, 1, (40, 3))
+    y = rng.integers(0, 2, 40)
     result = rangayyan_fisher_lda(X, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "w" in result
+    assert len(result["w"]) == 3
 
 
 def test_rgfld_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    X = rng.normal(0, 1, (20, 2))
+    y = rng.integers(0, 2, 20)
     result = rangayyan_fisher_lda(X, y)
     assert isinstance(result, dict)
+    assert "w" in result
+    assert len(result["w"]) == 2

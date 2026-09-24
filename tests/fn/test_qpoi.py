@@ -1,6 +1,7 @@
 """Tests for morie.fn.qpoi — Poisson quantile function."""
 
 from morie.fn import _array_core as np
+import math
 import pytest
 
 from morie.fn.qpoi import qpois
@@ -20,11 +21,13 @@ class TestQpois:
         assert int(result) >= 1
 
     def test_type(self):
-        """Returns integer-like."""
+        """Returns a finite numeric array of length 1."""
         result = qpois(0.5, lambda_=5.0)
-        assert isinstance(result, (int, np.integer, float, np.floating))
+        arr = np.asarray(result)
+        assert arr.size == 1
+        assert math.isfinite(float(arr))
 
     def test_raises_nonpositive_lambda(self):
         """Should reject lambda_ <= 0."""
         with pytest.raises(ValueError):
-            qpois(0.5, lambda_=0)
+            qpois(0.5, lambda_=0.0)

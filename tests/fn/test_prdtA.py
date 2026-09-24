@@ -1,20 +1,18 @@
 """Tests for prdtA.prefix_evaluation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.prdtA import prefix_evaluation
 
 
 def test_prdtA_basic():
     """Test basic functionality."""
-    expr = np.random.default_rng(42).normal(0, 1, 100)
+    expr = ['+', 2, 3]
     result = prefix_evaluation(expr)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert result == 5
 
 
 def test_prdtA_edge():
     """Test edge cases."""
-    expr = np.random.default_rng(42).normal(0, 1, 100)
+    expr = [42]
     result = prefix_evaluation(expr)
-    assert isinstance(result, dict)
+    assert result == 42

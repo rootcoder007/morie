@@ -7,16 +7,19 @@ from morie.fn.rkhsn import rkhs_norm
 
 def test_rkhsn_basic():
     """Test basic functionality."""
+    rng = np.random.default_rng(42)
     alpha = 0.05
-    eigenvalues = np.random.default_rng(42).normal(0, 1, 100)
-    result = rkhs_norm(alpha, eigenvalues)
+    K = rng.normal(0, 1, (40, 40))
+    result = rkhs_norm(alpha, K)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "norm" in result
 
 
 def test_rkhsn_edge():
     """Test edge cases."""
+    rng = np.random.default_rng(42)
     alpha = 0.05
-    eigenvalues = np.random.default_rng(42).normal(0, 1, 100)
-    result = rkhs_norm(alpha, eigenvalues)
+    K = rng.normal(0, 1, (5, 5))
+    result = rkhs_norm(alpha, K)
     assert isinstance(result, dict)
+    assert "norm" in result

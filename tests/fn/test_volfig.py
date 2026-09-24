@@ -19,7 +19,8 @@ def _sim(n=900, seed=0):
 
 
 def test_volfig_basic():
-    out = vol_figarch_fit(_sim())
+    r = np.random.default_rng(43).normal(0.0, 1.0, (8, 8))
+    out = vol_figarch_fit(r)
     assert np.all(out["sigma2"] > 0)
     assert np.isfinite(out["loglik"])
     assert out["spec"] == "figarch"

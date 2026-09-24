@@ -7,28 +7,14 @@ from morie.fn.sarima import seasonal_arima
 
 def test_sarima_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    d = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    Q = np.random.default_rng(42).normal(0, 1, 100)
-    s = 90
-    result = seasonal_arima(y, p, d, q, P, D, Q, s)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = seasonal_arima(y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_sarima_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    d = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    Q = np.random.default_rng(42).normal(0, 1, 100)
-    s = 90
-    result = seasonal_arima(y, p, d, q, P, D, Q, s)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = seasonal_arima(y)
     assert isinstance(result, dict)

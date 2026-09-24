@@ -1,7 +1,8 @@
 """Tests for rgcorec.rangayyan_correlation_coeff."""
 
-from morie.fn import _array_core as np
+import math
 
+from morie.fn import _array_core as np
 from morie.fn.bsastat import rangayyan_correlation_coeff
 
 
@@ -10,7 +11,10 @@ def test_rgcorec_basic():
     x = np.arange(10, dtype=float)
     y = x * 2 + 1
     result = rangayyan_correlation_coeff(x, y)
-    assert np.all(np.isfinite(np.asarray(result["statistic"], dtype=float)))  # N6: was a generator-guessed value
+    r = float(result["r"])
+    assert math.isfinite(r)
+    # Perfect linear relationship y = 2x + 1 gives correlation 1.0
+    assert abs(r - 1.0) < 1e-10
 
 
 def test_rgcorec_edge():
