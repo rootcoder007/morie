@@ -1,81 +1,35 @@
-"""Tests for msm080.mvsml_bayesian_regression_eq_6_11."""
+"""Verification tests for msm080.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments with the
+same function name, so mvsml_bayesian_regression_eq_6_11 lives once in msm076 and this module
+re-exports it. Its own contract is that the re-exported name reaches
+that single object; the arithmetic is verified against the book in the
+msm076 tests.
+"""
 
+import morie.fn.msm076 as host
+import morie.fn.msm080 as alias
 from morie.fn.msm080 import mvsml_bayesian_regression_eq_6_11
 
 
-def test_msm080_basic():
-    """Test basic functionality.
-
-    Model: Y = 1_IJ mu' + X B + Z1 b1 + Z2 b2 + E, with
-        b2 | Sigma_T, Sigma_E ~ MN(0, Sigma_E (x) G, Sigma_T).
-
-    The function returns the two inverse-Wishart full conditionals of
-    steps 5 and 6 (p.196). The "estimate" payload is scale_T[0][0].
-    """
-    rng = np.random.default_rng(42)
-
-    # Multi-trait matrices (2-D) as documented by bmtme_conditionals.
-    Y = rng.normal(0.0, 1.0, (1, 1))
-    Z1 = rng.normal(0.0, 1.0, (1, 1))
-    Z2 = rng.normal(0.0, 1.0, (1, 1))
-    G = np.eye(1)
-    Sigma_T = np.eye(1)
-    Sigma_E = np.eye(1)
-    R = np.eye(1)
-    b1 = rng.normal(0.0, 1.0, (1, 1))
-    b2 = rng.normal(0.0, 1.0, (1, 1))
-
-    result = mvsml_bayesian_regression_eq_6_11(Y, Z1, Z2, G, Sigma_T, Sigma_E, R,
-                                               b1=b1, b2=b2)
-
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    for key in ("nu_T_post", "scale_T", "nu_E_post", "scale_E", "method"):
-        assert key in result
-
-    # `estimate` is the (1,1) element of scale_T.
-    assert float(result["estimate"]) == float(result["scale_T"][0][0])
-
-    # Method label as documented.
-    assert result["method"] == "BMTME full conditionals (MVSML 2022 eq. 6.11)"
-
-    # Posterior scale matrices must be 2-D with matching shape.
-    sT = np.asarray(result["scale_T"])
-    sE = np.asarray(result["scale_E"])
-    assert sT.ndim == 2 and sE.ndim == 2
-    assert sT.shape == (1, 1)
-    assert sE.shape == (1, 1)
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert mvsml_bayesian_regression_eq_6_11 is getattr(host, "mvsml_bayesian_regression_eq_6_11")
+    assert alias.mvsml_bayesian_regression_eq_6_11 is getattr(host, "mvsml_bayesian_regression_eq_6_11")
 
 
-def test_msm080_edge():
-    """Test edge cases: minimum-size multi-trait inputs (I=J=t=1).
+def test_every_shared_name_reaches_the_same_one_function():
+    # names the module defines itself are its own; the ones the host
+    # also defines must not have been copied into a second object
+    assert "mvsml_bayesian_regression_eq_6_11" in alias.__all__
+    for name in alias.__all__:
+        if hasattr(host, name):
+            assert getattr(alias, name) is getattr(host, name)
 
-    Omitting the optional b1 / b2 keyword arguments exercises the
-    documented default of b1=b2=None.
-    """
-    rng = np.random.default_rng(42)
 
-    Y = rng.normal(0.0, 1.0, (1, 1))
-    Z1 = rng.normal(0.0, 1.0, (1, 1))
-    Z2 = rng.normal(0.0, 1.0, (1, 1))
-    G = np.eye(1)
-    Sigma_T = np.eye(1)
-    Sigma_E = np.eye(1)
-    R = np.eye(1)
+def test_the_alias_carries_the_hosts_documentation_unchanged():
+    assert alias.mvsml_bayesian_regression_eq_6_11.__module__ == getattr(host, "mvsml_bayesian_regression_eq_6_11").__module__
+    assert alias.mvsml_bayesian_regression_eq_6_11.__doc__ == getattr(host, "mvsml_bayesian_regression_eq_6_11").__doc__
 
-    # Call without optional b1 / b2; the documented signature allows None.
-    result = mvsml_bayesian_regression_eq_6_11(Y, Z1, Z2, G, Sigma_T, Sigma_E, R)
 
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "scale_T" in result
-    assert "scale_E" in result
-    assert "method" in result
-
-    sT = np.asarray(result["scale_T"])
-    sE = np.asarray(result["scale_E"])
-    assert sT.ndim == 2 and sE.ndim == 2
-    assert sT.shape == (1, 1)
-    assert sE.shape == (1, 1)
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "msm080" in alias.cheatsheet()

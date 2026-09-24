@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_km046.py

@@ -1,19 +1,35 @@
-"""Tests for lilliefors_test."""
+"""Verification tests for lbrst.
 
-from morie.fn import _array_core as np
-import pytest
+The stub generator stamped several extracted page fragments with the
+same function name, so lilliefors_test lives once in lilf and this module
+re-exports it. Its own contract is that the re-exported name reaches
+that single object; the arithmetic is verified against the book in the
+lilf tests.
+"""
 
+import morie.fn.lilf as host
+import morie.fn.lbrst as alias
 from morie.fn.lbrst import lilliefors_test
 
 
-class TestLilliefors:
-    def test_normal_data(self):
-        rng = np.random.default_rng(42)
-        x = rng.normal(0, 1, 200)
-        r = lilliefors_test(x)
-        assert r.test_name == "Lilliefors test"
-        assert not r.extra["reject_at_5pct"]
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert lilliefors_test is getattr(host, "lilliefors_test")
+    assert alias.lilliefors_test is getattr(host, "lilliefors_test")
 
-    def test_too_few(self):
-        with pytest.raises(ValueError):
-            lilliefors_test([1, 2, 3])
+
+def test_every_shared_name_reaches_the_same_one_function():
+    # names the module defines itself are its own; the ones the host
+    # also defines must not have been copied into a second object
+    assert "lilliefors_test" in alias.__all__
+    for name in alias.__all__:
+        if hasattr(host, name):
+            assert getattr(alias, name) is getattr(host, name)
+
+
+def test_the_alias_carries_the_hosts_documentation_unchanged():
+    assert alias.lilliefors_test.__module__ == getattr(host, "lilliefors_test").__module__
+    assert alias.lilliefors_test.__doc__ == getattr(host, "lilliefors_test").__doc__
+
+
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "lbrst" in alias.cheatsheet()

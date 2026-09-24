@@ -1,22 +1,35 @@
-"""Tests for msm096.mvsml_bayesian_regression_eq_6_7."""
+"""Verification tests for msm096.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments with the
+same function name, so mvsml_bayesian_regression_eq_6_7 lives once in msm063 and this module
+re-exports it. Its own contract is that the re-exported name reaches
+that single object; the arithmetic is verified against the book in the
+msm063 tests.
+"""
 
+import morie.fn.msm063 as host
+import morie.fn.msm096 as alias
 from morie.fn.msm096 import mvsml_bayesian_regression_eq_6_7
 
 
-def test_msm096_basic():
-    """Test basic functionality."""
-    Z_L = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    G = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    result = mvsml_bayesian_regression_eq_6_7(Z_L, G)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert mvsml_bayesian_regression_eq_6_7 is getattr(host, "mvsml_bayesian_regression_eq_6_7")
+    assert alias.mvsml_bayesian_regression_eq_6_7 is getattr(host, "mvsml_bayesian_regression_eq_6_7")
 
 
-def test_msm096_edge():
-    """Test edge cases."""
-    Z_L = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    G = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    result = mvsml_bayesian_regression_eq_6_7(Z_L, G)
-    assert isinstance(result, dict)
+def test_every_shared_name_reaches_the_same_one_function():
+    # names the module defines itself are its own; the ones the host
+    # also defines must not have been copied into a second object
+    assert "mvsml_bayesian_regression_eq_6_7" in alias.__all__
+    for name in alias.__all__:
+        if hasattr(host, name):
+            assert getattr(alias, name) is getattr(host, name)
+
+
+def test_the_alias_carries_the_hosts_documentation_unchanged():
+    assert alias.mvsml_bayesian_regression_eq_6_7.__module__ == getattr(host, "mvsml_bayesian_regression_eq_6_7").__module__
+    assert alias.mvsml_bayesian_regression_eq_6_7.__doc__ == getattr(host, "mvsml_bayesian_regression_eq_6_7").__doc__
+
+
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "msm096" in alias.cheatsheet()

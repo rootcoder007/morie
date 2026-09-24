@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_gh_c13_6.py

@@ -1,48 +1,35 @@
-"""Verification tests for incidens.incidence_rate.
+"""Verification tests for incidens.
 
-The incidence rate is cases divided by person-time, reported with an
-exact Poisson interval. The expected rate is recomputed in the test
-body and the interval is checked against the properties an exact
-Poisson interval must have.
+The stub generator stamped several extracted page fragments with the
+same function name, so incidence_rate lives once in cdinc and this module
+re-exports it. Its own contract is that the re-exported name reaches
+that single object; the arithmetic is verified against the book in the
+cdinc tests.
 """
 
-import math
-
-import pytest
-
+import morie.fn.cdinc as host
+import morie.fn.incidens as alias
 from morie.fn.incidens import incidence_rate
 
 
-def test_rate_is_cases_over_person_time():
-    for d, pt in ((12, 480.0), (3, 1000.0), (57, 2350.5)):
-        res = incidence_rate(d, pt)
-        assert float(res.estimate) == pytest.approx(d / pt, rel=1e-12)
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert incidence_rate is getattr(host, "incidence_rate")
+    assert alias.incidence_rate is getattr(host, "incidence_rate")
 
 
-def test_interval_contains_the_rate_and_is_ordered():
-    res = incidence_rate(12, 480.0, confidence=0.95)
-    lo, hi = float(res.ci_lower), float(res.ci_upper)
-    assert 0.0 <= lo <= float(res.estimate) <= hi
+def test_every_shared_name_reaches_the_same_one_function():
+    # names the module defines itself are its own; the ones the host
+    # also defines must not have been copied into a second object
+    assert "incidence_rate" in alias.__all__
+    for name in alias.__all__:
+        if hasattr(host, name):
+            assert getattr(alias, name) is getattr(host, name)
 
 
-def test_no_cases_gives_a_zero_lower_bound_and_a_positive_upper_bound():
-    res = incidence_rate(0, 500.0)
-    assert float(res.estimate) == pytest.approx(0.0, abs=1e-15)
-    assert float(res.ci_lower) == pytest.approx(0.0, abs=1e-15)
-    assert float(res.ci_upper) > 0.0
+def test_the_alias_carries_the_hosts_documentation_unchanged():
+    assert alias.incidence_rate.__module__ == getattr(host, "incidence_rate").__module__
+    assert alias.incidence_rate.__doc__ == getattr(host, "incidence_rate").__doc__
 
 
-def test_more_person_time_at_the_same_rate_narrows_the_interval():
-    small = incidence_rate(10, 100.0)
-    large = incidence_rate(100, 1000.0)
-    assert float(small.estimate) == pytest.approx(float(large.estimate), rel=1e-12)
-    width_small = float(small.ci_upper) - float(small.ci_lower)
-    width_large = float(large.ci_upper) - float(large.ci_lower)
-    assert width_large < width_small
-
-
-def test_a_wider_confidence_level_gives_a_wider_interval():
-    narrow = incidence_rate(12, 480.0, confidence=0.80)
-    wide = incidence_rate(12, 480.0, confidence=0.99)
-    assert float(wide.ci_upper) - float(wide.ci_lower) > \
-        float(narrow.ci_upper) - float(narrow.ci_lower)
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "incidens" in alias.cheatsheet()

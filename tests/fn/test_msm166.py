@@ -1,24 +1,35 @@
-"""Tests for msm166.mvsml_ridge_lasso_elastic_eq_9_2."""
+"""Verification tests for msm166.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments with the
+same function name, so hyperpl lives once in msm161 and this module
+re-exports it. Its own contract is that the re-exported name reaches
+that single object; the arithmetic is verified against the book in the
+msm161 tests.
+"""
 
-from morie.fn.msm166 import mvsml_ridge_lasso_elastic_eq_9_2
-
-
-def test_msm166_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    beta0 = 0.5
-    beta = 0.5
-    result = mvsml_ridge_lasso_elastic_eq_9_2(X, beta0, beta)
-    assert isinstance(result, dict)
-    assert "value" in result
+import morie.fn.msm161 as host
+import morie.fn.msm166 as alias
+from morie.fn.msm166 import hyperpl
 
 
-def test_msm166_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    beta0 = 0.5
-    beta = 0.5
-    result = mvsml_ridge_lasso_elastic_eq_9_2(X, beta0, beta)
-    assert isinstance(result, dict)
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert hyperpl is getattr(host, "hyperpl")
+    assert alias.hyperpl is getattr(host, "hyperpl")
+
+
+def test_every_shared_name_reaches_the_same_one_function():
+    # names the module defines itself are its own; the ones the host
+    # also defines must not have been copied into a second object
+    assert "hyperpl" in alias.__all__
+    for name in alias.__all__:
+        if hasattr(host, name):
+            assert getattr(alias, name) is getattr(host, name)
+
+
+def test_the_alias_carries_the_hosts_documentation_unchanged():
+    assert alias.hyperpl.__module__ == getattr(host, "hyperpl").__module__
+    assert alias.hyperpl.__doc__ == getattr(host, "hyperpl").__doc__
+
+
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "msm166" in alias.cheatsheet()

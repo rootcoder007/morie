@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_r2_from_f2.py

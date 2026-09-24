@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_var_sum_with_cov.py

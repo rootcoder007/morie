@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_weighted_category_total.py

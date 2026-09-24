@@ -1,22 +1,35 @@
-"""Tests for tstinf.test_information."""
+"""Verification tests for tstinf.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments with the
+same function name, so test_information lives once in tinfo and this module
+re-exports it. Its own contract is that the re-exported name reaches
+that single object; the arithmetic is verified against the book in the
+tinfo tests.
+"""
 
-from morie.fn.tstinf import test_information as _test_information
-
-
-def test_tstinf_basic():
-    """Test basic functionality."""
-    theta = np.random.default_rng(99).normal(0, 1, 100)
-    items = np.random.default_rng(42).normal(0, 1, 100)
-    result = _test_information(theta, items)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+import morie.fn.tinfo as host
+import morie.fn.tstinf as alias
+from morie.fn.tstinf import test_information
 
 
-def test_tstinf_edge():
-    """Test edge cases."""
-    theta = np.random.default_rng(99).normal(0, 1, 100)
-    items = np.random.default_rng(42).normal(0, 1, 100)
-    result = _test_information(theta, items)
-    assert isinstance(result, dict)
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert test_information is getattr(host, "test_information")
+    assert alias.test_information is getattr(host, "test_information")
+
+
+def test_every_shared_name_reaches_the_same_one_function():
+    # names the module defines itself are its own; the ones the host
+    # also defines must not have been copied into a second object
+    assert "test_information" in alias.__all__
+    for name in alias.__all__:
+        if hasattr(host, name):
+            assert getattr(alias, name) is getattr(host, name)
+
+
+def test_the_alias_carries_the_hosts_documentation_unchanged():
+    assert alias.test_information.__module__ == getattr(host, "test_information").__module__
+    assert alias.test_information.__doc__ == getattr(host, "test_information").__doc__
+
+
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "tstinf" in alias.cheatsheet()

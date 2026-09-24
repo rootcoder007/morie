@@ -1,32 +1,35 @@
-"""Tests for msm037.mvsml_linear_mixed_models_eq_5_4."""
+"""Verification tests for msm037.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments with the
+same function name, so mvsml_linear_mixed_models_eq_5_4 lives once in msm018 and this module
+re-exports it. Its own contract is that the re-exported name reaches
+that single object; the arithmetic is verified against the book in the
+msm018 tests.
+"""
 
+import morie.fn.msm018 as host
+import morie.fn.msm037 as alias
 from morie.fn.msm037 import mvsml_linear_mixed_models_eq_5_4
 
 
-def test_msm037_basic():
-    """Test basic functionality."""
-    y = [5.0, 6.0, 5.4, 6.8]
-    X_E = [[0.0]] * 4
-    Z_L = [[1, 0], [0, 1], [1, 0], [0, 1]]
-    Z_EL = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
-    G = [[1.0, 0.0], [0.0, 1.0]]
-    sigma2_g = 0.5
-    Sigma_E = [[0.3, 0.0], [0.0, 0.3]]
-    result = mvsml_linear_mixed_models_eq_5_4(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert mvsml_linear_mixed_models_eq_5_4 is getattr(host, "mvsml_linear_mixed_models_eq_5_4")
+    assert alias.mvsml_linear_mixed_models_eq_5_4 is getattr(host, "mvsml_linear_mixed_models_eq_5_4")
 
 
-def test_msm037_edge():
-    """Test edge cases."""
-    y = [5.0, 6.0, 5.4, 6.8]
-    X_E = [[0.0]] * 4
-    Z_L = [[1, 0], [0, 1], [1, 0], [0, 1]]
-    Z_EL = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
-    G = [[1.0, 0.0], [0.0, 1.0]]
-    sigma2_g = 0.5
-    Sigma_E = [[0.3, 0.0], [0.0, 0.3]]
-    result = mvsml_linear_mixed_models_eq_5_4(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E)
-    assert isinstance(result, dict)
+def test_every_shared_name_reaches_the_same_one_function():
+    # names the module defines itself are its own; the ones the host
+    # also defines must not have been copied into a second object
+    assert "mvsml_linear_mixed_models_eq_5_4" in alias.__all__
+    for name in alias.__all__:
+        if hasattr(host, name):
+            assert getattr(alias, name) is getattr(host, name)
+
+
+def test_the_alias_carries_the_hosts_documentation_unchanged():
+    assert alias.mvsml_linear_mixed_models_eq_5_4.__module__ == getattr(host, "mvsml_linear_mixed_models_eq_5_4").__module__
+    assert alias.mvsml_linear_mixed_models_eq_5_4.__doc__ == getattr(host, "mvsml_linear_mixed_models_eq_5_4").__doc__
+
+
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "msm037" in alias.cheatsheet()

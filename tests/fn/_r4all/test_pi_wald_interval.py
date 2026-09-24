@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_pi_wald_interval.py

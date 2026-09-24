@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp18e4.py

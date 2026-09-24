@@ -1,24 +1,35 @@
-"""Tests for msm108.mvsml_bayesian_regression_pt2_eq_7_6."""
+"""Verification tests for msm108.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments with the
+same function name, so mvsml_bayesian_regression_pt2_eq_7_6 lives once in msm106 and this module
+re-exports it. Its own contract is that the re-exported name reaches
+that single object; the arithmetic is verified against the book in the
+msm106 tests.
+"""
 
+import morie.fn.msm106 as host
+import morie.fn.msm108 as alias
 from morie.fn.msm108 import mvsml_bayesian_regression_pt2_eq_7_6
 
 
-def test_msm108_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
-    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    result = mvsml_bayesian_regression_pt2_eq_7_6(X, beta0, beta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert mvsml_bayesian_regression_pt2_eq_7_6 is getattr(host, "mvsml_bayesian_regression_pt2_eq_7_6")
+    assert alias.mvsml_bayesian_regression_pt2_eq_7_6 is getattr(host, "mvsml_bayesian_regression_pt2_eq_7_6")
 
 
-def test_msm108_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
-    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    result = mvsml_bayesian_regression_pt2_eq_7_6(X, beta0, beta)
-    assert isinstance(result, dict)
+def test_every_shared_name_reaches_the_same_one_function():
+    # names the module defines itself are its own; the ones the host
+    # also defines must not have been copied into a second object
+    assert "mvsml_bayesian_regression_pt2_eq_7_6" in alias.__all__
+    for name in alias.__all__:
+        if hasattr(host, name):
+            assert getattr(alias, name) is getattr(host, name)
+
+
+def test_the_alias_carries_the_hosts_documentation_unchanged():
+    assert alias.mvsml_bayesian_regression_pt2_eq_7_6.__module__ == getattr(host, "mvsml_bayesian_regression_pt2_eq_7_6").__module__
+    assert alias.mvsml_bayesian_regression_pt2_eq_7_6.__doc__ == getattr(host, "mvsml_bayesian_regression_pt2_eq_7_6").__doc__
+
+
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "msm108" in alias.cheatsheet()

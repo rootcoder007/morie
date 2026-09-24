@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_information_theory_mackay1e18.py

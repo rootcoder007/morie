@@ -1,69 +1,35 @@
-"""Tests for msm016.mvsml_linear_mixed_models_eq_5_3."""
+"""Verification tests for msm016.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments with the
+same function name, so mvsml_linear_mixed_models_eq_5_3 lives once in msm015 and this module
+re-exports it. Its own contract is that the re-exported name reaches
+that single object; the arithmetic is verified against the book in the
+msm015 tests.
+"""
 
+import morie.fn.msm015 as host
+import morie.fn.msm016 as alias
 from morie.fn.msm016 import mvsml_linear_mixed_models_eq_5_3
 
 
-def test_msm016_basic():
-    """Test basic functionality."""
-    rng = np.random.default_rng(42)
-    n = 100
-    sigma2_g = 0.5
-    sigma2_e = 1.0
-
-    # Build a positive-definite G (genomic relationship matrix)
-    A = rng.normal(0, 1, (10, 10))
-    G = A @ A.T + 10  # 10x10, PD
-
-    # Generate b ~ N(0, sigma2_g * G)
-    L = np.linalg.cholesky(sigma2_g * G)
-    b = L @ rng.normal(0, 1, 10)
-
-    # Z_L is n x 10 incidence matrix
-    Z_L = np.zeros((n, 10))
-    for i in range(n):
-        Z_L[i, rng.integers(0, 10)] = 1
-
-    # Generate phenotype
-    eps = rng.normal(0, np.sqrt(sigma2_e), n)
-    mu_true = 1.0
-    y = mu_true + Z_L @ b + eps
-
-    result = mvsml_linear_mixed_models_eq_5_3(y, Z_L, G, sigma2_g, sigma2_e)
-
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "gebv" in result
-    assert "mu" in result
-    assert "method" in result
-    assert result["estimate"] == result["mu"]
-    assert len(result["gebv"]) == 10
-    assert len(result["gebv"]) == Z_L.shape[1]
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert mvsml_linear_mixed_models_eq_5_3 is getattr(host, "mvsml_linear_mixed_models_eq_5_3")
+    assert alias.mvsml_linear_mixed_models_eq_5_3 is getattr(host, "mvsml_linear_mixed_models_eq_5_3")
 
 
-def test_msm016_edge():
-    """Test edge cases."""
-    rng = np.random.default_rng(42)
-    n = 50
-    sigma2_g = 0.7
+def test_every_shared_name_reaches_the_same_one_function():
+    # names the module defines itself are its own; the ones the host
+    # also defines must not have been copied into a second object
+    assert "mvsml_linear_mixed_models_eq_5_3" in alias.__all__
+    for name in alias.__all__:
+        if hasattr(host, name):
+            assert getattr(alias, name) is getattr(host, name)
 
-    A = rng.normal(0, 1, (5, 5))
-    G = A @ A.T + 10  # 5x5, PD
 
-    L = np.linalg.cholesky(sigma2_g * G)
-    b = L @ rng.normal(0, 1, 5)
+def test_the_alias_carries_the_hosts_documentation_unchanged():
+    assert alias.mvsml_linear_mixed_models_eq_5_3.__module__ == getattr(host, "mvsml_linear_mixed_models_eq_5_3").__module__
+    assert alias.mvsml_linear_mixed_models_eq_5_3.__doc__ == getattr(host, "mvsml_linear_mixed_models_eq_5_3").__doc__
 
-    Z_L = np.zeros((n, 5))
-    for i in range(n):
-        Z_L[i, rng.integers(0, 5)] = 1
 
-    eps = rng.normal(0, 1, n)
-    y = 2.0 + Z_L @ b + eps
-
-    result = mvsml_linear_mixed_models_eq_5_3(y, Z_L, G, sigma2_g)  # default sigma2_e=1.0
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "gebv" in result
-    assert len(result["gebv"]) == 5
-    assert result["estimate"] == result["mu"]
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "msm016" in alias.cheatsheet()

@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_ok_variance_semivariance_form.py

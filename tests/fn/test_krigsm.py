@@ -1,26 +1,35 @@
-"""Tests for krigsm.ordinary_kriging."""
+"""Verification tests for krigsm.
 
-from morie.fn import _array_core as np
+The stub generator stamped several extracted page fragments with the
+same function name, so ordinary_kriging lives once in krig and this module
+re-exports it. Its own contract is that the re-exported name reaches
+that single object; the arithmetic is verified against the book in the
+krig tests.
+"""
 
+import morie.fn.krig as host
+import morie.fn.krigsm as alias
 from morie.fn.krigsm import ordinary_kriging
 
 
-def test_krigsm_basic():
-    """Test basic functionality."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    values = np.random.default_rng(42).normal(0, 1, 100)
-    s_predict = np.random.default_rng(42).normal(0, 1, 100)
-    variogram = np.random.default_rng(42).normal(0, 1, 100)
-    result = ordinary_kriging(coords, values, s_predict, variogram)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_the_re_export_is_the_same_object_as_the_implementation():
+    assert ordinary_kriging is getattr(host, "ordinary_kriging")
+    assert alias.ordinary_kriging is getattr(host, "ordinary_kriging")
 
 
-def test_krigsm_edge():
-    """Test edge cases."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    values = np.random.default_rng(42).normal(0, 1, 100)
-    s_predict = np.random.default_rng(42).normal(0, 1, 100)
-    variogram = np.random.default_rng(42).normal(0, 1, 100)
-    result = ordinary_kriging(coords, values, s_predict, variogram)
-    assert isinstance(result, dict)
+def test_every_shared_name_reaches_the_same_one_function():
+    # names the module defines itself are its own; the ones the host
+    # also defines must not have been copied into a second object
+    assert "ordinary_kriging" in alias.__all__
+    for name in alias.__all__:
+        if hasattr(host, name):
+            assert getattr(alias, name) is getattr(host, name)
+
+
+def test_the_alias_carries_the_hosts_documentation_unchanged():
+    assert alias.ordinary_kriging.__module__ == getattr(host, "ordinary_kriging").__module__
+    assert alias.ordinary_kriging.__doc__ == getattr(host, "ordinary_kriging").__doc__
+
+
+def test_the_alias_module_carries_its_own_cheatsheet():
+    assert "krigsm" in alias.cheatsheet()
