@@ -9,14 +9,24 @@ from morie.fn.regression_estimator_general import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e8_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = regression_estimator_general(x)
+    x_all = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    b_hat = 5
+    z_sample = 5
+    x_sample = 5
+    pi_sample = 5
+    n_population = 5
+    result = regression_estimator_general(x_all, b_hat, z_sample, x_sample, pi_sample, n_population)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e8_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = regression_estimator_general(x)
+    x_all = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    b_hat = 5
+    z_sample = 5
+    x_sample = 5
+    pi_sample = 5
+    n_population = 5
+    result = regression_estimator_general(x_all, b_hat, z_sample, x_sample, pi_sample, n_population)
     assert isinstance(result, dict)

@@ -1,19 +1,21 @@
 """Tests for wsment.wasserman_entropy."""
 
+from morie.fn import _array_core as np
+
 from morie.fn.wsment import wasserman_entropy
 
 
 def test_wsment_basic():
     """Test basic functionality."""
-    p = 5
+    p = 1
     result = wasserman_entropy(p)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_wsment_edge():
     """Test edge cases."""
-    p = 5
+    p = 1
     result = wasserman_entropy(p)
     assert isinstance(result, dict)
 

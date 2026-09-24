@@ -7,14 +7,20 @@ from morie.fn.pooled_sd import pooled_sd
 
 def test_ca11e2_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = pooled_sd(x)
+    s1 = 0.5
+    s2 = 0.5
+    n1 = 5
+    n2 = 5
+    result = pooled_sd(s1, s2, n1, n2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca11e2_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = pooled_sd(x)
+    s1 = 0.5
+    s2 = 0.5
+    n1 = 5
+    n2 = 5
+    result = pooled_sd(s1, s2, n1, n2)
     assert isinstance(result, dict)

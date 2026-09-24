@@ -9,14 +9,14 @@ from morie.fn.poisson_zero_series import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e53_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poisson_zero_series(x)
+    a = 0.5
+    result = poisson_zero_series(a)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "partial_sums" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e53_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poisson_zero_series(x)
+    a = 0.5
+    result = poisson_zero_series(a)
     assert isinstance(result, dict)

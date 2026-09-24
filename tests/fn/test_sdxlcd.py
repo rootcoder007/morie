@@ -7,18 +7,16 @@ from morie.fn.sdxlcd import sdxl_unet
 
 def test_sdxlcd_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    text_emb = np.random.default_rng(42).normal(0, 1, 100)
-    result = sdxl_unet(x, t, text_emb)
+    h_original = 0.5
+    w_original = 0.5
+    result = sdxl_unet(h_original, w_original)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_sdxlcd_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    text_emb = np.random.default_rng(42).normal(0, 1, 100)
-    result = sdxl_unet(x, t, text_emb)
+    h_original = 0.5
+    w_original = 0.5
+    result = sdxl_unet(h_original, w_original)
     assert isinstance(result, dict)

@@ -9,14 +9,16 @@ from morie.fn.sd_scale import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e41_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = sd_scale(x)
+    a = 0.5
+    sigma = 0.5
+    result = sd_scale(a, sigma)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "a" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e41_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = sd_scale(x)
+    a = 0.5
+    sigma = 0.5
+    result = sd_scale(a, sigma)
     assert isinstance(result, dict)

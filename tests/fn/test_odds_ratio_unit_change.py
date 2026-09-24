@@ -7,14 +7,14 @@ from morie.fn.odds_ratio_unit_change import odds_ratio_unit_change
 
 def test_ca4e8_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = odds_ratio_unit_change(x)
+    b = 0.5
+    result = odds_ratio_unit_change(b)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca4e8_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = odds_ratio_unit_change(x)
+    b = 0.5
+    result = odds_ratio_unit_change(b)
     assert isinstance(result, dict)

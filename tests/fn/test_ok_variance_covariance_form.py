@@ -9,14 +9,20 @@ from morie.fn.ok_variance_covariance_form import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r21e8_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ok_variance_covariance_form(x)
+    sigma2 = 0.5
+    lam = 0.5
+    cov_s0 = 0.5
+    nu = 0.5
+    result = ok_variance_covariance_form(sigma2, lam, cov_s0, nu)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r21e8_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ok_variance_covariance_form(x)
+    sigma2 = 0.5
+    lam = 0.5
+    cov_s0 = 0.5
+    nu = 0.5
+    result = ok_variance_covariance_form(sigma2, lam, cov_s0, nu)
     assert isinstance(result, dict)

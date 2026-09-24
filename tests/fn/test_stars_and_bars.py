@@ -9,14 +9,16 @@ from morie.fn.stars_and_bars import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner1e57_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = stars_and_bars(x)
+    n = 5
+    N = 5
+    result = stars_and_bars(n, N)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "n" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner1e57_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = stars_and_bars(x)
+    n = 5
+    N = 5
+    result = stars_and_bars(n, N)
     assert isinstance(result, dict)

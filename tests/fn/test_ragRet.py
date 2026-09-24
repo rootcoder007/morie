@@ -7,16 +7,16 @@ from morie.fn.ragRet import rag_retrieval
 
 def test_ragRet_basic():
     """Test basic functionality."""
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    docs = np.random.default_rng(42).normal(0, 1, 100)
-    result = rag_retrieval(query, docs)
+    query = 0.5
+    corpus = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rag_retrieval(query, corpus)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "indices" in result
 
 
 def test_ragRet_edge():
     """Test edge cases."""
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    docs = np.random.default_rng(42).normal(0, 1, 100)
-    result = rag_retrieval(query, docs)
+    query = 0.5
+    corpus = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rag_retrieval(query, corpus)
     assert isinstance(result, dict)

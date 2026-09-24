@@ -7,14 +7,16 @@ from morie.fn.noncentrality_delta_r import noncentrality_delta_r
 
 def test_ca8e6_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = noncentrality_delta_r(x)
+    r = 0.5
+    n = 5
+    result = noncentrality_delta_r(r, n)
     assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
+    assert "value" in result
 
 
 def test_ca8e6_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = noncentrality_delta_r(x)
+    r = 0.5
+    n = 5
+    result = noncentrality_delta_r(r, n)
     assert isinstance(result, dict)

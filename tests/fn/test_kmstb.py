@@ -7,19 +7,31 @@ from morie.fn.kmstb import kamath_step_back_prompting
 
 def test_kmstb_basic():
     """Test basic functionality."""
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_step_back_prompting(query, model)
+    docs = {"physics": ["d1", "d2"], "which force": ["d2", "d3"]}
+    result = kamath_step_back_prompting(
+        "which force", lambda q: "physics",
+        retrieve=lambda q: docs[q],
+        answer=lambda q, ctx: "gravity, per " + ",".join(ctx))
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert result["step_back_query"] == "physics"
+    assert result["query"] == "which force"
+    assert result["context"] == ["d1", "d2", "d3"]
+    assert result["answer"] == "gravity, per d1,d2,d3"
+    assert result["stepped_back"] is True
+    assert result["n_context"] == 3
+    assert result["retrieved_by_query"]["physics"] == ["d1", "d2"]
+    assert result["retrieved_by_query"]["which force"] == ["d2", "d3"]
 
 
 def test_kmstb_edge():
-    """Test edge cases."""
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_step_back_prompting(query, model)
+    """Test edge case: model returns the original query, no retrieve/answer."""
+    result = kamath_step_back_prompting("what is x", lambda q: "what is x")
     assert isinstance(result, dict)
+    assert result["stepped_back"] is False
+    assert result["n_context"] == 0
+    assert result["context"] == []
+    assert "warning" in result
+    assert "answer" not in result
 
 
 # --- appended: the module's own worked example as a gate -----------

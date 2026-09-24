@@ -9,14 +9,16 @@ from morie.fn.shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10e3 i
 
 def test_shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10e3_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_equation_3(x)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    mu = 0.5
+    result = shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_equation_3(x, mu)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "cdf" in result
 
 
 def test_shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10e3_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_equation_3(x)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    mu = 0.5
+    result = shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_equation_3(x, mu)
     assert isinstance(result, dict)

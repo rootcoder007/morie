@@ -7,14 +7,18 @@ from morie.fn.power_from_delta_t import power_from_delta_t
 
 def test_ca8e3_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = power_from_delta_t(x)
+    delta = 0.5
+    t_cv = 0.5
+    df = 0.5
+    result = power_from_delta_t(delta, t_cv, df)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "t_beta" in result
 
 
 def test_ca8e3_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = power_from_delta_t(x)
+    delta = 0.5
+    t_cv = 0.5
+    df = 0.5
+    result = power_from_delta_t(delta, t_cv, df)
     assert isinstance(result, dict)

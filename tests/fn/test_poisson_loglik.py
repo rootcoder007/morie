@@ -9,14 +9,18 @@ from morie.fn.poisson_loglik import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e3_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poisson_loglik(x)
+    b = 0.5
+    x = 0.5
+    y = 0.5
+    result = poisson_loglik(b, x, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e3_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poisson_loglik(x)
+    b = 0.5
+    x = 0.5
+    y = 0.5
+    result = poisson_loglik(b, x, y)
     assert isinstance(result, dict)

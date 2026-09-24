@@ -7,20 +7,22 @@ from morie.fn.vaceff import vaccine_efficacy
 
 def test_vaceff_basic():
     """Test basic functionality."""
-    incidence_v = np.random.default_rng(42).normal(0, 1, 100)
-    incidence_u = np.random.default_rng(42).normal(0, 1, 100)
-    person_time = np.random.default_rng(42).normal(0, 1, 100)
-    result = vaccine_efficacy(incidence_v, incidence_u, person_time)
+    cases_vaccinated = 0.5
+    n_vaccinated = 5
+    cases_control = 5
+    n_control = 5
+    result = vaccine_efficacy(cases_vaccinated, n_vaccinated, cases_control, n_control)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_vaceff_edge():
     """Test edge cases."""
-    incidence_v = np.random.default_rng(42).normal(0, 1, 100)
-    incidence_u = np.random.default_rng(42).normal(0, 1, 100)
-    person_time = np.random.default_rng(42).normal(0, 1, 100)
-    result = vaccine_efficacy(incidence_v, incidence_u, person_time)
+    cases_vaccinated = 0.5
+    n_vaccinated = 5
+    cases_control = 5
+    n_control = 5
+    result = vaccine_efficacy(cases_vaccinated, n_vaccinated, cases_control, n_control)
     assert isinstance(result, dict)
 
 

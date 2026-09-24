@@ -7,14 +7,20 @@ from morie.fn.psm_standardized_bias import psm_standardized_bias
 
 def test_ca10e1_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = psm_standardized_bias(x)
+    mean_t = 0.5
+    mean_c = 0.5
+    s_t = 0.5
+    s_c = 0.5
+    result = psm_standardized_bias(mean_t, mean_c, s_t, s_c)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "value" in result or "value" in result
 
 
 def test_ca10e1_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = psm_standardized_bias(x)
+    mean_t = 0.5
+    mean_c = 0.5
+    s_t = 0.5
+    s_c = 0.5
+    result = psm_standardized_bias(mean_t, mean_c, s_t, s_c)
     assert isinstance(result, dict)

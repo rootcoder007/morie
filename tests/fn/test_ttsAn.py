@@ -7,16 +7,16 @@ from morie.fn.ttsAn import twitter_anomaly
 
 def test_ttsAn_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    period = np.random.default_rng(42).normal(0, 1, 100)
-    result = twitter_anomaly(y, period)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    period = 5
+    result = twitter_anomaly(x, period)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "anomalies" in result
 
 
 def test_ttsAn_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    period = np.random.default_rng(42).normal(0, 1, 100)
-    result = twitter_anomaly(y, period)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    period = 5
+    result = twitter_anomaly(x, period)
     assert isinstance(result, dict)

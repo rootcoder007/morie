@@ -6,8 +6,9 @@ from morie.fn.trnfn import trnfn
 
 
 def test_trnfn_smoke():
-    rng = np.random.default_rng(42)
-    result = trnfn(num=rng.standard_normal(20), den=rng.standard_normal(20))
+    num = 0.5
+    den = 0.5
+    result = trnfn(num, den)
     assert result is not None
     assert hasattr(result, "name")
     assert result.value is not None or result.extra is not None

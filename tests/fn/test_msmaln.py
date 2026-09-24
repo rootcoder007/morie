@@ -1,5 +1,7 @@
 """Tests for msmaln.aalen_johansen."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.msmaln import aalen_johansen
@@ -7,21 +9,38 @@ from morie.fn.msmaln import aalen_johansen
 
 def test_msmaln_basic():
     """Test basic functionality."""
-    time = np.linspace(0, 10, 100)
-    state = np.random.default_rng(42).normal(0, 1, 100)
-    transitions = np.random.default_rng(42).normal(0, 1, 100)
-    result = aalen_johansen(time, state, transitions)
+    rng = np.random.default_rng(42)
+    n = 100
+    time = rng.uniform(0, 10, n)
+    cause = rng.integers(0, 3, n)  # 0 = censored, 1 or 2 = cause of event
+    result = aalen_johansen(time, cause, n_causes=2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    expected_keys = {"times", "cif", "overall_survival", "naive_km",
+                     "overstatement", "partition_residual", "at_risk"}
+    for key in expected_keys:
+        assert key in result
+    T = len(result["times"])
+    assert len(result["cif"]) == 2
+    assert len(result["cif"][0]) == T
+    surv = result["overall_survival"]
+    assert all(0 <= s <= 1 for s in surv)
 
 
 def test_msmaln_edge():
-    """Test edge cases."""
-    time = np.linspace(0, 10, 100)
-    state = np.random.default_rng(42).normal(0, 1, 100)
-    transitions = np.random.default_rng(42).normal(0, 1, 100)
-    result = aalen_johansen(time, state, transitions)
+    """Test edge case: single cause (no competing risks)."""
+    rng = np.random.default_rng(123)
+    n = 40
+    time = rng.uniform(0, 10, n)
+    cause = rng.integers(0, 2, n)  # 0 = censored, 1 = cause
+    result = aalen_johansen(time, cause, n_causes=1)
     assert isinstance(result, dict)
+    assert "times" in result
+    assert "cif" in result
+    assert len(result["cif"]) == 1
+    # Partition: sum_k cif_k(t) + S(t) = 1 at every event time
+    resid = result["partition_residual"]
+    assert math.isfinite(resid)
+    assert abs(resid) < 1e-9
 
 
 # --- appended: the module's own worked example as a gate -----------

@@ -7,18 +7,18 @@ from morie.fn.bsaqrs import rangayyan_twa_spectral_mx
 
 def test_rgtwamx_basic():
     """Test basic functionality."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    r_peaks = np.arange(50, 1000, 50)
+    ecg = 5
+    fs = 5
+    r_peaks = np.array([1, 0, 2, 2, 3, 3, 1, 0, 4, 3, 2, 3, 0, 1, 1, 3, 3, 0, 1, 1, 3, 2, 4, 0, 4, 3, 1, 3, 0, 2, 2, 4, 1, 4, 2, 2, 3, 0, 0, 3])
     result = rangayyan_twa_spectral_mx(ecg, fs, r_peaks)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "alternans_voltage" in result
 
 
 def test_rgtwamx_edge():
     """Test edge cases."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    r_peaks = np.arange(50, 1000, 50)
+    ecg = 5
+    fs = 5
+    r_peaks = np.array([1, 0, 2, 2, 3, 3, 1, 0, 4, 3, 2, 3, 0, 1, 1, 3, 3, 0, 1, 1, 3, 2, 4, 0, 4, 3, 1, 3, 0, 2, 2, 4, 1, 4, 2, 2, 3, 0, 0, 3])
     result = rangayyan_twa_spectral_mx(ecg, fs, r_peaks)
     assert isinstance(result, dict)

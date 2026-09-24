@@ -9,14 +9,20 @@ from morie.fn.poisson_rate_mean import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e15_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poisson_rate_mean(x)
+    b0 = 0.5
+    bs = 0.5
+    xs = 0.5
+    exposure = 0.5
+    result = poisson_rate_mean(b0, bs, xs, exposure)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e15_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poisson_rate_mean(x)
+    b0 = 0.5
+    bs = 0.5
+    xs = 0.5
+    exposure = 0.5
+    result = poisson_rate_mean(b0, bs, xs, exposure)
     assert isinstance(result, dict)

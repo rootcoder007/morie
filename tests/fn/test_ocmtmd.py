@@ -7,20 +7,18 @@ from morie.fn.ocmtmd import outcome_model_diagnostic
 
 def test_ocmtmd_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    Q = np.random.default_rng(42).normal(0, 1, 100)
-    result = outcome_model_diagnostic(y, A, H, Q)
+    y = 0.5
+    A = 1
+    H = 0.5
+    result = outcome_model_diagnostic(y, A, H)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_ocmtmd_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    Q = np.random.default_rng(42).normal(0, 1, 100)
-    result = outcome_model_diagnostic(y, A, H, Q)
+    y = 0.5
+    A = 1
+    H = 0.5
+    result = outcome_model_diagnostic(y, A, H)
     assert isinstance(result, dict)

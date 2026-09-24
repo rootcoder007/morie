@@ -7,14 +7,20 @@ from morie.fn.odds_ratio_2x2 import odds_ratio_2x2
 
 def test_ca11e10_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = odds_ratio_2x2(x)
+    a = 0.5
+    b = 0.5
+    c = 0.5
+    d = 0.5
+    result = odds_ratio_2x2(a, b, c, d)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca11e10_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = odds_ratio_2x2(x)
+    a = 0.5
+    b = 0.5
+    c = 0.5
+    d = 0.5
+    result = odds_ratio_2x2(a, b, c, d)
     assert isinstance(result, dict)

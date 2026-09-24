@@ -7,18 +7,16 @@ from morie.fn.spspec2 import schabenberger_spectral_sim
 
 def test_spspec2_basic():
     """Test basic functionality."""
-    spectral_density = np.random.default_rng(42).normal(0, 1, 100)
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    n_freqs = np.random.default_rng(42).normal(0, 1, 100)
-    result = schabenberger_spectral_sim(spectral_density, coords, n_freqs)
+    mu = 0.5
+    cov_matrix = 0.5
+    result = schabenberger_spectral_sim(mu, cov_matrix)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "field" in result
 
 
 def test_spspec2_edge():
     """Test edge cases."""
-    spectral_density = np.random.default_rng(42).normal(0, 1, 100)
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    n_freqs = np.random.default_rng(42).normal(0, 1, 100)
-    result = schabenberger_spectral_sim(spectral_density, coords, n_freqs)
+    mu = 0.5
+    cov_matrix = 0.5
+    result = schabenberger_spectral_sim(mu, cov_matrix)
     assert isinstance(result, dict)

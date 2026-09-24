@@ -7,14 +7,20 @@ from morie.fn.se_log_or import se_log_or
 
 def test_ca11e11_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = se_log_or(x)
+    a = 0.5
+    b = 0.5
+    c = 0.5
+    d = 0.5
+    result = se_log_or(a, b, c, d)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca11e11_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = se_log_or(x)
+    a = 0.5
+    b = 0.5
+    c = 0.5
+    d = 0.5
+    result = se_log_or(a, b, c, d)
     assert isinstance(result, dict)

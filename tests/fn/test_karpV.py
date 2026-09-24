@@ -1,5 +1,8 @@
 """Tests for karpV.genetic_programming."""
 
+import math
+import pytest
+
 from morie.fn import _array_core as np
 
 from morie.fn.karpV import genetic_programming
@@ -7,18 +10,19 @@ from morie.fn.karpV import genetic_programming
 
 def test_karpV_basic():
     """Test basic functionality."""
-    fitness = np.random.default_rng(42).normal(0, 1, 100)
-    ops = np.random.default_rng(42).normal(0, 1, 100)
-    gens = np.random.default_rng(42).normal(0, 1, 100)
-    result = genetic_programming(fitness, ops, gens)
+    def fitness(tree):
+        return 0.0
+    result = genetic_programming(fitness=fitness, gens=2, pop_size=5, seed=1)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "best_raw" in result
+    assert "best_string" in result
+    assert "history" in result
+    assert math.isfinite(result["best_raw"])
 
 
 def test_karpV_edge():
     """Test edge cases."""
-    fitness = np.random.default_rng(42).normal(0, 1, 100)
-    ops = np.random.default_rng(42).normal(0, 1, 100)
-    gens = np.random.default_rng(42).normal(0, 1, 100)
-    result = genetic_programming(fitness, ops, gens)
-    assert isinstance(result, dict)
+    def fitness(tree):
+        return 0.0
+    with pytest.raises(ValueError):
+        genetic_programming(fitness=fitness, max_depth_init=1)

@@ -9,14 +9,18 @@ from morie.fn.ok_variance_semivariance_form import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r21e11_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ok_variance_semivariance_form(x)
+    lam = 0.5
+    gamma_s0 = 0.5
+    nu = 0.5
+    result = ok_variance_semivariance_form(lam, gamma_s0, nu)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r21e11_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ok_variance_semivariance_form(x)
+    lam = 0.5
+    gamma_s0 = 0.5
+    nu = 0.5
+    result = ok_variance_semivariance_form(lam, gamma_s0, nu)
     assert isinstance(result, dict)

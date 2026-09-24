@@ -9,14 +9,18 @@ from morie.fn.si_proportion_variance import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r3e14_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = si_proportion_variance(x)
+    p_hat = 0.5
+    n = 5
+    n_population = 5
+    result = si_proportion_variance(p_hat, n, n_population)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r3e14_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = si_proportion_variance(x)
+    p_hat = 0.5
+    n = 5
+    n_population = 5
+    result = si_proportion_variance(p_hat, n, n_population)
     assert isinstance(result, dict)

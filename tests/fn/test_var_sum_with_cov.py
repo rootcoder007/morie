@@ -9,14 +9,16 @@ from morie.fn.var_sum_with_cov import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e26_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = var_sum_with_cov(x)
+    var_x = 0.5
+    var_y = 0.5
+    result = var_sum_with_cov(var_x, var_y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "var_sum" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e26_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = var_sum_with_cov(x)
+    var_x = 0.5
+    var_y = 0.5
+    result = var_sum_with_cov(var_x, var_y)
     assert isinstance(result, dict)

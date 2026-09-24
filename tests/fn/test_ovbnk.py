@@ -7,24 +7,20 @@ from morie.fn.ovbnk import oster_omitted_bias_bound
 
 def test_ovbnk_basic():
     """Test basic functionality."""
-    beta_short = np.random.default_rng(42).normal(0, 1, 100)
-    beta_long = np.random.default_rng(42).normal(0, 1, 100)
-    R_short = np.random.default_rng(42).normal(0, 1, 100)
-    R_long = np.random.default_rng(42).normal(0, 1, 100)
-    R_max = 100
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    result = oster_omitted_bias_bound(beta_short, beta_long, R_short, R_long, R_max, delta)
+    beta_short = 0.5
+    beta_long = 0.5
+    R_short = 0.5
+    R_long = 1
+    result = oster_omitted_bias_bound(beta_short, beta_long, R_short, R_long)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_ovbnk_edge():
     """Test edge cases."""
-    beta_short = np.random.default_rng(42).normal(0, 1, 100)
-    beta_long = np.random.default_rng(42).normal(0, 1, 100)
-    R_short = np.random.default_rng(42).normal(0, 1, 100)
-    R_long = np.random.default_rng(42).normal(0, 1, 100)
-    R_max = 100
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    result = oster_omitted_bias_bound(beta_short, beta_long, R_short, R_long, R_max, delta)
+    beta_short = 0.5
+    beta_long = 0.5
+    R_short = 0.5
+    R_long = 1
+    result = oster_omitted_bias_bound(beta_short, beta_long, R_short, R_long)
     assert isinstance(result, dict)

@@ -7,17 +7,17 @@ from morie.fn.wsmmrk import wasserman_markov_ineq
 
 def test_wsmmrk_basic():
     """Test basic functionality."""
-    mean = np.random.default_rng(42).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
+    mean = 0.5
+    a = 0.5
     result = wasserman_markov_ineq(mean, a)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_wsmmrk_edge():
     """Test edge cases."""
-    mean = np.random.default_rng(42).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
+    mean = 0.5
+    a = 0.5
     result = wasserman_markov_ineq(mean, a)
     assert isinstance(result, dict)
 

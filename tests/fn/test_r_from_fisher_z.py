@@ -7,14 +7,14 @@ from morie.fn.r_from_fisher_z import r_from_fisher_z
 
 def test_ca11e14_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = r_from_fisher_z(x)
+    z = 0.5
+    result = r_from_fisher_z(z)
     assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
+    assert "value" in result
 
 
 def test_ca11e14_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = r_from_fisher_z(x)
+    z = 0.5
+    result = r_from_fisher_z(z)
     assert isinstance(result, dict)

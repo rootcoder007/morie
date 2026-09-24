@@ -1,5 +1,7 @@
 """Tests for kmglv.kamath_glove_cost."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.kmglv import kamath_glove_cost
@@ -7,29 +9,41 @@ from morie.fn.kmglv import kamath_glove_cost
 
 def test_kmglv_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    W_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    b_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    x_max = 100
-    alpha = 0.05
-    result = kamath_glove_cost(X, W, W_tilde, b, b_tilde, x_max, alpha)
+    rng = np.random.default_rng(42)
+    V, C, d = 40, 3, 4
+    # Co-occurrence counts must be non-negative
+    X = np.abs(rng.normal(0, 1, (V, C)))
+    W = rng.normal(0, 1, (V, d))
+    W_tilde = rng.normal(0, 1, (C, d))
+    b = rng.normal(0, 1, V)
+    b_tilde = rng.normal(0, 1, C)
+    result = kamath_glove_cost(X, W, W_tilde, b, b_tilde,
+                               x_max=100.0, alpha=0.75)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result
+    assert "n_nonzero" in result
+    assert "n" in result
+    assert math.isfinite(result["estimate"])
+    assert result["estimate"] >= 0
+    assert result["n_nonzero"] >= 1
+    assert result["n"] == V * C
 
 
 def test_kmglv_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    W_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    b_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    x_max = 100
-    alpha = 0.05
-    result = kamath_glove_cost(X, W, W_tilde, b, b_tilde, x_max, alpha)
+    rng = np.random.default_rng(42)
+    V, C, d = 5, 4, 3
+    X = np.abs(rng.normal(0, 1, (V, C)))
+    W = rng.normal(0, 1, (V, d))
+    W_tilde = rng.normal(0, 1, (C, d))
+    b = rng.normal(0, 1, V)
+    b_tilde = rng.normal(0, 1, C)
+    result = kamath_glove_cost(X, W, W_tilde, b, b_tilde,
+                               x_max=50.0, alpha=0.5)
     assert isinstance(result, dict)
+    assert "estimate" in result
+    assert math.isfinite(result["estimate"])
+    assert result["estimate"] >= 0
 
 
 # --- appended: the module's own worked example as a gate -----------

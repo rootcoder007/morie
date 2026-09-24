@@ -9,14 +9,18 @@ from morie.fn.n_for_proportion_length import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r12e11_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = n_for_proportion_length(x)
+    u_crit = 0.5
+    p_star = 0.5
+    l_max = 0.5
+    result = n_for_proportion_length(u_crit, p_star, l_max)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r12e11_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = n_for_proportion_length(x)
+    u_crit = 0.5
+    p_star = 0.5
+    l_max = 0.5
+    result = n_for_proportion_length(u_crit, p_star, l_max)
     assert isinstance(result, dict)

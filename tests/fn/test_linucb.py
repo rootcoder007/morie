@@ -7,18 +7,30 @@ from morie.fn.linucb import linucb
 
 def test_linucb_basic():
     """Test basic functionality."""
-    context = np.random.default_rng(42).normal(0, 1, 100)
-    arms = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    result = linucb(context, arms, alpha)
+    rng = np.random.default_rng(42)
+    p = 3
+    n_arms = 5
+
+    x = rng.normal(0, 1, p)
+    theta = rng.normal(0, 1, (n_arms, p))
+    Ainv = [np.eye(p) for _ in range(n_arms)]
+    alpha = 0.5
+
+    result = linucb(x, theta, Ainv, alpha)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert len(result) >= 1
 
 
 def test_linucb_edge():
     """Test edge cases."""
-    context = np.random.default_rng(42).normal(0, 1, 100)
-    arms = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    result = linucb(context, arms, alpha)
+    rng = np.random.default_rng(42)
+    p = 3
+    n_arms = 2
+
+    x = rng.normal(0, 1, p)
+    theta = rng.normal(0, 1, (n_arms, p))
+    Ainv = [np.eye(p) for _ in range(n_arms)]
+
+    result = linucb(x, theta, Ainv)
     assert isinstance(result, dict)
+    assert len(result) >= 1

@@ -7,14 +7,16 @@ from morie.fn.rr_from_or import rr_from_or
 
 def test_ca11e29_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = rr_from_or(x)
+    or_value = 0.5
+    p2 = 0.5
+    result = rr_from_or(or_value, p2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca11e29_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = rr_from_or(x)
+    or_value = 0.5
+    p2 = 0.5
+    result = rr_from_or(or_value, p2)
     assert isinstance(result, dict)

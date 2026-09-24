@@ -9,14 +9,16 @@ from morie.fn.regression_to_mean_factor import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner6e40_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = regression_to_mean_factor(x)
+    r = 0.5
+    y1 = 0.5
+    result = regression_to_mean_factor(r, y1)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "yavg" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner6e40_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = regression_to_mean_factor(x)
+    r = 0.5
+    y1 = 0.5
+    result = regression_to_mean_factor(r, y1)
     assert isinstance(result, dict)

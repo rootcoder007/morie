@@ -7,14 +7,14 @@ from morie.fn.r2_from_f2 import r2_from_f2
 
 def test_ca8e7_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = r2_from_f2(x)
+    f2 = 0.5
+    result = r2_from_f2(f2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca8e7_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = r2_from_f2(x)
+    f2 = 0.5
+    result = r2_from_f2(f2)
     assert isinstance(result, dict)

@@ -7,16 +7,20 @@ from morie.fn.bsaqrs import rangayyan_ch4_pan_tompkins_thresholds
 
 def test_rng191_basic():
     """Test basic functionality."""
-    NPKI = np.random.default_rng(42).normal(0, 1, 100)
-    SPKI = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_pan_tompkins_thresholds(NPKI, SPKI)
+    peaki = 0.5
+    spki = 0.5
+    npki = 0.5
+    issignal = 0.5
+    result = rangayyan_ch4_pan_tompkins_thresholds(peaki, spki, npki, issignal)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "spki" in result
 
 
 def test_rng191_edge():
     """Test edge cases."""
-    NPKI = np.random.default_rng(42).normal(0, 1, 100)
-    SPKI = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_pan_tompkins_thresholds(NPKI, SPKI)
+    peaki = 0.5
+    spki = 0.5
+    npki = 0.5
+    issignal = 0.5
+    result = rangayyan_ch4_pan_tompkins_thresholds(peaki, spki, npki, issignal)
     assert isinstance(result, dict)

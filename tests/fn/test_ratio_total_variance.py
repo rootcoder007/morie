@@ -9,14 +9,18 @@ from morie.fn.ratio_total_variance import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e25_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ratio_total_variance(x)
+    e = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    n = 5
+    n_population = 5
+    result = ratio_total_variance(e, n, n_population)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e25_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = ratio_total_variance(x)
+    e = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    n = 5
+    n_population = 5
+    result = ratio_total_variance(e, n, n_population)
     assert isinstance(result, dict)

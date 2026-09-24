@@ -7,18 +7,16 @@ from morie.fn.bsaclass import rangayyan_omp
 
 def test_rgomp_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    sparsity = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_omp(x, D, sparsity)
+    x = 0.5
+    D = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_omp(x, D)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "coefficients" in result
 
 
 def test_rgomp_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    sparsity = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_omp(x, D, sparsity)
+    x = 0.5
+    D = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_omp(x, D)
     assert isinstance(result, dict)

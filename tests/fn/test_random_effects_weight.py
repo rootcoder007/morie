@@ -7,14 +7,16 @@ from morie.fn.random_effects_weight import random_effects_weight
 
 def test_ca11e43_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = random_effects_weight(x)
+    se = 0.5
+    tau2 = 0.5
+    result = random_effects_weight(se, tau2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca11e43_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = random_effects_weight(x)
+    se = 0.5
+    tau2 = 0.5
+    result = random_effects_weight(se, tau2)
     assert isinstance(result, dict)

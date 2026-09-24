@@ -7,14 +7,18 @@ from morie.fn.se_g import se_g
 
 def test_ca11e7_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = se_g(x)
+    g = 0.5
+    n1 = 0.5
+    n2 = 0.5
+    result = se_g(g, n1, n2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca11e7_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = se_g(x)
+    g = 0.5
+    n1 = 0.5
+    n2 = 0.5
+    result = se_g(g, n1, n2)
     assert isinstance(result, dict)

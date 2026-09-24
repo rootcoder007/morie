@@ -1,27 +1,46 @@
 """Tests for kmcai.kamath_constitutional_ai_loop."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.kmcai import kamath_constitutional_ai_loop
 
 
 def test_kmcai_basic():
     """Test basic functionality."""
-    initial_response = np.random.default_rng(42).normal(0, 1, 100)
-    constitution = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
+    initial_response = "no"
+    constitution = ["be kind", "be brief"]
+
+    def model(stage, principle, response, critique):
+        return "too blunt" if stage == "critique" else response + "!"
+
     result = kamath_constitutional_ai_loop(initial_response, constitution, model)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert result["revised_response"] == "no!!"
+    assert result["n_revisions"] == 2
+    assert result["initial_response"] == "no"
+    assert "history" in result
+    assert isinstance(result["history"], list)
+    assert len(result["history"]) == 2
+    for entry in result["history"]:
+        assert "principle" in entry
+        assert "critique" in entry
+        assert "response_before" in entry
+        assert "response_after" in entry
 
 
 def test_kmcai_edge():
     """Test edge cases."""
-    initial_response = np.random.default_rng(42).normal(0, 1, 100)
-    constitution = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
+    # single-principle constitution: revisions still compose over one step
+    initial_response = "hi"
+    constitution = ["be polite"]
+
+    def model(stage, principle, response, critique):
+        return "rude" if stage == "critique" else response + "."
+
     result = kamath_constitutional_ai_loop(initial_response, constitution, model)
     assert isinstance(result, dict)
+    assert result["revised_response"] == "hi."
+    assert result["n_revisions"] == 1
+    assert len(result["history"]) == 1
+    assert result["history"][0]["principle"] == "be polite"
 
 
 # --- appended: the module's own worked example as a gate -----------

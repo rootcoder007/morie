@@ -7,18 +7,18 @@ from morie.fn.taylor import taylor_linearization
 
 def test_taylor_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    grad = np.random.default_rng(42).normal(0, 1, 100)
+    y = 0.5
+    weights = 0.5
+    grad = 0.5
     result = taylor_linearization(y, weights, grad)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "variance" in result
 
 
 def test_taylor_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    grad = np.random.default_rng(42).normal(0, 1, 100)
+    y = 0.5
+    weights = 0.5
+    grad = 0.5
     result = taylor_linearization(y, weights, grad)
     assert isinstance(result, dict)

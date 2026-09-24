@@ -1,27 +1,59 @@
 """Tests for kmap.kamath_autoprompt_gradient_search."""
 
+import math
+
+import pytest
+
 from morie.fn import _array_core as np
 
 from morie.fn.kmap import kamath_autoprompt_gradient_search
 
 
 def test_kmap_basic():
-    """Test basic functionality."""
-    template = [None, 'y']
+    """Test basic functionality: greedy loss-minimising trigger search."""
+    template = ["x", None]
     dataset = [1]
-    model = lambda tpl, d: 0.0
-    result = kamath_autoprompt_gradient_search(template, dataset, model)
+    vocab = ["a", "b"]
+    # Loss is 1.0 if the slot is 'a', else 0.5; the search must pick 'b'.
+    model = lambda tpl, d: 1.0 if tpl[1] == "a" else 0.5
+    result = kamath_autoprompt_gradient_search(
+        template, dataset, model, vocab=vocab)
+
+    # RichResult is dict-like: the docstring indexes it by key.
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("estimate", "loss", "trigger_tokens", "prompt",
+                "positions", "history", "n", "method"):
+        assert key in result
+
+    # Documented contract: one trigger slot is filled with 'b', final loss 0.5.
+    assert result["trigger_tokens"] == ["b"]
+    assert result["estimate"] == 0.5
+    assert math.isfinite(result["estimate"])
+    assert result["estimate"] == result["loss"]
+    assert result["n"] == 1
+    assert result["positions"] == [1]
+    assert result["prompt"] == ["x", "b"]
 
 
 def test_kmap_edge():
-    """Test edge cases."""
-    template = [None, 'y']
+    """Test edge cases: documented invalid inputs raise ValueError."""
     dataset = [1]
-    model = lambda tpl, d: 0.0
-    result = kamath_autoprompt_gradient_search(template, dataset, model)
-    assert isinstance(result, dict)
+    vocab = ["a", "b"]
+
+    # Template contains no None trigger slots.
+    with pytest.raises(ValueError):
+        kamath_autoprompt_gradient_search(
+            ["x", "y"], dataset, lambda t, d: 0.0, vocab=vocab)
+
+    # vocab must be non-empty.
+    with pytest.raises(ValueError):
+        kamath_autoprompt_gradient_search(
+            [None, "y"], dataset, lambda t, d: 0.0, vocab=[])
+
+    # model must be callable.
+    with pytest.raises(ValueError):
+        kamath_autoprompt_gradient_search(
+            [None, "y"], dataset, "not_callable", vocab=vocab)
 
 
 # --- appended: the module's own worked example as a gate -----------

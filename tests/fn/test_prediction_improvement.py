@@ -9,14 +9,14 @@ from morie.fn.prediction_improvement import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner6e27_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = prediction_improvement(x)
+    r = 0.5
+    result = prediction_improvement(r)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "r" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner6e27_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = prediction_improvement(x)
+    r = 0.5
+    result = prediction_improvement(r)
     assert isinstance(result, dict)

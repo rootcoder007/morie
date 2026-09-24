@@ -7,16 +7,16 @@ from morie.fn.plsa import plsa
 
 def test_plsa_basic():
     """Test basic functionality."""
-    docs = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = plsa(docs, K)
+    n_dw = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    K = 5
+    result = plsa(n_dw, K)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_plsa_edge():
     """Test edge cases."""
-    docs = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = plsa(docs, K)
+    n_dw = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    K = 5
+    result = plsa(n_dw, K)
     assert isinstance(result, dict)

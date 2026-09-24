@@ -7,17 +7,17 @@ from morie.fn.wsmkbk import wasserman_kullback_leibler
 
 def test_wsmkbk_basic():
     """Test basic functionality."""
-    p = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
+    p = 1
+    q = 1
     result = wasserman_kullback_leibler(p, q)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_wsmkbk_edge():
     """Test edge cases."""
-    p = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
+    p = 1
+    q = 1
     result = wasserman_kullback_leibler(p, q)
     assert isinstance(result, dict)
 

@@ -9,14 +9,18 @@ from morie.fn.poisson_score_interval import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e1_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poisson_score_interval(x)
+    mu_hat = 0.5
+    n = 0.5
+    z = 0.5
+    result = poisson_score_interval(mu_hat, n, z)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "lower" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e1_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poisson_score_interval(x)
+    mu_hat = 0.5
+    n = 0.5
+    z = 0.5
+    result = poisson_score_interval(mu_hat, n, z)
     assert isinstance(result, dict)

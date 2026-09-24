@@ -9,14 +9,20 @@ from morie.fn.three_mrcv_mean import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e16_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = three_mrcv_mean(x)
+    b0 = 0.5
+    beta_w_a = 0.5
+    beta_y_b = 0.5
+    beta_z_c = 0.5
+    result = three_mrcv_mean(b0, beta_w_a, beta_y_b, beta_z_c)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e16_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = three_mrcv_mean(x)
+    b0 = 0.5
+    beta_w_a = 0.5
+    beta_y_b = 0.5
+    beta_z_c = 0.5
+    result = three_mrcv_mean(b0, beta_w_a, beta_y_b, beta_z_c)
     assert isinstance(result, dict)

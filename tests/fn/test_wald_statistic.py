@@ -7,14 +7,16 @@ from morie.fn.wald_statistic import wald_statistic
 
 def test_ca4e15_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = wald_statistic(x)
+    b = 0.5
+    se = 0.5
+    result = wald_statistic(b, se)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca4e15_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = wald_statistic(x)
+    b = 0.5
+    se = 0.5
+    result = wald_statistic(b, se)
     assert isinstance(result, dict)

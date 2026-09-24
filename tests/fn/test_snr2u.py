@@ -7,18 +7,20 @@ from morie.fn.snr2u import snijders_bosker_r2_level2
 
 def test_snr2u_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    cluster = np.random.default_rng(42).normal(0, 1, 100)
-    result = snijders_bosker_r2_level2(y, X, cluster)
+    sigma2_e1 = 0.5
+    sigma2_u1 = 0.5
+    sigma2_e0 = 0.5
+    sigma2_u0 = 0.5
+    result = snijders_bosker_r2_level2(sigma2_e1, sigma2_u1, sigma2_e0, sigma2_u0)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_snr2u_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    cluster = np.random.default_rng(42).normal(0, 1, 100)
-    result = snijders_bosker_r2_level2(y, X, cluster)
+    sigma2_e1 = 0.5
+    sigma2_u1 = 0.5
+    sigma2_e0 = 0.5
+    sigma2_u0 = 0.5
+    result = snijders_bosker_r2_level2(sigma2_e1, sigma2_u1, sigma2_e0, sigma2_u0)
     assert isinstance(result, dict)

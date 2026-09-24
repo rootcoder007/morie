@@ -9,14 +9,20 @@ from morie.fn.pearson_chi2_two_groups import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e7_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = pearson_chi2_two_groups(x)
+    w1 = 0.5
+    n1 = 0.5
+    w2 = 0.5
+    n2 = 5
+    result = pearson_chi2_two_groups(w1, n1, w2, n2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "x2" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e7_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = pearson_chi2_two_groups(x)
+    w1 = 0.5
+    n1 = 0.5
+    w2 = 0.5
+    n2 = 5
+    result = pearson_chi2_two_groups(w1, n1, w2, n2)
     assert isinstance(result, dict)

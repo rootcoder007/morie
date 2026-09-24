@@ -7,23 +7,39 @@ from morie.fn.kmfst import kamath_fasttext_subword
 
 def test_kmfst_basic():
     """Test basic functionality."""
-    word = np.random.default_rng(42).normal(0, 1, 100)
-    ngram_embeddings = np.random.default_rng(42).normal(0, 1, 100)
-    n_min = 0
-    n_max = 100
-    result = kamath_fasttext_subword(word, ngram_embeddings, n_min, n_max)
+    word = "ab"
+    tbl = {"<a": [1.0, 0.0], "ab": [0.0, 1.0], "b>": [1.0, 1.0], "<ab>": [0.0, 0.0]}
+    n_min = 2
+    n_max = 2
+    result = kamath_fasttext_subword(word, tbl, n_min, n_max)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "vector" in result
+    assert "estimate" in result
+    assert "n_known" in result
+    assert "n_missing" in result
+    # From the docstring worked example
+    assert result["vector"] == [2.0, 2.0]
+    assert result["n_known"] == 4
+    assert result["n_missing"] == 0
 
 
 def test_kmfst_edge():
     """Test edge cases."""
-    word = np.random.default_rng(42).normal(0, 1, 100)
-    ngram_embeddings = np.random.default_rng(42).normal(0, 1, 100)
-    n_min = 0
-    n_max = 100
-    result = kamath_fasttext_subword(word, ngram_embeddings, n_min, n_max)
+    word = "ab"
+    # Partial table -- some subwords are missing from the lookup
+    tbl = {"<a": [1.0, 0.0], "ab": [0.0, 1.0]}
+    n_min = 2
+    n_max = 2
+    result = kamath_fasttext_subword(word, tbl, n_min, n_max)
     assert isinstance(result, dict)
+    assert "vector" in result
+    assert "n_known" in result
+    assert "n_missing" in result
+    # At least one known and at least one missing
+    assert result["n_known"] >= 1
+    assert result["n_missing"] >= 1
+    # Vector has the embedding dim of the known entries
+    assert len(result["vector"]) == 2
 
 
 # --- appended: the module's own worked example as a gate -----------

@@ -1,29 +1,71 @@
 """Tests for kmtot.kamath_tree_of_thoughts."""
 
-from morie.fn import _array_core as np
+import math
+
+import pytest
 
 from morie.fn.kmtot import kamath_tree_of_thoughts
 
 
+def _score_model(state, b):
+    """Model from the docstring example: append '1'..'b', score = i."""
+    return [(state + str(i), float(i)) for i in range(1, b + 1)]
+
+
 def test_kmtot_basic():
-    """Test basic functionality."""
-    problem = np.random.default_rng(42).normal(0, 1, 100)
-    branch_factor = np.random.default_rng(42).normal(0, 1, 100)
-    max_depth = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_tree_of_thoughts(problem, branch_factor, max_depth, model)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    """Greedy (beam=1) search reproduces the docstring worked example."""
+    out = kamath_tree_of_thoughts("", 2, 2, _score_model)
+    assert isinstance(out, dict)
+    for key in ("best_state", "estimate", "best_path", "n_expanded"):
+        assert key in out
+    assert out["best_state"] == "22"
+    assert out["estimate"] == 4.0
+    assert out["best_path"] == ["2", "22"]
+    assert isinstance(out["n_expanded"], int)
+    assert out["n_expanded"] >= 1
 
 
 def test_kmtot_edge():
-    """Test edge cases."""
-    problem = np.random.default_rng(42).normal(0, 1, 100)
-    branch_factor = np.random.default_rng(42).normal(0, 1, 100)
-    max_depth = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_tree_of_thoughts(problem, branch_factor, max_depth, model)
-    assert isinstance(result, dict)
+    """Wider beam, mixed dead-end model, and invalid arguments."""
+    # beam=2 with the docstring model expands exactly 3 nodes
+    wide = kamath_tree_of_thoughts("", 2, 2, _score_model, beam=2)
+    assert isinstance(wide, dict)
+    assert wide["n_expanded"] == 3
+    assert math.isfinite(wide["estimate"])
+
+    # Model that produces some dead ends but still completes to max_depth.
+    # With beam=2 both children are kept, so the dead end is expanded.
+    def mixed_dead_end(state, b):
+        if state == "x":
+            return [("a", 1.0), ("b", 2.0)]
+        elif state == "a":
+            return []  # dead end
+        elif state == "b":
+            return [("c", 3.0)]
+        elif state == "c":
+            return [("d", 4.0)]
+        else:
+            return []
+
+    out = kamath_tree_of_thoughts("x", 2, 3, mixed_dead_end, beam=2)
+    assert isinstance(out, dict)
+    for key in ("best_state", "estimate", "best_path", "n_expanded"):
+        assert key in out
+    # The best path follows the highest scores: b -> c -> d
+    assert out["best_path"] == ["b", "c", "d"]
+    assert math.isfinite(out["estimate"])
+    # At least four nodes were expanded (including the dead end)
+    assert out["n_expanded"] >= 4
+
+    # invalid parameters
+    with pytest.raises(ValueError):
+        kamath_tree_of_thoughts("x", 0, 2, _score_model)
+    with pytest.raises(ValueError):
+        kamath_tree_of_thoughts("x", 2, 0, _score_model)
+    with pytest.raises(ValueError):
+        kamath_tree_of_thoughts("x", 2, 2, _score_model, beam=0)
+    with pytest.raises(ValueError):
+        kamath_tree_of_thoughts("x", 2, 2, "not callable")
 
 
 # --- appended: the module's own worked example as a gate -----------

@@ -1,5 +1,7 @@
 """Tests for kmklr.kamath_kl_reward_shaping."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.kmklr import kamath_kl_reward_shaping
@@ -7,21 +9,29 @@ from morie.fn.kmklr import kamath_kl_reward_shaping
 
 def test_kmklr_basic():
     """Test basic functionality."""
-    r_phi = np.random.default_rng(42).normal(0, 1, 100)
-    kl_divergence = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    r_phi = rng.normal(0, 1, 100)
+    kl_divergence = np.abs(rng.normal(0, 1, 100))
     beta = 0.8
     result = kamath_kl_reward_shaping(r_phi, kl_divergence, beta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "shaped" in result
+    assert "estimate" in result
+    assert len(result["shaped"]) == 100
+    assert math.isfinite(result["estimate"])
 
 
 def test_kmklr_edge():
-    """Test edge cases."""
-    r_phi = np.random.default_rng(42).normal(0, 1, 100)
-    kl_divergence = np.random.default_rng(42).normal(0, 1, 100)
-    beta = 0.8
+    """Test edge cases: broadcasting a single KL value across a batch."""
+    rng = np.random.default_rng(42)
+    r_phi = rng.normal(0, 1, 10)
+    kl_divergence = [0.5]
+    beta = 0.1
     result = kamath_kl_reward_shaping(r_phi, kl_divergence, beta)
     assert isinstance(result, dict)
+    assert "shaped" in result
+    assert len(result["shaped"]) == 10
+    assert math.isfinite(result["estimate"])
 
 
 # --- appended: the module's own worked example as a gate -----------

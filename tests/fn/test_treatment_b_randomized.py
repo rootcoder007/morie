@@ -7,14 +7,18 @@ from morie.fn.treatment_b_randomized import treatment_b_randomized
 
 def test_ca9e2_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = treatment_b_randomized(x)
+    r_yt = 0.5
+    s_y = 0.5
+    s_t = 0.5
+    result = treatment_b_randomized(r_yt, s_y, s_t)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca9e2_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = treatment_b_randomized(x)
+    r_yt = 0.5
+    s_y = 0.5
+    s_t = 0.5
+    result = treatment_b_randomized(r_yt, s_y, s_t)
     assert isinstance(result, dict)

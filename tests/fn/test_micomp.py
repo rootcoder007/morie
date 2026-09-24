@@ -7,16 +7,22 @@ from morie.fn.micomp import mi_compare_models
 
 def test_micomp_basic():
     """Test basic functionality."""
-    theta_list = np.random.default_rng(42).normal(0, 1, 100)
-    var_list = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    m = 5  # number of imputations
+    k = 2  # number of parameters
+    theta_list = rng.normal(0, 1, (m, k))
+    var_list = [np.eye(k) + rng.normal(0, 0.1, (k, k)) for _ in range(m)]
     result = mi_compare_models(theta_list, var_list)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "payload" in result or "statistic" in result
 
 
 def test_micomp_edge():
     """Test edge cases."""
-    theta_list = np.random.default_rng(42).normal(0, 1, 100)
-    var_list = np.random.default_rng(42).normal(0, 1, 100)
+    rng = np.random.default_rng(42)
+    m = 3
+    k = 1
+    theta_list = rng.normal(0, 1, (m, k))
+    var_list = [np.ones((k, k)) for _ in range(m)]
     result = mi_compare_models(theta_list, var_list)
     assert isinstance(result, dict)

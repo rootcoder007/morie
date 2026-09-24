@@ -7,14 +7,20 @@ from morie.fn.se_d_probit import se_d_probit
 
 def test_ca11e21_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = se_d_probit(x)
+    p1 = 0.5
+    p2 = 0.5
+    n1 = 0.5
+    n2 = 0.5
+    result = se_d_probit(p1, p2, n1, n2)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "value" in result or "value" in result
 
 
 def test_ca11e21_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = se_d_probit(x)
+    p1 = 0.5
+    p2 = 0.5
+    n1 = 0.5
+    n2 = 0.5
+    result = se_d_probit(p1, p2, n1, n2)
     assert isinstance(result, dict)

@@ -9,14 +9,18 @@ from morie.fn.poisson_log_link import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e2_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poisson_log_link(x)
+    b0 = 0.5
+    bs = 0.5
+    xs = 0.5
+    result = poisson_log_link(b0, bs, xs)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e2_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poisson_log_link(x)
+    b0 = 0.5
+    bs = 0.5
+    xs = 0.5
+    result = poisson_log_link(b0, bs, xs)
     assert isinstance(result, dict)

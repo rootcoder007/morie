@@ -9,14 +9,18 @@ from morie.fn.truncated_power_spline import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e36_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = truncated_power_spline(x)
+    x = 0.5
+    betas = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    knots = 0.5
+    result = truncated_power_spline(x, betas, knots)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e36_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = truncated_power_spline(x)
+    x = 0.5
+    betas = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    knots = 0.5
+    result = truncated_power_spline(x, betas, knots)
     assert isinstance(result, dict)

@@ -9,14 +9,18 @@ from morie.fn.small_area_mb_mean import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r14e15_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = small_area_mb_mean(x)
+    xbar_d = 0.5
+    beta_hat = 0.5
+    v_d = 0.5
+    result = small_area_mb_mean(xbar_d, beta_hat, v_d)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r14e15_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = small_area_mb_mean(x)
+    xbar_d = 0.5
+    beta_hat = 0.5
+    v_d = 0.5
+    result = small_area_mb_mean(xbar_d, beta_hat, v_d)
     assert isinstance(result, dict)

@@ -9,14 +9,20 @@ from morie.fn.optimal_allocation_variance import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r13e10_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = optimal_allocation_variance(x)
+    weights = 0.5
+    s_h = 0.5
+    c_h = 0.5
+    n = 0.5
+    result = optimal_allocation_variance(weights, s_h, c_h, n)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r13e10_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = optimal_allocation_variance(x)
+    weights = 0.5
+    s_h = 0.5
+    c_h = 0.5
+    n = 0.5
+    result = optimal_allocation_variance(weights, s_h, c_h, n)
     assert isinstance(result, dict)

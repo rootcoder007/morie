@@ -9,14 +9,18 @@ from morie.fn.pi_j_wald_interval import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e8_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = pi_j_wald_interval(x)
+    pi_hat = 0.5
+    var_pi = 0.5
+    z = 0.5
+    result = pi_j_wald_interval(pi_hat, var_pi, z)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "lower" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e8_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = pi_j_wald_interval(x)
+    pi_hat = 0.5
+    var_pi = 0.5
+    z = 0.5
+    result = pi_j_wald_interval(pi_hat, var_pi, z)
     assert isinstance(result, dict)

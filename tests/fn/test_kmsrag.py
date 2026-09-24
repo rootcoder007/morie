@@ -7,19 +7,32 @@ from morie.fn.kmsrag import kamath_self_rag
 
 def test_kmsrag_basic():
     """Test basic functionality."""
-    context = np.random.default_rng(42).normal(0, 1, 100)
-    reflection_model = np.random.default_rng(42).normal(0, 1, 100)
+    context = ["doc1", "doc2"]
+    reflection_model = lambda c, q: ["[Retrieve]", "[Relevant]", "[Supported]"]
     result = kamath_self_rag(context, reflection_model)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert result["retrieve"] is True
+    assert result["relevant"] is True
+    assert result["supported"] is True
+    assert result["estimate"] == 3
+    assert result["n"] == 3
+    assert "tokens" in result
+    assert "by_group" in result
+    assert "method" in result
 
 
 def test_kmsrag_edge():
     """Test edge cases."""
-    context = np.random.default_rng(42).normal(0, 1, 100)
-    reflection_model = np.random.default_rng(42).normal(0, 1, 100)
+    context = ["doc"]
+    reflection_model = lambda c, q: ["[No Retrieve]"]
     result = kamath_self_rag(context, reflection_model)
     assert isinstance(result, dict)
+    assert result["retrieve"] is False
+    assert result["relevant"] is None
+    assert result["supported"] is None
+    assert result["estimate"] == 1
+    assert result["n"] == 1
+    assert result["tokens"] == ["[No Retrieve]"]
 
 
 # --- appended: the module's own worked example as a gate -----------
