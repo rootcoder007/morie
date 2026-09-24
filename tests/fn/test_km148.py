@@ -1,43 +1,33 @@
-"""Tests for km148.kamath_ch9_ldm_loss."""
+"""Verification tests for km148.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 9.20, the latent diffusion loss. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km148 import kamath_ch9_ldm_loss
 
 
-def test_km148_basic():
-    """Test basic functionality with eps_net as prediction array."""
-    rng = np.random.default_rng(42)
-    epsilon = rng.normal(0, 1, (20, 4))
-    z_t = rng.normal(0, 1, (20, 4))
-    H_X = rng.normal(0, 1, (20, 2))
-    eps_pred = rng.normal(0, 1, (20, 4))
-    result = kamath_ch9_ldm_loss(epsilon, z_t, H_X, eps_net=eps_pred, t=1)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert math.isfinite(result["estimate"])
-    assert result["estimate"] >= 0.0
-    assert result["per_sample"]
-    assert len(result["per_sample"]) == 20
-    assert result["n"] == 20
-    assert result["method"]
+def test_the_diffusion_loss_is_the_squared_noise_residual():
+    # Eq 9.20: L = E || eps - eps_X(z_t, t, H_X) ||^2
+    res = kamath_ch9_ldm_loss([[1.0, 0.0]], [[0.0, 0.0]], [[0.0]],
+               eps_net=lambda z, tt, h: [[0.0, 0.0]])
+    assert res["estimate"] == pytest.approx(1.0, rel=1e-12)
 
 
-def test_km148_edge():
-    """Test edge cases with eps_net as callable (matching the docstring)."""
-    epsilon = np.asarray([[1.0, 0.0], [0.0, 1.0]])
-    z_t = np.asarray([[0.0, 0.0], [0.0, 0.0]])
-    H_X = np.asarray([[0.0], [0.0]])
+def test_predicting_the_noise_exactly_costs_nothing():
+    res = kamath_ch9_ldm_loss([[1.0, 0.0]], [[0.0, 0.0]], [[0.0]],
+               eps_net=lambda z, tt, h: [[1.0, 0.0]])
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)
 
-    def eps_net(z, t, h):
-        return np.zeros_like(epsilon)
 
-    result = kamath_ch9_ldm_loss(epsilon, z_t, H_X, eps_net=eps_net, t=0.5)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert result["estimate"] == 1.0
-    assert result["n"] == 2
-    assert len(result["per_sample"]) == 2
-    assert all(math.isfinite(v) and v >= 0.0 for v in result["per_sample"])
+def test_the_loss_is_quadratic_in_the_residual():
+    one = kamath_ch9_ldm_loss([[1.0]], [[0.0]], [[0.0]],
+               eps_net=lambda z, tt, h: [[0.0]])["estimate"]
+    two = kamath_ch9_ldm_loss([[2.0]], [[0.0]], [[0.0]],
+               eps_net=lambda z, tt, h: [[0.0]])["estimate"]
+    assert two == pytest.approx(4.0 * one, rel=1e-12)

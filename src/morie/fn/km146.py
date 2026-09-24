@@ -36,10 +36,12 @@ def kamath_ch9_output_projector_mse(H_X, tau_X, t):
         raise ValueError("H_X must be 1-D, a 2-D feature matrix, or a "
                          "3-D stack of candidates.")
     cands = H if H.ndim == 3 else H[None, ...]
-    if cands[0].shape != target.shape:
+    cand_shape = tuple(H.shape)[1:] if H.ndim == 3 else tuple(H.shape)
+    if cand_shape != tuple(target.shape):
         raise ValueError(
-            f"H_X entries are {cands[0].shape} but tau_X(t) is "
-            f"{target.shape}; the MSE is not defined between them.")
+            f"H_X entries are {cand_shape} but tau_X(t) is "
+            f"{tuple(target.shape)}; the MSE is not defined "
+            f"between them.")
     if target.size == 0:
         raise ValueError("the target features are empty.")
     losses = [float(np.mean((c - target) ** 2)) for c in cands]

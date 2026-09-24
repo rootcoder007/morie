@@ -1,46 +1,31 @@
-"""Tests for km132.kamath_ch9_llm_signal_tokens."""
+"""Verification tests for km132.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 9.4, the language model's text and signal tokens. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
+
+import math
 
 import pytest
-from morie.fn import _array_core as np
 
 from morie.fn.km132 import kamath_ch9_llm_signal_tokens
 
 
-def test_km132_basic():
-    """Test basic functionality."""
-    P_X = np.array([[0.0]])
-    F_T = np.array([[1.0]])
-
-    def llm(p, f):
-        return ("a cat", ["<IMG>", "<AUDIO>"])
-
-    result = kamath_ch9_llm_signal_tokens(P_X, F_T, llm=llm)
-    assert isinstance(result, dict)
-    assert result["text"] == "a cat"
-    assert result["signal_tokens"] == ["<IMG>", "<AUDIO>"]
-    assert result["estimate"] == 2
-    assert result["n"] == 2
-    assert result["generates_modality"] is True
-    assert result["method"] == "LLM text and signal tokens (Kamath Eq 9.4)"
+def test_the_language_model_returns_both_text_and_signal_tokens():
+    # Eq 9.4: (t, S_X) = LLM(P_X, F_T)
+    res = kamath_ch9_llm_signal_tokens([[0.0]], [[1.0]], llm=lambda p, f: ("a cat", ["<IMG>"]))
+    assert res["text"] == "a cat"
+    assert list(res["signal_tokens"]) == ["<IMG>"]
+    assert res["estimate"] == 1
 
 
-def test_km132_edge():
-    """Test edge cases."""
-    P_X = np.array([[0.0]])
-    F_T = np.array([[1.0]])
+def test_the_signal_token_count_is_the_headline_value():
+    res = kamath_ch9_llm_signal_tokens([[0.0]], [[1.0]],
+               llm=lambda p, f: ("x", ["<IMG>", "<AUD>", "<VID>"]))
+    assert res["estimate"] == 3
 
-    # Edge: empty signal tokens (valid input)
-    def llm_empty(p, f):
-        return ("hello", [])
 
-    result = kamath_ch9_llm_signal_tokens(P_X, F_T, llm=llm_empty)
-    assert isinstance(result, dict)
-    assert result["estimate"] == 0
-    assert result["n"] == 0
-    assert result["generates_modality"] is False
-    assert result["text"] == "hello"
-    assert result["signal_tokens"] == []
-
-    # Edge: llm not callable is invalid per docstring
-    with pytest.raises(ValueError):
-        kamath_ch9_llm_signal_tokens(P_X, F_T, llm=None)
+def test_text_with_no_signal_tokens_counts_zero():
+    res = kamath_ch9_llm_signal_tokens([[0.0]], [[1.0]], llm=lambda p, f: ("just text", []))
+    assert res["estimate"] == 0

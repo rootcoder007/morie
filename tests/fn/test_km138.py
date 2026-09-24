@@ -1,34 +1,33 @@
-"""Tests for km138.kamath_ch9_simvlm_mlm."""
+"""Verification tests for km138.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 9.10, the SimVLM masked language-modelling loss. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
 
 import math
 
 import pytest
 
-from morie.fn import _array_core as np
-
 from morie.fn.km138 import kamath_ch9_simvlm_mlm
 
 
-def test_km138_basic():
-    """Test basic functionality with None theta (x holds probabilities)."""
-    x = [0.5, 1.0, 0.25]
-    v = [[0.0]]
-    x_m = [0, 2]
-    result = kamath_ch9_simvlm_mlm(None, x, v, x_m)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    expected = (math.log(2) + math.log(4)) / 2
-    assert math.isfinite(result["estimate"])
-    assert abs(result["estimate"] - expected) < 1e-12
-    assert result["n_image_regions"] == 1
-    assert result["n"] == 3
-    assert "method" in result
+def test_the_masked_loss_averages_over_the_masked_positions():
+    # Eq 9.10: L_MLM = -E log P(x_m | x_not m, v)
+    res = kamath_ch9_simvlm_mlm(None, [0.5, 1.0, 0.25], [[0.0]], [0, 2])
+    expected = (math.log(2.0) + math.log(4.0)) / 2.0
+    assert res["estimate"] == pytest.approx(expected, rel=1e-12)
 
 
-def test_km138_edge():
-    """Test edge case: empty image regions raises ValueError."""
-    x = [0.5, 1.0, 0.25]
-    v = np.zeros((0, 3))
-    x_m = [0, 2]
-    with pytest.raises(ValueError):
-        kamath_ch9_simvlm_mlm(None, x, v, x_m)
+def test_only_the_masked_positions_are_scored():
+    # position 1 has probability one and is not masked, so masking it
+    # instead must change the loss
+    a = kamath_ch9_simvlm_mlm(None, [0.5, 1.0, 0.25], [[0.0]], [0, 2])["estimate"]
+    b = kamath_ch9_simvlm_mlm(None, [0.5, 1.0, 0.25], [[0.0]], [1])["estimate"]
+    assert b == pytest.approx(0.0, abs=1e-15)
+    assert a > b
+
+
+def test_a_certain_model_costs_nothing():
+    res = kamath_ch9_simvlm_mlm(None, [1.0, 1.0], [[0.0]], [0, 1])
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)

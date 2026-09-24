@@ -1,50 +1,35 @@
-"""Tests for km108.kamath_ch6_differential_privacy."""
+"""Verification tests for km108.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 6.32, the differential-privacy guarantee check. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km108 import kamath_ch6_differential_privacy
 
 
-def _make_M():
-    dist_A = {"o1": 0.6, "o2": 0.4}
-    dist_B = {"o1": 0.3, "o2": 0.7}
-
-    def M(D):
-        return dist_A if D == "A" else dist_B
-
-    return M
-
-
-def test_km108_basic():
-    """Test basic functionality."""
-    M = _make_M()
-    A = "A"
-    B = "B"
-    S = ["o1"]
-    epsilon = 1.0
-    result = kamath_ch6_differential_privacy(M, A, B, S, epsilon)
-    assert isinstance(result, dict)
-    for key in ("estimate", "epsilon_required", "satisfied",
-                "p_A", "p_B", "ratio", "epsilon", "bound", "n", "method"):
-        assert key in result
-    assert result["satisfied"] is True
-    assert abs(result["epsilon_required"] - math.log(2)) < 1e-12
-    assert abs(result["p_A"] - 0.6) < 1e-12
-    assert abs(result["p_B"] - 0.3) < 1e-12
+def test_the_privacy_check_compares_the_output_ratio_to_the_budget():
+    # Eq 6.32: P[M(A) in S] <= e^eps P[M(B) in S]
+    M = lambda D: ({"o1": 0.6, "o2": 0.4} if D == "A"
+                   else {"o1": 0.3, "o2": 0.7})
+    res = kamath_ch6_differential_privacy(M, "A", "B", ["o1"], 1.0)
+    assert res["satisfied"] is True
+    # 0.6 / 0.3 = 2, so the required budget is log 2
+    assert res["epsilon_required"] == pytest.approx(math.log(2.0), rel=1e-12)
 
 
-def test_km108_edge():
-    """Test edge cases."""
-    M = _make_M()
-    A = "A"
-    B = "B"
-    S = ["o1"]
-    epsilon = 0.5
-    result = kamath_ch6_differential_privacy(M, A, B, S, epsilon)
-    assert isinstance(result, dict)
-    assert "satisfied" in result
-    assert result["satisfied"] is False
-    assert math.isfinite(result["epsilon_required"])
-    assert result["epsilon_required"] > 0.5
+def test_a_budget_below_the_requirement_fails_the_check():
+    M = lambda D: ({"o1": 0.6, "o2": 0.4} if D == "A"
+                   else {"o1": 0.3, "o2": 0.7})
+    assert kamath_ch6_differential_privacy(M, "A", "B", ["o1"], 0.5)["satisfied"] is False
+
+
+def test_identical_mechanisms_need_no_budget_at_all():
+    M = lambda D: {"o1": 0.5, "o2": 0.5}
+    res = kamath_ch6_differential_privacy(M, "A", "B", ["o1"], 0.0)
+    assert res["epsilon_required"] == pytest.approx(0.0, abs=1e-12)
+    assert res["satisfied"] is True

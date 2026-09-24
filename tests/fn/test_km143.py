@@ -1,41 +1,30 @@
-"""Tests for km143.kamath_ch9_fom_loss."""
+"""Verification tests for km143.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 9.15, the frame-order modelling loss. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km143 import kamath_ch9_fom_loss
 
 
-def test_km143_basic():
-    """Test basic functionality."""
-    rng = np.random.default_rng(42)
-    n_frames = 5
-    n_timestamps = 8
-    raw = [[float(rng.uniform(0, 1)) for _ in range(n_timestamps)]
-           for _ in range(n_frames)]
-    P = [[v / sum(row) for v in row] for row in raw]
-
-    r_i = list(range(n_frames))
-    t_i = list(range(n_frames))
-    result = kamath_ch9_fom_loss(r_i, t_i, n_frames, P)
-    assert isinstance(result, dict)
-    assert math.isfinite(result["estimate"])
-    assert result["n_reordered"] == n_frames
-    assert result["n"] == n_frames
-    assert len(result["per_frame"]) == n_frames
-    assert all(math.isfinite(v) for v in result["per_frame"])
+def test_the_order_modelling_loss_sums_the_timestamp_log_probabilities():
+    # Eq 9.15: L_FOM = -sum_i log P[r_i, t_i]
+    res = kamath_ch9_fom_loss([0, 1], [0, 1], P=[[0.5, 0.5], [0.25, 0.75]])
+    expected = math.log(2.0) - math.log(0.75)
+    assert res["estimate"] == pytest.approx(expected, rel=1e-12)
 
 
-def test_km143_edge():
-    """Test edge case using the smallest valid PMF from the docstring."""
-    P = [[0.5, 0.5], [0.25, 0.75]]
-    r_i = [0, 1]
-    t_i = [0, 1]
-    result = kamath_ch9_fom_loss(r_i, t_i, 2, P)
-    assert isinstance(result, dict)
-    assert math.isfinite(result["estimate"])
-    expected = math.log(2) - math.log(0.75)
-    assert abs(result["estimate"] - expected) < 1e-12
-    assert result["n_reordered"] == 2
-    assert len(result["per_frame"]) == 2
+def test_a_certain_ordering_costs_nothing():
+    res = kamath_ch9_fom_loss([0], [0], P=[[1.0, 0.0]])
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)
+
+
+def test_each_frame_contributes_its_own_term():
+    one = kamath_ch9_fom_loss([0], [0], P=[[0.5, 0.5]])["estimate"]
+    two = kamath_ch9_fom_loss([0, 1], [0, 0], P=[[0.5, 0.5], [0.5, 0.5]])["estimate"]
+    assert two == pytest.approx(2.0 * one, rel=1e-12)

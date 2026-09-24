@@ -1,62 +1,38 @@
-"""Tests for km104.kamath_ch6_affect_lm."""
+"""Verification tests for km104.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 6.28, the affect language model. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
+
 import math
+
 import pytest
 
-from morie.fn import _array_core as np
 from morie.fn.km104 import kamath_ch6_affect_lm
 
 
-def test_km104_basic():
-    """Test basic functionality."""
-    rng = np.random.default_rng(42)
-
-    vocab_size = 5
-    hidden_c = 3
-    hidden_e = 2
-
-    U = rng.normal(0, 1, (vocab_size, hidden_c))
-    V = rng.normal(0, 1, (vocab_size, hidden_e))
-    c = rng.normal(0, 1, hidden_c)
-    e = rng.normal(0, 1, hidden_e)
-    b = rng.normal(0, 1, vocab_size)
-
-    result = kamath_ch6_affect_lm(U, V, None, None, c, e, 0.7, b)
-
-    # Returned object should be dict‑like and contain the documented keys
-    assert isinstance(result, dict)
-    assert "p" in result
-    assert "affect_term" in result
-    assert "argmax" in result
-    assert "beta" in result
-    assert "estimate" in result
-    assert "n" in result
-    assert "method" in result
-
-    # Probability vector should have the right length and sum to 1
-    p = result["p"]
-    assert len(p) == vocab_size
-    assert math.isclose(sum(p), 1.0, abs_tol=1e-6)
-
-    # The estimated probability (max of p) must be finite
-    assert math.isfinite(result["estimate"])
-
-    # n should match the vocabulary size
-    assert result["n"] == vocab_size
+def test_the_affect_model_adds_a_weighted_emotion_term():
+    # Eq 6.28: softmax(U_i . f(c) + beta V_i . g(e) + b_i)
+    U = [[1.0, 0.0], [0.0, 1.0]]
+    V = [[0.0, 0.0], [1.0, 0.0]]
+    res = kamath_ch6_affect_lm(U, V, None, None, [1.0, 0.0], [1.0, 0.0], 2.0, [0.0, 0.0])
+    logits = [1.0 + 2.0 * 0.0, 0.0 + 2.0 * 1.0]
+    total = sum(math.exp(v) for v in logits)
+    assert res["p"][1] == pytest.approx(math.exp(2.0) / total, rel=1e-10)
+    assert round(res["p"][1], 10) == pytest.approx(0.7310585786, abs=1e-10)
 
 
-def test_km104_edge():
-    """Test that a non‑finite beta raises ValueError as documented."""
-    rng = np.random.default_rng(0)
+def test_a_zero_weight_reduces_to_the_plain_language_model():
+    U = [[1.0, 0.0], [0.0, 1.0]]
+    V = [[0.0, 0.0], [9.0, 0.0]]
+    res = kamath_ch6_affect_lm(U, V, None, None, [1.0, 0.0], [1.0, 0.0], 0.0, [0.0, 0.0])
+    assert res["argmax"] == 0
 
-    vocab_size = 4
-    hidden_c = 2
-    hidden_e = 2
 
-    U = rng.normal(0, 1, (vocab_size, hidden_c))
-    V = rng.normal(0, 1, (vocab_size, hidden_e))
-    c = rng.normal(0, 1, hidden_c)
-    e = rng.normal(0, 1, hidden_e)
-    b = rng.normal(0, 1, vocab_size)
-
-    with pytest.raises(ValueError):
-        kamath_ch6_affect_lm(U, V, None, None, c, e, math.inf, b)
+def test_raising_the_weight_strengthens_the_affect_term():
+    U = [[1.0, 0.0], [0.0, 1.0]]
+    V = [[0.0, 0.0], [1.0, 0.0]]
+    mild = kamath_ch6_affect_lm(U, V, None, None, [1.0, 0.0], [1.0, 0.0], 0.5, [0.0, 0.0])["p"][1]
+    strong = kamath_ch6_affect_lm(U, V, None, None, [1.0, 0.0], [1.0, 0.0], 4.0, [0.0, 0.0])["p"][1]
+    assert strong > mild

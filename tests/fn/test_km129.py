@@ -1,41 +1,31 @@
-"""Tests for km129.kamath_ch9_modality_encoder."""
+"""Verification tests for km129.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 9.1, the modality encoder. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
 
 import math
 
 import pytest
 
-from morie.fn import _array_core as np
 from morie.fn.km129 import kamath_ch9_modality_encoder
 
 
-def test_km129_basic():
-    """Test basic functionality with a lambda encoder."""
-    I_X = [3.0, 4.0]
-    ME_X = lambda z: [z[0], z[1], 0.0]
-    result = kamath_ch9_modality_encoder(I_X, ME_X)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "features" in result
-    assert "shape" in result
-    assert "n" in result
-    assert "method" in result
-    assert math.isfinite(result["estimate"])
-    assert math.isclose(result["estimate"], 5.0)
-    assert result["features"] == [3.0, 4.0, 0.0]
-    assert result["n"] == 3
+def test_the_encoder_applies_the_modality_encoder_to_its_input():
+    # Eq 9.1: F_X = ME_X(I_X), a composition rather than a formula
+    res = kamath_ch9_modality_encoder([3.0, 4.0], lambda z: [z[0], z[1], 0.0])
+    assert list(res["features"]) == [3.0, 4.0, 0.0]
+    # the headline value is the feature norm: 3-4-5 triangle
+    assert res["estimate"] == pytest.approx(5.0, rel=1e-12)
 
 
-def test_km129_edge():
-    """Test with array-like input and an encoder that scales features."""
-    rng = np.random.default_rng(0)
-    I_X = rng.normal(0, 1, 5)
-    ME_X = lambda z: [2.0 * float(v) for v in z]
-    result = kamath_ch9_modality_encoder(I_X, ME_X)
-    assert isinstance(result, dict)
-    assert math.isfinite(result["estimate"])
-    assert result["estimate"] >= 0.0
-    expected = 2.0 * math.sqrt(sum(float(v) ** 2 for v in I_X))
-    assert math.isclose(result["estimate"], expected, rel_tol=1e-9)
-    assert result["n"] == 5
-    assert len(result["features"]) == 5
-    assert all(math.isfinite(v) for v in result["features"])
+def test_the_identity_encoder_returns_its_input_unchanged():
+    res = kamath_ch9_modality_encoder([1.0, 0.0], lambda z: list(z))
+    assert list(res["features"]) == [1.0, 0.0]
+    assert res["estimate"] == pytest.approx(1.0, rel=1e-12)
+
+
+def test_a_non_callable_encoder_is_refused():
+    with pytest.raises((ValueError, TypeError)):
+        kamath_ch9_modality_encoder([1.0], None)

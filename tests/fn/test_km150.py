@@ -1,56 +1,30 @@
-"""Tests for km150.kamath_ch9_flamingo_dataset_mix."""
+"""Verification tests for km150.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 9.22, the Flamingo dataset mixture objective. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km150 import kamath_ch9_flamingo_dataset_mix
 
 
-def _make_seq(rng, seq_len):
-    """Create one sequence of per-token conditional probabilities."""
-    return [float(rng.uniform(0.1, 0.9)) for _ in range(seq_len)]
+def test_the_dataset_mixture_weights_each_corpus_loss():
+    # Eq 9.22: sum_m lambda_m E[-sum_l log p]
+    res = kamath_ch9_flamingo_dataset_mix([[[0.5]], [[0.25]]], [0.25, 0.75])
+    expected = 0.25 * math.log(2.0) + 0.75 * math.log(4.0)
+    assert res["estimate"] == pytest.approx(expected, rel=1e-10)
+    assert round(res["estimate"], 6) == pytest.approx(1.213008, abs=1e-6)
 
 
-def _make_dataset(rng, seq_len, n_seqs):
-    """Create one dataset: a list of sequences."""
-    return [_make_seq(rng, seq_len) for _ in range(n_seqs)]
+def test_all_weight_on_one_corpus_returns_its_own_loss():
+    res = kamath_ch9_flamingo_dataset_mix([[[0.5]], [[0.25]]], [1.0, 0.0])
+    assert res["estimate"] == pytest.approx(math.log(2.0), rel=1e-12)
 
 
-def test_km150_basic():
-    """Test basic functionality with multiple datasets."""
-    rng = np.random.default_rng(42)
-    D_m = [
-        _make_dataset(rng, seq_len=4, n_seqs=3),
-        _make_dataset(rng, seq_len=4, n_seqs=2),
-    ]
-    lambda_m = [0.3, 0.7]
-
-    result = kamath_ch9_flamingo_dataset_mix(D_m, lambda_m)
-
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert math.isfinite(result["estimate"])
-    assert "per_dataset_nll" in result
-    assert len(result["per_dataset_nll"]) == 2
-    assert all(math.isfinite(v) for v in result["per_dataset_nll"])
-    assert result["weights"] == [0.3, 0.7]
-    assert result["n"] == 2
-    assert "method" in result
-
-
-def test_km150_edge():
-    """Test edge case with a single dataset and matching weight."""
-    rng = np.random.default_rng(7)
-    D_m = [_make_dataset(rng, seq_len=2, n_seqs=1)]
-    lambda_m = [1.0]
-
-    result = kamath_ch9_flamingo_dataset_mix(D_m, lambda_m)
-
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert math.isfinite(result["estimate"])
-    assert result["n"] == 1
-    assert result["weights"] == [1.0]
-    assert len(result["per_dataset_nll"]) == 1
-    assert "method" in result
+def test_a_certain_model_on_every_corpus_costs_nothing():
+    res = kamath_ch9_flamingo_dataset_mix([[[1.0]], [[1.0]]], [0.5, 0.5])
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)

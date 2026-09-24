@@ -1,37 +1,32 @@
-"""Tests for km144.kamath_ch9_mm_instr_predict."""
+"""Verification tests for km144.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 9.16, multimodal instruction prediction. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km144 import kamath_ch9_mm_instr_predict
 
 
-def test_km144_basic():
-    """Test basic functionality with a callable model."""
-    I = "What animal is in this picture?"
-    M = "<image data>"
-    theta = lambda i, m: "a cat"
-    result = kamath_ch9_mm_instr_predict(I, M, theta)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "answer" in result
-    assert result["answer"] == "a cat"
-    assert result["instruction"] == I
-    assert result["multimodal_input"] == M
-    assert result["n"] == 1
+def test_the_instruction_prediction_applies_the_model_to_both_inputs():
+    # Eq 9.16: A = f(I, M; theta) over the triplet (I, M, R)
+    res = kamath_ch9_mm_instr_predict("What animal?", "<image>", lambda i, m: "a cat")
+    assert res["answer"] == "a cat"
 
 
-def test_km144_edge():
-    """Test edge case: callable f with theta as parameters."""
-    def f(i, m, theta):
-        return theta["prefix"] + i
+def test_both_the_instruction_and_the_modality_reach_the_model():
+    seen = {}
+    def f(i, m):
+        seen["i"], seen["m"] = i, m
+        return "ok"
+    kamath_ch9_mm_instr_predict("instr", "modal", f)
+    assert seen == {"i": "instr", "m": "modal"}
 
-    I = " an animal?"
-    M = "<image>"
-    theta = {"prefix": "It is"}
-    result = kamath_ch9_mm_instr_predict(I, M, theta, f=f)
-    assert isinstance(result, dict)
-    assert result["answer"] == "It is an animal?"
-    assert result["estimate"] == "It is an animal?"
-    assert math.isfinite(result["n"])
+
+def test_a_non_callable_model_is_refused():
+    with pytest.raises((ValueError, TypeError)):
+        kamath_ch9_mm_instr_predict("i", "m", None)
