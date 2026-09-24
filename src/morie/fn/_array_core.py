@@ -498,6 +498,8 @@ class marr:
         name = getattr(self, "_dt", None)
         if name and name != "float64":
             return _DTypeNarrow(name)
+        if getattr(self, "_is_mask", False):
+            return _DType("bool")
         return float64
 
     @property

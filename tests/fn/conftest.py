@@ -7,6 +7,14 @@ from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 import pytest
 
+try:
+    # pytest.approx() compares nested array-likes only when numpy is
+    # loaded (it converts objects with __array__); without this the
+    # result depended on which other test had imported numpy first.
+    import numpy  # noqa: F401
+except ImportError:  # pragma: no cover - numpy is a dev dependency
+    pass
+
 
 @pytest.fixture()
 def rng():
