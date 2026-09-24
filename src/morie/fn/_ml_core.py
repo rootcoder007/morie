@@ -1938,16 +1938,33 @@ def log_loss(y_true, y_prob, eps=1e-15):
     return total / len(yt)
 
 
-def confusion_matrix(y_true, y_pred):
+def confusion_matrix(y_true, y_pred, labels=None, sample_weight=None,
+                     normalize=None):
     yt = list(y_true.tolist() if hasattr(y_true, "tolist")
               else y_true)
     yp = list(y_pred.tolist() if hasattr(y_pred, "tolist")
               else y_pred)
-    classes = sorted(set(yt) | set(yp), key=str)
+    if labels is None:
+        classes = sorted(set(yt) | set(yp), key=str)
+    else:
+        classes = list(labels.tolist() if hasattr(labels, "tolist") else labels)
     cmap = {c: i for i, c in enumerate(classes)}
+    w = ([1.0] * len(yt) if sample_weight is None
+         else [float(v) for v in _ac.asarray(sample_weight)._flat()])
     m = [[0.0] * len(classes) for _ in classes]
-    for a, b in zip(yt, yp):
-        m[cmap[a]][cmap[b]] += 1.0
+    for a, b, wi in zip(yt, yp, w):
+        if a in cmap and b in cmap:
+            m[cmap[a]][cmap[b]] += wi
+    if normalize == "true":
+        m = [[v / s if (s := _math.fsum(row)) else 0.0 for v in row] for row in m]
+    elif normalize == "pred":
+        cs = [_math.fsum(row[j] for row in m) for j in range(len(classes))]
+        m = [[v / cs[j] if cs[j] else 0.0 for j, v in enumerate(row)] for row in m]
+    elif normalize == "all":
+        tot = _math.fsum(_math.fsum(row) for row in m)
+        m = [[v / tot if tot else 0.0 for v in row] for row in m]
+    elif normalize is not None:
+        raise ValueError("normalize must be one of {'true', 'pred', 'all', None}")
     return _ac.marr(m)
 
 

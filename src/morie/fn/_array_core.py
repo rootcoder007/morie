@@ -1480,7 +1480,10 @@ def asarray(x, dtype=None):
         return out
 
 
-def array(x, dtype=None):
+def array(x, dtype=None, copy=True, ndmin=0):
+    del copy
+    if ndmin >= 2 and _nested_depth(x) < 2 and not isinstance(x, marr):
+        return atleast_2d(array(x, dtype))
     if _is_object_like(x, dtype):
         return oarr(x.tolist() if hasattr(x, "tolist") else x)
     if isinstance(x, (list, tuple)) and _nested_depth(x) >= 3:
@@ -1618,20 +1621,24 @@ def linspace(a, b, n=50, endpoint=True, retstep=False, dtype=None):
     return (out, step) if retstep else out
 
 
-def eye(n, m=None, dtype=None):
+def eye(n, m=None, k=0, dtype=None):
     del dtype
     m = int(n) if m is None else int(m)
-    return marr([[1.0 if i == j else 0.0 for j in range(m)]
+    k = int(k)
+    return marr([[1.0 if j - i == k else 0.0 for j in range(m)]
                  for i in range(int(n))])
 
 
-def diag(x):
+def diag(x, k=0):
     a = asarray(x)
+    k = int(k)
     if len(a.shape) == 1:
-        n = a.shape[0]
-        return marr([[a.data[i] if i == j else 0.0 for j in range(n)]
-                     for i in range(n)])
-    return marr([a.data[i][i] for i in range(_bi.min(a.shape))])
+        n = a.shape[0] + abs(k)
+        return marr([[a.data[_bi.min(i, j)] if j - i == k else 0.0
+                      for j in range(n)] for i in range(n)])
+    r, c = a.shape
+    return marr([a.data[i][i + k] for i in range(r)
+                 if 0 <= i + k < c])
 
 
 def column_stack(cols):
@@ -3738,6 +3745,18 @@ class _DTypeNarrow:
 float32 = _DTypeNarrow("float32")
 int64 = int
 int32 = int
+int16 = int
+int8 = int
+uint8 = int
+uint16 = int
+uint32 = int
+uint64 = int
+int16 = int
+int8 = int
+uint8 = int
+uint16 = int
+uint32 = int
+uint64 = int
 
 
 def zeros_like(x, dtype=None):
@@ -3793,7 +3812,9 @@ expm1 = _uf(_ieee(_math.expm1))
 isnan = _uf(lambda v: 1.0 if v != v else 0.0)
 
 
-def vectorize(fn):
+def vectorize(fn, otypes=None, excluded=None, signature=None):
+    del otypes, excluded, signature
+
     def wrapped(x, *args, **kw):
         if isinstance(x, (list, tuple, marr)):
             return asarray(x)._map(lambda v: float(fn(v, *args, **kw)))
@@ -3964,16 +3985,100 @@ def percentile(x, q, axis=None):
         if lo == hi:
             return f[lo]
         return f[lo] + (pos - lo) * (f[hi] - f[lo])
-    if isinstance(q, (list, tuple)):
-        return marr([one(float(v)) for v in q])
+    if isinstance(q, (list, tuple, marr)):
+        return marr([one(float(v)) for v in asarray(q)._flat()])
     return one(float(q))
 
 
-def quantile(x, q):
+def quantile(x, q, axis=None, method="linear", **kw):
+    """numpy.quantile; ``method`` follows the Hyndman-Fan names numpy
+    uses (linear, lower, higher, nearest, midpoint, inverted_cdf,
+    averaged_inverted_cdf, closest_observation, interpolated_inverted_cdf,
+    hazen, weibull, median_unbiased, normal_unbiased)."""
+    method = kw.get("interpolation", method)
+    if method == "linear":
+        if isinstance(q, (list, tuple, marr)):
+            qf = q._flat() if isinstance(q, marr) else q
+            return percentile(x, [100.0 * float(v) for v in qf], axis=axis)
+        return percentile(x, 100.0 * float(q), axis=axis)
+    a = asarray(x)
+    if axis is not None and len(a.shape) == 2:
+        if axis in (0, -2):
+            cols = [[a.data[r][c] for r in range(a.shape[0])]
+                    for c in range(a.shape[1])]
+            return marr([float(quantile(col, q, method=method)) for col in cols]) \
+                if not isinstance(q, (list, tuple, marr)) else \
+                marr([[float(quantile(col, qq, method=method)) for col in cols]
+                      for qq in asarray(q)._flat()])
+        return marr([float(quantile(row, q, method=method)) for row in a.data]) \
+            if not isinstance(q, (list, tuple, marr)) else \
+            marr([[float(quantile(row, qq, method=method)) for row in a.data]
+                  for qq in asarray(q)._flat()])
     if isinstance(q, (list, tuple, marr)):
-        qf = q._flat() if isinstance(q, marr) else q
-        return percentile(x, [100.0 * float(v) for v in qf])
-    return percentile(x, 100.0 * float(q))
+        return marr([float(quantile(a, qq, method=method))
+                     for qq in asarray(q)._flat()])
+    f = sorted(a._flat())
+    n = len(f)
+    if n == 0:
+        return nan
+    if _bi.any(v != v for v in f):
+        return nan
+    p = float(q)
+    if not 0.0 <= p <= 1.0:
+        raise ValueError("Quantiles must be in the range [0, 1]")
+    # discontinuous methods (H&F 1-3) on the 1-based ordinal g = n p
+    if method in ("inverted_cdf", "averaged_inverted_cdf",
+                  "closest_observation"):
+        g = n * p
+        j = int(_math.floor(g))
+        frac = g - j
+        if method == "inverted_cdf":
+            k = j + (1 if frac > 0 else 0)
+        elif method == "averaged_inverted_cdf":
+            if frac > 0:
+                k = j + 1
+            else:
+                lo_i = _bi.max(j, 1) - 1
+                hi_i = _bi.min(j + 1, n) - 1
+                return 0.5 * (f[lo_i] + f[hi_i])
+        else:  # closest_observation (H&F 3): at g == 0 take the even
+            # order statistic, as numpy
+            idx = n * p - 1.5
+            prev = int(_math.floor(idx))
+            gam = idx - prev
+            k = prev if (gam == 0 and prev % 2 == 1) else prev + 1
+            k += 1
+        k = _bi.max(1, _bi.min(k, n))
+        return f[k - 1]
+    # continuous methods: virtual index (1-based) = alpha + p (n + 1 - alpha - beta)
+    ab = {"interpolated_inverted_cdf": (0.0, 1.0), "hazen": (0.5, 0.5),
+          "weibull": (0.0, 0.0), "linear": (1.0, 1.0),
+          "median_unbiased": (1.0 / 3.0, 1.0 / 3.0),
+          "normal_unbiased": (3.0 / 8.0, 3.0 / 8.0)}
+    if method in ("lower", "higher", "nearest", "midpoint"):
+        alpha = beta = 1.0
+    elif method in ab:
+        alpha, beta = ab[method]
+    else:
+        raise ValueError("unknown quantile method %r" % (method,))
+    g = alpha + p * (n + 1 - alpha - beta)
+    g = _bi.max(1.0, _bi.min(g, float(n)))
+    j = int(_math.floor(g))
+    frac = g - j
+    lo_v = f[j - 1]
+    hi_v = f[_bi.min(j + 1, n) - 1]
+    if method == "lower":
+        return lo_v
+    if method == "higher":
+        return hi_v if frac > 0 else lo_v
+    if method == "midpoint":
+        return 0.5 * (lo_v + hi_v) if frac > 0 else lo_v
+    if method == "nearest":
+        # numpy rounds half to even on the fractional part
+        if frac > 0.5 or (frac == 0.5 and j % 2 == 0):
+            return hi_v
+        return lo_v
+    return lo_v + frac * (hi_v - lo_v)
 
 
 def empty(n, dtype=None):
@@ -4043,11 +4148,44 @@ def multiply(a, b):
     return asarray(a)._zip(b, lambda x, y: x * y)
 
 
-def divide(a, b):
+def divide(a, b, out=None, where=None):
     if not isinstance(a, (list, tuple, marr)) \
             and not isinstance(b, (list, tuple, marr)):
         return _ieee_div(float(a), float(b))
-    return asarray(a)._zip(b, _ieee_div)
+    res = asarray(a)._zip(b, _ieee_div)
+    if out is None and where is None:
+        return res
+    return _ufunc_out(res, out, where)
+
+
+def _ufunc_out(res, out, where):
+    """numpy's ``out=`` / ``where=`` contract: elements where the mask
+    is false keep the value already in ``out``."""
+    if out is None:
+        out = zeros_like(res)
+    target = out[0] if isinstance(out, tuple) else out
+    if not isinstance(target, marr):
+        raise TypeError("out= needs a marr target")
+    rf = list(res._flat())
+    if where is None:
+        mask = [True] * len(rf)
+    else:
+        w = asarray(where)
+        mask = [bool(v) for v in w._flat()]
+        if len(mask) == 1:
+            mask = mask * len(rf)
+    if len(target.shape) == 2:
+        k = 0
+        for r in range(target.shape[0]):
+            for c in range(target.shape[1]):
+                if mask[k]:
+                    target.data[r][c] = rf[k]
+                k += 1
+    else:
+        for k, v in enumerate(rf):
+            if mask[k]:
+                target.data[k] = v
+    return target
 
 
 def fill_diagonal(a, val, wrap=False):
@@ -4795,7 +4933,28 @@ def convolve(a, v, mode="full"):
     raise ValueError("bad mode")
 
 
-def histogram(x, bins=10, range=None):  # noqa: A002
+def histogram(x, bins=10, range=None, density=False, weights=None):  # noqa: A002
+    if weights is not None or density:
+        counts, edges = histogram(x, bins, range)
+        f = list(asarray(x)._flat())
+        if weights is not None:
+            wv = list(asarray(weights)._flat())
+            ed = list(edges._flat())
+            wc = [0.0] * (len(ed) - 1)
+            for v, w in zip(f, wv):
+                if v < ed[0] or v > ed[-1]:
+                    continue
+                for b in range_(len(ed) - 1):
+                    if ed[b] <= v < ed[b + 1] or (b == len(ed) - 2 and v == ed[-1]):
+                        wc[b] += float(w)
+                        break
+            counts = marr(wc)
+        if density:
+            ed = list(edges._flat())
+            tot = _fsum(counts._flat())
+            counts = marr([c / (tot * (ed[i + 1] - ed[i])) if tot else 0.0
+                           for i, c in enumerate(counts._flat())])
+        return counts, edges
     f = asarray(x)._flat()
     lo = _bi.min(f) if range is None else range[0]
     hi = _bi.max(f) if range is None else range[1]
@@ -6169,7 +6328,11 @@ def array_split(a, sections, axis=0):
     return out
 
 
-def logspace(start, stop, num=50, base=10.0):
+def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None):
+    del dtype
+    if not endpoint:
+        step = (stop - start) / num
+        return marr([base ** (start + i * step) for i in range(num)])
     step = (stop - start) / (num - 1) if num > 1 else 0.0
     return marr([base ** (start + i * step) for i in range(num)])
 
@@ -6247,8 +6410,18 @@ def correlate(a, v, mode="valid"):
     return marr(full[lo:lo + abs(n - m) + 1])
 
 
-def unwrap(p, discont=None):
-    v = list(asarray(p)._flat())
+def unwrap(p, discont=None, axis=-1, period=2 * _math.pi):
+    a = asarray(p)
+    if len(a.shape) == 2:
+        if axis in (0, -2):
+            return transpose(unwrap(transpose(a), discont, -1, period))
+        return marr([list(unwrap(row, discont, -1, period)._flat())
+                     for row in a.data])
+    if period != 2 * _math.pi:
+        s = 2 * _math.pi / period
+        return unwrap([v * s for v in a._flat()], None if discont is None
+                      else discont * s, -1) / s
+    v = list(a._flat())
     d = discont if discont is not None else _math.pi
     out = [v[0]]
     offset = 0.0
@@ -7024,3 +7197,385 @@ def logical_xor(a, b):
 def logical_not(a):
     return ~asarray(a)
 
+
+# ------------------------------------------------ round-four additions (H)
+
+def argwhere(x):
+    """Indices of the non-zero elements, one row per element (k, ndim)."""
+    a = asarray(x)
+    if len(a.shape) == 2:
+        out = [[float(i), float(j)] for i, row in enumerate(a.data)
+               for j, v in enumerate(row) if v]
+        res = marr(out) if out else marr([[]])
+        if not out:
+            res = zeros((0, 2))
+    else:
+        out = [[float(i)] for i, v in enumerate(a.data) if v]
+        res = marr(out) if out else zeros((0, 1))
+    res._is_index = True
+    return _typed(res, int)
+
+
+def argpartition(x, kth, axis=-1, kind=None, order=None):
+    """Indices that partition; the sorted permutation satisfies the
+    partition contract, as partition() does in this core."""
+    del kth, kind, order
+    return argsort(x, axis=axis)
+
+
+def isneginf(x):
+    out = _map_unary(x, lambda v: 1.0 if v == -_math.inf else 0.0)
+    if isinstance(out, marr):
+        out._is_mask = True
+    return out
+
+
+def isposinf(x):
+    out = _map_unary(x, lambda v: 1.0 if v == _math.inf else 0.0)
+    if isinstance(out, marr):
+        out._is_mask = True
+    return out
+
+
+def reshape(x, shape, order="C"):
+    del order
+    return asarray(x).reshape(shape)
+
+
+def vdot(a, b):
+    """Flattened dot product with the first argument conjugated."""
+    fa = list(asarray(a)._flat())
+    fb = list(asarray(b)._flat())
+    if len(fa) != len(fb):
+        raise ValueError("vdot: size mismatch")
+    if any(isinstance(v, complex) for v in fa + fb):
+        return sum((v.conjugate() if isinstance(v, complex) else v) * w
+                   for v, w in zip(fa, fb))
+    return float(_fsum(v * w for v, w in zip(fa, fb)))
+
+
+def sinc(x):
+    def one(v):
+        if v == 0:
+            return 1.0
+        return _math.sin(_math.pi * v) / (_math.pi * v)
+    return _map_unary(x, one)
+
+
+def apply_along_axis(func1d, axis, arr, *args, **kwargs):
+    """Apply ``func1d`` to every 1-D slice of a 2-D array along ``axis``.
+    Scalar results give a vector; vector results are re-stacked along
+    the same axis, as numpy does."""
+    a = asarray(arr)
+    if len(a.shape) == 1:
+        return func1d(a, *args, **kwargs)
+    if axis in (0, -2):
+        slices = [marr([a.data[r][c] for r in range(a.shape[0])])
+                  for c in range(a.shape[1])]
+    else:
+        slices = [marr(row[:]) for row in a.data]
+    outs = [func1d(s, *args, **kwargs) for s in slices]
+    if all(not isinstance(o, (list, tuple, marr)) for o in outs):
+        return marr([float(o) for o in outs])
+    rows = [list(asarray(o)._flat()) for o in outs]
+    if axis in (0, -2):
+        return transpose(marr(rows))
+    return marr(rows)
+
+
+def moveaxis(a, source, destination):
+    """Move an axis to a new position (2-D and nested rank-3 inputs)."""
+    x = a if isinstance(a, marr) else asarray(a) if _nested_depth(a) <= 2 \
+        else ndlist(a)
+    nd = 2 if isinstance(x, marr) and len(x.shape) == 2 else \
+        1 if isinstance(x, marr) else _nested_depth(x.tolist() if hasattr(x, "tolist") else x)
+    src = source % nd if isinstance(source, int) else list(source)
+    dst = destination % nd if isinstance(destination, int) else list(destination)
+    if isinstance(src, list):
+        order = [i for i in range(nd) if i not in src]
+        for s, d in sorted(zip(src, dst), key=lambda t: t[1]):
+            order.insert(d, s)
+    else:
+        order = [i for i in range(nd) if i != src]
+        order.insert(dst, src)
+    if order == list(range(nd)):
+        return x
+    if nd == 2:
+        return transpose(x)
+    nested = x.tolist() if hasattr(x, "tolist") else x
+    return transpose(ndlist(nested), axes=order)
+
+
+class broadcast:
+    """numpy.broadcast: the broadcast shape of the arguments, iterable as
+    tuples of elements."""
+
+    def __init__(self, *args):
+        self._arrs = [asarray(v) for v in args]
+        shapes = [tuple(a.shape) for a in self._arrs]
+        nd = _bi.max([len(s) for s in shapes] + [0])
+        shape = []
+        for k in range(nd):
+            dims = {s[len(s) - nd + k] for s in shapes if len(s) - nd + k >= 0}
+            dims.discard(1)
+            if len(dims) > 1:
+                raise ValueError("shape mismatch: objects cannot be "
+                                 "broadcast to a single shape")
+            shape.append(dims.pop() if dims else 1)
+        self.shape = tuple(shape)
+        self.nd = self.ndim = nd
+        self.size = 1
+        for d in shape:
+            self.size *= d
+        self.numiter = len(self._arrs)
+
+    def __iter__(self):
+        flats = [list(broadcast_to(a, self.shape)._flat()) if a.shape != self.shape
+                 else list(a._flat()) for a in self._arrs]
+        return iter(zip(*flats))
+
+
+class _DType:
+    """numpy.dtype descriptor: name, kind, itemsize, equality against
+    strings and Python types."""
+
+    _KIND = {"float64": "f", "float32": "f", "float16": "f", "int64": "i",
+             "int32": "i", "int16": "i", "int8": "i", "uint8": "u",
+             "uint16": "u", "uint32": "u", "uint64": "u", "bool": "b",
+             "complex128": "c", "object": "O", "str": "U"}
+    _SIZE = {"float64": 8, "float32": 4, "float16": 2, "int64": 8,
+             "int32": 4, "int16": 2, "int8": 1, "uint8": 1, "uint16": 2,
+             "uint32": 4, "uint64": 8, "bool": 1, "complex128": 16,
+             "object": 8, "str": 4}
+
+    def __init__(self, spec):
+        if isinstance(spec, _DType):
+            name = spec.name
+        elif spec is float or spec is float64:
+            name = "float64"
+        elif spec is int:
+            name = "int64"
+        elif spec is bool:
+            name = "bool"
+        elif spec is complex:
+            name = "complex128"
+        elif spec is object:
+            name = "object"
+        elif spec is str:
+            name = "str"
+        elif hasattr(spec, "name") and isinstance(spec.name, str):
+            name = spec.name
+        else:
+            name = str(spec)
+            name = {"f8": "float64", "f4": "float32", "f2": "float16",
+                    "i8": "int64", "i4": "int32", "i2": "int16", "i1": "int8",
+                    "u1": "uint8", "u2": "uint16", "u4": "uint32", "u8": "uint64",
+                    "float": "float64", "int": "int64", "bool_": "bool",
+                    "?": "bool", "O": "object", "U": "str", "<U": "str",
+                    "double": "float64", "single": "float32", "complex": "complex128",
+                    "c16": "complex128", "<f8": "float64", "<i8": "int64",
+                    "<f4": "float32", "<i4": "int32"}.get(name, name)
+            if name.startswith("<U") or name.startswith("U"):
+                name = "str"
+        self.name = name
+        self.kind = self._KIND.get(name, "O")
+        self.itemsize = self._SIZE.get(name, 8)
+        self.type = {"f": float, "i": int, "u": int, "b": bool,
+                     "c": complex, "U": str}.get(self.kind, object)
+        self.char = {"float64": "d", "float32": "f", "int64": "l",
+                     "int32": "i", "bool": "?"}.get(name, "O")
+        self.str = "<" + {"f": "f", "i": "i", "u": "u", "b": "b",
+                          "c": "c", "U": "U"}.get(self.kind, "O") + str(self.itemsize)
+
+    def __eq__(self, other):
+        try:
+            return _DType(other).name == self.name
+        except Exception:  # noqa: BLE001
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash(self.name)
+
+    def __repr__(self):
+        return "dtype('%s')" % self.name
+
+    __str__ = __repr__
+
+
+dtype = _DType
+
+
+def savez(file, *args, **kwds):
+    """Save arrays into one file (a zip of JSON lists, readable by
+    load()); positional arrays are named arr_0, arr_1, ... as in numpy."""
+    import json as _json
+    import zipfile as _zip
+    arrays = {"arr_%d" % i: v for i, v in enumerate(args)}
+    arrays.update(kwds)
+    path = file if isinstance(file, str) else getattr(file, "name", str(file))
+    if isinstance(file, str) and not path.endswith(".npz"):
+        path = path + ".npz"
+    with _zip.ZipFile(path, "w") as zf:
+        for k, v in arrays.items():
+            data = v.tolist() if hasattr(v, "tolist") else v
+            zf.writestr(k + ".json", _json.dumps(data))
+    return path
+
+
+savez_compressed = savez
+
+
+class _NpzFile(dict):
+    files = property(lambda self: list(self.keys()))
+
+    def close(self):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+def load(file, allow_pickle=False, **kw):
+    """Read a savez() archive back as a mapping of arrays."""
+    del allow_pickle, kw
+    import json as _json
+    import zipfile as _zip
+    path = file if isinstance(file, str) else getattr(file, "name", str(file))
+    out = _NpzFile()
+    with _zip.ZipFile(path) as zf:
+        for name in zf.namelist():
+            if name.endswith(".json"):
+                out[name[:-5]] = array(_json.loads(zf.read(name).decode()))
+    return out
+
+
+def _golub_welsch(n, off, mu0):
+    """Nodes and weights of an n-point Gauss rule from the symmetric
+    Jacobi matrix with zero diagonal and off-diagonal ``off`` (length
+    n-1); mu0 is the total mass of the weight function."""
+    n = int(n)
+    if n < 1:
+        raise ValueError("n must be a positive integer")
+    if n == 1:
+        return marr([0.0]), marr([mu0])
+    J = [[0.0] * n for _ in range(n)]
+    for i in range(n - 1):
+        J[i][i + 1] = J[i + 1][i] = off[i]
+    w, v = _eigh(marr(J))
+    nodes = [float(x) for x in w._flat()]
+    weights = [mu0 * float(v.data[0][i]) ** 2 for i in range(n)]
+    # symmetrise numerically: the rules are exactly symmetric about 0
+    for i in range(n // 2):
+        j = n - 1 - i
+        m = 0.5 * (abs(nodes[i]) + abs(nodes[j]))
+        nodes[i], nodes[j] = -m, m
+        wm = 0.5 * (weights[i] + weights[j])
+        weights[i] = weights[j] = wm
+    if n % 2 == 1:
+        nodes[n // 2] = 0.0
+    return marr(nodes), marr(weights)
+
+
+class _PolyHermite:
+    @staticmethod
+    def hermgauss(deg):
+        """Gauss-Hermite (physicists', weight exp(-x^2))."""
+        n = int(deg)
+        return _golub_welsch(n, [_math.sqrt(i / 2.0) for i in range(1, n)],
+                             _math.sqrt(_math.pi))
+
+    @staticmethod
+    def hermval(x, c):
+        cs = list(asarray(c)._flat())
+
+        def one(v):
+            h0, h1 = 1.0, 2.0 * v
+            tot = cs[0] * h0 if cs else 0.0
+            if len(cs) > 1:
+                tot += cs[1] * h1
+            for k in range(2, len(cs)):
+                h0, h1 = h1, 2.0 * v * h1 - 2.0 * (k - 1) * h0
+                tot += cs[k] * h1
+            return tot
+        return _map_unary(x, one)
+
+
+class _PolyHermiteE:
+    @staticmethod
+    def hermegauss(deg):
+        """Gauss-Hermite (probabilists', weight exp(-x^2/2))."""
+        n = int(deg)
+        return _golub_welsch(n, [_math.sqrt(float(i)) for i in range(1, n)],
+                             _math.sqrt(2.0 * _math.pi))
+
+    @staticmethod
+    def hermeval(x, c):
+        cs = list(asarray(c)._flat())
+
+        def one(v):
+            h0, h1 = 1.0, v
+            tot = cs[0] * h0 if cs else 0.0
+            if len(cs) > 1:
+                tot += cs[1] * h1
+            for k in range(2, len(cs)):
+                h0, h1 = h1, v * h1 - (k - 1) * h0
+                tot += cs[k] * h1
+            return tot
+        return _map_unary(x, one)
+
+
+class _PolyLegendre:
+    @staticmethod
+    def leggauss(deg):
+        """Gauss-Legendre on [-1, 1]."""
+        n = int(deg)
+        return _golub_welsch(
+            n, [i / _math.sqrt(4.0 * i * i - 1.0) for i in range(1, n)], 2.0)
+
+    @staticmethod
+    def legval(x, c):
+        cs = list(asarray(c)._flat())
+
+        def one(v):
+            p0, p1 = 1.0, v
+            tot = cs[0] * p0 if cs else 0.0
+            if len(cs) > 1:
+                tot += cs[1] * p1
+            for k in range(2, len(cs)):
+                p0, p1 = p1, ((2 * k - 1) * v * p1 - (k - 1) * p0) / k
+                tot += cs[k] * p1
+            return tot
+        return _map_unary(x, one)
+
+
+class _PolyPolynomial:
+    """numpy.polynomial.polynomial: coefficients in INCREASING order."""
+
+    @staticmethod
+    def polyfit(x, y, deg):
+        return polyfit(x, y, deg)[::-1]
+
+    @staticmethod
+    def polyval(x, c):
+        cs = list(asarray(c)._flat())
+        return _map_unary(x, lambda v: _fsum(ck * v ** k for k, ck in enumerate(cs)))
+
+    @staticmethod
+    def polyder(c, m=1):
+        cs = list(asarray(c)._flat())
+        for _ in range(int(m)):
+            cs = [k * cs[k] for k in range(1, len(cs))] or [0.0]
+        return marr(cs)
+
+
+class polynomial:  # namespace mirror of numpy.polynomial
+    hermite = _PolyHermite
+    hermite_e = _PolyHermiteE
+    legendre = _PolyLegendre
+    polynomial = _PolyPolynomial

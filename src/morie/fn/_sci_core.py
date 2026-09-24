@@ -1398,7 +1398,9 @@ class interp1d:
 class CubicSpline:
     """Not-a-knot cubic spline (scipy default bc_type)."""
 
-    def __init__(self, x, y, bc_type="not-a-knot"):
+    def __init__(self, x, y, axis=0, bc_type="not-a-knot", extrapolate=True):
+        del axis
+        self.extrapolate = extrapolate
         xs = [float(v) for v in _ac.asarray(x)._flat()]
         ys = [float(v) for v in _ac.asarray(y)._flat()]
         n = len(xs)
@@ -1455,6 +1457,13 @@ class CubicSpline:
             h11 = t ** 3 - t ** 2
             return (h00 * ys[i] + h10 * h[i] * m[i]
                     + h01 * ys[i + 1] + h11 * h[i] * m[i + 1])
+        if not self.extrapolate:
+            lo, hi = self.x[0], self.x[-1]
+            inner = one
+
+            def one(v):  # noqa: F811
+                v = float(v)
+                return inner(v) if lo <= v <= hi else _math.nan
         if isinstance(xnew, (int, float)):
             return one(xnew)
         return _ac.marr([one(v) for v in _ac.asarray(xnew)._flat()])
@@ -1602,17 +1611,56 @@ def kmeans2(data, k, iter=10, seed=1, minit="points"):
     return _ac.marr(cents), _ac.marr([float(v) for v in labels])
 
 
-def linkage(y, method="single"):
+def _pair_metric(metric):
+    """Row-pair distance used by linkage() on an (n, d) input."""
+    def euclid(u, v):
+        return _math.sqrt(_math.fsum((p - q) ** 2 for p, q in zip(u, v)))
+
+    def cityblock(u, v):
+        return _math.fsum(abs(p - q) for p, q in zip(u, v))
+
+    def sqeuclid(u, v):
+        return _math.fsum((p - q) ** 2 for p, q in zip(u, v))
+
+    def cheb(u, v):
+        return max(abs(p - q) for p, q in zip(u, v))
+
+    def cosine(u, v):
+        nu = _math.sqrt(_math.fsum(p * p for p in u))
+        nv = _math.sqrt(_math.fsum(q * q for q in v))
+        if nu == 0 or nv == 0:
+            return _math.nan
+        return 1.0 - _math.fsum(p * q for p, q in zip(u, v)) / (nu * nv)
+
+    def correlation(u, v):
+        mu = _math.fsum(u) / len(u)
+        mv = _math.fsum(v) / len(v)
+        return cosine([p - mu for p in u], [q - mv for q in v])
+
+    def hamming(u, v):
+        return _math.fsum(1.0 for p, q in zip(u, v) if p != q) / len(u)
+
+    table = {"euclidean": euclid, "cityblock": cityblock, "manhattan": cityblock,
+             "sqeuclidean": sqeuclid, "chebyshev": cheb, "cosine": cosine,
+             "correlation": correlation, "hamming": hamming}
+    if callable(metric):
+        return metric
+    if metric not in table:
+        raise ValueError("unsupported linkage metric %r" % (metric,))
+    return table[metric]
+
+
+def linkage(y, method="single", metric="euclidean", optimal_ordering=False):
     """Agglomerative clustering (Lance-Williams); y condensed or (n,d)."""
+    del optimal_ordering
     a = _ac.asarray(y)
     if len(a.shape) == 2:
+        dist = _pair_metric(metric)
         D = {}
         n = a.shape[0]
         for i in range(n - 1):
             for j in range(i + 1, n):
-                D[(i, j)] = _math.sqrt(_math.fsum(
-                    (a.data[i][t] - a.data[j][t]) ** 2
-                    for t in range(a.shape[1])))
+                D[(i, j)] = dist(a.data[i], a.data[j])
     else:
         cond = [float(v) for v in a._flat()]
         m = len(cond)
@@ -2109,7 +2157,9 @@ linalg.LinAlgError = LinAlgError
 class BSpline:
     """B-spline evaluation via Cox-de Boor recursion."""
 
-    def __init__(self, t, c, k):
+    def __init__(self, t, c, k, extrapolate=True, axis=0):
+        del axis
+        self.extrapolate = extrapolate
         self.t = [float(v) for v in _ac.asarray(t)._flat()]
         self.c = [float(v) for v in _ac.asarray(c)._flat()]
         self.k = int(k)
@@ -2137,6 +2187,8 @@ class BSpline:
     def __call__(self, x):
         def one(v):
             v = float(v)
+            if not self.extrapolate and not (self.t[self.k] <= v <= self.t[-self.k - 1]):
+                return _math.nan
             return _math.fsum(self.c[i] * self._basis(i, self.k, v)
                               for i in range(len(self.c)))
         if isinstance(x, (int, float)):

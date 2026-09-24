@@ -1003,8 +1003,12 @@ def convolve2d(a, b, mode="full", boundary="fill", fillvalue=0.0):
     raise ValueError(mode)
 
 
-def dpss(M, NW, Kmax=None):
-    """Slepian sequences via the symmetric tridiagonal eigenproblem."""
+def dpss(M, NW, Kmax=None, sym=True, norm=None, return_ratios=False):
+    """Slepian sequences via the symmetric tridiagonal eigenproblem.
+    With ``return_ratios`` the energy concentration ratios
+    lambda_k = v_k^T S v_k (S the sinc kernel of bandwidth W) come back
+    alongside, as scipy returns them."""
+    del sym, norm
     M = int(M)
     W = float(NW) / M
     diag = [((M - 1.0 - 2.0 * i) / 2.0) ** 2
@@ -1034,7 +1038,22 @@ def dpss(M, NW, Kmax=None):
             corr = (M * M) / (M * M + float(NW))
             col = [v / mx * corr for v in col]
         out.append(col)
-    return _ac.marr(out if k > 1 else out[0])
+    tapers = _ac.marr(out if k > 1 else out[0])
+    if not return_ratios:
+        return tapers
+    ratios = []
+    for col in out:
+        nrm = _math.fsum(v * v for v in col)
+        acc = 0.0
+        for i in range(M):
+            for j in range(M):
+                if i == j:
+                    kern = 2.0 * W
+                else:
+                    kern = _math.sin(2.0 * _math.pi * W * (i - j)) / (_math.pi * (i - j))
+                acc += col[i] * kern * col[j]
+        ratios.append(acc / nrm if nrm else _math.nan)
+    return tapers, _ac.marr(ratios if k > 1 else ratios[0])
 
 
 class windows:

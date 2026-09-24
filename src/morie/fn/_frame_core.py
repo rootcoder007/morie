@@ -983,15 +983,21 @@ class _StrAccessor:
     def len(self):
         return self._map(len)
 
-    def contains(self, pat, case=True, regex=False):
+    def contains(self, pat, case=True, flags=0, na=None, regex=False):
+        import re
         if regex:
-            import re
-            flags = 0 if case else re.IGNORECASE
-            rx = re.compile(pat, flags)
-            return self._map(lambda v: bool(rx.search(v)))
-        if case:
-            return self._map(lambda v: pat in v)
-        return self._map(lambda v: pat.lower() in v.lower())
+            rx = re.compile(pat, flags | (0 if case else re.IGNORECASE))
+            test = lambda v: bool(rx.search(v))  # noqa: E731
+        elif case:
+            test = lambda v: pat in v  # noqa: E731
+        else:
+            test = lambda v: pat.lower() in v.lower()  # noqa: E731
+
+        # pandas: missing values give NaN, or ``na`` when given
+        return Series([test(v) if isinstance(v, str)
+                       else (_NAN if na is None else na)
+                       for v in self._s._data],
+                      index=list(self._s.index), name=self._s.name)
 
     def startswith(self, pat):
         return self._map(lambda v: v.startswith(pat))
@@ -1734,7 +1740,9 @@ class DataFrame:
                           for c, v in self._cols.items()},
                          index=list(self.index))
 
-    def corr(self):
+    def corr(self, method="pearson", min_periods=1):
+        if method not in ("pearson", "spearman", "kendall"):
+            raise ValueError("method must be 'pearson', 'spearman' or 'kendall'")
         cols = [c for c in self._cols if Series(
             self._cols[c])._is_numeric()]
         n = len(cols)
@@ -1745,8 +1753,9 @@ class DataFrame:
             if len(col) < 2 or min(col) == max(col):
                 mat[i][i] = float("nan")
             for j in range(i + 1, n):
-                mat[i][j] = mat[j][i] = _pearson(
-                    self._cols[cols[i]], self._cols[cols[j]])
+                mat[i][j] = mat[j][i] = _corr_pair(
+                    self._cols[cols[i]], self._cols[cols[j]], method,
+                    min_periods)
         return DataFrame(dict(zip(
             cols, [[mat[i][j] for j in range(n)]
                    for i in range(n)])), index=cols) \
@@ -2247,6 +2256,62 @@ class _Loc:
         raise TypeError("unsupported loc assignment")
 
 
+def _corr_pair(x, y, method="pearson", min_periods=1):
+    """Pairwise-complete correlation of two columns by method."""
+    pairs = [(float(a), float(b)) for a, b in zip(x, y)
+             if not _isnan(a) and not _isnan(b)]
+    if len(pairs) < max(2, int(min_periods)):
+        return _NAN
+    xs = [a for a, _ in pairs]
+    ys = [b for _, b in pairs]
+    if method == "pearson":
+        return _pearson(xs, ys)
+    if method == "spearman":
+        return _pearson(_avg_rank(xs), _avg_rank(ys))
+    # kendall tau-b
+    n = len(xs)
+    conc = disc = tx = ty = 0
+    for i in range(n - 1):
+        for j in range(i + 1, n):
+            dx = xs[i] - xs[j]
+            dy = ys[i] - ys[j]
+            if dx == 0 and dy == 0:
+                continue
+            if dx == 0:
+                tx += 1
+            elif dy == 0:
+                ty += 1
+            elif dx * dy > 0:
+                conc += 1
+            else:
+                disc += 1
+    n0 = n * (n - 1) / 2.0
+    denom = _math.sqrt((n0 - _tie_pairs(xs)) * (n0 - _tie_pairs(ys)))
+    return (conc - disc) / denom if denom > 0 else _NAN
+
+
+def _tie_pairs(v):
+    counts = {}
+    for u in v:
+        counts[u] = counts.get(u, 0) + 1
+    return _math.fsum(c * (c - 1) / 2.0 for c in counts.values())
+
+
+def _avg_rank(v):
+    order = sorted(range(len(v)), key=lambda i: v[i])
+    ranks = [0.0] * len(v)
+    i = 0
+    while i < len(order):
+        j = i
+        while j + 1 < len(order) and v[order[j + 1]] == v[order[i]]:
+            j += 1
+        r = (i + j) / 2.0 + 1.0
+        for k in range(i, j + 1):
+            ranks[order[k]] = r
+        i = j + 1
+    return ranks
+
+
 def _pearson(x, y):
     pairs = [(a, b) for a, b in zip(x, y)
              if not _isnan(a) and not _isnan(b)]
@@ -2496,6 +2561,9 @@ def _agg_fn(spec):
             "median": lambda s: s.median(), "min": lambda s: s.min(),
             "max": lambda s: s.max(), "count": lambda s: s.count(),
             "nunique": lambda s: s.nunique(),
+            "size": lambda s: len(s._data),
+            "prod": lambda s: s.prod(),
+            "sem": lambda s: s.sem(),
             "first": lambda s: s._data[0] if s._data else _NAN,
             "last": lambda s: s._data[-1] if s._data else _NAN,
             }[spec]
@@ -2690,7 +2758,16 @@ class _GroupBySeries:
                 out[i] = v
         return Series(out, index=list(gb._df.index), name=self._col)
 
-    def agg(self, spec):
+    def agg(self, spec=None, **named):
+        if named:
+            # named aggregation: agg(n="count", total="sum") gives one
+            # column per keyword, as pandas' SeriesGroupBy does
+            parts = {k: self._agg(_agg_fn(h)) for k, h in named.items()}
+            first = next(iter(parts.values()))
+            out = DataFrame({k: list(v._data) for k, v in parts.items()},
+                            index=list(first.index))
+            out.index_name = getattr(first, "index_name", None)
+            return out
         if isinstance(spec, (list, tuple)):
             # a list of aggregations: one column per name, as pandas
             parts = {str(getattr(h, "__name__", h)): self._agg(_agg_fn(h)) for h in spec}
@@ -3026,7 +3103,19 @@ def date_range(start, periods, freq="D"):
     return Series([s + i * step for i in range(int(periods))])
 
 
-def crosstab(index, columns, normalize=False):
+def crosstab(index, columns, normalize=False, margins=False,
+             margins_name="All", dropna=True):
+    del dropna
+    if margins:
+        base = crosstab(index, columns, normalize=normalize)
+        rows = list(base.index)
+        cols = list(base.columns)
+        data = {c: list(base[c]) for c in cols}
+        data[margins_name] = [sum(data[c][i] for c in cols)
+                              for i in range(len(rows))]
+        for c in list(data):
+            data[c] = data[c] + [sum(data[c])]
+        return DataFrame(data, index=rows + [margins_name])
     iv = index.tolist() if hasattr(index, "tolist") else list(index)
     cv = columns.tolist() if hasattr(columns, "tolist") \
         else list(columns)

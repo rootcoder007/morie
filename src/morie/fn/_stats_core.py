@@ -1218,7 +1218,13 @@ def pointbiserialr(x, y):
     return pearsonr(x, y)
 
 
-def kendalltau(x, y, alternative="two-sided"):
+def kendalltau(x, y, alternative="two-sided", variant="b", **kw):
+    """Kendall's tau: ``variant="b"`` (tie-corrected, scipy default) or
+    ``"c"`` (Stuart's tau-c for rectangular tables); the p-value uses
+    the tau-b machinery in both cases, as scipy does."""
+    del kw
+    if variant not in ("b", "c"):
+        raise ValueError("variant must be 'b' or 'c'")
     x, y = _flatten(x), _flatten(y)
     n = len(x)
     conc = disc = 0
@@ -1247,6 +1253,9 @@ def kendalltau(x, y, alternative="two-sided"):
     n1, n2 = tie_term(x), tie_term(y)
     denom = _math.sqrt((n0 - n1) * (n0 - n2))
     tau = (conc - disc) / denom if denom > 0 else float("nan")
+    if variant == "c" and n > 1:
+        m = min(len(set(x)), len(set(y)))
+        tau = 2.0 * (conc - disc) / (n * n * (m - 1) / float(m)) if m > 1 else float("nan")
     if n < 2 or tau != tau:
         return _TestResult(tau, _math.nan)
     if n1 == 0 and n2 == 0 and n <= 50:
@@ -1465,9 +1474,13 @@ def ttest_ind(a, b, equal_var=True, alternative="two-sided"):
     return _TestResult(stat, _t_pvalue(stat, df, alternative), df=df)
 
 
-def ttest_rel(a, b):
+def ttest_rel(a, b, alternative="two-sided", **kw):
+    del kw
     x, y = _flatten(a), _flatten(b)
-    return ttest_1samp([u - w for u, w in zip(x, y)], 0.0)
+    if len(x) != len(y):
+        raise ValueError("unequal length arrays")
+    return ttest_1samp([u - w for u, w in zip(x, y)], 0.0,
+                       alternative=alternative)
 
 
 def mannwhitneyu(x, y, alternative="two-sided", **kw):
