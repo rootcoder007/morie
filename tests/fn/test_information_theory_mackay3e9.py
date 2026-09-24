@@ -1,20 +1,27 @@
-"""Tests for information_theory_mackay3e9.information_theory_mackay_chapter_3_equation_9."""
+"""Verification tests for information_theory_mackay3e9.bcoinpri.
 
-from morie.fn import _array_core as np
+The expected values are recomputed from MacKay (2003) eq. (3.9) p. 51 in the test body, so a
+drift in the implementation fails the test.
+"""
 
-from morie.fn.information_theory_mackay3e9 import information_theory_mackay_chapter_3_equation_9
+import math
 
+import pytest
 
-def test_information_theory_mackay3e9_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_3_equation_9(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.information_theory_mackay3e9 import bcoinpri
 
 
-def test_information_theory_mackay3e9_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_3_equation_9(x)
-    assert isinstance(result, dict)
+def test_bcoinpri_is_the_uniform_density_on_the_unit_interval():
+    for pa in (0.0, 0.25, 0.5, 1.0):
+        res = bcoinpri(pa)
+        assert res["density"] == pytest.approx(1.0, abs=1e-12)
+        assert res["logdensity"] == pytest.approx(0.0, abs=1e-12)
+    outside = bcoinpri(1.5)
+    assert outside["density"] == 0.0
+    assert outside["logdensity"] == -math.inf
+
+
+def test_bcoinpri_integrates_to_one_over_the_unit_interval():
+    n = 1000
+    total = sum(bcoinpri(i / n)["density"] for i in range(n)) / n
+    assert total == pytest.approx(1.0, abs=1e-9)

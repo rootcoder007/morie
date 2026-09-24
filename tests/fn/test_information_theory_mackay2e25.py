@@ -1,20 +1,34 @@
-"""Tests for information_theory_mackay2e25.information_theory_mackay_chapter_2_equation_25."""
+"""Verification tests for information_theory_mackay2e25.urnpost.
 
-from morie.fn import _array_core as np
+The expected values are recomputed from MacKay (2003) eq. (2.25)-(2.26) p. 28 in the test body, so a
+drift in the implementation fails the test.
+"""
 
-from morie.fn.information_theory_mackay2e25 import information_theory_mackay_chapter_2_equation_25
+import math
 
+import pytest
 
-def test_information_theory_mackay2e25_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_2_equation_25(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.information_theory_mackay2e25 import urnpost
 
 
-def test_information_theory_mackay2e25_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_2_equation_25(x)
-    assert isinstance(result, dict)
+def test_urnpost_matches_the_binomial_posterior_over_urns():
+    nb, ntot, nurns = 3, 10, 10
+    prior = 1.0 / (nurns + 1.0)
+    joint = [prior * math.comb(ntot, nb) * (u / nurns) ** nb * (1.0 - u / nurns) ** (ntot - nb)
+             for u in range(nurns + 1)]
+    evid = sum(joint)
+    res = urnpost(nb, ntot, nurns)
+    assert res["evidence"] == pytest.approx(evid, rel=1e-12)
+    for u in range(nurns + 1):
+        assert res["posterior"][u] == pytest.approx(joint[u] / evid, abs=1e-12)
+    assert res["map"] == 3
+
+
+def test_urnpost_posterior_sums_to_one():
+    res = urnpost(7, 20)
+    assert sum(res["posterior"]) == pytest.approx(1.0, abs=1e-12)
+
+
+def test_urnpost_rejects_more_black_balls_than_draws():
+    with pytest.raises(ValueError):
+        urnpost(5, 3)

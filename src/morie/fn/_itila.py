@@ -321,7 +321,14 @@ def sexbeta(gamma):
 
 
 def sexdfdt(f, g, eta=None):
-    """(19.13) p.273 -- dF/dt = eta sqrt(f (1 - f) G) under sexual mixing."""
+    """(19.13) p.273 -- dF/dt = eta sqrt(f (1 - f) G) under sexual mixing.
+
+    The printed rate is returned as printed. Note that it is NOT the
+    derivative of the printed closed form (19.14): differentiating
+    f(t) = (1 + sin(eta (t + c)/sqrt(G)))/2 gives
+    eta sqrt(f (1 - f)/G), which is smaller by a factor of G. The two
+    equations in the book disagree; ``sexfsol`` solves the second one.
+    """
     f = float(f)
     g = float(g)
     if not 0.0 <= f <= 1.0 or g <= 0.0:
@@ -338,6 +345,11 @@ def sexfsol(t, g, f0, eta=None, c=None):
     ``eta t/sqrt(G) + c``.  The default ``c`` here is the
     self-consistent one, ``sqrt(G)/eta * asin(2 f_0 - 1)``; the printed
     value is returned as ``cbook`` so the disagreement stays visible.
+
+    This closed form differentiates to ``eta sqrt(f (1 - f)/G)``, which
+    is the printed rate (19.13) divided by G. Verified numerically to
+    six figures at G = 4, 36 and 100 in
+    ``tests/fn/test_information_theory_mackay19e14.py``.
     """
     t = float(t)
     g = float(g)

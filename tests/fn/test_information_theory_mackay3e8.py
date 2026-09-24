@@ -1,20 +1,25 @@
-"""Tests for information_theory_mackay3e8.information_theory_mackay_chapter_3_equation_8."""
+"""Verification tests for information_theory_mackay3e8.bcoinlik.
 
-from morie.fn import _array_core as np
+The expected values are recomputed from MacKay (2003) eq. (3.8) p. 51 in the test body, so a
+drift in the implementation fails the test.
+"""
 
-from morie.fn.information_theory_mackay3e8 import information_theory_mackay_chapter_3_equation_8
+import math
 
+import pytest
 
-def test_information_theory_mackay3e8_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_3_equation_8(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.information_theory_mackay3e8 import bcoinlik
 
 
-def test_information_theory_mackay3e8_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_3_equation_8(x)
-    assert isinstance(result, dict)
+def test_bcoinlik_is_the_bernoulli_likelihood():
+    pa, fa, fb = 0.3, 5, 7
+    res = bcoinlik(pa, fa, fb)
+    assert res["likelihood"] == pytest.approx(pa ** fa * (1.0 - pa) ** fb, rel=1e-12)
+    assert res["loglik"] == pytest.approx(fa * math.log(pa) + fb * math.log1p(-pa), abs=1e-12)
+
+
+def test_bcoinlik_is_maximised_at_the_sample_proportion():
+    fa, fb = 6, 4
+    best = max((bcoinlik(p / 1000.0, fa, fb)["likelihood"], p / 1000.0)
+               for p in range(1, 1000))
+    assert best[1] == pytest.approx(fa / (fa + fb), abs=2e-3)

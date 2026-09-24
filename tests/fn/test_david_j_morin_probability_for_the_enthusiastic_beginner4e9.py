@@ -1,5 +1,7 @@
 """Tests for david_j_morin_probability_for_the_enthusiastic_beginner4e9.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_9."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e9 import (
@@ -9,14 +11,19 @@ from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e9 import 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e9_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_9(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_9(40)
+    p = result.p
+    assert isinstance(p, (int, float))
+    assert math.isfinite(p)
+    assert 0.0 <= p <= 1.0
+    assert math.isclose(p, 1.0 / 41.0)
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e9_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_9(x)
-    assert isinstance(result, dict)
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_9(10)
+    p = result.p
+    assert isinstance(p, (int, float))
+    assert math.isfinite(p)
+    assert 0.0 <= p <= 1.0
+    assert math.isclose(p, 1.0 / 11.0)

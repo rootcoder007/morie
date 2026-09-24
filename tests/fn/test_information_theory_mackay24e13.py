@@ -1,20 +1,27 @@
-"""Tests for information_theory_mackay24e13.information_theory_mackay_chapter_24_equation_13."""
+"""Verification tests for information_theory_mackay24e13.sigevid.
 
-from morie.fn import _array_core as np
+The expected values are recomputed from MacKay (2003) eq. (24.13) p. 320 in the test body, so a
+drift in the implementation fails the test.
+"""
 
-from morie.fn.information_theory_mackay24e13 import information_theory_mackay_chapter_24_equation_13
+import math
 
+import pytest
 
-def test_information_theory_mackay24e13_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_24_equation_13(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.information_theory_mackay24e13 import sigevid
 
 
-def test_information_theory_mackay24e13_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_24_equation_13(x)
-    assert isinstance(result, dict)
+def test_sigevid_splits_into_best_fit_and_occam_factor():
+    s, n, sigma, sigmamu = 4.0, 9, 1.5, 2.0
+    bestfit = -n * math.log(math.sqrt(2.0 * math.pi) * sigma) - s / (2.0 * sigma ** 2)
+    occam = math.log(math.sqrt(2.0 * math.pi) * sigma / math.sqrt(n) / sigmamu)
+    res = sigevid(s, n, sigma, sigmamu)
+    assert res["bestfit"] == pytest.approx(bestfit, abs=1e-12)
+    assert res["logoccam"] == pytest.approx(occam, abs=1e-12)
+    assert res["logevidence"] == pytest.approx(bestfit + occam, abs=1e-12)
+
+
+def test_sigevid_occam_factor_penalises_a_wider_prior():
+    narrow = sigevid(4.0, 9, 1.5, 0.5)["logoccam"]
+    wide = sigevid(4.0, 9, 1.5, 5.0)["logoccam"]
+    assert wide < narrow

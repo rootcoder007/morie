@@ -7,18 +7,14 @@ from morie.fn.km149 import kamath_ch9_flamingo_factorized
 
 def test_km149_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    L = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch9_flamingo_factorized(y, x, L)
+    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = kamath_ch9_flamingo_factorized(y)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
 
 def test_km149_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    L = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch9_flamingo_factorized(y, x, L)
+    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = kamath_ch9_flamingo_factorized(y)
     assert isinstance(result, dict)

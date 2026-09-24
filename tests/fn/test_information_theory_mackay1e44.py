@@ -1,20 +1,36 @@
-"""Tests for information_theory_mackay1e44.information_theory_mackay_chapter_1_equation_44."""
+"""Verification tests for information_theory_mackay1e44.repcn.
 
-from morie.fn import _array_core as np
+The expected values are recomputed from MacKay (2003) eq. (1.44)-(1.45) p. 17 in the test body, so a
+drift in the implementation fails the test.
+"""
 
-from morie.fn.information_theory_mackay1e44 import information_theory_mackay_chapter_1_equation_44
+import math
 
+import pytest
 
-def test_information_theory_mackay1e44_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_1_equation_44(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.information_theory_mackay1e44 import repcn
 
 
-def test_information_theory_mackay1e44_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_1_equation_44(x)
-    assert isinstance(result, dict)
+def test_repcn_reproduces_the_books_iteration():
+    pb, f, n0, iters = 1e-15, 0.1, 68.0, 3
+    n = n0
+    denom = math.log10(4.0 * f * (1.0 - f))
+    half = None
+    for _ in range(iters):
+        half = (math.log10(pb) + math.log10(math.sqrt(math.pi * n / 8.0) / f)) / denom
+        n = 2.0 * half + 1.0
+    res = repcn(pb, f, n0, iters)
+    assert res["n"] == pytest.approx(n, rel=1e-12)
+    assert res["half"] == pytest.approx(half, rel=1e-12)
+    assert res["denom"] == pytest.approx(denom, rel=1e-12)
+
+
+def test_repcn_needs_a_longer_code_for_a_stricter_target():
+    loose = repcn(1e-6, 0.1)["n"]
+    strict = repcn(1e-15, 0.1)["n"]
+    assert strict > loose
+
+
+def test_repcn_rejects_a_channel_that_is_not_better_than_chance():
+    with pytest.raises(ValueError):
+        repcn(1e-6, 0.5)

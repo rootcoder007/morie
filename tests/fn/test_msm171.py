@@ -7,24 +7,18 @@ from morie.fn.msm171 import mvsml_ridge_lasso_elastic_eq_9_4
 
 def test_msm171_basic():
     """Test basic functionality."""
-    There = np.random.default_rng(42).normal(0, 1, 100)
-    are = np.random.default_rng(42).normal(0, 1, 100)
-    points = np.random.default_rng(42).normal(0, 1, 100)
-    that = np.random.default_rng(42).normal(0, 1, 100)
-    satisfying = np.random.default_rng(42).normal(0, 1, 100)
-    lie = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_4(There, are, points, that, satisfying, lie)
+    X = [[1.0, 1.0], [-1.0, -1.0]]
+    beta0 = 1.0
+    beta = [2.0, 3.0]
+    result = mvsml_ridge_lasso_elastic_eq_9_4(X, beta0, beta)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
 
 def test_msm171_edge():
     """Test edge cases."""
-    There = np.random.default_rng(42).normal(0, 1, 100)
-    are = np.random.default_rng(42).normal(0, 1, 100)
-    points = np.random.default_rng(42).normal(0, 1, 100)
-    that = np.random.default_rng(42).normal(0, 1, 100)
-    satisfying = np.random.default_rng(42).normal(0, 1, 100)
-    lie = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_4(There, are, points, that, satisfying, lie)
+    X = [[1.0, 1.0], [-1.0, -1.0]]
+    beta0 = 1.0
+    beta = [2.0, 3.0]
+    result = mvsml_ridge_lasso_elastic_eq_9_4(X, beta0, beta)
     assert isinstance(result, dict)

@@ -1,20 +1,24 @@
-"""Tests for information_theory_mackay3e21.information_theory_mackay_chapter_3_equation_21."""
+"""Verification tests for information_theory_mackay3e21.postodds.
 
-from morie.fn import _array_core as np
+The expected values are recomputed from MacKay (2003) eq. (3.21) p. 53 in the test body, so a
+drift in the implementation fails the test.
+"""
 
-from morie.fn.information_theory_mackay3e21 import information_theory_mackay_chapter_3_equation_21
+import math
 
+import pytest
 
-def test_information_theory_mackay3e21_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_3_equation_21(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.information_theory_mackay3e21 import postodds
 
 
-def test_information_theory_mackay3e21_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_3_equation_21(x)
-    assert isinstance(result, dict)
+def test_postodds_is_the_likelihood_ratio_times_the_prior_odds():
+    lik1, lik0, pr1, pr0 = 0.02, 0.005, 0.3, 0.7
+    res = postodds(lik1, lik0, pr1, pr0)
+    assert res["bayesfactor"] == pytest.approx(lik1 / lik0, rel=1e-12)
+    assert res["odds"] == pytest.approx((lik1 / lik0) * (pr1 / pr0), rel=1e-12)
+    assert res["p1"] == pytest.approx(res["odds"] / (1.0 + res["odds"]), rel=1e-12)
+
+
+def test_postodds_with_equal_priors_reduces_to_the_bayes_factor():
+    res = postodds(0.4, 0.1)
+    assert res["odds"] == pytest.approx(res["bayesfactor"], rel=1e-12)

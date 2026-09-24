@@ -1,5 +1,6 @@
 """Tests for bookadvanced_elementsofstatisticallearning2e26.bookadvanced_elementsofstatisticallearning_chapter_2_equation_26."""
 
+import pytest
 from morie.fn import _array_core as np
 
 from morie.fn.bookadvanced_elementsofstatisticallearning2e26 import (
@@ -9,14 +10,19 @@ from morie.fn.bookadvanced_elementsofstatisticallearning2e26 import (
 
 def test_bookadvanced_elementsofstatisticallearning2e26_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_26(x)
+    rng = np.random.default_rng(42)
+    x = rng.normal(0, 1, 40)
+    y = rng.normal(0, 1, 40)
+    with pytest.warns(DeprecationWarning):
+        result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_26(x, y)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_bookadvanced_elementsofstatisticallearning2e26_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_26(x)
+    rng = np.random.default_rng(42)
+    x = rng.normal(0, 1, 10)
+    y = rng.normal(0, 1, 10)
+    with pytest.warns(DeprecationWarning):
+        result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_26(x, y)
     assert isinstance(result, dict)

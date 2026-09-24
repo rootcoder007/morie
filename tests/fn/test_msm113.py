@@ -7,24 +7,20 @@ from morie.fn.msm113 import mvsml_bayesian_regression_pt2_eq_7_9
 
 def test_msm113_basic():
     """Test basic functionality."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    TWcX = np.random.default_rng(42).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_9(T, b, c, X, TWcX, D)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_pt2_eq_7_9(X, y, beta0, beta)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
 
 def test_msm113_edge():
     """Test edge cases."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    TWcX = np.random.default_rng(42).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_bayesian_regression_pt2_eq_7_9(T, b, c, X, TWcX, D)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_bayesian_regression_pt2_eq_7_9(X, y, beta0, beta)
     assert isinstance(result, dict)

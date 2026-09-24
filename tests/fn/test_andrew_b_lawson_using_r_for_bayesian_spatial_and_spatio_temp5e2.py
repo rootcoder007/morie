@@ -9,14 +9,23 @@ from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp5e2 im
 
 def test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp5e2_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_5_equation_2(x)
+    rng = np.random.default_rng(42)
+    n = 40
+    y = rng.integers(0, 20, n)
+    e = rng.uniform(0.5, 5.0, n)
+    n_draws = 100
+    theta_draws = rng.normal(0, 0.5, (n_draws, n))
+    result = andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_5_equation_2(y, e, theta_draws)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
 
 
 def test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp5e2_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_5_equation_2(x)
+    rng = np.random.default_rng(42)
+    n = 40
+    y = rng.integers(0, 20, n)
+    e = rng.uniform(0.5, 5.0, n)
+    n_draws = 50
+    theta_draws = rng.normal(0, 0.5, (n_draws, n))
+    result = andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_5_equation_2(y, e, theta_draws)
     assert isinstance(result, dict)

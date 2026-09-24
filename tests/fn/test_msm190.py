@@ -7,22 +7,16 @@ from morie.fn.msm190 import mvsml_ridge_lasso_elastic_eq_9_18
 
 def test_msm190_basic():
     """Test basic functionality."""
-    z = np.random.default_rng(44).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    subject = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_18(z, x, f, subject, to)
+    a = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    c = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_ridge_lasso_elastic_eq_9_18(a, c)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
 
 def test_msm190_edge():
     """Test edge cases."""
-    z = np.random.default_rng(44).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    subject = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_18(z, x, f, subject, to)
+    a = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    c = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_ridge_lasso_elastic_eq_9_18(a, c)
     assert isinstance(result, dict)

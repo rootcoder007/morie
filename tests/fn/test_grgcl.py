@@ -7,8 +7,8 @@ from morie.fn.grgcl import geron_gradient_clipping
 
 def test_grgcl_basic():
     """Test basic functionality."""
-    gradients = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
+    gradients = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    c = 0.1
     result = geron_gradient_clipping(gradients, c)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_grgcl_basic():
 
 def test_grgcl_edge():
     """Test edge cases."""
-    gradients = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
+    gradients = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    c = 0.1
     result = geron_gradient_clipping(gradients, c)
     assert isinstance(result, dict)

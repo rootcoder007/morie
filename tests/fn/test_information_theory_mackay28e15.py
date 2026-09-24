@@ -1,20 +1,30 @@
-"""Tests for information_theory_mackay28e15.information_theory_mackay_chapter_28_equation_15."""
+"""Verification tests for information_theory_mackay28e15.msglen.
 
-from morie.fn import _array_core as np
+The expected values are recomputed from MacKay (2003) eq. (28.15) p. 352 in the test body, so a
+drift in the implementation fails the test.
+"""
 
-from morie.fn.information_theory_mackay28e15 import information_theory_mackay_chapter_28_equation_15
+import math
 
+import pytest
 
-def test_information_theory_mackay28e15_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_28_equation_15(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.information_theory_mackay28e15 import msglen
 
 
-def test_information_theory_mackay28e15_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = information_theory_mackay_chapter_28_equation_15(x)
-    assert isinstance(result, dict)
+def test_msglen_inverts_between_probability_and_bits():
+    res = msglen(p=0.125)
+    assert res["length"] == pytest.approx(3.0, abs=1e-12)
+    back = msglen(length=3.0)
+    assert back["p"] == pytest.approx(0.125, abs=1e-12)
+    assert res["nats"] == pytest.approx(3.0 * math.log(2.0), abs=1e-12)
+
+
+def test_msglen_certainty_costs_no_bits():
+    assert msglen(p=1.0)["length"] == pytest.approx(0.0, abs=1e-12)
+
+
+def test_msglen_needs_exactly_one_of_its_two_arguments():
+    with pytest.raises(ValueError):
+        msglen()
+    with pytest.raises(ValueError):
+        msglen(p=0.5, length=1.0)

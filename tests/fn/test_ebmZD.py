@@ -7,20 +7,23 @@ from morie.fn.ebmZD import zonal_ebm
 
 def test_ebmZD_basic():
     """Test basic functionality."""
-    S = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    B = np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = zonal_ebm(S, alpha, A, B)
+    result = zonal_ebm(1.0, start=20.0)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    expected_keys = {"temperature", "global_mean", "ice_fraction",
+                     "albedo", "latitude", "converged", "snowball"}
+    assert expected_keys.issubset(result.keys())
+    assert len(result["temperature"]) == 9
+    assert len(result["latitude"]) == 9
+    assert not result["snowball"]
+    assert result["global_mean"] > 0
 
 
 def test_ebmZD_edge():
     """Test edge cases."""
-    S = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    B = np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = zonal_ebm(S, alpha, A, B)
+    rng = np.random.default_rng(42)
+    S = list(rng.uniform(0.5, 1.5, 9))
+    result = zonal_ebm(S, start=-40.0)
     assert isinstance(result, dict)
+    assert result["snowball"]
+    assert result["global_mean"] < 0
+    assert len(result["temperature"]) == 9

@@ -7,24 +7,26 @@ from morie.fn.msm040 import mvsml_linear_mixed_models_eq_5_4
 
 def test_msm040_basic():
     """Test basic functionality."""
-    yp_ts = np.random.default_rng(42).normal(0, 1, 100)
-    yp = np.random.default_rng(42).normal(0, 1, 100)
-    Pos_tst = np.random.default_rng(42).normal(0, 1, 100)
-    Tab = np.random.default_rng(42).normal(0, 1, 100)
-    MSEP10a = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    result = mvsml_linear_mixed_models_eq_5_4(yp_ts, yp, Pos_tst, Tab, MSEP10a, k)
+    y = [5.0, 6.0, 5.4, 6.8]
+    X_E = [[0.0]] * 4
+    Z_L = [[1, 0], [0, 1], [1, 0], [0, 1]]
+    Z_EL = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+    G = [[1.0, 0.0], [0.0, 1.0]]
+    sigma2_g = 0.5
+    Sigma_E = [[0.3, 0.0], [0.0, 0.3]]
+    result = mvsml_linear_mixed_models_eq_5_4(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
 
 def test_msm040_edge():
     """Test edge cases."""
-    yp_ts = np.random.default_rng(42).normal(0, 1, 100)
-    yp = np.random.default_rng(42).normal(0, 1, 100)
-    Pos_tst = np.random.default_rng(42).normal(0, 1, 100)
-    Tab = np.random.default_rng(42).normal(0, 1, 100)
-    MSEP10a = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    result = mvsml_linear_mixed_models_eq_5_4(yp_ts, yp, Pos_tst, Tab, MSEP10a, k)
+    y = [5.0, 6.0, 5.4, 6.8]
+    X_E = [[0.0]] * 4
+    Z_L = [[1, 0], [0, 1], [1, 0], [0, 1]]
+    Z_EL = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+    G = [[1.0, 0.0], [0.0, 1.0]]
+    sigma2_g = 0.5
+    Sigma_E = [[0.3, 0.0], [0.0, 0.3]]
+    result = mvsml_linear_mixed_models_eq_5_4(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E)
     assert isinstance(result, dict)
