@@ -7,20 +7,14 @@ from morie.fn.bsaclass import rangayyan_matching_pursuit
 
 def test_rgmp_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    dictionary = np.random.default_rng(42).normal(0, 1, 100)
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    tol = 1e-6
-    result = rangayyan_matching_pursuit(x, dictionary, max_iter, tol)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_matching_pursuit(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "coefficients" in result
 
 
 def test_rgmp_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    dictionary = np.random.default_rng(42).normal(0, 1, 100)
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    tol = 1e-6
-    result = rangayyan_matching_pursuit(x, dictionary, max_iter, tol)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_matching_pursuit(x)
     assert isinstance(result, dict)

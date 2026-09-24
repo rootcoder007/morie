@@ -7,20 +7,18 @@ from morie.fn.bsatf import rangayyan_ch4_signal_with_echo_output
 
 def test_rng247_basic():
     """Test basic functionality."""
-    h = 0.3
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    n_0 = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = rangayyan_ch4_signal_with_echo_output(h, a, n_0, n)
+    h = 0.1
+    a = 0.1
+    n_0 = 5
+    result = rangayyan_ch4_signal_with_echo_output(h, a, n_0)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "y" in result
 
 
 def test_rng247_edge():
     """Test edge cases."""
-    h = 0.3
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    n_0 = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = rangayyan_ch4_signal_with_echo_output(h, a, n_0, n)
+    h = 0.1
+    a = 0.1
+    n_0 = 5
+    result = rangayyan_ch4_signal_with_echo_output(h, a, n_0)
     assert isinstance(result, dict)

@@ -9,14 +9,14 @@ from morie.fn.sd_bernoulli import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e46_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = sd_bernoulli(x)
+    p = 0.1
+    result = sd_bernoulli(p)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "p" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e46_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = sd_bernoulli(x)
+    p = 0.1
+    result = sd_bernoulli(p)
     assert isinstance(result, dict)

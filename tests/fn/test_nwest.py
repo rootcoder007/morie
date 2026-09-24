@@ -7,18 +7,14 @@ from morie.fn.nwest import newey_west_hac
 
 def test_nwest_basic():
     """Test basic functionality."""
-    e = np.random.default_rng(44).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    lags = 10
-    result = newey_west_hac(e, X, lags)
+    scores = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = newey_west_hac(scores)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_nwest_edge():
     """Test edge cases."""
-    e = np.random.default_rng(44).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    lags = 10
-    result = newey_west_hac(e, X, lags)
+    scores = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = newey_west_hac(scores)
     assert isinstance(result, dict)

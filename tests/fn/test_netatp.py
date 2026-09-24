@@ -7,18 +7,14 @@ from morie.fn.netatp import network_attack_tolerance
 
 def test_netatp_basic():
     """Test basic functionality."""
-    G = np.eye(10)
-    attack_strategy = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    result = network_attack_tolerance(G, attack_strategy, k)
+    A = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = network_attack_tolerance(A)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "s_giant" in result
 
 
 def test_netatp_edge():
     """Test edge cases."""
-    G = np.eye(10)
-    attack_strategy = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    result = network_attack_tolerance(G, attack_strategy, k)
+    A = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = network_attack_tolerance(A)
     assert isinstance(result, dict)

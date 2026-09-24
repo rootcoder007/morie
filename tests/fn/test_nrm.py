@@ -7,20 +7,14 @@ from morie.fn.nrm import nominal_response_bock
 
 def test_nrm_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
-    a_k = np.random.default_rng(42).normal(0, 1, 100)
-    c_k = np.random.default_rng(42).normal(0, 1, 100)
-    result = nominal_response_bock(y, theta, a_k, c_k)
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = nominal_response_bock(theta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "p" in result
 
 
 def test_nrm_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
-    a_k = np.random.default_rng(42).normal(0, 1, 100)
-    c_k = np.random.default_rng(42).normal(0, 1, 100)
-    result = nominal_response_bock(y, theta, a_k, c_k)
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = nominal_response_bock(theta)
     assert isinstance(result, dict)

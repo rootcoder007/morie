@@ -7,24 +7,14 @@ from morie.fn.msm316 import mvsml_general_eq_1_2
 
 def test_msm316_basic():
     """Test basic functionality."""
-    dat_F = np.random.default_rng(42).normal(0, 1, 100)
-    dat_ls = np.random.default_rng(42).normal(0, 1, 100)
-    head = np.random.default_rng(42).normal(0, 1, 100)
-    Wavelengths = np.random.default_rng(42).normal(0, 1, 100)
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    dat_W = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_2(dat_F, dat_ls, head, Wavelengths, data, dat_W)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_2(groups)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm316_edge():
     """Test edge cases."""
-    dat_F = np.random.default_rng(42).normal(0, 1, 100)
-    dat_ls = np.random.default_rng(42).normal(0, 1, 100)
-    head = np.random.default_rng(42).normal(0, 1, 100)
-    Wavelengths = np.random.default_rng(42).normal(0, 1, 100)
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    dat_W = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_2(dat_F, dat_ls, head, Wavelengths, data, dat_W)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_2(groups)
     assert isinstance(result, dict)

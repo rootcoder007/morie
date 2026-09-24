@@ -7,18 +7,14 @@ from morie.fn.bsatf import rangayyan_emd_vf_detect
 
 def test_rgemdvf_basic():
     """Test basic functionality."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    n_imfs = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_emd_vf_detect(ecg, fs, n_imfs)
+    ecg = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_emd_vf_detect(ecg)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "imfs" in result
 
 
 def test_rgemdvf_edge():
     """Test edge cases."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    n_imfs = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_emd_vf_detect(ecg, fs, n_imfs)
+    ecg = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_emd_vf_detect(ecg)
     assert isinstance(result, dict)

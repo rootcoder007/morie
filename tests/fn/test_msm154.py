@@ -7,24 +7,14 @@ from morie.fn.msm154 import mvsml_categorical_count_eq_8_11
 
 def test_msm154_basic():
     """Test basic functionality."""
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    eigenvalues = np.random.default_rng(42).normal(0, 1, 100)
-    ordered = np.random.default_rng(42).normal(0, 1, 100)
-    largest = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    smallest = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_11(the, eigenvalues, ordered, largest, to, smallest)
+    K = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = mvsml_categorical_count_eq_8_11(K)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm154_edge():
     """Test edge cases."""
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    eigenvalues = np.random.default_rng(42).normal(0, 1, 100)
-    ordered = np.random.default_rng(42).normal(0, 1, 100)
-    largest = np.random.default_rng(42).normal(0, 1, 100)
-    to = np.random.default_rng(42).normal(0, 1, 100)
-    smallest = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_11(the, eigenvalues, ordered, largest, to, smallest)
+    K = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = mvsml_categorical_count_eq_8_11(K)
     assert isinstance(result, dict)

@@ -7,24 +7,20 @@ from morie.fn.rlear import r_learner
 
 def test_rlear_basic():
     """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    m_model = np.random.default_rng(42).normal(0, 1, 100)
-    e_model = np.random.default_rng(42).normal(0, 1, 100)
-    tau_model = np.random.default_rng(42).normal(0, 1, 100)
-    result = r_learner(Y, T, X, m_model, e_model, tau_model)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    t = np.array([float(i + 1) for i in range(40)])
+    m = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    e = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = r_learner(y, t, m, e)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "tau" in result
 
 
 def test_rlear_edge():
     """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    m_model = np.random.default_rng(42).normal(0, 1, 100)
-    e_model = np.random.default_rng(42).normal(0, 1, 100)
-    tau_model = np.random.default_rng(42).normal(0, 1, 100)
-    result = r_learner(Y, T, X, m_model, e_model, tau_model)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    t = np.array([float(i + 1) for i in range(40)])
+    m = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    e = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = r_learner(y, t, m, e)
     assert isinstance(result, dict)

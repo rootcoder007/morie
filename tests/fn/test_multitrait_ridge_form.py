@@ -7,24 +7,16 @@ from morie.fn.multitrait_ridge_form import multitrait_ridge_form
 
 def test_msm072_basic():
     """Test basic functionality."""
-    respectively = np.random.default_rng(42).normal(0, 1, 100)
-    In = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    third = np.random.default_rng(42).normal(0, 1, 100)
-    argument = np.random.default_rng(42).normal(0, 1, 100)
-    resCOV = np.random.default_rng(42).normal(0, 1, 100)
-    result = multitrait_ridge_form(respectively, In, the, third, argument, resCOV)
+    Z1 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    G = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = multitrait_ridge_form(Z1, G)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm072_edge():
     """Test edge cases."""
-    respectively = np.random.default_rng(42).normal(0, 1, 100)
-    In = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    third = np.random.default_rng(42).normal(0, 1, 100)
-    argument = np.random.default_rng(42).normal(0, 1, 100)
-    resCOV = np.random.default_rng(42).normal(0, 1, 100)
-    result = multitrait_ridge_form(respectively, In, the, third, argument, resCOV)
+    Z1 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    G = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = multitrait_ridge_form(Z1, G)
     assert isinstance(result, dict)

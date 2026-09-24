@@ -7,22 +7,18 @@ from morie.fn.otsklog import ot_sinkhorn_log
 
 def test_otsklog_basic():
     """Test basic functionality."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    epsilon = 1e-6
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    result = ot_sinkhorn_log(a, b, C, epsilon, max_iter)
+    a = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    b = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    C = np.random.default_rng(43).normal(0.0, 1.0, (8, 8))
+    result = ot_sinkhorn_log(a, b, C)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "T" in result
 
 
 def test_otsklog_edge():
     """Test edge cases."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    epsilon = 1e-6
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    result = ot_sinkhorn_log(a, b, C, epsilon, max_iter)
+    a = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    b = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    C = np.random.default_rng(43).normal(0.0, 1.0, (8, 8))
+    result = ot_sinkhorn_log(a, b, C)
     assert isinstance(result, dict)

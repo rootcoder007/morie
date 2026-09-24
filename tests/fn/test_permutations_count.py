@@ -9,14 +9,14 @@ from morie.fn.permutations_count import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner1e3_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = permutations_count(x)
+    n = 5
+    result = permutations_count(n)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "n" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner1e3_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = permutations_count(x)
+    n = 5
+    result = permutations_count(n)
     assert isinstance(result, dict)

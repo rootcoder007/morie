@@ -7,24 +7,18 @@ from morie.fn.msm263 import mvsml_convolutional_nn_eq_14_1
 
 def test_msm263_basic():
     """Test basic functionality."""
-    elements = np.random.default_rng(42).normal(0, 1, 100)
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    basis = np.random.default_rng(42).normal(0, 1, (100, 5))
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    function = np.random.default_rng(42).normal(0, 1, 100)
-    space = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_1(elements, of, basis, a, function, space)
+    t = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    x_values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    beta_values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_1(t, x_values, beta_values)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "integral" in result
 
 
 def test_msm263_edge():
     """Test edge cases."""
-    elements = np.random.default_rng(42).normal(0, 1, 100)
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    basis = np.random.default_rng(42).normal(0, 1, (100, 5))
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    function = np.random.default_rng(42).normal(0, 1, 100)
-    space = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_1(elements, of, basis, a, function, space)
+    t = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    x_values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    beta_values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_1(t, x_values, beta_values)
     assert isinstance(result, dict)

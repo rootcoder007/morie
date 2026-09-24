@@ -7,24 +7,16 @@ from morie.fn.msm248 import mvsml_reproducing_kernel_eq_10_9
 
 def test_msm248_basic():
     """Test basic functionality."""
-    jk = np.random.default_rng(42).normal(0, 1, 100)
-    E = np.random.default_rng(42).normal(0, 1, 100)
-    w = np.random.default_rng(45).exponential(1, 100)
-    l = np.random.default_rng(42).normal(0, 1, 100)
-    where = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_reproducing_kernel_eq_10_9(jk, E, w, l, where, the)
+    V_h = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    W_l = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_reproducing_kernel_eq_10_9(V_h, W_l)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm248_edge():
     """Test edge cases."""
-    jk = np.random.default_rng(42).normal(0, 1, 100)
-    E = np.random.default_rng(42).normal(0, 1, 100)
-    w = np.random.default_rng(45).exponential(1, 100)
-    l = np.random.default_rng(42).normal(0, 1, 100)
-    where = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_reproducing_kernel_eq_10_9(jk, E, w, l, where, the)
+    V_h = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    W_l = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_reproducing_kernel_eq_10_9(V_h, W_l)
     assert isinstance(result, dict)

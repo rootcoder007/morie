@@ -7,18 +7,16 @@ from morie.fn.bsaqrs import rangayyan_deriv_qrs
 
 def test_rgderqrs_basic():
     """Test basic functionality."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_deriv_qrs(ecg, fs, threshold)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
+    result = rangayyan_deriv_qrs(x, fs)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "qrs" in result
 
 
 def test_rgderqrs_edge():
     """Test edge cases."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_deriv_qrs(ecg, fs, threshold)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
+    result = rangayyan_deriv_qrs(x, fs)
     assert isinstance(result, dict)

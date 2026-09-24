@@ -7,16 +7,16 @@ from morie.fn.pmedex import proportion_te_explained
 
 def test_pmedex_basic():
     """Test basic functionality."""
-    nie = np.random.default_rng(42).normal(0, 1, 100)
-    te = np.random.default_rng(42).normal(0, 1, 100)
+    nie = 0.1
+    te = 0.1
     result = proportion_te_explained(nie, te)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_pmedex_edge():
     """Test edge cases."""
-    nie = np.random.default_rng(42).normal(0, 1, 100)
-    te = np.random.default_rng(42).normal(0, 1, 100)
+    nie = 0.1
+    te = 0.1
     result = proportion_te_explained(nie, te)
     assert isinstance(result, dict)

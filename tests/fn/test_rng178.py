@@ -7,18 +7,16 @@ from morie.fn.bsaqrs import rangayyan_ch4_qrs_combined_balda
 
 def test_rng178_basic():
     """Test basic functionality."""
-    y_0 = np.random.default_rng(42).normal(0, 1, 100)
-    y_1 = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = rangayyan_ch4_qrs_combined_balda(y_0, y_1, n)
+    y0 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y1 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch4_qrs_combined_balda(y0, y1)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "y2" in result
 
 
 def test_rng178_edge():
     """Test edge cases."""
-    y_0 = np.random.default_rng(42).normal(0, 1, 100)
-    y_1 = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = rangayyan_ch4_qrs_combined_balda(y_0, y_1, n)
+    y0 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y1 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch4_qrs_combined_balda(y0, y1)
     assert isinstance(result, dict)

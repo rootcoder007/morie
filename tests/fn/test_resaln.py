@@ -7,16 +7,16 @@ from morie.fn.resaln import resultant
 
 def test_resaln_basic():
     """Test basic functionality."""
-    p = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
+    p = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    q = np.random.default_rng(42).normal(0.0, 1.0, 40)
     result = resultant(p, q)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_resaln_edge():
     """Test edge cases."""
-    p = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
+    p = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    q = np.random.default_rng(42).normal(0.0, 1.0, 40)
     result = resultant(p, q)
     assert isinstance(result, dict)

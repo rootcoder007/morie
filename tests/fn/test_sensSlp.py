@@ -7,14 +7,14 @@ from morie.fn.sensSlp import sen_slope
 
 def test_sensSlp_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = sen_slope(x)
+    y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = sen_slope(y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "slope" in result
 
 
 def test_sensSlp_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = sen_slope(x)
+    y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = sen_slope(y)
     assert isinstance(result, dict)

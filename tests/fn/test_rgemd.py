@@ -7,18 +7,14 @@ from morie.fn.bsatf import rangayyan_emd
 
 def test_rgemd_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    max_imfs = np.random.default_rng(42).normal(0, 1, 100)
-    tol = 1e-6
-    result = rangayyan_emd(x, max_imfs, tol)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_emd(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "imfs" in result
 
 
 def test_rgemd_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    max_imfs = np.random.default_rng(42).normal(0, 1, 100)
-    tol = 1e-6
-    result = rangayyan_emd(x, max_imfs, tol)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_emd(x)
     assert isinstance(result, dict)

@@ -7,18 +7,14 @@ from morie.fn.polyak import polyak_target
 
 def test_polyak_basic():
     """Test basic functionality."""
-    theta = 0.0
-    theta_target = np.random.default_rng(42).normal(0, 1, 100)
-    tau = 0.1
-    result = polyak_target(theta, theta_target, tau)
+    iterates = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = polyak_target(iterates)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "average" in result
 
 
 def test_polyak_edge():
     """Test edge cases."""
-    theta = 0.0
-    theta_target = np.random.default_rng(42).normal(0, 1, 100)
-    tau = 0.1
-    result = polyak_target(theta, theta_target, tau)
+    iterates = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = polyak_target(iterates)
     assert isinstance(result, dict)

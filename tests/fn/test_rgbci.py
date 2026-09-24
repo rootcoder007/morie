@@ -7,18 +7,16 @@ from morie.fn.bsaclass import rangayyan_bci_nmf
 
 def test_rgbci_basic():
     """Test basic functionality."""
-    eeg = np.random.default_rng(42).normal(0, 1, 1024)
-    n_components = 3
-    fs = 100.0
-    result = rangayyan_bci_nmf(eeg, n_components, fs)
+    trials = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    nselect = 5
+    result = rangayyan_bci_nmf(trials, nselect)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "selected" in result
 
 
 def test_rgbci_edge():
     """Test edge cases."""
-    eeg = np.random.default_rng(42).normal(0, 1, 1024)
-    n_components = 3
-    fs = 100.0
-    result = rangayyan_bci_nmf(eeg, n_components, fs)
+    trials = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    nselect = 5
+    result = rangayyan_bci_nmf(trials, nselect)
     assert isinstance(result, dict)

@@ -7,24 +7,18 @@ from morie.fn.msm157 import mvsml_categorical_count_eq_8_10
 
 def test_msm157_basic():
     """Test basic functionality."""
-    Qu2 = np.random.default_rng(42).normal(0, 1, 100)
-    Zu1 = np.random.default_rng(42).normal(0, 1, 100)
-    Kn = np.random.default_rng(42).normal(0, 1, 100)
-    mK = np.random.default_rng(42).normal(0, 1, 100)
-    m = 10
-    mKT = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_10(Qu2, Zu1, Kn, mK, m, mKT)
+    Z_u1 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_categorical_count_eq_8_10(Z_u1, K, Z_E)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm157_edge():
     """Test edge cases."""
-    Qu2 = np.random.default_rng(42).normal(0, 1, 100)
-    Zu1 = np.random.default_rng(42).normal(0, 1, 100)
-    Kn = np.random.default_rng(42).normal(0, 1, 100)
-    mK = np.random.default_rng(42).normal(0, 1, 100)
-    m = 10
-    mKT = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_10(Qu2, Zu1, Kn, mK, m, mKT)
+    Z_u1 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_categorical_count_eq_8_10(Z_u1, K, Z_E)
     assert isinstance(result, dict)

@@ -7,18 +7,14 @@ from morie.fn.bsaclass import rangayyan_knee_classify
 
 def test_rgkneecl_basic():
     """Test basic functionality."""
-    vag = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    labels = np.random.default_rng(43).integers(0, 2, 100)
-    result = rangayyan_knee_classify(vag, fs, labels)
+    segments = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = rangayyan_knee_classify(segments)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "varmeans" in result
 
 
 def test_rgkneecl_edge():
     """Test edge cases."""
-    vag = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    labels = np.random.default_rng(43).integers(0, 2, 100)
-    result = rangayyan_knee_classify(vag, fs, labels)
+    segments = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = rangayyan_knee_classify(segments)
     assert isinstance(result, dict)

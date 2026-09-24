@@ -7,24 +7,20 @@ from morie.fn.multinomial_block_update import multinomial_block_update
 
 def test_msm112_basic():
     """Test basic functionality."""
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    e = np.random.default_rng(44).normal(0, 1, 100)
-    That = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    update = np.random.default_rng(42).normal(0, 1, 100)
-    block = np.random.default_rng(42).normal(0, 1, 100)
-    result = multinomial_block_update(of, e, That, the, update, block)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = multinomial_block_update(X, y, beta0, beta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm112_edge():
     """Test edge cases."""
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    e = np.random.default_rng(44).normal(0, 1, 100)
-    That = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    update = np.random.default_rng(42).normal(0, 1, 100)
-    block = np.random.default_rng(42).normal(0, 1, 100)
-    result = multinomial_block_update(of, e, That, the, update, block)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = multinomial_block_update(X, y, beta0, beta)
     assert isinstance(result, dict)

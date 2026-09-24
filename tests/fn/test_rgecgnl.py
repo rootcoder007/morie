@@ -7,18 +7,16 @@ from morie.fn.bsaclass import rangayyan_ecg_normal_ectopic
 
 def test_rgecgnl_basic():
     """Test basic functionality."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    r_peaks = np.arange(50, 1000, 50)
-    result = rangayyan_ecg_normal_ectopic(ecg, fs, r_peaks)
+    rr = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    ff = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ecg_normal_ectopic(rr, ff)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "labels" in result
 
 
 def test_rgecgnl_edge():
     """Test edge cases."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    r_peaks = np.arange(50, 1000, 50)
-    result = rangayyan_ecg_normal_ectopic(ecg, fs, r_peaks)
+    rr = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    ff = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ecg_normal_ectopic(rr, ff)
     assert isinstance(result, dict)

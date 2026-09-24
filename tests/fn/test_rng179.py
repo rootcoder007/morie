@@ -7,18 +7,14 @@ from morie.fn.bsaqrs import rangayyan_ch4_filtered_derivative_murthy
 
 def test_rng179_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    N = 100
-    result = rangayyan_ch4_filtered_derivative_murthy(x, n, N)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch4_filtered_derivative_murthy(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "g1" in result
 
 
 def test_rng179_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    N = 100
-    result = rangayyan_ch4_filtered_derivative_murthy(x, n, N)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch4_filtered_derivative_murthy(x)
     assert isinstance(result, dict)

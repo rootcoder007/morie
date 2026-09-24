@@ -7,16 +7,16 @@ from morie.fn.bsaqrs import rangayyan_ch4_pan_tompkins_searchback_update
 
 def test_rng192_basic():
     """Test basic functionality."""
-    PEAKI = np.random.default_rng(42).normal(0, 1, 100)
-    SPKI = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_pan_tompkins_searchback_update(PEAKI, SPKI)
+    peaki = 0.1
+    spki = 0.1
+    result = rangayyan_ch4_pan_tompkins_searchback_update(peaki, spki)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "spki" in result
 
 
 def test_rng192_edge():
     """Test edge cases."""
-    PEAKI = np.random.default_rng(42).normal(0, 1, 100)
-    SPKI = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_pan_tompkins_searchback_update(PEAKI, SPKI)
+    peaki = 0.1
+    spki = 0.1
+    result = rangayyan_ch4_pan_tompkins_searchback_update(peaki, spki)
     assert isinstance(result, dict)

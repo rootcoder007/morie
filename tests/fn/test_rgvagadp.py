@@ -7,18 +7,16 @@ from morie.fn.bsaclass import rangayyan_vag_adaptive_tfd
 
 def test_rgvagadp_basic():
     """Test basic functionality."""
-    vag = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    n_atoms = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_vag_adaptive_tfd(vag, fs, n_atoms)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
+    result = rangayyan_vag_adaptive_tfd(x, fs)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "tfd" in result
 
 
 def test_rgvagadp_edge():
     """Test edge cases."""
-    vag = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    n_atoms = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_vag_adaptive_tfd(vag, fs, n_atoms)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
+    result = rangayyan_vag_adaptive_tfd(x, fs)
     assert isinstance(result, dict)

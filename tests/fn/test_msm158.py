@@ -7,24 +7,20 @@ from morie.fn.msm158 import mvsml_categorical_count_eq_8_13
 
 def test_msm158_basic():
     """Test basic functionality."""
-    m = 10
-    Reproducing = np.random.default_rng(42).normal(0, 1, 100)
-    Kernel = np.random.default_rng(42).normal(0, 1, 100)
-    Hilbert = np.random.default_rng(42).normal(0, 1, 100)
-    Spaces = np.random.default_rng(42).normal(0, 1, 100)
-    Regression = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_13(m, Reproducing, Kernel, Hilbert, Spaces, Regression)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    m_index = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    Z_u1 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    Z_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_categorical_count_eq_8_13(X, m_index, Z_u1, Z_E)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "P" in result
 
 
 def test_msm158_edge():
     """Test edge cases."""
-    m = 10
-    Reproducing = np.random.default_rng(42).normal(0, 1, 100)
-    Kernel = np.random.default_rng(42).normal(0, 1, 100)
-    Hilbert = np.random.default_rng(42).normal(0, 1, 100)
-    Spaces = np.random.default_rng(42).normal(0, 1, 100)
-    Regression = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_13(m, Reproducing, Kernel, Hilbert, Spaces, Regression)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    m_index = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    Z_u1 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    Z_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_categorical_count_eq_8_13(X, m_index, Z_u1, Z_E)
     assert isinstance(result, dict)

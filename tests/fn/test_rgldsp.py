@@ -7,18 +7,18 @@ from morie.fn.bsaclass import rangayyan_dictionary_sparse
 
 def test_rgldsp_basic():
     """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    sparsity_T = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_dictionary_sparse(Y, D, sparsity_T)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    D = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    sparsity = 5
+    result = rangayyan_dictionary_sparse(Y, D, sparsity)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "coefficients" in result
 
 
 def test_rgldsp_edge():
     """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    sparsity_T = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_dictionary_sparse(Y, D, sparsity_T)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    D = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    sparsity = 5
+    result = rangayyan_dictionary_sparse(Y, D, sparsity)
     assert isinstance(result, dict)

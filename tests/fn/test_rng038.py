@@ -7,14 +7,12 @@ from morie.fn.bsasig import rangayyan_ch3_test_signal_sin_cos
 
 def test_rng038_basic():
     """Test basic functionality."""
-    t = np.linspace(0, 10, 100)
-    result = rangayyan_ch3_test_signal_sin_cos(t)
+    result = rangayyan_ch3_test_signal_sin_cos()
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "x" in result or "x" in result
 
 
 def test_rng038_edge():
     """Test edge cases."""
-    t = np.linspace(0, 10, 100)
-    result = rangayyan_ch3_test_signal_sin_cos(t)
+    result = rangayyan_ch3_test_signal_sin_cos()
     assert isinstance(result, dict)

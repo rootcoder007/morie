@@ -7,16 +7,12 @@ from morie.fn.omitV import omitted_variable_bias
 
 def test_omitV_basic():
     """Test basic functionality."""
-    beta_xu = np.random.default_rng(42).normal(0, 1, 100)
-    beta_yu_given_x = np.random.default_rng(42).normal(0, 1, 100)
-    result = omitted_variable_bias(beta_xu, beta_yu_given_x)
+    result = omitted_variable_bias()
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "bias" in result
 
 
 def test_omitV_edge():
     """Test edge cases."""
-    beta_xu = np.random.default_rng(42).normal(0, 1, 100)
-    beta_yu_given_x = np.random.default_rng(42).normal(0, 1, 100)
-    result = omitted_variable_bias(beta_xu, beta_yu_given_x)
+    result = omitted_variable_bias()
     assert isinstance(result, dict)

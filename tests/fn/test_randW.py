@@ -7,18 +7,16 @@ from morie.fn.randW import random_walk_kernel
 
 def test_randW_basic():
     """Test basic functionality."""
-    G1 = np.random.default_rng(42).normal(0, 1, 100)
-    G2 = np.random.default_rng(42).normal(0, 1, 100)
-    lam = 0.1
-    result = random_walk_kernel(G1, G2, lam)
+    G1 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    G2 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = random_walk_kernel(G1, G2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_randW_edge():
     """Test edge cases."""
-    G1 = np.random.default_rng(42).normal(0, 1, 100)
-    G2 = np.random.default_rng(42).normal(0, 1, 100)
-    lam = 0.1
-    result = random_walk_kernel(G1, G2, lam)
+    G1 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    G2 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = random_walk_kernel(G1, G2)
     assert isinstance(result, dict)

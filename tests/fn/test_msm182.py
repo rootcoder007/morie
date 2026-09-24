@@ -7,24 +7,16 @@ from morie.fn.msm182 import mvsml_ridge_lasso_elastic_eq_9_7
 
 def test_msm182_basic():
     """Test basic functionality."""
-    increasing = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    we = np.random.default_rng(42).normal(0, 1, 100)
-    can = np.random.default_rng(42).normal(0, 1, 100)
-    now = np.random.default_rng(42).normal(0, 1, 100)
-    reformulate = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_7(increasing, k, we, can, now, reformulate)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = mvsml_ridge_lasso_elastic_eq_9_7(X, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "beta" in result
 
 
 def test_msm182_edge():
     """Test edge cases."""
-    increasing = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    we = np.random.default_rng(42).normal(0, 1, 100)
-    can = np.random.default_rng(42).normal(0, 1, 100)
-    now = np.random.default_rng(42).normal(0, 1, 100)
-    reformulate = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_7(increasing, k, we, can, now, reformulate)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = mvsml_ridge_lasso_elastic_eq_9_7(X, y)
     assert isinstance(result, dict)

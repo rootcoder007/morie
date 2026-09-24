@@ -7,16 +7,16 @@ from morie.fn.plncF import planck_function
 
 def test_plncF_basic():
     """Test basic functionality."""
-    lam = 0.1
-    T = np.random.default_rng(43).integers(0, 2, 100)
+    lam = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    T = 0.1
     result = planck_function(lam, T)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_plncF_edge():
     """Test edge cases."""
-    lam = 0.1
-    T = np.random.default_rng(43).integers(0, 2, 100)
+    lam = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    T = 0.1
     result = planck_function(lam, T)
     assert isinstance(result, dict)

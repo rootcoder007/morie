@@ -7,16 +7,16 @@ from morie.fn.bsaphys import rangayyan_erp_features
 
 def test_rgerp_basic():
     """Test basic functionality."""
-    erp = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
+    erp = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
     result = rangayyan_erp_features(erp, fs)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "components" in result
 
 
 def test_rgerp_edge():
     """Test edge cases."""
-    erp = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
+    erp = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
     result = rangayyan_erp_features(erp, fs)
     assert isinstance(result, dict)

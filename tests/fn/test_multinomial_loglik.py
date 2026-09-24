@@ -7,24 +7,20 @@ from morie.fn.multinomial_loglik import multinomial_loglik
 
 def test_msm110_basic():
     """Test basic functionality."""
-    I = np.random.default_rng(42).normal(0, 1, 100)
-    yi = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    i = np.random.default_rng(42).normal(0, 1, 100)
-    log = np.random.default_rng(42).normal(0, 1, 100)
-    l = np.random.default_rng(42).normal(0, 1, 100)
-    result = multinomial_loglik(I, yi, c, i, log, l)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = multinomial_loglik(X, y, beta0, beta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm110_edge():
     """Test edge cases."""
-    I = np.random.default_rng(42).normal(0, 1, 100)
-    yi = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    i = np.random.default_rng(42).normal(0, 1, 100)
-    log = np.random.default_rng(42).normal(0, 1, 100)
-    l = np.random.default_rng(42).normal(0, 1, 100)
-    result = multinomial_loglik(I, yi, c, i, log, l)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = multinomial_loglik(X, y, beta0, beta)
     assert isinstance(result, dict)

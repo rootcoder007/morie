@@ -7,20 +7,14 @@ from morie.fn.seckdf import hkdf_extract_expand
 
 def test_seckdf_basic():
     """Test basic functionality."""
-    salt = np.random.default_rng(42).normal(0, 1, 100)
-    ikm = np.random.default_rng(42).normal(0, 1, 100)
-    info = np.random.default_rng(42).normal(0, 1, 100)
-    length = np.random.default_rng(42).normal(0, 1, 100)
-    result = hkdf_extract_expand(salt, ikm, info, length)
+    ikm = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = hkdf_extract_expand(ikm)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_seckdf_edge():
     """Test edge cases."""
-    salt = np.random.default_rng(42).normal(0, 1, 100)
-    ikm = np.random.default_rng(42).normal(0, 1, 100)
-    info = np.random.default_rng(42).normal(0, 1, 100)
-    length = np.random.default_rng(42).normal(0, 1, 100)
-    result = hkdf_extract_expand(salt, ikm, info, length)
+    ikm = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = hkdf_extract_expand(ikm)
     assert isinstance(result, dict)

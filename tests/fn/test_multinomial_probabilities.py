@@ -7,24 +7,18 @@ from morie.fn.multinomial_probabilities import multinomial_probabilities
 
 def test_msm106_basic():
     """Test basic functionality."""
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    following = np.random.default_rng(42).normal(0, 1, 100)
-    exp = np.random.default_rng(42).normal(0, 1, 100)
-    xT = np.random.default_rng(42).normal(0, 1, 100)
-    i = np.random.default_rng(42).normal(0, 1, 100)
-    result = multinomial_probabilities(C, the, following, exp, xT, i)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = multinomial_probabilities(X, beta0, beta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm106_edge():
     """Test edge cases."""
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    following = np.random.default_rng(42).normal(0, 1, 100)
-    exp = np.random.default_rng(42).normal(0, 1, 100)
-    xT = np.random.default_rng(42).normal(0, 1, 100)
-    i = np.random.default_rng(42).normal(0, 1, 100)
-    result = multinomial_probabilities(C, the, following, exp, xT, i)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    beta0 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    beta = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = multinomial_probabilities(X, beta0, beta)
     assert isinstance(result, dict)

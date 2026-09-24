@@ -7,24 +7,14 @@ from morie.fn.msm257 import mvsml_general_eq_1_222
 
 def test_msm257_basic():
     """Test basic functionality."""
-    We = np.random.default_rng(42).normal(0, 1, 100)
-    can = np.random.default_rng(42).normal(0, 1, 100)
-    see = np.random.default_rng(42).normal(0, 1, 100)
-    that = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    best = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_222(We, can, see, that, the, best)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_222(groups)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm257_edge():
     """Test edge cases."""
-    We = np.random.default_rng(42).normal(0, 1, 100)
-    can = np.random.default_rng(42).normal(0, 1, 100)
-    see = np.random.default_rng(42).normal(0, 1, 100)
-    that = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    best = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_222(We, can, see, that, the, best)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_222(groups)
     assert isinstance(result, dict)

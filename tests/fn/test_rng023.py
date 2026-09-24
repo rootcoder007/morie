@@ -7,20 +7,16 @@ from morie.fn.bsacorr import rangayyan_ch3_ccf_continuous
 
 def test_rng023_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    t1 = np.random.default_rng(42).normal(0, 1, 100)
-    tau = 0.1
-    result = rangayyan_ch3_ccf_continuous(x, y, t1, tau)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch3_ccf_continuous(x, y)
     assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
+    assert "lags" in result
 
 
 def test_rng023_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    t1 = np.random.default_rng(42).normal(0, 1, 100)
-    tau = 0.1
-    result = rangayyan_ch3_ccf_continuous(x, y, t1, tau)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch3_ccf_continuous(x, y)
     assert isinstance(result, dict)

@@ -7,18 +7,14 @@ from morie.fn.bsastat import rangayyan_pdf_estimate
 
 def test_rgpdfest_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    bins = np.random.default_rng(42).normal(0, 1, 100)
-    bw = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_pdf_estimate(x, bins, bw)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_pdf_estimate(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "grid" in result
 
 
 def test_rgpdfest_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    bins = np.random.default_rng(42).normal(0, 1, 100)
-    bw = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_pdf_estimate(x, bins, bw)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_pdf_estimate(x)
     assert isinstance(result, dict)

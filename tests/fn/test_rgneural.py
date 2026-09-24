@@ -7,18 +7,16 @@ from morie.fn.bsaclass import rangayyan_neural_decode
 
 def test_rgneural_basic():
     """Test basic functionality."""
-    spike_trains = np.random.default_rng(42).normal(0, 1, 100)
-    movement_labels = np.random.default_rng(43).integers(0, 2, 100)
-    n_ch = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_neural_decode(spike_trains, movement_labels, n_ch)
+    y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    C = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = rangayyan_neural_decode(y, C)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "states" in result
 
 
 def test_rgneural_edge():
     """Test edge cases."""
-    spike_trains = np.random.default_rng(42).normal(0, 1, 100)
-    movement_labels = np.random.default_rng(43).integers(0, 2, 100)
-    n_ch = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_neural_decode(spike_trains, movement_labels, n_ch)
+    y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    C = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = rangayyan_neural_decode(y, C)
     assert isinstance(result, dict)

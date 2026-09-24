@@ -7,14 +7,16 @@ from morie.fn.posrr import posterior_predictive_replication
 
 def test_posrr_basic():
     """Test basic functionality."""
-    samples = np.random.default_rng(42).normal(0, 1, 100)
-    result = posterior_predictive_replication(samples)
+    t_obs = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    t_rep = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = posterior_predictive_replication(t_obs, t_rep)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "p_value" in result
 
 
 def test_posrr_edge():
     """Test edge cases."""
-    samples = np.random.default_rng(42).normal(0, 1, 100)
-    result = posterior_predictive_replication(samples)
+    t_obs = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    t_rep = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = posterior_predictive_replication(t_obs, t_rep)
     assert isinstance(result, dict)

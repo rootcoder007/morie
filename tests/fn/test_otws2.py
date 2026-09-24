@@ -7,18 +7,16 @@ from morie.fn.otws2 import ot_wasserstein_p_1d
 
 def test_otws2_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    result = ot_wasserstein_p_1d(x, y, p)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = ot_wasserstein_p_1d(x, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "Wp" in result
 
 
 def test_otws2_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    result = ot_wasserstein_p_1d(x, y, p)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = ot_wasserstein_p_1d(x, y)
     assert isinstance(result, dict)

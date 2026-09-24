@@ -7,20 +7,18 @@ from morie.fn.bsatf import rangayyan_ch4_complex_cepstrum_signal_with_echo
 
 def test_rng252_basic():
     """Test basic functionality."""
-    h_hat = np.random.default_rng(42).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    n_0 = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = rangayyan_ch4_complex_cepstrum_signal_with_echo(h_hat, a, n_0, n)
+    h_hat = 0.1
+    a = 0.1
+    n_0 = 5
+    result = rangayyan_ch4_complex_cepstrum_signal_with_echo(h_hat, a, n_0)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "y_hat" in result
 
 
 def test_rng252_edge():
     """Test edge cases."""
-    h_hat = np.random.default_rng(42).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    n_0 = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = rangayyan_ch4_complex_cepstrum_signal_with_echo(h_hat, a, n_0, n)
+    h_hat = 0.1
+    a = 0.1
+    n_0 = 5
+    result = rangayyan_ch4_complex_cepstrum_signal_with_echo(h_hat, a, n_0)
     assert isinstance(result, dict)

@@ -7,18 +7,18 @@ from morie.fn.bsaqrs import rangayyan_heart_sound_id
 
 def test_rghsnd_basic():
     """Test basic functionality."""
-    pcg = np.random.default_rng(42).normal(0, 1, 1024)
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    result = rangayyan_heart_sound_id(pcg, ecg, fs)
+    ecg = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    cp = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
+    result = rangayyan_heart_sound_id(ecg, cp, fs)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "s1" in result
 
 
 def test_rghsnd_edge():
     """Test edge cases."""
-    pcg = np.random.default_rng(42).normal(0, 1, 1024)
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    result = rangayyan_heart_sound_id(pcg, ecg, fs)
+    ecg = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    cp = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
+    result = rangayyan_heart_sound_id(ecg, cp, fs)
     assert isinstance(result, dict)

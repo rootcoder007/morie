@@ -7,24 +7,18 @@ from morie.fn.msm293 import mvsml_convolutional_nn_eq_14_13
 
 def test_msm293_basic():
     """Test basic functionality."""
-    random = np.random.default_rng(42).normal(0, 1, 100)
-    partitions = np.random.default_rng(42).normal(0, 1, 100)
-    they = np.random.default_rng(42).normal(0, 1, 100)
-    were = np.random.default_rng(42).normal(0, 1, 100)
-    better = np.random.default_rng(42).normal(0, 1, 100)
-    than = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_13(random, partitions, they, were, better, than)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    X_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_13(y, X, X_E)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "coef" in result
 
 
 def test_msm293_edge():
     """Test edge cases."""
-    random = np.random.default_rng(42).normal(0, 1, 100)
-    partitions = np.random.default_rng(42).normal(0, 1, 100)
-    they = np.random.default_rng(42).normal(0, 1, 100)
-    were = np.random.default_rng(42).normal(0, 1, 100)
-    better = np.random.default_rng(42).normal(0, 1, 100)
-    than = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_13(random, partitions, they, were, better, than)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    X_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_13(y, X, X_E)
     assert isinstance(result, dict)

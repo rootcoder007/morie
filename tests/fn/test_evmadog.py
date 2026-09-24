@@ -1,5 +1,7 @@
 """Tests for evmadog.evt_madogram."""
 
+import math
+
 from morie.fn import _array_core as np
 
 from morie.fn.evmadog import evt_madogram
@@ -7,18 +9,26 @@ from morie.fn.evmadog import evt_madogram
 
 def test_evmadog_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    t_grid = np.random.default_rng(42).normal(0, 1, 100)
-    result = evt_madogram(x, y, t_grid)
+    rng = np.random.default_rng(42)
+    x = rng.normal(0, 1, 100)
+    y = rng.normal(0, 1, 100)
+    t = 0.5
+    result = evt_madogram(x, y, t)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert len(result) > 0
+    for value in result.values():
+        if isinstance(value, (int, float)):
+            assert math.isfinite(value)
 
 
 def test_evmadog_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    t_grid = np.random.default_rng(42).normal(0, 1, 100)
-    result = evt_madogram(x, y, t_grid)
+    """Test edge cases with minimal valid input."""
+    rng = np.random.default_rng(42)
+    x = rng.normal(0, 1, 20)
+    y = rng.normal(0, 1, 20)
+    t = 0.5
+    result = evt_madogram(x, y, t)
     assert isinstance(result, dict)
+    for value in result.values():
+        if isinstance(value, (int, float)):
+            assert math.isfinite(value)

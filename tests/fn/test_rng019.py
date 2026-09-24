@@ -7,16 +7,14 @@ from morie.fn.bsastat import rangayyan_ch3_time_average_mean
 
 def test_rng019_basic():
     """Test basic functionality."""
-    x_k = np.random.default_rng(42).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = rangayyan_ch3_time_average_mean(x_k, T)
+    x_k = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch3_time_average_mean(x_k)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "time_mean" in result
 
 
 def test_rng019_edge():
     """Test edge cases."""
-    x_k = np.random.default_rng(42).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = rangayyan_ch3_time_average_mean(x_k, T)
+    x_k = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch3_time_average_mean(x_k)
     assert isinstance(result, dict)

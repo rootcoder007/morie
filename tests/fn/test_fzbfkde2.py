@@ -10,15 +10,18 @@ def test_fzbfkde2_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     bandwidth = 0.3
     g_func = lambda v: v
-    result = fauzi_bdfree_density_from_cdf(x, bandwidth, g_func)
+    dg_func = lambda v: 1
+    result = fauzi_bdfree_density_from_cdf(x, bandwidth, g_func, dg_func)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "density" in result
 
 
 def test_fzbfkde2_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    bandwidth = 0.3
+    rng = np.random.default_rng(42)
+    x = rng.normal(0, 1, 40)
+    bandwidth = 0.5
     g_func = lambda v: v
-    result = fauzi_bdfree_density_from_cdf(x, bandwidth, g_func)
+    dg_func = lambda v: 1
+    result = fauzi_bdfree_density_from_cdf(x, bandwidth, g_func, dg_func)
     assert isinstance(result, dict)

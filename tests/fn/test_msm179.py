@@ -7,24 +7,16 @@ from morie.fn.msm179 import mvsml_ridge_lasso_elastic_eq_9_6
 
 def test_msm179_basic():
     """Test basic functionality."""
-    observations = np.random.default_rng(42).normal(0, 1, 100)
-    are = np.random.default_rng(42).normal(0, 1, 100)
-    inside = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    fences = np.random.default_rng(42).normal(0, 1, 100)
-    street = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_6(observations, are, inside, the, fences, street)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = mvsml_ridge_lasso_elastic_eq_9_6(X, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "beta" in result
 
 
 def test_msm179_edge():
     """Test edge cases."""
-    observations = np.random.default_rng(42).normal(0, 1, 100)
-    are = np.random.default_rng(42).normal(0, 1, 100)
-    inside = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    fences = np.random.default_rng(42).normal(0, 1, 100)
-    street = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_6(observations, are, inside, the, fences, street)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = mvsml_ridge_lasso_elastic_eq_9_6(X, y)
     assert isinstance(result, dict)

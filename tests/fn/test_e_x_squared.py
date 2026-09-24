@@ -9,14 +9,13 @@ from morie.fn.e_x_squared import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e70_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = e_x_squared(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    sigma = 2.0
+    mu = 1.0
+    result = e_x_squared(sigma, mu)
+    assert "e_x2" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e70_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = e_x_squared(x)
-    assert isinstance(result, dict)
+    result = e_x_squared(0.0, 0.0)
+    assert "e_x2" in result

@@ -7,24 +7,18 @@ from morie.fn.msm313 import mvsml_convolutional_nn_eq_14_14
 
 def test_msm313_basic():
     """Test basic functionality."""
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    MSE = np.random.default_rng(42).normal(0, 1, 100)
-    PBFR = np.random.default_rng(42).normal(0, 1, 100)
-    vs = np.random.default_rng(42).normal(0, 1, 100)
-    BFR = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_14(of, the, MSE, PBFR, vs, BFR)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    X_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_14(y, X, X_E)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "coef" in result
 
 
 def test_msm313_edge():
     """Test edge cases."""
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    MSE = np.random.default_rng(42).normal(0, 1, 100)
-    PBFR = np.random.default_rng(42).normal(0, 1, 100)
-    vs = np.random.default_rng(42).normal(0, 1, 100)
-    BFR = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_14(of, the, MSE, PBFR, vs, BFR)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    X_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_14(y, X, X_E)
     assert isinstance(result, dict)

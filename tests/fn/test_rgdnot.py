@@ -7,16 +7,16 @@ from morie.fn.bsaqrs import rangayyan_dicrotic_notch
 
 def test_rgdnot_basic():
     """Test basic functionality."""
-    pulse = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    result = rangayyan_dicrotic_notch(pulse, fs)
+    cp = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
+    result = rangayyan_dicrotic_notch(cp, fs)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "notch" in result
 
 
 def test_rgdnot_edge():
     """Test edge cases."""
-    pulse = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    result = rangayyan_dicrotic_notch(pulse, fs)
+    cp = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
+    result = rangayyan_dicrotic_notch(cp, fs)
     assert isinstance(result, dict)

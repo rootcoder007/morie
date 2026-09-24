@@ -7,16 +7,14 @@ from morie.fn.rbfkn import rbf_kernel
 
 def test_rbfkn_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    h = 0.3
-    result = rbf_kernel(X, h)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = rbf_kernel(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "K" in result
 
 
 def test_rbfkn_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    h = 0.3
-    result = rbf_kernel(X, h)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = rbf_kernel(X)
     assert isinstance(result, dict)

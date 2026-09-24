@@ -7,18 +7,14 @@ from morie.fn.sgtkpc import sgt_kernel_pca
 
 def test_sgtkpc_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    k = 5
-    result = sgt_kernel_pca(X, kernel, k)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = sgt_kernel_pca(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "Y" in result
 
 
 def test_sgtkpc_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    k = 5
-    result = sgt_kernel_pca(X, kernel, k)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = sgt_kernel_pca(X)
     assert isinstance(result, dict)

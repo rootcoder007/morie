@@ -7,16 +7,14 @@ from morie.fn.bsastat import rangayyan_rms_noise
 
 def test_rgrmsnw_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    noise_segments = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_rms_noise(x, noise_segments)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_rms_noise(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "rms_noise" in result
 
 
 def test_rgrmsnw_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    noise_segments = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_rms_noise(x, noise_segments)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_rms_noise(x)
     assert isinstance(result, dict)

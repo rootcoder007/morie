@@ -7,18 +7,14 @@ from morie.fn.bsatf import rangayyan_wavelet_entropy
 
 def test_rgentrwv_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    wavelet = "morl"
-    levels = [0.5, 1.0, 1.5, 2.0]
-    result = rangayyan_wavelet_entropy(x, wavelet, levels)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_wavelet_entropy(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "entropy" in result
 
 
 def test_rgentrwv_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    wavelet = "morl"
-    levels = [0.5, 1.0, 1.5, 2.0]
-    result = rangayyan_wavelet_entropy(x, wavelet, levels)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_wavelet_entropy(x)
     assert isinstance(result, dict)

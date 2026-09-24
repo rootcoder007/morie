@@ -7,16 +7,14 @@ from morie.fn.odgrev import outbreak_detection
 
 def test_odgrev_basic():
     """Test basic functionality."""
-    counts = np.random.default_rng(42).normal(0, 1, 100)
-    prior_hazard = np.random.default_rng(42).normal(0, 1, 100)
-    result = outbreak_detection(counts, prior_hazard)
+    counts = np.array([1, 0, 2, 2, 3, 3, 1, 0, 4, 3, 2, 3, 0, 1, 1, 3, 3, 0, 1, 1, 3, 2, 4, 0, 4, 3, 1, 3, 0, 2, 2, 4, 1, 4, 2, 2, 3, 0, 0, 3])
+    result = outbreak_detection(counts)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "cp_prob" in result
 
 
 def test_odgrev_edge():
     """Test edge cases."""
-    counts = np.random.default_rng(42).normal(0, 1, 100)
-    prior_hazard = np.random.default_rng(42).normal(0, 1, 100)
-    result = outbreak_detection(counts, prior_hazard)
+    counts = np.array([1, 0, 2, 2, 3, 3, 1, 0, 4, 3, 2, 3, 0, 1, 1, 3, 3, 0, 1, 1, 3, 2, 4, 0, 4, 3, 1, 3, 0, 2, 2, 4, 1, 4, 2, 2, 3, 0, 0, 3])
+    result = outbreak_detection(counts)
     assert isinstance(result, dict)

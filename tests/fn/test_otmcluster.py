@@ -7,18 +7,16 @@ from morie.fn.otmcluster import ot_clustering_w
 
 def test_otmcluster_basic():
     """Test basic functionality."""
-    X_list = np.random.default_rng(42).normal(0, 1, 100)
+    X_list = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     k = 5
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    result = ot_clustering_w(X_list, k, max_iter)
+    result = ot_clustering_w(X_list, k)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "labels" in result
 
 
 def test_otmcluster_edge():
     """Test edge cases."""
-    X_list = np.random.default_rng(42).normal(0, 1, 100)
+    X_list = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     k = 5
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    result = ot_clustering_w(X_list, k, max_iter)
+    result = ot_clustering_w(X_list, k)
     assert isinstance(result, dict)

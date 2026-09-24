@@ -7,18 +7,14 @@ from morie.fn.bsaclass import rangayyan_hierarchical_clust
 
 def test_rghier_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    linkage = np.random.default_rng(42).normal(0, 1, 100)
-    n_clusters = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_hierarchical_clust(X, linkage, n_clusters)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = rangayyan_hierarchical_clust(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "history" in result
 
 
 def test_rghier_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    linkage = np.random.default_rng(42).normal(0, 1, 100)
-    n_clusters = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_hierarchical_clust(X, linkage, n_clusters)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = rangayyan_hierarchical_clust(X)
     assert isinstance(result, dict)

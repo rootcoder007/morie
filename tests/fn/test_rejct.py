@@ -7,14 +7,12 @@ from morie.fn.rejct import rejection_point
 
 def test_rejct_basic():
     """Test basic functionality."""
-    psi = np.random.default_rng(42).normal(0, 1, 100)
-    result = rejection_point(psi)
+    result = rejection_point()
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_rejct_edge():
     """Test edge cases."""
-    psi = np.random.default_rng(42).normal(0, 1, 100)
-    result = rejection_point(psi)
+    result = rejection_point()
     assert isinstance(result, dict)

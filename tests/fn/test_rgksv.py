@@ -7,20 +7,18 @@ from morie.fn.bsaclass import rangayyan_ksvd
 
 def test_rgksv_basic():
     """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    n_atoms = np.random.default_rng(42).normal(0, 1, 100)
-    sparsity = np.random.default_rng(42).normal(0, 1, 100)
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ksvd(Y, n_atoms, sparsity, max_iter)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    natoms = 5
+    sparsity = 5
+    result = rangayyan_ksvd(Y, natoms, sparsity)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "dictionary" in result
 
 
 def test_rgksv_edge():
     """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    n_atoms = np.random.default_rng(42).normal(0, 1, 100)
-    sparsity = np.random.default_rng(42).normal(0, 1, 100)
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ksvd(Y, n_atoms, sparsity, max_iter)
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    natoms = 5
+    sparsity = 5
+    result = rangayyan_ksvd(Y, natoms, sparsity)
     assert isinstance(result, dict)

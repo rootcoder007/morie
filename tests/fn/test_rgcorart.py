@@ -7,18 +7,16 @@ from morie.fn.bsaphys import rangayyan_coronary_sound
 
 def test_rgcorart_basic():
     """Test basic functionality."""
-    diameter = np.random.default_rng(42).normal(0, 1, 100)
-    flow_velocity = np.random.default_rng(42).normal(0, 1, 100)
-    stenosis_pct = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_coronary_sound(diameter, flow_velocity, stenosis_pct)
+    diameter = 0.1
+    flow_velocity = 0.1
+    result = rangayyan_coronary_sound(diameter, flow_velocity)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "freq_hz" in result
 
 
 def test_rgcorart_edge():
     """Test edge cases."""
-    diameter = np.random.default_rng(42).normal(0, 1, 100)
-    flow_velocity = np.random.default_rng(42).normal(0, 1, 100)
-    stenosis_pct = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_coronary_sound(diameter, flow_velocity, stenosis_pct)
+    diameter = 0.1
+    flow_velocity = 0.1
+    result = rangayyan_coronary_sound(diameter, flow_velocity)
     assert isinstance(result, dict)

@@ -7,18 +7,18 @@ from morie.fn.otpot import ot_pot_log_potentials
 
 def test_otpot_basic():
     """Test basic functionality."""
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    epsilon = 1e-6
+    u = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    v = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    epsilon = 0.1
     result = ot_pot_log_potentials(u, v, epsilon)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_otpot_edge():
     """Test edge cases."""
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    epsilon = 1e-6
+    u = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    v = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    epsilon = 0.1
     result = ot_pot_log_potentials(u, v, epsilon)
     assert isinstance(result, dict)

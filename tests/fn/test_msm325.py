@@ -7,18 +7,14 @@ from morie.fn.msm325 import mvsml_functional_regression_eq_15_2
 
 def test_msm325_basic():
     """Test basic functionality."""
-    log = np.random.default_rng(42).normal(0, 1, 100)
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    i = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_functional_regression_eq_15_2(log, Y, i)
+    y_positive = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_functional_regression_eq_15_2(y_positive)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm325_edge():
     """Test edge cases."""
-    log = np.random.default_rng(42).normal(0, 1, 100)
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    i = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_functional_regression_eq_15_2(log, Y, i)
+    y_positive = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_functional_regression_eq_15_2(y_positive)
     assert isinstance(result, dict)

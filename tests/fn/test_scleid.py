@@ -7,16 +7,14 @@ from morie.fn.scleid import leiden_clustering
 
 def test_scleid_basic():
     """Test basic functionality."""
-    graph = np.array([[0, 1, 0], [0, 0, 1], [0, 0, 0]], dtype=float)
-    resolution = np.random.default_rng(42).normal(0, 1, 100)
-    result = leiden_clustering(graph, resolution)
+    graph = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = leiden_clustering(graph)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "labels" in result
 
 
 def test_scleid_edge():
     """Test edge cases."""
-    graph = np.array([[0, 1, 0], [0, 0, 1], [0, 0, 0]], dtype=float)
-    resolution = np.random.default_rng(42).normal(0, 1, 100)
-    result = leiden_clustering(graph, resolution)
+    graph = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = leiden_clustering(graph)
     assert isinstance(result, dict)

@@ -7,20 +7,16 @@ from morie.fn.objfair import individual_fairness_lipschitz
 
 def test_objfair_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    h_values = np.random.default_rng(42).normal(0, 1, 100)
-    x_pairs = np.random.default_rng(42).normal(0, 1, 100)
-    L = np.random.default_rng(42).normal(0, 1, 100)
-    result = individual_fairness_lipschitz(y, h_values, x_pairs, L)
+    h_values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    x_pairs = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = individual_fairness_lipschitz(h_values, x_pairs)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_objfair_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    h_values = np.random.default_rng(42).normal(0, 1, 100)
-    x_pairs = np.random.default_rng(42).normal(0, 1, 100)
-    L = np.random.default_rng(42).normal(0, 1, 100)
-    result = individual_fairness_lipschitz(y, h_values, x_pairs, L)
+    h_values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    x_pairs = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = individual_fairness_lipschitz(h_values, x_pairs)
     assert isinstance(result, dict)

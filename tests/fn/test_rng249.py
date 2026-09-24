@@ -7,20 +7,18 @@ from morie.fn.bsatf import rangayyan_ch4_fourier_signal_echo
 
 def test_rng249_basic():
     """Test basic functionality."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    n_0 = np.random.default_rng(42).normal(0, 1, 100)
-    omega = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_fourier_signal_echo(a, n_0, omega, H)
+    a = 0.1
+    n_0 = 5
+    omega = 0.1
+    result = rangayyan_ch4_fourier_signal_echo(a, n_0, omega)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "Y" in result
 
 
 def test_rng249_edge():
     """Test edge cases."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    n_0 = np.random.default_rng(42).normal(0, 1, 100)
-    omega = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_fourier_signal_echo(a, n_0, omega, H)
+    a = 0.1
+    n_0 = 5
+    omega = 0.1
+    result = rangayyan_ch4_fourier_signal_echo(a, n_0, omega)
     assert isinstance(result, dict)

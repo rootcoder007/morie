@@ -7,18 +7,14 @@ from morie.fn.ripL import ripley_l_function
 
 def test_ripL_basic():
     """Test basic functionality."""
-    points = np.random.default_rng(42).normal(0, 1, 100)
-    window = np.random.default_rng(42).normal(0, 1, 100)
-    r = 10
-    result = ripley_l_function(points, window, r)
+    points = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = ripley_l_function(points)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "r" in result
 
 
 def test_ripL_edge():
     """Test edge cases."""
-    points = np.random.default_rng(42).normal(0, 1, 100)
-    window = np.random.default_rng(42).normal(0, 1, 100)
-    r = 10
-    result = ripley_l_function(points, window, r)
+    points = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = ripley_l_function(points)
     assert isinstance(result, dict)

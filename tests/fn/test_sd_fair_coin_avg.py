@@ -9,14 +9,14 @@ from morie.fn.sd_fair_coin_avg import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e52_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = sd_fair_coin_avg(x)
+    n = 5
+    result = sd_fair_coin_avg(n)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "n" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner3e52_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = sd_fair_coin_avg(x)
+    n = 5
+    result = sd_fair_coin_avg(n)
     assert isinstance(result, dict)

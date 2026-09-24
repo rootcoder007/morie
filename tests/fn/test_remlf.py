@@ -7,18 +7,20 @@ from morie.fn.remlf import reml_log_likelihood
 
 def test_remlf_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    V = np.random.default_rng(42).normal(0, 1, 100)
-    result = reml_log_likelihood(y, X, V)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    D = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = reml_log_likelihood(X, Z, y, D)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "loglik" in result
 
 
 def test_remlf_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    V = np.random.default_rng(42).normal(0, 1, 100)
-    result = reml_log_likelihood(y, X, V)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Z = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    D = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = reml_log_likelihood(X, Z, y, D)
     assert isinstance(result, dict)

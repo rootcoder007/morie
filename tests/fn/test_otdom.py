@@ -7,18 +7,18 @@ from morie.fn.otdom import ot_domain_adaptation
 
 def test_otdom_basic():
     """Test basic functionality."""
-    Xs = np.random.default_rng(42).normal(0, 1, 100)
-    Xt = np.random.default_rng(42).normal(0, 1, 100)
-    epsilon = 1e-6
+    Xs = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Xt = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    epsilon = 0.1
     result = ot_domain_adaptation(Xs, Xt, epsilon)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "Xs_adapted" in result
 
 
 def test_otdom_edge():
     """Test edge cases."""
-    Xs = np.random.default_rng(42).normal(0, 1, 100)
-    Xt = np.random.default_rng(42).normal(0, 1, 100)
-    epsilon = 1e-6
+    Xs = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Xt = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    epsilon = 0.1
     result = ot_domain_adaptation(Xs, Xt, epsilon)
     assert isinstance(result, dict)

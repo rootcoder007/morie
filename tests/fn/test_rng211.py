@@ -7,18 +7,16 @@ from morie.fn.bsacorr import rangayyan_ch4_average_output_noise_power
 
 def test_rng211_basic():
     """Test basic functionality."""
-    P_eta_i = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_average_output_noise_power(P_eta_i, H, f)
+    P_eta_i = 0.1
+    H = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch4_average_output_noise_power(P_eta_i, H)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "output_power" in result
 
 
 def test_rng211_edge():
     """Test edge cases."""
-    P_eta_i = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_average_output_noise_power(P_eta_i, H, f)
+    P_eta_i = 0.1
+    H = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch4_average_output_noise_power(P_eta_i, H)
     assert isinstance(result, dict)

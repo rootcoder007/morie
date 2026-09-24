@@ -7,24 +7,14 @@ from morie.fn.msm145 import mvsml_categorical_count_eq_8_11
 
 def test_msm145_basic():
     """Test basic functionality."""
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    methods = np.random.default_rng(42).normal(0, 1, 100)
-    However = np.random.default_rng(42).normal(0, 1, 100)
-    this = np.random.default_rng(42).normal(0, 1, 100)
-    section = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_11(of, kernel, methods, However, this, section)
+    K = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = mvsml_categorical_count_eq_8_11(K)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm145_edge():
     """Test edge cases."""
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    methods = np.random.default_rng(42).normal(0, 1, 100)
-    However = np.random.default_rng(42).normal(0, 1, 100)
-    this = np.random.default_rng(42).normal(0, 1, 100)
-    section = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_11(of, kernel, methods, However, this, section)
+    K = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = mvsml_categorical_count_eq_8_11(K)
     assert isinstance(result, dict)

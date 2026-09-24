@@ -7,16 +7,16 @@ from morie.fn.bsaar import rangayyan_ar_order_aic
 
 def test_rgaic_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    max_order = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ar_order_aic(x, max_order)
+    prediction_errors = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    n_samples = 5
+    result = rangayyan_ar_order_aic(prediction_errors, n_samples)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "order" in result
 
 
 def test_rgaic_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    max_order = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ar_order_aic(x, max_order)
+    prediction_errors = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    n_samples = 5
+    result = rangayyan_ar_order_aic(prediction_errors, n_samples)
     assert isinstance(result, dict)

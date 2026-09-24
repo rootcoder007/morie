@@ -7,18 +7,16 @@ from morie.fn.otmapnk import ot_map_neural_kantorovich
 
 def test_otmapnk_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    epochs = np.random.default_rng(42).normal(0, 1, 100)
-    result = ot_map_neural_kantorovich(X, Y, epochs)
+    source = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    target = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = ot_map_neural_kantorovich(source, target)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_otmapnk_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    epochs = np.random.default_rng(42).normal(0, 1, 100)
-    result = ot_map_neural_kantorovich(X, Y, epochs)
+    source = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    target = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = ot_map_neural_kantorovich(source, target)
     assert isinstance(result, dict)

@@ -7,16 +7,16 @@ from morie.fn.rpnlt import roughness_penalty
 
 def test_rpnlt_basic():
     """Test basic functionality."""
-    basis = np.random.default_rng(42).normal(0, 1, (100, 5))
+    basis = np.random.default_rng(42).normal(0.0, 1.0, 40)
     lam = 0.1
     result = roughness_penalty(basis, lam)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_rpnlt_edge():
     """Test edge cases."""
-    basis = np.random.default_rng(42).normal(0, 1, (100, 5))
+    basis = np.random.default_rng(42).normal(0.0, 1.0, 40)
     lam = 0.1
     result = roughness_penalty(basis, lam)
     assert isinstance(result, dict)

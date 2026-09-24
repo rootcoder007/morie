@@ -7,24 +7,16 @@ from morie.fn.msm180 import mvsml_ridge_lasso_elastic_eq_9_6
 
 def test_msm180_basic():
     """Test basic functionality."""
-    distance = np.random.default_rng(42).normal(0, 1, 100)
-    margin = np.random.default_rng(42).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    hyperplane = np.random.default_rng(42).normal(0, 1, 100)
-    h0 = np.random.default_rng(42).normal(0, 1, 100)
-    xT = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_6(distance, margin, M, hyperplane, h0, xT)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = mvsml_ridge_lasso_elastic_eq_9_6(X, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "beta" in result
 
 
 def test_msm180_edge():
     """Test edge cases."""
-    distance = np.random.default_rng(42).normal(0, 1, 100)
-    margin = np.random.default_rng(42).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    hyperplane = np.random.default_rng(42).normal(0, 1, 100)
-    h0 = np.random.default_rng(42).normal(0, 1, 100)
-    xT = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_6(distance, margin, M, hyperplane, h0, xT)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = mvsml_ridge_lasso_elastic_eq_9_6(X, y)
     assert isinstance(result, dict)

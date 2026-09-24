@@ -7,18 +7,14 @@ from morie.fn.bsaclass import rangayyan_ch4_pan_tompkins_peak_classification
 
 def test_rng190_basic():
     """Test basic functionality."""
-    PEAKI = np.random.default_rng(42).normal(0, 1, 100)
-    SPKI = np.random.default_rng(42).normal(0, 1, 100)
-    NPKI = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_pan_tompkins_peak_classification(PEAKI, SPKI, NPKI)
+    PEAKI = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = rangayyan_ch4_pan_tompkins_peak_classification(PEAKI)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "SPKI" in result
 
 
 def test_rng190_edge():
     """Test edge cases."""
-    PEAKI = np.random.default_rng(42).normal(0, 1, 100)
-    SPKI = np.random.default_rng(42).normal(0, 1, 100)
-    NPKI = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_pan_tompkins_peak_classification(PEAKI, SPKI, NPKI)
+    PEAKI = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = rangayyan_ch4_pan_tompkins_peak_classification(PEAKI)
     assert isinstance(result, dict)

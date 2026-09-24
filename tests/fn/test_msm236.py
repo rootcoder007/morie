@@ -7,24 +7,14 @@ from morie.fn.msm236 import mvsml_general_eq_1_3
 
 def test_msm236_basic():
     """Test basic functionality."""
-    Creating = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    design = np.random.default_rng(42).normal(0, 1, 100)
-    matrix = np.random.default_rng(42).normal(0, 1, 100)
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    lines = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_3(Creating, the, design, matrix, of, lines)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_3(groups)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm236_edge():
     """Test edge cases."""
-    Creating = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    design = np.random.default_rng(42).normal(0, 1, 100)
-    matrix = np.random.default_rng(42).normal(0, 1, 100)
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    lines = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_general_eq_1_3(Creating, the, design, matrix, of, lines)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_3(groups)
     assert isinstance(result, dict)

@@ -7,18 +7,16 @@ from morie.fn.netcmp import network_comparison
 
 def test_netcmp_basic():
     """Test basic functionality."""
-    G1 = np.random.default_rng(42).normal(0, 1, 100)
-    G2 = np.random.default_rng(42).normal(0, 1, 100)
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    result = network_comparison(G1, G2, kernel)
+    G1 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    G2 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = network_comparison(G1, G2)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_netcmp_edge():
     """Test edge cases."""
-    G1 = np.random.default_rng(42).normal(0, 1, 100)
-    G2 = np.random.default_rng(42).normal(0, 1, 100)
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    result = network_comparison(G1, G2, kernel)
+    G1 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    G2 = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = network_comparison(G1, G2)
     assert isinstance(result, dict)

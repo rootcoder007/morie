@@ -7,20 +7,16 @@ from morie.fn.ordtm import ordinal_threshold_model
 
 def test_ordtm_basic():
     """Test basic functionality."""
-    y_ord = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    n_categories = np.random.default_rng(42).normal(0, 1, 100)
-    result = ordinal_threshold_model(y_ord, X, Z, n_categories)
+    eta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    thresholds = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = ordinal_threshold_model(eta, thresholds)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "probabilities" in result
 
 
 def test_ordtm_edge():
     """Test edge cases."""
-    y_ord = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    n_categories = np.random.default_rng(42).normal(0, 1, 100)
-    result = ordinal_threshold_model(y_ord, X, Z, n_categories)
+    eta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    thresholds = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = ordinal_threshold_model(eta, thresholds)
     assert isinstance(result, dict)

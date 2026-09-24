@@ -7,18 +7,16 @@ from morie.fn.bsaphys import rangayyan_ch4_complex_log_of_product
 
 def test_rng235_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    omega = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_complex_log_of_product(X, H, omega)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    H = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch4_complex_log_of_product(X, H)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "omega" in result
 
 
 def test_rng235_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    omega = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_ch4_complex_log_of_product(X, H, omega)
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    H = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch4_complex_log_of_product(X, H)
     assert isinstance(result, dict)

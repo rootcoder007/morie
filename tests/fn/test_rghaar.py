@@ -7,16 +7,14 @@ from morie.fn.bsatf import rangayyan_haar_wavelet
 
 def test_rghaar_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    levels = [0.5, 1.0, 1.5, 2.0]
-    result = rangayyan_haar_wavelet(x, levels)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_haar_wavelet(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "approx" in result
 
 
 def test_rghaar_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    levels = [0.5, 1.0, 1.5, 2.0]
-    result = rangayyan_haar_wavelet(x, levels)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_haar_wavelet(x)
     assert isinstance(result, dict)

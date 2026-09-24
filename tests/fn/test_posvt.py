@@ -7,16 +7,16 @@ from morie.fn.posvt import positivity_assumption
 
 def test_posvt_basic():
     """Test basic functionality."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = positivity_assumption(T, X)
+    treat = np.array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1])
+    stratum = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = positivity_assumption(treat, stratum)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "minprob" in result
 
 
 def test_posvt_edge():
     """Test edge cases."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = positivity_assumption(T, X)
+    treat = np.array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1])
+    stratum = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = positivity_assumption(treat, stratum)
     assert isinstance(result, dict)

@@ -7,16 +7,14 @@ from morie.fn.bsatf import rangayyan_cpr_analysis
 
 def test_rgcpr_basic():
     """Test basic functionality."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    result = rangayyan_cpr_analysis(ecg, fs)
+    ecg = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_cpr_analysis(ecg)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "sdw" in result
 
 
 def test_rgcpr_edge():
     """Test edge cases."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    fs = 100.0
-    result = rangayyan_cpr_analysis(ecg, fs)
+    ecg = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_cpr_analysis(ecg)
     assert isinstance(result, dict)

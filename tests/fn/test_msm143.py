@@ -7,24 +7,16 @@ from morie.fn.msm143 import mvsml_categorical_count_eq_8_9
 
 def test_msm143_basic():
     """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    R2 = np.random.default_rng(42).normal(0, 1, 100)
-    When = np.random.default_rng(42).normal(0, 1, 100)
-    individuals = np.random.default_rng(42).normal(0, 1, 100)
-    had = np.random.default_rng(42).normal(0, 1, 100)
-    more = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_9(A, R2, When, individuals, had, more)
+    Z = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_categorical_count_eq_8_9(Z, K)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm143_edge():
     """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    R2 = np.random.default_rng(42).normal(0, 1, 100)
-    When = np.random.default_rng(42).normal(0, 1, 100)
-    individuals = np.random.default_rng(42).normal(0, 1, 100)
-    had = np.random.default_rng(42).normal(0, 1, 100)
-    more = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_categorical_count_eq_8_9(A, R2, When, individuals, had, more)
+    Z = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    K = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_categorical_count_eq_8_9(Z, K)
     assert isinstance(result, dict)

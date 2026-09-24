@@ -7,18 +7,14 @@ from morie.fn.bsaqrs import rangayyan_ch4_pan_tompkins_highpass_combined
 
 def test_rng187_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    p = 5
-    n = 100
-    result = rangayyan_ch4_pan_tompkins_highpass_combined(x, p, n)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch4_pan_tompkins_highpass_combined(x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "p" in result
 
 
 def test_rng187_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    p = 5
-    n = 100
-    result = rangayyan_ch4_pan_tompkins_highpass_combined(x, p, n)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_ch4_pan_tompkins_highpass_combined(x)
     assert isinstance(result, dict)

@@ -7,24 +7,16 @@ from morie.fn.msm269 import mvsml_convolutional_nn_eq_14_6
 
 def test_msm269_basic():
     """Test basic functionality."""
-    uously = np.random.default_rng(42).normal(0, 1, 100)
-    observed = np.random.default_rng(42).normal(0, 1, 100)
-    Usually = np.random.default_rng(42).normal(0, 1, 100)
-    it = np.random.default_rng(42).normal(0, 1, 100)
-    only = np.random.default_rng(42).normal(0, 1, 100)
-    measured = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_6(uously, observed, Usually, it, only, measured)
+    t = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    c = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_6(t, c)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm269_edge():
     """Test edge cases."""
-    uously = np.random.default_rng(42).normal(0, 1, 100)
-    observed = np.random.default_rng(42).normal(0, 1, 100)
-    Usually = np.random.default_rng(42).normal(0, 1, 100)
-    it = np.random.default_rng(42).normal(0, 1, 100)
-    only = np.random.default_rng(42).normal(0, 1, 100)
-    measured = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_6(uously, observed, Usually, it, only, measured)
+    t = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    c = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_6(t, c)
     assert isinstance(result, dict)

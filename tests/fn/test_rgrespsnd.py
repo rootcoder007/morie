@@ -7,18 +7,12 @@ from morie.fn.bsaphys import rangayyan_respiratory_sound
 
 def test_rgrespsnd_basic():
     """Test basic functionality."""
-    resp_sound = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    flow = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_respiratory_sound(resp_sound, fs, flow)
+    result = rangayyan_respiratory_sound()
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "freq_hz" in result
 
 
 def test_rgrespsnd_edge():
     """Test edge cases."""
-    resp_sound = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    flow = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_respiratory_sound(resp_sound, fs, flow)
+    result = rangayyan_respiratory_sound()
     assert isinstance(result, dict)

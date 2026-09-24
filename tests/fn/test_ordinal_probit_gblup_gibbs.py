@@ -7,24 +7,16 @@ from morie.fn.ordinal_probit_gblup_gibbs import ordinal_probit_gblup_gibbs
 
 def test_msm095_basic():
     """Test basic functionality."""
-    Probs = np.random.default_rng(42).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    probs = np.random.default_rng(42).normal(0, 1, 100)
-    where = np.random.default_rng(42).normal(0, 1, 100)
-    dat_F = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    result = ordinal_probit_gblup_gibbs(Probs, A, probs, where, dat_F, the)
+    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    G = np.random.default_rng(43).normal(0.0, 1.0, (8, 8))
+    result = ordinal_probit_gblup_gibbs(y, G)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm095_edge():
     """Test edge cases."""
-    Probs = np.random.default_rng(42).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    probs = np.random.default_rng(42).normal(0, 1, 100)
-    where = np.random.default_rng(42).normal(0, 1, 100)
-    dat_F = np.random.default_rng(42).normal(0, 1, 100)
-    the = np.random.default_rng(42).normal(0, 1, 100)
-    result = ordinal_probit_gblup_gibbs(Probs, A, probs, where, dat_F, the)
+    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    G = np.random.default_rng(43).normal(0.0, 1.0, (8, 8))
+    result = ordinal_probit_gblup_gibbs(y, G)
     assert isinstance(result, dict)

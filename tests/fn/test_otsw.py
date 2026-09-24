@@ -7,20 +7,16 @@ from morie.fn.otsw import ot_sliced_wasserstein
 
 def test_otsw_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    n_proj = np.random.default_rng(42).normal(0, 1, 100)
-    result = ot_sliced_wasserstein(X, Y, p, n_proj)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = ot_sliced_wasserstein(X, Y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "SW" in result
 
 
 def test_otsw_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    n_proj = np.random.default_rng(42).normal(0, 1, 100)
-    result = ot_sliced_wasserstein(X, Y, p, n_proj)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = ot_sliced_wasserstein(X, Y)
     assert isinstance(result, dict)

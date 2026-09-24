@@ -7,20 +7,14 @@ from morie.fn.bsaclass import rangayyan_bayes_classifier
 
 def test_rgbayes_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    class_priors = np.random.default_rng(42).normal(0, 1, 100)
-    class_means = np.random.default_rng(42).normal(0, 1, 100)
-    class_covs = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_bayes_classifier(X, class_priors, class_means, class_covs)
+    likelihoods = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = rangayyan_bayes_classifier(likelihoods)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "d" in result
 
 
 def test_rgbayes_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    class_priors = np.random.default_rng(42).normal(0, 1, 100)
-    class_means = np.random.default_rng(42).normal(0, 1, 100)
-    class_covs = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_bayes_classifier(X, class_priors, class_means, class_covs)
+    likelihoods = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = rangayyan_bayes_classifier(likelihoods)
     assert isinstance(result, dict)

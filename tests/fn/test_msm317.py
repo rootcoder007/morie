@@ -7,24 +7,14 @@ from morie.fn.msm317 import mvsml_general_eq_1_2
 
 def test_msm317_basic():
     """Test basic functionality."""
-    dat_F = np.random.default_rng(42).normal(0, 1, 100)
-    dat_ls = np.random.default_rng(42).normal(0, 1, 100)
-    head = np.random.default_rng(42).normal(0, 1, 100)
-    yv = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    n = 100
-    result = mvsml_general_eq_1_2(dat_F, dat_ls, head, yv, y, n)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_2(groups)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm317_edge():
     """Test edge cases."""
-    dat_F = np.random.default_rng(42).normal(0, 1, 100)
-    dat_ls = np.random.default_rng(42).normal(0, 1, 100)
-    head = np.random.default_rng(42).normal(0, 1, 100)
-    yv = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    n = 100
-    result = mvsml_general_eq_1_2(dat_F, dat_ls, head, yv, y, n)
+    groups = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_general_eq_1_2(groups)
     assert isinstance(result, dict)

@@ -7,16 +7,14 @@ from morie.fn.sgtcoml import sgt_louvain_step
 
 def test_sgtcoml_basic():
     """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    labels = np.random.default_rng(43).integers(0, 2, 100)
-    result = sgt_louvain_step(A, labels)
+    A = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = sgt_louvain_step(A)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_sgtcoml_edge():
     """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    labels = np.random.default_rng(43).integers(0, 2, 100)
-    result = sgt_louvain_step(A, labels)
+    A = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = sgt_louvain_step(A)
     assert isinstance(result, dict)

@@ -1,6 +1,6 @@
 """Tests for exact_half_heads.exact_half_heads."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.exact_half_heads import (
     exact_half_heads,
@@ -9,14 +9,21 @@ from morie.fn.exact_half_heads import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner2e65_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = exact_half_heads(x)
+    result = exact_half_heads(5)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "n" in result
+    assert "probability" in result
+    assert result["n"] == 5
+    assert math.isfinite(result["probability"])
+    assert 0.0 <= result["probability"] <= 1.0
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner2e65_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = exact_half_heads(x)
+    result = exact_half_heads(1)
     assert isinstance(result, dict)
+    assert "n" in result
+    assert "probability" in result
+    assert result["n"] == 1
+    assert math.isfinite(result["probability"])
+    assert 0.0 <= result["probability"] <= 1.0

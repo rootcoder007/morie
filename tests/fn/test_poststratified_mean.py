@@ -9,14 +9,16 @@ from morie.fn.poststratified_mean import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e32_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poststratified_mean(x)
+    group_means_sample = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    group_weights = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = poststratified_mean(group_means_sample, group_weights)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e32_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = poststratified_mean(x)
+    group_means_sample = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    group_weights = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = poststratified_mean(group_means_sample, group_weights)
     assert isinstance(result, dict)

@@ -7,24 +7,18 @@ from morie.fn.msm302 import mvsml_convolutional_nn_eq_14_14
 
 def test_msm302_basic():
     """Test basic functionality."""
-    xT = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    This = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    was = np.random.default_rng(42).normal(0, 1, 100)
-    also = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_14(xT, n, This, model, was, also)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    X_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_14(y, X, X_E)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "coef" in result
 
 
 def test_msm302_edge():
     """Test edge cases."""
-    xT = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    This = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    was = np.random.default_rng(42).normal(0, 1, 100)
-    also = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_14(xT, n, This, model, was, also)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    X_E = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_14(y, X, X_E)
     assert isinstance(result, dict)

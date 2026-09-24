@@ -7,16 +7,16 @@ from morie.fn.otc2c import ot_cost_pairwise
 
 def test_otc2c_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     result = ot_cost_pairwise(X, Y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_otc2c_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Y = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     result = ot_cost_pairwise(X, Y)
     assert isinstance(result, dict)

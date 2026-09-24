@@ -7,16 +7,18 @@ from morie.fn.sdne import sdne
 
 def test_sdne_basic():
     """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    dim = np.random.default_rng(42).normal(0, 1, 100)
-    result = sdne(A, dim)
+    adjacency = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    reconstruction = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    embeddings = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = sdne(adjacency, reconstruction, embeddings)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_sdne_edge():
     """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    dim = np.random.default_rng(42).normal(0, 1, 100)
-    result = sdne(A, dim)
+    adjacency = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    reconstruction = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    embeddings = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = sdne(adjacency, reconstruction, embeddings)
     assert isinstance(result, dict)

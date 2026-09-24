@@ -7,18 +7,16 @@ from morie.fn.nie import natural_indirect_effect
 
 def test_nie_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    result = natural_indirect_effect(X, M, Y)
+    y11 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y10 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = natural_indirect_effect(y11, y10)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_nie_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    result = natural_indirect_effect(X, M, Y)
+    y11 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y10 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = natural_indirect_effect(y11, y10)
     assert isinstance(result, dict)

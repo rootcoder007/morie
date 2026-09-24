@@ -7,24 +7,18 @@ from morie.fn.msm292 import mvsml_convolutional_nn_eq_14_1
 
 def test_msm292_basic():
     """Test basic functionality."""
-    l = np.random.default_rng(42).normal(0, 1, 100)
-    Ei = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    e = np.random.default_rng(44).normal(0, 1, 100)
-    prior = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_1(l, Ei, y, X, e, prior)
+    t = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    x_values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    beta_values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_1(t, x_values, beta_values)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "integral" in result
 
 
 def test_msm292_edge():
     """Test edge cases."""
-    l = np.random.default_rng(42).normal(0, 1, 100)
-    Ei = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    e = np.random.default_rng(44).normal(0, 1, 100)
-    prior = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_convolutional_nn_eq_14_1(l, Ei, y, X, e, prior)
+    t = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    x_values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    beta_values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = mvsml_convolutional_nn_eq_14_1(t, x_values, beta_values)
     assert isinstance(result, dict)

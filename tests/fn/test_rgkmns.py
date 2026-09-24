@@ -7,20 +7,16 @@ from morie.fn.bsaclass import rangayyan_kmeans
 
 def test_rgkmns_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     k = 5
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    tol = 1e-6
-    result = rangayyan_kmeans(X, k, max_iter, tol)
+    result = rangayyan_kmeans(X, k)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "labels" in result
 
 
 def test_rgkmns_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     k = 5
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    tol = 1e-6
-    result = rangayyan_kmeans(X, k, max_iter, tol)
+    result = rangayyan_kmeans(X, k)
     assert isinstance(result, dict)

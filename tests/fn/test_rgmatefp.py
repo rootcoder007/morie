@@ -7,18 +7,16 @@ from morie.fn.bsaqrs import rangayyan_maternal_ecg_filter
 
 def test_rgmatefp_basic():
     """Test basic functionality."""
-    abdominal_ecg = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    n_channels = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_maternal_ecg_filter(abdominal_ecg, fs, n_channels)
+    abd = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    thor = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_maternal_ecg_filter(abd, thor)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "fetal" in result
 
 
 def test_rgmatefp_edge():
     """Test edge cases."""
-    abdominal_ecg = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    n_channels = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_maternal_ecg_filter(abdominal_ecg, fs, n_channels)
+    abd = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    thor = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = rangayyan_maternal_ecg_filter(abd, thor)
     assert isinstance(result, dict)

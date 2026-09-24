@@ -7,18 +7,18 @@ from morie.fn.se3T import se3_transformer
 
 def test_se3T_basic():
     """Test basic functionality."""
-    G = np.eye(10)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    result = se3_transformer(G, X, coords)
+    positions = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    type0 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    type1 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = se3_transformer(positions, type0, type1)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "type1" in result
 
 
 def test_se3T_edge():
     """Test edge cases."""
-    G = np.eye(10)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    result = se3_transformer(G, X, coords)
+    positions = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    type0 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    type1 = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = se3_transformer(positions, type0, type1)
     assert isinstance(result, dict)

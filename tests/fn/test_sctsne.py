@@ -7,16 +7,14 @@ from morie.fn.sctsne import tsne_embedding
 
 def test_sctsne_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    perplexity = np.random.default_rng(42).normal(0, 1, 100)
-    result = tsne_embedding(X, perplexity)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = tsne_embedding(X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "embedding" in result
 
 
 def test_sctsne_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    perplexity = np.random.default_rng(42).normal(0, 1, 100)
-    result = tsne_embedding(X, perplexity)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = tsne_embedding(X)
     assert isinstance(result, dict)

@@ -7,18 +7,14 @@ from morie.fn.quanrg import quantile_regression
 
 def test_quanrg_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    tau = 0.1
-    result = quantile_regression(y, X, tau)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = quantile_regression(y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "coefficients" in result
 
 
 def test_quanrg_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    tau = 0.1
-    result = quantile_regression(y, X, tau)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = quantile_regression(y)
     assert isinstance(result, dict)

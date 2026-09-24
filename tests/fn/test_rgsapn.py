@@ -7,18 +7,18 @@ from morie.fn.bsaqrs import rangayyan_sleep_apnea
 
 def test_rgsapn_basic():
     """Test basic functionality."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    spo2 = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    result = rangayyan_sleep_apnea(ecg, spo2, fs)
+    edr = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    spo2 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
+    result = rangayyan_sleep_apnea(edr, spo2, fs)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "events" in result
 
 
 def test_rgsapn_edge():
     """Test edge cases."""
-    ecg = np.random.default_rng(42).normal(0, 1, 1024)
-    spo2 = np.random.default_rng(42).normal(0, 1, 100)
-    fs = 100.0
-    result = rangayyan_sleep_apnea(ecg, spo2, fs)
+    edr = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    spo2 = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    fs = 0.1
+    result = rangayyan_sleep_apnea(edr, spo2, fs)
     assert isinstance(result, dict)

@@ -7,20 +7,16 @@ from morie.fn.bsaclass import rangayyan_cad_pipeline
 
 def test_rgcad_basic():
     """Test basic functionality."""
-    signals = np.random.default_rng(42).normal(0, 1, 100)
-    labels = np.random.default_rng(43).integers(0, 2, 100)
-    classifier = np.random.default_rng(42).normal(0, 1, 100)
-    cv_k = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_cad_pipeline(signals, labels, classifier, cv_k)
+    features = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    labels = np.array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1])
+    result = rangayyan_cad_pipeline(features, labels)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "accuracy" in result
 
 
 def test_rgcad_edge():
     """Test edge cases."""
-    signals = np.random.default_rng(42).normal(0, 1, 100)
-    labels = np.random.default_rng(43).integers(0, 2, 100)
-    classifier = np.random.default_rng(42).normal(0, 1, 100)
-    cv_k = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_cad_pipeline(signals, labels, classifier, cv_k)
+    features = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    labels = np.array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1])
+    result = rangayyan_cad_pipeline(features, labels)
     assert isinstance(result, dict)

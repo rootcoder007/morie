@@ -7,24 +7,16 @@ from morie.fn.msm332 import mvsml_elements_lin_reg_eq_3_1
 
 def test_msm332_basic():
     """Test basic functionality."""
-    Fitting = np.random.default_rng(42).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    Linear = np.random.default_rng(42).normal(0, 1, 100)
-    Multiple = np.random.default_rng(42).normal(0, 1, 100)
-    Regression = np.random.default_rng(42).normal(0, 1, 100)
-    Model = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_elements_lin_reg_eq_3_1(Fitting, a, Linear, Multiple, Regression, Model)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = mvsml_elements_lin_reg_eq_3_1(X, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_msm332_edge():
     """Test edge cases."""
-    Fitting = np.random.default_rng(42).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    Linear = np.random.default_rng(42).normal(0, 1, 100)
-    Multiple = np.random.default_rng(42).normal(0, 1, 100)
-    Regression = np.random.default_rng(42).normal(0, 1, 100)
-    Model = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_elements_lin_reg_eq_3_1(Fitting, a, Linear, Multiple, Regression, Model)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = mvsml_elements_lin_reg_eq_3_1(X, y)
     assert isinstance(result, dict)

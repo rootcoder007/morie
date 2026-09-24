@@ -7,18 +7,14 @@ from morie.fn.bsatf import rangayyan_istft
 
 def test_rgistft_basic():
     """Test basic functionality."""
-    stft = np.random.default_rng(42).normal(0, 1, 100)
-    window = np.random.default_rng(42).normal(0, 1, 100)
-    hop = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_istft(stft, window, hop)
+    stft = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = rangayyan_istft(stft)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "signal" in result
 
 
 def test_rgistft_edge():
     """Test edge cases."""
-    stft = np.random.default_rng(42).normal(0, 1, 100)
-    window = np.random.default_rng(42).normal(0, 1, 100)
-    hop = np.random.default_rng(42).normal(0, 1, 100)
-    result = rangayyan_istft(stft, window, hop)
+    stft = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = rangayyan_istft(stft)
     assert isinstance(result, dict)

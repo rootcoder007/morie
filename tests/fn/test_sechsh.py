@@ -7,18 +7,16 @@ from morie.fn.sechsh import hash_chain_audit
 
 def test_sechsh_basic():
     """Test basic functionality."""
-    prev_hash = np.random.default_rng(42).normal(0, 1, 100)
-    row = np.random.default_rng(42).normal(0, 1, 100)
-    hash_alg = np.random.default_rng(42).normal(0, 1, 100)
-    result = hash_chain_audit(prev_hash, row, hash_alg)
+    entries = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    hashes = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = hash_chain_audit(entries, hashes)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_sechsh_edge():
     """Test edge cases."""
-    prev_hash = np.random.default_rng(42).normal(0, 1, 100)
-    row = np.random.default_rng(42).normal(0, 1, 100)
-    hash_alg = np.random.default_rng(42).normal(0, 1, 100)
-    result = hash_chain_audit(prev_hash, row, hash_alg)
+    entries = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    hashes = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = hash_chain_audit(entries, hashes)
     assert isinstance(result, dict)
