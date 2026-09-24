@@ -271,6 +271,29 @@ def _norm_slice(s):
                  _slice_bound(s.step))
 
 
+class _Flags:
+    """numpy.ndarray.flags, as much of it as the list-backed core can
+    honestly report: it owns its data, is writeable, and is laid out
+    row by row."""
+
+    C_CONTIGUOUS = True
+    F_CONTIGUOUS = False
+    OWNDATA = True
+    WRITEABLE = True
+    ALIGNED = True
+
+    def __getitem__(self, key):
+        try:
+            return getattr(self, str(key))
+        except AttributeError:
+            raise KeyError(key)
+
+    def __repr__(self):
+        return ("  C_CONTIGUOUS : True\n  F_CONTIGUOUS : False\n"
+                "  OWNDATA : True\n  WRITEABLE : True\n"
+                "  ALIGNED : True")
+
+
 class marr:
     """Minimal array: nested lists of floats, 1-D or 2-D."""
 
@@ -623,6 +646,18 @@ class marr:
     def nbytes(self):
         """numpy.ndarray.nbytes: the element count times the item size."""
         return self.size * getattr(self.dtype, "itemsize", 8)
+
+    @property
+    def itemsize(self):
+        """numpy.ndarray.itemsize: the byte width of one element."""
+        return getattr(self.dtype, "itemsize", 8)
+
+    @property
+    def flags(self):
+        """numpy.ndarray.flags. The list-backed core always owns its
+        own rows and is always writeable, and rows are stored in C
+        order, so the four flags callers read are constant."""
+        return _Flags()
     @property
     def ndim(self):
         return len(self.shape)
@@ -5008,6 +5043,44 @@ class ndlist(list):
         """The raw sub-lists, bypassing the numpy-style __iter__."""
         return [list.__getitem__(self, i) for i in range(len(self))]
 
+    def argmax(self, axis=None):
+        """numpy.ndarray.argmax. With no axis the index is into the
+        flattened array, as numpy does."""
+        flat = _flatten_nested(self.tolist())
+        if axis is None:
+            if not flat:
+                raise ValueError("attempt to get argmax of an empty "
+                                 "sequence")
+            best = 0
+            for i in range(1, len(flat)):
+                if flat[i] > flat[best]:
+                    best = i
+            return best
+        return argmax(self, axis=axis)
+
+    def argmin(self, axis=None):
+        """numpy.ndarray.argmin, flattened when no axis is given."""
+        flat = _flatten_nested(self.tolist())
+        if axis is None:
+            if not flat:
+                raise ValueError("attempt to get argmin of an empty "
+                                 "sequence")
+            best = 0
+            for i in range(1, len(flat)):
+                if flat[i] < flat[best]:
+                    best = i
+            return best
+        return argmin(self, axis=axis)
+
+    def transpose(self, axes=None):
+        """numpy.ndarray.transpose: reverses the axes by default."""
+        return transpose(self, axes)
+
+    @property
+    def T(self):
+        """numpy.ndarray.T."""
+        return transpose(self, None)
+
     def __iter__(self):
         """numpy: iterating a rank-n array yields rank-(n-1) arrays."""
         for b in self._blocks():
@@ -5605,7 +5678,57 @@ def bincount(x, weights=None, minlength=0):
     return marr(out)
 
 
-def meshgrid(x, y, indexing="xy"):
+def meshgrid(*xi, **kw):
+    """As numpy.meshgrid: one or more 1-D arrays, plus the
+    ``indexing`` keyword. numpy accepts a single array (giving
+    one output) and three or more; requiring exactly two made
+    those calls a TypeError."""
+    indexing = kw.pop("indexing", "xy")
+    if kw:
+        raise TypeError("meshgrid() got an unexpected keyword "
+                        "argument %r" % next(iter(kw)))
+    if not xi:
+        return []
+    if len(xi) == 1:
+        return [asarray(xi[0]).copy()]
+    if len(xi) > 2:
+        return _meshgrid_nd(xi, indexing)
+    x, y = xi
+    return _meshgrid_2d(x, y, indexing)
+
+
+def _meshgrid_nd(xi, indexing):
+    """The general case: each output has the shape of the full
+    grid, with input i varying along its own axis."""
+    vecs = [list(asarray(v)._flat()) for v in xi]
+    shape = [len(v) for v in vecs]
+    if indexing == "xy":
+        shape[0], shape[1] = shape[1], shape[0]
+    elif indexing != "ij":
+        raise ValueError("indexing must be 'xy' or 'ij'")
+    out = []
+    for i, v in enumerate(vecs):
+        ax = i
+        if indexing == "xy" and i == 0:
+            ax = 1
+        elif indexing == "xy" and i == 1:
+            ax = 0
+        out.append(_broadcast_along(v, ax, shape))
+    return out
+
+
+def _broadcast_along(vec, axis, shape):
+    """A nested list of the given shape whose values vary only
+    along ``axis``."""
+    def build(dim, idx):
+        if dim == len(shape):
+            return vec[idx[axis]]
+        return [build(dim + 1, idx + [k]) for k in range(shape[dim])]
+    nested = build(0, [])
+    return ndlist(nested) if len(shape) >= 3 else marr(nested)
+
+
+def _meshgrid_2d(x, y, indexing="xy"):
     """As numpy.meshgrid, including the ``indexing`` keyword.
 
     The keyword was missing, so every caller writing the numpy-standard
@@ -6061,7 +6184,10 @@ def ediff1d(x):
     return diff(asarray(x)._flat())
 
 
-def setdiff1d(a, b):
+def setdiff1d(a, b, assume_unique=False):
+    """As numpy.setdiff1d. ``assume_unique`` is accepted for
+    signature parity; the result is unique and sorted either
+    way, which is what numpy returns when it is False."""
     bs = set(asarray(b)._flat()) if not isinstance(b, (int, float)) \
         else {float(b)}
     seen = set()
@@ -6228,14 +6354,148 @@ def ravel(x):
 
 
 def transpose(x, axes=None):
-    del axes
-    a = asarray(x)
-    if len(a.shape) == 2:
+    """As numpy.transpose, including the ``axes`` permutation.
+
+    The argument used to be discarded and anything but a matrix was
+    returned unchanged, so a rank-3 transpose silently did nothing.
+    """
+    nd = ndim(x)
+    if nd < 2:
+        return asarray(x).copy() if nd == 1 else x
+    if nd == 2 and axes is None:
+        a = asarray(x)
         if 0 in a.shape:
             return _empty2d(a.shape[1], a.shape[0])
         return marr([[a.data[i][j] for i in range(a.shape[0])]
                      for j in range(a.shape[1])])
-    return a
+    nested = x.tolist() if hasattr(x, "tolist") else x
+    shape = _list_shape(nested)
+    if axes is None:
+        perm = list(range(nd))[::-1]
+    else:
+        perm = [int(v) % nd for v in
+                (axes if isinstance(axes, (list, tuple)) else [axes])]
+        if sorted(perm) != list(range(nd)):
+            raise ValueError("axes don't match array")
+    out_shape = [shape[perm[k]] for k in range(nd)]
+
+    def get(nested_v, idx):
+        for i in idx:
+            nested_v = nested_v[i]
+        return nested_v
+
+    def build(dim, out_idx):
+        if dim == nd:
+            src = [0] * nd
+            for k in range(nd):
+                src[perm[k]] = out_idx[k]
+            return get(nested, src)
+        return [build(dim + 1, out_idx + [i])
+                for i in range(out_shape[dim])]
+
+    res = build(0, [])
+    return ndlist(res) if nd >= 3 else marr(res)
+
+
+def _list_shape(v):
+    """The shape of a plain nested list, one dimension per level.
+
+    Deliberately distinct from _nested_shape above, which also accepts
+    a marr and returns a tuple; these callers want the plain-list form.
+    """
+    shape = []
+    node = v
+    while isinstance(node, (list, tuple)):
+        shape.append(len(node))
+        if not node:
+            break
+        node = node[0]
+    return shape
+
+
+def tensordot(a, b, axes=2):
+    """As numpy.tensordot.
+
+    ``axes`` is either an integer count of trailing axes of ``a`` to
+    contract against leading axes of ``b``, or a pair of axis
+    sequences. The result keeps a's free axes followed by b's.
+    """
+    A = a.tolist() if hasattr(a, "tolist") else a
+    B = b.tolist() if hasattr(b, "tolist") else b
+    sa, sb = _list_shape(A), _list_shape(B)
+    na, nb = len(sa), len(sb)
+    if isinstance(axes, (int, float)):
+        k = int(axes)
+        ax_a = list(range(na - k, na))
+        ax_b = list(range(k))
+    else:
+        ax_a, ax_b = axes
+        ax_a = [int(v) % na for v in
+                (ax_a if isinstance(ax_a, (list, tuple)) else [ax_a])]
+        ax_b = [int(v) % nb for v in
+                (ax_b if isinstance(ax_b, (list, tuple)) else [ax_b])]
+    if len(ax_a) != len(ax_b):
+        raise ValueError("tensordot: the two axis lists must be the "
+                         "same length")
+    for i, j in zip(ax_a, ax_b):
+        if sa[i] != sb[j]:
+            raise ValueError("tensordot: contracted axes have sizes "
+                             "%d and %d" % (sa[i], sb[j]))
+    free_a = [i for i in range(na) if i not in ax_a]
+    free_b = [j for j in range(nb) if j not in ax_b]
+    out_shape = [sa[i] for i in free_a] + [sb[j] for j in free_b]
+    con_shape = [sa[i] for i in ax_a]
+
+    def get(node, idx):
+        for i in idx:
+            node = node[i]
+        return node
+
+    def counters(shape):
+        if not shape:
+            yield []
+            return
+        idx = [0] * len(shape)
+        while True:
+            yield list(idx)
+            d = len(shape) - 1
+            while d >= 0:
+                idx[d] += 1
+                if idx[d] < shape[d]:
+                    break
+                idx[d] = 0
+                d -= 1
+            if d < 0:
+                return
+
+    def cell(oi):
+        ai_free = oi[:len(free_a)]
+        bi_free = oi[len(free_a):]
+        total = 0.0
+        for ci in counters(con_shape):
+            ia = [0] * na
+            for pos, axis in enumerate(free_a):
+                ia[axis] = ai_free[pos]
+            for pos, axis in enumerate(ax_a):
+                ia[axis] = ci[pos]
+            ib = [0] * nb
+            for pos, axis in enumerate(free_b):
+                ib[axis] = bi_free[pos]
+            for pos, axis in enumerate(ax_b):
+                ib[axis] = ci[pos]
+            total += get(A, ia) * get(B, ib)
+        return total
+
+    if not out_shape:
+        return float(cell([]))
+
+    def build(dim, oi):
+        if dim == len(out_shape):
+            return cell(oi)
+        return [build(dim + 1, oi + [i]) for i in range(out_shape[dim])]
+
+    res = build(0, [])
+    return ndlist(res) if len(out_shape) >= 3 else marr(res)
 
 
 def geomspace(a, b, n):
