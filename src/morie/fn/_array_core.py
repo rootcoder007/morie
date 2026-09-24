@@ -294,6 +294,29 @@ class _Flags:
                 "  ALIGNED : True")
 
 
+def _bool_index(idx, length):
+    """The selected positions when ``idx`` is a boolean mask of the
+    right length, else None.
+
+    numpy distinguishes a boolean mask from a list of indices; the
+    list-backed core stores a mask as 1.0/0.0, so without this check
+    x[mask] was read as x[[1.0, 1.0, 0.0]] and gathered rows 1, 1, 0.
+    """
+    if isinstance(idx, marr):
+        if not getattr(idx, "_is_mask", False) \
+                and getattr(idx, "_dt", None) != "bool":
+            return None
+        vals = idx._flat()
+    elif isinstance(idx, (list, tuple)) and idx \
+            and all(isinstance(v, bool) for v in idx):
+        vals = list(idx)
+    else:
+        return None
+    if len(vals) != length:
+        return None
+    return [k for k, v in enumerate(vals) if v]
+
+
 class marr:
     """Minimal array: nested lists of floats, 1-D or 2-D."""
 
@@ -405,6 +428,24 @@ class marr:
         return diag(self, k=offset)
 
     def __getitem__(self, idx):
+        """Indexing, with the boolean flag carried to the result.
+
+        numpy keeps an array's dtype through indexing, so a column of a
+        boolean mask is still boolean. This core stores a mask as
+        1.0/0.0, and without carrying the flag a sliced mask decayed
+        into ordinary numbers -- after which x[mask] read those 1.0s
+        and 0.0s as row indices and silently returned the wrong rows.
+        """
+        out = self._getitem_raw(idx)
+        if isinstance(out, marr):
+            if getattr(self, "_is_mask", False):
+                out._is_mask = True
+            dt = getattr(self, "_dt", None)
+            if dt and getattr(out, "_dt", None) is None:
+                out._dt = dt
+        return out
+
+    def _getitem_raw(self, idx):
         if isinstance(idx, slice):
             idx = _norm_slice(idx)
         if isinstance(idx, tuple):
@@ -463,6 +504,41 @@ class marr:
             if i is None:                       # x[None, :] -> row
                 return marr([self._flat()])
             if len(self.shape) == 2:
+                # numpy: a boolean mask in one position selects along
+                # that axis. Stored as 1.0/0.0, it was being read as a
+                # list of row indices instead, so x[mask, j] silently
+                # returned the wrong rows.
+                i_mask = _bool_index(i, self.shape[0])
+                j_mask = _bool_index(j, self.shape[1])
+                if i_mask is not None or j_mask is not None:
+                    rows = i_mask if i_mask is not None else None
+                    cols = j_mask if j_mask is not None else None
+                    if rows is None:
+                        if isinstance(i, slice):
+                            rows = list(range(self.shape[0]))[i]
+                        elif isinstance(i, (int, float)):
+                            rows = [int(i)]
+                        else:
+                            rows = [int(v) for v in
+                                    (i._flat() if isinstance(i, marr) else i)]
+                    if cols is None:
+                        if isinstance(j, slice):
+                            cols = list(range(self.shape[1]))[j]
+                        elif isinstance(j, (int, float)):
+                            cols = [int(j)]
+                        else:
+                            cols = [int(v) for v in
+                                    (j._flat() if isinstance(j, marr) else j)]
+                    picked = [[self.data[r][c] for c in cols] for r in rows]
+                    drop_row = isinstance(i, (int, float))
+                    drop_col = isinstance(j, (int, float))
+                    if drop_row and drop_col:
+                        return float(picked[0][0])
+                    if drop_col:
+                        return marr([row[0] for row in picked])
+                    if drop_row:
+                        return marr(picked[0])
+                    return marr(picked)
                 if isinstance(i, (marr, list)) and \
                         isinstance(j, (marr, list)):
                     iv = [int(v) for v in
