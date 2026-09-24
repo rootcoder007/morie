@@ -1,7 +1,5 @@
 """Tests for david_j_morin_probability_for_the_enthusiastic_beginner4e89.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_89."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e89 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_89,
 )
@@ -9,14 +7,16 @@ from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e89 import
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e89_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_89(x)
+    # Poisson mode requires a scalar rate parameter a (lambda >= 0)
+    a = 5.0
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_89(a)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "statistic" in result or "mode" in result or "k_star" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e89_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_89(x)
+    # For a < 1, the Poisson mode is 0
+    a = 0.5
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_89(a)
     assert isinstance(result, dict)

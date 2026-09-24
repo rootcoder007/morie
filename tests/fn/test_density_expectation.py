@@ -20,8 +20,9 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner4e55_basic():
     assert isinstance(result, dict)
     assert "expectation" in result
     assert math.isfinite(result["expectation"])
-    # Standard normal density is symmetric about 0, so E[X] = 0
-    assert abs(result["expectation"]) < 0.01
+    # The density is symmetric about 0, and the quadrature is exact on a
+    # symmetric grid, so the expectation is zero to machine precision
+    assert abs(result["expectation"]) < 1e-12
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner4e55_edge():
@@ -34,5 +35,6 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner4e55_edge():
     assert isinstance(result, dict)
     assert "expectation" in result
     assert math.isfinite(result["expectation"])
-    # E[X] for uniform on [0, 1] is 0.5
-    assert abs(result["expectation"] - 0.5) < 0.01
+    # E[X] for uniform on [0, 1] is 1/2, and the trapezoid rule is exact
+    # for a linear integrand, so no sampling slack is warranted
+    assert abs(result["expectation"] - 0.5) < 1e-12
