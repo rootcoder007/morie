@@ -17,6 +17,7 @@ References:
 
 from __future__ import annotations
 
+import logging
 import os
 import platform
 import re
@@ -32,6 +33,8 @@ from typing import Any
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
+
+_logger = logging.getLogger(__name__)
 
 _JOULES_TO_KWH = 2.77778e-7
 _G_TO_KG = 0.001
@@ -557,6 +560,8 @@ class EmissionsTracker:
         self._pue = pue
         self._wue = wue
         self._save_to_file = save_to_file
+        self._save_to_logger = save_to_logger
+        _logger.setLevel(getattr(logging, str(log_level).upper(), logging.WARNING))
         self._country_iso = country_iso_code
         self._region = region
 
@@ -630,6 +635,9 @@ class EmissionsTracker:
 
         if self._save_to_file:
             self._write_csv(data)
+        if self._save_to_logger:
+            _logger.info("emissions: %.6f kg CO2 over %.1f s (%.6f kWh)",
+                         emissions, duration, total_energy)
 
         return emissions
 

@@ -622,6 +622,10 @@ class marr:
         f = self._flat()
         if len(f) != 1:
             raise ValueError("only single-element marr converts to float")
+        if isinstance(f[0], complex):
+            # the same error Python raises for float(1j), not the
+            # interpreter's "__float__ returned non-float" protocol message
+            raise TypeError("can't convert complex to float")
         return f[0]
 
     def __or__(self, o):
@@ -1093,11 +1097,15 @@ class marr:
         return _nan_argext(self._flat(), _bi.min)
 
     # -- reductions ----------------------------------------------------
+    def _kd_all(self, v):
+        """keepdims form of a full reduction: (1, 1) for 2-D, (1,) for 1-D."""
+        return marr([[v]]) if len(self.shape) == 2 else marr([v])
+
     def sum(self, axis=None, dtype=None, out=None, keepdims=False):
         del dtype, out
         if axis is None:
             v = float(_fsum(self._flat()))
-            return marr([v]) if keepdims else v
+            return self._kd_all(v) if keepdims else v
         if len(self.shape) != 2:
             # numpy: axis 0 / -1 on a 1-D array is the full reduction
             v = float(_fsum(self._flat()))
@@ -1116,9 +1124,9 @@ class marr:
             f = self._flat()
             if not f:
                 _warnings.warn("Mean of empty slice", RuntimeWarning, stacklevel=2)
-                return marr([_NAN]) if keepdims else _NAN
+                return self._kd_all(_NAN) if keepdims else _NAN
             v = float(_fsum(f) / len(f))
-            return marr([v]) if keepdims else v
+            return self._kd_all(v) if keepdims else v
         s = self.sum(axis=axis)
         d = self.shape[0] if axis == 0 else self.shape[1]
         out = s / float(d)
@@ -1134,6 +1142,8 @@ class marr:
             v = self.var(axis=axis, ddof=ddof)
             return marr([v.tolist()]) if axis in (0, -2) else \
                 marr([[x] for x in v._flat()])
+        if keepdims:
+            return self._kd_all(self.var(axis=axis, ddof=ddof))
         if axis is not None and len(self.shape) == 2:
             m = self.mean(axis=axis)
             if axis == 0:
@@ -1161,6 +1171,8 @@ class marr:
             v = self.std(axis=axis, ddof=ddof)
             return marr([v.tolist()]) if axis in (0, -2) else \
                 marr([[x] for x in v._flat()])
+        if keepdims:
+            return self._kd_all(self.std(axis=axis, ddof=ddof))
         v = self.var(axis=axis, ddof=ddof)
         if isinstance(v, marr):
             return marr([_math.sqrt(u) for u in v._flat()])
@@ -1168,6 +1180,8 @@ class marr:
 
     def max(self, axis=None, out=None, keepdims=False, initial=None):
         del out
+        if keepdims and (axis is None or len(self.shape) != 2):
+            return self._kd_all(self.max(axis=axis, initial=initial))
         if initial is not None and axis is None:
             f = self._flat()
             return _nan_ext([float(initial)] + f, _bi.max)
@@ -1183,6 +1197,8 @@ class marr:
 
     def min(self, axis=None, out=None, keepdims=False, initial=None):
         del out
+        if keepdims and (axis is None or len(self.shape) != 2):
+            return self._kd_all(self.min(axis=axis, initial=initial))
         if initial is not None and axis is None:
             f = self._flat()
             return _nan_ext([float(initial)] + f, _bi.min)
@@ -2103,30 +2119,32 @@ def mean(x, axis=None, dtype=None, keepdims=False):
 
 def std(x, axis=None, ddof=0, dtype=None, keepdims=False):
     _check_axis(asarray(x), axis)
-    del dtype, keepdims
-    return asarray(x).std(axis=axis, ddof=ddof)
+    del dtype
+    if isinstance(x, ndlist):
+        return x.std(axis=axis, ddof=ddof, keepdims=keepdims)
+    return asarray(x).std(axis=axis, ddof=ddof, keepdims=keepdims)
 
 
 def var(x, axis=None, ddof=0, dtype=None, keepdims=False):
     _check_axis(asarray(x), axis)
-    del dtype, keepdims
-    return asarray(x).var(axis=axis, ddof=ddof)
+    del dtype
+    if isinstance(x, ndlist):
+        return x.var(axis=axis, ddof=ddof, keepdims=keepdims)
+    return asarray(x).var(axis=axis, ddof=ddof, keepdims=keepdims)
 
 
 def max(x, axis=None, keepdims=False):  # noqa: A001
     _check_axis(asarray(x), axis)
     if isinstance(x, ndlist):
         return x.max(axis=axis, keepdims=keepdims)
-    del keepdims
-    return asarray(x).max(axis=axis)
+    return asarray(x).max(axis=axis, keepdims=keepdims)
 
 
 def min(x, axis=None, keepdims=False):  # noqa: A001
     _check_axis(asarray(x), axis)
     if isinstance(x, ndlist):
         return x.min(axis=axis, keepdims=keepdims)
-    del keepdims
-    return asarray(x).min(axis=axis)
+    return asarray(x).min(axis=axis, keepdims=keepdims)
 
 
 def _axis_reduce(x, axis, red):
@@ -2237,7 +2255,7 @@ def unique(x, return_inverse=False, return_counts=False,
         cnt = {}
         for v in vals:
             cnt[v] = cnt.get(v, 0) + 1
-        out.append(marr([float(cnt[v]) for v in uniq]))
+        out.append(_typed(marr([float(cnt[v]) for v in uniq]), int))
     return tuple(out)
 
 
@@ -3629,7 +3647,7 @@ def prod(x, axis=None, keepdims=False):
         else:
             out = marr([_p(row) for row in a.data])
         return _keepdims_wrap(out, axis, keepdims)
-    return _keepdims_wrap(_p(a._flat()), axis, keepdims)
+    return _keepdims_wrap(_p(a._flat()), axis, keepdims, len(a.shape))
 
 
 def outer(a, b):
@@ -3903,7 +3921,8 @@ def median(x, axis=None, keepdims=False):
         else:
             out = marr([_median_nanaware(row) for row in a.data])
         return _keepdims_wrap(out, axis, keepdims)
-    return _keepdims_wrap(_median_nanaware(a._flat()), axis, keepdims)
+    return _keepdims_wrap(_median_nanaware(a._flat()), axis, keepdims,
+                          len(a.shape))
 
 
 def percentile(x, q, axis=None):
@@ -4070,6 +4089,10 @@ def shape(x):
 
 
 def ndim(x):
+    # a Python scalar is 0-d in numpy; this core's asarray() has no 0-d
+    # form, so answer the question before building an array
+    if isinstance(x, (int, float, complex, bool)):
+        return 0
     return asarray(x).ndim
 
 
@@ -4565,11 +4588,16 @@ def block(rows):
     """numpy.block for the 2-D nested-list case: each inner list is a
     row of blocks joined left-to-right, rows stacked top-to-bottom. A
     flat list of 1-D blocks concatenates to a 1-D array, as numpy does."""
+    if isinstance(rows, marr):
+        return marr(rows)                      # an array is its own block
     if not any(isinstance(r, (list, tuple)) for r in rows):
         parts = [asarray(b) for b in rows]
         if all(len(p_.shape) == 1 for p_ in parts):
             return marr([v for p_ in parts for v in p_.data])
         return hstack(parts)
+    if all(isinstance(r, (list, tuple)) and
+           all(isinstance(v, (int, float)) for v in r) for r in rows):
+        return marr([list(map(float, r)) for r in rows])   # nested scalars
     out = []
     for row in rows:
         mats = [atleast_2d(asarray(b)) for b in row]
@@ -4673,23 +4701,33 @@ def nonzero(x):
     return (flatnonzero(x),)
 
 
-def triu_indices(n, k=0):
+def triu_indices(n, k=0, m=None):
+    m = n if m is None else int(m)
     ii, jj = [], []
     for i in range(n):
-        for j in range(i + k, n):
-            if j >= 0:
-                ii.append(float(i))
-                jj.append(float(j))
-    return marr(ii), marr(jj)
-
-
-def tril_indices(n, k=0):
-    ii, jj = [], []
-    for i in range(n):
-        for j in range(0, _bi.min(i + k + 1, n)):
+        for j in range(_bi.max(i + k, 0), m):
             ii.append(float(i))
             jj.append(float(j))
-    return marr(ii), marr(jj)
+    return _index_pair(ii, jj)
+
+
+def tril_indices(n, k=0, m=None):
+    m = n if m is None else int(m)
+    ii, jj = [], []
+    for i in range(n):
+        for j in range(0, _bi.min(i + k + 1, m)):
+            ii.append(float(i))
+            jj.append(float(j))
+    return _index_pair(ii, jj)
+
+
+def _index_pair(ii, jj):
+    """Two integer index arrays, tagged as such and int-valued so
+    ``tolist()`` gives the ints numpy gives."""
+    r, c = _typed(marr(ii), int), _typed(marr(jj), int)
+    r._is_index = True
+    c._is_index = True
+    return r, c
 
 
 def diag_indices(n):
@@ -4707,14 +4745,23 @@ def diag_indices_from(a):
     return diag_indices(arr.shape[0])
 
 
+def _tri_input(a):
+    """numpy broadcasts a 1-D input against tri(n, n): the row is
+    repeated down an n x n matrix before masking."""
+    m = asarray(a)
+    if len(m.shape) == 1:
+        return marr([m.data[:] for _ in range(m.shape[0])])
+    return atleast_2d(m)
+
+
 def triu(a, k=0):
-    m = atleast_2d(a)
+    m = _tri_input(a)
     return marr([[m.data[i][j] if j >= i + k else 0.0
                   for j in range(m.shape[1])] for i in range(m.shape[0])])
 
 
 def tril(a, k=0):
-    m = atleast_2d(a)
+    m = _tri_input(a)
     return marr([[m.data[i][j] if j <= i + k else 0.0
                   for j in range(m.shape[1])] for i in range(m.shape[0])])
 
@@ -4768,7 +4815,7 @@ def histogram(x, bins=10, range=None):  # noqa: A002
                                                 and v == edges[-1]):
                 counts[b] += 1.0
                 break
-    return marr(counts), marr(edges)
+    return _typed(marr(counts), int), marr(edges)
 
 
 def range_(n):
@@ -4976,12 +5023,17 @@ def _nan_filter(x):
     return [v for v in asarray(x)._flat() if v == v]
 
 
-def _keepdims_wrap(out, axis, keepdims):
+def _keepdims_wrap(out, axis, keepdims, nd=None):
+    """Give a reduction numpy's keepdims shape: the reduced axis stays as
+    length 1, so a full reduction of a 2-D input is (1, 1), of a 1-D
+    input (1,), and an axis reduction of a 2-D input (1, m) or (n, 1)."""
     if not keepdims:
         return out
     if isinstance(out, marr):
         return marr([out.tolist()]) if axis in (0, -2) else \
             marr([[v] for v in out._flat()])
+    if nd == 2:
+        return marr([[float(out)]])
     return marr([float(out)])
 
 
@@ -5006,7 +5058,8 @@ def _median_of(v):
 
 
 def nanmean(x, axis=None, keepdims=False):
-    if axis is not None and len(asarray(x).shape) == 2:
+    nd = len(asarray(x).shape)
+    if axis is not None and nd == 2:
         return _keepdims_wrap(
             _nan_axis(x, axis,
                       lambda v: _fsum(v) / len(v) if v else nan),
@@ -5014,15 +5067,16 @@ def nanmean(x, axis=None, keepdims=False):
     f = _nan_filter(x)
     if not f:
         _warnings.warn("Mean of empty slice", RuntimeWarning, stacklevel=2)
-        return _keepdims_wrap(_NAN, axis, keepdims)
-    return _keepdims_wrap(float(_fsum(f) / len(f)), axis, keepdims)
+        return _keepdims_wrap(_NAN, axis, keepdims, nd)
+    return _keepdims_wrap(float(_fsum(f) / len(f)), axis, keepdims, nd)
 
 
 def nansum(x, axis=None, keepdims=False):
-    if axis is not None and len(asarray(x).shape) == 2:
+    nd = len(asarray(x).shape)
+    if axis is not None and nd == 2:
         return _keepdims_wrap(_nan_axis(x, axis, lambda v: _fsum(v)),
                               axis, keepdims)
-    return float(_fsum(_nan_filter(x)))
+    return _keepdims_wrap(float(_fsum(_nan_filter(x))), axis, keepdims, nd)
 
 
 def _nanvar_of(v, ddof):
@@ -5035,10 +5089,12 @@ def _nanvar_of(v, ddof):
 def nanvar(x, axis=None, ddof=0, keepdims=False):
     """numpy.nanvar; honours axis and keepdims like its siblings (it
     accepted them and returned the flat scalar)."""
-    if axis is not None and len(asarray(x).shape) == 2:
+    nd = len(asarray(x).shape)
+    if axis is not None and nd == 2:
         return _keepdims_wrap(_nan_axis(x, axis, lambda v: _nanvar_of(v, ddof)),
                               axis, keepdims)
-    return _keepdims_wrap(float(_nanvar_of(_nan_filter(x), ddof)), axis, keepdims)
+    return _keepdims_wrap(float(_nanvar_of(_nan_filter(x), ddof)), axis,
+                          keepdims, nd)
 
 
 def nanstd(x, axis=None, ddof=0, keepdims=False):
@@ -5049,28 +5105,31 @@ def nanstd(x, axis=None, ddof=0, keepdims=False):
 
 
 def nanmax(x, axis=None, keepdims=False):
-    if axis is not None and len(asarray(x).shape) == 2:
+    nd = len(asarray(x).shape)
+    if axis is not None and nd == 2:
         return _keepdims_wrap(_nan_axis(x, axis, lambda v: _bi.max(v) if v else nan),
                               axis, keepdims)
-    return float(_bi.max(_nan_filter(x)))
+    return _keepdims_wrap(float(_bi.max(_nan_filter(x))), axis, keepdims, nd)
 
 
 def nanmin(x, axis=None, keepdims=False):
-    if axis is not None and len(asarray(x).shape) == 2:
+    nd = len(asarray(x).shape)
+    if axis is not None and nd == 2:
         return _keepdims_wrap(_nan_axis(x, axis, lambda v: _bi.min(v) if v else nan),
                               axis, keepdims)
-    return float(_bi.min(_nan_filter(x)))
+    return _keepdims_wrap(float(_bi.min(_nan_filter(x))), axis, keepdims, nd)
 
 
 def nanmedian(x, axis=None, keepdims=False):
-    if axis is not None and len(asarray(x).shape) == 2:
+    nd = len(asarray(x).shape)
+    if axis is not None and nd == 2:
         return _keepdims_wrap(_nan_axis(x, axis, lambda v: _median_of(v)),
                               axis, keepdims)
     f = _nan_filter(x)
     if not f:
         _warnings.warn("All-NaN slice encountered", RuntimeWarning, stacklevel=2)
-        return nan
-    return median(f)
+        return _keepdims_wrap(nan, axis, keepdims, nd)
+    return _keepdims_wrap(median(f), axis, keepdims, nd)
 
 
 def _nan_arg(f, better):
@@ -5125,7 +5184,18 @@ def polyfit(x, y, deg):
 
 
 def polyval(p, x):
-    c = asarray(p)._flat()
+    pa = asarray(p)
+    if len(pa.shape) == 2:
+        # numpy: 2-D coefficients evaluate one polynomial per column
+        # (Horner down axis 0), array-valued coefficients
+        if isinstance(x, (list, tuple, marr)):
+            raise ValueError("polyval: 2-D coefficients take a scalar x in this core")
+        v = float(x)
+        out = [0.0] * pa.shape[1]
+        for row in pa.data:
+            out = [o * v + cc for o, cc in zip(out, row)]
+        return marr(out)
+    c = pa._flat()
 
     def one(v):
         out = 0.0
@@ -5148,8 +5218,30 @@ def polymul(a, b):
 
 
 def poly(roots):
+    a = asarray(roots)
+    if len(a.shape) == 2:
+        # numpy: a square matrix gives its characteristic polynomial.
+        # Faddeev-LeVerrier builds the coefficients from traces of
+        # powers, without an eigen-decomposition.
+        n = a.shape[0]
+        if a.shape[1] != n:
+            raise ValueError("input must be 1d or non-empty square 2d array.")
+        A = [row[:] for row in a.data]
+        M = [[0.0] * n for _ in range(n)]
+        coef = [1.0]
+        for k in range(1, n + 1):
+            # M_k = A M_{k-1} + c_{n-k+1} I
+            AM = [[_fsum(A[i][t] * M[t][j] for t in range(n))
+                   for j in range(n)] for i in range(n)]
+            for i in range(n):
+                AM[i][i] += coef[-1]
+            M = AM
+            tr = _fsum(_fsum(A[i][t] * M[t][i] for t in range(n))
+                       for i in range(n))
+            coef.append(-tr / k)
+        return marr(coef)
     out = [1.0]
-    for r in asarray(roots)._flat():
+    for r in a._flat():
         out = convolve(out, [1.0, -r]).tolist()
     return marr(out)
 
@@ -5170,8 +5262,11 @@ def kron(a, b):
 
 
 def ix_(rows, cols):
-    r = marr([float(v) for v in asarray(rows)._flat()])
-    c = marr([float(v) for v in asarray(cols)._flat()])
+    """numpy.ix_: an open mesh, (n, 1) and (1, m) index arrays that
+    broadcast into a grid. Indexing consumers read them flat and see
+    the outer-product tag."""
+    r = _typed(marr([[float(v)] for v in asarray(rows)._flat()]), int)
+    c = _typed(marr([[float(v) for v in asarray(cols)._flat()]]), int)
     r._is_index = True
     c._is_index = True
     r._ix_outer = True
@@ -5226,7 +5321,10 @@ def in1d(a, b):
 
 def real(x):
     """Real part.  marr holds complex values, so this must actually take
-    the real part rather than pass the value through."""
+    the real part rather than pass the value through. A scalar input
+    gives a float, as numpy does."""
+    if isinstance(x, (int, float, complex)):
+        return float(x.real) if isinstance(x, complex) else float(x)
     return asarray(x)._map(lambda v: v.real if isinstance(v, complex)
                            else float(v))
 
@@ -5234,6 +5332,8 @@ def real(x):
 def imag(x):
     """Imaginary part.  Returned a hard zero before, which was a silent
     wrong answer for every complex input."""
+    if isinstance(x, (int, float, complex)):
+        return float(x.imag) if isinstance(x, complex) else 0.0
     return asarray(x)._map(lambda v: v.imag if isinstance(v, complex)
                            else 0.0)
 
@@ -5340,6 +5440,10 @@ def negative(x):
 
 
 def reciprocal(x):
+    a = asarray(x) if not isinstance(x, (int, float)) else None
+    if a is not None and getattr(a, "_dt", None) == "int64":
+        # numpy integer reciprocal is integer division: 1 for 1, else 0
+        return _typed(a._map(lambda v: float(int(1 / v)) if v != 0 else 0.0), int)
     return _map_unary(x, lambda v: _ieee_div(1.0, v))
 
 
@@ -5370,10 +5474,31 @@ def geomspace(a, b, n):
                  for i in range_(int(n))])
 
 
-def split(x, k):
-    f = asarray(x)._flat()
-    step = len(f) // int(k)
-    return [marr(f[i * step:(i + 1) * step]) for i in range_(int(k))]
+def split(x, k, axis=0):
+    """numpy.split: an integer count of equal pieces, or a list of split
+    points; a 2-D input splits its rows (axis 0) or columns (axis 1)."""
+    a = asarray(x)
+    two_d = len(a.shape) == 2
+    n = a.shape[1] if (two_d and axis in (1, -1)) else a.shape[0]
+    if isinstance(k, (list, tuple, marr)):
+        pts = [int(v) for v in (k._flat() if isinstance(k, marr) else k)]
+        bounds = [0] + pts + [n]
+    else:
+        kk = int(k)
+        if n % kk:
+            raise ValueError("array split does not result in an equal division")
+        step = n // kk
+        bounds = [i * step for i in range_(kk + 1)]
+    out = []
+    for lo, hi in zip(bounds[:-1], bounds[1:]):
+        lo, hi = _bi.max(lo, 0), _bi.max(hi, lo)
+        if not two_d:
+            out.append(marr(a.data[lo:hi]))
+        elif axis in (1, -1):
+            out.append(marr([row[lo:hi] for row in a.data]))
+        else:
+            out.append(marr(a.data[lo:hi]) if hi > lo else marr([[]]))
+    return out
 
 
 def empty_like(x, dtype=None):
@@ -5404,28 +5529,59 @@ def issubdtype(a, b):
 
 
 def array_str(x):
-    """numpy's string form: ``[1. 2.5 nan]`` and ``[[1. 2.]\n [3. 4.]]``."""
+    """numpy's string form: elements padded to a common width, the
+    fractional parts left-aligned, so ``[-2.  -0.5  0.   0.5  2. ]``,
+    ``[ True False  True]`` and ``[[1. 2.]\n [3. 4.]]``."""
     a = asarray(x)
+    is_mask = getattr(a, "_is_mask", False)
+    is_int = getattr(a, "_dt", None) == "int64"
 
-    def one(v):
+    def cells(vals):
+        if is_mask:
+            return ["True" if v else "False" for v in vals]
+        if is_int:
+            return [str(int(v)) for v in vals]
+        return [_num_str(v) for v in vals]
+
+    def _num_str(v):
+        if isinstance(v, complex):
+            return repr(v)
         if isinstance(v, bool):
             return "True" if v else "False"
-        if isinstance(v, int) or getattr(a, "_dt", None) == "int64":
-            return str(int(v))
-        if isinstance(v, float):
-            if v != v:
-                return "nan"
-            if v in (_math.inf, -_math.inf):
-                return "inf" if v > 0 else "-inf"
-            return "%d." % int(v) if v.is_integer() and _bi.abs(v) < 1e16 \
-                else repr(v)
+        v = float(v)
+        if v != v:
+            return "nan"
+        if v in (_math.inf, -_math.inf):
+            return "inf" if v > 0 else "-inf"
+        if v.is_integer() and _bi.abs(v) < 1e16:
+            return "%d." % int(v)
         return repr(v)
-    if len(a.shape) == 1:
-        return "[" + " ".join(one(v) for v in a.data) + "]"
+
+    flat = [c for row in (a.data if len(a.shape) == 2 else [a.data])
+            for c in cells(row)]
+    finite = [s for s in flat if "." in s]
+    if is_mask or is_int or not finite:
+        width = _bi.max([len(s) for s in flat] or [0])
+
+        def fmt(s):
+            return s.rjust(width)
+    else:
+        # nan/inf take the full width of the widest finite cell
+        left = _bi.max(len(s.split(".")[0]) for s in finite)
+        right = _bi.max(len(s.split(".")[1]) for s in finite)
+        total = _bi.max([left + 1 + right] + [len(s) for s in flat])
+
+        def fmt(s):
+            if "." not in s:
+                return s.rjust(total)
+            ip, fp = s.split(".")
+            return ip.rjust(left) + "." + fp.ljust(right)
+
     if len(a.shape) == 2:
-        rows = ["[" + " ".join(one(v) for v in row) + "]" for row in a.data]
+        rows = ["[" + " ".join(fmt(s) for s in cells(row)) + "]"
+                for row in a.data]
         return "[" + "\n ".join(rows) + "]"
-    return repr(a)
+    return "[" + " ".join(fmt(s) for s in flat) + "]"
 
 
 def select(conds, choices, default=0.0):
@@ -5642,6 +5798,15 @@ class carr:
                 else carr(self.rows[i])
         if isinstance(i, slice):
             return carr(self.data[i])
+        if isinstance(i, (marr, list, tuple)):
+            # boolean mask or integer fancy index, as marr supports
+            sel = list(i._flat()) if isinstance(i, marr) else list(i)
+            if getattr(i, "_is_mask", False) or (
+                    sel and _bi.all(isinstance(v, bool) for v in sel)):
+                if len(sel) != len(self.data):
+                    raise IndexError("boolean index did not match the array")
+                return carr([v for v, keep in zip(self.data, sel) if keep])
+            return carr([self.data[int(v)] for v in sel])
         return self.data[i]
 
     def __buffer__(self, flags):
@@ -6128,8 +6293,21 @@ def power(a, b):
     return asarray(a)._zip(b, _ieee_pow)
 
 
-def gradient(f, *varargs):
-    v = list(asarray(f)._flat())
+def gradient(f, *varargs, axis=None):
+    a = asarray(f)
+    if len(a.shape) == 2:
+        # a 2-D input: one array per axis (numpy returns the list), or
+        # the requested axis alone
+        if axis is None:
+            return [gradient(a, *varargs, axis=0),
+                    gradient(a, *varargs, axis=1)]
+        if axis in (1, -1):
+            return marr([gradient(row, *varargs).tolist() for row in a.data])
+        cols = [gradient([a.data[i][j] for i in range(a.shape[0])],
+                         *varargs).tolist() for j in range(a.shape[1])]
+        return marr([[cols[j][i] for j in range(a.shape[1])]
+                     for i in range(a.shape[0])])
+    v = list(a._flat())
     dx = float(varargs[0]) if varargs and isinstance(
         varargs[0], (int, float)) else 1.0
     xs = (list(asarray(varargs[0])._flat())
@@ -6217,12 +6395,35 @@ def ptp(a, axis=None):
     return marr([_p(row) for row in x.data])
 
 
-def pad(a, pad_width, mode="constant", constant_values=0.0):
-    v = list(asarray(a)._flat())
+def _pad_widths(pad_width, nd):
+    """numpy's pad_width forms: int, (before, after), or one pair per axis."""
     if isinstance(pad_width, int):
-        lo = hi = pad_width
-    else:
-        lo, hi = pad_width
+        return [(pad_width, pad_width)] * nd
+    pw = list(pad_width)
+    if pw and isinstance(pw[0], (list, tuple)):
+        pairs = [tuple(int(v) for v in p) for p in pw]
+        return pairs * nd if len(pairs) == 1 else pairs
+    lo, hi = pw
+    return [(int(lo), int(hi))] * nd
+
+
+def pad(a, pad_width, mode="constant", constant_values=0.0):
+    arr = asarray(a)
+    if len(arr.shape) == 2:
+        (rlo, rhi), (clo, chi) = _pad_widths(pad_width, 2)
+        if mode == "constant":
+            c = float(constant_values)
+            rows = [[c] * clo + row[:] + [c] * chi for row in arr.data]
+            width = arr.shape[1] + clo + chi
+            return marr([[c] * width] * rlo + rows + [[c] * width] * rhi)
+        if mode == "edge":
+            rows = [[row[0]] * clo + row[:] + [row[-1]] * chi for row in arr.data]
+            return marr([rows[0][:] for _ in range(rlo)] + rows
+                        + [rows[-1][:] for _ in range(rhi)])
+        raise ValueError("pad mode %r is not supported for 2-D input in this core"
+                         % mode)
+    v = list(arr._flat())
+    (lo, hi), = _pad_widths(pad_width, 1)
     if mode == "constant":
         c = float(constant_values)
         return marr([c] * lo + v + [c] * hi)
@@ -6652,13 +6853,17 @@ def copy(x):  # numpy.copy
 
 
 def triu_indices_from(a, k=0):
-    n = asarray(a).shape[0]
-    return triu_indices(n, k)
+    sh = asarray(a).shape
+    if len(sh) != 2:
+        raise ValueError("input array must be 2-d")
+    return triu_indices(sh[0], k, sh[1])
 
 
 def tril_indices_from(a, k=0):
-    n = asarray(a).shape[0]
-    return tril_indices(n, k)
+    sh = asarray(a).shape
+    if len(sh) != 2:
+        raise ValueError("input array must be 2-d")
+    return tril_indices(sh[0], k, sh[1])
 
 
 def broadcast_shapes(*shapes):

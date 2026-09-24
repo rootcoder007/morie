@@ -357,6 +357,25 @@ class _Frozen:
         return at
 
 
+def _adaptive_simpson(fx, a, b, tol, depth):
+    """Adaptive Simpson quadrature of fx on [a, b]."""
+    c = 0.5 * (a + b)
+    fa, fb, fc = fx(a), fx(b), fx(c)
+    whole = (b - a) / 6.0 * (fa + 4.0 * fc + fb)
+
+    def rec(a, b, fa, fb, fc, whole, tol, depth):
+        c = 0.5 * (a + b)
+        d, e = 0.5 * (a + c), 0.5 * (c + b)
+        fd, fe = fx(d), fx(e)
+        left = (c - a) / 6.0 * (fa + 4.0 * fd + fc)
+        right = (b - c) / 6.0 * (fc + 4.0 * fe + fb)
+        if depth <= 0 or _bi.abs(left + right - whole) <= 15.0 * tol:
+            return left + right + (left + right - whole) / 15.0
+        return (rec(a, c, fa, fc, fd, left, tol / 2.0, depth - 1)
+                + rec(c, b, fc, fb, fe, right, tol / 2.0, depth - 1))
+    return rec(a, b, fa, fb, fc, whole, tol, depth)
+
+
 class _Dist:
     """Common frozen/unfrozen scipy-like surface."""
 
@@ -440,6 +459,117 @@ class _Dist:
             return _math.log(c) if c > 0 else -_math.inf
         return c._map(lambda v: _math.log(v) if v > 0 else -_math.inf)
 
+    # -- the moment interface scipy gives every distribution: mean, var,
+    #    std, median, entropy, moment, interval, stats, support, expect.
+    #    Closed forms in subclasses take precedence; this default
+    #    integrates the density (or sums the mass) numerically.
+    def _bounds_for(self, *args, **kw):
+        try:
+            b = self._bounds(*args, **kw)
+        except TypeError:
+            b = self._support
+        return float(b[0]), float(b[1])
+
+    def _quantile_range(self, *args, **kw):
+        lo, hi = self._bounds_for(*args, **kw)
+        qlo = _scalar(self.ppf(1e-10, *args, **kw))
+        qhi = _scalar(self.ppf(1.0 - 1e-10, *args, **kw))
+        if lo == -_math.inf or qlo > lo:
+            lo = qlo
+        if hi == _math.inf or qhi < hi:
+            hi = qhi
+        return lo, hi
+
+    def expect(self, func=None, *args, **kw):
+        """E[func(X)] (func defaults to the identity)."""
+        g = func if func is not None else (lambda v: v)
+        if self._discrete:
+            lo, hi = self._bounds_for(*args, **kw)
+            k = int(lo) if lo > -_math.inf else int(_scalar(self.ppf(1e-14, *args, **kw)))
+            kmax = int(hi) if hi < _math.inf else k + 10 ** 6
+            total, mass = 0.0, 0.0
+            while k <= kmax:
+                p = _scalar(self.pmf(k, *args, **kw))
+                total += p * g(k)
+                mass += p
+                if mass > 1.0 - 1e-14 and hi == _math.inf and k > lo + 5:
+                    break
+                k += 1
+            return total
+        lo, hi = self._quantile_range(*args, **kw)
+
+        def fx(v):
+            p = _scalar(self.pdf(v, *args, **kw))
+            return 0.0 if p != p else p * g(v)
+        # knots at quantiles so a peaked or heavy-tailed density gets its
+        # resolution where the mass is; adaptive Simpson on each piece
+        knots = [lo]
+        for q in (1e-6, 1e-4, 1e-2, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99, 0.9999, 1.0 - 1e-6):
+            v = _scalar(self.ppf(q, *args, **kw))
+            if v == v and knots[-1] < v < hi:
+                knots.append(v)
+        knots.append(hi)
+        total = 0.0
+        for a, b in zip(knots[:-1], knots[1:]):
+            total += _adaptive_simpson(fx, a, b, 1e-11, 30)
+        return total
+
+    def mean(self, *args, **kw):
+        return self.expect(None, *args, **kw)
+
+    def var(self, *args, **kw):
+        mu = self.mean(*args, **kw)
+        return self.expect(lambda v: (v - mu) ** 2, *args, **kw)
+
+    def std(self, *args, **kw):
+        return _math.sqrt(self.var(*args, **kw))
+
+    def median(self, *args, **kw):
+        return _scalar(self.ppf(0.5, *args, **kw))
+
+    def moment(self, order, *args, **kw):
+        """Raw moment E[X**order]."""
+        return self.expect(lambda v: v ** order, *args, **kw)
+
+    def entropy(self, *args, **kw):
+        if self._discrete:
+            return self.expect(lambda k: -_math.log(_scalar(self.pmf(k, *args, **kw)))
+                               if _scalar(self.pmf(k, *args, **kw)) > 0 else 0.0,
+                               *args, **kw)
+        return self.expect(lambda v: -_math.log(_scalar(self.pdf(v, *args, **kw)))
+                           if _scalar(self.pdf(v, *args, **kw)) > 0 else 0.0,
+                           *args, **kw)
+
+    def interval(self, confidence, *args, **kw):
+        """Equal-tailed interval containing ``confidence`` of the mass."""
+        c = float(confidence)
+        if not 0.0 <= c <= 1.0:
+            raise ValueError("confidence must be between 0 and 1")
+        return (_scalar(self.ppf((1.0 - c) / 2.0, *args, **kw)),
+                _scalar(self.ppf((1.0 + c) / 2.0, *args, **kw)))
+
+    def support(self, *args, **kw):
+        return self._bounds_for(*args, **kw)
+
+    def stats(self, *args, moments="mv", **kw):
+        out = []
+        for ch in moments:
+            if ch == "m":
+                out.append(self.mean(*args, **kw))
+            elif ch == "v":
+                out.append(self.var(*args, **kw))
+            elif ch == "s":
+                mu, sd = self.mean(*args, **kw), self.std(*args, **kw)
+                out.append(self.expect(lambda v, mu=mu, sd=sd: ((v - mu) / sd) ** 3,
+                                       *args, **kw))
+            elif ch == "k":
+                mu, sd = self.mean(*args, **kw), self.std(*args, **kw)
+                out.append(self.expect(lambda v, mu=mu, sd=sd: ((v - mu) / sd) ** 4,
+                                       *args, **kw) - 3.0)
+            else:
+                raise ValueError("moments must be a combination of m, v, s, k")
+        return tuple(out)
+
     def logsf(self, x, *a, **k):
         s = self.sf(x, *a, **k)
         if isinstance(s, float):
@@ -449,14 +579,30 @@ class _Dist:
 
 
 class _Norm(_Dist):
-    @staticmethod
-    def var(loc=0.0, scale=1.0):
-        """Variance scale**2."""
-        del loc
-        return scale * scale
-
     def __init__(self, loc=0.0, scale=1.0):
         self.loc, self.scale = float(loc), float(scale)
+
+    def _ls(self, loc, scale):
+        return (self.loc if loc is None else float(loc),
+                self.scale if scale is None else float(scale))
+
+    def mean(self, loc=None, scale=None):
+        return self._ls(loc, scale)[0]
+
+    def var(self, loc=None, scale=None):
+        """Variance scale**2."""
+        s = self._ls(loc, scale)[1]
+        return s * s
+
+    def std(self, loc=None, scale=None):
+        return self._ls(loc, scale)[1]
+
+    def median(self, loc=None, scale=None):
+        return self._ls(loc, scale)[0]
+
+    def entropy(self, loc=None, scale=None):
+        s = self._ls(loc, scale)[1]
+        return 0.5 * _math.log(2.0 * _math.pi * _math.e * s * s)
 
     def _z(self, x):
         return (x - self.loc) / self.scale
@@ -637,11 +783,23 @@ class _Gamma(_Dist):
 
 class _Beta(_Dist):
     _support = (0.0, 1.0)
-    @staticmethod
-    def var(a, b):
+
+    def _ab(self, a, b):
+        return (getattr(self, "a", None) if a is None else float(a),
+                getattr(self, "b", None) if b is None else float(b))
+
+    def mean(self, a=None, b=None):
+        a, b = self._ab(a, b)
+        return a / (a + b)
+
+    def var(self, a=None, b=None):
         """Variance ab / ((a+b)^2 (a+b+1)) (Johnson, Kotz &
         Balakrishnan 1995, vol. 2, ch. 25)."""
+        a, b = self._ab(a, b)
         return (a * b) / ((a + b) ** 2 * (a + b + 1.0))
+
+    def std(self, a=None, b=None):
+        return _math.sqrt(self.var(a, b))
 
     def __init__(self, a=1.0, b=1.0):
         self.a, self.b = float(a), float(b)
@@ -1249,12 +1407,27 @@ def iqr(a):
     return q(0.75) - q(0.25)
 
 
+class _DescribeResult(tuple):
+    """scipy's DescribeResult: the 6-tuple (nobs, minmax, mean, variance,
+    skewness, kurtosis) with the same names as attributes."""
+
+    _fields = ("nobs", "minmax", "mean", "variance", "skewness", "kurtosis")
+
+    def __new__(cls, nobs, minmax, mean, variance, skewness, kurtosis):
+        obj = super().__new__(cls, (nobs, minmax, mean, variance, skewness, kurtosis))
+        for k, v in zip(cls._fields, obj):
+            setattr(obj, k, v)
+        return obj
+
+    def __repr__(self):
+        return "DescribeResult(%s)" % ", ".join(
+            "%s=%r" % (k, getattr(self, k)) for k in self._fields)
+
+
 def describe(a, ddof=1):
     v = _flatten(a)
-    return _TestResult(len(v), (min(v), max(v)), nobs=len(v),
-                       minmax=(min(v), max(v)), mean=_mean(v),
-                       variance=_var(v, ddof=ddof), skewness=skew(v),
-                       kurtosis=kurtosis(v))
+    return _DescribeResult(len(v), (min(v), max(v)), _mean(v),
+                           _var(v, ddof=ddof), skew(v), kurtosis(v))
 
 
 # ---------------------------------------------------- t / rank tests
@@ -1501,7 +1674,8 @@ def binomtest(k, n, p=0.5, alternative="two-sided"):
         pv = _math.fsum(pmf(x) for x in range(k, n + 1))
     else:
         pv = _math.fsum(pmf(x) for x in range(k + 1))
-    return _TestResult(float(k), _bi.min(1.0, pv),
+    # scipy's statistic is the observed proportion k / n, not the count
+    return _TestResult(k / n, _bi.min(1.0, pv),
                        k=k, n=n, proportion_estimate=k / n,
                        proportion_ci=lambda confidence_level=0.95, method="exact":
                        _proportion_ci(k, n, confidence_level, method))
@@ -2068,6 +2242,22 @@ class _Laplace(_Dist):
 
 
 class _Cauchy(_Dist):
+    # no finite moments: scipy reports nan, and the entropy in closed form
+    def mean(self, loc=0.0, scale=1.0):
+        return _math.nan
+
+    def var(self, loc=0.0, scale=1.0):
+        return _math.nan
+
+    def std(self, loc=0.0, scale=1.0):
+        return _math.nan
+
+    def moment(self, order, loc=0.0, scale=1.0):
+        return _math.nan
+
+    def entropy(self, loc=0.0, scale=1.0):
+        return _math.log(4.0 * _math.pi * scale)
+
     def pdf(self, x, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
@@ -2487,7 +2677,18 @@ def somersd(x, y):
     return _TestResult(d, _bi.min(1.0, 2.0 * norm.sf(abs(z))))
 
 
-def theilslopes(y, x=None):
+class _TheilslopesResult(tuple):
+    """(slope, intercept, low_slope, high_slope) with attribute access."""
+
+    def __new__(cls, slope, intercept, low_slope, high_slope):
+        obj = super().__new__(cls, (slope, intercept, low_slope, high_slope))
+        obj.slope, obj.intercept = slope, intercept
+        obj.low_slope, obj.high_slope = low_slope, high_slope
+        return obj
+
+
+def theilslopes(y, x=None, alpha=0.95, method="separate"):
+    del method                      # intercept: median(y) - slope * median(x)
     yv = _flatten(y)
     xv = _flatten(x) if x is not None else list(range(len(yv)))
     slopes = []
@@ -2505,10 +2706,30 @@ def theilslopes(y, x=None):
     ys = sorted(yv)
     ymed = ys[n // 2] if n % 2 else 0.5 * (ys[n // 2 - 1] + ys[n // 2])
     inter = ymed - med * xmed
-    out = _TestResult(med, inter)
-    out.slope = med
-    out.intercept = inter
-    return out
+    # Sen (1968) eq. 2.6 confidence limits on the slope, as scipy: the
+    # rank positions of the ordered pairwise slopes at z * sigma
+    if alpha > 0.5:
+        alpha = 1.0 - alpha
+    z = _norm_ppf(alpha / 2.0)
+    nt = m
+    ny = n
+
+    def _reps(v):
+        c = {}
+        for u in v:
+            c[u] = c.get(u, 0) + 1
+        return [k for k in c.values() if k > 1]
+    sigsq = (ny * (ny - 1) * (2 * ny + 5)
+             - _math.fsum(k * (k - 1) * (2 * k + 5) for k in _reps(xv))
+             - _math.fsum(k * (k - 1) * (2 * k + 5) for k in _reps(yv))) / 18.0
+    try:
+        sigma = _math.sqrt(sigsq)
+        ru = _bi.min(int(round((nt - z * sigma) / 2.0)), len(slopes) - 1)
+        rl = _bi.max(int(round((nt + z * sigma) / 2.0)) - 1, 0)
+        low, high = slopes[rl], slopes[ru]
+    except (ValueError, IndexError):
+        low, high = _math.nan, _math.nan
+    return _TheilslopesResult(med, inter, low, high)
 
 
 def ranksums(x, y):
@@ -2580,16 +2801,75 @@ class _KSTwoBign:
 kstwobign = _KSTwoBign()
 
 
+def _kolmogn_mtw(n, d):
+    """Pr(D_n <= d), exact, by Marsaglia, Tsang & Wang (2003), "Evaluating
+    Kolmogorov's distribution", J. Stat. Soft. 8(18): the (2k-1)-square
+    matrix power with the scaling of the original C code."""
+    k = int(n * d) + 1
+    m = 2 * k - 1
+    h = k - n * d
+    H = [[1.0 if i - j + 1 >= 0 else 0.0 for j in range(m)] for i in range(m)]
+    for i in range(m):
+        H[i][0] -= h ** (i + 1)
+        H[m - 1][i] -= h ** (m - i)
+    H[m - 1][0] += (2 * h - 1) ** m if 2 * h - 1 > 0 else 0.0
+    for i in range(m):
+        for j in range(m):
+            if i - j + 1 > 0:
+                for g in range(1, i - j + 2):
+                    H[i][j] /= g
+
+    def matmul(A, B):
+        return [[_math.fsum(A[i][t] * B[t][j] for t in range(m))
+                 for j in range(m)] for i in range(m)]
+
+    def rescale(A, e):
+        if A[k - 1][k - 1] > 1e140:
+            return [[v * 1e-140 for v in row] for row in A], e + 140
+        return A, e
+    # Q = H ** n by repeated squaring, exponent tracked in eQ
+    Q, eQ = None, 0
+    P, eP = H, 0
+    nn = n
+    while nn:
+        if nn & 1:
+            Q, eQ = (P, eP) if Q is None else rescale(matmul(Q, P), eQ + eP)
+        nn >>= 1
+        if nn:
+            P, eP = rescale(matmul(P, P), 2 * eP)
+    s = Q[k - 1][k - 1]
+    for i in range(1, n + 1):
+        s = s * i / n
+        if s < 1e-140:
+            s *= 1e140
+            eQ -= 140
+    return _bi.max(0.0, _bi.min(1.0, s * 10.0 ** eQ))
+
+
+def _kstwo_cdf(d, n):
+    d, n = float(d), int(n)
+    if d <= 0.0:
+        return 0.0
+    if d >= 1.0:
+        return 1.0
+    # exact where the matrix stays small; the asymptotic series with
+    # Stephens' correction beyond that
+    if n <= 140 and int(n * d) + 1 <= 64:
+        return _kolmogn_mtw(n, d)
+    return 1.0 - _ks_sf(d, n)
+
+
 class _KSTwo:
-    """Finite-n two-sided KS via asymptotic + Stephens correction."""
+    """Two-sided finite-n Kolmogorov distribution: exact (Marsaglia-Tsang-
+    Wang) for small n, asymptotic + Stephens correction beyond."""
 
     @staticmethod
     def sf(d, n):
-        return _ks_sf(float(d), int(n))
+        return 1.0 - _kstwo_cdf(d, n)
 
     @staticmethod
     def cdf(d, n):
-        return 1.0 - _ks_sf(float(d), int(n))
+        return _kstwo_cdf(d, n)
 
     @staticmethod
     def ppf(q, n):
@@ -2612,6 +2892,18 @@ kstwo = _KSTwo()
 
 class _HalfCauchy(_Dist):
     _support = (0.0, _math.inf)
+
+    def mean(self, loc=0.0, scale=1.0):
+        return _math.inf
+
+    def var(self, loc=0.0, scale=1.0):
+        return _math.inf
+
+    def std(self, loc=0.0, scale=1.0):
+        return _math.inf
+
+    def moment(self, order, loc=0.0, scale=1.0):
+        return _math.inf
     def pdf(self, x, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
@@ -2633,6 +2925,15 @@ class _HalfCauchy(_Dist):
 
 
 class _Pareto(_Dist):
+    def mean(self, b, loc=0.0, scale=1.0):
+        return loc + scale * b / (b - 1.0) if b > 1 else _math.inf
+
+    def var(self, b, loc=0.0, scale=1.0):
+        return scale * scale * b / ((b - 1.0) ** 2 * (b - 2.0)) if b > 2 else _math.inf
+
+    def std(self, b, loc=0.0, scale=1.0):
+        return _math.sqrt(self.var(b, loc, scale))
+
     _support = (1.0, _math.inf)
     def pdf(self, x, b, loc=0.0, scale=1.0):
         def one(v):
@@ -2778,32 +3079,77 @@ class _NCT(_Dist):
 
 
 class _NCF(_Dist):
+    """Noncentral F as a Poisson(nc/2) mixture of central F: with
+    U ~ chi2'(dfn, nc) = sum_j P(j) chi2(dfn + 2j), the ratio
+    (U/dfn)/(V/dfd) is (dfn+2j)/dfn times a central F(dfn+2j, dfd), so
+    both cdf and pdf are exact sums of central-F terms."""
+
     _support = (0.0, _math.inf)
-    """Noncentral F via chi2 mixture average."""
+
+    @staticmethod
+    def _mix(nc, fn):
+        lam = nc / 2.0
+        total = 0.0
+        pw = _math.exp(-lam)
+        j = 0
+        stop = lam + 40.0 * _math.sqrt(lam) + 40.0
+        while True:
+            total += pw * fn(j)
+            j += 1
+            pw *= lam / j
+            if j > stop or (pw < 1e-17 and j > lam):
+                break
+        return total
 
     def cdf(self, x, dfn, dfd, nc):
-        grid = _chi2_quantile_grid(float(dfd), 200)
+        dfn, dfd, nc = float(dfn), float(dfd), float(nc)
 
         def one(v):
-            total = 0.0
-            for w in grid:                # denominator chi2
-                # P(chi2_nc(dfn) <= v*dfn*w/dfd) with noncentrality nc:
-                # Poisson mixture of central chi2
-                lim = v * dfn * w / dfd
-                acc = 0.0
-                pw = _math.exp(-nc / 2.0)
-                for j in range(200):
-                    acc += pw * chi2.cdf(lim, dfn + 2 * j)
-                    pw *= (nc / 2.0) / (j + 1)
-                    if pw < 1e-14 and j > nc:
-                        break
-                total += acc
-            return total / len(grid)
+            if v != v:
+                return _math.nan
+            if v <= 0.0:
+                return 0.0
+            return self._mix(nc, lambda j: f.cdf(dfn * v / (dfn + 2 * j),
+                                                 dfn + 2 * j, dfd))
+        return _maybe_map(one, x)
+
+    def pdf(self, x, dfn, dfd, nc):
+        dfn, dfd, nc = float(dfn), float(dfd), float(nc)
+
+        def one(v):
+            if v != v:
+                return _math.nan
+            if v < 0.0:
+                return 0.0
+            return self._mix(nc, lambda j: dfn / (dfn + 2 * j)
+                             * f.pdf(dfn * v / (dfn + 2 * j), dfn + 2 * j, dfd))
         return _maybe_map(one, x)
 
     def sf(self, x, dfn, dfd, nc):
         c = self.cdf(x, dfn, dfd, nc)
         return 1.0 - c if isinstance(c, float) else 1.0 - c
+
+    def ppf(self, q, dfn, dfd, nc):
+        def one(p):
+            return _ppf_from_cdf(lambda v: self.cdf(v, dfn, dfd, nc), p, 0.0, 1e6)
+        return _maybe_map(one, q)
+
+    def mean(self, dfn, dfd, nc):
+        dfn, dfd, nc = float(dfn), float(dfd), float(nc)
+        if dfd <= 2.0:
+            return _math.inf
+        return dfd * (dfn + nc) / (dfn * (dfd - 2.0))
+
+    def var(self, dfn, dfd, nc):
+        dfn, dfd, nc = float(dfn), float(dfd), float(nc)
+        if dfd <= 4.0:
+            return _math.inf
+        return (2.0 * (dfd / dfn) ** 2
+                * ((dfn + nc) ** 2 + (dfn + 2.0 * nc) * (dfd - 2.0))
+                / ((dfd - 2.0) ** 2 * (dfd - 4.0)))
+
+    def std(self, dfn, dfd, nc):
+        return _math.sqrt(self.var(dfn, dfd, nc))
 
 
 halfcauchy = _HalfCauchy()
@@ -2811,6 +3157,431 @@ pareto = _Pareto()
 genpareto = _GenPareto()
 nct = _NCT()
 ncf = _NCF()
+
+
+# ---------------------------------------------------- further distributions
+
+def _bessel_i(v, x):
+    """Modified Bessel function I_v(x) by its power series (v >= 0 or an
+    integer; the integer case uses I_{-n} = I_n)."""
+    if v < 0 and float(v).is_integer():
+        v = -v
+    x = float(x)
+    term = (x / 2.0) ** v / _math.gamma(v + 1.0)
+    total = term
+    q = (x / 2.0) ** 2
+    k = 0
+    while term > 1e-17 * total or k < 5:
+        k += 1
+        term *= q / (k * (k + v))
+        total += term
+        if k > 10000:
+            break
+    return total
+
+
+def _owens_t(h, a):
+    """Owen's T(h, a) = (1/2pi) int_0^a exp(-h^2(1+x^2)/2)/(1+x^2) dx,
+    by composite Simpson (a may be negative: T is odd in a)."""
+    if a == 0.0:
+        return 0.0
+    sign = 1.0 if a > 0 else -1.0
+    a = _bi.abs(a)
+    npan = 2000
+    hstep = a / npan
+
+    def fx(x):
+        return _math.exp(-0.5 * h * h * (1.0 + x * x)) / (1.0 + x * x)
+    s = fx(0.0) + fx(a)
+    for i in range(1, npan):
+        s += (4.0 if i % 2 else 2.0) * fx(i * hstep)
+    return sign * s * hstep / 3.0 / (2.0 * _math.pi)
+
+
+def _discrete_ppf(q, pmf, lo, hi=None):
+    """Smallest k >= lo with cdf(k) >= q, walking the mass function."""
+    q = float(q)
+    if q <= 0.0:
+        return float(lo)
+    k = int(lo)
+    acc = 0.0
+    limit = k + 10 ** 6 if hi is None else int(hi)
+    while k <= limit:
+        acc += pmf(k)
+        if acc >= q * (1.0 - 1e-12):
+            return float(k)
+        k += 1
+    return float(limit)
+
+
+class _Rayleigh(_Dist):
+    _support = (0.0, _math.inf)
+
+    def pdf(self, x, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            return z * _math.exp(-0.5 * z * z) / scale if z >= 0 else 0.0
+        return _maybe_map(one, x)
+
+    def cdf(self, x, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            return 1.0 - _math.exp(-0.5 * z * z) if z > 0 else 0.0
+        return _maybe_map(one, x)
+
+    def ppf(self, q, loc=0.0, scale=1.0):
+        return _maybe_map(lambda p: loc + scale * _math.sqrt(-2.0 * _math.log1p(-p)), q)
+
+
+class _InvGamma(_Dist):
+    _support = (0.0, _math.inf)
+
+    def mean(self, a, loc=0.0, scale=1.0):
+        return loc + scale / (a - 1.0) if a > 1 else _math.inf
+
+    def var(self, a, loc=0.0, scale=1.0):
+        return scale * scale / ((a - 1.0) ** 2 * (a - 2.0)) if a > 2 else _math.inf
+
+    def std(self, a, loc=0.0, scale=1.0):
+        return _math.sqrt(self.var(a, loc, scale))
+
+    def pdf(self, x, a, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            if z <= 0:
+                return 0.0
+            return _math.exp(-(a + 1.0) * _math.log(z) - 1.0 / z - _math.lgamma(a)) / scale
+        return _maybe_map(one, x)
+
+    def cdf(self, x, a, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            return 1.0 - _scalar(gamma.cdf(1.0 / z, a)) if z > 0 else 0.0
+        return _maybe_map(one, x)
+
+    def ppf(self, q, a, loc=0.0, scale=1.0):
+        return _maybe_map(lambda p: loc + scale / _scalar(gamma.ppf(1.0 - p, a)), q)
+
+
+class _Triang(_Dist):
+    _support = (0.0, 1.0)
+
+    def _bounds(self, c=None, loc=0.0, scale=1.0):
+        return (loc, loc + scale)
+
+    def pdf(self, x, c, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            if z < 0 or z > 1:
+                return 0.0
+            if z < c:
+                return 2.0 * z / c / scale
+            if z > c:
+                return 2.0 * (1.0 - z) / (1.0 - c) / scale
+            return 2.0 / scale
+        return _maybe_map(one, x)
+
+    def cdf(self, x, c, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            if z <= 0:
+                return 0.0
+            if z >= 1:
+                return 1.0
+            return z * z / c if z <= c else 1.0 - (1.0 - z) ** 2 / (1.0 - c)
+        return _maybe_map(one, x)
+
+    def ppf(self, q, c, loc=0.0, scale=1.0):
+        def one(p):
+            z = _math.sqrt(p * c) if p <= c else 1.0 - _math.sqrt((1.0 - p) * (1.0 - c))
+            return loc + scale * z
+        return _maybe_map(one, q)
+
+
+class _Wald(_Dist):
+    """Inverse Gaussian with mean 1 and shape 1 (scipy's wald)."""
+    _support = (0.0, _math.inf)
+
+    def pdf(self, x, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            if z <= 0:
+                return 0.0
+            return _math.exp(-(z - 1.0) ** 2 / (2.0 * z)) / _math.sqrt(2.0 * _math.pi * z ** 3) / scale
+        return _maybe_map(one, x)
+
+    def cdf(self, x, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            if z <= 0:
+                return 0.0
+            r = _math.sqrt(z)
+            return _norm_cdf((z - 1.0) / r) + _math.exp(2.0) * _norm_cdf(-(z + 1.0) / r)
+        return _maybe_map(one, x)
+
+    def ppf(self, q, loc=0.0, scale=1.0):
+        return _maybe_map(lambda p: loc + scale * _ppf_from_cdf(
+            lambda v: _scalar(self.cdf(v)), p, 0.0, 1e6), q)
+
+
+class _SkewNorm(_Dist):
+    def pdf(self, x, a, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            return 2.0 * _math.exp(-0.5 * z * z) / _math.sqrt(2.0 * _math.pi) \
+                * _norm_cdf(a * z) / scale
+        return _maybe_map(one, x)
+
+    def cdf(self, x, a, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            return _bi.max(0.0, _bi.min(1.0, _norm_cdf(z) - 2.0 * _owens_t(z, a)))
+        return _maybe_map(one, x)
+
+    def ppf(self, q, a, loc=0.0, scale=1.0):
+        return _maybe_map(lambda p: loc + scale * _ppf_from_cdf(
+            lambda v: _scalar(self.cdf(v, a)), p, -40.0, 40.0), q)
+
+
+class _TruncNorm(_Dist):
+    def _bounds(self, a=None, b=None, loc=0.0, scale=1.0):
+        if a is None:
+            return self._support
+        return (loc + a * scale, loc + b * scale)
+
+    def pdf(self, x, a, b, loc=0.0, scale=1.0):
+        den = _norm_cdf(b) - _norm_cdf(a)
+
+        def one(v):
+            z = (v - loc) / scale
+            if z < a or z > b:
+                return 0.0
+            return _math.exp(-0.5 * z * z) / _math.sqrt(2.0 * _math.pi) / den / scale
+        return _maybe_map(one, x)
+
+    def cdf(self, x, a, b, loc=0.0, scale=1.0):
+        fa, fb = _norm_cdf(a), _norm_cdf(b)
+
+        def one(v):
+            z = (v - loc) / scale
+            if z <= a:
+                return 0.0
+            if z >= b:
+                return 1.0
+            return (_norm_cdf(z) - fa) / (fb - fa)
+        return _maybe_map(one, x)
+
+    def ppf(self, q, a, b, loc=0.0, scale=1.0):
+        fa, fb = _norm_cdf(a), _norm_cdf(b)
+        return _maybe_map(lambda p: loc + scale * _norm_ppf(fa + p * (fb - fa)), q)
+
+
+class _VonMises(_Dist):
+    _support = (-_math.pi, _math.pi)
+
+    def pdf(self, x, kappa, loc=0.0, scale=1.0):
+        norm_c = 2.0 * _math.pi * _bessel_i(0.0, kappa)
+
+        def one(v):
+            z = (v - loc) / scale
+            return _math.exp(kappa * _math.cos(z)) / norm_c / scale
+        return _maybe_map(one, x)
+
+    def cdf(self, x, kappa, loc=0.0, scale=1.0):
+        norm_c = 2.0 * _math.pi * _bessel_i(0.0, kappa)
+
+        def one(v):
+            z = (v - loc) / scale
+            if z <= -_math.pi:
+                return 0.0
+            if z >= _math.pi:
+                return 1.0
+            npan = 2000
+            h = (z + _math.pi) / npan
+            s = _math.exp(kappa * _math.cos(-_math.pi)) + _math.exp(kappa * _math.cos(z))
+            for i in range(1, npan):
+                s += (4.0 if i % 2 else 2.0) * _math.exp(kappa * _math.cos(-_math.pi + i * h))
+            return s * h / 3.0 / norm_c
+        return _maybe_map(one, x)
+
+    def ppf(self, q, kappa, loc=0.0, scale=1.0):
+        return _maybe_map(lambda p: loc + scale * _ppf_from_cdf(
+            lambda v: _scalar(self.cdf(v, kappa)), p, -_math.pi, _math.pi), q)
+
+
+class _Bernoulli(_Dist):
+    _discrete = True
+    _support = (0.0, 1.0)
+
+    def pmf(self, k, p):
+        return _maybe_map(lambda v: p if v == 1 else (1.0 - p if v == 0 else 0.0), k)
+
+    def cdf(self, k, p):
+        return _maybe_map(lambda v: 0.0 if v < 0 else (1.0 - p if v < 1 else 1.0), k)
+
+    def ppf(self, q, p):
+        return _maybe_map(lambda u: 0.0 if u <= 1.0 - p else 1.0, q)
+
+
+class _RandInt(_Dist):
+    """Uniform integers on [low, high), scipy's randint."""
+    _discrete = True
+
+    def _bounds(self, low=None, high=None):
+        if low is None:
+            return self._support
+        return (float(low), float(high) - 1.0)
+
+    def pmf(self, k, low, high):
+        n = float(high - low)
+        return _maybe_map(lambda v: 1.0 / n if low <= v < high and float(v).is_integer()
+                          else 0.0, k)
+
+    def cdf(self, k, low, high):
+        n = float(high - low)
+        return _maybe_map(lambda v: 0.0 if v < low else
+                          (1.0 if v >= high - 1 else (_math.floor(v) - low + 1) / n), k)
+
+    def ppf(self, q, low, high):
+        n = high - low
+        return _maybe_map(lambda u: float(low + _bi.min(n - 1, _bi.max(0, _math.ceil(u * n) - 1))), q)
+
+
+class _BetaBinom(_Dist):
+    _discrete = True
+
+    def _bounds(self, n=None, a=None, b=None):
+        return (0.0, float(n) if n is not None else _math.inf)
+
+    def pmf(self, k, n, a, b):
+        n = int(n)
+
+        def one(v):
+            kk = int(round(v))
+            if kk < 0 or kk > n:
+                return 0.0
+            return _math.exp(_log_comb(n, kk) + _math.lgamma(kk + a) + _math.lgamma(n - kk + b)
+                             - _math.lgamma(n + a + b) + _math.lgamma(a + b)
+                             - _math.lgamma(a) - _math.lgamma(b))
+        return _maybe_map(one, k)
+
+    def cdf(self, k, n, a, b):
+        return _maybe_map(lambda v: _math.fsum(_scalar(self.pmf(i, n, a, b))
+                                               for i in range(0, int(_math.floor(v)) + 1))
+                          if v >= 0 else 0.0, k)
+
+    def ppf(self, q, n, a, b):
+        return _maybe_map(lambda u: _discrete_ppf(u, lambda i: _scalar(self.pmf(i, n, a, b)),
+                                                  0, n), q)
+
+
+class _Zipf(_Dist):
+    _discrete = True
+    _support = (1.0, _math.inf)
+
+    @staticmethod
+    def _zeta(a):
+        # direct sum plus the Euler-Maclaurin tail
+        N = 2000
+        s = _math.fsum(k ** (-a) for k in range(1, N + 1))
+        return s + N ** (1.0 - a) / (a - 1.0) - 0.5 * N ** (-a) + a * N ** (-a - 1.0) / 12.0
+
+    def pmf(self, k, a):
+        z = self._zeta(a)
+        return _maybe_map(lambda v: v ** (-a) / z if v >= 1 and float(v).is_integer() else 0.0, k)
+
+    def cdf(self, k, a):
+        z = self._zeta(a)
+        return _maybe_map(lambda v: _math.fsum(i ** (-a) for i in range(1, int(_math.floor(v)) + 1)) / z
+                          if v >= 1 else 0.0, k)
+
+    def ppf(self, q, a):
+        z = self._zeta(a)
+        return _maybe_map(lambda u: _discrete_ppf(u, lambda i: i ** (-a) / z, 1), q)
+
+    def mean(self, a):
+        return self._zeta(a - 1.0) / self._zeta(a) if a > 2 else _math.inf
+
+    def var(self, a):
+        if a <= 3:
+            return _math.inf
+        mu = self.mean(a)
+        return self._zeta(a - 2.0) / self._zeta(a) - mu * mu
+
+    def std(self, a):
+        return _math.sqrt(self.var(a))
+
+
+class _Skellam(_Dist):
+    _discrete = True
+
+    def pmf(self, k, mu1, mu2):
+        mu1, mu2 = float(mu1), float(mu2)
+
+        def one(v):
+            kk = int(round(v))
+            return (_math.exp(-(mu1 + mu2)) * (mu1 / mu2) ** (kk / 2.0)
+                    * _bessel_i(_bi.abs(kk), 2.0 * _math.sqrt(mu1 * mu2)))
+        return _maybe_map(one, k)
+
+    def _kmin(self, mu1, mu2):
+        return int(_math.floor(mu1 - mu2 - 12.0 * _math.sqrt(mu1 + mu2) - 20.0))
+
+    def cdf(self, k, mu1, mu2):
+        lo = self._kmin(float(mu1), float(mu2))
+        return _maybe_map(lambda v: _math.fsum(_scalar(self.pmf(i, mu1, mu2))
+                                               for i in range(lo, int(_math.floor(v)) + 1)), k)
+
+    def ppf(self, q, mu1, mu2):
+        lo = self._kmin(float(mu1), float(mu2))
+        return _maybe_map(lambda u: _discrete_ppf(u, lambda i: _scalar(self.pmf(i, mu1, mu2)), lo), q)
+
+    def _bounds(self, mu1=None, mu2=None):
+        return (-_math.inf, _math.inf)
+
+
+class _NCX2(_Dist):
+    """Noncentral chi-square as the Poisson(nc/2) mixture of central
+    chi-square(df + 2j)."""
+    _support = (0.0, _math.inf)
+
+    def cdf(self, x, df, nc):
+        df, nc = float(df), float(nc)
+        return _maybe_map(lambda v: 0.0 if v <= 0 else _NCF._mix(
+            nc, lambda j: _scalar(chi2.cdf(v, df + 2 * j))), x)
+
+    def pdf(self, x, df, nc):
+        df, nc = float(df), float(nc)
+        return _maybe_map(lambda v: 0.0 if v < 0 else _NCF._mix(
+            nc, lambda j: _scalar(chi2.pdf(v, df + 2 * j))), x)
+
+    def ppf(self, q, df, nc):
+        return _maybe_map(lambda p: _ppf_from_cdf(
+            lambda v: _scalar(self.cdf(v, df, nc)), p, 0.0, 1e6), q)
+
+    def mean(self, df, nc):
+        return float(df) + float(nc)
+
+    def var(self, df, nc):
+        return 2.0 * (float(df) + 2.0 * float(nc))
+
+    def std(self, df, nc):
+        return _math.sqrt(self.var(df, nc))
+
+
+ncx2 = _NCX2()
+rayleigh = _Rayleigh()
+invgamma = _InvGamma()
+triang = _Triang()
+wald = _Wald()
+skewnorm = _SkewNorm()
+truncnorm = _TruncNorm()
+vonmises = _VonMises()
+bernoulli = _Bernoulli()
+randint = _RandInt()
+betabinom = _BetaBinom()
+zipf = _Zipf()
+skellam = _Skellam()
 
 
 # ---------------------------------------------------- residual tail 2
@@ -2859,7 +3630,41 @@ def fligner(*samples, center="median"):
     return _TestResult(stat, chi2.sf(stat, k - 1))
 
 
-def ansari(x, y):
+_ANSARI_CACHE = {}
+
+
+def _ansari_freqs(n1, n2):
+    """Exact null frequencies of the Ansari-Bradley statistic for sample
+    sizes n1, n2 without ties: the number of n1-subsets of the scores
+    min(r, N+1-r), r = 1..N, at each achievable sum (AS 93 by counting).
+    Returns (astart, freqs) with freqs[i] the count at sum astart + i."""
+    key = (n1, n2)
+    if key in _ANSARI_CACHE:
+        return _ANSARI_CACHE[key]
+    N = n1 + n2
+    scores = [_bi.min(r, N + 1 - r) for r in range(1, N + 1)]
+    smax = sum(sorted(scores)[-n1:])
+    # dp[j][s]: subsets of size j with score sum s
+    dp = [[0] * (smax + 1) for _ in range(n1 + 1)]
+    dp[0][0] = 1
+    for sc in scores:
+        for j in range(n1, 0, -1):
+            prev = dp[j - 1]
+            cur = dp[j]
+            for s in range(smax, sc - 1, -1):
+                c = prev[s - sc]
+                if c:
+                    cur[s] += c
+    astart = sum(sorted(scores)[:n1])
+    freqs = dp[n1][astart:smax + 1]
+    _ANSARI_CACHE[key] = (astart, freqs)
+    return astart, freqs
+
+
+def ansari(x, y, alternative="two-sided", method="auto"):
+    """Ansari-Bradley test. ``method='auto'`` is exact (the null
+    distribution enumerated) when both samples are under 55 and there
+    are no ties, the normal approximation otherwise, as in scipy."""
     xv, yv = _flatten(x), _flatten(y)
     n1, n2 = len(xv), len(yv)
     n = n1 + n2
@@ -2867,13 +3672,43 @@ def ansari(x, y):
     # Ansari-Bradley scores: min(r, N+1-r)
     scores = [_bi.min(r, n + 1.0 - r) for r in ranks]
     ab = _math.fsum(scores[:n1])
+    ties = len(set(xv + yv)) < n
+    if method == "auto":
+        method = "exact" if (n1 < 55 and n2 < 55 and not ties) else "asymptotic"
+    if method == "exact":
+        astart, freqs = _ansari_freqs(n1, n2)
+        total = float(sum(freqs))
+        # cdf rounds the index up, sf down: the tie-free null is an
+        # approximation under ties, and this avoids a Type I overshoot
+        ic = int(_math.ceil(ab - astart))
+        i_f = int(_math.floor(ab - astart))
+        cdf = sum(freqs[:_bi.max(ic + 1, 0)]) / total
+        sf = sum(freqs[_bi.max(i_f, 0):]) / total
+        if alternative == "two-sided":
+            pv = 2.0 * _bi.min(cdf, sf)
+        elif alternative == "greater":
+            pv = cdf
+        else:
+            pv = sf
+        return _TestResult(ab, _bi.min(1.0, pv))
     if n % 2 == 0:
         mu = n1 * (n + 2.0) / 4.0
         var = n1 * n2 * (n + 2.0) * (n - 2.0) / (48.0 * (n - 1.0))
     else:
         mu = n1 * (n + 1.0) ** 2 / (4.0 * n)
         var = n1 * n2 * (n + 1.0) * (3.0 + n * n) / (48.0 * n * n)
+    if ties:
+        # variance under ties from the observed scores, as scipy
+        fac = _math.fsum(s * s for s in scores)
+        if n % 2:
+            var = n1 * n2 * (16.0 * n * fac - (n + 1.0) ** 4) / (16.0 * n * n * (n - 1.0))
+        else:
+            var = n1 * n2 * (16.0 * fac - n * (n + 2.0) ** 2) / (16.0 * n * (n - 1.0))
     z = (ab - mu) / _math.sqrt(var)
+    if alternative == "greater":
+        return _TestResult(ab, norm.cdf(z))
+    if alternative == "less":
+        return _TestResult(ab, norm.sf(z))
     return _TestResult(ab, _bi.min(1.0, 2.0 * norm.sf(abs(z))))
 
 
@@ -2912,7 +3747,7 @@ def _kv_quarter(x):
     return total * hi / m
 
 
-def cramervonmises_2samp(x, y):
+def cramervonmises_2samp(x, y, method="auto"):
     xv, yv = sorted(_flatten(x)), sorted(_flatten(y))
     n, m = len(xv), len(yv)
     allr = rankdata(xv + yv)
@@ -2926,7 +3761,40 @@ def cramervonmises_2samp(x, y):
         + m * _math.fsum((ry[j] - (j + 1)) ** 2 for j in range(m))
     nm = n + m
     t = u / (n * m * nm) - (4.0 * n * m - 1.0) / (6.0 * nm)
+    if method == "auto":
+        method = "exact" if _bi.max(n, m) <= 20 else "asymptotic"
+    if method == "exact":
+        return _TestResult(t, _cvm_2samp_exact_p(u, n, m))
     return _TestResult(t, _cvm_asymp_sf(t))
+
+
+def _cvm_2samp_exact_p(u, m, n):
+    """Exact p-value of the two-sample Cramer-von Mises statistic by the
+    frequency recursion of Xiao, Gordon & Yakovlev (2006), J. Stat.
+    Soft. 17(8), on Anderson's (1962) form U; m and n are the sample
+    sizes and u the value of U."""
+    m, n = int(m), int(n)
+    lcm = m * n // _math.gcd(m, n)
+    a = lcm // m
+    b = lcm // n
+    mn = m * n
+    zeta = int(_math.floor(lcm ** 2 * (m + n) * (6.0 * u - mn * (4 * mn - 1))
+                           / (6 * mn ** 2)))
+    gs = [{0: 1}] + [{} for _ in range(m)]
+    for uu in range(n + 1):
+        next_gs = []
+        tmp = {}
+        for v, g in enumerate(gs):
+            merged = dict(tmp)
+            for key, c in g.items():
+                merged[key] = merged.get(key, 0) + c
+            res = (a * v - b * uu) ** 2
+            tmp = {key + res: c for key, c in merged.items()}
+            next_gs.append(tmp)
+        gs = next_gs
+    freq = gs[m]
+    total = _math.comb(m + n, m)
+    return sum(c for key, c in freq.items() if key >= zeta) / total
 
 
 def _cvm_asymp_sf(t):
@@ -3235,3 +4103,1807 @@ def entropy(pk, qk=None, base=None, axis=0):
         q_ = [v / qt for v in q_]
         h = _math.fsum(v * _math.log(v / w) for v, w in zip(p_, q_) if v > 0)
     return h / _math.log(base) if base else h
+
+
+# ---------------------------------------------------- scipy parity: closed-form families
+
+def _erfc(x):
+    return 2.0 * _norm_cdf(-x * _math.sqrt(2.0))
+
+
+def _bessel_k(v, x):
+    """Modified Bessel K_v(x), v real, x > 0, by the integral
+    K_v(x) = int_0^inf exp(-x cosh t) cosh(v t) dt (composite Simpson on a
+    range where the integrand has decayed)."""
+    x = float(x)
+    if x <= 0:
+        return _math.inf
+    v = _bi.abs(float(v))
+    t_max = 1.0
+    while x * _math.cosh(t_max) - v * t_max < 745.0 and t_max < 60.0:
+        t_max += 1.0
+    npan = 4000
+    h = t_max / npan
+
+    def f(t):
+        e = -x * _math.cosh(t) + _math.log(_math.cosh(v * t)) if v * t < 700 else -x * _math.cosh(t) + v * t - _math.log(2.0)
+        return _math.exp(e) if e > -745.0 else 0.0
+    s = f(0.0) + f(t_max)
+    for i in range(1, npan):
+        s += (4.0 if i % 2 else 2.0) * f(i * h)
+    return s * h / 3.0
+
+
+class _LS(_Dist):
+    """A location-scale family in scipy's convention: subclasses give the
+    standard-form ``_pdf``/``_cdf`` (and ``_ppf`` when closed) in the
+    shape parameters; ``loc`` and ``scale`` are trailing keywords."""
+
+    _shapes = 0
+
+    def _split(self, args, kw):
+        args = list(args)
+        loc = kw.pop("loc", None)
+        scale = kw.pop("scale", None)
+        if loc is None:
+            loc = args.pop(self._shapes) if len(args) > self._shapes else 0.0
+        if scale is None:
+            scale = args.pop(self._shapes) if len(args) > self._shapes else 1.0
+        return tuple(float(a) for a in args[:self._shapes]), float(loc), float(scale)
+
+    def _sup(self, *shape):
+        return self._support
+
+    def _bounds(self, *args, **kw):
+        sh, loc, scale = self._split(args, dict(kw))
+        lo, hi = self._sup(*sh)
+        return (loc + scale * lo, loc + scale * hi)
+
+    def pdf(self, x, *args, **kw):
+        sh, loc, scale = self._split(args, dict(kw))
+        lo, hi = self._sup(*sh)
+
+        def one(v):
+            if v != v:
+                return _math.nan
+            z = (v - loc) / scale
+            if z < lo or z > hi:
+                return 0.0
+            try:
+                return self._pdf(z, *sh) / scale
+            except (ValueError, ZeroDivisionError, OverflowError):
+                return 0.0
+        return _maybe_map(one, x)
+    # these bodies handle loc/scale, nan and the support themselves; the
+    # generic edge wrapper would read a third shape parameter as loc
+    pdf._edge_wrapped = True
+
+    def cdf(self, x, *args, **kw):
+        sh, loc, scale = self._split(args, dict(kw))
+        lo, hi = self._sup(*sh)
+
+        def one(v):
+            if v != v:
+                return _math.nan
+            z = (v - loc) / scale
+            if z <= lo:
+                return 0.0
+            if z >= hi:
+                return 1.0
+            return self._cdf_safe(z, sh, lo, hi)
+        return _maybe_map(one, x)
+    cdf._edge_wrapped = True
+
+    def _cdf_safe(self, z, sh, lo, hi):
+        if z <= lo:
+            return 0.0
+        if z >= hi:
+            return 1.0
+        try:
+            return _bi.max(0.0, _bi.min(1.0, self._cdf(z, *sh)))
+        except (ValueError, ZeroDivisionError, OverflowError):
+            mid = 0.5 * (_bi.max(lo, -1e6) + _bi.min(hi, 1e6))
+            return 0.0 if z < mid else 1.0
+
+    def ppf(self, q, *args, **kw):
+        sh, loc, scale = self._split(args, dict(kw))
+        lo, hi = self._sup(*sh)
+
+        def one(p):
+            if p != p or p < 0.0 or p > 1.0:
+                return _math.nan
+            if p == 0.0:
+                return loc + scale * lo
+            if p == 1.0:
+                return loc + scale * hi
+            if hasattr(self, "_ppf"):
+                return loc + scale * self._ppf(p, *sh)
+            F = lambda z: self._cdf_safe(z, sh, lo, hi)  # noqa: E731
+            if type(self)._cdf is _LS._cdf:
+                a, b = self._eff_range(*sh)
+            else:
+                a = lo + 1e-12 * _bi.max(1.0, _bi.abs(lo)) if lo > -_math.inf else -1e3
+                b = hi - 1e-12 * _bi.max(1.0, _bi.abs(hi)) if hi < _math.inf else 1e3
+                while a > -1e300 and F(a) > p:
+                    a = a * 2.0 if a < 0 else -1.0
+                while b < 1e300 and F(b) < p:
+                    b = b * 2.0 if b > 0 else 1.0
+            return loc + scale * _ppf_from_cdf(F, p, a, b)
+        return _maybe_map(one, q)
+    ppf._edge_wrapped = True
+
+    def _eff_range(self, *sh):
+        """Where the density is not negligible: stepped outward from a
+        point inside the support until the density falls under 1e-16 of
+        the largest value seen. Cached per shape tuple."""
+        cache = self.__dict__.setdefault("_eff_cache", {})
+        if sh in cache:
+            return cache[sh]
+        lo, hi = self._sup(*sh)
+        start = 0.0 if lo < 0.0 < hi else (lo + 1.0 if hi == _math.inf else 0.5 * (lo + hi))
+        if lo > -_math.inf and start <= lo:
+            start = lo + 1e-3 * (1.0 if hi == _math.inf else (hi - lo))
+
+        def pdf_at(t):
+            try:
+                v = self._pdf(t, *sh)
+                return v if v == v else 0.0
+            except (ValueError, ZeroDivisionError, OverflowError):
+                return 0.0
+        peak = _bi.max(pdf_at(start), 1e-300)
+        # right
+        r = start
+        step = 0.5
+        while hi == _math.inf or r < hi:
+            nxt = r + step
+            if hi < _math.inf and nxt > hi:
+                nxt = hi
+            v = pdf_at(nxt)
+            peak = _bi.max(peak, v)
+            r = nxt
+            if nxt == hi:
+                break
+            if v < 1e-16 * peak and step > 1.0:
+                break
+            step *= 1.5
+            if r > 1e12:
+                break
+        # left
+        l_ = start
+        step = 0.5
+        while lo == -_math.inf or l_ > lo:
+            nxt = l_ - step
+            if lo > -_math.inf and nxt < lo:
+                nxt = lo
+            v = pdf_at(nxt)
+            peak = _bi.max(peak, v)
+            l_ = nxt
+            if nxt == lo:
+                break
+            if v < 1e-16 * peak and step > 1.0:
+                break
+            step *= 1.5
+            if l_ < -1e12:
+                break
+        cache[sh] = (l_, r)
+        return cache[sh]
+
+    def _cdf(self, z, *sh):
+        # numeric cdf for a family that gives only a density: piecewise
+        # adaptive Simpson over the effective support
+        l_, r = self._eff_range(*sh)
+        if z <= l_:
+            return 0.0
+        if z >= r:
+            return 1.0
+
+        def pdf_at(t):
+            try:
+                v = self._pdf(t, *sh)
+                return v if v == v else 0.0
+            except (ValueError, ZeroDivisionError, OverflowError):
+                return 0.0
+        total = 0.0
+        a = l_
+        while a < z:
+            b = _bi.min(z, a + _bi.max(1.0, (r - l_) / 64.0))
+            total += _adaptive_simpson(pdf_at, a, b, 1e-13, 30)
+            a = b
+        return total
+
+
+def _phi(z):
+    return _math.exp(-0.5 * z * z) / _math.sqrt(2.0 * _math.pi)
+
+
+class _Alpha(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, a):
+        return _phi(a - 1.0 / x) / (x * x * _norm_cdf(a))
+
+    def _cdf(self, x, a):
+        return _norm_cdf(a - 1.0 / x) / _norm_cdf(a)
+
+    def _ppf(self, q, a):
+        return 1.0 / (a - _norm_ppf(q * _norm_cdf(a)))
+
+
+class _Anglit(_LS):
+    _support = (-_math.pi / 4.0, _math.pi / 4.0)
+
+    def _pdf(self, x):
+        return _math.cos(2.0 * x)
+
+    def _cdf(self, x):
+        return _math.sin(x + _math.pi / 4.0) ** 2
+
+    def _ppf(self, q):
+        return _math.asin(_math.sqrt(q)) - _math.pi / 4.0
+
+
+class _Arcsine(_LS):
+    _support = (0.0, 1.0)
+
+    def _pdf(self, x):
+        return 1.0 / (_math.pi * _math.sqrt(x * (1.0 - x))) if 0 < x < 1 else _math.inf
+
+    def _cdf(self, x):
+        return 2.0 / _math.pi * _math.asin(_math.sqrt(x))
+
+    def _ppf(self, q):
+        return _math.sin(_math.pi * q / 2.0) ** 2
+
+
+class _Argus(_LS):
+    _shapes = 1
+    _support = (0.0, 1.0)
+
+    @staticmethod
+    def _psi(c):
+        return _norm_cdf(c) - c * _phi(c) - 0.5
+
+    def _pdf(self, x, c):
+        y = 1.0 - x * x
+        return c ** 3 / (_math.sqrt(2.0 * _math.pi) * self._psi(c)) * x * _math.sqrt(y) * _math.exp(-0.5 * c * c * y)
+
+    def _cdf(self, x, c):
+        return 1.0 - self._psi(c * _math.sqrt(1.0 - x * x)) / self._psi(c)
+
+
+class _BetaPrime(_LS):
+    _shapes = 2
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, a, b):
+        return _math.exp((a - 1.0) * _math.log(x) - (a + b) * _math.log1p(x)
+                         - (_math.lgamma(a) + _math.lgamma(b) - _math.lgamma(a + b)))
+
+    def _cdf(self, x, a, b):
+        return _scalar(beta.cdf(x / (1.0 + x), a, b))
+
+    def _ppf(self, q, a, b):
+        t = _scalar(beta.ppf(q, a, b))
+        return t / (1.0 - t)
+
+
+class _Bradford(_LS):
+    _shapes = 1
+    _support = (0.0, 1.0)
+
+    def _pdf(self, x, c):
+        return c / ((1.0 + c * x) * _math.log1p(c))
+
+    def _cdf(self, x, c):
+        return _math.log1p(c * x) / _math.log1p(c)
+
+    def _ppf(self, q, c):
+        return ((1.0 + c) ** q - 1.0) / c
+
+
+class _Burr(_LS):
+    _shapes = 2
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, c, d):
+        return c * d * x ** (-c - 1.0) * (1.0 + x ** (-c)) ** (-d - 1.0)
+
+    def _cdf(self, x, c, d):
+        return (1.0 + x ** (-c)) ** (-d)
+
+    def _ppf(self, q, c, d):
+        return (q ** (-1.0 / d) - 1.0) ** (-1.0 / c)
+
+
+class _Burr12(_LS):
+    _shapes = 2
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, c, d):
+        return c * d * x ** (c - 1.0) * (1.0 + x ** c) ** (-d - 1.0)
+
+    def _cdf(self, x, c, d):
+        return 1.0 - (1.0 + x ** c) ** (-d)
+
+    def _ppf(self, q, c, d):
+        return ((1.0 - q) ** (-1.0 / d) - 1.0) ** (1.0 / c)
+
+
+class _Chi(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, df):
+        return _math.exp((df - 1.0) * _math.log(x) - 0.5 * x * x - (df / 2.0 - 1.0) * _math.log(2.0) - _math.lgamma(df / 2.0))
+
+    def _cdf(self, x, df):
+        return _scalar(gamma.cdf(0.5 * x * x, df / 2.0))
+
+    def _ppf(self, q, df):
+        return _math.sqrt(2.0 * _scalar(gamma.ppf(q, df / 2.0)))
+
+
+class _Cosine(_LS):
+    _support = (-_math.pi, _math.pi)
+
+    def _pdf(self, x):
+        return (1.0 + _math.cos(x)) / (2.0 * _math.pi)
+
+    def _cdf(self, x):
+        return (_math.pi + x + _math.sin(x)) / (2.0 * _math.pi)
+
+
+class _CrystalBall(_LS):
+    _shapes = 2
+
+    @staticmethod
+    def _consts(b, m):
+        A = (m / b) ** m * _math.exp(-0.5 * b * b)
+        B = m / b - b
+        N = 1.0 / (m / b / (m - 1.0) * _math.exp(-0.5 * b * b) + _math.sqrt(_math.pi / 2.0) * (1.0 + _math.erf(b / _math.sqrt(2.0))))
+        return A, B, N
+
+    def _pdf(self, x, b, m):
+        A, B, N = self._consts(b, m)
+        if x > -b:
+            return N * _math.exp(-0.5 * x * x)
+        return N * A * (B - x) ** (-m)
+
+    def _cdf(self, x, b, m):
+        A, B, N = self._consts(b, m)
+        if x <= -b:
+            return N * A * (B - x) ** (1.0 - m) / (m - 1.0)
+        return N * (m / b * _math.exp(-0.5 * b * b) / (m - 1.0)
+                    + _math.sqrt(_math.pi / 2.0) * (_math.erf(x / _math.sqrt(2.0)) + _math.erf(b / _math.sqrt(2.0))))
+
+
+class _DGamma(_LS):
+    _shapes = 1
+
+    def _pdf(self, x, a):
+        ax = _bi.abs(x)
+        return 0.5 * _math.exp((a - 1.0) * _math.log(ax) - ax - _math.lgamma(a)) if ax > 0 else (0.5 if a == 1.0 else (_math.inf if a < 1 else 0.0))
+
+    def _cdf(self, x, a):
+        g = _scalar(gamma.cdf(_bi.abs(x), a))
+        return 0.5 + 0.5 * g if x >= 0 else 0.5 - 0.5 * g
+
+    def _ppf(self, q, a):
+        if q >= 0.5:
+            return _scalar(gamma.ppf(2.0 * q - 1.0, a))
+        return -_scalar(gamma.ppf(1.0 - 2.0 * q, a))
+
+
+class _DWeibull(_LS):
+    _shapes = 1
+
+    def _pdf(self, x, c):
+        ax = _bi.abs(x)
+        return 0.5 * c * ax ** (c - 1.0) * _math.exp(-ax ** c) if ax > 0 else (0.5 * c if c == 1.0 else (_math.inf if c < 1 else 0.0))
+
+    def _cdf(self, x, c):
+        t = 1.0 - _math.exp(-_bi.abs(x) ** c)
+        return 0.5 + 0.5 * t if x >= 0 else 0.5 - 0.5 * t
+
+    def _ppf(self, q, c):
+        if q >= 0.5:
+            return (-_math.log(2.0 * (1.0 - q))) ** (1.0 / c)
+        return -(-_math.log(2.0 * q)) ** (1.0 / c)
+
+
+class _Erlang(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, a):
+        return _scalar(gamma.pdf(x, a))
+
+    def _cdf(self, x, a):
+        return _scalar(gamma.cdf(x, a))
+
+    def _ppf(self, q, a):
+        return _scalar(gamma.ppf(q, a))
+
+
+class _ExponNorm(_LS):
+    _shapes = 1
+
+    def _pdf(self, x, K):
+        iK = 1.0 / K
+        return 0.5 * iK * _math.exp(0.5 * iK * iK - x * iK) * _erfc(-(x - iK) / _math.sqrt(2.0))
+
+    def _cdf(self, x, K):
+        iK = 1.0 / K
+        return _norm_cdf(x) - _math.exp(-x * iK + 0.5 * iK * iK) * _norm_cdf(x - iK)
+
+
+class _ExponPow(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, b):
+        xb = x ** b
+        return b * x ** (b - 1.0) * _math.exp(1.0 + xb - _math.exp(xb))
+
+    def _cdf(self, x, b):
+        return 1.0 - _math.exp(1.0 - _math.exp(x ** b))
+
+    def _ppf(self, q, b):
+        return _math.log1p(-_math.log1p(-q)) ** (1.0 / b)
+
+
+class _ExponWeib(_LS):
+    _shapes = 2
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, a, c):
+        e = _math.exp(-x ** c)
+        return a * c * (1.0 - e) ** (a - 1.0) * e * x ** (c - 1.0)
+
+    def _cdf(self, x, a, c):
+        return (1.0 - _math.exp(-x ** c)) ** a
+
+    def _ppf(self, q, a, c):
+        return (-_math.log1p(-q ** (1.0 / a))) ** (1.0 / c)
+
+
+class _FatigueLife(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, c):
+        return (x + 1.0) / (2.0 * c * _math.sqrt(2.0 * _math.pi * x ** 3)) * _math.exp(-(x - 1.0) ** 2 / (2.0 * x * c * c))
+
+    def _cdf(self, x, c):
+        return _norm_cdf((_math.sqrt(x) - 1.0 / _math.sqrt(x)) / c)
+
+    def _ppf(self, q, c):
+        t = c * _norm_ppf(q)
+        r = 0.5 * (t + _math.sqrt(t * t + 4.0))
+        return r * r
+
+
+class _Fisk(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, c):
+        return c * x ** (c - 1.0) / (1.0 + x ** c) ** 2
+
+    def _cdf(self, x, c):
+        return 1.0 / (1.0 + x ** (-c))
+
+    def _ppf(self, q, c):
+        return (q / (1.0 - q)) ** (1.0 / c)
+
+
+class _FoldCauchy(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, c):
+        return (1.0 / (1.0 + (x - c) ** 2) + 1.0 / (1.0 + (x + c) ** 2)) / _math.pi
+
+    def _cdf(self, x, c):
+        return (_math.atan(x - c) + _math.atan(x + c)) / _math.pi
+
+
+class _FoldNorm(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, c):
+        return _math.sqrt(2.0 / _math.pi) * _math.cosh(c * x) * _math.exp(-0.5 * (x * x + c * c))
+
+    def _cdf(self, x, c):
+        return _norm_cdf(x - c) + _norm_cdf(x + c) - 1.0
+
+
+class _GenExpon(_LS):
+    _shapes = 3
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, a, b, c):
+        return (a + b * (1.0 - _math.exp(-c * x))) * _math.exp(-a * x - b * x + b / c * (1.0 - _math.exp(-c * x)))
+
+    def _cdf(self, x, a, b, c):
+        return 1.0 - _math.exp(-a * x - b * x + b / c * (1.0 - _math.exp(-c * x)))
+
+
+class _GenGamma(_LS):
+    _shapes = 2
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, a, c):
+        return _math.exp(_math.log(_bi.abs(c)) + (c * a - 1.0) * _math.log(x) - x ** c - _math.lgamma(a))
+
+    def _cdf(self, x, a, c):
+        g = _scalar(gamma.cdf(x ** c, a))
+        return g if c > 0 else 1.0 - g
+
+    def _ppf(self, q, a, c):
+        return _scalar(gamma.ppf(q if c > 0 else 1.0 - q, a)) ** (1.0 / c)
+
+
+class _GenHalfLogistic(_LS):
+    _shapes = 1
+
+    def _sup(self, c):
+        return (0.0, 1.0 / c)
+
+    def _pdf(self, x, c):
+        t = (1.0 - c * x) ** (1.0 / c)
+        return 2.0 * (1.0 - c * x) ** (1.0 / c - 1.0) / (1.0 + t) ** 2
+
+    def _cdf(self, x, c):
+        t = (1.0 - c * x) ** (1.0 / c)
+        return (1.0 - t) / (1.0 + t)
+
+    def _ppf(self, q, c):
+        t = (1.0 - q) / (1.0 + q)
+        return (1.0 - t ** c) / c
+
+
+class _GenLogistic(_LS):
+    _shapes = 1
+
+    def _pdf(self, x, c):
+        return c * _math.exp(-x) / (1.0 + _math.exp(-x)) ** (c + 1.0) if x > -700 else 0.0
+
+    def _cdf(self, x, c):
+        return (1.0 + _math.exp(-x)) ** (-c) if x > -700 else 0.0
+
+    def _ppf(self, q, c):
+        return -_math.log(q ** (-1.0 / c) - 1.0)
+
+
+class _GenNorm(_LS):
+    _shapes = 1
+
+    def _pdf(self, x, b):
+        return b / (2.0 * _math.gamma(1.0 / b)) * _math.exp(-_bi.abs(x) ** b)
+
+    def _cdf(self, x, b):
+        g = _scalar(gamma.cdf(_bi.abs(x) ** b, 1.0 / b))
+        return 0.5 + 0.5 * g if x >= 0 else 0.5 - 0.5 * g
+
+    def _ppf(self, q, b):
+        if q >= 0.5:
+            return _scalar(gamma.ppf(2.0 * q - 1.0, 1.0 / b)) ** (1.0 / b)
+        return -_scalar(gamma.ppf(1.0 - 2.0 * q, 1.0 / b)) ** (1.0 / b)
+
+
+class _Gibrat(_LS):
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x):
+        return _phi(_math.log(x)) / x
+
+    def _cdf(self, x):
+        return _norm_cdf(_math.log(x))
+
+    def _ppf(self, q):
+        return _math.exp(_norm_ppf(q))
+
+
+class _Gompertz(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, c):
+        return c * _math.exp(x) * _math.exp(-c * (_math.exp(x) - 1.0))
+
+    def _cdf(self, x, c):
+        return 1.0 - _math.exp(-c * (_math.exp(x) - 1.0))
+
+    def _ppf(self, q, c):
+        return _math.log1p(-_math.log1p(-q) / c)
+
+
+class _GumbelR(_LS):
+    def _pdf(self, x):
+        return _math.exp(-(x + _math.exp(-x))) if x > -700 else 0.0
+
+    def _cdf(self, x):
+        return _math.exp(-_math.exp(-x)) if x > -700 else 0.0
+
+    def _ppf(self, q):
+        return -_math.log(-_math.log(q))
+
+
+class _GumbelL(_LS):
+    def _pdf(self, x):
+        return _math.exp(x - _math.exp(x)) if x < 700 else 0.0
+
+    def _cdf(self, x):
+        return -_math.expm1(-_math.exp(x)) if x < 700 else 1.0
+
+    def _ppf(self, q):
+        return _math.log(-_math.log1p(-q))
+
+
+class _HalfGenNorm(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, b):
+        return b / _math.gamma(1.0 / b) * _math.exp(-x ** b)
+
+    def _cdf(self, x, b):
+        return _scalar(gamma.cdf(x ** b, 1.0 / b))
+
+    def _ppf(self, q, b):
+        return _scalar(gamma.ppf(q, 1.0 / b)) ** (1.0 / b)
+
+
+class _HalfLogistic(_LS):
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x):
+        e = _math.exp(-x)
+        return 2.0 * e / (1.0 + e) ** 2
+
+    def _cdf(self, x):
+        return _math.tanh(0.5 * x)
+
+    def _ppf(self, q):
+        return _math.log((1.0 + q) / (1.0 - q))
+
+
+class _HalfNorm(_LS):
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x):
+        return _math.sqrt(2.0 / _math.pi) * _math.exp(-0.5 * x * x)
+
+    def _cdf(self, x):
+        return 2.0 * _norm_cdf(x) - 1.0
+
+    def _ppf(self, q):
+        return _norm_ppf(0.5 * (1.0 + q))
+
+
+class _HypSecant(_LS):
+    def _pdf(self, x):
+        return 1.0 / (_math.pi * _math.cosh(x)) if _bi.abs(x) < 700 else 0.0
+
+    def _cdf(self, x):
+        return 2.0 / _math.pi * _math.atan(_math.exp(x)) if x < 700 else 1.0
+
+    def _ppf(self, q):
+        return _math.log(_math.tan(_math.pi * q / 2.0))
+
+
+class _InvGauss(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, mu):
+        return 1.0 / _math.sqrt(2.0 * _math.pi * x ** 3) * _math.exp(-(x - mu) ** 2 / (2.0 * x * mu * mu))
+
+    def _cdf(self, x, mu):
+        r = _math.sqrt(x)
+        a = _norm_cdf((x / mu - 1.0) / r)
+        b = _norm_cdf(-(x / mu + 1.0) / r)
+        return a + _math.exp(2.0 / mu + _math.log(b)) if b > 0 else a
+
+
+class _InvWeibull(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, c):
+        return c * x ** (-c - 1.0) * _math.exp(-x ** (-c))
+
+    def _cdf(self, x, c):
+        return _math.exp(-x ** (-c))
+
+    def _ppf(self, q, c):
+        return (-_math.log(q)) ** (-1.0 / c)
+
+
+class _IrwinHall(_LS):
+    _shapes = 1
+
+    def _sup(self, n):
+        return (0.0, float(n))
+
+    def _pdf(self, x, n):
+        n = int(n)
+        s = 0.0
+        for k in range(0, int(_math.floor(x)) + 1):
+            s += (-1) ** k * _math.comb(n, k) * (x - k) ** (n - 1)
+        return s / _math.factorial(n - 1)
+
+    def _cdf(self, x, n):
+        n = int(n)
+        s = 0.0
+        for k in range(0, int(_math.floor(x)) + 1):
+            s += (-1) ** k * _math.comb(n, k) * (x - k) ** n
+        return s / _math.factorial(n)
+
+
+class _JFSkewT(_LS):
+    _shapes = 2
+
+    def _pdf(self, x, a, b):
+        r = _math.sqrt(a + b + x * x)
+        c = _math.exp(-(a + b - 1.0) * _math.log(2.0) - (_math.lgamma(a) + _math.lgamma(b) - _math.lgamma(a + b)) - 0.5 * _math.log(a + b))
+        return c * (1.0 + x / r) ** (a + 0.5) * (1.0 - x / r) ** (b + 0.5)
+
+    def _cdf(self, x, a, b):
+        return _scalar(beta.cdf(0.5 * (1.0 + x / _math.sqrt(a + b + x * x)), a, b))
+
+    def _ppf(self, q, a, b):
+        t = _scalar(beta.ppf(q, a, b))
+        return (2.0 * t - 1.0) * _math.sqrt(a + b) / (2.0 * _math.sqrt(t * (1.0 - t)))
+
+
+class _JohnsonSB(_LS):
+    _shapes = 2
+    _support = (0.0, 1.0)
+
+    def _pdf(self, x, a, b):
+        return b / (x * (1.0 - x)) * _phi(a + b * _math.log(x / (1.0 - x)))
+
+    def _cdf(self, x, a, b):
+        return _norm_cdf(a + b * _math.log(x / (1.0 - x)))
+
+    def _ppf(self, q, a, b):
+        return 1.0 / (1.0 + _math.exp(-(_norm_ppf(q) - a) / b))
+
+
+class _JohnsonSU(_LS):
+    _shapes = 2
+
+    def _pdf(self, x, a, b):
+        return b / _math.sqrt(x * x + 1.0) * _phi(a + b * _math.asinh(x))
+
+    def _cdf(self, x, a, b):
+        return _norm_cdf(a + b * _math.asinh(x))
+
+    def _ppf(self, q, a, b):
+        return _math.sinh((_norm_ppf(q) - a) / b)
+
+
+class _Kappa3(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, a):
+        return a * (a + x ** a) ** (-(a + 1.0) / a)
+
+    def _cdf(self, x, a):
+        return x * (a + x ** a) ** (-1.0 / a)
+
+    def _ppf(self, q, a):
+        return (a * q ** a / (1.0 - q ** a)) ** (1.0 / a)
+
+
+class _Kappa4(_LS):
+    _shapes = 2
+
+    def _sup(self, h, k):
+        if h > 0 and k > 0:
+            return ((1.0 - h ** (-k)) / k, 1.0 / k)
+        if h > 0 and k == 0:
+            return (_math.log(h), _math.inf)
+        if h > 0 and k < 0:
+            return ((1.0 - h ** (-k)) / k, _math.inf)
+        if h <= 0 and k > 0:
+            return (-_math.inf, 1.0 / k)
+        if h <= 0 and k == 0:
+            return (-_math.inf, _math.inf)
+        return (1.0 / k, _math.inf)
+
+    def _cdf(self, x, h, k):
+        t = (1.0 - k * x) ** (1.0 / k) if k != 0 else _math.exp(-x)
+        return (1.0 - h * t) ** (1.0 / h) if h != 0 else _math.exp(-t)
+
+    def _pdf(self, x, h, k):
+        t = (1.0 - k * x) ** (1.0 / k) if k != 0 else _math.exp(-x)
+        dt = (1.0 - k * x) ** (1.0 / k - 1.0) if k != 0 else _math.exp(-x)
+        return (1.0 - h * t) ** (1.0 / h - 1.0) * dt if h != 0 else _math.exp(-t) * dt
+
+    def _ppf(self, q, h, k):
+        t = (1.0 - q ** h) / h if h != 0 else -_math.log(q)
+        return (1.0 - t ** k) / k if k != 0 else -_math.log(t)
+
+
+class _LaplaceAsymmetric(_LS):
+    _shapes = 1
+
+    def _pdf(self, x, kappa):
+        c = 1.0 / (kappa + 1.0 / kappa)
+        return c * (_math.exp(-x * kappa) if x >= 0 else _math.exp(x / kappa))
+
+    def _cdf(self, x, kappa):
+        k2 = kappa * kappa
+        if x < 0:
+            return k2 / (1.0 + k2) * _math.exp(x / kappa)
+        return 1.0 - _math.exp(-x * kappa) / (1.0 + k2)
+
+    def _ppf(self, q, kappa):
+        k2 = kappa * kappa
+        if q < k2 / (1.0 + k2):
+            return kappa * _math.log(q * (1.0 + k2) / k2)
+        return -_math.log((1.0 - q) * (1.0 + k2)) / kappa
+
+
+class _Levy(_LS):
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x):
+        return _math.exp(-0.5 / x) / (x * _math.sqrt(2.0 * _math.pi * x))
+
+    def _cdf(self, x):
+        return 2.0 * _norm_cdf(-1.0 / _math.sqrt(x))
+
+    def _ppf(self, q):
+        return 1.0 / _norm_ppf(1.0 - 0.5 * q) ** 2
+
+
+class _LevyL(_LS):
+    _support = (-_math.inf, 0.0)
+
+    def _pdf(self, x):
+        ax = -x
+        return _math.exp(-0.5 / ax) / (ax * _math.sqrt(2.0 * _math.pi * ax))
+
+    def _cdf(self, x):
+        return 2.0 * _norm_cdf(1.0 / _math.sqrt(-x)) - 1.0
+
+    def _ppf(self, q):
+        return -1.0 / _norm_ppf(0.5 * (1.0 + q)) ** 2
+
+
+class _LogGamma(_LS):
+    _shapes = 1
+
+    def _pdf(self, x, c):
+        return _math.exp(c * x - _math.exp(x) - _math.lgamma(c)) if x < 700 else 0.0
+
+    def _cdf(self, x, c):
+        return _scalar(gamma.cdf(_math.exp(x), c)) if x < 700 else 1.0
+
+    def _ppf(self, q, c):
+        return _math.log(_scalar(gamma.ppf(q, c)))
+
+
+class _LogLaplace(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, c):
+        return 0.5 * c * (x ** (c - 1.0) if x < 1.0 else x ** (-c - 1.0))
+
+    def _cdf(self, x, c):
+        return 0.5 * x ** c if x < 1.0 else 1.0 - 0.5 * x ** (-c)
+
+    def _ppf(self, q, c):
+        return (2.0 * q) ** (1.0 / c) if q < 0.5 else (2.0 * (1.0 - q)) ** (-1.0 / c)
+
+
+class _Lomax(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, c):
+        return c * (1.0 + x) ** (-c - 1.0)
+
+    def _cdf(self, x, c):
+        return 1.0 - (1.0 + x) ** (-c)
+
+    def _ppf(self, q, c):
+        return (1.0 - q) ** (-1.0 / c) - 1.0
+
+
+class _Maxwell(_LS):
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x):
+        return _math.sqrt(2.0 / _math.pi) * x * x * _math.exp(-0.5 * x * x)
+
+    def _cdf(self, x):
+        return _scalar(gamma.cdf(0.5 * x * x, 1.5))
+
+    def _ppf(self, q):
+        return _math.sqrt(2.0 * _scalar(gamma.ppf(q, 1.5)))
+
+
+class _Mielke(_LS):
+    _shapes = 2
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, k, s):
+        return k * x ** (k - 1.0) / (1.0 + x ** s) ** (1.0 + k / s)
+
+    def _cdf(self, x, k, s):
+        return x ** k / (1.0 + x ** s) ** (k / s)
+
+    def _ppf(self, q, k, s):
+        t = q ** (s / k)
+        return (t / (1.0 - t)) ** (1.0 / s)
+
+
+class _Moyal(_LS):
+    def _pdf(self, x):
+        return _math.exp(-0.5 * (x + _math.exp(-x))) / _math.sqrt(2.0 * _math.pi) if x > -700 else 0.0
+
+    def _cdf(self, x):
+        return _erfc(_math.exp(-0.5 * x) / _math.sqrt(2.0)) if x > -700 else 0.0
+
+    def _ppf(self, q):
+        return -2.0 * _math.log(-_norm_ppf(0.5 * q))
+
+
+class _Nakagami(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, nu):
+        return _math.exp(_math.log(2.0) + nu * _math.log(nu) - _math.lgamma(nu) + (2.0 * nu - 1.0) * _math.log(x) - nu * x * x)
+
+    def _cdf(self, x, nu):
+        return _scalar(gamma.cdf(nu * x * x, nu))
+
+    def _ppf(self, q, nu):
+        return _math.sqrt(_scalar(gamma.ppf(q, nu)) / nu)
+
+
+class _Pearson3(_LS):
+    _shapes = 1
+
+    def _sup(self, skew):
+        if _bi.abs(skew) < 1e-10:
+            return (-_math.inf, _math.inf)
+        a, b, z = self._abz(skew)
+        return (z, _math.inf) if b > 0 else (-_math.inf, z)
+
+    @staticmethod
+    def _abz(skew):
+        b = 2.0 / skew
+        a = 4.0 / (skew * skew)
+        return a, b, -a / b
+
+    def _pdf(self, x, skew):
+        if _bi.abs(skew) < 1e-10:
+            return _phi(x)
+        a, b, z = self._abz(skew)
+        y = b * (x - z)
+        return _bi.abs(b) * _math.exp((a - 1.0) * _math.log(y) - y - _math.lgamma(a)) if y > 0 else 0.0
+
+    def _cdf(self, x, skew):
+        if _bi.abs(skew) < 1e-10:
+            return _norm_cdf(x)
+        a, b, z = self._abz(skew)
+        g = _scalar(gamma.cdf(b * (x - z), a))
+        return g if b > 0 else 1.0 - g
+
+    def _ppf(self, q, skew):
+        if _bi.abs(skew) < 1e-10:
+            return _norm_ppf(q)
+        a, b, z = self._abz(skew)
+        return z + _scalar(gamma.ppf(q if b > 0 else 1.0 - q, a)) / b
+
+
+class _PowerLaw(_LS):
+    _shapes = 1
+    _support = (0.0, 1.0)
+
+    def _pdf(self, x, a):
+        return a * x ** (a - 1.0)
+
+    def _cdf(self, x, a):
+        return x ** a
+
+    def _ppf(self, q, a):
+        return q ** (1.0 / a)
+
+
+class _PowerLogNorm(_LS):
+    _shapes = 2
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, c, s):
+        z = _math.log(x) / s
+        return c / (x * s) * _phi(z) * _norm_cdf(-z) ** (c - 1.0)
+
+    def _cdf(self, x, c, s):
+        return 1.0 - _norm_cdf(-_math.log(x) / s) ** c
+
+    def _ppf(self, q, c, s):
+        return _math.exp(-s * _norm_ppf((1.0 - q) ** (1.0 / c)))
+
+
+class _PowerNorm(_LS):
+    _shapes = 1
+
+    def _pdf(self, x, c):
+        return c * _phi(x) * _norm_cdf(-x) ** (c - 1.0)
+
+    def _cdf(self, x, c):
+        return 1.0 - _norm_cdf(-x) ** c
+
+    def _ppf(self, q, c):
+        return -_norm_ppf((1.0 - q) ** (1.0 / c))
+
+
+class _RDist(_LS):
+    _shapes = 1
+    _support = (-1.0, 1.0)
+
+    def _pdf(self, x, c):
+        return _math.exp((c / 2.0 - 1.0) * _math.log1p(-x * x) - (_math.lgamma(0.5) + _math.lgamma(c / 2.0) - _math.lgamma(0.5 + c / 2.0)))
+
+    def _cdf(self, x, c):
+        g = _scalar(beta.cdf(x * x, 0.5, c / 2.0))
+        return 0.5 + 0.5 * g if x >= 0 else 0.5 - 0.5 * g
+
+    def _ppf(self, q, c):
+        if q >= 0.5:
+            return _math.sqrt(_scalar(beta.ppf(2.0 * q - 1.0, 0.5, c / 2.0)))
+        return -_math.sqrt(_scalar(beta.ppf(1.0 - 2.0 * q, 0.5, c / 2.0)))
+
+
+class _RecipInvGauss(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, mu):
+        return 1.0 / _math.sqrt(2.0 * _math.pi * x) * _math.exp(-(1.0 - mu * x) ** 2 / (2.0 * x * mu * mu))
+
+    def _cdf(self, x, mu):
+        isqx = 1.0 / _math.sqrt(x)
+        t1 = 1.0 - mu * x
+        t2 = 1.0 + mu * x
+        b = _norm_cdf(-isqx * t2 / mu)
+        return 1.0 - _norm_cdf(isqx * t1 / mu) - (_math.exp(2.0 / mu + _math.log(b)) if b > 0 else 0.0)
+
+
+class _Semicircular(_LS):
+    _support = (-1.0, 1.0)
+
+    def _pdf(self, x):
+        return 2.0 / _math.pi * _math.sqrt(1.0 - x * x)
+
+    def _cdf(self, x):
+        return 0.5 + (x * _math.sqrt(1.0 - x * x) + _math.asin(x)) / _math.pi
+
+
+class _SkewCauchy(_LS):
+    _shapes = 1
+
+    def _pdf(self, x, a):
+        s = 1.0 + a * (1.0 if x >= 0 else -1.0)
+        return 1.0 / (_math.pi * ((x / s) ** 2 + 1.0))
+
+    def _cdf(self, x, a):
+        s = 1.0 + a * (1.0 if x >= 0 else -1.0)
+        return (1.0 - a) / 2.0 + s / _math.pi * _math.atan(x / s)
+
+    def _ppf(self, q, a):
+        if q < (1.0 - a) / 2.0:
+            s = 1.0 - a
+        else:
+            s = 1.0 + a
+        return s * _math.tan(_math.pi * (q - (1.0 - a) / 2.0) / s)
+
+
+class _Trapezoid(_LS):
+    _shapes = 2
+    _support = (0.0, 1.0)
+
+    def _pdf(self, x, c, d):
+        h = 2.0 / (1.0 + d - c)
+        if x < c:
+            return h * x / c
+        if x <= d:
+            return h
+        return h * (1.0 - x) / (1.0 - d)
+
+    def _cdf(self, x, c, d):
+        h = 2.0 / (1.0 + d - c)
+        if x < c:
+            return 0.5 * h * x * x / c
+        if x <= d:
+            return 0.5 * h * c + h * (x - c)
+        return 1.0 - 0.5 * h * (1.0 - x) ** 2 / (1.0 - d)
+
+    def _ppf(self, q, c, d):
+        h = 2.0 / (1.0 + d - c)
+        qc = 0.5 * h * c
+        qd = qc + h * (d - c)
+        if q < qc:
+            return _math.sqrt(2.0 * q * c / h)
+        if q <= qd:
+            return c + (q - qc) / h
+        return 1.0 - _math.sqrt(2.0 * (1.0 - q) * (1.0 - d) / h)
+
+
+class _TruncExpon(_LS):
+    _shapes = 1
+
+    def _sup(self, b):
+        return (0.0, b)
+
+    def _pdf(self, x, b):
+        return _math.exp(-x) / (-_math.expm1(-b))
+
+    def _cdf(self, x, b):
+        return -_math.expm1(-x) / (-_math.expm1(-b))
+
+    def _ppf(self, q, b):
+        return -_math.log1p(q * _math.expm1(-b))
+
+
+class _TruncPareto(_LS):
+    _shapes = 2
+
+    def _sup(self, b, c):
+        return (1.0, c)
+
+    def _pdf(self, x, b, c):
+        return b * x ** (-b - 1.0) / (1.0 - c ** (-b))
+
+    def _cdf(self, x, b, c):
+        return (1.0 - x ** (-b)) / (1.0 - c ** (-b))
+
+    def _ppf(self, q, b, c):
+        return (1.0 - q * (1.0 - c ** (-b))) ** (-1.0 / b)
+
+
+class _TruncWeibullMin(_LS):
+    _shapes = 3
+
+    def _sup(self, c, a, b):
+        return (a, b)
+
+    def _pdf(self, x, c, a, b):
+        den = _math.exp(-a ** c) - _math.exp(-b ** c)
+        return c * x ** (c - 1.0) * _math.exp(-x ** c) / den
+
+    def _cdf(self, x, c, a, b):
+        return (_math.exp(-a ** c) - _math.exp(-x ** c)) / (_math.exp(-a ** c) - _math.exp(-b ** c))
+
+    def _ppf(self, q, c, a, b):
+        return (-_math.log(_math.exp(-a ** c) - q * (_math.exp(-a ** c) - _math.exp(-b ** c)))) ** (1.0 / c)
+
+
+class _TukeyLambda(_LS):
+    _shapes = 1
+
+    def _sup(self, lam):
+        if lam > 0:
+            return (-1.0 / lam, 1.0 / lam)
+        return (-_math.inf, _math.inf)
+
+    @staticmethod
+    def _Q(q, lam):
+        if lam == 0:
+            return _math.log(q / (1.0 - q))
+        return (q ** lam - (1.0 - q) ** lam) / lam
+
+    @staticmethod
+    def _dQ(q, lam):
+        if lam == 0:
+            return 1.0 / (q * (1.0 - q))
+        return q ** (lam - 1.0) + (1.0 - q) ** (lam - 1.0)
+
+    def _ppf(self, q, lam):
+        return self._Q(q, lam)
+
+    def _cdf(self, x, lam):
+        return _ppf_from_cdf(lambda u: self._Q(u, lam), x, 1e-300, 1.0 - 1e-16) if False else _bisect_unit(lambda u: self._Q(u, lam), x)
+
+    def _pdf(self, x, lam):
+        return 1.0 / self._dQ(self._cdf(x, lam), lam)
+
+
+def _bisect_unit(fn, target):
+    """u in (0, 1) with fn(u) = target, fn increasing."""
+    lo, hi = 0.0, 1.0
+    for _ in range(200):
+        mid = 0.5 * (lo + hi)
+        try:
+            v = fn(mid)
+        except (ValueError, ZeroDivisionError, OverflowError):
+            v = _math.inf if mid > 0.5 else -_math.inf
+        if v < target:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+
+class _WeibullMax(_LS):
+    _shapes = 1
+    _support = (-_math.inf, 0.0)
+
+    def _pdf(self, x, c):
+        return c * (-x) ** (c - 1.0) * _math.exp(-(-x) ** c)
+
+    def _cdf(self, x, c):
+        return _math.exp(-(-x) ** c)
+
+    def _ppf(self, q, c):
+        return -(-_math.log(q)) ** (1.0 / c)
+
+
+class _WrapCauchy(_LS):
+    _shapes = 1
+    _support = (0.0, 2.0 * _math.pi)
+
+    def _pdf(self, x, c):
+        return (1.0 - c * c) / (2.0 * _math.pi * (1.0 + c * c - 2.0 * c * _math.cos(x)))
+
+    def _cdf(self, x, c):
+        # scipy's closed form, by half-angle tangent
+        r = (1.0 + c) / (1.0 - c)
+        if x < _math.pi:
+            return _math.atan(r * _math.tan(0.5 * x)) / _math.pi
+        return 1.0 - _math.atan(r * _math.tan(0.5 * (2.0 * _math.pi - x))) / _math.pi
+
+
+alpha = _Alpha()
+anglit = _Anglit()
+arcsine = _Arcsine()
+argus = _Argus()
+betaprime = _BetaPrime()
+bradford = _Bradford()
+burr = _Burr()
+burr12 = _Burr12()
+chi = _Chi()
+cosine = _Cosine()
+crystalball = _CrystalBall()
+dgamma = _DGamma()
+dweibull = _DWeibull()
+erlang = _Erlang()
+exponnorm = _ExponNorm()
+exponpow = _ExponPow()
+exponweib = _ExponWeib()
+fatiguelife = _FatigueLife()
+fisk = _Fisk()
+foldcauchy = _FoldCauchy()
+foldnorm = _FoldNorm()
+genexpon = _GenExpon()
+gengamma = _GenGamma()
+genhalflogistic = _GenHalfLogistic()
+genlogistic = _GenLogistic()
+gennorm = _GenNorm()
+gibrat = _Gibrat()
+gompertz = _Gompertz()
+gumbel_r = _GumbelR()
+gumbel_l = _GumbelL()
+halfgennorm = _HalfGenNorm()
+halflogistic = _HalfLogistic()
+halfnorm = _HalfNorm()
+hypsecant = _HypSecant()
+invgauss = _InvGauss()
+invweibull = _InvWeibull()
+irwinhall = _IrwinHall()
+jf_skew_t = _JFSkewT()
+johnsonsb = _JohnsonSB()
+johnsonsu = _JohnsonSU()
+kappa3 = _Kappa3()
+kappa4 = _Kappa4()
+laplace_asymmetric = _LaplaceAsymmetric()
+levy = _Levy()
+levy_l = _LevyL()
+loggamma = _LogGamma()
+loglaplace = _LogLaplace()
+lomax = _Lomax()
+maxwell = _Maxwell()
+mielke = _Mielke()
+moyal = _Moyal()
+nakagami = _Nakagami()
+pearson3 = _Pearson3()
+powerlaw = _PowerLaw()
+powerlognorm = _PowerLogNorm()
+powernorm = _PowerNorm()
+rdist = _RDist()
+recipinvgauss = _RecipInvGauss()
+reciprocal = loguniform
+semicircular = _Semicircular()
+skewcauchy = _SkewCauchy()
+trapezoid = _Trapezoid()
+truncexpon = _TruncExpon()
+truncpareto = _TruncPareto()
+truncweibull_min = _TruncWeibullMin()
+tukeylambda = _TukeyLambda()
+vonmises_line = vonmises
+weibull_max = _WeibullMax()
+wrapcauchy = _WrapCauchy()
+
+
+# ---------------------------------------------------- scipy parity: quadrature families
+
+def _simpson_fixed(f, a, b, npan=2000):
+    h = (b - a) / npan
+    s = f(a) + f(b)
+    for i in range(1, npan):
+        s += (4.0 if i % 2 else 2.0) * f(a + i * h)
+    return s * h / 3.0
+
+
+class _GaussHyper(_LS):
+    _shapes = 4
+    _support = (0.0, 1.0)
+
+    @staticmethod
+    def _kernel(x, a, b, c, z):
+        return x ** (a - 1.0) * (1.0 - x) ** (b - 1.0) * (1.0 + z * x) ** (-c)
+
+    def _norm(self, a, b, c, z):
+        # B(a, b) 2F1(c, a; a + b; -z) as the integral of the kernel; the
+        # substitution x = u^2 tames the endpoint when a < 1
+        f = lambda u: 2.0 * u * self._kernel(u * u, a, b, c, z) if 0 < u < 1 else 0.0  # noqa: E731
+        return _adaptive_simpson(f, 0.0, 1.0, 1e-12, 40)
+
+    def _pdf(self, x, a, b, c, z):
+        return self._kernel(x, a, b, c, z) / self._norm(a, b, c, z)
+
+    def _cdf(self, x, a, b, c, z):
+        f = lambda u: 2.0 * u * self._kernel(u * u, a, b, c, z) if 0 < u < 1 else 0.0  # noqa: E731
+        return _adaptive_simpson(f, 0.0, _math.sqrt(x), 1e-12, 40) / self._norm(a, b, c, z)
+
+
+class _GenHyperbolic(_LS):
+    _shapes = 3
+
+    def _pdf(self, x, p, a, b):
+        g = _math.sqrt((a - b) * (a + b))
+        s = _math.sqrt(1.0 + x * x)
+        c = _math.exp(p * _math.log(g) - 0.5 * _math.log(2.0 * _math.pi) - (p - 0.5) * _math.log(a) - _math.log(_bessel_k(p, g)))
+        return c * s ** (p - 0.5) * _bessel_k(p - 0.5, a * s) * _math.exp(b * x)
+
+
+
+class _GenInvGauss(_LS):
+    _shapes = 2
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, p, b):
+        return x ** (p - 1.0) * _math.exp(-0.5 * b * (x + 1.0 / x)) / (2.0 * _bessel_k(p, b))
+
+
+
+class _NormInvGauss(_LS):
+    _shapes = 2
+
+    def _pdf(self, x, a, b):
+        g = _math.sqrt((a + b) * (a - b))
+        s = _math.hypot(1.0, x)
+        return a / _math.pi * _bessel_k(1.0, a * s) * _math.exp(b * x + g) / s
+
+
+
+class _Rice(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    def _pdf(self, x, b):
+        return x * _math.exp(-0.5 * (x - b) ** 2) * _math.exp(-x * b) * _bessel_i(0.0, x * b)
+
+    def _cdf(self, x, b):
+        return _scalar(ncx2.cdf(x * x, 2.0, b * b))
+
+    def _ppf(self, q, b):
+        return _math.sqrt(_scalar(ncx2.ppf(q, 2.0, b * b)))
+
+
+class _RelBreitWigner(_LS):
+    _shapes = 1
+    _support = (0.0, _math.inf)
+
+    @staticmethod
+    def _k(rho):
+        return 2.0 * _math.sqrt(2.0) * rho * rho * _math.sqrt(rho * rho + 1.0) / (
+            _math.pi * _math.sqrt(rho * rho + rho * _math.sqrt(rho * rho + 1.0)))
+
+    def _pdf(self, x, rho):
+        return self._k(rho) / ((x * x - rho * rho) ** 2 + rho * rho)
+
+
+
+class _Landau(_LS):
+    """scipy's Landau: the stable law with alpha = 1, beta = 1 in the S1
+    parameterisation (unit scale, zero location), so both the density and
+    the distribution function come from the stable-law integrals."""
+
+    def _pdf(self, x):
+        return levy_stable._pdf0(x, 1.0, 1.0)
+
+    def _cdf(self, x):
+        return _bi.max(0.0, _bi.min(1.0, levy_stable._cdf0(x, 1.0, 1.0)))
+
+class _LevyStable(_LS):
+    """Stable law in scipy's default S1 parameterisation, by Nolan's (1997)
+    integral representation in S0."""
+    _shapes = 2
+
+    @staticmethod
+    def _theta0_zeta(alpha, beta):
+        zeta = -beta * _math.tan(_math.pi * alpha / 2.0)
+        theta0 = _math.atan(beta * _math.tan(_math.pi * alpha / 2.0)) / alpha
+        return theta0, zeta
+
+    @classmethod
+    def _V(cls, theta, alpha, beta, theta0):
+        c1 = _math.cos(alpha * theta0) ** (1.0 / (alpha - 1.0))
+        return (c1 * (_math.cos(theta) / _math.sin(alpha * (theta0 + theta))) ** (alpha / (alpha - 1.0))
+                * _math.cos(alpha * theta0 + (alpha - 1.0) * theta) / _math.cos(theta))
+
+    def _pdf0(self, x0, alpha, beta):
+        # density in S0 at x0
+        if alpha == 1.0:
+            if beta == 0.0:
+                return 1.0 / (_math.pi * (1.0 + x0 * x0))
+            if beta < 0:
+                return self._pdf0(-x0, alpha, -beta)
+            def f(theta):
+                try:
+                    v = 2.0 / _math.pi * ((_math.pi / 2.0 + beta * theta) / _math.cos(theta)) * _math.exp(
+                        (_math.pi / 2.0 + beta * theta) * _math.tan(theta) / beta)
+                    g = _math.exp(-_math.pi * x0 / (2.0 * beta)) * v
+                    return g * _math.exp(-g) if g < 700 else 0.0
+                except (OverflowError, ZeroDivisionError, ValueError):
+                    return 0.0
+            return _adaptive_simpson(f, -_math.pi / 2.0 + 1e-9, _math.pi / 2.0 - 1e-9, 1e-10, 30) / (2.0 * _bi.abs(beta))
+        theta0, zeta = self._theta0_zeta(alpha, beta)
+        if _bi.abs(x0 - zeta) < 1e-10:
+            return _math.gamma(1.0 + 1.0 / alpha) * _math.cos(theta0) / (_math.pi * (1.0 + zeta * zeta) ** (0.5 / alpha))
+        if x0 < zeta:
+            return self._pdf0(-x0, alpha, -beta)
+        d = x0 - zeta
+        ex = alpha / (alpha - 1.0)
+
+        def f(theta):
+            try:
+                v = self._V(theta, alpha, beta, theta0)
+                g = d ** ex * v
+                return g * _math.exp(-g) if g < 700 else 0.0
+            except (ValueError, ZeroDivisionError, OverflowError):
+                return 0.0
+        integral = _adaptive_simpson(f, -theta0 + 1e-9, _math.pi / 2.0 - 1e-9, 1e-10, 30)
+        return alpha / (_math.pi * _bi.abs(alpha - 1.0) * d) * integral
+
+    def _cdf0(self, x0, alpha, beta):
+        if alpha == 1.0:
+            if beta == 0.0:
+                return 0.5 + _math.atan(x0) / _math.pi
+            if beta < 0:
+                return 1.0 - self._cdf0(-x0, alpha, -beta)
+            def f(theta):
+                try:
+                    v = 2.0 / _math.pi * ((_math.pi / 2.0 + beta * theta) / _math.cos(theta)) * _math.exp(
+                        (_math.pi / 2.0 + beta * theta) * _math.tan(theta) / beta)
+                    g = _math.exp(-_math.pi * x0 / (2.0 * beta)) * v
+                    return _math.exp(-g) if g < 700 else 0.0
+                except (OverflowError, ZeroDivisionError, ValueError):
+                    return 0.0
+            return _adaptive_simpson(f, -_math.pi / 2.0 + 1e-9, _math.pi / 2.0 - 1e-9, 1e-10, 30) / _math.pi
+        theta0, zeta = self._theta0_zeta(alpha, beta)
+        if _bi.abs(x0 - zeta) < 1e-10:
+            return 0.5 - theta0 / _math.pi
+        if x0 < zeta:
+            return 1.0 - self._cdf0(-x0, alpha, -beta)
+        d = x0 - zeta
+        ex = alpha / (alpha - 1.0)
+
+        def f(theta):
+            try:
+                g = d ** ex * self._V(theta, alpha, beta, theta0)
+                return _math.exp(-g) if g < 700 else 0.0
+            except (ValueError, ZeroDivisionError, OverflowError):
+                return 0.0
+        integral = _adaptive_simpson(f, -theta0 + 1e-9, _math.pi / 2.0 - 1e-9, 1e-10, 30)
+        c1 = (0.5 - theta0 / _math.pi) if alpha < 1 else 1.0
+        return c1 + (1.0 if alpha < 1 else -1.0) * integral / _math.pi
+
+    def _to_s0(self, x, alpha, beta):
+        if alpha == 1.0:
+            return x
+        return x - beta * _math.tan(_math.pi * alpha / 2.0)
+
+    def _pdf(self, x, alpha, beta):
+        return self._pdf0(self._to_s0(x, alpha, beta), alpha, beta)
+
+    def _cdf(self, x, alpha, beta):
+        return _bi.max(0.0, _bi.min(1.0, self._cdf0(self._to_s0(x, alpha, beta), alpha, beta)))
+
+
+class _StudentizedRange(_LS):
+    _shapes = 2
+    _support = (0.0, _math.inf)
+
+    @staticmethod
+    def _s_density(s, df):
+        return _math.exp(0.5 * df * _math.log(df) - _math.lgamma(0.5 * df) - (0.5 * df - 1.0) * _math.log(2.0)
+                         + (df - 1.0) * _math.log(s) - 0.5 * df * s * s)
+
+    def _cdf(self, q, k, df):
+        def inner(s):
+            qs = q * s
+            if qs > 40.0:
+                return 1.0
+            f = lambda z: _phi(z) * (_norm_cdf(z + qs) - _norm_cdf(z)) ** (k - 1.0)  # noqa: E731
+            return k * _adaptive_simpson(f, -8.0 - qs, 8.0, 1e-10, 25)
+        if df > 1e5:
+            return inner(1.0)
+        s_hi = 1.0 + 12.0 / _math.sqrt(df)
+        return _adaptive_simpson(lambda s: self._s_density(s, df) * inner(s), 1e-6, s_hi, 1e-8, 20)
+
+    def _pdf(self, q, k, df):
+        def inner(s):
+            qs = q * s
+            if qs > 40.0:
+                return 0.0
+            f = lambda z: _phi(z) * _phi(z + qs) * (_norm_cdf(z + qs) - _norm_cdf(z)) ** (k - 2.0)  # noqa: E731
+            return k * (k - 1.0) * s * _adaptive_simpson(f, -8.0 - qs, 8.0, 1e-10, 25)
+        if df > 1e5:
+            return inner(1.0)
+        s_hi = 1.0 + 12.0 / _math.sqrt(df)
+        return _adaptive_simpson(lambda s: self._s_density(s, df) * inner(s), 1e-6, s_hi, 1e-8, 20)
+
+
+class _DParetoLogNorm(_LS):
+    """Reed's double Pareto-lognormal with scipy's (u, s, a, b) shapes."""
+    _shapes = 4
+    _support = (0.0, _math.inf)
+
+    @staticmethod
+    def _R(t):
+        # Mills ratio Phi_c(t) / phi(t), stable in both tails
+        if t > 30.0:
+            return (1.0 / t) * (1.0 - 1.0 / (t * t) + 3.0 / t ** 4)
+        return _norm_cdf(-t) / _phi(t)
+
+    def _pdf(self, y, u, s, a, b):
+        z = (_math.log(y) - u) / s
+        return a * b / (a + b) / y * _phi(z) * (self._R(a * s - z) + self._R(b * s + z))
+
+    def _cdf(self, y, u, s, a, b):
+        z = (_math.log(y) - u) / s
+        return _norm_cdf(z) - _phi(z) * (b * self._R(a * s - z) - a * self._R(b * s + z)) / (a + b)
+
+
+gausshyper = _GaussHyper()
+genhyperbolic = _GenHyperbolic()
+geninvgauss = _GenInvGauss()
+norminvgauss = _NormInvGauss()
+rice = _Rice()
+rel_breitwigner = _RelBreitWigner()
+landau = _Landau()
+levy_stable = _LevyStable()
+studentized_range = _StudentizedRange()
+dpareto_lognorm = _DParetoLogNorm()
+
+
+# ---------------------------------------------------- scipy parity: discrete families
+
+class _Disc(_Dist):
+    """A discrete family: subclasses give ``_pmf(k, *shape)`` and the
+    support ``_sup(*shape)``; cdf sums the mass, ppf walks it."""
+    _discrete = True
+
+    def _sup(self, *sh):
+        return self._support
+
+    def _bounds(self, *args, **kw):
+        return tuple(float(v) for v in self._sup(*args))
+
+    def pmf(self, k, *args):
+        lo, hi = self._sup(*args)
+
+        def one(v):
+            if v != v:
+                return _math.nan
+            if v < lo or v > hi or float(v) != _math.floor(v):
+                return 0.0
+            return self._pmf(int(v), *args)
+        return _maybe_map(one, k)
+
+    def cdf(self, k, *args):
+        lo, hi = self._sup(*args)
+
+        def one(v):
+            if v != v:
+                return _math.nan
+            if v < lo:
+                return 0.0
+            if v >= hi:
+                return 1.0
+            kk = int(_math.floor(v))
+            start = int(lo) if lo > -_math.inf else self._lower_start(*args)
+            return _bi.min(1.0, _math.fsum(self._pmf(i, *args) for i in range(start, kk + 1)))
+        return _maybe_map(one, k)
+
+    def ppf(self, q, *args):
+        lo, hi = self._sup(*args)
+        start = int(lo) if lo > -_math.inf else self._lower_start(*args)
+
+        def one(p):
+            if p != p or p < 0.0 or p > 1.0:
+                return _math.nan
+            if p == 0.0:
+                return float(start - 1)
+            return _discrete_ppf(p, lambda i: self._pmf(i, *args), start, None if hi == _math.inf else int(hi))
+        return _maybe_map(one, q)
+    pmf._edge_wrapped = True
+    cdf._edge_wrapped = True
+    ppf._edge_wrapped = True
+
+
+class _BetaNBinom(_Disc):
+    _support = (0.0, _math.inf)
+
+    def _pmf(self, k, n, a, b):
+        return _math.exp(_log_comb(n + k - 1, k) + _math.lgamma(a + n) + _math.lgamma(b + k) - _math.lgamma(a + b + n + k)
+                         + _math.lgamma(a + b) - _math.lgamma(a) - _math.lgamma(b))
+
+
+class _Boltzmann(_Disc):
+    def _sup(self, lam, N):
+        return (0.0, float(N) - 1.0)
+
+    def _pmf(self, k, lam, N):
+        return (1.0 - _math.exp(-lam)) * _math.exp(-lam * k) / (1.0 - _math.exp(-lam * N))
+
+
+class _DLaplace(_Disc):
+    _support = (-_math.inf, _math.inf)
+
+    def _lower_start(self, a):
+        return -int(60.0 / a) - 5
+
+    def _pmf(self, k, a):
+        return _math.tanh(0.5 * a) * _math.exp(-a * _bi.abs(k))
+
+
+class _LogSer(_Disc):
+    _support = (1.0, _math.inf)
+
+    def _pmf(self, k, p):
+        return -p ** k / (k * _math.log1p(-p))
+
+
+class _NCHypergeomFisher(_Disc):
+    def _sup(self, M, n, N, odds):
+        return (float(_bi.max(0, N - (M - n))), float(_bi.min(n, N)))
+
+    def _weights(self, M, n, N, odds):
+        lo, hi = self._sup(M, n, N, odds)
+        ks = range(int(lo), int(hi) + 1)
+        w = [_math.exp(_log_comb(int(n), k) + _log_comb(int(M - n), int(N) - k) + k * _math.log(odds)) for k in ks]
+        tot = _math.fsum(w)
+        return {k: v / tot for k, v in zip(ks, w)}
+
+    def _pmf(self, k, M, n, N, odds):
+        return self._weights(M, n, N, odds).get(k, 0.0)
+
+
+class _NCHypergeomWallenius(_Disc):
+    def _sup(self, M, n, N, odds):
+        return (float(_bi.max(0, N - (M - n))), float(_bi.min(n, N)))
+
+    def _raw(self, k, M, n, N, odds):
+        D = odds * (n - k) + (M - n - (N - k))
+        if D <= 0:
+            return 1.0 if k == N else 0.0
+
+        def f(t):
+            if t <= 0.0 or t >= 1.0:
+                return 0.0
+            return (1.0 - t ** (odds / D)) ** k * (1.0 - t ** (1.0 / D)) ** (N - k)
+        integral = _adaptive_simpson(f, 0.0, 1.0, 1e-14, 45)
+        return _math.exp(_log_comb(n, k) + _log_comb(M - n, N - k)) * integral
+
+    def _pmf(self, k, M, n, N, odds):
+        M, n, N = int(M), int(n), int(N)
+        cache = self.__dict__.setdefault("_wcache", {})
+        key = (M, n, N, float(odds))
+        if key not in cache:
+            lo, hi = self._sup(M, n, N, odds)
+            raw = {i: self._raw(i, M, n, N, odds) for i in range(int(lo), int(hi) + 1)}
+            tot = _math.fsum(raw.values())
+            cache[key] = {i: v / tot for i, v in raw.items()}
+        return cache[key].get(k, 0.0)
+
+
+class _NHypergeom(_Disc):
+    def _sup(self, M, n, r):
+        return (0.0, float(n))
+
+    def _pmf(self, k, M, n, r):
+        M, n, r = int(M), int(n), int(r)
+        if M - r - k < n - k:
+            return 0.0
+        return _math.exp(_log_comb(k + r - 1, k) + _log_comb(M - r - k, n - k) - _log_comb(M, n))
+
+
+class _Planck(_Disc):
+    _support = (0.0, _math.inf)
+
+    def _pmf(self, k, lam):
+        return (1.0 - _math.exp(-lam)) * _math.exp(-lam * k)
+
+    def cdf(self, k, lam):
+        return _maybe_map(lambda v: 0.0 if v < 0 else 1.0 - _math.exp(-lam * (_math.floor(v) + 1.0)), k)
+
+    def ppf(self, q, lam):
+        return _maybe_map(lambda p: float(_bi.max(0, _math.ceil(-_math.log1p(-p) / lam - 1.0))), q)
+
+
+class _PoissonBinom(_Disc):
+    def _sup(self, p):
+        return (0.0, float(len(list(p))))
+
+    def _table(self, p):
+        probs = [float(v) for v in p]
+        dp = [1.0]
+        for pi in probs:
+            nxt = [0.0] * (len(dp) + 1)
+            for i, v in enumerate(dp):
+                nxt[i] += v * (1.0 - pi)
+                nxt[i + 1] += v * pi
+            dp = nxt
+        return dp
+
+    def _pmf(self, k, p):
+        t = self._table(p)
+        return t[k] if 0 <= k < len(t) else 0.0
+
+
+class _YuleSimon(_Disc):
+    _support = (1.0, _math.inf)
+
+    def _pmf(self, k, alpha):
+        return alpha * _math.exp(_math.lgamma(k) + _math.lgamma(alpha + 1.0) - _math.lgamma(k + alpha + 1.0))
+
+    def cdf(self, k, alpha):
+        return _maybe_map(lambda v: 0.0 if v < 1 else 1.0 - _math.floor(v) * _math.exp(
+            _math.lgamma(_math.floor(v)) + _math.lgamma(alpha + 1.0) - _math.lgamma(_math.floor(v) + alpha + 1.0)), k)
+
+
+class _Zipfian(_Disc):
+    def _sup(self, a, n):
+        return (1.0, float(n))
+
+    def _pmf(self, k, a, n):
+        h = _math.fsum(i ** (-a) for i in range(1, int(n) + 1))
+        return k ** (-a) / h
+
+
+betanbinom = _BetaNBinom()
+boltzmann = _Boltzmann()
+dlaplace = _DLaplace()
+logser = _LogSer()
+nchypergeom_fisher = _NCHypergeomFisher()
+nchypergeom_wallenius = _NCHypergeomWallenius()
+nhypergeom = _NHypergeom()
+planck = _Planck()
+poisson_binom = _PoissonBinom()
+yulesimon = _YuleSimon()
+zipfian = _Zipfian()

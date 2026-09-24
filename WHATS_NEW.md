@@ -9,6 +9,39 @@ Per-package full changelogs:
 
 ## 1.3.2 (2026-09-21)
 
+- **Round four (exhaustive sweep).** Array core: `keepdims` honoured by all
+  fifteen reductions, `poly(matrix)` is the characteristic polynomial,
+  `tril`/`triu` broadcast a vector, `triu_indices_from` on non-square input,
+  `ix_` returns an open mesh, `block`/`pad`/`polyval`/`split`/`gradient`
+  take 2-D input or a list of split points or `axis=`, `ndim(scalar)` is 0,
+  `float()` of a complex element raises Python's TypeError, counts from
+  `unique`/`histogram` are integers, `array_str` matches numpy's padding,
+  `reciprocal` of ints is integer division, complex arrays take mask and
+  fancy indexing. Frame core: `to_numpy()` keeps non-numeric columns,
+  `.dt.days/.seconds/.total_seconds()`, the groupby lag and cumulative
+  family (`shift`, `diff`, `cumsum`, `cumcount`, `rank`, `pct_change`,
+  `head`, `tail`, `nth`, `ffill`, `bfill`, `idxmax`, `idxmin`,
+  `value_counts`, `describe`, `sem`, `prod`, `any`, `all`), `nlargest` keeps
+  NaN rows, `keys()`/`columns` are an Index. Stats core: `describe()` is a
+  6-tuple, `theilslopes` returns the slope interval, `binomtest().statistic`
+  is the proportion, exact small-sample `ansari` (tie-corrected variance
+  otherwise), exact `cramervonmises_2samp` up to n = 20, exact `kstwo` for
+  small n, exact noncentral F with every method, the moment interface
+  (`mean`, `var`, `std`, `median`, `entropy`, `moment`, `interval`,
+  `stats`, `support`, `expect`) on every distribution, and thirteen new
+  distributions (`ncx2`, `rayleigh`, `invgamma`, `triang`, `wald`,
+  `skewnorm`, `truncnorm`, `vonmises`, `bernoulli`, `randint`,
+  `betabinom`, `zipf`, `skellam`). Loader: a module's own name can no
+  longer shadow the callable the map exports from it, whichever sibling
+  is touched first and whether or not the submodule is imported
+  explicitly; module-name aliases stay module-internal
+  (`from morie.fn.<mod> import <mod>`), a deliberate choice so that
+  `from morie.fn import <mod>` keeps returning the module.
+  `morie crypto` with no subcommand exits 2. `estimate_gate` honours
+  `propensity_col`. The parameters an AST scan found accepted but never
+  read across `src/morie` are now wired (or, where the docstring already
+  declared them a no-op, left as documented); the same for the R arm.
+
 - **`mrm_twoprop_test` on degenerate arms.** No events (or nothing but
   events) in both arms gives chi-square 0 with p = 1 and a warning, in
   both the Python and R arms. This is morie's convention (the limit of

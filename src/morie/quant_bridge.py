@@ -287,8 +287,10 @@ def compile_ggml_lib(
     output = output_dir / f"quant_ggml{suffix}"
 
     # The C source would need to be written; for now just validate the header
+    flags = ["-O2", "-DNDEBUG"] if optimize else ["-O0", "-g"]
     logger.info(
-        "GGML C library compilation not yet implemented -- header validated at %s. Using NumPy fallback.",
-        header,
+        "GGML C library compilation not yet implemented (would use %s %s -o %s) -- "
+        "header validated at %s. Using NumPy fallback.",
+        cc, " ".join(flags), output, header,
     )
     return None

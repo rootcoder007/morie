@@ -422,14 +422,29 @@ def greg_calibrate(
         )
 
     # Calibration adjustment
-    lambda_vec = XtWX_inv @ (T_x - T_hat)
-    g = 1.0 + X_mat @ lambda_vec
-    w_cal = w * g
-
-    # Check convergence
-    T_cal = X_mat.T @ w_cal
-    max_adj = float(np.max(np.abs(T_cal - T_x)))
-    converged = max_adj < tolerance
+    # linear calibration is a single step; iterate the step on the
+    # calibrated weights up to max_iterations when rounding leaves a
+    # residual above the tolerance
+    w_cal = w.copy()
+    iterations = 0
+    max_adj = float("inf")
+    converged = False
+    for step in range(1, int(max_iterations) + 1):
+        iterations = step
+        T_hat = X_mat.T @ w_cal
+        XtWX = X_mat.T @ np.diag(w_cal) @ X_mat
+        try:
+            XtWX_inv = np.linalg.inv(XtWX)
+        except np.linalg.LinAlgError:
+            XtWX_inv = np.linalg.pinv(XtWX)
+        lambda_vec = XtWX_inv @ (T_x - T_hat)
+        g = 1.0 + X_mat @ lambda_vec
+        w_cal = w_cal * g
+        T_cal = X_mat.T @ w_cal
+        max_adj = float(np.max(np.abs(T_cal - T_x)))
+        converged = max_adj < tolerance
+        if converged:
+            break
 
     if not converged:
         logger.warning("GREG calibration residual = %.6f (tolerance = %.6f)", max_adj, tolerance)
@@ -438,7 +453,7 @@ def greg_calibrate(
     return CalibrationResult(
         weights=w_cal,
         converged=converged,
-        iterations=1,
+        iterations=iterations,
         max_adjustment=max_adj,
         diagnostics=diag,
     )

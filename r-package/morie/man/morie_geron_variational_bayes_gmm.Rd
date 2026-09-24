@@ -18,6 +18,10 @@ morie_geron_variational_bayes_gmm(
 \item{X}{Data (n, d).}
 
 \item{n_components, max_iter, alpha0, tol, var_floor, seed}{As in Python original.}
+
+\item{seed}{Carried for parity with the Python module; the
+initialisation is deterministic (means at ordered quantiles of the
+first coordinate), so it has no effect.}
 }
 \value{
 list with weights, means, variances, resp, labels, alpha,

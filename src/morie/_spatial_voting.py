@@ -29,6 +29,10 @@ def aldrich_mckelvey(
     :param tol: Convergence tolerance.
     :return: dict with zhat (stimulus positions), alpha, beta, weights, iterations.
     """
+    if int(n_dims) != 1:
+        raise NotImplementedError(
+            "aldrich_mckelvey: this implementation recovers a single latent "
+            "dimension; n_dims must be 1")
     Z = np.asarray(Z, dtype=float)
     n_resp, n_stim = Z.shape
 
@@ -1422,7 +1426,7 @@ def ordered_optimal_classification(
                     new_cuts.append(cutpoints[j][k] if k < len(cutpoints[j]) else 0.0)
             cutpoints[j] = np.array(new_cuts)
 
-        if total > 0 and correct == old_correct and iteration > 0:
+        if total > 0 and iteration > 0 and abs(correct - old_correct) / total <= tol:
             break
 
     correct_rate = correct / total if total > 0 else 0.0
@@ -1700,6 +1704,7 @@ def dw_nominate(
     for j in range(n_votes):
         nv[j] /= np.linalg.norm(nv[j]) + 1e-12
     mid = np.zeros((n_votes, n_dims))
+    ll_prev = None
 
     for iteration in range(max_iter):
         ll_old = 0.0
@@ -1717,6 +1722,11 @@ def dw_nominate(
             p = normal_dist.cdf(u_diff)
             p = np.clip(p, 1e-10, 1 - 1e-10)
             ll_old += np.sum(y_v * np.log(p) + (1 - y_v) * np.log(1 - p))
+
+        # converged when the log-likelihood stops moving by more than tol
+        if ll_prev is not None and abs(ll_old - ll_prev) <= tol * max(1.0, abs(ll_prev)):
+            break
+        ll_prev = ll_old
 
         for j in range(n_votes):
             valid = mask[:, j]

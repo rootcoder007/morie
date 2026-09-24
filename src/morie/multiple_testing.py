@@ -1189,7 +1189,10 @@ def n_effective_tests(
         Estimated number of effective independent tests.
     """
     if correlation_matrix is None:
-        raise ValueError("correlation_matrix is required")
+        if p_values is None:
+            raise ValueError("correlation_matrix is required (or p_values, for the uncorrelated count)")
+        # without a correlation structure every test counts once
+        return float(len(np.asarray(p_values, dtype=float).ravel()))
 
     R = np.asarray(correlation_matrix, dtype=float)
     eigenvalues = np.linalg.eigvalsh(R)

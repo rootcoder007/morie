@@ -751,7 +751,9 @@ def test_parallel_trends(
 
     X = _add_intercept(np.column_stack([d_vals] + time_dummies + interact_cols))
 
-    cluster_ids = df_pre[cluster].values if cluster else None
+    # cluster by the named column, else by the panel unit when given
+    cl_col = cluster or unit
+    cluster_ids = df_pre[cl_col].values if cl_col else None
     beta, se = _ols_robust_se(X, y_vals, cluster_ids=cluster_ids)
 
     # Interaction coefficients start after: intercept (1) + treat (1) + time dummies
@@ -1305,8 +1307,18 @@ def did_doubly_robust(
     # Bootstrap inference
     n = len(df)
     boot_ests = []
+    members = None
+    if cluster is not None and cluster in data.columns:
+        # cluster bootstrap: whole clusters are resampled
+        cl = data.loc[df.index, cluster].values
+        cl_ids = np.unique(cl)
+        members = {c: np.flatnonzero(cl == c) for c in cl_ids}
     for _ in range(n_bootstrap):
-        idx = rng.choice(n, size=n, replace=True)
+        if members is None:
+            idx = rng.choice(n, size=n, replace=True)
+        else:
+            picked = rng.choice(cl_ids, size=len(cl_ids), replace=True)
+            idx = np.concatenate([members[c] for c in picked])
         try:
             b = _dr_estimate(d[idx], p[idx], y[idx], X_cov[idx])
             boot_ests.append(b)
@@ -2610,8 +2622,13 @@ def did_diagnostics(
             )
         cov_balance = pd.DataFrame(records)
 
+    cluster_counts = None
+    if cluster and cluster in df.columns:
+        cluster_counts = df.groupby([treatment, post])[cluster].nunique().unstack(fill_value=0)
+
     return {
         "sample_sizes": sizes,
         "outcome_stats": outcome_stats,
         "covariate_balance": cov_balance,
+        "cluster_counts": cluster_counts,
     }

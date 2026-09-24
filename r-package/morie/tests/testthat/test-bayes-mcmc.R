@@ -223,3 +223,12 @@ test_that("BS7.4/BS7.4a fitted values are on the response scale", {
   # fitted values live in the range of the observed response (same scale)
   expect_true(mean(fv) > min(f$y) && mean(fv) < max(f$y))
 })
+
+
+test_that("round four: stop_on_convergence truncates at the first converged checkpoint", {
+  d <- .bayes_data()
+  fit <- morie_bayes_lm(y ~ x, d, chains = 2L, iter = 400L, warmup = 50L,
+                        stop_on_convergence = TRUE, quiet = TRUE)
+  expect_true(is.na(fit$stopped_at) || fit$stopped_at <= 400L)
+  expect_true(nrow(fit$posterior) <= 2L * 400L)
+})

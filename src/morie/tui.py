@@ -5145,6 +5145,6 @@ def launch_tui(*, agent: str | None = None) -> int:
             )
         return 1
 
-    app = MORIEApp()
+    app = MORIEApp(agent=agent)
     app.run(mouse=True)
     return 0

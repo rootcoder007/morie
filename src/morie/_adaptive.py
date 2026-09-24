@@ -281,6 +281,12 @@ def smoothed_pseudo_wvd(
                 val = analytic[t1] * np.conj(analytic[t2]) * t_win[tau_idx]
                 for fi in range(n_freq):
                     tfd[fi, ti] += np.real(val * np.exp(-1j * 4 * np.pi * fi * tau / n_freq))
+    # frequency smoothing: a Hamming window of f_smooth bins along the
+    # frequency axis, the second half of the "smoothed pseudo" kernel
+    f_win = windows.hamming(min(f_smooth, n_freq))
+    f_win = f_win / np.sum(f_win)
+    for ti in range(n):
+        tfd[:, ti] = np.convolve(tfd[:, ti], f_win, mode="same")
     t = np.arange(n) / fs
     f = np.arange(n_freq) * fs / (2 * n_freq)
     return tfd, t, f

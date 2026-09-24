@@ -785,6 +785,8 @@ def arsau_available_datasets(
     rows: list[list[Any]] = []
     for e in entries:
         desc = e.description_fr if language.lower().startswith("fr") else e.description_en
+        cached = "?" if data_dir is None else (
+            "yes" if (Path(data_dir) / e.csv_filename).exists() else "no")
         rows.append(
             [
                 e.year_or_range,
@@ -793,6 +795,7 @@ def arsau_available_datasets(
                 "yes" if e.is_valid else "INVALID",
                 e.expected_rows,
                 e.expected_cols,
+                cached,
                 desc[:80] + ("…" if len(desc) > 80 else ""),
             ]
         )
@@ -820,7 +823,7 @@ def arsau_available_datasets(
         tables=[
             {
                 "title": "Registered datasets",
-                "headers": ["year", "kind", "csv", "valid", "rows", "cols", "description"],
+                "headers": ["year", "kind", "csv", "valid", "rows", "cols", "cached", "description"],
                 "rows": rows,
             }
         ],

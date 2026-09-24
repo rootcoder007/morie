@@ -151,6 +151,9 @@ def _setup_axes(ax, *, title: str, basemap_alpha: float = 0.0):
     ax.set_ylabel("north of centre (km)")
     ax.set_title(title)
     ax.grid(True, alpha=0.15, linestyle=":")
+    if basemap_alpha > 0:
+        # a faint ground tone standing in for a basemap
+        ax.set_facecolor((0.93, 0.93, 0.90, float(basemap_alpha)))
 
 
 def _polygon_pieces(df) -> list[tuple[np.ndarray, dict]]:

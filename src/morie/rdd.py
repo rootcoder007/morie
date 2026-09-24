@@ -411,7 +411,19 @@ def bandwidth_rot(
     sd_x = np.std(x)
     iqr_x = np.subtract(*np.percentile(x, [75, 25]))
     h_rot = 0.9 * min(sd_x, iqr_x / 1.349) * n ** (-1 / 5)
-    return BandwidthResult(h_opt=float(h_rot), method="ROT", details={"sd_x": float(sd_x), "iqr_x": float(iqr_x)})
+
+    def _side(xs):
+        if len(xs) < 2:
+            return float("nan")
+        s = np.std(xs)
+        q = np.subtract(*np.percentile(xs, [75, 25]))
+        return float(0.9 * min(s, q / 1.349) * len(xs) ** (-1 / 5))
+    # the same rule on each side of the cutoff, for a two-sided pilot
+    return BandwidthResult(h_opt=float(h_rot), method="ROT",
+                           details={"sd_x": float(sd_x), "iqr_x": float(iqr_x),
+                                    "cutoff": float(cutoff),
+                                    "h_left": _side(x[x < cutoff]),
+                                    "h_right": _side(x[x >= cutoff])})
 
 
 def bandwidth_cct(
@@ -608,6 +620,30 @@ def sharp_rdd(
         beta_r, V_r = _local_poly_fit(x_bw[right], y_adj[right], cutoff, h, p, kernel)
         tau = float(beta_r[0] - beta_l[0])
         se_tau = float(np.sqrt(max(V_r[0, 0] + V_l[0, 0], 0.0)))
+
+    if cluster is not None and cluster in df.columns:
+        # cluster-robust inference by cluster bootstrap of the estimate
+        cl = df.loc[mask, cluster].values
+        cl_ids = np.unique(cl)
+        members = {c: np.flatnonzero(cl == c) for c in cl_ids}
+        y_use = y_adj if covariates else y_bw
+        rng = np.random.default_rng(0)
+        boots = []
+        for _ in range(200):
+            picked = rng.choice(cl_ids, size=len(cl_ids), replace=True)
+            idx = np.concatenate([members[c] for c in picked])
+            xb, yb = x_bw[idx], y_use[idx]
+            lb, rb = xb < cutoff, xb >= cutoff
+            if lb.sum() < p + 1 or rb.sum() < p + 1:
+                continue
+            try:
+                b_l, _ = _local_poly_fit(xb[lb], yb[lb], cutoff, h, p, kernel)
+                b_r, _ = _local_poly_fit(xb[rb], yb[rb], cutoff, h, p, kernel)
+            except Exception:
+                continue
+            boots.append(float(b_r[0] - b_l[0]))
+        if len(boots) > 1:
+            se_tau = float(np.std(boots, ddof=1))
 
     t_val = tau / se_tau if se_tau > 0 else 0.0
     p_val = float(2 * stats.norm.sf(abs(t_val)))

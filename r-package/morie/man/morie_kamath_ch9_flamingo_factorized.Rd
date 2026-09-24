@@ -21,6 +21,9 @@ morie_kamath_ch9_flamingo_dataset_mix(D_m, lambda_m, x = NULL, y = NULL)
 \item{D_m}{List of datasets (each a list of probability vectors).}
 
 \item{lambda_m}{Dataset weights.}
+
+\item{x, y}{Carried for signature parity with the Python module; the
+mixture loss is a function of \code{D_m} and \code{lambda_m} only.}
 }
 \value{
 List with \code{estimate} (the product), \code{log_prob}, \code{nll}.

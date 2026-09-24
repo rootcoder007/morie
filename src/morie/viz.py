@@ -1845,8 +1845,11 @@ def power_curve_plot(
     if power_values is None:
         z_alpha = sp_stats.norm.ppf(1 - alpha / 2)
         pwr = []
+        per_group = {"two_sample_t": 2.0, "one_sample_t": 1.0, "paired_t": 1.0}
+        if test not in per_group:
+            raise ValueError(f"test must be one of {sorted(per_group)} (got {test!r})")
         for n in ns:
-            se = np.sqrt(2 / n)
+            se = np.sqrt(per_group[test] / n)
             z_beta = effect_size / se - z_alpha
             pwr.append(sp_stats.norm.cdf(z_beta))
         power_values = np.array(pwr)

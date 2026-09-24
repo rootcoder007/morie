@@ -75,8 +75,10 @@ class PipelineTracker:
         output_dir: str | None = None,
         track_carbon: bool = True,
         use_live: bool | None = None,
+        dataset_key: str | None = None,
     ) -> None:
         self.module_names = module_names
+        self.dataset_key = dataset_key
         self.cpads_csv = cpads_csv
         self.output_dir = output_dir
         self.track_carbon = track_carbon
@@ -425,6 +427,8 @@ def execute_pipeline_with_progress(
 
     if not silent:
         print("Selected modules:", ", ".join(selected))
+        if dataset_key:
+            print("Dataset:", dataset_key)
         try:
             confirm = input(f"Run {len(selected)} modules? [y/N]: ")
         except (EOFError, KeyboardInterrupt):
@@ -439,6 +443,7 @@ def execute_pipeline_with_progress(
         cpads_csv=cpads_csv,
         output_dir=output_dir,
         track_carbon=track_carbon,
+        dataset_key=dataset_key,
     )
     results = tracker.run()
 

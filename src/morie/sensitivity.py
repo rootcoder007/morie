@@ -418,8 +418,13 @@ def tipping_point_analysis(
     -------
     TippingPointResult
     """
+    if outcome_type not in ("continuous", "binary"):
+        raise ValueError(f"outcome_type must be 'continuous' or 'binary' (got {outcome_type!r})")
     if delta_range is None:
         max_delta = abs(estimate) * 3
+        if outcome_type == "binary":
+            # a risk difference cannot be shifted beyond the unit interval
+            max_delta = min(max_delta, 1.0)
         delta_range = np.linspace(-max_delta, max_delta, 101)
 
     delta_range = np.asarray(delta_range, dtype=float)

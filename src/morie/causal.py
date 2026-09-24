@@ -303,6 +303,7 @@ def estimate_aipw(
     outcome: str = "heavy_drinking_30d",
     covariates: list[str] | None = None,
     outcome_model: str = "logistic",
+    propensity_col: str | None = None,
 ) -> dict[str, Any]:
     """
     Estimate the ATE via the Augmented Inverse Probability Weighting (AIPW)
@@ -364,7 +365,12 @@ def estimate_aipw(
     y = frame[outcome].values.astype(float)
 
     # ── Propensity scores ────────────────────────────────────────────────────
-    ps = compute_propensity_scores(frame, treatment=treatment, covariates=covariates).values
+    if propensity_col is not None and propensity_col in data.columns:
+        # a caller-supplied propensity score, honoured as estimate_att and
+        # estimate_atc honour theirs
+        ps = data.loc[frame.index, propensity_col].values.astype(float)
+    else:
+        ps = compute_propensity_scores(frame, treatment=treatment, covariates=covariates).values
     ps = ps.clip(0.01, 0.99)
 
     # ── Outcome model: preprocess covariates the same way as propensity ─────
@@ -947,6 +953,8 @@ def estimate_gate(
     _logger = _logging.getLogger(__name__)
 
     required_cols = [treatment, outcome, group_col, *covariates]
+    if propensity_col is not None and propensity_col in data.columns:
+        required_cols.append(propensity_col)
     frame = data[required_cols].dropna().copy()
 
     results: list[dict] = []
@@ -962,6 +970,7 @@ def estimate_gate(
                 outcome=outcome,
                 covariates=covariates,
                 outcome_model="linear",
+                propensity_col=propensity_col,
             )
             results.append(
                 {

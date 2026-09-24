@@ -18,13 +18,14 @@ def sigmoid(z):
     before that; splitting on the sign keeps every ``exp`` argument
     non-positive.
     """
+    z_in = z
     z = np.asarray(z, dtype=float)
     out = np.empty(z.shape, dtype=float)
     pos = z >= 0
     out[pos] = 1.0 / (1.0 + np.exp(-z[pos]))
     e = np.exp(z[~pos])
     out[~pos] = e / (1.0 + e)
-    return out
+    return np.scalar_out(z_in, out)
 
 
 def add_bias_column(X):

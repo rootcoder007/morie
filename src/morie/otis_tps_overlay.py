@@ -147,7 +147,7 @@ def per_region_rollup(*, tps_total_by_year: pd.Series | None = None) -> RichResu
     if "Region_AtTimeOfPlacement" not in df.columns:
         return RichResult(title="OTIS region rollup", warnings=["region column missing"])
     by_region = df.groupby(["EndFiscalYear", "Region_AtTimeOfPlacement"]).size().unstack(fill_value=0).sort_index()
-    return RichResult(
+    out = RichResult(
         title="OTIS -- segregation placements per region × year",
         summary_lines=[
             ("Years", f"{int(by_region.index.min())}–{int(by_region.index.max())}"),
@@ -164,6 +164,23 @@ def per_region_rollup(*, tps_total_by_year: pd.Series | None = None) -> RichResu
         ],
         payload={"by_region": by_region.to_dict()},
     )
+    if tps_total_by_year is not None:
+        # OTIS placements against the TPS incident total for the same year
+        tps = pd.Series(tps_total_by_year)
+        otis_total = by_region.sum(axis=1)
+        rows = []
+        for y in otis_total.index:
+            t_val = tps.get(y, None)
+            ratio = float(otis_total[y]) / float(t_val) if t_val not in (None, 0) else float("nan")
+            rows.append([int(y), int(otis_total[y]), None if t_val is None else int(t_val),
+                         None if ratio != ratio else round(ratio, 4)])
+        out.tables.append({
+            "title": "OTIS placements vs TPS incidents by year:",
+            "headers": ["Year", "OTIS placements", "TPS incidents", "OTIS / TPS"],
+            "rows": rows,
+        })
+        out.payload["otis_per_tps_incident"] = {int(y): r[3] for y, r in zip(otis_total.index, rows)}
+    return out
 
 
 def composite_overlay(*, sample_rows: int | None = 30_000) -> RichResult:

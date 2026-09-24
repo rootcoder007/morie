@@ -14,7 +14,7 @@ def softmx(x: Union[Sequence[float], np.ndarray]) -> np.ndarray:
     """
     a = np.asarray(x, dtype=float)
     e = np.exp(a - a.max())
-    return e / e.sum()
+    return np.scalar_out(x, e / e.sum())
 
 
 def cheatsheet() -> str:

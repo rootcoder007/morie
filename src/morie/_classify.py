@@ -322,7 +322,9 @@ def lstm_biosignal(
         z = np.clip(z, -500, 500)
         return 1 / (1 + np.exp(-z))
 
-    correct = 0
+    # forward pass once: the recurrent weights are fixed, so the final
+    # hidden state of each sequence is the feature the readout learns on
+    H = np.zeros((n_samples, hidden_size))
     for i in range(n_samples):
         h = np.zeros(hidden_size)
         c = np.zeros(hidden_size)
@@ -335,9 +337,18 @@ def lstm_biosignal(
             c = f_gate * c + i_gate * c_cand
             o_gate = sigmoid(Wo @ combined)
             h = o_gate * np.tanh(c)
-        logits = h @ W_out
-        if np.argmax(logits) == int(y[i]):
-            correct += 1
+        H[i] = h
+    # softmax readout trained by gradient descent for n_epochs
+    y_int = np.asarray(y, dtype=int)
+    lr = 0.1
+    for _ in range(int(n_epochs)):
+        logits = H @ W_out
+        logits = logits - logits.max(axis=1, keepdims=True)
+        probs = np.exp(logits)
+        probs = probs / probs.sum(axis=1, keepdims=True)
+        probs[np.arange(n_samples), y_int] -= 1.0
+        W_out = W_out - lr * (H.T @ probs) / max(n_samples, 1)
+    correct = int(np.sum(np.argmax(H @ W_out, axis=1) == y_int))
     accuracy = correct / n_samples if n_samples > 0 else 0
     params = {"Wf": Wf, "Wi": Wi, "Wc": Wc, "Wo": Wo, "W_out": W_out, "hidden_size": hidden_size}
     return params, float(accuracy)

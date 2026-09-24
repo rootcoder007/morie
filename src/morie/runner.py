@@ -1150,7 +1150,7 @@ def _main_impl() -> int:
         crypto_cmd_parser = build_parser()._subparsers._group_actions[0].choices.get("crypto")
         if crypto_cmd_parser:
             crypto_cmd_parser.print_help()
-        return 0
+        return 2                # usage error, as argparse reports for the others
 
     if args.command == "convert-checkpoint":
         from .pt2gguf import convert

@@ -890,7 +890,8 @@ fixed_effects_meta <- function(estimates, standard_errors,
 #' @param estimates Numeric vector of effect-size estimates.
 #' @param standard_errors Numeric vector of SEs.
 #' @param confidence Confidence level. Default 0.95.
-#' @param method Tau^2 estimator. Only `"DL"` implemented.
+#' @param method Tau^2 estimator: `"DL"` (DerSimonian-Laird), `"PM"`
+#'   (Paule-Mandel) or `"REML"`.
 #' @return A `morie_effect_size` with tau^2, I^2, Q, prediction
 #'   interval in `extra`.
 #' @examples
@@ -906,6 +907,86 @@ random_effects_meta <- function(estimates, standard_errors,
   Q <- sum(w * (theta - theta_fe)^2)
   c_val <- sum(w) - sum(w^2) / sum(w)
   tau2 <- if (c_val > 0) max((Q - (k - 1)) / c_val, 0) else 0
+  if (method %in% c("PM", "REML")) {
+    # Paule-Mandel and REML by fixed-point iteration from the DL start
+    for (it in seq_len(200L)) {
+      wt <- 1 / (se^2 + tau2)
+      mu <- sum(wt * theta) / sum(wt)
+      new <- if (method == "PM") {
+        q_t <- sum(wt * (theta - mu)^2)
+        if (q_t <= k - 1) {
+          if (tau2 == 0) 0 else tau2 * (k - 1) / q_t
+        } else if (tau2 > 0) tau2 * q_t / (k - 1) else mean((theta - mu)^2)
+      } else {
+        num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
+        max(num / sum(wt^2), 0)
+      }
+      if (abs(new - tau2) < 1e-10) { tau2 <- new; break }
+      tau2 <- new
+    }
+  } else if (method != "DL") {
+    stop("method must be 'DL', 'PM' or 'REML'", call. = FALSE)
+  }
+  if (method %in% c("PM", "REML")) {
+    # Paule-Mandel and REML by fixed-point iteration from the DL start
+    for (it in seq_len(200L)) {
+      wt <- 1 / (se^2 + tau2)
+      mu <- sum(wt * theta) / sum(wt)
+      new <- if (method == "PM") {
+        q_t <- sum(wt * (theta - mu)^2)
+        if (q_t <= k - 1) {
+          if (tau2 == 0) 0 else tau2 * (k - 1) / q_t
+        } else if (tau2 > 0) tau2 * q_t / (k - 1) else mean((theta - mu)^2)
+      } else {
+        num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
+        max(num / sum(wt^2), 0)
+      }
+      if (abs(new - tau2) < 1e-10) { tau2 <- new; break }
+      tau2 <- new
+    }
+  } else if (method != "DL") {
+    stop("method must be 'DL', 'PM' or 'REML'", call. = FALSE)
+  }
+  if (method %in% c("PM", "REML")) {
+    # Paule-Mandel and REML by fixed-point iteration from the DL start
+    for (it in seq_len(200L)) {
+      wt <- 1 / (se^2 + tau2)
+      mu <- sum(wt * theta) / sum(wt)
+      new <- if (method == "PM") {
+        q_t <- sum(wt * (theta - mu)^2)
+        if (q_t <= k - 1) {
+          if (tau2 == 0) 0 else tau2 * (k - 1) / q_t
+        } else if (tau2 > 0) tau2 * q_t / (k - 1) else mean((theta - mu)^2)
+      } else {
+        num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
+        max(num / sum(wt^2), 0)
+      }
+      if (abs(new - tau2) < 1e-10) { tau2 <- new; break }
+      tau2 <- new
+    }
+  } else if (method != "DL") {
+    stop("method must be 'DL', 'PM' or 'REML'", call. = FALSE)
+  }
+  if (method %in% c("PM", "REML")) {
+    # Paule-Mandel and REML by fixed-point iteration from the DL start
+    for (it in seq_len(200L)) {
+      wt <- 1 / (se^2 + tau2)
+      mu <- sum(wt * theta) / sum(wt)
+      new <- if (method == "PM") {
+        q_t <- sum(wt * (theta - mu)^2)
+        if (q_t <= k - 1) {
+          if (tau2 == 0) 0 else tau2 * (k - 1) / q_t
+        } else if (tau2 > 0) tau2 * q_t / (k - 1) else mean((theta - mu)^2)
+      } else {
+        num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
+        max(num / sum(wt^2), 0)
+      }
+      if (abs(new - tau2) < 1e-10) { tau2 <- new; break }
+      tau2 <- new
+    }
+  } else if (method != "DL") {
+    stop("method must be 'DL', 'PM' or 'REML'", call. = FALSE)
+  }
   w_re <- 1 / (se^2 + tau2)
   pooled <- sum(w_re * theta) / sum(w_re)
   pooled_se <- sqrt(1 / sum(w_re))
@@ -914,7 +995,7 @@ random_effects_meta <- function(estimates, standard_errors,
   pred_se <- sqrt(pooled_se^2 + tau2)
   t_crit <- qt((1 + confidence) / 2, max(k - 2, 1))
   effect_size_result(
-    "Random-effects meta-analysis (DL)", pooled,
+    sprintf("Random-effects meta-analysis (%s)", method), pooled,
     pooled - z * pooled_se, pooled + z * pooled_se, pooled_se, k,
     extra = list(
       tau_squared = tau2, tau = sqrt(tau2),
@@ -1052,8 +1133,26 @@ cramers_v <- function(contingency_table, confidence = 0.95) {
   # Bias-corrected V (Bergsma 2013).
   v_bc <- max(0, v^2 - k * (nrow(tbl) - 1) / (n - 1))
   v_bc <- if (v_bc > 0) sqrt(v_bc) else 0
-  effect_size_result("Cramer's V", v, n = as.integer(n),
-                      extra = list(bias_corrected_v = v_bc))
+  # interval by inverting the noncentral chi-square: lambda = n k V^2
+  dof <- (nrow(tbl) - 1) * (ncol(tbl) - 1)
+  ncp_at <- function(target) {
+    if (stats::pchisq(chi2, dof, ncp = 0) <= target) return(0)
+    lo <- 0; hi <- max(chi2, 1) * 4 + 10
+    while (stats::pchisq(chi2, dof, ncp = hi) > target && hi < 1e7) hi <- hi * 2
+    for (i in seq_len(100L)) {
+      mid <- (lo + hi) / 2
+      if (stats::pchisq(chi2, dof, ncp = mid) > target) lo <- mid else hi <- mid
+    }
+    (lo + hi) / 2
+  }
+  a <- 1 - confidence
+  lo_l <- ncp_at(1 - a / 2)
+  hi_l <- ncp_at(a / 2)
+  ci_lo <- if (n * k > 0) sqrt(lo_l / (n * k)) else 0
+  ci_hi <- if (n * k > 0) min(sqrt(hi_l / (n * k)), 1) else 0
+  effect_size_result("Cramer's V", v, ci_lo, ci_hi, n = as.integer(n),
+                      extra = list(bias_corrected_v = v_bc, confidence = confidence,
+                                   ci_method = "noncentral chi-square inversion"))
 }
 
 # -- restored: morie-only definition kept through the rmorie sync --

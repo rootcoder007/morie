@@ -2308,12 +2308,14 @@ def analyze_c09_ruhela_aggregate(
 # usual demographic covariates (excluding the variable being treated).
 
 
-def _a01_ruhela_cell_frame() -> tuple[pd.DataFrame, list[str]]:
-    """Build the a01 cell-level (id × year) frame with vm count."""
+def _a01_ruhela_cell_frame(df: pd.DataFrame | None = None) -> tuple[pd.DataFrame, list[str]]:
+    """Build the a01 cell-level (id × year) frame with vm count from the
+    given a01 frame, or from the bundled dataset."""
     from . import otis_causal as oc
     from .otis_datasets import load_otis_dataset
 
-    df = load_otis_dataset("a01")
+    if df is None:
+        df = load_otis_dataset("a01")
     data, _, _, _ = oc.make_pair_alert_to_volatility_ruhela(df)
     return data, ["Gender", "Age_Category", "EndFiscalYear"]
 
@@ -2329,7 +2331,7 @@ def analyze_a01_ruhela_alt_gender(
     Tests whether women experience more or fewer regional transfers
     within a fiscal year of restrictive confinement.
     """
-    cell_data, _ = _a01_ruhela_cell_frame()
+    cell_data, _ = _a01_ruhela_cell_frame(df)
     cell_data = cell_data.copy()
     cell_data["T_female"] = _female_indicator(cell_data["Gender"])
     return _ruhela_formulations_on(
@@ -2354,7 +2356,7 @@ def analyze_a01_ruhela_alt_age(
     df: pd.DataFrame | None = None,
 ) -> RichResult:
     """Alt-T Ruhela formulation on a01 -- age 50+ -> regional volatility."""
-    cell_data, _ = _a01_ruhela_cell_frame()
+    cell_data, _ = _a01_ruhela_cell_frame(df)
     cell_data = cell_data.copy()
     cell_data["T_50plus"] = _age_50plus_indicator(cell_data["Age_Category"])
     return _ruhela_formulations_on(
@@ -2383,7 +2385,7 @@ def analyze_a01_ruhela_alt_toronto(
     whether Toronto-region placements produce different volatility
     than placements outside Toronto, controlling for demographics.
     """
-    cell_data, _ = _a01_ruhela_cell_frame()
+    cell_data, _ = _a01_ruhela_cell_frame(df)
     cell_data = cell_data.copy()
     # Cell-level frame has regA (region at placement)
     if "regA" not in cell_data.columns:
@@ -2413,7 +2415,7 @@ def analyze_a01_ruhela_alt_toronto(
 # ── b01 alt-T Ruhela formulations (parallel to a01 alt-T) ──────────
 
 
-def _b01_ruhela_cell_frame() -> pd.DataFrame:
+def _b01_ruhela_cell_frame(df: pd.DataFrame | None = None) -> pd.DataFrame:
     """Build the b01 cell-level (id × year) frame with vm count.
 
     Same structure as a01's cell frame: per-(UniqueIndividual_ID,
@@ -2422,7 +2424,8 @@ def _b01_ruhela_cell_frame() -> pd.DataFrame:
     from . import otis_causal as oc
     from .otis_datasets import load_otis_dataset
 
-    df = load_otis_dataset("b01")
+    if df is None:
+        df = load_otis_dataset("b01")
     data, _, _, _ = oc.make_pair_alert_to_volatility_ruhela(df)
     return data
 
@@ -2436,7 +2439,7 @@ def analyze_b01_ruhela_alt_gender(
     Detailed) cell frame. Tests whether women experience more or
     fewer regional transfers within a fiscal year of segregation.
     """
-    cell_data = _b01_ruhela_cell_frame()
+    cell_data = _b01_ruhela_cell_frame(df)
     cell_data = cell_data.copy()
     cell_data["T_female"] = _female_indicator(cell_data["Gender"])
     return _ruhela_formulations_on(
@@ -2462,7 +2465,7 @@ def analyze_b01_ruhela_alt_age(
     df: pd.DataFrame | None = None,
 ) -> RichResult:
     """Alt-T Ruhela formulation on b01 -- age 50+ -> regional volatility."""
-    cell_data = _b01_ruhela_cell_frame()
+    cell_data = _b01_ruhela_cell_frame(df)
     cell_data = cell_data.copy()
     cell_data["T_50plus"] = _age_50plus_indicator(cell_data["Age_Category"])
     return _ruhela_formulations_on(
@@ -2486,7 +2489,7 @@ def analyze_b01_ruhela_alt_toronto(
     df: pd.DataFrame | None = None,
 ) -> RichResult:
     """Alt-T Ruhela formulation on b01 -- Toronto-region -> regional volatility."""
-    cell_data = _b01_ruhela_cell_frame()
+    cell_data = _b01_ruhela_cell_frame(df)
     cell_data = cell_data.copy()
     if "regA" not in cell_data.columns:
         return RichResult(

@@ -21,6 +21,7 @@ def digamma(x):
     >>> round(float(digamma(2.0) - digamma(1.0)), 12)
     1.0
     """
+    x_in = x
     a = np.asarray(x, dtype=float)
     if np.any(a <= 0):
         raise ValueError("digamma: defined here for x > 0 only")
@@ -31,7 +32,8 @@ def digamma(x):
         r[m] -= 1.0 / a[m]
         a[m] += 1.0
     f = 1.0 / (a * a)
-    return r + np.log(a) - 0.5 / a + f * (-1.0 / 12 + f * (1.0 / 120 + f * (-1.0 / 252 + f * (1.0 / 240))))
+    out = r + np.log(a) - 0.5 / a + f * (-1.0 / 12 + f * (1.0 / 120 + f * (-1.0 / 252 + f * (1.0 / 240))))
+    return np.scalar_out(x_in, out)
 
 
 def geron_variational_bayes_gmm(X, n_components=3, max_iter=100, alpha0=1e-2, tol=1e-6, var_floor=1e-6, seed=0):

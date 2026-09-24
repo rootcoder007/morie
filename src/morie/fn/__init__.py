@@ -26,20 +26,62 @@ import importlib.util
 import json
 import os
 import sys
+import types
 
 _FN_DIR = os.path.dirname(__file__)
 _MAP_PATH = os.path.join(_FN_DIR, "_lazy_map.json")
 with open(_MAP_PATH) as _f:
     _LAZY_MAP = json.load(_f)
 
+# module -> every public name it exports through the map
+_MODULE_NAMES: "dict[str, list[str]]" = {}
+for _n, _m in _LAZY_MAP.items():
+    _MODULE_NAMES.setdefault(_m, []).append(_n)
+
+
+def _bind_module(modname, mod):
+    """Bind every name the map assigns to ``mod``.
+
+    Importing ``morie.fn.<modname>`` sets ``morie.fn.<modname>`` to the
+    module object. When a module exports a callable of its own name (the
+    convention here), binding only the requested name left the sibling
+    shadowed by the module for the rest of the process, and the order
+    of first access decided which. Binding all of them at once closes
+    that.
+    """
+    g = globals()
+    for n in _MODULE_NAMES.get(modname, ()):
+        obj = getattr(mod, n, None)
+        if obj is not None and not isinstance(obj, types.ModuleType):
+            g[n] = obj
+
 
 def __getattr__(name):
     if name in _LAZY_MAP:
         mod = importlib.import_module("." + _LAZY_MAP[name], package=__name__)
+        _bind_module(_LAZY_MAP[name], mod)
         obj = getattr(mod, name)
         globals()[name] = obj
         return obj
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+class _FnPackage(types.ModuleType):
+    """The package's module type: an explicit ``import morie.fn.X`` binds
+    the submodule as an attribute, which would shadow the callable ``X``
+    the map exports from it; keep the callable instead."""
+
+    def __setattr__(self, name, value):
+        if isinstance(value, types.ModuleType) and name in _LAZY_MAP \
+                and getattr(value, "__name__", "") == __name__ + "." + _LAZY_MAP[name]:
+            obj = getattr(value, name, None)
+            if obj is not None and not isinstance(obj, types.ModuleType):
+                _bind_module(_LAZY_MAP[name], value)
+                return
+        super().__setattr__(name, value)
+
+
+sys.modules[__name__].__class__ = _FnPackage
 
 
 def __dir__():

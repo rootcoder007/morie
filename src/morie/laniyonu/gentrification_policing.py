@@ -172,6 +172,12 @@ def gentrification_policing(
         growth_rent_col=growth_rent_col,
         return_thresholds=True,
     )
+    # income growth over the follow-up window, reported next to the rent
+    # and college thresholds the gentrification flag is built from
+    if follow_income_col in baseline_frame.columns and baseline_income_col in baseline_frame.columns:
+        thresholds = dict(thresholds)
+        thresholds["median_income_growth"] = float(
+            (baseline_frame[follow_income_col] - baseline_frame[baseline_income_col]).median())
     df = df.set_index(tract_id_col).join(gent_flag.rename("gentrification"), how="left").reset_index()
 
     gent_dist_overall = df.drop_duplicates(tract_id_col)["gentrification"].value_counts().to_dict()

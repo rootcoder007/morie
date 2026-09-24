@@ -433,3 +433,131 @@ def test_round_three_exit_codes_for_failed_backends(monkeypatch):
     assert runner._llm_exit_code(failed) == 1
     assert runner._llm_exit_code({"mode": "agent", "output_text": "ok",
                                   "failed": False}) == 0
+
+
+# --- round four (2026-09-24, at 1aa4b634d): the exhaustive sweep ------------
+
+
+def test_round_four_keepdims_everywhere():
+    m = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+    for fn in ("sum", "prod", "mean", "median", "std", "var", "min", "max",
+               "nanmean", "nanstd", "nanvar", "nansum", "nanmedian", "nanmin", "nanmax"):
+        f = getattr(np, fn)
+        assert f(m, axis=None, keepdims=True).shape == (1, 1), fn
+        assert f(m, axis=0, keepdims=True).shape == (1, 3), fn
+        assert f(m, axis=1, keepdims=True).shape == (2, 1), fn
+    # the stable-softmax idiom on a non-square matrix
+    assert (m - np.max(m, axis=1, keepdims=True)).tolist() == [[-2.0, -1.0, 0.0], [-2.0, -1.0, 0.0]]
+
+
+def test_round_four_array_shapes():
+    assert np.poly(np.array([[1.0, 2.0], [3.0, 4.0]])).tolist() == pytest.approx([1.0, -5.0, -2.0])
+    assert np.tril(np.array([1.0, 2.0, 3.0])).tolist() == [[1.0, 0.0, 0.0], [1.0, 2.0, 0.0], [1.0, 2.0, 3.0]]
+    r, c = np.triu_indices_from(np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]))
+    assert (r.tolist(), c.tolist()) == ([0, 0, 0, 1, 1], [0, 1, 2, 1, 2])
+    r, c = np.ix_(np.array([0, 2]), np.array([1]))
+    assert (r.shape, c.shape) == ((2, 1), (1, 1))
+    assert np.block([[1.0, 2.0], [3.0, 4.0]]).shape == (2, 2)
+    assert np.polyval(np.array([[1.0, 2.0], [3.0, 4.0]]), 2.0).tolist() == [5.0, 8.0]
+    parts = np.split(np.array([1.0, 2.0, 3.0, 4.0, 5.0]), [2, 4])
+    assert [p.tolist() for p in parts] == [[1.0, 2.0], [3.0, 4.0], [5.0]]
+    g = np.gradient(np.array([[1.0, 2.0, 3.0], [4.0, 6.0, 8.0]]), axis=0)
+    assert g.tolist() == [[3.0, 4.0, 5.0], [3.0, 4.0, 5.0]]
+    assert np.pad(np.array([[1.0, 2.0], [3.0, 4.0]]), 1).shape == (4, 4)
+    assert np.ndim(1.0) == 0 and np.ndim(3) == 0 and np.ndim([1.0]) == 1
+    with pytest.raises(TypeError):
+        float(np.array([complex(1, 0)]))
+    assert np.unique(np.array([3.0, 1.0, 3.0]), return_counts=True)[1].tolist() == [1, 2]
+    assert np.array_str(np.array([-2.0, -0.5, 0.0, 0.5, 2.0])) == "[-2.  -0.5  0.   0.5  2. ]"
+    assert np.reciprocal(np.array([1, 2, 3])).tolist() == [1, 0, 0]
+    roots = np.roots(np.array([1.0, 0.0, 0.0, 0.0, 1.0]))
+    assert len(roots[np.angle(roots) > 0]) == 2 and len(roots[[0, 2]]) == 2
+
+
+def test_round_four_frame_gaps():
+    df = pd.DataFrame({"a": [1.0, 2.0], "g": ["x", "y"]})
+    assert df.to_numpy().tolist() == [[1.0, "x"], [2.0, "y"]]
+    assert type(df.keys()).__name__ != "list"
+    s = pd.to_datetime(pd.Series(["2022-01-05", "2022-02-10"]))
+    t = pd.to_datetime(pd.Series(["2022-01-01", "2022-02-01"]))
+    assert (s - t).dt.days.tolist() == [4, 9]
+    assert (s - t).dt.total_seconds().tolist() == [4 * 86400.0, 9 * 86400.0]
+    g = pd.DataFrame({"g": ["a", "a", "b", "b"], "x": [1.0, 2.0, 3.0, 4.0]}).groupby("g")["x"]
+    sh = g.shift().tolist()
+    assert sh[1] == 1.0 and sh[3] == 3.0 and sh[0] != sh[0] and sh[2] != sh[2]
+    assert g.cumsum().tolist() == [1.0, 3.0, 3.0, 7.0]
+    assert g.cumcount().tolist() == [0, 1, 0, 1]
+    nan = float("nan")
+    assert len(pd.Series([nan, nan]).nlargest(2)) == 2
+
+
+def test_round_four_loader_keeps_callables():
+    import importlib
+
+    import morie.fn as F
+    # touching a sibling used to leave the module's own name bound to the module
+    getattr(F, "binary_segmentation")
+    assert callable(getattr(F, "binseg"))
+    importlib.import_module("morie.fn.describe")
+    assert callable(F.describe)
+
+
+def test_round_four_stats_semantics():
+    x = [1.0, 2, 3, 4, 5, 6, 7, 9]
+    y = [2.0, 1, 4, 3, 6, 5, 8, 7]
+    assert len(tuple(st.describe(x))) == 6
+    r = st.theilslopes(y, x)
+    assert len(tuple(r)) == 4 and r.low_slope == pytest.approx(1.0 / 3.0)
+    assert st.binomtest(7, 20).statistic == pytest.approx(0.35)
+    # exact small-sample tails, reference values from scipy 1.18
+    assert st.ansari([1.1, 2.2, 3.3, 4.4, 5.5, 6.6],
+                     [0.5, 1.7, 2.9, 4.1, 5.3, 7.2, 8.4]).pvalue == pytest.approx(0.6060606060606061, rel=1e-9)
+    assert st.kstwo.cdf(0.3, 10) == pytest.approx(0.7294644, abs=2e-7)
+    assert st.cramervonmises_2samp([2.1, 3.4, 3.4, 5.6, 1.2, 4.4, 4.4, 6.0],
+                                   [3.3, 2.2, 5.5, 4.1, 4.1, 7.0, 1.0, 2.0]).pvalue == pytest.approx(0.8060606, abs=1e-6)
+    assert st.ncf.logpdf(1.0, 6, 9, 1.0) == pytest.approx(-0.6770838039, abs=1e-8)
+    assert st.ncf.cdf(st.ncf.ppf(0.5, 5, 10, 1.5), 5, 10, 1.5) == pytest.approx(0.5, abs=1e-6)
+
+
+def test_round_four_moment_interface_and_new_distributions():
+    d = st.binom(20, 0.4)
+    lo, hi = d.interval(0.95)
+    assert (lo, hi) == (4.0, 12.0)
+    assert st.gamma(2.0).mean() == pytest.approx(2.0, abs=1e-4)
+    assert st.beta(2.0, 3.0).var() == pytest.approx(0.04, abs=1e-9)
+    assert st.norm(1.0, 2.0).var() == 4.0 and st.norm(1.0, 2.0).std() == 2.0
+    assert st.laplace(0.0, 2.0).entropy() == pytest.approx(1.0 + math.log(4.0), abs=1e-4)
+    assert st.pareto(2.5).mean() == pytest.approx(5.0 / 3.0)
+    assert math.isnan(st.cauchy.mean())
+    assert st.rayleigh.cdf(1.2) == pytest.approx(1.0 - math.exp(-0.72))
+    assert st.truncnorm.ppf(0.5, -1.0, 2.0) == pytest.approx(0.171163918, abs=1e-6)
+    assert st.bernoulli.pmf(1, 0.3) == pytest.approx(0.3)
+    assert st.betabinom.pmf(3, 10, 2.0, 3.0) == pytest.approx(0.143856143856, abs=1e-9)
+    assert st.skellam.pmf(0, 2.0, 1.5) == pytest.approx(0.216182963341, abs=1e-9)
+    assert st.zipf.mean(2.5) == pytest.approx(1.947372466, abs=1e-6)
+    assert st.ncx2.cdf(5.0, 3, 2.0) == pytest.approx(0.59340518, abs=1e-7)
+
+
+def test_round_four_estimate_gate_honours_propensity():
+    from morie.causal import estimate_gate
+    rng = np.random.default_rng(3)
+    n = 200
+    x = rng.standard_normal(n)
+    t = (rng.random(n) < 1.0 / (1.0 + np.exp(-x))).astype(float)
+    y = 1.0 + 2.0 * t + x + rng.normal(0, 0.5, n)
+    grp = np.array(["a", "b"] * (n // 2))
+    df = pd.DataFrame({"y": y, "t": t, "x": x, "g": grp,
+                       "ps_good": 1.0 / (1.0 + np.exp(-x)), "ps_flat": np.full(n, 0.5)})
+    good = estimate_gate(df, treatment="t", outcome="y", covariates=["x"], group_col="g", propensity_col="ps_good")
+    flat = estimate_gate(df, treatment="t", outcome="y", covariates=["x"], group_col="g", propensity_col="ps_flat")
+    assert good["ate"].tolist() != flat["ate"].tolist()
+
+
+def test_round_four_scalar_out_and_avgde():
+    from morie.fn import avgde, digamma, relu6, sigmoid
+    assert isinstance(digamma(0.5), float) and digamma(0.5) == pytest.approx(-1.96351002602, abs=1e-8)
+    assert isinstance(relu6(0.5), float) and isinstance(sigmoid(0.5), float)
+    rng = np.random.default_rng(0)
+    X = rng.standard_normal((120, 1))
+    yv = X[:, 0] * 2.0 + rng.normal(0, 0.2, 120)
+    assert isinstance(avgde(yv, X)["avg_derivative"], float)

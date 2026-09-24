@@ -539,6 +539,9 @@ def link_test(
     -------
     SpecificationTest
     """
+    if model_type != "linear":
+        raise ValueError(
+            f"link_test: only model_type='linear' is implemented (got {model_type!r})")
     y = np.asarray(y, dtype=float)
     X = np.asarray(X, dtype=float)
     n = len(y)

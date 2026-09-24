@@ -530,7 +530,9 @@ def gmm_iv(
     else:
         # Optimal weight matrix from first-step residuals
         resid1 = y - X @ beta1
-        S = (Z.T @ np.diag(resid1**2) @ Z) / n  # heteroskedastic-robust
+        # heteroskedastic-robust, or homoskedastic when robust=False
+        S = (Z.T @ np.diag(resid1**2) @ Z) / n if robust \
+            else float(np.mean(resid1**2)) * (Z.T @ Z) / n
 
         try:
             S_inv = np.linalg.inv(S)
@@ -1138,7 +1140,10 @@ def anderson_rubin_test(
         statistic=ar_stat,
         p_value=ar_p,
         test_name="anderson_rubin",
-        details={"beta0": beta0, "df1": q, "df2": n - k},
+        details={"beta0": beta0, "df1": q, "df2": n - k,
+                 "alpha": alpha,
+                 "critical_value": float(stats.f.ppf(1 - alpha, q, n - k)),
+                 "reject_at_alpha": bool(ar_p < alpha)},
     )
 
 

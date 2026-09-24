@@ -110,6 +110,26 @@ class FootnoteRegistry:
 # ---------------------------------------------------------------------------
 
 
+def _bold_significant_cells(df: pd.DataFrame, fmt: str) -> pd.DataFrame:
+    """Bold the cells of p-value columns that fall below .05."""
+    out = df.copy()
+    open_, close = ("**", "**") if fmt == "markdown" else ("<b>", "</b>")
+    for col in out.columns:
+        name = str(col).lower().replace("-", "_").replace(" ", "_")
+        if not (name in ("p", "p_value", "pvalue", "pval", "p_val") or name.endswith("_p")):
+            continue
+
+        def _mark(v):
+            s_ = str(v).strip()
+            try:
+                val = float(s_.lstrip("<").replace("p", "").replace("=", "").strip())
+            except ValueError:
+                return v
+            return f"{open_}{s_}{close}" if val < 0.05 else v
+        out[col] = out[col].map(_mark)
+    return out
+
+
 def _to_format(
     df: pd.DataFrame,
     fmt: FormatTarget,
@@ -133,6 +153,8 @@ def _to_format(
         return buf.getvalue()
 
     if fmt == "markdown":
+        if bold_significant:
+            df = _bold_significant_cells(df, "markdown")
         md = df.to_markdown(index=True)
         parts = []
         if title:
@@ -153,6 +175,8 @@ def _to_format(
         return "\n".join(parts)
 
     if fmt == "html":
+        if bold_significant:
+            df = _bold_significant_cells(df, "html")
         html = df.to_html(classes=["morie-table", "table", "table-striped"], border=0, escape=False)
         parts = []
         if title:
@@ -1022,6 +1046,11 @@ def format_dataframe(
         else:
             formatted[col] = formatted[col].apply(lambda x: f"{x:{numeric_fmt}}" if np.isfinite(x) else "")
 
+    if bold_cols and output_format in ("markdown", "html"):
+        open_, close = ("**", "**") if output_format == "markdown" else ("<b>", "</b>")
+        for col in bold_cols:
+            if col in formatted.columns:
+                formatted[col] = formatted[col].map(lambda v: f"{open_}{v}{close}" if str(v) else v)
     return _to_format(formatted, output_format, title=title)
 
 

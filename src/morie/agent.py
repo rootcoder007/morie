@@ -1753,6 +1753,9 @@ class PerseusAgent:
 
     def chat(self, message: str, *, stream: bool = False) -> AgentResponse:
         """Run a full agent loop: send message, handle tool calls, return final response."""
+        if stream:
+            # the streamed form, gathered into one response
+            return AgentResponse(text="".join(self.chat_stream(message)), model=self._model)
         tools = self._build_tool_definitions()
         system_prompt = self._build_system_prompt()
 

@@ -33,9 +33,10 @@ def guskr(u: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
     Silverman, B. W. (1986). *Density Estimation for Statistics and Data
         Analysis*. Chapman & Hall. Table 3.1.
     """
+    u_in = u
     u = np.asarray(u, dtype=float)
     result = np.exp(-0.5 * u**2) / np.sqrt(2.0 * np.pi)
-    return float(result) if result.ndim == 0 else result
+    return np.scalar_out(u_in, result)
 
 
 def cheatsheet() -> str:

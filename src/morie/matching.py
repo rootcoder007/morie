@@ -404,6 +404,20 @@ def match_nearest_neighbor(
     matched_treated_ids = set(match_df["treated_idx"]) if len(match_df) > 0 else set()
     all_matched_ids = list(matched_treated_ids | matched_control_ids)
     matched_data = df.loc[df.index.isin(all_matched_ids)].copy()
+    # covariate balance after matching: standardised mean difference and
+    # a two-sample t-test per covariate, judged at alpha
+    balance = {}
+    mt = matched_data[matched_data[treatment] == 1]
+    mc = matched_data[matched_data[treatment] == 0]
+    for cov in covariates:
+        a_v = mt[cov].astype(float).values
+        b_v = mc[cov].astype(float).values
+        if len(a_v) < 2 or len(b_v) < 2:
+            continue
+        pooled = np.sqrt((a_v.var(ddof=1) + b_v.var(ddof=1)) / 2.0)
+        smd = float((a_v.mean() - b_v.mean()) / pooled) if pooled > 0 else 0.0
+        p_val = float(stats.ttest_ind(a_v, b_v, equal_var=False).pvalue) if pooled > 0 else 1.0
+        balance[cov] = {"smd": smd, "p_value": p_val}
 
     return MatchResult(
         matched_data=matched_data,
@@ -416,6 +430,10 @@ def match_nearest_neighbor(
             "replace": replace,
             "n_neighbors": n_neighbors,
             "n_unmatched": len(treated_idx) - len(matched_treated_ids),
+            "alpha": alpha,
+            "balance": balance,
+            "balanced_at_alpha": bool(balance) and all(
+                b["p_value"] > alpha for b in balance.values()),
         },
     )
 
@@ -1534,6 +1552,7 @@ def estimate_att_matched(
     TreatmentEffectResult
     """
     diffs = []
+    wts = []
     for _, row in match_pairs.iterrows():
         t_id = row["treated_idx"]
         c_id = row["control_idx"]
@@ -1541,6 +1560,8 @@ def estimate_att_matched(
             y_t = float(data.loc[t_id, outcome])
             y_c = float(data.loc[c_id, outcome])
             diffs.append(y_t - y_c)
+            # the treated unit's weight, when a weight column is named
+            wts.append(float(data.loc[t_id, weights]) if weights and weights in data.columns else 1.0)
 
     if len(diffs) == 0:
         return TreatmentEffectResult(
@@ -1554,8 +1575,12 @@ def estimate_att_matched(
         )
 
     diffs = np.array(diffs)
-    att = float(diffs.mean())
-    se = float(diffs.std(ddof=1) / np.sqrt(len(diffs)))
+    w = np.array(wts)
+    att = float(np.average(diffs, weights=w))
+    if np.allclose(w, w[0]):
+        se = float(diffs.std(ddof=1) / np.sqrt(len(diffs)))
+    else:
+        se = float(np.sqrt(np.sum(w**2 * (diffs - att) ** 2)) / np.sum(w))
     t_val = att / se if se > 0 else 0.0
     p_val = float(2 * stats.norm.sf(abs(t_val)))
     z = stats.norm.ppf(1 - alpha / 2)
@@ -1767,7 +1792,7 @@ def abadie_imbens_se(
     # AI variance
     V = 0.0
     for i in range(n):
-        V += (1 + K[i]) ** 2 * sigma2[i]
+        V += (1 + K[i] / float(n_matches)) ** 2 * sigma2[i]
     V /= n**2
 
     return float(np.sqrt(max(V, 0.0)))

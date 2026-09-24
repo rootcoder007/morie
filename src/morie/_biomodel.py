@@ -168,7 +168,12 @@ def vocal_tract_model(
     for i in range(1, min(n_sections - 1, n_samples)):
         for j in range(n_sections - 2):
             output[i] += reflection[j] * output[max(0, i - j - 1)]
-    return output
+    # lip radiation: first-order high-pass with its corner at 50 Hz, which
+    # is where the sampling rate enters the model
+    r = float(np.exp(-2.0 * np.pi * 50.0 / float(fs)))
+    radiated = output.copy()
+    radiated[1:] = output[1:] - r * output[:-1]
+    return radiated
 
 
 def hodgkin_huxley(

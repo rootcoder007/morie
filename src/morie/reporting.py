@@ -387,11 +387,12 @@ def format_correlation(
     >>> format_correlation(0.45, 0.002, n=50)
     'r(48) = .45, p = .002'
     """
+    symbol = {"pearson": "r", "spearman": "rs", "kendall": "tau"}.get(str(method).lower(), "r")
     if n is not None:
         df_val = n - 2
-        stat = f"r({df_val}) = {r:.2f}".replace("0.", ".", 1)
+        stat = f"{symbol}({df_val}) = {r:.2f}".replace("0.", ".", 1)
     else:
-        stat = f"r = {r:.2f}".replace("0.", ".", 1)
+        stat = f"{symbol} = {r:.2f}".replace("0.", ".", 1)
     return f"{stat}, {format_p_value(p)}"
 
 

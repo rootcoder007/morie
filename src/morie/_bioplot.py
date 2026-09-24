@@ -155,9 +155,9 @@ def plot_spectrogram(
     plt = _get_plt()
     fig, ax = plt.subplots(figsize=(10, 5))
     if t is None:
-        t = np.arange(Sxx.shape[1])
+        t = np.arange(Sxx.shape[1]) / float(fs)
     if f is None:
-        f = np.arange(Sxx.shape[0])
+        f = np.arange(Sxx.shape[0]) * float(fs) / (2.0 * Sxx.shape[0])
     im = ax.pcolormesh(t, f, 10 * np.log10(np.abs(Sxx) + 1e-10), shading="auto", cmap="viridis")
     ax.set_xlabel("Time (s)")
     ax.set_ylabel("Frequency (Hz)")

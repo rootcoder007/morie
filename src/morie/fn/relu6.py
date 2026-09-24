@@ -31,12 +31,13 @@ def relu6(x, derivative=False):
     ndarray
         Output or gradient.
     """
+    x_in = x
     x = np.asarray(x, dtype=float)
 
     if derivative:
-        return np.where((x >= 0) & (x <= 6), 1.0, 0.0)
+        return np.scalar_out(x_in, np.where((x >= 0) & (x <= 6), 1.0, 0.0))
     else:
-        return np.clip(x, 0, 6)
+        return np.scalar_out(x_in, np.clip(x, 0, 6))
 
 
 def cheatsheet() -> str:

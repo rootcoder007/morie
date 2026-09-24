@@ -60,7 +60,9 @@ def avgde(
     """
     y = np.asarray(y, dtype=float).ravel()
     X = np.asarray(X, dtype=float)
-    univariate = X.ndim == 1
+    # one regressor, whether given as a vector or an (n, 1) matrix, is
+    # the univariate case and reports a number, not a one-element list
+    univariate = X.ndim == 1 or (X.ndim == 2 and X.shape[1] == 1)
     if univariate:
         X = X.reshape(-1, 1)
     n, p = X.shape

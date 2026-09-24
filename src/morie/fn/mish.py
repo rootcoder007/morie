@@ -31,6 +31,7 @@ def mish(x, derivative=False):
     ndarray
         Output or gradient.
     """
+    x_in = x
     x = np.asarray(x, dtype=float)
     tanh_arg = 1.0 / (1.0 + np.exp(-x))
     softplus = np.log(1.0 + np.exp(x))
@@ -38,9 +39,9 @@ def mish(x, derivative=False):
     if derivative:
         sech2 = 1.0 - tanh_arg**2
         sigmoid = 1.0 / (1.0 + np.exp(-softplus))
-        return sigmoid * (x * sech2 + tanh_arg)
+        return np.scalar_out(x_in, sigmoid * (x * sech2 + tanh_arg))
     else:
-        return x * np.tanh(softplus)
+        return np.scalar_out(x_in, x * np.tanh(softplus))
 
 
 def cheatsheet() -> str:

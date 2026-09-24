@@ -37,9 +37,10 @@ def epkrn(u: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
         multivariate probability density. *Theory of Probability and its
         Applications*, 14(1), 153-158.
     """
+    u_in = u
     u = np.asarray(u, dtype=float)
     result = np.where(np.abs(u) <= 1.0, 0.75 * (1.0 - u**2), 0.0)
-    return float(result) if result.ndim == 0 else result
+    return np.scalar_out(u_in, result)
 
 
 def cheatsheet() -> str:

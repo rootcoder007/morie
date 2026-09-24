@@ -260,6 +260,9 @@ set_transformer <- function(X = NULL, k = NULL, S = NULL,
   if (is.null(X) || is.null(S) || is.null(params)) {
     stop("set_transformer: X, S and params are required")
   }
+  if (!is.null(k) && NROW(S) != as.integer(k)) {
+    stop(sprintf("set_transformer: S has %d seed rows but k = %d", NROW(S), as.integer(k)))
+  }
   setT(X, S, params)
 }
 

@@ -754,6 +754,7 @@ def _qmd_to_ipynb_content(qmd_text: str, *, title: str = "") -> dict[str, Any]:
                 "name": "python3",
             },
             "language_info": {"name": "python", "version": "3.11.0"},
+            **({"title": title} if title else {}),
         },
         "cells": cells,
     }

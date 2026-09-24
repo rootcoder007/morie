@@ -34,13 +34,14 @@ def cskrn(u: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
     Wand, M. P. & Jones, M. C. (1995). *Kernel Smoothing*. Chapman & Hall.
         Table 2.1.
     """
+    u_in = u
     u = np.asarray(u, dtype=float)
     result = np.where(
         np.abs(u) <= 1.0,
         (np.pi / 4.0) * np.cos(np.pi * u / 2.0),
         0.0,
     )
-    return float(result) if result.ndim == 0 else result
+    return np.scalar_out(u_in, result)
 
 
 def cheatsheet() -> str:

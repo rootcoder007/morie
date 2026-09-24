@@ -224,12 +224,21 @@ def astcmb(
     # Aggregate per person-year
     acols = [f"a{i}" for i in range(1, 9)]
     grouped = data.groupby([id_col, year_col])[acols].sum().reset_index()
+    # placements per person-year, from the named column when it is present
+    has_np = np_col in data.columns
+    if has_np:
+        placements = data.groupby([id_col, year_col])[np_col].max().reset_index()
+        grouped = grouped.merge(placements, on=[id_col, year_col], how="left")
 
     # Complexity = number of distinct alert states observed
     grouped["ac"] = (grouped[acols] > 0).sum(axis=1)
 
     # Summary
     summary = grouped.groupby("ac").size().reset_index(name="n_persons")
+    if has_np:
+        summary = summary.merge(
+            grouped.groupby("ac")[np_col].mean().reset_index(name="mean_placements"),
+            on="ac", how="left")
     summary = summary.sort_values("ac", ascending=False)
 
     return AstRes(data=grouped, summary=summary)
@@ -373,7 +382,11 @@ def otdml(
     if covariates is None:
         covariates = ["gender", "age_category", "region_at_time_of_placement", "region_most_recent_placement"]
 
-    data = df[[outcome, treatment] + covariates].dropna().copy()
+    keep = [outcome, treatment] + covariates
+    if cluster and cluster not in keep:
+        keep = keep + [cluster]
+    data = df[keep].dropna().copy()
+    cluster_ids = data.pop(cluster).values if cluster else None
 
     # Encode categoricals as dummies
     data = pd._coerce_frame(data)
@@ -417,9 +430,16 @@ def otdml(
 
     # SE via heteroskedasticity-robust variance
     resid = y_res - d_res * ate
-    meat = np.mean((d_res**2) * (resid**2))
+    score = d_res * resid
     bread = np.mean(d_res**2)
-    se = float(np.sqrt(meat / (bread**2 * n)))
+    if cluster_ids is not None:
+        # cluster-robust: scores summed within cluster before squaring
+        sums: dict = {}
+        for g, sc in zip(cluster_ids, score):
+            sums[g] = sums.get(g, 0.0) + float(sc)
+        se = float(np.sqrt(sum(v * v for v in sums.values())) / (n * bread))
+    else:
+        se = float(np.sqrt(np.mean(score**2) / n) / bread)
 
     from morie.fn import _stats_core as stats
 

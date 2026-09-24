@@ -40,6 +40,7 @@ def drupt(
     ndarray
         Output with dropout applied (scaled by 1/(1-rate)).
     """
+    x_in = x
     x = np.asarray(x, dtype=float)
 
     if not (0 <= rate < 1):
@@ -51,7 +52,7 @@ def drupt(
     rng = np.random.RandomState(seed)
     mask = rng.binomial(1, 1 - rate, size=x.shape)
 
-    return x * mask / (1 - rate)
+    return np.scalar_out(x_in, x * mask / (1 - rate))
 
 
 def cheatsheet() -> str:

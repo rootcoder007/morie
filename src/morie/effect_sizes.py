@@ -810,12 +810,47 @@ def cramers_v(
     r, c = table.shape
     v_bc = max(0, v**2 - (k) * (table.shape[0] - 1) / (n - 1))
     v_bc = math.sqrt(v_bc) if v_bc > 0 else 0.0
+    # confidence interval by inverting the noncentral chi-square: the
+    # noncentrality lambda = n k V^2 (Smithson 2003), so the bounds on
+    # lambda give bounds on V
+    dof = (r - 1) * (c - 1)
+    lo_l, hi_l = _ncp_interval(float(chi2), int(dof), float(confidence))
+    ci_lower = math.sqrt(lo_l / (n * k)) if n * k > 0 else 0.0
+    ci_upper = math.sqrt(hi_l / (n * k)) if n * k > 0 else 0.0
     return EffectSizeResult(
         measure="Cramer's V",
         estimate=float(v),
+        ci_lower=float(ci_lower),
+        ci_upper=float(min(ci_upper, 1.0)),
         n=int(n),
-        extra={"bias_corrected_v": float(v_bc)},
+        extra={"bias_corrected_v": float(v_bc), "confidence": float(confidence),
+               "ci_method": "noncentral chi-square inversion"},
     )
+
+
+def _ncp_interval(chi2_obs, dof, confidence):
+    """Bounds on the noncentrality parameter of a chi-square statistic:
+    the lambda at which the observed value sits at the (1+c)/2 and (1-c)/2
+    quantiles of ncx2(dof, lambda)."""
+    from morie.fn._stats_core import ncx2
+
+    def solve(target):
+        if ncx2.cdf(chi2_obs, dof, 0.0) <= target:
+            return 0.0
+        lo, hi = 0.0, max(chi2_obs, 1.0) * 4.0 + 10.0
+        while ncx2.cdf(chi2_obs, dof, hi) > target:
+            hi *= 2.0
+            if hi > 1e7:
+                break
+        for _ in range(100):
+            mid = 0.5 * (lo + hi)
+            if ncx2.cdf(chi2_obs, dof, mid) > target:
+                lo = mid
+            else:
+                hi = mid
+        return 0.5 * (lo + hi)
+    a = 1.0 - confidence
+    return solve(1.0 - a / 2.0), solve(a / 2.0)
 
 
 def phi_coefficient(
@@ -1279,7 +1314,32 @@ def random_effects_meta(
 
     # DerSimonian-Laird tau-squared
     c = w.sum() - (w**2).sum() / w.sum()
-    tau2 = max((Q - (k - 1)) / c, 0.0) if c > 0 else 0.0
+    if method == "DL":
+        tau2 = max((Q - (k - 1)) / c, 0.0) if c > 0 else 0.0
+    elif method in ("PM", "REML"):
+        # Paule-Mandel: tau2 solving sum w_i(tau2) (theta_i - mu(tau2))^2 = k-1;
+        # REML: the iterative estimator of Viechtbauer (2005), both by
+        # fixed-point iteration from the DL start
+        tau2 = max((Q - (k - 1)) / c, 0.0) if c > 0 else 0.0
+        for _ in range(200):
+            wt = 1 / (se**2 + tau2)
+            mu = (wt * theta).sum() / wt.sum()
+            if method == "PM":
+                q_t = float((wt * (theta - mu) ** 2).sum())
+                if q_t <= k - 1:
+                    new = 0.0 if tau2 == 0.0 else tau2 * (k - 1) / q_t
+                else:
+                    new = tau2 * q_t / (k - 1) if tau2 > 0 else float(((theta - mu) ** 2).mean())
+            else:
+                num = float((wt**2 * ((theta - mu) ** 2 - se**2)).sum()) \
+                    + float((wt**2).sum()) / float(wt.sum())
+                new = max(num / float((wt**2).sum()), 0.0)
+            if abs(new - tau2) < 1e-10:
+                tau2 = new
+                break
+            tau2 = new
+    else:
+        raise ValueError(f"method must be 'DL', 'PM' or 'REML' (got {method!r})")
 
     # Random-effects weights
     w_re = 1 / (se**2 + tau2)
@@ -1297,7 +1357,7 @@ def random_effects_meta(
     pred_hi = pooled + t_crit * pred_se
 
     return EffectSizeResult(
-        measure="Random-effects meta-analysis (DL)",
+        measure=f"Random-effects meta-analysis ({method})",
         estimate=float(pooled),
         ci_lower=float(pooled - z * pooled_se),
         ci_upper=float(pooled + z * pooled_se),

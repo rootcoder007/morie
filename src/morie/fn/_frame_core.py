@@ -226,7 +226,7 @@ class Series:
         return zip(self.index, self._data)
 
     def keys(self):
-        return list(self.index)
+        return Index(self.index)
 
     # ---- indexing
     def __getitem__(self, key):
@@ -599,17 +599,19 @@ class Series:
             i = j
         return Series(out, index=list(self.index), name=self.name)
 
-    def nlargest(self, n=5):
+    def _nsorted(self, n, reverse):
+        # pandas keeps NaN rows after the ordered values (keep="first")
         pairs = [(i, v) for i, v in zip(self.index, self._data) if not _isnan(v)]
-        pairs.sort(key=lambda t: t[1], reverse=True)
+        pairs.sort(key=lambda t: t[1], reverse=reverse)
+        pairs += [(i, v) for i, v in zip(self.index, self._data) if _isnan(v)]
         pairs = pairs[:int(n)]
         return Series([v for _, v in pairs], index=[i for i, _ in pairs], name=self.name)
 
+    def nlargest(self, n=5):
+        return self._nsorted(n, True)
+
     def nsmallest(self, n=5):
-        pairs = [(i, v) for i, v in zip(self.index, self._data) if not _isnan(v)]
-        pairs.sort(key=lambda t: t[1])
-        pairs = pairs[:int(n)]
-        return Series([v for _, v in pairs], index=[i for i, _ in pairs], name=self.name)
+        return self._nsorted(n, False)
 
     def between(self, left, right, inclusive="both"):
         lo_ok = (lambda v: v >= left) if inclusive in ("both", "left") else (lambda v: v > left)
@@ -1012,12 +1014,61 @@ class _StrAccessor:
 
 
 class _DtAccessor:
+    """``Series.dt``: datetime fields, and the timedelta fields a
+    datetime difference carries (``days``, ``seconds``,
+    ``total_seconds()``), as in pandas."""
+
     def __init__(self, s):
         self._s = s
 
-    def _map(self, fn):
-        return Series([fn(v) if isinstance(v, (_dt.date, _dt.datetime))
-                       else _NAN for v in self._s._data],
+    def _map(self, fn, kinds=(_dt.date, _dt.datetime)):
+        return Series([fn(v) if isinstance(v, kinds) else _NAN
+                       for v in self._s._data],
+                      index=list(self._s.index), name=self._s.name)
+
+    def _map_td(self, fn):
+        return self._map(fn, (_dt.timedelta,))
+
+    @property
+    def days(self):
+        return self._map_td(lambda v: v.days)
+
+    @property
+    def seconds(self):
+        return self._map_td(lambda v: v.seconds)
+
+    @property
+    def microseconds(self):
+        return self._map_td(lambda v: v.microseconds)
+
+    def total_seconds(self):
+        return self._map_td(lambda v: v.total_seconds())
+
+    @property
+    def minute(self):
+        return self._map(lambda v: getattr(v, "minute", 0))
+
+    @property
+    def second(self):
+        return self._map(lambda v: getattr(v, "second", 0))
+
+    @property
+    def dayofyear(self):
+        return self._map(lambda v: v.timetuple().tm_yday)
+
+    @property
+    def quarter(self):
+        return self._map(lambda v: (v.month - 1) // 3 + 1)
+
+    @property
+    def weekday(self):
+        return self._map(lambda v: v.weekday())
+
+    @property
+    def date(self):
+        return Series([v.date() if isinstance(v, _dt.datetime) else v
+                       if isinstance(v, _dt.date) else _NAN
+                       for v in self._s._data],
                       index=list(self._s.index), name=self._s.name)
 
     @property
@@ -1211,6 +1262,11 @@ class DataFrame:
 
     @property
     def values(self):
+        # pandas: a frame with a non-numeric column converts to an object
+        # array that keeps the labels; only an all-numeric frame is float
+        if any(not self[c]._is_numeric() for c in self._cols):
+            return _ac.oarr([[self._cols[c][i] for c in self._cols]
+                             for i in range(self.shape[0])])
         return _ac.marr([[_to_float(self._cols[c][i])
                           for c in self._cols]
                          for i in range(self.shape[0])])
@@ -1253,7 +1309,7 @@ class DataFrame:
         return self.iloc[slice(-n, None)]
 
     def keys(self):
-        return list(self._cols.keys())
+        return _Columns(self._cols.keys())
 
     def items(self):
         for c in self._cols:
@@ -2020,7 +2076,9 @@ class DataFrame:
         del self._cols[col]
 
 
-class _Columns(list):
+class _Columns(Index):
+    """The column labels: an Index, as in pandas."""
+
     def __init__(self, it):
         super().__init__(it)
 
@@ -2245,6 +2303,61 @@ class GroupBy:
         if isinstance(col, (list, tuple)):
             return _GroupByFrame(self, list(col))
         return _GroupBySeries(self, col)
+
+    def _per_column(self, method, *a, **k):
+        cols = [c for c in self._df._cols if c not in self._by]
+        parts = {c: getattr(_GroupBySeries(self, c), method)(*a, **k) for c in cols}
+        return DataFrame({c: list(s._data) for c, s in parts.items()},
+                         index=list(self._df.index))
+
+    def shift(self, periods=1):
+        return self._per_column("shift", periods)
+
+    def diff(self, periods=1):
+        return self._per_column("diff", periods)
+
+    def cumsum(self):
+        return self._per_column("cumsum")
+
+    def cumcount(self, ascending=True):
+        pos = {}
+        for rs in self._groups.values():
+            n = len(rs)
+            for j, i in enumerate(rs):
+                pos[i] = j if ascending else n - 1 - j
+        return Series([pos.get(i, _NAN) for i in range(self._df.shape[0])],
+                      index=list(self._df.index))
+
+    def ffill(self):
+        return self._per_column("ffill")
+
+    def bfill(self):
+        return self._per_column("bfill")
+
+    def _rows_at(self, pick):
+        rows = sorted(i for rs in self._groups.values() for i in pick(rs))
+        return self._df._take(rows)
+
+    def head(self, n=5):
+        return self._rows_at(lambda rs: rs[:int(n)])
+
+    def tail(self, n=5):
+        return self._rows_at(lambda rs: rs[-int(n):] if int(n) else [])
+
+    def nth(self, n):
+        return self._rows_at(lambda rs: [rs[n]] if -len(rs) <= n < len(rs) else [])
+
+    def sem(self, ddof=1, numeric_only=True):
+        return self._agg(lambda s: s.sem(ddof=ddof), numeric_only=numeric_only)
+
+    def prod(self, numeric_only=True):
+        return self._agg(lambda s: s.prod(), numeric_only=numeric_only)
+
+    def any(self):
+        return self._agg(lambda s: s.any(), numeric_only=False)
+
+    def all(self):
+        return self._agg(lambda s: s.all(), numeric_only=False)
 
     @property
     def groups(self):
@@ -2604,6 +2717,109 @@ class _GroupBySeries:
 
     def unique(self):
         return self._agg(lambda s: s.unique())
+
+    # -- the within-group family: a Series the length of the frame, each
+    #    group's rows filled from a Series-level method run on that group
+    def _within(self, fn):
+        gb = self._gb
+        out = [_NAN] * gb._df.shape[0]
+        for rows in gb._groups.values():
+            res = fn(Series([gb._df._cols[self._col][i] for i in rows]))
+            vals = res._data if isinstance(res, Series) else list(res)
+            for i, v in zip(rows, vals):
+                out[i] = v
+        return Series(out, index=list(gb._df.index), name=self._col)
+
+    def shift(self, periods=1):
+        return self._within(lambda s: s.shift(periods))
+
+    def diff(self, periods=1):
+        return self._within(lambda s: s.diff(periods))
+
+    def cumsum(self):
+        return self._within(lambda s: s.cumsum())
+
+    def cumprod(self):
+        return self._within(lambda s: s.cumprod())
+
+    def cummax(self):
+        return self._within(lambda s: s.cummax())
+
+    def cummin(self):
+        return self._within(lambda s: s.cummin())
+
+    def cumcount(self, ascending=True):
+        def fn(s):
+            n = len(s._data)
+            return list(range(n)) if ascending else list(range(n - 1, -1, -1))
+        return self._within(fn)
+
+    def rank(self, ascending=True, method="average", na_option="keep"):
+        return self._within(lambda s: s.rank(ascending=ascending, method=method,
+                                             na_option=na_option))
+
+    def pct_change(self):
+        return self._within(lambda s: s.pct_change())
+
+    def ffill(self):
+        return self._within(lambda s: s.ffill())
+
+    def bfill(self):
+        return self._within(lambda s: s.bfill())
+
+    def _rows_at(self, pick):
+        gb = self._gb
+        rows = sorted(i for rs in gb._groups.values() for i in pick(rs))
+        return Series([gb._df._cols[self._col][i] for i in rows],
+                      index=[gb._df.index[i] for i in rows], name=self._col)
+
+    def head(self, n=5):
+        return self._rows_at(lambda rs: rs[:int(n)])
+
+    def tail(self, n=5):
+        return self._rows_at(lambda rs: rs[-int(n):] if int(n) else [])
+
+    def nth(self, n):
+        return self._rows_at(lambda rs: [rs[n]] if -len(rs) <= n < len(rs) else [])
+
+    def idxmax(self):
+        return self._agg(lambda s: s.idxmax())
+
+    def idxmin(self):
+        return self._agg(lambda s: s.idxmin())
+
+    def sem(self, ddof=1):
+        return self._agg(lambda s: s.sem(ddof=ddof))
+
+    def prod(self):
+        return self._agg(lambda s: s.prod())
+
+    def any(self):
+        return self._agg(lambda s: s.any())
+
+    def all(self):
+        return self._agg(lambda s: s.all())
+
+    def value_counts(self, normalize=False, sort=True, dropna=True):
+        gb = self._gb
+        idx, vals = [], []
+        for k in sorted(gb._groups):
+            vc = Series([gb._df._cols[self._col][i] for i in gb._groups[k]]) \
+                .value_counts(normalize=normalize, sort=sort, dropna=dropna)
+            key = k[0] if len(gb._by) == 1 else k
+            for v, c in zip(vc.index, vc._data):
+                idx.append((key, v))
+                vals.append(c)
+        return Series(vals, index=idx, name=self._col)
+
+    def describe(self):
+        gb = self._gb
+        keys = sorted(gb._groups)
+        rows = [Series([gb._df._cols[self._col][i] for i in gb._groups[k]]).describe()
+                for k in keys]
+        cols = list(rows[0].index) if rows else []
+        return DataFrame({c: [r._data[j] for r in rows] for j, c in enumerate(cols)},
+                         index=[k[0] if len(gb._by) == 1 else k for k in keys])
 
 
 # ===================================================== module fns

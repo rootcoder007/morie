@@ -840,6 +840,23 @@ def strobe_checklist(
         (22, "Funding", "Give source of funding and role of funders"),
     ]
 
+    designs = {
+        "cohort": {6: "eligibility criteria, sources and methods of selection, follow-up",
+                   12: "how loss to follow-up was addressed",
+                   14: "number of participants with missing data; follow-up time",
+                   15: "outcome events or summary measures over time"},
+        "case-control": {6: "case ascertainment and control selection, matching rationale",
+                         12: "how matching of cases and controls was addressed",
+                         14: "number of participants with missing data",
+                         15: "numbers in each exposure category or summary measures"},
+        "cross-sectional": {6: "eligibility criteria, sources and methods of selection",
+                            12: "analytical methods taking sampling strategy into account",
+                            14: "number of participants with missing data",
+                            15: "numbers of outcome events or summary measures"},
+    }
+    if study_type not in designs:
+        raise ValueError(f"study_type must be one of {sorted(designs)} (got {study_type!r})")
+    design_notes = designs[study_type]
     if items_addressed is None:
         items_addressed = {}
 
@@ -850,6 +867,7 @@ def strobe_checklist(
                 "Item": num,
                 "Section": title,
                 "Description": description,
+                "Design note": design_notes.get(num, ""),
                 "Addressed": "Yes" if items_addressed.get(num, False) else "No",
             }
         )
