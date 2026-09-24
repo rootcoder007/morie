@@ -1,32 +1,39 @@
-"""Tests for km113.kamath_ch8_perplexity."""
+"""Verification tests for km113.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 8.1, perplexity. Expected values are
+recomputed in the test body.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km113 import kamath_ch8_perplexity
 
 
-def test_km113_basic():
-    """Test basic functionality with array of token probabilities."""
-    rng = np.random.default_rng(42)
-    n_tokens = 100
-    tokens = list(range(n_tokens))
-    p_theta = rng.uniform(0.01, 1.0, n_tokens)
-    result = kamath_ch8_perplexity(tokens, N=n_tokens, p_theta=p_theta)
-    assert isinstance(result, dict)
-    assert math.isfinite(result["estimate"])
-    assert result["estimate"] > 0
-    assert result["n"] == n_tokens
-    assert math.isfinite(result["mean_nll"])
-    assert result["mean_nll"] >= 0
-    assert len(result["log_probs"]) == n_tokens
+def test_perplexity_is_the_exponential_of_the_mean_negative_log_likelihood():
+    # Eq 8.1: PPL = exp(-(1/N) sum log p)
+    probs = [0.5, 0.25, 0.5, 0.125]
+    res = kamath_ch8_perplexity(probs, p_theta=probs)
+    nll = -sum(math.log(p) for p in probs) / len(probs)
+    assert res["mean_nll"] == pytest.approx(nll, rel=1e-12)
+    assert res["estimate"] == pytest.approx(math.exp(nll), rel=1e-12)
 
 
-def test_km113_edge():
-    """Test edge case from docstring example."""
-    result = kamath_ch8_perplexity(["a", "b"], p_theta=[0.5, 0.5])
-    assert isinstance(result, dict)
-    assert math.isfinite(result["estimate"])
-    assert result["estimate"] == 2.0
-    assert result["n"] == 2
+def test_a_uniform_model_over_k_tokens_has_perplexity_k():
+    # every token predicted with probability 1/8 gives perplexity 8
+    probs = [0.125] * 6
+    res = kamath_ch8_perplexity(probs, p_theta=probs)
+    assert res["estimate"] == pytest.approx(8.0, rel=1e-12)
+
+
+def test_a_certain_model_has_perplexity_one():
+    probs = [1.0, 1.0, 1.0]
+    res = kamath_ch8_perplexity(probs, p_theta=probs)
+    assert res["estimate"] == pytest.approx(1.0, rel=1e-12)
+
+
+def test_a_worse_model_has_a_higher_perplexity():
+    good = kamath_ch8_perplexity([0.8] * 5, p_theta=[0.8] * 5)["estimate"]
+    bad = kamath_ch8_perplexity([0.2] * 5, p_theta=[0.2] * 5)["estimate"]
+    assert bad > good

@@ -1,33 +1,29 @@
-"""Tests for km135.kamath_ch9_clip_contrastive_total."""
+"""Verification tests for km135.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 9.7, the total CLIP contrastive loss. Expected values are
+recomputed in the test body.
+"""
 
 import math
 
 import pytest
 
-from morie.fn import _array_core as np
-
 from morie.fn.km135 import kamath_ch9_clip_contrastive_total
 
 
-def test_km135_basic():
-    """Test basic functionality."""
-    L_i2t = 0.25
-    L_t2i = 0.75
-    result = kamath_ch9_clip_contrastive_total(L_i2t, L_t2i)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert math.isfinite(result["estimate"])
-    assert result["estimate"] == L_i2t + L_t2i
-    assert result["L_i2t"] == L_i2t
-    assert result["L_t2i"] == L_t2i
+def test_the_clip_loss_is_the_sum_of_both_directions():
+    # Eq 9.7: L_CL = L_i2t + L_t2i
+    for a, b in ((1.5, 2.5), (0.0, 0.0), (3.25, 0.75)):
+        res = kamath_ch9_clip_contrastive_total(a, b)
+        assert res["estimate"] == pytest.approx(a + b, rel=1e-12)
 
 
-def test_km135_edge():
-    """Test edge cases."""
-    # Both losses zero: smallest valid input.
-    result = kamath_ch9_clip_contrastive_total(0.0, 0.0)
-    assert math.isfinite(result["estimate"])
-    assert result["estimate"] == 0.0
-    # A negative cross-entropy is rejected per the docstring.
+def test_the_loss_is_symmetric_in_its_two_halves():
+    assert kamath_ch9_clip_contrastive_total(1.5, 2.5)["estimate"] == pytest.approx(
+        kamath_ch9_clip_contrastive_total(2.5, 1.5)["estimate"], rel=1e-12)
+
+
+def test_a_negative_cross_entropy_is_refused():
+    # both halves are cross-entropies and so cannot be negative
     with pytest.raises(ValueError):
-        kamath_ch9_clip_contrastive_total(-0.1, 0.5)
+        kamath_ch9_clip_contrastive_total(-1.0, 2.0)

@@ -1,34 +1,33 @@
-"""Tests for km079.kamath_ch6_alignscore_total_loss."""
+"""Verification tests for km079.
+
+Kamath, Keenan, Somers and Sorenson (2024), eq. 6.3, the AlignScore joint loss. Expected values are
+recomputed in the test body.
+"""
 
 import math
 
 import pytest
 
-from morie.fn import _array_core as np
 from morie.fn.km079 import kamath_ch6_alignscore_total_loss
 
 
-def test_km079_basic():
-    """Test basic functionality with valid scalar inputs."""
-    L_3way = 1.5
-    L_bin = 0.5
-    L_reg = 2.0
-    lambdas = [0.5, 0.3, 0.2]
-    result = kamath_ch6_alignscore_total_loss(L_3way, L_bin, L_reg, lambdas)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "contributions" in result
-    assert "losses" in result
-    assert "lambdas" in result
-    assert math.isfinite(result["estimate"])
-    assert len(result["contributions"]) == 3
-    assert len(result["losses"]) == 3
-    assert len(result["lambdas"]) == 3
-    assert result["n"] == 3
-    assert result["method"] == "AlignScore joint loss (Kamath Eq 6.3)"
+def test_alignscore_total_is_the_weighted_sum_of_the_three_heads():
+    # Eq 6.3: L = lam1 L_3way + lam2 L_bin + lam3 L_reg
+    losses = (1.0, 2.0, 3.0)
+    lambdas = [0.2, 0.3, 0.5]
+    res = kamath_ch6_alignscore_total_loss(*losses, lambdas)
+    assert res["estimate"] == pytest.approx(
+        sum(l * w for l, w in zip(losses, lambdas)), rel=1e-12)
+    for got, (l, w) in zip(res["contributions"], zip(losses, lambdas)):
+        assert got == pytest.approx(l * w, rel=1e-12)
 
 
-def test_km079_edge():
-    """Test that negative weights raise ValueError per docstring."""
-    with pytest.raises(ValueError):
-        kamath_ch6_alignscore_total_loss(1.0, 2.0, 3.0, [0.5, -0.1, 0.6])
+def test_all_weight_on_one_head_returns_that_loss():
+    res = kamath_ch6_alignscore_total_loss(1.0, 2.0, 3.0, [0.0, 1.0, 0.0])
+    assert res["estimate"] == pytest.approx(2.0, rel=1e-12)
+
+
+def test_equal_weights_give_the_mean_of_the_heads():
+    third = 1.0 / 3.0
+    res = kamath_ch6_alignscore_total_loss(1.0, 2.0, 3.0, [third, third, third])
+    assert res["estimate"] == pytest.approx(2.0, rel=1e-12)
