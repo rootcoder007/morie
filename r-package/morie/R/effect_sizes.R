@@ -921,7 +921,10 @@ random_effects_meta <- function(estimates, standard_errors,
         num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
         max(num / sum(wt^2), 0)
       }
-      if (abs(new - tau2) < 1e-10) { tau2 <- new; break }
+      if (abs(new - tau2) < 1e-10) {
+        tau2 <- new
+        break
+      }
       tau2 <- new
     }
   } else if (method != "DL") {
@@ -941,7 +944,10 @@ random_effects_meta <- function(estimates, standard_errors,
         num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
         max(num / sum(wt^2), 0)
       }
-      if (abs(new - tau2) < 1e-10) { tau2 <- new; break }
+      if (abs(new - tau2) < 1e-10) {
+        tau2 <- new
+        break
+      }
       tau2 <- new
     }
   } else if (method != "DL") {
@@ -961,7 +967,10 @@ random_effects_meta <- function(estimates, standard_errors,
         num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
         max(num / sum(wt^2), 0)
       }
-      if (abs(new - tau2) < 1e-10) { tau2 <- new; break }
+      if (abs(new - tau2) < 1e-10) {
+        tau2 <- new
+        break
+      }
       tau2 <- new
     }
   } else if (method != "DL") {
@@ -981,7 +990,10 @@ random_effects_meta <- function(estimates, standard_errors,
         num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
         max(num / sum(wt^2), 0)
       }
-      if (abs(new - tau2) < 1e-10) { tau2 <- new; break }
+      if (abs(new - tau2) < 1e-10) {
+        tau2 <- new
+        break
+      }
       tau2 <- new
     }
   } else if (method != "DL") {
@@ -1137,7 +1149,8 @@ cramers_v <- function(contingency_table, confidence = 0.95) {
   dof <- (nrow(tbl) - 1) * (ncol(tbl) - 1)
   ncp_at <- function(target) {
     if (stats::pchisq(chi2, dof, ncp = 0) <= target) return(0)
-    lo <- 0; hi <- max(chi2, 1) * 4 + 10
+    lo <- 0
+  hi <- max(chi2, 1) * 4 + 10
     while (stats::pchisq(chi2, dof, ncp = hi) > target && hi < 1e7) hi <- hi * 2
     for (i in seq_len(100L)) {
       mid <- (lo + hi) / 2
