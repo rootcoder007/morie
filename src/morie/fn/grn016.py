@@ -73,14 +73,18 @@ def geron_ch4_logistic_regression_prediction(p_hat, threshold=0.5):
         raise ValueError(f"threshold must lie in [0, 1], got {threshold}.")
 
     yhat = (p >= threshold).astype(int)
-    est = int(yhat) if yhat.ndim == 0 else yhat.tolist()
+    # the list-backed array core has no 0-d form, so scalarness
+    # has to come from the argument rather than from p
+    scalar = np.ndim(p_hat) == 0
+    est = int(yhat.tolist()[0]) if scalar else yhat.tolist()
     return RichResult(
         title="Logistic regression prediction",
         summary_lines=[("Threshold", threshold), ("Positive rate", float(yhat.mean()))],
         payload={
             "y_hat": est,
             "positive_rate": float(yhat.mean()),
-            "margin": float(p - threshold) if p.ndim == 0 else (p - threshold).tolist(),
+            "margin": (float((p - threshold).tolist()[0]) if scalar
+                       else (p - threshold).tolist()),
             "threshold": threshold,
             "estimate": est,
             "n": int(p.size),

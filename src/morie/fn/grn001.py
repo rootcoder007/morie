@@ -66,7 +66,9 @@ def geron_ch4_simple_linear_life_satisfaction(theta_0, theta_1, GDP_per_capita):
     if np.any(g < 0):
         raise ValueError("GDP per capita cannot be negative.")
 
-    scalar = g.ndim == 0
+    # the list-backed array core has no 0-d form, so scalarness
+    # has to come from the argument rather than from g
+    scalar = np.ndim(GDP_per_capita) == 0
     Xm = g.reshape(-1, 1)
     inner = geron_ch4_linear_regression_prediction([theta_0, theta_1], Xm)
     pred = inner["prediction"]

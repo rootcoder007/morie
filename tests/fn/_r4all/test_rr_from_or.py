@@ -1,0 +1,1 @@
+/home/rootcoder/work/morie/tests/fn/test_rr_from_or.py

@@ -1,0 +1,1 @@
+/home/rootcoder/work/morie/tests/fn/test_g_weight_simple.py
