@@ -7,16 +7,16 @@ from morie.fn.joboxc import joseph_box_cox_transform
 
 def test_joboxc_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    lam = 0.1
-    result = joseph_box_cox_transform(y, lam)
+    x = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    lam = 0.5
+    result = joseph_box_cox_transform(x, lam)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "w" in result
 
 
 def test_joboxc_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    lam = 0.1
-    result = joseph_box_cox_transform(y, lam)
+    x = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    lam = 0.5
+    result = joseph_box_cox_transform(x, lam)
     assert isinstance(result, dict)

@@ -9,14 +9,16 @@ from morie.fn.iid_mean_variance import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r26e2_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = iid_mean_variance(x)
+    sigma2 = 0.5
+    n = 0.5
+    result = iid_mean_variance(sigma2, n)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r26e2_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = iid_mean_variance(x)
+    sigma2 = 0.5
+    n = 0.5
+    result = iid_mean_variance(sigma2, n)
     assert isinstance(result, dict)

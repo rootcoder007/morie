@@ -7,20 +7,18 @@ from morie.fn.kmscal import kamath_scaling_laws
 
 def test_kmscal_basic():
     """Test basic functionality."""
-    N = 100
-    N_c = np.random.default_rng(42).normal(0, 1, 100)
-    alpha_N = np.random.default_rng(42).normal(0, 1, 100)
-    L_inf = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_scaling_laws(N, N_c, alpha_N, L_inf)
+    N = 0.5
+    N_c = 0.5
+    alpha_N = 0.5
+    result = kamath_scaling_laws(N, N_c, alpha_N)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_kmscal_edge():
     """Test edge cases."""
-    N = 100
-    N_c = np.random.default_rng(42).normal(0, 1, 100)
-    alpha_N = np.random.default_rng(42).normal(0, 1, 100)
-    L_inf = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_scaling_laws(N, N_c, alpha_N, L_inf)
+    N = 0.5
+    N_c = 0.5
+    alpha_N = 0.5
+    result = kamath_scaling_laws(N, N_c, alpha_N)
     assert isinstance(result, dict)

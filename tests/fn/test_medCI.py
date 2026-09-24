@@ -7,22 +7,20 @@ from morie.fn.medCI import asymmetric_indirect_ci
 
 def test_medCI_basic():
     """Test basic functionality."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    sa = np.random.default_rng(42).normal(0, 1, 100)
-    sb = np.random.default_rng(42).normal(0, 1, 100)
-    n_sim = np.random.default_rng(42).normal(0, 1, 100)
-    result = asymmetric_indirect_ci(a, b, sa, sb, n_sim)
+    a = 0.5
+    b = 0.5
+    sa = 0.5
+    sb = 0.5
+    result = asymmetric_indirect_ci(a, b, sa, sb)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_medCI_edge():
     """Test edge cases."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    sa = np.random.default_rng(42).normal(0, 1, 100)
-    sb = np.random.default_rng(42).normal(0, 1, 100)
-    n_sim = np.random.default_rng(42).normal(0, 1, 100)
-    result = asymmetric_indirect_ci(a, b, sa, sb, n_sim)
+    a = 0.5
+    b = 0.5
+    sa = 0.5
+    sb = 0.5
+    result = asymmetric_indirect_ci(a, b, sa, sb)
     assert isinstance(result, dict)

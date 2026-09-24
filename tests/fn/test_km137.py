@@ -7,8 +7,8 @@ from morie.fn.km137 import kamath_ch9_itm_hard_negative
 
 def test_km137_basic():
     """Test basic functionality."""
-    Pos = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-    HardNeg = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    Pos = np.random.default_rng(42).uniform(0.05, 0.95, 100)
+    HardNeg = np.random.default_rng(42).uniform(0.05, 0.95, 100)
     result = kamath_ch9_itm_hard_negative(Pos, HardNeg)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_km137_basic():
 
 def test_km137_edge():
     """Test edge cases."""
-    Pos = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-    HardNeg = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    Pos = np.random.default_rng(42).uniform(0.05, 0.95, 100)
+    HardNeg = np.random.default_rng(42).uniform(0.05, 0.95, 100)
     result = kamath_ch9_itm_hard_negative(Pos, HardNeg)
     assert isinstance(result, dict)

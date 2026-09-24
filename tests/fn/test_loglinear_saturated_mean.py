@@ -9,14 +9,20 @@ from morie.fn.loglinear_saturated_mean import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e6_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = loglinear_saturated_mean(x)
+    b0 = 0.5
+    beta_x_i = 0.5
+    beta_z_j = 0.5
+    beta_xz_ij = 0.5
+    result = loglinear_saturated_mean(b0, beta_x_i, beta_z_j, beta_xz_ij)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e6_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = loglinear_saturated_mean(x)
+    b0 = 0.5
+    beta_x_i = 0.5
+    beta_z_j = 0.5
+    beta_xz_ij = 0.5
+    result = loglinear_saturated_mean(b0, beta_x_i, beta_z_j, beta_xz_ij)
     assert isinstance(result, dict)

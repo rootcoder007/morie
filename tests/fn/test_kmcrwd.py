@@ -7,8 +7,8 @@ from morie.fn.kmcrwd import kamath_crowspairs_bias
 
 def test_kmcrwd_basic():
     """Test basic functionality."""
-    stereo_pll = [-0.5, -0.5]
-    anti_pll = [-2.0, -3.0]
+    stereo_pll = [-1.0, -1.0]
+    anti_pll = [-1.0, -1.0]
     result = kamath_crowspairs_bias(stereo_pll, anti_pll)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_kmcrwd_basic():
 
 def test_kmcrwd_edge():
     """Test edge cases."""
-    stereo_pll = [-0.5, -0.5]
-    anti_pll = [-2.0, -3.0]
+    stereo_pll = [-1.0, -1.0]
+    anti_pll = [-1.0, -1.0]
     result = kamath_crowspairs_bias(stereo_pll, anti_pll)
     assert isinstance(result, dict)

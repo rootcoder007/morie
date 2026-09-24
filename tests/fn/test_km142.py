@@ -7,8 +7,8 @@ from morie.fn.km142 import kamath_ch9_itg_loss
 
 def test_km142_basic():
     """Test basic functionality."""
-    x = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    x = np.random.default_rng(42).uniform(0.05, 0.95, 100)
+    y = np.random.default_rng(42).uniform(0.05, 0.95, 100)
     result = kamath_ch9_itg_loss(x, y)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_km142_basic():
 
 def test_km142_edge():
     """Test edge cases."""
-    x = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-    y = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    x = np.random.default_rng(42).uniform(0.05, 0.95, 100)
+    y = np.random.default_rng(42).uniform(0.05, 0.95, 100)
     result = kamath_ch9_itg_loss(x, y)
     assert isinstance(result, dict)

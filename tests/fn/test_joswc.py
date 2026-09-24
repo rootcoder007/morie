@@ -7,22 +7,18 @@ from morie.fn.joswc import joseph_sliding_window_cv
 
 def test_joswc_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    T_w = np.random.default_rng(42).normal(0, 1, 100)
-    step = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = joseph_sliding_window_cv(y, T_w, step, H, K)
+    n = 5
+    trainsize = 2.0
+    testsize = 2.0
+    result = joseph_sliding_window_cv(n, trainsize, testsize)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "folds" in result
 
 
 def test_joswc_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    T_w = np.random.default_rng(42).normal(0, 1, 100)
-    step = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = joseph_sliding_window_cv(y, T_w, step, H, K)
+    n = 5
+    trainsize = 2.0
+    testsize = 2.0
+    result = joseph_sliding_window_cv(n, trainsize, testsize)
     assert isinstance(result, dict)

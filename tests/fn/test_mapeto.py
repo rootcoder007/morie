@@ -7,20 +7,20 @@ from morie.fn.mapeto import ma_peto_or
 
 def test_mapeto_basic():
     """Test basic functionality."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    d = 5
+    a = 0.5
+    b = 0.5
+    c = 0.5
+    d = 0.5
     result = ma_peto_or(a, b, c, d)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "OR" in result
 
 
 def test_mapeto_edge():
     """Test edge cases."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    d = 5
+    a = 0.5
+    b = 0.5
+    c = 0.5
+    d = 0.5
     result = ma_peto_or(a, b, c, d)
     assert isinstance(result, dict)

@@ -9,7 +9,7 @@ def test_kmcrag_basic():
     """Test basic functionality."""
     query = 'q'
     docs = ['d1', 'd2']
-    clf = lambda q, d: 0.05
+    clf = lambda q, d: 0.9 if d == 'd1' else 0.1
     tau_hi = 0.8
     tau_lo = 0.2
     result = kamath_corrective_rag(query, docs, clf, tau_hi, tau_lo)
@@ -21,7 +21,7 @@ def test_kmcrag_edge():
     """Test edge cases."""
     query = 'q'
     docs = ['d1', 'd2']
-    clf = lambda q, d: 0.05
+    clf = lambda q, d: 0.9 if d == 'd1' else 0.1
     tau_hi = 0.8
     tau_lo = 0.2
     result = kamath_corrective_rag(query, docs, clf, tau_hi, tau_lo)

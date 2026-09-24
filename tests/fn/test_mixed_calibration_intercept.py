@@ -9,14 +9,20 @@ from morie.fn.mixed_calibration_intercept import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e38_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = mixed_calibration_intercept(x)
+    b_hat = 0.5
+    z_sample = 0.5
+    pi_sample = 0.5
+    n_population = 0.5
+    result = mixed_calibration_intercept(b_hat, z_sample, pi_sample, n_population)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e38_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = mixed_calibration_intercept(x)
+    b_hat = 0.5
+    z_sample = 0.5
+    pi_sample = 0.5
+    n_population = 0.5
+    result = mixed_calibration_intercept(b_hat, z_sample, pi_sample, n_population)
     assert isinstance(result, dict)

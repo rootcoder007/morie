@@ -7,20 +7,18 @@ from morie.fn.hmlcos import geron_cosine_annealing
 
 def test_hmlcos_basic():
     """Test basic functionality."""
-    t = np.linspace(0, 10, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    eta_max = 100
-    eta_min = 0
-    result = geron_cosine_annealing(t, T, eta_max, eta_min)
+    t = 0.5
+    T = 5
+    eta_max = 0.5
+    result = geron_cosine_annealing(t, T, eta_max)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "eta" in result
 
 
 def test_hmlcos_edge():
     """Test edge cases."""
-    t = np.linspace(0, 10, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    eta_max = 100
-    eta_min = 0
-    result = geron_cosine_annealing(t, T, eta_max, eta_min)
+    t = 0.5
+    T = 5
+    eta_max = 0.5
+    result = geron_cosine_annealing(t, T, eta_max)
     assert isinstance(result, dict)

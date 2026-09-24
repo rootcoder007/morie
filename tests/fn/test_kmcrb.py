@@ -8,7 +8,7 @@ from morie.fn.kmcrb import kamath_cross_encoder_rerank
 def test_kmcrb_basic():
     """Test basic functionality."""
     q = 'q'
-    docs = ['aa', 'b']
+    docs = ['aa', 'b', 'cc']
     model = lambda q, d: len(d)
     result = kamath_cross_encoder_rerank(q, docs, model)
     assert isinstance(result, dict)
@@ -18,7 +18,7 @@ def test_kmcrb_basic():
 def test_kmcrb_edge():
     """Test edge cases."""
     q = 'q'
-    docs = ['aa', 'b']
+    docs = ['aa', 'b', 'cc']
     model = lambda q, d: len(d)
     result = kamath_cross_encoder_rerank(q, docs, model)
     assert isinstance(result, dict)

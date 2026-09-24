@@ -7,16 +7,16 @@ from morie.fn.hmpol import geron_policy
 
 def test_hmpol_basic():
     """Test basic functionality."""
-    state = np.random.default_rng(42).normal(0, 1, 100)
-    pi = np.random.default_rng(42).normal(0, 1, 100)
+    state = 0.5
+    pi = 5
     result = geron_policy(state, pi)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "probabilities" in result
 
 
 def test_hmpol_edge():
     """Test edge cases."""
-    state = np.random.default_rng(42).normal(0, 1, 100)
-    pi = np.random.default_rng(42).normal(0, 1, 100)
+    state = 0.5
+    pi = 5
     result = geron_policy(state, pi)
     assert isinstance(result, dict)

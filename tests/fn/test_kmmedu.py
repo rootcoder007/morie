@@ -7,18 +7,18 @@ from morie.fn.kmmedu import kamath_medusa_heads
 
 def test_kmmedu_basic():
     """Test basic functionality."""
-    hidden_state = np.random.default_rng(42).normal(0, 1, 100)
-    medusa_heads = np.random.default_rng(42).normal(0, 1, 100)
+    hidden_state = 5
+    medusa_heads = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     k = 5
     result = kamath_medusa_heads(hidden_state, medusa_heads, k)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "tokens" in result
 
 
 def test_kmmedu_edge():
     """Test edge cases."""
-    hidden_state = np.random.default_rng(42).normal(0, 1, 100)
-    medusa_heads = np.random.default_rng(42).normal(0, 1, 100)
+    hidden_state = 5
+    medusa_heads = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     k = 5
     result = kamath_medusa_heads(hidden_state, medusa_heads, k)
     assert isinstance(result, dict)

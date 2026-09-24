@@ -9,14 +9,18 @@ from morie.fn.infinite_total import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r3e18_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = infinite_total(x)
+    zbar_hat = 0.5
+    area = 0.5
+    sample_area = 0.5
+    result = infinite_total(zbar_hat, area, sample_area)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r3e18_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = infinite_total(x)
+    zbar_hat = 0.5
+    area = 0.5
+    sample_area = 0.5
+    result = infinite_total(zbar_hat, area, sample_area)
     assert isinstance(result, dict)

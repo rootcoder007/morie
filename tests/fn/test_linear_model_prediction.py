@@ -9,14 +9,18 @@ from morie.fn.linear_model_prediction import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r16e1_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = linear_model_prediction(x)
+    beta0 = 0.5
+    beta1 = 0.5
+    x = 0.5
+    result = linear_model_prediction(beta0, beta1, x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r16e1_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = linear_model_prediction(x)
+    beta0 = 0.5
+    beta1 = 0.5
+    x = 0.5
+    result = linear_model_prediction(beta0, beta1, x)
     assert isinstance(result, dict)

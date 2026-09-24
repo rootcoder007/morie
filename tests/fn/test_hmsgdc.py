@@ -7,8 +7,8 @@ from morie.fn.hmsgdc import geron_sgd_classifier
 
 def test_hmsgdc_basic():
     """Test basic functionality."""
-    X = [[2.0, -1.0]]
-    y = [1]
+    X = [[3.0, 1.0], [2.0, 2.0], [-3.0, -1.0], [-2.0, -2.0]]
+    y = [1, 1, 0, 0]
     result = geron_sgd_classifier(X, y)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
@@ -16,7 +16,7 @@ def test_hmsgdc_basic():
 
 def test_hmsgdc_edge():
     """Test edge cases."""
-    X = [[2.0, -1.0]]
-    y = [1]
+    X = [[3.0, 1.0], [2.0, 2.0], [-3.0, -1.0], [-2.0, -2.0]]
+    y = [1, 1, 0, 0]
     result = geron_sgd_classifier(X, y)
     assert isinstance(result, dict)

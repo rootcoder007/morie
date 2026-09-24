@@ -7,20 +7,16 @@ from morie.fn.jostlpc import joseph_stl_decomposition
 
 def test_jostlpc_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    period = np.random.default_rng(42).normal(0, 1, 100)
-    seasonal_window = np.random.default_rng(42).normal(0, 1, 100)
-    trend_window = np.random.default_rng(42).normal(0, 1, 100)
-    result = joseph_stl_decomposition(y, period, seasonal_window, trend_window)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    period = 5
+    result = joseph_stl_decomposition(x, period)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "trend" in result
 
 
 def test_jostlpc_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    period = np.random.default_rng(42).normal(0, 1, 100)
-    seasonal_window = np.random.default_rng(42).normal(0, 1, 100)
-    trend_window = np.random.default_rng(42).normal(0, 1, 100)
-    result = joseph_stl_decomposition(y, period, seasonal_window, trend_window)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    period = 5
+    result = joseph_stl_decomposition(x, period)
     assert isinstance(result, dict)

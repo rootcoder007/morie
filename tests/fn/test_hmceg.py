@@ -7,18 +7,18 @@ from morie.fn.hmceg import geron_cross_entropy_gradient
 
 def test_hmceg_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
+    X = 5
+    Y = 5
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
     result = geron_cross_entropy_gradient(X, Y, theta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "gradient" in result
 
 
 def test_hmceg_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
+    X = 5
+    Y = 5
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
     result = geron_cross_entropy_gradient(X, Y, theta)
     assert isinstance(result, dict)

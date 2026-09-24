@@ -7,24 +7,18 @@ from morie.fn.msm170 import mvsml_ridge_lasso_elastic_eq_9_3
 
 def test_msm170_basic():
     """Test basic functionality."""
-    it = np.random.default_rng(42).normal(0, 1, 100)
-    simply = np.random.default_rng(42).normal(0, 1, 100)
-    an = np.random.default_rng(42).normal(0, 1, 100)
-    extension = np.random.default_rng(42).normal(0, 1, 100)
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    pXp = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_3(it, simply, an, extension, of, pXp)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    beta0 = 0.5
+    beta = 0.5
+    result = mvsml_ridge_lasso_elastic_eq_9_3(X, beta0, beta)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_msm170_edge():
     """Test edge cases."""
-    it = np.random.default_rng(42).normal(0, 1, 100)
-    simply = np.random.default_rng(42).normal(0, 1, 100)
-    an = np.random.default_rng(42).normal(0, 1, 100)
-    extension = np.random.default_rng(42).normal(0, 1, 100)
-    of = np.random.default_rng(42).normal(0, 1, 100)
-    pXp = np.random.default_rng(42).normal(0, 1, 100)
-    result = mvsml_ridge_lasso_elastic_eq_9_3(it, simply, an, extension, of, pXp)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    beta0 = 0.5
+    beta = 0.5
+    result = mvsml_ridge_lasso_elastic_eq_9_3(X, beta0, beta)
     assert isinstance(result, dict)

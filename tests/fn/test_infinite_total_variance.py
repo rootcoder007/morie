@@ -9,14 +9,20 @@ from morie.fn.infinite_total_variance import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r3e21_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = infinite_total_variance(x)
+    s2_hat = 0.5
+    n = 0.5
+    area = 0.5
+    sample_area = 0.5
+    result = infinite_total_variance(s2_hat, n, area, sample_area)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r3e21_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = infinite_total_variance(x)
+    s2_hat = 0.5
+    n = 0.5
+    area = 0.5
+    sample_area = 0.5
+    result = infinite_total_variance(s2_hat, n, area, sample_area)
     assert isinstance(result, dict)

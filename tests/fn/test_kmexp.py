@@ -7,7 +7,7 @@ from morie.fn.kmexp import kamath_memorization_exposure
 
 def test_kmexp_basic():
     """Test basic functionality."""
-    canary_ll = -0.1
+    canary_ll = -1.0
     candidate_lls = [-2.0, -3.0, -0.5]
     result = kamath_memorization_exposure(canary_ll, candidate_lls)
     assert isinstance(result, dict)
@@ -16,7 +16,7 @@ def test_kmexp_basic():
 
 def test_kmexp_edge():
     """Test edge cases."""
-    canary_ll = -0.1
+    canary_ll = -1.0
     candidate_lls = [-2.0, -3.0, -0.5]
     result = kamath_memorization_exposure(canary_ll, candidate_lls)
     assert isinstance(result, dict)

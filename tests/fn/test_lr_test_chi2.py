@@ -7,14 +7,16 @@ from morie.fn.lr_test_chi2 import lr_test_chi2
 
 def test_ca7e8_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = lr_test_chi2(x)
+    ll_null = 0.5
+    ll_full = 0.5
+    result = lr_test_chi2(ll_null, ll_full)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_ca7e8_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = lr_test_chi2(x)
+    ll_null = 0.5
+    ll_full = 0.5
+    result = lr_test_chi2(ll_null, ll_full)
     assert isinstance(result, dict)

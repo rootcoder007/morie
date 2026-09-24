@@ -7,18 +7,18 @@ from morie.fn.josnv import joseph_seasonal_naive
 
 def test_josnv_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    m = 10
-    horizon = np.random.default_rng(42).normal(0, 1, 100)
-    result = joseph_seasonal_naive(y, m, horizon)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    season = 5
+    horizon = 5
+    result = joseph_seasonal_naive(x, season, horizon)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "forecast" in result
 
 
 def test_josnv_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    m = 10
-    horizon = np.random.default_rng(42).normal(0, 1, 100)
-    result = joseph_seasonal_naive(y, m, horizon)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    season = 5
+    horizon = 5
+    result = joseph_seasonal_naive(x, season, horizon)
     assert isinstance(result, dict)

@@ -7,18 +7,18 @@ from morie.fn.kmyarn import kamath_yarn_context_extrapolation
 
 def test_kmyarn_basic():
     """Test basic functionality."""
-    theta = 0.0
-    scale = np.random.default_rng(42).normal(0, 1, 100)
-    d = 5
+    theta = 0.5
+    scale = 0.5
+    d = 2.0
     result = kamath_yarn_context_extrapolation(theta, scale, d)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "theta" in result
 
 
 def test_kmyarn_edge():
     """Test edge cases."""
-    theta = 0.0
-    scale = np.random.default_rng(42).normal(0, 1, 100)
-    d = 5
+    theta = 0.5
+    scale = 0.5
+    d = 2.0
     result = kamath_yarn_context_extrapolation(theta, scale, d)
     assert isinstance(result, dict)

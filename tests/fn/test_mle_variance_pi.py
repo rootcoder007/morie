@@ -9,14 +9,16 @@ from morie.fn.mle_variance_pi import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e3_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = mle_variance_pi(x)
+    pi_hat = 0.5
+    n = 0.5
+    result = mle_variance_pi(pi_hat, n)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e3_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = mle_variance_pi(x)
+    pi_hat = 0.5
+    n = 0.5
+    result = mle_variance_pi(pi_hat, n)
     assert isinstance(result, dict)

@@ -7,20 +7,18 @@ from morie.fn.linkpr import link_prediction
 
 def test_linkpr_basic():
     """Test basic functionality."""
-    G = np.eye(10)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    method = "auto"
-    result = link_prediction(G, u, v, method)
+    G = 0.5
+    u = 0.5
+    v = 0.5
+    result = link_prediction(G, u, v)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "common_neighbours" in result
 
 
 def test_linkpr_edge():
     """Test edge cases."""
-    G = np.eye(10)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    method = "auto"
-    result = link_prediction(G, u, v, method)
+    G = 0.5
+    u = 0.5
+    v = 0.5
+    result = link_prediction(G, u, v)
     assert isinstance(result, dict)

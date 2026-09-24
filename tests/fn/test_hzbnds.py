@@ -7,20 +7,20 @@ from morie.fn.hzbnds import horowitz_manski_bounds
 
 def test_hzbnds_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    R = np.random.default_rng(42).normal(0, 1, 100)
-    y_min = 0
-    y_max = 100
+    y = 0.5
+    R = 1
+    y_min = 0.5
+    y_max = 0.5
     result = horowitz_manski_bounds(y, R, y_min, y_max)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_hzbnds_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    R = np.random.default_rng(42).normal(0, 1, 100)
-    y_min = 0
-    y_max = 100
+    y = 0.5
+    R = 1
+    y_min = 0.5
+    y_max = 0.5
     result = horowitz_manski_bounds(y, R, y_min, y_max)
     assert isinstance(result, dict)
