@@ -1,22 +1,21 @@
-"""Tests for the_r_series_dick_j_brus_spatial_sampling_with_r10e1.the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_1."""
+"""Verification tests for the_r_series_dick_j_brus_spatial_sampling_with_r10e1.
 
-from morie.fn import _array_core as np
+Brus (2022), Spatial Sampling with R, eq. (10.1), the model-assisted working model. Expected values are
+recomputed from the formula in the test body.
+"""
 
-from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r10e1 import (
-    the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_1,
-)
+import math
 
+import pytest
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e1_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_1(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r10e1 import the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_1
 
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r10e1_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_1(x)
-    assert isinstance(result, dict)
+def test_working_model_adds_the_residual_to_the_mean_function():
+    # (10.1): Z_k = m(x_k) + eps_k
+    for m, eps in ((3.0, 0.5), (-1.0, 2.25), (0.0, 0.0)):
+        assert the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_1(m, eps)["value"] == pytest.approx(m + eps, rel=1e-12)
+
+
+def test_a_zero_residual_returns_the_mean_function():
+    assert the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_1(7.5, 0.0)["value"] == pytest.approx(7.5, rel=1e-12)

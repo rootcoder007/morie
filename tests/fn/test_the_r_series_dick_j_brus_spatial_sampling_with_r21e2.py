@@ -1,22 +1,21 @@
-"""Tests for the_r_series_dick_j_brus_spatial_sampling_with_r21e2.the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_2."""
+"""Verification tests for the_r_series_dick_j_brus_spatial_sampling_with_r21e2.
 
-from morie.fn import _array_core as np
+Brus (2022), Spatial Sampling with R, eq. (21.2), the constant-mean model. Expected values are
+recomputed from the formula in the test body.
+"""
 
-from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r21e2 import (
-    the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_2,
-)
+import math
 
+import pytest
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r21e2_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_2(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r21e2 import the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_2
 
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r21e2_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_2(x)
-    assert isinstance(result, dict)
+def test_constant_mean_model_adds_the_residual():
+    # (21.2): Z(s) = mu + eps(s)
+    for mu, eps in ((3.0, 0.25), (-2.0, 1.5), (0.0, 0.0)):
+        assert the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_2(mu, eps)["value"] == pytest.approx(mu + eps, rel=1e-12)
+
+
+def test_the_expected_value_is_the_mean_when_the_residual_vanishes():
+    assert the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_2(4.25, 0.0)["value"] == pytest.approx(4.25, rel=1e-12)

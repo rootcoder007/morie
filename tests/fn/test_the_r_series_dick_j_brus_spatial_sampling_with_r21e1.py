@@ -1,22 +1,30 @@
-"""Tests for the_r_series_dick_j_brus_spatial_sampling_with_r21e1.the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_1."""
+"""Verification tests for the_r_series_dick_j_brus_spatial_sampling_with_r21e1.
 
-from morie.fn import _array_core as np
+Brus (2022), Spatial Sampling with R, eq. (21.1), the stationary process used for kriging. Expected values are
+recomputed from the formula in the test body.
+"""
 
-from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r21e1 import (
-    the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_1,
-)
+import math
 
+import pytest
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r21e1_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_1(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r21e1 import the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_1
 
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r21e1_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_1(x)
-    assert isinstance(result, dict)
+def test_the_kriging_model_reports_one_location_per_mean_value():
+    # (21.1): the same stationary process, used for kriging
+    mu = [0.5, 0.5, 0.5]
+    cov = [[1.0 if i == j else 0.3 for j in range(3)] for i in range(3)]
+    res = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_1(mu, cov)
+    assert res["n"] == 3
+
+
+def test_a_constant_mean_vector_is_accepted():
+    res = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_1([2.0] * 5, [[1.0 if i == j else 0.1 for j in range(5)]
+                          for i in range(5)])
+    assert res["n"] == 5
+
+
+def test_a_mismatched_covariance_is_refused():
+    with pytest.raises((ValueError, IndexError)):
+        the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_1([1.0, 2.0], [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])

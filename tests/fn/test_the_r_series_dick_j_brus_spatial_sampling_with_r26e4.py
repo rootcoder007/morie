@@ -1,22 +1,32 @@
-"""Tests for the_r_series_dick_j_brus_spatial_sampling_with_r26e4.the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_4."""
+"""Verification tests for the_r_series_dick_j_brus_spatial_sampling_with_r26e4.
 
-from morie.fn import _array_core as np
+Brus (2022), Spatial Sampling with R, eq. (26.4), the effective sample size under autocorrelation. Expected values are
+recomputed from the formula in the test body.
+"""
 
-from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r26e4 import (
-    the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_4,
-)
+import math
 
+import pytest
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r26e4_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_4(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r26e4 import the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_4
 
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r26e4_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_4(x)
-    assert isinstance(result, dict)
+def test_effective_sample_size_under_autocorrelation():
+    # (26.4): n_eff = n/(1 + (n - 1) rhobar)
+    for n, rho in ((10, 0.3), (50, 0.05), (4, 0.9)):
+        res = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_4(n, rho)
+        assert res["value"] == pytest.approx(n / (1.0 + (n - 1) * rho), rel=1e-12)
+
+
+def test_independent_observations_count_in_full():
+    assert the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_4(25, 0.0)["value"] == pytest.approx(25.0, rel=1e-12)
+
+
+def test_perfect_correlation_leaves_one_effective_observation():
+    assert the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_4(25, 1.0)["value"] == pytest.approx(1.0, rel=1e-12)
+
+
+def test_stronger_correlation_costs_effective_observations():
+    weak = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_4(30, 0.1)["value"]
+    strong = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_4(30, 0.5)["value"]
+    assert strong < weak < 30.0
