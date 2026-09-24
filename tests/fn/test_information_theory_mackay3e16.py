@@ -25,5 +25,10 @@ def test_sucrule_with_no_data_gives_one_half_and_no_maximum_likelihood():
 
 
 def test_sucrule_approaches_the_sample_proportion_as_data_accumulate():
+    # (F_a + 1) / (F_a + F_b + 2) closes on F_a / (F_a + F_b) as the
+    # counts grow, because the two added pseudo-counts stop mattering
+    near = sucrule(6, 4)
     far = sucrule(600, 400)
-    assert abs(far["p"] - 0.6) < 1e-3
+    assert near["p"] == pytest.approx(7.0 / 12.0, rel=1e-12)
+    assert far["p"] == pytest.approx(601.0 / 1002.0, rel=1e-12)
+    assert abs(far["p"] - 0.6) < abs(near["p"] - 0.6)
