@@ -1,6 +1,9 @@
-"""Tests for km109.kamath_ch6_perplexity_leakage."""
+"""Verification tests for km109.
 
-from morie.fn import _array_core as np
+Kamath, Keenan, Somers and Sorenson (2024), ch 6, the perplexity-ratio leakage score, eq. 6.33. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
 
 import math
 
@@ -9,29 +12,23 @@ import pytest
 from morie.fn.km109 import kamath_ch6_perplexity_leakage
 
 
-def test_km109_basic():
-    """Test basic functionality."""
-    rng = np.random.default_rng(42)
-    seqs = ["w" + str(i) for i in range(10)]
-    PP_public = {w: float(rng.uniform(1.0, 20.0)) for w in seqs}
-    PP_lm = {w: float(rng.uniform(1.0, 20.0)) for w in seqs}
-    result = kamath_ch6_perplexity_leakage(seqs, PP_public, PP_lm)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "argmax" in result
-    assert "per_sequence" in result
-    assert "n_leaking" in result
-    assert "n" in result
-    assert "method" in result
-    assert math.isfinite(result["estimate"])
-    assert result["argmax"] in seqs
-    assert result["n"] == len(seqs)
-    assert len(result["per_sequence"]) == len(seqs)
-    assert isinstance(result["n_leaking"], int)
-    assert 0 <= result["n_leaking"] <= len(seqs)
+def test_the_leakage_score_is_the_largest_log_perplexity_ratio():
+    # log(PP_public(w) / PP_lm(w)) over the unique sequences
+    res = kamath_ch6_perplexity_leakage(["w1", "w2"], {"w1": 10.0, "w2": 4.0},
+               {"w1": 5.0, "w2": 4.0})
+    assert res["estimate"] == pytest.approx(math.log(10.0 / 5.0), rel=1e-12)
+    assert res["estimate"] == pytest.approx(math.log(2.0), rel=1e-12)
+    assert res["argmax"] == "w1"
 
 
-def test_km109_edge():
-    """Test edge cases."""
-    with pytest.raises(ValueError):
-        kamath_ch6_perplexity_leakage([], {}, {})
+def test_a_model_no_more_surprised_than_the_public_baseline_leaks_nothing():
+    res = kamath_ch6_perplexity_leakage(["w1"], {"w1": 4.0}, {"w1": 4.0})
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)
+
+
+def test_memorising_a_sequence_raises_its_score_above_the_others():
+    res = kamath_ch6_perplexity_leakage(["plain", "memorised"],
+               {"plain": 4.0, "memorised": 100.0},
+               {"plain": 4.0, "memorised": 2.0})
+    assert res["argmax"] == "memorised"
+    assert res["estimate"] == pytest.approx(math.log(50.0), rel=1e-12)

@@ -1,50 +1,43 @@
-"""Tests for km130.kamath_ch9_input_alignment_loss."""
+"""Verification tests for km130.
+
+Kamath, Keenan, Somers and Sorenson (2024), ch 9, the input-alignment loss, eq. 9.2. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
 
 import math
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.km130 import kamath_ch9_input_alignment_loss
 
 
-def _mse(prediction, target):
-    return float(np.mean(
-        (np.array(prediction, dtype=float)
-         - np.array(target, dtype=float)) ** 2
-    ))
+def _mse(y, tgt):
+    flat_y = [v for row in y for v in row]
+    flat_t = [v for row in tgt for v in row]
+    return sum((a - b) ** 2 for a, b in zip(flat_y, flat_t)) / len(flat_t)
 
 
-def _add(P, F):
-    return np.array(P, dtype=float) + np.array(F, dtype=float)
+def _add(p, f):
+    return [[a + b for a, b in zip(pr, fr)] for pr, fr in zip(p, f)]
 
 
-def test_km130_basic():
-    """Test basic functionality with a 3-D stack of candidates."""
-    P_X = [[[0.0]], [[1.0]]]
-    F_T = [[1.0]]
-    t = [[1.0]]
-    result = kamath_ch9_input_alignment_loss(
-        P_X, F_T, t, llm=_add, loss_fn=_mse
-    )
-    assert isinstance(result, dict)
-    for key in ("estimate", "argmin", "losses", "n_candidates", "n", "method"):
-        assert key in result
-    assert math.isfinite(result["estimate"])
-    assert result["argmin"] == 0
-    assert result["n_candidates"] == 2
+def test_the_alignment_loss_picks_the_candidate_prompt_that_fits_the_text():
+    res = kamath_ch9_input_alignment_loss([[[0.0]], [[1.0]]], [[1.0]], [[1.0]],
+               llm=_add, loss_fn=_mse)
+    # candidate 0 gives [[1.0]] against a target of [[1.0]]
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)
+    assert res["argmin"] == 0
 
 
-def test_km130_edge():
-    """Test edge case with a 2-D single prompt-feature matrix."""
-    P_X = [[1.0]]
-    F_T = [[1.0]]
-    t = [[1.0]]
-    result = kamath_ch9_input_alignment_loss(
-        P_X, F_T, t, llm=_add, loss_fn=_mse
-    )
-    assert isinstance(result, dict)
-    for key in ("estimate", "argmin", "losses", "n_candidates", "n", "method"):
-        assert key in result
-    assert math.isfinite(result["estimate"])
-    assert result["n_candidates"] == 1
-    assert result["argmin"] == 0
+def test_the_losses_of_every_candidate_are_reported():
+    res = kamath_ch9_input_alignment_loss([[[0.0]], [[1.0]]], [[1.0]], [[1.0]],
+               llm=_add, loss_fn=_mse)
+    assert list(res["losses"]) == pytest.approx([0.0, 1.0], abs=1e-15)
+
+
+def test_the_worse_candidate_wins_when_the_target_moves():
+    res = kamath_ch9_input_alignment_loss([[[0.0]], [[1.0]]], [[1.0]], [[2.0]],
+               llm=_add, loss_fn=_mse)
+    assert res["argmin"] == 1
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)

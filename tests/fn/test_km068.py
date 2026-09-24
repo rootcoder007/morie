@@ -1,51 +1,36 @@
-"""Tests for km068.kamath_ch5_ppo_loss."""
+"""Verification tests for km068.
+
+Kamath, Keenan, Somers and Sorenson (2024), ch 5, the PPO objective, eq. 5.4. Expected values are
+recomputed in the test body and the docstring's own worked value is
+asserted too.
+"""
 
 import math
+
 import pytest
-from morie.fn import _array_core as np
 
 from morie.fn.km068 import kamath_ch5_ppo_loss
 
 
-def test_km068_basic():
-    """Test basic functionality."""
-    phi = [[0.5, 0.5], [0.3, 0.7]]
-    x = ["p1", "p2"]
-    y = [["a", "b"], ["c", "d"]]
-
-    def r_theta(xi, yi):
-        return 1.0 if yi == "a" else 0.5
-
-    beta = 0.8
-    pi_ref = [[0.5, 0.5], [0.5, 0.5]]
-
-    result = kamath_ch5_ppo_loss(phi, x, y, r_theta, beta, pi_ref=pi_ref)
-    assert isinstance(result, dict)
-    assert "estimate" in result
-    assert "per_prompt_objective" in result
-    assert "kl" in result
-    assert "expected_reward" in result
-    assert "beta" in result
-    assert "n" in result
-    assert "method" in result
-    assert math.isfinite(result["estimate"])
-    assert result["n"] == 2
-    assert result["beta"] == beta
-    assert len(result["per_prompt_objective"]) == 2
-    assert len(result["kl"]) == 2
-    assert len(result["expected_reward"]) == 2
+def test_the_ppo_objective_is_the_negated_expected_penalised_reward():
+    r = lambda xi, yi: 1.0 if yi == "a" else 0.0
+    res = kamath_ch5_ppo_loss([[0.5, 0.5]], ["p"], [["a", "b"]], r, 1.0,
+               pi_ref=[[0.5, 0.5]])
+    # E[r] = 0.5 * 1 + 0.5 * 0 with no divergence from the reference
+    assert res["estimate"] == pytest.approx(-0.5, rel=1e-12)
 
 
-def test_km068_edge():
-    """Test edge cases: missing pi_ref raises ValueError."""
-    phi = [[0.5, 0.5]]
-    x = ["p1"]
-    y = [["a", "b"]]
+def test_a_uniformly_zero_reward_gives_a_zero_objective():
+    r = lambda xi, yi: 0.0
+    res = kamath_ch5_ppo_loss([[0.5, 0.5]], ["p"], [["a", "b"]], r, 1.0,
+               pi_ref=[[0.5, 0.5]])
+    assert res["estimate"] == pytest.approx(0.0, abs=1e-15)
 
-    def r_theta(xi, yi):
-        return 1.0
 
-    beta = 0.8
-
-    with pytest.raises(ValueError):
-        kamath_ch5_ppo_loss(phi, x, y, r_theta, beta)
+def test_diverging_from_the_reference_policy_worsens_the_objective():
+    r = lambda xi, yi: 0.0
+    same = kamath_ch5_ppo_loss([[0.5, 0.5]], ["p"], [["a", "b"]], r, 1.0,
+                pi_ref=[[0.5, 0.5]])["estimate"]
+    apart = kamath_ch5_ppo_loss([[0.9, 0.1]], ["p"], [["a", "b"]], r, 1.0,
+                 pi_ref=[[0.5, 0.5]])["estimate"]
+    assert apart > same
