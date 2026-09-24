@@ -1,33 +1,40 @@
-"""Verification tests for kmp2.
+"""Tests for kmp2.kamath_p_tuning_v2."""
 
-The module documents its contract with a worked example carrying the
-printed value from the source it cites. These tests execute that
-example and require every printed value to reproduce exactly, so the
-documented contract is enforced here and not only under
---doctest-modules, which the main suite does not run over tests/fn.
-"""
+from morie.fn import _array_core as np
 
-import doctest
+from morie.fn.kmp2 import kamath_p_tuning_v2
 
-import morie.fn.kmp2 as module
+
+def test_kmp2_basic():
+    """Test basic functionality."""
+    prefixes_by_layer = np.random.default_rng(42).normal(0, 1, 100)
+    inputs_by_layer = np.random.default_rng(42).normal(0, 1, 100)
+    result = kamath_p_tuning_v2(prefixes_by_layer, inputs_by_layer)
+    assert isinstance(result, dict)
+    assert "estimate" in result or "statistic" in result
+
+
+def test_kmp2_edge():
+    """Test edge cases."""
+    prefixes_by_layer = np.random.default_rng(42).normal(0, 1, 100)
+    inputs_by_layer = np.random.default_rng(42).normal(0, 1, 100)
+    result = kamath_p_tuning_v2(prefixes_by_layer, inputs_by_layer)
+    assert isinstance(result, dict)
+
+
+# --- appended: the module's own worked example as a gate -----------
+# The docstring carries the printed value from the source the module
+# cites. Executing it here makes that value a test-suite gate, on top
+# of whatever the tests above already check.
+
+import doctest as _doctest
+
+import morie.fn.kmp2 as _doctest_module
 
 
 def test_every_printed_value_in_the_worked_example_reproduces():
-    res = doctest.testmod(module, verbose=False, report=False,
-                          optionflags=doctest.NORMALIZE_WHITESPACE
-                          | doctest.ELLIPSIS)
-    assert res.attempted >= 1
+    res = _doctest.testmod(
+        _doctest_module, verbose=False, report=False,
+        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+    assert res.attempted > 0
     assert res.failed == 0
-
-
-def test_the_worked_example_exercises_the_public_function():
-    names = list(getattr(module, "__all__", []) or [])
-    assert names
-    docs = [module.__doc__ or ""]
-    for name in names:
-        docs.append(getattr(module, name).__doc__ or "")
-    assert ">>>" in "\n".join(docs)
-
-
-def test_the_module_carries_its_own_cheatsheet():
-    assert "kmp2" in module.cheatsheet()

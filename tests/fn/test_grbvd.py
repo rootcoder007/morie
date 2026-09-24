@@ -7,16 +7,28 @@ from morie.fn.grbvd import geron_bias_variance_decomposition
 
 def test_grbvd_basic():
     """Test basic functionality."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    predictions = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_bias_variance_decomposition(y_true, predictions)
+    rng = np.random.default_rng(42)
+    n_samples = 50
+    n_models = 10
+    # predictions: 2-D matrix of predictions from n_models, each predicting n_samples
+    predictions = rng.normal(0, 1, (n_models, n_samples))
+    y_true = rng.normal(0, 1, n_samples)
+    result = geron_bias_variance_decomposition(predictions, y_true)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    # The decomposition should expose at least one bias-variance-noise component
+    assert any(
+        k in result
+        for k in ("bias", "variance", "noise", "expected_loss",
+                  "irreducible_error", "total_error", "avg_bias", "avg_variance")
+    )
 
 
 def test_grbvd_edge():
     """Test edge cases."""
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    predictions = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_bias_variance_decomposition(y_true, predictions)
+    rng = np.random.default_rng(42)
+    n_samples = 20
+    n_models = 5
+    predictions = rng.normal(0, 1, (n_models, n_samples))
+    y_true = rng.normal(0, 1, n_samples)
+    result = geron_bias_variance_decomposition(predictions, y_true)
     assert isinstance(result, dict)

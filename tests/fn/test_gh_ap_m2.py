@@ -1,26 +1,37 @@
 """Tests for gh_ap_m2.ghosal_gibbs_sampler."""
 
-import math
-
 from morie.fn import _array_core as np
+
 from morie.fn.gh_ap_m2 import ghosal_gibbs_sampler
 
 
 def test_gh_ap_m2_basic():
     """Test basic functionality."""
-    result = ghosal_gibbs_sampler(rho=0.6, n_draws=2000, seed=42)
+    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+    result = ghosal_gibbs_sampler(x)
     assert "estimate" in result
-    assert "target_rho" in result
-    assert "gap" in result
-    assert math.isfinite(result["estimate"])
-    assert result["target_rho"] == 0.6
-    assert math.isfinite(result["gap"])
+    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
 
 
 def test_gh_ap_m2_edge():
     """Test edge cases."""
-    # rho = 0 is the boundary of the sqrt
-    result = ghosal_gibbs_sampler(rho=0.0, n_draws=100, seed=0)
-    assert "estimate" in result
-    assert math.isfinite(result["estimate"])
-    assert result["target_rho"] == 0.0
+    result = ghosal_gibbs_sampler(np.array([42.0]))
+    assert result["n"] == 1
+
+
+# --- appended: the module's own worked example as a gate -----------
+# The docstring carries the printed value from the source the module
+# cites. Executing it here makes that value a test-suite gate, on top
+# of whatever the tests above already check.
+
+import doctest as _doctest
+
+import morie.fn.gh_ap_m2 as _doctest_module
+
+
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = _doctest.testmod(
+        _doctest_module, verbose=False, report=False,
+        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+    assert res.attempted > 0
+    assert res.failed == 0

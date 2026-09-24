@@ -1,28 +1,44 @@
 """Tests for glmbay.bayesian_glm."""
 
 from morie.fn import _array_core as np
-import pytest
 
 from morie.fn.glmbay import bayesian_glm
 
 
 def test_glmbay_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
-    n, p = 40, 3
-    X = rng.normal(0, 1, (n, p))
-    y = rng.normal(0, 1, n)
-    result = bayesian_glm(X, y, family="gaussian", prior_sd=2.5)
+    y = np.random.default_rng(43).normal(0, 1, 100)
+    X = np.random.default_rng(42).normal(0, 1, (100, 5))
+    family = "gaussian"
+    priors = np.random.default_rng(42).normal(0, 1, 100)
+    result = bayesian_glm(y, X, family, priors)
     assert isinstance(result, dict)
-    assert "estimate" in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_glmbay_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(43)
-    n, p = 40, 2
-    X = rng.normal(0, 1, (n, p))
-    y = rng.integers(0, 2, n)
-    result = bayesian_glm(X, y, family="binomial", prior_sd=2.5)
+    y = np.random.default_rng(43).normal(0, 1, 100)
+    X = np.random.default_rng(42).normal(0, 1, (100, 5))
+    family = "gaussian"
+    priors = np.random.default_rng(42).normal(0, 1, 100)
+    result = bayesian_glm(y, X, family, priors)
     assert isinstance(result, dict)
-    assert "estimate" in result
+
+
+# --- appended: the module's own worked example as a gate -----------
+# The docstring carries the printed value from the source the module
+# cites. Executing it here makes that value a test-suite gate, on top
+# of whatever the tests above already check.
+
+import doctest as _doctest
+
+import morie.fn.glmbay as _doctest_module
+
+
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = _doctest.testmod(
+        _doctest_module, verbose=False, report=False,
+        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+    assert res.attempted > 0
+    assert res.failed == 0

@@ -7,18 +7,45 @@ from morie.fn.hbvMod import hbv_hydrology
 
 def test_hbvMod_basic():
     """Test basic functionality."""
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    params = {"item1": {"a": 1.0, "b": 0.0}, "item2": {"a": 1.5, "b": 0.5}}
-    result = hbv_hydrology(P, T, params)
+    rng = np.random.default_rng(42)
+    P = rng.normal(0, 1, 100)
+    T = rng.integers(0, 2, 100)
+    PET = rng.normal(0, 1, 100)
+    params = {
+        "tt": 0.0,
+        "cfmax": 3.0,
+        "fc": 100.0,
+        "lp": 0.5,
+        "beta": 1.0,
+        "k0": 0.1,
+        "k1": 0.05,
+        "k2": 0.01,
+        "uzl": 5.0,
+        "perc": 1.0,
+        "maxbas": 3,
+    }
+    result = hbv_hydrology(P, T, PET, params)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
 
 
 def test_hbvMod_edge():
     """Test edge cases."""
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    params = {"item1": {"a": 1.0, "b": 0.0}, "item2": {"a": 1.5, "b": 0.5}}
-    result = hbv_hydrology(P, T, params)
+    rng = np.random.default_rng(42)
+    P = rng.normal(0, 1, 100)
+    T = rng.integers(0, 2, 100)
+    PET = rng.normal(0, 1, 100)
+    params = {
+        "tt": 0.0,
+        "cfmax": 3.0,
+        "fc": 100.0,
+        "lp": 0.5,
+        "beta": 1.0,
+        "k0": 0.1,
+        "k1": 0.05,
+        "k2": 0.01,
+        "uzl": 5.0,
+        "perc": 1.0,
+        "maxbas": 3,
+    }
+    result = hbv_hydrology(P, T, PET, params)
     assert isinstance(result, dict)

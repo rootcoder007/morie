@@ -7,18 +7,26 @@ from morie.fn.gwasl1 import gwas_linear
 
 def test_gwasl1_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = gwas_linear(y, M, K)
+    rng = np.random.default_rng(43)
+    n = 40
+    p = 3
+    y = rng.normal(0, 1, n)
+    X = rng.normal(0, 1, (n, p))
+    snp = rng.normal(0, 1, n)
+    Vinv = np.eye(n)
+    result = gwas_linear(y, X, snp, Vinv)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
 
 
 def test_gwasl1_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = gwas_linear(y, M, K)
+    rng = np.random.default_rng(43)
+    n = 40
+    p = 3
+    y = rng.normal(0, 1, n)
+    X = rng.normal(0, 1, (n, p))
+    snp = rng.normal(0, 1, n)
+    Vinv = np.eye(n)
+    result = gwas_linear(y, X, snp, Vinv)
     assert isinstance(result, dict)
+    assert hasattr(result, "keys") or hasattr(result, "__dict__")

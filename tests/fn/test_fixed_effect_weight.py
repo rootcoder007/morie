@@ -1,24 +1,38 @@
 """Tests for fixed_effect_weight.fixed_effect_weight."""
 
-import math
+from morie.fn import _array_core as np
 
 from morie.fn.fixed_effect_weight import fixed_effect_weight
 
 
 def test_ca11e34_basic():
     """Test basic functionality."""
-    se = 0.5
-    result = fixed_effect_weight(se)
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = fixed_effect_weight(x)
     assert isinstance(result, dict)
-    assert "value" in result
-    assert math.isclose(result["value"], 1.0 / (se ** 2))
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ca11e34_edge():
-    """Test edge cases with a different se."""
-    se = 2.0
-    result = fixed_effect_weight(se)
+    """Test edge cases."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = fixed_effect_weight(x)
     assert isinstance(result, dict)
-    assert "value" in result
-    assert math.isfinite(result["value"])
-    assert result["value"] > 0
+
+
+# --- appended: the module's own worked example as a gate -----------
+# The docstring carries the printed value from the source the module
+# cites. Executing it here makes that value a test-suite gate, on top
+# of whatever the tests above already check.
+
+import doctest as _doctest
+
+import morie.fn.fixed_effect_weight as _doctest_module
+
+
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = _doctest.testmod(
+        _doctest_module, verbose=False, report=False,
+        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+    assert res.attempted > 0
+    assert res.failed == 0

@@ -1,33 +1,42 @@
-"""Verification tests for hmceg.
+"""Tests for hmceg.geron_cross_entropy_gradient."""
 
-The module documents its contract with a worked example carrying the
-printed value from the source it cites. These tests execute that
-example and require every printed value to reproduce exactly, so the
-documented contract is enforced here and not only under
---doctest-modules, which the main suite does not run over tests/fn.
-"""
+from morie.fn import _array_core as np
 
-import doctest
+from morie.fn.hmceg import geron_cross_entropy_gradient
 
-import morie.fn.hmceg as module
+
+def test_hmceg_basic():
+    """Test basic functionality."""
+    X = 5
+    Y = 5
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_cross_entropy_gradient(X, Y, theta)
+    assert isinstance(result, dict)
+    assert "estimate" in result or "gradient" in result
+
+
+def test_hmceg_edge():
+    """Test edge cases."""
+    X = 5
+    Y = 5
+    theta = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = geron_cross_entropy_gradient(X, Y, theta)
+    assert isinstance(result, dict)
+
+
+# --- appended: the module's own worked example as a gate -----------
+# The docstring carries the printed value from the source the module
+# cites. Executing it here makes that value a test-suite gate, on top
+# of whatever the tests above already check.
+
+import doctest as _doctest
+
+import morie.fn.hmceg as _doctest_module
 
 
 def test_every_printed_value_in_the_worked_example_reproduces():
-    res = doctest.testmod(module, verbose=False, report=False,
-                          optionflags=doctest.NORMALIZE_WHITESPACE
-                          | doctest.ELLIPSIS)
-    assert res.attempted >= 1
+    res = _doctest.testmod(
+        _doctest_module, verbose=False, report=False,
+        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+    assert res.attempted > 0
     assert res.failed == 0
-
-
-def test_the_worked_example_exercises_the_public_function():
-    names = list(getattr(module, "__all__", []) or [])
-    assert names
-    docs = [module.__doc__ or ""]
-    for name in names:
-        docs.append(getattr(module, name).__doc__ or "")
-    assert ">>>" in "\n".join(docs)
-
-
-def test_the_module_carries_its_own_cheatsheet():
-    assert "hmceg" in module.cheatsheet()

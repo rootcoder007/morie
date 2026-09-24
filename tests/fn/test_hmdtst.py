@@ -7,16 +7,27 @@ from morie.fn.hmdtst import geron_tree_sensitivity_scale
 
 def test_hmdtst_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = geron_tree_sensitivity_scale(X, y)
+    rng_x = np.random.default_rng(42)
+    rng_y = np.random.default_rng(43)
+    X = rng_x.normal(0, 1, (40, 3))
+    y = rng_y.normal(0, 1, 40)
+    result = geron_tree_sensitivity_scale(X, y, criterion="mse")
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    expected_keys = {
+        "predictions_match", "thresholds", "scaled_thresholds",
+        "expected_thresholds", "thresholds_match", "knn_predictions",
+        "knn_scaled_predictions", "knn_match", "estimate", "n", "method"
+    }
+    assert expected_keys.issubset(set(result.keys()))
 
 
 def test_hmdtst_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = geron_tree_sensitivity_scale(X, y)
+    rng_x = np.random.default_rng(42)
+    rng_y = np.random.default_rng(43)
+    X = rng_x.normal(0, 1, (40, 3))
+    y = rng_y.normal(0, 1, 40)
+    result = geron_tree_sensitivity_scale(X, y, a=0.001, b=0.0, feature=1, criterion="mse")
     assert isinstance(result, dict)
+    assert "predictions_match" in result
+    assert "knn_match" in result

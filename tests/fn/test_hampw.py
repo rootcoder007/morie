@@ -1,26 +1,35 @@
 """Tests for hampw.hampel_three_part."""
 
-from morie.fn import _array_core as np
+import math
 
+import pytest
+
+from morie.fn import _array_core as np
 from morie.fn.hampw import hampel_three_part
 
 
 def test_hampw_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    result = hampel_three_part(y, a, b, c)
+    """Test basic functionality with normal-distributed residuals."""
+    rng = np.random.default_rng(43)
+    y = list(rng.normal(0, 1, 100))
+    a, b, c = 2.0, 4.0, 8.0
+    result = hampel_three_part(y, a=a, b=b, c=c)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    for key in ("estimate", "weights", "n_zero", "n", "a", "b", "c", "method"):
+        assert key in result
+    assert result["n"] == 100
+    assert len(result["weights"]) == 100
+    assert all(0.0 <= w <= 1.0 for w in result["weights"])
+    assert math.isfinite(result["estimate"])
+    assert 0.0 <= result["estimate"] <= 1.0
+    assert result["a"] == a
+    assert result["b"] == b
+    assert result["c"] == c
+    expected_n_zero = sum(1 for e in y if abs(e) > c)
+    assert result["n_zero"] == expected_n_zero
 
 
 def test_hampw_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    result = hampel_three_part(y, a, b, c)
-    assert isinstance(result, dict)
+    """Test that an empty residual vector raises ValueError."""
+    with pytest.raises(ValueError):
+        hampel_three_part([])

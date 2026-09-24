@@ -1,26 +1,40 @@
 """Tests for dimNet.dimenet."""
 
 from morie.fn import _array_core as np
-from morie.fn.dimNet import angle_between
-import math
+
+from morie.fn.dimNet import dimenet
 
 
 def test_dimNet_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
-    r_i = rng.normal(0, 1, 3)
-    r_j = rng.normal(0, 1, 3)
-    r_k = rng.normal(0, 1, 3)
-    result = angle_between(r_i, r_j, r_k)
-    assert math.isfinite(result)
-    assert 0 <= result <= math.pi
+    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
+    atom_types = np.random.default_rng(42).normal(0, 1, 100)
+    result = dimenet(coords, atom_types)
+    assert isinstance(result, dict)
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dimNet_edge():
     """Test edge cases."""
-    r_i = np.array([0.0, 0.0, 0.0])
-    r_j = np.array([1.0, 0.0, 0.0])
-    r_k = np.array([-1.0, 0.0, 0.0])
-    result = angle_between(r_i, r_j, r_k)
-    assert math.isfinite(result)
-    assert 0 <= result <= math.pi
+    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
+    atom_types = np.random.default_rng(42).normal(0, 1, 100)
+    result = dimenet(coords, atom_types)
+    assert isinstance(result, dict)
+
+
+# --- appended: the module's own worked example as a gate -----------
+# The docstring carries the printed value from the source the module
+# cites. Executing it here makes that value a test-suite gate, on top
+# of whatever the tests above already check.
+
+import doctest as _doctest
+
+import morie.fn.dimNet as _doctest_module
+
+
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = _doctest.testmod(
+        _doctest_module, verbose=False, report=False,
+        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+    assert res.attempted > 0
+    assert res.failed == 0

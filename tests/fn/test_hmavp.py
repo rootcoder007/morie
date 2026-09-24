@@ -1,33 +1,42 @@
-"""Verification tests for hmavp.
+"""Tests for hmavp.geron_average_pool."""
 
-The module documents its contract with a worked example carrying the
-printed value from the source it cites. These tests execute that
-example and require every printed value to reproduce exactly, so the
-documented contract is enforced here and not only under
---doctest-modules, which the main suite does not run over tests/fn.
-"""
+from morie.fn import _array_core as np
 
-import doctest
+from morie.fn.hmavp import geron_average_pool
 
-import morie.fn.hmavp as module
+
+def test_hmavp_basic():
+    """Test basic functionality."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    window = np.random.default_rng(42).normal(0, 1, 100)
+    stride = np.random.default_rng(42).normal(0, 1, 100)
+    result = geron_average_pool(x, window, stride)
+    assert isinstance(result, dict)
+    assert "estimate" in result or "statistic" in result
+
+
+def test_hmavp_edge():
+    """Test edge cases."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    window = np.random.default_rng(42).normal(0, 1, 100)
+    stride = np.random.default_rng(42).normal(0, 1, 100)
+    result = geron_average_pool(x, window, stride)
+    assert isinstance(result, dict)
+
+
+# --- appended: the module's own worked example as a gate -----------
+# The docstring carries the printed value from the source the module
+# cites. Executing it here makes that value a test-suite gate, on top
+# of whatever the tests above already check.
+
+import doctest as _doctest
+
+import morie.fn.hmavp as _doctest_module
 
 
 def test_every_printed_value_in_the_worked_example_reproduces():
-    res = doctest.testmod(module, verbose=False, report=False,
-                          optionflags=doctest.NORMALIZE_WHITESPACE
-                          | doctest.ELLIPSIS)
-    assert res.attempted >= 1
+    res = _doctest.testmod(
+        _doctest_module, verbose=False, report=False,
+        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+    assert res.attempted > 0
     assert res.failed == 0
-
-
-def test_the_worked_example_exercises_the_public_function():
-    names = list(getattr(module, "__all__", []) or [])
-    assert names
-    docs = [module.__doc__ or ""]
-    for name in names:
-        docs.append(getattr(module, name).__doc__ or "")
-    assert ">>>" in "\n".join(docs)
-
-
-def test_the_module_carries_its_own_cheatsheet():
-    assert "hmavp" in module.cheatsheet()

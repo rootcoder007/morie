@@ -1,28 +1,28 @@
 """Tests for hmcsam.hamiltonian_mc."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.hmcsam import hamiltonian_mc
 
 
 def test_hmcsam_basic():
     """Test basic functionality."""
-    log_p = np.random.default_rng(42).normal(0, 1, 100)
-    grad_log_p = np.random.default_rng(42).normal(0, 1, 100)
-    x0 = np.random.default_rng(42).normal(0, 1, 100)
-    step_size = 100
-    L = np.random.default_rng(42).normal(0, 1, 100)
-    result = hamiltonian_mc(log_p, grad_log_p, x0, step_size, L)
+    def log_p(x):
+        return -0.5 * sum(v * v for v in x)
+    def grad_log_p(x):
+        return [-v for v in x]
+    x0 = [1.0, 2.0]
+    result = hamiltonian_mc(log_p, grad_log_p, x0, step_size=0.1, L=10, n_iter=10)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result
 
 
 def test_hmcsam_edge():
     """Test edge cases."""
-    log_p = np.random.default_rng(42).normal(0, 1, 100)
-    grad_log_p = np.random.default_rng(42).normal(0, 1, 100)
-    x0 = np.random.default_rng(42).normal(0, 1, 100)
-    step_size = 100
-    L = np.random.default_rng(42).normal(0, 1, 100)
-    result = hamiltonian_mc(log_p, grad_log_p, x0, step_size, L)
-    assert isinstance(result, dict)
+    def log_p(x):
+        return -0.5 * sum(v * v for v in x)
+    def grad_log_p(x):
+        return [-v for v in x]
+    x0 = [1.0, 2.0]
+    with pytest.raises(ValueError):
+        hamiltonian_mc(log_p, grad_log_p, x0, step_size=-0.1, L=10, n_iter=10)
