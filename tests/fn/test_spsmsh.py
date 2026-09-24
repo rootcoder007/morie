@@ -7,20 +7,18 @@ from morie.fn.spsmsh import spsm_shifted_intervention
 
 def test_spsmsh_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    shift_fn = lambda v: v
-    result = spsm_shifted_intervention(y, A, H, shift_fn)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    a = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    h = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = spsm_shifted_intervention(y, a, h)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "psi" in result
 
 
 def test_spsmsh_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    shift_fn = lambda v: v
-    result = spsm_shifted_intervention(y, A, H, shift_fn)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    a = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    h = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = spsm_shifted_intervention(y, a, h)
     assert isinstance(result, dict)

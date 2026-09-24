@@ -9,14 +9,12 @@ from morie.fn.suit_full_house_probability import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner2e41_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = suit_full_house_probability(x)
+    result = suit_full_house_probability()
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "favorable" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner2e41_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = suit_full_house_probability(x)
+    result = suit_full_house_probability()
     assert isinstance(result, dict)

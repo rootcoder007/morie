@@ -7,18 +7,18 @@ from morie.fn.svmdu import svm_dual_wolfe
 
 def test_svmdu_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = svm_dual_wolfe(X, y, K)
+    alpha = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = svm_dual_wolfe(alpha, X, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "dual" in result
 
 
 def test_svmdu_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = svm_dual_wolfe(X, y, K)
+    alpha = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = svm_dual_wolfe(alpha, X, y)
     assert isinstance(result, dict)

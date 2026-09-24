@@ -7,16 +7,14 @@ from morie.fn.sumP import sum_pool
 
 def test_sumP_basic():
     """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    mode = "auto"
-    result = sum_pool(X, mode)
+    H = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = sum_pool(H)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "sum" in result
 
 
 def test_sumP_edge():
     """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    mode = "auto"
-    result = sum_pool(X, mode)
+    H = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = sum_pool(H)
     assert isinstance(result, dict)

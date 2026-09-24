@@ -9,14 +9,16 @@ from morie.fn.slope_from_cov import (
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner6e13_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = slope_from_cov(x)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = slope_from_cov(x, y)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "slope" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner6e13_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = slope_from_cov(x)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = slope_from_cov(x, y)
     assert isinstance(result, dict)

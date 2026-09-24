@@ -7,22 +7,20 @@ from morie.fn.sunabr import sun_abraham_did
 
 def test_sunabr_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    unit = np.random.default_rng(42).normal(0, 1, 100)
-    time = np.linspace(0, 10, 100)
-    cohort = np.random.default_rng(42).normal(0, 1, 100)
-    result = sun_abraham_did(y, D, unit, time, cohort)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    unit = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    time = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    cohort = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = sun_abraham_did(y, unit, time, cohort)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "event_time" in result
 
 
 def test_sunabr_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    unit = np.random.default_rng(42).normal(0, 1, 100)
-    time = np.linspace(0, 10, 100)
-    cohort = np.random.default_rng(42).normal(0, 1, 100)
-    result = sun_abraham_did(y, D, unit, time, cohort)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    unit = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    time = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    cohort = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = sun_abraham_did(y, unit, time, cohort)
     assert isinstance(result, dict)

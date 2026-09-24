@@ -7,14 +7,16 @@ from morie.fn.tau2_dersimonian_laird import tau2_dersimonian_laird
 
 def test_ca11e44_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = tau2_dersimonian_laird(x)
+    ys = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    ws_fixed = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = tau2_dersimonian_laird(ys, ws_fixed)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "value" in result or "value" in result
 
 
 def test_ca11e44_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = tau2_dersimonian_laird(x)
+    ys = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    ws_fixed = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = tau2_dersimonian_laird(ys, ws_fixed)
     assert isinstance(result, dict)

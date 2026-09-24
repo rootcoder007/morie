@@ -9,14 +9,20 @@ from morie.fn.shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a4e9 im
 
 def test_shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a4e9_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equation_9(x)
+    t = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    phi_re = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    phi_im = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equation_9(t, phi_re, phi_im, x)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "pmf" in result
 
 
 def test_shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a4e9_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equation_9(x)
+    t = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    phi_re = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    phi_im = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equation_9(t, phi_re, phi_im, x)
     assert isinstance(result, dict)

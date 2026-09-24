@@ -7,16 +7,14 @@ from morie.fn.spdetr import spatial_detrending
 
 def test_spdetr_basic():
     """Test basic functionality."""
-    values = np.random.default_rng(42).normal(0, 1, 100)
-    grid = np.random.default_rng(42).normal(0, 1, 100)
-    result = spatial_detrending(values, grid)
+    values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = spatial_detrending(values)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "overall" in result
 
 
 def test_spdetr_edge():
     """Test edge cases."""
-    values = np.random.default_rng(42).normal(0, 1, 100)
-    grid = np.random.default_rng(42).normal(0, 1, 100)
-    result = spatial_detrending(values, grid)
+    values = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = spatial_detrending(values)
     assert isinstance(result, dict)

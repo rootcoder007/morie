@@ -7,20 +7,16 @@ from morie.fn.snmlin import snm_linear
 
 def test_snmlin_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    treatment_history = np.random.default_rng(42).normal(0, 1, 100)
-    covariate_history = np.random.default_rng(42).normal(0, 1, 100)
-    time = np.linspace(0, 10, 100)
-    result = snm_linear(y, treatment_history, covariate_history, time)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    treatment_history = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = snm_linear(y, treatment_history)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_snmlin_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    treatment_history = np.random.default_rng(42).normal(0, 1, 100)
-    covariate_history = np.random.default_rng(42).normal(0, 1, 100)
-    time = np.linspace(0, 10, 100)
-    result = snm_linear(y, treatment_history, covariate_history, time)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    treatment_history = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    result = snm_linear(y, treatment_history)
     assert isinstance(result, dict)

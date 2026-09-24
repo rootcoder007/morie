@@ -7,20 +7,18 @@ from morie.fn.surdrl import survey_dr_estimator
 
 def test_surdrl_basic():
     """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    sampling_weights = np.random.default_rng(42).normal(0, 1, 100)
-    result = survey_dr_estimator(y, D, X, sampling_weights)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    D = np.array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1])
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = survey_dr_estimator(y, D, X)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "ate" in result
 
 
 def test_surdrl_edge():
     """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    sampling_weights = np.random.default_rng(42).normal(0, 1, 100)
-    result = survey_dr_estimator(y, D, X, sampling_weights)
+    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    D = np.array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1])
+    X = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = survey_dr_estimator(y, D, X)
     assert isinstance(result, dict)

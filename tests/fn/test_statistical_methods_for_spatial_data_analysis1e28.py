@@ -9,14 +9,16 @@ from morie.fn.statistical_methods_for_spatial_data_analysis1e28 import (
 
 def test_statistical_methods_for_spatial_data_analysis1e28_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = statistical_methods_for_spatial_data_analysis_chapter_1_equation_28(x)
+    n = 5
+    rho = 0.1
+    result = statistical_methods_for_spatial_data_analysis_chapter_1_equation_28(n, rho)
     assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    assert "sigma" in result or "sigma" in result
 
 
 def test_statistical_methods_for_spatial_data_analysis1e28_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = statistical_methods_for_spatial_data_analysis_chapter_1_equation_28(x)
+    n = 5
+    rho = 0.1
+    result = statistical_methods_for_spatial_data_analysis_chapter_1_equation_28(n, rho)
     assert isinstance(result, dict)

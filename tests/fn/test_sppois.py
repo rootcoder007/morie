@@ -1,20 +1,18 @@
 """Tests for sppois.schabenberger_poisson_process."""
 
+from morie.fn import _array_core as np
+
 from morie.fn.sppois import schabenberger_poisson_process
 
 
 def test_sppois_basic():
     """Test basic functionality."""
-    lam = 0.1
-    region = (0.0, 1.0, 0.0, 1.0)
-    result = schabenberger_poisson_process(lam, region)
+    result = schabenberger_poisson_process()
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "points" in result
 
 
 def test_sppois_edge():
     """Test edge cases."""
-    lam = 0.1
-    region = (0.0, 1.0, 0.0, 1.0)
-    result = schabenberger_poisson_process(lam, region)
+    result = schabenberger_poisson_process()
     assert isinstance(result, dict)

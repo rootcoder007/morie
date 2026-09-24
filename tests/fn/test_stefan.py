@@ -7,16 +7,14 @@ from morie.fn.stefan import stefan_boltzmann
 
 def test_stefan_basic():
     """Test basic functionality."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    emissivity = np.random.default_rng(42).normal(0, 1, 100)
-    result = stefan_boltzmann(T, emissivity)
+    T = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = stefan_boltzmann(T)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_stefan_edge():
     """Test edge cases."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    emissivity = np.random.default_rng(42).normal(0, 1, 100)
-    result = stefan_boltzmann(T, emissivity)
+    T = np.random.default_rng(42).normal(0.0, 1.0, 40)
+    result = stefan_boltzmann(T)
     assert isinstance(result, dict)

@@ -7,16 +7,16 @@ from morie.fn.spcovf import schabenberger_covariance_function
 
 def test_spcovf_basic():
     """Test basic functionality."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    z = np.random.default_rng(44).normal(0, 1, 100)
+    coords = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    z = np.random.default_rng(42).normal(0.0, 1.0, 40)
     result = schabenberger_covariance_function(coords, z)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "lag" in result
 
 
 def test_spcovf_edge():
     """Test edge cases."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    z = np.random.default_rng(44).normal(0, 1, 100)
+    coords = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    z = np.random.default_rng(42).normal(0.0, 1.0, 40)
     result = schabenberger_covariance_function(coords, z)
     assert isinstance(result, dict)

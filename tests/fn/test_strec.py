@@ -7,16 +7,20 @@ from morie.fn.strec import stamp
 
 def test_strec_basic():
     """Test basic functionality."""
-    sessions = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = stamp(sessions, K)
+    embeddings = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    item_table = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Ws = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    Wt = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = stamp(embeddings, item_table, Ws, Wt)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "estimate" in result or "estimate" in result
 
 
 def test_strec_edge():
     """Test edge cases."""
-    sessions = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = stamp(sessions, K)
+    embeddings = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    item_table = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
+    Ws = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    Wt = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = stamp(embeddings, item_table, Ws, Wt)
     assert isinstance(result, dict)

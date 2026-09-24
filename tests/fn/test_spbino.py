@@ -1,20 +1,18 @@
 """Tests for spbino.schabenberger_binomial_process."""
 
+from morie.fn import _array_core as np
+
 from morie.fn.spbino import schabenberger_binomial_process
 
 
 def test_spbino_basic():
     """Test basic functionality."""
-    n = 100
-    region = (0.0, 1.0, 0.0, 1.0)
-    result = schabenberger_binomial_process(n, region)
+    result = schabenberger_binomial_process()
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "points" in result
 
 
 def test_spbino_edge():
     """Test edge cases."""
-    n = 100
-    region = (0.0, 1.0, 0.0, 1.0)
-    result = schabenberger_binomial_process(n, region)
+    result = schabenberger_binomial_process()
     assert isinstance(result, dict)

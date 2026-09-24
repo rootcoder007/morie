@@ -7,16 +7,14 @@ from morie.fn.sutva import sutva_assumption
 
 def test_sutva_basic():
     """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = sutva_assumption(Y, T)
+    interference = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = sutva_assumption(interference)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "maxinterference" in result
 
 
 def test_sutva_edge():
     """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = sutva_assumption(Y, T)
+    interference = np.random.default_rng(43).normal(0.0, 1.0, (3, 3))
+    result = sutva_assumption(interference)
     assert isinstance(result, dict)

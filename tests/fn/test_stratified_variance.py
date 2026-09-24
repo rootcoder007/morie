@@ -9,14 +9,16 @@ from morie.fn.stratified_variance import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r4e4_basic():
     """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = stratified_variance(x)
+    stratum_variances = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    stratum_weights = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = stratified_variance(stratum_variances, stratum_weights)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert "value" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r4e4_edge():
     """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = stratified_variance(x)
+    stratum_variances = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    stratum_weights = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+    result = stratified_variance(stratum_variances, stratum_weights)
     assert isinstance(result, dict)
