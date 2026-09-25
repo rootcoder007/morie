@@ -61,7 +61,7 @@ def runge_kutta4(f, y0, t_span, n_steps: int = 100, **kwargs) -> DescriptiveResu
 
     return DescriptiveResult(
         name="runge_kutta4",
-        value=float(final) if final.ndim == 0 else float(final[0]),
+        value=float(final) if np.ndim(final) == 0 else float(final[0]),
         extra={
             "final_state": final,
             "time": t,

@@ -1,23 +1,38 @@
 """Tests for sgtclo.sgt_closeness_centrality."""
 
-from morie.fn import _array_core as np
+from collections import deque
+
+import pytest
 
 from morie.fn.sgtclo import sgt_closeness_centrality
 
+A = [[0, 1, 0, 0, 1], [1, 0, 1, 0, 0], [0, 1, 0, 1, 1], [0, 0, 1, 0, 0], [1, 0, 1, 0, 0]]
+
+
+def _bfs(s):
+    d = {s: 0}
+    q = deque([s])
+    while q:
+        u = q.popleft()
+        for v in range(5):
+            if A[u][v] and v not in d:
+                d[v] = d[u] + 1
+                q.append(v)
+    return d
+
 
 def test_sgtclo_basic():
-    """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = sgt_closeness_centrality(A)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    """C(v) = (n - 1) / sum_u d(v, u) with BFS distances, recomputed."""
+    r = sgt_closeness_centrality(A)
+    exp = [4 / sum(_bfs(v).values()) for v in range(5)]
+    assert r["closeness"] == pytest.approx(exp, rel=1e-15)
+    assert r["argmax"] == exp.index(max(exp))
 
 
 def test_sgtclo_edge():
-    """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = sgt_closeness_centrality(A)
-    assert isinstance(result, dict)
+    """A disconnected graph is refused."""
+    with pytest.raises(ValueError):
+        sgt_closeness_centrality([[0, 1, 0], [1, 0, 0], [0, 0, 0]])
 
 
 # --- appended: the module's own worked example as a gate -----------

@@ -16,8 +16,8 @@ def marginal_structural_med(x, m, y, c=None):
     baseline covariates that confound the exposure, weighting each
     unit by
 
-    .. math:: w_i = \frac{1}{P(X_i \mid C_i)}
-              \cdot \frac{1}{f(M_i \mid X_i, C_i)}
+    .. math:: w_i = \frac{P(X_i)}{P(X_i \mid C_i)}
+              \cdot \frac{f(M_i \mid X_i)}{f(M_i \mid X_i, C_i)}
 
     creates a pseudo-population in which X and M are both
     unconfounded, and the *weighted* regression
@@ -73,28 +73,37 @@ def marginal_structural_med(x, m, y, c=None):
     if n < C.shape[1] + 8:
         raise ValueError("too few observations for the weight and outcome models.")
 
-    # exposure weight
+    # stabilized weights (VanderWeele 2009, eq. 3):
+    #   sw = P(X) / P(X | C)  *  f(M | X) / f(M | X, C)
+    # The numerators keep the pseudo-population the size of the sample
+    # and leave the MSM coefficients unchanged in expectation; without
+    # them 1 / f(M | X, C) explodes in the Gaussian tails and the
+    # estimates swing wildly from sample to sample.
     e = np.clip(_logit_fit(C, x) if C.shape[1] else np.full(n, x.mean()), 0.01, 0.99)
-    w_x = np.where(x == 1, 1 / e, 1 / (1 - e))
+    px = float(x.mean())
+    w_x = np.where(x == 1, px / e, (1 - px) / (1 - e))
 
-    # mediator density weight: M | X, C ~ N(mu, s2)
+    def _gauss_fit(Dm):
+        b, *_ = np.linalg.lstsq(Dm, m, rcond=None)
+        r = m - Dm @ b
+        v = float((r**2).mean())
+        if v <= 0:
+            raise ValueError("mediator is perfectly predicted; density weight undefined.")
+        return b, np.exp(-(r**2) / (2 * v)) / np.sqrt(2 * np.pi * v)
+
     D = np.column_stack([np.ones(n), x, C])
-    bm, *_ = np.linalg.lstsq(D, m, rcond=None)
-    res = m - D @ bm
-    s2 = float((res**2).mean())
-    if s2 <= 0:
-        raise ValueError("mediator is perfectly predicted; density weight undefined.")
-    dens = np.exp(-(res**2) / (2 * s2)) / np.sqrt(2 * np.pi * s2)
-    w = w_x / np.maximum(dens, 1e-12)
-    w = w / w.mean()  # ponytail: normalise; only relative weights matter for WLS
-
+    bm, dens_xc = _gauss_fit(D)
+    _, dens_x = _gauss_fit(np.column_stack([np.ones(n), x]))
+    w = w_x * dens_x / np.maximum(dens_xc, 1e-300)
     Dy = np.column_stack([np.ones(n), x, m, x * m])
     sw = np.sqrt(w)
     theta, *_ = np.linalg.lstsq(Dy * sw[:, None], y * sw, rcond=None)
     t1, t2, t3 = float(theta[1]), float(theta[2]), float(theta[3])
 
-    # natural effects from the MSM, mediator distribution taken at x = 0
-    m0 = float(bm[0])
+    # natural effects from the MSM: E[M_0] averages the x = 0 mediator
+    # model over the covariate distribution, not at C = 0
+    D0 = np.column_stack([np.ones(n), np.zeros(n), C])
+    m0 = float(np.mean(D0 @ bm))
     b1 = float(bm[1])
     nde = t1 + t3 * m0
     nie = (t2 + t3) * b1

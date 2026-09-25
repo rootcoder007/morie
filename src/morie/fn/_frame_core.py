@@ -1457,6 +1457,9 @@ class DataFrame:
 
     # ---- indexing
     def __getitem__(self, key):
+        if isinstance(key, slice):
+            # pandas: df[a:b] slices ROWS by position
+            return self._take(list(range(self.shape[0]))[key])
         if isinstance(key, Series):
             key = key.tolist()
         elif type(key).__name__ == "marr":
@@ -1499,6 +1502,9 @@ class DataFrame:
             value = list(value._data)
         elif hasattr(value, "tolist"):
             value = value.tolist()
+        elif isinstance(value, (range, tuple)) or (
+                hasattr(value, "__iter__") and hasattr(value, "__next__")):
+            value = list(value)       # a range or iterator is a column
         if not isinstance(value, list):
             value = [value] * (n if self._cols else 1)
         if self._cols and len(value) != n:
@@ -2078,21 +2084,30 @@ class DataFrame:
             out = DataFrame({values: [agg(gb1[r]) for r in rows]}, index=rows)
             out.index_name = index
             return out
+        # index may be one column or a list of them (a MultiIndex of rows)
+        multi = isinstance(index, (list, tuple))
+        icols = list(index) if multi else [index]
         gb = {}
         for i in range(self.shape[0]):
             v = self._cols[values][i]
             if dropna and _isnan(v):
                 continue
-            key = (self._cols[index][i], self._cols[columns][i])
+            rk = tuple(self._cols[c][i] for c in icols)
+            key = (rk if multi else rk[0], self._cols[columns][i])
             gb.setdefault(key, []).append(v)
         rows = sorted({k[0] for k in gb})
         cols = sorted({k[1] for k in gb})
         # fill_value replaces empty cells, as in pandas; without it the caller
         # got a TypeError for passing a keyword this native version lacked.
         empty = _NAN if fill_value is None else fill_value
-        return DataFrame(
+        out = DataFrame(
             {c: [agg(gb[(r, c)]) if (r, c) in gb else empty
                  for r in rows] for c in cols}, index=rows)
+        if multi:
+            out.index_names = icols
+        else:
+            out.index_name = index
+        return out
 
     # ---- io / export
     def dot(self, other):
@@ -2288,8 +2303,36 @@ class DataFrame:
         if own:
             wr.close()
 
-    def to_string(self):
-        return self.to_csv(index=True, sep="\t")
+    def to_string(self, index=True, header=True, columns=None,
+                  na_rep="NaN", **kw):
+        """Column-aligned text, as pandas: right-justified cells, the
+        index at the left unless ``index=False``, floats shown to six
+        significant digits. The layout follows pandas; float formatting
+        is not byte-identical to it."""
+        del kw
+        cols = list(columns) if columns is not None else list(self._cols)
+
+        def cell(v):
+            if _isnan(v):
+                return na_rep
+            if isinstance(v, float):
+                return "%g" % v
+            return str(v)
+        table = [[cell(v) for v in self._cols[c]] for c in cols]
+        heads = [str(c) for c in cols]
+        widths = [max([len(h) if header else 0] + [len(x) for x in col])
+                  for h, col in zip(heads, table)]
+        ix = [str(v) for v in self.index]
+        iw = max([len(x) for x in ix] + [0]) if index else 0
+        lines = []
+        if header:
+            left = [" " * iw] if index else []
+            lines.append("  ".join(left + [h.rjust(w) for h, w in zip(heads, widths)]))
+        for r in range(self.shape[0]):
+            left = [ix[r].ljust(iw)] if index else []
+            lines.append("  ".join(left + [table[j][r].rjust(widths[j])
+                                           for j in range(len(cols))]))
+        return "\n".join(line.rstrip() for line in lines)
 
     def insert(self, loc, column, value):
         items = list(self._cols.items())
@@ -3458,11 +3501,106 @@ Timestamp = _dt.datetime
 NaT = _NAN
 
 
-def date_range(start, periods, freq="D"):
-    s = _parse_dt(start)
-    step = {"D": _dt.timedelta(days=1), "H": _dt.timedelta(hours=1),
-            "W": _dt.timedelta(weeks=1)}[freq]
-    return Series([s + i * step for i in range(int(periods))])
+def _add_months(d, k):
+    m = d.month - 1 + k
+    y, m = d.year + m // 12, m % 12 + 1
+    import calendar as _cal
+    return d.replace(year=y, month=m,
+                     day=min(d.day, _cal.monthrange(y, m)[1]))
+
+
+def _month_end(d):
+    import calendar as _cal
+    return d.replace(day=_cal.monthrange(d.year, d.month)[1])
+
+
+def date_range(start=None, periods=None, freq="D", end=None):
+    """pandas.date_range for fixed and calendar frequencies, with an
+    optional multiplier ("3h", "15min", "2W"): D, h/H, min/T, s/S, ms/L,
+    W (Sunday-anchored), B (business day), ME/M, MS, QE/Q, QS, YE/A/Y,
+    YS/AS. Month/quarter/year ends roll forward to the first anchor on
+    or after ``start``, as pandas does."""
+    import re as _re
+    m_ = _re.fullmatch(r"\s*(\d*)\s*([A-Za-z]+(?:-[A-Za-z]+)?)\s*", str(freq))
+    if not m_:
+        raise ValueError("invalid frequency: %r" % (freq,))
+    k = int(m_.group(1) or 1)
+    unit = m_.group(2)
+    fixed = {"D": _dt.timedelta(days=1), "h": _dt.timedelta(hours=1),
+             "H": _dt.timedelta(hours=1), "min": _dt.timedelta(minutes=1),
+             "T": _dt.timedelta(minutes=1), "s": _dt.timedelta(seconds=1),
+             "S": _dt.timedelta(seconds=1), "ms": _dt.timedelta(milliseconds=1),
+             "L": _dt.timedelta(milliseconds=1)}
+    s = _parse_dt(start) if start is not None else None
+    e = _parse_dt(end) if end is not None else None
+    if s is None and e is None:
+        raise ValueError("date_range needs start or end")
+    out = []
+
+    def done(cur):
+        if periods is not None:
+            return len(out) >= int(periods)
+        return cur > e
+
+    if unit in fixed:
+        step = k * fixed[unit]
+        if s is None:
+            out = [e - i * step for i in range(int(periods))][::-1]
+            return Series(out)
+        cur = s
+        while not done(cur):
+            out.append(cur)
+            cur = cur + step
+        return Series(out)
+    if s is None:
+        raise ValueError("calendar frequencies need a start")
+    if unit in ("W", "W-SUN"):
+        cur = s + _dt.timedelta(days=(6 - s.weekday()) % 7)
+        while not done(cur):
+            out.append(cur)
+            cur = cur + _dt.timedelta(weeks=k)
+        return Series(out)
+    if unit == "B":
+        cur = s
+        while cur.weekday() >= 5:
+            cur = cur + _dt.timedelta(days=1)
+        while not done(cur):
+            out.append(cur)
+            n_ = 0
+            while n_ < k:
+                cur = cur + _dt.timedelta(days=1)
+                if cur.weekday() < 5:
+                    n_ += 1
+        return Series(out)
+    months = {"ME": 1, "M": 1, "MS": 1, "QE": 3, "Q": 3, "QS": 3,
+              "YE": 12, "A": 12, "Y": 12, "YS": 12, "AS": 12}
+    if unit not in months:
+        raise ValueError("unsupported frequency: %r" % (freq,))
+    step = months[unit] * k
+    start_anchor = unit in ("MS", "QS", "YS", "AS")
+    if start_anchor:
+        cur = s.replace(day=1)
+        if cur < s:
+            cur = _add_months(cur, 1)
+        if unit in ("QS",):
+            while (cur.month - 1) % 3:
+                cur = _add_months(cur, 1)
+        if unit in ("YS", "AS"):
+            while cur.month != 1:
+                cur = _add_months(cur, 1)
+    else:
+        cur = _month_end(s)
+        if unit in ("QE", "Q"):
+            while cur.month % 3:
+                cur = _month_end(_add_months(cur.replace(day=1), 1))
+        if unit in ("YE", "A", "Y"):
+            while cur.month != 12:
+                cur = _month_end(_add_months(cur.replace(day=1), 1))
+    while not done(cur):
+        out.append(cur)
+        nxt = _add_months(cur.replace(day=1), step)
+        cur = nxt if start_anchor else _month_end(nxt)
+    return Series(out)
 
 
 def crosstab(index, columns, normalize=False, margins=False,

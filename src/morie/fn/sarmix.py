@@ -149,9 +149,58 @@ def spatial_ar_combined(y, X, W1, W2):
     rho, lam, fmin = _grid_refine(negll, lo1, hi1, lo2, hi2)
 
     A, B, G, beta, e = parts(rho, lam)
-    sigma2 = float(e @ e) / max(n - p, 1)
-    cov = sigma2 * np.linalg.inv(G)
-    se = np.sqrt(np.maximum(np.diag(cov), 0.0))
+    sigma2 = float(e @ e) / n              # the ML value, as documented
+
+    # Standard errors from the FULL observed information in
+    # (beta, rho, lambda, sigma2), as spatialreg::sacsarlm reports them;
+    # sigma2 (X*'X*)^-1 conditions on rho and lambda and understates the
+    # uncertainty of beta. The Hessian of
+    #   ll = -n/2 log(2 pi s2) + log|A| + log|B| - |B(Ay - X beta)|^2 / (2 s2)
+    # is taken by central differences with one Richardson step.
+    def full_ll(th):
+        b_ = th[:p]
+        r_, l_, s2_ = th[p], th[p + 1], th[p + 2]
+        if s2_ <= 0:
+            return -_math.inf
+        A_ = I - r_ * A1
+        B_ = I - l_ * A2
+        sa, la = np.linalg.slogdet(A_)
+        sb, lb = np.linalg.slogdet(B_)
+        if sa <= 0 or sb <= 0:
+            return -_math.inf
+        res = B_ @ (A_ @ yv - Xm @ np.array(b_))
+        return (-0.5 * n * _math.log(2.0 * _math.pi * s2_) + la + lb
+                - float(res @ res) / (2.0 * s2_))
+
+    th0 = [float(v) for v in beta.tolist()] + [float(rho), float(lam), sigma2]
+    k = len(th0)
+
+    def hess(h_scale):
+        hs = [h_scale * max(1.0, abs(v)) for v in th0]
+        H = [[0.0] * k for _ in range(k)]
+        f0 = full_ll(th0)
+        for i in range(k):
+            for j in range(i, k):
+                if i == j:
+                    tp, tm = list(th0), list(th0)
+                    tp[i] += hs[i]
+                    tm[i] -= hs[i]
+                    v = (full_ll(tp) - 2.0 * f0 + full_ll(tm)) / hs[i] ** 2
+                else:
+                    pts = []
+                    for si, sj in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
+                        t = list(th0)
+                        t[i] += si * hs[i]
+                        t[j] += sj * hs[j]
+                        pts.append(full_ll(t))
+                    v = (pts[0] - pts[1] - pts[2] + pts[3]) / (4.0 * hs[i] * hs[j])
+                H[i][j] = H[j][i] = v
+        return H
+    H1, H2 = hess(2e-4), hess(1e-4)
+    Hr = [[(4.0 * H2[i][j] - H1[i][j]) / 3.0 for j in range(k)] for i in range(k)]
+    cov = np.linalg.inv(-np.array(Hr))
+    se_all = [(_math.sqrt(v) if v > 0 else float("nan")) for v in np.diag(cov).tolist()]
+    se = np.array(se_all[:p])
 
     return RichResult(
         payload={
@@ -160,6 +209,8 @@ def spatial_ar_combined(y, X, W1, W2):
             "rho": float(rho),
             "lambda": float(lam),
             "sigma2": sigma2,
+            "se_rho": se_all[p],
+            "se_lambda": se_all[p + 1],
             "loglik": -float(fmin),
             "n": n,
             "method": "SARAR (SAR lag + SAR error) by concentrated ML",

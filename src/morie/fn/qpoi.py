@@ -33,7 +33,7 @@ def qpois(
         p_arr = np.exp(p_arr)
     if not lower_tail:
         p_arr = 1.0 - p_arr
-    return stats.poisson(mu=lambda_).ppf(p_arr)
+    return np.scalar_out(p, stats.poisson(mu=lambda_).ppf(p_arr))
 
 
 def cheatsheet() -> str:

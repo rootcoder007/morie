@@ -25,11 +25,13 @@ def test_k_is_non_decreasing_in_r():
 
 
 def test_k_approximates_pi_r_squared_for_csr_away_from_the_edge():
-    """Uncorrected K is biased low near the boundary, so this is checked
-    at a small radius on a large sample where the bias is slight."""
+    """Uncorrected K on the unit square has expectation
+    pi r^2 - (8/3) r^3 (the border loss, perimeter 4); at r = 0.03 and
+    n = 3000 about 12,700 pairs fall within r, so the Poisson sd of the
+    count is under 1% of it -- 4% covers four of them."""
     P = _csr(n=3000, seed=2)
     r = np.array([0.03])
-    assert _ripley_k(P, r, 1.0)[0] == pytest.approx(np.pi * 0.03**2, rel=0.15)
+    assert _ripley_k(P, r, 1.0)[0] == pytest.approx(np.pi * 0.03**2 - 8 / 3 * 0.03**3, rel=0.04)
 
 
 def test_csr_pattern_is_not_rejected():

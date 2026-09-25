@@ -94,6 +94,35 @@ def _gammainc_p(a, x):
     return 1.0 - _math.exp(ln_pre) * h
 
 
+def _stirling_tail(z):
+    """ln Gamma(z) - [(z - 1/2) ln z - z + ln(2 pi)/2]: the Stirling
+    series, accurate to double precision for z >= 20."""
+    z2 = z * z
+    return (1.0 / 12.0 - (1.0 / 360.0 - (1.0 / 1260.0 - (1.0 / 1680.0
+            - (1.0 / 1188.0 - 691.0 / 360360.0 / z2) / z2) / z2) / z2) / z2) / z
+
+
+def _lbeta(a, b):
+    """ln B(a, b) without the cancellation of lgamma(a) + lgamma(b) -
+    lgamma(a + b) when one argument is large: for the larger argument
+    b >= 20, ln Gamma(b) - ln Gamma(a + b) is formed from the Stirling
+    series as -a ln b - (a + b - 1/2) log1p(a/b) + a + S(b) - S(a + b),
+    so t, F and beta probabilities stay accurate at huge degrees of
+    freedom (the plain difference lost ~df * eps)."""
+    if a > b:
+        a, b = b, a
+    if b < 20.0:
+        return _math.lgamma(a) + _math.lgamma(b) - _math.lgamma(a + b)
+    if a >= 20.0:
+        # both large: Stirling on all three terms
+        return (0.5 * _math.log(2.0 * _math.pi) + (a - 0.5) * _math.log(a)
+                + (b - 0.5) * _math.log(b) - (a + b - 0.5) * _math.log(a + b)
+                + _stirling_tail(a) + _stirling_tail(b) - _stirling_tail(a + b))
+    diff = (-a * _math.log(b) - (a + b - 0.5) * _math.log1p(a / b) + a
+            + _stirling_tail(b) - _stirling_tail(a + b))
+    return _math.lgamma(a) + diff
+
+
 def _betainc(a, b, x):
     """Regularized incomplete beta I_x(a, b), Lentz continued fraction."""
     if not 0.0 <= x <= 1.0 or a <= 0 or b <= 0:
@@ -102,7 +131,7 @@ def _betainc(a, b, x):
         return 0.0
     if x == 1.0:
         return 1.0
-    ln_pre = (_math.lgamma(a + b) - _math.lgamma(a) - _math.lgamma(b)
+    ln_pre = (-_lbeta(a, b)
               + a * _math.log(x) + b * _math.log1p(-x))
     if x < (a + 1.0) / (a + b + 2.0):
         return _math.exp(ln_pre) * _betacf(a, b, x) / a
@@ -698,7 +727,22 @@ class _Chi2(_Dist):
                 v, 0.0, k + 10.0), q)
 
 
+def _t_cornish_fisher(x, nu):
+    """Student t quantile from the normal quantile x, Abramowitz and
+    Stegun 26.7.5 to fourth order; the error is O(nu^-5), below double
+    precision for nu >= 1e5 and |x| <= 10 (checked against scipy)."""
+    x2 = x * x
+    g1 = (x2 + 1.0) * x / 4.0
+    g2 = ((5.0 * x2 + 16.0) * x2 + 3.0) * x / 96.0
+    g3 = (((3.0 * x2 + 19.0) * x2 + 17.0) * x2 - 15.0) * x / 384.0
+    g4 = ((((79.0 * x2 + 776.0) * x2 + 1482.0) * x2 - 1920.0) * x2
+          - 945.0) * x / 92160.0
+    return x + (g1 + (g2 + (g3 + g4 / nu) / nu) / nu) / nu
+
+
 class _T(_Dist):
+    """Student t. df = inf is the standard normal, as in scipy."""
+
     def __init__(self, df=1.0):
         self.df = float(df)
 
@@ -706,8 +750,10 @@ class _T(_Dist):
         k = self.df if df is None else float(df)
 
         def one(v):
-            ln = (_math.lgamma((k + 1) / 2) - _math.lgamma(k / 2)
-                  - 0.5 * _math.log(k * _math.pi)
+            if k == _math.inf:
+                return _math.exp(-0.5 * v * v) / _math.sqrt(2.0 * _math.pi)
+            # Gamma((k+1)/2) / (sqrt(k pi) Gamma(k/2)) = 1 / (sqrt(k) B(1/2, k/2))
+            ln = (-0.5 * _math.log(k) - _lbeta(0.5, k / 2.0)
                   - (k + 1) / 2 * _math.log1p(v * v / k))
             return _math.exp(ln)
         return _maybe_map(one, x)
@@ -726,6 +772,22 @@ class _T(_Dist):
                 return 0.0
             if v == 0:
                 return 0.5
+            if k == _math.inf:
+                return 0.5 * _math.erfc(-v / _math.sqrt(2.0))
+            if k >= 1e5 and _bi.abs(v) <= 10.0:
+                # huge df: invert the Cornish-Fisher quantile by Newton
+                # with the exact density, from the normal start; the
+                # incomplete-beta continued fraction loses ~df * eps here
+                lower = v < 0
+                w = v if lower else -v
+                p_ = 0.5 * _math.erfc(-w / _math.sqrt(2.0))
+                for _ in range(8):
+                    step = (w - _t_cornish_fisher(float(norm.ppf(p_)), k)) \
+                        * self.pdf(w, df=k)
+                    p_ += step
+                    if _bi.abs(step) <= 1e-17 * p_:
+                        break
+                return p_ if lower else 1.0 - p_
             ib = _betainc(k / 2.0, 0.5, k / (k + v * v))
             return 1.0 - 0.5 * ib if v > 0 else 0.5 * ib
         return _maybe_map(one, x)
@@ -738,9 +800,20 @@ class _T(_Dist):
                 return 0.0
             if v > 0.5:                 # symmetry: invert the upper half
                 return -one(1.0 - v)
+            if k == _math.inf:
+                return float(norm.ppf(v))
+            if k >= 1e5:
+                x = float(norm.ppf(v))
+                if _bi.abs(x) <= 10.0:
+                    return _t_cornish_fisher(x, k)
             return _ppf_from_cdf(lambda u: self.cdf(u, df=k), v,
-                                 -50.0 - k, 0.0)
+                                 -50.0 - _bi.min(k, 1e6), 0.0)
         return _maybe_map(one, q)
+
+    def sf(self, x, df=None):
+        """Upper tail by symmetry, sf(v) = cdf(-v): no 1 - cdf loss."""
+        k = self.df if df is None else float(df)
+        return _maybe_map(lambda v: self.cdf(-v, df=k), x)
 
 
 class _F(_Dist):
@@ -762,11 +835,12 @@ class _F(_Dist):
         def one(v):
             if v <= 0:
                 return 0.0
-            ln = (0.5 * (d1 * _math.log(d1 * v) + d2 * _math.log(d2)
-                         - (d1 + d2) * _math.log(d1 * v + d2))
+            # d2 log d2 - d2 log(d1 v + d2) = -d2 log1p(d1 v / d2): no
+            # cancellation at large d2; the beta function via _lbeta
+            ln = (0.5 * (d1 * _math.log(d1 * v) - d1 * _math.log(d1 * v + d2)
+                         - d2 * _math.log1p(d1 * v / d2))
                   - _math.log(v)
-                  - (_math.lgamma(d1 / 2) + _math.lgamma(d2 / 2)
-                     - _math.lgamma((d1 + d2) / 2)))
+                  - _lbeta(d1 / 2.0, d2 / 2.0))
             return _math.exp(ln)
         return _maybe_map(one, x)
 
@@ -1814,6 +1888,8 @@ def chi2_contingency(observed, correction=True, lambda_=None):
     independence. With ``correction`` and one degree of freedom the
     observed counts are shifted half a unit toward the expected ones,
     as scipy does, before the statistic is formed."""
+    if hasattr(observed, "columns") and hasattr(observed, "values"):
+        observed = observed.values          # scipy: np.asarray(frame)
     rows = observed.tolist() if hasattr(observed, "tolist") \
         else [list(r) for r in observed]
     rows = [[float(v) for v in r] for r in rows]
@@ -2898,6 +2974,74 @@ class _GenExtreme(_Dist):
                 return loc - scale * _math.log(-_math.log(p))
             return loc + scale * (1.0 - (-_math.log(p)) ** c) / c
         return _maybe_map(one, q)
+
+    @staticmethod
+    def _nll(data, c, loc, scale):
+        """-log L with t = 1 - c z computed as log1p(-c z) so that c -> 0
+        joins the Gumbel limit smoothly."""
+        if scale <= 0:
+            return _math.inf
+        tot = len(data) * _math.log(scale)
+        for v in data:
+            z = (v - loc) / scale
+            if _bi.abs(c) < 1e-10:
+                tot += z + _math.exp(-z)
+                continue
+            if c * z >= 1.0:
+                return _math.inf
+            lt = _math.log1p(-c * z)
+            tot -= (1.0 / c - 1.0) * lt - _math.exp(lt / c)
+        return tot
+
+    def fit(self, data, *args, **kw):
+        """Maximum likelihood (c, loc, scale) in scipy's parametrisation.
+
+        Started from Hosking, Wallis & Wood's (1985) probability-weighted
+        moment estimates and refined by Nelder-Mead on (c, loc, log
+        scale). scipy's own fit stops at fmin's default 1e-4
+        tolerances; this one runs to 1e-12, so it can sit slightly
+        above scipy on the likelihood, never below.
+        """
+        del args, kw
+        x = sorted(float(v) for v in _flatten(data))
+        n = len(x)
+        if n < 3:
+            raise ValueError("genextreme.fit needs at least 3 observations")
+        b0 = _math.fsum(x) / n
+        b1 = _math.fsum((i / (n - 1.0)) * x[i] for i in range(n)) / n
+        b2 = _math.fsum((i * (i - 1.0)) / ((n - 1.0) * (n - 2.0)) * x[i]
+                        for i in range(n)) / n
+        den = 3.0 * b2 - b0
+        cc = ((2.0 * b1 - b0) / den if den != 0 else 0.0) \
+            - _math.log(2.0) / _math.log(3.0)
+        k = 7.8590 * cc + 2.9554 * cc * cc
+        if _bi.abs(k) < 1e-6:
+            alpha = (2.0 * b1 - b0) / _math.log(2.0)
+            xi = b0 - 0.5772156649015329 * alpha
+        else:
+            g = _math.gamma(1.0 + k)
+            alpha = (2.0 * b1 - b0) * k / (g * (1.0 - 2.0 ** (-k)))
+            xi = b0 + alpha * (g - 1.0) / k
+        if not alpha > 0:
+            alpha = _math.sqrt(_math.fsum((v - b0) ** 2 for v in x) / n) or 1.0
+        from . import _sci_core as _sc
+
+        def obj(th):
+            th = list(th)
+            return self._nll(x, th[0], th[1], _math.exp(th[2]))
+        best = None
+        start = [k, xi, _math.log(alpha)]
+        for _ in range(3):              # restart until the simplex settles
+            r = _sc.minimize(obj, start, method="Nelder-Mead",
+                             options={"xatol": 1e-12, "fatol": 1e-14,
+                                      "maxiter": 20000, "maxfev": 40000})
+            cand = list(r.x)
+            if best is None or obj(cand) < obj(best) - 1e-15:
+                best = cand
+                start = cand
+            else:
+                break
+        return float(best[0]), float(best[1]), float(_math.exp(best[2]))
 
 
 def _gauss_legendre(n):

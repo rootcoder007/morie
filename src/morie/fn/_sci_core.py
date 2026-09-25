@@ -2575,8 +2575,7 @@ class Voronoi:
                 regions[v].append(ti)
         # order each region's circumcenters by angle around the point
         self.regions = []
-        self.point_region = _ac.marr(
-            [float(i) for i in range(npts)])
+        self.point_region = _ac.marr(list(range(npts)))   # int64, as scipy
         for i in range(npts):
             cx, cy = pts[i]
             reg = sorted(regions[i], key=lambda ti: _math.atan2(

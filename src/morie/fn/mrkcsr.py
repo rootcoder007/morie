@@ -19,11 +19,18 @@ def _ripley_k(P, radii, area):
     simulated patterns, which are drawn in the same window, so they
     cancel in the envelope comparison.
     """
-    n = P.shape[0]
-    d = np.sqrt(((P[:, None, :] - P[None, :, :]) ** 2).sum(axis=-1))
-    np.fill_diagonal(d, np.inf)
-    counts = (d[None, :, :] <= radii[:, None, None]).sum(axis=(1, 2))
-    return area * counts / (n * n)
+    import bisect
+    import math
+
+    pts = [tuple(float(v) for v in row) for row in P.tolist()]
+    n = len(pts)
+    # each unordered pair once, sorted: the count of ordered pairs with
+    # d_ij <= r is twice the number of sorted distances <= r
+    dist = sorted(math.dist(pts[i], pts[j])
+                  for i in range(n) for j in range(i + 1, n))
+    rr = [float(v) for v in np.atleast_1d(radii).tolist()]
+    counts = [2 * bisect.bisect_right(dist, r) for r in rr]
+    return np.array([area * c / (n * n) for c in counts])
 
 
 def _as_window(window, P):

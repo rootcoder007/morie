@@ -623,6 +623,7 @@ class marr:
         into ordinary numbers -- after which x[mask] read those 1.0s
         and 0.0s as row indices and silently returned the wrong rows.
         """
+        idx = _coerce_index(idx)
         nax = _newaxis_index(self, idx)
         if nax is not NotImplemented:
             return nax
@@ -1230,6 +1231,7 @@ class marr:
         return f[0] != 0
 
     def __setitem__(self, idx, value):
+        idx = _coerce_index(idx)
         # values stored into a typed array follow _store: an int array
         # keeps integral values as ints (x[m, j] += 1 wrote 1.0 before),
         # a float32/float16 array rounds to its width
@@ -5955,6 +5957,18 @@ class ndlist(list):
     def min(self, axis=None, keepdims=False):
         return _ndlist_reduce(self, axis, keepdims, _bi.min)
 
+    def copy(self):
+        """numpy.ndarray.copy: a deep copy that is still an array
+        (list.copy returned a plain list, so x.copy()[:, :, k] = v
+        failed)."""
+        def cp(v):
+            if isinstance(v, marr):
+                return v.copy()
+            if isinstance(v, list):
+                return [cp(e) for e in v]
+            return v
+        return ndlist(cp(list(self)))
+
     def _blocks(self):
         """The raw sub-lists, bypassing the numpy-style __iter__."""
         return [list.__getitem__(self, i) for i in range(len(self))]
@@ -6092,6 +6106,7 @@ class ndlist(list):
         when its rank drops to 2 / 0 (numpy semantics for basic
         indexing). A boolean mask selects the flattened elements it
         marks, as numpy does."""
+        key = _coerce_index(key)
         nax = _newaxis_index(self, key)
         if nax is not NotImplemented:
             return nax
@@ -6141,6 +6156,7 @@ class ndlist(list):
         return ndlist(out)
 
     def __setitem__(self, key, value):
+        key = _coerce_index(key)
         if not isinstance(key, tuple):
             return list.__setitem__(self, key, value)
         node, keys = self, list(key)
@@ -6263,16 +6279,9 @@ class ndlist(list):
         return ndlist(build(flat, dims))
 
     def _cmp(self, other, fn):
-        """Elementwise comparison, as numpy: a nested mask of bools."""
-        def walk(v, o):
-            if isinstance(v, list):
-                return [walk(x, o) for x in v]
-            if isinstance(v, marr):
-                return [walk(x, o) for x in v._flat()]
-            return bool(fn(v, o))
-        if isinstance(other, (list, tuple, marr, ndlist)):
-            raise ValueError("ndlist comparison supports a scalar operand")
-        return ndlist(walk(self._blocks(), other))
+        """Elementwise comparison, as numpy: a mask of bools with the
+        broadcast shape (array operands broadcast like arithmetic)."""
+        return self._ew(other, lambda a, b: bool(fn(a, b)))
 
     def __gt__(self, other):
         return self._cmp(other, lambda a, b: a > b)
@@ -6416,6 +6425,26 @@ def _matnorm(a, ord):
         rs = [_fsum(_bi.abs(v) for v in r) for r in rows]
         return _bi.max(rs) if ord == _math.inf else _bi.min(rs)
     raise ValueError("Invalid norm order for matrices.")
+
+
+def _coerce_index(idx):
+    """A pandas-style Series used as an index acts through its values,
+    as numpy does with np.asarray(series): booleans become a mask and
+    integers an index array. Without this a boolean Series was read as
+    the row numbers 0 and 1 and silently picked the wrong rows."""
+    def one(k):
+        if type(k).__name__ in ("Series", "Index") and hasattr(k, "_data"):
+            vals = list(k._data)
+            if vals and _bi.all(isinstance(v, bool) for v in vals):
+                return marr(vals)
+            if vals and _bi.all(isinstance(v, int) and not isinstance(v, bool)
+                                for v in vals):
+                return marr(vals)
+            return marr([float(v) for v in vals])
+        return k
+    if isinstance(idx, tuple):
+        return tuple(one(k) for k in idx)
+    return one(idx)
 
 
 def _newaxis_index(x, key):
@@ -7889,16 +7918,25 @@ def array_str(x):
 
 
 def select(conds, choices, default=0.0):
+    """numpy.select: element i takes the choice of the FIRST true
+    condition, else ``default``. String choices give an object array.
+    (A value equal to the default no longer counted as unassigned.)"""
     n = asarray(conds[0]).shape[0]
-    out = [float(default)] * n
+    out = [default] * n
+    done = [False] * n
     for c, ch in zip(conds, choices):
         cf = asarray(c)._flat()
-        chf = asarray(ch)._flat() if isinstance(ch, (list, tuple, marr)) \
-            else [float(ch)] * n
+        if isinstance(ch, str) or not hasattr(ch, "__len__"):
+            chf = [ch] * n
+        else:
+            chf = list(ch.tolist() if hasattr(ch, "tolist") else ch)
         for i in range_(n):
-            if cf[i] != 0 and out[i] == float(default):
+            if not done[i] and cf[i]:
                 out[i] = chf[i]
-    return marr(out)
+                done[i] = True
+    if _bi.any(isinstance(v, str) for v in out):
+        return oarr(out)
+    return marr([float(v) for v in out])
 
 
 def lexsort(keys):
@@ -8046,6 +8084,9 @@ def _lstsq(a, b, rcond=None):
                 for c in range(bb.shape[1])]
     else:
         cols = [bb._flat()]
+        if len(cols[0]) != n:           # numpy raises here too
+            raise ValueError(
+                "lstsq: a has %d rows but b has %d" % (n, len(cols[0])))
 
     sols = []
     for bv in cols:
@@ -8160,6 +8201,36 @@ class carr:
             if isinstance(x, (list, tuple)):
                 return [complex(t) for t in x]
             return [complex(x)] * k
+        i = _coerce_index(i)
+        w0 = len(self.rows[0]) if self.rows else 0
+        if getattr(i, "_is_mask", False) or (
+                isinstance(i, (list, ndlist)) and i and
+                _bi.all(isinstance(t, bool) for t in _flatten_nested(list(i)))):
+            # boolean mask of the same shape: fill the marked cells in
+            # C order, as numpy does
+            flat_m = [bool(t) for t in (i._flat() if isinstance(i, marr)
+                                        else _flatten_nested(list(i)))]
+            if len(flat_m) != len(self.data):
+                raise IndexError("boolean index did not match the array shape")
+            pos = [k for k, b in enumerate(flat_m) if b]
+            vs = vals(v, len(pos)) if pos else []
+            for k, j in enumerate(pos):
+                self.data[j] = vs[k % len(vs)]
+            if self.rows is not None:
+                self.rows = [self.data[r * w0:(r + 1) * w0]
+                             for r in range(len(self.rows))]
+            return
+        if self.rows is not None and isinstance(i, tuple) and _bi.any(
+                isinstance(t, slice) for t in i):
+            r_, c_ = i
+            rs = range(len(self.rows))[r_] if isinstance(r_, slice) else [int(r_)]
+            cs = range(w0)[c_] if isinstance(c_, slice) else [int(c_)]
+            cells = [(a, b) for a in rs for b in cs]
+            vs = vals(v, len(cells))
+            for k, (a, b) in enumerate(cells):
+                self.rows[a][b] = vs[k % len(vs)]
+            self.data = [t for row in self.rows for t in row]
+            return
         if self.rows is None:
             if isinstance(i, slice):
                 idx = list(range(*i.indices(len(self.data))))
@@ -10567,3 +10638,26 @@ def matmul(a, b):  # noqa: F811
         out = _dtype_cast(int(out), A._int_dt(B))
     return out
 
+
+
+
+def _int_draws(meth):
+    """numpy's discrete generators return int64 (a Python int when
+    scalar); these returned floats, so range(rng.poisson(5)) failed."""
+    import functools as _ft
+
+    @_ft.wraps(meth)
+    def wrapped(self, *a, **k):
+        out = meth(self, *a, **k)
+        if isinstance(out, float):
+            return int(out)
+        if isinstance(out, (marr, ndlist)):
+            return _typed(out, "int64")
+        return out
+    return wrapped
+
+
+for _name in ("poisson", "binomial", "geometric", "negative_binomial",
+              "hypergeometric", "zipf", "logseries", "multinomial"):
+    if hasattr(_SplitMix64, _name):
+        setattr(_SplitMix64, _name, _int_draws(getattr(_SplitMix64, _name)))

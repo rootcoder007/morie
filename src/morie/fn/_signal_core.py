@@ -373,6 +373,15 @@ def _hann(n):
 
 
 def get_window(window, nperseg):
+    # an array is the window itself (scipy's stft/welch accept one)
+    if not isinstance(window, (str, tuple)) and window is not None and (
+            hasattr(window, "tolist") or isinstance(window, list)):
+        vals = [float(v) for v in (window.tolist() if hasattr(window, "tolist")
+                                   else window)]
+        if len(vals) != int(nperseg):
+            raise ValueError("window is %d long but nperseg is %d"
+                             % (len(vals), int(nperseg)))
+        return vals
     if window in ("hann", "hanning"):
         return _hann(nperseg)
     if window == "hamming":
@@ -503,7 +512,9 @@ def stft(x, fs=1.0, window="hann", nperseg=256, noverlap=None, **kw):
     freqs = _ac.marr([k * fs / nperseg for k in range(nfreq)])
     z = [[cols[t][k] for t in range(len(cols))]
          for k in range(nfreq)]
-    return freqs, _ac.marr(times), z
+    # a complex 2-D array (freq x time), as scipy returns -- a nested
+    # list had no masking, .copy() or elementwise arithmetic
+    return freqs, _ac.marr(times), _ac.carr(z)
 
 
 def spectrogram(x, fs=1.0, window=("tukey", 0.25), nperseg=256,

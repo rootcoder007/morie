@@ -33,7 +33,7 @@ def qchisq(
         p_arr = np.exp(p_arr)
     if not lower_tail:
         p_arr = 1.0 - p_arr
-    return stats.chi2(df=df).ppf(p_arr)
+    return np.scalar_out(p, stats.chi2(df=df).ppf(p_arr))
 
 
 qchsq = qchisq
