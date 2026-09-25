@@ -139,37 +139,53 @@ def _objective(x, c, F0, Fs, t):
                           for i in range(len(x))) + b["value"]
 
 
-def _centre(x0, c, F0, Fs, t, iters=200, tol=1e-12, h=1e-6):
-    r"""Centring by gradient descent with a feasibility-aware
-    backtracking line search."""
+def _centre(x0, c, F0, Fs, t, iters=200, tol=1e-14):
+    r"""Centring by Newton's method (Boyd & Vandenberghe Sec. 11.3.1).
+
+    The barrier gradient and Hessian are analytic,
+    :math:`\nabla_i\phi = -\mathrm{tr}(F^{-1}F_i)` and
+    :math:`\nabla^2_{ij}\phi = \mathrm{tr}(F^{-1}F_iF^{-1}F_j)`
+    (eqs. 11.60), so the step reaches the central point to working
+    precision -- which the m/t gap bound requires.  Backtracking keeps
+    the iterate strictly feasible; once the Newton decrement is below
+    1/4 the full step is taken (it stays inside the Dikin ellipsoid and
+    converges quadratically), because at large t the Armijo comparison of
+    objective values of size t is below floating-point resolution.
+    """
     x = [float(v) for v in k.vec(x0)]
     n = len(x)
-    f = _objective(x, c, F0, Fs, t)
+    cc = [float(v) for v in c]
+    Fm = [[[float(q) for q in r] for r in k.mat(M)] for M in Fs]
+    f = _objective(x, cc, F0, Fs, t)
     if not math.isfinite(f):
         raise ValueError("sdpwts: the starting point is not strictly "
                          "feasible, so the barrier is infinite there")
     it = 0
     for it in range(1, int(iters) + 1):
-        g = []
-        for i in range(n):
-            up, dn = list(x), list(x)
-            up[i] += h
-            dn[i] -= h
-            fu = _objective(up, c, F0, Fs, t)
-            fd = _objective(dn, c, F0, Fs, t)
-            if not math.isfinite(fu) or not math.isfinite(fd):
-                g.append(0.0)
-            else:
-                g.append((fu - fd) / (2.0 * h))
-        gn = math.sqrt(sum(v * v for v in g))
-        if gn < float(tol):
+        F = lmi(x, F0, Fs)
+        m = len(F)
+        vals, vecs = np.linalg.eigh(F)
+        V = [[float(vecs[a][b]) for b in range(m)] for a in range(m)]
+        lv = [float(v) for v in vals]
+        Finv = [[sum(V[a][q] * V[b][q] / lv[q] for q in range(m))
+                 for b in range(m)] for a in range(m)]
+        P = [[[sum(Finv[a][q] * Fm[i][q][b] for q in range(m))
+               for b in range(m)] for a in range(m)] for i in range(n)]
+        g = [float(t) * cc[i] - sum(P[i][a][a] for a in range(m))
+             for i in range(n)]
+        H = [[sum(P[i][a][b] * P[j][b][a] for a in range(m) for b in range(m))
+              for j in range(n)] for i in range(n)]
+        dx = [float(v) for v in np.linalg.solve(H, [-v for v in g])]
+        dec2 = -sum(g[i] * dx[i] for i in range(n))
+        if dec2 / 2.0 <= float(tol):
             break
         step = 1.0
         moved = False
         for _ in range(80):
-            cand = [x[i] - step * g[i] for i in range(n)]
-            fc = _objective(cand, c, F0, Fs, t)
-            if math.isfinite(fc) and fc < f - 1e-14:
+            cand = [x[i] + step * dx[i] for i in range(n)]
+            fc = _objective(cand, cc, F0, Fs, t)
+            if math.isfinite(fc) and (dec2 < 0.25 and step == 1.0
+                                      or fc <= f - 0.01 * step * dec2):
                 x, f = cand, fc
                 moved = True
                 break

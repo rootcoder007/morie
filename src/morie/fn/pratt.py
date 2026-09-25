@@ -115,7 +115,14 @@ def document_vector(H_sentences, W, b, u_s):
 
 
 def classify(word_states, Ww, bw, u_w, Ws, bs, u_s, Wc, bc):
-    r"""The full hierarchy: words to sentences to a document label."""
+    r"""The full hierarchy: words to sentences to a document label.
+
+    ``word_states`` are the word annotations h_it already produced by the
+    word encoder.  The sentence vectors s_i are attended over directly:
+    the sentence-level bidirectional GRU of Yang et al. (2016), eqs.
+    (8)-(9), is not part of this function, so pass encoded sentence
+    states through :func:`document_vector` if that encoder is wanted.
+    """
     S, wa = [], []
     for H in word_states:
         r = sentence_vector(H, Ww, bw, u_w)

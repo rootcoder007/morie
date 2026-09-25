@@ -1449,10 +1449,12 @@ def qrsdetect(x, fs=200.0):
     bp, dv, sq, ig, wint = _rgchain(x, fs)
     n = len(ig)
 
-    # cumulative group delay: 5 samples (Eq 4.8 at 200 Hz), 16 samples for the
-    # allpass branch of Eq 4.13, 2 samples for the derivative, and half the
-    # integrator window.
-    delay = int(round(5.0 * fs / 200.0)) + int(round(16.0 * fs / 200.0)) + 2 + wint // 2
+    # cumulative group delay: 5 samples (Eq 4.8), 16 samples for the allpass
+    # branch of Eq 4.13, 2 samples for the derivative, and half the
+    # integrator window.  The filter coefficients are fixed integers, so
+    # their delays are fixed in SAMPLES at any fs; only the 150 ms
+    # integrator window scales with fs.
+    delay = 5 + 16 + 2 + wint // 2
     refrac = max(1, int(round(0.200 * fs)))
 
     # local maxima of the integrator output are the candidate PEAKI values

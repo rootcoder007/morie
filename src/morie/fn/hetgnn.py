@@ -127,8 +127,11 @@ def node_attention(h_i, neighbours, H, a_vec, W, slope=0.2):
     tot = sum(e)
     al = [v / tot for v in e]
     d = len(hi)
+    # eq. (4): z_i = sigma(sum_j alpha_ij h'_j); sigma is the ELU of GAT
+    # and of the authors' HAN code
     z = [sum(al[t] * proj(H[neighbours[t]])[a]
              for t in range(len(neighbours))) for a in range(d)]
+    z = [v if v > 0 else math.expm1(v) for v in z]
     return {"embedding": z, "alpha": al, "neighbours": neighbours}
 
 
@@ -166,27 +169,35 @@ def han_forward(H, edges, types, metapaths, a_vec, W_node, W_sem,
     r"""Node-level attention within each meta-path, then semantic
     attention across them."""
     feats = [[float(v) for v in r] for r in k.mat(H)]
+    # every meta-path must start at the same target type: V in eq. (7)
+    # is the set of target nodes, and only they get an embedding
+    heads = {str(list(mp)[0]) for mp in metapaths.values()}
+    if len(heads) != 1:
+        raise ValueError("hetgnn: all meta-paths must start at the same "
+                         "target node type")
+    head = heads.pop()
+    target = [i for i in range(len(feats)) if types.get(i) == head]
+    if not target:
+        raise ValueError("hetgnn: no node has the meta-paths' start type")
     per = {}
     for name, mp in metapaths.items():
         nb = metapath_neighbours(edges, types, mp)["neighbours"]
-        Z = []
-        for i in range(len(feats)):
-            n = nb.get(i, [])
-            if not n:
-                Z.append([0.0] * len(W_node))
-                continue
-            Z.append(node_attention(feats[i], n, feats, a_vec,
-                                    W_node, slope)["embedding"])
-        per[name] = Z
+        # N_i includes i itself (Wang et al. 2019, Sec. 4.1)
+        per[name] = [node_attention(feats[i], sorted(set(nb.get(i, [])) | {i}),
+                                    feats, a_vec, W_node, slope)["embedding"]
+                     for i in target]
     sem = semantic_attention(per, W_sem, b_sem, q_sem)
     names = sem["metapaths"]
     d = len(per[names[0]][0])
-    final = [[sum(sem["beta"][nm] * per[nm][i][a] for nm in names)
+    rows = {i: r for r, i in enumerate(target)}
+    final = [[sum(sem["beta"][nm] * per[nm][rows[i]][a] for nm in names)
+              if i in rows else 0.0
               for a in range(d)] for i in range(len(feats))]
     return RichResult(payload={
         "estimate": final, "embeddings": final,
         "semantic_weights": sem["beta"],
         "per_metapath": per,
+        "target_nodes": target,
         "method": "hierarchical attention on a heterogeneous graph; "
                   "Wang et al. (2019)",
         "note": "two attentions answering different questions: which "

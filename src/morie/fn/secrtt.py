@@ -94,6 +94,7 @@ def wrap_dek(dek, kek, nonce, kek_id="kek-1", aad=b""):
     r = ae.aead_encrypt(kek, nonce, d, bound)
     return {"wrapped": r["ciphertext"], "tag": r["tag"],
             "nonce": h._as_bytes(nonce), "kek_id": kek_id,
+            "aad": h._as_bytes(aad),
             "wrapped_hex": r["ciphertext_hex"],
             "note": "the KEK id is authenticated, so a wrapped DEK "
                     "cannot be replayed under a different KEK"}
@@ -152,7 +153,7 @@ def rotate_kek(wrapped_deks, old_kek, new_kek, new_nonces,
     for i, w in enumerate(wrapped_deks):
         dek = unwrap_dek(w, old_kek, audit_log)["dek"]
         out.append(wrap_dek(dek, new_kek, new_nonces[i],
-                            new_kek_id))
+                            new_kek_id, w.get("aad", b"")))
     return RichResult(payload={
         "estimate": out, "wrapped": out, "n": len(out),
         "records_reencrypted": 0, "kek_id": new_kek_id,

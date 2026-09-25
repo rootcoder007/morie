@@ -83,7 +83,8 @@ def synthetic_did(Y, unit_id, time_id, treated, treatment_time, zeta=None,
         used when omitted, and the value used is reported.
     n_boot : int
         Jackknife-free placebo replications for the standard error.
-        Zero returns the leave-one-out jackknife of Algorithm 3.
+        Zero returns the leave-one-out jackknife of Algorithm 3, with the
+        unit and time weights held at their full-sample values.
     seed : int, optional
         Seed for the placebo draws.
 
@@ -176,27 +177,39 @@ def synthetic_did(Y, unit_id, time_id, treated, treatment_time, zeta=None,
             if pms.sum() < 1 or (~pms).sum() < 2:
                 continue
             reps.append(_sdid_point(Ms, pms, t0, float(zeta))[0])
-        se = float(np.std(reps, ddof=1)) if len(reps) > 1 else np.nan
+        # Algorithm 4: V = (1/B) sum (tau_b - mean tau)^2
+        se = float(np.std(reps, ddof=0)) if len(reps) > 1 else np.nan
         se_method = "placebo (Algorithm 4)"
-    elif mask.sum() > 1:
+    elif mask.sum() > 1 and int((w > 0).sum()) > 1:
+        # Algorithm 3: leave one unit out with the weights held FIXED at
+        # their full-sample values (omega renormalised over the remaining
+        # controls), as in the authors' synthdid::jackknife_se
+        ctrl_idx = np.nonzero(ctrl)[0].tolist()
+        tr_idx = np.nonzero(mask)[0].tolist()
+        wl = [float(v) for v in w]
+        pre_c = [float(M[j, :t0] @ lam) for j in ctrl_idx]
+        post_c = [float(M[j, t0:].mean()) for j in ctrl_idx]
+        pre_t = [float(M[j, :t0] @ lam) for j in tr_idx]
+        post_t = [float(M[j, t0:].mean()) for j in tr_idx]
         jk = []
-        idx = np.nonzero(mask)[0].tolist() + np.nonzero(ctrl)[0].tolist()
-        for i in idx:
-            keep = np.ones(n_u, dtype=bool)
-            keep[i] = False
-            if mask[keep].sum() < 1 or (~mask[keep]).sum() < 2:
-                continue
-            jk.append(_sdid_point(M[keep], mask[keep], t0, float(zeta))[0])
+        for i in tr_idx + ctrl_idx:
+            wk = [wl[q] if ctrl_idx[q] != i else 0.0 for q in range(len(wl))]
+            sw = sum(wk)
+            wk = [v / sw for v in wk] if sw > 0 else [1.0 / (len(wk) - 1) if ctrl_idx[q] != i else 0.0 for q in range(len(wk))]
+            tk = [q for q in range(len(tr_idx)) if tr_idx[q] != i]
+            tr_eff = sum(post_t[q] - pre_t[q] for q in tk) / len(tk)
+            co_eff = sum(wk[q] * (post_c[q] - pre_c[q]) for q in range(len(wk)))
+            jk.append(tr_eff - co_eff)
         jk = np.array(jk)
         n_j = jk.size
         se = float(np.sqrt((n_j - 1) / n_j * np.sum((jk - jk.mean()) ** 2)))
-        se_method = "leave-one-unit-out jackknife (Algorithm 3)"
+        se_method = "leave-one-unit-out jackknife with fixed weights (Algorithm 3)"
     else:
         se = np.nan
         se_method = (
-            "unavailable: the jackknife needs more than one treated unit, "
-            "and with a single treated unit placebo inference (n_boot > 0) "
-            "is the option the paper leaves open"
+            "unavailable: the fixed-weight jackknife needs more than one "
+            "treated unit and more than one donor with positive weight; "
+            "placebo inference (n_boot > 0) is the option left open"
         )
 
     z = 1.959963984540054

@@ -2344,6 +2344,12 @@ def eegbands(x, fs, bands=None):
     if len(x) < 8:
         raise ValueError("need at least eight samples to estimate a spectrum")
     nyq = fs / 2.0
+    # (f1, f2, include f1, include f2): Section 1.2.6 gives delta
+    # 0.5 <= f < 4, theta 4 <= f < 8, alpha 8 <= f <= 13, beta f > 13,
+    # gamma 30-80.  Closing every band at both ends counted the 4, 8
+    # and 13 Hz bins twice.  User bands are half-open [f1, f2), closed
+    # at f2 when f2 is the Nyquist frequency.
+    closure = {}
     if bands is None:
         bands = {
             "delta": (0.5, 4.0),
@@ -2352,6 +2358,9 @@ def eegbands(x, fs, bands=None):
             "beta": (13.0, nyq),
             "gamma": (30.0, min(80.0, nyq)),
         }
+        closure = {"delta": (True, False), "theta": (True, False),
+                   "alpha": (True, True), "beta": (False, True),
+                   "gamma": (True, True)}
     if not isinstance(bands, dict) or not bands:
         raise ValueError("bands must be a non-empty dict of (f1, f2) pairs")
 
@@ -2371,7 +2380,11 @@ def eegbands(x, fs, bands=None):
             raise ValueError("band %r must be an (f1, f2) pair" % (name,))
         if f1 < 0.0 or f2 <= f1:
             raise ValueError("band %r must satisfy 0 <= f1 < f2" % (name,))
-        p = fsum(psd[k] for k in range(len(psd)) if f1 <= freqs[k] <= f2)
+        c1, c2 = closure.get(name, (True, f2 >= nyq))
+
+        def inside(f, f1=f1, f2=f2, c1=c1, c2=c2):
+            return (f >= f1 if c1 else f > f1) and (f <= f2 if c2 else f < f2)
+        p = fsum(psd[k] for k in range(len(psd)) if inside(freqs[k]))
         power[name] = p
         frac[name] = p / total if total > 0.0 else 0.0
 
@@ -5456,50 +5469,17 @@ def svm(X, y, C=1.0, maxiter=2000, tol=1e-6):
         raise ValueError("C must be positive")
     K = [[fsum(Xs[i][t] * Xs[j][t] for t in range(p)) for j in range(n)]
          for i in range(n)]
-    a = [0.0] * n
-    b = 0.0
-    it = 0
-    for it in range(1, int(maxiter) + 1):
-        changed = 0
-        for i in range(n):
-            fi = fsum(a[t] * ys[t] * K[t][i] for t in range(n)) + b
-            Ei = fi - ys[i]
-            if (ys[i] * Ei < -tol and a[i] < Cv) or \
-               (ys[i] * Ei > tol and a[i] > 0):
-                j = (i + 1 + it) % n
-                if j == i:
-                    continue
-                fj = fsum(a[t] * ys[t] * K[t][j] for t in range(n)) + b
-                Ej = fj - ys[j]
-                ai, aj = a[i], a[j]
-                if ys[i] != ys[j]:
-                    L, H = max(0.0, aj - ai), min(Cv, Cv + aj - ai)
-                else:
-                    L, H = max(0.0, ai + aj - Cv), min(Cv, ai + aj)
-                if H - L < 1e-12:
-                    continue
-                eta = 2.0 * K[i][j] - K[i][i] - K[j][j]
-                if eta >= -1e-12:
-                    continue
-                anj = aj - ys[j] * (Ei - Ej) / eta
-                anj = min(H, max(L, anj))
-                if abs(anj - aj) < 1e-12:
-                    continue
-                ani = ai + ys[i] * ys[j] * (aj - anj)
-                b1 = b - Ei - ys[i] * (ani - ai) * K[i][i] \
-                    - ys[j] * (anj - aj) * K[i][j]
-                b2 = b - Ej - ys[i] * (ani - ai) * K[i][j] \
-                    - ys[j] * (anj - aj) * K[j][j]
-                if 0 < ani < Cv:
-                    b = b1
-                elif 0 < anj < Cv:
-                    b = b2
-                else:
-                    b = 0.5 * (b1 + b2)
-                a[i], a[j] = ani, anj
-                changed += 1
-        if changed == 0:
-            break
+    # Dual solved by SMO on the MAXIMAL VIOLATING PAIR (Fan, Chen & Lin
+    # 2005, as in morie.fn.svmopt, checked against sklearn): the former
+    # simplified-Platt loop paired i with (i + 1 + it) mod n -- for two
+    # points always i itself, so it never moved -- and stopped after a
+    # single pass without a change even when the KKT conditions failed.
+    from .svmopt import smo as _smo
+    _sol = _smo(ys, K, C=Cv, tol=float(tol), max_iter=int(maxiter) * max(n, 1))
+    a = [float(v) for v in _sol["alpha"]]
+    b = float(_sol["b"])
+    it = int(_sol["iterations"])
+    _conv = bool(_sol["converged"])
     w = [fsum(a[i] * ys[i] * Xs[i][t] for i in range(n))
          for t in range(p)]
     sv = [i for i in range(n) if a[i] > 1e-8]
@@ -5510,7 +5490,7 @@ def svm(X, y, C=1.0, maxiter=2000, tol=1e-6):
     return RichResult(payload={
         "w": w, "b": b, "alpha": a, "support_vectors": sv,
         "n_support": len(sv), "margin": marg, "C": Cv,
-        "iterations": it, "converged": it < int(maxiter),
+        "iterations": it, "converged": _conv,
         "training_accuracy": acc,
         "boundary_set_by_the_support_vectors_only": True,
         "large_c_contorts_around_outliers": True,
@@ -5569,52 +5549,24 @@ def svmkern(X, y, query=None, kernel="rbf", gamma=None, degree=3,
 
     K = [[kf(Xs[i], Xs[j]) for j in range(n)] for i in range(n)]
     Cv = float(C)
-    a = [0.0] * n
-    b = 0.0
-    it = 0
-    for it in range(1, int(maxiter) + 1):
-        changed = 0
-        for i in range(n):
-            fi = fsum(a[t] * ys[t] * K[t][i] for t in range(n)) + b
-            Ei = fi - ys[i]
-            if (ys[i] * Ei < -tol and a[i] < Cv) or \
-               (ys[i] * Ei > tol and a[i] > 0):
-                j = (i + 1 + it) % n
-                if j == i:
-                    continue
-                fj = fsum(a[t] * ys[t] * K[t][j] for t in range(n)) + b
-                Ej = fj - ys[j]
-                ai, aj = a[i], a[j]
-                if ys[i] != ys[j]:
-                    L, H = max(0.0, aj - ai), min(Cv, Cv + aj - ai)
-                else:
-                    L, H = max(0.0, ai + aj - Cv), min(Cv, ai + aj)
-                if H - L < 1e-12:
-                    continue
-                eta = 2.0 * K[i][j] - K[i][i] - K[j][j]
-                if eta >= -1e-12:
-                    continue
-                anj = min(H, max(L, aj - ys[j] * (Ei - Ej) / eta))
-                if abs(anj - aj) < 1e-12:
-                    continue
-                ani = ai + ys[i] * ys[j] * (aj - anj)
-                b1 = b - Ei - ys[i] * (ani - ai) * K[i][i] \
-                    - ys[j] * (anj - aj) * K[i][j]
-                b2 = b - Ej - ys[i] * (ani - ai) * K[i][j] \
-                    - ys[j] * (anj - aj) * K[j][j]
-                b = b1 if 0 < ani < Cv else (b2 if 0 < anj < Cv
-                                             else 0.5 * (b1 + b2))
-                a[i], a[j] = ani, anj
-                changed += 1
-        if changed == 0:
-            break
+    # Dual solved by SMO on the MAXIMAL VIOLATING PAIR (Fan, Chen & Lin
+    # 2005, as in morie.fn.svmopt, checked against sklearn): the former
+    # simplified-Platt loop paired i with (i + 1 + it) mod n -- for two
+    # points always i itself, so it never moved -- and stopped after a
+    # single pass without a change even when the KKT conditions failed.
+    from .svmopt import smo as _smo
+    _sol = _smo(ys, K, C=Cv, tol=float(tol), max_iter=int(maxiter) * max(n, 1))
+    a = [float(v) for v in _sol["alpha"]]
+    b = float(_sol["b"])
+    it = int(_sol["iterations"])
+    _conv = bool(_sol["converged"])
     sv = [i for i in range(n) if a[i] > 1e-8]
     pred = [1.0 if fsum(a[t] * ys[t] * K[t][i] for t in range(n)) + b >= 0
             else -1.0 for i in range(n)]
     acc = sum(1 for i in range(n) if pred[i] == ys[i]) / n
     out = {"alpha": a, "b": b, "support_vectors": sv,
            "n_support": len(sv), "kernel": kernel, "gamma": g, "C": Cv,
-           "iterations": it, "converged": it < int(maxiter),
+           "iterations": it, "converged": _conv,
            "training_accuracy": acc,
            "no_weight_vector_in_the_original_space": kernel != "linear",
            "model_grows_with_the_training_set": True,

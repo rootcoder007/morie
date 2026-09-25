@@ -358,7 +358,8 @@ def minimize(fun, x0, args=(), method=None, bounds=None, **kw):
         xc = clip(list(_ac.asarray(res.x)._flat()))
         res = OptimizeResult(x=_ac.asarray(xc), fun=float(res.fun),
                              success=getattr(res, "success", True),
-                             nit=getattr(res, "nit", 0))
+                             nit=getattr(res, "nit", 0),
+                             message=str(getattr(res, "message", "")))
     return res
 
 
@@ -444,7 +445,9 @@ def _constrained(fun, x0, constraints, args=(), maxiter=None, ftol=1e-9,
             r = min(r * 10.0, 1e12)
         viol_prev = viol
     return OptimizeResult(x=_ac.asarray(x), fun=fx, success=viol <= 1e-6,
-                          nit=outer)
+                          nit=outer,
+                          message=("constraints satisfied" if viol <= 1e-6
+                                   else "constraint violation %.3g" % viol))
 
 
 def minimize_scalar(fun, bounds=None, method=None, args=(), **kw):
@@ -476,7 +479,8 @@ def minimize_scalar(fun, bounds=None, method=None, args=(), **kw):
             d = a + gr * (b - a)
             fd = float(fun(d))
     xm = 0.5 * (a + b)
-    return OptimizeResult(x=xm, fun=float(fun(xm)), success=True)
+    return OptimizeResult(x=xm, fun=float(fun(xm)), success=True,
+                          message="converged")
 
 
 class optimize:  # namespace mirror
@@ -1337,7 +1341,8 @@ def solve_ivp(fun, t_span, y0, t_eval=None, args=(), rtol=1e-3,
     ymat = [[cols[k][i] for k in range(len(ts))]
             for i in range(len(y))]
     return OptimizeResult(t=_ac.marr(ts), y=_ac.marr(ymat),
-                          success=True)
+                          success=True,
+                          message="integration reached t_span end")
 
 
 class integrate:  # namespace mirror
@@ -2100,7 +2105,8 @@ def least_squares(fun, x0, args=(), **kw):
     rv = [float(v) for v in (r._flat() if hasattr(r, "_flat") else r)]
     return OptimizeResult(x=res.x, cost=0.5 * _math.fsum(
         v * v for v in rv), fun=_ac.marr(rv), success=res.success,
-        nfev=res.nfev)
+        nfev=res.nfev,
+                          message=str(getattr(res, "message", "")))
 
 
 def root(fun, x0, args=(), method=None, tol=None, **kw):
@@ -2148,7 +2154,8 @@ def root(fun, x0, args=(), method=None, tol=None, **kw):
         else:
             break
     return OptimizeResult(x=_ac.marr(x), fun=_ac.marr(F),
-                          success=max(abs(v) for v in F) < 1e-6)
+                          success=max(abs(v) for v in F) < 1e-6,
+                          message="root solver finished")
 
 
 def differential_evolution(func, bounds, args=(), maxiter=200,
@@ -2185,7 +2192,8 @@ def differential_evolution(func, bounds, args=(), maxiter=200,
             break
     bi_ = min(range(np_), key=lambda k: fit[k])
     return OptimizeResult(x=_ac.marr(pop[bi_]), fun=fit[bi_],
-                          success=True)
+                          success=True,
+                          message="differential evolution finished")
 
 
 for _n in ("root", "least_squares", "differential_evolution"):

@@ -67,15 +67,28 @@ def smoothing_cf(u):
     r"""``psi_zeta``: a bounded real characteristic function supported
     on [-1, 1].
 
-    The book's own example is the fourfold convolution of the uniform
-    density with itself, whose characteristic function is
-    :math:`\operatorname{sinc}^4`. Compact support in tau is the
-    whole point: it is what stops the integrand being evaluated where
-    the denominator vanishes.
+    The book's example (Horowitz, Sec. 5.1.3 and assumption PHU7) is
+    the fourfold convolution of the U[-1/4, 1/4] density with itself:
+    the density of a sum of four such uniforms, a cubic B-spline on
+    [-1, 1].  Its Fourier transform is sinc^4 >= 0, so after dividing by
+    its value 4/3 at the origin it is a genuine characteristic function
+    with psi_zeta(0) = 1 and two continuous derivatives.  With
+    x = 2u + 2 the Irwin-Hall n = 4 density gives
+    psi_zeta(u) = (3/2) * (1/6) * sum_k (-1)^k C(4, k) (x - k)_+^3.
+    Compact support in tau is the whole point: it is what stops the
+    integrand being evaluated where the denominator vanishes.
     """
-    u = np.asarray(u, dtype=float)
-    s = np.sinc(u / (4.0 * np.pi)) ** 4
-    return np.where(np.abs(u) <= 1.0, s, 0.0)
+    u = np.atleast_1d(np.asarray(u, dtype=float)).ravel()
+    out = []
+    for v in u.tolist():
+        if abs(v) >= 1.0:
+            out.append(0.0)
+            continue
+        x = 2.0 * abs(v) + 2.0
+        ih = (x ** 3 - 4.0 * (x - 1.0) ** 3 + 6.0 * (x - 2.0) ** 3
+              - 4.0 * max(x - 3.0, 0.0) ** 3) / 6.0
+        out.append(1.5 * ih)
+    return np.asarray(out, dtype=float)
 
 
 def deconvolve_pair(W, eta, grid_u, grid_z, nu_U, nu_eps, n_tau=2001):

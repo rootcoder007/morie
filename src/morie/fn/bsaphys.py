@@ -1909,13 +1909,19 @@ def cadspec(x, fs, bands=None):
     freqs, power = _bsapsd(x, fs)
     mom = _bsapsdmom(freqs, power)
     if bands is None:
-        bands = [(0.0, 100.0), (100.0, 300.0), (300.0, 600.0), (600.0, fs / 2.0)]
+        # the low/mid/high partition, cut at the Nyquist frequency: at
+        # fs <= 1200 Hz the last band (600, fs/2) would be empty
+        edges = [e for e in (0.0, 100.0, 300.0, 600.0) if e < fs / 2.0] + [fs / 2.0]
+        bands = [(edges[i], edges[i + 1]) for i in range(len(edges) - 1)]
     frac = []
     for lo, hi in bands:
         lo, hi = float(lo), float(hi)
         if hi <= lo:
             raise ValueError("each band must have hi > lo (Hz)")
-        frac.append((lo, hi, _bsabandpow(freqs, power, lo, hi) / mom["total_power"]))
+        # bands are [lo, hi); one ending at the Nyquist frequency keeps
+        # the Nyquist bin, or the fractions of a full partition miss it
+        hi_eff = hi if hi < fs / 2.0 else float("inf")
+        frac.append((lo, hi, _bsabandpow(freqs, power, lo, hi_eff) / mom["total_power"]))
     pk = _bsapeaks(freqs, power, count=1)
     fdom = pk[0][0] if pk else freqs[power.index(max(power))]
     bw, q = _bsaqfactor(freqs, power, fdom)
