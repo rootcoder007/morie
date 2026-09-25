@@ -37,8 +37,9 @@ def k_anonymity_check(y, quasi_ids, k):
     k : int
         Required anonymity level.
     """
-    yv = core.vec(y)
-    n = len(yv)
+    # one record per ROW: a record matrix must not be flattened, which
+    # counted every cell as a record
+    n = len(core.mat(y))
     if n == 0:
         raise ValueError("k_anonymity_check: y is empty")
     rows = core.mat(quasi_ids)

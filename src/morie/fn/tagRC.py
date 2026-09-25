@@ -156,7 +156,15 @@ def folkrank(triples, focus, d=0.7, weight=0.9, iters=200):
     N = g["nodes"]
     pv = preference_vector(N, focus, weight)
     with_p = adapted_pagerank(g["adjacency"], N, pv["p"], d, iters)
-    without = adapted_pagerank(g["adjacency"], N, None, d, iters)
+    # the baseline is the fixed point of Eq. (1) with beta = 1 -- pure
+    # weight spreading, no preference (Hotho et al. 2006, sec. 4.1,
+    # step 2).  On an undirected graph that fixed point is the degree
+    # distribution, so it is written down rather than iterated
+    adj = g["adjacency"]
+    deg = {u: sum(adj.get(u, {}).values()) for u in N}
+    tot = sum(deg.values())
+    wo = {u: deg[u] / tot for u in N}
+    without = {"w": wo, "ranking": sorted(N, key=lambda u: -wo[u])}
     diff = {u: with_p["w"][u] - without["w"][u] for u in N}
     order = sorted(N, key=lambda u: -diff[u])
     return RichResult(payload={

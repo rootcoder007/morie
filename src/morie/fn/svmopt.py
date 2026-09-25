@@ -147,13 +147,13 @@ def solve_pair(i, j, alpha, y, K, grad, C):
         return {"alpha": a, "moved": 0.0, "clipped": True,
                 "L": L, "H": Hh,
                 "note": "the box leaves no room for this pair"}
-    # eta and the step both carry the LABELS: the working set moves
-    # along the direction (y_i, -y_j) that keeps sum(y a) fixed, so
-    # y_i y_j appears in the curvature and the numerator is the KKT
-    # gap itself. Dropping the labels gives a zero step whenever the
-    # two gradients happen to agree -- which they do at the start,
-    # where every gradient is -1.
-    eta = K[i][i] + K[j][j] - 2.0 * y[i] * y[j] * K[i][j]
+    # The working set moves along a_i += y_i t, a_j -= y_j t, which keeps
+    # sum(y a) fixed.  The numerator is the KKT gap (-y_i g_i) - (-y_j g_j)
+    # -- that is where the labels enter -- and the curvature along the
+    # direction is K_ii + K_jj - 2 K_ij for EITHER label pairing
+    # (Platt 1998; LIBSVM's quad_coef, since Q_ij = y_i y_j K_ij and the
+    # direction's own signs cancel the labels).
+    eta = K[i][i] + K[j][j] - 2.0 * K[i][j]
     if eta <= _TAU:
         eta = _TAU
     step = ((-y[i] * grad[i]) - (-y[j] * grad[j])) / eta

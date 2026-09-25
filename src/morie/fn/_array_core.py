@@ -2533,6 +2533,11 @@ def _typed(out, dtype):
             out._dt = "int64"
             out.data = ([[int(v) for v in r] for r in out.data]
                         if len(out.shape) == 2 else [int(v) for v in out.data])
+        elif name == "float64" and str(getattr(out, "_dt", None) or "").startswith(("int", "uint")):
+            # np.array(ints, dtype=float) holds floats: without this the
+            # int payload and int64 tag survived an explicit float request
+            conv = out.astype(float)
+            out.data, out._dt = conv.data, None
     return out
 
 
@@ -5077,7 +5082,7 @@ def _pinv_extended(a, rcond=1e-15):
     """
     aa = atleast_2d(a)
     m_, n_ = aa.shape
-    u, sv, vt = _svd(aa)
+    u, sv, vt = _svd(aa, full_matrices=False)
     svals = list(sv._flat())
     cutoff = rcond * (_bi.max(svals) if svals else 0.0)
     inv_s = [1.0 / v if v > cutoff else 0.0 for v in svals]
@@ -5115,7 +5120,7 @@ def ginv(a, tol=None):
     """
     aa = atleast_2d(a)
     m_, n_ = aa.shape
-    u, sv, vt = _svd(aa)
+    u, sv, vt = _svd(aa, full_matrices=False)
     svals = list(sv._flat())
     if tol is None:
         tol = _math.sqrt(2.220446049250313e-16)
@@ -8361,11 +8366,70 @@ def _cholesky(a):
     return marr(low)
 
 
-def _svd(a, full_matrices=False, compute_uv=True):
+def _orth_fill(cols, m, want):
+    """Complete a list of length-m columns to `want` orthonormal ones.
+
+    Zero columns (a zero singular value leaves U undetermined there) and
+    the extra columns of a full U are filled by Gram-Schmidt, applied
+    twice, against the standard basis in order -- any orthonormal
+    completion is a valid SVD factor, as it is in LAPACK."""
+    out = []
+    slots = []
+    for c in cols:
+        nrm = _math.sqrt(_fsum(v * v for v in c))
+        if nrm > 1e-300:
+            out.append([v / nrm for v in c])
+        else:
+            out.append(None)
+            slots.append(len(out) - 1)
+    while len(out) < want:
+        out.append(None)
+        slots.append(len(out) - 1)
+    basis = [c for c in out if c is not None]
+    e = 0
+    for sl in slots:
+        while True:
+            v = [1.0 if r == e else 0.0 for r in range_(m)]
+            e += 1
+            for _ in range_(2):
+                for b in basis:
+                    d = _fsum(x * y for x, y in zip(v, b))
+                    v = [x - d * y for x, y in zip(v, b)]
+            nrm = _math.sqrt(_fsum(x * x for x in v))
+            if nrm > 1e-8:
+                v = [x / nrm for x in v]
+                break
+        out[sl] = v
+        basis.append(v)
+    return out
+
+
+def _svd(a, full_matrices=True, compute_uv=True):
     """SVD. C core: one-sided Jacobi (Demmel & Veselic 1992), high
     relative accuracy in every singular value. Fallback: eigh of
-    A^T A (accurate only above ~sqrt(eps)*s_max)."""
-    del full_matrices
+    A^T A (accurate only above ~sqrt(eps)*s_max).
+
+    ``full_matrices`` follows numpy (default True): U is m x m and Vt
+    n x n, the extra columns an orthonormal completion; False gives
+    the thin k = min(m, n) factors.  Columns of U belonging to zero
+    singular values are completed the same way, so U is orthonormal
+    even for a rank-deficient A."""
+    res = _svd_thin(a, compute_uv)
+    if not compute_uv:
+        return res
+    u, sv, vt = res
+    m, k = u.shape
+    n = vt.shape[1]
+    ucols = _orth_fill([[u.data[r][c] for r in range_(m)] for c in range_(k)],
+                       m, m if full_matrices else k)
+    vrows = _orth_fill([list(vt.data[r]) for r in range_(vt.shape[0])],
+                       n, n if full_matrices else k)
+    u = marr([[ucols[c][r] for c in range_(len(ucols))] for r in range_(m)])
+    vt = marr([list(row) for row in vrows])
+    return u, sv, vt
+
+
+def _svd_thin(a, compute_uv=True):
     aa = atleast_2d(a)
     if _HAS_CORE and hasattr(_CK, "jacobi_svd"):
         import array as _pa
@@ -8421,7 +8485,7 @@ def _lstsq(a, b, rcond=None):
     aa = atleast_2d(asarray(a))
     bb = asarray(b)
     n, k = aa.shape
-    u, sv, vt = _svd(aa)
+    u, sv, vt = _svd(aa, full_matrices=False)
     svl = list(sv._flat())
     eps = 2.220446049250313e-16
     if rcond is None:
@@ -9182,39 +9246,81 @@ def power(a, b):
     return asarray(a)._zip(b, _ieee_pow)
 
 
-def gradient(f, *varargs, axis=None):
-    a = asarray(f)
-    if len(a.shape) == 2:
-        # a 2-D input: one array per axis (numpy returns the list), or
-        # the requested axis alone
-        if axis is None:
-            return [gradient(a, *varargs, axis=0),
-                    gradient(a, *varargs, axis=1)]
-        if axis in (1, -1):
-            return marr([gradient(row, *varargs).tolist() for row in a.data])
-        cols = [gradient([a.data[i][j] for i in range(a.shape[0])],
-                         *varargs).tolist() for j in range(a.shape[1])]
-        return marr([[cols[j][i] for j in range(a.shape[1])]
-                     for i in range(a.shape[0])])
-    v = list(a._flat())
-    dx = float(varargs[0]) if varargs and isinstance(
-        varargs[0], (int, float)) else 1.0
-    xs = (list(asarray(varargs[0])._flat())
-          if varargs and not isinstance(varargs[0], (int, float))
-          else None)
+def _grad1(v, spacing):
+    """numpy.gradient along one line: second-order central differences
+    in the interior (the non-uniform three-point formula when
+    coordinates are given) and first-order one-sided at the ends."""
     n = len(v)
-    out = []
-    for i in range(n):
-        if i == 0:
-            h = (xs[1] - xs[0]) if xs else dx
-            out.append((v[1] - v[0]) / h)
-        elif i == n - 1:
-            h = (xs[-1] - xs[-2]) if xs else dx
-            out.append((v[-1] - v[-2]) / h)
-        else:
-            h2 = (xs[i + 1] - xs[i - 1]) if xs else 2.0 * dx
-            out.append((v[i + 1] - v[i - 1]) / h2)
-    return marr(out)
+    if n < 2:
+        raise ValueError("Shape of array too small to calculate a numerical "
+                         "gradient, at least (edge_order + 1) elements are "
+                         "required.")
+    if isinstance(spacing, list):
+        x = spacing
+        out = [(v[1] - v[0]) / (x[1] - x[0])]
+        for i in range(1, n - 1):
+            hd, hs = x[i] - x[i - 1], x[i + 1] - x[i]
+            out.append(-hs / (hd * (hd + hs)) * v[i - 1]
+                       + (hs - hd) / (hd * hs) * v[i]
+                       + hd / (hs * (hd + hs)) * v[i + 1])
+        out.append((v[-1] - v[-2]) / (x[-1] - x[-2]))
+        return out
+    h = float(spacing)
+    out = [(v[1] - v[0]) / h]
+    for i in range(1, n - 1):
+        out.append((v[i + 1] - v[i - 1]) / (2.0 * h))
+    out.append((v[-1] - v[-2]) / h)
+    return out
+
+
+def gradient(f, *varargs, axis=None):
+    """numpy.gradient for any rank: one array per axis when ``axis`` is
+    None (a single array for 1-D input), else the requested axis.
+    Spacing is a scalar or a coordinate vector, one per differentiated
+    axis."""
+    a = asarray(f)
+    nd = len(a.shape)
+    axes = list(range(nd)) if axis is None else (
+        [int(ax) % nd for ax in axis] if isinstance(axis, (list, tuple))
+        else [int(axis) % nd])
+    if len(varargs) == 0:
+        sp = [1.0] * len(axes)
+    elif len(varargs) == 1:
+        sp = [varargs[0]] * len(axes)
+    else:
+        sp = list(varargs)
+    sp = [float(v) if isinstance(v, (int, float)) else
+          [float(t) for t in asarray(v)._flat()] for v in sp]
+    nested = a.tolist()
+
+    def along(t, ax, spacing):
+        if ax == 0:
+            if not isinstance(t[0], list):
+                return _grad1([float(u) for u in t], spacing)
+            # differentiate across the first index, element by element
+            cols = along_first(t, spacing)
+            return cols
+        return [along(sub, ax - 1, spacing) for sub in t]
+
+    def along_first(t, spacing):
+        # t[i] are equally shaped sub-arrays: gradient over i for each
+        # position, rebuilt with the same nesting
+        if not isinstance(t[0], list):
+            return _grad1([float(u) for u in t], spacing)
+        m = len(t[0])
+        parts = [along_first([t[i][j] for i in range(len(t))], spacing)
+                 for j in range(m)]
+        return [[parts[j][i] for j in range(m)] for i in range(len(t))]
+
+    outs = []
+    for ax, spc in zip(axes, sp):
+        res = along(nested, ax, spc)
+        outs.append(asarray(res))
+    if axis is None and nd == 1:
+        return outs[0]
+    if axis is not None and not isinstance(axis, (list, tuple)):
+        return outs[0]
+    return outs
 
 
 def arctanh(x):

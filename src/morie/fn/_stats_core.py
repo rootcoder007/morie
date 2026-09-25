@@ -669,18 +669,27 @@ class _Norm(_Dist):
         return (x - self.loc) / self.scale
 
     def pdf(self, x, loc=None, scale=None):
-        d = self if loc is None else _Norm(loc, scale if scale is not None
-                                           else 1.0)
+        # either argument alone overrides the frozen value (scipy's
+        # norm.cdf(x, scale=s) keeps loc = 0); the old test on loc only
+        # silently dropped a scale passed without a loc
+        d = self if loc is None and scale is None else _Norm(
+            *self._ls(loc, scale))
         return _maybe_map(lambda v: _norm_pdf(d._z(v)) / d.scale, x)
 
     def cdf(self, x, loc=None, scale=None):
-        d = self if loc is None else _Norm(loc, scale if scale is not None
-                                           else 1.0)
+        # either argument alone overrides the frozen value (scipy's
+        # norm.cdf(x, scale=s) keeps loc = 0); the old test on loc only
+        # silently dropped a scale passed without a loc
+        d = self if loc is None and scale is None else _Norm(
+            *self._ls(loc, scale))
         return _maybe_map(lambda v: _norm_cdf(d._z(v)), x)
 
     def ppf(self, q, loc=None, scale=None):
-        d = self if loc is None else _Norm(loc, scale if scale is not None
-                                           else 1.0)
+        # either argument alone overrides the frozen value (scipy's
+        # norm.cdf(x, scale=s) keeps loc = 0); the old test on loc only
+        # silently dropped a scale passed without a loc
+        d = self if loc is None and scale is None else _Norm(
+            *self._ls(loc, scale))
         return _maybe_map(lambda v: d.loc + d.scale * _norm_ppf(v), q)
 
     @staticmethod
@@ -1691,7 +1700,15 @@ def ttest_1samp(a, popmean, alternative="two-sided"):
     v = _flatten(a)
     n = len(v)
     se = _math.sqrt(_var(v, ddof=1) / n)
-    stat = (_mean(v) - float(popmean)) / se
+    d = _mean(v) - float(popmean)
+    if se == 0.0:
+        # no spread: scipy returns t = +-inf (p = 0 on the matching
+        # side) for a non-zero difference and nan when it is zero too
+        stat = _math.copysign(float("inf"), d) if d != 0.0 else float("nan")
+    else:
+        stat = d / se
+    if stat != stat:
+        return _TestResult(stat, float("nan"), df=n - 1)
     return _TestResult(stat, _t_pvalue(stat, n - 1, alternative),
                        df=n - 1)
 
@@ -1721,29 +1738,64 @@ def ttest_rel(a, b, alternative="two-sided", **kw):
                        alternative=alternative)
 
 
-def mannwhitneyu(x, y, alternative="two-sided", **kw):
+def _mwu_exact_counts(n1, n2):
+    """Number of orderings giving each U in 0..n1*n2 (no ties):
+    f(n1, n2, u) = f(n1 - 1, n2, u - n2) + f(n1, n2 - 1, u)."""
+    prev = [[1] for _ in range(n2 + 1)]          # n1 = 0: U = 0 only
+    for i in range(1, n1 + 1):
+        cur = [[1]]                               # n2 = 0: U = 0 only
+        for j in range(1, n2 + 1):
+            size = i * j + 1
+            row = [0] * size
+            for u, c in enumerate(prev[j]):       # f(i-1, j, u - j)
+                row[u + j] += c
+            for u, c in enumerate(cur[j - 1]):    # f(i, j-1, u)
+                row[u] += c
+            cur.append(row)
+        prev = cur
+    return prev[n2]
+
+
+def mannwhitneyu(x, y, alternative="two-sided", use_continuity=True,
+                 method="auto", **kw):
+    """scipy.stats.mannwhitneyu: the statistic is U1; 'auto' uses the
+    exact null distribution when both samples have at most 8 values and
+    there are no ties, else the tie-corrected normal approximation with
+    an optional continuity correction on the side-appropriate U."""
     del kw
     xv, yv = _flatten(x), _flatten(y)
     n1, n2 = len(xv), len(yv)
     ranks = rankdata(xv + yv)
     r1 = _math.fsum(ranks[:n1])
     u1 = r1 - n1 * (n1 + 1) / 2.0
-    mu = n1 * n2 / 2.0
-    # tie correction
+    u2 = n1 * n2 - u1
     counts = {}
     for v in xv + yv:
         counts[v] = counts.get(v, 0) + 1
-    n = n1 + n2
-    tie = _math.fsum(c ** 3 - c for c in counts.values())
-    sig = _math.sqrt(n1 * n2 / 12.0 * ((n + 1) - tie / (n * (n - 1))))
-    z = (u1 - mu - 0.5 * (1 if u1 > mu else -1 if u1 < mu else 0)) / sig
-    if alternative == "two-sided":
-        p = 2.0 * norm.sf(abs(z))
-    elif alternative == "greater":
-        p = norm.sf(z)
+    ties = _bi.any(c > 1 for c in counts.values())
+    if method == "auto":
+        method = "exact" if (n1 <= 8 and n2 <= 8 and not ties) else "asymptotic"
+    if alternative == "greater":
+        U = u1
+    elif alternative == "less":
+        U = u2
     else:
-        p = norm.cdf(z)
-    return _TestResult(u1, _bi.min(1.0, p))
+        U = _bi.max(u1, u2)
+    if method == "exact":
+        cnt = _mwu_exact_counts(n1, n2)
+        tot = _math.fsum(cnt)
+        k = int(round(U))
+        p = _math.fsum(cnt[k:]) / tot             # P(U_null >= U)
+    else:
+        mu = n1 * n2 / 2.0
+        n = n1 + n2
+        tie = _math.fsum(c ** 3 - c for c in counts.values())
+        sig = _math.sqrt(n1 * n2 / 12.0 * ((n + 1) - tie / (n * (n - 1))))
+        z = (U - mu - (0.5 if use_continuity else 0.0)) / sig
+        p = norm.sf(z)
+    if alternative == "two-sided":
+        p = 2.0 * p
+    return _TestResult(u1, _bi.min(1.0, _bi.max(0.0, p)))
 
 
 def wilcoxon(x, y=None, correction=False, **kw):
@@ -3546,9 +3598,10 @@ def _kstwo_cdf(d, n):
         return 0.0
     if d >= 1.0:
         return 1.0
-    # exact where the matrix stays small; the asymptotic series with
-    # Stephens' correction beyond that
-    if n <= 140 and int(n * d) + 1 <= 64:
+    # exact wherever the (2k-1)-square matrix stays small -- its size is
+    # set by k = floor(n d) + 1, not by n, and the powering is by
+    # squaring -- the asymptotic series with Stephens correction beyond
+    if int(n * d) + 1 <= 64:
         return _kolmogn_mtw(n, d)
     return 1.0 - _ks_sf(d, n)
 

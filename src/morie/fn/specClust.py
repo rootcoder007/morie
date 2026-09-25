@@ -4,7 +4,8 @@
 from math import fsum, sqrt
 
 from ._richresult import RichResult
-from ._spx import eye, sqmat, topeigs
+from ._spx import eye, sqmat
+from ._tail1core import eigsym
 
 __all__ = [
     "spectral_clustering",
@@ -24,11 +25,13 @@ def spectral_clustering(a, k=2):
         L_sym = I - D^{-1/2} A D^{-1/2}
 
     and the clustering lives in the eigenvectors belonging to the SMALLEST
-    eigenvalues of L_sym. Because power iteration finds the LARGEST, the
-    iteration runs on ``2 I - L_sym``, whose largest eigenvalues are
-    L_sym's smallest; the eigenvalues are mapped back before they are
-    reported. Running power iteration on L_sym directly and taking the top
-    vectors is the standard way to get this exactly backwards.
+    eigenvalues of L_sym. The decomposition is taken of ``2 I - L_sym``,
+    whose largest eigenvalues are L_sym's smallest, by Jacobi rotations
+    (exact, unlike a fixed number of power steps, which stall when the
+    clusters are well separated and the Fiedler gap is tiny); the
+    eigenvalues are mapped back before they are reported. Taking the TOP
+    vectors of L_sym itself is the standard way to get this exactly
+    backwards.
 
     A node with zero degree has no D^{-1/2}, and rather than silently
     substituting zero the function raises: an isolated node does not
@@ -80,8 +83,13 @@ def spectral_clustering(a, k=2):
             lsym[i][j] = lsym[i][j] - ds[i] * w[i][j] * ds[j]
     shifted = [[(2.0 if i == j else 0.0) - lsym[i][j] for j in range(n)]
                for i in range(n)]
-    vals, vecs = topeigs(shifted, min(k, n))
-    eig = [2.0 - t for t in vals]
+    # a full Jacobi decomposition, not power iteration: the Fiedler gap
+    # (2 - l1)/2 is close to 1 exactly when the clusters are well
+    # separated, and a fixed number of power steps then stops short
+    vals, V = eigsym(shifted)
+    m = min(k, n)
+    eig = [2.0 - t for t in vals[:m]]
+    vecs = [[V[r][c] for r in range(n)] for c in range(m)]
     fied = vecs[1] if len(vecs) > 1 else vecs[0]
 
     if k == 2:

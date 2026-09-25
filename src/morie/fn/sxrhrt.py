@@ -238,8 +238,15 @@ def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9,
     # the cross-sex block is the only source of information about rg
     cross = max(abs(Km[i][j]) for i in range(n) for j in range(n)
                 if male[i] != male[j])
-    Xm = ([[1.0] for _ in range(n)] if X is None
+    # the sexes are two traits, so each carries its OWN fixed effects
+    # (GCTA's bivariate REML, Lee et al. 2012): the design is X crossed
+    # with sex, block diagonal -- a shared intercept would force equal
+    # means and push any mean difference into the residual variances
+    X0 = ([[1.0] for _ in range(n)] if X is None
           else [[float(v) for v in row] for row in k.mat(X)])
+    q0 = len(X0[0])
+    Xm = [(X0[i] + [0.0] * q0) if male[i] else ([0.0] * q0 + X0[i])
+          for i in range(n)]
     p = len(Xm[0])
 
     mu = sum(yv) / n
@@ -296,21 +303,33 @@ def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9,
     th1[2] = 0.999999
     ll_rg1 = at(th1)
     lrt_rg1 = max(2.0 * (ll - ll_rg1), 0.0)
-    # and against equal heritabilities
-    def feq(logv):
-        th = list(theta)
-        th[0] = math.exp(logv)
-        th[1] = math.exp(logv)
-        return at(th)
-    eq = math.exp(_gridmax(feq, lo, hi))
-    th2 = [eq, eq, theta[2], theta[3], theta[4]]
-    for _ in range(20):
-        for idx in (3, 4):
-            def f2(logv, idx=idx):
-                th = list(th2)
-                th[idx] = math.exp(logv)
-                return at(th)
-            th2[idx] = math.exp(_gridmax(f2, lo, hi))
+    # and against equal HERITABILITIES, h2_m = h2_f = h: each sex keeps
+    # its own phenotypic variance v, with s2g = h v and s2e = (1 - h) v,
+    # and rg held at its estimate.  (Equal GENETIC VARIANCES is a
+    # different hypothesis whenever the residual variances differ.)
+    vm0, vf0 = theta[0] + theta[3], theta[1] + theta[4]
+    hq = [0.5 * (h2m + h2f), math.log(vm0), math.log(vf0)]
+
+    def th_of(hv):
+        h_, vm_, vf_ = hv[0], math.exp(hv[1]), math.exp(hv[2])
+        return [h_ * vm_, h_ * vf_, theta[2], (1.0 - h_) * vm_,
+                (1.0 - h_) * vf_]
+
+    prev_hq = None
+    for _ in range(int(max_cycles)):
+        def fh(h_):
+            return at(th_of([h_, hq[1], hq[2]]))
+        hq[0] = _gridmax(fh, 0.001, 0.999)
+        for idx in (1, 2):
+            def fv(logv, idx=idx):
+                hv = list(hq)
+                hv[idx] = logv
+                return at(th_of(hv))
+            hq[idx] = _gridmax(fv, lo, hi)
+        if prev_hq is not None and hq == prev_hq:
+            break
+        prev_hq = list(hq)
+    th2 = th_of(hq)
     ll_eq = at(th2)
     lrt_equal = max(2.0 * (ll - ll_eq), 0.0)
 

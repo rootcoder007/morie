@@ -96,28 +96,60 @@ def schabenberger_random_field_stationarity(coords, z, n_blocks=4, n_bins=10,
     # E[Z(s+h) - Z(s)] = 0. A linear trend keeps the increment VARIANCE
     # stable while giving the increments a non-zero mean, so tying this
     # to variance drift would pass a trended field for the wrong reason.
-    i2, j2 = np.triu_indices(z.size, k=1)
-    lagvec = coords[j2] - coords[i2]
-    dv = z[j2] - z[i2]
-    # Orient every pair into the same half-space first. Binning on lag
-    # DISTANCE alone averages the +x and -x pairs together, so a linear
-    # trend cancels itself and passes -- the condition is about the lag
-    # VECTOR, E[Z(s+h) - Z(s)] = 0 for each h.
-    flip = lagvec[:, 0] < 0 if lagvec.shape[1] >= 1 else np.zeros(dv.size, bool)
-    if lagvec.shape[1] >= 2:
-        onaxis = lagvec[:, 0] == 0.0
-        flip = np.where(onaxis, lagvec[:, 1] < 0, flip)
-    dv = np.where(flip, -dv, dv)
-    dd = np.linalg.norm(lagvec, axis=1)
-    md = max_dist if max_dist is not None else (dd.max() / 2.0 if dd.size else 1.0)
-    ke = np.clip(np.digitize(dd, np.linspace(0.0, md, n_bins + 1)) - 1,
-                 0, n_bins - 1)
-    inc_means = np.array([dv[ke == b].mean() if np.any(ke == b) else np.nan
-                          for b in range(n_bins)])
+    # All pairs i < j, streamed rather than materialised: n(n-1)/2 pairs
+    # is 1.3 million at n = 1600, and building arrays of that size in
+    # the pure-Python array core took minutes.
+    import bisect
+    import math as _m
+
+    C = [[float(v) for v in row] for row in coords.tolist()]
+    Z = [float(v) for v in z.tolist()]
+    nz, dim = len(Z), len(C[0])
+    dmax = 0.0
+    for i in range(nz):
+        ci = C[i]
+        for j in range(i + 1, nz):
+            cj = C[j]
+            d2 = 0.0
+            for t in range(dim):
+                u = cj[t] - ci[t]
+                d2 += u * u
+            if d2 > dmax:
+                dmax = d2
+    dmax = _m.sqrt(dmax)
+    md = max_dist if max_dist is not None else (dmax / 2.0 if nz > 1 else 1.0)
+    edges = [float(v) for v in np.linspace(0.0, md, n_bins + 1).tolist()]
+    bsum = [0.0] * n_bins
+    bcnt = [0] * n_bins
+    cnt, mean_, m2 = 0, 0.0, 0.0
+    for i in range(nz):
+        ci, zi = C[i], Z[i]
+        for j in range(i + 1, nz):
+            cj = C[j]
+            d2 = 0.0
+            for t in range(dim):
+                u = cj[t] - ci[t]
+                d2 += u * u
+            dv = Z[j] - zi
+            # orient every pair into the same half-space: the condition is
+            # about the lag VECTOR, and binning on distance alone would let
+            # the +h and -h pairs of a linear trend cancel
+            lx = cj[0] - ci[0]
+            if lx < 0 or (lx == 0.0 and dim >= 2 and cj[1] - ci[1] < 0):
+                dv = -dv
+            k = bisect.bisect_right(edges, _m.sqrt(d2)) - 1
+            k = 0 if k < 0 else (n_bins - 1 if k > n_bins - 1 else k)
+            bsum[k] += dv
+            bcnt[k] += 1
+            cnt += 1
+            dlt = dv - mean_
+            mean_ += dlt / cnt
+            m2 += dlt * (dv - mean_)
+    inc_means = [bsum[k] / bcnt[k] for k in range(n_bins) if bcnt[k]]
     # ddof=1 to match `overall_sd` below -- this is a scale normaliser for the
     # increments, and the two spreads in one result must be the same estimator.
-    inc_sd = float(np.nanstd(dv, ddof=1)) or 1.0
-    inc_bias = float(np.nanmax(np.abs(inc_means)) / inc_sd)
+    inc_sd = (_m.sqrt(m2 / (cnt - 1)) if cnt > 1 else 0.0) or 1.0
+    inc_bias = float(max(abs(v) for v in inc_means) / inc_sd) if inc_means else float("nan")
 
     overall_sd = float(z.std(ddof=1))
     mean_drift = float((means.max() - means.min()) / overall_sd) if overall_sd else 0.0

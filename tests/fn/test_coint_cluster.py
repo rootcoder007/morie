@@ -69,22 +69,30 @@ def test_engle_granger_uses_mackinnon_not_plain_adf_values():
 
 
 def _coint_system(seed=0, n=400):
-    """Two series sharing one common trend: rank should be exactly 1."""
+    """Rank-1 VECM with drift, the setting of Johansen's Case 3 that
+    johansen() tests: dy1 = 0.3 + e1, dy2 = 0.6 - 0.5 (y2 - 2 y1) + e2.
+    (Without the drift the Case-3 critical values do not apply and the
+    rank-1 verdict is right only ~70% of the time.)"""
     rng = np.random.default_rng(seed)
-    trend = np.cumsum(rng.standard_normal(n))
-    return np.column_stack([trend + rng.standard_normal(n) * 0.5,
-                            2 * trend + rng.standard_normal(n) * 0.5])
+    e = rng.standard_normal((n, 2))
+    y1, y2, rows = 0.0, 0.0, []
+    for t in range(n):
+        z = y2 - 2 * y1
+        y1, y2 = y1 + 0.3 + float(e[t, 0]), y2 + 0.6 - 0.5 * z + float(e[t, 1])
+        rows.append([y1, y2])
+    return np.asarray(rows)
 
 
 def test_johansen_recovers_the_cointegrating_rank():
     ranks = [johansen(_coint_system(seed=s))["rank_5pct"] for s in range(6)]
-    assert sum(r == 1 for r in ranks) >= 5  # measured 6/6
+    assert sum(r == 1 for r in ranks) >= 5  # 96 of 100 seeds in a check run
     # two independent random walks: rank 0
     zero = 0
     for s in range(6):
         rng = np.random.default_rng(100 + s)
-        Y = np.column_stack([np.cumsum(rng.standard_normal(400)),
-                             np.cumsum(rng.standard_normal(400))])
+        # independent random walks WITH drift (Case 3, as above)
+        Y = np.column_stack([np.cumsum(rng.standard_normal(400) + 0.3),
+                             np.cumsum(rng.standard_normal(400) - 0.2)])
         zero += johansen(Y)["rank_5pct"] == 0
     assert zero >= 5  # measured 6/6
     out = johansen(_coint_system())

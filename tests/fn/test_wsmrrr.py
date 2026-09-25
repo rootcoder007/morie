@@ -1,23 +1,30 @@
-"""Tests for wsmrrr.wasserman_relative_risk."""
+"""Tests for wsmrrr.wasserman_relative_risk (Katz interval)."""
 
-from morie.fn import _array_core as np
+import math
+
+import pytest
 
 from morie.fn.wsmrrr import wasserman_relative_risk
 
 
 def test_wsmrrr_basic():
-    """Test basic functionality."""
-    table = np.array([[10, 20, 30], [15, 25, 35]])
-    result = wasserman_relative_risk(table)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    """RR = p1/p0; se(log RR) = sqrt((1-p1)/n11 + (1-p0)/n01); the 95%
+    interval is exp(log RR -+ 1.959964 se)."""
+    r = wasserman_relative_risk([[18, 42], [9, 51]])
+    p1, p0 = 18 / 60, 9 / 60
+    se = math.sqrt((1 - p1) / 18 + (1 - p0) / 9)
+    assert r["estimate"] == pytest.approx(p1 / p0, rel=1e-15)
+    assert r["se"] == pytest.approx(se, rel=1e-15)
+    assert r["ci_lower"] == pytest.approx(math.exp(math.log(2.0) - 1.959963984540054 * se), rel=1e-9)
+    assert r["ci_upper"] == pytest.approx(math.exp(math.log(2.0) + 1.959963984540054 * se), rel=1e-9)
 
 
 def test_wsmrrr_edge():
-    """Test edge cases."""
-    table = np.array([[10, 20, 30], [15, 25, 35]])
-    result = wasserman_relative_risk(table)
-    assert isinstance(result, dict)
+    """Zero events and non-2x2 tables raise."""
+    with pytest.raises(ValueError):
+        wasserman_relative_risk([[0, 5], [2, 3]])
+    with pytest.raises(ValueError):
+        wasserman_relative_risk([[1, 2, 3], [4, 5, 6]])
 
 
 # --- appended: the module's own worked example as a gate -----------

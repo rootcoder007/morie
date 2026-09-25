@@ -824,9 +824,26 @@ class _ForestBase:
         self.oob_score = bool(oob_score)
         self.bootstrap = bool(bootstrap)
 
+    @property
+    def feature_importances_(self):
+        """sklearn's forest importance: the mean over trees of each
+        tree's normalised mean decrease in impurity, renormalised to sum
+        to one (BaseForest.feature_importances_)."""
+        d = self.n_features_in_
+        acc = [0.0] * d
+        for t in self._trees:
+            imp = _SkTree(t, self._n_classes).compute_feature_importances(d)
+            for j, v in enumerate(imp._flat()):
+                acc[j] += float(v)
+        m = [v / len(self._trees) for v in acc]
+        tot = _math.fsum(m)
+        return _ac.marr([v / tot if tot > 0 else 0.0 for v in m])
+
     def _fit_forest(self, Xd, yv, classify, n_classes):
         n = len(yv)
         d = len(Xd[0])
+        self.n_features_in_ = d
+        self._n_classes = n_classes
         if self.max_features in (None, "auto"):
             mf = _bi.max(1, int(_math.sqrt(d))) if classify else d
         elif self.max_features == "sqrt":
@@ -953,24 +970,6 @@ class RandomForestClassifier(_ForestBase):
         p = self.predict(X)
         return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) \
             / len(yv)
-
-    @property
-    def feature_importances_(self):
-        # frequency-weighted split counts (proxy importance)
-        d_counts = {}
-
-        def walk(node, w):
-            if node.feat < 0:
-                return
-            d_counts[node.feat] = d_counts.get(node.feat, 0.0) + w
-            walk(node.left, w)
-            walk(node.right, w)
-        for t in self._trees:
-            walk(t, 1.0)
-        tot = _math.fsum(d_counts.values()) or 1.0
-        d = max(d_counts) + 1 if d_counts else 0
-        return _ac.marr([d_counts.get(j, 0.0) / tot
-                         for j in range(d)])
 
 
 def _split_count_importances(trees, n_features):

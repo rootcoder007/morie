@@ -39,7 +39,7 @@ def spectral_radius(g, iters=400):
     For a symmetric W the interval is contained in |rho| < 1/rho(W), and
     that bound is returned as ``sar_rho_bound``.
 
-    The computation is power iteration from a FIXED, slightly non-uniform
+    The computation is power iteration on W^2 from a FIXED, slightly non-uniform
     start vector for a FIXED number of steps -- fixed because an
     early-exit tolerance taken on one language arm and not the other would
     silently change the answer, and non-uniform because an all-ones start
@@ -84,20 +84,35 @@ def spectral_radius(g, iters=400):
                                  "to a complex pair and report a modulus "
                                  "that is not the spectral radius")
 
+    # Iterate on W^2, not W.  A symmetric W can have BOTH +rho and -rho
+    # as extreme eigenvalues (every bipartite graph does -- a rook grid,
+    # a path), and plain power iteration then oscillates between them
+    # and its Rayleigh quotient reports neither.  W^2 has the single
+    # dominant eigenvalue rho^2, so ||W v|| converges to rho regardless.
     v = [float((i % 7) + 1) for i in range(n)]
     s = sqrt(dot(v, v))
     v = [t / s for t in v]
     for _ in range(iters):
-        u = matvec(w, v)
+        u = matvec(w, matvec(w, v))
         s = sqrt(dot(u, u))
         if s < 1e-300:
             raise ValueError("`g` is numerically zero; the spectral "
                              "radius is 0 and no eigenvector is defined")
         v = [t / s for t in u]
-    lam = dot(v, matvec(w, v))
-    rho = abs(lam)
+    wv = matvec(w, v)
+    rho = sqrt(dot(wv, wv))
     if rho <= 0:
         raise ValueError("the spectral radius is 0; `g` has no edges")
+    # v lies in the span of the +rho and -rho eigenvectors; split it.
+    # A non-negative W always has +rho (Perron-Frobenius); otherwise the
+    # component with the larger share names the dominant sign.
+    up = [a_ + b_ / rho for a_, b_ in zip(v, wv)]
+    um = [a_ - b_ / rho for a_, b_ in zip(v, wv)]
+    np_, nm_ = sqrt(dot(up, up)), sqrt(dot(um, um))
+    if np_ >= nm_:
+        lam, v = rho, [t / np_ for t in up]
+    else:
+        lam, v = -rho, [t / nm_ for t in um]
     j = 0
     for i in range(n):
         if abs(v[i]) > abs(v[j]):
@@ -113,8 +128,8 @@ def spectral_radius(g, iters=400):
         "symmetric": True,
         "iterations": float(iters),
         "n": n,
-        "method": ("Spectral radius by power iteration (Golub & Van Loan "
-                   "2013, Sec. 7.3); the SAR bound |rho| < 1/rho(W) is "
+        "method": ("Spectral radius by power iteration on W^2 (Golub & "
+                   "Van Loan 2013, Sec. 7.3); the SAR bound |rho| < 1/rho(W) is "
                    "Schabenberger & Gotway (2005) Sec. 6.2.2.1, p. 336 -- "
                    "NOT eq (6.48)"),
     })

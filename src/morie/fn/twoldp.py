@@ -109,7 +109,8 @@ def two_locus_dprime(geno1, geno2):
         num = pab * (1.0 - pA - pB + pab)
         den = num + (pA - pab) * (pB - pab)
         w = num / den if den > 0 else 0.5
-        pab = (nAB + 2.0 * namb * w) / (2.0 * n)
+        # a double heterozygote in AB/ab phase carries ONE AB haplotype
+        pab = (nAB + namb * w) / (2.0 * n)
         lo = max(0.0, pA + pB - 1.0)
         hi = min(pA, pB)
         if pab < lo:

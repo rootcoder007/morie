@@ -1,23 +1,33 @@
-"""Tests for wsmodd.wasserman_odds_ratio."""
+"""Tests for wsmodd.wasserman_odds_ratio (Woolf interval)."""
 
-from morie.fn import _array_core as np
+import math
+
+import pytest
 
 from morie.fn.wsmodd import wasserman_odds_ratio
 
 
 def test_wsmodd_basic():
-    """Test basic functionality."""
-    table = np.array([[10, 20, 30], [15, 25, 35]])
-    result = wasserman_odds_ratio(table)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    """OR = n11 n00 / (n10 n01); se(log OR) = sqrt(sum 1/n); the 95%
+    interval is exp(log OR -+ 1.959964 se)."""
+    t = [[12, 7], [5, 20]]
+    r = wasserman_odds_ratio(t)
+    orr = 12 * 20 / (7 * 5)
+    se = math.sqrt(1 / 12 + 1 / 7 + 1 / 5 + 1 / 20)
+    assert r["estimate"] == pytest.approx(orr, rel=1e-15)
+    assert r["log_or"] == pytest.approx(math.log(orr), rel=1e-15)
+    assert r["se"] == pytest.approx(se, rel=1e-15)
+    assert r["ci_lower"] == pytest.approx(math.exp(math.log(orr) - 1.959963984540054 * se), rel=1e-9)
+    assert r["ci_upper"] == pytest.approx(math.exp(math.log(orr) + 1.959963984540054 * se), rel=1e-9)
+    assert r["n"] == 44
 
 
 def test_wsmodd_edge():
-    """Test edge cases."""
-    table = np.array([[10, 20, 30], [15, 25, 35]])
-    result = wasserman_odds_ratio(table)
-    assert isinstance(result, dict)
+    """A zero cell and a non-2x2 table raise."""
+    with pytest.raises(ValueError):
+        wasserman_odds_ratio([[5, 0], [3, 2]])
+    with pytest.raises(ValueError):
+        wasserman_odds_ratio([[1, 2, 3], [4, 5, 6]])
 
 
 # --- appended: the module's own worked example as a gate -----------

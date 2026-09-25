@@ -9,11 +9,9 @@ tinfo tests.
 
 import morie.fn.tinfo as host
 import morie.fn.tstinf as alias
-from morie.fn.tstinf import test_information
 
 
 def test_the_re_export_is_the_same_object_as_the_implementation():
-    assert test_information is getattr(host, "test_information")
     assert alias.test_information is getattr(host, "test_information")
 
 

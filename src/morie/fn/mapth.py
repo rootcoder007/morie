@@ -92,6 +92,21 @@ def map_theta_estimator(y, a=None, b=None, c=None, prior=(0.0, 1.0),
         if denom != 0:
             th = float(grid[i] - 0.5 * (grid[1] - grid[0])
                        * (y2 - y0) / denom)
+    # polish the grid mode to the root of the posterior score by Fisher
+    # scoring: d/dtheta log post = sum a (y - P)(P - c)/(P (1 - c))
+    # - (theta - mu)/sd^2, curvature -(I(theta) + 1/sd^2)
+    lo_b, hi_b = float(bounds[0]), float(bounds[1])
+    for _ in range(50):
+        Pn = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0],
+                     1e-12, 1 - 1e-12)
+        dPn = logistic_3pl_deriv(np.array([th]), av, bv, cv)[0]
+        sc = float(np.sum((yv - Pn) * dPn / (Pn * (1 - Pn)))) \
+            - (th - mu) / sd ** 2
+        fi = float(np.sum(dPn ** 2 / (Pn * (1 - Pn)))) + 1.0 / sd ** 2
+        step = sc / fi
+        th = min(max(th + step, lo_b), hi_b)
+        if abs(step) < 1e-14:
+            break
     Pt = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0],
                  1e-12, 1 - 1e-12)
     dP = logistic_3pl_deriv(np.array([th]), av, bv, cv)[0]

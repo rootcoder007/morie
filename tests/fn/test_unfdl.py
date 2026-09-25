@@ -34,12 +34,12 @@ def test_unfdl_recovers_a_planted_joint_configuration():
     X = rng.standard_normal((12, 2))
     Y = rng.standard_normal((5, 2))
     delta = _cross(X, Y)
-    # n_iter is raised past the default: the default 100 stops on the
-    # iteration cap rather than on tol, leaving ~4e-04 of error. See the
-    # convergence test below, which pins that behaviour explicitly.
-    r = unfold(delta, k=2, n_iter=500)
+    # tol is tightened: the loop stops when the iterate moves less than
+    # tol, and at the default 1e-6 the slow final contraction still leaves
+    # ~1.2e-5 of distance error; at 1e-10 it is ~1e-9.
+    r = unfold(delta, k=2, tol=1e-10)
     got = _cross(np.asarray(r["X"]), np.asarray(r["Y"]))
-    assert got == pytest.approx(delta, abs=1e-5)
+    assert got == pytest.approx(delta, abs=1e-8)
 
 
 def test_unfdl_stress_is_zero_on_an_exactly_embeddable_configuration():

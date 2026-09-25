@@ -266,7 +266,7 @@ def singular_value_adjust(a, cap=EIGENVALUE_CAP):
     if not 0.0 < cap < 1.0:
         raise ValueError("andmnh: cap must lie strictly between 0 and 1")
     am = np.asarray(a, dtype=float)
-    u, s, vt = np.linalg.svd(am)
+    u, s, vt = np.linalg.svd(am, full_matrices=False)
     s2 = [min(float(v), cap) for v in s]     # singular values are >= 0
     return np.dot(np.dot(np.asarray(u), np.diag(np.asarray(s2))),
                   np.asarray(vt))

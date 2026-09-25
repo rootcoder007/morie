@@ -59,14 +59,9 @@ def survival_bootstrap_se(time, event, t_grid=None, B=200, seed=0):
         np.atleast_1d(np.asarray(t_grid, dtype=float))
 
     def km(t, e, grid):
-        s = 1.0
         out = np.empty(grid.size)
         var = np.zeros(grid.size)
-        acc = 0.0
         for i, v in enumerate(grid):
-            for u in np.unique(t[(t <= v) & (e == 1.0)]):
-                pass
-            at_all = t >= v
             s = 1.0
             acc = 0.0
             for u in np.unique(t[(e == 1.0) & (t <= v)]):

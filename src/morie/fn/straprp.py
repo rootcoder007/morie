@@ -14,7 +14,10 @@ def stratified_proportion(y, stratum, weights=None, N_h=None):
     .. math:: \hat p_{st} = \sum_h W_h \hat p_h,
               \qquad
               \widehat{\operatorname{Var}}(\hat p_{st})
-              = \sum_h W_h^2 \frac{\hat p_h(1-\hat p_h)}{n_h - 1}.
+              = \sum_h W_h^2 (1 - f_h) \frac{\hat p_h(1-\hat p_h)}{n_h - 1},
+
+    with :math:`f_h = n_h/N_h` when ``N_h`` is given (Cochran 1977,
+    eq. 5.47) and :math:`f_h = 0` otherwise.
 
     The variance is a sum WITHIN strata, with no between-stratum
     term at all, and that is the entire point of stratification:
@@ -77,6 +80,10 @@ def stratified_proportion(y, stratum, weights=None, N_h=None):
             [N_h[l] for l in labs] if hasattr(N_h, "__getitem__")
             and not isinstance(N_h, (list, tuple, np.ndarray)) else N_h,
             dtype=float)).ravel()
+        if Nv.size != labs.size:
+            raise ValueError(f"N_h has {Nv.size} entries for {labs.size} strata.")
+        if np.any(Nv < nh):
+            raise ValueError("a population stratum is smaller than its sample.")
         W = Nv / Nv.sum()
         pop = True
     else:
@@ -85,11 +92,16 @@ def stratified_proportion(y, stratum, weights=None, N_h=None):
     if not np.isclose(W.sum(), 1.0):
         raise ValueError(f"stratum weights must sum to 1, got {W.sum()}.")
     p = float(np.sum(W * ph))
-    var = float(np.sum(W ** 2 * ph * (1 - ph) / (nh - 1)))
+    # finite population correction 1 - n_h/N_h when the stratum sizes are
+    # known (Cochran 1977, eq. 5.47); with shares alone the strata are
+    # treated as infinite
+    fpc = (1.0 - nh / Nv) if N_h is not None and weights is None else np.ones(nh.size)
+    var = float(np.sum(W ** 2 * fpc * ph * (1 - ph) / (nh - 1)))
     return RichResult(payload={
         "proportion": p, "variance": var, "se": float(np.sqrt(max(var, 0.0))),
         "strata": labs, "p_h": ph, "n_h": nh.astype(int), "W_h": W,
         "weights_are_population_shares": pop,
+        "fpc": fpc,
         "variance_note": "within-stratum only: between-stratum variation is "
                          "removed by DESIGN, not estimated",
         "n": int(yv.size),

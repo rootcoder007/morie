@@ -718,20 +718,35 @@ class _VECMResults:
 
 class VECM:
     def __init__(self, endog, k_ar_diff=1, coint_rank=1,
-                 deterministic="ci", **kw):
-        del deterministic, kw
+                 deterministic="co", **kw):
+        del kw
+        # statsmodels' codes: "co" an unrestricted constant, "n" none.
+        # The restricted-constant and trend variants change the Johansen
+        # step itself and are not implemented, so they are refused
+        # rather than silently fitted as "co".
+        if deterministic not in ("co", "n"):
+            raise ValueError("VECM: deterministic must be 'co' or 'n', got %r"
+                             % (deterministic,))
+        self.det = deterministic
         self.Y = _ac.atleast_2d(endog)
         self.k_ar_diff = k_ar_diff
         self.rank = coint_rank
 
     def fit(self, **kw):
         del kw
-        j = coint_johansen(self.Y, det_order=0,
+        j = coint_johansen(self.Y, det_order=0 if self.det == "co" else -1,
                            k_ar_diff=self.k_ar_diff)
         R0, R1, T, k = j._internals
         r = self.rank
         evec = j.evec.tolist()
         beta = [[evec[i][c] for c in range(r)] for i in range(k)]
+        # statsmodels' normalisation: the leading r x r block of beta is
+        # the identity (beta := beta B^-1 with B that block); alpha then
+        # carries the compensating scale, so alpha beta' is unchanged
+        B = _ac.marr([[beta[i][c] for c in range(r)] for i in range(r)])
+        Binv = _ac.linalg.inv(B).tolist() if r > 1 else [[1.0 / beta[0][0]]]
+        beta = [[_math.fsum(beta[i][a] * Binv[a][c] for a in range(r))
+                 for c in range(r)] for i in range(k)]
         # alpha via OLS of R0 on (R1 beta)
         Wrows = [[_math.fsum(R1[t][i] * beta[i][c]
                              for i in range(k)) for c in range(r)]
@@ -763,7 +778,8 @@ class VECM:
             row = list(ect)
             for lag in range(1, p + 1):
                 row += dY[t - lag]
-            row.append(1.0)
+            if self.det == "co":
+                row.append(1.0)
             rows.append(row)
             targets.append(dY[t])
         kz = len(rows[0])
@@ -771,6 +787,7 @@ class VECM:
                            for t in range(len(rows)))
                 for b in range(kz)] for a in range(kz)]
         gam = []
+        coefs_all = []
         for c in range(k):
             Zty = [_math.fsum(rows[t][a] * targets[t][c]
                               for t in range(len(rows)))
@@ -778,7 +795,20 @@ class VECM:
             coef = list(_ac.linalg.solve(_ac.marr(ZtZ),
                                          _ac.marr(Zty))._flat())
             gam.append(coef[r:r + p * k])
+            coefs_all.append(coef)
         res.gamma = _ac.marr(gam)
+        # residual covariance (1/T) U'U and the Gaussian log-likelihood
+        Te = len(rows)
+        U = [[targets[t][c] - _math.fsum(rows[t][a] * coefs_all[c][a]
+                                          for a in range(kz))
+              for c in range(k)] for t in range(Te)]
+        S = [[_math.fsum(U[t][a] * U[t][b] for t in range(Te)) / Te
+              for b in range(k)] for a in range(k)]
+        res.sigma_u = _ac.marr(S)
+        sign, logdet = _ac.linalg.slogdet(_ac.marr(S))
+        res.llf = float(-0.5 * Te * (k * _math.log(2 * _math.pi)
+                                      + float(logdet) + k))
+        res.resid = _ac.marr(U)
         return res
 
 

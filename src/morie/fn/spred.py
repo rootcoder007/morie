@@ -24,8 +24,13 @@ def shrinkage_predictor_level2(y, cluster, sigma2_u, sigma2_e):
 
     whose conditional expectation of the jth cluster mean is
 
-        thetahat_j = ybar.. + (1 - lambda_j)(ybar_j - ybar..),
-        lambda_j   = sigma2_e / (sigma2_e + n_j sigma2_u).
+        thetahat_j = muhat + (1 - lambda_j)(ybar_j - muhat),
+        lambda_j   = sigma2_e / (sigma2_e + n_j sigma2_u),
+        muhat      = sum_j w_j ybar_j / sum_j w_j,
+        w_j        = 1 / (sigma2_u + sigma2_e / n_j),
+
+    muhat being the generalised-least-squares mean (``grand_mean``).  The
+    raw ybar.. equals it only for balanced clusters or sigma2_u = 0.
 
     lambda_j is the SHRINKAGE FACTOR and n_j is the cluster's own size, so
     small clusters are pulled hard toward the grand mean and large ones
@@ -81,20 +86,21 @@ def shrinkage_predictor_level2(y, cluster, sigma2_u, sigma2_e):
     if len(keys) < 2:
         raise ValueError("at least 2 clusters are needed for shrinkage "
                          "to mean anything")
-    grand = fsum(yy) / n
-    sizes = []
-    raw = []
-    lam = []
-    shrunk = []
+    sizes, raw, lam = [], [], []
     for c in keys:
         vals = [yy[i] for i in range(n) if ci[i] == c]
         nj = float(len(vals))
-        mj = fsum(vals) / nj
-        lj = se / (se + nj * su)
         sizes.append(nj)
-        raw.append(mj)
-        lam.append(lj)
-        shrunk.append(grand + (1.0 - lj) * (mj - grand))
+        raw.append(fsum(vals) / nj)
+        lam.append(se / (se + nj * su))
+    # the mean the clusters shrink toward is the GLS estimate of mu,
+    # weighting each cluster mean by 1/Var(ybar_j) = 1/(s2u + s2e/n_j);
+    # with known variance components that is what makes the predictor
+    # the BLUP (Henderson).  The raw grand mean ybar.. coincides with it
+    # only for balanced clusters or s2u = 0.
+    wts = [nj / (se + nj * su) for nj in sizes]
+    grand = fsum([w * m for w, m in zip(wts, raw)]) / fsum(wts)
+    shrunk = [grand + (1.0 - lj) * (mj - grand) for lj, mj in zip(lam, raw)]
 
     return RichResult(payload={
         "clusters": [float(c) for c in keys],

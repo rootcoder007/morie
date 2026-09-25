@@ -16,9 +16,9 @@ def theta_map(X, items, prior=(0.0, 1.0)):
     Despite the neighbouring module name, this is the MODE and
     ``morie.fn.theteap.theta_eap`` is the MEAN -- they differ
     whenever the posterior is skewed, which for short tests and
-    extreme patterns is most of the time. Both are returned here so
-    the difference is visible rather than a matter of which module
-    got called.
+    extreme patterns is most of the time. Call both when the
+    difference matters; ``mode_not_mean`` in the result says which
+    one this is.
 
     References
     ----------

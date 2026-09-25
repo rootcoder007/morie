@@ -48,60 +48,22 @@ def vecm(Y, k_ar=1, coint_rank=1):
     if T < 20 or k < 2 or coint_rank < 1 or coint_rank > k:
         raise ValueError(f"Need T>=20, k>=2, 1<=rank<=k; got T={T}, k={k}, r={coint_rank}.")
 
-    try:
-        from ._ts_core import VECM
+    from ._ts_core import VECM
 
-        m = VECM(Y, k_ar_diff=k_ar, coint_rank=coint_rank, deterministic="ci")
-        fit = m.fit()
-        return RichResult(
-            payload={
-                "alpha": np.asarray(fit.alpha),
-                "beta": np.asarray(fit.beta),
-                "Gamma": [np.asarray(g) for g in fit.gamma.reshape(k_ar, k, k)] if k_ar > 0 else [],
-                "Sigma": np.asarray(fit.sigma_u),
-                "loglik": float(fit.llf),
-                "n": int(T),
-                "k": int(k),
-                "rank": int(coint_rank),
-                "method": "VECM via statsmodels.tsa.vector_ar.vecm.VECM",
-            }
-        )
-    except Exception:
-        pass
-
-    # Pure-NumPy fallback (single-lag Γ_1 only; full Johansen reduced
-    # rank via SVD on the Π matrix from OLS of ΔY on Y_{-1} and ΔY_{-1}).
-    dY = np.diff(Y, axis=0)
-    if k_ar == 0:
-        Z0 = dY
-        Z1 = Y[:-1]
-        rows = Z0.shape[0]
-        Pi_hat, *_ = np.linalg.lstsq(Z1, Z0, rcond=None)
-        eps = Z0 - Z1 @ Pi_hat
-    else:
-        rows = dY.shape[0] - k_ar
-        Z0 = dY[k_ar:]
-        Z1 = Y[k_ar:-1] if k_ar > 0 else Y[:-1]
-        Z2 = np.column_stack([dY[k_ar - i - 1 : k_ar - i - 1 + rows] for i in range(k_ar)])
-        X = np.column_stack([Z1, Z2])
-        B, *_ = np.linalg.lstsq(X, Z0, rcond=None)
-        Pi_hat = B[:k].T
-        eps = Z0 - X @ B
-    U, s, Vt = np.linalg.svd(Pi_hat.T, full_matrices=False)
-    alpha = U[:, :coint_rank] * s[:coint_rank]
-    beta = Vt[:coint_rank].T
-    Sigma = (eps.T @ eps) / max(rows - 1, 1)
+    fit = VECM(Y, k_ar_diff=k_ar, coint_rank=coint_rank).fit()
     return RichResult(
         payload={
-            "alpha": alpha,
-            "beta": beta,
-            "Gamma": [],
-            "Sigma": Sigma,
-            "loglik": np.nan,
+            "alpha": np.asarray(fit.alpha),
+            "beta": np.asarray(fit.beta),
+            "Gamma": ([np.asarray(g) for g in fit.gamma.reshape(k_ar, k, k)]
+                      if k_ar > 0 else []),
+            "Sigma": np.asarray(fit.sigma_u),
+            "loglik": float(fit.llf),
             "n": int(T),
             "k": int(k),
             "rank": int(coint_rank),
-            "method": "VECM via SVD of OLS Π (numpy fallback)",
+            "method": "VECM by Johansen reduced-rank regression, beta "
+                      "normalised to an identity leading block",
         }
     )
 

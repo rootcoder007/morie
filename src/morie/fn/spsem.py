@@ -113,13 +113,16 @@ def schabenberger_spatial_error_model(x, y, w, n_grid=201, refine=60):
     v = [float((i % 7) + 1) for i in range(n)]
     s = sqrt(dot(v, v))
     v = [t / s for t in v]
+    # power iteration on W^2: a bipartite W (a rook grid) has both +rho
+    # and -rho extreme, and iterating W itself never settles
     for _ in range(400):
-        u = matvec(ww, v)
+        u = matvec(ww, matvec(ww, v))
         s = sqrt(dot(u, u))
         if s < 1e-300:
             raise ValueError("`w` is numerically zero; no neighbours")
         v = [t / s for t in u]
-    srad = abs(dot(v, matvec(ww, v)))
+    wv = matvec(ww, v)
+    srad = sqrt(dot(wv, wv))
     if srad <= 0:
         raise ValueError("`w` has spectral radius 0; rho is unidentified")
     hi = (1.0 / srad) * (1.0 - 1e-6)

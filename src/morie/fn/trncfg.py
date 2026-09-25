@@ -18,10 +18,10 @@ def trimmed_causal_effect(y, d, X=None, propensity=None, alpha=None,
     :math:`\alpha` solving
 
     .. math::
-       \frac{2}{\alpha(1-\alpha)}
-       = \mathbb{E}\!\left[\frac{1}{e(X)(1-e(X))}
+       \frac{1}{\alpha(1-\alpha)}
+       = 2\,\mathbb{E}\!\left[\frac{1}{e(X)(1-e(X))}
          \;\middle|\;
-         \frac{1}{e(X)(1-e(X))} \le \frac{2}{\alpha(1-\alpha)}\right],
+         \frac{1}{e(X)(1-e(X))} \le \frac{1}{\alpha(1-\alpha)}\right],
 
     and that in practice :math:`\alpha = 0.1` is close to optimal
     across a wide range of designs -- which is where the familiar rule
@@ -106,32 +106,30 @@ def trimmed_causal_effect(y, d, X=None, propensity=None, alpha=None,
     elif rule == "fixed":
         a = 0.1
     else:
-        # Crump's condition is a CROSSING, not an inequality. Define
-        # g(gamma) = 2 E[inv | inv <= gamma] - gamma. At small gamma the
-        # retained values all sit near gamma so g > 0; as gamma grows the
-        # conditional mean flattens to E[inv] and g goes negative. The
-        # optimal cutoff is the crossing.
-        #
-        # Testing "mean(inv[inv <= c]) <= c" instead is satisfied at the
-        # very first candidate -- the mean of values below c is always
-        # below c -- so it returns gamma too small, the discriminant goes
-        # negative and alpha silently comes back 0 with nothing trimmed.
-        cands = np.unique(np.sort(inv))
-        cands = cands[cands >= 4.0]
-        gamma = None
-        for cand in cands:
-            m = inv <= cand
-            if m.sum() < 4:
-                continue
-            if 2.0 * float(np.mean(inv[m])) - cand <= 0.0:
-                gamma = float(cand)
-                break
-        if gamma is None or gamma <= 8.0:
-            # no cutoff improves the variance: overlap is already good
+        # Crump, Hotz, Imbens & Mitnik (2009), Corollary 1 and its sample
+        # version: the smallest alpha in [0, 1/2] with
+        #     1/(alpha(1-alpha)) <= 2 mean(inv | inv <= 1/(alpha(1-alpha))),
+        # i.e. the LARGEST gamma = 1/(alpha(1-alpha)) with
+        # gamma <= 2 m(gamma); alpha = 0 when sup inv <= 2 mean(inv).
+        # m(gamma) is a step function of gamma, constant between sorted
+        # values of inv, so the largest admissible gamma is found exactly.
+        srt = np.sort(inv)
+        vals = [float(v) for v in srt]
+        nn = len(vals)
+        if vals[-1] <= 2.0 * sum(vals) / nn:
             a = 0.0
         else:
-            disc = 1.0 - 8.0 / gamma
-            a = 0.5 * (1.0 - np.sqrt(max(disc, 0.0)))
+            csum = [0.0]
+            for v in vals:
+                csum.append(csum[-1] + v)
+            gamma = 4.0
+            for kk in range(nn - 1, -1, -1):
+                m_k = csum[kk + 1] / (kk + 1)
+                if 2.0 * m_k >= vals[kk]:
+                    upper = vals[kk + 1] if kk + 1 < nn else float("inf")
+                    gamma = min(2.0 * m_k, upper)
+                    break
+            a = 0.5 - float(np.sqrt(max(0.25 - 1.0 / gamma, 0.0)))
         a = float(np.clip(a, 0.0, 0.4999))
 
     keep = (e >= a) & (e <= 1 - a)

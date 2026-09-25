@@ -100,6 +100,14 @@ def strauss_process(coords, r, gamma=None, window=None, nx=12, ny=12,
         standard errors from the Poisson information, the sufficient
         statistic ``n_close_pairs``, ``valid_density``, and the log
         pseudolikelihood.
+
+    The estimates equal spatstat's ``ppm(Q ~ 1, Strauss(r),
+    correction = "none")`` on the same quadrature scheme, and the
+    standard errors its ``vcov(fit, hessian = TRUE)``: the inverse
+    Hessian of the log pseudolikelihood.  That treats the fit as if it
+    were Poisson and UNDERSTATES the uncertainty of a Gibbs model;
+    spatstat's default ``vcov`` adds the dependence terms of
+    Coeurjolly & Rubak (2013) and is typically larger.
     """
     P = [[float(v) for v in row] for row in k.mat(coords)]
     n = len(P)

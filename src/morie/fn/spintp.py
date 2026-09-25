@@ -29,6 +29,28 @@ def _kernel(t, kind):
     raise ValueError("kernel must be one of %s, got %r." % (KERNELS, kind))
 
 
+def _kernel_cdf(t, kind):
+    """K(t) = integral of k from -inf to t, in closed form for each kernel."""
+    import math
+
+    if kind == "gaussian":
+        return 0.5 * math.erfc(-t / math.sqrt(2.0))
+    u = min(max(t, -1.0), 1.0)
+    if kind == "quadratic":
+        return 0.5 + 0.75 * (u - u ** 3 / 3.0)
+    if kind == "minimum_variance":
+        return 0.5 + 0.375 * (3.0 * u - 5.0 * u ** 3 / 3.0)
+    return 0.5 + 0.5 * u
+
+
+def _trap(m):
+    """Trapezoid weights on m equally spaced nodes (unit spacing)."""
+    w = [1.0] * m
+    if m > 1:
+        w[0] = w[-1] = 0.5
+    return w
+
+
 def schabenberger_intensity_estimation(points, bandwidth=None, region=None,
                                        grid=40, kernel="gaussian",
                                        edge_correct=True):
@@ -150,24 +172,27 @@ def schabenberger_intensity_estimation(points, bandwidth=None, region=None,
                 * _kernel((GY - P[i, 1]) / hy, kernel))
     lam /= (hx * hy)
 
-    # Diggle's p_h(s): the kernel mass remaining inside A, evaluated by
-    # the same grid quadrature used everywhere else so the correction
-    # and the surface are consistent
+    # Diggle's p_h(s): the kernel mass remaining inside A.  The product
+    # kernel makes it separable, and each factor is a difference of the
+    # kernel's own CDF, K((x - xmin)/h) - K((x - xmax)/h) -- exact, where
+    # a grid sum would give the boundary nodes full weight and bias the
+    # correction precisely at the edge it exists for.
     edge = np.ones((g, g))
     if edge_correct:
-        dx = (xmax - xmin) / max(g - 1, 1)
-        dy = (ymax - ymin) / max(g - 1, 1)
-        for a in range(g):
-            for b_ in range(g):
-                w = (_kernel((GX - xs[a]) / hx, kernel)
-                     * _kernel((GY - ys[b_]) / hy, kernel)) / (hx * hy)
-                edge[a, b_] = float(np.sum(w) * dx * dy)
+        px = [_kernel_cdf((float(x) - xmin) / hx, kernel)
+              - _kernel_cdf((float(x) - xmax) / hx, kernel) for x in xs]
+        py = [_kernel_cdf((float(y) - ymin) / hy, kernel)
+              - _kernel_cdf((float(y) - ymax) / hy, kernel) for y in ys]
+        edge = np.asarray([[a * b_ for b_ in py] for a in px])
         edge = np.maximum(edge, 1e-6)
         lam = lam / edge
 
     dx = (xmax - xmin) / max(g - 1, 1)
     dy = (ymax - ymin) / max(g - 1, 1)
-    integrated = float(np.sum(lam) * dx * dy)
+    wx, wy = _trap(g), _trap(g)
+    lamv = lam.tolist()
+    integrated = float(sum(wx[a] * wy[b_] * lamv[a][b_]
+                           for a in range(g) for b_ in range(g)) * dx * dy)
     return RichResult(
         payload={
             "estimate": lam,

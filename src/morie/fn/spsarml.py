@@ -173,23 +173,54 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
     rho = float(0.5 * (a + b))
     neg2, beta, s2 = _concentrated(yy, X, W, rho, model)
 
+    # asymptotic covariance from the analytic information matrix of
+    # (beta, sigma^2, rho) -- Ord (1975) for the error model, Anselin
+    # (1988, eqs 6.5-6.6) for the lag model; spatialreg's errorsarlm /
+    # lagsarlm report the same.  With A = I - rho W and WA = W A^-1:
+    #   error:  I_bb = X'A'AX/s2, beta orthogonal to (s2, rho);
+    #   lag:    I_bb = X'X/s2, I_brho = X'WA X b/s2,
+    #           I_rhorho gains (WA X b)'(WA X b)/s2;
+    #   both:   I_ss = n/(2 s4), I_srho = tr(WA)/s2,
+    #           I_rhorho = tr(WA WA) + tr(WA'WA) (+ lag term).
     A = np.eye(n) - rho * W
-    Xe = A @ X if model == "error" else X
-    XtX = Xe.T @ Xe
-    cov_beta = s2 * np.linalg.inv(XtX)
-    # curvature of the concentrated objective gives a standard error
-    # for rho; it ignores the covariance with beta and sigma^2, which
-    # the full information matrix (6.42) would carry
-    h = max(1e-5, 1e-4 * max(abs(rho), 1.0))
-    f0 = neg2
-    fp = _concentrated(yy, X, W, min(rho + h, hi), model)[0]
-    fm = _concentrated(yy, X, W, max(rho - h, lo), model)[0]
-    curv = (fp - 2.0 * f0 + fm) / h ** 2
-    se_rho = float(np.sqrt(2.0 / curv)) if curv > 0 else float("nan")
+    WA = W @ np.linalg.inv(A)
+    tr1 = float(np.trace(WA))
+    t2 = float(np.trace(WA @ WA) + np.trace(WA.T @ WA))
+    p_ = X.shape[1]
+    b_ = np.atleast_1d(beta)
+    if model == "error":
+        Xe = A @ X
+        cov_beta = s2 * np.linalg.inv(Xe.T @ Xe)
+        info = np.array([[n / (2.0 * s2 ** 2), tr1 / s2], [tr1 / s2, t2]])
+        v_rho = float(np.linalg.inv(info)[1, 1])
+    else:
+        WXb = WA @ (X @ b_)
+        info = np.zeros((p_ + 2, p_ + 2))
+        info[:p_, :p_] = (X.T @ X) / s2
+        xw = (X.T @ WXb) / s2
+        info[:p_, p_ + 1] = xw
+        info[p_ + 1, :p_] = xw
+        info[p_, p_] = n / (2.0 * s2 ** 2)
+        info[p_, p_ + 1] = info[p_ + 1, p_] = tr1 / s2
+        info[p_ + 1, p_ + 1] = t2 + float(WXb @ WXb) / s2
+        inv = np.linalg.inv(info)
+        cov_beta = inv[:p_, :p_]
+        v_rho = float(inv[p_ + 1, p_ + 1])
+    se_rho = float(np.sqrt(v_rho)) if v_rho > 0 else float("nan")
 
+    # least squares for rho, the estimator Whittle (1954) and Ord (1975)
+    # showed inconsistent: regress the OLS residuals on their own lag
+    # (error model), or y on (X, Wy) (lag model)
     Wy = W @ yy
-    ols_rho = float((yy @ W.T @ W @ yy) / (yy @ W.T @ W @ W @ yy)) \
-        if abs(yy @ W.T @ W @ W @ yy) > 1e-12 else float("nan")
+    if model == "error":
+        bo = np.linalg.lstsq(X, yy, rcond=None)[0]
+        e_ = yy - X @ bo
+        We = W @ e_
+        den = float(We @ We)
+        ols_rho = float(We @ e_) / den if den > 1e-12 else float("nan")
+    else:
+        Z = np.column_stack([X, Wy])
+        ols_rho = float(np.linalg.lstsq(Z, yy, rcond=None)[0][-1])
 
     return RichResult(
         payload={

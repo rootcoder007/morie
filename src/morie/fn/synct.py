@@ -9,8 +9,9 @@ from ._richresult import RichResult
 __all__ = ["synthetic_control"]
 
 
-def _fit_one(Y, treated_row, t0):
-    donors = np.delete(np.arange(Y.shape[0]), treated_row)
+def _fit_one(Y, treated_row, t0, exclude=None):
+    drop = [treated_row] if exclude is None else [treated_row, exclude]
+    donors = np.asarray([u for u in range(Y.shape[0]) if u not in drop])
     A = Y[donors][:, :t0].T
     b = Y[treated_row, :t0]
     w, _, _ = simplex_lstsq(A, b)
@@ -140,7 +141,10 @@ def synthetic_control(Y, unit_id, time_id, treated_unit, treatment_time,
     placebo = {}
     cand = list(donors)
     for j in cand:
-        wj, _, sj = _fit_one(M, int(j), t0)
+        # the placebo's donor pool leaves out the actually treated unit,
+        # whose post-period outcomes carry the effect (Abadie, Diamond &
+        # Hainmueller 2010, sec. 5; SCtools::generate.placebos)
+        wj, _, sj = _fit_one(M, int(j), t0, exclude=row)
         gj = M[int(j)] - sj
         pj = _rmspe(gj, pre)
         placebo[float(units[int(j)])] = {

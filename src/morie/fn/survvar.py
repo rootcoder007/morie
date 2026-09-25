@@ -79,7 +79,12 @@ def variance_cox_estimator(beta, z, time, event, robust=False, cluster=None):
         zz = (w[at, None, None] * (Z[at][:, :, None] * Z[at][:, None, :])
               ).sum(axis=0) / sw
         info += zz - np.outer(zbar, zbar)
+        # Lin & Wei (1989) score residual: the event term for subject i
+        # and, for EVERY subject still at risk, minus its share of the
+        # compensator w_k (Z_k - zbar) / S0 -- dropping that second term
+        # leaves the sandwich built from half the martingale
         score_i[i] += Z[i] - zbar
+        score_i[at] -= (w[at] / sw)[:, None] * (Z[at] - zbar)
     var = np.linalg.pinv(info)
     out = {"information": info, "variance": var,
            "se": np.sqrt(np.maximum(np.diag(var), 0.0))}

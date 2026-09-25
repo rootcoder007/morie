@@ -72,11 +72,15 @@ def test_no_permissible_pairs_is_an_error():
         R.c_index([1.0, 2.0], [0, 0], [1.0, 2.0])
 
 
-def test_the_unsourced_splitting_rules_are_refused():
+def test_all_four_splitting_rules_of_the_paper_are_available():
+    """Ishwaran et al. (2008) list four rules; conserve and logrankscore
+    were added after their sources were located (commits 3e2692cd2c and
+    50c6576609), so every rule now fits a forest."""
+    assert set(R.rule_status()["available"]) == set(R.SPLIT_RULES)
     for rule in ("conserve", "logrankscore"):
-        assert not R.rule_status(rule)["available"]
-        with pytest.raises(ValueError):
-            R.forest(X, T, E, n_trees=2, rule=rule)
+        assert R.rule_status(rule)["available"]
+        f = R.forest(X, T, E, n_trees=2, rule=rule, seed=1)
+        assert 0.0 < f["oob_fraction"] < 1.0
 
 
 def test_an_unknown_splitting_rule_is_refused():

@@ -167,6 +167,15 @@ def johansen(Y, lags=1):
 
     Unlike Engle-Granger this finds *all* cointegrating vectors and
     does not depend on which variable is placed on the left.
+
+    The concentration includes an unrestricted constant and the
+    critical values are Johansen's Case 3 (statsmodels
+    ``coint_johansen(det_order=0)``, whose numbers these reproduce).
+    Case 3 presumes the levels carry linear trends; on driftless data
+    the last trace statistic is compared with a chi-square(1) value it
+    does not follow, and the test over-rejects -- a simulation of a
+    driftless two-series VECM of rank 1 gives the right rank only
+    about 70% of the time at the 5% level, against 96% with drift.
     """
     Y = np.asarray(Y, dtype=float)
     if Y.ndim != 2:
