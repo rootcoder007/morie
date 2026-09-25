@@ -27,15 +27,23 @@ def lcg(n, seed=1):
 
 
 def fd_grad(f, x, h=1e-6):
-    """Central finite-difference gradient of a scalar function."""
-    x = np.asarray(x, dtype=float)
-    g = np.zeros_like(x)
-    for i in range(x.size):
-        up, dn = x.copy(), x.copy()
-        up.flat[i] += h
-        dn.flat[i] -= h
-        g.flat[i] = (f(up) - f(dn)) / (2 * h)
-    return g
+    """Central finite-difference gradient of a scalar function.
+
+    Works on flat Python lists because the array core has no ``.flat``.
+    """
+    a = np.asarray(x, dtype=float)
+    shape = tuple(a.shape)
+    flat = [float(v) for v in a.ravel().tolist()]
+    g = []
+    for i in range(len(flat)):
+        up, dn = list(flat), list(flat)
+        up[i] += h
+        dn[i] -= h
+        g.append(
+            (f(np.reshape(np.asarray(up, dtype=float), shape))
+             - f(np.reshape(np.asarray(dn, dtype=float), shape))) / (2 * h)
+        )
+    return np.reshape(np.asarray(g, dtype=float), shape)
 
 
 def softmax_rows(Z):

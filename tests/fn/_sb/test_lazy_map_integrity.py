@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_lazy_map_integrity.py

@@ -1,25 +1,43 @@
 """Tests for qedscr.qed_drug_likeness."""
 
-from morie.fn import _array_core as np
+import math
 
+from morie.fn import _array_core as np
 from morie.fn.qedscr import qed_drug_likeness
 
 
 def test_qedscr_basic():
     """Test basic functionality."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    result = qed_drug_likeness(smiles, weights)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    properties = {
+        "MW": 46.07,
+        "ALOGP": -0.31,
+        "HBA": 1,
+        "HBD": 1,
+        "PSA": 20.23,
+        "ROTB": 0,
+        "AROM": 0,
+        "ALERTS": 0,
+    }
+    result = qed_drug_likeness(properties)
+    assert math.isfinite(result)
+    assert 0.0 <= result <= 1.0
 
 
 def test_qedscr_edge():
     """Test edge cases."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    result = qed_drug_likeness(smiles, weights)
-    assert isinstance(result, dict)
+    properties = {
+        "MW": 78.11,
+        "ALOGP": 2.13,
+        "HBA": 0,
+        "HBD": 0,
+        "PSA": 0.0,
+        "ROTB": 0,
+        "AROM": 1,
+        "ALERTS": 0,
+    }
+    result = qed_drug_likeness(properties)
+    assert math.isfinite(result)
+    assert 0.0 <= result <= 1.0
 
 
 # --- appended: the module's own worked example as a gate -----------

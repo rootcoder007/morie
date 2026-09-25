@@ -18,10 +18,16 @@ class TestEmfit:
         X = np.vstack([X1, X2])
 
         params, info = emfit(X, n_components=2, max_iter=100, seed=42, full_output=True)
-        assert "means" in params
-        assert "covars" in params
-        assert "weights" in params
         assert params["means"].shape == (2, 2)
+        assert params["covars"].shape == (2, 2, 2)
+        assert np.isclose(np.sum(params["weights"]), 1.0)
+        assert info["iterations"] >= 1
+        # The two clusters sit at (0, 0) and (5, 5); the fit recovers both.
+        centres = sorted(params["means"].tolist(), key=lambda m: m[0])
+        assert np.isclose(centres[0][0], 0.0, atol=0.5)
+        assert np.isclose(centres[0][1], 0.0, atol=0.5)
+        assert np.isclose(centres[1][0], 5.0, atol=0.5)
+        assert np.isclose(centres[1][1], 5.0, atol=0.5)
 
     def test_emfit_single_component(self):
         """Test fitting single component."""

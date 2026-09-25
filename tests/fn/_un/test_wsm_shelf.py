@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_wsm_shelf.py

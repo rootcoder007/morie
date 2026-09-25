@@ -3,10 +3,49 @@
 from morie.fn.irtgr import irtgr
 
 
-def test_irtgr_basic(mapq_df):
-    items = [c for c in mapq_df.columns if c.startswith(("EE", "EA", "UA", "ER")) and c[-1].isdigit()]
-    result = irtgr(mapq_df[items].values)
-    assert hasattr(result, "item_params")
+def test_irtgr_basic():
+    """GRM recovers a real parameter structure from ordered-category data.
+
+    The generated version fed the 200x20 five-category `mapq_df` fixture in,
+    which is 20 items x 4 thresholds through a pure-Python EM -- minutes, not
+    seconds -- and it asserted only that the result had an attribute. The
+    model contract is identical at n=40, k=3, and can be checked for real.
+    """
+    rows = []
+    for i in range(40):
+        lvl = i % 3
+        rows.append([lvl, min(2, lvl + i % 2), max(0, lvl - i % 2)])
+    rows[0] = [0, 0, 0]
+    rows[1] = [2, 2, 2]
+
+    result = irtgr(rows, n_quad=11, max_iter=15)
+
+    assert result.model == "GRM"
+    assert sorted(result.item_params) == ["item_0", "item_1", "item_2"]
+    for name, par in result.item_params.items():
+        assert 0.01 <= par["a"] <= 5.0, (name, par["a"])
+        # Samejima (5-3): thresholds are strictly ordered, one fewer than the
+        # three categories present in the data.
+        assert len(par["thresholds"]) == 2, (name, par["thresholds"])
+        assert par["thresholds"][0] < par["thresholds"][1], (name, par["thresholds"])
+        assert all(-6.0 <= b <= 6.0 for b in par["thresholds"]), (name, par["thresholds"])
+
+    assert len(result.theta) == 40
+    assert result.fit["n"] == 40
+    assert result.fit["k"] == 3
+    assert result.fit["loglik"] < 0.0
+    assert 1 <= result.fit["n_iter"] <= 15
+
+    # A respondent in the top category on every item must come out above one
+    # in the bottom category on every item: every operating characteristic is
+    # increasing in theta (Samejima 1969, Ch 5).
+    assert float(result.theta[1]) > float(result.theta[0])
+    # theta is a function of the response pattern alone, so identical rows
+    # must give identical estimates.
+    for i in range(2, 40):
+        for j in range(i + 1, 40):
+            if rows[i] == rows[j]:
+                assert abs(float(result.theta[i]) - float(result.theta[j])) < 1e-12
 
 
 def test_cheatsheet():

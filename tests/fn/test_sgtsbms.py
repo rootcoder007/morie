@@ -1,25 +1,64 @@
 """Tests for sgtsbms.sgt_sbm_spectral_estimate."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.sgtsbms import sgt_sbm_spectral_estimate
 
 
+def _two_cliques(m):
+    """Two disjoint cliques of size m: a planted partition with no noise."""
+    n = 2 * m
+    A = [[0.0] * n for _ in range(n)]
+    for block in (range(m), range(m, n)):
+        for i in block:
+            for j in block:
+                if i != j:
+                    A[i][j] = 1.0
+    return A
+
+
 def test_sgtsbms_basic():
-    """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = sgt_sbm_spectral_estimate(A, K)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    """The two cliques are recovered exactly, and the summaries follow."""
+    A = _two_cliques(3)
+    r = sgt_sbm_spectral_estimate(A, k=2)
+    labels = [int(v) for v in r["labels"]]
+    assert len(set(labels)) == 2
+    assert labels[0] == labels[1] == labels[2]
+    assert labels[3] == labels[4] == labels[5]
+    assert labels[0] != labels[3]
+    assert r["k"] == 2
+    assert r["n"] == 6
+    # every vertex has degree m - 1 = 2
+    assert abs(float(r["mean_degree"]) - 2.0) < 1e-9
+    assert abs(float(r["log_n"]) - math.log(6)) < 1e-9
+    assert [int(s) for s in sorted(float(s) for s in r["block_sizes"])] == [3, 3]
+    assert r["regularized"] is True
+
+
+def test_sgtsbms_eigenvalues_of_two_cliques():
+    """Two K_3 blocks: the adjacency spectrum is 2, 2, -1, -1, -1, -1.
+
+    Unregularized, so the reported leading eigenvalues are the graph's own.
+    """
+    r = sgt_sbm_spectral_estimate(_two_cliques(3), k=2, regularized=False)
+    ev = [float(v) for v in r["eigenvalues"]]
+    assert abs(ev[0] - 2.0) < 1e-9
+    assert abs(ev[1] - 2.0) < 1e-9
+    assert abs(ev[2] + 1.0) < 1e-9
+    # the eigengap separates the k-th from the (k+1)-th eigenvalue in magnitude
+    assert abs(float(r["eigengap"]) - (abs(ev[1]) - abs(ev[2]))) < 1e-9
+    assert r["regularized"] is False
 
 
 def test_sgtsbms_edge():
-    """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = sgt_sbm_spectral_estimate(A, K)
-    assert isinstance(result, dict)
+    """A larger pair of blocks satisfies the degree condition."""
+    r = sgt_sbm_spectral_estimate(_two_cliques(8), k=2)
+    labels = [int(v) for v in r["labels"]]
+    assert len(set(labels[:8])) == 1
+    assert len(set(labels[8:])) == 1
+    assert labels[0] != labels[8]
+    assert abs(float(r["mean_degree"]) - 7.0) < 1e-9
+    assert r["degree_condition"] is True
 
 
 # --- appended: the module's own worked example as a gate -----------
