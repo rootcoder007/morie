@@ -4,7 +4,8 @@
 from math import fsum, sqrt
 
 from ._richresult import RichResult
-from ._spx import eye, mat, matmul, solve, sqmat, trace, transpose, twosidep, vec
+from ._spx import (eye, mat, matmul, matvec, solve, sqmat, trace, transpose,
+                   twosidep, vec)
 
 __all__ = [
     "schabenberger_moran_i_residuals",
@@ -101,6 +102,11 @@ def schabenberger_moran_i_residuals(residuals, w, x=None):
             for j in range(n):
                 proj[i][j] = proj[i][j] - h[i][j]
 
+    # ehat = M e. The residuals were used as given, so a raw attribute
+    # passed with `x` (as documented) was never regressed on x and Ires
+    # came out several times too large; M is idempotent, so projecting
+    # residuals that are already OLS residuals changes nothing.
+    e = matvec(proj, e)
     ee = fsum([t * t for t in e])
     if ee <= 0:
         raise ValueError("the residuals are all zero; Ires is undefined")

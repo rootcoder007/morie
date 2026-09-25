@@ -4,7 +4,8 @@
 from math import fsum, sqrt
 
 from ._richresult import RichResult
-from ._spx import mat, matmul, matvec, sqmat, transpose, topeigs
+from ._array_core import _jacobi_eigh
+from ._spx import fixsign, mat, matmul, matvec, sqmat, transpose
 
 __all__ = [
     "spatial_pca",
@@ -32,7 +33,9 @@ def spatial_pca(x, w, naxes=2):
     can be NEGATIVE, and that is not a bug: a negative axis is a pattern
     of local CONTRAST (neighbouring sites unlike each other), which
     ordinary PCA has no way to express. Eigenvalues are returned signed
-    and unsorted-by-magnitude precisely so that structure is visible.
+    and ordered from the most positive down, the order in which
+    ade4::multispati reports its axes, so the leading axes are the
+    strongest positive spatial structure and the contrast axes come last.
 
     W is symmetrised before the eigen-decomposition. A row-standardised W
     is ASYMMETRIC, and feeding it to a symmetric eigensolver reads one
@@ -94,7 +97,13 @@ def spatial_pca(x, w, naxes=2):
             h[i][j] = av
             h[j][i] = av
 
-    vals, vecs = topeigs(h, naxes)
+    # All p eigenpairs, ranked algebraically. Power iteration ranks by
+    # |lambda|, which put strong local-contrast axes ahead of the
+    # positive spatial structure MULTISPATI's leading axes describe.
+    allv, allvec = _jacobi_eigh(h)
+    order = sorted(range(p), key=lambda a: -allv[a])[:naxes]
+    vals = [allv[a] for a in order]
+    vecs = [fixsign([allvec[j][a] for j in range(p)]) for a in order]
     scores = [[fsum([zz[i][j] * vecs[a][j] for j in range(p)])
                for i in range(n)] for a in range(naxes)]
     lagged = [matvec(sym, s) for s in scores]
