@@ -8,12 +8,12 @@ from morie.fn.pyr import person_years_at_risk
 
 class TestPersonYears:
     def test_known(self):
-        """3 people: 365, 730, 182 days => ~1 + 2 + 0.498 PY."""
+        """3 people: 366, 731 and 182 days (2020 is a leap year)."""
         entry = np.array(["2020-01-01", "2020-01-01", "2020-01-01"], dtype="datetime64[D]")
         exit_ = np.array(["2021-01-01", "2022-01-01", "2020-07-01"], dtype="datetime64[D]")
         res = person_years_at_risk(entry, exit_)
         assert res.measure == "Person-years"
-        assert res.estimate == pytest.approx(365 / 365.25 + 731 / 365.25 + 182 / 365.25, rel=0.01)
+        assert res.estimate == pytest.approx((366 + 731 + 182) / 365.25, rel=1e-12)
 
     def test_n(self):
         """n should equal number of subjects."""
