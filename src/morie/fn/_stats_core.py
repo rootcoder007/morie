@@ -2720,6 +2720,28 @@ class _NBinom(_Dist):
 
     pdf = pmf
 
+    def logpmf(self, k, n, p):
+        # scipy.stats.nbinom.logpmf, in log space so a tiny mass is not
+        # lost to exp underflow, broadcasting k, n and p as scipy does
+        # (a regression passes one p per observation)
+        def one(kk, nn, pp):
+            if kk != kk or nn != nn or pp != pp:
+                return _math.nan
+            if kk < 0 or kk != _math.floor(kk):
+                return -_math.inf
+            if pp == 1.0:
+                return 0.0 if kk == 0 else -_math.inf
+            return (_math.lgamma(kk + nn) - _math.lgamma(nn)
+                    - _math.lgamma(kk + 1.0) + nn * _math.log(pp)
+                    + kk * _math.log1p(-pp))
+        from . import _array_core as _ac2
+        if all(_ac2.ndim(v) == 0 for v in (k, n, p)):
+            return one(float(k), float(n), float(p))
+        kb, nb, pb = _ac2.broadcast_arrays(k, n, p)
+        return _ac2.marr([one(a, b, c) for a, b, c in
+                          zip(kb.ravel().tolist(), nb.ravel().tolist(),
+                              pb.ravel().tolist())]).reshape(kb.shape)
+
     def cdf(self, k, n, p):
         def one(kk):
             return _betainc(n, int(kk) + 1, p)

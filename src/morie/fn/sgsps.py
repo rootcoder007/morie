@@ -45,46 +45,79 @@ def spectral_grf_sim(
     .. epigraph::
 
     """
+    import math
+
     rng = np.random.default_rng(seed)
     coords = np.asarray(coords, dtype=np.float64)
     n = len(coords)
     params = cov_params or {"sill": 1.0, "range": 1.0, "nugget": 0.0}
-    sill = params.get("sill", 1.0)
-    r = params.get("range", 1.0)
-    nug = params.get("nugget", 0.0)
-
-    ux = np.unique(np.round(coords[:, 0], 8))
-    uy = np.unique(np.round(coords[:, 1], 8))
+    sill = float(params.get("sill", 1.0))
+    r = float(params.get("range", 1.0))
+    nug = float(params.get("nugget", 0.0))
+    if cov_model not in ("exponential", "gaussian"):
+        raise ValueError("cov_model must be 'exponential' or 'gaussian'")
+    if r <= 0 or sill < 0 or nug < 0:
+        raise ValueError("need range > 0, sill >= 0, nugget >= 0")
+    cx = [float(v) for v in coords[:, 0].tolist()]
+    cy = [float(v) for v in coords[:, 1].tolist()]
+    ux = sorted(set(round(v, 8) for v in cx))
+    uy = sorted(set(round(v, 8) for v in cy))
     nx, ny = len(ux), len(uy)
+    stx = ux[1] - ux[0] if nx > 1 else 1.0
+    sty = uy[1] - uy[0] if ny > 1 else 1.0
+    for u, st in ((ux, stx), (uy, sty)):
+        for a, b in zip(u, u[1:]):
+            if abs((b - a) - st) > 1e-6 * max(1.0, abs(st)):
+                raise ValueError("coords must lie on a regular grid")
+    ix = [int(round((round(v, 8) - ux[0]) / stx)) for v in cx]
+    iy = [int(round((round(v, 8) - uy[0]) / sty)) for v in cy]
 
-    dx = np.arange(nx) * (ux[1] - ux[0]) if nx > 1 else np.array([0.0])
-    dy = np.arange(ny) * (uy[1] - uy[0]) if ny > 1 else np.array([0.0])
-    DX, DY = np.meshgrid(dx, dy, indexing="ij")
-    H = np.sqrt(DX**2 + DY**2)
+    def cov(h):
+        return sill * (math.exp(-(h / r) ** 2) if cov_model == "gaussian"
+                       else math.exp(-h / r))
 
-    if cov_model == "gaussian":
-        C_grid = sill * np.exp(-((H / r) ** 2))
-    else:
-        C_grid = sill * np.exp(-H / r)
-
-    Nx, Ny = 2 * nx, 2 * ny
-    C_embed = np.zeros((Nx, Ny))
-    C_embed[:nx, :ny] = C_grid
-
-    S = np.real(np.fft.fft2(C_embed))
-    S = np.maximum(S, 0.0)
-
+    # Circulant embedding (Wood and Chan 1994; Dietrich and Newsam 1997):
+    # the base block holds C at the WRAPPED lag min(i, N - i), so the
+    # torus covariance restricted to the nx x ny corner is exactly C.
+    # The old code put C in one corner and zeros elsewhere, which is not
+    # a circulant covariance at all, and scaled the field by 1/N.
+    # A torus that is too small can leave negative eigenvalues; the
+    # remedy (Wood and Chan 1994) is to enlarge it, up to 8x here. Tiny
+    # negatives are round-off; if large ones remain they are clipped and
+    # ``embedding_exact`` is False.
+    for grow in (2, 4, 8):
+        Nx, Ny = grow * nx, grow * ny
+        C_embed = [[cov(math.hypot(min(i, Nx - i) * stx,
+                                   min(j, Ny - j) * sty))
+                    for j in range(Ny)] for i in range(Nx)]
+        S = [[float(v.real) for v in row]
+             for row in np.fft.fft2(np.array(C_embed)).tolist()]
+        smax = max(max(row) for row in S)
+        smin = min(min(row) for row in S)
+        exact = smin >= -1e-8 * smax
+        if exact:
+            break
+    N = Nx * Ny
+    amp = [[math.sqrt(max(v, 0.0) / N) for v in row] for row in S]
     sims = np.empty((n_sims, n))
     for k in range(n_sims):
-        noise = rng.standard_normal((Nx, Ny)) + 1j * rng.standard_normal((Nx, Ny))
-        field = np.real(np.fft.ifft2(np.sqrt(S) * noise))[:nx, :ny]
-        sims[k] = field.ravel()[:n]
-
+        e1 = rng.standard_normal((Nx, Ny)).tolist()
+        e2 = rng.standard_normal((Nx, Ny)).tolist()
+        w = [[amp[i][j] * complex(e1[i][j], e2[i][j]) for j in range(Ny)]
+             for i in range(Nx)]
+        # the real part of FFT(sqrt(S/N) eps) has covariance exactly C
+        f = np.fft.fft2(np.array(w)).tolist()
+        vals = [f[ix[m]][iy[m]].real for m in range(n)]
+        if nug > 0:
+            z = rng.standard_normal(n).tolist()
+            vals = [v + math.sqrt(nug) * t for v, t in zip(vals, z)]
+        sims[k] = vals
     return SpatialResult(
         name="spectral_grf_sim",
         statistic=float(np.mean(sims[0])),
         p_value=None,
-        extra={"simulations": sims},
+        extra={"simulations": sims, "embedding_exact": bool(exact),
+               "min_eigenvalue_ratio": float(smin / smax)},
     )
 
 

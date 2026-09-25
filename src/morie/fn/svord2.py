@@ -6,11 +6,22 @@ from ._containers import SpatialResult
 
 
 def svord2(voter, candidates, *, beta=1.0):
-    """Ordered Logit Spatial Model.
+    """Spatial-voting choice probabilities under a conditional logit.
+
+    With Euclidean distance d_j from the voter's ideal point to candidate
+    j, utility u_j = -beta d_j and McFadden's conditional logit gives
+
+        P_j = exp(u_j) / sum_k exp(u_k).
+
+    Despite the module title this is not an ordered-logit model: there
+    are no cut points and the candidates are unordered alternatives. The
+    ``statistic`` is the probability of choosing the nearest candidate.
 
     Returns
     -------
     SpatialResult
+        ``statistic`` = P(nearest); ``extra["probabilities"]`` = P_j in
+        candidate order.
     """
     voter = np.asarray(voter, dtype=float)
     candidates = np.asarray(candidates, dtype=float)

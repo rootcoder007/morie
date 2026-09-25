@@ -14,10 +14,13 @@ def starn(
 
     .. math::
 
-        z_t = \\sum_{k=1}^{p} \\phi_k W^k z_{t-1} + \\varepsilon_t
+        z_t = \\sum_{k=0}^{p} \\phi_k W^k z_{t-1} + \\varepsilon_t
 
-    where :math:`W` is the spatial weights matrix and :math:`p` is the
-    spatial lag order.
+    where :math:`W` is the spatial weights matrix, :math:`W^0 = I` and
+    :math:`p` is the spatial lag order: the STAR(1_p) of Pfeifer and
+    Deutsch (1980), with the l-th order neighbour matrix taken as W^l.
+    The k = 0 term, each site's own previous value, used to be left
+    out, which forced its coefficient to zero.
 
     :param data: Spatio-temporal data (T, n) -- T time steps, n locations.
     :param weights: Spatial weights matrix (n, n), row-standardised.
@@ -42,13 +45,11 @@ def starn(
 
     y = data[1:].ravel()
     X_parts = []
-    for k in range(1, order + 1):
+    for k in range(0, order + 1):
         Wk = np.linalg.matrix_power(weights, k)
         lagged = (Wk @ data[:-1].T).T
         X_parts.append(lagged.reshape(-1, 1) if lagged.ndim == 1 else lagged.reshape(-1, 1))
 
-    if not X_parts:
-        X_parts = [data[:-1].ravel().reshape(-1, 1)]
 
     X = np.hstack(X_parts)
     coeffs, _, _, _ = np.linalg.lstsq(X, y, rcond=None)
@@ -59,7 +60,9 @@ def starn(
     n_obs = len(y)
     rss = float(np.sum(residuals**2))
     sigma2 = rss / max(n_obs - k_params, 1)
-    aic = n_obs * np.log(sigma2 + 1e-12) + 2 * k_params
+    # Gaussian AIC uses the ML variance rss / n, not the unbiased one
+    aic = (n_obs * float(np.log(rss / n_obs)) + 2 * k_params
+           if rss > 0 else float("-inf"))
 
     return {
         "coefficients": coeffs,

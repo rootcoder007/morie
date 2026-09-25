@@ -826,6 +826,10 @@ class marr:
         """numpy.ndarray.itemsize: the byte width of one element."""
         return getattr(self.dtype, "itemsize", 8)
 
+    def argsort(self, axis=-1, kind=None, order=None):
+        del order
+        return argsort(self, axis=axis, kind=kind)
+
     def sort(self, axis=-1, kind=None, order=None):
         """numpy.ndarray.sort: sorts in place and returns None."""
         del kind, order
@@ -2914,6 +2918,28 @@ _pymax = _bi.max
 # ------------------------------------------------------------------ linalg
 
 class _Linalg:
+    @staticmethod
+    def matrix_power(a, n):
+        """numpy.linalg.matrix_power: repeated squaring; n < 0 inverts."""
+        if int(n) != n:
+            raise TypeError("exponent must be an integer")
+        n = int(n)
+        m = atleast_2d(a)
+        k = m.shape[0]
+        if m.shape[1] != k:
+            raise ValueError("matrix_power needs a square matrix")
+        if n < 0:
+            m = _Linalg.inv(m)
+            n = -n
+        out = eye(k)
+        while n:
+            if n & 1:
+                out = out @ m
+            n >>= 1
+            if n:
+                m = m @ m
+        return out
+
     @staticmethod
     def solve(a, b):
         aa = atleast_2d(a)
@@ -7465,19 +7491,27 @@ class carr:
     def copy(self):
         return carr(self)
 
+    def _shaped(self, flat):
+        # a 2-D result keeps its rows; flattening them made fft2 output,
+        # its .real and its arithmetic silently 1-D
+        if self.rows is None:
+            return flat
+        w = len(self.rows[0]) if self.rows else 0
+        return [flat[i * w:(i + 1) * w] for i in range(len(self.rows))]
+
     def tolist(self):
-        return self.data[:]
+        return self._shaped(self.data[:])
 
     @property
     def real(self):
-        return marr([v.real for v in self.data])
+        return marr(self._shaped([v.real for v in self.data]))
 
     @property
     def imag(self):
-        return marr([v.imag for v in self.data])
+        return marr(self._shaped([v.imag for v in self.data]))
 
     def conj(self):
-        return carr([v.conjugate() for v in self.data])
+        return carr(self._shaped([v.conjugate() for v in self.data]))
 
     conjugate = conj
 
@@ -7518,13 +7552,19 @@ class carr:
 
     def _binop(self, other, fn):
         if isinstance(other, carr):
-            return carr([fn(a, b) for a, b in zip(self.data, other.data)])
-        if isinstance(other, marr):
-            return carr([fn(a, b) for a, b in
-                         zip(self.data, other._flat())])
-        if isinstance(other, (list, tuple)):
-            return carr([fn(a, b) for a, b in zip(self.data, other)])
-        return carr([fn(a, other) for a in self.data])
+            od = other.data
+        elif isinstance(other, marr):
+            od = other._flat()
+        elif isinstance(other, (list, tuple)):
+            od = asarray(other)._flat() if other and isinstance(
+                other[0], (list, tuple)) else list(other)
+        else:
+            return carr(self._shaped([fn(a, other) for a in self.data]))
+        if len(od) != len(self.data):
+            raise ValueError("operands could not be broadcast together "
+                             "with shapes %r %r" % (self.shape, getattr(
+                                 other, "shape", (len(od),))))
+        return carr(self._shaped([fn(a, b) for a, b in zip(self.data, od)]))
 
     def __mul__(self, o):
         return self._binop(o, lambda a, b: a * b)
@@ -7672,6 +7712,22 @@ class _FFT:
         return _fft_any(a, False)[:len(a) // 2 + 1]
 
     @staticmethod
+    def fft2(x, s=None, axes=(-2, -1)):
+        """numpy.fft.fft2 on a 2-D array: rows, then columns."""
+        if tuple(axes) not in ((-2, -1), (0, 1)):
+            raise ValueError("fft2 supports only axes=(-2, -1)")
+        s0, s1 = (None, None) if s is None else s
+        return _FFT.fft(_FFT.fft(x, n=s1, axis=-1), n=s0, axis=0)
+
+    @staticmethod
+    def ifft2(x, s=None, axes=(-2, -1)):
+        """numpy.fft.ifft2 on a 2-D array: rows, then columns."""
+        if tuple(axes) not in ((-2, -1), (0, 1)):
+            raise ValueError("ifft2 supports only axes=(-2, -1)")
+        s0, s1 = (None, None) if s is None else s
+        return _FFT.ifft(_FFT.ifft(x, n=s1, axis=-1), n=s0, axis=0)
+
+    @staticmethod
     def fft(x, n=None, axis=-1):
         got = _fft_axis(x, n, axis, _FFT._fft1)
         if got is not None:
@@ -7737,20 +7793,43 @@ class _FFT:
         return marr([k / (n * d) for k in range(n // 2 + 1)])
 
     @staticmethod
-    def fftshift(x):
-        a = _tocomplex(x) if isinstance(x, carr) else None
-        if a is not None:
-            n = len(a)
-            return carr(a[(n + 1) // 2:] + a[:(n + 1) // 2])
-        v = list(asarray(x)._flat())
-        n = len(v)
-        return marr(v[(n + 1) // 2:] + v[:(n + 1) // 2])
+    @staticmethod
+    def _shift(x, axes, inverse):
+        # numpy.fft.fftshift / ifftshift: roll each axis by n//2 (or back).
+        # A 2-D input used to be flattened and rolled as one vector, which
+        # scrambled every 2-D spectrum passed through it.
+        def roll(v):
+            n = len(v)
+            k = n // 2 if inverse else (n + 1) // 2
+            return v[k:] + v[:k]
+
+        is_c = isinstance(x, carr)
+        rows = _rows2d(x) if is_c else None
+        if is_c and rows is None:
+            return carr(roll(list(x.data)))
+        a = None if is_c else asarray(x)
+        if rows is None and len(a.shape) == 1:
+            return marr(roll(list(a._flat())))
+        if rows is None:
+            rows = [list(r) for r in a.data]
+        if axes is None:
+            axes = (0, 1)
+        elif isinstance(axes, int):
+            axes = (axes,)
+        axes = {ax % 2 for ax in axes}
+        if 1 in axes:
+            rows = [roll(r) for r in rows]
+        if 0 in axes:
+            rows = roll(rows)
+        return carr(rows) if is_c else marr(rows)
 
     @staticmethod
-    def ifftshift(x):
-        v = list(asarray(x)._flat())
-        n = len(v)
-        return marr(v[n // 2:] + v[:n // 2])
+    def fftshift(x, axes=None):
+        return _FFT._shift(x, axes, False)
+
+    @staticmethod
+    def ifftshift(x, axes=None):
+        return _FFT._shift(x, axes, True)
 
 
 fft = _FFT()

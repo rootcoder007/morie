@@ -37,8 +37,11 @@ def spectral_density(Z, coords, n_freq=50):
     grid = np.full((n_freq, n_freq), np.nan)
 
     for k in range(len(Z)):
-        ix = int((coords[k, 0] - xmin) / (xmax - xmin + 1e-10) * (n_freq - 1))
-        iy = int((coords[k, 1] - ymin) / (ymax - ymin + 1e-10) * (n_freq - 1))
+        # nearest grid node; truncating a value divided by (range + 1e-10)
+        # put every point except the first one cell low and left the last
+        # row and column empty
+        ix = round((coords[k, 0] - xmin) / (xmax - xmin) * (n_freq - 1)) if xmax > xmin else 0
+        iy = round((coords[k, 1] - ymin) / (ymax - ymin) * (n_freq - 1)) if ymax > ymin else 0
         ix = min(ix, n_freq - 1)
         iy = min(iy, n_freq - 1)
         grid[iy, ix] = Z[k]
@@ -55,7 +58,11 @@ def spectral_density(Z, coords, n_freq=50):
     freq_bins = np.linspace(0, radial_freq.max(), n_freq // 2)
     radial_power = np.zeros(len(freq_bins) - 1)
     for i in range(len(freq_bins) - 1):
-        mask = (radial_freq >= freq_bins[i]) & (radial_freq < freq_bins[i + 1])
+        # the last bin is closed on the right, or the highest radial
+        # frequencies (the grid corners) fall in no bin at all
+        upper = (radial_freq <= freq_bins[i + 1]) if i == len(freq_bins) - 2 \
+            else (radial_freq < freq_bins[i + 1])
+        mask = (radial_freq >= freq_bins[i]) & upper
         if mask.any():
             radial_power[i] = power_shifted[mask].mean()
 

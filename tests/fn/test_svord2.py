@@ -27,3 +27,18 @@ class TestSvord2:
         assert isinstance(result.name, str)
         assert len(result.name) > 0
         assert result.name == "Ordered Logit Spatial Model"
+
+
+def test_svord2_conditional_logit_values():
+    """P_j = exp(-beta d_j) / sum_k exp(-beta d_k), recomputed here."""
+    import math
+    voter = [0.2, -0.1]
+    cands = [[1.0, 1.0], [0.0, 0.0], [-2.0, 0.5], [0.5, -0.4]]
+    beta = 1.7
+    r = svord2(voter, cands, beta=beta)
+    d = [math.dist(voter, c) for c in cands]
+    e = [math.exp(-beta * v) for v in d]
+    want = [v / sum(e) for v in e]
+    for got, ref in zip(r.extra["probabilities"], want):
+        assert abs(got - ref) < 1e-15
+    assert abs(r.statistic - want[d.index(min(d))]) < 1e-15
