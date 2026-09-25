@@ -285,7 +285,11 @@ def _solve_lin(A, b):
 
 
 def _mat(X):
-    rows = list(X)
+    # an array's rows iterate as array objects, not lists; take the
+    # nested-list form first or every row is mistaken for a scalar
+    rows = X.tolist() if hasattr(X, "tolist") else list(X)
+    if not isinstance(rows, list):
+        rows = [rows]
     if rows and not isinstance(rows[0], (list, tuple)):
         return [[float(v)] for v in rows]
     return [[float(v) for v in r] for r in rows]

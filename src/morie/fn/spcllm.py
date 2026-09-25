@@ -109,12 +109,18 @@ def spatial_cluster_lisa(x, w, alpha=0.05):
         varl = v * (s2 - s1 * s1 / (n - 1.0)) * (n - 1.0) / (n - 2.0)
         nb = fsum([1.0 for j in range(n) if ww[i][j] != 0.0])
         lagm.append(li / nb if nb > 0 else 0.0)
-        if varl <= 0:
+        if varl <= 0 or d[i] == 0.0:
+            # with Z_i at the mean, I(s_i) is identically zero under
+            # conditional randomization, so it has no z-score
             zs.append(float("nan"))
             ps.append(1.0)
             labels.append("NS")
             continue
-        zi = (li - mb * s1) / sqrt(varl)
+        # I(s_i) is the lag times the fixed factor n d_i / ss, so its
+        # z-score is the lag's z-score times the sign of d_i. Reporting
+        # the lag's z directly gave the wrong sign at every site below the
+        # mean: low-among-low clustering came out negative.
+        zi = (1.0 if d[i] > 0 else -1.0) * (li - mb * s1) / sqrt(varl)
         pv = twosidep(zi)
         zs.append(zi)
         ps.append(pv)

@@ -1334,7 +1334,11 @@ def winsorized_regression(X, y, tr=0.2, n_iter=20, tol=1e-4):
 
 def _mat_local(X):
     """Coerce to a list of rows; a flat sequence becomes one column."""
-    rows = list(X)
+    # an array's rows iterate as array objects, not lists; take the
+    # nested-list form first or every row is mistaken for a scalar
+    rows = X.tolist() if hasattr(X, "tolist") else list(X)
+    if not isinstance(rows, list):
+        rows = [rows]
     if rows and not isinstance(rows[0], (list, tuple)):
         return [[float(v)] for v in rows]
     return [[float(v) for v in r] for r in rows]
