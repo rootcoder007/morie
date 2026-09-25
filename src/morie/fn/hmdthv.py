@@ -113,7 +113,7 @@ def geron_tree_high_variance(X, y, n_resamples=20, seed=0, criterion="gini", max
         if criterion != "mse" and np.unique(yb).size < 2:
             # A degenerate resample: the tree is a single leaf, which is
             # itself part of the variance being measured.
-            tree = {"leaf": True, "value": yb[0].item(), "n": int(m), "impurity": 0.0, "depth": 0}
+            tree = {"leaf": True, "value": np.asarray(yb).tolist()[0], "n": int(m), "impurity": 0.0, "depth": 0}
             roots.append(None)
         else:
             res = geron_cart_algorithm(Xa[idx], yb, criterion=criterion, max_depth=max_depth)

@@ -77,7 +77,7 @@ def geron_johnson_lindenstrauss_bound(n_samples, eps):
     denom = e**2 / 2.0 - e**3 / 3.0
     d = 4.0 * math.log(m) / denom
     d_int = np.ceil(d).astype(int)
-    scalar = e.ndim == 0
+    scalar = np.ndim(eps) == 0     # morie has no 0-d arrays: ask the argument
 
     return RichResult(
         title="Johnson-Lindenstrauss bound",

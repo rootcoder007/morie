@@ -233,7 +233,7 @@ def _carry(src, out):
             if _is_int_typed(src):
                 f = out._flat()
                 if _bi.all(isinstance(v, int) or (isinstance(v, float) and v.is_integer()) for v in f):
-                    _typed(out, int)
+                    _typed(out, src._dt)    # keep int16/uint8/..., not int64
     return out
 
 
@@ -893,7 +893,20 @@ class marr:
             return _DTypeNarrow(name)
         if getattr(self, "_is_mask", False):
             return _DType("bool")
+        # complex values held in a float-backed array: numpy's dtype is
+        # complex128 (it reported float64, so complex checks never fired)
+        for v in self._flat():
+            if isinstance(v, complex):
+                return _DType("complex128")
         return float64
+
+    @property
+    def strides(self):
+        """numpy's C-order strides in bytes."""
+        item = getattr(self.dtype, "itemsize", 8) or 8
+        if len(self.shape) == 1:
+            return (item,)
+        return (self.shape[1] * item, item)
 
     @property
     def real(self):
@@ -1161,7 +1174,7 @@ class marr:
             # the same error Python raises for float(1j), not the
             # interpreter's "__float__ returned non-float" protocol message
             raise TypeError("can't convert complex to float")
-        return f[0]
+        return float(f[0])      # Python requires a float, even from int arrays
 
     def _int_operands(self, o):
         # numpy does BITWISE &, |, ^ on integer arrays and logical ones
@@ -1303,19 +1316,37 @@ class marr:
             if isinstance(i, slice) and isinstance(j, (marr, list)):
                 # x[:, mask_or_idx] = v
                 jv = j._flat() if isinstance(j, marr) else list(j)
+                # a mask only when it IS boolean: a plain [0, 1] of the
+                # right length is two column indices, as in numpy
                 if getattr(j, "_is_mask", False) or (
-                        not getattr(j, "_is_index", False)
-                        and len(jv) == self.shape[1]
-                        and _pyall(v2 in (0.0, 1.0) for v2 in jv)):
+                        isinstance(j, list) and jv
+                        and _pyall(isinstance(v2, bool) for v2 in jv)):
                     cols = [c for c, m2 in enumerate(jv) if m2]
                 else:
                     cols = [int(v2) for v2 in jv]
+                rws = list(range(*i.indices(self.shape[0])))
                 va = asarray(value)
+                if isinstance(va, marr) and len(va.shape) == 2:
+                    # (rows, cols) block, broadcasting a single row/column
+                    vr, vc = va.shape
+                    if vr not in (1, len(rws)) or vc not in (1, len(cols)):
+                        raise ValueError(
+                            "could not broadcast input array from shape %s "
+                            "into shape %s" % (tuple(va.shape), (len(rws), len(cols))))
+                    for ri, r2 in enumerate(rws):
+                        row = va.data[ri if vr > 1 else 0]
+                        for ci, c in enumerate(cols):
+                            self.data[r2][c] = _cv(row[ci if vc > 1 else 0])
+                    return
                 vf = va._flat() if isinstance(va, marr) else [_cv(va)]
-                for r2 in range(*i.indices(self.shape[0])):
+                if len(vf) not in (1, len(cols)):
+                    raise ValueError(
+                        "could not broadcast input array from shape (%d,) "
+                        "into shape %s" % (len(vf), (len(rws), len(cols))))
+                for r2 in rws:
                     for ci, c in enumerate(cols):
                         self.data[r2][c] = _cv(
-                            vf[0] if len(vf) == 1 else vf[ci % len(vf)])
+                            vf[0] if len(vf) == 1 else vf[ci])
                 return
             if isinstance(i, (marr, list, tuple)) \
                     and isinstance(j, (marr, list, tuple)):
@@ -1645,6 +1676,47 @@ class marr:
 
     def __rfloordiv__(self, o):
         return self._zip(o, lambda a, b: b // a)
+
+    # In-place arithmetic mutates THIS array, as numpy does. Without
+    # these Python rebinds the name to a new array, so
+    #     for arr, g in ((W, dW), ...): arr -= lr * g
+    # left every W untouched (a char-RNN never trained). An integer or
+    # boolean array cannot take a floating result in place (numpy's
+    # same-kind casting rule raises too).
+    def _inplace(self, o, op):
+        res = op(self, o)
+        res = res if isinstance(res, marr) else asarray(res)
+        own = str(getattr(self, "_dt", None) or "")
+        if (own.startswith(("int", "uint")) or getattr(self, "_is_mask", False)) \
+                and not str(getattr(res, "_dt", None) or "").startswith(("int", "uint")) \
+                and not (getattr(self, "_is_mask", False) and getattr(res, "_is_mask", False)):
+            raise TypeError("Cannot cast ufunc output from float64 to %s with "
+                            "casting rule 'same_kind'" % (own or "bool"))
+        if tuple(res.shape) != tuple(self.shape):
+            raise ValueError("non-broadcastable output operand with shape %s "
+                             "doesn't match the broadcast shape %s"
+                             % (tuple(self.shape), tuple(res.shape)))
+        if len(self.shape) == 1:
+            self.data[:] = res.data
+        else:
+            for r, row in zip(self.data, res.data):
+                r[:] = row
+        return self
+
+    def __iadd__(self, o):
+        return self._inplace(o, marr.__add__)
+
+    def __isub__(self, o):
+        return self._inplace(o, marr.__sub__)
+
+    def __imul__(self, o):
+        return self._inplace(o, marr.__mul__)
+
+    def __itruediv__(self, o):
+        return self._inplace(o, marr.__truediv__)
+
+    def __ipow__(self, o):
+        return self._inplace(o, marr.__pow__)
 
     def __neg__(self):
         return self._map(lambda v: -v)
@@ -2028,7 +2100,19 @@ class oarr(list):
             shape = tuple(shape[0])
         if shape in ((-1,), (len(self),)):
             return oarr(self)
-        raise ValueError("oarr reshape supports 1-D only")
+        if len(shape) == 2:
+            r, c = shape
+            n = len(self)
+            if r == -1:
+                r = n // c if c else 0
+            if c == -1:
+                c = n // r if r else 0
+            if r * c != n:
+                raise ValueError("cannot reshape array of size %d into shape %s"
+                                 % (n, (r, c)))
+            vals = list(self)
+            return oarr2([vals[i * c:(i + 1) * c] for i in range(r)])
+        raise ValueError("object arrays reshape to 1-D or 2-D only")
 
     def __eq__(self, other):
         out = marr([1.0 if v == other else 0.0 for v in self])
@@ -2043,6 +2127,11 @@ class oarr(list):
     __hash__ = None
 
     def __getitem__(self, key):
+        nax = _newaxis_index(self, key)
+        if nax is not NotImplemented:
+            return nax
+        if isinstance(key, tuple) and len(key) == 1:
+            key = key[0]
         if isinstance(key, marr):
             vals = key._flat()
             if getattr(key, "_is_mask", False):
@@ -2157,6 +2246,135 @@ def _datetime_array(x, unit):
     return out
 
 
+class oarr2:
+    """A 2-D object array (strings or mixed values), numpy's
+    dtype=object at rank 2: rows x columns with row, column and element
+    indexing. Built by asarray from a rectangular nested list with a
+    non-numeric entry, and by an object array's reshape to 2-D."""
+
+    def __init__(self, rows):
+        self.rows = [list(r) for r in rows]
+        w = len(self.rows[0]) if self.rows else 0
+        if _bi.any(len(r) != w for r in self.rows):
+            raise ValueError("oarr2 needs rows of equal length")
+
+    @property
+    def shape(self):
+        return (len(self.rows), len(self.rows[0]) if self.rows else 0)
+
+    ndim = property(lambda self: 2)
+    size = property(lambda self: self.shape[0] * self.shape[1])
+    dtype = property(lambda self: object)
+
+    def tolist(self):
+        return [list(r) for r in self.rows]
+
+    def __len__(self):
+        return len(self.rows)
+
+    def __iter__(self):
+        return (oarr(r) for r in self.rows)
+
+    def _flat(self):
+        return [v for r in self.rows for v in r]
+
+    def ravel(self, order="C"):
+        return oarr(self._flat())
+
+    flatten = ravel
+
+    def copy(self):
+        return oarr2(self.rows)
+
+    @property
+    def T(self):
+        m, n = self.shape
+        return oarr2([[self.rows[i][j] for i in range(m)] for j in range(n)])
+
+    def transpose(self, *axes):
+        return self.T
+
+    def reshape(self, *shape, order="C"):
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = tuple(shape[0])
+        return oarr(self._flat()).reshape(*shape)
+
+    def astype(self, dtype=None):
+        if dtype is None or _is_object_like(None, dtype):
+            return self.copy()
+        return marr([[float(v) for v in r] for r in self.rows])
+
+    def _pick(self, k, n):
+        if isinstance(k, slice):
+            return list(range(n))[k], True
+        if isinstance(k, (list, tuple, marr, oarr)):
+            vals = list(k._flat()) if isinstance(k, marr) else list(k)
+            if vals and _bi.all(isinstance(v, bool) for v in vals) or \
+                    getattr(k, "_is_mask", False):
+                return [i for i, m in enumerate(vals) if m], True
+            return [int(v) for v in vals], True
+        return [int(k)], False
+
+    def __getitem__(self, key):
+        m, n = self.shape
+        if not isinstance(key, tuple):
+            key = (key, slice(None))
+        ri, rkeep = self._pick(key[0], m)
+        ci, ckeep = self._pick(key[1], n)
+        if not rkeep and not ckeep:
+            return self.rows[ri[0]][ci[0]]
+        if not rkeep:
+            return oarr([self.rows[ri[0]][j] for j in ci])
+        if not ckeep:
+            return oarr([self.rows[i][ci[0]] for i in ri])
+        return oarr2([[self.rows[i][j] for j in ci] for i in ri])
+
+    def __setitem__(self, key, value):
+        m, n = self.shape
+        if not isinstance(key, tuple):
+            key = (key, slice(None))
+        ri, _ = self._pick(key[0], m)
+        ci, _ = self._pick(key[1], n)
+        for a, i in enumerate(ri):
+            for b, j in enumerate(ci):
+                if isinstance(value, oarr2):
+                    v = value.rows[a][b]
+                elif isinstance(value, (list, tuple, oarr)) and len(value) == len(ci):
+                    v = list(value)[b]
+                else:
+                    v = value
+                self.rows[i][j] = v
+
+    def _cmp(self, other, fn):
+        if isinstance(other, (oarr2, oarr)) or (hasattr(other, "shape") and hasattr(other, "tolist")):
+            B = other.rows if isinstance(other, oarr2) else \
+                [list(other.tolist())] if len(getattr(other, "shape", ())) == 1 else other.tolist()
+            A = self.rows
+            m = _bi.max(len(A), len(B))
+            n = _bi.max(len(A[0]), len(B[0]))
+            if len(A) not in (1, m) or len(B) not in (1, m) or \
+                    len(A[0]) not in (1, n) or len(B[0]) not in (1, n):
+                raise ValueError("operands could not be broadcast together")
+            out = marr([[1.0 if fn(A[i if len(A) > 1 else 0][j if len(A[0]) > 1 else 0],
+                                   B[i if len(B) > 1 else 0][j if len(B[0]) > 1 else 0]) else 0.0
+                         for j in range(n)] for i in range(m)])
+        else:
+            out = marr([[1.0 if fn(v, other) else 0.0 for v in r] for r in self.rows])
+        out._is_mask = True
+        return out
+
+    def __eq__(self, other):
+        return self._cmp(other, lambda a, b: a == b)
+
+    def __ne__(self, other):
+        return self._cmp(other, lambda a, b: a != b)
+
+    __hash__ = None
+
+    def __repr__(self):
+        return "array(%r, dtype=object)" % (self.rows,)
+
+
 def asarray(x, dtype=None):
     _dtu = _datetime_dtype_unit(dtype)
     if _dtu is not None:
@@ -2183,6 +2401,14 @@ def asarray(x, dtype=None):
             and not isinstance(x, marr):
         # frame-like (native or real pandas): take its array form
         x = x.to_numpy()
+    if isinstance(x, oarr2):
+        return x
+    if isinstance(x, (list, tuple)) and x and _bi.all(
+            isinstance(r, (list, tuple, oarr)) for r in x) and _bi.any(
+            isinstance(v, str) for r in x for v in r):
+        w = len(x[0])
+        if w and _bi.all(len(r) == w for r in x):
+            return oarr2(x)
     if _is_object_like(x, dtype):
         return oarr(x.tolist() if hasattr(x, "tolist") else x)
     if isinstance(x, marr):
@@ -2747,6 +2973,9 @@ class _PairUfunc:
         self._red = red
 
     def __call__(self, x, y):
+        if isinstance(x, (int, float)) and isinstance(y, (int, float)):
+            # two scalars: a scalar (with numpy's NaN propagation)
+            return float(self._fn(marr([float(x)]), float(y)).data[0])
         return self._fn(x, y)
 
     def accumulate(self, a, axis=0):
@@ -4383,9 +4612,38 @@ def put_along_axis(a, idx, values, axis=-1):
                 aa.data[int(ia.data[r][c])] = float(v)
 
 
+def _broadcast_general(a, shape):
+    """numpy.broadcast_to at any rank: trailing axes aligned, length-1
+    axes stretched, anything else refused."""
+    src = tuple(a.shape) if not isinstance(a, ndlist) else tuple(_nested_shape(a))
+    if len(src) > len(shape):
+        raise ValueError("input operand has more dimensions than allowed by the axis remapping")
+    src = (1,) * (len(shape) - len(src)) + src
+    for s_, t_ in zip(src, shape):
+        if s_ not in (1, t_):
+            raise ValueError("operands could not be broadcast together with "
+                             "remapped shapes [original->remapped]: %s and "
+                             "requested shape %s" % (tuple(a.shape), shape))
+    nested = a.tolist()
+    for _ in range(len(shape) - len(tuple(a.shape))):
+        nested = [nested]
+
+    def rec(node, d):
+        if d == len(shape):
+            return node
+        items = node if len(node) == shape[d] else [node[0]] * shape[d]
+        return [rec(v, d + 1) for v in items]
+    out = rec(nested, 0)
+    if len(shape) >= 3:
+        return ndlist(out)
+    return marr(out) if shape else marr([out])
+
+
 def broadcast_to(x, shape):
     a = asarray(x)
-    shape = tuple(int(v) for v in shape)
+    shape = tuple(int(v) for v in (shape if isinstance(shape, (tuple, list)) else (shape,)))
+    if isinstance(a, ndlist) or len(shape) >= 3 or len(tuple(a.shape)) > 2:
+        return _broadcast_general(a, shape)
     if len(shape) == 2 and len(a.shape) == 1:
         return marr([a.data[:] for _ in range(shape[0])])
     if len(shape) == 3 and len(a.shape) == 2:
@@ -5058,8 +5316,9 @@ arccos = _uf(_ieee(_math.acos))
 # numpy 2: the sign of a complex number is z / |z| (0 at 0)
 sign = _uf(lambda v: (v / abs(v) if v != 0 else 0j) if isinstance(v, complex) else
            (v if v != v else (0.0 if v == 0 else (1.0 if v > 0 else -1.0))))
-floor = _uf(_ieee(_math.floor))
-ceil = _uf(_ieee(_math.ceil))
+# numpy 2: floor/ceil return floats for float input (3.0, not 3) and keep ints
+floor = _uf(_ieee(lambda v: v if isinstance(v, int) else float(_math.floor(v))))
+ceil = _uf(_ieee(lambda v: v if isinstance(v, int) else float(_math.ceil(v))))
 _round0 = _uf(_ieee(lambda v: float(_bi.round(v))))
 
 
@@ -5391,8 +5650,29 @@ class _AddUfunc:
 
     @staticmethod
     def at(a, indices, b=1.0):
+        if isinstance(a, ndlist) and isinstance(indices, tuple):
+            # rank >= 3: unbuffered accumulation, repeated indices add up
+            cols = [[int(v) for v in asarray(ix)._flat()] if not isinstance(ix, int)
+                    else [int(ix)] for ix in indices]
+            m = _bi.max(len(c) for c in cols)
+            cols = [c * m if len(c) == 1 else c for c in cols]
+            bv = asarray(b)._flat() if isinstance(b, (list, tuple, marr)) \
+                else [float(b)] * m
+            if len(bv) == 1:
+                bv = bv * m
+            for pos in range(m):
+                node = a
+                for ax in range(len(cols) - 1):
+                    node = list.__getitem__(node, cols[ax][pos]) \
+                        if isinstance(node, list) else node[cols[ax][pos]]
+                last = cols[-1][pos]
+                if isinstance(node, marr):
+                    node.data[last] = node.data[last] + float(bv[pos])
+                else:
+                    node[last] = node[last] + float(bv[pos])
+            return None
         if not isinstance(a, marr):
-            raise TypeError("add.at needs an in-place marr target")
+            raise TypeError("add.at needs an in-place array target")
         if isinstance(indices, tuple):
             ii = [int(v) for v in asarray(indices[0])._flat()]
             jj = [int(v) for v in asarray(indices[1])._flat()]
@@ -5531,8 +5811,8 @@ def shape(x):
 def ndim(x):
     # a Python scalar is 0-d in numpy; this core's asarray() has no 0-d
     # form, so answer the question before building an array
-    if isinstance(x, (int, float, complex, bool)):
-        return 0
+    if isinstance(x, (int, float, complex, bool, str, bytes)) or x is None:
+        return 0                    # numpy: a string is a 0-d scalar too
     return asarray(x).ndim
 
 
@@ -5957,6 +6237,30 @@ class ndlist(list):
     def min(self, axis=None, keepdims=False):
         return _ndlist_reduce(self, axis, keepdims, _bi.min)
 
+    # In-place arithmetic, as numpy: the result is written back into the
+    # same array. Without these, list's own += concatenated the blocks
+    # (a (6,5,4) array += another became (12,5,4)) and *= repeated them.
+    def _inplace(self, o, op):
+        res = op(self, o)
+        vals = res.tolist() if hasattr(res, "tolist") else list(res)
+        list.__setitem__(self, slice(None), ndlist(vals))
+        return self
+
+    def __iadd__(self, o):
+        return self._inplace(o, ndlist.__add__)
+
+    def __isub__(self, o):
+        return self._inplace(o, ndlist.__sub__)
+
+    def __imul__(self, o):
+        return self._inplace(o, ndlist.__mul__)
+
+    def __itruediv__(self, o):
+        return self._inplace(o, ndlist.__truediv__)
+
+    def __ipow__(self, o):
+        return self._inplace(o, ndlist.__pow__)
+
     def copy(self):
         """numpy.ndarray.copy: a deep copy that is still an array
         (list.copy returned a plain list, so x.copy()[:, :, k] = v
@@ -6110,6 +6414,28 @@ class ndlist(list):
         nax = _newaxis_index(self, key)
         if nax is not NotImplemented:
             return nax
+        if isinstance(key, tuple) and key and _bi.all(
+                isinstance(k, (marr, list, tuple, int)) and not isinstance(k, bool)
+                and not getattr(k, "_is_mask", False) for k in key) and _bi.any(
+                isinstance(k, (marr, list, tuple)) for k in key):
+            # advanced indexing, one integer array per axis: gather the
+            # elements at the broadcast index tuples, as numpy
+            cols = [[int(v) for v in (k._flat() if isinstance(k, marr) else k)]
+                    if isinstance(k, (marr, list, tuple)) else [int(k)] for k in key]
+            m = _bi.max(len(c_) for c_ in cols)
+            if _bi.any(len(c_) not in (1, m) for c_ in cols):
+                raise IndexError("shape mismatch: indexing arrays could not be broadcast together")
+            cols = [c_ * m if len(c_) == 1 else c_ for c_ in cols]
+            out = []
+            for p_ in range(m):
+                node = self
+                for ax in range(len(cols)):
+                    node = list.__getitem__(node, cols[ax][p_]) if isinstance(node, list) \
+                        else node[cols[ax][p_]]
+                out.append(node)
+            if _bi.all(isinstance(v, (int, float)) for v in out):
+                return marr([float(v) for v in out])
+            return asarray([v.tolist() if hasattr(v, "tolist") else v for v in out])
         if isinstance(key, (ndlist, marr)) and (
                 isinstance(key, ndlist) or getattr(key, "_is_mask", False)):
             flat_v = _flatten_nested(self.tolist())
@@ -6131,6 +6457,14 @@ class ndlist(list):
                 v = object.__new__(marr)
                 v.data = sub
                 v.shape = (len(sub), len(sub[0]))
+                return v
+            if isinstance(key, int) and isinstance(sub, list) and sub \
+                    and not isinstance(sub[0], (list, marr)):
+                # a rank-1 row: a marr VIEW over the same list, so writes
+                # through x[i][j] = v (and x[i, :] = v) land in x
+                v = object.__new__(marr)
+                v.data = sub
+                v.shape = (len(sub),)
                 return v
             if isinstance(sub, list) and not isinstance(sub, ndlist):
                 return ndlist(sub)      # rank >= 3 stays an array
@@ -6157,6 +6491,30 @@ class ndlist(list):
 
     def __setitem__(self, key, value):
         key = _coerce_index(key)
+        if isinstance(key, slice) or (isinstance(key, int) and not isinstance(key, bool)):
+            # x[a:b] = v or x[i] = v on the leading axis: broadcast v into
+            # every selected block, as numpy (a scalar fills it; an array
+            # with one block per index is split along the axis)
+            idxs = list(range(len(self)))[key] if isinstance(key, slice) else [key]
+            va = value
+            per = None
+            if hasattr(value, "shape") or isinstance(value, (list, tuple)):
+                va = value if isinstance(value, (marr, ndlist)) else asarray(value)
+                if isinstance(key, slice) and len(va.shape) == len(self.shape) \
+                        and va.shape[0] == len(idxs):
+                    per = [va[j] for j in range(len(idxs))]
+            for j, i in enumerate(idxs):
+                v = per[j] if per is not None else va
+                blk = list.__getitem__(self, i)
+                if isinstance(blk, marr):
+                    blk[(slice(None),) * len(blk.shape)] = v
+                elif isinstance(blk, list):
+                    sub = ndlist(blk)
+                    sub[(slice(None),) * len(sub.shape)] = v
+                    list.__setitem__(self, i, list(sub))
+                else:
+                    list.__setitem__(self, i, float(v))
+            return None
         if not isinstance(key, tuple):
             return list.__setitem__(self, key, value)
         node, keys = self, list(key)
@@ -7543,6 +7901,8 @@ r_ = _RClass()
 
 
 def square(x):
+    if isinstance(x, (int, float, complex)) and not isinstance(x, bool):
+        return x * x                     # a scalar in, a scalar out
     return asarray(x)._map(lambda v: v * v)
 
 
@@ -8816,6 +9176,9 @@ def _ieee_pow(x, y):
 
 
 def power(a, b):
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)) \
+            and not isinstance(a, bool) and not isinstance(b, bool):
+        return _ieee_pow(a, b)           # scalars: a scalar, as numpy
     return asarray(a)._zip(b, _ieee_pow)
 
 

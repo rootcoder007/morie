@@ -1086,12 +1086,53 @@ def dpss(M, NW, Kmax=None, sym=True, norm=None, return_ratios=False):
     return tapers, _ac.marr(ratios if k > 1 else ratios[0])
 
 
+_bi_abs = abs
+
+
+def _general_cosine(M, a, sym=True):
+    """scipy.signal.windows.general_cosine: sum_k (-1)^k a_k cos(2 pi k
+    n / (M - 1)); sym=False is the periodic (DFT-even) variant, built
+    from M + 1 points with the last dropped."""
+    M = int(M)
+    if M < 1:
+        return _ac.marr([])
+    if M == 1:
+        return _ac.marr([1.0])
+    L = M if sym else M + 1
+    w = [_math.fsum((-1) ** k * c * _math.cos(2.0 * _math.pi * k * i / (L - 1))
+                    for k, c in enumerate(a)) for i in range(L)]
+    return _ac.marr(w[:M])
+
+
 class windows:
+    """scipy.signal.windows: symmetric by default (sym=True), unlike
+    get_window, which returns the periodic form for spectral use."""
     dpss = staticmethod(dpss)
 
     @staticmethod
-    def hann(n):
-        return _ac.marr(_hann(n))
+    def hann(M, sym=True):
+        return _general_cosine(M, [0.5, 0.5], sym)
+
+    @staticmethod
+    def hamming(M, sym=True):
+        return _general_cosine(M, [0.54, 0.46], sym)
+
+    @staticmethod
+    def blackman(M, sym=True):
+        return _general_cosine(M, [0.42, 0.50, 0.08], sym)
+
+    @staticmethod
+    def boxcar(M, sym=True):
+        return _ac.marr([1.0] * int(M))
+
+    @staticmethod
+    def bartlett(M, sym=True):
+        M = int(M)
+        if M <= 1:
+            return _ac.marr([1.0] * M)
+        L = M if sym else M + 1
+        w = [1.0 - _bi_abs(2.0 * i / (L - 1) - 1.0) for i in range(L)]
+        return _ac.marr(w[:M])
 
 
 def iirfilter(N, Wn, rp=None, rs=None, btype="low", ftype="butter",

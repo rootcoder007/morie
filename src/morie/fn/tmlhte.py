@@ -6,6 +6,7 @@ import math
 from . import _array_core as np
 
 from ._richresult import RichResult
+from ._stats_core import chi2 as _chi2
 from ._tmle import tmle_ate as _tmle_ate
 
 __all__ = ["tmle_heterogeneous"]
@@ -144,13 +145,7 @@ def tmle_heterogeneous(y, treatment, W, strata, trunc=0.01, min_stratum=20):
     pooled_se = float(np.sqrt(1.0 / np.sum(w)))
     q = float(np.sum(w * (est - pooled) ** 2))
     df = int(est.size - 1)
-    # upper-tail chi-square without a special-function dependency:
-    # Wilson-Hilferty, exact enough for a reported p-value and
-    # monotone in Q, which is what the decision needs
-    z = ((q / df) ** (1.0 / 3.0) - (1 - 2.0 / (9 * df))) / np.sqrt(
-        2.0 / (9 * df)
-    )
-    p = float(0.5 * math.erfc(z / np.sqrt(2.0)))
+    p = float(_chi2.sf(q, df))
 
     zc = 1.959963984540054
     return RichResult(

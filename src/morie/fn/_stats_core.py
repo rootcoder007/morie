@@ -689,11 +689,14 @@ class _Norm(_Dist):
         m = _math.fsum(v) / len(v)
         return (m, _math.sqrt(_math.fsum((x - m) ** 2 for x in v) / len(v)))
 
-    def rvs(self, size=None, random_state=None):
+    def rvs(self, loc=None, scale=None, size=None, random_state=None):
         # Box-Muller through the generator; random_state may itself be a
         # generator (default_rng() used to hand one to SplitMix64's seed
-        # arithmetic and die on `generator & mask`)
-        return _rng_from(random_state).normal(self.loc, self.scale, size)
+        # arithmetic and die on `generator & mask`). loc/scale, as in
+        # scipy norm.rvs(loc=, scale=, size=), override the frozen ones.
+        return _rng_from(random_state).normal(
+            self.loc if loc is None else loc,
+            self.scale if scale is None else scale, size)
 
 
 class _Chi2(_Dist):
@@ -3379,14 +3382,24 @@ def theilslopes(y, x=None, alpha=0.95, method="separate"):
     return _TheilslopesResult(med, inter, low, high)
 
 
-def ranksums(x, y):
+def ranksums(x, y, alternative="two-sided"):
+    """scipy.stats.ranksums: the Wilcoxon rank-sum z (no tie or
+    continuity correction), with scipy's one-sided alternatives."""
     xv, yv = _flatten(x), _flatten(y)
     n1, n2 = len(xv), len(yv)
     ranks = rankdata(xv + yv)
     r1 = _math.fsum(ranks[:n1])
     expected = n1 * (n1 + n2 + 1) / 2.0
     z = (r1 - expected) / _math.sqrt(n1 * n2 * (n1 + n2 + 1) / 12.0)
-    return _TestResult(z, 2.0 * norm.sf(abs(z)))
+    if alternative == "two-sided":
+        p = 2.0 * norm.sf(abs(z))
+    elif alternative == "greater":
+        p = norm.sf(z)
+    elif alternative == "less":
+        p = norm.cdf(z)
+    else:
+        raise ValueError("alternative must be 'two-sided', 'less' or 'greater'")
+    return _TestResult(z, float(p))
 
 
 def _typed_table(_ac, tt):

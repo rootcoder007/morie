@@ -16,7 +16,9 @@ def _data():
     time, event, X, occ = [], [], [], []
     for s in range(N_SUBJ):
         treat = float(s % 2)
-        age = 0.5 * ((s % 5) - 2)
+        # age must not order the event times, or the partial likelihood is
+        # monotone in its coefficient and no MLE exists
+        age = 0.5 * (((3 * s + 1) % 7) - 3)
         for k in OCCURRENCES:
             # first occurrence earlier than the second; ties every 5 subjects
             base = 2.0 + k * 3.0 + (s % 5)

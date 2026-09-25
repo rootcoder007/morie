@@ -105,7 +105,8 @@ def geron_encoder_decoder_seq2seq(encoder, decoder, x, max_out_len,
     stopped = False
     first_shape = None
     for t in range(1, max_out_len + 1):
-        y = np.asarray(decoder(y_prev, c, t), dtype=float)
+        y_raw = decoder(y_prev, c, t)
+        y = np.asarray(y_raw, dtype=float)
         if not np.all(np.isfinite(y)):
             raise ValueError(f"decoder returned a non-finite value at step {t}.")
         if first_shape is None:
@@ -114,7 +115,8 @@ def geron_encoder_decoder_seq2seq(encoder, decoder, x, max_out_len,
             raise ValueError(
                 f"decoder changed output shape at step {t}: {y.shape} after {first_shape}."
             )
-        outputs.append(float(y) if y.ndim == 0 else y.tolist())
+        # morie has no 0-d arrays: ask the decoder's own return value
+        outputs.append(float(y) if np.ndim(y_raw) == 0 else y.tolist())
         y_prev = y
         if eos_token is not None and y.size == 1 and float(y) == float(eos_token):
             stopped = True

@@ -30,15 +30,20 @@ def gradient_clipping(x, max_norm: float = 1.0):
     RichResult with keys: tensor (clipped grad, list if input was list),
     clip_coef, total_norm.
     """
-    if isinstance(x, (list, tuple)):
+    # a list of ARRAYS is a set of tensors; a list of numbers is one flat
+    # gradient (numpy would see 0-d entries and return 0-d parts)
+    listed = isinstance(x, (list, tuple)) and any(np.ndim(g) > 0 for g in x)
+    if listed:
         flats = [np.asarray(g, dtype=float).ravel() for g in x]
         cat = np.concatenate(flats) if flats else np.array([], dtype=float)
     else:
         cat = np.asarray(x, dtype=float).ravel()
     total_norm = float(np.linalg.norm(cat))
     coef = float(min(1.0, max_norm / (total_norm + 1e-12)))
-    if isinstance(x, (list, tuple)):
+    if listed:
         clipped = [np.asarray(g, dtype=float) * coef for g in x]
+    elif isinstance(x, (list, tuple)):
+        clipped = [float(g) * coef for g in x]
     else:
         clipped = np.asarray(x, dtype=float) * coef
     return RichResult(

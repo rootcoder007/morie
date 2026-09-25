@@ -752,8 +752,18 @@ def approx_fprime(xk, f, epsilon=1.4901161193847656e-08, *args):
     return _ac.marr(g)
 
 
-def curve_fit(f, xdata, ydata, p0=None, maxfev=2000):
-    """Levenberg-Marquardt least squares with numeric Jacobian."""
+def curve_fit(f, xdata, ydata, p0=None, maxfev=2000, bounds=None, **kw):
+    """Least squares by Levenberg-Marquardt with a numeric Jacobian.
+
+    ``bounds=(lo, hi)`` (scalars or one per parameter, +-inf allowed) is
+    honoured by a projected, active-set Levenberg-Marquardt that stops
+    at the KKT point of the box-constrained problem. The start is
+    scipy's feasible default (the midpoint, or one unit inside a single
+    bound) when p0 is not given; pcov is evaluated at the solution.
+    """
+    if bounds is not None:
+        return _curve_fit_bounded(f, xdata, ydata, p0, maxfev, bounds)
+    del kw
     xs = list(_ac.asarray(xdata)._flat()) \
         if not isinstance(xdata, (list, tuple)) else list(xdata)
     ys = [float(v) for v in _ac.asarray(ydata)._flat()]
@@ -816,12 +826,128 @@ def curve_fit(f, xdata, ydata, p0=None, maxfev=2000):
             lam *= 10.0
         if not improved or ssr < 1e-30:
             break
-    # covariance = ssr/(m-n) * (J^T J)^-1
+    # covariance = ssr/(m-n) * (J^T J)^-1 with J re-evaluated at the
+    # final parameters (the loop's last J belongs to the previous point)
+    J = []
+    for j in range(np_):
+        pj = list(p)
+        h = 1e-7 * max(abs(pj[j]), 1.0)
+        pj[j] += h
+        rj = resid(pj)
+        J.append([(rj[i] - r[i]) / h for i in range(len(r))])
+    A = [[_math.fsum(J[a][i] * J[b][i] for i in range(len(r)))
+          for b in range(np_)] for a in range(np_)]
     dof = max(len(r) - np_, 1)
     try:
         pcov = _ac.linalg.inv(_ac.marr(A)) * (ssr / dof)
     except Exception:
         pcov = _ac.marr([[float("inf")] * np_ for _ in range(np_)])
+    return _ac.marr(p), pcov
+
+
+def _curve_fit_bounded(f, xdata, ydata, p0, maxfev, bounds):
+    """Box-constrained least squares: projected Levenberg-Marquardt
+    with an active set. A parameter at a bound whose gradient points out
+    of the box is frozen; the others take a damped Gauss-Newton step,
+    which is then projected onto the box and kept only if the sum of
+    squares falls. The stopping point satisfies the KKT conditions of
+    the bounded problem, which is where scipy's 'trf' also stops."""
+    import inspect
+    lo_b, hi_b = bounds
+    if p0 is None:
+        k = len(inspect.signature(f).parameters) - 1
+    else:
+        k = len(list(_ac.asarray(p0)._flat()))
+
+    def vec(b_):
+        vals = list(_ac.asarray(b_)._flat()) if hasattr(b_, "__len__") \
+            or hasattr(b_, "_flat") else [float(b_)]
+        return [float(v) for v in vals] * (k if len(vals) == 1 else 1)
+    lo, hi = vec(lo_b), vec(hi_b)
+    if len(lo) != k or len(hi) != k or _bi.any(l_ >= h_ for l_, h_ in zip(lo, hi)):
+        raise ValueError("bounds must give lo < hi for every parameter")
+    inf = _math.inf
+    if p0 is None:
+        p0 = [(l_ + h_) / 2.0 if l_ > -inf and h_ < inf else
+              (l_ + 1.0 if l_ > -inf else (h_ - 1.0 if h_ < inf else 1.0))
+              for l_, h_ in zip(lo, hi)]
+    clip = lambda v: [_bi.min(_bi.max(x, l_), h_) for x, l_, h_ in zip(v, lo, hi)]
+    p = clip([float(v) for v in _ac.asarray(p0)._flat()])
+    xs = list(_ac.asarray(xdata)._flat()) \
+        if not isinstance(xdata, (list, tuple)) else list(xdata)
+    ys = [float(v) for v in _ac.asarray(ydata)._flat()]
+    n = len(ys)
+
+    def model(pv):
+        try:
+            mv = f(_ac.marr([float(u) for u in xs]), *pv)
+        except TypeError:
+            mv = [f(u, *pv) for u in xs]
+        return [float(v) for v in _ac.asarray(mv)._flat()]
+
+    def jac(pv, m0):
+        J = []
+        for j in range(k):
+            pj = list(pv)
+            h = 1e-7 * max(abs(pj[j]), 1.0)
+            # step inward at an upper bound so the model stays in the box
+            if pj[j] + h > hi[j]:
+                h = -h
+            pj[j] += h
+            mj = model(pj)
+            J.append([(mj[i] - m0[i]) / h for i in range(n)])
+        return J
+    m0 = model(p)
+    r = [ys[i] - m0[i] for i in range(n)]
+    ssr = _math.fsum(v * v for v in r)
+    lam = 1e-3
+    for _ in range(int(maxfev)):
+        J = jac(p, m0)
+        grad = [-_math.fsum(J[j][i] * r[i] for i in range(n)) for j in range(k)]
+        span = [_bi.max(1.0, _bi.abs(v)) for v in p]
+        free = [j for j in range(k)
+                if not ((p[j] <= lo[j] + 1e-12 * span[j] and grad[j] > 0) or
+                        (p[j] >= hi[j] - 1e-12 * span[j] and grad[j] < 0))]
+        if not free:
+            break
+        A = [[_math.fsum(J[a_][i] * J[b_][i] for i in range(n)) for b_ in free]
+             for a_ in free]
+        g = [_math.fsum(J[a_][i] * r[i] for i in range(n)) for a_ in free]
+        improved = False
+        for _try in range(40):
+            Ad = [[A[i][j] + (lam * A[i][i] if i == j else 0.0)
+                   for j in range(len(free))] for i in range(len(free))]
+            try:
+                d = list(_ac.linalg.solve(_ac.marr(Ad), _ac.marr(g))._flat())
+            except Exception:
+                lam *= 10.0
+                continue
+            pn = list(p)
+            for idx, j in enumerate(free):
+                pn[j] = p[j] + d[idx]
+            pn = clip(pn)
+            mn = model(pn)
+            rn = [ys[i] - mn[i] for i in range(n)]
+            ssn = _math.fsum(v * v for v in rn)
+            if ssn < ssr:
+                step = _bi.max(_bi.abs(pn[j] - p[j]) / span[j] for j in range(k))
+                rel = (ssr - ssn) / _bi.max(ssr, 1e-300)
+                p, m0, r, ssr = pn, mn, rn, ssn
+                lam = _bi.max(lam * 0.3, 1e-15)
+                improved = True
+                break
+            lam *= 10.0
+        if not improved or ssr < 1e-30 or (step < 1e-14 and rel < 1e-15):
+            break
+    # pcov in p at the solution (free and active alike, as scipy)
+    J = jac(p, m0)
+    A = [[_math.fsum(J[a_][i] * J[b_][i] for i in range(n)) for b_ in range(k)]
+         for a_ in range(k)]
+    dof = max(n - k, 1)
+    try:
+        pcov = _ac.linalg.inv(_ac.marr(A)) * (ssr / dof)
+    except Exception:
+        pcov = _ac.marr([[float("inf")] * k for _ in range(k)])
     return _ac.marr(p), pcov
 
 
@@ -2283,6 +2409,20 @@ class UnivariateSpline:
     def __call__(self, x):
         f = self._cs if self._cs is not None else self._ls
         return f(x)
+
+    def get_knots(self):
+        """The distinct knots, ends included (scipy's accessor). NOTE:
+        this spline's knots come from a quantile rule, not FITPACK's
+        smoothing-condition search, so they are not scipy's knots."""
+        if self._ls is None:
+            return _ac.marr(list(self._cs.x._flat()) if hasattr(self._cs.x, "_flat")
+                            else list(self._cs.x))
+        t = self._ls.t if hasattr(self._ls, "t") else []
+        seen = []
+        for v in (t.tolist() if hasattr(t, "tolist") else t):
+            if not seen or v != seen[-1]:
+                seen.append(float(v))
+        return _ac.marr(seen)
 
 
 interpolate.BSpline = BSpline

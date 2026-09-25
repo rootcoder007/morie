@@ -73,7 +73,7 @@ def geron_gradient_clipping(gradients, c):
     if isinstance(gradients, (list, tuple)) and len(gradients) == 0:
         raise ValueError("gradients is empty.")
     listed = isinstance(gradients, (list, tuple)) and any(
-        np.asarray(g).ndim > 0 for g in gradients
+        np.ndim(g) > 0 for g in gradients
     )
     flat = np.concatenate([np.asarray(g, dtype=float).ravel() for g in gradients]) \
         if listed else np.asarray(gradients, dtype=float).ravel()

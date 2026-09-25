@@ -1601,6 +1601,23 @@ class DataFrame:
                               for v in self._cols[c]] for c in self.columns},
                          index=list(self.index))
 
+    def _logical(self, o, fn):
+        if isinstance(o, DataFrame):
+            return DataFrame({c: [bool(fn(bool(a), bool(b)))
+                                  for a, b in zip(self._cols[c], o._cols[c])]
+                              for c in self.columns}, index=list(self.index))
+        return DataFrame({c: [bool(fn(bool(a), bool(o))) for a in self._cols[c]]
+                          for c in self.columns}, index=list(self.index))
+
+    def __and__(self, o):
+        return self._logical(o, lambda a, b: a and b)
+
+    def __or__(self, o):
+        return self._logical(o, lambda a, b: a or b)
+
+    def __xor__(self, o):
+        return self._logical(o, lambda a, b: a != b)
+
     def __invert__(self):
         # Elementwise logical NOT over every column, so (~df.isna()) works the
         # way it does for a Series. Without this, unary ~ raised TypeError.
@@ -3458,6 +3475,41 @@ class _TimedeltaArray(list):
         if isinstance(other, _dt.datetime):
             return Series([other + delta for delta in self])
         return NotImplemented
+
+
+class Timedelta(_dt.timedelta):
+    """pandas.Timedelta: a datetime.timedelta built from keywords
+    (days=, hours=, ...), a number with a unit, or a string such as
+    "3 days", "2h", "1D" or "90min"."""
+
+    _UNITS = {"D": "days", "day": "days", "days": "days",
+              "h": "hours", "hour": "hours", "hours": "hours", "H": "hours",
+              "m": "minutes", "min": "minutes", "minute": "minutes",
+              "minutes": "minutes", "T": "minutes",
+              "s": "seconds", "sec": "seconds", "second": "seconds",
+              "seconds": "seconds", "S": "seconds",
+              "ms": "milliseconds", "L": "milliseconds",
+              "us": "microseconds", "ns": "nanoseconds",
+              "W": "weeks", "w": "weeks", "week": "weeks", "weeks": "weeks"}
+
+    def __new__(cls, value=None, unit="ns", **kw):
+        if value is None:
+            return super().__new__(cls, **kw)
+        if isinstance(value, _dt.timedelta):
+            return super().__new__(cls, seconds=value.total_seconds())
+        if isinstance(value, str):
+            import re as _re
+            m = _re.fullmatch(r"\s*([-+]?[\d.]+)\s*([A-Za-z]+)\s*", value)
+            if not m:
+                raise ValueError("unrecognised timedelta %r" % (value,))
+            value, unit = float(m.group(1)), m.group(2)
+        key = cls._UNITS.get(unit)
+        if key is None:
+            raise ValueError("unknown unit %r" % (unit,))
+        v = float(value)
+        if key == "nanoseconds":
+            return super().__new__(cls, microseconds=v / 1000.0)
+        return super().__new__(cls, **{key: v})
 
 
 def to_timedelta(arg, unit="D"):

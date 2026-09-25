@@ -12,7 +12,7 @@ __all__ = ["tmlecde", "tmle_controlled_direct"]
 
 
 def tmlecde(Y, A, M, QAM, Q1m, Q0m, g1W, hmW, m=1, gbound=0.025,
-            level=0.95):
+            level=0.95, hm1W=None, hm0W=None):
     """Controlled direct effect: the treatment effect with the mediator held fixed.
 
     The CDE is not the total effect minus an indirect effect; it is
@@ -44,6 +44,12 @@ def tmlecde(Y, A, M, QAM, Q1m, Q0m, g1W, hmW, m=1, gbound=0.025,
         Initial P(A = 1 | W).
     hmW : array-like
         Initial P(M = m | A, W) at each observation's own A.
+    hm1W, hm0W : array-like, optional
+        P(M = m | A = 1, W) and P(M = m | A = 0, W) for every unit.
+        Q*(a, m, W) is updated along 1 / (g_a(W) h_m(a, W)) at every
+        unit, whatever its observed A, so both are needed; when omitted
+        hmW stands in for both, which is right only if M is
+        independent of A given W.
     m : float
         The level the mediator is set to.
     gbound : float
@@ -90,10 +96,13 @@ def tmlecde(Y, A, M, QAM, Q1m, Q0m, g1W, hmW, m=1, gbound=0.025,
     m = float(m)
     g1 = [T.bound(v, gbound, 1.0 - gbound) for v in g1W]
     g0 = [1.0 - v for v in g1]
-    h = [T.bound(v, gbound, 1.0) for v in hmW]
+    h1 = [T.bound(v, gbound, 1.0) for v in (C.vec(hm1W) if hm1W is not None else hmW)]
+    h0 = [T.bound(v, gbound, 1.0) for v in (C.vec(hm0W) if hm0W is not None else hmW)]
+    if len(h1) != n or len(h0) != n:
+        raise ValueError("hm1W and hm0W must have one entry per observation")
     at = [1.0 if M[i] == m else 0.0 for i in range(n)]
-    H1 = [at[i] * A[i] / (g1[i] * h[i]) for i in range(n)]
-    H0 = [at[i] * (1.0 - A[i]) / (g0[i] * h[i]) for i in range(n)]
+    H1 = [at[i] * A[i] / (g1[i] * h1[i]) for i in range(n)]
+    H0 = [at[i] * (1.0 - A[i]) / (g0[i] * h0[i]) for i in range(n)]
     off = [T.logit(v) for v in QAM]
     e = [0.0, 0.0]
     for _ in range(100):
@@ -114,9 +123,9 @@ def tmlecde(Y, A, M, QAM, Q1m, Q0m, g1W, hmW, m=1, gbound=0.025,
         if max(abs(st[0]), abs(st[1])) < 1e-12:
             break
     QAs = [T.expit(off[i] + e[0] * H0[i] + e[1] * H1[i]) for i in range(n)]
-    Q1s = [T.expit(T.logit(Q1m[i]) + e[1] / (g1[i] * h[i]))
+    Q1s = [T.expit(T.logit(Q1m[i]) + e[1] / (g1[i] * h1[i]))
            for i in range(n)]
-    Q0s = [T.expit(T.logit(Q0m[i]) + e[0] / (g0[i] * h[i]))
+    Q0s = [T.expit(T.logit(Q0m[i]) + e[0] / (g0[i] * h0[i]))
            for i in range(n)]
     mu1 = sum(Q1s) / n
     mu0 = sum(Q0s) / n
@@ -125,7 +134,7 @@ def tmlecde(Y, A, M, QAM, Q1m, Q0m, g1W, hmW, m=1, gbound=0.025,
     psi = mu1 - mu0
     se = math.sqrt(C.var(ic, 1) / n)
     z = C.qnorm((1.0 + float(level)) / 2.0)
-    den = [min(g1[i], g0[i]) * h[i] for i in range(n)]
+    den = [min(g1[i] * h1[i], g0[i] * h0[i]) for i in range(n)]
     return RichResult(payload={
         "estimate": psi, "se": se, "ci_lower": psi - z * se,
         "ci_upper": psi + z * se, "mu1": mu1, "mu0": mu0,

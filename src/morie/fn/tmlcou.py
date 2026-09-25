@@ -127,7 +127,10 @@ def tmle_count_outcome(y, D, X, offset=None, g=None, Q1=None,
 
     ``offset`` supplies exposure time, in which case the estimand is a
     rate. Nuisance fits may be supplied; otherwise they are fitted by
-    logistic and least-squares regression on ``X``.
+    logistic and least-squares regression on ``X``.  Supplied ``Q1`` and
+    ``Q0`` are predictions on the outcome's own scale (the rate scale
+    when ``offset`` is given); they are mapped to [0, 1] with the same
+    bounds as the outcome before the logistic fluctuation.
     """
     yv = [float(v) for v in k.vec(y)]
     a = [float(v) for v in k.vec(D)]
@@ -166,8 +169,13 @@ def tmle_count_outcome(y, D, X, offset=None, g=None, Q1=None,
         q0 = [min(max(pred(0.0, i), 1e-6), 1 - 1e-6)
               for i in range(n)]
     else:
-        q1 = [min(max(float(v), 1e-6), 1 - 1e-6) for v in k.vec(Q1)]
-        q0 = [min(max(float(v), 1e-6), 1 - 1e-6) for v in k.vec(Q0)]
+        # supplied fits are on the outcome's own scale (the rate scale
+        # when an offset is given) and go through the same affine map
+        lo_, rg_ = sc["lower"], sc["range"]
+        q1 = [min(max((float(v) - lo_) / rg_, 1e-6), 1 - 1e-6)
+              for v in k.vec(Q1)]
+        q0 = [min(max((float(v) - lo_) / rg_, 1e-6), 1 - 1e-6)
+              for v in k.vec(Q0)]
     H = [a[i] / gg[i] - (1.0 - a[i]) / (1.0 - gg[i])
          for i in range(n)]
     qa = [q1[i] if a[i] == 1.0 else q0[i] for i in range(n)]

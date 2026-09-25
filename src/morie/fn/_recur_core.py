@@ -13,6 +13,10 @@ from . import _array_core as np
 __all__ = ["cox_counting_process"]
 
 
+def _bi_clip(v, lo=-500.0, hi=500.0):
+    return lo if v < lo else (hi if v > hi else v)
+
+
 def cox_counting_process(start, stop, event, X, strata=None,
                          max_iter=50, tol=1e-9, offset=None):
     start = np.asarray(start, dtype=float)
@@ -48,45 +52,68 @@ def cox_counting_process(start, stop, event, X, strata=None,
         offs = np.asarray(offset, dtype=float)
         if offs.shape[0] != n:
             raise ValueError("offset must match the number of rows")
-    beta = np.zeros(p)
-    loglik = 0.0
-    info = np.zeros((p, p))
-    n_events = int(np.sum(event))
+    # the Newton loop runs on plain floats: building small arrays per
+    # risk-set member made one fit cost ~0.7 s at n = 24, and the shared
+    # frailty EM calls this fit dozens of times per theta
+    import math as _m
+    Xl = [[float(v) for v in row] for row in X.tolist()]
+    st = [float(v) for v in start.tolist()]
+    sp = [float(v) for v in stop.tolist()]
+    ev = [float(v) for v in event.tolist()]
+    of = [float(v) for v in offs.tolist()]
+    n_events = int(sum(ev))
     if n_events == 0:
         raise ValueError("no events in the data")
+    plan = []
+    for idx in groups.values():
+        ts = sorted(set(sp[i] for i in idx if ev[i] == 1.0))
+        for tk in ts:
+            D = [i for i in idx if sp[i] == tk and ev[i] == 1.0]
+            R = [i for i in idx if st[i] < tk <= sp[i]]
+            plan.append((D, R))
+    b_ = [0.0] * p
+    loglik = 0.0
+    info_l = [[0.0] * p for _ in range(p)]
+    it = 0
     for it in range(max_iter):
-        eta = np.clip(X @ beta + offs, -500.0, 500.0)
-        w = np.exp(eta)
-        U = np.zeros(p)
-        info = np.zeros((p, p))
+        eta = [_bi_clip(sum(Xl[i][j] * b_[j] for j in range(p)) + of[i])
+               for i in range(n)]
+        w = [_m.exp(v) for v in eta]
+        U = [0.0] * p
+        info_l = [[0.0] * p for _ in range(p)]
         loglik = 0.0
-        for idx in groups.values():
-            ts = [stop[i] for i in idx if event[i] == 1.0]
-            for tk in sorted(set(ts)):
-                D = [i for i in idx if stop[i] == tk and event[i] == 1.0]
-                R = [i for i in idx if start[i] < tk <= stop[i]]
-                S0 = float(np.sum(np.asarray([w[i] for i in R])))
-                S1 = np.zeros(p)
-                S2 = np.zeros((p, p))
-                for i in R:
-                    xi = X[i]
-                    S1 = S1 + w[i] * xi
-                    S2 = S2 + w[i] * np.outer(xi, xi)
-                d = float(len(D))
-                xbar = S1 / S0
-                for i in D:
-                    loglik += float(eta[i])
-                    U = U + X[i]
-                loglik -= d * float(np.log(S0))
-                U = U - d * xbar
-                info = info + d * (S2 / S0 - np.outer(xbar, xbar))
+        for D, R in plan:
+            S0 = sum(w[i] for i in R)
+            S1 = [0.0] * p
+            S2 = [[0.0] * p for _ in range(p)]
+            for i in R:
+                xi = Xl[i]
+                wi = w[i]
+                for a_ in range(p):
+                    S1[a_] = S1[a_] + wi * xi[a_]
+                    for c_ in range(p):
+                        S2[a_][c_] = S2[a_][c_] + wi * (xi[a_] * xi[c_])
+            d = float(len(D))
+            xbar = [v / S0 for v in S1]
+            for i in D:
+                loglik += eta[i]
+                for a_ in range(p):
+                    U[a_] = U[a_] + Xl[i][a_]
+            loglik -= d * _m.log(S0)
+            for a_ in range(p):
+                U[a_] = U[a_] - d * xbar[a_]
+                for c_ in range(p):
+                    info_l[a_][c_] = info_l[a_][c_] + d * (S2[a_][c_] / S0
+                                                           - xbar[a_] * xbar[c_])
         try:
-            step = np.linalg.solve(info, U)
+            step = list(np.linalg.solve(np.array(info_l), np.array(U))._flat())
         except Exception:
             raise ValueError("partial likelihood is monotone or information singular")
-        beta = beta + step
-        if float(np.max(np.abs(step))) < tol:
+        b_ = [b_[j] + step[j] for j in range(p)]
+        if max(abs(v) for v in step) < tol:
             break
+    beta = np.array(b_)
+    info = np.array(info_l)
     cov = np.linalg.inv(info)
     diag = [float(cov[j, j]) for j in range(p)]
     if any(v <= 0.0 or v != v for v in diag) or float(np.max(np.abs(beta))) > 50.0:

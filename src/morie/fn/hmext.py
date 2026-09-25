@@ -30,7 +30,7 @@ def _grow_extra(X, y, criterion, max_depth, max_features, min_samples_leaf, dept
         if criterion == "mse":
             return {"leaf": True, "value": float(np.mean(y)), "n": int(y.size), "depth": depth}
         vals, cnt = np.unique(y, return_counts=True)
-        return {"leaf": True, "value": vals[int(np.argmax(cnt))].item(), "n": int(y.size), "depth": depth}
+        return {"leaf": True, "value": np.asarray(vals).tolist()[int(np.argmax(cnt))], "n": int(y.size), "depth": depth}
 
     n_feat = X.shape[1]
     k = min(max_features, n_feat)
@@ -55,7 +55,7 @@ def _grow_extra(X, y, criterion, max_depth, max_features, min_samples_leaf, dept
         if criterion == "mse":
             return {"leaf": True, "value": float(np.mean(y)), "n": int(y.size), "depth": depth}
         vals, cnt = np.unique(y, return_counts=True)
-        return {"leaf": True, "value": vals[int(np.argmax(cnt))].item(), "n": int(y.size), "depth": depth}
+        return {"leaf": True, "value": np.asarray(vals).tolist()[int(np.argmax(cnt))], "n": int(y.size), "depth": depth}
 
     _, f, t = best
     mask = X[:, f] <= t

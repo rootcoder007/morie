@@ -72,7 +72,7 @@ def geron_numerical_differentiation(f, x, h=1e-5):
     xa = np.asarray(x, dtype=float)
     if not np.all(np.isfinite(xa)):
         raise ValueError("x contains non-finite values.")
-    scalar = xa.ndim == 0
+    scalar = np.ndim(x) == 0       # morie has no 0-d arrays: ask the argument
 
     def _diff(step):
         if scalar:

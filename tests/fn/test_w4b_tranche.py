@@ -1326,8 +1326,11 @@ def test_every_module_returns_the_required_payload_keys():
     by importing each module from the installed package, not by
     globbing a sandbox directory layout."""
     import importlib
-    names = [l.split(" | ")[0] for l in open(
-        "/Users/socialscientistlawyer/.claude/jobs/804e7f0b/tmp/w4b.txt")]
+    import re
+    # the shelf's modules are the ones this file imports (a list read
+    # from a sandbox path on one machine made the test unrunnable)
+    names = sorted(set(re.findall(r"from morie\.fn\.(hm\w+) import",
+                                  open(__file__).read())))
     assert len(names) >= 70
     for n in names:
         m = importlib.import_module(f"morie.fn.{n}")

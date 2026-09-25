@@ -81,16 +81,31 @@ def shared_frailty_marginal(time, event, X, cluster, theta=None):
             fit = cox_counting_process(zeros, t, e, Xa, offset=offs)
             eta = Xa @ fit["beta"]
             risk_w = [w[cl[i]] * math.exp(float(eta[i])) for i in range(n)]
+            # Breslow increments dL_k = d_k / sum_{t_i >= t_k} w_i e^{eta_i}
+            # and H_i = e^{eta_i} sum_{t_k <= t_i} dL_k, by one sort and
+            # running sums instead of a scan per event time and per unit
             etimes = sorted(set(float(t[i]) for i in range(n) if e[i] == 1.0))
-            dL = []
-            for tk in etimes:
-                d = sum(1 for i in range(n) if t[i] == tk and e[i] == 1.0)
-                s0 = sum(risk_w[i] for i in range(n) if t[i] >= tk)
-                dL.append(d / s0)
+            dcount = {}
+            for i in range(n):
+                if e[i] == 1.0:
+                    dcount[float(t[i])] = dcount.get(float(t[i]), 0) + 1
+            order = sorted(range(n), key=lambda i: -float(t[i]))
+            dL_rev, run, pos = [], 0.0, 0
+            for tk in reversed(etimes):
+                while pos < n and float(t[order[pos]]) >= tk:
+                    run += risk_w[order[pos]]
+                    pos += 1
+                dL_rev.append(dcount[tk] / run)
+            dL = dL_rev[::-1]
+            cum, acc = [], 0.0
+            for v in dL:
+                acc += v
+                cum.append(acc)
+            import bisect as _bisect
             H = []
             for i in range(n):
-                hi = sum(dL[m] for m in range(len(etimes)) if etimes[m] <= t[i])
-                H.append(hi * math.exp(float(eta[i])))
+                m = _bisect.bisect_right(etimes, float(t[i]))
+                H.append((cum[m - 1] if m else 0.0) * math.exp(float(eta[i])))
             D = [sum(1.0 for i in kidx[k] if e[i] == 1.0) for k in ks]
             L = [sum(H[i] for i in kidx[k]) for k in ks]
             w_new = {ks[j]: (D[j] + a) / (L[j] + a) for j in range(len(ks))}

@@ -52,6 +52,12 @@ def tmle_markov(state, action, reward, policy):
 
     References
     ----------
+    Liao, P., Klasnja, P. & Murphy, S. A. (2021).  Off-policy estimation
+    of long-term average outcomes with applications to mobile health.
+    JASA 116(533):382-391.  doi:10.1080/01621459.2020.1807993.  The
+    influence curve ``w(S) H (R + h(S') - h(S) - V)`` with ``h`` the
+    differential value of the evaluated chain.
+
     Murphy, S. A. (2003).  Optimal dynamic treatment regimes.  Journal
     of the Royal Statistical Society Series B 65(2):331-355.
     doi:10.1111/1467-9868.00389.  The targeting step is van der Laan,
@@ -119,14 +125,26 @@ def tmle_markov(state, action, reward, policy):
     d = C.solvev(A, rhs)
     V = sum(d[k] * rstar[k] for k in range(ns))
 
-    emp = [sum(1.0 for i in range(n) if si[sv[i]] == k) / n for k in range(ns)]
+    # differential value h of the evaluated chain: (I - P) h = r* - V,
+    # pinned by d'h = 0 (one equation of the singular system replaced)
+    Ah = [[(1.0 if j == k else 0.0) - P[k][j] for j in range(ns)] for k in range(ns)]
+    bh = [rstar[k] - V for k in range(ns)]
+    Ah[ns - 1] = list(d)
+    bh[ns - 1] = 0.0
+    h = C.solvev(Ah, bh)
+    # influence curve of the average reward from one trajectory (Liao,
+    # Klasnja & Murphy 2021, JASA 116:382-391, doi:10.1080/01621459.2020.1807993):
+    # D = w(S) H (R + h(S') - h(S) - V), w = d^pi / d^b, one term per
+    # transition.  The terms are martingale differences, so the variance
+    # of their mean is mean(D^2)/(n-1) with no iid assumption on states.
+    m1 = n - 1
+    emp = [sum(1.0 for i in range(m1) if si[sv[i]] == k) / m1 for k in range(ns)]
     ic = []
-    for i in range(n):
+    for i in range(m1):
         k = si[sv[i]]
         w = d[k] / emp[k] if emp[k] > 0 else 0.0
-        ic.append(w * H[i] * (rv[i] - Qobs[i] - eps * H[i]) + rstar[k] - V)
-    m = sum(ic) / n
-    se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
+        ic.append(w * H[i] * (rv[i] + h[si[sv[i + 1]]] - h[k] - V))
+    se = math.sqrt(sum(v * v for v in ic)) / m1
     return RichResult(payload={
         "estimate": V, "se": se, "eps": eps, "n_states": float(ns), "n": n,
         "method": "TMLE for the long-run average reward of a policy in an MDP"})

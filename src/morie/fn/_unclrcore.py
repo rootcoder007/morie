@@ -1053,6 +1053,7 @@ def cvtmle(y, a, q0, q1, g, fold, n_newton=50):
         return math.log(p / (1 - p))
 
     psi_fold, eps_fold = [], []
+    ic = [0.0] * n
     for f in sorted(set(fv)):
         idx = [i for i in range(n) if fv[i] == f]
         H = [av[i] / gv[i] - (1 - av[i]) / (1 - gv[i]) for i in idx]
@@ -1069,14 +1070,16 @@ def cvtmle(y, a, q0, q1, g, fold, n_newton=50):
             eps -= s / sc
         q1s = [1.0 / (1.0 + math.exp(-(lg(g1[i]) + eps * (1.0 / gv[i])))) for i in idx]
         q0s = [1.0 / (1.0 + math.exp(-(lg(g0[i]) - eps * (1.0 / (1 - gv[i]))))) for i in idx]
-        psi_fold.append(sum(q1s[q] - q0s[q] for q in range(len(idx))) / len(idx))
+        pf = sum(q1s[q] - q0s[q] for q in range(len(idx))) / len(idx)
+        psi_fold.append(pf)
         eps_fold.append(eps)
+        # the influence curve is evaluated at the TARGETED fit of the
+        # fold (Zheng & van der Laan 2010, CV-TMLE variance estimator),
+        # centred at that fold's estimate
+        for q, i in enumerate(idx):
+            qa = q1s[q] if av[i] == 1 else q0s[q]
+            ic[i] = H[q] * (yv[i] - qa) + q1s[q] - q0s[q] - pf
     psi = sum(psi_fold) / len(psi_fold)
-    ic = []
-    for i in range(n):
-        H = av[i] / gv[i] - (1 - av[i]) / (1 - gv[i])
-        Qa = g1[i] if av[i] == 1 else g0[i]
-        ic.append(H * (yv[i] - Qa) + (g1[i] - g0[i]) - psi)
     se = math.sqrt(sum(t * t for t in ic) / n / n)
     return {"estimate": psi, "se": se, "psi_fold": psi_fold, "eps_fold": eps_fold,
             "n_folds": len(psi_fold), "n": n}
