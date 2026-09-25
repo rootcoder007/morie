@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_se_d_from_se_r.py

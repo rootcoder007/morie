@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_gh_c5_8.py

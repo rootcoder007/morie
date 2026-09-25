@@ -32,8 +32,13 @@ def test_wsmfis_custom_normal_density():
         g = np.linspace(theta - 10.0, theta + 10.0, 4001)
         out = wasserman_fisher_info(normal, theta, x_grid=g)
         assert out["theta"] == theta
-        assert abs(out["estimate"] - 1.0) < 1e-4
-        assert abs(out["se_one_obs"] - 1.0) < 1e-4
+        # I(theta) = 1 exactly for a unit-variance normal, so 1/sqrt(I) = 1.
+        # The residual is the central-difference step h = 1e-5 plus the
+        # trapezoid rule, measured at about 7e-8 across these thetas.
+        exact_info = 1.0
+        assert out["estimate"] == pytest.approx(exact_info, abs=1e-6)
+        assert out["se_one_obs"] == pytest.approx(
+            1.0 / math.sqrt(exact_info), abs=1e-6)
 
 
 def test_wsmfis_edge():

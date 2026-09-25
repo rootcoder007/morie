@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_msm283.py

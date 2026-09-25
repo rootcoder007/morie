@@ -150,3 +150,8 @@ cran-comments.md
 
 # private wrangled data lives outside git at every depth
 **/data/private/
+
+# scratch symlink directories used for per-subset pytest runs; never
+# package content. _audit is real and stays tracked.
+tests/fn/_*/
+!tests/fn/_audit/

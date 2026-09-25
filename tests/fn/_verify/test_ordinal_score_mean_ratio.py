@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_ordinal_score_mean_ratio.py

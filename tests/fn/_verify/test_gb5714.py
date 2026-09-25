@@ -1,1 +1,0 @@
-/home/rootcoder/work/morie/tests/fn/test_gb5714.py
