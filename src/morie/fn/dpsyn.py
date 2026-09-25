@@ -36,7 +36,10 @@ def dp_synthetic_data(X, epsilon=1.0, n_synth=None, bins=10, bounds=None, seed=N
     X : array-like
         Real data ``(n, p)``.
     epsilon : float
-        Privacy budget, covering all features by parallel composition.
+        Total privacy budget.  Each record contributes to every
+        feature's histogram, so the p marginals compose sequentially and
+        each is released at ``epsilon / p``; within a marginal the bins
+        are disjoint and compose in parallel.
     n_synth : int, optional
         Records to generate. Defaults to ``n``.
     bins : int
@@ -103,7 +106,10 @@ def dp_synthetic_data(X, epsilon=1.0, n_synth=None, bins=10, bounds=None, seed=N
     marg_err = np.empty(p)
     for j in range(p):
         counts, edges = np.histogram(Xc[:, j], bins=bins, range=(lo, hi))
-        noisy = np.maximum(counts + rng.laplace(0.0, 2.0 / epsilon, counts.size), 0.0)
+        # every record enters all p marginals, so the marginals compose
+        # SEQUENTIALLY: each gets epsilon/p (bins within one marginal are
+        # disjoint, which is where parallel composition applies)
+        noisy = np.maximum(counts + rng.laplace(0.0, 2.0 * p / epsilon, counts.size), 0.0)
         if noisy.sum() <= 0:
             noisy = np.ones_like(noisy)
         prob = noisy / noisy.sum()

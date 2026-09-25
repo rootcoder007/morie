@@ -18,7 +18,10 @@ def ghost_signal(
     """Detect hidden (ghost) periodic signals buried in noise via surrogate testing.
 
     Computes the power spectrum of the data and compares the peak spectral
-    power against a null distribution generated from phase-randomized surrogates.
+    power against a null distribution from randomly permuted surrogates
+    (exchangeable-noise null; the Monte Carlo p-value is exact).
+    Phase-randomised surrogates are not usable here: they preserve the
+    periodogram, and with it the statistic.
 
     Parameters
     ----------
@@ -45,17 +48,18 @@ def ghost_signal(
     obs_peak = float(np.max(power[1:]))
     peak_freq_idx = int(np.argmax(power[1:]) + 1)
     peak_freq = float(peak_freq_idx / n)
+    # Surrogates are random PERMUTATIONS of the series: under the null of
+    # exchangeable noise every ordering is equally likely, so the Monte
+    # Carlo p-value is exact.  Phase-randomised surrogates cannot be used
+    # with this statistic -- they keep every Fourier amplitude, so each
+    # surrogate's periodogram equals the observed one and the "p-value"
+    # was decided by rounding noise in the comparison.
     rng = np.random.default_rng(seed)
     null_peaks = np.empty(n_surrogates)
-    amplitudes = np.abs(fft_x)
+    xs = [float(v) for v in x.tolist()]
     for i in range(n_surrogates):
-        phases = rng.uniform(0, 2 * np.pi, len(fft_x))
-        phases[0] = 0
-        if n % 2 == 0:
-            phases[-1] = 0
-        surrogate_fft = amplitudes * np.exp(1j * phases)
-        surrogate = np.fft.irfft(surrogate_fft, n=n)
-        s_fft = np.fft.rfft(surrogate)
+        perm = [int(k) for k in rng.permutation(n).tolist()]
+        s_fft = np.fft.rfft(np.asarray([xs[k] for k in perm]))
         s_power = np.abs(s_fft) ** 2
         null_peaks[i] = np.max(s_power[1:])
     p_value = float((null_peaks >= obs_peak).sum() + 1) / (n_surrogates + 1)
@@ -63,7 +67,7 @@ def ghost_signal(
         test_name="Ghost signal detection (surrogate)",
         statistic=obs_peak,
         p_value=p_value,
-        method="Phase-randomized surrogate",
+        method="Permutation surrogate",
         n=n,
         extra={
             "peak_frequency": peak_freq,

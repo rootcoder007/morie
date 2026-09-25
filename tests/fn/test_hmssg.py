@@ -21,7 +21,8 @@ def test_hmssg_basic():
     assert "labels" in result
     assert "scores" in result
     assert "class_counts" in result
-    assert result["labels"].shape == (H,)
+    # argmax over the class axis of an (H, W, K) score map is (H, W)
+    assert result["labels"].shape == (H, W)
     assert result["scores"].shape == (H, W, K)
     counts_total = 0
     for c in result["class_counts"]:

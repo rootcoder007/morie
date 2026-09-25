@@ -447,8 +447,16 @@ def _constrained(fun, x0, constraints, args=(), maxiter=None, ftol=1e-9,
                           nit=outer)
 
 
-def minimize_scalar(fun, bounds=None, method=None, **kw):
+def minimize_scalar(fun, bounds=None, method=None, args=(), **kw):
     del method, kw
+    if args:
+        # scipy passes args after x; dropping them broke every caller
+        # that minimised over theta with the data in args
+        f0 = fun
+        args = args if isinstance(args, tuple) else (args,)
+
+        def fun(t):
+            return f0(t, *args)
     lo, hi = (bounds if bounds else (-1e6, 1e6))
     # golden-section search
     gr = (_math.sqrt(5.0) - 1.0) / 2.0

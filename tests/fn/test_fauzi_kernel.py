@@ -180,7 +180,10 @@ def test_kdfe_beats_the_edf_where_the_edf_jumps():
     error, which is why the KDFE exists."""
     rng = np.random.default_rng(23)
     err_s, err_e = [], []
-    for s in range(12):
+    # 200 replications: the MSE gap is ~1e-4 against a between-replicate
+    # spread of the same order, and 12 draws could land either way
+    # (measured over 200: KDFE 9.3e-4, EDF 1.04e-3)
+    for s in range(200):
         x = rng.exponential(1.0, 120)
         g = np.linspace(0.2, 4, 60)
         o = fauzi_kdfe(x, grid=g)

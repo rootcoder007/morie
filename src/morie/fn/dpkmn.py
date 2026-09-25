@@ -109,7 +109,17 @@ def dp_kmeans(X, k=3, epsilon=1.0, n_iter=5, bounds=None, seed=None):
     # Split across iterations AND between the sum and count queries.
     eps_iter = epsilon / (2.0 * n_iter)
     rng = np.random.default_rng(seed)
-    centers = Xc[rng.choice(n, k, replace=False)].astype(float)
+    # Centres start (and restart) at data-INDEPENDENT uniform points in
+    # the clipping box: drawing them from the rows would publish a record
+    # verbatim whenever a centre is re-initialised on the last pass.
+    centers = np.asarray([[lo + (hi - lo) * float(rng.uniform()) for _ in range(p)]
+                          for _ in range(k)])
+    # Neighbouring data sets differ by one record (add/remove).  A count
+    # changes by 1; a p-dimensional sum by the record's L1 norm, at most
+    # p * max(|lo|, |hi|) after clipping -- per-coordinate (hi - lo)
+    # noise under-covers the L1 sensitivity by about a factor p.  Each
+    # record sits in one cluster, so the k clusters compose in parallel.
+    sens_sum = p * max(abs(lo), abs(hi))
     reinit = 0
     labels = np.zeros(n, dtype=int)
     for _ in range(n_iter):
@@ -119,9 +129,10 @@ def dp_kmeans(X, k=3, epsilon=1.0, n_iter=5, bounds=None, seed=None):
             m = labels == j
             noisy_count = m.sum() + rng.laplace(0.0, 1.0 / eps_iter)
             noisy_sum = (Xc[m].sum(axis=0) if m.any() else np.zeros(p)) + \
-                rng.laplace(0.0, (hi - lo) / eps_iter, p)
+                rng.laplace(0.0, sens_sum / eps_iter, p)
             if noisy_count < 1.0:
-                centers[j] = Xc[rng.integers(n)]
+                centers[j] = np.asarray([lo + (hi - lo) * float(rng.uniform())
+                                         for _ in range(p)])
                 reinit += 1
             else:
                 centers[j] = noisy_sum / noisy_count
@@ -140,6 +151,10 @@ def dp_kmeans(X, k=3, epsilon=1.0, n_iter=5, bounds=None, seed=None):
             "inertia": float(np.sum(d2[np.arange(n), labels])),
             "epsilon": epsilon, "k": k, "n_iter": n_iter,
             "bounds": (lo, hi), "method": "dp_kmeans",
+            "private_outputs": ("centers",),
+            "privacy_note": ("only `centers` is the differentially private "
+                             "release; `labels` and `inertia` are computed "
+                             "on the raw records and must not be published"),
         },
     )
 

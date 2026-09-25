@@ -217,6 +217,13 @@ class Series:
 
     @property
     def dtype(self):
+        # pandas: all-bool -> bool, all-int -> int64, other numeric ->
+        # float64 (NaN included), anything else object
+        vals = list(self._data)
+        if vals and all(isinstance(v, bool) for v in vals):
+            return _ac._DType("bool")
+        if vals and all(isinstance(v, int) and not isinstance(v, bool) for v in vals):
+            return _ac.int64
         if self._is_numeric():
             return _ac.float64
         return _ac.oarr([]).dtype
@@ -1401,6 +1408,9 @@ class DataFrame:
         for c, vals in self._cols.items():
             if all(isinstance(v, bool) for v in vals):
                 out[c] = "bool"
+            elif vals and all(isinstance(v, int) and not isinstance(v, bool)
+                              for v in vals):
+                out[c] = "int64"
             elif all(isinstance(v, (int, float)) or _isnan(v)
                      for v in vals):
                 out[c] = "float64"
@@ -1793,17 +1803,23 @@ class DataFrame:
         dt = self.dtypes.to_dict()
 
         def match(kind, spec):
-            spec = [spec] if isinstance(spec, str) else list(spec)
+            spec = list(spec) if isinstance(spec, (list, tuple, set)) else [spec]
             for s in spec:
                 # accept dtype objects/classes as well as the strings
                 if not isinstance(s, str):
                     s = getattr(s, "__name__", None) or \
                         getattr(s, "name", None) or str(s)
-                    if s in ("float", "float64", "int", "int64"):
-                        s = "number"
-                if s in ("number", "float", "float64", "int",
-                         "int64", "floating", "integer") \
-                        and kind == "float64":
+                    if s == "float":
+                        s = "float64"
+                    elif s == "int":
+                        s = "int64"
+                # pandas: "number" covers ints and floats (not bool);
+                # "integer"/"int64" only ints, "floating"/"float64" floats
+                if s == "number" and kind in ("float64", "int64"):
+                    return True
+                if s in ("float", "float64", "floating") and kind == "float64":
+                    return True
+                if s in ("int", "int64", "integer") and kind == "int64":
                     return True
                 if s in ("object", "string", "str", "category") \
                         and kind == "object":

@@ -260,21 +260,43 @@ def logit_fit(X, y, max_iter=100, tol=1e-10, ridge=1e-8):
     finite coefficients instead of diverging. Separation is a real
     warning about overlap, and the caller is told about it.
     """
+    import math as _m
+
     X = np.asarray(X, dtype=float)
     y = np.asarray(y, dtype=float).ravel()
-    beta = np.zeros(X.shape[1])
+    # plain row lists: the IRLS loop allocates no temporary arrays
+    rows = [[float(v) for v in r] for r in X.tolist()]
+    yv = [float(v) for v in y.tolist()]
+    k = len(rows[0])
+    beta = [0.0] * k
     separated = False
     for _ in range(int(max_iter)):
-        eta = np.clip(X @ beta, -30, 30)
-        p = 1.0 / (1.0 + np.exp(-eta))
-        wgt = np.maximum(p * (1 - p), 1e-10)
-        z = eta + (y - p) / wgt
-        XtW = X.T * wgt
-        step = np.linalg.solve(XtW @ X + ridge * np.eye(X.shape[1]), XtW @ z)
-        if np.max(np.abs(step - beta)) < tol:
-            beta = step
-            break
+        A = [[0.0] * k for _ in range(k)]
+        rhs = [0.0] * k
+        for r, yi in zip(rows, yv):
+            eta = sum([a * b for a, b in zip(r, beta)])
+            eta = min(max(eta, -30.0), 30.0)
+            pi = 1.0 / (1.0 + _m.exp(-eta))
+            w = max(pi * (1 - pi), 1e-10)
+            wz = w * (eta + (yi - pi) / w)
+            nz = [(a, v) for a, v in enumerate(r) if v != 0.0]
+            for a, va in nz:
+                rhs[a] += va * wz
+                wa = va * w
+                Aa = A[a]
+                for c, vc in nz:
+                    if c >= a:
+                        Aa[c] += wa * vc
+        for a in range(k):
+            for c in range(a + 1, k):
+                A[c][a] = A[a][c]
+            A[a][a] += ridge
+        step = [float(v) for v in np.linalg.solve(np.asarray(A), np.asarray(rhs)).tolist()]
+        done = max(abs(s1 - b1) for s1, b1 in zip(step, beta)) < tol
         beta = step
+        if done:
+            break
+    beta = np.asarray(beta)
     p = logit_predict(X, beta)
     if np.min(p) < 1e-6 or np.max(p) > 1 - 1e-6:
         separated = True

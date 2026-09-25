@@ -43,6 +43,9 @@ def _num(v):
     Complex is preserved for the same reason -- silently taking float()
     of it would raise, or worse, drop the imaginary part.
     """
+    t = type(v)
+    if t is float or t is int:      # the common cases, by identity
+        return v
     if isinstance(v, bool):
         return int(v)
     if isinstance(v, (int, complex)):
@@ -2151,6 +2154,10 @@ def _is_object_like(x, dtype):
                               or getattr(dtype, "__name__", "")
                               == "object" or dtype == "object"):
         return True
+    if isinstance(x, marr):
+        # a numeric marr is never an object array; asking for its dtype
+        # would scan every element for complex values on each asarray
+        return False
     xdt = getattr(x, "dtype", None)
     if xdt is not None and (xdt is object
                             or getattr(xdt, "kind", "") in ("O", "U", "S")
