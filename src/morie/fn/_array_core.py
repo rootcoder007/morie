@@ -317,6 +317,52 @@ def _bool_index(idx, length):
     return [k for k, v in enumerate(vals) if v]
 
 
+def _gather_rows_nd(a, idx):
+    """numpy integer-array indexing on axis 0 when the index array has
+    rank >= 2: the result has shape idx.shape + a.shape[1:]. A matrix
+    indexed by an (n, k) array of row numbers -- the embedding-lookup
+    idiom E[C] -- is therefore (n, k, d). The core only handled a 1-D
+    index, and raised on this. Returns None when it does not apply.
+    """
+    if isinstance(idx, (tuple, slice, int, float)) or idx is None:
+        return None
+    if isinstance(idx, marr):
+        if getattr(idx, "_is_mask", False) or len(idx.shape) != 2:
+            return None
+        rows = idx.data
+    elif isinstance(idx, ndlist):
+        rows = idx.tolist()
+    elif isinstance(idx, list) and idx and isinstance(idx[0], (list, tuple)):
+        rows = idx
+    else:
+        return None
+
+    def leaf_ok(v):
+        return isinstance(v, (int, float)) and not isinstance(v, bool) \
+            and float(v) == int(v)
+
+    def pick(node):
+        if isinstance(node, (list, tuple)):
+            return [pick(v) for v in node]
+        if not leaf_ok(node):
+            raise IndexError("arrays used as indices must be of integer "
+                             "type")
+        i = int(node)
+        n = a.shape[0]
+        if i < -n or i >= n:
+            raise IndexError("index %d is out of bounds for axis 0 with "
+                             "size %d" % (i, n))
+        if len(a.shape) == 1:
+            return a.data[i]
+        return list(a.data[i])
+
+    out = pick(rows)
+    depth = _nested_depth(out)
+    if depth >= 3:
+        return ndlist(out)
+    return marr(out)
+
+
 class marr:
     """Minimal array: nested lists of floats, 1-D or 2-D."""
 
@@ -436,6 +482,9 @@ class marr:
         into ordinary numbers -- after which x[mask] read those 1.0s
         and 0.0s as row indices and silently returned the wrong rows.
         """
+        gathered = _gather_rows_nd(self, idx)
+        if gathered is not None:
+            return gathered
         out = self._getitem_raw(idx)
         if isinstance(out, marr):
             if getattr(self, "_is_mask", False):
@@ -772,7 +821,9 @@ class marr:
     def ndim(self):
         return len(self.shape)
 
-    def ravel(self):
+    def ravel(self, order="C"):
+        if _is_f_order(order) and len(self.shape) >= 2:
+            return _carry(self, marr(transpose(self)._flat()))
         return _carry(self, marr(self._flat()))
 
     def squeeze(self, axis=None):
@@ -829,10 +880,22 @@ class marr:
         out._dt = None if name == "float64" else name
         return out
 
-    def flatten(self):
-        return _carry(self, marr(self._flat()))
+    def flatten(self, order="C"):
+        return self.ravel(order)
 
-    def reshape(self, *shape):
+    def reshape(self, *shape, order="C"):
+        """numpy.ndarray.reshape, honouring ``order``.
+
+        Column-major ('F') filling is numpy's identity
+        a.reshape(s, order='F') == a.T.ravel().reshape(s[::-1]).T.
+        The order argument used to be refused (methods) or silently
+        dropped (module function), so an 'F' fold came back row-major.
+        """
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = tuple(shape[0])
+        return _reshape_ordered(self, shape, order)
+
+    def _reshape_c(self, *shape):
         if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
             shape = tuple(shape[0])
         f = self._flat()
@@ -1677,7 +1740,8 @@ class oarr(list):
             return oarr(self)
         return marr([float(v) for v in self])
 
-    def reshape(self, *shape):
+    def reshape(self, *shape, order="C"):
+        del order                     # 1-D only: every order agrees
         if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
             shape = tuple(shape[0])
         if shape in ((-1,), (len(self),)):
@@ -5311,8 +5375,10 @@ class ndlist(list):
         written against the rank-2 core keeps working at rank 3."""
         return self._blocks()
 
-    def ravel(self):
-        """numpy.ndarray.ravel: a flat 1-D view."""
+    def ravel(self, order="C"):
+        """numpy.ndarray.ravel: a flat 1-D view, in either order."""
+        if _is_f_order(order):
+            return marr(_flatten_nested(transpose(self).tolist()))
         return marr(_flatten_nested(self.tolist()))
 
     def __matmul__(self, other):
@@ -5323,9 +5389,9 @@ class ndlist(list):
     def __rmatmul__(self, other):
         return _batched_matmul(other, self)
 
-    def flatten(self):
-        """numpy.ndarray.flatten: a flat 1-D copy."""
-        return marr(_flatten_nested(self.tolist()))
+    def flatten(self, order="C"):
+        """numpy.ndarray.flatten: a flat 1-D copy, in either order."""
+        return self.ravel(order)
 
     def squeeze(self, axis=None):
         """numpy.ndarray.squeeze: drops the length-1 axes."""
@@ -5474,7 +5540,19 @@ class ndlist(list):
                 yield float(v)
         return walk(self)
 
-    def reshape(self, *shape):
+    def reshape(self, *shape, order="C"):
+        """numpy.ndarray.reshape, honouring ``order``.
+
+        Column-major ('F') filling is numpy's identity
+        a.reshape(s, order='F') == a.T.ravel().reshape(s[::-1]).T.
+        The order argument used to be refused (methods) or silently
+        dropped (module function), so an 'F' fold came back row-major.
+        """
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = tuple(shape[0])
+        return _reshape_ordered(self, shape, order)
+
+    def _reshape_c(self, *shape):
         """Row-major reshape, with a single -1 inferred, as numpy does.
 
         Returns marr for rank 1 or 2 (the rank-2 core) and ndlist above
@@ -6648,8 +6726,10 @@ def cbrt(x):
                       if v == v else v)
 
 
-def ravel(x):
+def ravel(x, order="C"):
     a = asarray(x)
+    if _is_f_order(order) and len(getattr(a, "shape", ())) >= 2:
+        return a.ravel("F")
     return _carry(a, marr(list(a._flat())))
 
 
@@ -8459,8 +8539,27 @@ def isposinf(x):
 
 
 def reshape(x, shape, order="C"):
-    del order
-    return asarray(x).reshape(shape)
+    return asarray(x).reshape(shape, order=order)
+
+
+def _is_f_order(order):
+    o = "C" if order is None else str(order).upper()
+    if o not in ("C", "F", "A", "K"):
+        raise ValueError("order must be one of 'C', 'F', 'A', or 'K'")
+    return o == "F"
+
+
+def _reshape_ordered(a, shape, order):
+    """Reshape ``a`` in C or Fortran order (see ndarray.reshape)."""
+    if not _is_f_order(order):
+        return a._reshape_c(*shape)
+    # resolve -1 and validate with the row-major path first
+    target = a._reshape_c(*shape)
+    dims = tuple(int(d) for d in getattr(target, "shape", (len(target),)))
+    if len(dims) <= 1:
+        return a.ravel("F") if hasattr(a, "ravel") else target
+    flat_f = a.ravel("F")
+    return transpose(flat_f._reshape_c(*dims[::-1]))
 
 
 def vdot(a, b):
