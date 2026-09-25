@@ -2454,6 +2454,9 @@ class _Loc:
             rk = _loc_key(rk, df.index)
             if isinstance(value, Series):
                 value = list(value._data)
+            elif isinstance(value, tuple) or (
+                    hasattr(value, "tolist") and hasattr(value, "shape")):
+                value = list(value.tolist())    # array: one value per row
             if isinstance(rk, list) and rk \
                     and isinstance(rk[0], bool):
                 if ck not in df._cols:
@@ -2561,11 +2564,28 @@ def _cov(x, y, ddof=1):
 class GroupBy:
     def __init__(self, df, by, sort=True, dropna=True):
         self._df = df
-        self._by = by if isinstance(by, (list, tuple)) else [by]
+        by = by if isinstance(by, (list, tuple)) else [by]
+        # pandas: a key is a column label, a Series (its name labels the
+        # level) or an array of per-row values (unnamed level)
+        names, vecs = [], []
+        for b in by:
+            if isinstance(b, Series):
+                names.append(b.name)
+                vecs.append(list(b._data))
+            elif hasattr(b, "tolist") and hasattr(b, "shape"):
+                names.append(None)
+                vecs.append(list(b.tolist()))
+            else:
+                names.append(b)
+                vecs.append(df._cols[b])
+        for v in vecs:
+            if len(v) != df.shape[0]:
+                raise ValueError("Grouper and axis must be same length")
+        self._by = names
         self._sort = bool(sort)
         self._groups = {}
         for i in range(df.shape[0]):
-            key = tuple(df._cols[c][i] for c in self._by)
+            key = tuple(v[i] for v in vecs)
             if dropna and any(_isnan(k) for k in key):
                 continue
             self._groups.setdefault(key, []).append(i)
@@ -3204,11 +3224,27 @@ class _GroupBySeries:
 
 # ===================================================== module fns
 
+def _na_map(v, keep):
+    # pandas: array-like in, elementwise boolean array out (same shape).
+    def rec(x):
+        if isinstance(x, (list, tuple)):
+            return [rec(e) for e in x]
+        return _isnan(x) is keep
+    return _ac.asarray(rec(v.tolist() if hasattr(v, "tolist") else list(v)))
+
+
+def _is_listlike(v):
+    return isinstance(v, (list, tuple)) or (
+        hasattr(v, "tolist") and hasattr(v, "shape"))
+
+
 def isna(v):
     if isinstance(v, Series):
         return v.isna()
     if isinstance(v, DataFrame):
         return v.isna()
+    if _is_listlike(v):
+        return _na_map(v, True)
     return _isnan(v)
 
 
@@ -3218,6 +3254,8 @@ isnull = isna
 def notna(v):
     if isinstance(v, (Series, DataFrame)):
         return v.notna()
+    if _is_listlike(v):
+        return _na_map(v, False)
     return not _isnan(v)
 
 
@@ -3365,6 +3403,9 @@ def to_timedelta(arg, unit="D"):
     """pandas.to_timedelta for the units morie's callers use."""
     key = {"D": "days", "days": "days", "W": "weeks",
            "h": "hours", "m": "minutes", "s": "seconds"}[unit]
+    if isinstance(arg, Series):
+        return Series([_dt.timedelta(**{key: float(v)}) for v in arg._data],
+                      index=list(arg.index), name=arg.name)
     if hasattr(arg, "_flat"):
         vals = [float(v) for v in arg._flat()]
     elif isinstance(arg, (list, tuple)):

@@ -89,7 +89,22 @@ def _links(family):
 
 def bayesian_glm(X, y, family="binomial", prior_sd=2.5, add_intercept=True,
                  max_iter=100, tol=1e-10):
-    r"""Posterior mode and Laplace covariance for a GLM with a normal prior."""
+    r"""Posterior mode and Laplace covariance for a GLM with a normal prior.
+
+    Examples
+    --------
+    One Gaussian observation y = 2 at x = 1 with a N(0, 1) prior and no
+    intercept: the mode is x y / (x^2 + 1) = 1, the posterior variance
+    1 / (x^2 + 1) = 1/2, and y ~ N(0, 1 + 1) exactly, so the log
+    marginal is -(log(2 pi) + log 2 + 4/2) / 2:
+
+    >>> r = bayesian_glm([[1.0]], [2.0], family="gaussian", prior_sd=1.0,
+    ...                  add_intercept=False)
+    >>> round(r["coefficients"][0], 12), round(r["posterior_sd"][0] ** 2, 12)
+    (1.0, 0.5)
+    >>> round(r["log_marginal"], 6)
+    -2.265512
+    """
     Xm = [[float(v) for v in r] for r in k.mat(X)]
     yv = [float(v) for v in k.vec(y)]
     n = len(Xm)

@@ -260,9 +260,12 @@ class LinearRegression:
 
 
 class Ridge(LinearRegression):
-    def __init__(self, alpha=1.0, fit_intercept=True):
+    def __init__(self, alpha=1.0, fit_intercept=True, random_state=None):
         super().__init__(fit_intercept)
         self.alpha = alpha
+        # sklearn uses it only for the stochastic sag/saga solvers; the
+        # closed-form solve here is deterministic
+        self.random_state = random_state
 
     def fit(self, X, y):
         Xd = _X2d(X)
@@ -359,7 +362,7 @@ def _check_finite(rows, what="X"):
 
 
 class LogisticRegression:
-    """Binary logistic with L2 (matches sklearn C parametrization)."""
+    """Binary or multinomial logistic with L2 (sklearn C parametrization)."""
 
     def __init__(self, C=1.0, fit_intercept=True, penalty="l2",
                  max_iter=200, **kw):
@@ -372,11 +375,16 @@ class LogisticRegression:
     def fit(self, X, y):
         Xd = _X2d(X)
         yraw = list(y.tolist() if hasattr(y, "tolist") else y)
-        self.classes_ = sorted(set(yraw), key=str)
-        if len(self.classes_) != 2:
-            raise ValueError("binary only in native core")
-        yv = [1.0 if v == self.classes_[1] else 0.0 for v in yraw]
+        try:
+            self.classes_ = sorted(set(yraw))      # numpy.unique order
+        except TypeError:
+            self.classes_ = sorted(set(yraw), key=str)
+        if len(self.classes_) < 2:
+            raise ValueError("needs samples of at least 2 classes")
         _check_finite(Xd)
+        if len(self.classes_) > 2:
+            return self._fit_multinomial(Xd, yraw)
+        yv = [1.0 if v == self.classes_[1] else 0.0 for v in yraw]
         if self.fit_intercept:
             Xd = [[1.0] + r for r in Xd]
         n, k = len(Xd), len(Xd[0])
@@ -409,9 +417,81 @@ class LogisticRegression:
             self.coef_ = _ac.marr([b])
         return self
 
+    def _fit_multinomial(self, Xd, yraw):
+        """sklearn's multinomial logistic: minimise
+        C * sum_i -log softmax(W x_i + b)_{y_i} + ||W||^2 / 2 over all K
+        classes, intercepts unpenalised, by Newton's method. Starting
+        from zero the intercept gradient sums to zero over classes, so
+        the intercepts stay centred -- the solution sklearn's lbfgs
+        reaches."""
+        K = len(self.classes_)
+        pos = {c: i for i, c in enumerate(self.classes_)}
+        yi = [pos[v] for v in yraw]
+        X1 = [[1.0] + r for r in Xd] if self.fit_intercept else Xd
+        n, k = len(X1), len(X1[0])
+        lam = 0.0 if self.penalty in (None, "none") else 1.0 / self.C
+        pen = [0.0 if (self.fit_intercept and j == 0) else lam
+               for j in range(k)]
+        W = [[0.0] * k for _ in range(K)]
+        for _ in range(self.max_iter):
+            P = []
+            for r in range(n):
+                z = [_math.fsum(X1[r][j] * W[c][j] for j in range(k))
+                     for c in range(K)]
+                m = max(z)
+                e = [_math.exp(v - m) for v in z]
+                t = _math.fsum(e)
+                P.append([v / t for v in e])
+            g = [_math.fsum(X1[r][j] * (P[r][c] - (1.0 if yi[r] == c
+                                                     else 0.0))
+                            for r in range(n)) + pen[j] * W[c][j]
+                 for c in range(K) for j in range(k)]
+            d = K * k
+            H = [[0.0] * d for _ in range(d)]
+            for c in range(K):
+                for c2 in range(c, K):
+                    for j in range(k):
+                        for j2 in range(k):
+                            h = _math.fsum(
+                                X1[r][j] * X1[r][j2] * P[r][c]
+                                * ((1.0 if c == c2 else 0.0) - P[r][c2])
+                                for r in range(n))
+                            H[c * k + j][c2 * k + j2] = h
+                            H[c2 * k + j2][c * k + j] = h
+            for c in range(K):
+                for j in range(k):
+                    H[c * k + j][c * k + j] += pen[j] + 1e-10
+            step = list(_ac.linalg.solve(_ac.marr(H), _ac.marr(g))._flat())
+            for c in range(K):
+                for j in range(k):
+                    W[c][j] -= step[c * k + j]
+            # the common shift of an unpenalised column across classes
+            # leaves the probabilities unchanged; keep it at zero (the
+            # 1e-10 ridge alone lets rounding drift along it)
+            for j in range(k):
+                if pen[j] == 0.0:
+                    mu = _math.fsum(W[c][j] for c in range(K)) / K
+                    for c in range(K):
+                        W[c][j] -= mu
+            if max(abs(v) for v in step) < 1e-10:
+                break
+        if self.fit_intercept:
+            self.intercept_ = _ac.marr([W[c][0] for c in range(K)])
+            self.coef_ = _ac.marr([W[c][1:] for c in range(K)])
+        else:
+            self.intercept_ = _ac.marr([0.0] * K)
+            self.coef_ = _ac.marr([list(W[c]) for c in range(K)])
+        return self
+
     def decision_function(self, X):
         Xd = _X2d(X)
         _check_finite(Xd)
+        if len(self.classes_) > 2:
+            C = self.coef_.tolist()
+            b = self.intercept_.tolist()
+            return _ac.marr([[b[c] + _math.fsum(r[j] * C[c][j]
+                                                for j in range(len(r)))
+                              for c in range(len(C))] for r in Xd])
         c = self.coef_.tolist()[0]
         b0 = self.intercept_.tolist()[0]
         return _ac.marr([b0 + _math.fsum(r[j] * c[j]
@@ -419,6 +499,14 @@ class LogisticRegression:
                          for r in Xd])
 
     def predict_proba(self, X):
+        if len(self.classes_) > 2:
+            out = []
+            for z in self.decision_function(X).tolist():
+                m = max(z)
+                e = [_math.exp(v - m) for v in z]
+                t = _math.fsum(e)
+                out.append([v / t for v in e])
+            return _ac.marr(out)
         z = self.decision_function(X)._flat()
         out = []
         for e in z:
@@ -427,6 +515,9 @@ class LogisticRegression:
         return _ac.marr(out)
 
     def predict(self, X):
+        if len(self.classes_) > 2:
+            return [self.classes_[max(range(len(p)), key=p.__getitem__)]
+                    for p in self.predict_proba(X).tolist()]
         return [self.classes_[1] if p[1] >= 0.5 else self.classes_[0]
                 for p in self.predict_proba(X).data]
 
@@ -1986,23 +2077,46 @@ class KFold:
 
 class StratifiedKFold(KFold):
     def split(self, X, y):
+        """sklearn's _make_test_folds: classes numbered by first
+        appearance; fold i's share of each class is the class count in
+        the i-th stride of the sorted labels, and each class's members
+        (in index order, shuffled if asked) fill the folds in turn."""
+        del X
         yv = list(y.tolist() if hasattr(y, "tolist") else y)
         n = len(yv)
-        byclass = {}
-        for i, v in enumerate(yv):
-            byclass.setdefault(v, []).append(i)
-        if self.shuffle:
-            rng = _ac.random.default_rng(self.random_state)
-            for v in byclass:
-                rng.shuffle(byclass[v])
-        folds = [[] for _ in range(self.n_splits)]
-        for v, members in byclass.items():
-            for k, i in enumerate(members):
-                folds[k % self.n_splits].append(i)
-        for k in range(self.n_splits):
-            test = sorted(folds[k])
-            train = sorted(i for i in range(n) if i not in set(test))
+        code = {}
+        for v in yv:
+            code.setdefault(v, len(code))
+        enc = [code[v] for v in yv]
+        K = len(code)
+        order = sorted(enc)
+        alloc = [[order[i::self.n_splits].count(k) for k in range(K)]
+                 for i in range(self.n_splits)]
+        rng = _ac.random.default_rng(self.random_state) \
+            if self.shuffle else None
+        fold_of = [0] * n
+        for k in range(K):
+            ff = [i for i in range(self.n_splits) for _ in range(alloc[i][k])]
+            if rng is not None:
+                rng.shuffle(ff)
+            members = [i for i in range(n) if enc[i] == k]
+            for i, f in zip(members, ff):
+                fold_of[i] = f
+        for f in range(self.n_splits):
+            test = [i for i in range(n) if fold_of[i] == f]
+            train = [i for i in range(n) if fold_of[i] != f]
             yield train, test
+
+
+def _is_classifier(est):
+    """sklearn.base.is_classifier for the native estimators."""
+    if getattr(est, "_estimator_type", None) == "classifier":
+        return True
+    name = type(est).__name__
+    return name.endswith("Classifier") or name in (
+        "LogisticRegression", "SVC", "LinearSVC", "GaussianNB",
+        "MultinomialNB", "BernoulliNB", "LinearDiscriminantAnalysis",
+        "QuadraticDiscriminantAnalysis")
 
 
 def _index_rows(X, idx):
@@ -2012,7 +2126,13 @@ def _index_rows(X, idx):
 
 def cross_val_score(estimator, X, y, cv=5, scoring=None):
     import copy
-    folds = cv if hasattr(cv, "split") else KFold(n_splits=cv)
+    if hasattr(cv, "split"):
+        folds = cv
+    elif _is_classifier(estimator):
+        # sklearn's check_cv: an int cv stratifies for a classifier
+        folds = StratifiedKFold(n_splits=cv)
+    else:
+        folds = KFold(n_splits=cv)
     scorer = get_scorer(scoring) if isinstance(scoring, str) else None
     scores = []
     for tr, te in folds.split(X, y):

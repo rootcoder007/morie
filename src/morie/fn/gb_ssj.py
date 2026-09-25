@@ -34,6 +34,11 @@ def signnasy(theta, alpha=0.05, beta=0.10):
         keys ``n``, ``n_raw``, ``root_n``, ``z_alpha``, ``z_beta``,
         ``theta``, ``method``.
 
+    Examples
+    --------
+    >>> signnasy(0.75)["n"]
+    38
+
     References
     ----------
     Gibbons & Chakraborti (2011), eq. (5.4.9) two-sided form, p. 179.

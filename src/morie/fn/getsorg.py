@@ -57,6 +57,19 @@ def getis_ord_g(x, W):
         (two-sided), ``expected``, ``var``, ``S0``, ``S1``, ``S2``,
         ``n``, ``method``.
 
+    Examples
+    --------
+    Four nodes on a path, x = (1, 2, 3, 4): the linked products sum to
+    2 (1*2 + 2*3 + 3*4) = 40 over all off-diagonal products
+    10^2 - 30 = 70, and E[G] = S0 / (n (n - 1)) = 6 / 12:
+
+    >>> W = [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]]
+    >>> r = getis_ord_g([1.0, 2.0, 3.0, 4.0], W)
+    >>> round(r["estimate"], 12) == round(40 / 70, 12)
+    True
+    >>> r["expected"]
+    0.5
+
     References
     ----------
     Getis and Ord (1992), The analysis of spatial association by use of
@@ -73,6 +86,9 @@ def getis_ord_g(x, W):
     n = len(x)
     if len(W) != n or any(len(row) != n for row in W):
         raise ValueError("W must be n x n with n = len(x)")
+    if len(x) < 4:
+        # the randomisation variance carries a factor 1 / (n - 3)
+        raise ValueError("Getis-Ord G needs at least 4 observations")
     if any(xi < 0 for xi in x):
         raise ValueError("Getis-Ord G is undefined for negative x")
     for i in range(n):

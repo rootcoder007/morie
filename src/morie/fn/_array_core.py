@@ -573,6 +573,8 @@ class marr:
         return marr([[fn(v) for v in row] for row in self.data])
 
     def _zip(self, other, fn):
+        if isinstance(other, ndlist):       # rank >= 3: n-D broadcasting
+            return other._ew(self, lambda b, a: fn(a, b))
         o = asarray(other)
         if o.shape == (1,) and len(o.shape) == 1:
             return self._map(lambda v: fn(v, o.data[0]))
@@ -621,6 +623,9 @@ class marr:
         into ordinary numbers -- after which x[mask] read those 1.0s
         and 0.0s as row indices and silently returned the wrong rows.
         """
+        nax = _newaxis_index(self, idx)
+        if nax is not NotImplemented:
+            return nax
         gathered = _gather_rows_nd(self, idx)
         if gathered is not None:
             return gathered
@@ -2374,11 +2379,10 @@ def linspace(a, b, n=50, endpoint=True, retstep=False, dtype=None):
 
 
 def eye(n, m=None, k=0, dtype=None):
-    del dtype
     m = int(n) if m is None else int(m)
     k = int(k)
-    return marr([[1.0 if j - i == k else 0.0 for j in range(m)]
-                 for i in range(int(n))])
+    return _typed(marr([[1.0 if j - i == k else 0.0 for j in range(m)]
+                        for i in range(int(n))]), dtype)
 
 
 def diagonal(a, offset=0, axis1=0, axis2=1):
@@ -2721,10 +2725,14 @@ def _maximum_fn(x, y):
     # propagate. splfun computes sqrt(max(K, 0)/pi), so an undefined K came
     # out as L = -r in Python and NA in R: a real cross-language
     # disagreement that simply had not been hit yet.
+    if isinstance(x, ndlist):
+        return x._ew(y, _max2)
     return asarray(x)._zip(y, _max2)
 
 
 def _minimum_fn(x, y):
+    if isinstance(x, ndlist):
+        return x._ew(y, _min2)
     return asarray(x)._zip(y, _min2)
 
 
@@ -3239,45 +3247,47 @@ class _Linalg:
 
     @staticmethod
     def norm(x, ord=None, axis=None, keepdims=False):  # noqa: A002
-        if keepdims:
-            out = _Linalg.norm(x, ord=ord, axis=axis)
-            a = asarray(x)
-            if axis is None:
-                if len(a.shape) == 2:
-                    return marr([[float(out)]])
-                return marr([float(out)])
-            if len(a.shape) == 2:
-                if axis in (1, -1):
-                    return marr([[v] for v in out._flat()])
-                return marr([list(out._flat())])
-            return out
-        if isinstance(x, ndlist) and axis is not None:
-            # rank-3: reduce the last axis, giving the (n, n) pairwise
-            # matrix. Previously fell through to _flat() and raised
-            # "can't multiply sequence by non-int".
-            shape = x.shape
-            if axis in (-1, len(shape) - 1) and len(shape) == 3:
-                return marr([[_Linalg.norm(marr(cell), ord=ord)
-                              for cell in row] for row in x.tolist()])
-            raise ValueError(
-                "norm: rank-%d input supports only axis=-1" % len(shape))
+        """numpy.linalg.norm: vector norms along an axis at any rank,
+        matrix norms (fro, nuc, +-1, +-2, +-inf) for 2-D input with
+        axis=None, and keepdims."""
         a = asarray(x)
-        if axis is not None and len(a.shape) == 2:
-            rows = a.data if axis in (1, -1) else \
-                [[a.data[i][j] for i in range(a.shape[0])]
-                 for j in range(a.shape[1])]
-            return marr([_Linalg.norm(marr(r), ord=ord)
-                         for r in rows])
-        f = a._flat()
-        if ord in (None, 2, "fro"):
-            return _math.sqrt(_fsum(v * v for v in f))
-        if ord == 1:
-            return _fsum(_bi.abs(v) for v in f)
-        if ord == _math.inf:
-            return _bi.max(_bi.abs(v) for v in f)
-        if ord == -_math.inf:
-            return _bi.min(_bi.abs(v) for v in f)
-        return _fsum(_bi.abs(v) ** ord for v in f) ** (1.0 / ord)
+        nd = len(a.shape)
+        if isinstance(axis, (tuple, list)):
+            if len(axis) == 1:
+                axis = axis[0]
+            elif nd == 2 and sorted(int(v) % 2 for v in axis) == [0, 1]:
+                axis = None if [int(v) % 2 for v in axis] == [0, 1] else None
+            else:
+                raise ValueError("norm: a matrix norm needs 2-D input")
+        if axis is None:
+            if nd == 2 and ord not in (None, "fro"):
+                val = _matnorm(a, ord)
+            elif ord in (None, "fro") or nd == 1:
+                val = _vecnorm(a._flat() if isinstance(a, marr)
+                               else _flatten_nested(a.tolist()),
+                               None if ord == "fro" else ord)
+            else:
+                raise ValueError("Improper number of dimensions to norm.")
+            if keepdims:
+                return reshape(marr([val]), tuple([1] * nd))
+            return val
+        ax = int(axis) % nd
+        if nd == 1:
+            val = _vecnorm(a._flat(), ord)
+            return marr([val]) if keepdims else val
+        perm = [i for i in range(nd) if i != ax] + [ax]
+        nested = transpose(a, perm).tolist()
+
+        def red(node):
+            if node and isinstance(node[0], list):
+                return [red(n) for n in node]
+            return _vecnorm(node, ord)
+        out = asarray(red(nested))
+        if keepdims:
+            shp = list(a.shape)
+            shp[ax] = 1
+            return reshape(out, tuple(shp))
+        return out
 
     @staticmethod
     def qr(a, mode="reduced"):
@@ -4430,6 +4440,21 @@ def repeat(x, reps, axis=None):
             out2._is_index = True
         return _carry(a2, out2) if isinstance(a2, marr) else out2
     if isinstance(x, list) and x and isinstance(x[0], (list, marr)) \
+            and _nested_shape(x) and len(_nested_shape(x)) >= 3 \
+            and axis is not None:
+        # rank >= 3: repeat each element along the chosen axis
+        nd_ = len(_nested_shape(x))
+        ax_ = int(axis) % nd_
+
+        def rep_(node, d):
+            node = node.tolist() if isinstance(node, marr) else node
+            if d == ax_:
+                return [(e.tolist() if isinstance(e, marr) else
+                         (list(e) if isinstance(e, list) else e))
+                        for e in node for _ in range(int(reps))]
+            return [rep_(e, d + 1) for e in node]
+        return asarray(rep_(x, 0))
+    if isinstance(x, list) and x and isinstance(x[0], (list, marr)) \
             and _nested_shape(x) and len(_nested_shape(x)) == 3:
         # rank-3 nested-list block: repeat whole blocks along axis 0
         if axis == 0:
@@ -4972,18 +4997,24 @@ uint16 = _IntDType("uint16")
 uint8 = _IntDType("uint8")
 
 
+def _like_dtype(a, dtype):
+    # numpy *_like: dtype=None inherits the prototype's dtype
+    if dtype is not None:
+        return dtype
+    if getattr(a, "_is_mask", False):
+        return bool
+    dt = getattr(a, "_dt", None)
+    return dt if dt and dt != "float64" else None
+
+
 def zeros_like(x, dtype=None):
     a = asarray(x)
-    if len(a.shape) == 2:
-        return marr([[0.0] * a.shape[1] for _ in range(a.shape[0])])
-    return marr([0.0] * a.shape[0])
+    return zeros(tuple(a.shape), dtype=_like_dtype(a, dtype))
 
 
 def ones_like(x, dtype=None):
     a = asarray(x)
-    if len(a.shape) == 2:
-        return marr([[1.0] * a.shape[1] for _ in range(a.shape[0])])
-    return marr([1.0] * a.shape[0])
+    return ones(tuple(a.shape), dtype=_like_dtype(a, dtype))
 
 
 tanh = _uf(_math.tanh)
@@ -5057,6 +5088,8 @@ def cumsum(x, axis=None):
 
 
 def argmax(x, axis=None):
+    if isinstance(x, ndlist):
+        return x.argmax(axis=axis)
     _check_axis(asarray(x), axis)
     a = asarray(x)
     if axis is None or len(a.shape) == 1:
@@ -5069,6 +5102,8 @@ def argmax(x, axis=None):
 
 
 def argmin(x, axis=None):
+    if isinstance(x, ndlist):
+        return x.argmin(axis=axis)
     _check_axis(asarray(x), axis)
     a = asarray(x)
     if axis is None or len(a.shape) == 1:
@@ -5910,7 +5945,17 @@ class ndlist(list):
                 if flat[i] > flat[best]:
                     best = i
             return best
-        return argmax(self, axis=axis)
+        def pick(v):
+            # first extreme; a NaN wins at its first position (numpy)
+            best = 0
+            for i in range(len(v)):
+                if v[i] != v[i]:
+                    return i
+                if v[i] > v[best]:
+                    best = i
+            return best
+        out = _ndlist_reduce(self, axis, False, pick)
+        return _typed(out, "int64") if isinstance(out, marr) else out
 
     def argmin(self, axis=None):
         """numpy.ndarray.argmin, flattened when no axis is given."""
@@ -5924,7 +5969,17 @@ class ndlist(list):
                 if flat[i] < flat[best]:
                     best = i
             return best
-        return argmin(self, axis=axis)
+        def pick(v):
+            # first extreme; a NaN wins at its first position (numpy)
+            best = 0
+            for i in range(len(v)):
+                if v[i] != v[i]:
+                    return i
+                if v[i] < v[best]:
+                    best = i
+            return best
+        out = _ndlist_reduce(self, axis, False, pick)
+        return _typed(out, "int64") if isinstance(out, marr) else out
 
     def transpose(self, *axes):
         """numpy.ndarray.transpose: reverses the axes by default; the
@@ -6010,6 +6065,9 @@ class ndlist(list):
         when its rank drops to 2 / 0 (numpy semantics for basic
         indexing). A boolean mask selects the flattened elements it
         marks, as numpy does."""
+        nax = _newaxis_index(self, key)
+        if nax is not NotImplemented:
+            return nax
         if isinstance(key, (ndlist, marr)) and (
                 isinstance(key, ndlist) or getattr(key, "_is_mask", False)):
             flat_v = _flatten_nested(self.tolist())
@@ -6027,11 +6085,13 @@ class ndlist(list):
             # (gb_hg2's Mann-Whitney counts) turned into a hang
             if isinstance(key, int) and isinstance(sub, list) and sub \
                     and isinstance(sub[0], list) and sub[0] \
-                    and not isinstance(sub[0][0], list):
+                    and not isinstance(sub[0][0], (list, marr)):
                 v = object.__new__(marr)
                 v.data = sub
                 v.shape = (len(sub), len(sub[0]))
                 return v
+            if isinstance(sub, list) and not isinstance(sub, ndlist):
+                return ndlist(sub)      # rank >= 3 stays an array
             return sub
 
         def pick(node, keys):
@@ -6199,6 +6259,21 @@ class ndlist(list):
     def __le__(self, other):
         return self._cmp(other, lambda a, b: a <= b)
 
+    # numpy: comparing with a scalar is elementwise. Against a list the
+    # list equality is kept, so `assert x == [[...]]` still compares
+    # the whole array rather than yielding an always-truthy mask.
+    def __eq__(self, other):
+        if isinstance(other, (int, float, complex)):
+            return self._cmp(other, lambda a, b: a == b)
+        return list.__eq__(self, other)
+
+    def __ne__(self, other):
+        if isinstance(other, (int, float, complex)):
+            return self._cmp(other, lambda a, b: a != b)
+        return list.__ne__(self, other)
+
+    __hash__ = None
+
     def _ew(self, other, fn):
         """Elementwise fn with numpy broadcasting at any rank: trailing
         axes aligned, length-1 axes stretched. The blockwise version it
@@ -6262,6 +6337,102 @@ class ndlist(list):
     def __rtruediv__(self, o):
         return self._ew(o, lambda a, b: b / a)
 
+    def __mod__(self, o):
+        return self._ew(o, _ieee_mod)
+
+    def __rmod__(self, o):
+        return self._ew(o, lambda a, b: _ieee_mod(b, a))
+
+    def __floordiv__(self, o):
+        return self._ew(o, lambda a, b: a // b)
+
+    def __rfloordiv__(self, o):
+        return self._ew(o, lambda a, b: b // a)
+
+    def __rpow__(self, o):
+        return self._ew(o, lambda a, b: b ** a)
+
+    def __abs__(self):
+        return self._ew(0.0, lambda a, b: _bi.abs(a))
+
+
+def _vecnorm(f, ord=None):
+    """Vector p-norm of a flat sequence (complex entries by modulus)."""
+    f = [_bi.abs(v) for v in f]
+    if ord in (None, 2):
+        return _math.sqrt(_fsum(v * v for v in f))
+    if ord == 1:
+        return _fsum(f)
+    if ord == _math.inf:
+        return _bi.max(f)
+    if ord == -_math.inf:
+        return _bi.min(f)
+    if ord == 0:
+        return float(_bi.sum(1 for v in f if v != 0))
+    return _fsum(v ** ord for v in f) ** (1.0 / ord)
+
+
+def _matnorm(a, ord):
+    """numpy's 2-D matrix norms for axis=None."""
+    rows = a.data
+    if ord == "nuc" or ord in (2, -2):
+        ev = linalg.eigvalsh(matmul(transpose(a), a) if a.shape[0] >= a.shape[1]
+                              else matmul(a, transpose(a)))
+        sv = [_math.sqrt(_bi.max(float(v), 0.0)) for v in asarray(ev)._flat()]
+        if ord == "nuc":
+            return _fsum(sv)
+        return _bi.max(sv) if ord == 2 else _bi.min(sv)
+    if ord in (1, -1):
+        cols = [_fsum(_bi.abs(r[j]) for r in rows) for j in range(a.shape[1])]
+        return _bi.max(cols) if ord == 1 else _bi.min(cols)
+    if ord in (_math.inf, -_math.inf):
+        rs = [_fsum(_bi.abs(v) for v in r) for r in rows]
+        return _bi.max(rs) if ord == _math.inf else _bi.min(rs)
+    raise ValueError("Invalid norm order for matrices.")
+
+
+def _newaxis_index(x, key):
+    """numpy basic indexing with ``None`` (newaxis) and ``...``.
+
+    The Ellipsis expands to as many full slices as the axes the other
+    entries leave unindexed; the remaining key is applied as usual and
+    a length-1 axis is then inserted wherever a ``None`` stood. Returns
+    NotImplemented when the key has neither, so callers fall through.
+    """
+    if key is None or key is Ellipsis:
+        key = (key,)
+    if not isinstance(key, tuple) or not any(
+            k is None or k is Ellipsis for k in key):
+        return NotImplemented
+    nd = len(x.shape)
+    used = _bi.sum(1 for k in key if k is not None and k is not Ellipsis)
+    full = []
+    seen_ell = False
+    for k in key:
+        if k is Ellipsis and not seen_ell:
+            full.extend([slice(None)] * _bi.max(nd - used, 0))
+            seen_ell = True
+        elif k is Ellipsis:
+            raise IndexError("an index can only have a single ellipsis")
+        else:
+            full.append(k)
+    core = tuple(k for k in full if k is not None)
+    res = x[core] if core else x.copy()
+    pos, at = [], 0
+    for k in full:
+        if k is None:
+            pos.append(at)
+            at += 1
+        elif isinstance(k, slice):
+            at += 1
+        elif hasattr(k, "shape") or isinstance(k, (list, tuple)):
+            at += 1 if getattr(k, "_is_mask", False) else len(asarray(k).shape)
+    shape = list(asarray(res).shape) if hasattr(res, "shape") else []
+    for p_ in pos:
+        shape.insert(p_, 1)
+    return reshape(asarray(res) if hasattr(res, "shape") else marr([res]),
+                   tuple(shape))
+
 
 def _nested_shape(x):
     sh = []
@@ -6272,7 +6443,8 @@ def _nested_shape(x):
         sh.append(len(v))
         if not len(v):
             break
-        v = v[0]
+        # the raw element: an ndlist's own __getitem__ builds a view
+        v = list.__getitem__(v, 0) if isinstance(v, list) else v[0]
     return tuple(sh)
 
 
@@ -6440,7 +6612,30 @@ def stack(parts, axis=0):
     raise ValueError("stack: unsupported axis %r" % (axis,))
 
 
-dstack = None  # rarely used; assigned below if needed
+def dstack(tup):
+    """numpy.dstack: stack along the third axis. A 1-D (N,) part is
+    taken as (1, N, 1) and a 2-D (M, N) part as (M, N, 1)."""
+    parts = []
+    for t in tup:
+        a = asarray(t)
+        nested = a.tolist()
+        if len(a.shape) == 1:
+            nested = [[[v] for v in nested]]
+        elif len(a.shape) == 2:
+            nested = [[[v] for v in row] for row in nested]
+        elif len(a.shape) != 3:
+            raise ValueError("dstack: parts must be at most 3-D")
+        parts.append(nested)
+    if not parts:
+        raise ValueError("need at least one array to concatenate")
+    sh = [(len(p_), len(p_[0])) for p_ in parts]
+    if len(set(sh)) != 1:
+        raise ValueError("dstack: all parts must agree on the first two axes")
+    m, n = sh[0]
+    return ndlist([[[v for p_ in parts for v in p_[i][j]] for j in range(n)]
+                   for i in range(m)])
+
+
 
 
 def searchsorted(a, v, side="left"):
@@ -7514,7 +7709,7 @@ def split(x, k, axis=0):
 
 
 def empty_like(x, dtype=None):
-    return zeros_like(x)
+    return zeros_like(x, dtype=dtype)
 
 
 def spacing(x):
@@ -7530,14 +7725,84 @@ def spacing(x):
     return _uf(one)(x)
 
 
-integer = int
-number = float
-floating = float
+class _AbstractDTypeMeta(type):
+    """numpy's abstract scalar types (np.number, np.integer, ...):
+    isinstance/issubclass on Python scalars, and the kind letters
+    issubdtype checks a concrete dtype against."""
+
+    def __instancecheck__(cls, v):
+        if isinstance(v, bool):
+            return "b" in cls._kinds
+        return isinstance(v, cls._py)
+
+    def __subclasscheck__(cls, sub):
+        if isinstance(sub, _AbstractDTypeMeta):
+            return set(sub._kinds) <= set(cls._kinds)
+        if sub is bool:
+            return "b" in cls._kinds
+        return isinstance(sub, type) and issubclass(sub, cls._py)
+
+
+def _abstract(name, kinds, py):
+    return _AbstractDTypeMeta(name, (), {"_kinds": kinds, "_py": py,
+                                         "__module__": __name__})
+
+
+generic = _abstract("generic", "biufcUSOMm", (object,))
+number = _abstract("number", "iufc", (int, float, complex))
+integer = _abstract("integer", "iu", (int,))
+signedinteger = _abstract("signedinteger", "i", (int,))
+unsignedinteger = _abstract("unsignedinteger", "u", ())
+inexact = _abstract("inexact", "fc", (float, complex))
+floating = _abstract("floating", "f", (float,))
+complexfloating = _abstract("complexfloating", "c", (complex,))
+
+
+def _dtype_kind_name(a):
+    """(kind letter, name) of a dtype given as an array, a dtype marker,
+    a Python type or a dtype string."""
+    if isinstance(a, _AbstractDTypeMeta):
+        return None, a.__name__
+    if isinstance(a, marr) and a.dtype == "float64" and \
+            _bi.any(isinstance(v, complex) for v in a._flat()):
+        return "c", "complex128"        # complex values held in a marr
+    if isinstance(a, (marr, ndlist, oarr, carr)):
+        a = a.dtype
+    if a is bool or a == "bool" or getattr(a, "__name__", None) == "bool_":
+        return "b", "bool"
+    if a is int:
+        return "i", "int64"
+    if a is float:
+        return "f", "float64"
+    if a is complex:
+        return "c", "complex128"
+    if a is str:
+        return "U", "str"
+    if a is object:
+        return "O", "object"
+    name = getattr(a, "name", None) or getattr(a, "__name__", None) or str(a)
+    name = {"f8": "float64", "f4": "float32", "i8": "int64", "i4": "int32",
+            "float": "float64", "int": "int64", "complex": "complex128",
+            "c16": "complex128", "?": "bool"}.get(name, name)
+    for pre, k in (("uint", "u"), ("int", "i"), ("float", "f"),
+                   ("complex", "c"), ("bool", "b"), ("str", "U"),
+                   ("<U", "U"), ("object", "O"), ("datetime", "M"),
+                   ("timedelta", "m")):
+        if name.startswith(pre):
+            return k, name
+    return getattr(a, "kind", None), name
 
 
 def issubdtype(a, b):
-    del a, b
-    return True     # all our dtypes are float; callers gate float paths
+    """numpy.issubdtype: is dtype a equal to, or a kind of, b?"""
+    ka, na = _dtype_kind_name(a)
+    if isinstance(b, _AbstractDTypeMeta):
+        if isinstance(a, _AbstractDTypeMeta):
+            return set(a._kinds) <= set(b._kinds)
+        return ka is not None and ka in b._kinds
+    if isinstance(a, _AbstractDTypeMeta):
+        return False
+    return na == _dtype_kind_name(b)[1]
 
 
 def array_str(x):
@@ -7612,9 +7877,11 @@ def select(conds, choices, default=0.0):
 def lexsort(keys):
     arrs = [asarray(k)._flat() for k in keys]
     n = len(arrs[0])
-    order = sorted(range_(n), key=lambda i: tuple(a[i]
-                                                 for a in reversed(arrs)))
-    return marr([float(i) for i in order])
+    # last key is primary; NaN sorts last within a key, as in numpy
+    order = sorted(range_(n), key=lambda i: tuple(
+        (a[i] != a[i], a[i] if a[i] == a[i] else 0.0)
+        for a in reversed(arrs)))
+    return marr([int(i) for i in order])    # int64 indices, not a mask
 
 
 def cross(a, b):
@@ -8250,12 +8517,8 @@ del _pname
 # --------------------------------------------------------------- final tail
 
 def full_like(a, fill_value, dtype=None):
-    del dtype
     x = asarray(a)
-    if len(x.shape) == 2:
-        return marr([[float(fill_value)] * x.shape[1]
-                     for _ in range(x.shape[0])])
-    return marr([float(fill_value)] * x.shape[0])
+    return _typed(full(tuple(x.shape), fill_value), _like_dtype(x, dtype))
 
 
 def ascontiguousarray(a, dtype=None):
@@ -8400,16 +8663,38 @@ def unwrap(p, discont=None, axis=-1, period=2 * _math.pi):
 
 
 def roll(a, shift, axis=None):
+    """numpy.roll at any rank; shift and axis may be tuples (each shift
+    applied along its axis). axis=None rolls the flattened array."""
     x = asarray(a)
-    if len(x.shape) == 2 and axis is not None:
-        if axis == 0:
-            s = int(shift) % x.shape[0]
-            return marr(x.data[-s:] + x.data[:-s])
-        s = int(shift) % x.shape[1]
-        return marr([row[-s:] + row[:-s] for row in x.data])
-    f = list(x._flat())
-    s = int(shift) % len(f)
-    return marr(f[-s:] + f[:-s])
+    if axis is None:
+        f = list(x._flat()) if isinstance(x, marr) else \
+            _flatten_nested(x.tolist())
+        if not f:
+            return x.copy()
+        s_ = int(shift) % len(f)
+        return reshape(marr(f[-s_:] + f[:-s_] if s_ else f), tuple(x.shape))
+    shifts = shift if isinstance(shift, (tuple, list)) else (shift,)
+    axes = axis if isinstance(axis, (tuple, list)) else (axis,)
+    if len(shifts) == 1 and len(axes) > 1:
+        shifts = tuple(shifts) * len(axes)
+    if len(axes) == 1 and len(shifts) > 1:
+        axes = tuple(axes) * len(shifts)
+    if len(shifts) != len(axes):
+        raise ValueError("'shift' and 'axis' should be scalars or 1D "
+                         "sequences of the same length")
+    nd = len(x.shape)
+    nested = x.tolist()
+    for sh, ax in zip(shifts, axes):
+        ax = int(ax) % nd
+
+        def rec(node, d):
+            if d == ax:
+                n_ = len(node)
+                k = int(sh) % n_ if n_ else 0
+                return node[-k:] + node[:-k] if k else list(node)
+            return [rec(e, d + 1) for e in node]
+        nested = rec(nested, 0)
+    return asarray(nested)
 
 
 def _ieee_pow(x, y):
@@ -9111,7 +9396,11 @@ if _HAS_CORE:
         m2, p = B.shape
         if m != m2:
             return _py_matmul(a, b)     # let the reference arm raise
-        flat = _CK.matmul(_buf(A._flat()), _buf(B._flat()), n, m, p)
+        try:
+            fa, fb = _buf(A._flat()), _buf(B._flat())
+        except TypeError:               # complex entries: exact Python arm
+            return _py_matmul(a, b)
+        flat = _CK.matmul(fa, fb, n, m, p)
         vals = _unbuf(flat)
         return marr([vals[i * p:(i + 1) * p] for i in range(n)])
 

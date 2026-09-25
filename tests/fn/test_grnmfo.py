@@ -1,27 +1,34 @@
 """Tests for grnmfo.geron_nmf_objective."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.grnmfo import geron_nmf_objective
 
+X = [[1.0, 0.5, 2.0], [0.0, 1.5, 1.0], [3.0, 0.2, 0.7], [0.4, 0.4, 0.4]]
+W = [[0.5, 1.0], [0.2, 0.8], [1.5, 0.1], [0.3, 0.3]]
+H = [[1.8, 0.1, 0.6], [0.2, 0.9, 1.1]]
+
 
 def test_grnmfo_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
+    """||X - WH||_F^2 with WH, the residual and the relative error
+    ||X - WH||_F / ||X||_F recomputed entry by entry."""
     result = geron_nmf_objective(X, W, H)
     assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    WH = [[sum(W[i][t] * H[t][j] for t in range(2)) for j in range(3)] for i in range(4)]
+    R = [[X[i][j] - WH[i][j] for j in range(3)] for i in range(4)]
+    obj = sum(v * v for row in R for v in row)
+    assert result["objective"] == pytest.approx(obj, rel=1e-14)
+    assert result["relative_error"] == pytest.approx(
+        (obj / sum(v * v for row in X for v in row)) ** 0.5, rel=1e-14)
+    assert result["rank"] == 2
 
 
 def test_grnmfo_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_nmf_objective(X, W, H)
-    assert isinstance(result, dict)
+    """Negative data is not NMF; mismatched inner dimensions are refused."""
+    with pytest.raises(ValueError):
+        geron_nmf_objective([[-1.0, 0.0]], [[1.0]], [[1.0, 1.0]])
+    with pytest.raises(ValueError):
+        geron_nmf_objective(X, W, [[1.0, 1.0, 1.0]])
 
 
 # --- appended: the module's own worked example as a gate -----------

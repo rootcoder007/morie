@@ -49,3 +49,16 @@ def test_emd_pure_sine():
     x = np.sin(2 * np.pi * 5 * t)
     result = emd(x, max_imfs=3)
     assert result.extra["n_imfs"] >= 1
+
+
+def test_emd_imfs_and_residue_sum_to_the_signal():
+    """Sifting subtracts each IMF from what remains, so the IMFs plus the
+    residue reconstruct the input exactly."""
+    import math
+    t = [k / 500 for k in range(500)]
+    x = [math.sin(2 * math.pi * 10 * s) + 0.5 * math.sin(2 * math.pi * 50 * s) + 0.3 * s for s in t]
+    r = emd(x, max_imfs=5)
+    imfs = [list(v) for v in (r.extra["imfs"].tolist() if hasattr(r.extra["imfs"], "tolist") else r.extra["imfs"])]
+    res = list(r.extra["residue"].tolist() if hasattr(r.extra["residue"], "tolist") else r.extra["residue"])
+    rebuilt = [sum(imf[k] for imf in imfs) + res[k] for k in range(500)]
+    assert max(abs(a - b) for a, b in zip(rebuilt, x)) < 1e-12

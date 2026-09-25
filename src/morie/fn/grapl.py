@@ -81,24 +81,28 @@ def geron_average_pooling_2d(x, pool_size=2, stride=None, padding="valid"):
 
     n, h, w, c = a.shape
     if padding == "same":
+        # TensorFlow / Keras SAME: ceil(h / s) outputs, the padding split
+        # with the extra row/column at the bottom/right, and each window
+        # averaged over its in-bounds cells only -- the zero padding is
+        # not counted in the denominator (tf.nn.avg_pool)
         oh = int(np.ceil(h / sh))
         ow = int(np.ceil(w / sw))
-        ph = max((oh - 1) * sh + kh - h, 0)
-        pw = max((ow - 1) * sw + kw - w, 0)
-        a = np.pad(a, ((0, 0), (ph // 2, ph - ph // 2),
-                       (pw // 2, pw - pw // 2), (0, 0)), mode="edge")
-        h, w = a.shape[1], a.shape[2]
-    oh = (h - kh) // sh + 1
-    ow = (w - kw) // sw + 1
+        pt = max((oh - 1) * sh + kh - h, 0) // 2
+        pl = max((ow - 1) * sw + kw - w, 0) // 2
+    else:
+        oh = (h - kh) // sh + 1
+        ow = (w - kw) // sw + 1
+        pt = pl = 0
     if oh < 1 or ow < 1:
         raise ValueError(
             "pool window %dx%d does not fit in a %dx%d input." % (kh, kw, h, w)
         )
     out = np.empty((n, oh, ow, c))
     for i in range(oh):
+        r0, r1 = max(i * sh - pt, 0), min(i * sh - pt + kh, h)
         for j in range(ow):
-            out[:, i, j, :] = a[:, i * sh:i * sh + kh,
-                                j * sw:j * sw + kw, :].mean(axis=(1, 2))
+            c0, c1 = max(j * sw - pl, 0), min(j * sw - pl + kw, w)
+            out[:, i, j, :] = a[:, r0:r1, c0:c1, :].mean(axis=(1, 2))
     res = out
     if squeeze_chan:
         res = res[..., 0]

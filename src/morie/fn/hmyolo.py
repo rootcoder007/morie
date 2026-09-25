@@ -59,7 +59,6 @@ def geron_yolo(image, model, n_boxes=1, conf_threshold=0.5, iou_threshold=0.45):
     Two detections in opposite corners of a 2x2 grid: they do not overlap,
     so both survive NMS and their coordinates are exact.
 
-    >>> import numpy as np
     >>> def m(x):
     ...     p = np.zeros((2, 2, 7))
     ...     p[0, 0, :5] = [0.5, 0.5, 0.5, 0.5, 1.0]

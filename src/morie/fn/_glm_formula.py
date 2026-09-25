@@ -46,21 +46,76 @@ def formula_terms(formula):
     return outcome, terms, intercept
 
 
-def _term_column(term, data):
-    """One design column for a term.
+def _factor_name(q):
+    """``C(x)`` forces x categorical; anything else is a column name."""
+    q = q.strip()
+    if q.startswith("C(") and q.endswith(")"):
+        return q[2:-1].strip(), True
+    return q, False
 
-    ``a`` is the column itself; ``a:b`` (and ``a:b:c``) is the
-    elementwise product of its parts, which is how an interaction is
-    coded. The parts must all be columns of ``data``.
+
+def _levels(vals):
+    lv = set(vals)
+    try:
+        return sorted(lv)
+    except TypeError:
+        return sorted(lv, key=str)
+
+
+def _build_spec(terms, data, intercept):
+    """Per term, how each factor is coded (patsy / R treatment coding).
+
+    A numeric factor enters as itself. A categorical one -- string
+    values, or wrapped in ``C()`` -- enters as indicator columns over
+    its sorted levels: all of them when the term without this factor
+    is not already in the model (so ``0 + g`` is full rank), all but
+    the first (the reference) when it is (``1 + g``, or ``a + a:g``).
     """
-    parts = [q.strip() for q in term.split(":")]
-    if len(parts) == 1:
-        return [float(v) for v in data[parts[0]]]
-    col = None
-    for q in parts:
-        vals = [float(v) for v in data[q]]
-        col = vals if col is None else [a * b for a, b in zip(col, vals)]
-    return col
+    seen = {frozenset()} if intercept else set()
+    spec = []
+    for t in terms:
+        parts = [q.strip() for q in t.split(":")]
+        names = [_factor_name(q)[0] for q in parts]
+        facs = []
+        for q, nm in zip(parts, names):
+            forced = _factor_name(q)[1]
+            vals = list(data[nm])
+            if forced or any(isinstance(v, str) for v in vals):
+                rest = frozenset(x for x in names if x != nm)
+                facs.append((q, nm, _levels(vals), rest not in seen))
+            else:
+                facs.append((q, nm, None, False))
+        seen.add(frozenset(names))
+        spec.append(facs)
+    return spec
+
+
+def _spec_columns(spec, data):
+    """Design columns and their names for a coding spec."""
+    names, cols = [], []
+    for facs in spec:
+        blocks = []
+        for q, nm, levels, full in facs:
+            vals = list(data[nm])
+            if levels is None:
+                blocks.append([(q, [float(v) for v in vals])])
+            else:
+                use = levels if full else levels[1:]
+                fmt = "%s[%s]" if full else "%s[T.%s]"
+                blocks.append([(fmt % (q, lv),
+                                [1.0 if v == lv else 0.0 for v in vals])
+                               for lv in use])
+        combos = [("", None)]
+        # patsy order: the first factor's levels vary fastest
+        for blk in reversed(blocks):
+            combos = [(lab + (":" + nm if nm else ""),
+                       col if acc is None else
+                       [x * y for x, y in zip(col, acc)])
+                      for nm, acc in combos for lab, col in blk]
+        for lab, col in combos:
+            names.append(lab)
+            cols.append(col)
+    return names, cols
 
 
 def _expand(terms):
@@ -96,15 +151,16 @@ def _design(formula, data):
     outcome, terms, intercept = formula_terms(formula)
     terms = _expand(terms)
     y = [float(v) for v in data[outcome]]
-    cols = [_term_column(t, data) for t in terms]
+    spec = _build_spec(terms, data, intercept)
+    labels, cols = _spec_columns(spec, data)
     n = len(y)
-    for t, c in zip(terms, cols):
+    for t, c in zip(labels, cols):
         if len(c) != n:
             raise ValueError("term %r has %d rows, outcome has %d"
                              % (t, len(c), n))
     X = [[c[i] for c in cols] for i in range(n)]
-    names = (["Intercept"] if intercept else []) + list(terms)
-    return y, X, names, intercept
+    names = (["Intercept"] if intercept else []) + labels
+    return y, X, names, intercept, spec
 
 
 class _ConfIntLoc(object):
@@ -423,7 +479,8 @@ def _hc_cov(X, resid, XtX_inv, cov_type):
 class _LinearModel(object):
     def __init__(self, formula, data, weights=None):
         self.formula = formula
-        self.y, self.X, self.names, self.intercept = _design(formula, data)
+        (self.y, self.X, self.names, self.intercept,
+         self._spec) = _design(formula, data)
         self.terms = _expand(formula_terms(formula)[1])
         if self.intercept:
             self.X = [[1.0] + r for r in self.X]
@@ -478,7 +535,7 @@ class _LinearModel(object):
                        model=self)
 
     def predict_from(self, data):
-        cols = [_term_column(t, data) for t in self.terms]
+        cols = _spec_columns(self._spec, data)[1]
         rows = len(cols[0]) if cols else 0
         X = [[c[i] for c in cols] for i in range(rows)]
         if self.intercept:
@@ -553,7 +610,8 @@ class _GLMModel(object):
     def __init__(self, formula, data, family="gaussian", weights=None,
                  var_weights=None, freq_weights=None):
         self.formula = formula
-        self.y, self.X, self.names, self.intercept = _design(formula, data)
+        (self.y, self.X, self.names, self.intercept,
+         self._spec) = _design(formula, data)
         self.terms = _expand(formula_terms(formula)[1])
         self.family = family
         if freq_weights is not None:
@@ -609,7 +667,7 @@ class _GLMModel(object):
                        model=self)
 
     def predict_from(self, data):
-        cols = [_term_column(t, data) for t in self.terms]
+        cols = _spec_columns(self._spec, data)[1]
         rows = len(cols[0]) if cols else 0
         X = [[c[i] for c in cols] for i in range(rows)]
         return _glm_core.glm_predict(self._fit, X,

@@ -67,12 +67,27 @@ def test_the_exact_law_is_used_below_n_100_and_the_series_above():
     assert sc.kstest(lcg(120, 3), "uniform").exact is False
 
 
-def test_ties_force_the_asymptotic_two_sample_p_value():
+def test_ties_are_counted_and_the_exact_law_is_still_used():
+    # scipy.stats.ks_2samp(method="auto") uses the exact Smirnov law for
+    # these sizes whether or not there are ties (conservative with ties)
+    # and this core follows scipy. The exact p for n = m = 5, D = 2/5 is
+    # the share of the C(10, 5) = 252 monotone lattice paths that ever
+    # reach |i - j| >= 2, counted here: scipy gives 55/63.
     a = [1, 2, 3, 4, 5]
     b = [3, 4, 5, 6, 7]
     r = sc.ks_2samp(a, b)
     assert r.n_ties == 3
-    assert r.exact is False
+    assert r.exact is True
+    inside = [[0] * 6 for _ in range(6)]
+    for i in range(6):
+        for j in range(6):
+            if abs(i - j) >= 2:
+                continue
+            inside[i][j] = 1 if i == j == 0 else (
+                (inside[i - 1][j] if i else 0) + (inside[i][j - 1] if j else 0))
+    p = 1.0 - inside[5][5] / math.comb(10, 5)
+    assert r.pvalue == pytest.approx(p, rel=1e-12)
+    assert p == pytest.approx(55 / 63, rel=1e-15)
 
 
 def test_the_exact_kolmogorov_law_is_a_distribution():

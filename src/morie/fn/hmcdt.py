@@ -88,7 +88,7 @@ def geron_classification_tree(X, y, criterion="gini", max_depth=None, min_sample
         X, y, criterion=criterion, max_depth=max_depth, min_samples_leaf=min_samples_leaf
     )
     Xa = np.atleast_2d(np.asarray(X, dtype=float))
-    classes = [c.item() for c in np.unique(ya)]
+    classes = np.unique(ya).tolist()
     proba = [_proba_of(base["tree"], row, classes) for row in Xa]
 
     return RichResult(

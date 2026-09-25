@@ -17,10 +17,20 @@ __all__ = ["ghosal_dir_marginal"]
 def ghosal_dir_marginal(alpha, merge_idx=(0, 1)):
     """X_{j1} + ... + X_{jm} ~ Be(sum alpha_jl, A - sum alpha_jl)
     (Prop G.3): aggregation of Dirichlet cells stays Beta/Dirichlet.
-    Keys: estimate."""
+    Keys: estimate.
+
+    >>> ghosal_dir_marginal([2.0, 3.0, 5.0])["beta_params"]
+    [5.0, 5.0]
+    """
     a = _bnp._flat(alpha)
+    idx = [int(i) for i in merge_idx]
+    if len(set(idx)) != len(idx) or any(not 0 <= i < len(a) for i in idx):
+        raise ValueError("merge_idx must be distinct cell indices in 0..%d"
+                         % (len(a) - 1))
+    if any(v <= 0 for v in a):
+        raise ValueError("Dirichlet parameters must be positive")
     A = sum(a)
-    s = sum(a[i] for i in merge_idx)
+    s = sum(a[i] for i in idx)
     mean = s / A
     var = s * (A - s) / (A * A * (A + 1.0))
     res = RichResult(payload={"estimate": mean,
