@@ -32,7 +32,12 @@ def dgeom(x: Union[int, np.ndarray], prob: float) -> Union[float, np.ndarray]:
     # scipy geom.pmf(k, p) = p * (1-p)^(k-1) for k = 1, 2, 3, ...
     # So dgeom(x, p) = geom.pmf(x + 1, p)
     result = geom.pmf(np.asarray(x) + 1, prob)
-    return float(result) if np.ndim(result) == 0 else result
+    # x is coerced to an array above, so a scalar x reaches geom.pmf as a
+    # one-element array and comes back as one; scalarness has to be read
+    # from the argument, since the list-backed core has no 0-d array
+    if np.ndim(x) == 0:
+        return float(result) if np.ndim(result) == 0 else float(list(result)[0])
+    return result
 
 
 dgeometric = dgeom

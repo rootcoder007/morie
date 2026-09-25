@@ -13,6 +13,18 @@ def cochr(data, axis=0, cdf=None):
 
     Tests H0: k treatments have equal effect on binary response
     in a randomized block design.
+
+    Q = (k - 1) [k sum_j G_j^2 - N^2] / [k N - sum_i L_i^2], referred to
+    chi-square with k - 1 degrees of freedom, where G_j are treatment
+    totals, L_i block totals and N the grand total. For k = 2 it reduces
+    to McNemar's uncorrected statistic. When every block responds the
+    same way to all treatments the statistic is 0/0 and no block is
+    informative; the test then reports Q = 0 and p = 1.
+
+    References
+    ----------
+    Cochran, W. G. (1950). The comparison of percentages in matched
+    samples. Biometrika 37(3/4), 256-266.
     """
     data = np.asarray(data, dtype=int)
 
@@ -34,11 +46,25 @@ def cochr(data, axis=0, cdf=None):
     # Row totals (block successes)
     L = np.sum(data, axis=1)
 
-    # Cochran's Q statistic
-    Q = (k * (k - 1) * np.sum(G**2) - (k * np.sum(L) ** 2)) / (k * np.sum(L) - np.sum(L**2))
-
-    # p-value from chi-square with k-1 df
-    p_value = 1 - sp_stats.chi2.cdf(Q, k - 1)
+    # Cochran's Q (Cochran 1950):
+    #   Q = (k - 1) [k sum_j G_j^2 - N^2] / [k N - sum_i L_i^2]
+    # with N the grand total. The previous form scaled N^2 by k instead
+    # of (k - 1), which is wrong for every input and could even go
+    # negative, which Q cannot.
+    N = float(np.sum(L))
+    num = (k - 1) * (k * float(np.sum(G ** 2)) - N * N)
+    den = k * N - float(np.sum(L ** 2))
+    if den == 0:
+        # Every block responded identically across treatments, so no
+        # block carries information about a treatment difference and the
+        # treatment totals are necessarily equal: there is no evidence
+        # against H0. Q is 0/0 here; report Q = 0, p = 1.
+        Q = 0.0
+        p_value = 1.0
+    else:
+        Q = num / den
+        # p-value from chi-square with k-1 df
+        p_value = float(sp_stats.chi2.sf(Q, k - 1))
 
     return {
         "statistic": float(Q),

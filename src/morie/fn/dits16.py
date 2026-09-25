@@ -102,7 +102,12 @@ def gflops(tokens, depth, width, mlp_ratio=4.0):
                          "positive")
     attn = 4.0 * T * d * d + 2.0 * T * T * d
     mlp = 2.0 * float(mlp_ratio) * T * d * d
-    return {"gflops": L * (attn + mlp) * 2.0 / 1e9,
+    # The paper counts a multiply-add as ONE operation (the fvcore
+    # convention); with that, this reproduces its Table 4 to within the
+    # patch-embedding and output-head cost it omits (DiT-B/2 22.95 vs
+    # 23.01, DiT-XL/2 118.4 vs 118.6). The previous extra factor of 2
+    # reported every model at twice the paper's Gflops.
+    return {"gflops": L * (attn + mlp) / 1e9,
             "tokens": T, "depth": L, "width": d,
             "attention_share": attn / (attn + mlp),
             "note": "measured in Gflops, not parameters, so the "
@@ -165,7 +170,10 @@ def scaling_comparison(configs):
     for (name, I, p, L, d) in configs:
         t = patch_grid(I, p)["tokens"]
         g = gflops(t, L, d)
-        params = L * (4 * d * d + 8 * d * d)
+        # per block: attention 4d^2 + MLP 8d^2 + the adaLN-Zero
+        # modulation (a d -> 6d projection) 6d^2; omitting the last
+        # undercounted DiT-XL by about a third
+        params = L * (4 * d * d + 8 * d * d + 6 * d * d)
         out.append({"name": name, "tokens": t,
                     "gflops": g["gflops"], "parameters": params})
     out.sort(key=lambda r: r["gflops"])
