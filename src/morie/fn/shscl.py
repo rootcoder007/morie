@@ -35,28 +35,40 @@ def _schoenfeld(t, e, X, beta):
     return times, res, var
 
 
-def _transform(times, e_times, how):
+def _transform(times, t_all, e_all, how):
+    """g(t) at each event time, as R's survival::cox.zph computes it.
+
+    "km" is 1 - S(t-), the left-continuous Kaplan-Meier estimate over ALL
+    subjects, censored ones included, with tied events taken together;
+    "rank" ranks all follow-up times with ties averaged. The previous
+    version built the Kaplan-Meier risk sets from the event times alone
+    and stepped once per tied duplicate.
+    """
     if how == "identity":
         return list(times)
     if how == "log":
         return [log(v) for v in times]
     if how == "rank":
-        s = sorted(range(len(times)), key=lambda i: times[i])
-        r = [0.0] * len(times)
-        for rank, i in enumerate(s):
-            r[i] = float(rank + 1)
-        return r
-    # "km": 1 - KM estimate over the event times, the default in most software
-    n = len(e_times)
-    surv, out = 1.0, []
-    at_risk = n
-    for tt in times:
-        d = sum(1 for v in e_times if v == tt)
-        nr = sum(1 for v in e_times if v >= tt)
-        out.append(1.0 - surv)
-        if nr > 0:
+        order = sorted(range(len(t_all)), key=lambda i: t_all[i])
+        rk = {}
+        i = 0
+        while i < len(order):
+            j = i
+            while j + 1 < len(order) and t_all[order[j + 1]] == t_all[order[i]]:
+                j += 1
+            rk[t_all[order[i]]] = (i + j) / 2.0 + 1.0
+            i = j + 1
+        return [rk[v] for v in times]
+    uniq = sorted(set(t_all))
+    surv_before = {}
+    surv = 1.0
+    for u in uniq:
+        surv_before[u] = surv
+        nr = sum(1 for v in t_all if v >= u)
+        d = sum(1 for v, ev in zip(t_all, e_all) if v == u and ev == 1)
+        if nr > 0 and d > 0:
             surv *= 1.0 - d / nr
-    return out
+    return [1.0 - surv_before[v] for v in times]
 
 
 def scaled_schoenfeld_residual(time, event, X, transform="km"):
@@ -82,9 +94,18 @@ def scaled_schoenfeld_residual(time, event, X, transform="km"):
     form:
 
     .. math:: U=\sum_j (g_j-\bar g)\,s_j, \qquad
-              \operatorname{Var}(U)=\sum_j (g_j-\bar g)^2 V_j ,
+              A=\sum_j (g_j-\bar g)^2 V_j, \quad
+              C=\sum_j (g_j-\bar g) V_j, \quad
+              I=\sum_j V_j ,
 
-    giving :math:`U^{\top}\operatorname{Var}(U)^{-1}U\sim\chi^2_p`.
+    and, because :math:`\hat\beta` is estimated, the variance of the
+    score for :math:`\theta` is the efficient one,
+    :math:`A - C I^{-1} C^{\top}`, giving
+    :math:`U^{\top}(A - C I^{-1} C^{\top})^{-1}U\sim\chi^2_p` and, per
+    covariate, :math:`U_k^2 / (A - C I^{-1} C^{\top})_{kk}`. This is the
+    test R's ``survival::cox.zph`` (version 3) reports. Using :math:`A`
+    alone treats :math:`\hat\beta` as known and understates the
+    statistic.
     No numerical optimisation is involved, so the arms agree exactly
     rather than to an optimiser's tolerance.
 
@@ -146,14 +167,23 @@ def scaled_schoenfeld_residual(time, event, X, transform="km"):
     if d < 3:
         raise ValueError("need at least 3 events.")
     e_times = [t[i] for i in range(len(t)) if e[i] == 1]
-    g = _transform(times, e_times, transform)
+    g = _transform(times, t, e, transform)
     gbar = sum(g) / d
     gc = [v - gbar for v in g]
 
     scaled = [[beta[k] + d * sum(Vbl[k][m] * res[j][m] for m in range(p)) for k in range(p)]
               for j in range(d)]
     U = [sum(gc[j] * res[j][k] for j in range(d)) for k in range(p)]
-    VU = [[sum(gc[j] * gc[j] * var[j][a][b] for j in range(d)) for b in range(p)]
+    A = [[sum(gc[j] * gc[j] * var[j][a][b] for j in range(d)) for b in range(p)]
+         for a in range(p)]
+    C = [[sum(gc[j] * var[j][a][b] for j in range(d)) for b in range(p)]
+         for a in range(p)]
+    Iinf = [[sum(var[j][a][b] for j in range(d)) for b in range(p)] for a in range(p)]
+    # efficient variance of the theta-score: beta-hat is estimated too
+    IC = [[float(v) for v in col] for col in np.linalg.solve(
+        np.asarray(Iinf, dtype=float), np.asarray(C, dtype=float).T).T.tolist()] \
+        if p > 1 else [[C[0][0] / Iinf[0][0]]]
+    VU = [[A[a][b] - sum(IC[a][m] * C[b][m] for m in range(p)) for b in range(p)]
           for a in range(p)]
     stat, pv = [], []
     for k in range(p):

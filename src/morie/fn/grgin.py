@@ -74,7 +74,7 @@ def geron_gini_impurity(y):
             "classes": classes.tolist(),
             "counts": counts.tolist(),
             "max_possible": 1.0 - 1.0 / K,
-            "majority_class": classes[counts.argmax()].item(),
+            "majority_class": classes.tolist()[int(counts.argmax())],
             "estimate": gini,
             "n": int(y.size),
             "method": _METHOD,

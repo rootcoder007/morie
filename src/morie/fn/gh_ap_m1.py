@@ -17,7 +17,20 @@ __all__ = ["ghosal_mh_sampler"]
 def ghosal_mh_sampler(n_draws=4000, seed=42):
     """Accept theta* with prob min(1, pi(theta*) q(theta | theta*) /
     (pi(theta) q(theta* | theta))) (App M): symmetric random-walk MH
-    targeting N(0,1); sample moments match. Keys: estimate."""
+    targeting N(0,1); sample moments match. Keys: estimate.
+
+    With an N(0, 1) proposal on the N(0, 1) target the stationary
+    acceptance rate is E min(1, pi(x + z) / pi(x)) = (2/pi) arctan 2 =
+    0.7048. Over 20000 draws the sample variance is within its Monte Carlo
+    error (about 0.017) of 1:
+
+    >>> import math
+    >>> r = ghosal_mh_sampler(n_draws=20000, seed=1)
+    >>> abs(r["estimate"] - 1.0) < 0.09
+    True
+    >>> abs(r["accept_rate"] - 2 / math.pi * math.atan(2)) < 0.02
+    True
+    """
     rng = np.random.default_rng(seed)
     x = 0.0
     acc = 0

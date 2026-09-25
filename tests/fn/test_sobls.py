@@ -44,12 +44,14 @@ def test_sobls_unscrambled_is_deterministic_and_seed_free():
     """The plain Sobol sequence is a fixed construction: no seed changes it."""
     a = np.asarray(sob(N=32, d=2, scramble=False, seed=1)["sample"])
     b = np.asarray(sob(N=32, d=2, scramble=False, seed=999)["sample"])
-    assert a == pytest.approx(b, abs=0.0)
+    assert a.tolist() == b.tolist()
+    # scipy.stats.qmc.Sobol(d=2, scramble=False).random(4)
+    assert a.tolist()[:4] == [[0.0, 0.0], [0.5, 0.5], [0.75, 0.25], [0.25, 0.75]]
 
 
 def test_sobls_scrambling_is_reproducible_but_seed_sensitive():
     a = np.asarray(sob(N=32, d=2, scramble=True, seed=11)["sample"])
     b = np.asarray(sob(N=32, d=2, scramble=True, seed=11)["sample"])
     c = np.asarray(sob(N=32, d=2, scramble=True, seed=12)["sample"])
-    assert a == pytest.approx(b, abs=0.0)
+    assert a.tolist() == b.tolist()
     assert not np.allclose(a, c)

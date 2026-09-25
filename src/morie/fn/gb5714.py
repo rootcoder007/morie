@@ -39,6 +39,17 @@ def wsrn(p2, alpha=0.05, beta=0.05, twosided=False):
         keys ``n``, ``n_raw``, ``z_alpha``, ``z_beta``, ``p2``,
         ``method``.
 
+    Examples
+    --------
+    The book's two worked values (alpha = 0.05, power 0.95, one-sided):
+
+    >>> wsrn(0.556)["n"]
+    1151
+    >>> wsrn(0.921)["n"]
+    21
+    >>> round(wsrn(0.556)["n_raw"], 6)
+    1150.316094
+
     References
     ----------
     Gibbons & Chakraborti (2011), eq. (5.7.15), p. 206.

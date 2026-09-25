@@ -18,6 +18,14 @@ def ginagg(A, H, eps=0.0):
     injective on multisets.  The learned MLP that follows is left to the
     caller; this is the aggregation step itself.
 
+    Examples
+    --------
+    On the path 0 - 1 - 2 with eps = 0.5, node 1 gets 1.5 * 2 + (1 + 3):
+
+    >>> r = ginagg([[0, 1, 0], [1, 0, 1], [0, 1, 0]], [[1.0], [2.0], [3.0]], eps=0.5)
+    >>> [row[0] for row in r["H"]]
+    [3.5, 7.0, 6.5]
+
     Returns
     -------
     RichResult

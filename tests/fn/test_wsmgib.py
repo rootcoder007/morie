@@ -1,27 +1,26 @@
 """Tests for wsmgib.wasserman_gibbs_sampler."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.wsmgib import wasserman_gibbs_sampler
 
 
 def test_wsmgib_basic():
-    """Test basic functionality."""
-    target = np.random.default_rng(43).integers(0, 2, 100)
-    x0 = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = wasserman_gibbs_sampler(target, x0, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    """The chain's correlation recovers rho; lag-one autocorrelation rho^2
+    leaves about n (1 - rho^2) / (1 + rho^2) effective draws, so with
+    rho = 0.9 and n = 20000 the standard error is near 0.003."""
+    out = wasserman_gibbs_sampler(0.9, [0.0, 0.0], 20000)
+    assert abs(out["estimate"] - 0.9) < 0.015
+    assert abs(out["mean_x"]) < 0.15 and abs(out["mean_y"]) < 0.15
 
 
 def test_wsmgib_edge():
-    """Test edge cases."""
-    target = np.random.default_rng(43).integers(0, 2, 100)
-    x0 = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = wasserman_gibbs_sampler(target, x0, n)
-    assert isinstance(result, dict)
+    """|rho| must be below 1; seeded chains repeat."""
+    a = wasserman_gibbs_sampler(-0.5, [1.0, -1.0], 500, seed=3)
+    b = wasserman_gibbs_sampler(-0.5, [1.0, -1.0], 500, seed=3)
+    assert a["estimate"] == b["estimate"]
+    with pytest.raises(ValueError, match="rho"):
+        wasserman_gibbs_sampler(1.0, [0.0, 0.0], 100)
 
 
 # --- appended: the module's own worked example as a gate -----------

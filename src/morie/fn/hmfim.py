@@ -42,7 +42,9 @@ def feature_importance_trees(impurity_decrease, n_features=None,
     n_features : int, optional
         Checked against the data's width.
     normalize : bool
-        Scale to sum to one.
+        As scikit-learn's forest ``feature_importances_``: scale each
+        tree's decreases to sum to one, average over trees, and rescale
+        the average to sum to one. Without it, the raw mean decrease.
     feature_names : sequence, optional
 
     Returns
@@ -74,10 +76,19 @@ def feature_importance_trees(impurity_decrease, n_features=None,
         )
     if np.any(A < -1e-12):
         raise ValueError("impurity decrease cannot be negative.")
-    imp = A.mean(axis=0)
-    total = float(imp.sum())
-    if normalize and total > 0:
-        imp = imp / total
+    if normalize:
+        # per-tree shares first, as sklearn does: averaging raw decreases
+        # lets the trees with the most impurity to remove dominate
+        rows = []
+        for r in A.tolist():
+            t = sum(r)
+            rows.append([v / t for v in r] if t > 0 else [0.0] * p)
+        imp = np.asarray(rows, dtype=float).mean(axis=0)
+        total = float(imp.sum())
+        if total > 0:
+            imp = imp / total
+    else:
+        imp = A.mean(axis=0)
     order = np.argsort(imp)[::-1]
     names = (list(feature_names) if feature_names is not None
              else ["x%d" % j for j in range(p)])

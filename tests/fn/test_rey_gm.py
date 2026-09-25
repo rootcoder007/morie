@@ -39,3 +39,20 @@ class TestReyGm:
         df = pd.DataFrame({"y": [0, 1, 2], "x": [1, 2, 3]})
         with pytest.raises(ValueError, match="positive"):
             rey_gm(df, y="y", x="x")
+
+
+def _rey_data(zeros=False):
+    import math
+    n = 80
+    x = [math.sin(1.3 * i) for i in range(n)]
+    y = [math.exp(1.0 + 0.5 * a) * (0.5 + ((i * 37) % 23) / 22) for i, a in enumerate(x)]
+    if zeros:
+        y = [0.0 if (i * 7) % 5 == 0 else v for i, v in enumerate(y)]
+    return pd.DataFrame({"y": y, "x": x})
+
+
+def test_matches_statsmodels_gamma_log():
+    """Coefficients equal statsmodels 0.15 GLM(Gamma(Log())) on the same data."""
+    r = rey_gm(_rey_data(), y="y", x="x")
+    assert r.coefficients["intercept"] == pytest.approx(0.989255752842124, rel=1e-9)
+    assert r.coefficients["x"] == pytest.approx(0.520087716950179, rel=1e-9)

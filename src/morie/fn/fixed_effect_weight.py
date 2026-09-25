@@ -21,6 +21,11 @@ def fixed_effect_weight(se):
     result : RichResult
         dict subclass; headline key 'value' plus the full payload.
 
+    Examples
+    --------
+    >>> fixed_effect_weight(0.25)["value"]
+    16.0
+
     References
     ----------
     Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Tweedie regression (compound Poisson-gamma GLM)."""
 
+import math
+
 from . import _array_core as np
 from ._sci_core import minimize
 from ._stats_core import norm
@@ -53,54 +55,68 @@ def rey_tw(
 
     pw = power
 
-    def neg_quasi_ll(beta):
-        eta = X_arr @ beta
-        mu = np.exp(eta)
-        mu = np.clip(mu, 1e-10, 1e10)
-        # Tweedie deviance unit: 2 * [y*mu^(1-p)/(1-p) - mu^(2-p)/(2-p)]
-        # quasi-loglik kernel
-        if pw == 1:
-            ll = np.sum(y_arr * np.log(mu) - mu)
-        elif pw == 2:
-            ll = np.sum(-y_arr / mu - np.log(mu))
-        else:
-            term1 = y_arr * mu ** (1 - pw) / (1 - pw)
-            term2 = mu ** (2 - pw) / (2 - pw)
-            ll = np.sum(term1 - term2)
-        return -ll
+    # Fisher scoring on the quasi-score, the standard GLM fit (McCullagh
+    # and Nelder 1989, ch. 2): with the log link and V(mu) = mu^p the
+    # working weight is mu^(2 - p) and the working response
+    # eta + (y - mu) / mu. It replaced a BFGS minimisation at default
+    # tolerance (coefficients good to about 1e-8) whose standard errors
+    # were BFGS's approximate inverse Hessian with no dispersion factor.
+    Xl = X_arr.tolist()
+    yl = [float(v) for v in y_arr.tolist()]
+    beta_l = [float(v) for v in np.linalg.lstsq(
+        X_arr, np.log(np.maximum(y_arr, 0.5)), rcond=None)[0].tolist()]
 
-    # Initialize with log-link OLS
-    log_y = np.log(np.maximum(y_arr, 0.5))
-    beta0 = np.linalg.lstsq(X_arr, log_y, rcond=None)[0]
-    result = minimize(neg_quasi_ll, beta0, method="BFGS")
-    beta_hat = result.x
+    def _wls(beta):
+        eta = [sum(b * xv for b, xv in zip(beta, r)) for r in Xl]
+        mu = [math.exp(e) for e in eta]
+        w = [m ** (2.0 - pw) for m in mu]
+        z = [e + (yv - m) / m for e, yv, m in zip(eta, yl, mu)]
+        XtWX = [[sum(w[i] * Xl[i][a] * Xl[i][c] for i in range(n)) for c in range(p_dim)]
+                for a in range(p_dim)]
+        XtWz = [sum(w[i] * Xl[i][a] * z[i] for i in range(n)) for a in range(p_dim)]
+        return XtWX, XtWz
 
+    for _ in range(100):
+        A, bvec = _wls(beta_l)
+        new_b = [float(v) for v in np.linalg.solve(np.array(A), np.array(bvec)).tolist()]
+        step = max(abs(a - b) for a, b in zip(new_b, beta_l))
+        beta_l = new_b
+        if step < 1e-13 * (1.0 + max(abs(v) for v in beta_l)):
+            break
+    beta_hat = np.array(beta_l)
     mu_hat = np.exp(X_arr @ beta_hat)
-    mu_hat = np.clip(mu_hat, 1e-10, None)
     residuals = y_arr - mu_hat
 
-    # Dispersion estimate
+    # Dispersion: Pearson chi-square over residual degrees of freedom
     V_mu = mu_hat**pw
     pearson_resid = (y_arr - mu_hat) / np.sqrt(V_mu)
     phi = np.sum(pearson_resid**2) / max(n - p_dim, 1)
 
-    # Standard errors via Hessian
-    if result.hess_inv is not None:
-        H_inv = (
-            np.asarray(result.hess_inv)
-            if not hasattr(result.hess_inv, "todense")
-            else np.asarray(result.hess_inv.todense())
-        )
-        se_beta = np.sqrt(np.maximum(np.diag(H_inv), 0.0))
-    else:
-        se_beta = np.full(p_dim, np.nan)
+    # Var(beta) = phi (X'WX)^-1 at the fit
+    A, _ = _wls(beta_l)
+    cov = np.linalg.inv(np.array(A)) * phi
+    se_beta = np.sqrt(np.maximum(np.diag(cov), 0.0))
+
+    def neg_quasi_ll(beta):
+        mu = np.exp(X_arr @ beta)
+        if pw == 1:
+            return -np.sum(y_arr * np.log(mu) - mu)
+        if pw == 2:
+            return -np.sum(-y_arr / mu - np.log(mu))
+        return -np.sum(y_arr * mu ** (1 - pw) / (1 - pw) - mu ** (2 - pw) / (2 - pw))
+
+    class _R:
+        fun = float(neg_quasi_ll(beta_hat))
+    result = _R()
 
     z_vals = beta_hat / np.where(se_beta > 0, se_beta, np.inf)
     p_vals = 2.0 * (1.0 - norm.cdf(np.abs(z_vals)))
 
     # Tweedie deviance
     dev = 2.0 * np.sum(
-        np.maximum(y_arr, 1e-10) ** (2 - pw) / ((1 - pw) * (2 - pw))
+        # y^(2-p) is exactly 0 at y = 0 for 1 < p < 2; flooring y at 1e-10
+        # added 2e-5 / ((1-p)(2-p)) per zero to the deviance
+        y_arr ** (2 - pw) / ((1 - pw) * (2 - pw))
         - y_arr * mu_hat ** (1 - pw) / (1 - pw)
         + mu_hat ** (2 - pw) / (2 - pw)
     )

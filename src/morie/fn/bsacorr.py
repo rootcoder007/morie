@@ -912,13 +912,19 @@ def alpharhy(x, fs, band=(8.0, 13.0), threshold=0.3):
     lag_hi = int(fsv / lo) + 1
     r = eegacf(x, fsv, maxlag=min(lag_hi + 2, len(aslist(x)) - 1))
     rho = r["normalized"]
+    # The rhythm's period is the lag of the FIRST significant ACF peak.
+    # Searching only inside the band's lags found the 2nd or 3rd period
+    # of a faster rhythm (a 25 Hz beta rhythm peaks at lags 4, 8, 12 at
+    # 100 Hz, and 8 and 12 sit in the alpha lag range), which reported
+    # beta as alpha. Peaks below the threshold are skipped, so a weak
+    # faster component riding on the alpha rhythm does not mask it.
     best, best_lag = None, None
-    for m in range(max(2, lag_lo), min(lag_hi, len(rho) - 1) + 1):
-        if rho[m] > rho[m - 1] and rho[m] >= rho[m - 1] and \
-                (m + 1 >= len(rho) or rho[m] >= rho[m + 1]):
-            if best is None or rho[m] > best:
-                best, best_lag = rho[m], m
-    present = best is not None and best >= thr
+    for m in range(2, min(lag_hi, len(rho) - 1) + 1):
+        if rho[m] > rho[m - 1] and \
+                (m + 1 >= len(rho) or rho[m] >= rho[m + 1]) and rho[m] >= thr:
+            best, best_lag = rho[m], m
+            break
+    present = best_lag is not None and lag_lo <= best_lag <= lag_hi
     return RichResult(payload={
         "present": bool(present), "peak": best, "peak_lag": best_lag,
         "frequency_hz": (fsv / best_lag) if best_lag else None,

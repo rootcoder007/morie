@@ -18,7 +18,16 @@ def ghosal_gibbs_sampler(rho=0.6, n_draws=4000, seed=42):
     """theta_j ~ pi(theta_j | theta_{-j}, X) cyclically (App M):
     bivariate normal with correlation rho -- conditionals
     N(rho * other, 1 - rho^2); sample correlation matches rho.
-    Keys: estimate."""
+    Keys: estimate.
+
+    The chain's lag-one autocorrelation is rho^2, so 20000 draws carry
+    about 9400 effective ones and the correlation's standard error is near
+    (1 - rho^2) / sqrt(9400) = 0.0066:
+
+    >>> r = ghosal_gibbs_sampler(rho=0.6, n_draws=20000, seed=1)
+    >>> abs(r["estimate"] - 0.6) < 0.035
+    True
+    """
     rng = np.random.default_rng(seed)
     x = y = 0.0
     xs = []

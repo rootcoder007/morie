@@ -1,27 +1,31 @@
 """Tests for hmoptn.geron_optuna."""
 
-from morie.fn import _array_core as np
+import pytest
 
-from morie.fn.hmoptn import geron_optuna
+from morie.fn.hmoptn import tpe_suggest
+
+
+TRIALS = [([0.1], 1.0), ([0.9], 5.0), ([0.2], 1.2), ([0.8], 4.0),
+          ([0.15], 0.9), ([0.6], 3.1), ([0.45], 2.0), ([0.3], 1.4)]
 
 
 def test_hmoptn_basic():
-    """Test basic functionality."""
-    objective = np.random.default_rng(42).normal(0, 1, 100)
-    n_trials = np.random.default_rng(42).normal(0, 1, 100)
-    sampler = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_optuna(objective, n_trials, sampler)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    """The good set is the ceil(gamma n) lowest losses; the suggestion lies
+    inside the bounds and, with good trials near 0.1-0.2, below 0.5."""
+    r = tpe_suggest(TRIALS, [(0.0, 1.0)], gamma=0.25, seed=1)
+    assert (r["n_good"], r["n_bad"]) == (2, 6)
+    assert 0.0 <= r["suggestion"][0] <= 1.0
+    assert r["suggestion"][0] < 0.5
+    assert r["best_so_far"] == 0.9
 
 
 def test_hmoptn_edge():
-    """Test edge cases."""
-    objective = np.random.default_rng(42).normal(0, 1, 100)
-    n_trials = np.random.default_rng(42).normal(0, 1, 100)
-    sampler = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_optuna(objective, n_trials, sampler)
-    assert isinstance(result, dict)
+    """Seeded suggestions repeat; gamma must lie in (0, 1)."""
+    a = tpe_suggest(TRIALS, [(0.0, 1.0)], seed=4)["suggestion"]
+    b = tpe_suggest(TRIALS, [(0.0, 1.0)], seed=4)["suggestion"]
+    assert a == b
+    with pytest.raises(ValueError, match="gamma"):
+        tpe_suggest(TRIALS, [(0.0, 1.0)], gamma=1.0)
 
 
 # --- appended: the module's own worked example as a gate -----------

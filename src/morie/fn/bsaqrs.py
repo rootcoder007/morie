@@ -1796,7 +1796,7 @@ def pwavedet(x, qrs, fs, template=None):
        from the samples preceding it;
     2. the result is bandpass filtered with -3 dB points at 3 and 11 Hz;
     3. the search interval runs from the end of the preceding T wave to the
-       current QRS, with the T end estimated as QTmax = 29 RR + 250 ms;
+       current QRS, with the T end estimated as QTmax = (2/9) RR + 250 ms;
     4. maximum and minimum are found in the search interval;
     5. the signal is rectified and thresholded at 50% and 75% of the maximum
        to give a ternary signal;
@@ -1844,19 +1844,32 @@ def pwavedet(x, qrs, fs, template=None):
         for i in range(a, b):
             y[i] = lvl
 
-    # step 2: 3-11 Hz bandpass as the difference of two moving averages
-    lo = _rgmavg(y, max(1, int(round(fs / 11.0))))
-    hi = _rgmavg(y, max(1, int(round(fs / 3.0))))
-    bp = [a - b for a, b in zip(lo, hi)]
+    # step 2: the 3-11 Hz bandpass (-3 dB points at 3 and 11 Hz, as the
+    # method specifies), second-order Butterworth run forwards and
+    # backwards so it has zero phase and the P wave stays where it is.
+    # The difference of two causal moving averages it replaces had
+    # neither those corner frequencies nor zero phase, and its 0.33 s
+    # window carried the preceding T wave into the search interval.
+    if fs <= 22.0:
+        raise ValueError("fs must exceed 22 Hz for the 3-11 Hz bandpass")
+    from ._signal_core import butter as _butter, filtfilt as _filtfilt
+    _b, _a = _butter(2, [3.0, 11.0], btype="band", fs=fs)
+    bp = [float(v) for v in _filtfilt(_b, _a, y)]
 
     # step 3: search interval from the end of the preceding T wave to this QRS
     wins = []
     for k in range(1, len(q)):
         rr = (q[k] - q[k - 1]) / fs
-        qtmax = 29.0 * rr + 0.250
-        start = max(q[k - 1], q[k - 1] + int(round(min(qtmax, 0.75 * rr) * fs)))
-        stop = max(start + 2, q[k] - half)
-        if stop <= start or stop > n:
+        # Hengeveld and van Bemmel's T-end estimate, QTmax = (2/9) RR + 250
+        # ms. It had been read as "29 RR" (23 s at RR = 0.8 s), which a
+        # cap at 0.75 RR then silently replaced.
+        qtmax = (2.0 / 9.0) * rr + 0.250
+        start = q[k - 1] + int(round(qtmax * fs))
+        # the interval ends where the deleted QRS begins; when the T end
+        # already falls past it (a short RR) there is no interval, rather
+        # than a two-sample window placed after the QRS
+        stop = q[k] - half
+        if stop - start < 2 or stop > n:
             wins.append(None)
         else:
             wins.append((start, stop))
@@ -1877,11 +1890,20 @@ def pwavedet(x, qrs, fs, template=None):
         return out
 
     if template is None:
-        acc = [0.0] * wlen
+        # a representative P wave: in each interval the P-length (120 ms)
+        # segment centred on the strongest band-passed deflection, averaged
+        # over beats and ternarised. Averaging the whole interval made the
+        # template as long as the interval itself, so the only possible
+        # match was at offset 0 and every "P wave" was the interval's
+        # midpoint.
+        plen = max(3, min(wlen, int(round(0.120 * fs))))
+        acc = [0.0] * plen
         for a, b in usable:
-            seg = bp[a:a + wlen]
-            for i in range(wlen):
-                acc[i] += seg[i]
+            seg = bp[a:b]
+            c = max(range(len(seg)), key=lambda i: abs(seg[i]))
+            st = min(max(0, c - plen // 2), len(seg) - plen)
+            for i in range(plen):
+                acc[i] += seg[st + i]
         template = _ternary([v / len(usable) for v in acc])
     else:
         template = _rgcheck(template, 2, "template")

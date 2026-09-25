@@ -1,27 +1,42 @@
 """Tests for glm.glr_test."""
 
-from morie.fn import _array_core as np
+import math
+
+import pytest
 
 from morie.fn.glm import glr_test
 
 
+def _page(scores):
+    """max_k sum_{i=k}^n z_i by brute force over k, for every n."""
+    return [max(0.0, max(sum(scores[k:n + 1]) for k in range(n + 1)))
+            for n in range(len(scores))]
+
+
 def test_glm_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    p0 = np.random.default_rng(42).normal(0, 1, 100)
-    p1 = np.random.default_rng(42).normal(0, 1, 100)
-    result = glr_test(x, p0, p1)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    """The one-pass statistic equals the brute-force maximum of eq. (2.3)."""
+    x = [0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1]
+    r = glr_test(x, 0.2, 0.6)
+    a, b = math.log(0.6 / 0.2), math.log(0.4 / 0.8)
+    z = [a if v else b for v in x]
+    assert r["scores"] == pytest.approx(z, rel=1e-15)
+    assert r["estimate"] == pytest.approx(_page(z), abs=1e-12)
+    assert r["kl"] == pytest.approx(0.6 * a + 0.4 * b, rel=1e-15)
 
 
 def test_glm_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    p0 = np.random.default_rng(42).normal(0, 1, 100)
-    p1 = np.random.default_rng(42).normal(0, 1, 100)
-    result = glr_test(x, p0, p1)
-    assert isinstance(result, dict)
+    """Normal and Poisson scores; the change is dated to the last minimum."""
+    r = glr_test([0.1, -0.3, 0.2, 1.4, 0.9, 1.3], 0.0, 1.0, family="normal")
+    assert r["estimate"] == pytest.approx(_page([v - 0.5 for v in [0.1, -0.3, 0.2, 1.4, 0.9, 1.3]]), abs=1e-12)
+    assert r["changepoint"] == 3 and r["kl"] == 0.5
+    x = [1, 0, 2, 5, 4]
+    r = glr_test(x, 1.0, 3.0, family="poisson")
+    assert r["estimate"] == pytest.approx(_page([v * math.log(3) - 2 for v in x]), abs=1e-12)
+    assert r["kl"] == pytest.approx(3 * math.log(3) - 2, rel=1e-15)
+    with pytest.raises(ValueError, match="must differ"):
+        glr_test(x, 1.0, 1.0, family="poisson")
+    with pytest.raises(ValueError, match="0 or 1"):
+        glr_test([0.5], 0.1, 0.5)
 
 
 # --- appended: the module's own worked example as a gate -----------

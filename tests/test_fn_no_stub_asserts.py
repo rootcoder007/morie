@@ -65,6 +65,12 @@ _TIGHT = 1e-9
 # residuals; the key it actually pins is "scale_final". That was fixed
 # rather than allowlisted.
 _REVIEWED = frozenset({
+    # 2026-09-25: true simulation parameters with Monte Carlo bounds of
+    # about five standard errors, derived in each docstring (a g-formula
+    # ATE of 2.8, an MH stationary variance of 1, a Gibbs rho of 0.9)
+    "test_gcomp.py",
+    "test_gh_ap_m1.py",
+    "test_wsmgib.py",
     "test_abdpd_pearl.py",
     "test_batch4_family.py",
     "test_bayhmc.py",

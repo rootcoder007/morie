@@ -144,6 +144,21 @@ def glr_test(x, p0, p1, threshold=None, family="bernoulli", sd=1.0):
         value at every ``n``; ``changepoint`` is the argmax's left end,
         the maximum-likelihood estimate of :math:`\nu`; ``kl`` is
         Lorden's information number.
+
+    Examples
+    --------
+    Bernoulli, p0 = 0.1 to p1 = 0.5: a 1 scores log 5 and a 0 scores
+    log(5/9), so the chart rests at 0 through the in-control zeros, jumps
+    by log 5 = 1.609438 per success and first crosses c = 3 at index 4.
+    KL = (log 5 + log(5/9)) / 2 and Lorden's delay is c / KL:
+
+    >>> r = glr_test([0, 0, 0, 1, 1, 0, 1, 1, 1], 0.1, 0.5, threshold=3.0)
+    >>> [round(v, 6) for v in r["estimate"]]
+    [0.0, 0.0, 0.0, 1.609438, 3.218876, 2.631089, 4.240527, 5.849965, 7.459403]
+    >>> r["changepoint"], r["stop_index"]
+    (3, 4)
+    >>> round(r["kl"], 12), round(r["expected_delay"], 12)
+    (0.510825623766, 5.872845566914)
     """
     xv = np.atleast_1d(np.asarray(x, dtype=float))
     n = len(xv)

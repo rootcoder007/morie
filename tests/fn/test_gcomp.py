@@ -57,3 +57,26 @@ def test_cheatsheet():
     from morie.fn.gcomp import cheatsheet
 
     assert len(cheatsheet()) > 0
+
+
+def test_feedback_recovers_the_g_formula_effect():
+    """A1 -> L2 -> Y feedback: E[Y(1,1)] - E[Y(0,0)] = 1 + 1 + 0.8 = 2.8.
+    Regressing Y on the whole history and swapping treatments gives about
+    2.0 (it holds L2 fixed); the backward regressions recover 2.8. With
+    n = 2000 the standard error of the estimate is about 0.09."""
+    import math
+    import random
+
+    rnd = random.Random(7)
+    Y, T, L = [], [], []
+    for _ in range(2000):
+        l1 = rnd.gauss(0, 1)
+        a1 = 1.0 if rnd.random() < 1 / (1 + math.exp(-l1)) else 0.0
+        l2 = 0.8 * a1 + l1 + rnd.gauss(0, 1)
+        a2 = 1.0 if rnd.random() < 1 / (1 + math.exp(-l2)) else 0.0
+        Y.append(a1 + a2 + l2 + rnd.gauss(0, 1))
+        T.append([a1, a2])
+        L.append([[l1], [l2]])
+    r = gcomp(Y, T, L, n_boot=10)
+    assert abs(r["ate"] - 2.8) < 0.35
+    assert abs(r["ate"] - 2.0) > 0.45

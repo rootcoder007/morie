@@ -20,8 +20,10 @@ def _leaf(y, criterion):
     imp = float(1.0 - np.sum(p * p)) if criterion == "gini" else float(-np.sum(p * np.log2(p)))
     return {
         "leaf": True,
-        "value": classes[int(np.argmax(counts))].item(),
-        "proba": dict(zip([c.item() for c in classes], p.tolist())),
+        # tolist() gives native values; array elements here are already
+        # Python numbers, which have no .item()
+        "value": classes.tolist()[int(np.argmax(counts))],
+        "proba": dict(zip(classes.tolist(), p.tolist())),
         "n": int(y.size),
         "impurity": imp,
     }

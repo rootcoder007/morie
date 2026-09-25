@@ -1,22 +1,23 @@
 """Tests for gh_ap_m1.ghosal_mh_sampler."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_m1 import ghosal_mh_sampler
 
 
 def test_gh_ap_m1_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = ghosal_mh_sampler(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    """Stationary N(0, 1): variance 1 and mean 0 within ~5 Monte Carlo SE."""
+    r = ghosal_mh_sampler(n_draws=20000, seed=3)
+    assert abs(r["estimate"] - 1.0) < 0.09
+    assert abs(r["mean"]) < 0.07
 
 
 def test_gh_ap_m1_edge():
-    """Test edge cases."""
-    result = ghosal_mh_sampler(np.array([42.0]))
-    assert result["n"] == 1
+    """Acceptance rate (2/pi) arctan 2 for an N(0, 1) proposal; seeded runs
+    reproduce exactly."""
+    import math
+    r = ghosal_mh_sampler(n_draws=20000, seed=4)
+    assert abs(r["accept_rate"] - 2 / math.pi * math.atan(2)) < 0.02
+    assert ghosal_mh_sampler(n_draws=500, seed=9)["estimate"] == \
+        ghosal_mh_sampler(n_draws=500, seed=9)["estimate"]
 
 
 # --- appended: the module's own worked example as a gate -----------

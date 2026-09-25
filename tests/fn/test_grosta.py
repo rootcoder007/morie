@@ -23,9 +23,10 @@ class TestGrosta:
         assert result.extra["n_groups"] == 2
         tbl = result.value
         # Check that means are 10 and 20
-        means = tbl[("val", "mean")].tolist()
-        assert np.all(np.isfinite(np.asarray(means[0], dtype=float)))  # N6: was a generator-guessed value
-        assert np.all(np.isfinite(np.asarray(means[1], dtype=float)))  # N6: was a generator-guessed value
+        assert tbl[("val", "mean")].tolist() == [10.0, 20.0]
+        assert tbl[("val", "std")].tolist() == [0.0, 0.0]
+        assert tbl[("val", "count")].tolist() == [50, 50]
+        assert tbl["group"].tolist() == ["A", "B"]
 
     def test_auto_numeric_cols(self):
         df = pd.DataFrame(

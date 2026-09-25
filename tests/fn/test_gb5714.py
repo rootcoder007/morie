@@ -1,29 +1,31 @@
 """Tests for gb5714.gibbons_wsrt_sampsize."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.gb5714 import gibbons_wsrt_sampsize
 
 
 def test_gb5714_basic():
-    """Test basic functionality."""
-    alpha = 0.05
-    beta = 0.8
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    sigma = 1.0
-    result = gibbons_wsrt_sampsize(alpha, beta, delta, sigma)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    """Eq. (5.7.15): N = (z_a + z_b)^2 / (3 (p2 - 1/2)^2), recomputed here
+    and against scipy.stats.norm (1150.3160944283197 for p2 = 0.556)."""
+    import math
+    r = gibbons_wsrt_sampsize(0.556, alpha=0.05, beta=0.05)
+    z = 1.6448536269514722  # scipy.stats.norm.ppf(0.95)
+    assert r["n_raw"] == pytest.approx((2 * z) ** 2 / (3 * 0.056 ** 2), rel=1e-12)
+    assert r["n_raw"] == pytest.approx(1150.3160944283197, rel=1e-12)
+    assert r["n"] == math.ceil(r["n_raw"]) == 1151
+    assert gibbons_wsrt_sampsize(0.921)["n"] == 21
 
 
 def test_gb5714_edge():
-    """Test edge cases."""
-    alpha = 0.05
-    beta = 0.8
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    sigma = 1.0
-    result = gibbons_wsrt_sampsize(alpha, beta, delta, sigma)
-    assert isinstance(result, dict)
+    """Two-sided halves alpha; p2 = 1/2 has no finite N."""
+    r = gibbons_wsrt_sampsize(0.556, twosided=True)
+    assert r["z_alpha"] == pytest.approx(1.959963984540054, rel=1e-12)
+    assert r["n_raw"] == pytest.approx(1381.240434961676, rel=1e-12)
+    with pytest.raises(ValueError, match="differ from 0.5"):
+        gibbons_wsrt_sampsize(0.5)
+    with pytest.raises(ValueError, match="inside"):
+        gibbons_wsrt_sampsize(1.2)
 
 
 # --- appended: the module's own worked example as a gate -----------

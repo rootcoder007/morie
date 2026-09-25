@@ -20,7 +20,7 @@ S = [[0.9317784078463273, 0.30427829329185896, 0.13390431790287197],
 def test_vardec_basic():
     """decomposition[h][i] matches statsmodels decomp[i, h]."""
     r = var_variance_decomp(A, S, periods=6)
-    d = r.extra["decomposition"]
+    d = r.extra["decomposition"].tolist()
     for got, ref in zip(d[5][2], [0.09364396618344853, 0.27197610339055983, 0.6343799304259916]):
         assert got == pytest.approx(ref, rel=1e-12)
     for got, ref in zip(d[3][1], [0.19049763736731412, 0.8083947119302327, 0.0011076507024529285]):

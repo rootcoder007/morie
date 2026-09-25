@@ -38,6 +38,17 @@ def generalizability_theory(X, facets=None):
     X : n_p x n_i matrix of scores.
     facets : int, optional
         Number of items to project onto; defaults to the observed n_i.
+
+    Examples
+    --------
+    Five persons by three items. E rho^2 equals coefficient alpha,
+    k/(k-1) (1 - sum var_item / var_total) = 0.951428...:
+
+    >>> r = generalizability_theory([[2, 4, 5], [3, 3, 4], [5, 6, 7], [1, 2, 4], [4, 4, 6]])
+    >>> round(r["var_p"], 12), round(r["var_i"], 12), round(r["var_pi"], 12)
+    (1.85, 1.183333333333, 0.283333333333)
+    >>> round(r["e_rho2"], 12), round(r["phi"], 12)
+    (0.951428571429, 0.790973871734)
     """
     M = core.mat(X)
     npr = len(M)

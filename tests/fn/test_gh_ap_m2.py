@@ -1,22 +1,20 @@
 """Tests for gh_ap_m2.ghosal_gibbs_sampler."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_m2 import ghosal_gibbs_sampler
 
 
 def test_gh_ap_m2_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = ghosal_gibbs_sampler(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    """The sampled correlation recovers rho within ~5 Monte Carlo SE."""
+    for rho in (0.6, -0.3):
+        r = ghosal_gibbs_sampler(rho=rho, n_draws=20000, seed=5)
+        assert abs(r["estimate"] - rho) < 0.035
+        assert r["gap"] == abs(r["estimate"] - rho)
 
 
 def test_gh_ap_m2_edge():
-    """Test edge cases."""
-    result = ghosal_gibbs_sampler(np.array([42.0]))
-    assert result["n"] == 1
+    """rho = 0 gives independent coordinates."""
+    r = ghosal_gibbs_sampler(rho=0.0, n_draws=20000, seed=6)
+    assert abs(r["estimate"]) < 0.035
 
 
 # --- appended: the module's own worked example as a gate -----------

@@ -127,17 +127,23 @@ def _mw_counts(m, n):
     catches it.
     """
     top = m * n
-    table = np.zeros((m + 1, n + 1, top + 1))
-    table[0, :, 0] = 1.0
-    table[:, 0, 0] = 1.0
+    # plain nested lists: the recurrence touches (m+1)(n+1)(mn+1) cells,
+    # 2.7 million at m = n = 40, far too many for array-object indexing
+    table = [[[0.0] * (top + 1) for _ in range(n + 1)] for _ in range(m + 1)]
+    for j in range(n + 1):
+        table[0][j][0] = 1.0
+    for i in range(m + 1):
+        table[i][0][0] = 1.0
     for i in range(1, m + 1):
+        prev_i = table[i - 1]
+        cur = table[i]
         for j in range(1, n + 1):
+            left = cur[j - 1]
+            down = prev_i[j]
+            row = cur[j]
             for u in range(top + 1):
-                v = table[i, j - 1, u]
-                if u - j >= 0:
-                    v += table[i - 1, j, u - j]
-                table[i, j, u] = v
-    return table[m, n]
+                row[u] = left[u] + (down[u - j] if u >= j else 0.0)
+    return np.asarray(table[m][n])
 
 
 def _mw_cdf(m, n, u):

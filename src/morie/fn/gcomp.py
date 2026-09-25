@@ -41,16 +41,21 @@ def gcomp(
 ) -> dict[str, Any]:
     r"""G-computation for time-varying treatment regimes.
 
-    Sequentially models the outcome under the observed data, then
-    applies the g-formula by replacing treatment with a counterfactual
-    regime and iterating forward through time.
+    The iterated-conditional-expectation form of Robins' g-formula
+    (Bang and Robins 2005; Hernan and Robins 2020, ch. 21). For a static
+    regime :math:`\bar a^*`, set :math:`Q_{K+1} = Y` and for
+    :math:`k = K, \ldots, 1` regress :math:`Q_{k+1}` on the observed
+    history :math:`(\bar A_k, \bar L_k)` by least squares, then predict
+    with :math:`\bar A_k = \bar a^*_k` and the observed
+    :math:`\bar L_k`; the mean of :math:`Q_1` estimates
+    :math:`E[Y(\bar a^*)]`.
 
-    For ``K`` time points, at each step :math:`k`:
-
-    .. math::
-
-        \bar{L}_k = (L_0, \ldots, L_k), \quad
-        \hat{Y}_k = \hat{\mu}_k(\bar{A}_k^*, \bar{L}_k)
+    The previous version regressed Y on the whole history once and swapped
+    the treatments in, keeping the observed covariates. Under
+    treatment-confounder feedback (A_1 -> L_2 -> Y) that holds L_2 at its
+    observed value and drops the part of A_1's effect that runs through
+    it; the backward regressions average L_2 over its distribution given
+    the earlier history, which is what the g-formula requires.
 
     Parameters
     ----------
@@ -99,37 +104,36 @@ def gcomp(
         raise ValueError("L_seq shape must be (n, K) or (n, K, p).")
 
     rng = np.random.default_rng(seed)
+    yl = [float(v) for v in Y.tolist()]
+    tl = [[float(v) for v in row] for row in T_seq.tolist()]
+    ll = L_seq.tolist()
+    p = len(ll[0][0])
+
+    def _ols_fit_predict(rows, target, rows_new):
+        X = np.array(rows)
+        b = np.linalg.lstsq(X, np.array(target), rcond=None)[0]
+        bl = [float(v) for v in b.tolist()]
+        return [sum(c * x for c, x in zip(bl, r)) for r in rows_new]
 
     def _estimate(idx):
-        y_ = Y[idx]
-        t_ = T_seq[idx]
-        l_ = L_seq[idx]
-        n_ = len(idx)
-
-        # Build cumulative feature matrix and fit OLS at each time step
-        betas = []
-        for k in range(K):
-            cum_T = t_[:, : k + 1].reshape(n_, -1)
-            cum_L = l_[:, : k + 1, :].reshape(n_, -1)
-            Xk = np.column_stack([np.ones(n_), cum_T, cum_L])
-            bk = np.linalg.lstsq(Xk, y_, rcond=None)[0]
-            betas.append(bk)
-
-        def _predict_regime(t_regime):
-            t_fill = np.full((n_, K), t_regime, dtype=float)
-            preds = np.zeros(n_)
-            for k in range(K):
-                cum_T = t_fill[:, : k + 1]
-                cum_L = l_[:, : k + 1, :].reshape(n_, -1)
-                Xk = np.column_stack([np.ones(n_), cum_T, cum_L])
-                preds = Xk @ betas[k]
-            return preds
-
+        idx = [int(i) for i in (idx.tolist() if hasattr(idx, "tolist") else idx)]
+        y_ = [yl[i] for i in idx]
         if regime == "natural":
-            return float(np.mean(y_)), None, None
+            return sum(y_) / len(y_), None, None
 
-        mu1 = float(np.mean(_predict_regime(1.0)))
-        mu0 = float(np.mean(_predict_regime(0.0)))
+        def _mean_under(astar):
+            q = list(y_)
+            for k in range(K - 1, -1, -1):
+                hist_obs, hist_reg = [], []
+                for i in idx:
+                    lk = [ll[i][j][c] for j in range(k + 1) for c in range(p)]
+                    hist_obs.append([1.0] + tl[i][: k + 1] + lk)
+                    hist_reg.append([1.0] + [astar] * (k + 1) + lk)
+                q = _ols_fit_predict(hist_obs, q, hist_reg)
+            return sum(q) / len(q)
+
+        mu1 = _mean_under(1.0)
+        mu0 = _mean_under(0.0)
         return mu1 - mu0, mu1, mu0
 
     ate_obs, mu1_obs, mu0_obs = _estimate(np.arange(n))

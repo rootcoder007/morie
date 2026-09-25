@@ -26,7 +26,11 @@ __all__ = [
 
 
 def _mat(X):
-    rows = list(X)
+    # tolist() first: iterating a 2-D array yields array rows, not lists,
+    # and those were read as scalars, so a matrix became a column
+    rows = X.tolist() if hasattr(X, "tolist") else list(X)
+    if not isinstance(rows, list):
+        rows = [rows]
     if rows and not isinstance(rows[0], (list, tuple)):
         return [[float(v)] for v in rows]
     return [[float(v) for v in r] for r in rows]

@@ -50,6 +50,9 @@ def geron_sigmoid(t):
     >>> geron_sigmoid(-800.0)["estimate"]
     0.0
     """
+    # scalar in, scalar out: the core has no 0-d arrays, so ask of the
+    # argument, not of the converted array (which is always 1-D here)
+    scalar = np.ndim(t) == 0
     t = np.asarray(t, dtype=float)
     if t.size == 0:
         raise ValueError("t is empty; sigmoid needs at least one logit.")
@@ -63,13 +66,13 @@ def geron_sigmoid(t):
     out[~pos] = e / (1.0 + e)
     deriv = out * (1.0 - out)
 
-    est = float(out) if out.ndim == 0 else out.tolist()
+    est = float(out.tolist()[0]) if scalar else out.tolist()
     return RichResult(
         title="Logistic function",
         summary_lines=[("n", int(t.size)), ("mean sigma", float(out.mean()))],
         payload={
             "sigma": est,
-            "derivative": float(deriv) if deriv.ndim == 0 else deriv.tolist(),
+            "derivative": float(deriv.tolist()[0]) if scalar else deriv.tolist(),
             "estimate": est,
             "n": int(t.size),
             "method": _METHOD,

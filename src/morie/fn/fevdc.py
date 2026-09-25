@@ -71,8 +71,9 @@ def fevd(
         name="fevd",
         value=float(decomp[-1][0][0]),
         extra={
-            "decomposition": decomp,
-            "mse_contributions": mse,
+            # (periods + 1, k, k) arrays, as documented
+            "decomposition": np.array(decomp),
+            "mse_contributions": np.array(mse),
             "periods": periods,
             "k": k,
         },

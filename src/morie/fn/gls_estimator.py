@@ -16,6 +16,14 @@ def gls_estimator(x, c, zhat):
 
     Formula: zhat_GLS = (X^T C^-1 X)^-1 X^T C^-1 zhat
 
+    Examples
+    --------
+    Two surveys estimate the same mean as 2 and 5 with variances 1 and 4;
+    GLS weights them 1 : 1/4, giving (2 + 5/4) / (1 + 1/4) = 2.6:
+
+    >>> round(gls_estimator([1.0, 1.0], [[1.0, 0.0], [0.0, 4.0]], [2.0, 5.0])["value"], 12)
+    2.6
+
     Returns
     -------
     result : RichResult
