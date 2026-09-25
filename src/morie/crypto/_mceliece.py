@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 
 from morie.fn import _array_core as np
+from morie.crypto._sysrng import system_rng
 
 from morie.crypto._ecc import goppa_generate
 
@@ -27,7 +28,7 @@ def mceliece_keygen(m: int = 4, t: int = 2) -> dict:
     n = code["n"]
     k = code["k"]
 
-    rng = np.random.default_rng()
+    rng = system_rng()  # OS CSPRNG: key material
     perm = rng.permutation(n).astype(int)
     H_perm = H[:, perm]
 
@@ -46,7 +47,7 @@ def mceliece_encaps(pk: np.ndarray) -> tuple[bytes, np.ndarray]:
     """
     r, n = pk.shape
 
-    rng = np.random.default_rng()
+    rng = system_rng()  # OS CSPRNG: key material
     e = np.zeros(n, dtype=np.uint8)
     error_positions = rng.choice(n, size=min(2, n), replace=False)
     e[error_positions] = 1

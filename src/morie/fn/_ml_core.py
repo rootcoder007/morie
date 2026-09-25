@@ -2218,20 +2218,39 @@ class RandomizedSearchCV(GridSearchCV):
 
 def learning_curve(estimator, X, y, train_sizes=(0.1, 0.33, 0.55,
                                                  0.78, 1.0), cv=5,
-                   scoring=None):
+                   scoring=None, shuffle=False, random_state=None, **kw):
+    """sklearn.model_selection.learning_curve: one set of absolute
+    training sizes, fixed from the first fold's training-set length
+    (fractions floored, clipped to [1, n_max], duplicates dropped); each
+    fold trains on the first m of its (optionally shuffled) training
+    indices. An int cv stratifies a classifier, as check_cv does."""
+    del kw
     import copy
-    n = len(X.tolist() if hasattr(X, "tolist") else X)
-    folds = list(KFold(n_splits=cv).split(X, y))
+    if hasattr(cv, "split"):
+        folds = list(cv.split(X, y))
+    elif _is_classifier(estimator):
+        folds = list(StratifiedKFold(n_splits=cv).split(X, y))
+    else:
+        folds = list(KFold(n_splits=cv).split(X, y))
+    if shuffle:
+        rng = _ac.random.default_rng(random_state)
+        folds = [([tr[i] for i in rng.permutation(len(tr)).tolist()], te)
+                 for tr, te in folds]
+    n_max = len(folds[0][0])
     sizes_abs = []
-    train_scores = []
-    test_scores = []
+    for frac in (train_sizes.tolist() if hasattr(train_sizes, "tolist")
+                 else train_sizes):
+        f = float(frac)
+        m = int(f * n_max) if f <= 1.0 else int(f)
+        m = min(max(m, 1), n_max)
+        if m not in sizes_abs:
+            sizes_abs.append(m)
+    sizes_abs.sort()
     scorer = get_scorer(scoring) if isinstance(scoring, str) else None
-    for frac in train_sizes:
-        tr_scores = []
-        te_scores = []
-        m = None
+    train_scores, test_scores = [], []
+    for m in sizes_abs:
+        tr_scores, te_scores = [], []
         for tr, te in folds:
-            m = int(len(tr) * frac) if frac <= 1 else int(frac)
             sub = tr[:m]
             est = copy.deepcopy(estimator)
             est.fit(_index_rows(X, sub), _index_rows(y, sub))
@@ -2245,10 +2264,9 @@ def learning_curve(estimator, X, y, train_sizes=(0.1, 0.33, 0.55,
                                            _index_rows(y, sub)))
                 te_scores.append(est.score(_index_rows(X, te),
                                            _index_rows(y, te)))
-        sizes_abs.append(m)
         train_scores.append(tr_scores)
         test_scores.append(te_scores)
-    return (_ac.marr([float(s) for s in sizes_abs]),
+    return (_ac.marr([int(v) for v in sizes_abs]),
             _ac.marr(train_scores), _ac.marr(test_scores))
 
 

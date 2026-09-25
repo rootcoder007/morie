@@ -24,8 +24,8 @@ def pp_test(y, lags: int | None = None) -> TestResult:
     y : array-like
         Univariate time series (n,).
     lags : int or None
-        Lag truncation for Newey-West long-run variance estimator.
-        If None uses ``ceil(4 * (n/100)^(2/9))``.
+        Lag truncation for the Newey-West long-run variance. If None uses
+        ``trunc(4 * (n/100)^(1/4))`` with n = len(y) - 1, urca's "short".
 
     Returns
     -------
@@ -37,6 +37,29 @@ def pp_test(y, lags: int | None = None) -> TestResult:
         extra['lags']: lag truncation used.
         extra['lrvar']: estimated long-run variance.
 
+    Notes
+    -----
+    Follows urca::ur.pp(type = "Z-tau", model = "constant"): regress
+    y_t on (1, y_{t-1}) over the n = T - 1 pairs; with s = sum(u^2)/n,
+    the Bartlett long-run variance
+    sig = s + (2/n) sum_l (1 - l/(L+1)) sum_t u_t u_{t-l},
+    and ybar2 = sum((y_t - mean y)^2) / n^2,
+
+        Z_tau = sqrt(s/sig) * t_rho - (sig - s) / (2 sig) * sqrt(sig / ybar2),
+
+    t_rho = (rho - 1) / se(rho). Critical values are MacKinnon's
+    finite-sample response surfaces as urca uses them.
+
+    Examples
+    --------
+    A stationary sawtooth, x_t = (7t mod 11) - 5: urca's
+    ur.pp(x, type = "Z-tau", model = "constant", lags = "short") gives
+    Z_tau = -12.65008 with 3 lags, far beyond the 1% value:
+
+    >>> r = pp_test([float((7 * t) % 11) - 5.0 for t in range(60)])
+    >>> round(r.statistic, 5), r.extra["lags"], r.p_value
+    (-12.65008, 3, 0.01)
+
     References
     ----------
     Phillips P.C.B. & Perron P. (1988). Testing for a unit root in time series
@@ -45,81 +68,49 @@ def pp_test(y, lags: int | None = None) -> TestResult:
     MacKinnon J.G. (1994). Approximate asymptotic distribution functions for
     unit root and cointegration tests.
     Journal of Business & Economic Statistics, 12(2), 167-176.
+
+    Pfaff, B. (2008). urca: Unit root and cointegration tests for time
+    series data, function ur.pp.
     """
     y = np.asarray(y, dtype=float).ravel()
-    n = len(y)
-    if n < 4:
-        raise ValueError(f"Need >= 4 observations, got {n}.")
-
+    T = len(y)
+    if T < 4:
+        raise ValueError(f"Need >= 4 observations, got {T}.")
+    n = T - 1
     if lags is None:
-        lags = int(np.ceil(4.0 * (n / 100.0) ** (2.0 / 9.0)))
-    lags = max(0, min(lags, n - 2))
-
-    # OLS: delta(y) = mu + alpha*y[t-1] + epsilon.
-    dy = np.diff(y)  # length n-1
-    X = np.column_stack([np.ones(n - 1), y[: n - 1]])
-    try:
-        beta, _, _, _ = np.linalg.lstsq(X, dy, rcond=None)
-    except np.linalg.LinAlgError:
-        return TestResult(
-            test_name="Phillips-Perron",
-            statistic=np.nan,
-            p_value=np.nan,
-            n=n,
-            method=f"PP Z_tau (lags={lags})",
-            extra={"critical_values": {}, "lags": lags, "lrvar": np.nan},
-        )
-
-    resid = dy - X @ beta
-    n_ols = n - 1
-    df_res = n_ols - 2
-    if df_res <= 0:
-        return TestResult(
-            test_name="Phillips-Perron",
-            statistic=np.nan,
-            p_value=np.nan,
-            n=n,
-            method=f"PP Z_tau (lags={lags})",
-            extra={"critical_values": {}, "lags": lags, "lrvar": np.nan},
-        )
-    sigma2_ols = float(np.sum(resid**2) / df_res)
-
-    # Newey-West long-run variance estimator.
-    lrvar = float(np.mean(resid**2))
-    for k in range(1, lags + 1):
-        weight = 1.0 - k / (lags + 1.0)
-        acov = float(np.mean(resid[k:] * resid[: n_ols - k]))
-        lrvar += 2.0 * weight * acov
-    lrvar = max(lrvar, 1e-300)
-
-    try:
-        XtX_inv = np.linalg.inv(X.T @ X)
-    except np.linalg.LinAlgError:
-        return TestResult(
-            test_name="Phillips-Perron",
-            statistic=np.nan,
-            p_value=np.nan,
-            n=n,
-            method=f"PP Z_tau (lags={lags})",
-            extra={"critical_values": {}, "lags": lags, "lrvar": lrvar},
-        )
-
-    se_ols = float(np.sqrt(sigma2_ols * XtX_inv[1, 1]))
-    tau_ols = float(beta[1]) / se_ols if se_ols > 0.0 else np.nan
-
-    # Z_tau correction (Phillips & Perron 1988, eq. 23):
-    # Z_tau = sqrt(sigma2_ols/lrvar)*tau - 0.5*(lrvar - sigma2_ols) * ...
-    Sxx = float((X[:, 1] @ X[:, 1]) - n_ols * np.mean(X[:, 1]) ** 2)
-    correction = (
-        0.5 * (lrvar - sigma2_ols) * np.sqrt(n_ols) * np.sqrt(Sxx) / (lrvar * np.sqrt(float(np.sum(resid**2))))
-        if lrvar > 0.0 and np.sum(resid**2) > 0.0
-        else 0.0
-    )
-
-    z_tau = float(np.sqrt(sigma2_ols / lrvar)) * tau_ols - correction
-
-    # MacKinnon (1994) critical values for regression with constant.
-    cv = {"1%": -3.43, "5%": -2.86, "10%": -2.57}
+        lags = int(4.0 * (n / 100.0) ** 0.25)
+    lags = max(0, min(int(lags), n - 2))
+    ycur = [float(v) for v in y[1:]]
+    ylag = [float(v) for v in y[:-1]]
+    ml = sum(ylag) / n
+    mc = sum(ycur) / n
+    sxx = sum((v - ml) ** 2 for v in ylag)
+    nan_out = TestResult(test_name="Phillips-Perron", statistic=np.nan,
+                         p_value=np.nan, n=T, method=f"PP Z_tau (lags={lags})",
+                         extra={"critical_values": {}, "lags": lags, "lrvar": np.nan})
+    if n - 2 <= 0 or sxx <= 0.0:
+        return nan_out
+    rho = sum((a - ml) * (c - mc) for a, c in zip(ylag, ycur)) / sxx
+    mu = mc - rho * ml
+    res = [c - mu - rho * a for a, c in zip(ylag, ycur)]
+    ssr = sum(u * u for u in res)
+    se_rho = (ssr / (n - 2) / sxx) ** 0.5
+    if se_rho <= 0.0:
+        return nan_out
+    t_rho = (rho - 1.0) / se_rho
+    s = ssr / n
+    lrvar = s
+    for l in range(1, lags + 1):
+        lrvar += (2.0 / n) * (1.0 - l / (lags + 1.0)) * sum(
+            res[t] * res[t - l] for t in range(l, n))
+    ybar2 = sum((c - mc) ** 2 for c in ycur) / n ** 2
+    if lrvar <= 0.0 or ybar2 <= 0.0:
+        return nan_out
+    lam = 0.5 * (lrvar - s) / lrvar
+    z_tau = (s / lrvar) ** 0.5 * t_rho - lam * lrvar ** 0.5 / ybar2 ** 0.5
+    cv = {"1%": -3.4335 - 5.999 / n - 29.25 / n ** 2,
+          "5%": -2.8621 - 2.738 / n - 8.36 / n ** 2,
+          "10%": -2.5671 - 1.438 / n - 4.48 / n ** 2}
     if z_tau <= cv["1%"]:
         pval = 0.01
     elif z_tau <= cv["5%"]:
@@ -133,7 +124,7 @@ def pp_test(y, lags: int | None = None) -> TestResult:
         test_name="Phillips-Perron",
         statistic=float(z_tau),
         p_value=float(pval),
-        n=n,
+        n=T,
         method=f"PP Z_tau (lags={lags})",
         extra={"critical_values": cv, "lags": lags, "lrvar": lrvar},
     )

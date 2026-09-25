@@ -1,9 +1,11 @@
 # morie.fn -- function file (rootcoder007/morie)
 """
-MA(q) model fitting via method of moments.
+MA(q) model fitting by conditional least squares.
 
-Fits moving-average model of order q using the method of moments or
-conditional maximum likelihood (CML).
+Brockwell and Davis's convention, X_t = Z_t + theta_1 Z_{t-1} + ... +
+theta_q Z_{t-q}: the coefficients are fitted by minimising the
+conditional sum of squared innovations, started from the invertible
+lag-one moment solution.
 
 Category: TimeSeries
 """
@@ -22,13 +24,24 @@ def mafit(y, q=1, method="cml"):
     q : int, optional
         Order of moving average. Default 1.
     method : str, optional
-        "cml" (conditional maximum likelihood) or "mle" (exact MLE).
-        Default "cml".
+        "cml" (conditional maximum likelihood, i.e. conditional least
+        squares). Default "cml".
 
     Returns
     -------
     TimeSeriesResult
         Fields: ma_coeff (array), sigma2 (float), acf (array), loglik (float), n (int).
+        ``acf`` is the model autocorrelation
+        rho(k) = (theta_k + sum_j theta_j theta_{j+k}) / (1 + sum_j theta_j^2).
+
+    Examples
+    --------
+    The model ACF of X_t = Z_t + 0.5 Z_{t-1} is 0.5 / 1.25 = 0.4 at lag 1:
+
+    >>> r = mafit([0.3, -1.2, 0.8, 0.1, -0.4, 1.5, -0.7, 0.2, 0.9, -1.1], q=1)
+    >>> th = float(r.ma_coeff[0])
+    >>> abs(float(r.acf[1]) - th / (1 + th * th)) < 1e-15
+    True
 
     References
     ----------
@@ -51,11 +64,17 @@ def mafit(y, q=1, method="cml"):
     acov = np.array([np.mean(y[:-k] * y[k:]) if k > 0 else np.mean(y**2) for k in range(q + 1)])
     rho = acov / acov[0]
 
-    # Initial estimate from method of moments
-    # For MA(q): rho(k) = -theta_k + sum_j theta_j*theta_{j+k} / (1 + sum theta_j^2)
-    # Use first-lag approximation for initial guess
+    # Start value: the invertible solution of rho(1) = theta / (1 + theta^2)
+    # (Brockwell and Davis Sec. 3.4); |rho(1)| >= 1/2 has none, so start
+    # on the boundary's side at +-0.5
     theta_init = np.zeros(q)
-    theta_init[0] = -rho[1] if abs(rho[1]) < 1 else 0.5 * np.sign(rho[1])
+    r1 = float(rho[1])
+    if r1 == 0.0:
+        theta_init[0] = 0.0
+    elif abs(r1) < 0.5:
+        theta_init[0] = (1.0 - (1.0 - 4.0 * r1 * r1) ** 0.5) / (2.0 * r1)
+    else:
+        theta_init[0] = 0.5 * (1.0 if r1 > 0 else -1.0)
 
     def cml_loglik(theta, y, q):
         """Conditional log-likelihood for MA(q)."""
@@ -83,7 +102,9 @@ def mafit(y, q=1, method="cml"):
     acf_ma[0] = 1.0
     denominator = 1 + np.sum(theta**2)
     for k in range(1, q + 1):
-        acf_ma[k] = (-theta[k - 1] + np.sum(theta[: k - 1] * theta[k - 1 :: -1])) / denominator
+        # theta_0 = 1: gamma(k) / sigma^2 = theta_k + sum_{j=1}^{q-k} theta_j theta_{j+k}
+        cross = sum(float(theta[j - 1]) * float(theta[j + k - 1]) for j in range(1, q - k + 1))
+        acf_ma[k] = (float(theta[k - 1]) + cross) / denominator
 
     return TimeSeriesResult(
         name=short,

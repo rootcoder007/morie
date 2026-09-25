@@ -9,6 +9,7 @@ NOT constant-time. Educational/research only.
 from __future__ import annotations
 
 from morie.fn import _array_core as np
+from morie.crypto._sysrng import system_rng
 
 
 def hamming_generator(r: int) -> tuple[np.ndarray, np.ndarray]:
@@ -121,7 +122,7 @@ def gen_parity_check(n: int, k: int, code_type: str = "hamming") -> dict:
         G, H = hamming_generator(r_ham)
         return {"G": G, "H": H, "n": G.shape[1], "k": G.shape[0], "type": code_type}
 
-    rng = np.random.default_rng()
+    rng = system_rng()  # OS CSPRNG: key material
     P = rng.integers(0, 2, size=(k, r), dtype=np.uint8)
     G = np.hstack([np.eye(k, dtype=np.uint8), P])
     H = np.hstack([P.T, np.eye(r, dtype=np.uint8)])
@@ -140,7 +141,7 @@ def ldpc_generate(n: int = 20, rate: float = 0.5, col_weight: int = 3) -> dict:
     m = n - k
 
     H = np.zeros((m, n), dtype=np.uint8)
-    rng = np.random.default_rng()
+    rng = system_rng()  # OS CSPRNG: key material
     for j in range(n):
         rows = rng.choice(m, size=min(col_weight, m), replace=False)
         H[rows, j] = 1
@@ -222,7 +223,7 @@ def goppa_generate(m: int = 4, t: int = 2) -> dict:
     n = len(support)
     k = n - m * t
 
-    rng = np.random.default_rng()
+    rng = system_rng()  # OS CSPRNG: key material
     g_roots = rng.choice(field_size, size=min(t, field_size), replace=False).tolist()
 
     H_rows = []

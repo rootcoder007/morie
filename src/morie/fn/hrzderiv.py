@@ -15,8 +15,10 @@ def hrz_density_derivative(x, grid=None, h=None, kernel_name="gaussian", r=1):
     .. math:: \hat f'(x) = -\frac{1}{nh^2}\sum_i
               K'\!\left(\frac{x - X_i}{h}\right),
 
-    converging at :math:`O_p(n^{-r/(2r+3)})` for the rth derivative --
-    strictly slower than the density itself. The bandwidth must be
+    converging at :math:`O_p(n^{-2/(2r+5)})` for the rth derivative with
+    a second-order kernel (bias :math:`O(h^2)`, variance
+    :math:`O(1/(nh^{2r+1}))`, so :math:`h \propto n^{-1/(2r+5)}`) --
+    strictly slower than the density's :math:`n^{-2/5}`. The bandwidth must be
     WIDER than the density-optimal one; reusing that bandwidth
     undersmooths badly, which is the standard mistake here.
 

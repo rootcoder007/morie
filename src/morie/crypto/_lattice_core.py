@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from morie.fn import _array_core as np
+from morie.crypto._sysrng import system_rng
 
 from morie.crypto._poly_ring import (
     build_zetas,
@@ -182,7 +183,7 @@ def lwe_sample(n: int = 64, m: int = 128, q: int = 3329, sigma: float = 3.2) -> 
     :param sigma: Gaussian noise standard deviation.
     :return: dict with A, b, s, e (s and e are secret witnesses).
     """
-    rng = np.random.default_rng()
+    rng = system_rng()  # OS CSPRNG: key material
     A = rng.integers(0, q, size=(m, n))
     s = rng.integers(0, q, size=n)
     e = np.round(rng.normal(0, sigma, size=m)).astype(np.int64) % q
@@ -205,7 +206,7 @@ def rlwe_sample(n: int = 256, q: int = 3329, sigma: float = 3.2) -> dict:
     :param sigma: Gaussian noise standard deviation.
     :return: dict with a, b, s, e polynomials and parameters.
     """
-    rng = np.random.default_rng()
+    rng = system_rng()  # OS CSPRNG: key material
     a = [int(x) for x in rng.integers(0, q, size=n)]
     s = [int(x) % q for x in np.round(rng.normal(0, sigma, size=n)).astype(np.int64)]
     e = [int(x) % q for x in np.round(rng.normal(0, sigma, size=n)).astype(np.int64)]
@@ -228,7 +229,8 @@ def rlwe_sample(n: int = 256, q: int = 3329, sigma: float = 3.2) -> dict:
 def lwe_key_exchange(n: int = 64, q: int = 3329, sigma: float = 3.2) -> dict:
     """Simulate a Diffie-Hellman-style LWE key exchange.
 
-    Alice and Bob each generate LWE instances with a shared matrix A.
+    Alice and Bob each generate LWE instances with a shared matrix A,
+    secrets and errors both drawn from the rounded Gaussian.
     Alice sends b_A = s_A^T * A + e_A, Bob sends b_B = A * s_B + e_B.
     Both derive approximately equal shared keys via rounding.
 
@@ -240,14 +242,17 @@ def lwe_key_exchange(n: int = 64, q: int = 3329, sigma: float = 3.2) -> dict:
     :param sigma: Gaussian noise standard deviation.
     :return: dict with alice_key, bob_key, match (bool), and intermediates.
     """
-    rng = np.random.default_rng()
+    rng = system_rng()  # OS CSPRNG: key material
     A = rng.integers(0, q, size=(n, n))
 
-    sa = rng.integers(0, q, size=n)
+    # secrets come from the error distribution, not uniformly from Z_q:
+    # the two raw keys differ by e_A.s_B - s_A.e_B, which is small only
+    # when both s and e are small (Ding 2012; Peikert 2014)
+    sa = np.round(rng.normal(0, sigma, size=n)).astype(np.int64) % q
     ea = np.round(rng.normal(0, sigma, size=n)).astype(np.int64) % q
     ba = (sa @ A + ea) % q
 
-    sb = rng.integers(0, q, size=n)
+    sb = np.round(rng.normal(0, sigma, size=n)).astype(np.int64) % q
     eb = np.round(rng.normal(0, sigma, size=n)).astype(np.int64) % q
     bb = (A @ sb + eb) % q
 

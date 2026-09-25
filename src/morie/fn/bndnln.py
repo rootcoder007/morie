@@ -89,6 +89,10 @@ def bound_nonlinear(data, g, theta_grid, alpha=0.05, B=500, seed=0):
     Q = np.empty(len(thetas))
     crit = np.empty(len(thetas))
     nbind = 0
+    # one set of multipliers for the whole grid: every theta's critical
+    # value is then read off the same bootstrap world, and the draws cost
+    # B * n once instead of once per grid point
+    mult = rng.standard_normal((int(B), n))
     for i, th in enumerate(thetas):
         G = np.atleast_2d(np.asarray(g(d, th), dtype=float))
         if G.shape[0] != n:
@@ -105,7 +109,6 @@ def bound_nonlinear(data, g, theta_grid, alpha=0.05, B=500, seed=0):
         # driven by inequalities AT their boundary, so the centred
         # process is what the critical value must come from
         Z = (G - gbar) / sd
-        mult = rng.standard_normal((int(B), n))
         boot_t = mult @ Z / np.sqrt(n)
         # only the (nearly) binding moments can contribute under the
         # null; slack ones are pushed to -inf by the sqrt(n) scaling

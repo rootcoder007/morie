@@ -66,3 +66,43 @@ def test_too_short_raises():
 
 def test_alias():
     assert pptst is pp_test
+
+
+def test_z_tau_matches_the_urca_formula():
+    """urca::ur.pp(type = "Z-tau", model = "constant"), recomputed:
+    regress y_t on (1, y_{t-1}); s = SSR/n; Bartlett long-run variance
+    with L lags; Z = sqrt(s/sig) t - (sig - s)/(2 sig) sqrt(sig/ybar2)."""
+    import math
+
+    x = [float(v) for v in _ar1(0.6, 90, seed=4)]
+    n, L = len(x) - 1, 3
+    yl, yc = x[:-1], x[1:]
+    ml, mc = sum(yl) / n, sum(yc) / n
+    sxx = sum((v - ml) ** 2 for v in yl)
+    rho = sum((a - ml) * (c - mc) for a, c in zip(yl, yc)) / sxx
+    u = [c - (mc - rho * ml) - rho * a for a, c in zip(yl, yc)]
+    t = (rho - 1) / math.sqrt(sum(e * e for e in u) / (n - 2) / sxx)
+    s = sum(e * e for e in u) / n
+    sig = s + 2 / n * sum((1 - l / (L + 1)) * sum(u[i] * u[i - l] for i in range(l, n))
+                          for l in range(1, L + 1))
+    yb2 = sum((c - mc) ** 2 for c in yc) / n ** 2
+    z = math.sqrt(s / sig) * t - 0.5 * (sig - s) / sig * math.sqrt(sig / yb2)
+    r = pp_test(x, lags=L)
+    assert r.statistic == pytest.approx(z, rel=1e-12)
+    assert r.extra["critical_values"]["5%"] == pytest.approx(-2.8621 - 2.738 / n - 8.36 / n ** 2, rel=1e-15)
+
+
+# --- appended: the module worked example as a gate -----------
+
+import doctest as _doctest
+import importlib as _importlib
+
+_doctest_module = _importlib.import_module("morie.fn.pptst")
+
+
+def test_every_printed_value_in_the_worked_example_reproduces():
+    res = _doctest.testmod(
+        _doctest_module, verbose=False, report=False,
+        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+    assert res.attempted > 0
+    assert res.failed == 0

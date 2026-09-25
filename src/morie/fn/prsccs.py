@@ -24,6 +24,13 @@ def csshrink(beta_hat, D, psi, n, sigma2=1.0):
     -------
     RichResult
         Inherits from ``dict``; keys are listed above.
+
+    Examples
+    --------
+    One SNP with D = 1 and psi = 0.25: the mean is beta_hat / (1 + 4):
+
+    >>> round(csshrink([0.2], [[1.0]], [0.25], n=1000)["beta"][0], 12)
+    0.04
     """
     return RichResult(title="Continuous-shrinkage polygenic effects", payload=_c.csshrink(beta_hat=beta_hat, D=D, psi=psi, n=n, sigma2=sigma2))
 

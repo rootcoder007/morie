@@ -1627,10 +1627,10 @@ class marr:
         return self._zip(o, lambda a, b: _ieee_div(b, a))
 
     def __pow__(self, o):
-        return self._zip(o, lambda a, b: a ** b)
+        return self._zip(o, _ieee_pow)
 
     def __rpow__(self, o):
-        return self._zip(o, lambda a, b: b ** a)
+        return self._zip(o, lambda a, b: _ieee_pow(b, a))
 
     def __mod__(self, o):
         return self._zip(o, _ieee_mod)
@@ -2905,6 +2905,10 @@ def dot(a, b):
         if _bi.any(isinstance(v, complex) for v in aa.data) \
                 or _bi.any(isinstance(v, complex) for v in bb.data):
             return _bi.sum(x * y for x, y in zip(aa.data, bb.data))
+        dt = aa._int_dt(bb)
+        if dt is not None:      # integer vectors: an exact integer sum
+            return _dtype_cast(_bi.sum(int(x) * int(y)
+                                       for x, y in zip(aa.data, bb.data)), dt)
         return float(_fsum(x * y for x, y in zip(aa.data, bb.data)))
     return matmul(aa, bb)
 
@@ -4110,11 +4114,10 @@ class _SplitMix64:
                  endpoint=False):
         """Integers in [low, high), or [low, high] with endpoint=True.
 
-        `dtype` is accepted for numpy call-compatibility; the draws are
-        Python ints either way, which is what every integer dtype means
-        here.
+        An array result carries `dtype` (int64 by default), so its item
+        size -- tobytes(), nbytes -- is numpy's: uint8 draws are one
+        byte each, not eight.
         """
-        del dtype
         if high is None:
             low, high = 0, low
         lo, hi = int(low), int(high) + (1 if endpoint else 0)
@@ -4124,7 +4127,10 @@ class _SplitMix64:
 
         def one():
             return lo + self._next() % (hi - lo)
-        return self._fill(one, size)
+        out = self._fill(one, size)
+        if dtype is not None and isinstance(out, (marr, ndlist)):
+            return _typed(out, dtype)
+        return out
 
 
 def _rng_param_broadcast(meth):
@@ -4201,18 +4207,39 @@ def isclose(a, b, rtol=1e-5, atol=1e-8, equal_nan=False):
         else 0.0)
 
 
-def diff(x, n=1, axis=-1):
+def diff(x, n=1, axis=-1, prepend=None, append=None):
     a = asarray(x)
     if len(a.shape) == 2:
         rows = a.data if axis in (1, -1) else \
             [[a.data[i][j] for i in range(a.shape[0])]
              for j in range(a.shape[1])]
-        out = [list(diff(marr(r), n=n)._flat()) for r in rows]
+
+        def _edge(v, k):
+            # numpy: a scalar broadcasts to one slot per lane; an array
+            # supplies its own lane values along the diff axis
+            if v is None:
+                return []
+            va = asarray(v)
+            if len(va.shape) == 1 and va.shape == (1,):
+                return [va.data[0]]
+            if len(va.shape) == 2:
+                lanes = va.data if axis in (1, -1) else \
+                    [[va.data[i][j] for i in range(va.shape[0])]
+                     for j in range(va.shape[1])]
+                return list(lanes[k])
+            return [va.data[k]] if len(va.shape) == 1 else [float(v)]
+        out = [list(diff(marr(_edge(prepend, k) + list(r)
+                              + _edge(append, k)), n=n)._flat())
+               for k, r in enumerate(rows)]
         if axis in (1, -1):
             return marr(out)
         return marr([[out[j][i] for j in range(len(out))]
                      for i in range(len(out[0]))])
     f = list(a._flat())
+    if prepend is not None:
+        f = list(asarray(prepend)._flat()) + f
+    if append is not None:
+        f = f + list(asarray(append)._flat())
     for _ in range(int(n)):
         f = [f[i + 1] - f[i] for i in range(len(f) - 1)]
     return marr(f)
@@ -6315,7 +6342,7 @@ class ndlist(list):
     def __pow__(self, o):
         # absent entirely, so the `(x[:, None, :] - y[None, :, :]) ** 2`
         # spelling of the pairwise idiom raised TypeError
-        return self._ew(o, lambda a, b: a ** b)
+        return self._ew(o, _ieee_pow)
 
     def __mul__(self, o):
         return self._ew(o, lambda a, b: a * b)
@@ -6350,7 +6377,7 @@ class ndlist(list):
         return self._ew(o, lambda a, b: b // a)
 
     def __rpow__(self, o):
-        return self._ew(o, lambda a, b: b ** a)
+        return self._ew(o, lambda a, b: _ieee_pow(b, a))
 
     def __abs__(self):
         return self._ew(0.0, lambda a, b: _bi.abs(a))
@@ -8698,15 +8725,23 @@ def roll(a, shift, axis=None):
 
 
 def _ieee_pow(x, y):
-    """numpy power: a negative base to a fractional exponent is nan, not
-    a complex number; overflow is inf."""
+    """numpy power on floats: overflow is +-inf (negative only for a
+    negative base to an odd integer power), 0 to a negative power is
+    inf, and a negative base to a fractional power is nan, not the
+    complex number Python returns."""
     try:
         r = x ** y
     except OverflowError:
-        return _INF
+        odd = float(y).is_integer() and int(y) % 2 == 1
+        return -_INF if (x < 0 and odd) else _INF
     except ZeroDivisionError:
-        return _INF
-    return _NAN if isinstance(r, complex) else r
+        odd = float(y).is_integer() and int(y) % 2 == 1
+        neg0 = _math.copysign(1.0, x) < 0
+        return -_INF if (neg0 and odd) else _INF
+    if isinstance(r, complex) and not isinstance(x, complex) \
+            and not isinstance(y, complex):
+        return _NAN
+    return r
 
 
 def power(a, b):
@@ -10512,3 +10547,23 @@ linalg.eig = _eig_general
 linalg.eigvals = _eigvals_general
 linalg.eigh = _eigh_any
 linalg.eigvalsh = _eigvalsh_any
+
+
+# numpy: an integer @ integer product keeps the promoted integer dtype
+# (NEP 50); the float kernels above compute it exactly below 2**53
+_matmul_numeric = matmul
+
+
+def matmul(a, b):  # noqa: F811
+    out = _matmul_numeric(a, b)
+    A, B = asarray(a), asarray(b)
+    if isinstance(out, marr) and isinstance(A, marr) and isinstance(B, marr):
+        dt = A._int_dt(B)
+        if dt is not None:
+            out = out._map(lambda v: _dtype_cast(int(v), dt))
+            out._dt = dt
+    elif isinstance(out, float) and isinstance(A, marr) and isinstance(B, marr) \
+            and A._int_dt(B) is not None:
+        out = _dtype_cast(int(out), A._int_dt(B))
+    return out
+

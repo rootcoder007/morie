@@ -125,14 +125,26 @@ def mask_units(n_units, rate=0.3, seed=0, block=1):
 
 
 def patch_of_box(box, width, height, patch_grid=14):
-    r"""Which image patches a text box covers."""
+    r"""Which image patches a text box covers: every cell of the
+    ``patch_grid x patch_grid`` grid the box overlaps, from
+    floor(start * g / size) to ceil(end * g / size) - 1. (Rounding the
+    corners, as the 0..1000 layout embedding does, moved a word lying
+    in the right half of a patch into the next one.) A zero-width box
+    still covers the cell it sits in."""
     g = int(patch_grid)
-    x0, y0, x1, y1 = normalise_bbox(box, width, height, g)
-    out = []
-    for r in range(min(y0, g - 1), min(max(y1, y0 + 1), g)):
-        for c in range(min(x0, g - 1), min(max(x1, x0 + 1), g)):
-            out.append(r * g + c)
-    return sorted(set(out))
+    bx0, by0, bx1, by1 = [float(v) for v in box]
+    W, H = float(width), float(height)
+    if W <= 0.0 or H <= 0.0:
+        raise ValueError("ocrwit: the page dimensions must be positive")
+    if bx1 < bx0 or by1 < by0:
+        raise ValueError("ocrwit: the box is inverted")
+
+    def span(a, b, size):
+        lo = min(max(int(math.floor(a / size * g)), 0), g - 1)
+        hi = min(max(int(math.ceil(b / size * g)) - 1, lo), g - 1)
+        return range(lo, hi + 1)
+    return sorted(r * g + c for r in span(by0, by1, H)
+                  for c in span(bx0, bx1, W))
 
 
 def word_patch_alignment(text_boxes, masked_patches, width, height,

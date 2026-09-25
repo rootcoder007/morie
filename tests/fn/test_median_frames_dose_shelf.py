@@ -108,7 +108,14 @@ def test_the_order_statistic_interval_covers_without_any_assumption():
         x = rng.standard_cauchy(size=51)   # no mean, no variance
         o = median_voter(x)
         hits += o["ci_exact_lower"] <= 0.0 <= o["ci_exact_upper"]
-    assert hits / reps > 0.95
+    # [x_(19), x_(33)] has coverage 1 - 2 P(Bin(51, 1/2) <= 18) = 0.95113
+    # whatever the distribution; that is barely above 0.95, so "> 0.95"
+    # failed about half the time. The Monte Carlo share must sit within
+    # 4 binomial sd of the exact value (a false alarm has prob. 6e-5).
+    import math
+    cover = 1.0 - 2.0 * sum(math.comb(51, i) for i in range(19)) / 2.0 ** 51
+    assert o["exact_coverage"] == pytest.approx(cover, rel=1e-12)
+    assert abs(hits / reps - cover) <= 4 * math.sqrt(cover * (1 - cover) / reps)
 
 
 def test_the_exact_interval_reports_its_achieved_level():

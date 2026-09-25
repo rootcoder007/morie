@@ -952,7 +952,11 @@ def csshrink(beta_hat, D, psi, n, sigma2=1.0):
     if any(t <= 0 for t in ps):
         raise ValueError("psi entries must be positive")
     nn = float(n)
-    A = [[Dm[r][c] + (1.0 / ps[r] / nn if r == c else 0.0) for c in range(p)] for r in range(p)]
+    # Ge et al. (2019), PRS-CS: beta_j ~ N(0, sigma2 psi_j / n), so the
+    # posterior mean is (D + Psi^-1)^-1 beta_hat -- n and sigma2 cancel
+    # from the mean (mcmc_gtb.py: ld_blk + diag(1/psi)); the former
+    # 1/(psi n) all but removed the shrinkage
+    A = [[Dm[r][c] + (1.0 / ps[r] if r == c else 0.0) for c in range(p)] for r in range(p)]
     post = solve(A, bh)
     shrink = [post[j] / bh[j] if bh[j] != 0 else float("nan") for j in range(p)]
     return {"beta": post, "shrinkage": shrink, "n": nn,

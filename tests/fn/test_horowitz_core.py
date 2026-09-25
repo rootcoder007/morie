@@ -97,7 +97,9 @@ def test_density_derivative_uses_a_wider_bandwidth_and_has_the_right_sign():
     assert abs(d["derivative"][1]) < 0.05
     # and the bandwidth exceeds the density-optimal one
     assert d["bandwidth"] > hrz_kde(x)["bandwidth"]
-    assert d["rate_exponent"] == pytest.approx(-1 / 5)
+    # bias O(h^2), variance O(1/(n h^3)) for f': h ~ n^(-1/7) and the
+    # RMSE rate n^(-2/7), slower than the density's n^(-2/5)
+    assert d["rate_exponent"] == pytest.approx(-2 / 7, rel=1e-15)
     with pytest.raises(ValueError):
         hrz_density_derivative(x, r=0)
 
@@ -149,23 +151,26 @@ def test_max_score_and_its_smoothed_version_differ_in_what_they_promise():
     sm = hrz_smoothed_max_score(X, y)
     assert sm["standard_errors_valid"] is True   # normality restored
     assert sm["rate_exponent"] == pytest.approx(-2 / 5)
-    # Point estimates over seeds, not one draw: at n = 400 the spread
-    # is sd ~0.21, so a single seed can sit 2 sd out (seed 7 gives
-    # -1.44). Measured medians: n=400 -> -0.974, n=2000 -> -0.900,
-    # converging on the true -0.8.
-    def _sms_median(nn, reps=6):
+    # Consistency over seeds, not one draw: the median over seeds of
+    # |beta_1 - (-0.8)|. Six seeds were too few -- their median of the
+    # estimates sat closer to the truth at n = 400 than at 1600 by
+    # chance. With 30 seeds the median absolute error falls from 0.155
+    # (n = 400) to 0.109 (n = 1600) and 0.057 (n = 6400), a ratio per
+    # fourfold n between n^(-1/3) and n^(-2/5).
+    def _sms_mae(nn, reps=30):
         out = []
         for s in range(reps):
             r = np.random.default_rng(s)
             Xs = r.standard_normal((nn, 2))
             sc = 0.5 + np.abs(Xs[:, 0])
             ys = ((Xs @ beta_true + sc * r.standard_normal(nn)) > 0).astype(float)
-            out.append(hrz_smoothed_max_score(Xs, ys)["beta"][1])
-        return float(np.median(out))
+            out.append(abs(hrz_smoothed_max_score(Xs, ys)["beta"][1] + 0.8))
+        out.sort()
+        return (out[reps // 2 - 1] + out[reps // 2]) / 2
 
-    small, large = _sms_median(400), _sms_median(1600)
-    assert abs(small - (-0.8)) < 0.4
-    assert abs(large - (-0.8)) < abs(small - (-0.8))  # consistency
+    small, large = _sms_mae(400), _sms_mae(1600)
+    assert small < 0.4
+    assert large < small  # consistency
     with pytest.raises(ValueError):
         hrz_maximum_score(X, np.full(n, 2.0))
 

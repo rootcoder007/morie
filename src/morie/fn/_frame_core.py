@@ -898,8 +898,13 @@ class Series:
         if sort:
             items.sort(key=lambda kv: (-kv[1], str(kv[0])))
         tot = sum(v for _, v in items)
-        return Series([v / tot if normalize else v for _, v in items],
-                      index=[k for k, _ in items], name=self.name)
+        # pandas 2: the counts are named "count" ("proportion" when
+        # normalised) and the original name moves to the index
+        out = Series([v / tot if normalize else v for _, v in items],
+                     index=[k for k, _ in items],
+                     name="proportion" if normalize else "count")
+        out.index_name = self.name
+        return out
 
     def sort_values(self, ascending=True, na_position="last"):
         live = [(i, v) for i, v in zip(self.index, self._data) if not _isnan(v)]
@@ -929,12 +934,15 @@ class Series:
         # A multi-key groupby leaves tuples in the index; pandas expands them
         # into one column per key, and callers rely on that (otis.rplace does
         # groupby([a, b])[c].nunique().reset_index() then names 3 columns).
-        if idx and all(isinstance(k, tuple) for k in idx):
+        # Only a real MultiIndex (index_names set by the groupby) expands;
+        # a flat index whose VALUES are tuples -- value_counts of tuple
+        # rows, say -- stays one column, as in pandas.
+        names = getattr(self, "index_names", None)
+        if idx and names and all(isinstance(k, tuple) for k in idx):
             width = len(idx[0])
-            if all(len(k) == width for k in idx):
-                names = getattr(self, "index_names", None)
-                if not names or len(names) != width:
-                    names = ["level_%d" % i for i in range(width)]
+            if all(len(k) == width for k in idx) and len(names) == width:
+                names = [nm if nm is not None else "level_%d" % i
+                         for i, nm in enumerate(names)]
                 cols = {names[i]: [k[i] for k in idx] for i in range(width)}
                 cols[val_name] = list(self._data)
                 return DataFrame(cols)
@@ -2783,7 +2791,13 @@ class GroupBy:
         out = [fn(self._df._take(self._groups[k])) for k in keys]
         ix = [k[0] if len(self._by) == 1 else k for k in keys]
         if all(isinstance(v, (int, float)) for v in out):
-            return Series(out, index=ix)
+            res = Series(out, index=ix)
+            # label the (Multi)Index so reset_index restores the keys
+            if len(self._by) == 1:
+                res.index_name = self._by[0]
+            else:
+                res.index_names = list(self._by)
+            return res
         if out and all(isinstance(v, Series) for v in out):
             # pandas: Series-per-group stacks into a frame whose
             # columns are the Series index
@@ -2794,6 +2808,8 @@ class GroupBy:
                 index=ix)
             if len(self._by) == 1:
                 res.index_name = self._by[0]
+            else:
+                res.index_names = list(self._by)
             return res
         if out and all(isinstance(v, DataFrame) for v in out):
             return concat(out)
@@ -3206,11 +3222,13 @@ class _GroupBySeries:
         for k in gb._keys():
             vc = Series([gb._df._cols[self._col][i] for i in gb._groups[k]]) \
                 .value_counts(normalize=normalize, sort=sort, dropna=dropna)
-            key = k[0] if len(gb._by) == 1 else k
             for v, c in zip(vc.index, vc._data):
-                idx.append((key, v))
+                idx.append(tuple(k) + (v,))      # flat levels: keys..., value
                 vals.append(c)
-        return Series(vals, index=idx, name=self._col)
+        # pandas 2: MultiIndex (keys..., column), values named "count"
+        out = Series(vals, index=idx, name="proportion" if normalize else "count")
+        out.index_names = list(gb._by) + [self._col]
+        return out
 
     def describe(self):
         gb = self._gb

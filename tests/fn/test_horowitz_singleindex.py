@@ -60,7 +60,13 @@ def test_efficient_weights_are_the_reciprocal_of_the_variance_function():
     # largest weight is far above the typical one is the estimator's
     # real fragility, and it is reported rather than hidden.
     assert np.median(out["weights"][hi]) < np.median(out["weights"][lo])
-    assert out["max_weight"] > 5 * np.median(out["weights"])
+    # max_weight is the largest weight, and it sits above the typical
+    # one. (A former "> 5 x median" bound exceeded even the population
+    # ratio: with sigma = 0.3 (1 + |x1|), max/median of 1/sigma^2 is
+    # (1 + median|x1|)^2 / (1 + min|x1|)^2, about 2.8 here.)
+    w = [float(v) for v in out["weights"]]
+    assert out["max_weight"] == max(w)
+    assert out["max_weight"] > float(np.median(out["weights"]))
     assert np.allclose(out["weights"], 1.0 / out["sigma2_hat"])
     # unknown G costs efficiency but NOT rate; the two are separate
     assert out["efficiency_loss_from_unknown_G"] is True

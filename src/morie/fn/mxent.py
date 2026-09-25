@@ -75,12 +75,17 @@ def mxent(
         p /= p.sum()
         return c_values - f_values @ p
 
-    lam0 = np.zeros(n_constraints)
-    result = minimize(
-        neg_entropy, lam0, jac=neg_entropy_grad, method="L-BFGS-B", options={"maxiter": 1000, "ftol": tol}
-    )
-
-    lambdas = result.x
+    if n_constraints == 0:
+        # nothing to satisfy: the entropy maximiser is uniform, and there
+        # are no multipliers to optimise (an empty start point is an error
+        # to the optimiser, as it is in scipy)
+        lambdas = np.zeros(0)
+    else:
+        lam0 = np.zeros(n_constraints)
+        result = minimize(
+            neg_entropy, lam0, jac=neg_entropy_grad, method="L-BFGS-B", options={"maxiter": 1000, "ftol": tol}
+        )
+        lambdas = result.x
     log_unnorm = -f_values.T @ lambdas
     log_unnorm -= log_unnorm.max()
     pmf = np.exp(log_unnorm)

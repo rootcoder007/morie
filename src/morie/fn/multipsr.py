@@ -44,6 +44,16 @@ def twostage(Y, Nl, M, N, level=0.95):
         ``psu_var``, ``between_term``, ``within_term``, ``m``, ``M``,
         ``N``.
 
+    Examples
+    --------
+    samplingbook 1.2.5, ``submean(y, PSU, N = 100, M = 10,
+    Nl = c(12, 9, 15), method = "ratio")`` on these three PSUs gives
+    mean 4.666667 and se 1.109392:
+
+    >>> r = twostage([[3, 5, 4], [8, 7], [2, 4, 3, 5]], [12, 9, 15], 10, 100)
+    >>> round(r["estimate"], 6), round(r["se"], 6)
+    (4.666667, 1.109392)
+
     References
     ----------
     Cochran (1977), Sampling Techniques, 3rd edition, Chapter 10

@@ -195,7 +195,7 @@ def muzero(observation, actions, representation, dynamics, prediction,
         acts = []
         # --- Selection (eq. 2), descending while the node is expanded
         while node.expanded:
-            a = _select(node, A, mm, c1, c2)
+            a = _select(node, A, mm, c1, c2, gamma)
             acts.append(a)
             node = node.children[a]
             path.append(node)
@@ -221,8 +221,8 @@ def muzero(observation, actions, representation, dynamics, prediction,
         w = [v ** (1.0 / float(temperature)) for v in visits]
         sw = sum(w)
         policy = [x / sw for x in w]
-    root_value = sum(root.children[a].visits * root.children[a].value()
-                     for a in A) / total
+    Qa = dict((a, _edge_q(root.children[a], gamma)) for a in A)
+    root_value = sum(root.children[a].visits * Qa[a] for a in A) / total
 
     return RichResult(payload={
         "estimate": policy,
@@ -230,7 +230,7 @@ def muzero(observation, actions, representation, dynamics, prediction,
         "action": A[max(range(len(A)), key=lambda i: policy[i])],
         "value": float(root_value),
         "visits": dict((A[i], visits[i]) for i in range(len(A))),
-        "Q": dict((a, root.children[a].value()) for a in A),
+        "Q": Qa,
         "prior": dict((a, root.children[a].prior) for a in A),
         "n_dynamics_calls": calls[0],
         "n_prediction_calls": calls[1],
@@ -262,7 +262,14 @@ class _Node(object):
             self.children[a] = _Node(prior[i])
 
 
-def _select(node, A, mm, c1, c2):
+def _edge_q(child, gamma):
+    """Q(s, a) = r(s, a) + gamma V(s'): the edge's reward plus the
+    discounted mean backed-up value of the child (the pseudocode's
+    ``child.reward + discount * child.value()``)."""
+    return child.reward + gamma * child.value() if child.visits else 0.0
+
+
+def _select(node, A, mm, c1, c2, gamma):
     """eq. 2, with Q normalised by eq. 5."""
     total = sum(node.children[a].visits for a in A)
     sqrt_total = math.sqrt(total) if total > 0 else 0.0
@@ -272,7 +279,7 @@ def _select(node, A, mm, c1, c2):
         ch = node.children[a]
         explore = (ch.prior * sqrt_total / (1.0 + ch.visits)
                    * (c1 + math.log((total + c2 + 1.0) / c2)))
-        q = mm.normalize(ch.value()) if ch.visits > 0 else 0.0
+        q = mm.normalize(_edge_q(ch, gamma)) if ch.visits > 0 else 0.0
         score = q + explore
         if best is None or score > best:
             best = score
@@ -286,7 +293,8 @@ def _backup(path, value, gamma, mm):
     for node in reversed(path):
         node.value_sum += g
         node.visits += 1
-        mm.update(node.value())
+        if node is not path[0]:          # the edge into this node
+            mm.update(node.reward + gamma * node.value())
         g = node.reward + gamma * g
 
 

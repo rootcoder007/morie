@@ -524,12 +524,35 @@ def comb(n, k, exact=False):
     return val if exact else float(val)
 
 
-def softmax(x):
-    v = [float(u) for u in (x.tolist() if hasattr(x, "tolist") else x)]
-    m = max(v)
-    e = [_math.exp(u - m) for u in v]
-    s = _math.fsum(e)
-    return _ac.marr([u / s for u in e])
+def softmax(x, axis=None):
+    """scipy.special.softmax: exp(x - max) normalised over `axis`; with
+    axis=None over every element, the shape kept."""
+    a = _ac.asarray(x)
+    nested = a.tolist()
+
+    def norm(v):
+        v = [float(u) for u in v]
+        m = max(v)
+        e = [_math.exp(u - m) for u in v]
+        t = _math.fsum(e)
+        return [u / t for u in e]
+    nd = len(a.shape)
+    if axis is None or nd == 1:
+        if nd == 1:
+            return _ac.marr(norm(nested))
+        flat = _ac._flatten_nested(nested)
+        return _ac.reshape(_ac.marr(norm(flat)), tuple(a.shape))
+    ax = int(axis) % nd
+    perm = [i for i in range(nd) if i != ax] + [ax]
+    t = _ac.transpose(a, perm).tolist()
+
+    def rec(node):
+        if node and isinstance(node[0], list):
+            return [rec(u) for u in node]
+        return norm(node)
+    out = _ac.asarray(rec(t))
+    inv = [perm.index(i) for i in range(nd)]
+    return _ac.transpose(out, inv)
 
 
 def erfcinv(y):
