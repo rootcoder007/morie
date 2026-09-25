@@ -126,8 +126,8 @@ def esl_prototype_lvq(X, y, n_prototypes=2, eta=0.1, n_epochs=50, newdata=None, 
     Z = X if newdata is None else np.atleast_2d(np.asarray(newdata, dtype=float))
     if Z.shape[1] != X.shape[1]:
         raise ValueError(f"newdata has {Z.shape[1]} columns but X has {X.shape[1]}")
-    pred = mc[np.argmin(((Z[:, None] - M[None]) ** 2).sum(-1), axis=1)]
-    train = mc[np.argmin(((X[:, None] - M[None]) ** 2).sum(-1), axis=1)]
+    pred = mc[np.argmin(((Z[:, None] - M[None, :]) ** 2).sum(-1), axis=1)]
+    train = mc[np.argmin(((X[:, None] - M[None, :]) ** 2).sum(-1), axis=1)]
     return RichResult(
         title="Learning vector quantization",
         summary_lines=[("n", n), ("prototypes/class", int(n_prototypes)),

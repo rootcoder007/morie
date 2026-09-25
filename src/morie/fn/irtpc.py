@@ -10,6 +10,19 @@ from ._sci_core import optimize
 from morie.fn._containers import IRTResult
 
 
+def _logaddexp_rows(m):
+    """Left-fold np.logaddexp across columns of a 2-D array.
+
+    morie.fn._array_core.logaddexp is a plain function, not a ufunc, so it
+    has no .reduce; this is the same left fold ufunc.reduce performs and is
+    bit-identical to it.
+    """
+    out = m[:, 0]
+    for _c in range(1, m.shape[1]):
+        out = np.logaddexp(out, m[:, _c])
+    return out
+
+
 def _pcm_category_probs(theta: float, steps: list[float]) -> np.ndarray:
     """Category probabilities for one PCM item at a single theta.
 
@@ -122,7 +135,7 @@ def irtpc(
                 log_like_quad[:, q] += np.log(probs[resp])
 
         log_joint = log_like_quad + np.log(quad_wts)[None, :]
-        log_marginal = np.logaddexp.reduce(log_joint, axis=1)
+        log_marginal = _logaddexp_rows(log_joint)
         loglik = np.sum(log_marginal)
 
         if abs(loglik - loglik_prev) < tol:
@@ -164,7 +177,7 @@ def irtpc(
             log_like_quad[:, q] += np.log(probs[resp])
 
     log_joint = log_like_quad + np.log(quad_wts)[None, :]
-    log_marginal = np.logaddexp.reduce(log_joint, axis=1)
+    log_marginal = _logaddexp_rows(log_joint)
     posterior = np.exp(log_joint - log_marginal[:, None])
     theta = (posterior * quad_pts[None, :]).sum(axis=1)
     se_theta = np.sqrt((posterior * (quad_pts[None, :] - theta[:, None]) ** 2).sum(axis=1))

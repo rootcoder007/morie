@@ -26,13 +26,14 @@ def dequantize_nf4(codes, absmax, n_bins=16):
         raise ValueError(
             f"every code must lie in [0, {grid.size - 1}]; the NF4 grid "
             f"has {grid.size} levels.")
-    s = np.asarray(absmax, dtype=float)
-    if s.ndim == 0:
-        scale = float(s)
+    # _array_core.asarray(scalar).ndim is 1, not 0, so a scalar absmax is
+    # recognised before the conversion.
+    if np.isscalar(absmax):
+        scale = float(absmax)
         if scale <= 0:
             raise ValueError("absmax must be positive.")
         return grid[codes] * scale
-    s = s.ravel()
+    s = np.asarray(absmax, dtype=float).ravel()
     if s.size != codes.shape[0]:
         raise ValueError(
             f"blockwise absmax needs one value per row: {s.size} for "

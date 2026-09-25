@@ -86,7 +86,10 @@ def burkov_cbow(context_ids, center_ids, embeddings, output_weights,
             % (b.size, W.shape[0])
         )
 
-    h = E[C].mean(axis=1)
+    # ponytail: E[C] would need 3-D fancy indexing, which the array
+    # core does not provide; average the context rows directly
+    h = np.asarray([[sum(E[int(c)][j] for c in row) / float(k)
+                     for j in range(d)] for row in C])
     logits = h @ W.T + b
     mx = logits.max(axis=1, keepdims=True)
     ex = np.exp(logits - mx)

@@ -64,9 +64,11 @@ def mice_impute(
             obs = df[c].dropna()
             mis_idx = df[c].isna()
             if len(obs) > 0 and mis_idx.sum() > 0:
-                fill_vals = obs.sample(
-                    n=int(mis_idx.sum()), replace=True, random_state=int(rng.integers(1 << 31))
-                ).values
+                obs_vals = list(obs.values)
+                fill_vals = [
+                    float(obs_vals[int(i)])
+                    for i in rng.integers(0, len(obs_vals), size=int(mis_idx.sum()))
+                ]
                 df.loc[mis_idx, c] = fill_vals
             elif mis_idx.sum() > 0:
                 df[c] = df[c].fillna(0.0)
@@ -79,9 +81,13 @@ def mice_impute(
                     continue
 
                 predictors = [c for c in cols if c != target]
-                X_obs = df.loc[obs_idx, predictors].values.astype(float)
-                y_obs = df.loc[obs_idx, target].values.astype(float)
-                X_mis = df.loc[mis_idx, predictors].values.astype(float)
+                X_obs = np.array(
+                    [[float(v) for v in row] for row in df.loc[obs_idx, predictors].values]
+                )
+                y_obs = np.array([float(v) for v in df.loc[obs_idx, target].values])
+                X_mis = np.array(
+                    [[float(v) for v in row] for row in df.loc[mis_idx, predictors].values]
+                )
 
                 if X_obs.shape[0] < X_obs.shape[1] + 1:
                     continue

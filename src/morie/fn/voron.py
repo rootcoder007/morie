@@ -49,7 +49,7 @@ def voronoi_areas(
     n_infinite = 0
 
     for i, reg_idx in enumerate(vor.point_region):
-        region = vor.regions[reg_idx]
+        region = vor.regions[int(reg_idx)]
         if not region or -1 in region:
             n_infinite += 1
             continue

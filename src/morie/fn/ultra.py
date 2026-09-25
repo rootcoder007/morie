@@ -7,6 +7,18 @@ from . import _array_core as np
 from ._containers import DescriptiveResult
 
 
+def _weighted_mean_over_models(P, w):
+    """Weighted mean down the model axis; the array core's ``average``
+    is 1-D only, so the reduction is written out here."""
+    rows = np.asarray(P, dtype=float).tolist()
+    wl = [float(v) for v in w]
+    return np.asarray(
+        [sum(wl[i] * rows[i][j] for i in range(len(wl)))
+         for j in range(len(rows[0]))],
+        dtype=float,
+    )
+
+
 def ensemble_aggregate(
     predictions: np.ndarray,
     *,
@@ -45,12 +57,12 @@ def ensemble_aggregate(
         w = w / w.sum()
 
     if method == "mean":
-        agg = np.average(P, axis=0, weights=w)
+        agg = _weighted_mean_over_models(P, w)
     elif method == "median":
         agg = np.median(P, axis=0)
     elif method == "trimmed_mean":
         if n_models < 3:
-            agg = np.average(P, axis=0, weights=w)
+            agg = _weighted_mean_over_models(P, w)
         else:
             sorted_p = np.sort(P, axis=0)
             trim = max(1, n_models // 5)

@@ -52,9 +52,11 @@ def kamath_yarn_context_extrapolation(theta, scale, d, ramp=None):
     if s <= 0:
         raise ValueError(f"the scale factor must be positive; got {s}.")
     half = d // 2
+    # _array_core.asarray(scalar).ndim is 1, not 0, so a scalar RoPE base is
+    # recognised before the conversion.
     t = np.asarray(theta, dtype=float)
-    if t.ndim == 0:
-        base = float(t)
+    if np.isscalar(theta):
+        base = float(theta)
         if base <= 1.0:
             raise ValueError(
                 f"a scalar theta is the RoPE base and must exceed 1; "

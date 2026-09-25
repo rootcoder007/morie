@@ -101,7 +101,7 @@ def esl_partial_dependence(model, X, S, grid=None, n_grid=20):
 
     pd = np.empty(G.shape[0])
     warn = np.zeros(G.shape[0], dtype=bool)
-    Dxx = np.sqrt(((X[:, None] - X[None]) ** 2).sum(-1))
+    Dxx = np.sqrt(((X[:, None] - X[None, :]) ** 2).sum(-1))
     np.fill_diagonal(Dxx, np.inf)
     ref_nn = float(np.median(Dxx.min(axis=1)))
     for t, gv in enumerate(G):
@@ -113,7 +113,7 @@ def esl_partial_dependence(model, X, S, grid=None, n_grid=20):
         # unobserved is the pair (g, x_iC). Compare how far each synthetic row
         # sits from the real cloud against how far real rows sit from each
         # other.
-        dz = np.sqrt(((Z[:, None] - X[None]) ** 2).sum(-1)).min(axis=1)
+        dz = np.sqrt(((Z[:, None] - X[None, :]) ** 2).sum(-1)).min(axis=1)
         warn[t] = bool(np.median(dz) > 2.0 * ref_nn)
 
     return RichResult(

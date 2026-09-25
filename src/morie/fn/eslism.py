@@ -93,7 +93,7 @@ def esl_isomap(X, k=2, neighbors=5):
     if not 1 <= neighbors < n:
         raise ValueError(f"neighbors must be between 1 and {n - 1}")
 
-    D = np.sqrt(np.maximum(((X[:, None] - X[None]) ** 2).sum(-1), 0.0))
+    D = np.sqrt(np.maximum(((X[:, None] - X[None, :]) ** 2).sum(-1), 0.0))
     G = np.full((n, n), np.inf)
     np.fill_diagonal(G, 0.0)
     idx = np.argsort(D, axis=1)[:, 1: neighbors + 1]
@@ -119,7 +119,7 @@ def esl_isomap(X, k=2, neighbors=5):
     pos = np.clip(w[:k], 0, None)
     emb = V[:, :k] * np.sqrt(pos)
 
-    Dg = np.sqrt(np.maximum(((emb[:, None] - emb[None]) ** 2).sum(-1), 0.0))
+    Dg = np.sqrt(np.maximum(((emb[:, None] - emb[None, :]) ** 2).sum(-1), 0.0))
     iu = np.triu_indices(n, 1)
     rv = float(1 - np.corrcoef(G[iu], Dg[iu])[0, 1] ** 2)
     return RichResult(

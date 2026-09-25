@@ -92,7 +92,7 @@ def esl_lle(X, k=2, neighbors=5, reg=1e-3):
     if not 1 <= m < n:
         raise ValueError(f"neighbors must be between 1 and {n - 1}")
 
-    D = ((X[:, None] - X[None]) ** 2).sum(-1)
+    D = ((X[:, None] - X[None, :]) ** 2).sum(-1)
     idx = np.argsort(D, axis=1)[:, 1: m + 1]
 
     W = np.zeros((n, n))

@@ -54,7 +54,13 @@ def threat_score(
     means = numeric.mean()
     stds = numeric.std()
     stds = stds.replace(0, 1)
-    z = (numeric - means) / stds
+    # Standardise column by column: the frame core has no DataFrame-minus-
+    # Series broadcast, and `numeric - means` raised TypeError rather than
+    # producing the documented z-score composite.
+    z = pd.DataFrame(
+        {c: ((numeric[c] - float(means[c])) / float(stds[c])).tolist()
+         for c in list(numeric.columns)}
+    )
 
     scores = z.to_numpy() @ w
     if normalize:

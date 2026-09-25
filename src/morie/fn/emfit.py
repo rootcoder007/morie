@@ -11,6 +11,17 @@ from ._stats_core import multivariate_normal
 __all__ = ["emfit"]
 
 
+def _pdf_rows(X, mean, cov):
+    """Gaussian density at every row of X.
+
+    ``_stats_core.multivariate_normal`` is a module-level instance whose
+    ``pdf(x, mean, cov)`` evaluates a single point, so the rows are walked
+    here rather than handed the whole matrix.
+    """
+    return np.array([multivariate_normal.pdf(X[i], mean, cov)
+                     for i in range(len(X))])
+
+
 def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=False):
     """
     EM algorithm for Gaussian mixture models.
@@ -74,8 +85,8 @@ def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=Fals
     for it in range(max_iter):
         # E-step: compute responsibilities
         for k in range(n_components):
-            mvn = multivariate_normal(mean=means[k], cov=covars[k] + 1e-6 * np.eye(d))
-            resp[:, k] = weights[k] * mvn.pdf(X)
+            resp[:, k] = weights[k] * _pdf_rows(X, means[k],
+                                                covars[k] + 1e-6 * np.eye(d))
         resp = resp / (resp.sum(axis=1, keepdims=True) + 1e-10)
 
         # M-step: update parameters
@@ -93,8 +104,8 @@ def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=Fals
         # Log-likelihood
         llh = 0.0
         for k in range(n_components):
-            mvn = multivariate_normal(mean=means[k], cov=covars[k] + 1e-6 * np.eye(d))
-            llh += np.sum(resp[:, k] * np.log(weights[k] * mvn.pdf(X) + 1e-10))
+            dens = _pdf_rows(X, means[k], covars[k] + 1e-6 * np.eye(d))
+            llh += np.sum(resp[:, k] * np.log(weights[k] * dens + 1e-10))
 
         if np.abs(llh - llh_prev) < tol:
             params = {"means": means, "covars": covars, "weights": weights, "llh": llh}

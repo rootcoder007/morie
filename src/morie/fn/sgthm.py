@@ -36,13 +36,13 @@ def thomas_process(kappa, mu, sigma, window, seed=None):
     rng = np.random.default_rng(seed)
 
     ext = 3 * sigma
-    n_parents = rng.poisson(kappa * (xmax - xmin + 2 * ext) * (ymax - ymin + 2 * ext))
+    n_parents = int(rng.poisson(kappa * (xmax - xmin + 2 * ext) * (ymax - ymin + 2 * ext)))
     px = rng.uniform(xmin - ext, xmax + ext, n_parents)
     py = rng.uniform(ymin - ext, ymax + ext, n_parents)
 
     all_x, all_y = [], []
     for i in range(n_parents):
-        nc = rng.poisson(mu)
+        nc = int(rng.poisson(mu))
         cx = px[i] + rng.normal(0, sigma, nc)
         cy = py[i] + rng.normal(0, sigma, nc)
         mask = (cx >= xmin) & (cx <= xmax) & (cy >= ymin) & (cy <= ymax)
