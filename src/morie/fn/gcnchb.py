@@ -26,7 +26,21 @@ __all__ = ["chebnet"]
 
 
 def chebnet(L, X, K=3, theta=None):
-    """Chebyshev polynomial filter of order K-1 applied to X."""
+    """Chebyshev polynomial filter of order K-1 applied to X.
+
+    Examples
+    --------
+    On the 3-node path, L has eigenvalues 0, 1, 3, so Lt = 2L/3 - I and,
+    with the default theta = (1, 1/2, 1/3), the filtered impulse at node 0
+    is (141/162, -1/3, 8/27), the same as U g(Lambda) U' x evaluated
+    spectrally:
+
+    >>> r = chebnet([[1, -1, 0], [-1, 2, -1], [0, -1, 1]], [[1.0], [0.0], [0.0]])
+    >>> round(r["lambda_max"], 12)
+    3.0
+    >>> [round(row[0], 12) for row in r["H"]]
+    [0.87037037037, -0.333333333333, 0.296296296296]
+    """
     M = core.mat(L)
     n = len(M)
     if n == 0:
