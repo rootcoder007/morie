@@ -180,6 +180,24 @@ def _bi_abs(v):
     return v if v >= 0 else -v
 
 
+def _is_arraylike(v):
+    return v is not None and not isinstance(v, (int, float, bool)) and (
+        hasattr(v, "tolist") or isinstance(v, (list, tuple)))
+
+
+def _bcast(one, *args):
+    """Evaluate a scalar function elementwise over broadcast arguments,
+    returning a marr of the broadcast shape (scipy's convention for
+    array-valued distribution parameters)."""
+    from . import _array_core as _ac2
+    arrs = _ac2.broadcast_arrays(*[_ac2.asarray(a) if _is_arraylike(a)
+                                   else _ac2.asarray([float(a)]) for a in args])
+    shape = arrs[0].shape
+    flat = [a.ravel().tolist() for a in arrs]
+    vals = [one(*[float(f[i]) for f in flat]) for i in range(len(flat[0]))]
+    return _ac2.marr(vals).reshape(shape) if len(shape) > 1 else _ac2.marr(vals)
+
+
 def _maybe_map(fn, x):
     """Apply fn elementwise: scalars stay scalar, 1-D stays 1-D,
     2-D keeps its shape (rows of lists)."""
@@ -233,6 +251,20 @@ def _edge_wrap(name, fn):
     _n_pos = len(_params)
 
     def wrapped(self, x, *args, **kw):
+        # scipy broadcasts x against array-valued shape, loc and scale
+        # parameters (one rate per observation, say); the scalar path
+        # below read only the first element of such a parameter
+        if any(_is_arraylike(a) for a in args) or \
+                any(_is_arraylike(v) for v in kw.values()):
+            keys = list(kw)
+            if all(_is_arraylike(v) or isinstance(v, (int, float)) for v in
+                   list(args) + [kw[k] for k in keys]):
+                na = len(args)
+
+                def call(xv, *vals):
+                    return wrapped(self, xv, *vals[:na],
+                                   **dict(zip(keys, vals[na:])))
+                return _bcast(call, x, *args, *[kw[k] for k in keys])
         # scipy's loc / scale on a body that has none: shift and scale
         # the argument (cdf/sf/pdf family) or the result (ppf/isf). Given
         # positionally past the body's own parameters, they are loc then
@@ -1053,6 +1085,9 @@ class _Poisson(_Dist):
 
 
     def logpmf(self, k, mu=None):
+        if _is_arraylike(mu):
+            # scipy broadcasts k against mu: one rate per observation
+            return _bcast(lambda kk, m: self.logpmf(kk, m), k, mu)
         mu = self._resolve(mu)
 
         def one(kk):
@@ -4485,8 +4520,118 @@ class _LatinHypercube:
                           for i in range(n)])
 
 
+class _Sobol:
+    """scipy.stats.qmc.Sobol: Joe-Kuo (2008) direction numbers, points in
+    Gray-code order, `bits` bits of resolution. Unscrambled output is
+    bit-for-bit scipy's. scramble=True applies Matousek's linear matrix
+    scramble and a random digital shift (the scheme scipy uses); the
+    random bits come from morie's generator, so the scrambled points are
+    a different draw than scipy's for the same seed, with the same
+    (t, m, s)-net guarantees.
+    """
+
+    def __init__(self, d, *, scramble=True, bits=None, rng=None, seed=None,
+                 optimization=None):
+        from ._sobol_dirnums import POLY, VINIT
+        if optimization is not None:
+            raise NotImplementedError("Sobol optimization is not supported")
+        d = int(d)
+        if not 1 <= d <= len(POLY):
+            raise ValueError("d must be between 1 and %d" % len(POLY))
+        bits = 30 if bits is None else int(bits)
+        if not 1 <= bits <= 64:
+            raise ValueError("bits must be between 1 and 64")
+        self.d = d
+        self.bits = bits
+        self.scramble = bool(scramble)
+        self._maxn = 2 ** bits
+        v = [[0] * bits for _ in range(d)]
+        for j in range(bits):
+            v[0][j] = 1
+        for dim in range(1, d):
+            p = POLY[dim]
+            m = p.bit_length() - 1
+            for j in range(min(m, bits)):
+                v[dim][j] = VINIT[dim][j]
+            for j in range(m, bits):
+                newv = v[dim][j - m]
+                pow2 = 1
+                for k in range(m):
+                    pow2 <<= 1
+                    if (p >> (m - 1 - k)) & 1:
+                        newv ^= pow2 * v[dim][j - k - 1]
+                v[dim][j] = newv
+        for dim in range(d):
+            for j in range(bits):
+                v[dim][j] <<= bits - 1 - j
+        shift = [0] * d
+        if self.scramble:
+            from . import _array_core as _ac2
+            g = _ac2.random.default_rng(seed if rng is None else rng)
+            for dim in range(d):
+                # lower-triangular binary matrix with unit diagonal, rows
+                # indexed from the most significant bit
+                L = [[1 if c == r else (int(g.integers(0, 2)) if c < r else 0)
+                      for c in range(bits)] for r in range(bits)]
+                for j in range(bits):
+                    col = v[dim][j]
+                    out = 0
+                    for r in range(bits):
+                        acc = 0
+                        for c in range(r + 1):
+                            if L[r][c] and (col >> (bits - 1 - c)) & 1:
+                                acc ^= 1
+                        out |= acc << (bits - 1 - r)
+                    v[dim][j] = out
+                shift[dim] = sum(int(g.integers(0, 2)) << b for b in range(bits))
+        self._v = v
+        self._shift = shift
+        self.reset()
+
+    def reset(self):
+        self._quasi = list(self._shift)
+        self.num_generated = 0
+        return self
+
+    def fast_forward(self, n):
+        for _ in range(int(n)):
+            self._advance()
+        return self
+
+    def _advance(self):
+        k = self.num_generated
+        c = 0
+        while (k >> c) & 1:
+            c += 1
+        for dim in range(self.d):
+            self._quasi[dim] ^= self._v[dim][c]
+        self.num_generated += 1
+
+    def random(self, n=1):
+        from . import _array_core as _ac2
+        n = int(n)
+        if self.num_generated + n > self._maxn:
+            raise ValueError("at most 2**bits = %d points can be generated"
+                             % self._maxn)
+        scale = 1.0 / self._maxn
+        out = []
+        for _ in range(n):
+            out.append([q * scale for q in self._quasi])
+            self._advance()
+        return _ac2.marr(out) if out else _ac2.zeros((0, self.d))
+
+    def random_base2(self, m):
+        n = 2 ** int(m)
+        total = self.num_generated + n
+        if total & (total - 1):
+            raise ValueError("the balance properties of Sobol points need "
+                             "the total count to be a power of 2")
+        return self.random(n)
+
+
 class _QMC:
     LatinHypercube = _LatinHypercube
+    Sobol = _Sobol
 
 
 qmc = _QMC()

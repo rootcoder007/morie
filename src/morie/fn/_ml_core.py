@@ -181,6 +181,26 @@ class PolynomialFeatures:
     def fit_transform(self, X, y=None):
         return self.fit(X).transform(X)
 
+    def get_feature_names_out(self, input_features=None):
+        """sklearn's names: "1", "x0", "x0^2", "x0 x1", in transform order."""
+        d = self._d
+        names = (list(input_features) if input_features is not None
+                 else ["x%d" % j for j in range(d)])
+        if len(names) != d:
+            raise ValueError("input_features has %d names for %d features"
+                             % (len(names), d))
+        out = []
+        for cmb in self._combos():
+            if not cmb:
+                out.append("1")
+                continue
+            parts = []
+            for j in sorted(set(cmb)):
+                p = cmb.count(j)
+                parts.append(names[j] if p == 1 else "%s^%d" % (names[j], p))
+            out.append(" ".join(parts))
+        return _ac.oarr(out)
+
 
 # ===================================================== linear models
 
@@ -1038,7 +1058,9 @@ class KMeans:
                 else:
                     cents.append(list(Xd[-1]))
             labels = [0] * n
+            n_it = 0
             for _it in range(self.max_iter):
+                n_it = _it + 1
                 moved = False
                 for i, r in enumerate(Xd):
                     bj = min(range(k), key=lambda j: _math.fsum(
@@ -1058,8 +1080,8 @@ class KMeans:
                 _math.fsum((Xd[i][t] - cents[labels[i]][t]) ** 2
                            for t in range(d)) for i in range(n))
             if best is None or inertia < best[0]:
-                best = (inertia, cents, labels)
-        self.inertia_, cents, labels = best
+                best = (inertia, cents, labels, n_it)
+        self.inertia_, cents, labels, self.n_iter_ = best
         self.cluster_centers_ = _ac.marr(cents)
         self.labels_ = _ac.marr([float(v) for v in labels])
         return self
@@ -1149,6 +1171,16 @@ class PCA:
         n, d = len(Xd), len(Xd[0])
         self.mean_ = [_math.fsum(Xd[r][j] for r in range(n)) / n
                       for j in range(d)]
+        if n < 2:
+            # sklearn: one sample has no variance to explain; the
+            # variances are 0/0 = nan and the components the identity
+            k = self.n_components or d
+            self.components_ = _ac.marr([[1.0 if i == j else 0.0 for j in range(d)]
+                                         for i in range(k)])
+            self.explained_variance_ = _ac.marr([_math.nan] * k)
+            self.explained_variance_ratio_ = _ac.marr([_math.nan] * k)
+            self.singular_values_ = _ac.marr([0.0] * k)
+            return self
         Xc = [[Xd[r][j] - self.mean_[j] for j in range(d)]
               for r in range(n)]
         cov = [[_math.fsum(Xc[r][i] * Xc[r][j] for r in range(n))
@@ -1169,6 +1201,10 @@ class PCA:
         self.components_ = _ac.marr(comps)
         self.explained_variance_ = _ac.marr(
             [wl[c] for c in order[:k]])
+        # sklearn: explained_variance_ = S^2 / (n - 1) for the singular
+        # values S of the centred data
+        self.singular_values_ = _ac.marr(
+            [_math.sqrt(max(wl[c], 0.0) * (n - 1)) for c in order[:k]])
         tot = _math.fsum(wl)
         self.explained_variance_ratio_ = _ac.marr(
             [wl[c] / tot for c in order[:k]])
@@ -1306,30 +1342,154 @@ class LinearSVC:
 
 
 class SVC:
-    """Kernel SVM via simplified SMO (rbf / linear)."""
+    """C-support vector classifier, solved as libsvm solves it.
 
-    def __init__(self, C=1.0, kernel="rbf", gamma="scale",
-                 max_iter=200, probability=False, random_state=0,
-                 **kw):
+    The dual  min 1/2 a'Qa - e'a,  0 <= a <= C,  y'a = 0  is solved by SMO
+    with the second-order working-set selection of Fan, Chen and Lin
+    (2005, JMLR 6:1889-1918) and libsvm's stopping rule
+    max_{I_up} -y G - min_{I_low} -y G < tol; the offset is libsvm's rho
+    (the mean of y G over free variables). Several classes are handled
+    one-vs-one, and the fitted attributes follow sklearn's layout
+    (support_, n_support_, support_vectors_, dual_coef_, intercept_).
+
+    The previous solver paired each i with a fixed j and stopped after
+    200 sweeps whether or not the KKT conditions held, and it treated a
+    three-class problem as "class 1 against the rest".
+    """
+
+    def __init__(self, C=1.0, kernel="rbf", degree=3, gamma="scale",
+                 coef0=0.0, tol=1e-3, max_iter=-1, probability=False,
+                 decision_function_shape="ovr", random_state=None, **kw):
         del kw
         self.C = C
         self.kernel = kernel
+        self.degree = degree
         self.gamma = gamma
+        self.coef0 = coef0
+        self.tol = tol
         self.max_iter = max_iter
         self.probability = probability
+        self.decision_function_shape = decision_function_shape
+        self.random_state = random_state
 
     def _k(self, a, b):
+        dot = _math.fsum(x * y for x, y in zip(a, b))
         if self.kernel == "linear":
-            return _math.fsum(x * y for x, y in zip(a, b))
+            return dot
         g = self._gamma
+        if self.kernel == "poly":
+            return (g * dot + self.coef0) ** self.degree
+        if self.kernel == "sigmoid":
+            return _math.tanh(g * dot + self.coef0)
         return _math.exp(-g * _math.fsum((x - y) ** 2
                                          for x, y in zip(a, b)))
+
+    def _solve(self, K, ys):
+        """Binary dual by SMO with WSS2; returns (alpha, rho)."""
+        n = len(ys)
+        C = float(self.C)
+        tau = 1e-12
+        alpha = [0.0] * n
+        G = [-1.0] * n
+        limit = self.max_iter if self.max_iter and self.max_iter > 0 \
+            else 10000000
+        for _ in range(limit):
+            gmax = -_math.inf
+            i = -1
+            for t in range(n):
+                if (ys[t] > 0 and alpha[t] < C) or \
+                        (ys[t] < 0 and alpha[t] > 0):
+                    v = -ys[t] * G[t]
+                    if v >= gmax:
+                        gmax, i = v, t
+            gmin = _math.inf
+            j = -1
+            best = _math.inf
+            for t in range(n):
+                if (ys[t] > 0 and alpha[t] > 0) or \
+                        (ys[t] < 0 and alpha[t] < C):
+                    v = -ys[t] * G[t]
+                    if v <= gmin:
+                        gmin = v
+                    b = gmax - v
+                    if i >= 0 and b > 0:
+                        a = K[i][i] + K[t][t] - 2.0 * K[i][t]
+                        if a <= 0:
+                            a = tau
+                        obj = -(b * b) / a
+                        if obj <= best:
+                            best, j = obj, t
+            if i < 0 or j < 0 or gmax - gmin < self.tol:
+                break
+            yi, yj = ys[i], ys[j]
+            ai, aj = alpha[i], alpha[j]
+            Kij = K[i][j]
+            if yi != yj:
+                quad = K[i][i] + K[j][j] + 2.0 * yi * yj * Kij
+                quad = quad if quad > 0 else tau
+                delta = (-G[i] - G[j]) / quad
+                diff = ai - aj
+                ni, nj = ai + delta, aj + delta
+                if diff > 0:
+                    if nj < 0:
+                        nj, ni = 0.0, diff
+                elif ni < 0:
+                    ni, nj = 0.0, -diff
+                if diff > 0:
+                    if ni > C:
+                        ni, nj = C, C - diff
+                elif nj > C:
+                    nj, ni = C, C + diff
+            else:
+                quad = K[i][i] + K[j][j] - 2.0 * yi * yj * Kij
+                quad = quad if quad > 0 else tau
+                delta = (G[i] - G[j]) / quad
+                s = ai + aj
+                ni, nj = ai - delta, aj + delta
+                if s > C:
+                    if ni > C:
+                        ni, nj = C, s - C
+                elif nj < 0:
+                    nj, ni = 0.0, s
+                if s > C:
+                    if nj > C:
+                        nj, ni = C, s - C
+                elif ni < 0:
+                    ni, nj = 0.0, s
+            di, dj = ni - ai, nj - aj
+            alpha[i], alpha[j] = ni, nj
+            for t in range(n):
+                G[t] += ys[t] * (yi * K[t][i] * di + yj * K[t][j] * dj)
+        # rho as libsvm's calculate_rho
+        ub, lb = _math.inf, -_math.inf
+        nfree, sfree = 0, 0.0
+        for t in range(n):
+            yg = ys[t] * G[t]
+            if alpha[t] >= C:
+                if ys[t] < 0:
+                    ub = min(ub, yg)
+                else:
+                    lb = max(lb, yg)
+            elif alpha[t] <= 0:
+                if ys[t] > 0:
+                    ub = min(ub, yg)
+                else:
+                    lb = max(lb, yg)
+            else:
+                nfree += 1
+                sfree += yg
+        rho = sfree / nfree if nfree else (ub + lb) / 2.0
+        return alpha, rho
 
     def fit(self, X, y):
         Xd = _X2d(X)
         yraw = list(y.tolist() if hasattr(y, "tolist") else y)
-        self.classes_ = sorted(set(yraw), key=str)
-        ys = [1.0 if v == self.classes_[1] else -1.0 for v in yraw]
+        if len(yraw) != len(Xd):
+            raise ValueError("X and y have different lengths")
+        self.classes_ = sorted(set(yraw), key=lambda v: (str(type(v)), v))
+        nc = len(self.classes_)
+        if nc < 2:
+            raise ValueError("The number of classes has to be greater than one")
         n, d = len(Xd), len(Xd[0])
         if self.gamma == "scale":
             flat = [v for r in Xd for v in r]
@@ -1340,73 +1500,102 @@ class SVC:
             self._gamma = 1.0 / d
         else:
             self._gamma = float(self.gamma)
-        K = [[self._k(Xd[i], Xd[j]) for j in range(n)]
-             for i in range(n)]
-        alpha = [0.0] * n
-        b = 0.0
-        C = self.C
-        for _sweep in range(self.max_iter):
-            changed = 0
-            for i in range(n):
-                Ei = _math.fsum(alpha[t] * ys[t] * K[t][i]
-                                for t in range(n)) + b - ys[i]
-                if (ys[i] * Ei < -1e-3 and alpha[i] < C) or \
-                        (ys[i] * Ei > 1e-3 and alpha[i] > 0):
-                    j = (i + 1 + _sweep) % n
-                    if j == i:
-                        continue
-                    Ej = _math.fsum(alpha[t] * ys[t] * K[t][j]
-                                    for t in range(n)) + b - ys[j]
-                    ai_old, aj_old = alpha[i], alpha[j]
-                    if ys[i] != ys[j]:
-                        L = _bi.max(0.0, aj_old - ai_old)
-                        H = _bi.min(C, C + aj_old - ai_old)
-                    else:
-                        L = _bi.max(0.0, ai_old + aj_old - C)
-                        H = _bi.min(C, ai_old + aj_old)
-                    if L >= H:
-                        continue
-                    eta = 2.0 * K[i][j] - K[i][i] - K[j][j]
-                    if eta >= 0:
-                        continue
-                    aj = aj_old - ys[j] * (Ei - Ej) / eta
-                    aj = _bi.max(L, _bi.min(H, aj))
-                    if abs(aj - aj_old) < 1e-6:
-                        continue
-                    ai = ai_old + ys[i] * ys[j] * (aj_old - aj)
-                    alpha[i], alpha[j] = ai, aj
-                    b1 = b - Ei - ys[i] * (ai - ai_old) * K[i][i] \
-                        - ys[j] * (aj - aj_old) * K[i][j]
-                    b2 = b - Ej - ys[i] * (ai - ai_old) * K[i][j] \
-                        - ys[j] * (aj - aj_old) * K[j][j]
-                    if 0 < ai < C:
-                        b = b1
-                    elif 0 < aj < C:
-                        b = b2
-                    else:
-                        b = 0.5 * (b1 + b2)
-                    changed += 1
-            if changed == 0:
-                break
-        self._sv = [(Xd[i], ys[i], alpha[i]) for i in range(n)
-                    if alpha[i] > 1e-10]
-        self._b = b
+        cls = [self.classes_.index(v) for v in yraw]
+        K = [[self._k(Xd[i], Xd[j]) for j in range(n)] for i in range(n)]
+        members = [[i for i in range(n) if cls[i] == c] for c in range(nc)]
+        pairs = []
+        is_sv = [False] * n
+        for a in range(nc):
+            for b in range(a + 1, nc):
+                idx = members[a] + members[b]
+                ys = [1.0 if cls[t] == a else -1.0 for t in idx]
+                Ks = [[K[p][q] for q in idx] for p in idx]
+                al, rho = self._solve(Ks, ys)
+                coef = {idx[t]: al[t] * ys[t] for t in range(len(idx))
+                        if al[t] > 0}
+                for t in coef:
+                    is_sv[t] = True
+                pairs.append((a, b, coef, rho))
+        sv = [i for c in range(nc) for i in members[c] if is_sv[i]]
+        pos = {i: k for k, i in enumerate(sv)}
+        self.support_ = _ac.marr([float(i) for i in sv])
+        self.support_._is_index = True
+        self.n_support_ = _ac.marr([float(sum(1 for i in members[c] if is_sv[i]))
+                                   for c in range(nc)])
+        self.n_support_._dt = "int32"
+        self.support_vectors_ = _ac.marr([list(Xd[i]) for i in sv]) \
+            if sv else _ac.zeros((0, d))
+        dual = [[0.0] * len(sv) for _ in range(nc - 1)]
+        inter = []
+        for a, b, coef, rho in pairs:
+            # libsvm layout: class-a coefficients in row b-1, class-b in row a
+            for i, c in coef.items():
+                row = b - 1 if cls[i] == a else a
+                dual[row][pos[i]] = c
+            inter.append(-rho)
+        self._pairs = [(a, b, {pos[i]: c for i, c in coef.items()}, rho)
+                       for a, b, coef, rho in pairs]
+        self._svx = [list(Xd[i]) for i in sv]
+        if nc == 2:
+            # sklearn negates the binary solution so that a positive
+            # decision value means classes_[1]
+            dual = [[-v for v in dual[0]]]
+            inter = [-inter[0]]
+        self.dual_coef_ = _ac.marr(dual)
+        self.intercept_ = _ac.marr(inter)
+        self.fit_status_ = 0
         return self
 
+    def _ovo(self, Xd):
+        out = []
+        for r in Xd:
+            kr = [self._k(s, r) for s in self._svx]
+            out.append([_math.fsum(c * kr[k] for k, c in coef.items()) - rho
+                        for _a, _b, coef, rho in self._pairs])
+        return out
+
     def decision_function(self, X):
-        Xd = _X2d(X)
-        return _ac.marr([
-            _math.fsum(a * yv * self._k(sv, r)
-                       for sv, yv, a in self._sv) + self._b
-            for r in Xd])
+        dec = self._ovo(_X2d(X))
+        nc = len(self.classes_)
+        if nc == 2:
+            return _ac.marr([-v[0] for v in dec])
+        if self.decision_function_shape == "ovo":
+            return _ac.marr(dec)
+        out = []
+        for row in dec:
+            votes = [0.0] * nc
+            conf = [0.0] * nc
+            k = 0
+            for i in range(nc):
+                for j in range(i + 1, nc):
+                    conf[i] += row[k]
+                    conf[j] -= row[k]
+                    # sklearn: dec < 0 votes for j, so a tie votes i
+                    votes[i if row[k] >= 0 else j] += 1
+                    k += 1
+            out.append([votes[c] + conf[c] / (3.0 * (abs(conf[c]) + 1.0))
+                        for c in range(nc)])
+        return _ac.marr(out)
 
     def predict(self, X):
-        return [self.classes_[1] if v >= 0 else self.classes_[0]
-                for v in self.decision_function(X)._flat()]
+        dec = self._ovo(_X2d(X))
+        nc = len(self.classes_)
+        out = []
+        for row in dec:
+            votes = [0] * nc
+            k = 0
+            for i in range(nc):
+                for j in range(i + 1, nc):
+                    votes[i if row[k] > 0 else j] += 1
+                    k += 1
+            out.append(self.classes_[max(range(nc), key=lambda c: (votes[c], -c))])
+        if all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in out):
+            return _ac.marr([float(v) for v in out])
+        return _ac.oarr(out)
 
     def score(self, X, y):
         yv = list(y.tolist() if hasattr(y, "tolist") else y)
-        p = self.predict(X)
+        p = list(self.predict(X).tolist())
         return _math.fsum(1.0 for a, b in zip(p, yv) if a == b) \
             / len(yv)
 

@@ -122,9 +122,13 @@ def _pos(j):
 
 
 class Series:
+    # the category order of a categorical (pd.cut output); None otherwise
+    _categories = None
+
     def __init__(self, data=None, index=None, name=None, dtype=None):
         if isinstance(data, Series):
             self._data = list(data._data)
+            self._categories = data._categories
             index = list(data.index) if index is None else index
             name = data.name if name is None else name
         elif isinstance(data, dict):
@@ -154,6 +158,56 @@ class Series:
 
     def __repr__(self):
         return "Series(%r, name=%r)" % (self._data[:10], self.name)
+
+    def unstack(self, level=-1, fill_value=None):
+        """pandas Series.unstack for a tuple (multi-level) index: the
+        last level becomes the columns, the rest the rows, each in its
+        level order (category order for a categorical, else sorted)."""
+        if level not in (-1,) and not (isinstance(level, int) and self.index
+                                       and level == len(self.index[0]) - 1):
+            raise NotImplementedError("only the last level can be unstacked")
+        idx = list(self.index)
+        if not idx or not all(isinstance(k, tuple) and len(k) >= 2 for k in idx):
+            raise ValueError("unstack needs a multi-level (tuple) index")
+        nlev = len(idx[0])
+        orders = getattr(self, "_level_orders", None)
+        if not orders or len(orders) != nlev:
+            orders = []
+            for j in range(nlev):
+                vals = {k[j] for k in idx}
+                try:
+                    orders.append(sorted(vals))
+                except TypeError:
+                    orders.append(sorted(vals, key=str))
+        pos = [{v: i for i, v in enumerate(o)} for o in orders]
+        rows = sorted({k[:-1] for k in idx},
+                      key=lambda r: tuple(pos[j][v] for j, v in enumerate(r)))
+        cols = [c for c in orders[-1] if any(k[-1] == c for k in idx)]
+        cell = {k: v for k, v in zip(idx, self._data)}
+        fill = _NAN if fill_value is None else fill_value
+        out = DataFrame({c: [cell.get(r + (c,), fill) for r in rows] for c in cols},
+                        index=[r[0] if nlev == 2 else r for r in rows])
+        names = getattr(self, "index_names", None)
+        if names:
+            if nlev == 2:
+                out.index_name = names[0]
+            else:
+                out.index_names = list(names[:-1])
+        return out
+
+    def corr(self, other, method="pearson", min_periods=None):
+        """pandas Series.corr: aligned on the index labels, pairs with a
+        missing value dropped, then Pearson, Spearman or Kendall tau-b."""
+        if method not in ("pearson", "spearman", "kendall"):
+            raise ValueError("method must be 'pearson', 'spearman' or 'kendall'")
+        other = other if isinstance(other, Series) else Series(other)
+        a, b = self._data, other._data
+        if list(self.index) != list(other.index):
+            pos = {k: i for i, k in enumerate(other.index)}
+            keep = [(i, pos[k]) for i, k in enumerate(self.index) if k in pos]
+            a = [a[i] for i, _ in keep]
+            b = [b[j] for _, j in keep]
+        return _corr_pair(a, b, method, 1 if min_periods is None else min_periods)
 
     @property
     def values(self):
@@ -1217,6 +1271,12 @@ class DataFrame:
     def __init__(self, data=None, index=None, columns=None):
         self._attrs = {}
         self._cols = {}
+        self._catorder = {}
+        if isinstance(data, DataFrame):
+            self._catorder = dict(getattr(data, "_catorder", {}))
+        elif isinstance(data, dict):
+            self._catorder = {k: v._categories for k, v in data.items()
+                              if isinstance(v, Series) and v._categories}
         if data is None:
             data = {}
         if isinstance(data, DataFrame):
@@ -1400,8 +1460,10 @@ class DataFrame:
         if isinstance(key, list):
             return DataFrame({c: list(self._cols[c]) for c in key},
                              index=list(self.index))
-        return Series(list(self._cols[key]), index=list(self.index),
-                      name=key)
+        out = Series(list(self._cols[key]), index=list(self.index),
+                     name=key)
+        out._categories = getattr(self, "_catorder", {}).get(key)
+        return out
 
     def __setitem__(self, key, value):
         n = self.shape[0]
@@ -1420,6 +1482,11 @@ class DataFrame:
             for k in key:
                 self[k] = value
             return
+        cats = value._categories if isinstance(value, Series) else None
+        if cats:
+            self._catorder[key] = cats
+        else:
+            getattr(self, "_catorder", {}).pop(key, None)
         if isinstance(value, Series):
             value = list(value._data)
         elif hasattr(value, "tolist"):
@@ -1435,9 +1502,11 @@ class DataFrame:
 
     def _take(self, rows):
         rows = [int(i) for i in rows]
-        return DataFrame(
+        out = DataFrame(
             {c: [v[i] for i in rows] for c, v in self._cols.items()},
             index=[self.index[i] for i in rows])
+        out._catorder = dict(getattr(self, "_catorder", {}))
+        return out
 
     @property
     def iloc(self):
@@ -2018,6 +2087,80 @@ class DataFrame:
                  for r in rows] for c in cols}, index=rows)
 
     # ---- io / export
+    def dot(self, other):
+        """Matrix product. A DataFrame or Series operand is aligned on
+        this frame's columns against its index, as pandas does."""
+        cols = list(self._cols)
+        left = [[_to_float(self._cols[c][i]) for c in cols]
+                for i in range(self.shape[0])]
+        if isinstance(other, (DataFrame, Series)):
+            oidx = list(other.index)
+            if sorted(map(str, oidx)) != sorted(map(str, cols)):
+                raise ValueError("matrices are not aligned")
+            pos = {k: i for i, k in enumerate(oidx)}
+            order = [pos[c] for c in cols]
+            if isinstance(other, Series):
+                vec = [_to_float(other._data[k]) for k in order]
+                return Series([_math.fsum(r[t] * vec[t] for t in range(len(cols)))
+                               for r in left], index=list(self.index))
+            ocols = list(other._cols)
+            right = [[_to_float(other._cols[c][k]) for c in ocols] for k in order]
+            res = {oc: [_math.fsum(r[t] * right[t][j] for t in range(len(cols)))
+                        for r in left] for j, oc in enumerate(ocols)}
+            return DataFrame(res, index=list(self.index))
+        o = _ac.asarray(other)
+        if len(o.shape) == 1:
+            vec = list(o._flat())
+            if len(vec) != len(cols):
+                raise ValueError("Dot product shape mismatch")
+            return Series([_math.fsum(r[t] * vec[t] for t in range(len(cols)))
+                           for r in left], index=list(self.index))
+        rows = o.tolist()
+        if len(rows) != len(cols):
+            raise ValueError("Dot product shape mismatch")
+        return DataFrame({j: [_math.fsum(r[t] * rows[t][j] for t in range(len(cols)))
+                              for r in left] for j in range(len(rows[0]))},
+                         index=list(self.index))
+
+    def to_json(self, path_or_buf=None, orient=None):
+        """pandas DataFrame.to_json for orient columns (the default),
+        records, index, split and values; NaN is written as null."""
+        import json as _json
+        orient = orient or "columns"
+        cols = list(self._cols)
+        idx = list(self.index)
+
+        def val(v):
+            if _isnan(v):
+                return None
+            return v.item() if hasattr(v, "item") else v
+
+        n = self.shape[0]
+        if orient == "columns":
+            obj = {str(c): {str(idx[i]): val(self._cols[c][i]) for i in range(n)}
+                   for c in cols}
+        elif orient == "records":
+            obj = [{str(c): val(self._cols[c][i]) for c in cols} for i in range(n)]
+        elif orient == "index":
+            obj = {str(idx[i]): {str(c): val(self._cols[c][i]) for c in cols}
+                   for i in range(n)}
+        elif orient == "split":
+            obj = {"columns": cols, "index": idx,
+                   "data": [[val(self._cols[c][i]) for c in cols] for i in range(n)]}
+        elif orient == "values":
+            obj = [[val(self._cols[c][i]) for c in cols] for i in range(n)]
+        else:
+            raise ValueError("orient must be columns, records, index, split or values")
+        s = _json.dumps(obj, separators=(",", ":"))
+        if path_or_buf is None:
+            return s
+        if hasattr(path_or_buf, "write"):
+            path_or_buf.write(s)
+            return None
+        with open(path_or_buf, "w") as fh:
+            fh.write(s)
+        return None
+
     def to_dict(self, orient="dict"):
         if orient in ("records",):
             return [{c: self._cols[c][i] for c in self._cols}
@@ -2427,10 +2570,30 @@ class GroupBy:
                 continue
             self._groups.setdefault(key, []).append(i)
 
+    def _level_orders(self):
+        """Per grouping column, the order its observed values sort in:
+        category order for a categorical (pandas), natural otherwise."""
+        cat = getattr(self._df, "_catorder", {})
+        orders = []
+        for j, c in enumerate(self._by):
+            seen = {k[j] for k in self._groups}
+            if c in cat:
+                orders.append([v for v in cat[c] if v in seen])
+            else:
+                try:
+                    orders.append(sorted(seen))
+                except TypeError:
+                    orders.append(sorted(seen, key=str))
+        return orders
+
     def _keys(self):
         # sort=False keeps first-appearance order (dict insertion),
         # matching pandas
-        return sorted(self._groups) if self._sort else list(self._groups)
+        if not self._sort:
+            return list(self._groups)
+        pos = [{v: i for i, v in enumerate(o)} for o in self._level_orders()]
+        return sorted(self._groups,
+                      key=lambda k: tuple(pos[j][v] for j, v in enumerate(k)))
 
     def __iter__(self):
         for key in self._keys():
@@ -2512,6 +2675,8 @@ class GroupBy:
         out = Series([len(self._groups[k]) for k in keys],
                      index=[k[0] if len(self._by) == 1 else k
                             for k in keys])
+        # unstack() needs each level's order, categorical ones included
+        out._level_orders = self._level_orders()
         # keep the grouping names so reset_index() labels the key column(s)
         # the way pandas does, instead of calling it "index"
         if len(self._by) == 1:
@@ -2736,7 +2901,7 @@ class _GroupByFrame:
 
     def _agg(self, fn):
         gb = self._gb
-        keys = sorted(gb._groups)
+        keys = gb._keys()
         data = {}
         for c in self._cols_sel:
             data[c] = [fn(Series([gb._df._cols[c][i] for i in gb._groups[k]]))
@@ -2751,6 +2916,55 @@ class _GroupByFrame:
 
     def sum(self):
         return self._agg(lambda s: s.sum())
+
+    _NAMED = ("mean", "std", "var", "sum", "min", "max", "median",
+              "count", "size", "nunique", "first", "last")
+
+    def _one(self, how):
+        if callable(how):
+            return lambda s: how(s)
+        if how not in self._NAMED:
+            raise ValueError("unknown aggregation %r" % (how,))
+        if how == "size":
+            return lambda s: len(s)
+        if how == "first":
+            return lambda s: s._data[0] if len(s) else _NAN
+        if how == "last":
+            return lambda s: s._data[-1] if len(s) else _NAN
+        return lambda s: getattr(s, how)()
+
+    def agg(self, func):
+        """pandas GroupBy.agg: one name or callable gives one column per
+        selected column; a list gives (column, name) columns in pandas'
+        order; a dict maps columns to one or several aggregations."""
+        gb = self._gb
+        keys = gb._keys()
+        if isinstance(func, dict):
+            plan = [(c, f) for c, fs in func.items()
+                    for f in (fs if isinstance(fs, (list, tuple)) else [fs])]
+            multi = any(isinstance(fs, (list, tuple)) for fs in func.values())
+        elif isinstance(func, (list, tuple)):
+            plan = [(c, f) for c in self._cols_sel for f in func]
+            multi = True
+        else:
+            plan = [(c, func) for c in self._cols_sel]
+            multi = False
+        data = {}
+        for c, f in plan:
+            fn = self._one(f)
+            label = (c, f if isinstance(f, str) else getattr(f, "__name__", "<lambda>")) \
+                if multi else c
+            data[label] = [fn(Series([gb._df._cols[c][i] for i in gb._groups[k]]))
+                           for k in keys]
+        idx = [k[0] if len(gb._by) == 1 else k for k in keys]
+        out = DataFrame(data, index=idx)
+        if len(gb._by) == 1:
+            out.index_name = gb._by[0]
+        else:
+            out.index_names = list(gb._by)
+        return out
+
+    aggregate = agg
 
     def mean(self):
         return self._agg(lambda s: s.mean())
@@ -2779,7 +2993,7 @@ class _GroupBySeries:
     def __iter__(self):
         """(key, Series) pairs in key order, as pandas' SeriesGroupBy."""
         gb = self._gb
-        for k in sorted(gb._groups):
+        for k in gb._keys():
             rows = gb._groups[k]
             yield (k[0] if len(gb._by) == 1 else k), Series(
                 [gb._df._cols[self._col][i] for i in rows],
@@ -2794,7 +3008,7 @@ class _GroupBySeries:
 
     def _agg(self, fn):
         gb = self._gb
-        keys = sorted(gb._groups)
+        keys = gb._keys()
         vals = [fn(Series([gb._df._cols[self._col][i]
                            for i in gb._groups[k]])) for k in keys]
         out = Series(vals, index=[k[0] if len(gb._by) == 1 else k
@@ -2969,7 +3183,7 @@ class _GroupBySeries:
     def value_counts(self, normalize=False, sort=True, dropna=True):
         gb = self._gb
         idx, vals = [], []
-        for k in sorted(gb._groups):
+        for k in gb._keys():
             vc = Series([gb._df._cols[self._col][i] for i in gb._groups[k]]) \
                 .value_counts(normalize=normalize, sort=sort, dropna=dropna)
             key = k[0] if len(gb._by) == 1 else k
@@ -2980,7 +3194,7 @@ class _GroupBySeries:
 
     def describe(self):
         gb = self._gb
-        keys = sorted(gb._groups)
+        keys = gb._keys()
         rows = [Series([gb._df._cols[self._col][i] for i in gb._groups[k]]).describe()
                 for k in keys]
         cols = list(rows[0].index) if rows else []
@@ -3253,9 +3467,16 @@ def cut(x, bins, labels=None, right=True, include_lowest=False):
                           else "[%g, %g)" % (lo_e, hi_e))
                 break
         out.append(placed)
-    if isinstance(x, Series):
-        return Series(out, index=list(x.index), name=x.name)
-    return Series(out)
+    res = Series(out, index=list(x.index), name=x.name) \
+        if isinstance(x, Series) else Series(out)
+    # pandas returns a categorical ordered by bin; grouping on it follows
+    # that order, not the lexical order of the labels ("10-14" < "5-9")
+    if labels is not False:
+        res._categories = (list(labels) if labels is not None else
+                           ["(%g, %g]" % (edges[i], edges[i + 1]) if right
+                            else "[%g, %g)" % (edges[i], edges[i + 1])
+                            for i in range(len(edges) - 1)])
+    return res
 
 
 def qcut(x, q, labels=None, duplicates="raise"):
@@ -3488,7 +3709,7 @@ __version__ = "0.0-morie-native"
 
 # ===================================================== io tail
 
-def read_json(path_or_buf, orient=None, lines=False):
+def read_json(path_or_buf, orient=None, lines=False, encoding=None):
     import json as _json
     if hasattr(path_or_buf, "read"):
         raw = path_or_buf.read()
@@ -3496,19 +3717,50 @@ def read_json(path_or_buf, orient=None, lines=False):
             in ("[", "{"):
         raw = path_or_buf
     else:
-        with open(path_or_buf) as fh:
+        with open(path_or_buf, encoding=encoding or "utf-8") as fh:
             raw = fh.read()
     if lines:
         rows = [_json.loads(ln) for ln in raw.splitlines()
                 if ln.strip()]
         return DataFrame(rows)
     obj = _json.loads(raw)
+
+    def axis(labels):
+        # pandas convert_axes: all-integer string labels become ints
+        try:
+            return [int(k) for k in labels] if all(
+                str(int(k)) == k for k in labels) else list(labels)
+        except (TypeError, ValueError):
+            return list(labels)
+
     if isinstance(obj, list):
+        if obj and isinstance(obj[0], list):
+            return DataFrame({j: [r[j] for r in obj] for j in range(len(obj[0]))})
         return DataFrame(obj)
+    if orient == "split" or (orient is None and set(obj) >= {"columns", "data"}
+                             and isinstance(obj.get("data"), list)):
+        cols = obj["columns"]
+        data = obj["data"]
+        return DataFrame({c: [r[j] for r in data] for j, c in enumerate(cols)},
+                         index=obj.get("index"))
     if orient == "index":
-        rows = [{"index": k, **v} for k, v in obj.items()]
-        df = DataFrame(rows)
-        return df.set_index("index")
+        keys = list(obj)
+        cols = []
+        for k in keys:
+            for c in obj[k]:
+                if c not in cols:
+                    cols.append(c)
+        return DataFrame({c: [obj[k].get(c, _NAN) for k in keys] for c in cols},
+                         index=axis(keys))
+    if obj and all(isinstance(v, dict) for v in obj.values()):
+        # orient="columns", pandas' default: {column: {index: value}}
+        idx = []
+        for v in obj.values():
+            for k in v:
+                if k not in idx:
+                    idx.append(k)
+        return DataFrame({c: [v.get(k, _NAN) for k in idx] for c, v in obj.items()},
+                         index=axis(idx))
     return DataFrame(obj)
 
 

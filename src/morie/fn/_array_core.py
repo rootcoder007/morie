@@ -97,8 +97,13 @@ def _dtype_cast(v, name):
         # round-trip through the narrow width: float32/float16 arrays do
         # not keep the extra mantissa bits, and a later tobytes() would
         # silently drop them anyway.
-        return _struct.unpack("<" + fmt, _struct.pack("<" + fmt,
-                                                      float(v)))[0]
+        try:
+            return _struct.unpack("<" + fmt, _struct.pack("<" + fmt,
+                                                          float(v)))[0]
+        except OverflowError:
+            # numpy: a finite value past the narrow type's range rounds
+            # to +-inf (with a warning); struct raises instead
+            return _math.copysign(_math.inf, float(v))
     iv = int(v)                       # numpy truncates toward zero
     bits = size * 8
     iv &= (1 << bits) - 1
@@ -212,6 +217,9 @@ def _store(arr, value):
             return int(v)
         arr._dt = None
         return v
+    dt = getattr(arr, "_dt", None)
+    if dt in ("float32", "float16"):
+        return _dtype_cast(float(value), dt)
     return float(value)
 
 
@@ -227,6 +235,79 @@ def _carry(src, out):
                 if _bi.all(isinstance(v, int) or (isinstance(v, float) and v.is_integer()) for v in f):
                     _typed(out, int)
     return out
+
+
+class _FlatIter:
+    """numpy.ndarray.flat: a C-order 1-D iterator over the array that can
+    be indexed and assigned through (a.flat[k] = v writes into a)."""
+
+    def __init__(self, base):
+        self._base = base
+
+    def _pos(self, k):
+        b = self._base
+        n = b.size
+        if k < 0:
+            k += n
+        if not 0 <= k < n:
+            raise IndexError("index %d is out of bounds for size %d" % (k, n))
+        if len(b.shape) == 1:
+            return b.data, k
+        w = b.shape[1]
+        return b.data[k // w], k % w
+
+    def __len__(self):
+        return self._base.size
+
+    def __iter__(self):
+        return iter(self._base._flat())
+
+    def __getitem__(self, k):
+        if isinstance(k, slice):
+            return marr(list(self._base._flat())[k])
+        if isinstance(k, (list, tuple, marr)):
+            flat = list(self._base._flat())
+            return marr([flat[int(i)] for i in (k._flat() if isinstance(k, marr) else k)])
+        row, j = self._pos(int(k))
+        return row[j]
+
+    def __setitem__(self, k, v):
+        if isinstance(k, slice):
+            idx = range(*k.indices(self._base.size))
+        elif isinstance(k, (list, tuple, marr)):
+            idx = [int(i) for i in (k._flat() if isinstance(k, marr) else k)]
+        else:
+            idx = [int(k)]
+        vals = list(v._flat()) if isinstance(v, marr) else (
+            list(v) if isinstance(v, (list, tuple)) else None)
+        for t, i in enumerate(idx):
+            row, j = self._pos(i)
+            row[j] = _num(vals[t % len(vals)] if vals is not None else v)
+
+    def tolist(self):
+        return list(self._base._flat())
+
+    def copy(self):
+        return marr(list(self._base._flat()))
+
+
+def _fcv(v):
+    """A value stored into a float array: float, but a complex value keeps
+    its imaginary part (the float-backed core carries complex elements
+    as-is, as _store does); float() raised on it."""
+    if type(v) is complex:
+        return v if v.imag != 0.0 else v.real
+    if isinstance(v, complex):
+        return complex(v)
+    return float(v)
+
+
+def _row_view(row):
+    """A 1-D marr sharing `row` (a list of numbers) without copying."""
+    v = object.__new__(marr)
+    v.data = row
+    v.shape = (len(row),)
+    return v
 
 
 def _empty2d(nrow, ncol):
@@ -282,6 +363,12 @@ class _Flags:
     OWNDATA = True
     WRITEABLE = True
     ALIGNED = True
+    # numpy exposes the same flags as lower-case attributes
+    c_contiguous = C_CONTIGUOUS
+    f_contiguous = F_CONTIGUOUS
+    owndata = OWNDATA
+    writeable = WRITEABLE
+    aligned = ALIGNED
 
     def __getitem__(self, key):
         try:
@@ -388,10 +475,13 @@ def _assign_with_mask(a, i, j, value):
     rows, _ = (im, False) if im is not None else positions(i, n)
     cols, _ = (jm, False) if jm is not None else positions(j, m)
     va = asarray(value) if not isinstance(value, (int, float)) else None
+    _d = getattr(a, "_dt", None)
+    cv = float if (not _d or _d == "float64" or _d not in _DTYPE_FMT) \
+        else (lambda v: _store(a, v))
     if va is None:
-        flat = [float(value)]
+        flat = [cv(value)]
     else:
-        flat = [float(v) for v in va._flat()]
+        flat = [cv(v) for v in va._flat()]
     shape = tuple(va.shape) if va is not None else ()
     R, C = len(rows), len(cols)
     if len(flat) == 1:
@@ -544,6 +634,11 @@ class marr:
         return out
 
     def _getitem_raw(self, idx):
+        if idx is None:
+            # x[None]: a new leading axis, as numpy
+            if len(self.shape) == 1:
+                return marr([list(self.data)])
+            return ndlist([[list(r) for r in self.data]])
         if isinstance(idx, slice):
             idx = _norm_slice(idx)
         if isinstance(idx, tuple):
@@ -770,7 +865,10 @@ class marr:
                 # W[:0] is (0, k) in numpy, not (0,): the deflation
                 # idiom W[:j].T @ (W[:j] @ v) needs the k at j == 0
                 return _empty2d(0, self.shape[1])
-            return marr(out)
+            # an integer row is a VIEW, as in numpy: it shares the row
+            # list, so m[i][j] = v writes through. A copy silently
+            # dropped every such assignment.
+            return _row_view(out)
         return out
 
     @property
@@ -829,6 +927,16 @@ class marr:
     def argsort(self, axis=-1, kind=None, order=None):
         del order
         return argsort(self, axis=axis, kind=kind)
+
+    @property
+    def flat(self):
+        return _FlatIter(self)
+
+    def transpose(self, *axes):
+        """numpy.ndarray.transpose, taking one tuple or separate ints."""
+        if len(axes) == 1 and (axes[0] is None or isinstance(axes[0], (list, tuple))):
+            axes = axes[0]
+        return transpose(self, axes if axes else None)
 
     def sort(self, axis=-1, kind=None, order=None):
         """numpy.ndarray.sort: sorts in place and returns None."""
@@ -912,8 +1020,31 @@ class marr:
         return round(self, decimals)
 
     def view(self, dtype=None):
-        del dtype
-        return self
+        """numpy.ndarray.view(dtype): the same bytes read as another
+        dtype of the same width (float32 <-> uint32/int32, float64 <->
+        uint64/int64, float16 <-> uint16/int16). Returning the array
+        unchanged made f.view(np.uint32) hand back floats."""
+        if dtype is None:
+            return self
+        new = _dtype_name(dtype)
+        old = getattr(self, "_dt", None) or "float64"
+        if new == old or new not in _DTYPE_FMT or old not in _DTYPE_FMT:
+            return self
+        fo, so = _DTYPE_FMT[old]
+        fn_, sn = _DTYPE_FMT[new]
+        if so != sn:
+            raise ValueError("view between %s and %s changes the item size, "
+                             "which this core does not support" % (old, new))
+
+        def cast(v):
+            if fo in ("d", "f", "e"):
+                raw = _struct.pack("<" + fo, float(v))
+            else:
+                raw = _struct.pack("<" + fo, int(v))
+            return _struct.unpack("<" + fn_, raw)[0]
+        out = self._map(cast)
+        out._dt = None if new == "float64" else new
+        return out
 
     def conj(self):
         return self.copy()
@@ -1019,7 +1150,35 @@ class marr:
             raise TypeError("can't convert complex to float")
         return f[0]
 
+    def _int_operands(self, o):
+        # numpy does BITWISE &, |, ^ on integer arrays and logical ones
+        # only on booleans; this core's masks are 1.0/0.0 floats
+        if getattr(self, "_is_mask", False) or getattr(o, "_is_mask", False):
+            return False
+        if not str(getattr(self, "_dt", None) or "").startswith(("int", "uint")):
+            return False
+        if isinstance(o, marr):
+            return str(getattr(o, "_dt", None) or "").startswith(("int", "uint"))
+        return isinstance(o, int) and not isinstance(o, bool)
+
+    def _bitop(self, o, fn):
+        out = self._zip(o, lambda a, b: fn(int(a), int(b)))
+        out._dt = self._dt
+        return out
+
+    def __rshift__(self, o):
+        if not str(getattr(self, "_dt", None) or "").startswith(("int", "uint")):
+            raise TypeError("ufunc 'right_shift' not supported for the input types")
+        return self._bitop(o, lambda a, b: a >> b)
+
+    def __lshift__(self, o):
+        if not str(getattr(self, "_dt", None) or "").startswith(("int", "uint")):
+            raise TypeError("ufunc 'left_shift' not supported for the input types")
+        return self._bitop(o, lambda a, b: _dtype_cast(a << b, self._dt))
+
     def __or__(self, o):
+        if self._int_operands(o):
+            return self._bitop(o, lambda a, b: a | b)
         out = self._zip(o, lambda a, b: 1.0 if (a != 0 or b != 0)
                         else 0.0)
         if getattr(self, "_is_mask", False) \
@@ -1028,6 +1187,8 @@ class marr:
         return out
 
     def __and__(self, o):
+        if self._int_operands(o):
+            return self._bitop(o, lambda a, b: a & b)
         out = self._zip(o, lambda a, b: 1.0 if (a != 0 and b != 0)
                         else 0.0)
         if getattr(self, "_is_mask", False) \
@@ -1036,6 +1197,8 @@ class marr:
         return out
 
     def __xor__(self, o):
+        if self._int_operands(o):
+            return self._bitop(o, lambda a, b: a ^ b)
         out = self._zip(o, lambda a, b: 1.0 if ((a != 0) != (b != 0))
                         else 0.0)
         out._is_mask = True
@@ -1055,6 +1218,12 @@ class marr:
         return f[0] != 0
 
     def __setitem__(self, idx, value):
+        # values stored into a typed array follow _store: an int array
+        # keeps integral values as ints (x[m, j] += 1 wrote 1.0 before),
+        # a float32/float16 array rounds to its width
+        _d = getattr(self, "_dt", None)
+        _cv = _fcv if (not _d or _d == "float64" or _d not in _DTYPE_FMT) \
+            else (lambda v: _store(self, v))
         idx = _ix(idx)
         if isinstance(idx, slice):
             idx = _norm_slice(idx)
@@ -1062,18 +1231,18 @@ class marr:
             idx = tuple(_norm_slice(v) if isinstance(v, slice) else v for v in idx)
         if isinstance(idx, tuple) and len(idx) == 0:
             v = asarray(value)
-            f = v._flat() if isinstance(v, marr) else [float(v)]
+            f = v._flat() if isinstance(v, marr) else [_cv(v)]
             if len(self.shape) == 2:
                 m2 = self.shape[1]
                 if len(f) == 1:
                     f = f * (self.shape[0] * m2)
                 for r2 in range(self.shape[0]):
-                    self.data[r2] = [float(x)
+                    self.data[r2] = [_cv(x)
                                      for x in f[r2 * m2:(r2 + 1) * m2]]
             else:
                 if len(f) == 1:
                     f = f * len(self.data)
-                self.data[:] = [float(x) for x in f]
+                self.data[:] = [_cv(x) for x in f]
             return
         if isinstance(idx, tuple) and len(idx) == 1:
             self[idx[0]] = value
@@ -1093,13 +1262,13 @@ class marr:
                     # np.ix_ pair: outer block assignment
                     v = asarray(value)
                     if v.size == 1:
-                        block = [[float(v._flat()[0])] * len(jv)
+                        block = [[_cv(v._flat()[0])] * len(jv)
                                  for _ in iv]
                     else:
                         block = atleast_2d(v).tolist()
                     for a, r2 in enumerate(iv):
                         for b, c2 in enumerate(jv):
-                            self.data[int(r2)][int(c2)] = float(block[a][b])
+                            self.data[int(r2)][int(c2)] = _cv(block[a][b])
                     return
                 if len(iv) != len(jv):
                     raise ValueError(
@@ -1107,7 +1276,7 @@ class marr:
                         "and %d" % (len(iv), len(jv)))
                 v = asarray(value)
                 vals = list(v._flat()) if isinstance(v, marr) \
-                    else [float(value)]
+                    else [_cv(value)]
                 if len(vals) == 1:
                     vals = vals * len(iv)
                 if len(vals) != len(iv):
@@ -1115,7 +1284,7 @@ class marr:
                         "cannot assign %d values to %d positions"
                         % (len(vals), len(iv)))
                 for r2, c2, val in zip(iv, jv, vals):
-                    self.data[int(r2)][int(c2)] = float(val)
+                    self.data[int(r2)][int(c2)] = _cv(val)
                 return
             if isinstance(i, slice) and isinstance(j, (marr, list)):
                 # x[:, mask_or_idx] = v
@@ -1128,10 +1297,10 @@ class marr:
                 else:
                     cols = [int(v2) for v2 in jv]
                 va = asarray(value)
-                vf = va._flat() if isinstance(va, marr) else [float(va)]
+                vf = va._flat() if isinstance(va, marr) else [_cv(va)]
                 for r2 in range(*i.indices(self.shape[0])):
                     for ci, c in enumerate(cols):
-                        self.data[r2][c] = float(
+                        self.data[r2][c] = _cv(
                             vf[0] if len(vf) == 1 else vf[ci % len(vf)])
                 return
             if isinstance(i, (marr, list, tuple)) \
@@ -1141,11 +1310,11 @@ class marr:
                 jv = [int(v) for v in
                       (j._flat() if isinstance(j, marr) else j)]
                 va = asarray(value)
-                vf = va._flat() if isinstance(va, marr) else [float(va)]
+                vf = va._flat() if isinstance(va, marr) else [_cv(va)]
                 if len(vf) == 1:
                     vf = vf * len(iv)
                 for r2, c2, v2 in zip(iv, jv, vf):
-                    self.data[r2][c2] = float(v2)
+                    self.data[r2][c2] = _cv(v2)
                 return
             if isinstance(i, (marr, list, tuple)) \
                     and not isinstance(i, slice):
@@ -1163,8 +1332,8 @@ class marr:
                 scalar = len(vals) == 1
                 for ri, r in enumerate(rows):
                     for ci, c in enumerate(cols):
-                        self.data[r][c] = vals[0] if scalar else \
-                            vals[(ri * len(cols) + ci) % len(vals)]
+                        self.data[r][c] = _cv(vals[0] if scalar else
+                                              vals[(ri * len(cols) + ci) % len(vals)])
                 return
             if not isinstance(i, slice) \
                     and isinstance(j, (marr, list, tuple)):
@@ -1187,7 +1356,7 @@ class marr:
                         "cannot assign %d values to %d columns"
                         % (len(vals), len(cols)))
                 for c2, v2 in zip(cols, vals):
-                    self.data[r2][c2] = float(v2)
+                    self.data[r2][c2] = _cv(v2)
                 return
             if isinstance(i, slice) or isinstance(j, slice):
                 rows = range(*i.indices(self.shape[0])) \
@@ -1201,14 +1370,14 @@ class marr:
                              or v.shape == (len(rows), len(cols))):
                     for ri, r in enumerate(rows):
                         for ci, c in enumerate(cols):
-                            self.data[r][c] = flat[ri * len(cols) + ci]
+                            self.data[r][c] = _cv(flat[ri * len(cols) + ci])
                     return
                 v2 = _b2(v)
                 for ri, r in enumerate(rows):
                     for ci, c in enumerate(cols):
-                        self.data[r][c] = v2.data[
+                        self.data[r][c] = _cv(v2.data[
                             ri if v2.shape[0] > 1 else 0][
-                            ci if v2.shape[1] > 1 else 0]
+                            ci if v2.shape[1] > 1 else 0])
                 return
             self.data[_ix(i)][_ix(j)] = _store(self, value)
         elif isinstance(idx, slice):
@@ -1225,7 +1394,7 @@ class marr:
                         "cannot assign %d values to a (%d, %d) slice"
                         % (len(vals), len(rng), m2))
                 for r2, k in enumerate(rng):
-                    self.data[k] = [float(x)
+                    self.data[k] = [_cv(x)
                                     for x in vals[r2 * m2:(r2 + 1) * m2]]
                 return
             if len(vals) == 1:
@@ -1254,9 +1423,9 @@ class marr:
                 for r in range(self.shape[0]):
                     for c in range(self.shape[1]):
                         if raw[r * self.shape[1] + c]:
-                            self.data[r][c] = float(value) \
+                            self.data[r][c] = _cv(value) \
                                 if vals is None \
-                                else float(vals[k if len(vals) > 1 else 0])
+                                else _cv(vals[k if len(vals) > 1 else 0])
                             k += 1
                 return
             if is_mask:
@@ -1272,7 +1441,7 @@ class marr:
                 m2 = self.shape[1]
                 if isinstance(value, (int, float)):
                     for r in ids:
-                        self.data[r] = [float(value)] * m2
+                        self.data[r] = [_cv(value)] * m2
                     return
                 v2 = _b2(asarray(value))
                 if v2.shape[0] not in (1, len(ids)) \
@@ -1283,14 +1452,14 @@ class marr:
                 for k, r in enumerate(ids):
                     src_row = v2.data[k if v2.shape[0] > 1 else 0]
                     self.data[r] = [
-                        float(src_row[c if v2.shape[1] > 1 else 0])
+                        _cv(src_row[c if v2.shape[1] > 1 else 0])
                         for c in range(m2)]
                 return
             vals = list(asarray(value)._flat()) \
                 if not isinstance(value, (int, float)) else None
             for k, r in enumerate(ids):
-                self.data[r] = float(value) if vals is None \
-                    else float(vals[k if len(vals) > 1 else 0])
+                self.data[r] = _cv(value) if vals is None \
+                    else _cv(vals[k if len(vals) > 1 else 0])
         else:
             if len(self.shape) == 2 and isinstance(idx, int):
                 v = asarray(value)
@@ -1299,7 +1468,7 @@ class marr:
                     f = f * self.shape[1]
                 if len(f) != self.shape[1]:
                     raise ValueError("row assignment length mismatch")
-                self.data[idx] = [float(x) for x in f]
+                self.data[idx] = [_cv(x) for x in f]
                 return
             self.data[idx] = _store(self, value)
 
@@ -1383,18 +1552,60 @@ class marr:
         return "marr(%r)" % (self.tolist(),)
 
     # -- arithmetic ---------------------------------------------------
+    def _int_dt(self, o):
+        """numpy 2 (NEP 50) result dtype of an integer operation, or None
+        when the result is floating. A Python int takes the array's type;
+        two integer arrays promote by numpy's table."""
+        a = getattr(self, "_dt", None)
+        if not (a and a.startswith(("int", "uint"))) or getattr(self, "_is_mask", False):
+            return None
+        if isinstance(o, bool) or getattr(o, "_is_mask", False):
+            return None
+        if isinstance(o, int):
+            return a
+        b = getattr(o, "_dt", None) if isinstance(o, marr) else None
+        if not (b and b.startswith(("int", "uint"))):
+            return None
+        if a == b:
+            return a
+        ua, ub = a.startswith("u"), b.startswith("u")
+        wa = int(a.lstrip("uint") or 64)
+        wb = int(b.lstrip("uint") or 64)
+        if ua == ub:
+            return a if wa >= wb else b
+        wsig = wb if ua else wa          # width of the signed operand
+        wuns = wa if ua else wb          # width of the unsigned operand
+        if wuns < wsig:
+            return "int%d" % wsig
+        return "int%d" % (2 * wuns) if wuns < 64 else None
+
+    def _intop(self, o, fn):
+        dt = self._int_dt(o)
+        out = self._zip(o, fn)
+        if isinstance(out, marr):
+            if dt is not None:
+                out = out._map(lambda v: _dtype_cast(v, dt))
+                out._dt = dt
+            elif str(getattr(self, "_dt", None) or "").startswith(("int", "uint")) \
+                    and str(getattr(o, "_dt", None) or "").startswith(("int", "uint")):
+                # e.g. int64 with uint64: numpy has no integer type for
+                # both and computes in float64
+                out = out._map(float)
+                out._dt = None
+        return out
+
     def __add__(self, o):
-        return self._zip(o, lambda a, b: a + b)
+        return self._intop(o, lambda a, b: a + b)
     __radd__ = __add__
 
     def __sub__(self, o):
-        return self._zip(o, lambda a, b: a - b)
+        return self._intop(o, lambda a, b: a - b)
 
     def __rsub__(self, o):
-        return self._zip(o, lambda a, b: b - a)
+        return self._intop(o, lambda a, b: b - a)
 
     def __mul__(self, o):
-        return self._zip(o, lambda a, b: a * b)
+        return self._intop(o, lambda a, b: a * b)
     __rmul__ = __mul__
 
     def __truediv__(self, o):
@@ -1487,14 +1698,7 @@ class marr:
     def clip(self, a_min=None, a_max=None, lower=None, upper=None):
         lo = a_min if a_min is not None else lower
         hi = a_max if a_max is not None else upper
-
-        def one(v):
-            if lo is not None and v < lo:
-                return float(lo)
-            if hi is not None and v > hi:
-                return float(hi)
-            return v
-        return self._map(one)
+        return clip(self, lo, hi)
 
     def argmax(self, axis=None):
         if axis is not None:
@@ -1549,7 +1753,9 @@ class marr:
             if not f:
                 _warnings.warn("Mean of empty slice", RuntimeWarning, stacklevel=2)
                 return self._kd_all(_NAN) if keepdims else _NAN
-            v = float(_fsum(f) / len(f))
+            v = _fsum(f) / len(f)
+            # a complex array has a complex mean
+            v = v if isinstance(v, complex) else float(v)
             return self._kd_all(v) if keepdims else v
         s = self.sum(axis=axis)
         d = self.shape[0] if axis == 0 else self.shape[1]
@@ -1941,6 +2147,10 @@ def asarray(x, dtype=None):
     _dtu = _datetime_dtype_unit(dtype)
     if _dtu is not None:
         return _datetime_array(x, _dtu)
+    if isinstance(x, ndlist):
+        # before the list-of-matrices scan below, which iterates x and
+        # would wrap every block of a rank-4 array
+        return x
     if isinstance(x, (list, tuple)) and x and _bi.all(
             isinstance(v, (marr, oarr)) and len(getattr(v, "shape", ())) == 2
             for v in x):
@@ -1962,7 +2172,9 @@ def asarray(x, dtype=None):
     if _is_object_like(x, dtype):
         return oarr(x.tolist() if hasattr(x, "tolist") else x)
     if isinstance(x, marr):
-        return x
+        if dtype is None or _dtype_name(dtype) == (getattr(x, "_dt", None) or "float64"):
+            return x
+        return x.astype(dtype)
     # A rank-3 or deeper nested list has to become an ndlist. marr is the
     # rank-2 core and raises on the inner lists, and the fallback below
     # then makes an object array of ndim 1 -- so every module taking a
@@ -2066,11 +2278,17 @@ def _is_bool_dtype(dtype):
 
 
 def _typed(out, dtype):
-    """Apply an int / bool dtype request to a freshly built array."""
+    """Apply a dtype request to a freshly built array: bool, or any
+    fixed-width float/int numpy type (values cast and wrapped as numpy
+    stores them; float32 used to be ignored outright)."""
     if isinstance(out, marr):
+        name = _dtype_name(dtype)
         if _is_bool_dtype(dtype):
             out._is_mask = True
             out._dt = None
+        elif name in _DTYPE_FMT and name != "float64":
+            cast = out._map(lambda v: _dtype_cast(v, name))
+            out.data, out._dt = cast.data, name
         elif _is_int_dtype(dtype):
             out._dt = "int64"
             out.data = ([[int(v) for v in r] for r in out.data]
@@ -2111,6 +2329,13 @@ def _ones(n, dtype=None):
 
 
 def full(n, v, dtype=None):
+    if not isinstance(v, (int, float, bool, complex)) and (
+            hasattr(v, "tolist") or isinstance(v, (list, tuple))):
+        # numpy broadcasts an array fill value to the requested shape
+        shape = tuple(int(t) for t in n) if isinstance(n, (tuple, list)) else (int(n),)
+        out = broadcast_to(asarray(v), shape)
+        out = marr(out.tolist()) if isinstance(out, marr) else out
+        return _typed(out, dtype) if dtype is not None else out
     if dtype is None and isinstance(v, int) and not isinstance(v, bool):
         dtype = int                     # numpy: full(3, -1) is int64
     if dtype is None and isinstance(v, bool):
@@ -2211,7 +2436,9 @@ def _uf(fn):
         if isinstance(x, complex):
             return fn(x)
         if isinstance(x, ndlist):
-            return ndlist(wrapped(marr(b)) for b in x)
+            # each block at its own rank (marr() cannot hold a 3-D block
+            # of a rank-4 array)
+            return ndlist(wrapped(_wrap_block(b)) for b in x)
         if isinstance(x, carr) and x.rows is not None:
             rows = [[fn(v) for v in r] for r in x.rows]
             if _bi.any(isinstance(v, complex) for r in rows for v in r):
@@ -2290,7 +2517,36 @@ log1p = _uf(_ieee_log1p)
 abs = _uf(_bi.abs)  # noqa: A001  # builtin: complex -> magnitude
 
 
-def clip(x, lo, hi):
+def clip(x, lo=None, hi=None, out=None, **kw):
+    # numpy's keyword spellings
+    if lo is None:
+        lo = kw.pop("a_min", kw.pop("min", None))
+    if hi is None:
+        hi = kw.pop("a_max", kw.pop("max", None))
+
+    def _arr(v):
+        return v is not None and not isinstance(v, (int, float, bool)) and (
+            hasattr(v, "_flat") or hasattr(v, "tolist") or isinstance(v, (list, tuple)))
+
+    if _arr(lo) or _arr(hi):
+        # numpy broadcasts array-valued bounds against x (per-coordinate
+        # box constraints, bounds[:, 0] and bounds[:, 1]); comparing a
+        # value with a whole bound array raised "truth value ambiguous"
+        parts = [asarray(x)]
+        parts.append(asarray(lo) if _arr(lo) else asarray([_NAN if lo is None else float(lo)]))
+        parts.append(asarray(hi) if _arr(hi) else asarray([_NAN if hi is None else float(hi)]))
+        xa, la, ha = broadcast_arrays(*parts)
+        shape = tuple(xa.shape)
+        vals = []
+        for v, l_, h_ in zip(xa.ravel()._flat(), la.ravel()._flat(), ha.ravel()._flat()):
+            if l_ == l_ and v < l_:
+                v = float(l_)
+            if h_ == h_ and v > h_:
+                v = float(h_)
+            vals.append(v)
+        res = marr(vals)
+        return res.reshape(shape) if len(shape) > 1 else res
+
     # numpy allows None for an open bound
     def one(v):
         if lo is not None and v < lo:
@@ -2298,6 +2554,8 @@ def clip(x, lo, hi):
         if hi is not None and v > hi:
             return float(hi)
         return v
+    if isinstance(x, (int, float)) and not isinstance(x, bool):
+        return one(float(x))            # a scalar in, a scalar out
     a = asarray(x)
     if isinstance(a, marr):
         return _carry(a, a._map(one))
@@ -3852,6 +4110,57 @@ class _SplitMix64:
         return self._fill(one, size)
 
 
+def _rng_param_broadcast(meth):
+    """numpy's Generator broadcasts array-valued distribution parameters
+    against each other and against ``size``, drawing one variate per
+    element in C order (rng.gamma(5, scale=mu / 5) with an array mu, say).
+    These methods took scalars only and raised on float(array)."""
+    import functools as _ft
+    import inspect as _insp
+
+    def _arr(v):
+        return not isinstance(v, (int, float, bool, str)) and v is not None and (
+            hasattr(v, "_flat") or hasattr(v, "tolist") or isinstance(v, (list, tuple)))
+
+    _params = list(_insp.signature(meth).parameters)[1:]      # after self
+    _size_at = _params.index("size") if "size" in _params else None
+
+    @_ft.wraps(meth)
+    def wrapped(self, *args, **kw):
+        # ``size`` may come positionally, as in rng.exponential(1.0, 10)
+        size = kw.pop("size", None)
+        if _size_at is not None and len(args) > _size_at:
+            size = args[_size_at]
+            args = args[:_size_at]
+        keys = list(kw)
+        vals = list(args) + [kw[k] for k in keys]
+        if not any(_arr(v) for v in vals):
+            return meth(self, *args, size=size, **kw)
+        arrs = broadcast_arrays(*[asarray(v) if _arr(v) else asarray([float(v)])
+                                  for v in vals])
+        shape = tuple(arrs[0].shape)
+        if size is not None:
+            tgt = tuple(size) if isinstance(size, (tuple, list)) else (int(size),)
+            arrs = [broadcast_to(a, tgt) for a in arrs]
+            shape = tgt
+        flat = [list(a.ravel()._flat()) for a in arrs]
+        na = len(args)
+        out = [meth(self, *[f[i] for f in flat[:na]],
+                    **dict(zip(keys, [f[i] for f in flat[na:]])))
+               for i in _pyrange(len(flat[0]))]
+        res = marr([_num(v) for v in out])
+        return res.reshape(shape) if len(shape) > 1 else res
+    return wrapped
+
+
+for _name in ("gamma", "standard_gamma", "exponential", "laplace", "chisquare",
+              "geometric", "standard_t", "weibull", "pareto", "rayleigh",
+              "gumbel", "logistic", "wald", "vonmises", "f",
+              "negative_binomial", "lognormal", "beta"):
+    if hasattr(_SplitMix64, _name):
+        setattr(_SplitMix64, _name, _rng_param_broadcast(getattr(_SplitMix64, _name)))
+
+
 class _Random:
     @staticmethod
     def default_rng(seed=None):
@@ -4625,20 +4934,34 @@ class _DTypeNarrow:
 
 
 float32 = _DTypeNarrow("float32")
-int64 = int
-int32 = int
-int16 = int
-int8 = int
-uint8 = int
-uint16 = int
-uint32 = int
-uint64 = int
-int16 = int
-int8 = int
-uint8 = int
-uint16 = int
-uint32 = int
-uint64 = int
+
+
+class _IntDType(_DTypeNarrow):
+    """numpy's fixed-width integer types. They used to be aliases of
+    int, so astype(np.uint32).dtype == np.uint32 was False and
+    view(np.uint32) could not tell which width was meant. Calling one
+    wraps like numpy: np.uint8(300) == 44."""
+
+    def __call__(self, v=0):
+        return _dtype_cast(int(v), self.name)
+
+    def __eq__(self, other):
+        if other is int:
+            return self.name == "int64"
+        return other == self.name or getattr(other, "name", None) == self.name
+
+    def __hash__(self):
+        return hash(self.name)
+
+
+int64 = _IntDType("int64")
+int32 = _IntDType("int32")
+int16 = _IntDType("int16")
+int8 = _IntDType("int8")
+uint64 = _IntDType("uint64")
+uint32 = _IntDType("uint32")
+uint16 = _IntDType("uint16")
+uint8 = _IntDType("uint8")
 
 
 def zeros_like(x, dtype=None):
@@ -4792,9 +5115,6 @@ def finfo(dtype=None):
     return _FInfo(dtype)
 
 
-int16 = _DTypeNarrow("int16")
-int8 = _DTypeNarrow("int8")
-uint8 = _DTypeNarrow("uint8")
 
 bool_ = bool
 
@@ -5436,7 +5756,12 @@ def _wrap_block(b):
     if isinstance(b, (marr, ndlist)):
         return b
     if isinstance(b, list):
-        d = _nested_depth(b)
+        # an element that is itself an array counts with its own rank: a
+        # list of 2-D marr blocks is 3-D, and marr() cannot hold it
+        if b and isinstance(b[0], (marr, ndlist)):
+            d = 1 + len(b[0].shape)
+        else:
+            d = _nested_depth(b)
         if d >= 3:
             return ndlist(b)
         if d >= 1:
@@ -5592,9 +5917,13 @@ class ndlist(list):
             return best
         return argmin(self, axis=axis)
 
-    def transpose(self, axes=None):
-        """numpy.ndarray.transpose: reverses the axes by default."""
-        return transpose(self, axes)
+    def transpose(self, *axes):
+        """numpy.ndarray.transpose: reverses the axes by default; the
+        permutation may be one tuple or separate integers, as in numpy
+        (x.transpose(0, 2, 1) used to raise a TypeError)."""
+        if len(axes) == 1 and (axes[0] is None or isinstance(axes[0], (list, tuple))):
+            axes = axes[0]
+        return transpose(self, axes if axes else None)
 
     @property
     def data(self):
@@ -5680,9 +6009,21 @@ class ndlist(list):
                 raise IndexError("boolean index did not match the array shape")
             return marr([v for v, m in zip(flat_v, flat_m) if m])
         if not isinstance(key, tuple):
-            # the raw sub-list, NOT a wrapped copy: __setitem__ and the
-            # module-level loops mutate what they index
-            return list.__getitem__(self, key)
+            sub = list.__getitem__(self, key)
+            # x[i] on a rank-3 array is a 2-D array in numpy. Returned as
+            # a marr VIEW over the same row lists, so x[i][j][k] = v and
+            # module loops that mutate what they index still write through
+            # O(1) shape test on the first row: checking every row made
+            # each x[i] cost O(rows), which a triple loop over a 3-D table
+            # (gb_hg2's Mann-Whitney counts) turned into a hang
+            if isinstance(key, int) and isinstance(sub, list) and sub \
+                    and isinstance(sub[0], list) and sub[0] \
+                    and not isinstance(sub[0][0], list):
+                v = object.__new__(marr)
+                v.data = sub
+                v.shape = (len(sub), len(sub[0]))
+                return v
+            return sub
 
         def pick(node, keys):
             if not keys:
@@ -5693,7 +6034,8 @@ class ndlist(list):
                 return sub.tolist() if isinstance(sub, marr) else sub
             if isinstance(k, slice):
                 return [pick(v, rest) for v in list(node)[k]]
-            return pick(node[int(k)], rest)
+            # the raw element: no view object per step of the walk
+            return pick(list.__getitem__(node, int(k)), rest)
         out = pick(self, key)
         depth = _nested_depth(out)
         if depth == 0:
@@ -5849,35 +6191,39 @@ class ndlist(list):
         return self._cmp(other, lambda a, b: a <= b)
 
     def _ew(self, other, fn):
-        if isinstance(other, ndlist):
-            # blockwise: marr broadcasting handles the trailing axes
-            # ((q,1) vs (q,k) etc.). The leading axis is broadcast here.
-            # This used to be a bare zip(self, other), which TRUNCATES to
-            # the shorter operand, so (n,1,k) - (1,n,k) silently returned
-            # one block instead of n -- the wrong shape, no error raised.
-            a, b = self._blocks(), other._blocks()
-            if len(a) != len(b):
-                if len(a) == 1:
-                    a = a * len(b)
-                elif len(b) == 1:
-                    b = b * len(a)
-                else:
-                    raise ValueError(
-                        "ndlist: leading axes %d and %d cannot be "
-                        "broadcast" % (len(a), len(b)))
-            return ndlist(marr(x)._zip(marr(y), fn)
-                          for x, y in zip(a, b))
-        if isinstance(other, (marr, list)) and not isinstance(
-                other, ndlist) and isinstance(other, marr):
-            return ndlist(marr(v)._zip(other, fn) for v in self._blocks())
+        """Elementwise fn with numpy broadcasting at any rank: trailing
+        axes aligned, length-1 axes stretched. The blockwise version it
+        replaces handled one leading axis over marr blocks and could not
+        combine rank-5 operands (group normalisation, say) at all."""
+        A = self.tolist()
+        sa = tuple(_list_shape(A))
+        if isinstance(other, (ndlist, marr)) or isinstance(other, (list, tuple)):
+            B = other.tolist() if hasattr(other, "tolist") else list(other)
+            sb = tuple(_list_shape(B))
+        else:
+            B, sb = other, ()
+        r = _bi.max(len(sa), len(sb))
+        pa = (1,) * (r - len(sa)) + sa
+        pb = (1,) * (r - len(sb)) + sb
+        out_shape = []
+        for x, y in zip(pa, pb):
+            if x != y and x != 1 and y != 1:
+                raise ValueError("operands could not be broadcast together "
+                                 "with shapes %r %r" % (sa, sb))
+            out_shape.append(_bi.max(x, y))
+        for _ in range(r - len(sa)):
+            A = [A]
+        for _ in range(r - len(sb)):
+            B = [B]
 
-        def walk(v):
-            if isinstance(v, marr):
-                return v._map(lambda x: fn(x, float(other)))
-            if isinstance(v, list):
-                return [walk(x) for x in v]
-            return fn(float(v), float(other))
-        return ndlist(walk(v) for v in self._blocks())
+        def go(a, b, k):
+            if k == r:
+                return fn(a, b)
+            n = out_shape[k]
+            return [go(a[i if pa[k] > 1 else 0], b[i if pb[k] > 1 else 0], k + 1)
+                    for i in _pyrange(n)]
+        res = go(A, B, 0)
+        return ndlist(res) if r >= 3 else (marr(res) if r >= 1 else res)
 
     def __truediv__(self, o):
         return self._ew(o, lambda a, b: a / b)
@@ -7866,8 +8212,7 @@ def full_like(a, fill_value, dtype=None):
 
 
 def ascontiguousarray(a, dtype=None):
-    del dtype
-    return asarray(a).copy()
+    return asarray(a, dtype=dtype).copy()
 
 
 def array_split(a, sections, axis=0):
@@ -8293,28 +8638,71 @@ def digitize(x, bins, right=False):
     return _map_unary(x, one)
 
 
-def histogram2d(x, y, bins=10, range=None):  # noqa: A002
-    xv = list(asarray(x)._flat())
-    yv = list(asarray(y)._flat())
-    if isinstance(bins, int):
-        bx = by = bins
+def histogram2d(x, y, bins=10, range=None, density=False, weights=None):  # noqa: A002
+    """numpy.histogram2d. ``bins`` is an int, a pair of ints, one edge
+    array for both axes, or a pair of edge arrays; bins are half-open
+    except the last, which includes its right edge, and points outside
+    the edges are not counted. Explicit edge arrays used to raise, and
+    out-of-range points were clipped into the edge bins."""
+    import bisect as _bisect
+    xv = [float(v) for v in asarray(x)._flat()]
+    yv = [float(v) for v in asarray(y)._flat()]
+    if len(xv) != len(yv):
+        raise ValueError("x and y must have the same length")
+    wv = ([float(v) for v in asarray(weights)._flat()] if weights is not None
+          else [1.0] * len(xv))
+
+    def _is_edges(b):
+        return not isinstance(b, (int, float)) and (
+            hasattr(b, "tolist") or isinstance(b, (list, tuple)))
+
+    if _is_edges(bins) and len(bins) == 2 and _is_edges(bins[0]) and _is_edges(bins[1]):
+        spec = [bins[0], bins[1]]
+    elif _is_edges(bins) and len(bins) == 2 and not _is_edges(bins[0]):
+        spec = [int(bins[0]), int(bins[1])]
+    elif _is_edges(bins):
+        spec = [bins, bins]
     else:
-        bx, by = bins
-    if range is not None:
-        (xlo, xhi), (ylo, yhi) = range
-    else:
-        xlo, xhi = _bi.min(xv), _bi.max(xv)
-        ylo, yhi = _bi.min(yv), _bi.max(yv)
-    H = [[0.0] * by for _ in _pyrange(bx)]
-    for a, b in zip(xv, yv):
-        i = int((a - xlo) / (xhi - xlo) * bx) if xhi > xlo else 0
-        j = int((b - ylo) / (yhi - ylo) * by) if yhi > ylo else 0
-        i = _bi.max(0, _bi.min(i, bx - 1))
-        j = _bi.max(0, _bi.min(j, by - 1))
-        H[i][j] += 1.0
-    xe = [xlo + (xhi - xlo) * k / bx for k in _pyrange(bx + 1)]
-    ye = [ylo + (yhi - ylo) * k / by for k in _pyrange(by + 1)]
-    return marr(H), marr(xe), marr(ye)
+        spec = [int(bins), int(bins)]
+    rng = range if range is not None else [None, None]
+    edges = []
+    for ax, (v, b) in enumerate(zip((xv, yv), spec)):
+        if _is_edges(b):
+            e = [float(t) for t in asarray(b)._flat()]
+            if _bi.any(e[k + 1] < e[k] for k in _pyrange(len(e) - 1)):
+                raise ValueError("bins must increase monotonically")
+        else:
+            if rng[ax] is not None:
+                lo, hi = float(rng[ax][0]), float(rng[ax][1])
+            elif v:
+                lo, hi = _bi.min(v), _bi.max(v)
+            else:
+                lo, hi = 0.0, 1.0
+            if lo == hi:
+                lo, hi = lo - 0.5, hi + 0.5
+            e = [lo + (hi - lo) * k / b for k in _pyrange(b + 1)]
+            e[-1] = hi
+        edges.append(e)
+    ex, ey = edges
+    H = [[0.0] * (len(ey) - 1) for _ in _pyrange(len(ex) - 1)]
+
+    def _bin(e, v):
+        if v < e[0] or v > e[-1] or v != v:
+            return None
+        if v == e[-1]:
+            return len(e) - 2
+        return _bisect.bisect_right(e, v) - 1
+
+    for a, b, w in zip(xv, yv, wv):
+        i, j = _bin(ex, a), _bin(ey, b)
+        if i is not None and j is not None:
+            H[i][j] += w
+    if density:
+        tot = _math.fsum(v for r in H for v in r)
+        H = [[H[i][j] / (tot * (ex[i + 1] - ex[i]) * (ey[j + 1] - ey[j]))
+              if tot > 0 else _NAN for j in _pyrange(len(ey) - 1)]
+             for i in _pyrange(len(ex) - 1)]
+    return marr(H), marr(ex), marr(ey)
 
 
 _pyrange = __import__("builtins").range
@@ -9448,3 +9836,343 @@ def _xor_call(a, b):
 
 # numpy.bitwise_xor with reduce/accumulate (callers fold a hash with it)
 bitwise_xor = _FoldUfunc(_xor_call, lambda x, y: int(x) ^ int(y), 0)
+
+
+def _hqr_eigvals(A):
+    """Eigenvalues of a real square matrix: balancing, Householder
+    reduction to upper Hessenberg form and the Francis double-shift QR
+    iteration (the EISPACK hqr algorithm, as in Press et al., Numerical
+    Recipes, 3rd ed., Sec. 11.6). Complex pairs come out conjugate."""
+    n = len(A)
+    a = [[float(A[i][j]) for j in range(n)] for i in range(n)]
+    # balance (Parlett-Reinsch) so the QR iteration sees comparable rows
+    radix = 2.0
+    done = False
+    while not done:
+        done = True
+        for i in range(n):
+            r = _fsum(abs(a[i][j]) for j in range(n) if j != i)
+            c = _fsum(abs(a[j][i]) for j in range(n) if j != i)
+            if c != 0.0 and r != 0.0:
+                g = r / radix
+                f = 1.0
+                s = c + r
+                while c < g:
+                    f *= radix
+                    c *= radix * radix
+                while c > r * radix:
+                    f /= radix
+                    c /= radix * radix
+                if (c + r) / f < 0.95 * s:
+                    done = False
+                    g = 1.0 / f
+                    for j in range(n):
+                        a[i][j] *= g
+                    for j in range(n):
+                        a[j][i] *= f
+    # reduce to Hessenberg by Householder reflections
+    for k in range(n - 2):
+        x = [a[i][k] for i in range(k + 1, n)]
+        alpha = _math.sqrt(_fsum(v * v for v in x))
+        if alpha == 0.0:
+            continue
+        if x[0] > 0:
+            alpha = -alpha
+        v = list(x)
+        v[0] -= alpha
+        vn = _fsum(t * t for t in v)
+        if vn == 0.0:
+            continue
+        for j in range(n):
+            d = 2.0 * _fsum(v[i] * a[k + 1 + i][j] for i in range(len(v))) / vn
+            for i in range(len(v)):
+                a[k + 1 + i][j] -= d * v[i]
+        for i in range(n):
+            d = 2.0 * _fsum(a[i][k + 1 + t] * v[t] for t in range(len(v))) / vn
+            for t in range(len(v)):
+                a[i][k + 1 + t] -= d * v[t]
+        for i in range(k + 2, n):
+            a[i][k] = 0.0
+    # Francis double-shift QR on the Hessenberg matrix
+    wr = [0.0] * n
+    wi = [0.0] * n
+    anorm = _fsum(abs(a[i][j]) for i in range(n) for j in range(_bi.max(i - 1, 0), n))
+    nn = n - 1
+    t = 0.0
+    p = q = r = 0.0
+    while nn >= 0:
+        its = 0
+        while True:
+            l = nn
+            while l >= 1:
+                s = abs(a[l - 1][l - 1]) + abs(a[l][l])
+                if s == 0.0:
+                    s = anorm
+                if abs(a[l][l - 1]) + s == s:
+                    a[l][l - 1] = 0.0
+                    break
+                l -= 1
+            x = a[nn][nn]
+            if l == nn:
+                wr[nn] = x + t
+                wi[nn] = 0.0
+                nn -= 1
+                break
+            y = a[nn - 1][nn - 1]
+            w = a[nn][nn - 1] * a[nn - 1][nn]
+            if l == nn - 1:
+                p = 0.5 * (y - x)
+                q = p * p + w
+                z = _math.sqrt(abs(q))
+                x += t
+                if q >= 0.0:
+                    z = p + (z if p >= 0 else -z)
+                    wr[nn - 1] = wr[nn] = x + z
+                    if z != 0.0:
+                        wr[nn] = x - w / z
+                    wi[nn - 1] = wi[nn] = 0.0
+                else:
+                    wr[nn - 1] = wr[nn] = x + p
+                    wi[nn - 1] = -z
+                    wi[nn] = z
+                nn -= 2
+                break
+            if its == 60:
+                raise linalg.LinAlgError("Eigenvalues did not converge")
+            if its == 10 or its == 20:
+                t += x
+                for i in range(nn + 1):
+                    a[i][i] -= x
+                s = abs(a[nn][nn - 1]) + abs(a[nn - 1][nn - 2])
+                y = x = 0.75 * s
+                w = -0.4375 * s * s
+            its += 1
+            m = nn - 2
+            while m >= l:
+                z = a[m][m]
+                r = x - z
+                s = y - z
+                p = (r * s - w) / a[m + 1][m] + a[m][m + 1]
+                q = a[m + 1][m + 1] - z - r - s
+                r = a[m + 2][m + 1]
+                s = abs(p) + abs(q) + abs(r)
+                p /= s
+                q /= s
+                r /= s
+                if m == l:
+                    break
+                u = abs(a[m][m - 1]) * (abs(q) + abs(r))
+                v = abs(p) * (abs(a[m - 1][m - 1]) + abs(z) + abs(a[m + 1][m + 1]))
+                if u + v == v:
+                    break
+                m -= 1
+            for i in range(m, nn - 1):
+                a[i + 2][i] = 0.0
+                if i != m:
+                    a[i + 2][i - 1] = 0.0
+            k = m
+            while k <= nn - 1:
+                if k != m:
+                    p = a[k][k - 1]
+                    q = a[k + 1][k - 1]
+                    r = 0.0
+                    if k != nn - 1:
+                        r = a[k + 2][k - 1]
+                    x = abs(p) + abs(q) + abs(r)
+                    if x != 0.0:
+                        p /= x
+                        q /= x
+                        r /= x
+                s = _math.sqrt(p * p + q * q + r * r)
+                if p < 0:
+                    s = -s
+                if s != 0.0:
+                    if k == m:
+                        if l != m:
+                            a[k][k - 1] = -a[k][k - 1]
+                    else:
+                        a[k][k - 1] = -s * x
+                    p += s
+                    x = p / s
+                    y = q / s
+                    z = r / s
+                    q /= p
+                    r /= p
+                    for j in range(k, nn + 1):
+                        p = a[k][j] + q * a[k + 1][j]
+                        if k != nn - 1:
+                            p += r * a[k + 2][j]
+                            a[k + 2][j] -= p * z
+                        a[k + 1][j] -= p * y
+                        a[k][j] -= p * x
+                    mmin = nn if nn < k + 3 else k + 3
+                    for i in range(l, mmin + 1):
+                        p = x * a[i][k] + y * a[i][k + 1]
+                        if k != nn - 1:
+                            p += z * a[i][k + 2]
+                            a[i][k + 2] -= p * r
+                        a[i][k + 1] -= p * q
+                        a[i][k] -= p
+                k += 1
+    return [complex(wr[i], wi[i]) for i in range(n)]
+
+
+def _cplx_solve(M, b):
+    """Gaussian elimination with partial pivoting over the complex numbers."""
+    n = len(M)
+    A = [list(M[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        piv = _bi.max(range(c, n), key=lambda i: abs(A[i][c]))
+        A[c], A[piv] = A[piv], A[c]
+        d = A[c][c]
+        if d == 0:
+            d = 1e-300
+            A[c][c] = d
+        for i in range(c + 1, n):
+            f = A[i][c] / d
+            if f != 0:
+                for j in range(c, n + 1):
+                    A[i][j] -= f * A[c][j]
+    x = [0j] * n
+    for i in range(n - 1, -1, -1):
+        s = A[i][n] - _fsum(A[i][j] * x[j] for j in range(i + 1, n))
+        x[i] = s / A[i][i]
+    return x
+
+
+def _eigvec_for(A, lam, avoid=()):
+    """Unit eigenvector for eigenvalue lam by inverse iteration, normalised
+    as LAPACK geev does: 2-norm one and, for a complex vector, its
+    largest component real. ``avoid`` holds vectors already found for the
+    same (repeated) eigenvalue; they are projected out at every step so a
+    multi-dimensional eigenspace yields independent vectors instead of
+    the same one again."""
+    n = len(A)
+    scale = _bi.max(1.0, _bi.max(abs(A[i][j]) for i in range(n) for j in range(n)))
+    shift = lam + (1e-10 * scale) * (1 + 1j if isinstance(lam, complex) and lam.imag != 0 else 1)
+    M = [[A[i][j] - (shift if i == j else 0) for j in range(n)] for i in range(n)]
+    k0 = len(avoid)
+    v = [complex(1.0 + 0.1 * ((i + 3 * k0) % n), 0.05 * ((i * (k0 + 1)) % n)) for i in range(n)]
+
+    def _deflate(v):
+        for u in avoid:
+            c = _fsum(x.conjugate() * y for x, y in zip(u, v))
+            v = [y - c * x for x, y in zip(u, v)]
+        return v
+
+    v = _deflate(v)
+    for _ in range(4):
+        v = _deflate(_cplx_solve(M, v))
+        nrm = _math.sqrt(_fsum(abs(u) ** 2 for u in v)) or 1.0
+        v = [u / nrm for u in v]
+    k = _bi.max(range(n), key=lambda i: abs(v[i]))
+    ph = v[k] / abs(v[k]) if v[k] != 0 else 1
+    v = [u / ph for u in v]
+    return v
+
+
+# ---- general and Hermitian eigenproblems -------------------------------
+
+def _any_complex(rows):
+    return _bi.any(isinstance(v, complex) and v.imag != 0.0
+                   for r in rows for v in r)
+
+
+_eig_charpoly = _Linalg.eig
+_eigvals_charpoly = _Linalg.eigvals
+
+
+def _eig_general(a):
+    """numpy.linalg.eig. Real input: eigenvalues by the Francis QR
+    iteration on the balanced Hessenberg form (the characteristic
+    polynomial route it replaces loses accuracy fast with n), eigenvectors
+    by inverse iteration, normalised as LAPACK does. Real output when the
+    whole spectrum is real."""
+    A = atleast_2d(a)
+    rows = A.tolist()
+    n = len(rows)
+    if n == 0 or _bi.any(len(r) != n for r in rows):
+        raise linalg.LinAlgError("eig needs a square matrix")
+    if _any_complex(rows):
+        return _eig_charpoly(a)
+    vals = _hqr_eigvals(rows)
+    real = _bi.all(v.imag == 0.0 for v in vals)
+    scale = _bi.max(1.0, _bi.max(abs(v) for v in vals))
+    vecs = []
+    for i, v in enumerate(vals):
+        same = [vecs[j] for j in range(i) if abs(vals[j] - v) <= 1e-8 * scale]
+        vecs.append(_eigvec_for(rows, v.real if real else v, same))
+    if real:
+        w = marr([v.real for v in vals])
+        V = marr([[vecs[j][i].real for j in range(n)] for i in range(n)])
+        return w, V
+    return carr(vals), marr([[vecs[j][i] for j in range(n)] for i in range(n)])
+
+
+def _eigvals_general(a):
+    A = atleast_2d(a)
+    rows = A.tolist()
+    if _any_complex(rows):
+        return _eigvals_charpoly(a)
+    vals = _hqr_eigvals(rows)
+    if _bi.all(v.imag == 0.0 for v in vals):
+        return marr([v.real for v in vals])
+    return carr(vals)
+
+
+_eigh_real = linalg.eigh
+_eigvalsh_real = linalg.eigvalsh
+
+
+def _herm_embed(rows):
+    """Real symmetric [[Ar, -Ai], [Ai, Ar]] of a Hermitian matrix: each
+    eigenvalue of A appears twice, with vectors (x; y) and (-y; x) for
+    the complex eigenvector x + iy."""
+    n = len(rows)
+    re = [[complex(v).real for v in r] for r in rows]
+    im = [[complex(v).imag for v in r] for r in rows]
+    return [[re[i][j] for j in range(n)] + [-im[i][j] for j in range(n)] for i in range(n)] + \
+           [[im[i][j] for j in range(n)] + [re[i][j] for j in range(n)] for i in range(n)]
+
+
+def _eigh_any(a, UPLO="L"):
+    """numpy.linalg.eigh, including complex Hermitian input (ascending
+    real eigenvalues, orthonormal complex eigenvectors)."""
+    rows = atleast_2d(a).tolist()
+    if not _any_complex(rows):
+        real = marr([[complex(v).real for v in r] for r in rows])
+        return _eigh_real(real) if UPLO == "L" else _eigh_real(real, UPLO)
+    n = len(rows)
+    w, V = _eigh_real(marr(_herm_embed(rows)))
+    wl = list(w._flat())
+    Vl = V.tolist()
+    order = sorted(range(2 * n), key=lambda k: wl[k])
+    cand = [(wl[k], [complex(Vl[i][k], Vl[n + i][k]) for i in range(n)]) for k in order]
+    vals, vecs = [], []
+    tol = 1e-9 * _bi.max(1.0, _bi.max(abs(v) for v in wl))
+    for lam, v in cand:
+        # the embedding gives each eigenvalue twice (v and i v); project
+        # out the vectors already kept for the same eigenvalue
+        for k, u in enumerate(vecs):
+            if abs(lam - vals[k]) <= 1e3 * tol:
+                c = _fsum(x.conjugate() * y for x, y in zip(u, v))
+                v = [y - c * x for x, y in zip(u, v)]
+        nrm = _math.sqrt(_fsum(abs(x) ** 2 for x in v))
+        if nrm > 1e-6 and len(vals) < n:
+            vals.append(lam)
+            vecs.append([x / nrm for x in v])
+    return marr(vals), marr([[vecs[j][i] for j in range(n)] for i in range(n)])
+
+
+def _eigvalsh_any(a, UPLO="L"):
+    rows = atleast_2d(a).tolist()
+    if not _any_complex(rows):
+        return _eigvalsh_real(marr([[complex(v).real for v in r] for r in rows]))
+    w = sorted(_eigvalsh_real(marr(_herm_embed(rows)))._flat())
+    return marr(w[0::2])
+
+
+linalg.eig = _eig_general
+linalg.eigvals = _eigvals_general
+linalg.eigh = _eigh_any
+linalg.eigvalsh = _eigvalsh_any
