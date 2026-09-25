@@ -308,6 +308,7 @@ def glm(y, X, family="binomial", add_intercept=True, weights=None,
             "dispersion": disp, "pearson_chi2": pearson,
             "aic": aic, "loglik": ll, "converged": converged,
             "family": fl, "n": n, "k": p, "vcov": V,
+            "working_weights": list(w_fit),
             "method": "generalised linear model (IRLS)"}
 
 

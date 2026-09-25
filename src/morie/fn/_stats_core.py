@@ -746,10 +746,80 @@ class _F(_Dist):
                                     0.0, 10.0), q)
 
 
+def _digamma(x):
+    """psi(x) for x > 0: recurrence up to 12, then the asymptotic series (truncation error below 1e-16 there)."""
+    r = 0.0
+    while x < 12.0:
+        r -= 1.0 / x
+        x += 1.0
+    f = 1.0 / (x * x)
+    return r + _math.log(x) - 0.5 / x - f * (1.0 / 12 - f * (1.0 / 120 - f * (
+        1.0 / 252 - f * (1.0 / 240 - f / 132))))
+
+
+def _trigamma(x):
+    """psi'(x) for x > 0: recurrence up to 12, then the asymptotic series (truncation error below 1e-16 there)."""
+    r = 0.0
+    while x < 12.0:
+        r += 1.0 / (x * x)
+        x += 1.0
+    f = 1.0 / (x * x)
+    return r + 1.0 / x + f / 2.0 + (1.0 / x) * f * (1.0 / 6 - f * (
+        1.0 / 30 - f * (1.0 / 42 - f / 30)))
+
+
+
 class _Gamma(_Dist):
     _support = (0.0, _math.inf)
     def __init__(self, a=1.0, loc=0.0, scale=1.0):
         self.a, self.loc, self.scale = float(a), float(loc), float(scale)
+
+    def fit(self, data, *args, floc=None, fscale=None, **kw):
+        """Maximum likelihood with a fixed location (scipy's floc).
+
+        With the location fixed, the shape solves
+        log(a) - digamma(a) = log(mean) - mean(log x) and the scale is
+        mean / a (Minka 2002); Newton steps from Minka's closed-form
+        start converge in a handful of iterations. Returns
+        (a, loc, scale) as scipy does. A free location is a different
+        and often ill-posed problem, so it is refused rather than
+        guessed.
+        """
+        del args, kw
+        if floc is None:
+            raise NotImplementedError(
+                "gamma.fit needs floc= (a fixed location); the free-location "
+                "fit is not implemented in the native core")
+        x = [float(v) - float(floc) for v in _flatten(data)]
+        if not x or any(not v > 0 for v in x):
+            raise ValueError("gamma.fit: every observation must exceed floc")
+        n = len(x)
+        mean = _bi.sum(x) / n
+        if fscale is not None:
+            # shape given the scale solves digamma(a) = mean(log x) - log(scale)
+            target = _bi.sum(_math.log(v) for v in x) / n - _math.log(float(fscale))
+            a = 1.0
+            for _ in range(200):
+                step = (_digamma(a) - target) / _trigamma(a)
+                a_new = a - step
+                a = a_new if a_new > 0 else a / 2.0
+                if abs(step) < 1e-14 * a:
+                    break
+            return (a, float(floc), float(fscale))
+        s = _math.log(mean) - _bi.sum(_math.log(v) for v in x) / n
+        if s <= 0:
+            raise ValueError("gamma.fit: all observations are equal, so the "
+                             "shape is unbounded")
+        a = (3.0 - s + _math.sqrt((s - 3.0) ** 2 + 24.0 * s)) / (12.0 * s)
+        for _ in range(100):
+            f = _math.log(a) - _digamma(a) - s
+            fp = 1.0 / a - _trigamma(a)
+            step = f / fp
+            a_new = a - step
+            a = a_new if a_new > 0 else a / 2.0
+            if abs(step) < 1e-15 * a:
+                break
+        return (a, float(floc), mean / a)
 
     def cdf(self, x, a=None, loc=0.0, scale=1.0):
         aa = self.a if a is None else float(a)
@@ -765,7 +835,16 @@ class _Gamma(_Dist):
 
         def one(v):
             z = (v - lo) / sc
-            if z <= 0:
+            if z < 0:
+                return 0.0
+            if z == 0:
+                # the density at the origin is z^(a-1)/Gamma(a)/scale:
+                # unbounded for a < 1, 1/scale for a = 1 (exponential),
+                # and 0 for a > 1, as scipy.stats.gamma gives
+                if aa < 1:
+                    return _math.inf
+                if aa == 1:
+                    return 1.0 / sc
                 return 0.0
             ln = (aa - 1) * _math.log(z) - z - _math.lgamma(aa)
             return _math.exp(ln) / sc
@@ -1404,16 +1483,63 @@ def trim_mean(a, proportiontocut):
     return _mean(core)
 
 
-def iqr(a):
-    v = sorted(_flatten(a))
-    n = len(v)
+def iqr(x, axis=None, rng=(25, 75), scale=1.0, nan_policy="propagate",
+        interpolation="linear", keepdims=False):
+    """scipy.stats.iqr over the whole sample (axis=None).
 
-    def q(p):
-        h = (n - 1) * p
+    ``interpolation`` follows numpy's percentile methods: linear, lower,
+    higher, midpoint, nearest. ``scale`` divides the result; "normal"
+    makes it a consistent estimator of a normal standard deviation.
+    It used to accept only the sample, so any caller passing scipy's
+    keywords raised TypeError.
+    """
+    del keepdims
+    if axis is not None:
+        raise NotImplementedError("iqr: axis is not supported; the native "
+                                  "core computes over the whole sample")
+    v = [float(t) for t in _flatten(x)]
+    if any(_math.isnan(t) for t in v):
+        if nan_policy == "raise":
+            raise ValueError("The input contains nan values")
+        if nan_policy == "propagate":
+            return _math.nan
+        v = [t for t in v if not _math.isnan(t)]
+    if not v:
+        return _math.nan
+    v.sort()
+    n = len(v)
+    lo_p, hi_p = float(rng[0]), float(rng[1])
+    if not 0 <= lo_p <= hi_p <= 100:
+        raise ValueError("rng must satisfy 0 <= rng[0] <= rng[1] <= 100")
+
+    def q(pct):
+        h = (n - 1) * pct / 100.0
         lo = int(_math.floor(h))
         hi = _bi.min(lo + 1, n - 1)
-        return v[lo] + (h - lo) * (v[hi] - v[lo])
-    return q(0.75) - q(0.25)
+        frac = h - lo
+        if interpolation == "linear":
+            return v[lo] + frac * (v[hi] - v[lo])
+        if interpolation == "lower":
+            return v[lo]
+        if interpolation == "higher":
+            return v[hi] if frac > 0 else v[lo]
+        if interpolation == "midpoint":
+            return 0.5 * (v[lo] + v[hi]) if frac > 0 else v[lo]
+        if interpolation == "nearest":
+            # numpy rounds half to even on the fractional index
+            return v[int(round(h))]
+        raise ValueError("interpolation must be linear, lower, higher, "
+                         "midpoint or nearest")
+    out = q(hi_p) - q(lo_p)
+    if isinstance(scale, str):
+        if scale != "normal":
+            raise ValueError("scale must be a number or 'normal'")
+        # scipy uses the normal IQR, Phi^-1(0.75) - Phi^-1(0.25), for
+        # every rng: "normal" rescales to a normal sd only at (25, 75)
+        sc = norm.ppf(0.75) - norm.ppf(0.25)
+    else:
+        sc = float(scale)
+    return out / sc
 
 
 class _DescribeResult(tuple):
@@ -2424,6 +2550,28 @@ class _LogNorm(_Dist):
     _support = (0.0, _math.inf)
     """scipy parametrization: lognorm(s, loc=0, scale=exp(mu))."""
 
+    def fit(self, data, *args, floc=None, fscale=None, **kw):
+        """Maximum likelihood with a fixed location (scipy's floc).
+
+        log(x - loc) is normal, so the MLE is closed form: mu is the mean
+        of the logs and s their standard deviation with divisor n.
+        Returns (s, loc, scale = exp(mu)) as scipy does. The free-location
+        fit is refused rather than guessed.
+        """
+        del args, kw
+        if floc is None:
+            raise NotImplementedError(
+                "lognorm.fit needs floc= (a fixed location); the free-location "
+                "fit is not implemented in the native core")
+        x = [float(v) - float(floc) for v in _flatten(data)]
+        if not x or any(not v > 0 for v in x):
+            raise ValueError("lognorm.fit: every observation must exceed floc")
+        logs = [_math.log(v) for v in x]
+        n = len(logs)
+        mu = _bi.sum(logs) / n if fscale is None else _math.log(float(fscale))
+        sd = _math.sqrt(_bi.sum((v - mu) ** 2 for v in logs) / n)
+        return (sd, float(floc), _math.exp(mu))
+
     def pdf(self, x, s, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
@@ -2882,27 +3030,97 @@ def wasserstein_distance(u_values, v_values):
     return d
 
 
-def somersd(x, y):
+class _SomersDResult(tuple):
+    """(statistic, pvalue) with .statistic, .pvalue and .table, as
+    scipy.stats.somersd returns."""
+
+    def __new__(cls, statistic, pvalue, table):
+        obj = super().__new__(cls, (statistic, pvalue))
+        obj.statistic, obj.pvalue, obj.table = statistic, pvalue, table
+        obj.correlation = statistic
+        return obj
+
+
+def _somers_table(x, y):
+    """Contingency table of x (rows, sorted levels) by y (columns)."""
     xv, yv = _flatten(x), _flatten(y)
-    n = len(xv)
-    conc = disc = ty = 0
-    for i in range(n - 1):
-        for j in range(i + 1, n):
-            dx = xv[i] - xv[j]
-            dy = yv[i] - yv[j]
-            if dx == 0:
-                continue
-            if dy == 0:
-                ty += 1
-            elif dx * dy > 0:
-                conc += 1
-            else:
-                disc += 1
-    tot = conc + disc + ty
-    d = (conc - disc) / tot if tot else float("nan")
-    z = (conc - disc) / _math.sqrt(
-        n * (n - 1) * (2 * n + 5) / 18.0) if n > 2 else 0.0
-    return _TestResult(d, _bi.min(1.0, 2.0 * norm.sf(abs(z))))
+    if len(xv) != len(yv):
+        raise ValueError("x and y must have the same length")
+    rows = sorted(set(xv))
+    cols = sorted(set(yv))
+    ri = {v: i for i, v in enumerate(rows)}
+    ci = {v: j for j, v in enumerate(cols)}
+    A = [[0] * len(cols) for _ in rows]
+    for a, b in zip(xv, yv):
+        A[ri[a]][ci[b]] += 1
+    return A
+
+
+def somersd(x, y=None, alternative="two-sided"):
+    """Somers' D(Y|X) and its asymptotic test, as scipy.stats.somersd.
+
+    ``x`` and ``y`` are paired ordinal samples (x is the independent
+    variable), or ``x`` alone is a contingency table with the
+    independent variable on the rows. With P and Q twice the concordant
+    and discordant pair counts, D = (P - Q) / (N^2 - sum_i R_i^2), and
+    the test statistic is Z = (P - Q) / sqrt(4 S), with
+    S = sum_ij A_ij (A_ij^+ - A_ij^-)^2 - (P - Q)^2 / N (the
+    Goodman-Kruskal asymptotic variance used by scipy).
+
+    The previous version tested with Kendall's tau-a normal
+    approximation, which ignores ties and so gave a different p-value
+    for almost every ordinal sample, and returned no table.
+    """
+    if y is None:
+        A = [[int(v) for v in row] for row in
+             (x.tolist() if hasattr(x, "tolist") else x)]
+    else:
+        A = _somers_table(x, y)
+    m = len(A)
+    n = len(A[0]) if m else 0
+    if m <= 1 or n <= 1:
+        return _SomersDResult(0.0, 1.0, A)
+
+    def block(r0, r1, c0, c1):
+        tot = 0
+        for i in range(r0, r1):
+            for j in range(c0, c1):
+                tot += A[i][j]
+        return tot
+
+    P = Q = 0
+    agg = 0
+    Aplus = [[0] * n for _ in range(m)]
+    Aminus = [[0] * n for _ in range(m)]
+    for i in range(m):
+        for j in range(n):
+            ap = block(0, i, 0, j) + block(i + 1, m, j + 1, n)
+            am = block(i + 1, m, 0, j) + block(0, i, j + 1, n)
+            Aplus[i][j], Aminus[i][j] = ap, am
+            P += A[i][j] * ap
+            Q += A[i][j] * am
+            agg += A[i][j] * (ap - am) ** 2
+    N = _bi.sum(_bi.sum(r) for r in A)
+    sri2 = _bi.sum(_bi.sum(r) ** 2 for r in A)
+    denom = N * N - sri2
+    d = (P - Q) / denom if denom else _math.nan
+    S = agg - (P - Q) ** 2 / N
+    if S <= 0:
+        z = _math.inf if P != Q else _math.nan
+    else:
+        z = (P - Q) / _math.sqrt(4.0 * S)
+    if _math.isnan(z):
+        p = _math.nan
+    elif alternative == "two-sided":
+        p = _bi.min(1.0, 2.0 * norm.sf(abs(z)))
+    elif alternative == "greater":
+        p = norm.sf(z)
+    elif alternative == "less":
+        p = norm.cdf(z)
+    else:
+        raise ValueError("alternative must be 'two-sided', 'less' or "
+                         "'greater'")
+    return _SomersDResult(float(d), float(p), A)
 
 
 class _TheilslopesResult(tuple):

@@ -25,6 +25,7 @@ from __future__ import annotations
 import builtins as _bi
 import cmath as _cmath
 import math as _math
+import re
 import struct as _struct
 import warnings as _warnings
 
@@ -361,6 +362,54 @@ def _gather_rows_nd(a, idx):
     if depth >= 3:
         return ndlist(out)
     return marr(out)
+
+
+def _assign_with_mask(a, i, j, value):
+    """x[i, j] = value when exactly one of i, j is a boolean mask.
+
+    numpy selects the True positions along that axis. The mask is stored
+    as 1.0/0.0, and without this it was read as a list of indices: with
+    three True entries out of four the assignment demanded four values.
+    Returns False when no mask is involved, leaving the other paths.
+    """
+    n, m = a.shape
+    im, jm = _bool_index(i, n), _bool_index(j, m)
+    if (im is None) == (jm is None):
+        return False
+
+    def positions(k, size):
+        if isinstance(k, slice):
+            return list(range(size))[k], False
+        if isinstance(k, (int, float)) and not isinstance(k, bool):
+            return [int(k) % size], True
+        vals = k._flat() if isinstance(k, marr) else list(k)
+        return [int(v) % size for v in vals], False
+
+    rows, _ = (im, False) if im is not None else positions(i, n)
+    cols, _ = (jm, False) if jm is not None else positions(j, m)
+    va = asarray(value) if not isinstance(value, (int, float)) else None
+    if va is None:
+        flat = [float(value)]
+    else:
+        flat = [float(v) for v in va._flat()]
+    shape = tuple(va.shape) if va is not None else ()
+    R, C = len(rows), len(cols)
+    if len(flat) == 1:
+        block = [[flat[0]] * C for _ in range(R)]
+    elif len(flat) == R * C and (len(shape) != 1 or R == 1 or C == 1):
+        block = [flat[r * C:(r + 1) * C] for r in range(R)]
+    elif len(shape) == 1 and len(flat) == C:
+        block = [list(flat) for _ in range(R)]
+    elif len(shape) == 2 and shape == (R, 1):
+        block = [[flat[r]] * C for r in range(R)]
+    else:
+        raise ValueError("shape mismatch: value array of shape %r could not "
+                         "be broadcast to indexing result of shape (%d, %d)"
+                         % (shape, R, C))
+    for r, rr in enumerate(rows):
+        for c, cc in enumerate(cols):
+            a.data[rr][cc] = block[r][c]
+    return True
 
 
 class marr:
@@ -869,6 +918,13 @@ class marr:
 
     def astype(self, dtype=None, copy=True):
         del copy
+        m = re.fullmatch(r"(timedelta64|datetime64)\[(D|h|m|s)\]",
+                         str(dtype)) if isinstance(dtype, str) else None
+        if m:
+            kind, unit = m.groups()
+            if kind == "timedelta64":
+                return oarr([timedelta64(int(v), unit) for v in self._flat()])
+            raise TypeError("cannot cast numbers to datetime64 directly")
         name = _dtype_name(dtype)
         if _is_bool_dtype(dtype) or name == "bool":
             out = self._map(lambda v: 1.0 if v != 0 else 0.0)
@@ -1020,6 +1076,8 @@ class marr:
             return
         if isinstance(idx, tuple) and len(self.shape) == 2:
             i, j = idx
+            if _assign_with_mask(self, i, j, value):
+                return
             if isinstance(i, (marr, list)) and isinstance(j, (marr, list)) \
                     and not isinstance(i, slice):
                 # paired integer index arrays, as returned by
@@ -1845,7 +1903,40 @@ class _CStack:
 c_ = _CStack()
 
 
+def _datetime_dtype_unit(dtype):
+    """'D' for dtype='datetime64[D]' (or the datetime64 class), else None."""
+    if dtype is None:
+        return None
+    if dtype is datetime64:
+        return "D"
+    m = re.fullmatch(r"datetime64(?:\[(D|h|m|s)\])?", str(dtype)) \
+        if isinstance(dtype, str) else None
+    if m:
+        return m.group(1) or "D"
+    return None
+
+
+def _datetime_array(x, unit):
+    """numpy.array(values, dtype='datetime64[unit]') as an object array of
+    datetime64 values: ISO strings, dates and datetime64 are accepted."""
+    if isinstance(x, (str, bytes)) or not hasattr(x, "__iter__"):
+        vals = [x]
+    elif hasattr(x, "tolist") and not isinstance(x, oarr):
+        vals = x.tolist()
+        vals = vals if isinstance(vals, list) else [vals]
+    else:
+        vals = list(x)
+    out = oarr([datetime64(v if not isinstance(v, datetime64) else v, unit)
+                if not isinstance(v, datetime64) else datetime64(v, unit)
+                for v in vals])
+    out._dt_unit = unit
+    return out
+
+
 def asarray(x, dtype=None):
+    _dtu = _datetime_dtype_unit(dtype)
+    if _dtu is not None:
+        return _datetime_array(x, _dtu)
     if isinstance(x, (list, tuple)) and x and _bi.all(
             isinstance(v, (marr, oarr)) and len(getattr(v, "shape", ())) == 2
             for v in x):
@@ -1897,6 +1988,9 @@ def asarray(x, dtype=None):
 
 def array(x, dtype=None, copy=True, ndmin=0):
     del copy
+    _dtu = _datetime_dtype_unit(dtype)
+    if _dtu is not None:
+        return _datetime_array(x, _dtu)
     if isinstance(x, (list, tuple)) and x and _bi.all(
             isinstance(v, marr) and len(v.shape) == 2 for v in x):
         return ndlist([v.tolist() for v in x])
@@ -2321,10 +2415,7 @@ def _fsum(it):
     """math.fsum with numpy's answers for the cases it raises on:
     inf + -inf is nan, an intermediate overflow is inf, and a complex
     term is summed as numpy sums it rather than rejected."""
-    vals = list(it)
-    if _bi.any(isinstance(v, complex) for v in vals):
-        # math.fsum is real-only; numpy sums complex termwise
-        return _bi.sum(vals, complex(0.0, 0.0))
+    vals = it if isinstance(it, list) else list(it)
     try:
         return _math.fsum(vals)
     except ValueError:
@@ -2332,6 +2423,10 @@ def _fsum(it):
     except OverflowError:
         return _INF
     except TypeError:
+        # math.fsum is real-only; numpy sums complex termwise. Trying the
+        # real sum first keeps the common case free of a scan per call.
+        if _bi.any(isinstance(v, complex) for v in vals):
+            return _bi.sum(vals, complex(0.0, 0.0))
         return _bi.sum(vals)
 
 
@@ -2392,12 +2487,15 @@ class _PairUfunc:
             return marr(rows)
         return marr([self.accumulate(marr(row)).data for row in arr.data])
 
-    def reduce(self, a, axis=None):
+    def reduce(self, a, axis=0, keepdims=False):
+        """numpy ufunc.reduce: axis 0 by default, axis=None for all.
+        The default used to be None, so maximum.reduce of a matrix
+        returned one number instead of the column maxima."""
         arr = asarray(a)
-        if axis is None:
+        if axis is None or len(arr.shape) == 1:
             return self._red(arr._flat())
-        return arr.max(axis=axis) if self._red is _bi.max \
-            else arr.min(axis=axis)
+        return arr.max(axis=axis, keepdims=keepdims) \
+            if self._red is _bi.max else arr.min(axis=axis, keepdims=keepdims)
 
 
 maximum = _PairUfunc(_maximum_fn, _bi.max)
@@ -3068,14 +3166,36 @@ class _SplitMix64:
                     return [float(x) for x in v]
                 return [float(v)]
             lo, hi = _vals(low), _vals(high)
-            n = _bi.max(len(lo), len(hi))  # the module max() is the axis reducer
-            if size is not None:
-                n = int(size[0]) if isinstance(size, (tuple, list)) \
-                    else int(size)
-            return marr([lo[i % len(lo)] +
-                         (hi[i % len(hi)] - lo[i % len(lo)]) *
-                         ((self._next() >> 11) / (1 << 53))
-                         for i in range(n)])
+            width = _bi.max(len(lo), len(hi))  # module max() is the reducer
+            for b in (lo, hi):
+                if len(b) not in (1, width):
+                    raise ValueError("low and high could not be broadcast "
+                                     "together")
+            if size is None:
+                shape = (width,)
+            elif isinstance(size, (tuple, list)):
+                shape = tuple(int(d) for d in size)
+            else:
+                shape = (int(size),)
+            # numpy broadcasts 1-D bounds against the LAST axis: with
+            # size (n, 2) and two bounds, column j draws from bound j.
+            # This used to keep only size[0] and cycle bounds by row,
+            # returning an (n,) vector from the wrong boxes.
+            if width > 1 and shape[-1] != width:
+                raise ValueError("shape mismatch: bounds of length %d cannot"
+                                 " broadcast to size %r" % (width, shape))
+            total = 1
+            for d in shape:
+                total *= d
+            flat = []
+            for i in range(total):
+                j = i % shape[-1]
+                a = lo[j % len(lo)]
+                b = hi[j % len(hi)]
+                flat.append(a + (b - a) * ((self._next() >> 11) / (1 << 53)))
+            if len(shape) == 1:
+                return marr(flat)
+            return marr(flat).reshape(shape)
 
         def one():
             return low + (high - low) * (self._next() >> 11) / (1 << 53)
@@ -3754,12 +3874,69 @@ def trace(a):
                             for i in range(_bi.min(aa.shape))))
 
 
-def logaddexp(a, b):
-    def f(x, y):
-        hi, lo = (x, y) if x >= y else (y, x)
-        return hi + _math.log1p(_math.exp(lo - hi))
-    return asarray(a)._zip(b, f) if isinstance(a, (marr, list, tuple)) \
-        or isinstance(b, (marr, list, tuple)) else f(float(a), float(b))
+def _logaddexp2(x, y):
+    if x == -_math.inf:
+        return y
+    if y == -_math.inf:
+        return x
+    hi, lo = (x, y) if x >= y else (y, x)
+    return hi + _math.log1p(_math.exp(lo - hi))
+
+
+def _logaddexp_call(a, b):
+    return asarray(a)._zip(b, _logaddexp2) if isinstance(a, (marr, list, tuple)) \
+        or isinstance(b, (marr, list, tuple)) else _logaddexp2(float(a), float(b))
+
+
+class _FoldUfunc:
+    """A binary ufunc with numpy's reduce and accumulate, built from a
+    scalar fold. reduce defaults to axis 0, as numpy's does."""
+
+    def __init__(self, call, fold, identity):
+        self._call, self._fold, self._id = call, fold, identity
+
+    def __call__(self, a, b):
+        return self._call(a, b)
+
+    def _fold_list(self, vals):
+        acc = self._id
+        for v in vals:
+            acc = self._fold(acc, v)
+        return acc
+
+    def reduce(self, a, axis=0, keepdims=False):
+        arr = asarray(a)
+        if axis is None or len(arr.shape) == 1:
+            return self._fold_list(arr._flat())
+        if len(arr.shape) != 2:
+            raise ValueError("reduce supports rank 1 and 2 here")
+        n, m = arr.shape
+        if axis in (0, -2):
+            out = [self._fold_list([arr.data[i][j] for i in range(n)])
+                   for j in range(m)]
+            return marr([out]) if keepdims else marr(out)
+        if axis in (1, -1):
+            out = [self._fold_list(row) for row in arr.data]
+            return marr([[v] for v in out]) if keepdims else marr(out)
+        raise AxisError("axis %r is out of bounds" % (axis,))
+
+    def accumulate(self, a, axis=0):
+        arr = asarray(a)
+        if len(arr.shape) == 1:
+            out, acc = [], self._id
+            for v in arr._flat():
+                acc = self._fold(acc, v)
+                out.append(acc)
+            return marr(out)
+        n, m = arr.shape
+        if axis in (0, -2):
+            cols = [self.accumulate(marr([arr.data[i][j] for i in range(n)]))._flat()
+                    for j in range(m)]
+            return marr([[cols[j][i] for j in range(m)] for i in range(n)])
+        return marr([self.accumulate(marr(row))._flat() for row in arr.data])
+
+
+logaddexp = _FoldUfunc(_logaddexp_call, _logaddexp2, -_math.inf)
 
 
 def tile(x, reps):
@@ -4310,6 +4487,8 @@ linalg.cond = _LinalgExt.cond
 
 
 def prod(x, axis=None, keepdims=False):
+    if isinstance(x, ndlist):
+        return x.prod(axis=axis, keepdims=keepdims)
     axis = _axis_arg(x, axis)
     _check_axis(asarray(x), axis)
     def _p(vals):
@@ -4862,8 +5041,22 @@ def _ufunc_out(res, out, where):
     else:
         w = asarray(where)
         mask = [bool(v) for v in w._flat()]
+        tshape = tuple(target.shape)
+        wshape = tuple(getattr(w, "shape", (len(mask),)))
         if len(mask) == 1:
             mask = mask * len(rf)
+        elif len(tshape) == 2 and len(mask) != len(rf):
+            # numpy broadcasts where= against the output: a length-m (or
+            # (1, m)) mask applies to every row, an (n, 1) mask to every
+            # column. It used to be read flat and ran off the end.
+            n, m = tshape
+            if len(mask) == m and wshape in ((m,), (1, m)):
+                mask = [mask[c] for _ in range(n) for c in range(m)]
+            elif len(mask) == n and wshape == (n, 1):
+                mask = [mask[r] for r in range(n) for _ in range(m)]
+            else:
+                raise ValueError("where= of shape %r cannot broadcast to "
+                                 "%r" % (wshape, tshape))
     if len(target.shape) == 2:
         k = 0
         for r in range(target.shape[0]):
@@ -5231,6 +5424,14 @@ def _batched_matmul(a, b):
     A = a.tolist() if hasattr(a, "tolist") else a
     B = b.tolist() if hasattr(b, "tolist") else b
     sa, sb = _list_shape(A), _list_shape(B)
+    # numpy: a 1-D left operand is a row, a 1-D right operand a column,
+    # and that axis is dropped from the result afterwards
+    if len(sa) == 1 and len(sb) >= 3:
+        out = _batched_matmul([A], B)
+        return marr([row[0] for row in out.tolist()])
+    if len(sb) == 1 and len(sa) >= 3:
+        out = _batched_matmul(A, [[v] for v in B])
+        return marr([[r[0] for r in blk] for blk in out.tolist()])
     if len(sa) < 2 or len(sb) < 2:
         raise ValueError("matmul needs at least 2-D operands")
 
@@ -6014,15 +6215,25 @@ def histogram(x, bins=10, range=None, density=False, weights=None):  # noqa: A00
                            for i, c in enumerate(counts._flat())])
         return counts, edges
     f = asarray(x)._flat()
-    lo = _bi.min(f) if range is None else range[0]
-    hi = _bi.max(f) if range is None else range[1]
     if isinstance(bins, (list, tuple, marr)):
+        # explicit edges: the data range is irrelevant, so empty data
+        # just gives zero counts (it used to crash computing min([]))
         edges = asarray(bins)._flat()
     else:
+        if range is not None:
+            lo, hi = float(range[0]), float(range[1])
+        elif f:
+            lo, hi = float(_bi.min(f)), float(_bi.max(f))
+        else:
+            lo, hi = 0.0, 1.0               # numpy's range for no data
+        if lo == hi:
+            # numpy widens a degenerate range by half a unit each side
+            lo, hi = lo - 0.5, hi + 0.5
         step = (hi - lo) / bins
-        edges = [lo + i * step for i in _bi.range(bins + 1)] \
-            if hasattr(_bi, "range") else [lo + i * step
-                                           for i in list(__import__("builtins").range(bins + 1))]
+        # numpy builds edges with linspace, which pins the last edge to
+        # hi exactly; lo + bins*step can land a rounding error below hi,
+        # which silently dropped the maximum observation from every bin
+        edges = [lo + i * step for i in range_(bins)] + [hi]
     counts = [0.0] * (len(edges) - 1)
     for v in f:
         if v < edges[0] or v > edges[-1]:
@@ -8077,21 +8288,152 @@ complex128 = complex
 NDArray = marr          # typing shim for `from numpy.typing import`
 
 
-class datetime64:
-    """Thin ISO-date wrapper for the single call site using it."""
+_DT_UNITS = {"D": 86400, "h": 3600, "m": 60, "s": 1}
 
-    def __init__(self, value):
-        import datetime as _dt
-        if isinstance(value, str):
-            self._d = _dt.datetime.fromisoformat(value)
-        else:
-            self._d = value
 
-    def __repr__(self):
-        return "datetime64(%r)" % self._d.isoformat()
+def _dt_unit_of(text):
+    """numpy's unit for an ISO string: the finest component given."""
+    if "T" not in text and " " not in text:
+        return "D"
+    clock = re.split("[T ]", text, 1)[1]
+    parts = clock.split(":")
+    return {1: "h", 2: "m"}.get(len(parts), "s")
+
+
+class timedelta64:
+    """numpy.timedelta64 at day/hour/minute/second resolution."""
+
+    def __init__(self, value, unit="D"):
+        if unit not in _DT_UNITS:
+            raise ValueError("timedelta64 unit %r is not supported" % (unit,))
+        self.value, self.unit = int(value), unit
+
+    def _seconds(self):
+        return self.value * _DT_UNITS[self.unit]
 
     def item(self):
-        return self._d
+        import datetime as _dt
+        return _dt.timedelta(seconds=self._seconds())
+
+    def __repr__(self):
+        return "numpy.timedelta64(%d,%r)" % (self.value, self.unit)
+
+    def __str__(self):
+        # numpy prints the bare count and the plural unit name
+        return "%d %s" % (self.value, {"D": "days", "h": "hours",
+                                       "m": "minutes", "s": "seconds"}[self.unit])
+
+    def __eq__(self, other):
+        if isinstance(other, timedelta64):
+            return self._seconds() == other._seconds()
+        return NotImplemented
+
+    def __hash__(self):
+        return hash(self._seconds())
+
+    def __int__(self):
+        return self.value
+
+    def __float__(self):
+        return float(self.value)
+
+
+class datetime64:
+    """numpy.datetime64 at day/hour/minute/second resolution.
+
+    It used to be a thin ISO wrapper with no arithmetic, so the numpy
+    idiom base + offsets.astype("timedelta64[D]") crashed. Adding an
+    integer shifts by the value's own unit, as numpy does; adding a
+    timedelta64 shifts by that; subtracting two gives a timedelta64.
+    """
+
+    def __init__(self, value, unit=None):
+        import datetime as _dt
+        if isinstance(value, datetime64):
+            self._d, self.unit = value._d, (unit or value.unit)
+            return
+        if isinstance(value, str):
+            text = value.strip()
+            self._d = _dt.datetime.fromisoformat(text)
+            self.unit = unit or _dt_unit_of(text)
+        elif isinstance(value, _dt.datetime):
+            self._d, self.unit = value, unit or "s"
+        elif isinstance(value, _dt.date):
+            self._d = _dt.datetime(value.year, value.month, value.day)
+            self.unit = unit or "D"
+        else:
+            raise TypeError("cannot convert %r to datetime64" % (value,))
+        if self.unit not in _DT_UNITS:
+            raise ValueError("datetime64 unit %r is not supported" % (self.unit,))
+        if self.unit == "D":
+            self._d = self._d.replace(hour=0, minute=0, second=0,
+                                      microsecond=0)
+
+    def _shift(self, seconds, unit):
+        import datetime as _dt
+        fine = _bi.min((self.unit, unit), key=lambda u: _DT_UNITS[u])
+        return datetime64(self._d + _dt.timedelta(seconds=seconds), fine)
+
+    def __add__(self, other):
+        if isinstance(other, (marr, oarr, list, tuple)):
+            vals = other._flat() if isinstance(other, marr) else list(other)
+            return oarr([self + v for v in vals])
+        if isinstance(other, timedelta64):
+            return self._shift(other._seconds(), other.unit)
+        if isinstance(other, (int, float)) and not isinstance(other, bool):
+            if float(other) != int(other):
+                raise TypeError("datetime64 + non-integer is undefined")
+            return self._shift(int(other) * _DT_UNITS[self.unit], self.unit)
+        import datetime as _dt
+        if isinstance(other, _dt.timedelta):
+            return self._shift(other.total_seconds(), "s")
+        return NotImplemented
+
+    __radd__ = __add__
+
+    def __sub__(self, other):
+        if isinstance(other, datetime64):
+            fine = _bi.min((self.unit, other.unit), key=lambda u: _DT_UNITS[u])
+            secs = int((self._d - other._d).total_seconds())
+            return timedelta64(secs // _DT_UNITS[fine], fine)
+        if isinstance(other, timedelta64):
+            return self._shift(-other._seconds(), other.unit)
+        if isinstance(other, (int, float)) and not isinstance(other, bool):
+            return self + (-int(other))
+        return NotImplemented
+
+    def __eq__(self, other):
+        if isinstance(other, datetime64):
+            return self._d == other._d
+        return NotImplemented
+
+    def __lt__(self, other):
+        return self._d < datetime64(other)._d
+
+    def __le__(self, other):
+        return self._d <= datetime64(other)._d
+
+    def __gt__(self, other):
+        return self._d > datetime64(other)._d
+
+    def __ge__(self, other):
+        return self._d >= datetime64(other)._d
+
+    def __hash__(self):
+        return hash(self._d)
+
+    def __str__(self):
+        if self.unit == "D":
+            return self._d.date().isoformat()
+        return self._d.isoformat(timespec={"h": "hours", "m": "minutes",
+                                           "s": "seconds"}[self.unit])
+
+    def __repr__(self):
+        return "numpy.datetime64(%r)" % str(self)
+
+    def item(self):
+        """numpy: a day-unit datetime64 gives a datetime.date."""
+        return self._d.date() if self.unit == "D" else self._d
 
 
 # --------------------------------------------------------------- random tail
@@ -8924,3 +9266,106 @@ for _name, _op in (("subtract", lambda x, y: x - y), ("multiply", lambda x, y: x
             pass
 if not hasattr(add, "outer"):
     type(add).outer = staticmethod(_outer_of(lambda x, y: x + y))
+
+
+
+# ------------------------------------------------ method axis normalisation
+#
+# The module-level reductions pass ``axis`` through _axis_arg, which
+# turns numpy's tuple form into what the rank-2 core understands:
+# (0,) -> 0, (0, 1) -> None. The marr *methods* never did, so
+# a.sum(axis=(0,)) reduced along axis 1 and a.sum(axis=(0, 1)) left a
+# vector -- silent wrong answers (total correlation came out negative
+# through exactly this). Every marr reduction method now normalises
+# first, and prod exists as a method on both array classes.
+
+def _with_axis_normalised(method):
+    def wrapper(self, axis=None, *args, **kwargs):
+        return method(self, _axis_arg(self, axis), *args, **kwargs)
+    wrapper.__name__ = method.__name__
+    wrapper.__qualname__ = method.__qualname__
+    wrapper.__doc__ = method.__doc__
+    return wrapper
+
+
+for _name in ("sum", "mean", "var", "std", "max", "min", "all", "any"):
+    setattr(marr, _name, _with_axis_normalised(getattr(marr, _name)))
+del _name
+
+
+def _marr_prod(self, axis=None, dtype=None, out=None, keepdims=False):
+    """numpy.ndarray.prod."""
+    del dtype, out
+    return prod(self, axis=axis, keepdims=keepdims)
+
+
+marr.prod = _marr_prod
+
+
+def _product(vals):
+    out = 1.0
+    for v in vals:
+        out *= v
+    return float(out)
+
+
+def _ndlist_prod(self, axis=None, dtype=None, out=None, keepdims=False):
+    """numpy.ndarray.prod on a rank >= 3 array."""
+    del dtype, out
+    return _ndlist_reduce(self, axis, keepdims, _product)
+
+
+ndlist.prod = _ndlist_prod
+
+
+def _ndlist_bool_reduce(self, axis, keepdims, test):
+    out = _ndlist_reduce(self, axis, keepdims,
+                         lambda vals: 1.0 if test(vals) else 0.0)
+    if isinstance(out, (int, float)):
+        return bool(out)
+    out._is_mask = True
+    return out
+
+
+def _ndlist_any(self, axis=None, out=None, keepdims=False):
+    """numpy.ndarray.any on a rank >= 3 array."""
+    del out
+    return _ndlist_bool_reduce(self, axis, keepdims,
+                               lambda vals: _bi.any(v != 0 for v in vals))
+
+
+def _ndlist_all(self, axis=None, out=None, keepdims=False):
+    """numpy.ndarray.all on a rank >= 3 array."""
+    del out
+    return _ndlist_bool_reduce(self, axis, keepdims,
+                               lambda vals: _bi.all(v != 0 for v in vals))
+
+
+ndlist.any = _ndlist_any
+ndlist.all = _ndlist_all
+
+
+def _oarr_elementwise(a, b, op):
+    if isinstance(b, (oarr, marr, list, tuple)):
+        bv = b._flat() if isinstance(b, marr) else list(b)
+        if len(bv) != len(a):
+            raise ValueError("operands could not be broadcast together with "
+                             "shapes (%d,) (%d,)" % (len(a), len(bv)))
+        return oarr([op(x, y) for x, y in zip(a, bv)])
+    return oarr([op(x, b) for x in a])
+
+
+oarr.__sub__ = lambda self, o: _oarr_elementwise(self, o, lambda x, y: x - y)
+oarr.__rsub__ = lambda self, o: _oarr_elementwise(self, o, lambda x, y: y - x)
+oarr.__add__ = lambda self, o: _oarr_elementwise(self, o, lambda x, y: x + y)
+oarr.__radd__ = lambda self, o: _oarr_elementwise(self, o, lambda x, y: y + x)
+
+
+def _xor_call(a, b):
+    if isinstance(a, (marr, list, tuple)) or isinstance(b, (marr, list, tuple)):
+        return _typed(asarray(a)._zip(b, lambda x, y: float(int(x) ^ int(y))), int)
+    return int(a) ^ int(b)
+
+
+# numpy.bitwise_xor with reduce/accumulate (callers fold a hash with it)
+bitwise_xor = _FoldUfunc(_xor_call, lambda x, y: int(x) ^ int(y), 0)

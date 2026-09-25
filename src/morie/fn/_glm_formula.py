@@ -488,30 +488,124 @@ class _LinearModel(object):
                 for i in range(rows)]
 
 
+def _glm_robust_cov(model, fit, family, ct, cov_kwds):
+    """Sandwich covariance for a fitted GLM: H^-1 S H^-1 with H the
+    expected information and S the outer product of the per-observation
+    scores, summed within clusters for cov_type="cluster". HC1 and the
+    cluster form carry statsmodels' small-sample factors; HC2 and HC3
+    divide each score by (1 - h) and (1 - h)^2 with h the leverage of
+    the weighted design."""
+    fam = _glm_core.FAMILIES[str(family).lower()]
+    X = [[1.0] + list(r) for r in model.X] if model.intercept else \
+        [list(r) for r in model.X]
+    y = [float(v) for v in model.y]
+    n, k = len(X), len(X[0])
+    pw = model.weights or [1.0] * n
+    mu, eta = fit["fitted"], fit["linear_predictor"]
+    scale = fit["dispersion"]
+    # R's sandwich (estfun.glm, bread.glm, hatvalues.glm) uses the
+    # working weights of the final IRLS step -- the ones that produced
+    # beta -- and the working residuals at the converged fit; recomputing
+    # the weights at the converged eta differs by one scoring step
+    W = [float(v) for v in fit["working_weights"]]
+    u = [W[i] * (y[i] - mu[i]) / fam["mu_eta"](eta[i]) / scale
+         for i in range(n)]
+    H = [[sum(W[i] * X[i][a] * X[i][b] for i in range(n)) / scale
+          for b in range(k)] for a in range(k)]
+    Hi = _glm_core._inv(H)
+    scores = [[u[i] * X[i][a] for a in range(k)] for i in range(n)]
+    if ct in ("HC2", "HC3"):
+        for i in range(n):
+            h = W[i] / scale * sum(X[i][a] * Hi[a][b] * X[i][b]
+                                   for a in range(k) for b in range(k))
+            f = (1.0 - h) ** (0.5 if ct == "HC2" else 1.0)
+            scores[i] = [v / f for v in scores[i]]
+    if ct == "CLUSTER":
+        groups = cov_kwds.get("groups")
+        if groups is None:
+            raise ValueError("cov_type='cluster' needs cov_kwds={'groups': ...}")
+        gl = list(groups.values if hasattr(groups, "values") else groups)
+        if len(gl) != n:
+            raise ValueError("groups has %d entries for %d observations"
+                             % (len(gl), n))
+        sums = {}
+        for i, g in enumerate(gl):
+            acc = sums.setdefault(g, [0.0] * k)
+            for a in range(k):
+                acc[a] += scores[i][a]
+        rows = list(sums.values())
+        G = len(rows)
+        corr = (G / (G - 1.0)) * ((n - 1.0) / (n - k)) \
+            if cov_kwds.get("use_correction", True) else 1.0
+    elif ct in ("HC0", "HC1", "HC2", "HC3"):
+        rows = scores
+        corr = n / (n - k) if ct == "HC1" else 1.0
+    else:
+        raise ValueError("cov_type must be nonrobust, HC0-HC3 or cluster; "
+                         "got %r" % (ct,))
+    S = [[sum(r[a] * r[b] for r in rows) for b in range(k)] for a in range(k)]
+    M = [[sum(Hi[a][c] * S[c][d] * Hi[d][b] for c in range(k) for d in range(k))
+          for b in range(k)] for a in range(k)]
+    return [[corr * M[a][b] for b in range(k)] for a in range(k)]
+
+
 class _GLMModel(object):
-    def __init__(self, formula, data, family="gaussian", weights=None):
+    def __init__(self, formula, data, family="gaussian", weights=None,
+                 var_weights=None, freq_weights=None):
         self.formula = formula
         self.y, self.X, self.names, self.intercept = _design(formula, data)
         self.terms = _expand(formula_terms(formula)[1])
         self.family = family
-        self.weights = None if weights is None else \
-            [float(v) for v in weights]
+        if freq_weights is not None:
+            # frequency weights also change the observation count and so
+            # the residual degrees of freedom; treating them as variance
+            # weights would give wrong standard errors, so refuse
+            raise NotImplementedError(
+                "glm: freq_weights are not supported natively; use "
+                "var_weights for analytic (survey) weights")
+        if weights is not None and var_weights is not None:
+            raise ValueError("glm: give weights or var_weights, not both")
+        w = var_weights if var_weights is not None else weights
+        # statsmodels' var_weights are the prior weights of the IRLS; they
+        # used to fall into **kw and be dropped, so every weighted GLM
+        # fitted through the formula interface was silently unweighted
+        self.weights = None if w is None else \
+            [float(v) for v in (w.values if hasattr(w, "values") else w)]
 
-    def fit(self, *a, **kw):
+    def fit(self, cov_type="nonrobust", cov_kwds=None, **kw):
         fam = self.family
         if not isinstance(fam, str):
             fam = getattr(fam, "name", None) or \
                 type(fam).__name__.lower()
+        # statsmodels' fit(maxiter=, tol=) reach the IRLS loop
+        extra = {}
+        if "maxiter" in kw:
+            extra["max_iter"] = int(kw["maxiter"])
+        if "tol" in kw:
+            extra["tol"] = float(kw["tol"])
         fit = _glm_core.glm(self.y, self.X, family=fam,
                             add_intercept=self.intercept,
-                            weights=self.weights)
+                            weights=self.weights, **extra)
         self._fit = fit
-        return _Result(fit["coef"], fit["se"], self.names, len(self.y),
+        ct = (cov_type or "nonrobust").upper()
+        cov, se = fit.get("vcov"), fit["se"]
+        if ct != "NONROBUST":
+            cov = _glm_robust_cov(self, fit, fam, ct, cov_kwds or {})
+            se = [math.sqrt(cov[j][j]) if cov[j][j] > 0 else float("nan")
+                  for j in range(len(cov))]
+            stat = [b / e if e == e and e else float("nan")
+                    for b, e in zip(fit["coef"], se)]
+            fit = dict(fit)
+            fit["se"], fit["vcov"], fit["statistic"] = se, cov, stat
+            fit["p_value"] = [2.0 * _glm_core._norm_sf(abs(t)) for t in stat]
+            fit["cov_type"] = cov_type
+        self._fit = fit
+        return _Result(fit["coef"], se, self.names, len(self.y),
                        fit["df_residual"],
                        tvalues=fit.get("statistic"),
                        pvalues=fit.get("p_value", fit.get("pvalues")),
                        fittedvalues=fit.get("fitted"),
-                       cov=fit.get("vcov"), extra=fit,
+                       cov=cov, extra=fit,
                        model=self)
 
     def predict_from(self, data):
@@ -533,9 +627,11 @@ def wls(formula, data, weights=None, **kw):
     return _LinearModel(formula, data, weights=weights)
 
 
-def glm(formula, data, family="gaussian", weights=None, **kw):
+def glm(formula, data, family="gaussian", weights=None, var_weights=None,
+        freq_weights=None, **kw):
     """Generalised linear model from a formula."""
-    return _GLMModel(formula, data, family=family, weights=weights)
+    return _GLMModel(formula, data, family=family, weights=weights,
+                     var_weights=var_weights, freq_weights=freq_weights)
 
 
 def gee(*a, **k):
