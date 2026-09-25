@@ -1,28 +1,28 @@
 """Tests for ksr066.kosorok_ch3_z_estimator_no_bias."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ksr066 import kosorok_ch3_z_estimator_no_bias
 
 
 def test_ksr066_basic():
-    """Test basic functionality."""
-    theta_n = np.random.default_rng(42).normal(0, 1, 100)
-    eta_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    l_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = kosorok_ch3_z_estimator_no_bias(theta_n, eta_n, theta, l_tilde, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    """An efficient score whose bias is second order in theta - theta0
+    satisfies the no-bias condition: bias / (n^-1/2 + |theta - theta0|)
+    shrinks along the sequence."""
+    ns = [100, 400, 1600, 6400]
+    th = [0.5 + n ** -0.5 for n in ns]
+    r = kosorok_ch3_z_estimator_no_bias(lambda t, n: (t - 0.5) ** 2, th, 0.5, ns)
+    assert r["holds"] is True
+    for b, t_, n in zip(r["bias"].tolist(), th, ns):
+        assert b == pytest.approx((t_ - 0.5) ** 2, rel=1e-12)
 
 
 def test_ksr066_edge():
-    """Test edge cases."""
-    theta_n = np.random.default_rng(42).normal(0, 1, 100)
-    eta_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    l_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = kosorok_ch3_z_estimator_no_bias(theta_n, eta_n, theta, l_tilde, n)
-    assert isinstance(result, dict)
+    """A constant first-order bias fails it."""
+    ns = [100, 400, 1600, 6400]
+    th = [0.5 + n ** -0.5 for n in ns]
+    assert kosorok_ch3_z_estimator_no_bias(lambda t, n: 0.1, th, 0.5, ns)["holds"] is False
+    with pytest.raises(ValueError, match="entries"):
+        kosorok_ch3_z_estimator_no_bias(lambda t, n: 0.0, th[:2], 0.5, ns)
+
+

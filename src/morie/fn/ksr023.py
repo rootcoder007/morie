@@ -68,7 +68,9 @@ def kosorok_cox_score_process(beta, z, time, event, t_grid=None):
         raise ValueError(f"beta has {b.size} entries for {Z.shape[1]} columns.")
     n, p = Z.shape
     w = np.exp(Z @ b)
-    et = np.sort(tv[ev == 1.0])
+    # distinct event times: each iteration below adds EVERY event at its
+    # time, so a repeated time counted tied events twice
+    et = np.unique(tv[ev == 1.0])
     if et.size == 0:
         raise ValueError("no events: the score process is identically zero.")
     tg = et if t_grid is None else np.atleast_1d(np.asarray(t_grid, dtype=float))

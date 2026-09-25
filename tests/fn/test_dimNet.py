@@ -1,25 +1,29 @@
 """Tests for dimNet.dimenet."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.dimNet import dimenet
+import pytest
+
+from morie.fn.dimNet import angle_between, bessel_basis, spherical_harmonic_basis, triplet_count
 
 
 def test_dimNet_basic():
-    """Test basic functionality."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    atom_types = np.random.default_rng(42).normal(0, 1, 100)
-    result = dimenet(coords, atom_types)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    """The angle at j, the radial basis sqrt(2/c) sin(n pi d / c) / d and
+    the Legendre angular basis, recomputed here."""
+    assert angle_between([1, 0, 0], [0, 0, 0], [0, 1, 0]) == pytest.approx(math.pi / 2, rel=1e-15)
+    assert angle_between([1, 1, 0], [0, 0, 0], [1, 0, 0]) == pytest.approx(math.pi / 4, rel=1e-14)
+    b = bessel_basis(1.3, cutoff=5.0, n_basis=3)
+    assert b == pytest.approx([math.sqrt(2 / 5) * math.sin(n * math.pi * 1.3 / 5) / 1.3 for n in (1, 2, 3)], rel=1e-14)
+    x = math.cos(0.7)
+    assert spherical_harmonic_basis(0.7, n_basis=4) == pytest.approx(
+        [1.0, x, (3 * x * x - 1) / 2, (5 * x ** 3 - 3 * x) / 2], rel=1e-14)
 
 
 def test_dimNet_edge():
-    """Test edge cases."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    atom_types = np.random.default_rng(42).normal(0, 1, 100)
-    result = dimenet(coords, atom_types)
-    assert isinstance(result, dict)
+    """Messages interact over triplets: a star with three leaves has six
+    ordered (k, j, i) paths through its centre and six directed edges."""
+    r = triplet_count({0: [1], 1: [0, 2, 3], 2: [1], 3: [1]})
+    assert (r["triplets"], r["pairs"]) == (6, 6)
 
 
 # --- appended: the module's own worked example as a gate -----------

@@ -693,8 +693,15 @@ class marr:
                     return marr([[v] for v in self._flat()[i]])
                 if isinstance(i, (int, float)):
                     return marr([self._flat()[int(i)]])
+                if len(self.shape) == 1:
+                    # x[mask, None] or x[idx_array, None]: the selected
+                    # elements as a column
+                    sel = self[i]
+                    return marr([[v] for v in sel._flat()])
                 raise ValueError("unsupported index")
             if i is None:                       # x[None, :] -> row
+                if len(self.shape) == 1 and not isinstance(j, slice):
+                    return marr([list(self[j]._flat())])
                 return marr([self._flat()])
             if len(self.shape) == 2:
                 # numpy: a boolean mask in one position selects along
@@ -4329,7 +4336,8 @@ def put_along_axis(a, idx, values, axis=-1):
     va = atleast_2d(asarray(values))
     for r in range(ia.shape[0]):
         for c in range(ia.shape[1]):
-            v = va.data[r][c if va.shape[1] > 1 else 0]
+            # values broadcast against idx, as numpy: one row serves all
+            v = va.data[r if va.shape[0] > 1 else 0][c if va.shape[1] > 1 else 0]
             if len(aa.shape) == 2:
                 aa.data[r][int(ia.data[r][c])] = float(v)
             else:
@@ -4987,8 +4995,9 @@ tan = _uf(_ieee(_math.tan))
 arctan = _uf(_math.atan)
 arcsin = _uf(_ieee(_math.asin))
 arccos = _uf(_ieee(_math.acos))
-sign = _uf(lambda v: v if v != v else
-           (0.0 if v == 0 else (1.0 if v > 0 else -1.0)))
+# numpy 2: the sign of a complex number is z / |z| (0 at 0)
+sign = _uf(lambda v: (v / abs(v) if v != 0 else 0j) if isinstance(v, complex) else
+           (v if v != v else (0.0 if v == 0 else (1.0 if v > 0 else -1.0))))
 floor = _uf(_ieee(_math.floor))
 ceil = _uf(_ieee(_math.ceil))
 _round0 = _uf(_ieee(lambda v: float(_bi.round(v))))
@@ -6242,6 +6251,16 @@ class ndlist(list):
 
     def __sub__(self, o):
         return self._ew(o, lambda a, b: a - b)
+
+    # scalar or array on the left: 1 - x, 2 + x, 1 / x (numpy's reflected
+    # operators; ``1 - x`` raised TypeError)
+    __radd__ = __add__
+
+    def __rsub__(self, o):
+        return self._ew(o, lambda a, b: b - a)
+
+    def __rtruediv__(self, o):
+        return self._ew(o, lambda a, b: b / a)
 
 
 def _nested_shape(x):
@@ -7836,6 +7855,34 @@ class carr:
 
     def copy(self):
         return carr(self)
+
+    def __setitem__(self, i, v):
+        """Item and slice assignment, as a numpy complex array allows."""
+        def vals(x, k):
+            if isinstance(x, carr):
+                return list(x.data)
+            if hasattr(x, "_flat"):
+                return [complex(t) for t in x._flat()]
+            if isinstance(x, (list, tuple)):
+                return [complex(t) for t in x]
+            return [complex(x)] * k
+        if self.rows is None:
+            if isinstance(i, slice):
+                idx = list(range(*i.indices(len(self.data))))
+                vs = vals(v, len(idx))
+                for k, j in enumerate(idx):
+                    self.data[j] = vs[k % len(vs)]
+            else:
+                self.data[int(i)] = complex(v)
+            return
+        w = len(self.rows[0]) if self.rows else 0
+        if isinstance(i, tuple):
+            r, c = i
+            self.rows[int(r)][int(c)] = complex(v)
+        else:
+            vs = vals(v, w)
+            self.rows[int(i)] = [vs[k % len(vs)] for k in range(w)]
+        self.data = [t for row in self.rows for t in row]
 
     def _shaped(self, flat):
         # a 2-D result keeps its rows; flattening them made fft2 output,

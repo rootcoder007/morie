@@ -62,15 +62,6 @@ def horowitz_deconvolution(y, sigma_u=0.5, bandwidth=None, grid=None, noise="lap
     th = T * h
     phi_K = np.where(np.abs(th) <= 1, (1 - th**2) ** 3, 0.0)
     # Inverse Fourier integral evaluated on `grid` by numerical quadrature
-    integrand = (
-        phi_K
-        * phi_Y
-        / np.maximum(np.abs(phi_U), 1e-10)
-        * np.sign(phi_U + 0j).conj()
-        / np.maximum(np.abs(phi_U), 1e-10)
-        * np.abs(phi_U)
-    )
-    # simpler: integrand = phi_K * phi_Y / phi_U
     integrand = phi_K * phi_Y / np.where(np.abs(phi_U) > 1e-10, phi_U, np.inf)
     f_hat = np.zeros(grid.size)
     for i, x0 in enumerate(grid):

@@ -88,6 +88,11 @@ def angle_between(r_k, r_j, r_i):
     Two configurations can share every pairwise distance in the
     message's own pair and differ here -- which is precisely what a
     distance-only model cannot see.
+
+    Examples
+    --------
+    >>> round(angle_between([1, 1, 0], [0, 0, 0], [1, 0, 0]), 12)
+    0.785398163397
     """
     a = [float(v) for v in k.vec(r_k)]
     b = [float(v) for v in k.vec(r_j)]

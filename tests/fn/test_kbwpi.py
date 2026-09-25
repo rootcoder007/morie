@@ -27,3 +27,12 @@ class TestKbwpi:
     def test_raises_small(self):
         with pytest.raises(ValueError):
             kbwpi(np.array([1.0]))
+
+
+def test_kbwpi_matches_R_bw_SJ():
+    """Equals R stats::bw.SJ on the same data: method "ste" (solved to
+    tol = 1e-13 in R) and "dpi"."""
+    import math
+    x = [math.sin(1.7 * i) * 2 + 0.3 * math.cos(0.37 * i) for i in range(200)]
+    assert kbwpi(x)["bw_opt"] == pytest.approx(0.27073444708748634, rel=1e-9)
+    assert kbwpi(x, method="dpi")["bw_opt"] == pytest.approx(0.31627279834784933, rel=1e-12)

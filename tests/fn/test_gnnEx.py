@@ -1,24 +1,24 @@
 """Tests for gnnEx.gnn_explainer."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.gnnEx import gnn_explainer
+import pytest
+
+from morie.fn.gnnEx import computation_graph, conditional_entropy
 
 
 def test_gnnEx_basic():
-    """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    graph = np.array([[0, 1, 0], [0, 0, 1], [0, 0, 0]], dtype=float)
-    node = np.random.default_rng(42).normal(0, 1, 100)
-    result = gnn_explainer(model, graph, node)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    """The L-hop computation graph and H(Y) in nats."""
+    adj = {0: [1], 1: [0, 2], 2: [1, 3], 3: [2]}
+    r = computation_graph(adj, 0, 2)
+    assert r["nodes"] == [0, 1, 2] and r["edges"] == [(0, 1), (1, 2)]
+    assert computation_graph(adj, 0, 3)["nodes"] == [0, 1, 2, 3]
+    assert conditional_entropy([0.25, 0.75]) == pytest.approx(
+        -(0.25 * math.log(0.25) + 0.75 * math.log(0.75)), rel=1e-15)
 
 
 def test_gnnEx_edge():
-    """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    graph = np.array([[0, 1, 0], [0, 0, 1], [0, 0, 0]], dtype=float)
-    node = np.random.default_rng(42).normal(0, 1, 100)
-    result = gnn_explainer(model, graph, node)
-    assert isinstance(result, dict)
+    """A certain prediction carries no entropy."""
+    assert conditional_entropy([1.0, 0.0]) == pytest.approx(0.0, abs=1e-15)
+
+

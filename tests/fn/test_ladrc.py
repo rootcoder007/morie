@@ -1,19 +1,20 @@
 """Tests for ladrc.ladder_of_causation."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ladrc import ladder_of_causation
 
 
 def test_ladrc_basic():
-    """Test basic functionality."""
-    x = np.arange(10, dtype=float)
-    y = x * 2 + 1
-    result = ladder_of_causation(x, y)
-    assert np.all(np.isfinite(np.asarray(result["statistic"], dtype=float)))  # N6: was a generator-guessed value
+    """Table 2.1: association needs only the joint distribution, intervention
+    a causal graph, counterfactuals a full SCM."""
+    got = [(ladder_of_causation(k)["needsgraph"], ladder_of_causation(k)["needsscm"]) for k in (1, 2, 3)]
+    assert got == [(False, False), (True, False), (True, True)]
+    assert [ladder_of_causation(k)["level"] for k in (1, 2, 3)] == [1, 2, 3]
 
 
 def test_ladrc_edge():
-    """Test edge cases."""
-    result = ladder_of_causation(np.array([1.0, 2.0]), np.array([3.0, 4.0]))
-    assert result["n"] == 2
+    with pytest.raises(ValueError, match="rung"):
+        ladder_of_causation(4)
+
+

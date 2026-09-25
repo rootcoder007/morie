@@ -10,86 +10,139 @@ from ._richresult import RichResult
 __all__ = ["kbwpi"]
 
 
-def kbwpi(data: np.ndarray) -> dict:
+def _bw_bins(x, nb):
+    """R's bw_den: counts of pairwise |i - j| bin distances on nb bins."""
+    import math
+    xmin = min(x)
+    rang = (max(x) - xmin) * 1.01
+    if rang <= 0:
+        raise ValueError("data have zero range")
+    dd = rang / nb
+    # as the C code in R: (int)(x / dd), truncating toward zero, no shift
+    idx = [int(v / dd) for v in x]
+    cnt = [0] * nb
+    n = len(x)
+    for i in range(1, n):
+        ii = idx[i]
+        for j in range(i):
+            cnt[abs(ii - idx[j])] += 1
+    return dd, cnt
+
+
+def _phi4(cnt, d, n, h):
+    import math
+    s = 0.0
+    for i, c in enumerate(cnt):
+        delta = (i * d / h) ** 2
+        if delta >= 1000:
+            break
+        s += math.exp(-delta / 2) * (delta * delta - 6 * delta + 3) * c
+    s = 2 * s + n * 3
+    return s / (n * (n - 1) * h ** 5 * math.sqrt(2 * math.pi))
+
+
+def _phi6(cnt, d, n, h):
+    import math
+    s = 0.0
+    for i, c in enumerate(cnt):
+        delta = (i * d / h) ** 2
+        if delta >= 1000:
+            break
+        s += math.exp(-delta / 2) * (delta ** 3 - 15 * delta * delta + 45 * delta - 15) * c
+    s = 2 * s - 15 * n
+    return s / (n * (n - 1) * h ** 7 * math.sqrt(2 * math.pi))
+
+
+def kbwpi(data: np.ndarray, method: str = "ste", nb: int = 1000,
+          tol: float = 1e-12) -> dict:
     r"""
     Sheather-Jones plug-in bandwidth selector.
 
-    Estimates the AMISE-optimal bandwidth by iteratively solving:
+    The AMISE-optimal Gaussian-kernel bandwidth
+    :math:`h = [R(K) / (n\,\mu_2(K)^2 \hat\psi_4(g))]^{1/5}` with the
+    density functional :math:`\psi_4` estimated at a pilot bandwidth.
+    ``method="ste"`` solves that equation with the pilot tied to h
+    (Sheather and Jones's solve-the-equation rule); ``"dpi"`` is the
+    two-stage direct plug-in. Both follow R's ``stats::bw.SJ`` step for
+    step, pairwise distances binned on ``nb`` bins as there; the equation
+    is solved to ``tol`` rather than bw.SJ's default of 10% of the
+    bracket.
 
-    .. math::
-
-        h = \left[\frac{R(K)}{n\,\mu_2(K)^2\,\hat{\sigma}_K^{(4)}(g)}\right]^{1/5}
-
-    where :math:`\hat{\sigma}_K^{(4)}` is a kernel estimate of the
-    integrated squared second derivative of *f*, evaluated at a pilot
-    bandwidth *g*.
+    The previous version used the physicists' Hermite polynomials (the
+    Gaussian derivatives need the probabilists') with a sign fudge, so
+    its functional could come out with the wrong sign and the bandwidth
+    complex.
 
     Parameters
     ----------
-    data : np.ndarray
-        1-d array of observations.
+    data : array-like
+        1-d observations.
+    method : {"ste", "dpi"}
+    nb : int
+        Number of bins for the pairwise distances (bw.SJ's nb).
+    tol : float
+        Root-finding tolerance for "ste".
 
     Returns
     -------
     dict
-        ``bw_opt``, ``n``.
+        ``bw_opt``, ``n``, ``method``.
 
     References
     ----------
     Sheather, S. J. & Jones, M. C. (1991). A reliable data-based bandwidth
         selection method for kernel density estimation. *JRSS-B*,
-        53(3), 683-690.
+        53(3), 683-690. R Core Team, ``stats::bw.SJ``.
     """
-    from ._stats_core import norm
-
-    data = np.asarray(data, dtype=float).ravel()
-    n = data.shape[0]
+    import math
+    x = [float(v) for v in np.asarray(data, dtype=float).ravel().tolist()]
+    n = len(x)
     if n < 2:
         raise ValueError("Need at least 2 observations.")
-
-    sigma = np.std(data, ddof=1)
-    iqr = np.subtract(*np.percentile(data, [75, 25]))
-    s = min(sigma, iqr / 1.349) if iqr > 0 else sigma
-    s = max(s, 1e-10)
-
-    diffs = data[:, None] - data[None, :]
-
-    def _phi_r(r, g):
-        """Kernel estimate of int f^(r)(x)^2 dx using Gaussian kernel."""
-        coeff = (-1) ** (r // 2)
-        vals = norm.pdf(diffs / g, 0, 1)
-        from ._sci_core import hermite
-
-        H = hermite(r)
-        vals = vals * H(diffs / g) / (g ** (r + 1))
-        return coeff * vals.sum() / (n * (n - 1))
-
-    lam = np.subtract(*np.percentile(data, [75, 25]))
-    lam = max(lam, sigma)
-
-    a = (8 * np.sqrt(np.pi) * 15 / 3.0) ** 0.2
-    g6 = a * s * n ** (-1.0 / 7)
-
-    phi6 = _phi_r(6, g6)
-    if abs(phi6) < 1e-30:
-        phi6 = -15.0 / (16 * np.sqrt(np.pi) * s**7)
-
-    g4 = (-6.0 / (np.sqrt(2 * np.pi) * phi6 * n)) ** (1.0 / 7)
-    g4 = max(g4, s * 0.01)
-
-    phi4 = _phi_r(4, g4)
-    if abs(phi4) < 1e-30:
-        phi4 = 3.0 / (8 * np.sqrt(np.pi) * s**5)
-
-    rk = 1.0 / (2 * np.sqrt(np.pi))
-    ratio = rk / (n * phi4)
-    if ratio <= 0:
-        bw_opt = 0.9 * s * n ** (-0.2)
+    if method not in ("ste", "dpi"):
+        raise ValueError("method must be 'ste' or 'dpi'")
+    m = sum(x) / n
+    sd = math.sqrt(sum((v - m) ** 2 for v in x) / (n - 1))
+    q75, q25 = (float(v) for v in np.percentile(x, [75, 25]).tolist())
+    scale = min(sd, (q75 - q25) / 1.349)
+    if not scale > 0:
+        scale = sd
+    d, cnt = _bw_bins(x, int(nb))
+    a = 1.24 * scale * n ** (-1 / 7)
+    b = 1.23 * scale * n ** (-1 / 9)
+    c1 = 1 / (2 * math.sqrt(math.pi) * n)
+    TD = -_phi6(cnt, d, n, b)
+    if not (TD > 0 and math.isfinite(TD)):
+        raise ValueError("sample is too sparse to find TD")
+    if method == "dpi":
+        h = (c1 / _phi4(cnt, d, n, (2.394 / (n * TD)) ** (1 / 7))) ** 0.2
     else:
-        bw_opt = ratio**0.2
-    bw_opt = max(bw_opt, 1e-10)
+        alph2 = 1.357 * (_phi4(cnt, d, n, a) / TD) ** (1 / 7)
 
-    return RichResult(payload={"bw_opt": float(bw_opt), "n": n})
+        def f(h):
+            return (c1 / _phi4(cnt, d, n, alph2 * h ** (5 / 7))) ** 0.2 - h
+
+        hmax = 1.144 * scale * n ** (-1 / 5)
+        lo, hi = 0.1 * hmax, hmax
+        for _ in range(99):
+            if f(lo) * f(hi) <= 0:
+                break
+            if f(lo) < 0:
+                lo *= 0.9
+            else:
+                hi *= 1.2
+        flo = f(lo)
+        for _ in range(300):
+            mid = 0.5 * (lo + hi)
+            fm = f(mid)
+            if (fm < 0) == (flo < 0):
+                lo, flo = mid, fm
+            else:
+                hi = mid
+            if hi - lo < tol * max(1.0, abs(mid)):
+                break
+        h = 0.5 * (lo + hi)
+    return RichResult(payload={"bw_opt": float(h), "n": n, "method": method})
 
 
 def cheatsheet() -> str:

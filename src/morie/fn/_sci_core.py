@@ -1146,7 +1146,7 @@ def odeint(func, y0, t, args=(), rtol=1.49e-8, atol=1.49e-8, **kw):
                             else [y0])]
 
     def f(tt, yy, *a):
-        out = func(yy, tt, *a)
+        out = func(_ac.marr(list(yy)), tt, *a)     # an ndarray, as scipy
         if isinstance(out, (int, float)):
             return [float(out)]
         return [float(v) for v in (out._flat()
@@ -1168,7 +1168,9 @@ def solve_ivp(fun, t_span, y0, t_eval=None, args=(), rtol=1e-3,
     y = [float(v) for v in _ac.asarray(y0)._flat()]
 
     def f(tt, yy, *a):
-        out = fun(tt, yy, *a)
+        # scipy hands fun an ndarray; a plain list broke every right-hand
+        # side written with array arithmetic (y[2:] - 2 * y[1:-1] ...)
+        out = fun(tt, _ac.marr(list(yy)), *a)
         return [float(v) for v in (out._flat()
                                    if hasattr(out, "_flat") else out)]
     cols = [list(y)]
@@ -1404,7 +1406,26 @@ class CubicSpline:
         xs = [float(v) for v in _ac.asarray(x)._flat()]
         ys = [float(v) for v in _ac.asarray(y)._flat()]
         n = len(xs)
+        if n < 2:
+            raise ValueError("`x` must contain at least 2 elements.")
         h = [xs[i + 1] - xs[i] for i in range(n - 1)]
+        if n == 2 or (n == 3 and bc_type != "natural"):
+            # scipy: two points give the straight line, and not-a-knot on
+            # three points is the parabola through them (the general
+            # system below needs four points and indexed past the end)
+            if n == 2:
+                m = [(ys[1] - ys[0]) / h[0]] * 2
+            else:
+                d0 = (ys[1] - ys[0]) / h[0]
+                d1 = (ys[2] - ys[1]) / h[1]
+                c2 = (d1 - d0) / (xs[2] - xs[0])      # parabola curvature / 2
+                m = [d0 + c2 * (xs[i] - xs[0] - h[0]) + c2 * (xs[i] - xs[0])
+                     for i in range(3)]
+            self.x = xs
+            self.y = ys
+            self._m = m
+            self._h = h
+            return
         # solve for second-derivative-like coefficients via the
         # standard tridiagonal system on spline slopes (m = y')
         A = [[0.0] * n for _ in range(n)]

@@ -987,7 +987,11 @@ def cqr(callo, calhi, caly, lo, hi, alpha=0.1):
     scores = sorted(max(cl[i] - cy[i], cy[i] - ch[i]) for i in range(len(cy)))
     n = len(scores)
     k = int(math.ceil((n + 1) * (1.0 - alpha)))
-    qhat = scores[min(k, n) - 1] if k >= 1 else scores[0]
+    # Romano et al. (2019): when ceil((n+1)(1-alpha)) exceeds n the
+    # calibration set is too small for the requested coverage and the
+    # quantile is +inf (an unbounded interval); clamping to the largest
+    # score silently under-covered
+    qhat = scores[k - 1] if k <= n else math.inf
     lo = _vec(lo, "lo")
     hi = _vec(hi, "hi")
     if len(lo) != len(hi):
