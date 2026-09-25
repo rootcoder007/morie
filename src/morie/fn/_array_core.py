@@ -1393,6 +1393,10 @@ class marr:
         count = getattr(self, "_is_mask", False) or _is_int_typed(self)
 
         def fin(v):
+            # numpy keeps a complex sum complex; forcing float here
+            # turned every complex reduction into a TypeError
+            if isinstance(v, complex):
+                return v
             return int(round(v)) if count else float(v)
 
         def fin_arr(a):
@@ -2250,14 +2254,21 @@ def _ieee_mod(x, y):
 
 
 def _fsum(it):
-    """math.fsum with numpy's answers for the two cases it raises on:
-    inf + -inf is nan, and an intermediate overflow is inf."""
+    """math.fsum with numpy's answers for the cases it raises on:
+    inf + -inf is nan, an intermediate overflow is inf, and a complex
+    term is summed as numpy sums it rather than rejected."""
+    vals = list(it)
+    if _bi.any(isinstance(v, complex) for v in vals):
+        # math.fsum is real-only; numpy sums complex termwise
+        return _bi.sum(vals, complex(0.0, 0.0))
     try:
-        return _math.fsum(it)
+        return _math.fsum(vals)
     except ValueError:
         return _NAN
     except OverflowError:
         return _INF
+    except TypeError:
+        return _bi.sum(vals)
 
 
 def _max2(a, b):
@@ -2420,13 +2431,25 @@ def where(cond, a=None, b=None):
                  for i in range(c.shape[0])])
 
 
+def _finite(v):
+    """numpy.isfinite for one value: a complex number is finite when
+    both of its parts are, which math.isfinite refuses to answer."""
+    if isinstance(v, complex):
+        return _math.isfinite(v.real) and _math.isfinite(v.imag)
+    return _math.isfinite(float(v))
+
+
 def isfinite(x):
-    if isinstance(x, (int, float)):
-        return _math.isfinite(float(x))
+    if isinstance(x, (int, float, complex)):
+        return _finite(x)
+    if isinstance(x, carr):
+        return marr([1.0 if _finite(v) else 0.0 for v in x.data])
     a = asarray(x)
     if not isinstance(a, marr):
-        a = marr([float(v) for v in a])
-    return a._map(lambda v: 1.0 if _math.isfinite(v) else 0.0)
+        a = marr([1.0 if _finite(v) else 0.0 for v in a])
+        a._is_mask = True
+        return a
+    return a._map(lambda v: 1.0 if _finite(v) else 0.0)
 
 
 def dot(a, b):
@@ -2448,6 +2471,10 @@ def dot(a, b):
 
 
 def matmul(a, b):
+    # numpy treats a leading axis as a batch, so a stack of matrices on
+    # either side is a batched product rather than a shape error
+    if ndim(a) >= 3 or ndim(b) >= 3:
+        return _batched_matmul(a, b)
     a_arr = asarray(a)
     a_was_1d = len(a_arr.shape) == 1
     aa = atleast_2d(a_arr)
@@ -5134,6 +5161,36 @@ def _wrap_block(b):
     return b
 
 
+def _batched_matmul(a, b):
+    """numpy's @ for rank-3 operands: the leading axis is a batch, and
+    a lone matrix is broadcast across it."""
+    A = a.tolist() if hasattr(a, "tolist") else a
+    B = b.tolist() if hasattr(b, "tolist") else b
+    sa, sb = _list_shape(A), _list_shape(B)
+    if len(sa) < 2 or len(sb) < 2:
+        raise ValueError("matmul needs at least 2-D operands")
+
+    def mm(x, y):
+        n, k, m = len(x), len(y), len(y[0])
+        if len(x[0]) != k:
+            raise ValueError(
+                "matmul: inner dimensions %d and %d do not agree"
+                % (len(x[0]), k))
+        return [[_bi.sum(x[i][t] * y[t][j] for t in range(k))
+                 for j in range(m)] for i in range(n)]
+
+    if len(sa) == 3 and len(sb) == 3:
+        if sa[0] != sb[0]:
+            raise ValueError("matmul: batch sizes %d and %d do not agree"
+                             % (sa[0], sb[0]))
+        return ndlist([mm(A[i], B[i]) for i in range(sa[0])])
+    if len(sa) == 3:
+        return ndlist([mm(A[i], B) for i in range(sa[0])])
+    if len(sb) == 3:
+        return ndlist([mm(A, B[i]) for i in range(sb[0])])
+    return marr(mm(A, B))
+
+
 class ndlist(list):
     """Thin rank>=3 container: nested lists with .shape/.tolist and
     elementwise scalar arithmetic. The rank-2 core stays marr; this
@@ -5257,6 +5314,14 @@ class ndlist(list):
     def ravel(self):
         """numpy.ndarray.ravel: a flat 1-D view."""
         return marr(_flatten_nested(self.tolist()))
+
+    def __matmul__(self, other):
+        """numpy: @ on a stack of matrices multiplies them pairwise,
+        broadcasting a single matrix across the stack."""
+        return _batched_matmul(self, other)
+
+    def __rmatmul__(self, other):
+        return _batched_matmul(other, self)
 
     def flatten(self):
         """numpy.ndarray.flatten: a flat 1-D copy."""
