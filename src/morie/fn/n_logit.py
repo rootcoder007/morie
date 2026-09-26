@@ -5,91 +5,97 @@ import math
 
 from . import _stats_core as stats
 
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from ._glm_core import NormalIndPower
-except ImportError:
-    NormalIndPower = _MissingDep('NormalIndPower')
-
 
 def sample_size_logistic(
     p0: float,
-    p1: float,
+    p1: float | None = None,
     alpha: float = 0.05,
     power: float = 0.80,
     *,
     two_sided: bool = True,
+    B: float = 0.5,
+    covariate: str = "binary",
+    odds_ratio: float | None = None,
 ) -> int:
-    r"""
-    Minimum sample size for logistic regression to detect a change in
-    event probability from ``p0`` (control) to ``p1`` (treatment).
+    r"""Total sample size for logistic regression (Hsieh, Bloch & Larsen 1998).
 
-    Uses the Hsieh, Bloch & Larsen (1998) formula:
+    Binary covariate (their eq. 1): with event rates :math:`P_0` at
+    :math:`X = 0` and :math:`P_1` at :math:`X = 1`, a fraction :math:`B` of
+    the sample at :math:`X = 1` and :math:`\bar P = (1-B)P_0 + BP_1`,
 
     .. math::
 
-        n = \\frac{(z_{\\alpha/2} + z_{\\beta})^2}{p_0(1-p_0) + p_1(1-p_1)} \\cdot \\frac{(p_0 + p_1)}{2} \\cdot 2
+        n = \frac{\left[z_{1-\alpha/2}\sqrt{\bar P(1-\bar P)/B}
+            + z_{1-\beta}\sqrt{P_0(1-P_0) + P_1(1-P_1)(1-B)/B}\right]^2}
+            {(P_0 - P_1)^2 (1-B)}.
 
-    More precisely, this uses the arcsine transformation approach via
-    Cohen's h for the two-proportion z-test, inflated by a factor to
-    account for logistic regression efficiency relative to the z-test.
+    Continuous, normally distributed covariate (their eq. 2):
+    :math:`n = (z_{1-\alpha/2} + z_{1-\beta})^2 / (P_0(1-P_0)\beta^{*2})`,
+    with :math:`P_0` the event rate at the covariate mean and
+    :math:`\beta^* = \log` (odds ratio per standard deviation).
 
-    :param p0: Event probability in the control/reference group (in (0, 1)).
-    :param p1: Event probability in the intervention group (in (0, 1)).
-    :param alpha: Type I error. Default 0.05.
-    :param power: Desired power (1 - beta). Default 0.80.
-    :param two_sided: If True use two-sided alpha. Default True.
-    :return: Required total sample size (integer; equal allocation assumed).
-    :raises ValueError: If p0 or p1 not in (0, 1).
+    Parameters
+    ----------
+    p0 : float
+        Event rate at X = 0 (binary) or at the covariate mean (continuous).
+    p1 : float, optional
+        Event rate at X = 1 (binary covariate). Give either ``p1`` or
+        ``odds_ratio``.
+    alpha, power : float
+        Type I error and power.
+    two_sided : bool
+        Two-sided test (``z_{1-alpha/2}``) or one-sided (``z_{1-alpha}``).
+    B : float
+        Fraction of the sample with X = 1 (binary covariate).
+    covariate : {"binary", "continuous"}
+    odds_ratio : float, optional
+        Odds ratio for X = 1 vs 0 (binary) or per standard deviation
+        (continuous).
+
+    Returns
+    -------
+    int
+        Total sample size, rounded up.
 
     References
     ----------
     Hsieh, F. Y., Bloch, D. A., & Larsen, M. D. (1998). A simple method of
-        sample size calculation for linear and logistic regression. Statistics
-        in Medicine, 17(14), 1623-1634.
+    sample size calculation for linear and logistic regression. Statistics
+    in Medicine, 17(14), 1623-1634. (R: powerMediation::SSizeLogisticBin,
+    SSizeLogisticCon.)
+
+    Examples
+    --------
+    >>> sample_size_logistic(0.2, 0.35)
+    276
+    >>> sample_size_logistic(0.2, covariate="continuous", odds_ratio=1.5)
+    299
     """
     if not 0 < p0 < 1:
         raise ValueError(f"p0 must be in (0, 1), got {p0}.")
-    if not 0 < p1 < 1:
-        raise ValueError(f"p1 must be in (0, 1), got {p1}.")
     if not 0 < alpha < 1:
         raise ValueError(f"alpha must be in (0, 1), got {alpha}.")
     if not 0 < power < 1:
         raise ValueError(f"power must be in (0, 1), got {power}.")
-
-    alpha_eff = alpha / 2 if two_sided else alpha
-    z_alpha = float(stats.norm.ppf(1 - alpha_eff))
-    z_beta = float(stats.norm.ppf(power))
-
-    # Cohen's h effect size for the two proportions
-    h = abs(2 * math.asin(math.sqrt(p1)) - 2 * math.asin(math.sqrt(p0)))
-    # Per-group n from NormalIndPower (same as z-test approach)
-    analysis = NormalIndPower()
-    n_per_group = analysis.solve_power(
-        effect_size=h,
-        alpha=float(alpha),
-        power=float(power),
-        alternative="two-sided" if two_sided else "larger",
-    )
-    # Inflate by logistic regression efficiency factor (~pi^2/3 variance inflation)
-    # For equal groups: total = 2 * n_per_group (no additional inflation needed for OR approach)
-    total_n = math.ceil(2 * n_per_group)
-    return int(total_n)
+    za = float(stats.norm.ppf(1 - (alpha / 2 if two_sided else alpha)))
+    zb = float(stats.norm.ppf(power))
+    if covariate == "continuous":
+        if odds_ratio is None or odds_ratio <= 0 or odds_ratio == 1:
+            raise ValueError("continuous covariate: odds_ratio > 0 and != 1 is required.")
+        return int(math.ceil((za + zb) ** 2 / (p0 * (1 - p0) * math.log(odds_ratio) ** 2)))
+    if covariate != "binary":
+        raise ValueError("covariate must be 'binary' or 'continuous'.")
+    if p1 is None:
+        if odds_ratio is None or odds_ratio <= 0:
+            raise ValueError("give p1 or a positive odds_ratio.")
+        p1 = odds_ratio * p0 / (1 - p0 + odds_ratio * p0)
+    if not 0 < p1 < 1 or p1 == p0:
+        raise ValueError(f"p1 must be in (0, 1) and differ from p0, got {p1}.")
+    if not 0 < B < 1:
+        raise ValueError(f"B must be in (0, 1), got {B}.")
+    pbar = (1 - B) * p0 + B * p1
+    num = (za * math.sqrt(pbar * (1 - pbar) / B) + zb * math.sqrt(p0 * (1 - p0) + p1 * (1 - p1) * (1 - B) / B)) ** 2
+    return int(math.ceil(num / ((p0 - p1) ** 2 * (1 - B))))
 
 
 n_logit = sample_size_logistic
