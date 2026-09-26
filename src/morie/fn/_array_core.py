@@ -7546,10 +7546,6 @@ class _Testing:
                     "arrays differ at index %d: %r != %r. %s"
                     % (i, x, y, err_msg))
 
-    assert_equal = assert_array_equal
-    assert_array_almost_equal = staticmethod(
-        lambda a, d, decimal=6, **kw: _Testing.assert_allclose(
-            a, d, rtol=0, atol=1.5 * 10.0 ** (-decimal)))
 
 
 testing = _Testing()
