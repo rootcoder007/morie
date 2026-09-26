@@ -139,143 +139,166 @@ def bootstrap(
     -------
     BootstrapResult
     """
+    import math
+
+    if ci_method not in ("percentile", "normal", "basic", "bca", "studentized"):
+        raise ValueError(f"Unknown ci_method: {ci_method}")
     rng = np.random.default_rng(seed)
     data = np.asarray(data)
     n = len(data)
-
-    original = statistic(data)
-
-    boot_stats = np.empty(n_boot)
-
-    if cluster is not None:
-        cluster = np.asarray(cluster)
-        unique_clusters = np.unique(cluster)
-        n_clusters = len(unique_clusters)
-
-        for b in range(n_boot):
-            sampled_clusters = rng.choice(unique_clusters, size=n_clusters, replace=True)
-            indices = np.concatenate([np.where(cluster == c)[0] for c in sampled_clusters])
-            boot_stats[b] = statistic(data[indices])
-
-    elif stratify is not None:
-        stratify = np.asarray(stratify)
-        strata = np.unique(stratify)
-
-        for b in range(n_boot):
-            indices = []
-            for s in strata:
-                s_idx = np.where(stratify == s)[0]
-                indices.append(rng.choice(s_idx, size=len(s_idx), replace=True))
-            all_indices = np.concatenate(indices)
-            boot_stats[b] = statistic(data[all_indices])
-
-    else:
-        for b in range(n_boot):
-            indices = rng.integers(0, n, size=n)
-            boot_stats[b] = statistic(data[indices])
-
-    se = float(np.std(boot_stats, ddof=1))
-    bias = float(np.mean(boot_stats) - original)
-
+    original = float(statistic(data))
     alpha = 1 - ci_level
+    # index vectors of every replicate, kept for the BCa influence values
+    if cluster is not None:
+        cluster = np.asarray(cluster).tolist()
+        uniq = sorted(set(cluster))
+        members = {c: [i for i, v in enumerate(cluster) if v == c] for c in uniq}
 
+        def draw():
+            picks = rng.choice(len(uniq), size=len(uniq), replace=True).tolist()
+            return [i for k in picks for i in members[uniq[int(k)]]]
+    elif stratify is not None:
+        stratify = np.asarray(stratify).tolist()
+        groups = [[i for i, v in enumerate(stratify) if v == s_] for s_ in sorted(set(stratify))]
+
+        def draw():
+            out = []
+            for g in groups:
+                out.extend(g[int(k)] for k in rng.integers(0, len(g), size=len(g)).tolist())
+            return out
+    else:
+
+        def draw():
+            return [int(k) for k in rng.integers(0, n, size=n).tolist()]
+
+    idx = []
+    boot = []
+    inner_se = []
+    for _b in range(n_boot):
+        ix = draw()
+        idx.append(ix)
+        bd = data[ix]
+        boot.append(float(statistic(bd)))
+        if ci_method == "studentized":
+            # the SE of each replicate from a second-level bootstrap of THAT
+            # replicate, so t* = (theta* - theta) / se* pairs like with like
+            m = len(ix)
+            inner = [float(statistic(bd[[int(k) for k in rng.integers(0, m, size=m).tolist()]])) for _ in range(50)]
+            mu_i = sum(inner) / 50
+            inner_se.append(math.sqrt(sum((v - mu_i) ** 2 for v in inner) / 49))
+    boot_stats = np.array(boot)
+    fin = [v for v in boot if math.isfinite(v)]
+    mu_b = sum(fin) / len(fin)
+    se = math.sqrt(sum((v - mu_b) ** 2 for v in fin) / (len(fin) - 1))
+    bias = mu_b - original
+    acc = 0.0
+    # interval rules of boot::boot.ci, with its norm.inter order-statistic
+    # interpolation on the normal scale
     if ci_method == "percentile":
-        ci_lo = float(np.percentile(boot_stats, 100 * alpha / 2))
-        ci_hi = float(np.percentile(boot_stats, 100 * (1 - alpha / 2)))
-
+        ci_lo, ci_hi = _norm_inter(fin, [alpha / 2, 1 - alpha / 2])
     elif ci_method == "normal":
         z = stats.norm.ppf(1 - alpha / 2)
-        ci_lo = float(original - bias - z * se)
-        ci_hi = float(original - bias + z * se)
-
+        ci_lo, ci_hi = original - bias - z * se, original - bias + z * se
     elif ci_method == "basic":
-        p_lo = np.percentile(boot_stats, 100 * (1 - alpha / 2))
-        p_hi = np.percentile(boot_stats, 100 * alpha / 2)
-        ci_lo = float(2 * original - p_lo)
-        ci_hi = float(2 * original - p_hi)
-
+        q = _norm_inter(fin, [1 - alpha / 2, alpha / 2])
+        ci_lo, ci_hi = 2 * original - q[0], 2 * original - q[1]
     elif ci_method == "bca":
-        ci_lo, ci_hi, acc = _bca_interval(data, statistic, boot_stats, original, ci_level, rng)
-
-    elif ci_method == "studentized":
-        # Requires nested bootstrap for SE estimation.
-        boot_ses = np.empty(n_boot)
-        for b in range(n_boot):
-            indices = rng.integers(0, n, size=n)
-            boot_data = data[indices]
-            inner_stats = np.empty(50)
-            for ib in range(50):
-                inner_idx = rng.integers(0, len(boot_data), size=len(boot_data))
-                inner_stats[ib] = statistic(boot_data[inner_idx])
-            boot_ses[b] = np.std(inner_stats, ddof=1)
-
-        t_stats = (boot_stats - original) / np.maximum(boot_ses, 1e-10)
-        t_lo = np.percentile(t_stats, 100 * (1 - alpha / 2))
-        t_hi = np.percentile(t_stats, 100 * alpha / 2)
-        ci_lo = float(original - t_lo * se)
-        ci_hi = float(original - t_hi * se)
-
+        w = stats.norm.ppf(sum(1 for v in fin if v < original) / len(fin))
+        if not math.isfinite(w):
+            raise ValueError("estimated BCa bias correction is infinite: every replicate falls on one side")
+        if cluster is not None:
+            L = _jackknife_influence(data, statistic, [members[c] for c in uniq])
+        else:
+            L = _empinf_reg(idx, boot, n, stratify)
+        acc = sum(v**3 for v in L) / (6 * sum(v * v for v in L) ** 1.5)
+        adj = []
+        for za in (stats.norm.ppf(alpha / 2), stats.norm.ppf(1 - alpha / 2)):
+            adj.append(float(stats.norm.cdf(w + (w + za) / (1 - acc * (w + za)))))
+        ci_lo, ci_hi = _norm_inter(fin, adj)
     else:
-        raise ValueError(f"Unknown ci_method: {ci_method}")
-
-    acc = 0.0
-    if ci_method == "bca":
-        pass  # already set
-    else:
-        acc = 0.0
-
+        zt = [(v - original) / sv for v, sv in zip(boot, inner_se) if math.isfinite(v) and sv > 0]
+        q = _norm_inter(zt, [1 - alpha / 2, alpha / 2])
+        ci_lo, ci_hi = original - se * q[0], original - se * q[1]
     return BootstrapResult(
         estimate=original,
         se=se,
-        ci_lower=ci_lo,
-        ci_upper=ci_hi,
+        ci_lower=float(ci_lo),
+        ci_upper=float(ci_hi),
         bias=bias,
         n_boot=n_boot,
         method="nonparametric",
         ci_method=ci_method,
         boot_distribution=boot_stats,
         original_estimate=original,
-        acceleration=acc,
+        acceleration=float(acc),
     )
 
 
-def _bca_interval(
-    data: np.ndarray,
-    statistic: Callable,
-    boot_stats: np.ndarray,
-    original: float,
-    ci_level: float,
-    rng: np.random.Generator,
-) -> tuple[float, float, float]:
-    """Compute BCa (bias-corrected and accelerated) confidence interval."""
-    n = len(data)
-    alpha = 1 - ci_level
+def _norm_inter(t, alpha):
+    """boot's norm.inter: the (R + 1) alpha order statistic, interpolated on
+    the normal quantile scale between neighbours (Davison & Hinkley 1997,
+    eq. 5.8)."""
+    t = sorted(t)
+    R = len(t)
+    out = []
+    for a in alpha:
+        rk = (R + 1) * a
+        k = int(rk)
+        if k == 0:
+            out.append(t[0])
+        elif k >= R:
+            out.append(t[-1])
+        elif k == rk:
+            out.append(t[k - 1])
+        else:
+            q1, q2, q3 = stats.norm.ppf(a), stats.norm.ppf(k / (R + 1)), stats.norm.ppf((k + 1) / (R + 1))
+            out.append(t[k - 1] + (q1 - q2) / (q3 - q2) * (t[k] - t[k - 1]))
+    return [float(v) for v in out]
 
-    # Bias correction factor (z0).
-    z0 = stats.norm.ppf(np.mean(boot_stats < original))
 
-    # Acceleration factor (a) via jackknife.
-    jack_stats = np.empty(n)
-    for i in range(n):
-        jack_data = np.delete(data, i, axis=0)
-        jack_stats[i] = statistic(jack_data)
+def _empinf_reg(idx, boot, n, stratify=None):
+    """boot's empinf(type = "reg"): empirical influence values from the
+    regression of the replicates on their resampling proportions, centred
+    within strata (Davison & Hinkley 1997, sec. 2.7.4)."""
+    import math
 
-    jack_mean = np.mean(jack_stats)
-    num = np.sum((jack_mean - jack_stats) ** 3)
-    den = 6 * (np.sum((jack_mean - jack_stats) ** 2)) ** 1.5
-    a = num / max(den, 1e-10)
+    strata = [0] * n if stratify is None else list(stratify)
+    labels = sorted(set(strata))
+    ns = {g: strata.count(g) for g in labels}
+    first = {g: min(i for i in range(n) if strata[i] == g) for g in labels}
+    inc = [i for i in range(n) if i != first[strata[i]]]
+    rows, ys = [], []
+    for ix, v in zip(idx, boot):
+        if not math.isfinite(v):
+            continue
+        f = [0] * n
+        for i in ix:
+            f[i] += 1
+        rows.append([1.0] + [f[i] / ns[strata[i]] for i in inc])
+        ys.append(v)
+    beta = np.linalg.lstsq(np.array(rows), np.array(ys), rcond=None)[0]
+    L = [0.0] * n
+    for j, i in enumerate(inc):
+        L[i] = float(beta[j + 1])
+    for g in labels:
+        members = [i for i in range(n) if strata[i] == g]
+        m = sum(L[i] for i in members) / len(members)
+        for i in members:
+            L[i] -= m
+    return L
 
-    # Adjusted percentiles.
-    z_lo = stats.norm.ppf(alpha / 2)
-    z_hi = stats.norm.ppf(1 - alpha / 2)
 
-    a1 = stats.norm.cdf(z0 + (z0 + z_lo) / max(1 - a * (z0 + z_lo), 0.01))
-    a2 = stats.norm.cdf(z0 + (z0 + z_hi) / max(1 - a * (z0 + z_hi), 0.01))
-
-    ci_lo = float(np.percentile(boot_stats, 100 * np.clip(a1, 0.001, 0.999)))
-    ci_hi = float(np.percentile(boot_stats, 100 * np.clip(a2, 0.001, 0.999)))
-
-    return ci_lo, ci_hi, float(a)
+def _jackknife_influence(data, statistic, groups):
+    """Jackknife influence values, deleting one group (observation or
+    cluster) at a time: (G - 1)(mean - theta_(-g))."""
+    G = len(groups)
+    allidx = list(range(len(data)))
+    jack = []
+    for g in groups:
+        drop = set(g)
+        jack.append(float(statistic(data[[i for i in allidx if i not in drop]])))
+    jm = sum(jack) / G
+    return [(G - 1) * (jm - v) for v in jack]
 
 
 # ---------------------------------------------------------------------------
@@ -734,14 +757,16 @@ def permutation_test(
     g2 = np.asarray(group2, dtype=float)
     combined = np.concatenate([g1, g2])
     n1 = len(g1)
-    n = len(combined)
-
     if callable(statistic):
         stat_fn = statistic
     elif statistic == "mean_diff":
-        stat_fn = lambda a, b: np.mean(a) - np.mean(b)
+
+        def stat_fn(a, b):
+            return np.mean(a) - np.mean(b)
     elif statistic == "median_diff":
-        stat_fn = lambda a, b: np.median(a) - np.median(b)
+
+        def stat_fn(a, b):
+            return np.median(a) - np.median(b)
     elif statistic == "t_stat":
 
         def stat_fn(a, b):
@@ -970,7 +995,7 @@ def bootstrap_632(
 
     # Bootstrap error.
     boot_errors = []
-    for b in range(n_boot):
+    for _b in range(n_boot):
         indices = rng.integers(0, n, size=n)
         oob = np.setdiff1d(np.arange(n), indices)
         if len(oob) == 0:
