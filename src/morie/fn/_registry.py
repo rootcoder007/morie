@@ -89807,6 +89807,41 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "zegcnt",
+    "zeger_count_moments",
+    "Auto",
+    "Auto-wired callable from fn/zegcnt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "cndchk",
+    "semivariogram_cnd_check",
+    "Auto",
+    "Auto-wired callable from fn/cndchk.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "nnlsq",
+    "nonnegative_least_squares",
+    "Auto",
+    "Auto-wired callable from fn/nnlsq.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "spnpsv",
+    "shapiro_botha_semivariogram",
+    "Auto",
+    "Auto-wired callable from fn/spnpsv.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "spkrnv",
+    "kernel_semivariogram",
+    "Auto",
+    "Auto-wired callable from fn/spkrnv.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
@@ -90231,13 +90266,6 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "statistical_methods_for_spatial_data_analysis1u1172",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1172",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1172.py",
-    "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
     "statistical_methods_for_spatial_data_analysis1u1685",
     "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1685",
     "Auto",
@@ -90250,13 +90278,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1686.py",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u429",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_429",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u429.py",
-    "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
     "statistics_fourth_edition_david_freeman_robert_pisani_and_ro27u111",
