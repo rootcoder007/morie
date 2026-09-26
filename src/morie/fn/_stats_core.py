@@ -4547,9 +4547,31 @@ class _NCT(_Dist):
         grid = [_math.exp(lo + k / 4.0) for k in range(n)]
         vals = [logg(v) for v in grid]
         k = _bi.max(range(len(grid)), key=vals.__getitem__)
-        vmax = grid[k]
         if vals[k] == -_math.inf:
             return -_math.inf
+        # refine the peak by golden section in log v between the grid
+        # neighbours: at large df the chi-square weight is far narrower
+        # than the grid step, and starting the integration off the peak
+        # lets exp(logg - logg(start)) overflow
+        a = _math.log(grid[_bi.max(k - 1, 0)])
+        b = _math.log(grid[_bi.min(k + 1, len(grid) - 1)])
+        gr = (5 ** 0.5 - 1) / 2
+        c, d = b - gr * (b - a), a + gr * (b - a)
+        fc, fd = logg(_math.exp(c)), logg(_math.exp(d))
+        for _ in range(200):
+            if b - a < 1e-15 * _bi.max(1.0, _bi_abs(a)):
+                break
+            if fc > fd:
+                b, d, fd = d, c, fc
+                c = b - gr * (b - a)
+                fc = logg(_math.exp(c))
+            else:
+                a, c, fc = c, d, fd
+                d = a + gr * (b - a)
+                fd = logg(_math.exp(d))
+        vmax = _math.exp(0.5 * (a + b))
+        if logg(vmax) < vals[k]:
+            vmax = grid[k]
         up = _log_tail_integral(logg, vmax, +1)
         down = _log_tail_integral(logg, vmax, -1, bound=0.0)
         m = _bi.max(up, down)

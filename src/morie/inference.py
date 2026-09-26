@@ -978,6 +978,21 @@ def runif(n: int, min: float = 0.0, max: float = 1.0, seed: int | None = None) -
 # ===========================================================================
 
 
+
+def _t_interval(est, se, df, alternative, level=0.95):
+    """Confidence interval matching the test's alternative, as R's t.test:
+    two-sided est -/+ t_{1-a/2} se; "less" (-inf, est + t_{1-a} se];
+    "greater" [est - t_{1-a} se, inf)."""
+    a = 1.0 - level
+    if alternative in ("two-sided", "two.sided"):
+        q = float(stats.t.ppf(1 - a / 2, df))
+        return est - q * se, est + q * se
+    q = float(stats.t.ppf(1 - a, df))
+    if alternative == "less":
+        return -math.inf, est + q * se
+    return est - q * se, math.inf
+
+
 def two_sample_t_test(
     x1: Union[list, np.ndarray],
     x2: Union[list, np.ndarray],
@@ -1027,11 +1042,16 @@ def two_sample_t_test(
         num = (s1 / n1 + s2 / n2) ** 2
         denom = (s1 / n1) ** 2 / (n1 - 1) + (s2 / n2) ** 2 / (n2 - 1)
         df = float(num / denom) if denom > 0 else float(n1 + n2 - 2)
-    # Two-sided CI for the mean difference
-    se_diff = float(np.sqrt(np.var(a1, ddof=1) / len(a1) + np.var(a2, ddof=1) / len(a2)))
-    t_crit = float(stats.t(df=df).ppf(0.975))
-    ci_lower = mean_diff - t_crit * se_diff
-    ci_upper = mean_diff + t_crit * se_diff
+    # CI for the mean difference: the pooled SE for Student's test (the
+    # Welch SE was used for both), bounds matching the alternative
+    n1, n2 = len(a1), len(a2)
+    v1, v2 = float(np.var(a1, ddof=1)), float(np.var(a2, ddof=1))
+    if equal_var:
+        sp2 = ((n1 - 1) * v1 + (n2 - 1) * v2) / (n1 + n2 - 2)
+        se_diff = math.sqrt(sp2 * (1.0 / n1 + 1.0 / n2))
+    else:
+        se_diff = math.sqrt(v1 / n1 + v2 / n2)
+    ci_lower, ci_upper = _t_interval(mean_diff, se_diff, df, alternative)
 
     return {
         "t": float(t_stat),
@@ -1076,15 +1096,15 @@ def one_sample_t_test(
     n = len(arr)
     mean_val = float(np.mean(arr))
     se = float(np.std(arr, ddof=1) / np.sqrt(n))
-    t_crit = float(stats.t(df=n - 1).ppf(0.975))
+    ci_lo, ci_hi = _t_interval(mean_val, se, n - 1, alternative)
     return {
         "t": float(t_stat),
         "df": float(n - 1),
         "p_value": float(p_val),
         "mean": mean_val,
         "se": se,
-        "ci_lower": mean_val - t_crit * se,
-        "ci_upper": mean_val + t_crit * se,
+        "ci_lower": ci_lo,
+        "ci_upper": ci_hi,
         "method": "One-sample t-test",
     }
 
@@ -1125,15 +1145,15 @@ def paired_t_test(
     n = len(diff)
     mean_diff = float(np.mean(diff))
     se_diff = float(np.std(diff, ddof=1) / np.sqrt(n))
-    t_crit = float(stats.t(df=n - 1).ppf(0.975))
+    ci_lo, ci_hi = _t_interval(mean_diff, se_diff, n - 1, alternative)
     return {
         "t": float(t_stat),
         "df": float(n - 1),
         "p_value": float(p_val),
         "mean_diff": mean_diff,
         "se_diff": se_diff,
-        "ci_lower": mean_diff - t_crit * se_diff,
-        "ci_upper": mean_diff + t_crit * se_diff,
+        "ci_lower": ci_lo,
+        "ci_upper": ci_hi,
         "method": "Paired t-test",
     }
 
@@ -1185,6 +1205,99 @@ def chi_square_test(
     }
 
 
+
+def _fisher_conditional(table, conf_level=0.95):
+    """Conditional maximum-likelihood odds ratio and exact confidence
+    interval of a 2x2 table from the noncentral hypergeometric
+    distribution, a port of R's fisher.test (Fisher 1935; Cornfield 1956).
+    Returns (estimate, ci_lower, ci_upper)."""
+    (a, b), (c, d) = [[int(v) for v in r] for r in table]
+    m, n, k = a + c, b + d, a + b
+    lo, hi = max(0, k - n), min(k, m)
+    support = list(range(lo, hi + 1))
+
+    def lchoose(x, y):
+        return math.lgamma(x + 1) - math.lgamma(y + 1) - math.lgamma(x - y + 1)
+
+    logdc = [lchoose(m, u) + lchoose(n, k - u) for u in support]
+
+    def dnhyper(ncp):
+        ln = math.log(ncp)
+        dd = [l + ln * u for l, u in zip(logdc, support)]
+        mx = max(dd)
+        w = [math.exp(v - mx) for v in dd]
+        tot = math.fsum(w)
+        return [v / tot for v in w]
+
+    def mnhyper(ncp):
+        if ncp == 0:
+            return lo
+        if ncp == math.inf:
+            return hi
+        return math.fsum(u * pr for u, pr in zip(support, dnhyper(ncp)))
+
+    def pnhyper(q, ncp, upper=False):
+        if ncp == 0:
+            return float(q >= lo) if not upper else float(q <= lo)
+        if ncp == math.inf:
+            return float(q >= hi) if not upper else float(q <= hi)
+        dn = dnhyper(ncp)
+        if upper:
+            return math.fsum(pr for u, pr in zip(support, dn) if u >= q)
+        return math.fsum(pr for u, pr in zip(support, dn) if u <= q)
+
+    def root(f, lo_, hi_):
+        flo = f(lo_)
+        for _ in range(300):
+            mid = 0.5 * (lo_ + hi_)
+            fm = f(mid)
+            if (fm > 0) == (flo > 0):
+                lo_, flo = mid, fm
+            else:
+                hi_ = mid
+            if hi_ - lo_ <= 1e-16:
+                break
+        return 0.5 * (lo_ + hi_)
+
+    eps = 2.220446049250313e-16
+    x = a
+
+    def mle():
+        if x == lo:
+            return 0.0
+        if x == hi:
+            return math.inf
+        mu = mnhyper(1.0)
+        if mu > x:
+            return root(lambda t: mnhyper(t) - x, 0.0, 1.0)
+        if mu < x:
+            return 1.0 / root(lambda t: mnhyper(1.0 / t) - x, eps, 1.0)
+        return 1.0
+
+    def ncp_u(alpha):
+        if x == hi:
+            return math.inf
+        pv = pnhyper(x, 1.0)
+        if pv < alpha:
+            return root(lambda t: pnhyper(x, t) - alpha, 0.0, 1.0)
+        if pv > alpha:
+            return 1.0 / root(lambda t: pnhyper(x, 1.0 / t) - alpha, eps, 1.0)
+        return 1.0
+
+    def ncp_l(alpha):
+        if x == lo:
+            return 0.0
+        pv = pnhyper(x, 1.0, upper=True)
+        if pv > alpha:
+            return root(lambda t: pnhyper(x, t, upper=True) - alpha, 0.0, 1.0)
+        if pv < alpha:
+            return 1.0 / root(lambda t: pnhyper(x, 1.0 / t, upper=True) - alpha, eps, 1.0)
+        return 1.0
+
+    alpha = (1.0 - conf_level) / 2.0
+    return mle(), ncp_l(alpha), ncp_u(alpha)
+
+
 def fisher_exact_test(table_2x2: Union[list, np.ndarray]) -> dict:
     """
     Fisher's exact test for a 2x2 contingency table.
@@ -1193,7 +1306,10 @@ def fisher_exact_test(table_2x2: Union[list, np.ndarray]) -> dict:
     approximation is unreliable.
 
     :param table_2x2: A 2x2 array-like [[a, b], [c, d]].
-    :return: dict with keys ``odds_ratio``, ``p_value``.
+    :return: dict with keys ``odds_ratio`` (conditional maximum-likelihood
+        estimate, as R's fisher.test), ``ci_lower``/``ci_upper`` (exact
+        conditional 95% interval), ``sample_odds_ratio`` (ad/bc) and
+        ``p_value``.
     :raises ValueError: If the table is not 2x2 or contains negative values.
 
     References
@@ -1206,9 +1322,15 @@ def fisher_exact_test(table_2x2: Union[list, np.ndarray]) -> dict:
         raise ValueError(f"table_2x2 must have shape (2, 2), got {tbl.shape}.")
     if np.any(tbl < 0):
         raise ValueError("Contingency table entries must be non-negative.")
-    odds_ratio, p_val = stats.fisher_exact(tbl.astype(int))
+    _sample_or, p_val = stats.fisher_exact(tbl.astype(int))
+    # the estimate R's fisher.test reports: the conditional MLE of the odds
+    # ratio, with its exact conditional 95% interval
+    est, lo, hi = _fisher_conditional(tbl.astype(int).tolist(), 0.95)
     return {
-        "odds_ratio": float(odds_ratio),
+        "odds_ratio": float(est),
+        "ci_lower": float(lo),
+        "ci_upper": float(hi),
+        "sample_odds_ratio": float(_sample_or),
         "p_value": float(p_val),
         "method": "Fisher's exact test",
     }
@@ -1545,9 +1667,14 @@ def rate_ratio_ci(n1: int, t1: float, n2: int, t2: float, *, alpha: float = 0.05
     }
 
 
-def odds_ratio_ci(table_2x2: Union[list, np.ndarray], *, alpha: float = 0.05) -> dict:
+def odds_ratio_ci(table_2x2: Union[list, np.ndarray], *, alpha: float = 0.05, method: str = "exact") -> dict:
     """
-    Odds ratio with exact (Baptista-Pike) confidence interval from scipy.
+    Odds ratio with an exact conditional or a Woolf confidence interval.
+
+    ``method="exact"`` (default): the exact conditional interval of R's
+    fisher.test (Cornfield 1956), from the noncentral hypergeometric
+    distribution. ``method="woolf"``: exp(log OR -/+ z sqrt(1/a + 1/b + 1/c + 1/d)),
+    with 0.5 added to every cell when one is zero (Haldane-Anscombe).
 
     For a 2x2 table [[a, b], [c, d]]:
     OR = (a * d) / (b * c)
@@ -1572,22 +1699,19 @@ def odds_ratio_ci(table_2x2: Union[list, np.ndarray], *, alpha: float = 0.05) ->
         raise ValueError(f"alpha must be in (0, 1), got {alpha}.")
     # Fisher exact gives odds ratio and two-sided p-value
     or_point, p_val = stats.fisher_exact(tbl.astype(int))
-    # For CI, use the Woolf log-normal CI (well-defined when all cells > 0)
     a, b, c, d = tbl[0, 0], tbl[0, 1], tbl[1, 0], tbl[1, 1]
-    if all(v > 0 for v in [a, b, c, d]):
+    if method == "exact":
+        _, ci_lower, ci_upper = _fisher_conditional([[int(a), int(b)], [int(c), int(d)]], 1.0 - alpha)
+    elif method == "woolf":
+        if not all(v > 0 for v in [a, b, c, d]):
+            a, b, c, d = a + 0.5, b + 0.5, c + 0.5, d + 0.5
         log_or = math.log(a * d / (b * c))
         se_log_or = math.sqrt(1 / a + 1 / b + 1 / c + 1 / d)
         z = float(stats.norm.ppf(1 - alpha / 2))
         ci_lower = math.exp(log_or - z * se_log_or)
         ci_upper = math.exp(log_or + z * se_log_or)
     else:
-        # Haldane-Anscombe correction: add 0.5 to all cells
-        a, b, c, d = a + 0.5, b + 0.5, c + 0.5, d + 0.5
-        log_or = math.log(a * d / (b * c))
-        se_log_or = math.sqrt(1 / a + 1 / b + 1 / c + 1 / d)
-        z = float(stats.norm.ppf(1 - alpha / 2))
-        ci_lower = math.exp(log_or - z * se_log_or)
-        ci_upper = math.exp(log_or + z * se_log_or)
+        raise ValueError("method must be 'exact' or 'woolf'.")
     return {
         "odds_ratio": float(or_point),
         "ci_lower": float(ci_lower),
@@ -1975,6 +2099,43 @@ def kendall_tau(
     return {"tau": float(tau), "p_value": float(p_val)}
 
 
+
+def _prho(n, is_, lower_tail):
+    """Algorithm AS 89 (Best & Roberts 1975) as in R's prho.c:
+    P[S >= is] (or P[S < is] when lower_tail) for Spearman's
+    S = (n^3 - n)(1 - rho)/6 -- exact enumeration for n <= 9, Edgeworth
+    series above."""
+    pv = 0.0 if lower_tail else 1.0
+    if n <= 1 or is_ <= 0.0:
+        return pv
+    n3 = n * (n * n - 1.0) / 3.0
+    if is_ > n3:
+        return 1.0 - pv
+    if n <= 9:
+        import itertools
+
+        nfac = math.factorial(n)
+        if is_ == n3:
+            ifr = 1
+        else:
+            ifr = 0
+            for perm in itertools.permutations(range(1, n + 1)):
+                ise = sum((i + 1 - v) ** 2 for i, v in enumerate(perm))
+                if is_ <= ise:
+                    ifr += 1
+        return (nfac - ifr if lower_tail else ifr) / nfac
+    c = (.2274, .2531, .1745, .0758, .1033, .3932, .0879, .0151, .0072, .0831, .0131, 4.6e-4)
+    y = float(n)
+    b = 1.0 / y
+    x = (6.0 * (is_ - 1) * b / (y * y - 1) - 1) * math.sqrt(y - 1)
+    y = x * x
+    u = x * b * (c[0] + b * (c[1] + c[2] * b) + y * (-c[3] + b * (c[4] + c[5] * b) - y * b * (
+        c[6] + c[7] * b - y * (c[8] - c[9] * b + y * b * (c[10] - c[11] * y)))))
+    y = u / math.exp(y / 2.0)
+    pv = (-y if lower_tail else y) + float(stats.norm.cdf(x) if lower_tail else stats.norm.sf(x))
+    return min(max(pv, 0.0), 1.0)
+
+
 def spearman_rho(
     x: Union[list, np.ndarray],
     y: Union[list, np.ndarray],
@@ -2002,12 +2163,44 @@ def spearman_rho(
     if len(ax) < 3:
         raise ValueError("At least 3 observations are required.")
     rho, p_val = stats.spearmanr(ax, ay)
-    return {"rho": float(rho), "p_value": float(p_val)}
+    rho = float(rho)
+    n = len(ax)
+    ties = len(set(ax.tolist())) < n or len(set(ay.tolist())) < n
+    if not ties and n < 1290:
+        # R cor.test(method = "spearman"): exact / Edgeworth (AS 89) p-value
+        # for untied data; with ties the t approximation stays
+        q = (n ** 3 - n) * (1.0 - rho) / 6.0
+        if q > (n ** 3 - n) / 6.0:
+            pp = _prho(n, round(q) + 0.0, False)
+        else:
+            pp = _prho(n, round(q) + 2.0, True)
+        p_val = min(2.0 * pp, 1.0)
+    return {"rho": rho, "p_value": float(p_val)}
 
 
 # ===========================================================================
 # SECTION 5 -- POWER ANALYSIS
 # ===========================================================================
+
+
+def _solve_increasing(f, target, lo, hi):
+    """Root of the increasing f(x) = target: the upper end starts at hi and
+    doubles until it passes the target (so f is never evaluated far out,
+    where a noncentral tail loses accuracy), then bisection to machine
+    precision."""
+    grow = 0
+    while f(hi) < target and grow < 200:
+        lo, hi = hi, hi * 2.0
+        grow += 1
+    for _ in range(400):
+        mid = 0.5 * (lo + hi)
+        if hi - lo <= 1e-15 * max(1.0, abs(mid)):
+            return mid
+        if f(mid) < target:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
 
 
 def power_t_test(
@@ -2020,31 +2213,20 @@ def power_t_test(
     alternative: str = "two-sided",
     type: str = "two-sample",
 ) -> float:
-    """
-    Solve for any one missing parameter in a t-test power calculation.
-
-    Exactly one of ``n``, ``delta``, or ``power`` must be None; the function
-    solves for that parameter and returns it.
-
-    Mirrors R's ``power.t.test()``.
-
-    :param n: Sample size per group (two-sample) or total (one-sample).
-    :param delta: Standardised effect size (|mean difference| / sd).
-    :param sd: Standard deviation. Default 1.0.
-    :param alpha: Type I error rate. Default 0.05.
-    :param power: Desired power (1 - beta).
-    :param alternative: ``"two-sided"`` or ``"one-sided"``. Default ``"two-sided"``.
-    :param type: ``"two-sample"``, ``"one-sample"``, or ``"paired"``. Default ``"two-sample"``.
-    :return: The value of the missing parameter.
-    :raises ValueError: If exactly one parameter is not None, or invalid values provided.
+    """Solve for the one missing quantity (``n``, ``delta`` or ``power``) of a
+    t-test power calculation, exactly as R's ``power.t.test`` (strict =
+    FALSE): power = P(T' > t_{1-alpha/s, nu}) for the noncentral t with
+    nu = (n - 1) * k and ncp = sqrt(n / k) * delta / sd, where k = 2 for
+    a two-sample test (n per group) and 1 for one-sample or paired, and
+    s = 2 for a two-sided test. Roots are solved to machine precision
+    (R's uniroot stops at about 1e-4).
 
     References
     ----------
-    Cohen, J. (1988). Statistical Power Analysis for the Behavioral Sciences (2nd ed.).
-    R Core Team (2024). power.t.test {stats}. R documentation.
+    R Core Team. power.t.test {stats}. Cohen, J. (1988). Statistical Power
+    Analysis for the Behavioral Sciences (2nd ed.).
     """
-    none_count = sum(v is None for v in [n, delta, power])
-    if none_count != 1:
+    if sum(v is None for v in (n, delta, power)) != 1:
         raise ValueError("Exactly one of n, delta, or power must be None.")
     if sd <= 0:
         raise ValueError(f"sd must be > 0, got {sd}.")
@@ -2052,76 +2234,29 @@ def power_t_test(
         raise ValueError(f"alpha must be in (0, 1), got {alpha}.")
     if power is not None and not 0 < power < 1:
         raise ValueError(f"power must be in (0, 1), got {power}.")
-
-    if alternative == "two-sided":
-        ratio = 1 if type in ("one-sample", "paired") else 1
-        two_tailed = True
-    elif alternative in ("one-sided", "greater", "less"):
-        two_tailed = False
+    if alternative in ("two-sided", "two.sided"):
+        tside = 2.0
+    elif alternative in ("one-sided", "one.sided", "greater", "less"):
+        tside = 1.0
     else:
         raise ValueError(f"alternative must be 'two-sided' or 'one-sided', got {alternative!r}.")
-
-    # Effective effect size (Cohen's d-like) = delta / sd
-    effect = (delta / sd) if delta is not None else None
-
-    if type == "two-sample":
-        analysis = TTestIndPower()
-        ratio_arg = 1.0  # equal group sizes
+    if type in ("two-sample", "two.sample"):
+        tsample = 2.0
+    elif type in ("one-sample", "one.sample", "paired"):
+        tsample = 1.0
     else:
-        analysis = TTestPower()
-        ratio_arg = None
+        raise ValueError(f"unknown type {type!r}.")
 
+    def p_body(nn, dd):
+        nu = (nn - 1.0) * tsample
+        qu = float(stats.t.isf(alpha / tside, nu))
+        return float(stats.nct.sf(qu, nu, math.sqrt(nn / tsample) * dd / sd))
+
+    if power is None:
+        return p_body(float(n), float(delta))
     if n is None:
-        if type == "two-sample":
-            result = analysis.solve_power(
-                effect_size=float(effect),
-                alpha=float(alpha),
-                power=float(power),
-                alternative="two-sided" if two_tailed else "larger",
-                ratio=ratio_arg,
-            )
-        else:
-            result = analysis.solve_power(
-                effect_size=float(effect),
-                alpha=float(alpha),
-                power=float(power),
-                alternative="two-sided" if two_tailed else "larger",
-            )
-        return float(result)
-    elif delta is None:
-        if type == "two-sample":
-            result = analysis.solve_power(
-                nobs1=float(n),
-                alpha=float(alpha),
-                power=float(power),
-                alternative="two-sided" if two_tailed else "larger",
-                ratio=ratio_arg,
-            )
-        else:
-            result = analysis.solve_power(
-                nobs=float(n),
-                alpha=float(alpha),
-                power=float(power),
-                alternative="two-sided" if two_tailed else "larger",
-            )
-        return float(result) * float(sd)  # convert back to delta scale
-    else:  # power is None
-        if type == "two-sample":
-            result = analysis.solve_power(
-                effect_size=float(effect),
-                nobs1=float(n),
-                alpha=float(alpha),
-                alternative="two-sided" if two_tailed else "larger",
-                ratio=ratio_arg,
-            )
-        else:
-            result = analysis.solve_power(
-                effect_size=float(effect),
-                nobs=float(n),
-                alpha=float(alpha),
-                alternative="two-sided" if two_tailed else "larger",
-            )
-        return float(np.clip(result, 0.0, 1.0))
+        return _solve_increasing(lambda nn: p_body(nn, float(delta)), power, 2.0, 4.0)
+    return _solve_increasing(lambda dd: p_body(float(n), dd), power, 0.0, sd)
 
 
 def power_prop_test(
@@ -2133,65 +2268,35 @@ def power_prop_test(
     *,
     alternative: str = "two-sided",
 ) -> float:
-    """
-    Power for two-proportion z-test.
-
-    Solves for one missing parameter among ``n``, ``p1``, ``p2``, or ``power``.
-    Mirrors R's ``power.prop.test()``.
-
-    :param n: Sample size per group.
-    :param p1: Proportion in group 1.
-    :param p2: Proportion in group 2.
-    :param alpha: Type I error rate. Default 0.05.
-    :param power: Desired power.
-    :param alternative: ``"two-sided"`` or ``"one-sided"``. Default ``"two-sided"``.
-    :return: The value of the missing parameter (n, or power).
-    :raises ValueError: If p1 and p2 are both provided but either is out of [0, 1].
-
-    Notes
-    -----
-    The NormalIndPower class operates on an arcsine-transformed effect size
-    h = 2*arcsin(sqrt(p1)) - 2*arcsin(sqrt(p2)) (Cohen's h). This is the
-    conventional approach for proportion tests.
+    """Power of the two-proportion test, exactly as R's ``power.prop.test``
+    (strict = FALSE), solving for the one missing quantity (``n`` per group,
+    ``p2`` given ``p1``, or ``power``):
+    power = Phi( (sqrt(n) |p1 - p2| - z_{1-alpha/s} sqrt((p1 + p2)(1 - (p1 + p2)/2)))
+                 / sqrt(p1 (1 - p1) + p2 (1 - p2)) ).
 
     References
     ----------
-    Cohen, J. (1988). Statistical Power Analysis for the Behavioral Sciences (2nd ed.).
-        Section 7. Effect size h.
-    R Core Team (2024). power.prop.test {stats}. R documentation.
+    R Core Team. power.prop.test {stats}. Fleiss, J. L., Levin, B. & Paik,
+    M. C. (2003). Statistical Methods for Rates and Proportions, ch. 4.
     """
-    if p1 is not None and not 0 < p1 < 1:
-        raise ValueError(f"p1 must be in (0, 1), got {p1}.")
-    if p2 is not None and not 0 < p2 < 1:
-        raise ValueError(f"p2 must be in (0, 1), got {p2}.")
+    if sum(v is None for v in (n, p1, p2, power)) != 1:
+        raise ValueError("Exactly one of n, p1, p2, or power must be None.")
     if not 0 < alpha < 1:
         raise ValueError(f"alpha must be in (0, 1), got {alpha}.")
-    two_tailed = alternative == "two-sided"
+    tside = 2.0 if alternative in ("two-sided", "two.sided") else 1.0
+    qu = float(stats.norm.isf(alpha / tside))
 
-    if p1 is not None and p2 is not None:
-        # Cohen's h: effect size for proportions
-        h = abs(2 * math.asin(math.sqrt(p1)) - 2 * math.asin(math.sqrt(p2)))
-        analysis = NormalIndPower()
-        if n is None and power is not None:
-            result = analysis.solve_power(
-                effect_size=h,
-                alpha=float(alpha),
-                power=float(power),
-                alternative="two-sided" if two_tailed else "larger",
-            )
-            return float(result)
-        elif power is None and n is not None:
-            result = analysis.solve_power(
-                effect_size=h,
-                alpha=float(alpha),
-                nobs1=float(n),
-                alternative="two-sided" if two_tailed else "larger",
-            )
-            return float(np.clip(result, 0.0, 1.0))
-        else:
-            raise ValueError("Provide exactly one of (n, power) when p1 and p2 are given.")
-    else:
-        raise ValueError("p1 and p2 must both be provided.")
+    def p_body(nn, a, b):
+        return float(stats.norm.cdf((math.sqrt(nn * (a - b) ** 2) - qu * math.sqrt((a + b) * (1 - (a + b) / 2)))
+                                    / math.sqrt(a * (1 - a) + b * (1 - b))))
+
+    if power is None:
+        return p_body(float(n), float(p1), float(p2))
+    if n is None:
+        return _solve_increasing(lambda nn: p_body(nn, float(p1), float(p2)), power, 2.0, 4.0)
+    if p2 is None:
+        return _solve_increasing(lambda b: p_body(float(n), float(p1), b), power, float(p1), 1.0 - 1e-10)
+    return _solve_increasing(lambda a: p_body(float(n), a, float(p2)), power, 1e-10, float(p2))
 
 
 def power_anova(
