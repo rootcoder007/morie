@@ -19,6 +19,7 @@ MA-thesis "210-day TTR" claim should have been.
 
 from __future__ import annotations
 
+import datetime
 from dataclasses import dataclass
 
 from morie.fn import _array_core as np
@@ -37,7 +38,56 @@ class SIUCaseDecisionResult:
     by_service: pd.DataFrame
 
 
+def _km_summary(time, event, probs=(0.25, 0.5, 0.75)):
+    """Kaplan-Meier summary as survival::survfit.
+
+    Quantiles by quantile.survfit's rule (first time the cumulative
+    incidence reaches p, the midpoint when the curve sits exactly on
+    1 - p) and the restricted mean survival to the last time
+    (print.survfit's rmean).  Mirrors ``.mrm_km_summary`` in the R arm.
+    """
+    time = [float(v) for v in time]
+    event = [bool(v) for v in event]
+    ut = sorted(set(time))
+    surv, s = [], 1.0
+    for u in ut:
+        n_risk = sum(t >= u for t in time)
+        n_ev = sum(t == u and e for t, e in zip(time, event))
+        s *= 1 - n_ev / n_risk
+        surv.append(s)
+    x = [min(0.0, ut[0]), *ut]
+    y = [0.0, *(1 - v for v in surv)]
+    xmax = x[-1]
+    seen, xs, ys = set(), [], []
+    for a, b in zip(x, y):
+        if b not in seen:
+            seen.add(b)
+            xs.append(a)
+            ys.append(b)
+    tol = 2.220446049250313e-16**0.5
+    q = []
+    for p in probs:
+        if max(ys) < p:
+            q.append(float("nan"))
+            continue
+        i1 = next(i for i, v in enumerate(ys) if v + tol >= p)
+        i2 = next((i for i, v in enumerate(ys) if v - tol >= p), None)
+        if abs(p - ys[-1]) < tol:
+            q.append((xs[i1] + xmax) / 2)
+        else:
+            q.append((xs[i1] + xs[i2]) / 2)
+    left = [1.0, *surv[:-1]]
+    rmean = sum(sl * (b - a) for sl, a, b in zip(left, [0.0, *ut[:-1]], ut))
+    return q, rmean
+
+
 def _summarise(gap, cens, label) -> dict:
+    """Kaplan-Meier summary of case-to-decision days; open cases censored.
+
+    ``median_days`` / ``p25_days`` / ``p75_days`` are KM quantiles of the
+    time to decision and ``mean_days`` the restricted mean to the last
+    follow-up, all as survival::survfit (see :func:`_km_summary`).
+    """
     if gap.size == 0:
         return {
             "stratum": label,
@@ -49,14 +99,15 @@ def _summarise(gap, cens, label) -> dict:
             "p75_days": np.nan,
             "max_days": np.nan,
         }
+    (q25, q50, q75), rmean = _km_summary(gap, [not c for c in cens])
     return {
         "stratum": label,
         "n": int(gap.size),
         "n_censored": int(cens.sum()),
-        "median_days": float(np.median(gap)),
-        "mean_days": round(float(gap.mean()), 2),
-        "p25_days": float(np.quantile(gap, 0.25)),
-        "p75_days": float(np.quantile(gap, 0.75)),
+        "median_days": q50,
+        "mean_days": round(rmean, 2),
+        "p25_days": q25,
+        "p75_days": q75,
         "max_days": float(gap.max()),
     }
 
@@ -71,38 +122,41 @@ def mrm_siu_case_to_decision_km(
     min_n: int = 5,
 ) -> SIUCaseDecisionResult:
     """KM-style time-from-incident-to-Director's-decision summary."""
-    df = pd.coerce_frame(data).copy()
-    inc = pd.to_datetime(df[incident_col], errors="coerce")
-    dec = pd.to_datetime(df[decision_col], errors="coerce")
-    svc = df[service_col].astype(str)
+    df = pd.coerce_frame(data)
 
-    keep_inc = inc.notna()
-    gap = (dec - inc).dt.days.astype("float64")
+    def _day(v):
+        # ISO date -> day ordinal; missing or unparseable -> None
+        try:
+            return datetime.date.fromisoformat(str(v)[:10]).toordinal()
+        except (TypeError, ValueError):
+            return None
 
+    inc = [_day(v) for v in df[incident_col]]
+    dec = [_day(v) for v in df[decision_col]]
+    svc = [str(v) for v in df[service_col]]
+    gap = [d - i if i is not None and d is not None else None for i, d in zip(inc, dec)]
+    censored = [False] * len(gap)
     if censor_open_cases:
-        cutoff = dec.max()
-        open_mask = keep_inc & dec.isna()
-        gap.loc[open_mask] = (cutoff - inc.loc[open_mask]).dt.days.astype("float64")
-        censored = open_mask.values
-    else:
-        censored = np.zeros(len(df), dtype=bool)
-
-    observed = keep_inc & (dec.notna() | censor_open_cases)
-    ok = observed.values & np.isfinite(gap.values) & (gap.values >= 0)
-    gap_v = gap.values[ok]
-    svc_v = svc.values[ok]
-    cens_v = censored[ok]
-
+        # open cases: right-censored at the latest decision date in the data
+        cutoff = max(d for d in dec if d is not None)
+        for k, (i, d) in enumerate(zip(inc, dec)):
+            if i is not None and d is None:
+                gap[k] = cutoff - i
+                censored[k] = True
+    ok = [g is not None and g >= 0 for g in gap]
+    gap_v = np.array([float(g) for g, o in zip(gap, ok) if o])
+    svc_v = [v for v, o in zip(svc, ok) if o]
+    cens_v = np.array([c for c, o in zip(censored, ok) if o])
     pooled = pd.DataFrame([_summarise(gap_v, cens_v, "pooled")])
 
     rows = []
-    for s in pd.unique(svc_v):
-        if not s or s == "nan":
+    for sv in dict.fromkeys(svc_v):
+        if not sv or sv in ("nan", "None"):
             continue
-        mask = svc_v == s
-        if mask.sum() < min_n:
+        idx = [k for k, v in enumerate(svc_v) if v == sv]
+        if len(idx) < min_n:
             continue
-        rows.append(_summarise(gap_v[mask], cens_v[mask], s))
+        rows.append(_summarise(np.array([gap_v[k] for k in idx]), np.array([cens_v[k] for k in idx]), sv))
     by_service = pd.DataFrame(rows)
 
     return SIUCaseDecisionResult(pooled=pooled, by_service=by_service)
