@@ -37,6 +37,7 @@ def _to_float(v):
 
 # ===================================================== Series
 
+
 class Index(list):
     """Row labels with pandas-style boolean-mask selection."""
 
@@ -96,7 +97,7 @@ class Index(list):
         of bool so both Index.__getitem__ and .loc take it directly."""
         try:
             vs = set(values.tolist() if hasattr(values, "tolist") else values)
-        except TypeError:          # unhashable members: fall back to a scan
+        except TypeError:  # unhashable members: fall back to a scan
             vs = None
         if vs is None:
             seq = list(values)
@@ -143,8 +144,7 @@ class Series:
             self._data = [data] * n
         else:
             self._data = list(data)
-        self.index = Index(index) if index is not None \
-            else Index(range(len(self._data)))
+        self.index = Index(index) if index is not None else Index(range(len(self._data)))
         self.name = name
         if dtype is not None:
             self._data = _cast_list(self._data, dtype)
@@ -163,8 +163,7 @@ class Series:
         """pandas Series.unstack for a tuple (multi-level) index: the
         last level becomes the columns, the rest the rows, each in its
         level order (category order for a categorical, else sorted)."""
-        if level not in (-1,) and not (isinstance(level, int) and self.index
-                                       and level == len(self.index[0]) - 1):
+        if level not in (-1,) and not (isinstance(level, int) and self.index and level == len(self.index[0]) - 1):
             raise NotImplementedError("only the last level can be unstacked")
         idx = list(self.index)
         if not idx or not all(isinstance(k, tuple) and len(k) >= 2 for k in idx):
@@ -180,13 +179,13 @@ class Series:
                 except TypeError:
                     orders.append(sorted(vals, key=str))
         pos = [{v: i for i, v in enumerate(o)} for o in orders]
-        rows = sorted({k[:-1] for k in idx},
-                      key=lambda r: tuple(pos[j][v] for j, v in enumerate(r)))
+        rows = sorted({k[:-1] for k in idx}, key=lambda r: tuple(pos[j][v] for j, v in enumerate(r)))
         cols = [c for c in orders[-1] if any(k[-1] == c for k in idx)]
         cell = {k: v for k, v in zip(idx, self._data)}
         fill = _NAN if fill_value is None else fill_value
-        out = DataFrame({c: [cell.get(r + (c,), fill) for r in rows] for c in cols},
-                        index=[r[0] if nlev == 2 else r for r in rows])
+        out = DataFrame(
+            {c: [cell.get(r + (c,), fill) for r in rows] for c in cols}, index=[r[0] if nlev == 2 else r for r in rows]
+        )
         names = getattr(self, "index_names", None)
         if names:
             if nlev == 2:
@@ -269,13 +268,11 @@ class Series:
         return Series(vals)
 
     def _is_numeric(self):
-        return all(isinstance(v, (int, float, bool)) or _isnan(v)
-                   for v in self._data)
+        return all(isinstance(v, (int, float, bool)) or _isnan(v) for v in self._data)
 
     def to_numpy(self, dtype=None):
         v = self.values
-        if dtype is not None and hasattr(v, "_flat") is False \
-                and isinstance(v, list):
+        if dtype is not None and hasattr(v, "_flat") is False and isinstance(v, list):
             return _ac.marr([_to_float(x) for x in v])
         return v
 
@@ -285,8 +282,7 @@ class Series:
     to_list = tolist
 
     def copy(self):
-        return Series(list(self._data), index=list(self.index),
-                      name=self.name)
+        return Series(list(self._data), index=list(self.index), name=self.name)
 
     def groupby(self, by, sort=True, observed=True):
         """SeriesGroupBy surface: iterable of (key, sub-Series) that
@@ -312,12 +308,10 @@ class Series:
         return Series(data, index=list(index), name=self.name)
 
     def head(self, n=5):
-        return Series(self._data[:n], index=self.index[:n],
-                      name=self.name)
+        return Series(self._data[:n], index=self.index[:n], name=self.name)
 
     def tail(self, n=5):
-        return Series(self._data[-n:], index=self.index[-n:],
-                      name=self.name)
+        return Series(self._data[-n:], index=self.index[-n:], name=self.name)
 
     def items(self):
         return zip(self.index, self._data)
@@ -332,14 +326,13 @@ class Series:
         elif type(key).__name__ == "marr":
             key = [bool(v) for v in key._flat()]
         elif hasattr(key, "dtype") and hasattr(key, "tolist"):
-            key = list(key.tolist())        # real-pandas/numpy mask
+            key = list(key.tolist())  # real-pandas/numpy mask
         if isinstance(key, list) and key and isinstance(key[0], bool):
             d = [v for v, m in zip(self._data, key) if m]
             ix = [i for i, m in zip(self.index, key) if m]
             return Series(d, index=ix, name=self.name)
         if isinstance(key, slice):
-            return Series(self._data[key], index=self.index[key],
-                          name=self.name)
+            return Series(self._data[key], index=self.index[key], name=self.name)
         if key in self.index:
             return self._data[self.index.index(key)]
         return self._data[key]
@@ -350,16 +343,13 @@ class Series:
         elif type(key).__name__ == "marr":
             key = [bool(v) for v in key._flat()]
         elif hasattr(key, "dtype") and hasattr(key, "tolist"):
-            key = list(key.tolist())        # real-pandas/numpy mask
+            key = list(key.tolist())  # real-pandas/numpy mask
         if isinstance(key, list) and key and isinstance(key[0], bool):
-            vals = (list(value.tolist())
-                    if hasattr(value, "tolist") else value)
+            vals = list(value.tolist()) if hasattr(value, "tolist") else value
             vi = 0
             for i, m in enumerate(key):
                 if m:
-                    self._data[i] = (vals[vi]
-                                     if isinstance(vals, list)
-                                     else vals)
+                    self._data[i] = vals[vi] if isinstance(vals, list) else vals
                     vi += 1
             return
         if key in self.index:
@@ -380,13 +370,16 @@ class Series:
         # A native array (marr/oarr) is a sequence, not a scalar: without this
         # it was broadcast whole against each element, so
         # produced a column OF ARRAYS instead of an elementwise sum.
-        if not isinstance(other, (str, bytes)) and hasattr(other, "__len__")                 and hasattr(other, "__iter__") and not isinstance(other, dict):
+        if (
+            not isinstance(other, (str, bytes))
+            and hasattr(other, "__len__")
+            and hasattr(other, "__iter__")
+            and not isinstance(other, dict)
+        ):
             other = list(other)
         if isinstance(other, (list, tuple)):
             if len(other) != len(self._data):
-                raise ValueError(
-                    "length mismatch in Series arithmetic: %d vs %d"
-                    % (len(self._data), len(other)))
+                raise ValueError("length mismatch in Series arithmetic: %d vs %d" % (len(self._data), len(other)))
             d = [fn(a, b) for a, b in zip(self._data, other)]
         else:
             d = [fn(a, other) for a in self._data]
@@ -411,19 +404,19 @@ class Series:
         return self._binop(o, lambda a, b: b * a)
 
     def __truediv__(self, o):
-        return self._binop(o, lambda a, b: a / b if b != 0 else
-                           (_NAN if a == 0 else _math.copysign(
-                               _math.inf, a) * (1 if b == 0 else 1)))
+        return self._binop(
+            o,
+            lambda a, b: a / b if b != 0 else (_NAN if a == 0 else _math.copysign(_math.inf, a) * (1 if b == 0 else 1)),
+        )
 
     def __rtruediv__(self, o):
         return self._binop(o, lambda a, b: b / a)
 
     def __pow__(self, o):
-        return self._binop(o, lambda a, b: a ** b)
+        return self._binop(o, lambda a, b: a**b)
 
     def __neg__(self):
-        return Series([-v for v in self._data], index=list(self.index),
-                      name=self.name)
+        return Series([-v for v in self._data], index=list(self.index), name=self.name)
 
     def _cmp(self, other, fn):
         if isinstance(other, Series):
@@ -461,8 +454,7 @@ class Series:
         return self._cmp(o, lambda a, b: bool(a) or bool(b))
 
     def __invert__(self):
-        return Series([not bool(v) for v in self._data],
-                      index=list(self.index), name=self.name)
+        return Series([not bool(v) for v in self._data], index=list(self.index), name=self.name)
 
     # ---- reductions (skipna like pandas)
     def _clean(self):
@@ -479,8 +471,7 @@ class Series:
     def count(self):
         # pandas counts non-missing values of any dtype; going through
         # _clean() coerced to float and blew up on identifier columns.
-        return sum(0 if (v is None or (isinstance(v, float) and _isnan(v)))
-                   else 1 for v in self._data)
+        return sum(0 if (v is None or (isinstance(v, float) and _isnan(v))) else 1 for v in self._data)
 
     def mean(self):
         c = self._clean()
@@ -504,13 +495,11 @@ class Series:
         return self.std(ddof=ddof) / _math.sqrt(len(c)) if c else _NAN
 
     def min(self):
-        c = self._clean() if self._is_numeric() \
-            else [v for v in self._data if not _isnan(v)]
+        c = self._clean() if self._is_numeric() else [v for v in self._data if not _isnan(v)]
         return min(c) if c else _NAN
 
     def max(self):
-        c = self._clean() if self._is_numeric() \
-            else [v for v in self._data if not _isnan(v)]
+        c = self._clean() if self._is_numeric() else [v for v in self._data if not _isnan(v)]
         return max(c) if c else _NAN
 
     def median(self):
@@ -521,17 +510,14 @@ class Series:
         if not c:
             return _NAN
         if isinstance(q, (list, tuple)):
-            return Series([self.quantile(v) for v in q], index=list(q),
-                          name=self.name)
+            return Series([self.quantile(v) for v in q], index=list(q), name=self.name)
         h = (len(c) - 1) * float(q)
         lo = int(_math.floor(h))
         hi = min(lo + 1, len(c) - 1)
         return c[lo] + (h - lo) * (c[hi] - c[lo])
 
     def abs(self):
-        return Series([abs(v) if not _isnan(v) else v
-                       for v in self._data],
-                      index=list(self.index), name=self.name)
+        return Series([abs(v) if not _isnan(v) else v for v in self._data], index=list(self.index), name=self.name)
 
     def prod(self):
         out = 1.0
@@ -609,7 +595,7 @@ class Series:
         n, _, m2, m3, _ = self._moments()
         if n < 3 or m2 == 0:
             return _NAN
-        g1 = m3 / m2 ** 1.5
+        g1 = m3 / m2**1.5
         return ((n * (n - 1)) ** 0.5 / (n - 2)) * g1
 
     def kurt(self):
@@ -701,7 +687,7 @@ class Series:
         pairs = [(i, v) for i, v in zip(self.index, self._data) if not _isnan(v)]
         pairs.sort(key=lambda t: t[1], reverse=reverse)
         pairs += [(i, v) for i, v in zip(self.index, self._data) if _isnan(v)]
-        pairs = pairs[:int(n)]
+        pairs = pairs[: int(n)]
         return Series([v for _, v in pairs], index=[i for i, _ in pairs], name=self.name)
 
     def nlargest(self, n=5):
@@ -718,8 +704,7 @@ class Series:
 
     def where(self, cond, other=_NAN):
         c = list(cond.tolist() if hasattr(cond, "tolist") else cond)
-        oth = list(other.tolist() if hasattr(other, "tolist") else
-                   [other] * len(self._data))
+        oth = list(other.tolist() if hasattr(other, "tolist") else [other] * len(self._data))
         out = [v if bool(ci) else o for v, ci, o in zip(self._data, c, oth)]
         return Series(out, index=list(self.index), name=self.name)
 
@@ -730,14 +715,20 @@ class Series:
     @property
     def is_monotonic_increasing(self):
         v = [x for x in self._data]
-        return all(not _isnan(a) and not _isnan(b) and a <= b for a, b in zip(v, v[1:])) \
-            if len(v) > 1 else not any(_isnan(x) for x in v) or len(v) == 0
+        return (
+            all(not _isnan(a) and not _isnan(b) and a <= b for a, b in zip(v, v[1:]))
+            if len(v) > 1
+            else not any(_isnan(x) for x in v) or len(v) == 0
+        )
 
     @property
     def is_monotonic_decreasing(self):
         v = [x for x in self._data]
-        return all(not _isnan(a) and not _isnan(b) and a >= b for a, b in zip(v, v[1:])) \
-            if len(v) > 1 else not any(_isnan(x) for x in v) or len(v) == 0
+        return (
+            all(not _isnan(a) and not _isnan(b) and a >= b for a, b in zip(v, v[1:]))
+            if len(v) > 1
+            else not any(_isnan(x) for x in v) or len(v) == 0
+        )
 
     def diff(self, periods=1):
         d = [_NAN] * min(periods, len(self._data))
@@ -749,17 +740,18 @@ class Series:
     def shift(self, periods=1):
         n = len(self._data)
         if periods >= 0:
-            d = [_NAN] * min(periods, n) + self._data[:n - periods]
+            d = [_NAN] * min(periods, n) + self._data[: n - periods]
         else:
             d = self._data[-periods:] + [_NAN] * min(-periods, n)
         return Series(d, index=list(self.index), name=self.name)
 
     def pct_change(self):
         prev = self.shift(1)
-        return Series([_NAN if _isnan(a) or _isnan(b) or b == 0
-                       else a / b - 1.0
-                       for a, b in zip(self._data, prev._data)],
-                      index=list(self.index), name=self.name)
+        return Series(
+            [_NAN if _isnan(a) or _isnan(b) or b == 0 else a / b - 1.0 for a, b in zip(self._data, prev._data)],
+            index=list(self.index),
+            name=self.name,
+        )
 
     def clip(self, lower=None, upper=None):
         def one(v):
@@ -770,13 +762,13 @@ class Series:
             if upper is not None and v > upper:
                 return upper
             return v
-        return Series([one(v) for v in self._data],
-                      index=list(self.index), name=self.name)
+
+        return Series([one(v) for v in self._data], index=list(self.index), name=self.name)
 
     def round(self, decimals=0):
-        return Series([round(v, decimals) if not _isnan(v) else v
-                       for v in self._data],
-                      index=list(self.index), name=self.name)
+        return Series(
+            [round(v, decimals) if not _isnan(v) else v for v in self._data], index=list(self.index), name=self.name
+        )
 
     def any(self):
         return any(bool(v) for v in self._data if not _isnan(v))
@@ -805,38 +797,30 @@ class Series:
 
     # ---- missing data
     def isna(self):
-        return Series([_isnan(v) for v in self._data],
-                      index=list(self.index), name=self.name)
+        return Series([_isnan(v) for v in self._data], index=list(self.index), name=self.name)
 
     isnull = isna
 
     def notna(self):
-        return Series([not _isnan(v) for v in self._data],
-                      index=list(self.index), name=self.name)
+        return Series([not _isnan(v) for v in self._data], index=list(self.index), name=self.name)
 
     notnull = notna
 
     def dropna(self):
-        pairs = [(i, v) for i, v in zip(self.index, self._data)
-                 if not _isnan(v)]
-        return Series([v for _, v in pairs], index=[i for i, _ in pairs],
-                      name=self.name)
+        pairs = [(i, v) for i, v in zip(self.index, self._data) if not _isnan(v)]
+        return Series([v for _, v in pairs], index=[i for i, _ in pairs], name=self.name)
 
     def fillna(self, value):
-        return Series([value if _isnan(v) else v for v in self._data],
-                      index=list(self.index), name=self.name)
+        return Series([value if _isnan(v) else v for v in self._data], index=list(self.index), name=self.name)
 
     # ---- transforms
     def astype(self, dtype):
-        return Series(_cast_list(self._data, dtype),
-                      index=list(self.index), name=self.name)
+        return Series(_cast_list(self._data, dtype), index=list(self.index), name=self.name)
 
     def map(self, fn):
         if isinstance(fn, dict):
-            return Series([fn.get(v, _NAN) for v in self._data],
-                          index=list(self.index), name=self.name)
-        return Series([fn(v) for v in self._data],
-                      index=list(self.index), name=self.name)
+            return Series([fn.get(v, _NAN) for v in self._data], index=list(self.index), name=self.name)
+        return Series([fn(v) for v in self._data], index=list(self.index), name=self.name)
 
     def apply(self, fn):
         return self.map(fn)
@@ -849,9 +833,7 @@ class Series:
         elif isinstance(to_replace, (list, tuple)):
             if isinstance(value, (list, tuple)):
                 if len(value) != len(to_replace):
-                    raise ValueError(
-                        "replace: %d targets but %d replacements"
-                        % (len(to_replace), len(value)))
+                    raise ValueError("replace: %d targets but %d replacements" % (len(to_replace), len(value)))
                 table = dict(zip(to_replace, value))
             else:
                 table = {k: value for k in to_replace}
@@ -862,18 +844,15 @@ class Series:
             try:
                 if v in table:
                     return table[v]
-            except TypeError:      # unhashable value: nothing can match
+            except TypeError:  # unhashable value: nothing can match
                 return v
             return v
 
-        return Series([one(v) for v in self._data],
-                      index=list(self.index), name=self.name)
+        return Series([one(v) for v in self._data], index=list(self.index), name=self.name)
 
     def isin(self, values):
-        vs = set(values.tolist() if hasattr(values, "tolist")
-                 else values)
-        return Series([v in vs for v in self._data],
-                      index=list(self.index), name=self.name)
+        vs = set(values.tolist() if hasattr(values, "tolist") else values)
+        return Series([v in vs for v in self._data], index=list(self.index), name=self.name)
 
     def unique(self):
         seen, out = set(), []
@@ -883,8 +862,7 @@ class Series:
                 seen.add(k)
                 out.append(v)
         # pandas returns an array: carry .size/.shape/.tolist
-        if all(isinstance(v, (int, float)) and not isinstance(v, bool)
-               for v in out):
+        if all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in out):
             return _ac.marr([float(v) for v in out])
         return _ac.oarr(out)
 
@@ -907,9 +885,11 @@ class Series:
         tot = sum(v for _, v in items)
         # pandas 2: the counts are named "count" ("proportion" when
         # normalised) and the original name moves to the index
-        out = Series([v / tot if normalize else v for _, v in items],
-                     index=[k for k, _ in items],
-                     name="proportion" if normalize else "count")
+        out = Series(
+            [v / tot if normalize else v for _, v in items],
+            index=[k for k, _ in items],
+            name="proportion" if normalize else "count",
+        )
         out.index_name = self.name
         return out
 
@@ -918,14 +898,11 @@ class Series:
         nas = [(i, v) for i, v in zip(self.index, self._data) if _isnan(v)]
         live.sort(key=lambda kv: kv[1], reverse=not ascending)
         pairs = nas + live if na_position == "first" else live + nas
-        return Series([v for _, v in pairs], index=[i for i, _ in pairs],
-                      name=self.name)
+        return Series([v for _, v in pairs], index=[i for i, _ in pairs], name=self.name)
 
     def sort_index(self, ascending=True):
-        pairs = sorted(zip(self.index, self._data),
-                       key=lambda kv: kv[0], reverse=not ascending)
-        return Series([v for _, v in pairs], index=[i for i, _ in pairs],
-                      name=self.name)
+        pairs = sorted(zip(self.index, self._data), key=lambda kv: kv[0], reverse=not ascending)
+        return Series([v for _, v in pairs], index=[i for i, _ in pairs], name=self.name)
 
     def reset_index(self, drop=False, name=None):
         # pandas: Series.reset_index(name="n") returns a DataFrame whose
@@ -948,8 +925,7 @@ class Series:
         if idx and names and all(isinstance(k, tuple) for k in idx):
             width = len(idx[0])
             if all(len(k) == width for k in idx) and len(names) == width:
-                names = [nm if nm is not None else "level_%d" % i
-                         for i, nm in enumerate(names)]
+                names = [nm if nm is not None else "level_%d" % i for i, nm in enumerate(names)]
                 cols = {names[i]: [k[i] for k in idx] for i in range(width)}
                 cols[val_name] = list(self._data)
                 return DataFrame(cols)
@@ -977,15 +953,17 @@ class Series:
         live.sort(key=lambda i: vals[i], reverse=not ascending)
         # NaNs form one tied block placed before (top) or after (bottom)
         # the live values, or are left out (keep)
-        order = live if na_option == "keep" else (
-            nas + live if na_option == "top" else live + nas)
+        order = live if na_option == "keep" else (nas + live if na_option == "top" else live + nas)
         ranks = [float("nan")] * n
         i = 0
         dense = 0
         while i < len(order):
             j = i
-            while (j + 1 < len(order) and isna[order[j + 1]] == isna[order[i]]
-                   and (isna[order[i]] or vals[order[j + 1]] == vals[order[i]])):
+            while (
+                j + 1 < len(order)
+                and isna[order[j + 1]] == isna[order[i]]
+                and (isna[order[i]] or vals[order[j + 1]] == vals[order[i]])
+            ):
                 j += 1
             dense += 1
             for k in range(i, j + 1):
@@ -1009,23 +987,30 @@ class Series:
         return out
 
     def to_frame(self, name=None):
-        return DataFrame({name or self.name or 0: list(self._data)},
-                         index=list(self.index))
+        return DataFrame({name or self.name or 0: list(self._data)}, index=list(self.index))
 
     def to_dict(self):
         return dict(zip(self.index, self._data))
 
     def describe(self):
-        return Series([self.count(), self.mean(), self.std(),
-                       self.min(), self.quantile(0.25), self.median(),
-                       self.quantile(0.75), self.max()],
-                      index=["count", "mean", "std", "min", "25%",
-                             "50%", "75%", "max"], name=self.name)
+        return Series(
+            [
+                self.count(),
+                self.mean(),
+                self.std(),
+                self.min(),
+                self.quantile(0.25),
+                self.median(),
+                self.quantile(0.75),
+                self.max(),
+            ],
+            index=["count", "mean", "std", "min", "25%", "50%", "75%", "max"],
+            name=self.name,
+        )
 
 
 def _cast_list(data, dtype):
-    d = dtype if isinstance(dtype, str) else getattr(
-        dtype, "__name__", str(dtype))
+    d = dtype if isinstance(dtype, str) else getattr(dtype, "__name__", str(dtype))
     if d in ("float", "float64", "float32", "Float64"):
         return [_to_float(v) for v in data]
     if d in ("int", "int64", "int32", "Int64", "Int32"):
@@ -1045,8 +1030,7 @@ class _SeriesILoc:
 
     def __getitem__(self, i):
         if isinstance(i, slice):
-            return Series(self._s._data[i], index=self._s.index[i],
-                          name=self._s.name)
+            return Series(self._s._data[i], index=self._s.index[i], name=self._s.name)
         return self._s._data[i]
 
     def __setitem__(self, i, v):
@@ -1059,9 +1043,7 @@ class _SeriesLoc:
 
     def __getitem__(self, key):
         s = self._s
-        if isinstance(key, Index) or (
-                isinstance(key, (list, tuple)) and key
-                and not isinstance(key[0], bool)):
+        if isinstance(key, Index) or (isinstance(key, (list, tuple)) and key and not isinstance(key[0], bool)):
             # label-based selection, as pandas' .loc with a list of labels
             labels = list(key)
             pos = {}
@@ -1070,8 +1052,7 @@ class _SeriesLoc:
             missing = [lab for lab in labels if lab not in pos]
             if missing:
                 raise KeyError("%r not in index" % (missing[:5],))
-            return Series([s._data[pos[lab]] for lab in labels],
-                          index=labels, name=s.name)
+            return Series([s._data[pos[lab]] for lab in labels], index=labels, name=s.name)
         return s[key]
 
     def __setitem__(self, key, v):
@@ -1083,9 +1064,9 @@ class _StrAccessor:
         self._s = s
 
     def _map(self, fn):
-        return Series([fn(v) if isinstance(v, str) else _NAN
-                       for v in self._s._data],
-                      index=list(self._s.index), name=self._s.name)
+        return Series(
+            [fn(v) if isinstance(v, str) else _NAN for v in self._s._data], index=list(self._s.index), name=self._s.name
+        )
 
     def lower(self):
         return self._map(str.lower)
@@ -1104,6 +1085,7 @@ class _StrAccessor:
 
     def contains(self, pat, case=True, flags=0, na=None, regex=False):
         import re
+
         if regex:
             rx = re.compile(pat, flags | (0 if case else re.IGNORECASE))
             test = lambda v: bool(rx.search(v))  # noqa: E731
@@ -1113,10 +1095,11 @@ class _StrAccessor:
             test = lambda v: pat.lower() in v.lower()  # noqa: E731
 
         # pandas: missing values give NaN, or ``na`` when given
-        return Series([test(v) if isinstance(v, str)
-                       else (_NAN if na is None else na)
-                       for v in self._s._data],
-                      index=list(self._s.index), name=self._s.name)
+        return Series(
+            [test(v) if isinstance(v, str) else (_NAN if na is None else na) for v in self._s._data],
+            index=list(self._s.index),
+            name=self._s.name,
+        )
 
     def startswith(self, pat):
         return self._map(lambda v: v.startswith(pat))
@@ -1127,6 +1110,7 @@ class _StrAccessor:
     def replace(self, old, new, regex=False):
         if regex:
             import re
+
             rx = re.compile(old)
             return self._map(lambda v: rx.sub(new, v))
         return self._map(lambda v: v.replace(old, new))
@@ -1147,9 +1131,11 @@ class _DtAccessor:
         self._s = s
 
     def _map(self, fn, kinds=(_dt.date, _dt.datetime)):
-        return Series([fn(v) if isinstance(v, kinds) else _NAN
-                       for v in self._s._data],
-                      index=list(self._s.index), name=self._s.name)
+        return Series(
+            [fn(v) if isinstance(v, kinds) else _NAN for v in self._s._data],
+            index=list(self._s.index),
+            name=self._s.name,
+        )
 
     def _map_td(self, fn):
         return self._map(fn, (_dt.timedelta,))
@@ -1191,10 +1177,14 @@ class _DtAccessor:
 
     @property
     def date(self):
-        return Series([v.date() if isinstance(v, _dt.datetime) else v
-                       if isinstance(v, _dt.date) else _NAN
-                       for v in self._s._data],
-                      index=list(self._s.index), name=self._s.name)
+        return Series(
+            [
+                v.date() if isinstance(v, _dt.datetime) else v if isinstance(v, _dt.date) else _NAN
+                for v in self._s._data
+            ],
+            index=list(self._s.index),
+            name=self._s.name,
+        )
 
     @property
     def year(self):
@@ -1218,6 +1208,7 @@ class _DtAccessor:
 
 
 # ===================================================== DataFrame
+
 
 class _Rolling:
     """Series.rolling(window): NaN until min_periods valid values."""
@@ -1277,7 +1268,7 @@ class _Expanding(_Rolling):
         vals = list(self._s._data)
         out = []
         for i in range(len(vals)):
-            window = [v for v in vals[:i + 1] if not _isnan(v)]
+            window = [v for v in vals[: i + 1] if not _isnan(v)]
             out.append(fn(window) if len(window) >= self._min and window else _NAN)
         return Series(out, index=list(self._s.index), name=self._s.name)
 
@@ -1290,8 +1281,7 @@ class DataFrame:
         if isinstance(data, DataFrame):
             self._catorder = dict(getattr(data, "_catorder", {}))
         elif isinstance(data, dict):
-            self._catorder = {k: v._categories for k, v in data.items()
-                              if isinstance(v, Series) and v._categories}
+            self._catorder = {k: v._categories for k, v in data.items() if isinstance(v, Series) and v._categories}
         if data is None:
             data = {}
         if isinstance(data, DataFrame):
@@ -1329,8 +1319,7 @@ class DataFrame:
             for k, v in data.items():
                 col = prepared[k]
                 self._cols[k] = list(col) if col is not None else [v] * n
-        elif isinstance(data, list) and data \
-                and isinstance(data[0], dict):
+        elif isinstance(data, list) and data and isinstance(data[0], dict):
             keys = []
             for row in data:
                 for k in row:
@@ -1339,24 +1328,23 @@ class DataFrame:
             for k in keys:
                 self._cols[k] = [row.get(k, _NAN) for row in data]
         elif isinstance(data, list):
-            rows = [list(r.tolist() if hasattr(r, "tolist") else r)
-                    if isinstance(r, (list, tuple)) or hasattr(
-                        r, "tolist") else [r] for r in data]
+            rows = [
+                list(r.tolist() if hasattr(r, "tolist") else r)
+                if isinstance(r, (list, tuple)) or hasattr(r, "tolist")
+                else [r]
+                for r in data
+            ]
             ncol = len(rows[0]) if rows else 0
-            names = list(columns) if columns is not None \
-                else list(range(ncol))
+            names = list(columns) if columns is not None else list(range(ncol))
             for j, nm in enumerate(names):
                 self._cols[nm] = [r[j] for r in rows]
         elif hasattr(data, "tolist"):
             DataFrame.__init__(self, data.tolist(), index=index, columns=columns)
             return
         if columns is not None and isinstance(data, dict):
-            self._cols = {c: self._cols.get(
-                c, [_NAN] * (len(index) if index else 0))
-                for c in columns}
+            self._cols = {c: self._cols.get(c, [_NAN] * (len(index) if index else 0)) for c in columns}
         n = len(next(iter(self._cols.values()))) if self._cols else 0
-        self.index = Index(index) if index is not None \
-            else Index(range(n))
+        self.index = Index(index) if index is not None else Index(range(n))
 
     # ---- basics
     @property
@@ -1373,9 +1361,7 @@ class DataFrame:
     def columns(self, names):
         names = list(names)
         if len(names) != len(self._cols):
-            raise ValueError(
-                "length mismatch: frame has %d columns, got %d names"
-                % (len(self._cols), len(names)))
+            raise ValueError("length mismatch: frame has %d columns, got %d names" % (len(self._cols), len(names)))
         self._cols = dict(zip(names, self._cols.values()))
 
     @property
@@ -1396,11 +1382,8 @@ class DataFrame:
         # pandas: a frame with a non-numeric column converts to an object
         # array that keeps the labels; only an all-numeric frame is float
         if any(not self[c]._is_numeric() for c in self._cols):
-            return _ac.oarr([[self._cols[c][i] for c in self._cols]
-                             for i in range(self.shape[0])])
-        return _ac.marr([[_to_float(self._cols[c][i])
-                          for c in self._cols]
-                         for i in range(self.shape[0])])
+            return _ac.oarr([[self._cols[c][i] for c in self._cols] for i in range(self.shape[0])])
+        return _ac.marr([[_to_float(self._cols[c][i]) for c in self._cols] for i in range(self.shape[0])])
 
     @property
     def dtypes(self):
@@ -1408,11 +1391,9 @@ class DataFrame:
         for c, vals in self._cols.items():
             if all(isinstance(v, bool) for v in vals):
                 out[c] = "bool"
-            elif vals and all(isinstance(v, int) and not isinstance(v, bool)
-                              for v in vals):
+            elif vals and all(isinstance(v, int) and not isinstance(v, bool) for v in vals):
                 out[c] = "int64"
-            elif all(isinstance(v, (int, float)) or _isnan(v)
-                     for v in vals):
+            elif all(isinstance(v, (int, float)) or _isnan(v) for v in vals):
                 out[c] = "float64"
             else:
                 out[c] = "object"
@@ -1426,15 +1407,13 @@ class DataFrame:
         return self.shape[0]
 
     def __repr__(self):
-        return "DataFrame(%d x %d: %s)" % (
-            self.shape[0], self.shape[1], list(self._cols)[:8])
+        return "DataFrame(%d x %d: %s)" % (self.shape[0], self.shape[1], list(self._cols)[:8])
 
     def __contains__(self, key):
         return key in self._cols
 
     def copy(self):
-        return DataFrame({c: list(v) for c, v in self._cols.items()},
-                         index=list(self.index))
+        return DataFrame({c: list(v) for c, v in self._cols.items()}, index=list(self.index))
 
     def head(self, n=5):
         return self.iloc[slice(0, n)]
@@ -1451,18 +1430,15 @@ class DataFrame:
 
     def iterrows(self):
         for i in range(self.shape[0]):
-            yield self.index[i], Series(
-                [self._cols[c][i] for c in self._cols],
-                index=list(self._cols.keys()))
+            yield self.index[i], Series([self._cols[c][i] for c in self._cols], index=list(self._cols.keys()))
 
     def itertuples(self, index=True):
         import collections
-        fields = (["Index"] if index else []) + [
-            str(c) for c in self._cols]
+
+        fields = (["Index"] if index else []) + [str(c) for c in self._cols]
         T = collections.namedtuple("Row", fields, rename=True)
         for i in range(self.shape[0]):
-            vals = ([self.index[i]] if index else []) + [
-                self._cols[c][i] for c in self._cols]
+            vals = ([self.index[i]] if index else []) + [self._cols[c][i] for c in self._cols]
             yield T(*vals)
 
     # ---- indexing
@@ -1474,15 +1450,12 @@ class DataFrame:
             key = key.tolist()
         elif type(key).__name__ == "marr":
             key = [bool(v) for v in key._flat()]
-        if isinstance(key, list) and key \
-                and isinstance(key[0], bool):
+        if isinstance(key, list) and key and isinstance(key[0], bool):
             keep = [i for i, m in enumerate(key) if m]
             return self._take(keep)
         if isinstance(key, list):
-            return DataFrame({c: list(self._cols[c]) for c in key},
-                             index=list(self.index))
-        out = Series(list(self._cols[key]), index=list(self.index),
-                     name=key)
+            return DataFrame({c: list(self._cols[c]) for c in key}, index=list(self.index))
+        out = Series(list(self._cols[key]), index=list(self.index), name=key)
         out._categories = getattr(self, "_catorder", {}).get(key)
         return out
 
@@ -1512,23 +1485,19 @@ class DataFrame:
             value = list(value._data)
         elif hasattr(value, "tolist"):
             value = value.tolist()
-        elif isinstance(value, (range, tuple)) or (
-                hasattr(value, "__iter__") and hasattr(value, "__next__")):
-            value = list(value)       # a range or iterator is a column
+        elif isinstance(value, (range, tuple)) or (hasattr(value, "__iter__") and hasattr(value, "__next__")):
+            value = list(value)  # a range or iterator is a column
         if not isinstance(value, list):
             value = [value] * (n if self._cols else 1)
         if self._cols and len(value) != n:
-            raise ValueError("length mismatch: %d vs %d"
-                             % (len(value), n))
+            raise ValueError("length mismatch: %d vs %d" % (len(value), n))
         self._cols[key] = list(value)
         if not self.index and value:
             self.index = Index(range(len(value)))
 
     def _take(self, rows):
         rows = [int(i) for i in rows]
-        out = DataFrame(
-            {c: [v[i] for i in rows] for c, v in self._cols.items()},
-            index=[self.index[i] for i in rows])
+        out = DataFrame({c: [v[i] for i in rows] for c, v in self._cols.items()}, index=[self.index[i] for i in rows])
         out._catorder = dict(getattr(self, "_catorder", {}))
         return out
 
@@ -1556,35 +1525,26 @@ class DataFrame:
             missing = [c for c in columns if c not in self._cols]
             if missing and errors == "raise":
                 raise KeyError(missing)
-            return DataFrame({c: list(v) for c, v in self._cols.items()
-                              if c not in columns},
-                             index=list(self.index))
+            return DataFrame({c: list(v) for c, v in self._cols.items() if c not in columns}, index=list(self.index))
         if not isinstance(labels, (list, tuple)):
             labels = [labels]
-        keep = [i for i, ix in enumerate(self.index)
-                if ix not in labels]
+        keep = [i for i, ix in enumerate(self.index) if ix not in labels]
         return self._take(keep)
 
     def rename(self, columns=None, **kw):
         del kw
         columns = columns or {}
-        return DataFrame({columns.get(c, c): list(v)
-                          for c, v in self._cols.items()},
-                         index=list(self.index))
+        return DataFrame({columns.get(c, c): list(v) for c, v in self._cols.items()}, index=list(self.index))
 
     def astype(self, dtype):
         if isinstance(dtype, dict):
-            out = {c: (_cast_list(v, dtype[c]) if c in dtype
-                       else list(v))
-                   for c, v in self._cols.items()}
+            out = {c: (_cast_list(v, dtype[c]) if c in dtype else list(v)) for c, v in self._cols.items()}
         else:
-            out = {c: _cast_list(v, dtype)
-                   for c, v in self._cols.items()}
+            out = {c: _cast_list(v, dtype) for c, v in self._cols.items()}
         return DataFrame(out, index=list(self.index))
 
     def _cmp_scalar(self, other, fn):
-        return DataFrame({c: [fn(v, other) for v in self._cols[c]]
-                          for c in self.columns}, index=list(self.index))
+        return DataFrame({c: [fn(v, other) for v in self._cols[c]] for c in self.columns}, index=list(self.index))
 
     def __gt__(self, o):
         return self._cmp_scalar(o, lambda a, b: a > b)
@@ -1604,20 +1564,25 @@ class DataFrame:
         if isinstance(other, Series):
             denom = list(other._data)
             return DataFrame(
-                {c: [(self._cols[c][i] / denom[i]) if denom[i] else _NAN
-                     for i in range(self.shape[0])] for c in self.columns},
-                index=list(self.index))
-        return DataFrame({c: [(v / other) if other else _NAN
-                              for v in self._cols[c]] for c in self.columns},
-                         index=list(self.index))
+                {
+                    c: [(self._cols[c][i] / denom[i]) if denom[i] else _NAN for i in range(self.shape[0])]
+                    for c in self.columns
+                },
+                index=list(self.index),
+            )
+        return DataFrame(
+            {c: [(v / other) if other else _NAN for v in self._cols[c]] for c in self.columns}, index=list(self.index)
+        )
 
     def _logical(self, o, fn):
         if isinstance(o, DataFrame):
-            return DataFrame({c: [bool(fn(bool(a), bool(b)))
-                                  for a, b in zip(self._cols[c], o._cols[c])]
-                              for c in self.columns}, index=list(self.index))
-        return DataFrame({c: [bool(fn(bool(a), bool(o))) for a in self._cols[c]]
-                          for c in self.columns}, index=list(self.index))
+            return DataFrame(
+                {c: [bool(fn(bool(a), bool(b))) for a, b in zip(self._cols[c], o._cols[c])] for c in self.columns},
+                index=list(self.index),
+            )
+        return DataFrame(
+            {c: [bool(fn(bool(a), bool(o))) for a in self._cols[c]] for c in self.columns}, index=list(self.index)
+        )
 
     def __and__(self, o):
         return self._logical(o, lambda a, b: a and b)
@@ -1631,40 +1596,41 @@ class DataFrame:
     def __invert__(self):
         # Elementwise logical NOT over every column, so (~df.isna()) works the
         # way it does for a Series. Without this, unary ~ raised TypeError.
-        return DataFrame({c: [not bool(v) for v in self._cols[c]]
-                          for c in self.columns}, index=list(self.index))
+        return DataFrame({c: [not bool(v) for v in self._cols[c]] for c in self.columns}, index=list(self.index))
 
     def isna(self):
-        return DataFrame({c: [_isnan(v) for v in vals]
-                          for c, vals in self._cols.items()},
-                         index=list(self.index))
+        return DataFrame({c: [_isnan(v) for v in vals] for c, vals in self._cols.items()}, index=list(self.index))
 
     isnull = isna
 
     def any(self, axis=0):
         if axis in (1, "columns"):
-            return Series([any(bool(self._cols[c][i]) for c in self._cols
-                               if not _isnan(self._cols[c][i]))
-                           for i in range(self.shape[0])],
-                          index=list(self.index))
-        return Series([any(bool(v) for v in vals if not _isnan(v))
-                       for vals in self._cols.values()],
-                      index=list(self._cols))
+            return Series(
+                [
+                    any(bool(self._cols[c][i]) for c in self._cols if not _isnan(self._cols[c][i]))
+                    for i in range(self.shape[0])
+                ],
+                index=list(self.index),
+            )
+        return Series(
+            [any(bool(v) for v in vals if not _isnan(v)) for vals in self._cols.values()], index=list(self._cols)
+        )
 
     def all(self, axis=0):
         if axis in (1, "columns"):
-            return Series([all(bool(self._cols[c][i]) for c in self._cols
-                               if not _isnan(self._cols[c][i]))
-                           for i in range(self.shape[0])],
-                          index=list(self.index))
-        return Series([all(bool(v) for v in vals if not _isnan(v))
-                       for vals in self._cols.values()],
-                      index=list(self._cols))
+            return Series(
+                [
+                    all(bool(self._cols[c][i]) for c in self._cols if not _isnan(self._cols[c][i]))
+                    for i in range(self.shape[0])
+                ],
+                index=list(self.index),
+            )
+        return Series(
+            [all(bool(v) for v in vals if not _isnan(v)) for vals in self._cols.values()], index=list(self._cols)
+        )
 
     def notna(self):
-        return DataFrame({c: [not _isnan(v) for v in vals]
-                          for c, vals in self._cols.items()},
-                         index=list(self.index))
+        return DataFrame({c: [not _isnan(v) for v in vals] for c, vals in self._cols.items()}, index=list(self.index))
 
     def dropna(self, subset=None, how="any"):
         cols = subset if subset is not None else list(self._cols)
@@ -1679,24 +1645,24 @@ class DataFrame:
     def fillna(self, value):
         if isinstance(value, dict):
             return DataFrame(
-                {c: [value[c] if c in value and _isnan(v) else v
-                     for v in vals]
-                 for c, vals in self._cols.items()},
-                index=list(self.index))
-        return DataFrame({c: [value if _isnan(v) else v for v in vals]
-                          for c, vals in self._cols.items()},
-                         index=list(self.index))
+                {c: [value[c] if c in value and _isnan(v) else v for v in vals] for c, vals in self._cols.items()},
+                index=list(self.index),
+            )
+        return DataFrame(
+            {c: [value if _isnan(v) else v for v in vals] for c, vals in self._cols.items()}, index=list(self.index)
+        )
 
     def replace(self, to_replace, value=None):
         if isinstance(to_replace, dict) and value is None:
+
             def one(v):
                 return to_replace.get(v, v)
         else:
+
             def one(v):
                 return value if v == to_replace else v
-        return DataFrame({c: [one(v) for v in vals]
-                          for c, vals in self._cols.items()},
-                         index=list(self.index))
+
+        return DataFrame({c: [one(v) for v in vals] for c, vals in self._cols.items()}, index=list(self.index))
 
     def nlargest(self, n=5, columns=None, keep="first"):
         """The n rows with the largest values in ``columns`` (pandas
@@ -1711,15 +1677,12 @@ class DataFrame:
         if columns is None:
             raise TypeError("nlargest/nsmallest need the column(s) to rank by")
         cols = [columns] if not isinstance(columns, (list, tuple)) else list(columns)
-        rows = [i for i in range(self.shape[0])
-                if not any(_isnan(self._cols[c][i]) for c in cols)]
-        rows.sort(key=lambda i: tuple(self._cols[c][i] for c in cols),
-                  reverse=largest)
+        rows = [i for i in range(self.shape[0]) if not any(_isnan(self._cols[c][i]) for c in cols)]
+        rows.sort(key=lambda i: tuple(self._cols[c][i] for c in cols), reverse=largest)
         if keep == "last":
             # pandas keeps the LAST of equal keys: stable-sort the ties back
-            rows.sort(key=lambda i: (tuple(self._cols[c][i] for c in cols), -i),
-                      reverse=largest)
-        return self._take(rows[:int(n)])
+            rows.sort(key=lambda i: (tuple(self._cols[c][i] for c in cols), -i), reverse=largest)
+        return self._take(rows[: int(n)])
 
     def sort_values(self, by, ascending=True, na_position="last"):
         """pandas: NaN keys go last (or first) whichever way the sort runs;
@@ -1738,9 +1701,7 @@ class DataFrame:
         return self._take(order)
 
     def sort_index(self, ascending=True):
-        order = sorted(range(self.shape[0]),
-                       key=lambda i: self.index[i],
-                       reverse=not ascending)
+        order = sorted(range(self.shape[0]), key=lambda i: self.index[i], reverse=not ascending)
         return self._take(order)
 
     def reset_index(self, drop=False):
@@ -1749,8 +1710,7 @@ class DataFrame:
             idx = list(self.index)
             # a multi-key groupby leaves tuples in the index; expand them into
             # one column per key, as pandas does
-            if idx and all(isinstance(k, tuple) for k in idx) \
-                    and len({len(k) for k in idx}) == 1:
+            if idx and all(isinstance(k, tuple) for k in idx) and len({len(k) for k in idx}) == 1:
                 width = len(idx[0])
                 names = getattr(self, "index_names", None)
                 if not names or len(names) != width:
@@ -1768,13 +1728,13 @@ class DataFrame:
         out.index_name = col  # reset_index() restores the column under its name
         return out
 
-    def melt(self, id_vars=None, value_vars=None, var_name="variable",
-             value_name="value"):
+    def melt(self, id_vars=None, value_vars=None, var_name="variable", value_name="value"):
         """Wide to long: one row per (id, variable) pair, variables in
         column order, as pandas."""
         ids = [id_vars] if isinstance(id_vars, str) else list(id_vars or [])
-        vv = [value_vars] if isinstance(value_vars, str) else list(
-            value_vars or [c for c in self._cols if c not in ids])
+        vv = (
+            [value_vars] if isinstance(value_vars, str) else list(value_vars or [c for c in self._cols if c not in ids])
+        )
         out = {c: [] for c in ids}
         out[var_name], out[value_name] = [], []
         for var in vv:
@@ -1788,6 +1748,7 @@ class DataFrame:
     def sample(self, n=None, frac=None, replace=False, random_state=None, axis=0):
         del axis
         from . import _array_core as _ac
+
         rng = _ac.random.default_rng(random_state)
         total = self.shape[0]
         k = int(round(total * frac)) if frac is not None else (1 if n is None else int(n))
@@ -1807,8 +1768,7 @@ class DataFrame:
             for s in spec:
                 # accept dtype objects/classes as well as the strings
                 if not isinstance(s, str):
-                    s = getattr(s, "__name__", None) or \
-                        getattr(s, "name", None) or str(s)
+                    s = getattr(s, "__name__", None) or getattr(s, "name", None) or str(s)
                     if s == "float":
                         s = "float64"
                     elif s == "int":
@@ -1821,12 +1781,12 @@ class DataFrame:
                     return True
                 if s in ("int", "int64", "integer") and kind == "int64":
                     return True
-                if s in ("object", "string", "str", "category") \
-                        and kind == "object":
+                if s in ("object", "string", "str", "category") and kind == "object":
                     return True
                 if s == "bool" and kind == "bool":
                     return True
             return False
+
         cols = list(self._cols)
         if include is not None:
             cols = [c for c in cols if match(dt[c], include)]
@@ -1877,8 +1837,7 @@ class DataFrame:
 
     def mean(self, numeric_only=True, axis=0):
         if axis in (1, "columns"):
-            return self._row_reduce(
-                lambda vals: _math.fsum(vals) / len(vals) if vals else _NAN)
+            return self._row_reduce(lambda vals: _math.fsum(vals) / len(vals) if vals else _NAN)
         return self._reduce(lambda s: s.mean(), numeric_only)
 
     def _row_reduce(self, fn):
@@ -1886,13 +1845,14 @@ class DataFrame:
         # booleans count as 1/0 here: (df > 0).sum(axis=1) is the idiom for
         # "how many columns satisfy the predicate", and excluding bool made it
         # return 0 for every row
-        cols = [c for c in self._cols
-                if all(isinstance(v, (int, float, bool)) for v in self._cols[c])]
+        cols = [c for c in self._cols if all(isinstance(v, (int, float, bool)) for v in self._cols[c])]
         out = []
         for i in range(self.shape[0]):
-            vals = [float(self._cols[c][i]) for c in cols
-                    if not (isinstance(self._cols[c][i], float)
-                            and _isnan(self._cols[c][i]))]
+            vals = [
+                float(self._cols[c][i])
+                for c in cols
+                if not (isinstance(self._cols[c][i], float) and _isnan(self._cols[c][i]))
+            ]
             out.append(fn(vals))
         return Series(out, index=list(self.index))
 
@@ -1925,15 +1885,12 @@ class DataFrame:
         return self._reduce(lambda s: s.quantile(q))
 
     def abs(self):
-        return DataFrame({c: Series(v).abs().tolist()
-                          for c, v in self._cols.items()},
-                         index=list(self.index))
+        return DataFrame({c: Series(v).abs().tolist() for c, v in self._cols.items()}, index=list(self.index))
 
     def corr(self, method="pearson", min_periods=1):
         if method not in ("pearson", "spearman", "kendall"):
             raise ValueError("method must be 'pearson', 'spearman' or 'kendall'")
-        cols = [c for c in self._cols if Series(
-            self._cols[c])._is_numeric()]
+        cols = [c for c in self._cols if Series(self._cols[c])._is_numeric()]
         n = len(cols)
         mat = [[1.0] * n for _ in range(n)]
         for i in range(n):
@@ -1942,36 +1899,26 @@ class DataFrame:
             if len(col) < 2 or min(col) == max(col):
                 mat[i][i] = float("nan")
             for j in range(i + 1, n):
-                mat[i][j] = mat[j][i] = _corr_pair(
-                    self._cols[cols[i]], self._cols[cols[j]], method,
-                    min_periods)
-        return DataFrame(dict(zip(
-            cols, [[mat[i][j] for j in range(n)]
-                   for i in range(n)])), index=cols) \
-            .T if False else DataFrame(
-            {cols[j]: [mat[i][j] for i in range(n)]
-             for j in range(n)}, index=cols)
+                mat[i][j] = mat[j][i] = _corr_pair(self._cols[cols[i]], self._cols[cols[j]], method, min_periods)
+        return (
+            DataFrame(dict(zip(cols, [[mat[i][j] for j in range(n)] for i in range(n)])), index=cols).T
+            if False
+            else DataFrame({cols[j]: [mat[i][j] for i in range(n)] for j in range(n)}, index=cols)
+        )
 
     def cov(self, ddof=1):
-        cols = [c for c in self._cols if Series(
-            self._cols[c])._is_numeric()]
+        cols = [c for c in self._cols if Series(self._cols[c])._is_numeric()]
         n = len(cols)
         mat = [[0.0] * n for _ in range(n)]
         for i in range(n):
             for j in range(i, n):
-                mat[i][j] = mat[j][i] = _cov(
-                    self._cols[cols[i]], self._cols[cols[j]], ddof)
-        return DataFrame({cols[j]: [mat[i][j] for i in range(n)]
-                          for j in range(n)}, index=cols)
+                mat[i][j] = mat[j][i] = _cov(self._cols[cols[i]], self._cols[cols[j]], ddof)
+        return DataFrame({cols[j]: [mat[i][j] for i in range(n)] for j in range(n)}, index=cols)
 
     def describe(self):
-        cols = [c for c in self._cols
-                if Series(self._cols[c])._is_numeric()]
-        rows = ["count", "mean", "std", "min", "25%", "50%", "75%",
-                "max"]
-        return DataFrame(
-            {c: Series(self._cols[c]).describe().tolist()
-             for c in cols}, index=rows)
+        cols = [c for c in self._cols if Series(self._cols[c])._is_numeric()]
+        rows = ["count", "mean", "std", "min", "25%", "50%", "75%", "max"]
+        return DataFrame({c: Series(self._cols[c]).describe().tolist() for c in cols}, index=rows)
 
     def apply(self, fn, axis=0):
         if axis in (1, "columns"):
@@ -1984,14 +1931,11 @@ class DataFrame:
             vals.append(fn(self[c]))
             ix.append(c)
         if all(isinstance(v, Series) for v in vals):
-            return DataFrame({c: v.tolist()
-                              for c, v in zip(ix, vals)},
-                             index=list(self.index))
+            return DataFrame({c: v.tolist() for c, v in zip(ix, vals)}, index=list(self.index))
         return Series(vals, index=ix)
 
     # ---- combine
-    def merge(self, right, on=None, how="inner", left_on=None,
-              right_on=None, suffixes=("_x", "_y")):
+    def merge(self, right, on=None, how="inner", left_on=None, right_on=None, suffixes=("_x", "_y")):
         lk = left_on or on
         rk = right_on or on
         if not isinstance(lk, (list, tuple)):
@@ -2002,17 +1946,15 @@ class DataFrame:
         for j in range(right.shape[0]):
             key = tuple(right._cols[c][j] for c in rk)
             rmap.setdefault(key, []).append(j)
-        shared_key = (lk == rk)
-        rcols = [c for c in right._cols
-                 if not (shared_key and c in rk)]
+        shared_key = lk == rk
+        rcols = [c for c in right._cols if not (shared_key and c in rk)]
         out = {}
         lnames, rnames = {}, {}
         for c in self._cols:
             lnames[c] = c if c not in rcols else str(c) + suffixes[0]
             out[lnames[c]] = []
         for c in rcols:
-            rnames[c] = c if c not in self._cols \
-                else str(c) + suffixes[1]
+            rnames[c] = c if c not in self._cols else str(c) + suffixes[1]
             out[rnames[c]] = []
         for i in range(self.shape[0]):
             key = tuple(self._cols[c][i] for c in lk)
@@ -2030,15 +1972,12 @@ class DataFrame:
                 for c in rcols:
                     out[rnames[c]].append(right._cols[c][j])
         if how in ("right", "outer"):
-            lseen = {tuple(self._cols[c][i] for c in lk)
-                     for i in range(self.shape[0])}
+            lseen = {tuple(self._cols[c][i] for c in lk) for i in range(self.shape[0])}
             for j in range(right.shape[0]):
                 key = tuple(right._cols[c][j] for c in rk)
                 if key not in lseen:
                     for c in self._cols:
-                        out[lnames[c]].append(
-                            right._cols[rk[lk.index(c)]][j]
-                            if c in lk else _NAN)
+                        out[lnames[c]].append(right._cols[rk[lk.index(c)]][j] if c in lk else _NAN)
                     for c in rcols:
                         out[rnames[c]].append(right._cols[c][j])
         return DataFrame(out)
@@ -2051,15 +1990,13 @@ class DataFrame:
             col = []
             for ix in self.index:
                 j = rmap.get(ix)
-                col.append(other._cols[c][j] if j is not None
-                           else _NAN)
+                col.append(other._cols[c][j] if j is not None else _NAN)
             out[c] = col
         del how
         return DataFrame(out, index=list(self.index))
 
     def assign(self, **kwargs):
-        out = DataFrame({c: list(v) for c, v in self._cols.items()},
-                        index=list(self.index))
+        out = DataFrame({c: list(v) for c, v in self._cols.items()}, index=list(self.index))
         for name, val in kwargs.items():
             if callable(val):
                 val = val(out)
@@ -2081,30 +2018,52 @@ class DataFrame:
             return cls({c: [] for c in (columns or [])}, index=index)
         if isinstance(rows[0], dict):
             cols = columns or list(rows[0].keys())
-            return cls({c: [r.get(c, _NAN) for r in rows]
-                        for c in cols}, index=index)
+            return cls({c: [r.get(c, _NAN) for r in rows] for c in cols}, index=index)
         cols = columns or list(range(len(rows[0])))
-        return cls({c: [r[i] for r in rows]
-                    for i, c in enumerate(cols)}, index=index)
+        return cls({c: [r[i] for r in rows] for i, c in enumerate(cols)}, index=index)
 
-    def groupby(self, by, sort=True, dropna=True, observed=True,
-                as_index=True):
+    def groupby(self, by, sort=True, dropna=True, observed=True, as_index=True):
         del observed, as_index
         return GroupBy(self, by, sort=sort, dropna=dropna)
 
     @property
     def T(self):
-        rows = [[self._cols[c][i] for c in self._cols]
-                for i in range(self.shape[0])]
-        return DataFrame({self.index[i]: rows[i]
-                          for i in range(len(rows))},
-                         index=list(self._cols.keys()))
+        rows = [[self._cols[c][i] for c in self._cols] for i in range(self.shape[0])]
+        return DataFrame({self.index[i]: rows[i] for i in range(len(rows))}, index=list(self._cols.keys()))
 
-    def pivot_table(self, values, index, columns=None, aggfunc="mean",
-                    fill_value=None, dropna=True, margins=False):
-        agg = {"mean": lambda v: _math.fsum(v) / len(v),
-               "sum": _math.fsum, "count": len, "median": lambda v: Series(v).median(),
-               "min": min, "max": max}[aggfunc] if isinstance(aggfunc, str) else aggfunc
+    def pivot(self, index=None, columns=None, values=None):
+        """Reshape long to wide without aggregating, as pandas: one row per
+        ``index`` value, one column per ``columns`` value, cells from
+        ``values``; missing cells are NaN and a repeated (index, column)
+        pair raises."""
+        if columns is None or values is None:
+            raise TypeError("pivot needs columns= and values=")
+        idx = self._cols[index] if index is not None else list(self.index)
+        cells = {}
+        for i in range(self.shape[0]):
+            key = (idx[i], self._cols[columns][i])
+            if key in cells:
+                raise ValueError("Index contains duplicate entries, cannot reshape")
+            cells[key] = self._cols[values][i]
+        rows = sorted({k[0] for k in cells})
+        cols = sorted({k[1] for k in cells})
+        out = DataFrame({c: [cells.get((r, c), _NAN) for r in rows] for c in cols}, index=rows)
+        out.index_name = index
+        return out
+
+    def pivot_table(self, values, index, columns=None, aggfunc="mean", fill_value=None, dropna=True, margins=False):
+        agg = (
+            {
+                "mean": lambda v: _math.fsum(v) / len(v),
+                "sum": _math.fsum,
+                "count": len,
+                "median": lambda v: Series(v).median(),
+                "min": min,
+                "max": max,
+            }[aggfunc]
+            if isinstance(aggfunc, str)
+            else aggfunc
+        )
         if columns is None:
             # index only: one column named after `values`
             gb1 = {}
@@ -2133,9 +2092,7 @@ class DataFrame:
         # fill_value replaces empty cells, as in pandas; without it the caller
         # got a TypeError for passing a keyword this native version lacked.
         empty = _NAN if fill_value is None else fill_value
-        out = DataFrame(
-            {c: [agg(gb[(r, c)]) if (r, c) in gb else empty
-                 for r in rows] for c in cols}, index=rows)
+        out = DataFrame({c: [agg(gb[(r, c)]) if (r, c) in gb else empty for r in rows] for c in cols}, index=rows)
         if multi:
             out.index_names = icols
         else:
@@ -2147,8 +2104,7 @@ class DataFrame:
         """Matrix product. A DataFrame or Series operand is aligned on
         this frame's columns against its index, as pandas does."""
         cols = list(self._cols)
-        left = [[_to_float(self._cols[c][i]) for c in cols]
-                for i in range(self.shape[0])]
+        left = [[_to_float(self._cols[c][i]) for c in cols] for i in range(self.shape[0])]
         if isinstance(other, (DataFrame, Series)):
             oidx = list(other.index)
             if sorted(map(str, oidx)) != sorted(map(str, cols)):
@@ -2157,31 +2113,35 @@ class DataFrame:
             order = [pos[c] for c in cols]
             if isinstance(other, Series):
                 vec = [_to_float(other._data[k]) for k in order]
-                return Series([_math.fsum(r[t] * vec[t] for t in range(len(cols)))
-                               for r in left], index=list(self.index))
+                return Series(
+                    [_math.fsum(r[t] * vec[t] for t in range(len(cols))) for r in left], index=list(self.index)
+                )
             ocols = list(other._cols)
             right = [[_to_float(other._cols[c][k]) for c in ocols] for k in order]
-            res = {oc: [_math.fsum(r[t] * right[t][j] for t in range(len(cols)))
-                        for r in left] for j, oc in enumerate(ocols)}
+            res = {
+                oc: [_math.fsum(r[t] * right[t][j] for t in range(len(cols))) for r in left]
+                for j, oc in enumerate(ocols)
+            }
             return DataFrame(res, index=list(self.index))
         o = _ac.asarray(other)
         if len(o.shape) == 1:
             vec = list(o._flat())
             if len(vec) != len(cols):
                 raise ValueError("Dot product shape mismatch")
-            return Series([_math.fsum(r[t] * vec[t] for t in range(len(cols)))
-                           for r in left], index=list(self.index))
+            return Series([_math.fsum(r[t] * vec[t] for t in range(len(cols))) for r in left], index=list(self.index))
         rows = o.tolist()
         if len(rows) != len(cols):
             raise ValueError("Dot product shape mismatch")
-        return DataFrame({j: [_math.fsum(r[t] * rows[t][j] for t in range(len(cols)))
-                              for r in left] for j in range(len(rows[0]))},
-                         index=list(self.index))
+        return DataFrame(
+            {j: [_math.fsum(r[t] * rows[t][j] for t in range(len(cols))) for r in left] for j in range(len(rows[0]))},
+            index=list(self.index),
+        )
 
     def to_json(self, path_or_buf=None, orient=None):
         """pandas DataFrame.to_json for orient columns (the default),
         records, index, split and values; NaN is written as null."""
         import json as _json
+
         orient = orient or "columns"
         cols = list(self._cols)
         idx = list(self.index)
@@ -2193,16 +2153,13 @@ class DataFrame:
 
         n = self.shape[0]
         if orient == "columns":
-            obj = {str(c): {str(idx[i]): val(self._cols[c][i]) for i in range(n)}
-                   for c in cols}
+            obj = {str(c): {str(idx[i]): val(self._cols[c][i]) for i in range(n)} for c in cols}
         elif orient == "records":
             obj = [{str(c): val(self._cols[c][i]) for c in cols} for i in range(n)]
         elif orient == "index":
-            obj = {str(idx[i]): {str(c): val(self._cols[c][i]) for c in cols}
-                   for i in range(n)}
+            obj = {str(idx[i]): {str(c): val(self._cols[c][i]) for c in cols} for i in range(n)}
         elif orient == "split":
-            obj = {"columns": cols, "index": idx,
-                   "data": [[val(self._cols[c][i]) for c in cols] for i in range(n)]}
+            obj = {"columns": cols, "index": idx, "data": [[val(self._cols[c][i]) for c in cols] for i in range(n)]}
         elif orient == "values":
             obj = [[val(self._cols[c][i]) for c in cols] for i in range(n)]
         else:
@@ -2219,27 +2176,26 @@ class DataFrame:
 
     def to_dict(self, orient="dict"):
         if orient in ("records",):
-            return [{c: self._cols[c][i] for c in self._cols}
-                    for i in range(self.shape[0])]
+            return [{c: self._cols[c][i] for c in self._cols} for i in range(self.shape[0])]
         if orient in ("list",):
             return {c: list(v) for c, v in self._cols.items()}
-        return {c: dict(zip(self.index, v))
-                for c, v in self._cols.items()}
+        return {c: dict(zip(self.index, v)) for c, v in self._cols.items()}
 
     def to_parquet(self, path, compression="snappy"):
         """Write this frame to a Parquet file (native codec)."""
         from ._parquet_core import to_parquet as _wp
+
         return _wp(self, path, compression=compression)
 
     def to_csv(self, path=None, index=True, sep=","):
         import io
+
         buf = io.StringIO()
         w = _csv.writer(buf, delimiter=sep, lineterminator="\n")
         header = ([""] if index else []) + [str(c) for c in self._cols]
         w.writerow(header)
         for i in range(self.shape[0]):
-            row = ([self.index[i]] if index else []) + [
-                self._cols[c][i] for c in self._cols]
+            row = ([self.index[i]] if index else []) + [self._cols[c][i] for c in self._cols]
             w.writerow(["" if _isnan(v) else v for v in row])
         s = buf.getvalue()
         if path is None:
@@ -2247,8 +2203,7 @@ class DataFrame:
         with open(path, "w") as f:
             f.write(s)
 
-    def to_sql(self, name, con, if_exists="fail", index=True,
-               index_label=None, **kw):
+    def to_sql(self, name, con, if_exists="fail", index=True, index_label=None, **kw):
         """Write the frame to a DB-API table (sqlite3 and friends).
 
         Mirrors pandas: ``if_exists`` is "fail", "replace" or "append",
@@ -2257,13 +2212,11 @@ class DataFrame:
         """
         del kw
         if if_exists not in ("fail", "replace", "append"):
-            raise ValueError("if_exists must be 'fail', 'replace' or "
-                             "'append', got %r" % (if_exists,))
+            raise ValueError("if_exists must be 'fail', 'replace' or 'append', got %r" % (if_exists,))
         cur = con.cursor()
         quoted = '"%s"' % str(name).replace('"', '""')
 
-        cur.execute("SELECT name FROM sqlite_master WHERE type='table' "
-                    "AND name=?", (str(name),))
+        cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (str(name),))
         exists = cur.fetchone() is not None
         if exists and if_exists == "fail":
             raise ValueError("table %r already exists" % (name,))
@@ -2294,28 +2247,22 @@ class DataFrame:
             return "TEXT"
 
         if not exists:
-            types = ([sql_type(list(self.index))] if index else []) + [
-                sql_type(self._cols[c]) for c in self._cols]
-            decl = ", ".join('"%s" %s' % (c.replace('"', '""'), t)
-                             for c, t in zip(cols, types))
+            types = ([sql_type(list(self.index))] if index else []) + [sql_type(self._cols[c]) for c in self._cols]
+            decl = ", ".join('"%s" %s' % (c.replace('"', '""'), t) for c, t in zip(cols, types))
             cur.execute("CREATE TABLE %s (%s)" % (quoted, decl))
 
         n = self.shape[0]
         rows = []
         for i in range(n):
-            row = ([self.index[i]] if index else []) + [
-                self._cols[c][i] for c in self._cols]
-            rows.append(tuple(None if (v is not None and _isnan(v)) else v
-                              for v in row))
+            row = ([self.index[i]] if index else []) + [self._cols[c][i] for c in self._cols]
+            rows.append(tuple(None if (v is not None and _isnan(v)) else v for v in row))
         placeholders = ", ".join(["?"] * len(cols))
         collist = ", ".join('"%s"' % c.replace('"', '""') for c in cols)
-        cur.executemany("INSERT INTO %s (%s) VALUES (%s)"
-                        % (quoted, collist, placeholders), rows)
+        cur.executemany("INSERT INTO %s (%s) VALUES (%s)" % (quoted, collist, placeholders), rows)
         con.commit()
         return n
 
-    def to_excel(self, writer, sheet_name="Sheet1", index=True,
-                 index_label=None, **kw):
+    def to_excel(self, writer, sheet_name="Sheet1", index=True, index_label=None, **kw):
         """Write the frame as one sheet of an ExcelWriter workbook.
 
         ``writer`` may also be a path or file object, in which case a
@@ -2324,20 +2271,16 @@ class DataFrame:
         del kw
         own = not isinstance(writer, ExcelWriter)
         wr = ExcelWriter(writer) if own else writer
-        header = ([index_label or ""] if index else []) + [
-            str(c) for c in self._cols]
+        header = ([index_label or ""] if index else []) + [str(c) for c in self._cols]
         rows = [header]
         for i in range(self.shape[0]):
-            row = ([self.index[i]] if index else []) + [
-                self._cols[c][i] for c in self._cols]
-            rows.append([None if (v is not None and _isnan(v)) else v
-                         for v in row])
+            row = ([self.index[i]] if index else []) + [self._cols[c][i] for c in self._cols]
+            rows.append([None if (v is not None and _isnan(v)) else v for v in row])
         wr.add_sheet(sheet_name, rows)
         if own:
             wr.close()
 
-    def to_string(self, index=True, header=True, columns=None,
-                  na_rep="NaN", **kw):
+    def to_string(self, index=True, header=True, columns=None, na_rep="NaN", **kw):
         """Column-aligned text, as pandas: right-justified cells, the
         index at the left unless ``index=False``, floats shown to six
         significant digits. The layout follows pandas; float formatting
@@ -2351,10 +2294,10 @@ class DataFrame:
             if isinstance(v, float):
                 return "%g" % v
             return str(v)
+
         table = [[cell(v) for v in self._cols[c]] for c in cols]
         heads = [str(c) for c in cols]
-        widths = [max([len(h) if header else 0] + [len(x) for x in col])
-                  for h, col in zip(heads, table)]
+        widths = [max([len(h) if header else 0] + [len(x) for x in col]) for h, col in zip(heads, table)]
         ix = [str(v) for v in self.index]
         iw = max([len(x) for x in ix] + [0]) if index else 0
         lines = []
@@ -2363,8 +2306,7 @@ class DataFrame:
             lines.append("  ".join(left + [h.rjust(w) for h, w in zip(heads, widths)]))
         for r in range(self.shape[0]):
             left = [ix[r].ljust(iw)] if index else []
-            lines.append("  ".join(left + [table[j][r].rjust(widths[j])
-                                           for j in range(len(cols))]))
+            lines.append("  ".join(left + [table[j][r].rjust(widths[j]) for j in range(len(cols))]))
         return "\n".join(line.rstrip() for line in lines)
 
     def insert(self, loc, column, value):
@@ -2411,23 +2353,33 @@ class _ILoc:
         n = df.shape[0]
         if isinstance(key, tuple):
             rk, ck = key
-            cidx = (list(range(len(cols)))[ck] if isinstance(ck, slice)
-                    else [int(ck)] if not isinstance(ck, (list, tuple))
-                    else [int(c) for c in ck])
+            cidx = (
+                list(range(len(cols)))[ck]
+                if isinstance(ck, slice)
+                else [int(ck)]
+                if not isinstance(ck, (list, tuple))
+                else [int(c) for c in ck]
+            )
         else:
             rk, cidx = key, list(range(len(cols)))
-        ridx = (list(range(n))[rk] if isinstance(rk, slice)
-                else [int(rk) if int(rk) >= 0 else n + int(rk)]
-                if not isinstance(rk, (list, tuple))
-                else [int(r) for r in rk])
+        ridx = (
+            list(range(n))[rk]
+            if isinstance(rk, slice)
+            else [int(rk) if int(rk) >= 0 else n + int(rk)]
+            if not isinstance(rk, (list, tuple))
+            else [int(r) for r in rk]
+        )
         vals = value.tolist() if hasattr(value, "tolist") else value
         if isinstance(vals, Series):
             vals = list(vals._data)
         for a, r in enumerate(ridx):
             for b, c in enumerate(cidx):
                 if isinstance(vals, list):
-                    v = vals[a] if len(ridx) > 1 and not isinstance(vals[0], list) \
+                    v = (
+                        vals[a]
+                        if len(ridx) > 1 and not isinstance(vals[0], list)
                         else (vals[a][b] if isinstance(vals[0], list) else vals[b])
+                    )
                 else:
                     v = vals
                 df._cols[cols[c]][r] = v
@@ -2445,16 +2397,13 @@ class _ILoc:
                 if isinstance(rk, int):
                     return df._cols[sel][rk]
                 return sub[sel]
-            sel = cols[ck] if isinstance(ck, slice) else \
-                [cols[_pos(j)] for j in ck]
+            sel = cols[ck] if isinstance(ck, slice) else [cols[_pos(j)] for j in ck]
             base = df[sel if isinstance(sel, list) else list(sel)]
             return base.iloc[rk]
         if isinstance(key, int):
             n = self._df.shape[0]
             i = key if key >= 0 else n + key
-            return Series([df._cols[c][i] for c in df._cols],
-                          index=list(df._cols.keys()),
-                          name=df.index[i])
+            return Series([df._cols[c][i] for c in df._cols], index=list(df._cols.keys()), name=df.index[i])
         if isinstance(key, slice):
             rows = list(range(df.shape[0]))[key]
             return df._take(rows)
@@ -2481,10 +2430,8 @@ def _loc_key(k, labels):
         if getattr(k, "_is_mask", False):
             return [bool(v) for v in vals]
         lab = set(labels)
-        conv = [(int(v) if isinstance(v, float) and v.is_integer()
-                 and int(v) in lab else v) for v in vals]
-        if len(vals) == len(labels) and all(v in (0.0, 1.0) for v in vals) \
-                and not all(c in lab for c in conv):
+        conv = [(int(v) if isinstance(v, float) and v.is_integer() and int(v) in lab else v) for v in vals]
+        if len(vals) == len(labels) and all(v in (0.0, 1.0) for v in vals) and not all(c in lab for c in conv):
             return [bool(v) for v in vals]
         return conv
     return k
@@ -2500,23 +2447,18 @@ class _Loc:
             rk, ck = key
             rk = _loc_key(rk, df.index)
             ck = _loc_key(ck, list(df._cols))
-            if isinstance(rk, list) and rk \
-                    and isinstance(rk[0], bool):
+            if isinstance(rk, list) and rk and isinstance(rk[0], bool):
                 sub = df[rk]
             elif isinstance(rk, slice):
                 sub = df.iloc[rk]
-            elif isinstance(rk, (list, Index)) or (
-                    hasattr(rk, "tolist") and not isinstance(rk, str)):
+            elif isinstance(rk, (list, Index)) or (hasattr(rk, "tolist") and not isinstance(rk, str)):
                 # label-list row selection
-                labels = list(rk.tolist() if hasattr(rk, "tolist")
-                              else rk)
+                labels = list(rk.tolist() if hasattr(rk, "tolist") else rk)
                 pos = {k: i for i, k in enumerate(df.index)}
                 sub = df._take([pos[k] for k in labels])
             else:
                 i = df.index.index(rk)
-                if isinstance(ck, str) or (
-                        not isinstance(ck, (list, tuple))
-                        and ck in df._cols):
+                if isinstance(ck, str) or (not isinstance(ck, (list, tuple)) and ck in df._cols):
                     return df._cols[ck][i]
                 return Series([df._cols[c][i] for c in ck], index=ck)
             if isinstance(ck, str) or not isinstance(ck, (list, tuple)):
@@ -2538,19 +2480,15 @@ class _Loc:
             rk = _loc_key(rk, df.index)
             if isinstance(value, Series):
                 value = list(value._data)
-            elif isinstance(value, tuple) or (
-                    hasattr(value, "tolist") and hasattr(value, "shape")):
-                value = list(value.tolist())    # array: one value per row
-            if isinstance(rk, list) and rk \
-                    and isinstance(rk[0], bool):
+            elif isinstance(value, tuple) or (hasattr(value, "tolist") and hasattr(value, "shape")):
+                value = list(value.tolist())  # array: one value per row
+            if isinstance(rk, list) and rk and isinstance(rk[0], bool):
                 if ck not in df._cols:
                     df._cols[ck] = [_NAN] * df.shape[0]
                 vi = 0
                 for i, m in enumerate(rk):
                     if m:
-                        df._cols[ck][i] = (value[vi]
-                                           if isinstance(value, list)
-                                           else value)
+                        df._cols[ck][i] = value[vi] if isinstance(value, list) else value
                         vi += 1
                 return
             i = df.index.index(rk)
@@ -2561,8 +2499,7 @@ class _Loc:
 
 def _corr_pair(x, y, method="pearson", min_periods=1):
     """Pairwise-complete correlation of two columns by method."""
-    pairs = [(float(a), float(b)) for a, b in zip(x, y)
-             if not _isnan(a) and not _isnan(b)]
+    pairs = [(float(a), float(b)) for a, b in zip(x, y) if not _isnan(a) and not _isnan(b)]
     if len(pairs) < max(2, int(min_periods)):
         return _NAN
     xs = [a for a, _ in pairs]
@@ -2616,8 +2553,7 @@ def _avg_rank(v):
 
 
 def _pearson(x, y):
-    pairs = [(a, b) for a, b in zip(x, y)
-             if not _isnan(a) and not _isnan(b)]
+    pairs = [(a, b) for a, b in zip(x, y) if not _isnan(a) and not _isnan(b)]
     n = len(pairs)
     if n < 2:
         return _NAN
@@ -2632,18 +2568,17 @@ def _pearson(x, y):
 
 
 def _cov(x, y, ddof=1):
-    pairs = [(a, b) for a, b in zip(x, y)
-             if not _isnan(a) and not _isnan(b)]
+    pairs = [(a, b) for a, b in zip(x, y) if not _isnan(a) and not _isnan(b)]
     n = len(pairs)
     if n <= ddof:
         return _NAN
     mx = _math.fsum(a for a, _ in pairs) / n
     my = _math.fsum(b for _, b in pairs) / n
-    return _math.fsum((a - mx) * (b - my)
-                      for a, b in pairs) / (n - ddof)
+    return _math.fsum((a - mx) * (b - my) for a, b in pairs) / (n - ddof)
 
 
 # ===================================================== GroupBy
+
 
 class GroupBy:
     def __init__(self, df, by, sort=True, dropna=True):
@@ -2696,8 +2631,7 @@ class GroupBy:
         if not self._sort:
             return list(self._groups)
         pos = [{v: i for i, v in enumerate(o)} for o in self._level_orders()]
-        return sorted(self._groups,
-                      key=lambda k: tuple(pos[j][v] for j, v in enumerate(k)))
+        return sorted(self._groups, key=lambda k: tuple(pos[j][v] for j, v in enumerate(k)))
 
     def __iter__(self):
         for key in self._keys():
@@ -2712,8 +2646,7 @@ class GroupBy:
     def _per_column(self, method, *a, **k):
         cols = [c for c in self._df._cols if c not in self._by]
         parts = {c: getattr(_GroupBySeries(self, c), method)(*a, **k) for c in cols}
-        return DataFrame({c: list(s._data) for c, s in parts.items()},
-                         index=list(self._df.index))
+        return DataFrame({c: list(s._data) for c, s in parts.items()}, index=list(self._df.index))
 
     def shift(self, periods=1):
         return self._per_column("shift", periods)
@@ -2730,8 +2663,7 @@ class GroupBy:
             n = len(rs)
             for j, i in enumerate(rs):
                 pos[i] = j if ascending else n - 1 - j
-        return Series([pos.get(i, _NAN) for i in range(self._df.shape[0])],
-                      index=list(self._df.index))
+        return Series([pos.get(i, _NAN) for i in range(self._df.shape[0])], index=list(self._df.index))
 
     def ffill(self):
         return self._per_column("ffill")
@@ -2744,10 +2676,10 @@ class GroupBy:
         return self._df._take(rows)
 
     def head(self, n=5):
-        return self._rows_at(lambda rs: rs[:int(n)])
+        return self._rows_at(lambda rs: rs[: int(n)])
 
     def tail(self, n=5):
-        return self._rows_at(lambda rs: rs[-int(n):] if int(n) else [])
+        return self._rows_at(lambda rs: rs[-int(n) :] if int(n) else [])
 
     def nth(self, n):
         return self._rows_at(lambda rs: [rs[n]] if -len(rs) <= n < len(rs) else [])
@@ -2766,8 +2698,7 @@ class GroupBy:
 
     @property
     def groups(self):
-        return {(k[0] if len(self._by) == 1 else k): v
-                for k, v in self._groups.items()}
+        return {(k[0] if len(self._by) == 1 else k): v for k, v in self._groups.items()}
 
     def get_group(self, key):
         if not isinstance(key, tuple):
@@ -2776,9 +2707,7 @@ class GroupBy:
 
     def size(self):
         keys = self._keys()
-        out = Series([len(self._groups[k]) for k in keys],
-                     index=[k[0] if len(self._by) == 1 else k
-                            for k in keys])
+        out = Series([len(self._groups[k]) for k in keys], index=[k[0] if len(self._by) == 1 else k for k in keys])
         # unstack() needs each level's order, categorical ones included
         out._level_orders = self._level_orders()
         # keep the grouping names so reset_index() labels the key column(s)
@@ -2796,16 +2725,13 @@ class GroupBy:
         keys = self._keys()
         val_cols = [c for c in self._df._cols if c not in self._by]
         if numeric_only:
-            val_cols = [c for c in val_cols
-                        if Series(self._df._cols[c])._is_numeric()]
+            val_cols = [c for c in val_cols if Series(self._df._cols[c])._is_numeric()]
         out = {c: [] for c in val_cols}
         for k in keys:
             rows = self._groups[k]
             for c in val_cols:
-                out[c].append(fn(Series(
-                    [self._df._cols[c][i] for i in rows])))
-        return DataFrame(out, index=[k[0] if len(self._by) == 1
-                                     else k for k in keys])
+                out[c].append(fn(Series([self._df._cols[c][i] for i in rows])))
+        return DataFrame(out, index=[k[0] if len(self._by) == 1 else k for k in keys])
 
     def mean(self, numeric_only=True):
         return self._agg(lambda s: s.mean(), numeric_only)
@@ -2838,11 +2764,8 @@ class GroupBy:
             out = {}
             for out_col, (col, how) in named.items():
                 fn = _agg_fn(how)
-                out[out_col] = [fn(Series([self._df._cols[col][i]
-                                           for i in self._groups[k]]))
-                                for k in keys]
-            res = DataFrame(out, index=[k[0] if len(self._by) == 1
-                                        else k for k in keys])
+                out[out_col] = [fn(Series([self._df._cols[col][i] for i in self._groups[k]])) for k in keys]
+            res = DataFrame(out, index=[k[0] if len(self._by) == 1 else k for k in keys])
             if len(self._by) == 1:
                 res.index_name = self._by[0]
             return res
@@ -2853,11 +2776,8 @@ class GroupBy:
         out = {}
         for col, how in spec.items():
             fn = _agg_fn(how)
-            out[col] = [fn(Series([self._df._cols[col][i]
-                                   for i in self._groups[k]]))
-                        for k in keys]
-        return DataFrame(out, index=[k[0] if len(self._by) == 1
-                                     else k for k in keys])
+            out[col] = [fn(Series([self._df._cols[col][i] for i in self._groups[k]])) for k in keys]
+        return DataFrame(out, index=[k[0] if len(self._by) == 1 else k for k in keys])
 
     aggregate = agg
 
@@ -2879,9 +2799,8 @@ class GroupBy:
             # columns are the Series index
             cols = list(out[0].index)
             res = DataFrame(
-                {c: [float(o[c]) if isinstance(o[c], (int, float))
-                     else o[c] for o in out] for c in cols},
-                index=ix)
+                {c: [float(o[c]) if isinstance(o[c], (int, float)) else o[c] for o in out] for c in cols}, index=ix
+            )
             if len(self._by) == 1:
                 res.index_name = self._by[0]
             else:
@@ -2906,18 +2825,22 @@ class GroupBy:
 def _agg_fn(spec):
     if callable(spec):
         return lambda s: spec(s)
-    return {"mean": lambda s: s.mean(), "sum": lambda s: s.sum(),
-            "std": lambda s: s.std(), "var": lambda s: s.var(),
-            "median": lambda s: s.median(), "min": lambda s: s.min(),
-            "max": lambda s: s.max(), "count": lambda s: s.count(),
-            "nunique": lambda s: s.nunique(),
-            "size": lambda s: len(s._data),
-            "prod": lambda s: s.prod(),
-            "sem": lambda s: s.sem(),
-            "first": lambda s: s._data[0] if s._data else _NAN,
-            "last": lambda s: s._data[-1] if s._data else _NAN,
-            }[spec]
-
+    return {
+        "mean": lambda s: s.mean(),
+        "sum": lambda s: s.sum(),
+        "std": lambda s: s.std(),
+        "var": lambda s: s.var(),
+        "median": lambda s: s.median(),
+        "min": lambda s: s.min(),
+        "max": lambda s: s.max(),
+        "count": lambda s: s.count(),
+        "nunique": lambda s: s.nunique(),
+        "size": lambda s: len(s._data),
+        "prod": lambda s: s.prod(),
+        "sem": lambda s: s.sem(),
+        "first": lambda s: s._data[0] if s._data else _NAN,
+        "last": lambda s: s._data[-1] if s._data else _NAN,
+    }[spec]
 
 
 class _SeriesOwnGroupBy:
@@ -2930,16 +2853,13 @@ class _SeriesOwnGroupBy:
 
     def _sub(self, k):
         ix = self._groups[k]
-        return Series([self._s._data[i] for i in ix],
-                      index=[self._s.index[i] for i in ix],
-                      name=self._s.name)
+        return Series([self._s._data[i] for i in ix], index=[self._s.index[i] for i in ix], name=self._s.name)
 
     def __iter__(self):
         return iter([(k, self._sub(k)) for k in self._order])
 
     def _agg(self, fn):
-        return Series([fn(self._sub(k)) for k in self._order],
-                      index=list(self._order), name=self._s.name)
+        return Series([fn(self._sub(k)) for k in self._order], index=list(self._order), name=self._s.name)
 
     def mean(self):
         return self._agg(lambda s: s.mean())
@@ -2966,16 +2886,14 @@ class _SeriesOwnGroupBy:
         return self._agg(lambda s: s.nunique())
 
     def size(self):
-        return Series([len(self._groups[k]) for k in self._order],
-                      index=list(self._order), name=self._s.name)
+        return Series([len(self._groups[k]) for k in self._order], index=list(self._order), name=self._s.name)
 
     def agg(self, spec):
         if isinstance(spec, (list, tuple)):
             # a list of aggregations: one column per name, as pandas
             parts = {str(getattr(h, "__name__", h)): self._agg(_agg_fn(h)) for h in spec}
             first = next(iter(parts.values()))
-            out = DataFrame({k: list(v._data) for k, v in parts.items()},
-                            index=list(first.index))
+            out = DataFrame({k: list(v._data) for k, v in parts.items()}, index=list(first.index))
             out.index_name = getattr(first, "index_name", None)
             return out
         return self._agg(_agg_fn(spec))
@@ -2998,8 +2916,7 @@ class _SeriesOwnGroupBy:
             v = fn(self._sub(k))
             for i in self._groups[k]:
                 out[i] = v
-        return Series(out, index=list(self._s.index),
-                      name=self._s.name)
+        return Series(out, index=list(self._s.index), name=self._s.name)
 
 
 class _GroupByFrame:
@@ -3016,8 +2933,7 @@ class _GroupByFrame:
         keys = gb._keys()
         data = {}
         for c in self._cols_sel:
-            data[c] = [fn(Series([gb._df._cols[c][i] for i in gb._groups[k]]))
-                       for k in keys]
+            data[c] = [fn(Series([gb._df._cols[c][i] for i in gb._groups[k]])) for k in keys]
         idx = [k[0] if len(gb._by) == 1 else k for k in keys]
         out = DataFrame(data, index=idx)
         if len(gb._by) == 1:
@@ -3029,8 +2945,7 @@ class _GroupByFrame:
     def sum(self):
         return self._agg(lambda s: s.sum())
 
-    _NAMED = ("mean", "std", "var", "sum", "min", "max", "median",
-              "count", "size", "nunique", "first", "last")
+    _NAMED = ("mean", "std", "var", "sum", "min", "max", "median", "count", "size", "nunique", "first", "last")
 
     def _one(self, how):
         if callable(how):
@@ -3052,8 +2967,7 @@ class _GroupByFrame:
         gb = self._gb
         keys = gb._keys()
         if isinstance(func, dict):
-            plan = [(c, f) for c, fs in func.items()
-                    for f in (fs if isinstance(fs, (list, tuple)) else [fs])]
+            plan = [(c, f) for c, fs in func.items() for f in (fs if isinstance(fs, (list, tuple)) else [fs])]
             multi = any(isinstance(fs, (list, tuple)) for fs in func.values())
         elif isinstance(func, (list, tuple)):
             plan = [(c, f) for c in self._cols_sel for f in func]
@@ -3064,10 +2978,8 @@ class _GroupByFrame:
         data = {}
         for c, f in plan:
             fn = self._one(f)
-            label = (c, f if isinstance(f, str) else getattr(f, "__name__", "<lambda>")) \
-                if multi else c
-            data[label] = [fn(Series([gb._df._cols[c][i] for i in gb._groups[k]]))
-                           for k in keys]
+            label = (c, f if isinstance(f, str) else getattr(f, "__name__", "<lambda>")) if multi else c
+            data[label] = [fn(Series([gb._df._cols[c][i] for i in gb._groups[k]])) for k in keys]
         idx = [k[0] if len(gb._by) == 1 else k for k in keys]
         out = DataFrame(data, index=idx)
         if len(gb._by) == 1:
@@ -3107,9 +3019,12 @@ class _GroupBySeries:
         gb = self._gb
         for k in gb._keys():
             rows = gb._groups[k]
-            yield (k[0] if len(gb._by) == 1 else k), Series(
-                [gb._df._cols[self._col][i] for i in rows],
-                index=[gb._df.index[i] for i in rows], name=self._col)
+            yield (
+                (k[0] if len(gb._by) == 1 else k),
+                Series(
+                    [gb._df._cols[self._col][i] for i in rows], index=[gb._df.index[i] for i in rows], name=self._col
+                ),
+            )
 
     def __len__(self):
         return len(self._gb._groups)
@@ -3121,10 +3036,8 @@ class _GroupBySeries:
     def _agg(self, fn):
         gb = self._gb
         keys = gb._keys()
-        vals = [fn(Series([gb._df._cols[self._col][i]
-                           for i in gb._groups[k]])) for k in keys]
-        out = Series(vals, index=[k[0] if len(gb._by) == 1 else k
-                                  for k in keys], name=self._col)
+        vals = [fn(Series([gb._df._cols[self._col][i] for i in gb._groups[k]])) for k in keys]
+        out = Series(vals, index=[k[0] if len(gb._by) == 1 else k for k in keys], name=self._col)
         # carry the grouping column names so reset_index() can label the
         # expanded key columns the way pandas does
         if len(gb._by) == 1:
@@ -3179,16 +3092,14 @@ class _GroupBySeries:
             # column per keyword, as pandas' SeriesGroupBy does
             parts = {k: self._agg(_agg_fn(h)) for k, h in named.items()}
             first = next(iter(parts.values()))
-            out = DataFrame({k: list(v._data) for k, v in parts.items()},
-                            index=list(first.index))
+            out = DataFrame({k: list(v._data) for k, v in parts.items()}, index=list(first.index))
             out.index_name = getattr(first, "index_name", None)
             return out
         if isinstance(spec, (list, tuple)):
             # a list of aggregations: one column per name, as pandas
             parts = {str(getattr(h, "__name__", h)): self._agg(_agg_fn(h)) for h in spec}
             first = next(iter(parts.values()))
-            out = DataFrame({k: list(v._data) for k, v in parts.items()},
-                            index=list(first.index))
+            out = DataFrame({k: list(v._data) for k, v in parts.items()}, index=list(first.index))
             out.index_name = getattr(first, "index_name", None)
             return out
         return self._agg(_agg_fn(spec))
@@ -3244,11 +3155,11 @@ class _GroupBySeries:
         def fn(s):
             n = len(s._data)
             return list(range(n)) if ascending else list(range(n - 1, -1, -1))
+
         return self._within(fn)
 
     def rank(self, ascending=True, method="average", na_option="keep"):
-        return self._within(lambda s: s.rank(ascending=ascending, method=method,
-                                             na_option=na_option))
+        return self._within(lambda s: s.rank(ascending=ascending, method=method, na_option=na_option))
 
     def pct_change(self):
         return self._within(lambda s: s.pct_change())
@@ -3262,14 +3173,13 @@ class _GroupBySeries:
     def _rows_at(self, pick):
         gb = self._gb
         rows = sorted(i for rs in gb._groups.values() for i in pick(rs))
-        return Series([gb._df._cols[self._col][i] for i in rows],
-                      index=[gb._df.index[i] for i in rows], name=self._col)
+        return Series([gb._df._cols[self._col][i] for i in rows], index=[gb._df.index[i] for i in rows], name=self._col)
 
     def head(self, n=5):
-        return self._rows_at(lambda rs: rs[:int(n)])
+        return self._rows_at(lambda rs: rs[: int(n)])
 
     def tail(self, n=5):
-        return self._rows_at(lambda rs: rs[-int(n):] if int(n) else [])
+        return self._rows_at(lambda rs: rs[-int(n) :] if int(n) else [])
 
     def nth(self, n):
         return self._rows_at(lambda rs: [rs[n]] if -len(rs) <= n < len(rs) else [])
@@ -3296,10 +3206,11 @@ class _GroupBySeries:
         gb = self._gb
         idx, vals = [], []
         for k in gb._keys():
-            vc = Series([gb._df._cols[self._col][i] for i in gb._groups[k]]) \
-                .value_counts(normalize=normalize, sort=sort, dropna=dropna)
+            vc = Series([gb._df._cols[self._col][i] for i in gb._groups[k]]).value_counts(
+                normalize=normalize, sort=sort, dropna=dropna
+            )
             for v, c in zip(vc.index, vc._data):
-                idx.append(tuple(k) + (v,))      # flat levels: keys..., value
+                idx.append(tuple(k) + (v,))  # flat levels: keys..., value
                 vals.append(c)
         # pandas 2: MultiIndex (keys..., column), values named "count"
         out = Series(vals, index=idx, name="proportion" if normalize else "count")
@@ -3309,14 +3220,16 @@ class _GroupBySeries:
     def describe(self):
         gb = self._gb
         keys = gb._keys()
-        rows = [Series([gb._df._cols[self._col][i] for i in gb._groups[k]]).describe()
-                for k in keys]
+        rows = [Series([gb._df._cols[self._col][i] for i in gb._groups[k]]).describe() for k in keys]
         cols = list(rows[0].index) if rows else []
-        return DataFrame({c: [r._data[j] for r in rows] for j, c in enumerate(cols)},
-                         index=[k[0] if len(gb._by) == 1 else k for k in keys])
+        return DataFrame(
+            {c: [r._data[j] for r in rows] for j, c in enumerate(cols)},
+            index=[k[0] if len(gb._by) == 1 else k for k in keys],
+        )
 
 
 # ===================================================== module fns
+
 
 def _na_map(v, keep):
     # pandas: array-like in, elementwise boolean array out (same shape).
@@ -3324,12 +3237,12 @@ def _na_map(v, keep):
         if isinstance(x, (list, tuple)):
             return [rec(e) for e in x]
         return _isnan(x) is keep
+
     return _ac.asarray(rec(v.tolist() if hasattr(v, "tolist") else list(v)))
 
 
 def _is_listlike(v):
-    return isinstance(v, (list, tuple)) or (
-        hasattr(v, "tolist") and hasattr(v, "shape"))
+    return isinstance(v, (list, tuple)) or (hasattr(v, "tolist") and hasattr(v, "shape"))
 
 
 def isna(v):
@@ -3361,8 +3274,7 @@ def unique(values):
 
 
 def factorize(values):
-    vals = list(values.tolist() if hasattr(values, "tolist")
-                else values)
+    vals = list(values.tolist() if hasattr(values, "tolist") else values)
     seen = {}
     codes = []
     uniq = []
@@ -3382,11 +3294,9 @@ def _coerce_frame(o):
     if isinstance(o, (DataFrame, Series)) or o is None:
         return o
     if hasattr(o, "columns") and hasattr(o, "__getitem__"):
-        return DataFrame({c: list(o[c]) for c in o.columns},
-                         index=list(o.index))
+        return DataFrame({c: list(o[c]) for c in o.columns}, index=list(o.index))
     if hasattr(o, "tolist") and hasattr(o, "index"):
-        return Series(list(o.tolist()), index=list(o.index),
-                      name=getattr(o, "name", None))
+        return Series(list(o.tolist()), index=list(o.index), name=getattr(o, "name", None))
     return o
 
 
@@ -3394,14 +3304,12 @@ def concat(objs, axis=0, ignore_index=False):
     objs = [_coerce_frame(o) for o in objs if o is not None]
     if all(isinstance(o, Series) for o in objs):
         if axis == 1:
-            return DataFrame({(o.name if o.name is not None else i):
-                              o.tolist() for i, o in enumerate(objs)})
+            return DataFrame({(o.name if o.name is not None else i): o.tolist() for i, o in enumerate(objs)})
         data, ix = [], []
         for o in objs:
             data += o.tolist()
             ix += list(o.index)
-        return Series(data, index=list(range(len(data)))
-                      if ignore_index else ix)
+        return Series(data, index=list(range(len(data))) if ignore_index else ix)
     if axis == 1:
         out = {}
         index = objs[0].index
@@ -3427,8 +3335,7 @@ def concat(objs, axis=0, ignore_index=False):
         for c in cols:
             out[c] += list(o._cols.get(c, [_NAN] * n))
         ix += list(o.index)
-    return DataFrame(out, index=list(range(len(ix)))
-                     if ignore_index else ix)
+    return DataFrame(out, index=list(range(len(ix))) if ignore_index else ix)
 
 
 def merge(left, right, **kw):
@@ -3441,9 +3348,11 @@ def to_numeric(arg, errors="raise"):
     for v in vals:
         try:
             f = float(v)
-            out.append(int(f) if f == int(f) and not isinstance(
-                v, float) and "." not in str(v) and "e" not in
-                str(v).lower() else f)
+            out.append(
+                int(f)
+                if f == int(f) and not isinstance(v, float) and "." not in str(v) and "e" not in str(v).lower()
+                else f
+            )
         except (TypeError, ValueError):
             if errors == "coerce":
                 out.append(_NAN)
@@ -3456,15 +3365,23 @@ def to_numeric(arg, errors="raise"):
     return Series(out)
 
 
-_DT_FORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%d/%m/%Y", "%m/%d/%Y",
-               "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S", "%Y%m%d",
-               "%d-%b-%Y", "%B %d, %Y", "%b %d, %Y"]
+_DT_FORMATS = [
+    "%Y-%m-%d",
+    "%Y/%m/%d",
+    "%d/%m/%Y",
+    "%m/%d/%Y",
+    "%Y-%m-%d %H:%M:%S",
+    "%Y-%m-%dT%H:%M:%S",
+    "%Y%m%d",
+    "%d-%b-%Y",
+    "%B %d, %Y",
+    "%b %d, %Y",
+]
 
 
 def _parse_dt(v, fmt=None):
     if isinstance(v, (_dt.date, _dt.datetime)):
-        return v if isinstance(v, _dt.datetime) else _dt.datetime(
-            v.year, v.month, v.day)
+        return v if isinstance(v, _dt.datetime) else _dt.datetime(v.year, v.month, v.day)
     if _isnan(v):
         return _NAN
     s = str(v).strip()
@@ -3498,15 +3415,33 @@ class Timedelta(_dt.timedelta):
     (days=, hours=, ...), a number with a unit, or a string such as
     "3 days", "2h", "1D" or "90min"."""
 
-    _UNITS = {"D": "days", "day": "days", "days": "days",
-              "h": "hours", "hour": "hours", "hours": "hours", "H": "hours",
-              "m": "minutes", "min": "minutes", "minute": "minutes",
-              "minutes": "minutes", "T": "minutes",
-              "s": "seconds", "sec": "seconds", "second": "seconds",
-              "seconds": "seconds", "S": "seconds",
-              "ms": "milliseconds", "L": "milliseconds",
-              "us": "microseconds", "ns": "nanoseconds",
-              "W": "weeks", "w": "weeks", "week": "weeks", "weeks": "weeks"}
+    _UNITS = {
+        "D": "days",
+        "day": "days",
+        "days": "days",
+        "h": "hours",
+        "hour": "hours",
+        "hours": "hours",
+        "H": "hours",
+        "m": "minutes",
+        "min": "minutes",
+        "minute": "minutes",
+        "minutes": "minutes",
+        "T": "minutes",
+        "s": "seconds",
+        "sec": "seconds",
+        "second": "seconds",
+        "seconds": "seconds",
+        "S": "seconds",
+        "ms": "milliseconds",
+        "L": "milliseconds",
+        "us": "microseconds",
+        "ns": "nanoseconds",
+        "W": "weeks",
+        "w": "weeks",
+        "week": "weeks",
+        "weeks": "weeks",
+    }
 
     def __new__(cls, value=None, unit="ns", **kw):
         if value is None:
@@ -3515,6 +3450,7 @@ class Timedelta(_dt.timedelta):
             return super().__new__(cls, seconds=value.total_seconds())
         if isinstance(value, str):
             import re as _re
+
             m = _re.fullmatch(r"\s*([-+]?[\d.]+)\s*([A-Za-z]+)\s*", value)
             if not m:
                 raise ValueError("unrecognised timedelta %r" % (value,))
@@ -3530,11 +3466,9 @@ class Timedelta(_dt.timedelta):
 
 def to_timedelta(arg, unit="D"):
     """pandas.to_timedelta for the units morie's callers use."""
-    key = {"D": "days", "days": "days", "W": "weeks",
-           "h": "hours", "m": "minutes", "s": "seconds"}[unit]
+    key = {"D": "days", "days": "days", "W": "weeks", "h": "hours", "m": "minutes", "s": "seconds"}[unit]
     if isinstance(arg, Series):
-        return Series([_dt.timedelta(**{key: float(v)}) for v in arg._data],
-                      index=list(arg.index), name=arg.name)
+        return Series([_dt.timedelta(**{key: float(v)}) for v in arg._data], index=list(arg.index), name=arg.name)
     if hasattr(arg, "_flat"):
         vals = [float(v) for v in arg._flat()]
     elif isinstance(arg, (list, tuple)):
@@ -3545,10 +3479,8 @@ def to_timedelta(arg, unit="D"):
 
 
 def to_datetime(arg, errors="raise", format=None):
-    scalar = not (isinstance(arg, (list, tuple, Series))
-                  or hasattr(arg, "tolist"))
-    vals = [arg] if scalar else (
-        arg.tolist() if hasattr(arg, "tolist") else list(arg))
+    scalar = not (isinstance(arg, (list, tuple, Series)) or hasattr(arg, "tolist"))
+    vals = [arg] if scalar else (arg.tolist() if hasattr(arg, "tolist") else list(arg))
     out = []
     for v in vals:
         try:
@@ -3573,12 +3505,13 @@ def _add_months(d, k):
     m = d.month - 1 + k
     y, m = d.year + m // 12, m % 12 + 1
     import calendar as _cal
-    return d.replace(year=y, month=m,
-                     day=min(d.day, _cal.monthrange(y, m)[1]))
+
+    return d.replace(year=y, month=m, day=min(d.day, _cal.monthrange(y, m)[1]))
 
 
 def _month_end(d):
     import calendar as _cal
+
     return d.replace(day=_cal.monthrange(d.year, d.month)[1])
 
 
@@ -3589,16 +3522,23 @@ def date_range(start=None, periods=None, freq="D", end=None):
     YS/AS. Month/quarter/year ends roll forward to the first anchor on
     or after ``start``, as pandas does."""
     import re as _re
+
     m_ = _re.fullmatch(r"\s*(\d*)\s*([A-Za-z]+(?:-[A-Za-z]+)?)\s*", str(freq))
     if not m_:
         raise ValueError("invalid frequency: %r" % (freq,))
     k = int(m_.group(1) or 1)
     unit = m_.group(2)
-    fixed = {"D": _dt.timedelta(days=1), "h": _dt.timedelta(hours=1),
-             "H": _dt.timedelta(hours=1), "min": _dt.timedelta(minutes=1),
-             "T": _dt.timedelta(minutes=1), "s": _dt.timedelta(seconds=1),
-             "S": _dt.timedelta(seconds=1), "ms": _dt.timedelta(milliseconds=1),
-             "L": _dt.timedelta(milliseconds=1)}
+    fixed = {
+        "D": _dt.timedelta(days=1),
+        "h": _dt.timedelta(hours=1),
+        "H": _dt.timedelta(hours=1),
+        "min": _dt.timedelta(minutes=1),
+        "T": _dt.timedelta(minutes=1),
+        "s": _dt.timedelta(seconds=1),
+        "S": _dt.timedelta(seconds=1),
+        "ms": _dt.timedelta(milliseconds=1),
+        "L": _dt.timedelta(milliseconds=1),
+    }
     s = _parse_dt(start) if start is not None else None
     e = _parse_dt(end) if end is not None else None
     if s is None and e is None:
@@ -3640,8 +3580,7 @@ def date_range(start=None, periods=None, freq="D", end=None):
                 if cur.weekday() < 5:
                     n_ += 1
         return Series(out)
-    months = {"ME": 1, "M": 1, "MS": 1, "QE": 3, "Q": 3, "QS": 3,
-              "YE": 12, "A": 12, "Y": 12, "YS": 12, "AS": 12}
+    months = {"ME": 1, "M": 1, "MS": 1, "QE": 3, "Q": 3, "QS": 3, "YE": 12, "A": 12, "Y": 12, "YS": 12, "AS": 12}
     if unit not in months:
         raise ValueError("unsupported frequency: %r" % (freq,))
     step = months[unit] * k
@@ -3671,22 +3610,19 @@ def date_range(start=None, periods=None, freq="D", end=None):
     return Series(out)
 
 
-def crosstab(index, columns, normalize=False, margins=False,
-             margins_name="All", dropna=True):
+def crosstab(index, columns, normalize=False, margins=False, margins_name="All", dropna=True):
     del dropna
     if margins:
         base = crosstab(index, columns, normalize=normalize)
         rows = list(base.index)
         cols = list(base.columns)
         data = {c: list(base[c]) for c in cols}
-        data[margins_name] = [sum(data[c][i] for c in cols)
-                              for i in range(len(rows))]
+        data[margins_name] = [sum(data[c][i] for c in cols) for i in range(len(rows))]
         for c in list(data):
             data[c] = data[c] + [sum(data[c])]
         return DataFrame(data, index=rows + [margins_name])
     iv = index.tolist() if hasattr(index, "tolist") else list(index)
-    cv = columns.tolist() if hasattr(columns, "tolist") \
-        else list(columns)
+    cv = columns.tolist() if hasattr(columns, "tolist") else list(columns)
     rows = sorted({v for v in iv if not _isnan(v)}, key=str)
     cols = sorted({v for v in cv if not _isnan(v)}, key=str)
     counts = {(r, c): 0 for r in rows for c in cols}
@@ -3707,8 +3643,7 @@ def cut(x, bins, labels=None, right=True, include_lowest=False):
     if isinstance(bins, int):
         lo, hi = min(vals), max(vals)
         pad = (hi - lo) * 0.001 or 0.001
-        edges = [lo - pad] + [lo + (hi - lo) * (i + 1) / bins
-                              for i in range(bins)]
+        edges = [lo - pad] + [lo + (hi - lo) * (i + 1) / bins for i in range(bins)]
     else:
         edges = [float(b) for b in bins]
     out = []
@@ -3720,27 +3655,33 @@ def cut(x, bins, labels=None, right=True, include_lowest=False):
         for i in range(len(edges) - 1):
             lo_e, hi_e = edges[i], edges[i + 1]
             if right:
-                ok = (lo_e < v <= hi_e) or (
-                    include_lowest and i == 0 and v == lo_e)
+                ok = (lo_e < v <= hi_e) or (include_lowest and i == 0 and v == lo_e)
             else:
-                ok = lo_e <= v < hi_e or (
-                    i == len(edges) - 2 and v == hi_e)
+                ok = lo_e <= v < hi_e or (i == len(edges) - 2 and v == hi_e)
             if ok:
-                placed = (float(i) if labels is False else
-                          labels[i] if labels is not None
-                          else "(%g, %g]" % (lo_e, hi_e) if right
-                          else "[%g, %g)" % (lo_e, hi_e))
+                placed = (
+                    float(i)
+                    if labels is False
+                    else labels[i]
+                    if labels is not None
+                    else "(%g, %g]" % (lo_e, hi_e)
+                    if right
+                    else "[%g, %g)" % (lo_e, hi_e)
+                )
                 break
         out.append(placed)
-    res = Series(out, index=list(x.index), name=x.name) \
-        if isinstance(x, Series) else Series(out)
+    res = Series(out, index=list(x.index), name=x.name) if isinstance(x, Series) else Series(out)
     # pandas returns a categorical ordered by bin; grouping on it follows
     # that order, not the lexical order of the labels ("10-14" < "5-9")
     if labels is not False:
-        res._categories = (list(labels) if labels is not None else
-                           ["(%g, %g]" % (edges[i], edges[i + 1]) if right
-                            else "[%g, %g)" % (edges[i], edges[i + 1])
-                            for i in range(len(edges) - 1)])
+        res._categories = (
+            list(labels)
+            if labels is not None
+            else [
+                "(%g, %g]" % (edges[i], edges[i + 1]) if right else "[%g, %g)" % (edges[i], edges[i + 1])
+                for i in range(len(edges) - 1)
+            ]
+        )
     return res
 
 
@@ -3758,26 +3699,20 @@ def qcut(x, q, labels=None, duplicates="raise"):
         e = s.quantile(v)
         if not edges or e > edges[-1]:
             edges.append(e)
-    return cut(x, edges, labels=labels, right=True,
-               include_lowest=True)
+    return cut(x, edges, labels=labels, right=True, include_lowest=True)
 
 
-def get_dummies(data, prefix=None, drop_first=False, columns=None,
-                dtype=None):
+def get_dummies(data, prefix=None, drop_first=False, columns=None, dtype=None):
     del dtype
     # a real pandas frame would otherwise fall through to the Series
     # branch and be iterated as its column NAMES
     if not isinstance(data, (DataFrame, Series)):
         data = _coerce_frame(data)
     if isinstance(data, DataFrame):
-        cols = columns if columns is not None else [
-            c for c in data._cols
-            if not Series(data._cols[c])._is_numeric()]
-        out = DataFrame({c: list(v) for c, v in data._cols.items()
-                         if c not in cols}, index=list(data.index))
+        cols = columns if columns is not None else [c for c in data._cols if not Series(data._cols[c])._is_numeric()]
+        out = DataFrame({c: list(v) for c, v in data._cols.items() if c not in cols}, index=list(data.index))
         for c in cols:
-            dm = get_dummies(data[c], prefix=str(c),
-                             drop_first=drop_first)
+            dm = get_dummies(data[c], prefix=str(c), drop_first=drop_first)
             for dc in dm._cols:
                 out[dc] = dm._cols[dc]
         return out
@@ -3785,7 +3720,7 @@ def get_dummies(data, prefix=None, drop_first=False, columns=None,
     cats = sorted({v for v in vals if not _isnan(v)}, key=str)
     if drop_first:
         cats = cats[1:]
-    name = prefix          # pandas ignores Series name unless prefix=
+    name = prefix  # pandas ignores Series name unless prefix=
     out = {}
     for c in cats:
         key = "%s_%s" % (name, c) if name is not None else c
@@ -3795,11 +3730,9 @@ def get_dummies(data, prefix=None, drop_first=False, columns=None,
 
 class Categorical(list):
     def __init__(self, values, categories=None, ordered=False):
-        vals = values.tolist() if hasattr(values, "tolist") \
-            else list(values)
+        vals = values.tolist() if hasattr(values, "tolist") else list(values)
         super().__init__(vals)
-        self.categories = categories if categories is not None \
-            else sorted({v for v in vals if not _isnan(v)}, key=str)
+        self.categories = categories if categories is not None else sorted({v for v in vals if not _isnan(v)}, key=str)
         self.ordered = ordered
 
     @property
@@ -3814,19 +3747,29 @@ class CategoricalDtype:
         self.ordered = ordered
 
 
-def read_csv(path, sep=",", header=0, names=None, dtype=None,
-             na_values=None, skiprows=0, nrows=None, usecols=None,
-             encoding=None, **kw):
+def read_csv(
+    path,
+    sep=",",
+    header=0,
+    names=None,
+    dtype=None,
+    na_values=None,
+    skiprows=0,
+    nrows=None,
+    usecols=None,
+    encoding=None,
+    **kw,
+):
     del kw
     # pandas drops a UTF-8 byte-order mark; without this the first header
     # comes back as "\ufeffName" and every lookup by name fails
     if (encoding or "utf-8").lower().replace("_", "-") in ("utf-8", "utf8"):
         encoding = "utf-8-sig"
     na_extra = set(na_values or [])
-    na_default = {"", "NA", "N/A", "NaN", "nan", "NULL", "null",
-                  "None", "#N/A"}
+    na_default = {"", "NA", "N/A", "NaN", "nan", "NULL", "null", "None", "#N/A"}
     if hasattr(path, "read"):
         import io as _io
+
         raw = path.read()
         if isinstance(raw, bytes):
             raw = raw.decode(encoding or "utf-8")
@@ -3846,7 +3789,7 @@ def read_csv(path, sep=",", header=0, names=None, dtype=None,
         cols = list(range(len(rows[0]) if rows else 0))
     else:
         cols = rows[header]
-        rows = rows[header + 1:]
+        rows = rows[header + 1 :]
     if nrows is not None:
         rows = rows[:nrows]
 
@@ -3862,10 +3805,10 @@ def read_csv(path, sep=",", header=0, names=None, dtype=None,
             return float(v)
         except ValueError:
             return v
+
     data = {}
     for j, c in enumerate(cols):
-        if usecols is not None and c not in usecols \
-                and j not in (usecols or []):
+        if usecols is not None and c not in usecols and j not in (usecols or []):
             continue
         data[c] = [conv(r[j]) if j < len(r) else _NAN for r in rows]
     df = DataFrame(data)
@@ -3900,16 +3843,14 @@ class _PdApiTypes:
     @staticmethod
     def is_string_dtype(obj):
         if isinstance(obj, Series):
-            return all(isinstance(v, str) or _isnan(v)
-                       for v in obj._data)
+            return all(isinstance(v, str) or _isnan(v) for v in obj._data)
         k = _foreign_kind(obj)
         if k is not None:
             if k in ("U", "S", "T"):
                 return True
             if k == "O":
                 v = _foreign_values(obj)
-                return bool(v) and all(
-                    isinstance(x, str) for x in v if x == x)
+                return bool(v) and all(isinstance(x, str) for x in v if x == x)
             return False
         return isinstance(obj, str)
 
@@ -3917,13 +3858,12 @@ class _PdApiTypes:
     def is_categorical_dtype(obj):
         if isinstance(obj, Categorical):
             return True
-        return type(getattr(obj, "dtype", None)).__name__             == "CategoricalDtype"
+        return type(getattr(obj, "dtype", None)).__name__ == "CategoricalDtype"
 
     @staticmethod
     def is_datetime64_any_dtype(obj):
         if isinstance(obj, Series):
-            return any(isinstance(v, (_dt.date, _dt.datetime))
-                       for v in obj._data)
+            return any(isinstance(v, (_dt.date, _dt.datetime)) for v in obj._data)
         k = _foreign_kind(obj)
         if k is not None:
             return k == "M"
@@ -3941,8 +3881,7 @@ class _PdApiTypes:
     @staticmethod
     def is_float_dtype(obj):
         if isinstance(obj, Series):
-            return obj._is_numeric() and any(
-                isinstance(v, float) for v in obj._data)
+            return obj._is_numeric() and any(isinstance(v, float) for v in obj._data)
         k = _foreign_kind(obj)
         if k is not None:
             return k == "f"
@@ -3960,8 +3899,7 @@ class _PdApiTypes:
     @staticmethod
     def is_integer_dtype(obj):
         if isinstance(obj, Series):
-            return all(isinstance(v, int) and not isinstance(v, bool)
-                       for v in obj._data)
+            return all(isinstance(v, int) and not isinstance(v, bool) for v in obj._data)
         k = _foreign_kind(obj)
         if k is not None:
             return k in "iu"
@@ -3978,27 +3916,26 @@ __version__ = "0.0-morie-native"
 
 # ===================================================== io tail
 
+
 def read_json(path_or_buf, orient=None, lines=False, encoding=None):
     import json as _json
+
     if hasattr(path_or_buf, "read"):
         raw = path_or_buf.read()
-    elif isinstance(path_or_buf, str) and path_or_buf.lstrip()[:1] \
-            in ("[", "{"):
+    elif isinstance(path_or_buf, str) and path_or_buf.lstrip()[:1] in ("[", "{"):
         raw = path_or_buf
     else:
         with open(path_or_buf, encoding=encoding or "utf-8") as fh:
             raw = fh.read()
     if lines:
-        rows = [_json.loads(ln) for ln in raw.splitlines()
-                if ln.strip()]
+        rows = [_json.loads(ln) for ln in raw.splitlines() if ln.strip()]
         return DataFrame(rows)
     obj = _json.loads(raw)
 
     def axis(labels):
         # pandas convert_axes: all-integer string labels become ints
         try:
-            return [int(k) for k in labels] if all(
-                str(int(k)) == k for k in labels) else list(labels)
+            return [int(k) for k in labels] if all(str(int(k)) == k for k in labels) else list(labels)
         except (TypeError, ValueError):
             return list(labels)
 
@@ -4006,12 +3943,10 @@ def read_json(path_or_buf, orient=None, lines=False, encoding=None):
         if obj and isinstance(obj[0], list):
             return DataFrame({j: [r[j] for r in obj] for j in range(len(obj[0]))})
         return DataFrame(obj)
-    if orient == "split" or (orient is None and set(obj) >= {"columns", "data"}
-                             and isinstance(obj.get("data"), list)):
+    if orient == "split" or (orient is None and set(obj) >= {"columns", "data"} and isinstance(obj.get("data"), list)):
         cols = obj["columns"]
         data = obj["data"]
-        return DataFrame({c: [r[j] for r in data] for j, c in enumerate(cols)},
-                         index=obj.get("index"))
+        return DataFrame({c: [r[j] for r in data] for j, c in enumerate(cols)}, index=obj.get("index"))
     if orient == "index":
         keys = list(obj)
         cols = []
@@ -4019,8 +3954,7 @@ def read_json(path_or_buf, orient=None, lines=False, encoding=None):
             for c in obj[k]:
                 if c not in cols:
                     cols.append(c)
-        return DataFrame({c: [obj[k].get(c, _NAN) for k in keys] for c in cols},
-                         index=axis(keys))
+        return DataFrame({c: [obj[k].get(c, _NAN) for k in keys] for c in cols}, index=axis(keys))
     if obj and all(isinstance(v, dict) for v in obj.values()):
         # orient="columns", pandas' default: {column: {index: value}}
         idx = []
@@ -4028,8 +3962,7 @@ def read_json(path_or_buf, orient=None, lines=False, encoding=None):
             for k in v:
                 if k not in idx:
                     idx.append(k)
-        return DataFrame({c: [v.get(k, _NAN) for k in idx] for c, v in obj.items()},
-                         index=axis(idx))
+        return DataFrame({c: [v.get(k, _NAN) for k in idx] for c, v in obj.items()}, index=axis(idx))
     return DataFrame(obj)
 
 
@@ -4039,8 +3972,7 @@ def read_sql(sql, con, params=None):
     cur.execute(sql, params or ())
     cols = [d[0] for d in cur.description]
     rows = cur.fetchall()
-    return DataFrame({c: [r[i] for r in rows]
-                      for i, c in enumerate(cols)})
+    return DataFrame({c: [r[i] for r in rows] for i, c in enumerate(cols)})
 
 
 read_sql_query = read_sql
@@ -4048,18 +3980,16 @@ read_sql_query = read_sql
 
 def _xlsx_shared_strings(zf):
     import xml.etree.ElementTree as ET
+
     try:
         raw = zf.read("xl/sharedStrings.xml")
     except KeyError:
         return []
-    ns = {"m": "http://schemas.openxmlformats.org/"
-               "spreadsheetml/2006/main"}
+    ns = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
     root = ET.fromstring(raw)
     out = []
     for si in root.findall("m:si", ns):
-        text = "".join(t.text or "" for t in si.iter(
-            "{http://schemas.openxmlformats.org/spreadsheetml/2006/"
-            "main}t"))
+        text = "".join(t.text or "" for t in si.iter("{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t"))
         out.append(text)
     return out
 
@@ -4083,11 +4013,10 @@ def _xlsx_sheet_map(zf):
     part. OOXML addresses them by r:id, so follow that.
     """
     import xml.etree.ElementTree as ET
+
     M = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
-    R = ("{http://schemas.openxmlformats.org/officeDocument/2006/"
-         "relationships}")
-    PR = ("{http://schemas.openxmlformats.org/package/2006/"
-          "relationships}")
+    R = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"
+    PR = "{http://schemas.openxmlformats.org/package/2006/relationships}"
     rels = {}
     try:
         rt = ET.fromstring(zf.read("xl/_rels/workbook.xml.rels"))
@@ -4109,12 +4038,10 @@ def _xlsx_sheet_map(zf):
     if any(part is None for _, part in out):
         # No usable rels: fall back to NUMERIC order of the parts.
         parts = sorted(
-            (n for n in zf.namelist()
-             if n.startswith("xl/worksheets/sheet") and n.endswith(".xml")),
-            key=lambda n: int("".join(c for c in n.rsplit("/", 1)[-1]
-                                     if c.isdigit()) or 0))
-        out = [(nm, parts[i] if i < len(parts) else None)
-               for i, (nm, _) in enumerate(out)]
+            (n for n in zf.namelist() if n.startswith("xl/worksheets/sheet") and n.endswith(".xml")),
+            key=lambda n: int("".join(c for c in n.rsplit("/", 1)[-1] if c.isdigit()) or 0),
+        )
+        out = [(nm, parts[i] if i < len(parts) else None) for i, (nm, _) in enumerate(out)]
     return out
 
 
@@ -4123,6 +4050,7 @@ def read_excel(path, sheet_name=0, header=0, **kw):
     del kw
     import xml.etree.ElementTree as ET
     import zipfile
+
     zf = zipfile.ZipFile(path)
     shared = _xlsx_shared_strings(zf)
     smap = _xlsx_sheet_map(zf)
@@ -4131,8 +4059,7 @@ def read_excel(path, sheet_name=0, header=0, **kw):
     else:
         names = [nm for nm, _ in smap]
         if sheet_name not in names:
-            raise ValueError("no sheet named %r; the workbook has %r"
-                             % (sheet_name, names))
+            raise ValueError("no sheet named %r; the workbook has %r" % (sheet_name, names))
         target = smap[names.index(sheet_name)][1]
     ns = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
     root = ET.fromstring(zf.read(target))
@@ -4168,19 +4095,16 @@ def read_excel(path, sheet_name=0, header=0, **kw):
     if not grid:
         return DataFrame({})
     maxr = max(r for r, _ in grid) + 1
-    rows = [[grid.get((r, c), _NAN) for c in range(maxc)]
-            for r in range(maxr)]
+    rows = [[grid.get((r, c), _NAN) for c in range(maxc)] for r in range(maxr)]
     if header is None:
         return DataFrame(rows)
     cols = [str(v) for v in rows[header]]
-    body = rows[header + 1:]
-    return DataFrame({cols[j]: [row[j] for row in body]
-                      for j in range(maxc)})
+    body = rows[header + 1 :]
+    return DataFrame({cols[j]: [row[j] for row in body] for j in range(maxc)})
 
 
 def _xml_escape(t):
-    return (str(t).replace("&", "&amp;").replace("<", "&lt;")
-            .replace(">", "&gt;"))
+    return str(t).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 def _xlsx_col_ref(c):
@@ -4223,9 +4147,10 @@ class ExcelWriter:
         return self._sheets
 
     def _sheet_xml(self, rows):
-        out = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
-               '<worksheet xmlns="http://schemas.openxmlformats.org/'
-               'spreadsheetml/2006/main"><sheetData>']
+        out = [
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+            '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>',
+        ]
         for i, row in enumerate(rows):
             out.append('<row r="%d">' % (i + 1))
             for j, v in enumerate(row):
@@ -4233,15 +4158,13 @@ class ExcelWriter:
                 if v is None:
                     continue
                 if isinstance(v, bool):
-                    out.append('<c r="%s" t="b"><v>%d</v></c>'
-                               % (ref, 1 if v else 0))
+                    out.append('<c r="%s" t="b"><v>%d</v></c>' % (ref, 1 if v else 0))
                 elif isinstance(v, (int, float)):
                     out.append('<c r="%s"><v>%r</v></c>' % (ref, v))
                 else:
-                    out.append('<c r="%s" t="inlineStr"><is><t>%s</t>'
-                               '</is></c>' % (ref, _xml_escape(v)))
-            out.append('</row>')
-        out.append('</sheetData></worksheet>')
+                    out.append('<c r="%s" t="inlineStr"><is><t>%s</t></is></c>' % (ref, _xml_escape(v)))
+            out.append("</row>")
+        out.append("</sheetData></worksheet>")
         return "".join(out)
 
     def close(self):
@@ -4249,50 +4172,59 @@ class ExcelWriter:
             return
         self._closed = True
         import zipfile
+
         n = len(self._sheets)
         names = ["xl/worksheets/sheet%03d.xml" % (i + 1) for i in range(n)]
 
-        ct = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
-              '<Types xmlns="http://schemas.openxmlformats.org/'
-              'package/2006/content-types">',
-              '<Default Extension="rels" ContentType="application/'
-              'vnd.openxmlformats-package.relationships+xml"/>',
-              '<Default Extension="xml" ContentType="application/xml"/>',
-              '<Override PartName="/xl/workbook.xml" ContentType='
-              '"application/vnd.openxmlformats-officedocument.'
-              'spreadsheetml.sheet.main+xml"/>']
+        ct = [
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+            '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">',
+            '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>',
+            '<Default Extension="xml" ContentType="application/xml"/>',
+            '<Override PartName="/xl/workbook.xml" ContentType='
+            '"application/vnd.openxmlformats-officedocument.'
+            'spreadsheetml.sheet.main+xml"/>',
+        ]
         for nm in names:
-            ct.append('<Override PartName="/%s" ContentType="application/'
-                      'vnd.openxmlformats-officedocument.spreadsheetml.'
-                      'worksheet+xml"/>' % nm)
-        ct.append('</Types>')
+            ct.append(
+                '<Override PartName="/%s" ContentType="application/'
+                "vnd.openxmlformats-officedocument.spreadsheetml."
+                'worksheet+xml"/>' % nm
+            )
+        ct.append("</Types>")
 
-        rels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-                '<Relationships xmlns="http://schemas.openxmlformats.org/'
-                'package/2006/relationships"><Relationship Id="rId1" '
-                'Type="http://schemas.openxmlformats.org/officeDocument/'
-                '2006/relationships/officeDocument" Target="xl/'
-                'workbook.xml"/></Relationships>')
+        rels = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<Relationships xmlns="http://schemas.openxmlformats.org/'
+            'package/2006/relationships"><Relationship Id="rId1" '
+            'Type="http://schemas.openxmlformats.org/officeDocument/'
+            '2006/relationships/officeDocument" Target="xl/'
+            'workbook.xml"/></Relationships>'
+        )
 
-        wb = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
-              '<workbook xmlns="http://schemas.openxmlformats.org/'
-              'spreadsheetml/2006/main" xmlns:r="http://schemas.'
-              'openxmlformats.org/officeDocument/2006/relationships">',
-              '<sheets>']
+        wb = [
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+            '<workbook xmlns="http://schemas.openxmlformats.org/'
+            'spreadsheetml/2006/main" xmlns:r="http://schemas.'
+            'openxmlformats.org/officeDocument/2006/relationships">',
+            "<sheets>",
+        ]
         for i, (nm, _) in enumerate(self._sheets):
-            wb.append('<sheet name="%s" sheetId="%d" r:id="rId%d"/>'
-                      % (_xml_escape(nm), i + 1, i + 1))
-        wb.append('</sheets></workbook>')
+            wb.append('<sheet name="%s" sheetId="%d" r:id="rId%d"/>' % (_xml_escape(nm), i + 1, i + 1))
+        wb.append("</sheets></workbook>")
 
-        wbrels = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
-                  '<Relationships xmlns="http://schemas.openxmlformats.org/'
-                  'package/2006/relationships">']
+        wbrels = [
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+            '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">',
+        ]
         for i in range(n):
-            wbrels.append('<Relationship Id="rId%d" Type="http://schemas.'
-                          'openxmlformats.org/officeDocument/2006/'
-                          'relationships/worksheet" Target="worksheets/'
-                          'sheet%03d.xml"/>' % (i + 1, i + 1))
-        wbrels.append('</Relationships>')
+            wbrels.append(
+                '<Relationship Id="rId%d" Type="http://schemas.'
+                "openxmlformats.org/officeDocument/2006/"
+                'relationships/worksheet" Target="worksheets/'
+                'sheet%03d.xml"/>' % (i + 1, i + 1)
+            )
+        wbrels.append("</Relationships>")
 
         zf = zipfile.ZipFile(self._path, "w", zipfile.ZIP_DEFLATED)
         try:
@@ -4309,6 +4241,7 @@ class ExcelWriter:
 class ExcelFile:
     def __init__(self, path):
         import zipfile
+
         self._path = path
         zf = zipfile.ZipFile(path)
         self.sheet_names = [nm for nm, _ in _xlsx_sheet_map(zf)]
@@ -4320,21 +4253,29 @@ class ExcelFile:
 def read_parquet(path, columns=None, **kw):
     """Read a Parquet file into a DataFrame (native codec)."""
     from ._parquet_core import read_parquet as _rp
+
     return _rp(path, columns=columns)
 
 
 def to_parquet(df, path, compression="snappy"):
     """Write a DataFrame to Parquet (native codec)."""
     from ._parquet_core import to_parquet as _wp
+
     return _wp(df, path, compression=compression)
 
 
-
-def pivot_table(data, values=None, index=None, columns=None,
-                aggfunc="mean", fill_value=None, dropna=True, margins=False):
-    return data.pivot_table(values=values, index=index, columns=columns,
-                            aggfunc=aggfunc, fill_value=fill_value,
-                            dropna=dropna, margins=margins)
+def pivot_table(
+    data, values=None, index=None, columns=None, aggfunc="mean", fill_value=None, dropna=True, margins=False
+):
+    return data.pivot_table(
+        values=values,
+        index=index,
+        columns=columns,
+        aggfunc=aggfunc,
+        fill_value=fill_value,
+        dropna=dropna,
+        margins=margins,
+    )
 
 
 class MultiIndex:
@@ -4376,16 +4317,13 @@ class MultiIndex:
 # AttributeError: module has no attribute 'testing'.
 
 
-def _assert_frame_equal(left, right, check_dtype=True, check_names=True,
-                        rtol=1e-5, atol=1e-8, err_msg=""):
+def _assert_frame_equal(left, right, check_dtype=True, check_names=True, rtol=1e-5, atol=1e-8, err_msg=""):
     del check_dtype, check_names
     lc, rc = list(left.columns), list(right.columns)
     if lc != rc:
-        raise AssertionError("columns differ: %r vs %r. %s"
-                             % (lc, rc, err_msg))
+        raise AssertionError("columns differ: %r vs %r. %s" % (lc, rc, err_msg))
     if len(left) != len(right):
-        raise AssertionError("row count differs: %d vs %d. %s"
-                             % (len(left), len(right), err_msg))
+        raise AssertionError("row count differs: %d vs %d. %s" % (len(left), len(right), err_msg))
     for c in lc:
         a, b = list(left[c]), list(right[c])
         for i, (x, y) in enumerate(zip(a, b)):
@@ -4393,18 +4331,13 @@ def _assert_frame_equal(left, right, check_dtype=True, check_names=True,
                 if x != x and y != y:
                     continue
                 if not abs(x - y) <= atol + rtol * abs(y):
-                    raise AssertionError(
-                        "column %r differs at row %d: %r != %r. %s"
-                        % (c, i, x, y, err_msg))
+                    raise AssertionError("column %r differs at row %d: %r != %r. %s" % (c, i, x, y, err_msg))
             elif x != y:
-                raise AssertionError(
-                    "column %r differs at row %d: %r != %r. %s"
-                    % (c, i, x, y, err_msg))
+                raise AssertionError("column %r differs at row %d: %r != %r. %s" % (c, i, x, y, err_msg))
 
 
 def _assert_series_equal(left, right, **kw):
-    _assert_frame_equal(DataFrame({"v": list(left)}),
-                        DataFrame({"v": list(right)}), **kw)
+    _assert_frame_equal(DataFrame({"v": list(left)}), DataFrame({"v": list(right)}), **kw)
 
 
 class _TestingNamespace:
@@ -4448,5 +4381,7 @@ def coerce_frame(data, what: str = "data") -> DataFrame:
         if rows and all(isinstance(r, dict) for r in rows):
             cols = list(rows[0].keys())
             return DataFrame({c: [r.get(c) for r in rows] for c in cols})
-    raise TypeError(f"{what} must be a DataFrame (native or pandas), a CSV path, "
-                    f"a dict of columns or a list of row dicts, got {type(data).__name__}")
+    raise TypeError(
+        f"{what} must be a DataFrame (native or pandas), a CSV path, "
+        f"a dict of columns or a list of row dicts, got {type(data).__name__}"
+    )

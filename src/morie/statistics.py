@@ -377,25 +377,55 @@ def two_way_anova(
     TestResult
         The ``extra`` dict contains per-factor and interaction F and *p* values.
     """
-    from morie.fn import _glm_core as sm
-    from morie.fn._glm_core import ols
+    d = data.dropna(subset=[outcome, factor_a, factor_b])
+    yv = [float(v) for v in d[outcome].tolist()]
+    fa = [str(v) for v in d[factor_a].tolist()]
+    fb = [str(v) for v in d[factor_b].tolist()]
+    n = len(yv)
+    la, lb = sorted(set(fa)), sorted(set(fb))
+    # treatment-coded design columns; type II sums of squares are
+    # differences of residual sums of squares of nested fits (car::Anova)
+    da = [[1.0 if v == lev else 0.0 for v in fa] for lev in la[1:]]
+    db = [[1.0 if v == lev else 0.0 for v in fb] for lev in lb[1:]]
+    dab = [[x * z for x, z in zip(ca, cb)] for ca in da for cb in db]
 
-    formula = f"{outcome} ~ C({factor_a}) * C({factor_b})"
-    model = ols(formula, data=data.dropna(subset=[outcome, factor_a, factor_b])).fit()
-    anova_table = sm.stats.anova_lm(model, typ=2)
-    # Interaction row
+    def rss(cols):
+        X = np.array([[1.0] + [c[i] for c in cols] for i in range(n)])
+        beta = np.linalg.lstsq(X, np.array(yv), rcond=None)[0]
+        fit = X @ beta
+        return float(sum((yv[i] - float(fit[i])) ** 2 for i in range(n))), int(np.linalg.matrix_rank(X))
+
+    rss_a, _ = rss(da)
+    rss_b, _ = rss(db)
+    rss_ab, _ = rss(da + db)
+    rss_full, rank_full = rss(da + db + dab)
+    df_res = n - rank_full
+    ms_res = rss_full / df_res if df_res > 0 else float("nan")
+    rows = {
+        f"C({factor_a})": (rss_b - rss_ab, len(la) - 1),
+        f"C({factor_b})": (rss_a - rss_ab, len(lb) - 1),
+        f"C({factor_a}):C({factor_b})": (rss_ab - rss_full, rank_full - 1 - (len(la) - 1) - (len(lb) - 1)),
+    }
+    table = {"sum_sq": {}, "df": {}, "F": {}, "PR(>F)": {}}
+    for key, (ss, dfk) in rows.items():
+        f_val = (ss / dfk) / ms_res if dfk > 0 and ms_res > 0 else float("nan")
+        table["sum_sq"][key] = float(ss)
+        table["df"][key] = float(dfk)
+        table["F"][key] = float(f_val)
+        table["PR(>F)"][key] = float(stats.f.sf(f_val, dfk, df_res)) if dfk > 0 and ms_res > 0 else float("nan")
+    table["sum_sq"]["Residual"] = float(rss_full)
+    table["df"]["Residual"] = float(df_res)
+    table["F"]["Residual"] = float("nan")
+    table["PR(>F)"]["Residual"] = float("nan")
     interaction_key = f"C({factor_a}):C({factor_b})"
-    f_int = float(anova_table.loc[interaction_key, "F"]) if interaction_key in anova_table.index else np.nan
-    p_int = float(anova_table.loc[interaction_key, "PR(>F)"]) if interaction_key in anova_table.index else np.nan
-    ss_total = anova_table["sum_sq"].sum()
-    eta2_a = float(anova_table.loc[f"C({factor_a})", "sum_sq"] / ss_total)
+    ss_total = sum(table["sum_sq"].values())
     return TestResult(
         method="Two-way ANOVA",
-        test_statistic=f_int,
-        p_value=p_int,
-        effect_size=eta2_a,
-        n=len(data.dropna(subset=[outcome, factor_a, factor_b])),
-        extra={"anova_table": anova_table.to_dict()},
+        test_statistic=table["F"][interaction_key],
+        p_value=table["PR(>F)"][interaction_key],
+        effect_size=float(table["sum_sq"][f"C({factor_a})"] / ss_total),
+        n=n,
+        extra={"anova_table": table},
     )
 
 
@@ -443,16 +473,34 @@ def repeated_measures_anova(
     ms_cond = ss_cond / df_cond if df_cond > 0 else 0.0
     ms_error = ss_error / df_error if df_error > 0 else 0.0
     f_stat = ms_cond / ms_error if ms_error > 0 else 0.0
-    p = 1.0 - stats.f.cdf(f_stat, df_cond, df_error)
+    p_unc = float(stats.f.sf(f_stat, df_cond, df_error))
+    # Greenhouse-Geisser epsilon from the double-centred covariance of the
+    # conditions: (tr S)^2 / ((k - 1) sum S_ij^2), bounded below by 1/(k-1)
+    Y = [[float(v) for v in row] for row in wide.values.tolist()]
+    cm = [sum(Y[i][j] for i in range(n)) / n for j in range(k)]
+    S = [[sum((Y[i][a] - cm[a]) * (Y[i][b] - cm[b]) for i in range(n)) / (n - 1) for b in range(k)] for a in range(k)]
+    rmean = [sum(r) / k for r in S]
+    gm = sum(rmean) / k
+    D = [[S[a][b] - rmean[a] - rmean[b] + gm for b in range(k)] for a in range(k)]
+    ssq = sum(v * v for r in D for v in r)
+    eps = (sum(D[a][a] for a in range(k)) ** 2 / ((k - 1) * ssq)) if ssq > 0 else 1.0
+    eps = min(1.0, max(eps, 1.0 / (k - 1)))
+    p = float(stats.f.sf(f_stat, eps * df_cond, eps * df_error))
     eta2 = ss_cond / (ss_cond + ss_error) if (ss_cond + ss_error) > 0 else 0.0
     return TestResult(
         method="Repeated-measures ANOVA",
         test_statistic=float(f_stat),
-        p_value=float(p),
+        p_value=p,
         df=float(df_cond),
         effect_size=float(eta2),
         n=n,
-        extra={"df_error": df_error, "ss_cond": ss_cond, "ss_error": ss_error},
+        extra={
+            "df_error": df_error,
+            "ss_cond": ss_cond,
+            "ss_error": ss_error,
+            "epsilon_gg": float(eps),
+            "p_uncorrected": p_unc,
+        },
     )
 
 
@@ -657,7 +705,7 @@ def cochrans_q(
     num = (k - 1) * (k * (col_sums**2).sum() - T_total**2)
     denom = k * T_total - (row_sums**2).sum()
     q_stat = num / denom if denom > 0 else 0.0
-    p = 1.0 - stats.chi2.cdf(q_stat, k - 1)
+    p = float(stats.chi2.sf(q_stat, k - 1))
     return TestResult(
         method="Cochran's Q test",
         test_statistic=float(q_stat),
@@ -874,11 +922,14 @@ def partial_correlation(
     beta_y = np.linalg.lstsq(Z_aug, y, rcond=None)[0]
     res_x = x - Z_aug @ beta_x
     res_y = y - Z_aug @ beta_y
-    r, p = stats.pearsonr(res_x, res_y)
+    r, _ = stats.pearsonr(res_x, res_y)
     p_vars = Z.shape[1]
+    # t test on n - 2 - p df and Fisher z with n - 3 - p, as ppcor::pcor.test
     df_val = n - 2 - p_vars
+    t_stat = r * math.sqrt(df_val / (1 - r * r)) if df_val > 0 and abs(r) < 1 else math.copysign(math.inf, r)
+    p = 2.0 * float(stats.t.sf(abs(t_stat), df_val)) if df_val > 0 else float("nan")
     z = np.arctanh(r)
-    se_z = 1.0 / math.sqrt(df_val) if df_val > 0 else np.inf
+    se_z = 1.0 / math.sqrt(df_val - 1) if df_val > 1 else np.inf
     z_crit = stats.norm.ppf((1 + confidence) / 2)
     return TestResult(
         method="Partial correlation",
@@ -924,11 +975,16 @@ def semi_partial_correlation(
     Z_aug = np.column_stack([np.ones(n), Z])
     beta_x = np.linalg.lstsq(Z_aug, x, rcond=None)[0]
     res_x = x - Z_aug @ beta_x
-    r, p = stats.pearsonr(res_x, y)
+    r, _ = stats.pearsonr(res_x, y)
+    # t test on n - 2 - p df, as ppcor::spcor.test
+    df_val = n - 2 - Z.shape[1]
+    t_stat = r * math.sqrt(df_val / (1 - r * r)) if df_val > 0 and abs(r) < 1 else math.copysign(math.inf, r)
+    p = 2.0 * float(stats.t.sf(abs(t_stat), df_val)) if df_val > 0 else float("nan")
     return TestResult(
         method="Semi-partial correlation",
         test_statistic=float(r),
         p_value=float(p),
+        df=float(df_val),
         effect_size=float(r**2),
         estimate=float(r),
         n=n,
@@ -1789,11 +1845,15 @@ def fleiss_kappa(
     P_bar = P_i.mean()
     P_e = float((p_j**2).sum())
     kappa_val = (P_bar - P_e) / (1 - P_e) if (1 - P_e) > 0 else 0.0
-    # SE (Fleiss et al., 2003)
-    se_num = 2.0 / (n * N_raters * (N_raters - 1))
-    se_term = (p_j * (1 - p_j)).sum() ** 2
-    denom = (1 - P_e) ** 2
-    se = math.sqrt(se_num * (se_term / denom)) if denom > 0 else 0.0
+    # null SE (Fleiss, Levin & Paik 2003, eq. 18.15), as irr::kappam.fleiss
+    pq = [float(v) * (1 - float(v)) for v in p_j]
+    spq = sum(pq)
+    inner = spq**2 - sum(a * (1 - 2 * float(v)) for a, v in zip(pq, p_j))
+    se = (
+        math.sqrt(2) / (spq * math.sqrt(n * N_raters * (N_raters - 1))) * math.sqrt(inner)
+        if spq > 0 and inner > 0
+        else 0.0
+    )
     z = kappa_val / se if se > 0 else 0.0
     p_val = 2 * stats.norm.sf(abs(z))
     return TestResult(
@@ -1881,21 +1941,49 @@ def intraclass_correlation(
     else:
         raise ValueError(f"Unknown ICC type: {icc_type}. Use ICC1, ICC1k, ICC2, ICC2k, ICC3, ICC3k.")
 
-    # F-test for significance
-    f_stat = ms_rows / ms_error if ms_error > 0 else 0.0
+    # F tests and intervals of Shrout & Fleiss (1979) / McGraw & Wong (1996),
+    # as psych::ICC (95%)
     df1 = n - 1
-    df2 = (n - 1) * (k - 1)
-    p_val = 1 - stats.f.cdf(f_stat, df1, df2)
-
+    fq = stats.f.ppf
+    if icc_type in ("ICC1", "ICC1k"):
+        df2 = n * (k - 1)
+        f_stat = ms_rows / ms_within if ms_within > 0 else 0.0
+        fl = f_stat / fq(0.975, df1, df2)
+        fu = f_stat * fq(0.975, df2, df1)
+        lo, hi = ((fl - 1) / (fl + k - 1), (fu - 1) / (fu + k - 1)) if icc_type == "ICC1" else (1 - 1 / fl, 1 - 1 / fu)
+    else:
+        df2 = (n - 1) * (k - 1)
+        f_stat = ms_rows / ms_error if ms_error > 0 else 0.0
+        if icc_type in ("ICC3", "ICC3k"):
+            fl = f_stat / fq(0.975, df1, df2)
+            fu = f_stat * fq(0.975, df2, df1)
+            lo, hi = (
+                ((fl - 1) / (fl + k - 1), (fu - 1) / (fu + k - 1)) if icc_type == "ICC3" else (1 - 1 / fl, 1 - 1 / fu)
+            )
+        else:
+            i2 = (ms_rows - ms_error) / (ms_rows + (k - 1) * ms_error + k * (ms_cols - ms_error) / n)
+            fj = ms_cols / ms_error
+            vn = (k - 1) * (n - 1) * (k * i2 * fj + n * (1 + (k - 1) * i2) - k * i2) ** 2
+            vd = (n - 1) * k**2 * i2**2 * fj**2 + (n * (1 + (k - 1) * i2) - k * i2) ** 2
+            v = vn / vd
+            f3u = fq(0.975, n - 1, v)
+            f3l = fq(0.975, v, n - 1)
+            lo = n * (ms_rows - f3u * ms_error) / (f3u * (k * ms_cols + (k * n - k - n) * ms_error) + n * ms_rows)
+            hi = n * (f3l * ms_rows - ms_error) / (k * ms_cols + (k * n - k - n) * ms_error + n * f3l * ms_rows)
+            if icc_type == "ICC2k":
+                lo, hi = lo * k / (1 + lo * (k - 1)), hi * k / (1 + hi * (k - 1))
+    p_val = float(stats.f.sf(f_stat, df1, df2))
     return TestResult(
         method=f"Intraclass correlation ({icc_type})",
         test_statistic=float(f_stat),
         p_value=float(p_val),
         df=float(df1),
+        ci_lower=float(lo),
+        ci_upper=float(hi),
         effect_size=float(icc),
         estimate=float(icc),
         n=n,
-        extra={"icc_type": icc_type, "n_raters": k, "ms_rows": ms_rows, "ms_error": ms_error},
+        extra={"icc_type": icc_type, "n_raters": k, "ms_rows": ms_rows, "ms_error": ms_error, "df2": df2},
     )
 
 
