@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,392 single-purpose callables** -- every one
+``morie.fn`` ships **18,388 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -16083,10 +16083,6 @@ Full list
    "statistical_methods_for_spatial_data_analysis_chapter_1_equation_27", "statistical_methods_for_spatial_data_analysis1e27"
    "statistical_methods_for_spatial_data_analysis_chapter_1_equation_28", "statistical_methods_for_spatial_data_analysis1e28"
    "statistical_methods_for_spatial_data_analysis_chapter_1_equation_3", "statistical_methods_for_spatial_data_analysis1e3"
-   "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1685", "statistical_methods_for_spatial_data_analysis1u1685"
-   "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1686", "statistical_methods_for_spatial_data_analysis1u1686"
-   "statistical_methods_for_spatial_data_analysis_chapter_6_equation_97", "statistical_methods_for_spatial_data_analysis6e97"
-   "statistical_methods_for_spatial_data_analysis_chapter_6_equation_98", "statistical_methods_for_spatial_data_analysis6e98"
    "statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_27_unnumbered_111", "statistics_fourth_edition_david_freeman_robert_pisani_and_ro27u111"
    "statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_27_unnumbered_112", "statistics_fourth_edition_david_freeman_robert_pisani_and_ro27u112"
    "statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_27_unnumbered_117", "statistics_fourth_edition_david_freeman_robert_pisani_and_ro27u117"

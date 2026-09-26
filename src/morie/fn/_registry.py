@@ -90322,20 +90322,6 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "statistical_methods_for_spatial_data_analysis1u1685",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1685",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1685.py",
-    "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1686",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1686",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1686.py",
-    "Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
     "statistics_fourth_edition_david_freeman_robert_pisani_and_ro27u111",
     "statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_27_unnumbered_111",
     "Auto",
