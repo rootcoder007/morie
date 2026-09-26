@@ -37,30 +37,8 @@ import warnings
 
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
-from morie.fn import _stats_core as scipy_stats
-
-
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from morie.fn import _glm_core as sm
-except ImportError:
-    sm = _MissingDep('sm')
 from morie.fn import _glm_core
+from morie.fn import _stats_core as scipy_stats
 
 # ---------------------------------------------------------------------------
 # Native formula interface for weighted GLMs.
@@ -82,8 +60,85 @@ def _native_glm_from_formula(formula, data, family, weights=None):
     three; keeping a second copy is how the two drift apart.
     """
     from morie.fn import _glm_formula
+
     w = None if weights is None else [float(v) for v in weights]
     return _glm_formula.glm(formula, data, family=family, weights=w).fit()
+
+
+def _svy_glm(formula, data, family, weights, psu=None, strata=None):
+    """Design-based GLM as survey::svyglm: the weighted IRLS fit and the
+    linearisation (sandwich) variance A^-1 M A^-1, where A is the weighted
+    information and M the between-PSU variance of the score totals within
+    strata, scaled by n_h/(n_h - 1); t tests on degf + 1 - p df, degf the
+    number of PSUs less the number of strata (Binder 1983; Lumley 2010,
+    sec. 5.2)."""
+    from morie.fn import _glm_formula
+
+    fam = family
+    if not isinstance(fam, str):
+        fam = getattr(fam, "name", None) or type(fam).__name__.lower()
+    fam = str(fam).lower().replace("-", "").replace("_", "")
+    w = [float(v) for v in (weights.values if hasattr(weights, "values") else weights)]
+    model = _glm_formula.glm(formula, data, family=fam, weights=w)
+    res = model.fit()
+    F = _glm_core.FAMILIES[fam]
+    beta = [float(b) for b in res.params]
+    X = [[1.0] + [float(v) for v in r] if model.intercept else [float(v) for v in r] for r in model.X]
+    y = [float(v) for v in model.y]
+    n, k = len(y), len(beta)
+    A = [[0.0] * k for _ in range(k)]
+    U = []
+    for i in range(n):
+        eta = sum(X[i][j] * beta[j] for j in range(k))
+        mu = F["linkinv"](eta)
+        g = F["mu_eta"](eta)
+        v = F["variance"](mu)
+        U.append([w[i] * X[i][j] * (y[i] - mu) * g / v for j in range(k)])
+        c = w[i] * g * g / v
+        for a in range(k):
+            for b in range(k):
+                A[a][b] += c * X[i][a] * X[i][b]
+    psu = list(range(n)) if psu is None else [v for v in (psu.values if hasattr(psu, "values") else psu)]
+    strata = [0] * n if strata is None else [v for v in (strata.values if hasattr(strata, "values") else strata)]
+    M = [[0.0] * k for _ in range(k)]
+    n_psu = 0
+    for h in sorted(set(strata), key=str):
+        tot = {}
+        for i in range(n):
+            if strata[i] == h:
+                t = tot.setdefault(psu[i], [0.0] * k)
+                for j in range(k):
+                    t[j] += U[i][j]
+        nh = len(tot)
+        n_psu += nh
+        if nh < 2:
+            continue
+        ub = [sum(t[j] for t in tot.values()) / nh for j in range(k)]
+        for t in tot.values():
+            for a in range(k):
+                for b in range(k):
+                    M[a][b] += nh / (nh - 1) * (t[a] - ub[a]) * (t[b] - ub[b])
+    Ai = _glm_core._inv(A)
+    V = [[sum(Ai[a][c] * M[c][d] * Ai[d][b] for c in range(k) for d in range(k)) for b in range(k)] for a in range(k)]
+    se = [math.sqrt(V[j][j]) for j in range(k)]
+    df_res = n_psu - len(set(strata)) + 1 - k
+    tv = [b / e if e > 0 else float("nan") for b, e in zip(beta, se)]
+    pv = [2.0 * float(scipy_stats.t.sf(abs(t), df_res)) if df_res > 0 and t == t else float("nan") for t in tv]
+    from morie.fn._glm_formula import _Result
+
+    return _Result(
+        beta,
+        se,
+        res.param_names,
+        n,
+        df_res,
+        tvalues=tv,
+        pvalues=pv,
+        fittedvalues=res.fittedvalues,
+        cov=V,
+        extra=dict(model._fit, cov_type="survey"),
+        model=model,
+    )
 
 
 class SurveyDesign:
@@ -123,24 +178,15 @@ class SurveyDesign:
         Fit a survey-weighted generalized linear model.
 
         Survey probability weights (such as CPADS ``weight`` / ``wtpumf``) are
-        analytic / probability weights, **not** frequency expansion weights.
-        Using ``freq_weights`` would incorrectly treat each weight as a
-        replication count, inflating the effective sample size and producing
-        anti-conservative standard errors.  The correct statsmodels parameter
-        for analytic probability weights in a GLM is ``var_weights``, which
-        scales the variance of each observation proportionally to its weight
-        without artificially expanding *n*.
+        probability weights, **not** frequency expansion weights. The fit is
+        the weighted IRLS estimate and the standard errors are the
+        design-based linearisation (sandwich) variance, with the design's
+        strata and each unit its own PSU, as ``survey::svyglm``.
 
-        Standard errors returned by statsmodels GLM with ``var_weights`` are
-        model-based (sandwich-free); for fully robust inference use
-        ``fit(cov_type='HC3')`` on the returned object.
-
-        :param formula: A strictly patsy-compatible formula string.
+        :param formula: A formula string.
         :type formula: str
-        :param family: A statsmodels family object, defaults to Binomial().
-        :type family: statsmodels.genmod.families.family.Family, optional
-        :return: A fitted statsmodels GLM result object.
-        :rtype: statsmodels.genmod.generalized_linear_model.GLMResultsWrapper
+        :param family: Family name or object, defaults to binomial.
+        :return: A fitted GLM result with design-based standard errors.
 
         References
         ----------
@@ -148,15 +194,14 @@ class SurveyDesign:
         Wiley. (Chapter 2 -- probability weights vs. frequency weights.)
         """
         if family is None:
-            family = sm.families.Binomial()
+            family = "binomial"
 
         # var_weights: analytic/probability weights -- correct for survey data.
         # Each weight w_i re-scales the variance of observation i by 1/w_i,
         # which is the appropriate treatment for unequal-probability sampling.
         # Do NOT use freq_weights, which expands the dataset by the weight
         # value and thus inflates n_effective and deflates standard errors.
-        return _native_glm_from_formula(formula, self.data, family,
-                                        weights=self.weights)
+        return _svy_glm(formula, self.data, family, self.weights, strata=self.strata)
 
 
 # ===========================================================================
@@ -179,18 +224,18 @@ def horvitz_thompson_total(
 
     where :math:`\\pi_i` is the first-order inclusion probability for unit i.
 
-    The variance estimator used here is the Sen-Yates-Grundy (SYG) approximation
-    assuming simple random sampling (i.e., pairwise inclusion probabilities
-    :math:`\\pi_{ij} \\approx \\pi_i \\pi_j`), which yields:
+    The variance estimator is the Horvitz-Thompson one under Poisson sampling,
+    where the pairwise inclusion probabilities are exactly
+    :math:`\\pi_{ij} = \\pi_i \\pi_j` (as ``survey::svytotal`` with
+    ``pps = poisson_sampling(pi)``):
 
     .. math::
 
         \\hat{V}(\\hat{\\tau}_{HT}) \\approx \\sum_i \\frac{y_i^2}{\\pi_i^2}
         \\cdot \\frac{1 - \\pi_i}{1}
 
-    This is the standard Horvitz-Thompson variance under with-replacement
-    sampling (Hansen-Hurwitz estimator) and is conservative under
-    without-replacement designs.
+    Under other without-replacement designs it ignores the pairwise
+    inclusion probabilities the design actually has.
 
     :param y: Observed response values for sampled units (1-D array-like).
     :param inclusion_probs: First-order inclusion probabilities pi_i for each
@@ -286,7 +331,9 @@ def hajek_mean(
     residuals = y_arr - hajek_mean_val
     # With-replacement approximation: treat pi_i ≈ w_i / sum_w => (1 - pi_i) ≈ 1
     # V(y_bar_H) ≈ (1/sum_w^2) * sum(w_i^2 * (y_i - y_bar_H)^2)
-    var_hajek = float(np.sum(w_arr**2 * residuals**2)) / (sum_w**2)
+    # with the n/(n - 1) of the with-replacement variance, as survey::svymean
+    n = len(y_arr)
+    var_hajek = n / (n - 1) * float(np.sum(w_arr**2 * residuals**2)) / (sum_w**2)
     se = math.sqrt(max(0.0, var_hajek))
 
     z_crit = float(scipy_stats.norm.ppf(0.975))
@@ -364,7 +411,9 @@ def ratio_estimator(
 
     # Taylor linearisation SE
     residuals = y_arr - r_hat * x_arr
-    var_est = float(np.sum(w_arr**2 * residuals**2)) / (x_ht**2) * (X_population_total**2)
+    # with the n/(n - 1) of the with-replacement variance, as survey::svyratio
+    n = len(y_arr)
+    var_est = n / (n - 1) * float(np.sum(w_arr**2 * residuals**2)) / (x_ht**2) * (X_population_total**2)
     se = math.sqrt(max(0.0, var_est))
 
     z_crit = float(scipy_stats.norm.ppf(0.975))
@@ -418,7 +467,6 @@ def poststratification_weights(
     if strata_col not in df.columns:
         raise ValueError(f"Column '{strata_col}' not found in DataFrame.")
     strata_vals = df[strata_col].astype(str)
-    sample_counts = strata_vals.value_counts()
     missing_strata = set(strata_vals.unique()) - set(str(k) for k in population_counts)
     if missing_strata:
         raise ValueError(f"Strata {missing_strata} appear in the sample but are missing from population_counts.")
@@ -453,8 +501,8 @@ def calibration_weights(
     tol: float = 1e-6,
 ) -> pd.Series:
     """
-    Raking calibration (iterative proportional fitting) to match known
-    population marginal totals.
+    Raking calibration to known population totals of the auxiliary
+    variables (Deville & Sarndal 1992, raking distance).
 
     For each auxiliary variable x_j, the calibration adjusts weights
     multiplicatively so that:
@@ -491,36 +539,26 @@ def calibration_weights(
         if var not in population_totals:
             raise ValueError(f"Population total for '{var}' not found in population_totals.")
 
+    # Raking (Deville & Sarndal 1992): w_i = exp(x_i' lambda) from unit
+    # starting weights, lambda solving sum_i w_i x_i = T by Newton, as
+    # survey::calibrate(calfun = "raking") with no intercept
+    X = [[float(v) for v in df[var].astype(float).values.tolist()] for var in aux_vars]
+    T = [float(population_totals[var]) for var in aux_vars]
     n = len(df)
-    # Start from equal weights summing to n (equivalent to unweighted sample)
-    weights = pd.Series(np.ones(n, dtype=float), index=df.index)
-
-    for iteration in range(max_iter):
-        max_dev = 0.0
-        for var in aux_vars:
-            x = df[var].astype(float).values
-            T_j = float(population_totals[var])
-            current_total = float((weights.values * x).sum())
-            if current_total == 0:
-                warnings.warn(
-                    f"Weighted total of '{var}' is zero at iteration {iteration}; calibration may not converge.",
-                    stacklevel=2,
-                )
-                continue
-            factor = T_j / current_total
-            weights = weights * factor
-            rel_dev = abs(factor - 1.0)
-            if rel_dev > max_dev:
-                max_dev = rel_dev
-        if max_dev < tol:
+    k = len(aux_vars)
+    lam = [0.0] * k
+    w = [1.0] * n
+    for _iteration in range(max_iter):
+        w = [math.exp(sum(lam[j] * X[j][i] for j in range(k))) for i in range(n)]
+        F = [sum(w[i] * X[j][i] for i in range(n)) - T[j] for j in range(k)]
+        if max(abs(F[j]) / max(abs(T[j]), 1.0) for j in range(k)) < tol:
             break
+        J = np.array([[sum(w[i] * X[a][i] * X[b][i] for i in range(n)) for b in range(k)] for a in range(k)])
+        step = np.linalg.solve(J, np.array(F))
+        lam = [lam[j] - float(step[j]) for j in range(k)]
     else:
-        warnings.warn(
-            f"Raking calibration did not converge within {max_iter} iterations "
-            f"(max relative deviation = {max_dev:.2e}).",
-            stacklevel=2,
-        )
-    return weights
+        warnings.warn(f"Raking calibration did not converge within {max_iter} iterations.", stacklevel=2)
+    return pd.Series(w, index=df.index)
 
 
 # ===========================================================================
@@ -593,7 +631,9 @@ def subpopulation_estimate(
 
     # Woodruff linearisation: z_i = d_i * (y_i - y_bar_d)
     z = domain_mask * (y - y_bar_d)
-    var_d = float(np.sum(w**2 * z**2)) / (N_d**2)
+    # n/(n - 1) over the FULL sample, as survey::svymean on subset(design, .)
+    n_all = len(y)
+    var_d = n_all / (n_all - 1) * float(np.sum(w**2 * z**2)) / (N_d**2)
     se = math.sqrt(max(0.0, var_d))
 
     z_crit = float(scipy_stats.norm.ppf(0.975))
@@ -623,14 +663,11 @@ def complex_survey_glm(
     """
     Fit a GLM with complex survey design (weights, optional clustering, strata).
 
-    Model is fit using statsmodels WLS/GLM with analytic ``var_weights``
-    (not freq_weights -- see :meth:`SurveyDesign.svyglm` for the rationale).
-
-    When ``cluster_col`` is provided, cluster-robust (sandwich) standard errors
-    are applied via ``fit(cov_type='cluster', cov_kwds={'groups': ...})``.
-
-    Strata support is informational only at this level; stratum-specific
-    estimates require :func:`subpopulation_estimate`.
+    The coefficients are the weighted IRLS fit and the standard errors the
+    design-based linearisation variance of ``survey::svyglm``: score totals
+    per PSU (``cluster_col``, or each unit), their between-PSU variance
+    within strata (``strata_col``) scaled by n_h/(n_h - 1), and t tests on
+    (PSUs - strata) + 1 - p degrees of freedom.
 
     Supported families (string): ``"gaussian"``, ``"binomial"``, ``"poisson"``,
     ``"gamma"``, ``"negativebinomial"``.
@@ -657,28 +694,17 @@ def complex_survey_glm(
     if strata_col is not None and strata_col not in df.columns:
         raise ValueError(f"Strata column '{strata_col}' not found in DataFrame.")
 
-    _family_map = {
-        "gaussian": sm.families.Gaussian(),
-        "binomial": sm.families.Binomial(),
-        "poisson": sm.families.Poisson(),
-        "gamma": sm.families.Gamma(),
-        "negativebinomial": sm.families.NegativeBinomial(),
-    }
     family_str = family.lower().replace("-", "").replace("_", "")
-    if family_str not in _family_map:
-        raise ValueError(f"Unknown family '{family}'. Choose from: {list(_family_map.keys())}.")
-    family_obj = _family_map[family_str]
-
+    if family_str not in _glm_core.FAMILIES:
+        raise ValueError(f"Unknown family '{family}'. Choose from: {list(_glm_core.FAMILIES)}.")
     w = df[weight_col].astype(float)
     if np.any(w.values <= 0):
         raise ValueError("All survey weights must be > 0.")
-
-    model = _native_glm_from_formula(formula, df, family_obj, weights=w)
-
-    if cluster_col is not None:
-        groups = df[cluster_col].values
-        result = model.fit(cov_type="cluster", cov_kwds={"groups": groups})
-    else:
-        result = model.fit(cov_type="HC3")
-
-    return result
+    return _svy_glm(
+        formula,
+        df,
+        family_str,
+        w,
+        psu=None if cluster_col is None else df[cluster_col],
+        strata=None if strata_col is None else df[strata_col],
+    )

@@ -123,6 +123,19 @@ FAMILIES = {
         "start": lambda y: max(y, _EPS),
         "dispersion_fixed": False,
     },
+    # negative binomial with theta = 1 (variance mu + mu^2) and log link, as
+    # MASS::negative.binomial(1)
+    "negativebinomial": {
+        "link": lambda mu: math.log(max(mu, _EPS)),
+        "linkinv": lambda e: math.exp(min(e, 700.0)),
+        "variance": lambda mu: max(mu, _EPS) + max(mu, _EPS) ** 2,
+        "mu_eta": lambda e: math.exp(min(e, 700.0)),
+        "dev_resid": lambda y, mu: 2.0 * (
+            (y * math.log(max(1.0, y) / max(mu, _EPS)))
+            - (y + 1.0) * math.log((y + 1.0) / (max(mu, _EPS) + 1.0))),
+        "start": lambda y: y + (1.0 / 6.0 if y == 0 else 0.0),
+        "dispersion_fixed": True,
+    },
 }
 
 
