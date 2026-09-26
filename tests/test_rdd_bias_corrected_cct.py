@@ -73,3 +73,34 @@ def test_sharp_fuzzy_kink_match_rdrobust_nn():
     assert abs(k.estimate - 4.65174038836) <= 1e-9 and abs(k.std_error - 1.39440321497) <= 1e-10
     cc = causrddc(d["yf"].tolist(), x, treatment=fz, h=0.5, b=0.5)
     assert abs(cc["bias_corrected"] - 2.45321344528486) <= 1e-12 and abs(cc["se_robust"] - 0.40614527539738) <= 1e-12
+
+
+def test_default_bandwidths_are_mserd_and_match_rdrobust():
+    # rdbwselect(...) h, b and rdrobust(...) with default bandwidths
+    import math
+
+    from morie import rdd as R
+    from morie.fn import _frame_core as pd
+    from morie.fn.causrddc import rd_mserd_bandwidth
+
+    n = 400
+    x = [math.sin(1.37 * i) * 1.2 + 0.4 * math.cos(0.21 * i) for i in range(n)]
+    tr = [int(v >= 0) for v in x]
+    fz = [int((x[i] >= 0 and i % 5 != 0) or (x[i] < 0 and i % 7 == 0)) for i in range(n)]
+    y = [1 + 0.8 * x[i] + 0.3 * x[i] ** 2 + 1.2 * tr[i] + 0.4 * math.sin(3.1 * i) for i in range(n)]
+    yf = [1 + 0.8 * x[i] + 2 * fz[i] + 0.4 * math.sin(3.1 * i) for i in range(n)]
+    yk = [1 + 0.8 * x[i] + 1.5 * max(x[i], 0) + 0.4 * math.sin(3.1 * i) for i in range(n)]
+    d = pd.DataFrame({"x": x, "y": y, "yf": yf, "yk": yk, "fz": fz})
+    for got, ref in (
+        (rd_mserd_bandwidth(y, x), (0.584477848907144, 0.93283333886784)),
+        (rd_mserd_bandwidth(yf, x, treatment=fz), (0.479323994236654, 0.824084209003945)),
+        (rd_mserd_bandwidth(yk, x, p=2, deriv=1), (0.635424623301575, 0.965984594756331)),
+    ):
+        assert abs(got["h"] - ref[0]) <= 1e-9 * ref[0] and abs(got["b"] - ref[1]) <= 1e-9 * ref[1]
+    for r, ref in (
+        (R.sharp_rdd(d, "y", "x"), (1.29449761957, 0.0787346761035)),
+        (R.fuzzy_rdd(d, "yf", "x", "fz"), (2.31807950054, 0.29104188413)),
+        (R.kink_rdd(d, "yk", "x"), (4.41013383404, 0.999751323253)),
+        (R.rdd_bias_corrected(d, "y", "x"), (1.31362793469, 0.0921089745395)),
+    ):
+        assert abs(r.estimate - ref[0]) <= 1e-8 * abs(ref[0]) and abs(r.std_error - ref[1]) <= 1e-8 * ref[1]

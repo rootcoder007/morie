@@ -137,12 +137,11 @@ def local_poly_weights(x, h, p, nu, kernel="triangular", side=1):
     e = [1.0 if t == nu else 0.0 for t in range(d)]
     try:
         c = _solve([[M[a][b] for b in range(d)] for a in range(d)], e)
-    except Exception:
+    except Exception as err:
         raise ValueError(
-            "causrddc: the local polynomial design is singular "
-            "at h = %g on side %+d -- too few points inside "
-            "the bandwidth" % (h, side)
-        )
+            f"causrddc: the local polynomial design is singular at h = {h:g} "
+            f"on side {side:+d} -- too few points inside the bandwidth"
+        ) from err
     scale = math.factorial(nu) / (h**nu)
     w = [scale * sum(c[a] * RW[a][i] for a in range(d)) for i in range(n)]
     omega = scale * sum(c[a] * sum(RW[a][i] * xp1[i] for i in range(n)) for a in range(d)) * (h ** (p + 1))
@@ -183,7 +182,7 @@ def _global_derivative(x, y, side, order, deriv):
     d = order + 1
     if len(idx) <= d:
         raise ValueError(
-            "causrddc: too few observations on side %+d for a preliminary polynomial of order %d" % (side, order)
+            f"causrddc: too few observations on side {side:+d} for a preliminary polynomial of order {order:d}"
         )
     M = [[0.0] * d for _ in range(d)]
     v = [0.0] * d
@@ -275,7 +274,7 @@ def rd_bandwidth(x, y, nu=0, p=1, kernel="triangular", s=0, prelim_order=None):
     if n != len(y):
         raise ValueError("causrddc: x and y must have the same length")
     if kernel not in _KERNELS:
-        raise ValueError("causrddc: kernel must be one of %r" % (_KERNELS,))
+        raise ValueError(f"causrddc: kernel must be one of {_KERNELS!r}")
     if not 0 <= nu <= p:
         raise ValueError("causrddc: need 0 <= nu <= p")
     r = p + 1
@@ -335,6 +334,179 @@ def _density_at_zero(x, h=None):
         if abs(u) <= 1.0:
             tot += 0.75 * (1.0 - u * u)
     return max(tot / (n * h), 1e-12)
+
+
+def _rdb_kweight(x, h, kernel):
+    """rdrobust's kernel weights K(x/h)/h (x already centred at the cutoff)."""
+    out = []
+    for v in x:
+        u = v / h
+        if kernel in ("epanechnikov", "epa"):
+            w = 0.75 * (1 - u * u) if abs(u) <= 1 else 0.0
+        elif kernel in ("uniform", "uni"):
+            w = 0.5 if abs(u) <= 1 else 0.0
+        else:
+            w = (1 - abs(u)) if abs(u) <= 1 else 0.0
+        out.append(w / h)
+    return out
+
+
+def _rdb_inv(A):
+    k = len(A)
+    M = [list(r) + [1.0 if i == j else 0.0 for j in range(k)] for i, r in enumerate(A)]
+    for c in range(k):
+        piv = max(range(c, k), key=lambda r: abs(M[r][c]))
+        M[c], M[piv] = M[piv], M[c]
+        d = M[c][c]
+        M[c] = [v / d for v in M[c]]
+        for r in range(k):
+            if r != c and M[r][c] != 0.0:
+                f = M[r][c]
+                M[r] = [a - f * b for a, b in zip(M[r], M[c])]
+    return [row[k:] for row in M]
+
+
+def _rdb_part(X, Y, T, o, nu, o_B, h_V, h_B, scale, kernel, vce, nnmatch):
+    """rdrobust:::rdrobust_bw on one side: the variance constant V, the
+    bias constant B, the regularisation R and the rate of an MSE-optimal
+    bandwidth for an order-o fit of the nu-th derivative."""
+
+    def fit(h, order):
+        w = _rdb_kweight(X, h, kernel)
+        ind = [i for i in range(len(X)) if w[i] > 0]
+        R = [[X[i] ** j for j in range(order + 1)] for i in ind]
+        W = [w[i] for i in ind]
+        G = [
+            [sum(W[t] * R[t][a] * R[t][b] for t in range(len(ind))) for b in range(order + 1)] for a in range(order + 1)
+        ]
+        return ind, R, W, _rdb_inv(G)
+
+    def coef(ind, R, W, invG, vec):
+        rhs = [sum(W[t] * R[t][a] * vec[ind[t]] for t in range(len(ind))) for a in range(len(invG))]
+        return [sum(invG[a][b] * rhs[b] for b in range(len(invG))) for a in range(len(invG))]
+
+    def resid2(ind, R, W, invG, comp, order, h):
+        if vce == "nn":
+            xs = [X[i] for i in ind]
+            ys = [comp[i] for i in ind]
+            return _nn_sigma2(xs, ys, int(nnmatch), [1] * len(xs))
+        b = coef(ind, R, W, invG, comp)
+        n_, k_ = len(ind), order + 1
+        out = []
+        for t in range(n_):
+            e = comp[ind[t]] - sum(R[t][a] * b[a] for a in range(k_))
+            if vce == "hc0":
+                f = 1.0
+            elif vce == "hc1":
+                f = n_ / (n_ - k_)
+            else:
+                hii = W[t] * sum(R[t][a] * invG[a][b_] * R[t][b_] for a in range(k_) for b_ in range(k_))
+                f = 1.0 / max(1 - hii, 1e-8) if vce == "hc2" else 1.0 / max(1 - hii, 1e-8) ** 2
+            out.append(f * e * e)
+        return out
+
+    def sandwich(ind, R, W, invG, r2, j):
+        k_ = len(invG)
+        Mm = [
+            [sum(r2[t] * (R[t][a] * W[t]) * (R[t][b] * W[t]) for t in range(len(ind))) for b in range(k_)]
+            for a in range(k_)
+        ]
+        row = invG[j]
+        return sum(row[a] * Mm[a][b] * row[b] for a in range(k_) for b in range(k_))
+
+    ind, R, W, invG = fit(h_V, o)
+    s_vec = [1.0]
+    comp = list(Y)
+    if T is not None:
+        bY = coef(ind, R, W, invG, Y)
+        bT = coef(ind, R, W, invG, T)
+        f = math.factorial(nu)
+        tY, tT = f * bY[nu], f * bT[nu]
+        s_vec = [1.0 / tT, -tY / tT**2]
+        comp = [s_vec[0] * Y[i] + s_vec[1] * T[i] for i in range(len(Y))]
+    V_V = sandwich(ind, R, W, invG, resid2(ind, R, W, invG, comp, o, h_V), nu)
+    v = [sum(R[t][a] * W[t] * (X[ind[t]] / h_V) ** (o + 1) for t in range(len(ind))) for a in range(o + 1)]
+    iv = [sum(invG[a][b] * v[b] for b in range(o + 1)) for a in range(o + 1)]
+    BConst = h_V**nu * iv[nu]
+
+    indB, RB, WB, invGB = fit(h_B, o_B)
+    bcomp = coef(indB, RB, WB, invGB, comp)
+    BWreg = 0.0
+    if scale > 0:
+        V_B = sandwich(indB, RB, WB, invGB, resid2(indB, RB, WB, invGB, comp, o_B, h_B), o + 1)
+        BWreg = 3 * BConst**2 * V_B
+    B = math.sqrt(2 * (o + 1 - nu)) * BConst * bcomp[o + 1]
+    Vc = (2 * nu + 1) * h_V ** (2 * nu + 1) * V_V
+    Rr = scale * (2 * (o + 1 - nu)) * BWreg
+    return Vc, B, Rr, 1.0 / (2 * o + 3)
+
+
+def rd_mserd_bandwidth(
+    y, x, cutoff=0.0, p=1, deriv=0, q=None, kernel="triangular", vce="nn", nnmatch=3, treatment=None, scaleregul=1.0
+):
+    """rdrobust's common MSE-optimal bandwidths (bwselect = "mserd"): h for
+    the order-p estimate of the deriv-th derivative jump and b for its
+    bias correction, as rdrobust::rdbwselect (Calonico, Cattaneo &
+    Farrell 2020), defaults stdvars = FALSE, masspoints = "adjust",
+    bwrestrict = TRUE. Returns {"h": h, "b": b}."""
+    q = p + 1 if q is None else int(q)
+    xs = [float(v) - float(cutoff) for v in x]
+    ys = [float(v) for v in y]
+    ts = None if treatment is None else [float(v) for v in treatment]
+    order = sorted(range(len(xs)), key=lambda i: xs[i])
+    xs = [xs[i] for i in order]
+    ys = [ys[i] for i in order]
+    if ts is not None:
+        ts = [ts[i] for i in order]
+    n = len(xs)
+    srt = sorted(xs)
+
+    def q2(pr):
+        # quantile type 2 (averaged inverse ECDF)
+        g = n * pr
+        j = int(math.floor(g))
+        if abs(g - j) < 1e-12:
+            return 0.5 * (srt[j - 1] + srt[j])
+        return srt[j]
+
+    mu = sum(xs) / n
+    sd = math.sqrt(sum((v - mu) ** 2 for v in xs) / (n - 1))
+    BWp = min(sd, (q2(0.75) - q2(0.25)) / 1.349)
+    C_c = {"epanechnikov": 2.34, "epa": 2.34, "uniform": 1.843, "uni": 1.843}.get(kernel, 2.576)
+    L = [i for i in range(n) if xs[i] < 0]
+    Rt = [i for i in range(n) if xs[i] >= 0]
+    Xl, Xr = [xs[i] for i in L], [xs[i] for i in Rt]
+    Yl, Yr = [ys[i] for i in L], [ys[i] for i in Rt]
+    Tl = None if ts is None else [ts[i] for i in L]
+    Tr = None if ts is None else [ts[i] for i in Rt]
+    if ts is not None and (len(set(Tl)) == 1 or len(set(Tr)) == 1):
+        Tl = Tr = None  # perfect compliance on a side: sharp bandwidths
+    M_l, M_r = len(set(Xl)), len(set(Xr))
+    c_bw = C_c * BWp * (M_l + M_r) ** (-0.2)
+    bw_max = max(abs(srt[0]), abs(srt[-1]))
+    c_bw = min(c_bw, bw_max)
+    bw_min = None
+    if 1 - M_l / len(Xl) >= 0.2 or 1 - M_r / len(Xr) >= 0.2:
+        ul = sorted(set(Xl), reverse=True)
+        ur = sorted(set(Xr))
+        bw_min = max(abs(ul[min(10, M_l) - 1]) + 1e-8, abs(ur[min(10, M_r) - 1]) + 1e-8)
+        c_bw = max(c_bw, bw_min)
+    range_l, range_r = abs(srt[0]), abs(srt[-1])
+
+    def both(o, nu, o_B, hb_l, hb_r, scale):
+        a = _rdb_part(Xl, Yl, Tl, o, nu, o_B, c_bw, hb_l, scale, kernel, vce, nnmatch)
+        b = _rdb_part(Xr, Yr, Tr, o, nu, o_B, c_bw, hb_r, scale, kernel, vce, nnmatch)
+        return a, b
+
+    dl, dr = both(q + 1, q + 1, q + 2, range_l, range_r, 0.0)
+    d_bw = min(((dl[0] + dr[0]) / (dr[1] - dl[1]) ** 2) ** dl[3], bw_max)
+    if bw_min is not None:
+        d_bw = max(d_bw, bw_min)
+    bl, br = both(q, p + 1, q + 1, d_bw, d_bw, scaleregul)
+    b_bw = min(((bl[0] + br[0]) / ((br[1] - bl[1]) ** 2 + scaleregul * (br[2] + bl[2]))) ** bl[3], bw_max)
+    hl, hr = both(p, deriv, q, b_bw, b_bw, scaleregul)
+    h_bw = min(((hl[0] + hr[0]) / ((hr[1] - hl[1]) ** 2 + scaleregul * (hr[2] + hl[2]))) ** hl[3], bw_max)
+    return {"h": h_bw, "b": b_bw}
 
 
 def causrddc(
@@ -435,7 +607,7 @@ def causrddc(
     if n != len(y):
         raise ValueError("causrddc: y and x must have the same length")
     if kernel not in _KERNELS:
-        raise ValueError("causrddc: kernel must be one of %r" % (_KERNELS,))
+        raise ValueError(f"causrddc: kernel must be one of {_KERNELS!r}")
     if vce not in ("nn", "hc"):
         raise ValueError("causrddc: vce must be 'nn' or 'hc'")
     p = int(p)

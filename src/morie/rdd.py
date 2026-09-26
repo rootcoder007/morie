@@ -438,10 +438,15 @@ def bandwidth_cct(
     cutoff: float = 0.0,
     kernel: str = "triangular",
     p: int = 1,
+    deriv: int = 0,
+    treatment: np.ndarray | None = None,
+    vce: str = "nn",
 ) -> BandwidthResult:
-    """Calonico-Cattaneo-Titiunik (2014) MSE-optimal bandwidth.
-
-    Also computes the CER-optimal bandwidth.
+    """MSE-optimal RD bandwidths of Calonico, Cattaneo & Farrell (2020), as
+    ``rdrobust::rdbwselect(bwselect = "mserd")``: ``h`` for the order-p
+    estimate of the ``deriv``-th derivative jump (fuzzy with
+    ``treatment``) and ``b`` for its bias correction. The CER-optimal h
+    (``bwselect = "cerrd"``) is ``h * N^(-p/((3+p)(3+2p)))``.
 
     Parameters
     ----------
@@ -450,70 +455,42 @@ def bandwidth_cct(
     kernel : str
     p : int
         Polynomial order.
+    deriv : int
+        Derivative of the regression function (1 for a kink).
+    treatment : np.ndarray, optional
+        Treatment received, for fuzzy designs.
+    vce : str
+        ``"nn"`` (default) or ``"hc0"``-``"hc3"``.
 
     Returns
     -------
     BandwidthResult
-        ``details`` includes ``h_mse`` and ``h_cer``.
+        ``h_opt`` is the MSE-optimal h; ``details`` has ``h_mse``,
+        ``b_mse`` and ``h_cer``.
 
     References
     ----------
     Calonico, S., Cattaneo, M. D., & Titiunik, R. (2014). Robust
     nonparametric confidence intervals for regression-discontinuity
     designs. *Econometrica*, 82(6), 2295--2326.
+
+    Calonico, S., Cattaneo, M. D., & Farrell, M. H. (2020). Optimal
+    bandwidth choice for robust bias-corrected inference in regression
+    discontinuity designs. *Econometrics Journal*, 23(2), 192--210.
     """
-    n = len(x)
-    # Pilot bandwidth
-    bw_ik = bandwidth_ik(x, y, cutoff, kernel)
-    h_pilot = bw_ik.h_opt
+    from morie.fn.causrddc import rd_mserd_bandwidth
 
-    left = x < cutoff
-    right = x >= cutoff
-
-    # Estimate bias (second derivative)
-    def _curvature(x_sub, y_sub, h):
-        if len(x_sub) < p + 3:
-            return 0.0
-        beta, _ = _local_poly_fit(x_sub, y_sub, cutoff, h, p=p + 1, kernel=kernel)
-        return float((p + 1) * beta[p + 1]) if len(beta) > p + 1 else 0.0
-
-    b_left = _curvature(x[left], y[left], h_pilot)
-    b_right = _curvature(x[right], y[right], h_pilot)
-    bias_sq = (b_right - b_left) ** 2
-
-    # Estimate variance
-    def _var_side(x_sub, y_sub, h):
-        if len(x_sub) < p + 2:
-            return float(np.var(y_sub)) if len(y_sub) > 0 else 1.0
-        beta, V = _local_poly_fit(x_sub, y_sub, cutoff, h, p=p, kernel=kernel)
-        return float(V[0, 0])
-
-    v_left = _var_side(x[left], y[left], h_pilot)
-    v_right = _var_side(x[right], y[right], h_pilot)
-    variance = v_left + v_right
-
-    # MSE-optimal bandwidth
-    if bias_sq > 0:
-        h_mse = float((variance / (2 * (p + 1) * bias_sq)) ** (1 / (2 * p + 3)) * n ** (-1 / (2 * p + 3)))
-    else:
-        h_mse = h_pilot
-
-    x_range = x.max() - x.min()
-    h_mse = min(max(h_mse, x_range * 0.01), x_range * 0.5)
-
-    # CER-optimal: smaller than MSE-optimal
-    h_cer = h_mse * n ** (-p / (3 * (2 * p + 3)))
-
+    xv = [float(v) for v in np.asarray(x, dtype=float).tolist()]
+    yv = [float(v) for v in np.asarray(y, dtype=float).tolist()]
+    tv = None if treatment is None else [float(v) for v in np.asarray(treatment, dtype=float).tolist()]
+    bw = rd_mserd_bandwidth(yv, xv, cutoff=cutoff, p=p, deriv=deriv, kernel=kernel, vce=vce, treatment=tv)
+    n = len(xv)
+    h_cer = bw["h"] * n ** (-(p / ((3 + p) * (3 + 2 * p))))
     return BandwidthResult(
-        h_opt=h_mse,
-        method="CCT",
-        details={"h_mse": h_mse, "h_cer": float(h_cer), "bias_sq": bias_sq, "variance": variance},
+        h_opt=float(bw["h"]),
+        method="CCF mserd",
+        details={"h_mse": float(bw["h"]), "b_mse": float(bw["b"]), "h_cer": float(h_cer)},
     )
-
-
-# ---------------------------------------------------------------------------
-# Sharp RDD
-# ---------------------------------------------------------------------------
 
 
 def sharp_rdd(
@@ -579,10 +556,12 @@ def sharp_rdd(
     y = df[outcome].values.astype(float)
 
     if bandwidth is None:
-        bw_res = bandwidth_cct(x, y, cutoff, kernel, p)
+        bw_res = bandwidth_cct(x, y, cutoff, kernel, p, vce=vce)
         h = bw_res.h_opt
+        b_nn = bw_res.details["b_mse"]
     else:
         h = bandwidth
+        b_nn = h
 
     # Select observations within bandwidth
     mask = np.abs(x - cutoff) <= h
@@ -613,7 +592,7 @@ def sharp_rdd(
     # "hc0"-"hc3"), from the same engine as rdd_bias_corrected
     from morie.fn.causrddc import causrddc
 
-    fit = causrddc(y, x, cutoff=cutoff, p=p, h=h, b=h, kernel=kernel, alpha=alpha, vce=vce)
+    fit = causrddc(y, x, cutoff=cutoff, p=p, h=h, b=b_nn, kernel=kernel, alpha=alpha, vce=vce)
     tau = float(fit["estimate"])
     se_tau = float(fit["se_conventional"])
 
@@ -732,10 +711,12 @@ def fuzzy_rdd(
     d = df[treatment].values.astype(float)
 
     if bandwidth is None:
-        bw_res = bandwidth_cct(x, y, cutoff, kernel, p)
+        bw_res = bandwidth_cct(x, y, cutoff, kernel, p, treatment=d, vce=vce)
         h = bw_res.h_opt
+        b_nn = bw_res.details["b_mse"]
     else:
         h = bandwidth
+        b_nn = h
 
     mask = np.abs(x - cutoff) <= h
     x_bw = x[mask]
@@ -763,7 +744,7 @@ def fuzzy_rdd(
     # rdrobust(fuzzy = ...)
     from morie.fn.causrddc import causrddc
 
-    fit = causrddc(y, x, treatment=d, cutoff=cutoff, p=p, h=h, b=h, kernel=kernel, alpha=alpha, vce=vce)
+    fit = causrddc(y, x, treatment=d, cutoff=cutoff, p=p, h=h, b=b_nn, kernel=kernel, alpha=alpha, vce=vce)
     tau = float(fit["estimate"])
     se_tau = float(fit["se_conventional"])
     rf = float(causrddc(y, x, cutoff=cutoff, p=p, h=h, b=h, kernel=kernel, vce=vce)["estimate"])
@@ -802,7 +783,7 @@ def rdd_bias_corrected(
     cutoff: float = 0.0,
     *,
     bandwidth: float | None = None,
-    rho: float = 1.0,
+    rho: float | None = None,
     p: int = 1,
     kernel: str = "triangular",
     alpha: float = 0.05,
@@ -820,8 +801,9 @@ def rdd_bias_corrected(
     cutoff : float
     bandwidth : float, optional
         Main bandwidth.  If ``None``, uses CCT MSE-optimal.
-    rho : float
-        Ratio of pilot bandwidth to main bandwidth (default 1.0).
+    rho : float, optional
+        Ratio h/b. By default b is the MSE-optimal bias bandwidth when no
+        bandwidth is given, and b = h when one is (as rdrobust).
     p : int
         Main polynomial order.
     kernel : str
@@ -841,12 +823,13 @@ def rdd_bias_corrected(
     y = df[outcome].values.astype(float)
 
     if bandwidth is None:
-        bw_res = bandwidth_cct(x, y, cutoff, kernel, p)
+        bw_res = bandwidth_cct(x, y, cutoff, kernel, p, vce=vce)
         h = bw_res.h_opt
+        # rdrobust: both bandwidths MSE-optimal unless rho is given
+        b = bw_res.details["b_mse"] if rho is None else h / rho
     else:
         h = bandwidth
-
-    b = h / rho  # pilot bandwidth
+        b = h if rho is None else h / rho  # rdrobust: b = h when only h is set
 
     # Robust bias-corrected inference (CCT 2014, Theorem 1): the bias
     # estimate carries the kernel constant e_0' Gamma_p^{-1} Lambda_p, and
@@ -1556,7 +1539,11 @@ def kink_rdd(
     x = df[running].values.astype(float)
     y = df[outcome].values.astype(float)
 
-    h = bandwidth_cct(x, y, cutoff, kernel, p=2).h_opt if bandwidth is None else bandwidth
+    if bandwidth is None:
+        bw_res = bandwidth_cct(x, y, cutoff, kernel, p=2, deriv=1, vce=vce)
+        h, b_nn = bw_res.h_opt, bw_res.details["b_mse"]
+    else:
+        h = b_nn = bandwidth
 
     mask = np.abs(x - cutoff) <= h
     x_bw = x[mask]
@@ -1587,7 +1574,7 @@ def kink_rdd(
     # rdrobust(deriv = 1, p = 2)
     from morie.fn.causrddc import causrddc
 
-    fit = causrddc(y, x, cutoff=cutoff, nu=1, p=2, h=h, b=h, kernel=kernel, alpha=alpha, vce=vce)
+    fit = causrddc(y, x, cutoff=cutoff, nu=1, p=2, h=h, b=b_nn, kernel=kernel, alpha=alpha, vce=vce)
     kink = float(fit["estimate"])
     se_kink = float(fit["se_conventional"])
 
