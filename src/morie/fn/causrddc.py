@@ -87,8 +87,7 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["causrddc", "causal_rdd_ccft_bw", "rdrobust", "rd_bandwidth", "kernel_constants",
-           "local_poly_weights"]
+__all__ = ["causrddc", "causal_rdd_ccft_bw", "rdrobust", "rd_bandwidth", "kernel_constants", "local_poly_weights"]
 
 _KERNELS = ("triangular", "uniform", "epanechnikov")
 
@@ -105,8 +104,7 @@ def _kern(u, kernel):
 
 
 def _solve(M, b):
-    return [float(v) for v in np.linalg.solve(np.asarray(M, dtype=float),
-                                              np.asarray(b, dtype=float))]
+    return [float(v) for v in np.linalg.solve(np.asarray(M, dtype=float), np.asarray(b, dtype=float))]
 
 
 def local_poly_weights(x, h, p, nu, kernel="triangular", side=1):
@@ -121,8 +119,7 @@ def local_poly_weights(x, h, p, nu, kernel="triangular", side=1):
     bias correction removes.
     """
     n = len(x)
-    keep = [i for i in range(n)
-            if (x[i] >= 0.0 if side > 0 else x[i] < 0.0) and abs(x[i]) <= h]
+    keep = [i for i in range(n) if (x[i] >= 0.0 if side > 0 else x[i] < 0.0) and abs(x[i]) <= h]
     d = p + 1
     M = [[0.0] * d for _ in range(d)]
     RW = [[0.0] * n for _ in range(d)]
@@ -141,13 +138,14 @@ def local_poly_weights(x, h, p, nu, kernel="triangular", side=1):
     try:
         c = _solve([[M[a][b] for b in range(d)] for a in range(d)], e)
     except Exception:
-        raise ValueError("causrddc: the local polynomial design is singular "
-                         "at h = %g on side %+d -- too few points inside "
-                         "the bandwidth" % (h, side))
-    scale = math.factorial(nu) / (h ** nu)
+        raise ValueError(
+            "causrddc: the local polynomial design is singular "
+            "at h = %g on side %+d -- too few points inside "
+            "the bandwidth" % (h, side)
+        )
+    scale = math.factorial(nu) / (h**nu)
     w = [scale * sum(c[a] * RW[a][i] for a in range(d)) for i in range(n)]
-    omega = scale * sum(c[a] * sum(RW[a][i] * xp1[i] for i in range(n))
-                        for a in range(d)) * (h ** (p + 1))
+    omega = scale * sum(c[a] * sum(RW[a][i] * xp1[i] for i in range(n)) for a in range(d)) * (h ** (p + 1))
     return w, omega
 
 
@@ -172,21 +170,21 @@ def kernel_constants(p, q, kernel="triangular", n_grid=2001):
         wq = (1.0 if g in (0, m - 1) else (4.0 if g % 2 else 2.0)) * step / 3.0
         k = _kern(u, kernel)
         for a in range(d):
-            th[a] += wq * k * (u ** q) * (u ** a)
+            th[a] += wq * k * (u**q) * (u**a)
             for b in range(d):
-                G[a][b] += wq * k * (u ** a) * (u ** b)
-                P[a][b] += wq * k * k * (u ** a) * (u ** b)
+                G[a][b] += wq * k * (u**a) * (u**b)
+                P[a][b] += wq * k * k * (u**a) * (u**b)
     return G, th, P
 
 
 def _global_derivative(x, y, side, order, deriv):
     """Preliminary global polynomial estimate of mu^(deriv) at the cutoff."""
-    idx = [i for i in range(len(x))
-           if (x[i] >= 0.0 if side > 0 else x[i] < 0.0)]
+    idx = [i for i in range(len(x)) if (x[i] >= 0.0 if side > 0 else x[i] < 0.0)]
     d = order + 1
     if len(idx) <= d:
-        raise ValueError("causrddc: too few observations on side %+d for a "
-                         "preliminary polynomial of order %d" % (side, order))
+        raise ValueError(
+            "causrddc: too few observations on side %+d for a preliminary polynomial of order %d" % (side, order)
+        )
     M = [[0.0] * d for _ in range(d)]
     v = [0.0] * d
     for i in idx:
@@ -198,7 +196,7 @@ def _global_derivative(x, y, side, order, deriv):
     beta = _solve(M, v)
     fitted = [sum(beta[t] * x[i] ** t for t in range(d)) for i in idx]
     resid = [y[i] - f for i, f in zip(idx, fitted)]
-    sigma2 = (sum(r * r for r in resid) / max(1, len(idx) - d))
+    sigma2 = sum(r * r for r in resid) / max(1, len(idx) - d)
     return beta[deriv] * math.factorial(deriv), sigma2
 
 
@@ -251,11 +249,12 @@ def _nn_sigma2(x, y, J, side_of, window=float("inf")):
                         rpos += dups[t + rpos + 1]
                         lpos += dups[t - lpos - 1]
             ji = lpos + rpos
-            mean = (sum(ys[t - lpos:t + rpos + 1]) - ys[t]) / float(ji)
+            mean = (sum(ys[t - lpos : t + rpos + 1]) - ys[t]) / float(ji)
             out[order[t]] = (ji / (ji + 1.0)) * (ys[t] - mean) ** 2
     return out
-def rd_bandwidth(x, y, nu=0, p=1, kernel="triangular", s=0,
-                 prelim_order=None):
+
+
+def rd_bandwidth(x, y, nu=0, p=1, kernel="triangular", s=0, prelim_order=None):
     r"""The MSE-optimal bandwidth of Lemma 1.
 
     ``s`` selects the estimand's sign convention in
@@ -288,19 +287,17 @@ def rd_bandwidth(x, y, nu=0, p=1, kernel="triangular", s=0,
     Ginv_e = _solve(G, e)
     # B_{nu,p,p+1,s}
     diff = mu_p - ((-1.0) ** (nu + r + s)) * mu_m
-    B = (diff / math.factorial(r)) * math.factorial(nu) * \
-        sum(Ginv_e[a] * th[a] for a in range(p + 1))
+    B = (diff / math.factorial(r)) * math.factorial(nu) * sum(Ginv_e[a] * th[a] for a in range(p + 1))
     # V_{nu p}: (sigma^2_- + sigma^2_+) nu!^2 e' G^-1 Psi G^-1 e / f
-    PG = [sum(P[a][b] * Ginv_e[b] for b in range(p + 1))
-          for a in range(p + 1)]
+    PG = [sum(P[a][b] * Ginv_e[b] for b in range(p + 1)) for a in range(p + 1)]
     quad = sum(Ginv_e[a] * PG[a] for a in range(p + 1))
     f = _density_at_zero(x)
     V = (s2p + s2m) * (math.factorial(nu) ** 2) * quad / f
     if abs(B) < 1e-300:
-        raise ValueError("causrddc: the leading bias constant is zero, so "
-                         "the MSE-optimal bandwidth is not defined; supply h")
-    C = ((1.0 + 2.0 * nu) * V /
-         (2.0 * (p + 1.0 - nu) * B * B)) ** (1.0 / (2.0 * p + 3.0))
+        raise ValueError(
+            "causrddc: the leading bias constant is zero, so the MSE-optimal bandwidth is not defined; supply h"
+        )
+    C = ((1.0 + 2.0 * nu) * V / (2.0 * (p + 1.0 - nu) * B * B)) ** (1.0 / (2.0 * p + 3.0))
     h = C * n ** (-1.0 / (2.0 * p + 3.0))
     # A near-zero estimated bias constant sends h to infinity. That happens
     # whenever the two sides share their (p+1)th derivative, which is common
@@ -309,9 +306,17 @@ def rd_bandwidth(x, y, nu=0, p=1, kernel="triangular", s=0,
     # substitute here is to clamp at the observed support and say so.
     span = max(max(v for v in x), -min(v for v in x))
     at_bound = h > span
-    return {"h": min(h, span), "h_unclamped": h, "at_bound": at_bound,
-            "C": C, "B": B, "V": V, "f": f, "mu_plus": mu_p,
-            "mu_minus": mu_m}
+    return {
+        "h": min(h, span),
+        "h_unclamped": h,
+        "at_bound": at_bound,
+        "C": C,
+        "B": B,
+        "V": V,
+        "f": f,
+        "mu_plus": mu_p,
+        "mu_minus": mu_m,
+    }
 
 
 def _density_at_zero(x, h=None):
@@ -332,8 +337,9 @@ def _density_at_zero(x, h=None):
     return max(tot / (n * h), 1e-12)
 
 
-def causrddc(y, x, treatment=None, cutoff=0.0, nu=0, p=1, q=None, h=None,
-             b=None, kernel="triangular", alpha=0.05, vce="nn", J=3):
+def causrddc(
+    y, x, treatment=None, cutoff=0.0, nu=0, p=1, q=None, h=None, b=None, kernel="triangular", alpha=0.05, vce="nn", J=3
+):
     r"""Sharp or fuzzy RD estimates with conventional, bias-corrected and
     robust confidence intervals.
 
@@ -438,8 +444,7 @@ def causrddc(y, x, treatment=None, cutoff=0.0, nu=0, p=1, q=None, h=None,
         raise ValueError("causrddc: need 0 <= nu <= p")
     q = p + 1 if q is None else int(q)
     if q <= p:
-        raise ValueError("causrddc: need q > p (the bias estimator must be "
-                         "of higher order than the point estimator)")
+        raise ValueError("causrddc: need q > p (the bias estimator must be of higher order than the point estimator)")
     if not 0.0 < float(alpha) < 1.0:
         raise ValueError("causrddc: alpha must lie in (0, 1)")
 
@@ -461,8 +466,7 @@ def causrddc(y, x, treatment=None, cutoff=0.0, nu=0, p=1, q=None, h=None,
         vm, _ = local_poly_weights(x, b, q, p + 1, kernel, -1)
         fac = 1.0 / math.factorial(p + 1)
         w_conv = [wp[i] - wm[i] for i in range(n)]
-        w_bc = [w_conv[i] - fac * (om_p * vp[i] - om_m * vm[i])
-                for i in range(n)]
+        w_bc = [w_conv[i] - fac * (om_p * vp[i] - om_m * vm[i]) for i in range(n)]
         tau = sum(w_conv[i] * vec[i] for i in range(n))
         tau_bc = sum(w_bc[i] * vec[i] for i in range(n))
         return w_conv, w_bc, tau, tau_bc
@@ -475,17 +479,18 @@ def causrddc(y, x, treatment=None, cutoff=0.0, nu=0, p=1, q=None, h=None,
     else:
         t = [float(v) for v in treatment]
         if len(t) != n:
-            raise ValueError("causrddc: treatment must have the same length "
-                             "as y")
+            raise ValueError("causrddc: treatment must have the same length as y")
         wT, wTbc, tauT, tauTbc = weights_for(t)
         if abs(tauT) < 1e-12:
-            raise ValueError("causrddc: the first-stage jump is zero, so the "
-                             "fuzzy estimand is not identified")
+            raise ValueError("causrddc: the first-stage jump is zero, so the fuzzy estimand is not identified")
         tau = tauY / tauT
-        tau_bc = tauYbc / tauTbc
-        # the paper's first-order linearisation (section 4.2, Lemma 2)
-        w_conv = [(wY[i] - tau * wT[i]) / tauT for i in range(n)]
-        w_bc = [(wYbc[i] - tau_bc * wTbc[i]) / tauTbc for i in range(n)]
+        # one linearisation at the conventional estimates, s = (1/tau_T,
+        # -tau_Y/tau_T^2), for the bias correction and both variances, as
+        # rdrobust: tau_bc = tau - s'(bias_Y, bias_T). The local-polynomial
+        # weights depend on x alone, so s'(w y, w t) = w (y - tau t) / tau_T
+        tau_bc = tau - ((tauY - tauYbc) / tauT - tauY * (tauT - tauTbc) / tauT**2)
+        w_conv = [wY[i] / tauT for i in range(n)]
+        w_bc = [wYbc[i] / tauT for i in range(n)]
         resid_source = [y[i] - tau * t[i] for i in range(n)]
 
     side_of = [1 if v >= 0.0 else -1 for v in x]
@@ -504,27 +509,34 @@ def causrddc(y, x, treatment=None, cutoff=0.0, nu=0, p=1, q=None, h=None,
     se_c = math.sqrt(max(v_conv, 0.0))
     se_r = math.sqrt(max(v_rbc, 0.0))
     inside = [i for i in range(n) if abs(x[i]) <= h]
-    return RichResult(payload={
-        "estimate": tau,
-        "bias_corrected": tau_bc,
-        "se_conventional": se_c,
-        "se_robust": se_r,
-        "ci_conventional": (tau - z * se_c, tau + z * se_c),
-        "ci_bias_corrected": (tau_bc - z * se_c, tau_bc + z * se_c),
-        "ci_robust": (tau_bc - z * se_r, tau_bc + z * se_r),
-        "pvalue_robust": 2.0 * (_norm_cdf(-(abs(tau_bc) / se_r)))
-        if se_r > 0 else float("nan"),
-        "h": h, "b": b, "rho": h / b, "p": p, "q": q, "nu": nu,
-        "kernel": kernel, "vce": vce, "alpha": float(alpha),
-        "n": n,
-        "n_left": sum(1 for i in inside if x[i] < 0.0),
-        "n_right": sum(1 for i in inside if x[i] >= 0.0),
-        "weights_conventional": w_conv,
-        "weights_bias_corrected": w_bc,
-        "fuzzy": treatment is not None,
-        "method": "robust bias-corrected RD (Calonico, Cattaneo & Titiunik "
-                  "2014)",
-    })
+    return RichResult(
+        payload={
+            "estimate": tau,
+            "bias_corrected": tau_bc,
+            "se_conventional": se_c,
+            "se_robust": se_r,
+            "ci_conventional": (tau - z * se_c, tau + z * se_c),
+            "ci_bias_corrected": (tau_bc - z * se_c, tau_bc + z * se_c),
+            "ci_robust": (tau_bc - z * se_r, tau_bc + z * se_r),
+            "pvalue_robust": 2.0 * (_norm_cdf(-(abs(tau_bc) / se_r))) if se_r > 0 else float("nan"),
+            "h": h,
+            "b": b,
+            "rho": h / b,
+            "p": p,
+            "q": q,
+            "nu": nu,
+            "kernel": kernel,
+            "vce": vce,
+            "alpha": float(alpha),
+            "n": n,
+            "n_left": sum(1 for i in inside if x[i] < 0.0),
+            "n_right": sum(1 for i in inside if x[i] >= 0.0),
+            "weights_conventional": w_conv,
+            "weights_bias_corrected": w_bc,
+            "fuzzy": treatment is not None,
+            "method": "robust bias-corrected RD (Calonico, Cattaneo & Titiunik 2014)",
+        }
+    )
 
 
 def _hc_sigma2(x, y, h, p, kernel):
@@ -532,9 +544,7 @@ def _hc_sigma2(x, y, h, p, kernel):
     n = len(x)
     out = [0.0] * n
     for side in (+1, -1):
-        idx = [i for i in range(n)
-               if (x[i] >= 0.0 if side > 0 else x[i] < 0.0) and
-               abs(x[i]) <= h]
+        idx = [i for i in range(n) if (x[i] >= 0.0 if side > 0 else x[i] < 0.0) and abs(x[i]) <= h]
         d = p + 1
         if len(idx) <= d:
             continue
@@ -570,18 +580,20 @@ def _norm_ppf(pr):
 
 
 def cheatsheet():
-    return ("causrddc: robust bias-corrected RD inference (Calonico, "
-            "Cattaneo & Titiunik 2014). MSE-optimal bandwidths are 'large' "
-            "on purpose, so the conventional CI carries a first-order bias "
-            "and undercovers. Fix: recentre by an estimated bias from a "
-            "higher-order local polynomial at pilot bandwidth b, AND "
-            "rescale by V + C^bc, a variance that includes the bias "
-            "estimate's own variability -- which is what lets rho = h/b "
-            "stay non-zero. Remark 7: at h = b the bias-corrected "
-            "estimator IS the local-quadratic estimator (Frisch-Waugh). "
-            "Bandwidths from Lemma 1; variance nearest-neighbour (J=3) or "
-            "plug-in residuals. Sharp, kink (nu=1) and fuzzy all from one "
-            "code path.")
+    return (
+        "causrddc: robust bias-corrected RD inference (Calonico, "
+        "Cattaneo & Titiunik 2014). MSE-optimal bandwidths are 'large' "
+        "on purpose, so the conventional CI carries a first-order bias "
+        "and undercovers. Fix: recentre by an estimated bias from a "
+        "higher-order local polynomial at pilot bandwidth b, AND "
+        "rescale by V + C^bc, a variance that includes the bias "
+        "estimate's own variability -- which is what lets rho = h/b "
+        "stay non-zero. Remark 7: at h = b the bias-corrected "
+        "estimator IS the local-quadratic estimator (Frisch-Waugh). "
+        "Bandwidths from Lemma 1; variance nearest-neighbour (J=3) or "
+        "plug-in residuals. Sharp, kink (nu=1) and fuzzy all from one "
+        "code path."
+    )
 
 
 # compact alias per ledger/NAMING.md

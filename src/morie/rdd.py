@@ -231,8 +231,9 @@ def _local_poly_fit(
 
     beta = XtWX_inv @ (X.T @ W @ y)
     resid = y - X @ beta
-    sigma2 = np.sum(kw * resid**2) / max(np.sum(kw > 0) - (p + 1), 1)
-    V = sigma2 * XtWX_inv @ (X.T @ np.diag(kw**2 * resid**2) @ X) @ XtWX_inv
+    # HC0 sandwich (X'WX)^-1 X'W diag(e^2) W X (X'WX)^-1, rdrobust's
+    # vce = "hc0"
+    V = XtWX_inv @ (X.T @ np.diag(kw**2 * resid**2) @ X) @ XtWX_inv
 
     return beta, V
 
@@ -527,6 +528,7 @@ def sharp_rdd(
     cluster: str | None = None,
     covariates: list[str] | None = None,
     alpha: float = 0.05,
+    vce: str = "nn",
 ) -> RDDResult:
     r"""Sharp regression discontinuity design estimator.
 
@@ -606,20 +608,22 @@ def sharp_rdd(
             n_right=n_right,
         )
 
-    # Fit local polynomial on each side
-    beta_left, V_left = _local_poly_fit(x_bw[left], y_bw[left], cutoff, h, p, kernel)
-    beta_right, V_right = _local_poly_fit(x_bw[right], y_bw[right], cutoff, h, p, kernel)
+    # the conventional local-polynomial estimate and standard error of
+    # rdrobust (vce = "nn" nearest-neighbour residuals by default, or
+    # "hc0"-"hc3"), from the same engine as rdd_bias_corrected
+    from morie.fn.causrddc import causrddc
 
-    tau = float(beta_right[0] - beta_left[0])
-    se_tau = float(np.sqrt(max(V_right[0, 0] + V_left[0, 0], 0.0)))
+    fit = causrddc(y, x, cutoff=cutoff, p=p, h=h, b=h, kernel=kernel, alpha=alpha, vce=vce)
+    tau = float(fit["estimate"])
+    se_tau = float(fit["se_conventional"])
 
     # Covariate adjustment
     if covariates:
         cov_vals = df.loc[mask, covariates].values.astype(float)
         # Partial out covariates
-        from morie.fn._ml_core import LinearRegression as LR
+        from morie.fn._ml_core import LinearRegression
 
-        lr = LR().fit(cov_vals, y_bw)
+        lr = LinearRegression().fit(cov_vals, y_bw)
         y_adj = y_bw - lr.predict(cov_vals) + y_bw.mean()
         beta_l, V_l = _local_poly_fit(x_bw[left], y_adj[left], cutoff, h, p, kernel)
         beta_r, V_r = _local_poly_fit(x_bw[right], y_adj[right], cutoff, h, p, kernel)
@@ -687,6 +691,7 @@ def fuzzy_rdd(
     p: int = 1,
     kernel: str = "triangular",
     alpha: float = 0.05,
+    vce: str = "nn",
 ) -> RDDResult:
     r"""Fuzzy regression discontinuity design estimator.
 
@@ -734,8 +739,6 @@ def fuzzy_rdd(
 
     mask = np.abs(x - cutoff) <= h
     x_bw = x[mask]
-    y_bw = y[mask]
-    d_bw = d[mask]
     left = x_bw < cutoff
     right = x_bw >= cutoff
     n_left = int(left.sum())
@@ -755,26 +758,16 @@ def fuzzy_rdd(
             method="fuzzy_rdd",
         )
 
-    # Reduced form (outcome jump)
-    beta_y_l, V_y_l = _local_poly_fit(x_bw[left], y_bw[left], cutoff, h, p, kernel)
-    beta_y_r, V_y_r = _local_poly_fit(x_bw[right], y_bw[right], cutoff, h, p, kernel)
-    rf = float(beta_y_r[0] - beta_y_l[0])
-    se_rf = float(np.sqrt(max(V_y_r[0, 0] + V_y_l[0, 0], 0.0)))
+    # the fuzzy RD ratio and its linearised standard error (the
+    # covariance of the reduced form and the first stage included), as
+    # rdrobust(fuzzy = ...)
+    from morie.fn.causrddc import causrddc
 
-    # First stage (treatment jump)
-    beta_d_l, V_d_l = _local_poly_fit(x_bw[left], d_bw[left], cutoff, h, p, kernel)
-    beta_d_r, V_d_r = _local_poly_fit(x_bw[right], d_bw[right], cutoff, h, p, kernel)
-    fs = float(beta_d_r[0] - beta_d_l[0])
-    se_fs = float(np.sqrt(max(V_d_r[0, 0] + V_d_l[0, 0], 0.0)))
-
-    if abs(fs) < 1e-10:
-        logger.warning("First-stage jump near zero; fuzzy RDD estimate unreliable.")
-        tau = np.nan
-        se_tau = np.nan
-    else:
-        tau = rf / fs
-        # Delta method SE
-        se_tau = abs(tau) * np.sqrt((se_rf / rf) ** 2 + (se_fs / fs) ** 2 if rf != 0 else (se_rf**2 + se_fs**2))
+    fit = causrddc(y, x, treatment=d, cutoff=cutoff, p=p, h=h, b=h, kernel=kernel, alpha=alpha, vce=vce)
+    tau = float(fit["estimate"])
+    se_tau = float(fit["se_conventional"])
+    rf = float(causrddc(y, x, cutoff=cutoff, p=p, h=h, b=h, kernel=kernel, vce=vce)["estimate"])
+    fs = float(causrddc(d, x, cutoff=cutoff, p=p, h=h, b=h, kernel=kernel, vce=vce)["estimate"])
 
     t_val = tau / se_tau if se_tau and se_tau > 0 else 0.0
     p_val = float(2 * stats.norm.sf(abs(t_val))) if not np.isnan(t_val) else np.nan
@@ -956,10 +949,7 @@ def mccrary_test(
     dens_l = counts_l / (n_total * bin_width) if n_total > 0 else counts_l.astype(float)
     dens_r = counts_r / (n_total * bin_width) if n_total > 0 else counts_r.astype(float)
 
-    if bandwidth is None:
-        h = bin_width * 5
-    else:
-        h = bandwidth
+    h = bin_width * 5 if bandwidth is None else bandwidth
 
     # Local linear fit at cutoff from each side
     if len(mids_l) > 1:
@@ -1033,10 +1023,7 @@ def cattaneo_density_test(
     x_right = x[x >= cutoff]
 
     n = len(x)
-    if bandwidth is None:
-        h = 1.84 * np.std(x) * n ** (-1 / 5)
-    else:
-        h = bandwidth
+    h = 1.84 * np.std(x) * n ** (-1 / 5) if bandwidth is None else bandwidth
 
     # Estimate density at cutoff from each side
     def _density_at_cutoff(x_sub, side_sign):
@@ -1161,10 +1148,7 @@ def placebo_cutoff_test(
     results = []
     for pc in placebo_cutoffs:
         # Use only data on one side of the true cutoff
-        if pc < true_cutoff:
-            df_sub = data[data[running] < true_cutoff]
-        else:
-            df_sub = data[data[running] >= true_cutoff]
+        df_sub = data[data[running] < true_cutoff] if pc < true_cutoff else data[data[running] >= true_cutoff]
 
         if len(df_sub) < 2 * (p + 1):
             continue
@@ -1392,7 +1376,7 @@ def rd_plot_data(
             continue
         try:
             bins = pd.qcut(x_s, min(n_bins, len(np.unique(x_s))), duplicates="drop")
-            for b, grp_idx in pd.Series(range(len(x_s))).groupby(bins, observed=False):
+            for _b, grp_idx in pd.Series(range(len(x_s))).groupby(bins, observed=False):
                 pos = [int(v) for v in grp_idx.values]
                 bin_records.append(
                     {
@@ -1535,6 +1519,7 @@ def kink_rdd(
     bandwidth: float | None = None,
     kernel: str = "triangular",
     alpha: float = 0.05,
+    vce: str = "nn",
 ) -> RDDResult:
     r"""Regression Kink Design (RKD) estimator.
 
@@ -1571,10 +1556,7 @@ def kink_rdd(
     x = df[running].values.astype(float)
     y = df[outcome].values.astype(float)
 
-    if bandwidth is None:
-        h = bandwidth_cct(x, y, cutoff, kernel, p=2).h_opt
-    else:
-        h = bandwidth
+    h = bandwidth_cct(x, y, cutoff, kernel, p=2).h_opt if bandwidth is None else bandwidth
 
     mask = np.abs(x - cutoff) <= h
     x_bw = x[mask]
@@ -1596,18 +1578,18 @@ def kink_rdd(
             method="kink_rdd",
         )
 
-    # Fit quadratic on each side to get slope at cutoff
-    beta_l, V_l = _local_poly_fit(x_bw[left], y_bw[left], cutoff, h, 2, kernel)
-    beta_r, V_r = _local_poly_fit(x_bw[right], y_bw[right], cutoff, h, 2, kernel)
+    # Slope at cutoff is beta[1] (first derivative), local quadratic
+    beta_l, _ = _local_poly_fit(x_bw[left], y_bw[left], cutoff, h, 2, kernel)
+    beta_r, _ = _local_poly_fit(x_bw[right], y_bw[right], cutoff, h, 2, kernel)
+    slope_l = float(beta_l[1])
+    slope_r = float(beta_r[1])
+    # the jump in the first derivative and its standard error, as
+    # rdrobust(deriv = 1, p = 2)
+    from morie.fn.causrddc import causrddc
 
-    # Slope at cutoff is beta[1] (first derivative)
-    slope_l = float(beta_l[1]) if len(beta_l) > 1 else 0.0
-    slope_r = float(beta_r[1]) if len(beta_r) > 1 else 0.0
-    kink = slope_r - slope_l
-
-    se_kink = float(
-        np.sqrt(max(V_l[1, 1] if V_l.shape[0] > 1 else 0.0, 0.0) + max(V_r[1, 1] if V_r.shape[0] > 1 else 0.0, 0.0))
-    )
+    fit = causrddc(y, x, cutoff=cutoff, nu=1, p=2, h=h, b=h, kernel=kernel, alpha=alpha, vce=vce)
+    kink = float(fit["estimate"])
+    se_kink = float(fit["se_conventional"])
 
     t_val = kink / se_kink if se_kink > 0 else 0.0
     p_val = float(2 * stats.norm.sf(abs(t_val)))
