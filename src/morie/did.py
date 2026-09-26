@@ -2544,6 +2544,54 @@ def did_heterogeneous(
 
 # ---------------------------------------------------------------------------
 # 19. Heterogeneity-robust TWFE (de Chaisemartin & D'Haultfoeuille)
+
+
+def _didm_point(df, outcome, treatment, unit, time):
+    """DID_M of de Chaisemartin & D'Haultfoeuille (2020, AER eq. 3).
+
+    Collapses to (group, period) cells, then for each pair of consecutive
+    periods compares joiners (0 -> 1) with stable-untreated groups and
+    leavers (1 -> 0) with stable-treated groups, cell-size weighted; the
+    estimate is the switcher-weighted average of the DID_+ and DID_- terms.
+    Mirrors .morie_didm_point in the R arm. Returns (estimate, N_S).
+    """
+    cells = {}
+    for g, t, yv, dv in zip(df[unit], df[time], df[outcome], df[treatment]):
+        c = cells.setdefault((g, t), [0.0, 0.0, 0])
+        c[0] += float(yv)
+        c[1] += float(dv)
+        c[2] += 1
+    by_t = {}
+    for (g, t), (sy, sd, n) in cells.items():
+        by_t.setdefault(t, {})[g] = (sy / n, sd / n, n)
+    tlist = sorted(by_t)
+    num = den = 0.0
+    for t0, t1 in zip(tlist[:-1], tlist[1:]):
+        a, b = by_t[t0], by_t[t1]
+        common = [g for g in b if g in a]
+        dy = {g: b[g][0] - a[g][0] for g in common}
+        w = {g: b[g][2] for g in common}
+
+        def wmean(gs, dy=dy, w=w):
+            return sum(w[g] * dy[g] for g in gs) / sum(w[g] for g in gs)
+
+        join = [g for g in common if a[g][1] == 0 and b[g][1] == 1]
+        stay0 = [g for g in common if a[g][1] == 0 and b[g][1] == 0]
+        leave = [g for g in common if a[g][1] == 1 and b[g][1] == 0]
+        stay1 = [g for g in common if a[g][1] == 1 and b[g][1] == 1]
+        if join and stay0:
+            n_plus = sum(w[g] for g in join)
+            num += n_plus * (wmean(join) - wmean(stay0))
+            den += n_plus
+        if leave and stay1:
+            n_minus = sum(w[g] for g in leave)
+            num += n_minus * (wmean(stay1) - wmean(leave))
+            den += n_minus
+    if den == 0:
+        return float("nan"), 0
+    return num / den, int(den)
+
+
 # ---------------------------------------------------------------------------
 
 
@@ -2589,46 +2637,8 @@ def did_chaisemartin_dhaultfoeuille(
     """
     rng = np.random.default_rng(seed)
     df = data.sort_values([unit, time]).copy()
-    periods = sorted(df[time].unique())
-
-    estimates = []
-    weights = []
-
-    for t_idx in range(1, len(periods)):
-        t_cur = periods[t_idx]
-        t_prev = periods[t_idx - 1]
-
-        df_cur = df[df[time] == t_cur].set_index(unit)
-        df_prev = df[df[time] == t_prev].set_index(unit)
-        common_units = df_cur.index.intersection(df_prev.index)
-
-        if len(common_units) == 0:
-            continue
-
-        d_cur = df_cur.loc[common_units, treatment].values.astype(float)
-        d_prev = df_prev.loc[common_units, treatment].values.astype(float)
-        y_cur = df_cur.loc[common_units, outcome].values.astype(float)
-        y_prev = df_prev.loc[common_units, outcome].values.astype(float)
-
-        # Switchers: units that went from untreated to treated
-        switchers = (d_cur == 1) & (d_prev == 0)
-        # Non-switchers staying untreated
-        controls = (d_cur == 0) & (d_prev == 0)
-
-        n_switch = switchers.sum()
-        n_ctrl = controls.sum()
-
-        if n_switch == 0 or n_ctrl == 0:
-            continue
-
-        delta_y_switch = (y_cur[switchers] - y_prev[switchers]).mean()
-        delta_y_ctrl = (y_cur[controls] - y_prev[controls]).mean()
-        est_t = delta_y_switch - delta_y_ctrl
-
-        estimates.append(est_t)
-        weights.append(n_switch)
-
-    if len(estimates) == 0:
+    delta_hat, _ = _didm_point(df, outcome, treatment, unit, time)
+    if not np.isfinite(delta_hat):
         return DiDResult(
             estimate=np.nan,
             std_error=np.nan,
@@ -2640,11 +2650,8 @@ def did_chaisemartin_dhaultfoeuille(
             n_control=0,
             method="chaisemartin_dhaultfoeuille",
         )
-
-    w = np.array(weights, dtype=float)
-    w = w / w.sum()
-    delta_hat = float(np.sum(w * np.array(estimates)))
-
+    # units ever treated, as the R arm
+    n_ever = len({u for u, dv in zip(df[unit], df[treatment]) if dv == 1})
     # Bootstrap SE
     units = df[unit].unique()
     boot_ests = []
@@ -2679,8 +2686,8 @@ def did_chaisemartin_dhaultfoeuille(
         p_value=p_val,
         ci_lower=ci_lo,
         ci_upper=ci_hi,
-        n_treated=int(sum(weights)),
-        n_control=len(df[unit].unique()) - int(sum(weights)),
+        n_treated=n_ever,
+        n_control=len(set(df[unit])) - n_ever,
         method="chaisemartin_dhaultfoeuille",
     )
 

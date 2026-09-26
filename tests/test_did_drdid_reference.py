@@ -334,3 +334,43 @@ def test_fuzzy_did_matches_ivreg_sandwich():
     r2 = did_fuzzy(df, "y", "z", "d", "post", covariates=["x"], cluster="cl")
     assert abs(r2.estimate - 1.49639162449551) < 1e-10
     assert abs(r2.std_error - 0.148095523165333) < 1e-10
+
+
+def test_did_m_counts_joiners_and_leavers():
+    # de Chaisemartin & D'Haultfoeuille (2020) AER eq. 3: joiners g 1-10 at
+    # t = 3 vs stable-0 g 25-30, leavers g 11-18 at t = 4 vs stable-1 g 1-10, 19-24
+    import math
+
+    import pandas as pd
+
+    from morie.did import did_chaisemartin_dhaultfoeuille
+
+    def dfun(g, t):
+        if g <= 10:
+            return int(t >= 3)
+        if g <= 18:
+            return int(t <= 3)
+        return 1 if g <= 24 else 0
+
+    rows = []
+    for t in range(1, 6):
+        for g in range(1, 31):
+            for r in range(1, 4):
+                d = dfun(g, t)
+                y = math.sin(0.9 * g) + 0.15 * t + 0.8 * d + 0.3 * math.cos(1.7 * g * t + r)
+                rows.append({"r": r, "g": g, "t": t, "d": d, "y": y})
+    res = did_chaisemartin_dhaultfoeuille(pd.DataFrame(rows), "y", "d", "g", "t", n_bootstrap=0)
+
+    def ym(g, t):
+        return (
+            sum(math.sin(0.9 * g) + 0.15 * t + 0.8 * dfun(g, t) + 0.3 * math.cos(1.7 * g * t + r) for r in (1, 2, 3))
+            / 3
+        )
+
+    def dy(gs, t):
+        return sum(ym(g, t) - ym(g, t - 1) for g in gs) / len(gs)
+
+    did_plus = dy(range(1, 11), 3) - dy(range(25, 31), 3)
+    did_minus = dy([*range(1, 11), *range(19, 25)], 4) - dy(range(11, 19), 4)
+    assert abs(res.estimate - (30 * did_plus + 24 * did_minus) / 54) < 1e-12
+    assert abs(res.estimate - 0.879860090735746) < 1e-10
