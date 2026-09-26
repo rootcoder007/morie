@@ -85,7 +85,7 @@ def _ols_anova(formula_terms: list[tuple[str, np.ndarray]], y: np.ndarray):
         df_b = Xb.shape[1]
         ss_b = rss_old - rss_new
         ms_b = ss_b / df_b if df_b > 0 else float("nan")
-        rows.append({"name": name, "df": df_b, "ss": round(ss_b, 6), "ms": round(ms_b, 6)})
+        rows.append({"name": name, "df": df_b, "ss": round(ss_b, 6), "ms": round(ms_b, 6), "_ms": ms_b})
         accumulated_X = new_X
         last_resid_ss = rss_new
         last_resid_df = n - accumulated_X.shape[1]
@@ -95,13 +95,16 @@ def _ols_anova(formula_terms: list[tuple[str, np.ndarray]], y: np.ndarray):
     # Compute F and p for each non-residual block
     for r in rows[:-1]:
         if ms_res > 0:
-            F = r["ms"] / ms_res
+            # F and p from the unrounded mean squares
+            F = r["_ms"] / ms_res
             p = stats.f.sf(F, r["df"], last_resid_df)
             r["F"] = round(float(F), 4)
             r["p_value"] = float(p)
         else:
             r["F"] = float("nan")
             r["p_value"] = float("nan")
+    for r in rows[:-1]:
+        del r["_ms"]
     rows[-1]["F"] = None
     rows[-1]["p_value"] = None
     return rows
