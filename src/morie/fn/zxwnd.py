@@ -1,23 +1,8 @@
 """Wind rose directional stats"""
 
-
-def wind_rose(data, *, method="default"):
-    """NOT IMPLEMENTED. The previous body of this callable did not compute the
-    method named here (it returned a placeholder such as the mean of its
-    input, or a statistic of internally generated data). It raises
-    NotImplementedError until the real method is built.
-
-    Wind rose directional stats
-
-    Returns
-    -------
-    DescriptiveResult
-    """
-    raise NotImplementedError(
-        "morie.fn.zxwnd.wind_rose is not implemented yet: its former body returned a "
-        "placeholder, not the method its name and docstring describe."
-    )
-
+# wind_rose was a placeholder that shadowed the real implementation of the same
+# name; it now is that implementation.
+from .winros import wind_rose  # noqa: E402,F401
 
 wind = wind_rose
 

@@ -3,35 +3,9 @@
 __all__ = ["theta_method"]
 
 
-def theta_method(y, theta):
-    """NOT IMPLEMENTED. The previous body of this callable did not compute the
-    method named here (it returned a placeholder such as the mean of its
-    input, or a statistic of internally generated data). It raises
-    NotImplementedError until the real method is built.
-    Theta method
-
-    Formula: decomp into θ-lines; combine SES + linear regression
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    theta : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Assimakopoulos-Nikolopoulos (2000)
-    """
-    raise NotImplementedError(
-        "morie.fn.thetaF.theta_method is not implemented yet: its former body returned a "
-        "placeholder, not the method its name and docstring describe."
-    )
+# theta_method was a placeholder that shadowed the real implementation of the same
+# name; it now is that implementation.
+from .esttsl import theta_method  # noqa: E402,F401
 
 
 def cheatsheet():

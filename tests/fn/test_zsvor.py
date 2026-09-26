@@ -1,10 +1,8 @@
-"""zsvor is a placeholder: it must refuse to run, not return a number."""
+"""zsvor re-exports the real voronoi_areas from voron."""
 
-import pytest
-
+from morie.fn.voron import voronoi_areas as canonical
 from morie.fn.zsvor import voronoi_areas
 
 
-def test_zsvor_raises_not_implemented():
-    with pytest.raises(NotImplementedError, match="not implemented"):
-        voronoi_areas(data=None)
+def test_zsvor_is_the_canonical_implementation():
+    assert voronoi_areas is canonical

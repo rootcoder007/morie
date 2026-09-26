@@ -1,23 +1,8 @@
 """Anisotropy ratio estimation"""
 
-
-def anisotropy_ratio(data, *, method="default"):
-    """NOT IMPLEMENTED. The previous body of this callable did not compute the
-    method named here (it returned a placeholder such as the mean of its
-    input, or a statistic of internally generated data). It raises
-    NotImplementedError until the real method is built.
-
-    Anisotropy ratio estimation
-
-    Returns
-    -------
-    SpatialResult
-    """
-    raise NotImplementedError(
-        "morie.fn.vgani.anisotropy_ratio is not implemented yet: its former body returned a "
-        "placeholder, not the method its name and docstring describe."
-    )
-
+# anisotropy_ratio was a placeholder that shadowed the real implementation of the same
+# name; it now is that implementation.
+from .sganr import anisotropy_ratio  # noqa: E402,F401
 
 anis = anisotropy_ratio
 

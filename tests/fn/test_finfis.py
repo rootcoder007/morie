@@ -1,10 +1,8 @@
-"""finfis is a placeholder: it must refuse to run, not return a number."""
+"""finfis re-exports the real fisher_information from fient."""
 
-import pytest
-
+from morie.fn.fient import fisher_information as canonical
 from morie.fn.finfis import fisher_information
 
 
-def test_finfis_raises_not_implemented():
-    with pytest.raises(NotImplementedError, match="not implemented"):
-        fisher_information(log_likelihood=None, theta=None)
+def test_finfis_is_the_canonical_implementation():
+    assert fisher_information is canonical

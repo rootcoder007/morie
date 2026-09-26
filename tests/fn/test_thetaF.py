@@ -1,10 +1,8 @@
-"""thetaF is a placeholder: it must refuse to run, not return a number."""
+"""thetaF re-exports the real theta_method from esttsl."""
 
-import pytest
-
+from morie.fn.esttsl import theta_method as canonical
 from morie.fn.thetaF import theta_method
 
 
-def test_thetaF_raises_not_implemented():
-    with pytest.raises(NotImplementedError, match="not implemented"):
-        theta_method(y=None, theta=None)
+def test_thetaF_is_the_canonical_implementation():
+    assert theta_method is canonical

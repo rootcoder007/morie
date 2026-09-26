@@ -1,10 +1,8 @@
-"""zxwnd is a placeholder: it must refuse to run, not return a number."""
+"""zxwnd re-exports the real wind_rose from winros."""
 
-import pytest
-
+from morie.fn.winros import wind_rose as canonical
 from morie.fn.zxwnd import wind_rose
 
 
-def test_zxwnd_raises_not_implemented():
-    with pytest.raises(NotImplementedError, match="not implemented"):
-        wind_rose(data=None)
+def test_zxwnd_is_the_canonical_implementation():
+    assert wind_rose is canonical

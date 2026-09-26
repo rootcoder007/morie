@@ -1,10 +1,8 @@
-"""icc31c is a placeholder: it must refuse to run, not return a number."""
+"""icc31c re-exports the real icc_one_way from icc1."""
 
-import pytest
-
+from morie.fn.icc1 import icc_one_way as canonical
 from morie.fn.icc31c import icc_one_way
 
 
-def test_icc31c_raises_not_implemented():
-    with pytest.raises(NotImplementedError, match="not implemented"):
-        icc_one_way(X=None)
+def test_icc31c_is_the_canonical_implementation():
+    assert icc_one_way is canonical

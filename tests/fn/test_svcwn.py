@@ -1,10 +1,8 @@
-"""svcwn is a placeholder: it must refuse to run, not return a number."""
+"""svcwn re-exports the real condorcet_winner from cndrc."""
 
-import pytest
-
+from morie.fn.cndrc import condorcet_winner as canonical
 from morie.fn.svcwn import condorcet_winner
 
 
-def test_svcwn_raises_not_implemented():
-    with pytest.raises(NotImplementedError, match="not implemented"):
-        condorcet_winner(data=None)
+def test_svcwn_is_the_canonical_implementation():
+    assert condorcet_winner is canonical

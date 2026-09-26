@@ -1,10 +1,8 @@
-"""ptcsr is a placeholder: it must refuse to run, not return a number."""
+"""ptcsr re-exports the real csr_test from mrkcsr."""
 
-import pytest
-
+from morie.fn.mrkcsr import csr_test as canonical
 from morie.fn.ptcsr import csr_test
 
 
-def test_ptcsr_raises_not_implemented():
-    with pytest.raises(NotImplementedError, match="not implemented"):
-        csr_test(data=None)
+def test_ptcsr_is_the_canonical_implementation():
+    assert csr_test is canonical

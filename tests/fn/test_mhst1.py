@@ -1,10 +1,8 @@
-"""mhst1 is a placeholder: it must refuse to run, not return a number."""
+"""mhst1 re-exports the real mantel_haenszel_or from mhors."""
 
-import pytest
-
+from morie.fn.mhors import mantel_haenszel_or as canonical
 from morie.fn.mhst1 import mantel_haenszel_or
 
 
-def test_mhst1_raises_not_implemented():
-    with pytest.raises(NotImplementedError, match="not implemented"):
-        mantel_haenszel_or(strata=None)
+def test_mhst1_is_the_canonical_implementation():
+    assert mantel_haenszel_or is canonical
