@@ -76,3 +76,49 @@ def test_did_doubly_robust_matches_drdid_rc1():
         rows.append({"y": y, "d": d, "post": post, "x1": x1, "x2": x2})
     r = did.did_doubly_robust(pd.DataFrame(rows), "y", "d", "post", ["x1", "x2"], n_bootstrap=2)
     assert abs(r.estimate - 1.3769830934895855) <= 1e-10
+
+
+def test_twfe_and_event_study_match_fixest():
+    # feols(y ~ D | unit + time, cluster = ~unit); event study with binned
+    # endpoints and wald() on the pre-period coefficients; unbalanced panel
+    import math
+
+    from morie import did as D
+    from morie.fn import _frame_core as pd
+
+    rows = []
+    for unit in range(1, 41):
+        for time in range(1, 9):
+            g = 4 if unit <= 12 else (6 if unit <= 24 else 0)
+            dd = int(g > 0 and time >= g)
+            x = round(math.sin(1.3 * unit) + 0.2 * time, 4)
+            y = round(
+                0.5 * unit / 10
+                + 0.3 * time
+                + 1.5 * dd
+                + 0.4 * dd * (time - g) * (g > 0)
+                + 0.3 * math.sin(2.7 * unit * time)
+                + 0.2 * x,
+                5,
+            )
+            rows.append((unit, time, g, dd, y))
+    full = {k: [r[j] for r in rows] for j, k in enumerate(("unit", "time", "g", "D", "y"))}
+    d = pd.DataFrame(full)
+    r = D.did_panel_fe(d, "y", "D", "unit", "time", cluster="unit")
+    assert abs(r.estimate - 1.88383260684) <= 1e-10 and abs(r.std_error - 0.0758991745971) <= 1e-11
+    keep = [i for i, r_ in enumerate(rows) if not (r_[0] in (3, 17, 30) and r_[1] in (2, 5))]
+    u = pd.DataFrame({k: [v[i] for i in keep] for k, v in full.items()})
+    r = D.did_panel_fe(u, "y", "D", "unit", "time", cluster="unit")
+    assert abs(r.estimate - 1.8824137808) <= 1e-10 and abs(r.std_error - 0.0767819050896) <= 1e-11
+    u["tt"] = [float(v) if v > 0 else float("nan") for v in u["g"].tolist()]
+    es = D.event_study(u, "y", "unit", "time", "tt", cluster="unit")
+    c = es.coefficients
+    rt = c["relative_time"].tolist()
+    for k, b, s in (
+        (-4, -0.0579744164321, 0.0940534922065),
+        (0, 1.43679248031, 0.0899078370266),
+        (4, 3.07422506574, 0.0939645477063),
+    ):
+        i = rt.index(k)
+        assert abs(c["estimate"].tolist()[i] - b) <= 1e-10 and abs(c["std_error"].tolist()[i] - s) <= 1e-11
+    assert abs(es.pre_trend_f_stat - 0.216136594631) <= 1e-10

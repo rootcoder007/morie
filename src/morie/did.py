@@ -46,25 +46,22 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
+
 
 try:
     from morie.fn._ml_core import GradientBoostingClassifier, GradientBoostingRegressor
 except ImportError:
-    GradientBoostingClassifier = _MissingDep('GradientBoostingClassifier')
-    GradientBoostingRegressor = _MissingDep('GradientBoostingRegressor')
+    GradientBoostingClassifier = _MissingDep("GradientBoostingClassifier")
+    GradientBoostingRegressor = _MissingDep("GradientBoostingRegressor")
 try:
     from morie.fn._ml_core import LinearRegression, LogisticRegression
 except ImportError:
-    LinearRegression = _MissingDep('LinearRegression')
-    LogisticRegression = _MissingDep('LogisticRegression')
+    LinearRegression = _MissingDep("LinearRegression")
+    LogisticRegression = _MissingDep("LogisticRegression")
 
 logger = logging.getLogger(__name__)
 
@@ -229,6 +226,61 @@ def _ols_robust_se(
 def _add_intercept(X: np.ndarray) -> np.ndarray:
     """Prepend an intercept column of ones."""
     return np.column_stack([np.ones(X.shape[0]), X])
+
+
+def _twfe_within(df, unit, time, columns):
+    """Within transformation for unit and time fixed effects by alternating
+    projections, exact for unbalanced panels (one pass of two-way demeaning
+    is only right for balanced ones). Returns one array per column."""
+    uid = df[unit].tolist()
+    tid = df[time].tolist()
+    ug, tg = {}, {}
+    for i in range(len(uid)):
+        ug.setdefault(uid[i], []).append(i)
+        tg.setdefault(tid[i], []).append(i)
+    out = []
+    for col in columns:
+        v = [float(a) for a in col]
+        for _ in range(100000):
+            delta = 0.0
+            for groups in (ug, tg):
+                for idx in groups.values():
+                    m = sum(v[i] for i in idx) / len(idx)
+                    if m != 0.0:
+                        delta = max(delta, abs(m))
+                        for i in idx:
+                            v[i] -= m
+            if delta < 1e-13:
+                break
+        out.append(np.array(v))
+    return out
+
+
+def _twfe_cluster_vcov(X, resid, cl, uid, tid):
+    """Cluster-robust (CR1) variance of a unit and time FE regression with
+    fixest's default small-sample factor, ssc(adj = TRUE, fixef.K =
+    "nested"): G/(G-1) (n-1)/(n-K), K the regressors plus the fixed-effect
+    levels less one per extra FE, a FE nested in the cluster counting once."""
+    n, k = X.shape
+
+    def nested(ids):
+        owner = {}
+        for a_, c_ in zip(ids, cl):
+            if owner.setdefault(a_, c_) != c_:
+                return False
+        return True
+
+    K = k + sum(1 if nested(ids) else len(set(ids)) for ids in (uid, tid)) - 1
+    XtX_inv = np.linalg.pinv(X.T @ X)
+    meat = np.zeros((k, k))
+    groups = {}
+    for i, c_ in enumerate(cl):
+        groups.setdefault(c_, []).append(i)
+    for idx in groups.values():
+        sc = X[idx].T @ resid[idx]
+        meat += np.outer(sc, sc)
+    G = len(groups)
+    return (G / (G - 1)) * ((n - 1) / (n - K)) * XtX_inv @ meat @ XtX_inv, G
 
 
 def _make_ci(
@@ -472,33 +524,16 @@ def did_panel_fe(
     DiDResult
     """
     df = data.dropna(subset=[outcome, treatment, unit, time]).copy()
-
-    # Within-transformation: demean by unit and time
-    y = df[outcome].values.astype(float)
-    unit_means = df.groupby(unit)[outcome].transform("mean").values
-    time_means = df.groupby(time)[outcome].transform("mean").values
-    grand_mean = y.mean()
-    y_demean = y - unit_means - time_means + grand_mean
-
-    treat_raw = df[treatment].values.astype(float)
-    t_unit_means = df.groupby(unit)[treatment].transform("mean").values
-    t_time_means = df.groupby(time)[treatment].transform("mean").values
-    t_grand_mean = treat_raw.mean()
-    d_demean = treat_raw - t_unit_means - t_time_means + t_grand_mean
-
-    cols = [d_demean]
+    cols_raw = [df[outcome].values.astype(float).tolist(), df[treatment].values.astype(float).tolist()]
     if covariates:
-        for c in covariates:
-            v = df[c].values.astype(float)
-            vm = df.groupby(unit)[c].transform("mean").values
-            tm = df.groupby(time)[c].transform("mean").values
-            gm = v.mean()
-            cols.append(v - vm - tm + gm)
-
-    X = np.column_stack(cols)
-    cluster_ids = df[cluster].values if cluster else df[unit].values
-    beta, se = _ols_robust_se(X, y_demean, cluster_ids=cluster_ids)
-
+        cols_raw += [df[c].values.astype(float).tolist() for c in covariates]
+    dm = _twfe_within(df, unit, time, cols_raw)
+    y_demean = dm[0]
+    X = np.column_stack(dm[1:])
+    cl = df[cluster if cluster else unit].tolist()
+    beta = np.linalg.pinv(X.T @ X) @ (X.T @ y_demean)
+    V, _ = _twfe_cluster_vcov(X, y_demean - X @ beta, cl, df[unit].tolist(), df[time].tolist())
+    se = np.sqrt(np.maximum(np.diag(V), 0.0))
     est = float(beta[0])
     se_est = float(se[0])
     t_val = est / se_est if se_est > 0 else 0.0
@@ -578,41 +613,28 @@ def event_study(
     """
     df = data.copy()
     df["_rel_time"] = df[time].astype(float) - df[treatment_time].astype(float)
-
-    # Build relative-time dummies
+    # relative-time dummies; the endpoints are binned, so every treated
+    # observation outside the window counts in -leads or lags rather than
+    # silently in the reference period (Schmidheiny & Siegloch 2020)
     periods = [k for k in range(-leads, lags + 1) if k != reference_period]
+    rel = [min(max(v, -leads), lags) if v == v else v for v in df["_rel_time"].tolist()]
     for k in periods:
-        df[f"_rel_{k}"] = (df["_rel_time"] == k).astype(float)
-
-    # Within-transformation (unit + time FE)
-    y = df[outcome].values.astype(float)
-    y_dm = y - df.groupby(unit)[outcome].transform("mean").values
-    y_dm = y_dm - df.groupby(time)[outcome].transform("mean").values.astype(float) + y.mean()
-
+        df[f"_rel_{k}"] = [1.0 if r_ == k else 0.0 for r_ in rel]
     X_cols = [f"_rel_{k}" for k in periods]
     if covariates:
         X_cols.extend(covariates)
-
-    X_raw = df[X_cols].values.astype(float)
-    X_dm = X_raw.copy()
-    for j in range(X_raw.shape[1]):
-        col = X_raw[:, j]
-        um = df.groupby(unit)[X_cols[j] if j < len(X_cols) else outcome].transform("mean").values.astype(float)
-        # Simpler: use generic demeaning
-        um = np.zeros(len(col))
-        for u_id in df[unit].unique():
-            mask = df[unit].values == u_id
-            um[mask] = col[mask].mean()
-        tm = np.zeros(len(col))
-        for t_id in df[time].unique():
-            mask = df[time].values == t_id
-            tm[mask] = col[mask].mean()
-        gm = col.mean()
-        X_dm[:, j] = col - um - tm + gm
-
-    cluster_ids = df[cluster].values if cluster else df[unit].values
-    beta, se = _ols_robust_se(X_dm, y_dm, cluster_ids=cluster_ids)
-
+    dm = _twfe_within(
+        df,
+        unit,
+        time,
+        [df[outcome].values.astype(float).tolist()] + [df[c].values.astype(float).tolist() for c in X_cols],
+    )
+    y_dm = dm[0]
+    X_dm = np.column_stack(dm[1:])
+    cl = df[cluster if cluster else unit].tolist()
+    beta = np.linalg.pinv(X_dm.T @ X_dm) @ (X_dm.T @ y_dm)
+    V, G = _twfe_cluster_vcov(X_dm, y_dm - X_dm @ beta, cl, df[unit].tolist(), df[time].tolist())
+    se = np.sqrt(np.maximum(np.diag(V), 0.0))
     n_rel = len(periods)
     coefs = []
     for i, k in enumerate(periods):
@@ -647,13 +669,13 @@ def event_study(
     # Joint pre-trend test: F-test that all pre-treatment coefficients are zero
     pre_indices = [i for i, k in enumerate(periods) if k < 0]
     if len(pre_indices) > 0:
+        # joint Wald test with the full cluster covariance, as fixest::wald:
+        # F = b' V^-1 b / q on (q, G - 1) degrees of freedom
         pre_beta = beta[pre_indices]
-        # Approximate F-statistic using Wald test
-        pre_se = se[pre_indices]
-        pre_se = np.where(pre_se > 0, pre_se, 1e-10)
-        chi2 = float(np.sum((pre_beta / pre_se) ** 2))
-        f_stat = chi2 / len(pre_indices)
-        f_p = float(stats.chi2.sf(chi2, len(pre_indices)))
+        Vpre = V[np.ix_(pre_indices, pre_indices)]
+        q_ = len(pre_indices)
+        f_stat = float(pre_beta @ np.linalg.solve(Vpre, pre_beta)) / q_
+        f_p = float(stats.f.sf(f_stat, q_, G - 1))
     else:
         f_stat = np.nan
         f_p = np.nan
@@ -1023,10 +1045,7 @@ def group_time_att(
                 except Exception:
                     continue
 
-            if len(boot_ests) > 1:
-                se_hat = float(np.std(boot_ests, ddof=1))
-            else:
-                se_hat = np.nan
+            se_hat = float(np.std(boot_ests, ddof=1)) if len(boot_ests) > 1 else np.nan
 
             ci_lo, ci_hi = _make_ci(att_hat, se_hat, alpha) if not np.isnan(se_hat) else (np.nan, np.nan)
             p_val = float(2 * stats.norm.sf(abs(att_hat / se_hat))) if se_hat > 0 else np.nan
@@ -1704,10 +1723,7 @@ def synthetic_did(
 
     Y_ctrl_pre_wavg = Y_ctrl_pre @ lambda_hat  # (N_ctrl,)
 
-    if zeta is None:
-        zeta_val = float(T_pre**0.25 * np.std(Y_ctrl_pre))
-    else:
-        zeta_val = zeta
+    zeta_val = float(T_pre**0.25 * np.std(Y_ctrl_pre)) if zeta is None else zeta
 
     def _unit_obj(omega):
         pred = Y_ctrl_pre_wavg @ omega
@@ -1879,10 +1895,7 @@ def wild_cluster_bootstrap(
     boot_t_stats = []
     for _ in range(n_bootstrap):
         # Draw cluster-level weights
-        if weight_type == "webb":
-            w = rng.choice(webb_vals, size=G)
-        else:
-            w = rng.choice([-1.0, 1.0], size=G)
+        w = rng.choice(webb_vals, size=G) if weight_type == "webb" else rng.choice([-1.0, 1.0], size=G)
 
         # Construct bootstrap outcome
         y_star = X_r @ beta_r  # fitted under null
