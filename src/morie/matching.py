@@ -545,7 +545,8 @@ def match_cem(
             df[f"_cem_{c}"] = df[c].astype(str)
 
     cem_cols = [f"_cem_{c}" for c in covariates]
-    df["_cem_stratum"] = df[cem_cols].astype(str).agg("|".join, axis=1)
+    cols = [[str(v) for v in df[c].tolist()] for c in cem_cols]
+    df["_cem_stratum"] = ["|".join(parts) for parts in zip(*cols)]
 
     # Keep only strata with both treated and control
     valid_strata = set()
@@ -555,26 +556,18 @@ def match_cem(
 
     df_matched = df[df["_cem_stratum"].isin(valid_strata)].copy()
 
-    # Compute CEM weights
-    weights = np.ones(len(df_matched))
-    for s, grp in df_matched.groupby("_cem_stratum"):
-        n_t = (grp[treatment] == 1).sum()
-        n_c = (grp[treatment] == 0).sum()
-        if n_t == 0 or n_c == 0:
-            continue
-        # Weight controls to have same total as treated within stratum
-        t_mask = df_matched.index.isin(grp.index[grp[treatment] == 1])
-        c_mask = df_matched.index.isin(grp.index[grp[treatment] == 0])
-        weights[np.where(c_mask[df_matched.index].values)[0] if hasattr(c_mask, "values") else c_mask] = n_t / n_c
-
-    # Simpler weight assignment
+    # CEM weights for the ATT (Iacus, King & Porro 2012; MatchIt, cem):
+    # treated units 1; controls in stratum s get (m_C / m_T) (m_T^s / m_C^s),
+    # so control weights sum to the number of matched controls
     df_matched["_cem_weight"] = 1.0
+    m_t = float((df_matched[treatment] == 1).sum())
+    m_c = float((df_matched[treatment] == 0).sum())
     for s in valid_strata:
         mask_s = df_matched["_cem_stratum"] == s
         n_t = (df_matched.loc[mask_s, treatment] == 1).sum()
         n_c = (df_matched.loc[mask_s, treatment] == 0).sum()
         if n_c > 0:
-            df_matched.loc[mask_s & (df_matched[treatment] == 0), "_cem_weight"] = n_t / n_c
+            df_matched.loc[mask_s & (df_matched[treatment] == 0), "_cem_weight"] = (m_c / m_t) * (n_t / n_c)
 
     # Build match pairs
     records = []
