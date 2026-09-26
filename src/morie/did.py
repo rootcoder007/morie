@@ -847,19 +847,27 @@ def _outcome_regression_att(
     return float(np.mean(y[treat == 1] - y0_hat))
 
 
+def _odds_weights(treat: np.ndarray, ps: np.ndarray) -> np.ndarray:
+    """Control odds weights p/(1-p), zero for treated units and for
+    controls with p >= 0.995 (DRDID's trimming rule, Sant'Anna & Zhao
+    2020); no other clipping."""
+    ctrl = (treat == 0) & (ps < 0.995)
+    w = np.zeros(len(ps))
+    w[ctrl] = ps[ctrl] / (1.0 - ps[ctrl])
+    return w
+
+
 def _ipw_att(
     y: np.ndarray,
     treat: np.ndarray,
     ps: np.ndarray,
 ) -> float:
-    """IPW ATT estimator."""
-    ps_clip = np.clip(ps, 0.01, 0.99)
-    w = ps_clip / (1 - ps_clip)
+    """Normalised (Hajek) IPW ATT, as DRDID::std_ipw_did_panel."""
     n1 = treat.sum()
     if n1 == 0:
         return 0.0
-    att = np.mean(y[treat == 1]) - np.sum(w[treat == 0] * y[treat == 0]) / np.sum(w[treat == 0])
-    return float(att)
+    w = _odds_weights(treat, ps)
+    return float(np.mean(y[treat == 1]) - np.sum(w * y) / np.sum(w))
 
 
 def group_time_att(
@@ -969,7 +977,7 @@ def group_time_att(
             def _estimate(y_d, treat_ind, X_cov):
                 if method == "ipw":
                     if X_cov.shape[1] > 0 and np.std(treat_ind) > 0:
-                        lr = LogisticRegression(max_iter=1000, solver="lbfgs")
+                        lr = LogisticRegression(max_iter=1000, solver="lbfgs", penalty=None)
                         lr.fit(X_cov, treat_ind)
                         ps = lr.predict_proba(X_cov)[:, 1]
                     else:
@@ -980,13 +988,11 @@ def group_time_att(
                 else:
                     # Doubly robust
                     if X_cov.shape[1] > 0 and np.std(treat_ind) > 0:
-                        lr = LogisticRegression(max_iter=1000, solver="lbfgs")
+                        lr = LogisticRegression(max_iter=1000, solver="lbfgs", penalty=None)
                         lr.fit(X_cov, treat_ind)
                         ps = lr.predict_proba(X_cov)[:, 1]
                     else:
                         ps = np.full(len(treat_ind), treat_ind.mean())
-                    ps_clip = np.clip(ps, 0.01, 0.99)
-
                     # Outcome model on controls
                     ctrl_mask = treat_ind == 0
                     treat_mask = treat_ind == 1
@@ -995,19 +1001,13 @@ def group_time_att(
                     lr_out = LinearRegression().fit(X_cov[ctrl_mask], y_d[ctrl_mask])
                     mu0 = lr_out.predict(X_cov)
 
-                    n1 = treat_mask.sum()
-                    if n1 == 0:
+                    if treat_mask.sum() == 0:
                         return 0.0
-                    w = ps_clip / (1 - ps_clip)
-                    dr = (
-                        np.mean(y_d[treat_mask] - mu0[treat_mask])
-                        + np.sum(w[ctrl_mask] * (y_d[ctrl_mask] - mu0[ctrl_mask]))
-                        / np.sum(w[ctrl_mask])
-                        * 0  # bias-correction zeroed for stability
-                    )
-                    # Simplified DR: OR estimate + IPW correction
-                    or_att = float(np.mean(y_d[treat_mask] - mu0[treat_mask]))
-                    return or_att
+                    # Sant'Anna & Zhao (2020) panel DR-DiD (DRDID::drdid_panel):
+                    # ATT = mean_T(dY - mu0) - odds-weighted mean_C(dY - mu0)
+                    w = _odds_weights(treat_ind.astype(int), ps)
+                    resid = y_d - mu0
+                    return float(np.mean(resid[treat_mask]) - np.sum(w * resid) / np.sum(w))
 
             att_hat = _estimate(y_diff, treat_indicator, cov_data)
 
@@ -1246,10 +1246,9 @@ def did_doubly_robust(
         if ps_model == "gbm":
             ps_fit = GradientBoostingClassifier(n_estimators=50, max_depth=3, random_state=seed)
         else:
-            ps_fit = LogisticRegression(max_iter=1000, solver="lbfgs")
+            ps_fit = LogisticRegression(max_iter=1000, solver="lbfgs", penalty=None)
         ps_fit.fit(X_v, d_v)
         ps_vals = ps_fit.predict_proba(X_v)[:, 1]
-        ps_vals = np.clip(ps_vals, 0.01, 0.99)
 
         # Outcome regression on controls in post-period
         ctrl_post = (d_v == 0) & (p_v == 1)
@@ -1285,11 +1284,11 @@ def did_doubly_robust(
 
         att_or = float(np.mean(y_v[treat_post] - mu0_post[treat_post]) - np.mean(y_v[treat_pre] - mu0_pre[treat_pre]))
 
-        # IPW correction
-        w = ps_vals / (1 - ps_vals)
+        # IPW correction (DRDID::drdid_rc1): odds weights on controls,
+        # controls with p >= 0.995 trimmed
+        w = _odds_weights(d_v.astype(int), ps_vals)
         ipw_correction = 0.0
         if (d_v == 0).sum() > 0:
-            w_ctrl = w[d_v == 0]
             resid_post = y_v[(d_v == 0) & (p_v == 1)] - mu0_post[(d_v == 0) & (p_v == 1)]
             resid_pre = y_v[(d_v == 0) & (p_v == 0)] - mu0_pre[(d_v == 0) & (p_v == 0)]
             if len(resid_post) > 0 and len(resid_pre) > 0:
