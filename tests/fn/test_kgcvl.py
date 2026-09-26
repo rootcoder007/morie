@@ -1,17 +1,10 @@
-"""Tests for morie.fn.kgcvl -- Kriging LOO cross-validation"""
+"""kgcvl is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.kgcvl import kriging_cv_loo
 
 
-class TestKrigingCvLoo:
-    def test_basic(self):
-        vals = np.array([1.0, 2.0, 3.0, 2.5, 1.5])
-        x = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
-        result = kriging_cv_loo(vals, x)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = kriging_cv_loo(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
-        assert hasattr(result, "statistic")
+def test_kgcvl_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        kriging_cv_loo(values=None, x=None)

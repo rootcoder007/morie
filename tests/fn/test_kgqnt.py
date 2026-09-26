@@ -1,17 +1,10 @@
-"""Tests for morie.fn.kgqnt -- Kriging quantile prediction"""
+"""kgqnt is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.kgqnt import kriging_quantile
 
 
-class TestKrigingQuantile:
-    def test_basic(self):
-        vals = np.array([1.0, 2.0, 3.0, 2.5, 1.5])
-        x = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
-        result = kriging_quantile(vals, x)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = kriging_quantile(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
-        assert hasattr(result, "statistic")
+def test_kgqnt_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        kriging_quantile(values=None, x=None)

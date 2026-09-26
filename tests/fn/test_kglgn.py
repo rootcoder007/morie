@@ -1,17 +1,10 @@
-"""Tests for morie.fn.kglgn -- Lognormal kriging"""
+"""kglgn is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.kglgn import lognormal_kriging
 
 
-class TestLognormalKriging:
-    def test_basic(self):
-        vals = np.array([1.0, 2.0, 3.0, 2.5, 1.5])
-        x = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
-        result = lognormal_kriging(vals, x)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = lognormal_kriging(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
-        assert hasattr(result, "statistic")
+def test_kglgn_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        lognormal_kriging(values=None, x=None)

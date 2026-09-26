@@ -1,17 +1,10 @@
-"""Tests for morie.fn.kgrhs -- Kriging right-hand side vector"""
+"""kgrhs is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.kgrhs import kriging_rhs
 
 
-class TestKrigingRhs:
-    def test_basic(self):
-        vals = np.array([1.0, 2.0, 3.0, 2.5, 1.5])
-        x = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
-        result = kriging_rhs(vals, x)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = kriging_rhs(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
-        assert hasattr(result, "statistic")
+def test_kgrhs_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        kriging_rhs(values=None, x=None)

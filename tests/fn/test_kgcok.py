@@ -1,17 +1,10 @@
-"""Tests for morie.fn.kgcok -- Co-kriging multivariate"""
+"""kgcok is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.kgcok import cokriging
 
 
-class TestCokriging:
-    def test_basic(self):
-        vals = np.array([1.0, 2.0, 3.0, 2.5, 1.5])
-        x = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
-        result = cokriging(vals, x)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = cokriging(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
-        assert hasattr(result, "statistic")
+def test_kgcok_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        cokriging(values=None, x=None)

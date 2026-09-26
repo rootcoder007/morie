@@ -1,17 +1,10 @@
-"""Tests for morie.fn.kgcvk -- Kriging k-fold cross-validation"""
+"""kgcvk is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.kgcvk import kriging_cv_kfold
 
 
-class TestKrigingCvKfold:
-    def test_basic(self):
-        vals = np.array([1.0, 2.0, 3.0, 2.5, 1.5])
-        x = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
-        result = kriging_cv_kfold(vals, x)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = kriging_cv_kfold(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
-        assert hasattr(result, "statistic")
+def test_kgcvk_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        kriging_cv_kfold(values=None, x=None)

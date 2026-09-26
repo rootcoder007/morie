@@ -1,26 +1,21 @@
 """Gaussian utility function for spatial voting."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def svgut(ideal, pos, *, bandwidth=1.0):
-    """Gaussian utility function for spatial voting.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Gaussian utility function for spatial voting.
 
     Returns
     -------
     SpatialResult
     """
-
-    ideal = np.asarray(ideal, dtype=float)
-    pos = np.asarray(pos, dtype=float)
-    d2 = float(np.sum((ideal - pos) ** 2))
-    stat = np.exp(-d2 / (2 * bandwidth**2))
-    return SpatialResult(
-        name="Gaussian utility function for spatial voting",
-        statistic=0.0,
-        extra={},
+    raise NotImplementedError(
+        "morie.fn.svgut.svgut is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

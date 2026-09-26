@@ -1,29 +1,22 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Agenda winner prediction."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def agwin(options, setter_ideal, reversion):
-    """Agenda winner prediction.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Agenda winner prediction.
 
     Returns
     -------
     SpatialResult
     """
-
-    options = np.asarray(options, dtype=float)
-    setter_ideal = float(setter_ideal)
-    reversion = float(reversion)
-    sq_dist = abs(setter_ideal - reversion)
-    best_opt = options[np.argmin(np.abs(options - setter_ideal))]
-    stat = abs(best_opt - setter_ideal) < sq_dist
-    return SpatialResult(
-        name="Agenda winner prediction",
-        statistic=0.0,
-        extra={},
+    raise NotImplementedError(
+        "morie.fn.agwin.agwin is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

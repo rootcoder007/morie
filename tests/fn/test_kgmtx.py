@@ -1,17 +1,10 @@
-"""Tests for morie.fn.kgmtx -- Kriging system matrix"""
+"""kgmtx is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.kgmtx import kriging_matrix
 
 
-class TestKrigingMatrix:
-    def test_basic(self):
-        vals = np.array([1.0, 2.0, 3.0, 2.5, 1.5])
-        x = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
-        result = kriging_matrix(vals, x)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = kriging_matrix(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
-        assert hasattr(result, "statistic")
+def test_kgmtx_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        kriging_matrix(values=None, x=None)

@@ -1,29 +1,22 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Amendment agenda procedure."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def agame(options, setter_ideal, reversion):
-    """Amendment agenda procedure.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Amendment agenda procedure.
 
     Returns
     -------
     SpatialResult
     """
-
-    options = np.asarray(options, dtype=float)
-    setter_ideal = float(setter_ideal)
-    reversion = float(reversion)
-    sq_dist = abs(setter_ideal - reversion)
-    best_opt = options[np.argmin(np.abs(options - setter_ideal))]
-    stat = abs(best_opt - setter_ideal) < sq_dist
-    return SpatialResult(
-        name="Amendment agenda procedure",
-        statistic=0.0,
-        extra={},
+    raise NotImplementedError(
+        "morie.fn.agame.agame is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 
