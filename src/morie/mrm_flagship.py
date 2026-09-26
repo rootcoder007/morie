@@ -376,7 +376,7 @@ def mrm_estimate_causal_effect(data, treatment: str, outcome: str,
                          % ", ".join(missing))
 
     tvals = {r[treatment] for r in rows_in}
-    if not tvals <= {0, 1, 0.0, 1.0, True, False}:
+    if not tvals <= {0, 1}:  # 0.0, 1.0, False, True hash equal to these
         raise ValueError(
             "`%s` must be a binary 0/1 treatment; a categorical treatment "
             "must not be silently coerced, because factor level indices "
@@ -441,7 +441,7 @@ def mrm_estimate_causal_effect(data, treatment: str, outcome: str,
             # native core with "binary only", which reads like a missing
             # capability and is really the wrong link function.
             yvals = {r[outcome] for r in rows_in}
-            binary = yvals <= {0, 1, 0.0, 1.0, True, False}
+            binary = yvals <= {0, 1}  # also matches 0.0, 1.0, False, True
             a = estimate_aipw(frame, treatment=treatment, outcome=outcome,
                               covariates=covariates,
                               outcome_model="logistic" if binary

@@ -79,7 +79,6 @@ def wlcst(time: np.ndarray, event: np.ndarray, group: np.ndarray, weight: str = 
     event_times = np.unique(time[event == 1])
 
     # KM pooled survival for Peto weights
-    S_peto = 1.0
     km_map = {}
     if weight == "peto":
         order = np.argsort(time)
