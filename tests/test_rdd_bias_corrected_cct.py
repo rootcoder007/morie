@@ -104,3 +104,22 @@ def test_default_bandwidths_are_mserd_and_match_rdrobust():
         (R.rdd_bias_corrected(d, "y", "x"), (1.31362793469, 0.0921089745395)),
     ):
         assert abs(r.estimate - ref[0]) <= 1e-8 * abs(ref[0]) and abs(r.std_error - ref[1]) <= 1e-8 * ref[1]
+
+
+def test_density_test_matches_rddensity():
+    # rddensity(x, c = 0, h = 0.5); rddensity(x); rddensity(x, p = 1); mass points
+    import math
+
+    from morie import rdd as R
+
+    x = [math.sin(1.37 * i) * 1.2 + 0.4 * math.cos(0.21 * i) for i in range(400)]
+    assert abs(R.cattaneo_density_test(x, bandwidth=0.5).statistic + 0.424998995462388) <= 1e-10
+    r = R.cattaneo_density_test(x)
+    assert abs(r.statistic + 0.328188049213095) <= 1e-9
+    assert (
+        abs(r.details["h_left"] - 0.566842258247533) <= 1e-9 and abs(r.details["h_right"] - 0.536752772079201) <= 1e-9
+    )
+    assert abs(R.cattaneo_density_test(x, p=1).statistic - 0.829783793810616) <= 1e-9
+    xr = [round(v, 1) for v in x]
+    assert abs(R.cattaneo_density_test(xr).statistic - 0.317121592199131) <= 1e-9
+    assert abs(R.cattaneo_density_test(xr, bandwidth=0.6).statistic + 0.746116220795682) <= 1e-9

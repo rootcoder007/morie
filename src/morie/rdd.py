@@ -30,6 +30,7 @@ density estimators. *Journal of the American Statistical Association*,
 from __future__ import annotations
 
 import logging
+import math
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
@@ -980,8 +981,10 @@ def cattaneo_density_test(
 ) -> DensityTestResult:
     """Cattaneo, Jansson, & Ma (2020) density test for manipulation.
 
-    Uses local polynomial density estimation on each side of the cutoff
-    and tests for a discontinuity.
+    The local polynomial density estimator of the empirical CDF on each
+    side of the cutoff (unrestricted fit, order q = p + 1 for the robust
+    test), with the jackknife variance, as ``rddensity::rddensity(x, c,
+    p, h)``: the statistic is its ``t_jk``.
 
     Parameters
     ----------
@@ -991,6 +994,8 @@ def cattaneo_density_test(
         Polynomial order for density estimation.
     kernel : str
     bandwidth : float, optional
+        Common bandwidth; by default rddensity's data-driven ``comb``
+        bandwidths from ``rdbwdensity``.
 
     Returns
     -------
@@ -1001,44 +1006,186 @@ def cattaneo_density_test(
     Cattaneo, M. D., Jansson, M., & Ma, X. (2020). Simple local polynomial
     density estimators. *JASA*, 115(531), 1449--1455.
     """
-    x = np.asarray(x, dtype=float)
-    x_left = x[x < cutoff]
-    x_right = x[x >= cutoff]
-
-    n = len(x)
-    h = 1.84 * np.std(x) * n ** (-1 / 5) if bandwidth is None else bandwidth
-
-    # Estimate density at cutoff from each side
-    def _density_at_cutoff(x_sub, side_sign):
-        if len(x_sub) < p + 2:
-            return 0.0, 1.0
-        # Use histogram-based density estimation
-        bw = h
-        K = _get_kernel(kernel)
-        u = (x_sub - cutoff) / bw
-        kw = K(u) / bw
-        f_hat = float(np.sum(kw) / len(x))
-        # Variance via bootstrap approximation
-        se = float(np.sqrt(f_hat * (1 - f_hat) / len(x_sub)))
-        return max(f_hat, 1e-10), max(se, 1e-10)
-
-    f_left, se_left = _density_at_cutoff(x_left, -1)
-    f_right, se_right = _density_at_cutoff(x_right, 1)
-
-    T_stat = (f_right - f_left) / np.sqrt(se_left**2 + se_right**2)
-    p_val = float(2 * stats.norm.sf(abs(T_stat)))
-
+    q = p + 1
+    xs = sorted(float(v) - float(cutoff) for v in np.asarray(x, dtype=float).tolist())
+    N = len(xs)
+    Y, mass = _cjm_ecdf(xs)
+    if bandwidth is None:
+        hl, hr = _cjm_bandwidth(xs, Y, mass, p, kernel)
+    else:
+        hl = hr = float(bandwidth)
+    idx = [i for i in range(N) if -hl <= xs[i] <= hr]
+    fv = _cjm_fv([Y[i] for i in idx], [xs[i] for i in idx], N, hl, hr, q, 1, kernel, mass)
+    t_jk = fv["hat"][2] / math.sqrt(fv["jk"][2])
+    p_jk = 2 * float(stats.norm.sf(abs(t_jk)))
     return DensityTestResult(
-        statistic=float(T_stat),
-        p_value=p_val,
+        statistic=float(t_jk),
+        p_value=p_jk,
         method="cattaneo_jansson_ma",
-        details={"f_left": f_left, "f_right": f_right},
+        details={"f_left": fv["hat"][0], "f_right": fv["hat"][1], "h_left": hl, "h_right": hr, "q": q},
     )
 
 
-# ---------------------------------------------------------------------------
-# Covariate balance at cutoff
-# ---------------------------------------------------------------------------
+def _cjm_ecdf(xs):
+    """Empirical CDF (0..N-1)/(N-1) at the sorted points; a tie block takes
+    the value at its LAST member, as rddensity."""
+    N = len(xs)
+    Y = [i / (N - 1) for i in range(N)]
+    last = {}
+    for i, v in enumerate(xs):
+        last[v] = i
+    mass = len(last) < N
+    if mass:
+        Y = [Y[last[v]] for v in xs]
+    return Y, mass
+
+
+def _cjm_fv(Yh, Xh, N, hl, hr, p, s_der, kernel, mass):
+    """rddensity:::rddensity_fV, unrestricted fit with jackknife variance:
+    the densities left and right (hat), their jackknife variances (l, r,
+    diff, sum) and the s-th derivative coefficients."""
+    Nh = len(Xh)
+    kc = 2 * p + 2
+
+    def kern(v):
+        h = hl if v < 0 else hr
+        u = v / h
+        if kernel == "uniform":
+            return 1 / (2 * h)
+        if kernel == "epanechnikov":
+            return 0.75 * (1 - u * u) / h
+        return (1 - abs(u)) / h
+
+    W = [kern(v) for v in Xh]
+    Xp = [
+        [
+            ((v / hl) ** ((j - 1) // 2) if v < 0 else 0.0) if j % 2 else ((v / hr) ** ((j - 2) // 2) if v >= 0 else 0.0)
+            for j in range(1, kc + 1)
+        ]
+        for v in Xh
+    ]
+    Hp = [hl ** ((j - 1) // 2) if j % 2 else hr ** ((j - 2) // 2) for j in range(1, kc + 1)]
+    XpW = [[r[j] * W[t] for j in range(kc)] for t, r in enumerate(Xp)]
+    S = np.array([[sum(XpW[t][a] * Xp[t][b] for t in range(Nh)) for b in range(kc)] for a in range(kc)])
+    Sinv = np.linalg.inv(S).tolist()
+    rhs = [sum(XpW[t][a] * Yh[t] for t in range(Nh)) for a in range(kc)]
+    beta = [sum(Sinv[a][c] * rhs[c] for c in range(kc)) / Hp[a] for a in range(kc)]
+    # jackknife: L_i sums the scores of the later observations, / (N - 1)
+    L = [[0.0] * kc for _ in range(Nh)]
+    for jj in range(kc):
+        acc = 0.0
+        for t in range(Nh - 1, -1, -1):
+            L[t][jj] = acc / (N - 1)
+            acc += XpW[t][jj]
+    if mass:
+        first = {}
+        for t, v in enumerate(Xh):
+            first.setdefault(v, t)
+        L = [list(L[first[v]]) for v in Xh]
+    LtL = np.array([[sum(L[t][a] * L[t][b] for t in range(Nh)) for b in range(kc)] for a in range(kc)])
+    Vs = (np.array(Sinv) @ LtL @ np.array(Sinv)).tolist()
+    V = [[Vs[a][b] / (Hp[a] * Hp[b]) for b in range(kc)] for a in range(kc)]
+    fl, fr = beta[2], beta[3]
+    v33, v44, v34 = V[2][2], V[3][3], V[2][3]
+    return {
+        "hat": (fl, fr, fr - fl, fr + fl),
+        "jk": (v33, v44, v33 + v44 - 2 * v34, v33 + v44 + 2 * v34),
+        "s": (beta[2 * s_der], beta[2 * s_der + 1]),
+    }
+
+
+def _cjm_moment(m, kernel):
+    """Integral over [0, 1] of x^m K(x)."""
+    if kernel == "uniform":
+        return 0.5 / (m + 1)
+    if kernel == "epanechnikov":
+        return 0.75 * (1 / (m + 1) - 1 / (m + 3))
+    return 1 / (m + 1) - 1 / (m + 2)
+
+
+def _cjm_bandwidth(xs, Y, mass, p, kernel):
+    """rddensity's default bandwidths: rdbwdensity (unrestricted fit,
+    jackknife variance, regularised) and the "comb" rule, h_l the median
+    of the left, difference and sum bandwidths and h_r likewise."""
+    N = len(xs)
+    Nl = sum(1 for v in xs if v < 0)
+    Nr = N - Nl
+    mu = sum(xs) / N
+    sd = math.sqrt(sum((v - mu) ** 2 for v in xs) / (N - 1))
+    uniq = sorted(set(xs))
+    NlU = sum(1 for v in uniq if v < 0)
+    NrU = len(uniq) - NlU
+
+    def herm(z, k):
+        H0, H1 = 1.0, z
+        if k == 0:
+            return H0
+        for n_ in range(1, k):
+            H0, H1 = H1, z * H1 - n_ * H0
+        return H1
+
+    z = mu / sd
+    phi = math.exp(-z * z / 2) / math.sqrt(2 * math.pi)
+    Cb = (
+        25884.4444444942,
+        3430865.45512362,
+        845007948.042626,
+        330631733667.038,
+        187774809656037,
+        145729502641999264,
+        1.4601350297445e20,
+    )
+    Cc = (
+        4.80000000000002,
+        548.571428571555,
+        100800.000000204,
+        29558225.4581006,
+        12896196859.6126,
+        7890871468221.61,
+        6467911284037581,
+    )
+    fhatb = 1 / (herm(z, p + 2) ** 2 * phi)
+    fhatc = 1 / (herm(z, p) ** 2 * phi)
+    bn = ((2 * p + 1) / 4 * fhatb * Cb[p - 1] / N) ** (1 / (2 * p + 5)) * sd
+    cn = (1 / (2 * p) * fhatc * Cc[p - 1] / N) ** (1 / (2 * p + 1)) * sd
+    absl = sorted(abs(v) for v in xs if v < 0)
+    rr = [v for v in xs if v >= 0]
+    absl_u = sorted(abs(v) for v in uniq if v < 0)
+    rr_u = [v for v in uniq if v >= 0]
+    maxabs = max(abs(uniq[0]), abs(uniq[-1]))
+    bn = min(bn, maxabs)
+    cn = min(cn, maxabs)
+    kb, kc_ = 20 + p + 2 + 1, 20 + p + 1
+    bn = max(bn, absl[min(kb, Nl) - 1], rr[min(kb, Nr) - 1])
+    cn = max(cn, absl[min(kc_, Nl) - 1], rr[min(kc_, Nr) - 1])
+    bn = max(bn, absl_u[min(kb, NlU) - 1], rr_u[min(kb, NrU) - 1])
+    cn = max(cn, absl_u[min(kc_, NlU) - 1], rr_u[min(kc_, NrU) - 1])
+    ib = [i for i in range(N) if abs(xs[i]) <= bn]
+    ic = [i for i in range(N) if abs(xs[i]) <= cn]
+    fb = _cjm_fv([Y[i] for i in ib], [xs[i] for i in ib], N, bn, bn, p + 2, p + 1, kernel, mass)
+    fc = _cjm_fv([Y[i] for i in ic], [xs[i] for i in ic], N, cn, cn, p, 1, kernel, mass)
+    var = [N * cn * v for v in fc["jk"]]
+    Sm = [[_cjm_moment(i + j, kernel) for j in range(p + 1)] for i in range(p + 1)]
+    Cm = [_cjm_moment(i + p + 1, kernel) for i in range(p + 1)]
+    sc = np.linalg.solve(np.array(Sm), np.array(Cm)).tolist()[1]
+    bl = fb["s"][0] * sc * (-1) ** p
+    br = fb["s"][1] * sc
+    bias2 = [bl**2, br**2, (br - bl) ** 2, (br + bl) ** 2]
+    hn = []
+    for v, b2 in zip(var, bias2):
+        h = (1 / (2 * p) * v / b2 / N) ** (1 / (2 * p + 1)) if v >= 0 and b2 > 0 else 0.0
+        hn.append(h)
+    hn[0] = min(hn[0], abs(uniq[0]))
+    hn[1] = min(hn[1], uniq[-1])
+    hn[2] = min(hn[2], maxabs)
+    hn[3] = min(hn[3], maxabs)
+    for k in (20 + p + 1,):
+        hlMin, hrMin = absl[min(Nl, k) - 1], rr[min(Nr, k) - 1]
+        hn = [max(hn[0], hlMin), max(hn[1], hrMin), max(hn[2], hlMin, hrMin), max(hn[3], hlMin, hrMin)]
+        hlMin, hrMin = absl_u[min(NlU, k) - 1], rr_u[min(NrU, k) - 1]
+        hn = [max(hn[0], hlMin), max(hn[1], hrMin), max(hn[2], hlMin, hrMin), max(hn[3], hlMin, hrMin)]
+    med = lambda a, b, c: sorted([a, b, c])[1]  # noqa: E731
+    return med(hn[0], hn[2], hn[3]), med(hn[1], hn[2], hn[3])
 
 
 def covariate_balance_rdd(
