@@ -4,9 +4,8 @@
 def test_balance_threshold_and_glm_propensity():
     import math
 
-    import pandas as pd
-
     from morie import mrm_diagnostics as M
+    from morie.fn import _frame_core as pd
 
     rows = []
     for i in range(1, 121):

@@ -5,9 +5,8 @@ def test_rcbd_unbalanced_matches_r_anova():
     # reference: anova(lm(y ~ block + trt)) with cell (b3, t1) removed
     import math
 
-    import pandas as pd
-
     from morie import mrm_doe as M
+    from morie.fn import _frame_core as pd
 
     rows = []
     for k in range(20):

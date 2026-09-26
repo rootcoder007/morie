@@ -1,12 +1,16 @@
 """MRM spatial statistics: LISA (spdep conventions) and the Kulldorff scan."""
 
+import datetime
 import itertools
 import math
 
-import pandas as pd
-
 from morie import mrm_kulldorff as K
 from morie import mrm_lisa as L
+from morie.fn import _frame_core as pd
+
+
+def _days(v):
+    return datetime.date.fromisoformat(str(v)[:10]).toordinal()
 
 
 def _polys():
@@ -43,7 +47,7 @@ def test_kulldorff_expected_count_and_separation():
         lon = -79.39 + 0.004 * math.cos(i) if hot else -79.38 + 0.04 * math.cos(1.7 * i)
         rows.append(
             {
-                "OCC_DATE": f"{(pd.Timestamp('2018-01-01') + pd.Timedelta(days=day)).date()}",
+                "OCC_DATE": str(datetime.date(2018, 1, 1) + datetime.timedelta(days=day)),
                 "LAT_WGS84": lat,
                 "LONG_WGS84": lon,
             }
@@ -53,12 +57,11 @@ def test_kulldorff_expected_count_and_separation():
         ev, radii_km=(1.0, 3.0), window_years=2, n_centers=12, n_permutations=19, n_top_clusters=2, seed=5
     )
     assert len(cl) == 2
-    epoch = pd.Timestamp("1970-01-01")
-    t = [(pd.Timestamp(s) - epoch).days for s in ev["OCC_DATE"]]
+    t = [_days(s) for s in ev["OCC_DATE"]]
     lats, lons = list(ev["LAT_WGS84"]), list(ev["LONG_WGS84"])
     for c in cl:
         ns = sum(K._haversine_km(c.center_lat, c.center_lon, a, b) <= c.radius_km for a, b in zip(lats, lons))
-        ts, te = (pd.Timestamp(c.t_start) - epoch).days, (pd.Timestamp(c.t_end) - epoch).days
+        ts, te = _days(c.t_start), _days(c.t_end)
         nt = sum(ts <= v < te for v in t)
         assert c.n_expected == round(ns * nt / n, 2)
     assert K._haversine_km(cl[0].center_lat, cl[0].center_lon, cl[1].center_lat, cl[1].center_lon) > cl[0].radius_km

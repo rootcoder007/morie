@@ -2,9 +2,8 @@
 
 import math
 
-import pandas as pd
-
 from morie import mrm_design as M
+from morie.fn import _frame_core as pd
 
 
 def test_tukey_hsd_matches_r_tukeyhsd():

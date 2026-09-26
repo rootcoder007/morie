@@ -2,9 +2,8 @@
 
 import math
 
-import pandas as pd
-
 from morie import mrm_tps as T
+from morie.fn import _frame_core as pd
 
 
 def test_grid_moran_matches_r_arm():

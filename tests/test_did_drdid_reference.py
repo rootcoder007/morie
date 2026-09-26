@@ -160,15 +160,18 @@ def test_synthetic_did_matches_synthdid():
 
 def test_parallel_trends_joint_wald_matches_fixest():
     # reference: fixest feols(y ~ g * factor(t), cluster = ~id); wald(keep = "^g:tf")
-    import numpy as np
-    import pandas as pd
+    import math
 
     from morie.did import test_parallel_trends as tpt
+    from morie.fn import _frame_core as pd
 
-    ids, ts = np.meshgrid(np.arange(1, 31), np.arange(1, 7))
-    ids, ts = ids.ravel(), ts.ravel()
-    g = (ids <= 12).astype(float)
-    y = 0.3 * g + 0.1 * ts + np.sin(1.7 * ids) + 0.05 * g * ts + 0.8 * np.cos(0.9 * ids * ts)
+    ids = [i for _ in range(1, 7) for i in range(1, 31)]
+    ts = [t for t in range(1, 7) for _ in range(1, 31)]
+    g = [1.0 if i <= 12 else 0.0 for i in ids]
+    y = [
+        0.3 * gi + 0.1 * t + math.sin(1.7 * i) + 0.05 * gi * t + 0.8 * math.cos(0.9 * i * t)
+        for i, t, gi in zip(ids, ts, g)
+    ]
     df = pd.DataFrame({"id": ids, "t": ts, "g": g, "y": y})
     r1 = tpt(df, "y", "g", "t", unit="id", pre_periods=[1, 2, 3, 4])
     assert abs(r1["joint_f_stat"] - 0.942822618248327) < 1e-10
@@ -183,9 +186,8 @@ def test_group_time_att_aggregation_matches_did_aggte():
     # did::aggte(type = "simple" / "group" / "dynamic", bstrap = FALSE)
     import math
 
-    import pandas as pd
-
     from morie.did import aggregate_gt_att, group_time_att
+    from morie.fn import _frame_core as pd
 
     gid = [3] * 15 + [4] * 15 + [5] * 12 + [0] * 18
     rows = []
@@ -252,9 +254,8 @@ def test_bacon_decomposition_matches_bacondecomp():
     # reference: bacondecomp::bacon(y ~ D, id_var = "id", time_var = "t")
     import math
 
-    import pandas as pd
-
     from morie.did import bacon_decomposition
+    from morie.fn import _frame_core as pd
 
     gid = [3] * 15 + [4] * 15 + [5] * 12 + [0] * 18
     rows = []
@@ -294,9 +295,8 @@ def test_wild_cluster_bootstrap_matches_boottest():
     #   clustid = "cl", B = 9999, type = "rademacher") -- full enumeration of 2^10
     import math
 
-    import pandas as pd
-
     from morie.did import wild_cluster_bootstrap
+    from morie.fn import _frame_core as pd
 
     rows = []
     for cl in range(1, 11):
@@ -315,9 +315,8 @@ def test_fuzzy_did_matches_ivreg_sandwich():
     # with x and vcovCL(cluster = ~cl, type = "HC1")
     import math
 
-    import pandas as pd
-
     from morie.did import did_fuzzy
+    from morie.fn import _frame_core as pd
 
     rows = []
     for i in range(1, 401):
@@ -341,9 +340,8 @@ def test_did_m_counts_joiners_and_leavers():
     # t = 3 vs stable-0 g 25-30, leavers g 11-18 at t = 4 vs stable-1 g 1-10, 19-24
     import math
 
-    import pandas as pd
-
     from morie.did import did_chaisemartin_dhaultfoeuille
+    from morie.fn import _frame_core as pd
 
     def dfun(g, t):
         if g <= 10:
@@ -380,9 +378,8 @@ def test_honest_sensitivity_identified_set_matches_honestdid():
     # reference: HonestDiD:::.compute_IDset_DeltaRM(Mbar, c(pre, post), l_vec)
     import math
 
-    import pandas as pd
-
     from morie.did import event_study, honest_sensitivity
+    from morie.fn import _frame_core as pd
 
     rows = []
     for time in range(1, 10):

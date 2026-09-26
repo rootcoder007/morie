@@ -1,7 +1,8 @@
 """mrm_siu case-to-decision summaries: Kaplan-Meier as survival::survfit."""
 
-import pandas as pd
+import datetime
 
+from morie.fn import _frame_core as pd
 from morie.mrm_siu import _km_summary, mrm_siu_case_to_decision_km
 
 
@@ -22,15 +23,15 @@ def test_km_summary_matches_survfit():
 
 
 def test_case_to_decision_censors_open_cases():
-    base = pd.Timestamp("2020-01-01")
+    base = datetime.date(2020, 1, 1)
     inc = [0, 10, 20, 30, 40, 5, 15, 25, 35, 45]
     dec = [3, 15, 28, 55, None, 10, 30, 30, None, 60]
     d = pd.DataFrame(
         {
             "police_service": ["A"] * 5 + ["B"] * 5,
-            "date_of_incident_iso": [str((base + pd.Timedelta(days=v)).date()) for v in inc],
+            "date_of_incident_iso": [str(base + datetime.timedelta(days=v)) for v in inc],
             "date_of_director_decision_iso": [
-                None if v is None else str((base + pd.Timedelta(days=v)).date()) for v in dec
+                None if v is None else str(base + datetime.timedelta(days=v)) for v in dec
             ],
         }
     )
