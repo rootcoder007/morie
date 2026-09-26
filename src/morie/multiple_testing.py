@@ -277,22 +277,24 @@ def hommel(
     order = np.argsort(p)
     sorted_p = p[order]
 
-    adjusted = np.full(m, np.nan)
-
-    # Hommel's method: find the largest j such that p_(m-j+k) > k*alpha/j for all k=1..j
-    # Then reject all p_i <= alpha/j.
-    q = np.full(m, sorted_p[-1])
-
-    for j in range(m - 1, 0, -1):
-        idx = np.arange(m - j, m)
-        q_star = min(j * sorted_p[idx] / np.arange(1, j + 1))
-        q[: m - j] = np.minimum(q[: m - j], q_star)
-        q[m - j] = min(q[m - j], q_star)
-
-    for i in range(1, m):
-        q[i] = max(q[i], q[i - 1])
-
-    adjusted_sorted = np.minimum(q, 1.0)
+    # Hommel (1988) adjusted p-values, R's p.adjust(method = "hommel")
+    # algorithm (Wright 1992): for each subset size k = m-1..2 the
+    # Simes-type minimum over the largest k p-values, carried as a running
+    # maximum. The old loop capped the smallest p-values at the q_star of
+    # the whole family (0.055 where R gives 0.006).
+    ps = [float(v) for v in sorted_p]
+    base = min(m * ps[i] / (i + 1) for i in range(m))
+    q = [base] * m
+    pa = [base] * m
+    for k in range(m - 1, 1, -1):
+        n_low = m - k + 1                       # indices 0..n_low-1
+        q1 = min(k * ps[n_low + j] / (j + 2) for j in range(k - 1))
+        for i in range(n_low):
+            q[i] = min(k * ps[i], q1)
+        for i in range(n_low, m):
+            q[i] = q[n_low - 1]
+        pa = [max(x, y) for x, y in zip(pa, q)]
+    adjusted_sorted = np.array([min(1.0, max(x, y)) for x, y in zip(pa, ps)])
 
     adjusted_final = np.empty(m)
     adjusted_final[order] = adjusted_sorted
