@@ -90175,20 +90175,6 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "statistical_methods_for_spatial_data_analysis1u1120",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1120",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1120.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1122",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1122",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1122.py",
-    "Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
     "statistical_methods_for_spatial_data_analysis1u1161",
     "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1161",
     "Auto",
@@ -90210,179 +90196,11 @@ _r(
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "statistical_methods_for_spatial_data_analysis1u1234",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1234",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1234.py",
-    "The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1300",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1300",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1300.py",
-    "We must know. We will know. -- David Hilbert",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1301",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1301",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1301.py",
-    "Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1302",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1302",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1302.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1339",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1339",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1339.py",
-    "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1389",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1389",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1389.py",
-    "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u144",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_144",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u144.py",
-    "Knowledge is power. -- Francis Bacon",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1455",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1455",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1455.py",
-    "The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1456",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1456",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1456.py",
-    "The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1462",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1462",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1462.py",
-    "Number rules the universe. -- Pythagoras",
-)
-_r(
     "statistical_methods_for_spatial_data_analysis1u1466",
     "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1466",
     "Auto",
     "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1466.py",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1518",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1518",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1518.py",
-    "What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1530",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1530",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1530.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1531",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1531",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1531.py",
-    "What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1532",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1532",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1532.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1566",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1566",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1566.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1567",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1567",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1567.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1587",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1587",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1587.py",
-    "Knowledge is power. -- Francis Bacon",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1610",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1610",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1610.py",
-    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1617",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1617",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1617.py",
-    "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1663",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1663",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1663.py",
-    "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1675",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1675",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1675.py",
-    "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1676",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1676",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1676.py",
-    "What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1677",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1677",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1677.py",
-    "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1678",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1678",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1678.py",
-    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
     "statistical_methods_for_spatial_data_analysis1u1685",
@@ -90397,153 +90215,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1686.py",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1728",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1728",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1728.py",
-    "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1797",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1797",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1797.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1799",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1799",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1799.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u18",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_18",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u18.py",
-    "Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1800",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1800",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1800.py",
-    "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1801",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1801",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1801.py",
-    "No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1802",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1802",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1802.py",
-    "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1805",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1805",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1805.py",
-    "Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1835",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1835",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1835.py",
-    "Number rules the universe. -- Pythagoras",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1836",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1836",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1836.py",
-    "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1837",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1837",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1837.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1864",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1864",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1864.py",
-    "Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1865",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1865",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1865.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1867",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1867",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1867.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1869",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1869",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1869.py",
-    "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1871",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1871",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1871.py",
-    "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u188",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_188",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u188.py",
-    "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u26",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_26",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u26.py",
-    "The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u260",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_260",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u260.py",
-    "The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u273",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_273",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u273.py",
-    "Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u274",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_274",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u274.py",
-    "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "statistical_methods_for_spatial_data_analysis1u3",
@@ -90567,34 +90238,6 @@ _r(
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    "statistical_methods_for_spatial_data_analysis1u310",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_310",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u310.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u33",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_33",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u33.py",
-    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u34",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_34",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u34.py",
-    "No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u39",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_39",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u39.py",
-    "Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
     "statistical_methods_for_spatial_data_analysis1u4",
     "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_4",
     "Auto",
@@ -90602,46 +90245,11 @@ _r(
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "statistical_methods_for_spatial_data_analysis1u41",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_41",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u41.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u42",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_42",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u42.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
     "statistical_methods_for_spatial_data_analysis1u429",
     "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_429",
     "Auto",
     "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u429.py",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u43",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_43",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u43.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u434",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_434",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u434.py",
-    "No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u441",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_441",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u441.py",
-    "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
     "statistical_methods_for_spatial_data_analysis1u445",
@@ -90658,46 +90266,11 @@ _r(
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "statistical_methods_for_spatial_data_analysis1u66",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_66",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u66.py",
-    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u69",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_69",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u69.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u70",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_70",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u70.py",
-    "We must know. We will know. -- David Hilbert",
-)
-_r(
     "statistical_methods_for_spatial_data_analysis1u93",
     "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_93",
     "Auto",
     "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u93.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u968",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_968",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u968.py",
-    "It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u99",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_99",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u99.py",
-    "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
     "statistics_fourth_edition_david_freeman_robert_pisani_and_ro27u111",
