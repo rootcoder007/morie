@@ -34,6 +34,8 @@ Klein, J. P., & Moeschberger, M. L. (2003). *Survival Analysis: Techniques
 from __future__ import annotations
 
 import logging
+from math import exp as _math_exp
+from math import log as _math_log
 import math
 from dataclasses import dataclass, field
 from typing import Union
@@ -155,6 +157,102 @@ class CompetingRiskResult:
 # ===================================================================
 
 
+
+
+def _aft_fit(log_t, X, e, family, fixed_scale=False):
+    """Maximum likelihood for log T = [1, X] beta + sigma W, W standard
+    extreme value ("ev"), normal ("norm") or logistic ("logis"), with right
+    censoring; Newton-Raphson on the analytic score and information in
+    (beta, log sigma), as survival::survreg. Returns (beta, sigma, loglik,
+    vcov) with beta intercept first and vcov over (beta, log sigma)."""
+    import math as _m
+
+    from morie.fn._stats_core import _log_ndtr
+
+    n = len(log_t)
+    Xm = [[1.0] + [float(v) for v in X[i]] for i in range(n)] if X is not None else [[1.0] for _ in range(n)]
+    p = len(Xm[0])
+    y = [float(v) for v in log_t]
+    ev = [float(v) for v in e]
+
+    def fam(w):
+        """log f, log S and their first and second derivatives in w."""
+        if family == "ev":
+            ew = _m.exp(w) if w < 700 else _m.inf
+            return w - ew, -ew, 1 - ew, -ew, -ew, -ew
+        if family == "norm":
+            lf = -0.5 * w * w - 0.5 * _m.log(2 * _m.pi)
+            ls = _log_ndtr(-w)
+            lam = _m.exp(lf - ls)
+            return lf, ls, -w, -lam, -1.0, -lam * (lam - w)
+        # logistic
+        F = 1.0 / (1.0 + _m.exp(-w)) if w >= 0 else _m.exp(w) / (1.0 + _m.exp(w))
+        fw = F * (1.0 - F)
+        lf = -abs(w) - 2.0 * _m.log1p(_m.exp(-abs(w)))
+        ls = -(w + _m.log1p(_m.exp(-w))) if w >= 0 else -_m.log1p(_m.exp(w))
+        return lf, ls, 1 - 2 * F, -F, -2 * fw, -fw
+
+    def parts(th):
+        b = th[:p]
+        ls_ = 0.0 if fixed_scale else th[p]
+        sg = _m.exp(ls_)
+        ll = 0.0
+        k = p if fixed_scale else p + 1
+        g = [0.0] * k
+        H = [[0.0] * k for _ in range(k)]
+        for i in range(n):
+            xi = Xm[i]
+            w = (y[i] - sum(xi[a] * b[a] for a in range(p))) / sg
+            lf, lS, dlf, dlS, d2lf, d2lS = fam(w)
+            ei = ev[i]
+            ll += ei * (lf - ls_ - y[i]) + (1 - ei) * lS
+            g1 = ei * dlf + (1 - ei) * dlS
+            g2 = ei * d2lf + (1 - ei) * d2lS
+            for a in range(p):
+                g[a] += -g1 * xi[a] / sg
+                for c in range(p):
+                    H[a][c] += g2 * xi[a] * xi[c] / (sg * sg)
+            if not fixed_scale:
+                g[p] += -ei - g1 * w
+                for a in range(p):
+                    v = (g2 * w + g1) * xi[a] / sg
+                    H[a][p] += v
+                    H[p][a] += v
+                H[p][p] += g2 * w * w + g1 * w
+        return ll, g, H                           # H = Hessian of ll
+
+    evn = [i for i in range(n) if ev[i] == 1]
+    b0 = [sum(y[i] for i in evn) / len(evn) if evn else sum(y) / n] + [0.0] * (p - 1)
+    th = b0 + ([] if fixed_scale else [0.0])
+    ll, g, H = parts(th)
+    for _ in range(500):
+        if max(abs(v) for v in g) < 1e-12:
+            break
+        try:
+            step = list(np.linalg.solve(np.array([[-v for v in r] for r in H]), np.array(g)))
+        except np.linalg.LinAlgError:
+            step = list(g)
+        # away from the optimum the information need not be positive
+        # definite; then the Newton step is no ascent direction and the
+        # gradient is used instead
+        if sum(a * b for a, b in zip(step, g)) <= 0:
+            scale = 1.0 / max(1.0, max(abs(v) for v in g))
+            step = [v * scale for v in g]
+        for _h in range(80):
+            cand = [th[a] + step[a] for a in range(len(th))]
+            ll_new, g_new, H_new = parts(cand)
+            if ll_new == ll_new and ll_new >= ll:
+                break
+            step = [v / 2 for v in step]
+        else:
+            break
+        th, ll, g, H = cand, ll_new, g_new, H_new
+    try:
+        vcov = np.linalg.inv(np.array([[-v for v in r] for r in H]))
+    except np.linalg.LinAlgError:
+        vcov = None
+    sigma = 1.0 if fixed_scale else _m.exp(th[p])
+    return th[:p], sigma, ll, vcov
 
 def _validate_survival_input(
     time: Union[np.ndarray, pd.Series, list],
@@ -343,7 +441,6 @@ def _logrank_generic(
     # Pool all event times
     all_times = np.sort(np.unique(t[e == 1]))
     k = len(all_times)
-    n_total = len(t)
 
     # Build risk and event counts per group per time
     d_j = np.zeros((k, n_groups))  # events per group
@@ -557,7 +654,6 @@ def _cox_negative_log_partial_likelihood(
     ties: str = "efron",
 ) -> float:
     """Negative log partial likelihood for Cox PH with Efron or Breslow ties."""
-    n = len(time)
     order = np.argsort(-time)  # descending
     X_ord = X[order]
     t_ord = time[order]
@@ -982,18 +1078,8 @@ def weibull_model(
     n = len(t)
     d = int(e.sum())
 
-    def neg_ll(params):
-        k, lam = params
-        if k <= 0 or lam <= 0:
-            return 1e15
-        ll = d * np.log(k + 1e-15) - d * k * np.log(lam + 1e-15)
-        ll += (k - 1) * np.sum(e * np.log(t + 1e-15))
-        ll -= np.sum((t / lam) ** k)
-        return -ll
-
-    result = minimize(neg_ll, [1.0, np.mean(t)], method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14})
-    k_hat, lam_hat = result.x
-    ll = -result.fun
+    beta0, sigma0, ll, _ = _aft_fit([_math_log(v) for v in t], None, e, "ev")
+    k_hat, lam_hat = 1.0 / sigma0, _math_exp(beta0[0])
     n_params = 2
     aic = -2 * ll + 2 * n_params
     bic = -2 * ll + n_params * np.log(n)
@@ -1025,7 +1111,7 @@ def lognormal_model(
     t, e = _validate_survival_input(time, event)
     n = len(t)
     d = int(e.sum())
-    log_t = np.log(t + 1e-15)
+    log_t = np.log(t)
 
     def neg_ll(params):
         mu, sigma = params
@@ -1180,30 +1266,13 @@ def aft_weibull(
     e = df[event_col].values.astype(np.int32)
     X = df[covariate_cols].values.astype(np.float64)
     n, p = X.shape
-    log_t = np.log(t + 1e-15)
+    log_t = np.log(t)
 
-    def neg_ll(params):
-        mu = params[0]
-        sigma = params[1]
-        beta = params[2:]
-        if sigma <= 0:
-            return 1e15
-        z = (log_t - mu - X @ beta) / sigma
-        # Extreme value distribution: f(z) = exp(z - exp(z)), S(z) = exp(-exp(z))
-        ll = np.sum(e * (z - np.exp(z) - np.log(sigma) - log_t))
-        ll += np.sum((1 - e) * (-np.exp(z)))
-        return -ll
-
-    x0 = np.zeros(p + 2)
-    x0[0] = log_t[e == 1].mean() if e.sum() > 0 else 0.0
-    x0[1] = 1.0
-    result = minimize(neg_ll, x0, method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14})
-    mu_hat = result.x[0]
-    sigma_hat = result.x[1]
-    beta_hat = result.x[2:]
-    ll = -result.fun
+    beta_hat, sigma_hat, ll, vcov = _aft_fit(log_t, X, e, "ev")
+    mu_hat = beta_hat[0]
+    beta_hat = beta_hat[1:]
     n_params = p + 2
-    coefs = {"intercept": float(mu_hat), "sigma": float(abs(sigma_hat))}
+    coefs = {"intercept": float(mu_hat), "sigma": float(sigma_hat)}
     for name, val in zip(covariate_cols, beta_hat):
         coefs[name] = float(val)
     return ParametricSurvivalResult(
@@ -1214,6 +1283,8 @@ def aft_weibull(
         bic=float(-2 * ll + n_params * np.log(n)),
         n_observations=n,
         n_events=int(e.sum()),
+        extra={"vcov_beta_logsigma": vcov,
+               "se": None if vcov is None else [float(v) ** 0.5 for v in np.diag(vcov)]},
     )
 
 
@@ -1240,29 +1311,13 @@ def aft_lognormal(
     e = df[event_col].values.astype(np.int32)
     X = df[covariate_cols].values.astype(np.float64)
     n, p = X.shape
-    log_t = np.log(t + 1e-15)
+    log_t = np.log(t)
 
-    def neg_ll(params):
-        mu = params[0]
-        sigma = params[1]
-        beta = params[2:]
-        if sigma <= 0:
-            return 1e15
-        z = (log_t - mu - X @ beta) / sigma
-        ll = np.sum(e * (-np.log(sigma) - 0.5 * np.log(2 * np.pi) - 0.5 * z**2 - log_t))
-        ll += np.sum((1 - e) * np.log(stats.norm.sf(z) + 1e-15))
-        return -ll
-
-    x0 = np.zeros(p + 2)
-    x0[0] = log_t[e == 1].mean() if e.sum() > 0 else 0.0
-    x0[1] = 1.0
-    result = minimize(neg_ll, x0, method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14})
-    mu_hat = result.x[0]
-    sigma_hat = result.x[1]
-    beta_hat = result.x[2:]
-    ll = -result.fun
+    beta_hat, sigma_hat, ll, vcov = _aft_fit(log_t, X, e, "norm")
+    mu_hat = beta_hat[0]
+    beta_hat = beta_hat[1:]
     n_params = p + 2
-    coefs = {"intercept": float(mu_hat), "sigma": float(abs(sigma_hat))}
+    coefs = {"intercept": float(mu_hat), "sigma": float(sigma_hat)}
     for name, val in zip(covariate_cols, beta_hat):
         coefs[name] = float(val)
     return ParametricSurvivalResult(
@@ -1273,6 +1328,8 @@ def aft_lognormal(
         bic=float(-2 * ll + n_params * np.log(n)),
         n_observations=n,
         n_events=int(e.sum()),
+        extra={"vcov_beta_logsigma": vcov,
+               "se": None if vcov is None else [float(v) ** 0.5 for v in np.diag(vcov)]},
     )
 
 
@@ -1299,30 +1356,13 @@ def aft_loglogistic(
     e = df[event_col].values.astype(np.int32)
     X = df[covariate_cols].values.astype(np.float64)
     n, p = X.shape
-    log_t = np.log(t + 1e-15)
+    log_t = np.log(t)
 
-    def neg_ll(params):
-        mu = params[0]
-        sigma = params[1]
-        beta = params[2:]
-        if sigma <= 0:
-            return 1e15
-        z = (log_t - mu - X @ beta) / sigma
-        # Logistic distribution
-        ll = np.sum(e * (z - np.log(sigma) - log_t - 2 * np.log(1 + np.exp(z))))
-        ll += np.sum((1 - e) * (-np.log(1 + np.exp(z))))
-        return -ll
-
-    x0 = np.zeros(p + 2)
-    x0[0] = log_t[e == 1].mean() if e.sum() > 0 else 0.0
-    x0[1] = 1.0
-    result = minimize(neg_ll, x0, method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14})
-    mu_hat = result.x[0]
-    sigma_hat = result.x[1]
-    beta_hat = result.x[2:]
-    ll = -result.fun
+    beta_hat, sigma_hat, ll, vcov = _aft_fit(log_t, X, e, "logis")
+    mu_hat = beta_hat[0]
+    beta_hat = beta_hat[1:]
     n_params = p + 2
-    coefs = {"intercept": float(mu_hat), "sigma": float(abs(sigma_hat))}
+    coefs = {"intercept": float(mu_hat), "sigma": float(sigma_hat)}
     for name, val in zip(covariate_cols, beta_hat):
         coefs[name] = float(val)
     return ParametricSurvivalResult(
@@ -1333,6 +1373,8 @@ def aft_loglogistic(
         bic=float(-2 * ll + n_params * np.log(n)),
         n_observations=n,
         n_events=int(e.sum()),
+        extra={"vcov_beta_logsigma": vcov,
+               "se": None if vcov is None else [float(v) ** 0.5 for v in np.diag(vcov)]},
     )
 
 
@@ -1582,7 +1624,6 @@ def fine_gray_weights(
 
     # KM estimate of censoring distribution G(t)
     order = np.argsort(t)
-    t_s = t[order]
     e_s = e[order]
     G = np.ones(n)
     n_risk = n
@@ -1883,7 +1924,6 @@ def left_truncated_km(
     entry = np.asarray(entry_time, dtype=np.float64).ravel()
     exit_ = np.asarray(exit_time, dtype=np.float64).ravel()
     e = np.asarray(event, dtype=np.int32).ravel()
-    n = len(entry)
 
     event_times = np.sort(np.unique(exit_[e == 1]))
     at_risk = np.empty(len(event_times))

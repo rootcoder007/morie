@@ -65,3 +65,42 @@ def test_rmst_matches_survrm2():
 def test_concordance_matches_survival():
     T, E, _, X1, _ = _data()
     assert rel(S.concordance_index(T, X1, E), 0.56794871794871793) <= 1e-13
+
+
+# survreg(Surv(t, e) ~ x1 + x2, dist = ..., control = survreg.control(rel.tolerance = 1e-14)):
+# coefficients, scale, SEs of (intercept, x1, x2, log scale), log-likelihood
+AFT_REF = {
+    "weibull": (
+        [0.95464566434250653, -0.42397359150975616, 0.3596205839009648],
+        1.2082781490838239,
+        [0.14915168219246222, 0.15600025833897435, 0.21785133436179238, 0.073715052052702901],
+        -262.92038894138722,
+    ),
+    "lognormal": (
+        [0.2930708670275064, -0.44501849394716181, 0.40973903203989143],
+        1.5231352509549119,
+        [0.176947723904718, 0.18112984231016344, 0.25486483101727631, 0.06506216323184047],
+        -263.31995645449791,
+    ),
+    "loglogistic": (
+        [0.35322548245078, -0.40628730573015726, 0.39980424072509529],
+        0.90923066767639271,
+        [0.18417134590609704, 0.18851426245724751, 0.26365034787765024, 0.073649829110218265],
+        -266.62828968729383,
+    ),
+}
+
+
+def test_aft_models_match_survreg():
+    T, E, _, X1, X2 = _data()
+    df = pd.DataFrame({"t": T, "e": E, "x1": X1, "x2": X2})
+    for dist, fn in (("weibull", S.aft_weibull), ("lognormal", S.aft_lognormal), ("loglogistic", S.aft_loglogistic)):
+        coef, scale, se, ll = AFT_REF[dist]
+        r = fn(df, "t", "e", ["x1", "x2"])
+        got = [r.coefficients["intercept"], r.coefficients["x1"], r.coefficients["x2"]]
+        for a, b in zip(got, coef):
+            assert rel(a, b) <= 1e-11
+        assert rel(r.coefficients["sigma"], scale) <= 1e-11
+        for a, b in zip(r.extra["se"], se):
+            assert rel(a, b) <= 1e-10
+        assert rel(r.log_likelihood, ll) <= 1e-13
