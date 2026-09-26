@@ -198,3 +198,9 @@ test_that("internal match returns FALSE for empty name", {
   expect_false(morie:::.morie_dataset_match("", "id"))
   expect_true(morie:::.morie_dataset_match("case_id", "id"))
 })
+
+test_that("morie_dataset_load strips a UTF-8 byte-order mark from the header", {
+  f <- tempfile(fileext = ".csv")
+  writeBin(c(as.raw(c(0xef, 0xbb, 0xbf)), charToRaw("EndFiscalYear,n\n2023,5\n")), f)
+  expect_identical(names(morie_dataset_load(f))[1], "EndFiscalYear")
+})

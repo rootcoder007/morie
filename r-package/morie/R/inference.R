@@ -128,6 +128,74 @@ morie_chi_square_test <- function(observed, expected = NULL) {
   )
 }
 
+
+#' Conditional MLE and exact interval of a 2x2 odds ratio
+#'
+#' The noncentral hypergeometric machinery of \code{stats::fisher.test}
+#' (Cornfield 1956), solved by bisection to machine precision (fisher.test
+#' stops its \code{uniroot} near 1e-4).
+#' @param tab 2x2 integer table.
+#' @param conf_level Confidence level.
+#' @return numeric \code{c(estimate, lower, upper)}.
+#' @keywords internal
+#' @noRd
+.morie_fisher_conditional <- function(tab, conf_level = 0.95) {
+  tab <- round(as.matrix(tab))
+  x <- tab[1, 1]
+  m <- sum(tab[, 1])
+  n <- sum(tab[, 2])
+  k <- sum(tab[1, ])
+  lo <- max(0, k - n)
+  hi <- min(k, m)
+  s <- lo:hi
+  ld <- stats::dhyper(s, m, n, k, log = TRUE)
+  dn <- function(p) {
+    d <- ld + log(p) * s
+    d <- exp(d - max(d))
+    d / sum(d)
+  }
+  mn <- function(p) if (p == 0) lo else if (is.infinite(p)) hi else sum(s * dn(p))
+  pn <- function(q, p, upper = FALSE) {
+    if (upper) sum(dn(p)[s >= q]) else sum(dn(p)[s <= q])
+  }
+  bis <- function(f, a, b) {
+    fa <- f(a)
+    for (i in seq_len(300)) {
+      mid <- (a + b) / 2
+      fm <- f(mid)
+      if ((fm > 0) == (fa > 0)) {
+        a <- mid
+        fa <- fm
+      } else {
+        b <- mid
+      }
+      if (b - a <= 1e-16) break
+    }
+    (a + b) / 2
+  }
+  eps <- .Machine$double.eps
+  mle <- if (x == lo) 0 else if (x == hi) Inf else {
+    mu <- mn(1)
+    if (mu > x) bis(function(t) mn(t) - x, 0, 1)
+    else if (mu < x) 1 / bis(function(t) mn(1 / t) - x, eps, 1)
+    else 1
+  }
+  alpha <- (1 - conf_level) / 2
+  up <- if (x == hi) Inf else {
+    p <- pn(x, 1)
+    if (p < alpha) bis(function(t) pn(x, t) - alpha, 0, 1)
+    else if (p > alpha) 1 / bis(function(t) pn(x, 1 / t) - alpha, eps, 1)
+    else 1
+  }
+  low <- if (x == lo) 0 else {
+    p <- pn(x, 1, TRUE)
+    if (p > alpha) bis(function(t) pn(x, t, TRUE) - alpha, 0, 1)
+    else if (p < alpha) 1 / bis(function(t) pn(x, 1 / t, TRUE) - alpha, eps, 1)
+    else 1
+  }
+  c(mle, low, up)
+}
+
 #' Fisher's exact test for 2x2 tables
 #'
 #' @param table_2x2 A 2x2 matrix or data frame of counts.
@@ -141,9 +209,13 @@ morie_fisher_exact_test <- function(table_2x2,
                               alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::fisher.test(as.matrix(table_2x2), alternative = alternative)
+  ## estimate and two-sided interval from the tight conditional solver
+  ## (fisher.test's own stop about 1e-4 short); one-sided alternatives keep
+  ## fisher.test's interval
+  cond <- .morie_fisher_conditional(table_2x2, 0.95)
   list(
-    odds_ratio = as.numeric(result$estimate),
-    ci = as.numeric(result$conf.int),
+    odds_ratio = cond[1],
+    ci = if (alternative == "two.sided") cond[2:3] else as.numeric(result$conf.int),
     p_value = result$p.value
   )
 }
@@ -328,6 +400,9 @@ morie_proportion_ci <- function(successes, n, alpha = 0.05,
 #'
 #' @param table_2x2 A 2x2 matrix: rows are treatment, columns are outcome.
 #' @param alpha Significance level; sets the width of the interval,
+#' @param method "exact" (default): the exact conditional interval of
+#'   fisher.test, solved to machine precision; "woolf": the log-scale Wald
+#'   interval with a half added to every cell when one is empty.
 #'   which is Woolf's on the log scale (Haldane-Anscombe corrected when
 #'   a cell is empty).
 #' @return Named list: `odds_ratio` (the sample odds ratio), `ci_lower`,
@@ -336,7 +411,8 @@ morie_proportion_ci <- function(successes, n, alpha = 0.05,
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-morie_odds_ratio_ci <- function(table_2x2, alpha = 0.05) {
+morie_odds_ratio_ci <- function(table_2x2, alpha = 0.05, method = c("exact", "woolf")) {
+  method <- match.arg(method)
   m <- as.matrix(table_2x2)
   if (!identical(dim(m), c(2L, 2L))) {
     stop("table_2x2 must be 2 by 2; got ",
@@ -375,10 +451,15 @@ morie_odds_ratio_ci <- function(table_2x2, alpha = 0.05) {
   se_log_or <- sqrt(1 / aa + 1 / bb + 1 / ccc + 1 / dd)
   z <- stats::qnorm(1 - alpha / 2)
   result <- stats::fisher.test(round(m))
+  ci <- if (method == "exact") {
+    .morie_fisher_conditional(m, 1 - alpha)[2:3]
+  } else {
+    exp(log_or + c(-1, 1) * z * se_log_or)
+  }
   list(
     odds_ratio = as.numeric(or_point),
-    ci_lower = exp(log_or - z * se_log_or),
-    ci_upper = exp(log_or + z * se_log_or),
+    ci_lower = ci[1],
+    ci_upper = ci[2],
     p_value = result$p.value
   )
 }
@@ -493,7 +574,11 @@ morie_omega_squared <- function(f_stat, df_between, df_within, n) {
 #' morie_spearman_rho(x = rnorm(50), y = rnorm(50))
 #' @export
 morie_spearman_rho <- function(x, y) {
-  result <- stats::cor.test(x, y, method = "spearman", exact = FALSE)
+  ## cor.test's own default: the exact / Edgeworth (AS 89) p-value for
+  ## untied data with n < 1290, the t approximation otherwise
+  ok <- stats::complete.cases(x, y)
+  exact <- sum(ok) < 1290 && !anyDuplicated(x[ok]) && !anyDuplicated(y[ok])
+  result <- stats::cor.test(x, y, method = "spearman", exact = exact)
   list(rho = as.numeric(result$estimate), p_value = result$p.value)
 }
 
@@ -584,34 +669,66 @@ morie_power_prop_test <- function(n = NULL, p1 = NULL, p2 = NULL,
   )
 }
 
-#' Sample size for logistic regression detecting a target odds ratio
+#' Sample size for logistic regression (Hsieh, Bloch and Larsen 1998)
 #'
-#' Uses the formula from Hsieh et al. (1998):
-#' \deqn{n = \frac{(z_{\alpha/2} + z_\beta)^2}{p_1(1-p_1) [\log(OR)]^2}}{n =
-#' frac{(z_alpha/2 + z_beta)^2}{p_1(1-p_1) [log(OR)]^2}}
+#' Binary covariate (their eq. 1): with event rates \eqn{P_0} at X = 0 and
+#' \eqn{P_1} at X = 1, a fraction \eqn{B} of the sample at X = 1 and
+#' \eqn{\bar P = (1-B)P_0 + BP_1},
+#' \deqn{n = \frac{[z_{1-\alpha/2}\sqrt{\bar P(1-\bar P)/B} + z_{1-\beta}
+#'   \sqrt{P_0(1-P_0) + P_1(1-P_1)(1-B)/B}]^2}{(P_0 - P_1)^2 (1-B)}.}{n =
+#'   [z_a sqrt(Pbar(1-Pbar)/B) + z_b sqrt(P0(1-P0) + P1(1-P1)(1-B)/B)]^2 /
+#'   ((P0-P1)^2 (1-B)).}
+#' Continuous normal covariate (their eq. 2):
+#' \eqn{n = (z_{1-\alpha/2} + z_{1-\beta})^2 / (P_0(1-P_0)\log(OR)^2)}, with
+#' \eqn{P_0} the event rate at the covariate mean and OR per standard
+#' deviation.
 #'
-#' @param p0 Prevalence under control.
-#' @param or Target odds ratio.
+#' @param p0 Event rate at X = 0 (binary) or at the covariate mean
+#'   (continuous).
+#' @param or Odds ratio for X = 1 vs 0 (binary) or per standard deviation
+#'   (continuous). Ignored for a binary covariate when \code{p1} is given.
 #' @param alpha Significance level.
 #' @param power Desired power.
-#' @param two_sided Logical.
-#' @return Integer sample size.
+#' @param two_sided Logical; one-sided uses \eqn{z_{1-\alpha}}.
+#' @param B Fraction of the sample with X = 1 (binary covariate).
+#' @param covariate \code{"binary"} or \code{"continuous"}.
+#' @param p1 Optional event rate at X = 1 (binary covariate).
+#' @return Integer total sample size, rounded up.
 #' @examples
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
+#' morie_sample_size_logistic(0.2, p1 = 0.35)                # 276
+#' morie_sample_size_logistic(0.2, or = 1.5, covariate = "continuous")  # 299
 #' @export
 #' @references
 #'   Hsieh FY, Bloch DA, Larsen MD (1998). A simple method of sample size
 #'   calculation for linear and logistic regression.
-#'   *Statistics in Medicine*, 17(14):1623-1634.
-morie_sample_size_logistic <- function(p0, or, alpha = 0.05, power = 0.80,
-                                 two_sided = TRUE) {
-  p1 <- (or * p0) / (1 - p0 + or * p0)
+#'   \emph{Statistics in Medicine}, 17(14):1623-1634. Reference
+#'   implementation: powerMediation::SSizeLogisticBin, SSizeLogisticCon.
+morie_sample_size_logistic <- function(p0, or = NULL, alpha = 0.05, power = 0.80,
+                                       two_sided = TRUE, B = 0.5,
+                                       covariate = c("binary", "continuous"),
+                                       p1 = NULL) {
+  covariate <- match.arg(covariate)
+  if (!(p0 > 0 && p0 < 1)) stop("p0 must be in (0, 1)", call. = FALSE)
   z_a <- stats::qnorm(if (two_sided) 1 - alpha / 2 else 1 - alpha)
   z_b <- stats::qnorm(power)
-  p_bar <- (p0 + p1) / 2
-  n <- as.integer(ceiling((z_a + z_b)^2 / (p_bar * (1 - p_bar) * (log(or))^2)))
-  n
+  if (covariate == "continuous") {
+    if (is.null(or) || or <= 0 || or == 1) {
+      stop("continuous covariate: or > 0 and != 1 is required", call. = FALSE)
+    }
+    return(as.integer(ceiling((z_a + z_b)^2 / (p0 * (1 - p0) * log(or)^2))))
+  }
+  if (is.null(p1)) {
+    if (is.null(or) || or <= 0) stop("give p1 or a positive or", call. = FALSE)
+    p1 <- (or * p0) / (1 - p0 + or * p0)
+  }
+  if (!(p1 > 0 && p1 < 1) || p1 == p0) {
+    stop("p1 must be in (0, 1) and differ from p0", call. = FALSE)
+  }
+  if (!(B > 0 && B < 1)) stop("B must be in (0, 1)", call. = FALSE)
+  p_bar <- (1 - B) * p0 + B * p1
+  num <- (z_a * sqrt(p_bar * (1 - p_bar) / B) +
+            z_b * sqrt(p0 * (1 - p0) + p1 * (1 - p1) * (1 - B) / B))^2
+  as.integer(ceiling(num / ((p0 - p1)^2 * (1 - B))))
 }
 
 #' Cohen's d effect size

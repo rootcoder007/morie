@@ -37,7 +37,7 @@ static bool morie_sodium_ready() {
 }
 #endif
 
-// [[Rcpp::export(.morie_crypto_sodium_available)]]
+// [[Rcpp::export(name = ".morie_sodium_available_impl")]]
 bool morie_crypto_sodium_available() {
 #ifdef MORIE_HAVE_SODIUM
   return true;
@@ -46,7 +46,7 @@ bool morie_crypto_sodium_available() {
 #endif
 }
 
-// [[Rcpp::export(.morie_crypto_sodium_version)]]
+// [[Rcpp::export(name = ".morie_sodium_version_impl")]]
 std::string morie_crypto_sodium_version() {
 #ifdef MORIE_HAVE_SODIUM
   morie_sodium_ready();
@@ -143,7 +143,7 @@ SEXP morie_crypto_chacha20poly1305_decrypt(
 // Mirrors the Python hkdf_sha256(ikm, length=32, salt=b"", info=b"")
 // signature. Empty salt -> zero-filled 32-byte salt (RFC 5869 §2.2 spec
 // + Python morie code path match).
-// [[Rcpp::export(.morie_crypto_hkdf_sha256)]]
+// [[Rcpp::export(name = ".morie_hkdf_sha256_impl")]]
 SEXP morie_crypto_hkdf_sha256(
     SEXP ikm_sxp, SEXP length_sxp, SEXP salt_sxp, SEXP info_sxp) {
 #ifdef MORIE_HAVE_SODIUM
@@ -205,7 +205,7 @@ SEXP morie_crypto_hkdf_sha256(
 }
 
 // Cryptographically secure random bytes (libsodium randombytes_buf).
-// [[Rcpp::export(.morie_crypto_random_bytes)]]
+// [[Rcpp::export(name = ".morie_random_bytes_impl")]]
 SEXP morie_crypto_random_bytes(int n) {
 #ifdef MORIE_HAVE_SODIUM
   morie_sodium_ready();
