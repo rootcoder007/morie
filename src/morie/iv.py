@@ -149,12 +149,10 @@ def _robust_se(X: np.ndarray, resid: np.ndarray, Z: np.ndarray) -> np.ndarray:
     except np.linalg.LinAlgError:
         bread = np.linalg.pinv(XtPZ @ X)
 
-    # HC1 meat
-    meat = np.zeros((k, k))
-    for i in range(n):
-        xi = X[i : i + 1]
-        zi = Z[i : i + 1]
-        meat += resid[i] ** 2 * (xi.T @ zi) @ (zi.T @ xi)
+    # HC1 meat on the projected regressors Xhat = P_Z X, the other half of
+    # the inv(X' P_Z X) bread (as sandwich::vcovHC(ivreg, "HC1"))
+    X_hat = P_Z @ X
+    meat = (X_hat * (resid**2)[:, None]).T @ X_hat
 
     correction = n / (n - k)
     V = correction * bread @ meat @ bread
@@ -531,8 +529,7 @@ def gmm_iv(
         # Optimal weight matrix from first-step residuals
         resid1 = y - X @ beta1
         # heteroskedastic-robust, or homoskedastic when robust=False
-        S = (Z.T @ np.diag(resid1**2) @ Z) / n if robust \
-            else float(np.mean(resid1**2)) * (Z.T @ Z) / n
+        S = (Z.T @ np.diag(resid1**2) @ Z) / n if robust else float(np.mean(resid1**2)) * (Z.T @ Z) / n
 
         try:
             S_inv = np.linalg.inv(S)
@@ -553,19 +550,23 @@ def gmm_iv(
     except np.linalg.LinAlgError:
         S_hat_inv = np.linalg.pinv(S_hat)
 
+    # Var(beta) = (G' S^-1 G)^-1 / n with G = Z'X / n, i.e.
+    # n (X'Z S^-1 Z'X)^-1 (Hansen 1982)
     try:
-        V = np.linalg.inv(X.T @ Z @ S_hat_inv @ Z.T @ X) / n
+        V = n * np.linalg.inv(X.T @ Z @ S_hat_inv @ Z.T @ X)
     except np.linalg.LinAlgError:
-        V = np.linalg.pinv(X.T @ Z @ S_hat_inv @ Z.T @ X) / n
+        V = n * np.linalg.pinv(X.T @ Z @ S_hat_inv @ Z.T @ X)
 
     se = np.sqrt(np.maximum(np.diag(V), 0.0))
     t_vals = np.where(se > 0, beta / se, 0.0)
     p_vals = 2 * stats.norm.sf(np.abs(t_vals))
     z_crit = stats.norm.ppf(1 - alpha / 2)
 
-    # J-test statistic if overidentified
+    # Hansen's J: the minimised criterion, n g' W g with the weight matrix
+    # the estimate was computed with
     g_bar = Z.T @ resid / n
-    j_stat = float(n * g_bar.T @ S_hat_inv @ g_bar) if k < L else np.nan
+    W_est = S_inv if weight_matrix != "identity" else S_hat_inv
+    j_stat = float(n * g_bar.T @ W_est @ g_bar) if k < L else np.nan
     j_df = L - k
     j_p = float(stats.chi2.sf(j_stat, j_df)) if j_df > 0 and not np.isnan(j_stat) else np.nan
 
@@ -648,23 +649,53 @@ def cue_gmm(
     except np.linalg.LinAlgError:
         beta = np.linalg.pinv(X.T @ P_Z @ X) @ (X.T @ P_Z @ y)
 
-    for iteration in range(max_iter):
-        resid = y - X @ beta
-        S = (Z.T @ np.diag(resid**2) @ Z) / n
-        try:
-            S_inv = np.linalg.inv(S)
-        except np.linalg.LinAlgError:
-            S_inv = np.linalg.pinv(S)
+    # CUE (Hansen, Heaton & Yaron 1996): minimise
+    # Q(beta) = g(beta)' S(beta)^-1 g(beta), the weight re-evaluated at every
+    # beta, by Newton steps on central-difference derivatives with
+    # backtracking, from the two-step GMM start
 
-        try:
-            beta_new = np.linalg.inv(X.T @ Z @ S_inv @ Z.T @ X) @ (X.T @ Z @ S_inv @ Z.T @ y)
-        except np.linalg.LinAlgError:
-            beta_new = np.linalg.pinv(X.T @ Z @ S_inv @ Z.T @ X) @ (X.T @ Z @ S_inv @ Z.T @ y)
+    def Q(b):
+        e = y - X @ b
+        g = Z.T @ e / n
+        S = (Z * (e**2)[:, None]).T @ Z / n
+        return float(g @ np.linalg.solve(S, g))
 
-        if np.max(np.abs(beta_new - beta)) < tol:
-            beta = beta_new
+    resid = y - X @ beta
+    S1 = (Z * (resid**2)[:, None]).T @ Z / n
+    W1 = np.linalg.inv(S1)
+    beta = np.linalg.solve(X.T @ Z @ W1 @ Z.T @ X, X.T @ Z @ W1 @ Z.T @ y)
+    iteration = 0
+    for iteration in range(max_iter):  # noqa: B007 (reported as iterations below)
+        h = [1e-5 * max(1.0, abs(float(v))) for v in beta]
+        grad = np.zeros(k)
+        hess = np.zeros((k, k))
+        f0 = Q(beta)
+        for a_ in range(k):
+            ea = np.zeros(k)
+            ea[a_] = h[a_]
+            fp, fm = Q(beta + ea), Q(beta - ea)
+            grad[a_] = (fp - fm) / (2 * h[a_])
+            hess[a_, a_] = (fp - 2 * f0 + fm) / h[a_] ** 2
+            for b_ in range(a_):
+                eb = np.zeros(k)
+                eb[b_] = h[b_]
+                hess[a_, b_] = hess[b_, a_] = (
+                    Q(beta + ea + eb) - Q(beta + ea - eb) - Q(beta - ea + eb) + Q(beta - ea - eb)
+                ) / (4 * h[a_] * h[b_])
+        try:
+            step = np.linalg.solve(hess, grad)
+        except np.linalg.LinAlgError:
+            step = grad
+        if float(step @ grad) <= 0:
+            step = grad
+        t = 1.0
+        while t > 1e-10 and Q(beta - t * step) > f0:
+            t /= 2
+        new = beta - t * step
+        done = float(np.max(np.abs(new - beta))) < tol
+        beta = new
+        if done:
             break
-        beta = beta_new
 
     resid = y - X @ beta
     S = (Z.T @ np.diag(resid**2) @ Z) / n
@@ -674,9 +705,9 @@ def cue_gmm(
         S_inv = np.linalg.pinv(S)
 
     try:
-        V = np.linalg.inv(X.T @ Z @ S_inv @ Z.T @ X) / n
+        V = n * np.linalg.inv(X.T @ Z @ S_inv @ Z.T @ X)
     except np.linalg.LinAlgError:
-        V = np.linalg.pinv(X.T @ Z @ S_inv @ Z.T @ X) / n
+        V = n * np.linalg.pinv(X.T @ Z @ S_inv @ Z.T @ X)
 
     se = np.sqrt(np.maximum(np.diag(V), 0.0))
     t_vals = np.where(se > 0, beta / se, 0.0)
@@ -832,10 +863,7 @@ def first_stage_diagnostics(
     df = data[list(set(cols))].dropna().copy()
     n = len(df)
 
-    if exogenous:
-        W = _add_const(df[exogenous].values.astype(float))
-    else:
-        W = np.ones((n, 1))
+    W = _add_const(df[exogenous].values.astype(float)) if exogenous else np.ones((n, 1))
 
     M_W = _annihilator(W)
     Z_excl = df[instruments].values.astype(float)
@@ -912,10 +940,7 @@ def cragg_donald_test(
     k_endog = len(endogenous)
     k_instr = len(instruments)
 
-    if exogenous:
-        W = _add_const(df[exogenous].values.astype(float))
-    else:
-        W = np.ones((n, 1))
+    W = _add_const(df[exogenous].values.astype(float)) if exogenous else np.ones((n, 1))
 
     M_W = _annihilator(W)
     D = df[endogenous].values.astype(float)
@@ -1018,10 +1043,7 @@ def kleibergen_paap_test(
     df = data[list(set(cols))].dropna().copy()
     n = len(df)
 
-    if exogenous:
-        W = _add_const(df[exogenous].values.astype(float))
-    else:
-        W = np.ones((n, 1))
+    W = _add_const(df[exogenous].values.astype(float)) if exogenous else np.ones((n, 1))
 
     M_W = _annihilator(W)
     D = df[endogenous].values.astype(float)
@@ -1131,7 +1153,10 @@ def anderson_rubin_test(
     q = Z_excl.shape[1]
     k = Z.shape[1]
 
-    num = float(y_tilde @ P_Z @ y_tilde / q)
+    # the F test of the EXCLUDED instruments: the increment P_Z - P_W over
+    # the included exogenous columns (Anderson and Rubin 1949)
+    P_W = _proj(W)
+    num = float(y_tilde @ (P_Z - P_W) @ y_tilde / q)
     den = float(y_tilde @ M_Z @ y_tilde / (n - k))
     ar_stat = num / den if den > 0 else 0.0
     ar_p = float(stats.f.sf(ar_stat, q, n - k))
@@ -1140,10 +1165,14 @@ def anderson_rubin_test(
         statistic=ar_stat,
         p_value=ar_p,
         test_name="anderson_rubin",
-        details={"beta0": beta0, "df1": q, "df2": n - k,
-                 "alpha": alpha,
-                 "critical_value": float(stats.f.ppf(1 - alpha, q, n - k)),
-                 "reject_at_alpha": bool(ar_p < alpha)},
+        details={
+            "beta0": beta0,
+            "df1": q,
+            "df2": n - k,
+            "alpha": alpha,
+            "critical_value": float(stats.f.ppf(1 - alpha, q, n - k)),
+            "reject_at_alpha": bool(ar_p < alpha),
+        },
     )
 
 
@@ -1412,8 +1441,8 @@ def hausman_test(
     """
     iv_res = tsls(data, outcome, endogenous, instruments, exogenous, robust=True)
 
-    # OLS
-    cols = [outcome] + endogenous
+    # OLS, on the rows the IV fit used
+    cols = [outcome] + endogenous + instruments
     if exogenous:
         cols += exogenous
     df = data[list(set(cols))].dropna().copy()
@@ -1430,16 +1459,20 @@ def hausman_test(
     resid_ols = y - X @ beta_ols
     n, k = X.shape
     sigma2_ols = float(np.sum(resid_ols**2) / (n - k))
-    V_ols = sigma2_ols * np.linalg.pinv(X.T @ X)
-    se_ols = np.sqrt(np.maximum(np.diag(V_ols), 0.0))
 
     # Compare coefficients on endogenous variables
     n_endog = len(endogenous)
-    # Endogenous coefs are indices 1 through n_endog (index 0 = constant)
+    # Endogenous coefs are indices 1 through n_endog (index 0 = constant).
+    # Both variances on the OLS sigma^2 (Durbin's form; Stata's
+    # sigmamore), the full endogenous block of
+    # (X'P_Z X)^-1 - (X'X)^-1, so the difference is positive semidefinite
     idx = slice(1, 1 + n_endog)
     diff = iv_res.coefficients[idx] - beta_ols[idx]
-    V_diff = np.diag(iv_res.std_errors[idx] ** 2 - se_ols[idx] ** 2)
-    V_diff = np.maximum(V_diff, np.eye(n_endog) * 1e-10)
+    Zx = df[instruments].values.astype(float)
+    Z_all = _add_const(np.column_stack([Zx, df[exogenous].values.astype(float)]) if exogenous else Zx)
+    P_Z = _proj(Z_all)
+    V_full = sigma2_ols * (np.linalg.pinv(X.T @ P_Z @ X) - np.linalg.pinv(X.T @ X))
+    V_diff = V_full[idx, idx]
 
     try:
         h_stat = float(diff @ np.linalg.inv(V_diff) @ diff)
@@ -1863,6 +1896,30 @@ def control_function(
 # ---------------------------------------------------------------------------
 
 
+def _probit_fit(X, y, max_iter=100, tol=1e-12):
+    """Probit maximum likelihood by Fisher scoring; returns the coefficients
+    and the inverse expected information."""
+    n, k = X.shape
+    beta = np.zeros(k)
+    for _ in range(max_iter):
+        eta = np.clip(X @ beta, -30.0, 30.0)
+        mu = np.clip(stats.norm.cdf(eta), 1e-15, 1 - 1e-15)
+        phi = stats.norm.pdf(eta)
+        w = phi**2 / (mu * (1 - mu))
+        z = eta + (y - mu) / np.maximum(phi, 1e-300)
+        A = (X * w[:, None]).T @ X
+        new = np.linalg.solve(A, (X * w[:, None]).T @ z)
+        done = float(np.max(np.abs(new - beta))) < tol
+        beta = new
+        if done:
+            break
+    eta = np.clip(X @ beta, -30.0, 30.0)
+    mu = np.clip(stats.norm.cdf(eta), 1e-15, 1 - 1e-15)
+    phi = stats.norm.pdf(eta)
+    w = phi**2 / (mu * (1 - mu))
+    return beta, np.linalg.inv((X * w[:, None]).T @ X)
+
+
 def iv_probit(
     data: pd.DataFrame,
     outcome: str,
@@ -1896,8 +1953,6 @@ def iv_probit(
     and exogeneity tests for simultaneous probit models. *Journal of
     Econometrics*, 39(3), 347--366.
     """
-    from morie.fn._ml_core import LogisticRegression as LR
-
     cols = [outcome] + endogenous + instruments
     if exogenous:
         cols += exogenous
@@ -1928,29 +1983,13 @@ def iv_probit(
         X_second = np.column_stack([D, V_hat])
         var_names = endogenous + [f"v_hat_{e}" for e in endogenous]
 
-    # Use logistic regression as probit approximation (probit ~ logit / 1.7)
-    lr = LR(max_iter=1000, solver="lbfgs", penalty=None)
-    lr.fit(X_second, y)
-
-    beta = np.concatenate([[lr.intercept_[0]], lr.coef_[0]])
+    # Rivers-Vuong control function: a probit of y on [1, D, W, v_hat] by
+    # Fisher scoring, with glm's model-based standard errors (as the R
+    # arm's glm(binomial(link = "probit")))
+    Xp = _add_const(X_second)
+    beta, V = _probit_fit(Xp, y.astype(float))
     var_names = ["const"] + var_names
-
-    # Bootstrap SE
-    rng = np.random.default_rng(42)
-    boot_betas = []
-    for _ in range(200):
-        idx = rng.choice(n, size=n, replace=True)
-        try:
-            lr_b = LR(max_iter=1000, solver="lbfgs", penalty=None)
-            lr_b.fit(X_second[idx], y[idx])
-            boot_betas.append(np.concatenate([[lr_b.intercept_[0]], lr_b.coef_[0]]))
-        except Exception:
-            continue
-
-    if len(boot_betas) > 1:
-        se = np.std(boot_betas, axis=0, ddof=1)
-    else:
-        se = np.full(len(beta), np.nan)
+    se = np.sqrt(np.maximum(np.diag(V), 0.0))
 
     t_vals = np.where(se > 0, beta / se, 0.0)
     p_vals = 2 * stats.norm.sf(np.abs(t_vals))
