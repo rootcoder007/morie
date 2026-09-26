@@ -18,7 +18,7 @@ SES = [0.1, 0.15, 0.12]
 
 def test_fixed_effect_pooling_is_inverse_variance():
     p = morie.meta_pool(YS, SES)
-    w = [1 / s ** 2 for s in SES]
+    w = [1 / s**2 for s in SES]
     want = sum(wi * y for wi, y in zip(w, YS)) / sum(w)
     assert p["mean"] == pytest.approx(want, abs=1e-12)
     assert p["se"] == pytest.approx(math.sqrt(1 / sum(w)), abs=1e-12)
@@ -31,13 +31,12 @@ def test_fixed_effect_pooling_is_inverse_variance():
 
 def test_cochran_q_and_i_squared_by_hand():
     p = morie.meta_pool(YS, SES)
-    w = [1 / s ** 2 for s in SES]
+    w = [1 / s**2 for s in SES]
     m = sum(wi * y for wi, y in zip(w, YS)) / sum(w)
     q = sum(wi * (y - m) ** 2 for wi, y in zip(w, YS))
     assert p["q"] == pytest.approx(q, abs=1e-10)
     assert p["df"] == len(YS) - 1
-    assert p["i2"] == pytest.approx(max(0.0, (q - p["df"]) / q * 100),
-                                    abs=1e-10)
+    assert p["i2"] == pytest.approx(max(0.0, (q - p["df"]) / q * 100), abs=1e-10)
 
 
 def test_homogeneous_studies_get_no_random_effects_variance():
@@ -64,8 +63,7 @@ def test_heterogeneous_studies_are_flagged_rather_than_averaged_away():
 
 
 def test_subgroups_split_q_into_within_and_between():
-    g = morie.meta_pool([0.2, 0.4, 0.3, 0.5], [0.1, 0.15, 0.12, 0.2],
-                        groups=["a", "a", "b", "b"])
+    g = morie.meta_pool([0.2, 0.4, 0.3, 0.5], [0.1, 0.15, 0.12, 0.2], groups=["a", "a", "b", "b"])
     assert g["q_within"] == pytest.approx(1.9660633484, abs=1e-9)
     assert g["q_between"] == pytest.approx(0.4770891064, abs=1e-9)
     # the split must account for the total
@@ -113,8 +111,7 @@ def test_absent_inputs_produce_absent_keys_not_zeros():
 
 def test_conversion_constants_are_the_ones_the_literature_uses():
     cv = morie.meta_convert(ln_or=0.7, se_ln_or=0.2)
-    assert cv["sd_logistic"] == pytest.approx(math.pi / math.sqrt(3.0),
-                                              abs=1e-12)
+    assert cv["sd_logistic"] == pytest.approx(math.pi / math.sqrt(3.0), abs=1e-12)
     assert cv["sd_logistic"] == pytest.approx(1.8137993642, abs=1e-9)
     assert cv["d_logit"] == pytest.approx(0.3859302268, abs=1e-9)
     assert cv["d_cox"] == pytest.approx(0.4242424242, abs=1e-9)
@@ -126,8 +123,30 @@ def test_conversion_constants_are_the_ones_the_literature_uses():
 def test_probit_and_correlation_routes():
     cv = morie.meta_convert(p1=0.6, p2=0.4, n1=100, n2=100)
     assert "d_probit" in cv and "se_d_probit" in cv
-    assert cv["d_probit"] > 0                     # p1 > p2
+    assert cv["d_probit"] > 0  # p1 > p2
     cr = morie.meta_convert(r=0.3, se_r=0.05)
-    assert cr["fisher_z"] == pytest.approx(0.5 * math.log(1.3 / 0.7),
-                                           abs=1e-12)
+    assert cr["fisher_z"] == pytest.approx(0.5 * math.log(1.3 / 0.7), abs=1e-12)
     assert "d_from_r" in cr and "se_d_from_se_r" in cr
+
+
+def test_random_effects_meta_pm_reml_match_metafor():
+    # metafor::rma(y, sei = s, method = m, control = list(tol = 1e-15,
+    # threshold = 1e-15)); PM also checked through its defining equation
+    from morie.effect_sizes import random_effects_meta
+
+    y = [0.20, 0.35, 0.15, 0.62, -0.05, 0.41]
+    s = [0.08, 0.10, 0.07, 0.15, 0.12, 0.09]
+
+    def qg(t):
+        w = [1 / (e * e + t) for e in s]
+        mu = sum(a * b for a, b in zip(w, y)) / sum(w)
+        return sum(a * (b - mu) ** 2 for a, b in zip(w, y))
+
+    pm = random_effects_meta(y, s, method="PM").extra["tau_squared"]
+    assert abs(pm - 0.037823443092707444) <= 1e-12 * 0.0378
+    assert abs(qg(pm) - 5) <= 1e-12
+    reml = random_effects_meta(y, s, method="REML").extra["tau_squared"]
+    assert abs(reml - 0.0322950288465516) <= 1e-12 * 0.0323
+    dl = random_effects_meta(y, s, method="DL").extra["tau_squared"]
+    assert abs(dl - 0.0249786151186425) <= 1e-12 * 0.025
+    assert random_effects_meta([0.1, 0.12, 0.11], [0.2, 0.25, 0.3], method="PM").extra["tau_squared"] == 0.0

@@ -164,8 +164,8 @@ def cohens_d(
     nx, ny = len(x), len(y)
     sp = math.sqrt(((nx - 1) * x.var(ddof=1) + (ny - 1) * y.var(ddof=1)) / (nx + ny - 2))
     d = (x.mean() - y.mean()) / sp if sp > 0 else 0.0
-    # Analytic SE (Hedges & Olkin, 1985)
-    se = math.sqrt((nx + ny) / (nx * ny) + d**2 / (2 * (nx + ny - 2)))
+    # Hedges & Olkin (1985, p. 86) large-sample variance, as metafor::escalc
+    se = math.sqrt((nx + ny) / (nx * ny) + d**2 / (2 * (nx + ny)))
     z = stats.norm.ppf((1 + confidence) / 2)
     return EffectSizeResult(
         measure="Cohen's d",
@@ -184,7 +184,9 @@ def hedges_g(
 ) -> EffectSizeResult:
     """Hedges' *g* -- bias-corrected Cohen's *d*.
 
-    Applies the exact correction factor :math:`J = 1 - 3/(4(n_1+n_2-2)-1)`.
+    Applies the exact correction factor
+    :math:`J(m) = \\Gamma(m/2) / (\\sqrt{m/2}\\,\\Gamma((m-1)/2))`, :math:`m = n_1+n_2-2`
+    (Hedges 1981); :math:`1 - 3/(4m-1)` is its large-*m* approximation.
 
     Parameters
     ----------
@@ -198,7 +200,11 @@ def hedges_g(
     x, y = _arr(x), _arr(y)
     d_result = cohens_d(x, y, confidence)
     df_val = len(x) + len(y) - 2
-    J = 1 - 3 / (4 * df_val - 1) if df_val > 1 else 1.0
+    J = (
+        math.exp(math.lgamma(df_val / 2) - 0.5 * math.log(df_val / 2) - math.lgamma((df_val - 1) / 2))
+        if df_val > 1
+        else 1.0
+    )
     g = d_result.estimate * J
     se = d_result.se * J if d_result.se else 0.0
     z = stats.norm.ppf((1 + confidence) / 2)
@@ -274,17 +280,14 @@ def cles(
     """
     x, y = _arr(x), _arr(y)
     nx, ny = len(x), len(y)
-    count = 0
-    ties = 0
-    for xi in x:
-        for yj in y:
-            if xi > yj:
-                count += 1
-            elif xi == yj:
-                ties += 1
-    p_sup = (count + 0.5 * ties) / (nx * ny) if nx * ny > 0 else 0.5
+
+    def psup(a, b):
+        dm = np.subtract.outer(a, b)
+        return (float((dm > 0).sum()) + 0.5 * float((dm == 0).sum())) / (len(a) * len(b))
+
+    p_sup = psup(x, y) if nx * ny > 0 else 0.5
     se, ci_lo, ci_hi = _bootstrap_ci(
-        lambda a, b: sum(1 for ai in a for bj in b if ai > bj) / (len(a) * len(b)),
+        psup,
         (x, y),
         confidence=confidence,
     )
@@ -352,11 +355,22 @@ def r_squared(
     """
     r_res = r_effect_size(x, y)
     r2 = r_res.estimate**2
+    # r^2 is not monotone in r: an r interval that spans 0 maps to
+    # [0, max(lo^2, hi^2)], a negative one to [hi^2, lo^2]
+    lo, hi = r_res.ci_lower, r_res.ci_upper
+    if lo is None or hi is None:
+        ci = (None, None)
+    elif lo >= 0:
+        ci = (float(lo**2), float(hi**2))
+    elif hi <= 0:
+        ci = (float(hi**2), float(lo**2))
+    else:
+        ci = (0.0, float(max(lo**2, hi**2)))
     return EffectSizeResult(
         measure="R-squared",
         estimate=float(r2),
-        ci_lower=float(r_res.ci_lower**2) if r_res.ci_lower else None,
-        ci_upper=float(r_res.ci_upper**2) if r_res.ci_upper else None,
+        ci_lower=ci[0],
+        ci_upper=ci[1],
         n=r_res.n,
     )
 
@@ -494,9 +508,14 @@ def odds_ratio(
     -------
     EffectSizeResult
     """
-    or_val = (a * d) / (b * c) if b * c > 0 else np.inf
-    log_or = math.log(or_val) if or_val > 0 and np.isfinite(or_val) else 0.0
-    se_log = math.sqrt(1 / max(a, 1) + 1 / max(b, 1) + 1 / max(c, 1) + 1 / max(d, 1))
+    # Haldane-Anscombe: with any zero cell, 1/2 is added to all four, as
+    # metafor::escalc(measure="OR") does by default (add=1/2, to="only0")
+    n = a + b + c + d
+    cc = 0.5 if min(a, b, c, d) == 0 else 0.0
+    a, b, c, d = a + cc, b + cc, c + cc, d + cc
+    or_val = (a * d) / (b * c)
+    log_or = math.log(or_val)
+    se_log = math.sqrt(1 / a + 1 / b + 1 / c + 1 / d)
     z = stats.norm.ppf((1 + confidence) / 2)
     return EffectSizeResult(
         measure="Odds ratio",
@@ -504,8 +523,8 @@ def odds_ratio(
         ci_lower=float(math.exp(log_or - z * se_log)),
         ci_upper=float(math.exp(log_or + z * se_log)),
         se=float(se_log),
-        n=a + b + c + d,
-        extra={"log_or": log_or},
+        n=n,
+        extra={"log_or": log_or, "continuity_correction": cc},
     )
 
 
@@ -529,11 +548,13 @@ def risk_ratio(
     -------
     EffectSizeResult
     """
-    p1 = a / (a + b) if (a + b) > 0 else 0.0
-    p2 = c / (c + d) if (c + d) > 0 else 0.0
-    rr = p1 / p2 if p2 > 0 else np.inf
-    log_rr = math.log(rr) if rr > 0 and np.isfinite(rr) else 0.0
-    se_log = math.sqrt(b / (a * (a + b)) + d / (c * (c + d))) if a > 0 and c > 0 else np.inf
+    # 1/2 added to all four cells when any is zero (metafor::escalc "RR")
+    n = a + b + c + d
+    cc = 0.5 if min(a, b, c, d) == 0 else 0.0
+    a, b, c, d = a + cc, b + cc, c + cc, d + cc
+    rr = (a / (a + b)) / (c / (c + d))
+    log_rr = math.log(rr)
+    se_log = math.sqrt(1 / a - 1 / (a + b) + 1 / c - 1 / (c + d))
     z = stats.norm.ppf((1 + confidence) / 2)
     return EffectSizeResult(
         measure="Risk ratio",
@@ -541,7 +562,8 @@ def risk_ratio(
         ci_lower=float(math.exp(log_rr - z * se_log)),
         ci_upper=float(math.exp(log_rr + z * se_log)),
         se=float(se_log),
-        n=a + b + c + d,
+        n=n,
+        extra={"continuity_correction": cc},
     )
 
 
@@ -604,14 +626,20 @@ def number_needed_to_treat(
     rd_res = risk_difference(a, b, c, d, confidence)
     rd = rd_res.estimate
     nnt = 1 / abs(rd) if abs(rd) > 0 else np.inf
-    ci_lo = 1 / abs(rd_res.ci_upper) if rd_res.ci_upper and abs(rd_res.ci_upper) > 0 else np.inf
-    ci_hi = 1 / abs(rd_res.ci_lower) if rd_res.ci_lower and abs(rd_res.ci_lower) > 0 else np.inf
+    lo, hi = rd_res.ci_lower, rd_res.ci_upper
+    # Altman (1998): when the RD interval spans 0 the NNT interval is
+    # disjoint, from one bound through infinity to the other; ci_lower is
+    # then the smaller finite limit and ci_upper is inf
+    spans = lo is not None and hi is not None and lo < 0 < hi
+    lim = [1 / abs(v) if v else np.inf for v in (lo, hi)]
+    ci = (min(lim), np.inf) if spans else tuple(sorted(lim))
     return EffectSizeResult(
         measure="NNT",
         estimate=float(nnt),
-        ci_lower=float(min(ci_lo, ci_hi)),
-        ci_upper=float(max(ci_lo, ci_hi)),
+        ci_lower=float(ci[0]),
+        ci_upper=float(ci[1]),
         n=rd_res.n,
+        extra={"ci_spans_zero": spans},
     )
 
 
@@ -667,11 +695,12 @@ def rate_ratio(
     -------
     EffectSizeResult
     """
-    r1 = events1 / person_time1 if person_time1 > 0 else 0.0
-    r2 = events2 / person_time2 if person_time2 > 0 else 0.0
-    irr = r1 / r2 if r2 > 0 else np.inf
-    log_irr = math.log(irr) if irr > 0 and np.isfinite(irr) else 0.0
-    se = math.sqrt(1 / max(events1, 1) + 1 / max(events2, 1))
+    # 1/2 added to both event counts when either is zero (metafor::escalc "IRR")
+    cc = 0.5 if min(events1, events2) == 0 else 0.0
+    e1, e2 = events1 + cc, events2 + cc
+    irr = (e1 / person_time1) / (e2 / person_time2)
+    log_irr = math.log(irr)
+    se = math.sqrt(1 / e1 + 1 / e2)
     z = stats.norm.ppf((1 + confidence) / 2)
     return EffectSizeResult(
         measure="Rate ratio",
@@ -680,6 +709,7 @@ def rate_ratio(
         ci_upper=float(math.exp(log_irr + z * se)),
         se=float(se),
         n=events1 + events2,
+        extra={"continuity_correction": cc},
     )
 
 
@@ -747,10 +777,7 @@ def cohens_w(
     EffectSizeResult
     """
     obs = np.asarray(observed, dtype=np.float64)
-    if expected is None:
-        exp = np.full_like(obs, obs.sum() / len(obs))
-    else:
-        exp = np.asarray(expected, dtype=np.float64)
+    exp = np.full_like(obs, obs.sum() / len(obs)) if expected is None else np.asarray(expected, dtype=np.float64)
     n = obs.sum()
     chi2 = np.sum((obs - exp) ** 2 / (exp + 1e-15))
     w = math.sqrt(chi2 / n) if n > 0 else 0.0
@@ -806,10 +833,12 @@ def cramers_v(
     n = table.sum()
     k = min(table.shape) - 1
     v = math.sqrt(chi2 / (n * k)) if n * k > 0 else 0.0
-    # Bias-corrected V
+    # Bias-corrected V (Bergsma 2013, eq. 4-5): phi^2 less its bias, over
+    # the bias-corrected table dimensions
     r, c = table.shape
-    v_bc = max(0, v**2 - (k) * (table.shape[0] - 1) / (n - 1))
-    v_bc = math.sqrt(v_bc) if v_bc > 0 else 0.0
+    phi2c = max(0.0, chi2 / n - (r - 1) * (c - 1) / (n - 1))
+    kc = min(r - (r - 1) ** 2 / (n - 1), c - (c - 1) ** 2 / (n - 1)) - 1
+    v_bc = math.sqrt(phi2c / kc) if phi2c > 0 and kc > 0 else 0.0
     # confidence interval by inverting the noncentral chi-square: the
     # noncentrality lambda = n k V^2 (Smithson 2003), so the bounds on
     # lambda give bounds on V
@@ -823,8 +852,11 @@ def cramers_v(
         ci_lower=float(ci_lower),
         ci_upper=float(min(ci_upper, 1.0)),
         n=int(n),
-        extra={"bias_corrected_v": float(v_bc), "confidence": float(confidence),
-               "ci_method": "noncentral chi-square inversion"},
+        extra={
+            "bias_corrected_v": float(v_bc),
+            "confidence": float(confidence),
+            "ci_method": "noncentral chi-square inversion",
+        },
     )
 
 
@@ -849,6 +881,7 @@ def _ncp_interval(chi2_obs, dof, confidence):
             else:
                 hi = mid
         return 0.5 * (lo + hi)
+
     a = 1.0 - confidence
     return solve(1.0 - a / 2.0), solve(a / 2.0)
 
@@ -894,9 +927,11 @@ def rank_biserial_correlation(
     y: Union[np.ndarray, pd.Series, list],
     confidence: float = 0.95,
 ) -> EffectSizeResult:
-    """Rank-biserial correlation (matched rank version).
+    """Rank-biserial correlation for two independent samples.
 
-    :math:`r = 1 - 2U / (n_1 n_2)` where *U* is the Mann--Whitney statistic.
+    Glass (1965): positive when *x* tends to exceed *y* (equal to Cliff's delta).
+
+    :math:`r = 2U / (n_1 n_2) - 1` where *U* is the Mann--Whitney statistic of *x*.
 
     Parameters
     ----------
@@ -910,9 +945,9 @@ def rank_biserial_correlation(
     x, y = _arr(x), _arr(y)
     u, _ = stats.mannwhitneyu(x, y, alternative="two-sided")
     nx, ny = len(x), len(y)
-    r = 1 - 2 * u / (nx * ny) if nx * ny > 0 else 0.0
+    r = 2 * u / (nx * ny) - 1 if nx * ny > 0 else 0.0
     se, ci_lo, ci_hi = _bootstrap_ci(
-        lambda a, b: 1 - 2 * stats.mannwhitneyu(a, b, alternative="two-sided").statistic / (len(a) * len(b)),
+        lambda a, b: 2 * stats.mannwhitneyu(a, b, alternative="two-sided").statistic / (len(a) * len(b)) - 1,
         (x, y),
         confidence=confidence,
     )
@@ -1145,10 +1180,7 @@ def d_to_r(d: float, n1: int | None = None, n2: int | None = None) -> float:
     -------
     float
     """
-    if n1 is not None and n2 is not None:
-        a = (n1 + n2) ** 2 / (n1 * n2)
-    else:
-        a = 4.0
+    a = (n1 + n2) ** 2 / (n1 * n2) if n1 is not None and n2 is not None else 4.0
     return d / math.sqrt(d**2 + a)
 
 
@@ -1292,7 +1324,8 @@ def random_effects_meta(
     standard_errors : array-like
     confidence : float, default 0.95
     method : str, default "DL"
-        Tau-squared estimator: ``"DL"`` (DerSimonian--Laird).
+        Tau-squared estimator: ``"DL"`` (DerSimonian--Laird), ``"PM"``
+        (Paule--Mandel) or ``"REML"``.
 
     Returns
     -------
@@ -1316,28 +1349,44 @@ def random_effects_meta(
     c = w.sum() - (w**2).sum() / w.sum()
     if method == "DL":
         tau2 = max((Q - (k - 1)) / c, 0.0) if c > 0 else 0.0
-    elif method in ("PM", "REML"):
-        # Paule-Mandel: tau2 solving sum w_i(tau2) (theta_i - mu(tau2))^2 = k-1;
-        # REML: the iterative estimator of Viechtbauer (2005), both by
-        # fixed-point iteration from the DL start
+    elif method == "PM":
+        # Paule-Mandel: the root of the generalised Q statistic,
+        # Q(tau2) = k - 1 (Q decreases in tau2), by bisection
+        def qg(t):
+            wt = 1 / (se**2 + t)
+            return float((wt * (theta - (wt * theta).sum() / wt.sum()) ** 2).sum())
+
+        if k < 2 or qg(0.0) <= k - 1:
+            tau2 = 0.0
+        else:
+            lo, hi = 0.0, max((Q - (k - 1)) / c if c > 0 else 0.0, 1e-8)
+            while qg(hi) > k - 1:
+                hi *= 2
+            for _ in range(400):
+                mid = (lo + hi) / 2
+                if qg(mid) > k - 1:
+                    lo = mid
+                else:
+                    hi = mid
+                if hi - lo <= 4 * np.finfo(float).eps * hi:
+                    break
+            tau2 = (lo + hi) / 2
+    elif method == "REML":
+        # REML by the fixed-point iteration of Viechtbauer (2005), eq. 11,
+        # from the DL start
         tau2 = max((Q - (k - 1)) / c, 0.0) if c > 0 else 0.0
-        for _ in range(200):
+        for _ in range(10000):
             wt = 1 / (se**2 + tau2)
             mu = (wt * theta).sum() / wt.sum()
-            if method == "PM":
-                q_t = float((wt * (theta - mu) ** 2).sum())
-                if q_t <= k - 1:
-                    new = 0.0 if tau2 == 0.0 else tau2 * (k - 1) / q_t
-                else:
-                    new = tau2 * q_t / (k - 1) if tau2 > 0 else float(((theta - mu) ** 2).mean())
-            else:
-                num = float((wt**2 * ((theta - mu) ** 2 - se**2)).sum()) \
-                    + float((wt**2).sum()) / float(wt.sum())
-                new = max(num / float((wt**2).sum()), 0.0)
-            if abs(new - tau2) < 1e-10:
-                tau2 = new
-                break
+            new = max(
+                (float((wt**2 * ((theta - mu) ** 2 - se**2)).sum()) + float((wt**2).sum()) / float(wt.sum()))
+                / float((wt**2).sum()),
+                0.0,
+            )
+            done = abs(new - tau2) <= 1e-15 * max(1.0, tau2)
             tau2 = new
+            if done:
+                break
     else:
         raise ValueError(f"method must be 'DL', 'PM' or 'REML' (got {method!r})")
 
@@ -1368,7 +1417,7 @@ def random_effects_meta(
             "tau": float(math.sqrt(tau2)),
             "I_squared": float(i2),
             "Q": float(Q),
-            "Q_p_value": float(1 - stats.chi2.cdf(Q, k - 1)) if k > 1 else 1.0,
+            "Q_p_value": float(stats.chi2.sf(Q, k - 1)) if k > 1 else 1.0,
             "prediction_interval_lower": float(pred_lo),
             "prediction_interval_upper": float(pred_hi),
         },

@@ -164,7 +164,10 @@ cles <- function(x, y, confidence = 0.95) {
   ties <- sum(diff_mat == 0)
   p_sup <- if (nx * ny > 0) (count + 0.5 * ties) / (nx * ny) else 0.5
   boot <- .bootstrap_ci(
-    function(a, b) sum(outer(a, b, "-") > 0) / (length(a) * length(b)),
+    function(a, b) {
+      dm <- outer(a, b, "-")
+      (sum(dm > 0) + 0.5 * sum(dm == 0)) / (length(a) * length(b))
+    },
     list(x, y),
     confidence = confidence
   )
@@ -221,12 +224,15 @@ r_effect_size <- function(x, y, confidence = 0.95) {
 r_squared <- function(x, y) {
   r_res <- r_effect_size(x, y)
   r2 <- r_res$estimate^2
-  effect_size_result(
-    "R-squared", r2,
-    if (!is.na(r_res$ci_lower)) r_res$ci_lower^2 else NA_real_,
-    if (!is.na(r_res$ci_upper)) r_res$ci_upper^2 else NA_real_,
-    n = r_res$n
-  )
+  # r^2 is not monotone in r: an r interval that spans 0 maps to
+  # [0, max(lo^2, hi^2)], a negative one to [hi^2, lo^2]
+  lo <- r_res$ci_lower
+  hi <- r_res$ci_upper
+  ci <- if (is.na(lo) || is.na(hi)) c(NA_real_, NA_real_)
+        else if (lo >= 0) c(lo^2, hi^2)
+        else if (hi <= 0) c(hi^2, lo^2)
+        else c(0, max(lo^2, hi^2))
+  effect_size_result("R-squared", r2, ci[1], ci[2], n = r_res$n)
 }
 
 
@@ -301,16 +307,22 @@ epsilon_squared <- function(ss_effect, ss_total, df_effect, ms_error) {
 #' odds_ratio(20, 80, 10, 90, confidence = 0.99)$ci_upper
 #' @export
 odds_ratio <- function(a, b, c, d, confidence = 0.95) {
-  or_val <- if (b * c > 0) (a * d) / (b * c) else Inf
-  log_or <- if (or_val > 0 && is.finite(or_val)) log(or_val) else 0
-  se_log <- sqrt(1 / max(a, 1) + 1 / max(b, 1) +
-    1 / max(c, 1) + 1 / max(d, 1))
+  # Haldane-Anscombe: with any zero cell, 1/2 is added to all four, as
+  # metafor::escalc(measure = "OR") does by default (add = 1/2, to = "only0")
+  cc <- if (min(a, b, c, d) == 0) 0.5 else 0
+  a <- a + cc
+  b <- b + cc
+  c <- c + cc
+  d <- d + cc
+  or_val <- (a * d) / (b * c)
+  log_or <- log(or_val)
+  se_log <- sqrt(1 / a + 1 / b + 1 / c + 1 / d)
   z <- qnorm((1 + confidence) / 2)
   effect_size_result(
     "Odds ratio", or_val,
     exp(log_or - z * se_log), exp(log_or + z * se_log),
-    se_log, a + b + c + d,
-    extra = list(log_or = log_or)
+    se_log, a + b + c + d - 4 * cc,
+    extra = list(log_or = log_or, continuity_correction = cc)
   )
 }
 
@@ -334,21 +346,22 @@ odds_ratio <- function(a, b, c, d, confidence = 0.95) {
 #' risk_ratio(20, 80, 10, 90, confidence = 0.90)$ci_upper
 #' @export
 risk_ratio <- function(a, b, c, d, confidence = 0.95) {
-  p1 <- if ((a + b) > 0) a / (a + b) else 0
-  p2 <- if ((c + d) > 0) c / (c + d) else 0
-  rr <- if (p2 > 0) p1 / p2 else Inf
-  log_rr <- if (rr > 0 && is.finite(rr)) log(rr) else 0
-  se_log <- if (a > 0 && c > 0) {
-    sqrt(b / (a * (a + b)) + d / (c * (c + d)))
-  } else {
-    Inf
-  }
+  # 1/2 added to all four cells when any is zero (metafor::escalc "RR")
+  cc <- if (min(a, b, c, d) == 0) 0.5 else 0
+  a <- a + cc
+  b <- b + cc
+  c <- c + cc
+  d <- d + cc
+  rr <- (a / (a + b)) / (c / (c + d))
+  log_rr <- log(rr)
+  se_log <- sqrt(1 / a - 1 / (a + b) + 1 / c - 1 / (c + d))
   z <- qnorm((1 + confidence) / 2)
   effect_size_result(
     "Risk ratio", rr,
     exp(log_rr - z * se_log),
     exp(log_rr + z * se_log),
-    se_log, a + b + c + d
+    se_log, a + b + c + d - 4 * cc,
+    extra = list(continuity_correction = cc)
   )
 }
 
@@ -401,18 +414,17 @@ number_needed_to_treat <- function(a, b, c, d, confidence = 0.95) {
   rd_res <- risk_difference(a, b, c, d, confidence)
   rd <- rd_res$estimate
   nnt <- if (abs(rd) > 0) 1 / abs(rd) else Inf
-  ci_lo <- if (!is.na(rd_res$ci_upper) && abs(rd_res$ci_upper) > 0) {
-    1 / abs(rd_res$ci_upper)
-  } else {
-    Inf
-  }
-  ci_hi <- if (!is.na(rd_res$ci_lower) && abs(rd_res$ci_lower) > 0) {
-    1 / abs(rd_res$ci_lower)
-  } else {
-    Inf
-  }
-  effect_size_result("NNT", nnt, min(ci_lo, ci_hi), max(ci_lo, ci_hi),
-    n = rd_res$n
+  lo <- rd_res$ci_lower
+  hi <- rd_res$ci_upper
+  # Altman (1998): when the RD interval spans 0 the NNT interval is
+  # disjoint, from one bound through infinity to the other; ci_lower is
+  # then the smaller finite limit and ci_upper is Inf
+  spans <- !is.na(lo) && !is.na(hi) && lo < 0 && hi > 0
+  lim <- c(if (!is.na(lo) && lo != 0) 1 / abs(lo) else Inf,
+           if (!is.na(hi) && hi != 0) 1 / abs(hi) else Inf)
+  ci <- if (spans) c(min(lim), Inf) else sort(lim)
+  effect_size_result("NNT", nnt, ci[1], ci[2], n = rd_res$n,
+    extra = list(ci_spans_zero = spans)
   )
 }
 
@@ -450,16 +462,19 @@ number_needed_to_harm <- function(a, b, c, d, confidence = 0.95) {
 #' @export
 rate_ratio <- function(events1, person_time1, events2, person_time2,
                        confidence = 0.95) {
-  r1 <- if (person_time1 > 0) events1 / person_time1 else 0
-  r2 <- if (person_time2 > 0) events2 / person_time2 else 0
-  irr <- if (r2 > 0) r1 / r2 else Inf
-  log_irr <- if (irr > 0 && is.finite(irr)) log(irr) else 0
-  se <- sqrt(1 / max(events1, 1) + 1 / max(events2, 1))
+  # 1/2 added to both event counts when either is zero (metafor::escalc "IRR")
+  cc <- if (min(events1, events2) == 0) 0.5 else 0
+  e1 <- events1 + cc
+  e2 <- events2 + cc
+  irr <- (e1 / person_time1) / (e2 / person_time2)
+  log_irr <- log(irr)
+  se <- sqrt(1 / e1 + 1 / e2)
   z <- qnorm((1 + confidence) / 2)
   effect_size_result(
     "Rate ratio", irr,
     exp(log_irr - z * se), exp(log_irr + z * se),
-    se, events1 + events2
+    se, events1 + events2,
+    extra = list(continuity_correction = cc)
   )
 }
 
@@ -560,7 +575,10 @@ phi_coefficient <- function(contingency_table) {
 # NON-PARAMETRIC EFFECT SIZES
 # =====================================================================
 
-#' Rank-biserial correlation (matched rank version)
+#' Rank-biserial correlation for two independent samples
+#'
+#' Glass (1965): r = 2U/(n1 n2) - 1 with U the Mann-Whitney count for x,
+#' positive when x tends to exceed y (equal to Cliff's delta).
 #'
 #' @param x,y Numeric vectors (NA dropped).
 #' @param confidence Confidence level for CI. Default 0.95.
@@ -577,16 +595,16 @@ rank_biserial_correlation <- function(x, y, confidence = 0.95) {
   )
   nx <- length(x)
   ny <- length(y)
-  r <- if (nx * ny > 0) 1 - 2 * u / (nx * ny) else 0
+  r <- if (nx * ny > 0) 2 * u / (nx * ny) - 1 else 0
   boot <- .bootstrap_ci(
     function(a, b) {
-      1 - 2 * as.numeric(suppressWarnings(
+      2 * as.numeric(suppressWarnings(
         wilcox.test(a, b,
           alternative = "two.sided",
           exact = FALSE
         )$statistic
       )) /
-        (length(a) * length(b))
+        (length(a) * length(b)) - 1
     },
     list(x, y),
     confidence = confidence
@@ -907,94 +925,37 @@ random_effects_meta <- function(estimates, standard_errors,
   Q <- sum(w * (theta - theta_fe)^2)
   c_val <- sum(w) - sum(w^2) / sum(w)
   tau2 <- if (c_val > 0) max((Q - (k - 1)) / c_val, 0) else 0
-  if (method %in% c("PM", "REML")) {
-    # Paule-Mandel and REML by fixed-point iteration from the DL start
-    for (it in seq_len(200L)) {
-      wt <- 1 / (se^2 + tau2)
-      mu <- sum(wt * theta) / sum(wt)
-      new <- if (method == "PM") {
-        q_t <- sum(wt * (theta - mu)^2)
-        if (q_t <= k - 1) {
-          if (tau2 == 0) 0 else tau2 * (k - 1) / q_t
-        } else if (tau2 > 0) tau2 * q_t / (k - 1) else mean((theta - mu)^2)
-      } else {
-        num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
-        max(num / sum(wt^2), 0)
-      }
-      if (abs(new - tau2) < 1e-10) {
-        tau2 <- new
-        break
-      }
-      tau2 <- new
+  if (method == "PM") {
+    # Paule-Mandel: the root of the generalised Q statistic, Q(tau2) = k - 1
+    # (Q decreases in tau2), by bisection; 0 when Q(0) <= k - 1
+    qg <- function(t) {
+      wt <- 1 / (se^2 + t)
+      sum(wt * (theta - sum(wt * theta) / sum(wt))^2)
     }
-  } else if (method != "DL") {
-    stop("method must be 'DL', 'PM' or 'REML'", call. = FALSE)
-  }
-  if (method %in% c("PM", "REML")) {
-    # Paule-Mandel and REML by fixed-point iteration from the DL start
-    for (it in seq_len(200L)) {
-      wt <- 1 / (se^2 + tau2)
-      mu <- sum(wt * theta) / sum(wt)
-      new <- if (method == "PM") {
-        q_t <- sum(wt * (theta - mu)^2)
-        if (q_t <= k - 1) {
-          if (tau2 == 0) 0 else tau2 * (k - 1) / q_t
-        } else if (tau2 > 0) tau2 * q_t / (k - 1) else mean((theta - mu)^2)
-      } else {
-        num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
-        max(num / sum(wt^2), 0)
+    if (k < 2 || qg(0) <= k - 1) {
+      tau2 <- 0
+    } else {
+      lo <- 0
+      hi <- max(tau2, 1e-8)
+      while (qg(hi) > k - 1) hi <- 2 * hi
+      for (it in seq_len(400L)) {
+        mid <- (lo + hi) / 2
+        if (qg(mid) > k - 1) lo <- mid else hi <- mid
+        if (hi - lo <= 4 * .Machine$double.eps * hi) break
       }
-      if (abs(new - tau2) < 1e-10) {
-        tau2 <- new
-        break
-      }
-      tau2 <- new
+      tau2 <- (lo + hi) / 2
     }
-  } else if (method != "DL") {
-    stop("method must be 'DL', 'PM' or 'REML'", call. = FALSE)
-  }
-  if (method %in% c("PM", "REML")) {
-    # Paule-Mandel and REML by fixed-point iteration from the DL start
-    for (it in seq_len(200L)) {
+  } else if (method == "REML") {
+    # REML by the fixed-point iteration of Viechtbauer (2005), eq. 11,
+    # from the DL start
+    for (it in seq_len(10000L)) {
       wt <- 1 / (se^2 + tau2)
       mu <- sum(wt * theta) / sum(wt)
-      new <- if (method == "PM") {
-        q_t <- sum(wt * (theta - mu)^2)
-        if (q_t <= k - 1) {
-          if (tau2 == 0) 0 else tau2 * (k - 1) / q_t
-        } else if (tau2 > 0) tau2 * q_t / (k - 1) else mean((theta - mu)^2)
-      } else {
-        num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
-        max(num / sum(wt^2), 0)
-      }
-      if (abs(new - tau2) < 1e-10) {
-        tau2 <- new
-        break
-      }
+      new <- max((sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)) /
+        sum(wt^2), 0)
+      done <- abs(new - tau2) <= 1e-15 * max(1, tau2)
       tau2 <- new
-    }
-  } else if (method != "DL") {
-    stop("method must be 'DL', 'PM' or 'REML'", call. = FALSE)
-  }
-  if (method %in% c("PM", "REML")) {
-    # Paule-Mandel and REML by fixed-point iteration from the DL start
-    for (it in seq_len(200L)) {
-      wt <- 1 / (se^2 + tau2)
-      mu <- sum(wt * theta) / sum(wt)
-      new <- if (method == "PM") {
-        q_t <- sum(wt * (theta - mu)^2)
-        if (q_t <= k - 1) {
-          if (tau2 == 0) 0 else tau2 * (k - 1) / q_t
-        } else if (tau2 > 0) tau2 * q_t / (k - 1) else mean((theta - mu)^2)
-      } else {
-        num <- sum(wt^2 * ((theta - mu)^2 - se^2)) + sum(wt^2) / sum(wt)
-        max(num / sum(wt^2), 0)
-      }
-      if (abs(new - tau2) < 1e-10) {
-        tau2 <- new
-        break
-      }
-      tau2 <- new
+      if (done) break
     }
   } else if (method != "DL") {
     stop("method must be 'DL', 'PM' or 'REML'", call. = FALSE)
@@ -1118,7 +1079,8 @@ cohens_d <- function(x, y, confidence = 0.95) {
   }
   sp <- sqrt(((nx - 1) * var(x) + (ny - 1) * var(y)) / (nx + ny - 2))
   d  <- if (sp > 0) (mean(x) - mean(y)) / sp else 0
-  se <- sqrt((nx + ny) / (nx * ny) + d^2 / (2 * (nx + ny - 2)))
+  # Hedges and Olkin (1985, p. 86) large-sample variance, as metafor::escalc
+  se <- sqrt((nx + ny) / (nx * ny) + d^2 / (2 * (nx + ny)))
   z  <- qnorm((1 + confidence) / 2)
   effect_size_result("Cohen's d", d, d - z * se, d + z * se, se, nx + ny)
 }
@@ -1142,9 +1104,13 @@ cramers_v <- function(contingency_table, confidence = 0.95) {
   n    <- sum(tbl)
   k    <- min(dim(tbl)) - 1
   v    <- if (n * k > 0) sqrt(chi2 / (n * k)) else 0
-  # Bias-corrected V (Bergsma 2013).
-  v_bc <- max(0, v^2 - k * (nrow(tbl) - 1) / (n - 1))
-  v_bc <- if (v_bc > 0) sqrt(v_bc) else 0
+  # Bias-corrected V (Bergsma 2013, eq. 4-5): phi^2 less its bias, over
+  # the bias-corrected table dimensions
+  nr <- nrow(tbl)
+  nc <- ncol(tbl)
+  phi2c <- max(0, chi2 / n - (nr - 1) * (nc - 1) / (n - 1))
+  kc <- min(nr - (nr - 1)^2 / (n - 1), nc - (nc - 1)^2 / (n - 1)) - 1
+  v_bc <- if (phi2c > 0 && kc > 0) sqrt(phi2c / kc) else 0
   # interval by inverting the noncentral chi-square: lambda = n k V^2
   dof <- (nrow(tbl) - 1) * (ncol(tbl) - 1)
   ncp_at <- function(target) {
@@ -1202,7 +1168,8 @@ hedges_g <- function(x, y, confidence = 0.95) {
   y <- .arr(y)
   d_res <- cohens_d(x, y, confidence)
   df_val <- length(x) + length(y) - 2
-  J <- if (df_val > 1) 1 - 3 / (4 * df_val - 1) else 1
+  # exact correction (Hedges 1981): Gamma(m/2) / (sqrt(m/2) Gamma((m-1)/2))
+  J <- if (df_val > 1) exp(lgamma(df_val / 2) - 0.5 * log(df_val / 2) - lgamma((df_val - 1) / 2)) else 1
   g  <- d_res$estimate * J
   se <- if (!is.na(d_res$se)) d_res$se * J else 0
   z  <- qnorm((1 + confidence) / 2)

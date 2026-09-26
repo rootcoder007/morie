@@ -384,6 +384,12 @@ optimal_duration <- function(t_Q = 3.0, generation_time = NULL,
 }
 
 # -- restored: morie-only definition kept through the rmorie sync --
+#' qrntcq cheatsheet
+#'
+#' One-paragraph summary of the method and the traps in using it.
+#' @return A character string.
+#' @examples
+#' qrntcq_cheatsheet()
 #' @export
 qrntcq_cheatsheet <- function() {
   paste0("qrntcq: efficacy = mass of the generation-time density ",

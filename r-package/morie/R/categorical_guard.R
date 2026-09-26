@@ -159,6 +159,36 @@ morie_audit_categories <- function(data, cols = NULL) {
         hazards = "", stringsAsFactors = FALSE
       ))
     }
+    if (!is_cat(v)) {
+      # a numeric, logical or date column is data, not a set of labels:
+      # none of the label heuristics apply (an integer covariate such as
+      # age is not "numeric-looking labels")
+      return(data.frame(
+        column = cn, storage = paste(class(v), collapse = "/"),
+        n_levels = NA_integer_, levels = "", reference = NA_character_,
+        hazards = "", stringsAsFactors = FALSE
+      ))
+    }
+    if (!is_cat(v)) {
+      # a numeric, logical or date column is data, not a set of labels:
+      # none of the label heuristics apply (an integer covariate such as
+      # age is not "numeric-looking labels")
+      return(data.frame(
+        column = cn, storage = paste(class(v), collapse = "/"),
+        n_levels = NA_integer_, levels = "", reference = NA_character_,
+        hazards = "", stringsAsFactors = FALSE
+      ))
+    }
+    if (!is_cat(v)) {
+      # a numeric, logical or date column is data, not a set of labels:
+      # none of the label heuristics apply (an integer covariate such as
+      # age is not "numeric-looking labels")
+      return(data.frame(
+        column = cn, storage = paste(class(v), collapse = "/"),
+        n_levels = NA_integer_, levels = "", reference = NA_character_,
+        hazards = "", stringsAsFactors = FALSE
+      ))
+    }
     if (inherits(v, c("haven_labelled", "labelled"))) {
       hazards <- c(
         hazards,

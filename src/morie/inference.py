@@ -43,14 +43,11 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError("%s is no longer bundled; this code path awaits its native morie implementation" % self._name)
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError("%s is no longer bundled; this code path awaits its native morie implementation" % self._name)
+
 
 from morie.fn._glm_core import (
     FTestAnovaPower,
@@ -978,7 +975,6 @@ def runif(n: int, min: float = 0.0, max: float = 1.0, seed: int | None = None) -
 # ===========================================================================
 
 
-
 def _t_interval(est, se, df, alternative, level=0.95):
     """Confidence interval matching the test's alternative, as R's t.test:
     two-sided est -/+ t_{1-a/2} se; "less" (-inf, est + t_{1-a} se];
@@ -1203,7 +1199,6 @@ def chi_square_test(
         "expected": exp_arr,
         "method": "Chi-square goodness-of-fit test",
     }
-
 
 
 def _fisher_conditional(table, conf_level=0.95):
@@ -1820,8 +1815,6 @@ def risk_difference_ci(table_2x2: Union[list, np.ndarray], *, alpha: float = 0.0
 
     l1, u1 = _wilson_bounds(a, n1)
     l2, u2 = _wilson_bounds(c, n2)
-    ci_lower = rd - z * math.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2)
-    ci_upper = rd + z * math.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2)
     # Newcombe's refined bounds using Wilson limits
     ci_lower_nc = rd - math.sqrt((p1 - l1) ** 2 + (u2 - p2) ** 2)
     ci_upper_nc = rd + math.sqrt((u1 - p1) ** 2 + (p2 - l2) ** 2)
@@ -1900,7 +1893,7 @@ def hedges_g(
 
     Applies Hedges' correction factor J(m) to reduce small-sample bias:
     g = d * J(m),  where m = n1 + n2 - 2
-    J(m) ≈ 1 - 3 / (4m - 1)
+    J(m) = Gamma(m/2) / (sqrt(m/2) Gamma((m-1)/2))  (exact; 1 - 3/(4m-1) for large m)
 
     :param x1: First group sample.
     :param x2: Second group sample.
@@ -2099,7 +2092,6 @@ def kendall_tau(
     return {"tau": float(tau), "p_value": float(p_val)}
 
 
-
 def _prho(n, is_, lower_tail):
     """Algorithm AS 89 (Best & Roberts 1975) as in R's prho.c:
     P[S >= is] (or P[S < is] when lower_tail) for Spearman's
@@ -2124,13 +2116,25 @@ def _prho(n, is_, lower_tail):
                 if is_ <= ise:
                     ifr += 1
         return (nfac - ifr if lower_tail else ifr) / nfac
-    c = (.2274, .2531, .1745, .0758, .1033, .3932, .0879, .0151, .0072, .0831, .0131, 4.6e-4)
+    c = (0.2274, 0.2531, 0.1745, 0.0758, 0.1033, 0.3932, 0.0879, 0.0151, 0.0072, 0.0831, 0.0131, 4.6e-4)
     y = float(n)
     b = 1.0 / y
     x = (6.0 * (is_ - 1) * b / (y * y - 1) - 1) * math.sqrt(y - 1)
     y = x * x
-    u = x * b * (c[0] + b * (c[1] + c[2] * b) + y * (-c[3] + b * (c[4] + c[5] * b) - y * b * (
-        c[6] + c[7] * b - y * (c[8] - c[9] * b + y * b * (c[10] - c[11] * y)))))
+    u = (
+        x
+        * b
+        * (
+            c[0]
+            + b * (c[1] + c[2] * b)
+            + y
+            * (
+                -c[3]
+                + b * (c[4] + c[5] * b)
+                - y * b * (c[6] + c[7] * b - y * (c[8] - c[9] * b + y * b * (c[10] - c[11] * y)))
+            )
+        )
+    )
     y = u / math.exp(y / 2.0)
     pv = (-y if lower_tail else y) + float(stats.norm.cdf(x) if lower_tail else stats.norm.sf(x))
     return min(max(pv, 0.0), 1.0)
@@ -2169,8 +2173,8 @@ def spearman_rho(
     if not ties and n < 1290:
         # R cor.test(method = "spearman"): exact / Edgeworth (AS 89) p-value
         # for untied data; with ties the t approximation stays
-        q = (n ** 3 - n) * (1.0 - rho) / 6.0
-        if q > (n ** 3 - n) / 6.0:
+        q = (n**3 - n) * (1.0 - rho) / 6.0
+        if q > (n**3 - n) / 6.0:
             pp = _prho(n, round(q) + 0.0, False)
         else:
             pp = _prho(n, round(q) + 2.0, True)
@@ -2287,8 +2291,12 @@ def power_prop_test(
     qu = float(stats.norm.isf(alpha / tside))
 
     def p_body(nn, a, b):
-        return float(stats.norm.cdf((math.sqrt(nn * (a - b) ** 2) - qu * math.sqrt((a + b) * (1 - (a + b) / 2)))
-                                    / math.sqrt(a * (1 - a) + b * (1 - b))))
+        return float(
+            stats.norm.cdf(
+                (math.sqrt(nn * (a - b) ** 2) - qu * math.sqrt((a + b) * (1 - (a + b) / 2)))
+                / math.sqrt(a * (1 - a) + b * (1 - b))
+            )
+        )
 
     if power is None:
         return p_body(float(n), float(p1), float(p2))

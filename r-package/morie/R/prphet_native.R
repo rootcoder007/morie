@@ -456,6 +456,12 @@ prophet_predict <- function(fit, t_new, seasonalities = NULL,
 }
 
 # -- restored: morie-only definition kept through the rmorie sync --
+#' prphet cheatsheet
+#'
+#' One-paragraph summary of the method and the traps in using it.
+#' @return A character string.
+#' @examples
+#' prphet_cheatsheet()
 #' @export
 prphet_cheatsheet <- function() {
   paste0("prphet: y = g(t) + s(t) + h(t) + eps. Trend g = (k + ",

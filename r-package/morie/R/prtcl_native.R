@@ -267,6 +267,12 @@ kalman_filter_1d <- function(y, a, q, c, r, m0 = 0.0, p0 = 1.0) {
 }
 
 # -- restored: morie-only definition kept through the rmorie sync --
+#' prtcl cheatsheet
+#'
+#' One-paragraph summary of the method and the traps in using it.
+#' @return A character string.
+#' @examples
+#' prtcl_cheatsheet()
 #' @export
 prtcl_cheatsheet <- function() {
   paste0("prtcl: propagate, weight by the measurement density, ",

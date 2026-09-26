@@ -218,6 +218,12 @@ lasso_fista <- function(A, b, lam, max_iter = 500L, tol = 1e-10,
 }
 
 # -- restored: morie-only definition kept through the rmorie sync --
+#' prxgms cheatsheet
+#'
+#' One-paragraph summary of the method and the traps in using it.
+#' @return A character string.
+#' @examples
+#' prxgms_cheatsheet()
 #' @export
 prxgms_cheatsheet <- function() {
   paste0("prxgms: ISTA/FISTA, x = prox_{g/L}(x - grad f / L), ",
