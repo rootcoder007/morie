@@ -238,3 +238,20 @@ class TestDesignEffect:
 
     def test_empty_returns_one(self):
         assert design_effect(np.array([])) == 1.0
+
+
+def test_pps_sample_inclusion_probabilities_and_weights():
+    from morie import sampling as S
+    from morie.fn import _frame_core as pd
+
+    sizes = [50, 30, 20, 10, 10, 5, 5, 400]
+    df = pd.DataFrame({"id": list(range(8)), "sz": sizes})
+    pik = S._inclusion_probabilities([float(v) for v in sizes], 3)
+    # the 400 unit is a certainty; the other two draws share 3 - 1 = 2
+    assert pik[7] == 1.0
+    assert all(abs(pik[i] - 2 * sizes[i] / 130) <= 1e-15 for i in range(7))
+    for s in range(25):
+        out = S.pps_sample(df, "sz", 3, seed=s)
+        ids = out["id"].tolist()
+        assert len(ids) == 3 and 7 in ids
+        assert all(abs(w - 1 / pik[i]) <= 1e-15 for w, i in zip(out[".weight"].tolist(), ids))

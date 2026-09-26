@@ -28,6 +28,7 @@ Lumley, T. (2010). *Complex Surveys: A Guide to Analysis Using R*. Wiley.
 from __future__ import annotations
 
 import logging
+import math
 import warnings
 from collections.abc import Callable
 from typing import Any
@@ -172,7 +173,7 @@ def stratified_sample(
     elif isinstance(n_per_stratum, dict):
         n_map = n_per_stratum
     else:
-        n_map = {name: n_per_stratum for name in groups.groups.keys()}
+        n_map = {name: n_per_stratum for name in groups.groups}
 
     samples = []
     for stratum_val, group_df in groups:
@@ -265,8 +266,12 @@ def pps_sample(
 ) -> pd.DataFrame:
     """Probability-proportional-to-size (PPS) sampling.
 
-    Draws *n* units with probability proportional to the values in
-    *size_col*.  Negative or zero size values are excluded with a warning.
+    Draws *n* units without replacement with inclusion probability
+    :math:`\\pi_i = n x_i / \\sum x` (units whose value reaches 1 are taken
+    with certainty and the rest rescaled), by randomised systematic
+    sampling (Hartley & Rao 1962). The returned rows carry the design
+    weight ``.weight`` = :math:`1/\\pi_i`. Negative or zero size values are
+    excluded with a warning.
 
     Parameters
     ----------
@@ -315,12 +320,45 @@ def pps_sample(
         )
         clean = clean[mask]
 
-    sizes = clean[size_col].values.astype(float)
-    probs = sizes / sizes.sum()
-
+    sizes = [float(v) for v in clean[size_col].values.tolist()]
+    if n > len(sizes):
+        raise ValueError("PPS without replacement requires n <= the number of units with positive size.")
+    pik = _inclusion_probabilities(sizes, n)
     rng = np.random.default_rng(seed)
-    indices = rng.choice(len(clean), size=n, replace=False, p=probs)
-    return clean.iloc[indices].copy()
+    # randomised systematic pi-ps (Hartley & Rao 1962): a random order,
+    # then every unit whose cumulative inclusion probability crosses
+    # u, u + 1, ..., u + n - 1; unit i is drawn with probability pik[i]
+    order = [int(v) for v in rng.permutation(len(sizes)).tolist()]
+    u = float(rng.random())
+    picked, cum = [], 0.0
+    for i in order:
+        lo = cum
+        cum += pik[i]
+        if math.floor(cum - u) > math.floor(lo - u) or (lo == 0.0 and u == 0.0):
+            picked.append(i)
+    out = clean.iloc[picked].copy()
+    out[".weight"] = [1.0 / pik[i] for i in picked]
+    return out
+
+
+def _inclusion_probabilities(sizes, n):
+    """pi_i = n x_i / sum(x), with units at or above 1 taken with
+    certainty and the rest rescaled until none exceeds 1, as
+    sampling::inclusionprobabilities."""
+    pik = [0.0] * len(sizes)
+    cert = set()
+    while True:
+        rest = [i for i in range(len(sizes)) if i not in cert]
+        tot = sum(sizes[i] for i in rest)
+        k = n - len(cert)
+        new = {i for i in rest if k * sizes[i] / tot >= 1.0}
+        if not new:
+            for i in rest:
+                pik[i] = k * sizes[i] / tot
+            for i in cert:
+                pik[i] = 1.0
+            return pik
+        cert |= new
 
 
 # ---------------------------------------------------------------------------
