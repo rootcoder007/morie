@@ -18,6 +18,7 @@ Reference:
 
 from __future__ import annotations
 
+import datetime
 import math
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -47,6 +48,9 @@ class ScanCluster:
     p_value: float
 
 
+_EPOCH = datetime.date(1970, 1, 1).toordinal()
+
+
 def _haversine_km(lat1, lon1, lat2, lon2):
     R = 6371.0
     rad = math.pi / 180.0
@@ -64,7 +68,6 @@ def _poisson_lrt(n_obs: int, n_in: int, n_exp: float, n_tot: int) -> float:
     """
     if n_in == 0 or n_obs == 0 or n_obs <= n_exp:
         return 0.0
-    n_out = n_tot - n_in
     obs_out = n_tot - n_obs
     exp_out = n_tot - n_exp
     if obs_out == 0 or exp_out <= 0:
@@ -82,7 +85,7 @@ def mrm_tps_kulldorff_scan(
     window_years: float = 4.0,
     n_centers: int = 60,
     n_permutations: int = 199,
-    n_top_clusters: int = 2,
+    n_top_clusters: int = 1,
     seed: int = 42,
 ) -> list[ScanCluster]:
     """Run a 3-d (lat, lon, time) Kulldorff scan with MC inference.
@@ -115,7 +118,9 @@ def mrm_tps_kulldorff_scan(
 
     lat = df[lat_col].values
     lon = df[lon_col].values
-    t = df[date_col].values.astype("datetime64[D]").astype(np.int64)
+    # integer days since 1970-01-01 via the stdlib ordinal
+    # (datetime, Timestamp or datetime64 all print as ISO dates)
+    t = np.array([datetime.date.fromisoformat(str(v)[:10]).toordinal() - _EPOCH for v in df[date_col].values])
 
     # Sub-sample candidate centres
     center_idx = rng.choice(n, size=min(n_centers, n), replace=False)
@@ -123,11 +128,12 @@ def mrm_tps_kulldorff_scan(
     # Build candidate (centre, radius, time-start) tuples
     window_days = int(round(window_years * 365.25))
     t_min, t_max = t.min(), t.max()
-    starts = np.linspace(t_min, t_max - window_days, num=max(2, int((t_max - t_min) / window_days)))
+    starts = np.linspace(t_min, t_max - window_days, max(2, int((t_max - t_min) / window_days)))
 
-    def _scan_one(t_obs: np.ndarray) -> tuple[float, int, int, float, int, int]:
-        """Return (best_lrt, ci, ri, ti_start, n_obs, n_in)."""
-        best = (0.0, -1, -1, -1, 0, 0)
+    def _scan_one(t_obs: np.ndarray, keep=None) -> tuple[float, int, int, int, int, int, int]:
+        """Return (best_lrt, ci, ri, ti_start, n_in_cyl, n_space, n_time); ``keep``
+        collects every cylinder with a positive LRT."""
+        best = (0.0, -1, -1, -1, 0, 0, 0)
         for ci in center_idx:
             d_km = _haversine_km(lat[ci], lon[ci], lat, lon)
             for ri, r in enumerate(radii_km):
@@ -146,31 +152,33 @@ def mrm_tps_kulldorff_scan(
                         continue
                     n_exp = n_space * n_time / n
                     lrt = _poisson_lrt(n_in_cyl, n_space, n_exp, n)
+                    cand = (lrt, int(ci), int(ri), int(ti_start), n_in_cyl, n_space, n_time)
+                    if keep is not None and lrt > 0:
+                        keep.append(cand)
                     if lrt > best[0]:
-                        best = (lrt, int(ci), int(ri), int(ti_start), n_in_cyl, n_space)
+                        best = cand
         return best
 
     # Observed top cluster + MC null
-    obs = _scan_one(t)
+    candidates: list = []
+    obs = _scan_one(t, candidates)
     null = np.zeros(n_permutations, dtype=np.float64)
     for k in range(n_permutations):
         t_perm = rng.permutation(t)
         null[k] = _scan_one(t_perm)[0]
-    p_value = float((null >= obs[0]).sum() + 1) / (n_permutations + 1)
-
     if obs[1] < 0:
         return []
 
-    def _build(lrt, ci, ri, ti_start, n_in_cyl, n_space, p):
+    def _build(lrt, ci, ri, ti_start, n_in_cyl, n_space, n_time):
         r = radii_km[ri]
-        t_start = pd.Timestamp(np.datetime64(int(ti_start), "D"))
-        t_end = pd.Timestamp(np.datetime64(int(ti_start + window_days), "D"))
-        n_exp = (
-            n_space * (n_in_cyl / max(1, int((t == t).sum())))
-            if False
-            else n_space * window_days / max(1, t.max() - t.min())
-        )
+        t_start = pd.Timestamp.fromordinal(int(ti_start) + _EPOCH)
+        t_end = pd.Timestamp.fromordinal(int(ti_start + window_days) + _EPOCH)
+        # space-time permutation expectation (Kulldorff et al. 2005), the
+        # same mu the scan maximised: n_space * n_time / n
+        n_exp = n_space * n_time / n
         rr = n_in_cyl / n_exp if n_exp > 0 else float("nan")
+        # every cluster is judged against the null of the maximum LRT
+        p = float((null >= lrt).sum() + 1) / (n_permutations + 1)
         return ScanCluster(
             center_lat=float(lat[ci]),
             center_lon=float(lon[ci]),
@@ -181,20 +189,16 @@ def mrm_tps_kulldorff_scan(
             n_expected=round(float(n_exp), 2),
             relative_risk=round(float(rr), 3),
             log_lrt=round(float(lrt), 2),
-            p_value=round(p_value, 4),
+            p_value=round(p, 4),
         )
 
-    clusters = [_build(*obs, p=p_value)]
-    if n_top_clusters > 1:
-        # Find non-overlapping secondary clusters (greedy excluded-zone scan)
-        masked = np.zeros(n, dtype=bool)
-        # mask the first cluster's events
-        d0 = _haversine_km(clusters[0].center_lat, clusters[0].center_lon, lat, lon)
-        in0 = d0 <= clusters[0].radius_km
-        masked |= in0
-        for _ in range(n_top_clusters - 1):
-            # Naive: re-scan with masked events excluded (skipped here; clusters[0]
-            # is sufficient for the empirical paper's "top-1 cluster" report).
+    # secondary clusters: descending LRT, no centre within the radius of a
+    # higher-LRT cluster
+    chosen: list = []
+    for cand in sorted(candidates, key=lambda c: -c[0]):
+        if len(chosen) >= n_top_clusters:
             break
-
-    return clusters
+        ci = cand[1]
+        if all(_haversine_km(lat[c[1]], lon[c[1]], lat[ci], lon[ci]) > radii_km[c[2]] for c in chosen):
+            chosen.append(cand)
+    return [_build(*c) for c in chosen]

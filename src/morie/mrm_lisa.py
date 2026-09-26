@@ -97,7 +97,11 @@ def mrm_tps_lisa(
         id_col: optional polygon-id column (passed through to output).
         k: k-NN spatial-weights neighbourhood (default 6).
         n_permutations: MC permutations for significance. 999 is the
-            spatial-statistics convention.
+            spatial-statistics convention. Local p-values use conditional
+            randomization (Anselin 1995): z_i stays fixed and its
+            neighbours are drawn from the other n - 1 values; folded
+            pseudo p = (min(#>=, #<=) + 1) / (R + 1), as GeoDa and
+            spdep::localmoran_perm.
         seed: RNG seed for reproducibility.
 
     Returns:
@@ -121,19 +125,26 @@ def mrm_tps_lisa(
     I_global = float(I_local.sum() / (z**2).sum())
 
     # Quadrants
-    quad = np.empty(n, dtype=object)
-    quad[(z > 0) & (lag > 0)] = "HH"
-    quad[(z > 0) & (lag <= 0)] = "HL"
-    quad[(z <= 0) & (lag > 0)] = "LH"
-    quad[(z <= 0) & (lag <= 0)] = "LL"
+    # labels as a plain list: the array shim holds numbers only
+    quad = [("H" if zi > 0 else "L") + ("H" if li > 0 else "L") for zi, li in zip(z, lag)]
 
     # Significance via MC permutation (z fixed, lag permuted)
+    # conditional randomization (Anselin 1995; GeoDa, spdep::localmoran_perm):
+    # z_i stays at i and its neighbours are drawn from the other n - 1
+    # values; folded pseudo p = (min(#>=, #<=) + 1) / (R + 1)
     p_local = np.zeros(n)
-    for _ in range(n_permutations):
-        zp = rng.permutation(z)
-        lp = W @ zp
-        p_local += (np.abs(z * lp) >= np.abs(I_local)).astype(int)
-    p_local = (p_local + 1) / (n_permutations + 1)
+    for i in range(n):
+        nb = np.nonzero(W[i])[0]
+        w = W[i, nb]
+        others = np.delete(z, i)
+        ge = le = 0
+        # ties (the observed neighbour set, repeated values) count both ways
+        tol = 1e-10 * max(1.0, abs(float(I_local[i])))
+        for _ in range(n_permutations):
+            Ip = z[i] * float(w @ others[rng.choice(n - 1, size=nb.size, replace=False)])
+            ge += Ip >= I_local[i] - tol
+            le += Ip <= I_local[i] + tol
+        p_local[i] = (min(ge, le) + 1) / (n_permutations + 1)
 
     out = pd.DataFrame(
         {
@@ -150,8 +161,8 @@ def mrm_tps_lisa(
         }
     )
 
-    quads_all = {q: int((quad == q).sum()) for q in ("HH", "HL", "LH", "LL")}
-    quads_sig = {q: int(((quad == q) & (p_local <= 0.05)).sum()) for q in ("HH", "HL", "LH", "LL")}
+    quads_all = {q: sum(v == q for v in quad) for q in ("HH", "HL", "LH", "LL")}
+    quads_sig = {q: sum(v == q and pv <= 0.05 for v, pv in zip(quad, p_local)) for q in ("HH", "HL", "LH", "LL")}
 
     return LISAResult(
         n_polygons=int(n),
@@ -188,7 +199,8 @@ def mrm_tps_polygon_moran_per_year(
 
     Returns:
         DataFrame with one row per year: year, n_events, moran_I,
-        global_p_value.
+        global_p_value (one-sided permutation test of positive
+        autocorrelation, as spdep::moran.mc).
     """
     rows = []
     for c in year_cols:
@@ -198,41 +210,30 @@ def mrm_tps_polygon_moran_per_year(
         m = re.search(r"\d{4}", c)
         year = int(m.group(0)) if m else c
 
-        try:
-            res = mrm_tps_lisa(
-                data,
-                count_col=c,
-                lat_col=lat_col,
-                lon_col=lon_col,
-                k=k,
-                n_permutations=n_permutations,
-                seed=seed,
-            )
-        except ValueError:
+        # the polygons mrm_tps_lisa uses: count and centroid all present
+        d = data[[c, lat_col, lon_col]].dropna()
+        if len(d) < 5:
             continue
 
         # Global p via permutation of the whole z surface
         rng = np.random.default_rng(seed)
-        n = res.n_polygons
-        x = data[c].dropna().to_numpy(dtype=float)
+        x = d[c].to_numpy(dtype=float)
         z = (x - x.mean()) / x.std(ddof=0)
-        lat = data[lat_col].dropna().to_numpy(dtype=float)
-        lon = data[lon_col].dropna().to_numpy(dtype=float)
-        W = _knn_weights(lat, lon, k)
-        I_obs = res.global_moran_I
-        gt = 0
+        W = _knn_weights(d[lat_col].to_numpy(dtype=float), d[lon_col].to_numpy(dtype=float), k)
+        I_obs = float((z * (W @ z)).sum() / (z**2).sum())
+        # one-sided test of positive autocorrelation, as spdep::moran.mc
+        # (E[I] = -1/(n-1), so |I| >= |I_obs| is not a two-sided test)
+        ge = 0
         for _ in range(n_permutations):
             zp = rng.permutation(z)
-            I_perm = (zp * (W @ zp)).sum() / (zp**2).sum()
-            if abs(I_perm) >= abs(I_obs):
-                gt += 1
-        p_global = (gt + 1) / (n_permutations + 1)
+            ge += (zp * (W @ zp)).sum() / (zp**2).sum() >= I_obs
+        p_global = (ge + 1) / (n_permutations + 1)
 
         rows.append(
             {
                 "year": year,
                 "n_events": int(x.sum()),
-                "moran_I": I_obs,
+                "moran_I": round(I_obs, 4),
                 "global_p_value": round(p_global, 4),
             }
         )
