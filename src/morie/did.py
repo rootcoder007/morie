@@ -28,6 +28,7 @@ Arkhangelsky, D., Athey, S., Hirshberg, D. A., Imbens, G. W., & Wager, S.
 from __future__ import annotations
 
 import logging
+import math
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from itertools import combinations
@@ -36,7 +37,6 @@ from typing import Any
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as stats
-from morie.fn._sci_core import minimize
 
 
 class _MissingDep:
@@ -176,7 +176,8 @@ def _ols_robust_se(
     X: np.ndarray,
     y: np.ndarray,
     cluster_ids: np.ndarray | None = None,
-) -> tuple[np.ndarray, np.ndarray]:
+    return_vcov: bool = False,
+):
     """OLS with heteroskedasticity- or cluster-robust standard errors.
 
     Parameters
@@ -220,6 +221,8 @@ def _ols_robust_se(
         V = correction * XtX_inv @ meat @ XtX_inv
 
     se = np.sqrt(np.maximum(np.diag(V), 0.0))
+    if return_vcov:
+        return beta, se, V
     return beta, se
 
 
@@ -265,10 +268,7 @@ def _twfe_cluster_vcov(X, resid, cl, uid, tid):
 
     def nested(ids):
         owner = {}
-        for a_, c_ in zip(ids, cl):
-            if owner.setdefault(a_, c_) != c_:
-                return False
-        return True
+        return all(owner.setdefault(a_, c_) == c_ for a_, c_ in zip(ids, cl))
 
     K = k + sum(1 if nested(ids) else len(set(ids)) for ids in (uid, tid)) - 1
     XtX_inv = np.linalg.pinv(X.T @ X)
@@ -635,7 +635,6 @@ def event_study(
     beta = np.linalg.pinv(X_dm.T @ X_dm) @ (X_dm.T @ y_dm)
     V, G = _twfe_cluster_vcov(X_dm, y_dm - X_dm @ beta, cl, df[unit].tolist(), df[time].tolist())
     se = np.sqrt(np.maximum(np.diag(V), 0.0))
-    n_rel = len(periods)
     coefs = []
     for i, k in enumerate(periods):
         est_k = float(beta[i])
@@ -756,7 +755,6 @@ def test_parallel_trends(
         }
 
     df_pre = df[df[time].isin(pre_periods)].copy()
-    ref_period = pre_periods[0]
     test_periods = pre_periods[1:]
 
     # Construct interaction dummies
@@ -777,7 +775,7 @@ def test_parallel_trends(
     # cluster by the named column, else by the panel unit when given
     cl_col = cluster or unit
     cluster_ids = df_pre[cl_col].values if cl_col else None
-    beta, se = _ols_robust_se(X, y_vals, cluster_ids=cluster_ids)
+    beta, se, V = _ols_robust_se(X, y_vals, cluster_ids=cluster_ids, return_vcov=True)
 
     # Interaction coefficients start after: intercept (1) + treat (1) + time dummies
     start_idx = 1 + 1 + len(test_periods)
@@ -793,15 +791,18 @@ def test_parallel_trends(
     coef_df = pd.DataFrame(coefs)
 
     # Joint test
-    interact_betas = beta[start_idx : start_idx + len(test_periods)]
-    interact_se = se[start_idx : start_idx + len(test_periods)]
-    interact_se = np.where(interact_se > 0, interact_se, 1e-10)
-    chi2 = float(np.sum((interact_betas / interact_se) ** 2))
-    joint_p = float(stats.chi2.sf(chi2, len(test_periods)))
+    # joint Wald test with the full robust covariance, as fixest::wald:
+    # F = b' V^-1 b / q on (q, G - 1) df when clustered, (q, n - k) otherwise
+    idx = list(range(start_idx, start_idx + len(test_periods)))
+    ib = beta[idx]
+    q_ = len(idx)
+    f_joint = float(ib @ np.linalg.solve(V[np.ix_(idx, idx)], ib)) / q_
+    df2 = (len(set(cluster_ids.tolist())) - 1) if cluster_ids is not None else (X.shape[0] - X.shape[1])
+    joint_p = float(stats.f.sf(f_joint, q_, df2))
 
     return {
         "coefficients": coef_df,
-        "joint_f_stat": chi2 / len(test_periods),
+        "joint_f_stat": f_joint,
         "joint_p_value": joint_p,
         "parallel_trends_plausible": joint_p > 0.05,
     }
@@ -956,8 +957,6 @@ def group_time_att(
 
     cohorts = sorted(df.loc[np.isfinite(df["_g"]), "_g"].unique())
     all_times = sorted(df[time].unique())
-    units = df[unit].unique()
-
     results = []
 
     for g in cohorts:
@@ -1254,12 +1253,6 @@ def did_doubly_robust(
     p = df[post].values.astype(float)
     y = df[outcome].values.astype(float)
     X_cov = df[covariates].values.astype(float)
-
-    # Compute outcome change for panel-like structure:
-    # If data has repeated obs, compute Y_post - Y_pre per unit; otherwise use
-    # cross-section DR approach.
-    # For cross-section: use Y * Post interaction
-    delta_y = y  # simplified: use outcome directly with post indicator absorbed
 
     def _dr_estimate(d_v, p_v, y_v, X_v):
         # Propensity score
@@ -1606,6 +1599,67 @@ def bacon_decomposition(
 # ---------------------------------------------------------------------------
 
 
+def _sdid_fw(Ym, zeta, lam0, min_decrease, max_iter):
+    """synthdid:::sc.weight.fw with intercept: Frank-Wolfe with exact line
+    search on the simplex; stops when the objective falls by less than
+    min_decrease^2."""
+    N0 = len(Ym)
+    T0 = len(Ym[0]) - 1
+    cm = [sum(r[j] for r in Ym) / N0 for j in range(T0 + 1)]
+    Y = [[r[j] - cm[j] for j in range(T0 + 1)] for r in Ym]
+    A = [r[:T0] for r in Y]
+    b = [r[T0] for r in Y]
+    lam = [1.0 / T0] * T0 if lam0 is None else list(lam0)
+    eta = N0 * zeta**2
+    vals = []
+    t = 0
+    while t < max_iter and (t < 2 or vals[t - 2] - vals[t - 1] > min_decrease**2):
+        t += 1
+        Ax = [sum(A[i][j] * lam[j] for j in range(T0)) for i in range(N0)]
+        hg = [sum(A[i][j] * (Ax[i] - b[i]) for i in range(N0)) + eta * lam[j] for j in range(T0)]
+        k = min(range(T0), key=lambda j: hg[j])
+        dx = [-v for v in lam]
+        dx[k] = 1 - lam[k]
+        if any(v != 0 for v in dx):
+            derr = [A[i][k] - Ax[i] for i in range(N0)]
+            step = -sum(h * d for h, d in zip(hg, dx)) / (sum(e * e for e in derr) + eta * sum(d * d for d in dx))
+            st = min(1.0, max(0.0, step))
+            lam = [lam[j] + st * dx[j] for j in range(T0)]
+        err = [sum(Y[i][j] * lam[j] for j in range(T0)) - Y[i][T0] for i in range(N0)]
+        vals.append(zeta**2 * sum(v * v for v in lam) + sum(e * e for e in err) / N0)
+    return lam
+
+
+def _sdid_sparsify(v):
+    m = max(v) / 4
+    w = [x if x > m else 0.0 for x in v]
+    tot = sum(w)
+    return [x / tot for x in w]
+
+
+def _sdid_core(Y, N0, T0, opts, omega=None, lam=None, update_omega=True, update_lambda=True):
+    """synthdid::synthdid_estimate without covariates (Arkhangelsky, Athey,
+    Hirshberg, Imbens & Wager 2021)."""
+    N, T = len(Y), len(Y[0])
+    N1, T1 = N - N0, T - T0
+    Yc = [list(Y[i][:T0]) + [sum(Y[i][T0:]) / T1] for i in range(N0)]
+    Yc.append(
+        [sum(Y[i][j] for i in range(N0, N)) / N1 for j in range(T0)]
+        + [sum(Y[i][j] for i in range(N0, N) for j in range(T0, T)) / (N1 * T1)]
+    )
+    if update_lambda:
+        l1 = _sdid_fw(Yc[:N0], opts["zeta_lambda"], lam, opts["min_decrease"], 100)
+        lam = _sdid_fw(Yc[:N0], opts["zeta_lambda"], _sdid_sparsify(l1), opts["min_decrease"], 10000)
+    if update_omega:
+        Yo = [[Yc[i][j] for i in range(N0 + 1)] for j in range(T0)]
+        o1 = _sdid_fw(Yo, opts["zeta_omega"], omega, opts["min_decrease"], 100)
+        omega = _sdid_fw(Yo, opts["zeta_omega"], _sdid_sparsify(o1), opts["min_decrease"], 10000)
+    wu = [-v for v in omega] + [1.0 / N1] * N1
+    wt = [-v for v in lam] + [1.0 / T1] * T1
+    tau = sum(wu[i] * sum(Y[i][j] * wt[j] for j in range(T)) for i in range(N))
+    return tau, omega, lam
+
+
 def synthetic_did(
     data: pd.DataFrame,
     outcome: str,
@@ -1618,195 +1672,144 @@ def synthetic_did(
     n_bootstrap: int = 200,
     seed: int = 42,
     alpha: float = 0.05,
+    se_method: str = "bootstrap",
 ) -> DiDResult:
-    r"""Synthetic Difference-in-Differences estimator.
-
-    Combines synthetic control reweighting of control units with DiD to
-    produce a doubly-robust estimator.
-
-    Solves for unit weights :math:`\hat\omega` and time weights
-    :math:`\hat\lambda` that minimise weighted pre-treatment outcome
-    differences, then estimates:
-
-    .. math::
-
-        \hat\tau_{\text{SDID}} =
-        \sum_i \hat\omega_i \sum_t \hat\lambda_t
-        \bigl(Y_{it} - \hat\mu\bigr)
+    """Synthetic difference-in-differences (Arkhangelsky, Athey, Hirshberg,
+    Imbens & Wager 2021), computed as ``synthdid::synthdid_estimate``: unit
+    and time weights by Frank-Wolfe with a sparsify pass, zeta_omega =
+    (N1 T1)^(1/4) sigma and zeta_lambda = 1e-6 sigma, sigma the sd of the
+    controls' pre-period first differences. Block design: every treated
+    unit starts at the first treatment time.
 
     Parameters
     ----------
     data : pd.DataFrame
-        Balanced panel.
-    outcome, unit, time, treatment_time : str
-        Column names.
+        Long panel.
+    outcome, unit, time : str
+    treatment_time : str
+        Column of first treatment time (NaN or 0 for never treated).
     treated_units : list, optional
-        Explicit list of treated unit IDs.
     zeta : float, optional
-        Regularisation parameter for unit weights.  If ``None``,
-        automatically selected.
+        Overrides zeta_omega.
     n_bootstrap : int
-        Bootstrap replications.
+        Replications for the bootstrap and placebo standard errors.
     seed : int
-        Random seed.
     alpha : float
-        Significance level.
+    se_method : {"bootstrap", "jackknife", "placebo"}
+        As ``synthdid::vcov``: the jackknife holds the weights fixed; the
+        bootstrap and placebo re-solve them from the renormalised
+        full-sample weights.
 
     Returns
     -------
     DiDResult
-
-    References
-    ----------
-    Arkhangelsky, D., et al. (2021). Synthetic difference-in-differences.
-    *American Economic Review*, 111(12), 4088--4118.
     """
-    rng = np.random.default_rng(seed)
     df = data.copy()
-    df["_treat_time"] = df[treatment_time].astype(float)
-
+    tt = [float(v) for v in df[treatment_time].tolist()]
+    units = df[unit].tolist()
     if treated_units is None:
-        treated_units = df.loc[np.isfinite(df["_treat_time"]), unit].unique().tolist()
-
-    all_units = df[unit].unique()
-    control_units = [u for u in all_units if u not in treated_units]
-    all_times = sorted(df[time].unique())
-
-    # Determine pre and post periods
-    treat_onset_times = df.loc[df[unit].isin(treated_units), "_treat_time"]
-    if len(treat_onset_times) == 0:
+        treated_units = sorted({u for u, g in zip(units, tt) if g == g and g > 0})
+    if not treated_units:
         raise ValueError("No treated units found.")
-    first_treat = treat_onset_times.min()
-    pre_times = [t for t in all_times if t < first_treat]
-    post_times = [t for t in all_times if t >= first_treat]
+    first_treat = min(g for u, g in zip(units, tt) if u in set(treated_units) and g == g)
+    control_units = sorted(set(units) - set(treated_units))
+    times = sorted(set(df[time].tolist()))
+    pre = [t for t in times if t < first_treat]
+    if len(pre) < 2 or len(pre) == len(times):
+        raise ValueError("Need at least two pre periods and one post period.")
+    cell = {}
+    for u, t, yv in zip(units, df[time].tolist(), df[outcome].tolist()):
+        cell[(u, t)] = float(yv)
+    Y = [[cell[(u, t)] for t in times] for u in control_units + list(treated_units)]
+    N0, T0 = len(control_units), len(pre)
+    N1, T1 = len(Y) - N0, len(times) - T0
+    diffs = [Y[i][j + 1] - Y[i][j] for i in range(N0) for j in range(T0 - 1)]
+    mu = sum(diffs) / len(diffs)
+    noise = math.sqrt(sum((v - mu) ** 2 for v in diffs) / (len(diffs) - 1))
+    opts = {
+        "zeta_omega": ((N1 * T1) ** 0.25) * noise if zeta is None else float(zeta),
+        "zeta_lambda": 1e-6 * noise,
+        "min_decrease": 1e-5 * noise,
+    }
+    tau, omega, lam = _sdid_core(Y, N0, T0, opts)
 
-    if len(pre_times) == 0 or len(post_times) == 0:
-        raise ValueError("Need at least one pre and one post period.")
+    def norm1(v):
+        tot = sum(v)
+        return [x / tot for x in v] if tot > 0 else [1.0 / len(v)] * len(v)
 
-    # Build outcome matrix (units x times)
-    pivot = df.pivot_table(index=unit, columns=time, values=outcome, aggfunc="mean")
-    pivot = pivot.reindex(columns=all_times)
-
-    Y_ctrl_pre = pivot.loc[control_units, pre_times].values.astype(float)
-    Y_ctrl_post = pivot.loc[control_units, post_times].values.astype(float)
-    Y_treat_pre = pivot.loc[treated_units, pre_times].values.astype(float)
-    Y_treat_post = pivot.loc[treated_units, post_times].values.astype(float)
-
-    N_ctrl = len(control_units)
-    T_pre = len(pre_times)
-    T_post = len(post_times)
-
-    # --- Time weights (lambda) ---
-    # Minimise || Y_ctrl_pre' lambda - Y_ctrl_post_mean ||^2
-    Y_ctrl_pre_mean_across_units = Y_ctrl_pre.mean(axis=0)  # (T_pre,)
-    Y_ctrl_post_mean = Y_ctrl_post.mean()
-
-    # Simplex constraint via scipy
-    def _time_obj(lam):
-        pred = Y_ctrl_pre_mean_across_units @ lam
-        return (pred - Y_ctrl_post_mean) ** 2
-
-    from morie.fn._sci_core import LinearConstraint
-
-    lam0 = np.ones(T_pre) / T_pre
-    constraints = LinearConstraint(np.ones(T_pre), lb=1.0, ub=1.0)
-    bounds = [(0, None)] * T_pre
-    res = minimize(
-        _time_obj, lam0, method="SLSQP", bounds=bounds, constraints={"type": "eq", "fun": lambda x: x.sum() - 1}
-    )
-    lambda_hat = res.x
-
-    # --- Unit weights (omega) ---
-    # Match pre-treatment weighted-time average of controls to treated
-    Y_treat_pre_wavg = Y_treat_pre @ lambda_hat  # (N_treat,)
-    target = Y_treat_pre_wavg.mean()
-
-    Y_ctrl_pre_wavg = Y_ctrl_pre @ lambda_hat  # (N_ctrl,)
-
-    zeta_val = float(T_pre**0.25 * np.std(Y_ctrl_pre)) if zeta is None else zeta
-
-    def _unit_obj(omega):
-        pred = Y_ctrl_pre_wavg @ omega
-        reg = zeta_val * np.sum(omega**2)
-        return (pred - target) ** 2 + reg
-
-    omega0 = np.ones(N_ctrl) / N_ctrl
-    res_u = minimize(
-        _unit_obj,
-        omega0,
-        method="SLSQP",
-        bounds=[(0, None)] * N_ctrl,
-        constraints={"type": "eq", "fun": lambda x: x.sum() - 1},
-    )
-    omega_hat = res_u.x
-
-    # --- SDID estimate ---
-    Y_treat_post_mean = Y_treat_post.mean()
-    Y_treat_pre_lam = float(Y_treat_pre_wavg.mean())
-    Y_ctrl_post_omega = float(omega_hat @ Y_ctrl_post.mean(axis=1))
-    Y_ctrl_pre_omega_lam = float(omega_hat @ Y_ctrl_pre_wavg)
-
-    tau_sdid = (Y_treat_post_mean - Y_treat_pre_lam) - (Y_ctrl_post_omega - Y_ctrl_pre_omega_lam)
-
-    # Bootstrap
-    boot_ests = []
-    for _ in range(n_bootstrap):
-        b_ctrl = rng.choice(N_ctrl, size=N_ctrl, replace=True)
-        b_treat = rng.choice(len(treated_units), size=len(treated_units), replace=True)
-        try:
-            Ycp = Y_ctrl_pre[b_ctrl]
-            Yco = Y_ctrl_post[b_ctrl]
-            Ytp = Y_treat_pre[b_treat]
-            Yto = Y_treat_post[b_treat]
-
-            cpm = Ycp.mean(axis=0)
-            com = Yco.mean()
-            res_t = minimize(
-                lambda l: (cpm @ l - com) ** 2,
-                lam0,
-                method="SLSQP",
-                bounds=bounds,
-                constraints={"type": "eq", "fun": lambda x: x.sum() - 1},
-            )
-            lam_b = res_t.x
-            tp_wt = (Ytp @ lam_b).mean()
-            to_m = Yto.mean()
-
-            cpw = Ycp @ lam_b
-            tgt_b = (Ytp @ lam_b).mean()
-            res_o = minimize(
-                lambda o: (cpw @ o - tgt_b) ** 2 + zeta_val * np.sum(o**2),
-                omega0[: len(b_ctrl)] if len(b_ctrl) == N_ctrl else np.ones(len(b_ctrl)) / len(b_ctrl),
-                method="SLSQP",
-                bounds=[(0, None)] * len(b_ctrl),
-                constraints={"type": "eq", "fun": lambda x: x.sum() - 1},
-            )
-            om_b = res_o.x
-            cow = float(om_b @ Yco.mean(axis=1))
-            cpow = float(om_b @ cpw)
-            boot_ests.append((to_m - tp_wt) - (cow - cpow))
-        except Exception:
-            continue
-
-    se_est = float(np.std(boot_ests, ddof=1)) if len(boot_ests) > 1 else np.nan
-    t_val = tau_sdid / se_est if se_est > 0 else 0.0
-    p_val = float(2 * stats.norm.sf(abs(t_val)))
-    ci_lo, ci_hi = _make_ci(tau_sdid, se_est, alpha)
-
+    rng = np.random.default_rng(seed)
+    se_est = float("nan")
+    N = len(Y)
+    if se_method == "jackknife":
+        if N0 < N - 1 and sum(1 for v in omega if v != 0) > 1:
+            jk = []
+            for i in range(N):
+                ind = [k for k in range(N) if k != i]
+                n0 = sum(1 for k in ind if k < N0)
+                jk.append(
+                    _sdid_core(
+                        [Y[k] for k in ind],
+                        n0,
+                        T0,
+                        opts,
+                        omega=norm1([omega[k] for k in ind if k < N0]),
+                        lam=lam,
+                        update_omega=False,
+                        update_lambda=False,
+                    )[0]
+                )
+            m = sum(jk) / N
+            se_est = math.sqrt((N - 1) / N * sum((v - m) ** 2 for v in jk))
+    elif se_method == "placebo":
+        if N0 > N1:
+            reps = []
+            for _ in range(n_bootstrap):
+                ind = [int(v) for v in rng.permutation(N0).tolist()]
+                n0 = N0 - N1
+                reps.append(
+                    _sdid_core([Y[k] for k in ind], n0, T0, opts, omega=norm1([omega[k] for k in ind[:n0]]), lam=lam)[0]
+                )
+            m = sum(reps) / len(reps)
+            se_est = math.sqrt(sum((v - m) ** 2 for v in reps) / len(reps))
+    elif se_method == "bootstrap":
+        if N0 < N - 1:
+            reps = []
+            while len(reps) < n_bootstrap:
+                ind = sorted(int(v) for v in rng.integers(0, N, size=N).tolist())
+                if all(k < N0 for k in ind) or all(k >= N0 for k in ind):
+                    continue
+                reps.append(
+                    _sdid_core(
+                        [Y[k] for k in ind],
+                        sum(1 for k in ind if k < N0),
+                        T0,
+                        opts,
+                        omega=norm1([omega[k] for k in ind if k < N0]),
+                        lam=lam,
+                    )[0]
+                )
+            m = sum(reps) / len(reps)
+            se_est = math.sqrt(sum((v - m) ** 2 for v in reps) / len(reps))
+    else:
+        raise ValueError("se_method must be 'bootstrap', 'jackknife' or 'placebo'")
+    t_val = tau / se_est if se_est > 0 else 0.0
+    p_val = float(2 * stats.norm.sf(abs(t_val))) if se_est == se_est else float("nan")
+    ci_lo, ci_hi = _make_ci(tau, se_est, alpha)
     return DiDResult(
-        estimate=tau_sdid,
+        estimate=float(tau),
         std_error=se_est,
         t_stat=t_val,
         p_value=p_val,
         ci_lower=ci_lo,
         ci_upper=ci_hi,
-        n_treated=len(treated_units),
-        n_control=N_ctrl,
+        n_treated=N1,
+        n_control=N0,
         method="synthetic_did",
         details={
-            "unit_weights": dict(zip(control_units, omega_hat.tolist())),
-            "time_weights": dict(zip(pre_times, lambda_hat.tolist())),
-            "zeta": zeta_val,
+            "unit_weights": dict(zip(control_units, omega)),
+            "time_weights": dict(zip(pre, lam)),
+            "zeta": opts["zeta_omega"],
+            "se_method": se_method,
         },
     )
 

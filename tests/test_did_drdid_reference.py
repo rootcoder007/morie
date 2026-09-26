@@ -122,3 +122,55 @@ def test_twfe_and_event_study_match_fixest():
         i = rt.index(k)
         assert abs(c["estimate"].tolist()[i] - b) <= 1e-10 and abs(c["std_error"].tolist()[i] - s) <= 1e-11
     assert abs(es.pre_trend_f_stat - 0.216136594631) <= 1e-10
+
+
+def test_synthetic_did_matches_synthdid():
+    # synthdid::synthdid_estimate(Y, N0, T0) and vcov(method = "jackknife")
+    import math
+
+    from morie import did as D
+    from morie.fn import _frame_core as pd
+
+    rows = []
+    for unit in range(1, 41):
+        for time in range(1, 9):
+            g = 4 if unit <= 12 else (6 if unit <= 24 else 0)
+            if g == 6:
+                continue
+            dd = int(g > 0 and time >= g)
+            x = round(math.sin(1.3 * unit) + 0.2 * time, 4)
+            y = round(
+                0.5 * unit / 10
+                + 0.3 * time
+                + 1.5 * dd
+                + 0.4 * dd * (time - g) * (g > 0)
+                + 0.3 * math.sin(2.7 * unit * time)
+                + 0.2 * x,
+                5,
+            )
+            rows.append((unit, time, float(g) if g else float("nan"), y))
+    d = pd.DataFrame({k: [r[j] for r in rows] for j, k in enumerate(("unit", "time", "tt", "y"))})
+    r = D.synthetic_did(d, "y", "unit", "time", "tt", se_method="jackknife")
+    assert abs(r.estimate - 2.27183974304) <= 1e-10 and abs(r.std_error - 0.0699340890602) <= 1e-11
+    lam = list(r.details["time_weights"].values())
+    assert max(abs(a - b) for a, b in zip(lam, (0.314692, 0.321395, 0.363913))) <= 1e-6
+
+
+def test_parallel_trends_joint_wald_matches_fixest():
+    # reference: fixest feols(y ~ g * factor(t), cluster = ~id); wald(keep = "^g:tf")
+    import numpy as np
+    import pandas as pd
+
+    from morie.did import test_parallel_trends as tpt
+
+    ids, ts = np.meshgrid(np.arange(1, 31), np.arange(1, 7))
+    ids, ts = ids.ravel(), ts.ravel()
+    g = (ids <= 12).astype(float)
+    y = 0.3 * g + 0.1 * ts + np.sin(1.7 * ids) + 0.05 * g * ts + 0.8 * np.cos(0.9 * ids * ts)
+    df = pd.DataFrame({"id": ids, "t": ts, "g": g, "y": y})
+    r1 = tpt(df, "y", "g", "t", unit="id", pre_periods=[1, 2, 3, 4])
+    assert abs(r1["joint_f_stat"] - 0.942822618248327) < 1e-10
+    assert abs(r1["joint_p_value"] - 0.432733321843015) < 1e-10
+    r2 = tpt(df, "y", "g", "t", pre_periods=[1, 2, 3, 4])
+    assert abs(r2["joint_f_stat"] - 0.188423585724467) < 1e-10
+    assert abs(r2["joint_p_value"] - 0.904089344068759) < 1e-10
