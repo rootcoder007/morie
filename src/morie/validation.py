@@ -26,20 +26,17 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
+
 
 try:
     from morie.fn._ml_core import BaseEstimator, clone
 except ImportError:
-    BaseEstimator = _MissingDep('BaseEstimator')
-    clone = _MissingDep('clone')
+    BaseEstimator = _MissingDep("BaseEstimator")
+    clone = _MissingDep("clone")
 
 logger = logging.getLogger(__name__)
 
@@ -592,7 +589,6 @@ def bootstrap_validate(
         oob_scores.append(oob_score)
 
     oob_arr = np.array(oob_scores)
-    boot_arr = np.array(boot_scores)
 
     if method == "632":
         corrected = 0.368 * apparent + 0.632 * oob_arr.mean()
@@ -609,7 +605,6 @@ def bootstrap_validate(
     else:
         raise ValueError(f"Unknown bootstrap method: {method}. Use '632' or '632plus'.")
 
-    scores_arr = np.array([corrected] + list(oob_arr))
     z = sp_stats.norm.ppf(0.975)
     se = oob_arr.std() / np.sqrt(len(oob_arr))
 
@@ -675,7 +670,6 @@ def assess_calibration(
     """
     y_true = np.asarray(y_true, dtype=int)
     y_pred = np.asarray(y_pred, dtype=float)
-    n = len(y_true)
 
     # Hosmer-Lemeshow test
     order = np.argsort(y_pred)
@@ -747,6 +741,7 @@ def assess_discrimination(
     n_bootstrap: int = 1000,
     confidence: float = 0.95,
     random_state: int = 42,
+    ci_method: str = "delong",
 ) -> DiscriminationResult:
     """
     Comprehensive discrimination assessment for a binary classifier.
@@ -761,8 +756,11 @@ def assess_discrimination(
         Predicted probabilities from a reference model.  If provided,
         NRI and IDI are computed comparing *y_pred* to *y_pred_ref*.
     n_bootstrap : int
-        Number of bootstrap replicates for the AUC confidence interval
-        (DeLong approximation is used when possible; bootstrap is fallback).
+        Number of bootstrap replicates when ``ci_method="bootstrap"``.
+    ci_method : str
+        ``"delong"`` (default): AUC +/- z SE with the DeLong, DeLong &
+        Clarke-Pearson (1988) variance, clipped to [0, 1], as
+        ``pROC::ci.auc``; ``"bootstrap"``: percentile bootstrap.
     confidence : float
     random_state : int
 
@@ -788,18 +786,38 @@ def assess_discrimination(
 
     auroc = roc_auc_score(y_true, y_pred)
 
-    # Bootstrap CI for AUC
-    rng = np.random.default_rng(random_state)
-    boot_aucs = []
-    for _ in range(n_bootstrap):
-        idx = rng.integers(0, len(y_true), size=len(y_true))
-        if len(np.unique(y_true[idx])) < 2:
-            continue
-        boot_aucs.append(roc_auc_score(y_true[idx], y_pred[idx]))
-    boot_aucs = np.array(boot_aucs)
     alpha = (1 - confidence) / 2
-    ci_lo = float(np.percentile(boot_aucs, 100 * alpha))
-    ci_hi = float(np.percentile(boot_aucs, 100 * (1 - alpha)))
+    if ci_method == "delong":
+        # structural components: V10_i over positives, V01_j over negatives
+        pos = [float(v) for v, t in zip(y_pred.tolist(), y_true.tolist()) if t == 1]
+        neg = [float(v) for v, t in zip(y_pred.tolist(), y_true.tolist()) if t == 0]
+        n1, n0 = len(pos), len(neg)
+
+        def psi(a, b):
+            return 1.0 if a > b else 0.5 if a == b else 0.0
+
+        v10 = [sum(psi(a, b) for b in neg) / n0 for a in pos]
+        v01 = [sum(psi(a, b) for a in pos) / n1 for b in neg]
+        m10, m01 = sum(v10) / n1, sum(v01) / n0
+        s10 = sum((v - m10) ** 2 for v in v10) / (n1 - 1)
+        s01 = sum((v - m01) ** 2 for v in v01) / (n0 - 1)
+        se = (s10 / n1 + s01 / n0) ** 0.5
+        z = float(sp_stats.norm.ppf(1 - alpha))
+        ci_lo = max(0.0, float(auroc) - z * se)
+        ci_hi = min(1.0, float(auroc) + z * se)
+    elif ci_method == "bootstrap":
+        rng = np.random.default_rng(random_state)
+        boot_aucs = []
+        for _ in range(n_bootstrap):
+            idx = rng.integers(0, len(y_true), size=len(y_true))
+            if len(np.unique(y_true[idx])) < 2:
+                continue
+            boot_aucs.append(roc_auc_score(y_true[idx], y_pred[idx]))
+        boot_aucs = np.array(boot_aucs)
+        ci_lo = float(np.percentile(boot_aucs, 100 * alpha))
+        ci_hi = float(np.percentile(boot_aucs, 100 * (1 - alpha)))
+    else:
+        raise ValueError("ci_method must be 'delong' or 'bootstrap'")
 
     # C-statistic = AUC for binary outcomes
     c_stat = auroc
@@ -1068,10 +1086,7 @@ def temporal_validate(
     scorer = get_scorer(scoring)
 
     dates = pd.to_datetime(X[date_col])
-    if split_date is None:
-        split_date = dates.quantile(split_quantile)
-    else:
-        split_date = pd.Timestamp(split_date)
+    split_date = dates.quantile(split_quantile) if split_date is None else pd.Timestamp(split_date)
 
     train_mask = dates <= split_date
     test_mask = dates > split_date
