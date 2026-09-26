@@ -55,7 +55,7 @@ def proportion_ci(
         centre = (p_hat + z**2 / (2 * n)) / denom
         half_width = z * math.sqrt(p_hat * (1 - p_hat) / n + z**2 / (4 * n**2)) / denom
         return float(max(0.0, centre - half_width)), float(min(1.0, centre + half_width))
-    elif method == "clopper-pearson":
+    elif method in ("clopper-pearson", "exact"):
         lower = float(stats.beta.ppf(alpha / 2, successes, n - successes + 1)) if successes > 0 else 0.0
         upper = float(stats.beta.ppf(1 - alpha / 2, successes + 1, n - successes)) if successes < n else 1.0
         return lower, upper
@@ -64,8 +64,14 @@ def proportion_ci(
         p_tilde = (successes + z**2 / 2) / n_tilde
         half_width = z * math.sqrt(p_tilde * (1 - p_tilde) / n_tilde)
         return float(max(0.0, p_tilde - half_width)), float(min(1.0, p_tilde + half_width))
+    elif method == "wald":
+        # Wald: p_hat -/+ z sqrt(p_hat (1 - p_hat) / n), clipped to [0, 1]
+        half_width = z * math.sqrt(p_hat * (1 - p_hat) / n)
+        return (float(max(0.0, p_hat - half_width)), float(min(1.0, p_hat + half_width)))
     else:
-        raise ValueError(f"Unknown method '{method}'. Use 'wilson', 'clopper-pearson', or 'agresti-coull'.")
+        raise ValueError(
+            f"Unknown method '{method}'. Use 'wilson', 'clopper-pearson' (or 'exact'), 'agresti-coull' or 'wald'."
+        )
 
 
 prop_ci = proportion_ci
