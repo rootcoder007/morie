@@ -246,3 +246,44 @@ def test_group_time_att_aggregation_matches_did_aggte():
             0.0758576178078758,
         ],
     )
+
+
+def test_bacon_decomposition_matches_bacondecomp():
+    # reference: bacondecomp::bacon(y ~ D, id_var = "id", time_var = "t")
+    import math
+
+    import pandas as pd
+
+    from morie.did import bacon_decomposition
+
+    gid = [3] * 15 + [4] * 15 + [5] * 12 + [0] * 18
+    rows = []
+    for t in range(1, 7):
+        for i in range(1, 61):
+            g = gid[i - 1]
+            x = math.cos(1.3 * i)
+            eff = 0.5 + 0.1 * (t - g) if g > 0 and t >= g else 0.0
+            y = math.sin(0.7 * i) + 0.2 * t + 0.4 * x * t / 3 + eff + 0.3 * math.cos(2.1 * i * t)
+            rows.append({"id": i, "t": t, "y": y, "D": int(g > 0 and t >= g)})
+    r = bacon_decomposition(pd.DataFrame(rows), "y", "D", "id", "t")
+    c = r.components
+    got = {
+        (int(a), 0 if b == "never_treated" else int(b)): (e, w)
+        for a, b, e, w in zip(c["group1"], c["group2"], c["estimate"], c["weight"])
+    }
+    ref = {
+        (3, 4): (0.523568287270677, 0.0459981600735971),
+        (3, 5): (0.616746934635197, 0.0735970561177553),
+        (3, 0): (0.752103993303805, 0.2207911683532659),
+        (4, 3): (0.388211962376151, 0.0689972401103956),
+        (4, 5): (0.524521848065035, 0.0551977920883165),
+        (4, 0): (0.642924957220009, 0.2483900643974241),
+        (5, 3): (0.243329389807110, 0.0735970561177553),
+        (5, 4): (0.319243244825162, 0.0367985280588776),
+        (5, 0): (0.542736084292959, 0.1766329346826127),
+    }
+    assert set(got) == set(ref)
+    for k, (e, w) in ref.items():
+        assert abs(got[k][0] - e) < 1e-10
+        assert abs(got[k][1] - w) < 1e-10
+    assert abs(r.overall_estimate - 0.576487105060352) < 1e-10
