@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,391 single-purpose callables** -- every one
+``morie.fn`` ships **18,390 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -15685,6 +15685,7 @@ Full list
    "spatial_cluster_lisa", "spcllm"
    "spatial_combined", "sacmod"
    "spatial_concordance_kappa", "spcgme"
+   "spatial_covariance_comparison", "spcmp"
    "spatial_cross_validation", "spcrs"
    "spatial_cure_rate", "zescr"
    "spatial_cv_block", "zxsbv"
@@ -16082,8 +16083,6 @@ Full list
    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1685", "statistical_methods_for_spatial_data_analysis1u1685"
    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1686", "statistical_methods_for_spatial_data_analysis1u1686"
    "statistical_methods_for_spatial_data_analysis_chapter_6_equation_54", "statistical_methods_for_spatial_data_analysis6e54"
-   "statistical_methods_for_spatial_data_analysis_chapter_6_equation_58", "statistical_methods_for_spatial_data_analysis6e58"
-   "statistical_methods_for_spatial_data_analysis_chapter_6_equation_60", "statistical_methods_for_spatial_data_analysis6e60"
    "statistical_methods_for_spatial_data_analysis_chapter_6_equation_97", "statistical_methods_for_spatial_data_analysis6e97"
    "statistical_methods_for_spatial_data_analysis_chapter_6_equation_98", "statistical_methods_for_spatial_data_analysis6e98"
    "statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_27_unnumbered_111", "statistics_fourth_edition_david_freeman_robert_pisani_and_ro27u111"
