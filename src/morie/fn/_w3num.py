@@ -221,8 +221,11 @@ def ncdf(z):
     z = float(z)
     if z == 0.0:
         return 0.5
-    p = gammp(0.5, 0.5 * z * z)
-    return 0.5 * (1.0 + p) if z > 0.0 else 0.5 * (1.0 - p)
+    if z > 0.0:
+        return 0.5 * (1.0 + gammp(0.5, 0.5 * z * z))
+    # the lower tail as 0.5 Q(1/2, z^2/2): 0.5 (1 - P) cancels to 0
+    # long before Phi(z) underflows
+    return 0.5 * gammq(0.5, 0.5 * z * z)
 
 
 def npdf(z):

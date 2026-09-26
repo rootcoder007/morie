@@ -21,27 +21,15 @@ def _t_cdf(t, v):
 
 
 def t_quantile(p, v):
-    """Student-t quantile by bisection on the betainc-based CDF
-    (accurate to ~1e-13; anchored against R's qt in the tests)."""
+    """Student-t quantile.
+
+    Delegates to the core t.ppf, which inverts the tail that carries the
+    information (the old bisection inverted 1 - p, so p = 1e-15 lost every
+    digit and came back 5% off R's qt)."""
+    from . import _stats_core as sc
     if not 0.0 < p < 1.0:
         raise ValueError("p in (0,1) required")
-    if p == 0.5:
-        return 0.0
-    neg = p < 0.5
-    pp = 1.0 - p if neg else p
-    lo, hi = 0.0, 1.0
-    while _t_cdf(hi, v) < pp:
-        hi *= 2.0
-        if hi > 1e300:
-            break
-    for _ in range(200):
-        mid = 0.5 * (lo + hi)
-        if _t_cdf(mid, v) < pp:
-            lo = mid
-        else:
-            hi = mid
-    q = 0.5 * (lo + hi)
-    return -q if neg else q
+    return float(sc.t.ppf(p, v))
 
 
 def _median(v):

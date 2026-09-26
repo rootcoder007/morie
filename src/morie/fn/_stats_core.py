@@ -36,6 +36,21 @@ def _norm_cdf(z):
     return 0.5 * _math.erfc(-z / _math.sqrt(2.0))
 
 
+def _log_ndtr(z):
+    """log Phi(z).  Direct where Phi(z) is representable with full
+    relative accuracy; below z = -20 the asymptotic series
+    log Phi(z) = -z^2/2 - log(-z) - log(2 pi)/2
+                 + log(1 - 1/z^2 + 3/z^4 - 15/z^6 + 105/z^8)
+    (Abramowitz and Stegun 26.2.12), which stays finite long after
+    Phi(z) underflows."""
+    if z > -20.0:
+        c = 0.5 * _math.erfc(-z / _math.sqrt(2.0))
+        return _math.log(c) if z < 5.0 else _math.log1p(-0.5 * _math.erfc(z / _math.sqrt(2.0)))
+    z2 = z * z
+    series = 1.0 - 1.0 / z2 + 3.0 / z2 ** 2 - 15.0 / z2 ** 3 + 105.0 / z2 ** 4 - 945.0 / z2 ** 5
+    return -0.5 * z2 - _math.log(-z) - 0.5 * _math.log(2.0 * _math.pi) + _math.log(series)
+
+
 def _norm_pdf(z):
     return _math.exp(-0.5 * z * z) / _math.sqrt(2.0 * _math.pi)
 
@@ -96,6 +111,39 @@ def _gammainc_p(a, x):
     return 1.0 - _math.exp(ln_pre) * h
 
 
+def _gammainc_q(a, x):
+    """Regularized upper incomplete gamma Q(a, x) = 1 - P(a, x), computed
+    directly (Lentz continued fraction) where it is small, so the upper
+    tail keeps full relative accuracy instead of cancelling in 1 - P."""
+    if x < 0 or a <= 0:
+        raise ValueError("invalid arguments")
+    if x == 0:
+        return 1.0
+    if x < a + 1.0:
+        return 1.0 - _gammainc_p(a, x)
+    ln_pre = a * _math.log(x) - x - _math.lgamma(a)
+    tiny = 1e-300
+    b = x + 1.0 - a
+    c = 1.0 / tiny
+    d = 1.0 / b
+    h = d
+    for i in range(1, 500):
+        an = -i * (i - a)
+        b += 2.0
+        d = an * d + b
+        if abs(d) < tiny:
+            d = tiny
+        c = b + an / c
+        if abs(c) < tiny:
+            c = tiny
+        d = 1.0 / d
+        delta = d * c
+        h *= delta
+        if abs(delta - 1.0) < 1e-16:
+            break
+    return _math.exp(ln_pre) * h
+
+
 def _stirling_tail(z):
     """ln Gamma(z) - [(z - 1/2) ln z - z + ln(2 pi)/2]: the Stirling
     series, accurate to double precision for z >= 20."""
@@ -140,6 +188,21 @@ def _betainc(a, b, x):
     return 1.0 - _math.exp(ln_pre) * _betacf(b, a, 1.0 - x) / b
 
 
+def _betaincc(a, b, x):
+    """1 - I_x(a, b) = I_{1-x}(b, a), computed directly on the side where
+    it is small so an upper tail does not cancel."""
+    if not 0.0 <= x <= 1.0 or a <= 0 or b <= 0:
+        raise ValueError("invalid arguments")
+    if x == 0.0:
+        return 1.0
+    if x == 1.0:
+        return 0.0
+    ln_pre = (-_lbeta(a, b) + a * _math.log(x) + b * _math.log1p(-x))
+    if x < (a + 1.0) / (a + b + 2.0):
+        return 1.0 - _math.exp(ln_pre) * _betacf(a, b, x) / a
+    return _math.exp(ln_pre) * _betacf(b, a, 1.0 - x) / b
+
+
 def _betacf(a, b, x):
     tiny = 1e-300
     qab, qap, qam = a + b, a + 1.0, a - 1.0
@@ -175,36 +238,67 @@ def _betacf(a, b, x):
     return h
 
 
-def _ppf_from_cdf(cdf, p, lo, hi, iters=200):
-    """Monotone-cdf inversion: bisection with Newton-like midpoint bias."""
+def _invert(cdf, lo, hi, p=None, q=None, sf=None, iters=3000):
+    """Solve cdf(x) = p, or sf(x) = q, for a monotone distribution.
+
+    The tail that carries the information is used: a lower probability
+    solves on the cdf, an upper one on the sf (given directly as q, or as
+    1 - p when p > 1/2 and an sf is available), so neither tail loses
+    digits to 1 - p.  Bisection is geometric when the bracket has one
+    sign -- quantiles like 1e-200 need relative, not absolute, steps --
+    and stops at relative width 2e-16.
+    """
+    if q is not None:
+        use_sf, target = True, q
+    elif sf is not None and p > 0.5:
+        use_sf, target = True, 1.0 - p
+    else:
+        use_sf, target = False, p
+
+    def h(x):
+        return target - sf(x) if use_sf else cdf(x) - target
+
+    grow = 0
+    while h(hi) < 0 and grow < 2000:
+        hi = hi * 2.0 if hi > 0 else (hi / 2.0 if hi < 0 else 1.0)
+        grow += 1
+    while h(lo) > 0 and grow < 4000:
+        lo = lo * 2.0 if lo < 0 else (lo / 2.0 if lo > 0 else -1.0)
+        grow += 1
+    for _ in range(iters):
+        if lo == 0.0 and hi > 0.0:
+            mid = hi * 1e-10 if hi * 1e-10 > 1e-300 else hi * 0.5
+        elif hi == 0.0 and lo < 0.0:
+            mid = lo * 1e-10 if -lo * 1e-10 > 1e-300 else lo * 0.5
+        elif lo > 0.0 and hi > 2.0 * lo:
+            mid = _math.sqrt(lo) * _math.sqrt(hi)
+        elif hi < 0.0 and lo < 2.0 * hi:
+            mid = -_math.sqrt(-lo) * _math.sqrt(-hi)
+        else:
+            mid = 0.5 * (lo + hi)
+        if mid <= lo or mid >= hi:
+            break
+        v = h(mid)
+        if v < 0:
+            lo = mid
+        elif v > 0:
+            hi = mid
+        else:
+            return mid
+        if hi - lo <= 2e-16 * max(_bi_abs(lo), _bi_abs(hi)):
+            break
+    return 0.5 * (lo + hi)
+
+
+def _ppf_from_cdf(cdf, p, lo, hi, iters=200, sf=None):
+    """Monotone-cdf inversion (see _invert); p = 0 / 1 give the bracket."""
     if not 0.0 < p < 1.0:
         if p == 0.0:
             return lo
         if p == 1.0:
             return hi
         raise ValueError("p must be in [0, 1]")
-    # expand upper bracket if needed
-    flo, fhi = cdf(lo), cdf(hi)
-    grow = 0
-    while fhi < p and grow < 200:
-        hi *= 2.0 if hi > 0 else 0.5
-        if hi == 0:
-            hi = 1.0
-        fhi = cdf(hi)
-        grow += 1
-    while flo > p and grow < 400:
-        lo = lo * 2.0 if lo < 0 else lo - _bi_abs(hi)
-        flo = cdf(lo)
-        grow += 1
-    for _ in range(iters):
-        mid = 0.5 * (lo + hi)
-        if cdf(mid) < p:
-            lo = mid
-        else:
-            hi = mid
-        if hi - lo < 1e-14 * max(1.0, abs(hi)):
-            break
-    return 0.5 * (lo + hi)
+    return _invert(cdf, lo, hi, p=p, sf=sf)
 
 
 def _bi_abs(v):
@@ -505,8 +599,24 @@ class _Dist:
         return 1.0 - c
 
     def isf(self, q, *args, **kw):
+        """Upper quantile.  When the distribution has its own sf the
+        equation sf(x) = q is solved directly, so a tiny q keeps its
+        digits (ppf(1 - q) cannot: 1 - 1e-20 is 1.0)."""
+        has_sf = type(self).sf is not _Dist.sf
+
         def one(v):
-            return self.ppf(1.0 - v, *args, **kw)
+            v = float(v)
+            if v != v or not 0.0 <= v <= 1.0:
+                return _math.nan
+            if not has_sf or v >= 0.5 or v in (0.0, 1.0):
+                return self.ppf(1.0 - v, *args, **kw)
+            lo_b, hi_b = self._bounds(*args, **kw) if self._bounds.__code__.co_argcount > 1 \
+                else self._bounds()
+            med = float(self.ppf(0.5, *args, **kw))
+            lo = med
+            hi = hi_b if hi_b != _math.inf else (_bi_abs(med) * 2.0 + 1.0)
+            return _invert(lambda x: float(self.cdf(x, *args, **kw)), lo, hi, q=v,
+                           sf=lambda x: float(self.sf(x, *args, **kw)))
         return _maybe_map(one, q)
 
     def logpdf(self, x, *args, **kw):
@@ -692,6 +802,27 @@ class _Norm(_Dist):
             *self._ls(loc, scale))
         return _maybe_map(lambda v: _norm_cdf(-d._z(v)), x)
 
+    def logpdf(self, x, loc=None, scale=None):
+        d = self if loc is None and scale is None else _Norm(
+            *self._ls(loc, scale))
+        return _maybe_map(lambda v: -0.5 * d._z(v) ** 2 - 0.5 * _math.log(2.0 * _math.pi)
+                          - _math.log(d.scale), x)
+
+    def logcdf(self, x, loc=None, scale=None):
+        d = self if loc is None and scale is None else _Norm(
+            *self._ls(loc, scale))
+        return _maybe_map(lambda v: _log_ndtr(d._z(v)), x)
+
+    def logsf(self, x, loc=None, scale=None):
+        d = self if loc is None and scale is None else _Norm(
+            *self._ls(loc, scale))
+        return _maybe_map(lambda v: _log_ndtr(-d._z(v)), x)
+
+    def isf(self, q, loc=None, scale=None):
+        d = self if loc is None and scale is None else _Norm(
+            *self._ls(loc, scale))
+        return _maybe_map(lambda v: d.loc - d.scale * _norm_ppf(v), q)
+
     def ppf(self, q, loc=None, scale=None):
         # either argument alone overrides the frozen value (scipy's
         # norm.cdf(x, scale=s) keeps loc = 0); the old test on loc only
@@ -739,12 +870,30 @@ class _Chi2(_Dist):
         return _maybe_map(
             lambda v: 0.0 if v <= 0 else _gammainc_p(k / 2.0, v / 2.0), x)
 
+    def sf(self, x, df=None):
+        k = self.df if df is None else float(df)
+        return _maybe_map(
+            lambda v: 1.0 if v <= 0 else _gammainc_q(k / 2.0, v / 2.0), x)
+
+    def logpdf(self, x, df=None):
+        k = self.df if df is None else float(df)
+
+        def one(v):
+            if v < 0:
+                return -_math.inf
+            if v == 0:
+                return _math.inf if k < 2 else (_math.log(0.5) if k == 2 else -_math.inf)
+            return ((k / 2 - 1) * _math.log(v) - v / 2
+                    - (k / 2) * _math.log(2) - _math.lgamma(k / 2))
+        return _maybe_map(one, x)
+
     def ppf(self, q, df=None):
         k = self.df if df is None else float(df)
         return _maybe_map(
             lambda v: _ppf_from_cdf(
                 lambda t: 0.0 if t <= 0 else _gammainc_p(k / 2, t / 2),
-                v, 0.0, k + 10.0), q)
+                v, 0.0, k + 10.0,
+                sf=lambda t: 1.0 if t <= 0 else _gammainc_q(k / 2, t / 2)), q)
 
 
 def _t_cornish_fisher(x, nu):
@@ -808,7 +957,14 @@ class _T(_Dist):
                     if _bi.abs(step) <= 1e-17 * p_:
                         break
                 return p_ if lower else 1.0 - p_
-            ib = _betainc(k / 2.0, 0.5, k / (k + v * v))
+            # k / (k + v^2) without overflowing v^2 at |v| > 1e154
+            r = _math.sqrt(k) / _bi.abs(v)
+            if r < 1e-100:
+                # far tail: I_x(k/2, 1/2) = r^k / ((k/2) B(k/2, 1/2)) (1 + O(r^2)),
+                # in logs so it survives where r^k underflows
+                ib = _math.exp(k * _math.log(r) - _math.log(k / 2.0) - _lbeta(k / 2.0, 0.5))
+            else:
+                ib = _betainc(k / 2.0, 0.5, r * r / (1.0 + r * r) if r < 1e150 else 1.0)
             return 1.0 - 0.5 * ib if v > 0 else 0.5 * ib
         return _maybe_map(one, x)
 
@@ -834,6 +990,20 @@ class _T(_Dist):
         """Upper tail by symmetry, sf(v) = cdf(-v): no 1 - cdf loss."""
         k = self.df if df is None else float(df)
         return _maybe_map(lambda v: self.cdf(-v, df=k), x)
+
+    def logpdf(self, x, df=None):
+        k = self.df if df is None else float(df)
+
+        def one(v):
+            if k == _math.inf:
+                return -0.5 * v * v - 0.5 * _math.log(2.0 * _math.pi)
+            return (-0.5 * _math.log(k) - _lbeta(0.5, k / 2.0)
+                    - (k + 1) / 2 * _math.log1p(v * v / k))
+        return _maybe_map(one, x)
+
+    def isf(self, q, df=None):
+        k = self.df if df is None else float(df)
+        return _maybe_map(lambda v: -float(self.ppf(v, df=k)), q)
 
 
 class _F(_Dist):
@@ -864,12 +1034,34 @@ class _F(_Dist):
             return _math.exp(ln)
         return _maybe_map(one, x)
 
+    def sf(self, x, dfn=None, dfd=None):
+        d1 = self.dfn if dfn is None else float(dfn)
+        d2 = self.dfd if dfd is None else float(dfd)
+        # I_{d2 / (d2 + d1 x)}(d2/2, d1/2): the small argument formed
+        # directly, not as 1 - d1 x / (d1 x + d2), which rounds at large x
+        return _maybe_map(
+            lambda v: 1.0 if v <= 0 else _betainc(
+                d2 / 2.0, d1 / 2.0, d2 / (d2 + d1 * v)), x)
+
+    def logpdf(self, x, dfn=None, dfd=None):
+        d1 = self.dfn if dfn is None else float(dfn)
+        d2 = self.dfd if dfd is None else float(dfd)
+
+        def one(v):
+            if v <= 0:
+                return -_math.inf
+            return (0.5 * (d1 * _math.log(d1 * v) - d1 * _math.log(d1 * v + d2)
+                           - d2 * _math.log1p(d1 * v / d2))
+                    - _math.log(v) - _lbeta(d1 / 2.0, d2 / 2.0))
+        return _maybe_map(one, x)
+
     def ppf(self, q, dfn=None, dfd=None):
         d1 = self.dfn if dfn is None else float(dfn)
         d2 = self.dfd if dfd is None else float(dfd)
         return _maybe_map(
-            lambda v: _ppf_from_cdf(lambda t: self.cdf(t, d1, d2), v,
-                                    0.0, 10.0), q)
+            lambda v: _ppf_from_cdf(lambda t: float(self.cdf(t, d1, d2)), v,
+                                    0.0, 10.0,
+                                    sf=lambda t: float(self.sf(t, d1, d2))), q)
 
 
 def _digamma(x):
@@ -976,6 +1168,27 @@ class _Gamma(_Dist):
             return _math.exp(ln) / sc
         return _maybe_map(one, x)
 
+    def sf(self, x, a=None, loc=0.0, scale=1.0):
+        aa = self.a if a is None else float(a)
+        lo = self.loc if a is None else float(loc)
+        sc = self.scale if a is None else float(scale)
+        return _maybe_map(
+            lambda v: 1.0 if v <= lo else _gammainc_q(aa, (v - lo) / sc), x)
+
+    def logpdf(self, x, a=None, loc=0.0, scale=1.0):
+        aa = self.a if a is None else float(a)
+        lo = self.loc if a is None else float(loc)
+        sc = self.scale if a is None else float(scale)
+
+        def one(v):
+            z = (v - lo) / sc
+            if z < 0:
+                return -_math.inf
+            if z == 0:
+                return _math.inf if aa < 1 else (-_math.log(sc) if aa == 1 else -_math.inf)
+            return (aa - 1) * _math.log(z) - z - _math.lgamma(aa) - _math.log(sc)
+        return _maybe_map(one, x)
+
     def ppf(self, q, a=None, loc=0.0, scale=1.0):
         aa = self.a if a is None else float(a)
         lo = self.loc if a is None else float(loc)
@@ -983,7 +1196,8 @@ class _Gamma(_Dist):
         return _maybe_map(
             lambda v: lo + sc * _ppf_from_cdf(
                 lambda t: 0.0 if t <= 0 else _gammainc_p(aa, t),
-                v, 0.0, aa + 10.0), q)
+                v, 0.0, aa + 10.0,
+                sf=lambda t: 1.0 if t <= 0 else _gammainc_q(aa, t)), q)
 
 
 class _Beta(_Dist):
@@ -1028,12 +1242,30 @@ class _Beta(_Dist):
             return _math.exp(ln)
         return _maybe_map(one, x)
 
+    def sf(self, x, a=None, b=None):
+        aa = self.a if a is None else float(a)
+        bb = self.b if b is None else float(b)
+        return _maybe_map(
+            lambda v: _betaincc(aa, bb, min(max(v, 0.0), 1.0)), x)
+
+    def logpdf(self, x, a=None, b=None):
+        aa = self.a if a is None else float(a)
+        bb = self.b if b is None else float(b)
+
+        def one(v):
+            if not 0.0 < v < 1.0:
+                return -_math.inf
+            return (-_lbeta(aa, bb) + (aa - 1) * _math.log(v)
+                    + (bb - 1) * _math.log1p(-v))
+        return _maybe_map(one, x)
+
     def ppf(self, q, a=None, b=None):
         aa = self.a if a is None else float(a)
         bb = self.b if b is None else float(b)
         return _maybe_map(
-            lambda v: _ppf_from_cdf(lambda t: _betainc(aa, bb, t), v,
-                                    0.0, 1.0), q)
+            lambda v: _ppf_from_cdf(lambda t: _betainc(aa, bb, min(max(t, 0.0), 1.0)), v,
+                                    0.0, 1.0,
+                                    sf=lambda t: _betaincc(aa, bb, min(max(t, 0.0), 1.0))), q)
 
 
 class _Binom(_Dist):
@@ -1276,7 +1508,27 @@ class _Expon(_Dist):
         lo = self.loc if loc is None else float(loc)
         sc = self.scale if scale is None else float(scale)
         return _maybe_map(
-            lambda v: 0.0 if v < lo else 1.0 - _math.exp(-(v - lo) / sc), x)
+            lambda v: 0.0 if v < lo else -_math.expm1(-(v - lo) / sc), x)
+
+    def sf(self, x, loc=None, scale=None):
+        lo = self.loc if loc is None else float(loc)
+        sc = self.scale if scale is None else float(scale)
+        return _maybe_map(lambda v: 1.0 if v < lo else _math.exp(-(v - lo) / sc), x)
+
+    def logpdf(self, x, loc=None, scale=None):
+        lo = self.loc if loc is None else float(loc)
+        sc = self.scale if scale is None else float(scale)
+        return _maybe_map(lambda v: -(v - lo) / sc - _math.log(sc) if v >= lo else -_math.inf, x)
+
+    def logsf(self, x, loc=None, scale=None):
+        lo = self.loc if loc is None else float(loc)
+        sc = self.scale if scale is None else float(scale)
+        return _maybe_map(lambda v: -(v - lo) / sc if v >= lo else 0.0, x)
+
+    def isf(self, q, loc=None, scale=None):
+        lo = self.loc if loc is None else float(loc)
+        sc = self.scale if scale is None else float(scale)
+        return _maybe_map(lambda v: lo - sc * _math.log(v), q)
 
     def ppf(self, q, loc=None, scale=None):
         lo = self.loc if loc is None else float(loc)
@@ -5008,7 +5260,7 @@ def combine_pvalues(pvalues, method="fisher", weights=None):
         w = [1.0] * k if weights is None else [float(v) for v in _flatten(weights)]
         z = _math.fsum(wi * _norm_ppf(1.0 - v) for wi, v in zip(w, ps)) \
             / _math.sqrt(_math.fsum(wi * wi for wi in w))
-        return _TestResult(z, 1.0 - _norm_cdf(z))
+        return _TestResult(z, _norm_cdf(-(z)))
     raise ValueError("method must be 'fisher' or 'stouffer'")
 
 
@@ -6103,7 +6355,7 @@ class _RecipInvGauss(_LS):
         t1 = 1.0 - mu * x
         t2 = 1.0 + mu * x
         b = _norm_cdf(-isqx * t2 / mu)
-        return 1.0 - _norm_cdf(isqx * t1 / mu) - (_math.exp(2.0 / mu + _math.log(b)) if b > 0 else 0.0)
+        return _norm_cdf(-(isqx * t1 / mu)) - (_math.exp(2.0 / mu + _math.log(b)) if b > 0 else 0.0)
 
 
 class _Semicircular(_LS):

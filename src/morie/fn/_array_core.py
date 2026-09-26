@@ -1865,15 +1865,21 @@ class marr:
             return self._kd_all(self.var(axis=axis, ddof=ddof))
         if axis is not None and len(self.shape) == 2:
             m = self.mean(axis=axis)
-            if axis == 0:
+            # numpy: n - ddof <= 0 gives NaN with a warning, not an error
+            den = self.shape[0 if axis in (0, -2) else 1] - ddof
+            if den <= 0:
+                _warnings.warn("Degrees of freedom <= 0 for slice", RuntimeWarning,
+                               stacklevel=2)
+                return marr([_NAN] * self.shape[1 if axis in (0, -2) else 0])
+            if axis in (0, -2):
                 return marr([_fsum(
                     (self.data[i][j] - m.data[j]) ** 2
                     for i in range(self.shape[0]))
-                    / (self.shape[0] - ddof)
+                    / den
                     for j in range(self.shape[1])])
             return marr([_fsum((v - m.data[i]) ** 2
                                     for v in row)
-                         / (self.shape[1] - ddof)
+                         / den
                          for i, row in enumerate(self.data)])
         f = self._flat()
         if len(f) - ddof <= 0:
@@ -3276,6 +3282,8 @@ def _axis_reduce(x, axis, red):
 
 
 def all(x, axis=None):  # noqa: A001
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     if axis is None:
         if isinstance(x, ndlist):
             return _bi.all(v != 0 for v in x._flat())
@@ -3286,6 +3294,8 @@ def all(x, axis=None):  # noqa: A001
 
 
 def any(x, axis=None):  # noqa: A001
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     if axis is None:
         if isinstance(x, ndlist):
             return _bi.any(v != 0 for v in x._flat())
@@ -4698,6 +4708,15 @@ def expand_dims(x, axis):
         if axis in (0, -2):
             return marr([a.data[:]])
         return marr([[v] for v in a.data])
+    if len(a.shape) == 2:
+        ax = axis + 3 if axis < 0 else axis
+        if ax == 0:
+            return ndlist([[row[:] for row in a.data]])
+        if ax == 1:
+            return ndlist([[row[:]] for row in a.data])
+        if ax == 2:
+            return ndlist([[[v] for v in row] for row in a.data])
+        raise AxisError("axis %r is out of bounds for array of dimension 3" % (axis,))
     raise ValueError("expand_dims: rank-2 core")
 
 
@@ -4721,6 +4740,8 @@ def squeeze(x, axis=None):
     if len(a.shape) == 1 and a.shape[0] == 1:
         return float(a.data[0])
     if len(a.shape) == 2:
+        if a.shape == (1, 1):
+            return float(a.data[0][0])
         if a.shape[0] == 1:
             return marr(a.data[0][:])
         if a.shape[1] == 1:
@@ -5389,6 +5410,8 @@ def _running(vals, start, op):
 
 
 def cumsum(x, axis=None):
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     a = asarray(x)
     if axis is not None and len(a.shape) == 2:
         if axis in (0, -2):
@@ -5516,7 +5539,9 @@ def percentile(x, q, axis=None):
     numpy; nanpercentile() is the skipping form.
     """
     a = asarray(x)
-    if axis is None and _bi.any(v != v for v in a._flat()):
+    if axis is not None:
+        _check_axis(a, axis)
+    if (axis is None or len(a.shape) == 1) and _bi.any(v != v for v in a._flat()):
         return marr([nan] * len(list(q))) if isinstance(q, (list, tuple, marr)) else nan
     if axis is not None and len(a.shape) == 2:
         if axis in (0, -2):
@@ -5554,6 +5579,8 @@ def quantile(x, q, axis=None, method="linear", **kw):
     uses (linear, lower, higher, nearest, midpoint, inverted_cdf,
     averaged_inverted_cdf, closest_observation, interpolated_inverted_cdf,
     hazen, weibull, median_unbiased, normal_unbiased)."""
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     method = kw.get("interpolation", method)
     if method == "linear":
         if isinstance(q, (list, tuple, marr)):
@@ -5821,8 +5848,16 @@ def count_nonzero(x, axis=None):
     if axis is None:
         return int(_bi.sum(1 for v in a._flat() if v != 0))
     _check_axis(a, axis)
-    out = marr(_reduce_axis(a.tolist(), axis,
-                            lambda vs: float(_bi.sum(1 for v in vs if v != 0))))
+    nd = len(a.shape)
+    ax = axis + nd if axis < 0 else axis
+    if nd == 1:
+        return int(_bi.sum(1 for v in a._flat() if v != 0))
+    if ax == 0:
+        vals = [_bi.sum(1 for i in range(a.shape[0]) if a.data[i][j] != 0)
+                for j in range(a.shape[1])]
+    else:
+        vals = [_bi.sum(1 for v in row if v != 0) for row in a.data]
+    out = marr([int(v) for v in vals])
     out._dt = "int64"
     return out
 
@@ -5886,6 +5921,11 @@ def corrcoef(x, y=None, rowvar=True):
 def cov(x, y=None, rowvar=True, bias=False, ddof=None):
     if ddof is None:
         ddof = 0 if bias else 1
+    if y is None and len(asarray(x).shape) == 1:
+        v = list(asarray(x)._flat())
+        mu = _fsum(v) / len(v)
+        den = len(v) - ddof
+        return _fsum((t - mu) ** 2 for t in v) / den if den > 0 else nan
     if y is None:
         a = atleast_2d(x)
         if not rowvar:
@@ -7201,6 +7241,9 @@ def _conv_args(a, v):
 
 def convolve(a, v, mode="full"):
     x, y = _conv_args(a, v)
+    if len(y) > len(x):
+        # numpy swaps so the longer input sets the 'same' length
+        x, y = y, x
     n, m = len(x), len(y)
     full = [0.0] * (n + m - 1)
     for i in range(n):
@@ -7365,12 +7408,52 @@ def _meshgrid_2d(x, y, indexing="xy"):
     return gx, gy
 
 
-def average(x, weights=None):
+def average(x, axis=None, weights=None, returned=False, keepdims=False):
     a = asarray(x)
+    if axis is not None:
+        _check_axis(a, axis)
+    nd = len(a.shape)
     if weights is None:
-        return a.mean()
+        avg = a.mean() if axis is None else a.mean(axis=axis, keepdims=keepdims)
+        if returned:
+            cnt = float(a.size) if axis is None else float(a.shape[axis])
+            return avg, cnt
+        return avg
     w = asarray(weights)
-    return float(dot(w, a) / w.sum())
+    if axis is None or nd == 1:
+        if tuple(w.shape) != tuple(a.shape):
+            if nd == 1 or len(w.shape) != 1:
+                raise ValueError("weights must have the shape of the data "
+                                 "or be 1-D along the axis")
+        fa, fw = list(a._flat()), list(w._flat())
+        if len(fa) != len(fw):
+            raise ValueError("length of weights differs from the data")
+        tot = _fsum(fw)
+        if tot == 0:
+            raise ZeroDivisionError("Weights sum to zero, can't be normalized")
+        avg = _fsum(u * v for u, v in zip(fa, fw)) / tot
+        return (avg, tot) if returned else avg
+    ax = axis + nd if axis < 0 else axis
+    if len(w.shape) == 1:
+        if w.shape[0] != a.shape[ax]:
+            raise ValueError("length of weights differs from the axis length")
+        wv = list(w._flat())
+        wmat = [[wv[i] if ax == 0 else wv[j] for j in range(a.shape[1])]
+                for i in range(a.shape[0])]
+    else:
+        wmat = w.tolist()
+    if ax == 0:
+        num = [_fsum(a.data[i][j] * wmat[i][j] for i in range(a.shape[0])) for j in range(a.shape[1])]
+        den = [_fsum(wmat[i][j] for i in range(a.shape[0])) for j in range(a.shape[1])]
+    else:
+        num = [_fsum(a.data[i][j] * wmat[i][j] for j in range(a.shape[1])) for i in range(a.shape[0])]
+        den = [_fsum(wmat[i][j] for j in range(a.shape[1])) for i in range(a.shape[0])]
+    if _bi.any(d == 0 for d in den):
+        raise ZeroDivisionError("Weights sum to zero, can't be normalized")
+    avg = marr([u / d for u, d in zip(num, den)])
+    if keepdims:
+        avg = marr([list(avg._flat())]) if ax == 0 else marr([[v] for v in avg._flat()])
+    return (avg, marr(den)) if returned else avg
 
 
 class _Testing:
@@ -7561,6 +7644,8 @@ def _median_of(v):
 
 
 def nanmean(x, axis=None, keepdims=False):
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     axis = _axis_arg(x, axis)
     nd = len(asarray(x).shape)
     if axis is not None and nd == 2:
@@ -7576,6 +7661,8 @@ def nanmean(x, axis=None, keepdims=False):
 
 
 def nansum(x, axis=None, keepdims=False):
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     axis = _axis_arg(x, axis)
     nd = len(asarray(x).shape)
     if axis is not None and nd == 2:
@@ -7594,6 +7681,8 @@ def _nanvar_of(v, ddof):
 def nanvar(x, axis=None, ddof=0, keepdims=False):
     """numpy.nanvar; honours axis and keepdims like its siblings (it
     accepted them and returned the flat scalar)."""
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     nd = len(asarray(x).shape)
     if axis is not None and nd == 2:
         return _keepdims_wrap(_nan_axis(x, axis, lambda v: _nanvar_of(v, ddof)),
@@ -7603,6 +7692,8 @@ def nanvar(x, axis=None, ddof=0, keepdims=False):
 
 
 def nanstd(x, axis=None, ddof=0, keepdims=False):
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     v = nanvar(x, axis=axis, ddof=ddof, keepdims=keepdims)
     if isinstance(v, marr):
         return v._map(_math.sqrt)
@@ -7610,6 +7701,8 @@ def nanstd(x, axis=None, ddof=0, keepdims=False):
 
 
 def nanmax(x, axis=None, keepdims=False):
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     axis = _axis_arg(x, axis)
     nd = len(asarray(x).shape)
     if axis is not None and nd == 2:
@@ -7619,6 +7712,8 @@ def nanmax(x, axis=None, keepdims=False):
 
 
 def nanmin(x, axis=None, keepdims=False):
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     axis = _axis_arg(x, axis)
     nd = len(asarray(x).shape)
     if axis is not None and nd == 2:
@@ -7628,6 +7723,8 @@ def nanmin(x, axis=None, keepdims=False):
 
 
 def nanmedian(x, axis=None, keepdims=False):
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     nd = len(asarray(x).shape)
     if axis is not None and nd == 2:
         return _keepdims_wrap(_nan_axis(x, axis, lambda v: _median_of(v)),
@@ -7782,6 +7879,8 @@ def ix_(rows, cols):
 
 
 def cumprod(x, axis=None):
+    if axis is not None and not isinstance(x, ndlist):
+        _check_axis(asarray(x), _axis_arg(x, axis))
     a = asarray(x)
     if axis is not None and len(a.shape) == 2:
         if axis in (0, -2):
@@ -8406,9 +8505,13 @@ def _orth_fill(cols, m, want):
         out.append(None)
         slots.append(len(out) - 1)
     basis = [c for c in out if c is not None]
+    if want > m:
+        raise ValueError("cannot complete %d orthonormal vectors in R^%d" % (want, m))
     e = 0
     for sl in slots:
         while True:
+            if e >= m:
+                raise ValueError("orthonormal completion ran out of basis vectors")
             v = [1.0 if r == e else 0.0 for r in range_(m)]
             e += 1
             for _ in range_(2):
@@ -8440,6 +8543,15 @@ def _svd(a, full_matrices=True, compute_uv=True):
     u, sv, vt = res
     m, k = u.shape
     n = vt.shape[1]
+    # the thin factorisation has exactly min(m, n) singular triplets; the
+    # eigh fallback can return max(m, n) with trailing zeros, and asking
+    # _orth_fill for more than m orthonormal columns of R^m cannot succeed
+    kk = _bi.min(m, n)
+    if k > kk or len(sv.tolist()) > kk:
+        sv = marr(list(sv._flat())[:kk])
+        u = marr([row[:kk] for row in u.data])
+        vt = marr([list(r) for r in vt.data[:kk]])
+        k = kk
     ucols = _orth_fill([[u.data[r][c] for r in range_(m)] for c in range_(k)],
                        m, m if full_matrices else k)
     vrows = _orth_fill([list(vt.data[r]) for r in range_(vt.shape[0])],
@@ -9398,6 +9510,8 @@ def trapz(y, x=None, dx=1.0):
 
 def ptp(a, axis=None):
     """numpy.ptp: max - min, NaN if any NaN in the slice."""
+    if axis is not None and not isinstance(a, ndlist):
+        _check_axis(asarray(a), _axis_arg(a, axis))
     x = asarray(a)
     def _p(vals):
         vals = list(vals)
@@ -11150,3 +11264,9 @@ for _name in ("poisson", "binomial", "geometric", "negative_binomial",
               "hypergeometric", "zipf", "logseries", "multinomial"):
     if hasattr(_SplitMix64, _name):
         setattr(_SplitMix64, _name, _int_draws(getattr(_SplitMix64, _name)))
+
+
+def identity(n, dtype=None):
+    """numpy.identity: the n x n identity matrix."""
+    del dtype
+    return eye(int(n))

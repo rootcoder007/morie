@@ -19,21 +19,15 @@ def _f_cdf(x, d1, d2):
 
 
 def _f_ppf(p, d1, d2, iters=300):
-    # monotone bisection on the CDF (same convention as the R arm)
+    """F quantile through the core f.ppf, which solves on the upper tail
+    for p > 1/2 instead of losing digits to 1 - p."""
+    del iters
+    from . import _stats_core as sc
     if p <= 0.0:
         return 0.0
     if p >= 1.0:
         return float("inf")
-    lo, hi = 0.0, 1.0
-    while _f_cdf(hi, d1, d2) < p and hi < 1e12:
-        hi *= 2.0
-    for _ in range(iters):
-        mid = 0.5 * (lo + hi)
-        if _f_cdf(mid, d1, d2) < p:
-            lo = mid
-        else:
-            hi = mid
-    return 0.5 * (lo + hi)
+    return float(sc.f.ppf(p, d1, d2))
 
 
 def vcomp(y, group, method="reml", conf_level=0.95):

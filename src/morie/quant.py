@@ -43,6 +43,7 @@ Validated Results (2026-03-31)
 
 from __future__ import annotations
 
+import functools
 import math
 from dataclasses import dataclass
 from typing import Any
@@ -115,6 +116,13 @@ def rotation_matrix(d: int, seed: int | None = None) -> F64:
     Uses the QR decomposition of a matrix with i.i.d. N(0,1) entries,
     with sign correction to ensure a uniform distribution over O(d).
     """
+    if seed is not None:
+        # deterministic in (d, seed): computed once, not on every append
+        return np.asarray(_rotation_rows(int(d), int(seed)))
+    return np.asarray(_rotation_rows_uncached(d, None))
+
+
+def _rotation_rows_uncached(d, seed):
     rng = np.random.default_rng(seed)
     A = rng.standard_normal((d, d))
     Q, R = np.linalg.qr(A)
@@ -122,7 +130,12 @@ def rotation_matrix(d: int, seed: int | None = None) -> F64:
     signs = np.sign(np.diag(R))
     signs[signs == 0] = 1
     Q = Q * signs[np.newaxis, :]
-    return Q
+    return tuple(tuple(float(v) for v in row) for row in Q.tolist())
+
+
+@functools.lru_cache(maxsize=64)
+def _rotation_rows(d, seed):
+    return _rotation_rows_uncached(d, seed)
 
 
 def verify_orthogonal(Q: F64, atol: float = 1e-10) -> bool:
