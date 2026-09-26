@@ -21,13 +21,13 @@ class _MissingDep:
 
     def __getattr__(self, attr):
         raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+            f"{self._name} is no longer bundled; this code path awaits its native "
+            "morie implementation")
 
     def __call__(self, *a, **k):
         raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+            f"{self._name} is no longer bundled; this code path awaits its native "
+            "morie implementation")
 
 try:
     from ._ml_core import LogisticRegression
@@ -44,21 +44,40 @@ _PS_MODELS = ("mle", "ridge")
 
 
 def _ps_design(data, covariates):
-    """Numeric design matrix: non-numeric columns label-encoded."""
-    X = []
+    """Design matrix [1, covariates]: numeric columns as they are, others
+    as treatment-coded dummies over their sorted levels (the first level
+    is the reference), as R's model.matrix and the R arm's .mor_ps_design.
+    An integer code would impose an order a nominal covariate lacks."""
     cols = []
     for col in covariates:
         v = list(data[col])
         try:
             cols.append([float(u) for u in v])
         except (TypeError, ValueError):
-            levels = sorted({str(u) for u in v})
-            idx = {lv: i for i, lv in enumerate(levels)}
-            cols.append([float(idx[str(u)]) for u in v])
-    n = len(cols[0]) if cols else 0
-    for i in range(n):
-        X.append([1.0] + [c[i] for c in cols])
-    return X
+            vals = [str(u) for u in v]
+            for lv in sorted(set(vals))[1:]:
+                cols.append([1.0 if u == lv else 0.0 for u in vals])
+    n = len(data)
+    return [[1.0] + [c[i] for c in cols] for i in range(n)]
+
+
+def _independent_columns(X, tol=1e-7):
+    """Indices of the columns that are not linear combinations of earlier
+    ones (Gram-Schmidt in column order, relative tolerance ``tol``): the
+    columns R's pivoted QR keeps, so aliased covariates drop out as in glm."""
+    n, k = len(X), len(X[0])
+    basis, keep = [], []
+    for j in range(k):
+        v = [X[i][j] for i in range(n)]
+        norm0 = _math.sqrt(sum(a * a for a in v))
+        for q in basis:
+            d = sum(a * b for a, b in zip(v, q))
+            v = [a - d * b for a, b in zip(v, q)]
+        nv = _math.sqrt(sum(a * a for a in v))
+        if norm0 > 0 and nv > tol * norm0:
+            basis.append([a / nv for a in v])
+            keep.append(j)
+    return keep
 
 
 def _ps_standardize(X):
@@ -95,6 +114,11 @@ def _ps_irls_beta(X, y, lam=0.0, max_iter=200, tol=1e-12):
     routes agree across languages rather than each inheriting whatever
     its own ecosystem's logistic regression happens to default to.
     """
+    # aliased columns (those qr() pivots out) get a zero coefficient, as
+    # glm's NA, so collinear covariates do not make the MLE singular
+    full_p = len(X[0])
+    keep = _independent_columns(X) if lam == 0 else list(range(full_p))
+    X = [[r[j] for j in keep] for r in X]
     n = len(X)
     p = len(X[0])
     beta = [0.0] * p
@@ -114,7 +138,10 @@ def _ps_irls_beta(X, y, lam=0.0, max_iter=200, tol=1e-12):
         beta = new
         if delta < tol:
             break
-    return beta
+    out = [0.0] * full_p
+    for j, b in zip(keep, beta):
+        out[j] = b
+    return out
 
 
 def _ps_solve(A, b):

@@ -4,6 +4,7 @@ Causal estimators: IPW, AIPW, G-computation, Matching and Double Machine Learnin
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
 from morie.fn import _array_core as np
@@ -17,38 +18,35 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
+
 
 try:
     from morie.fn import _glm_core as sm
 except ImportError:
-    sm = _MissingDep('sm')
+    sm = _MissingDep("sm")
 try:
     from morie.fn._glm_core import formula as smf
 except ImportError:
-    smf = _MissingDep('smf')
+    smf = _MissingDep("smf")
 try:
     from morie.fn._ml_core import RandomForestClassifier, RandomForestRegressor
 except ImportError:
-    RandomForestClassifier = _MissingDep('RandomForestClassifier')
-    RandomForestRegressor = _MissingDep('RandomForestRegressor')
+    RandomForestClassifier = _MissingDep("RandomForestClassifier")
+    RandomForestRegressor = _MissingDep("RandomForestRegressor")
 try:
     from morie.fn._ml_core import LinearRegression, LogisticRegression
 except ImportError:
-    LinearRegression = _MissingDep('LinearRegression')
-    LogisticRegression = _MissingDep('LogisticRegression')
+    LinearRegression = _MissingDep("LinearRegression")
+    LogisticRegression = _MissingDep("LogisticRegression")
 try:
     from morie.fn._ml_core import LabelEncoder, StandardScaler
 except ImportError:
-    LabelEncoder = _MissingDep('LabelEncoder')
-    StandardScaler = _MissingDep('StandardScaler')
+    LabelEncoder = _MissingDep("LabelEncoder")
+    StandardScaler = _MissingDep("StandardScaler")
 
 
 def _safe_exp(value):
@@ -62,27 +60,54 @@ def _safe_exp(value):
     return float(result) if result.ndim == 0 else result
 
 
-def compute_propensity_scores(data: pd.DataFrame, treatment: str, covariates: list) -> pd.Series:
+from morie.fn.ps_fit import _independent_columns, _ps_design, _ps_irls_beta, _ps_standardize  # noqa: E402
+
+
+def _logistic_predict(X, beta):
+    k = len(beta)
+    return [1.0 / (1.0 + math.exp(-min(max(sum(r[j] * beta[j] for j in range(k)), -30.0), 30.0))) for r in X]
+
+
+def _om_fit_predict(X, y, rows, Xpred, outcome_model):
+    """Outcome regression fitted on ``rows`` and predicted on ``Xpred``:
+    maximum-likelihood logistic or ordinary least squares."""
+    Xs = [X[i] for i in rows]
+    ys = [y[i] for i in rows]
+    if outcome_model == "logistic":
+        return _logistic_predict(Xpred, _ps_irls_beta(Xs, ys))
+    keep = _independent_columns(Xs)
+    Xs = [[r[j] for j in keep] for r in Xs]
+    k = len(keep)
+    XtX = [[sum(r[a_] * r[b_] for r in Xs) for b_ in range(k)] for a_ in range(k)]
+    Xty = [sum(r[a_] * v for r, v in zip(Xs, ys)) for a_ in range(k)]
+    beta = [float(v) for v in np.linalg.solve(np.array(XtX), np.array(Xty)).tolist()]
+    return [sum(r[j] * b_ for j, b_ in zip(keep, beta)) for r in Xpred]
+
+
+def compute_propensity_scores(
+    data: pd.DataFrame,
+    treatment: str,
+    covariates: list,
+    ps_model: str = "mle",
+    ridge_lambda: float = 1.0,
+) -> pd.Series:
     """
-    Compute propensity scores using logistic regression with standard preprocessing.
+    Propensity scores from a logistic regression of the treatment on the
+    covariates.
 
-    Non-numeric (object/categorical) columns are integer-encoded with
-    :class:`~sklearn.preprocessing.LabelEncoder` and all numeric columns are
-    standardised with :class:`~sklearn.preprocessing.StandardScaler` before
-    fitting.  Standardisation stabilises the logistic-regression solver and
-    makes coefficients comparable across covariates on different scales.
-    Encoding is applied in-place on a copy; the original ``data`` frame is
-    not modified.
+    Numeric covariates enter as they are and categorical ones as
+    treatment-coded dummies (R's ``model.matrix`` coding). ``ps_model="mle"``
+    is the maximum-likelihood logit (R's ``glm(family = binomial)``);
+    ``"ridge"`` standardises the covariates and adds an L2 penalty
+    ``ridge_lambda`` on the slopes. The R arm's
+    ``morie_estimate_propensity_scores`` has the same two routes.
 
-    :param data: The input pandas DataFrame containing covariates and treatment.
-    :type data: pandas.DataFrame
-    :param treatment: The name of the column containing the binary treatment variable.
-    :type treatment: str
-    :param covariates: A list of column names for the covariates to adjust for.
-    :type covariates: list[str]
-    :return: A pandas Series containing the predicted propensity scores
-        (values in the open interval (0, 1)).
-    :rtype: pandas.Series
+    :param data: Input DataFrame.
+    :param treatment: Name of the binary treatment column.
+    :param covariates: Covariate column names.
+    :param ps_model: ``"mle"`` (default) or ``"ridge"``.
+    :param ridge_lambda: Penalty for ``ps_model="ridge"``.
+    :return: Series of propensity scores in (0, 1), indexed like ``data``.
 
     References
     ----------
@@ -90,9 +115,8 @@ def compute_propensity_scores(data: pd.DataFrame, treatment: str, covariates: li
     propensity score in observational studies for causal effects.
     *Biometrika*, 70(1), 41–55. https://doi.org/10.1093/biomet/70.1.41
     """
-    X_raw = data[covariates].copy()
-    y = data[treatment]
-
+    if ps_model not in ("mle", "ridge"):
+        raise ValueError("ps_model must be 'mle' or 'ridge'")
     # A missing covariate or treatment value is refused, not propagated:
     # one NaN made the whole propensity vector exactly 0 (no warning), and
     # the IPW weights downstream came out capped at 100 for every unit,
@@ -100,25 +124,19 @@ def compute_propensity_scores(data: pd.DataFrame, treatment: str, covariates: li
     missing = [c for c in [*covariates, treatment] if bool(data[c].isna().any())]
     if missing:
         raise ValueError(
-            "missing values in " + ", ".join(repr(c) for c in missing)
+            "missing values in "
+            + ", ".join(repr(c) for c in missing)
             + "; drop or impute them (e.g. data.dropna(subset=...)) before "
-            "estimating propensity scores")
-
-    # Encode any non-numeric columns so LogisticRegression receives a numeric
-    # matrix.  LabelEncoder maps each unique string/category to an integer.
-    for col in X_raw.columns:
-        if not pd.api.types.is_numeric_dtype(X_raw[col]):
-            le = LabelEncoder()
-            X_raw[col] = le.fit_transform(X_raw[col].astype(str))
-
-    # Standardise all numeric columns: mean 0, unit variance.
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X_raw)
-
-    model = LogisticRegression(max_iter=1000)
-    model.fit(X_scaled, y)
-
-    return pd.Series(model.predict_proba(X_scaled)[:, 1], index=data.index, name="ps")
+            "estimating propensity scores"
+        )
+    y = [float(v) for v in data[treatment].tolist()]
+    X = _ps_design(data, covariates)
+    if ps_model == "ridge":
+        X = _ps_standardize(X)
+        beta = _ps_irls_beta(X, y, lam=float(ridge_lambda))
+    else:
+        beta = _ps_irls_beta(X, y)
+    return pd.Series(_logistic_predict(X, beta), index=data.index, name="ps")
 
 
 def calculate_ipw_weights(
@@ -374,32 +392,13 @@ def estimate_aipw(
         ps = compute_propensity_scores(frame, treatment=treatment, covariates=covariates).values
     ps = ps.clip(0.01, 0.99)
 
-    # ── Outcome model: preprocess covariates the same way as propensity ─────
-    X_raw = frame[covariates].copy()
-    for col in X_raw.columns:
-        if not pd.api.types.is_numeric_dtype(X_raw[col]):
-            le = LabelEncoder()
-            X_raw[col] = le.fit_transform(X_raw[col].astype(str))
-    scaler = StandardScaler()
-    X = scaler.fit_transform(X_raw)
-
-    treated_mask = t == 1
-    control_mask = t == 0
-
-    if outcome_model == "logistic":
-        om1 = LogisticRegression(max_iter=1000)
-        om0 = LogisticRegression(max_iter=1000)
-        om1.fit(X[treated_mask], y[treated_mask])
-        om0.fit(X[control_mask], y[control_mask])
-        mu1 = om1.predict_proba(X)[:, 1]
-        mu0 = om0.predict_proba(X)[:, 1]
-    else:
-        om1 = LinearRegression()
-        om0 = LinearRegression()
-        om1.fit(X[treated_mask], y[treated_mask])
-        om0.fit(X[control_mask], y[control_mask])
-        mu1 = om1.predict(X)
-        mu0 = om0.predict(X)
+    # ── Outcome models: unpenalised regressions on the same design ──────────
+    X = _ps_design(frame, covariates)
+    yl = [float(v) for v in y.tolist()]
+    rows1 = [i for i in range(len(yl)) if t[i] == 1]
+    rows0 = [i for i in range(len(yl)) if t[i] == 0]
+    mu1 = np.array(_om_fit_predict(X, yl, rows1, X, outcome_model))
+    mu0 = np.array(_om_fit_predict(X, yl, rows0, X, outcome_model))
 
     # ── AIPW influence scores ─────────────────────────────────────────────────
     psi = mu1 - mu0 + t * (y - mu1) / ps - (1.0 - t) * (y - mu0) / (1.0 - ps)
@@ -1149,10 +1148,7 @@ def estimate_late(
     try:
         from morie.fn._glm_core import IV2SLS_LM as LM_IV2SLS
 
-        if covariates:
-            exog = sm.add_constant(frame[covariates].values.astype(float))
-        else:
-            exog = np.ones((n, 1))
+        exog = sm.add_constant(frame[covariates].values.astype(float)) if covariates else np.ones((n, 1))
 
         result = LM_IV2SLS(
             dependent=y,
@@ -1340,9 +1336,10 @@ def estimate_irm(
     C1--C68. https://doi.org/10.1111/ectj.12097
     """
     from morie.fn.irm import estimate_irm as _native_irm
-    return _native_irm(data, treatment=treatment, outcome=outcome,
-                       covariates=covariates, n_folds=n_folds,
-                       random_state=random_state)
+
+    return _native_irm(
+        data, treatment=treatment, outcome=outcome, covariates=covariates, n_folds=n_folds, random_state=random_state
+    )
 
 
 _DOUBLEML_RANDOM_STATE: int = 42
@@ -1408,6 +1405,7 @@ def estimate_double_ml(
     """
     del n_rep  # single-rep native estimator; kept for signature compat
     from morie.fn.plr import estimate_plr as _native_plr
-    return _native_plr(data, treatment=treatment, outcome=outcome,
-                       covariates=covariates, n_folds=n_folds,
-                       random_state=random_state)
+
+    return _native_plr(
+        data, treatment=treatment, outcome=outcome, covariates=covariates, n_folds=n_folds, random_state=random_state
+    )
