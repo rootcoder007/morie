@@ -12,7 +12,9 @@ def test_returns_multiline_block_for_known_fn():
     # When-to-use section is always present.
     assert "When to use this" in out
     # And ends with a quote (either from the Robust pool or _default).
-    assert '"' in out
+    pools = cs.CATEGORY_QUOTES.values()
+    quotes = {q for pool in pools for q in ([pool] if isinstance(pool, str) else pool)}
+    assert out.strip().splitlines()[-1] in quotes
 
 
 def test_unknown_fn_does_not_crash():

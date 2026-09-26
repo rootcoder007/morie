@@ -3818,6 +3818,10 @@ def read_csv(path, sep=",", header=0, names=None, dtype=None,
              na_values=None, skiprows=0, nrows=None, usecols=None,
              encoding=None, **kw):
     del kw
+    # pandas drops a UTF-8 byte-order mark; without this the first header
+    # comes back as "\ufeffName" and every lookup by name fails
+    if (encoding or "utf-8").lower().replace("_", "-") in ("utf-8", "utf8"):
+        encoding = "utf-8-sig"
     na_extra = set(na_values or [])
     na_default = {"", "NA", "N/A", "NaN", "nan", "NULL", "null",
                   "None", "#N/A"}

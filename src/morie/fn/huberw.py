@@ -21,6 +21,8 @@ from ._richresult import RichResult
 
 __all__ = ["huber_weight"]
 
+CATEGORY = "Robust"
+
 
 def huber_weight(y, k=1.345):
     """Huber weights of a residual vector.

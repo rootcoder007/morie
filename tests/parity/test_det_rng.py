@@ -12,26 +12,9 @@ Verifies:
 
 from __future__ import annotations
 
-import importlib.util
-import os
-import sys
-import types
-
+from morie import _det_rng
 from morie.fn import _array_core as np
 from morie.fn import _stats_core as stats
-
-# Load morie._det_rng directly to avoid hitting the package __init__ which
-# pulls in heavyweight optional deps (statsmodels, torch, etc.).
-BASE = "/tmp/morie-feature/src/morie"
-if "morie" not in sys.modules:
-    pkg = types.ModuleType("morie")
-    pkg.__path__ = [BASE]
-    sys.modules["morie"] = pkg
-
-_spec = importlib.util.spec_from_file_location("morie._det_rng", os.path.join(BASE, "_det_rng.py"))
-_det_rng = importlib.util.module_from_spec(_spec)
-sys.modules["morie._det_rng"] = _det_rng
-_spec.loader.exec_module(_det_rng)
 
 from_seed = _det_rng.from_seed
 r_seed = _det_rng.r_seed

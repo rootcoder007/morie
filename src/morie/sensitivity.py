@@ -314,6 +314,8 @@ def rosenbaum_bounds(
     p_lower = np.empty(len(gamma_range))
 
     if method == "wilcoxon":
+        # zero differences carry no sign information (Wilcoxon's rule)
+        diffs = diffs[diffs != 0]
         ranks = stats.rankdata(np.abs(diffs))
         signs = np.sign(diffs)
         t_obs = np.sum(ranks[signs > 0])
@@ -327,14 +329,14 @@ def rosenbaum_bounds(
             expected_upper = np.sum(ranks * p_treat)
             var_upper = np.sum(ranks**2 * p_treat * (1 - p_treat))
             z_upper = (t_obs - expected_upper) / np.sqrt(max(var_upper, 1e-10))
-            p_upper[i] = 1 - stats.norm.cdf(z_upper)
+            p_upper[i] = stats.norm.sf(z_upper)
 
             # Lower bound.
             p_treat_low = 1 / (1 + gamma)
             expected_lower = np.sum(ranks * p_treat_low)
             var_lower = np.sum(ranks**2 * p_treat_low * (1 - p_treat_low))
             z_lower = (t_obs - expected_lower) / np.sqrt(max(var_lower, 1e-10))
-            p_lower[i] = 1 - stats.norm.cdf(z_lower)
+            p_lower[i] = stats.norm.sf(z_lower)
 
     elif method == "sign":
         n_positive = np.sum(diffs > 0)
@@ -342,9 +344,9 @@ def rosenbaum_bounds(
         for i, gamma in enumerate(gamma_range):
             p_treat = gamma / (1 + gamma)
             # Upper bound: binomial test.
-            p_upper[i] = 1 - stats.binom.cdf(n_positive - 1, n, p_treat)
+            p_upper[i] = stats.binom.sf(n_positive - 1, n, p_treat)
             p_treat_low = 1 / (1 + gamma)
-            p_lower[i] = 1 - stats.binom.cdf(n_positive - 1, n, p_treat_low)
+            p_lower[i] = stats.binom.sf(n_positive - 1, n, p_treat_low)
 
     elif method == "mcnemar":
         # For binary outcomes: discordant pairs.
@@ -354,9 +356,9 @@ def rosenbaum_bounds(
 
         for i, gamma in enumerate(gamma_range):
             p_treat = gamma / (1 + gamma)
-            p_upper[i] = 1 - stats.binom.cdf(int(b) - 1, int(n_disc), p_treat)
+            p_upper[i] = stats.binom.sf(int(b) - 1, int(n_disc), p_treat)
             p_treat_low = 1 / (1 + gamma)
-            p_lower[i] = 1 - stats.binom.cdf(int(b) - 1, int(n_disc), p_treat_low)
+            p_lower[i] = stats.binom.sf(int(b) - 1, int(n_disc), p_treat_low)
 
     else:
         raise ValueError(f"Unknown method: {method}")

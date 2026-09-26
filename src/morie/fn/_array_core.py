@@ -591,8 +591,10 @@ class marr:
                          for r1, r2 in zip(self.data, o.data)])
         # 2-D broadcasting: (n,m) with (n,1), (1,m), (n,) rows or (m,) cols
         a2, b2 = _b2(self), _b2(o)
-        n = _bi.max(a2.shape[0], b2.shape[0])
-        m = _bi.max(a2.shape[1], b2.shape[1])
+        # numpy's rule: a length-1 axis takes the other's length, which
+        # may be 0 ((n,1) - (1,0) is (n,0)), so max() is wrong here
+        n = b2.shape[0] if a2.shape[0] == 1 else a2.shape[0]
+        m = b2.shape[1] if a2.shape[1] == 1 else a2.shape[1]
         for arr in (a2, b2):
             if arr.shape[0] not in (1, n) or arr.shape[1] not in (1, m):
                 raise ValueError("shape mismatch %s vs %s"

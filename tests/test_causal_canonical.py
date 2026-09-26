@@ -21,9 +21,12 @@ Design principles:
 
 from __future__ import annotations
 
+import math
+
+import pytest
+
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
-import pytest
 
 # ---------------------------------------------------------------------------
 # DGP fixtures — shared simulators cited from the literature.
@@ -504,7 +507,6 @@ class TestForceCanonical:
     def test_force_welch_ci_coverage_sanity(self) -> None:
         """CI width should equal 2 * t_crit * SE (Welch-Satterthwaite df)."""
         from morie.fn import _stats_core as stats
-
         from morie.fn.force import ate_diff
 
         df = _dgp_randomized(n=1000, tau=1.5, seed=52)
@@ -985,9 +987,11 @@ class TestPlivCanonical:
         # Naive OLS of Y on D and X (no IV)
         from morie.fn import _glm_core as sm
 
+        # _glm_core.OLS returns the fit directly; params are positional,
+        # constant prepended, so D is params[1]
         X_ols = sm.add_constant(df[["D"] + covs].astype(float))
-        ols = sm.OLS(df["Y"].astype(float), X_ols).fit()
-        ols_bias = abs(float(ols.params["D"]) - theta_true)
+        ols = sm.OLS(df["Y"].astype(float).tolist(), X_ols)
+        ols_bias = abs(float(ols.params[1]) - theta_true)
 
         # PLIV
         result = estimate_pliv(df, treatment="D", outcome="Y", instrument="Z", covariates=covs, n_folds=3)
@@ -1247,7 +1251,7 @@ class TestCateCanonical:
             covariates=["X1", "X2", "X3"],
             meta_learner="t_learner",
         )
-        assert (hasattr(result, "index") and hasattr(result, "tolist") and not hasattr(result, "_cols"))
+        assert hasattr(result, "index") and hasattr(result, "tolist") and not hasattr(result, "_cols")
         assert len(result) == len(df)
         assert np.all(np.isfinite(result.values))
 
@@ -1300,7 +1304,7 @@ class TestCateCanonical:
             covariates=["X1", "X2", "X3"],
             meta_learner="s_learner",
         )
-        assert (hasattr(result, "index") and hasattr(result, "tolist") and not hasattr(result, "_cols"))
+        assert hasattr(result, "index") and hasattr(result, "tolist") and not hasattr(result, "_cols")
         assert len(result) == len(df)
         assert np.all(np.isfinite(result.values))
 
@@ -1388,7 +1392,7 @@ class TestGateCanonical:
             covariates=["X1", "X2", "X3"],
             group_col="G",
         )
-        assert (hasattr(result, "columns") or hasattr(result, "_cols"))
+        assert hasattr(result, "columns") or hasattr(result, "_cols")
         assert {"group", "ate", "se", "ci_lower", "ci_upper", "n"}.issubset(result.columns), (
             f"GATE missing expected columns. Got: {list(result.columns)}"
         )
@@ -1439,31 +1443,32 @@ class TestPsMatchCanonical:
       3. Too-tight caliper on sparse data raises ValueError.
     """
 
+    # ps_match (mando) was removed with the IP-named aliases; the
+    # canonical path is morie.matching's nearest-neighbour matcher plus
+    # its matched-sample ATT.
     def test_mando_returns_esres_with_matched_count(self) -> None:
-        from morie.fn.plcbsc import ps_match
+        from morie.matching import estimate_att_matched, match_nearest_neighbor
 
-        # Rename our DGP's columns to match ps_match's defaults
         df = _dgp_logistic_ps(n=800, tau=1.5, seed=151)
-        df2 = df.rename(columns={"Y": "outcome", "T": "treatment"})
-        result = ps_match(df2, y="outcome", t="treatment", x=["X1", "X2", "X3"])
+        m = match_nearest_neighbor(df, "T", ["X1", "X2", "X3"], caliper=0.2)
+        result = estimate_att_matched(df, "Y", "T", m.match_pairs)
         assert hasattr(result, "estimate")
-        assert "n_matched" in result.extra
-        assert "caliper" in result.extra
-        assert int(result.extra["n_matched"]) > 0
+        assert m.n_matched_control > 0
+        assert "caliper" in m.details  # stored rescaled to the PS standard deviation
 
     def test_mando_beats_naive_on_confounded_dgp(self) -> None:
-        from morie.fn.plcbsc import ps_match
+        from morie.matching import estimate_att_matched, match_nearest_neighbor
 
         tau_true = 1.5
         df = _dgp_logistic_ps(n=4000, tau=tau_true, seed=152)
-        df2 = df.rename(columns={"Y": "outcome", "T": "treatment"})
 
         # Naive difference in means (biased under confounding)
         naive = float(df["Y"][df["T"] == 1].mean() - df["Y"][df["T"] == 0].mean())
         naive_bias = abs(naive - tau_true)
 
         # Matched ATT
-        result = ps_match(df2, y="outcome", t="treatment", x=["X1", "X2", "X3"])
+        m = match_nearest_neighbor(df, "T", ["X1", "X2", "X3"])
+        result = estimate_att_matched(df, "Y", "T", m.match_pairs)
         matched_bias = abs(float(result.estimate) - tau_true)
 
         assert matched_bias < 0.7 * naive_bias + 0.05, (
@@ -1563,14 +1568,9 @@ class TestBdrjStubDetection:
         from morie.fn.bdrj import backdoor_adjustment_formula
 
         rng = np.random.default_rng(171)
-        data = rng.normal(size=100)
         # Different X, Y, Z; same data.
-        r1 = backdoor_adjustment_formula(
-            X=rng.normal(size=100), Y=rng.normal(size=100), Z=rng.normal(size=100), data=data
-        )
-        r2 = backdoor_adjustment_formula(
-            X=rng.uniform(size=100), Y=rng.uniform(size=100), Z=rng.uniform(size=100), data=data
-        )
+        r1 = backdoor_adjustment_formula(X=rng.normal(size=100), Y=rng.normal(size=100), Z=rng.normal(size=100))
+        r2 = backdoor_adjustment_formula(X=rng.uniform(size=100), Y=rng.uniform(size=100), Z=rng.uniform(size=100))
         # A real back-door formula WOULD differ when X/Y/Z differ.
         # This stub returns same value; xfail captures that fact.
         assert r1 != r2, "bdrj should use X/Y/Z — if this passes, stub is fixed"
@@ -1708,37 +1708,47 @@ class TestSensitivityCanonical:
       4. Critical Γ is 1 when the input is already non-significant.
     """
 
-    def test_yoda_s_returns_structure(self) -> None:
-        from morie.fn.scmaba import sensitivity_analysis
+    # sensitivity_analysis(ate, se) (yoda_s) was removed with the IP-named
+    # aliases; the canonical path is morie.sensitivity.rosenbaum_bounds on
+    # matched-pair outcomes (Rosenbaum 2002, ch. 4, signed-rank statistic).
+    @staticmethod
+    def _pairs(shift, n=60):
+        diffs = [shift + 0.5 * math.sin(3.0 * i + 1.0) for i in range(n)]
+        return [d for d in diffs], [0.0] * n
 
-        result = sensitivity_analysis(ate=1.0, se=0.3)  # z = 3.33, strong signal
-        assert hasattr(result, "value")
-        assert "table" in result.extra
-        assert "critical_gamma" in result.extra
-        assert len(result.extra["table"]) == 10  # default n_gamma
+    def test_yoda_s_returns_structure(self) -> None:
+        from morie.sensitivity import rosenbaum_bounds
+
+        t, c = self._pairs(0.4)
+        result = rosenbaum_bounds(t, c, gamma_range=[1.0 + 0.25 * k for k in range(10)])
+        assert len(result.p_upper) == 10
+        assert len(result.p_lower) == 10
+        assert result.critical_gamma >= 1.0
 
     def test_yoda_s_gamma1_gives_original_pvalue(self) -> None:
-        """At Γ=1 (no bias), the Rosenbaum upper p-value equals the
-        standard 2-sided z-test p-value."""
+        """At Γ=1 (no hidden bias) the upper bound is the ordinary
+        one-sided signed-rank p-value, normal approximation."""
         from morie.fn import _stats_core as stats
+        from morie.sensitivity import rosenbaum_bounds
 
-        from morie.fn.scmaba import sensitivity_analysis
-
-        ate, se = 1.0, 0.3
-        result = sensitivity_analysis(ate=ate, se=se, gamma_range=(1.0, 1.0), n_gamma=1)
-        row0 = result.extra["table"][0]
-        assert row0["gamma"] == pytest.approx(1.0)
-        # Standard 2-sided p-value
-        expected_p = float(2 * stats.norm.sf(abs(ate / se)))
-        assert row0["p_upper"] == pytest.approx(expected_p, abs=1e-6)
+        t, c = self._pairs(0.4)
+        d = [a - b for a, b in zip(t, c) if a != b]
+        r = stats.rankdata([abs(v) for v in d])
+        t_obs = sum(rk for rk, v in zip(r, d) if v > 0)
+        mean = sum(r) / 2.0
+        var = sum(rk * rk for rk in r) / 4.0
+        expected_p = float(stats.norm.sf((t_obs - mean) / math.sqrt(var)))
+        result = rosenbaum_bounds(t, c, gamma_range=[1.0])
+        assert abs(float(result.p_upper[0]) - expected_p) <= 1e-12 * max(expected_p, 1e-300)
 
     def test_yoda_s_p_upper_monotone_in_gamma(self) -> None:
         """p_upper should be non-decreasing as Γ grows (larger assumed bias
         means weaker evidence of effect)."""
-        from morie.fn.scmaba import sensitivity_analysis
+        from morie.sensitivity import rosenbaum_bounds
 
-        result = sensitivity_analysis(ate=0.8, se=0.3, gamma_range=(1.0, 3.0), n_gamma=10)
-        ps = [r["p_upper"] for r in result.extra["table"]]
+        t, c = self._pairs(0.3)
+        result = rosenbaum_bounds(t, c, gamma_range=[1.0 + 2.0 * k / 9 for k in range(10)])
+        ps = [float(v) for v in result.p_upper]
         for a, b in zip(ps, ps[1:]):
             assert b >= a - 1e-9, (
                 f"p_upper is non-monotone in Γ: {a:.4f} -> {b:.4f}. Rosenbaum-bound direction violated."

@@ -241,7 +241,7 @@ class TestNoOffensiveTerms:
     def test_no_slave_flag(self):
         from pathlib import Path
 
-        tui_path = Path(__file__).resolve().parents[2] / "tools" / "py-package" / "morie" / "tui.py"
+        tui_path = Path(__file__).resolve().parents[1] / "src" / "morie" / "tui.py"
         content = tui_path.read_text()
         assert "--slave" not in content, "R --slave flag must be replaced with --no-echo"
 

@@ -26,6 +26,9 @@ __all__ = ["glm", "glm_predict", "deviance_residuals", "FAMILIES",
 def _mat(X):
     # tolist() first: iterating a 2-D array yields array rows, not lists,
     # and those were read as scalars, so a matrix became a column
+    # a DataFrame has no tolist(), and list(frame) is its column labels
+    if not hasattr(X, "tolist") and hasattr(X, "to_numpy"):
+        X = X.to_numpy()
     rows = X.tolist() if hasattr(X, "tolist") else list(X)
     if not isinstance(rows, list):
         rows = [rows]

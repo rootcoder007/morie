@@ -199,28 +199,15 @@ known-first-party = ["morie"]
 # the public API.
 #
 # Top-level skips (each documented):
-#   - test_siu_federal_aggregate.py: needs OTIS CSV bundle (28 files)
-#     not shipped with the package, plus IAP wisdom-quote keys that
-#     drifted; runs locally with data/datasets/OTIS/ populated.
-#   - test_tui.py: hardcoded sibling-repo path assertion.
-#   - test_causal_canonical.py: still references the IP-named aliases
-#     (mando, yoda_s, sith.synth_control) removed in the cleanup pass;
-#     update once the canonical-name rewrite lands. The DML result
-#     contract it covered lives in tests/test_dml_contract.py.
-#   - test_parity.py: requires a sibling rtests/ directory not in this
-#     repo.
-#   - test_cheatsheet.py / test_polyglot.py: content/assertion drift
-#     after the registry rewrite; refresh these in a follow-up.
+#   - tests/fn: 36k per-callable files; .github/workflows/fn-sampled.yml
+#     runs a nightly rotating sample (locally: scripts/audit/run_fn_subset.sh).
+#   - test_siu_federal_aggregate.py: needs the OTIS CSV bundle (28 files)
+#     not shipped with the package; runs locally with data/datasets/OTIS/
+#     populated (55 pass there).
 testpaths = ["tests"]
 addopts = """\
 -q \
 -n auto \
 --ignore=tests/fn \
---ignore=tests/parity \
---ignore=tests/test_siu_federal_aggregate.py \
---ignore=tests/test_tui.py \
---ignore=tests/test_causal_canonical.py \
---ignore=tests/test_parity.py \
---ignore=tests/test_cheatsheet.py \
---ignore=tests/test_polyglot.py\
+--ignore=tests/test_siu_federal_aggregate.py\
 """

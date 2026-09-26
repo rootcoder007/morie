@@ -6,33 +6,17 @@ Run as:
     python3 _smoke_ml.py [name1 name2 ...]
 """
 
-import importlib.util
+import importlib
 import os
 import sys
 import traceback
-import types
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(ROOT, "src")
-
-pkg = types.ModuleType("morie")
-pkg.__path__ = [os.path.join(SRC, "morie")]
-sys.modules["morie"] = pkg
-fnpkg = types.ModuleType("morie.fn")
-fnpkg.__path__ = [os.path.join(SRC, "morie", "fn")]
-sys.modules["morie.fn"] = fnpkg
+SRC = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "src")
 
 
 def _load(modname, relpath):
-    full = f"morie.fn.{modname}" if modname != "_richresult" else "morie.fn._richresult"
-    spec = importlib.util.spec_from_file_location(full, os.path.join(SRC, "morie", "fn", relpath))
-    m = importlib.util.module_from_spec(spec)
-    sys.modules[full] = m
-    spec.loader.exec_module(m)
-    return m
-
-
-_load("_richresult", "_richresult.py")
+    del relpath
+    return importlib.import_module(f"morie.fn.{modname}")
 
 
 def run_one(name):

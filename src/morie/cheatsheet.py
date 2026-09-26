@@ -341,16 +341,19 @@ def _docstring_first_line(fn_callable) -> str:
     return doc.splitlines()[0] if doc else ""
 
 
+_CITATION_RE = re.compile(r"\((1[5-9]|20)\d{2}[a-z]?\)|\b(1[5-9]|20)\d{2}\b.*[A-Z]|doi", re.IGNORECASE)
+
+
 def _docstring_reference(fn_callable) -> str:
-    """Pull a 'References' or trailing citation out of the docstring."""
+    """Pull a 'References' section or a citation-looking line (a year or
+    a DOI) out of a docstring; anything else is not a reference."""
     doc = inspect.getdoc(fn_callable) or ""
     m = re.search(r"References?\s*\n[-=]+\s*\n(.+)", doc, re.DOTALL)
     if m:
         return m.group(1).strip().splitlines()[0]
-    # Last-line citation pattern (the generator emits this).
-    last = doc.strip().splitlines()
-    if last:
-        return last[-1].strip()
+    for line in doc.strip().splitlines()[1:]:
+        if _CITATION_RE.search(line):
+            return line.strip()
     return ""
 
 
@@ -389,7 +392,7 @@ def cheatsheet(fn_name: str) -> str:
         # Find the first public function in the module and read its
         # docstring.
         for name, obj in vars(module).items():
-            if name.startswith("_") or not callable(obj):
+            if name.startswith("_") or not inspect.isfunction(obj) or obj.__module__ != module.__name__:
                 continue
             short = _docstring_first_line(obj)
             if short:
@@ -406,11 +409,15 @@ def cheatsheet(fn_name: str) -> str:
     # 4. Reference (formula source)
     ref_text = ""
     for name, obj in vars(module).items():
-        if name.startswith("_") or not callable(obj):
+        # only the module's own functions: an imported class's docstring
+        # (RichResult's field list) is not this callable's reference
+        if name.startswith("_") or not inspect.isfunction(obj) or obj.__module__ != module.__name__:
             continue
         ref_text = _docstring_reference(obj)
         if ref_text:
             break
+    if not ref_text:
+        ref_text = _docstring_reference(module)
 
     parts: list[str] = []
     parts.append(f"━━━ {fn_name} ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")

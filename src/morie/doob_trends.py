@@ -410,7 +410,10 @@ def pettitt_changepoint(series: Iterable[float]) -> dict:
             "note": "n < 5; Pettitt test not applicable",
         }
     U = np.zeros(n)
-    for t in range(1, n):
+    # U_t for t = 1..n-1 (Pettitt 1979): the first t observations against
+    # the remaining n - t; index t here is the 0-based last element of the
+    # first segment
+    for t in range(n - 1):
         a = arr[: t + 1].reshape(-1, 1)
         b = arr[t + 1 :].reshape(1, -1)
         U[t] = float(np.sign(a - b).sum())
