@@ -203,39 +203,58 @@ def _global_derivative(x, y, side, order, deriv):
     return beta[deriv] * math.factorial(deriv), sigma2
 
 
-def _nn_sigma2(x, y, J, side_of):
-    """Abadie-Imbens nearest-neighbour variance, section 5, same side only."""
+def _nn_sigma2(x, y, J, side_of, window=float("inf")):
+    """Abadie-Imbens nearest-neighbour variance, section 5, same side only.
+
+    Neighbours are drawn from the units inside ``window`` (max(h, b)), the
+    estimation sample.  Ties follow rdrobust's rule: units sharing x are
+    always matched together, and an equal-distance step takes both sides,
+    so a unit can have more than J neighbours."""
     n = len(x)
     out = [0.0] * n
-    idx_pos = [i for i in range(n) if side_of[i] > 0]
-    idx_neg = [i for i in range(n) if side_of[i] <= 0]
+    idx_pos = [i for i in range(n) if side_of[i] > 0 and abs(x[i]) <= window]
+    idx_neg = [i for i in range(n) if side_of[i] <= 0 and abs(x[i]) <= window]
     for group in (idx_pos, idx_neg):
-        if len(group) < J + 1:
+        m = len(group)
+        if m < J + 1:
             continue
         order = sorted(group, key=lambda i: x[i])
-        pos = dict((i, t) for t, i in enumerate(order))
-        for i in group:
-            t = pos[i]
-            cand = []
-            lo, hi = t - 1, t + 1
-            while len(cand) < J and (lo >= 0 or hi < len(order)):
-                if lo < 0:
-                    cand.append(order[hi])
-                    hi += 1
-                elif hi >= len(order):
-                    cand.append(order[lo])
-                    lo -= 1
-                elif abs(x[order[lo]] - x[i]) <= abs(x[order[hi]] - x[i]):
-                    cand.append(order[lo])
-                    lo -= 1
+        xs = [x[i] for i in order]
+        ys = [y[i] for i in order]
+        # dups[t]: size of t's tie block; dupsid[t]: 1-based rank inside it
+        dups = [0] * m
+        dupsid = [0] * m
+        t = 0
+        while t < m:
+            u = t
+            while u + 1 < m and xs[u + 1] == xs[t]:
+                u += 1
+            for k in range(t, u + 1):
+                dups[k] = u - t + 1
+                dupsid[k] = k - t + 1
+            t = u + 1
+        for t in range(m):
+            rpos = dups[t] - dupsid[t]
+            lpos = dupsid[t] - 1
+            while lpos + rpos < min(J, m - 1):
+                if t - lpos - 1 < 0:
+                    rpos += dups[t + rpos + 1]
+                elif t + rpos + 1 >= m:
+                    lpos += dups[t - lpos - 1]
                 else:
-                    cand.append(order[hi])
-                    hi += 1
-            mean = sum(y[j] for j in cand) / float(len(cand))
-            out[i] = (len(cand) / (len(cand) + 1.0)) * (y[i] - mean) ** 2
+                    dl = xs[t] - xs[t - lpos - 1]
+                    dr = xs[t + rpos + 1] - xs[t]
+                    if dl > dr:
+                        rpos += dups[t + rpos + 1]
+                    elif dl < dr:
+                        lpos += dups[t - lpos - 1]
+                    else:
+                        rpos += dups[t + rpos + 1]
+                        lpos += dups[t - lpos - 1]
+            ji = lpos + rpos
+            mean = (sum(ys[t - lpos:t + rpos + 1]) - ys[t]) / float(ji)
+            out[order[t]] = (ji / (ji + 1.0)) * (ys[t] - mean) ** 2
     return out
-
-
 def rd_bandwidth(x, y, nu=0, p=1, kernel="triangular", s=0,
                  prelim_order=None):
     r"""The MSE-optimal bandwidth of Lemma 1.
@@ -472,12 +491,16 @@ def causrddc(y, x, treatment=None, cutoff=0.0, nu=0, p=1, q=None, h=None,
 
     side_of = [1 if v >= 0.0 else -1 for v in x]
     if vce == "nn":
-        sig2 = _nn_sigma2(x, resid_source, int(J), side_of)
+        sig2 = _nn_sigma2(x, resid_source, int(J), side_of, max(h, b))
+        sig2_b = sig2
     else:
+        # conventional: residuals of the order-p fit at h; robust: of the
+        # order-q fit at b, which covers every unit the bias weights touch
         sig2 = _hc_sigma2(x, resid_source, h, p, kernel)
+        sig2_b = _hc_sigma2(x, resid_source, b, q, kernel)
 
     v_conv = sum(w_conv[i] ** 2 * sig2[i] for i in range(n))
-    v_rbc = sum(w_bc[i] ** 2 * sig2[i] for i in range(n))
+    v_rbc = sum(w_bc[i] ** 2 * sig2_b[i] for i in range(n))
     z = _norm_ppf(1.0 - float(alpha) / 2.0)
     se_c = math.sqrt(max(v_conv, 0.0))
     se_r = math.sqrt(max(v_rbc, 0.0))
@@ -490,7 +513,7 @@ def causrddc(y, x, treatment=None, cutoff=0.0, nu=0, p=1, q=None, h=None,
         "ci_conventional": (tau - z * se_c, tau + z * se_c),
         "ci_bias_corrected": (tau_bc - z * se_c, tau_bc + z * se_c),
         "ci_robust": (tau_bc - z * se_r, tau_bc + z * se_r),
-        "pvalue_robust": 2.0 * (1.0 - _norm_cdf(abs(tau_bc) / se_r))
+        "pvalue_robust": 2.0 * (_norm_cdf(-(abs(tau_bc) / se_r)))
         if se_r > 0 else float("nan"),
         "h": h, "b": b, "rho": h / b, "p": p, "q": q, "nu": nu,
         "kernel": kernel, "vce": vce, "alpha": float(alpha),

@@ -56,7 +56,8 @@ def test_remark_7_identity():
     x, y = _make(800, 7)
     for p in (1, 2):
         lo = causrddc(y, x, p=p, h=0.5, b=0.5)
-        hi = causrddc(y, x, p=p + 1, h=0.5)
+        # b = h too: the nearest-neighbour sample is the window max(h, b)
+        hi = causrddc(y, x, p=p + 1, h=0.5, b=0.5)
         assert abs(lo["bias_corrected"] - hi["estimate"]) < 1e-11
         assert abs(lo["se_robust"] - hi["se_conventional"]) < 1e-12
         assert abs(lo["estimate"] - hi["estimate"]) > 1e-6

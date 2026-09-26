@@ -4,7 +4,10 @@ A condensed map of the verified, reproducible findings the MORIE
 v0.2.0 callables surface on the OTIS, TPS, and SIU public-release
 data. Each row links the substantive claim to the morie callable
 that re-derives it, the underlying public dataset, and the
-verification result file in `papers/morie-empirical-paper/results/`.
+verification result file (`results/...`). The result files and the
+companion papers are kept with the paper manuscripts, outside this
+repository; the callables named here re-derive every number from the
+public data.
 
 The five companion papers cite these numbers; the per-result text
 files capture method choices and any deviations from prior

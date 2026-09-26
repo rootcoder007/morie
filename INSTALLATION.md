@@ -1,6 +1,6 @@
 # Installing morie
 
-> ⚠️ **Pre-alpha (v0.x).** morie is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift, datasets may move, and findings may be refined between minor versions.
+> **Beta (v1.x).** APIs may still shift between minor versions. Callables whose describe() guide is marked NOT IMPLEMENTED raise `NotImplementedError` until their method is built.
 
 ## Step 1 — install the prerequisites
 
@@ -212,7 +212,7 @@ Windows ships without `bash`, `python`, and `R` (though it *does* include `curl`
 
 ```powershell
 python -c "import morie; print(morie.__version__)"
-Rscript -e "library(morie); cat(as.character(packageVersion('morie')), '\n')"
+Rscript -e "library(rmorie); cat(as.character(packageVersion('rmorie')), '\n')"
 ```
 
 ### 2B. winget (also works — where your Windows has it)
@@ -363,8 +363,8 @@ morie list-modules | head -3
 
 ```r
 # R
-library(morie)
-packageVersion("morie")
+library(rmorie)
+packageVersion("rmorie")
 ```
 
 ## First analysis (≤60 seconds, no code to write)

@@ -337,21 +337,19 @@ def bandwidth_ik(
             details={},
         )
     f_c = (n_l + n_r) / (2 * n * h1)
-    s2_c = float(
-        np.sum((y[il] - y[il].mean()) ** 2) + np.sum((y[ir] - y[ir].mean()) ** 2)
-    ) / (n_l + n_r)
+    s2_c = float(np.sum((y[il] - y[il].mean()) ** 2) + np.sum((y[ir] - y[ir].mean()) ** 2)) / (n_l + n_r)
 
     # Step 2: third derivative from a global cubic, then the
     # second-stage pilot bandwidths and one-sided quadratics.
     d = x - cutoff
     tr = (d >= 0).astype(float)
-    G = np.column_stack([np.ones(n), tr, d, d ** 2, d ** 3])
+    G = np.column_stack([np.ones(n), tr, d, d**2, d**3])
     coef, *_ = np.linalg.lstsq(G, y, rcond=None)
     m3 = 6 * coef[4]
     if not np.isfinite(m3) or m3 == 0:
         m3 = 1e-8
     n_pos, n_neg = int((d >= 0).sum()), int((d < 0).sum())
-    base = (s2_c / (f_c * m3 ** 2)) ** (1 / 7)
+    base = (s2_c / (f_c * m3**2)) ** (1 / 7)
     h2_r = 3.56 * base * n_pos ** (-1 / 7)
     h2_l = 3.56 * base * n_neg ** (-1 / 7)
 
@@ -361,7 +359,7 @@ def bandwidth_ik(
         if k < 4:
             return 0.0, k
         dd = d[sel]
-        Q = np.column_stack([np.ones(k), dd, dd ** 2])
+        Q = np.column_stack([np.ones(k), dd, dd**2])
         b, *_ = np.linalg.lstsq(Q, y[sel], rcond=None)
         return float(2 * b[2]), k
 
@@ -369,10 +367,9 @@ def bandwidth_ik(
     m2_l, N_l = _fit2(d < 0, h2_l)
 
     # Step 3: the regularised MSE-optimal bandwidth.
-    r_r = 2160 * s2_c / (max(N_r, 1) * h2_r ** 4)
-    r_l = 2160 * s2_c / (max(N_l, 1) * h2_l ** 4)
-    C_K = {"triangular": 3.4375, "uniform": 5.40,
-           "epanechnikov": 4.497}.get(kernel, 3.4375)
+    r_r = 2160 * s2_c / (max(N_r, 1) * h2_r**4)
+    r_l = 2160 * s2_c / (max(N_l, 1) * h2_l**4)
+    C_K = {"triangular": 3.4375, "uniform": 5.40, "epanechnikov": 4.497}.get(kernel, 3.4375)
     denom = (m2_r - m2_l) ** 2 + r_r + r_l
     h_ik = C_K * (2 * s2_c / (f_c * denom)) ** (1 / 5) * n ** (-1 / 5)
 
@@ -388,6 +385,7 @@ def bandwidth_ik(
             "reg_left": float(r_l),
         },
     )
+
 
 def bandwidth_rot(
     x: np.ndarray,
@@ -418,12 +416,19 @@ def bandwidth_rot(
         s = np.std(xs)
         q = np.subtract(*np.percentile(xs, [75, 25]))
         return float(0.9 * min(s, q / 1.349) * len(xs) ** (-1 / 5))
+
     # the same rule on each side of the cutoff, for a two-sided pilot
-    return BandwidthResult(h_opt=float(h_rot), method="ROT",
-                           details={"sd_x": float(sd_x), "iqr_x": float(iqr_x),
-                                    "cutoff": float(cutoff),
-                                    "h_left": _side(x[x < cutoff]),
-                                    "h_right": _side(x[x >= cutoff])})
+    return BandwidthResult(
+        h_opt=float(h_rot),
+        method="ROT",
+        details={
+            "sd_x": float(sd_x),
+            "iqr_x": float(iqr_x),
+            "cutoff": float(cutoff),
+            "h_left": _side(x[x < cutoff]),
+            "h_right": _side(x[x >= cutoff]),
+        },
+    )
 
 
 def bandwidth_cct(
@@ -808,6 +813,7 @@ def rdd_bias_corrected(
     p: int = 1,
     kernel: str = "triangular",
     alpha: float = 0.05,
+    vce: str = "nn",
 ) -> RDDResult:
     r"""Bias-corrected RDD with robust confidence intervals (CCT, 2014).
 
@@ -827,6 +833,9 @@ def rdd_bias_corrected(
         Main polynomial order.
     kernel : str
     alpha : float
+    vce : {"nn", "hc"}
+        Residual variance: nearest-neighbour (rdrobust's default) or
+        plug-in residuals of the local fits.
 
     Returns
     -------
@@ -846,55 +855,40 @@ def rdd_bias_corrected(
 
     b = h / rho  # pilot bandwidth
 
-    # Conventional estimate
-    mask_h = np.abs(x - cutoff) <= h
-    x_h = x[mask_h]
-    y_h = y[mask_h]
-    left_h = x_h < cutoff
-    right_h = x_h >= cutoff
+    # Robust bias-corrected inference (CCT 2014, Theorem 1): the bias
+    # estimate carries the kernel constant e_0' Gamma_p^{-1} Lambda_p, and
+    # the robust variance is that of the bias-corrected linear smoother,
+    # not an inflated conventional one.  Matches rdrobust (vce="nn") to
+    # ~1e-14.
+    from morie.fn.causrddc import causrddc
 
-    beta_l, V_l = _local_poly_fit(x_h[left_h], y_h[left_h], cutoff, h, p, kernel)
-    beta_r, V_r = _local_poly_fit(x_h[right_h], y_h[right_h], cutoff, h, p, kernel)
-    tau_conv = float(beta_r[0] - beta_l[0])
-    se_conv = float(np.sqrt(max(V_r[0, 0] + V_l[0, 0], 0.0)))
-
-    # Bias estimate using p+1 polynomial on pilot bandwidth
-    mask_b = np.abs(x - cutoff) <= b
-    x_b = x[mask_b]
-    y_b = y[mask_b]
-    left_b = x_b < cutoff
-    right_b = x_b >= cutoff
-
-    bias = 0.0
-    if left_b.sum() > p + 2 and right_b.sum() > p + 2:
-        beta_l_b, _ = _local_poly_fit(x_b[left_b], y_b[left_b], cutoff, b, p + 1, kernel)
-        beta_r_b, _ = _local_poly_fit(x_b[right_b], y_b[right_b], cutoff, b, p + 1, kernel)
-        if len(beta_l_b) > p + 1 and len(beta_r_b) > p + 1:
-            bias_l = beta_l_b[p + 1] * h ** (p + 1)
-            bias_r = beta_r_b[p + 1] * h ** (p + 1)
-            bias = float(bias_r - bias_l)
-
-    tau_bc = tau_conv - bias
-
-    # Robust SE (accounts for bias estimation uncertainty)
-    se_robust = se_conv * 1.1  # simplified inflation factor
+    fit = causrddc(y, x, cutoff=cutoff, p=p, h=h, b=b, kernel=kernel, alpha=alpha, vce=vce)
+    tau_conv = float(fit["estimate"])
+    tau_bc = float(fit["bias_corrected"])
+    se_robust = float(fit["se_robust"])
 
     t_val = tau_bc / se_robust if se_robust > 0 else 0.0
     p_val = float(2 * stats.norm.sf(abs(t_val)))
-    z = stats.norm.ppf(1 - alpha / 2)
+    lo, hi = fit["ci_robust"]
 
     return RDDResult(
         estimate=tau_bc,
         std_error=se_robust,
         t_stat=t_val,
         p_value=p_val,
-        ci_lower=tau_bc - z * se_robust,
-        ci_upper=tau_bc + z * se_robust,
+        ci_lower=float(lo),
+        ci_upper=float(hi),
         bandwidth=h,
-        n_left=int((x_h < cutoff).sum()),
-        n_right=int((x_h >= cutoff).sum()),
+        n_left=int(fit["n_left"]),
+        n_right=int(fit["n_right"]),
         method="rdd_bias_corrected",
-        details={"tau_conventional": tau_conv, "bias": bias, "pilot_bw": b},
+        details={
+            "tau_conventional": tau_conv,
+            "bias": tau_conv - tau_bc,
+            "se_conventional": float(fit["se_conventional"]),
+            "pilot_bw": b,
+            "vce": vce,
+        },
     )
 
 

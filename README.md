@@ -121,14 +121,19 @@ install.packages(
 
 ```python
 import morie
+from morie.data import load_dataset
 
-# Load a built-in dataset
-df = morie.load_dataset("otis-2025")
+# CPADS 2021-22 public-use microdata: fetched from Open Canada on first
+# use, then served from the local cache
+df = load_dataset("ocp21")
+print(df.shape)
 
-# Run an MRM module on OTIS data
-from morie.otis_all_analyze import analyze_a01_mrm
-result = analyze_a01_mrm(df)
+# Welch's two-sample t-test, and the guide every morie.fn callable carries
+from morie.fn import describe, welcht
+
+result = welcht([5.1, 4.9, 5.6, 5.8, 6.0], [6.2, 6.8, 7.1, 6.5, 7.4])
 print(result)
+print(describe("welcht"))
 ```
 
 ## What's new
