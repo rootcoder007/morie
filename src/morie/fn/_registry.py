@@ -89877,6 +89877,27 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "krftst",
+    "kenward_roger_test",
+    "Auto",
+    "Auto-wired callable from fn/krftst.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "bkrnig",
+    "bayesian_kriging_nig",
+    "Auto",
+    "Auto-wired callable from fn/bkrnig.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "hsbkrg",
+    "bayesian_kriging_matern",
+    "Auto",
+    "Auto-wired callable from fn/hsbkrg.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",

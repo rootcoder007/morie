@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,390 single-purpose callables** -- every one
+``morie.fn`` ships **18,392 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1106,6 +1106,8 @@ Full list
    "bayesian_irt_posterior", "birtp"
    "bayesian_iv", "bivrt"
    "bayesian_kernel_regression", "bkern"
+   "bayesian_kriging_matern", "hsbkrg"
+   "bayesian_kriging_nig", "bkrnig"
    "bayesian_lasso", "blasr"
    "bayesian_lasso_full", "blasf"
    "bayesian_linear_regression", "blr"
@@ -9462,6 +9464,7 @@ Full list
    "kendalltau", "tau"
    "kendalltaub", "kendt"
    "kentau", "kentau"
+   "kenward_roger_test", "krftst"
    "kepler_orbit", "orbit"
    "keplerorbit", "orbit"
    "kernel_blup", "kblup"
@@ -16082,7 +16085,6 @@ Full list
    "statistical_methods_for_spatial_data_analysis_chapter_1_equation_3", "statistical_methods_for_spatial_data_analysis1e3"
    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1685", "statistical_methods_for_spatial_data_analysis1u1685"
    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1686", "statistical_methods_for_spatial_data_analysis1u1686"
-   "statistical_methods_for_spatial_data_analysis_chapter_6_equation_54", "statistical_methods_for_spatial_data_analysis6e54"
    "statistical_methods_for_spatial_data_analysis_chapter_6_equation_97", "statistical_methods_for_spatial_data_analysis6e97"
    "statistical_methods_for_spatial_data_analysis_chapter_6_equation_98", "statistical_methods_for_spatial_data_analysis6e98"
    "statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_27_unnumbered_111", "statistics_fourth_edition_david_freeman_robert_pisani_and_ro27u111"
