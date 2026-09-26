@@ -381,23 +381,23 @@ def liml(
 
     M_W = _annihilator(W_full)
 
-    # Matrices for kappa calculation
+    # kappa = smallest eigenvalue of (Y' M_Z Y)^{-1} (Y' M_W Y) with
+    # Y = [y, D], M_Z annihilating all instruments (excluded and exogenous)
+    # and M_W the exogenous ones only; kappa >= 1, and = 1 when just
+    # identified (LIML = 2SLS). The old code took the smallest eigenvalue
+    # of the inverse ratio, i.e. 1 / kappa_max.
     Y_tilde = M_W @ np.column_stack([y, D])
-    Z_tilde = M_W @ Z_excl
     Z_all = np.column_stack([W_full, Z_excl])
     M_Z_all = _annihilator(Z_all)
-
-    # kappa = smallest eigenvalue of (Y~' M_Zexcl Y~)^{-1} (Y~' Y~)
-    # Equivalently: eigenvalue problem
     A = Y_tilde.T @ M_Z_all @ Y_tilde
     B = Y_tilde.T @ M_W @ Y_tilde
 
     try:
-        eigvals = np.linalg.eigvalsh(np.linalg.solve(B, A))
+        eigvals = np.linalg.eigvals(np.linalg.solve(A, B))
     except np.linalg.LinAlgError:
-        eigvals = np.linalg.eigvalsh(np.linalg.pinv(B) @ A)
+        eigvals = np.linalg.eigvals(np.linalg.pinv(A) @ B)
 
-    kappa = float(np.min(eigvals[eigvals > -1e-10]))
+    kappa = float(np.min(np.real(eigvals)))
 
     # k-class estimator
     if exogenous:
