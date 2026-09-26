@@ -2414,7 +2414,8 @@ def chi2_contingency(observed, correction=True, lambda_=None):
             adj.append(o + (mag if diff > 0 else -mag if diff < 0 else 0.0))
         obs = adj
     stat = _power_divergence_stat(obs, e, lambda_)
-    return _Chi2ContingencyResult(stat, chi2.sf(stat, dof), dof, exp)
+    from . import _array_core as _ac2
+    return _Chi2ContingencyResult(stat, chi2.sf(stat, dof), dof, _ac2.array(exp))
 
 
 def _log_comb(n, k):

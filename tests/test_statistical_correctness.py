@@ -482,14 +482,11 @@ def test_gof_rejects_misfit_and_accepts_good_fit():
 
     rng = np.random.default_rng(4)
     heavy = rng.exponential(size=200)          # not normal
-    # Both land beyond the largest tabulated critical value, so p is clamped
-    # at the table floor and flagged; a strictly smaller p is not expressible.
+    # the normal-null p-values are nortest's formulas, not table clamps
     li = lilliefors_test(heavy, dist="norm")
-    assert li.p_value == pytest.approx(0.001)
-    assert li.extra["p_bounded"] == "lower"
+    assert li.p_value < 0.001 and li.extra["p_bounded"] is None
     ad = anderson_darling(heavy, dist="norm")
-    assert ad.p_value == pytest.approx(0.01)
-    assert ad.extra["p_bounded"] == "lower"
+    assert ad.p_value < 0.001 and ad.extra["p_bounded"] is None
 
     good = np.random.default_rng(5).normal(size=200)
     assert lilliefors_test(good, dist="norm").p_value > 0.05

@@ -544,10 +544,7 @@ def chi2_goodness_of_fit(
         Effect size is Cohen's *w*.
     """
     obs = np.asarray(observed, dtype=np.float64)
-    if expected is None:
-        exp = np.full_like(obs, obs.sum() / len(obs))
-    else:
-        exp = np.asarray(expected, dtype=np.float64)
+    exp = np.full_like(obs, obs.sum() / len(obs)) if expected is None else np.asarray(expected, dtype=np.float64)
     chi2, p = stats.chisquare(obs, f_exp=exp)
     k = len(obs)
     n = obs.sum()
@@ -621,7 +618,7 @@ def mcnemar_test(
     n = table.sum()
     if exact:
         p = float(stats.binom_test(int(min(b, c)), int(b + c), 0.5)) if (b + c) > 0 else 1.0
-        chi2_stat = float(b + c)
+        chi2_stat = float(b)  # binom.test(b, b + c): successes among discordant pairs
     else:
         chi2_stat = (abs(b - c) - 1) ** 2 / (b + c) if (b + c) > 0 else 0.0
         p = 1.0 - stats.chi2.cdf(chi2_stat, 1) if (b + c) > 0 else 1.0
@@ -740,6 +737,14 @@ def spearman_correlation(
     n = min(len(x), len(y))
     x, y = x[:n], y[:n]
     rho, p = stats.spearmanr(x, y)
+    if n < 1290 and len(set(x.tolist())) == n and len(set(y.tolist())) == n:
+        # cor.test(method = "spearman"): exact (n <= 9) or Edgeworth
+        # (AS 89) p-value for untied data; the t approximation otherwise
+        from morie.inference import _prho
+
+        q = (n**3 - n) * (1.0 - rho) / 6.0
+        pp = _prho(n, round(q) + 0.0, False) if q > (n**3 - n) / 6.0 else _prho(n, round(q) + 2.0, True)
+        p = min(2.0 * pp, 1.0)
     z = np.arctanh(rho)
     se_z = 1.0 / math.sqrt(n - 3) if n > 3 else np.inf
     z_crit = stats.norm.ppf((1 + confidence) / 2)
@@ -952,13 +957,18 @@ def mann_whitney_u(
     Returns
     -------
     TestResult
-        Effect size is rank-biserial correlation :math:`r = 1 - 2U / (n_1 n_2)`.
+        Effect size is rank-biserial correlation :math:`r = 2U / (n_1 n_2) - 1`,
+        positive when *x* tends to exceed *y*. The p-value is exact for
+        untied samples both under 50, as ``wilcox.test``, and the
+        tie-corrected normal approximation otherwise.
     """
     x = _validate_array(x, "x")
     y = _validate_array(y, "y")
-    u_stat, p = stats.mannwhitneyu(x, y, alternative=alternative)
     nx, ny = len(x), len(y)
-    r_rb = 1.0 - 2.0 * u_stat / (nx * ny) if nx * ny > 0 else 0.0
+    xy = x.tolist() + y.tolist()
+    exact = nx < 50 and ny < 50 and len(set(xy)) == len(xy)
+    u_stat, p = stats.mannwhitneyu(x, y, alternative=alternative, method="exact" if exact else "asymptotic")
+    r_rb = 2.0 * u_stat / (nx * ny) - 1.0 if nx * ny > 0 else 0.0
     return TestResult(
         method="Mann-Whitney U test",
         test_statistic=float(u_stat),
@@ -1083,37 +1093,56 @@ def ks_test_two_sample(
 # (N = 18 and N = 20 at alpha = 0.001 are .328 and .329).
 # ---------------------------------------------------------------------
 
-_GOF_LILLIE_N = (4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20,
-                 25, 30, 40, 50, 60, 75, 100)
+_GOF_LILLIE_N = (4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 25, 30, 40, 50, 60, 75, 100)
 _GOF_LILLIE_ALPHA = (0.100, 0.050, 0.010, 0.001)
 
 _GOF_LILLIE_NORM = (
-    (.344, .375, .414, .432), (.320, .344, .398, .427),
-    (.298, .323, .369, .421), (.281, .305, .351, .399),
-    (.266, .289, .334, .383), (.252, .273, .316, .366),
-    (.240, .261, .305, .350), (.231, .251, .291, .331),
-    (.223, .242, .281, .327), (.208, .226, .262, .302),
-    (.195, .213, .249, .291), (.185, .201, .234, .272),
-    (.176, .192, .223, .266), (.159, .173, .202, .236),
-    (.146, .159, .186, .219), (.127, .139, .161, .190),
-    (.114, .125, .145, .173), (.105, .114, .133, .159),
-    (.094, .102, .119, .138), (.082, .089, .104, .121),
+    (0.344, 0.375, 0.414, 0.432),
+    (0.320, 0.344, 0.398, 0.427),
+    (0.298, 0.323, 0.369, 0.421),
+    (0.281, 0.305, 0.351, 0.399),
+    (0.266, 0.289, 0.334, 0.383),
+    (0.252, 0.273, 0.316, 0.366),
+    (0.240, 0.261, 0.305, 0.350),
+    (0.231, 0.251, 0.291, 0.331),
+    (0.223, 0.242, 0.281, 0.327),
+    (0.208, 0.226, 0.262, 0.302),
+    (0.195, 0.213, 0.249, 0.291),
+    (0.185, 0.201, 0.234, 0.272),
+    (0.176, 0.192, 0.223, 0.266),
+    (0.159, 0.173, 0.202, 0.236),
+    (0.146, 0.159, 0.186, 0.219),
+    (0.127, 0.139, 0.161, 0.190),
+    (0.114, 0.125, 0.145, 0.173),
+    (0.105, 0.114, 0.133, 0.159),
+    (0.094, 0.102, 0.119, 0.138),
+    (0.082, 0.089, 0.104, 0.121),
 )
 _GOF_LILLIE_EXP = (
-    (.444, .483, .556, .626), (.405, .443, .514, .585),
-    (.374, .410, .477, .551), (.347, .381, .444, .509),
-    (.327, .359, .421, .502), (.310, .339, .399, .460),
-    (.296, .325, .379, .444), (.284, .312, .366, .433),
-    (.271, .299, .350, .412), (.252, .277, .325, .388),
-    (.237, .261, .311, .366), (.224, .247, .293, .328),
-    (.213, .234, .279, .329), (.192, .211, .251, .296),
-    (.176, .193, .229, .270), (.153, .168, .201, .241),
-    (.137, .150, .179, .214), (.125, .138, .164, .193),
-    (.113, .124, .146, .173), (.098, .108, .127, .150),
+    (0.444, 0.483, 0.556, 0.626),
+    (0.405, 0.443, 0.514, 0.585),
+    (0.374, 0.410, 0.477, 0.551),
+    (0.347, 0.381, 0.444, 0.509),
+    (0.327, 0.359, 0.421, 0.502),
+    (0.310, 0.339, 0.399, 0.460),
+    (0.296, 0.325, 0.379, 0.444),
+    (0.284, 0.312, 0.366, 0.433),
+    (0.271, 0.299, 0.350, 0.412),
+    (0.252, 0.277, 0.325, 0.388),
+    (0.237, 0.261, 0.311, 0.366),
+    (0.224, 0.247, 0.293, 0.328),
+    (0.213, 0.234, 0.279, 0.329),
+    (0.192, 0.211, 0.251, 0.296),
+    (0.176, 0.193, 0.229, 0.270),
+    (0.153, 0.168, 0.201, 0.241),
+    (0.137, 0.150, 0.179, 0.214),
+    (0.125, 0.138, 0.164, 0.193),
+    (0.113, 0.124, 0.146, 0.173),
+    (0.098, 0.108, 0.127, 0.150),
 )
 _GOF_LILLIE_ASYMP = {
-    "norm": (.816, .888, 1.038, 1.212),
-    "expon": (.980, 1.077, 1.274, 1.501),
+    "norm": (0.816, 0.888, 1.038, 1.212),
+    "expon": (0.980, 1.077, 1.274, 1.501),
 }
 
 _GOF_AD_ALPHA = (0.01, 0.025, 0.05, 0.10, 0.15)
@@ -1131,8 +1160,7 @@ def _gof_lillie_crit(n: int, dist: str) -> np.ndarray:
     if n <= _GOF_LILLIE_N[0]:
         return tab[0]
     # Interpolate each tabulated significance level linearly in N.
-    return np.array([np.interp(n, _GOF_LILLIE_N, tab[:, j])
-                     for j in range(tab.shape[1])])
+    return np.array([np.interp(n, _GOF_LILLIE_N, tab[:, j]) for j in range(tab.shape[1])])
 
 
 def _gof_p_from_crit(stat, crit, alpha):
@@ -1151,6 +1179,33 @@ def _gof_p_from_crit(stat, crit, alpha):
     if stat >= crit[-1]:
         return float(alpha.min()), "lower"
     return float(np.exp(np.interp(stat, crit, np.log(alpha)))), None
+
+
+def _lillie_p_norm(k: float, n: int) -> float:
+    """Lilliefors normal-null p-value: Dallal & Wilkinson (1986) below 0.1,
+    Stephens' (1974) modified-statistic polynomials above, as
+    nortest::lillie.test."""
+    kd, nd = (k, n) if n <= 100 else (k * (n / 100) ** 0.49, 100)
+    p = math.exp(
+        -7.01256 * kd**2 * (nd + 2.78019)
+        + 2.99587 * kd * math.sqrt(nd + 2.78019)
+        - 0.122119
+        + 0.974598 / math.sqrt(nd)
+        + 1.67997 / nd
+    )
+    if p > 0.1:
+        kk = (math.sqrt(n) - 0.01 + 0.85 / math.sqrt(n)) * k
+        if kk <= 0.302:
+            p = 1.0
+        elif kk <= 0.5:
+            p = 2.76773 - 19.828315 * kk + 80.709644 * kk**2 - 138.55152 * kk**3 + 81.218052 * kk**4
+        elif kk <= 0.9:
+            p = -4.901232 + 40.662806 * kk - 97.490286 * kk**2 + 94.029866 * kk**3 - 32.355711 * kk**4
+        elif kk <= 1.31:
+            p = 6.198765 - 19.558097 * kk + 23.186922 * kk**2 - 12.234627 * kk**3 + 2.423045 * kk**4
+        else:
+            p = 0.0
+    return float(p)
 
 
 def anderson_darling(
@@ -1219,7 +1274,22 @@ def anderson_darling(
     i = np.arange(1, n + 1)
     a2 = -n - np.mean((2 * i - 1) * (lf + lsf))
     astar = a2 * mult
-    p, bounded = _gof_p_from_crit(astar, _GOF_AD_CRIT[dist], _GOF_AD_ALPHA)
+    if dist == "norm":
+        # D'Agostino & Stephens (1986, Table 4.9), as nortest::ad.test
+        aa = astar
+        if aa < 0.2:
+            p = 1 - math.exp(-13.436 + 101.14 * aa - 223.73 * aa**2)
+        elif aa < 0.34:
+            p = 1 - math.exp(-8.318 + 42.796 * aa - 59.938 * aa**2)
+        elif aa < 0.6:
+            p = math.exp(0.9177 - 4.279 * aa - 1.38 * aa**2)
+        elif aa < 10:
+            p = math.exp(1.2937 - 5.709 * aa + 0.0186 * aa**2)
+        else:
+            p = 3.7e-24
+        p, bounded = float(p), None
+    else:
+        p, bounded = _gof_p_from_crit(astar, _GOF_AD_CRIT[dist], _GOF_AD_ALPHA)
     return TestResult(
         method=f"Anderson-Darling test ({dist})",
         test_statistic=float(astar),
@@ -1465,7 +1535,10 @@ def lilliefors_test(
     # Both one-sided gaps: the EDF jumps at each order statistic, so the
     # supremum is attained just before or just at an observation.
     d = float(np.maximum(i / n - f, f - (i - 1) / n).max())
-    p, bounded = _gof_p_from_crit(d, _gof_lillie_crit(n, dist), _GOF_LILLIE_ALPHA)
+    if dist == "norm":
+        p, bounded = _lillie_p_norm(d, n), None
+    else:
+        p, bounded = _gof_p_from_crit(d, _gof_lillie_crit(n, dist), _GOF_LILLIE_ALPHA)
     return TestResult(
         method=f"Lilliefors test ({dist})",
         test_statistic=d,
@@ -1587,14 +1660,31 @@ def fisher_exact_test(
     table = np.asarray(contingency_table, dtype=np.int64)
     if table.shape != (2, 2):
         raise ValueError("Fisher exact test requires a 2x2 table.")
-    odds_ratio, p = stats.fisher_exact(table, alternative=alternative)
+    _, p = stats.fisher_exact(table, alternative=alternative)
     n = int(table.sum())
+    # conditional MLE and exact interval, as fisher.test: two-sided 95%, or
+    # the one-sided 95% bound (the matching limit of the two-sided 90%)
+    from morie.inference import _fisher_conditional
+
+    tab = [[int(v) for v in r] for r in table.tolist()]
+    est, lo, hi = _fisher_conditional(tab, 0.95 if alternative == "two-sided" else 0.90)
+    if alternative == "greater":
+        hi = math.inf
+    elif alternative == "less":
+        lo = 0.0
     return TestResult(
         method="Fisher's exact test",
-        test_statistic=float(odds_ratio),
+        test_statistic=float(est),
         p_value=float(p),
-        estimate=float(odds_ratio),
+        ci_lower=float(lo),
+        ci_upper=float(hi),
+        estimate=float(est),
         n=n,
+        extra={
+            "sample_odds_ratio": float(table[0, 0] * table[1, 1] / (table[0, 1] * table[1, 0]))
+            if table[0, 1] * table[1, 0] > 0
+            else math.inf
+        },
     )
 
 
@@ -1638,13 +1728,28 @@ def cohens_kappa(
     col_sums = matrix.sum(axis=0) / n
     p_e = float((row_sums * col_sums).sum())
     kappa_val = (p_o - p_e) / (1 - p_e) if (1 - p_e) > 0 else 0.0
-    # Approximate SE (Fleiss, 1981)
-    se = math.sqrt(p_e / (n * (1 - p_e) ** 2)) if (1 - p_e) > 0 and n > 0 else 0.0
+    # Fleiss, Cohen and Everitt (1969): the null variance for the z test
+    # (as irr::kappa2) and the non-null variance for the interval (as
+    # psych::cohen.kappa)
+    P = matrix / n
+    rs = [float(v) for v in row_sums]
+    cs = [float(v) for v in col_sums]
+    den = n * (1 - p_e) ** 2
+    v0 = (p_e + p_e**2 - sum(r * c * (r + c) for r, c in zip(rs, cs))) / den if den > 0 else 0.0
+    diag_part = sum(float(P[i, i]) * (1 - (rs[i] + cs[i]) * (1 - kappa_val)) ** 2 for i in range(k))
+    off_part = sum(float(P[i, j]) * (cs[i] + rs[j]) ** 2 for i in range(k) for j in range(k) if i != j)
+    v1 = (
+        (diag_part + (1 - kappa_val) ** 2 * off_part - (kappa_val - p_e * (1 - kappa_val)) ** 2) / den
+        if den > 0
+        else 0.0
+    )
+    se = math.sqrt(max(v1, 0.0))
     z_crit = stats.norm.ppf((1 + confidence) / 2)
+    z_stat = kappa_val / math.sqrt(v0) if v0 > 0 else 0.0
     return TestResult(
         method="Cohen's kappa",
-        test_statistic=float(kappa_val / se) if se > 0 else 0.0,
-        p_value=float(2 * stats.norm.sf(abs(kappa_val / se))) if se > 0 else 1.0,
+        test_statistic=float(z_stat),
+        p_value=float(2 * stats.norm.sf(abs(z_stat))) if v0 > 0 else 1.0,
         ci_lower=float(kappa_val - z_crit * se),
         ci_upper=float(kappa_val + z_crit * se),
         effect_size=float(kappa_val),
