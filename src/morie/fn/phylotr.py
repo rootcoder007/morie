@@ -2,7 +2,6 @@
 """Neighbor-joining phylogenetic tree construction (Saitou-Nei 1987)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["phylotr", "phylogenetic_tree"]

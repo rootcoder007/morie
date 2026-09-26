@@ -2,7 +2,6 @@
 """Marginal structural Cox model fitted with IPTW."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .aiptdd import _logit_fit
 from .survmd import _cox_newton

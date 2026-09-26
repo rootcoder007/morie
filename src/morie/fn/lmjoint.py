@@ -2,7 +2,6 @@
 """Joint LM test for spatial lag and error."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

@@ -2,7 +2,6 @@
 """NLS estimator for parametric survival."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["nonlinear_least_squares_surv"]

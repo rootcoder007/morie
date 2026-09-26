@@ -2,7 +2,6 @@
 """Posterior predictive p-value from replicated test quantities."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["ppcrep", "posterior_predictive_replication"]

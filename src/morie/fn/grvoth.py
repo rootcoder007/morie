@@ -3,7 +3,6 @@
 """Hard voting ensemble prediction (majority label among base classifiers)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_hard_voting"]

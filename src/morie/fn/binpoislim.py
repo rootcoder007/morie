@@ -4,7 +4,6 @@ Morin (2016), Probability: For the Enthusiastic Beginner, eqs (4.34)-(4.35).
 """
 
 from . import _morin
-
 from ._richresult import RichResult
 
 __all__ = ["binpoislim"]

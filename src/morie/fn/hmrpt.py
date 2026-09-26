@@ -3,7 +3,6 @@
 """Random patches: subsample rows and features per base model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmbag import _stump
 from .hmpas import _lcg_sample

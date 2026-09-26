@@ -12,7 +12,6 @@ Deep learning. Nature, 521(7553), 436-444.
 __all__ = ["mxpl2"]
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 

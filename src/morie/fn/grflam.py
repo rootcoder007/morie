@@ -3,7 +3,6 @@
 """Flamingo gated cross-attention."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grca import geron_cross_attention
 

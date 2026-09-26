@@ -2,7 +2,6 @@
 """Inverse distance weighted interpolation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_idw"]

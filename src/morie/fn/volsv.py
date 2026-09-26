@@ -1,7 +1,6 @@
 """Quasi-likelihood estimation of the SV(1) stochastic volatility model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vol_sv_quasi_lik"]

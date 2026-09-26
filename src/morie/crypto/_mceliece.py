@@ -10,10 +10,9 @@ from __future__ import annotations
 
 import hashlib
 
-from morie.fn import _array_core as np
-from morie.crypto._sysrng import system_rng
-
 from morie.crypto._ecc import goppa_generate
+from morie.crypto._sysrng import system_rng
+from morie.fn import _array_core as np
 
 
 def mceliece_keygen(m: int = 4, t: int = 2) -> dict:

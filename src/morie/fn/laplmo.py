@@ -2,7 +2,6 @@
 """Laplacian eigenvectors and the Fiedler vector."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["lapeig", "laplacian_eigen"]

@@ -2,7 +2,6 @@
 """CATE estimation by S-, T-, X- and R-learner meta-algorithms."""
 
 from . import _array_core as np
-
 from ._cforest import CausalForest
 from ._did import add_intercept, logit_fit, logit_predict, ols_fit
 from ._richresult import RichResult

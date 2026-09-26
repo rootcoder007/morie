@@ -2,7 +2,6 @@
 """Rectifier linear unit activation and its gradient."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['reluact', 'relu_activation', 'reluactivation']

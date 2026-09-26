@@ -5,7 +5,6 @@ import math
 
 from . import _s03core as k
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["mirt_2d_compensatory", "mirt2dcompensatory"]

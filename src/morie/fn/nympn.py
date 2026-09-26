@@ -2,7 +2,6 @@
 """Neyman-Pearson threshold."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 _QUOTE = "We suffer more often in imagination than in reality. -- Seneca"

@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Simplified graph convolution propagation."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["sgcprop", "sgc"]
 

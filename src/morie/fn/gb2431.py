@@ -4,9 +4,8 @@
 from math import comb
 
 from . import _array_core as np
-from ._sci_core import special
-
 from ._richresult import RichResult
+from ._sci_core import special
 
 __all__ = ["gibbons_binomial_beta_link"]
 

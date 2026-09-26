@@ -3,7 +3,6 @@
 """Kamath Eq 2.40: top-k gating G(x) = softmax(TopK(x W_g))."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_moe_topk_gating"]

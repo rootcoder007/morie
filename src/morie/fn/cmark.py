@@ -3,7 +3,6 @@
 
 from . import _array_core as np
 from . import _stats_core as stats
-
 from ._richresult import RichResult
 from .bdcrt import _descendants, _has_cycle, _parse
 

@@ -2,7 +2,6 @@
 """Exact binomial test."""
 
 from . import _stats_core as stats
-
 from ._containers import TestResult
 
 

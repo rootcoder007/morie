@@ -20,7 +20,6 @@ and `spreml`.
 """
 
 from . import _array_core as np
-
 from ._schab_gn import gauss_newton_semivariogram
 from ._schab_vario import correlogram, semivariogram
 

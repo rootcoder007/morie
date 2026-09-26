@@ -3,7 +3,6 @@
 """Mean squared error cost for linear regression (theta minimizes MSE)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_linreg_mse_cost"]

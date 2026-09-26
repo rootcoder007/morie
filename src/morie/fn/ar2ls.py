@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Mastering others is strength; mastering yourself is true power. -- Lao Tzu"

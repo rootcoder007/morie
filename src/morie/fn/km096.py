@@ -3,7 +3,6 @@
 """Kamath Eq 6.20: the gender-projection regulariser."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_gender_projection_reg"]

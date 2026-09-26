@@ -2,7 +2,6 @@
 """Category probabilities of the ordinal threshold model."""
 
 from . import _gp_core as G
-
 from ._richresult import RichResult
 
 __all__ = ['ordprobs', 'ordinal_threshold_model']

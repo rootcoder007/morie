@@ -4,10 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import cophenet, linkage
-from ._sci_core import pdist
-
 from ._containers import DescriptiveResult
+from ._sci_core import cophenet, linkage, pdist
 
 
 def cophenetic_correlation(

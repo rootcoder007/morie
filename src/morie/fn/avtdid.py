@@ -2,7 +2,6 @@
 """Average treatment effect from a difference-in-differences design."""
 
 from . import _array_core as np
-
 from ._did import add_intercept, ols_fit
 from ._richresult import RichResult
 

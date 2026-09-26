@@ -3,7 +3,6 @@
 """Reverse-mode autodiff via chain rule (what PyTorch autograd computes)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_autograd_chain_rule"]

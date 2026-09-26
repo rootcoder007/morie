@@ -3,7 +3,6 @@
 """Gaussian mixture model density."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .wsmemt import wasserman_em_algorithm
 

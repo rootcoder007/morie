@@ -3,7 +3,6 @@
 
 import math
 
-
 from ._richresult import RichResult
 
 __all__ = ['predacc', 'genomic_selection_accuracy']

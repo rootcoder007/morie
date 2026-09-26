@@ -4,8 +4,7 @@
 prune to size by likelihood loss."""
 
 from ._richresult import RichResult
-from .kmuni import (kamath_unigram_lm_tokenizer, unigram_loglik,
-                    viterbi_segment)
+from .kmuni import kamath_unigram_lm_tokenizer, unigram_loglik, viterbi_segment
 
 __all__ = ["kamath_sentencepiece_tokenizer"]
 

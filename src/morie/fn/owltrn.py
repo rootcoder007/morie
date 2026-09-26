@@ -2,7 +2,6 @@
 """Outcome-weighted learning for an optimal treatment regime."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["outcome_weighted_learning"]

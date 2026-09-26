@@ -2,9 +2,8 @@
 """Moment matching: posterior mean and variance of G(A) for a DP."""
 
 from . import _array_core as np
-from ._stats_core import norm
-
 from ._richresult import RichResult
+from ._stats_core import norm
 
 __all__ = ["ghosal_moment_matching"]
 

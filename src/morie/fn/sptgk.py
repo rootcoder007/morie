@@ -2,7 +2,6 @@
 """Trans-Gaussian kriging, and the anamorphosis / normal-scores transform."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._rng import normal_quantile
 from ._schab_krig import ordinary_kriging

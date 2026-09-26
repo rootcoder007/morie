@@ -6,7 +6,6 @@ import math
 
 import pytest
 
-from morie.fn import _frame_core as pd
 from morie.datasets_vic import (
     vic_catalog,
     vic_indigenous_ratio,
@@ -15,6 +14,7 @@ from morie.datasets_vic import (
     vic_sheets,
     vic_table,
 )
+from morie.fn import _frame_core as pd
 
 
 def test_catalog_lists_every_workbook():

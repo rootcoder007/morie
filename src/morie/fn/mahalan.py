@@ -9,9 +9,8 @@ from . import _array_core as np
 
 def mahalan(x: Union[Sequence, np.ndarray], mu: Union[Sequence, np.ndarray], cov: Union[Sequence, np.ndarray]):
     """Mahalanobis distance: sqrt((x-mu)' Sigma^-1 (x-mu))."""
-    from ._stats_core import chi2 as _chi2
-
     from ._richresult import RichResult
+    from ._stats_core import chi2 as _chi2
 
     x = np.asarray(x, dtype=float)
     mu = np.asarray(mu, dtype=float)

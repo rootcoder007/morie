@@ -3,7 +3,6 @@
 """Linear discriminant analysis (ESL Ch 4.3)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_lda_disc"]

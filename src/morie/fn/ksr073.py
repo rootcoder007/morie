@@ -2,7 +2,6 @@
 """Joint convergence of parameter and nuisance (Kosorok Cor 3.2)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_joint_convergence", "kosorok_ch3_max_likelihood_efficiency_corollary"]

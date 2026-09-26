@@ -1,9 +1,8 @@
 """Nugget effect in the semivariogram: discontinuity at the origin."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_vario import semivariogram, _as_lag
+from ._schab_vario import _as_lag, semivariogram
 
 __all__ = ["schabenberger_nugget_effect"]
 

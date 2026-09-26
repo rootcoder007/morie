@@ -1,9 +1,8 @@
 """Leave-one-out cross-validation for ordinary kriging."""
 
 from . import _array_core as np
-from ._sci_core import cdist
-
 from ._richresult import RichResult
+from ._sci_core import cdist
 
 __all__ = ["spatial_cross_validation"]
 

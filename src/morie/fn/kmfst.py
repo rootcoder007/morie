@@ -3,7 +3,6 @@
 """FastText word representation: sum of subword n-gram embeddings."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_fasttext_subword", "word_ngrams"]

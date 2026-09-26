@@ -1,10 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """U-process."""
 
-from . import _array_core as np
-
 from itertools import combinations
 
+from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_u_process_measure"]

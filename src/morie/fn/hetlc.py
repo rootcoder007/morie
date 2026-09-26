@@ -2,7 +2,6 @@
 """Marker heterozygosity and frequency of heterogeneous loci."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["heterozygosity_locus"]

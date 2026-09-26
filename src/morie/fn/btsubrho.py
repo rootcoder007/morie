@@ -46,7 +46,6 @@ import math
 
 from . import _s03core as core
 from . import _tail1core as C
-
 from ._richresult import RichResult
 from .btmoutn import resample_idx
 

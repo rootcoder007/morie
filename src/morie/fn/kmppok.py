@@ -3,7 +3,6 @@
 """PPO-based RLHF policy objective: reward model minus a KL penalty."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ppo_rlhf_objective"]

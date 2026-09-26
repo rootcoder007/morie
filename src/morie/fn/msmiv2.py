@@ -2,7 +2,6 @@
 """Marginal structural model estimated with instrumental variables."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["msm_iv"]

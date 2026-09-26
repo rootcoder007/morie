@@ -3,7 +3,6 @@
 """Markov decision process (S, A, P, R, gamma)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_mdp"]

@@ -2,7 +2,6 @@
 """Tree-structured Parzen estimator for hyperparameter search."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["tpe_suggest", "geron_optuna"]

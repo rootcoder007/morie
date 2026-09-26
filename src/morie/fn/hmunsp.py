@@ -3,7 +3,6 @@
 """Unsupervised pretraining: learn representation via reconstruction before labels."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmaen import geron_autoencoder
 

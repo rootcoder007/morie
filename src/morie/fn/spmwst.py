@@ -2,7 +2,6 @@
 """Moving-window kriging with locally re-estimated semivariograms."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_nonstat import haas_window, moving_window_krige
 

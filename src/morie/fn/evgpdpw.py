@@ -2,7 +2,6 @@
 """PWM estimator of the generalised Pareto distribution."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ev_gpd_pwm", "evt_gpd_pwm"]

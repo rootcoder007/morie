@@ -6,7 +6,6 @@ MacKay (2003) eq. (3.12), (3.20), (3.22), pp. 52-53
 """
 
 from . import _itila as _core
-
 from ._richresult import RichResult
 
 __all__ = ["bcoinbf", "information_theory_mackay_chapter_3_equation_22"]

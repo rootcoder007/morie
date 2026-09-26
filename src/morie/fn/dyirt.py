@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dynamic IRT model estimation"""
 
-from . import _array_core as np
-
 from .._spatial_voting import dynamic_irt as _dynamic_irt
+from . import _array_core as np
 from ._containers import DescriptiveResult
 
 

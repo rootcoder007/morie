@@ -7,11 +7,13 @@ symbols are unchanged.
 """
 
 from __future__ import annotations
-from math import atan2 as _atan2, cos, fsum, log, pi, sin
+
+from math import atan2 as _atan2
+from math import cos, fsum, log, pi, sin
+
 from . import _array_core as np
 from ._rgcore import aslist, gridint
-from ._richresult import RichResult
-from ._richresult import with_describe_pointer
+from ._richresult import RichResult, with_describe_pointer
 from .bsafilt import rangayyan_ch3_z_transform_fir
 
 __all__ = [

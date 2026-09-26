@@ -1,7 +1,6 @@
 """Random Forest ensemble (bagging + feature subsampling)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["random_forest_ensemble"]

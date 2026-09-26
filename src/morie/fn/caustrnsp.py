@@ -2,7 +2,6 @@
 """Transport/generalize a trial effect to a target population by weighting."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["caustrnsp", "causal_transport_weights"]

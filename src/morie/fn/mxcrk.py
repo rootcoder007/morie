@@ -4,8 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import minimize
-from ._sci_core import expit
+from ._sci_core import expit, minimize
 
 __all__ = ["mxcrk"]
 

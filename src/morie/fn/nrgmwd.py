@@ -2,7 +2,6 @@
 """Mean functional of a normalized random measure."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["normalized_random_measure"]

@@ -7,9 +7,10 @@ derived from the actual result objects — no hardcoded values.
 
 from __future__ import annotations
 
+import pytest
+
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
-import pytest
 
 
 @pytest.fixture

@@ -3,7 +3,6 @@
 """Randomized hyperparameter search with K-fold cross-validated scoring."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_randomized_search_cv"]

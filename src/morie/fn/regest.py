@@ -2,7 +2,6 @@
 """Regression estimator (linear adjustment to known X-mean)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["regression_estimator"]

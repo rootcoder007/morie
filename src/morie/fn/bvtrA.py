@@ -2,7 +2,6 @@
 """Bias-variance decomposition of the expected prediction error."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['biasvardec', 'bias_variance_tradeoff']

@@ -2,7 +2,6 @@
 """Manski no-assumption bounds on the ATE, refined by outcome covariates."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["manski_no_assumption_outcome", "manskinoassumptionoutcome"]

@@ -33,7 +33,6 @@ and the deltoid the relationship is NOT linear, and only r^2 shows it.
 from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_isometric_contraction"]

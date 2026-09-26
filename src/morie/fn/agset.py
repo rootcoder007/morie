@@ -2,7 +2,6 @@
 """Agenda-setter model (Romer & Rosenthal 1978)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 __all__ = ["agset", "agenda_setter_power"]

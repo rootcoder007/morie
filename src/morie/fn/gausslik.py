@@ -21,7 +21,6 @@ from __future__ import annotations
 import math
 
 from . import _s03core as k
-
 from ._richresult import RichResult
 
 __all__ = ["gausslik"]

@@ -2,7 +2,6 @@
 """Leave-one-out influence diagnostics for meta-analysis."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ma_leave_one_out"]
@@ -51,7 +50,6 @@ def ma_leave_one_out(yi, vi, method="PM"):
     Methods* 1:112-125. Viechtbauer, W. (2010), *JSS* 36(3).
     """
     from . import _stats_core as stats
-
     from ._psycho import dersimonian_laird
 
     y = np.asarray(yi, dtype=float).ravel()

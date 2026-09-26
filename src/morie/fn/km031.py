@@ -3,7 +3,6 @@
 """Kamath Eq 2.31: sentence order prediction (SOP)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km030 import kamath_ch2_nsp_loss
 

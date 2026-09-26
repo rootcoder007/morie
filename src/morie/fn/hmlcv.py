@@ -3,7 +3,6 @@
 """Learning curves: RMSE on train and validation vs training set size."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_learning_curves"]

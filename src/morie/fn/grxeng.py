@@ -3,7 +3,6 @@
 """Gradient of K-class softmax cross-entropy w.r.t. Theta."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grsmxp import probability_matrix
 from .grxent import _one_hot

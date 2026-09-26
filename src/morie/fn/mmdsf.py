@@ -2,7 +2,6 @@
 """Classical metric MDS via the Torgerson double-centering decomposition."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["metric_mds_torgerson"]

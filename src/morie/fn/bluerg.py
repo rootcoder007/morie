@@ -2,7 +2,6 @@
 """BLUE and BLUP from Henderson's mixed model equations."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["blue_gls"]

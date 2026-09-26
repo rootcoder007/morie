@@ -1,7 +1,6 @@
 """DeltaCon structural distance between two graphs (Koutra et al.)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["strdis", "structural_distance"]

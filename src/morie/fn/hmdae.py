@@ -3,7 +3,6 @@
 """Denoising autoencoder: reconstruct clean input from corrupted."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grdae import geron_denoising_autoencoder as _grdae
 from .hmdfw import lcg_normal

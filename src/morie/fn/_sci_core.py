@@ -14,7 +14,6 @@ import math as _math
 
 from . import _array_core as _ac
 
-
 # ------------------------------------------------------------ special
 
 def expit(x):

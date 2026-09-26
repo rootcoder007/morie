@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import minimize_scalar
-
-from ._schab_rho import safe_search_interval
-
 from ._containers import SpatialResult
+from ._schab_rho import safe_search_interval
+from ._sci_core import minimize_scalar
 
 
 def spatial_durbin_model(

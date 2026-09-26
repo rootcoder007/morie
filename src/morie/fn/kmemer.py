@@ -3,7 +3,6 @@
 """Kamath Ch 1: the emergent-ability step at a scale threshold."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_emergent_abilities"]

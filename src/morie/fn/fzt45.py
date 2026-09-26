@@ -2,7 +2,6 @@
 """Theorem 4.5: strong uniform consistency of boundary-free MRL estimators."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_theorem_4_5", "fauzi_thm4_5_mrl_consistency"]

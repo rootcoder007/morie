@@ -4,10 +4,9 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import special
 from . import _stats_core as _st
-
 from ._containers import RegressionResult
+from ._sci_core import special
 
 
 def negbin_glm(

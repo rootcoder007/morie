@@ -2,7 +2,6 @@
 """MISE of kernel density estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_mise", "fauzi_mise_kdfe"]

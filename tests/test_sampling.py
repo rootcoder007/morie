@@ -1,9 +1,9 @@
 """Tests for morie.sampling — survey sampling and resampling utilities."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.sampling import (
     bootstrap_sample,
     cluster_sample,

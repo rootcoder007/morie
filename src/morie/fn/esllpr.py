@@ -3,9 +3,8 @@
 """Local linear regression (ESL Ch 6.1.1)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from .eslnnk import _kernel_weights, _KERNELS
+from .eslnnk import _KERNELS, _kernel_weights
 
 __all__ = ["esl_local_linear"]
 

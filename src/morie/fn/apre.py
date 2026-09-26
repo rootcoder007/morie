@@ -2,7 +2,6 @@
 """Aggregate proportional reduction in error (APRE) for OC/NOMINATE fits."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["oc_apre"]

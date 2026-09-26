@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import special
-
 from ._containers import DescriptiveResult
+from ._sci_core import special
 
 
 def expected_log_pred(

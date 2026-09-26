@@ -1,7 +1,6 @@
 """Transfer function step and impulse response."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Study the past if you would define the future. -- Confucius"

@@ -2,7 +2,6 @@
 """Generalized estimating equations for survival."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["general_estimating_eq_surv"]

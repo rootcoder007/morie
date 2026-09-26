@@ -3,7 +3,6 @@
 """CLIP contrastive image-text loss (symmetric InfoNCE over a batch)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_clip_contrastive_loss"]

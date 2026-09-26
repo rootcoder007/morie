@@ -2,7 +2,6 @@
 """HAR-RV-J: HAR with a separate jump regressor."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .volhar import _har_design
 

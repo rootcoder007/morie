@@ -1,7 +1,5 @@
 """Tests for new causal estimators: ATT, ATC, GATE, CATE, LATE, IRM."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
 from morie.causal import (
@@ -11,6 +9,8 @@ from morie.causal import (
     estimate_gate,
     estimate_late,
 )
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 # DoubleML is an optional dependency; skip IRM tests if not installed.
 try:

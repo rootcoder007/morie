@@ -2,7 +2,6 @@
 """Monte Carlo coverage check for a family of bound estimates."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["bound_coverage_check"]

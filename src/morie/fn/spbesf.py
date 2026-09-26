@@ -1,7 +1,6 @@
 """Modified Bessel function K_nu used in the Matern covariance."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_bessel_function"]

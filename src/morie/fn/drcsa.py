@@ -2,9 +2,7 @@
 """Doubly-robust group-time ATT (Callaway and Sant'Anna 2021)."""
 
 from . import _array_core as np
-
-from ._did import add_intercept, as_panel, first_treatment, logit_fit, \
-    logit_predict, ols_fit
+from ._did import add_intercept, as_panel, first_treatment, logit_fit, logit_predict, ols_fit
 from ._richresult import RichResult
 
 __all__ = ["dr_callaway_santanna"]

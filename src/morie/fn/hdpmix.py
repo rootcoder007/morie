@@ -29,9 +29,7 @@ from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
 from . import _s03core as k
-
 from ._richresult import RichResult
-
 from .dpsbw import stick_breaking_weights
 
 __all__ = ["hierarchical_dp"]

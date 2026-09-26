@@ -1,7 +1,6 @@
 """Softmax and temperature-scaled softmax."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

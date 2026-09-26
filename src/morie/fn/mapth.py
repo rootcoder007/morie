@@ -2,7 +2,6 @@
 """Maximum a posteriori ability estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["map_theta_estimator"]

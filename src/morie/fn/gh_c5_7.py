@@ -2,7 +2,6 @@
 """Predictive recursion deconvolution algorithm for DPM estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_pred_rec"]

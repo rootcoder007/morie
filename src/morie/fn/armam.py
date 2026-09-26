@@ -2,9 +2,8 @@
 """ARMA(p,q) model fitting via conditional MLE."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-
 from ._containers import DescriptiveResult
+from ._sci_core import optimize
 
 
 def arma_fit(y: np.ndarray, p: int = 1, q: int = 1) -> DescriptiveResult:

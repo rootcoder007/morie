@@ -3,7 +3,6 @@
 """Kamath Eq 9.1: the multimodal modality encoder."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch9_modality_encoder"]

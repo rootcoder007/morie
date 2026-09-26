@@ -2,7 +2,6 @@
 """Targeted maximum likelihood estimation of the ATE."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._tmle import tmle_ate as _tmle_ate
 

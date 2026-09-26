@@ -1,7 +1,6 @@
 """Kernel spatial weights (Gaussian/bisquare)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

@@ -2,7 +2,6 @@
 """Spectral density estimation consistency via Whittle likelihood."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_spec_dens_con"]

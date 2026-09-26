@@ -56,7 +56,6 @@ not something this file should be pretending to own.
 """
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["hindsr", "her"]

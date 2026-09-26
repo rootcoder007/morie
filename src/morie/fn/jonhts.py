@@ -6,7 +6,6 @@ Challu et al. (2023) AAAI, arXiv:2201.12886, eqs. (1)-(4)
 """
 
 from . import _joseph as _core
-
 from ._richresult import RichResult
 
 __all__ = ["nhitsnet", "joseph_nhits"]

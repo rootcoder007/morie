@@ -2,7 +2,6 @@
 """Density estimation via finite random series prior: log f = sum beta_k phi_k."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_frs_density"]

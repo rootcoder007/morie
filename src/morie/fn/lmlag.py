@@ -2,7 +2,6 @@
 """LM test for spatial lag (Anselin 1988)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

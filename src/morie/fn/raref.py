@@ -2,9 +2,8 @@
 """Rarefaction curve computation."""
 
 from . import _array_core as np
-from ._sci_core import comb
-
 from ._containers import DescriptiveResult
+from ._sci_core import comb
 
 
 def rarefaction(abundances, n_subsample=None, n_points: int = 20, **kwargs) -> DescriptiveResult:

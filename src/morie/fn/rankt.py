@@ -2,7 +2,6 @@
 """Rank transformation for nonparametric analysis."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

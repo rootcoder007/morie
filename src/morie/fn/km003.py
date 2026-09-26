@@ -3,7 +3,6 @@
 """Kamath Eq 2.3: the simplest context mapping, c = h_T."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km002 import kamath_ch2_context_vector
 

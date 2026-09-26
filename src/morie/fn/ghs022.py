@@ -27,7 +27,6 @@ The previous KS body is deleted.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_tailfree_cell_counts"]

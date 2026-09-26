@@ -5,6 +5,7 @@ from __future__ import annotations
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
+
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""
 

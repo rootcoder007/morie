@@ -18,9 +18,8 @@ on the fixture in the canonical test to 1e-9.
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02dl, k02fe
-
 from ._richresult import RichResult
+from .k02util import k02dl, k02fe
 
 __all__ = ["ma_influence_diagnostics"]
 

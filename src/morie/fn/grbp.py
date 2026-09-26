@@ -3,7 +3,6 @@
 """Backpropagation: gradient of the loss w.r.t. each weight layer via the chain rule."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_backpropagation_gradient"]

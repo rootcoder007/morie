@@ -1,7 +1,6 @@
 """Polynomial feature expansion + OLS."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["polynomial_regression"]
@@ -25,8 +24,7 @@ def polynomial_regression(x, y, *, degree=2):
     RichResult with payload: estimate (coefficients including intercept),
     se (classical OLS standard errors), feature_names, n, method.
     """
-    from ._ml_core import LinearRegression
-    from ._ml_core import PolynomialFeatures
+    from ._ml_core import LinearRegression, PolynomialFeatures
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float).ravel()

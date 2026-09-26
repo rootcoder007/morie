@@ -2,7 +2,6 @@
 """Chen (2002) estimator of T in transformation model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_chen_estimator_T"]

@@ -2,9 +2,8 @@
 """Andersen-Gill model for recurrent events."""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
 from ._recur_core import cox_counting_process
+from ._richresult import RichResult
 
 __all__ = ["agrec", "andersen_gill_recurrent"]
 

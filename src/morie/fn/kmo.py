@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import KmoRes
+
 from . import _array_core as np
 from . import _frame_core as pd
-
-from morie.fn._containers import KmoRes
 
 
 def kmo(data: pd.DataFrame | np.ndarray) -> KmoRes:

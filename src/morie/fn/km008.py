@@ -3,7 +3,6 @@
 """Kamath Eq 2.8: attention weights b = softmax(a)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_attention_softmax_weights"]

@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Index of prediction accuracy (scaled Brier score)."""
 
-from .brier import brier
-
 from ._richresult import RichResult
+from .brier import brier
 
 __all__ = ["ipa_brier"]
 

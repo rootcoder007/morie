@@ -3,7 +3,6 @@
 """Pasting: train base models on samples drawn without replacement."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmbag import _stump
 

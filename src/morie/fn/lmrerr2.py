@@ -2,7 +2,6 @@
 """One-directional robust LM error (Bera-Yoon)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

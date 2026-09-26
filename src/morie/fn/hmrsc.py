@@ -3,7 +3,6 @@
 """Randomized hyperparameter search."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcvs import geron_cross_validation_score
 

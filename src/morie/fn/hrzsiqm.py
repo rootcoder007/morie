@@ -31,7 +31,6 @@ from __future__ import annotations
 
 from . import _array_core as np
 from ._horowitz import qirls
-
 from ._richresult import RichResult
 
 __all__ = ["simquant", "horowitz_sim_quantile"]

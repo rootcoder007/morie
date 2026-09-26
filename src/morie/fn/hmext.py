@@ -3,7 +3,6 @@
 """Extra-trees: randomize thresholds per feature split for extra variance reduction."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcart import geron_cart_split_cost
 from .hmcart import geron_cart_algorithm, predict_tree

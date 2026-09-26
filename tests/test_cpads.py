@@ -1,7 +1,5 @@
 """Tests for morie.cpads — CPADS data contract and canonicalization."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
 from morie.cpads import (
@@ -14,6 +12,8 @@ from morie.cpads import (
     missing_cpads_variables,
     validate_cpads_frame,
 )
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 
 class TestContract:

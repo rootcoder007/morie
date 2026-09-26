@@ -3,7 +3,6 @@
 """Bootstrap pivotal confidence interval."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .wsmbpc import _boot_replicates, _type1_quantile
 

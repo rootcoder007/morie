@@ -2,7 +2,6 @@
 """Bayesian multidimensional unfolding of rating data."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .procs import procrustes_rotation
 

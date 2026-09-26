@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Default hyperparameters of the Bayesian ridge regression prior."""
 
-from . import _tail1core as C
 from . import _gp_core as G
-
+from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ['brrhyper', 'brr_prior_posterior']

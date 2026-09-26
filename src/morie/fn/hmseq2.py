@@ -3,7 +3,6 @@
 """Sequence-to-sequence encoder-decoder architecture."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmsftm import geron_softmax_function
 

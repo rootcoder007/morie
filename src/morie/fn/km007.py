@@ -3,7 +3,6 @@
 """Kamath Eq 2.7: the generic attention score a_i = alpha(q, k_i)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_attention_score"]

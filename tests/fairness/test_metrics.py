@@ -9,7 +9,6 @@ Two test families:
   flagged (guards against false negatives).
 """
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fairness.metrics import (
@@ -20,6 +19,7 @@ from morie.fairness.metrics import (
     fairness_equalized_odds,
     fairness_gini,
 )
+from morie.fn import _array_core as np
 
 A5B5 = ["A"] * 5 + ["B"] * 5
 A4B4 = ["A"] * 4 + ["B"] * 4

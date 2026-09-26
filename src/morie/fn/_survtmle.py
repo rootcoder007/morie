@@ -14,7 +14,6 @@ tangent to the parameter and are left alone.
 """
 
 from . import _array_core as np
-
 from ._did import add_intercept, logit_fit, logit_predict
 
 __all__ = [

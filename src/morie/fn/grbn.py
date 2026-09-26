@@ -3,7 +3,6 @@
 """Batch normalization: z-normalize per feature across the mini-batch, then affine scale/shift."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_batch_normalization"]

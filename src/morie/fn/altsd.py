@@ -4,7 +4,6 @@
 Alammar Ch 10)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_tsdae_objective"]

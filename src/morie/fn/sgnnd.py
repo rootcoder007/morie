@@ -20,6 +20,7 @@ def nearest_neighbor_distances(points):
     DescriptiveResult
     """
     from morie.fn import _array_core as np
+
     from ._sci_core import pdist, squareform
 
     pts = np.asarray(points, dtype=np.float64)

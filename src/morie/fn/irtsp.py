@@ -2,7 +2,6 @@
 """IRT-based 2PL spatial ideal-point model (Armstrong Ch 4)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["irt_spatial", "irtsp"]

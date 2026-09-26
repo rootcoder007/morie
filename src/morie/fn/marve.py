@@ -2,7 +2,6 @@
 """Robust variance estimation for dependent effect sizes."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ma_robust_variance_est"]

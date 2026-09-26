@@ -2,7 +2,6 @@
 """Prefix-LM attention mask: bidirectional over the prefix, causal over the completion."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_prefix_lm_mask"]

@@ -3,7 +3,6 @@
 """Mutual information I(X;Y)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .wsmkbk import wasserman_kullback_leibler
 

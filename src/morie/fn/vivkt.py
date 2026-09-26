@@ -2,7 +2,6 @@
 """Two-way and four-way decompositions side by side."""
 
 from . import _s04core as S
-
 from ._richresult import RichResult
 
 __all__ = ["vansteelandt_vanderweele"]

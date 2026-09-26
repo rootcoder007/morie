@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """INDSCAL individual differences MDS"""
 
-from . import _array_core as np
-
 from .._spatial_voting import indscal as _indscal
+from . import _array_core as np
 from ._containers import DescriptiveResult
 
 

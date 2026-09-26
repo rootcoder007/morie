@@ -8,7 +8,6 @@ CIHI download is performed here.
 import io
 
 from morie.fn import _frame_core as pd
-
 from morie.ingest.cihi import _pick_data_sheet
 
 

@@ -6,7 +6,6 @@ MacKay (2003) eq. (28.15), p. 352
 """
 
 from . import _itila as _core
-
 from ._richresult import RichResult
 
 __all__ = ["msglen", "information_theory_mackay_chapter_28_equation_15"]

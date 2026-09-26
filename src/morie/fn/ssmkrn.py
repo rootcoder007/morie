@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Structured state-space convolution kernel."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["ssmk", "s4ssmkernel", "s4_ssm_kernel"]
 

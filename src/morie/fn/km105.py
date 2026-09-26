@@ -3,7 +3,6 @@
 """Kamath Eq 6.29: GeDi's combined training loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_gedi_combined_loss"]

@@ -2,9 +2,8 @@
 """Cure rate mixture model -- long-term survivors."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-
 from ._containers import DescriptiveResult
+from ._sci_core import optimize
 
 
 def cure_rate_model(time, event):

@@ -3,7 +3,6 @@
 """Kamath Eq 5.8: the Bradley-Terry preference probability."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch5_bradley_terry_pref"]

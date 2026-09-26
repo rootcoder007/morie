@@ -520,7 +520,8 @@ class TTestPower(_PowerBase):
 
     def power(self, effect_size, nobs, alpha=0.05, df=None,
               alternative="two-sided"):
-        from morie.fn._stats_core import nct, t as _t
+        from morie.fn._stats_core import nct
+        from morie.fn._stats_core import t as _t
         nobs = float(nobs)
         if df is None:
             df = nobs - 1.0
@@ -555,7 +556,8 @@ class TTestIndPower(_PowerBase):
 
     def power(self, effect_size, nobs1, alpha=0.05, ratio=1.0, df=None,
               alternative="two-sided"):
-        from morie.fn._stats_core import nct, t as _t
+        from morie.fn._stats_core import nct
+        from morie.fn._stats_core import t as _t
         nobs1 = float(nobs1)
         ratio = float(ratio)
         if df is None:
@@ -621,7 +623,8 @@ class FTestAnovaPower(_PowerBase):
         return float(k_groups) + 1e-6
 
     def power(self, effect_size, nobs, alpha=0.05, k_groups=2):
-        from morie.fn._stats_core import ncf, f as _f
+        from morie.fn._stats_core import f as _f
+        from morie.fn._stats_core import ncf
         nobs = float(nobs)
         dfn = float(k_groups) - 1.0
         dfd = nobs - float(k_groups)
@@ -647,7 +650,7 @@ class FTestAnovaPower(_PowerBase):
 # the existing lookup with no change to glm().
 
 
-class _Family(object):
+class _Family:
     name = "gaussian"
 
     def __init__(self, link=None):
@@ -692,7 +695,7 @@ class NegativeBinomial(_Family):
         self.alpha = float(alpha)
 
 
-class _FamiliesNamespace(object):
+class _FamiliesNamespace:
     """Mirrors `statsmodels.api.families`."""
 
     Gaussian = Gaussian
@@ -748,7 +751,7 @@ def _xtx_xty(X, y, W=None):
     return XtX, Xty
 
 
-class _LinearResult(object):
+class _LinearResult:
     """The subset of a statsmodels results object morie actually reads."""
 
     def __init__(self, params, cov, resid, y, n, k, has_const, method):

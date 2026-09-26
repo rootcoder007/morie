@@ -2,7 +2,6 @@
 """Pearl front-door adjustment from tabulated distributions."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causal_frontdoor_adjustment"]

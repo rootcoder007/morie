@@ -3,11 +3,11 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
-from . import _frame_core as pd
-
 from morie.fn._containers import DIFResult
 from morie.fn._helpers import _validate_df
+
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def difag(

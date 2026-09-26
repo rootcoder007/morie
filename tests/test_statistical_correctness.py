@@ -15,14 +15,14 @@ Each test documents the mathematical property it is asserting.
 
 from __future__ import annotations
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
 from morie.causal import (
     compute_propensity_scores,
     run_propensity_ipw_analysis,
 )
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.inference import bootstrap_ci, calculate_interaction_power
 from morie.investigation import run_treatment_effects_analysis
 from morie.survey import SurveyDesign

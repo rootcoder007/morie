@@ -3,7 +3,6 @@
 """LLM-as-judge aggregation (Zheng et al. 2023; Alammar Ch 12)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_llm_as_judge"]

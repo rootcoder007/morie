@@ -2,8 +2,6 @@
 
 import tempfile
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
 from morie.dataset import (
@@ -14,6 +12,8 @@ from morie.dataset import (
     profile_dataset,
     suggest_analysis_plan,
 )
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 # ---------------------------------------------------------------------------
 # Fixtures: synthetic DataFrames

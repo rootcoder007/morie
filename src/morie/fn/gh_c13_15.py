@@ -4,7 +4,6 @@
 import math as _math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_cox_bvm"]

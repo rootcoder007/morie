@@ -2,7 +2,6 @@
 """Nonparametric quantile IV."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["hrz_npiv_quantile", "horowitz_nonpar_quantile_iv"]

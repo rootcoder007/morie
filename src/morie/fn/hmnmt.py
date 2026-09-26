@@ -3,7 +3,6 @@
 """Encoder-decoder neural machine translation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_encoder_decoder_nmt"]

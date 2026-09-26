@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._optim import init_state
 from ._richresult import RichResult
 from .dpsgd import dp_sgd

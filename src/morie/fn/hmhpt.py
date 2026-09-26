@@ -3,7 +3,6 @@
 """Hyperparameter tuning: optimize over discrete grid or random samples."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcvs import geron_cross_validation_score
 from .hmgrs import geron_grid_search, ridge_estimator

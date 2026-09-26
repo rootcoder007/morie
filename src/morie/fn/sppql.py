@@ -2,10 +2,8 @@
 """Penalized quasi-likelihood / pseudo-likelihood for spatial GLMMs."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_glmm import (canonical_link, fit_pseudo_likelihood, pql_score,
-                          reml_objective)
+from ._schab_glmm import canonical_link, fit_pseudo_likelihood, pql_score, reml_objective
 
 __all__ = ["schabenberger_pql"]
 

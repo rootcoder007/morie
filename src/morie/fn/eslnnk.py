@@ -3,7 +3,6 @@
 """Nadaraya-Watson kernel smoother (ESL Ch 6.1)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_nadaraya_watson"]

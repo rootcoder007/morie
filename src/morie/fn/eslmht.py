@@ -23,7 +23,6 @@ test against a fitted normal, pasted by the stub generator.  Deleted.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_holm_bonferroni"]

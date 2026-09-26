@@ -96,7 +96,6 @@ A strictly feasible starting point can be found with :func:`phase1`
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = [
@@ -261,7 +260,7 @@ def _num_hess(f, x, h=1e-4):
     return out
 
 
-class _Fun(object):
+class _Fun:
     """A function with whatever derivatives were supplied."""
 
     def __init__(self, f, grad=None, hess=None, affine=False):

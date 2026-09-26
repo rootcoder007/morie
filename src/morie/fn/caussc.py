@@ -2,9 +2,8 @@
 """Abadie-Diamond-Hainmueller synthetic control weights."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-
 from ._richresult import RichResult
+from ._sci_core import optimize
 
 __all__ = ["causal_synthetic_control"]
 

@@ -2,7 +2,6 @@
 """Trigram maximum-likelihood probability (Burkov eq 2.4)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch2_trigram_count"]

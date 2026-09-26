@@ -57,7 +57,6 @@ the framework is the contribution.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["mtdrl", "meta_rl", "bandit_tasks", "history_features",
@@ -110,7 +109,7 @@ def history_features(history, n_arms):
     return feat
 
 
-class TabularHistoryAgent(object):
+class TabularHistoryAgent:
     r"""A reference inner learner: history-dependent, weights fixed.
 
     Keeps per-arm counts and means *within the episode only* and acts

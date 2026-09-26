@@ -39,7 +39,6 @@ from __future__ import annotations
 
 from . import _array_core as np
 from ._horowitz import coord_min
-
 from ._richresult import RichResult
 
 __all__ = ["spmlebin", "horowitz_semipar_mle_binary"]

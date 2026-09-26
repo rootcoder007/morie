@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wolfe dual objective of the support vector machine."""
 
-from . import _tail1core as C
 from . import _gp_core as G
-
+from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ['svmwolfe', 'svm_dual_wolfe', 'svmdualwolfe']

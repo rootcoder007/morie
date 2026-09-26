@@ -2,7 +2,6 @@
 """Cox partial likelihood."""
 
 from . import _array_core as np
-
 from ._kosorok import cox_score
 from ._richresult import RichResult
 

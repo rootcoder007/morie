@@ -3,7 +3,6 @@
 """One-vs-Rest: K binary classifiers, predict the argmax of their scores."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grsig import geron_sigmoid
 

@@ -35,7 +35,6 @@ Cell layout follows the ledger formula OR = (a/b) / (c/d):
 import math
 
 from . import _stats_core as stats
-
 from ._richresult import RichResult
 
 __all__ = ["odds_ratio"]

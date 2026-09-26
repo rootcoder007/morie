@@ -22,6 +22,7 @@ def index_of_dispersion(counts, cdf=None):
     DescriptiveResult
     """
     from morie.fn import _array_core as np
+
     from . import _stats_core as stats
 
     c = np.asarray(counts, dtype=np.float64).ravel()

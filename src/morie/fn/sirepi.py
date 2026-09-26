@@ -1,7 +1,6 @@
 """SIR compartmental model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["sir_compartmental"]

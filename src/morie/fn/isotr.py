@@ -2,7 +2,6 @@
 """Pool-adjacent-violators isotonic regression for nonmetric MDS disparities."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["isotonic_regression_disparity"]

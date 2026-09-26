@@ -4,7 +4,6 @@
 auxiliary MLM term."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km022 import kamath_ch2_mlm_loss
 

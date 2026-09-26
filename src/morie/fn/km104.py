@@ -3,7 +3,6 @@
 """Kamath Eq 6.28: Affect-LM's affect-shifted vocabulary softmax."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km103 import _hidden, _softmax_logits, kamath_ch6_lstm_softmax_word
 

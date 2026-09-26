@@ -2,7 +2,6 @@
 """Powering: scalar multiplication on the simplex."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["powering", "aitchison_powering"]

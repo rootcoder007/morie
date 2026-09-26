@@ -13,9 +13,8 @@ In NIPS (pp. 5998-6008).
 __all__ = ["mhatt"]
 
 from . import _array_core as np
-from ._sci_core import softmax
-
 from ._richresult import RichResult
+from ._sci_core import softmax
 
 
 def mhatt(

@@ -2,7 +2,6 @@
 """Monotone treatment selection bounds."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["mtsbound", "bound_monot_selection"]

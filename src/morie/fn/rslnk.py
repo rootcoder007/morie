@@ -6,7 +6,6 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["residual_connection"]

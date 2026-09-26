@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from . import _frame_core as pd
-
 from ._containers import DescriptiveResult
 
 _PLANETS = pd.DataFrame(

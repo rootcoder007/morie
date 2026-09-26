@@ -80,7 +80,6 @@ solution -- the reference the approximate step should agree with.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["safrl", "safe_rl", "cpo_step", "cmdp_returns",

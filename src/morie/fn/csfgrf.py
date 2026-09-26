@@ -2,7 +2,6 @@
 """Causal survival forest for heterogeneous time-to-event effects."""
 
 from . import _array_core as np
-
 from ._cforest import CausalForest
 from ._richresult import RichResult
 

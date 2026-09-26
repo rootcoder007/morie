@@ -3,7 +3,6 @@
 """Self-supervised learning: generate labels from the data itself via pretext task."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_self_supervised"]

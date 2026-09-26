@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import SignalResult
 
 _QUOTE = "Mathematics is the art of giving the same name to different things. -- Henri Poincare"

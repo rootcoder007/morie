@@ -3,7 +3,6 @@
 """Threshold Logic Unit: weighted sum with a step activation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_threshold_logic_unit"]

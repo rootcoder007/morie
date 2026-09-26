@@ -2,7 +2,6 @@
 """M-estimator asymptotic normality (Kosorok Thm 2.13)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_m_normality", "kosorok_ch2_m_estimator_master_theorem"]

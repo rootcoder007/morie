@@ -3,7 +3,6 @@
 """k-nearest-neighbour fit (ESL Ch 2.3.2 / 13.3)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_knn"]

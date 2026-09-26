@@ -34,7 +34,6 @@ observed value excludes it.
 import math
 
 from . import _stats_core as stats
-
 from ._richresult import RichResult
 
 __all__ = ["mean_excess"]

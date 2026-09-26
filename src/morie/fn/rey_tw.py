@@ -3,11 +3,11 @@
 
 import math
 
+from morie.fn._containers import RegressionResult
+
 from . import _array_core as np
 from ._sci_core import minimize
 from ._stats_core import norm
-
-from morie.fn._containers import RegressionResult
 
 
 def rey_tw(

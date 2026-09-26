@@ -2,7 +2,6 @@
 """Extreme-value copula from a Pickands dependence function."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["extremal_copula"]

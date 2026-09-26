@@ -45,7 +45,6 @@ a default and is used only for the critical value.
 import math
 
 from . import _stats_core as stats
-
 from ._richresult import RichResult
 
 __all__ = ["grubbs_test"]

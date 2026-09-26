@@ -7,13 +7,15 @@ symbols are unchanged.
 """
 
 from __future__ import annotations
-from math import atan2 as _atan2, cos, fsum, log, pi, sin, sqrt
+
 import math as _math
+from math import atan2 as _atan2
+from math import cos, fsum, log, pi, sin, sqrt
+
 from . import _array_core as np
 from ._containers import DescriptiveResult
 from ._rgcore import aslist
-from ._richresult import RichResult
-from ._richresult import with_describe_pointer
+from ._richresult import RichResult, with_describe_pointer
 from .bsacorr import rangayyan_acf_estimate
 
 __all__ = [

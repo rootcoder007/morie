@@ -6,7 +6,6 @@ from __future__ import annotations
 from typing import Literal
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 # Burnett et al. 2018 PNAS 115(38):9592-9597, Supplementary Table S1.

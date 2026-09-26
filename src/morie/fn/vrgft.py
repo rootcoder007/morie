@@ -1,10 +1,8 @@
 """Variogram model fitting (spherical/exponential/Gaussian)."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-from ._sci_core import pdist, squareform
-
 from ._richresult import RichResult
+from ._sci_core import optimize, pdist, squareform
 
 __all__ = ["variogram_fitting"]
 

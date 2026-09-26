@@ -11,7 +11,6 @@ import pytest
 
 import morie
 
-
 # ---------------------------------------------------------------- measures
 
 def test_adp_is_days_per_day():

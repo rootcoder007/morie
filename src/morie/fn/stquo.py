@@ -2,7 +2,6 @@
 """Status quo vs proposal in the spatial voting model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["status_quo_spatial"]

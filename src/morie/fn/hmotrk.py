@@ -6,7 +6,6 @@ Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Rei
 """
 
 from . import _geron as _core
-
 from ._richresult import RichResult
 
 __all__ = ["trkassign", "geron_object_tracking"]

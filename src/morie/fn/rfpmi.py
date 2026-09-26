@@ -38,9 +38,8 @@ _mvsmlrf, whose out-of-bag fraction reproduces the book's own 36.8%.
 from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
-from . import _s03core as core
 from . import _mvsmlrf as rf
-
+from . import _s03core as core
 from ._richresult import RichResult
 
 __all__ = ["rf_permutation_importance"]

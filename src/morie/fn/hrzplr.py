@@ -2,7 +2,6 @@
 """Partially linear regression."""
 
 from . import _array_core as np
-
 from ._horowitz import local_linear, silverman_bw
 from ._richresult import RichResult
 

@@ -3,7 +3,6 @@
 """F1 score: harmonic mean of precision and recall."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmcfm import geron_confusion_matrix
 

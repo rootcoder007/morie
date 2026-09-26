@@ -2,7 +2,6 @@
 """Compressed sensing denoising via L1 regularization."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Rebellions are built on hope. -- Jyn Erso"

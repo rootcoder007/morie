@@ -2,7 +2,6 @@
 """Hodges-Lehmann efficiency bounds."""
 
 from . import _array_core as np
-
 from ._gb_are import (
     ARE_TABLE,
     HL_SIGN_LOWER_BOUND,

@@ -6,7 +6,6 @@ Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 fi
 """
 
 from . import _molak as _core
-
 from ._richresult import RichResult
 
 __all__ = ["poschk", "positivity_assumption"]

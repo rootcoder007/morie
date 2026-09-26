@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 # Aguilera et al. 2021 Nature Communications 12:1493 found wildfire-

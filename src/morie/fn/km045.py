@@ -3,7 +3,6 @@
 """Kamath Eq 3.4: the Dante cloze probe for parametric knowledge."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_dante_cloze"]

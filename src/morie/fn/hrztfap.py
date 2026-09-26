@@ -2,7 +2,6 @@
 """Asymptotic properties of Horowitz's T_n and F_n estimators."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_T_F_asymp_props"]

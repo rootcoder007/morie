@@ -3,7 +3,6 @@
 """Smith's 1cycle LR schedule: triangular warm-up then anneal + momentum mirror."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_1cycle_schedule"]

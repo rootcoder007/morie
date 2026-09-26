@@ -3,7 +3,6 @@
 """Kamath Eq 3.8: top-1 accuracy as the prompt selection metric."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_top1_prompt_metric"]

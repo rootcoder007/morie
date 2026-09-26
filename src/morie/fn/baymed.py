@@ -2,7 +2,6 @@
 """Bayesian mediation with conjugate normal priors."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bayes_mediation"]

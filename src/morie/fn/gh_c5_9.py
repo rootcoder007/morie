@@ -2,7 +2,6 @@
 """Beta kernel for bounded-support DPM density estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_beta_ker"]
@@ -51,7 +50,6 @@ def ghosal_beta_ker(x, grid=None, alpha=1.0, precision=20.0, K=50, seed=0,
     Ghosal and van der Vaart, Sec. 5.5 (examples of kernels).
     """
     from . import _stats_core as _st
-
     from ._ghosal import stick_breaking
 
     xv = np.asarray(x, dtype=float).ravel()

@@ -12,7 +12,6 @@ arXiv preprint arXiv:1910.14599.
 __all__ = ["topkp"]
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 

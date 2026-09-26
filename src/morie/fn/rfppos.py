@@ -59,8 +59,8 @@ References
 import math
 
 from . import _w3num as _w
-from .avalon import parse_smiles, _adjacency
 from ._richresult import RichResult
+from .avalon import _adjacency, parse_smiles
 
 __all__ = ["reactive_pose_filter", "find_warhead", "angle", "dihedral",
            "distance", "cheatsheet"]

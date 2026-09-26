@@ -2,9 +2,9 @@
 
 import struct
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.gguf_loader import (
     _GGUF_TYPE_FLOAT32,
     _GGUF_TYPE_INT32,

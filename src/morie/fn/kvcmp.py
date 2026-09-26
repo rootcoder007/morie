@@ -13,7 +13,6 @@ Two callables share this module:
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 from ._richresult import RichResult
 

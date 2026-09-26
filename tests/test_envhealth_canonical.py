@@ -9,9 +9,10 @@ real math bug, not a template regression.
 
 from __future__ import annotations
 
+import pytest
+
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
-import pytest
 
 # ---------------------------------------------------------------------------
 # concentration_response_pm25 — Burnett et al. (2014) IER

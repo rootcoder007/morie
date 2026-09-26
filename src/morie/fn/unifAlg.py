@@ -246,9 +246,7 @@ def match(pattern, subject):
                     return None
             else:
                 sub[x[1]] = y
-        elif is_var(y):
-            return None
-        elif x[1] != y[1] or len(x[2]) != len(y[2]):
+        elif is_var(y) or x[1] != y[1] or len(x[2]) != len(y[2]):
             return None
         else:
             stack.extend(zip(x[2], y[2]))

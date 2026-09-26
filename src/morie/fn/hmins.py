@@ -3,7 +3,6 @@
 """Instance-based learning: predict by measuring similarity to stored examples."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_instance_based"]

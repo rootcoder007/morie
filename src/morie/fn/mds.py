@@ -3,11 +3,11 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import MdsRes
+
 from . import _array_core as np
 from . import _frame_core as pd
 from ._sci_core import pdist, squareform
-
-from morie.fn._containers import MdsRes
 
 
 def mds(

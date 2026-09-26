@@ -2,7 +2,6 @@
 """Random-walk kernel of a graph as a resolvent."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["sgt_random_walk_kernel"]

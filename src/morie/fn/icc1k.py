@@ -2,7 +2,6 @@
 """ICC(1,k): one-way random, average of k ratings."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["icc_one_way_average"]

@@ -5,6 +5,7 @@ import math
 
 from . import _array_core as np
 
+
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""
 

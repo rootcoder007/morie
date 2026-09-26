@@ -2,7 +2,6 @@
 """Spatial trend surface: linear mean plus correlated error."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["spatrend", "bivand2013_chapter_8_equation_5"]

@@ -3,7 +3,6 @@
 """Mixed-precision training: FP16 compute with FP32 master weights."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_mixed_precision"]

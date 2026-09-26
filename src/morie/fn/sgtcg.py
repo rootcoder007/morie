@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Commute-time distance."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["commdist", "sgt_commute_distance"]
 

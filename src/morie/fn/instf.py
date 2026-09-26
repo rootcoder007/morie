@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._signal_core import hilbert
-
 from ._containers import DescriptiveResult
+from ._signal_core import hilbert
 
 _QUOTE = "Begun, the Clone War has."
 

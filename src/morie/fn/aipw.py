@@ -13,6 +13,7 @@ from typing import Any
 from . import _array_core as np
 from . import _frame_core as pd
 
+
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""
 
@@ -40,11 +41,9 @@ except ImportError:
     LabelEncoder = _MissingDep('LabelEncoder')
     StandardScaler = _MissingDep('StandardScaler')
 
-from morie.fn.ps_fit import compute_propensity_scores
-from morie.fn.ps_fit import (_ps_design, _ps_irls_beta,
-                             _ps_solve)
 import math as _math
 
+from morie.fn.ps_fit import _ps_design, _ps_irls_beta, _ps_solve, compute_propensity_scores
 
 _PS_EPS = 1e-6
 

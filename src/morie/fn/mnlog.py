@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Penalized log-likelihood of the multinomial logistic model."""
 
-from . import _tail1core as C
 from . import _gp_core as G
-
+from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ['mnpenlik', 'multinomial_logistic_penalized']

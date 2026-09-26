@@ -3,7 +3,6 @@
 """Bradley-Terry reward-model loss (Alammar Ch 12; RLHF)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_reward_model_training_bt"]

@@ -2,7 +2,6 @@
 """Estimated true preferential ordering from k rankings."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_concordance_preference"]

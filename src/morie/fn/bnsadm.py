@@ -17,7 +17,6 @@ treatment effect, computed from the same fitted nuisances:
 import math
 
 from . import _array_core as np
-
 from ._did import add_intercept, logit_fit, logit_predict
 from ._richresult import RichResult
 

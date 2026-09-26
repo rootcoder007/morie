@@ -2,7 +2,6 @@
 """Minimum distance classifier."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "The man who moves a mountain begins by carrying away small stones. -- Confucius"

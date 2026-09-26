@@ -1,10 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nelson-Aalen cumulative hazard estimator."""
 
+from morie.fn._containers import SurvivalResult
+
 from . import _array_core as np
 from . import _stats_core as _stats
-
-from morie.fn._containers import SurvivalResult
 
 
 def nels(

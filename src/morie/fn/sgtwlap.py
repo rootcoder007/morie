@@ -2,7 +2,6 @@
 """Weighted graph Laplacian built from an edge list."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["wgtlap", "sgt_weighted_laplacian"]

@@ -25,7 +25,6 @@ Source: fetched-wave3/liu-etal-2021-swin-transformer-arxiv2103.14030.pdf
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["swinmw", "swin_msa_window"]

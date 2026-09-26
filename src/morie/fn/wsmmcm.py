@@ -3,10 +3,9 @@
 """Metropolis-Hastings sampler."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from .wsmnpb import _lcg_uniforms
 from .wsmgib import _norm_inv
+from .wsmnpb import _lcg_uniforms
 
 __all__ = ["wasserman_mcmc_metropolis"]
 

@@ -2,8 +2,8 @@
 
 import math
 
-from ._stats_core import norm
 from ._richresult import RichResult
+from ._stats_core import norm
 
 __all__ = ["cmuti", "copula_mutual_information"]
 

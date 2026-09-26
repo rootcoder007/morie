@@ -6,7 +6,6 @@ Liu et al. (2024) ICLR, arXiv:2310.06625, eqs. (1)-(2)
 """
 
 from . import _joseph as _core
-
 from ._richresult import RichResult
 
 __all__ = ["itrans", "joseph_itransformer"]

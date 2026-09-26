@@ -2,7 +2,6 @@
 """Functional-class fingerprint, radius 2 (FCFP4)."""
 
 from ._richresult import RichResult
-
 from .ecfp4 import _bonds, _morgan
 
 __all__ = ["fcfp4", "fcfp_4_fingerprint"]

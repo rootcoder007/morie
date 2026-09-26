@@ -2,7 +2,6 @@
 """Bayesian ideal-point estimation (Armstrong Ch 5)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bayesian_ideal_points", "bysid"]

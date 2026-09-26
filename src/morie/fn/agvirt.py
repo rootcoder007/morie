@@ -2,7 +2,6 @@
 """Virtual loss for parallel Monte-Carlo tree search."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["virtloss", "alphazero_virtual_loss"]

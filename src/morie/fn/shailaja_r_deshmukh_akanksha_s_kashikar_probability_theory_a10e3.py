@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Degenerate limiting distribution of the sample mean."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["degencdf", "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_equation_3"]
 

@@ -2,7 +2,6 @@
 """Exposure-response modeling for environmental epidemiology."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

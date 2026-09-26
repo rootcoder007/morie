@@ -2,7 +2,6 @@
 """Design-corrected p-value for a test statistic computed as if simple random."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["survey_p_value"]

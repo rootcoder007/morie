@@ -2,7 +2,6 @@
 """Aalen-Johansen multistate transition probabilities."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["multistate_transition_matrix"]

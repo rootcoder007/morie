@@ -2,10 +2,8 @@
 """Cross K-function for bivariate point patterns."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_pp import (as_points, as_region, cross_k_combined,
-                        cross_k_function, diggle_chetwynd_d)
+from ._schab_pp import as_points, as_region, cross_k_combined, cross_k_function, diggle_chetwynd_d
 
 __all__ = ["schabenberger_cross_k_function"]
 

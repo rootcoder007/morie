@@ -13,7 +13,6 @@ so the two languages agree on the same design to full precision.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ramsey_reset", "reset_core"]

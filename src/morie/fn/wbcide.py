@@ -2,7 +2,6 @@
 """Wooldridge's extended two-way fixed-effects estimator."""
 
 from . import _array_core as np
-
 from ._did import as_panel, first_treatment
 from ._richresult import RichResult
 

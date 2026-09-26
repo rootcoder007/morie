@@ -40,7 +40,6 @@ Source: fetched-wave3/peng-etal-2023-yarn-arxiv2309.00071.pdf
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["yarn", "yarn_context_scaling"]

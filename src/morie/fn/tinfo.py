@@ -2,8 +2,8 @@
 
 from math import sqrt
 
+from ._k05irt import info, item_params
 from ._richresult import RichResult
-from ._k05irt import item_params, info
 
 __all__ = ["test_information"]
 

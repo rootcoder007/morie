@@ -3,7 +3,6 @@
 """StereoSet stereotype-preference score."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_stereoset_bias"]

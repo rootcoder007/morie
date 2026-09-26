@@ -25,7 +25,6 @@ directly from X and beta, and that is what this function does.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["simident", "horowitz_sim_identification"]

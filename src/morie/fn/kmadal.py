@@ -3,7 +3,6 @@
 """Kamath Ch 4: AdaLoRA SVD-parametrized update with rank pruning."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_adalora_rank_allocation"]

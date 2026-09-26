@@ -3,7 +3,6 @@
 """Feature map output of a conv layer after activation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcvf import geron_conv2d_forward
 

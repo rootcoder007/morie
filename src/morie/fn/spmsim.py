@@ -2,7 +2,6 @@
 """Multiscale GWR (MGWR): one bandwidth per covariate."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_gwr import mgwr_backfit, pairwise_distances
 

@@ -2,7 +2,6 @@
 """Moore-Penrose pseudoinverse."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Knowing others is intelligence; knowing yourself is true wisdom. -- Lao Tzu"

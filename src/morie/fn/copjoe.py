@@ -2,7 +2,6 @@
 """Joe copula (upper-tail dependence)."""
 
 from . import _array_core as np
-
 from ._copula import copula_cdf, copula_tau
 from ._richresult import RichResult
 

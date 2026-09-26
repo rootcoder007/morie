@@ -62,7 +62,6 @@ quietly papered over.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["copynm", "circular_binary_segmentation", "cbs_statistic"]

@@ -2,7 +2,6 @@
 """SAR direct/indirect/total impact decomposition."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

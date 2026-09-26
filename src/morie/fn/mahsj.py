@@ -19,9 +19,8 @@ CI lower -0.0996502208931884, PI (-0.171412021529504, 0.355430976045376).
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02dl, k02p2t, k02tq
-
 from ._richresult import RichResult
+from .k02util import k02dl, k02p2t, k02tq
 
 __all__ = ["ma_hksj_t_pi"]
 

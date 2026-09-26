@@ -3,7 +3,6 @@
 """DCGAN generator: transposed-conv upsampling from latent z."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_dcgan_generator"]

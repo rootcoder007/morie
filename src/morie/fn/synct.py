@@ -2,7 +2,6 @@
 """Synthetic control for comparative case studies."""
 
 from . import _array_core as np
-
 from ._did import as_panel, simplex_lstsq
 from ._richresult import RichResult
 

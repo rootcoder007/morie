@@ -2,7 +2,6 @@
 """Orthogonal (principal-component) GARCH."""
 
 from . import _array_core as np
-
 from ._garch import garch_fit
 from ._richresult import RichResult
 

@@ -2,7 +2,6 @@
 """Negative-only treatment bound (monotone treatment response, decreasing)."""
 
 from . import _bndcore as B
-
 from ._richresult import RichResult
 
 __all__ = ["bound_neg_treatment"]

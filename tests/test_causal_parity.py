@@ -1,4 +1,3 @@
-from morie.fn import _frame_core as pd
 import pytest
 
 from morie.causal import (
@@ -6,6 +5,7 @@ from morie.causal import (
     run_ebac_selection_ipw_analysis,
     run_propensity_ipw_analysis,
 )
+from morie.fn import _frame_core as pd
 
 
 def test_run_propensity_ipw_analysis_returns_expected_tables():

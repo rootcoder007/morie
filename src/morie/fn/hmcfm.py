@@ -3,7 +3,6 @@
 """Confusion matrix: rows = actual, columns = predicted classes."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcfm import geron_confusion_matrix as _grcfm
 

@@ -2,7 +2,6 @@
 """ANOVA F-test per feature for selection."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "I cannot teach anybody anything. I can only make them think. -- Socrates"

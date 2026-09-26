@@ -2,7 +2,6 @@
 """Second cumulative survival function estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_cumulative_survival_2", "fauzi_cum_surv_est2"]
@@ -57,8 +56,7 @@ def fauzi_cumulative_survival_2(x, t_grid, h=None, transform="log"):
     Eqs. (4.17)-(4.18), Theorem 4.2 and Remark 4.3. Transcribed from the PDF: the distilled text file in the
     reference library omits the Jacobian factor and truncates (4.24).
     """
-    from ._fauzi import (boundary_free_transform, kdfe_bandwidth,
-                         kernel_V)
+    from ._fauzi import boundary_free_transform, kdfe_bandwidth, kernel_V
 
     xv = np.asarray(x, dtype=float).ravel()
     n = xv.size

@@ -2,7 +2,6 @@
 """Number needed to treat (NNT) from a 2x2 table."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 from .rd_es import risk_difference
 

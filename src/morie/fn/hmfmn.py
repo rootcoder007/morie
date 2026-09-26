@@ -3,7 +3,6 @@
 """FashionMNIST image classifier: CNN on 28x28 gray images."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcos import geron_conv_output_size
 

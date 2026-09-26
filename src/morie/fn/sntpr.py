@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
-from . import _frame_core as pd
-
 from morie.fn._otis_const import DEFAULT_COLS
 
+from . import _array_core as np
+from . import _frame_core as pd
 from ._richresult import RichResult
 
 

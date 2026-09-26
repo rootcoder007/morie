@@ -1,7 +1,6 @@
 """ARDL bounds test for the existence of a level relationship."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .zaurts import _ols_coef_se
 

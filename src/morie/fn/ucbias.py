@@ -2,7 +2,6 @@
 """Bounding factor for an unmeasured confounder (Ding-VanderWeele)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["unmeasured_conf_bias"]

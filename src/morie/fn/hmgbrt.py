@@ -3,7 +3,6 @@
 """Gradient boosted regression trees (GBRT): fit residual trees sequentially."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmcart import geron_cart_algorithm, predict_tree
 

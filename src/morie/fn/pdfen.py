@@ -2,7 +2,6 @@
 """Non-parametric PDF estimation."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Character is destiny. -- Heraclitus"

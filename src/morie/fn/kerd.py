@@ -2,7 +2,6 @@
 """Kernel density estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kernel_density", "kernel_density_fda"]

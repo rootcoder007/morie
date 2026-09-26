@@ -2,7 +2,6 @@
 """Ferro-Segers intervals estimator of the extremal index."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ev_extremal_intervals", "evt_extremal_index_intervals"]

@@ -21,7 +21,6 @@ proportional to size (pps) sampling with replacement.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["pps_with_replacement"]

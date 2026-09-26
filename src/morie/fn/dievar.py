@@ -4,9 +4,7 @@ Morin (2016), Probability: For the Enthusiastic Beginner, eq (3.20).
 """
 
 from . import _array_core as np
-
 from . import _morin
-
 from ._richresult import RichResult
 
 __all__ = ["dievar"]

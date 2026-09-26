@@ -48,7 +48,6 @@ In ICML (pp. 1139-1147).
 __all__ = ["sgdop"]
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 

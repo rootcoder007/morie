@@ -2,7 +2,6 @@
 """Monotone 1-D transport map fitted to the quantile coupling."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["neural_kantorovich_map", "ot_map_neural_kantorovich"]

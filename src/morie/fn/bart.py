@@ -3,11 +3,11 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import BrtRes
+
 from . import _array_core as np
 from . import _frame_core as pd
 from . import _stats_core as sp
-
-from morie.fn._containers import BrtRes
 
 
 def bart(data: pd.DataFrame | np.ndarray, cdf=None) -> BrtRes:

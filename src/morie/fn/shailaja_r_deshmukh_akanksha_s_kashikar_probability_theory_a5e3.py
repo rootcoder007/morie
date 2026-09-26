@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Independence of two random variables."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["indrv2", "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_5_equation_3"]
 

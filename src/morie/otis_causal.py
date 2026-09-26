@@ -743,8 +743,7 @@ def otis_aipw_superlearner(
       Super Learner. Stat. Appl. Genet. Mol. Biol. 6(1): Article 25.
     """
     try:
-        from morie.fn._ml_core import RandomForestClassifier, RandomForestRegressor
-        from morie.fn._ml_core import LogisticRegression, Ridge
+        from morie.fn._ml_core import LogisticRegression, RandomForestClassifier, RandomForestRegressor, Ridge
     except ImportError:
         # Fall back to plain AIPW with a note
         result = otis_aipw(
@@ -765,6 +764,8 @@ def otis_aipw_superlearner(
     # of the external xgboost package.
     from morie.fn._ml_core import (
         GradientBoostingClassifier as _GBC,
+    )
+    from morie.fn._ml_core import (
         GradientBoostingRegressor as _GBR,
     )
     HAS_XGB = True

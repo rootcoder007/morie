@@ -2,7 +2,6 @@
 """Estimators fn_eps and fn_U for panel deconvolution."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_fn_eps_fn_U", "horowitz_panel_density_estimators"]
@@ -76,9 +75,7 @@ def horowitz_fn_eps_fn_U(y, x, beta, nu_U=None, nu_eps=None,
     Econometrics*. Springer. Sec. 5.2.1-5.2.2, eqs. (5.25)-(5.26),
     assumptions P1-P4 and Theorem 5.4.
     """
-    from ._hrz_paneldec import deconvolve_pair, default_bandwidths, panel_residuals
-
-    from ._hrz_paneldec import _check_kernel
+    from ._hrz_paneldec import _check_kernel, deconvolve_pair, default_bandwidths, panel_residuals
     _check_kernel(kernel)
     Y = np.atleast_2d(np.asarray(y, dtype=float))
     n, T = Y.shape

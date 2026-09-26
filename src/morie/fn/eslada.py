@@ -3,7 +3,6 @@
 """AdaBoost.M1 (ESL Ch 10.1)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_adaboost", "esl_adaboost_predict"]

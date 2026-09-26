@@ -3,7 +3,6 @@
 """Receiver operating characteristic curve (TPR vs FPR over thresholds)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_roc_curve"]

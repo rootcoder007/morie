@@ -3,7 +3,6 @@
 """k-means++ initialization for well-separated initial centers."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_kmeans_plus_plus"]

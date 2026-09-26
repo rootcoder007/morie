@@ -2,7 +2,6 @@
 """Thermometer folding diagnostics for unfolding analysis."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["folding_problem"]

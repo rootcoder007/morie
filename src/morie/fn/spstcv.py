@@ -2,10 +2,8 @@
 """Separable spatio-temporal covariance functions."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_st import (is_separable, is_valid_covariance,
-                        separable_covariance, st_lag_matrices)
+from ._schab_st import is_separable, is_valid_covariance, separable_covariance, st_lag_matrices
 
 __all__ = ["schabenberger_st_cov_separable"]
 

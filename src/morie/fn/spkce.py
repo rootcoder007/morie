@@ -2,14 +2,14 @@
 """Covariance-parameter estimation for kriging (LS, ML, REML)."""
 
 from . import _array_core as np
-
+from ._did import add_intercept, ols_fit
 from ._richresult import RichResult
+
 # imported under an alias: the public argument is also called
 # variogram_model, and letting the string shadow the function makes the
 # covariance assembly fail only on the spatially-varying-mean path
 from ._schaben import MODELS, fit_variogram_wls, matheron
 from ._schaben import variogram_model as _vgm
-from ._did import add_intercept, ols_fit
 
 __all__ = ["schabenberger_cov_param_estimation_kriging"]
 

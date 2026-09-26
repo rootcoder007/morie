@@ -49,8 +49,7 @@ import math
 from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
-from .prphet import (fourier_terms, holiday_matrix, piecewise_trend,
-                     prophet_fit)
+from .prphet import fourier_terms, holiday_matrix, piecewise_trend, prophet_fit
 
 __all__ = ["additive_components", "component_shares"]
 

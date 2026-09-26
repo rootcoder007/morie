@@ -3,7 +3,6 @@
 """Regression MLP expressed as a PyTorch nn.Sequential architecture."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmregn import geron_regression_mlp
 

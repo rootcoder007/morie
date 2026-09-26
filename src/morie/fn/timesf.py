@@ -22,8 +22,7 @@ See Also
 :mod:`morie.fn.timesfm` -- the implementation.
 """
 
-from .timesfm import (causal_mask, horizon_plan, input_patches,
-                      rollout, rollout_steps)
+from .timesfm import causal_mask, horizon_plan, input_patches, rollout, rollout_steps
 
 __all__ = ["input_patches", "causal_mask", "rollout_steps", "rollout",
            "horizon_plan"]

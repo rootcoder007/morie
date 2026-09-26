@@ -2,7 +2,6 @@
 """Posterior consistency for normal mixture density estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_norm_mix_con"]

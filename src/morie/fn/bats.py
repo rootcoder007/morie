@@ -85,7 +85,6 @@ Only the small vector (:math:`\omega, \phi, \alpha, \beta, \gamma,
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._sci_core import minimize
 
@@ -167,7 +166,7 @@ def seasonal_harmonics(m, k=None):
 # the model specification
 # --------------------------------------------------------------------------
 
-class BatsSpec(object):
+class BatsSpec:
     r"""``BATS(omega, phi, p, q, m1, ..., mT)`` or its TBATS form.
 
     ``harmonics`` is ``None`` for the index seasonal of equation 3e, or

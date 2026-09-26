@@ -3,7 +3,6 @@
 """Sparse autoencoder: reconstruction error plus an L1 penalty on the code."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_sparse_autoencoder"]

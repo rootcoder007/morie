@@ -4,7 +4,6 @@
 from math import comb, factorial
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_type1_run_lengths"]

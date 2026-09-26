@@ -15,7 +15,6 @@ the estimator.  ``T`` is B-robust at ``F`` exactly when gamma* is finite.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gross_error_sensitivity"]

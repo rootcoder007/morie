@@ -2,7 +2,6 @@
 """Weighted two-way table with a design-corrected test of independence."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["survey_xtab"]

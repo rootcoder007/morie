@@ -2,7 +2,6 @@
 """Adaptive Polya tree prior: alpha_m = m^2 gives near-optimal density estimation rate."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_pt_adaptive"]

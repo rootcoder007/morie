@@ -2,7 +2,6 @@
 """MM-estimator regression (Yohai 1987)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["mm_regression_estimator"]
@@ -51,8 +50,7 @@ def mm_regression_estimator(X, y, n_subsets=200, seed=0):
     robust estimates for regression", *Annals of Statistics*
     15:642-656, Sec. 2 and Theorem 2.1.
     """
-    from ._robust import (TUKEY_C_95, mm_regression, prepare_design,
-                          tukey_weight)
+    from ._robust import TUKEY_C_95, mm_regression, prepare_design, tukey_weight
 
     A, yv = prepare_design(X, y)
     beta, scale, beta_s, conv = mm_regression(A, yv, n_subsets=n_subsets,

@@ -3,7 +3,6 @@
 """Kamath Ch 5: deep RL from human preferences (Christiano et al. 2017)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .alrmt import alammar_reward_model_training_bt
 

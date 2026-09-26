@@ -2,7 +2,6 @@
 """Recursive (exponentially forgetting) volatility update."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vol_recursive_least_sq"]

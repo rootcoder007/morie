@@ -2,7 +2,6 @@
 """GANomaly anomaly score from encoder-decoder-encoder latents."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["ganomscore", "adversarial_anomaly"]

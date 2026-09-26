@@ -59,8 +59,8 @@ import math
 
 from . import _array_core as _core
 from . import _w3num as _w
-from .qsfrgr import survival_forest, forest_weights, weighted_km
 from ._richresult import RichResult
+from .qsfrgr import forest_weights, survival_forest, weighted_km
 
 __all__ = ["crsfst", "crs_forest", "rmst", "make_folds", "cheatsheet"]
 

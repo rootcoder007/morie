@@ -2,8 +2,8 @@
 
 import math
 
-from ._sci_core import minimize
 from ._richresult import RichResult
+from ._sci_core import minimize
 
 __all__ = ["linkhae", "irt_linking_haebara"]
 

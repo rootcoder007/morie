@@ -2,7 +2,6 @@
 """Validity check for a collection of bound assumptions."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["bound_validity_check"]

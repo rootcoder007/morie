@@ -2,9 +2,8 @@
 """Three-step counterfactual inference: abduction, action, prediction."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-
 from ._richresult import RichResult
+from ._sci_core import optimize
 from .scmdf import scm_definition
 
 __all__ = ["abduction_modification_prediction"]

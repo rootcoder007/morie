@@ -3,7 +3,6 @@
 """Kamath Ch 7: Corrective RAG's retrieval-confidence router."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_corrective_rag"]

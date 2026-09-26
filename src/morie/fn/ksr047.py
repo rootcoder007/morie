@@ -2,7 +2,6 @@
 """Kaplan-Meier Z-estimator map Psi(S)(t)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_survival_psi", "kosorok_ch2_kaplan_meier_self_consistency"]

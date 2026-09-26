@@ -2,7 +2,6 @@
 """W-NOMINATE log-likelihood of a roll-call matrix."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .wnomp import wnominate_probability
 

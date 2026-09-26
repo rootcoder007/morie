@@ -27,7 +27,6 @@ works around with an H-decomposition.
 """
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["lstat", "fauzi_l_statistic"]

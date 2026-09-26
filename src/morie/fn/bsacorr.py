@@ -7,17 +7,16 @@ symbols are unchanged.
 """
 
 from __future__ import annotations
-from math import atan2 as _atan2, cos, fsum, log10, pi, sin, sqrt
-from math import log
+
 import math as _math
+from math import atan2 as _atan2
+from math import cos, fsum, log, log10, pi, sin, sqrt
+
 from . import _array_core as np
 from . import _stats_core as stats
-from ._containers import DescriptiveResult
-from ._containers import SignalResult
-from ._rgcore import aslist
-from ._rgcore import gridint
-from ._richresult import RichResult
-from ._richresult import with_describe_pointer
+from ._containers import DescriptiveResult, SignalResult
+from ._rgcore import aslist, gridint
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = [
     'coherence',

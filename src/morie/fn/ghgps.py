@@ -2,7 +2,6 @@
 """Gaussian-process regression -- squared-exponential kernel."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_gp_squared_exponential"]

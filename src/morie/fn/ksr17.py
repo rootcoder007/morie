@@ -6,7 +6,6 @@ N(infty), event times array, and risk-set-size at each event.
 """
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_counting_process"]

@@ -3,7 +3,6 @@
 """Kamath Eq 3.5: the sentiment PREFIX prompt template."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_prefix_prompt_template"]

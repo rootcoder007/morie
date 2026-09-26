@@ -2,7 +2,6 @@
 """IPW average treatment effect on the Crump-trimmed overlap sample."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causipw", "causal_ipw_truncated"]

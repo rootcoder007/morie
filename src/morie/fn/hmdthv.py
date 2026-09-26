@@ -3,7 +3,6 @@
 """Decision trees exhibit high variance; small data changes yield very different trees."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmcart import geron_cart_algorithm, predict_tree
 

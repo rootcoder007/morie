@@ -3,7 +3,6 @@
 
 from . import _otcore as ot
 from . import _s03core as core
-
 from ._richresult import RichResult
 
 __all__ = ["ot_quantization_distortion"]

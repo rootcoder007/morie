@@ -23,7 +23,6 @@ calls on the same data give the same answer.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["simbrate", "horowitz_rate_beta_estimation"]

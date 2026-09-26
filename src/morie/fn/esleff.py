@@ -3,7 +3,6 @@
 """Effective degrees of freedom of a linear smoother (ESL Ch 5.4)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_effective_dof"]

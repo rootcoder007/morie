@@ -3,7 +3,6 @@
 """BERT masked-language-modeling loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grgptl import geron_gpt_autoregressive_loss
 

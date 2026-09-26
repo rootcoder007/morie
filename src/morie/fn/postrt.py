@@ -2,7 +2,6 @@
 """Post-stratification as a weight adjustment."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 from .poststs import _strata
 

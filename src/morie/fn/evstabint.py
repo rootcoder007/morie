@@ -19,6 +19,7 @@ def evt_xi_ci_profile(x, alpha=0.05, model="gev"):
     sec. 2.6.5). The profile maximizes the remaining parameters at
     each fixed xi by Nelder-Mead."""
     import math
+
     from . import _sci_core as sci
     from ._stats_core import chi2 as _chi2
     xs = _ev._flat(x)

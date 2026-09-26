@@ -2,9 +2,8 @@
 """Triply robust natural indirect effect."""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
 from ._did import add_intercept, logit_fit, logit_predict, ols_fit
+from ._richresult import RichResult
 
 __all__ = ["triply_robust_mediation"]
 

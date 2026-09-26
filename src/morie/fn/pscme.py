@@ -2,7 +2,6 @@
 """Path-specific causal effect for multiple mediators."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .medstg import sequential_mediation
 

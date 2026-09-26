@@ -3,7 +3,6 @@
 """Kamath Eq 6.2: AlignScore's alignment function f: (a, b) -> y."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_alignment_function"]

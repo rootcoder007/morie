@@ -9,7 +9,6 @@ book's actual result.
 import math
 
 from . import _array_core as np
-
 from . import _morin
 from ._richresult import RichResult
 

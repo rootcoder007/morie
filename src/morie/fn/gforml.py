@@ -2,7 +2,6 @@
 """Robins g-formula -- Monte Carlo simulation of counterfactual outcome distribution."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["robins_g_formula"]

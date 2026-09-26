@@ -4,9 +4,8 @@
 __all__ = ["gxenv"]
 
 from . import _array_core as np
-from ._stats_core import f as _f_dist
-
 from ._containers import GenomicsResult
+from ._stats_core import f as _f_dist
 
 
 def gxenv(

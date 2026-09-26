@@ -3,7 +3,6 @@
 """Error analysis via normalized confusion matrix row/column inspection."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmcfm import geron_confusion_matrix
 

@@ -3,7 +3,6 @@
 """Hidden layers guideline: add layers until validation error stops improving."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_hidden_layers_heuristic"]

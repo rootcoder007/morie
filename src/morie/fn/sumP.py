@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Graph readout by sum pooling."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["sumpl", "sumpool", "sum_pool"]
 

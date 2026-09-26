@@ -2,7 +2,6 @@
 """Bootstrap confidence interval for a ratio."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["boot_ci_ratio"]

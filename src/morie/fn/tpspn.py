@@ -16,7 +16,6 @@ where K_ij = phi(||x_i - x_j||) and T = [1 x].
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["thin_plate_spline"]

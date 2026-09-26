@@ -2,7 +2,6 @@
 """Bridge sampling estimator of a marginal likelihood."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bridge_sampling", "bridge_sampling_marginal"]

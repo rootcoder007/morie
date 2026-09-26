@@ -2,7 +2,6 @@
 """Consistency and boundedness of the estimated efficient score."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_eff_score_consistency", "kosorok_ch3_z_estimator_consistency_score"]

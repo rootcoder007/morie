@@ -2,7 +2,6 @@
 """Brownian bridge covariance."""
 
 from . import _array_core as np
-
 from ._kosorok import bridge_cov
 from ._richresult import RichResult
 

@@ -2,7 +2,6 @@
 """Conditions C1-C6 for boundary-free MRL estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_conditions_c1_c6"]

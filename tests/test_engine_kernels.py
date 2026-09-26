@@ -1,7 +1,5 @@
 """Tests for morie.engine_bridge — C kernel bridge with Accelerate.framework."""
 
-from morie.fn import _array_core as np
-
 from morie.engine_bridge import (
     argmax,
     is_available,
@@ -11,6 +9,7 @@ from morie.engine_bridge import (
     silu_inplace,
     softmax,
 )
+from morie.fn import _array_core as np
 
 
 class TestAvailability:

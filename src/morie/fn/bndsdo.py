@@ -2,7 +2,6 @@
 """Monotone-treatment-selection bound."""
 
 from . import _bndcore as B
-
 from ._richresult import RichResult
 
 __all__ = ["bound_skewed_outcome"]

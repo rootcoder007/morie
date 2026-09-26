@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
+from morie.fn.crba import crba
+
 from . import _array_core as np
 from . import _frame_core as pd
-
-from morie.fn.crba import crba
 
 
 def adel(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:

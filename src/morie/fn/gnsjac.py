@@ -2,7 +2,6 @@
 """GNS dual Jacobian ln|I-rho*W| + ln|I-lam*W|."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

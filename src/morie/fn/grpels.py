@@ -3,7 +3,6 @@
 """Peephole LSTM cell: the gates see the cell state as well."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grsig import geron_sigmoid
 

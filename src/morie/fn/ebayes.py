@@ -2,7 +2,6 @@
 """Empirical Bayes shrinkage estimator for cluster means."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["empirical_bayes_shrinkage"]

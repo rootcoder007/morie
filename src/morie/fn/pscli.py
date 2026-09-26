@@ -2,7 +2,6 @@
 """ideal()-style Bayesian roll-call scaling on an encoded rollcall object."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .mcmpp import mcmcpack_irt
 

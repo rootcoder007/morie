@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from .eslemg import esl_em_gmm, _log_mvn
+from .eslemg import _log_mvn, esl_em_gmm
 
 __all__ = ["esl_gaussian_mixture"]
 

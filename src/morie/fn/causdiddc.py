@@ -37,7 +37,6 @@ Implemented here:
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causdiddc", "twfe", "twfe_weights", "did_m"]

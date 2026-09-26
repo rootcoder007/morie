@@ -2,7 +2,6 @@
 """Bivariate LISA (Lee 2001)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

@@ -7,12 +7,13 @@ symbols are unchanged.
 """
 
 from __future__ import annotations
+
 from math import atan2, cos, exp, fsum, hypot, log, pi, sin, sqrt
+
 from . import _array_core as np
 from . import _stats_core as stats
 from ._containers import DescriptiveResult
-from ._rgcore import aslist, aslistc
-from ._rgcore import gridint
+from ._rgcore import aslist, aslistc, gridint
 from ._richresult import RichResult
 from ._sci_core import CubicSpline
 from .bsacorr import rangayyan_welch_psd

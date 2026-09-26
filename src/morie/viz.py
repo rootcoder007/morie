@@ -12,11 +12,11 @@ import logging
 from collections.abc import Sequence
 from typing import Any
 
-from morie.fn._plot_core import patches as mpatches
-from morie.fn import _plot_core as plt
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
+from morie.fn import _plot_core as plt
 from morie.fn import _stats_core as sp_stats
+from morie.fn._plot_core import patches as mpatches
 
 logger = logging.getLogger(__name__)
 

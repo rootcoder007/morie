@@ -2,9 +2,8 @@
 """Lyapunov stability analysis."""
 
 from . import _array_core as np
-from ._sci_core import linalg
-
 from ._containers import DescriptiveResult
+from ._sci_core import linalg
 
 
 def lyapunov_stability(A, Q=None, **kwargs) -> DescriptiveResult:

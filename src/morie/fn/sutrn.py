@@ -1,7 +1,6 @@
 """Substance use trend over time periods."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

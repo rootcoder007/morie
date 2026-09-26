@@ -3,7 +3,6 @@
 """Gradient of cross-entropy for softmax regression."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmcec import geron_cross_entropy_cost
 

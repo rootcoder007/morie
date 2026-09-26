@@ -2,7 +2,6 @@
 """Pearl's mediation formula (discrete mediator)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["mediation_formula"]

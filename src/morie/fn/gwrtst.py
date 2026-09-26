@@ -2,7 +2,6 @@
 """GWR Monte-Carlo test for spatial variability."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

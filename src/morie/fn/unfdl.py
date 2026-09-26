@@ -2,7 +2,6 @@
 """Unfolding analysis for preference data (Coombs 1964; Schoenemann 1970)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["unfolding_analysis", "unfdl"]

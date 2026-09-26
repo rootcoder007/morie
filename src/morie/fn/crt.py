@@ -2,7 +2,6 @@
 """Chinese Remainder Theorem solver."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "The belonging you seek is not behind you. It is ahead. -- Maz Kanata"

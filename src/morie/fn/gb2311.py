@@ -2,7 +2,6 @@
 """Moments of the empirical distribution function."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_edf_mean_var"]

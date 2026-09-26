@@ -3,7 +3,6 @@
 """One-vs-One: K(K-1)/2 binary classifiers, majority vote."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grovr import train_logreg
 

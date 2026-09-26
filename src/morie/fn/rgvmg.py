@@ -33,7 +33,6 @@ from __future__ import annotations
 from math import cos, pi, sin, sqrt
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_vmg"]

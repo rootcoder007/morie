@@ -3,7 +3,6 @@
 """One-feature linear model: life satisfaction from GDP per capita."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grn002 import geron_ch4_linear_regression_prediction
 

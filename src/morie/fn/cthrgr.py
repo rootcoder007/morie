@@ -63,8 +63,8 @@ import math
 
 from . import _array_core as _core
 from . import _w3num as _w
-from .sdcfst import honest_forest, forest_predict
 from ._richresult import RichResult
+from .sdcfst import forest_predict, honest_forest
 
 __all__ = ["cthrgr", "causal_three_layer_grf", "ROUTES", "cheatsheet"]
 

@@ -16,7 +16,6 @@ H^2 = 1 - BC and is reported alongside.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["hellinger_distance"]

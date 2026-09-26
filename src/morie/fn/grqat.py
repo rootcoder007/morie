@@ -3,7 +3,6 @@
 """Quantization-aware training: fake-quantize forward, straight-through backward."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_quantization_aware_training"]

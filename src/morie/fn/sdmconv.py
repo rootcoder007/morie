@@ -2,7 +2,6 @@
 """SDM rho/lambda joint feasibility check."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

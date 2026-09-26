@@ -20,7 +20,6 @@ The uncorrected objective is also returned so the two can be compared.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["degree_corrected_sbm"]

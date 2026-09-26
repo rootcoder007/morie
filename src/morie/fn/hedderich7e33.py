@@ -36,7 +36,6 @@ from __future__ import annotations
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["hedderich_chapter_7_equation_33"]

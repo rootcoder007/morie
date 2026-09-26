@@ -1,7 +1,6 @@
 """Gender-specific substance use rates."""
 
 from . import _frame_core as pd
-
 from ._containers import DescriptiveResult
 
 

@@ -2,7 +2,6 @@
 """Maximum-score estimator for panel data with fixed effects."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_panel_max_score"]
@@ -72,7 +71,6 @@ def horowitz_panel_max_score(x, y, n_periods, smoothed=True, h=None,
     Theorems 4.9-4.10; Manski (1987), Charlier et al. (1995).
     """
     from . import _stats_core as stats
-
     from ._horowitz import optimize_scale_normalized
 
     T = int(n_periods)

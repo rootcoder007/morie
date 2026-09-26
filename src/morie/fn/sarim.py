@@ -2,9 +2,8 @@
 """Seasonal ARIMA (SARIMA) model."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-
 from ._containers import DescriptiveResult
+from ._sci_core import optimize
 
 
 def sarima_fit(

@@ -1,7 +1,6 @@
 """t-SNE for non-linear dimension reduction / visualisation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["tsne_reduction"]

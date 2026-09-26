@@ -3,7 +3,6 @@
 """Kamath Eq 9.22: Flamingo's weighted multi-dataset training loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km149 import kamath_ch9_flamingo_factorized
 

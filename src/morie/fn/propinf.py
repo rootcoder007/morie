@@ -82,7 +82,6 @@ shadow models on a GPU.
 import math
 
 from . import _array_core as np  # noqa: F401  (kept for array interop)
-
 from ._richresult import RichResult
 
 __all__ = [
@@ -336,9 +335,7 @@ def _mlp_forward(net, x, final="relu", hidden_act="relu"):
             acts.append(list(z))
         elif t == last and final == "sigmoid":
             acts.append([_sigmoid(v) for v in z])
-        elif t == last and final == "tanh":
-            acts.append([math.tanh(v) for v in z])
-        elif hidden_act == "tanh":
+        elif t == last and final == "tanh" or hidden_act == "tanh":
             acts.append([math.tanh(v) for v in z])
         else:
             acts.append([_relu(v) for v in z])

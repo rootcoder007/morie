@@ -2,11 +2,14 @@
 """Spatial generalized linear mixed model: the conditional specification."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_glmm import (canonical_link, conditional_mean,
-                          conditional_variance, marginal_moments_lognormal,
-                          naive_marginal_mean)
+from ._schab_glmm import (
+    canonical_link,
+    conditional_mean,
+    conditional_variance,
+    marginal_moments_lognormal,
+    naive_marginal_mean,
+)
 
 __all__ = ["schabenberger_glmm_conditional"]
 

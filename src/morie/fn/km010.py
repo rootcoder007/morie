@@ -3,7 +3,6 @@
 """Kamath Eq 2.10: the attention output o = sum b_i v_i."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_attention_output"]

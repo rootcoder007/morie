@@ -1,7 +1,7 @@
 """Test characteristic curve: expected total score as a function of theta."""
 
-from ._richresult import RichResult
 from ._k05irt import item_params, prob
+from ._richresult import RichResult
 
 __all__ = ["test_characteristic_curve"]
 

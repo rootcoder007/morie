@@ -1,7 +1,6 @@
+from morie.causal import calculate_ipw_weights, compute_propensity_scores
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
-
-from morie.causal import calculate_ipw_weights, compute_propensity_scores
 
 
 def test_calculate_ipw_weights():

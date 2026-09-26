@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import optimize
-
 from ._containers import TimeSeriesResult
+from ._sci_core import optimize
 
 
 def arima_fit(x, *, p: int = 1, d: int = 0, q: int = 0) -> TimeSeriesResult:

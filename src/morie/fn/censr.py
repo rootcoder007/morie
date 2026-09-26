@@ -5,9 +5,8 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _stats_core as _st
-from ._sci_core import minimize
-
 from ._containers import DescriptiveResult
+from ._sci_core import minimize
 
 
 def censored_regression(y: np.ndarray, x: np.ndarray, censor_val: float = 0.0, cdf=None) -> DescriptiveResult:

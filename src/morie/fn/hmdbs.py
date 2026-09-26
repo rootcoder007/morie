@@ -3,7 +3,6 @@
 """Density-based spatial clustering (DBSCAN)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grdbs import geron_dbscan_core_point
 

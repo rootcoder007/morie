@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Characteristic-function inversion for a pmf."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["cfinvpmf", "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equation_9"]
 

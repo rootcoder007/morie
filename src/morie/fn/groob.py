@@ -2,7 +2,6 @@
 """Out-of-bag error for bagged ensembles."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_oob_evaluation", "geron_oob_error"]

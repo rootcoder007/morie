@@ -2,7 +2,6 @@
 """The instrumental-variable estimand under a causal DAG."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causal_iv_instrumental_dag"]
@@ -68,7 +67,6 @@ def causal_iv_instrumental_dag(y, D, Z, homogeneous=False):
     91:444-455, for the graph-and-assumptions presentation.
     """
     from . import _stats_core as stats
-
     from .causivla import causal_iv_late
 
     o = causal_iv_late(y, D, Z)

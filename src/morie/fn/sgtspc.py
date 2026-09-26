@@ -2,7 +2,6 @@
 """Spectrum of the normalised Laplacian."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["lapspec", "sgt_spectrum"]

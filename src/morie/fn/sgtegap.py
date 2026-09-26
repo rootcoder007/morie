@@ -2,7 +2,6 @@
 """Eigengap heuristic for the number of clusters."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["eigengap", "sgt_eigengap_heuristic"]

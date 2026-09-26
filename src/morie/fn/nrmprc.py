@@ -7,8 +7,8 @@ quadrature is not repeated here; this module delegates to it and adds
 only the data-side summary its own signature asks for.
 """
 
-from .gh_c14_14 import ghosal_nig_proc as _nig
 from ._richresult import RichResult
+from .gh_c14_14 import ghosal_nig_proc as _nig
 
 __all__ = ["normalized_inverse_gauss"]
 

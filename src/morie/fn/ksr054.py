@@ -2,7 +2,6 @@
 """Lipschitz envelope condition for M-estimators."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_lipschitz_envelope", "kosorok_ch2_m_estimator_lipschitz_envelope"]

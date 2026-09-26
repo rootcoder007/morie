@@ -2,7 +2,6 @@
 """Occupational injury rate per 100 FTE."""
 
 from . import _stats_core as stats
-
 from ._containers import ESRes
 
 

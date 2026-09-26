@@ -2,7 +2,6 @@
 """Confidence intervals for a partially identified parameter."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bound_variance_term"]
@@ -63,8 +62,8 @@ def bound_variance_term(lower_hat, upper_hat, se_lower, se_upper, n,
     Eq. (6). Stoye, J. (2009), "More on confidence intervals for
     partially identified parameters", *Econometrica* 77:1299-1315.
     """
-    from ._sci_core import optimize
     from . import _stats_core as stats
+    from ._sci_core import optimize
 
     tl, tu = float(lower_hat), float(upper_hat)
     sl, su = float(se_lower), float(se_upper)

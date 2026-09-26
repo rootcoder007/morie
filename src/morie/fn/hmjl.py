@@ -3,7 +3,6 @@
 """Johnson-Lindenstrauss lemma: d' = O(log(n)/eps^2) preserves pairwise distances."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_johnson_lindenstrauss"]

@@ -2,7 +2,6 @@
 """Penalised log-likelihood."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch1_penalized_loglikelihood"]

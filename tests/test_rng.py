@@ -9,8 +9,7 @@ doubles rather than to the same distribution.
 
 import pytest
 
-from morie.fn._rng import (normal_quantile, philox4x32, random_normal,
-                           random_uniform)
+from morie.fn._rng import normal_quantile, philox4x32, random_normal, random_uniform
 
 # Random123 kat_vectors, the three `philox4x32 10` lines, verbatim.
 PHILOX_KAT = [

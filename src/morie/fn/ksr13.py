@@ -8,7 +8,6 @@ of moment scores {x - mean(x), x^2 - mean(x^2)} and return its rank.
 """
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_tangent_space"]

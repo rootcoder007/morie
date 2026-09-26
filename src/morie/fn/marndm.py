@@ -15,9 +15,8 @@ The pooled effect then uses ``w*_i = 1/(v_i + tau^2)``.  Verified against
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02dl, k02p2z, k02pchi, k02z
-
 from ._richresult import RichResult
+from .k02util import k02dl, k02p2z, k02pchi, k02z
 
 __all__ = ["ma_random_dl"]
 

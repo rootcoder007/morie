@@ -2,7 +2,6 @@
 """Lewbel heteroskedastic binary response estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_lewbel_estimator"]
@@ -91,7 +90,6 @@ def horowitz_lewbel_estimator(x, y, z, bandwidth=None, instruments=None,
     which changes the estimand.
     """
     from . import _stats_core as stats
-
     from ._horowitz import kernel, silverman_bw
 
     X = np.atleast_2d(np.asarray(x, dtype=float))

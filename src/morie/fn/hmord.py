@@ -3,7 +3,6 @@
 """Ordinal encoding: map categories to integers preserving order."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_ordinal_encoding"]

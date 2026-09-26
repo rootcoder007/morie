@@ -2,8 +2,8 @@
 
 from math import log
 
-from ._richresult import hypothesis_test_result
 from . import _stats_core as stats
+from ._richresult import hypothesis_test_result
 from .volkupiec import _hit_counts, _lr_uc
 
 __all__ = ["vol_christoffersen_cc"]

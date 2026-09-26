@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Three conditions for a valid instrument Z for the causal effect of X on Y."""
 
-from ._richresult import RichResult
 from ._dsep import d_separated
+from ._richresult import RichResult
 from .bdcrt import _parse
 
 __all__ = ["iv_conditions"]

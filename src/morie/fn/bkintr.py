@@ -3,7 +3,6 @@
 """Burkov Ch 2: linear interpolation of n-gram orders."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_ngram_interpolation"]

@@ -3,7 +3,6 @@
 """Classical multidimensional scaling (ESL Ch 14.8)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_mds"]

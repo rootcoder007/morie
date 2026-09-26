@@ -69,14 +69,13 @@ without adopting anything from this package beyond the machine itself.
 """
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["rmrl", "reward_machine", "qrm", "reward_machine_run",
            "qlearn_flat"]
 
 
-class RewardMachine(object):
+class RewardMachine:
     r"""A simple reward machine :math:`\langle U, u_0, \delta_u, \delta_r
     \rangle` (Definitions 3.1-3.2).
 

@@ -2,7 +2,6 @@
 """ARE of the sign test against the Wilcoxon signed-rank test."""
 
 from . import _array_core as np
-
 from ._gb_are import efficacy_are
 from ._richresult import RichResult
 

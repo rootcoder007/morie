@@ -3,7 +3,6 @@
 """RLAIF: a reward model fitted to AI feedback via Bradley-Terry."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .kmrmloss import kamath_reward_model_training_loss
 

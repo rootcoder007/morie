@@ -3,7 +3,6 @@
 """Kamath Eq 4.8: the KronA layer output."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km062 import _tuned
 

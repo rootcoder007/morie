@@ -1,7 +1,6 @@
 """STL decomposition (seasonal-trend via LOESS)."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

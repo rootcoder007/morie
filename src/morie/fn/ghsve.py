@@ -2,9 +2,8 @@
 """Sieve prior construction (truncated log-spline / Bernstein basis)."""
 
 from . import _array_core as np
-from ._sci_core import gammaln
-
 from ._richresult import RichResult
+from ._sci_core import gammaln
 
 __all__ = ["ghosal_sieve_prior"]
 

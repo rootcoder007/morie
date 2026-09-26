@@ -2,7 +2,6 @@
 """First cumulative survival function estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_cumulative_survival_1", "fauzi_cum_surv_est1"]
@@ -58,8 +57,7 @@ def fauzi_cumulative_survival_1(x, t_grid, h=None, transform="log"):
     Eqs. (4.8)-(4.9), Theorem 4.1 and Remark 4.2. Transcribed from the PDF: the distilled text file in the
     reference library omits the Jacobian factor and truncates (4.24).
     """
-    from ._fauzi import (boundary_free_transform, kdfe_bandwidth,
-                         kernel_V)
+    from ._fauzi import boundary_free_transform, kdfe_bandwidth, kernel_V
 
     xv = np.asarray(x, dtype=float).ravel()
     n = xv.size

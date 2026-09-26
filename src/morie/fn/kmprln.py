@@ -3,7 +3,6 @@
 """Pre-LayerNorm transformer block (the stable-training placement)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .kmpoln import layer_norm
 

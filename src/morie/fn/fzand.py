@@ -2,7 +2,6 @@
 """Fuzzy AND (t-norm) operation."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "The whole is greater than the sum of its parts. -- Aristotle"

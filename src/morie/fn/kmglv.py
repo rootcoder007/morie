@@ -3,7 +3,6 @@
 """GloVe weighted least-squares cost over co-occurrence counts."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_glove_cost", "glove_weight"]

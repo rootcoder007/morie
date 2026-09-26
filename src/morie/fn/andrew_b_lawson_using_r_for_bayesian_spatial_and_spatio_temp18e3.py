@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Epidemic log-autoregression."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["epiar", "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_18_equation_3"]
 

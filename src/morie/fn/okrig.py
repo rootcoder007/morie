@@ -1,9 +1,8 @@
 """Ordinary kriging prediction (exact predictor with unbiasedness)."""
 
 from . import _array_core as np
-from ._sci_core import cdist
-
 from ._richresult import RichResult
+from ._sci_core import cdist
 
 __all__ = ["ordinary_kriging"]
 

@@ -134,9 +134,9 @@ def cross_map(driver, response, E=2, tau=1, library=None, seed=1,
                 if b != a and abs(idx[b] - idx[a]) > int(exclude)]
         if len(cand) < k:
             continue
-        d = sorted(((math.sqrt(sum((pts[a][c] - pts[b][c]) ** 2
+        d = sorted((math.sqrt(sum((pts[a][c] - pts[b][c]) ** 2
                                    for c in range(len(pts[a])))), b)
-                    for b in cand))[:k]
+                    for b in cand)[:k]
         d1 = d[0][0]
         if d1 <= 0:
             w = [1.0 if j == 0 else 0.0 for j in range(k)]

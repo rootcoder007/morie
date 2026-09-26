@@ -2,7 +2,6 @@
 """Proximal causal inference via a two-stage proxy bridge function."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causal_proximal_proxy"]

@@ -2,7 +2,6 @@
 """BERTScore precision, recall and F1."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["bertscore"]

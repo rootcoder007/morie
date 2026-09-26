@@ -20,8 +20,8 @@ from __future__ import annotations
 
 import math
 
-from .olsfit import olsfit
 from ._richresult import RichResult
+from .olsfit import olsfit
 
 __all__ = ["ssdecomp"]
 

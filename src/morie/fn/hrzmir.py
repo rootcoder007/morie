@@ -2,7 +2,6 @@
 """Marginal integration estimator for additive model components."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_marginal_integration"]

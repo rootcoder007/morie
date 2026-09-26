@@ -2,9 +2,8 @@
 """Ordinary kriging interpolation."""
 
 from . import _array_core as np
-from ._sci_core import cdist
-
 from ._containers import DescriptiveResult
+from ._sci_core import cdist
 
 
 def _spherical_variogram(h: np.ndarray, nugget: float, sill: float, range_: float) -> np.ndarray:

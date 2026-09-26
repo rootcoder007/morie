@@ -58,7 +58,6 @@ Everything here is internal.
 """
 
 from . import _array_core as np
-
 from ._schab_gn import semivariogram_jacobian
 from ._schab_vario import correlogram
 

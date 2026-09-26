@@ -3,7 +3,6 @@
 """Beam search decoder: keep top-k hypotheses at each step."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_beam_search_decoder"]

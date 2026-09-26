@@ -3,7 +3,6 @@
 """Kamath Eq 9.7: the total CLIP contrastive loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch9_clip_contrastive_total"]

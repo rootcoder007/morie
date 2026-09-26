@@ -2,7 +2,6 @@
 """Restricted Isometry Property (RIP) check."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Knowledge is power. -- Francis Bacon"

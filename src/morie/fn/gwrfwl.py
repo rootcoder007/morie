@@ -2,7 +2,6 @@
 """GWR Frisch-Waugh-Lovell local partitioned regression."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

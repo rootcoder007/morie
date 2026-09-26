@@ -16,9 +16,10 @@ from pathlib import Path
 # reach PyPI or print notices during tests.
 os.environ.setdefault("MORIE_NO_UPDATE_CHECK", "1")
 
+import pytest
+
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
-import pytest
 
 ROOT = Path(__file__).resolve().parents[1]  # the repository root
 PY_PACKAGE = ROOT / "tools" / "py-package"

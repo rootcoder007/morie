@@ -2,7 +2,6 @@
 """Conditional simulation of a Gaussian random field, by kriging."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_sim import simple_kriging_variance, simulate_conditional
 

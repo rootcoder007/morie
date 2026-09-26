@@ -3,7 +3,6 @@
 """Kamath Eq 2.28: the alternate language modelling (ALM) pretraining loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_alm_loss"]

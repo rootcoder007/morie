@@ -17,9 +17,8 @@ on the fixture in the canonical test below (agreement to 1e-15).
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02fe, k02p2z, k02pchi, k02z
-
 from ._richresult import RichResult
+from .k02util import k02fe, k02p2z, k02pchi, k02z
 
 __all__ = ["ma_fixed_effect"]
 

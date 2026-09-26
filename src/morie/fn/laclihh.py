@@ -2,7 +2,6 @@
 """LISA high-high cluster identification."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

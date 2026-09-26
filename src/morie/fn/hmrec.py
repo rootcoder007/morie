@@ -3,7 +3,6 @@
 """Recall (true positive rate, sensitivity) = TP / (TP + FN)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .recal import recall as _recall
 

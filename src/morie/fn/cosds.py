@@ -2,7 +2,6 @@
 """Cosine distance."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 _QUOTE = "Rebellions are built on hope. -- Jyn Erso"

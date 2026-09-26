@@ -6,8 +6,10 @@ one-function modules named after book coordinates; the public
 symbols are unchanged.
 """
 
-from math import atan2 as _atan2, cos, exp, fsum, log, log10, pi, sin, sqrt
 import math as _math
+from math import atan2 as _atan2
+from math import cos, exp, fsum, log, log10, pi, sin, sqrt
+
 from . import _array_core as np
 from ._rgcore import aslist
 from ._richresult import RichResult

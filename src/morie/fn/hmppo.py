@@ -3,7 +3,6 @@
 """Proximal policy optimization with the clipped surrogate objective."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmrl import _bind
 

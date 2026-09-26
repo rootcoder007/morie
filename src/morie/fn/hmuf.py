@@ -3,7 +3,6 @@
 """Underfitting: high training error because the model is too simple."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_underfitting"]

@@ -2,7 +2,6 @@
 """Unbiasedness of the ProdQJL estimator (TurboQuant Lemma 3.2)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["turboquant_prodqjl_unbiasedness"]

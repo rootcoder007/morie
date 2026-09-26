@@ -2,7 +2,6 @@
 """Moran's I (original Moran 1950)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

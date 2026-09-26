@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 # Gasparrini et al. 2015 Lancet 386:369-375 multi-country study

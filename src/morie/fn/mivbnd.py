@@ -2,7 +2,6 @@
 """Manski monotone instrumental variable bounds."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["monotone_iv_bounds"]

@@ -2,7 +2,6 @@
 """Cumulative incidence function -- non-parametric."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

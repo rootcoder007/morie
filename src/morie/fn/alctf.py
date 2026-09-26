@@ -3,7 +3,6 @@
 """Class-based TF-IDF (Grootendorst 2022; Alammar Ch 5)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_c_tfidf"]

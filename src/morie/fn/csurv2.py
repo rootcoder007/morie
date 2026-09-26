@@ -2,7 +2,6 @@
 """Best linear predictor for causal survival forest CATE."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .crfhte import causal_forest_hte_test
 from .csfgrf import causal_survival_forest

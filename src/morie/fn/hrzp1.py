@@ -13,7 +13,6 @@ SE via the heteroskedasticity-consistent (HC0) sandwich on r_X.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_plr_estimator"]

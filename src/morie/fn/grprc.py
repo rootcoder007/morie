@@ -3,7 +3,6 @@
 """Precision-recall curve: precision and recall over thresholds."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grroc import _sorted_counts
 

@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._surv import prepare
 
@@ -88,9 +87,9 @@ def generalized_gamma_aft(time, event, X, max_iter=500, tol=1e-6):
     ...      < generalized_gamma_aft(t2, e2, X)["lr_vs_weibull"])
     True
     """
-    from ._sci_core import minimize
-    from ._sci_core import gammaln
-    from ._stats_core import chi2, gamma as gamma_dist
+    from ._sci_core import gammaln, minimize
+    from ._stats_core import chi2
+    from ._stats_core import gamma as gamma_dist
 
     t, e, Xm = prepare(time, event, X)
     if np.any(t <= 0):

@@ -2,9 +2,8 @@
 """Maximum likelihood for spatial autoregressive models."""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
 from ._did import ols_fit
+from ._richresult import RichResult
 
 __all__ = ["schabenberger_sar_ml"]
 

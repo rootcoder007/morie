@@ -3,7 +3,6 @@
 """MoverScore: Word Mover's Distance over contextual embeddings."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_moverscore", "word_movers_distance"]

@@ -3,7 +3,6 @@
 
 from . import _array_core as np
 from . import _schab_fit as fit
-
 from ._richresult import RichResult
 from .spgls import schabenberger_gls_spatial as _gls
 

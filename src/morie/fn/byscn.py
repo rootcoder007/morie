@@ -2,7 +2,6 @@
 """BayesCpi: spike-and-slab genomic regression with pi estimated."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bayes_c_pi", "bayes_cpi_prior"]

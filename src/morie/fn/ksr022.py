@@ -2,7 +2,6 @@
 """Multiplicative intensity model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch1_multiplicative_intensity"]

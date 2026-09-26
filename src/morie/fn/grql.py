@@ -3,7 +3,6 @@
 """Q-learning off-policy update."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_q_learning_update"]

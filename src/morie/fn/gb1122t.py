@@ -2,7 +2,6 @@
 """Kendall's tau_b with tie correction."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_kendall_ties"]

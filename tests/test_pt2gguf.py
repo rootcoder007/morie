@@ -1,8 +1,8 @@
 """Tests for morie.pt2gguf — PyTorch checkpoint to GGUF converter."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.pt2gguf import _map_tensor_name
 
 # ---------------------------------------------------------------------------

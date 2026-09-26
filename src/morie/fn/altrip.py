@@ -3,7 +3,6 @@
 """Triplet loss (Alammar Ch 10; SBERT)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_sbert_triplet_loss"]

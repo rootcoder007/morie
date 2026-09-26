@@ -2,7 +2,6 @@
 """Horowitz estimators for T and F in fully nonparametric transformation model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_T_F_estimators"]
@@ -82,8 +81,7 @@ def horowitz_T_F_estimators(x, y, bandwidth, beta_hat, y0=None,
     Econometrics*. Springer. Sec. 6.3.1, eqs. (6.57)-(6.66);
     Horowitz (1996).
     """
-    from ._hrz_transform import (SCALE_NOTE, kernel_K, kernel_Kz_sixth,
-                                 kernel_Kz_sixth_deriv, normalize_scale)
+    from ._hrz_transform import SCALE_NOTE, kernel_K, kernel_Kz_sixth, kernel_Kz_sixth_deriv, normalize_scale
 
     X = np.atleast_2d(np.asarray(x, dtype=float))
     yv = np.asarray(y, dtype=float).ravel()

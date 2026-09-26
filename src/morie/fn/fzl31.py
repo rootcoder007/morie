@@ -2,7 +2,6 @@
 """Lemma 3.1: asymptotic representation of kernel quantile estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_lemma_3_1", "fauzi_lem3_1_asymp_rep"]

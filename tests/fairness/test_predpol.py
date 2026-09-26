@@ -7,8 +7,6 @@ must produce no disparity signal (no false positive), and an injected
 group over-prediction must be detected (no false negative).
 """
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fairness.cityprofile import (
@@ -23,6 +21,8 @@ from morie.fairness.predpol import (
     predpol_calibration_audit,
     predpol_score_disparity,
 )
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 # ── predpol_aggregate_areas ─────────────────────────────────────────
 

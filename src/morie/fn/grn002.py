@@ -3,7 +3,6 @@
 """Linear regression prediction as a weighted sum of features plus bias."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_ch4_linear_regression_prediction"]

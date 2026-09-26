@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import KmeansRes
+
 from . import _array_core as np
 from . import _frame_core as pd
-
-from morie.fn._containers import KmeansRes
 
 
 def _kmeans_pp(X: np.ndarray, k: int, rng: np.random.Generator) -> np.ndarray:

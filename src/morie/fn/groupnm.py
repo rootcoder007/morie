@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Group normalisation."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["grpnorm", "groupnorm", "group_norm"]
 

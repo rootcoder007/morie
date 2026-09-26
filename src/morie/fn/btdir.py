@@ -24,7 +24,6 @@ bit-identical draws.
 from __future__ import annotations
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["boot_dirichlet_weights"]

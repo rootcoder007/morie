@@ -3,7 +3,6 @@
 """Zero-shot learning: LLM generalizes to unseen tasks from prompt only."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmsftm import geron_softmax_function
 

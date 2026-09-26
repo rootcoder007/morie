@@ -3,7 +3,6 @@
 """Generative adversarial network: generator vs discriminator minimax."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmdfw import lcg_normal
 

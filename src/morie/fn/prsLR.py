@@ -65,8 +65,7 @@ core-merging idea behind LALR.
 """
 
 from ._richresult import RichResult
-from .prsLL import (END, EPSILON, first_sets, follow_sets, grammar,
-                    linearise, nonterminals, terminals)
+from .prsLL import END, EPSILON, first_sets, follow_sets, grammar, linearise, nonterminals, terminals
 
 __all__ = ["augment", "closure", "goto", "canonical_collection",
            "build_tables", "conflicts", "parse", "lr_parser",

@@ -3,7 +3,6 @@
 """GPT-1: decoder-only transformer pretrained on next-token prediction."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmdctr import geron_decoder_only
 

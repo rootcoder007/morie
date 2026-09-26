@@ -2,7 +2,6 @@
 """Sharp RDD by local linear regression at the threshold."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .causrddh import ik_bandwidth
 

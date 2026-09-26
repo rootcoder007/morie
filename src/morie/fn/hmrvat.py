@@ -3,7 +3,6 @@
 """RNN visual attention over a spatial feature map."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_rnn_visual_attention"]

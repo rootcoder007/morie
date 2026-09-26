@@ -2,9 +2,8 @@
 """Natural direct effect from a linear structural mediation model."""
 
 from . import _tail1core as C
-from .tmlnde import ndeff
-
 from ._richresult import RichResult
+from .tmlnde import ndeff
 
 __all__ = ["natural_direct_effect", "naturaldirecteffect"]
 

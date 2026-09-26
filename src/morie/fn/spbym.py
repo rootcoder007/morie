@@ -2,10 +2,8 @@
 """Besag-York-Mollie convolution model for disease mapping."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_glmm import (bym_identifiability_note, bym_map,
-                          bym_median_log_prior, neighbour_structure, smr)
+from ._schab_glmm import bym_identifiability_note, bym_map, bym_median_log_prior, neighbour_structure, smr
 
 __all__ = ["schabenberger_bym"]
 

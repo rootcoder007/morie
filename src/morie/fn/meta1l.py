@@ -2,7 +2,6 @@
 """S-, T-, X- and R-metalearners for the CATE with OLS base learners."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["meta1l", "metalearner_ensemble"]

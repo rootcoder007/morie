@@ -3,7 +3,6 @@
 """Markov inequality P(X >= a) <= E[X] / a."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wasserman_markov_ineq"]

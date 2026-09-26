@@ -2,7 +2,6 @@
 """Probability-proportional-to-size selection probabilities and design variance."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["pps_sampling"]

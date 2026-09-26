@@ -2,7 +2,6 @@
 """Double exponential smoothing (Holt's linear trend method)."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

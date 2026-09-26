@@ -2,7 +2,6 @@
 """Balke-Pearl linear-programming bounds on the ATE with a binary instrument."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 from .bndcvx import bound_convex_estimator
 

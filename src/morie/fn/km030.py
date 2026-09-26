@@ -3,7 +3,6 @@
 """Kamath Eq 2.30/2.31: sentence-pair classification losses."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_nsp_loss"]

@@ -2,7 +2,6 @@
 """Polynomial kernel matrix."""
 
 from . import _gp_core as G
-
 from ._richresult import RichResult
 
 __all__ = ['polykern', 'polynomial_kernel']

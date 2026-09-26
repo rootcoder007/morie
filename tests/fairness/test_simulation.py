@@ -8,7 +8,6 @@ through the Phase A audit, which both checks the generator and serves
 as an end-to-end audit-pipeline test.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fairness.metrics import fairness_disparate_impact
@@ -17,6 +16,7 @@ from morie.fairness.simulation import (
     noisy_or_detection,
     simulate_biased_crime_data,
 )
+from morie.fn import _array_core as np
 
 # ── noisy_or_detection ──────────────────────────────────────────────
 

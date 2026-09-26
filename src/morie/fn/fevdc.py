@@ -2,7 +2,6 @@
 """Forecast error variance decomposition from a VAR(1) model."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

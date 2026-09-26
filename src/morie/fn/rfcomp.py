@@ -43,9 +43,8 @@ import math
 from . import _array_core as np  # noqa: F401
 from . import _rousscore as R
 from . import _s03core as k
-from .mcdv import mcd
-
 from ._richresult import RichResult
+from .mcdv import mcd
 
 __all__ = ["robust_factor_analysis"]
 

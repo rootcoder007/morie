@@ -3,7 +3,6 @@
 """Kamath Ch 5: the Direct Preference Optimization (DPO) loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .alrmt import alammar_reward_model_training_bt
 

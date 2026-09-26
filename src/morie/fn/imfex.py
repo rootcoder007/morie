@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import CubicSpline
-
 from ._containers import DescriptiveResult
+from ._sci_core import CubicSpline
 
 _QUOTE = "Your focus determines your reality."
 

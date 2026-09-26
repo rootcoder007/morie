@@ -2,7 +2,6 @@
 """MuZero n-step bootstrapped value targets."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["mznstep", "muzero_n_step_value"]

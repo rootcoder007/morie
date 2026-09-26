@@ -2,7 +2,6 @@
 """Neutral-to-the-right process -- Doksum (1974) survival prior."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_neutral_right"]

@@ -28,9 +28,9 @@ import argparse
 import io
 import logging
 import os
-import warnings
 import pickle
 import struct
+import warnings
 from pathlib import Path
 
 from morie.fn import _array_core as np

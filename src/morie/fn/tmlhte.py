@@ -4,7 +4,6 @@
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._stats_core import chi2 as _chi2
 from ._tmle import tmle_ate as _tmle_ate

@@ -3,7 +3,6 @@
 """Kamath Eq 8.1: perplexity of a tokenized sequence."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch8_perplexity"]

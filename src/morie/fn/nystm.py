@@ -2,7 +2,6 @@
 """Nystrom low-rank approximation of a kernel matrix."""
 
 from . import _gp_core as G
-
 from ._richresult import RichResult
 
 __all__ = ['nystromap', 'nystrom_approximation']

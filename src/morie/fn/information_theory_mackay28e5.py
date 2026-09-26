@@ -6,7 +6,6 @@ MacKay (2003) eq. (28.5), p. 344
 """
 
 from . import _itila as _core
-
 from ._richresult import RichResult
 
 __all__ = ["postgapx", "information_theory_mackay_chapter_28_equation_5"]

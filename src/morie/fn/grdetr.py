@@ -3,7 +3,6 @@
 """DETR set-prediction loss: Hungarian matching + classification + bounding box."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_detr_hungarian_matching"]

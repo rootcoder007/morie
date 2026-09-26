@@ -13,9 +13,8 @@ appeared.  Each step uses DerSimonian-Laird.
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02dl, k02z
-
 from ._richresult import RichResult
+from .k02util import k02dl, k02z
 
 __all__ = ["ma_cumulative"]
 

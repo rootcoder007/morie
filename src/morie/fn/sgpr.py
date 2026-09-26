@@ -24,9 +24,7 @@ from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
 from . import _s03core as k
-
 from ._richresult import RichResult
-
 from .gpsfn import gp_sparse_inducing
 
 __all__ = ["sparse_gp"]

@@ -5,7 +5,6 @@ reachability + single linkage + minimum cluster size (Campello et al.
 2013; Alammar Ch 5)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_hdbscan_cluster"]

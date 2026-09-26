@@ -3,7 +3,6 @@
 """Precision = TP / (TP + FP)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcfm import geron_confusion_matrix
 

@@ -4,9 +4,8 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _stats_core as sp_stats
-from ._sci_core import brentq
-
 from ._containers import ESRes
+from ._sci_core import brentq
 
 
 def tetrachoric_corr(a: int, b: int, c: int, d: int) -> ESRes:

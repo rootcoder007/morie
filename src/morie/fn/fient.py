@@ -2,7 +2,6 @@
 """Fisher information."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 

@@ -6,17 +6,19 @@ refused, and the CATE path never emits ``sd/sqrt(n)`` as an SE -- ``"none"``
 gives a point + dispersion only, ``"bootstrap"`` gives a valid SE + CI.
 """
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn._stats_core import norm
 from morie.taphonomy import (
+    _read_usgs_soil_zip,
+    taphonomy_bhm,
+    taphonomy_clr,
     taphonomy_decay_absorption,
     taphonomy_decay_chain,
     taphonomy_decay_delta,
     taphonomy_decay_simulate,
-    taphonomy_bhm,
-    taphonomy_clr,
     taphonomy_evidence_loglik,
     taphonomy_ilr,
     taphonomy_likelihood_ratio,
@@ -26,8 +28,6 @@ from morie.taphonomy import (
     taphonomy_schema,
     taphonomy_simulate_pxrf,
 )
-from morie.taphonomy import _read_usgs_soil_zip
-from morie.fn._stats_core import norm
 
 
 def test_schema_is_typed_zero_row_template():

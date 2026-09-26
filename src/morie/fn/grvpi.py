@@ -3,7 +3,6 @@
 """State value function V^pi(s) for a finite MDP."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_state_value_function", "policy_evaluation"]

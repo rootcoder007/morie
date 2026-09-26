@@ -5,7 +5,6 @@ from __future__ import annotations
 
 from . import _frame_core as pd
 from . import _stats_core as stats
-
 from ._containers import TestResult
 from ._helpers import _validate_df
 

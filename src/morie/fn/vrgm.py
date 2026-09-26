@@ -1,9 +1,8 @@
 """Empirical variogram estimation (Matheron classical estimator)."""
 
 from . import _array_core as np
-from ._sci_core import pdist, squareform
-
 from ._richresult import RichResult
+from ._sci_core import pdist, squareform
 
 __all__ = ["variogram_estimation"]
 

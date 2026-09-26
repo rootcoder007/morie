@@ -3,7 +3,6 @@
 """Kamath Eq 7.2: RAG answer-faithfulness metric."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch7_faithfulness_metric"]

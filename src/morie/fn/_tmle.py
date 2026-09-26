@@ -2,7 +2,6 @@
 """Shared TMLE core: initial fit, clever covariate, fluctuation, EIF."""
 
 from . import _array_core as np
-
 from .aiptdd import _logit_fit, _ols_predict
 
 __all__ = ["tmle_ate"]

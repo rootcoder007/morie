@@ -3,7 +3,6 @@
 """Kamath Eq 5.1: the pairwise reward-model loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch5_reward_loss_pairwise"]

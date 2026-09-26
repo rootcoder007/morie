@@ -1,7 +1,6 @@
 """Stationarity definitions: strict, second-order, intrinsic."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_random_field_stationarity"]

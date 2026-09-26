@@ -2,7 +2,6 @@
 """MGWR model fit (Fotheringham et al. 2017)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

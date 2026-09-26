@@ -2,7 +2,6 @@
 """Univariate kernel density estimate."""
 
 from . import _array_core as np
-
 from ._horowitz import kde, silverman_bw
 from ._richresult import RichResult
 

@@ -2,7 +2,6 @@
 """Two-way fixed-effects difference-in-differences."""
 
 from . import _array_core as np
-
 from ._did import as_panel, cluster_se, first_treatment, twfe_beta
 from ._richresult import RichResult
 

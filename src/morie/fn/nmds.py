@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import pdist, squareform
-
 from ._containers import MdsRes
+from ._sci_core import pdist, squareform
 
 
 def nmds(

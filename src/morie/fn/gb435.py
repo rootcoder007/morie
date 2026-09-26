@@ -2,7 +2,6 @@
 """One-sided K-S asymptotic distribution."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_ks_onesided_asymp"]

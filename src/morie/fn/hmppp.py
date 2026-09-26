@@ -3,7 +3,6 @@
 """Pipeline parallelism: staged layers with microbatches."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmmpp import geron_model_parallelism
 

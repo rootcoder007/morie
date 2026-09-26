@@ -6,7 +6,6 @@ MacKay (2003) eq. (19.14), p. 273
 """
 
 from . import _itila as _core
-
 from ._richresult import RichResult
 
 __all__ = ["sexfsol", "information_theory_mackay_chapter_19_equation_14"]

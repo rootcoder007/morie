@@ -2,9 +2,8 @@
 """Propensity trimming for the trimmed causal effect."""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
 from ._did import add_intercept, logit_fit, logit_predict
+from ._richresult import RichResult
 
 __all__ = ["trimmed_causal_effect", "truncated_cf_estimator"]
 

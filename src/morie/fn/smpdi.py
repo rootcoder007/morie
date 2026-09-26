@@ -1,7 +1,6 @@
 """Simpson's diversity index."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "The only true wisdom is in knowing you know nothing. -- Socrates"

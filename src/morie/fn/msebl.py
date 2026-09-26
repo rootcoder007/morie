@@ -2,7 +2,6 @@
 """Sum-of-squared-error loss for continuous outcomes."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['ssello', 'mse_loss_continuous']

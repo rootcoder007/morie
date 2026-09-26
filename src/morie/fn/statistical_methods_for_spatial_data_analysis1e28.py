@@ -2,7 +2,6 @@
 """AR(1) covariance matrix and its closed-form inverse."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = [

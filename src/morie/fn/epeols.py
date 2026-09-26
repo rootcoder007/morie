@@ -21,7 +21,6 @@ usual residual estimate RSS/(N - q) from the same design.
 from __future__ import annotations
 
 from . import _s03core as k
-
 from ._richresult import RichResult
 
 __all__ = ["epeols"]

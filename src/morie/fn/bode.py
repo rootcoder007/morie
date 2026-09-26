@@ -2,7 +2,6 @@
 """Bode magnitude and phase plot computation."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Time discovers truth. -- Seneca"

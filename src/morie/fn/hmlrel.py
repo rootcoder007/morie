@@ -3,7 +3,6 @@
 """Leaky ReLU: small negative slope prevents dead neurons."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_leaky_relu"]

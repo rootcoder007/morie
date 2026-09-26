@@ -80,8 +80,8 @@ import math
 
 from . import _array_core as _core
 from . import _w3num as _w
-from .manfd import jacobi_eigen
 from ._richresult import RichResult
+from .manfd import jacobi_eigen
 
 __all__ = ["rfdiffusion_protein", "ddpm_schedule", "forward_noise",
            "kabsch", "rmsd", "ideal_chain", "cheatsheet"]

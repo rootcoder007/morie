@@ -21,7 +21,6 @@ as such in ``method``.
 from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
 
 __all__ = ["alphazero_dirichlet_concentration"]

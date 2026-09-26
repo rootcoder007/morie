@@ -1,7 +1,6 @@
 """Random search for hyperparameter optimisation (Bergstra & Bengio 2012)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["random_search_cv"]
@@ -49,9 +48,8 @@ def random_search_cv(
     RichResult with payload: estimate (best CV score), best_params,
     best_score, sampled_params, sampled_scores, n, method.
     """
+    from ._ml_core import LogisticRegression, RandomizedSearchCV, Ridge
     from ._stats_core import loguniform
-    from ._ml_core import LogisticRegression, Ridge
-    from ._ml_core import RandomizedSearchCV
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()

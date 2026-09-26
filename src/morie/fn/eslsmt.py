@@ -3,7 +3,6 @@
 """Smoothing spline (ESL Ch 5.4)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_smoothing_spline"]

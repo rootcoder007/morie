@@ -2,7 +2,6 @@
 """Propensity score caliper matching (restrict to within-caliper pairs)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["caliper_psm"]

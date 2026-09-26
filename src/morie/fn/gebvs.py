@@ -2,7 +2,6 @@
 """Genomic estimated breeding values."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["genomic_ebv", "gebv_selection"]

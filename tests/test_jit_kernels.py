@@ -8,8 +8,9 @@ extension -- skipped on a bare PYTHONPATH=src checkout.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
+
+from morie.fn import _array_core as np
 
 pytest.importorskip("morie._core")
 

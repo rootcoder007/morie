@@ -2,7 +2,6 @@
 """Individual treatment effect (ITE) using potential outcomes notation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["potential_outcomes_individual"]

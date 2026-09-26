@@ -2,7 +2,6 @@
 """MAPE (Mean Absolute Percentage Error) forecast accuracy."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

@@ -5,8 +5,8 @@ Quandt (1960); Andrews (1993); p-values per Hansen (1997).
 
 import math
 
-from ._stats_core import chi2
 from ._richresult import RichResult
+from ._stats_core import chi2
 
 __all__ = ["qlrtst", "quandt_likelihood_ratio"]
 

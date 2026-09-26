@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 _QUOTE = "Your eyes can deceive you. Don't trust them. --"

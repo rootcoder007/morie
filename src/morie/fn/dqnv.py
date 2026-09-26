@@ -70,7 +70,7 @@ __all__ = ["ReplayBuffer", "td_target", "clip_reward",
 _EPS = 1e-12
 
 
-class ReplayBuffer(object):
+class ReplayBuffer:
     r"""A finite cache; the oldest transitions are discarded.
 
     Sampling is uniform, which is the point -- sequential sampling

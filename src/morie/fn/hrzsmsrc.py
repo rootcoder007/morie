@@ -2,7 +2,6 @@
 """Rate of convergence of smoothed maximum-score estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_sms_rate"]

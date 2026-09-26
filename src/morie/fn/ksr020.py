@@ -2,7 +2,6 @@
 """Semiparametric linear regression model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch1_linear_regression_model"]

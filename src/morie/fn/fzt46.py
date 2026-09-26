@@ -2,7 +2,6 @@
 """Theorem 4.6: mean value property of boundary-free MRL estimators."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_theorem_4_6", "fauzi_thm4_6_mean_value"]

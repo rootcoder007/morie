@@ -2,7 +2,6 @@
 """General M-estimator regression by IRLS."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["m_regression", "m_estimator_regression"]
@@ -49,8 +48,7 @@ def m_regression(X, y, psi="huber", c=None, max_iter=100):
     A. E. and Tukey, J. W. (1974), *Technometrics* 16:147-185, for
     the biweight.
     """
-    from ._robust import (HUBER_C_95, TUKEY_C_95, mad_scale, prepare_design,
-                          tukey_weight)
+    from ._robust import HUBER_C_95, TUKEY_C_95, mad_scale, prepare_design, tukey_weight
 
     A, yv = prepare_design(X, y)
     n, p = A.shape

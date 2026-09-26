@@ -2,7 +2,6 @@
 """SARSA (on-policy TD control)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .mdpval import _mdp_args
 from .qlearn import _greedy, _sample_row

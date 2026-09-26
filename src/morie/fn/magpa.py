@@ -21,9 +21,8 @@ profiling it away -- which is what ``metafor::rma.glmm`` reports.
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02gh, k02gold, k02z
-
 from ._richresult import RichResult
+from .k02util import k02gh, k02gold, k02z
 
 __all__ = ["ma_glmm_ipd_proportion"]
 

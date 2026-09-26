@@ -3,7 +3,6 @@
 """Burkov's Eq 1.2: squared error for a single example."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_squared_error"]

@@ -2,9 +2,8 @@
 """Inverse probability weighting."""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
 from ._did import add_intercept, logit_fit, logit_predict
+from ._richresult import RichResult
 
 __all__ = ["ipw_ate", "ipw_estimator"]
 

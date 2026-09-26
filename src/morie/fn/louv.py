@@ -14,10 +14,9 @@ visited in index order and ties go to the smallest community label.
 from __future__ import annotations
 
 from . import _array_core as np
+from ._richresult import RichResult
 from .k02util import k02mod
 from .sgtcoml import _phase1, _relabel
-
-from ._richresult import RichResult
 
 __all__ = ["louvain_communities"]
 

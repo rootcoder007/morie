@@ -3,7 +3,6 @@
 """NDCG@k (Jarvelin and Kekalainen 2002; Alammar Ch 8)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_ndcg_at_k"]

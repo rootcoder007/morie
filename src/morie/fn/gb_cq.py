@@ -2,7 +2,6 @@
 """Cramer's V (front-end)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .gb1421t import gibbons_phi_cramers_v
 

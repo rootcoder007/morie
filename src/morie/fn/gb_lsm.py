@@ -2,7 +2,6 @@
 """Large-sample moments of order statistics."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_large_sample_moments"]

@@ -13,7 +13,6 @@ where ``f_i = f(x_i)`` and the x's are sorted.  Uses scikit-learn's
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["isotonic_regression"]

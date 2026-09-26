@@ -3,7 +3,6 @@
 """Stratified sampling preserves class/strata proportions in each split."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_stratified_sampling"]

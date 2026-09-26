@@ -3,7 +3,6 @@
 """Burkov Ch 5: the repetition penalty on decoder logits."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_repetition_penalty"]

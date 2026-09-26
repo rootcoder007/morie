@@ -2,7 +2,6 @@
 """SAR Cochrane-Orcutt-style spatial filter."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

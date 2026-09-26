@@ -54,13 +54,12 @@ in your own by passing ``target`` and ``predictor`` callables.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["rndnet", "random_network_distillation", "combine_returns"]
 
 
-class _RandomFeatures(object):
+class _RandomFeatures:
     """Frozen random target: x -> tanh(W1 x + b1) W2, W fixed at init."""
 
     def __init__(self, n_in, n_hidden, n_out, rng, scale=1.0):
@@ -97,7 +96,7 @@ class _RandomFeatures(object):
         return out
 
 
-class _Predictor(object):
+class _Predictor:
     """Same random hidden layer, trainable output layer, SGD on MSE.
 
     Keeping the features fixed and learning the read-out is the smallest
@@ -133,7 +132,7 @@ class _Predictor(object):
                 row[o] -= lr * 2.0 * err[o] * hi
 
 
-class _RunningStats(object):
+class _RunningStats:
     """Welford mean/variance, used for both normalisers of section 2.4."""
 
     def __init__(self, n):

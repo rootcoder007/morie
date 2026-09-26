@@ -28,7 +28,6 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _sci_core as sci
-
 from ._richresult import RichResult
 
 __all__ = ["simidentd", "horowitz_sim_id_discrete_x"]

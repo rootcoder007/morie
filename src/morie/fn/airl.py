@@ -54,7 +54,6 @@ paper, so both are here, with the transferable one as the default.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["airl", "soft_value_iteration"]

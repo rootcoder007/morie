@@ -405,8 +405,7 @@ def mrm_estimate_causal_effect(data, treatment: str, outcome: str,
 
     if "matching" in methods:
         def _matching():
-            from morie.matching import (match_nearest_neighbor,
-                                        estimate_att_matched)
+            from morie.matching import estimate_att_matched, match_nearest_neighbor
             m = match_nearest_neighbor(frame, treatment, covariates)
             pairs = getattr(m, "match_pairs", None)
             if pairs is None:
@@ -424,8 +423,7 @@ def mrm_estimate_causal_effect(data, treatment: str, outcome: str,
     if "ate" in methods:
         def _ate():
             import morie
-            from morie.causal import (calculate_ipw_weights,
-                                      compute_propensity_scores)
+            from morie.causal import calculate_ipw_weights, compute_propensity_scores
             f2 = frame.copy() if hasattr(frame, "copy") else frame
             f2["_ps"] = list(compute_propensity_scores(frame, treatment,
                                                        covariates))

@@ -3,7 +3,6 @@
 """Supervised learning paradigm: learn mapping f(x)->y from labeled examples."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmbat import geron_batch_learning
 

@@ -3,7 +3,6 @@
 """One EM step for a Gaussian mixture."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grgmll import geron_gmm_log_likelihood
 

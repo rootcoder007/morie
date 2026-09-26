@@ -6,7 +6,6 @@ MacKay (2003) eq. (24.9)-(24.11), p. 320
 """
 
 from . import _itila as _core
-
 from ._richresult import RichResult
 
 __all__ = ["mupostsg", "information_theory_mackay_chapter_24_equation_9"]

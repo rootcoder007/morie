@@ -2,9 +2,8 @@
 """ARIMA(p,d,q) fitting via conditional MLE."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-
 from ._containers import DescriptiveResult
+from ._sci_core import optimize
 
 
 def arima_fit(y: np.ndarray, order: tuple[int, int, int] = (1, 0, 0)) -> DescriptiveResult:

@@ -2,7 +2,6 @@
 """Synthetic difference-in-differences estimator."""
 
 from . import _array_core as np
-
 from ._did import as_panel, simplex_lstsq
 from ._richresult import RichResult
 

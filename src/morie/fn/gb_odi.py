@@ -4,7 +4,6 @@
 import math
 
 from . import _stats_core as stats
-
 from ._richresult import RichResult
 
 __all__ = ['oddsrat', 'gibbons_odds_ratio']

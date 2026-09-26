@@ -2,9 +2,9 @@
 
 from math import log
 
-from ._richresult import hypothesis_test_result
 from . import _array_core as np
 from . import _stats_core as stats
+from ._richresult import hypothesis_test_result
 
 __all__ = ["vol_kupiec_var_test"]
 

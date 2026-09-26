@@ -40,7 +40,6 @@ import math
 
 from . import _array_core as np  # noqa: F401
 from . import _s03core as core
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_weibull_heterogeneity"]

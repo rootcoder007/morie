@@ -2,9 +2,8 @@
 """Multinomial probit for spatial choice (Train 2009, GHK simulator)."""
 
 from . import _array_core as np
-from ._stats_core import norm
-
 from ._richresult import RichResult
+from ._stats_core import norm
 
 __all__ = ["multinomial_probit_spatial", "mnpbt"]
 

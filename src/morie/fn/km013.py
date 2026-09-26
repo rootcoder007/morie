@@ -3,7 +3,6 @@
 """Kamath Eq 2.13/2.14: sinusoidal positional encodings."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_positional_encoding_sin"]

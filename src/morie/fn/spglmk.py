@@ -2,7 +2,6 @@
 """Spatial prediction in generalized linear models."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_glmm import canonical_link, link, predict_glm
 

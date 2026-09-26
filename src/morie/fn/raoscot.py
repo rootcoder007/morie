@@ -3,8 +3,8 @@
 import math
 
 from . import _array_core as np
-from ._stats_core import chi2
 from ._richresult import RichResult
+from ._stats_core import chi2
 
 __all__ = ["raoscot", "rao_scott_chisq"]
 

@@ -2,7 +2,6 @@
 """Random utility model (McFadden) for stochastic choice."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["random_utility_model"]

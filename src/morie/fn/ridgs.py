@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Closed-form ridge regression estimator."""
 
-from . import _tail1core as C
 from . import _gp_core as G
-
+from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ['ridgesol', 'ridge_solution', 'ridgesolution']

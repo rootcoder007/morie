@@ -2,7 +2,6 @@
 """Cost-effectiveness acceptability curve (CEAC)."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

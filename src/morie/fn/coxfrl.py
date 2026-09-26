@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._surv import cox_fit, prepare
 
@@ -117,9 +116,7 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
             "every cluster has one member, so a shared frailty is not identifiable"
         )
 
-    from ._sci_core import minimize_scalar
-    from ._sci_core import gammaln
-
+    from ._sci_core import gammaln, minimize_scalar
     from ._surv import baseline_hazard
 
     def _inner(th_val):

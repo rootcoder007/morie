@@ -2,7 +2,6 @@
 """GWR seemingly-unrelated regression system."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

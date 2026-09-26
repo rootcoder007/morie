@@ -3,7 +3,6 @@
 """Dueling DQN value/advantage decomposition."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_dueling_dqn"]

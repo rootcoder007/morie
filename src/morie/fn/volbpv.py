@@ -2,7 +2,6 @@
 """Bipower variation: jump-robust realised volatility."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vol_bipower_variation"]

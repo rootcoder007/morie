@@ -2,7 +2,6 @@
 """UCB1 multi-armed bandit policy."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ucbb", "ucb_bandit"]

@@ -21,9 +21,7 @@ Recorded in ledger/wave2/DUPMAP.tsv as baysrnd -> bayhier.
 from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
-
 from .bayhier import hierarchical_pooling as _pool
 
 __all__ = ["shrinkage_random"]

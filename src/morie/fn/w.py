@@ -4,7 +4,6 @@ import math
 from typing import Union
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 

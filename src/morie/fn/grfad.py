@@ -3,7 +3,6 @@
 """Forward-mode autodiff via dual numbers."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_forward_mode_autodiff", "Dual"]

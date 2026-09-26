@@ -2,9 +2,8 @@
 """Empirical semivariogram estimation."""
 
 from . import _array_core as np
-from ._sci_core import pdist
-
 from ._containers import DescriptiveResult
+from ._sci_core import pdist
 
 
 def semivariogram(

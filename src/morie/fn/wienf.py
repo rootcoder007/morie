@@ -7,7 +7,6 @@ Analysis*, 3rd ed. IEEE/Wiley, Chapter 9.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import SignalResult
 
 __all__ = ["wienf"]

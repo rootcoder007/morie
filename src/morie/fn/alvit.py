@@ -3,7 +3,6 @@
 """ViT patch embedding (Dosovitskiy et al. 2021; Alammar Ch 9)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_vit_patch_embedding"]

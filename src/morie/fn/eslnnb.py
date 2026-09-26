@@ -3,7 +3,6 @@
 """Gaussian naive Bayes (ESL Ch 6.6.3)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_naive_bayes"]

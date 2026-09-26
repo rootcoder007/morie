@@ -10,7 +10,6 @@ Poole KT (2005), *Spatial Models of Parliamentary Voting*, Ch 3-4.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wnominate_alternating"]

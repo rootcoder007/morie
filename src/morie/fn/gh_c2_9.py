@@ -17,6 +17,7 @@ def ghosal_np_binary_reg(x, y, length=0.7, var=2.0):
     Newton iterations on the probit-GP log-posterior (the Laplace
     route the chapter's computation sections use)."""
     import math
+
     from ._stats_core import norm as _norm
     xs = _bnp._flat(x)
     ys = _bnp._flat(y)

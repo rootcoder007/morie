@@ -6,7 +6,6 @@ Morin (2016), Probability: For the Enthusiastic Beginner, eq (6.38).
 import math
 
 from . import _morin
-
 from ._richresult import RichResult
 
 __all__ = ["retestiq"]

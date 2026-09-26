@@ -32,7 +32,6 @@ difference.
 """
 
 from . import _array_core as np
-
 from ._trees_native import gb_fit, gb_predict
 
 __all__ = [

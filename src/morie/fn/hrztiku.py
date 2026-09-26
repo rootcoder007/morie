@@ -3,7 +3,6 @@
 
 from . import _array_core as np
 from . import _hrz3 as H
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_tikhonov_unknown_T"]

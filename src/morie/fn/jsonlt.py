@@ -42,7 +42,7 @@ __all__ = [
 
 # ---------------------------------------------------------------- R model
 
-class _NAType(object):
+class _NAType:
     """R's NA. Not None (that is NULL) and not NaN (that is a number)."""
 
     _inst = None
@@ -65,7 +65,7 @@ class _NAType(object):
 NA = _NAType()
 
 
-class RVector(object):
+class RVector:
     """An R atomic vector: values plus one type for all of them."""
 
     def __init__(self, values, rtype=None):
@@ -79,7 +79,7 @@ class RVector(object):
         return "RVector(%r, %r)" % (self.values, self.rtype)
 
 
-class DataFrame(object):
+class DataFrame:
     """Columns, in order. Every column the same length."""
 
     def __init__(self, columns):
@@ -102,7 +102,7 @@ class DataFrame(object):
         raise KeyError(name)
 
 
-class Matrix(object):
+class Matrix:
     """A rectangular numeric/character array, stored row by row."""
 
     def __init__(self, rows, rtype=None):
@@ -119,7 +119,7 @@ class Matrix(object):
         return len(self.rows)
 
 
-class Factor(object):
+class Factor:
     """Integer codes (1-based, R's own) over a level table."""
 
     def __init__(self, codes, levels):
@@ -136,7 +136,7 @@ class Factor(object):
         return out
 
 
-class RawVec(object):
+class RawVec:
     """R's raw vector: bytes."""
 
     def __init__(self, data):
@@ -146,14 +146,14 @@ class RawVec(object):
             self.data = bytes(bytearray(int(b) & 0xFF for b in data))
 
 
-class Boxed(object):
+class Boxed:
     """I(x): never unboxed, however long it is. jsonlite's AsIs."""
 
     def __init__(self, value):
         self.value = value
 
 
-class Unboxed(object):
+class Unboxed:
     """unbox(x): always a bare scalar. Errors on length != 1."""
 
     def __init__(self, value):
@@ -163,7 +163,7 @@ class Unboxed(object):
         self.value = value
 
 
-class Sig(object):
+class Sig:
     """digits = Sig(n): n SIGNIFICANT digits, jsonlite's digits = I(n)."""
 
     def __init__(self, n):
@@ -346,7 +346,7 @@ def _unb64(s):
 
 # ---------------------------------------------------------------- encoder
 
-class _Opt(object):
+class _Opt:
     pass
 
 
@@ -597,7 +597,7 @@ def to_json(x, **kw):
 
 # ---------------------------------------------------------------- parser
 
-class _P(object):
+class _P:
     def __init__(self, s):
         self.s = s
         self.i = 0

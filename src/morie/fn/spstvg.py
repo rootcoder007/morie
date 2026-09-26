@@ -2,11 +2,13 @@
 """The spatio-temporal semivariogram."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_st import (conditional_spatial_semivariogram,
-                        empirical_st_semivariogram,
-                        semivariogram_from_covariance, st_wls_objective)
+from ._schab_st import (
+    conditional_spatial_semivariogram,
+    empirical_st_semivariogram,
+    semivariogram_from_covariance,
+    st_wls_objective,
+)
 
 __all__ = ["schabenberger_st_variogram"]
 

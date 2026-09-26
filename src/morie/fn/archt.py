@@ -2,9 +2,8 @@
 """ARCH(p) conditional heteroscedasticity model."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-
 from ._containers import DescriptiveResult
+from ._sci_core import optimize
 
 
 def arch_fit(returns: np.ndarray, p: int = 1) -> DescriptiveResult:

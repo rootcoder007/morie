@@ -3,7 +3,6 @@
 """Kamath Eq 3.1: prompt-based classification through a label word map."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_prompt_label_mapping"]

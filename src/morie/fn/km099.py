@@ -3,7 +3,6 @@
 """Kamath Eq 6.23: Expected Maximum Toxicity."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km101 import _scores
 

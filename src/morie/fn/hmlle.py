@@ -3,7 +3,6 @@
 """Locally linear embedding (LLE): preserve local linear reconstruction weights."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmmds import pairwise_distances
 

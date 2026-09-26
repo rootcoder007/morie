@@ -1,9 +1,8 @@
 """Best Linear Unbiased Predictor (BLUP) for spatial prediction."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_krig import cov_from_model, _dist
+from ._schab_krig import _dist, cov_from_model
 
 __all__ = ["schabenberger_blup"]
 

@@ -3,7 +3,6 @@
 """Standard errors of fitted coefficients (ESL Ch 3.2)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .eslrss import esl_residual_sum_squares
 from .eslvbt import esl_var_beta_hat

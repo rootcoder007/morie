@@ -2,7 +2,6 @@
 """Benford's law test for first-digit distribution."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

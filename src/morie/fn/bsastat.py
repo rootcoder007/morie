@@ -7,14 +7,13 @@ symbols are unchanged.
 """
 
 from __future__ import annotations
-from math import cos, fsum, log, log10, pi, sin, sqrt
-from math import inf
+
+from math import cos, fsum, inf, log, log10, pi, sin, sqrt
+
 from . import _array_core as np
 from . import _stats_core as stats
-from ._rgcore import aslist
-from ._rgcore import checkpdf, pdfint
-from ._richresult import RichResult
-from ._richresult import with_describe_pointer
+from ._rgcore import aslist, checkpdf, pdfint
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = [
     'corrcoef',
@@ -103,7 +102,7 @@ def corrcoef(x, y):
     it says nothing about scale or agreement -- only about how tightly
     the points hug a straight line.
     """
-    from .bsacorr import dotprod          # eqs (4.24)-(4.25), one copy
+    from .bsacorr import dotprod  # eqs (4.24)-(4.25), one copy
 
     xs, ys = aslist(x), aslist(y)
     if len(xs) != len(ys):

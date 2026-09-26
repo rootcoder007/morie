@@ -3,7 +3,6 @@
 """KV-cache compression for autoregressive LLM inference."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmint8 import geron_int8_quant
 

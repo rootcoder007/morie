@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Judge me by my size, do you?"

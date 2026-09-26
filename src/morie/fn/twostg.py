@@ -2,7 +2,6 @@
 """Two-stage estimation for linear transformation models with censored data."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["twostg", "two_stage_hazard"]

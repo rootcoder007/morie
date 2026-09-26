@@ -70,8 +70,8 @@ References
 import math
 
 from . import _w3num as _w
-from .avalon import parse_smiles, _adjacency, _bfs_dist, implicit_h, _fnv
 from ._richresult import RichResult
+from .avalon import _adjacency, _bfs_dist, _fnv, implicit_h, parse_smiles
 
 __all__ = ["scaffold_hop", "atom_types", "cats", "murcko_scaffold",
            "scaffold_signature", "similarity", "cheatsheet"]

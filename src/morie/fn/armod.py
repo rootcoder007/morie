@@ -2,7 +2,6 @@
 """AR(p) model fitting via Yule-Walker equations."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

@@ -2,7 +2,6 @@
 """CART decision tree (pure numpy, recursive splitting)."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 from ._richresult import RichResult
 

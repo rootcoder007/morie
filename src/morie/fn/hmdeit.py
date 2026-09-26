@@ -3,7 +3,6 @@
 """Data-efficient Image Transformer (DeiT) with distillation token."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grdeit import geron_deit_distillation_loss
 from .hmdctr import block_params

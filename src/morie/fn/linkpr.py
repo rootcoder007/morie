@@ -1,7 +1,6 @@
 """Link prediction scores: common neighbours, Adamic-Adar, resource allocation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["linkpr", "link_prediction"]

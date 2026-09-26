@@ -2,7 +2,6 @@
 """Nakagawa-Schielzeth marginal R^2 for a random-intercept LMM."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["nakagawa_marginal_r2"]

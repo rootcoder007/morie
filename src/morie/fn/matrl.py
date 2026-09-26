@@ -24,9 +24,8 @@ against ``metafor::rma.mv`` (agreement reported in the canonical test).
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02gold, k02z
-
 from ._richresult import RichResult
+from .k02util import k02gold, k02z
 
 __all__ = ["ma_three_level"]
 

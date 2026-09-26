@@ -2,7 +2,6 @@
 """Imai-Keele sensitivity of the ACME to unmeasured confounding."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["imai_sensitivity_rho"]

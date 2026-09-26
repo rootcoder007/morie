@@ -2,7 +2,6 @@
 """Aalen-Johansen estimator for competing risks."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["aalen_johansen"]

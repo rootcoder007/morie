@@ -72,7 +72,6 @@ assumed to be equal to 1 for a basic or neutral compound and 0.55
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["clrnt", "hepatic_clearance_prediction", "clearance_intrinsic", "fu_microsomes",

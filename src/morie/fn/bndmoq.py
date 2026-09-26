@@ -3,7 +3,6 @@
 
 from . import _bndcore as B
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["bound_moment_qed"]

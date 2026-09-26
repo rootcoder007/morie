@@ -3,7 +3,6 @@
 """Deep (stacked) RNN: multiple recurrent layers."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_deep_rnn"]

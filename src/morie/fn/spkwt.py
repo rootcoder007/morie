@@ -1,7 +1,6 @@
 """Kriging weights from the kriging system solution."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_kriging_weights"]

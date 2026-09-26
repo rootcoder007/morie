@@ -3,7 +3,6 @@
 """Kamath Ch 8: BERTScore end to end, from tokens to P/R/F1."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km119 import kamath_ch8_bertscore_recall
 from .km120 import kamath_ch8_bertscore_precision

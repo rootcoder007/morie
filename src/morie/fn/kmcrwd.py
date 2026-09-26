@@ -3,7 +3,6 @@
 """Kamath Ch 6: the CrowS-Pairs stereotype-preference bias score."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_crowspairs_bias"]

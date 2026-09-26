@@ -26,6 +26,7 @@ def covariance_function_estimate(Z, coords, max_lag=None, n_lags=15):
     DescriptiveResult
     """
     from morie.fn import _array_core as np
+
     from ._sci_core import pdist, squareform
 
     Z = np.asarray(Z, dtype=np.float64).ravel()

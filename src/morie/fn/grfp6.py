@@ -3,7 +3,6 @@
 """FP16 mixed-precision training with loss scaling."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_fp16_mixed_precision"]

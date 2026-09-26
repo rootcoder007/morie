@@ -2,7 +2,6 @@
 """KMT strong approximation."""
 
 from . import _array_core as np
-
 from ._kosorok import sup_norm
 from ._richresult import RichResult
 

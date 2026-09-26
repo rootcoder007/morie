@@ -20,9 +20,8 @@ and QE 5.88183457856643 on the fixture below.
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02dl
-
 from ._richresult import RichResult
+from .k02util import k02dl
 
 __all__ = ["ma_percent_heterogeneity_R2"]
 

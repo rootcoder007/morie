@@ -3,7 +3,6 @@
 """Mean-shift: mode-seeking via kernel density gradient ascent."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_mean_shift"]

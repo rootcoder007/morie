@@ -3,7 +3,6 @@
 """Classification + localization: predict class and bounding box."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_classification_localization"]

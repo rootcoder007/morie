@@ -1,7 +1,6 @@
 """Spatial probit direct/indirect MEs."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

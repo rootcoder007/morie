@@ -1,6 +1,7 @@
 """Barndorff-Nielsen & Shephard jump test from bipower variation."""
 
-from math import gamma as _gamma, pi, sqrt
+from math import gamma as _gamma
+from math import pi, sqrt
 
 from . import _array_core as np
 from . import _stats_core as stats

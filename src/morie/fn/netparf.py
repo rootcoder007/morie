@@ -2,7 +2,6 @@
 """Network attributable fraction with spillover."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["network_paf"]

@@ -2,7 +2,6 @@
 """Rho critical value where the mediation effect goes to zero."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .sensIM import _lsem_fit
 

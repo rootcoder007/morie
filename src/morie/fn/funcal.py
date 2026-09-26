@@ -45,7 +45,6 @@ single divergent orthologue is exactly how a wrong term propagates, and
 """
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
 
 __all__ = [

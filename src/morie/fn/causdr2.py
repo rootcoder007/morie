@@ -2,7 +2,6 @@
 """DML2 partially linear regression with the Neyman-orthogonal score."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._rrng_core import RRandom
 

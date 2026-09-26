@@ -3,7 +3,6 @@
 """Transformer encoder block: multi-head attention + FFN, both residual + LayerNorm."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grsdpa import attend
 

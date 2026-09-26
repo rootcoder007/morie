@@ -3,8 +3,8 @@
 
 from math import fsum, sqrt
 
-from ._richresult import RichResult
 from ._array_core import _jacobi_eigh
+from ._richresult import RichResult
 from ._spx import fixsign, mat, matmul, matvec, sqmat, transpose
 
 __all__ = [

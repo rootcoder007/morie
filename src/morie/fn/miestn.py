@@ -2,7 +2,6 @@
 """MINE: mutual information via a neural lower bound."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["mine_mutual_information", "mi_neural_estimator"]

@@ -2,7 +2,6 @@
 """Theorem 4.4: asymptotic normality of boundary-free MRL estimators."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_theorem_4_4", "fauzi_thm4_4_mrl_normality"]

@@ -3,9 +3,8 @@
 __all__ = ["sxint"]
 
 from . import _array_core as np
-from ._stats_core import chi2 as _chi2
-
 from ._containers import GenomicsResult
+from ._stats_core import chi2 as _chi2
 
 
 def sxint(

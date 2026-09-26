@@ -28,7 +28,6 @@ Location normalisation: each component is centred, as in (3.6).
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["addlink", "horowitz_additive_nonid_link"]

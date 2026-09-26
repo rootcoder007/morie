@@ -3,7 +3,6 @@
 """Few-shot exemplar selection by similarity to the query."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_few_shot_exemplar_selection"]

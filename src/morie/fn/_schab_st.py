@@ -1032,7 +1032,7 @@ def _chi2_sf(x, df):
     returns 0.00557 -- a difference that silently turns a Poisson pattern into
     a significant departure from complete randomness.
     """
-    from math import lgamma, exp, log
+    from math import exp, lgamma, log
     x = 0.5 * float(x)
     a = 0.5 * float(df)
     if x <= 0:

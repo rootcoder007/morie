@@ -1,8 +1,7 @@
 """SAC model -- spatial lag and spatial error sharing one weights matrix."""
 
-from .sarmix import spatial_ar_combined
-
 from ._richresult import RichResult
+from .sarmix import spatial_ar_combined
 
 __all__ = ["spatial_combined"]
 

@@ -3,7 +3,6 @@
 """Lasso regression cost, Géron Eq 4-11 (factor-of-two convention)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grlaso import geron_lasso_cost
 

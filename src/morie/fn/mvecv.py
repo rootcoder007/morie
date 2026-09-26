@@ -34,9 +34,8 @@ from __future__ import annotations
 from . import _array_core as np  # noqa: F401
 from . import _rousscore as R
 from . import _s03core as k
-from .mvedet import mve
-
 from ._richresult import RichResult
+from .mvedet import mve
 
 __all__ = ["min_volume_ellipsoid"]
 

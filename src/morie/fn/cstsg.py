@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _frame_core as pd
-
 from ._richresult import RichResult
 
 

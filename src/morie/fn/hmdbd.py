@@ -3,7 +3,6 @@
 """Decision boundary for logistic regression: theta^T x = 0."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_decision_boundary"]

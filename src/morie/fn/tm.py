@@ -1,7 +1,6 @@
 """DNA melting temperature (nearest-neighbor method)."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 

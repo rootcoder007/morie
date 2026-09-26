@@ -1,7 +1,6 @@
 """Intrinsic CAR (ICAR) prior for Bayesian spatial models."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_icar_prior"]

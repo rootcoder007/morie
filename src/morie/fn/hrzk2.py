@@ -11,7 +11,6 @@ fit) plus an asymptotic pointwise SE based on local variance
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_kernel_regression"]

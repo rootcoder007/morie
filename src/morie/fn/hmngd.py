@@ -2,7 +2,6 @@
 """Hamming distance between binary vectors."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "I have spoken. -- Kuiil"

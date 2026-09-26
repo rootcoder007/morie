@@ -2,7 +2,6 @@
 """Doubly-robust difference-in-differences (Sant'Anna and Zhao 2020)."""
 
 from . import _array_core as np
-
 from ._did import add_intercept, logit_fit, logit_predict, ols_fit
 from ._richresult import RichResult
 

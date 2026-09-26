@@ -27,7 +27,6 @@ Source: fetched-wave3/liu-etal-2022-swin-v2-arxiv2111.09883.pdf
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vitscn", "vit_scaled_cosine"]

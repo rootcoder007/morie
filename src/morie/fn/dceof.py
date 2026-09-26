@@ -2,7 +2,6 @@
 """Sorensen-Dice coefficient."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Numbers have life; they're not just symbols on paper. -- Shakuntala Devi"

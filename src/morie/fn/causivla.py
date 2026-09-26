@@ -2,7 +2,6 @@
 """Local average treatment effect."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causal_iv_late"]

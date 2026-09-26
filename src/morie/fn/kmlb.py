@@ -3,7 +3,6 @@
 """MoE auxiliary load-balancing loss (Shazeer / Switch Transformer)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_moe_load_balance_loss"]

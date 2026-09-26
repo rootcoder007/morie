@@ -6,7 +6,6 @@ MacKay (2003) eq. (1.18), p. 9
 """
 
 from . import _itila as _core
-
 from ._richresult import RichResult
 
 __all__ = ["r3post", "information_theory_mackay_chapter_1_equation_18"]

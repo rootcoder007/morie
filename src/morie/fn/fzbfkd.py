@@ -2,7 +2,6 @@
 """Boundary-free kernel density estimator via bijective transformation g."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_boundary_free_kde", "fauzi_bdfree_kde"]

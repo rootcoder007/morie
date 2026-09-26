@@ -4,7 +4,6 @@ Book-as-spec implementation; see reference for context.
 """
 
 from . import _array_core as np
-
 from . import _brus
 from ._richresult import RichResult
 

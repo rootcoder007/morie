@@ -3,7 +3,6 @@
 """Kernel PCA with RBF kernel in reproducing kernel Hilbert space."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_kernel_pca_rbf", "kernel_pca_from_gram", "center_gram"]

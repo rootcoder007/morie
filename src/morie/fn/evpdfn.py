@@ -72,11 +72,7 @@ def evt_pickands_dep_fn(x, y, t_grid=None, u=None):
             if ux[i] <= a and uy[i] <= b:
                 c += 1
         p = c / float(n)
-        if t <= 0.0:
-            A.append(1.0)
-        elif t >= 1.0:
-            A.append(1.0)
-        elif p <= 0.0:
+        if t <= 0.0 or t >= 1.0 or p <= 0.0:
             A.append(1.0)
         else:
             v = -math.log(p) / lu

@@ -4,9 +4,7 @@ Morin (2016), Probability: For the Enthusiastic Beginner, eqs (3.37), (3.60), (3
 """
 
 from . import _array_core as np
-
 from . import _morin
-
 from ._richresult import RichResult
 
 __all__ = ["popvar"]

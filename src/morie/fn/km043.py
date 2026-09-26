@@ -3,7 +3,6 @@
 """Kamath Eq 3.2: the softmax over label words' pre-softmax vectors."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_prompt_softmax_label"]

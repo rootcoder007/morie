@@ -3,7 +3,6 @@
 """DALL-E autoregressive text-to-image token modeling."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_dalle_autoregressive_token"]

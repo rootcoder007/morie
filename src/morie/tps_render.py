@@ -287,8 +287,7 @@ def render_quad(
       d) Significant Gi* hot/cold spots -- diverging
     """
     from morie.fn import _plot_core as plt
-    from morie.fn._plot_core import PolyCollection
-    from morie.fn._plot_core import Normalize
+    from morie.fn._plot_core import Normalize, PolyCollection
     from morie.fn._stats_core import gaussian_kde
 
     from .tps_datasets import load_tps_dataset
@@ -609,8 +608,7 @@ def render_district_proportional(
     "Number of <metric>" graduated-symbol legend with 5 size tiers.
     """
     from morie.fn import _plot_core as plt
-    from morie.fn._plot_core import PolyCollection
-    from morie.fn._plot_core import Circle, Rectangle
+    from morie.fn._plot_core import Circle, PolyCollection, Rectangle
 
     from .tps_io import load_tps
 
@@ -740,10 +738,9 @@ def render_satscan_panel(
     outside; null distribution by Monte-Carlo (`n_mc` permutations of
     incident timestamps within the bbox).
     """
-    from morie.fn._plot_core import patheffects as pe
     from morie.fn import _plot_core as plt
-    from morie.fn._plot_core import PolyCollection
-    from morie.fn._plot_core import Circle
+    from morie.fn._plot_core import Circle, PolyCollection
+    from morie.fn._plot_core import patheffects as pe
 
     from .tps_datasets import load_tps_dataset
     from .tps_io import load_tps
@@ -893,7 +890,8 @@ def render_satscan_panel(
             path_effects=[pe.withStroke(linewidth=1.6, foreground="white")],
         )
 
-    from morie.fn._plot_core import (Rectangle as FancyBboxPatch, Rectangle as ConnectionPatch)
+    from morie.fn._plot_core import Rectangle as ConnectionPatch
+    from morie.fn._plot_core import Rectangle as FancyBboxPatch
 
     sig_loc_count = 0
     info.text(

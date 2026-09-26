@@ -2,7 +2,6 @@
 """Amalgamation: sum a subset of parts into a single part."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["amalgam", "aitchison_amalgamation"]

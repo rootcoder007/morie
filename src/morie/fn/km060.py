@@ -3,7 +3,6 @@
 """Kamath Eq 4.7: KronA's efficient (A (x) B) x without forming W."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch4_krona_efficient"]

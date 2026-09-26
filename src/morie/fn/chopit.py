@@ -2,10 +2,9 @@
 """CHOPIT anchoring-vignette model (King et al. 2004), simplified core."""
 
 from . import _array_core as np
-from ._sci_core import optimize
 from . import _stats_core as stats
-
 from ._richresult import RichResult
+from ._sci_core import optimize
 
 __all__ = ["chopit_vignette"]
 

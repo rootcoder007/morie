@@ -3,11 +3,11 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import IRTResult
+
 from . import _array_core as np
 from . import _frame_core as pd
 from ._sci_core import optimize
-
-from morie.fn._containers import IRTResult
 
 
 def _logaddexp_rows(m):

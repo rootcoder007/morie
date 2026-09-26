@@ -3,7 +3,6 @@
 """Swish / SiLU activation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmsigm import geron_sigmoid
 

@@ -2,9 +2,8 @@
 """Value function of a treatment regime."""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
 from ._did import add_intercept, logit_fit, logit_predict, ols_fit
+from ._richresult import RichResult
 
 __all__ = ["regime_value", "value_function_eval"]
 

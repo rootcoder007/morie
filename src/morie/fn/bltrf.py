@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "The art of doing mathematics consists in finding that special case which contains all the germs of generality. -- David Hilbert"

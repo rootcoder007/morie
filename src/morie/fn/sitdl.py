@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+from morie.fn._mapq_const import SUBSCALES
+from morie.fn.crba import crba
+
 from . import _array_core as np
 from . import _frame_core as pd
 from . import _stats_core as sp
-
-from morie.fn._mapq_const import SUBSCALES
-from morie.fn.crba import crba
 
 
 def subscale_item_detail(

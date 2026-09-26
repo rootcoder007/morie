@@ -6,7 +6,6 @@ Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Rei
 """
 
 from . import _geron as _core
-
 from ._richresult import RichResult
 
 __all__ = ["ttsplit", "geron_train_test_split"]

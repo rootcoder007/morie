@@ -18,7 +18,6 @@ it is directly comparable across partitions of the same graph.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["stochastic_block_model"]

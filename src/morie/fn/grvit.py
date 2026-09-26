@@ -3,7 +3,6 @@
 """Vision Transformer patch embedding."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_vit_patch_embedding"]

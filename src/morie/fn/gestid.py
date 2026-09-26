@@ -2,9 +2,8 @@
 """G-estimation of a structural nested mean model."""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
 from ._did import add_intercept, logit_fit, logit_predict
+from ._richresult import RichResult
 
 __all__ = ["g_estimation_snmm", "g_estimation_snm"]
 

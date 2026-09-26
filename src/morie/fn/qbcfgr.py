@@ -2,7 +2,6 @@
 """Quantile-balanced causal forest for distributional treatment effects."""
 
 from . import _array_core as np
-
 from ._cforest import CausalForest
 from ._richresult import RichResult
 

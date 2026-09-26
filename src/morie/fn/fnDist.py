@@ -21,7 +21,6 @@ import math
 from . import _array_core as np  # noqa: F401
 from . import _fdacore as fda
 from . import _s03core as k
-
 from ._richresult import RichResult
 
 __all__ = ["functional_distance"]

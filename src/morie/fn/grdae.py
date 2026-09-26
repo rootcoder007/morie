@@ -3,7 +3,6 @@
 """Denoising autoencoder: reconstruct clean x from corrupted x_tilde."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_denoising_autoencoder"]

@@ -1,7 +1,6 @@
 """Second-order spatial lag W^2 y."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

@@ -3,7 +3,6 @@
 """Lasso (L1) regression cost."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hml1r import geron_l1_regularization
 

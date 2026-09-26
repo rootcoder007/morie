@@ -2,7 +2,6 @@
 """Score operator for a nuisance path."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_score_operator", "kosorok_ch3_score_operator_path"]

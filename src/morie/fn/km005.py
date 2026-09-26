@@ -3,7 +3,6 @@
 """Kamath Eq 2.5: the decoder's next-token distribution."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_decoder_token_distribution"]

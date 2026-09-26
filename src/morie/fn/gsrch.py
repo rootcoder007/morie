@@ -1,7 +1,6 @@
 """Grid search with cross-validation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["grid_search_cv"]
@@ -31,8 +30,7 @@ def grid_search_cv(x, y, *, estimator=None, param_grid=None, cv=5, scoring=None,
     RichResult with payload: estimate (best CV score), best_params,
     best_score, cv_results (list of dicts), n, method.
     """
-    from ._ml_core import LogisticRegression, Ridge
-    from ._ml_core import GridSearchCV
+    from ._ml_core import GridSearchCV, LogisticRegression, Ridge
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()

@@ -2,13 +2,17 @@
 """Non-separable spatio-temporal covariance functions."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_st import (bivariate_power_mixture_correlation,
-                        gneiting_covariance, gneiting_with_temporal,
-                        is_valid_covariance, jones_zhang_covariance,
-                        power_mixture_correlation, scale_mixture_covariance,
-                        separability_test)
+from ._schab_st import (
+    bivariate_power_mixture_correlation,
+    gneiting_covariance,
+    gneiting_with_temporal,
+    is_valid_covariance,
+    jones_zhang_covariance,
+    power_mixture_correlation,
+    scale_mixture_covariance,
+    separability_test,
+)
 
 __all__ = ["schabenberger_st_cov_nonsep"]
 

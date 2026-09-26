@@ -2,7 +2,6 @@
 """RDKit path/subgraph-based topological fingerprint."""
 
 from ._richresult import RichResult
-
 from .ecfp4 import _bonds, _mix
 
 __all__ = ["rdkfp", "rdkit_path_fp", "rdkitpathfp"]

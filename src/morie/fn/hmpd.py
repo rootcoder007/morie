@@ -3,7 +3,6 @@
 """Zero-padding around an input for valid/same convolutions."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_padding"]

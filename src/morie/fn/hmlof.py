@@ -3,7 +3,6 @@
 """Local outlier factor (LOF) using local reachability density."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmmds import pairwise_distances
 

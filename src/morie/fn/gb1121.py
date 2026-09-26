@@ -2,7 +2,6 @@
 """Kendall's tau coefficient."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_kendall_tau"]

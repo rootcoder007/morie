@@ -3,7 +3,6 @@
 """Elastic net cost, Géron Eq 4-13 (per-instance L2 convention)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grlaso import geron_lasso_cost
 

@@ -2,7 +2,6 @@
 """Optimal Classification cutting-plane estimator (Poole 2000; Armstrong Ch 3)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["optimal_classification", "optcl"]

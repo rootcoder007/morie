@@ -11,7 +11,6 @@ sample size ``ESS = (sum w)^2 / sum(w^2)``.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["importance_sampling"]

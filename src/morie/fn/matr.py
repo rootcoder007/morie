@@ -23,9 +23,8 @@ fixture), and applies the display above once.
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02dl, k02mm, k02p2z, k02z
-
 from ._richresult import RichResult
+from .k02util import k02dl, k02mm, k02p2z, k02z
 
 __all__ = ["ma_two_step_dl_he"]
 

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Strike me down, and I will become more powerful than you imagine."

@@ -3,7 +3,6 @@
 """Stochastic gradient descent on linear-regression MSE, one sample per step."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_stochastic_gradient_descent"]

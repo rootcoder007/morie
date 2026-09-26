@@ -3,7 +3,6 @@
 """CLIP: contrastive image-text pretraining."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grclp import geron_clip_contrastive_loss
 

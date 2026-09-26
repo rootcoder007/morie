@@ -3,7 +3,6 @@
 """Self-attention: Q=K=V come from same input."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmsdp import geron_scaled_dot_product
 

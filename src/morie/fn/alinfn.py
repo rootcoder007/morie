@@ -3,7 +3,6 @@
 """InfoNCE loss (van den Oord et al. 2018; Alammar Ch 10)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_infonce_loss"]

@@ -20,6 +20,7 @@ def semiparametric_max(x, t=None):
     the trend coefficient beta1; a likelihood-ratio statistic against
     the stationary model (sec. 6.2.3 practice) is included."""
     import math
+
     from . import _sci_core as sci
     xs = _ev._flat(x)
     n = len(xs)

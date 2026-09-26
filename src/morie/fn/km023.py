@@ -3,7 +3,6 @@
 """Kamath Eq 2.23: the replaced token detection (RTD) discriminative loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_rtd_loss"]

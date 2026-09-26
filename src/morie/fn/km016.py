@@ -3,7 +3,6 @@
 """Kamath Eq 2.16: the multi-head combination."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_multihead_concat"]

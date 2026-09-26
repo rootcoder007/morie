@@ -2,10 +2,8 @@
 """Periodogram of a process observed on a rectangular lattice."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_spectral import (fourier_frequencies, periodogram,
-                              periodogram_from_covariance, sample_covariance_2d)
+from ._schab_spectral import fourier_frequencies, periodogram, periodogram_from_covariance, sample_covariance_2d
 
 __all__ = ["schabenberger_periodogram"]
 

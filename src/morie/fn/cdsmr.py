@@ -2,7 +2,6 @@
 """Standardized mortality ratio (SMR) with CI."""
 
 from . import _stats_core as stats
-
 from ._containers import ESRes
 
 

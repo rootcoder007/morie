@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .mhatf import multi_head_attention_full
 

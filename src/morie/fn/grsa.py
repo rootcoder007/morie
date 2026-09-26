@@ -3,7 +3,6 @@
 """Self-attention: Q, K and V all projected from the same sequence."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grsdpa import attend
 

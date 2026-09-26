@@ -2,7 +2,6 @@
 """Hannan-Rissanen estimation of an ARIMA(p, d, q) model."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["arimahr", "arima_box_jenkins"]

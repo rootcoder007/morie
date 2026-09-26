@@ -2,7 +2,6 @@
 """Exact posterior predictive for DP: closed-form Polya urn for density estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_dp_posterior_exact"]

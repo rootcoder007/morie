@@ -3,7 +3,6 @@
 """Residual sum of squares (ESL Ch 3.2)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_residual_sum_squares"]

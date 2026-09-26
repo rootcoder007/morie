@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 # US EPA action level: 4 pCi/L (148 Bq/m³) triggers mitigation.

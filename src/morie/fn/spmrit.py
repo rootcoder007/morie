@@ -4,8 +4,7 @@
 from math import fsum, sqrt
 
 from ._richresult import RichResult
-from ._spx import (eye, mat, matmul, matvec, solve, sqmat, trace, transpose,
-                   twosidep, vec)
+from ._spx import eye, mat, matmul, matvec, solve, sqmat, trace, transpose, twosidep, vec
 
 __all__ = [
     "schabenberger_moran_i_residuals",

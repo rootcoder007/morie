@@ -3,7 +3,6 @@
 """Perceiver IO: cross-attention encoder plus a query-driven decoder."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmprcv import _softmax_rows, geron_perceiver
 

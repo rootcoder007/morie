@@ -2,7 +2,6 @@
 """Law of the iterated logarithm for the empirical process."""
 
 from . import _array_core as np
-
 from ._kosorok import sup_norm
 from ._richresult import RichResult
 

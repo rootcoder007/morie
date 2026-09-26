@@ -3,7 +3,6 @@
 """Top-k sampling: renormalize over the k most likely tokens."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grn021 import softmax_vector
 

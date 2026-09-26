@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rosenbaum sensitivity bounds over a grid of Gamma (wraps cnsRos)."""
 
-from .cnsRos import rosenbaum_bound_signed
 from ._richresult import RichResult
+from .cnsRos import rosenbaum_bound_signed
 
 __all__ = ["rosenb", "rosenbaum_bounds"]
 

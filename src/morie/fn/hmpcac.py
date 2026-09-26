@@ -3,7 +3,6 @@
 """Principal components via SVD of the centred data matrix."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .pcsvd import pca_svd
 

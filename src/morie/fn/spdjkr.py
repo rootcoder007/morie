@@ -2,10 +2,8 @@
 """Disjunctive kriging via the Chebyshev-Hermite expansion."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_hermite import (disjunctive_kriging, hermite_coefficients,
-                             indicator_coefficients)
+from ._schab_hermite import disjunctive_kriging, hermite_coefficients, indicator_coefficients
 
 __all__ = ["schabenberger_disjunctive_kriging"]
 

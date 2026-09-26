@@ -3,7 +3,6 @@
 """Kamath Eq 5.12: the DPO loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km065 import _bt_loss
 from .km075 import _implicit_rewards

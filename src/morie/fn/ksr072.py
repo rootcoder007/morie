@@ -2,7 +2,6 @@
 """Semiparametric efficiency theorem (Kosorok Thm 3.1)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_semipar_efficiency", "kosorok_ch3_z_estimator_efficiency_master"]

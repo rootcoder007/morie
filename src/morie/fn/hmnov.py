@@ -3,7 +3,6 @@
 """Novelty detection against a clean training distribution."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_novelty_detection"]

@@ -2,7 +2,6 @@
 """Targeted maximum likelihood estimation for right-censored survival."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._survtmle import survival_tmle
 

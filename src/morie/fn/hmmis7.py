@@ -3,7 +3,6 @@
 """Mistral-7B: open-weights 7B-parameter decoder-only LLM."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_mistral7b"]

@@ -2,7 +2,6 @@
 """Apply a dropout mask with inverted scaling."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['dropmask', 'dropout_regularization']

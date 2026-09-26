@@ -2,7 +2,6 @@
 """Simple MLP (1 hidden layer, numpy)."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

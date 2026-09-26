@@ -2,7 +2,6 @@
 """Pointwise strong law for the EDF."""
 
 from . import _array_core as np
-
 from ._kosorok import empirical_df
 from ._richresult import RichResult
 

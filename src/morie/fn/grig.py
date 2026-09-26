@@ -3,7 +3,6 @@
 """Information gain from a candidate split."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grent import geron_shannon_entropy
 from .grgin import geron_gini_impurity

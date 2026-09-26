@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import kmeans2
-from ._sci_core import eigsh
-
 from ._containers import DescriptiveResult
+from ._sci_core import eigsh, kmeans2
 
 
 def spectral_cluster(

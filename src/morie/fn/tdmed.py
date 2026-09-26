@@ -2,7 +2,6 @@
 """Two-dimensional (parallel) mediation with M1 and M2."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["two_dimensional_mediation"]

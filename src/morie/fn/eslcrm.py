@@ -3,7 +3,6 @@
 """Multiclass cross-entropy loss (ESL Ch 4.4 / 11.3)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_cross_entropy"]

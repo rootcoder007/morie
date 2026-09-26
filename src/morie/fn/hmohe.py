@@ -3,7 +3,6 @@
 """One-hot encoding of categorical variables."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_one_hot_encoding"]

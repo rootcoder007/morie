@@ -3,7 +3,6 @@
 """Kamath Eq 6.19: the gender direction in embedding space."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km094 import _pair_vectors
 

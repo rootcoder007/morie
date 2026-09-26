@@ -2,7 +2,6 @@
 """Generalized Synthetic Control with interactive fixed effects."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["generalized_synthetic_control"]

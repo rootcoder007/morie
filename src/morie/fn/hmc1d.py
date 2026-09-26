@@ -2,7 +2,6 @@
 """Causal 1D convolution: output at time t depends only on t' <= t."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_causal_1d_conv"]

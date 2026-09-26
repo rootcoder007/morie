@@ -2,7 +2,6 @@
 """Four-way decomposition reported as proportions."""
 
 from . import _s04core as S
-
 from ._richresult import RichResult
 
 __all__ = ["vanderweele_decomposition"]

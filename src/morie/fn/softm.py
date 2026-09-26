@@ -11,7 +11,6 @@ Deep Learning. MIT press.
 __all__ = ["softm"]
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 

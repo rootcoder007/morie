@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-from . import _frame_core as pd
-
 from morie.fn._containers import CrimeResult
+
+from . import _frame_core as pd
 
 
 def custody_work_program(

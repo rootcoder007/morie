@@ -3,7 +3,6 @@
 """Deep Q-network (DQN): neural Q-function with replay buffer and target net."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_dqn", "check_buffer"]

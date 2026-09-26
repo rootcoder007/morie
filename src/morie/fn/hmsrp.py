@@ -3,7 +3,6 @@
 """Sparse random projection matrix with {-1,0,+1} entries."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_sparse_rand_projection"]

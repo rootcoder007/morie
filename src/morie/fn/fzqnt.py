@@ -11,9 +11,8 @@ with tau^2 = p(1-p) (the binomial variance of the empirical CDF at Q).
 
 from . import _array_core as np
 from . import _stats_core as _sps
-from ._sci_core import brentq as _brentq
-
 from ._richresult import RichResult
+from ._sci_core import brentq as _brentq
 
 __all__ = ["fauzi_kernel_quantile_asymptotic"]
 

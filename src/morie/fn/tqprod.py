@@ -2,7 +2,6 @@
 """Asymmetric QJL inner-product estimator (TurboQuant eq 4)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["turboquant_qjl_product_estimator"]

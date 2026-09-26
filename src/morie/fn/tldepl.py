@@ -2,9 +2,8 @@
 """Lower tail dependence coefficient."""
 
 from . import _tail1core as C
-from .chiDep import chi_dependence
-
 from ._richresult import RichResult
+from .chiDep import chi_dependence
 
 __all__ = ["lower_tail_dependence"]
 

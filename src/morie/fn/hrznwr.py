@@ -2,7 +2,6 @@
 """Nadaraya-Watson regression."""
 
 from . import _array_core as np
-
 from ._horowitz import nw_regression
 from ._richresult import RichResult
 

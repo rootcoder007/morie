@@ -2,7 +2,6 @@
 """Chunked causal attention for long-context efficiency."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causal_chunked_attention"]

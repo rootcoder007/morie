@@ -2,7 +2,6 @@
 """Augmented Synthetic Control (Ben-Michael-Feller-Rothstein)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .caussc import causal_synthetic_control
 

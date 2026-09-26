@@ -2,9 +2,8 @@
 """Goodman-Bacon three-way composition of the TWFE DiD coefficient."""
 
 from . import _array_core as np
-
-from .gbacon import goodman_bacon_decomp
 from ._richresult import RichResult
+from .gbacon import goodman_bacon_decomp
 
 __all__ = ["gbtcom", "goodman_bacon_3way"]
 

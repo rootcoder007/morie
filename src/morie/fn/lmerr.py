@@ -2,7 +2,6 @@
 """LM test for spatial error (Anselin 1988)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

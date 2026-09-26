@@ -2,7 +2,6 @@
 """Subcomposition: closure of a selected subset of parts."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["subcomp", "aitchison_subcomposition"]

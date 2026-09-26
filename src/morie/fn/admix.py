@@ -2,7 +2,6 @@
 """Simple admixture estimation via NMF on genotype matrix."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

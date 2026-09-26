@@ -23,9 +23,8 @@ from __future__ import annotations
 from typing import Any
 
 from . import _array_core as np
-from ._sci_core import expit, logit
-
 from ._richresult import RichResult
+from ._sci_core import expit, logit
 
 __all__ = ["calbt"]
 

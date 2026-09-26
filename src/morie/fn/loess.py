@@ -19,7 +19,6 @@ h9/h1 and c9/c1 guards, so it reproduces R's output exactly at ``delta = 0``.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["loess"]

@@ -3,7 +3,6 @@
 """Burkov's Eq 1.1: the one-feature linear model f(x) = wx + b."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_linear_function"]

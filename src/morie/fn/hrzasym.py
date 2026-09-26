@@ -2,7 +2,6 @@
 """One-step asymptotically efficient estimator for single-index model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_one_step_efficient"]

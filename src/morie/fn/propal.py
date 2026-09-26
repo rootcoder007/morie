@@ -23,9 +23,8 @@ case the two allocations coincide.
 from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
-from .neyman import _abc, _alloc_check, _alloc_variance, _largest_remainder
-
 from ._richresult import RichResult
+from .neyman import _abc, _alloc_check, _alloc_variance, _largest_remainder
 
 __all__ = ["proportional_allocation"]
 

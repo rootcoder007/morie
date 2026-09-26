@@ -2,10 +2,8 @@
 """Maximum and restricted maximum likelihood variogram estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schaben import (MODELS, _nelder_mead, gaussian_neg2loglik,
-                       reml_neg2loglik)
+from ._schaben import MODELS, _nelder_mead, gaussian_neg2loglik, reml_neg2loglik
 
 __all__ = ["schabenberger_ml_variogram"]
 

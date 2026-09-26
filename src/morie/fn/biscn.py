@@ -2,7 +2,6 @@
 """Bisection method for root finding."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "So this is how liberty dies. With thunderous applause. -- Padme"

@@ -2,7 +2,6 @@
 """Stacked block-diagonal GLS (Schabenberger & Gotway eq. 1.3)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .statistical_methods_for_spatial_data_analysis1e1 import glsblk
 

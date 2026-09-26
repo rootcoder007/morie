@@ -3,7 +3,6 @@
 """Online learning: sequential updates from a data stream."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_online_learning"]

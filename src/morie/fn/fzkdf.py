@@ -19,7 +19,6 @@ For Gaussian K: mu_2 = 1, r(K) = 1/(2*sqrt(pi)).
 
 from . import _array_core as np
 from . import _stats_core as _sps
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_kdfe_properties"]

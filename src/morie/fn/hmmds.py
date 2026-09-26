@@ -3,7 +3,6 @@
 """Classical multidimensional scaling (MDS) preserves pairwise distances."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_mds", "pairwise_distances", "double_center"]

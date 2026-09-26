@@ -3,7 +3,6 @@
 """DistilBERT: distilled BERT with ~40% fewer parameters."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmencox import geron_encoder_only
 

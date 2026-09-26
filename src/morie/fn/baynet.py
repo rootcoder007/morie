@@ -1,7 +1,6 @@
 """Discrete Bayesian network inference by variable elimination."""
 
 from . import _array_core as np  # noqa: F401  (kept for house-style parity)
-
 from ._richresult import RichResult
 
 __all__ = ["baynet", "bayes_network"]

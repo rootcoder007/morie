@@ -1,7 +1,6 @@
 """SVM with kernel trick (RBF / poly / sigmoid)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["svm_kernel_trick"]

@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Log-ratio EM for values below a detection limit."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["lrem", "compositional_zero_lrem"]
 

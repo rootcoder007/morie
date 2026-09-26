@@ -3,7 +3,6 @@
 """Kamath Eq 8.15: the G-Eval probability-weighted score."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch8_geval_score"]

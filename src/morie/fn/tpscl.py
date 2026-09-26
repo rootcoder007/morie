@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import CrimeResult
+
 from . import _array_core as np
 from . import _stats_core as sp_stats
-
-from morie.fn._containers import CrimeResult
 
 
 def tps_clearance_rate(

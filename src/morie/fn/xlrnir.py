@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """X-learner heterogeneous treatment effect."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["xlearn", "xlearner", "x_learner"]
 

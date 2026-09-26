@@ -2,9 +2,8 @@
 """Benchmark dose estimation for dose-response analysis."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-
 from ._containers import DescriptiveResult
+from ._sci_core import optimize
 
 
 def benchmark_dose(dose, response, bmr=0.1, model="logistic"):

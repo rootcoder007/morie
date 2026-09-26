@@ -3,7 +3,6 @@
 """Logistic regression by Newton-Raphson (IRLS)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wasserman_logistic_regression"]

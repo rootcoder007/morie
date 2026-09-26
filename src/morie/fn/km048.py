@@ -3,7 +3,6 @@
 """Kamath Eq 3.7: the sentiment CLOZE prompt template."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km046 import _fill_template, _result
 

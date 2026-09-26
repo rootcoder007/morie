@@ -1,7 +1,6 @@
 """Years of potential life lost (YPLL)."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 

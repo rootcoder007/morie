@@ -2,7 +2,6 @@
 """Nonparametric TMLE for a survival treatment effect (RMST)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._tmle import tmle_ate
 from .csfgrf import causal_survival_forest

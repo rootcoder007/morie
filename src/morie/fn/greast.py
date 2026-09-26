@@ -3,7 +3,6 @@
 """Early stopping: keep the parameters from the best validation step."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grmse import geron_linreg_mse_cost
 from .grn007 import geron_ch4_mse_gradient_vector

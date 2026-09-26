@@ -2,7 +2,6 @@
 """HAR-RV: heterogeneous autoregressive model of realised volatility."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vol_har_rv", "_har_design"]

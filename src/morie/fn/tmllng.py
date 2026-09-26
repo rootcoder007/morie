@@ -2,7 +2,6 @@
 """TMLE for longitudinal data with time-varying treatments and confounders."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .tmltvc import tmle_time_varying_confound
 

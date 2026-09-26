@@ -2,7 +2,6 @@
 """Sun and Abraham interaction-weighted event-study estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causal_did_sun_abraham"]

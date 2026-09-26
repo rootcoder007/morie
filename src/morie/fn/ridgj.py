@@ -2,7 +2,6 @@
 """Penalized residual sum of squares of ridge regression."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['ridgeobj', 'ridge_objective', 'ridgeobjective']

@@ -2,7 +2,6 @@
 """Maximum-likelihood ability estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["mle_theta_estimator"]

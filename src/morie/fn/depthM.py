@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _t4core as T
-
 from ._richresult import RichResult
 
 __all__ = ["mahalanobis_depth"]

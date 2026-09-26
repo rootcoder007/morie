@@ -13,7 +13,6 @@ scaled to a maximum of one, which is the normalisation ``igraph``'s
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["sgt_hits_kleinberg"]

@@ -2,10 +2,8 @@
 """Partly linear logistic regression."""
 
 from . import _array_core as np
-
-from ._sci_core import optimize
-
 from ._richresult import RichResult
+from ._sci_core import optimize
 
 __all__ = ["kosorok_ch1_partly_linear_logistic"]
 

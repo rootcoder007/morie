@@ -2,9 +2,8 @@
 """K-nearest neighbors spatial weights matrix."""
 
 from . import _array_core as np
-from ._sci_core import cdist
-
 from ._containers import DescriptiveResult
+from ._sci_core import cdist
 
 
 def knn_weights(

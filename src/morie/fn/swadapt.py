@@ -1,7 +1,6 @@
 """Adaptive kernel weights (variable bandwidth)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

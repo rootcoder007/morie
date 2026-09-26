@@ -14,7 +14,6 @@ of ``E_U[f(U)]`` with its sample SE.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["latin_hypercube"]

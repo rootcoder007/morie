@@ -2,10 +2,8 @@
 """Uniform-entropy Donsker theorem."""
 
 from . import _array_core as np
-
-from ._sci_core import integrate
-
 from ._richresult import RichResult
+from ._sci_core import integrate
 
 __all__ = ["kosorok_ch2_donsker_uniform_entropy"]
 

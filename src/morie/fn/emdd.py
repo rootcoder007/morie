@@ -2,7 +2,6 @@
 """Earth mover's (Wasserstein-1) distance."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 

@@ -16,7 +16,6 @@ inverse is checked against the definition rather than trusted.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["sgt_katz_centrality"]

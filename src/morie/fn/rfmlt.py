@@ -53,9 +53,8 @@ offsets, so both arms grow the identical forest.
 from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
-from . import _s03core as core
 from . import _mvsmlrf as rf
-
+from . import _s03core as core
 from ._richresult import RichResult
 
 __all__ = ["rf_multivariate"]

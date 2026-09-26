@@ -4,7 +4,6 @@
 extrapolation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_yarn_context_extrapolation"]

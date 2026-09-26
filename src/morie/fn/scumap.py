@@ -80,7 +80,6 @@ formula and see the difference.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = [
@@ -147,9 +146,7 @@ def smooth_knn_dist(distances, n_neighbors, rho=None, tol=1e-5,
     # the reference implementation floors sigma relative to the local
     # scale so that a duplicated point cannot drive it to zero
     mean_d = sum(d) / len(d)
-    if rho > 0.0:
-        mid = max(mid, min_scale * mean_d)
-    elif mean_d > 0.0:
+    if rho > 0.0 or mean_d > 0.0:
         mid = max(mid, min_scale * mean_d)
     return mid, rho
 

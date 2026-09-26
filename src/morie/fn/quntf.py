@@ -15,7 +15,6 @@ with ``f`` estimated by a Gaussian kernel (Silverman's rule bandwidth).
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["quantile_function"]

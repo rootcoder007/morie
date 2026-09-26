@@ -3,7 +3,6 @@
 """Partial least squares regression (ESL Ch 3.5.2)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_pls"]

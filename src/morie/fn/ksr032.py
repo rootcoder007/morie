@@ -2,7 +2,6 @@
 """Weak convergence characterisation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .ksr031 import kosorok_ch2_weak_convergence_tightness
 

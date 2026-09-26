@@ -3,7 +3,6 @@
 """Kamath Eq 3.3: answer search over the filled prompts."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_prompt_search_argmax"]

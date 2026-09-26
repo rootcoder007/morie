@@ -11,7 +11,6 @@ arXiv:1711.03908.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gauss_subgaussian_estimator", "dp_mean_error_curve"]

@@ -2,7 +2,6 @@
 """REML estimator of between-study variance."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ma_random_reml"]
@@ -57,7 +56,6 @@ def ma_random_reml(yi, vi, max_iter=200, tol=1e-12):
     36(3), for the metafor implementation.
     """
     from . import _stats_core as stats
-
     from ._psycho import dersimonian_laird, fixed_effect_pool
 
     y = np.asarray(yi, dtype=float).ravel()

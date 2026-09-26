@@ -2,8 +2,8 @@
 """Holt's linear trend exponential smoothing."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
+
 
 def _squash(x):
     """Logistic mapped into (eps, 1 - eps).

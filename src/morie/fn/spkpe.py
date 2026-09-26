@@ -2,7 +2,6 @@
 """Kriging prediction error when covariance parameters are estimated."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schaben import MODELS
 from ._schaben import variogram_model as _vgm

@@ -2,7 +2,6 @@
 """Distribution of a simple random walk after a fixed number of steps."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["random_walk"]

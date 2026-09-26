@@ -10,9 +10,9 @@ from __future__ import annotations
 
 import logging as _logging
 
-from . import _frame_core as pd
-
 from morie.fn.aipw import estimate_aipw
+
+from . import _frame_core as pd
 
 _logger = _logging.getLogger(__name__)
 

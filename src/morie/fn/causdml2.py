@@ -2,7 +2,6 @@
 """Double machine learning for the partially linear model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causal_dml_partial_lin"]

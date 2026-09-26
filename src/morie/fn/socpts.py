@@ -1,7 +1,6 @@
 """Second-order cone programming."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["second_order_cone"]

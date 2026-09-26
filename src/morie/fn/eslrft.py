@@ -2,7 +2,6 @@
 """Random forest for regression, ESL Algorithm 15.1."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_random_forest"]

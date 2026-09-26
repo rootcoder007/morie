@@ -2,9 +2,8 @@
 """Doubly-censored GLS with inverse probability of censoring weights."""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
 from ._did import add_intercept, ols_fit
+from ._richresult import RichResult
 
 __all__ = ["doubly_censored_gls"]
 

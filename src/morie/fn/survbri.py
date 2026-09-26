@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Brier score for survival prediction."""
 
-from .brier import brier
-
 from ._richresult import RichResult
+from .brier import brier
 
 __all__ = ["brier_score"]
 

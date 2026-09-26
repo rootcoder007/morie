@@ -3,7 +3,6 @@
 """Kamath Ch 7: dense passage retrieval (DPR) top-k."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_dense_passage_retrieval"]

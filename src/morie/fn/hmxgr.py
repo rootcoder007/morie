@@ -3,7 +3,6 @@
 """Exploding gradients: gradients grow through layers."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmvgr import layer_norms
 

@@ -1,7 +1,6 @@
 """Single-occasion acute harm risk from BAC levels."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

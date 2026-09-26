@@ -69,7 +69,6 @@ import math
 
 from . import _array_core as np
 from . import _schab_gwr as _gwr
-
 from ._richresult import RichResult
 
 __all__ = [

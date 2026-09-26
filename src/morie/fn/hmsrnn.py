@@ -3,7 +3,6 @@
 """Simple RNN forward pass over a sequence."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmtanh import geron_tanh
 

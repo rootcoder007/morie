@@ -67,13 +67,12 @@ optimum.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["muzero", "mcts_search"]
 
 
-class _MinMax(object):
+class _MinMax:
     """The tree-wide min/max of eq. 5."""
 
     def __init__(self):
@@ -239,7 +238,7 @@ def muzero(observation, actions, representation, dynamics, prediction,
     })
 
 
-class _Node(object):
+class _Node:
     __slots__ = ("visits", "value_sum", "prior", "children", "state",
                  "reward", "expanded")
 

@@ -1,7 +1,6 @@
 """Neyman-Scott cluster process."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_neyman_scott"]

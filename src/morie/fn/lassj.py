@@ -2,7 +2,6 @@
 """Penalized residual sum of squares of the lasso, with its soft-threshold step."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['lassoobj', 'lasso_objective', 'lassoobjective']

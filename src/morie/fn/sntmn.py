@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import DescriptiveResult
+
 from . import _array_core as np
 from . import _frame_core as pd
-
-from morie.fn._containers import DescriptiveResult
 
 
 def sentence_mandatory_min(

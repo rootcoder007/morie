@@ -2,7 +2,6 @@
 """Perplexity under a context window (Burkov eq 2.5)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch2_perplexity"]

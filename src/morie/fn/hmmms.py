@@ -3,7 +3,6 @@
 """Min-max scaling to range [0,1]."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_min_max_scaling"]

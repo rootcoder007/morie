@@ -3,7 +3,6 @@
 """Kamath Eq 2.14: the cosine half of the positional encoding."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_positional_encoding_cos"]

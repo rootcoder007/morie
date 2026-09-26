@@ -4,7 +4,6 @@
 (Grootendorst 2022; Alammar Ch 5)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .alctf import alammar_c_tfidf
 from .alhds import alammar_hdbscan_cluster

@@ -2,7 +2,6 @@
 """Penalised changepoint segmentation (PELT, Normal mean cost)."""
 
 from . import _array_core as np  # noqa: F401  (kept for API uniformity)
-
 from ._richresult import RichResult
 from .pelt import pelt as _pelt
 

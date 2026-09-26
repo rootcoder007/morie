@@ -3,7 +3,6 @@
 """Elastic net, ESL/glmnet parameterisation (ESL Ch 3.4.3 / 18.4)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_elastic_net"]

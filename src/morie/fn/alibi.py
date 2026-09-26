@@ -20,10 +20,9 @@ the paper's causal row on the lower triangle.
 from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
-
-from .atalib import alibi_bias as _bias, head_slopes as _slopes
+from .atalib import alibi_bias as _bias
+from .atalib import head_slopes as _slopes
 
 __all__ = ["alibi"]
 

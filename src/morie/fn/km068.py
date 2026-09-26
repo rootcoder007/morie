@@ -3,7 +3,6 @@
 """Kamath Eq 5.4: the PPO loss used to update the policy."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km069 import kamath_ch5_rlhf_objective
 

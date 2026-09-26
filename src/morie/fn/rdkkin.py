@@ -4,7 +4,6 @@
 import math
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 from .rdksrn import _rdd_sides, _wls_side
 

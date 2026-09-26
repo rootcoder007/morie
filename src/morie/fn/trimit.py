@@ -2,7 +2,6 @@
 """Weight trimming at an absolute threshold, with the excess redistributed."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["weight_trimming"]

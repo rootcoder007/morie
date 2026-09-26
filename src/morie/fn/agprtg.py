@@ -19,7 +19,6 @@ from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
 from . import _s03core as k
-
 from ._richresult import RichResult
 
 __all__ = ["alphazero_priority_target"]

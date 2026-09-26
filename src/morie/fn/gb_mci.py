@@ -4,7 +4,6 @@
 import math
 
 from . import _stats_core as stats
-
 from ._richresult import RichResult
 
 __all__ = ['mcnemarci', 'gibbons_mcnemar_ci']

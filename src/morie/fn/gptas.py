@@ -1,7 +1,6 @@
 """Beam search decoding."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gpt_assistant_decode"]

@@ -6,7 +6,6 @@ MacKay (2003) eq. (4.29), p. 80
 """
 
 from . import _itila as _core
-
 from ._richresult import RichResult
 
 __all__ = ["typset", "information_theory_mackay_chapter_4_equation_29"]

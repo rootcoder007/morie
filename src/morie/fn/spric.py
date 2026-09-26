@@ -1,7 +1,6 @@
 """Species richness estimation (Chao1)."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Life is really simple, but we insist on making it complicated. -- Confucius"

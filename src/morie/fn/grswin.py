@@ -3,7 +3,6 @@
 """Swin Transformer: self-attention restricted to non-overlapping local windows."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grsdpa import attend
 

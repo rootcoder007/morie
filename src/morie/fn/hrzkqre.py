@@ -2,7 +2,6 @@
 """Kernel conditional quantile."""
 
 from . import _array_core as np
-
 from ._horowitz import kernel, silverman_bw
 from ._richresult import RichResult
 

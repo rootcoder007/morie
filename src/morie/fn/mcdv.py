@@ -41,10 +41,9 @@ from __future__ import annotations
 from . import _array_core as np  # noqa: F401
 from . import _rousscore as R
 from . import _s03core as k
+from ._richresult import RichResult
 from .pchsq import pchisq
 from .qchsq import qchisq
-
-from ._richresult import RichResult
 
 __all__ = ["mcd"]
 

@@ -28,7 +28,6 @@ Source: fetched-wave3/lee-etal-2019-set-transformer-arxiv1810.00825.pdf
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["setT", "set_transformer"]

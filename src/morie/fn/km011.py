@@ -3,7 +3,6 @@
 """Kamath Eq 2.11: the scaled dot score q.k / sqrt(d_k)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_scaled_dot_score"]

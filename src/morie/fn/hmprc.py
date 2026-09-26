@@ -3,7 +3,6 @@
 """Precision-recall curve over decision thresholds."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .prcpl import precision_recall_curve as _prc
 

@@ -34,8 +34,7 @@ from typing import Literal
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as sps
-from morie.fn._sci_core import minimize
-from morie.fn._sci_core import gammainc, gammaln  # noqa: F401 -- used inline
+from morie.fn._sci_core import gammainc, gammaln, minimize  # noqa: F401 -- used inline
 
 from .fn._richresult import RichResult
 from .tps_hawkes_jit import has_jit_path, neg_loglik_jit

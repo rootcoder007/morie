@@ -3,7 +3,6 @@
 """Gibbs sampler (bivariate normal conditionals)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .wsmnpb import _lcg_uniforms
 

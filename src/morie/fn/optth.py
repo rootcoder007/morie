@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 _QUOTE = "The right choice is the hardest one. -- Ahsoka"

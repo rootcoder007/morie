@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import UmapRes
+
 from . import _array_core as np
 from ._sci_core import pdist, squareform
-
-from morie.fn._containers import UmapRes
 
 
 def _fuzzy_simplicial_set(D: np.ndarray, n_neighbors: int) -> np.ndarray:

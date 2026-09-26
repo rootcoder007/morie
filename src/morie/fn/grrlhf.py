@@ -3,7 +3,6 @@
 """RLHF objective: expected reward minus a KL penalty against the reference model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_rlhf_reward_kl_objective"]

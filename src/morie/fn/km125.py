@@ -3,7 +3,6 @@
 """Kamath Eq 8.13: MoverScore n-gram weight."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch8_ngram_weight"]

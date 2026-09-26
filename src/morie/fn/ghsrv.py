@@ -2,7 +2,6 @@
 """Beta-process prior for survival (Hjort 1990)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_survival_beta_process", "ghsrv"]

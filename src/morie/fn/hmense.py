@@ -2,7 +2,6 @@
 """Ensemble combination of several models' predictions."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ensemble_evaluate", "geron_ensemble_eval"]

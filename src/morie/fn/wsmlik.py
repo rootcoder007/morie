@@ -3,7 +3,6 @@
 """Likelihood L(theta) = prod f(X_i; theta)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wasserman_likelihood"]

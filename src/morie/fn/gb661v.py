@@ -2,7 +2,6 @@
 """Null variance of the Mann-Whitney U statistic."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_mw_var"]

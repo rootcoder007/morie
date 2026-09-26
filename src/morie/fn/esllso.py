@@ -3,7 +3,6 @@
 """Lasso regression (ESL Ch 3.4.2)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_lasso"]

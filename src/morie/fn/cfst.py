@@ -2,7 +2,6 @@
 """Causal forest for heterogeneous treatment effect estimation."""
 
 from . import _array_core as np
-
 from ._cforest import CausalForest
 from ._richresult import RichResult
 

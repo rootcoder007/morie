@@ -5,9 +5,8 @@ import math
 
 from . import _s04core as S
 from . import _tail1core as C
-from .tmlmpi import _cdf_bank
-
 from ._richresult import RichResult
+from .tmlmpi import _cdf_bank
 
 __all__ = ["tmle_non_smooth"]
 

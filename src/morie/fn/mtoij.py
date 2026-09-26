@@ -5,9 +5,9 @@ from __future__ import annotations
 
 from collections import Counter
 
-from . import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
+
+from . import _array_core as np
 
 
 def mto_injury_severity(

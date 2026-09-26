@@ -1,7 +1,6 @@
 """Support vector machine classifier -- simplified SMO."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

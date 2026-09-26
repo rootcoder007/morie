@@ -64,8 +64,8 @@ import math
 
 from . import _array_core as _core
 from . import _w3num as _w
-from .slbpdg import slice_break_dp
 from ._richresult import RichResult
+from .slbpdg import slice_break_dp
 
 __all__ = ["bnp_percent_quantile", "bnppct", "mixture_cdf",
            "mixture_quantile", "expand_bracket", "ROUTES", "cheatsheet"]

@@ -2,7 +2,6 @@
 """Deconvolution density estimate."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["hrz_deconvolution", "horowitz_deconvolution_density"]

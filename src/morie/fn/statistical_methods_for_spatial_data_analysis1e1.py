@@ -2,7 +2,6 @@
 """Block-diagonal generalised least squares for independent subjects."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = [

@@ -39,6 +39,7 @@ from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as scipy_stats
 
+
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""
 
@@ -60,7 +61,6 @@ try:
 except ImportError:
     sm = _MissingDep('sm')
 from morie.fn import _glm_core
-
 
 # ---------------------------------------------------------------------------
 # Native formula interface for weighted GLMs.

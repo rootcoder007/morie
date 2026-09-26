@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Resistance distance matrix."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["resdist", "sgt_resistance_distance_matrix"]
 

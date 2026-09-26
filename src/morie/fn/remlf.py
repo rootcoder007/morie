@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Restricted (residual) maximum likelihood log-likelihood of a mixed model."""
 
-from . import _tail1core as C
 from . import _gp_core as G
-
+from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ['remlik', 'reml_log_likelihood']

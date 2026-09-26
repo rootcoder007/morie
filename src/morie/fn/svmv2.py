@@ -1,7 +1,6 @@
 """Median voter in 2D (Plott conditions)"""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

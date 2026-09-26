@@ -2,7 +2,6 @@
 """Spectral-decomposition simulation of a Gaussian random field."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_sim import simulate_unconditional, spectral_root
 

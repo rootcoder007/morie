@@ -2,7 +2,6 @@
 """Parzen-Rosenblatt kernel density estimate, ESL Sec. 6.6."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_kernel_density"]

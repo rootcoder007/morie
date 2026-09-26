@@ -2,7 +2,6 @@
 """Party unity score per legislator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["party_unity_score"]

@@ -3,7 +3,6 @@
 """VideoBERT: transformer on discretized video tokens + text."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmsdp import geron_scaled_dot_product
 from .hmsftm import geron_softmax_function

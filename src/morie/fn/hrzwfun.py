@@ -2,7 +2,6 @@
 """Choosing weight function for NLS single-index estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_nls_weight_function"]

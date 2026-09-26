@@ -2,7 +2,6 @@
 """Fourth-order (Muller) kernel for quantile estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_muller_kernel", "fauzi_muller_fourth_order_kernel"]

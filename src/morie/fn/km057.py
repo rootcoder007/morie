@@ -3,7 +3,6 @@
 """Kamath Eq 4.4: the LoRA objective, optimised over Theta alone."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km056 import _sequence_objective
 

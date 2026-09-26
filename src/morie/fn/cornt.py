@@ -2,7 +2,6 @@
 """Correlation entropy (K2, Grassberger-Procaccia)."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 

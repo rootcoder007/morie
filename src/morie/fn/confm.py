@@ -1,7 +1,6 @@
 """Confusion matrix with precision / recall / F1 (per class + macro)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["confusion_matrix_metrics"]

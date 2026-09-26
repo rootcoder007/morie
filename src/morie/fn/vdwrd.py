@@ -10,7 +10,6 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _stats_core as stats
-
 from ._richresult import RichResult
 
 __all__ = ["van_der_waerden_test"]

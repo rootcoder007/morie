@@ -26,9 +26,7 @@ Recorded in ledger/wave2/DUPMAP.tsv as baysrr -> brreg.
 from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
-
 from .brreg import bayesian_ridge_regression as _ridge
 
 __all__ = ["bayes_ridge"]

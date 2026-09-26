@@ -2,9 +2,8 @@
 """SEIR compartmental model (Susceptible-Exposed-Infected-Recovered)."""
 
 from . import _array_core as np
-from ._sci_core import odeint
-
 from ._containers import SIRResult
+from ._sci_core import odeint
 
 
 def seir_model(

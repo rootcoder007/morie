@@ -2,15 +2,14 @@
 """Smoothed maximum score."""
 
 from . import _array_core as np
-
 from ._horowitz import silverman_bw
 from ._richresult import RichResult
 
 __all__ = ["hrz_smoothed_max_score", "horowitz_smoothed_max_score"]
 
 
-from ._sci_core import optimize
 from . import _stats_core as _st
+from ._sci_core import optimize
 
 
 def hrz_smoothed_max_score(X, y, h=None, beta0=None, r=2):

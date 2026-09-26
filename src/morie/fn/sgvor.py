@@ -20,6 +20,7 @@ def voronoi_tessellation(points):
     DescriptiveResult
     """
     from morie.fn import _array_core as np
+
     from ._sci_core import Voronoi
 
     pts = np.asarray(points, dtype=np.float64)

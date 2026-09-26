@@ -2,7 +2,6 @@
 """Exponential (Laplace) kernel matrix."""
 
 from . import _gp_core as G
-
 from ._richresult import RichResult
 
 __all__ = ['expkern', 'laplacian_kernel']

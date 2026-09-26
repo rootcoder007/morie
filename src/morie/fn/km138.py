@@ -3,7 +3,6 @@
 """Kamath Eq 9.10: SimVLM masked language modelling with image regions."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km022 import kamath_ch2_mlm_loss
 

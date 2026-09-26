@@ -3,7 +3,6 @@
 """Burkov's Eq 1.6: first hidden layer y1 = phi(W1 x + b1)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_layer1_output"]

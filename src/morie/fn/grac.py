@@ -3,7 +3,6 @@
 """Actor-critic with learned value baseline; advantage = r + gamma*V(s') - V(s)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_actor_critic_advantage"]

@@ -3,7 +3,6 @@
 """Reverse-mode autodiff: one backward sweep of the chain rule over a graph."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_reverse_mode_autodiff"]

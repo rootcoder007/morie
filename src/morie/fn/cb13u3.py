@@ -2,7 +2,6 @@
 
 from . import _array_core as np
 from . import _stats_core as stats
-
 from ._richresult import hypothesis_test_result
 
 __all__ = ["cb_chapter_13_unnumbered_3"]

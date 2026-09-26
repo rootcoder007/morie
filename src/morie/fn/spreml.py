@@ -2,7 +2,6 @@
 """Restricted maximum likelihood (REML) for semivariogram parameters."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_reml import fit_reml
 

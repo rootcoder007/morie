@@ -19,6 +19,7 @@ def evt_return_level_ci(x, T, alpha=0.05):
     Var(z_T) = grad^T V grad with V the MLE covariance (Coles 2001
     sec. 3.3.3). Fits the GEV to ``x`` first."""
     import math
+
     from ._stats_core import norm as _norm
     f = _ev.gev_mle(x)
     z = _ev.gev_return_level(float(T), f["mu"], f["sigma"], f["xi"])

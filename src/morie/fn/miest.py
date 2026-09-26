@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
+from morie.fn._mapq_const import SUBSCALES
+
 from . import _array_core as np
 from . import _frame_core as pd
-
-from morie.fn._mapq_const import SUBSCALES
 
 
 def mi_effect_size(

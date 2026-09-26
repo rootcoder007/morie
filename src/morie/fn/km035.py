@@ -3,7 +3,6 @@
 """Kamath Eq 2.35: GPT's supervised softmax head."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_gpt_supervised_softmax"]

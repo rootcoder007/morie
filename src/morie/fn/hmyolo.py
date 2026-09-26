@@ -3,7 +3,6 @@
 """YOLO: single-shot object detection via grid regression."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_yolo", "box_iou"]

@@ -2,7 +2,6 @@
 """Cross-fitted one-step (double machine learning) estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["cross_fit_estimator", "cross_fit_one_step"]

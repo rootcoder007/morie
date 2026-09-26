@@ -3,7 +3,6 @@
 """Z-scores for coefficient significance (ESL Ch 3.2)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .eslsbt import esl_se_beta
 

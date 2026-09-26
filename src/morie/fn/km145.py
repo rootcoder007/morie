@@ -3,7 +3,6 @@
 """Kamath Eq 9.17: the MMLLM autoregressive instruction-tuning loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch9_mmllm_autoregressive"]

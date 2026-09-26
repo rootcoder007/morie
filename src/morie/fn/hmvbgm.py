@@ -3,7 +3,6 @@
 """Bayesian Gaussian mixture with variational inference (VBGMM)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_variational_bayes_gmm", "digamma"]

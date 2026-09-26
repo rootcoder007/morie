@@ -2,7 +2,6 @@
 """Kernel quantile estimator via kernel-smoothed empirical quantile function."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_kernel_quantile", "fauzi_kernel_quantile_estimator"]

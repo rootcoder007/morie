@@ -27,7 +27,6 @@ different estimators of the same target and must not be collapsed.
 from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
-
 from .bayfac import bayes_factor as _bf
 
 __all__ = ["bayes_factor"]

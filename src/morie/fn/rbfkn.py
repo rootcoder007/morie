@@ -2,7 +2,6 @@
 """Gaussian (radial basis) kernel matrix."""
 
 from . import _gp_core as G
-
 from ._richresult import RichResult
 
 __all__ = ['rbfkern', 'rbf_kernel']

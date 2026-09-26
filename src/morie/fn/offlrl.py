@@ -75,7 +75,6 @@ extensions of Appendix D.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["offlrl", "offline_rl_cql", "conservative_q_learning"]

@@ -15,7 +15,6 @@ clean-room methods reproduce the papers' *mechanisms* on synthetic
 data whose ground-truth bias is known.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
 # NOTE: morie.fairness.gan is NOT imported here — it needs the optional
@@ -36,6 +35,7 @@ from morie.fairness.predpol import (
 from morie.fairness.simulation import simulate_biased_crime_data
 from morie.fairness.temporal import predpol_temporal_audit
 from morie.fairness.xai import xai_permutation_importance
+from morie.fn import _array_core as np
 
 # ── subsystem-level false-positive guard ────────────────────────────
 

@@ -3,9 +3,8 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np  # noqa: F401
-
 from . import _acd
+from . import _array_core as np  # noqa: F401
 from ._richresult import RichResult
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_11"]

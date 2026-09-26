@@ -3,7 +3,6 @@
 """SGD classifier with hinge loss (linear SVM) trained by stochastic gradient descent."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_sgd_classifier"]

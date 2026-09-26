@@ -2,7 +2,6 @@
 """DP posterior convergence to Kaplan-Meier estimator as concentration alpha->0."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_surv_dp_km"]

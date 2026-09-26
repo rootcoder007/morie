@@ -2,7 +2,6 @@
 """Post-stratified estimator of a population mean."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["poststratify"]

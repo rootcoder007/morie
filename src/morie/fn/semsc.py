@@ -2,7 +2,6 @@
 """SEM score test for spatial error parameter."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

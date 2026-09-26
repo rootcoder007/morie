@@ -2,7 +2,6 @@
 """Particle swarm optimisation on a deterministic low-discrepancy stream."""
 
 from . import _s03core as core
-
 from ._richresult import RichResult
 
 __all__ = ["particle_swarm"]

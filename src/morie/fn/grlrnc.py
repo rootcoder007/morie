@@ -3,7 +3,6 @@
 """Learning curves: train and validation RMSE against training-set size."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grmse import geron_linreg_mse_cost
 from .grn005 import geron_ch4_normal_equation

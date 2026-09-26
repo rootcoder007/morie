@@ -2,7 +2,6 @@
 """Microstructure noise variance from high-frequency returns."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vol_noise_variance", "vol_noise_variance_est"]

@@ -2,7 +2,6 @@
 """Random sensing matrix generation for compressed sensing."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "I know what I have to do. -- Kylo Ren"

@@ -2,7 +2,6 @@
 """Two-stage least squares."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causal_iv_2sls"]
@@ -59,7 +58,6 @@ def causal_iv_2sls(y, X, Z, cluster=None):
     *Econometrica* 26:393-415, for the overidentification test.
     """
     from . import _stats_core as stats
-
     from ._caus_iv import add_intercept, annihilator, first_stage_f, projection
 
     yv = np.asarray(y, dtype=float).ravel()

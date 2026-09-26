@@ -2,7 +2,6 @@
 """Z-estimator consistency theorem (Kosorok Thm 2.10)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_z_consistency", "kosorok_ch2_z_estimator_consistency"]

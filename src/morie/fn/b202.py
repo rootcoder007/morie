@@ -4,7 +4,6 @@
 made operational as a bigram MLE over the supplied sequence."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch2_lm_next_token"]

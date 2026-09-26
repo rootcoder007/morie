@@ -2,7 +2,6 @@
 """b_1(t) coefficient in the boundary-free bias expansion."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_b1_coefficient"]

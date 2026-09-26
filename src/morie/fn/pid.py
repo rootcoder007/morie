@@ -2,7 +2,6 @@
 """PID controller simulation."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "No man ever steps in the same river twice. -- Heraclitus"

@@ -3,7 +3,6 @@
 """Random subspaces: bag the features, keep every row."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmbag import _stump
 

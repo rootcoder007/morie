@@ -6,7 +6,6 @@ closed form: a model that uses only one feature, a linear model, an
 additive model.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fairness.xai import (
@@ -16,6 +15,7 @@ from morie.fairness.xai import (
     xai_permutation_importance,
     xai_shap_values,
 )
+from morie.fn import _array_core as np
 
 NAMES = ["a", "b", "c"]
 

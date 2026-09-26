@@ -10,7 +10,6 @@ theta_n and its sandwich SE (Huber 1981, Section 3.2.2).
 """
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_m_estimator"]

@@ -2,7 +2,6 @@
 """Empirical Bayes: estimate hyperparameter alpha from marginal likelihood."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_empirical_bayes_np"]

@@ -3,7 +3,6 @@
 """Full gradient vector of the linear-regression MSE cost."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grmse import geron_linreg_mse_cost
 

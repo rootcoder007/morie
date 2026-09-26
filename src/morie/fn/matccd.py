@@ -4,7 +4,6 @@
 import math
 
 from . import _s03core as core
-
 from ._richresult import RichResult
 
 __all__ = ["matched_case_control"]

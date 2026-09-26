@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
-
 from morie.fn._containers import ESRes
+
+from . import _array_core as np
 
 
 def bootstrap_reliability(

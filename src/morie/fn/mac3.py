@@ -14,9 +14,8 @@ of the residual tau^2.
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02dl
-
 from ._richresult import RichResult
+from .k02util import k02dl
 
 __all__ = ["ma_centered_predictors"]
 

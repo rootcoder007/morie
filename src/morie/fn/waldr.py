@@ -2,7 +2,6 @@
 """Wald estimator for a binary instrument."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wald_estimator"]

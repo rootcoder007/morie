@@ -2,7 +2,6 @@
 """Linear min-max (intersection) bound."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["bound_linear_min_max"]

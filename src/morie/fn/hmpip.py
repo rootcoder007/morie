@@ -2,7 +2,6 @@
 """Preprocessing pipeline with fit/transform separation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["preprocessing_pipeline", "geron_pipeline"]

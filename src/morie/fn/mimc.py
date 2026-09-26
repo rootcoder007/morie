@@ -2,7 +2,6 @@
 """Moran's I Monte-Carlo permutation test."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

@@ -3,7 +3,6 @@
 """Burkov's Eq 1.11: closed-form BCE gradients for logistic regression."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_bce_gradients"]

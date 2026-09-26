@@ -1,9 +1,9 @@
 """Tests for morie.otis — Ontario Restrictive Confinement analysis."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.otis import (
     AGE_GROUPS,
     ALERT_COMBOS,

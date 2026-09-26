@@ -3,7 +3,6 @@
 """Transfer learning: reuse pretrained model, fine-tune on new task."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_transfer_learning"]

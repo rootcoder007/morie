@@ -4,7 +4,6 @@
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .pelt import _cost_tables, _make_cost
 

@@ -165,9 +165,7 @@ def quantize(x, bins):
     c, e = bins["centers"], bins["edges"]
     out, clipped = [], 0
     for q in v:
-        if q < c[0]:
-            clipped += 1
-        elif q > c[-1]:
+        if q < c[0] or q > c[-1]:
             clipped += 1
         j = 0
         while j < len(e) and q >= e[j]:

@@ -2,7 +2,6 @@
 """Parkinson high-low range volatility estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vol_parkinson", "vol_parkinson_range"]

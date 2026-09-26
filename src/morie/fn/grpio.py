@@ -3,7 +3,6 @@
 """Perceiver IO: a small latent array cross-attends to a large input."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grsdpa import attend
 

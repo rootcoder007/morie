@@ -2,7 +2,6 @@
 """Bootstrap functional delta method."""
 
 from . import _array_core as np
-
 from ._kosorok import hadamard_derivative
 from ._richresult import RichResult
 

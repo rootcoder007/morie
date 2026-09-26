@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._signal_core import stft
-
 from ._containers import DescriptiveResult
+from ._signal_core import stft
 
 _QUOTE = "Knowledge itself is power. -- Francis Bacon"
 

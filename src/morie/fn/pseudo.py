@@ -2,7 +2,6 @@
 """Path-specific effects in linear structural equation models."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["pseudo", "path_specific_effect"]

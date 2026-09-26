@@ -2,7 +2,6 @@
 """Four-way decomposition of a total effect."""
 
 from . import _s04core as S
-
 from ._richresult import RichResult
 
 __all__ = ["interaction_mediation_4way"]

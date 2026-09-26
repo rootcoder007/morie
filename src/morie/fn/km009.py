@@ -3,7 +3,6 @@
 """Kamath Eq 2.9: one softmax element written out."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km008 import kamath_ch2_attention_softmax_weights
 

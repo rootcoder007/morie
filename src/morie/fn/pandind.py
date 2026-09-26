@@ -4,7 +4,6 @@ Morin (2016), Probability: For the Enthusiastic Beginner, eqs (2.2), (2.3), (2.7
 """
 
 from . import _array_core as np
-
 from . import _morin
 from ._richresult import RichResult
 

@@ -3,7 +3,6 @@
 """Magnitude-based unstructured weight pruning."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_weight_pruning"]

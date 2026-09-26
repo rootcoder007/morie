@@ -48,7 +48,6 @@ arbitrary Eulerian path and presenting it as the answer.
 """
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["asmnvr", "de_bruijn_graph", "eulerian_path",

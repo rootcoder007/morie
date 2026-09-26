@@ -3,7 +3,6 @@
 """DALL-E: text-to-image generation via discrete VAE + autoregressive transformer."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grdal import geron_dalle_autoregressive_token
 

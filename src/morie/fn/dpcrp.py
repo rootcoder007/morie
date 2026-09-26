@@ -4,7 +4,6 @@
 import math
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['crp', 'chinese_restaurant_process']

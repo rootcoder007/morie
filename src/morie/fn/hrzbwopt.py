@@ -2,7 +2,6 @@
 """MISE-optimal bandwidth."""
 
 from . import _array_core as np
-
 from ._horowitz import kernel
 from ._richresult import RichResult
 

@@ -3,7 +3,6 @@
 """Kamath Eq 4.5: the LoRA forward pass."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch4_lora_forward"]

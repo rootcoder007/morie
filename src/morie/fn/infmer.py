@@ -23,9 +23,14 @@ See Also
 :mod:`morie.fn.informer` -- the implementation.
 """
 
-from .informer import (complexity, full_attention, kl_from_uniform,
-                       probsparse_attention, select_queries,
-                       sparsity_measure)
+from .informer import (
+    complexity,
+    full_attention,
+    kl_from_uniform,
+    probsparse_attention,
+    select_queries,
+    sparsity_measure,
+)
 
 __all__ = ["sparsity_measure", "kl_from_uniform", "select_queries",
            "probsparse_attention", "full_attention", "complexity"]

@@ -1,7 +1,6 @@
 """Empirical spatiotemporal autocovariance C(h, u)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["spatiotemporal_autocovariance"]

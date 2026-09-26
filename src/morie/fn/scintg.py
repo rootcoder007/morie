@@ -96,7 +96,6 @@ The default cluster count follows the paper's heuristic,
 import math
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
 
 _SIGNS = ("penalise", "as_printed")

@@ -1,9 +1,8 @@
 """Nested covariance/variogram model: sum of valid components."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_vario import semivariogram, _as_lag
+from ._schab_vario import _as_lag, semivariogram
 
 __all__ = ["schabenberger_nested_variogram"]
 

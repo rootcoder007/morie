@@ -2,7 +2,6 @@
 """Spatial count bootstrap CI."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

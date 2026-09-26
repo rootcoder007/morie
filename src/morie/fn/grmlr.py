@@ -3,7 +3,6 @@
 """Regression MLP output head."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grlinf import geron_linear_layer_forward
 

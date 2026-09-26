@@ -8,8 +8,8 @@ NOT constant-time. Educational/research only.
 
 from __future__ import annotations
 
-from morie.fn import _array_core as np
 from morie.crypto._sysrng import system_rng
+from morie.fn import _array_core as np
 
 
 def hamming_generator(r: int) -> tuple[np.ndarray, np.ndarray]:

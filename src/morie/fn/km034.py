@@ -3,7 +3,6 @@
 """Kamath Eq 2.34: GPT's unsupervised objective."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_gpt_unsupervised_obj"]

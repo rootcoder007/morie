@@ -2,7 +2,6 @@
 """Theorem 4.3: bias and variance of boundary-free MRL estimators."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_theorem_4_3", "fauzi_thm4_3_mrl_bias_var"]

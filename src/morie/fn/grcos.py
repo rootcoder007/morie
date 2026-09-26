@@ -3,7 +3,6 @@
 """Conv layer output spatial size from input size, filter, padding, stride."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_conv_output_size"]

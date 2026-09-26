@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Errors using inadequate data are much less than those using no data at all. -- Charles Babbage"

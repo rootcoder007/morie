@@ -1,7 +1,6 @@
 """State-space model with Kalman filter."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

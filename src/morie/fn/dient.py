@@ -4,10 +4,9 @@
 import math
 
 from . import _array_core as np
+from ._containers import ESRes
 from ._sci_core import erfc  # noqa: F401
 from ._stats_core import norm
-
-from ._containers import ESRes
 
 
 def dispersion_entropy(x, m: int = 2, c: int = 6, delay: int = 1, cdf=None, **kwargs) -> ESRes:

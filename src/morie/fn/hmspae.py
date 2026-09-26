@@ -2,7 +2,6 @@
 """Sparse autoencoder activation penalty."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["sparse_autoencoder_penalty", "geron_sparse_autoencoder"]

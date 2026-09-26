@@ -3,7 +3,6 @@
 """Transformer architecture (Vaswani et al. 2017)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmsdp import geron_scaled_dot_product
 

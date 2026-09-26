@@ -19,7 +19,6 @@ R-side; the Python side only needs ``hashlib`` from the std lib).
 from __future__ import annotations
 
 from morie.fn import _array_core as np
-
 from morie.fn.drpfw import dropout_forward
 from morie.fn.grucl import gru_cell
 from morie.fn.heinz import he_initialization

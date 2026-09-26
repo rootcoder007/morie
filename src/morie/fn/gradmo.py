@@ -3,7 +3,6 @@
 """Adam optimizer step (bias-corrected first and second moments)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_adam_update"]

@@ -3,7 +3,6 @@
 """ARIMA(p, d, q) one-step-ahead forecast (post-differencing)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_arima_forecast"]

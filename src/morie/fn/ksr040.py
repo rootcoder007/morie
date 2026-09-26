@@ -2,7 +2,6 @@
 """Bootstrap Donsker characterisation (in probability)."""
 
 from . import _array_core as np
-
 from ._kosorok import bootstrap_multiplier_process, bridge_cov
 from ._richresult import RichResult
 

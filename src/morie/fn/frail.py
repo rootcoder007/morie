@@ -2,9 +2,8 @@
 """Frailty model -- gamma-distributed shared frailty for survival."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-
 from ._containers import DescriptiveResult
+from ._sci_core import optimize
 
 
 def frailty_model(time, event, group, theta_init=1.0):

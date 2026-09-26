@@ -2,7 +2,6 @@
 """Madogram estimator of the Pickands dependence function."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ev_madogram", "evt_madogram"]

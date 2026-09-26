@@ -65,7 +65,6 @@ Two feature routes, both from the paper:
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["explor", "intrinsic_motivation", "icm"]

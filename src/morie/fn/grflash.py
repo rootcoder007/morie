@@ -3,7 +3,6 @@
 """FlashAttention: tiled softmax(QK^T)V with online normalisation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .attsdp import scaled_dot_product_attention
 

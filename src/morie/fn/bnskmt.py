@@ -64,8 +64,7 @@ import math
 from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
-from .bndsmw import (S_function, hypercube_instruments,
-                     weighted_moments)
+from .bndsmw import S_function, hypercube_instruments, weighted_moments
 
 __all__ = ["ks_statistic", "ks_critical_value", "ks_confidence_set",
            "compare_forms"]

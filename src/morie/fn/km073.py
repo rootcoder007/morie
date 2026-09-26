@@ -3,7 +3,6 @@
 """Kamath Eq 5.9: the same preference, written as a sigmoid."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km072 import kamath_ch5_bradley_terry_pref
 

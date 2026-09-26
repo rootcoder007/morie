@@ -2,7 +2,6 @@
 """Thompson sampling for the Beta-Bernoulli bandit."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["thomp", "thompson_sampling"]

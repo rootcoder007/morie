@@ -3,7 +3,6 @@
 """Burkov's Eq 1.8: logistic regression y = sigma(w.x + b)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_logistic_regression"]

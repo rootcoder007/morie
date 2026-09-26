@@ -3,7 +3,6 @@
 """Expectation E[X] = int x f(x) dx."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wasserman_expectation"]

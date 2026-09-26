@@ -2,7 +2,6 @@
 """Leiden refinement step (Traag, Waltman & van Eck)."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["sgt_leiden_step"]

@@ -1,7 +1,6 @@
 """Simple kriging: known mean mu, known C(h)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_krig import simple_kriging
 

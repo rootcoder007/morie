@@ -94,7 +94,6 @@ words from the answer as the paper's evaluation does.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wrd2v", "word2vec", "analogy", "training_complexity",

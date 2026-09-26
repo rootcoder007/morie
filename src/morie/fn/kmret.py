@@ -3,7 +3,6 @@
 """RetNet retention: the parallel form of a decaying recurrence."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_retnet_retention"]

@@ -5,9 +5,8 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _stats_core as stats
-from ._sci_core import minimize
-
 from ._containers import ESRes
+from ._sci_core import minimize
 
 
 def dose_response(

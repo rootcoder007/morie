@@ -2,7 +2,6 @@
 """Quadratic Euclidean utility for the spatial voting model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["euclidean_utility"]

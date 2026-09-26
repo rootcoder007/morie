@@ -1,7 +1,6 @@
 """Shared kriging primitives (Schabenberger & Gotway 2005, Ch. 5)."""
 
 from . import _array_core as np
-
 from ._schab_vario import correlogram
 
 __all__ = []

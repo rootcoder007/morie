@@ -2,7 +2,6 @@
 """Frequentist confidence interval for an interval-identified parameter."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 from .bndvar import bound_variance_term
 

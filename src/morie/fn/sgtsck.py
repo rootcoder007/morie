@@ -4,7 +4,6 @@
 import math
 
 from . import _s03core as core
-
 from ._richresult import RichResult
 from .sgtlap2 import _norm_laplacian
 

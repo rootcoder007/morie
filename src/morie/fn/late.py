@@ -13,6 +13,7 @@ from typing import Any
 from . import _array_core as np
 from . import _frame_core as pd
 
+
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""
 

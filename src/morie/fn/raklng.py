@@ -2,7 +2,6 @@
 """Raking ratio estimation by iterative proportional fitting."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["raking_ratio"]

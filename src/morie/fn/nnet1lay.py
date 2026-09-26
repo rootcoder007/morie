@@ -17,7 +17,6 @@ here rather than being invented.
 from __future__ import annotations
 
 from . import _s03core as k
-
 from ._richresult import RichResult
 
 __all__ = ["nnet1lay"]

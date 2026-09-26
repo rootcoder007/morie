@@ -5,10 +5,9 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _frame_core as pd
-from ._sci_core import optimize
-
 from ._containers import RegressionResult
 from ._helpers import _validate_df
+from ._sci_core import optimize
 
 
 def quantile_regression(

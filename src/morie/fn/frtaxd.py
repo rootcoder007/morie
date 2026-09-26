@@ -1,7 +1,6 @@
 """Spatial Shannon-Wiener taxon diversity on a rectangular grid."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["frtaxd", "forest_taxon_diversity"]

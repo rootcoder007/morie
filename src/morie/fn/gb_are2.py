@@ -45,6 +45,7 @@ def gibbons_are_normal_case(distribution="normal", cdf=None):
             f"this module carries the normal case, got {distribution!r}."
         )
     from morie.fn import _array_core as np
+
     from . import _stats_core as stats
 
     dens = {

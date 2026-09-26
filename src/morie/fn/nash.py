@@ -2,7 +2,6 @@
 """Nash equilibrium for 2-player games (support enumeration)."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

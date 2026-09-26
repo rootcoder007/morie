@@ -18,9 +18,8 @@ re-verified against them.
 """
 
 from . import _array_core as np
-from ._sci_core import integrate
-from ._sci_core import special
 from . import _stats_core as stats
+from ._sci_core import integrate, special
 
 __all__ = ["copula_cdf", "copula_tau", "tau_to_theta", "FAMILIES"]
 

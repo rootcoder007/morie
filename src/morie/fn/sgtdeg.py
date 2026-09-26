@@ -2,7 +2,6 @@
 """Degree matrix and volume of a graph."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['degmat', 'sgt_degree_matrix']

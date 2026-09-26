@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import Delaunay
-
 from ._containers import DescriptiveResult
+from ._sci_core import Delaunay
 
 
 def delaunay_simple(points: np.ndarray) -> DescriptiveResult:

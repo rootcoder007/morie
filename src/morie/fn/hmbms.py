@@ -3,7 +3,6 @@
 """Beam search decoding with beam width K."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_beam_search"]

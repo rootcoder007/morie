@@ -4,9 +4,9 @@
 import math
 from typing import Union
 
-from . import _array_core as np
-
 from morie.fn.d import cohens_d
+
+from . import _array_core as np
 
 
 def hedges_g(

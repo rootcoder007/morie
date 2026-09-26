@@ -2,7 +2,6 @@
 """Quantile treatment effect via Firpo IPW."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causal_quantile_treatment_effect"]

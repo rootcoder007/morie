@@ -1,7 +1,6 @@
 """Leave-one-out cross-validation for kriging: MSPE."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_krig import simple_kriging
 

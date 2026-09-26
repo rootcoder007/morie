@@ -3,7 +3,6 @@
 """Multilabel classification: independent binary decisions per label."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grf1 import geron_f1_score
 

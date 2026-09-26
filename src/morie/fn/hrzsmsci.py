@@ -49,7 +49,6 @@ from __future__ import annotations
 from . import _array_core as np
 from . import _stats_core as stats
 from ._horowitz import coord_min
-
 from ._richresult import RichResult
 
 __all__ = ["smsciband", "horowitz_sms_confidence"]

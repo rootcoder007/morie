@@ -59,7 +59,6 @@ estimation is out of scope here.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["tmlefp", "optimal_overlap", "tmle_effective_pi", "optimal_alpha", "optimal_alpha_att",

@@ -2,7 +2,6 @@
 """Bounds on the RD effect when outcomes are missing near the cutoff."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bound_causal_rd"]

@@ -2,7 +2,6 @@
 """Bayesian Aldrich-McKelvey scaling via Gibbs sampling."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bayesian_am_scaling"]

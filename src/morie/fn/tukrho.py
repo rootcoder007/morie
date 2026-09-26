@@ -2,7 +2,6 @@
 """Tukey biweight rho, psi and weight functions."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["tukey_biweight"]

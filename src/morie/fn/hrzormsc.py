@@ -2,7 +2,6 @@
 """Ordered-response maximum-score estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_ordered_max_score"]
@@ -75,8 +74,8 @@ def horowitz_ordered_max_score(x, y, thresholds=None, smoothed=False, h=None,
     Theorem 4.11; Kooreman and Melenberg (1989), Lee (1992),
     Melenberg and van Soest (1996).
     """
-    from ._sci_core import optimize
     from . import _stats_core as stats
+    from ._sci_core import optimize
 
     X = np.atleast_2d(np.asarray(x, dtype=float))
     yv = np.asarray(y).ravel()

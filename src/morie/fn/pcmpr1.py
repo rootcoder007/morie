@@ -2,7 +2,6 @@
 
 from . import _array_core as np
 from . import _big2 as _big2
-
 from ._richresult import RichResult
 
 __all__ = ["prediction_compression"]

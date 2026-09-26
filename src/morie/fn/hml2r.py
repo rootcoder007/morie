@@ -3,7 +3,6 @@
 """L2 regularization adds theta^2 penalty."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_l2_regularization"]

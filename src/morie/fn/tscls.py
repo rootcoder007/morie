@@ -1,7 +1,6 @@
 """1-NN DTW time series classifier."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

@@ -3,7 +3,6 @@
 """Softmax class-score for class k in multinomial logistic regression."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_softmax_score", "score_matrix"]

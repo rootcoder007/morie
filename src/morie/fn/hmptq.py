@@ -3,7 +3,6 @@
 """Static post-training quantization using calibration data."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_static_quantization_ptq"]

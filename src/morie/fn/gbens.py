@@ -1,7 +1,6 @@
 """Gradient Boosting ensemble (sequential additive model)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gradient_boosting_ensemble"]

@@ -28,6 +28,7 @@ def pair_correlation_function(points, window, r_values=None, bandwidth=None):
     DescriptiveResult
     """
     from morie.fn import _array_core as np
+
     from ._sci_core import pdist
 
     pts = np.asarray(points, dtype=np.float64)

@@ -2,7 +2,6 @@
 """Goodman-Bacon decomposition of the two-way fixed-effects estimator."""
 
 from . import _array_core as np
-
 from ._did import as_panel, first_treatment, twfe_beta
 from ._richresult import RichResult
 

@@ -3,7 +3,6 @@
 """Mode-collapse metric for generative samples."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_gan_mode_collapse_metric"]

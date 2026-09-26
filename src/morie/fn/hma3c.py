@@ -3,7 +3,6 @@
 """Asynchronous advantage actor-critic (A3C)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_a3c"]

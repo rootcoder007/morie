@@ -4,7 +4,6 @@ Morin (2016), Probability: For the Enthusiastic Beginner, eq (4.40).
 """
 
 from . import _morin
-
 from ._richresult import RichResult
 
 __all__ = ["poispmf"]

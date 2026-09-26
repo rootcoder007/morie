@@ -103,7 +103,6 @@ mate 2, plus read lengths.
 import math  # noqa: F401  (kept for parity with the rest of morie.fn)
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
 
 __all__ = [

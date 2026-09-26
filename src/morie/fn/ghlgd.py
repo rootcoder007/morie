@@ -2,9 +2,8 @@
 """Log-density estimation by exponential-family expansion."""
 
 from . import _array_core as np
-from ._sci_core import minimize
-
 from ._richresult import RichResult
+from ._sci_core import minimize
 
 __all__ = ["ghosal_log_density"]
 

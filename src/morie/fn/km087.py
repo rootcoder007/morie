@@ -3,7 +3,6 @@
 """Kamath Eq 6.11: the CrowS-Pairs Score."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km086 import kamath_ch6_pll
 

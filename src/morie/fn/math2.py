@@ -16,9 +16,8 @@ Verified against ``metafor::rma`` (H2 = 1.17733737024221 on the fixture).
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02fe, k02pchi, k02z
-
 from ._richresult import RichResult
+from .k02util import k02fe, k02pchi, k02z
 
 __all__ = ["ma_higgins_h2"]
 

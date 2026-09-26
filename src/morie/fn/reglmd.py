@@ -2,7 +2,6 @@
 """Regression estimator with auxiliary."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["regression_estimator_multi", "regression_estimator"]

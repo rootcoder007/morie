@@ -14,7 +14,6 @@ Returns each coverage's expected value E[U_i] = 1/(n+1).
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["one_sample_coverage"]

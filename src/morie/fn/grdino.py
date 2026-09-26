@@ -3,7 +3,6 @@
 """DINO self-distillation loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_dino_self_distillation"]

@@ -1,7 +1,6 @@
 """Sampling-importance-resampling (SIR, Rubin 1988)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bayisr", "importance_resample"]

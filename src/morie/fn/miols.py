@@ -2,7 +2,6 @@
 """Moran's I test on OLS residuals."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

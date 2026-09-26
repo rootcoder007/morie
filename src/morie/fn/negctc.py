@@ -4,9 +4,8 @@
 import math
 
 from . import _tail1core as C
-from .negct import negative_control
-
 from ._richresult import RichResult
+from .negct import negative_control
 
 __all__ = ["negative_control_outcome", "negativecontroloutcome"]
 

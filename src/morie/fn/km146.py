@@ -3,7 +3,6 @@
 """Kamath Eq 9.18: the output-projector MSE objective."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch9_output_projector_mse"]

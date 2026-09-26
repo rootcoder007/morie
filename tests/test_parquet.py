@@ -10,8 +10,8 @@ import os
 
 import pytest
 
-from morie.fn._frame_core import DataFrame, read_parquet
 from morie.fn import _parquet_core as P
+from morie.fn._frame_core import DataFrame, read_parquet
 
 STORE = sorted(glob.glob(os.path.expanduser(
     "~/.cache/R/rmoriedata/*.parquet")))

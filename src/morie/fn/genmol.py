@@ -73,9 +73,9 @@ import math
 
 from . import _array_core as _core
 from . import _w3num as _w
+from ._richresult import RichResult
 from .alfrf2 import ddpm_schedule
 from .avalon import parse_smiles
-from ._richresult import RichResult
 
 __all__ = ["generative_chemistry", "sample_latent", "kl_divergence",
            "elbo", "optimise_latent", "validity", "cheatsheet"]

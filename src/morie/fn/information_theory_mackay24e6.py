@@ -6,7 +6,6 @@ MacKay (2003) eq. (24.5)-(24.6), p. 319
 """
 
 from . import _itila as _core
-
 from ._richresult import RichResult
 
 __all__ = ["gllsuff", "information_theory_mackay_chapter_24_equation_6"]

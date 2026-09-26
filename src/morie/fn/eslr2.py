@@ -3,7 +3,6 @@
 """Coefficient of determination (ESL Ch 3.2)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .eslrss import esl_residual_sum_squares
 from .eslrss2 import esl_total_sum_squares

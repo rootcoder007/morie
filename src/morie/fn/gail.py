@@ -45,7 +45,6 @@ check it), or the raw concatenated vector, or your own feature map.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gail", "occupancy_measure"]

@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Parallel multiple mediators (alias of :mod:`mcausm`)."""
 
-from .mcausm import multi_mediator_causal
-
 from ._richresult import RichResult
+from .mcausm import multi_mediator_causal
 
 __all__ = ["multiple_mediators", "multiplemediators"]
 

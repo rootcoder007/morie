@@ -3,7 +3,6 @@
 """Gradient of logistic regression cost."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmlogp import geron_logistic_probability
 

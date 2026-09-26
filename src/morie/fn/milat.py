@@ -3,11 +3,11 @@
 
 from __future__ import annotations
 
+from morie.fn._cfa_engine import get_mapq_structure
+
 from . import _array_core as np
 from . import _frame_core as pd
 from . import _stats_core as sp
-
-from morie.fn._cfa_engine import get_mapq_structure
 
 
 def mi_latent_means(

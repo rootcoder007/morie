@@ -3,7 +3,6 @@
 """Kamath Eq 5.6: the closed-form optimal KL-regularised policy."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch5_rlhf_optimal_policy"]

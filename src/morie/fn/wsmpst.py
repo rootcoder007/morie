@@ -2,7 +2,6 @@
 """Plug-in estimator of a statistical functional."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wasserman_plug_in_estimator"]

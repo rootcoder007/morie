@@ -2,7 +2,6 @@
 """Double machine-learning mediation (Neyman-orthogonal, cross-fitted)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ml_mediation_dml"]

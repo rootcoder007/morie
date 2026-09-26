@@ -2,7 +2,6 @@
 """Cause-specific mortality rate."""
 
 from . import _stats_core as stats
-
 from ._containers import ESRes
 
 

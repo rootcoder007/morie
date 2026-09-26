@@ -3,7 +3,6 @@
 """Log-likelihood l(theta) = sum log f(X_i; theta)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .wsmlik import wasserman_likelihood
 

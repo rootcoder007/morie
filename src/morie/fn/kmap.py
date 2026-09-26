@@ -3,7 +3,6 @@
 """Kamath Ch 3: AutoPrompt discrete trigger-token search."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_autoprompt_gradient_search"]

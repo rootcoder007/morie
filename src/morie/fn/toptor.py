@@ -53,7 +53,6 @@ organic elements. That default is this module's choice, not a quotation.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["toptor", "topological_torsion", "topological_torsions",

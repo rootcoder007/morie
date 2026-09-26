@@ -2,7 +2,6 @@
 """ARE by the Pitman efficacy ratio."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_are_def"]

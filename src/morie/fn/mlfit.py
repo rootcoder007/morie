@@ -2,9 +2,8 @@
 """ML log-likelihood of a linear mixed model (alias of :mod:`lmmll`)."""
 
 from . import _tail1core as C
-from .lmmll import lmm_loglik
-
 from ._richresult import RichResult
+from .lmmll import lmm_loglik
 
 __all__ = ["ml_loglik", "mlloglik"]
 

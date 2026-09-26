@@ -4,11 +4,11 @@
 from __future__ import annotations
 
 from . import _alfcore as A
+from ._richresult import RichResult
 from .alfpaf import alphafold_pair_repr
 from .alfsmd import alphafold_msa_attention
 from .alftrm import alphafold_triangle_mult
 from .tritta import alphafold_triangle_attn
-from ._richresult import RichResult
 
 __all__ = ["alphafold_evoformer"]
 

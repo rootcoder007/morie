@@ -3,7 +3,6 @@
 """Kamath Eq 6.33: the worst-case perplexity leakage metric."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_perplexity_leakage"]

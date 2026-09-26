@@ -2,7 +2,6 @@
 """Linear mixed model log-likelihood."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["lmm_loglik", "lmm_log_likelihood"]

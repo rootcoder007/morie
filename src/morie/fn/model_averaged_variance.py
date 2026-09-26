@@ -3,9 +3,8 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np  # noqa: F401
-
 from . import _acd
+from . import _array_core as np  # noqa: F401
 from ._richresult import RichResult
 
 __all__ = ["model_averaged_variance"]

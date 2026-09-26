@@ -3,7 +3,6 @@
 """Regression decision tree (CART) minimising the MSE per leaf."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcart import geron_cart_split_cost
 

@@ -163,7 +163,7 @@ def _design(formula, data):
     return y, X, names, intercept, spec
 
 
-class _ConfIntLoc(object):
+class _ConfIntLoc:
     def __init__(self, ci):
         self._ci = ci
 
@@ -182,7 +182,7 @@ class _ConfIntLoc(object):
         return self._row(key)
 
 
-class _ConfInt(object):
+class _ConfInt:
     """Confidence limits with the two-column frame shape statsmodels
     returns: ``ci[0]`` is the lower-bound COLUMN (indexed by term) and
     ``ci.loc[term, 0]`` is that term's lower bound."""
@@ -278,7 +278,7 @@ def _as_series(values):
         return list(values)
 
 
-class _WaldResult(object):
+class _WaldResult:
     """What statsmodels' wald_test returns, as far as morie reads it."""
 
     def __init__(self, statistic, pvalue, df):
@@ -292,12 +292,12 @@ class _WaldResult(object):
             self.statistic, self.df_constraint, self.pvalue)
 
 
-class _WaldTerms(object):
+class _WaldTerms:
     def __init__(self, table):
         self.table = table
 
 
-class _Result(object):
+class _Result:
     """The subset of the statsmodels result API that morie reads."""
 
     def __init__(self, params, bse, names, nobs, df_resid,
@@ -476,7 +476,7 @@ def _hc_cov(X, resid, XtX_inv, cov_type):
              for b in range(k)] for a in range(k)]
 
 
-class _LinearModel(object):
+class _LinearModel:
     def __init__(self, formula, data, weights=None):
         self.formula = formula
         (self.y, self.X, self.names, self.intercept,
@@ -606,7 +606,7 @@ def _glm_robust_cov(model, fit, family, ct, cov_kwds):
     return [[corr * M[a][b] for b in range(k)] for a in range(k)]
 
 
-class _GLMModel(object):
+class _GLMModel:
     def __init__(self, formula, data, family="gaussian", weights=None,
                  var_weights=None, freq_weights=None):
         self.formula = formula

@@ -2,7 +2,6 @@
 """Weighted frequency distribution over a categorical variable."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["weighted_frequency"]

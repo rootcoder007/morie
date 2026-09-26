@@ -3,7 +3,6 @@
 """Kamath Eq 2.39: the mixture-of-experts combination."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_moe_output"]

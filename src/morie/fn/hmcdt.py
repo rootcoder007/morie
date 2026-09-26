@@ -3,7 +3,6 @@
 """Classification decision tree via CART with Gini or entropy."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmcart import geron_cart_algorithm
 

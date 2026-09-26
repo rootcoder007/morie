@@ -1,7 +1,6 @@
 """Getis spatial filtering approach."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

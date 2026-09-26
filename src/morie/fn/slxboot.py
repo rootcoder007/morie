@@ -1,7 +1,6 @@
 """SLX bootstrap CI for theta."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

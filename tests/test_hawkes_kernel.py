@@ -6,8 +6,9 @@ morie/tps_hawkes_jit.py::_ll_exp_const (same arithmetic). Requires the
 built extension.
 """
 
-from morie.fn import _array_core as np
 import pytest
+
+from morie.fn import _array_core as np
 
 core = pytest.importorskip("morie._core")
 

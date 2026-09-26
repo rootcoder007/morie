@@ -2,7 +2,6 @@
 """Symmetry of linear rank statistics: folded scores."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_linrank_sym_special"]

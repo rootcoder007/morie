@@ -1,7 +1,6 @@
 """Cross-entropy."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 _QUOTE = "Numbers have life; they're not just symbols on paper. -- Shakuntala Devi"

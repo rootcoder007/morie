@@ -3,11 +3,11 @@
 
 from __future__ import annotations
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
 from morie import tox
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 
 def test_matrix_schema_is_typed_zero_row():

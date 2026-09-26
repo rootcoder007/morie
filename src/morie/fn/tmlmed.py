@@ -2,7 +2,6 @@
 """TMLE for natural direct and indirect mediation effects."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._tmle import tmle_ate
 from .aiptdd import _logit_fit, _ols_predict

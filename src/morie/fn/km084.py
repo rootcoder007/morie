@@ -3,7 +3,6 @@
 """Kamath Eq 6.8: the Log-Probability Bias Score."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_lpbs_bias"]

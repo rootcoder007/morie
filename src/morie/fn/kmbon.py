@@ -3,7 +3,6 @@
 """Kamath Ch 5: best-of-N (rejection) sampling."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_best_of_n_sampling"]

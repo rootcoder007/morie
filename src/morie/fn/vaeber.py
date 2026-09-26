@@ -45,7 +45,6 @@ import math
 
 from . import _s03core as core
 from . import _vitcore as vc
-
 from ._richresult import RichResult
 
 __all__ = ["vae_elbo"]

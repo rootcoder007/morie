@@ -2,7 +2,6 @@
 """Min-max normalization for marker data or responses."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["minmax_normalization"]

@@ -1,7 +1,6 @@
 """Getis-Ord Gi* hot/cold spot map with Benjamini-Hochberg FDR."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._sci_core import erfc
 from .getis import getis_ord_gi_star

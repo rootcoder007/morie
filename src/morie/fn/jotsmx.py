@@ -6,7 +6,6 @@ Chen, Li, Yoder, Arik and Pfister (2023) TMLR, arXiv:2303.06053, eqs. (4)-(5)
 """
 
 from . import _joseph as _core
-
 from ._richresult import RichResult
 
 __all__ = ["tsmixer", "joseph_tsmixer"]

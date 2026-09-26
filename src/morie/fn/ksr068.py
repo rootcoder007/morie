@@ -2,11 +2,9 @@
 """Cox profile score."""
 
 from . import _array_core as np
-
-from ._sci_core import optimize
-
 from ._kosorok import cox_score
 from ._richresult import RichResult
+from ._sci_core import optimize
 
 __all__ = ["kosorok_ch3_cox_profile_score"]
 

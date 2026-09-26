@@ -3,7 +3,6 @@
 """One-standard-error rule for model selection (ESL Ch 7.10)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_one_se_rule"]

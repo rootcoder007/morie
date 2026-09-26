@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
+
+from . import _array_core as np
 
 
 def victim_fear(

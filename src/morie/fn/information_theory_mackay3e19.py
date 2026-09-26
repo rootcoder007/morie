@@ -6,7 +6,6 @@ MacKay (2003) eq. (3.19), p. 53
 """
 
 from . import _itila as _core
-
 from ._richresult import RichResult
 
 __all__ = ["evidmix", "information_theory_mackay_chapter_3_equation_19"]

@@ -3,7 +3,6 @@
 """2D convolution forward pass with a single filter, stride s and padding p."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_conv2d_forward"]

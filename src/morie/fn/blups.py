@@ -2,7 +2,6 @@
 """BLUP of random intercept and slope."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["blupslope", "blup_random_slope"]

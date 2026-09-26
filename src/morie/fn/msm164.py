@@ -2,7 +2,6 @@
 """Hyperplane equation and point classification (MVSML Eq. 9.1)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["hyperplane_side"]

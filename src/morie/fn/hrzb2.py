@@ -10,10 +10,9 @@ convergence rate and normal-theory SEs.
 from __future__ import annotations
 
 from . import _array_core as np
+from ._richresult import RichResult
 from ._sci_core import minimize
 from ._stats_core import norm
-
-from ._richresult import RichResult
 
 __all__ = ["horowitz_smoothed_maximum_score"]
 

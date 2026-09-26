@@ -25,9 +25,8 @@ their stationarity region without a constrained optimiser.
 """
 
 from . import _array_core as np
-from ._sci_core import optimize
-from ._sci_core import special
 from . import _stats_core as stats
+from ._sci_core import optimize, special
 
 __all__ = ["garch_recursion", "garch_fit", "SPECS"]
 

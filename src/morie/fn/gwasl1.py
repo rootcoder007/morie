@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Unified mixed-model per-SNP association test."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["gwasmlm", "gwaslinear", "gwas_linear"]
 

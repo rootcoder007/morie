@@ -4,7 +4,6 @@
 from typing import Union
 
 from . import _array_core as np
-
 from .remeta import random_effects_meta
 
 

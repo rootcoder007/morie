@@ -2,10 +2,9 @@
 """Gaussian-process regression -- Matern kernel."""
 
 from . import _array_core as np
+from ._richresult import RichResult
 from ._sci_core import gamma as gammafn
 from ._sci_core import kv
-
-from ._richresult import RichResult
 
 __all__ = ["ghosal_gp_matern"]
 

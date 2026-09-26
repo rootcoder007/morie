@@ -4,7 +4,6 @@
 import math
 
 from . import _gp_core as G
-
 from ._richresult import RichResult
 
 __all__ = ['rkhsnorm', 'rkhs_norm']

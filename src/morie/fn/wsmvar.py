@@ -3,7 +3,6 @@
 """Variance Var(X) = E[(X-mu)^2]."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wasserman_variance"]

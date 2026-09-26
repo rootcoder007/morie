@@ -2,7 +2,6 @@
 """Classical MDS for spatial map of legislators (Armstrong sec. 3.1, p.68)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["mds_spatial_map", "mdspl"]

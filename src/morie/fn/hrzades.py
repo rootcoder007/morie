@@ -2,7 +2,6 @@
 """Average derivative estimator (sample form)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["hrz_average_derivative_hat", "horowitz_improved_ade"]

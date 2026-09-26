@@ -3,7 +3,6 @@
 """Grouped-query attention (Ainslie et al. 2023; Alammar Ch 3)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .attsdp import scaled_dot_product_attention
 

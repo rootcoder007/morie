@@ -3,7 +3,6 @@
 """LeNet-5 CNN architecture."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcos import geron_conv_output_size
 

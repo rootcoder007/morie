@@ -6,7 +6,6 @@ Das, Kong, Leach, Mathur, Sen and Yu (2023) TMLR, arXiv:2304.08424, eqs. (3)-(6)
 """
 
 from . import _joseph as _core
-
 from ._richresult import RichResult
 
 __all__ = ["tide", "joseph_tide_encoder"]

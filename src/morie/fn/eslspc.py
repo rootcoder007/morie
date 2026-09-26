@@ -3,7 +3,6 @@
 """Spectral clustering (ESL Ch 14.5.3)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .wsmkmn import wasserman_kmeans
 

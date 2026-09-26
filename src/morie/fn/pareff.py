@@ -7,8 +7,8 @@ aliases it, only reordering the arguments to the (pe, RR) form the
 module's own signature declares.
 """
 
-from .attfr import attributable_fraction as _af
 from ._richresult import RichResult
+from .attfr import attributable_fraction as _af
 
 __all__ = ["population_attributable"]
 

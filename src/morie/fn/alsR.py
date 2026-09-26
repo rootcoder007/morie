@@ -2,7 +2,6 @@
 """Alternating least squares for implicit-feedback matrix factorisation."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["alsmf", "als"]

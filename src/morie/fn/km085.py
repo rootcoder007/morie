@@ -3,7 +3,6 @@
 """Kamath Eq 6.9: the Categorical Bias Score."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_cbs_variance"]

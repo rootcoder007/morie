@@ -3,7 +3,6 @@
 """FlashAttention: IO-aware exact attention with tiling and recomputation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_flash_attention"]

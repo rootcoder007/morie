@@ -1,7 +1,6 @@
 """ROC curve and AUC computation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["roc_auc_score"]

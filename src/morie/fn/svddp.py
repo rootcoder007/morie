@@ -1,7 +1,6 @@
 """Singular Value Decomposition."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Nature does not hurry, yet everything is accomplished. -- Lao Tzu"

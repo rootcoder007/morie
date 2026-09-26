@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rotary position embedding."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["rope", "rotary_position_embedding"]
 

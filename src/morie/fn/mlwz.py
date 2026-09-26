@@ -4,9 +4,8 @@
 import math
 
 from . import _tail1core as C
-from .cwcm import centering_within_cluster_mean
-
 from ._richresult import RichResult
+from .cwcm import centering_within_cluster_mean
 
 __all__ = ["multilevel_within_cluster_z", "multilevelwithinclusterz"]
 

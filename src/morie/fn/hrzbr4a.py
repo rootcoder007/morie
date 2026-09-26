@@ -39,7 +39,6 @@ nothing exits on a tolerance.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["binresp", "horowitz_binary_response_model"]

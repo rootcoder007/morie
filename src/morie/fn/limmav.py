@@ -86,9 +86,7 @@ underlying variances vary between genes", so :math:`d_0 = \infty` and
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-
 from .deseq2 import benjamini_hochberg
 
 __all__ = ["limmav", "voom", "limma_voom", "log_cpm", "lowess",

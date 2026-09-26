@@ -3,7 +3,6 @@
 """Kamath Eq 4.9: the merged KronA weights."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km059 import _kron
 

@@ -2,7 +2,6 @@
 """Tau-estimator regression (Yohai and Zamar 1988)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["tau_regression", "tau_estimator_regression"]
@@ -56,10 +55,9 @@ def tau_regression(X, y, n_subsets=200, seed=0, c1=1.5476, c2=6.08):
     estimates of regression by means of the minimization of an
     efficient scale", *JASA* 83:406-413, Secs. 2 and 4.
     """
-    from ._sci_core import integrate
     from . import _stats_core as stats
-
     from ._robust import prepare_design, s_scale, tukey_rho, tukey_weight
+    from ._sci_core import integrate
 
     A, yv = prepare_design(X, y)
     n, p = A.shape

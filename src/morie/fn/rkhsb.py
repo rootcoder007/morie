@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian kernel BLUP: the closed-form conditional mean of the kernel effects."""
 
-from . import _tail1core as C
 from . import _gp_core as G
-
+from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ['rkhsbayes', 'rkhs_bayesian_kernel']

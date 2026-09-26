@@ -2,7 +2,6 @@
 """LDA feature extraction."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "The road up and the road down are the same thing. -- Heraclitus"

@@ -3,7 +3,6 @@
 """DETR: CNN-transformer hybrid for end-to-end object detection."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grdetr import geron_detr_hungarian_matching
 from .hmdctr import block_params

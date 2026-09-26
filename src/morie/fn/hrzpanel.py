@@ -2,7 +2,6 @@
 """Panel data deconvolution: estimate fU and f_eps from Y_jt = X_jt'beta + U_j + eps_jt."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_panel_deconvolution", "horowitz_panel_deconv"]
@@ -83,9 +82,7 @@ def horowitz_panel_deconvolution(y, x, beta, nu_U=None, nu_eps=None,
     Econometrics*. Springer. Sec. 5.2.1-5.2.2, eqs. (5.21)-(5.26)
     and Theorem 5.4; Horowitz and Markatou (1996).
     """
-    from ._hrz_paneldec import deconvolve_pair, default_bandwidths, panel_residuals
-
-    from ._hrz_paneldec import _check_kernel
+    from ._hrz_paneldec import _check_kernel, deconvolve_pair, default_bandwidths, panel_residuals
     _check_kernel(kernel)
     Y = np.atleast_2d(np.asarray(y, dtype=float))
     n, T = Y.shape

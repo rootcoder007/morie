@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import uniform_filter1d
-
 from ._containers import TimeSeriesResult
+from ._sci_core import uniform_filter1d
 
 
 def mstld(y, periods=None, seasonal_deg=1, trend_deg=1, seasonal_jump=1, trend_jump=1):

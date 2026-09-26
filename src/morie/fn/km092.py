@@ -3,7 +3,6 @@
 """Kamath Eq 6.16: Stereotypical Associations."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km091 import _count, _tokens
 

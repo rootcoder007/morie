@@ -13,7 +13,6 @@ For a symmetric kernel g(x1,x2):
 from itertools import combinations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_h_decomposition"]

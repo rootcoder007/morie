@@ -3,7 +3,6 @@
 """Elastic net in the two-penalty (lambda1, lambda2) form."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .eslnln import _enet
 

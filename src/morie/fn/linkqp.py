@@ -2,8 +2,8 @@
 
 import math
 
-from ._sci_core import minimize
 from ._richresult import RichResult
+from ._sci_core import minimize
 
 __all__ = ["linkqp", "irt_linking_stocking_lord"]
 

@@ -3,7 +3,6 @@
 """Kamath Ch 7: RAGAS answer relevance from reverse-generated questions."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km112 import kamath_ch7_answer_relevance
 

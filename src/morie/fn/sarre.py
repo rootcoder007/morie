@@ -1,11 +1,9 @@
 """Spatial autoregressive error model (SAR error, ML)."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-
-from ._schab_rho import safe_search_interval
-
 from ._richresult import RichResult
+from ._schab_rho import safe_search_interval
+from ._sci_core import optimize
 
 __all__ = ["spatial_ar_error"]
 

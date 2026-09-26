@@ -17,9 +17,8 @@ small-worldness.
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02bfs
-
 from ._richresult import RichResult
+from .k02util import k02bfs
 
 __all__ = ["small_worldness"]
 

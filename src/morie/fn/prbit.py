@@ -18,6 +18,7 @@ def ordinal_probit_coefficients(Y, X, cdf=None) -> DescriptiveResult:
     .. epigraph:: You have power over your mind, not outside events. -- Marcus Aurelius
     """
     from morie.fn import _array_core as np
+
     from ._sci_core import minimize
     from ._stats_core import norm
 

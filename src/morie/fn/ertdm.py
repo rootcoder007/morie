@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._stats_core import wasserstein_distance
-
 from ._containers import DescriptiveResult
+from ._stats_core import wasserstein_distance
 
 
 def earth_movers_dist(

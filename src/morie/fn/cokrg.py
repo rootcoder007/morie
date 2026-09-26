@@ -1,9 +1,8 @@
 """Cokriging (linear model of coregionalization, simple-cokriging form)."""
 
 from . import _array_core as np
-from ._sci_core import cdist
-
 from ._richresult import RichResult
+from ._sci_core import cdist
 
 __all__ = ["cokriging"]
 

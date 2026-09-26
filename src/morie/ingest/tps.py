@@ -36,6 +36,7 @@ from __future__ import annotations
 from typing import Any
 
 import httpx
+
 from morie.fn import _frame_core as pd
 
 DEFAULT_USER_AGENT = "morie/0.9.4 (+https://github.com/rootcoder007/morie)"

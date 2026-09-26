@@ -3,7 +3,6 @@
 """Logistic regression class prediction at a 50% probability threshold."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_ch4_logistic_regression_prediction"]

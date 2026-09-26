@@ -3,7 +3,6 @@
 """INT8 quantization: post-training 8-bit weight+activation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_int8_quant"]

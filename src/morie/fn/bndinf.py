@@ -3,7 +3,6 @@
 
 from . import _bndmi as MI
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["bound_inference"]

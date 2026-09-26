@@ -3,7 +3,6 @@
 """Missing-value imputation using column median (numeric) or mode (categorical)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_imputation_median"]

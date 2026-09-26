@@ -7,8 +7,9 @@ symbols are unchanged.
 """
 
 from fractions import Fraction
-from math import cos, isfinite, sin, tanh
-from math import erf, exp, fsum, lgamma as _lgamma, log, pi, sqrt
+from math import cos, erf, exp, fsum, isfinite, log, pi, sin, sqrt, tanh
+from math import lgamma as _lgamma
+
 from . import _array_core as np
 from . import _stats_core as stats
 from ._rgcore import aslist

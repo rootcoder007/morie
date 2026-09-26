@@ -2,7 +2,6 @@
 """Propensity-score nearest-neighbour 1:1 matching."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .cipsc import caliper_psm
 

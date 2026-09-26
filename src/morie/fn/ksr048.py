@@ -2,7 +2,6 @@
 """Stochastic equicontinuity condition for Z-estimators."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_stochastic_equicontinuity", "kosorok_ch2_z_master_stochastic_equicontinuity"]

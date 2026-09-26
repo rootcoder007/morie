@@ -2,8 +2,8 @@
 
 import math
 
-from ._stats_core import gamma as _gamma_dist
 from ._richresult import RichResult
+from ._stats_core import gamma as _gamma_dist
 
 __all__ = ["droSPI", "standardized_precipitation_index"]
 

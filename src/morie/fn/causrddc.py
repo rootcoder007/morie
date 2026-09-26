@@ -85,7 +85,6 @@ so fuzzy RD and fuzzy kink RD come out of the same code path with
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causrddc", "causal_rdd_ccft_bw", "rdrobust", "rd_bandwidth", "kernel_constants",

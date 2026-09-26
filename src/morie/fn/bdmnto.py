@@ -2,7 +2,6 @@
 """Monotone treatment response bounds."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["mtrbound", "bound_monot_outcome"]

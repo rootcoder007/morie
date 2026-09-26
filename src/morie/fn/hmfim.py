@@ -2,7 +2,6 @@
 """Impurity-based feature importance for tree ensembles."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["feature_importance_trees", "geron_feature_importance"]
@@ -101,7 +100,7 @@ def feature_importance_trees(impurity_decrease, n_features=None,
     # Gini of the shares, and the inverse Simpson index
     srt = np.sort(share)
     idx = np.arange(1, p + 1)
-    gini = float((2 * np.sum(idx * srt) / (p * np.sum(srt)) - (p + 1) / p)) \
+    gini = float(2 * np.sum(idx * srt) / (p * np.sum(srt)) - (p + 1) / p) \
         if s > 0 and p > 1 else 0.0
     eff = float(1.0 / np.sum(share ** 2)) if s > 0 else np.nan
     stab = (float(np.mean(np.std(A, axis=0) / np.maximum(A.mean(axis=0), 1e-12)))

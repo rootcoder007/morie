@@ -2,9 +2,8 @@
 """Monotone treatment response bounds (alias of :mod:`bdmnto`)."""
 
 from . import _tail1core as C
-from .bdmnto import mtrbound
-
 from ._richresult import RichResult
+from .bdmnto import mtrbound
 
 __all__ = ["monotone_treatment_response", "monotonetreatmentresponse"]
 

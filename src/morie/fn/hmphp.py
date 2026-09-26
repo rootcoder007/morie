@@ -3,7 +3,6 @@
 """Peephole LSTM cell: gates also look at the cell state."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_peephole_lstm"]

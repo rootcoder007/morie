@@ -3,7 +3,6 @@
 """Backpropagation through time: unroll the RNN and apply standard backprop."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_backprop_through_time"]

@@ -3,9 +3,11 @@
 
 from __future__ import annotations
 
+from morie.fn._array_core import linalg as _acl
+
 from . import _array_core as np
 from . import _frame_core as pd
-from morie.fn._array_core import linalg as _acl
+
 lstsq = _acl.lstsq
 from . import _stats_core as stats
 

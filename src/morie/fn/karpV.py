@@ -58,7 +58,7 @@ __all__ = ["genetic_programming", "karpV", "cheatsheet", "evaluate",
 _MASK = 0xFFFFFFFF
 
 
-class _Rng(object):
+class _Rng:
     """32-bit xorshift. Written out because R and Python do not share a
     generator and a bred population has to be reproducible in both."""
 

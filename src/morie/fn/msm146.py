@@ -5,7 +5,7 @@ The stub generator stamped several extracted page fragments with this
 same function name, so the implementation lives once in msm138.
 """
 
-from .msm138 import mvsml_categorical_count_eq_8_8, mvsml_bayesian_kernel_blup
+from .msm138 import mvsml_bayesian_kernel_blup, mvsml_categorical_count_eq_8_8
 
 __all__ = ["mvsml_categorical_count_eq_8_8", "mvsml_bayesian_kernel_blup"]
 

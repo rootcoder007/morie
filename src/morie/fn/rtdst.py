@@ -4,7 +4,6 @@
 __all__ = ["rtdst"]
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 

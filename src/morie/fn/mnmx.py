@@ -2,9 +2,8 @@
 """Minimax strategy for zero-sum games."""
 
 from . import _array_core as np
-from ._sci_core import linprog
-
 from ._containers import DescriptiveResult
+from ._sci_core import linprog
 
 
 def minimax(payoff_matrix: np.ndarray) -> DescriptiveResult:

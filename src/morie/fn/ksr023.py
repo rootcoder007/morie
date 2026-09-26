@@ -2,7 +2,6 @@
 """Cox partial-likelihood score process."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_cox_score_process", "kosorok_ch1_cox_estimating_equation"]

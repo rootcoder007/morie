@@ -2,7 +2,6 @@
 """Parametric non-stationary correlation: the point-source model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_nonstat import point_source_correlation, practical_range
 

@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Shared-factor multivariate disease mean."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["mvfacmu", "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_14_equation_1"]
 

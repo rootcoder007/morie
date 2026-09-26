@@ -1,7 +1,6 @@
 """Mean-square differentiability of a random field."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_mean_square_diff"]

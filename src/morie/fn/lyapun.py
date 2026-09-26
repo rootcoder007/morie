@@ -61,7 +61,6 @@ Henon map at :math:`a = 1.4`, :math:`b = 0.3`.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = [

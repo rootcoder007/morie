@@ -2,7 +2,6 @@
 """LISA Monte-Carlo significance."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

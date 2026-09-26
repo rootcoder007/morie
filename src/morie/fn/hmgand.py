@@ -3,7 +3,6 @@
 """GMM-based anomaly detection: low-density points are anomalies."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmgmm import geron_gaussian_mixture, gmm_log_pdf
 

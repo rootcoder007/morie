@@ -3,9 +3,8 @@
 
 import math
 
-from . import _tail1core as C
 from . import _b1tmle as T
-
+from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["tmlestab", "tmle_stabilized"]

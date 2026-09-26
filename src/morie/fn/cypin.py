@@ -62,9 +62,9 @@ References
 import math
 
 from . import _w3num as _w
-from .avalon import parse_smiles, _adjacency, implicit_h, ring_bonds
-from .scfhop import atom_types
 from ._richresult import RichResult
+from .avalon import _adjacency, implicit_h, parse_smiles, ring_bonds
+from .scfhop import atom_types
 
 __all__ = ["cyp450_inhibition", "descriptors", "fit", "predict",
            "ISOZYMES", "cheatsheet"]

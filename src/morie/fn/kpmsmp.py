@@ -25,7 +25,6 @@ import math
 
 from . import _array_core as np  # noqa: F401
 from . import _s03core as core  # noqa: F401
-
 from ._richresult import RichResult
 from .kpmnci import _risk_table
 

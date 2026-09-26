@@ -35,8 +35,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from morie.fn import _frame_core as pd
-
 from morie.arsau_datasets import (
     arsau_load_aggregate_summary,
     arsau_load_detailed_dataset,
@@ -45,6 +43,7 @@ from morie.arsau_datasets import (
     arsau_load_probe_cycle_records,
     arsau_load_weapon_records,
 )
+from morie.fn import _frame_core as pd
 from morie.fn._richresult import RichResult
 from morie.mrm_uof import (
     mrm_uof_data_quality_audit,

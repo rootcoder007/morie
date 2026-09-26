@@ -3,7 +3,6 @@
 """Diffusion reverse process denoises from x_T back to x_0."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmdfw import beta_schedule_values, lcg_normal
 

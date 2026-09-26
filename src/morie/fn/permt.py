@@ -9,7 +9,6 @@ p-value with the standard +1/(B+1) Monte Carlo continuity correction.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["permutation_test_general"]

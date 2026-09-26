@@ -2,7 +2,6 @@
 """Quasi-Kalman filter for the log-variance SV(1) model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vol_stochastic_kalman"]

@@ -44,6 +44,7 @@ from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as stats
 from morie.fn._sci_core import cdist
 
+
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""
 

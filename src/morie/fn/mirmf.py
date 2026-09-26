@@ -2,7 +2,6 @@
 """Minimum Redundancy Maximum Relevance (mRMR) scoring."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

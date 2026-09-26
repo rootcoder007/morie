@@ -3,7 +3,6 @@
 """Kamath Eq 6.12: the Context Association Test score."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km086 import _log_probs
 

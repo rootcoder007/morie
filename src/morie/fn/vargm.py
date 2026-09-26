@@ -2,7 +2,6 @@
 """Empirical (Matheron) variogram with a fitted model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schaben import MODELS, fit_variogram_wls, matheron, variogram_model
 

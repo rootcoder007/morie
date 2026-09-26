@@ -3,7 +3,6 @@
 """Fully convolutional network (FCN) for dense prediction."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcvf import geron_conv2d_forward
 

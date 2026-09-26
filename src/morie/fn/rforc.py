@@ -5,9 +5,9 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-from . import _array_core as np
-
 from morie.fn.dtree import decision_tree as dtree_classify
+
+from . import _array_core as np
 
 
 def random_forest(

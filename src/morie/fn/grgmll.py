@@ -3,7 +3,6 @@
 """Gaussian mixture log-likelihood."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_gmm_log_likelihood"]

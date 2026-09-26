@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._signal_core import fftconvolve
-
 from ._containers import DescriptiveResult
+from ._signal_core import fftconvolve
 
 _QUOTE = "You know, no matter how much we fought, I always hated watching you leave."
 

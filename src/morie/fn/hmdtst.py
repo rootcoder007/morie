@@ -3,7 +3,6 @@
 """Decision trees are insensitive to feature scale (axis-aligned splits)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmcart import geron_cart_algorithm, predict_tree
 

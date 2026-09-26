@@ -13,7 +13,6 @@ values ``yhat = K alpha``; in-sample SE from residual variance.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["rkhs_kernel_regression"]

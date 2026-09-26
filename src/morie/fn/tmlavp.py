@@ -2,7 +2,6 @@
 """Algorithm-agnostic variable importance from average predictiveness."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._vimp import MEASURES, vim
 

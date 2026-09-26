@@ -3,7 +3,6 @@
 """Decoder-only transformer (GPT family)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_decoder_only", "block_params", "causal_mask"]

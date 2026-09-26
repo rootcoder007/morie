@@ -3,7 +3,6 @@
 """Gaussian mixture model fit via EM."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_gaussian_mixture", "gmm_log_pdf"]

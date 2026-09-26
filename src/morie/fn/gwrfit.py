@@ -2,7 +2,6 @@
 """GWR basic model fit (Brunsdon et al. 1996)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

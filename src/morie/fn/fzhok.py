@@ -22,7 +22,6 @@ and fourth moment is -3.
 
 from . import _array_core as np
 from . import _stats_core as _sps
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_higher_order_kernel"]

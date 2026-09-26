@@ -3,7 +3,6 @@
 """Scaled dot-product attention."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_scaled_dot_product_attention", "attend"]

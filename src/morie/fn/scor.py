@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-from . import _frame_core as pd
-
 from morie.fn._mapq_const import SUBSCALES
+
+from . import _frame_core as pd
 
 
 def subscale_correlations(

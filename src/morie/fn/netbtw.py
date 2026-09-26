@@ -2,9 +2,8 @@
 """Freeman betweenness centrality of a node."""
 
 from . import _tail1core as C
-from .btwns import betweenness
-
 from ._richresult import RichResult
+from .btwns import betweenness
 
 __all__ = ["betweenness_centrality", "betweennesscentrality"]
 

@@ -2,7 +2,6 @@
 """Standard kernel density estimator (Rosenblatt-Parzen)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_kde", "fauzi_standard_kde"]

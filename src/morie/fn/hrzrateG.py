@@ -31,7 +31,6 @@ h = c n^{-1/(2s+1)}: nothing is cross-validated and nothing is random.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["simgrate", "horowitz_rate_G_estimation"]

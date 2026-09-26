@@ -2,7 +2,6 @@
 """Exp3 adversarial bandit algorithm."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["exp3", "exp3_bandit"]

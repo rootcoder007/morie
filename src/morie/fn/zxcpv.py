@@ -3,7 +3,6 @@
 
 from . import _array_core as np
 from . import _stats_core as stats
-
 from ._copula import copula_tau, tau_to_theta
 from ._richresult import RichResult
 

@@ -63,8 +63,7 @@ order and its subterm/precedence cases as implemented in
 """
 
 from ._richresult import RichResult
-from .unifAlg import (VAR, app, apply_subst, const, is_var, match,
-                      substitute, unify, var, variables)
+from .unifAlg import VAR, app, apply_subst, const, is_var, match, substitute, unify, var, variables
 
 __all__ = ["rule", "positions", "subterm_at", "replace_at",
            "rewrite_step", "normal_form", "lpo_greater",

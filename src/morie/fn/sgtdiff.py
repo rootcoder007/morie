@@ -17,7 +17,6 @@ component, so every row of K sums to one -- asserted below.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["sgt_diffusion_kernel"]

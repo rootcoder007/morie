@@ -2,7 +2,6 @@
 """Delta-shift sensitivity to a not-at-random missingness mechanism."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["missing_mechanism_sensitivity", "missingmechanismsensitivity"]

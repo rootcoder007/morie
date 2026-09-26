@@ -3,7 +3,6 @@
 """Kamath Eq 2.17: the position-wise feed-forward block."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_ffn_relu"]

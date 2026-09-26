@@ -3,7 +3,6 @@
 """Overfitting gap: training accuracy minus validation accuracy."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_overfitting_gap"]

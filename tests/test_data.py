@@ -1,10 +1,10 @@
 import json
 from pathlib import Path
 
-from morie.fn import _frame_core as pd
 import pytest
 
 from morie.data import DatasetRegistry
+from morie.fn import _frame_core as pd
 
 
 def test_dataset_registry_lists_seed_catalog():

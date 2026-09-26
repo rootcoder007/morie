@@ -4,7 +4,6 @@ Morin (2016), Probability: For the Enthusiastic Beginner, eq (7.11).
 """
 
 from . import _morin
-
 from ._richresult import RichResult
 
 __all__ = ["poissum1"]

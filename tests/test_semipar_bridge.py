@@ -12,9 +12,9 @@ Tests verify mathematical correctness of:
 
 from __future__ import annotations
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.semipar_bridge import (
     KERNEL_BIWEIGHT,
     KERNEL_EPANECHNIKOV,

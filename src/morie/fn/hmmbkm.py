@@ -3,7 +3,6 @@
 """Mini-batch k-means: update centers using small random batches."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmkmpp import geron_kmeans_plus_plus
 

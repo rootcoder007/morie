@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import DIFResult
+
 from . import _frame_core as pd
 from . import _stats_core as sp
-
-from morie.fn._containers import DIFResult
 
 
 def dif_lord_chisq(item_params_ref: dict, item_params_focal: dict, cdf=None, *, alpha: float = 0.05) -> DIFResult:

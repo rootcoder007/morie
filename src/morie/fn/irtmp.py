@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import DescriptiveResult
+
 from . import _array_core as np
 from ._sci_core import optimize
-
-from morie.fn._containers import DescriptiveResult
 
 
 def irt_map_theta(

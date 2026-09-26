@@ -3,7 +3,6 @@
 """OPTICS: ordering points to identify the clustering structure."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_optics"]

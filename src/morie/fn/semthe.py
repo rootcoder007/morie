@@ -2,7 +2,6 @@
 """Standard error of theta from test information (IRT)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["sem_theta"]

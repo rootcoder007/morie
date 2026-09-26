@@ -1,9 +1,8 @@
 """Toeplitz matrix construction."""
 
 from . import _array_core as np
-from ._sci_core import toeplitz as _toeplitz
-
 from ._containers import DescriptiveResult
+from ._sci_core import toeplitz as _toeplitz
 
 _QUOTE = "Patience is bitter, but its fruit is sweet. -- Aristotle"
 

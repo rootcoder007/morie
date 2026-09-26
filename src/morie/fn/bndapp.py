@@ -2,7 +2,6 @@
 """Manski-Pepper MTR-MTS bounds (the returns-to-schooling application)."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["bndapp", "bound_application"]

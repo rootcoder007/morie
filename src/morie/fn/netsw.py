@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import ESRes
 from .netpl import network_path_length
 from .ntccf import network_clustering_coeff

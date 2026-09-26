@@ -17,7 +17,6 @@ score; the ``window`` argument applies that correction.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["pointwise_mutual_info"]

@@ -25,7 +25,6 @@ from __future__ import annotations
 import math
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
 
 __all__ = ["ma_continuity_correction"]

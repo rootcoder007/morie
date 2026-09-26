@@ -3,7 +3,6 @@
 """Randomized PCA via a random projection of the data matrix."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_randomized_pca"]

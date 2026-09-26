@@ -2,7 +2,6 @@
 """Local linear regression."""
 
 from . import _array_core as np
-
 from ._horowitz import local_linear
 from ._richresult import RichResult
 

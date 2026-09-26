@@ -3,7 +3,6 @@
 """Log-linear model for a 2-way table."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wasserman_log_linear"]

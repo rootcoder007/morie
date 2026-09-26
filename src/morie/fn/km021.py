@@ -3,7 +3,6 @@
 """Kamath Eq 2.21: the causal language modelling (CLM) loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_clm_loss"]

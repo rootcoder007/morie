@@ -6,7 +6,6 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

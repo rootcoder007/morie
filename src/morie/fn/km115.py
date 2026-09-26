@@ -3,7 +3,6 @@
 """Kamath Eq 8.3: BLEU-N, the geometric mean of n-gram precisions."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch8_bleu_n_geom_mean"]

@@ -1,7 +1,6 @@
 """ABC rejection sampler (Pritchard et al. 1999)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["abcrej", "abc_rejection"]

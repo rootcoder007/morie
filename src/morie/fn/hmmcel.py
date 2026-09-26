@@ -3,7 +3,6 @@
 """Memory cell abstraction: internal state carries information through time."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_memory_cell"]

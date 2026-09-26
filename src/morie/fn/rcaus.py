@@ -2,7 +2,6 @@
 """Random common cause refutation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["random_common_cause_refutation", "random_cause_refutation"]

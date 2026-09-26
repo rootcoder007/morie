@@ -2,7 +2,6 @@
 """Adjacency matrix from an edge list."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["sgt_adjacency_matrix"]

@@ -12,10 +12,8 @@ are deferred to v0.3.0 (see ``NotImplementedError`` branch).
 """
 
 from . import _array_core as np
-from ._sci_core import optimize
-from ._sci_core import cdist
-
 from ._richresult import RichResult
+from ._sci_core import cdist, optimize
 
 __all__ = ["spatial_glm"]
 

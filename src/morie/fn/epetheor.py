@@ -23,7 +23,6 @@ you want one, exactly as the book does throughout Chapter 2.
 from __future__ import annotations
 
 from . import _s03core as k
-
 from ._richresult import RichResult
 
 __all__ = ["epetheor"]

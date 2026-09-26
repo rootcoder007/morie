@@ -2,7 +2,6 @@
 """General copula frailty for clustered survival."""
 
 from . import _array_core as np
-
 from ._copula import FAMILIES, copula_cdf, tau_to_theta
 from ._richresult import RichResult
 from .clyfr import _km

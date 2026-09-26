@@ -8,7 +8,6 @@ the Fisher-information lower bound on Var(sqrt(n) beta_hat).
 """
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_information_bound"]

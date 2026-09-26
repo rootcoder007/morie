@@ -2,7 +2,6 @@
 """Bridge observations for cross-chamber comparison (Armstrong Ch 6)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bridge_observations", "brdgr"]

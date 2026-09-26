@@ -2,7 +2,6 @@
 """Rice index of party cohesion on roll calls."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["rice_index"]

@@ -4,7 +4,6 @@
 Alammar Ch 4)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_t5_text_to_text_classify"]

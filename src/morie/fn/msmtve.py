@@ -30,8 +30,9 @@ def msm_time_varying_exposure(y, exposure_history, covariate_history=None, time=
     ``weights`` is omitted they are computed from the exposure and
     covariate histories. Keys: estimate."""
     if weights is None and covariate_history is not None:
-        from .msmwt import msmwt as _msmwt
         import morie.fn._array_core as _np
+
+        from .msmwt import msmwt as _msmwt
         weights = _msmwt(_np.marr(_gp._mat(exposure_history)),
                          _np.marr(_gp._mat(covariate_history)))["sw"]
     d = _gp.msm_design(exposure_history)

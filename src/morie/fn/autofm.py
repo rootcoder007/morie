@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Series decomposition and autocorrelation."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["serdecomp", "autoformer"]
 

@@ -3,7 +3,6 @@
 """Bagging (bootstrap aggregating): train on bootstrap samples, aggregate outputs."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_bagging"]

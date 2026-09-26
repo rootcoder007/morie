@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import optimize
-
 from ._containers import RegressionResult
+from ._sci_core import optimize
 
 
 def conditional_logistic(

@@ -2,7 +2,6 @@
 """GWR local coefficient estimates."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

@@ -3,12 +3,12 @@
 
 from __future__ import annotations
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
 from morie import hawkes_spatial as hs
 from morie.dml_clustered import dml_clustered
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 
 def _clustered(G=80, ng=15, seed=1):

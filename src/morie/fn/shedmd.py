@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Piecewise log-linear shedding curve."""
 
-from ._richresult import RichResult
 from . import _unclrcore as _c
+from ._richresult import RichResult
 
 __all__ = ["shedcurve", "viral_shedding_model"]
 

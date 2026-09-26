@@ -3,7 +3,6 @@
 """Variational autoencoder with latent Gaussian prior."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_vae", "vae_loss_and_grads"]

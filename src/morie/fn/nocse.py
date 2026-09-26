@@ -12,6 +12,7 @@ def nominate_confidence_interval(boot_se, alpha=0.05) -> DescriptiveResult:
     .. epigraph:: Statistics is the grammar of science. -- Karl Pearson
     """
     from morie.fn import _array_core as np
+
     from ._stats_core import norm
 
     se = np.asarray(boot_se, dtype=float)

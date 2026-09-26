@@ -23,7 +23,6 @@ from __future__ import annotations
 import math
 
 from . import _array_core as np  # noqa: F401  (kept for module conventions)
-
 from ._richresult import RichResult
 
 __all__ = ["bayesian_information_criterion"]

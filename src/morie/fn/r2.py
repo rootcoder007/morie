@@ -5,7 +5,6 @@ from typing import Union
 
 from . import _array_core as np
 from . import _frame_core as pd
-
 from ._containers import ESRes
 from .r_es import r_effect_size
 

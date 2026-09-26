@@ -2,7 +2,6 @@
 """LATE bound when monotonicity may be violated."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["bound_no_monotonicity"]

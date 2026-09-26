@@ -2,7 +2,6 @@
 """SNP-BLUP additive genomic prediction."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["snp_blup"]

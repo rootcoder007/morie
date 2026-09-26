@@ -3,7 +3,6 @@
 
 import math
 
-
 from ._richresult import RichResult
 
 __all__ = ['rmsetst', 'rmse_metric', 'rmsemetric']

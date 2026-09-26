@@ -5,7 +5,6 @@ from __future__ import annotations
 import re
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

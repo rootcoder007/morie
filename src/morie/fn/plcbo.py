@@ -2,7 +2,6 @@
 """Placebo (permutation) refutation test for a causal estimate."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["placebo_refutation"]

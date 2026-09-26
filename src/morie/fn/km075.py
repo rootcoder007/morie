@@ -3,7 +3,6 @@
 """Kamath Eq 5.11: the DPO preference with Z(x) already cancelled."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km073 import kamath_ch5_pref_sigmoid_form
 

@@ -1,10 +1,8 @@
 """Complete spatial randomness (CSR): the homogeneous Poisson process."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_pp import (as_points, as_region, intensity, nn_distances,
-                        region_area)
+from ._schab_pp import as_points, as_region, intensity, nn_distances, region_area
 
 __all__ = ["schabenberger_csr_def"]
 

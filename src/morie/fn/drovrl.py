@@ -2,7 +2,6 @@
 """DR-DiD with propensity overlap trimming."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .aiptdd import _logit_fit, aipw_did
 

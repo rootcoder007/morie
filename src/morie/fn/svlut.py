@@ -1,7 +1,6 @@
 """Linear utility function for spatial voting."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

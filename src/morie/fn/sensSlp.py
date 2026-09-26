@@ -2,7 +2,6 @@
 """Sen's slope for a time-indexed series."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["sens_slope", "sen_slope"]

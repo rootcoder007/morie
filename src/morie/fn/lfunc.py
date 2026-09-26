@@ -2,7 +2,6 @@
 """Ripley's L function for spatial point patterns."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 from .kfunc import ripley_k
 

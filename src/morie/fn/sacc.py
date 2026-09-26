@@ -2,7 +2,6 @@
 """Soft policy iteration (the exact tabular core of soft actor-critic)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .mdpval import _mdp_args
 

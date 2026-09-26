@@ -1,7 +1,6 @@
 """Zipf's law fit for word frequency distributions."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

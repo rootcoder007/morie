@@ -26,7 +26,6 @@ Closed-form rate arithmetic; no estimation, no randomness.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["dimredrate", "horowitz_dimension_reduction"]

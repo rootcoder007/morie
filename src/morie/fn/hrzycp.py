@@ -2,7 +2,6 @@
 """Conditional prediction of Y given X after transformation model estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_conditional_prediction"]

@@ -3,7 +3,6 @@
 """Kamath Eq 2.29: the span boundary objective (SBO) pretraining loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_sbo_loss"]

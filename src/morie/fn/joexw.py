@@ -6,7 +6,6 @@ Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2n
 """
 
 from . import _joseph as _core
-
 from ._richresult import RichResult
 
 __all__ = ["expandcv", "joseph_expanding_window_cv"]

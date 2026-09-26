@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Hope is like the sun. If you only believe in it when you can see it, you'll never make it through the night."

@@ -3,7 +3,6 @@
 """Scaled dot-product attention (Vaswani et al. 2017, Eq 1)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["scaled_dot_product_attention"]

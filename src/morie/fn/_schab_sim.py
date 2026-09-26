@@ -30,7 +30,6 @@ Everything here is internal.
 """
 
 from . import _array_core as np
-
 from ._rng import random_normal
 
 __all__ = []

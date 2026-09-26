@@ -2,7 +2,6 @@
 """Activity-data times emission-factor inventory."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["emisinv", "emissions_inventory"]

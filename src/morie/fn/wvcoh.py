@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._signal_core import fftconvolve
-
 from ._containers import DescriptiveResult
+from ._signal_core import fftconvolve
 
 _QUOTE = "We are the spark that will light the fire."
 

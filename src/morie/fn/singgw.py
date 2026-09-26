@@ -2,7 +2,6 @@
 """Single-step GBLUP relationship matrix H and its inverse."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["single_step_h"]

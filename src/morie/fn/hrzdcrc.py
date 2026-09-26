@@ -2,7 +2,6 @@
 """Deconvolution convergence rates."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["hrz_deconv_rate", "horowitz_deconv_rate"]

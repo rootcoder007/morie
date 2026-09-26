@@ -3,7 +3,6 @@
 """In-context learning: LLM adapts via examples in prompt."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_in_context_learning"]

@@ -3,7 +3,6 @@
 """Limits of k-means: fails with non-spherical or varying-size clusters."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmkmn import geron_kmeans
 

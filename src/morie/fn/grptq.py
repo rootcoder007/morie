@@ -3,7 +3,6 @@
 """Static post-training quantization: calibrate activation scales on a sample."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grq8 import quantize_symmetric
 

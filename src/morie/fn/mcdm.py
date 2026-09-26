@@ -2,7 +2,6 @@
 """TOPSIS multi-criteria decision making."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

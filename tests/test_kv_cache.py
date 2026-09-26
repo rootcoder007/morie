@@ -1,8 +1,8 @@
 """Tests for morie.kv_cache — TurboQuant-compressed KV cache."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.kv_cache import CacheStats, TurboQuantKVCache, UncompressedKVCache
 
 RNG = np.random.default_rng(42)

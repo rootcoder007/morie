@@ -2,7 +2,6 @@
 """Gravity model negative-binomial PPML."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

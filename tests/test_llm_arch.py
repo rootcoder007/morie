@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from morie.fn import _array_core as np
-
 from morie.fn import (
     bpblm,
     cslat,

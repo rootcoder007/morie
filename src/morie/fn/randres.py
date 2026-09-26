@@ -5,7 +5,6 @@ import math
 
 from . import _s04core as S
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["randomized_response"]

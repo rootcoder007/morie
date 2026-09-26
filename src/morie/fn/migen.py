@@ -3,12 +3,12 @@
 
 from __future__ import annotations
 
-from . import _frame_core as pd
-
 from morie.fn.mi_cf import mi_configural
 from morie.fn.mi_mt import mi_metric
 from morie.fn.mi_sc import mi_scalar
 from morie.fn.mi_st import mi_strict
+
+from . import _frame_core as pd
 
 
 def mi_by_gender(

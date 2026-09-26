@@ -3,15 +3,15 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
-from . import _frame_core as pd
-
 from morie.fn._cfa_engine import (
     cov_from_data,
     fit_cfa,
     get_mapq_structure,
     structure_to_indices,
 )
+
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def mi_configural(

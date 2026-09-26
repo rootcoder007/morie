@@ -2,7 +2,6 @@
 """Order-m kernel condition for quantile estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_order_m_kernel", "fauzi_kernel_order_m_condition"]

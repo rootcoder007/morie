@@ -17,7 +17,6 @@ well under a second even for the Gibbs / training callables.
 from __future__ import annotations
 
 from morie.fn import _array_core as np
-
 from morie.fn.bglup import bayes_cpi_genomic
 from morie.fn.blasf import bayesian_lasso_full
 from morie.fn.brdgf import bayes_ridge_gibbs

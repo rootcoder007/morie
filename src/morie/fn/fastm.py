@@ -38,9 +38,8 @@ from __future__ import annotations
 from . import _array_core as np  # noqa: F401
 from . import _rousscore as R
 from . import _s03core as k
-from .mcdv import consistency_factor
-
 from ._richresult import RichResult
+from .mcdv import consistency_factor
 
 __all__ = ["fast_mcd"]
 

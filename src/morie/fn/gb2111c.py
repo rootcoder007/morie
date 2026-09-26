@@ -2,7 +2,6 @@
 """Elementary coverages are Beta(1, n)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_elementary_coverage_beta"]

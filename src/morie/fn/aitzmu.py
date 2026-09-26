@@ -27,7 +27,6 @@ from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
 from . import _s03core as k  # noqa: F401
-
 from ._richresult import RichResult
 
 __all__ = ["compositional_zero_multreplace"]

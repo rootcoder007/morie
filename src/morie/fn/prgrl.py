@@ -77,7 +77,6 @@ minimum reached, not about a formula.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["prgrl", "curriculum_schedule", "is_curriculum",

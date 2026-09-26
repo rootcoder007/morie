@@ -3,7 +3,6 @@
 """Additive model by backfitting (ESL Ch 9.1)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["esl_gam"]

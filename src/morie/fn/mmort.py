@@ -2,7 +2,6 @@
 """Maternal mortality ratio."""
 
 from . import _stats_core as stats
-
 from ._containers import ESRes
 
 

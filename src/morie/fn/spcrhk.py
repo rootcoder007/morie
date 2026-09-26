@@ -2,7 +2,6 @@
 """Cressie-Hawkins robust semivariogram estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schaben import cressie_hawkins, matheron
 

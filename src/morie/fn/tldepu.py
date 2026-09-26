@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Upper tail dependence coefficient."""
 
-from .chiDep import chi_dependence
-
 from ._richresult import RichResult
+from .chiDep import chi_dependence
 
 __all__ = ["upper_tail_dependence"]
 

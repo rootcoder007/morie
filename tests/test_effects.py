@@ -1,6 +1,5 @@
-from morie.fn import _frame_core as pd
-
 from morie.effects import estimate_ate
+from morie.fn import _frame_core as pd
 
 
 def test_estimate_ate_returns_float_estimate_and_standard_error():

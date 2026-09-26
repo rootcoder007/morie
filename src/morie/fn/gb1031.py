@@ -4,7 +4,6 @@
 import math
 
 from . import _stats_core as stats
-
 from ._richresult import RichResult
 
 __all__ = ['kctrlmed', 'gibbons_k_ctrl_median']

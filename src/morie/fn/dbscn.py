@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import DbscnRes
+
 from . import _array_core as np
 from ._sci_core import pdist, squareform
-
-from morie.fn._containers import DbscnRes
 
 
 def dbscn(

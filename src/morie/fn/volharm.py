@@ -2,7 +2,6 @@
 """Harmonic-mean aggregation of per-period volatilities."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vol_harmonic", "vol_harmonic_volatility"]

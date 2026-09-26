@@ -2,7 +2,6 @@
 
 import struct
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.engine import (
@@ -14,6 +13,7 @@ from morie.engine import (
     _softmax,
     backend,
 )
+from morie.fn import _array_core as np
 from morie.gguf_loader import (
     _GGUF_TYPE_ARRAY,
     _GGUF_TYPE_FLOAT32,

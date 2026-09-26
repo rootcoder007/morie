@@ -2,7 +2,6 @@
 """Nonparametric IID bootstrap of a statistic."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["boot_iid_resample"]

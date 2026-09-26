@@ -2,7 +2,6 @@
 """Brier score for a categorical predictive distribution."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['brierscore', 'brier_score']

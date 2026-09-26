@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "We are what we repeatedly do. Excellence is not an act, but a habit. -- Aristotle"

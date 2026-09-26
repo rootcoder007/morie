@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Left-truncated survival adjustment."""
 
-from .lftrt import lftrt
-
 from ._richresult import RichResult
+from .lftrt import lftrt
 
 __all__ = ["surv_truncation_left"]
 

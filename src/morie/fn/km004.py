@@ -3,7 +3,6 @@
 """Kamath Eq 2.4: the decoder hidden-state recurrence."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_decoder_hidden_state"]

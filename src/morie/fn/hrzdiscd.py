@@ -2,7 +2,6 @@
 """Direct estimation of single-index model with discrete covariates."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_direct_discrete_x"]

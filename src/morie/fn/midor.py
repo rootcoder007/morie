@@ -11,7 +11,6 @@ Shpitser I, VanderWeele T, Robins JM (2010) on adjustment.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["model_identify_estimate_refute", "backdoor_sets",

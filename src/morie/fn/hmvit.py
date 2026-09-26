@@ -3,7 +3,6 @@
 """Vision Transformer (ViT): transformer on image patches."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmtfm import encoder_params, geron_transformer
 

@@ -3,7 +3,6 @@
 """1cycle policy: warm up then anneal the learning rate."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .gr1cy import geron_1cycle_schedule
 

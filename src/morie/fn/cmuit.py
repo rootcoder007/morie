@@ -20,9 +20,7 @@ import math
 
 from . import _array_core as np  # noqa: F401
 from . import _s03core as k
-
 from ._richresult import RichResult
-
 from .mutifo import mutual_information
 
 __all__ = ["conditional_mutual_information"]

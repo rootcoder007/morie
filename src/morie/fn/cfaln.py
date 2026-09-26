@@ -3,14 +3,14 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
-from . import _frame_core as pd
-
 from morie.fn._cfa_engine import (
     cov_from_data,
     fit_cfa,
     structure_to_indices,
 )
+
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def cfa_loadings(

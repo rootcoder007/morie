@@ -2,7 +2,6 @@
 """L-moment estimator of the GEV parameters."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ev_gev_lmoments", "evt_gev_lmoments"]

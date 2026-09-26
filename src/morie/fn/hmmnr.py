@@ -3,7 +3,6 @@
 """Max-norm regularization: rescale weights so ||w||_2 <= r."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_max_norm"]

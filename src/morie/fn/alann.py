@@ -4,7 +4,6 @@
 neighbour search (Malkov and Yashunin 2020; Alammar Ch 8)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_approximate_nearest_neighbor"]

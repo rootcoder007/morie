@@ -2,7 +2,6 @@
 """Integration (neural complexity measure)."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 

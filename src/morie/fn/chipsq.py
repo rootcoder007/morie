@@ -4,9 +4,8 @@
 import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
 from . import _sci_core as sci
+from ._richresult import RichResult
 
 __all__ = ["chipsq", "chip_seq_peak"]
 

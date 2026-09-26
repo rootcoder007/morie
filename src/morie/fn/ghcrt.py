@@ -2,7 +2,6 @@
 """Posterior contraction rate."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_contraction_rate"]

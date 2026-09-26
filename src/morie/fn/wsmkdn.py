@@ -2,7 +2,6 @@
 """Kernel density estimator with Silverman's window-width rules."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wasserman_kde"]

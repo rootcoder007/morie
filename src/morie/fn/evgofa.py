@@ -38,7 +38,6 @@ from __future__ import annotations
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hedderich7e33 import ad_statistic
 

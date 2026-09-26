@@ -24,10 +24,10 @@ from __future__ import annotations
 import math
 
 from . import _array_core as np  # noqa: F401
+
 # aliased `core`, not `k`, because this module's public signature already
 # uses `k` for the number of components
 from . import _s03core as core
-
 from ._richresult import RichResult
 
 __all__ = ["sgt_kernel_pca"]

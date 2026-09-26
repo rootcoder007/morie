@@ -6,7 +6,6 @@ Nie, Nguyen, Sinthong and Kalagnanam (2023) ICLR, arXiv:2211.14730, sec. 3.1
 """
 
 from . import _joseph as _core
-
 from ._richresult import RichResult
 
 __all__ = ["patchts", "joseph_patchtst"]

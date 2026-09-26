@@ -2,7 +2,6 @@
 """Ridge (weight-decay) regularized loss."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['l2pen', 'l2_weight_regularization']

@@ -2,7 +2,6 @@
 """Newman-Girvan modularity Q of a labelled partition."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["sgt_modularity_q"]

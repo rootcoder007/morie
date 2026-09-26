@@ -3,7 +3,6 @@
 """Monte Carlo dropout: leave dropout on at inference for uncertainty."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_mc_dropout"]

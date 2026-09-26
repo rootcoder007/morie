@@ -3,7 +3,6 @@
 """Kamath Ch 7: cross-encoder re-ranking."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_cross_encoder_rerank"]

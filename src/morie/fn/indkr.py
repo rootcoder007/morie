@@ -1,9 +1,8 @@
 """Indicator kriging for exceedance probability."""
 
 from . import _array_core as np
-from ._sci_core import cdist
-
 from ._richresult import RichResult
+from ._sci_core import cdist
 
 __all__ = ["indicator_kriging"]
 

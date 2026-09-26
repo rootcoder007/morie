@@ -2,7 +2,6 @@
 """Augmented Lagrangian for equality-constrained minimisation."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["auglag", "augmented_lagrangian"]

@@ -26,6 +26,7 @@ def second_order_intensity(points, window, bandwidth=None):
     DescriptiveResult
     """
     from morie.fn import _array_core as np
+
     from ._sci_core import pdist
 
     pts = np.asarray(points, dtype=np.float64)

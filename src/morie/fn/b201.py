@@ -3,7 +3,6 @@
 """Burkov's Eq 2.1: categorical cross-entropy with a one-hot target."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch2_categorical_cross_entropy"]

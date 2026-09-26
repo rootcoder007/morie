@@ -3,7 +3,6 @@
 """Kamath Eq 9.21: Flamingo's factorized text likelihood."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch9_flamingo_factorized"]

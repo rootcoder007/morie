@@ -3,7 +3,6 @@
 """Unsupervised learning: discover structure from unlabeled data."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmaen import geron_autoencoder
 from .hmagc import geron_agglomerative

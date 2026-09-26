@@ -2,7 +2,6 @@
 """Interventional (randomised-mediator) direct and indirect effects."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .aiptdd import _logit_fit, _ols_predict
 

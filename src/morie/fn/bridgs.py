@@ -1,7 +1,6 @@
 """Bridge sampling for ratios of normalizing constants (Meng-Wong 1996)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bridgs", "bridge_sampling"]

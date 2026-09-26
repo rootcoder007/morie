@@ -3,7 +3,6 @@
 """Learning rate schedule used with SGD: eta_t = eta_0 / (t + t_0)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_learning_rate_schedule"]

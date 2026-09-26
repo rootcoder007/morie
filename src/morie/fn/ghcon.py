@@ -2,9 +2,8 @@
 """Schwartz posterior consistency diagnostic."""
 
 from . import _array_core as np
-from ._stats_core import norm
-
 from ._richresult import RichResult
+from ._stats_core import norm
 
 __all__ = ["ghosal_posterior_consistency"]
 

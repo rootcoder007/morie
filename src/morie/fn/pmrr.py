@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 # Landmark per-10-µg/m³ all-cause mortality RR estimates:

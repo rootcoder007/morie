@@ -3,7 +3,6 @@
 """Temperature scaling of softmax logits before sampling."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grn021 import softmax_vector
 

@@ -2,7 +2,6 @@
 """Durbin-Watson test statistic for autocorrelation."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

@@ -2,7 +2,6 @@
 """Likelihood ratio for Gaussian hypotheses."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 _QUOTE = "Statistics is the grammar of science. -- Karl Pearson"

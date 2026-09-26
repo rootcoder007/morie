@@ -3,7 +3,6 @@
 """Burkov Ch 1: the dot product."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_dot_product"]

@@ -36,9 +36,7 @@ Everything else -- bounds, kernel, ``kappa``, ``xi``, the initial design
 """
 
 from ._richresult import RichResult  # noqa: F401  (re-exported shape)
-from .bayopt import (acquire, expected_improvement, gp_posterior,
-                     lower_confidence_bound,
-                     probability_of_improvement)
+from .bayopt import acquire, expected_improvement, gp_posterior, lower_confidence_bound, probability_of_improvement
 from .bayopt import bayopt as _bayopt
 
 __all__ = [

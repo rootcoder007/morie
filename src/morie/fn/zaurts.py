@@ -1,7 +1,6 @@
 """Zivot-Andrews unit root test with an endogenous structural break."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["zivot_andrews_unit_root"]

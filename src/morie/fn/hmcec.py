@@ -3,7 +3,6 @@
 """Cross-entropy cost for K-class softmax regression."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_cross_entropy_cost"]

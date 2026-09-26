@@ -2,7 +2,6 @@
 """Linear mixed model in the form Y = X beta + Z u + e, with its two means and marginal variance."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['lmmform', 'lmm_form_eq2_1', 'lmmformeq21']

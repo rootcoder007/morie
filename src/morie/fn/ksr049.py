@@ -2,7 +2,6 @@
 """Asymptotic linearity of a Z-estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_asymptotic_linearity", "kosorok_ch2_z_master_linearization"]

@@ -2,7 +2,6 @@
 """New-user/active-comparator cohort design for pharmacoepi."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

@@ -2,7 +2,6 @@
 """L1 minimization via Iterative Shrinkage-Thresholding (ISTA)."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Hope is like the sun. -- Vice Admiral Holdo"

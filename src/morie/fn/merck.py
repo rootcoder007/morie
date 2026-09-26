@@ -2,7 +2,6 @@
 """Mercer check: is a Gram matrix a valid kernel matrix?"""
 
 from . import _gp_core as G
-
 from ._richresult import RichResult
 
 __all__ = ['mercerchk', 'mercer_theorem', 'mercertheorem']

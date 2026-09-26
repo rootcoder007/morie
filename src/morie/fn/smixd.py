@@ -10,10 +10,8 @@ closed form (Patterson-Thompson 1971).
 """
 
 from . import _array_core as np
-from ._sci_core import optimize
-from ._sci_core import cdist
-
 from ._richresult import RichResult
+from ._sci_core import cdist, optimize
 
 __all__ = ["spatial_mixed_model"]
 

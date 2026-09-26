@@ -2,7 +2,6 @@
 """Linear-programming bounds on a target parameter."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bound_convex_estimator"]

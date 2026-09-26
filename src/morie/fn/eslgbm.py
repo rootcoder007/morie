@@ -3,7 +3,6 @@
 """Gradient boosting for squared-error loss (ESL Ch 10.10)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .esldct import esl_decision_tree, esl_tree_predict
 

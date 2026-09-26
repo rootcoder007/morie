@@ -3,7 +3,6 @@
 """Kamath Eq 2.24: the shuffled token detection (STD) discriminative loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_std_loss"]

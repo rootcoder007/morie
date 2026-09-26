@@ -2,7 +2,6 @@
 """ICC(3,k): two-way mixed, average measure."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["icc_two_way_mixed_avg"]

@@ -3,7 +3,6 @@
 """He initialization for ReLU-family activations."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_he_init"]

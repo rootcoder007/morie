@@ -2,7 +2,6 @@
 """General lattice spatial test battery."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

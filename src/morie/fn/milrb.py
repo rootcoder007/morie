@@ -2,7 +2,6 @@
 """Miller-Rabin probabilistic primality test."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "He who has a why to live can bear almost any how. -- Friedrich Nietzsche"

@@ -2,7 +2,6 @@
 """Conjugate normal model: N-Inv-chi2 posterior update (BDA3 3.3)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["nignst", "normal_invgamma_update"]

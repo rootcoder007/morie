@@ -2,7 +2,6 @@
 """Preacher-Hayes bootstrap for specific and total indirect effects."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._rrng_core import RRandom
 

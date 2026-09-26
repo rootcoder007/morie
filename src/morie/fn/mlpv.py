@@ -2,7 +2,6 @@
 """Proportional reduction in level-1 variance across nested models."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["multilevel_pseudo_variance_ratio", "multilevelpseudovarianceratio"]

@@ -2,7 +2,6 @@
 """Kruskal stress-1 badness of fit for MDS solutions."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kruskal_stress"]

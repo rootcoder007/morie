@@ -1,7 +1,6 @@
 """Spatial weights matrices from point coordinates."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["weights_matrix"]

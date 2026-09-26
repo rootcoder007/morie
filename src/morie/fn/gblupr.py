@@ -23,7 +23,6 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _s03core as core
-
 from ._richresult import RichResult
 
 __all__ = ["gblup_estimator"]

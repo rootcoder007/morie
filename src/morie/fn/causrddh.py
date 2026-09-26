@@ -2,7 +2,6 @@
 """Imbens-Kalyanaraman optimal bandwidth for sharp RDD."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["causrddh", "ik_bandwidth", "causal_rdd_imbens_kalyanaraman"]

@@ -24,7 +24,6 @@ Source: fetched-wave3/wang-etal-2020-linformer-arxiv2006.04768.pdf
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["linatt", "linformer_linear_attention"]

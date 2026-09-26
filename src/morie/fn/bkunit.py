@@ -3,7 +3,6 @@
 """Burkov Ch 1: the unit vector."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_unit_vector"]

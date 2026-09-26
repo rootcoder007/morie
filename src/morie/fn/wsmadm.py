@@ -2,7 +2,6 @@
 """Admissibility of decision rules by risk dominance."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wasserman_admissible"]

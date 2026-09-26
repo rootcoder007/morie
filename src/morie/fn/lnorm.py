@@ -13,7 +13,6 @@ arXiv preprint arXiv:1607.06450.
 __all__ = ["lnorm"]
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 

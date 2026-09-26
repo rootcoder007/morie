@@ -1,7 +1,6 @@
 """Nonlinear utility via polynomial."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

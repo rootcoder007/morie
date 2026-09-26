@@ -4,7 +4,7 @@
 from math import fsum, log, pi, sqrt
 
 from ._richresult import RichResult
-from ._spx import (dot, eye, logabsdet, lstsq, mat, matvec, sqmat, vec)
+from ._spx import dot, eye, logabsdet, lstsq, mat, matvec, sqmat, vec
 
 __all__ = [
     "schabenberger_spatial_error_model",

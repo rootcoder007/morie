@@ -2,7 +2,6 @@
 """Correlation distance."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 _QUOTE = "Luck is what happens when preparation meets opportunity. -- Seneca"

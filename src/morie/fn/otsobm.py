@@ -2,7 +2,6 @@
 """Sobolev (H^-1) approximation to the 1-Wasserstein distance."""
 
 from . import _s03core as core
-
 from ._richresult import RichResult
 
 __all__ = ["ot_sobolev_w1"]

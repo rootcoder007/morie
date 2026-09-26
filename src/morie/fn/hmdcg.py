@@ -3,7 +3,6 @@
 """Deep convolutional GAN (DCGAN)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grdcgan import geron_dcgan_generator
 

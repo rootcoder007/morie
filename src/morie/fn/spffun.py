@@ -1,7 +1,6 @@
 """F-function (empty space function)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_pp import as_points, as_region, intensity
 

@@ -2,7 +2,6 @@
 """Smoothed deconvolution estimator of fU."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_smoothed_fU", "horowitz_deconv_estimator"]
@@ -58,9 +57,7 @@ def horowitz_smoothed_fU(y, x, beta, nu_U=None, grid=None, kernel="fourfold"):
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
     Econometrics*. Springer. Sec. 5.2.1, eq. (5.26).
     """
-    from ._hrz_paneldec import deconvolve_pair, default_bandwidths, panel_residuals
-
-    from ._hrz_paneldec import _check_kernel
+    from ._hrz_paneldec import _check_kernel, deconvolve_pair, default_bandwidths, panel_residuals
     _check_kernel(kernel)
     Y = np.atleast_2d(np.asarray(y, dtype=float))
     n, T = Y.shape

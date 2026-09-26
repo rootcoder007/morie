@@ -2,10 +2,9 @@
 """Bayesian nonparametric hypothesis testing via Polya-tree marginals."""
 
 from . import _array_core as np
+from ._richresult import RichResult
 from ._sci_core import betaln
 from ._stats_core import norm
-
-from ._richresult import RichResult
 
 __all__ = ["ghosal_np_testing"]
 

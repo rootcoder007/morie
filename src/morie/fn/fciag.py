@@ -5,7 +5,6 @@ import itertools
 
 from . import _array_core as np
 from . import _stats_core as stats
-
 from ._richresult import RichResult
 
 __all__ = ["fci_algorithm"]

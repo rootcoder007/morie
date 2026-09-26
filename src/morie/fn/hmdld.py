@@ -3,7 +3,6 @@
 """DataLoader for mini-batch iteration with shuffling and parallel workers."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_dataloader"]

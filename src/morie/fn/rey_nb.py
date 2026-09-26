@@ -1,12 +1,11 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Negative binomial regression (GLM) via IRLS."""
 
-from . import _array_core as np
-from ._sci_core import minimize
-from ._sci_core import gammaln
-from ._stats_core import norm
-
 from morie.fn._containers import RegressionResult
+
+from . import _array_core as np
+from ._sci_core import gammaln, minimize
+from ._stats_core import norm
 
 
 def rey_nb(

@@ -2,7 +2,6 @@
 """Effective simple-random-sample size of a weighted design."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["neffsrs", "effective_srs"]

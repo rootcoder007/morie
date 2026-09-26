@@ -2,7 +2,6 @@
 """Pickands estimator of the extreme-value index."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ev_pickands", "evt_pickands_estimator"]

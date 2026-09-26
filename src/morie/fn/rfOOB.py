@@ -2,7 +2,6 @@
 """Random-forest out-of-bag error."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["random_forest_oob", "rf_oob_error"]

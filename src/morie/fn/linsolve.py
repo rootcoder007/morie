@@ -24,8 +24,8 @@ All three are one method and live in this one function.
 
 from __future__ import annotations
 
-from .mrank import _mm, _rank, _rows, _t
 from ._richresult import RichResult
+from .mrank import _mm, _rank, _rows, _t
 
 __all__ = ["linsolve"]
 

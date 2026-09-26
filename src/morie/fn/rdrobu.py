@@ -34,9 +34,8 @@ See :mod:`morie.fn.causrddc` for the estimator, kernels, variance routes
 bandwidth selectors.
 """
 
-from .causrddc import causrddc
-
 from ._richresult import RichResult
+from .causrddc import causrddc
 
 __all__ = ["rdrobu", "calonico_cattaneo_titiunik", "rd_confidence_intervals"]
 

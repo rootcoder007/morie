@@ -3,7 +3,6 @@
 """K-fold cross-validation: partition into k equal folds; rotate held-out fold."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcvs import geron_cross_validation_score
 

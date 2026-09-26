@@ -3,7 +3,6 @@
 """Closeness centrality (Wasserman-Faust)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["sgt_closeness_centrality"]

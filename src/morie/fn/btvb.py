@@ -2,7 +2,6 @@
 """Bootstrap variance from replicates."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["boot_var_estimator"]

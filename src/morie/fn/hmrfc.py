@@ -3,7 +3,6 @@
 """Random forest: bagged trees with random feature splits."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmrdt import _grow, _predict_tree
 

@@ -1,10 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Survey-weighted regression with robust (sandwich) standard errors."""
 
+from morie.fn._containers import RegressionResult
+
 from . import _array_core as np
 from ._stats_core import t as t_dist
-
-from morie.fn._containers import RegressionResult
 
 
 def rey_sv(

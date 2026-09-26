@@ -4,7 +4,6 @@ Morin (2016), Probability: For the Enthusiastic Beginner, eqs (3.42)-(3.43).
 """
 
 from . import _morin
-
 from ._richresult import RichResult
 
 __all__ = ["sdsum"]

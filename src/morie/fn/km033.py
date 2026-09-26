@@ -3,7 +3,6 @@
 """Kamath Eq 2.33: the denoising autoencoder loss."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km021 import kamath_ch2_clm_loss
 

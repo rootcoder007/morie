@@ -1,7 +1,6 @@
 """Semivariogram definition as half the mean squared difference."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_vario import empirical_semivariogram
 

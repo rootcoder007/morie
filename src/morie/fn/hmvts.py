@@ -2,7 +2,6 @@
 """Soft-voting classifier."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["soft_voting_classifier", "geron_voting_soft"]

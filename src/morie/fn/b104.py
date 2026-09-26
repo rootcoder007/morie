@@ -3,7 +3,6 @@
 """Burkov's Eq 1.4: the linear model in vector form, w . x + b."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_linear_vector"]

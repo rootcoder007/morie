@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from collections import Counter
 
-from . import _array_core as np
-
 from morie.fn._containers import CrimeResult
+
+from . import _array_core as np
 
 
 def tps_use_of_force(

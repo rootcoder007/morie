@@ -3,7 +3,6 @@
 """Binary classification: predict one of two classes using probability threshold."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_binary_classification"]

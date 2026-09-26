@@ -2,7 +2,6 @@
 """Fuzzy RDD: Wald ratio of the outcome and treatment jumps."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .causrdd import rdd_local_linear
 from .causrddh import ik_bandwidth

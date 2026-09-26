@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._dp import check_budget, gaussian_sigma
 from ._richresult import RichResult
 

@@ -19,9 +19,8 @@ se 0.0745588782641038, lower limit -0.0996502208931884 on the fixture.
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02dl, k02p2t, k02tq
-
 from ._richresult import RichResult
+from .k02util import k02dl, k02p2t, k02tq
 
 __all__ = ["ma_hartung_knapp"]
 

@@ -3,7 +3,6 @@
 """Kamath Eq 8.7: BERTScore recall."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch8_bertscore_recall"]

@@ -1,7 +1,6 @@
 """Twin-delayed DDPG (TD3)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["td3"]

@@ -3,7 +3,6 @@
 """Characteristic function phi_X(t) = E[e^{itX}]."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wasserman_char_fn"]

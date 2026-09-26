@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._dp import check_budget
 from ._richresult import RichResult
 
@@ -85,9 +84,7 @@ def dp_count(D, epsilon=1.0, predicate=None, seed=None, nonneg=True):
     arr = np.asarray(D)
     if predicate is not None:
         true_count = float(sum(bool(predicate(r)) for r in arr))
-    elif arr.dtype == bool:
-        true_count = float(arr.sum())
-    elif arr.ndim == 1 and np.all(np.isin(arr, (0, 1))):
+    elif arr.dtype == bool or arr.ndim == 1 and np.all(np.isin(arr, (0, 1))):
         true_count = float(arr.sum())
     else:
         true_count = float(len(arr))

@@ -2,7 +2,6 @@
 """i.i.d. contraction theorem in Hellinger metric: main tool for density estimation rates."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_iid_crt_thm"]

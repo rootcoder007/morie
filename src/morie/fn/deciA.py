@@ -2,7 +2,6 @@
 """End-to-end causal pipeline: structure discovery then effect estimation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .bdcrt import _parse, backdoor_criterion
 from .fciag import fci_algorithm

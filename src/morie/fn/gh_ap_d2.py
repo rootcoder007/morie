@@ -2,7 +2,6 @@
 """Le Cam's posterior inequality."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["lecam", "ghosal_lecam_lemma"]

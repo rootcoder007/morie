@@ -17,7 +17,6 @@ Cornish-Fisher correction to the Gaussian critical value.
 
 from . import _array_core as np
 from . import _stats_core as _sps
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_edgeworth_quantile"]

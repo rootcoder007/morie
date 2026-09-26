@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import SignalResult
 
 _QUOTE = "All models are wrong, but some are useful. -- George E. P. Box"

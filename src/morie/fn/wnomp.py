@@ -2,7 +2,6 @@
 """W-NOMINATE vote probability from the Gaussian spatial utility."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["wnominate_probability"]

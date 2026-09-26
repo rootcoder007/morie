@@ -3,7 +3,6 @@
 """Denoising diffusion implicit models (DDIM) for faster sampling."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grddim import geron_ddim_sampling_step
 from .hmdfw import beta_schedule_values

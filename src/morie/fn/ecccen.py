@@ -16,7 +16,6 @@ maximum is the diameter.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from . import t3util as _t3
 from ._richresult import RichResult
 

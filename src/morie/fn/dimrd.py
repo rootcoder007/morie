@@ -2,7 +2,6 @@
 """Dimensionality test for spatial voting (Kaiser 1960; Cattell 1966)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["dimensionality_test", "dimrd"]

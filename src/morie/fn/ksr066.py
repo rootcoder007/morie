@@ -2,7 +2,6 @@
 """No-bias condition for semiparametric efficiency."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_no_bias", "kosorok_ch3_z_estimator_no_bias"]

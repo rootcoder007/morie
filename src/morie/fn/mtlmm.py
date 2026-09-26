@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multi-trait linear mixed model."""
 
-from . import _tail1core as C
 from . import _gp_core as GC
-
+from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ['mtlmmfit', 'multi_trait_lmm', 'multitraitlmm']

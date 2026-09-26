@@ -2,9 +2,8 @@
 """Semiparametric Bernstein–von Mises diagnostic."""
 
 from . import _array_core as np
-from ._stats_core import kstest, norm
-
 from ._richresult import RichResult
+from ._stats_core import kstest, norm
 
 __all__ = ["ghosal_bernstein_von_mises"]
 

@@ -3,7 +3,6 @@
 """REINFORCE parameter update from sampled episodes."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmpg import geron_policy_gradient
 

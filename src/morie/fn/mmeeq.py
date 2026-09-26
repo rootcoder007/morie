@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Henderson's mixed model equations for the BLUE and the BLUP."""
 
-from . import _tail1core as C
 from . import _gp_core as G
-
+from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ['hendmme', 'henderson_mme_eq2_2']

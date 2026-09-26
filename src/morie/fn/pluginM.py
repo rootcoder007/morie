@@ -2,7 +2,6 @@
 """Plug-in g-computation NIE."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["plug_in_mediation"]

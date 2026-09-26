@@ -10,8 +10,7 @@ See :mod:`egnnL` for the equations, the equivariance argument and the
 references.
 """
 
-from .egnnL import (cheatsheet, coord_update, edge_message, egcl,
-                    equivariance_error, run_egnn)
+from .egnnL import cheatsheet, coord_update, edge_message, egcl, equivariance_error, run_egnn
 
 __all__ = ["edge_message", "coord_update", "egcl", "run_egnn",
            "equivariance_error", "cheatsheet"]

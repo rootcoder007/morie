@@ -11,7 +11,6 @@ Computing 26:409-421; the sandwich smoother is Xiao L, Li Y, Ruppert D
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["face_smooth", "bspline_basis"]

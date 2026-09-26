@@ -4,7 +4,6 @@
 placement)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_post_ln_transformer", "layer_norm"]

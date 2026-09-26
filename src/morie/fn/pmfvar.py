@@ -4,9 +4,7 @@ Morin (2016), Probability: For the Enthusiastic Beginner, eqs (3.19), (3.34)-(3.
 """
 
 from . import _array_core as np
-
 from . import _morin
-
 from ._richresult import RichResult
 
 __all__ = ["pmfvar"]

@@ -21,10 +21,9 @@ from typing import Any
 # the runner's --help text works even when a user hasn't installed
 # pandas / the envhealth deps.
 def _load_deps():
+    from morie import envhealth
     from morie.fn import _array_core as np
     from morie.fn import _frame_core as pd
-
-    from morie import envhealth
 
     return np, pd, envhealth
 

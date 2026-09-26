@@ -2,7 +2,6 @@
 """F-beta score."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 _QUOTE = "So this is how liberty dies. With thunderous applause. -- Padme"

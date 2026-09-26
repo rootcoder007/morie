@@ -82,7 +82,6 @@ sharpest available check that the birth/death ratio is right.
 import math
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
 from ._rng import random_uniform
 

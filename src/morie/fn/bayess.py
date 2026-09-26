@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._mcmc import ess_from_chains, split_rhat
 from ._richresult import RichResult
 

@@ -2,7 +2,6 @@
 """Wordfish: Poisson scaling of word-frequency matrices."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["em_irt_text"]

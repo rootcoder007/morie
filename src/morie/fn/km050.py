@@ -3,7 +3,6 @@
 """Kamath Eq 3.9: the round-trip (back-translation) prompt score."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_back_translation_prob"]

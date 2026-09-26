@@ -11,9 +11,9 @@ Validates mathematical correctness against paper bounds:
 
 from __future__ import annotations
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.quant import (
     compress_kv_cache,
     decompress_kv_cache,

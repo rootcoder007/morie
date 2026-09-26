@@ -2,7 +2,6 @@
 """TMLE for quantile treatment effects."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._tmle import tmle_ate
 

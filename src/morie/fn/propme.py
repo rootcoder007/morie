@@ -2,7 +2,6 @@
 """Proportion of the total effect mediated, ab / (c' + ab)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .propMd import proportion_mediated as _prop_md
 

@@ -3,7 +3,6 @@
 import warnings
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 __all__ = ["conditional_autoregressive"]

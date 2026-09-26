@@ -2,7 +2,6 @@
 """Clayton copula bivariate survival for clustered event times."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["clayton_copula_frailty"]

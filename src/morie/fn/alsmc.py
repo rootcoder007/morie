@@ -3,7 +3,6 @@
 """SimCSE unsupervised objective (Gao et al. 2021; Alammar Ch 10)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_simcse_dropout_aug"]

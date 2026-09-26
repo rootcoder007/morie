@@ -3,7 +3,6 @@
 """Kamath Eq 4.11: LoftQ's quantisation-plus-low-rank objective."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch4_loftq_objective"]

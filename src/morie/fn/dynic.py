@@ -2,7 +2,6 @@
 """Dynamic linear model (local level + local trend)."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

@@ -3,7 +3,6 @@
 """Savage-Dickey Bayes factor."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["savage_dickey_ratio"]

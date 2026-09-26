@@ -3,7 +3,6 @@
 """Brain floating point (BF16): FP32-range with FP16-size."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_bf16"]

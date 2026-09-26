@@ -6,7 +6,6 @@ Winkler (1972) JASA 67(337):187-191; Gneiting and Raftery (2007) JASA 102(477) e
 """
 
 from . import _joseph as _core
-
 from ._richresult import RichResult
 
 __all__ = ["winkler", "joseph_winkler_interval_score"]

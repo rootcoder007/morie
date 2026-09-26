@@ -34,9 +34,9 @@ rather than attributed.
 from __future__ import annotations
 
 from . import _s03core as core
-from .wave import _dbfilter, _pow2, _step as _dbstep_public
-
 from ._richresult import RichResult
+from .wave import _dbfilter, _pow2
+from .wave import _step as _dbstep_public
 
 __all__ = ["db_wavelet"]
 

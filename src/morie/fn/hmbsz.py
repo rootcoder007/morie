@@ -3,7 +3,6 @@
 """Batch size heuristic: power of two in [32, 512] balancing noise and throughput."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_batch_size_heuristic"]

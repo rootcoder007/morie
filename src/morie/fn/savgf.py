@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._signal_core import savgol_filter as _savgol
-
 from ._containers import DescriptiveResult
+from ._signal_core import savgol_filter as _savgol
 
 
 def savgol_smooth(

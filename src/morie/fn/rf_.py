@@ -2,7 +2,6 @@
 """Random forest (bagged CART) for regression."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 from .cart import _build_tree, _predict_one
 

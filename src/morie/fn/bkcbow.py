@@ -2,7 +2,6 @@
 """CBOW: predict the centre word from averaged context embeddings."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_cbow"]

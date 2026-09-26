@@ -2,7 +2,6 @@
 """Matheron's classical semivariogram estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schaben import matheron
 

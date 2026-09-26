@@ -4,7 +4,6 @@
 cumulative probability >= p."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .toppd import top_p_nucleus
 

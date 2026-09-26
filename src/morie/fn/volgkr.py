@@ -2,7 +2,6 @@
 """Garman-Klass OHLC volatility estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vol_garman_klass"]

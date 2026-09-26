@@ -2,10 +2,8 @@
 """Spatio-temporal point processes."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_st import (cstr_reference, cstr_test, st_intensity,
-                        st_marginal_intensities)
+from ._schab_st import cstr_reference, cstr_test, st_intensity, st_marginal_intensities
 
 __all__ = ["schabenberger_st_point_process"]
 

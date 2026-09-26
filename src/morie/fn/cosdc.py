@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import dct, idct
-
 from ._containers import DescriptiveResult
+from ._sci_core import dct, idct
 
 _QUOTE = "He who fights with monsters should be careful lest he thereby become a monster. -- Friedrich Nietzsche"
 

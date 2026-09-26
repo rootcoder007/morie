@@ -31,7 +31,6 @@ replicate exactly mu, which no amount of simulation noise can blur.
 from __future__ import annotations
 
 from . import _s03core as core
-
 from ._richresult import RichResult
 
 __all__ = ["boot_parametric"]

@@ -2,7 +2,6 @@
 """Extended-connectivity fingerprint, radius 3 (ECFP6)."""
 
 from ._richresult import RichResult
-
 from .ecfp4 import _bonds, _connectivity_invariants, _defaults, _morgan
 
 __all__ = ["ecfp6", "ecfp_6_fingerprint"]

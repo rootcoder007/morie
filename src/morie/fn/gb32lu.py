@@ -2,7 +2,6 @@
 """Exact distribution of runs up and down by recursion."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_runs_up_down_recur"]

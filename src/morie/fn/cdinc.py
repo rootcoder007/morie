@@ -2,7 +2,6 @@
 """Person-time incidence rate with CI."""
 
 from . import _stats_core as stats
-
 from ._containers import ESRes
 
 

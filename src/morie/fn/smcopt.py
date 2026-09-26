@@ -28,9 +28,7 @@ the objective stated as something to *maximise* rather than as a log density.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-
 from .smcsam import random_walk_kernel, smcsam
 
 __all__ = ["smcopt", "sequential_mc", "smc_optimise", "annealing_ladder"]

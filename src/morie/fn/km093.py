@@ -3,7 +3,6 @@
 """Kamath Eq 6.17: the HONEST hurtful-completion score."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_honest_score"]

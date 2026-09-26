@@ -3,7 +3,6 @@
 """t-SNE: KL divergence between joint probabilities in high- and low-dim."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_tsne", "conditional_p"]

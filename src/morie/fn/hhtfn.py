@@ -4,10 +4,9 @@
 from __future__ import annotations
 
 from . import _array_core as np
+from ._containers import DescriptiveResult
 from ._sci_core import CubicSpline
 from ._signal_core import hilbert
-
-from ._containers import DescriptiveResult
 
 _QUOTE = "You were the chosen one!"
 

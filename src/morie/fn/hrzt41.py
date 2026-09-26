@@ -27,7 +27,6 @@ in within cells of the remaining covariates.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["binidmed", "horowitz_thm4_1_id_median"]

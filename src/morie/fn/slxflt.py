@@ -1,7 +1,6 @@
 """SLX spatial filter (de-mean with WX)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

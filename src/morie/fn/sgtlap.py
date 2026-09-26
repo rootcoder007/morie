@@ -2,7 +2,6 @@
 """Combinatorial graph Laplacian L = T - A."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["graphlap", "sgt_laplacian"]

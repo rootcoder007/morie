@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import SignalResult
 
 _QUOTE = "Many of the truths we cling to depend on our point of view."

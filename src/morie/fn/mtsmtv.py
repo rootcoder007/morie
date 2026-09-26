@@ -2,10 +2,9 @@
 """Combined MTS + MTR Manski-Pepper bounds on E[Y(d)]."""
 
 from . import _tail1core as C
+from ._richresult import RichResult
 from .bdmnsl import mtsbound
 from .bdmnto import mtrbound
-
-from ._richresult import RichResult
 
 __all__ = ["mts_mtr_combined", "mtsmtrcombined"]
 

@@ -2,7 +2,6 @@
 """Random-walk Laplacian."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["rwlap", "sgt_random_walk_laplacian"]

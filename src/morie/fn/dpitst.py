@@ -3,7 +3,6 @@
 from . import _array_core as np
 from . import _big2 as _big2
 from . import _stats_core as stats
-
 from ._richresult import RichResult
 
 __all__ = ["data_processing_inequality"]

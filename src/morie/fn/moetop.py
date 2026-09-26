@@ -35,7 +35,6 @@ arxiv2101.03961.pdf (Eqs 1, 4-6).
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["moetop", "moe_topk_routing"]

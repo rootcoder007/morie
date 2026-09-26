@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._aft import aft_fit
 from ._richresult import RichResult
 from ._surv import prepare

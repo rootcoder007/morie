@@ -3,7 +3,6 @@
 """Transformer decoder block: masked self-attention, cross-attention, FFN."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grteb import feed_forward, layer_norm, multi_head_attention
 

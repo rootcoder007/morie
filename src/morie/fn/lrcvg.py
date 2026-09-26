@@ -1,7 +1,6 @@
 """Learning curve -- train/val error vs training-set size."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["learning_curve"]

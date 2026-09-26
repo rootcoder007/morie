@@ -3,7 +3,6 @@
 """DeiT distillation loss: CE on the class token + CE on the distillation token."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_deit_distillation_loss"]

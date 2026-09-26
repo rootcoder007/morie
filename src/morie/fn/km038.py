@@ -3,7 +3,6 @@
 """Kamath Eq 2.38: GPT-2's task conditioning p(output|input,task)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_gpt2_task_conditioning"]

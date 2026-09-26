@@ -2,7 +2,6 @@
 """Fourth-order Runge-Kutta ODE solver."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Stay on target. -- Gold Five"

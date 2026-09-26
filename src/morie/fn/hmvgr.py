@@ -3,7 +3,6 @@
 """Vanishing gradients: small gradients shrink through many layers."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_vanishing_gradients", "layer_norms"]

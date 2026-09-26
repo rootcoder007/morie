@@ -5,7 +5,6 @@ from itertools import combinations
 from math import factorial
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["voting_power_index", "vtpwr"]

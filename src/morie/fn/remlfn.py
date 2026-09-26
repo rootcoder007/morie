@@ -3,7 +3,7 @@
 import math
 
 from ._richresult import RichResult
-from .ranova import ranova, _groups
+from .ranova import _groups, ranova
 
 __all__ = ["remlfn", "reml_variance_components"]
 

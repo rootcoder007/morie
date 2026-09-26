@@ -2,7 +2,6 @@
 """EstimateScores: attention scores from QJL-sketched keys."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["turboquant_estimate_scores"]

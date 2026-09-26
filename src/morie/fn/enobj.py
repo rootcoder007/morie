@@ -2,7 +2,6 @@
 """Elastic net penalized residual sum of squares."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['enetobj', 'elastic_net_objective']

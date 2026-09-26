@@ -3,7 +3,6 @@
 """ARIMA(p,d,q) model: ARMA applied to d-th differenced series."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_arima"]

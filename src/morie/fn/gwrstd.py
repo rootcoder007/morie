@@ -2,7 +2,6 @@
 """GWR local standard errors of coefficients."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

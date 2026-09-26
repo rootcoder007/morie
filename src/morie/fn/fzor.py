@@ -2,7 +2,6 @@
 """Fuzzy OR (t-conorm) operation."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "I've got a bad feeling about this. -- Everyone"

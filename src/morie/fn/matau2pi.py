@@ -16,9 +16,8 @@ so the two conventions can be compared rather than confused.
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02dl, k02tq
-
 from ._richresult import RichResult
+from .k02util import k02dl, k02tq
 
 __all__ = ["ma_tau2_predict_interval"]
 

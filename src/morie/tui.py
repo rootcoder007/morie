@@ -1678,9 +1678,8 @@ if _TEXTUAL_AVAILABLE:
 
             def _load(path_or_name=None):
                 """Load a dataset. Use load('cpads') or load('path/to/file.csv')."""
-                from morie.fn import _frame_core as _pd
-
                 from morie.data import list_datasets, load_dataset
+                from morie.fn import _frame_core as _pd
 
                 if path_or_name is None:
                     print("Usage: load('name') or load('path.csv')")
@@ -2208,7 +2207,6 @@ if _TEXTUAL_AVAILABLE:
                     print(f"  Columns: {', '.join(data.columns[:15])}")
                     return
                 from morie.fn import _frame_core as _pd
-
                 from morie.statistics import chi2_independence
 
                 ct = _pd.crosstab(data[col1], data[col2])
@@ -2294,9 +2292,8 @@ if _TEXTUAL_AVAILABLE:
                     if _nc:
                         print(f"  Numeric columns: {', '.join(_nc)}")
                     return
-                from morie.fn import _array_core as _np
-
                 from morie.bootstrap_methods import bootstrap as _bs
+                from morie.fn import _array_core as _np
 
                 vals = data[col].dropna().values.astype(float)
                 r = _bs(vals, _np.mean, n_boot=n_boot, ci_method="bca")
@@ -2308,7 +2305,6 @@ if _TEXTUAL_AVAILABLE:
             def _bh(*p_values):
                 """Benjamini-Hochberg correction. Usage: bh(0.01, 0.04, 0.03, 0.20)."""
                 from morie.fn import _array_core as _np
-
                 from morie.multiple_testing import benjamini_hochberg
 
                 pv = _np.array(p_values)
@@ -2817,9 +2813,8 @@ if _TEXTUAL_AVAILABLE:
                 if col1 is None or col2 is None:
                     print("Usage: odds_ratio('outcome_col', 'exposure_col')")
                     return
-                from morie.fn import _frame_core as _pd
-
                 from morie.effect_sizes import odds_ratio
+                from morie.fn import _frame_core as _pd
 
                 ct = _pd.crosstab(data[col1], data[col2])
                 if ct.shape != (2, 2):
@@ -2840,9 +2835,8 @@ if _TEXTUAL_AVAILABLE:
                 if col1 is None or col2 is None:
                     print("Usage: nnt('outcome_col', 'treatment_col')")
                     return
-                from morie.fn import _frame_core as _pd
-
                 from morie.effect_sizes import number_needed_to_treat
+                from morie.fn import _frame_core as _pd
 
                 ct = _pd.crosstab(data[col1], data[col2])
                 if ct.shape != (2, 2):
@@ -2917,7 +2911,6 @@ if _TEXTUAL_AVAILABLE:
             def _bonferroni(*pvals):
                 """Bonferroni correction. Usage: bonferroni(0.01, 0.04, 0.06)."""
                 from morie.fn import _array_core as _np
-
                 from morie.multiple_testing import bonferroni
 
                 r = bonferroni(_np.array(pvals))
@@ -2936,9 +2929,8 @@ if _TEXTUAL_AVAILABLE:
                 if col is None:
                     print("Usage: jackknife('column_name')")
                     return
-                from morie.fn import _array_core as _np
-
                 from morie.bootstrap_methods import jackknife
+                from morie.fn import _array_core as _np
 
                 r = jackknife(data[col].dropna().values, statistic=_np.mean)
                 print(f"  Est={r.estimate:.4f}, SE={r.se:.4f}, CI=[{r.ci_lower:.4f}, {r.ci_upper:.4f}]")

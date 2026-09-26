@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-from . import _stats_core as sp_stats
-
 from morie.fn._containers import CrimeResult
+
+from . import _stats_core as sp_stats
 
 
 def mto_fatality_rate(

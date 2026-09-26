@@ -2,7 +2,6 @@
 """LM test for SARMA (lag + error)."""
 
 from . import _array_core as np
-
 from ._containers import SpatialResult
 
 

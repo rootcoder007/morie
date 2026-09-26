@@ -90,8 +90,8 @@ def nn_distances(coords, k=1, metric="euclidean"):
     out = []
     idx = []
     for i in range(n):
-        pairs = sorted(((_d(coords[i], coords[j], metric), j)
-                        for j in range(n) if j != i))
+        pairs = sorted((_d(coords[i], coords[j], metric), j)
+                        for j in range(n) if j != i)
         out.append(pairs[k - 1][0])
         idx.append(pairs[k - 1][1])
     return out, idx

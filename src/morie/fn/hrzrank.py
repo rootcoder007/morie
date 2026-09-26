@@ -2,7 +2,6 @@
 """Semiparametric rank estimator for single-index model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_semipar_rank"]
@@ -81,8 +80,7 @@ def horowitz_semipar_rank(x, y, variant="mrc", M=None, n_restarts=8, seed=0):
     estimators); Han (1987), Sherman (1993), Cavanagh and Sherman
     (1998), Subbotin (2008).
     """
-    from ._horowitz import (GRID_SCAN_HALF_WIDTH, GRID_SCAN_POINTS,
-                            optimize_scale_normalized)
+    from ._horowitz import GRID_SCAN_HALF_WIDTH, GRID_SCAN_POINTS, optimize_scale_normalized
 
     X = np.atleast_2d(np.asarray(x, dtype=float))
     yv = np.asarray(y, dtype=float).ravel()

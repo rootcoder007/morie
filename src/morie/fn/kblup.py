@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kernel covariance of a replicated-line predictor."""
 
-from . import _tail1core as C
 from . import _gp_core as G
-
+from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ['kernblup', 'kernel_blup', 'kernelblup']

@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "The happiness of your life depends upon the quality of your thoughts. -- Marcus Aurelius"

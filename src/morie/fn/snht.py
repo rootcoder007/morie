@@ -3,8 +3,8 @@
 from math import sqrt
 
 from . import _array_core as np
-from ._richresult import hypothesis_test_result
 from ._k05core import rnorm
+from ._richresult import hypothesis_test_result
 
 __all__ = ["snht"]
 

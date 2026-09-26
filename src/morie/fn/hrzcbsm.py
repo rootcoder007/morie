@@ -2,7 +2,6 @@
 """Maximum-score estimator with choice-based samples."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["horowitz_choice_based_sms", "choice_based_optimal_shares"]
@@ -108,7 +107,6 @@ def horowitz_choice_based_sms(x, y, sampling_weights, smoothed=True, h=None,
     Theorems 4.7-4.8.
     """
     from . import _stats_core as stats
-
     from ._horowitz import optimize_scale_normalized
 
     X = np.atleast_2d(np.asarray(x, dtype=float))

@@ -2,7 +2,6 @@
 """Mutual information between two discrete variables."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 

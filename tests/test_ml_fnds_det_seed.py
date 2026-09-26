@@ -12,7 +12,6 @@ The default ``deterministic_seed=None`` path is unchanged.
 from __future__ import annotations
 
 from morie.fn import _array_core as np
-
 from morie.fn.gbens import gradient_boosting_ensemble
 from morie.fn.rfens import random_forest_ensemble
 from morie.fn.rndsr import random_search_cv

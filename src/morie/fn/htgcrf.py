@@ -2,7 +2,6 @@
 """Causal forest with a monotonicity constraint on the CATE."""
 
 from . import _array_core as np
-
 from ._cforest import CausalForest
 from ._richresult import RichResult
 

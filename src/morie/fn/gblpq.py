@@ -2,7 +2,6 @@
 """Cholesky re-parameterization that makes GBLUP an ordinary mixed model."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ['gblupeq', 'gblup_equivalence']

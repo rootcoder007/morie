@@ -10,8 +10,8 @@ from typing import Any, Union
 
 from . import _array_core as np
 from . import _stats_core as stats
-from ._sci_core import minimize as sp_minimize
 from ._sci_core import cdist
+from ._sci_core import minimize as sp_minimize
 
 
 def _rbf_kernel(X1, X2, length_scale=1.0, variance=1.0, cdf=None):

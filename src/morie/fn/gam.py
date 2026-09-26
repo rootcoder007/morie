@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import BSpline
-
 from ._containers import DescriptiveResult
+from ._sci_core import BSpline
 
 
 def _bspline_basis(x: np.ndarray, n_splines: int = 10, degree: int = 3) -> np.ndarray:

@@ -2,7 +2,6 @@
 """Nested counterfactual mediation effect."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["nested_counterfactual_mediation"]

@@ -67,7 +67,6 @@ at each state, the Q-table is fitted by the eq. 18 backup, and the
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["bcq", "batch_constrained_q"]

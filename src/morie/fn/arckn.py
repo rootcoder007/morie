@@ -2,7 +2,6 @@
 """Arc-cosine kernel matrix."""
 
 from . import _gp_core as G
-
 from ._richresult import RichResult
 
 __all__ = ['arckern', 'arc_cosine_kernel']

@@ -3,7 +3,6 @@
 """Dynamic quantization: quantize weights statically, activations at runtime."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_dynamic_quantization"]

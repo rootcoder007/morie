@@ -2,7 +2,6 @@
 """Joint moment of EDF counts at two points."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_edf_joint_moment"]

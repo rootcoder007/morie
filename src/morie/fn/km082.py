@@ -3,7 +3,6 @@
 """Kamath Eq 6.6: the WEAT effect size."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km080 import _sums
 

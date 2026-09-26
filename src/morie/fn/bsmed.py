@@ -2,7 +2,6 @@
 """Bootstrap percentile CI for the indirect effect in simple mediation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._rrng_core import RRandom
 

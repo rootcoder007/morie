@@ -2,7 +2,6 @@
 """Sequential targeted parametric g-formula."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["sequential_target_models"]

@@ -2,9 +2,8 @@
 """Realised power variation of order p."""
 
 from . import _array_core as np
-from ._sci_core import special
-
 from ._richresult import RichResult
+from ._sci_core import special
 
 __all__ = ["vol_power_variation"]
 

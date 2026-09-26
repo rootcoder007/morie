@@ -1,8 +1,8 @@
 import sqlite3
 
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _frame_core as pd
 from morie.modules import list_modules, run_module
 
 

@@ -18,10 +18,8 @@ from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
 from . import _s03core as core
-
-from .kalmf import kalman_filter as _matrix_filter
-
 from ._richresult import RichResult
+from .kalmf import kalman_filter as _matrix_filter
 
 __all__ = ["kalman_filter"]
 

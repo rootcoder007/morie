@@ -2,7 +2,6 @@
 """Longitudinal mediation (cross-lagged panel)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["longitudinal_mediation"]

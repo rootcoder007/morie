@@ -2,7 +2,6 @@
 """Proportional allocation of a sample across strata."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["propalloc", "proportional_allocation"]

@@ -3,7 +3,6 @@
 """Receiver operating characteristic: FPR vs TPR over thresholds."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmauc import geron_auc_roc
 

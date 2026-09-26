@@ -2,7 +2,6 @@
 """Random-walk graph kernel between two graphs."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["random_walk_kernel"]

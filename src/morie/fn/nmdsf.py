@@ -2,7 +2,6 @@
 """Nonmetric MDS via isotonic regression (Kruskal 1964)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .isotr import isotonic_regression_disparity
 from .krust import kruskal_stress

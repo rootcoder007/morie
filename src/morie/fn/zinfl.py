@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import special
-
 from ._containers import RegressionResult
+from ._sci_core import special
 
 
 def zero_inflated_poisson(

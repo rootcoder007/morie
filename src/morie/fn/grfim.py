@@ -3,7 +3,6 @@
 """Feature importance via mean decrease in impurity across a forest."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_feature_importance_mdi"]

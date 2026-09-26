@@ -3,7 +3,6 @@
 """Feature-map size of a convolutional layer."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_feature_map_dim"]

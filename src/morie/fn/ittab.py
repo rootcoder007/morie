@@ -3,11 +3,11 @@
 
 from __future__ import annotations
 
+from morie.fn.crba import crba
+
 from . import _array_core as np
 from . import _frame_core as pd
 from . import _stats_core as sp
-
-from morie.fn.crba import crba
 
 
 def item_table(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:

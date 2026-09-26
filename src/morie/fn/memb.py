@@ -55,7 +55,6 @@ which the paper says outright and this module's anchors demonstrate.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["memb", "membership_inference", "logistic_trainer",

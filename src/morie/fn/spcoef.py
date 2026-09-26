@@ -2,7 +2,6 @@
 """Spearman's rho implied by a copula."""
 
 from . import _array_core as np
-
 from ._copula import FAMILIES, copula_cdf
 from ._richresult import RichResult
 

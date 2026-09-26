@@ -2,7 +2,6 @@
 """Local linear quantile regression."""
 
 from . import _array_core as np
-
 from ._horowitz import local_linear_quantile
 from ._richresult import RichResult
 

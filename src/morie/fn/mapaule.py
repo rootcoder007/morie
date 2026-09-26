@@ -2,7 +2,6 @@
 """Paule-Mandel estimator of between-study variance."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ma_paule_mandel"]
@@ -61,7 +60,6 @@ def ma_paule_mandel(yi, vi, max_iter=200, tol=1e-12):
     Methods* 7:55-79, for the comparison of tau^2 estimators.
     """
     from . import _stats_core as stats
-
     from ._psycho import dersimonian_laird, fixed_effect_pool
 
     y = np.asarray(yi, dtype=float).ravel()

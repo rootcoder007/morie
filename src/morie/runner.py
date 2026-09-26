@@ -10,15 +10,14 @@ import argparse
 import sys
 from pathlib import Path
 
-from . import __version__
-from .modules import DEFAULT_CPADS_CSV, list_modules, run_module
-from .perseus import ask_percy
-
 # ---------------------------------------------------------------------------
 # Emissions tracking -- use vendored morie.emissions, fall back to codecarbon
 # ---------------------------------------------------------------------------
-
 from morie.emissions import EmissionsTracker as _EmissionsTracker
+
+from . import __version__
+from .modules import DEFAULT_CPADS_CSV, list_modules, run_module
+from .perseus import ask_percy
 
 _CODECARBON_AVAILABLE = True  # the vendored tracker is always present
 

@@ -2,7 +2,6 @@
 """Empirical distribution of regression residuals."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_residual_edf", "kosorok_ch1_residual_empirical_distribution"]

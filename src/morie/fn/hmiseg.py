@@ -3,7 +3,6 @@
 """Image segmentation via k-means on pixel colors."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmkmn import geron_kmeans
 

@@ -15,7 +15,6 @@ with sigma_m^2(t) computed via the Yang (1978) plug-in.
 
 from . import _array_core as np
 from . import _stats_core as _sps
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_mrl_asymptotic"]

@@ -2,7 +2,6 @@
 """Newey-West HAC covariance estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["newey_west_hac"]

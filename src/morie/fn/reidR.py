@@ -2,7 +2,6 @@
 """Re-identification risk from quasi-identifier equivalence classes."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["reidentification_risk"]

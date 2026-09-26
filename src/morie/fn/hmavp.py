@@ -2,7 +2,6 @@
 """Global and windowed average pooling."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grapl import geron_average_pooling_2d
 

@@ -17,7 +17,6 @@ import math as _math
 
 from . import _array_core as _ac
 
-
 # ------------------------------------------------------------ helpers
 
 def _poly(roots):

@@ -2,7 +2,6 @@
 """Precision, recall, and F1 score."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 _QUOTE = "Without music, life would be a mistake. -- Friedrich Nietzsche"

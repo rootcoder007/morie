@@ -4,10 +4,9 @@
 from __future__ import annotations
 
 from . import _array_core as np
+from ._containers import ESRes
 from ._sci_core import brentq
 from ._stats_core import norm
-
-from ._containers import ESRes
 
 
 def benchmark_dose(

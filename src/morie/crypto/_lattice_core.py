@@ -2,9 +2,6 @@
 
 from __future__ import annotations
 
-from morie.fn import _array_core as np
-from morie.crypto._sysrng import system_rng
-
 from morie.crypto._poly_ring import (
     build_zetas,
     inv_ntt,
@@ -13,6 +10,8 @@ from morie.crypto._poly_ring import (
     poly_mul_ntt,
     poly_ring_mul,
 )
+from morie.crypto._sysrng import system_rng
+from morie.fn import _array_core as np
 
 
 def gram_schmidt(basis: np.ndarray) -> tuple[np.ndarray, np.ndarray]:

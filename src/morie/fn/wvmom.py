@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._stats_core import kurtosis, skew
-
 from ._containers import DescriptiveResult
+from ._stats_core import kurtosis, skew
 
 _QUOTE = "Difficult to see. Always in motion is the future."
 

@@ -6,7 +6,8 @@ one-function modules named after book coordinates; the public
 symbols are unchanged.
 """
 
-from math import fsum, sqrt, cos, sin, pi, atan2, hypot
+from math import atan2, cos, fsum, hypot, pi, sin, sqrt
+
 from . import _array_core as np
 from . import _stats_core as stats
 from ._rgcore import aslist
@@ -1854,7 +1855,8 @@ def pwavedet(x, qrs, fs, template=None):
     # window carried the preceding T wave into the search interval.
     if fs <= 22.0:
         raise ValueError("fs must exceed 22 Hz for the 3-11 Hz bandpass")
-    from ._signal_core import butter as _butter, filtfilt as _filtfilt
+    from ._signal_core import butter as _butter
+    from ._signal_core import filtfilt as _filtfilt
     _b, _a = _butter(2, [3.0, 11.0], btype="band", fs=fs)
     bp = [float(v) for v in _filtfilt(_b, _a, y)]
 
@@ -3351,9 +3353,7 @@ def lengthxfm(chans, wwin, fs):
     if not chans:
         raise ValueError("need at least one channel")
     first = chans[0]
-    if not hasattr(first, "__len__") and not hasattr(first, "__iter__"):
-        chans = [chans]
-    elif isinstance(first, (int, float)):
+    if not hasattr(first, "__len__") and not hasattr(first, "__iter__") or isinstance(first, (int, float)):
         chans = [chans]
     ch = [_rgcheck(c, 2, "channel") for c in chans]
     nlen = len(ch[0])

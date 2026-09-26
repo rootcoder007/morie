@@ -78,7 +78,6 @@ is much higher". That is what ``trait="binary"`` does here; no GLMM.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gwasem", "emmax", "emmax_gwas", "gower_normalize", "reml_variance",

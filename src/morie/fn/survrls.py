@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Restricted mean survival time over a fixed horizon."""
 
-from .rmst import rmst_estimate
-
 from ._richresult import RichResult
+from .rmst import rmst_estimate
 
 __all__ = ["restricted_lifetime"]
 

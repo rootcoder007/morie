@@ -257,7 +257,6 @@ def _test_verify():
 def _test_statistics():
     """Test a real statistical function."""
     from morie.fn import _array_core as np
-
     from morie.statistics import one_sample_ttest
 
     data = np.array([2.1, 3.5, 2.8, 4.0, 3.2])
@@ -271,9 +270,8 @@ def _test_statistics():
 
 def _test_effect_sizes():
     """Test effect size computation."""
-    from morie.fn import _array_core as np
-
     from morie.effect_sizes import cohens_d
+    from morie.fn import _array_core as np
 
     g1 = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     g2 = np.array([2.0, 3.0, 4.0, 5.0, 6.0])
@@ -286,7 +284,6 @@ def _test_effect_sizes():
 def _test_multiple_testing():
     """Test p-value adjustment."""
     from morie.fn import _array_core as np
-
     from morie.multiple_testing import benjamini_hochberg
 
     p = np.array([0.001, 0.01, 0.05, 0.1, 0.5])
@@ -365,9 +362,8 @@ def _test_sensitivity():
 
 def _test_bootstrap():
     """Test bootstrap inference."""
-    from morie.fn import _array_core as np
-
     from morie.bootstrap_methods import bootstrap
+    from morie.fn import _array_core as np
 
     data = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0])
     result = bootstrap(data, np.mean, n_boot=500, ci_method="percentile", seed=42)

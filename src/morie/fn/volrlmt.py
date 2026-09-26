@@ -2,7 +2,6 @@
 """AR(1) on log realised volatility."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vol_realised_log_vol_ar"]

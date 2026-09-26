@@ -4,7 +4,6 @@
 Alammar Ch 9)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_openclip_contrastive"]

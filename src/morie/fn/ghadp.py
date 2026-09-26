@@ -2,7 +2,6 @@
 """Adaptive posterior contraction over a range of smoothnesses."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ghosal_adaptation"]

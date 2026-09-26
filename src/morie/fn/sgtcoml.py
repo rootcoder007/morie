@@ -19,9 +19,8 @@ one; ``louv`` runs the full multi-level algorithm.
 from __future__ import annotations
 
 from . import _array_core as np
-from .k02util import k02mod
-
 from ._richresult import RichResult
+from .k02util import k02mod
 
 __all__ = ["sgt_louvain_step"]
 

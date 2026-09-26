@@ -2,10 +2,8 @@
 """GWR bandwidth selection by cross-validation or corrected AIC."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_gwr import (aic_from_parts, aicc_from_parts, cv_score, gwr_fit,
-                         pairwise_distances, select_bandwidth)
+from ._schab_gwr import aic_from_parts, aicc_from_parts, cv_score, gwr_fit, pairwise_distances, select_bandwidth
 
 __all__ = ["schabenberger_gwr_bandwidth"]
 

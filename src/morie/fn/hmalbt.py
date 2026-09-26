@@ -3,7 +3,6 @@
 """ALBERT: cross-layer parameter sharing + factorized embeddings."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_albert"]

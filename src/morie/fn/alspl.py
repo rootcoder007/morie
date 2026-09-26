@@ -3,7 +3,6 @@
 """Ancestral sampling from decoder logits (Alammar Ch 6)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["alammar_sampling_decoding"]

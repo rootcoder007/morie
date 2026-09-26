@@ -2,7 +2,6 @@
 """BFGS secant update of the Hessian and its inverse."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["bfgsupd", "bfgs"]

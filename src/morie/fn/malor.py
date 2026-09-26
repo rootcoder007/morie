@@ -17,7 +17,6 @@ statistic finite for sparse tables.  Verified against
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ma_log_odds_ratio"]

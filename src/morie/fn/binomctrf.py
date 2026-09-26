@@ -6,7 +6,6 @@ Morin (2016), Probability: For the Enthusiastic Beginner, eq (5.5).
 import math
 
 from . import _morin
-
 from ._richresult import RichResult
 
 __all__ = ["binomctrf"]

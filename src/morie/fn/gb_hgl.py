@@ -2,7 +2,6 @@
 """Hodges-Lehmann one-sample location estimator from Walsh averages."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gibbons_hodges_lehmann"]

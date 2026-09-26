@@ -1,12 +1,11 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Epidemic curve (epi curve) construction."""
 
+import datetime as _dt
+
 from . import _array_core as np
 from . import _frame_core as pd
-
 from ._containers import DescriptiveResult
-
-import datetime as _dt
 
 
 def _iter_dates(dates):

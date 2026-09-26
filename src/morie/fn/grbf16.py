@@ -3,7 +3,6 @@
 """BF16 representation: 1 sign + 8 exponent + 7 mantissa bits (FP32's exponent range)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_bf16_range"]

@@ -2,7 +2,6 @@
 """Kernel density derivative."""
 
 from . import _array_core as np
-
 from ._horowitz import kde_deriv
 from ._richresult import RichResult
 

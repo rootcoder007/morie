@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._containers import SignalResult
 
 _QUOTE = "I know what I have to do but I don't know if I have the strength to do it."

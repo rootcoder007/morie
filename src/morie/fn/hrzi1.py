@@ -16,9 +16,8 @@ formula in Ichimura (1993, Eq. 4.2).
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import minimize
-
 from ._richresult import RichResult
+from ._sci_core import minimize
 
 __all__ = ["horowitz_index_model"]
 

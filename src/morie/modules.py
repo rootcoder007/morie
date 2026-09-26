@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import math as _math
 import shutil
 import subprocess
 import tempfile
@@ -11,8 +12,6 @@ from pathlib import Path
 
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
-import math as _math
-
 from morie.fn._glm_core import NormalIndPower
 
 

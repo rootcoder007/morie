@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
+from morie.fn._containers import DescriptiveResult
+
 from . import _array_core as np
 from . import _stats_core as sp_stats
-
-from morie.fn._containers import DescriptiveResult
 
 
 def mto_trend(

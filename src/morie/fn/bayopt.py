@@ -60,7 +60,6 @@ the observations exactly.
 import math
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
 
 __all__ = [

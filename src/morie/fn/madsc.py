@@ -12,7 +12,6 @@ consistent for sigma at the normal.  Matches ``stats::mad`` exactly.
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["mad_scale"]

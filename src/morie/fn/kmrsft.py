@@ -4,7 +4,6 @@
 prompt and SFT on them."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_rejection_sampling_finetune"]

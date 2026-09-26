@@ -3,7 +3,6 @@
 """Kamath Eq 5.5: the RLHF objective, reward minus a KL leash."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch5_rlhf_objective"]

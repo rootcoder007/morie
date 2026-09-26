@@ -3,7 +3,6 @@
 """Learning-rate heuristic: start with LR finder, use 1/10 of divergence point."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_learning_rate_heuristic"]

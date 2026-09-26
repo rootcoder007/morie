@@ -4,7 +4,6 @@
 import math
 
 from . import _schab_pp as pp
-
 from ._richresult import RichResult
 
 __all__ = ["pair_correlation_function"]

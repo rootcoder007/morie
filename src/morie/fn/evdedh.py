@@ -2,7 +2,6 @@
 """Dekkers-Einmahl-de Haan moment estimator."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ev_dedh", "evt_dekkers_einmahl_dehaan"]

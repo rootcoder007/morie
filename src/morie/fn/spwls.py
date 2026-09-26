@@ -2,7 +2,6 @@
 """Weighted least squares fitting of a semivariogram model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_fit import as_empirical_variogram, fit_semivariogram
 from ._schab_vario import semivariogram

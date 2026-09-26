@@ -2,9 +2,8 @@
 """Asymptotic null variance of a linear rank statistic."""
 
 from . import _array_core as np
-from ._sci_core import integrate
-
 from ._richresult import RichResult
+from ._sci_core import integrate
 
 __all__ = ["gibbons_cs_null_var"]
 

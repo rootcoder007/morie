@@ -6,12 +6,11 @@ one-function modules named after book coordinates; the public
 symbols are unchanged.
 """
 
-from math import cos, exp, fsum, pi, sin
-from math import log, sqrt
+from math import cos, exp, fsum, log, pi, sin, sqrt
+
 from . import _array_core as np
 from . import _stats_core as stats
-from ._rgcore import aslist
-from ._rgcore import gridint
+from ._rgcore import aslist, gridint
 from ._richresult import RichResult
 
 __all__ = [

@@ -6,7 +6,6 @@ Lim, Arik, Loeff and Pfister (2021) IJF 37(4), arXiv:1912.09363, eqs. (2)-(6), (
 """
 
 from . import _joseph as _core
-
 from ._richresult import RichResult
 
 __all__ = ["tftnet", "joseph_temporal_fusion_transformer"]

@@ -3,7 +3,6 @@
 """Fine-tune a pretrained language model on a downstream task."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_finetune_lm"]

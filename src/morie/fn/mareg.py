@@ -5,7 +5,6 @@ import math
 
 from . import _macore as ma
 from . import _s03core as core
-
 from ._richresult import RichResult
 
 __all__ = ["ma_meta_regression"]

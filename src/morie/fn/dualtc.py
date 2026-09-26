@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .totcorr import _entropy, _validate_pmf
 

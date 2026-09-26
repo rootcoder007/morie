@@ -3,7 +3,6 @@
 __all__ = ["snphw"]
 
 from . import _array_core as np
-
 from ._containers import GenomicsResult
 
 

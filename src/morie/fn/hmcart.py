@@ -3,7 +3,6 @@
 """CART algorithm: greedy binary splits minimizing impurity."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grcart import geron_cart_split_cost
 

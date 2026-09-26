@@ -2,7 +2,6 @@
 """Second boundary-free MRL estimator m_tilde_X,2."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["fauzi_mrl_boundary_free_2", "fauzi_mrl_est2"]

@@ -2,7 +2,6 @@
 """Monotone instrumental variable bounds."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["mivbound", "bound_monot_inst"]

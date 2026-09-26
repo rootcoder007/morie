@@ -2,10 +2,9 @@
 """Black-Scholes implied volatility by root-finding."""
 
 from . import _array_core as np
-from ._sci_core import optimize
 from . import _stats_core as stats
-
 from ._richresult import RichResult
+from ._sci_core import optimize
 
 __all__ = ["vol_implied_volatility_bs"]
 

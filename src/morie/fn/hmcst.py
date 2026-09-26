@@ -3,7 +3,6 @@
 """Contrastive learning: pull positives close, push negatives far."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grctr import geron_contrastive_infonce
 

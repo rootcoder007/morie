@@ -6,7 +6,6 @@ from __future__ import annotations
 import math
 
 from . import _t4core as T
-
 from ._richresult import RichResult
 
 __all__ = ["phillips_perron_unit_root"]

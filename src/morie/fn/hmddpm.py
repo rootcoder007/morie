@@ -3,7 +3,6 @@
 """Denoising diffusion probabilistic model (DDPM)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .hmdfw import beta_schedule_values, lcg_normal
 

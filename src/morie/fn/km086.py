@@ -3,7 +3,6 @@
 """Kamath Eq 6.10: pseudo-log-likelihood (PLL)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_pll"]

@@ -6,7 +6,6 @@ import math
 from . import _horowitz as hrz
 from . import _s03core as core
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["np_bayes_quant_reg"]

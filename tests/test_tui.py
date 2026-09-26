@@ -7,6 +7,7 @@ Uses Textual's App.run_test() for headless async testing.
 from __future__ import annotations
 
 import pytest as _pytest
+
 _pytest.importorskip("morie.tui")  # interactive/agent layer ships in the source tree only
 
 import pytest
@@ -437,7 +438,6 @@ class TestSummaryHelper:
     def test_summary_with_dataframe_arg(self):
         """summary(df) should not raise ValueError about truth value."""
         from morie.fn import _frame_core as pd
-
         from morie.tui import ReplScreen
 
         screen = ReplScreen()
@@ -449,7 +449,6 @@ class TestSummaryHelper:
 
     def test_summary_with_string_arg(self):
         from morie.fn import _frame_core as pd
-
         from morie.tui import ReplScreen
 
         screen = ReplScreen()
@@ -698,7 +697,6 @@ class TestAliasExecution:
         """All helpers with required args should show usage when called with none."""
         from morie.fn import _array_core as np
         from morie.fn import _frame_core as pd
-
         from morie.tui import ReplScreen
 
         screen = ReplScreen()

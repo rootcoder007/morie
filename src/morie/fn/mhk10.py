@@ -2,7 +2,6 @@
 """Kessler K10 psychological distress score."""
 
 from . import _array_core as np
-
 from ._containers import ESRes
 
 

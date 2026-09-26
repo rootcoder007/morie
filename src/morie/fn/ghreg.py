@@ -2,7 +2,6 @@
 """Bayesian-nonparametric regression -- GP prior on the mean."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .ghgps import ghosal_gp_squared_exponential
 

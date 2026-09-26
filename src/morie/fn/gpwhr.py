@@ -25,9 +25,7 @@ import math
 
 from . import _array_core as np  # noqa: F401
 from . import _s03core as k
-
 from ._richresult import RichResult
-
 from .gpkrr import gp_kernel_ridge_reg
 
 __all__ = ["gp_warped"]

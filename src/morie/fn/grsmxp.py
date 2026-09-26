@@ -3,7 +3,6 @@
 """Softmax probabilities from a linear score model."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grn021 import softmax_vector
 from .grsmxs import score_matrix

@@ -20,7 +20,6 @@ none is added.
 from __future__ import annotations
 
 from . import _s03core as k
-
 from ._richresult import RichResult
 
 __all__ = ["sigbasis"]

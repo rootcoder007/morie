@@ -2,7 +2,6 @@
 """Cox likelihood with the Breslow baseline estimator."""
 
 from . import _array_core as np
-
 from ._kosorok import cox_score
 from ._richresult import RichResult
 

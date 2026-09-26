@@ -2,7 +2,6 @@
 """Causal LM next-token cross-entropy loss (GPT-style)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_causal_lm_loss"]

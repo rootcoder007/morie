@@ -20,7 +20,6 @@ tau = -dt / log(phi), and the red spectrum
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["ar1_climate"]

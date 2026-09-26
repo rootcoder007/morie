@@ -18,7 +18,6 @@ Press, Ch 3-4.
 import math
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["acute_toxicity_ld50", "effective_dose"]

@@ -31,11 +31,9 @@ R parity: ``r-morie-oss`` ``R/taphonomy.R``
 from __future__ import annotations
 
 import math
-
-from morie.fn import _array_core as _acnp
-
 from typing import Any
 
+from morie.fn import _array_core as _acnp
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn._stats_core import norm

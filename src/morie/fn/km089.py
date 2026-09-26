@@ -3,7 +3,6 @@
 """Kamath Eq 6.13: Social Group Substitution invariance."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_sgs_invariance"]

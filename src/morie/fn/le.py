@@ -2,7 +2,6 @@
 """Life expectancy from an abridged life table."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

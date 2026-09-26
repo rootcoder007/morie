@@ -3,7 +3,6 @@
 """Kamath Eq 6.27: the LSTM's softmax over the vocabulary."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_lstm_softmax_word"]

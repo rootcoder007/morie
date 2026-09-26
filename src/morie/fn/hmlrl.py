@@ -3,7 +3,6 @@
 """Life satisfaction = theta0 + theta1 * GDP_per_capita (introductory example)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_linear_regression_life"]

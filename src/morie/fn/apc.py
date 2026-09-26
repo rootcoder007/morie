@@ -2,7 +2,6 @@
 """Age-period-cohort (APC) decomposition via intrinsic estimator."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

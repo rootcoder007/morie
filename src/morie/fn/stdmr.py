@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from . import _stats_core as stats
-
 from ._containers import ESRes
 
 

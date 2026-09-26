@@ -5,7 +5,6 @@ import math
 
 from . import _s03core as core
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["sgt_mixing_time"]

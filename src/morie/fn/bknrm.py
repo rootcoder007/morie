@@ -3,7 +3,6 @@
 """Burkov Ch 1: the Euclidean norm."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["burkov_vector_norm"]

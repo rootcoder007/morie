@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multi-environment genomic model with a genotype-by-environment term."""
 
-from . import _tail1core as C
 from . import _gp_core as GC
-
+from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ['gxeblup', 'multi_env_model', 'multienvmodel']

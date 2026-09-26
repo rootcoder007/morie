@@ -17,7 +17,6 @@ row norm of Q), which is stable for collinear designs.  Matches
 from __future__ import annotations
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["hat_matrix_diagonal"]

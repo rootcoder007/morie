@@ -3,7 +3,6 @@
 """Word embeddings: dense vector representations learned per token."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_word_embeddings"]

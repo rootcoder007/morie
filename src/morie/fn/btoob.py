@@ -2,7 +2,6 @@
 """Out-of-bag error for a bootstrap-aggregated predictor."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["boot_oob_error"]

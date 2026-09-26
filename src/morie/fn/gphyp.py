@@ -4,10 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from ._sci_core import cholesky, solve_triangular
-from ._sci_core import minimize
-
 from ._containers import SpatialResult
+from ._sci_core import cholesky, minimize, solve_triangular
 
 
 def gaussian_process_marginal_likelihood(

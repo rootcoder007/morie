@@ -3,7 +3,6 @@
 """Closed-form KL divergence of a diagonal Gaussian from N(0, I)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_kl_divergence_gaussian"]

@@ -6,7 +6,6 @@ Wu, Xu, Wang and Long (2021) NeurIPS, arXiv:2106.13008, eqs. (1), (5), (6)
 """
 
 from . import _joseph as _core
-
 from ._richresult import RichResult
 
 __all__ = ["autoform", "joseph_autoformer"]

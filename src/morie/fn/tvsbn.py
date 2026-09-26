@@ -2,7 +2,6 @@
 """Tversky similarity on binary fingerprints."""
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["tversky_similarity"]

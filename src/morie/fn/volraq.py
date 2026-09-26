@@ -2,7 +2,6 @@
 """Realised quadratic variation of a sampled path."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["vol_realised_quadratic_var"]

@@ -2,7 +2,6 @@
 """Exact permutation test for two-sample location."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

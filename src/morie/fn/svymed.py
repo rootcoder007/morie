@@ -2,9 +2,8 @@
 """Median of a complex survey sample."""
 
 from . import _tail1core as C
-from .svyqtl import survey_quantile
-
 from ._richresult import RichResult
+from .svyqtl import survey_quantile
 
 __all__ = ["survey_median"]
 

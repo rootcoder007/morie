@@ -6,7 +6,6 @@ MacKay (2003) eq. (28.13)-(28.14), p. 351
 """
 
 from . import _itila as _core
-
 from ._richresult import RichResult
 
 __all__ = ["evratio", "information_theory_mackay_chapter_28_equation_13"]

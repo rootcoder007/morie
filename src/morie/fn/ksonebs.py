@@ -15,7 +15,6 @@ def ksonebs(
 ):
     """Kolmogorov-Smirnov goodness-of-fit / two-sample test."""
     from . import _stats_core as _ss
-
     from ._richresult import hypothesis_test_result
 
     a = np.asarray(x, dtype=float)

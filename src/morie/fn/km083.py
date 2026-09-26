@@ -3,7 +3,6 @@
 """Kamath Eq 6.7: CEAT's random-effects pooling of WEAT samples."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .km082 import kamath_ch6_weat_effect_size
 

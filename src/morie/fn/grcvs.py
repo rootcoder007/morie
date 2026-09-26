@@ -3,7 +3,6 @@
 """Mean cross-validation score across K folds."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_cross_validation_score"]

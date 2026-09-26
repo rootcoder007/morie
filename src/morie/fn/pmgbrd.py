@@ -6,7 +6,6 @@ from __future__ import annotations
 from typing import Literal
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 from .pmgemm import pm_gemm_rr
 

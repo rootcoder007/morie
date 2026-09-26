@@ -1,7 +1,6 @@
 """Vanilla (batch) gradient descent for linear regression."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["gradient_descent_vanilla"]

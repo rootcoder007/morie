@@ -2,7 +2,6 @@
 """PCA on genotype matrix for population stratification."""
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

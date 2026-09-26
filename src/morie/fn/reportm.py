@@ -6,7 +6,6 @@ from __future__ import annotations
 import math
 
 from . import _tail1core as C
-
 from ._richresult import RichResult
 
 __all__ = ["reportm", "report_noisy_max"]

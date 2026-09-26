@@ -486,10 +486,7 @@ def chemscore_dock(receptor, ligand, smoothing="gaussian", dg0=0.0,
                     be = [_angle(latt, rx, ratt)] if ratt is not None else []
                     hbonds.append((hb_r, al, be))
                     pair = ("hbond", hb_r)
-            elif rrole == "metal" and lrole == "acceptor":
-                metals.append(d)
-                pair = ("metal", d)
-            elif rrole == "acceptor" and lrole == "metal":
+            elif rrole == "metal" and lrole == "acceptor" or rrole == "acceptor" and lrole == "metal":
                 metals.append(d)
                 pair = ("metal", d)
             elif rrole in ("lipophilic", "sulphur") and lrole == "lipophilic":

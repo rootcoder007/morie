@@ -3,7 +3,6 @@
 """Sinusoidal positional encoding (Vaswani et al. 2017)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_sinusoidal_positional_encoding"]

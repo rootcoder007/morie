@@ -2,7 +2,6 @@
 """Lipschitz bound for LAD criteria."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_lad_lipschitz_bound"]

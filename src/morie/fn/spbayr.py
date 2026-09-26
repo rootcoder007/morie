@@ -2,12 +2,18 @@
 """Bayesian hierarchical spatial models for disease mapping."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
-from ._schab_glmm import (interaction_structure, lcar_full_conditional,
-                          lcar_precision, linear_trend_log_risk,
-                          neighbour_structure, nonparametric_log_risk,
-                          null_space_constraints, random_walk_structure, smr)
+from ._schab_glmm import (
+    interaction_structure,
+    lcar_full_conditional,
+    lcar_precision,
+    linear_trend_log_risk,
+    neighbour_structure,
+    nonparametric_log_risk,
+    null_space_constraints,
+    random_walk_structure,
+    smr,
+)
 
 __all__ = ["schabenberger_bayes_hierarchical"]
 

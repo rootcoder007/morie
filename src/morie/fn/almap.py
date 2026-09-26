@@ -2,7 +2,6 @@
 """Mean average precision."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["mean_average_precision", "alammar_mean_average_precision"]

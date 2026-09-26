@@ -2,7 +2,6 @@
 """Moments of Moran's I under Gaussianity and under randomization."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from ._schab_moran import geary_c, moran_i, moran_moments, weight_sums
 

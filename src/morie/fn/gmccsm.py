@@ -2,7 +2,6 @@
 """Cross-method consistency check (g-formula vs IPW vs AIPW)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .aiptdd import _logit_fit
 from .causmrop import causal_robins_g_formula

@@ -1,9 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Uno C-index for censored data."""
 
-from .cstat import cstat
-
 from ._richresult import RichResult
+from .cstat import cstat
 
 __all__ = ["uno_concordance"]
 

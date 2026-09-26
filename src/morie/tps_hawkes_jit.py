@@ -835,6 +835,7 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
     # Hessenberg + shifted-QR kernel (LAPACK-grade accuracy; the
     # char-poly route loses the small modes above order ~6).
     import array as _pa
+
     from morie import _core as _ck
     flat = _pa.array("d", [float(x2) for row in Ad for x2 in row])
     wr_b, wi_b = _ck.eig_general(flat, m)

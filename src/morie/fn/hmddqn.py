@@ -3,7 +3,6 @@
 """Double DQN: decouple action selection and evaluation."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grddqn import geron_double_dqn_target
 from .hmdqn import check_buffer

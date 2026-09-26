@@ -3,7 +3,6 @@
 """Stacking meta-learner: base-model predictions feed a trained blender."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["geron_stacking_predictor"]

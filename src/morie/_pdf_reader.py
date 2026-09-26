@@ -241,10 +241,7 @@ def _extract_from_content(data):
                         elif isinstance(el, (int, float)) \
                                 and el < -180:
                             out.append(" ")     # big kern = space
-            elif tok in (b"Td", b"TD", b"T*"):
-                if out and not out[-1].endswith("\n"):
-                    out.append("\n")
-            elif tok == b"Tm":
+            elif tok in (b"Td", b"TD", b"T*") or tok == b"Tm":
                 if out and not out[-1].endswith("\n"):
                     out.append("\n")
             stack = []

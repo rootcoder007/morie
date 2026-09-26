@@ -18,6 +18,7 @@ from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as sp_stats
 
+
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""
 

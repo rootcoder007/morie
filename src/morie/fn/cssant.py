@@ -2,7 +2,6 @@
 """Callaway-Sant'Anna group-time average treatment effects."""
 
 from . import _array_core as np
-
 from ._did import as_panel, first_treatment
 from ._richresult import RichResult
 

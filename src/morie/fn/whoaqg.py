@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Any
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 # WHO Global Air Quality Guidelines 2021, 2nd ed.

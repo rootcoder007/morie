@@ -3,7 +3,6 @@
 """Hybrid retrieval: weighted fusion of dense and sparse scores."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_hybrid_retrieval_fusion"]

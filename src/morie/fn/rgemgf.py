@@ -46,7 +46,6 @@ from __future__ import annotations
 from math import sqrt
 
 from . import _array_core as np  # noqa: F401
-
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_emg_force"]
@@ -175,8 +174,8 @@ def rangayyan_emg_force(emg, force, fs, window=None, turn_threshold=100.0):
     r2_rms, r2_zcr, r2_tcr : equation (5.28) for each parameter
     slope_rms, intercept_rms, ... : the straight-line fits
     """
-    from .bsastat import rms as _rms
     from .bsastat import rangayyan_zero_crossing as _zcr
+    from .bsastat import rms as _rms
     from .bsastat import turnscount as _turns
 
     e = _aslist(emg)

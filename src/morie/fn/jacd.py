@@ -6,7 +6,6 @@ from __future__ import annotations
 from itertools import combinations
 
 from . import _array_core as np
-
 from ._containers import DescriptiveResult
 
 

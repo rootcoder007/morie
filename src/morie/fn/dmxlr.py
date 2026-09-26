@@ -6,7 +6,6 @@ __all__ = ["dmxlr"]
 from itertools import product as _product
 
 from . import _array_core as np
-
 from ._containers import GenomicsResult
 
 

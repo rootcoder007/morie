@@ -2,10 +2,8 @@
 """Empirical-Bayes hyper-parameter selection for a DP prior."""
 
 from . import _array_core as np
-from ._sci_core import minimize_scalar
-from ._sci_core import gammaln
-
 from ._richresult import RichResult
+from ._sci_core import gammaln, minimize_scalar
 
 __all__ = ["ghosal_empirical_bayes"]
 

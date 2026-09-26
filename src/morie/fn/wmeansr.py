@@ -1,7 +1,6 @@
 """Weighted (Hajek) survey mean with linearised variance."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
 __all__ = ["weighted_mean_survey"]

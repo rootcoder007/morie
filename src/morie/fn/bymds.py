@@ -2,7 +2,6 @@
 """Bayesian metric MDS with posterior credible regions."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .mmdsf import metric_mds_torgerson
 from .procs import procrustes_rotation

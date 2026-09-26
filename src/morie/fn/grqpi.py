@@ -3,7 +3,6 @@
 """Action-value function Q^pi(s, a) for a finite MDP."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 from .grvpi import policy_evaluation
 

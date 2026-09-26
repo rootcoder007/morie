@@ -4,7 +4,6 @@ Morin (2016), Probability: For the Enthusiastic Beginner, eqs (6.3)-(6.6), (6.17
 """
 
 from . import _morin
-
 from ._richresult import RichResult
 
 __all__ = ["linmodel"]

@@ -6,7 +6,6 @@ MacKay (2003) eq. (3.16), p. 52
 """
 
 from . import _itila as _core
-
 from ._richresult import RichResult
 
 __all__ = ["sucrule", "information_theory_mackay_chapter_3_equation_16"]

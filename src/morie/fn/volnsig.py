@@ -2,11 +2,9 @@
 """EGARCH with a skewed generalized-error distribution."""
 
 from . import _array_core as np
-from ._sci_core import optimize
-from ._sci_core import special
-
 from ._garch import garch_fit
 from ._richresult import RichResult
+from ._sci_core import optimize, special
 
 __all__ = ["vol_nelson_skew_garch"]
 

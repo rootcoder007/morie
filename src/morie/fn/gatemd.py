@@ -18,10 +18,8 @@ from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
 from . import _s03core as core
-
-from .gat import gat as _gat
-
 from ._richresult import RichResult
+from .gat import gat as _gat
 
 __all__ = ["graph_attention_net"]
 

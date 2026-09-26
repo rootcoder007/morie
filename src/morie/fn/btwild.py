@@ -41,7 +41,6 @@ from __future__ import annotations
 import math
 
 from . import _s03core as core
-
 from ._richresult import RichResult
 from .btres import _xtxinv
 

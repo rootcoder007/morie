@@ -66,9 +66,8 @@ import math
 
 from . import _array_core as np  # noqa: F401
 from . import _s03core as core
-from .matern import _lens_area
-
 from ._richresult import RichResult
+from .matern import _lens_area
 
 __all__ = ["hardcore_process"]
 
