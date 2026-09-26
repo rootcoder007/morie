@@ -139,6 +139,7 @@ def mrm_otis_seg_duration_km(
     *,
     duration_col: str = "NumberConsecutiveDays_Segregation",
     group_cols: Sequence[str] | None = None,
+    probs: Sequence[float] = (0.5, 0.25, 0.10, 0.05, 0.01),
     mandela_threshold: int = 15,
 ) -> pd.DataFrame:
     """KM-style summary of b01 segregation placement durations.
@@ -151,6 +152,9 @@ def mrm_otis_seg_duration_km(
         data: b01 placement-level data.
         duration_col: column with day-count durations.
         group_cols: optional stratifying columns.
+        probs: survival levels; ``days_at_SXX`` is the day at which the
+            empirical survival function reaches XX% (the 1 - p quantile,
+            type 7), as the R arm.
         mandela_threshold: day cutoff defining Mandela-prolonged.
 
     Returns:
@@ -162,13 +166,14 @@ def mrm_otis_seg_duration_km(
     else:
         groups = list(data.groupby(list(group_cols)))
         groups = [("|".join(map(str, k)) if isinstance(k, tuple) else str(k), g) for k, g in groups]
+    qcols = [f"days_at_S{round(100 * p):02d}" for p in probs]
     rows = []
     for label, sub in groups:
         d = sub[duration_col].dropna()
         d = d[d > 0].values
         n = d.size
         if n == 0:
-            rows.append((label, 0, np.nan, np.nan, np.nan, np.nan, np.nan))
+            rows.append((label, 0, np.nan, np.nan, np.nan, np.nan, np.nan, *([np.nan] * len(probs))))
             continue
         above = d > mandela_threshold
         rows.append(
@@ -180,6 +185,7 @@ def mrm_otis_seg_duration_km(
                 float(np.quantile(d, 0.75)),
                 round(100.0 * above.mean(), 2),
                 float(np.median(d[above])) if above.any() else np.nan,
+                *(float(np.quantile(d, 1 - p)) for p in probs),
             )
         )
     return pd.DataFrame(
@@ -192,6 +198,7 @@ def mrm_otis_seg_duration_km(
             "q25_days",
             "pct_above_mandela",
             "median_among_above_mandela",
+            *qcols,
         ],
     )
 
@@ -284,6 +291,19 @@ def mrm_otis_region_locality(
     )
 
 
+def _alert_yes(series):
+    """Alert flag: "Yes" (any case) or a positive number, as the R arm."""
+    out = []
+    for v in series:
+        if isinstance(v, bool):
+            out.append(v)
+        elif isinstance(v, (int, float)):
+            out.append(v == v and v > 0)
+        else:
+            out.append(str(v).strip().lower() == "yes")
+    return pd.Series(out, index=series.index)
+
+
 def mrm_classify_mandela(
     data: pd.DataFrame,
     *,
@@ -340,8 +360,10 @@ def mrm_classify_mandela(
     if broader_rc:
         if not all(c in data.columns for c in alert_cols):
             raise KeyError(f"alert_cols {alert_cols} must all be in data")
-        alerts_count = sum((data[c].astype(str) == "Yes").astype(int) for c in alert_cols)
-        broader_row = strict_row | ((alerts_count >= 2) & dur.notna() & (dur > threshold_days))
+        alerts_count = sum(_alert_yes(data[c]).astype(int) for c in alert_cols)
+        # alert-complexity >= 2 counts regardless of duration (the documented
+        # broader restrictive-confinement rule, as the R arm)
+        broader_row = strict_row | (alerts_count >= 2)
     else:
         broader_row = strict_row
 
@@ -356,7 +378,7 @@ def mrm_classify_mandela(
     rows = []
     for y in [*years, "pooled"]:
         if y == "pooled":
-            mask = pd.Series(True, index=data.index)
+            mask = strict_row | ~strict_row  # all rows, same series type as data
             label = "pooled"
         else:
             mask = data[year_col] == y

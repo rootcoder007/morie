@@ -1539,8 +1539,11 @@ class marr:
         else:
             buf = _pa.array("d", [float(v) for v in f]).tobytes()
             typestr = "<f8"
-        self._aif_keep = buf
-        addr = _ct.cast(_ct.c_char_p(buf), _ct.c_void_p).value
+        # a ctypes copy owns the bytes at a real data address; casting a
+        # c_char_p of a bytes object handed numpy the object header instead
+        cbuf = (_ct.c_char * _bi.max(len(buf), 1)).from_buffer_copy(buf or b"\0")
+        self._aif_keep = cbuf
+        addr = _ct.addressof(cbuf)
         return {"version": 3, "shape": self.shape,
                 "typestr": typestr, "data": (addr, True)}
 
@@ -10154,6 +10157,8 @@ if _HAS_CORE:
 def _tag_index(fn):
     def wrapped(*a, **k):
         out = fn(*a, **k)
+        if fn.__name__ == "where" and len(a) + len(k) > 1:
+            return out          # where(cond, x, y) returns values, not indices
         if isinstance(out, marr):
             out._is_index = True
         elif isinstance(out, tuple):

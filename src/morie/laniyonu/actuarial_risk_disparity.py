@@ -99,8 +99,8 @@ class ActuarialRiskDisparityResult:
     ordinal_result: dict[str, ThresholdSpecificOrdinalResult] | None = None
     residual_result: ScoreNetResidualResult | None = None
     per_threshold_logodds: dict[tuple[str, str, str], float] = field(default_factory=dict)
-    proportional_odds_lr_stat: float | None = None
-    proportional_odds_lr_df: int | None = None
+    proportional_odds_stat: float | None = None
+    proportional_odds_df: int | None = None
     proportional_odds_p: float | None = None
     note: str = ""
 
@@ -381,16 +381,16 @@ def _run_ordinal_stage(
                     i = res.covariate_names.index(rc)
                     per_thresh[("pooled", thresh_label, rc)] = float(res.coefficients[k, i])
 
-    # PO-LR test summary: take the worst-p across strata as the
+    # Brant proportional-odds test: take the worst-p across strata as the
     # diagnostic (one rejection is enough to motivate threshold-specific).
     lr_stats = [
         (
-            r.proportional_odds_lr_stat,
-            r.proportional_odds_lr_df,
-            r.proportional_odds_lr_stat is not None and r.proportional_odds_p is not None and r.proportional_odds_p,
+            r.proportional_odds_stat,
+            r.proportional_odds_df,
+            r.proportional_odds_stat is not None and r.proportional_odds_p is not None and r.proportional_odds_p,
         )
         for r in results.values()
-        if r.proportional_odds_lr_stat is not None
+        if r.proportional_odds_stat is not None
     ]
     if lr_stats:
         # pick the stratum with the smallest p (strongest PO violation)
@@ -415,8 +415,8 @@ def _run_ordinal_stage(
         ordinal_result=results,
         residual_result=None,
         per_threshold_logodds=per_thresh,
-        proportional_odds_lr_stat=(float(worst_stat) if worst_stat is not None else None),
-        proportional_odds_lr_df=(int(worst_df) if worst_df is not None else None),
+        proportional_odds_stat=(float(worst_stat) if worst_stat is not None else None),
+        proportional_odds_df=(int(worst_df) if worst_df is not None else None),
         proportional_odds_p=(float(worst_p) if worst_p not in (None, False) else None),
         note=note,
     )

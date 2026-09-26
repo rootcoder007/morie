@@ -30,10 +30,12 @@ the beta_k difference across thresholds.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
 
 
 @dataclass
@@ -46,8 +48,8 @@ class ThresholdSpecificOrdinalResult:
     cutpoints: np.ndarray  # shape (K-1,)
     log_likelihood: float
     n_obs: int
-    proportional_odds_lr_stat: float | None = None
-    proportional_odds_lr_df: int | None = None
+    proportional_odds_stat: float | None = None
+    proportional_odds_df: int | None = None
     proportional_odds_p: float | None = None
 
     def coefficient_by_threshold(self, covariate: str) -> dict[str, float]:
@@ -63,9 +65,9 @@ class ThresholdSpecificOrdinalResult:
         if self.proportional_odds_p is not None:
             decision = "REJECTED" if self.proportional_odds_p < 0.05 else "not rejected"
             lines.append(
-                f"  Proportional-odds LR test: "
-                f"chi2={self.proportional_odds_lr_stat:.3f} on "
-                f"df={self.proportional_odds_lr_df}, p={self.proportional_odds_p:.4f} "
+                f"  Brant proportional-odds test: "
+                f"chi2={self.proportional_odds_stat:.3f} on "
+                f"df={self.proportional_odds_df}, p={self.proportional_odds_p:.4f} "
                 f"({decision} at alpha=0.05)."
             )
         return "\n".join(lines)
@@ -99,7 +101,7 @@ def threshold_specific_ordinal(
         which is rarely what you want — pass this explicitly.
     fit_proportional_odds_first : bool, default True
         If True, also fits the standard proportional-odds model and
-        reports the LR test of (PO vs. threshold-specific).  Helps
+        runs Brant's (1990) Wald test of proportional odds.  Helps
         the caller decide whether the threshold-specific fit is
         empirically warranted.
     max_iter, tol : numerical tolerances for the IRLS-style fit.
@@ -112,14 +114,15 @@ def threshold_specific_ordinal(
     if ordinal_levels is None:
         ordinal_levels = sorted(df[outcome_col].dropna().unique().tolist())
     level_to_int = {lvl: i for i, lvl in enumerate(ordinal_levels)}
-    y = df[outcome_col].map(level_to_int).to_numpy(dtype=int)
+    # plain lists into the array shim, whether df is pandas or the frame shim
+    y = np.array([int(v) for v in df[outcome_col].map(level_to_int)])
     if (y < 0).any():
         raise ValueError(f"outcome contains values not in ordinal_levels={ordinal_levels}")
     K = len(ordinal_levels)
     if K < 3:
         raise ValueError(f"threshold-specific ordinal needs >=3 levels; got {K}")
 
-    X = df[covariate_cols].to_numpy(dtype=float)
+    X = np.array([[float(v) for v in row] for row in df[covariate_cols].to_numpy(dtype=float).tolist()])
     n, p = X.shape
 
     # K-1 binary cutpoint regressions: P(Y <= k) for k = 0..K-2
@@ -145,31 +148,7 @@ def threshold_specific_ordinal(
     )
 
     if fit_proportional_odds_first:
-        # PO model: single beta shared across thresholds; use the
-        # cutpoint-stacked logits but constrain beta to be equal.
-        # We approximate by pooling all (X, y<=k) pairs into one
-        # regression — a coarse but useful nested-LR baseline.
-        X_stacked = np.tile(X, (K - 1, 1))
-        y_stacked = np.concatenate([(y <= k).astype(int) for k in range(K - 1)])
-        # Add per-threshold dummies so the intercepts can still differ
-        threshold_dummies = np.zeros((n * (K - 1), K - 1))
-        for k in range(K - 1):
-            threshold_dummies[k * n : (k + 1) * n, k] = 1.0
-        X_po = np.column_stack([threshold_dummies, X_stacked])
-        # No global intercept (the dummies absorb it)
-        coef_po = _logit_fit_no_intercept(X_po, y_stacked, max_iter, tol)
-        intercepts_po = coef_po[: K - 1]
-        beta_po = coef_po[K - 1 :]
-        ll_po = 0.0
-        for k in range(K - 1):
-            ll_po += _logit_ll(X, (y <= k).astype(int), intercepts_po[k], beta_po)
-        # LR: 2 * (LL_threshold - LL_po), df = (K-2) * p
-        lr = 2.0 * (total_ll - ll_po)
-        df_lr = (K - 2) * p
-        # Quick chi-square survival approximation via Wilson-Hilferty
-        result.proportional_odds_lr_stat = float(lr)
-        result.proportional_odds_lr_df = int(df_lr)
-        result.proportional_odds_p = _chi2_sf_approx(lr, df_lr)
+        result.proportional_odds_stat, result.proportional_odds_df, result.proportional_odds_p = _brant_test(X, y, K)
 
     return result
 
@@ -183,11 +162,6 @@ def _logit_fit(X: np.ndarray, y: np.ndarray, max_iter: int, tol: float) -> tuple
     X_int = np.column_stack([np.ones(n), X])
     coef = _logit_fit_raw(X_int, y, max_iter, tol)
     return float(coef[0]), coef[1:]
-
-
-def _logit_fit_no_intercept(X: np.ndarray, y: np.ndarray, max_iter: int, tol: float) -> np.ndarray:
-    """IRLS without auto-added intercept (caller already supplied one)."""
-    return _logit_fit_raw(X, y, max_iter, tol)
 
 
 def _logit_fit_raw(X_int: np.ndarray, y: np.ndarray, max_iter: int, tol: float) -> np.ndarray:
@@ -214,27 +188,45 @@ def _logit_fit_raw(X_int: np.ndarray, y: np.ndarray, max_iter: int, tol: float) 
 def _logit_ll(X: np.ndarray, y: np.ndarray, intercept: float, beta: np.ndarray) -> float:
     eta = intercept + X @ beta
     # Use log-sum-exp for numerical safety
-    return float(np.sum(y * eta - np.logaddexp(0.0, eta)))
+    # log(1 + exp(eta)) = max(eta, 0) + log1p(exp(-|eta|)), stable in both tails
+    return float(sum(yi * e - (max(e, 0.0) + math.log1p(math.exp(-abs(e)))) for yi, e in zip(y, eta)))
 
 
-def _chi2_sf_approx(x: float, df: int) -> float:
-    """Wilson-Hilferty normal approximation to chi-square survival.
-    Adequate for df >= 4; coarser below that.  Avoids importing scipy.
+def _brant_test(X: np.ndarray, y: np.ndarray, K: int) -> tuple[float, int, float]:
+    """Brant (1990) Wald test that the K - 1 cumulative-logit slopes agree.
+
+    Cov(b_k, b_l) = (X'W_k X)^-1 X'W_kl X (X'W_l X)^-1 with W_kl = pi_k (1 - pi_l)
+    for k < l (pi = P(Y <= k)); Cov(b_l, b_k) is its transpose (brant::brant
+    copies the block untransposed).  Mirrors ``.mrm_brant_test`` in the R arm.
+    Returns (chi-square, df, p).
     """
-    if df <= 0 or x <= 0:
-        return 1.0
-    h = 2.0 / (9.0 * df)
-    z = ((x / df) ** (1.0 / 3.0) - (1.0 - h)) / np.sqrt(h)
-    # Normal SF approximation
-    return float(0.5 * (1.0 - _erf(z / np.sqrt(2.0))))
-
-
-def _erf(x: float) -> float:
-    """Abramowitz & Stegun 7.1.26 — max error ~1.5e-7."""
-    sign = 1.0 if x >= 0 else -1.0
-    ax = abs(x)
-    t = 1.0 / (1.0 + 0.3275911 * ax)
-    y = 1.0 - (
-        ((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592
-    ) * t * np.exp(-ax * ax)
-    return sign * y
+    n, p = X.shape
+    Xi = np.column_stack([np.ones(n), X])
+    J = K - 1
+    q = p + 1
+    fits = []
+    for k in range(J):
+        b = _logit_fit_raw(Xi, (y <= k).astype(float), 500, 1e-12)
+        fits.append((b, 1.0 / (1.0 + np.exp(-(Xi @ b)))))
+    inv = [np.linalg.inv((Xi * (pi * (1 - pi))[:, None]).T @ Xi) for _, pi in fits]
+    V = [[0.0] * (J * q) for _ in range(J * q)]
+    for k in range(J):
+        for m in range(k, J):
+            w = fits[k][1] * (1 - fits[m][1])
+            blk = inv[k] @ ((Xi * w[:, None]).T @ Xi) @ inv[m]
+            for a in range(q):
+                for c in range(q):
+                    V[k * q + a][m * q + c] = float(blk[a, c])
+                    V[m * q + c][k * q + a] = float(blk[a, c])
+    keep = [k * q + 1 + j for k in range(J) for j in range(p)]
+    Vs = np.array([[V[r][c] for c in keep] for r in keep])
+    bs = np.array([float(fits[k][0][1 + j]) for k in range(J) for j in range(p)])
+    D = np.zeros(((J - 1) * p, J * p))
+    for k in range(1, J):
+        for j in range(p):
+            D[(k - 1) * p + j, j] = 1.0
+            D[(k - 1) * p + j, k * p + j] = -1.0
+    Db = D @ bs
+    stat = float(Db @ np.linalg.solve(D @ Vs @ D.T, Db))
+    df = (K - 2) * p
+    return stat, df, float(stats.chi2.sf(stat, df))

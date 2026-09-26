@@ -107,7 +107,8 @@ def score_net_residual(
 
     coef = _fit(X, y, family)
     # coef[0] = intercept; coef[1] = score; coef[2..] = sensitive then controls
-    score_coef = float(coef[2])  # idx 1 is intercept after column-stacking 1s; idx 2 is score
+    # coef = [intercept, score, sensitive..., controls]
+    score_coef = float(coef[1])  # idx 1 is intercept after column-stacking 1s; idx 2 is score
     # Actually: _fit prepends a 1 column; so coef[0]=intercept, coef[1]=score,
     # coef[2..1+len(sensitive)] = sensitive coefs.
     sensitive_idx = list(range(2, 2 + len(sensitive_cols)))
@@ -117,12 +118,13 @@ def score_net_residual(
         rng = np.random.default_rng(random_state)
         boot_coefs = np.zeros((bootstrap_replicates, X.shape[1] + 1))
         for b in range(bootstrap_replicates):
-            idx = rng.integers(0, n, size=n)
+            idx = [int(v) for v in rng.integers(0, n, size=n)]
             try:
                 boot_coefs[b] = _fit(X[idx], y[idx], family)
             except (ValueError, np.linalg.LinAlgError):
                 boot_coefs[b] = np.nan
-        ses = np.nanstd(boot_coefs, axis=0)
+        # bootstrap SE: sd with n - 1, as the R arm (stats::sd)
+        ses = np.nanstd(boot_coefs, axis=0, ddof=1)
         se_dict = {name: float(ses[i]) for name, i in zip(sensitive_cols, sensitive_idx)}
     else:
         se_dict = {name: float("nan") for name in sensitive_cols}

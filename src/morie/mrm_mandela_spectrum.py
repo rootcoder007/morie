@@ -173,7 +173,7 @@ def mrm_otis_mandela_spectrum(
                     if y == "pooled":
                         sub = c11_data
                     else:
-                        sub = c11_data[c11_data[year_col] == int(y) if isinstance(y, str) else y]
+                        sub = c11_data[c11_data[year_col] == (int(y) if isinstance(y, str) else y)]
                     n_d_col = "NumberIndividuals_Segregation"
                     if n_d_col not in sub.columns:
                         continue
