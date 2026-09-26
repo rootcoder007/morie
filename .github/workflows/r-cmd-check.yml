@@ -81,9 +81,9 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: r-lib/actions/setup-pandoc@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - uses: r-lib/actions/setup-pandoc@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
 
-      - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
@@ -119,7 +119,7 @@ jobs:
       - id: deps
         if: runner.os != 'macOS'
         continue-on-error: true
-        uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+        uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
         with:
           working-directory: r-package/morie
           cache-version: 2
@@ -176,7 +176,7 @@ jobs:
                  "${RUNNER_TEMP}/pkgcache" 2>/dev/null || true
 
       - if: runner.os != 'macOS' && steps.deps.outcome == 'failure'
-        uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+        uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
         with:
           working-directory: r-package/morie
           cache-version: 3
@@ -191,7 +191,7 @@ jobs:
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
         run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
         shell: Rscript {0}
-      - uses: r-lib/actions/check-r-package@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - uses: r-lib/actions/check-r-package@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
         with:
           working-directory: r-package/morie
           upload-snapshots: true
@@ -284,9 +284,9 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: r-lib/actions/setup-pandoc@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - uses: r-lib/actions/setup-pandoc@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
 
-      - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
         with:
           r-version: '4.6.1'
           use-public-rspm: true
@@ -301,7 +301,7 @@ jobs:
 
       - id: deps_pg
         continue-on-error: true
-        uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+        uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
         with:
           working-directory: r-package/morie
           cache-version: 2
@@ -323,7 +323,7 @@ jobs:
                  "${RUNNER_TEMP}/pkgcache" 2>/dev/null || true
 
       - if: steps.deps_pg.outcome == 'failure'
-        uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+        uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
         with:
           working-directory: r-package/morie
           cache-version: 3
@@ -338,7 +338,7 @@ jobs:
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
         run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
         shell: Rscript {0}
-      - uses: r-lib/actions/check-r-package@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - uses: r-lib/actions/check-r-package@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
         with:
           working-directory: r-package/morie
           upload-snapshots: true
