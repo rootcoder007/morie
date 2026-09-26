@@ -79,7 +79,7 @@ def _gini(x: np.ndarray) -> float:
     if n == 0 or s == 0:
         return float("nan")
     idx = np.arange(1, n + 1, dtype=np.float64)
-    return float((2.0 * idx.dot(x) - (n + 1) * s) / (n * s))
+    return float((2.0 * float((idx * x).sum()) - (n + 1) * s) / (n * s))
 
 
 def _hill_alpha(x: np.ndarray, x_min: float = 1.0) -> float:
@@ -110,8 +110,11 @@ def _topk_share(x: np.ndarray, k: int) -> float:
 
 
 def _wilson_ci(k: int, n: int, z: float = 1.959963984540054) -> tuple[float, float]:
-    """Wilson score 95 percent confidence interval with continuity
-    correction.
+    """Wilson score 95 percent confidence interval (uncorrected).
+
+    As the R arm's ``.uof_wilson_ci`` and the defaults of
+    ``binom::binom.wilson`` / ``Hmisc::binconf``: the continuity-corrected
+    form misbehaves at the corners.
 
     Parameters
     ----------
@@ -134,22 +137,8 @@ def _wilson_ci(k: int, n: int, z: float = 1.959963984540054) -> tuple[float, flo
     z2 = z * z
     denom = 1.0 + z2 / n
     centre = (p + z2 / (2.0 * n)) / denom
-    # Continuity-corrected half-width
-    try:
-        half_lo = (z * math.sqrt(z2 - 1.0 / n + 4.0 * n * p * (1 - p) + (4 * p - 2)) + 1.0) / (2.0 * (n + z2))
-        half_hi = (z * math.sqrt(z2 - 1.0 / n + 4.0 * n * p * (1 - p) - (4 * p - 2)) + 1.0) / (2.0 * (n + z2))
-        lo = max(0.0, centre - half_lo) if n * p >= 1 else 0.0
-        hi = min(1.0, centre + half_hi) if n * (1 - p) >= 1 else 1.0
-    except ValueError:
-        lo = float("nan")
-        hi = float("nan")
-    # Sanity: if continuity formula went pathological (sqrt of negative),
-    # fall back to uncorrected Wilson.
-    if not (math.isfinite(lo) and math.isfinite(hi)) or lo > hi:
-        margin = z * math.sqrt(p * (1 - p) / n + z2 / (4 * n * n)) / denom
-        lo = max(0.0, centre - margin)
-        hi = min(1.0, centre + margin)
-    return (float(lo), float(hi))
+    margin = z * math.sqrt(p * (1 - p) / n + z2 / (4.0 * n * n)) / denom
+    return (max(0.0, centre - margin), min(1.0, centre + margin))
 
 
 def _cramers_v(chi2: float, n: int, r: int, c: int) -> float:
@@ -615,9 +604,7 @@ def mrm_uof_yoy_change(
         # the series first makes the L2 cost scale-free -- the role
         # the RBF cost played in the previous ruptures.Pelt call on
         # this 1-D series.
-        yv = [float(v) for v in counts_arr._flat()] \
-            if hasattr(counts_arr, "_flat") \
-            else [float(v) for v in counts_arr]
+        yv = [float(v) for v in counts_arr._flat()] if hasattr(counts_arr, "_flat") else [float(v) for v in counts_arr]
         mu = sum(yv) / len(yv)
         sd = (sum((v - mu) ** 2 for v in yv) / len(yv)) ** 0.5 or 1.0
         zv = [(v - mu) / sd for v in yv]
@@ -643,19 +630,17 @@ def mrm_uof_yoy_change(
                     best, barg = val, sme
             F[t] = best
             prev_cp[t] = barg
-            cands = [sme for sme in cands
-                     if F[sme] + _cost(sme, t) <= F[t]] + [t]
+            cands = [sme for sme in cands if F[sme] + _cost(sme, t) <= F[t]] + [t]
         bkps = []
         t = n_years
         while t > 0:
             bkps.append(t)
             t = prev_cp[t]
-        bkps = sorted(bkps)     # INDEX-AFTER; final entry == n_years
+        bkps = sorted(bkps)  # INDEX-AFTER; final entry == n_years
         real_bkps = [b for b in bkps if b < n_years]
         if real_bkps:
             change_point_year = int(years_sorted[real_bkps[0]])
-            change_point_method = \
-                "native PELT (Killick et al. 2012, L2 cost, pen=10)"
+            change_point_method = "native PELT (Killick et al. 2012, L2 cost, pen=10)"
 
     finite_yoy = [v for v in yoy_pct if v is not None and math.isfinite(v)]
     mean_abs_yoy = float(np.mean([abs(v) for v in finite_yoy])) if finite_yoy else float("nan")
@@ -758,11 +743,16 @@ def mrm_uof_region_locality(
             payload={"n": 0, "n_dropped": n_dropped},
         )
 
-    table = pd.crosstab(pair[region_at_col], pair[region_now_col])
-    all_labels = sorted(set(table.index) | set(table.columns), key=lambda s: str(s))
-    table = table.reindex(index=all_labels, columns=all_labels, fill_value=0)
-
-    obs = table.values.astype(np.float64)
+    # square origin x destination table over the union of labels (plain
+    # counting: works for pandas and the frame shim alike)
+    at_v = list(pair[region_at_col])
+    now_v = list(pair[region_now_col])
+    all_labels = sorted(set(at_v) | set(now_v), key=lambda s: str(s))
+    pos = {lab: i for i, lab in enumerate(all_labels)}
+    cells = [[0.0] * len(all_labels) for _ in all_labels]
+    for a_, b_ in zip(at_v, now_v):
+        cells[pos[a_]][pos[b_]] += 1.0
+    obs = np.array(cells, dtype=np.float64)
     n = int(obs.sum())
     diag = float(np.trace(obs))
     diagonal_share = diag / n if n > 0 else float("nan")
@@ -796,11 +786,11 @@ def mrm_uof_region_locality(
         ("Cramer's V", v),
     ]
 
-    table_rows: list[list[Any]] = [[str(lab)] + [int(v) for v in row] for lab, row in zip(table.index, obs)]
+    table_rows: list[list[Any]] = [[str(lab)] + [int(v) for v in row] for lab, row in zip(all_labels, obs)]
     sections = [
         {
             "title": "Region contingency (at-time x now)",
-            "headers": ["region\\region"] + [str(c) for c in table.columns],
+            "headers": ["region\\region"] + [str(c) for c in all_labels],
             "table": table_rows,
         }
     ]
@@ -887,13 +877,13 @@ def mrm_uof_demographic_disparity(
 
     y = sub[outcome_col]
     if y.dtype == bool:
-        y_int = y.astype(np.int64)
+        y_int = y.astype("int64")
     else:
         try:
-            y_int = y.astype(np.int64)
+            y_int = y.astype("int64")
         except (TypeError, ValueError):
             warnings.append(f"outcome_col {outcome_col!r} could not be coerced to int; treating non-zero as 1.")
-            y_int = (y.astype(float) != 0).astype(np.int64)
+            y_int = (y.astype(float) != 0).astype("int64")
     sub = sub.assign(**{outcome_col: y_int})
 
     grouped = sub.groupby(demo_col)[outcome_col].agg(["count", "sum"])
@@ -944,8 +934,8 @@ def mrm_uof_demographic_disparity(
                 rng = np.random.default_rng(0)
                 rr_draws = np.empty(int(bootstrap_reps), dtype=np.float64)
                 for b in range(int(bootstrap_reps)):
-                    bi = rng.integers(0, sub_cat.size, sub_cat.size)
-                    bj = rng.integers(0, sub_base.size, sub_base.size)
+                    bi = [int(v) for v in rng.integers(0, sub_cat.size, sub_cat.size)]
+                    bj = [int(v) for v in rng.integers(0, sub_base.size, sub_base.size)]
                     rate_i = sub_cat[bi].mean()
                     rate_j = sub_base[bj].mean()
                     rr_draws[b] = rate_i / rate_j if rate_j > 0 else np.nan
