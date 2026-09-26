@@ -857,6 +857,140 @@ def parallel_trends_data(
 
 # ---------------------------------------------------------------------------
 # 7. Generalized DiD / Callaway-Sant'Anna (group-time ATTs)
+
+# ---------------------------------------------------------------------------
+# Sant'Anna-Zhao (2020) panel engines and Callaway-Sant'Anna aggregation
+# (mirrors R/did_native.R; equal to DRDID / did::att_gt / did::aggte)
+# ---------------------------------------------------------------------------
+
+
+def _did_ps_fit(D, X):
+    """Logistic propensity MLE and its influence-function linear rep."""
+    from morie.fn.ps_fit import _ps_irls_beta
+
+    beta = np.array(_ps_irls_beta(X.tolist(), D.tolist()))
+    ps = 1.0 / (1.0 + np.exp(-(X @ beta)))
+    ps = np.minimum(ps, 1 - 1e-16)
+    n = len(D)
+    score = (D - ps)[:, None] * X
+    hess = (X * (ps * (1 - ps))[:, None]).T @ X / n
+    return ps, score @ np.linalg.pinv(hess)
+
+
+def _did_or_fit(y, X, w):
+    """Weighted least squares of y on X; fitted values and linear rep."""
+    n = len(y)
+    wX = X * w[:, None]
+    XpX_inv = np.linalg.pinv(wX.T @ X / n)
+    beta = XpX_inv @ (wX.T @ y / n)
+    fitted = X @ beta
+    return fitted, ((w * (y - fitted))[:, None] * X) @ XpX_inv
+
+
+def _did_panel_att(dy, D, X, est_method):
+    """ATT and influence function of DRDID's panel dr / reg / ipw estimators."""
+    w_treat = D
+    if est_method == "reg":
+        m, lin_or = _did_or_fit(dy, X, 1.0 - D)
+        att_t = np.mean(w_treat * dy) / np.mean(w_treat)
+        att_c = np.mean(w_treat * m) / np.mean(w_treat)
+        inf_t = (w_treat * dy - w_treat * att_t) / np.mean(w_treat)
+        M1 = np.mean(w_treat[:, None] * X, axis=0) / np.mean(w_treat)
+        inf_c = (w_treat * m - w_treat * att_c) / np.mean(w_treat) + lin_or @ M1
+        return float(att_t - att_c), inf_t - inf_c
+    ps, lin_ps = _did_ps_fit(D, X)
+    w_cont = ps * (1 - D) / (1 - ps)
+    if est_method == "ipw":
+        att_t = np.mean(w_treat * dy) / np.mean(w_treat)
+        att_c = np.mean(w_cont * dy) / np.mean(w_cont)
+        inf_t = (w_treat * dy - w_treat * att_t) / np.mean(w_treat)
+        inf_c1 = (w_cont * dy - w_cont * att_c) / np.mean(w_cont)
+        M2 = np.mean((w_cont * (dy - att_c))[:, None] * X, axis=0) / np.mean(w_cont)
+        return float(att_t - att_c), inf_t - inf_c1 - lin_ps @ M2
+    m, lin_or = _did_or_fit(dy, X, 1.0 - D)
+    r = dy - m
+    att_t = np.mean(w_treat * r) / np.mean(w_treat)
+    att_c = np.mean(w_cont * r) / np.mean(w_cont)
+    M1 = np.mean(w_treat[:, None] * X, axis=0) / np.mean(w_treat)
+    inf_t = (w_treat * r - w_treat * att_t) / np.mean(w_treat) - lin_or @ M1
+    M2 = np.mean((w_cont * (r - att_c))[:, None] * X, axis=0) / np.mean(w_cont)
+    M3 = np.mean(w_cont[:, None] * X, axis=0) / np.mean(w_cont)
+    inf_c = (w_cont * r - w_cont * att_c) / np.mean(w_cont) + lin_ps @ M2 - lin_or @ M3
+    return float(att_t - att_c), inf_t - inf_c
+
+
+def _did_mboot_se(IF, biters, seed):
+    """Mammen multiplier-bootstrap SE (did::mboot): IQR / (z.75 - z.25)."""
+    IF = np.asarray(IF, dtype=float)
+    if IF.ndim == 1:
+        IF = IF[:, None]
+    n = IF.shape[0]
+    rng = np.random.default_rng(seed)
+    sq5 = math.sqrt(5)
+    k1, k2, p1 = 0.5 * (1 - sq5), 0.5 * (1 + sq5), 0.5 * (1 + sq5) / sq5
+    boot = np.array(
+        [math.sqrt(n) * np.mean(np.where(rng.random(n) < p1, k1, k2)[:, None] * IF, axis=0) for _ in range(int(biters))]
+    )
+    q = stats.norm.ppf(0.75) - stats.norm.ppf(0.25)
+    return (np.quantile(boot, 0.75, axis=0) - np.quantile(boot, 0.25, axis=0)) / q / math.sqrt(n)
+
+
+def _did_aggte(fit, kind):
+    """did::aggte on a group_time_att fit: simple / group / dynamic / calendar."""
+    grp, tt, att = fit["group"], fit["t"], fit["att"]
+    IF, gu, n = fit["IF"], fit["G"], fit["n"]
+    glist = np.array(sorted(set(grp.tolist())))
+    pgg = np.array([np.mean(gu == g) for g in glist])
+    pg = pgg[np.searchsorted(glist, grp)]
+
+    def se_of(inf):
+        if fit["biters"] > 0:
+            se = float(_did_mboot_se(inf, fit["biters"], fit["seed"])[0])
+        else:
+            se = math.sqrt(float(np.mean(inf**2)) / n)
+        return se if np.isfinite(se) and se > math.sqrt(2.220446049250313e-16) * 10 else float("nan")
+
+    def wif(keep, pgv, gv):
+        s_ = float(np.sum(pgv[keep]))
+        c = np.column_stack([(gu == gv[k]).astype(float) - pgv[k] for k in keep])
+        return c / s_ - np.outer(np.sum(c, axis=1), pgv[keep] / s_**2)
+
+    def agg_if(a, inf, keep, w, wf=None):
+        out = inf[:, keep] @ w
+        return out + wf @ a[keep] if wf is not None else out
+
+    def one(keep, with_wif=True):
+        keep = np.asarray(keep, dtype=int)
+        w = pg[keep] / np.sum(pg[keep])
+        inf = agg_if(att, IF, keep, w, wif(keep, pg, grp) if with_wif else None)
+        return float(np.sum(w * att[keep])), inf, se_of(inf)
+
+    if kind == "simple":
+        est, _, se = one(np.where(grp <= tt)[0])
+        return est, se, None, None, None
+    if kind == "group":
+        parts = [one(np.where((grp == g) & (g <= tt))[0], with_wif=False) for g in glist]
+        est_g = np.array([p_[0] for p_ in parts])
+        inf_g = np.column_stack([p_[1] for p_ in parts])
+        k = np.arange(len(glist))
+        inf = agg_if(est_g, inf_g, k, pgg / np.sum(pgg), wif(k, pgg, glist))
+        return float(np.sum(est_g * pgg) / np.sum(pgg)), se_of(inf), glist, est_g, np.array([p_[2] for p_ in parts])
+    if kind == "dynamic":
+        e = tt - grp
+        keys = np.array(sorted(set(e.tolist())))
+        parts = [one(np.where(e == ee)[0]) for ee in keys]
+    elif kind == "calendar":
+        keys = np.array([t1 for t1 in sorted(set(tt[tt >= np.min(grp)].tolist())) if np.any((tt == t1) & (grp <= tt))])
+        parts = [one(np.where((tt == t1) & (grp <= tt))[0]) for t1 in keys]
+    else:
+        raise ValueError(f"Unknown aggregation: {kind}")
+    est_k = np.array([p_[0] for p_ in parts])
+    inf_k = np.column_stack([p_[1] for p_ in parts])
+    k = np.where(keys >= 0)[0] if kind == "dynamic" else np.arange(len(keys))
+    inf = agg_if(est_k, inf_k, k, np.full(len(k), 1.0 / len(k)))
+    return float(np.mean(est_k[k])), se_of(inf), keys, est_k, np.array([p_[2] for p_ in parts])
+
+
 # ---------------------------------------------------------------------------
 
 
@@ -907,6 +1041,7 @@ def group_time_att(
     n_bootstrap: int = 200,
     seed: int = 42,
     alpha: float = 0.05,
+    se_convention: str = "reference",
 ) -> pd.DataFrame:
     r"""Estimate group-time average treatment effects (Callaway & Sant'Anna 2021).
 
@@ -934,134 +1069,122 @@ def group_time_att(
     control_group : str
         ``"never_treated"`` or ``"not_yet_treated"``.
     n_bootstrap : int
-        Number of bootstrap replications for inference.
+        Mammen multiplier-bootstrap replications (0 = analytic
+        influence-function standard errors).
     seed : int
-        Random seed for bootstrap.
+        Random seed for the multiplier bootstrap.
     alpha : float
         Significance level.
+    se_convention : str
+        Analytic SE: ``"reference"`` (did's sqrt(mean(IF^2)/n)) or
+        ``"bessel"`` (sd(IF)/sqrt(n)).
 
     Returns
     -------
     pd.DataFrame
         Columns: ``cohort``, ``time``, ``att``, ``std_error``,
-        ``ci_lower``, ``ci_upper``, ``p_value``.
+        ``ci_lower``, ``ci_upper``, ``p_value``, ``n_treated``, ``post``;
+        ``attrs["did_fit"]`` holds the influence functions used by
+        :func:`aggregate_gt_att`.
+
+    Notes
+    -----
+    Base period is ``g - 1`` after treatment and ``t - 1`` before it;
+    each cell is DRDID's panel estimator (dr / reg / ipw) with the
+    covariates of the base period. Point estimates and analytic SEs equal
+    ``did::att_gt(..., bstrap = FALSE)``.
 
     References
     ----------
     Callaway, B., & Sant'Anna, P. H. C. (2021). Difference-in-Differences
     with multiple time periods. *Journal of Econometrics*, 225(2), 200--230.
     """
-    rng = np.random.default_rng(seed)
-    df = pd._coerce_frame(data).copy()
-    df["_g"] = df[treatment_time].astype(float)
-
-    cohorts = sorted(df.loc[np.isfinite(df["_g"]), "_g"].unique())
-    all_times = sorted(df[time].unique())
-    results = []
-
-    for g in cohorts:
-        post_times = [t for t in all_times if t >= g]
-        pre_time = max([t for t in all_times if t < g], default=None)
-        if pre_time is None:
-            continue
-
-        for t in post_times:
-            # Select comparison data
-            cohort_units = df.loc[df["_g"] == g, unit].unique()
+    est_method = {"doubly_robust": "dr", "ipw": "ipw", "outcome_regression": "reg"}.get(method, "dr")
+    df = pd._coerce_frame(data)
+    g_all = np.array(df[treatment_time].astype(float).values)
+    g_all = np.where(np.isfinite(g_all), g_all, 0.0)  # never treated = 0
+    time_all = np.array(df[time].values, dtype=float)
+    y_all = np.array(df[outcome].values, dtype=float)
+    unit_all = list(df[unit].values)
+    ids = sorted(set(unit_all))
+    pos = {u: i for i, u in enumerate(ids)}
+    uid_all = np.array([pos[u] for u in unit_all])
+    n_ids = len(ids)
+    Xcov_all = np.array(df[list(covariates)].values, dtype=float) if covariates else None
+    tlist = sorted(set(time_all.tolist()))
+    glist = [g for g in sorted(set(g_all[g_all > 0].tolist())) if g > tlist[0]]
+    rows, IF_cols = [], []
+    for g in glist:
+        for tt in tlist[1:]:
+            # base period: g - 1 after treatment, varying t - 1 before
+            pret = max(t_ for t_ in tlist if t_ < (g if tt >= g else tt))
             if control_group == "never_treated":
-                ctrl_units = df.loc[np.isinf(df["_g"]), unit].unique()
+                is_control = g_all == 0
             else:
-                # Not-yet-treated: units whose treatment time is strictly after t
-                ctrl_units = df.loc[df["_g"] > t, unit].unique()
-
-            if len(ctrl_units) == 0 or len(cohort_units) == 0:
+                is_control = (g_all == 0) | ((g_all > max(tt, pret)) & (g_all != g))
+            cidx = np.where(((g_all == g) | is_control) & ((time_all == pret) | (time_all == tt)))[0]
+            counts = np.bincount(uid_all[cidx], minlength=n_ids)
+            cidx = cidx[counts[uid_all[cidx]] == 2]
+            if len(cidx) == 0:
                 continue
-
-            # Extract data for current period and pre-period
-            relevant_units = np.concatenate([cohort_units, ctrl_units])
-            df_sub = df[df[unit].isin(relevant_units) & df[time].isin([pre_time, t])].copy()
-
-            # Create DiD-style outcome: Y_t - Y_pre
-            wide = df_sub.pivot_table(index=unit, columns=time, values=outcome, aggfunc="mean")
-            if pre_time not in wide.columns or t not in wide.columns:
+            cidx = cidx[np.lexsort((time_all[cidx], uid_all[cidx]))]
+            pre_idx = cidx[time_all[cidx] == pret]
+            dy = y_all[cidx[time_all[cidx] == tt]] - y_all[pre_idx]
+            D = (g_all[pre_idx] == g).astype(float)
+            if D.sum() == 0 or (1 - D).sum() == 0:
                 continue
-            delta_y = (wide[t] - wide[pre_time]).dropna()
-
-            treat_indicator = np.isin(delta_y.index, cohort_units).astype(float)
-            y_diff = delta_y.values.astype(float)
-
-            if covariates:
-                cov_data = df[df[time] == pre_time].set_index(unit).loc[delta_y.index, covariates].values.astype(float)
+            X = np.ones((len(dy), 1))
+            if Xcov_all is not None:
+                X = np.column_stack([X, Xcov_all[pre_idx]])
+            att_gt, inf = _did_panel_att(dy, D, X, est_method)
+            # map to the full unit list, scaled by n / n_sub (did's convention)
+            IF_full = np.zeros(n_ids)
+            IF_full[uid_all[pre_idx]] = inf * (n_ids / len(dy))
+            if se_convention == "bessel":
+                se_a = float(np.std(IF_full, ddof=1)) / math.sqrt(n_ids)
             else:
-                cov_data = np.ones((len(y_diff), 1))
-
-            # Point estimate
-            def _estimate(y_d, treat_ind, X_cov):
-                if method == "ipw":
-                    if X_cov.shape[1] > 0 and np.std(treat_ind) > 0:
-                        lr = LogisticRegression(max_iter=1000, solver="lbfgs", penalty=None)
-                        lr.fit(X_cov, treat_ind)
-                        ps = lr.predict_proba(X_cov)[:, 1]
-                    else:
-                        ps = np.full(len(treat_ind), treat_ind.mean())
-                    return _ipw_att(y_d, treat_ind.astype(int), ps)
-                elif method == "outcome_regression":
-                    return _outcome_regression_att(y_d, X_cov, treat_ind.astype(int))
-                else:
-                    # Doubly robust
-                    if X_cov.shape[1] > 0 and np.std(treat_ind) > 0:
-                        lr = LogisticRegression(max_iter=1000, solver="lbfgs", penalty=None)
-                        lr.fit(X_cov, treat_ind)
-                        ps = lr.predict_proba(X_cov)[:, 1]
-                    else:
-                        ps = np.full(len(treat_ind), treat_ind.mean())
-                    # Outcome model on controls
-                    ctrl_mask = treat_ind == 0
-                    treat_mask = treat_ind == 1
-                    if ctrl_mask.sum() < 2:
-                        return float(np.mean(y_d[treat_mask]))
-                    lr_out = LinearRegression().fit(X_cov[ctrl_mask], y_d[ctrl_mask])
-                    mu0 = lr_out.predict(X_cov)
-
-                    if treat_mask.sum() == 0:
-                        return 0.0
-                    # Sant'Anna & Zhao (2020) panel DR-DiD (DRDID::drdid_panel):
-                    # ATT = mean_T(dY - mu0) - odds-weighted mean_C(dY - mu0)
-                    w = _odds_weights(treat_ind.astype(int), ps)
-                    resid = y_d - mu0
-                    return float(np.mean(resid[treat_mask]) - np.sum(w * resid) / np.sum(w))
-
-            att_hat = _estimate(y_diff, treat_indicator, cov_data)
-
-            # Bootstrap SE
-            boot_ests = []
-            n = len(y_diff)
-            for _ in range(n_bootstrap):
-                idx = rng.choice(n, size=n, replace=True)
-                try:
-                    b_est = _estimate(y_diff[idx], treat_indicator[idx], cov_data[idx])
-                    boot_ests.append(b_est)
-                except Exception:
-                    continue
-
-            se_hat = float(np.std(boot_ests, ddof=1)) if len(boot_ests) > 1 else np.nan
-
-            ci_lo, ci_hi = _make_ci(att_hat, se_hat, alpha) if not np.isnan(se_hat) else (np.nan, np.nan)
-            p_val = float(2 * stats.norm.sf(abs(att_hat / se_hat))) if se_hat > 0 else np.nan
-
-            results.append(
-                {
-                    "cohort": g,
-                    "time": t,
-                    "att": att_hat,
-                    "std_error": se_hat,
-                    "ci_lower": ci_lo,
-                    "ci_upper": ci_hi,
-                    "p_value": p_val,
-                }
-            )
-
-    return pd.DataFrame(results)
+                se_a = math.sqrt(float(np.mean(IF_full**2)) / n_ids)
+            rows.append((g, tt, att_gt, int(D.sum()), se_a))
+            IF_cols.append(IF_full)
+    cols = ["cohort", "time", "att", "std_error", "ci_lower", "ci_upper", "p_value", "n_treated", "post"]
+    if not rows:
+        return pd.DataFrame({c: [] for c in cols})
+    IF = np.column_stack(IF_cols)
+    se = np.array([r[4] for r in rows])
+    if n_bootstrap > 0:
+        sb = _did_mboot_se(IF, n_bootstrap, seed)
+        se = np.where(np.isfinite(sb) & (sb > 0), sb, se)
+    z = stats.norm.ppf(1 - alpha / 2)
+    grp = np.array([r[0] for r in rows])
+    tcol = np.array([r[1] for r in rows])
+    att = np.array([r[2] for r in rows])
+    out = pd.DataFrame(
+        {
+            "cohort": grp.tolist(),
+            "time": tcol.tolist(),
+            "att": att.tolist(),
+            "std_error": se.tolist(),
+            "ci_lower": (att - z * se).tolist(),
+            "ci_upper": (att + z * se).tolist(),
+            "p_value": (2 * stats.norm.sf(np.abs(att / se))).tolist(),
+            "n_treated": [r[3] for r in rows],
+            "post": (tcol >= grp).tolist(),
+        }
+    )
+    G_unit = np.zeros(n_ids)
+    G_unit[uid_all] = g_all
+    out.attrs["did_fit"] = {
+        "group": grp,
+        "t": tcol,
+        "att": att,
+        "IF": IF,
+        "G": G_unit,
+        "n": n_ids,
+        "biters": int(n_bootstrap),
+        "seed": seed,
+        "alpha": alpha,
+    }
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -1080,6 +1203,11 @@ def aggregate_gt_att(
 ) -> pd.DataFrame:
     """Aggregate group-time ATTs into summary treatment effect parameters.
 
+    On the unmodified output of :func:`group_time_att` the aggregation
+    uses its influence functions and equals ``did::aggte`` (simple,
+    group, dynamic, calendar), estimated-weight term included; any other
+    table is combined as independent cell estimates.
+
     Parameters
     ----------
     gt_results : pd.DataFrame
@@ -1097,6 +1225,37 @@ def aggregate_gt_att(
         Aggregated estimates with ``estimate``, ``std_error``, ``ci_lower``,
         ``ci_upper``.
     """
+    fit = getattr(gt_results, "attrs", {}).get("did_fit")
+    if fit is not None and len(gt_results) == len(fit["att"]):
+        # influence-function aggregation, as did::aggte
+        kind = {"overall": "simple", "cohort": "group", "calendar_time": "calendar", "event_time": "dynamic"}.get(
+            aggregation
+        )
+        if kind is None:
+            raise ValueError(f"Unknown aggregation: {aggregation}")
+        est, se, keys, est_k, se_k = _did_aggte(fit, kind)
+        z = stats.norm.ppf(1 - fit["alpha"] / 2)
+        if kind == "simple":
+            return pd.DataFrame(
+                [
+                    {
+                        "group": "overall",
+                        "estimate": est,
+                        "std_error": se,
+                        "ci_lower": est - z * se,
+                        "ci_upper": est + z * se,
+                    }
+                ]
+            )
+        return pd.DataFrame(
+            {
+                "group": keys.tolist(),
+                "estimate": est_k.tolist(),
+                "std_error": se_k.tolist(),
+                "ci_lower": (est_k - z * se_k).tolist(),
+                "ci_upper": (est_k + z * se_k).tolist(),
+            }
+        )
     df = gt_results.copy()
     df["_rel_time"] = df[time_col] - df[cohort_col]
 

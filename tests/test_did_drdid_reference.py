@@ -53,7 +53,9 @@ def _panel():
 @pytest.mark.parametrize("method", sorted(REF))
 def test_group_time_att_matches_did_att_gt(method):
     r = did.group_time_att(_panel(), "y", "id", "t", "g", covariates=["x"], method=method, n_bootstrap=2)
-    got = {(int(a), int(b)): v for a, b, v in zip(r["cohort"], r["time"], r["att"])}
+    # REF records the post-treatment cells; pre-treatment (placebo) cells
+    # are also returned, as by did::att_gt
+    got = {(int(a), int(b)): v for a, b, v in zip(r["cohort"], r["time"], r["att"]) if b >= a}
     assert set(got) == set(REF[method])
     for k, ref in REF[method].items():
         assert abs(got[k] - ref) <= 1e-10 * abs(ref)
@@ -174,3 +176,73 @@ def test_parallel_trends_joint_wald_matches_fixest():
     r2 = tpt(df, "y", "g", "t", pre_periods=[1, 2, 3, 4])
     assert abs(r2["joint_f_stat"] - 0.188423585724467) < 1e-10
     assert abs(r2["joint_p_value"] - 0.904089344068759) < 1e-10
+
+
+def test_group_time_att_aggregation_matches_did_aggte():
+    # reference: did::att_gt(xformla = ~x, bstrap = FALSE) then
+    # did::aggte(type = "simple" / "group" / "dynamic", bstrap = FALSE)
+    import math
+
+    import pandas as pd
+
+    from morie.did import aggregate_gt_att, group_time_att
+
+    gid = [3] * 15 + [4] * 15 + [5] * 12 + [0] * 18
+    rows = []
+    for t in range(1, 7):
+        for i in range(1, 61):
+            g = gid[i - 1]
+            x = math.cos(1.3 * i)
+            eff = 0.5 + 0.1 * (t - g) if g > 0 and t >= g else 0.0
+            y = math.sin(0.7 * i) + 0.2 * t + 0.4 * x * t / 3 + eff + 0.3 * math.cos(2.1 * i * t)
+            rows.append({"id": i, "t": t, "x": x, "y": y, "Gi": float("inf") if g == 0 else float(g)})
+    df = pd.DataFrame(rows)
+
+    def close(a, b):
+        assert len(a) == len(b)
+        for u, v in zip(a, b):
+            assert abs(u - v) < 1e-10
+
+    gt = group_time_att(df, "y", "id", "t", "Gi", covariates=["x"], n_bootstrap=0)
+    ov = aggregate_gt_att(gt, aggregation="overall")
+    close([ov["estimate"][0], ov["std_error"][0]], [0.680720069727177, 0.0307827144376915])
+    co = aggregate_gt_att(gt, aggregation="cohort")
+    close(list(co["estimate"]), [0.760138449710617, 0.603668526906854, 0.626645762556686])
+    close(list(co["std_error"]), [0.0529726630687719, 0.0315205359155238, 0.105803645031071])
+    gt2 = group_time_att(
+        df,
+        "y",
+        "id",
+        "t",
+        "Gi",
+        covariates=["x"],
+        method="outcome_regression",
+        control_group="not_yet_treated",
+        n_bootstrap=0,
+    )
+    ev = aggregate_gt_att(gt2, aggregation="event_time")
+    close(list(ev["group"]), [-3, -2, -1, 0, 1, 2, 3])
+    close(
+        list(ev["estimate"]),
+        [
+            0.00065953484673939,
+            0.00725994205258019,
+            0.00687541685809847,
+            0.50096180806059,
+            0.614759267545716,
+            0.788858787835507,
+            1.13359903056218,
+        ],
+    )
+    close(
+        list(ev["std_error"]),
+        [
+            0.0403357734533585,
+            0.0370813522917365,
+            0.0357685577536678,
+            0.051117871440564,
+            0.0396760732308281,
+            0.0278547541602288,
+            0.0758576178078758,
+        ],
+    )
