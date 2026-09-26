@@ -50,30 +50,27 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
+
 
 try:
     from morie.fn._ml_core import RandomForestClassifier, RandomForestRegressor
 except ImportError:
-    RandomForestClassifier = _MissingDep('RandomForestClassifier')
-    RandomForestRegressor = _MissingDep('RandomForestRegressor')
+    RandomForestClassifier = _MissingDep("RandomForestClassifier")
+    RandomForestRegressor = _MissingDep("RandomForestRegressor")
 try:
     from morie.fn._ml_core import enable_iterative_imputer  # noqa: F401
 except ImportError:
-    enable_iterative_imputer = _MissingDep('enable_iterative_imputer')
+    enable_iterative_imputer = _MissingDep("enable_iterative_imputer")
 try:
     from morie.fn._ml_core import BayesianRidge, LinearRegression, LogisticRegression
 except ImportError:
-    BayesianRidge = _MissingDep('BayesianRidge')
-    LinearRegression = _MissingDep('LinearRegression')
-    LogisticRegression = _MissingDep('LogisticRegression')
+    BayesianRidge = _MissingDep("BayesianRidge")
+    LinearRegression = _MissingDep("LinearRegression")
+    LogisticRegression = _MissingDep("LogisticRegression")
 
 logger = logging.getLogger(__name__)
 
@@ -382,10 +379,7 @@ def classify_missing_mechanism(
         logger.warning("Logistic regression failed for %s: %s", target, exc)
         return {"target": target, "classification": "Error", "p_value": None, "details": {"error": str(exc)}}
 
-    if p_val > alpha:
-        classification = "MCAR (likely)"
-    else:
-        classification = "MAR (likely)"
+    classification = "MCAR (likely)" if p_val > alpha else "MAR (likely)"
 
     return {
         "target": target,
@@ -431,56 +425,86 @@ def littles_mcar_test(data: pd.DataFrame) -> MCARTestResult:
     n, p = df.shape
     if p < 2:
         raise ValueError("Little's MCAR test requires at least 2 numeric variables.")
-
-    # Identify unique missingness patterns
-    pattern = (~df.isna()).astype(int)
-    pattern_str = pattern.apply(lambda row: tuple(row), axis=1)
-    unique_patterns = pattern_str.unique()
-    n_patterns = len(unique_patterns)
-
-    if n_patterns <= 1:
-        return MCARTestResult(test_statistic=0.0, p_value=1.0, df=0, n_patterns=1)
-
-    # Overall means and covariance from complete observations (simple EM substitute)
-    # Use pairwise-complete means and covariance
-    mu = df.mean().values
-    sigma = df.cov().values
-    sigma_reg = sigma + np.eye(p) * 1e-6  # regularise
-
-    chi2 = 0.0
+    cols = list(df.columns)
+    rows = []
+    for i in range(n):
+        r = [df[c].iloc[i] for c in cols]
+        r = [None if v is None or v != v else float(v) for v in r]
+        if any(v is not None for v in r):  # rows with nothing observed carry no information
+            rows.append(r)
+    pats = {}
+    for r in rows:
+        pats.setdefault(tuple(v is not None for v in r), []).append(r)
+    if len(pats) <= 1:
+        return MCARTestResult(test_statistic=0.0, p_value=1.0, df=0, n_patterns=len(pats))
+    mu, sigma = _em_mvn(rows, p)
+    # Little (1988, eq. 2): d^2 = sum_j n_j (ybar_j - mu_j)' Sigma_j^{-1} (ybar_j - mu_j)
+    # with the ML (EM) mean and covariance restricted to pattern j's variables
+    d2 = 0.0
     df_test = 0
-
-    for pat in unique_patterns:
-        pat_arr = np.array(pat)
-        obs_idx = np.where(pat_arr == 1)[0]
-        if len(obs_idx) == 0:
-            continue
-        mask = pattern_str == pat
-        group = df.loc[mask].iloc[:, obs_idx].dropna()
-        n_j = len(group)
-        if n_j <= 1:
-            continue
-        mu_j = group.mean().values
-        mu_obs = mu[obs_idx]
-        diff = mu_j - mu_obs
-        sigma_obs = sigma_reg[np.ix_(obs_idx, obs_idx)]
-        try:
-            sigma_inv = np.linalg.inv(sigma_obs / n_j)
-            chi2 += float(diff @ sigma_inv @ diff)
-            df_test += len(obs_idx)
-        except np.linalg.LinAlgError:
-            continue
-
-    # Adjust df for estimated parameters
-    df_test = max(df_test - p, 1)
-    p_val = 1 - stats.chi2.cdf(chi2, df_test)
-
+    for pat, grp in pats.items():
+        o = [j for j in range(p) if pat[j]]
+        nj = len(grp)
+        diff = [sum(r[j] for r in grp) / nj - mu[j] for j in o]
+        S = np.array([[sigma[a_][b_] for b_ in o] for a_ in o])
+        w = np.linalg.solve(S, np.array(diff))
+        d2 += nj * sum(diff[t] * float(w[t]) for t in range(len(o)))
+        df_test += len(o)
+    df_test -= p
     return MCARTestResult(
-        test_statistic=float(chi2),
-        p_value=float(p_val),
+        test_statistic=float(d2),
+        p_value=float(stats.chi2.sf(d2, df_test)),
         df=df_test,
-        n_patterns=n_patterns,
+        n_patterns=len(pats),
     )
+
+
+def _em_mvn(rows, p, tol=1e-12, max_iter=10000):
+    """Maximum-likelihood mean and covariance of a multivariate normal from
+    rows with missing entries (None), by EM (Dempster, Laird & Rubin 1977;
+    Little & Rubin 2002, sec. 11.2). Returns (mu, sigma) as lists."""
+    n = len(rows)
+    mu = []
+    for j in range(p):
+        v = [r[j] for r in rows if r[j] is not None]
+        mu.append(sum(v) / len(v))
+    sigma = [[0.0] * p for _ in range(p)]
+    for j in range(p):
+        v = [r[j] for r in rows if r[j] is not None]
+        sigma[j][j] = sum((x - mu[j]) ** 2 for x in v) / len(v)
+    for _ in range(max_iter):
+        t1 = [0.0] * p
+        t2 = [[0.0] * p for _ in range(p)]
+        for r in rows:
+            o = [j for j in range(p) if r[j] is not None]
+            m = [j for j in range(p) if r[j] is None]
+            x = [r[j] if r[j] is not None else 0.0 for j in range(p)]
+            c = [[0.0] * p for _ in range(p)]
+            if m:
+                Soo = np.array([[sigma[a][b] for b in o] for a in o])
+                Smo = [[sigma[a][b] for b in o] for a in m]
+                res = np.array([r[j] - mu[j] for j in o])
+                w = np.linalg.solve(Soo, res)
+                # regression of the missing on the observed entries
+                B = np.linalg.solve(Soo, np.array([[sigma[b][a] for a in m] for b in o]))
+                for ia, a in enumerate(m):
+                    x[a] = mu[a] + sum(Smo[ia][t] * float(w[t]) for t in range(len(o)))
+                    for ib, bb in enumerate(m):
+                        c[a][bb] = sigma[a][bb] - sum(Smo[ia][t] * float(B[t][ib]) for t in range(len(o)))
+            for a in range(p):
+                t1[a] += x[a]
+                for bb in range(p):
+                    t2[a][bb] += x[a] * x[bb] + c[a][bb]
+        new_mu = [v / n for v in t1]
+        new_sigma = [[t2[a][bb] / n - new_mu[a] * new_mu[bb] for bb in range(p)] for a in range(p)]
+        change = max(
+            max(abs(new_mu[a] - mu[a]) for a in range(p)),
+            max(abs(new_sigma[a][bb] - sigma[a][bb]) for a in range(p) for bb in range(p)),
+        )
+        mu, sigma = new_mu, new_sigma
+        if change < tol:
+            break
+    return mu, sigma
 
 
 # ===================================================================
@@ -508,10 +532,7 @@ def complete_case_analysis(
         Keys: ``complete_data``, ``n_original``, ``n_complete``,
         ``pct_dropped``, ``variables_checked``.
     """
-    if outcome is not None and covariates is not None:
-        cols = [outcome] + covariates
-    else:
-        cols = data.columns.tolist()
+    cols = [outcome] + covariates if outcome is not None and covariates is not None else data.columns.tolist()
 
     n_orig = len(data)
     cc = data.dropna(subset=cols)
@@ -951,10 +972,7 @@ def mice(
         )
 
     # Determine method per variable
-    if isinstance(method, str):
-        method_map = {v: method for v in vars_with_missing}
-    else:
-        method_map = method
+    method_map = {v: method for v in vars_with_missing} if isinstance(method, str) else method
 
     # Trace storage for convergence diagnostics
     traces: dict[str, dict[str, list[float]]] = {v: {"mean": [], "var": []} for v in vars_with_missing}
@@ -973,7 +991,7 @@ def mice(
                 if len(mode) > 0:
                     filled[col] = filled[col].fillna(mode.iloc[0])
 
-        for iteration in range(max_iter):
+        for _iteration in range(max_iter):
             for target in vars_with_missing:
                 missing_mask = df[target].isna()
                 if missing_mask.sum() == 0:
@@ -1044,6 +1062,7 @@ def rubins_rules(
     estimates: Union[np.ndarray, list[float]],
     variances: Union[np.ndarray, list[float]],
     confidence: float = 0.95,
+    dfcom: float = math.inf,
 ) -> PooledEstimate:
     """Pool multiply imputed estimates using Rubin's rules.
 
@@ -1054,13 +1073,22 @@ def rubins_rules(
     variances : array-like
         Variance estimates from each imputed dataset.
     confidence : float, default 0.95
+    dfcom : float, default inf
+        Complete-data degrees of freedom for the Barnard--Rubin (1999)
+        small-sample adjustment; ``inf`` gives Rubin's large-sample df.
 
     Returns
     -------
     PooledEstimate
+        As ``mice::pool.scalar``: df is Barnard--Rubin's, the FMI is
+        ``(r + 2/(df + 3)) / (r + 1)`` and the relative efficiency
+        ``1 / (1 + fmi/m)``.
 
     References
     ----------
+    Barnard, J., & Rubin, D. B. (1999). Small-sample degrees of freedom with
+    multiple imputation. *Biometrika*, 86(4), 948--955.
+
     Rubin, D. B. (1987). *Multiple Imputation for Nonresponse in Surveys*.
     Wiley. Chapter 3.
     """
@@ -1076,19 +1104,19 @@ def rubins_rules(
     T = U_bar + (1 + 1 / m) * B  # total variance
     se = math.sqrt(T)
 
-    # Fraction of missing information
     r = (1 + 1 / m) * B / U_bar if U_bar > 0 else 0.0
     lambda_hat = (1 + 1 / m) * B / T if T > 0 else 0.0
-    fmi = (r + 2 / (m * (1 - lambda_hat) + 3)) / (r + 1) if (r + 1) > 0 else 0.0
-
-    # Degrees of freedom (Barnard & Rubin, 1999)
-    v_old = (m - 1) * (1 + 1 / r) ** 2 if r > 0 else float("inf")
-    # Adjusted df for small samples: use v_old as approximation
-    df_val = max(v_old, 1.0)
-
-    # Relative efficiency
-    re = 1 / (1 + lambda_hat / m) if m > 0 else 1.0
-
+    # Barnard-Rubin degrees of freedom, as mice's barnard.rubin (lambda is
+    # floored at 1e-4 so the old df stays finite)
+    lam = max(lambda_hat, 1e-4)
+    df_old = (m - 1) / lam**2
+    if math.isinf(dfcom):
+        df_val = df_old
+    else:
+        df_obs = (dfcom + 1) / (dfcom + 3) * dfcom * (1 - lam)
+        df_val = df_old * df_obs / (df_old + df_obs)
+    fmi = (r + 2 / (df_val + 3)) / (r + 1)
+    re = 1 / (1 + fmi / m)
     t_crit = stats.t.ppf((1 + confidence) / 2, df_val)
     ci_lo = Q_bar - t_crit * se
     ci_hi = Q_bar + t_crit * se
@@ -1398,16 +1426,10 @@ def select_auxiliary_variables(
     scores = []
     for col in numeric_cols:
         valid = df[[col, target]].dropna()
-        if len(valid) > 2:
-            r_target = abs(valid[col].corr(valid[target]))
-        else:
-            r_target = 0.0
+        r_target = abs(valid[col].corr(valid[target])) if len(valid) > 2 else 0.0
         valid_ind = df[col].dropna()
         common = valid_ind.index.intersection(indicator.index)
-        if len(common) > 2:
-            r_miss = abs(valid_ind.loc[common].corr(indicator.loc[common]))
-        else:
-            r_miss = 0.0
+        r_miss = abs(valid_ind.loc[common].corr(indicator.loc[common])) if len(common) > 2 else 0.0
         max_r = max(r_target, r_miss)
         if max_r >= r_threshold:
             scores.append((col, max_r))
