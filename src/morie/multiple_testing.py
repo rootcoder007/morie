@@ -287,7 +287,7 @@ def hommel(
     q = [base] * m
     pa = [base] * m
     for k in range(m - 1, 1, -1):
-        n_low = m - k + 1                       # indices 0..n_low-1
+        n_low = m - k + 1  # indices 0..n_low-1
         q1 = min(k * ps[n_low + j] / (j + 2) for j in range(k - 1))
         for i in range(n_low):
             q[i] = min(k * ps[i], q1)
@@ -693,7 +693,6 @@ def permutation_fdr(
     p = np.asarray(p_values, dtype=float)
     p_null = np.asarray(null_p_values, dtype=float)
     m = len(p)
-    n_perm = p_null.shape[0]
 
     thresholds = np.sort(p)
     fdr_at_t = np.empty(len(thresholds))
@@ -708,10 +707,7 @@ def permutation_fdr(
 
     # Find the largest threshold where FDR <= alpha.
     valid = fdr_at_t <= alpha
-    if valid.any():
-        t_star = thresholds[np.where(valid)[0][-1]]
-    else:
-        t_star = 0
+    t_star = thresholds[np.where(valid)[0][-1]] if valid.any() else 0
 
     rejected = p <= t_star
 
@@ -1088,35 +1084,76 @@ def estimate_pi0(p_values: np.ndarray, method: str = "storey") -> float:
     p = np.asarray(p_values, dtype=float)
     m = len(p)
 
+    lambdas = [0.05 * k for k in range(1, 20)]  # qvalue's default grid, 0.05 to 0.95
+    pi0_lam = [sum(1 for v in p.tolist() if v >= lam) / (m * (1 - lam)) for lam in lambdas]
     if method == "storey":
-        lambdas = np.arange(0.05, 0.95, 0.05)
-        pi0_estimates = [(np.sum(p > lam) / (m * (1 - lam))) for lam in lambdas]
-        return float(min(min(pi0_estimates), 1.0))
+        # Storey & Tibshirani (2003): a cubic smoothing spline with 3 df
+        # through pi0(lambda), read at the largest lambda (qvalue's
+        # pi0.method = "smoother")
+        pi0 = _smoothing_spline_df(lambdas, pi0_lam, 3.0)[-1]
+        if pi0 <= 0:
+            raise ValueError("estimated pi0 <= 0 (the smoother extrapolated below zero); use method='bootstrap'")
+        return float(min(pi0, 1.0))
 
     elif method == "bootstrap":
-        lambdas = np.arange(0.05, 0.95, 0.05)
-        pi0_hat = np.array([np.sum(p > lam) / (m * (1 - lam)) for lam in lambdas])
-        min_pi0 = np.quantile(pi0_hat, 0.1)
-        # Bootstrap variance selection.
-        mse = np.zeros(len(lambdas))
-        for b in range(100):
-            p_boot = np.random.choice(p, size=m, replace=True)
-            pi0_boot = np.array([np.sum(p_boot > lam) / (m * (1 - lam)) for lam in lambdas])
-            mse += (pi0_boot - min_pi0) ** 2
-        mse /= 100
-        best_idx = np.argmin(mse)
-        return float(min(pi0_hat[best_idx], 1.0))
+        # Storey, Taylor & Siegmund (2004): the lambda minimising the
+        # closed-form MSE against the 10% quantile of pi0(lambda)
+        # (qvalue's pi0.method = "bootstrap")
+        srt = sorted(pi0_lam)
+        h = 0.1 * (len(srt) - 1)
+        lo = int(h)
+        min_pi0 = srt[lo] + (h - lo) * (srt[min(lo + 1, len(srt) - 1)] - srt[lo])
+        mse = []
+        for lam, pl in zip(lambdas, pi0_lam):
+            W = sum(1 for v in p.tolist() if v >= lam)
+            mse.append(W / (m**2 * (1 - lam) ** 2) * (1 - W / m) + (pl - min_pi0) ** 2)
+        best = min(mse)
+        return float(min(min(pl for pl, e in zip(pi0_lam, mse) if e == best), 1.0))
 
     elif method == "two_step":
-        # Two-step BH approach.
-        bh_result = benjamini_hochberg(p, alpha=0.05)
+        # Benjamini, Krieger & Yekutieli (2006): stage-one BH at q/(1 + q)
+        bh_result = benjamini_hochberg(p, alpha=0.05 / 1.05)
         r = bh_result.n_rejected
-        if r == 0:
-            return 1.0
         return float(min((m - r) / m, 1.0))
 
     else:
         raise ValueError(f"Unknown method: {method}")
+
+
+def _smoothing_spline_df(x, y, df):
+    """Fitted values of the natural cubic smoothing spline with the given
+    effective degrees of freedom (Green & Silverman 1994, sec. 2.3):
+    g = (I + a K)^-1 y with K = Q R^-1 Q', a solved so that tr = df."""
+    import math
+
+    n = len(x)
+    hh = [x[i + 1] - x[i] for i in range(n - 1)]
+    Q = [[0.0] * (n - 2) for _ in range(n)]
+    Rm = [[0.0] * (n - 2) for _ in range(n - 2)]
+    for j in range(1, n - 1):
+        c = j - 1
+        Q[j - 1][c] = 1.0 / hh[j - 1]
+        Q[j][c] = -1.0 / hh[j - 1] - 1.0 / hh[j]
+        Q[j + 1][c] = 1.0 / hh[j]
+        Rm[c][c] = (hh[j - 1] + hh[j]) / 3.0
+        if c + 1 < n - 2:
+            Rm[c][c + 1] = Rm[c + 1][c] = hh[j] / 6.0
+    RiQt = np.linalg.solve(np.array(Rm), np.array([[Q[i][c] for i in range(n)] for c in range(n - 2)]))
+    K = [[sum(Q[i][c] * float(RiQt[c][k]) for c in range(n - 2)) for k in range(n)] for i in range(n)]
+
+    def smoother(a):
+        return np.linalg.inv(np.array([[(1.0 if i == k else 0.0) + a * K[i][k] for k in range(n)] for i in range(n)]))
+
+    lo, hi = -30.0, 30.0  # bisection on log a: tr(S) falls from n to 2
+    for _ in range(200):
+        mid = 0.5 * (lo + hi)
+        S = smoother(math.exp(mid))
+        if sum(float(S[i][i]) for i in range(n)) > df:
+            lo = mid
+        else:
+            hi = mid
+    S = smoother(math.exp(0.5 * (lo + hi)))
+    return [sum(float(S[i][k]) * y[k] for k in range(n)) for i in range(n)]
 
 
 def adjust_p_values(
