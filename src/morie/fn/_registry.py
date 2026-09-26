@@ -89842,6 +89842,20 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "spglsv",
+    "gls_semivariogram_fit",
+    "Auto",
+    "Auto-wired callable from fn/spglsv.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "vgdrift",
+    "drift_semivariogram_bias",
+    "Auto",
+    "Auto-wired callable from fn/vgdrift.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",

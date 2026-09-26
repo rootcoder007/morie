@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,393 single-purpose callables** -- every one
+``morie.fn`` ships **18,392 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -4287,6 +4287,7 @@ Full list
    "dreamer", "dreamr"
    "drift_forecast", "driftF"
    "drift_magnitude", "drfmg"
+   "drift_semivariogram_bias", "vgdrift"
    "driftforecast", "driftF"
    "driftmagnitude", "drfmg"
    "drlea", "drlea"
@@ -7365,6 +7366,7 @@ Full list
    "gls_estimator", "gls_estimator"
    "gls_population_slope", "gls_population_slope"
    "gls_regression", "glsrg"
+   "gls_semivariogram_fit", "spglsv"
    "gls_spatial", "sggls"
    "glsestimator", "gls_estimator"
    "glsregression", "glsrg"
@@ -16077,9 +16079,6 @@ Full list
    "statistical_methods_for_spatial_data_analysis_chapter_1_equation_3", "statistical_methods_for_spatial_data_analysis1e3"
    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1685", "statistical_methods_for_spatial_data_analysis1u1685"
    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1686", "statistical_methods_for_spatial_data_analysis1u1686"
-   "statistical_methods_for_spatial_data_analysis_chapter_4_equation_30", "statistical_methods_for_spatial_data_analysis4e30"
-   "statistical_methods_for_spatial_data_analysis_chapter_4_equation_31", "statistical_methods_for_spatial_data_analysis4e31"
-   "statistical_methods_for_spatial_data_analysis_chapter_5_equation_35", "statistical_methods_for_spatial_data_analysis5e35"
    "statistical_methods_for_spatial_data_analysis_chapter_6_equation_10", "statistical_methods_for_spatial_data_analysis6e10"
    "statistical_methods_for_spatial_data_analysis_chapter_6_equation_11", "statistical_methods_for_spatial_data_analysis6e11"
    "statistical_methods_for_spatial_data_analysis_chapter_6_equation_12", "statistical_methods_for_spatial_data_analysis6e12"
