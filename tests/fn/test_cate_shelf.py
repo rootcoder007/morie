@@ -252,7 +252,7 @@ def test_meta_learner_disagreement_is_reported():
     # matrix is what says so
     corr = out["agreement"]
     assert corr.shape == (5, 5)
-    assert np.all(np.diag(corr) == pytest.approx(1.0))
+    assert np.diag(corr).tolist() == pytest.approx([1.0] * 5)
     assert corr[0, 2] > 0.95
     assert np.mean(out["uncertainty"]) < 0.2
     with pytest.raises(ValueError, match="estimator must be one of"):

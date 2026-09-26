@@ -31,7 +31,9 @@ def _erf(x):
 
 
 def _norm_cdf(z):
-    return 0.5 * (1.0 + _math.erf(z / _math.sqrt(2.0)))
+    # erfc keeps full relative accuracy in the lower tail, where
+    # 1 + erf(z / sqrt 2) cancels to 0 below z of about -8
+    return 0.5 * _math.erfc(-z / _math.sqrt(2.0))
 
 
 def _norm_pdf(z):
@@ -683,6 +685,12 @@ class _Norm(_Dist):
         d = self if loc is None and scale is None else _Norm(
             *self._ls(loc, scale))
         return _maybe_map(lambda v: _norm_cdf(d._z(v)), x)
+
+    def sf(self, x, loc=None, scale=None):
+        # 0.5 erfc(z / sqrt 2) directly: 1 - cdf cancels in the upper tail
+        d = self if loc is None and scale is None else _Norm(
+            *self._ls(loc, scale))
+        return _maybe_map(lambda v: _norm_cdf(-d._z(v)), x)
 
     def ppf(self, q, loc=None, scale=None):
         # either argument alone overrides the frozen value (scipy's
@@ -1798,46 +1806,105 @@ def mannwhitneyu(x, y, alternative="two-sided", use_continuity=True,
     return _TestResult(u1, _bi.min(1.0, _bi.max(0.0, p)))
 
 
-def wilcoxon(x, y=None, correction=False, **kw):
+def wilcoxon(x, y=None, zero_method="wilcox", correction=False,
+             alternative="two-sided", method="auto", **kw):
+    """Wilcoxon signed-rank test with scipy.stats.wilcoxon's rules.
+
+    ``method="auto"`` is exact when there are no ties and no zeros and
+    n <= 50; with ties or zeros it enumerates all 2^n sign flips (the
+    permutation test scipy runs) when n <= 13, and uses the tie-corrected
+    normal approximation otherwise.  The statistic is min(W+, W-) for a
+    two-sided test and W+ for a one-sided one.
+    """
     del kw
+    if alternative not in ("two-sided", "greater", "less"):
+        raise ValueError("alternative must be 'two-sided', 'greater' or 'less'")
+    if zero_method not in ("wilcox", "pratt"):
+        raise ValueError("zero_method must be 'wilcox' or 'pratt'")
+    if method not in ("auto", "exact", "asymptotic"):
+        raise ValueError("method must be 'auto', 'exact' or 'asymptotic'")
     xv = _flatten(x)
     if y is not None:
         yv = _flatten(y)
+        if len(yv) != len(xv):
+            raise ValueError("x and y must have the same length")
         d = [a - b for a, b in zip(xv, yv)]
     else:
-        d = xv
-    d = [v for v in d if v != 0.0]
-    n = len(d)
-    ranks = rankdata([abs(v) for v in d])
-    wplus = _math.fsum(r for r, v in zip(ranks, d) if v > 0)
-    wminus = _math.fsum(r for r, v in zip(ranks, d) if v < 0)
-    stat = _bi.min(wplus, wminus)
-    mu = n * (n + 1) / 4.0
-    counts = {}
-    for v in d:
-        counts[abs(v)] = counts.get(abs(v), 0) + 1
-    tie = _math.fsum(c ** 3 - c for c in counts.values())
-    if n == 0:
+        d = list(xv)
+    d = [v for v in d if v == v]
+    n_all = len(d)
+    if n_all == 0:
         return _TestResult(_math.nan, _math.nan)
-    if n <= 50:
-        # exact: enumerate the distribution of W+ over the 2^n sign
-        # assignments by a subset-sum walk on doubled ranks (mid-ranks
-        # with ties are half-integers), as scipy's method="auto" does
-        r2 = [int(round(2.0 * r)) for r in ranks]
+    n_zero = sum(1 for v in d if v == 0.0)
+    keep = d if zero_method == "pratt" else [v for v in d if v != 0.0]
+    count = len(keep)
+    ranks = rankdata([abs(v) for v in keep]) if keep else []
+    wplus = _math.fsum(r for r, v in zip(ranks, keep) if v > 0)
+    wminus = _math.fsum(r for r, v in zip(ranks, keep) if v < 0)
+    stat = _bi.min(wplus, wminus) if alternative == "two-sided" else wplus
+    groups = {}
+    for v in keep:
+        if v != 0.0:
+            groups[abs(v)] = groups.get(abs(v), 0) + 1
+    has_ties = any(c > 1 for c in groups.values())
+    if method == "auto":
+        if n_all > 50:
+            method = "asymptotic"
+        elif not (has_ties or n_zero > 0):
+            method = "exact"
+        elif n_all <= 13:
+            method = "permutation"
+        else:
+            method = "asymptotic"
+    if method in ("exact", "permutation"):
+        # null distribution of W+ over the 2^m sign flips of the non-zero
+        # differences, on doubled ranks so mid-ranks stay integral
+        r2 = [int(round(2.0 * r)) for r, v in zip(ranks, keep) if v != 0.0]
         total = sum(r2)
         dist = [0.0] * (total + 1)
         dist[0] = 1.0
         for r in r2:
             for w in range(total, r - 1, -1):
                 dist[w] += dist[w - r]
-        scale = 2.0 ** n
-        w2 = int(round(2.0 * stat))
-        p_low = _math.fsum(dist[:w2 + 1]) / scale
-        return _TestResult(stat, _bi.min(1.0, 2.0 * p_low))
-    sig = _math.sqrt(n * (n + 1) * (2 * n + 1) / 24.0 - tie / 48.0)
-    corr = 0.5 * (1 if correction else 0)
-    z = (stat - mu + corr) / sig
-    return _TestResult(stat, _bi.min(1.0, 2.0 * norm.sf(abs(z))))
+        scale = 2.0 ** len(r2)
+        w2 = 2.0 * wplus
+        if method == "exact":
+            # scipy rounds a non-integral W+ up for the cdf and down for the sf
+            lo_k = int(_math.ceil(w2 / 2.0 - 1e-12)) * 2
+            hi_k = int(_math.floor(w2 / 2.0 + 1e-12)) * 2
+        else:
+            lo_k = int(_math.floor(w2 + 1e-9))
+            hi_k = int(_math.ceil(w2 - 1e-9))
+        p_le = _math.fsum(dist[:_bi.max(0, _bi.min(lo_k, total)) + 1]) / scale if lo_k >= 0 else 0.0
+        p_ge = _math.fsum(dist[_bi.max(0, hi_k):]) / scale if hi_k <= total else 0.0
+        if alternative == "less":
+            p = p_le
+        elif alternative == "greater":
+            p = p_ge
+        else:
+            p = _bi.min(1.0, 2.0 * _bi.min(p_le, p_ge))
+        return _TestResult(stat, p)
+    mn = count * (count + 1) / 4.0
+    var = count * (count + 1) * (2 * count + 1)
+    if zero_method == "pratt":
+        mn -= n_zero * (n_zero + 1) / 4.0
+        var -= n_zero * (n_zero + 1) * (2 * n_zero + 1)
+    tie = _math.fsum(c ** 3 - c for c in groups.values())
+    se = _math.sqrt((var - tie / 2.0) / 24.0) if var - tie / 2.0 > 0 else 0.0
+    if se == 0.0:
+        return _TestResult(stat, _math.nan)
+    z = (wplus - mn) / se
+    if correction:
+        sgn = 1.0 if alternative == "greater" else -1.0 if alternative == "less" \
+            else (1.0 if z > 0 else -1.0 if z < 0 else 0.0)
+        z -= sgn * 0.5 / se
+    if alternative == "greater":
+        p = norm.sf(z)
+    elif alternative == "less":
+        p = norm.cdf(z)
+    else:
+        p = _bi.min(1.0, 2.0 * norm.sf(abs(z)))
+    return _TestResult(stat, p)
 
 
 def kruskal(*groups):

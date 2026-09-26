@@ -9,7 +9,7 @@ __all__ = ["horowitz_panel_deconvolution", "horowitz_panel_deconv"]
 
 
 def horowitz_panel_deconvolution(y, x, beta, nu_U=None, nu_eps=None,
-                                 grid_u=None, grid_z=None):
+                                 grid_u=None, grid_z=None, kernel="fourfold"):
     r"""Nonparametric densities of the individual effect and the
     idiosyncratic error in a panel model (Horowitz Sec. 5.2.1),
     equations (5.21)-(5.26):
@@ -57,11 +57,17 @@ def horowitz_panel_deconvolution(y, x, beta, nu_U=None, nu_eps=None,
     beta : array-like, shape (d,)
         A root-n-consistent estimate of beta.
     nu_U, nu_eps : float, optional
-        Smoothing bandwidths for (5.26) and (5.25). Defaults follow
-        the amplification criterion, ``(log n)**(-1/2)``, matching
-        the logarithmic rate the theory allows.
+        Smoothing bandwidths for (5.26) and (5.25). By default
+        ``sigma_eps / sqrt(log n)`` for f_U (the noise-amplification
+        criterion, logarithmic rate) and ``0.5 sigma_eps N**(-1/5)`` for
+        f_eps, which needs no division (``_hrz_paneldec.default_bandwidths``).
     grid_u, grid_z : array-like, optional
         Evaluation points for :math:`f_U` and :math:`f_\varepsilon`.
+    kernel : {"fourfold", "flattop"}, default "fourfold"
+        ``psi_zeta``. "fourfold" is the book's characteristic function
+        (assumption PHU7); "flattop" is the indicator of [-1, 1], outside
+        PHU7 but with higher-order bias and 2-3 times smaller errors in
+        simulation. Each has its own default bandwidths.
 
     Returns
     -------
@@ -77,8 +83,10 @@ def horowitz_panel_deconvolution(y, x, beta, nu_U=None, nu_eps=None,
     Econometrics*. Springer. Sec. 5.2.1-5.2.2, eqs. (5.21)-(5.26)
     and Theorem 5.4; Horowitz and Markatou (1996).
     """
-    from ._hrz_paneldec import deconvolve_pair, panel_residuals
+    from ._hrz_paneldec import deconvolve_pair, default_bandwidths, panel_residuals
 
+    from ._hrz_paneldec import _check_kernel
+    _check_kernel(kernel)
     Y = np.atleast_2d(np.asarray(y, dtype=float))
     n, T = Y.shape
     b = np.asarray(beta, dtype=float).ravel()
@@ -86,16 +94,17 @@ def horowitz_panel_deconvolution(y, x, beta, nu_U=None, nu_eps=None,
     if n < 10:
         raise ValueError(f"need at least 10 individuals, got {n}.")
 
-    default = float(np.log(n) ** -0.5)
-    nU = default if nu_U is None else float(nu_U)
-    ne = default if nu_eps is None else float(nu_eps)
+    dU, dE = default_bandwidths(eta, n, kernel, W)
+    nU = dU if nu_U is None else float(nu_U)
+    ne = dE if nu_eps is None else float(nu_eps)
     gu = np.linspace(np.quantile(W, 0.05), np.quantile(W, 0.95), 61) \
         if grid_u is None else np.atleast_1d(np.asarray(grid_u, dtype=float))
     gz = np.linspace(np.quantile(eta, 0.05), np.quantile(eta, 0.95), 61) \
         if grid_z is None else np.atleast_1d(np.asarray(grid_z, dtype=float))
 
-    f_U, f_eps = deconvolve_pair(W, eta, gu, gz, nU, ne)
+    f_U, f_eps = deconvolve_pair(W, eta, gu, gz, nU, ne, kernel=kernel)
     return RichResult(payload={
+        "kernel": kernel,
         "grid_u": gu, "f_U": f_U, "grid_z": gz, "f_eps": f_eps,
         "psi_eps_from_root": True, "symmetry_required": True,
         "nu_U": nU, "nu_eps": ne,

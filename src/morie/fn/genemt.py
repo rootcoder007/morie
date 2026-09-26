@@ -70,7 +70,7 @@ _EPS = 1e-12
 
 
 def _norm_cdf(x):
-    return 0.5 * (1.0 + math.erf(float(x) / math.sqrt(2.0)))
+    return 0.5 * math.erfc(-(float(x)) / math.sqrt(2.0))
 
 
 def _norm_ppf(p):

@@ -8,7 +8,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_smoothed_fU", "horowitz_deconv_estimator"]
 
 
-def horowitz_smoothed_fU(y, x, beta, nu_U=None, grid=None):
+def horowitz_smoothed_fU(y, x, beta, nu_U=None, grid=None, kernel="fourfold"):
     r"""The smoothed estimator of :math:`f_U` alone (Horowitz
     Sec. 5.2.1), equation (5.26):
 
@@ -37,9 +37,15 @@ def horowitz_smoothed_fU(y, x, beta, nu_U=None, grid=None):
     beta : array-like, shape (d,)
         Root-n-consistent beta.
     nu_U : float, optional
-        Smoothing bandwidth; ``(log n)**(-1/2)`` otherwise.
+        Smoothing bandwidth; ``sigma_eps / sqrt(log n)`` otherwise (see
+        ``_hrz_paneldec.default_bandwidths``).
     grid : array-like, optional
         Evaluation points.
+    kernel : {"fourfold", "flattop"}, default "fourfold"
+        ``psi_zeta``. "fourfold" is the book's characteristic function
+        (assumption PHU7); "flattop" is the indicator of [-1, 1], outside
+        PHU7 but with higher-order bias and 2-3 times smaller errors in
+        simulation. Each has its own default bandwidths.
 
     Returns
     -------
@@ -52,21 +58,24 @@ def horowitz_smoothed_fU(y, x, beta, nu_U=None, grid=None):
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
     Econometrics*. Springer. Sec. 5.2.1, eq. (5.26).
     """
-    from ._hrz_paneldec import deconvolve_pair, panel_residuals
+    from ._hrz_paneldec import deconvolve_pair, default_bandwidths, panel_residuals
 
+    from ._hrz_paneldec import _check_kernel
+    _check_kernel(kernel)
     Y = np.atleast_2d(np.asarray(y, dtype=float))
     n, T = Y.shape
     b = np.asarray(beta, dtype=float).ravel()
     W, eta = panel_residuals(Y, x, b)
     if n < 10:
         raise ValueError(f"need at least 10 individuals, got {n}.")
-    nU = float(np.log(n) ** -0.5) if nu_U is None else float(nu_U)
+    nU = default_bandwidths(eta, n, kernel, W)[0] if nu_U is None else float(nu_U)
     if nU <= 0:
         raise ValueError(f"nu_U must be positive, got {nU}.")
     g = np.linspace(np.quantile(W, 0.05), np.quantile(W, 0.95), 61) \
         if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
-    f_U, _ = deconvolve_pair(W, eta, g, g[:1], nU, nU)
+    f_U, _ = deconvolve_pair(W, eta, g, g[:1], nU, nU, kernel=kernel)
     return RichResult(payload={
+        "kernel": kernel,
         "grid": g, "f_U": f_U, "nu_U": nU, "cutoff": 1.0 / nU,
         "regularisation_required": True,
         "n": int(n), "T": int(T),

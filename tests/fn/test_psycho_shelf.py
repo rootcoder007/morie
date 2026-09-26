@@ -172,25 +172,27 @@ def test_map_and_eap_shrink_toward_the_prior_mean():
 
 
 def test_warms_weighted_likelihood_reduces_the_ml_bias():
-    """Warm's claim, measured by simulation rather than asserted:
-    at a fixed true theta the WLE's mean error is smaller than the
-    ML estimator's."""
-    a, b = irt_items()
+    """Warm's claim, computed exactly rather than simulated: with 8
+    items every one of the 2^8 response patterns is enumerated and
+    weighted by its probability at the true theta = 1, so E[theta_hat]
+    has no Monte Carlo error (400 simulated replicates carry an SE of
+    about 0.03, larger than the biases being compared).  E[WLE - theta]
+    = -0.0066 against E[MLE - theta | finite MLE] = +0.0136."""
+    import itertools
+    import math
+    a, b = irt_items(8)
     true = 1.0
-    ml_err, wl_err = [], []
-    for r in range(400):
-        rng = np.random.default_rng(1000 + r)
-        p = 1 / (1 + np.exp(-a * (true - b)))
-        y = (rng.random(20) < p).astype(float)
-        m = mle_theta_estimator(y, a=a, b=b)
-        if not m["finite"]:
-            continue
-        w = weighted_likelihood_theta(y, a=a, b=b)
-        ml_err.append(m["theta"] - true)
-        wl_err.append(w["theta"] - true)
-    assert abs(np.mean(wl_err)) < abs(np.mean(ml_err))
+    P = [1 / (1 + math.exp(-float(ai) * (true - float(bi)))) for ai, bi in zip(a, b)]
+    ew = em = pm = 0.0
+    for y in itertools.product((0.0, 1.0), repeat=8):
+        pr = math.prod(p if v else 1 - p for p, v in zip(P, y))
+        ew += pr * (weighted_likelihood_theta(np.array(y), a=a, b=b)["theta"] - true)
+        if 0 < sum(y) < 8:
+            em += pr * (mle_theta_estimator(np.array(y), a=a, b=b)["theta"] - true)
+            pm += pr
+    assert abs(ew) < abs(em / pm)
     assert weighted_likelihood_theta(np.r_[np.ones(10), np.zeros(10)],
-                                     a=a, b=b)["bias_corrected"] is True
+                                     a=np.full(20, 1.2), b=np.linspace(-2, 2, 20))["bias_corrected"] is True
 
 
 def test_the_matrix_aliases_share_the_single_pattern_implementations():

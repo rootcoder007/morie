@@ -71,3 +71,23 @@ def test_hrzfnu_edge():
         horowitz_deconv_estimator(Y, X, BETA, nu_U=-1.0)
     with pytest.raises(ValueError):
         horowitz_deconv_estimator([[v[0]] for v in Y], [[v[0]] for v in X], BETA)
+
+
+def test_hrzfnu_flattop():
+    """kernel="flattop" uses psi_zeta = 1{|u| <= 1}; its default cut-off
+    is the first tau (on a 0.02 / sd(W) grid) where |psi_nW| falls to
+    2 / sqrt(N_W), and f_nU is the same inversion with that weight."""
+    import statistics
+    r = horowitz_deconv_estimator(Y, X, BETA, grid=[0.0, 0.8], kernel="flattop")
+    step = 0.02 / statistics.stdev(Wr)
+    floor = 2 / math.sqrt(len(Wr))
+    T = next(k * step for k in range(1, 1501) if math.hypot(*_cf(Wr, k * step)) < floor)
+    assert r["nu_U"] == pytest.approx(1 / T, rel=1e-12)
+
+    def fu(u, nu):
+        def g(t):
+            a, b = _cf(Wr, t)
+            c, d = _cf(ETA, t)
+            return (a * math.cos(t * u) + b * math.sin(t * u)) / math.sqrt(math.hypot(c, d))
+        return _trap(g, 1 / nu)
+    assert [float(v) for v in r["f_U"]] == pytest.approx([fu(0.0, 1 / T), fu(0.8, 1 / T)], rel=1e-9)

@@ -65,6 +65,7 @@ def bayesian_ideal_points(x, n_iter: int = 400, burn: int = 100, seed: int = 0, 
     except np.linalg.LinAlgError:
         x_cur = rng.normal(size=n)
     x_cur = (x_cur - x_cur.mean()) / (x_cur.std() + 1e-12)
+    x_ref = x_cur.copy()
     a_cur = np.ones(m)
     b_cur = np.zeros(m)
     samples = []
@@ -123,7 +124,19 @@ def bayesian_ideal_points(x, n_iter: int = 400, burn: int = 100, seed: int = 0, 
         acc_b += int(take.sum())
 
         ll_x = row_ll(x_cur, a_cur, b_cur)
-
+        # identify inside the chain: a_j (x_i - b_j) is unchanged by
+        # x -> (x - mu)/sd with a -> a sd, b -> (b - mu)/sd, and by the
+        # reflection (x, a, b) -> -(x, a, b).  Left free, the chain
+        # random-walks in scale and flips sign, and the posterior mean
+        # averages the flips away; pinning the location, scale and sign
+        # (against the SVD start) each sweep removes that drift
+        mu_x = float(x_cur.mean())
+        sd_x = float(x_cur.std()) + 1e-12
+        x_cur = (x_cur - mu_x) / sd_x
+        a_cur = a_cur * sd_x
+        b_cur = (b_cur - mu_x) / sd_x
+        if float((x_cur * x_ref).sum()) < 0:
+            x_cur, a_cur, b_cur = -x_cur, -a_cur, -b_cur
         if t < burn:
             # Robbins-Monro step tuning towards the 0.44 optimum for scalar moves.
             step_x *= np.exp((acc_x / ((t + 1) * n) - 0.44) * 0.5)

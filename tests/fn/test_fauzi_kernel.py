@@ -15,6 +15,8 @@ oracle. Nothing here is anchored to output the implementation
 happened to produce.
 """
 
+import math
+
 from morie.fn import _array_core as np
 import pytest
 
@@ -207,18 +209,26 @@ def test_the_density_bandwidth_rule_would_lose_to_the_empirical_df():
     (2.3)-(2.4) put the bandwidth in the variance at O(h/n), with a
     negative sign, not at O(1/(nh)). Substituting the density rule
     n^{-1/5} oversmooths, and the smoothed estimate then has a LARGER
-    mean squared error than the raw step function."""
+    mean squared error than the raw step function.
+
+    MISE(kernel df) - MISE(edf) = -c_K (h/n) int f + (h^4/4) int f'^2
+    (c_K = 1/sqrt(pi) for the Gaussian kernel), so the sign is set by h.
+    The design is N(0, 1) on [-3, 3]: smooth, with no boundary -- an
+    Exp(1) sample adds an O(h) boundary bias at 0 that swamps the
+    O(h/n) gain.  At n = 1000 the paired Monte Carlo differences over
+    40 replicates are 2.8 (cube-root rule beats the edf) and 3.1
+    (density rule loses to it) standard errors from zero."""
     rng = np.random.default_rng(101)
+    g = np.linspace(-3, 3, 60)
+    truth = np.asarray([0.5 * math.erfc(-v / math.sqrt(2)) for v in g.tolist()])
     right, wrong, edf = [], [], []
-    for _ in range(12):
-        x = rng.exponential(1.0, 200)
-        g = np.linspace(0.2, 4, 60)
-        truth = 1 - np.exp(-g)
+    for _ in range(40):
+        x = rng.normal(0.0, 1.0, 1000)
         sd = np.std(x, ddof=1)
         iqr = np.subtract(*np.percentile(x, [75, 25])) / 1.349
         sig = min(sd, iqr) if iqr > 0 else sd
         o = fauzi_kdfe(x, grid=g)
-        w = fauzi_kdfe(x, grid=g, h=1.06 * sig * 200 ** (-1 / 5))
+        w = fauzi_kdfe(x, grid=g, h=1.06 * sig * 1000 ** (-1 / 5))
         right.append(np.mean((o["F_hat"] - truth) ** 2))
         wrong.append(np.mean((w["F_hat"] - truth) ** 2))
         edf.append(np.mean((o["F_empirical"] - truth) ** 2))

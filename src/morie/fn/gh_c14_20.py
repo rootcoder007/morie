@@ -20,7 +20,7 @@ def ghosal_probit_sbp(x=0.4, n_terms=25, seed=42):
     erf. Keys: estimate."""
     rng = np.random.default_rng(seed)
     def Phi(v):
-        return 0.5 * (1.0 + math.erf(v / math.sqrt(2.0)))
+        return 0.5 * math.erfc(-(v) / math.sqrt(2.0))
     V = [Phi(float(rng.normal(0, 1))
              + float(rng.normal(0, 1)) * x)
          for _ in range(n_terms)]

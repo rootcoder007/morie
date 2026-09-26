@@ -79,15 +79,30 @@ def fauzi_cumulative_survival_2(x, t_grid, h=None, transform="log"):
     hh = kdfe_bandwidth(zx) if h is None else float(h)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
-    lower = float(np.min(zx) - 6 * hh)
+    import math
+
+    def _Phi(v):
+        return 0.5 * math.erfc(-v / math.sqrt(2.0))
+
+    def _phi(v):
+        return math.exp(-0.5 * v * v) / math.sqrt(2.0 * math.pi)
+    # V_{2,h}(x, y) = int_{-inf}^y g'(z) V((x - z)/h) dz in closed form
+    # for the Gaussian kernel, with b = (y - x)/h:
+    #   g = exp:      e^y Phi(b) - e^{x + h^2/2} Phi(b - h)
+    #   g = identity: h (b Phi(b) + phi(b))
+    log_t = tr["name"] == "exp/log"
+    zxl = [float(v) for v in zx.tolist()]
     S_cum = np.empty(tg.size)
-    for j, zv in enumerate(zt):
-        vals = np.empty(zx.size)
-        for i, yy in enumerate(zx):
-            zz = np.linspace(lower, yy, 200)
-            vals[i] = float(np.trapezoid(
-                tr["dg"](zz) * kernel_V((zv - zz) / hh), zz))
-        S_cum[j] = float(vals.mean())
+    for j, zv in enumerate([float(v) for v in zt.tolist()]):
+        acc = []
+        for y in zxl:
+            b = (y - zv) / hh
+            if log_t:
+                acc.append(math.exp(y) * _Phi(b)
+                           - math.exp(zv + 0.5 * hh * hh) * _Phi(b - hh))
+            else:
+                acc.append(hh * (b * _Phi(b) + _phi(b)))
+        S_cum[j] = math.fsum(acc) / len(acc)
     S_surv = kernel_V((zt[:, None] - zx[None, :]) / hh).mean(axis=1)
     return RichResult(payload={
         "t_grid": tg, "S_cumulative": S_cum, "S_survival": S_surv,

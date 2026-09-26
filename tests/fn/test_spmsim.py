@@ -56,23 +56,26 @@ def test_covariates_at_different_scales_get_different_bandwidths():
     assert hits >= 6
 
 
-def test_soc_can_stop_before_finding_any_scale_separation():
-    """The documented failure mode, pinned so it cannot regress silently.
-
-    Both scores measure how much the fit MOVED. When the initial
-    single-bandwidth GWR already sits at the wide end of the interval, the
-    first sweep leaves it there, the score is tiny and the loop reports
-    convergence after two or three sweeps with no separation found. The
-    reference implementation shares this; `at_search_boundary` flags it.
-    """
+def test_backfitting_matches_the_reference_and_separates_the_scales():
+    """Checked against the authors' implementation, PySAL mgwr 2.2.1
+    (Sel_BW(multi=True, kernel="gaussian", fixed=True) on the same
+    standardised data): seed 13 gives (4.93, 1.99) and seed 5 gives
+    (1.53, 0.79) there -- mgwr's golden section rounds bandwidths to two
+    decimals, so its answer can sit one full 0.01 step from the
+    continuous optimum found here, hence the 0.02 tolerance.  On seed 29
+    mgwr stops at a worse local optimum (2.08, 21.85; AICc 96.82, RSS 18.79) while this
+    implementation finds the narrow slope bandwidth the sin(x) slope
+    calls for (AICc 83.96, RSS 1.48), so there the scales separate."""
+    for seed, ref in ((13, (4.93, 1.99)), (5, (1.53, 0.79))):
+        X, y, coords = _two_scales(seed=seed)
+        r = mgwr(X, y, coords, max_iter=40)
+        assert r["converged"] is True
+        assert np.asarray(r["bandwidths"]).tolist() == pytest.approx(ref, abs=0.02)
     X, y, coords = _two_scales(seed=29)
     r = mgwr(X, y, coords, max_iter=40)
-    assert r["converged"] is True
-    assert r["n_iter"] <= 3
-    assert r["at_search_boundary"] is True
     bws = np.asarray(r["bandwidths"])
-    assert bws.max() / bws.min() < 1.05          # no separation at all
-
+    assert r["converged"] is True and r["at_search_boundary"] is False
+    assert bws[1] < bws[0] / 1.5          # the fast-varying slope is narrower
 
 def test_a_healthy_fit_is_not_flagged_at_the_boundary():
     X, y, coords = _two_scales(seed=5)

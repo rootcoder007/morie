@@ -435,7 +435,7 @@ def noncentrality_delta_d(d, n1, n2):
 
 
 def _norm_cdf(z):
-    return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
+    return 0.5 * math.erfc(-(z) / math.sqrt(2.0))
 
 
 def _noncentral_t_cdf(t, df, delta):

@@ -554,8 +554,7 @@ def limmav(counts, design, contrast=None, lib_sizes=None, span=0.5,
             se.append(se_g)
             tt.append(t_g)
             pv.append(_t_sf(t_g, dtot) if dtot != float("inf")
-                      else 2.0 * (1.0 - 0.5 * (1.0 + math.erf(
-                          abs(t_g) / math.sqrt(2.0)))))
+                      else math.erfc(abs(t_g) / math.sqrt(2.0)))
     padj = benjamini_hochberg(pv)
     return RichResult(payload={
         "estimate": est,

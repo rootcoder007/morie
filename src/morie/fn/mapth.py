@@ -79,7 +79,7 @@ def map_theta_estimator(y, a=None, b=None, c=None, prior=(0.0, 1.0),
     if sd <= 0:
         raise ValueError(f"the prior standard deviation must be positive, "
                          f"got {sd}.")
-    grid = np.linspace(float(bounds[0]), float(bounds[1]), 8001)
+    grid = np.linspace(float(bounds[0]), float(bounds[1]), 401)
     P = np.clip(logistic_3pl(grid, av, bv, cv), 1e-12, 1 - 1e-12)
     ll = (yv * np.log(P) + (1 - yv) * np.log(1 - P)).sum(axis=1)
     post = ll - (grid - mu) ** 2 / (2 * sd ** 2)

@@ -155,7 +155,7 @@ def fixed_effect_scan(y, G, covariates=(), K=None):
 
 
 def _norm_cdf(x):
-    return 0.5 * (1.0 + math.erf(float(x) / math.sqrt(2.0)))
+    return 0.5 * math.erfc(-(float(x)) / math.sqrt(2.0))
 
 
 def random_effect_step(y, G, selected, bins=None):

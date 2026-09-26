@@ -133,6 +133,53 @@ def logistic_3pl_deriv(theta, a, b, c=0.0):
     return a * (1.0 - c) * star * (1.0 - star)
 
 
+def theta_score(t, y, a, b, c, weighted=False):
+    r"""d/dtheta of the 3PL log-likelihood, plus Warm's (1989) term
+    I'(theta) / (2 I(theta)) when ``weighted``.
+
+    With s = logistic(a (theta - b)), P = c + (1 - c) s,
+    P' = a (1 - c) s (1 - s) and P'' = a (1 - 2 s) P'; the score is
+    sum (y - P) P' / (P Q), I = sum P'^2 / (P Q) and
+    I' = sum [2 P' P'' / (P Q) - P'^3 (1 - 2 P) / (P Q)^2].
+    """
+    import math
+    sc = 0.0
+    inf = 0.0
+    dinf = 0.0
+    for yj, aj, bj, cj in zip(y, a, b, c):
+        z = aj * (t - bj)
+        s_ = 1.0 / (1.0 + math.exp(-z)) if z > -700 else 0.0
+        P = min(max(cj + (1.0 - cj) * s_, 1e-12), 1 - 1e-12)
+        pq = P * (1.0 - P)
+        d1 = aj * (1.0 - cj) * s_ * (1.0 - s_)
+        d2 = aj * (1.0 - 2.0 * s_) * d1
+        sc += (yj - P) * d1 / pq
+        inf += d1 * d1 / pq
+        dinf += 2.0 * d1 * d2 / pq - d1 ** 3 * (1.0 - 2.0 * P) / pq ** 2
+    if weighted and inf > 0:
+        sc += dinf / (2.0 * inf)
+    return sc
+
+
+def score_root(f, left, right):
+    """Root of a decreasing-through-zero score on [left, right] by
+    bisection to machine precision; None when the bracket has no sign
+    change (the maximum sits on the search boundary)."""
+    fl, fr = f(left), f(right)
+    if not (fl > 0 > fr):
+        return None
+    for _ in range(200):
+        mid = 0.5 * (left + right)
+        if mid == left or mid == right:
+            break
+        fm = f(mid)
+        if fm > 0:
+            left = mid
+        else:
+            right = mid
+    return 0.5 * (left + right)
+
+
 def gauss_hermite(n_nodes=41, mu=0.0, sigma=1.0):
     """Nodes and normalised weights for expectation against a normal
     prior, by Gauss-Hermite quadrature."""

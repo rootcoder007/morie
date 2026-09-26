@@ -91,47 +91,83 @@ class CausalForest:
         self.trees_ = []
         self.in_bag_ = []
 
-    def _grow(self, X, y, d, rows_split, rows_est, depth, rng):
-        node = _Node()
-        node.n = rows_est.size
-        node.tau = _tau(y[rows_est], d[rows_est])
-        if np.isnan(node.tau):
-            node.tau = _tau(y[rows_split], d[rows_split])
-        if np.isnan(node.tau):
-            node.tau = 0.0
-        if depth >= self.max_depth or rows_split.size < 4 * self.min_leaf:
-            return node
+    @staticmethod
+    def _tau_rows(rows, y, d):
+        """Difference in means over plain row indices; NaN when an arm is empty."""
+        st = sc = 0.0
+        nt = nc = 0
+        for i in rows:
+            if d[i] == 1.0:
+                st += y[i]
+                nt += 1
+            else:
+                sc += y[i]
+                nc += 1
+        if nt == 0 or nc == 0:
+            return float("nan")
+        return st / nt - sc / nc
 
-        p = X.shape[1]
+    @staticmethod
+    def _quantiles(vals, qs):
+        """numpy's default (linear) quantiles of a list."""
+        v = sorted(vals)
+        n = len(v)
+        out = []
+        for q in qs:
+            pos = (n - 1) * q
+            lo = int(pos)
+            hi = min(lo + 1, n - 1)
+            out.append(v[lo] + (pos - lo) * (v[hi] - v[lo]))
+        return out
+
+    def _grow(self, X, y, d, rows_split, rows_est, depth, rng):
+        # X is a list of row lists, y and d plain lists, rows lists of ints;
+        # the arithmetic is the array version's, without per-element array
+        # indexing (which dominated the run time)
+        node = _Node()
+        node.n = len(rows_est)
+        node.tau = self._tau_rows(rows_est, y, d)
+        if node.tau != node.tau:
+            node.tau = self._tau_rows(rows_split, y, d)
+        if node.tau != node.tau:
+            node.tau = 0.0
+        if depth >= self.max_depth or len(rows_split) < 4 * self.min_leaf:
+            return node
+        p = len(X[0])
         m = self.mtry or max(1, int(np.ceil(np.sqrt(p))))
-        feats = rng.choice(p, size=min(m, p), replace=False)
+        feats = [int(v) for v in rng.choice(p, size=min(m, p), replace=False).tolist()]
         best = (0.0, None, None)
+        ns = len(rows_split)
         for f in feats:
-            vals = np.unique(np.quantile(X[rows_split, f], np.linspace(0.1, 0.9, 9)))
+            col = [X[i][f] for i in rows_split]
+            vals = sorted(set(self._quantiles(col, [0.1 * k for k in range(1, 10)])))
             for thr in vals:
-                lm = X[rows_split, f] <= thr
-                lsp, rsp = rows_split[lm], rows_split[~lm]
-                if lsp.size < 2 * self.min_leaf or rsp.size < 2 * self.min_leaf:
+                lsp = [i for i, v in zip(rows_split, col) if v <= thr]
+                rsp = [i for i, v in zip(rows_split, col) if v > thr]
+                # Wager and Athey (2018): every leaf holds at least min_leaf
+                # units of EACH arm, so both child effects are estimable
+                ltr = sum(1 for i in lsp if d[i] == 1.0)
+                rtr = sum(1 for i in rsp if d[i] == 1.0)
+                if min(ltr, len(lsp) - ltr, rtr, len(rsp) - rtr) < self.min_leaf:
                     continue
-                tl, tr = _tau(y[lsp], d[lsp]), _tau(y[rsp], d[rsp])
-                if np.isnan(tl) or np.isnan(tr):
+                tl, tr = self._tau_rows(lsp, y, d), self._tau_rows(rsp, y, d)
+                if tl != tl or tr != tr:
                     continue
                 # Athey-Imbens criterion: reward heterogeneity between children,
                 # less GRF's imbalance regularizer.
-                score = lsp.size * rsp.size / rows_split.size * (tl - tr) ** 2
+                score = len(lsp) * len(rsp) / ns * (tl - tr) ** 2
                 if self.imbalance_penalty:
-                    score -= self.imbalance_penalty * (1.0 / lsp.size + 1.0 / rsp.size)
+                    score -= self.imbalance_penalty * (1.0 / len(lsp) + 1.0 / len(rsp))
                 if score > best[0]:
                     best = (score, f, thr)
-
         if best[1] is None:
             return node
         _, f, thr = best
         node.feature, node.threshold = int(f), float(thr)
-        lsp = rows_split[X[rows_split, f] <= thr]
-        rsp = rows_split[X[rows_split, f] > thr]
-        les = rows_est[X[rows_est, f] <= thr]
-        res = rows_est[X[rows_est, f] > thr]
+        lsp = [i for i in rows_split if X[i][f] <= thr]
+        rsp = [i for i in rows_split if X[i][f] > thr]
+        les = [i for i in rows_est if X[i][f] <= thr]
+        res = [i for i in rows_est if X[i][f] > thr]
         node.left = self._grow(X, y, d, lsp, les, depth + 1, rng)
         node.right = self._grow(X, y, d, rsp, res, depth + 1, rng)
         return node
@@ -153,12 +189,16 @@ class CausalForest:
         rng = np.random.default_rng(self.seed)
         self.trees_, self.in_bag_ = [], []
         m = max(4 * self.min_leaf, int(self.subsample * n))
+        Xl = [[float(v) for v in row] for row in X.tolist()]
+        yl = [float(v) for v in y.tolist()]
+        dl = [float(v) for v in d.tolist()]
         for _ in range(self.n_trees):
-            idx = rng.choice(n, size=min(m, n), replace=False)
-            half = idx.size // 2
-            self.trees_.append(self._grow(X, y, d, idx[:half], idx[half:], 0, rng))
-            mask = np.zeros(n, dtype=bool)
-            mask[idx] = True
+            idx = [int(v) for v in rng.choice(n, size=min(m, n), replace=False).tolist()]
+            half = len(idx) // 2
+            self.trees_.append(self._grow(Xl, yl, dl, idx[:half], idx[half:], 0, rng))
+            mask = [False] * n
+            for i in idx:
+                mask[i] = True
             self.in_bag_.append(mask)
         self._X, self._n = X, n
         return self
@@ -175,20 +215,22 @@ class CausalForest:
         if oob:
             if X is not None:
                 raise ValueError("out-of-bag predictions are only defined on the training rows.")
-            out = np.full(self._n, np.nan)
+            Xl = [[float(v) for v in row] for row in self._X.tolist()]
+            out = []
             for i in range(self._n):
                 vals = [
-                    self._walk(t, self._X[i])
+                    self._walk(t, Xl[i])
                     for t, bag in zip(self.trees_, self.in_bag_)
                     if not bag[i]
                 ]
-                if vals:
-                    out[i] = float(np.mean(vals))
-            return out
+                out.append(sum(vals) / len(vals) if vals else float("nan"))
+            return np.array(out)
         Xq = self._X if X is None else np.asarray(X, dtype=float)
         if Xq.ndim == 1:
             Xq = Xq[:, None]
-        return np.array([float(np.mean([self._walk(t, row) for t in self.trees_])) for row in Xq])
+        rows = [[float(v) for v in row] for row in Xq.tolist()]
+        return np.array([sum(self._walk(t, row) for t in self.trees_) / len(self.trees_)
+                         for row in rows])
 
 
 def cheatsheet():

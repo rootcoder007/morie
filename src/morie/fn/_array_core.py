@@ -4419,7 +4419,8 @@ def _rng_param_broadcast(meth):
     return wrapped
 
 
-for _name in ("gamma", "standard_gamma", "exponential", "laplace", "chisquare",
+for _name in ("poisson", "binomial", "normal", "uniform",
+              "gamma", "standard_gamma", "exponential", "laplace", "chisquare",
               "geometric", "standard_t", "weibull", "pareto", "rayleigh",
               "gumbel", "logistic", "wald", "vonmises", "f",
               "negative_binomial", "lognormal", "beta"):
@@ -4657,7 +4658,14 @@ def broadcast_to(x, shape):
     if isinstance(a, ndlist) or len(shape) >= 3 or len(tuple(a.shape)) > 2:
         return _broadcast_general(a, shape)
     if len(shape) == 2 and len(a.shape) == 1:
-        return marr([a.data[:] for _ in range(shape[0])])
+        # a trailing axis of 1 repeats across the columns; any other
+        # length must equal the column count
+        if a.shape[0] == shape[1]:
+            return marr([a.data[:] for _ in range(shape[0])])
+        if a.shape[0] == 1:
+            return marr([[a.data[0]] * shape[1] for _ in range(shape[0])])
+        raise ValueError("broadcast_to: cannot broadcast %r to %r"
+                         % (a.shape, shape))
     if len(shape) == 3 and len(a.shape) == 2:
         # rank-3 broadcast surfaces as a nested list (rank-2 core);
         # einsum and the module loops consume nested lists directly
@@ -5247,6 +5255,11 @@ class _DTypeNarrow:
 
     def __call__(self, v):
         return float(v)
+
+    @property
+    def type(self):
+        # numpy: dtype.type is the scalar type; these markers are both
+        return self
 
     def __eq__(self, other):
         return other is float or other == self.name \

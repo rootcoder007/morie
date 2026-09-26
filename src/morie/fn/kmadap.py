@@ -44,7 +44,7 @@ def kamath_houlsby_adapter(h, W_down, W_up, approximate="none"):
     >>> import math
     >>> out = kamath_houlsby_adapter([1.0, 0.0], [[1.0, 0.0]],
     ...                              [[1.0], [0.0]])
-    >>> g = 0.5 * (1.0 + math.erf(1.0 / math.sqrt(2.0)))
+    >>> g = 0.5 * math.erfc(-(1.0) / math.sqrt(2.0))
     >>> abs(out["h_adapted"][0][0] - (1.0 + g)) < 1e-12
     True
     """

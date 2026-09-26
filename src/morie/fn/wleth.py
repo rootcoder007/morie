@@ -69,20 +69,52 @@ def weighted_likelihood_theta(y, a=None, b=None, c=None,
     cv = np.zeros(m) if c is None else np.asarray(c, dtype=float).ravel()
     if not (bv.size == av.size == cv.size == m):
         raise ValueError("a, b, c must each have one entry per item.")
-    grid = np.linspace(float(bounds[0]), float(bounds[1]), 8001)
+    import math
+
+    def objective(t):
+        # log L(theta) + (1/2) log I(theta), Warm (1989)
+        p = np.clip(logistic_3pl(np.array([t]), av, bv, cv)[0],
+                    1e-12, 1 - 1e-12)
+        dp = logistic_3pl_deriv(np.array([t]), av, bv, cv)[0]
+        inf_t = float(np.sum(dp ** 2 / (p * (1 - p))))
+        llt = float(np.sum(yv * np.log(p) + (1 - yv) * np.log(1 - p)))
+        return llt + 0.5 * math.log(max(inf_t, 1e-300)), llt
+
+    # a coarse grid brackets the global mode (the 3PL objective can be
+    # multimodal), then golden-section search locates it to 1e-10
+    grid = np.linspace(float(bounds[0]), float(bounds[1]), 401)
     P = np.clip(logistic_3pl(grid, av, bv, cv), 1e-12, 1 - 1e-12)
     dP = logistic_3pl_deriv(grid, av, bv, cv)
     info = np.sum(dP ** 2 / (P * (1 - P)), axis=1)
     ll = (yv * np.log(P) + (1 - yv) * np.log(1 - P)).sum(axis=1)
     obj = ll + 0.5 * np.log(np.maximum(info, 1e-300))
     i = int(np.argmax(obj))
-    th = float(grid[i])
-    if 0 < i < grid.size - 1:
-        y0, y1, y2 = obj[i - 1], obj[i], obj[i + 1]
-        den = y0 - 2 * y1 + y2
-        if den != 0:
-            th = float(grid[i] - 0.5 * (grid[1] - grid[0])
-                       * (y2 - y0) / den)
+    gl = [float(v) for v in grid.tolist()]
+    left, right = gl[max(i - 1, 0)], gl[min(i + 1, len(gl) - 1)]
+    gr = (math.sqrt(5.0) - 1.0) / 2.0
+    x1, x2 = right - gr * (right - left), left + gr * (right - left)
+    f1, f2 = -objective(x1)[0], -objective(x2)[0]
+    for _ in range(100):
+        if f1 < f2:
+            right, x2, f2 = x2, x1, f1
+            x1 = right - gr * (right - left)
+            f1 = -objective(x1)[0]
+        else:
+            left, x1, f1 = x1, x2, f2
+            x2 = left + gr * (right - left)
+            f2 = -objective(x2)[0]
+        if right - left < 1e-10:
+            break
+    th = float((left + right) / 2)
+    # polish on Warm's estimating equation, which is well conditioned
+    # where the objective is flat
+    from ._psycho import score_root, theta_score
+    yl, al, bl, cl = ([float(v) for v in q.tolist()] for q in (yv, av, bv, cv))
+    g = [float(v) for v in grid.tolist()]
+    r = score_root(lambda t: theta_score(t, yl, al, bl, cl, weighted=True),
+                   g[max(i - 1, 0)], g[min(i + 1, len(g) - 1)])
+    if r is not None:
+        th = r
     Pt = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0],
                  1e-12, 1 - 1e-12)
     dPt = logistic_3pl_deriv(np.array([th]), av, bv, cv)[0]
@@ -98,7 +130,7 @@ def weighted_likelihood_theta(y, a=None, b=None, c=None,
         "theta": th, "se": float(1 / np.sqrt(info_t)) if info_t > 0
         else np.inf,
         "information": info_t,
-        "loglik": float(np.interp(th, grid, ll)),
+        "loglik": objective(th)[1],
         "weight_term": float(0.5 * np.log(max(info_t, 1e-300))),
         "bias_corrected": True,
         "finite_for_perfect_patterns": True,

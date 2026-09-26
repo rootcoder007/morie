@@ -51,38 +51,34 @@ def geods(
     if x0.shape != (4,) or u0.shape != (4,):
         raise ValueError("x0 and u0 must be length-4.")
 
+    def _mat(x):
+        return [[float(v) for v in row] for row in np.asarray(metric_func(x), dtype=float).tolist()]
+
     def christoffel(x):
-        g = metric_func(x)
-        ginv = np.linalg.inv(g)
-        dg = np.zeros((4, 4, 4))
+        # Gamma^lam_{mu nu} = 1/2 g^{lam sig} (d_mu g_{sig nu} + d_nu g_{sig mu}
+        # - d_sig g_{mu nu}), metric derivatives by central differences;
+        # plain lists keep the RK45 inner loop free of array indexing
+        xl = [float(v) for v in x]
+        ginv = [[float(v) for v in row] for row in np.linalg.inv(np.asarray(_mat(xl))).tolist()]
+        dg = []
         for mu in range(4):
-            dx = np.zeros(4)
-            dx[mu] = h
-            gp = metric_func(x + dx)
-            gm = metric_func(x - dx)
-            dg[mu] = (gp - gm) / (2.0 * h)
-        G = np.zeros((4, 4, 4))
-        for lam in range(4):
-            for mu in range(4):
-                for nu in range(4):
-                    s = 0.0
-                    for sig in range(4):
-                        s += 0.5 * ginv[lam, sig] * (dg[nu, sig, mu] + dg[mu, sig, nu] - dg[sig, mu, nu])
-                    G[lam, mu, nu] = s
-        return G
+            xp = list(xl)
+            xm = list(xl)
+            xp[mu] += h
+            xm[mu] -= h
+            gp, gm = _mat(xp), _mat(xm)
+            dg.append([[(gp[i][j] - gm[i][j]) / (2.0 * h) for j in range(4)] for i in range(4)])
+        return [[[0.5 * sum(ginv[lam][sig] * (dg[mu][sig][nu] + dg[nu][sig][mu] - dg[sig][mu][nu])
+                            for sig in range(4))
+                  for nu in range(4)] for mu in range(4)] for lam in range(4)]
 
     def rhs(tau, y):
-        x = y[:4]
-        u = y[4:]
+        yl = [float(v) for v in y]
+        x, u = yl[:4], yl[4:]
         G = christoffel(x)
-        accel = np.zeros(4)
-        for mu in range(4):
-            s = 0.0
-            for a in range(4):
-                for b in range(4):
-                    s += G[mu, a, b] * u[a] * u[b]
-            accel[mu] = -s
-        return np.concatenate([u, accel])
+        accel = [-sum(G[mu][a][b] * u[a] * u[b] for a in range(4) for b in range(4))
+                 for mu in range(4)]
+        return np.asarray(u + accel, dtype=float)
 
     y0 = np.concatenate([x0, u0])
     tau_eval = np.linspace(tau_span[0], tau_span[1], n_points)

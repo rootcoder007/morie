@@ -1399,7 +1399,7 @@ def bmtme_conditionals(Y, Z1, Z2, G, Sigma_T, Sigma_E, R, mu=None,
 
 # ------------- ordinal / categorical / count models (ch. 7)
 def _norm_cdf(z):
-    return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
+    return 0.5 * math.erfc(-(z) / math.sqrt(2.0))
 
 
 def _norm_ppf(u):

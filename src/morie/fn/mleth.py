@@ -94,7 +94,7 @@ def mle_theta_estimator(y, a=None, b=None, c=None, bounds=(-6.0, 6.0)):
             "method": "3PL maximum likelihood (no finite maximum here)"})
 
     lo, hi = float(bounds[0]), float(bounds[1])
-    grid = np.linspace(lo, hi, 4001)
+    grid = np.linspace(lo, hi, 401)
     P = logistic_3pl(grid, av, bv, cv)
     P = np.clip(P, 1e-12, 1 - 1e-12)
     ll = (yv * np.log(P) + (1 - yv) * np.log(1 - P)).sum(axis=1)
@@ -124,6 +124,15 @@ def mle_theta_estimator(y, a=None, b=None, c=None, bounds=(-6.0, 6.0)):
         if right - left < 1e-10:
             break
     th = float((left + right) / 2)
+    # polish on the score equation, well conditioned where the
+    # log-likelihood is flat
+    from ._psycho import score_root, theta_score
+    yl, al, bl, cl = ([float(v) for v in q.tolist()] for q in (yv, av, bv, cv))
+    gl_ = [float(v) for v in grid.tolist()]
+    r = score_root(lambda t: theta_score(t, yl, al, bl, cl),
+                   gl_[max(i - 1, 0)], gl_[min(i + 1, len(gl_) - 1)])
+    if r is not None:
+        th = r
     Pt = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0],
                  1e-12, 1 - 1e-12)
     dP = logistic_3pl_deriv(np.array([th]), av, bv, cv)[0]

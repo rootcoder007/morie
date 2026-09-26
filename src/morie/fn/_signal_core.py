@@ -1044,28 +1044,32 @@ def dpss(M, NW, Kmax=None, sym=True, norm=None, return_ratios=False):
     diag = [((M - 1.0 - 2.0 * i) / 2.0) ** 2
             * _math.cos(2.0 * _math.pi * W) for i in range(M)]
     off = [i * (M - i) / 2.0 for i in range(1, M)]
-    A = [[0.0] * M for _ in range(M)]
-    for i in range(M):
-        A[i][i] = diag[i]
-    for i in range(M - 1):
-        A[i][i + 1] = A[i + 1][i] = off[i]
-    w, V = _ac.linalg.eigh(_ac.marr(A))
-    order = sorted(range(M), key=lambda i: -float(w[i]))
     k = int(Kmax) if Kmax is not None else 1
-    Vd = V.tolist()
     out = []
     for kk in range(k):
-        col = [Vd[i][order[kk]] for i in range(M)]
-        s = _math.fsum(col)
-        if s < 0:
-            col = [-v for v in col]
+        # k-th largest eigenpair of the symmetric tridiagonal matrix, as
+        # scipy's eigh_tridiagonal(select="i"): Sturm-count bisection for
+        # the eigenvalue, then inverse iteration (Thomas solves) for the
+        # vector -- O(M) per step instead of a dense O(M^3) eigh
+        lam = _tri_kth_largest(diag, off, kk)
+        col = _tri_inverse_iteration(diag, off, lam)
         nrm = _math.sqrt(_math.fsum(v * v for v in col))
         col = [v / nrm for v in col]
+        # scipy's sign convention: symmetric (even-order) tapers sum
+        # positive; antisymmetric ones start with a positive lobe
+        if kk % 2 == 0:
+            flip = _math.fsum(col) < 0
+        else:
+            thresh = max(1e-7, 1.0 / M)
+            first = next((v for v in col if v * v > thresh), 0.0)
+            flip = first < 0
+        if flip:
+            col = [-v for v in col]
         if Kmax is None:
-            # scipy default norm="approximate":
-            # peak to 1, then * M^2/(M^2 + NW)
+            # scipy default norm="approximate": peak to 1, then for even
+            # M * M^2/(M^2 + NW)
             mx = max(abs(v) for v in col)
-            corr = (M * M) / (M * M + float(NW))
+            corr = (M * M) / (M * M + float(NW)) if M % 2 == 0 else 1.0
             col = [v / mx * corr for v in col]
         out.append(col)
     tapers = _ac.marr(out if k > 1 else out[0])
@@ -1074,16 +1078,77 @@ def dpss(M, NW, Kmax=None, sym=True, norm=None, return_ratios=False):
     ratios = []
     for col in out:
         nrm = _math.fsum(v * v for v in col)
-        acc = 0.0
-        for i in range(M):
-            for j in range(M):
-                if i == j:
-                    kern = 2.0 * W
-                else:
-                    kern = _math.sin(2.0 * _math.pi * W * (i - j)) / (_math.pi * (i - j))
-                acc += col[i] * kern * col[j]
+        # v' S v with the Toeplitz sinc kernel, summed by lag
+        acc = 2.0 * W * nrm
+        for lag in range(1, M):
+            r = _math.fsum(col[i] * col[i + lag] for i in range(M - lag))
+            acc += 2.0 * r * _math.sin(2.0 * _math.pi * W * lag) / (_math.pi * lag)
         ratios.append(acc / nrm if nrm else _math.nan)
     return tapers, _ac.marr(ratios if k > 1 else ratios[0])
+
+
+def _tri_count_greater(diag, off, x):
+    """Number of eigenvalues of the symmetric tridiagonal (diag, off)
+    strictly greater than x (Sturm sequence of T - x I)."""
+    cnt_le = 0
+    q = 1.0
+    for i in range(len(diag)):
+        b2 = off[i - 1] ** 2 if i > 0 else 0.0
+        q = diag[i] - x - (b2 / q if i > 0 else 0.0)
+        if q == 0.0:
+            q = -1e-300
+        if q < 0.0:
+            cnt_le += 1
+    return len(diag) - cnt_le
+
+
+def _tri_kth_largest(diag, off, k):
+    """(k+1)-th largest eigenvalue by bisection on the Sturm count."""
+    n = len(diag)
+    rad = [abs(off[i - 1]) if i > 0 else 0.0 for i in range(n)]
+    for i in range(n - 1):
+        rad[i] += abs(off[i])
+    lo = min(diag[i] - rad[i] for i in range(n))
+    hi = max(diag[i] + rad[i] for i in range(n))
+    for _ in range(200):
+        mid = 0.5 * (lo + hi)
+        if mid == lo or mid == hi:
+            break
+        if _tri_count_greater(diag, off, mid) > k:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+
+def _tri_inverse_iteration(diag, off, lam, iters=4):
+    """Eigenvector for eigenvalue lam by inverse iteration with
+    tridiagonal (Thomas) solves of (T - lam I) x = b."""
+    n = len(diag)
+    scale = max(abs(v) for v in diag) + max([abs(v) for v in off] or [0.0])
+    shift = lam + 1e-12 * max(scale, 1.0)
+    b = [1.0 / _math.sqrt(n)] * n
+    for _ in range(iters):
+        a = [diag[i] - shift for i in range(n)]
+        c = list(off)
+        cp = [0.0] * n
+        dp = [0.0] * n
+        den = a[0]
+        cp[0] = (c[0] / den) if n > 1 else 0.0
+        dp[0] = b[0] / den
+        for i in range(1, n):
+            den = a[i] - off[i - 1] * cp[i - 1]
+            if den == 0.0:
+                den = 1e-300
+            cp[i] = (c[i] / den) if i < n - 1 else 0.0
+            dp[i] = (b[i] - off[i - 1] * dp[i - 1]) / den
+        x = [0.0] * n
+        x[-1] = dp[-1]
+        for i in range(n - 2, -1, -1):
+            x[i] = dp[i] - cp[i] * x[i + 1]
+        nrm = _math.sqrt(_math.fsum(v * v for v in x))
+        b = [v / nrm for v in x]
+    return b
 
 
 _bi_abs = abs

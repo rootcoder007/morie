@@ -19,25 +19,17 @@ def _votes(n=120, m=30, seed=1):
     return x, (rng.random((n, m)) < p).astype(float)
 
 
-def test_bysid_recovers_the_latent_ordering_but_needs_a_long_chain():
-    """This sampler mixes SLOWLY, and a caller needs to know.
-
-    On the same simulated 2PL data where morie.fn.irtsp's EM reaches |r| =
-    0.855, the Gibbs sampler here climbs with the chain length:
-
-        n_iter   400 / burn  100   |r| = 0.486
-        n_iter  1000 / burn  300   |r| = 0.486
-        n_iter  3000 / burn 1000   |r| = 0.618
-        n_iter  8000 / burn 3000   |r| = 0.772   <- still rising
-
-    So the default-ish short chains in the generated test were not merely
-    imprecise, they were nowhere near the posterior. Anyone using this for
-    real ideal points should run tens of thousands of iterations and check
-    convergence, or use irtsp if a point estimate is all that is wanted.
-    """
+def test_bysid_recovers_the_latent_ordering():
+    """The likelihood a_j (x_i - b_j) is invariant to the location, scale
+    and sign of x, so the sampler pins them inside the chain every sweep
+    (absorbing the change into a and b).  Without that the chain drifted
+    in scale and flipped sign, and the posterior mean averaged the flips
+    away: |r| was 0.486 at 400 iterations and still climbing at 8000.
+    Identified, a 400-iteration chain reaches |r| = 0.941 on this 2PL
+    fixture -- above the 0.855 of morie.fn.irtsp's EM point estimate."""
     truth, votes = _votes(seed=3)
-    xm = np.asarray(bip(votes, n_iter=8000, burn=3000, seed=3)["x_mean"])
-    assert abs(float(np.corrcoef(xm, truth)[0, 1])) > 0.7
+    xm = np.asarray(bip(votes, n_iter=400, burn=100, seed=3)["x_mean"])
+    assert abs(float(np.corrcoef(xm, truth)[0, 1])) > 0.9
 
 
 def test_bysid_recovery_improves_with_chain_length():
@@ -48,7 +40,7 @@ def test_bysid_recovery_improves_with_chain_length():
     short = abs(float(np.corrcoef(
         np.asarray(bip(votes, n_iter=400, burn=100, seed=3)["x_mean"]), truth)[0, 1]))
     long_ = abs(float(np.corrcoef(
-        np.asarray(bip(votes, n_iter=8000, burn=3000, seed=3)["x_mean"]), truth)[0, 1]))
+        np.asarray(bip(votes, n_iter=1000, burn=300, seed=3)["x_mean"]), truth)[0, 1]))
     assert long_ >= short - 0.05
 
 

@@ -270,13 +270,17 @@ def logit_fit(X, y, max_iter=100, tol=1e-10, ridge=1e-8):
     k = len(rows[0])
     beta = [0.0] * k
     separated = False
+    dev_old = None
     for _ in range(int(max_iter)):
         A = [[0.0] * k for _ in range(k)]
         rhs = [0.0] * k
+        dev = 0.0
         for r, yi in zip(rows, yv):
             eta = sum([a * b for a, b in zip(r, beta)])
             eta = min(max(eta, -30.0), 30.0)
             pi = 1.0 / (1.0 + _m.exp(-eta))
+            dev -= 2.0 * (yi * _m.log(pi) + (1.0 - yi) * _m.log1p(-pi)) \
+                if 0.0 < pi < 1.0 else 0.0
             w = max(pi * (1 - pi), 1e-10)
             wz = w * (eta + (yi - pi) / w)
             nz = [(a, v) for a, v in enumerate(r) if v != 0.0]
@@ -291,6 +295,12 @@ def logit_fit(X, y, max_iter=100, tol=1e-10, ridge=1e-8):
             for c in range(a + 1, k):
                 A[c][a] = A[a][c]
             A[a][a] += ridge
+        # glm's rule on the deviance at the current beta (1e-10 here,
+        # stricter than glm's 1e-8): under separation a coefficient walks
+        # off to infinity and never settles, but the deviance does
+        if dev_old is not None and abs(dev - dev_old) / (abs(dev) + 0.1) < tol:
+            break
+        dev_old = dev
         step = [float(v) for v in np.linalg.solve(np.asarray(A), np.asarray(rhs)).tolist()]
         done = max(abs(s1 - b1) for s1, b1 in zip(step, beta)) < tol
         beta = step

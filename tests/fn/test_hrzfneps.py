@@ -1,6 +1,7 @@
 """Tests for hrzfneps.horowitz_panel_density_estimators (eqs. 5.25-5.26)."""
 
 import math
+import statistics
 
 import pytest
 
@@ -57,8 +58,12 @@ def test_hrzfneps_basic():
     assert float(r["f_U"][0]) == pytest.approx(_fU(0.3, 0.5), rel=1e-9)
     assert [float(v) for v in r["f_eps"]] == pytest.approx([_feps(0.0, 0.4), _feps(0.2, 0.4)], rel=1e-9)
     assert r["f_eps_requires_division"] is False and r["f_U_requires_division"] is True
+    # defaults: sigma_eps = sd(eta)/sqrt(2); nu_U = sigma_eps/sqrt(log n)
+    # (noise amplification), nu_eps = 0.5 sigma_eps N^(-1/5) (no division)
     d = horowitz_panel_density_estimators(Y, X, BETA, grid_u=[0.0], grid_z=[0.0])
-    assert d["nu_U"] == d["nu_eps"] == pytest.approx(math.log(N) ** -0.5, rel=1e-15)
+    sig = statistics.stdev(ETA) / math.sqrt(2)
+    assert d["nu_U"] == pytest.approx(sig / math.sqrt(math.log(N)), rel=1e-12)
+    assert d["nu_eps"] == pytest.approx(0.5 * sig * len(ETA) ** -0.2, rel=1e-12)
 
 
 def test_hrzfneps_edge():

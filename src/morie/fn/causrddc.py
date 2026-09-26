@@ -533,7 +533,7 @@ def _hc_sigma2(x, y, h, p, kernel):
 
 
 def _norm_cdf(z):
-    return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
+    return 0.5 * math.erfc(-(z) / math.sqrt(2.0))
 
 
 def _norm_ppf(pr):

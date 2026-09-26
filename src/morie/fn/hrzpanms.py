@@ -117,17 +117,24 @@ def horowitz_panel_max_score(x, y, n_periods, smoothed=True, h=None,
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
 
+    n_pairs = int(dY.size)
+    # concordant pairs have dY = 0 and add nothing to (4.39)/(4.40), so
+    # the score is summed over the discordant pairs only -- the same
+    # function, evaluated on the pairs that carry information
+    keep = dY != 0.0
+    Wd = W[keep]
+    dYd = dY[keep]
     def score(b):
-        v = W @ b
+        v = Wd @ b
         ind = stats.norm.cdf(v / hh) if smoothed else (v >= 0.0).astype(float)
-        return float(np.sum(dY * ind)) / n
+        return float(np.sum(dYd * ind)) / n
 
     beta, negval = optimize_scale_normalized(lambda b: -score(b), d,
                                              n_restarts=n_restarts, seed=seed)
     return RichResult(payload={
         "beta": beta, "score": -negval,
-        "n_pairs": int(dY.size),
-        "n_discordant_pairs": int(np.sum(dY != 0.0)),
+        "n_pairs": n_pairs,
+        "n_discordant_pairs": int(dYd.size),
         "unidentified_columns": const_cols,
         "intercept_identified": False,
         "smoothed": bool(smoothed),

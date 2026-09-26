@@ -428,7 +428,7 @@ def qnorm(p):
 
 
 def pnorm(z):
-    return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
+    return 0.5 * math.erfc(-(z) / math.sqrt(2.0))
 
 
 def normdraws(n, base=2):

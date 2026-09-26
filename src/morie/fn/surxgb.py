@@ -128,7 +128,7 @@ def cdf(z, dist="normal"):
         return 0.0
     z = max(-_CLAMP, min(_CLAMP, zf))
     if dist == "normal":
-        return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
+        return 0.5 * math.erfc(-(z) / math.sqrt(2.0))
     if dist == "logistic":
         return 1.0 / (1.0 + math.exp(-z))
     return 1.0 - math.exp(-math.exp(z))

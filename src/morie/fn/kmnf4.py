@@ -23,7 +23,7 @@ def normal_quantile(u, tol=1e-14, max_iter=200):
     lo, hi = -40.0, 40.0
     for _ in range(max_iter):
         mid = 0.5 * (lo + hi)
-        if 0.5 * (1.0 + math.erf(mid / math.sqrt(2.0))) < u:
+        if 0.5 * math.erfc(-(mid) / math.sqrt(2.0)) < u:
             lo = mid
         else:
             hi = mid
