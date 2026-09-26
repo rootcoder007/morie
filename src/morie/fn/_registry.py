@@ -89751,6 +89751,20 @@ _r(
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
+    "spcirc",
+    "schabenberger_circular_variogram",
+    "Auto",
+    "Auto-wired callable from fn/spcirc.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "sptent",
+    "schabenberger_tent_variogram",
+    "Auto",
+    "Auto-wired callable from fn/sptent.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
@@ -90250,20 +90264,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u429.py",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u445",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_445",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u445.py",
-    "It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u446",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_446",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u446.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
     "statistical_methods_for_spatial_data_analysis1u93",

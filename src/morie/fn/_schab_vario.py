@@ -58,6 +58,17 @@ def correlogram(h, rng, model):
         u = h[inside] / rng
         r[inside] = 1.0 - 1.5 * u + 0.5 * u**3
         return r
+    if model == "tent":                              # Sec. 4.3.3, p. 146 (R^1)
+        r = np.zeros_like(h)
+        inside = h <= rng
+        r[inside] = 1.0 - h[inside] / rng
+        return r
+    if model == "circular":                          # Sec. 4.3.3, p. 146 (R^2)
+        r = np.zeros_like(h)
+        inside = h <= rng
+        u = h[inside] / rng
+        r[inside] = 2.0 / np.pi * (np.arccos(u) - u * np.sqrt(1.0 - u * u))
+        return r
     raise ValueError(f"unknown model {model!r}")
 
 
