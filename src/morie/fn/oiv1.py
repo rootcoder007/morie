@@ -85,7 +85,7 @@ def otis_iv_distance(
     se = float(np.sqrt(vcov[-1, -1]))
     se = max(se, 1e-10)
     z = iv_est / se
-    pval = float(2 * (1 - stats.norm.cdf(abs(z))))
+    pval = float(2 * (stats.norm.sf(abs(z))))
 
     return {
         "iv_estimate": iv_est,

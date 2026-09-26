@@ -36,11 +36,11 @@ def mardia_test(X: np.ndarray, cdf=None) -> TestResult:
     b1p = float(np.sum(D**3) / (n**2))
     chi2_skew = n * b1p / 6.0
     df_skew = p * (p + 1) * (p + 2) / 6
-    p_skew = float(1.0 - stats.chi2.cdf(chi2_skew, df_skew))
+    p_skew = float(stats.chi2.sf(chi2_skew, df_skew))
 
     b2p = float(np.trace(D**2) / n)
     z_kurt = (b2p - p * (p + 2)) / np.sqrt(8.0 * p * (p + 2) / n)
-    p_kurt = float(2.0 * (1.0 - stats.norm.cdf(abs(z_kurt))))
+    p_kurt = float(2.0 * (stats.norm.sf(abs(z_kurt))))
 
     return TestResult(
         test_name="Mardia",

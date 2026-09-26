@@ -47,7 +47,7 @@ def dif_lord_chisq(item_params_ref: dict, item_params_focal: dict, cdf=None, *, 
         db = ref.get("b", 0.0) - foc.get("b", 0.0)
         chi2 = da**2 + db**2
         df = 2
-        p_val = 1.0 - sp.chi2.cdf(chi2, df)
+        p_val = sp.chi2.sf(chi2, df)
         sig = p_val < alpha
         rows.append(
             {

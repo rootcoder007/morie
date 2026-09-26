@@ -51,7 +51,7 @@ def truncated_regression(
         z_c = (threshold - mu) / sigma
         ll = _st.norm.logpdf(z) - np.log(sigma)
         if direction == "left":
-            ll -= np.log(np.maximum(1.0 - _st.norm.cdf(z_c), 1e-15))
+            ll -= np.log(np.maximum(_st.norm.sf(z_c), 1e-15))
         else:
             ll -= np.log(np.maximum(_st.norm.cdf(z_c), 1e-15))
         return -np.sum(ll)

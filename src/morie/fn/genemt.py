@@ -142,7 +142,7 @@ def gene_statistic(y, G, keep=0.999):
     d2 = max(n - m - 1, 1)
     F = (ssr / m) / (sse / d2) if sse > _EPS else float("inf")
     z = math.sqrt(2.0 * F) - math.sqrt(2.0 * m - 1.0)
-    p = 1.0 - _norm_cdf(z)
+    p = _norm_cdf(-(z))
     return {"F": F, "df1": m, "df2": d2, "p": p,
             "z": _norm_ppf(1.0 - p), "n_markers": pc["n_markers"],
             "note": "an ANALYTIC p-value; no permutation"}
@@ -206,7 +206,7 @@ def gene_set_regression(z_scores, membership, covariates=None):
     t = co[1] / se if se > 0 else 0.0
     return RichResult(payload={
         "estimate": co[1], "beta": co[1], "se": se, "t": t,
-        "p": 1.0 - _norm_cdf(t),
+        "p": _norm_cdf(-(t)),
         "n_genes": n, "covariates_used": covariates is not None,
         "method": "MAGMA gene-set regression; de Leeuw et al. (2015)",
         "note": "one-sided: enrichment means a POSITIVE coefficient",

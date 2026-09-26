@@ -25,7 +25,7 @@ def waldjt(
     inner = R @ S @ R.T
     W = float(diff @ np.linalg.pinv(inner) @ diff)
     df = int(np.linalg.matrix_rank(R))
-    p = float(1 - chi2.cdf(W, df))
+    p = float(chi2.sf(W, df))
     return hypothesis_test_result(
         test_name="Wald joint test",
         statistic=W,

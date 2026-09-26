@@ -87,7 +87,7 @@ def granger_test(y1, y2, maxlag: int = 4, cdf=None) -> TestResult:
         p_val = 1.0
     else:
         f_stat = float(((rss_res - rss_unres) / df_num) / (rss_unres / df_den))
-        p_val = float(1.0 - _st.f.cdf(f_stat, df_num, df_den))
+        p_val = float(_st.f.sf(f_stat, df_num, df_den))
 
     return TestResult(
         test_name="Granger Causality",

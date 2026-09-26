@@ -112,7 +112,7 @@ def bayesian_rci(
         post_true_var = sigma_post**2 * s_diff**2 / total_var
         # P(|true_change| > 1.96 * SEM)
         threshold = 1.96 * sem
-        p_above = 1 - sp.norm.cdf(threshold, post_true_mean, np.sqrt(post_true_var))
+        p_above = sp.norm.sf(threshold, post_true_mean, np.sqrt(post_true_var))
         p_below = sp.norm.cdf(-threshold, post_true_mean, np.sqrt(post_true_var))
         prob_reliable[i] = float(np.mean(p_above + p_below))
 

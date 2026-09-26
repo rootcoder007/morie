@@ -53,7 +53,7 @@ def interrupted_time_series(y: list[float] | np.ndarray, intervention_point: int
     from . import _stats_core as st
 
     t_stats = beta / se_beta
-    p_values = 2 * (1 - st.t.cdf(np.abs(t_stats), n - 4))
+    p_values = 2 * (st.t.sf(np.abs(t_stats), n - 4))
 
     return ESRes(
         measure="ITS",

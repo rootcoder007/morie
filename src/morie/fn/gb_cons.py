@@ -52,7 +52,7 @@ def consist(nvals, effect, alpha=0.05):
     effect = float(effect)
     alpha = float(alpha)
     za = stats.norm.ppf(1.0 - alpha)
-    pw = [1.0 - stats.norm.cdf(za - math.sqrt(v) * effect) for v in ns]
+    pw = [stats.norm.sf(za - math.sqrt(v) * effect) for v in ns]
     mono = all(pw[i] <= pw[i + 1] + 1e-15 for i in range(len(pw) - 1))
     return RichResult(
         payload={

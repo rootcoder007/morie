@@ -51,7 +51,7 @@ def box_m_test(X: np.ndarray, groups: np.ndarray, cdf=None) -> TestResult:
     c1 = (sum(1.0 / ni for ni in ns) - 1.0 / n_total) * (2 * p**2 + 3 * p - 1) / (6 * (p + 1) * (g - 1))
     df = p * (p + 1) * (g - 1) / 2
     chi2 = M * (1.0 - c1)
-    pval = float(1.0 - stats.chi2.cdf(chi2, df))
+    pval = float(stats.chi2.sf(chi2, df))
 
     return TestResult(
         test_name="Box's M",

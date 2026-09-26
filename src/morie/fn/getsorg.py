@@ -122,7 +122,7 @@ def getis_ord_g(x, W):
     vg = ((b0 * m2 * m2 + b1 * m4 + b2 * m1 * m1 * m2 + b3 * m1 * m3 + b4 * m1 ** 4)
           / (((m1 * m1 - m2) ** 2) * n * n1 * n2 * n3)) - eg * eg
     z = (g - eg) / math.sqrt(vg) if vg > 0 else float("nan")
-    p = 2.0 * (1.0 - stats.norm.cdf(abs(z))) if vg > 0 else float("nan")
+    p = 2.0 * (stats.norm.sf(abs(z))) if vg > 0 else float("nan")
     return RichResult(
         payload={
             "estimate": float(g),

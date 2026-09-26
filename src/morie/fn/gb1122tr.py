@@ -61,11 +61,11 @@ def tautrend(y, alternative="two-sided"):
     var = 2.0 * (2.0 * n + 5.0) / (9.0 * n * (n - 1.0))
     z = tau / math.sqrt(var)
     if alternative == "greater":
-        pv = 1.0 - stats.norm.cdf(z)
+        pv = stats.norm.sf(z)
     elif alternative == "less":
         pv = stats.norm.cdf(z)
     elif alternative == "two-sided":
-        pv = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
+        pv = 2.0 * (stats.norm.sf(abs(z)))
     else:
         raise ValueError("alternative must be two-sided, greater or less.")
     return RichResult(

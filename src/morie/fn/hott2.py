@@ -61,7 +61,7 @@ def hotelling_t2(
         df1, df2 = p, n - p
 
     df2 = max(df2, 1)
-    p_value = float(1 - sp_stats.f.cdf(max(F_val, 0), df1, df2))
+    p_value = float(sp_stats.f.sf(max(F_val, 0), df1, df2))
 
     return DescriptiveResult(
         name="HotellingT2",

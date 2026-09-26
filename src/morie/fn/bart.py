@@ -33,7 +33,7 @@ def bart(data: pd.DataFrame | np.ndarray, cdf=None) -> BrtRes:
     det_R = max(np.linalg.det(R), 1e-15)
     chisq = -(n - 1 - (2 * k + 5) / 6) * np.log(det_R)
     df = k * (k - 1) // 2
-    pval = 1 - sp.chi2.cdf(chisq, df)
+    pval = sp.chi2.sf(chisq, df)
 
     return BrtRes(chisq=float(chisq), df=df, pval=float(pval))
 

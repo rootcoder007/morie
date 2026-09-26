@@ -65,7 +65,7 @@ def dif_bundle(
         mean_diff = score_ref.mean() - score_foc.mean()
         pooled_var = score_ref.var(ddof=1) / max(n_ref, 1) + score_foc.var(ddof=1) / max(n_foc, 1)
         z = mean_diff / max(np.sqrt(pooled_var), 1e-10)
-        p_val = 2 * (1 - sp.norm.cdf(abs(z)))
+        p_val = 2 * (sp.norm.sf(abs(z)))
 
         rows.append(
             {

@@ -86,7 +86,7 @@ def dif_uniform(
         except np.linalg.LinAlgError:
             se_b2 = 1.0
         z = beta[2] / se_b2
-        p_val = 2 * (1 - sp.norm.cdf(abs(z)))
+        p_val = 2 * (sp.norm.sf(abs(z)))
 
         rows.append(
             {

@@ -46,7 +46,7 @@ def dunn_test(*groups: np.ndarray, method: str = "bonferroni") -> DescriptiveRes
             diff = mean_ranks[i] - mean_ranks[j]
             se = np.sqrt((N * (N + 1) / 12.0) * (1.0 / ns[i] + 1.0 / ns[j]))
             z = diff / (se + 1e-12)
-            p = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
+            p = 2.0 * (stats.norm.sf(abs(z)))
             pairs.append((i, j))
             z_stats.append(float(z))
             raw_pvals.append(float(p))

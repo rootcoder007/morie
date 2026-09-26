@@ -37,7 +37,7 @@ def bowman_shenton_test(x, cdf=None) -> TestResult:
     k2 = 24.0 * n * (n - 2) * (n - 3) / ((n + 1) ** 2 * (n + 3) * (n + 5))
 
     bs = skew**2 / s2 + kurt**2 / k2
-    pval = 1.0 - sp_stats.chi2.cdf(bs, df=2)
+    pval = sp_stats.chi2.sf(bs, df=2)
 
     return TestResult(
         test_name="Bowman-Shenton test",

@@ -68,7 +68,7 @@ def otis_het_region(
         }
 
     f_stat = float(((ssr_r - ssr_u) / df1) / (ssr_u / df2))
-    pval = float(1 - stats.f.cdf(f_stat, df1, df2))
+    pval = float(stats.f.sf(f_stat, df1, df2))
 
     # Extract interaction coefficients
     interaction_coefs = {}

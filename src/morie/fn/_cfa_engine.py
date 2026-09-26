@@ -145,7 +145,7 @@ def fit_cfa(S: np.ndarray, n: int, structure: dict[str, list[int]], p: int, *, m
 
     from . import _stats_core as sp
 
-    p_value = float(1 - sp.chi2.cdf(chi2, df)) if df > 0 else 1.0
+    p_value = float(sp.chi2.sf(chi2, df)) if df > 0 else 1.0
 
     # Loadings as dict
     loadings = {}

@@ -54,7 +54,7 @@ def berkson_bias_test(
     ln_diff = np.log(or_hospital) - np.log(or_population)
     se_diff = np.sqrt(se_hospital**2 + se_population**2)
     z_stat = ln_diff / se_diff
-    p_val = 2 * (1 - stats.norm.cdf(abs(z_stat)))
+    p_val = 2 * (stats.norm.sf(abs(z_stat)))
 
     z = stats.norm.ppf((1 + confidence) / 2)
     ratio = or_hospital / or_population

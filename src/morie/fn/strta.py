@@ -77,7 +77,7 @@ def stratified_analysis(tables: list[tuple[int, int, int, int]], confidence: flo
         bd_stat += (a - a_exp) ** 2 / var_a
 
     bd_df = len(tables) - 1
-    bd_p = 1 - stats.chi2.cdf(bd_stat, bd_df)
+    bd_p = stats.chi2.sf(bd_stat, bd_df)
 
     return ESRes(
         measure="stratified_2x2xK",

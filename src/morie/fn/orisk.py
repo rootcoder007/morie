@@ -75,7 +75,7 @@ def otis_risk_table(
             ci_lo = np.exp(log_or - 1.96 * se_log) if np.isfinite(log_or) else np.nan
             ci_hi = np.exp(log_or + 1.96 * se_log) if np.isfinite(log_or) else np.nan
             z = log_or / se_log if np.isfinite(log_or) else 0
-            pval = float(2 * (1 - stats.norm.cdf(abs(z))))
+            pval = float(2 * (stats.norm.sf(abs(z))))
         else:
             ci_lo = ci_hi = pval = np.nan
 

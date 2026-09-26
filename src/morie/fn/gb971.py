@@ -66,9 +66,9 @@ def sukhatme(x, y, alternative="two-sided"):
     if alternative == "less":
         pv = stats.norm.cdf(z)
     elif alternative == "greater":
-        pv = 1.0 - stats.norm.cdf(z)
+        pv = stats.norm.sf(z)
     elif alternative == "two-sided":
-        pv = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
+        pv = 2.0 * (stats.norm.sf(abs(z)))
     else:
         raise ValueError("alternative must be two-sided, less or greater.")
     return RichResult(

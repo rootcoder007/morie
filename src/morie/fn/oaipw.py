@@ -89,7 +89,7 @@ def otis_aipw(
     se = float(np.std(psi, ddof=1) / np.sqrt(n))
     se = max(se, 1e-10)
     z = ate / se
-    pval = float(2 * (1 - stats.norm.cdf(abs(z))))
+    pval = float(2 * (stats.norm.sf(abs(z))))
 
     return {
         "ate": ate,

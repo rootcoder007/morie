@@ -73,7 +73,7 @@ def ma_begg_test(yi, vi):
         raise ValueError("vi - 1/sum(1/vi) must be positive for every study")
     ystar = [(yi[i] - theta) / math.sqrt(vstar[i]) for i in range(k)]
     tau, z = T.kendalltaub(ystar, vi)
-    p = 2.0 * (1.0 - stats.norm.cdf(abs(z))) if z == z else float("nan")
+    p = 2.0 * (stats.norm.sf(abs(z))) if z == z else float("nan")
     return RichResult(
         payload={
             "tau": float(tau),

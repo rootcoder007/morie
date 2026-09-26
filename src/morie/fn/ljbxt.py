@@ -46,7 +46,7 @@ def ljung_box(residuals: np.ndarray, lags: int = 10, fitdf: int = 0, cdf=None) -
         Q += rho_k**2 / (n - k)
     Q *= n * (n + 2)
     df = max(lags - fitdf, 1)
-    p_val = 1 - stats.chi2.cdf(Q, df)
+    p_val = stats.chi2.sf(Q, df)
     return DescriptiveResult(
         name="ljung_box",
         value=float(Q),

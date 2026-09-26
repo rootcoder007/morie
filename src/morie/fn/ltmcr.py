@@ -62,7 +62,7 @@ def little_mcar_test(data: np.ndarray, cdf=None) -> TestResult:
 
     df -= p
     df = max(df, 1)
-    p_val = float(1 - sp_stats.chi2.cdf(chi2, df))
+    p_val = float(sp_stats.chi2.sf(chi2, df))
 
     return TestResult(
         test_name="Little MCAR",

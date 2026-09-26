@@ -64,7 +64,7 @@ def runsz(r, n1, n2, correct=False):
         payload={
             "z": float(z),
             "z_exact": float(de / math.sqrt(ve)),
-            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "p_value": float(2.0 * (stats.norm.sf(abs(z)))),
             "mean": float(mean),
             "var": float(sd * sd),
             "mean_exact": float(me),

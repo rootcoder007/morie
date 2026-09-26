@@ -154,7 +154,7 @@ def difmh(
         else:
             chi2_stat = 0.0
 
-        p_value = 1.0 - sp.chi2.cdf(chi2_stat, df=1)
+        p_value = sp.chi2.sf(chi2_stat, df=1)
 
         # ETS classification
         abs_delta = abs(mh_delta) if np.isfinite(mh_delta) else 0.0

@@ -129,7 +129,7 @@ def two_stage_ls(
         V_diff = V - V_ols
         hausman_stat = float(diff @ np.linalg.inv(V_diff) @ diff)
         hausman_df = len(x_endog)
-        hausman_pval = float(1 - stats.chi2.cdf(hausman_stat, hausman_df))
+        hausman_pval = float(stats.chi2.sf(hausman_stat, hausman_df))
     except np.linalg.LinAlgError:
         hausman_stat = float("nan")
         hausman_df = len(x_endog)

@@ -88,7 +88,7 @@ def dif_nonuniform(
         except np.linalg.LinAlgError:
             se_b3 = 1.0
         z = beta[3] / se_b3
-        p_val = 2 * (1 - sp.norm.cdf(abs(z)))
+        p_val = 2 * (sp.norm.sf(abs(z)))
 
         rows.append(
             {

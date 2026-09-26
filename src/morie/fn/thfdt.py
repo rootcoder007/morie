@@ -61,7 +61,7 @@ def terry_hoeffding_test(x, y):
     E_T = 0.0  # since scores sum to ~0
     Var_T = (m * n / float(N * (N - 1))) * sum_a2
     z = (T - E_T) / np.sqrt(Var_T) if Var_T > 0 else np.nan
-    p = 2.0 * (1.0 - stats.norm.cdf(abs(z))) if np.isfinite(z) else np.nan
+    p = 2.0 * (stats.norm.sf(abs(z))) if np.isfinite(z) else np.nan
     return RichResult(
         payload={
             "statistic": T,

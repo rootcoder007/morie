@@ -81,7 +81,7 @@ def otis_att_region(
         se = float(np.sqrt(np.mean(psi**2) / n))
         se = max(se, 1e-10)
         z = att / se
-        pval = float(2 * (1 - stats.norm.cdf(abs(z))))
+        pval = float(2 * (stats.norm.sf(abs(z))))
 
         results.append(
             {

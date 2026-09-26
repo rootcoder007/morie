@@ -572,7 +572,7 @@ def deseq2(counts, design, contrast=None, size=None, beta_prior=True,
     est_mle = [v * scale for v in lfc_mle]
     se = [v * scale for v in se_map]
     stat = [est[i] / se[i] if se[i] > 0 else 0.0 for i in range(n_genes)]
-    pval = [2.0 * (1.0 - _norm_cdf(abs(z))) for z in stat]
+    pval = [2.0 * (_norm_cdf(-(abs(z)))) for z in stat]
     padj = benjamini_hochberg(pval)
 
     return RichResult(payload={

@@ -26,7 +26,7 @@ def asymptotic_z_test(observed_stat, expected, se, cdf=None):
     from . import _stats_core as stats
 
     z = (observed_stat - expected) / se if se > 0 else 0.0
-    p_value = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
+    p_value = 2.0 * (stats.norm.sf(abs(z)))
 
     return DescriptiveResult(
         name="asymptotic_z_test",

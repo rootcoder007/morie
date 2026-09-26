@@ -158,7 +158,7 @@ def rirr(
 
     # Two-sided test: H0: kappa = 0
     z_stat = kappa / se if se > 1e-15 else float("inf")
-    p_value = 2.0 * (1.0 - sp.norm.cdf(abs(z_stat)))
+    p_value = 2.0 * (sp.norm.sf(abs(z_stat)))
 
     return {
         "kappa": float(kappa),

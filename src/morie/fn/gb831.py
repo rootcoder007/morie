@@ -79,7 +79,7 @@ def normscores(x, y, nodes=4001):
         payload={
             "statistic": float(stat),
             "z": float(z),
-            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "p_value": float(2.0 * (stats.norm.sf(abs(z)))),
             "mean": 0.0,
             "var": float(var),
             "scores": scores,

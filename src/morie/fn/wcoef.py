@@ -38,7 +38,7 @@ def wcoef(data, axis=0, cdf=None):
 
     # Chi-square test
     chi2_stat = k * (n - 1) * W
-    p_value = 1 - sp_stats.chi2.cdf(chi2_stat, n - 1)
+    p_value = sp_stats.chi2.sf(chi2_stat, n - 1)
 
     return {
         "concordance": float(W),

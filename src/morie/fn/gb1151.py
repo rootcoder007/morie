@@ -100,7 +100,7 @@ def normcorr(x, y, rho=0.0, nodes=4001):
             "mean_zf": float(mz),
             "var_zf": float(vz),
             "z": float(z),
-            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "p_value": float(2.0 * (stats.norm.sf(abs(z)))),
             "scores": xi,
             "n": n,
             "method": "Fieller-Hartley-Pearson normal-scores R_F (Sec. 11.5)",

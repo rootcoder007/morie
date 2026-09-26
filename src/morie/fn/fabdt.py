@@ -46,7 +46,7 @@ def fabdt(x, y, axis=0, cdf=None):
 
     # Standardized statistic
     z_stat = (T - E_T) / np.sqrt(Var_T)
-    p_value = 2 * (1 - sp_stats.norm.cdf(np.abs(z_stat)))
+    p_value = 2 * (sp_stats.norm.sf(np.abs(z_stat)))
 
     return {
         "statistic": float(T),

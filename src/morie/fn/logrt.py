@@ -151,7 +151,7 @@ def logrt(
     except np.linalg.LinAlgError:
         chi2 = float(U @ np.linalg.lstsq(V, U, rcond=None)[0])
     chi2 = max(chi2, 0.0)
-    p_val = float(1 - _stats.chi2.cdf(chi2, df=df))
+    p_val = float(_stats.chi2.sf(chi2, df=df))
 
     return {
         "statistic": chi2,

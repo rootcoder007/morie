@@ -50,7 +50,7 @@ def kwone(*samples, axis=0):
 
     # p-value from chi-square with k-1 df
     k = len(samples)
-    p_value = 1 - sp_stats.chi2.cdf(H, k - 1)
+    p_value = sp_stats.chi2.sf(H, k - 1)
 
     return {
         "statistic": float(H),

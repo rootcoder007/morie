@@ -48,11 +48,11 @@ def anova_twoway(data: pd.DataFrame, cdf=None, *, y: str = "y", a: str = "a", b:
     ms_resid = ss_resid / df_resid
 
     f_stat = ms_a / ms_resid if ms_resid > 0 else float("inf")
-    p_val = 1 - stats.f.cdf(f_stat, df_a, df_resid)
+    p_val = stats.f.sf(f_stat, df_a, df_resid)
 
     # Factor B F and p
     f_b = (ss_b / df_b) / ms_resid if df_b > 0 and ms_resid > 0 else 0
-    p_b = 1 - stats.f.cdf(f_b, df_b, df_resid) if df_b > 0 and ms_resid > 0 else 1.0
+    p_b = stats.f.sf(f_b, df_b, df_resid) if df_b > 0 and ms_resid > 0 else 1.0
 
     return TestResult(
         test_name="Two-way ANOVA (factor A)",

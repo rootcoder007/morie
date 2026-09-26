@@ -61,7 +61,7 @@ def empll(x: np.ndarray, cdf=None, *, mu0: float = 0.0, alpha: float = 0.05) -> 
         mean_x = float(np.mean(x))
         var_x = float(np.var(x, ddof=1))
         wald = n * (mean_x - mu0) ** 2 / max(var_x, 1e-12)
-        p_value = float(1.0 - stats.chi2.cdf(wald, df=1))
+        p_value = float(stats.chi2.sf(wald, df=1))
         return {
             "log_ratio": float(wald),
             "p_value": p_value,
@@ -94,7 +94,7 @@ def empll(x: np.ndarray, cdf=None, *, mu0: float = 0.0, alpha: float = 0.05) -> 
     weights /= np.sum(weights)
 
     log_ratio = -2.0 * np.sum(np.log(n * weights))
-    p_value = float(1.0 - stats.chi2.cdf(max(log_ratio, 0), df=1))
+    p_value = float(stats.chi2.sf(max(log_ratio, 0), df=1))
 
     return {
         "log_ratio": float(log_ratio),

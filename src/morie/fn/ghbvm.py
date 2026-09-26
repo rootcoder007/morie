@@ -77,7 +77,7 @@ def ghosal_bernstein_von_mises(x, theta0=None, B=500, seed=0, deterministic_seed
     ks = kstest(z, "norm")
     if theta0 is not None:
         wald = (theta_mean - float(theta0)) / max(theta_sd, 1e-12)
-        wald_p = 2 * (1 - norm.cdf(abs(wald)))
+        wald_p = 2 * (norm.sf(abs(wald)))
     else:
         wald = float("nan")
         wald_p = float("nan")

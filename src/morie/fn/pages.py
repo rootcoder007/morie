@@ -30,7 +30,7 @@ def page_trend_test(ranks_matrix: np.ndarray, cdf=None) -> TestResult:
     E_L = n * k * (k + 1) ** 2 / 4.0
     Var_L = n * k**2 * (k + 1) * (k**2 - 1) / 144.0
     z = (L - E_L) / np.sqrt(Var_L)
-    pval = float(1.0 - stats.norm.cdf(z))
+    pval = float(stats.norm.sf(z))
 
     return TestResult(
         test_name="Page's L",

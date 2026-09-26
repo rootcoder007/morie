@@ -70,7 +70,7 @@ def firth_logistic(
     from . import _stats_core as _st
 
     z_vals = beta / (se_arr + 1e-12)
-    pvals = 2 * (1 - _st.norm.cdf(np.abs(z_vals)))
+    pvals = 2 * (_st.norm.sf(np.abs(z_vals)))
 
     names = ["(Intercept)", *x]
     return RegressionResult(

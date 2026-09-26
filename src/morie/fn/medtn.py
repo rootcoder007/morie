@@ -88,7 +88,7 @@ def causal_mediation(
     # Sobel test
     sobel_se = math.sqrt(b_path**2 * se_a**2 + a_path**2 * se_b**2)
     sobel_z = indirect / sobel_se if sobel_se > 0 else float("nan")
-    sobel_p = float(2.0 * (1.0 - _st.norm.cdf(abs(sobel_z)))) if np.isfinite(sobel_z) else float("nan")
+    sobel_p = float(2.0 * (_st.norm.sf(abs(sobel_z)))) if np.isfinite(sobel_z) else float("nan")
 
     return {
         "total_effect": c_total,

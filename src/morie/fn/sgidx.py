@@ -31,7 +31,7 @@ def index_of_dispersion(counts, cdf=None):
     vmr = var_c / mean_c if mean_c > 0 else 0.0
     n = len(c)
     chi2 = vmr * (n - 1)
-    p_value = 1.0 - stats.chi2.cdf(chi2, n - 1)
+    p_value = stats.chi2.sf(chi2, n - 1)
 
     if vmr > 1:
         pattern = "clustered"

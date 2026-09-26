@@ -103,7 +103,7 @@ def concordance_incomplete(x):
 
     df = n - 1
     chi2 = k * (n - 1) * W if np.isfinite(W) else np.nan
-    p = float(1.0 - stats.chi2.cdf(chi2, df)) if np.isfinite(chi2) else np.nan
+    p = float(stats.chi2.sf(chi2, df)) if np.isfinite(chi2) else np.nan
     return RichResult(
         payload={
             "statistic": float(W),

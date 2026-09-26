@@ -76,7 +76,7 @@ def bfkdfnorm(estimate, variance, null=None, bias=0.0, level=0.95):
         pval = float("nan")
     else:
         stat = (centre - float(null)) / se
-        pval = float(2.0 * (1.0 - stats.norm.cdf(abs(stat))))
+        pval = float(2.0 * (stats.norm.sf(abs(stat))))
     return RichResult(
         payload={
             "statistic": float(stat),

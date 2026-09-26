@@ -57,7 +57,7 @@ def signpow(n, theta, alpha=0.05, exact=True):
     if not 0.0 < alpha < 1.0:
         raise ValueError("alpha must lie strictly inside (0, 1).")
     za = stats.norm.ppf(1.0 - alpha)
-    approx = 1.0 - stats.norm.cdf(
+    approx = stats.norm.sf(
         (n * (0.5 - theta) + 0.5 * math.sqrt(n) * za)
         / math.sqrt(n * theta * (1.0 - theta))
     )

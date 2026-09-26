@@ -43,7 +43,7 @@ def quadrat_test(points: np.ndarray, n_quadrats: int = 4, cdf=None) -> TestResul
     expected = np.full_like(observed, n / len(observed))
     chi2 = float(np.sum((observed - expected) ** 2 / expected))
     df = len(observed) - 1
-    pval = float(1 - sp_stats.chi2.cdf(chi2, df))
+    pval = float(sp_stats.chi2.sf(chi2, df))
     return TestResult(
         test_name="quadrat_test",
         statistic=chi2,

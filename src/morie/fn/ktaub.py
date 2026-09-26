@@ -78,7 +78,7 @@ def ktaub(x, y, axis=0, cdf=None):
     # p-value (normal approximation)
     var_tau = (2 * (2 * n + 5)) / (9 * n * (n - 1))
     z_stat = tau_b / np.sqrt(var_tau)
-    p_value = 2 * (1 - sp_stats.norm.cdf(np.abs(z_stat)))
+    p_value = 2 * (sp_stats.norm.sf(np.abs(z_stat)))
 
     return {
         "correlation": float(tau_b),

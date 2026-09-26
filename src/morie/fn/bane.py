@@ -61,7 +61,7 @@ def structural_break(data: pd.DataFrame | np.ndarray, cdf=None, *, col: str = "x
             best_f = f_stat
             best_bp = bp
     df1, df2 = k, n - 2 * k
-    p_value = float(1 - stats.f.cdf(best_f, df1, df2)) if df2 > 0 else 1.0
+    p_value = float(stats.f.sf(best_f, df1, df2)) if df2 > 0 else 1.0
     return TestResult(
         test_name="Structural break test (max F)",
         statistic=best_f,

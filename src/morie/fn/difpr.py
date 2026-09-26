@@ -72,7 +72,7 @@ def dif_purification(
             n_foc = (g == groups[1]).sum()
             se = np.sqrt(p_ref * (1 - p_ref) / n_ref + p_foc * (1 - p_foc) / n_foc)
             z = (p_ref - p_foc) / max(se, 1e-10)
-            p_val = 2 * (1 - sp.norm.cdf(abs(z)))
+            p_val = 2 * (sp.norm.sf(abs(z)))
             if p_val < alpha:
                 new_flagged.add(j)
 

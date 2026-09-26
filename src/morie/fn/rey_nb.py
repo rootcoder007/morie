@@ -93,7 +93,7 @@ def rey_nb(
     se_beta = se_all[:p]
 
     z_vals = beta_hat / np.where(se_beta > 0, se_beta, np.inf)
-    p_vals = 2.0 * (1.0 - norm.cdf(np.abs(z_vals)))
+    p_vals = 2.0 * (norm.sf(np.abs(z_vals)))
 
     names = ["intercept"] + list(x)
     mu_hat = np.exp(X_arr @ beta_hat)

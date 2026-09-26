@@ -64,9 +64,9 @@ def fauzi_smoothed_wilcoxon(x, theta0=0.0, h=None, alternative="two-sided"):
     var = n_eff * (n_eff + 1) * (2 * n_eff + 1) / 6.0
     z = W_n / np.sqrt(var)
     if alternative == "two-sided":
-        p = 2.0 * (1.0 - _sps.norm.cdf(abs(z)))
+        p = 2.0 * (_sps.norm.sf(abs(z)))
     elif alternative == "greater":
-        p = 1.0 - _sps.norm.cdf(z)
+        p = _sps.norm.sf(z)
     elif alternative == "less":
         p = float(_sps.norm.cdf(z))
     else:

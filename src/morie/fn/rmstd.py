@@ -92,7 +92,7 @@ def rmstd(
         "se": float(se),
         "ci_lower": float(diff - z * se),
         "ci_upper": float(diff + z * se),
-        "p_value": float(2 * (1 - norm.cdf(abs(diff / se)))) if se > 0 else 1.0,
+        "p_value": float(2 * (norm.sf(abs(diff / se)))) if se > 0 else 1.0,
         "tau": float(tau),
     }
 

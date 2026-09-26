@@ -42,7 +42,7 @@ def granger_cause(x, y, cdf=None, *, max_lag: int = 4) -> TestResult:
     df1 = max_lag
     df2 = n_eff - X_u.shape[1]
     f_stat = ((ss_r - ss_u) / df1) / (ss_u / df2) if ss_u > 0 and df2 > 0 else 0
-    p_val = float(1 - _st.f.cdf(f_stat, df1, df2))
+    p_val = float(_st.f.sf(f_stat, df1, df2))
     return TestResult(
         test_name="Granger causality",
         statistic=float(f_stat),

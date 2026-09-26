@@ -72,7 +72,7 @@ def granger_causality(x: np.ndarray | list, y: np.ndarray | list, cdf=None, *, m
         raise ValueError("Not enough observations for F-test degrees of freedom")
 
     f_stat = ((ssr_r - ssr_u) / df_num) / (ssr_u / df_den)
-    p_val = float(1 - _st.f.cdf(f_stat, df_num, df_den))
+    p_val = float(_st.f.sf(f_stat, df_num, df_den))
 
     return TestResult(
         test_name="Granger Causality",

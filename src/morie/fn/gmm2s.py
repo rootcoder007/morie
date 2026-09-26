@@ -114,7 +114,7 @@ def gmm_twostep(
 
     j_stat = float(n * e2 @ Z @ W2 @ Z.T @ e2 / n**2) if q > k else 0.0
     j_df = q - k
-    j_pval = float(1 - stats.chi2.cdf(j_stat, j_df)) if j_df > 0 else float("nan")
+    j_pval = float(stats.chi2.sf(j_stat, j_df)) if j_df > 0 else float("nan")
 
     return RegressionResult(
         method="2-step GMM",

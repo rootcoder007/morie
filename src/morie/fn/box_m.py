@@ -58,7 +58,7 @@ def box_m_test(X: np.ndarray, groups: np.ndarray, cdf=None) -> TestResult:
     M_adj = M * (1 - c1)
 
     df = p * (p + 1) * (k - 1) / 2
-    p_val = float(1 - sp_stats.chi2.cdf(M_adj, df))
+    p_val = float(sp_stats.chi2.sf(M_adj, df))
 
     return TestResult(
         test_name="Box M",

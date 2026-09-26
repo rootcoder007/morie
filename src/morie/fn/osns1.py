@@ -72,8 +72,8 @@ def otis_sensitivity(
         z_upper = (T_obs - E_upper) / np.sqrt(V_upper) if V_upper > 0 else 0.0
         z_lower = (T_obs - E_lower) / np.sqrt(V_lower) if V_lower > 0 else 0.0
 
-        p_upper.append(float(1 - stats.norm.cdf(z_upper)))
-        p_lower.append(float(1 - stats.norm.cdf(z_lower)))
+        p_upper.append(float(stats.norm.sf(z_upper)))
+        p_lower.append(float(stats.norm.sf(z_lower)))
 
     return {
         "gamma_values": gamma_range,

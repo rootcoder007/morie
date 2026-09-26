@@ -46,7 +46,7 @@ def spatial_regime(y: np.ndarray, X: np.ndarray, regions: np.ndarray, cdf=None) 
     df1 = (J - 1) * k
     df2 = n - J * k
     f_stat = ((rss_pool - rss_regime) / df1) / (rss_regime / df2) if df2 > 0 and df1 > 0 else 0.0
-    p_val = float(1 - sp_stats.f.cdf(f_stat, df1, df2)) if df2 > 0 else 1.0
+    p_val = float(sp_stats.f.sf(f_stat, df1, df2)) if df2 > 0 else 1.0
     return DescriptiveResult(
         name="spatial_regime",
         value=float(f_stat),

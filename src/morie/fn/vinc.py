@@ -65,7 +65,7 @@ def validity_incremental(y: np.ndarray, x_base: np.ndarray, x_new: np.ndarray, c
 
     if df1 > 0 and df2 > 0 and (1 - r2_full) > 0:
         f_stat = (delta_r2 / df1) / ((1 - r2_full) / df2)
-        p_value = 1.0 - sp.f.cdf(f_stat, df1, df2)
+        p_value = sp.f.sf(f_stat, df1, df2)
     else:
         f_stat = np.nan
         p_value = np.nan

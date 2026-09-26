@@ -84,7 +84,7 @@ def mi_latent_means(
             cohens_d = mean_diff / pooled_sd if pooled_sd > 1e-10 else 0.0
             se = pooled_sd * np.sqrt(1 / n_ref + 1 / n_g)
             t_stat = mean_diff / se if se > 1e-10 else 0.0
-            p_val = float(2 * (1 - sp.t.cdf(abs(t_stat), n_ref + n_g - 2)))
+            p_val = float(2 * (sp.t.sf(abs(t_stat), n_ref + n_g - 2)))
 
             comparisons.append(
                 {

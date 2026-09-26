@@ -76,7 +76,7 @@ def random_effects_meta(
             "tau": float(math.sqrt(tau2)),
             "I_squared": float(i2),
             "Q": float(Q),
-            "Q_p_value": float(1 - stats.chi2.cdf(Q, k - 1)) if k > 1 else 1.0,
+            "Q_p_value": float(stats.chi2.sf(Q, k - 1)) if k > 1 else 1.0,
             "prediction_interval_lower": float(pred_lo),
             "prediction_interval_upper": float(pred_hi),
         },

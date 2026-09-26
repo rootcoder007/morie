@@ -82,7 +82,7 @@ def runsq(x, axis=0, cdf=None):
         p_value = 0.0
     else:
         z_stat = (runs - E_R) / np.sqrt(Var_R)
-        p_value = 2 * (1 - stats.norm.cdf(np.abs(z_stat)))
+        p_value = 2 * (stats.norm.sf(np.abs(z_stat)))
 
     interpretation = "random" if p_value > 0.05 else "not random"
 

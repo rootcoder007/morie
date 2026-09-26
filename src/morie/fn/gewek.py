@@ -77,7 +77,7 @@ def geweke_diagnostic(
     var_b = _spectral_var(b)
 
     z = float((np.mean(a) - np.mean(b)) / np.sqrt(var_a + var_b))
-    p = float(2.0 * (1.0 - stats.norm.cdf(abs(z))))
+    p = float(2.0 * (stats.norm.sf(abs(z))))
 
     return {
         "z_score": z,

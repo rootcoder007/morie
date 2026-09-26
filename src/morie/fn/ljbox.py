@@ -26,7 +26,7 @@ def ljbox(residuals: Union[Sequence, np.ndarray], lags: int = 10):
         test_name="Ljung-Box test for residual autocorrelation",
         statistic=Q,
         df=lags,
-        pvalue=float(1 - chi2.cdf(Q, lags)),
+        pvalue=float(chi2.sf(Q, lags)),
         extra_summary=[
             ("Lags tested", lags),
             ("n residuals", n),

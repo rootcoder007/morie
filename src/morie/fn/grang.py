@@ -48,7 +48,7 @@ def granger_test(y: np.ndarray, x: np.ndarray, max_lag: int = 4, cdf=None) -> De
         if df2 < 1 or rss_u <= 0:
             continue
         f_stat = ((rss_r - rss_u) / df1) / (rss_u / df2)
-        p_val = 1 - stats.f.cdf(f_stat, df1, df2)
+        p_val = stats.f.sf(f_stat, df1, df2)
         if f_stat > best_f:
             best_f = f_stat
             best_p = p_val

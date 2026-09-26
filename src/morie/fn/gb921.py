@@ -79,7 +79,7 @@ def moodscale(x, y):
             "var": float(var),
             "var_general": float(vg),
             "z": float(zz),
-            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(zz)))),
+            "p_value": float(2.0 * (stats.norm.sf(abs(zz)))),
             "m": m,
             "n": n,
             "method": "Mood scale test, eqs. (9.2.1)-(9.2.3)",

@@ -110,7 +110,7 @@ def rey_tw(
     result = _R()
 
     z_vals = beta_hat / np.where(se_beta > 0, se_beta, np.inf)
-    p_vals = 2.0 * (1.0 - norm.cdf(np.abs(z_vals)))
+    p_vals = 2.0 * (norm.sf(np.abs(z_vals)))
 
     # Tweedie deviance
     dev = 2.0 * np.sum(

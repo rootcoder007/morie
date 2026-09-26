@@ -49,7 +49,7 @@ def mediation_analysis(y, treatment, mediator, covariates=None, cdf=None):
     indirect = a * b
     sobel_se = np.sqrt(a**2 * sb**2 + b**2 * sa**2)
     sobel_z = indirect / sobel_se if sobel_se > 0 else 0.0
-    sobel_p = 2 * (1 - stats.norm.cdf(abs(sobel_z)))
+    sobel_p = 2 * (stats.norm.sf(abs(sobel_z)))
 
     return DescriptiveResult(
         name="mediation_analysis",

@@ -41,7 +41,7 @@ def log_rank(time1, event1, time2, event2, cdf=None) -> TestResult:
         E1 += e1_exp
         V += n1 * n2 * d * (n - d) / (n**2 * (n - 1)) if n > 1 else 0
     chi2 = (O1 - E1) ** 2 / V if V > 0 else 0
-    p_val = float(1 - stats.chi2.cdf(chi2, 1))
+    p_val = float(stats.chi2.sf(chi2, 1))
     return TestResult(
         test_name="Log-rank",
         statistic=float(chi2),

@@ -136,7 +136,7 @@ def wlcst(time: np.ndarray, event: np.ndarray, group: np.ndarray, weight: str = 
 
     z = numerator / np.sqrt(variance)
     chi2 = z**2
-    p_val = float(1 - _stats.chi2.cdf(chi2, df=1))
+    p_val = float(_stats.chi2.sf(chi2, df=1))
 
     return {
         "statistic": float(chi2),

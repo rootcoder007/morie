@@ -72,7 +72,7 @@ def kendall_tau_partial(x, y, z):
     tau_p = (tau_xy - tau_xz * tau_yz) / denom
     # Use the Kendall-tau normal approx (z = tau * sqrt(9n(n-1) / (2(2n+5))))
     z_stat = tau_p * np.sqrt(9.0 * n * (n - 1) / (2.0 * (2 * n + 5)))
-    p = 2.0 * (1.0 - stats.norm.cdf(abs(z_stat)))
+    p = 2.0 * (stats.norm.sf(abs(z_stat)))
     return RichResult(
         payload={
             "statistic": float(tau_p),

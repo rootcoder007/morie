@@ -58,13 +58,13 @@ def rhotest(r, n, alternative="two-sided"):
     else:
         t = r * math.sqrt((n - 2.0) / (1.0 - r * r))
     if alternative == "greater":
-        pn = 1.0 - stats.norm.cdf(z)
+        pn = stats.norm.sf(z)
         pt = stats.t.sf(t, n - 2)
     elif alternative == "less":
         pn = stats.norm.cdf(z)
         pt = 1.0 - stats.t.sf(t, n - 2)
     elif alternative == "two-sided":
-        pn = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
+        pn = 2.0 * (stats.norm.sf(abs(z)))
         pt = 2.0 * stats.t.sf(abs(t), n - 2)
     else:
         raise ValueError("alternative must be two-sided, greater or less.")

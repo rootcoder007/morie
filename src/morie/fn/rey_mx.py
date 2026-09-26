@@ -113,7 +113,7 @@ def rey_mx(
     XtX_inv = np.linalg.inv(X_arr.T @ X_arr + 1e-10 * np.eye(p))
     se_beta = np.sqrt(np.diag(XtX_inv) * sigma2_e)
     z_vals = beta / np.where(se_beta > 0, se_beta, np.inf)
-    p_vals = 2.0 * (1.0 - norm.cdf(np.abs(z_vals)))
+    p_vals = 2.0 * (norm.sf(np.abs(z_vals)))
 
     names = ["intercept"] + list(x_fixed)
     n_params = p + 2  # beta + sigma2_e + sigma2_b

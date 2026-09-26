@@ -168,7 +168,7 @@ def ordered_alternatives_test(groups):
     E_J = (N**2 - np.sum(ns**2)) / 4.0
     Var_J = (N**2 * (2 * N + 3) - np.sum(ns**2 * (2 * ns + 3))) / 72.0
     z = (J - E_J) / np.sqrt(Var_J) if Var_J > 0 else np.nan
-    p = 2.0 * (1.0 - stats.norm.cdf(abs(z))) if np.isfinite(z) else np.nan
+    p = 2.0 * (stats.norm.sf(abs(z))) if np.isfinite(z) else np.nan
     return RichResult(
         payload={
             "statistic": float(J),

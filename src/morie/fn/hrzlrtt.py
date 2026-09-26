@@ -152,7 +152,7 @@ def splrtest(x, y, fitted=None, h=None, degree=1, kernel="closed"):
     support = float(np.max(xv) - np.min(xv))
     df = rk * ck * support / hh
     statv = rk * lam
-    pval = float(1.0 - stats.chi2.cdf(statv, df)) if df > 0 else float("nan")
+    pval = float(stats.chi2.sf(statv, df)) if df > 0 else float("nan")
     return RichResult(
         title="Generalized likelihood ratio test (Fan, Zhang and Zhang 2001)",
         payload={"statistic": float(statv),

@@ -62,7 +62,7 @@ def lgrst(time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None) -> d
         )
 
     stat = (O1 - E1) ** 2 / V
-    pval = 1 - chi2.cdf(stat, df=1)
+    pval = chi2.sf(stat, df=1)
 
     return {
         "statistic": float(stat),

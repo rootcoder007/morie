@@ -76,7 +76,7 @@ def dif_irt_based(
             p_foc * np.log(p_foc) + (1 - p_foc) * np.log(1 - p_foc)
         )
         G2 = max(-2 * (ll_compact - ll_augment), 0)
-        p_val = 1.0 - sp.chi2.cdf(G2, df=1)
+        p_val = sp.chi2.sf(G2, df=1)
 
         rows.append(
             {

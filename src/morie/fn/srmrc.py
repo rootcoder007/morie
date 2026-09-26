@@ -53,7 +53,7 @@ def srmrc(x, y, axis=0, ci_level=0.95, cdf=None):
 
     # p-value
     t_stat = rho * np.sqrt((n - 2) / (1 - rho**2 + 1e-10))
-    p_value = 2 * (1 - sp_stats.t.cdf(np.abs(t_stat), n - 2))
+    p_value = 2 * (sp_stats.t.sf(np.abs(t_stat), n - 2))
 
     return {
         "correlation": float(rho),

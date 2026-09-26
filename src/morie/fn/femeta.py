@@ -38,7 +38,7 @@ def fixed_effects_meta(
     z = stats.norm.ppf((1 + confidence) / 2)
     q = float(((theta - pooled) ** 2 * w).sum())
     k = len(theta)
-    p_q = 1 - stats.chi2.cdf(q, k - 1) if k > 1 else 1.0
+    p_q = stats.chi2.sf(q, k - 1) if k > 1 else 1.0
     return ESRes(
         measure="Fixed-effects meta-analysis",
         estimate=float(pooled),

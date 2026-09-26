@@ -42,7 +42,7 @@ def rstst(time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None, *, t
     se = result["se"]
     diff = result["difference"]
     z = diff / se if se > 0 else 0.0
-    pval = 2 * (1 - norm.cdf(abs(z)))
+    pval = 2 * (norm.sf(abs(z)))
 
     return {
         "rmst_0": result["rmst_0"],

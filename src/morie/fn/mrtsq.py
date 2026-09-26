@@ -44,7 +44,7 @@ def mauchly_test(data: np.ndarray, cdf=None) -> DescriptiveResult:
     f = 1.0 - (2 * p**2 + p + 2) / (6 * p * (n - 1))
     chi2 = -f * (n - 1) * np.log(max(W, 1e-300))
     df = p * (p + 1) // 2 - 1
-    p_value = float(1 - sp_stats.chi2.cdf(chi2, max(df, 1)))
+    p_value = float(sp_stats.chi2.sf(chi2, max(df, 1)))
 
     eigvals = np.linalg.eigvalsh(S)
     eigvals = np.maximum(eigvals, 0)

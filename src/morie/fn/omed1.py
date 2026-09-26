@@ -83,7 +83,7 @@ def otis_mediation(
     # Sobel test
     sobel_se = np.sqrt(a**2 * se_b**2 + b**2 * se_a**2)
     sobel_z = float(indirect / sobel_se) if sobel_se > 0 else 0.0
-    sobel_pval = float(2 * (1 - stats.norm.cdf(abs(sobel_z))))
+    sobel_pval = float(2 * (stats.norm.sf(abs(sobel_z))))
 
     prop = float(indirect / total) if abs(total) > 1e-10 else np.nan
 

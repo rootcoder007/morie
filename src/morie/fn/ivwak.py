@@ -48,7 +48,7 @@ def iv_weak_test(endogenous, instrument, covariates=None, cdf=None):
     df1 = l
     df2 = n - W.shape[1] - l
     f_stat = ((ss_red - ss_full) / df1) / (ss_full / df2) if df2 > 0 else 0.0
-    f_pval = 1 - stats.f.cdf(f_stat, df1, df2) if df2 > 0 else 1.0
+    f_pval = stats.f.sf(f_stat, df1, df2) if df2 > 0 else 1.0
 
     ss_total_res = np.sum(y_res**2)
     partial_r2 = 1 - ss_full / ss_red if ss_red > 0 else 0.0

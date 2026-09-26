@@ -50,7 +50,7 @@ def loglinear_model(table: np.ndarray, max_iter: int = 100, tol: float = 1e-8, c
     dof = (r - 1) * (c - 1)
     from . import _stats_core as _st
 
-    p_value = float(1.0 - _st.chi2.cdf(g2, df=dof)) if dof > 0 else 1.0
+    p_value = float(_st.chi2.sf(g2, df=dof)) if dof > 0 else 1.0
     return DescriptiveResult(
         name="loglinear_model",
         value=g2,

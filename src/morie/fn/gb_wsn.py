@@ -56,11 +56,11 @@ def wsrz(tplus, n, alternative="two-sided", correct=False):
             d += 0.5
     z = d / math.sqrt(var)
     if alternative == "greater":
-        pv = 1.0 - stats.norm.cdf(z)
+        pv = stats.norm.sf(z)
     elif alternative == "less":
         pv = stats.norm.cdf(z)
     elif alternative == "two-sided":
-        pv = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
+        pv = 2.0 * (stats.norm.sf(abs(z)))
     else:
         raise ValueError("alternative must be two-sided, greater or less.")
     return RichResult(

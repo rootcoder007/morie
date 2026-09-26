@@ -147,7 +147,7 @@ def fixed_effect_scan(y, G, covariates=(), K=None):
         sxx = sum((X[i][0] - xm) ** 2 for i in range(n))
         se = math.sqrt(s2 / sxx) if sxx > _EPS else float("inf")
         t = co[1] / se if se > 0 else 0.0
-        pv.append(2.0 * (1.0 - _norm_cdf(abs(t))))
+        pv.append(2.0 * (_norm_cdf(-(abs(t)))))
         betas.append(co[1])
     return {"p": pv, "beta": betas, "covariates": cov,
             "note": "associated markers enter as COVARIATES, which is "

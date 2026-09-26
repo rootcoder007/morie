@@ -88,7 +88,7 @@ def mi_configural(
 
     from . import _stats_core as sp
 
-    pooled_p = float(1 - sp.chi2.cdf(total_chi2, total_df)) if total_df > 0 else 1.0
+    pooled_p = float(sp.chi2.sf(total_chi2, total_df)) if total_df > 0 else 1.0
 
     from morie.fn._mapq_const import FIT_THRESHOLDS
 

@@ -89,7 +89,7 @@ def bg_test(y, lags: int = 1, x=None, cdf=None) -> TestResult:
     r2 = float(np.clip(r2, 0.0, 1.0))
 
     lm_stat = float(n * r2)
-    p_val = float(1.0 - _st.chi2.cdf(lm_stat, lags))
+    p_val = float(_st.chi2.sf(lm_stat, lags))
 
     return TestResult(
         test_name="Breusch-Godfrey",

@@ -58,7 +58,7 @@ def box_m_test(data: np.ndarray, groups: np.ndarray, cdf=None) -> DescriptiveRes
 
     chi2 = (1 - c1) * M
     df = p * (p + 1) * (k - 1) // 2
-    p_value = float(1 - sp_stats.chi2.cdf(chi2, df))
+    p_value = float(sp_stats.chi2.sf(chi2, df))
 
     return DescriptiveResult(
         name="BoxM",

@@ -81,7 +81,7 @@ def mwu(x, y):
             "statistic": float(u),
             "p_value": float(min(1.0, 2.0 * min(lower, upper))),
             "z": float(z),
-            "p_normal": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "p_normal": float(2.0 * (stats.norm.sf(abs(z)))),
             "mean": float(mean),
             "var": float(var),
             "m": m,

@@ -90,7 +90,7 @@ def ctrfn(
     se_rho = float(se_all[1])
 
     hausman_t = rho / se_rho if se_rho > 1e-12 else 0.0
-    hausman_p = float(2 * (1 - stats.norm.cdf(abs(hausman_t))))
+    hausman_p = float(2 * (stats.norm.sf(abs(hausman_t))))
 
     z_crit = stats.norm.ppf(1.0 - alpha / 2.0)
     return {

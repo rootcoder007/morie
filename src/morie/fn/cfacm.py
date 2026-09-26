@@ -43,7 +43,7 @@ def cfa_compare(fit1: dict, fit2: dict, cdf=None, *, alpha: float = 0.05) -> dic
     if delta_df < 1:
         delta_df = 1
 
-    p_value = float(1 - sp.chi2.cdf(delta_chi2, delta_df))
+    p_value = float(sp.chi2.sf(delta_chi2, delta_df))
 
     cfi_1 = fit1.get("cfi", 1.0)
     cfi_2 = fit2.get("cfi", 1.0)

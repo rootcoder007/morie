@@ -52,7 +52,7 @@ def box_pierce_test(x, lags=1, fitdf=0):
     r = T.acfbiased(x, m)
     q = n * sum(rk * rk for rk in r)
     df = m - fitdf
-    p = 1.0 - stats.chi2.cdf(q, df) if df > 0 else float("nan")
+    p = stats.chi2.sf(q, df) if df > 0 else float("nan")
     return RichResult(
         payload={
             "statistic": float(q),

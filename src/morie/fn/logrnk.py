@@ -38,7 +38,7 @@ def logrnk(times1, events1, times2, events2):
         p = 1.0
     else:
         chi = (obs1 - exp1) ** 2 / var
-        p = float(1 - chi2.cdf(chi, 1))
+        p = float(chi2.sf(chi, 1))
     return hypothesis_test_result(
         test_name="Log-rank test (two-group survival)",
         statistic=float(chi),

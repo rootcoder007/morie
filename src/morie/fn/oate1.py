@@ -37,7 +37,7 @@ def otis_ate_region(
         ate = float(treated.mean() - control.mean())
         se = float(np.sqrt(treated.var() / len(treated) + control.var() / len(control)))
         z = ate / se if se > 0 else 0.0
-        pval = float(2 * (1 - stats.norm.cdf(abs(z))))
+        pval = float(2 * (stats.norm.sf(abs(z))))
 
         results.append(
             {

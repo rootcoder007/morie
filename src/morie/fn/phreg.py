@@ -98,7 +98,7 @@ def phreg(
         se = np.full(p, np.nan)
 
     z = beta / np.where(se > 0, se, np.nan)
-    pvals = 2 * (1 - norm.cdf(np.abs(z)))
+    pvals = 2 * (norm.sf(np.abs(z)))
 
     return {
         "coefficients": beta,

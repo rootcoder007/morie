@@ -54,7 +54,7 @@ def manova_one(X: np.ndarray, groups: np.ndarray, cdf=None) -> TestResult:
     df2 = (n - k - 1) - (p - (k - 1) + 1) / 2
     df2 = max(df2, 1)
     F_approx = (1 - lam_t) / lam_t * df2 / df_h if df_h > 0 else 0.0
-    p_val = float(1 - sp_stats.f.cdf(F_approx, df_h, df2))
+    p_val = float(sp_stats.f.sf(F_approx, df_h, df2))
 
     return TestResult(
         test_name="MANOVA",

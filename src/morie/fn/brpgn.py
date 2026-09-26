@@ -37,7 +37,7 @@ def breusch_pagan(residuals: np.ndarray, X: np.ndarray, cdf=None) -> TestResult:
     ss_reg = np.sum((ghat - g.mean()) ** 2)
     bp = ss_reg / 2.0
     df = X.shape[1]
-    p_val = float(1 - sp_stats.chi2.cdf(bp, df))
+    p_val = float(sp_stats.chi2.sf(bp, df))
 
     return TestResult(
         test_name="Breusch-Pagan",

@@ -132,15 +132,15 @@ def diflr(
         # Likelihood ratio tests
         # Uniform DIF: M1 vs M2 (1 df)
         chi2_uniform = max(dev1 - dev2, 0.0)
-        p_uniform = 1.0 - sp.chi2.cdf(chi2_uniform, df=1)
+        p_uniform = sp.chi2.sf(chi2_uniform, df=1)
 
         # Non-uniform DIF: M2 vs M3 (1 df)
         chi2_nonuniform = max(dev2 - dev3, 0.0)
-        p_nonuniform = 1.0 - sp.chi2.cdf(chi2_nonuniform, df=1)
+        p_nonuniform = sp.chi2.sf(chi2_nonuniform, df=1)
 
         # Total DIF: M1 vs M3 (2 df)
         chi2_total = max(dev1 - dev3, 0.0)
-        p_total = 1.0 - sp.chi2.cdf(chi2_total, df=2)
+        p_total = sp.chi2.sf(chi2_total, df=2)
 
         # Classify DIF type
         if p_total < alpha:

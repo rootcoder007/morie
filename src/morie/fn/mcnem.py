@@ -44,7 +44,7 @@ def mcnem(table: Union[Sequence, np.ndarray], continuity: bool = True):
         test_name="McNemar test (paired binary)",
         statistic=float(chi),
         df=1,
-        pvalue=float(1 - chi2.cdf(chi, 1)),
+        pvalue=float(chi2.sf(chi, 1)),
         extra_summary=[
             ("Concordant a", int(a)),
             ("Discordant b", int(b)),

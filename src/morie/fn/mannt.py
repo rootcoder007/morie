@@ -100,13 +100,13 @@ def mannt(x, y, axis=0, alternative="two-sided", cdf=None):
     # So "greater" (x > y) rejects when U_x is SMALL relative to E_U.
     if alternative == "two-sided":
         z_stat = (U - E_U - 0.5) / np.sqrt(Var_U)
-        p_value = 2 * (1 - sp_stats.norm.cdf(np.abs(z_stat)))
+        p_value = 2 * (sp_stats.norm.sf(np.abs(z_stat)))
     elif alternative == "greater":
         z_stat = (U_x - E_U + 0.5) / np.sqrt(Var_U)
         p_value = sp_stats.norm.cdf(z_stat)
     elif alternative == "less":
         z_stat = (U_x - E_U - 0.5) / np.sqrt(Var_U)
-        p_value = 1 - sp_stats.norm.cdf(z_stat)
+        p_value = sp_stats.norm.sf(z_stat)
     else:
         raise ValueError("alternative must be 'two-sided', 'less', or 'greater'")
 

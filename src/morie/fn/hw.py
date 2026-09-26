@@ -60,7 +60,7 @@ def hardy_weinberg_test(n_AA: int, n_Aa: int, n_aa: int, cdf=None) -> GenomicsRe
 
     mask = expected > 0
     chi2 = float(np.sum((observed[mask] - expected[mask]) ** 2 / expected[mask]))
-    p_value = float(1.0 - stats.chi2.cdf(chi2, df=1))
+    p_value = float(stats.chi2.sf(chi2, df=1))
 
     return GenomicsResult(
         name="Hardy-Weinberg",

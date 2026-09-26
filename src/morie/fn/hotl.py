@@ -47,7 +47,7 @@ def hotelling_t2(X1: np.ndarray, X2: np.ndarray, cdf=None) -> TestResult:
     df1 = p
     df2 = n1 + n2 - p - 1
     F_stat = T2 * df2 / (df1 * (n1 + n2 - 2))
-    p_val = float(1 - sp_stats.f.cdf(F_stat, df1, df2))
+    p_val = float(sp_stats.f.sf(F_stat, df1, df2))
 
     return TestResult(
         test_name="Hotelling T2",

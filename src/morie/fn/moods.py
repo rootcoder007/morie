@@ -58,7 +58,7 @@ def moods(x, y, axis=0, cdf=None):
     Var_M = n_x * n_y * (n**2 - 1) * (n**2 - 4) / (180 * (n - 1))
 
     z_stat = (M_x - E_M) / np.sqrt(Var_M)
-    p_value = 2 * (1 - sp_stats.norm.cdf(np.abs(z_stat)))
+    p_value = 2 * (sp_stats.norm.sf(np.abs(z_stat)))
 
     return {
         "statistic": float(M_x),

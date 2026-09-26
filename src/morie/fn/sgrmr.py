@@ -51,7 +51,7 @@ def moran_residual_test(residuals: np.ndarray, W: np.ndarray, cdf=None) -> Spati
     ) - EI**2
     VI = max(VI, 1e-10)
     z = (I - EI) / np.sqrt(VI)
-    p = float(2 * (1 - norm.cdf(abs(z))))
+    p = float(2 * (norm.sf(abs(z))))
 
     return SpatialResult(
         name="moran_residual_test",

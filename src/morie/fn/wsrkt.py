@@ -128,9 +128,9 @@ def wsrkt(x, y=None, theta0=None, axis=0, alternative="two-sided", cdf=None):
 
     # p-value
     if alternative == "two-sided":
-        p_value = 2 * (1 - sp_stats.norm.cdf(np.abs(z_stat)))
+        p_value = 2 * (sp_stats.norm.sf(np.abs(z_stat)))
     elif alternative == "greater":
-        p_value = 1 - sp_stats.norm.cdf(z_stat)
+        p_value = sp_stats.norm.sf(z_stat)
     elif alternative == "less":
         p_value = sp_stats.norm.cdf(z_stat)
     else:

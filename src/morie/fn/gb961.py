@@ -95,7 +95,7 @@ def pctranksc(x, y, s=0.5, r=None):
             "mean_book": float(mb),
             "var_book": float(vb),
             "z": float(zz),
-            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(zz)))),
+            "p_value": float(2.0 * (stats.norm.sf(abs(zz)))),
             "S": int(S),
             "R": int(R),
             "m": m,

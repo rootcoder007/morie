@@ -34,7 +34,7 @@ def ljung_box_test_fn(residuals: np.ndarray, nlags: int = 20, cdf=None) -> Descr
         return DescriptiveResult(name="ljung_box", value=0.0, extra={"Q": 0.0, "p_value": 1.0})
     acf_vals = acf_full[n : n + nlags] / r0
     Q = n * (n + 2) * np.sum(acf_vals**2 / (n - np.arange(1, nlags + 1)))
-    p_value = float(1 - chi2.cdf(Q, df=nlags))
+    p_value = float(chi2.sf(Q, df=nlags))
     return DescriptiveResult(
         name="ljung_box",
         value=float(Q),

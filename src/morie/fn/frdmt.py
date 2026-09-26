@@ -66,7 +66,7 @@ def frdmt(data, axis=0, cdf=None):
         T = T / ties_correction
 
     # p-value
-    p_value = 1 - sp_stats.chi2.cdf(T, k - 1)
+    p_value = sp_stats.chi2.sf(T, k - 1)
 
     return {
         "statistic": float(T),

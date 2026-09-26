@@ -66,7 +66,7 @@ def otis_ipw_placement(
     se = float(np.sqrt(np.mean(psi**2) / n))
     se = max(se, 1e-10)
     z = ate / se
-    pval = float(2 * (1 - stats.norm.cdf(abs(z))))
+    pval = float(2 * (stats.norm.sf(abs(z))))
 
     # Effective sample sizes
     ess1 = float(np.sum(w1) ** 2 / np.sum(w1**2)) if np.sum(w1**2) > 0 else 0

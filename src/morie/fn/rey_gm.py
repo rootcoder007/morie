@@ -116,7 +116,7 @@ def rey_gm(
     se_beta = np.sqrt(np.maximum(np.diag(XtWX_inv) * phi, 0.0))
 
     z_vals = beta / np.where(se_beta > 0, se_beta, np.inf)
-    p_vals = 2.0 * (1.0 - norm.cdf(np.abs(z_vals)))
+    p_vals = 2.0 * (norm.sf(np.abs(z_vals)))
 
     # Deviance
     dev = 2.0 * np.sum((y_arr - mu) / mu - np.log(y_arr / mu))

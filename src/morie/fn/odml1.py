@@ -91,7 +91,7 @@ def otis_dml_region(
         bread = np.mean(d_res**2)
         se = float(np.sqrt(meat / (bread**2 * n))) if bread > 0 else np.nan
         z = ate / se if se > 0 else 0.0
-        pval = float(2 * (1 - stats.norm.cdf(abs(z))))
+        pval = float(2 * (stats.norm.sf(abs(z))))
 
         results.append(
             {

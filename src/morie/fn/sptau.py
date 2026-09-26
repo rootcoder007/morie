@@ -95,7 +95,7 @@ def spatial_autocorrelation(x, w):
             p_value = float("nan")
         else:
             zscore = (I - EI) / np.sqrt(var_I)
-            p_value = 2.0 * (1.0 - _scistats.norm.cdf(abs(zscore)))
+            p_value = 2.0 * (_scistats.norm.sf(abs(zscore)))
 
     return RichResult(
         payload={

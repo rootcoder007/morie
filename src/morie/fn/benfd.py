@@ -39,7 +39,7 @@ def benfords_law_test(data, cdf=None):
     expected = expected_prop * n
 
     chi2 = np.sum((observed - expected) ** 2 / expected)
-    p_value = 1 - sp_stats.chi2.cdf(chi2, df=8)
+    p_value = sp_stats.chi2.sf(chi2, df=8)
 
     return DescriptiveResult(
         name="benfords_law_test",

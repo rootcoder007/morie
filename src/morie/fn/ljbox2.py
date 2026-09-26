@@ -62,7 +62,7 @@ def ljung_box(y, lags=1, fitdf=0):
         q += r[k - 1] ** 2 / (n - k)
     q *= n * (n + 2.0)
     df = m - fitdf
-    p = 1.0 - stats.chi2.cdf(q, df) if df > 0 else float("nan")
+    p = stats.chi2.sf(q, df) if df > 0 else float("nan")
     return RichResult(
         payload={
             "statistic": float(q),

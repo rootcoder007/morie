@@ -157,7 +157,7 @@ def causal_rdd_manipulation(x, cutoff=0.0, bw=None, binsize=None):
     theta = math.log(fr) - math.log(fl)
     se = math.sqrt((1.0 / (rn * bw)) * (24.0 / 5.0) * (1.0 / fr + 1.0 / fl))
     z = theta / se
-    p = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
+    p = 2.0 * (stats.norm.sf(abs(z)))
     return RichResult(
         payload={
             "estimate": float(theta),

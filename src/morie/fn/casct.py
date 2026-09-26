@@ -52,7 +52,7 @@ def case_control_or(a: int, b: int, c: int, d: int, confidence: float = 0.95, cd
     ci_hi = np.exp(ln_or + z * se_ln)
 
     chi2 = (a * d - b * c) ** 2 * (a + b + c + d) / ((a + b) * (c + d) * (a + c) * (b + d))
-    p_val = 1 - stats.chi2.cdf(chi2, 1)
+    p_val = stats.chi2.sf(chi2, 1)
 
     return ESRes(
         measure="OR_cc",

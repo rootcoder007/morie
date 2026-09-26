@@ -79,7 +79,7 @@ def otis_did_policy(
     se = float(np.sqrt(vcov[3, 3]))
     se = max(se, 1e-10)
     z = did / se
-    pval = float(2 * (1 - stats.norm.cdf(abs(z))))
+    pval = float(2 * (stats.norm.sf(abs(z))))
 
     # Cell means
     pre_t = data.loc[(data["_post"] == 0) & (data["_treat"] == 1), outcome].mean()

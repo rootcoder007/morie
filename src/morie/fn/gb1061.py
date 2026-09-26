@@ -72,11 +72,11 @@ def jtstat(samples, alternative="greater"):
     ) / 72.0
     z = (b - mean) / math.sqrt(var)
     if alternative == "greater":
-        pv = 1.0 - stats.norm.cdf(z)
+        pv = stats.norm.sf(z)
     elif alternative == "less":
         pv = stats.norm.cdf(z)
     elif alternative == "two-sided":
-        pv = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
+        pv = 2.0 * (stats.norm.sf(abs(z)))
     else:
         raise ValueError("alternative must be greater, less or two-sided.")
     return RichResult(

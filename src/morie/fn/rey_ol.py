@@ -101,7 +101,7 @@ def rey_ol(df, y: str = "y", x: list | str = "x", alpha: float = 0.05, cdf=None)
     se_thresh = se_all[:n_thresholds]
     se_beta = se_all[n_thresholds:]
     z_vals = beta_hat / np.where(se_beta > 0, se_beta, np.inf)
-    p_vals = 2.0 * (1.0 - norm.cdf(np.abs(z_vals)))
+    p_vals = 2.0 * (norm.sf(np.abs(z_vals)))
 
     loglik = -result.fun
     n_params_total = n_thresholds + p

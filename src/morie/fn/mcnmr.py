@@ -40,7 +40,7 @@ def mcnemar_test(before: np.ndarray, after: np.ndarray, cdf=None, *, correction:
     else:
         chi2 = (b - c) ** 2 / (b + c)
 
-    p = float(1 - sp_stats.chi2.cdf(chi2, 1))
+    p = float(sp_stats.chi2.sf(chi2, 1))
 
     return TestResult(
         test_name="McNemar",

@@ -60,7 +60,7 @@ def pageasymp(ell, k, n, correct=True):
     return RichResult(
         payload={
             "z": float(z),
-            "p_value": float(1.0 - stats.norm.cdf(z)),
+            "p_value": float(stats.norm.sf(z)),
             "mean": float(mean),
             "var": float(var),
             "statistic": ell,

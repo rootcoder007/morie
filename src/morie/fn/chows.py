@@ -42,7 +42,7 @@ def chow_test(y: np.ndarray, X: np.ndarray, break_point: int, cdf=None) -> Descr
     if df2 < 1 or (rss1 + rss2) <= 0:
         raise ValueError("Insufficient degrees of freedom.")
     f_stat = ((rss_full - rss1 - rss2) / df1) / ((rss1 + rss2) / df2)
-    p_val = 1 - stats.f.cdf(f_stat, df1, df2)
+    p_val = stats.f.sf(f_stat, df1, df2)
     return DescriptiveResult(
         name="chow_test",
         value=float(f_stat),

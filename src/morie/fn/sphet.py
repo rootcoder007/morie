@@ -37,7 +37,7 @@ def spatial_heterogeneity(residuals: np.ndarray, W: np.ndarray, cdf=None) -> Tes
     sst = np.sum((e2 - e2.mean()) ** 2)
     r2 = 1 - ssr / sst if sst > 0 else 0.0
     stat = float(n * r2)
-    pval = float(1 - sp_stats.chi2.cdf(stat, df=1))
+    pval = float(sp_stats.chi2.sf(stat, df=1))
     return TestResult(
         test_name="spatial_heterogeneity",
         statistic=stat,

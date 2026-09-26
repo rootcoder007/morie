@@ -138,8 +138,8 @@ def rey_zp(df, y: str = "y", x: list | str = "x", max_iter: int = 200, tol: floa
     names = ["intercept"] + list(x)
     z_d = delta_hat / np.where(se_delta > 0, se_delta, np.inf)
     z_g = gamma_hat / np.where(se_gamma > 0, se_gamma, np.inf)
-    pv_d = 2.0 * (1.0 - norm.cdf(np.abs(z_d)))
-    pv_g = 2.0 * (1.0 - norm.cdf(np.abs(z_g)))
+    pv_d = 2.0 * (norm.sf(np.abs(z_d)))
+    pv_g = 2.0 * (norm.sf(np.abs(z_g)))
 
     aic = 2.0 * (2 * p) - 2.0 * prev_ll
 

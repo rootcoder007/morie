@@ -83,7 +83,7 @@ def ordered_categories(x, row_scores=None, col_scores=None):
         )
     rho = float(np.corrcoef(U, V)[0, 1])
     M2 = (n_total - 1.0) * rho**2
-    p = float(1.0 - stats.chi2.cdf(M2, 1))
+    p = float(stats.chi2.sf(M2, 1))
     return RichResult(
         payload={
             "statistic": float(M2),

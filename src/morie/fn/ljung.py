@@ -32,7 +32,7 @@ def ljung_box(x, cdf=None, *, n_lags: int = 10) -> TestResult:
         return TestResult(test_name="Ljung-Box", statistic=0.0, p_value=1.0, df=float(n_lags), n=n)
     acf_vals = np.array([np.sum(x_c[: n - k] * x_c[k:]) / (n * var) for k in range(1, n_lags + 1)])
     Q = float(n * (n + 2) * np.sum(acf_vals**2 / np.arange(n - 1, n - n_lags - 1, -1)))
-    p_val = float(1 - _st.chi2.cdf(Q, n_lags))
+    p_val = float(_st.chi2.sf(Q, n_lags))
     return TestResult(
         test_name="Ljung-Box",
         statistic=Q,

@@ -48,7 +48,7 @@ def variance_changepoint(y: np.ndarray, alpha: float = 0.05, cdf=None) -> Descri
         if lr > best_stat:
             best_stat = lr
             best_tau = tau
-    p_value = float(1.0 - _st.chi2.cdf(best_stat, df=1))
+    p_value = float(_st.chi2.sf(best_stat, df=1))
     significant = p_value < alpha
     var1 = float(np.var(y[:best_tau], ddof=1))
     var2 = float(np.var(y[best_tau:], ddof=1))

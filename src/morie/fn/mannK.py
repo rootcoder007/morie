@@ -76,7 +76,7 @@ def mann_kendall(x, continuity=True):
         z = sg * (abs(s) - 1.0) / math.sqrt(vars_)
     else:
         z = s / math.sqrt(vars_)
-    p = 2.0 * min(0.5, 1.0 - stats.norm.cdf(abs(z)))
+    p = 2.0 * min(0.5, stats.norm.sf(abs(z)))
     return RichResult(
         payload={
             "statistic": float(z),

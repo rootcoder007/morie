@@ -88,7 +88,7 @@ def logrank_test(time, event, group):
                 v += d * f * (1.0 - f) * (r - d) / (r - 1.0)
         i = j + 1
     chi2 = (o1 - e1) ** 2 / v if v > 0 else float("nan")
-    p = 1.0 - stats.chi2.cdf(chi2, 1) if v > 0 else float("nan")
+    p = stats.chi2.sf(chi2, 1) if v > 0 else float("nan")
     return RichResult(
         payload={
             "statistic": float(chi2),

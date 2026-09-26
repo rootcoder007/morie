@@ -43,8 +43,8 @@ def lm_test_spatial(residuals: np.ndarray, W: np.ndarray, cdf=None) -> SpatialRe
     T = np.trace(W @ W + W.T @ W)
     lm_lag = float(lm_lag_num / T) if T > 0 else 0.0
 
-    p_err = float(1.0 - chi2.cdf(lm_err, 1))
-    p_lag = float(1.0 - chi2.cdf(lm_lag, 1))
+    p_err = float(chi2.sf(lm_err, 1))
+    p_lag = float(chi2.sf(lm_lag, 1))
 
     return SpatialResult(
         name="lm_test_spatial",

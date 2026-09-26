@@ -54,7 +54,7 @@ def runsudvar(n, r=None, alpha=0.05):
         r = float(r)
         zl = (r + 0.5 - mean) / sd
         zr = (r - 0.5 - mean) / sd
-        pv = 2.0 * min(stats.norm.cdf(zl), 1.0 - stats.norm.cdf(zr))
+        pv = 2.0 * min(stats.norm.cdf(zl), stats.norm.sf(zr))
         pv = min(1.0, pv)
     return RichResult(
         payload={

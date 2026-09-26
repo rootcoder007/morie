@@ -36,7 +36,7 @@ def kendall_concordance(ratings, cdf=None) -> TestResult:
     w = 12.0 * ss / (k**2 * (n**3 - n))
     chi2_stat = k * (n - 1) * w
     df = n - 1
-    pval = 1.0 - chi2.cdf(chi2_stat, df)
+    pval = chi2.sf(chi2_stat, df)
 
     return TestResult(
         test_name="Kendall's W",

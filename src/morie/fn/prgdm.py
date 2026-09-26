@@ -56,7 +56,7 @@ def program_dml(
     sigma2 = float(np.sum(resid**2) / (len(y) - 1))
     se = float(np.sqrt(sigma2 / denom))
     z = theta / se if se > 0 else float("inf")
-    pval = float(2 * (1 - sp_stats.norm.cdf(abs(z))))
+    pval = float(2 * (sp_stats.norm.sf(abs(z))))
     return ESRes(
         measure="program_dml_ate",
         estimate=theta,

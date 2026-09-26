@@ -51,7 +51,7 @@ def dm_test(
             var_d += 2 * gamma_k
     var_d = max(var_d / n, 1e-15)
     dm_stat = d_bar / np.sqrt(var_d)
-    p_val = 2 * (1 - stats.norm.cdf(abs(dm_stat)))
+    p_val = 2 * (stats.norm.sf(abs(dm_stat)))
     return DescriptiveResult(
         name="dm_test",
         value=float(dm_stat),

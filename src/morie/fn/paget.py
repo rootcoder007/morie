@@ -43,7 +43,7 @@ def paget(data, axis=0, cdf=None):
 
     # Standardized statistic
     z_stat = (L - E_L) / np.sqrt(Var_L)
-    p_value = 1 - sp_stats.norm.cdf(z_stat)
+    p_value = sp_stats.norm.sf(z_stat)
 
     return {
         "statistic": float(L),

@@ -44,7 +44,7 @@ def bg_test(y: np.ndarray, X: np.ndarray, order: int = 1, cdf=None) -> Descripti
     ss_tot = float(np.sum(resid**2))
     r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0
     lm_stat = n * r2
-    p_val = 1 - stats.chi2.cdf(lm_stat, order)
+    p_val = stats.chi2.sf(lm_stat, order)
     return DescriptiveResult(
         name="bg_test",
         value=float(lm_stat),

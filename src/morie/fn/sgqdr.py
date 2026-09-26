@@ -42,7 +42,7 @@ def quadrat_count_test(points, window, nx=5, ny=5, cdf=None):
     expected = n / (nx * ny)
     chi2 = float(np.sum((counts - expected) ** 2 / expected)) if expected > 0 else 0.0
     df = nx * ny - 1
-    p_value = 1.0 - stats.chi2.cdf(chi2, df)
+    p_value = stats.chi2.sf(chi2, df)
 
     return DescriptiveResult(
         name="quadrat_count_test",

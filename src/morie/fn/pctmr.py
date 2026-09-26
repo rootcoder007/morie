@@ -65,7 +65,7 @@ def percentile_modified_rank(x, y, q: float = 0.25):
     sum_a2 = float((a**2).sum())
     Var_T = (m * n / float(N * (N - 1))) * sum_a2
     z = T / np.sqrt(Var_T) if Var_T > 0 else np.nan
-    p = 2.0 * (1.0 - stats.norm.cdf(abs(z))) if np.isfinite(z) else np.nan
+    p = 2.0 * (stats.norm.sf(abs(z))) if np.isfinite(z) else np.nan
     return RichResult(
         payload={
             "statistic": T,

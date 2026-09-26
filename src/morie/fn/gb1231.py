@@ -88,7 +88,7 @@ def pagel(data, weights=None):
         payload={
             "statistic": float(ell),
             "z": float(z),
-            "p_value": float(1.0 - stats.norm.cdf(z)),
+            "p_value": float(stats.norm.sf(z)),
             "rav": float(rav),
             "rank_sums": rsum,
             "k": int(k),

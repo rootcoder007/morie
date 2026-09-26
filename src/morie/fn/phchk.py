@@ -155,10 +155,10 @@ def phchk(
         # Test statistic: rho^2 * (n-2) / (1-rho^2) ~ chi2(1) approximately
         # Use: chi2 = rho^2 * d (approximate, Grambsch-Therneau)
         chi2[j] = rho[j] ** 2 * d
-        p_val[j] = float(1 - _stats.chi2.cdf(chi2[j], df=1))
+        p_val[j] = float(_stats.chi2.sf(chi2[j], df=1))
 
     global_chi2 = float(chi2.sum())
-    global_p = float(1 - _stats.chi2.cdf(global_chi2, df=p))
+    global_p = float(_stats.chi2.sf(global_chi2, df=p))
 
     return {
         "residuals": residuals,

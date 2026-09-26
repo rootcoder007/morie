@@ -29,7 +29,7 @@ def bptest(residuals: Union[Sequence, np.ndarray], X: Union[Sequence, np.ndarray
         test_name="Breusch-Pagan test for heteroscedasticity",
         statistic=lm,
         df=p,
-        pvalue=float(1 - chi2.cdf(lm, p)),
+        pvalue=float(chi2.sf(lm, p)),
         extra_summary=[
             ("R^2 of e^2 on X", r2),
             ("LM = n * R^2", lm),

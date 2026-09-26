@@ -55,7 +55,7 @@ def cochran_mantel(strata: list[np.ndarray], cdf=None) -> DescriptiveResult:
         or_numer += a * d / n_k
         or_denom += b * c / n_k
     chi2 = numer**2 / denom if denom > 0 else 0.0
-    p_value = float(1.0 - _st.chi2.cdf(chi2, df=1))
+    p_value = float(_st.chi2.sf(chi2, df=1))
     common_or = or_numer / or_denom if or_denom > 0 else float("inf")
     return DescriptiveResult(
         name="cochran_mantel_haenszel",

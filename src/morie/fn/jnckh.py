@@ -39,7 +39,7 @@ def jonckheere_terpstra(*groups: np.ndarray) -> TestResult:
     E_J = (N**2 - sum(ni**2 for ni in ns)) / 4.0
     Var_J = (N**2 * (2 * N + 3) - sum(ni**2 * (2 * ni + 3) for ni in ns)) / 72.0
     z = (J - E_J) / (np.sqrt(Var_J) + 1e-12)
-    pval = float(1.0 - stats.norm.cdf(z))
+    pval = float(stats.norm.sf(z))
 
     return TestResult(
         test_name="Jonckheere-Terpstra",

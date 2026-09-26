@@ -62,7 +62,7 @@ def wsr(x, m0=0.0):
     mean = n * (n + 1.0) / 4.0
     var = n * (n + 1.0) * (2.0 * n + 1.0) / 24.0 - corr / 48.0
     z = (tplus - mean) / math.sqrt(var) if var > 0.0 else float("nan")
-    pv = 2.0 * (1.0 - stats.norm.cdf(abs(z))) if var > 0.0 else float("nan")
+    pv = 2.0 * (stats.norm.sf(abs(z))) if var > 0.0 else float("nan")
     return RichResult(
         payload={
             "statistic": float(tplus),

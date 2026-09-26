@@ -65,7 +65,7 @@ def dif_raju_area(
         unsigned = float(_trapz(np.abs(diff), dx=dt))
         se = max(unsigned * 0.2, 0.01)
         z = abs(signed) / se
-        p_val = 2 * (1 - sp.norm.cdf(z))
+        p_val = 2 * (sp.norm.sf(z))
         rows.append(
             {
                 "item": item_names[j],

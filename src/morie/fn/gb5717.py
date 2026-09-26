@@ -62,7 +62,7 @@ def wsrsym(x, centre=0.0):
         payload={
             "statistic": float(tplus),
             "z": float(z),
-            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "p_value": float(2.0 * (stats.norm.sf(abs(z)))),
             "mean": float(mean),
             "var": float(var),
             "skewdir": 1 if tplus > mean else (-1 if tplus < mean else 0),

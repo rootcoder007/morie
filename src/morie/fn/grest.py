@@ -65,7 +65,7 @@ def grest(time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None) -> d
         )
 
     stat = num**2 / den
-    pval = 1 - chi2.cdf(stat, df=1)
+    pval = chi2.sf(stat, df=1)
 
     return {
         "statistic": float(stat),

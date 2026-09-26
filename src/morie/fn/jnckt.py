@@ -39,7 +39,7 @@ def jnckt(*samples, axis=0):
 
     # Standardized statistic
     z_stat = (J - E_J) / np.sqrt(Var_J)
-    p_value = 1 - sp_stats.norm.cdf(z_stat)
+    p_value = sp_stats.norm.sf(z_stat)
 
     return {
         "statistic": float(J),
