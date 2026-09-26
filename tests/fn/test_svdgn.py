@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svdgn -- Deegan-Packel power index"""
+"""svdgn is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svdgn import deegan_packel
 
 
-class TestDeeganPackel:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = deegan_packel(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = deegan_packel(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svdgn_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        deegan_packel(data=None)

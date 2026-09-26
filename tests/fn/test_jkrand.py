@@ -1,20 +1,10 @@
-"""Tests for jkrand.jackknife_repl."""
+"""jkrand is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.jkrand import jackknife_repl
 
 
-def test_jkrand_basic():
-    """Test basic functionality."""
-    theta_replicates = np.random.default_rng(42).normal(0, 1, 100)
-    result = jackknife_repl(theta_replicates)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_jkrand_edge():
-    """Test edge cases."""
-    theta_replicates = np.random.default_rng(42).normal(0, 1, 100)
-    result = jackknife_repl(theta_replicates)
-    assert isinstance(result, dict)
+def test_jkrand_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        jackknife_repl(theta_replicates=None)

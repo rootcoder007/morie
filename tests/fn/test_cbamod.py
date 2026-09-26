@@ -1,20 +1,10 @@
-"""Tests for cbamod.cbam_attention."""
+"""cbamod is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.cbamod import cbam_attention
 
 
-def test_cbamod_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cbam_attention(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_cbamod_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cbam_attention(x)
-    assert isinstance(result, dict)
+def test_cbamod_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        cbam_attention(x=None)

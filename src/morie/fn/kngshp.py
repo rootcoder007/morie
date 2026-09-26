@@ -1,14 +1,13 @@
 """Kinship from genotypes (KING-robust)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["kinship_estimator"]
 
 
 def kinship_estimator(genotypes):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Kinship from genotypes (KING-robust)
 
     Formula: per-pair kinship via shared alleles
@@ -27,11 +26,10 @@ def kinship_estimator(genotypes):
     ----------
     Manichaikul et al (2010) KING
     """
-    genotypes = np.atleast_1d(np.asarray(genotypes, dtype=float))
-    n = len(genotypes)
-    result = float(np.mean(genotypes))
-    se = float(np.std(genotypes, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Kinship from genotypes (KING-robust)"})
+    raise NotImplementedError(
+        "morie.fn.kngshp.kinship_estimator is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

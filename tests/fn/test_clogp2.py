@@ -1,20 +1,10 @@
-"""Tests for clogp2.clogp_estimate."""
+"""clogp2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.clogp2 import clogp_estimate
 
 
-def test_clogp2_basic():
-    """Test basic functionality."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    result = clogp_estimate(smiles)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_clogp2_edge():
-    """Test edge cases."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    result = clogp_estimate(smiles)
-    assert isinstance(result, dict)
+def test_clogp2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        clogp_estimate(smiles=None)

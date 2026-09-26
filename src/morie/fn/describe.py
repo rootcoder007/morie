@@ -74,6 +74,7 @@ def _read_fn_source(name: str) -> str | None:
             return None
     return None
 
+
 # The 9 standard section headers we expect in describe_<name>.md files.
 # Order matters -- this is the order they're rendered.
 _STANDARD_SECTIONS = [
@@ -144,8 +145,38 @@ def describe(name: str):
     md_text = _load_describe_md(entry.short)
     if md_text is not None:
         md_name = Path(f"{_DESCRIBE_PREFIX}{entry.short}.md")
-        return _render_from_md(md_text, entry, md_name)
-    return _render_skeleton(entry)
+        result = _render_from_md(md_text, entry, md_name)
+    else:
+        result = _render_skeleton(entry)
+    if _is_not_implemented(name):
+        result.title = f"[NOT IMPLEMENTED] {result.title}"
+        result.warnings = [
+            f"NOT IMPLEMENTED: {name} raises NotImplementedError. Its former body "
+            "returned a placeholder, so the guide below describes the intended "
+            "method, not working code."
+        ] + list(result.warnings or [])
+        result.payload["implemented"] = False
+    return result
+
+
+@functools.lru_cache(maxsize=1)
+def _not_implemented_modules() -> frozenset:
+    try:
+        return frozenset(json.loads((_FN_DIR / "_not_implemented.json").read_text()))
+    except (OSError, ValueError):
+        return frozenset()
+
+
+def _is_not_implemented(name: str) -> bool:
+    """True when `name` (a callable or its module) is a registered placeholder."""
+    stubs = _not_implemented_modules()
+    if name in stubs:
+        return True
+    try:
+        module = json.loads((_FN_DIR / "_lazy_map.json").read_text()).get(name)
+    except (OSError, ValueError):
+        return False
+    return module in stubs
 
 
 @functools.lru_cache(maxsize=1)

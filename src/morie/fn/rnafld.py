@@ -1,14 +1,13 @@
 """RNA secondary structure (Zuker)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["rna_fold"]
 
 
 def rna_fold(sequence):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     RNA secondary structure (Zuker)
 
     Formula: DP minimizing free energy
@@ -27,11 +26,10 @@ def rna_fold(sequence):
     ----------
     Zuker (1989); Lorenz et al (2011) ViennaRNA
     """
-    sequence = np.atleast_1d(np.asarray(sequence, dtype=float))
-    n = len(sequence)
-    result = float(np.mean(sequence))
-    se = float(np.std(sequence, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "RNA secondary structure (Zuker)"})
+    raise NotImplementedError(
+        "morie.fn.rnafld.rna_fold is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

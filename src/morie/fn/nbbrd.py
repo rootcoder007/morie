@@ -5,27 +5,22 @@ Bird diversity noise
 Category: NoisBrd
 """
 
-from . import _array_core as np
-
 
 def nbbrd(data=None, coords=None, n=50):
-    """Bird diversity noise
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Bird diversity noise
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if data is None:
-        data = np.random.default_rng(0).uniform(30, 90, n)
-    if coords is None:
-        coords = np.random.default_rng(1).uniform(0, 100, (n, 2))
-    stat = float(np.mean(data))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(data), "mean_db": float(np.mean(data)), "max_db": float(np.max(data))},
+    raise NotImplementedError(
+        "morie.fn.nbbrd.nbbrd is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

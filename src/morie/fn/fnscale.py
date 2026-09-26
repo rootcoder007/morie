@@ -1,14 +1,13 @@
 """Functional scale (L²-norm)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["functional_scale"]
 
 
 def functional_scale(f):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Functional scale (L²-norm)
 
     Formula: ||f|| = √∫f(t)² dt
@@ -27,11 +26,10 @@ def functional_scale(f):
     ----------
     Ramsay-Silverman (2005)
     """
-    f = np.atleast_1d(np.asarray(f, dtype=float))
-    n = len(f)
-    result = float(np.mean(f))
-    se = float(np.std(f, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Functional scale (L²-norm)"})
+    raise NotImplementedError(
+        "morie.fn.fnscale.functional_scale is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

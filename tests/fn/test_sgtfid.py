@@ -1,20 +1,10 @@
-"""Tests for sgtfid.sgt_fiedler_value."""
+"""sgtfid is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sgtfid import sgt_fiedler_value
 
 
-def test_sgtfid_basic():
-    """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = sgt_fiedler_value(A)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_sgtfid_edge():
-    """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = sgt_fiedler_value(A)
-    assert isinstance(result, dict)
+def test_sgtfid_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sgt_fiedler_value(A=None)

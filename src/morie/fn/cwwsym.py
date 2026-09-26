@@ -1,14 +1,13 @@
 """Continuous wavelet transform (Morlet)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["cwt_morlet"]
 
 
 def cwt_morlet(y, scales):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Continuous wavelet transform (Morlet)
 
     Formula: CWT(a,b) = (1/sqrt(a)) integral y(t) psi^*((t-b)/a) dt
@@ -29,11 +28,10 @@ def cwt_morlet(y, scales):
     ----------
     Torrence-Compo (1998)
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Continuous wavelet transform (Morlet)"})
+    raise NotImplementedError(
+        "morie.fn.cwwsym.cwt_morlet is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

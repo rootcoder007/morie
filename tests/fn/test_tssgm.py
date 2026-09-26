@@ -1,21 +1,10 @@
-"""Test tssgm."""
+"""tssgm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.tssgm import tssgm
 
 
-def test_tssgm_basic():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((20, 5))
-    coords = rng.uniform(0, 100, (20, 2))
-    r = tssgm(data=data, coords=coords, n=20, t=5)
-    assert r.value is not None
-
-
-def test_tssgm_description():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((20, 5))
-    coords = rng.uniform(0, 100, (20, 2))
-    r = tssgm(data=data, coords=coords, n=20, t=5)
-    assert r.name
+def test_tssgm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        tssgm()

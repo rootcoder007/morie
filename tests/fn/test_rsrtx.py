@@ -1,19 +1,10 @@
-"""Test rsrtx."""
+"""rsrtx is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.rsrtx import rsrtx
 
 
-def test_rsrtx_basic():
-    rng = np.random.default_rng(42)
-    pixels = rng.uniform(0, 10000, (40, 4))
-    r = rsrtx(pixels=pixels, n=40)
-    assert r.value is not None
-
-
-def test_rsrtx_description():
-    rng = np.random.default_rng(42)
-    pixels = rng.uniform(0, 10000, (40, 4))
-    r = rsrtx(pixels=pixels, n=40)
-    assert r.name
+def test_rsrtx_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        rsrtx()

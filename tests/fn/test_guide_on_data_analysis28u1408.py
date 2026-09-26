@@ -1,20 +1,10 @@
-"""Tests for guide_on_data_analysis28u1408.guide_on_data_analysis_chapter_28_unnumbered_1408."""
+"""guide_on_data_analysis28u1408 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.guide_on_data_analysis28u1408 import guide_on_data_analysis_chapter_28_unnumbered_1408
 
 
-def test_guide_on_data_analysis28u1408_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = guide_on_data_analysis_chapter_28_unnumbered_1408(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
-
-
-def test_guide_on_data_analysis28u1408_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = guide_on_data_analysis_chapter_28_unnumbered_1408(x)
-    assert isinstance(result, dict)
+def test_guide_on_data_analysis28u1408_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        guide_on_data_analysis_chapter_28_unnumbered_1408(x=None)

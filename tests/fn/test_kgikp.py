@@ -1,16 +1,10 @@
-"""Tests for morie.fn.kgikp -- Indicator kriging probability"""
+"""kgikp is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.kgikp import ik_probability
 
 
-class TestIkProbability:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = ik_probability(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = ik_probability(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_kgikp_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ik_probability(data=None)

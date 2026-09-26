@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zsrbf -- Multiquadric RBF interpolation"""
+"""zsrbf is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zsrbf import rbf_multiquad
 
 
-class TestRbfMultiquad:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = rbf_multiquad(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = rbf_multiquad(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zsrbf_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        rbf_multiquad(data=None)

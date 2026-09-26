@@ -1,19 +1,10 @@
-"""Test rsatm."""
+"""rsatm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.rsatm import rsatm
 
 
-def test_rsatm_basic():
-    rng = np.random.default_rng(42)
-    pixels = rng.uniform(0, 10000, (40, 4))
-    r = rsatm(pixels=pixels, n=40)
-    assert r.value is not None
-
-
-def test_rsatm_description():
-    rng = np.random.default_rng(42)
-    pixels = rng.uniform(0, 10000, (40, 4))
-    r = rsatm(pixels=pixels, n=40)
-    assert r.name
+def test_rsatm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        rsatm()

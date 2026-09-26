@@ -1,22 +1,12 @@
-"""Tests for blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit10u324.blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_324."""
+"""blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit10u324 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit10u324 import (
     blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_324,
 )
 
 
-def test_blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit10u324_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_324(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
-
-
-def test_blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit10u324_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_324(x)
-    assert isinstance(result, dict)
+def test_blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit10u324_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_324(x=None)

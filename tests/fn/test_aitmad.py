@@ -1,20 +1,10 @@
-"""Tests for aitmad.compositional_mad."""
+"""aitmad is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.aitmad import compositional_mad
 
 
-def test_aitmad_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = compositional_mad(X)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_aitmad_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = compositional_mad(X)
-    assert isinstance(result, dict)
+def test_aitmad_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        compositional_mad(X=None)

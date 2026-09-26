@@ -1,12 +1,13 @@
 """Spatial Tobit model."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def sprtobt(y, X, W):
-    """Spatial Tobit model.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Spatial Tobit model.
 
     Category: SProbit
 
@@ -18,14 +19,10 @@ def sprtobt(y, X, W):
     -------
     SpatialResult
     """
-    try:
-        n = len(y)
-        result = float(np.dot(y, np.dot(W, y)) / (np.dot(y, y) + 1e-12))
-        return SpatialResult(name="sprtobt", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="sprtobt", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    raise NotImplementedError(
+        "morie.fn.sprtobt.sprtobt is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 sprtobt_fn = sprtobt

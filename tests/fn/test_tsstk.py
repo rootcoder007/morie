@@ -1,23 +1,10 @@
-"""Test tsstk."""
+"""tsstk is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.tsstk import tsstk
 
 
-def test_tsstk_basic():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((20, 5))
-    coords = rng.uniform(0, 100, (20, 2))
-    r = tsstk(data=data, coords=coords, n=20, t=5)
-    assert isinstance(r.value, float)
-    assert np.isfinite(r.value), "Space-time K statistic must be finite"
-    assert abs(r.value) < 3.0, f"Mean of standard normal data {r.value} implausibly far from 0"
-
-
-def test_tsstk_description():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((20, 5))
-    coords = rng.uniform(0, 100, (20, 2))
-    r = tsstk(data=data, coords=coords, n=20, t=5)
-    assert r.name
+def test_tsstk_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        tsstk()

@@ -1,17 +1,10 @@
-"""Tests for morie.fn.msst2 -- Normalized stress"""
+"""msst2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.msst2 import stress_norm
 
 
-class TestStressNorm:
-    def test_basic(self):
-        rng = np.random.default_rng(42)
-        X = rng.standard_normal((10, 3))
-        result = stress_norm(X)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = stress_norm(np.random.default_rng(0).standard_normal((5, 2)))
-        assert hasattr(result, "value")
+def test_msst2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        stress_norm(X=None)

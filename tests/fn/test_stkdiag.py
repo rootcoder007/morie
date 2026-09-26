@@ -1,34 +1,10 @@
-"""Tests for stkdiag."""
+"""stkdiag is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.stkdiag import stkdiag
 
 
-def test_stkdiag_basic():
-    result = stkdiag()
-    assert hasattr(result, "statistic")
-    assert isinstance(result.statistic, float)
-    assert result.name == "ST-Kriging-Diag"
-
-
-def test_stkdiag_with_data():
-    rng = np.random.default_rng(0)
-    data = rng.standard_normal(20)
-    coords = rng.uniform(0, 1, size=(20, 2))
-    result = stkdiag(data=data, coords=coords, n=20, seed=0)
-    assert result.statistic == pytest.approx(float(np.mean(data)))
-    assert result.extra["n_points"] == 20
-
-
-def test_stkdiag_no_data():
-    result = stkdiag(n=50, seed=7)
-    assert result.statistic is not None
-    assert result.extra["n_points"] == 50
-
-
-def test_stkdiag_alias():
-    from morie.fn.stkdiag import stkdiag
-
-    assert stkdiag is stkdiag
+def test_stkdiag_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        stkdiag()

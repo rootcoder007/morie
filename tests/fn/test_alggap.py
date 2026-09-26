@@ -1,20 +1,10 @@
-"""Tests for alggap.algebraic_connectivity."""
+"""alggap is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.alggap import algebraic_connectivity
 
 
-def test_alggap_basic():
-    """Test basic functionality."""
-    G = np.eye(10)
-    result = algebraic_connectivity(G)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_alggap_edge():
-    """Test edge cases."""
-    G = np.eye(10)
-    result = algebraic_connectivity(G)
-    assert isinstance(result, dict)
+def test_alggap_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        algebraic_connectivity(G=None)

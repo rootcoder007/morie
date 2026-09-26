@@ -1,35 +1,10 @@
-"""Tests for morie.fn.sprtobt."""
+"""sprtobt is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sprtobt import sprtobt
 
 
-class TestSprtobt:
-    def test_basic(self):
-        np.random.seed(156)
-        n = 25
-        y = np.clip(np.random.randn(n), 0, None)
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.2
-        result = sprtobt(y, X, W)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        np.random.seed(156)
-        n = 25
-        y = np.clip(np.random.randn(n), 0, None)
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.2
-        result = sprtobt(y, X, W)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        np.random.seed(156)
-        n = 25
-        y = np.clip(np.random.randn(n), 0, None)
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.2
-        result = sprtobt(y, X, W)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_sprtobt_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sprtobt(y=None, X=None, W=None)

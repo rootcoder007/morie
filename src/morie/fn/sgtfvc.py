@@ -1,14 +1,13 @@
 """Fiedler vector -- eigenvector for λ_2."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["sgt_fiedler_vector"]
 
 
 def sgt_fiedler_vector(A):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Fiedler vector -- eigenvector for λ_2
 
     Formula: L v = λ_2 v
@@ -27,11 +26,10 @@ def sgt_fiedler_vector(A):
     ----------
     Fiedler (1973)
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fiedler vector -- eigenvector for λ_2"})
+    raise NotImplementedError(
+        "morie.fn.sgtfvc.sgt_fiedler_vector is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

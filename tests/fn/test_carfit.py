@@ -1,24 +1,10 @@
-"""Tests for morie.fn.carfit."""
+"""carfit is a placeholder: it must refuse to run, not return a number."""
+
+import pytest
 
 from morie.fn.carfit import carfit
 
 
-class TestCarfit:
-    def test_basic(self):
-        ll = -50.0
-        p_d = 5.0
-        result = carfit(ll, p_d)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        ll = -50.0
-        p_d = 5.0
-        result = carfit(ll, p_d)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        ll = -50.0
-        p_d = 5.0
-        result = carfit(ll, p_d)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_carfit_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        carfit(ll=None, p_d=None)

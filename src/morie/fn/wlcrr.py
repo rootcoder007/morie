@@ -4,27 +4,22 @@ Corridor identification
 Category: WildlSp
 """
 
-from . import _array_core as np
-
 
 def wlcrr(abundance=None, coords=None, n=50):
-    """Corridor identification
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Corridor identification
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if abundance is None:
-        abundance = np.random.default_rng(0).poisson(10, n)
-    if coords is None:
-        coords = np.random.default_rng(1).uniform(0, 100, (n, 2))
-    stat = float(np.mean(abundance))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(abundance), "total": int(np.sum(abundance)), "mean": float(np.mean(abundance))},
+    raise NotImplementedError(
+        "morie.fn.wlcrr.wlcrr is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

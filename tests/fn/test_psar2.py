@@ -1,20 +1,10 @@
-"""Tests for psar2.polar_surface_area."""
+"""psar2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.psar2 import polar_surface_area
 
 
-def test_psar2_basic():
-    """Test basic functionality."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    result = polar_surface_area(smiles)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_psar2_edge():
-    """Test edge cases."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    result = polar_surface_area(smiles)
-    assert isinstance(result, dict)
+def test_psar2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        polar_surface_area(smiles=None)

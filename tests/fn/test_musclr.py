@@ -1,20 +1,10 @@
-"""Tests for musclr.muscle_msa."""
+"""musclr is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.musclr import muscle_msa
 
 
-def test_musclr_basic():
-    """Test basic functionality."""
-    sequences = np.random.default_rng(42).normal(0, 1, 100)
-    result = muscle_msa(sequences)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_musclr_edge():
-    """Test edge cases."""
-    sequences = np.random.default_rng(42).normal(0, 1, 100)
-    result = muscle_msa(sequences)
-    assert isinstance(result, dict)
+def test_musclr_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        muscle_msa(sequences=None)

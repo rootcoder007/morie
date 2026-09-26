@@ -1,10 +1,13 @@
 """Spatial panel within-demeaning transform."""
 
-from ._containers import SpatialResult
-
 
 def sppde(y, unit_id):
-    """Spatial panel within-demeaning transform.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Spatial panel within-demeaning transform.
 
     Category: SPanel
 
@@ -16,11 +19,10 @@ def sppde(y, unit_id):
     -------
     SpatialResult
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="sppde", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="sppde", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.sppde.sppde is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 sppde_fn = sppde

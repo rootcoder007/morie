@@ -1,20 +1,10 @@
-"""Tests for sgtmodul.sgt_modularity_matrix."""
+"""sgtmodul is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sgtmodul import sgt_modularity_matrix
 
 
-def test_sgtmodul_basic():
-    """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = sgt_modularity_matrix(A)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_sgtmodul_edge():
-    """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = sgt_modularity_matrix(A)
-    assert isinstance(result, dict)
+def test_sgtmodul_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sgt_modularity_matrix(A=None)

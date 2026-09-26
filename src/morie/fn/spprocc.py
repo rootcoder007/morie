@@ -1,10 +1,13 @@
 """Spatial probit ROC-AUC."""
 
-from ._containers import SpatialResult
-
 
 def spprocc(y, probs):
-    """Spatial probit ROC-AUC.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Spatial probit ROC-AUC.
 
     Category: SProbit
 
@@ -16,13 +19,10 @@ def spprocc(y, probs):
     -------
     SpatialResult
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="spprocc", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="spprocc", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    raise NotImplementedError(
+        "morie.fn.spprocc.spprocc is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 spprocc_fn = spprocc

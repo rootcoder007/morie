@@ -1,16 +1,10 @@
-"""Tests for morie.fn.nmala -- Alpha-NOMINATE acceptance rate"""
+"""nmala is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.nmala import alpha_nom_accept
 
 
-class TestAlphaNomAccept:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = alpha_nom_accept(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = alpha_nom_accept(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_nmala_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        alpha_nom_accept(data=None)

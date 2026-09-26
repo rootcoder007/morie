@@ -1,14 +1,13 @@
 """Lipinski Rule of 5 oral-bioavailability filter."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["lipinski_rule_of_5"]
 
 
 def lipinski_rule_of_5(smiles):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Lipinski Rule of 5 oral-bioavailability filter
 
     Formula: MW≤500, LogP≤5, HBA≤10, HBD≤5; pass if ≥3 met
@@ -27,12 +26,9 @@ def lipinski_rule_of_5(smiles):
     ----------
     Lipinski et al (1997, 2001)
     """
-    smiles = np.atleast_1d(np.asarray(smiles, dtype=float))
-    n = len(smiles)
-    result = float(np.mean(smiles))
-    se = float(np.std(smiles, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Lipinski Rule of 5 oral-bioavailability filter"}
+    raise NotImplementedError(
+        "morie.fn.lip5.lipinski_rule_of_5 is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

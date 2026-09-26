@@ -4,33 +4,22 @@ Capacitated VRP spatial
 Category: TransSp
 """
 
-from . import _array_core as np
-
 
 def trcpv(flow_volume=None, travel_time=None, coords=None, n=50):
-    """Capacitated VRP spatial
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Capacitated VRP spatial
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if flow_volume is None:
-        flow_volume = np.random.default_rng(0).poisson(500, n)
-    if travel_time is None:
-        travel_time = np.random.default_rng(1).uniform(5, 60, n)
-    if coords is None:
-        coords = np.random.default_rng(2).uniform(0, 100, (n, 2))
-    stat = float(np.mean(flow_volume))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={
-            "n": len(flow_volume),
-            "total_flow": int(np.sum(flow_volume)),
-            "mean_travel_time": float(np.mean(travel_time)),
-        },
+    raise NotImplementedError(
+        "morie.fn.trcpv.trcpv is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

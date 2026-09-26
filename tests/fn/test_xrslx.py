@@ -1,16 +1,10 @@
-"""Tests for morie.fn.xrslx -- SLX model OLS estimation"""
+"""xrslx is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.xrslx import slx_ols
 
 
-class TestSlxOls:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = slx_ols(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = slx_ols(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_xrslx_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        slx_ols(data=None)

@@ -1,14 +1,13 @@
 """Legendre polynomial basis."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["legendre_basis"]
 
 
 def legendre_basis(x, K):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Legendre polynomial basis
 
     Formula: recurrence relation
@@ -29,11 +28,10 @@ def legendre_basis(x, K):
     ----------
     Legendre (1782)
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Legendre polynomial basis"})
+    raise NotImplementedError(
+        "morie.fn.legpb.legendre_basis is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

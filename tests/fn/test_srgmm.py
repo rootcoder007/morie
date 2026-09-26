@@ -1,21 +1,10 @@
-"""Test srgmm."""
+"""srgmm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.srgmm import srgmm
 
 
-def test_srgmm_basic():
-    rng = np.random.default_rng(42)
-    X = rng.standard_normal((30, 3))
-    y = X @ np.array([1, -0.5, 0.3]) + rng.standard_normal(30) * 0.5
-    r = srgmm(X=X, y=y, n=30, k=3)
-    assert r.value is not None
-
-
-def test_srgmm_description():
-    rng = np.random.default_rng(42)
-    X = rng.standard_normal((30, 3))
-    y = X @ np.array([1, -0.5, 0.3]) + rng.standard_normal(30) * 0.5
-    r = srgmm(X=X, y=y, n=30, k=3)
-    assert r.name
+def test_srgmm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        srgmm()

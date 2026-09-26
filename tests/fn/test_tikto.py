@@ -1,20 +1,10 @@
-"""Tests for tikto.tiktoken_bpe."""
+"""tikto is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.tikto import tiktoken_bpe
 
 
-def test_tikto_basic():
-    """Test basic functionality."""
-    corpus = np.random.default_rng(42).normal(0, 1, 100)
-    result = tiktoken_bpe(corpus)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_tikto_edge():
-    """Test edge cases."""
-    corpus = np.random.default_rng(42).normal(0, 1, 100)
-    result = tiktoken_bpe(corpus)
-    assert isinstance(result, dict)
+def test_tikto_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        tiktoken_bpe(corpus=None)

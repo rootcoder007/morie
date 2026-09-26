@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zemir -- Migration flow model"""
+"""zemir is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zemir import migration_flow
 
 
-class TestMigrationFlow:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = migration_flow(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = migration_flow(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zemir_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        migration_flow(data=None)

@@ -1,19 +1,10 @@
-"""Test clspc."""
+"""clspc is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.clspc import clspc
 
 
-def test_clspc_basic():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((30, 2))
-    r = clspc(data=data, n=30, k=3)
-    assert r.value is not None
-
-
-def test_clspc_description():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((30, 2))
-    r = clspc(data=data, n=30, k=3)
-    assert r.name
+def test_clspc_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        clspc()

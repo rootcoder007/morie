@@ -1,11 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SAR sigma-squared ML estimate."""
 
-from ._containers import SpatialResult
-
 
 def sarsig(resid, n):
-    """SAR sigma-squared ML estimate.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    SAR sigma-squared ML estimate.
 
     Category: SAR
 
@@ -17,11 +20,10 @@ def sarsig(resid, n):
     -------
     SpatialResult
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="sarsig", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="sarsig", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.sarsig.sarsig is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 sarsig_fn = sarsig

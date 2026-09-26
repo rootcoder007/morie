@@ -5,33 +5,22 @@ Resilience spatial network
 Category: MovTyp
 """
 
-from . import _array_core as np
-
 
 def mtres(trajectory=None, n=50, dt=1.0):
-    """Resilience spatial network
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Resilience spatial network
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if trajectory is None:
-        steps = np.random.default_rng(0).standard_normal((n, 2))
-        trajectory = np.cumsum(steps, axis=0)
-    diffs = np.diff(trajectory, axis=0)
-    step_lens = np.sqrt(np.sum(diffs**2, axis=1))
-    stat = float(np.mean(step_lens))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={
-            "n_steps": len(trajectory) - 1,
-            "total_distance": float(np.sum(step_lens)),
-            "mean_step": float(np.mean(step_lens)),
-            "max_step": float(np.max(step_lens)),
-        },
+    raise NotImplementedError(
+        "morie.fn.mtres.mtres is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

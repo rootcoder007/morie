@@ -1,29 +1,10 @@
-"""Tests for morie.fn.igravpt."""
+"""igravpt is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.igravpt import igravpt
 
 
-class TestIgravpt:
-    def test_basic(self):
-        np.random.seed(180)
-        mass = np.random.rand(10) * 1e6
-        dist = np.random.rand(10) * 1000 + 10
-        result = igravpt(mass, dist)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        np.random.seed(180)
-        mass = np.random.rand(10) * 1e6
-        dist = np.random.rand(10) * 1000 + 10
-        result = igravpt(mass, dist)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        np.random.seed(180)
-        mass = np.random.rand(10) * 1e6
-        dist = np.random.rand(10) * 1000 + 10
-        result = igravpt(mass, dist)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_igravpt_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        igravpt(mass=None, dist=None)

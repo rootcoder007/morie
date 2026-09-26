@@ -1,27 +1,10 @@
-"""Tests for morie.fn.sembic."""
+"""sembic is a placeholder: it must refuse to run, not return a number."""
+
+import pytest
 
 from morie.fn.sembic import sembic
 
 
-class TestSembic:
-    def test_basic(self):
-        ll = -60.0
-        k = 4
-        n = 50
-        result = sembic(ll, k, n)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        ll = -60.0
-        k = 4
-        n = 50
-        result = sembic(ll, k, n)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        ll = -60.0
-        k = 4
-        n = 50
-        result = sembic(ll, k, n)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_sembic_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sembic(ll=None, k=None, n=None)

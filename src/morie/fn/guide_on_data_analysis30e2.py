@@ -1,14 +1,13 @@
 """CentralTendency equation extracted from guide on data analysis.."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["guide_on_data_analysis_chapter_30_equation_2"]
 
 
 def guide_on_data_analysis_chapter_30_equation_2(x):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     CentralTendency equation extracted from guide on data analysis.
 
     Formula: gp = gpar(fontsize = major.axes.fontsize)
@@ -30,23 +29,9 @@ def guide_on_data_analysis_chapter_30_equation_2(x):
     ----------
     guide on data analysis, ch.30 eq.30.2
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="CentralTendency equation extracted from guide on data analysis.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency equation extracted from guide on data analysis.",
-        },
+    raise NotImplementedError(
+        "morie.fn.guide_on_data_analysis30e2.guide_on_data_analysis_chapter_30_equation_2 is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

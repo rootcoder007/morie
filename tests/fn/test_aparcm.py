@@ -1,22 +1,10 @@
-"""Tests for aparcm.aparch_dge."""
+"""aparcm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.aparcm import aparch_dge
 
 
-def test_aparcm_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    result = aparch_dge(x, delta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_aparcm_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    result = aparch_dge(x, delta)
-    assert isinstance(result, dict)
+def test_aparcm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        aparch_dge(x=None, delta=None)

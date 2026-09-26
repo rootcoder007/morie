@@ -1,14 +1,13 @@
 """Separation of variables PDE."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["pde_separation"]
 
 
 def pde_separation(pde):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Separation of variables PDE
 
     Formula: u(x,t) = X(x)T(t)
@@ -27,11 +26,10 @@ def pde_separation(pde):
     ----------
     classical
     """
-    pde = np.atleast_1d(np.asarray(pde, dtype=float))
-    n = len(pde)
-    result = float(np.mean(pde))
-    se = float(np.std(pde, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Separation of variables PDE"})
+    raise NotImplementedError(
+        "morie.fn.pdesl.pde_separation is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

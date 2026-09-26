@@ -1,23 +1,10 @@
-"""Test gdlit."""
+"""gdlit is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.gdlit import gdlit
 
 
-def test_gdlit_basic():
-    rng = np.random.default_rng(42)
-    pop = rng.poisson(10000, 20)
-    births = rng.poisson(100, 20)
-    deaths = rng.poisson(80, 20)
-    r = gdlit(population=pop, births=births, deaths=deaths, n=20)
-    assert r.value is not None
-
-
-def test_gdlit_description():
-    rng = np.random.default_rng(42)
-    pop = rng.poisson(10000, 20)
-    births = rng.poisson(100, 20)
-    deaths = rng.poisson(80, 20)
-    r = gdlit(population=pop, births=births, deaths=deaths, n=20)
-    assert r.name
+def test_gdlit_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gdlit()

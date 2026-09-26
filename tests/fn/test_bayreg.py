@@ -1,24 +1,10 @@
-"""Tests for bayreg.bayes_linear."""
+"""bayreg is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.bayreg import bayes_linear
 
 
-def test_bayreg_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    prior_var = np.random.default_rng(42).normal(0, 1, 100)
-    result = bayes_linear(y, X, prior_var)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_bayreg_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    prior_var = np.random.default_rng(42).normal(0, 1, 100)
-    result = bayes_linear(y, X, prior_var)
-    assert isinstance(result, dict)
+def test_bayreg_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        bayes_linear(y=None, X=None, prior_var=None)

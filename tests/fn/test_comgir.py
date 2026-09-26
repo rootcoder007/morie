@@ -1,20 +1,10 @@
-"""Tests for comgir.girvan_newman."""
+"""comgir is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.comgir import girvan_newman
 
 
-def test_comgir_basic():
-    """Test basic functionality."""
-    G = np.eye(10)
-    result = girvan_newman(G)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_comgir_edge():
-    """Test edge cases."""
-    G = np.eye(10)
-    result = girvan_newman(G)
-    assert isinstance(result, dict)
+def test_comgir_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        girvan_newman(G=None)

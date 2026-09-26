@@ -5,29 +5,22 @@ Total suspended solids
 Category: HydroSp
 """
 
-from . import _array_core as np
-
 
 def hytss(flow=None, precip=None, coords=None, n=50):
-    """Total suspended solids
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Total suspended solids
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if flow is None:
-        flow = np.abs(np.random.default_rng(0).standard_normal(n)) * 100
-    if precip is None:
-        precip = np.abs(np.random.default_rng(1).standard_normal(n)) * 50
-    if coords is None:
-        coords = np.random.default_rng(2).uniform(0, 100, (n, 2))
-    stat = float(np.mean(flow))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(flow), "mean_flow": float(np.mean(flow)), "mean_precip": float(np.mean(precip))},
+    raise NotImplementedError(
+        "morie.fn.hytss.hytss is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

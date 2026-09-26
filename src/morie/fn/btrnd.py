@@ -1,14 +1,13 @@
 """Deterministic seeded RNG factory for reproducible bootstrap."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["boot_rng_seeded"]
 
 
 def boot_rng_seeded(seed):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Deterministic seeded RNG factory for reproducible bootstrap
 
     Formula: rng = numpy.random.default_rng(seed)
@@ -27,17 +26,9 @@ def boot_rng_seeded(seed):
     ----------
     PCG64 (O'Neill 2014)
     """
-    seed = np.atleast_1d(np.asarray(seed, dtype=float))
-    n = len(seed)
-    result = float(np.mean(seed))
-    se = float(np.std(seed, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Deterministic seeded RNG factory for reproducible bootstrap",
-        }
+    raise NotImplementedError(
+        "morie.fn.btrnd.boot_rng_seeded is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

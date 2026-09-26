@@ -5,27 +5,22 @@ Bingham distribution
 Category: DistTheor
 """
 
-from . import _array_core as np
-
 
 def dtbng(x=None, n=100, params=None):
-    """Bingham distribution
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Bingham distribution
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if x is None:
-        x = np.random.default_rng(0).standard_normal(n)
-    if params is None:
-        params = {"loc": float(np.mean(x)), "scale": float(np.std(x))}
-    stat = float(np.mean(x))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(x), "mean": float(np.mean(x)), "std": float(np.std(x)), "params": params},
+    raise NotImplementedError(
+        "morie.fn.dtbng.dtbng is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

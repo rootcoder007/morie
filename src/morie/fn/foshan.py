@@ -5,35 +5,22 @@ Shannon diversity spatial
 Category: ForstSp
 """
 
-from . import _array_core as np
-
 
 def foshan(dbh=None, height=None, coords=None, n=50):
-    """Shannon diversity spatial
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Shannon diversity spatial
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if dbh is None:
-        dbh = np.random.default_rng(0).uniform(5, 80, n)
-    if height is None:
-        height = np.random.default_rng(1).uniform(3, 40, n)
-    if coords is None:
-        coords = np.random.default_rng(2).uniform(0, 100, (n, 2))
-    basal_area = np.pi * (dbh / 200) ** 2
-    stat = float(np.sum(basal_area))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={
-            "n": len(dbh),
-            "mean_dbh": float(np.mean(dbh)),
-            "mean_height": float(np.mean(height)),
-            "total_ba": float(np.sum(basal_area)),
-        },
+    raise NotImplementedError(
+        "morie.fn.foshan.foshan is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

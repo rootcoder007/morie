@@ -1,14 +1,13 @@
 """Inverse logit back to proportion."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["ma_logit_inverse"]
 
 
 def ma_logit_inverse(z):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Inverse logit back to proportion
 
     Formula: p = exp(z)/(1+exp(z))
@@ -27,11 +26,10 @@ def ma_logit_inverse(z):
     ----------
     Nyaga et al. (2014)
     """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Inverse logit back to proportion"})
+    raise NotImplementedError(
+        "morie.fn.matransi.ma_logit_inverse is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

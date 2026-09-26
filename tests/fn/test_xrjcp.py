@@ -1,16 +1,10 @@
-"""Tests for morie.fn.xrjcp -- Join count permutation test"""
+"""xrjcp is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.xrjcp import join_count_perm
 
 
-class TestJoinCountPerm:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = join_count_perm(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = join_count_perm(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_xrjcp_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        join_count_perm(data=None)

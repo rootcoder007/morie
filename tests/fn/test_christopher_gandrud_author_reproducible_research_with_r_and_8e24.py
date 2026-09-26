@@ -1,22 +1,12 @@
-"""The whole is greater than the sum of its parts. — Aristotle"""
+"""christopher_gandrud_author_reproducible_research_with_r_and_8e24 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_8e24 import (
     christopher_gandrud_author_reproducible_research_with_r_and__chapter_8_equation_24,
 )
 
 
-def test_christopher_gandrud_author_reproducible_research_with_r_and_8e24_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = christopher_gandrud_author_reproducible_research_with_r_and__chapter_8_equation_24(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
-
-
-def test_christopher_gandrud_author_reproducible_research_with_r_and_8e24_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = christopher_gandrud_author_reproducible_research_with_r_and__chapter_8_equation_24(x)
-    assert isinstance(result, dict)
+def test_christopher_gandrud_author_reproducible_research_with_r_and_8e24_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        christopher_gandrud_author_reproducible_research_with_r_and__chapter_8_equation_24(x=None)

@@ -1,14 +1,13 @@
 """SignalP signal peptide prediction."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["signal_peptide"]
 
 
 def signal_peptide(sequence):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     SignalP signal peptide prediction
 
     Formula: deep learning + cleavage site
@@ -27,11 +26,10 @@ def signal_peptide(sequence):
     ----------
     Almagro Armenteros et al (2019) SignalP-5
     """
-    sequence = np.atleast_1d(np.asarray(sequence, dtype=float))
-    n = len(sequence)
-    result = float(np.mean(sequence))
-    se = float(np.std(sequence, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SignalP signal peptide prediction"})
+    raise NotImplementedError(
+        "morie.fn.sigpep.signal_peptide is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

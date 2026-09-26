@@ -1,14 +1,13 @@
 """Mantel-Haenszel pooled OR."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["mantel_haenszel_or"]
 
 
 def mantel_haenszel_or(strata):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Mantel-Haenszel pooled OR
 
     Formula: OR_MH = sum(a_k d_k / n_k) / sum(b_k c_k / n_k)
@@ -27,11 +26,10 @@ def mantel_haenszel_or(strata):
     ----------
     Mantel-Haenszel (1959)
     """
-    strata = np.atleast_1d(np.asarray(strata, dtype=float))
-    n = len(strata)
-    result = float(np.mean(strata))
-    se = float(np.std(strata, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mantel-Haenszel pooled OR"})
+    raise NotImplementedError(
+        "morie.fn.mhst1.mantel_haenszel_or is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

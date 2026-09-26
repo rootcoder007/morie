@@ -1,14 +1,13 @@
 """Asymptotic expansion."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["asymptotic_expansion"]
 
 
 def asymptotic_expansion(f, x_inf):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Asymptotic expansion
 
     Formula: f ~ sum a_n φ_n as x->∞
@@ -29,11 +28,10 @@ def asymptotic_expansion(f, x_inf):
     ----------
     Erdélyi (1956)
     """
-    f = np.atleast_1d(np.asarray(f, dtype=float))
-    n = len(f)
-    result = float(np.mean(f))
-    se = float(np.std(f, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Asymptotic expansion"})
+    raise NotImplementedError(
+        "morie.fn.asymp.asymptotic_expansion is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

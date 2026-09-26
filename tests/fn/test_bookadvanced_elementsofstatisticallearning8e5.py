@@ -1,22 +1,12 @@
-"""Tests for bookadvanced_elementsofstatisticallearning8e5.bookadvanced_elementsofstatisticallearning_chapter_8_equation_5."""
+"""bookadvanced_elementsofstatisticallearning8e5 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.bookadvanced_elementsofstatisticallearning8e5 import (
     bookadvanced_elementsofstatisticallearning_chapter_8_equation_5,
 )
 
 
-def test_bookadvanced_elementsofstatisticallearning8e5_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bookadvanced_elementsofstatisticallearning_chapter_8_equation_5(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
-
-
-def test_bookadvanced_elementsofstatisticallearning8e5_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bookadvanced_elementsofstatisticallearning_chapter_8_equation_5(x)
-    assert isinstance(result, dict)
+def test_bookadvanced_elementsofstatisticallearning8e5_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        bookadvanced_elementsofstatisticallearning_chapter_8_equation_5(x=None)

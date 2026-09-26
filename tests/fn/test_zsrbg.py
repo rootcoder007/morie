@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zsrbg -- Gaussian RBF interpolation"""
+"""zsrbg is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zsrbg import rbf_gaussian
 
 
-class TestRbfGaussian:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = rbf_gaussian(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = rbf_gaussian(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zsrbg_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        rbf_gaussian(data=None)

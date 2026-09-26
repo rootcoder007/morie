@@ -1,14 +1,13 @@
 """Laplace transform."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["laplace_transform"]
 
 
 def laplace_transform(f, t, s):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Laplace transform
 
     Formula: L{f}(s) = ∫_0^∞ f(t) e^{-st} dt
@@ -31,11 +30,10 @@ def laplace_transform(f, t, s):
     ----------
     classical
     """
-    f = np.atleast_1d(np.asarray(f, dtype=float))
-    n = len(f)
-    result = float(np.mean(f))
-    se = float(np.std(f, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Laplace transform"})
+    raise NotImplementedError(
+        "morie.fn.laplT.laplace_transform is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

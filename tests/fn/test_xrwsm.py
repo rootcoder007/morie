@@ -1,16 +1,10 @@
-"""Tests for morie.fn.xrwsm -- Weights symmetrization"""
+"""xrwsm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.xrwsm import w_symmetrize
 
 
-class TestWSymmetrize:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = w_symmetrize(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = w_symmetrize(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_xrwsm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        w_symmetrize(data=None)

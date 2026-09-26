@@ -1,11 +1,14 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """CAR variance ratio (spatial vs unstructured)."""
 
-from ._containers import SpatialResult
-
 
 def carvr(var_sp, var_un):
-    """CAR variance ratio (spatial vs unstructured).
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    CAR variance ratio (spatial vs unstructured).
 
     Category: CAR
 
@@ -17,11 +20,10 @@ def carvr(var_sp, var_un):
     -------
     SpatialResult
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="carvr", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="carvr", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.carvr.carvr is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 carvr_fn = carvr

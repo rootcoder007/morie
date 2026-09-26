@@ -1,14 +1,13 @@
 """Clark-Evans aggregation index."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["clark_evans"]
 
 
 def clark_evans(coords):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Clark-Evans aggregation index
 
     Formula: R = mean(d_NN) / E[d_NN] under CSR
@@ -27,11 +26,10 @@ def clark_evans(coords):
     ----------
     Clark-Evans (1954)
     """
-    coords = np.atleast_1d(np.asarray(coords, dtype=float))
-    n = len(coords)
-    result = float(np.mean(coords))
-    se = float(np.std(coords, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Clark-Evans aggregation index"})
+    raise NotImplementedError(
+        "morie.fn.clstpp.clark_evans is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

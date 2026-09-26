@@ -1,16 +1,10 @@
-"""Tests for morie.fn.ptrpl -- Ripley edge correction"""
+"""ptrpl is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ptrpl import ripley_correction
 
 
-class TestRipleyCorrection:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = ripley_correction(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = ripley_correction(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_ptrpl_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ripley_correction(data=None)

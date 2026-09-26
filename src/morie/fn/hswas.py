@@ -4,26 +4,22 @@
 Category: Spatial
 """
 
-from . import _array_core as np
-
-from ._containers import DescriptiveResult
-
 
 def hswas(data=None, n=50):
-    """Wasted-vote Hotelling.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Wasted-vote Hotelling.
 
     Returns
     -------
     DescriptiveResult
     """
-    if data is None:
-        data = np.random.default_rng(0).standard_normal(n)
-    data = np.atleast_1d(np.asarray(data, dtype=float))
-    stat = float(np.mean(data))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(data), "mean": float(np.mean(data)), "std": float(np.std(data))},
+    raise NotImplementedError(
+        "morie.fn.hswas.hswas is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

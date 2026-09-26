@@ -1,20 +1,10 @@
-"""Tests for semsbn.sem_sb_chi_sq."""
+"""semsbn is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.semsbn import sem_sb_chi_sq
 
 
-def test_semsbn_basic():
-    """Test basic functionality."""
-    fit = np.random.default_rng(42).normal(0, 1, 100)
-    result = sem_sb_chi_sq(fit)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_semsbn_edge():
-    """Test edge cases."""
-    fit = np.random.default_rng(42).normal(0, 1, 100)
-    result = sem_sb_chi_sq(fit)
-    assert isinstance(result, dict)
+def test_semsbn_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sem_sb_chi_sq(fit=None)

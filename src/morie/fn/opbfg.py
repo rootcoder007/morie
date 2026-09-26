@@ -5,42 +5,22 @@ BFGS spatial optimization
 Category: OptimSp
 """
 
-from . import _array_core as np
-
 
 def opbfg(func=None, x0=None, bounds=None, n_dims=2, max_iter=100):
-    """BFGS spatial optimization
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    BFGS spatial optimization
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if x0 is None:
-        x0 = np.random.default_rng(0).uniform(-5, 5, n_dims)
-    if func is None:
-        func = lambda x: float(np.sum(x**2))
-    result = func(x0)
-    step = 0.1
-    best_x = x0.copy()
-    best_val = result
-    for _ in range(max_iter):
-        candidate = best_x + np.random.default_rng(42).uniform(-step, step, n_dims)
-        val = func(candidate)
-        if val < best_val:
-            best_x = candidate
-            best_val = val
-    stat = float(best_val)
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={
-            "optimal_x": best_x.tolist(),
-            "optimal_value": float(best_val),
-            "n_dims": n_dims,
-            "iterations": max_iter,
-        },
+    raise NotImplementedError(
+        "morie.fn.opbfg.opbfg is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

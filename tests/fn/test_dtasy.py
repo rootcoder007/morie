@@ -1,19 +1,10 @@
-"""Test dtasy."""
+"""dtasy is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.dtasy import dtasy
 
 
-def test_dtasy_basic():
-    rng = np.random.default_rng(42)
-    x = rng.standard_normal(50)
-    r = dtasy(x=x, n=50)
-    assert r.value is not None
-
-
-def test_dtasy_description():
-    rng = np.random.default_rng(42)
-    x = rng.standard_normal(50)
-    r = dtasy(x=x, n=50)
-    assert r.name
+def test_dtasy_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        dtasy()

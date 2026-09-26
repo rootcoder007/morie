@@ -5,37 +5,22 @@ Dynamic linear health
 Category: GeoHlth
 """
 
-from . import _array_core as np
-
 
 def ghdlm(cases=None, controls=None, exposure=None, coords=None, n=50):
-    """Dynamic linear health
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Dynamic linear health
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if cases is None:
-        cases = np.random.default_rng(0).poisson(10, n)
-    if controls is None:
-        controls = np.random.default_rng(1).poisson(100, n) + 10
-    if exposure is None:
-        exposure = np.random.default_rng(2).uniform(0, 1, n)
-    if coords is None:
-        coords = np.random.default_rng(3).uniform(0, 100, (n, 2))
-    odds = cases / (controls + 1e-10)
-    stat = float(np.mean(odds))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={
-            "n": len(cases),
-            "total_cases": int(np.sum(cases)),
-            "mean_exposure": float(np.mean(exposure)),
-            "mean_odds": float(np.mean(odds)),
-        },
+    raise NotImplementedError(
+        "morie.fn.ghdlm.ghdlm is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

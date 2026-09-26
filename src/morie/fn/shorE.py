@@ -1,14 +1,13 @@
 """Shor's quantum factoring (period-finding)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["shor_factoring"]
 
 
 def shor_factoring(N):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Shor's quantum factoring (period-finding)
 
     Formula: QFT-based period of f(x)=a^x mod N
@@ -27,12 +26,9 @@ def shor_factoring(N):
     ----------
     Shor (1994)
     """
-    N = np.atleast_1d(np.asarray(N, dtype=float))
-    n = len(N)
-    result = float(np.mean(N))
-    se = float(np.std(N, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Shor's quantum factoring (period-finding)"}
+    raise NotImplementedError(
+        "morie.fn.shorE.shor_factoring is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

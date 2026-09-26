@@ -1,14 +1,13 @@
 """Estrada index -- sum exp eigenvalues."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["sgt_estrada_index"]
 
 
 def sgt_estrada_index(A):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Estrada index -- sum exp eigenvalues
 
     Formula: EE(G) = Σ_i exp(λ_i)
@@ -27,11 +26,10 @@ def sgt_estrada_index(A):
     ----------
     Estrada (2000)
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Estrada index -- sum exp eigenvalues"})
+    raise NotImplementedError(
+        "morie.fn.sgtest.sgt_estrada_index is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

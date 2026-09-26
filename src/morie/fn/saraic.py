@@ -1,11 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SAR Akaike information criterion."""
 
-from ._containers import SpatialResult
-
 
 def saraic(ll, k, n):
-    """SAR Akaike information criterion.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    SAR Akaike information criterion.
 
     Category: SAR
 
@@ -17,11 +20,10 @@ def saraic(ll, k, n):
     -------
     SpatialResult
     """
-    try:
-        result = float(2 * k + (-2) * ll)
-        return SpatialResult(name="saraic", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="saraic", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.saraic.saraic is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 saraic_fn = saraic

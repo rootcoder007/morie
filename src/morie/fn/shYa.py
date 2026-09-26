@@ -1,14 +1,13 @@
 """Shunting-yard infix->RPN."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["shunting_yard"]
 
 
 def shunting_yard(tokens):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Shunting-yard infix->RPN
 
     Formula: two-stack precedence-based parser
@@ -27,11 +26,10 @@ def shunting_yard(tokens):
     ----------
     Dijkstra (1961)
     """
-    tokens = np.atleast_1d(np.asarray(tokens, dtype=float))
-    n = len(tokens)
-    result = float(np.mean(tokens))
-    se = float(np.std(tokens, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Shunting-yard infix->RPN"})
+    raise NotImplementedError(
+        "morie.fn.shYa.shunting_yard is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

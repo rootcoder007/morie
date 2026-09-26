@@ -1,21 +1,10 @@
-"""Test gchrc."""
+"""gchrc is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.gchrc import gchrc
 
 
-def test_gchrc_basic():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal(30)
-    coords = rng.uniform(0, 100, (30, 2))
-    r = gchrc(data=data, coords=coords, n=30)
-    assert r.value is not None
-
-
-def test_gchrc_description():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal(30)
-    coords = rng.uniform(0, 100, (30, 2))
-    r = gchrc(data=data, coords=coords, n=30)
-    assert r.name
+def test_gchrc_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gchrc()

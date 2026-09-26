@@ -1,20 +1,10 @@
-"""Tests for cfafit.cfa_fit_indices."""
+"""cfafit is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.cfafit import cfa_fit_indices
 
 
-def test_cfafit_basic():
-    """Test basic functionality."""
-    fit = np.random.default_rng(42).normal(0, 1, 100)
-    result = cfa_fit_indices(fit)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_cfafit_edge():
-    """Test edge cases."""
-    fit = np.random.default_rng(42).normal(0, 1, 100)
-    result = cfa_fit_indices(fit)
-    assert isinstance(result, dict)
+def test_cfafit_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        cfa_fit_indices(fit=None)

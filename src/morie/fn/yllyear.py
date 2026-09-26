@@ -1,14 +1,13 @@
 """Years of life lost."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["yll_calculation"]
 
 
 def yll_calculation(deaths, ages, life_table):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Years of life lost
 
     Formula: YLL = N × (life_expectancy - age_at_death)
@@ -31,11 +30,10 @@ def yll_calculation(deaths, ages, life_table):
     ----------
     WHO Global Burden of Disease
     """
-    deaths = np.atleast_1d(np.asarray(deaths, dtype=float))
-    n = len(deaths)
-    result = float(np.mean(deaths))
-    se = float(np.std(deaths, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Years of life lost"})
+    raise NotImplementedError(
+        "morie.fn.yllyear.yll_calculation is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,20 +1,10 @@
-"""Tests for sigpep.signal_peptide."""
+"""sigpep is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sigpep import signal_peptide
 
 
-def test_sigpep_basic():
-    """Test basic functionality."""
-    sequence = np.random.default_rng(42).normal(0, 1, 100)
-    result = signal_peptide(sequence)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_sigpep_edge():
-    """Test edge cases."""
-    sequence = np.random.default_rng(42).normal(0, 1, 100)
-    result = signal_peptide(sequence)
-    assert isinstance(result, dict)
+def test_sigpep_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        signal_peptide(sequence=None)

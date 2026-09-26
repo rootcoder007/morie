@@ -1,14 +1,13 @@
 """CFA fit indices (CFI, RMSEA, SRMR, TLI)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["cfa_fit_indices"]
 
 
 def cfa_fit_indices(fit):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     CFA fit indices (CFI, RMSEA, SRMR, TLI)
 
     Formula: chi-sq based + residual based
@@ -27,12 +26,9 @@ def cfa_fit_indices(fit):
     ----------
     Hu-Bentler (1999)
     """
-    fit = np.atleast_1d(np.asarray(fit, dtype=float))
-    n = len(fit)
-    result = float(np.mean(fit))
-    se = float(np.std(fit, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "CFA fit indices (CFI, RMSEA, SRMR, TLI)"}
+    raise NotImplementedError(
+        "morie.fn.cfafit.cfa_fit_indices is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

@@ -1,24 +1,10 @@
-"""Tests for tft.temporal_fusion_transformer."""
+"""tft is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.tft import temporal_fusion_transformer
 
 
-def test_tft_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    static_cov = np.random.default_rng(42).normal(0, 1, 100)
-    result = temporal_fusion_transformer(X, y, static_cov)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_tft_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    static_cov = np.random.default_rng(42).normal(0, 1, 100)
-    result = temporal_fusion_transformer(X, y, static_cov)
-    assert isinstance(result, dict)
+def test_tft_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        temporal_fusion_transformer(X=None, y=None, static_cov=None)

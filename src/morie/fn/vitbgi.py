@@ -1,14 +1,13 @@
 """ViT-B/16 initialization (768 dim, 12 heads, 12 layers)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["vit_b16_init"]
 
 
 def vit_b16_init(model):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     ViT-B/16 initialization (768 dim, 12 heads, 12 layers)
 
     Formula: truncated normal(std=0.02)
@@ -27,17 +26,9 @@ def vit_b16_init(model):
     ----------
     Dosovitskiy et al (2020)
     """
-    model = np.atleast_1d(np.asarray(model, dtype=float))
-    n = len(model)
-    result = float(np.mean(model))
-    se = float(np.std(model, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "ViT-B/16 initialization (768 dim, 12 heads, 12 layers)",
-        }
+    raise NotImplementedError(
+        "morie.fn.vitbgi.vit_b16_init is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

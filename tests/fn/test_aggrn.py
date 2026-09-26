@@ -1,21 +1,10 @@
-"""Test aggrn."""
+"""aggrn is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.aggrn import aggrn
 
 
-def test_aggrn_basic():
-    rng = np.random.default_rng(42)
-    areas = rng.uniform(10, 500, 15)
-    perims = 4 * np.sqrt(areas) * rng.uniform(0.9, 1.3, 15)
-    r = aggrn(areas=areas, perimeters=perims, n=15)
-    assert r.value is not None
-
-
-def test_aggrn_description():
-    rng = np.random.default_rng(42)
-    areas = rng.uniform(10, 500, 15)
-    perims = 4 * np.sqrt(areas) * rng.uniform(0.9, 1.3, 15)
-    r = aggrn(areas=areas, perimeters=perims, n=15)
-    assert r.name
+def test_aggrn_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        aggrn()

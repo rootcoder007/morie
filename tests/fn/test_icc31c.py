@@ -1,20 +1,10 @@
-"""Tests for icc31c.icc_one_way."""
+"""icc31c is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.icc31c import icc_one_way
 
 
-def test_icc31c_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = icc_one_way(X)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_icc31c_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = icc_one_way(X)
-    assert isinstance(result, dict)
+def test_icc31c_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        icc_one_way(X=None)

@@ -1,14 +1,13 @@
 """Messick validity argument."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["presmessick_validity"]
 
 
 def presmessick_validity(evidence_set):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Messick validity argument
 
     Formula: unified concept: content + construct + criterion
@@ -27,11 +26,10 @@ def presmessick_validity(evidence_set):
     ----------
     Messick (1989)
     """
-    evidence_set = np.atleast_1d(np.asarray(evidence_set, dtype=float))
-    n = len(evidence_set)
-    result = float(np.mean(evidence_set))
-    se = float(np.std(evidence_set, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Messick validity argument"})
+    raise NotImplementedError(
+        "morie.fn.prsval.presmessick_validity is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

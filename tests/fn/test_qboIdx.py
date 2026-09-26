@@ -1,20 +1,10 @@
-"""Tests for qboIdx.qbo."""
+"""qboIdx is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.qboIdx import qbo
 
 
-def test_qboIdx_basic():
-    """Test basic functionality."""
-    U30 = np.random.default_rng(42).normal(0, 1, 100)
-    result = qbo(U30)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_qboIdx_edge():
-    """Test edge cases."""
-    U30 = np.random.default_rng(42).normal(0, 1, 100)
-    result = qbo(U30)
-    assert isinstance(result, dict)
+def test_qboIdx_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        qbo(U30=None)

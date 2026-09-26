@@ -1,19 +1,10 @@
-"""Test sagge."""
+"""sagge is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sagge import sagge
 
 
-def test_sagge_basic():
-    rng = np.random.default_rng(42)
-    vals = rng.standard_normal(25)
-    r = sagge(values=vals, n=25)
-    assert r.value is not None
-
-
-def test_sagge_description():
-    rng = np.random.default_rng(42)
-    vals = rng.standard_normal(25)
-    r = sagge(values=vals, n=25)
-    assert r.name
+def test_sagge_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sagge()

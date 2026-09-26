@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zedsg -- Poisson-Gamma disease mapping"""
+"""zedsg is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zedsg import disease_map_gamma
 
 
-class TestDiseaseMapGamma:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = disease_map_gamma(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = disease_map_gamma(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zedsg_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        disease_map_gamma(data=None)

@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zxwmr -- Spatial wavelet MRA"""
+"""zxwmr is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zxwmr import wavelet_mra_sp
 
 
-class TestWaveletMraSp:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = wavelet_mra_sp(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = wavelet_mra_sp(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_zxwmr_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        wavelet_mra_sp(data=None)

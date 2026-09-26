@@ -1,24 +1,10 @@
-"""Tests for bayscm.bayes_c_pi."""
+"""bayscm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.bayscm import bayes_c_pi
 
 
-def test_bayscm_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    pi = np.random.default_rng(42).normal(0, 1, 100)
-    result = bayes_c_pi(y, M, pi)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_bayscm_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    pi = np.random.default_rng(42).normal(0, 1, 100)
-    result = bayes_c_pi(y, M, pi)
-    assert isinstance(result, dict)
+def test_bayscm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        bayes_c_pi(y=None, M=None, pi=None)

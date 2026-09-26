@@ -1,17 +1,10 @@
-"""Tests for morie.fn.msans -- MDS anisotropy measure"""
+"""msans is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.msans import mds_aniso
 
 
-class TestMdsAniso:
-    def test_basic(self):
-        rng = np.random.default_rng(42)
-        X = rng.standard_normal((10, 3))
-        result = mds_aniso(X)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = mds_aniso(np.random.default_rng(0).standard_normal((5, 2)))
-        assert hasattr(result, "value")
+def test_msans_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        mds_aniso(X=None)

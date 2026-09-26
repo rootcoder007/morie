@@ -1,21 +1,10 @@
-"""Test fostrm."""
+"""fostrm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.fostrm import fostrm
 
 
-def test_fostrm_basic():
-    rng = np.random.default_rng(42)
-    dbh = rng.uniform(5, 80, 20)
-    ht = rng.uniform(3, 40, 20)
-    r = fostrm(dbh=dbh, height=ht, n=20)
-    assert r.value is not None
-
-
-def test_fostrm_description():
-    rng = np.random.default_rng(42)
-    dbh = rng.uniform(5, 80, 20)
-    ht = rng.uniform(3, 40, 20)
-    r = fostrm(dbh=dbh, height=ht, n=20)
-    assert r.name
+def test_fostrm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        fostrm()

@@ -1,14 +1,13 @@
 """Posterior predictive check."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["posterior_predictive_check"]
 
 
 def posterior_predictive_check(y, y_rep, statistic):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Posterior predictive check
 
     Formula: discrepancy T(y, theta) vs T(y_rep, theta)
@@ -31,11 +30,10 @@ def posterior_predictive_check(y, y_rep, statistic):
     ----------
     Gelman-Meng-Stern (1996)
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Posterior predictive check"})
+    raise NotImplementedError(
+        "morie.fn.bayppc.posterior_predictive_check is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

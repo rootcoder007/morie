@@ -1,20 +1,10 @@
-"""Tests for naoIdx.nao_index."""
+"""naoIdx is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.naoIdx import nao_index
 
 
-def test_naoIdx_basic():
-    """Test basic functionality."""
-    slp = np.random.default_rng(42).normal(0, 1, 100)
-    result = nao_index(slp)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_naoIdx_edge():
-    """Test edge cases."""
-    slp = np.random.default_rng(42).normal(0, 1, 100)
-    result = nao_index(slp)
-    assert isinstance(result, dict)
+def test_naoIdx_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        nao_index(slp=None)

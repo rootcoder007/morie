@@ -1,34 +1,10 @@
-"""Tests for mcint."""
+"""mcint is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mcint import mcint
 
 
-def test_mcint_basic():
-    result = mcint()
-    assert hasattr(result, "statistic")
-    assert isinstance(result.statistic, float)
-    assert result.name == "MC-SpatialIntegration"
-
-
-def test_mcint_with_data():
-    rng = np.random.default_rng(0)
-    data = rng.standard_normal(20)
-    coords = rng.uniform(0, 1, size=(20, 2))
-    result = mcint(data=data, coords=coords, n=20, seed=0)
-    assert result.statistic == pytest.approx(float(np.mean(data)))
-    assert result.extra["n_points"] == 20
-
-
-def test_mcint_no_data():
-    result = mcint(n=50, seed=7)
-    assert result.statistic is not None
-    assert result.extra["n_points"] == 50
-
-
-def test_mcint_alias():
-    from morie.fn.mcint import mcint
-
-    assert mcint is mcint
+def test_mcint_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        mcint()

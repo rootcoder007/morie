@@ -1,26 +1,21 @@
 """GP prediction"""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def gp_predict(data, *, method="default"):
-    """GP prediction
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    GP prediction
 
     Returns
     -------
     SpatialResult
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    mu = float(np.mean(data))
-    var = float(np.var(data, ddof=1)) if n > 1 else 0.0
-    se = float(np.sqrt(var / n)) if n > 0 else 0.0
-    return SpatialResult(
-        name="GP prediction",
-        statistic=float(mu) if isinstance(mu, (int, float)) else 0.0,
-        extra={},
+    raise NotImplementedError(
+        "morie.fn.zsgpp.gp_predict is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

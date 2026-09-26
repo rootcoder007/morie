@@ -1,21 +1,10 @@
-"""Test enaqi."""
+"""enaqi is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.enaqi import enaqi
 
 
-def test_enaqi_basic():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal(30)
-    coords = rng.uniform(0, 100, (30, 2))
-    r = enaqi(data=data, coords=coords, n=30)
-    assert r.value is not None
-
-
-def test_enaqi_description():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal(30)
-    coords = rng.uniform(0, 100, (30, 2))
-    r = enaqi(data=data, coords=coords, n=30)
-    assert r.name
+def test_enaqi_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        enaqi()

@@ -1,19 +1,10 @@
-"""Test ktest."""
+"""ktest is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ktest import ktest
 
 
-def test_ktest_basic():
-    rng = np.random.default_rng(42)
-    pts = rng.uniform(0, 100, (40, 2))
-    r = ktest(points=pts, n=40)
-    assert r.value is not None
-
-
-def test_ktest_description():
-    rng = np.random.default_rng(42)
-    pts = rng.uniform(0, 100, (40, 2))
-    r = ktest(points=pts, n=40)
-    assert r.name
+def test_ktest_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ktest()

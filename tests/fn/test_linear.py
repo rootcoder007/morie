@@ -1,22 +1,10 @@
-"""Tests for linear.linearization_se."""
+"""linear is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.linear import linearization_se
 
 
-def test_linear_basic():
-    """Test basic functionality."""
-    estimator = np.random.default_rng(42).normal(0, 1, 100)
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    result = linearization_se(estimator, data)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_linear_edge():
-    """Test edge cases."""
-    estimator = np.random.default_rng(42).normal(0, 1, 100)
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    result = linearization_se(estimator, data)
-    assert isinstance(result, dict)
+def test_linear_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        linearization_se(estimator=None, data=None)

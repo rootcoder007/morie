@@ -1,27 +1,10 @@
-"""Tests for morie.fn.sppaic."""
+"""sppaic is a placeholder: it must refuse to run, not return a number."""
+
+import pytest
 
 from morie.fn.sppaic import sppaic
 
 
-class TestSppaic:
-    def test_basic(self):
-        ll = -80.0
-        k = 6
-        n = 60
-        result = sppaic(ll, k, n)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        ll = -80.0
-        k = 6
-        n = 60
-        result = sppaic(ll, k, n)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        ll = -80.0
-        k = 6
-        n = 60
-        result = sppaic(ll, k, n)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_sppaic_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sppaic(ll=None, k=None, n=None)

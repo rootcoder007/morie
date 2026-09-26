@@ -1,14 +1,13 @@
 """DDPM reverse step."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["ddpm_step"]
 
 
 def ddpm_step(x_t, t, eps_theta):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     DDPM reverse step
 
     Formula: x_{t-1} = (1/sqrt(alpha_t)) (x_t - eps_theta) + sigma_t z
@@ -31,11 +30,10 @@ def ddpm_step(x_t, t, eps_theta):
     ----------
     Ho-Jain-Abbeel (2020)
     """
-    x_t = np.atleast_1d(np.asarray(x_t, dtype=float))
-    n = len(x_t)
-    result = float(np.mean(x_t))
-    se = float(np.std(x_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DDPM reverse step"})
+    raise NotImplementedError(
+        "morie.fn.ddpmst.ddpm_step is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

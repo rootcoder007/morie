@@ -1,15 +1,13 @@
 """Association expression (auto-extracted; see ref).."""
 
-from . import _array_core as np
-from . import _stats_core as stats
-
-from ._richresult import hypothesis_test_result
-
 __all__ = ["neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_2_unnumbered_9"]
 
 
 def neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_2_unnumbered_9(x, y=None):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Association expression (auto-extracted; see ref).
 
     Formula: 10.831 15.139 * 3.484 *tt tBurglary Time Time=+ −
@@ -31,33 +29,9 @@ def neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_2_unnum
     ----------
     Neighborhood Structures And Crime A Spatial Analysis George Kikuchi, ch.2 (unnumbered)
     """
-    if y is None:
-        # Auto-extracted single-input stub: correlate x against itself so
-        # the call is well-defined instead of raising UnboundLocalError.
-        y = x
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return hypothesis_test_result(
-            test_name="Association expression (auto-extracted; see ref).",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<3: insufficient pairs for correlation."],
-            extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Association expression (auto-extracted; see ref)."},
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return hypothesis_test_result(
-        test_name="Association expression (auto-extracted; see ref).",
-        statistic=float(result.statistic),
-        pvalue=float(result.pvalue),
-        extra_summary=[("n", n)],
-        extra_payload={
-            "n": n,
-            "method": "Association expression (auto-extracted; see ref).",
-            "p_value": float(result.pvalue),
-        },
+    raise NotImplementedError(
+        "morie.fn.neighborhood_structures_and_crime_a_spatial_analysis_george_2u9.neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_2_unnumbered_9 is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

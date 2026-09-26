@@ -1,23 +1,10 @@
-"""Test vmdir."""
+"""vmdir is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.vmdir import vmdir
 
 
-def test_vmdir_basic():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 30)
-    y = rng.uniform(0, 100, 30)
-    v = rng.standard_normal(30)
-    r = vmdir(x=x, y=y, values=v)
-    assert r.value is not None
-
-
-def test_vmdir_description():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 30)
-    y = rng.uniform(0, 100, 30)
-    v = rng.standard_normal(30)
-    r = vmdir(x=x, y=y, values=v)
-    assert r.name
+def test_vmdir_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        vmdir()

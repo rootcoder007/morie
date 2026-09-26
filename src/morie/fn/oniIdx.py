@@ -1,14 +1,13 @@
 """Oceanic Niño Index."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["oni"]
 
 
 def oni(sst_n34):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Oceanic Niño Index
 
     Formula: 3-month running mean Niño 3.4 anomaly
@@ -27,11 +26,10 @@ def oni(sst_n34):
     ----------
     NOAA CPC
     """
-    sst_n34 = np.atleast_1d(np.asarray(sst_n34, dtype=float))
-    n = len(sst_n34)
-    result = float(np.mean(sst_n34))
-    se = float(np.std(sst_n34, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Oceanic Niño Index"})
+    raise NotImplementedError(
+        "morie.fn.oniIdx.oni is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

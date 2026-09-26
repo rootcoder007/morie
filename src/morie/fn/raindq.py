@@ -1,14 +1,13 @@
 """Rainbow: 6 DQN improvements combined."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["rainbow_dqn"]
 
 
 def rainbow_dqn(env):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Rainbow: 6 DQN improvements combined
 
     Formula: double + dueling + PER + multistep + noisy + categorical
@@ -27,11 +26,10 @@ def rainbow_dqn(env):
     ----------
     Hessel et al (2018)
     """
-    env = np.atleast_1d(np.asarray(env, dtype=float))
-    n = len(env)
-    result = float(np.mean(env))
-    se = float(np.std(env, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rainbow: 6 DQN improvements combined"})
+    raise NotImplementedError(
+        "morie.fn.raindq.rainbow_dqn is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

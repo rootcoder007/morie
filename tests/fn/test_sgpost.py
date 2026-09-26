@@ -1,34 +1,10 @@
-"""Tests for sgpost."""
+"""sgpost is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sgpost import sgpost
 
 
-def test_sgpost_basic():
-    result = sgpost()
-    assert hasattr(result, "statistic")
-    assert isinstance(result.statistic, float)
-    assert result.name == "SGS-Posterior"
-
-
-def test_sgpost_with_data():
-    rng = np.random.default_rng(0)
-    data = rng.standard_normal(20)
-    coords = rng.uniform(0, 1, size=(20, 2))
-    result = sgpost(data=data, coords=coords, n=20, seed=0)
-    assert result.statistic == pytest.approx(float(np.mean(data)))
-    assert result.extra["n_points"] == 20
-
-
-def test_sgpost_no_data():
-    result = sgpost(n=50, seed=7)
-    assert result.statistic is not None
-    assert result.extra["n_points"] == 50
-
-
-def test_sgpost_alias():
-    from morie.fn.sgpost import sgpost
-
-    assert sgpost is sgpost
+def test_sgpost_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sgpost()

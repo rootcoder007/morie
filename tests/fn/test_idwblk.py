@@ -1,34 +1,10 @@
-"""Tests for idwblk."""
+"""idwblk is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.idwblk import idwblk
 
 
-def test_idwblk_basic():
-    result = idwblk()
-    assert hasattr(result, "statistic")
-    assert isinstance(result.statistic, float)
-    assert result.name == "IDW-Block"
-
-
-def test_idwblk_with_data():
-    rng = np.random.default_rng(0)
-    data = rng.standard_normal(20)
-    coords = rng.uniform(0, 1, size=(20, 2))
-    result = idwblk(data=data, coords=coords, n=20, seed=0)
-    assert result.statistic == pytest.approx(float(np.mean(data)))
-    assert result.extra["n_points"] == 20
-
-
-def test_idwblk_no_data():
-    result = idwblk(n=50, seed=7)
-    assert result.statistic is not None
-    assert result.extra["n_points"] == 50
-
-
-def test_idwblk_alias():
-    from morie.fn.idwblk import idwblk
-
-    assert idwblk is idwblk
+def test_idwblk_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        idwblk()

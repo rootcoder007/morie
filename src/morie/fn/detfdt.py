@@ -1,14 +1,13 @@
 """Detrended fluctuation analysis (DFA)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["detrended_fluctuation"]
 
 
 def detrended_fluctuation(y, scales):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Detrended fluctuation analysis (DFA)
 
     Formula: power-law scaling of detrended cumulative
@@ -29,11 +28,10 @@ def detrended_fluctuation(y, scales):
     ----------
     Peng et al (1994)
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Detrended fluctuation analysis (DFA)"})
+    raise NotImplementedError(
+        "morie.fn.detfdt.detrended_fluctuation is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

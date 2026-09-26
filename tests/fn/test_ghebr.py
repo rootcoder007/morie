@@ -1,23 +1,10 @@
-"""Test ghebr."""
+"""ghebr is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ghebr import ghebr
 
 
-def test_ghebr_basic():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(10, 20)
-    controls = rng.poisson(100, 20) + 10
-    exposure = rng.uniform(0, 1, 20)
-    r = ghebr(cases=cases, controls=controls, exposure=exposure, n=20)
-    assert r.value is not None
-
-
-def test_ghebr_description():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(10, 20)
-    controls = rng.poisson(100, 20) + 10
-    exposure = rng.uniform(0, 1, 20)
-    r = ghebr(cases=cases, controls=controls, exposure=exposure, n=20)
-    assert r.name
+def test_ghebr_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ghebr()

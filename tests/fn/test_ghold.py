@@ -1,23 +1,10 @@
-"""Test ghold."""
+"""ghold is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ghold import ghold
 
 
-def test_ghold_basic():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(10, 20)
-    controls = rng.poisson(100, 20) + 10
-    exposure = rng.uniform(0, 1, 20)
-    r = ghold(cases=cases, controls=controls, exposure=exposure, n=20)
-    assert r.value is not None
-
-
-def test_ghold_description():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(10, 20)
-    controls = rng.poisson(100, 20) + 10
-    exposure = rng.uniform(0, 1, 20)
-    r = ghold(cases=cases, controls=controls, exposure=exposure, n=20)
-    assert r.name
+def test_ghold_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ghold()

@@ -1,20 +1,10 @@
-"""Tests for aitdrs.dirichlet_sample."""
+"""aitdrs is a placeholder: it must refuse to run, not return a number."""
+
+import pytest
 
 from morie.fn.aitdrs import dirichlet_sample
 
 
-def test_aitdrs_basic():
-    """Test basic functionality."""
-    alpha = 0.05
-    n = 100
-    result = dirichlet_sample(alpha, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_aitdrs_edge():
-    """Test edge cases."""
-    alpha = 0.05
-    n = 100
-    result = dirichlet_sample(alpha, n)
-    assert isinstance(result, dict)
+def test_aitdrs_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        dirichlet_sample(alpha=None, n=None)

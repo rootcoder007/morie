@@ -1,14 +1,13 @@
 """SAM prompt encoder (points/boxes/masks)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["sam_prompt_encoder"]
 
 
 def sam_prompt_encoder(prompts):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     SAM prompt encoder (points/boxes/masks)
 
     Formula: learned embeddings per prompt type
@@ -27,12 +26,9 @@ def sam_prompt_encoder(prompts):
     ----------
     Kirillov et al (2023)
     """
-    prompts = np.atleast_1d(np.asarray(prompts, dtype=float))
-    n = len(prompts)
-    result = float(np.mean(prompts))
-    se = float(np.std(prompts, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "SAM prompt encoder (points/boxes/masks)"}
+    raise NotImplementedError(
+        "morie.fn.sampre.sam_prompt_encoder is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

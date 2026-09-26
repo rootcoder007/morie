@@ -1,20 +1,10 @@
-"""Tests for sgtpns.sgt_perron_frobenius."""
+"""sgtpns is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sgtpns import sgt_perron_frobenius
 
 
-def test_sgtpns_basic():
-    """Test basic functionality."""
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = sgt_perron_frobenius(M)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_sgtpns_edge():
-    """Test edge cases."""
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    result = sgt_perron_frobenius(M)
-    assert isinstance(result, dict)
+def test_sgtpns_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sgt_perron_frobenius(M=None)

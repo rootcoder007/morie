@@ -1,21 +1,10 @@
-"""Test truer."""
+"""truer is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.truer import truer
 
 
-def test_truer_basic():
-    rng = np.random.default_rng(42)
-    flow = rng.poisson(500, 20)
-    tt = rng.uniform(5, 60, 20)
-    r = truer(flow_volume=flow, travel_time=tt, n=20)
-    assert r.value is not None
-
-
-def test_truer_description():
-    rng = np.random.default_rng(42)
-    flow = rng.poisson(500, 20)
-    tt = rng.uniform(5, 60, 20)
-    r = truer(flow_volume=flow, travel_time=tt, n=20)
-    assert r.name
+def test_truer_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        truer()

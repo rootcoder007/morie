@@ -1,22 +1,12 @@
-"""Tests for probability_and_random_processes_with_one_thousand_exercises2u472.probability_and_random_processes_with_one_thousand_exercises_chapter_2_unnumbered_472."""
+"""probability_and_random_processes_with_one_thousand_exercises2u472 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.probability_and_random_processes_with_one_thousand_exercises2u472 import (
     probability_and_random_processes_with_one_thousand_exercises_chapter_2_unnumbered_472,
 )
 
 
-def test_probability_and_random_processes_with_one_thousand_exercises2u472_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = probability_and_random_processes_with_one_thousand_exercises_chapter_2_unnumbered_472(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
-
-
-def test_probability_and_random_processes_with_one_thousand_exercises2u472_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = probability_and_random_processes_with_one_thousand_exercises_chapter_2_unnumbered_472(x)
-    assert isinstance(result, dict)
+def test_probability_and_random_processes_with_one_thousand_exercises2u472_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        probability_and_random_processes_with_one_thousand_exercises_chapter_2_unnumbered_472(x=None)

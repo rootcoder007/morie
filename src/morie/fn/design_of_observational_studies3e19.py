@@ -1,15 +1,13 @@
 """GeneralStatistics equation extracted from Design of observational studies.."""
 
-from . import _array_core as np
-from . import _stats_core as stats
-
-from ._richresult import hypothesis_test_result
-
 __all__ = ["design_of_observational_studies_chapter_3_equation_19"]
 
 
 def design_of_observational_studies_chapter_3_equation_19(x, cdf=None):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     GeneralStatistics equation extracted from Design of observational studies.
 
     Formula: ΓI (I + 1) / {2 (1 + Γ )} from (3.19) and solving the equation for ˆτ
@@ -33,47 +31,9 @@ def design_of_observational_studies_chapter_3_equation_19(x, cdf=None):
     ----------
     Design of observational studies, ch.3 eq.3.19
     """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if n < 2:
-        return hypothesis_test_result(
-            test_name="GeneralStatistics equation extracted from Design of observational studies.",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<2: insufficient data."],
-            extra_summary=[("n", n)],
-            extra_payload={
-                "n": n,
-                "method": "GeneralStatistics equation extracted from Design of observational studies.",
-                "p_value": float("nan"),
-            },
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return hypothesis_test_result(
-        test_name="GeneralStatistics equation extracted from Design of observational studies.",
-        statistic=float(statistic),
-        pvalue=float(p_value),
-        extra_summary=[("n", n)],
-        extra_payload={
-            "n": n,
-            "method": "GeneralStatistics equation extracted from Design of observational studies.",
-            "p_value": float(p_value),
-        },
+    raise NotImplementedError(
+        "morie.fn.design_of_observational_studies3e19.design_of_observational_studies_chapter_3_equation_19 is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

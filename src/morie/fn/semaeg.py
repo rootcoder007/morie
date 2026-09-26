@@ -1,14 +1,13 @@
 """SAM image encoder (ViT-H)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["sam_image_encoder"]
 
 
 def sam_image_encoder(image):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     SAM image encoder (ViT-H)
 
     Formula: large ViT pretrained on SA-1B
@@ -27,11 +26,10 @@ def sam_image_encoder(image):
     ----------
     Kirillov et al (2023) SAM
     """
-    image = np.atleast_1d(np.asarray(image, dtype=float))
-    n = len(image)
-    result = float(np.mean(image))
-    se = float(np.std(image, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SAM image encoder (ViT-H)"})
+    raise NotImplementedError(
+        "morie.fn.semaeg.sam_image_encoder is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,14 +1,13 @@
 """Rotatable bond count."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["rotatable_bond_count"]
 
 
 def rotatable_bond_count(smiles):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Rotatable bond count
 
     Formula: non-ring single bonds excluding terminal
@@ -27,11 +26,10 @@ def rotatable_bond_count(smiles):
     ----------
     Veber (2002)
     """
-    smiles = np.atleast_1d(np.asarray(smiles, dtype=float))
-    n = len(smiles)
-    result = float(np.mean(smiles))
-    se = float(np.std(smiles, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rotatable bond count"})
+    raise NotImplementedError(
+        "morie.fn.rotbnd.rotatable_bond_count is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,24 +1,10 @@
-"""Tests for laplI.inverse_laplace."""
+"""laplI is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.laplI import inverse_laplace
 
 
-def test_laplI_basic():
-    """Test basic functionality."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    s = 90
-    t = np.linspace(0, 10, 100)
-    result = inverse_laplace(F, s, t)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_laplI_edge():
-    """Test edge cases."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    s = 90
-    t = np.linspace(0, 10, 100)
-    result = inverse_laplace(F, s, t)
-    assert isinstance(result, dict)
+def test_laplI_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        inverse_laplace(F=None, s=None, t=None)

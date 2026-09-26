@@ -1,23 +1,10 @@
-"""Test nrst2."""
+"""nrst2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.nrst2 import nrst2
 
 
-def test_nrst2_basic():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 30)
-    y = rng.uniform(0, 100, 30)
-    v = rng.standard_normal(30)
-    r = nrst2(x=x, y=y, values=v)
-    assert r.value is not None
-
-
-def test_nrst2_description():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 30)
-    y = rng.uniform(0, 100, 30)
-    v = rng.standard_normal(30)
-    r = nrst2(x=x, y=y, values=v)
-    assert r.name
+def test_nrst2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        nrst2()

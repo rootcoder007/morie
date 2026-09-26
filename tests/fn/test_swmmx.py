@@ -1,23 +1,10 @@
-"""Tests for morie.fn.swmmx."""
+"""swmmx is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.swmmx import swmmx
 
 
-class TestSwmmx:
-    def test_basic(self):
-        W = np.array([[0, 2, 1], [2, 0, 3], [1, 3, 0]], dtype=float)
-        result = swmmx(W)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        W = np.array([[0, 2, 1], [2, 0, 3], [1, 3, 0]], dtype=float)
-        result = swmmx(W)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        W = np.array([[0, 2, 1], [2, 0, 3], [1, 3, 0]], dtype=float)
-        result = swmmx(W)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_swmmx_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        swmmx(W=None)

@@ -1,20 +1,10 @@
-"""Tests for kr20cr.kuder_richardson_20."""
+"""kr20cr is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.kr20cr import kuder_richardson_20
 
 
-def test_kr20cr_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = kuder_richardson_20(X)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_kr20cr_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = kuder_richardson_20(X)
-    assert isinstance(result, dict)
+def test_kr20cr_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        kuder_richardson_20(X=None)

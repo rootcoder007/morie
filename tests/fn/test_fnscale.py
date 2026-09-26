@@ -1,20 +1,10 @@
-"""Tests for fnscale.functional_scale."""
+"""fnscale is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.fnscale import functional_scale
 
 
-def test_fnscale_basic():
-    """Test basic functionality."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    result = functional_scale(f)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_fnscale_edge():
-    """Test edge cases."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    result = functional_scale(f)
-    assert isinstance(result, dict)
+def test_fnscale_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        functional_scale(f=None)

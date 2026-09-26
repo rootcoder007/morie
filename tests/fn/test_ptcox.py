@@ -1,16 +1,10 @@
-"""Tests for morie.fn.ptcox -- Cox (doubly stochastic) process"""
+"""ptcox is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ptcox import cox_process
 
 
-class TestCoxProcess:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = cox_process(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = cox_process(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_ptcox_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        cox_process(data=None)

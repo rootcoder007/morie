@@ -1,16 +1,10 @@
-"""Tests for morie.fn.nmdmp -- Party divergence measure"""
+"""nmdmp is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.nmdmp import party_diverge
 
 
-class TestPartyDiverge:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = party_diverge(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = party_diverge(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_nmdmp_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        party_diverge(data=None)

@@ -1,16 +1,10 @@
-"""Tests for morie.fn.msemb -- Embedding quality measure"""
+"""msemb is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.msemb import embedding_qual
 
 
-class TestEmbeddingQual:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = embedding_qual(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = embedding_qual(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_msemb_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        embedding_qual(data=None)

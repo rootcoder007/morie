@@ -1,20 +1,10 @@
-"""Tests for sgtrnh.sgt_randic_index."""
+"""sgtrnh is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sgtrnh import sgt_randic_index
 
 
-def test_sgtrnh_basic():
-    """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = sgt_randic_index(A)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_sgtrnh_edge():
-    """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = sgt_randic_index(A)
-    assert isinstance(result, dict)
+def test_sgtrnh_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sgt_randic_index(A=None)

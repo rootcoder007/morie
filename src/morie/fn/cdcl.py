@@ -1,14 +1,13 @@
 """CDCL conflict-driven clause learning."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["cdcl"]
 
 
 def cdcl(cnf):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     CDCL conflict-driven clause learning
 
     Formula: DPLL + learned clauses + backjumping
@@ -27,11 +26,10 @@ def cdcl(cnf):
     ----------
     Marques-Silva-Sakallah (1999)
     """
-    cnf = np.atleast_1d(np.asarray(cnf, dtype=float))
-    n = len(cnf)
-    result = float(np.mean(cnf))
-    se = float(np.std(cnf, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "CDCL conflict-driven clause learning"})
+    raise NotImplementedError(
+        "morie.fn.cdcl.cdcl is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

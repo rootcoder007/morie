@@ -1,14 +1,13 @@
 """Laurent series (with negative powers)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["laurent_series"]
 
 
 def laurent_series(f, c, order):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Laurent series (with negative powers)
 
     Formula: sum_{n=-∞}^∞ a_n (x-c)^n
@@ -31,11 +30,10 @@ def laurent_series(f, c, order):
     ----------
     Laurent (1843)
     """
-    f = np.atleast_1d(np.asarray(f, dtype=float))
-    n = len(f)
-    result = float(np.mean(f))
-    se = float(np.std(f, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Laurent series (with negative powers)"})
+    raise NotImplementedError(
+        "morie.fn.laurnt.laurent_series is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

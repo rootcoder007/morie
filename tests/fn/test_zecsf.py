@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zecsf -- Concentration surface estimation"""
+"""zecsf is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zecsf import concentration_srf
 
 
-class TestConcentrationSrf:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = concentration_srf(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = concentration_srf(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zecsf_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        concentration_srf(data=None)

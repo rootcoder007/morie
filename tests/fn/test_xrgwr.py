@@ -1,16 +1,10 @@
-"""Tests for morie.fn.xrgwr -- GWR basic estimation"""
+"""xrgwr is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.xrgwr import gwr_basic
 
 
-class TestGwrBasic:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = gwr_basic(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = gwr_basic(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_xrgwr_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gwr_basic(data=None)

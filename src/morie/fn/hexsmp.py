@@ -5,25 +5,22 @@ Hexagonal grid sampling
 Category: GeoProcss
 """
 
-from . import _array_core as np
-
 
 def hexsmp(coords=None, n=50, source_crs="EPSG:4326", target_crs="EPSG:3857"):
-    """Hexagonal grid sampling
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Hexagonal grid sampling
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if coords is None:
-        coords = np.random.default_rng(0).uniform(-180, 180, (n, 2))
-    stat = float(np.mean(np.linalg.norm(coords, axis=1)))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n_points": len(coords), "source": source_crs, "target": target_crs},
+    raise NotImplementedError(
+        "morie.fn.hexsmp.hexsmp is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

@@ -1,16 +1,10 @@
-"""Tests for morie.fn.xrgwr2 -- GWR local R-squared"""
+"""xrgwr2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.xrgwr2 import gwr_rsquared
 
 
-class TestGwrRsquared:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = gwr_rsquared(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = gwr_rsquared(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_xrgwr2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gwr_rsquared(data=None)

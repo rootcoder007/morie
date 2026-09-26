@@ -1,22 +1,10 @@
-"""Tests for cwwsym.cwt_morlet."""
+"""cwwsym is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.cwwsym import cwt_morlet
 
 
-def test_cwwsym_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    scales = np.random.default_rng(42).normal(0, 1, 100)
-    result = cwt_morlet(y, scales)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_cwwsym_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    scales = np.random.default_rng(42).normal(0, 1, 100)
-    result = cwt_morlet(y, scales)
-    assert isinstance(result, dict)
+def test_cwwsym_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        cwt_morlet(y=None, scales=None)

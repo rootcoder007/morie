@@ -1,20 +1,10 @@
-"""Tests for gelutn.gelu_tanh_approx."""
+"""gelutn is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.gelutn import gelu_tanh_approx
 
 
-def test_gelutn_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = gelu_tanh_approx(y)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_gelutn_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = gelu_tanh_approx(y)
-    assert isinstance(result, dict)
+def test_gelutn_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gelu_tanh_approx(y=None)

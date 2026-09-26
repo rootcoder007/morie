@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zsstn -- Non-separable space-time covariance"""
+"""zsstn is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zsstn import st_cov_nonsep
 
 
-class TestStCovNonsep:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = st_cov_nonsep(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = st_cov_nonsep(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zsstn_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        st_cov_nonsep(data=None)

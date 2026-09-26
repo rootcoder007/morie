@@ -1,14 +1,13 @@
 """Newman modularity matrix B."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["sgt_modularity_matrix"]
 
 
 def sgt_modularity_matrix(A):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Newman modularity matrix B
 
     Formula: B_{ij} = A_{ij} - k_i k_j/(2m)
@@ -27,11 +26,10 @@ def sgt_modularity_matrix(A):
     ----------
     Newman (2006)
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Newman modularity matrix B"})
+    raise NotImplementedError(
+        "morie.fn.sgtmodul.sgt_modularity_matrix is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

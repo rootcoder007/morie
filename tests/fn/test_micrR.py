@@ -1,20 +1,10 @@
-"""Tests for micrR.microsoft_sr."""
+"""micrR is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.micrR import microsoft_sr
 
 
-def test_micrR_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = microsoft_sr(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_micrR_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = microsoft_sr(x)
-    assert isinstance(result, dict)
+def test_micrR_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        microsoft_sr(x=None)

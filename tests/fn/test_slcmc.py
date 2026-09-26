@@ -1,24 +1,10 @@
-"""Tests for slcmc.slice_sampler."""
+"""slcmc is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.slcmc import slice_sampler
 
 
-def test_slcmc_basic():
-    """Test basic functionality."""
-    log_p = np.random.default_rng(42).normal(0, 1, 100)
-    x0 = np.random.default_rng(42).normal(0, 1, 100)
-    width = np.random.default_rng(42).normal(0, 1, 100)
-    result = slice_sampler(log_p, x0, width)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_slcmc_edge():
-    """Test edge cases."""
-    log_p = np.random.default_rng(42).normal(0, 1, 100)
-    x0 = np.random.default_rng(42).normal(0, 1, 100)
-    width = np.random.default_rng(42).normal(0, 1, 100)
-    result = slice_sampler(log_p, x0, width)
-    assert isinstance(result, dict)
+def test_slcmc_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        slice_sampler(log_p=None, x0=None, width=None)

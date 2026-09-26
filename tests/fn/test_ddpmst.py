@@ -1,24 +1,10 @@
-"""Tests for ddpmst.ddpm_step."""
+"""ddpmst is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ddpmst import ddpm_step
 
 
-def test_ddpmst_basic():
-    """Test basic functionality."""
-    x_t = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    eps_theta = np.random.default_rng(42).normal(0, 1, 100)
-    result = ddpm_step(x_t, t, eps_theta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_ddpmst_edge():
-    """Test edge cases."""
-    x_t = np.random.default_rng(42).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    eps_theta = np.random.default_rng(42).normal(0, 1, 100)
-    result = ddpm_step(x_t, t, eps_theta)
-    assert isinstance(result, dict)
+def test_ddpmst_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ddpm_step(x_t=None, t=None, eps_theta=None)

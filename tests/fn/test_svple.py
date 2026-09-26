@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svple -- Esteban-Ray polarization index"""
+"""svple is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svple import polarization_er
 
 
-class TestPolarizationEr:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = polarization_er(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = polarization_er(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svple_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        polarization_er(data=None)

@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zeitv -- Travel time catchment"""
+"""zeitv is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zeitv import travel_time_catch
 
 
-class TestTravelTimeCatch:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = travel_time_catch(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = travel_time_catch(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zeitv_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        travel_time_catch(data=None)

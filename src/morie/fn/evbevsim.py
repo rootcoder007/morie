@@ -1,14 +1,13 @@
 """Simulate from a bivariate extreme-value copula."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["evt_bv_evd_sim"]
 
 
 def evt_bv_evd_sim(alpha, n):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Simulate from a bivariate extreme-value copula
 
     Formula: x_i = -1/log(U_i^{α_i}) per Stephenson
@@ -29,12 +28,9 @@ def evt_bv_evd_sim(alpha, n):
     ----------
     Stephenson (2003)
     """
-    alpha = np.atleast_1d(np.asarray(alpha, dtype=float))
-    n = len(alpha)
-    result = float(np.mean(alpha))
-    se = float(np.std(alpha, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Simulate from a bivariate extreme-value copula"}
+    raise NotImplementedError(
+        "morie.fn.evbevsim.evt_bv_evd_sim is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

@@ -1,20 +1,10 @@
-"""Tests for cdcl.cdcl."""
+"""cdcl is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.cdcl import cdcl
 
 
-def test_cdcl_basic():
-    """Test basic functionality."""
-    cnf = np.random.default_rng(42).normal(0, 1, 100)
-    result = cdcl(cnf)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_cdcl_edge():
-    """Test edge cases."""
-    cnf = np.random.default_rng(42).normal(0, 1, 100)
-    result = cdcl(cnf)
-    assert isinstance(result, dict)
+def test_cdcl_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        cdcl(cnf=None)

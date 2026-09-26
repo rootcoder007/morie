@@ -1,17 +1,10 @@
-"""Tests for morie.fn.mssts -- Kruskal stress S1"""
+"""mssts is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.mssts import stress_s1
 
 
-class TestStressS1:
-    def test_basic(self):
-        rng = np.random.default_rng(42)
-        X = rng.standard_normal((10, 3))
-        result = stress_s1(X)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = stress_s1(np.random.default_rng(0).standard_normal((5, 2)))
-        assert hasattr(result, "value")
+def test_mssts_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        stress_s1(X=None)

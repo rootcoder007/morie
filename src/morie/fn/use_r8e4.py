@@ -1,14 +1,13 @@
 """Dispersion equation extracted from Use R.."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["use_r_chapter_8_equation_4"]
 
 
 def use_r_chapter_8_equation_4(x):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Dispersion equation extracted from Use R.
 
     Formula: [EQ] (Z(si) − Z(si + h))2, ∀h ∈ ˜hj (8.4)
@@ -30,18 +29,9 @@ def use_r_chapter_8_equation_4(x):
     ----------
     Use R, ch.8 eq.8.4
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Dispersion equation extracted from Use R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={"estimate": result, "se": se, "n": n, "method": "Dispersion equation extracted from Use R."},
+    raise NotImplementedError(
+        "morie.fn.use_r8e4.use_r_chapter_8_equation_4 is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

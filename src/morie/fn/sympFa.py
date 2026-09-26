@@ -1,14 +1,13 @@
 """Polynomial factorization."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["sympy_factor"]
 
 
 def sympy_factor(expr):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Polynomial factorization
 
     Formula: Berlekamp-Zassenhaus / Cantor-Zassenhaus
@@ -27,11 +26,10 @@ def sympy_factor(expr):
     ----------
     Cohen (1996) book
     """
-    expr = np.atleast_1d(np.asarray(expr, dtype=float))
-    n = len(expr)
-    result = float(np.mean(expr))
-    se = float(np.std(expr, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Polynomial factorization"})
+    raise NotImplementedError(
+        "morie.fn.sympFa.sympy_factor is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

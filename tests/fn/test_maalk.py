@@ -1,23 +1,10 @@
-"""Test maalk."""
+"""maalk is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.maalk import maalk
 
 
-def test_maalk_basic():
-    rng = np.random.default_rng(42)
-    depth = rng.uniform(0, 5000, 20)
-    temp = rng.uniform(-2, 30, 20)
-    sal = rng.uniform(30, 40, 20)
-    r = maalk(depth=depth, temp=temp, salinity=sal, n=20)
-    assert r.value is not None
-
-
-def test_maalk_description():
-    rng = np.random.default_rng(42)
-    depth = rng.uniform(0, 5000, 20)
-    temp = rng.uniform(-2, 30, 20)
-    sal = rng.uniform(30, 40, 20)
-    r = maalk(depth=depth, temp=temp, salinity=sal, n=20)
-    assert r.name
+def test_maalk_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        maalk()

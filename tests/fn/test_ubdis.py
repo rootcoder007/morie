@@ -1,21 +1,10 @@
-"""Test ubdis."""
+"""ubdis is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ubdis import ubdis
 
 
-def test_ubdis_basic():
-    rng = np.random.default_rng(42)
-    pop = rng.poisson(5000, 20)
-    area = rng.uniform(1, 100, 20)
-    r = ubdis(population=pop, area=area, n=20)
-    assert r.value is not None
-
-
-def test_ubdis_description():
-    rng = np.random.default_rng(42)
-    pop = rng.poisson(5000, 20)
-    area = rng.uniform(1, 100, 20)
-    r = ubdis(population=pop, area=area, n=20)
-    assert r.name
+def test_ubdis_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ubdis()

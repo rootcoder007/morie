@@ -1,22 +1,10 @@
-"""Tests for bayoutl.bayes_outlier."""
+"""bayoutl is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.bayoutl import bayes_outlier
 
 
-def test_bayoutl_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    outlier_prior = np.random.default_rng(42).normal(0, 1, 100)
-    result = bayes_outlier(y, outlier_prior)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_bayoutl_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    outlier_prior = np.random.default_rng(42).normal(0, 1, 100)
-    result = bayes_outlier(y, outlier_prior)
-    assert isinstance(result, dict)
+def test_bayoutl_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        bayes_outlier(y=None, outlier_prior=None)

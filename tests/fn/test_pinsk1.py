@@ -1,22 +1,10 @@
-"""Tests for pinsk1.pinsker_inequality."""
+"""pinsk1 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.pinsk1 import pinsker_inequality
 
 
-def test_pinsk1_basic():
-    """Test basic functionality."""
-    p = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    result = pinsker_inequality(p, q)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_pinsk1_edge():
-    """Test edge cases."""
-    p = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    result = pinsker_inequality(p, q)
-    assert isinstance(result, dict)
+def test_pinsk1_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        pinsker_inequality(p=None, q=None)

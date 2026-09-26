@@ -1,20 +1,10 @@
-"""Tests for raindq.rainbow_dqn."""
+"""raindq is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.raindq import rainbow_dqn
 
 
-def test_raindq_basic():
-    """Test basic functionality."""
-    env = np.random.default_rng(42).normal(0, 1, 100)
-    result = rainbow_dqn(env)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_raindq_edge():
-    """Test edge cases."""
-    env = np.random.default_rng(42).normal(0, 1, 100)
-    result = rainbow_dqn(env)
-    assert isinstance(result, dict)
+def test_raindq_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        rainbow_dqn(env=None)

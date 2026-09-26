@@ -1,14 +1,13 @@
 """Build ILR contrast matrix V from a sequential binary partition."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["aitchison_sbp_basis"]
 
 
 def aitchison_sbp_basis(sign):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Build ILR contrast matrix V from a sequential binary partition
 
     Formula: V from SBP sign matrix per Egozcue & Pawlowsky-Glahn
@@ -27,17 +26,9 @@ def aitchison_sbp_basis(sign):
     ----------
     Egozcue (2005)
     """
-    sign = np.atleast_1d(np.asarray(sign, dtype=float))
-    n = len(sign)
-    result = float(np.mean(sign))
-    se = float(np.std(sign, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Build ILR contrast matrix V from a sequential binary partition",
-        }
+    raise NotImplementedError(
+        "morie.fn.aitsbp.aitchison_sbp_basis is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

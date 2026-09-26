@@ -1,22 +1,12 @@
-"""Tests for statistical_methods_for_spatial_data_analysis1u1455.statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1455."""
+"""statistical_methods_for_spatial_data_analysis1u1455 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.statistical_methods_for_spatial_data_analysis1u1455 import (
     statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1455,
 )
 
 
-def test_statistical_methods_for_spatial_data_analysis1u1455_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1455(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
-
-
-def test_statistical_methods_for_spatial_data_analysis1u1455_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1455(x)
-    assert isinstance(result, dict)
+def test_statistical_methods_for_spatial_data_analysis1u1455_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1455(x=None)

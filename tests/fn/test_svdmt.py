@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svdmt -- Dimensionality test for spatial data"""
+"""svdmt is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svdmt import dim_test
 
 
-class TestDimTest:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = dim_test(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = dim_test(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svdmt_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        dim_test(data=None)

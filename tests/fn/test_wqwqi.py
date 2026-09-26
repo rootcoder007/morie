@@ -1,21 +1,10 @@
-"""Test wqwqi."""
+"""wqwqi is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.wqwqi import wqwqi
 
 
-def test_wqwqi_basic():
-    rng = np.random.default_rng(42)
-    data = rng.uniform(0, 14, 20)
-    coords = rng.uniform(0, 100, (20, 2))
-    r = wqwqi(data=data, coords=coords, n=20)
-    assert r.value is not None
-
-
-def test_wqwqi_description():
-    rng = np.random.default_rng(42)
-    data = rng.uniform(0, 14, 20)
-    coords = rng.uniform(0, 100, (20, 2))
-    r = wqwqi(data=data, coords=coords, n=20)
-    assert r.name
+def test_wqwqi_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        wqwqi()

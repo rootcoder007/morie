@@ -1,24 +1,10 @@
-"""Test hypor."""
+"""hypor is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hypor import hypor
 
 
-def test_hypor_basic():
-    rng = np.random.default_rng(42)
-    flow = np.abs(rng.standard_normal(20)) * 100
-    precip = np.abs(rng.standard_normal(20)) * 50
-    r = hypor(flow=flow, precip=precip, n=20)
-    assert isinstance(r.value, float) and np.isfinite(r.value)
-    assert r.value > 0
-    assert r.value == pytest.approx(np.mean(flow), rel=1e-10)
-
-
-def test_hypor_description():
-    rng = np.random.default_rng(42)
-    flow = np.abs(rng.standard_normal(20)) * 100
-    precip = np.abs(rng.standard_normal(20)) * 50
-    r = hypor(flow=flow, precip=precip, n=20)
-    assert isinstance(r.name, str) and len(r.name) > 0
+def test_hypor_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        hypor()

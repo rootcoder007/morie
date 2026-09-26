@@ -1,14 +1,13 @@
 """Bayesian outlier detection via DP."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["bayes_outlier_dp"]
 
 
 def bayes_outlier_dp(y, alpha):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Bayesian outlier detection via DP
 
     Formula: posterior cluster size = 1 indicates outlier
@@ -29,11 +28,10 @@ def bayes_outlier_dp(y, alpha):
     ----------
     Quintana-Iglesias (2003)
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian outlier detection via DP"})
+    raise NotImplementedError(
+        "morie.fn.bayocl.bayes_outlier_dp is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,20 +1,10 @@
-"""Tests for egan2.egan_filter."""
+"""egan2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.egan2 import egan_filter
 
 
-def test_egan2_basic():
-    """Test basic functionality."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    result = egan_filter(smiles)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_egan2_edge():
-    """Test edge cases."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    result = egan_filter(smiles)
-    assert isinstance(result, dict)
+def test_egan2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        egan_filter(smiles=None)

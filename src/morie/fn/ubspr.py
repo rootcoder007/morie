@@ -4,30 +4,22 @@ Urban sprawl index
 Category: UrbanSp
 """
 
-from . import _array_core as np
-
 
 def ubspr(population=None, area=None, coords=None, n=50):
-    """Urban sprawl index
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Urban sprawl index
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if population is None:
-        population = np.random.default_rng(0).poisson(5000, n)
-    if area is None:
-        area = np.random.default_rng(1).uniform(1, 100, n)
-    if coords is None:
-        coords = np.random.default_rng(2).uniform(0, 100, (n, 2))
-    density = population / area
-    stat = float(np.mean(density))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(population), "mean_density": float(np.mean(density)), "total_pop": int(np.sum(population))},
+    raise NotImplementedError(
+        "morie.fn.ubspr.ubspr is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

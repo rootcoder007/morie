@@ -1,21 +1,10 @@
-"""Test cscir."""
+"""cscir is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.cscir import cscir
 
 
-def test_cscir_basic():
-    rng = np.random.default_rng(42)
-    inc = rng.poisson(20, 20)
-    pop = rng.poisson(5000, 20) + 100
-    r = cscir(incidents=inc, population=pop, n=20)
-    assert r.value is not None
-
-
-def test_cscir_description():
-    rng = np.random.default_rng(42)
-    inc = rng.poisson(20, 20)
-    pop = rng.poisson(5000, 20) + 100
-    r = cscir(incidents=inc, population=pop, n=20)
-    assert r.name
+def test_cscir_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        cscir()

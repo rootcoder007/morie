@@ -1,25 +1,10 @@
-"""Test dk4co."""
+"""dk4co is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.dk4co import dk4co
 
 
-def test_dk4co_basic():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 15)
-    y = rng.uniform(0, 100, 15)
-    z = rng.uniform(0, 50, 15)
-    v = rng.standard_normal(15)
-    r = dk4co(x=x, y=y, z=z, values=v, n=15)
-    assert r.value is not None
-
-
-def test_dk4co_description():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 15)
-    y = rng.uniform(0, 100, 15)
-    z = rng.uniform(0, 50, 15)
-    v = rng.standard_normal(15)
-    r = dk4co(x=x, y=y, z=z, values=v, n=15)
-    assert r.name
+def test_dk4co_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        dk4co()

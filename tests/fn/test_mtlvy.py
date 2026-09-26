@@ -1,21 +1,10 @@
-"""Test mtlvy."""
+"""mtlvy is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.mtlvy import mtlvy
 
 
-def test_mtlvy_basic():
-    rng = np.random.default_rng(42)
-    traj = np.cumsum(rng.standard_normal((25, 2)), axis=0)
-    r = mtlvy(trajectory=traj, n=25)
-    assert isinstance(r.value, float)
-    assert r.value > 0, "Mean step length must be positive"
-    assert np.isfinite(r.value), "Mean step length must be finite"
-
-
-def test_mtlvy_description():
-    rng = np.random.default_rng(42)
-    traj = np.cumsum(rng.standard_normal((25, 2)), axis=0)
-    r = mtlvy(trajectory=traj, n=25)
-    assert r.name
+def test_mtlvy_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        mtlvy()

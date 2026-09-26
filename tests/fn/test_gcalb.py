@@ -1,21 +1,10 @@
-"""Test gcalb."""
+"""gcalb is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.gcalb import gcalb
 
 
-def test_gcalb_basic():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal(30)
-    coords = rng.uniform(0, 100, (30, 2))
-    r = gcalb(data=data, coords=coords, n=30)
-    assert r.value is not None
-
-
-def test_gcalb_description():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal(30)
-    coords = rng.uniform(0, 100, (30, 2))
-    r = gcalb(data=data, coords=coords, n=30)
-    assert r.name
+def test_gcalb_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gcalb()

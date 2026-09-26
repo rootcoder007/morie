@@ -1,26 +1,21 @@
 """Banks set computation"""
 
-from . import _array_core as np
-
-from ._containers import DescriptiveResult
-
 
 def banks_set(data, *, method="default"):
-    """Banks set computation
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Banks set computation
 
     Returns
     -------
     DescriptiveResult
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    mu = float(np.mean(data))
-    var = float(np.var(data, ddof=1)) if n > 1 else 0.0
-    se = float(np.sqrt(var / n)) if n > 0 else 0.0
-    return DescriptiveResult(
-        name="svbnk",
-        value=float(mu) if isinstance(mu, (int, float)) else 0.0,
-        extra={},
+    raise NotImplementedError(
+        "morie.fn.svbnk.banks_set is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

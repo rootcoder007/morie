@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svcwn -- Condorcet winner test"""
+"""svcwn is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svcwn import condorcet_winner
 
 
-class TestCondorcetWinner:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = condorcet_winner(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = condorcet_winner(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svcwn_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        condorcet_winner(data=None)

@@ -1,14 +1,13 @@
 """Perron-Frobenius leading eigenvalue + eigenvector."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["sgt_perron_frobenius"]
 
 
 def sgt_perron_frobenius(M):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Perron-Frobenius leading eigenvalue + eigenvector
 
     Formula: λ_PF = max{|λ_i|}; v_PF >= 0
@@ -27,12 +26,9 @@ def sgt_perron_frobenius(M):
     ----------
     Perron (1907); Frobenius (1908)
     """
-    M = np.atleast_1d(np.asarray(M, dtype=float))
-    n = len(M)
-    result = float(np.mean(M))
-    se = float(np.std(M, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Perron-Frobenius leading eigenvalue + eigenvector"}
+    raise NotImplementedError(
+        "morie.fn.sgtpns.sgt_perron_frobenius is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

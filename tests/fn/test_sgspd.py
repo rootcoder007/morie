@@ -1,13 +1,10 @@
-"""Test sgspd."""
+"""sgspd is a placeholder: it must refuse to run, not return a number."""
+
+import pytest
 
 from morie.fn.sgspd import space_deformation
 
 
-def test_sgspd_basic():
-    r = space_deformation()
-    assert r.statistic is not None
-
-
-def test_sgspd_name():
-    r = space_deformation()
-    assert r.name
+def test_sgspd_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        space_deformation()

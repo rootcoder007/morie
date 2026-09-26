@@ -1,14 +1,13 @@
 """Reliability of GEBV."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["reliability_gebv"]
 
 
 def reliability_gebv(fit):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Reliability of GEBV
 
     Formula: r^2 = 1 - PEV/sigma_a^2
@@ -27,11 +26,10 @@ def reliability_gebv(fit):
     ----------
     Henderson (1984)
     """
-    fit = np.atleast_1d(np.asarray(fit, dtype=float))
-    n = len(fit)
-    result = float(np.mean(fit))
-    se = float(np.std(fit, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Reliability of GEBV"})
+    raise NotImplementedError(
+        "morie.fn.reldge.reliability_gebv is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

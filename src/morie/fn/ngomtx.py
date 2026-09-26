@@ -1,14 +1,13 @@
 """Next-generation matrix R0."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["next_generation_matrix"]
 
 
 def next_generation_matrix(FV_decomposition):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Next-generation matrix R0
 
     Formula: R0 = spectral radius of NGM
@@ -27,11 +26,10 @@ def next_generation_matrix(FV_decomposition):
     ----------
     Diekmann-Heesterbeek-Roberts (2010)
     """
-    FV_decomposition = np.atleast_1d(np.asarray(FV_decomposition, dtype=float))
-    n = len(FV_decomposition)
-    result = float(np.mean(FV_decomposition))
-    se = float(np.std(FV_decomposition, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Next-generation matrix R0"})
+    raise NotImplementedError(
+        "morie.fn.ngomtx.next_generation_matrix is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

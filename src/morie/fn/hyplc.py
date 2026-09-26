@@ -1,14 +1,13 @@
 """Harmonic mean marginal likelihood (cautionary)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["harmonic_mean_estimator"]
 
 
 def harmonic_mean_estimator(log_lik):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Harmonic mean marginal likelihood (cautionary)
 
     Formula: m(y) ≈ ( (1/S) sum_s 1/p(y|theta_s) )^{-1}
@@ -27,12 +26,9 @@ def harmonic_mean_estimator(log_lik):
     ----------
     Newton & Raftery (1994); cf. Neal's pathological
     """
-    log_lik = np.atleast_1d(np.asarray(log_lik, dtype=float))
-    n = len(log_lik)
-    result = float(np.mean(log_lik))
-    se = float(np.std(log_lik, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Harmonic mean marginal likelihood (cautionary)"}
+    raise NotImplementedError(
+        "morie.fn.hyplc.harmonic_mean_estimator is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

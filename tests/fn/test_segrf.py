@@ -1,23 +1,10 @@
-"""Test segrf."""
+"""segrf is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.segrf import segrf
 
 
-def test_segrf_basic():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(5, 20)
-    pop = rng.poisson(1000, 20) + 100
-    coords = rng.uniform(0, 100, (20, 2))
-    r = segrf(cases=cases, population=pop, coords=coords, n=20)
-    assert r.value is not None
-
-
-def test_segrf_description():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(5, 20)
-    pop = rng.poisson(1000, 20) + 100
-    coords = rng.uniform(0, 100, (20, 2))
-    r = segrf(cases=cases, population=pop, coords=coords, n=20)
-    assert r.name
+def test_segrf_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        segrf()

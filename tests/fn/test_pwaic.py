@@ -1,20 +1,10 @@
-"""Tests for pwaic.effective_parameters_waic."""
+"""pwaic is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.pwaic import effective_parameters_waic
 
 
-def test_pwaic_basic():
-    """Test basic functionality."""
-    log_lik = np.random.default_rng(42).normal(0, 1, 100)
-    result = effective_parameters_waic(log_lik)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_pwaic_edge():
-    """Test edge cases."""
-    log_lik = np.random.default_rng(42).normal(0, 1, 100)
-    result = effective_parameters_waic(log_lik)
-    assert isinstance(result, dict)
+def test_pwaic_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        effective_parameters_waic(log_lik=None)

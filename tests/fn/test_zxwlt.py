@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zxwlt -- Spatial wavelet analysis"""
+"""zxwlt is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zxwlt import wavelet_spatial
 
 
-class TestWaveletSpatial:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = wavelet_spatial(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = wavelet_spatial(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_zxwlt_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        wavelet_spatial(data=None)

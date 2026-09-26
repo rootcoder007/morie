@@ -1,19 +1,10 @@
-"""Test sawsp."""
+"""sawsp is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sawsp import sawsp
 
 
-def test_sawsp_basic():
-    rng = np.random.default_rng(42)
-    vals = rng.standard_normal(25)
-    r = sawsp(values=vals, n=25)
-    assert r.value is not None
-
-
-def test_sawsp_description():
-    rng = np.random.default_rng(42)
-    vals = rng.standard_normal(25)
-    r = sawsp(values=vals, n=25)
-    assert r.name
+def test_sawsp_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sawsp()

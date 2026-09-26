@@ -1,25 +1,10 @@
-"""Test dk3vg."""
+"""dk3vg is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.dk3vg import dk3vg
 
 
-def test_dk3vg_basic():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 15)
-    y = rng.uniform(0, 100, 15)
-    z = rng.uniform(0, 50, 15)
-    v = rng.standard_normal(15)
-    r = dk3vg(x=x, y=y, z=z, values=v, n=15)
-    assert r.value is not None
-
-
-def test_dk3vg_description():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 15)
-    y = rng.uniform(0, 100, 15)
-    z = rng.uniform(0, 50, 15)
-    v = rng.standard_normal(15)
-    r = dk3vg(x=x, y=y, z=z, values=v, n=15)
-    assert r.name
+def test_dk3vg_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        dk3vg()

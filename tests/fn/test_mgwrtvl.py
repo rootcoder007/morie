@@ -1,29 +1,10 @@
-"""Tests for morie.fn.mgwrtvl."""
+"""mgwrtvl is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.mgwrtvl import mgwrtvl
 
 
-class TestMgwrtvl:
-    def test_basic(self):
-        np.random.seed(125)
-        coef = np.random.randn(15)
-        se = np.abs(np.random.randn(15)) + 0.1
-        result = mgwrtvl(coef, se)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        np.random.seed(125)
-        coef = np.random.randn(15)
-        se = np.abs(np.random.randn(15)) + 0.1
-        result = mgwrtvl(coef, se)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        np.random.seed(125)
-        coef = np.random.randn(15)
-        se = np.abs(np.random.randn(15)) + 0.1
-        result = mgwrtvl(coef, se)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_mgwrtvl_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        mgwrtvl(coef=None, se=None)

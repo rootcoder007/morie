@@ -1,14 +1,13 @@
 """Expected log predictive density (elpd)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["expected_log_predictive_density"]
 
 
 def expected_log_predictive_density(log_lik):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Expected log predictive density (elpd)
 
     Formula: elpd = E[log p(y_tilde)]
@@ -27,12 +26,9 @@ def expected_log_predictive_density(log_lik):
     ----------
     Vehtari, Gelman, Gabry (2017)
     """
-    log_lik = np.atleast_1d(np.asarray(log_lik, dtype=float))
-    n = len(log_lik)
-    result = float(np.mean(log_lik))
-    se = float(np.std(log_lik, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Expected log predictive density (elpd)"}
+    raise NotImplementedError(
+        "morie.fn.elpdc.expected_log_predictive_density is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

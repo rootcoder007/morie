@@ -1,14 +1,13 @@
 """Thomas cluster process."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["thomas_cluster"]
 
 
 def thomas_cluster(lambda_p, mu, sigma):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Thomas cluster process
 
     Formula: Gaussian-distributed offspring around Poisson parents
@@ -31,11 +30,10 @@ def thomas_cluster(lambda_p, mu, sigma):
     ----------
     Thomas (1949)
     """
-    lambda_p = np.atleast_1d(np.asarray(lambda_p, dtype=float))
-    n = len(lambda_p)
-    result = float(np.mean(lambda_p))
-    se = float(np.std(lambda_p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Thomas cluster process"})
+    raise NotImplementedError(
+        "morie.fn.thmksp.thomas_cluster is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

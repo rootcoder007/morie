@@ -1,11 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SDM sigma-squared ML estimate."""
 
-from ._containers import SpatialResult
-
 
 def sdmsig(resid, n):
-    """SDM sigma-squared ML estimate.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    SDM sigma-squared ML estimate.
 
     Category: SDM
 
@@ -17,11 +20,10 @@ def sdmsig(resid, n):
     -------
     SpatialResult
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="sdmsig", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="sdmsig", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.sdmsig.sdmsig is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 sdmsig_fn = sdmsig

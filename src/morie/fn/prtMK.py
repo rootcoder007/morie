@@ -1,14 +1,13 @@
 """Pre-whitened Mann-Kendall."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["prewhitening_mk"]
 
 
 def prewhitening_mk(x):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Pre-whitened Mann-Kendall
 
     Formula: remove AR(1) before MK
@@ -27,11 +26,10 @@ def prewhitening_mk(x):
     ----------
     Yue-Pilon-Cavadias (2002)
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pre-whitened Mann-Kendall"})
+    raise NotImplementedError(
+        "morie.fn.prtMK.prewhitening_mk is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

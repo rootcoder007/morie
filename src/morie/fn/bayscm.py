@@ -1,14 +1,13 @@
 """BayesC pi."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["bayes_c_pi"]
 
 
 def bayes_c_pi(y, M, pi):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     BayesC pi
 
     Formula: u_j ~ N(0, sigma_b^2) with prob (1-pi); 0 otherwise
@@ -31,11 +30,10 @@ def bayes_c_pi(y, M, pi):
     ----------
     Habier et al (2011)
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BayesC pi"})
+    raise NotImplementedError(
+        "morie.fn.bayscm.bayes_c_pi is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

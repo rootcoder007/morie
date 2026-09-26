@@ -1,26 +1,10 @@
-"""Tests for morie.fn.slxwald."""
+"""slxwald is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.slxwald import slxwald
 
 
-class TestSlxwald:
-    def test_basic(self):
-        theta = np.array([0.1, 0.2])
-        se_theta = np.array([0.05, 0.06])
-        result = slxwald(theta, se_theta)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        theta = np.array([0.1, 0.2])
-        se_theta = np.array([0.05, 0.06])
-        result = slxwald(theta, se_theta)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        theta = np.array([0.1, 0.2])
-        se_theta = np.array([0.05, 0.06])
-        result = slxwald(theta, se_theta)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_slxwald_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        slxwald(theta=None, se_theta=None)

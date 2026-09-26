@@ -1,16 +1,10 @@
-"""Tests for morie.fn.xrlml -- LM test for spatial lag"""
+"""xrlml is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.xrlml import lm_lag
 
 
-class TestLmLag:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = lm_lag(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = lm_lag(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_xrlml_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        lm_lag(data=None)

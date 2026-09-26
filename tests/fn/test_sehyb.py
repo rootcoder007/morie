@@ -1,23 +1,10 @@
-"""Test sehyb."""
+"""sehyb is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sehyb import sehyb
 
 
-def test_sehyb_basic():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(5, 20)
-    pop = rng.poisson(1000, 20) + 100
-    coords = rng.uniform(0, 100, (20, 2))
-    r = sehyb(cases=cases, population=pop, coords=coords, n=20)
-    assert r.value is not None
-
-
-def test_sehyb_description():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(5, 20)
-    pop = rng.poisson(1000, 20) + 100
-    coords = rng.uniform(0, 100, (20, 2))
-    r = sehyb(cases=cases, population=pop, coords=coords, n=20)
-    assert r.name
+def test_sehyb_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sehyb()

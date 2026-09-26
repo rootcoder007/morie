@@ -1,10 +1,13 @@
 """SLX local/global impacts decomposition."""
 
-from ._containers import SpatialResult
-
 
 def slximp(coef, theta):
-    """SLX local/global impacts decomposition.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    SLX local/global impacts decomposition.
 
     Category: SLX
 
@@ -16,11 +19,10 @@ def slximp(coef, theta):
     -------
     SpatialResult
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="slximp", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="slximp", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.slximp.slximp is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 slximp_fn = slximp

@@ -1,15 +1,13 @@
 """CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context).."""
 
-from . import _array_core as np
-from . import _stats_core as stats
-
-from ._richresult import hypothesis_test_result
-
 __all__ = ["cb_chapter_14_equation_1"]
 
 
 def cb_chapter_14_equation_1(x, y=None):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context).
 
     Formula: [EQ] () ()∑
@@ -31,36 +29,9 @@ def cb_chapter_14_equation_1(x, y=None):
     ----------
     Beginner's Guide to Statistics for Criminology and Criminal Justice using R (Wooditch et al., Springer 2021), ch.14 eq.14.1
     """
-    if y is None:
-        # Auto-extracted single-input stub: correlate x against itself so
-        # the call is well-defined instead of raising UnboundLocalError.
-        y = x
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return hypothesis_test_result(
-            test_name="CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context).",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<3: insufficient pairs for correlation."],
-            extra_summary=[("n", n)],
-            extra_payload={
-                "n": n,
-                "method": "CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context).",
-            },
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return hypothesis_test_result(
-        test_name="CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context).",
-        statistic=float(result.statistic),
-        pvalue=float(result.pvalue),
-        extra_summary=[("n", n)],
-        extra_payload={
-            "n": n,
-            "method": "CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context).",
-            "p_value": float(result.pvalue),
-        },
+    raise NotImplementedError(
+        "morie.fn.cb14e1.cb_chapter_14_equation_1 is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

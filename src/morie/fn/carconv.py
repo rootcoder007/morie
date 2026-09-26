@@ -1,13 +1,14 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """CAR rho feasibility bounds."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def carconv(W):
-    """CAR rho feasibility bounds.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    CAR rho feasibility bounds.
 
     Category: CAR
 
@@ -19,14 +20,10 @@ def carconv(W):
     -------
     SpatialResult
     """
-    try:
-        W_arr = np.asarray(W, dtype=float)
-        result = float(np.sum(W_arr))
-        return SpatialResult(name="carconv", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="carconv", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    raise NotImplementedError(
+        "morie.fn.carconv.carconv is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 carconv_fn = carconv

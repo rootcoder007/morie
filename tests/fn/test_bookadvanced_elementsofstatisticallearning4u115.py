@@ -1,22 +1,12 @@
-"""Tests for bookadvanced_elementsofstatisticallearning4u115.bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_115."""
+"""bookadvanced_elementsofstatisticallearning4u115 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.bookadvanced_elementsofstatisticallearning4u115 import (
     bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_115,
 )
 
 
-def test_bookadvanced_elementsofstatisticallearning4u115_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_115(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
-
-
-def test_bookadvanced_elementsofstatisticallearning4u115_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_115(x)
-    assert isinstance(result, dict)
+def test_bookadvanced_elementsofstatisticallearning4u115_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_115(x=None)

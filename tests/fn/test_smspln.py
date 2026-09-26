@@ -1,24 +1,10 @@
-"""Tests for smspln.smoothing_spline."""
+"""smspln is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.smspln import smoothing_spline
 
 
-def test_smspln_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    lam = 0.1
-    result = smoothing_spline(x, y, lam)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_smspln_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    lam = 0.1
-    result = smoothing_spline(x, y, lam)
-    assert isinstance(result, dict)
+def test_smspln_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        smoothing_spline(x=None, y=None, lam=None)

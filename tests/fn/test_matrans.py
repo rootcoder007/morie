@@ -1,20 +1,10 @@
-"""Tests for matrans.ma_logit_transform."""
+"""matrans is a placeholder: it must refuse to run, not return a number."""
+
+import pytest
 
 from morie.fn.matrans import ma_logit_transform
 
 
-def test_matrans_basic():
-    """Test basic functionality."""
-    p = 5
-    n = 100
-    result = ma_logit_transform(p, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_matrans_edge():
-    """Test edge cases."""
-    p = 5
-    n = 100
-    result = ma_logit_transform(p, n)
-    assert isinstance(result, dict)
+def test_matrans_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ma_logit_transform(p=None, n=None)

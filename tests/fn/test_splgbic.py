@@ -1,27 +1,10 @@
-"""Tests for morie.fn.splgbic."""
+"""splgbic is a placeholder: it must refuse to run, not return a number."""
+
+import pytest
 
 from morie.fn.splgbic import splgbic
 
 
-class TestSplgbic:
-    def test_basic(self):
-        ll = -44.0
-        k = 4
-        n = 30
-        result = splgbic(ll, k, n)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        ll = -44.0
-        k = 4
-        n = 30
-        result = splgbic(ll, k, n)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        ll = -44.0
-        k = 4
-        n = 30
-        result = splgbic(ll, k, n)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_splgbic_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        splgbic(ll=None, k=None, n=None)

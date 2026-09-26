@@ -1,27 +1,10 @@
-"""Tests for morie.fn.carbic."""
+"""carbic is a placeholder: it must refuse to run, not return a number."""
+
+import pytest
 
 from morie.fn.carbic import carbic
 
 
-class TestCarbic:
-    def test_basic(self):
-        ll = -55.0
-        k = 3
-        n = 40
-        result = carbic(ll, k, n)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        ll = -55.0
-        k = 3
-        n = 40
-        result = carbic(ll, k, n)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        ll = -55.0
-        k = 3
-        n = 40
-        result = carbic(ll, k, n)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_carbic_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        carbic(ll=None, k=None, n=None)

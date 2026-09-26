@@ -1,20 +1,10 @@
-"""Tests for pdesl.pde_separation."""
+"""pdesl is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.pdesl import pde_separation
 
 
-def test_pdesl_basic():
-    """Test basic functionality."""
-    pde = np.random.default_rng(42).normal(0, 1, 100)
-    result = pde_separation(pde)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_pdesl_edge():
-    """Test edge cases."""
-    pde = np.random.default_rng(42).normal(0, 1, 100)
-    result = pde_separation(pde)
-    assert isinstance(result, dict)
+def test_pdesl_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        pde_separation(pde=None)

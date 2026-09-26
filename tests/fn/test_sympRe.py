@@ -1,20 +1,10 @@
-"""Tests for sympRe.sympy_simplify."""
+"""sympRe is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sympRe import sympy_simplify
 
 
-def test_sympRe_basic():
-    """Test basic functionality."""
-    expr = np.random.default_rng(42).normal(0, 1, 100)
-    result = sympy_simplify(expr)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_sympRe_edge():
-    """Test edge cases."""
-    expr = np.random.default_rng(42).normal(0, 1, 100)
-    result = sympy_simplify(expr)
-    assert isinstance(result, dict)
+def test_sympRe_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sympy_simplify(expr=None)

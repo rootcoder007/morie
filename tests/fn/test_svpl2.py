@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svpl2 -- 2D spatial polarization"""
+"""svpl2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svpl2 import polarization_2d
 
 
-class TestPolarization2d:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = polarization_2d(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = polarization_2d(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svpl2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        polarization_2d(data=None)

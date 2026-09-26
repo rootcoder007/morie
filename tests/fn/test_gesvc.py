@@ -1,21 +1,10 @@
-"""Test gesvc."""
+"""gesvc is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.gesvc import gesvc
 
 
-def test_gesvc_basic():
-    rng = np.random.default_rng(42)
-    gdp = rng.uniform(1000, 100000, 20)
-    trade = rng.uniform(100, 50000, 20)
-    r = gesvc(gdp=gdp, trade=trade, n=20)
-    assert r.value is not None
-
-
-def test_gesvc_description():
-    rng = np.random.default_rng(42)
-    gdp = rng.uniform(1000, 100000, 20)
-    trade = rng.uniform(100, 50000, 20)
-    r = gesvc(gdp=gdp, trade=trade, n=20)
-    assert r.name
+def test_gesvc_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gesvc()

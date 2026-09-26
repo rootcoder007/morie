@@ -1,21 +1,10 @@
-"""Test sr2sl."""
+"""sr2sl is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sr2sl import sr2sl
 
 
-def test_sr2sl_basic():
-    rng = np.random.default_rng(42)
-    X = rng.standard_normal((30, 3))
-    y = X @ np.array([1, -0.5, 0.3]) + rng.standard_normal(30) * 0.5
-    r = sr2sl(X=X, y=y, n=30, k=3)
-    assert r.value is not None
-
-
-def test_sr2sl_description():
-    rng = np.random.default_rng(42)
-    X = rng.standard_normal((30, 3))
-    y = X @ np.array([1, -0.5, 0.3]) + rng.standard_normal(30) * 0.5
-    r = sr2sl(X=X, y=y, n=30, k=3)
-    assert r.name
+def test_sr2sl_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sr2sl()

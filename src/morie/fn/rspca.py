@@ -5,28 +5,22 @@ PCA remote sensing
 Category: RemSens
 """
 
-from . import _array_core as np
-
 
 def rspca(pixels=None, bands=None, n=100):
-    """PCA remote sensing
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    PCA remote sensing
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if pixels is None:
-        pixels = np.random.default_rng(0).uniform(0, 10000, (n, 4))
-    if bands is None:
-        bands = ["blue", "green", "red", "nir"]
-    ndvi = (pixels[:, 3] - pixels[:, 2]) / (pixels[:, 3] + pixels[:, 2] + 1e-10)
-    stat = float(np.mean(ndvi))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n_pixels": len(pixels), "n_bands": len(bands), "mean_ndvi": float(np.mean(ndvi))},
+    raise NotImplementedError(
+        "morie.fn.rspca.rspca is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

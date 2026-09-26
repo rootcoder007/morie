@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svdm2 -- Second dimensionality test"""
+"""svdm2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svdm2 import dim_test_2
 
 
-class TestDimTest2:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = dim_test_2(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = dim_test_2(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svdm2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        dim_test_2(data=None)

@@ -1,14 +1,13 @@
 """Maximum entropy distribution."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["max_entropy"]
 
 
 def max_entropy(constraints):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Maximum entropy distribution
 
     Formula: argmax H(p) s.t. moment constraints
@@ -27,11 +26,10 @@ def max_entropy(constraints):
     ----------
     Jaynes (1957)
     """
-    constraints = np.atleast_1d(np.asarray(constraints, dtype=float))
-    n = len(constraints)
-    result = float(np.mean(constraints))
-    se = float(np.std(constraints, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Maximum entropy distribution"})
+    raise NotImplementedError(
+        "morie.fn.mxtent.max_entropy is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

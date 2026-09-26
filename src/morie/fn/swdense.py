@@ -1,12 +1,13 @@
 """Compute density of spatial weights matrix."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def swdense(W):
-    """Compute density of spatial weights matrix.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Compute density of spatial weights matrix.
 
     Category: Weights
 
@@ -18,14 +19,10 @@ def swdense(W):
     -------
     SpatialResult
     """
-    try:
-        W_arr = np.asarray(W, dtype=float)
-        result = float(np.sum(W_arr))
-        return SpatialResult(name="swdense", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="swdense", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    raise NotImplementedError(
+        "morie.fn.swdense.swdense is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 swdense_fn = swdense

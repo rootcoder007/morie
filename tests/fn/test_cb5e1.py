@@ -1,20 +1,10 @@
-"""Tests for cb5e1.cb_chapter_5_equation_1."""
+"""cb5e1 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.cb5e1 import cb_chapter_5_equation_1
 
 
-def test_cb5e1_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cb_chapter_5_equation_1(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
-
-
-def test_cb5e1_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cb_chapter_5_equation_1(x)
-    assert isinstance(result, dict)
+def test_cb5e1_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        cb_chapter_5_equation_1(x=None)

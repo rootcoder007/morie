@@ -1,20 +1,10 @@
-"""Tests for mwght.molecular_weight."""
+"""mwght is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.mwght import molecular_weight
 
 
-def test_mwght_basic():
-    """Test basic functionality."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    result = molecular_weight(smiles)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_mwght_edge():
-    """Test edge cases."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    result = molecular_weight(smiles)
-    assert isinstance(result, dict)
+def test_mwght_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        molecular_weight(smiles=None)

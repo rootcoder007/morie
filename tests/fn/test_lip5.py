@@ -1,20 +1,10 @@
-"""Tests for lip5.lipinski_rule_of_5."""
+"""lip5 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.lip5 import lipinski_rule_of_5
 
 
-def test_lip5_basic():
-    """Test basic functionality."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    result = lipinski_rule_of_5(smiles)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_lip5_edge():
-    """Test edge cases."""
-    smiles = np.random.default_rng(42).normal(0, 1, 100)
-    result = lipinski_rule_of_5(smiles)
-    assert isinstance(result, dict)
+def test_lip5_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        lipinski_rule_of_5(smiles=None)

@@ -1,14 +1,13 @@
 """OLC long-read assembly."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["olc_assembly"]
 
 
 def olc_assembly(long_reads):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     OLC long-read assembly
 
     Formula: overlap-layout-consensus on long reads
@@ -27,11 +26,10 @@ def olc_assembly(long_reads):
     ----------
     Myers (2005)
     """
-    long_reads = np.atleast_1d(np.asarray(long_reads, dtype=float))
-    n = len(long_reads)
-    result = float(np.mean(long_reads))
-    se = float(np.std(long_reads, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "OLC long-read assembly"})
+    raise NotImplementedError(
+        "morie.fn.asmolc.olc_assembly is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

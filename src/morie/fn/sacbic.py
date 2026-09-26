@@ -1,11 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SAC Bayesian information criterion."""
 
-from ._containers import SpatialResult
-
 
 def sacbic(ll, k, n):
-    """SAC Bayesian information criterion.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    SAC Bayesian information criterion.
 
     Category: SAC
 
@@ -17,11 +20,10 @@ def sacbic(ll, k, n):
     -------
     SpatialResult
     """
-    try:
-        result = float(2 * k + (-2) * ll)
-        return SpatialResult(name="sacbic", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="sacbic", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.sacbic.sacbic is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 sacbic_fn = sacbic

@@ -1,14 +1,13 @@
 """Jordan canonical form."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["jordan_canonical"]
 
 
 def jordan_canonical(A):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Jordan canonical form
 
     Formula: P J P^{-1}; J block-diagonal
@@ -27,11 +26,10 @@ def jordan_canonical(A):
     ----------
     Jordan (1870)
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Jordan canonical form"})
+    raise NotImplementedError(
+        "morie.fn.jordCD.jordan_canonical is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

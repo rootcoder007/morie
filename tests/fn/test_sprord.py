@@ -1,35 +1,10 @@
-"""Tests for morie.fn.sprord."""
+"""sprord is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sprord import sprord
 
 
-class TestSprord:
-    def test_basic(self):
-        np.random.seed(155)
-        n = 25
-        y = np.random.randint(0, 3, n).astype(float)
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.2
-        result = sprord(y, X, W)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        np.random.seed(155)
-        n = 25
-        y = np.random.randint(0, 3, n).astype(float)
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.2
-        result = sprord(y, X, W)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        np.random.seed(155)
-        n = 25
-        y = np.random.randint(0, 3, n).astype(float)
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.2
-        result = sprord(y, X, W)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_sprord_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sprord(y=None, X=None, W=None)

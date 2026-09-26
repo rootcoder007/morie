@@ -1,14 +1,13 @@
 """Log-logistic AFT model."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["log_logistic_aft"]
 
 
 def log_logistic_aft(time, event, X):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Log-logistic AFT model
 
     Formula: log(T) = beta'X + sigma * Z, Z ~ logistic(0,1)
@@ -31,11 +30,10 @@ def log_logistic_aft(time, event, X):
     ----------
     Kalbfleisch & Prentice (2002) §2.2.5
     """
-    time = np.atleast_1d(np.asarray(time, dtype=float))
-    n = len(time)
-    result = float(np.mean(time))
-    se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Log-logistic AFT model"})
+    raise NotImplementedError(
+        "morie.fn.llgaft.log_logistic_aft is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

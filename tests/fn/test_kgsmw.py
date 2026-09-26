@@ -1,16 +1,10 @@
-"""Tests for morie.fn.kgsmw -- Simple kriging weights"""
+"""kgsmw is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.kgsmw import sk_weights
 
 
-class TestSkWeights:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = sk_weights(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = sk_weights(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_kgsmw_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sk_weights(data=None)

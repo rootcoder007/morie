@@ -1,16 +1,10 @@
-"""Tests for morie.fn.mssmm -- SMACOF with missing data"""
+"""mssmm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.mssmm import smacof_missing
 
 
-class TestSmacofMissing:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = smacof_missing(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = smacof_missing(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_mssmm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        smacof_missing(data=None)

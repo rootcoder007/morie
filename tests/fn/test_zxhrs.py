@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zxhrs -- Hierarchical spatial (nested)"""
+"""zxhrs is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zxhrs import hier_spatial_fe
 
 
-class TestHierSpatialFe:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = hier_spatial_fe(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = hier_spatial_fe(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_zxhrs_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        hier_spatial_fe(data=None)

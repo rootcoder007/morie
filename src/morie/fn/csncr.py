@@ -5,30 +5,22 @@ Near-repeat analysis
 Category: CrimSp
 """
 
-from . import _array_core as np
-
 
 def csncr(incidents=None, population=None, coords=None, n=50):
-    """Near-repeat analysis
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Near-repeat analysis
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if incidents is None:
-        incidents = np.random.default_rng(0).poisson(20, n)
-    if population is None:
-        population = np.random.default_rng(1).poisson(5000, n) + 100
-    if coords is None:
-        coords = np.random.default_rng(2).uniform(0, 100, (n, 2))
-    rates = incidents / population * 1000
-    stat = float(np.mean(rates))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(incidents), "total_incidents": int(np.sum(incidents)), "mean_rate": float(np.mean(rates))},
+    raise NotImplementedError(
+        "morie.fn.csncr.csncr is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

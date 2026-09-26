@@ -1,14 +1,13 @@
 """Logit transform for proportion meta-analysis."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["ma_logit_transform"]
 
 
 def ma_logit_transform(p, n):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Logit transform for proportion meta-analysis
 
     Formula: logit(p) = log(p/(1-p)); v = 1/(np) + 1/(n(1-p))
@@ -29,12 +28,9 @@ def ma_logit_transform(p, n):
     ----------
     Nyaga et al. (2014)
     """
-    p = np.atleast_1d(np.asarray(p, dtype=float))
-    n = len(p)
-    result = float(np.mean(p))
-    se = float(np.std(p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Logit transform for proportion meta-analysis"}
+    raise NotImplementedError(
+        "morie.fn.matrans.ma_logit_transform is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

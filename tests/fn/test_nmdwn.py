@@ -1,16 +1,10 @@
-"""Tests for morie.fn.nmdwn -- DW-NOMINATE dynamic estimation"""
+"""nmdwn is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.nmdwn import dwnominate
 
 
-class TestDwnominate:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = dwnominate(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = dwnominate(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_nmdwn_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        dwnominate(data=None)

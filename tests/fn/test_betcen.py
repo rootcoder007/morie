@@ -1,20 +1,10 @@
-"""Tests for betcen.betweenness_centrality."""
+"""betcen is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.betcen import betweenness_centrality
 
 
-def test_betcen_basic():
-    """Test basic functionality."""
-    G = np.eye(10)
-    result = betweenness_centrality(G)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_betcen_edge():
-    """Test edge cases."""
-    G = np.eye(10)
-    result = betweenness_centrality(G)
-    assert isinstance(result, dict)
+def test_betcen_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        betweenness_centrality(G=None)

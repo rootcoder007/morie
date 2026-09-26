@@ -1,24 +1,10 @@
-"""Tests for sdmmod.spatial_durbin."""
+"""sdmmod is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sdmmod import spatial_durbin
 
 
-def test_sdmmod_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    result = spatial_durbin(y, X, W)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_sdmmod_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    result = spatial_durbin(y, X, W)
-    assert isinstance(result, dict)
+def test_sdmmod_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        spatial_durbin(y=None, X=None, W=None)

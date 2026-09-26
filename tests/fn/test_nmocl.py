@@ -1,16 +1,10 @@
-"""Tests for morie.fn.nmocl -- Optimal Classification cutting line"""
+"""nmocl is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.nmocl import oc_cutline
 
 
-class TestOcCutline:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = oc_cutline(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = oc_cutline(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_nmocl_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        oc_cutline(data=None)

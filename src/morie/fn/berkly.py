@@ -1,14 +1,13 @@
 """Berkeley Earth Kriging surface T."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["berkeley_earth"]
 
 
 def berkeley_earth(stations):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Berkeley Earth Kriging surface T
 
     Formula: weighted least squares + variogram
@@ -27,11 +26,10 @@ def berkeley_earth(stations):
     ----------
     Rohde et al (2013)
     """
-    stations = np.atleast_1d(np.asarray(stations, dtype=float))
-    n = len(stations)
-    result = float(np.mean(stations))
-    se = float(np.std(stations, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Berkeley Earth Kriging surface T"})
+    raise NotImplementedError(
+        "morie.fn.berkly.berkeley_earth is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

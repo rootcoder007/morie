@@ -1,19 +1,10 @@
-"""Test saelm."""
+"""saelm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.saelm import saelm
 
 
-def test_saelm_basic():
-    rng = np.random.default_rng(42)
-    vals = rng.standard_normal(25)
-    r = saelm(values=vals, n=25)
-    assert r.value is not None
-
-
-def test_saelm_description():
-    rng = np.random.default_rng(42)
-    vals = rng.standard_normal(25)
-    r = saelm(values=vals, n=25)
-    assert r.name
+def test_saelm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        saelm()

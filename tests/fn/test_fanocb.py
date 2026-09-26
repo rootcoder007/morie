@@ -1,22 +1,10 @@
-"""Tests for fanocb.fano_inequality."""
+"""fanocb is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.fanocb import fano_inequality
 
 
-def test_fanocb_basic():
-    """Test basic functionality."""
-    pe = np.random.default_rng(42).normal(0, 1, 100)
-    X_card = np.random.default_rng(42).normal(0, 1, 100)
-    result = fano_inequality(pe, X_card)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_fanocb_edge():
-    """Test edge cases."""
-    pe = np.random.default_rng(42).normal(0, 1, 100)
-    X_card = np.random.default_rng(42).normal(0, 1, 100)
-    result = fano_inequality(pe, X_card)
-    assert isinstance(result, dict)
+def test_fanocb_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        fano_inequality(pe=None, X_card=None)

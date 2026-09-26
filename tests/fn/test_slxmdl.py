@@ -1,24 +1,10 @@
-"""Tests for slxmdl.slx_model."""
+"""slxmdl is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.slxmdl import slx_model
 
 
-def test_slxmdl_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    result = slx_model(y, X, W)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_slxmdl_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    result = slx_model(y, X, W)
-    assert isinstance(result, dict)
+def test_slxmdl_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        slx_model(y=None, X=None, W=None)

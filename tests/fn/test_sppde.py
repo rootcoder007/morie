@@ -1,35 +1,10 @@
-"""Tests for morie.fn.sppde."""
+"""sppde is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sppde import sppde
 
 
-class TestSppde:
-    def test_basic(self):
-        np.random.seed(134)
-        n = 15
-        T = 3
-        y = np.random.randn(n * T)
-        unit_id = np.tile(np.arange(n), T)
-        result = sppde(y, unit_id)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        np.random.seed(134)
-        n = 15
-        T = 3
-        y = np.random.randn(n * T)
-        unit_id = np.tile(np.arange(n), T)
-        result = sppde(y, unit_id)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        np.random.seed(134)
-        n = 15
-        T = 3
-        y = np.random.randn(n * T)
-        unit_id = np.tile(np.arange(n), T)
-        result = sppde(y, unit_id)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_sppde_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sppde(y=None, unit_id=None)

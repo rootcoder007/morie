@@ -1,23 +1,10 @@
-"""Test canny."""
+"""canny is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.canny import canny
 
 
-def test_canny_basic():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 20)
-    y = rng.uniform(0, 100, 20)
-    v = rng.standard_normal(20)
-    r = canny(x=x, y=y, values=v)
-    assert r.value is not None
-
-
-def test_canny_description():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 20)
-    y = rng.uniform(0, 100, 20)
-    v = rng.standard_normal(20)
-    r = canny(x=x, y=y, values=v)
-    assert r.name
+def test_canny_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        canny()

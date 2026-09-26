@@ -1,63 +1,16 @@
 """Correlation expression (auto-extracted; see ref).."""
 
-from . import _array_core as np
-from . import _stats_core as stats
-
-from ._richresult import hypothesis_test_result
-
 __all__ = ["spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_2_unnumbered_14"]
 
 
 def spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_2_unnumbered_14(x, y=None):
-    if y is None:
-        # Auto-extracted single-input stub: correlate x against itself so
-        # the call is well-defined instead of raising UnboundLocalError.
-        y = x
-    """
-    Correlation expression (auto-extracted; see ref).
-
-    Formula: Section 2.5) that include one or more random effects. Conditional on random effects, bi, theYi are assumed independent, with expectation,E(Yi|bi) = µi = g−1(γi) =
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('spatiotemporal_methods_in_environmental_epidemiology_with_r_2u14')`` for the full guide.
-
-    References
-    ----------
-    spatiotemporal-methods-in-environmental-epidemiology-with-r-chapman-amp-hall-crc-texts-in-statistical-science-2nbsped-1032397810-9781032397818, ch.2 (unnumbered)
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return hypothesis_test_result(
-            test_name="Correlation expression (auto-extracted; see ref).",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<3: insufficient pairs for correlation."],
-            extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Correlation expression (auto-extracted; see ref)."},
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return hypothesis_test_result(
-        test_name="Correlation expression (auto-extracted; see ref).",
-        statistic=float(result.statistic),
-        pvalue=float(result.pvalue),
-        extra_summary=[("n", n)],
-        extra_payload={
-            "n": n,
-            "method": "Correlation expression (auto-extracted; see ref).",
-            "p_value": float(result.pvalue),
-        },
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built."""
+    raise NotImplementedError(
+        "morie.fn.spatiotemporal_methods_in_environmental_epidemiology_with_r_2u14.spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_2_unnumbered_14 is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zxbet -- Betti numbers computation"""
+"""zxbet is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zxbet import betti_numbers
 
 
-class TestBettiNumbers:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = betti_numbers(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = betti_numbers(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_zxbet_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        betti_numbers(data=None)

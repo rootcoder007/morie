@@ -1,20 +1,10 @@
-"""Tests for rnafld.rna_fold."""
+"""rnafld is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.rnafld import rna_fold
 
 
-def test_rnafld_basic():
-    """Test basic functionality."""
-    sequence = np.random.default_rng(42).normal(0, 1, 100)
-    result = rna_fold(sequence)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_rnafld_edge():
-    """Test edge cases."""
-    sequence = np.random.default_rng(42).normal(0, 1, 100)
-    result = rna_fold(sequence)
-    assert isinstance(result, dict)
+def test_rnafld_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        rna_fold(sequence=None)

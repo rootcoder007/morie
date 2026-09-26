@@ -1,11 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """LM Breusch-Pagan test (general heteroskedasticity)."""
 
-from ._containers import SpatialResult
-
 
 def lmbp(resid, X):
-    """LM Breusch-Pagan test (general heteroskedasticity).
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    LM Breusch-Pagan test (general heteroskedasticity).
 
     Category: LM
 
@@ -17,11 +20,10 @@ def lmbp(resid, X):
     -------
     SpatialResult
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="lmbp", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="lmbp", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.lmbp.lmbp is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 lmbp_fn = lmbp

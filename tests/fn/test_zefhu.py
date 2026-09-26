@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zefhu -- Unit-level Fay-Herriot"""
+"""zefhu is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zefhu import fay_herriot_unit
 
 
-class TestFayHerriotUnit:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = fay_herriot_unit(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = fay_herriot_unit(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zefhu_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        fay_herriot_unit(data=None)

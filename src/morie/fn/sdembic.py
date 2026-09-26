@@ -1,11 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SDEM Bayesian information criterion."""
 
-from ._containers import SpatialResult
-
 
 def sdembic(ll, k, n):
-    """SDEM Bayesian information criterion.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    SDEM Bayesian information criterion.
 
     Category: SDEM
 
@@ -17,13 +20,10 @@ def sdembic(ll, k, n):
     -------
     SpatialResult
     """
-    try:
-        result = float(2 * k + (-2) * ll)
-        return SpatialResult(name="sdembic", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="sdembic", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    raise NotImplementedError(
+        "morie.fn.sdembic.sdembic is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 sdembic_fn = sdembic

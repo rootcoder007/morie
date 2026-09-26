@@ -4,34 +4,22 @@
 Category: Spatial
 """
 
-from . import _array_core as np
-
-from ._containers import DescriptiveResult
-
 
 def mdrot(data=None, query=None, origin=None, *, n=50):
-    """Rotation invariance multidim.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Rotation invariance multidim.
 
     Returns
     -------
     DescriptiveResult
     """
-    if data is None:
-        data = np.random.default_rng(0).standard_normal((n, 2))
-    data = np.atleast_2d(np.asarray(data, dtype=float))
-    if query is not None:
-        query = np.asarray(query, dtype=float)
-    if origin is not None:
-        origin = np.asarray(origin, dtype=float)
-    centroid = data.mean(axis=0)
-    if query is not None and origin is not None:
-        stat = float(np.linalg.norm(query - origin))
-    else:
-        stat = float(np.linalg.norm(centroid))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(data), "centroid": centroid.tolist()},
+    raise NotImplementedError(
+        "morie.fn.mdrot.mdrot is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

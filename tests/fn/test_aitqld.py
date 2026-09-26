@@ -1,20 +1,10 @@
-"""Tests for aitqld.compositional_quantile_dist."""
+"""aitqld is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.aitqld import compositional_quantile_dist
 
 
-def test_aitqld_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = compositional_quantile_dist(X)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_aitqld_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = compositional_quantile_dist(X)
-    assert isinstance(result, dict)
+def test_aitqld_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        compositional_quantile_dist(X=None)

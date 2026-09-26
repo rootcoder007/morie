@@ -1,23 +1,10 @@
-"""Test alphsh."""
+"""alphsh is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.alphsh import alphsh
 
 
-def test_alphsh_basic():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 30)
-    y = rng.uniform(0, 100, 30)
-    v = rng.standard_normal(30)
-    r = alphsh(x=x, y=y, values=v)
-    assert r.value is not None
-
-
-def test_alphsh_description():
-    rng = np.random.default_rng(42)
-    x = rng.uniform(0, 100, 30)
-    y = rng.uniform(0, 100, 30)
-    v = rng.standard_normal(30)
-    r = alphsh(x=x, y=y, values=v)
-    assert r.name
+def test_alphsh_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        alphsh()

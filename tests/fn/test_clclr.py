@@ -1,19 +1,10 @@
-"""Test clclr."""
+"""clclr is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.clclr import clclr
 
 
-def test_clclr_basic():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((30, 2))
-    r = clclr(data=data, n=30, k=3)
-    assert r.value is not None
-
-
-def test_clclr_description():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((30, 2))
-    r = clclr(data=data, n=30, k=3)
-    assert r.name
+def test_clclr_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        clclr()

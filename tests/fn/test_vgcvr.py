@@ -1,18 +1,10 @@
-"""Tests for morie.fn.vgcvr -- Covariance matrix from variogram"""
+"""vgcvr is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.vgcvr import covario_matrix
 
 
-class TestCovarioMatrix:
-    def test_basic(self):
-        rng = np.random.default_rng(42)
-        coords = rng.uniform(0, 10, (20, 2))
-        values = rng.standard_normal(20)
-        result = covario_matrix(coords, values)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = covario_matrix(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
-        assert hasattr(result, "statistic")
+def test_vgcvr_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        covario_matrix(coords=None, values=None)

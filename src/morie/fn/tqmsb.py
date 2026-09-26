@@ -1,14 +1,13 @@
 """Theoretical MSE distortion bound for TurboQuant at b bits."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["turboquant_mse_distortion_bound"]
 
 
 def turboquant_mse_distortion_bound(bits):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Theoretical MSE distortion bound for TurboQuant at b bits
 
     Formula: MSE <= c_b * sigma^2;  c_b = Panter-Dite constant for b-bit Lloyd-Max
@@ -27,17 +26,9 @@ def turboquant_mse_distortion_bound(bits):
     ----------
     TurboQuant MORIE integration -- mse_distortion_bound
     """
-    bits = np.atleast_1d(np.asarray(bits, dtype=float))
-    n = len(bits)
-    result = float(np.mean(bits))
-    se = float(np.std(bits, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Theoretical MSE distortion bound for TurboQuant at b bits",
-        }
+    raise NotImplementedError(
+        "morie.fn.tqmsb.turboquant_mse_distortion_bound is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

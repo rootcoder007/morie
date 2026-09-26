@@ -1,22 +1,10 @@
-"""Tests for breakd.breakdown_point."""
+"""breakd is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.breakd import breakdown_point
 
 
-def test_breakd_basic():
-    """Test basic functionality."""
-    estimator = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = breakdown_point(estimator, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_breakd_edge():
-    """Test edge cases."""
-    estimator = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = breakdown_point(estimator, n)
-    assert isinstance(result, dict)
+def test_breakd_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        breakdown_point(estimator=None, n=None)

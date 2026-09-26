@@ -1,28 +1,10 @@
-"""Tests for morie.fn.idpir."""
+"""idpir is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.idpir import idpir
 
 
-class TestIdpir:
-    def test_basic(self):
-        result = idpir(np.array([1.0, 0.0, 1.0, 0.0, 1.0]), np.array([-1.0, -0.5, 0.0, 0.5, 1.0]))
-        assert result is not None
-        assert result.value is not None
-        assert isinstance(result.value, float)
-
-    def test_returns_spatial_result(self):
-        result = idpir(np.array([1.0, 0.0, 1.0, 0.0, 1.0]), np.array([-1.0, -0.5, 0.0, 0.5, 1.0]))
-        assert hasattr(result, "value")
-        assert hasattr(result, "name")
-        assert hasattr(result, "extra")
-
-    def test_finite_output(self):
-        result = idpir(np.array([1.0, 0.0, 1.0, 0.0, 1.0]), np.array([-1.0, -0.5, 0.0, 0.5, 1.0]))
-        assert np.isfinite(result.value)
-
-    def test_name_string(self):
-        result = idpir(np.array([1.0, 0.0, 1.0, 0.0, 1.0]), np.array([-1.0, -0.5, 0.0, 0.5, 1.0]))
-        assert isinstance(result.name, str)
-        assert len(result.name) > 0
+def test_idpir_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        idpir()

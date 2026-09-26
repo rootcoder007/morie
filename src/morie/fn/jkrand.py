@@ -1,14 +1,13 @@
 """Jackknife replicate weights variance."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["jackknife_repl"]
 
 
 def jackknife_repl(theta_replicates):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Jackknife replicate weights variance
 
     Formula: Var = (n-1)/n sum (theta_i - thetabar)^2
@@ -27,11 +26,10 @@ def jackknife_repl(theta_replicates):
     ----------
     Wolter (2007)
     """
-    theta_replicates = np.atleast_1d(np.asarray(theta_replicates, dtype=float))
-    n = len(theta_replicates)
-    result = float(np.mean(theta_replicates))
-    se = float(np.std(theta_replicates, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Jackknife replicate weights variance"})
+    raise NotImplementedError(
+        "morie.fn.jkrand.jackknife_repl is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

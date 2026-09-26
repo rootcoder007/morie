@@ -1,21 +1,10 @@
-"""Test tssop."""
+"""tssop is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.tssop import tssop
 
 
-def test_tssop_basic():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((20, 5))
-    coords = rng.uniform(0, 100, (20, 2))
-    r = tssop(data=data, coords=coords, n=20, t=5)
-    assert r.value is not None
-
-
-def test_tssop_description():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((20, 5))
-    coords = rng.uniform(0, 100, (20, 2))
-    r = tssop(data=data, coords=coords, n=20, t=5)
-    assert r.name
+def test_tssop_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        tssop()

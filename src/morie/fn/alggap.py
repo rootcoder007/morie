@@ -1,14 +1,13 @@
 """Algebraic connectivity (lambda_2 of L)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["algebraic_connectivity"]
 
 
 def algebraic_connectivity(G):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Algebraic connectivity (lambda_2 of L)
 
     Formula: second smallest eigenvalue of Laplacian
@@ -27,12 +26,9 @@ def algebraic_connectivity(G):
     ----------
     Fiedler (1973)
     """
-    G = np.atleast_1d(np.asarray(G, dtype=float))
-    n = len(G)
-    result = float(np.mean(G))
-    se = float(np.std(G, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Algebraic connectivity (lambda_2 of L)"}
+    raise NotImplementedError(
+        "morie.fn.alggap.algebraic_connectivity is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

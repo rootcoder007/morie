@@ -1,20 +1,10 @@
-"""Tests for jrqbq.jarque_bera."""
+"""jrqbq is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.jrqbq import jarque_bera
 
 
-def test_jrqbq_basic():
-    """Test basic functionality."""
-    resid = np.random.default_rng(42).normal(0, 1, 100)
-    result = jarque_bera(resid)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_jrqbq_edge():
-    """Test edge cases."""
-    resid = np.random.default_rng(42).normal(0, 1, 100)
-    result = jarque_bera(resid)
-    assert isinstance(result, dict)
+def test_jrqbq_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        jarque_bera(resid=None)

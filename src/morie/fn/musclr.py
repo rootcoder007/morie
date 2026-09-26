@@ -1,14 +1,13 @@
 """MUSCLE multiple sequence alignment."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["muscle_msa"]
 
 
 def muscle_msa(sequences):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     MUSCLE multiple sequence alignment
 
     Formula: iterative refinement on guide tree
@@ -27,11 +26,10 @@ def muscle_msa(sequences):
     ----------
     Edgar (2004)
     """
-    sequences = np.atleast_1d(np.asarray(sequences, dtype=float))
-    n = len(sequences)
-    result = float(np.mean(sequences))
-    se = float(np.std(sequences, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MUSCLE multiple sequence alignment"})
+    raise NotImplementedError(
+        "morie.fn.musclr.muscle_msa is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

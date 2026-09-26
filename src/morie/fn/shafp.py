@@ -4,29 +4,22 @@ Sharpen filter spatial
 Category: KrigFilt
 """
 
-from . import _array_core as np
-
 
 def shafp(x=None, y=None, values=None, grid_size=20, range_param=30.0, sill=1.0, nugget=0.1):
-    """Sharpen filter spatial
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Sharpen filter spatial
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if x is None:
-        x = np.random.default_rng(0).uniform(0, 100, 30)
-    if y is None:
-        y = np.random.default_rng(1).uniform(0, 100, 30)
-    if values is None:
-        values = np.random.default_rng(2).standard_normal(len(x))
-    stat = float(np.var(values))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n_obs": len(x), "range": range_param, "sill": sill, "nugget": nugget, "grid_size": grid_size},
+    raise NotImplementedError(
+        "morie.fn.shafp.shafp is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

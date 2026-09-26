@@ -1,29 +1,10 @@
-"""Tests for morie.fn.semsig."""
+"""semsig is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.semsig import semsig
 
 
-class TestSemsig:
-    def test_basic(self):
-        np.random.seed(19)
-        resid = np.random.randn(20)
-        n = 20
-        result = semsig(resid, n)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        np.random.seed(19)
-        resid = np.random.randn(20)
-        n = 20
-        result = semsig(resid, n)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        np.random.seed(19)
-        resid = np.random.randn(20)
-        n = 20
-        result = semsig(resid, n)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_semsig_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        semsig(resid=None, n=None)

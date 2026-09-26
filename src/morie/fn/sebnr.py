@@ -5,35 +5,22 @@ Bayesian normal-normal rate
 Category: SpatEpi2
 """
 
-from . import _array_core as np
-
 
 def sebnr(cases=None, population=None, coords=None, n=50):
-    """Bayesian normal-normal rate
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Bayesian normal-normal rate
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if cases is None:
-        cases = np.random.default_rng(0).poisson(5, n)
-    if population is None:
-        population = np.random.default_rng(1).poisson(1000, n) + 100
-    if coords is None:
-        coords = np.random.default_rng(2).uniform(0, 100, (n, 2))
-    rates = cases / population
-    stat = float(np.mean(rates))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={
-            "n_areas": len(cases),
-            "total_cases": int(np.sum(cases)),
-            "total_pop": int(np.sum(population)),
-            "mean_rate": float(np.mean(rates)),
-        },
+    raise NotImplementedError(
+        "morie.fn.sebnr.sebnr is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

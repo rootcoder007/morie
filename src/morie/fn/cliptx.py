@@ -1,14 +1,13 @@
 """CLIP image-text contrastive alignment."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["clip_image_text"]
 
 
 def clip_image_text(images, texts, tau):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     CLIP image-text contrastive alignment
 
     Formula: L = -1/N sum log exp(I_i^T T_i / tau) / sum_j exp(I_i^T T_j / tau)
@@ -31,11 +30,10 @@ def clip_image_text(images, texts, tau):
     ----------
     Radford et al (2021) OpenAI
     """
-    images = np.atleast_1d(np.asarray(images, dtype=float))
-    n = len(images)
-    result = float(np.mean(images))
-    se = float(np.std(images, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "CLIP image-text contrastive alignment"})
+    raise NotImplementedError(
+        "morie.fn.cliptx.clip_image_text is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

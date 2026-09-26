@@ -1,34 +1,10 @@
-"""Tests for tbnbnd."""
+"""tbnbnd is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tbnbnd import tbnbnd
 
 
-def test_tbnbnd_basic():
-    result = tbnbnd()
-    assert hasattr(result, "statistic")
-    assert isinstance(result.statistic, float)
-    assert result.name == "TurningBands-NBands"
-
-
-def test_tbnbnd_with_data():
-    rng = np.random.default_rng(0)
-    data = rng.standard_normal(20)
-    coords = rng.uniform(0, 1, size=(20, 2))
-    result = tbnbnd(data=data, coords=coords, n=20, seed=0)
-    assert result.statistic == pytest.approx(float(np.mean(data)))
-    assert result.extra["n_points"] == 20
-
-
-def test_tbnbnd_no_data():
-    result = tbnbnd(n=50, seed=7)
-    assert result.statistic is not None
-    assert result.extra["n_points"] == 50
-
-
-def test_tbnbnd_alias():
-    from morie.fn.tbnbnd import tbnbnd
-
-    assert tbnbnd is tbnbnd
+def test_tbnbnd_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        tbnbnd()

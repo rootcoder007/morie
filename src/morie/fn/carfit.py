@@ -1,11 +1,14 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """CAR DIC (deviance information criterion)."""
 
-from ._containers import SpatialResult
-
 
 def carfit(ll, p_d):
-    """CAR DIC (deviance information criterion).
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    CAR DIC (deviance information criterion).
 
     Category: CAR
 
@@ -17,11 +20,10 @@ def carfit(ll, p_d):
     -------
     SpatialResult
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="carfit", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="carfit", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.carfit.carfit is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 carfit_fn = carfit

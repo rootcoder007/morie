@@ -1,26 +1,10 @@
-"""Tests for morie.fn.slximp."""
+"""slximp is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.slximp import slximp
 
 
-class TestSlximp:
-    def test_basic(self):
-        coef = np.array([0.5, 0.3])
-        theta = np.array([0.1, 0.2])
-        result = slximp(coef, theta)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        coef = np.array([0.5, 0.3])
-        theta = np.array([0.1, 0.2])
-        result = slximp(coef, theta)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        coef = np.array([0.5, 0.3])
-        theta = np.array([0.1, 0.2])
-        result = slximp(coef, theta)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_slximp_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        slximp(coef=None, theta=None)

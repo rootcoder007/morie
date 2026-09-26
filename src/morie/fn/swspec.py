@@ -1,12 +1,13 @@
 """Spectral radius of W."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def swspec(W):
-    """Spectral radius of W.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Spectral radius of W.
 
     Category: WDiag
 
@@ -18,12 +19,10 @@ def swspec(W):
     -------
     SpatialResult
     """
-    try:
-        W_arr = np.asarray(W, dtype=float)
-        result = float(np.sum(W_arr))
-        return SpatialResult(name="swspec", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="swspec", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.swspec.swspec is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 swspec_fn = swspec

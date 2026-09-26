@@ -1,14 +1,13 @@
 """DSSP secondary structure assignment."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["dssp_secondary"]
 
 
 def dssp_secondary(coords):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     DSSP secondary structure assignment
 
     Formula: hydrogen-bond pattern -> 8-state alphabet
@@ -27,11 +26,10 @@ def dssp_secondary(coords):
     ----------
     Kabsch-Sander (1983)
     """
-    coords = np.atleast_1d(np.asarray(coords, dtype=float))
-    n = len(coords)
-    result = float(np.mean(coords))
-    se = float(np.std(coords, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DSSP secondary structure assignment"})
+    raise NotImplementedError(
+        "morie.fn.dssprt.dssp_secondary is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,14 +1,13 @@
 """Bits per character."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["bits_per_character"]
 
 
 def bits_per_character(log_probs, N):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Bits per character
 
     Formula: BPC = -(1/N) sum log_2 p(x_i)
@@ -29,11 +28,10 @@ def bits_per_character(log_probs, N):
     ----------
     Hutter Prize benchmark
     """
-    log_probs = np.atleast_1d(np.asarray(log_probs, dtype=float))
-    n = len(log_probs)
-    result = float(np.mean(log_probs))
-    se = float(np.std(log_probs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bits per character"})
+    raise NotImplementedError(
+        "morie.fn.bpc.bits_per_character is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,24 +1,10 @@
-"""Tests for yllyear.yll_calculation."""
+"""yllyear is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.yllyear import yll_calculation
 
 
-def test_yllyear_basic():
-    """Test basic functionality."""
-    deaths = np.random.default_rng(42).normal(0, 1, 100)
-    ages = np.random.default_rng(42).normal(0, 1, 100)
-    life_table = np.random.default_rng(42).normal(0, 1, 100)
-    result = yll_calculation(deaths, ages, life_table)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_yllyear_edge():
-    """Test edge cases."""
-    deaths = np.random.default_rng(42).normal(0, 1, 100)
-    ages = np.random.default_rng(42).normal(0, 1, 100)
-    life_table = np.random.default_rng(42).normal(0, 1, 100)
-    result = yll_calculation(deaths, ages, life_table)
-    assert isinstance(result, dict)
+def test_yllyear_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        yll_calculation(deaths=None, ages=None, life_table=None)

@@ -1,14 +1,13 @@
 """Interaction information II(X;Y;Z)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["interaction_information"]
 
 
 def interaction_information(pxyz):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Interaction information II(X;Y;Z)
 
     Formula: II = I(X;Y|Z) - I(X;Y)
@@ -27,11 +26,10 @@ def interaction_information(pxyz):
     ----------
     McGill (1954)
     """
-    pxyz = np.atleast_1d(np.asarray(pxyz, dtype=float))
-    n = len(pxyz)
-    result = float(np.mean(pxyz))
-    se = float(np.std(pxyz, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Interaction information II(X;Y;Z)"})
+    raise NotImplementedError(
+        "morie.fn.intinf.interaction_information is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

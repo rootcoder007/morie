@@ -1,20 +1,10 @@
-"""Tests for rescor.rescore_consensus."""
+"""rescor is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.rescor import rescore_consensus
 
 
-def test_rescor_basic():
-    """Test basic functionality."""
-    scores = np.random.default_rng(42).uniform(0, 1, 100)
-    result = rescore_consensus(scores)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_rescor_edge():
-    """Test edge cases."""
-    scores = np.random.default_rng(42).uniform(0, 1, 100)
-    result = rescore_consensus(scores)
-    assert isinstance(result, dict)
+def test_rescor_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        rescore_consensus(scores=None)

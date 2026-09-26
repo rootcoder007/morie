@@ -1,14 +1,13 @@
 """Finite-sample breakdown point."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["breakdown_point"]
 
 
 def breakdown_point(estimator, n):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Finite-sample breakdown point
 
     Formula: smallest fraction of contamination that ruins estimator
@@ -29,11 +28,10 @@ def breakdown_point(estimator, n):
     ----------
     Donoho-Huber (1983)
     """
-    estimator = np.atleast_1d(np.asarray(estimator, dtype=float))
-    n = len(estimator)
-    result = float(np.mean(estimator))
-    se = float(np.std(estimator, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Finite-sample breakdown point"})
+    raise NotImplementedError(
+        "morie.fn.breakd.breakdown_point is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,20 +1,10 @@
-"""Tests for design_of_observational_studies6u392.design_of_observational_studies_chapter_6_unnumbered_392."""
+"""design_of_observational_studies6u392 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.design_of_observational_studies6u392 import design_of_observational_studies_chapter_6_unnumbered_392
 
 
-def test_design_of_observational_studies6u392_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = design_of_observational_studies_chapter_6_unnumbered_392(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
-
-
-def test_design_of_observational_studies6u392_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = design_of_observational_studies_chapter_6_unnumbered_392(x)
-    assert isinstance(result, dict)
+def test_design_of_observational_studies6u392_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        design_of_observational_studies_chapter_6_unnumbered_392(x=None)

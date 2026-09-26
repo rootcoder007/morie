@@ -1,19 +1,10 @@
-"""Test pprip."""
+"""pprip is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.pprip import pprip
 
 
-def test_pprip_basic():
-    rng = np.random.default_rng(42)
-    pts = rng.uniform(0, 1, (30, 2))
-    r = pprip(points=pts, n=30)
-    assert r.value is not None
-
-
-def test_pprip_description():
-    rng = np.random.default_rng(42)
-    pts = rng.uniform(0, 1, (30, 2))
-    r = pprip(points=pts, n=30)
-    assert r.name
+def test_pprip_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        pprip()

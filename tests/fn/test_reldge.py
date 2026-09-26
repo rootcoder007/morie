@@ -1,20 +1,10 @@
-"""Tests for reldge.reliability_gebv."""
+"""reldge is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.reldge import reliability_gebv
 
 
-def test_reldge_basic():
-    """Test basic functionality."""
-    fit = np.random.default_rng(42).normal(0, 1, 100)
-    result = reliability_gebv(fit)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_reldge_edge():
-    """Test edge cases."""
-    fit = np.random.default_rng(42).normal(0, 1, 100)
-    result = reliability_gebv(fit)
-    assert isinstance(result, dict)
+def test_reldge_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        reliability_gebv(fit=None)

@@ -1,20 +1,10 @@
-"""Tests for cttdis.ctt_discrimination."""
+"""cttdis is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.cttdis import ctt_discrimination
 
 
-def test_cttdis_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = ctt_discrimination(X)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_cttdis_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = ctt_discrimination(X)
-    assert isinstance(result, dict)
+def test_cttdis_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ctt_discrimination(X=None)

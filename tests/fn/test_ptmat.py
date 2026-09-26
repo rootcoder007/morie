@@ -1,16 +1,10 @@
-"""Tests for morie.fn.ptmat -- Matern cluster process"""
+"""ptmat is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ptmat import matern_process
 
 
-class TestMaternProcess:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = matern_process(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = matern_process(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_ptmat_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        matern_process(data=None)

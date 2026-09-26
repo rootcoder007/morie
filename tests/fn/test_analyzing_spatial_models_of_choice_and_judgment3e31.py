@@ -1,22 +1,12 @@
-"""Tests for analyzing_spatial_models_of_choice_and_judgment3e31.analyzing_spatial_models_of_choice_and_judgment_chapter_3_equation_31."""
+"""analyzing_spatial_models_of_choice_and_judgment3e31 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.analyzing_spatial_models_of_choice_and_judgment3e31 import (
     analyzing_spatial_models_of_choice_and_judgment_chapter_3_equation_31,
 )
 
 
-def test_analyzing_spatial_models_of_choice_and_judgment3e31_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = analyzing_spatial_models_of_choice_and_judgment_chapter_3_equation_31(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_analyzing_spatial_models_of_choice_and_judgment3e31_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = analyzing_spatial_models_of_choice_and_judgment_chapter_3_equation_31(x)
-    assert isinstance(result, dict)
+def test_analyzing_spatial_models_of_choice_and_judgment3e31_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        analyzing_spatial_models_of_choice_and_judgment_chapter_3_equation_31(x=None)

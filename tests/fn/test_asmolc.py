@@ -1,20 +1,10 @@
-"""Tests for asmolc.olc_assembly."""
+"""asmolc is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.asmolc import olc_assembly
 
 
-def test_asmolc_basic():
-    """Test basic functionality."""
-    long_reads = np.random.default_rng(42).normal(0, 1, 100)
-    result = olc_assembly(long_reads)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_asmolc_edge():
-    """Test edge cases."""
-    long_reads = np.random.default_rng(42).normal(0, 1, 100)
-    result = olc_assembly(long_reads)
-    assert isinstance(result, dict)
+def test_asmolc_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        olc_assembly(long_reads=None)

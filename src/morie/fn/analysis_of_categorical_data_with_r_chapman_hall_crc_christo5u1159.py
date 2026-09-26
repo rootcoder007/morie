@@ -1,15 +1,13 @@
 """Correlation expression (auto-extracted; see ref).."""
 
-from . import _array_core as np
-from . import _stats_core as stats
-
-from ._richresult import hypothesis_test_result
-
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1159"]
 
 
 def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1159(x, y=None):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Correlation expression (auto-extracted; see ref).
 
     Formula: ao - Scott LRT sta tist ic = 11.96 , df = 5.23 , p = 0.0409
@@ -31,33 +29,9 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnum
     ----------
     Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ), ch.5 (unnumbered)
     """
-    if y is None:
-        # Auto-extracted single-input stub: correlate x against itself so
-        # the call is well-defined instead of raising UnboundLocalError.
-        y = x
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return hypothesis_test_result(
-            test_name="Correlation expression (auto-extracted; see ref).",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<3: insufficient pairs for correlation."],
-            extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Correlation expression (auto-extracted; see ref)."},
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return hypothesis_test_result(
-        test_name="Correlation expression (auto-extracted; see ref).",
-        statistic=float(result.statistic),
-        pvalue=float(result.pvalue),
-        extra_summary=[("n", n)],
-        extra_payload={
-            "n": n,
-            "method": "Correlation expression (auto-extracted; see ref).",
-            "p_value": float(result.pvalue),
-        },
+    raise NotImplementedError(
+        "morie.fn.analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1159.analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1159 is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

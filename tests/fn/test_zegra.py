@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zegra -- Gravity-based accessibility"""
+"""zegra is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zegra import gravity_access
 
 
-class TestGravityAccess:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = gravity_access(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = gravity_access(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zegra_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gravity_access(data=None)

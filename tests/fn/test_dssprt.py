@@ -1,20 +1,10 @@
-"""Tests for dssprt.dssp_secondary."""
+"""dssprt is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.dssprt import dssp_secondary
 
 
-def test_dssprt_basic():
-    """Test basic functionality."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    result = dssp_secondary(coords)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_dssprt_edge():
-    """Test edge cases."""
-    coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
-    result = dssp_secondary(coords)
-    assert isinstance(result, dict)
+def test_dssprt_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        dssp_secondary(coords=None)

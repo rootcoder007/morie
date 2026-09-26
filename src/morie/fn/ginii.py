@@ -1,15 +1,14 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Gini impurity for classification tree splits."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["gini_impurity"]
 
 
 def gini_impurity(class_probs):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Gini impurity for classification tree splits
 
     Formula: Gini(t) = 1 - sum_k p_k^2; p_k = proportion class k at node t
@@ -28,12 +27,9 @@ def gini_impurity(class_probs):
     ----------
     Montesinos Lopez Ch 15
     """
-    class_probs = np.atleast_1d(np.asarray(class_probs, dtype=float))
-    n = len(class_probs)
-    result = float(np.mean(class_probs))
-    se = float(np.std(class_probs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Gini impurity for classification tree splits"}
+    raise NotImplementedError(
+        "morie.fn.ginii.gini_impurity is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

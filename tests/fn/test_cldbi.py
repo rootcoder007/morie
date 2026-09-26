@@ -1,19 +1,10 @@
-"""Test cldbi."""
+"""cldbi is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.cldbi import cldbi
 
 
-def test_cldbi_basic():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((30, 2))
-    r = cldbi(data=data, n=30, k=3)
-    assert r.value is not None
-
-
-def test_cldbi_description():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((30, 2))
-    r = cldbi(data=data, n=30, k=3)
-    assert r.name
+def test_cldbi_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        cldbi()

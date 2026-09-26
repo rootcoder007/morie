@@ -1,20 +1,10 @@
-"""Tests for elpdc.expected_log_predictive_density."""
+"""elpdc is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.elpdc import expected_log_predictive_density
 
 
-def test_elpdc_basic():
-    """Test basic functionality."""
-    log_lik = np.random.default_rng(42).normal(0, 1, 100)
-    result = expected_log_predictive_density(log_lik)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_elpdc_edge():
-    """Test edge cases."""
-    log_lik = np.random.default_rng(42).normal(0, 1, 100)
-    result = expected_log_predictive_density(log_lik)
-    assert isinstance(result, dict)
+def test_elpdc_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        expected_log_predictive_density(log_lik=None)

@@ -1,14 +1,13 @@
 """Topological polar surface area (TPSA)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["polar_surface_area"]
 
 
 def polar_surface_area(smiles):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Topological polar surface area (TPSA)
 
     Formula: sum tabulated PSA contributions per polar atom
@@ -27,11 +26,10 @@ def polar_surface_area(smiles):
     ----------
     Ertl-Rohde-Selzer (2000)
     """
-    smiles = np.atleast_1d(np.asarray(smiles, dtype=float))
-    n = len(smiles)
-    result = float(np.mean(smiles))
-    se = float(np.std(smiles, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Topological polar surface area (TPSA)"})
+    raise NotImplementedError(
+        "morie.fn.psar2.polar_surface_area is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

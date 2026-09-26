@@ -1,12 +1,13 @@
 """Spectral coherence simulation for cross-fields."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def spccoh(data=None, coords=None, n=100, seed=42, **kwargs):
-    """Spectral coherence simulation for cross-fields
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Spectral coherence simulation for cross-fields
 
     Parameters
     ----------
@@ -25,20 +26,9 @@ def spccoh(data=None, coords=None, n=100, seed=42, **kwargs):
     -------
     SpatialResult
     """
-    rng = np.random.default_rng(seed)
-    if coords is None:
-        coords = rng.uniform(0, 1, size=(n, 2))
-    coords = np.asarray(coords, dtype=float)
-    if data is not None:
-        data = np.asarray(data, dtype=float)
-        statistic = float(np.mean(data))
-    else:
-        statistic = float(rng.standard_normal())
-    return SpatialResult(
-        name="SpectralSim-Coherence",
-        statistic=statistic,
-        p_value=None,
-        extra={"n_points": int(coords.shape[0])},
+    raise NotImplementedError(
+        "morie.fn.spccoh.spccoh is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

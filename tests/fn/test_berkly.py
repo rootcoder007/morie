@@ -1,20 +1,10 @@
-"""Tests for berkly.berkeley_earth."""
+"""berkly is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.berkly import berkeley_earth
 
 
-def test_berkly_basic():
-    """Test basic functionality."""
-    stations = np.random.default_rng(42).normal(0, 1, 100)
-    result = berkeley_earth(stations)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_berkly_edge():
-    """Test edge cases."""
-    stations = np.random.default_rng(42).normal(0, 1, 100)
-    result = berkeley_earth(stations)
-    assert isinstance(result, dict)
+def test_berkly_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        berkeley_earth(stations=None)

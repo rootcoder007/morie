@@ -1,21 +1,10 @@
-"""Test csseq."""
+"""csseq is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.csseq import csseq
 
 
-def test_csseq_basic():
-    rng = np.random.default_rng(42)
-    inc = rng.poisson(20, 20)
-    pop = rng.poisson(5000, 20) + 100
-    r = csseq(incidents=inc, population=pop, n=20)
-    assert r.value is not None
-
-
-def test_csseq_description():
-    rng = np.random.default_rng(42)
-    inc = rng.poisson(20, 20)
-    pop = rng.poisson(5000, 20) + 100
-    r = csseq(incidents=inc, population=pop, n=20)
-    assert r.name
+def test_csseq_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        csseq()

@@ -1,13 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SDM maximum-likelihood estimation."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def sdmml(y, X, W):
-    """SDM maximum-likelihood estimation.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    SDM maximum-likelihood estimation.
 
     Category: SDM
 
@@ -19,12 +20,10 @@ def sdmml(y, X, W):
     -------
     SpatialResult
     """
-    try:
-        n = len(y)
-        result = float(np.dot(y, np.dot(W, y)) / (np.dot(y, y) + 1e-12))
-        return SpatialResult(name="sdmml", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="sdmml", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.sdmml.sdmml is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 sdmml_fn = sdmml

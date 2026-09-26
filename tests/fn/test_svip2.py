@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svip2 -- 2D ideal point estimation"""
+"""svip2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svip2 import ideal_point_2d
 
 
-class TestIdealPoint2d:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = ideal_point_2d(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = ideal_point_2d(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svip2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ideal_point_2d(data=None)

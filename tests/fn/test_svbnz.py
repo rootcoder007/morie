@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svbnz -- Banzhaf power index spatial"""
+"""svbnz is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svbnz import banzhaf_spatial
 
 
-class TestBanzhafSpatial:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = banzhaf_spatial(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = banzhaf_spatial(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svbnz_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        banzhaf_spatial(data=None)

@@ -1,14 +1,13 @@
 """PolarQuant radius+angle decomposition of a d-dim vector."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["turboquant_polar_transform"]
 
 
 def turboquant_polar_transform(x):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     PolarQuant radius+angle decomposition of a d-dim vector
 
     Formula: r = ||x||_2;  theta_i = atan2(x_{i+1}, x_i)  for successive pairs;  x = (r, theta)
@@ -27,17 +26,9 @@ def turboquant_polar_transform(x):
     ----------
     TurboQuant MORIE integration -- morie/quant.py polar_transform
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "PolarQuant radius+angle decomposition of a d-dim vector",
-        }
+    raise NotImplementedError(
+        "morie.fn.tqpol.turboquant_polar_transform is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

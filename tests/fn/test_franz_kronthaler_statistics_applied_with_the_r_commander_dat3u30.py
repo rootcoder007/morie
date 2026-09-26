@@ -1,22 +1,12 @@
-"""Tests for franz_kronthaler_statistics_applied_with_the_r_commander_dat3u30.franz_kronthaler_statistics_applied_with_the_r_commander_dat_chapter_3_unnumbered_30."""
+"""franz_kronthaler_statistics_applied_with_the_r_commander_dat3u30 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.franz_kronthaler_statistics_applied_with_the_r_commander_dat3u30 import (
     franz_kronthaler_statistics_applied_with_the_r_commander_dat_chapter_3_unnumbered_30,
 )
 
 
-def test_franz_kronthaler_statistics_applied_with_the_r_commander_dat3u30_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = franz_kronthaler_statistics_applied_with_the_r_commander_dat_chapter_3_unnumbered_30(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
-
-
-def test_franz_kronthaler_statistics_applied_with_the_r_commander_dat3u30_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = franz_kronthaler_statistics_applied_with_the_r_commander_dat_chapter_3_unnumbered_30(x)
-    assert isinstance(result, dict)
+def test_franz_kronthaler_statistics_applied_with_the_r_commander_dat3u30_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        franz_kronthaler_statistics_applied_with_the_r_commander_dat_chapter_3_unnumbered_30(x=None)

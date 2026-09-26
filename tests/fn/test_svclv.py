@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svclv -- Coalition value in spatial game"""
+"""svclv is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svclv import coalition_value
 
 
-class TestCoalitionValue:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = coalition_value(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = coalition_value(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svclv_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        coalition_value(data=None)

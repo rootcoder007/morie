@@ -1,14 +1,13 @@
 """SiLU / Swish activation."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["silu_swish"]
 
 
 def silu_swish(y):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     SiLU / Swish activation
 
     Formula: SiLU(x) = x * sigmoid(x)
@@ -27,11 +26,10 @@ def silu_swish(y):
     ----------
     Elfwing, Uchibe, Doya (2018); Ramachandran et al. (2017) Swish
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SiLU / Swish activation"})
+    raise NotImplementedError(
+        "morie.fn.silu.silu_swish is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,14 +1,13 @@
 """Mauna Loa CO₂ trend (Keeling curve)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["co2_trend"]
 
 
 def co2_trend(co2_monthly):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Mauna Loa CO₂ trend (Keeling curve)
 
     Formula: long-term + seasonal cycle decomposition
@@ -27,11 +26,10 @@ def co2_trend(co2_monthly):
     ----------
     Keeling (1960)
     """
-    co2_monthly = np.atleast_1d(np.asarray(co2_monthly, dtype=float))
-    n = len(co2_monthly)
-    result = float(np.mean(co2_monthly))
-    se = float(np.std(co2_monthly, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mauna Loa CO₂ trend (Keeling curve)"})
+    raise NotImplementedError(
+        "morie.fn.co2Trnd.co2_trend is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

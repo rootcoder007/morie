@@ -1,23 +1,10 @@
-"""Test gdemg."""
+"""gdemg is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.gdemg import gdemg
 
 
-def test_gdemg_basic():
-    rng = np.random.default_rng(42)
-    pop = rng.poisson(10000, 20)
-    births = rng.poisson(100, 20)
-    deaths = rng.poisson(80, 20)
-    r = gdemg(population=pop, births=births, deaths=deaths, n=20)
-    assert r.value is not None
-
-
-def test_gdemg_description():
-    rng = np.random.default_rng(42)
-    pop = rng.poisson(10000, 20)
-    births = rng.poisson(100, 20)
-    deaths = rng.poisson(80, 20)
-    r = gdemg(population=pop, births=births, deaths=deaths, n=20)
-    assert r.name
+def test_gdemg_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gdemg()

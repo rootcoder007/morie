@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zsrng -- Random non-Gaussian field"""
+"""zsrng is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zsrng import random_nongauss
 
 
-class TestRandomNongauss:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = random_nongauss(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = random_nongauss(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zsrng_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        random_nongauss(data=None)

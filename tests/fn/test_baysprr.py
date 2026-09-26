@@ -1,24 +1,10 @@
-"""Tests for baysprr.sparsity_horseshoe."""
+"""baysprr is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.baysprr import sparsity_horseshoe
 
 
-def test_baysprr_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    tau = 0.1
-    result = sparsity_horseshoe(X, y, tau)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_baysprr_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    tau = 0.1
-    result = sparsity_horseshoe(X, y, tau)
-    assert isinstance(result, dict)
+def test_baysprr_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sparsity_horseshoe(X=None, y=None, tau=None)

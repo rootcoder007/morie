@@ -1,14 +1,13 @@
 """Theta method."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["theta_method"]
 
 
 def theta_method(y, theta):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Theta method
 
     Formula: decomp into θ-lines; combine SES + linear regression
@@ -29,11 +28,10 @@ def theta_method(y, theta):
     ----------
     Assimakopoulos-Nikolopoulos (2000)
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Theta method"})
+    raise NotImplementedError(
+        "morie.fn.thetaF.theta_method is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

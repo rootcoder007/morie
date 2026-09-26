@@ -1,18 +1,10 @@
-"""Tests for shorE.shor_factoring."""
+"""shorE is a placeholder: it must refuse to run, not return a number."""
+
+import pytest
 
 from morie.fn.shorE import shor_factoring
 
 
-def test_shorE_basic():
-    """Test basic functionality."""
-    N = 100
-    result = shor_factoring(N)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_shorE_edge():
-    """Test edge cases."""
-    N = 100
-    result = shor_factoring(N)
-    assert isinstance(result, dict)
+def test_shorE_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        shor_factoring(N=None)

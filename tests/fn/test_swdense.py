@@ -1,23 +1,10 @@
-"""Tests for morie.fn.swdense."""
+"""swdense is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.swdense import swdense
 
 
-class TestSwdense:
-    def test_basic(self):
-        W = np.array([[0, 1, 1], [1, 0, 0], [1, 0, 0]], dtype=float)
-        result = swdense(W)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        W = np.array([[0, 1, 1], [1, 0, 0], [1, 0, 0]], dtype=float)
-        result = swdense(W)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        W = np.array([[0, 1, 1], [1, 0, 0], [1, 0, 0]], dtype=float)
-        result = swdense(W)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_swdense_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        swdense(W=None)

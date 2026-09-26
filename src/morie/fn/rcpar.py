@@ -4,26 +4,22 @@
 Category: Spatial
 """
 
-from . import _array_core as np
-
-from ._containers import DescriptiveResult
-
 
 def rcpar(data=None, n=50):
-    """Party cue roll call model.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Party cue roll call model.
 
     Returns
     -------
     DescriptiveResult
     """
-    if data is None:
-        data = np.random.default_rng(0).standard_normal(n)
-    data = np.atleast_1d(data)
-    stat = float(np.mean(data))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(data), "mean": float(np.mean(data)), "std": float(np.std(data))},
+    raise NotImplementedError(
+        "morie.fn.rcpar.rcpar is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

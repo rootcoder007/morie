@@ -1,21 +1,10 @@
-"""Test trbkl."""
+"""trbkl is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.trbkl import trbkl
 
 
-def test_trbkl_basic():
-    rng = np.random.default_rng(42)
-    flow = rng.poisson(500, 20)
-    tt = rng.uniform(5, 60, 20)
-    r = trbkl(flow_volume=flow, travel_time=tt, n=20)
-    assert r.value is not None
-
-
-def test_trbkl_description():
-    rng = np.random.default_rng(42)
-    flow = rng.poisson(500, 20)
-    tt = rng.uniform(5, 60, 20)
-    r = trbkl(flow_volume=flow, travel_time=tt, n=20)
-    assert r.name
+def test_trbkl_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        trbkl()

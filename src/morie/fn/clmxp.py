@@ -5,36 +5,22 @@ Max-p spatial cluster
 Category: ClstSp
 """
 
-from . import _array_core as np
-
 
 def clmxp(data=None, n=50, k=3, coords=None):
-    """Max-p spatial cluster
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Max-p spatial cluster
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if data is None:
-        data = np.random.default_rng(0).standard_normal((n, 2))
-    if coords is None:
-        coords = data[:, :2] if data.shape[1] >= 2 else np.random.default_rng(1).uniform(0, 100, (n, 2))
-    centers = data[np.random.default_rng(2).choice(len(data), k, replace=False)]
-    dists = np.sqrt(np.sum((data[:, None] - centers[None, :]) ** 2, axis=-1))
-    labels = np.argmin(dists, axis=1)
-    inertia = float(np.sum(np.min(dists, axis=1) ** 2))
-    stat = float(inertia)
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={
-            "n_points": len(data),
-            "k": k,
-            "inertia": float(inertia),
-            "label_counts": [int(np.sum(labels == i)) for i in range(k)],
-        },
+    raise NotImplementedError(
+        "morie.fn.clmxp.clmxp is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

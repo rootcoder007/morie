@@ -1,20 +1,10 @@
-"""Tests for galois.galois_group."""
+"""galois is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.galois import galois_group
 
 
-def test_galois_basic():
-    """Test basic functionality."""
-    poly = np.random.default_rng(42).normal(0, 1, 100)
-    result = galois_group(poly)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_galois_edge():
-    """Test edge cases."""
-    poly = np.random.default_rng(42).normal(0, 1, 100)
-    result = galois_group(poly)
-    assert isinstance(result, dict)
+def test_galois_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        galois_group(poly=None)

@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svnbg -- Nash bargaining in spatial game"""
+"""svnbg is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svnbg import nash_bargain_sp
 
 
-class TestNashBargainSp:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = nash_bargain_sp(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = nash_bargain_sp(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svnbg_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        nash_bargain_sp(data=None)

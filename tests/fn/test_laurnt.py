@@ -1,24 +1,10 @@
-"""Tests for laurnt.laurent_series."""
+"""laurnt is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.laurnt import laurent_series
 
 
-def test_laurnt_basic():
-    """Test basic functionality."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    order = 4
-    result = laurent_series(f, c, order)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_laurnt_edge():
-    """Test edge cases."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    order = 4
-    result = laurent_series(f, c, order)
-    assert isinstance(result, dict)
+def test_laurnt_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        laurent_series(f=None, c=None, order=None)

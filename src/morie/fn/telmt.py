@@ -1,14 +1,13 @@
 """Concept-drift detection (DDM)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["telemetry_drift"]
 
 
 def telemetry_drift(error_stream):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Concept-drift detection (DDM)
 
     Formula: monitor error rate p_t and σ_t
@@ -27,11 +26,10 @@ def telemetry_drift(error_stream):
     ----------
     Gama et al (2004) DDM
     """
-    error_stream = np.atleast_1d(np.asarray(error_stream, dtype=float))
-    n = len(error_stream)
-    result = float(np.mean(error_stream))
-    se = float(np.std(error_stream, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Concept-drift detection (DDM)"})
+    raise NotImplementedError(
+        "morie.fn.telmt.telemetry_drift is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,16 +1,10 @@
-"""Tests for morie.fn.xrgwk -- GWR kernel function"""
+"""xrgwk is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.xrgwk import gwr_kernel
 
 
-class TestGwrKernel:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = gwr_kernel(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = gwr_kernel(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_xrgwk_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gwr_kernel(data=None)

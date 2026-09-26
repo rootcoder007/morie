@@ -1,14 +1,13 @@
 """Girvan-Newman edge-betweenness."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["girvan_newman"]
 
 
 def girvan_newman(G):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Girvan-Newman edge-betweenness
 
     Formula: iteratively remove highest-betweenness edge
@@ -27,11 +26,10 @@ def girvan_newman(G):
     ----------
     Girvan-Newman (2002)
     """
-    G = np.atleast_1d(np.asarray(G, dtype=float))
-    n = len(G)
-    result = float(np.mean(G))
-    se = float(np.std(G, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Girvan-Newman edge-betweenness"})
+    raise NotImplementedError(
+        "morie.fn.comgir.girvan_newman is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

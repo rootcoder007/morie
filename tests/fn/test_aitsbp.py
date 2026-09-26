@@ -1,20 +1,10 @@
-"""Tests for aitsbp.aitchison_sbp_basis."""
+"""aitsbp is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.aitsbp import aitchison_sbp_basis
 
 
-def test_aitsbp_basic():
-    """Test basic functionality."""
-    sign = np.random.default_rng(42).normal(0, 1, 100)
-    result = aitchison_sbp_basis(sign)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_aitsbp_edge():
-    """Test edge cases."""
-    sign = np.random.default_rng(42).normal(0, 1, 100)
-    result = aitchison_sbp_basis(sign)
-    assert isinstance(result, dict)
+def test_aitsbp_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        aitchison_sbp_basis(sign=None)

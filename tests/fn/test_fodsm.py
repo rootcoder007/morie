@@ -1,21 +1,10 @@
-"""Test fodsm."""
+"""fodsm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.fodsm import fodsm
 
 
-def test_fodsm_basic():
-    rng = np.random.default_rng(42)
-    dbh = rng.uniform(5, 80, 20)
-    ht = rng.uniform(3, 40, 20)
-    r = fodsm(dbh=dbh, height=ht, n=20)
-    assert r.value is not None
-
-
-def test_fodsm_description():
-    rng = np.random.default_rng(42)
-    dbh = rng.uniform(5, 80, 20)
-    ht = rng.uniform(3, 40, 20)
-    r = fodsm(dbh=dbh, height=ht, n=20)
-    assert r.name
+def test_fodsm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        fodsm()

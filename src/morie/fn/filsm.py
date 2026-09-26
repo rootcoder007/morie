@@ -5,33 +5,22 @@ FILTERSIM MPS method
 Category: SpatialPat
 """
 
-from . import _array_core as np
-
 
 def filsm(points=None, n=100, window=(0, 100, 0, 100)):
-    """FILTERSIM MPS method
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    FILTERSIM MPS method
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if points is None:
-        points = np.column_stack(
-            [
-                np.random.default_rng(0).uniform(window[0], window[1], n),
-                np.random.default_rng(1).uniform(window[2], window[3], n),
-            ]
-        )
-    dists = np.sqrt(np.sum((points[:, None] - points[None, :]) ** 2, axis=-1))
-    np.fill_diagonal(dists, np.inf)
-    nn_dists = np.min(dists, axis=1)
-    stat = float(np.mean(nn_dists))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(points), "mean_nn_dist": float(np.mean(nn_dists)), "window": window},
+    raise NotImplementedError(
+        "morie.fn.filsm.filsm is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

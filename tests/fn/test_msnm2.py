@@ -1,16 +1,10 @@
-"""Tests for morie.fn.msnm2 -- Nonmetric MDS 2D"""
+"""msnm2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.msnm2 import nonmetric_2d
 
 
-class TestNonmetric2d:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = nonmetric_2d(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = nonmetric_2d(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_msnm2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        nonmetric_2d(data=None)

@@ -4,25 +4,22 @@
 Category: Spatial
 """
 
-from . import _array_core as np
-
-from ._containers import DescriptiveResult
-
 
 def mpens(data=None, n=50):
-    """Effective number of parties.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Effective number of parties.
 
     Returns
     -------
     DescriptiveResult
     """
-    if data is None:
-        data = np.random.default_rng(0).standard_normal(n)
-    stat = float(np.mean(data))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(data), "mean": float(np.mean(data)), "std": float(np.std(data))},
+    raise NotImplementedError(
+        "morie.fn.mpens.mpens is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

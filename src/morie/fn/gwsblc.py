@@ -1,14 +1,13 @@
 """GWAS results across blocks."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["gwas_block_combine"]
 
 
 def gwas_block_combine(block_results):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     GWAS results across blocks
 
     Formula: meta-analysis of per-block stats
@@ -27,11 +26,10 @@ def gwas_block_combine(block_results):
     ----------
     de Bakker et al (2008)
     """
-    block_results = np.atleast_1d(np.asarray(block_results, dtype=float))
-    n = len(block_results)
-    result = float(np.mean(block_results))
-    se = float(np.std(block_results, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GWAS results across blocks"})
+    raise NotImplementedError(
+        "morie.fn.gwsblc.gwas_block_combine is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

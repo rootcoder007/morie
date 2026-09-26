@@ -1,14 +1,13 @@
 """Estrada communicability matrix exp(A)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["sgt_communicability_matrix"]
 
 
 def sgt_communicability_matrix(A):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Estrada communicability matrix exp(A)
 
     Formula: C = exp(A)
@@ -27,11 +26,10 @@ def sgt_communicability_matrix(A):
     ----------
     Estrada-Hatano (2008)
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Estrada communicability matrix exp(A)"})
+    raise NotImplementedError(
+        "morie.fn.sgtcom2.sgt_communicability_matrix is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

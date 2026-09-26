@@ -1,11 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SEM Akaike information criterion."""
 
-from ._containers import SpatialResult
-
 
 def semaic(ll, k, n):
-    """SEM Akaike information criterion.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    SEM Akaike information criterion.
 
     Category: SEM
 
@@ -17,11 +20,10 @@ def semaic(ll, k, n):
     -------
     SpatialResult
     """
-    try:
-        result = float(2 * k + (-2) * ll)
-        return SpatialResult(name="semaic", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="semaic", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.semaic.semaic is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 semaic_fn = semaic

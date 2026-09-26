@@ -1,15 +1,13 @@
 """Association expression (auto-extracted; see ref).."""
 
-from . import _array_core as np
-from . import _stats_core as stats
-
-from ._richresult import hypothesis_test_result
-
 __all__ = ["spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnumbered_278"]
 
 
 def spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnumbered_278(x, y=None):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Association expression (auto-extracted; see ref).
 
     Formula: Let φ = 1/V be the observational precision. Define, at time t = 0, a normalgamma prior distribution for p(Z0, φ|D0) by Z0|D0,V∼ N(m0,V C∗
@@ -31,33 +29,9 @@ def spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnum
     ----------
     spatiotemporal-methods-in-environmental-epidemiology-with-r-chapman-amp-hall-crc-texts-in-statistical-science-2nbsped-1032397810-9781032397818, ch.9 (unnumbered)
     """
-    if y is None:
-        # Auto-extracted single-input stub: correlate x against itself so
-        # the call is well-defined instead of raising UnboundLocalError.
-        y = x
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return hypothesis_test_result(
-            test_name="Association expression (auto-extracted; see ref).",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<3: insufficient pairs for correlation."],
-            extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Association expression (auto-extracted; see ref)."},
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return hypothesis_test_result(
-        test_name="Association expression (auto-extracted; see ref).",
-        statistic=float(result.statistic),
-        pvalue=float(result.pvalue),
-        extra_summary=[("n", n)],
-        extra_payload={
-            "n": n,
-            "method": "Association expression (auto-extracted; see ref).",
-            "p_value": float(result.pvalue),
-        },
+    raise NotImplementedError(
+        "morie.fn.spatiotemporal_methods_in_environmental_epidemiology_with_r_9u278.spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnumbered_278 is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

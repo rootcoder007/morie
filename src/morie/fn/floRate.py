@@ -1,14 +1,13 @@
 """Flow-duration curve."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["flow_duration"]
 
 
 def flow_duration(Q):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Flow-duration curve
 
     Formula: sorted Q_t vs exceedance probability
@@ -27,11 +26,10 @@ def flow_duration(Q):
     ----------
     Vogel-Fennessey (1995)
     """
-    Q = np.atleast_1d(np.asarray(Q, dtype=float))
-    n = len(Q)
-    result = float(np.mean(Q))
-    se = float(np.std(Q, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Flow-duration curve"})
+    raise NotImplementedError(
+        "morie.fn.floRate.flow_duration is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

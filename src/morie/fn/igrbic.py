@@ -1,11 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gravity model BIC."""
 
-from ._containers import SpatialResult
-
 
 def igrbic(ll, k, n):
-    """Gravity model BIC.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Gravity model BIC.
 
     Category: Gravity
 
@@ -17,11 +20,10 @@ def igrbic(ll, k, n):
     -------
     SpatialResult
     """
-    try:
-        result = float(2 * k + (-2) * ll)
-        return SpatialResult(name="igrbic", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="igrbic", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.igrbic.igrbic is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 igrbic_fn = igrbic

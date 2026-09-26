@@ -1,14 +1,13 @@
 """CTT item difficulty."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["ctt_difficulty"]
 
 
 def ctt_difficulty(X):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     CTT item difficulty
 
     Formula: p_j = mean(X_j)
@@ -27,11 +26,10 @@ def ctt_difficulty(X):
     ----------
     Nunnally-Bernstein (1994)
     """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "CTT item difficulty"})
+    raise NotImplementedError(
+        "morie.fn.cttdif.ctt_difficulty is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

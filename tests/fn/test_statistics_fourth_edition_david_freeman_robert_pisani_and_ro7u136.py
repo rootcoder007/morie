@@ -1,22 +1,12 @@
-"""Tests for statistics_fourth_edition_david_freeman_robert_pisani_and_ro7u136.statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_7_unnumbered_136."""
+"""statistics_fourth_edition_david_freeman_robert_pisani_and_ro7u136 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.statistics_fourth_edition_david_freeman_robert_pisani_and_ro7u136 import (
     statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_7_unnumbered_136,
 )
 
 
-def test_statistics_fourth_edition_david_freeman_robert_pisani_and_ro7u136_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_7_unnumbered_136(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
-
-
-def test_statistics_fourth_edition_david_freeman_robert_pisani_and_ro7u136_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_7_unnumbered_136(x)
-    assert isinstance(result, dict)
+def test_statistics_fourth_edition_david_freeman_robert_pisani_and_ro7u136_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_7_unnumbered_136(x=None)

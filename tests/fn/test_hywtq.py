@@ -1,21 +1,10 @@
-"""Test hywtq."""
+"""hywtq is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.hywtq import hywtq
 
 
-def test_hywtq_basic():
-    rng = np.random.default_rng(42)
-    flow = np.abs(rng.standard_normal(20)) * 100
-    precip = np.abs(rng.standard_normal(20)) * 50
-    r = hywtq(flow=flow, precip=precip, n=20)
-    assert r.value is not None
-
-
-def test_hywtq_description():
-    rng = np.random.default_rng(42)
-    flow = np.abs(rng.standard_normal(20)) * 100
-    precip = np.abs(rng.standard_normal(20)) * 50
-    r = hywtq(flow=flow, precip=precip, n=20)
-    assert r.name
+def test_hywtq_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        hywtq()

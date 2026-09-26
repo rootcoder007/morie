@@ -1,14 +1,13 @@
 """Ghose drug-like filter."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["ghose_filter"]
 
 
 def ghose_filter(smiles):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Ghose drug-like filter
 
     Formula: 160≤MW≤480, -0.4≤LogP≤5.6, 40≤MR≤130, 20≤atoms≤70
@@ -27,11 +26,10 @@ def ghose_filter(smiles):
     ----------
     Ghose-Viswanadhan-Wendoloski (1999)
     """
-    smiles = np.atleast_1d(np.asarray(smiles, dtype=float))
-    n = len(smiles)
-    result = float(np.mean(smiles))
-    se = float(np.std(smiles, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Ghose drug-like filter"})
+    raise NotImplementedError(
+        "morie.fn.ghoste.ghose_filter is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

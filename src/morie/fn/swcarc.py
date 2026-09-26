@@ -1,12 +1,13 @@
 """Cardinality (neighbours count) for each unit."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def swcarc(W):
-    """Cardinality (neighbours count) for each unit.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Cardinality (neighbours count) for each unit.
 
     Category: WDiag
 
@@ -18,12 +19,10 @@ def swcarc(W):
     -------
     SpatialResult
     """
-    try:
-        W_arr = np.asarray(W, dtype=float)
-        result = float(np.sum(W_arr))
-        return SpatialResult(name="swcarc", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="swcarc", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.swcarc.swcarc is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 swcarc_fn = swcarc

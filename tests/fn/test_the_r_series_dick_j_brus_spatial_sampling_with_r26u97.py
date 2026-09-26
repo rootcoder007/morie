@@ -1,22 +1,12 @@
-"""Tests for the_r_series_dick_j_brus_spatial_sampling_with_r26u97.the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_unnumbered_97."""
+"""the_r_series_dick_j_brus_spatial_sampling_with_r26u97 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r26u97 import (
     the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_unnumbered_97,
 )
 
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r26u97_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_unnumbered_97(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
-
-
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r26u97_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_unnumbered_97(x)
-    assert isinstance(result, dict)
+def test_the_r_series_dick_j_brus_spatial_sampling_with_r26u97_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_unnumbered_97(x=None)

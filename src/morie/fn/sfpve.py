@@ -1,10 +1,13 @@
 """Proportion of variance explained by eigenvectors."""
 
-from ._containers import SpatialResult
-
 
 def sfpve(y, evecs):
-    """Proportion of variance explained by eigenvectors.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Proportion of variance explained by eigenvectors.
 
     Category: SFilter
 
@@ -16,11 +19,10 @@ def sfpve(y, evecs):
     -------
     SpatialResult
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="sfpve", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="sfpve", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.sfpve.sfpve is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 sfpve_fn = sfpve

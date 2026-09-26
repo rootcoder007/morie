@@ -1,16 +1,10 @@
-"""Tests for morie.fn.kgorv -- Ordinary kriging variance"""
+"""kgorv is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.kgorv import ok_variance
 
 
-class TestOkVariance:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = ok_variance(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = ok_variance(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_kgorv_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ok_variance(data=None)

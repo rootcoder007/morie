@@ -1,14 +1,13 @@
 """Pan-assay interference compound filter (PAINS)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["pains_filter"]
 
 
 def pains_filter(smiles):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Pan-assay interference compound filter (PAINS)
 
     Formula: 480 SMARTS patterns flagging promiscuous binders
@@ -27,12 +26,9 @@ def pains_filter(smiles):
     ----------
     Baell-Holloway (2010)
     """
-    smiles = np.atleast_1d(np.asarray(smiles, dtype=float))
-    n = len(smiles)
-    result = float(np.mean(smiles))
-    se = float(np.std(smiles, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Pan-assay interference compound filter (PAINS)"}
+    raise NotImplementedError(
+        "morie.fn.pains3.pains_filter is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

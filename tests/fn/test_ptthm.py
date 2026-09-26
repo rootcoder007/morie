@@ -1,16 +1,10 @@
-"""Tests for morie.fn.ptthm -- Thomas cluster process"""
+"""ptthm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ptthm import thomas_process
 
 
-class TestThomasProcess:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = thomas_process(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = thomas_process(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_ptthm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        thomas_process(data=None)

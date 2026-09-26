@@ -1,14 +1,13 @@
 """Galois group of polynomial."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["galois_group"]
 
 
 def galois_group(poly):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Galois group of polynomial
 
     Formula: compute via resolvents / Stauduhar
@@ -27,11 +26,10 @@ def galois_group(poly):
     ----------
     Galois (1832)
     """
-    poly = np.atleast_1d(np.asarray(poly, dtype=float))
-    n = len(poly)
-    result = float(np.mean(poly))
-    se = float(np.std(poly, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Galois group of polynomial"})
+    raise NotImplementedError(
+        "morie.fn.galois.galois_group is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

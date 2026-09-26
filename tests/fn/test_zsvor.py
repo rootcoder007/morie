@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zsvor -- Voronoi polygon areas"""
+"""zsvor is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zsvor import voronoi_areas
 
 
-class TestVoronoiAreas:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = voronoi_areas(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = voronoi_areas(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zsvor_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        voronoi_areas(data=None)

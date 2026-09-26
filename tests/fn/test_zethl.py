@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zethl -- Spatial Theil decomposition"""
+"""zethl is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zethl import theil_spatial
 
 
-class TestTheilSpatial:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = theil_spatial(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = theil_spatial(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zethl_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        theil_spatial(data=None)

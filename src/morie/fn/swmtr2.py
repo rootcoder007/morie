@@ -1,12 +1,13 @@
 """Trace of W^2."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def swmtr2(W):
-    """Trace of W^2.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Trace of W^2.
 
     Category: WDiag
 
@@ -18,12 +19,10 @@ def swmtr2(W):
     -------
     SpatialResult
     """
-    try:
-        W_arr = np.asarray(W, dtype=float)
-        result = float(np.sum(W_arr))
-        return SpatialResult(name="swmtr2", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="swmtr2", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.swmtr2.swmtr2 is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 swmtr2_fn = swmtr2

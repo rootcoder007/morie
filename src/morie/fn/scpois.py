@@ -1,13 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spatial Poisson SAR regression."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def scpois(y, X, W):
-    """Spatial Poisson SAR regression.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Spatial Poisson SAR regression.
 
     Category: SCount
 
@@ -19,12 +20,10 @@ def scpois(y, X, W):
     -------
     SpatialResult
     """
-    try:
-        n = len(y)
-        result = float(np.dot(y, np.dot(W, y)) / (np.dot(y, y) + 1e-12))
-        return SpatialResult(name="scpois", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="scpois", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.scpois.scpois is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 scpois_fn = scpois

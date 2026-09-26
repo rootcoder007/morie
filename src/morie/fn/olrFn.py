@@ -1,14 +1,13 @@
 """OLR parameterization."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["outgoing_longwave"]
 
 
 def outgoing_longwave(T_s):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     OLR parameterization
 
     Formula: OLR = A + B T_s
@@ -27,11 +26,10 @@ def outgoing_longwave(T_s):
     ----------
     Budyko (1969)
     """
-    T_s = np.atleast_1d(np.asarray(T_s, dtype=float))
-    n = len(T_s)
-    result = float(np.mean(T_s))
-    se = float(np.std(T_s, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "OLR parameterization"})
+    raise NotImplementedError(
+        "morie.fn.olrFn.outgoing_longwave is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,14 +1,13 @@
 """Quasi-Biennial Oscillation."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["qbo"]
 
 
 def qbo(U30):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Quasi-Biennial Oscillation
 
     Formula: 30 hPa zonal wind at equator
@@ -27,11 +26,10 @@ def qbo(U30):
     ----------
     Reed et al (1961)
     """
-    U30 = np.atleast_1d(np.asarray(U30, dtype=float))
-    n = len(U30)
-    result = float(np.mean(U30))
-    se = float(np.std(U30, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quasi-Biennial Oscillation"})
+    raise NotImplementedError(
+        "morie.fn.qboIdx.qbo is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,14 +1,13 @@
 """Identity-by-state matrix."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["ibs_matrix"]
 
 
 def ibs_matrix(genotypes):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Identity-by-state matrix
 
     Formula: per-pair shared allele count / total
@@ -27,11 +26,10 @@ def ibs_matrix(genotypes):
     ----------
     Purcell et al (2007) PLINK
     """
-    genotypes = np.atleast_1d(np.asarray(genotypes, dtype=float))
-    n = len(genotypes)
-    result = float(np.mean(genotypes))
-    se = float(np.std(genotypes, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Identity-by-state matrix"})
+    raise NotImplementedError(
+        "morie.fn.ibsmtx.ibs_matrix is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

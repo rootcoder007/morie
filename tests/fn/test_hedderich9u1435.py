@@ -1,20 +1,10 @@
-"""Tests for hedderich9u1435.hedderich_chapter_9_unnumbered_1435."""
+"""hedderich9u1435 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.hedderich9u1435 import hedderich_chapter_9_unnumbered_1435
 
 
-def test_hedderich9u1435_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = hedderich_chapter_9_unnumbered_1435(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
-
-
-def test_hedderich9u1435_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = hedderich_chapter_9_unnumbered_1435(x)
-    assert isinstance(result, dict)
+def test_hedderich9u1435_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        hedderich_chapter_9_unnumbered_1435(x=None)

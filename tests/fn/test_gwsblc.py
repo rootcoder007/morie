@@ -1,20 +1,10 @@
-"""Tests for gwsblc.gwas_block_combine."""
+"""gwsblc is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.gwsblc import gwas_block_combine
 
 
-def test_gwsblc_basic():
-    """Test basic functionality."""
-    block_results = np.random.default_rng(42).normal(0, 1, 100)
-    result = gwas_block_combine(block_results)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_gwsblc_edge():
-    """Test edge cases."""
-    block_results = np.random.default_rng(42).normal(0, 1, 100)
-    result = gwas_block_combine(block_results)
-    assert isinstance(result, dict)
+def test_gwsblc_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gwas_block_combine(block_results=None)

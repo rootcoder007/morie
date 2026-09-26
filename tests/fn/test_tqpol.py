@@ -1,20 +1,10 @@
-"""Tests for tqpol.turboquant_polar_transform."""
+"""tqpol is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.tqpol import turboquant_polar_transform
 
 
-def test_tqpol_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = turboquant_polar_transform(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_tqpol_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = turboquant_polar_transform(x)
-    assert isinstance(result, dict)
+def test_tqpol_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        turboquant_polar_transform(x=None)

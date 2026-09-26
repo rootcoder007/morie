@@ -1,20 +1,10 @@
-"""Tests for wilcox7e2.wilcox_chapter_7_equation_2."""
+"""wilcox7e2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.wilcox7e2 import wilcox_chapter_7_equation_2
 
 
-def test_wilcox7e2_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = wilcox_chapter_7_equation_2(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
-
-
-def test_wilcox7e2_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = wilcox_chapter_7_equation_2(x)
-    assert isinstance(result, dict)
+def test_wilcox7e2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        wilcox_chapter_7_equation_2(x=None)

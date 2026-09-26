@@ -1,16 +1,10 @@
-"""Tests for morie.fn.ptpcf -- Pair correlation function g(r)"""
+"""ptpcf is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ptpcf import pair_corr_fn
 
 
-class TestPairCorrFn:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = pair_corr_fn(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = pair_corr_fn(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_ptpcf_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        pair_corr_fn(data=None)

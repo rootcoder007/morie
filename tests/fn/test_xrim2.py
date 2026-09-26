@@ -1,16 +1,10 @@
-"""Tests for morie.fn.xrim2 -- SDM impacts decomposition"""
+"""xrim2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.xrim2 import sdm_impacts
 
 
-class TestSdmImpacts:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = sdm_impacts(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = sdm_impacts(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_xrim2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sdm_impacts(data=None)

@@ -1,16 +1,10 @@
-"""Tests for morie.fn.nmrcm -- Roll call matrix construction"""
+"""nmrcm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.nmrcm import roll_call_matrix
 
 
-class TestRollCallMatrix:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = roll_call_matrix(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = roll_call_matrix(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_nmrcm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        roll_call_matrix(data=None)

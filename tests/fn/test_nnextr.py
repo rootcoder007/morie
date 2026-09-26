@@ -1,34 +1,10 @@
-"""Tests for nnextr."""
+"""nnextr is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.nnextr import nnextr
 
 
-def test_nnextr_basic():
-    result = nnextr()
-    assert hasattr(result, "statistic")
-    assert isinstance(result.statistic, float)
-    assert result.name == "NatNeighbor-Extrapolation"
-
-
-def test_nnextr_with_data():
-    rng = np.random.default_rng(0)
-    data = rng.standard_normal(20)
-    coords = rng.uniform(0, 1, size=(20, 2))
-    result = nnextr(data=data, coords=coords, n=20, seed=0)
-    assert result.statistic == pytest.approx(float(np.mean(data)))
-    assert result.extra["n_points"] == 20
-
-
-def test_nnextr_no_data():
-    result = nnextr(n=50, seed=7)
-    assert result.statistic is not None
-    assert result.extra["n_points"] == 50
-
-
-def test_nnextr_alias():
-    from morie.fn.nnextr import nnextr
-
-    assert nnextr is nnextr
+def test_nnextr_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        nnextr()

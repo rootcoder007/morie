@@ -1,16 +1,10 @@
-"""Tests for morie.fn.xrwkr -- Kernel weights"""
+"""xrwkr is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.xrwkr import w_kernel
 
 
-class TestWKernel:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = w_kernel(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = w_kernel(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_xrwkr_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        w_kernel(data=None)

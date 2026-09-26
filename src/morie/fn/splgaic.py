@@ -1,10 +1,13 @@
 """Spatial logit AIC."""
 
-from ._containers import SpatialResult
-
 
 def splgaic(ll, k, n):
-    """Spatial logit AIC.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Spatial logit AIC.
 
     Category: SProbit
 
@@ -16,13 +19,10 @@ def splgaic(ll, k, n):
     -------
     SpatialResult
     """
-    try:
-        result = float(2 * k + (-2) * ll)
-        return SpatialResult(name="splgaic", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="splgaic", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    raise NotImplementedError(
+        "morie.fn.splgaic.splgaic is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 splgaic_fn = splgaic

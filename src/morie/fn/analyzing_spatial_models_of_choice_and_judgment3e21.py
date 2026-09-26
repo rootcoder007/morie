@@ -1,14 +1,13 @@
 """Spatial equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment.."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["analyzing_spatial_models_of_choice_and_judgment_chapter_3_equation_21"]
 
 
 def analyzing_spatial_models_of_choice_and_judgment_chapter_3_equation_21(x):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Spatial equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment.
 
     Formula: D∗zi = Dzi + E = (diagZWi Z f )Jqf − 2ZWi Z f + Jq (diagZWi Z f )f + Ei   (3.21)
@@ -30,23 +29,9 @@ def analyzing_spatial_models_of_choice_and_judgment_chapter_3_equation_21(x):
     ----------
     Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment, ch.3 eq.3.21
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Spatial equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Spatial equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment.",
-        },
+    raise NotImplementedError(
+        "morie.fn.analyzing_spatial_models_of_choice_and_judgment3e21.analyzing_spatial_models_of_choice_and_judgment_chapter_3_equation_21 is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

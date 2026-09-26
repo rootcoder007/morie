@@ -1,14 +1,13 @@
 """Bayesian shrinkage (horseshoe / Laplace)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["shrinkage_bayes"]
 
 
 def shrinkage_bayes(X, y, prior_family):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Bayesian shrinkage (horseshoe / Laplace)
 
     Formula: beta_j ~ N(0, lambda_j tau); lambda_j ~ C+(0,1)
@@ -31,12 +30,9 @@ def shrinkage_bayes(X, y, prior_family):
     ----------
     Carvalho-Polson-Scott (2010) horseshoe
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Bayesian shrinkage (horseshoe / Laplace)"}
+    raise NotImplementedError(
+        "morie.fn.shrinkbm.shrinkage_bayes is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

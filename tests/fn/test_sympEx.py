@@ -1,20 +1,10 @@
-"""Tests for sympEx.sympy_expand."""
+"""sympEx is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.sympEx import sympy_expand
 
 
-def test_sympEx_basic():
-    """Test basic functionality."""
-    expr = np.random.default_rng(42).normal(0, 1, 100)
-    result = sympy_expand(expr)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_sympEx_edge():
-    """Test edge cases."""
-    expr = np.random.default_rng(42).normal(0, 1, 100)
-    result = sympy_expand(expr)
-    assert isinstance(result, dict)
+def test_sympEx_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sympy_expand(expr=None)

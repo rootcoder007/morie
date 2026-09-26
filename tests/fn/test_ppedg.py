@@ -1,19 +1,10 @@
-"""Test ppedg."""
+"""ppedg is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ppedg import ppedg
 
 
-def test_ppedg_basic():
-    rng = np.random.default_rng(42)
-    pts = rng.uniform(0, 1, (30, 2))
-    r = ppedg(points=pts, n=30)
-    assert r.value is not None
-
-
-def test_ppedg_description():
-    rng = np.random.default_rng(42)
-    pts = rng.uniform(0, 1, (30, 2))
-    r = ppedg(points=pts, n=30)
-    assert r.name
+def test_ppedg_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ppedg()

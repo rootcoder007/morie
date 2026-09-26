@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zxfpc -- Spatial functional PCA"""
+"""zxfpc is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zxfpc import fpca_spatial
 
 
-class TestFpcaSpatial:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = fpca_spatial(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = fpca_spatial(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_zxfpc_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        fpca_spatial(data=None)

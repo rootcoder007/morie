@@ -5,29 +5,22 @@ Management zone delineation
 Category: AgriSp
 """
 
-from . import _array_core as np
-
 
 def afmgz(yield_data=None, soil=None, coords=None, n=50):
-    """Management zone delineation
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Management zone delineation
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if yield_data is None:
-        yield_data = np.random.default_rng(0).uniform(50, 200, n)
-    if soil is None:
-        soil = np.random.default_rng(1).uniform(0, 1, n)
-    if coords is None:
-        coords = np.random.default_rng(2).uniform(0, 100, (n, 2))
-    stat = float(np.mean(yield_data))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(yield_data), "mean_yield": float(np.mean(yield_data)), "mean_soil": float(np.mean(soil))},
+    raise NotImplementedError(
+        "morie.fn.afmgz.afmgz is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

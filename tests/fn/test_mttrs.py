@@ -1,19 +1,10 @@
-"""Test mttrs."""
+"""mttrs is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.mttrs import mttrs
 
 
-def test_mttrs_basic():
-    rng = np.random.default_rng(42)
-    traj = np.cumsum(rng.standard_normal((25, 2)), axis=0)
-    r = mttrs(trajectory=traj, n=25)
-    assert r.value is not None
-
-
-def test_mttrs_description():
-    rng = np.random.default_rng(42)
-    traj = np.cumsum(rng.standard_normal((25, 2)), axis=0)
-    r = mttrs(trajectory=traj, n=25)
-    assert r.name
+def test_mttrs_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        mttrs()

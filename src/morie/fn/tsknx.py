@@ -4,34 +4,22 @@ Knox test for interaction
 Category: TempSpat
 """
 
-from . import _array_core as np
-
 
 def tsknx(data=None, coords=None, times=None, n=50, t=10):
-    """Knox test for interaction
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Knox test for interaction
 
     Returns
     -------
     DescriptiveResult
     """
-    from ._containers import DescriptiveResult
-
-    if data is None:
-        data = np.random.default_rng(0).standard_normal((n, t))
-    if coords is None:
-        coords = np.random.default_rng(1).uniform(0, 100, (n, 2))
-    if times is None:
-        times = np.arange(t)
-    stat = float(np.mean(data))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={
-            "n_locations": data.shape[0],
-            "n_times": data.shape[1],
-            "mean": float(np.mean(data)),
-            "var": float(np.var(data)),
-        },
+    raise NotImplementedError(
+        "morie.fn.tsknx.tsknx is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

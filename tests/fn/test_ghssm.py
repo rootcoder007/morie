@@ -1,23 +1,10 @@
-"""Test ghssm."""
+"""ghssm is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ghssm import ghssm
 
 
-def test_ghssm_basic():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(10, 20)
-    controls = rng.poisson(100, 20) + 10
-    exposure = rng.uniform(0, 1, 20)
-    r = ghssm(cases=cases, controls=controls, exposure=exposure, n=20)
-    assert r.value is not None
-
-
-def test_ghssm_description():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(10, 20)
-    controls = rng.poisson(100, 20) + 10
-    exposure = rng.uniform(0, 1, 20)
-    r = ghssm(cases=cases, controls=controls, exposure=exposure, n=20)
-    assert r.name
+def test_ghssm_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ghssm()

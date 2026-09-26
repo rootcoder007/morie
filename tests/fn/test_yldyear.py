@@ -1,24 +1,10 @@
-"""Tests for yldyear.yld_calculation."""
+"""yldyear is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.yldyear import yld_calculation
 
 
-def test_yldyear_basic():
-    """Test basic functionality."""
-    prevalence = np.random.default_rng(42).normal(0, 1, 100)
-    disability = np.random.default_rng(42).normal(0, 1, 100)
-    duration = np.random.default_rng(42).normal(0, 1, 100)
-    result = yld_calculation(prevalence, disability, duration)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_yldyear_edge():
-    """Test edge cases."""
-    prevalence = np.random.default_rng(42).normal(0, 1, 100)
-    disability = np.random.default_rng(42).normal(0, 1, 100)
-    duration = np.random.default_rng(42).normal(0, 1, 100)
-    result = yld_calculation(prevalence, disability, duration)
-    assert isinstance(result, dict)
+def test_yldyear_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        yld_calculation(prevalence=None, disability=None, duration=None)

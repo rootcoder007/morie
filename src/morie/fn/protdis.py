@@ -1,14 +1,13 @@
 """Intrinsic disorder prediction."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["protein_disorder"]
 
 
 def protein_disorder(sequence):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Intrinsic disorder prediction
 
     Formula: residue-level NN with composition features
@@ -27,11 +26,10 @@ def protein_disorder(sequence):
     ----------
     Mészáros et al (2018) IUPred2A
     """
-    sequence = np.atleast_1d(np.asarray(sequence, dtype=float))
-    n = len(sequence)
-    result = float(np.mean(sequence))
-    se = float(np.std(sequence, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Intrinsic disorder prediction"})
+    raise NotImplementedError(
+        "morie.fn.protdis.protein_disorder is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

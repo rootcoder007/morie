@@ -173,3 +173,15 @@ def test_describe_payload_access():
     assert r.payload["name"] == "welcht"
     assert r.payload["category"]
     assert r.payload["sections"]
+
+
+def test_describe_flags_not_implemented_placeholders():
+    from morie.fn import describe
+
+    stub = describe("abbac")
+    assert stub.title.startswith("[NOT IMPLEMENTED]")
+    assert stub.payload["implemented"] is False
+    assert stub.warnings[0].startswith("NOT IMPLEMENTED: abbac raises NotImplementedError")
+    real = describe("welcht")
+    assert "implemented" not in real.payload
+    assert not real.title.startswith("[NOT IMPLEMENTED]")

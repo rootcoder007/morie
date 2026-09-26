@@ -1,20 +1,10 @@
-"""Tests for cb15e3.cb_chapter_15_equation_3."""
+"""cb15e3 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.cb15e3 import cb_chapter_15_equation_3
 
 
-def test_cb15e3_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cb_chapter_15_equation_3(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_cb15e3_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cb_chapter_15_equation_3(x)
-    assert isinstance(result, dict)
+def test_cb15e3_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        cb_chapter_15_equation_3(x=None)

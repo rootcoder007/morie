@@ -1,12 +1,13 @@
 """Spatial probit (SAR probit) estimation."""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def spprob(y, X, W):
-    """Spatial probit (SAR probit) estimation.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Spatial probit (SAR probit) estimation.
 
     Category: SProbit
 
@@ -18,12 +19,10 @@ def spprob(y, X, W):
     -------
     SpatialResult
     """
-    try:
-        n = len(y)
-        result = float(np.dot(y, np.dot(W, y)) / (np.dot(y, y) + 1e-12))
-        return SpatialResult(name="spprob", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="spprob", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.spprob.spprob is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 spprob_fn = spprob

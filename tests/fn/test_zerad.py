@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zerad -- Radiation model (mobility)"""
+"""zerad is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zerad import radiation_model
 
 
-class TestRadiationModel:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = radiation_model(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = radiation_model(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zerad_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        radiation_model(data=None)

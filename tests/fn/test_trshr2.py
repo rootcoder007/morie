@@ -1,21 +1,10 @@
-"""Test trshr2."""
+"""trshr2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.trshr2 import trshr2
 
 
-def test_trshr2_basic():
-    rng = np.random.default_rng(42)
-    flow = rng.poisson(500, 20)
-    tt = rng.uniform(5, 60, 20)
-    r = trshr2(flow_volume=flow, travel_time=tt, n=20)
-    assert r.value is not None
-
-
-def test_trshr2_description():
-    rng = np.random.default_rng(42)
-    flow = rng.poisson(500, 20)
-    tt = rng.uniform(5, 60, 20)
-    r = trshr2(flow_volume=flow, travel_time=tt, n=20)
-    assert r.name
+def test_trshr2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        trshr2()

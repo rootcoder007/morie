@@ -1,20 +1,10 @@
-"""Tests for bayloo.loo_psi."""
+"""bayloo is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.bayloo import loo_psi
 
 
-def test_bayloo_basic():
-    """Test basic functionality."""
-    log_lik = np.random.default_rng(42).normal(0, 1, 100)
-    result = loo_psi(log_lik)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_bayloo_edge():
-    """Test edge cases."""
-    log_lik = np.random.default_rng(42).normal(0, 1, 100)
-    result = loo_psi(log_lik)
-    assert isinstance(result, dict)
+def test_bayloo_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        loo_psi(log_lik=None)

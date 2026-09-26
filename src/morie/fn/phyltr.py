@@ -1,14 +1,13 @@
 """Neighbor-joining tree."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["phylogenetic_tree_nj"]
 
 
 def phylogenetic_tree_nj(distance_matrix):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Neighbor-joining tree
 
     Formula: iteratively join pair minimizing Q-metric
@@ -27,11 +26,10 @@ def phylogenetic_tree_nj(distance_matrix):
     ----------
     Saitou-Nei (1987)
     """
-    distance_matrix = np.atleast_1d(np.asarray(distance_matrix, dtype=float))
-    n = len(distance_matrix)
-    result = float(np.mean(distance_matrix))
-    se = float(np.std(distance_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Neighbor-joining tree"})
+    raise NotImplementedError(
+        "morie.fn.phyltr.phylogenetic_tree_nj is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

@@ -1,19 +1,10 @@
-"""Test clagg."""
+"""clagg is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.clagg import clagg
 
 
-def test_clagg_basic():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((30, 2))
-    r = clagg(data=data, n=30, k=3)
-    assert r.value is not None
-
-
-def test_clagg_description():
-    rng = np.random.default_rng(42)
-    data = rng.standard_normal((30, 2))
-    r = clagg(data=data, n=30, k=3)
-    assert r.name
+def test_clagg_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        clagg()

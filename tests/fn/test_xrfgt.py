@@ -1,16 +1,10 @@
-"""Tests for morie.fn.xrfgt -- Getis spatial filtering"""
+"""xrfgt is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.xrfgt import getis_filter
 
 
-class TestGetisFilter:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = getis_filter(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = getis_filter(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_xrfgt_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        getis_filter(data=None)

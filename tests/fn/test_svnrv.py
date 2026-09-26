@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svnrv -- Normal vector to cutting line"""
+"""svnrv is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svnrv import normal_vector
 
 
-class TestNormalVector:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = normal_vector(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = normal_vector(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svnrv_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        normal_vector(data=None)

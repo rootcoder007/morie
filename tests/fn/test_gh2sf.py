@@ -1,23 +1,10 @@
-"""Test gh2sf."""
+"""gh2sf is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.gh2sf import gh2sf
 
 
-def test_gh2sf_basic():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(10, 20)
-    controls = rng.poisson(100, 20) + 10
-    exposure = rng.uniform(0, 1, 20)
-    r = gh2sf(cases=cases, controls=controls, exposure=exposure, n=20)
-    assert r.value is not None
-
-
-def test_gh2sf_description():
-    rng = np.random.default_rng(42)
-    cases = rng.poisson(10, 20)
-    controls = rng.poisson(100, 20) + 10
-    exposure = rng.uniform(0, 1, 20)
-    r = gh2sf(cases=cases, controls=controls, exposure=exposure, n=20)
-    assert r.name
+def test_gh2sf_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        gh2sf()

@@ -1,21 +1,10 @@
-"""Test afwndb."""
+"""afwndb is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.afwndb import afwndb
 
 
-def test_afwndb_basic():
-    rng = np.random.default_rng(42)
-    yld = rng.uniform(50, 200, 20)
-    soil = rng.uniform(0, 1, 20)
-    r = afwndb(yield_data=yld, soil=soil, n=20)
-    assert r.value is not None
-
-
-def test_afwndb_description():
-    rng = np.random.default_rng(42)
-    yld = rng.uniform(50, 200, 20)
-    soil = rng.uniform(0, 1, 20)
-    r = afwndb(yield_data=yld, soil=soil, n=20)
-    assert r.name
+def test_afwndb_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        afwndb()

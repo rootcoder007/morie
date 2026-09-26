@@ -1,19 +1,10 @@
-"""Test ppmh2."""
+"""ppmh2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ppmh2 import ppmh2
 
 
-def test_ppmh2_basic():
-    rng = np.random.default_rng(42)
-    pts = rng.uniform(0, 1, (30, 2))
-    r = ppmh2(points=pts, n=30)
-    assert r.value is not None
-
-
-def test_ppmh2_description():
-    rng = np.random.default_rng(42)
-    pts = rng.uniform(0, 1, (30, 2))
-    r = ppmh2(points=pts, n=30)
-    assert r.name
+def test_ppmh2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        ppmh2()

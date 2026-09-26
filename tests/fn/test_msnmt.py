@@ -1,17 +1,10 @@
-"""Tests for morie.fn.msnmt -- Nonmetric MDS (Kruskal)"""
+"""msnmt is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.msnmt import nonmetric_mds
 
 
-class TestNonmetricMds:
-    def test_basic(self):
-        rng = np.random.default_rng(42)
-        X = rng.standard_normal((10, 3))
-        result = nonmetric_mds(X)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = nonmetric_mds(np.random.default_rng(0).standard_normal((5, 2)))
-        assert hasattr(result, "value")
+def test_msnmt_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        nonmetric_mds(X=None)

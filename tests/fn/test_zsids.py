@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zsids -- Modified Shepard interpolation"""
+"""zsids is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zsids import idw_shepard
 
 
-class TestIdwShepard:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = idw_shepard(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = idw_shepard(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zsids_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        idw_shepard(data=None)

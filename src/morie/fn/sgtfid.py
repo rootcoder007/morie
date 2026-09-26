@@ -1,14 +1,13 @@
 """Fiedler (algebraic connectivity) eigenvalue λ_2 of L."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["sgt_fiedler_value"]
 
 
 def sgt_fiedler_value(A):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Fiedler (algebraic connectivity) eigenvalue λ_2 of L
 
     Formula: λ_2(L)
@@ -27,12 +26,9 @@ def sgt_fiedler_value(A):
     ----------
     Fiedler (1973)
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Fiedler (algebraic connectivity) eigenvalue λ_2 of L"}
+    raise NotImplementedError(
+        "morie.fn.sgtfid.sgt_fiedler_value is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

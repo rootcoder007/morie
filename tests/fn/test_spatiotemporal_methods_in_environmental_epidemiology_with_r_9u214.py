@@ -1,22 +1,12 @@
-"""Tests for spatiotemporal_methods_in_environmental_epidemiology_with_r_9u214.spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnumbered_214."""
+"""spatiotemporal_methods_in_environmental_epidemiology_with_r_9u214 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.spatiotemporal_methods_in_environmental_epidemiology_with_r_9u214 import (
     spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnumbered_214,
 )
 
 
-def test_spatiotemporal_methods_in_environmental_epidemiology_with_r_9u214_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnumbered_214(x)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "estimate" in result
-
-
-def test_spatiotemporal_methods_in_environmental_epidemiology_with_r_9u214_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnumbered_214(x)
-    assert isinstance(result, dict)
+def test_spatiotemporal_methods_in_environmental_epidemiology_with_r_9u214_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnumbered_214(x=None)

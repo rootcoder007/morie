@@ -1,17 +1,10 @@
-"""Tests for morie.fn.msst1 -- Raw stress (Kruskal stress-1)"""
+"""msst1 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.msst1 import stress_raw
 
 
-class TestStressRaw:
-    def test_basic(self):
-        rng = np.random.default_rng(42)
-        X = rng.standard_normal((10, 3))
-        result = stress_raw(X)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = stress_raw(np.random.default_rng(0).standard_normal((5, 2)))
-        assert hasattr(result, "value")
+def test_msst1_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        stress_raw(X=None)

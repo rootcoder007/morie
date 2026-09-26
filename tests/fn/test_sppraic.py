@@ -1,27 +1,10 @@
-"""Tests for morie.fn.sppraic."""
+"""sppraic is a placeholder: it must refuse to run, not return a number."""
+
+import pytest
 
 from morie.fn.sppraic import sppraic
 
 
-class TestSppraic:
-    def test_basic(self):
-        ll = -45.0
-        k = 4
-        n = 30
-        result = sppraic(ll, k, n)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        ll = -45.0
-        k = 4
-        n = 30
-        result = sppraic(ll, k, n)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        ll = -45.0
-        k = 4
-        n = 30
-        result = sppraic(ll, k, n)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_sppraic_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        sppraic(ll=None, k=None, n=None)

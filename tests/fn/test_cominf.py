@@ -1,20 +1,10 @@
-"""Tests for cominf.infomap."""
+"""cominf is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.cominf import infomap
 
 
-def test_cominf_basic():
-    """Test basic functionality."""
-    G = np.eye(10)
-    result = infomap(G)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_cominf_edge():
-    """Test edge cases."""
-    G = np.eye(10)
-    result = infomap(G)
-    assert isinstance(result, dict)
+def test_cominf_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        infomap(G=None)

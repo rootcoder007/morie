@@ -1,16 +1,10 @@
-"""Tests for morie.fn.svucs -- Uncovered set in 2D"""
+"""svucs is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.svucs import uncovered_set
 
 
-class TestUncoveredSet:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = uncovered_set(data)
-        assert result.value is not None
-
-    def test_output_type(self):
-        result = uncovered_set(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_svucs_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        uncovered_set(data=None)

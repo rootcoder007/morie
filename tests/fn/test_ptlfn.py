@@ -1,16 +1,10 @@
-"""Tests for morie.fn.ptlfn -- L-function (variance-stabilized K)"""
+"""ptlfn is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.ptlfn import l_function
 
 
-class TestLFunction:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = l_function(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = l_function(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_ptlfn_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        l_function(data=None)

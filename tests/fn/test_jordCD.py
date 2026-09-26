@@ -1,20 +1,10 @@
-"""Tests for jordCD.jordan_canonical."""
+"""jordCD is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.jordCD import jordan_canonical
 
 
-def test_jordCD_basic():
-    """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = jordan_canonical(A)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_jordCD_edge():
-    """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = jordan_canonical(A)
-    assert isinstance(result, dict)
+def test_jordCD_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        jordan_canonical(A=None)

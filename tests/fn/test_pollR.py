@@ -1,18 +1,10 @@
-"""Tests for pollR.pollards_rho."""
+"""pollR is a placeholder: it must refuse to run, not return a number."""
+
+import pytest
 
 from morie.fn.pollR import pollards_rho
 
 
-def test_pollR_basic():
-    """Test basic functionality."""
-    n = 100
-    result = pollards_rho(n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_pollR_edge():
-    """Test edge cases."""
-    n = 100
-    result = pollards_rho(n)
-    assert isinstance(result, dict)
+def test_pollR_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        pollards_rho(n=None)

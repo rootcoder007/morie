@@ -1,14 +1,13 @@
 """Walsh-Hadamard Transform with 1/sqrt(d) normalization (CRITICAL -- not 1/d)."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["turboquant_walsh_hadamard_transform"]
 
 
 def turboquant_walsh_hadamard_transform(x):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     Walsh-Hadamard Transform with 1/sqrt(d) normalization (CRITICAL -- not 1/d)
 
     Formula: y = H x / sqrt(d);  H_{d x d} = Hadamard(d);  inverse: x = H y / sqrt(d)  (H^2 / d = I)
@@ -27,17 +26,9 @@ def turboquant_walsh_hadamard_transform(x):
     ----------
     TurboQuant MORIE integration -- morie/quant_ggml.c
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Walsh-Hadamard Transform with 1/sqrt(d) normalization (CRITICAL -- not 1/d)",
-        }
+    raise NotImplementedError(
+        "morie.fn.tqwht.turboquant_walsh_hadamard_transform is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

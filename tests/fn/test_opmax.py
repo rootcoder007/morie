@@ -1,19 +1,10 @@
-"""Test opmax."""
+"""opmax is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.opmax import opmax
 
 
-def test_opmax_basic():
-    rng = np.random.default_rng(42)
-    r = opmax(n_dims=2, max_iter=50)
-    assert isinstance(r.value, float)
-    assert r.value >= 0, "Minimized sum-of-squares must be non-negative"
-    assert np.isfinite(r.value), "Optimization result must be finite"
-
-
-def test_opmax_description():
-    rng = np.random.default_rng(42)
-    r = opmax(n_dims=2, max_iter=50)
-    assert r.name
+def test_opmax_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        opmax()

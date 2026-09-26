@@ -1,11 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GWR corrected AIC (AICc) for model selection."""
 
-from ._containers import SpatialResult
-
 
 def gwraicc(ll, k, n):
-    """GWR corrected AIC (AICc) for model selection.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    GWR corrected AIC (AICc) for model selection.
 
     Category: GWR
 
@@ -17,13 +20,10 @@ def gwraicc(ll, k, n):
     -------
     SpatialResult
     """
-    try:
-        result = float(2 * k + (-2) * ll)
-        return SpatialResult(name="gwraicc", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="gwraicc", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    raise NotImplementedError(
+        "morie.fn.gwraicc.gwraicc is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 gwraicc_fn = gwraicc

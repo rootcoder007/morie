@@ -1,27 +1,22 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Indicator kriging probability"""
 
-from . import _array_core as np
-
-from ._containers import SpatialResult
-
 
 def ik_probability(data, *, method="default"):
-    """Indicator kriging probability
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Indicator kriging probability
 
     Returns
     -------
     SpatialResult
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    mu = float(np.mean(data))
-    var = float(np.var(data, ddof=1)) if n > 1 else 0.0
-    se = float(np.sqrt(var / n)) if n > 0 else 0.0
-    return SpatialResult(
-        name="Indicator kriging probability",
-        statistic=float(mu) if isinstance(mu, (int, float)) else 0.0,
-        extra={},
+    raise NotImplementedError(
+        "morie.fn.kgikp.ik_probability is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

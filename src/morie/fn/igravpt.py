@@ -1,11 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spatial potential model."""
 
-from ._containers import SpatialResult
-
 
 def igravpt(mass, dist):
-    """Spatial potential model.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Spatial potential model.
 
     Category: Gravity
 
@@ -17,13 +20,10 @@ def igravpt(mass, dist):
     -------
     SpatialResult
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="igravpt", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="igravpt", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    raise NotImplementedError(
+        "morie.fn.igravpt.igravpt is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 igravpt_fn = igravpt

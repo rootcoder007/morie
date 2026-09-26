@@ -4,13 +4,14 @@
 Category: Spatial
 """
 
-from . import _array_core as np
-
-from ._containers import DescriptiveResult
-
 
 def pawgt(data=None, positions=None, weights=None, n=50):
-    """Weighted aggregation spatial.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    Weighted aggregation spatial.
 
     Parameters
     ----------
@@ -27,18 +28,9 @@ def pawgt(data=None, positions=None, weights=None, n=50):
     -------
     DescriptiveResult
     """
-    if data is None:
-        data = np.random.default_rng(0).standard_normal(n)
-    data = np.atleast_1d(data)
-    if weights is not None:
-        weights = np.atleast_1d(weights)
-        stat = float(np.average(data, weights=weights))
-    else:
-        stat = float(np.mean(data))
-    return DescriptiveResult(
-        name=short,
-        value=stat,
-        extra={"n": len(data), "mean": float(np.mean(data)), "std": float(np.std(data))},
+    raise NotImplementedError(
+        "morie.fn.pawgt.pawgt is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
     )
 
 

@@ -1,16 +1,10 @@
-"""Tests for morie.fn.zeby2 -- BYM2 reparameterized model"""
+"""zeby2 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.zeby2 import bym2_model
 
 
-class TestBym2Model:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = bym2_model(data)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = bym2_model(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def test_zeby2_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        bym2_model(data=None)

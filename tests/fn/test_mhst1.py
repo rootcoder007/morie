@@ -1,20 +1,10 @@
-"""Tests for mhst1.mantel_haenszel_or."""
+"""mhst1 is a placeholder: it must refuse to run, not return a number."""
 
-from morie.fn import _array_core as np
+import pytest
 
 from morie.fn.mhst1 import mantel_haenszel_or
 
 
-def test_mhst1_basic():
-    """Test basic functionality."""
-    strata = np.random.default_rng(42).normal(0, 1, 100)
-    result = mantel_haenszel_or(strata)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_mhst1_edge():
-    """Test edge cases."""
-    strata = np.random.default_rng(42).normal(0, 1, 100)
-    result = mantel_haenszel_or(strata)
-    assert isinstance(result, dict)
+def test_mhst1_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="not implemented"):
+        mantel_haenszel_or(strata=None)

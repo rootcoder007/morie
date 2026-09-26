@@ -1,14 +1,13 @@
 """SMT solver framework."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["smt_solver"]
 
 
 def smt_solver(formula):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     SMT solver framework
 
     Formula: DPLL(T) -- SAT + theory solvers
@@ -27,11 +26,10 @@ def smt_solver(formula):
     ----------
     de Moura-Bjørner (2008) Z3
     """
-    formula = np.atleast_1d(np.asarray(formula, dtype=float))
-    n = len(formula)
-    result = float(np.mean(formula))
-    se = float(np.std(formula, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SMT solver framework"})
+    raise NotImplementedError(
+        "morie.fn.smtZ3.smt_solver is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():

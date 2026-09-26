@@ -1,11 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SDM Akaike information criterion."""
 
-from ._containers import SpatialResult
-
 
 def sdmaic(ll, k, n):
-    """SDM Akaike information criterion.
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
+
+    SDM Akaike information criterion.
 
     Category: SDM
 
@@ -17,11 +20,10 @@ def sdmaic(ll, k, n):
     -------
     SpatialResult
     """
-    try:
-        result = float(2 * k + (-2) * ll)
-        return SpatialResult(name="sdmaic", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="sdmaic", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    raise NotImplementedError(
+        "morie.fn.sdmaic.sdmaic is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 sdmaic_fn = sdmaic

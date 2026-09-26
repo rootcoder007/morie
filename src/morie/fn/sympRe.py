@@ -1,14 +1,13 @@
 """SymPy simplify expression."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
-
 __all__ = ["sympy_simplify"]
 
 
 def sympy_simplify(expr):
-    """
+    """NOT IMPLEMENTED. The previous body of this callable did not compute the
+    method named here (it returned a placeholder such as the mean of its
+    input, or a statistic of internally generated data). It raises
+    NotImplementedError until the real method is built.
     SymPy simplify expression
 
     Formula: normalize via various heuristics
@@ -27,11 +26,10 @@ def sympy_simplify(expr):
     ----------
     SymPy team (2017)
     """
-    expr = np.atleast_1d(np.asarray(expr, dtype=float))
-    n = len(expr)
-    result = float(np.mean(expr))
-    se = float(np.std(expr, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SymPy simplify expression"})
+    raise NotImplementedError(
+        "morie.fn.sympRe.sympy_simplify is not implemented yet: its former body returned a "
+        "placeholder, not the method its name and docstring describe."
+    )
 
 
 def cheatsheet():
