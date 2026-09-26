@@ -1182,40 +1182,25 @@ def jackknife_replicate_weights(
     n = len(w)
 
     if jk_type == "JK1":
-        # Delete-1 jackknife: n replicates
-        rep_weights = np.tile(w, (n, 1)).T  # n x n
+        # Delete-1 (Wolter 2007, ch. 4; survey::as.svrepdesign type JK1):
+        # replicate i drops unit i and scales the rest by n / (n - 1)
+        rep_weights = np.tile(w, (n, 1)).T * (n / (n - 1.0))
         for i in range(n):
-            # Redistribute deleted unit's weight to others
             rep_weights[i, i] = 0.0
-            remaining = w.copy()
-            remaining[i] = 0
-            total_remaining = remaining.sum()
-            if total_remaining > 0:
-                factor = w.sum() / total_remaining
-                rep_weights[:, i] = remaining * factor
-
         return rep_weights
 
     elif jk_type == "JKn":
-        unique_strata = np.unique(s)
-        n_reps = len(unique_strata)
-        rep_weights = np.tile(w, (n_reps, 1)).T  # n x n_reps
-
-        for r, stratum in enumerate(unique_strata):
-            mask = s == stratum
-            n_h = int(mask.sum())
+        # One replicate per PSU (Wolter 2007): drop PSU i and scale the
+        # remaining n_h - 1 PSUs of its stratum by n_h / (n_h - 1); other
+        # strata keep their weights. (This used to delete the whole stratum.)
+        rep_weights = np.tile(w, (n, 1)).T
+        for i in range(n):
+            mask_h = s == s[i]
+            n_h = int(mask_h.sum())
             if n_h <= 1:
                 continue
-            # Zero out this stratum and rescale others
-            rep_weights[mask, r] = 0.0
-            # Redistribute within stratum
-            stratum_total = w[mask].sum()
-            other_strata = ~mask
-            # Keep other strata weights unchanged, rescale current stratum
-            # Actually for JKn: remove one PSU, inflate remaining in stratum
-            # Simplified: remove entire stratum in this replicate
-            rep_weights[mask, r] = 0.0
-
+            rep_weights[mask_h, i] = w[mask_h] * (n_h / (n_h - 1.0))
+            rep_weights[i, i] = 0.0
         return rep_weights
 
     else:
