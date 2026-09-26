@@ -625,7 +625,6 @@ def permutation_fwer(
     t_obs = np.asarray(test_statistics, dtype=float)
     t_null = np.asarray(null_distribution, dtype=float)
     m = len(t_obs)
-    n_perm = t_null.shape[0]
 
     if alternative == "two-sided":
         t_obs_abs = np.abs(t_obs)

@@ -161,12 +161,10 @@ def compute_residuals(
     std_res = raw / np.sqrt(max(mse, 1e-10) * (1 - h))
 
     # Studentized (externally studentized) residuals.
-    student_res = np.empty(n)
-    for i in range(n):
-        mask = np.ones(n, dtype=bool)
-        mask[i] = False
-        mse_i = np.sum(raw[mask] ** 2) / max(n - p - 1, 1)
-        student_res[i] = raw[i] / np.sqrt(max(mse_i * (1 - h[i]), 1e-10))
+    # s_(i)^2 = ((n - p) s^2 - e_i^2 / (1 - h_i)) / (n - p - 1), the
+    # deleted-case variance (Belsley, Kuh & Welsch 1980), as rstudent
+    s2_del = (np.sum(raw**2) - raw**2 / (1 - h)) / max(n - p - 1, 1)
+    student_res = raw / np.sqrt(s2_del * (1 - h))
 
     # Deviance and Pearson residuals for GLMs.
     deviance_res = None
@@ -206,7 +204,7 @@ def compute_residuals(
         ss_reg = np.sum((X_centered @ np.linalg.lstsq(X_centered, r_sq_centered, rcond=None)[0]) ** 2)
         ss_tot = np.sum(r_sq_centered**2)
         bp_stat = n * ss_reg / max(ss_tot, 1e-10)
-        bp_p = 1 - stats.chi2.cdf(bp_stat, p - 1)
+        bp_p = float(stats.chi2.sf(bp_stat, p - 1))
     except Exception:
         bp_stat, bp_p = float("nan"), float("nan")
     heteroskedasticity = {"statistic": float(bp_stat), "p_value": float(bp_p)}
@@ -282,17 +280,14 @@ def compute_influence(
     mse = np.sum(residuals**2) / max(n - p, 1)
 
     # Cook's distance.
-    cooks_d = (residuals**2 * h) / (p * mse * (1 - h) ** 2 + 1e-10)
+    cooks_d = (residuals**2 * h) / (p * mse * (1 - h) ** 2)
 
     # DFFITS.
-    mse_i = np.empty(n)
-    for i in range(n):
-        mask = np.ones(n, dtype=bool)
-        mask[i] = False
-        res_i = residuals[mask]
-        mse_i[i] = np.sum(res_i**2) / max(n - p - 1, 1)
-
-    dffits = residuals * np.sqrt(h / ((1 - h) * mse_i + 1e-10)) / np.sqrt(max(mse, 1e-10))
+    # deleted-case variance and externally studentized residuals
+    # (Belsley, Kuh & Welsch 1980), as influence.measures
+    mse_i = (np.sum(residuals**2) - residuals**2 / (1 - h)) / max(n - p - 1, 1)
+    t_ext = residuals / np.sqrt(mse_i * (1 - h))
+    dffits = t_ext * np.sqrt(h / (1 - h))
 
     # DFBETAS.
     dfbetas = np.empty((n, p))
@@ -310,9 +305,7 @@ def compute_influence(
     covratio = np.empty(n)
     for i in range(n):
         # COVRATIO_i = det(Var(b_{(i)})) / det(Var(b))
-        s2_i = mse_i[i]
-        t_i = residuals[i] / np.sqrt(max(s2_i * (1 - h[i]), 1e-10))
-        covratio[i] = 1 / ((((n - p - 1 + t_i**2) / (n - p)) ** p) * (1 - h[i]) + 1e-10)
+        covratio[i] = 1 / ((((n - p - 1 + t_ext[i] ** 2) / (n - p)) ** p) * (1 - h[i]))
 
     # Thresholds.
     leverage_threshold = 2 * p / n
@@ -502,7 +495,7 @@ def ramsey_reset_test(
     df1 = p_u - p
     df2 = n - p_u
     f_stat = ((ssr_r - ssr_u) / max(df1, 1)) / (ssr_u / max(df2, 1))
-    f_p = 1 - stats.f.cdf(f_stat, df1, df2)
+    f_p = float(stats.f.sf(f_stat, df1, df2))
 
     conclusion = (
         "Reject functional form (p < 0.05): consider nonlinear terms."
@@ -540,8 +533,7 @@ def link_test(
     SpecificationTest
     """
     if model_type != "linear":
-        raise ValueError(
-            f"link_test: only model_type='linear' is implemented (got {model_type!r})")
+        raise ValueError(f"link_test: only model_type='linear' is implemented (got {model_type!r})")
     y = np.asarray(y, dtype=float)
     X = np.asarray(X, dtype=float)
     n = len(y)
@@ -602,7 +594,6 @@ def hosmer_lemeshow_test(
     """
     y = np.asarray(y, dtype=float)
     y_prob = np.asarray(y_prob, dtype=float)
-    n = len(y)
 
     # Create decile groups based on predicted probabilities.
     order = np.argsort(y_prob)
@@ -624,7 +615,7 @@ def hosmer_lemeshow_test(
             chi2_stat += (obs_non - exp_non) ** 2 / exp_non
 
     df = n_groups - 2
-    p_value = 1 - stats.chi2.cdf(chi2_stat, df)
+    p_value = float(stats.chi2.sf(chi2_stat, df))
 
     conclusion = (
         "Poor fit (p < 0.05): model does not adequately fit the data."
@@ -884,15 +875,9 @@ def wald_test(
     V = np.asarray(vcov, dtype=float)
     p = len(beta)
 
-    if R is None:
-        R = np.eye(p)
-    else:
-        R = np.asarray(R, dtype=float)
+    R = np.eye(p) if R is None else np.asarray(R, dtype=float)
 
-    if r is None:
-        r = np.zeros(R.shape[0])
-    else:
-        r = np.asarray(r, dtype=float)
+    r = np.zeros(R.shape[0]) if r is None else np.asarray(r, dtype=float)
 
     q = R.shape[0]  # Number of restrictions.
     diff = R @ beta - r
@@ -934,15 +919,15 @@ def score_test(
     SpecificationTest
     """
     U = np.asarray(score_vector, dtype=float)
-    I = np.asarray(information_matrix, dtype=float)
+    info = np.asarray(information_matrix, dtype=float)
     q = len(U)
 
     try:
-        s_stat = float(U @ np.linalg.solve(I, U))
+        s_stat = float(U @ np.linalg.solve(info, U))
     except np.linalg.LinAlgError:
-        s_stat = float(U @ np.linalg.pinv(I) @ U)
+        s_stat = float(U @ np.linalg.pinv(info) @ U)
 
-    p_value = 1 - stats.chi2.cdf(s_stat, q)
+    p_value = float(stats.chi2.sf(s_stat, q))
 
     return SpecificationTest(
         name="score",
@@ -1016,10 +1001,7 @@ def full_diagnostics(
     if collinearity.n_collinear > 0:
         issues.append(f"{collinearity.n_collinear} collinear variable(s)")
 
-    if issues:
-        assessment = "Issues detected: " + "; ".join(issues)
-    else:
-        assessment = "No major diagnostic issues detected."
+    assessment = "Issues detected: " + "; ".join(issues) if issues else "No major diagnostic issues detected."
 
     return DiagnosticReport(
         residuals=residuals,
