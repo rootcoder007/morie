@@ -164,8 +164,10 @@ def e_value_or(
 ) -> EValueResult:
     """Compute E-value for an odds ratio.
 
-    For rare outcomes (prevalence < 15%), the OR approximates the RR.
-    For common outcomes, a correction is applied using the prevalence.
+    For rare outcomes (prevalence < 15%, or ``prevalence`` not given) the
+    OR approximates the RR.  For common outcomes the OR is converted with
+    :math:`RR \\approx \\sqrt{OR}` (VanderWeele & Ding 2017), as
+    ``EValue::evalues.OR(rare = FALSE)``.
 
     Parameters
     ----------
@@ -176,23 +178,19 @@ def e_value_or(
     ci_upper : float, optional
         Upper CI bound.
     prevalence : float, optional
-        Outcome prevalence for OR-to-RR conversion.
+        Outcome prevalence; 0.15 or more selects the common-outcome
+        conversion.
 
     Returns
     -------
     EValueResult
     """
     if prevalence is not None and prevalence >= 0.15:
-        # Convert OR to RR using Zhang & Yu (1998) formula.
-        rr = odds_ratio / (1 - prevalence + prevalence * odds_ratio)
-        if ci_lower is not None:
-            ci_lower = ci_lower / (1 - prevalence + prevalence * ci_lower)
-        if ci_upper is not None:
-            ci_upper = ci_upper / (1 - prevalence + prevalence * ci_upper)
+        rr = np.sqrt(odds_ratio)
+        ci_lower = np.sqrt(ci_lower) if ci_lower is not None else None
+        ci_upper = np.sqrt(ci_upper) if ci_upper is not None else None
     else:
         rr = odds_ratio
-        # OR ≈ RR for rare outcomes.
-
     return e_value_rr(rr, ci_lower, ci_upper)
 
 
@@ -200,10 +198,14 @@ def e_value_hr(
     hr: float,
     ci_lower: float | None = None,
     ci_upper: float | None = None,
+    rare: bool = False,
 ) -> EValueResult:
     """Compute E-value for a hazard ratio.
 
-    Uses the HR-to-RR approximation from VanderWeele (2017).
+    For a common outcome the HR is converted with VanderWeele's (2017)
+    approximation :math:`RR = (1 - 0.5^{\\sqrt{HR}}) / (1 - 0.5^{\\sqrt{1/HR}})`;
+    for a rare outcome (``rare=True``) the HR approximates the RR, as
+    ``EValue::evalues.HR``.
 
     Parameters
     ----------
@@ -213,22 +215,22 @@ def e_value_hr(
         Lower CI bound.
     ci_upper : float, optional
         Upper CI bound.
+    rare : bool
+        Outcome rare (< 15%) at the end of follow-up.
 
     Returns
     -------
     EValueResult
     """
-    # HR-to-RR approximation.
-    rr = (1 - 0.5 ** np.sqrt(hr)) / (1 - 0.5 ** np.sqrt(1 / hr)) if hr != 1 else 1.0
-    if ci_lower is not None and ci_lower > 0:
-        rr_lo = (1 - 0.5 ** np.sqrt(ci_lower)) / (1 - 0.5 ** np.sqrt(1 / ci_lower)) if ci_lower != 1 else 1.0
-    else:
-        rr_lo = None
-    if ci_upper is not None and ci_upper > 0:
-        rr_hi = (1 - 0.5 ** np.sqrt(ci_upper)) / (1 - 0.5 ** np.sqrt(1 / ci_upper)) if ci_upper != 1 else 1.0
-    else:
-        rr_hi = None
-    return e_value_rr(rr, rr_lo, rr_hi)
+
+    def to_rr(x):
+        if x is None or x <= 0:
+            return None
+        if rare or x == 1:
+            return x
+        return (1 - 0.5 ** np.sqrt(x)) / (1 - 0.5 ** np.sqrt(1 / x))
+
+    return e_value_rr(to_rr(hr), to_rr(ci_lower), to_rr(ci_upper))
 
 
 def e_value_d(
@@ -238,8 +240,9 @@ def e_value_d(
 ) -> EValueResult:
     """Compute E-value for a standardized mean difference (Cohen's d).
 
-    Converts d to a risk ratio scale using the VanderWeele & Ding
-    approximation: RR ≈ exp(0.91 * d).
+    Converts d to a risk ratio with the VanderWeele & Ding (2017)
+    approximation :math:`RR \\approx \\exp(0.91 d)`, CI
+    :math:`\\exp(0.91 d \\pm 1.78\\,s)`, as ``EValue::evalues.MD``.
 
     Parameters
     ----------
@@ -255,18 +258,14 @@ def e_value_d(
     EValueResult
     """
     rr = np.exp(0.91 * d)
-
+    if se is None and n is not None:
+        se = np.sqrt(4 / n)
     if se is not None:
-        rr_lo = np.exp(0.91 * (d - 1.96 * se))
-        rr_hi = np.exp(0.91 * (d + 1.96 * se))
-    elif n is not None:
-        se_approx = np.sqrt(4 / n)
-        rr_lo = np.exp(0.91 * (d - 1.96 * se_approx))
-        rr_hi = np.exp(0.91 * (d + 1.96 * se_approx))
+        rr_lo = np.exp(0.91 * d - 1.78 * se)
+        rr_hi = np.exp(0.91 * d + 1.78 * se)
     else:
         rr_lo = None
         rr_hi = None
-
     return e_value_rr(rr, rr_lo, rr_hi)
 
 
@@ -339,7 +338,9 @@ def rosenbaum_bounds(
             p_lower[i] = stats.norm.sf(z_lower)
 
     elif method == "sign":
+        # zero differences carry no sign; n counts the non-zero pairs
         n_positive = np.sum(diffs > 0)
+        n = int(np.sum(diffs != 0))
 
         for i, gamma in enumerate(gamma_range):
             p_treat = gamma / (1 + gamma)
@@ -399,7 +400,12 @@ def tipping_point_analysis(
     """Tipping-point analysis for missing data sensitivity.
 
     Evaluates how much the treatment effect changes if missing outcomes
-    are systematically different from observed outcomes.
+    are systematically different from observed outcomes, shifting the
+    estimate by :math:`\\delta`.  The tipping point is the smallest shift
+    that makes the two-sided 5% test non-significant,
+    :math:`\\delta^* = \\hat\\tau - \\mathrm{sign}(\\hat\\tau)\\, z_{0.975}\\, se`
+    (0 when the estimate is already non-significant); the grid reports
+    the adjusted estimates and p-values over ``delta_range``.
 
     Parameters
     ----------
@@ -425,28 +431,13 @@ def tipping_point_analysis(
     if delta_range is None:
         max_delta = abs(estimate) * 3
         if outcome_type == "binary":
-            # a risk difference cannot be shifted beyond the unit interval
             max_delta = min(max_delta, 1.0)
         delta_range = np.linspace(-max_delta, max_delta, 101)
-
     delta_range = np.asarray(delta_range, dtype=float)
-
     adjusted_estimates = estimate - delta_range
-    adjusted_z = adjusted_estimates / se
-    adjusted_p = 2 * (stats.norm.sf(np.abs(adjusted_z)))
-
-    # Tipping point: delta where adjusted p-value crosses 0.05.
-    significant = adjusted_p <= 0.05
-    if significant.all():
-        tipping_point = float(delta_range[-1])
-    elif not significant.any():
-        tipping_point = float(delta_range[0])
-    else:
-        # Find transition.
-        transitions = np.diff(significant.astype(int))
-        cross_idx = np.where(transitions != 0)[0]
-        tipping_point = float(delta_range[cross_idx[0]]) if len(cross_idx) > 0 else float("nan")
-
+    adjusted_p = 2 * stats.norm.sf(np.abs(adjusted_estimates / se))
+    z = stats.norm.ppf(0.975)
+    tipping_point = float(estimate - np.sign(estimate) * z * se) if abs(estimate) > z * se else 0.0
     _robust = abs(tipping_point) > abs(estimate)
     _robustness_msg = (
         "This suggests the result is robust."
@@ -454,11 +445,9 @@ def tipping_point_analysis(
         else "This suggests the result may be sensitive to missing data."
     )
     interpretation = (
-        f"The observed estimate ({estimate:.4f}) becomes non-significant "
-        f"when outcomes for missing data differ by delta = {tipping_point:.4f}. "
-        f"{_robustness_msg}"
+        f"The observed estimate ({estimate:.4f}) becomes non-significant when outcomes for "
+        f"missing data differ by delta = {tipping_point:.4f}. {_robustness_msg}"
     )
-
     return TippingPointResult(
         delta_values=delta_range,
         adjusted_estimates=adjusted_estimates,
@@ -482,12 +471,19 @@ def omitted_variable_bias(
     partial_r2_treatment: float,
     q: float = 1.0,
     alpha: float = 0.05,
-    benchmark_covariates: dict[str, float] | None = None,
+    benchmark_covariates: dict[str, float | tuple[float, float]] | None = None,
+    kd: float = 1.0,
+    ky: float | None = None,
 ) -> OmittedVariableBias:
-    """Omitted variable bias analysis (sensemakr framework).
+    """Omitted-variable-bias sensitivity (Cinelli & Hazlett 2020).
 
-    Implements the Cinelli & Hazlett (2020) approach to assess how much
-    an unobserved confounder would need to explain to change the conclusion.
+    Robustness values as ``sensemakr::robustness_value``: with
+    :math:`f_q = q |t| / \\sqrt{dof}`, :math:`RV_q =
+    \\tfrac12(\\sqrt{f_q^4 + 4 f_q^2} - f_q^2)`, and :math:`RV_{q,\\alpha}`
+    the same in :math:`f_q - f^*` with :math:`f^* = |t^*_{\\alpha, dof-1}| /
+    \\sqrt{dof - 1}` (the extreme robustness value when :math:`f_q > 1/f^*`).
+    Benchmark bounds follow ``sensemakr::ovb_bounds``: a confounder
+    ``kd`` / ``ky`` times as strong as the benchmark covariate.
 
     Parameters
     ----------
@@ -506,44 +502,63 @@ def omitted_variable_bias(
     alpha : float
         Significance level.
     benchmark_covariates : dict, optional
-        Dictionary mapping covariate names to their partial R-squared
-        with the outcome.  Used to generate benchmark bounds.
+        Covariate name to ``(r2_dxj_x, r2_yxj_dx)``: its partial R-squared
+        with the treatment (given the other covariates) and with the
+        outcome (given treatment and the other covariates).  A single
+        number is used for both.
+    kd, ky : float
+        Strength multipliers of the confounder relative to a benchmark
+        (``ky`` defaults to ``kd``).
 
     Returns
     -------
     OmittedVariableBias
+        ``benchmark_bounds`` maps each covariate to a dict with
+        ``r2dz_x``, ``r2yz_dx``, ``adjusted_estimate``, ``adjusted_se``,
+        ``adjusted_lower_ci`` and ``adjusted_upper_ci``.
     """
     t_stat = estimate / se
-    f_stat = t_stat**2
 
-    # Robustness value (RV_q): partial R2 of confounder needed to
-    # reduce estimate by proportion q.
-    rv_q = 0.5 * (np.sqrt(f_stat**2 - f_stat) - f_stat + 1) if f_stat > 1 else 0.0
-    rv_q = max(rv_q, 0.0)
+    def _rv(alpha_):
+        fq = q * abs(t_stat) / np.sqrt(dof)
+        f_crit = abs(stats.t.ppf(alpha_ / 2, dof - 1)) / np.sqrt(dof - 1) if alpha_ < 1 else 0.0
+        fqa = fq - f_crit
+        if fqa <= 0:
+            return 0.0
+        if f_crit > 0 and fq > 1 / f_crit:
+            return float((fq**2 - f_crit**2) / (1 + fq**2))
+        return float(2 / (1 + np.sqrt(1 + 4 / fqa**2)))
 
-    # RV_{q,alpha}: partial R2 needed to make CI include q*estimate.
-    t_crit = stats.t.ppf(1 - alpha / 2, dof)
-    f_crit = t_crit**2
-    rv_qa = 0.5 * (np.sqrt(f_stat**2 - f_crit * f_stat) - f_stat + f_crit) if f_stat > f_crit else 0.0
-    rv_qa = max(rv_qa, 0.0)
-
-    # Benchmark bounds.
+    rv_q = _rv(1.0)
+    rv_qa = _rv(alpha)
+    ky = kd if ky is None else ky
     bounds = {}
-    if benchmark_covariates:
-        for name, r2_bench in benchmark_covariates.items():
-            # If confounder is as strong as benchmark covariate:
-            bias = estimate * r2_bench / partial_r2_treatment if partial_r2_treatment > 0 else 0
-            bounds[name] = (
-                estimate - bias,
-                estimate + bias,
-            )
-
+    for name, r2 in (benchmark_covariates or {}).items():
+        r2dxj, r2yxj = (r2, r2) if isinstance(r2, (int, float)) else r2
+        r2dz = kd * r2dxj / (1 - r2dxj)
+        if r2dz >= 1:
+            raise ValueError(f"Implied bound on r2dz.x >= 1 for {name!r}; use a lower kd.")
+        r2zxj = kd * r2dxj**2 / ((1 - kd * r2dxj) * (1 - r2dxj))
+        if r2zxj >= 1:
+            raise ValueError(f"Impossible kd value for {name!r}; use a lower kd.")
+        r2yz = min(((np.sqrt(ky) + np.sqrt(r2zxj)) / np.sqrt(1 - r2zxj)) ** 2 * (r2yxj / (1 - r2yxj)), 1.0)
+        bias = np.sqrt(r2yz * r2dz / (1 - r2dz)) * se * np.sqrt(dof)
+        adj = float(np.sign(estimate) * (abs(estimate) - bias))
+        adj_se = float(np.sqrt((1 - r2yz) / (1 - r2dz)) * se * np.sqrt(dof / (dof - 1)))
+        tc = stats.t.ppf(1 - alpha / 2, dof)
+        bounds[name] = {
+            "r2dz_x": float(r2dz),
+            "r2yz_dx": float(r2yz),
+            "adjusted_estimate": adj,
+            "adjusted_se": adj_se,
+            "adjusted_lower_ci": adj - tc * adj_se,
+            "adjusted_upper_ci": adj + tc * adj_se,
+        }
     interpretation = (
-        f"To explain away {q * 100:.0f}% of the estimate ({estimate:.4f}), "
-        f"an unobserved confounder would need partial R2 >= {rv_q:.4f} with both "
-        f"treatment and outcome. To make the CI include zero, partial R2 >= {rv_qa:.4f}."
+        f"To explain away {q * 100:.0f}% of the estimate ({estimate:.4f}), an unobserved "
+        f"confounder would need partial R2 >= {rv_q:.4f} with both treatment and outcome. "
+        f"To make the CI include zero, partial R2 >= {rv_qa:.4f}."
     )
-
     return OmittedVariableBias(
         estimate=estimate,
         se=se,
@@ -715,7 +730,10 @@ def manski_bounds(
     """Compute Manski worst-case bounds for the ATE.
 
     Under no assumptions about selection, the ATE is only partially
-    identified.
+    identified (Manski 1990): with the outcome in :math:`[a, b]`,
+    :math:`E[Y_1] \\in [p\\bar y_1 + a(1-p),\\; p\\bar y_1 + b(1-p)]` and
+    :math:`E[Y_0] \\in [(1-p)\\bar y_0 + a p,\\; (1-p)\\bar y_0 + b p]`, so the
+    bounds always have width :math:`b - a`.
 
     Parameters
     ----------
@@ -735,37 +753,16 @@ def manski_bounds(
     """
     y1 = np.asarray(outcome_treated, dtype=float)
     y0 = np.asarray(outcome_control, dtype=float)
-
     if outcome_range is None:
         outcome_range = (0.0, 1.0)
-
     y_min, y_max = outcome_range
-    e1 = np.mean(y1)
-    e0 = np.mean(y0)
-
-    # Manski bounds: ATE ∈ [E[Y|T=1]*P(T=1) + y_min*P(T=0) - E[Y|T=0]*P(T=0) - y_max*P(T=1),
-    #                        E[Y|T=1]*P(T=1) + y_max*P(T=0) - E[Y|T=0]*P(T=0) - y_min*P(T=1)]
+    e1 = float(np.mean(y1))
+    e0 = float(np.mean(y0))
     p1 = p_treated
     p0 = 1 - p_treated
-
-    lower = e1 * p1 + y_min * p0 - (e0 * p0 + y_max * p1)
-    upper = e1 * p1 + y_max * p0 - (e0 * p0 + y_min * p1)
-
-    # Simplification for the standard case:
-    lower_simple = e1 - e0 - (y_max - y_min) * (1 - p1)
-    upper_simple = e1 - e0 + (y_max - y_min) * p1
-
-    # Two valid lower (resp. upper) bounds: keep the TIGHTER one.
-    # v0.9.5.6+ uses the strict-Manski max(lo)/min(hi) combination;
-    # pre-v0.9.5.6 picked min/max which over-reported uncertainty.
-    lo = max(lower, lower_simple)
-    hi = min(upper, upper_simple)
-    return {
-        "lower_bound": float(lo),
-        "upper_bound": float(hi),
-        "point_estimate": float(e1 - e0),
-        "width": float(hi - lo),
-    }
+    lo = e1 * p1 + y_min * p0 - (e0 * p0 + y_max * p1)
+    hi = e1 * p1 + y_max * p0 - (e0 * p0 + y_min * p1)
+    return {"lower_bound": float(lo), "upper_bound": float(hi), "point_estimate": e1 - e0, "width": float(hi - lo)}
 
 
 # ---------------------------------------------------------------------------
@@ -778,43 +775,53 @@ def bias_adjusted_estimate(
     se: float,
     rr_ud: float,
     rr_eu: float,
-    prevalence_confounder: float = 0.5,
+    prevalence_confounder: float | None = None,
 ) -> dict[str, float]:
-    """Compute bias-adjusted treatment effect.
+    """Compute bias-adjusted treatment effect on the log-RR scale.
 
-    Uses the Ding & VanderWeele (2016) bias formula.
+    Without ``prevalence_confounder`` the adjustment is the Ding &
+    VanderWeele (2016) bounding factor
+    :math:`B = RR_{UD} RR_{EU} / (RR_{UD} + RR_{EU} - 1)`, the largest
+    bias any confounder with those strengths can produce, applied toward
+    the null.  With the prevalence :math:`p_0` of a binary confounder
+    among the unexposed, ``rr_eu`` is its prevalence ratio
+    (:math:`p_1 = RR_{EU} p_0`) and the bias is Schlesselman's (1978)
+    exact factor :math:`(1 + (RR_{UD}-1)p_1) / (1 + (RR_{UD}-1)p_0)`.
 
     Parameters
     ----------
     estimate : float
-        Observed treatment effect (on log-RR or coefficient scale).
+        Observed treatment effect (log-RR scale).
     se : float
         Standard error.
     rr_ud : float
         Risk ratio relating confounder to outcome.
     rr_eu : float
         Risk ratio relating treatment to confounder.
-    prevalence_confounder : float
-        Prevalence of the confounder in the population.
+    prevalence_confounder : float, optional
+        Prevalence of the confounder among the unexposed.
 
     Returns
     -------
     dict
-        With keys: adjusted_estimate, bias, adjusted_ci_lower, adjusted_ci_upper.
+        With keys: adjusted_estimate, bias, adjusted_ci_lower,
+        adjusted_ci_upper, original_estimate (``bias`` on the log scale).
     """
-    # Bias formula: B ≈ (RR_UD * RR_EU - 1) / (RR_UD + RR_EU - 1) * prevalence adjustment
-    bias_factor = (rr_ud * rr_eu - 1) / max(rr_ud + rr_eu - 1, 0.01)
-    bias = np.log(bias_factor) * prevalence_confounder
-
+    if prevalence_confounder is None:
+        bias = float(np.log(rr_ud * rr_eu / (rr_ud + rr_eu - 1))) * (1.0 if estimate >= 0 else -1.0)
+    else:
+        p0 = float(prevalence_confounder)
+        p1 = rr_eu * p0
+        if not 0 <= p1 <= 1:
+            raise ValueError("rr_eu * prevalence_confounder must be a probability.")
+        bias = float(np.log((1 + (rr_ud - 1) * p1) / (1 + (rr_ud - 1) * p0)))
     adjusted = estimate - bias
-    ci_lo = adjusted - 1.96 * se
-    ci_hi = adjusted + 1.96 * se
-
+    z = stats.norm.ppf(0.975)
     return {
         "adjusted_estimate": float(adjusted),
-        "bias": float(bias),
-        "adjusted_ci_lower": float(ci_lo),
-        "adjusted_ci_upper": float(ci_hi),
+        "bias": bias,
+        "adjusted_ci_lower": float(adjusted - z * se),
+        "adjusted_ci_upper": float(adjusted + z * se),
         "original_estimate": float(estimate),
     }
 
@@ -833,13 +840,17 @@ def probabilistic_bias_analysis(
 ) -> dict[str, float]:
     """Probabilistic (Monte Carlo) sensitivity analysis.
 
-    Draws bias parameters from specified prior distributions and computes
-    the distribution of bias-adjusted estimates.
+    Draws bias parameters from specified prior distributions and the
+    estimate from its sampling distribution, and removes Schlesselman's
+    binary-confounder bias :math:`\\log[(1 + (RR_{UD}-1)p_1) /
+    (1 + (RR_{UD}-1)p_0)]` with :math:`p_0` the drawn prevalence among
+    the unexposed and :math:`p_1 = \\min(RR_{EU} p_0, 1)` (Lash, Fox &
+    Fink 2009, ch. 8).
 
     Parameters
     ----------
     estimate : float
-        Observed estimate.
+        Observed estimate (log-RR scale).
     se : float
         Standard error.
     n_simulations : int
@@ -855,26 +866,15 @@ def probabilistic_bias_analysis(
         Summary of bias-adjusted estimate distribution.
     """
     rng = np.random.default_rng(seed)
-
     if bias_parms is None:
-        bias_parms = {
-            "rr_ud": (1.5, 0.3),
-            "rr_eu": (1.5, 0.3),
-            "prevalence": (0.3, 0.1),
-        }
-
+        bias_parms = {"rr_ud": (1.5, 0.3), "rr_eu": (1.5, 0.3), "prevalence": (0.3, 0.1)}
     rr_ud = np.abs(rng.normal(bias_parms["rr_ud"][0], bias_parms["rr_ud"][1], n_simulations))
     rr_eu = np.abs(rng.normal(bias_parms["rr_eu"][0], bias_parms["rr_eu"][1], n_simulations))
-    prev = np.clip(rng.normal(bias_parms["prevalence"][0], bias_parms["prevalence"][1], n_simulations), 0.01, 0.99)
-
-    # Add random error.
+    p0 = np.clip(rng.normal(bias_parms["prevalence"][0], bias_parms["prevalence"][1], n_simulations), 0.01, 0.99)
     estimates_with_error = rng.normal(estimate, se, n_simulations)
-
-    # Compute bias-adjusted estimates.
-    bias_factors = (rr_ud * rr_eu - 1) / np.maximum(rr_ud + rr_eu - 1, 0.01)
-    biases = np.log(np.maximum(bias_factors, 0.01)) * prev
+    p1 = np.minimum(rr_eu * p0, 1.0)
+    biases = np.log((1 + (rr_ud - 1) * p1) / (1 + (rr_ud - 1) * p0))
     adjusted = estimates_with_error - biases
-
     return {
         "original_estimate": float(estimate),
         "median_adjusted": float(np.median(adjusted)),
@@ -889,6 +889,86 @@ def probabilistic_bias_analysis(
 
 # ---------------------------------------------------------------------------
 # Cross-validation of sensitivity
+
+
+def konfound(
+    estimate: float,
+    se: float,
+    n: int,
+    n_covariates: int = 0,
+    alpha: float = 0.05,
+) -> dict[str, float]:
+    """Robustness of an inference to replacement and confounding (Frank et al.).
+
+    Native ``konfound::pkonfound`` for a regression coefficient (two
+    tails, null 0): the threshold is :math:`t^* se` with :math:`t^*` on
+    :math:`n - n_{cov} - 2` df; the percent bias to invalidate is
+    :math:`100 (1 - t^* se / \\hat\\beta)` (to sustain when not
+    significant) and RIR the corresponding number of cases; the impact
+    threshold of a confounding variable is
+    :math:`(r - r^*) / (1 \\pm |r^*|)` with :math:`r = t / \\sqrt{t^2 + df}`.
+    Mirrors ``morie_sensitivity_konfound`` in the R arm.
+
+    Parameters
+    ----------
+    estimate, se : float
+        Coefficient and its standard error.
+    n : int
+        Number of observations.
+    n_covariates : int
+        Number of covariates besides the focal predictor.
+    alpha : float
+        Significance level.
+
+    Returns
+    -------
+    dict
+        ``percent_bias_to_invalidate``, ``rir`` (cases to replace),
+        ``impact_threshold_confounder``, ``beta_threshold``.
+    """
+    df = n - n_covariates - 2
+    t_crit = stats.t.ppf(1 - alpha / 2, df) * (-1 if estimate < 0 else 1)
+    thr = t_crit * se
+    # percent bias to invalidate, or to sustain when not significant
+    pct = 100 * (1 - thr / estimate) if abs(estimate) > abs(thr) else 100 * (1 - estimate / thr)
+    act_t = estimate / se
+    act_r = act_t / np.sqrt(act_t**2 + df)
+    crit_r = t_crit / np.sqrt(t_crit**2 + df)
+    mp = 1 if -abs(thr) < estimate < abs(thr) else -1
+    sign = 1 if estimate > thr else (-1 if estimate < thr else 0)
+    itcv = sign * abs(act_r - crit_r) / (1 + mp * abs(crit_r))
+    return {
+        "percent_bias_to_invalidate": float(pct),
+        "rir": int(round(n * pct / 100)),
+        "impact_threshold_confounder": float(itcv),
+        "beta_threshold": float(thr),
+    }
+
+
+def tipping_point_smd(effect_observed: float, smd: float) -> dict[str, float]:
+    """Confounder-outcome effect that tips a ratio estimate to the null.
+
+    Native ``tipr::tip``: an unmeasured confounder whose standardized
+    mean difference between exposure groups is ``smd`` tips an observed
+    ratio :math:`b` to 1 when its effect on the outcome is
+    :math:`b^{1/smd}` (Lin, Psaty & Kronmal 1998).  Mirrors
+    ``morie_sensitivity_tipping_point`` in the R arm.
+
+    Parameters
+    ----------
+    effect_observed : float
+        Observed ratio (e.g. risk ratio), the bound nearest the null.
+    smd : float
+        Exposure-confounder standardized mean difference.
+
+    Returns
+    -------
+    dict
+        ``effect_adjusted`` (1), ``confounder_outcome_effect``.
+    """
+    return {"effect_adjusted": 1.0, "confounder_outcome_effect": float(effect_observed ** (1 / smd))}
+
+
 # ---------------------------------------------------------------------------
 
 
