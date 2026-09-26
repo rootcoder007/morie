@@ -89765,6 +89765,48 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "csinv",
+    "compound_symmetry_inverse",
+    "Auto",
+    "Auto-wired callable from fn/csinv.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "nestvc",
+    "nested_variance_components",
+    "Auto",
+    "Auto-wired callable from fn/nestvc.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "bvcchy",
+    "bivariate_cauchy_density",
+    "Auto",
+    "Auto-wired callable from fn/bvcchy.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "plackt",
+    "plackett_distribution",
+    "Auto",
+    "Auto-wired callable from fn/plackt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "rhobin",
+    "binary_equicorrelation_bound",
+    "Auto",
+    "Auto-wired callable from fn/rhobin.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "mgamrf",
+    "multivariate_gamma_field",
+    "Auto",
+    "Auto-wired callable from fn/mgamrf.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
@@ -90189,32 +90231,11 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "statistical_methods_for_spatial_data_analysis1u1161",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1161",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1161.py",
-    "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1163",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1163",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1163.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
     "statistical_methods_for_spatial_data_analysis1u1172",
     "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1172",
     "Auto",
     "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1172.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u1466",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1466",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u1466.py",
-    "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
     "statistical_methods_for_spatial_data_analysis1u1685",
@@ -90231,46 +90252,11 @@ _r(
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "statistical_methods_for_spatial_data_analysis1u3",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_3",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u3.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u306",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_306",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u306.py",
-    "Knowledge is power. -- Francis Bacon",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u307",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_307",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u307.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u4",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_4",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u4.py",
-    "Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
     "statistical_methods_for_spatial_data_analysis1u429",
     "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_429",
     "Auto",
     "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u429.py",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "statistical_methods_for_spatial_data_analysis1u93",
-    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_93",
-    "Auto",
-    "Auto-wired callable from fn/statistical_methods_for_spatial_data_analysis1u93.py",
-    "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
     "statistics_fourth_edition_david_freeman_robert_pisani_and_ro27u111",

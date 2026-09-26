@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,395 single-purpose callables** -- every one
+``morie.fn`` ships **18,393 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1309,6 +1309,7 @@ Full list
    "bilinwarp", "bsafilt"
    "bimid", "bimid"
    "binary_crossentropy_loss", "bcelO"
+   "binary_equicorrelation_bound", "rhobin"
    "binary_heap", "bheap"
    "binary_outcome_mediation", "binMd"
    "binary_segmentation", "binseg"
@@ -1358,6 +1359,7 @@ Full list
    "bivand2013_chapter_7_unnumbered_297", "bivand20137u297"
    "bivand2013_chapter_8_equation_4", "bivand20138e4"
    "bivand2013_chapter_8_equation_5", "bivand20138e5"
+   "bivariate_cauchy_density", "bvcchy"
    "bivariate_causal_test", "bivcn"
    "bivariate_morans_i", "morbiv"
    "biweight_midcorrelation", "biwtm"
@@ -2971,6 +2973,7 @@ Full list
    "compositional_zero_lrda", "aitzlk"
    "compositional_zero_lrem", "aitzlr"
    "compositional_zero_multreplace", "aitzmu"
+   "compound_symmetry_inverse", "csinv"
    "compressed_lmm", "cmlmer"
    "compressedlmm", "cmlmer"
    "compsig", "bsasig"
@@ -11156,6 +11159,7 @@ Full list
    "multistate_transition_matrix", "mstrn"
    "multitrait_ridge_form", "multitrait_ridge_form"
    "multitraitlmm", "mtlmm"
+   "multivariate_gamma_field", "mgamrf"
    "multivariate_outlier", "mvout"
    "multiverse_bootstrap", "drstr"
    "multiview_cca", "anmls"
@@ -11512,6 +11516,7 @@ Full list
    "nested_anova_prediction", "nested_anova_prediction"
    "nested_counterfactual_mediation", "nemed"
    "nested_cv", "nestc"
+   "nested_variance_components", "nestvc"
    "nested_variogram", "sgnst"
    "nestedcv", "nestc"
    "nesterov_accelerated", "nesterv"
@@ -12420,6 +12425,7 @@ Full list
    "placebotestdid", "plctst"
    "plackett_burman", "plakb"
    "plackett_copula", "plkt"
+   "plackett_distribution", "plackt"
    "plackettburman", "plakb"
    "plackettcopula", "plkt"
    "plafp", "plafp"
@@ -16065,18 +16071,10 @@ Full list
    "statistical_methods_for_spatial_data_analysis_chapter_1_equation_27", "statistical_methods_for_spatial_data_analysis1e27"
    "statistical_methods_for_spatial_data_analysis_chapter_1_equation_28", "statistical_methods_for_spatial_data_analysis1e28"
    "statistical_methods_for_spatial_data_analysis_chapter_1_equation_3", "statistical_methods_for_spatial_data_analysis1e3"
-   "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1161", "statistical_methods_for_spatial_data_analysis1u1161"
-   "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1163", "statistical_methods_for_spatial_data_analysis1u1163"
    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1172", "statistical_methods_for_spatial_data_analysis1u1172"
-   "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1466", "statistical_methods_for_spatial_data_analysis1u1466"
    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1685", "statistical_methods_for_spatial_data_analysis1u1685"
    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1686", "statistical_methods_for_spatial_data_analysis1u1686"
-   "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_3", "statistical_methods_for_spatial_data_analysis1u3"
-   "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_306", "statistical_methods_for_spatial_data_analysis1u306"
-   "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_307", "statistical_methods_for_spatial_data_analysis1u307"
-   "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_4", "statistical_methods_for_spatial_data_analysis1u4"
    "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_429", "statistical_methods_for_spatial_data_analysis1u429"
-   "statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_93", "statistical_methods_for_spatial_data_analysis1u93"
    "statistical_methods_for_spatial_data_analysis_chapter_4_equation_16", "statistical_methods_for_spatial_data_analysis4e16"
    "statistical_methods_for_spatial_data_analysis_chapter_4_equation_30", "statistical_methods_for_spatial_data_analysis4e30"
    "statistical_methods_for_spatial_data_analysis_chapter_4_equation_31", "statistical_methods_for_spatial_data_analysis4e31"
