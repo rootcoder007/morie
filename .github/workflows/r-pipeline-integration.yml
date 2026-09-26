@@ -35,9 +35,9 @@ jobs:
         with:
           python-version: "3.12"
 
-      - uses: r-lib/actions/setup-pandoc@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - uses: r-lib/actions/setup-pandoc@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
 
-      - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
         with:
           use-public-rspm: true
 
@@ -51,7 +51,7 @@ jobs:
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
         with:
           working-directory: r-package/morie
           cache-version: 2
