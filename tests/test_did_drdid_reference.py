@@ -374,3 +374,43 @@ def test_did_m_counts_joiners_and_leavers():
     did_minus = dy([*range(1, 11), *range(19, 25)], 4) - dy(range(11, 19), 4)
     assert abs(res.estimate - (30 * did_plus + 24 * did_minus) / 54) < 1e-12
     assert abs(res.estimate - 0.879860090735746) < 1e-10
+
+
+def test_honest_sensitivity_identified_set_matches_honestdid():
+    # reference: HonestDiD:::.compute_IDset_DeltaRM(Mbar, c(pre, post), l_vec)
+    import math
+
+    import pandas as pd
+
+    from morie.did import event_study, honest_sensitivity
+
+    rows = []
+    for time in range(1, 10):
+        for unit in range(1, 61):
+            tt = 6.0 if unit <= 30 else float("inf")
+            d = int(time >= tt)
+            y = (
+                0.4 * time
+                + 1.2 * d
+                + 0.05 * (unit <= 30) * time
+                + 0.6 * math.sin(1.3 * unit * time)
+                + 0.3 * math.cos(0.7 * unit)
+            )
+            rows.append({"unit": unit, "time": time, "treat_time": tt, "y": y})
+    es = event_study(pd.DataFrame(rows), "y", "unit", "time", "treat_time", leads=4, lags=3)
+    ref = {
+        0: (
+            [1.23094239561005, 1.18959317035158, 1.10689471983464],
+            [1.313640846127, 1.35499007138547, 1.43768852190242],
+        ),
+        2: (
+            [1.19519004303279, 1.07114236725737, 0.823047015706535],
+            [1.44328539458363, 1.56733307035904, 1.81542842190988],
+        ),
+    }
+    for tt, (lo, hi) in ref.items():
+        o = honest_sensitivity(es, m_bar_range=(0.5, 1, 2), target_time=tt)
+        for a, b in zip(o["id_lower"], lo):
+            assert abs(a - b) < 1e-10
+        for a, b in zip(o["id_upper"], hi):
+            assert abs(a - b) < 1e-10

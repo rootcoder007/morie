@@ -2710,8 +2710,10 @@ def did_sensitivity_analysis(
 ) -> pd.DataFrame:
     r"""Sensitivity of DiD estimate to violations of parallel trends.
 
-    Following Rambachan & Roth (2023), computes the identified set for
-    the ATT under bounded deviations :math:`\delta` from parallel trends:
+    Bounds the bias from a parallel-trends violation by :math:`\delta`
+    standard errors of the 2x2 estimate (a fixed-bias band in the spirit of
+    Rambachan & Roth 2023; a 2x2 design has no pre-periods to calibrate
+    their relative-magnitudes set, for which see :func:`honest_sensitivity`):
 
     .. math::
 
@@ -2758,6 +2760,89 @@ def did_sensitivity_analysis(
             }
         )
     return pd.DataFrame(results)
+
+
+def honest_sensitivity(
+    event_study_result: EventStudyResult,
+    *,
+    m_bar_range: Sequence[float] = (0.0, 0.5, 1.0, 1.5, 2.0),
+    target_time: int = 0,
+    alpha: float = 0.05,
+) -> pd.DataFrame:
+    r"""Rambachan-Roth (2023) relative-magnitudes sensitivity for an event study.
+
+    Under :math:`\Delta^{RM}(\bar M)` every post-period change in the
+    trend violation is at most :math:`\bar M` times the largest change
+    between consecutive pre-periods (the reference period counts as
+    zero), so the violation at the target lies within
+    :math:`k \bar M m` of the last pre-period, :math:`k` steps later.
+    ``id_lower`` / ``id_upper`` are that identified set at the estimated
+    coefficients (equal to HonestDiD's ``.compute_IDset_DeltaRM``); the
+    interval widens it by :math:`z` standard errors of the target, a
+    plug-in band that treats the pre-period changes as known (not
+    HonestDiD's conditional / hybrid ARP interval). Mirrors
+    ``morie_did_honest_sensitivity`` in the R arm.
+
+    Parameters
+    ----------
+    event_study_result : EventStudyResult
+        Output of :func:`event_study`.
+    m_bar_range : sequence of float
+        Values of :math:`\bar M`.
+    target_time : int
+        Post-treatment relative time to bound (default 0, onset).
+    alpha : float
+        Significance level.
+
+    Returns
+    -------
+    pd.DataFrame
+        Columns ``m_bar``, ``estimate``, ``id_lower``, ``id_upper``,
+        ``ci_lower``, ``ci_upper``, ``covers_zero``; ``attrs`` holds
+        ``breakdown_m_bar`` and ``max_pre_deviation``.
+
+    References
+    ----------
+    Rambachan, A., & Roth, J. (2023). A more credible approach to
+    parallel trends. *Review of Economic Studies*, 90(5), 2555--2591.
+    """
+    cf = event_study_result.coefficients
+    ref = event_study_result.reference_period
+    rel = [int(r) for r in cf["relative_time"]]
+    est = [float(e) for e in cf["estimate"]]
+    se = [float(v) for v in cf["std_error"]]
+    if target_time not in rel:
+        raise ValueError(f"No event-study coefficient at relative time {target_time}.")
+    pre = sorted([(r, e) for r, e in zip(rel, est) if r < 0 and r != ref] + [(ref, 0.0)])
+    if target_time <= pre[-1][0]:
+        raise ValueError("`target_time` must be a post-treatment relative time.")
+    max_pre = max((abs(b[1] - a[1]) for a, b in zip(pre[:-1], pre[1:])), default=0.0)
+    steps = target_time - pre[-1][0]
+    anchor = pre[-1][1]
+    i = rel.index(target_time)
+    b_t, s_t = est[i], se[i]
+    z = stats.norm.ppf(1 - alpha / 2)
+    rows = []
+    for m_bar in m_bar_range:
+        half = steps * m_bar * max_pre
+        id_lo, id_hi = b_t - anchor - half, b_t - anchor + half
+        lo, hi = id_lo - z * s_t, id_hi + z * s_t
+        rows.append(
+            {
+                "m_bar": m_bar,
+                "estimate": b_t,
+                "id_lower": id_lo,
+                "id_upper": id_hi,
+                "ci_lower": lo,
+                "ci_upper": hi,
+                "covers_zero": lo <= 0 <= hi,
+            }
+        )
+    out = pd.DataFrame(rows)
+    covers = [r["m_bar"] for r in rows if r["covers_zero"]]
+    out.attrs["breakdown_m_bar"] = min(covers) if covers else float("nan")
+    out.attrs["max_pre_deviation"] = max_pre
+    return out
 
 
 # ---------------------------------------------------------------------------
