@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_968(x, y=
     NotImplementedError until the real method is built.
     Correlation expression (auto-extracted; see ref).
 
-    Formula:  = (X(s) Σ(θ)−1 X(s))−1 X(s) Σ(θ)−1 Z(s).
+    Formula: \b = (X(s) Σ(θ)−1 X(s))−1 X(s) Σ(θ)−1 Z(s).
 
     Parameters
     ----------

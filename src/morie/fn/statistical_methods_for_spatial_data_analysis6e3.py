@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_6_equation_3(x, cdf=No
     NotImplementedError until the real method is built.
     GeneralStatistics equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula: βj ± tα/2,n−rank{X(s)} × ese βj
+    Formula: β\bj ± tα/2,n−rank{X(s)} × ese β\bj
 
     Parameters
     ----------

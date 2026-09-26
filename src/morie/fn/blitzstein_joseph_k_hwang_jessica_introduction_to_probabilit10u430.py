@@ -10,7 +10,7 @@ def blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnu
     NotImplementedError until the real method is built.
     Association expression (auto-extracted; see ref).
 
-    Formula: [EQ] 1x) =P (pxZ1px) = (px) (px) = 2(px) 1;
+    Formula: [EQ] 1x) =P (pxZ1px) = \b(px) \b(px) = 2\b(px) 1;
 
     Parameters
     ----------

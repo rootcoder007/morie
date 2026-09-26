@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_4_equation_31(x, cdf=N
     NotImplementedError until the real method is built.
     GeneralStatistics equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula: 2. Compute residuals r = Z(s) − X(s)β   
+    Formula: 2. Compute residuals r = Z(s) − X(s)β   \b
 
     Parameters
     ----------

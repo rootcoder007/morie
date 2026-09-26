@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_6_equation_94(x, cdf=N
     NotImplementedError until the real method is built.
     Multilevel equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula: X(s0 )β + (s0 ) and that
+    Formula: X(s0 )β + \b(s0 ) and that
 
     Parameters
     ----------

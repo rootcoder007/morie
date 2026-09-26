@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1678(x, y
     NotImplementedError until the real method is built.
     Association expression (auto-extracted; see ref).
 
-    Formula: σ                    ) V (Z(s) − X(s)β
+    Formula: σ                   \b ) V (Z(s) − X(s)β
 
     Parameters
     ----------

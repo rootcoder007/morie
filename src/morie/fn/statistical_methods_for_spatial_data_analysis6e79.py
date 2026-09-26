@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_6_equation_79(x, cdf=N
     NotImplementedError until the real method is built.
     Dispersion equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula: ν=Ψ   −1 (Z(s) − μ) + X(s)β  +S (s),              (6.83)
+    Formula: ν=Ψ  \b −1 (Z(s) − \bμ) + X(s)β \b +S\b (s),              (6.83)
 
     Parameters
     ----------

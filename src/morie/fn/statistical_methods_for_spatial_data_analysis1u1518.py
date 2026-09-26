@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1518(x, y
     NotImplementedError until the real method is built.
     Correlation expression (auto-extracted; see ref).
 
-    Formula: μ = g −1 (Xβ    );
+    Formula: μ = g −1 (Xβ   \b );
 
     Parameters
     ----------

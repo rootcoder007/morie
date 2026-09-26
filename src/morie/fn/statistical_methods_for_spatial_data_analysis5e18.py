@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_5_equation_18(x, cdf=N
     NotImplementedError until the real method is built.
     CentralTendency equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula:  + σ  Σ−1 (Z(s) − 1β
+    Formula: \b + σ  Σ−1 (Z(s) − 1β
 
     Parameters
     ----------

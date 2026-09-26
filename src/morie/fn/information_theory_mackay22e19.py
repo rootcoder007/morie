@@ -10,7 +10,7 @@ def information_theory_mackay_chapter_22_equation_19(x, cdf=None):
     NotImplementedError until the real method is built.
     GeneralStatistics equation extracted from Information theory MacKay.
 
-    Formula: [EQ] n=1jfkg;) =
+    Formula: [EQ] n=1jfkg;\x1b) =
 
     Parameters
     ----------

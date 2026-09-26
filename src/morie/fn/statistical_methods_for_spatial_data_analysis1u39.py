@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_39(x, y=N
     NotImplementedError until the real method is built.
     Correlation expression (auto-extracted; see ref).
 
-    Formula: statistic of the residuals ei = Z(si ) − x (si )β
+    Formula: statistic of the residuals e\bi = Z(si ) − x (si )β
 
     Parameters
     ----------

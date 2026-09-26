@@ -1348,8 +1348,8 @@ class DataFrame:
             for j, nm in enumerate(names):
                 self._cols[nm] = [r[j] for r in rows]
         elif hasattr(data, "tolist"):
-            return DataFrame.__init__(self, data.tolist(), index=index,
-                                      columns=columns)
+            DataFrame.__init__(self, data.tolist(), index=index, columns=columns)
+            return
         if columns is not None and isinstance(data, dict):
             self._cols = {c: self._cols.get(
                 c, [_NAN] * (len(index) if index else 0))

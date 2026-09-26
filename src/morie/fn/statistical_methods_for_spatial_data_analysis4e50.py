@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_4_equation_50(x, cdf=N
     NotImplementedError until the real method is built.
     GeneralStatistics equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula: Q(θ) =         (hi ) − (σ 2 − C(θ, hi ))
+    Formula: Q(θ) =         \b(hi ) − (σ 2 − C(θ, hi ))
 
     Parameters
     ----------

@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_6_equation_11(x, cdf=N
     NotImplementedError until the real method is built.
     Regression equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula: Z(s) = Xτ + βW(Z(s) − Xτ ) + ∗ .                     (6.11)
+    Formula: Z(s) = Xτ + βW(Z(s) − Xτ ) + \b∗ .                     (6.11)
 
     Parameters
     ----------

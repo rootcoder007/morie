@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_6_equation_78(x, cdf=N
     NotImplementedError until the real method is built.
     Regression equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula: owever, because Σμ    does depend on β we iterate as follows
+    Formula: owever, because Σμ   \b does depend on β we iterate as follows
 
     Parameters
     ----------

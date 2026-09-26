@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_6_equation_20(x, cdf=N
     NotImplementedError until the real method is built.
     GeneralStatistics equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula:  = GU(s) V−1 (Z(s) − X(s)β
+    Formula: \b = GU(s) V−1 (Z(s) − X(s)β
 
     Parameters
     ----------

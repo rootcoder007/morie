@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_1676(x, y
     NotImplementedError until the real method is built.
     Association expression (auto-extracted; see ref).
 
-    Formula: a = 0, then m∗ = β     , and E[σ 2 |Z(s)] = {(n − p)/(d + n − 2)σ     2 }, with
+    Formula: a = 0, then m∗ = β    \b , and E[σ 2 |Z(s)] = {(n − p)/(d + n − 2)σ     \b2 }, with
 
     Parameters
     ----------

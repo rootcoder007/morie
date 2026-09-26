@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_6_equation_28(x, cdf=N
     NotImplementedError until the real method is built.
     Regression equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula: (6.28) is the variance matrix of [β     (s) − υ(s) ]. Verify that the element
+    Formula: (6.28) is the variance matrix of [β    \b (s) − υ(s) ]. Verify that the element
 
     Parameters
     ----------

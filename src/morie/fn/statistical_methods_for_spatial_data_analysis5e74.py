@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_5_equation_74(x, cdf=N
     NotImplementedError until the real method is built.
     Dispersion equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula: dictor of Z(B) based on data {Z(Ai )} is Z(B) = i=1 λi Z(Ai ), where the
+    Formula: dictor of Z(B) based on data {Z(Ai )} is Z\b(B) = i=1 λi Z(Ai ), where the
 
     Parameters
     ----------

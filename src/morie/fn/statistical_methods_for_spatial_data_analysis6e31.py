@@ -10,7 +10,7 @@ def statistical_methods_for_spatial_data_analysis_chapter_6_equation_31(x, cdf=N
     NotImplementedError until the real method is built.
     Dispersion equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
 
-    Formula: (6.28) is the variance matrix of [β     (s) − υ(s) ]. Verify that the element in
+    Formula: (6.28) is the variance matrix of [β    \b (s) − υ(s) ]. Verify that the element in
 
     Parameters
     ----------
