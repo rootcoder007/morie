@@ -69,7 +69,8 @@ def mrm_tps_levy_scaling(
     if n < 2:
         return LevyResult(n, 0, min_step_km, float("nan"))
     step = _haversine_km(lat[:-1], lon[:-1], lat[1:], lon[1:])
-    tail = step[step >= min_step_km]
+    # Clauset, Shalizi & Newman (2009) MLE on the tail x >= x_min
+    tail = step[step >= max(min_step_km, x_min)]
     alpha = 1.0 + tail.size / np.log(tail / x_min).sum() if tail.size >= 2 else float("nan")
     return LevyResult(int(n), int(tail.size), float(min_step_km), round(float(alpha), 4))
 
@@ -102,8 +103,9 @@ def mrm_tps_moran_clustering(
 
     lat_b = np.linspace(lat.min(), lat.max(), grid_resolution + 1)
     lon_b = np.linspace(lon.min(), lon.max(), grid_resolution + 1)
-    i_idx = np.clip(np.digitize(lat, lat_b) - 1, 0, grid_resolution - 1)
-    j_idx = np.clip(np.digitize(lon, lon_b) - 1, 0, grid_resolution - 1)
+    # right-closed bins with the lowest edge included, as the R arm cut()
+    i_idx = np.clip(np.digitize(lat, lat_b, right=True) - 1, 0, grid_resolution - 1)
+    j_idx = np.clip(np.digitize(lon, lon_b, right=True) - 1, 0, grid_resolution - 1)
     counts = np.zeros((grid_resolution, grid_resolution), dtype=int)
     np.add.at(counts, (i_idx, j_idx), 1)
 
@@ -126,8 +128,24 @@ def mrm_tps_moran_clustering(
         morans_z = float("nan")
     else:
         morans_I = float((N / W) * num / (z**2).sum())
+        # moments under randomisation, as spdep::moran.test: rook binary
+        # weights give S1 = 2 S0 and S2 = sum_i (2 d_i)^2 with d_i the
+        # number of rook neighbours of cell i
         EI = -1.0 / (N - 1)
-        var_I = 2.0 / (N - 1) ** 2
+        S0 = float(W)
+        S1 = 2.0 * S0
+        g = grid_resolution
+        S2 = 0.0
+        for i in range(g):
+            for j in range(g):
+                d_i = (i > 0) + (i < g - 1) + (j > 0) + (j < g - 1)
+                S2 += (2.0 * d_i) ** 2
+        zz = [float(v) for v in z.ravel()]
+        m2 = sum(v * v for v in zz)
+        b2 = N * sum(v**4 for v in zz) / m2**2
+        var_I = (
+            N * ((N * N - 3 * N + 3) * S1 - N * S2 + 3 * S0 * S0) - b2 * ((N * N - N) * S1 - 2 * N * S2 + 6 * S0 * S0)
+        ) / ((N - 1) * (N - 2) * (N - 3) * S0 * S0) - EI * EI
         morans_z = (morans_I - EI) / math.sqrt(var_I)
 
     n_clusters = 0
