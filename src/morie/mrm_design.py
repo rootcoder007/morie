@@ -26,6 +26,7 @@ Each returns a tidy dict / dataclass with the canonical fields
 
 from __future__ import annotations
 
+import math
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 
@@ -147,31 +148,30 @@ def mrm_anova_oneway(
     f, p = stats.f_oneway(*groups)
 
     # Tukey HSD via statsmodels (optional; if unavailable use Bonferroni-corrected pairwise t)
-    try:
-        from morie.fn._glm_core import pairwise_tukeyhsd
-
-        tk = pairwise_tukeyhsd(df[response_col].values, df[group_col].values, alpha=alpha)
-        tk_df = pd.DataFrame(data=tk._results_table.data[1:], columns=tk._results_table.data[0])
-    except Exception:
-        # fallback: Bonferroni-corrected pairwise Welch t
-        rows = []
-        names = list(groups.index)
-        n_pairs = n_groups * (n_groups - 1) // 2
-        for i in range(n_groups):
-            for j in range(i + 1, n_groups):
-                a, b = groups.iloc[i], groups.iloc[j]
-                t = stats.ttest_ind(a, b, equal_var=False)
-                rows.append(
-                    {
-                        "group1": names[i],
-                        "group2": names[j],
-                        "meandiff": float(a.mean() - b.mean()),
-                        "p-adj": min(1.0, t.pvalue * n_pairs),
-                        "reject": (t.pvalue * n_pairs) < alpha,
-                    }
-                )
-        tk_df = pd.DataFrame(rows)
-
+    # Tukey-Kramer HSD as R's TukeyHSD(aov()): pair "B-A" is mean(B) - mean(A)
+    # over sorted levels, se = sqrt(MSE / 2 (1/n_A + 1/n_B)), studentized range
+    # on (k, N - k) df
+    names = list(groups.index)
+    mean_g = [float(v.mean()) for v in groups]
+    n_g = [int(v.size) for v in groups]
+    n_all = sum(n_g)
+    mse = sum(float(((v - v.mean()) ** 2).sum()) for v in groups) / (n_all - n_groups)
+    q_crit = float(stats.studentized_range.ppf(1 - alpha, n_groups, n_all - n_groups))
+    rows = []
+    for i in range(n_groups):
+        for j in range(i + 1, n_groups):
+            d_ij = mean_g[j] - mean_g[i]
+            se_ij = math.sqrt(mse / 2 * (1 / n_g[i] + 1 / n_g[j]))
+            rows.append(
+                {
+                    "diff": d_ij,
+                    "lwr": d_ij - q_crit * se_ij,
+                    "upr": d_ij + q_crit * se_ij,
+                    "p adj": float(stats.studentized_range.sf(abs(d_ij) / se_ij, n_groups, n_all - n_groups)),
+                    "pair": f"{names[j]}-{names[i]}",
+                }
+            )
+    tk_df = pd.DataFrame(rows)
     means = {g: float(v.mean()) for g, v in groups.items()}
     ns = {g: int(v.size) for g, v in groups.items()}
     n_total = sum(ns.values())
@@ -323,10 +323,16 @@ def mrm_causal_design(
 
     if estimator == "ipw" and len(covariates) > 0:
         # logistic propensity then Hájek IPW
-        from morie.fn._ml_core import LogisticRegression
+        from morie.fn.ps_fit import _ps_irls_beta
+
+        def _ps(Xm, Dv):
+            # unpenalised logistic MLE, as the R arm's glm(binomial)
+            Xc = np.column_stack([np.ones(len(Dv)), Xm])
+            beta = np.array(_ps_irls_beta(Xc.tolist(), [float(v) for v in Dv]))
+            return 1 / (1 + np.exp(-(Xc @ beta)))
 
         X = df[list(covariates)].to_numpy(dtype=float)
-        e = LogisticRegression(max_iter=1000).fit(X, D).predict_proba(X)[:, 1]
+        e = _ps(X, D)
         e = np.clip(e, 1e-6, 1 - 1e-6)
         # Hájek ATE
         w1 = D / e
@@ -336,10 +342,10 @@ def mrm_causal_design(
         rng = np.random.default_rng(42)
         boots = []
         for _ in range(199):
-            idx = rng.integers(0, n, n)
+            idx = [int(v) for v in rng.integers(0, n, n)]
             D_b, Y_b, X_b = D[idx], Y[idx], X[idx]
             try:
-                e_b = LogisticRegression(max_iter=200).fit(X_b, D_b).predict_proba(X_b)[:, 1]
+                e_b = _ps(X_b, D_b)
                 e_b = np.clip(e_b, 1e-6, 1 - 1e-6)
                 w1b = D_b / e_b
                 w0b = (1 - D_b) / (1 - e_b)
