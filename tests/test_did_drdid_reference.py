@@ -287,3 +287,24 @@ def test_bacon_decomposition_matches_bacondecomp():
         assert abs(got[k][0] - e) < 1e-10
         assert abs(got[k][1] - w) < 1e-10
     assert abs(r.overall_estimate - 0.576487105060352) < 1e-10
+
+
+def test_wild_cluster_bootstrap_matches_boottest():
+    # reference: fwildclusterboot::boottest(lm(y ~ d + post + dp), param = "dp",
+    #   clustid = "cl", B = 9999, type = "rademacher") -- full enumeration of 2^10
+    import math
+
+    import pandas as pd
+
+    from morie.did import wild_cluster_bootstrap
+
+    rows = []
+    for cl in range(1, 11):
+        for k in range(1, 9):
+            d, post = int(cl <= 5), int(k > 4)
+            y = 0.3 * d + 0.2 * post + 0.25 * d * post + 0.5 * math.sin(1.9 * cl) + 0.7 * math.cos(1.3 * cl * k)
+            rows.append({"cl": cl, "d": d, "post": post, "y": y})
+    r = wild_cluster_bootstrap(pd.DataFrame(rows), "y", "d", "post", "cl", n_bootstrap=1024)
+    assert r.details["full_enumeration"]
+    assert abs(r.p_value - 0.1640625) < 1e-12
+    assert abs(r.t_stat - 1.54025438940341) < 1e-10

@@ -31,7 +31,7 @@ import logging
 import math
 from collections.abc import Sequence
 from dataclasses import dataclass, field
-from itertools import combinations
+from itertools import combinations, product
 from typing import Any
 
 from morie.fn import _array_core as np
@@ -2054,10 +2054,17 @@ def wild_cluster_bootstrap(
         [-np.sqrt(3 / 2), -np.sqrt(2 / 2), -np.sqrt(1 / 2), np.sqrt(1 / 2), np.sqrt(2 / 2), np.sqrt(3 / 2)]
     )
 
+    # Rademacher weights are enumerated in full when 2^G <= B, as
+    # fwildclusterboot::boottest and Stata's boottest do
+    enum = weight_type != "webb" and n_bootstrap >= 2**G
+    draws = product([-1.0, 1.0], repeat=G) if enum else range(n_bootstrap)
     boot_t_stats = []
-    for _ in range(n_bootstrap):
+    for draw in draws:
         # Draw cluster-level weights
-        w = rng.choice(webb_vals, size=G) if weight_type == "webb" else rng.choice([-1.0, 1.0], size=G)
+        if enum:
+            w = np.array(draw)
+        else:
+            w = rng.choice(webb_vals, size=G) if weight_type == "webb" else rng.choice([-1.0, 1.0], size=G)
 
         # Construct bootstrap outcome
         y_star = X_r @ beta_r  # fitted under null
@@ -2070,7 +2077,9 @@ def wild_cluster_bootstrap(
         boot_t_stats.append(abs(t_b))
 
     # Bootstrap p-value
-    boot_p = float(np.mean(np.array(boot_t_stats) >= abs(t_stat_full)))
+    # symmetric p-value, strict inequality (boottest); the draws w = +-1
+    # reproduce t itself and must not count
+    boot_p = float(np.mean(np.array(boot_t_stats) > abs(t_stat_full) * (1 + 1e-10)))
 
     est = float(beta_full[tau_idx])
     se_est = float(se_full[tau_idx])
@@ -2086,7 +2095,12 @@ def wild_cluster_bootstrap(
         n_treated=int(d.sum()),
         n_control=int((1 - d).sum()),
         method="wild_cluster_bootstrap",
-        details={"n_clusters": G, "n_bootstrap": n_bootstrap, "weight_type": weight_type},
+        details={
+            "n_clusters": G,
+            "n_bootstrap": len(boot_t_stats),
+            "weight_type": weight_type,
+            "full_enumeration": enum,
+        },
     )
 
 
