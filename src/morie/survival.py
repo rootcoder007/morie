@@ -147,6 +147,7 @@ class CompetingRiskResult:
     event_of_interest: int
     n_total: int
     method: str = "Aalen-Johansen"
+    variance: np.ndarray | None = None
 
 
 # ===================================================================
@@ -1420,41 +1421,50 @@ def cumulative_incidence_function(
     cif = np.zeros(len(unique_times))
     ci_lo = np.zeros(len(unique_times))
     ci_hi = np.zeros(len(unique_times))
+    var_out = np.zeros(len(unique_times))
 
-    # Overall KM for all events combined
-    e_any = (e_sorted > 0).astype(np.int32)
-    # Build KM-like estimates
-    s_prev = 1.0
-    cum_inc = 0.0
-    n_at_risk = n
+    # Aalen-Johansen estimate with Gray's variance: a port of cmprsk's
+    # Fortran cinc (the estimator behind cmprsk::cuminc). The risk set at
+    # t_j counts every observation with time >= t_j -- the old loop only
+    # removed observations at event times, so anyone censored between
+    # events stayed at risk for ever.
     z = stats.norm.ppf((1 + confidence) / 2)
-    var_cif = 0.0
-
+    fk = 1.0                    # overall survival just before t_j
+    f_cur = 0.0                 # CIF of the event of interest
+    v1 = v2 = v3 = 0.0
+    var_cur = 0.0
     for i, ut in enumerate(unique_times):
-        at_time = t_sorted == ut
-        d_interest = ((t_sorted == ut) & (e_sorted == event_of_interest)).sum()
-        d_total = ((t_sorted == ut) & (e_sorted > 0)).sum()
-        n_at_time = at_time.sum()
-
-        if n_at_risk <= 0:
-            cif[i] = cum_inc
-            ci_lo[i] = cum_inc
-            ci_hi[i] = cum_inc
-            continue
-
-        h_interest = d_interest / n_at_risk
-        h_total = d_total / n_at_risk
-        cum_inc += s_prev * h_interest
-        s_prev *= 1 - h_total
-        cif[i] = cum_inc
-
-        # Approximate variance
-        var_cif += (d_interest / n_at_risk**2) if n_at_risk > 0 else 0
-        se = math.sqrt(max(var_cif, 0))
-        ci_lo[i] = max(cum_inc - z * se, 0)
-        ci_hi[i] = min(cum_inc + z * se, 1)
-
-        n_at_risk -= n_at_time
+        rs = float((t_sorted >= ut).sum())
+        at = t_sorted == ut
+        nd1 = int((at & (e_sorted == event_of_interest)).sum())
+        nd2 = int((at & (e_sorted > 0)).sum()) - nd1
+        nd = nd1 + nd2
+        fkn = fk * (rs - nd) / rs
+        if nd1 > 0:
+            f_cur = f_cur + fk * nd1 / rs
+        if nd2 > 0 and fkn > 0:
+            t5 = 1.0 - (nd2 - 1.0) / (rs - 1.0) if nd2 > 1 else 1.0
+            t6 = fk * fk * t5 * nd2 / (rs * rs)
+            t3 = 1.0 / fkn
+            t4 = f_cur / fkn
+            v1 += t4 * t4 * t6
+            v2 += t3 * t4 * t6
+            v3 += t3 * t3 * t6
+        if nd1 > 0:
+            t5 = 1.0 - (nd1 - 1.0) / (rs - 1.0) if nd1 > 1 else 1.0
+            t6 = fk * fk * t5 * nd1 / (rs * rs)
+            t3 = 1.0 / fkn if fkn > 0 else 0.0
+            t4 = 1.0 + t3 * f_cur
+            v1 += t4 * t4 * t6
+            v2 += t3 * t4 * t6
+            v3 += t3 * t3 * t6
+            var_cur = v1 + f_cur * f_cur * v3 - 2.0 * f_cur * v2
+        fk = fkn
+        cif[i] = f_cur
+        se = math.sqrt(max(var_cur, 0.0))
+        ci_lo[i] = max(f_cur - z * se, 0.0)
+        ci_hi[i] = min(f_cur + z * se, 1.0)
+        var_out[i] = var_cur
 
     return CompetingRiskResult(
         times=unique_times,
@@ -1463,6 +1473,7 @@ def cumulative_incidence_function(
         ci_upper=ci_hi,
         event_of_interest=event_of_interest,
         n_total=n,
+        variance=var_out,
     )
 
 
