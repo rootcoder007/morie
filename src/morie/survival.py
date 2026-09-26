@@ -34,10 +34,10 @@ Klein, J. P., & Moeschberger, M. L. (2003). *Survival Analysis: Techniques
 from __future__ import annotations
 
 import logging
-from math import exp as _math_exp
-from math import log as _math_log
 import math
 from dataclasses import dataclass, field
+from math import exp as _math_exp
+from math import log as _math_log
 from typing import Union
 
 from morie.fn import _array_core as np
@@ -500,7 +500,7 @@ def _logrank_generic(
     except np.linalg.LinAlgError:
         chi2 = 0.0
 
-    p_val = 1.0 - stats.chi2.cdf(chi2, q)
+    p_val = stats.chi2.sf(chi2, q)
     method_names = {
         "logrank": "Log-rank test",
         "peto": "Peto-Peto test",
@@ -1775,10 +1775,7 @@ def survival_plot_data(
     """
     t = np.asarray(time, dtype=np.float64).ravel()
     e = np.asarray(event, dtype=np.int32).ravel()
-    if group is None:
-        g = np.ones(len(t), dtype=int)
-    else:
-        g = np.asarray(group).ravel()
+    g = np.ones(len(t), dtype=int) if group is None else np.asarray(group).ravel()
 
     frames = []
     for gval in np.unique(g):
@@ -1836,10 +1833,7 @@ def survival_calibration(
     for i in range(n_groups):
         lo = boundaries[i]
         hi = boundaries[i + 1]
-        if i == n_groups - 1:
-            mask = (pred >= lo) & (pred <= hi)
-        else:
-            mask = (pred >= lo) & (pred < hi)
+        mask = (pred >= lo) & (pred <= hi) if i == n_groups - 1 else (pred >= lo) & (pred < hi)
         if mask.sum() == 0:
             continue
         km = kaplan_meier(t[mask], e[mask])
@@ -2003,7 +1997,7 @@ def turnbull_estimator(
     # Initialise uniform mass
     p = np.ones(m) / m
 
-    for iteration in range(max_iter):
+    for _iteration in range(max_iter):
         p_old = p.copy()
         # E-step: for each observation, compute weight of each interval point
         weights = np.zeros(m)

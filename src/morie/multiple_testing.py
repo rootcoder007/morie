@@ -750,7 +750,7 @@ def fisher_combined(p_values: np.ndarray) -> tuple[float, float]:
     p = np.asarray(p_values, dtype=float)
     p = np.clip(p, 1e-300, 1.0)
     chi2_stat = -2.0 * np.sum(np.log(p))
-    combined_p = 1.0 - stats.chi2.cdf(chi2_stat, df=2 * len(p))
+    combined_p = stats.chi2.sf(chi2_stat, df=2 * len(p))
     return float(chi2_stat), float(combined_p)
 
 
@@ -779,7 +779,7 @@ def stouffer_combined(
         z_combined = np.sum(w * z) / np.sqrt(np.sum(w**2))
     else:
         z_combined = np.sum(z) / np.sqrt(len(z))
-    combined_p = 1.0 - stats.norm.cdf(z_combined)
+    combined_p = stats.norm.sf(z_combined)
     return float(z_combined), float(combined_p)
 
 
@@ -878,7 +878,7 @@ def cauchy_combination(
     t_stat = np.sum(w * t_values)
 
     # P-value from standard Cauchy distribution.
-    combined_p = 1.0 - stats.cauchy.cdf(t_stat)
+    combined_p = stats.cauchy.sf(t_stat)
     return float(t_stat), float(combined_p)
 
 

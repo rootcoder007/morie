@@ -444,13 +444,13 @@ def otdml(
     from morie.fn import _stats_core as stats
 
     z = ate / se if se > 0 else 0
-    pval = float(2 * (1 - stats.norm.cdf(abs(z))))
+    pval = float(2 * (stats.norm.sf(abs(z))))
 
     # ATT approximation (weight by treatment probability)
     p_treat = d.mean()
     att = ate / p_treat if p_treat > 0 else ate
     att_se = se / p_treat if p_treat > 0 else se
-    att_pval = float(2 * (1 - stats.norm.cdf(abs(att / att_se)))) if att_se > 0 else 1.0
+    att_pval = float(2 * (stats.norm.sf(abs(att / att_se)))) if att_se > 0 else 1.0
 
     return OtDmlR(
         ate=ate,

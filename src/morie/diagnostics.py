@@ -553,7 +553,7 @@ def link_test(
         XtX_inv = np.linalg.inv(X_link.T @ X_link)
         se = np.sqrt(mse * np.diag(XtX_inv))
         t_stat = beta_link[2] / max(se[2], 1e-10)
-        p_val = 2 * (1 - stats.t.cdf(abs(t_stat), n - 3))
+        p_val = 2 * (stats.t.sf(abs(t_stat), n - 3))
     except Exception:
         t_stat, p_val = float("nan"), float("nan")
 
@@ -689,7 +689,7 @@ def compute_goodness_of_fit(
         mse_model = (ss_tot - ss_res) / max(df_model, 1)
         mse_res = ss_res / max(df_residual, 1)
         f_stat = mse_model / max(mse_res, 1e-10)
-        f_p = 1 - stats.f.cdf(f_stat, df_model, df_residual)
+        f_p = stats.f.sf(f_stat, df_model, df_residual)
 
         if log_likelihood is None:
             log_likelihood = -n / 2 * (np.log(2 * np.pi) + np.log(ss_res / n) + 1)
@@ -829,7 +829,7 @@ def likelihood_ratio_test(
     SpecificationTest
     """
     lr_stat = -2 * (ll_restricted - ll_full)
-    p_value = 1 - stats.chi2.cdf(lr_stat, df_diff)
+    p_value = stats.chi2.sf(lr_stat, df_diff)
 
     conclusion = (
         "Full model significantly improves fit (p < 0.05)."
@@ -888,7 +888,7 @@ def wald_test(
     except np.linalg.LinAlgError:
         w_stat = float(diff @ np.linalg.pinv(meat) @ diff)
 
-    p_value = 1 - stats.chi2.cdf(w_stat, q)
+    p_value = stats.chi2.sf(w_stat, q)
 
     conclusion = "Reject null hypothesis (p < 0.05)." if p_value < 0.05 else "Cannot reject null hypothesis."
 

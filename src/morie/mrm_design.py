@@ -355,7 +355,7 @@ def mrm_causal_design(
 
     z = 1.96
     ci_lo, ci_hi = tau - z * se, tau + z * se
-    p = 2 * (1 - stats.norm.cdf(abs(tau / se))) if se > 0 else float("nan")
+    p = 2 * (stats.norm.sf(abs(tau / se))) if se > 0 else float("nan")
 
     return CausalDesignResult(
         estimator=estimator,

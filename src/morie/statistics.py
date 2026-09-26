@@ -669,7 +669,7 @@ def mcnemar_test(
         chi2_stat = float(b)  # binom.test(b, b + c): successes among discordant pairs
     else:
         chi2_stat = (abs(b - c) - 1) ** 2 / (b + c) if (b + c) > 0 else 0.0
-        p = 1.0 - stats.chi2.cdf(chi2_stat, 1) if (b + c) > 0 else 1.0
+        p = stats.chi2.sf(chi2_stat, 1) if (b + c) > 0 else 1.0
     return TestResult(
         method="McNemar's test" + (" (exact)" if exact else ""),
         test_statistic=float(chi2_stat),

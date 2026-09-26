@@ -79,7 +79,7 @@ def mrm_oneprop_test(
     p_hat = x / n
     se_null = float(np.sqrt(p0 * (1 - p0) / n))
     z = (p_hat - p0) / se_null if se_null > 0 else float("nan")
-    p_wald = 2 * (1 - stats.norm.cdf(abs(z)))
+    p_wald = 2 * (stats.norm.sf(abs(z)))
     p_exact = float(stats.binomtest(x, n, p=p0).pvalue)
     se = float(np.sqrt(p_hat * (1 - p_hat) / n)) if 0 < p_hat < 1 else 0.0
     z_a = stats.norm.ppf(1 - alpha / 2)
@@ -154,7 +154,7 @@ def mrm_twoprop_test(
     # Wald CI for p1 - p2
     se = float(np.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2))
     z_w = (p1 - p2) / se if se > 0 else float("nan")
-    p_wald = 2 * (1 - stats.norm.cdf(abs(z_w)))
+    p_wald = 2 * (stats.norm.sf(abs(z_w)))
     z_a = stats.norm.ppf(1 - alpha / 2)
     diff = p1 - p2
     return TwoPropResult(

@@ -374,7 +374,7 @@ def classify_missing_mechanism(
         ll_null = len(y) * (p_hat * np.log(p_hat + 1e-15) + (1 - p_hat) * np.log(1 - p_hat + 1e-15))
         lr_stat = 2 * (ll_full - ll_null)
         dof = len(predictors)
-        p_val = 1 - stats.chi2.cdf(max(lr_stat, 0), dof)
+        p_val = stats.chi2.sf(max(lr_stat, 0), dof)
     except Exception as exc:
         logger.warning("Logistic regression failed for %s: %s", target, exc)
         return {"target": target, "classification": "Error", "p_value": None, "details": {"error": str(exc)}}

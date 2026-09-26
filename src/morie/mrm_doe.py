@@ -68,7 +68,6 @@ def _ols_anova(formula_terms: list[tuple[str, np.ndarray]], y: np.ndarray):
     [{name, df, ss, ms, F, p_value}, ..., {name='Residual', ...}].
     """
     n = y.size
-    Xs = []
     rows = []
     Xfull = np.ones((n, 1))  # intercept
     df_total = n - 1
@@ -97,7 +96,7 @@ def _ols_anova(formula_terms: list[tuple[str, np.ndarray]], y: np.ndarray):
     for r in rows[:-1]:
         if ms_res > 0:
             F = r["ms"] / ms_res
-            p = 1 - stats.f.cdf(F, r["df"], last_resid_df)
+            p = stats.f.sf(F, r["df"], last_resid_df)
             r["F"] = round(float(F), 4)
             r["p_value"] = float(p)
         else:
@@ -394,7 +393,7 @@ def mrm_anova_power(
     df2 = N - k_groups
     ncp = N * effect_size_f**2
     F_crit = stats.f.ppf(1 - alpha, df1, df2)
-    power = 1 - stats.ncf.cdf(F_crit, df1, df2, ncp)
+    power = stats.ncf.sf(F_crit, df1, df2, ncp)
     return {
         "k_groups": int(k_groups),
         "n_per_group": int(n_per_group),
@@ -478,7 +477,7 @@ def mrm_perm_block(
     perm_stats = np.empty(n_perm)
     for k in range(n_perm):
         permuted = d.copy()
-        for b, idx in d.groupby(block_col).groups.items():
+        for _b, idx in d.groupby(block_col).groups.items():
             shuffled = rng.permutation(d.loc[idx, treatment_col].values)
             permuted.loc[idx, treatment_col] = shuffled
         perm_stats[k] = permuted.groupby(treatment_col)[response_col].mean().diff().iloc[-1]

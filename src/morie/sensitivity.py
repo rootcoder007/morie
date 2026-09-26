@@ -430,11 +430,10 @@ def tipping_point_analysis(
         delta_range = np.linspace(-max_delta, max_delta, 101)
 
     delta_range = np.asarray(delta_range, dtype=float)
-    n_total = n_treated + n_control
 
     adjusted_estimates = estimate - delta_range
     adjusted_z = adjusted_estimates / se
-    adjusted_p = 2 * (1 - stats.norm.cdf(np.abs(adjusted_z)))
+    adjusted_p = 2 * (stats.norm.sf(np.abs(adjusted_z)))
 
     # Tipping point: delta where adjusted p-value crosses 0.05.
     significant = adjusted_p <= 0.05
@@ -446,10 +445,7 @@ def tipping_point_analysis(
         # Find transition.
         transitions = np.diff(significant.astype(int))
         cross_idx = np.where(transitions != 0)[0]
-        if len(cross_idx) > 0:
-            tipping_point = float(delta_range[cross_idx[0]])
-        else:
-            tipping_point = float("nan")
+        tipping_point = float(delta_range[cross_idx[0]]) if len(cross_idx) > 0 else float("nan")
 
     _robust = abs(tipping_point) > abs(estimate)
     _robustness_msg = (
@@ -935,7 +931,7 @@ def sensitivity_summary(
     ci_lo = estimate - 1.96 * se
     ci_hi = estimate + 1.96 * se
     z = estimate / se
-    p = 2 * (1 - stats.norm.cdf(abs(z)))
+    p = 2 * (stats.norm.sf(abs(z)))
     rows.append({"metric": "estimate", "value": estimate})
     rows.append({"metric": "se", "value": se})
     rows.append({"metric": "ci_lower", "value": ci_lo})
