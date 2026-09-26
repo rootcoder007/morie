@@ -242,7 +242,7 @@ class TestNoOffensiveTerms:
         from pathlib import Path
 
         tui_path = Path(__file__).resolve().parents[1] / "src" / "morie" / "tui.py"
-        content = tui_path.read_text()
+        content = tui_path.read_text(encoding="utf-8")
         assert "--slave" not in content, "R --slave flag must be replaced with --no-echo"
 
 

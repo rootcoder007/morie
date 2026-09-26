@@ -1,14 +1,17 @@
 
 import pytest as _pytest
+
 _pytest.importorskip("morie.polyglot")  # interactive/agent layer ships in the source tree only
 """Tests for the headless polyglot REPL engine."""
 
 import os
+import shutil
 
 import pytest
 
 from morie.polyglot import LABELS, LANGUAGES, ExecResult, PolyglotEngine, detect_language
 
+_HAS_SHELL = bool(os.environ.get("SHELL") or shutil.which("bash") or shutil.which("sh"))
 
 class TestDetectLanguage:
     def test_python_default(self):
@@ -199,6 +202,7 @@ class TestPolyglotEngine:
         assert "ZeroDivision" in result.stderr
         engine.close()
 
+    @pytest.mark.skipif(not _HAS_SHELL, reason="no POSIX shell on PATH")
     def test_shell_exec(self):
         engine = PolyglotEngine(polyglot=False, auto_detect=True)
         result = engine.execute("!echo hello_polyglot")
@@ -207,6 +211,7 @@ class TestPolyglotEngine:
         assert "hello_polyglot" in result.stdout
         engine.close()
 
+    @pytest.mark.skipif(not _HAS_SHELL, reason="no POSIX shell on PATH")
     def test_shell_variable_extraction(self):
         engine = PolyglotEngine(polyglot=True, auto_detect=True)
         result = engine.execute("!MY_VAR=42")
@@ -232,6 +237,7 @@ class TestPolyglotEngine:
         assert "alice" in result.stdout
         engine.close()
 
+    @pytest.mark.skipif(not _HAS_SHELL, reason="no POSIX shell on PATH")
     def test_auto_detect_toggle(self):
         engine = PolyglotEngine(polyglot=False, auto_detect=True)
         r1 = engine.execute("print('python code')")
@@ -278,6 +284,7 @@ class TestPolyglotBridging:
         assert engine._py_ns.get("bridge_test") == 99
         engine.close()
 
+    @pytest.mark.skipif(not _HAS_SHELL, reason="no POSIX shell on PATH")
     def test_shell_var_bridges_to_python(self):
         engine = PolyglotEngine(polyglot=True, auto_detect=True)
         result = engine.execute("!SHELL_X=123")

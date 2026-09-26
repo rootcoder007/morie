@@ -22,6 +22,7 @@ import code as _code
 import io
 import os
 import re
+import shutil
 import subprocess
 import sys
 import traceback
@@ -876,7 +877,10 @@ class PolyglotEngine:
         self._r_proc: subprocess.Popen | None = None
         self._julia_proc: subprocess.Popen | None = None
         self._node_proc: subprocess.Popen | None = None
-        self._shell = os.environ.get("SHELL", "/bin/bash")
+        # $SHELL is unset on Windows; fall back to a bash/sh on PATH (Git
+        # for Windows ships bash.exe) before the POSIX default
+        self._shell = (os.environ.get("SHELL") or shutil.which("bash")
+                       or shutil.which("sh") or "/bin/bash")
 
         self._db_conn = None
 
@@ -1283,6 +1287,8 @@ class PolyglotEngine:
             )
         except subprocess.TimeoutExpired:
             return ExecResult(language="shell", stderr="Timeout (30s)", success=False)
+        except FileNotFoundError:
+            return ExecResult(language="shell", stderr=f"shell not found: {self._shell}", success=False)
 
     def _exec_julia(self, code: str) -> ExecResult:
         if not self._start_julia():
@@ -1404,7 +1410,7 @@ class PolyglotEngine:
     def _exec_go(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".go", mode="w", delete=False, dir="/tmp")
+        tmp = tempfile.NamedTemporaryFile(suffix=".go", mode="w", delete=False)
         try:
             tmp.write(code)
             tmp.close()
@@ -1423,7 +1429,7 @@ class PolyglotEngine:
     def _exec_rust(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".rs", mode="w", delete=False, dir="/tmp")
+        tmp = tempfile.NamedTemporaryFile(suffix=".rs", mode="w", delete=False)
         out_bin = tmp.name.replace(".rs", "")
         try:
             tmp.write(code)
@@ -1453,7 +1459,7 @@ class PolyglotEngine:
     def _exec_c(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".c", mode="w", delete=False, dir="/tmp")
+        tmp = tempfile.NamedTemporaryFile(suffix=".c", mode="w", delete=False)
         out_bin = tmp.name.replace(".c", "")
         try:
             tmp.write(code)
@@ -1479,7 +1485,7 @@ class PolyglotEngine:
     def _exec_cpp(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".cpp", mode="w", delete=False, dir="/tmp")
+        tmp = tempfile.NamedTemporaryFile(suffix=".cpp", mode="w", delete=False)
         out_bin = tmp.name.replace(".cpp", "")
         try:
             tmp.write(code)
@@ -1509,7 +1515,7 @@ class PolyglotEngine:
     def _exec_ocaml(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".ml", mode="w", delete=False, dir="/tmp")
+        tmp = tempfile.NamedTemporaryFile(suffix=".ml", mode="w", delete=False)
         try:
             tmp.write(code)
             tmp.close()
@@ -1614,7 +1620,7 @@ class PolyglotEngine:
     def _exec_file_based(self, code: str, lang: str, ext: str, run_cmd: list, timeout: int = 30) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False, dir="/tmp")
+        tmp = tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False)
         try:
             tmp.write(code)
             tmp.close()
@@ -1633,7 +1639,7 @@ class PolyglotEngine:
     def _exec_compile_run(self, code: str, lang: str, ext: str, compile_cmd: list, timeout: int = 30) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False, dir="/tmp")
+        tmp = tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False)
         out_bin = tmp.name.rsplit(".", 1)[0]
         try:
             tmp.write(code)
@@ -1708,7 +1714,7 @@ class PolyglotEngine:
     def _exec_nim(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".nim", mode="w", delete=False, dir="/tmp")
+        tmp = tempfile.NamedTemporaryFile(suffix=".nim", mode="w", delete=False)
         try:
             tmp.write(code)
             tmp.close()
@@ -1778,7 +1784,7 @@ class PolyglotEngine:
     def _exec_rmd(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".Rmd", mode="w", delete=False, dir="/tmp")
+        tmp = tempfile.NamedTemporaryFile(suffix=".Rmd", mode="w", delete=False)
         try:
             tmp.write(code)
             tmp.close()
