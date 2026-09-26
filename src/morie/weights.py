@@ -297,7 +297,6 @@ def rake(
     *Annals of Mathematical Statistics*, 11(4), 427--444.
     """
     w = np.asarray(weights, dtype=float).copy()
-    n = len(w)
     converged = False
     max_adj = 0.0
 
@@ -477,8 +476,9 @@ def calibrate_to_totals(
         Initial weights.
     df : pd.DataFrame
         Data frame.
-    totals : dict[str, float]
-        Column names mapped to their target population totals.
+    totals : dict
+        Column names mapped to a population total (numeric column) or, for
+        raking, to a dict of category -> population count.
     method : str
         ``raking`` or ``greg``.
     **kwargs
@@ -489,15 +489,53 @@ def calibrate_to_totals(
     CalibrationResult
     """
     if method == "raking":
-        # Convert totals to margins format for raking
-        margins: dict[str, dict[Any, float]] = {}
+        # Raking (Deville & Sarndal 1992): w_i* = w_i exp(x_i' lambda) with
+        # sum_i w_i* x_i = T, solved by Newton, as survey::calibrate(calfun =
+        # "raking"). A dict total gives one indicator column per category
+        # (its population count); a scalar gives the column itself. On
+        # category margins alone this is the IPF solution.
+        import math as _m
+
+        w0 = [float(v) for v in np.asarray(weights, dtype=float).tolist()]
+        cols, T = [], []
         for col, total in totals.items():
-            unique_vals = df[col].unique()
-            # Distribute total proportionally based on unweighted counts
-            counts = df[col].value_counts()
-            proportions = counts / counts.sum()
-            margins[col] = {val: total * proportions.get(val, 0) for val in unique_vals}
-        return rake(weights, df, margins, **kwargs)
+            vals = df[col].tolist()
+            if isinstance(total, dict):
+                for cat, tgt in total.items():
+                    cols.append([1.0 if v == cat else 0.0 for v in vals])
+                    T.append(float(tgt))
+            else:
+                # a scalar total on a non-numeric column is the population
+                # size: an all-ones column
+                try:
+                    cols.append([float(v) for v in vals])
+                except (TypeError, ValueError):
+                    cols.append([1.0] * len(vals))
+                T.append(float(total))
+        n, k = len(w0), len(cols)
+        max_iter = int(kwargs.get("max_iterations", 100))
+        tol = float(kwargs.get("tolerance", 1e-10))
+        lam = [0.0] * k
+        w = list(w0)
+        converged, it, max_adj = False, 0, float("inf")
+        for it in range(1, max_iter + 1):  # noqa: B007 (reported as iterations)
+            w = [w0[i] * _m.exp(sum(lam[j] * cols[j][i] for j in range(k))) for i in range(n)]
+            F = [sum(w[i] * cols[j][i] for i in range(n)) - T[j] for j in range(k)]
+            max_adj = max(abs(F[j]) / max(abs(T[j]), 1.0) for j in range(k))
+            if max_adj < tol:
+                converged = True
+                break
+            J = [[sum(w[i] * cols[a_][i] * cols[b_][i] for i in range(n)) for b_ in range(k)] for a_ in range(k)]
+            step = np.linalg.solve(np.array(J), np.array(F)).tolist()
+            lam = [lam[j] - step[j] for j in range(k)]
+        wa = np.array(w)
+        return CalibrationResult(
+            weights=wa,
+            converged=converged,
+            iterations=it,
+            max_adjustment=float(max_adj),
+            diagnostics=weight_diagnostics(wa),
+        )
     elif method == "greg":
         X = df[list(totals.keys())].values
         pop_totals = np.array([totals[c] for c in totals])
@@ -665,10 +703,7 @@ def nonresponse_adjustment(
     w = np.asarray(weights, dtype=float).copy()
     resp = np.asarray(responded, dtype=bool)
 
-    if adjustment_cells is None:
-        cells = np.zeros(len(w), dtype=int)
-    else:
-        cells = np.asarray(adjustment_cells)
+    cells = np.zeros(len(w), dtype=int) if adjustment_cells is None else np.asarray(adjustment_cells)
 
     unique_cells = np.unique(cells)
 
@@ -1244,7 +1279,6 @@ def brr_replicate_weights(
     """
     w = np.asarray(weights, dtype=float)
     s = np.asarray(strata)
-    n = len(w)
     unique_strata = np.unique(s)
     H = len(unique_strata)
 
@@ -1325,7 +1359,6 @@ def fay_brr_weights(
 
     w = np.asarray(weights, dtype=float)
     s = np.asarray(strata)
-    n = len(w)
     unique_strata = np.unique(s)
     H = len(unique_strata)
 
@@ -1606,10 +1639,7 @@ def multiframe_weights(
         ess_a = _ess(wa[ov_a]) if ov_a.any() else 0.0
         ess_b = _ess(wb[ov_b]) if ov_b.any() else 0.0
         total_ess = ess_a + ess_b
-        if total_ess > 0:
-            opt_theta = ess_a / total_ess
-        else:
-            opt_theta = 0.5
+        opt_theta = ess_a / total_ess if total_ess > 0 else 0.5
         wa[ov_a] *= opt_theta
         wb[ov_b] *= 1 - opt_theta
     else:
@@ -1801,6 +1831,8 @@ def render_diagnostics(diag: WeightDiagnostics) -> None:
 
         if diag.cv > 1.0:
             console.print(f"[{cv_style}]High CV ({diag.cv:.2f}). Consider weight trimming.[/{cv_style}]")
+        if diag.design_effect > 2.0:
+            console.print(f"[{deff_style}]High design effect ({diag.design_effect:.2f}).[/{deff_style}]")
         if diag.n_negative > 0:
             console.print(f"[red]{diag.n_negative} negative weights detected.[/red]")
 
