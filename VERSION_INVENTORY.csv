@@ -3226,7 +3226,7 @@ File,Line,Status,Version,Context
 ./src/morie/fn/_schaben.py,73,STALE_OR_DEP,4.4.1,"the semivariogram cloud of section 4.4.1."
 ./src/morie/fn/_sci_core.py,2758,STALE_OR_DEP,4.3.265,"Journal* 4(3); 265-271; doi:10.1093/comjnl/4.3.265. Schur"
 ./src/morie/fn/_stats_core.py,44,STALE_OR_DEP,26.2.12,"(Abramowitz and Stegun 26.2.12); which stays finite long after"
-./src/morie/fn/_stats_core.py,901,STALE_OR_DEP,26.7.5,"Stegun 26.7.5 to fourth order; the error is O(nu^-5); below double"
+./src/morie/fn/_stats_core.py,948,STALE_OR_DEP,26.7.5,"Stegun 26.7.5 to fourth order; the error is O(nu^-5); below double"
 ./src/morie/fn/_unclrcore.py,784,STALE_OR_DEP,7.3.1,"# Theorems 7.3.1 and 7.3.2 (moments of a linear rank statistic)."
 ./src/morie/fn/_unclrcore.py,784,STALE_OR_DEP,7.3.1,"# Theorems 7.3.1 and 7.3.2 (moments of a linear rank statistic)."
 ./src/morie/fn/_wsm.py,54,STALE_OR_DEP,3.4.2,"rThe window-width rules of Silverman Sec. 3.4.2."
