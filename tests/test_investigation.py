@@ -29,8 +29,8 @@ def _pick(u, values):
 
 def _frame():
     n = 120
-    u = _draws(n * 8)
-    c = [u[k * n:(k + 1) * n] for k in range(8)]
+    u = _draws(n * 10)
+    c = [u[k * n:(k + 1) * n] for k in range(10)]
     return pd.DataFrame(
         {
             "weight": [0.6 + 1.0 * v for v in c[0]],
@@ -42,8 +42,8 @@ def _frame():
             "age_group": _pick(c[5], [1, 2, 3, 4]),
             "gender": [int(v < 0.5) for v in c[6]],
             "province_region": _pick(c[7], [0, 1, 2]),
-            "mental_health": _pick(c[0], [1, 2, 3, 4, 5]),
-            "physical_health": _pick(c[1], [1, 2, 3, 4, 5]),
+            "mental_health": _pick(c[8], [1, 2, 3, 4, 5]),
+            "physical_health": _pick(c[9], [1, 2, 3, 4, 5]),
         }
     )
 

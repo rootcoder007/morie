@@ -100,7 +100,9 @@ def _svy_glm(formula, data, family, weights, psu=None, strata=None):
                 A[a][b] += c * X[i][a] * X[i][b]
     psu = list(range(n)) if psu is None else [v for v in (psu.values if hasattr(psu, "values") else psu)]
     strata = [0] * n if strata is None else [v for v in (strata.values if hasattr(strata, "values") else strata)]
-    M = [[0.0] * k for _ in range(k)]
+    # M = S'S with one row of S per PSU, so V = (A^-1 S')(A^-1 S')' is
+    # positive semidefinite even when A is near singular (separation)
+    S = []
     n_psu = 0
     for h in sorted(set(strata), key=str):
         tot = {}
@@ -114,12 +116,11 @@ def _svy_glm(formula, data, family, weights, psu=None, strata=None):
         if nh < 2:
             continue
         ub = [sum(t[j] for t in tot.values()) / nh for j in range(k)]
-        for t in tot.values():
-            for a in range(k):
-                for b in range(k):
-                    M[a][b] += nh / (nh - 1) * (t[a] - ub[a]) * (t[b] - ub[b])
+        f = math.sqrt(nh / (nh - 1))
+        S.extend([f * (t[j] - ub[j]) for j in range(k)] for t in tot.values())
     Ai = _glm_core._inv(A)
-    V = [[sum(Ai[a][c] * M[c][d] * Ai[d][b] for c in range(k) for d in range(k)) for b in range(k)] for a in range(k)]
+    Z = [[sum(Ai[a][c] * r[c] for c in range(k)) for a in range(k)] for r in S]
+    V = [[sum(z[a] * z[b] for z in Z) for b in range(k)] for a in range(k)]
     se = [math.sqrt(V[j][j]) for j in range(k)]
     df_res = n_psu - len(set(strata)) + 1 - k
     tv = [b / e if e > 0 else float("nan") for b, e in zip(beta, se)]
