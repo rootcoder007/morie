@@ -155,6 +155,7 @@ class CompetingRiskResult:
 # ===================================================================
 
 
+
 def _validate_survival_input(
     time: Union[np.ndarray, pd.Series, list],
     event: Union[np.ndarray, pd.Series, list],
@@ -365,9 +366,11 @@ def _logrank_generic(
     elif weight_func == "tarone":
         w = np.sqrt(n_total_t)
     elif weight_func == "peto":
-        # Peto-Peto: S_tilde (left-continuous KM)
-        s_tilde = np.cumprod(1 - d_total / (n_total_t + 1))
-        w = s_tilde
+        # Peto-Peto: pooled Kaplan-Meier just before each event time,
+        # S(t_j-), as survival::survdiff(rho = 1). (The Prentice variant
+        # prod (1 - d / (n + 1)) through t_j was used before.)
+        s_km = np.cumprod(1 - d_total / n_total_t)
+        w = np.concatenate([[1.0], s_km[:-1]])
     else:
         raise ValueError(f"Unknown weight: {weight_func}")
 
@@ -493,6 +496,59 @@ def tarone_ware_test(
 # ===================================================================
 
 
+def _cox_loglik_score_info(beta, X, time, event, ties="efron"):
+    """Log partial likelihood, score and observed information of the Cox
+    model with Efron or Breslow ties (Therneau & Grambsch 2000, ch. 3),
+    by suffix sums over the risk sets."""
+    import math as _m
+
+    n, p = X.shape
+    order = sorted(range(n), key=lambda i: time[i])
+    ts = [float(time[i]) for i in order]
+    es = [int(event[i]) for i in order]
+    xs = [[float(v) for v in X[i]] for i in order]
+    eta = [sum(xs[i][k] * beta[k] for k in range(p)) for i in range(n)]
+    w = [_m.exp(v) for v in eta]
+    # suffix sums: S0[i] = sum_{k >= i} w_k, S1, S2 likewise
+    S0 = [0.0] * (n + 1)
+    S1 = [[0.0] * p for _ in range(n + 1)]
+    S2 = [[[0.0] * p for _ in range(p)] for _ in range(n + 1)]
+    for i in range(n - 1, -1, -1):
+        S0[i] = S0[i + 1] + w[i]
+        for a in range(p):
+            S1[i][a] = S1[i + 1][a] + w[i] * xs[i][a]
+            for b in range(p):
+                S2[i][a][b] = S2[i + 1][a][b] + w[i] * xs[i][a] * xs[i][b]
+    ll = 0.0
+    grad = [0.0] * p
+    info = [[0.0] * p for _ in range(p)]
+    i = 0
+    while i < n:
+        j = i
+        while j < n and ts[j] == ts[i]:
+            j += 1
+        D = [k for k in range(i, j) if es[k] == 1]
+        d = len(D)
+        if d:
+            s0d = sum(w[k] for k in D)
+            s1d = [sum(w[k] * xs[k][a] for k in D) for a in range(p)]
+            s2d = [[sum(w[k] * xs[k][a] * xs[k][b] for k in D) for b in range(p)] for a in range(p)]
+            ll += sum(eta[k] for k in D)
+            for a in range(p):
+                grad[a] += sum(xs[k][a] for k in D)
+            for ell in range(d):
+                f = ell / d if ties == "efron" else 0.0
+                den = S0[i] - f * s0d
+                num1 = [S1[i][a] - f * s1d[a] for a in range(p)]
+                ll -= _m.log(den)
+                for a in range(p):
+                    grad[a] -= num1[a] / den
+                    for b in range(p):
+                        info[a][b] += (S2[i][a][b] - f * s2d[a][b]) / den - num1[a] * num1[b] / (den * den)
+        i = j
+    return ll, grad, info
+
+
 def _cox_negative_log_partial_likelihood(
     beta: np.ndarray,
     X: np.ndarray,
@@ -585,40 +641,40 @@ def cox_ph(
     sd[sd == 0] = 1.0
     X_std = (X - mu) / sd
 
-    def objective(beta):
-        nll = _cox_negative_log_partial_likelihood(beta, X_std, t, e, ties)
-        nll += 0.5 * penalizer * np.sum(beta**2)
-        return nll
+    if ties not in ("efron", "breslow"):
+        raise ValueError(f"Unknown tie method: {ties}")
 
-    beta0 = np.zeros(p)
-    result = minimize(objective, beta0, method="L-BFGS-B")
-    beta_std = result.x
+    def fit_parts(b):
+        ll, g, info = _cox_loglik_score_info(b, X_std, t, e, ties)
+        ll -= 0.5 * penalizer * sum(v * v for v in b)
+        g = [g[a] - penalizer * b[a] for a in range(p)]
+        info = [[info[a][c] + (penalizer if a == c else 0.0) for c in range(p)] for a in range(p)]
+        return ll, g, info
 
-    # Transform back to original scale
+    # Newton-Raphson with step halving, as survival::coxph; converged when
+    # the log partial likelihood stops changing to 1e-13 relative
+    beta_std = [0.0] * p
+    ll, g, info = fit_parts(beta_std)
+    for _ in range(100):
+        step = list(np.linalg.solve(np.array(info), np.array(g)))
+        for _half in range(60):
+            cand = [beta_std[a] + step[a] for a in range(p)]
+            ll_new, g_new, info_new = fit_parts(cand)
+            if ll_new == ll_new and ll_new >= ll - 1e-12 * (1.0 + abs(ll)):
+                break
+            step = [v / 2.0 for v in step]
+        done = abs(ll_new - ll) <= 1e-13 * (1.0 + abs(ll)) and max(abs(v) for v in step) <= 1e-10
+        beta_std, ll, g, info = cand, ll_new, g_new, info_new
+        if done:
+            break
+    beta_std = np.array(beta_std)
     beta = beta_std / sd
-
-    # Hessian via finite differences for SE
-    eps = 1e-5
-    hessian = np.zeros((p, p))
-    f0 = objective(beta_std)
-    for i in range(p):
-        for j in range(i, p):
-            e_i = np.zeros(p)
-            e_j = np.zeros(p)
-            e_i[i] = eps
-            e_j[j] = eps
-            f_ij = objective(beta_std + e_i + e_j)
-            f_i = objective(beta_std + e_i)
-            f_j = objective(beta_std + e_j)
-            h = (f_ij - f_i - f_j + f0) / eps**2
-            hessian[i, j] = hessian[j, i] = h
-
     try:
-        cov = np.linalg.inv(hessian)
-        se_std = np.sqrt(np.clip(np.diag(cov), 0, np.inf))
-        se = se_std / sd
+        cov = np.linalg.inv(np.array(info))
+        se = np.sqrt(np.clip(np.diag(cov), 0, np.inf)) / sd
     except np.linalg.LinAlgError:
         se = np.full(p, np.nan)
+    log_lik = float(ll)
 
     hr = np.exp(beta)
     z = beta / se
@@ -643,7 +699,7 @@ def cox_ph(
         ci_upper=ci_hi,
         covariate_names=covariate_cols,
         concordance=c_index,
-        log_likelihood=-result.fun,
+        log_likelihood=log_lik,
         n_events=int(e.sum()),
         n_observations=n,
         method=f"Cox PH ({ties} ties)",
@@ -935,7 +991,7 @@ def weibull_model(
         ll -= np.sum((t / lam) ** k)
         return -ll
 
-    result = minimize(neg_ll, [1.0, np.mean(t)], method="Nelder-Mead", options={"maxiter": 5000})
+    result = minimize(neg_ll, [1.0, np.mean(t)], method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14})
     k_hat, lam_hat = result.x
     ll = -result.fun
     n_params = 2
@@ -981,7 +1037,7 @@ def lognormal_model(
         return -ll
 
     result = minimize(
-        neg_ll, [log_t[e == 1].mean() if d > 0 else 0.0, 1.0], method="Nelder-Mead", options={"maxiter": 5000}
+        neg_ll, [log_t[e == 1].mean() if d > 0 else 0.0, 1.0], method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14}
     )
     mu_hat, sigma_hat = result.x
     ll = -result.fun
@@ -1027,7 +1083,7 @@ def loglogistic_model(
         return -ll
 
     t_median = np.median(t[e == 1]) if d > 0 else np.median(t)
-    result = minimize(neg_ll, [t_median, 1.0], method="Nelder-Mead", options={"maxiter": 5000})
+    result = minimize(neg_ll, [t_median, 1.0], method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14})
     alpha_hat, beta_hat = result.x
     ll = -result.fun
     n_params = 2
@@ -1077,7 +1133,7 @@ def gompertz_model(
         return -ll
 
     result = minimize(
-        neg_ll, [d / t.sum() if t.sum() > 0 else 0.01, 0.01], method="Nelder-Mead", options={"maxiter": 5000}
+        neg_ll, [d / t.sum() if t.sum() > 0 else 0.01, 0.01], method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14}
     )
     b_hat, c_hat = result.x
     ll = -result.fun
@@ -1141,7 +1197,7 @@ def aft_weibull(
     x0 = np.zeros(p + 2)
     x0[0] = log_t[e == 1].mean() if e.sum() > 0 else 0.0
     x0[1] = 1.0
-    result = minimize(neg_ll, x0, method="Nelder-Mead", options={"maxiter": 10000})
+    result = minimize(neg_ll, x0, method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14})
     mu_hat = result.x[0]
     sigma_hat = result.x[1]
     beta_hat = result.x[2:]
@@ -1200,7 +1256,7 @@ def aft_lognormal(
     x0 = np.zeros(p + 2)
     x0[0] = log_t[e == 1].mean() if e.sum() > 0 else 0.0
     x0[1] = 1.0
-    result = minimize(neg_ll, x0, method="Nelder-Mead", options={"maxiter": 10000})
+    result = minimize(neg_ll, x0, method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14})
     mu_hat = result.x[0]
     sigma_hat = result.x[1]
     beta_hat = result.x[2:]
@@ -1260,7 +1316,7 @@ def aft_loglogistic(
     x0 = np.zeros(p + 2)
     x0[0] = log_t[e == 1].mean() if e.sum() > 0 else 0.0
     x0[1] = 1.0
-    result = minimize(neg_ll, x0, method="Nelder-Mead", options={"maxiter": 10000})
+    result = minimize(neg_ll, x0, method="Nelder-Mead", options={"maxiter": 50000, "xatol": 1e-12, "fatol": 1e-14})
     mu_hat = result.x[0]
     sigma_hat = result.x[1]
     beta_hat = result.x[2:]
@@ -1308,23 +1364,35 @@ def restricted_mean_survival_time(
     dict
         Keys: ``rmst``, ``se``, ``ci_lower``, ``ci_upper``, ``tau``.
     """
-    km = kaplan_meier(time, event, confidence=confidence)
+    # Area under the Kaplan-Meier step function up to tau, and its
+    # Greenwood-type variance, as survRM2::rmst1 (Uno et al. 2014): the
+    # KM is a step function, so the area is rectangles, not trapezoids;
+    # Var = sum_j A_j^2 d_j / (n_j (n_j - d_j)), A_j = int_{t_j}^{tau} S.
+    t, e = _validate_survival_input(time, event)
+    unique_times, at_risk, events, _ = _kaplan_meier_table(t, e)
     if tau is None:
-        tau = float(km.times[-1])
-    mask = km.times <= tau
-    t_vals = np.concatenate([[0], km.times[mask], [tau]])
-    s_vals = np.concatenate([[1.0], km.survival[mask]])
-    # Extend survival at tau
-    if km.times[mask].max() < tau:
-        s_vals = np.append(s_vals, s_vals[-1])
-    else:
-        s_vals = np.append(s_vals, km.survival[mask][-1])
-    # Trapezoidal integration
-    _trapz = getattr(np, "trapezoid", getattr(np, "trapz", None))
-    rmst = float(_trapz(s_vals[:-1], t_vals[:-1]) + s_vals[-2] * (t_vals[-1] - t_vals[-2]))
-    # Approximate SE via Greenwood
-    n = len(_validate_survival_input(time, event)[0])
-    se = rmst / math.sqrt(n) if n > 0 else 0.0
+        tau = float(unique_times[-1])
+    surv, s_cur = [], 1.0
+    for n_j, d_j in zip(at_risk, events):
+        s_cur *= 1.0 - d_j / n_j
+        surv.append(s_cur)
+    idx = [j for j, u in enumerate(unique_times) if u <= tau]
+    grid = [float(unique_times[j]) for j in idx] + [float(tau)]
+    s_left = [1.0] + [surv[j] for j in idx]           # S just after each grid point
+    areas = []
+    prev = 0.0
+    for g, sv in zip(grid, s_left):
+        areas.append((g - prev) * sv)
+        prev = g
+    rmst = float(sum(areas))
+    wk_var = [0.0 if at_risk[j] - events[j] == 0 else events[j] / (at_risk[j] * (at_risk[j] - events[j]))
+              for j in idx]
+    var = 0.0
+    tail = 0.0
+    for j in range(len(idx) - 1, -1, -1):
+        tail += areas[j + 1]                            # A_j = area to the right of t_j
+        var += tail * tail * wk_var[j]
+    se = math.sqrt(var)
     z = stats.norm.ppf((1 + confidence) / 2)
     return {
         "rmst": rmst,
@@ -1577,7 +1645,10 @@ def concordance_index(
         if e[i] == 0:
             continue
         for j in range(n):
-            if i == j or t[j] <= t[i]:
+            # comparable when j outlives i; a unit censored at i s event
+            # time was still at risk then (Harrell; survival::concordance),
+            # while two events at the same time are a time tie, not scored
+            if i == j or t[j] < t[i] or (t[j] == t[i] and e[j] == 1):
                 continue
             if s[i] > s[j]:
                 concordant += 1
