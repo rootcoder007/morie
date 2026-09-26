@@ -241,7 +241,9 @@ def _aft_fit(log_t, X, e, family, fixed_scale=False):
         for _h in range(80):
             cand = [th[a] + step[a] for a in range(len(th))]
             ll_new, g_new, H_new = parts(cand)
-            if ll_new == ll_new and ll_new >= ll:
+            # at the optimum ll is flat to rounding, so a step that shrinks
+            # the gradient is taken even when ll ties or dips in the last bit
+            if ll_new == ll_new and (ll_new >= ll or max(abs(v) for v in g_new) < max(abs(v) for v in g)):
                 break
             step = [v / 2 for v in step]
         else:
