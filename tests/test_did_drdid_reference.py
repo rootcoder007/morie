@@ -308,3 +308,29 @@ def test_wild_cluster_bootstrap_matches_boottest():
     assert r.details["full_enumeration"]
     assert abs(r.p_value - 0.1640625) < 1e-12
     assert abs(r.t_stat - 1.54025438940341) < 1e-10
+
+
+def test_fuzzy_did_matches_ivreg_sandwich():
+    # reference: ivreg(y ~ z + post + dp | z + post + zp) with vcovHC(type = "HC1");
+    # with x and vcovCL(cluster = ~cl, type = "HC1")
+    import math
+
+    import pandas as pd
+
+    from morie.did import did_fuzzy
+
+    rows = []
+    for i in range(1, 401):
+        z, post = int(i % 40 < 20), int(i % 2 == 0)
+        s = math.sin(1.7 * i)
+        d = int(post == 1 and ((z == 1 and s > -0.4) or (z == 0 and s > 0.8)))
+        x = math.cos(0.9 * i)
+        y = 0.2 + 0.3 * z + 0.4 * post + 1.5 * d + 0.5 * x + 0.8 * math.sin(2.3 * i)
+        rows.append({"cl": (i - 1) // 10 + 1, "z": z, "post": post, "d": d, "x": x, "y": y})
+    df = pd.DataFrame(rows)
+    r1 = did_fuzzy(df, "y", "z", "d", "post")
+    assert abs(r1.estimate - 1.48586165523135) < 1e-10
+    assert abs(r1.std_error - 0.304579519027194) < 1e-10
+    r2 = did_fuzzy(df, "y", "z", "d", "post", covariates=["x"], cluster="cl")
+    assert abs(r2.estimate - 1.49639162449551) < 1e-10
+    assert abs(r2.std_error - 0.148095523165333) < 1e-10

@@ -2234,7 +2234,9 @@ def did_fuzzy(
     zp = z * p
     dp = d * p
 
-    exog = [z, p, d]
+    # Wald-DiD: controls are assignment and period only; take-up is the
+    # endogenous regressor and cannot also be a control
+    exog = [z, p]
     if covariates:
         for c in covariates:
             exog.append(df[c].values.astype(float))
@@ -2249,9 +2251,14 @@ def did_fuzzy(
     # Second stage: Y = beta0 + tau*(D*Post_hat) + exog + u
     X_second = np.column_stack([X_exog, dp_hat])
     cluster_ids = df[cluster].values if cluster else None
-    beta_2, se_2 = _ols_robust_se(X_second, y, cluster_ids=cluster_ids)
-
     tau_idx = X_second.shape[1] - 1  # last column
+    tau0 = _ols_robust_se(X_second, y)[0][tau_idx]
+    # 2SLS residuals use the actual D*Post: y - X beta = (y - tau (dp - dp_hat))
+    # - Xhat beta, and dp - dp_hat is orthogonal to Xhat, so refitting on the
+    # adjusted outcome returns the same beta with the 2SLS residuals (the
+    # sandwich of ivreg: projected regressors, structural residuals)
+    y_adj = y - tau0 * (dp - dp_hat)
+    beta_2, se_2 = _ols_robust_se(X_second, y_adj, cluster_ids=cluster_ids)
     est = float(beta_2[tau_idx])
     se_est = float(se_2[tau_idx])
     t_val = est / se_est if se_est > 0 else 0.0
