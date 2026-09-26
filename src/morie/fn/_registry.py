@@ -89856,6 +89856,20 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "papadk",
+    "papadakis_analysis",
+    "Auto",
+    "Auto-wired callable from fn/papadk.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "fdiffm",
+    "first_difference_model",
+    "Auto",
+    "Auto-wired callable from fn/fdiffm.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
