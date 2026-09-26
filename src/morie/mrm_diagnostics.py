@@ -49,33 +49,18 @@ __all__ = [
 
 
 def _logistic_propensity(D: np.ndarray, X: np.ndarray) -> np.ndarray:
-    """Fit a logistic propensity model + return e(x) ∈ (0,1)."""
-    try:
-        from morie.fn._ml_core import LogisticRegression
+    """Propensity scores from the unpenalised logistic MLE (as R's glm).
 
-        fit = LogisticRegression(max_iter=1000).fit(X, D)
-        e = fit.predict_proba(X)[:, 1]
-    except Exception:
-        # NumPy fallback (Newton-Raphson on the logistic log-likelihood)
-        n, p = X.shape
-        Xc = np.column_stack([np.ones(n), X])
-        beta = np.zeros(p + 1)
-        for _ in range(50):
-            z = Xc @ beta
-            mu = 1 / (1 + np.exp(-z))
-            W = mu * (1 - mu)
-            grad = Xc.T @ (D - mu)
-            H = Xc.T @ (Xc * W[:, None])
-            try:
-                step = np.linalg.solve(H + 1e-6 * np.eye(p + 1), grad)
-            except np.linalg.LinAlgError:
-                break
-            beta = beta + step
-            if np.max(np.abs(step)) < 1e-6:
-                break
-        z = Xc @ beta
-        e = 1 / (1 + np.exp(-z))
-    return np.clip(e, 1e-6, 1 - 1e-6)
+    Uses the shared IRLS of :mod:`morie.fn.ps_fit`, mirrored by the R arm's
+    ``glm(D ~ ., family = binomial())``; clipped to [1e-6, 1 - 1e-6].
+    """
+    from morie.fn.ps_fit import _ps_irls_beta
+
+    n = len(D)
+    Xc = np.column_stack([np.ones(n), X])
+    beta = np.array(_ps_irls_beta(Xc.tolist(), [float(v) for v in D]))
+    e = 1 / (1 + np.exp(-(Xc @ beta)))
+    return np.clip(e, 1e-06, 1 - 1e-06)
 
 
 def mrm_standardised_difference(
@@ -145,6 +130,8 @@ def mrm_check_balancing(
     10 percentage points, Austin 2009 / Rosenbaum-Rubin 1985).
     """
     tbl = mrm_standardised_difference(data, treatment_col=treatment_col, covariates=covariates)
+    # flag against the caller's threshold (the table itself flags at 10%)
+    tbl["imbalanced"] = [None if v != v else abs(v) > threshold_pct for v in tbl["smd_pct"]]
     n_imbalanced = int(tbl["imbalanced"].sum())
     overall = n_imbalanced == 0
     return BalanceResult(
