@@ -35,6 +35,7 @@ https://doi.org/10.1093/pan/mpr025
 from __future__ import annotations
 
 import logging
+import math
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any, Union
@@ -53,26 +54,27 @@ class _MissingDep:
 
     def __getattr__(self, attr):
         raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+            f"{self._name} is no longer bundled; this code path awaits its native morie implementation"
+        )
 
     def __call__(self, *a, **k):
         raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+            f"{self._name} is no longer bundled; this code path awaits its native morie implementation"
+        )
+
 
 try:
     from morie.fn._ml_core import LogisticRegression
 except ImportError:
-    LogisticRegression = _MissingDep('LogisticRegression')
+    LogisticRegression = _MissingDep("LogisticRegression")
 try:
     from morie.fn._ml_core import NearestNeighbors
 except ImportError:
-    NearestNeighbors = _MissingDep('NearestNeighbors')
+    NearestNeighbors = _MissingDep("NearestNeighbors")
 try:
     from morie.fn._ml_core import StandardScaler
 except ImportError:
-    StandardScaler = _MissingDep('StandardScaler')
+    StandardScaler = _MissingDep("StandardScaler")
 
 logger = logging.getLogger(__name__)
 
@@ -223,18 +225,23 @@ def estimate_propensity_score(
     X = df[covariates].values.astype(float)
     y = df[treatment].values.astype(int)
 
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-
     if model == "gbm":
         from morie.fn._ml_core import GradientBoostingClassifier
 
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
         clf = GradientBoostingClassifier(n_estimators=100, max_depth=3, random_state=42)
+        clf.fit(X_scaled, y)
+        ps = clf.predict_proba(X_scaled)[:, 1]
     else:
-        clf = LogisticRegression(max_iter=max_iter, solver="lbfgs")
+        # the maximum-likelihood logit, as MatchIt's glm and the R arm (the
+        # default LogisticRegression is L2-penalised)
+        from morie.fn.ps_fit import _ps_design, _ps_irls_beta
 
-    clf.fit(X_scaled, y)
-    ps = clf.predict_proba(X_scaled)[:, 1]
+        Xd = _ps_design(df, covariates)
+        beta = _ps_irls_beta(Xd, [float(v) for v in y.tolist()], max_iter=max_iter)
+        eta = [max(-30.0, min(30.0, sum(r[j] * beta[j] for j in range(len(beta))))) for r in Xd]
+        ps = np.array([1.0 / (1.0 + math.exp(-e)) for e in eta])
     return pd.Series(ps, index=df.index, name="propensity_score")
 
 
@@ -361,10 +368,7 @@ def match_nearest_neighbor(
     logit_t = np.log(np.clip(ps_treated, eps, 1 - eps) / (1 - np.clip(ps_treated, eps, 1 - eps)))
     logit_c = np.log(np.clip(ps_control, eps, 1 - eps) / (1 - np.clip(ps_control, eps, 1 - eps)))
 
-    if caliper is not None:
-        caliper_val = caliper * np.std(np.concatenate([logit_t, logit_c]))
-    else:
-        caliper_val = np.inf
+    caliper_val = caliper * np.std(np.concatenate([logit_t, logit_c])) if caliper is not None else np.inf
 
     nn = NearestNeighbors(n_neighbors=min(n_neighbors * 5, len(control_idx)), metric="euclidean")
     nn.fit(logit_c.reshape(-1, 1))
@@ -433,8 +437,7 @@ def match_nearest_neighbor(
             "n_unmatched": len(treated_idx) - len(matched_treated_ids),
             "alpha": alpha,
             "balance": balance,
-            "balanced_at_alpha": bool(balance) and all(
-                b["p_value"] > alpha for b in balance.values()),
+            "balanced_at_alpha": bool(balance) and all(b["p_value"] > alpha for b in balance.values()),
         },
     )
 
@@ -470,7 +473,7 @@ def match_exact(
     records = []
     matched_ids = []
 
-    for stratum, grp in df.groupby("_stratum"):
+    for _stratum, grp in df.groupby("_stratum"):
         t_ids = grp.index[grp[treatment] == 1].tolist()
         c_ids = grp.index[grp[treatment] == 0].tolist()
         if len(t_ids) == 0 or len(c_ids) == 0:
@@ -532,10 +535,7 @@ def match_cem(
     """
     df = data.dropna(subset=[treatment] + covariates).copy()
 
-    if isinstance(n_bins, int):
-        bins_map = {c: n_bins for c in covariates}
-    else:
-        bins_map = n_bins
+    bins_map = {c: n_bins for c in covariates} if isinstance(n_bins, int) else n_bins
 
     for c in covariates:
         nb = bins_map.get(c, 5)
@@ -859,7 +859,6 @@ def match_full(
         mask_s = df_matched["_subclass"] == s
         n_t = (df_matched.loc[mask_s, treatment] == 1).sum()
         n_c = (df_matched.loc[mask_s, treatment] == 0).sum()
-        n_total = n_t + n_c
         if n_c > 0:
             df_matched.loc[mask_s & (df_matched[treatment] == 0), "_full_weight"] = n_t / n_c
         if n_t > 0:
@@ -1112,7 +1111,6 @@ def match_genetic(
         dist = cdist(X_t_w, X_c_w, metric="euclidean")
         # Greedy 1:1 matching
         used = set()
-        total_smd = 0.0
         matched_c_indices = []
         for i in range(len(X_t)):
             best_j = None
@@ -1138,7 +1136,7 @@ def match_genetic(
     best_w = np.ones(p)
     best_score = _evaluate_weights(best_w)
 
-    for gen in range(n_generations):
+    for _gen in range(n_generations):
         scores = np.array([_evaluate_weights(ind) for ind in population])
         sorted_idx = np.argsort(scores)
         if scores[sorted_idx[0]] < best_score:
@@ -1346,14 +1344,13 @@ def match_cardinality(
             continue
 
         bal = balance_diagnostics(result.matched_data, treatment, covariates)
-        if bal.max_smd <= balance_threshold:
-            if result.n_treated + result.n_matched_control > best_n:
-                best_n = result.n_treated + result.n_matched_control
-                best_result = result
-                best_result.method = "cardinality"
-                best_result.details["balance_threshold"] = balance_threshold
-                # Don't need to go tighter if we have balance
-                break
+        if bal.max_smd <= balance_threshold and result.n_treated + result.n_matched_control > best_n:
+            best_n = result.n_treated + result.n_matched_control
+            best_result = result
+            best_result.method = "cardinality"
+            best_result.details["balance_threshold"] = balance_threshold
+            # Don't need to go tighter if we have balance
+            break
 
     if best_result is None:
         # Return the loosest caliper result
@@ -1401,30 +1398,46 @@ def balance_diagnostics(
     c_mask = df[treatment] == 0
 
     records = []
+
+    def wvar(x, w):
+        # cobalt's weighted variance: sum(w) / (sum(w)^2 - sum(w^2)) *
+        # sum(w (x - m)^2), the sample variance when all weights are 1
+        m = float(np.sum(w * x) / np.sum(w))
+        sw, sw2 = float(np.sum(w)), float(np.sum(w**2))
+        return sw / (sw**2 - sw2) * float(np.sum(w * (x - m) ** 2))
+
+    def wks(a, wa, b, wb):
+        # largest gap between the two weighted empirical CDFs
+        pts = np.unique(np.concatenate([a, b]))
+        fa = np.array([np.sum(wa[a <= v]) for v in pts]) / np.sum(wa)
+        fb = np.array([np.sum(wb[b <= v]) for v in pts]) / np.sum(wb)
+        return float(np.max(np.abs(fa - fb)))
+
     for cov in covariates:
         t_vals = df.loc[t_mask, cov].astype(float)
         c_vals = df.loc[c_mask, cov].astype(float)
-
-        if weights and weights in df.columns:
-            w_t = df.loc[t_mask, weights].values.astype(float)
-            w_c = df.loc[c_mask, weights].values.astype(float)
-            mean_t = float(np.average(t_vals, weights=w_t))
-            mean_c = float(np.average(c_vals, weights=w_c))
-            var_t = float(np.average((t_vals - mean_t) ** 2, weights=w_t))
-            var_c = float(np.average((c_vals - mean_c) ** 2, weights=w_c))
-        else:
-            mean_t = float(t_vals.mean())
-            mean_c = float(c_vals.mean())
-            var_t = float(t_vals.var(ddof=1)) if len(t_vals) > 1 else 0.0
-            var_c = float(c_vals.var(ddof=1)) if len(c_vals) > 1 else 0.0
-
-        pooled_sd = np.sqrt((var_t + var_c) / 2)
+        tv, cv = t_vals.values, c_vals.values
+        weighted = bool(weights and weights in df.columns)
+        w_t = df.loc[t_mask, weights].values.astype(float) if weighted else np.ones(len(tv))
+        w_c = df.loc[c_mask, weights].values.astype(float) if weighted else np.ones(len(cv))
+        mean_t = float(np.sum(w_t * tv) / np.sum(w_t))
+        mean_c = float(np.sum(w_c * cv) / np.sum(w_c))
+        # the SMD scale is the UNADJUSTED pooled SD, fixed before matching,
+        # so balance is not "improved" by shrinking the denominator
+        # (cobalt s.d.denom = "pooled"; Stuart 2010)
+        sd_t = float(tv.var(ddof=1)) if len(tv) > 1 else 0.0
+        sd_c = float(cv.var(ddof=1)) if len(cv) > 1 else 0.0
+        pooled_sd = np.sqrt((sd_t + sd_c) / 2)
         smd = (mean_t - mean_c) / pooled_sd if pooled_sd > 0 else 0.0
+        var_t = wvar(tv, w_t) if len(tv) > 1 else 0.0
+        var_c = wvar(cv, w_c) if len(cv) > 1 else 0.0
         var_ratio = var_t / var_c if var_c > 0 else np.nan
-
-        # KS statistic
-        ks_stat, ks_p = stats.ks_2samp(t_vals.values, c_vals.values)
-
+        # KS on the weighted distributions; its p-value is only defined for
+        # the unweighted two-sample test
+        if weighted:
+            ks_stat, ks_p = wks(tv, w_t, cv, w_c), float("nan")
+        else:
+            ks_stat, ks_p = stats.ks_2samp(tv, cv)
         records.append(
             {
                 "covariate": cov,
@@ -1724,26 +1737,33 @@ def abadie_imbens_se(
     match_pairs: pd.DataFrame,
     *,
     n_matches: int = 1,
+    covariates: list[str] | None = None,
 ) -> float:
-    r"""Abadie-Imbens (2006) standard error for matching estimators.
-
-    Accounts for the fact that matching introduces correlation across
-    matched observations.  Uses the conditional variance estimator:
+    r"""Abadie-Imbens (2006) standard error of the matching ATT (sample
+    ATT), as ``Matching::Match(estimand = "ATT", sample = TRUE)``:
 
     .. math::
 
-        \hat V_{AI} = \frac{1}{n^2}\sum_i \bigl[\hat\sigma^2(X_i)
-        + (K_M(i))^2\,\hat\sigma^2(X_i)\bigr]
+        \hat V = \frac{1}{N_1^2} \sum_i
+            \bigl(W_i + (1 - W_i) K_M(i) / M\bigr)^2 \hat\sigma^2(X_i, W_i)
 
-    where :math:`K_M(i)` is the number of times unit *i* is used as
-    a match.
+    where :math:`K_M(i)` counts the times control *i* is used as a match
+    and :math:`\hat\sigma^2(X_i, W_i) = \tfrac12 (Y_i - Y_{l(i)})^2` with
+    :math:`l(i)` the nearest unit of the SAME treatment arm on the
+    ``covariates`` scaled by their inverse variances (``Var.calc = 1``).
+    Without ``covariates`` the conditional variance is approximated by
+    half the squared outcome difference of each matched pair.
 
     Parameters
     ----------
     data : pd.DataFrame
     outcome, treatment : str
     match_pairs : pd.DataFrame
+        ``treated_idx`` / ``control_idx`` index labels of the matches.
     n_matches : int
+        M, the matches per treated unit.
+    covariates : list of str, optional
+        The matching covariates, for AI's within-arm variance estimate.
 
     Returns
     -------
@@ -1756,40 +1776,41 @@ def abadie_imbens_se(
     matching estimators for average treatment effects. *Econometrica*,
     74(1), 235--267.
     """
-    df = data.dropna(subset=[outcome, treatment]).copy()
+    cols = [outcome, treatment] + list(covariates or [])
+    df = data.dropna(subset=cols).copy()
     n = len(df)
-    y = df[outcome].values.astype(float)
-    d = df[treatment].values.astype(int)
-
-    # Count how many times each unit is used as a match
-    K = np.zeros(n)
-    idx_to_pos = {idx: pos for pos, idx in enumerate(df.index)}
-
-    for _, row in match_pairs.iterrows():
-        c_idx = row["control_idx"]
-        if c_idx in idx_to_pos:
-            K[idx_to_pos[c_idx]] += 1
-
-    # Estimate conditional variance using matched pairs
-    sigma2 = np.zeros(n)
-    for _, row in match_pairs.iterrows():
-        t_id = row["treated_idx"]
-        c_id = row["control_idx"]
-        if t_id in idx_to_pos and c_id in idx_to_pos:
-            t_pos = idx_to_pos[t_id]
-            c_pos = idx_to_pos[c_id]
-            # Simple variance estimate: half the squared difference
-            diff2 = (y[t_pos] - y[c_pos]) ** 2 / 2
-            sigma2[t_pos] = diff2
-            sigma2[c_pos] = diff2
-
-    # AI variance
-    V = 0.0
-    for i in range(n):
-        V += (1 + K[i] / float(n_matches)) ** 2 * sigma2[i]
-    V /= n**2
-
-    return float(np.sqrt(max(V, 0.0)))
+    y = [float(v) for v in df[outcome].tolist()]
+    w = [int(v) for v in df[treatment].tolist()]
+    pos = {idx: k for k, idx in enumerate(df.index)}
+    K = [0.0] * n
+    for c_id in match_pairs["control_idx"].tolist():
+        if c_id in pos:
+            K[pos[c_id]] += 1
+    sigma2 = [0.0] * n
+    if covariates:
+        X = [[float(v) for v in df[c].tolist()] for c in covariates]
+        scale = []
+        for col in X:
+            m = sum(col) / n
+            scale.append(1.0 / (sum((v - m) ** 2 for v in col) / (n - 1)))
+        for i in range(n):
+            best, bd = None, math.inf
+            for j in range(n):
+                if j != i and w[j] == w[i]:
+                    dd = sum(sc * (col[i] - col[j]) ** 2 for sc, col in zip(scale, X))
+                    if dd < bd:
+                        best, bd = j, dd
+            if best is not None:
+                sigma2[i] = 0.5 * (y[i] - y[best]) ** 2
+    else:
+        for t_id, c_id in zip(match_pairs["treated_idx"].tolist(), match_pairs["control_idx"].tolist()):
+            if t_id in pos and c_id in pos:
+                d2 = 0.5 * (y[pos[t_id]] - y[pos[c_id]]) ** 2
+                sigma2[pos[t_id]] = d2
+                sigma2[pos[c_id]] = d2
+    n1 = sum(w)
+    V = sum((w[i] + (1 - w[i]) * K[i] / n_matches) ** 2 * sigma2[i] for i in range(n)) / n1**2
+    return float(math.sqrt(max(V, 0.0)))
 
 
 # ---------------------------------------------------------------------------
@@ -1962,17 +1983,18 @@ def doubly_robust_matching(
     att_dr = float(np.mean(y_t - y0_hat_t))
 
     # Bootstrap SE
-    n = len(df)
     boot_ests = []
     # resample within each arm so every replicate keeps the design's
     # treated and control counts (the ATT is conditional on who was treated)
     t_all = np.flatnonzero(np.asarray(df[treatment].values) == 1)
     c_all = np.flatnonzero(np.asarray(df[treatment].values) == 0)
     for _ in range(n_bootstrap):
-        idx = np.concatenate([
-            rng.choice(t_all, size=len(t_all), replace=True),
-            rng.choice(c_all, size=len(c_all), replace=True),
-        ])
+        idx = np.concatenate(
+            [
+                rng.choice(t_all, size=len(t_all), replace=True),
+                rng.choice(c_all, size=len(c_all), replace=True),
+            ]
+        )
         df_b = df.iloc[idx].copy()
         df_b = df_b.reset_index(drop=True)
         try:
