@@ -89002,6 +89002,48 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "pbci",
+    "pbci",
+    "Auto",
+    "Auto-wired callable from fn/pbci.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "comvar2",
+    "comvar2",
+    "Auto",
+    "Auto-wired callable from fn/comvar2.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "linconbt",
+    "linconbt",
+    "Auto",
+    "Auto-wired callable from fn/linconbt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "friedf",
+    "friedf",
+    "Auto",
+    "Auto-wired callable from fn/friedf.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "outmah",
+    "outmah",
+    "Auto",
+    "Auto-wired callable from fn/outmah.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "logrsm",
+    "logrsm",
+    "Auto",
+    "Auto-wired callable from fn/logrsm.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
