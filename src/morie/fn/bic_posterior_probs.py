@@ -18,15 +18,17 @@ def bic_posterior_probs(bics):
     Returns
     -------
     result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
+        dict subclass; ``probs`` holds the posterior probability of every
+        model (in input order) and ``value`` the first of them.
 
     References
     ----------
     Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
     eq. (5.2).
     """
-    value = float(_acd.bic_posterior_probs(bics)[0])
-    payload = {"value": value}
+    probs = [float(v) for v in _acd.bic_posterior_probs(bics)]
+    value = probs[0]
+    payload = {"value": value, "probs": probs}
     summary = [(k, v) for k, v in payload.items()
                if isinstance(v, (int, float))][:4]
     payload = dict(payload)

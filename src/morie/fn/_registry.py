@@ -88904,6 +88904,55 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "eslvcb",
+    "esl_vc_bound",
+    "Auto",
+    "Auto-wired callable from fn/eslvcb.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslgcv",
+    "esl_gcv",
+    "Auto",
+    "Auto-wired callable from fn/eslgcv.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslpee",
+    "esl_linear_prediction_error",
+    "Auto",
+    "Auto-wired callable from fn/eslpee.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslbse",
+    "esl_basis_fit_se",
+    "Auto",
+    "Auto-wired callable from fn/eslbse.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslpbt",
+    "esl_parametric_bootstrap",
+    "Auto",
+    "Auto-wired callable from fn/eslpbt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslbbp",
+    "esl_bayes_basis_posterior",
+    "Auto",
+    "Auto-wired callable from fn/eslbbp.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "esldrp",
+    "esl_dirichlet_posterior",
+    "Auto",
+    "Auto-wired callable from fn/esldrp.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
