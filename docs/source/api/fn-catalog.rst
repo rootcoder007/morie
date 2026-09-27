@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,271 single-purpose callables** -- every one
+``morie.fn`` ships **17,270 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1196,6 +1196,7 @@ Full list
    "binary_outcome_mediation", "binMd"
    "binary_segmentation", "binseg"
    "binaryheap", "bheap"
+   "binghamdens", "binghamdens"
    "binomcoef", "binomcoef"
    "binomctr", "binomctr"
    "binomctrf", "binomctrf"
@@ -3834,13 +3835,10 @@ Full list
    "dsspsecondary", "dssprt"
    "dstudydecision", "genvdm"
    "dt", "dt"
-   "dtbng", "dtbng"
-   "dtcpb", "dtcpb"
    "dtft", "bsaxfrm"
    "dtft_compute", "dtft"
    "dtftcompute", "dtft"
    "dtftz", "bsaxfrm"
-   "dtghs", "dtghs"
    "dtonnt", "d2nnt"
    "dtoor", "d2or"
    "dtor", "d2r"
@@ -6384,6 +6382,7 @@ Full list
    "ghrsk", "ghrsk"
    "ghscn", "ghscn"
    "ghsdm", "ghsdm"
+   "ghsecant", "ghsecant"
    "ghsir", "ghsir"
    "ghslg", "ghslg"
    "ghsmr", "ghsmr"

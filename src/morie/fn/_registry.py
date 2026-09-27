@@ -19188,21 +19188,6 @@ _r(
     quote="We must know. We will know. -- David Hilbert",
 )
 _r("dssim", "dssim", "SpatialPat", "Direct sampling simulation", quote="Knowledge is power. -- Francis Bacon")
-_r("dtbng", "dtbng", "DistTheor", "Bingham distribution", quote="Statistics is the grammar of science. -- Karl Pearson")
-_r(
-    "dtcpb",
-    "dtcpb",
-    "DistTheor",
-    "BB1 copula",
-    quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "dtghs",
-    "dtghs",
-    "DistTheor",
-    "Generalized hyperbolic secant",
-    quote="Statistics is the grammar of science. -- Karl Pearson",
-)
 _r("eckrt4", "eckrt4", "GeoProcss", "Eckert IV projection", quote="Number rules the universe. -- Pythagoras")
 _r(
     "edgfp",
@@ -86296,6 +86281,20 @@ _r(
     "multinomialdist",
     "Auto",
     "Auto-wired callable from fn/multinomialdist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "ghsecant",
+    "ghsecant",
+    "Auto",
+    "Auto-wired callable from fn/ghsecant.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "binghamdens",
+    "binghamdens",
+    "Auto",
+    "Auto-wired callable from fn/binghamdens.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(

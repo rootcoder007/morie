@@ -20,7 +20,7 @@ def _dt(x, nu):
     )
 
 
-def copuladens(u, v, family="gaussian", theta=0.5, df=4.0):
+def copuladens(u, v, family="gaussian", theta=0.5, df=4.0, delta=1.5):
     r"""Copula density c(u, v) = d^2 C(u, v)/(du dv).
 
     gaussian (theta = rho): exp(-(rho^2 (a^2 + b^2) - 2 rho a b)/(2(1 - rho^2)))/sqrt(1 - rho^2), a = Phi^{-1}(u);
@@ -28,15 +28,19 @@ def copuladens(u, v, family="gaussian", theta=0.5, df=4.0):
     clayton: (1 + theta)(u v)^{-theta-1}(u^{-theta} + v^{-theta} - 1)^{-2-1/theta};
     gumbel: C (x y)^{theta-1}/(u v) A^{1/theta-2} (A^{1/theta} + theta - 1), A = x^theta + y^theta, x = -log u;
     frank: theta(1 - e^{-theta}) e^{-theta(u+v)} / ((1 - e^{-theta}) - (1 - e^{-theta u})(1 - e^{-theta v}))^2;
-    joe: (s)^{1/theta-2} ubar^{theta-1} vbar^{theta-1} (theta - 1 + s), s = ubar^theta + vbar^theta - ubar^theta vbar^theta.
+    joe: (s)^{1/theta-2} ubar^{theta-1} vbar^{theta-1} (theta - 1 + s), s = ubar^theta + vbar^theta - ubar^theta vbar^theta;
+    bb1 (theta > 0, delta >= 1): C = (1 + w)^{-1/theta}, w = s^{1/delta}, s = a^delta + b^delta, a = u^{-theta} - 1,
+    differentiated in closed form; delta = 1 is Clayton, theta -> 0 is Gumbel(delta) (Joe 2014, sec 4.17).
 
     Parameters
     ----------
     u, v : float in (0, 1)
-    family : {"gaussian", "t", "clayton", "gumbel", "frank", "joe"}
+    family : {"gaussian", "t", "clayton", "gumbel", "frank", "joe", "bb1"}
     theta : float
     df : float
         Degrees of freedom of the t copula.
+    delta : float
+        Second BB1 parameter, delta >= 1.
 
     Returns
     -------
@@ -98,8 +102,19 @@ def copuladens(u, v, family="gaussian", theta=0.5, df=4.0):
         ub, vb = 1 - u, 1 - v
         s = ub**theta + vb**theta - (ub * vb) ** theta
         d = s ** (1 / theta - 2) * ub ** (theta - 1) * vb ** (theta - 1) * (theta - 1 + s)
+    elif family == "bb1":
+        if not (theta > 0 and delta >= 1):
+            raise ValueError("need theta > 0 and delta >= 1")
+        a, b = u**-theta - 1, v**-theta - 1
+        s = a**delta + b**delta
+        w = s ** (1 / delta)
+        xu = delta * a ** (delta - 1) * theta * u ** (-theta - 1)
+        yv = delta * b ** (delta - 1) * theta * v ** (-theta - 1)
+        h1 = -((1 + w) ** (-1 / theta - 1)) / theta
+        h2 = (1 / theta) * (1 / theta + 1) * (1 + w) ** (-1 / theta - 2)
+        d = xu * yv * (h2 * (w / (delta * s)) ** 2 + h1 * (1 / delta) * (1 / delta - 1) * w / (s * s))
     else:
-        raise ValueError('family must be "gaussian", "t", "clayton", "gumbel", "frank" or "joe"')
+        raise ValueError('family must be "gaussian", "t", "clayton", "gumbel", "frank", "joe" or "bb1"')
     return RichResult(
         title=f"{family} copula density",
         summary_lines=[("density", d)],
