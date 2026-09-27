@@ -22126,20 +22126,6 @@ _r(
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "markg",
-    "markg",
-    "SpatialPat",
-    "Mark correlation function",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "markv",
-    "markv",
-    "SpatialPat",
-    "Mark variogram",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
     "masat",
     "masat",
     "MarinSp",
@@ -24147,25 +24133,11 @@ _r(
 )
 _r("ppare", "ppare", "PointProc", "Area-interaction process", quote="Number rules the universe. -- Pythagoras")
 _r(
-    "ppbay",
-    "ppbay",
-    "PointProc",
-    "Bayesian point process",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
     "ppcox",
     "ppcox",
     "PointProc",
     "Cox process (doubly stochastic)",
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "ppdgr",
-    "ppdgr",
-    "PointProc",
-    "Diggle test space-time",
-    quote="What is now proved was once only imagined. -- William Blake",
 )
 _r(
     "ppint2",
@@ -24174,7 +24146,6 @@ _r(
     "Intensity estimation (adaptive)",
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
-_r("ppitb", "ppitb", "PointProc", "Intensity with bandwidth CV", quote="We must know. We will know. -- David Hilbert")
 _r(
     "pplgc",
     "pplgc",
@@ -24182,29 +24153,7 @@ _r(
     "Log-Gaussian Cox process",
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
-_r(
-    "ppmkc",
-    "ppmkc",
-    "PointProc",
-    "Mark correlation PP",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "ppmkd",
-    "ppmkd",
-    "PointProc",
-    "Mark dependence test",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
 _r("ppmks", "ppmks", "PointProc", "Mark segregation test", quote="We must know. We will know. -- David Hilbert")
-_r(
-    "ppmkv",
-    "ppmkv",
-    "PointProc",
-    "Mark variogram PP",
-    quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r("ppmrk", "ppmrk", "PointProc", "Marked point process", quote="There is no royal road to geometry. -- Euclid")
 _r(
     "pppnl",
     "pppnl",
@@ -24212,14 +24161,6 @@ _r(
     "Penalized likelihood PP",
     quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
-_r(
-    "pprth",
-    "pprth",
-    "PointProc",
-    "Ripley theta function",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r("ppspx", "ppspx", "PointProc", "Space-time point process", quote="There is no royal road to geometry. -- Euclid")
 _r("ppstg", "ppstg", "PointProc", "Space-time G-function", quote="Knowledge is power. -- Francis Bacon")
 _r("ppstj", "ppstj", "PointProc", "Space-time J-function", quote="I think, therefore I am. -- Rene Descartes")
 _r(
@@ -24379,13 +24320,6 @@ _r(
     quote="Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "ptdgm",
-    "ptdgm",
-    "Spatial",
-    "Diggle-Cressie-Loosmore test",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
     "ptdlr",
     "ptdlr",
     "Spatial",
@@ -24434,13 +24368,6 @@ _r(
     "Spatial",
     "Adaptive kernel density",
     quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "ptkdb",
-    "ptkdb",
-    "Spatial",
-    "KDE bandwidth selection (spatial)",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "ptkde",
@@ -28919,13 +28846,6 @@ _r(
     quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r("tsstg2", "tsstg2", "TempSpat", "Space-time geostatistical", quote="We must know. We will know. -- David Hilbert")
-_r(
-    "tssti",
-    "tssti",
-    "TempSpat",
-    "Space-time interaction test",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
 _r(
     "tsstk",
     "tsstk",
@@ -74261,13 +74181,6 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "ppbnd",
-    "plasma_protein_binding",
-    "Auto",
-    "Auto-wired callable from fn/ppbnd.py",
-    "Number rules the universe. -- Pythagoras",
-)
-_r(
     "ppc",
     "posterior_predictive_check",
     "Auto",
@@ -85052,6 +84965,41 @@ _r(
     "rho_bounds",
     "Auto",
     "Auto-wired callable from fn/swops.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "bwdigg",
+    "bandwidth_diggle",
+    "Auto",
+    "Auto-wired callable from fn/bwdigg.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "mkcorr",
+    "mark_correlation",
+    "Auto",
+    "Auto-wired callable from fn/mkcorr.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "mkdep",
+    "mark_dependence_test",
+    "Auto",
+    "Auto-wired callable from fn/mkdep.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "stmct",
+    "space_time_interaction_test",
+    "Auto",
+    "Auto-wired callable from fn/stmct.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "csrgt",
+    "csr_global_test",
+    "Auto",
+    "Auto-wired callable from fn/csrgt.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
