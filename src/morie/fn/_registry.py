@@ -88981,6 +88981,13 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "eslgbk",
+    "esl_gbm_multiclass",
+    "Auto",
+    "Auto-wired callable from fn/eslgbk.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
