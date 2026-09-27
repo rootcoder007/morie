@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,788 single-purpose callables** -- every one
+``morie.fn`` ships **17,780 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -631,24 +631,17 @@ Full list
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_3", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e3"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_4", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e4"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_5", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e5"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1140", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1140"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1141", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1141"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1158", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1158"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1159", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1159"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1161", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1161"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1162", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1162"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1163", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1163"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1289", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1289"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1290", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1290"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1388", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1388"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1389", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1389"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_890", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u890"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_962", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u962"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_1", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e1"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_10", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e10"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_11", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e11"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_12", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e12"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_13", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e13"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_14", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e14"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_15", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e15"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_16", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e16"
@@ -661,13 +654,8 @@ Full list
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_24", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e24"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_25", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e25"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_26", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e26"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_28", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e28"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_29", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e29"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_3", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e3"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_30", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e30"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_31", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e31"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_32", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e32"
-   "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_33", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e33"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_34", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e34"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_35", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e35"
    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_36", "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e36"
@@ -7295,8 +7283,11 @@ Full list
    "grucell", "grucl"
    "grwsp", "grwsp"
    "gsmsp", "gsmsp"
+   "gtdorfman", "gtdorfman"
    "gtest", "gtest"
    "gtfd", "bsatf"
+   "gtprev", "gtprev"
+   "gtregem", "gtregem"
    "gtwr", "stgwr"
    "guide_on_data_analysis_chapter_11_unnumbered_821", "guide_on_data_analysis11u821"
    "guide_on_data_analysis_chapter_11_unnumbered_822", "guide_on_data_analysis11u822"
@@ -15389,6 +15380,7 @@ Full list
    "splogit", "splogit"
    "splrg", "splrg"
    "spltps", "spltps"
+   "spmi", "spmi"
    "spmxd", "spmxd"
    "sppaic", "sppaic"
    "sppbe", "sppbe"

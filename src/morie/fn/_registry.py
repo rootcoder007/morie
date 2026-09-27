@@ -42655,20 +42655,6 @@ _r(
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1140",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1140",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1140.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1141",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1141",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1141.py",
-    "There is no royal road to geometry. -- Euclid",
-)
-_r(
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1158",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1158",
     "Auto",
@@ -42702,34 +42688,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1163.py",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1289",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1289",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1289.py",
-    "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1290",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1290",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1290.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1388",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1388",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1388.py",
-    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1389",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1389",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1389.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u890",
@@ -42772,13 +42730,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e12.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e13",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_13",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e13.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e14",
@@ -89055,6 +89006,34 @@ _r(
     "rogangladen",
     "Auto",
     "Auto-wired callable from fn/rogangladen.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "gtdorfman",
+    "gtdorfman",
+    "Auto",
+    "Auto-wired callable from fn/gtdorfman.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "gtprev",
+    "gtprev",
+    "Auto",
+    "Auto-wired callable from fn/gtprev.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "gtregem",
+    "gtregem",
+    "Auto",
+    "Auto-wired callable from fn/gtregem.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "spmi",
+    "spmi",
+    "Auto",
+    "Auto-wired callable from fn/spmi.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
