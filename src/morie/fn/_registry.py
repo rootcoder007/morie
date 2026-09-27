@@ -88953,6 +88953,55 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "trimse",
+    "trimse",
+    "Auto",
+    "Auto-wired callable from fn/trimse.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "trimci",
+    "trimci",
+    "Auto",
+    "Auto-wired callable from fn/trimci.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "akpd",
+    "akpd",
+    "Auto",
+    "Auto-wired callable from fn/akpd.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "yuen",
+    "yuen",
+    "Auto",
+    "Auto-wired callable from fn/yuen.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "ciovlap",
+    "ciovlap",
+    "Auto",
+    "Auto-wired callable from fn/ciovlap.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "r2ftest",
+    "r2ftest",
+    "Auto",
+    "Auto-wired callable from fn/r2ftest.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "explpow",
+    "explpow",
+    "Auto",
+    "Auto-wired callable from fn/explpow.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
