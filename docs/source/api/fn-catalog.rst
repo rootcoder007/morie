@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,075 single-purpose callables** -- every one
+``morie.fn`` ships **18,063 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1475,18 +1475,8 @@ Full list
    "bonfer", "bonfer"
    "bonferroni_correction", "bonf"
    "bonne", "bonne"
-   "bookadvanced_elementsofstatisticallearning_chapter_10_equation_2", "bookadvanced_elementsofstatisticallearning10e2"
-   "bookadvanced_elementsofstatisticallearning_chapter_10_equation_21", "bookadvanced_elementsofstatisticallearning10e21"
-   "bookadvanced_elementsofstatisticallearning_chapter_10_equation_29", "bookadvanced_elementsofstatisticallearning10e29"
-   "bookadvanced_elementsofstatisticallearning_chapter_10_equation_30", "bookadvanced_elementsofstatisticallearning10e30"
-   "bookadvanced_elementsofstatisticallearning_chapter_10_equation_35", "bookadvanced_elementsofstatisticallearning10e35"
-   "bookadvanced_elementsofstatisticallearning_chapter_10_equation_41", "bookadvanced_elementsofstatisticallearning10e41"
-   "bookadvanced_elementsofstatisticallearning_chapter_10_equation_5", "bookadvanced_elementsofstatisticallearning10e5"
-   "bookadvanced_elementsofstatisticallearning_chapter_10_equation_52", "bookadvanced_elementsofstatisticallearning10e52"
    "bookadvanced_elementsofstatisticallearning_chapter_10_equation_57", "bookadvanced_elementsofstatisticallearning10e57"
    "bookadvanced_elementsofstatisticallearning_chapter_10_equation_58", "bookadvanced_elementsofstatisticallearning10e58"
-   "bookadvanced_elementsofstatisticallearning_chapter_10_equation_7", "bookadvanced_elementsofstatisticallearning10e7"
-   "bookadvanced_elementsofstatisticallearning_chapter_10_equation_8", "bookadvanced_elementsofstatisticallearning10e8"
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_1", "bookadvanced_elementsofstatisticallearning11e1"
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_13", "bookadvanced_elementsofstatisticallearning11e13"
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_14", "bookadvanced_elementsofstatisticallearning11e14"
@@ -1591,7 +1581,6 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_189", "bookadvanced_elementsofstatisticallearning4u189"
    "bookadvanced_elementsofstatisticallearning_chapter_5_unnumbered_826", "bookadvanced_elementsofstatisticallearning5u826"
    "bookadvanced_elementsofstatisticallearning_chapter_6_unnumbered_862", "bookadvanced_elementsofstatisticallearning6u862"
-   "bookadvanced_elementsofstatisticallearning_chapter_9_equation_10", "bookadvanced_elementsofstatisticallearning9e10"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_19", "bookadvanced_elementsofstatisticallearning9e19"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_20", "bookadvanced_elementsofstatisticallearning9e20"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_23", "bookadvanced_elementsofstatisticallearning9e23"
@@ -1600,7 +1589,6 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_28", "bookadvanced_elementsofstatisticallearning9e28"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_29", "bookadvanced_elementsofstatisticallearning9e29"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_30", "bookadvanced_elementsofstatisticallearning9e30"
-   "bookadvanced_elementsofstatisticallearning_chapter_9_equation_9", "bookadvanced_elementsofstatisticallearning9e9"
    "bookmeans", "bookmeans"
    "boolean_eval", "bexpr"
    "boolean_minimize", "boolm"

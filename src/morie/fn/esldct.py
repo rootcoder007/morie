@@ -146,7 +146,8 @@ def esl_tree_predict(tree, X):
     Parameters
     ----------
     tree : dict
-        Node dict as documented on esl_decision_tree.
+        Node dict as documented on esl_decision_tree, or the whole result
+        of esl_decision_tree.
     X : array-like, shape (m, p)
         Rows to predict.
 
@@ -161,6 +162,8 @@ def esl_tree_predict(tree, X):
     >>> esl_tree_predict(t, [[0.0], [100.0]])
     [0.0, 4.0]
     """
+    if "tree" in tree and "leaf" not in tree:
+        tree = tree["tree"]  # the whole result of esl_decision_tree
     X = np.atleast_2d(np.asarray(X, dtype=float))
     out = []
     for row in X:
