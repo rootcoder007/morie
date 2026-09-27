@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,211 single-purpose callables** -- every one
+``morie.fn`` ships **18,192 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -7854,25 +7854,6 @@ Full list
    "hedderich_chapter_9_unnumbered_1226", "hedderich9u1226"
    "hedderich_chapter_9_unnumbered_1427", "hedderich9u1427"
    "hedderich_chapter_9_unnumbered_1435", "hedderich9u1435"
-   "hedderich_chapter_9_unnumbered_1465", "hedderich9u1465"
-   "hedderich_chapter_9_unnumbered_1466", "hedderich9u1466"
-   "hedderich_chapter_9_unnumbered_1467", "hedderich9u1467"
-   "hedderich_chapter_9_unnumbered_1468", "hedderich9u1468"
-   "hedderich_chapter_9_unnumbered_1469", "hedderich9u1469"
-   "hedderich_chapter_9_unnumbered_1470", "hedderich9u1470"
-   "hedderich_chapter_9_unnumbered_1471", "hedderich9u1471"
-   "hedderich_chapter_9_unnumbered_1472", "hedderich9u1472"
-   "hedderich_chapter_9_unnumbered_1473", "hedderich9u1473"
-   "hedderich_chapter_9_unnumbered_1474", "hedderich9u1474"
-   "hedderich_chapter_9_unnumbered_1475", "hedderich9u1475"
-   "hedderich_chapter_9_unnumbered_1480", "hedderich9u1480"
-   "hedderich_chapter_9_unnumbered_1481", "hedderich9u1481"
-   "hedderich_chapter_9_unnumbered_1482", "hedderich9u1482"
-   "hedderich_chapter_9_unnumbered_1483", "hedderich9u1483"
-   "hedderich_chapter_9_unnumbered_1484", "hedderich9u1484"
-   "hedderich_chapter_9_unnumbered_1485", "hedderich9u1485"
-   "hedderich_chapter_9_unnumbered_1486", "hedderich9u1486"
-   "hedderich_chapter_9_unnumbered_1489", "hedderich9u1489"
    "hedderich_chapter_9_unnumbered_1560", "hedderich9u1560"
    "hedderich_chapter_9_unnumbered_1686", "hedderich9u1686"
    "hedderich_chapter_9_unnumbered_1687", "hedderich9u1687"
