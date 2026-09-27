@@ -47,6 +47,12 @@ def test_kl_nmf():
     for k in range(2):
         g = sum(W[i][k] * (X[i][j] / WH[i][j] - 1) for i in range(8) for j in range(6))
         assert abs(g) < 1e-4  # stationarity in H (summed over columns)
+    for i in range(8):
+        for k in range(2):
+            gw = sum(H[k][j] * (X[i][j] / WH[i][j] - 1) for j in range(6))
+            assert abs(gw) < 1e-4  # stationarity in W: sum_j h_kj (x_ij / (WH)_ij - 1) = 0
+    tot = sum(map(sum, X))
+    assert abs(sum(map(sum, WH)) - tot) < 1e-8 * tot  # KL updates keep sum WH = sum X at the fixed point
     const = sum(X[i][j] - (X[i][j] * math.log(X[i][j]) if X[i][j] > 0 else 0) for i in range(8) for j in range(6))
     assert close(r["loglik"] + const, -r["kl_divergence"], 1e-10)  # eq 14.73 is -D up to a constant
     fro = esl_nmf(X, 2)
