@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,002 single-purpose callables** -- every one
+``morie.fn`` ships **18,000 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1489,8 +1489,6 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_92", "bookadvanced_elementsofstatisticallearning14e92"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_32", "bookadvanced_elementsofstatisticallearning18e32"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_33", "bookadvanced_elementsofstatisticallearning18e33"
-   "bookadvanced_elementsofstatisticallearning_chapter_18_equation_51", "bookadvanced_elementsofstatisticallearning18e51"
-   "bookadvanced_elementsofstatisticallearning_chapter_18_equation_53", "bookadvanced_elementsofstatisticallearning18e53"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_1", "bookadvanced_elementsofstatisticallearning2e1"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_15", "bookadvanced_elementsofstatisticallearning2e15"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_16", "bookadvanced_elementsofstatisticallearning2e16"
