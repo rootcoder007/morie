@@ -1,151 +1,97 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Maximum Likelihood Factor Analysis.
 
-Estimates factor analysis via maximum likelihood, optimizing the likelihood
-subject to the factor model. Returns loadings, communalities, and fit statistics.
+Fits the factor model S = Lambda Lambda' + Psi by maximum likelihood (the objective of
+stats::factanal) and returns loadings, uniquenesses and fit statistics.
 
 References
 ----------
-Jöreskog, K. G. (1967). Some contributions to maximum likelihood factor analysis.
+Joreskog, K. G. (1967). Some contributions to maximum likelihood factor analysis.
     Psychometrika, 32(4), 443-482.
-Anderson, T. W., & Rubin, H. (1956). Statistical inference in factor analysis.
-    In Proc. 3rd Berkeley Symp. Mathematical Statistics and Probability.
+Lawley, D. N. & Maxwell, A. E. (1971). Factor Analysis as a Statistical Method, 2nd ed.
 """
 
-from . import _array_core as np
-from ._sci_core import linalg as la
+import math
+
+from ._mlfa import corr_matrix, eigh_desc, fa_statistic, mlfa_fit, to_corr
 
 __all__ = ["mlfac"]
 
 
-def mlfac(
-    X,
-    n_factors=None,
-    max_iter=200,
-    tol=1e-6,
-    scale=True,
-):
-    """
-    Maximum Likelihood Factor Analysis.
+def mlfac(X, n_factors=None, max_iter=500, tol=1e-12, scale=True):
+    r"""Maximum Likelihood Factor Analysis.
+
+    Minimises F(Psi) = sum_{j>m} (theta_j - log theta_j) - (p - m), theta the
+    eigenvalues of Psi^{-1/2} S Psi^{-1/2}, over uniquenesses in [0.005, 1] by
+    bounded Newton steps (the criterion minimised by ``factanal``); the loadings
+    are Psi^{1/2} U diag(sqrt(theta - 1)) (unrotated). The likelihood-ratio
+    statistic is Bartlett's (n - 1 - (2p + 5)/6 - 2m/3) F on
+    ((p - m)^2 - p - m)/2 degrees of freedom; AIC = chi2 - 2 df and
+    BIC = chi2 - df log n are on that scale.
 
     Parameters
     ----------
-    X : ndarray, shape (n, p)
-        Data matrix with n observations and p variables.
+    X : n x p data
     n_factors : int, optional
-        Number of factors. If None, uses Kaiser criterion (eigenvalues > 1).
-    max_iter : int, optional
-        Maximum iterations for EM algorithm (default 200).
-    tol : float, optional
-        Convergence tolerance (default 1e-6).
-    scale : bool, optional
-        If True (default), use correlation matrix; else covariance.
+        Number of factors (default: Kaiser count of correlation eigenvalues > 1).
+    max_iter : int
+        Newton iterations.
+    tol : float
+        Gradient tolerance.
+    scale : bool
+        Analyse the correlation matrix (True) or the covariance matrix.
 
     Returns
     -------
     dict
-        'loadings' : ndarray, shape (p, n_factors)
-            Maximum likelihood factor loadings.
-        'communalities' : ndarray, shape (p,)
-            Communalities.
-        'uniqueness' : ndarray, shape (p,)
-            Unique variances (1 - communality).
-        'variance_explained' : ndarray, shape (n_factors,)
-            Variance explained by each factor.
-        'log_likelihood' : float
-            Log-likelihood of the model.
-        'aic' : float
-            Akaike Information Criterion.
-        'bic' : float
-            Bayesian Information Criterion.
+        loadings (p x m), communalities, uniqueness (standardised), variance_explained,
+        objective, log_likelihood, statistic, dof, p_value, aic, bic.
+
+    Examples
+    --------
+    >>> X = [[1, 2, 1, 3], [2, 3, 2, 4], [3, 3, 4, 4], [4, 5, 4, 6], [5, 5, 6, 5], [6, 7, 5, 8], [7, 8, 7, 8], [8, 8, 9, 9]]
+    >>> r = mlfac(X, n_factors=1)
+    >>> all(0 < u <= 1 for u in r["uniqueness"])
+    True
     """
-    X = np.asarray(X, dtype=float)
-    n, p = X.shape
+    from ._rrng_core import pchisq
 
-    # Standardize
-    X_centered = X - X.mean(axis=0)
-    if scale:
-        std = X_centered.std(axis=0, ddof=1)
-        std[std == 0] = 1
-        X_scaled = X_centered / std
-        S = np.cov(X_scaled, rowvar=False)
-    else:
-        S = np.cov(X_centered, rowvar=False)
-
-    # Determine number of factors
+    if hasattr(X, "to_numpy"):
+        X = X.to_numpy()
+    if hasattr(X, "tolist"):
+        X = X.tolist()
+    X = [[float(v) for v in row] for row in X]
+    n, p = len(X), len(X[0])
+    C = corr_matrix(X)
+    R = to_corr(C)
     if n_factors is None:
-        eigenvalues, _ = la.eigh(S)
-        eigenvalues = np.sort(eigenvalues)[::-1]
-        n_factors = np.sum(eigenvalues > 1)
-        if n_factors == 0:
-            n_factors = 1
-
-    # Initialize with PCA loadings
-    eigenvalues, eigenvectors = la.eigh(S)
-    idx = np.argsort(eigenvalues)[::-1]
-    eigenvalues = eigenvalues[idx]
-    eigenvectors = eigenvectors[:, idx[:n_factors]]
-
-    L = eigenvectors * np.sqrt(np.maximum(eigenvalues[:n_factors], 0))
-    Psi = np.diag(np.maximum(1 - np.sum(L**2, axis=1), 0.01))
-
-    # EM algorithm
-    for iteration in range(max_iter):
-        L_old = L.copy()
-
-        # E-step: compute factor scores covariance
-        # Cov(F) = (I + L^T Psi^{-1} L)^{-1}
-        Psi_inv = np.diag(1 / np.diag(Psi))
-        M = np.eye(n_factors) + L.T @ Psi_inv @ L
-        M_inv = la.inv(M)
-
-        # M-step: update loadings and uniqueness
-        L_new = S @ Psi_inv @ L @ M_inv
-        Psi_new = np.diag(np.diag(S) - np.diag(L_new @ M_inv @ L_new.T))
-        Psi_new = np.diag(np.maximum(np.diag(Psi_new), 0.01))
-
-        # Check convergence
-        if np.max(np.abs(L_new - L_old)) < tol:
-            L = L_new
-            Psi = Psi_new
-            break
-
-        L = L_new
-        Psi = Psi_new
-
-    # Communalities and uniqueness
-    h2 = np.sum(L**2, axis=1)
-    psi = np.diag(Psi)
-
-    # Log-likelihood
-    # LL = -0.5 * n * (p * log(2*pi) + log|Sigma| + tr(S @ Sigma^{-1}))
-    # where Sigma = L @ L^T + Psi
-    Sigma = L @ L.T + Psi
-    try:
-        log_det = np.linalg.slogdet(Sigma)[1]
-        Sigma_inv = la.inv(Sigma)
-        trace_term = np.trace(S @ Sigma_inv)
-        log_likelihood = -0.5 * n * (p * np.log(2 * np.pi) + log_det + trace_term)
-    except la.LinAlgError:
-        log_likelihood = np.nan
-
-    # Information criteria
-    n_params = p * n_factors + p  # loadings + uniqueness variances
-    aic = -2 * log_likelihood + 2 * n_params
-    bic = -2 * log_likelihood + n_params * np.log(n)
-
-    variance_explained = np.sum(L**2, axis=0)
-
+        ev, _ = eigh_desc(R)
+        n_factors = max(1, sum(v > 1 for v in ev))
+    m = int(n_factors)
+    fit = mlfa_fit(R, m, max_iter=max_iter, gtol=tol)
+    L = fit["loadings"]
+    if not scale:
+        sd = [math.sqrt(C[j][j]) for j in range(p)]
+        L = [[L[j][k] * sd[j] for k in range(m)] for j in range(p)]
+    h2 = [sum(v * v for v in row) for row in fit["loadings"]]
+    stat, dof = fa_statistic(fit["objective"], n, p, m)
+    # at the MLE, log|Sigma| + tr(Sigma^{-1} S) = F + log|S| + p
+    loglik = -n / 2 * (p * math.log(2 * math.pi) + fit["objective"] + sum(math.log(e) for e in eigh_desc(R)[0]) + p)
     return {
         "loadings": L,
         "communalities": h2,
-        "uniqueness": 1 - h2,
-        "variance_explained": variance_explained,
-        "log_likelihood": log_likelihood,
-        "aic": aic,
-        "bic": bic,
+        "uniqueness": fit["uniquenesses"],
+        "variance_explained": [sum(L[j][k] ** 2 for j in range(p)) for k in range(m)],
+        "objective": fit["objective"],
+        "log_likelihood": loglik,
+        "statistic": stat,
+        "dof": dof,
+        "p_value": pchisq(stat, dof, lower_tail=False) if dof > 0 else float("nan"),
+        "aic": stat - 2 * dof,
+        "bic": stat - dof * math.log(n),
+        "n_factors": m,
     }
 
 
-def cheatsheet() -> str:
-    return "mlfac: mlfac(X, n_factors, max_iter, tol, scale) -> Maximum Likelihood Factor Analysis."
+def cheatsheet():
+    return "mlfac: maximum likelihood factor analysis (factanal objective), loadings, uniquenesses, chi2, AIC, BIC."

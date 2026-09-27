@@ -19188,51 +19188,7 @@ _r(
     quote="We must know. We will know. -- David Hilbert",
 )
 _r("dssim", "dssim", "SpatialPat", "Direct sampling simulation", quote="Knowledge is power. -- Francis Bacon")
-_r("dtaic", "dtaic", "Spatial", "AIC dimensionality test.", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "dtbic",
-    "dtbic",
-    "Spatial",
-    "BIC dimensionality test.",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
 _r("dtbng", "dtbng", "DistTheor", "Bingham distribution", quote="Statistics is the grammar of science. -- Karl Pearson")
-_r(
-    "dtbvc",
-    "dtbvc",
-    "DistTheor",
-    "Bivariate copula density",
-    quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r("dtbvn", "dtbvn", "DistTheor", "Bivariate normal density", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "dtbvp",
-    "dtbvp",
-    "DistTheor",
-    "Bivariate Poisson",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "dtcfa",
-    "dtcfa",
-    "Spatial",
-    "CFA dimensionality test.",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "dtcmp",
-    "dtcmp",
-    "Spatial",
-    "Comparative fit dimensionality.",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "dtcnf",
-    "dtcnf",
-    "Spatial",
-    "Confirmatory dimensionality test.",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
 _r(
     "dtcpb",
     "dtcpb",
@@ -19241,146 +19197,11 @@ _r(
     quote="Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    "dtcpg",
-    "dtcpg",
-    "DistTheor",
-    "Gaussian copula",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "dtcpt",
-    "dtcpt",
-    "DistTheor",
-    "Student-t copula",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "dtcvg",
-    "dtcvg",
-    "Spatial",
-    "Convergent validity dimensionality.",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "dtdcr",
-    "dtdcr",
-    "Spatial",
-    "Discriminant test dimensionality.",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "dteig",
-    "dteig",
-    "Spatial",
-    "Eigenvalue dimensionality test.",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
     "dtghs",
     "dtghs",
     "DistTheor",
     "Generalized hyperbolic secant",
     quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "dtiws",
-    "dtiws",
-    "DistTheor",
-    "Inverse Wishart distribution",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "dtknt",
-    "dtknt",
-    "DistTheor",
-    "Kent distribution (spherical)",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "dtlkj",
-    "dtlkj",
-    "DistTheor",
-    "LKJ correlation distribution",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "dtmap",
-    "dtmap",
-    "Spatial",
-    "MAP test dimensionality.",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "dtmnm",
-    "dtmnm",
-    "DistTheor",
-    "Multinomial distribution",
-    quote="What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "dtmvn",
-    "dtmvn",
-    "DistTheor",
-    "Multivariate normal density",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r("dtmvs", "dtmvs", "DistTheor", "Multivariate skew-normal", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "dtmvt",
-    "dtmvt",
-    "DistTheor",
-    "Multivariate t density",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "dtpar",
-    "dtpar",
-    "Spatial",
-    "Parallel analysis dimensionality.",
-    quote="There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "dtrkn",
-    "dtrkn",
-    "Spatial",
-    "Rank-based dimensionality.",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r("dtrot", "dtrot", "Spatial", "Rotation test dimensionality.", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "dtscr",
-    "dtscr",
-    "Spatial",
-    "Scree test dimensionality.",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "dtvar",
-    "dtvar",
-    "Spatial",
-    "Variance explained test.",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "dtvmf",
-    "dtvmf",
-    "DistTheor",
-    "Von Mises-Fisher distribution",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "dtwsh",
-    "dtwsh",
-    "DistTheor",
-    "Wishart distribution",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "dtxpl",
-    "dtxpl",
-    "Spatial",
-    "Exploratory dimensionality test.",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r("eckrt4", "eckrt4", "GeoProcss", "Eckert IV projection", quote="Number rules the universe. -- Pythagoras")
 _r(
@@ -86398,6 +86219,83 @@ _r(
     "categoricaldist",
     "Auto",
     "Auto-wired callable from fn/categoricaldist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "mvnormdens",
+    "mvnormdens",
+    "Auto",
+    "Auto-wired callable from fn/mvnormdens.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "mvtdens",
+    "mvtdens",
+    "Auto",
+    "Auto-wired callable from fn/mvtdens.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "bvnormdist",
+    "bvnormdist",
+    "Auto",
+    "Auto-wired callable from fn/bvnormdist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "mvskewnorm",
+    "mvskewnorm",
+    "Auto",
+    "Auto-wired callable from fn/mvskewnorm.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "bvpois",
+    "bvpois",
+    "Auto",
+    "Auto-wired callable from fn/bvpois.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "wishartdens",
+    "wishartdens",
+    "Auto",
+    "Auto-wired callable from fn/wishartdens.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "lkjcorr",
+    "lkjcorr",
+    "Auto",
+    "Auto-wired callable from fn/lkjcorr.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "vmfdens",
+    "vmfdens",
+    "Auto",
+    "Auto-wired callable from fn/vmfdens.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "kentdens",
+    "kentdens",
+    "Auto",
+    "Auto-wired callable from fn/kentdens.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "copuladens",
+    "copuladens",
+    "Auto",
+    "Auto-wired callable from fn/copuladens.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "multinomialdist",
+    "multinomialdist",
+    "Auto",
+    "Auto-wired callable from fn/multinomialdist.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
