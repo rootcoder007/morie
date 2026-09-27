@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,270 single-purpose callables** -- every one
+``morie.fn`` ships **17,257 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -10898,41 +10898,29 @@ Full list
    "opazt", "opazt"
    "opbat", "opbat"
    "opbfg", "opbfg"
-   "opcgd", "opcgd"
    "opcko", "opcko"
    "opcnt", "opcnt"
    "opcom", "opcom"
    "opcov", "opcov"
-   "opdbr", "opdbr"
-   "opde", "opde"
    "open_clip", "opnclp"
    "openclip", "opnclp"
    "openf", "openf"
    "openfold_msa_pair", "alfomg"
    "opffa", "opffa"
    "opfln", "opfln"
-   "opga", "opga"
-   "opgir", "opgir"
    "opgrr", "opgrr"
    "opgwo", "opgwo"
-   "ophdb", "ophdb"
    "ophho", "ophho"
    "opjay", "opjay"
    "oplbf", "oplbf"
-   "opldn", "opldn"
-   "oplvn", "oplvn"
    "opmax", "opmax"
    "opmed", "opmed"
    "opmfo", "opmfo"
    "opmxc", "opmxc"
-   "opmxm", "opmxm"
    "opnms", "opnms"
-   "opnwt", "opnwt"
    "oppar", "oppar"
-   "oppso", "oppso"
    "oprdn", "oprdn"
    "opred", "opred"
-   "opsa", "opsa"
    "opsca", "opsca"
    "opsfl", "opsfl"
    "opskr", "opskr"
@@ -10951,7 +10939,6 @@ Full list
    "optimaldesign", "optds"
    "optimalhuberk", "opthr"
    "optlb", "optlb"
-   "optrs", "optrs"
    "optsp", "optsp"
    "opvhc", "opvhc"
    "opwoa", "opwoa"

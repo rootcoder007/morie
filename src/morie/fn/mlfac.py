@@ -23,7 +23,7 @@ def mlfac(X, n_factors=None, max_iter=500, tol=1e-12, scale=True):
 
     Minimises F(Psi) = sum_{j>m} (theta_j - log theta_j) - (p - m), theta the
     eigenvalues of Psi^{-1/2} S Psi^{-1/2}, over uniquenesses in [0.005, 1] by
-    bounded Newton steps (the criterion minimised by ``factanal``); the loadings
+    projected BFGS with the analytic gradient (the criterion minimised by ``factanal``); the loadings
     are Psi^{1/2} U diag(sqrt(theta - 1)) (unrotated). The likelihood-ratio
     statistic is Bartlett's (n - 1 - (2p + 5)/6 - 2m/3) F on
     ((p - m)^2 - p - m)/2 degrees of freedom; AIC = chi2 - 2 df and
@@ -35,7 +35,7 @@ def mlfac(X, n_factors=None, max_iter=500, tol=1e-12, scale=True):
     n_factors : int, optional
         Number of factors (default: Kaiser count of correlation eigenvalues > 1).
     max_iter : int
-        Newton iterations.
+        BFGS iterations.
     tol : float
         Gradient tolerance.
     scale : bool

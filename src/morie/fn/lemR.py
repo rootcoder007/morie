@@ -12,11 +12,9 @@ def lemR(A, resolution=1.0, quality="modularity", max_iter=20):
     guarantees connected communities.
 
     This is an alias: the optimisation lives in
-    :func:`morie.fn.scleid.leiden_clustering` (deterministic index-order
-    variant; every community is split into its connected components
-    before aggregation, which is the guarantee the Leiden refinement
-    exists to provide). Implementing a second copy here would only let
-    the two drift apart.
+    :func:`morie.fn.scleid.leiden_clustering` (Traag et al. 2019,
+    Algorithm A.2: fast local moving, refinement, aggregation).
+    Implementing a second copy here would only let the two drift apart.
 
     Sources
     -------
@@ -51,6 +49,7 @@ leiden_grph = lemR
 
 def cheatsheet():
     return "lemR: Leiden refined community detection (alias of scleid)"
+
 
 # public names resolved by fn/_lazy_map.json
 leidengrph = lemR

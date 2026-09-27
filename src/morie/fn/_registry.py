@@ -23987,13 +23987,6 @@ _r(
     quote="No man ever steps in the same river twice. -- Heraclitus",
 )
 _r("opbfg", "opbfg", "OptimSp", "BFGS spatial optimization", quote="We must know. We will know. -- David Hilbert")
-_r(
-    "opcgd",
-    "opcgd",
-    "OptimSp",
-    "Conjugate gradient spatial",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
 _r("opcko", "opcko", "OptimSp", "Cuckoo search spatial", quote="Statistics is the grammar of science. -- Karl Pearson")
 _r("opcnt", "opcnt", "OptimSp", "Spatial p-center problem", quote="Knowledge is power. -- Francis Bacon")
 _r(
@@ -24009,20 +24002,6 @@ _r(
     "OptimSp",
     "Spatial set covering",
     quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "opdbr",
-    "opdbr",
-    "OptimSp",
-    "DBSCAN spatial regionalization",
-    quote="What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "opde",
-    "opde",
-    "OptimSp",
-    "Differential evolution spatial",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "openf",
@@ -24046,20 +24025,6 @@ _r(
     quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "opga",
-    "opga",
-    "OptimSp",
-    "Genetic algorithm spatial",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "opgir",
-    "opgir",
-    "OptimSp",
-    "Girvan-Newman spatial community",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
     "opgrr",
     "opgrr",
     "OptimSp",
@@ -24072,13 +24037,6 @@ _r(
     "OptimSp",
     "Grey wolf optimizer spatial",
     quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "ophdb",
-    "ophdb",
-    "OptimSp",
-    "HDBSCAN spatial regionalization",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r("ophho", "ophho", "OptimSp", "Harris hawks optimizer spatial", quote="I think, therefore I am. -- Rene Descartes")
 _r(
@@ -24094,20 +24052,6 @@ _r(
     "OptimSp",
     "L-BFGS-B spatial optimization",
     quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "opldn",
-    "opldn",
-    "OptimSp",
-    "Leiden spatial clustering",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "oplvn",
-    "oplvn",
-    "OptimSp",
-    "Louvain spatial clustering",
-    quote="Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
     "opmax",
@@ -24138,34 +24082,13 @@ _r(
     quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "opmxm",
-    "opmxm",
-    "OptimSp",
-    "Maximum modularity spatial",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
     "opnms",
     "opnms",
     "OptimSp",
     "Nelder-Mead spatial optimization",
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
-_r(
-    "opnwt",
-    "opnwt",
-    "OptimSp",
-    "Newton-Raphson spatial",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
 _r("oppar", "oppar", "OptimSp", "Spatial partitioning", quote="I think, therefore I am. -- Rene Descartes")
-_r(
-    "oppso",
-    "oppso",
-    "OptimSp",
-    "Particle swarm spatial",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
 _r(
     "oprdn",
     "oprdn",
@@ -24174,13 +24097,6 @@ _r(
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r("opred", "opred", "OptimSp", "Spatial redistricting", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "opsa",
-    "opsa",
-    "OptimSp",
-    "Simulated annealing spatial",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
 _r("opsca", "opsca", "OptimSp", "Sine cosine algorithm spatial", quote="Number rules the universe. -- Pythagoras")
 _r(
     "opsfl",
@@ -24211,7 +24127,6 @@ _r(
     "Teaching-learning spatial",
     quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
-_r("optrs", "optrs", "OptimSp", "Trust region spatial", quote="There is no royal road to geometry. -- Euclid")
 _r(
     "optsp",
     "optsp",

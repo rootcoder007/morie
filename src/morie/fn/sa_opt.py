@@ -42,6 +42,7 @@ import math
 
 from . import _array_core as np
 from ._richresult import RichResult
+from ._rng import random_normal, random_uniform
 
 __all__ = ["simulated_annealing", "sa_opt"]
 
@@ -50,16 +51,16 @@ _SCHEDULES = ("geometric", "linear", "logarithmic")
 
 def _temperature(schedule, T0, k, n_iter, alpha):
     if schedule == "geometric":
-        return T0 * (alpha ** k)
+        return T0 * (alpha**k)
     if schedule == "linear":
         frac = 1.0 - (k / float(n_iter))
         return T0 * frac if frac > 0.0 else 0.0
     return T0 / math.log(k + math.e)
 
 
-def simulated_annealing(fun, x0, step=1.0, T0=1.0, n_iter=1000,
-                        schedule="geometric", alpha=0.99, lower=None,
-                        upper=None, seed=0):
+def simulated_annealing(
+    fun, x0, step=1.0, T0=1.0, n_iter=1000, schedule="geometric", alpha=0.99, lower=None, upper=None, seed=0
+):
     r"""Minimise ``fun`` over a continuous box by simulated annealing.
 
     Parameters
@@ -83,7 +84,9 @@ def simulated_annealing(fun, x0, step=1.0, T0=1.0, n_iter=1000,
     lower, upper : array-like, optional
         Box constraints; proposals outside are clipped.
     seed : int
-        RNG seed.
+        Philox seed: proposal k uses normals (k - 1) n .. k n - 1 of stream 0
+        and the Metropolis test uses uniform k - 1 of stream 1, identically in
+        both language arms.
 
     Returns
     -------
@@ -98,26 +101,21 @@ def simulated_annealing(fun, x0, step=1.0, T0=1.0, n_iter=1000,
         raise ValueError("simulated_annealing: x0 must be non-empty")
     sched = str(schedule).lower()
     if sched not in _SCHEDULES:
-        raise ValueError(
-            "simulated_annealing: schedule must be one of %s, got %r"
-            % (", ".join(_SCHEDULES), schedule))
+        raise ValueError(f"simulated_annealing: schedule must be one of {', '.join(_SCHEDULES)}, got {schedule!r}")
     T0 = float(T0)
     if T0 <= 0.0:
-        raise ValueError(
-            "simulated_annealing: T0 must be positive, got %r" % (T0,))
+        raise ValueError(f"simulated_annealing: T0 must be positive, got {T0!r}")
     n_iter = int(n_iter)
     if n_iter < 1:
         raise ValueError("simulated_annealing: n_iter must be at least 1")
     alpha = float(alpha)
     if not (0.0 < alpha <= 1.0):
-        raise ValueError(
-            "simulated_annealing: alpha must lie in (0, 1], got %r" % (alpha,))
-    lo = None if lower is None else [float(v) for v in
-                                     np.atleast_1d(np.asarray(lower, dtype=float))]
-    hi = None if upper is None else [float(v) for v in
-                                     np.atleast_1d(np.asarray(upper, dtype=float))]
+        raise ValueError(f"simulated_annealing: alpha must lie in (0, 1], got {alpha!r}")
+    lo = None if lower is None else [float(v) for v in np.atleast_1d(np.asarray(lower, dtype=float))]
+    hi = None if upper is None else [float(v) for v in np.atleast_1d(np.asarray(upper, dtype=float))]
 
-    rng = np.random.default_rng(seed)
+    Z = [float(v) for v in random_normal(n_iter * n, seed=seed, stream=0)]
+    U = [float(v) for v in random_uniform(n_iter, seed=seed, stream=1)]
     f = float(fun(x))
     best_x, best_f = list(x), f
     n_acc = 0
@@ -128,8 +126,7 @@ def simulated_annealing(fun, x0, step=1.0, T0=1.0, n_iter=1000,
     for k in range(1, n_iter + 1):
         T = _temperature(sched, T0, k, n_iter, alpha)
         temps.append(T)
-        prop = [x[j] + float(step) * float(rng.standard_normal())
-                for j in range(n)]
+        prop = [x[j] + float(step) * Z[(k - 1) * n + j] for j in range(n)]
         if lo is not None:
             prop = [max(prop[j], lo[j]) for j in range(n)]
         if hi is not None:
@@ -142,10 +139,8 @@ def simulated_annealing(fun, x0, step=1.0, T0=1.0, n_iter=1000,
         elif T <= 0.0:
             accept = False
         else:
-            # Metropolis: exp(-dE/T). Drawn even when it will not be
-            # used would desynchronise the two arms, so the draw happens
-            # only on this branch in both.
-            accept = float(rng.uniform()) < math.exp(-dE / T)
+            # Metropolis: exp(-dE/T), uniform k - 1 of stream 1.
+            accept = U[k - 1] < math.exp(-dE / T)
             if accept:
                 n_up += 1
 
@@ -156,29 +151,32 @@ def simulated_annealing(fun, x0, step=1.0, T0=1.0, n_iter=1000,
                 best_x, best_f = list(x), f
         trace.append(f)
 
-    return RichResult(payload={
-        "estimate": best_x,
-        "x": best_x,
-        "fun": float(best_f),
-        "final_x": x,
-        "final_fun": float(f),
-        "n_accepted": int(n_acc),
-        "n_uphill_accepted": int(n_up),
-        "acceptance_rate": n_acc / float(n_iter),
-        "temperatures": temps,
-        "trace": trace,
-        "schedule": sched,
-        "T0": T0,
-        "n_iter": int(n_iter),
-        "method": "Simulated annealing, Metropolis acceptance "
-                  "(Kirkpatrick, Gelatt & Vecchi 1983)",
-    })
+    return RichResult(
+        payload={
+            "estimate": best_x,
+            "x": best_x,
+            "fun": float(best_f),
+            "final_x": x,
+            "final_fun": float(f),
+            "n_accepted": int(n_acc),
+            "n_uphill_accepted": int(n_up),
+            "acceptance_rate": n_acc / float(n_iter),
+            "temperatures": temps,
+            "trace": trace,
+            "schedule": sched,
+            "T0": T0,
+            "n_iter": int(n_iter),
+            "method": "Simulated annealing, Metropolis acceptance (Kirkpatrick, Gelatt & Vecchi 1983)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sa_opt: Metropolis accept exp(-dE/T) for dE>0, always for "
-            "dE<=0; schedules geometric T0 a^k, linear, logarithmic "
-            "T0/ln(k+e); returns the BEST point visited, not the last.")
+    return (
+        "sa_opt: Metropolis accept exp(-dE/T) for dE>0, always for "
+        "dE<=0; schedules geometric T0 a^k, linear, logarithmic "
+        "T0/ln(k+e); returns the BEST point visited, not the last."
+    )
 
 
 sa_opt = simulated_annealing

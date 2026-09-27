@@ -2,8 +2,6 @@
 
 import math
 
-import numpy as np
-
 from morie.fn.deopti import differential_evolution
 
 
@@ -14,16 +12,13 @@ def _f_simple(x):
 
 def test_deopti_basic():
     """Test basic functionality on a simple quadratic."""
-    rng = np.random.default_rng(42)
-    population = rng.normal(0.0, 1.0, (5, 3)).tolist()
+    population = [[0.3, -1.2, 0.8], [1.1, 0.4, -0.6], [-0.9, 0.7, 1.5], [0.2, -0.3, -1.1], [-1.4, 1.0, 0.1]]
 
     F = 0.8
     CR = 0.9
     generations = 20
 
-    result = differential_evolution(
-        _f_simple, population, F=F, CR=CR, generations=generations
-    )
+    result = differential_evolution(_f_simple, population, F=F, CR=CR, generations=generations)
 
     # Function returns a RichResult-like object; check its payload keys.
     payload = result.payload
@@ -51,8 +46,7 @@ def test_deopti_basic():
         assert math.isclose(fv, sum(v * v for v in row), rel_tol=1e-9, abs_tol=1e-9)
 
     # The minimum of fvals equals the reported estimate.
-    assert math.isclose(min(payload["fvals"]), payload["estimate"],
-                        rel_tol=1e-9, abs_tol=1e-9)
+    assert math.isclose(min(payload["fvals"]), payload["estimate"], rel_tol=1e-9, abs_tol=1e-9)
 
     # Number of evaluations: npop initial + npop*generations subsequent = 5 + 5*20.
     assert payload["evals"] == 5 + 5 * generations
@@ -60,12 +54,9 @@ def test_deopti_basic():
 
 def test_deopti_edge():
     """Test edge cases: tiny population and population of one point."""
-    rng = np.random.default_rng(7)
-    population = rng.normal(0.0, 1.0, (4, 2)).tolist()
+    population = [[0.5, -1.1], [-0.8, 0.3], [1.2, 0.9], [-0.4, -1.6]]
 
-    result = differential_evolution(
-        _f_simple, population, F=0.5, CR=0.5, generations=3
-    )
+    result = differential_evolution(_f_simple, population, F=0.5, CR=0.5, generations=3)
     payload = result.payload
 
     assert "estimate" in payload
@@ -80,8 +71,6 @@ def test_deopti_edge():
     assert len(payload["x"]) == 2
 
     expected_f_best = sum(v * v for v in payload["x"])
-    assert math.isclose(payload["estimate"], expected_f_best,
-                        rel_tol=1e-9, abs_tol=1e-9)
-    assert math.isclose(min(payload["fvals"]), payload["estimate"],
-                        rel_tol=1e-9, abs_tol=1e-9)
+    assert math.isclose(payload["estimate"], expected_f_best, rel_tol=1e-9, abs_tol=1e-9)
+    assert math.isclose(min(payload["fvals"]), payload["estimate"], rel_tol=1e-9, abs_tol=1e-9)
     assert payload["evals"] == 4 + 4 * 3
