@@ -63874,60 +63874,11 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "hedderich9u1060",
-    "hedderich_chapter_9_unnumbered_1060",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1060.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
     "hedderich9u1136",
     "hedderich_chapter_9_unnumbered_1136",
     "Auto",
     "Auto-wired callable from fn/hedderich9u1136.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "hedderich9u1141",
-    "hedderich_chapter_9_unnumbered_1141",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1141.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "hedderich9u1142",
-    "hedderich_chapter_9_unnumbered_1142",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1142.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "hedderich9u1226",
-    "hedderich_chapter_9_unnumbered_1226",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1226.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "hedderich9u1427",
-    "hedderich_chapter_9_unnumbered_1427",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1427.py",
-    "What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "hedderich9u1435",
-    "hedderich_chapter_9_unnumbered_1435",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1435.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "hedderich9u1560",
-    "hedderich_chapter_9_unnumbered_1560",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1560.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
     "hedderich9u1686",
@@ -63942,34 +63893,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/hedderich9u1687.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "hedderich9u2682",
-    "hedderich_chapter_9_unnumbered_2682",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2682.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "hedderich9u2966",
-    "hedderich_chapter_9_unnumbered_2966",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2966.py",
-    "Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "hedderich9u2971",
-    "hedderich_chapter_9_unnumbered_2971",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2971.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "hedderich9u2972",
-    "hedderich_chapter_9_unnumbered_2972",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2972.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "hedderich9u2977",
@@ -63993,13 +63916,6 @@ _r(
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
-    "hedderich9u3112",
-    "hedderich_chapter_9_unnumbered_3112",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3112.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
     "hedderich9u3162",
     "hedderich_chapter_9_unnumbered_3162",
     "Auto",
@@ -64019,13 +63935,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/hedderich9u340.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "hedderich9u3453",
-    "hedderich_chapter_9_unnumbered_3453",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3453.py",
-    "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
     "hedderich9u3474",
@@ -88894,6 +88803,76 @@ _r(
     "pearson_normality_test",
     "Auto",
     "Auto-wired callable from fn/pchnrm.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "corrci",
+    "correlation_ci",
+    "Auto",
+    "Auto-wired callable from fn/corrci.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "corcin",
+    "correlation_ci_sample_size",
+    "Auto",
+    "Auto-wired callable from fn/corcin.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "corrng",
+    "correlation_admissible_range",
+    "Auto",
+    "Auto-wired callable from fn/corrng.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "chin1",
+    "chi_square_n_minus_1",
+    "Auto",
+    "Auto-wired callable from fn/chin1.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "ctresid",
+    "contingency_residuals",
+    "Auto",
+    "Auto-wired callable from fn/ctresid.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "rrexct",
+    "rate_ratio_exact_ci",
+    "Auto",
+    "Auto-wired callable from fn/rrexct.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "gmconj",
+    "gamma_conjugate_posterior",
+    "Auto",
+    "Auto-wired callable from fn/gmconj.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "invbpr",
+    "inverse_binomial_prevalence",
+    "Auto",
+    "Auto-wired callable from fn/invbpr.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "bnappx",
+    "binomial_normal_approx",
+    "Auto",
+    "Auto-wired callable from fn/bnappx.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "bvncnd",
+    "bivariate_normal_conditional",
+    "Auto",
+    "Auto-wired callable from fn/bvncnd.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(

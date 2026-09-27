@@ -3,7 +3,6 @@
 
 import math
 
-from . import _array_core as np
 from . import _stats_core as stats
 from ._containers import ESRes
 
@@ -29,11 +28,14 @@ def rate_ratio(
     -------
     ESRes
     """
-    r1 = events1 / person_time1 if person_time1 > 0 else 0.0
-    r2 = events2 / person_time2 if person_time2 > 0 else 0.0
-    irr = r1 / r2 if r2 > 0 else np.inf
-    log_irr = math.log(irr) if irr > 0 and np.isfinite(irr) else 0.0
-    se = math.sqrt(1 / max(events1, 1) + 1 / max(events2, 1))
+    if person_time1 <= 0 or person_time2 <= 0:
+        raise ValueError("person-time must be positive")
+    # 1/2 added to both event counts when either is zero (metafor::escalc "IRR"), as the R arm
+    cc = 0.5 if min(events1, events2) == 0 else 0.0
+    e1, e2 = events1 + cc, events2 + cc
+    irr = (e1 / person_time1) / (e2 / person_time2)
+    log_irr = math.log(irr)
+    se = math.sqrt(1 / e1 + 1 / e2)
     z = stats.norm.ppf((1 + confidence) / 2)
     return ESRes(
         measure="Rate ratio",
