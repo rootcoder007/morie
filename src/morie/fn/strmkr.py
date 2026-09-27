@@ -69,8 +69,7 @@ __all__ = ["strauss_process"]
 _EPS = 1e-12
 
 
-def strauss_process(coords, r, gamma=None, window=None, nx=12, ny=12,
-                    max_iter=100, tol=1e-11):
+def strauss_process(coords, r, gamma=None, window=None, nx=12, ny=12, max_iter=100, tol=1e-11):
     r"""Fit or evaluate a Strauss process on a planar point pattern.
 
     Parameters
@@ -102,7 +101,11 @@ def strauss_process(coords, r, gamma=None, window=None, nx=12, ny=12,
         pseudolikelihood.
 
     The estimates equal spatstat's ``ppm(Q ~ 1, Strauss(r),
-    correction = "none")`` on the same quadrature scheme, and the
+    correction = "none")`` on the same quadrature scheme -- ``Q =
+    quadscheme(X, D, method = "grid", ntile = c(nx, ny))`` with ``D`` the
+    ``nx`` by ``ny`` grid of tile centres; spatstat's default dummy pattern
+    also places points on the boundary, so its default fit differs
+    slightly -- and the
     standard errors its ``vcov(fit, hessian = TRUE)``: the inverse
     Hessian of the log pseudolikelihood.  That treats the fit as if it
     were Poisson and UNDERSTATES the uncertainty of a Gibbs model;
@@ -112,8 +115,7 @@ def strauss_process(coords, r, gamma=None, window=None, nx=12, ny=12,
     P = [[float(v) for v in row] for row in k.mat(coords)]
     n = len(P)
     if n == 0:
-        raise ValueError("strmkr: an empty pattern carries no information "
-                         "about interaction")
+        raise ValueError("strmkr: an empty pattern carries no information about interaction")
     if any(len(p) != 2 for p in P):
         raise ValueError("strmkr: coords must be two-dimensional")
     rr = float(r)
@@ -138,8 +140,7 @@ def strauss_process(coords, r, gamma=None, window=None, nx=12, ny=12,
     else:
         win = [float(v) for v in k.vec(window)]
         if len(win) != 4:
-            raise ValueError("strmkr: window must be "
-                             "(xmin, xmax, ymin, ymax)")
+            raise ValueError("strmkr: window must be (xmin, xmax, ymin, ymax)")
         if win[1] <= win[0] or win[3] <= win[2]:
             raise ValueError("strmkr: the window has non-positive area")
         window_source = "supplied"
@@ -158,8 +159,7 @@ def strauss_process(coords, r, gamma=None, window=None, nx=12, ny=12,
     dummy = []
     for a in range(nx):
         for b in range(ny):
-            dummy.append([win[0] + (a + 0.5) * (win[1] - win[0]) / nx,
-                          win[2] + (b + 0.5) * (win[3] - win[2]) / ny])
+            dummy.append([win[0] + (a + 0.5) * (win[1] - win[0]) / nx, win[2] + (b + 0.5) * (win[3] - win[2]) / ny])
     quad = [list(p) for p in P] + dummy
     isdata = [1.0] * n + [0.0] * len(dummy)
 
@@ -211,12 +211,13 @@ def strauss_process(coords, r, gamma=None, window=None, nx=12, ny=12,
                     A[a][b] += ww * X[i][a] * X[i][b]
         det = A[0][0] * A[1][1] - A[0][1] * A[1][0]
         if abs(det) < 1e-300:
-            raise ValueError("strmkr: the pseudolikelihood information "
-                             "matrix is singular -- no quadrature point has "
-                             "a close neighbour, so gamma is not identified "
-                             "at this radius")
-        new = [(A[1][1] * rhs[0] - A[0][1] * rhs[1]) / det,
-               (A[0][0] * rhs[1] - A[1][0] * rhs[0]) / det]
+            raise ValueError(
+                "strmkr: the pseudolikelihood information "
+                "matrix is singular -- no quadrature point has "
+                "a close neighbour, so gamma is not identified "
+                "at this radius"
+            )
+        new = [(A[1][1] * rhs[0] - A[0][1] * rhs[1]) / det, (A[0][0] * rhs[1] - A[1][0] * rhs[0]) / det]
         shift = max(abs(new[0] - beta[0]), abs(new[1] - beta[1]))
         beta = new
         if shift < tol:
@@ -234,47 +235,63 @@ def strauss_process(coords, r, gamma=None, window=None, nx=12, ny=12,
     beta_hat = math.exp(beta[0])
     gamma_hat = math.exp(beta[1])
     # Poisson null: the same fit with the interaction term dropped
-    logpl_pois = (n * math.log(max(n / area, 1e-300)) - n)
+    logpl_pois = n * math.log(max(n / area, 1e-300)) - n
     out = {
         "estimate": [beta_hat, gamma_hat],
-        "beta": beta_hat, "gamma": gamma_hat,
-        "log_beta": beta[0], "log_gamma": beta[1],
-        "se_log_beta": se[0], "se_log_gamma": se[1],
+        "beta": beta_hat,
+        "gamma": gamma_hat,
+        "log_beta": beta[0],
+        "log_gamma": beta[1],
+        "se_log_beta": se[0],
+        "se_log_gamma": se[1],
         "gamma_ci_lower": math.exp(beta[1] - 1.959963984540054 * se[1]),
         "gamma_ci_upper": math.exp(beta[1] + 1.959963984540054 * se[1]),
-        "n_points": n, "n_close_pairs": npairs, "radius": rr,
-        "area": area, "window": win, "window_source": window_source,
-        "n_quadrature": m, "n_dummy": len(dummy),
+        "n_points": n,
+        "n_close_pairs": npairs,
+        "radius": rr,
+        "area": area,
+        "window": win,
+        "window_source": window_source,
+        "n_quadrature": m,
+        "n_dummy": len(dummy),
         "log_pseudolikelihood": logpl,
         "log_pseudolikelihood_poisson": logpl_pois,
-        "iterations": it, "converged": converged,
+        "iterations": it,
+        "converged": converged,
         "valid_density": bool(gamma_hat <= 1.0),
-        "interaction": ("inhibition" if gamma_hat < 1.0 - 1e-8 else
-                        ("none (Poisson)" if abs(gamma_hat - 1.0) <= 1e-8
-                         else "attraction -- NOT a valid Strauss density")),
+        "interaction": (
+            "inhibition"
+            if gamma_hat < 1.0 - 1e-8
+            else ("none (Poisson)" if abs(gamma_hat - 1.0) <= 1e-8 else "attraction -- NOT a valid Strauss density")
+        ),
     }
     if gamma is not None:
         g = float(gamma)
         if g <= 0.0:
             raise ValueError("strmkr: gamma must be positive")
         out["gamma_given"] = g
-        out["log_density_unnormalised"] = (n * math.log(beta_hat)
-                                           + npairs * math.log(g))
+        out["log_density_unnormalised"] = n * math.log(beta_hat) + npairs * math.log(g)
         out["valid_density_given"] = bool(g <= 1.0)
-    out["method"] = ("Strauss process fitted by maximum pseudolikelihood "
-                     "through the Baddeley-Turner quadrature device "
-                     "(Strauss 1975; Besag 1977; Baddeley & Turner 2000)")
-    out["note"] = ("gamma < 1 is inhibition, gamma = 1 is Poisson, and "
-                   "gamma > 1 is not an integrable density at all (Kelly & "
-                   "Ripley 1976) -- valid_density says which case the fit "
-                   "landed in instead of clamping it")
+    out["method"] = (
+        "Strauss process fitted by maximum pseudolikelihood "
+        "through the Baddeley-Turner quadrature device "
+        "(Strauss 1975; Besag 1977; Baddeley & Turner 2000)"
+    )
+    out["note"] = (
+        "gamma < 1 is inhibition, gamma = 1 is Poisson, and "
+        "gamma > 1 is not an integrable density at all (Kelly & "
+        "Ripley 1976) -- valid_density says which case the fit "
+        "landed in instead of clamping it"
+    )
     return RichResult(payload=out)
 
 
 def cheatsheet():
-    return ("strmkr: strauss_process(coords, r, gamma) -> pseudolikelihood "
-            "beta and gamma for the Strauss inhibition model (Strauss 1975; "
-            "Baddeley & Turner 2000)")
+    return (
+        "strmkr: strauss_process(coords, r, gamma) -> pseudolikelihood "
+        "beta and gamma for the Strauss inhibition model (Strauss 1975; "
+        "Baddeley & Turner 2000)"
+    )
 
 
 # compact alias per ledger/NAMING.md

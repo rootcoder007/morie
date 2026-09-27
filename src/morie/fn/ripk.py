@@ -78,6 +78,18 @@ def ripley_k_function(points, window, r):
         Khat_b(h) = sum_{i: d_i > h} #{j != i: h_ij <= h}
                     / (lambdahat * #{i: d_i > h})
 
+    Translation correction (Ohser and Stoyan 1981), weighting each pair by
+    ``|W| / |W n (W + s_j - s_i)|`` = ``|W| / ((w - |dx|)(h - |dy|))`` in a
+    ``w`` by ``h`` rectangle::
+
+        Khat_t(h) = area / n^2 sum_i sum_{j != i} e_ij I(h_ij <= h)
+
+    The isotropic and translation estimators use ``lambdahat^2 = n^2 /
+    area^2`` (Ripley 1976); ``spatstat.explore::Kest`` uses ``n (n - 1) /
+    area^2``, so its values are these times ``n / (n - 1)``. The border
+    estimator divides by ``lambdahat`` once and equals ``Kest``'s
+    ``border``.
+
     Under complete spatial randomness ``K(h) = pi h^2``; the Besag
     transform ``L(h) = sqrt(K(h)/pi)`` is returned alongside so the CSR
     reference is the straight line ``L(h) = h``.
@@ -94,7 +106,7 @@ def ripley_k_function(points, window, r):
     Returns
     -------
     RichResult
-        Payload keys: ``r``, ``k``, ``k_border``, ``l``, ``csr``,
+        Payload keys: ``r``, ``k``, ``k_border``, ``k_trans``, ``l``, ``csr``,
         ``lambda_hat``, ``area``, ``n``, ``method``.
 
     References
@@ -122,11 +134,11 @@ def ripley_k_function(points, window, r):
     for i in range(n):
         if not (x0 <= px[i] <= x1 and y0 <= py[i] <= y1):
             raise ValueError("every point must lie inside `window`")
-    bdist = [min(px[i] - x0, x1 - px[i], py[i] - y0, y1 - py[i])
-             for i in range(n)]
+    bdist = [min(px[i] - x0, x1 - px[i], py[i] - y0, y1 - py[i]) for i in range(n)]
 
     d = [[0.0] * n for _ in range(n)]
     wt = [[1.0] * n for _ in range(n)]
+    tw = [[1.0] * n for _ in range(n)]
     for i in range(n):
         for j in range(n):
             if i == j:
@@ -134,16 +146,20 @@ def ripley_k_function(points, window, r):
             dij = _math.sqrt((px[i] - px[j]) ** 2 + (py[i] - py[j]) ** 2)
             d[i][j] = dij
             wt[i][j] = isotropic_weight(px[i], py[i], dij, x0, x1, y0, y1)
+            tw[i][j] = area / ((x1 - x0 - abs(px[i] - px[j])) * (y1 - y0 - abs(py[i] - py[j])))
 
-    kiso, kbor, lvals, csr = [], [], [], []
+    kiso, kbor, ktr, lvals, csr = [], [], [], [], []
     for h in rs:
         acc = 0.0
+        acc_t = 0.0
         for i in range(n):
             for j in range(n):
                 if i != j and d[i][j] <= h:
                     acc += 1.0 / wt[i][j]
+                    acc_t += tw[i][j]
         kh = area * acc / (n * n)
         kiso.append(kh)
+        ktr.append(area * acc_t / (n * n))
         lvals.append(_math.sqrt(kh / _math.pi) if kh > 0.0 else 0.0)
         csr.append(_math.pi * h * h)
         m = 0
@@ -161,12 +177,13 @@ def ripley_k_function(points, window, r):
             "r": rs,
             "k": kiso,
             "k_border": kbor,
+            "k_trans": ktr,
             "l": lvals,
             "csr": csr,
             "lambda_hat": lam,
             "area": area,
             "n": n,
-            "method": "Ripley's K function (isotropic + border correction)",
+            "method": "Ripley's K function (isotropic, border and translation corrections)",
         }
     )
 
