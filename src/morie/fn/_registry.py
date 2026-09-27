@@ -28496,13 +28496,6 @@ _r(
     "Asymmetric utility with salience weights.",
     quote="What is now proved was once only imagined. -- William Blake",
 )
-_r(
-    "svblp",
-    "svblp",
-    "Spatial",
-    "Bliss point estimation",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
 _r("svblt", "svblt", "Spatial", "Boltzmann (softmax) spatial voting", quote="Number rules the universe. -- Pythagoras")
 _r(
     "svbut",
@@ -28589,13 +28582,6 @@ _r(
     "Spatial",
     "Fuzzy utility with membership degrees.",
     quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "svfxl",
-    "svfxl",
-    "Spatial",
-    "Fixed-effect logit panel spatial.",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
     "svgau",
@@ -28686,13 +28672,6 @@ _r(
     quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "svkut",
-    "svkut",
-    "Spatial",
-    "Kernel-smoothed utility surface.",
-    quote="We must know. We will know. -- David Hilbert",
-)
-_r(
     "svlgp",
     "svlgp",
     "Spatial",
@@ -28780,13 +28759,6 @@ _r(
     quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "svord",
-    "svord",
-    "Spatial",
-    "Ordered logit spatial model.",
-    quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
     "svout",
     "svout",
     "Spatial",
@@ -28813,13 +28785,6 @@ _r(
     "Spatial",
     "Proximity with fatigue function.",
     quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "svpnl",
-    "svpnl",
-    "Spatial",
-    "Panel probit spatial vote.",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
     "svpro",
@@ -28849,13 +28814,6 @@ _r(
     "Proximity voting model probability",
     quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
-_r(
-    "svqrp",
-    "svqrp",
-    "Spatial",
-    "Quantile regression spatial prob.",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
 _r("svqta", "svqta", "Spatial", "Quota game equilibrium", quote="I think, therefore I am. -- Rene Descartes")
 _r(
     "svqud",
@@ -28863,13 +28821,6 @@ _r(
     "Spatial",
     "Quadratic spatial utility function",
     quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "svrel",
-    "svrel",
-    "Spatial",
-    "Random-effect logit spatial.",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r("svret", "svret", "Spatial", "Retrospective proximity model.", quote="There is no royal road to geometry. -- Euclid")
 _r(
@@ -85834,6 +85785,20 @@ _r(
     "ranked_probability_score",
     "Auto",
     "Auto-wired callable from fn/rpscore.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "panchc",
+    "panel_binary_choice",
+    "Auto",
+    "Auto-wired callable from fn/panchc.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "svbliss",
+    "bliss_points",
+    "Auto",
+    "Auto-wired callable from fn/svbliss.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(

@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,135 single-purpose callables** -- every one
+``morie.fn`` ships **17,129 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1277,8 +1277,7 @@ Full list
    "blip2qformer", "blip2v"
    "blip_qformer", "blipqf"
    "blipqformer", "blipqf"
-   "bliss_point", "svblp"
-   "blisspoint", "svblp"
+   "bliss_points", "svbliss"
    "blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_134", "blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit10u134"
    "blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_195", "blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit10u195"
    "blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_197", "blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit10u197"
@@ -11137,6 +11136,7 @@ Full list
    "pan_tompkins", "ecgdet"
    "pan_tompkins_qrs", "pntmp"
    "pandind", "pandind"
+   "panel_binary_choice", "panchc"
    "panel_regression", "panel"
    "pantompkins", "ecgdet"
    "pantompkinsqrs", "pntmp"
@@ -15285,11 +15285,9 @@ Full list
    "sveut", "sveut"
    "svexp2", "svexp2"
    "svfut", "svfut"
-   "svfxl", "svfxl"
    "svhut", "svhut"
    "svhyb", "svhyb"
    "sviut", "sviut"
-   "svkut", "svkut"
    "svlgp", "svlgp"
    "svlut", "svlut"
    "svm", "bsaclass"
@@ -15321,7 +15319,6 @@ Full list
    "svmxl2", "svmxl2"
    "svnst", "svnst"
    "svnut", "svnut"
-   "svord", "svord"
    "svord2", "svord2"
    "svout", "svout"
    "svp_approx", "svpap"
@@ -15329,12 +15326,9 @@ Full list
    "svpbp", "svpbp"
    "svpd2", "svpd2"
    "svpft", "svpft"
-   "svpnl", "svpnl"
    "svpro", "svpro"
    "svpwt", "svpwt"
-   "svqrp", "svqrp"
    "svr_epsilon_insensitive", "svmep"
-   "svrel", "svrel"
    "svret", "svret"
    "svtut", "svtut"
    "svwdm", "svwdm"
