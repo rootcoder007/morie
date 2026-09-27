@@ -45669,32 +45669,11 @@ _r(
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "bookadvanced_elementsofstatisticallearning3u602",
-    "bookadvanced_elementsofstatisticallearning_chapter_3_unnumbered_602",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning3u602.py",
-    "The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "bookadvanced_elementsofstatisticallearning3u603",
-    "bookadvanced_elementsofstatisticallearning_chapter_3_unnumbered_603",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning3u603.py",
-    "There is no royal road to geometry. -- Euclid",
-)
-_r(
     "bookadvanced_elementsofstatisticallearning5u826",
     "bookadvanced_elementsofstatisticallearning_chapter_5_unnumbered_826",
     "Auto",
     "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning5u826.py",
     "The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "bookadvanced_elementsofstatisticallearning6u862",
-    "bookadvanced_elementsofstatisticallearning_chapter_6_unnumbered_862",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning6u862.py",
-    "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
     "boolm",
@@ -88950,6 +88929,20 @@ _r(
     "esl_l1_margin",
     "Auto",
     "Auto-wired callable from fn/esll1m.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslmnr",
+    "esl_median_nn_radius",
+    "Auto",
+    "Auto-wired callable from fn/eslmnr.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "esltr2",
+    "esl_test_r2",
+    "Auto",
+    "Auto-wired callable from fn/esltr2.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(

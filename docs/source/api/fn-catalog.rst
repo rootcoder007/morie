@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,037 single-purpose callables** -- every one
+``morie.fn`` ships **18,023 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1482,10 +1482,7 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_14", "bookadvanced_elementsofstatisticallearning11e14"
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_15", "bookadvanced_elementsofstatisticallearning11e15"
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_16", "bookadvanced_elementsofstatisticallearning11e16"
-   "bookadvanced_elementsofstatisticallearning_chapter_11_equation_18", "bookadvanced_elementsofstatisticallearning11e18"
-   "bookadvanced_elementsofstatisticallearning_chapter_11_equation_20", "bookadvanced_elementsofstatisticallearning11e20"
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_5", "bookadvanced_elementsofstatisticallearning11e5"
-   "bookadvanced_elementsofstatisticallearning_chapter_11_equation_7", "bookadvanced_elementsofstatisticallearning11e7"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_10", "bookadvanced_elementsofstatisticallearning12e10"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_16", "bookadvanced_elementsofstatisticallearning12e16"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_19", "bookadvanced_elementsofstatisticallearning12e19"
@@ -1497,10 +1494,8 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_36", "bookadvanced_elementsofstatisticallearning12e36"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_59", "bookadvanced_elementsofstatisticallearning12e59"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_60", "bookadvanced_elementsofstatisticallearning12e60"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_64", "bookadvanced_elementsofstatisticallearning12e64"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_68", "bookadvanced_elementsofstatisticallearning12e68"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_70", "bookadvanced_elementsofstatisticallearning12e70"
-   "bookadvanced_elementsofstatisticallearning_chapter_13_equation_7", "bookadvanced_elementsofstatisticallearning13e7"
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_49", "bookadvanced_elementsofstatisticallearning14e49"
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_50", "bookadvanced_elementsofstatisticallearning14e50"
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_55", "bookadvanced_elementsofstatisticallearning14e55"
@@ -1513,15 +1508,10 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_81", "bookadvanced_elementsofstatisticallearning14e81"
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_91", "bookadvanced_elementsofstatisticallearning14e91"
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_92", "bookadvanced_elementsofstatisticallearning14e92"
-   "bookadvanced_elementsofstatisticallearning_chapter_15_equation_11", "bookadvanced_elementsofstatisticallearning15e11"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_38", "bookadvanced_elementsofstatisticallearning17e38"
-   "bookadvanced_elementsofstatisticallearning_chapter_18_equation_1", "bookadvanced_elementsofstatisticallearning18e1"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_10", "bookadvanced_elementsofstatisticallearning18e10"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_19", "bookadvanced_elementsofstatisticallearning18e19"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_32", "bookadvanced_elementsofstatisticallearning18e32"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_33", "bookadvanced_elementsofstatisticallearning18e33"
-   "bookadvanced_elementsofstatisticallearning_chapter_18_equation_36", "bookadvanced_elementsofstatisticallearning18e36"
-   "bookadvanced_elementsofstatisticallearning_chapter_18_equation_37", "bookadvanced_elementsofstatisticallearning18e37"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_51", "bookadvanced_elementsofstatisticallearning18e51"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_53", "bookadvanced_elementsofstatisticallearning18e53"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_1", "bookadvanced_elementsofstatisticallearning2e1"
@@ -1543,15 +1533,9 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_6", "bookadvanced_elementsofstatisticallearning2e6"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_9", "bookadvanced_elementsofstatisticallearning2e9"
    "bookadvanced_elementsofstatisticallearning_chapter_3_equation_75", "bookadvanced_elementsofstatisticallearning3e75"
-   "bookadvanced_elementsofstatisticallearning_chapter_3_unnumbered_602", "bookadvanced_elementsofstatisticallearning3u602"
-   "bookadvanced_elementsofstatisticallearning_chapter_3_unnumbered_603", "bookadvanced_elementsofstatisticallearning3u603"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_40", "bookadvanced_elementsofstatisticallearning4e40"
    "bookadvanced_elementsofstatisticallearning_chapter_5_unnumbered_826", "bookadvanced_elementsofstatisticallearning5u826"
-   "bookadvanced_elementsofstatisticallearning_chapter_6_unnumbered_862", "bookadvanced_elementsofstatisticallearning6u862"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_19", "bookadvanced_elementsofstatisticallearning9e19"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_20", "bookadvanced_elementsofstatisticallearning9e20"
-   "bookadvanced_elementsofstatisticallearning_chapter_9_equation_23", "bookadvanced_elementsofstatisticallearning9e23"
-   "bookadvanced_elementsofstatisticallearning_chapter_9_equation_24", "bookadvanced_elementsofstatisticallearning9e24"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_27", "bookadvanced_elementsofstatisticallearning9e27"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_28", "bookadvanced_elementsofstatisticallearning9e28"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_29", "bookadvanced_elementsofstatisticallearning9e29"
@@ -4692,6 +4676,7 @@ Full list
    "esl_markov_rf", "eslmrf"
    "esl_mdl", "eslmdl"
    "esl_mds", "eslmds"
+   "esl_median_nn_radius", "eslmnr"
    "esl_multi_output_ls", "eslmol"
    "esl_multinomial_logit", "eslmnl"
    "esl_mvn_em_missing", "eslmem"
@@ -4732,6 +4717,7 @@ Full list
    "esl_subsampling", "eslsmp"
    "esl_svc", "eslsvc"
    "esl_svm_kernel", "eslsvm"
+   "esl_test_r2", "esltr2"
    "esl_thin_plate_spline", "eslthl"
    "esl_total_sum_squares", "eslrss2"
    "esl_tree_predict", "esldct"
