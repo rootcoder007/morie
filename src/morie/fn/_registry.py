@@ -23986,7 +23986,6 @@ _r(
     "Bat algorithm spatial",
     quote="No man ever steps in the same river twice. -- Heraclitus",
 )
-_r("opbfg", "opbfg", "OptimSp", "BFGS spatial optimization", quote="We must know. We will know. -- David Hilbert")
 _r("opcko", "opcko", "OptimSp", "Cuckoo search spatial", quote="Statistics is the grammar of science. -- Karl Pearson")
 _r("opcnt", "opcnt", "OptimSp", "Spatial p-center problem", quote="Knowledge is power. -- Francis Bacon")
 _r(
@@ -24047,13 +24046,6 @@ _r(
     quote="The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "oplbf",
-    "oplbf",
-    "OptimSp",
-    "L-BFGS-B spatial optimization",
-    quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
     "opmax",
     "opmax",
     "OptimSp",
@@ -24080,13 +24072,6 @@ _r(
     "OptimSp",
     "Spatial max covering location",
     quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "opnms",
-    "opnms",
-    "OptimSp",
-    "Nelder-Mead spatial optimization",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r("oppar", "oppar", "OptimSp", "Spatial partitioning", quote="I think, therefore I am. -- Rene Descartes")
 _r(
@@ -86210,6 +86195,27 @@ _r(
     "binghamdens",
     "Auto",
     "Auto-wired callable from fn/binghamdens.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "bfgsmin",
+    "bfgs_minimize",
+    "Auto",
+    "Auto-wired callable from fn/bfgsmin.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "lbfgsb",
+    "lbfgsb_minimize",
+    "Auto",
+    "Auto-wired callable from fn/lbfgsb.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "neldmd",
+    "nelder_mead",
+    "Auto",
+    "Auto-wired callable from fn/neldmd.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
