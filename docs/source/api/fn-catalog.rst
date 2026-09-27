@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,796 single-purpose callables** -- every one
+``morie.fn`` ships **17,797 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -8527,6 +8527,7 @@ Full list
    "jnpnt", "jnpnt"
    "joe_copula", "copjoe"
    "joecopula", "copjoe"
+   "johanq", "johanq"
    "johansen_cointegration", "johanc"
    "johansen_max_eigen", "jhomev"
    "johansen_test", "johcg"
@@ -12494,6 +12495,7 @@ Full list
    "ptotal", "ptotal"
    "ptsetmassmean", "pt_set_mass_mean"
    "pttsp", "pttsp"
+   "ptukey", "ptukey"
    "punif", "punf"
    "pure_natural_indirect_effect", "pnie"
    "pvcbayes", "bsaclass"
@@ -12580,6 +12582,7 @@ Full list
    "qt", "qt"
    "qt_interval", "qtint"
    "qtinterval", "qtint"
+   "qtukey", "qtukey"
    "quad_utility", "svqud"
    "quadrat_aggregation", "sgqag"
    "quadrat_count_test", "sgqdr"
@@ -14260,6 +14263,7 @@ Full list
    "schabenberger_trend_surface", "sptrs"
    "schabenberger_wiener_khinchin", "spwkth"
    "schabenberger_wls_variogram", "spwls"
+   "scheffeci", "scheffeci"
    "schnet", "schN"
    "schoenfeld", "survmore"
    "schoenfeld_residual", "shres"
@@ -16655,6 +16659,7 @@ Full list
    "tukey_biweight", "tukey"
    "tukey_regression", "tukrr"
    "tukeybiweight", "tukey"
+   "tukeykramer", "tukeykramer"
    "tukyl", "tukyl"
    "turan_graph", "extrgt"
    "turan_number", "extrgt"
@@ -17556,10 +17561,6 @@ Full list
    "wigner_ville_fn", "wvd"
    "wignerville", "bsatf"
    "wignervillefn", "wvd"
-   "wilcox_chapter_10_equation_4", "wilcox10e4"
-   "wilcox_chapter_12_equation_4", "wilcox12e4"
-   "wilcox_chapter_12_equation_7", "wilcox12e7"
-   "wilcox_chapter_12_equation_9", "wilcox12e9"
    "wilcox_chapter_2_equation_12", "wilcox2e12"
    "wilcox_chapter_2_equation_13", "wilcox2e13"
    "wilcox_chapter_2_equation_14", "wilcox2e14"

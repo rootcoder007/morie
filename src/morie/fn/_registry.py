@@ -89044,6 +89044,41 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "ptukey",
+    "ptukey",
+    "Auto",
+    "Auto-wired callable from fn/ptukey.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "qtukey",
+    "qtukey",
+    "Auto",
+    "Auto-wired callable from fn/qtukey.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "tukeykramer",
+    "tukeykramer",
+    "Auto",
+    "Auto-wired callable from fn/tukeykramer.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "scheffeci",
+    "scheffeci",
+    "Auto",
+    "Auto-wired callable from fn/scheffeci.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "johanq",
+    "johanq",
+    "Auto",
+    "Auto-wired callable from fn/johanq.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
