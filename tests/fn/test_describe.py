@@ -47,12 +47,11 @@ def test_describe_skeleton_for_callable_without_md():
     dynamically from the REGISTRY -- hard-coding one broke when its doc
     was authored (xbar gained describe_xbar.md and the old version of
     this test started failing for the wrong reason)."""
+    import json
     from pathlib import Path
 
     import morie.fn as fnpkg
     from morie.fn._registry import REGISTRY
-
-    import json
 
     fn_dir = Path(fnpkg.__file__).parent
     # Must survive describe()'s truthfulness gate too: the name has to be
@@ -176,12 +175,22 @@ def test_describe_payload_access():
 
 
 def test_describe_flags_not_implemented_placeholders():
+    import json
+    import pathlib
+
+    import pytest
+
+    import morie.fn as fn
     from morie.fn import describe
 
-    stub = describe("abbac")
+    pending = json.loads((pathlib.Path(fn.__file__).parent / "_not_implemented.json").read_text())
+    if not pending:
+        pytest.skip("no not-implemented placeholders remain")
+    name = sorted(pending)[0]
+    stub = describe(name)
     assert stub.title.startswith("[NOT IMPLEMENTED]")
     assert stub.payload["implemented"] is False
-    assert stub.warnings[0].startswith("NOT IMPLEMENTED: abbac raises NotImplementedError")
+    assert stub.warnings[0].startswith(f"NOT IMPLEMENTED: {name} raises NotImplementedError")
     real = describe("welcht")
     assert "implemented" not in real.payload
     assert not real.title.startswith("[NOT IMPLEMENTED]")
