@@ -23981,14 +23981,6 @@ _r(
     "SKATER regionalization",
     quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
-_r("opslp", "opslp", "OptimSp", "Sequential linear programming", quote="I think, therefore I am. -- Rene Descartes")
-_r(
-    "opsqp",
-    "opsqp",
-    "OptimSp",
-    "Sequential quadratic programming",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
 _r(
     "opzon",
     "opzon",
@@ -74377,13 +74369,6 @@ _r(
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "opsqp",
-    "opsqp",
-    "Auto",
-    "Auto-wired callable from fn/opsqp.py",
-    "Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
     "optcl",
     "optimal_classification",
     "Auto",
@@ -86246,6 +86231,20 @@ _r(
     "morphological_opening",
     "Auto",
     "Auto-wired callable from fn/mopnop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "sqpmin",
+    "sequential_quadratic_programming",
+    "Auto",
+    "Auto-wired callable from fn/sqpmin.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "slpmin",
+    "sequential_linear_programming",
+    "Auto",
+    "Auto-wired callable from fn/slpmin.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(

@@ -1,4 +1,9 @@
-"""Sequential Quadratic Programming (SQP)."""
+"""Sequential Quadratic Programming (SQP) for equality-constrained problems.
+
+Thin interface over :func:`morie.fn.sqpmin.sequential_quadratic_programming` (Nocedal and
+Wright 2006, Algorithm 18.3). The earlier body took full Newton steps without a merit
+function and updated B with the objective gradient instead of the Lagrangian gradient.
+"""
 
 from __future__ import annotations
 
@@ -6,6 +11,7 @@ from collections.abc import Callable
 
 from . import _array_core as np
 from ._containers import DescriptiveResult
+from .sqpmin import sequential_quadratic_programming
 
 
 def sqp_optimize(
@@ -20,8 +26,8 @@ def sqp_optimize(
 ) -> DescriptiveResult:
     """Sequential Quadratic Programming for equality-constrained problems.
 
-    Solves: min f(x) s.t. c_i(x) = 0.
-    Uses BFGS approximation to the Hessian of the Lagrangian.
+    Solves: min f(x) s.t. c_i(x) = 0 by line-search SQP with damped BFGS on the
+    Lagrangian and an l1 merit function.
 
     Parameters
     ----------
@@ -38,53 +44,41 @@ def sqp_optimize(
     maxiter : int
         Maximum iterations.
     h : float
-        Finite-difference step.
+        Forward-difference step for the constraint Jacobian.
 
     Returns
     -------
     DescriptiveResult
-        ``value`` is the final objective; ``extra`` has x and iterations.
+        ``value`` is the final objective; ``extra`` has x, iterations, constraint_violation,
+        multipliers and converged.
     """
-    x = np.asarray(x0, dtype=float).copy()
-    n = len(x)
-    nc = len(constraints)
-    B = np.eye(n)
-    lam = np.zeros(nc)
-    for it in range(1, maxiter + 1):
-        gf = np.asarray(grad_f(x), dtype=float)
-        cv = np.array([constraints[k](x) for k in range(nc)])
-        A_jac = np.zeros((nc, n))
-        for k in range(nc):
-            for j in range(n):
-                xp = x.copy()
+    cons = list(constraints)
+
+    def jac(x):
+        rows = []
+        for c in cons:
+            c0 = float(c(x))
+            row = []
+            for j in range(len(x)):
+                xp = list(x)
                 xp[j] += h
-                A_jac[k, j] = (constraints[k](xp) - cv[k]) / h
-        if np.linalg.norm(cv) < tol and np.linalg.norm(gf + A_jac.T @ lam) < tol:
-            break
-        K = np.block([[B, A_jac.T], [A_jac, np.zeros((nc, nc))]])
-        rhs = np.concatenate([-gf, -cv])
-        try:
-            sol = np.linalg.solve(K, rhs)
-        except np.linalg.LinAlgError:
-            sol = np.linalg.lstsq(K, rhs, rcond=None)[0]
-        dx = sol[:n]
-        lam = sol[n:]
-        x_new = x + dx
-        s = dx
-        gf_new = np.asarray(grad_f(x_new), dtype=float)
-        y = gf_new - gf
-        sy = s @ y
-        if sy > 1e-15:
-            Bs = B @ s
-            B = B - np.outer(Bs, Bs) / (s @ Bs + 1e-30) + np.outer(y, y) / sy
-        x = x_new
+                row.append((float(c(xp)) - c0) / h)
+            rows.append(row)
+        return rows
+
+    r = sequential_quadratic_programming(
+        f, [float(v) for v in np.asarray(x0, dtype=float)], grad=lambda x: [float(v) for v in grad_f(np.asarray(x))],
+        eq=cons, eq_jac=jac, tol=tol, max_iter=maxiter,
+    )
     return DescriptiveResult(
         name="SQP",
-        value=float(f(x)),
+        value=float(r["fun"]),
         extra={
-            "x": x,
-            "iterations": it,
-            "constraint_violation": float(np.linalg.norm(cv)),
+            "x": np.asarray(r["x"]),
+            "iterations": r["n_iter"],
+            "constraint_violation": r["violation"],
+            "multipliers": r["multipliers_eq"],
+            "converged": r["converged"],
         },
     )
 

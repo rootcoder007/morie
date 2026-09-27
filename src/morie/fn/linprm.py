@@ -70,17 +70,20 @@ METHODS = ("simplex", "interior_point", "auto")
 
 
 def _cholesky(M):
+    # pivots are floored at 1e-13 times the largest diagonal: A D A' turns rank deficient
+    # near degenerate optima (basic variables grow while the rest vanish), and an absolute
+    # floor lets rounding push the iterates away (seen as divergence in one arm)
     n = len(M)
     L = [[0.0] * n for _ in range(n)]
+    big = max(abs(M[i][i]) for i in range(n)) if n else 1.0
+    floor = 1e-13 * (big if big > 0 else 1.0)
     for i in range(n):
         for j in range(i + 1):
-            s = M[i][j] - sum(L[i][k] * L[j][k] for k in range(j))
+            s = M[i][j]
+            for k in range(j):
+                s -= L[i][k] * L[j][k]
             if i == j:
-                if s <= 1e-14:
-                    s = 1e-14   # the normal equations go ill-
-                    # conditioned as the iterates approach the
-                    # boundary; this is the standard regularisation
-                L[i][i] = math.sqrt(s)
+                L[i][i] = math.sqrt(s if s > floor else floor)
             else:
                 L[i][j] = s / L[j][j]
     return L
