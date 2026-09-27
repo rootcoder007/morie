@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,999 single-purpose callables** -- every one
+``morie.fn`` ships **17,996 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1478,10 +1478,6 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_10_equation_57", "bookadvanced_elementsofstatisticallearning10e57"
    "bookadvanced_elementsofstatisticallearning_chapter_10_equation_58", "bookadvanced_elementsofstatisticallearning10e58"
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_1", "bookadvanced_elementsofstatisticallearning11e1"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_59", "bookadvanced_elementsofstatisticallearning12e59"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_60", "bookadvanced_elementsofstatisticallearning12e60"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_68", "bookadvanced_elementsofstatisticallearning12e68"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_70", "bookadvanced_elementsofstatisticallearning12e70"
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_61", "bookadvanced_elementsofstatisticallearning14e61"
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_62", "bookadvanced_elementsofstatisticallearning14e62"
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_75", "bookadvanced_elementsofstatisticallearning14e75"
@@ -4647,6 +4643,7 @@ Full list
    "esl_logistic_reg", "esllgr"
    "esl_mallows_cp", "eslcp"
    "esl_markov_rf", "eslmrf"
+   "esl_mda", "eslmda"
    "esl_mdl", "eslmdl"
    "esl_mds", "eslmds"
    "esl_median_nn_radius", "eslmnr"
