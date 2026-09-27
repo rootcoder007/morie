@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,153 single-purpose callables** -- every one
+``morie.fn`` ships **18,138 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1578,29 +1578,10 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_5", "bookadvanced_elementsofstatisticallearning2e5"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_6", "bookadvanced_elementsofstatisticallearning2e6"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_9", "bookadvanced_elementsofstatisticallearning2e9"
-   "bookadvanced_elementsofstatisticallearning_chapter_3_equation_34", "bookadvanced_elementsofstatisticallearning3e34"
-   "bookadvanced_elementsofstatisticallearning_chapter_3_equation_35", "bookadvanced_elementsofstatisticallearning3e35"
-   "bookadvanced_elementsofstatisticallearning_chapter_3_equation_36", "bookadvanced_elementsofstatisticallearning3e36"
    "bookadvanced_elementsofstatisticallearning_chapter_3_equation_75", "bookadvanced_elementsofstatisticallearning3e75"
    "bookadvanced_elementsofstatisticallearning_chapter_3_unnumbered_602", "bookadvanced_elementsofstatisticallearning3u602"
    "bookadvanced_elementsofstatisticallearning_chapter_3_unnumbered_603", "bookadvanced_elementsofstatisticallearning3u603"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_1", "bookadvanced_elementsofstatisticallearning4e1"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_12", "bookadvanced_elementsofstatisticallearning4e12"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_17", "bookadvanced_elementsofstatisticallearning4e17"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_20", "bookadvanced_elementsofstatisticallearning4e20"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_21", "bookadvanced_elementsofstatisticallearning4e21"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_23", "bookadvanced_elementsofstatisticallearning4e23"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_26", "bookadvanced_elementsofstatisticallearning4e26"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_27", "bookadvanced_elementsofstatisticallearning4e27"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_3", "bookadvanced_elementsofstatisticallearning4e3"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_31", "bookadvanced_elementsofstatisticallearning4e31"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_32", "bookadvanced_elementsofstatisticallearning4e32"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_34", "bookadvanced_elementsofstatisticallearning4e34"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_35", "bookadvanced_elementsofstatisticallearning4e35"
    "bookadvanced_elementsofstatisticallearning_chapter_4_equation_40", "bookadvanced_elementsofstatisticallearning4e40"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_5", "bookadvanced_elementsofstatisticallearning4e5"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_8", "bookadvanced_elementsofstatisticallearning4e8"
-   "bookadvanced_elementsofstatisticallearning_chapter_4_equation_9", "bookadvanced_elementsofstatisticallearning4e9"
    "bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_112", "bookadvanced_elementsofstatisticallearning4u112"
    "bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_115", "bookadvanced_elementsofstatisticallearning4u115"
    "bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_171", "bookadvanced_elementsofstatisticallearning4u171"
@@ -4803,10 +4784,12 @@ Full list
    "esl_gbm_predict", "eslgbm"
    "esl_holm_bonferroni", "eslmht"
    "esl_ica", "eslica"
+   "esl_indicator_regression", "eslind"
    "esl_isomap", "eslism"
    "esl_iwls", "esliwls"
    "esl_kernel_density", "eslkrn"
    "esl_knn", "eslknn"
+   "esl_l1_logistic", "esll1l"
    "esl_lasso", "esllso"
    "esl_lda_disc", "esllsc"
    "esl_least_angle_reg", "esllar"
@@ -4817,6 +4800,8 @@ Full list
    "esl_markov_rf", "eslmrf"
    "esl_mdl", "eslmdl"
    "esl_mds", "eslmds"
+   "esl_multi_output_ls", "eslmol"
+   "esl_multinomial_logit", "eslmnl"
    "esl_nadaraya_watson", "eslnnk"
    "esl_naive_bayes", "eslnnb"
    "esl_natural_spline", "eslnsl"

@@ -88869,6 +88869,34 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "eslmol",
+    "esl_multi_output_ls",
+    "Auto",
+    "Auto-wired callable from fn/eslmol.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslind",
+    "esl_indicator_regression",
+    "Auto",
+    "Auto-wired callable from fn/eslind.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslmnl",
+    "esl_multinomial_logit",
+    "Auto",
+    "Auto-wired callable from fn/eslmnl.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "esll1l",
+    "esl_l1_logistic",
+    "Auto",
+    "Auto-wired callable from fn/esll1l.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
