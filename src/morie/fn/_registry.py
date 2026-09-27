@@ -63874,48 +63874,6 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "hedderich9u1136",
-    "hedderich_chapter_9_unnumbered_1136",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1136.py",
-    "An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "hedderich9u1686",
-    "hedderich_chapter_9_unnumbered_1686",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1686.py",
-    "Number rules the universe. -- Pythagoras",
-)
-_r(
-    "hedderich9u1687",
-    "hedderich_chapter_9_unnumbered_1687",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1687.py",
-    "An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "hedderich9u2977",
-    "hedderich_chapter_9_unnumbered_2977",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2977.py",
-    "You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "hedderich9u2984",
-    "hedderich_chapter_9_unnumbered_2984",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2984.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
-    "hedderich9u2985",
-    "hedderich_chapter_9_unnumbered_2985",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2985.py",
-    "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
     "hedderich9u3162",
     "hedderich_chapter_9_unnumbered_3162",
     "Auto",
@@ -63935,13 +63893,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/hedderich9u340.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "hedderich9u3474",
-    "hedderich_chapter_9_unnumbered_3474",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3474.py",
-    "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
     "hedderich9u352",
@@ -88873,6 +88824,62 @@ _r(
     "bivariate_normal_conditional",
     "Auto",
     "Auto-wired callable from fn/bvncnd.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "accqlv",
+    "acceptance_quality_levels",
+    "Auto",
+    "Auto-wired callable from fn/accqlv.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "accpln",
+    "acceptance_sampling_plan",
+    "Auto",
+    "Auto-wired callable from fn/accpln.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "bcppcc",
+    "box_cox_ppcc",
+    "Auto",
+    "Auto-wired callable from fn/bcppcc.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "schomg",
+    "score_homogeneity_test",
+    "Auto",
+    "Auto-wired callable from fn/schomg.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "chisqmc",
+    "chisq_monte_carlo",
+    "Auto",
+    "Auto-wired callable from fn/chisqmc.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "bkelim",
+    "backward_elimination",
+    "Auto",
+    "Auto-wired callable from fn/bkelim.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "ll3way",
+    "loglinear_three_way",
+    "Auto",
+    "Auto-wired callable from fn/ll3way.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "linsys",
+    "solve_linear_system",
+    "Auto",
+    "Auto-wired callable from fn/linsys.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
