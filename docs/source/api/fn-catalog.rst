@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,990 single-purpose callables** -- every one
+``morie.fn`` ships **17,989 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1475,8 +1475,6 @@ Full list
    "bonfer", "bonfer"
    "bonferroni_correction", "bonf"
    "bonne", "bonne"
-   "bookadvanced_elementsofstatisticallearning_chapter_14_equation_91", "bookadvanced_elementsofstatisticallearning14e91"
-   "bookadvanced_elementsofstatisticallearning_chapter_14_equation_92", "bookadvanced_elementsofstatisticallearning14e92"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_1", "bookadvanced_elementsofstatisticallearning2e1"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_15", "bookadvanced_elementsofstatisticallearning2e15"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_16", "bookadvanced_elementsofstatisticallearning2e16"
@@ -4661,6 +4659,7 @@ Full list
    "esl_pls", "eslpls"
    "esl_precision_regression", "eslprr"
    "esl_principal_curve", "eslpcv"
+   "esl_prodenica", "eslpdi"
    "esl_projection_pursuit", "eslppr"
    "esl_prototype_lvq", "eslprq"
    "esl_qda", "eslqda"

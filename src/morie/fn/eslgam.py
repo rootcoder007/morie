@@ -58,9 +58,12 @@ def _spline_smooth(x, r, lam, w=None, full=False):
             R[c][c] = (h[j - 1] + h[j]) / 3
             if c + 1 < m - 2:
                 R[c][c + 1] = R[c + 1][c] = h[j] / 6
+        # only the band |a - b| <= 2 is non-zero (Q has three non-zeros per column)
         A = [
             [
                 R[a][b] + lam * sum(Q[i][a] * Q[i][b] / W[i] for i in range(max(0, a), min(m, a + 5)))
+                if abs(a - b) <= 2
+                else 0.0
                 for b in range(m - 2)
             ]
             for a in range(m - 2)
