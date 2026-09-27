@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,063 single-purpose callables** -- every one
+``morie.fn`` ships **18,048 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1520,27 +1520,7 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_16_equation_7", "bookadvanced_elementsofstatisticallearning16e7"
    "bookadvanced_elementsofstatisticallearning_chapter_16_equation_8", "bookadvanced_elementsofstatisticallearning16e8"
    "bookadvanced_elementsofstatisticallearning_chapter_16_equation_9", "bookadvanced_elementsofstatisticallearning16e9"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_1", "bookadvanced_elementsofstatisticallearning17e1"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_11", "bookadvanced_elementsofstatisticallearning17e11"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_12", "bookadvanced_elementsofstatisticallearning17e12"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_13", "bookadvanced_elementsofstatisticallearning17e13"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_14", "bookadvanced_elementsofstatisticallearning17e14"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_16", "bookadvanced_elementsofstatisticallearning17e16"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_18", "bookadvanced_elementsofstatisticallearning17e18"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_19", "bookadvanced_elementsofstatisticallearning17e19"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_22", "bookadvanced_elementsofstatisticallearning17e22"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_26", "bookadvanced_elementsofstatisticallearning17e26"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_28", "bookadvanced_elementsofstatisticallearning17e28"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_29", "bookadvanced_elementsofstatisticallearning17e29"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_30", "bookadvanced_elementsofstatisticallearning17e30"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_34", "bookadvanced_elementsofstatisticallearning17e34"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_35", "bookadvanced_elementsofstatisticallearning17e35"
    "bookadvanced_elementsofstatisticallearning_chapter_17_equation_38", "bookadvanced_elementsofstatisticallearning17e38"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_44", "bookadvanced_elementsofstatisticallearning17e44"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_45", "bookadvanced_elementsofstatisticallearning17e45"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_7", "bookadvanced_elementsofstatisticallearning17e7"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_8", "bookadvanced_elementsofstatisticallearning17e8"
-   "bookadvanced_elementsofstatisticallearning_chapter_17_equation_9", "bookadvanced_elementsofstatisticallearning17e9"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_1", "bookadvanced_elementsofstatisticallearning18e1"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_10", "bookadvanced_elementsofstatisticallearning18e10"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_19", "bookadvanced_elementsofstatisticallearning18e19"
@@ -4700,9 +4680,12 @@ Full list
    "esl_gbm", "eslgbm"
    "esl_gbm_predict", "eslgbm"
    "esl_gcv", "eslgcv"
+   "esl_ggm_fit", "esleggm"
+   "esl_graphical_lasso", "eslglso"
    "esl_holm_bonferroni", "eslmht"
    "esl_ica", "eslica"
    "esl_indicator_regression", "eslind"
+   "esl_ising_fit", "eslisg"
    "esl_isomap", "eslism"
    "esl_iwls", "esliwls"
    "esl_kernel_density", "eslkrn"
@@ -4722,6 +4705,7 @@ Full list
    "esl_mds", "eslmds"
    "esl_multi_output_ls", "eslmol"
    "esl_multinomial_logit", "eslmnl"
+   "esl_mvn_em_missing", "eslmem"
    "esl_nadaraya_watson", "eslnnk"
    "esl_naive_bayes", "eslnnb"
    "esl_natural_spline", "eslnsl"
@@ -4738,6 +4722,7 @@ Full list
    "esl_penalized_logistic", "eslplg"
    "esl_perceptron", "eslprc"
    "esl_pls", "eslpls"
+   "esl_precision_regression", "eslprr"
    "esl_prototype_lvq", "eslprq"
    "esl_qda", "eslqda"
    "esl_r_squared", "eslr2"
