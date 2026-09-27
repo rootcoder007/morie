@@ -6871,7 +6871,20 @@ def _coerce_index(idx):
             return marr([float(v) for v in vals])
         return k
     if isinstance(idx, tuple):
-        return tuple(one(k) for k in idx)
+        idx = tuple(one(k) for k in idx)
+        # numpy: with two or more index arrays each boolean one acts through
+        # its nonzero() positions and the arrays are paired, so x[m, m] on
+        # masks is a 1-D gather of the diagonal cells, not an outer block
+        # (x[m, m] = 0 used to zero cells picked by reading True/False as
+        # the row numbers 1/0)
+        def is_mask(k):
+            if isinstance(k, marr):
+                return bool(getattr(k, "_is_mask", False))
+            return isinstance(k, list) and bool(k) and _bi.all(isinstance(v, bool) for v in k)
+        if _bi.sum(1 for k in idx if isinstance(k, (marr, list))) >= 2 and _bi.any(is_mask(k) for k in idx):
+            idx = tuple(marr([i for i, m in enumerate(k._flat() if isinstance(k, marr) else k) if m])
+                        if is_mask(k) else k for k in idx)
+        return idx
     return one(idx)
 
 

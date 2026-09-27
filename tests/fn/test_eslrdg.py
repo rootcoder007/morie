@@ -1,7 +1,6 @@
 """Tests for eslrdg.esl_ridge."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslrdg import esl_ridge
 
 
@@ -20,10 +19,10 @@ def test_eslrdg_basic():
     X_arr = np.asarray(X)
     y_arr = np.asarray(y)
     p = X_arr.shape[1]
-    I = np.eye(p)
-    # Build the penalty matrix: column 0 (intercept) is left unpenalised.
-    P = I.copy()
-    P[0, 0] = 0.0
+    eye = np.eye(p)
+    # X has no constant column, so every column is penalised (only a
+    # constant intercept column is left out of the penalty).
+    P = eye.copy()
     A = X_arr.T @ X_arr + lambda_ * P
     beta_expected = np.linalg.solve(A, X_arr.T @ y_arr)
 
