@@ -5,6 +5,15 @@ import math
 from . import _array_core as np
 
 
+def _ssum(it):
+    # plain left-to-right summation: sum() of floats is compensated from Python 3.12 on, which
+    # would make results depend on the Python version and differ from the R arm
+    s = 0.0
+    for v in it:
+        s += v
+    return s
+
+
 def eigh_desc(M):
     """Eigenvalues (descending) and eigenvectors (columns) of a symmetric matrix given as lists."""
     w, V = np.linalg.eigh(np.asarray(M))
@@ -17,8 +26,8 @@ def eigh_desc(M):
 def corr_matrix(X):
     n = len(X)
     p = len(X[0])
-    mu = [sum(r[j] for r in X) / n for j in range(p)]
-    C = [[sum((r[a] - mu[a]) * (r[b] - mu[b]) for r in X) / (n - 1) for b in range(p)] for a in range(p)]
+    mu = [_ssum(r[j] for r in X) / n for j in range(p)]
+    C = [[_ssum((r[a] - mu[a]) * (r[b] - mu[b]) for r in X) / (n - 1) for b in range(p)] for a in range(p)]
     return C
 
 
@@ -41,7 +50,7 @@ def _solve(A, b):
                 M[i][j] -= f * M[k][j]
     x = [0.0] * n
     for k in range(n - 1, -1, -1):
-        x[k] = (M[k][n] - sum(M[k][j] * x[j] for j in range(k + 1, n))) / M[k][k]
+        x[k] = (M[k][n] - _ssum(M[k][j] * x[j] for j in range(k + 1, n))) / M[k][k]
     return x
 
 
@@ -56,9 +65,9 @@ def _state(S, psi, m):
     sq = [math.sqrt(v) for v in psi]
     Ss = [[S[i][j] / (sq[i] * sq[j]) for j in range(p)] for i in range(p)]
     th, U = eigh_desc(Ss)
-    F = sum(t - math.log(t) for t in th[m:]) - (p - m)
+    F = _ssum(t - math.log(t) for t in th[m:]) - (p - m)
     L = [[sq[i] * U[i][k] * math.sqrt(max(th[k] - 1, 0.0)) for k in range(m)] for i in range(p)]
-    g = [(sum(L[j][k] ** 2 for k in range(m)) + psi[j] - S[j][j]) / psi[j] ** 2 for j in range(p)]
+    g = [(_ssum(L[j][k] ** 2 for k in range(m)) + psi[j] - S[j][j]) / psi[j] ** 2 for j in range(p)]
     return F, g, L
 
 
@@ -89,15 +98,15 @@ def mlfa_fit(S, m, lower=0.005, max_iter=1000, gtol=1e-10):
             break
         d = [0.0] * p
         for a in free:
-            d[a] = -sum(Hinv[a][b] * g[b] for b in free)
-        if sum(d[j] * g[j] for j in free) >= 0:
+            d[a] = -_ssum(Hinv[a][b] * g[b] for b in free)
+        if _ssum(d[j] * g[j] for j in free) >= 0:
             Hinv = [[float(a == b) for b in range(p)] for a in range(p)]
             d = [(-g[j] if j in free else 0.0) for j in range(p)]
         t = 1.0
         while True:
             cand = [min(1.0, max(lower, psi[j] + t * d[j])) for j in range(p)]
             Fc, gc, Lc = _state(S, cand, m)
-            if Fc <= F - 1e-4 * t * abs(sum(d[j] * g[j] for j in free)) or t < 1e-14:
+            if Fc <= F - 1e-4 * t * abs(_ssum(d[j] * g[j] for j in free)) or t < 1e-14:
                 break
             t /= 2
         sv = [a - b for a, b in zip(cand, psi)]
@@ -109,10 +118,10 @@ def mlfa_fit(S, m, lower=0.005, max_iter=1000, gtol=1e-10):
             Hinv = [[float(a == b) for b in range(p)] for a in range(p)]
             free = newfree
         else:
-            sy = sum(sv[j] * yv[j] for j in free)
+            sy = _ssum(sv[j] * yv[j] for j in free)
             if sy > 1e-300:
-                Hy = [sum(Hinv[a][b] * yv[b] for b in free) for a in range(p)]
-                yHy = sum(yv[a] * Hy[a] for a in free)
+                Hy = [_ssum(Hinv[a][b] * yv[b] for b in free) for a in range(p)]
+                yHy = _ssum(yv[a] * Hy[a] for a in free)
                 for a in free:
                     for b in free:
                         Hinv[a][b] += (sy + yHy) * sv[a] * sv[b] / sy**2 - (Hy[a] * sv[b] + sv[a] * Hy[b]) / sy

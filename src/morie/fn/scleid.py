@@ -36,6 +36,16 @@ from . import _s03core as k
 from ._richresult import RichResult
 from ._rng import random_uniform
 
+
+def _ssum(it):
+    # plain left-to-right summation: sum() of floats is compensated from Python 3.12 on, which
+    # would make results depend on the Python version and differ from the R arm
+    s = 0.0
+    for v in it:
+        s += v
+    return s
+
+
 __all__ = ["leiden_clustering"]
 
 
@@ -102,8 +112,8 @@ def _refine(adj, w, r, comm, theta, draws):
     for c in sorted(groups):
         S = groups[c]
         inS = set(S)
-        WS = sum(w[v] for v in S)
-        ext = {v: sum(a for u, a in adj[v].items() if u in inS and u != v) for v in S}
+        WS = _ssum(w[v] for v in S)
+        ext = {v: _ssum(a for u, a in adj[v].items() if u in inS and u != v) for v in S}
         cw = {v: w[v] for v in S}
         cext = dict(ext)  # E(C, S - C) per refined sub-community, keyed by its id
         single = {v: True for v in S}
@@ -126,7 +136,7 @@ def _refine(adj, w, r, comm, theta, draws):
                     gains.append(g)
             gm = max(gains)
             ps = [math.exp((g - gm) / theta) for g in gains]
-            s = sum(ps)
+            s = _ssum(ps)
             x, acc, pick = us[len(S) + t] * s, 0.0, cand[-1]
             for C, p in zip(cand, ps):
                 acc += p
@@ -157,17 +167,17 @@ def _canon(lab):
 
 def _quality(W, lab, gamma, quality):
     n = len(W)
-    e = sum(W[i][j] for i in range(n) for j in range(n) if lab[i] == lab[j]) / 2
+    e = _ssum(W[i][j] for i in range(n) for j in range(n) if lab[i] == lab[j]) / 2
     if quality == "cpm":
         size = {}
         for c in lab:
             size[c] = size.get(c, 0) + 1
-        return e - gamma * sum(s * (s - 1) / 2 for s in size.values())
-    m2 = sum(sum(row) for row in W)
+        return e - gamma * _ssum(s * (s - 1) / 2 for s in size.values())
+    m2 = _ssum(_ssum(row) for row in W)
     K = {}
     for i in range(n):
-        K[lab[i]] = K.get(lab[i], 0.0) + sum(W[i])
-    return 2 * e / m2 - gamma * sum(v * v for v in K.values()) / (m2 * m2)
+        K[lab[i]] = K.get(lab[i], 0.0) + _ssum(W[i])
+    return 2 * e / m2 - gamma * _ssum(v * v for v in K.values()) / (m2 * m2)
 
 
 def _connected(W, lab):
@@ -230,7 +240,7 @@ def leiden_clustering(graph, resolution=1.0, quality="modularity", max_iter=20, 
     if any(W[i][j] < 0 or abs(W[i][j] - W[j][i]) > 1e-12 for i in range(n) for j in range(n)):
         raise ValueError("graph must be symmetric with non-negative weights")
     g = float(resolution)
-    m2 = sum(sum(row) for row in W)
+    m2 = _ssum(_ssum(row) for row in W)
     if m2 <= 0:
         lab = list(range(n))
     else:
@@ -240,7 +250,7 @@ def leiden_clustering(graph, resolution=1.0, quality="modularity", max_iter=20, 
         for _ in range(int(max_iter)):
             passes += 1
             adj = [{j: W[i][j] for j in range(n) if W[i][j] != 0.0} for i in range(n)]
-            w = [sum(W[i]) for i in range(n)] if quality == "modularity" else [1.0] * n
+            w = [_ssum(W[i]) for i in range(n)] if quality == "modularity" else [1.0] * n
             r = g / m2 if quality == "modularity" else g
             member = [[v] for v in range(n)]
             comm = list(lab)

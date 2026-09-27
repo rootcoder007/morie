@@ -9,6 +9,16 @@ import math
 from ._qncore import dot, num_grad, wolfe
 from ._richresult import RichResult
 
+
+def _ssum(it):
+    # plain left-to-right summation: sum() of floats is compensated from Python 3.12 on, which
+    # would make results depend on the Python version and differ from the R arm
+    s = 0.0
+    for v in it:
+        s += v
+    return s
+
+
 __all__ = ["lbfgsb_minimize"]
 
 _EPS = 2.220446049250313e-16
@@ -29,7 +39,7 @@ def _solve(A, b):
                 M[r][k] -= t * M[c][k]
     x = [0.0] * n
     for r in range(n - 1, -1, -1):
-        x[r] = (M[r][n] - sum(M[r][k] * x[k] for k in range(r + 1, n))) / M[r][r]
+        x[r] = (M[r][n] - _ssum(M[r][k] * x[k] for k in range(r + 1, n))) / M[r][r]
     return x
 
 
@@ -75,7 +85,7 @@ def _cauchy(x, g, lo, hi, theta, W, M):
             t[i] = (x[i] - lo[i]) / g[i]
         d[i] = 0.0 if t[i] == 0 else -g[i]
     k2 = 0 if W is None else len(M)
-    p = [sum(W[i][j] * d[i] for i in range(n)) for j in range(k2)]
+    p = [_ssum(W[i][j] * d[i] for i in range(n)) for j in range(k2)]
     c = [0.0] * k2
     fp = -dot(d, d)
     fpp = -theta * fp - (dot(p, _mv(M, p)) if k2 else 0.0)
@@ -139,8 +149,8 @@ def _subspace(x, g, xc, c, lo, hi, theta, W, M):
         r = [g[i] + theta * (xc[i] - x[i]) - dot(W[i], Mc) for i in Z]
         WZ = [W[i] for i in Z]
         k2 = len(M)
-        v = _mv(M, [sum(WZ[a][j] * r[a] for a in range(len(Z))) for j in range(k2)])
-        WtW = [[sum(WZ[a][i] * WZ[a][j] for a in range(len(Z))) for j in range(k2)] for i in range(k2)]
+        v = _mv(M, [_ssum(WZ[a][j] * r[a] for a in range(len(Z))) for j in range(k2)])
+        WtW = [[_ssum(WZ[a][i] * WZ[a][j] for a in range(len(Z))) for j in range(k2)] for i in range(k2)]
         MWtW = [[dot(M[i], [WtW[q][j] for q in range(k2)]) for j in range(k2)] for i in range(k2)]
         N = [[float(i == j) - MWtW[i][j] / theta for j in range(k2)] for i in range(k2)]
         v = _solve(N, v)

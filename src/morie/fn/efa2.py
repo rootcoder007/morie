@@ -6,6 +6,16 @@ import math
 from ._mlfa import corr_matrix, eigh_desc, fa_statistic, mlfa_fit, to_corr
 from ._rng import random_normal
 
+
+def _ssum(it):
+    # plain left-to-right summation: sum() of floats is compensated from Python 3.12 on, which
+    # would make results depend on the Python version and differ from the R arm
+    s = 0.0
+    for v in it:
+        s += v
+    return s
+
+
 __all__ = ["efa_nfactors"]
 
 
@@ -19,12 +29,12 @@ def _quantile7(v, q):
 def _map(R, ev, V, power):
     p = len(R)
     denom = p * (p - 1)
-    out = [sum(R[i][j] ** power for i in range(p) for j in range(p) if i != j) / denom]
+    out = [_ssum(R[i][j] ** power for i in range(p) for j in range(p) if i != j) / denom]
     for m in range(1, p - 1):
         A = [[V[i][k] * math.sqrt(max(ev[k], 0.0)) for k in range(m)] for i in range(p)]
-        C = [[R[i][j] - sum(A[i][k] * A[j][k] for k in range(m)) for j in range(p)] for i in range(p)]
+        C = [[R[i][j] - _ssum(A[i][k] * A[j][k] for k in range(m)) for j in range(p)] for i in range(p)]
         d = [math.sqrt(C[i][i]) for i in range(p)]
-        out.append(sum((C[i][j] / (d[i] * d[j])) ** power for i in range(p) for j in range(p) if i != j) / denom)
+        out.append(_ssum((C[i][j] / (d[i] * d[j])) ** power for i in range(p) for j in range(p) if i != j) / denom)
     return out
 
 
@@ -127,7 +137,7 @@ def efa_nfactors(data, *, method="parallel", nsim=100, seed=42, quantile=0.95, t
         k = nc if method == "scree" else best
         out.update(n_factors=k, predicted=pred, acceleration=af)
     elif method == "variance":
-        tot = sum(ev)
+        tot = _ssum(ev)
         cum = []
         s = 0.0
         for v in ev:

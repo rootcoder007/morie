@@ -7,6 +7,16 @@ Wright (1998), SIAM Journal on Optimization 9, 112-147.
 
 from ._richresult import RichResult
 
+
+def _ssum(it):
+    # plain left-to-right summation: sum() of floats is compensated from Python 3.12 on, which
+    # would make results depend on the Python version and differ from the R arm
+    s = 0.0
+    for v in it:
+        s += v
+    return s
+
+
 __all__ = ["nelder_mead"]
 
 
@@ -69,7 +79,7 @@ def nelder_mead(f, x0, step=None, xtol=1e-10, ftol=1e-10, max_iter=None):
             conv = True
             break
         it += 1
-        cen = [sum(simp[i][j] for i in range(n)) / n for j in range(n)]
+        cen = [_ssum(simp[i][j] for i in range(n)) / n for j in range(n)]
         xr = [2 * c - w for c, w in zip(cen, simp[n])]
         fr = float(f(xr))
         nfev += 1

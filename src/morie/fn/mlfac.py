@@ -15,6 +15,16 @@ import math
 
 from ._mlfa import corr_matrix, eigh_desc, fa_statistic, mlfa_fit, to_corr
 
+
+def _ssum(it):
+    # plain left-to-right summation: sum() of floats is compensated from Python 3.12 on, which
+    # would make results depend on the Python version and differ from the R arm
+    s = 0.0
+    for v in it:
+        s += v
+    return s
+
+
 __all__ = ["mlfac"]
 
 
@@ -73,15 +83,15 @@ def mlfac(X, n_factors=None, max_iter=500, tol=1e-12, scale=True):
     if not scale:
         sd = [math.sqrt(C[j][j]) for j in range(p)]
         L = [[L[j][k] * sd[j] for k in range(m)] for j in range(p)]
-    h2 = [sum(v * v for v in row) for row in fit["loadings"]]
+    h2 = [_ssum(v * v for v in row) for row in fit["loadings"]]
     stat, dof = fa_statistic(fit["objective"], n, p, m)
     # at the MLE, log|Sigma| + tr(Sigma^{-1} S) = F + log|S| + p
-    loglik = -n / 2 * (p * math.log(2 * math.pi) + fit["objective"] + sum(math.log(e) for e in eigh_desc(R)[0]) + p)
+    loglik = -n / 2 * (p * math.log(2 * math.pi) + fit["objective"] + _ssum(math.log(e) for e in eigh_desc(R)[0]) + p)
     return {
         "loadings": L,
         "communalities": h2,
         "uniqueness": fit["uniquenesses"],
-        "variance_explained": [sum(L[j][k] ** 2 for j in range(p)) for k in range(m)],
+        "variance_explained": [_ssum(L[j][k] ** 2 for j in range(p)) for k in range(m)],
         "objective": fit["objective"],
         "log_likelihood": loglik,
         "statistic": stat,

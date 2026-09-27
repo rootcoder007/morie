@@ -10,6 +10,16 @@ from ._distcore import gauss_legendre
 from ._mvcore import as_matrix, log_bessel_i, points
 from ._richresult import RichResult
 
+
+def _ssum(it):
+    # plain left-to-right summation: sum() of floats is compensated from Python 3.12 on, which
+    # would make results depend on the Python version and differ from the R arm
+    s = 0.0
+    for v in it:
+        s += v
+    return s
+
+
 __all__ = ["binghamdens"]
 
 
@@ -65,9 +75,9 @@ def binghamdens(x, A):
     pts, single = points(x)
     lp = []
     for v in pts:
-        if len(v) != d or abs(sum(t * t for t in v) - 1) > 1e-9:
+        if len(v) != d or abs(_ssum(t * t for t in v) - 1) > 1e-9:
             raise ValueError("x must be unit vectors of the dimension of A")
-        lp.append(sum(v[i] * M[i][j] * v[j] for i in range(d) for j in range(d)) - logc)
+        lp.append(_ssum(v[i] * M[i][j] * v[j] for i in range(d) for j in range(d)) - logc)
     return RichResult(
         title="Bingham distribution",
         summary_lines=[("dimension", d)],
