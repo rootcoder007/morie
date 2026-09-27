@@ -23943,20 +23943,6 @@ _r(
     "Ordinary kriging filter",
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
-_r(
-    "opabc",
-    "opabc",
-    "OptimSp",
-    "Artificial bee colony spatial",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "opaco",
-    "opaco",
-    "OptimSp",
-    "Ant colony optimization spatial",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
 _r("opagg", "opagg", "OptimSp", "Spatial aggregation problem", quote="I think, therefore I am. -- Rene Descartes")
 _r(
     "opall",
@@ -23979,14 +23965,6 @@ _r(
     "AZP regionalization",
     quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
-_r(
-    "opbat",
-    "opbat",
-    "OptimSp",
-    "Bat algorithm spatial",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r("opcko", "opcko", "OptimSp", "Cuckoo search spatial", quote="Statistics is the grammar of science. -- Karl Pearson")
 _r("opcnt", "opcnt", "OptimSp", "Spatial p-center problem", quote="Knowledge is power. -- Francis Bacon")
 _r(
     "opcom",
@@ -24010,13 +23988,6 @@ _r(
     quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
-    "opffa",
-    "opffa",
-    "OptimSp",
-    "Firefly algorithm spatial",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
     "opfln",
     "opfln",
     "OptimSp",
@@ -24031,21 +24002,6 @@ _r(
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    "opgwo",
-    "opgwo",
-    "OptimSp",
-    "Grey wolf optimizer spatial",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r("ophho", "ophho", "OptimSp", "Harris hawks optimizer spatial", quote="I think, therefore I am. -- Rene Descartes")
-_r(
-    "opjay",
-    "opjay",
-    "OptimSp",
-    "Jaya algorithm spatial",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
     "opmax",
     "opmax",
     "OptimSp",
@@ -24058,13 +24014,6 @@ _r(
     "OptimSp",
     "Spatial p-median problem",
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "opmfo",
-    "opmfo",
-    "OptimSp",
-    "Moth-flame optimizer spatial",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
     "opmxc",
@@ -24082,7 +24031,6 @@ _r(
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r("opred", "opred", "OptimSp", "Spatial redistricting", quote="Knowledge is power. -- Francis Bacon")
-_r("opsca", "opsca", "OptimSp", "Sine cosine algorithm spatial", quote="Number rules the universe. -- Pythagoras")
 _r(
     "opsfl",
     "opsfl",
@@ -24106,13 +24054,6 @@ _r(
     quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "optlb",
-    "optlb",
-    "OptimSp",
-    "Teaching-learning spatial",
-    quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
     "optsp",
     "optsp",
     "OptimSp",
@@ -24126,7 +24067,6 @@ _r(
     "Vehicle routing spatial",
     quote="The measure of a man is what he does with power. -- Plato",
 )
-_r("opwoa", "opwoa", "OptimSp", "Whale optimization spatial", quote="Number rules the universe. -- Pythagoras")
 _r(
     "opzon",
     "opzon",
@@ -86216,6 +86156,90 @@ _r(
     "nelder_mead",
     "Auto",
     "Auto-wired callable from fn/neldmd.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "abcopt",
+    "artificial_bee_colony",
+    "Auto",
+    "Auto-wired callable from fn/abcopt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "acorop",
+    "ant_colony_continuous",
+    "Auto",
+    "Auto-wired callable from fn/acorop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "batalg",
+    "bat_algorithm",
+    "Auto",
+    "Auto-wired callable from fn/batalg.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "cuckoo",
+    "cuckoo_search",
+    "Auto",
+    "Auto-wired callable from fn/cuckoo.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "fflyop",
+    "firefly_algorithm",
+    "Auto",
+    "Auto-wired callable from fn/fflyop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "gwoopt",
+    "grey_wolf_optimizer",
+    "Auto",
+    "Auto-wired callable from fn/gwoopt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "hhoopt",
+    "harris_hawks_optimizer",
+    "Auto",
+    "Auto-wired callable from fn/hhoopt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "jayaop",
+    "jaya_algorithm",
+    "Auto",
+    "Auto-wired callable from fn/jayaop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "mfoopt",
+    "moth_flame_optimizer",
+    "Auto",
+    "Auto-wired callable from fn/mfoopt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "scaopt",
+    "sine_cosine_algorithm",
+    "Auto",
+    "Auto-wired callable from fn/scaopt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "tlbopt",
+    "teaching_learning_optimizer",
+    "Auto",
+    "Auto-wired callable from fn/tlbopt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "woaopt",
+    "whale_optimization",
+    "Auto",
+    "Auto-wired callable from fn/woaopt.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
