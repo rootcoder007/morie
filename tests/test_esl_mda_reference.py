@@ -27,3 +27,22 @@ def test_mda_equals_mda_package():
     tr = esl_mda(X, g, 2)
     conf = [[sum(1 for p_, t in zip(tr["prediction"], g) if p_ == a and t == b) for b in range(3)] for a in range(3)]
     assert conf == [[27, 8, 4], [0, 19, 3], [3, 3, 23]]
+
+
+def test_posterior_is_bayes_rule_with_unequal_priors():
+    i = [t for t in range(1, 91) if not (t % 3 == 0 and t > 45)]  # class 0 smaller
+    X = [[math.sin(t) + ((t % 3) == 0) * 1.5 + ((t % 7) < 3) * 0.8, math.cos(2 * t) + ((t % 3) == 1) * 1.2 - ((t % 5) < 2) * 0.9]
+         for t in i]
+    g = [t % 3 for t in i]
+    q = [0.4, 0.1]
+    r = esl_mda(X, g, 2, query=[q])
+    S = r["covariance"]
+    det = S[0][0] * S[1][1] - S[0][1] * S[1][0]
+    Si = [[S[1][1] / det, -S[0][1] / det], [-S[1][0] / det, S[0][0] / det]]
+
+    def phi(m):
+        d = [q[0] - m[0], q[1] - m[1]]
+        return math.exp(-0.5 * sum(d[a] * Si[a][b] * d[b] for a in range(2) for b in range(2))) / (2 * math.pi * math.sqrt(det))
+
+    joint = [g.count(c) / len(g) * sum(pk * phi(mk) for pk, mk in zip(r["mixing"][c], r["means"][c])) for c in r["classes"]]
+    assert all(abs(a - b / sum(joint)) < 1e-12 for a, b in zip(r["posterior"][0], joint))
