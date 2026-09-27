@@ -51475,62 +51475,6 @@ _r(
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner5u360",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered_360",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner5u360.py",
-    "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner5u366",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered_366",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner5u366.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner5u380",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered_380",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner5u380.py",
-    "There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner5u381",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered_381",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner5u381.py",
-    "We must know. We will know. -- David Hilbert",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner5u382",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered_382",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner5u382.py",
-    "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner5u430",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered_430",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner5u430.py",
-    "It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner5u457",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered_457",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner5u457.py",
-    "An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e11",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_11",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e11.py",
-    "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
     "david_j_morin_probability_for_the_enthusiastic_beginner6e12",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_12",
     "Auto",
@@ -51552,32 +51496,11 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e15",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_15",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e15.py",
-    "You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e16",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_16",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e16.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
     "david_j_morin_probability_for_the_enthusiastic_beginner6e17",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_17",
     "Auto",
     "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e17.py",
     "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e2",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_2",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e2.py",
-    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
     "david_j_morin_probability_for_the_enthusiastic_beginner6e22",
@@ -51606,20 +51529,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e3.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e30",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_30",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e30.py",
-    "It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e31",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_31",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e31.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "david_j_morin_probability_for_the_enthusiastic_beginner6e36",
@@ -51727,13 +51636,6 @@ _r(
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e62",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_62",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e62.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
     "david_j_morin_probability_for_the_enthusiastic_beginner6e63",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_63",
     "Auto",
@@ -51781,13 +51683,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e76.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e77",
-    "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_77",
-    "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e77.py",
-    "What is now proved was once only imagined. -- William Blake",
 )
 _r(
     "david_j_morin_probability_for_the_enthusiastic_beginner6e8",
@@ -89027,6 +88922,34 @@ _r(
     "esl_prodenica",
     "Auto",
     "Auto-wired callable from fn/eslpdi.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "sampvarvar",
+    "sampvarvar",
+    "Auto",
+    "Auto-wired callable from fn/sampvarvar.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "geomexp",
+    "geomexp",
+    "Auto",
+    "Auto-wired callable from fn/geomexp.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "linmodelinv",
+    "linmodelinv",
+    "Auto",
+    "Auto-wired callable from fn/linmodelinv.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "bvnmodel",
+    "bvnmodel",
+    "Auto",
+    "Auto-wired callable from fn/bvnmodel.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
