@@ -28490,27 +28490,6 @@ _r(
     quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "svag2",
-    "svag2",
-    "Spatial",
-    "2D amendment agenda",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "svagn",
-    "svagn",
-    "Spatial",
-    "1D agenda setting equilibrium",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "svamn",
-    "svamn",
-    "Spatial",
-    "Sequential amendment procedure",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
     "svasp",
     "svasp",
     "Spatial",
@@ -28525,21 +28504,6 @@ _r(
     quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r("svblt", "svblt", "Spatial", "Boltzmann (softmax) spatial voting", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "svbnk",
-    "svbnk",
-    "Spatial",
-    "Banks set computation",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "svbnz",
-    "svbnz",
-    "Spatial",
-    "Banzhaf power index spatial",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r("svbrd", "svbrd", "Spatial", "Borda count in spatial model", quote="There is no royal road to geometry. -- Euclid")
 _r(
     "svbut",
     "svbut",
@@ -28590,14 +28554,6 @@ _r(
     "Cutting plane in 3D",
     quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
-_r("svclr", "svclr", "Spatial", "Condorcet loser identification", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "svcls",
-    "svcls",
-    "Spatial",
-    "Minimum winning coalition size",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
 _r(
     "svclv",
     "svclv",
@@ -28606,28 +28562,6 @@ _r(
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "svcly",
-    "svcly",
-    "Spatial",
-    "Yolk of spatial game",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "svcm2",
-    "svcm2",
-    "Spatial",
-    "2D committee decision",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "svcmp",
-    "svcmp",
-    "Spatial",
-    "Committee median voter model",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r("svcpw", "svcpw", "Spatial", "Copeland spatial winner", quote="Number rules the universe. -- Pythagoras")
-_r(
     "svcwn",
     "svcwn",
     "Spatial",
@@ -28635,25 +28569,11 @@ _r(
     quote="Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "svcyc",
-    "svcyc",
-    "Spatial",
-    "Condorcet cycle detection",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
     "svdft",
     "svdft",
     "Spatial",
     "Directional with intensity term.",
     quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "svdgn",
-    "svdgn",
-    "Spatial",
-    "Deegan-Packel power index",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
     "svdm2",
@@ -28808,13 +28728,6 @@ _r(
     quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "svjhn",
-    "svjhn",
-    "Spatial",
-    "Johnston power index",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
     "svkut",
     "svkut",
     "Spatial",
@@ -28957,13 +28870,6 @@ _r(
     "Spatial",
     "2D spatial polarization",
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "svplc",
-    "svplc",
-    "Spatial",
-    "Plott radial symmetry condition check",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
     "svpld",
@@ -29119,20 +29025,12 @@ _r(
     quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "svshp",
-    "svshp",
-    "Spatial",
-    "Shapley value in spatial game",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
     "svsph",
     "svsph",
     "Spatial",
     "Spatial phase transition (chaos/order)",
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
-_r("svtcs", "svtcs", "Spatial", "Top cycle set computation", quote="Knowledge is power. -- Francis Bacon")
 _r(
     "svtut",
     "svtut",
@@ -29140,7 +29038,6 @@ _r(
     "Threshold utility step function.",
     quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
-_r("svucs", "svucs", "Spatial", "Uncovered set in 2D", quote="I think, therefore I am. -- Rene Descartes")
 _r(
     "svutm",
     "svutm",
@@ -85991,6 +85888,48 @@ _r(
     "vote_probability",
     "Auto",
     "Auto-wired callable from fn/svprob.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "svtour",
+    "majority_tournament",
+    "Auto",
+    "Auto-wired callable from fn/svtour.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "svgeom",
+    "yolk",
+    "Auto",
+    "Auto-wired callable from fn/svgeom.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "svagnd",
+    "amendment_agenda",
+    "Auto",
+    "Auto-wired callable from fn/svagnd.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "svsetr",
+    "agenda_setter_equilibrium",
+    "Auto",
+    "Auto-wired callable from fn/svsetr.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "svpowr",
+    "power_indices",
+    "Auto",
+    "Auto-wired callable from fn/svpowr.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "svsowen",
+    "shapley_owen",
+    "Auto",
+    "Auto-wired callable from fn/svsowen.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
