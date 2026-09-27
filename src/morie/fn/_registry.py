@@ -25371,60 +25371,11 @@ _r(
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "saelm",
-    "saelm",
-    "SpatAutoC",
-    "Moran eigenvector spatial filter",
-    quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "sagsp",
-    "sagsp",
-    "SpatAutoC",
-    "Geary scatter plot",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "saldf",
-    "saldf",
-    "SpatAutoC",
-    "LISA differential test",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "saldi",
-    "saldi",
-    "SpatAutoC",
-    "LISA discriminant",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "samob",
-    "samob",
-    "SpatAutoC",
-    "Moran's I bias correction",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "saqmo",
-    "saqmo",
-    "SpatAutoC",
-    "Quantile Moran scatter",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
     "sarboot",
     "sarboot",
     "SAR",
     "SAR bootstrap confidence interval for rho.",
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "sarconv",
-    "sarconv",
-    "SAR",
-    "SAR convergence diagnostic (eigenvalue method).",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
     "sardet",
@@ -25491,57 +25442,6 @@ _r(
     "SAR",
     "SAR Wald test on spatial lag parameter.",
     quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "sawad",
-    "sawad",
-    "SpatAutoC",
-    "Spatial weight adaptive",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "sawbl",
-    "sawbl",
-    "SpatAutoC",
-    "Spatial weight block",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "sawcm",
-    "sawcm",
-    "SpatAutoC",
-    "Spatial weight comparison",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "sawco",
-    "sawco",
-    "SpatAutoC",
-    "Spatial weight contiguity",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "sawer",
-    "sawer",
-    "SpatAutoC",
-    "Spatial weight error operator",
-    quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r("sawhi", "sawhi", "SpatAutoC", "Spatial weight histogram", quote="Knowledge is power. -- Francis Bacon")
-_r("sawlg", "sawlg", "SpatAutoC", "Spatial weight lag operator", quote="We must know. We will know. -- David Hilbert")
-_r(
-    "sawpl",
-    "sawpl",
-    "SpatAutoC",
-    "Spatial weight plot",
-    quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
-    "sawrg",
-    "sawrg",
-    "SpatAutoC",
-    "Spatial weight regime",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
 )
 _r("sbalt", "sbalt", "Spatial", "Alternating offer bargaining.", quote="We must know. We will know. -- David Hilbert")
 _r(
@@ -79503,13 +79403,6 @@ _r(
 )
 _r("sactv", "activity", "Auto", "Auto-wired callable from fn/sactv.py", "Knowledge is power. -- Francis Bacon")
 _r(
-    "saelm",
-    "saelm",
-    "Auto",
-    "Auto-wired callable from fn/saelm.py",
-    "Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
     "safrl",
     "safe_rl",
     'reinforcement-learning',
@@ -85152,6 +85045,20 @@ _r(
     "gm_error_sar",
     "Auto",
     "Auto-wired callable from fn/gmsar.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "mesf",
+    "moran_eigenvector_filter",
+    "Auto",
+    "Auto-wired callable from fn/mesf.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "swops",
+    "rho_bounds",
+    "Auto",
+    "Auto-wired callable from fn/swops.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(

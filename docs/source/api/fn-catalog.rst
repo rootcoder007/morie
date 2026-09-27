@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,005 single-purpose callables** -- every one
+``morie.fn`` ships **16,991 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -9969,6 +9969,7 @@ Full list
    "mood_median_test", "mood"
    "moodmediantest", "mood"
    "moods", "moods"
+   "moran_eigenvector_filter", "mesf"
    "moran_resid", "xrmri"
    "moran_residual_test", "sgrmr"
    "moran_scatter", "morplt"
@@ -13027,6 +13028,7 @@ Full list
    "rhat_diagnostic", "rhatd"
    "rhatd", "rhatd"
    "rhatdiagnostic", "rhatd"
+   "rho_bounds", "swops"
    "rho_critical_mediation", "rhomed"
    "rhumbr", "rhumbr"
    "riccati", "bsaadapt"
@@ -13411,14 +13413,10 @@ Full list
    "sacrob", "sacrob"
    "sacvar", "sacvar"
    "sacwald", "sacwald"
-   "saelm", "saelm"
    "safe_rl", "safrl"
    "saferl", "safrl"
-   "sagsp", "sagsp"
    "saige_gwas", "saigeg"
    "saigegwas", "saigeg"
-   "saldf", "saldf"
-   "saldi", "saldi"
    "sam2_video_propagation", "sam2vd"
    "sam_image_encoder", "semaeg"
    "sam_mask_decoder", "samdec"
@@ -13428,7 +13426,6 @@ Full list
    "sammaskdecoder", "samdec"
    "sammon_mapping", "semap"
    "sammonmapping", "semap"
-   "samob", "samob"
    "sampford_design", "sampfd"
    "sample_autocorrelation", "acsamp"
    "sample_bound", "smpbd"
@@ -13468,12 +13465,10 @@ Full list
    "sampvarvar", "sampvarvar"
    "samsegment", "samseg"
    "sandwich_robust_se", "robcov"
-   "saqmo", "saqmo"
    "sar_impacts", "xrimp"
    "sar_lag_model", "sgsar"
    "sar_ml", "xrsar"
    "sarboot", "sarboot"
-   "sarconv", "sarconv"
    "sardet", "sardet"
    "sarfilt", "sarfilt"
    "sarima_fit", "sarim"
@@ -13499,15 +13494,6 @@ Full list
    "savefigure", "savfg"
    "savgol_smooth", "savgf"
    "savgolsmooth", "savgf"
-   "sawad", "sawad"
-   "sawbl", "sawbl"
-   "sawcm", "sawcm"
-   "sawco", "sawco"
-   "sawer", "sawer"
-   "sawhi", "sawhi"
-   "sawlg", "sawlg"
-   "sawpl", "sawpl"
-   "sawrg", "sawrg"
    "sax_representation", "saxR"
    "sbalt", "sbalt"
    "sbbias", "sbbias"
