@@ -28626,23 +28626,7 @@ _r(
     "Hybrid proximity-valence model.",
     quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
-_r("svip1", "svip1", "Spatial", "1D ideal point estimation", quote="I think, therefore I am. -- Rene Descartes")
-_r("svip2", "svip2", "Spatial", "2D ideal point estimation", quote="We must know. We will know. -- David Hilbert")
 _r("svipa", "svipa", "Spatial", "Adaptive ideal point estimation", quote="We must know. We will know. -- David Hilbert")
-_r(
-    "svipb",
-    "svipb",
-    "Spatial",
-    "Bayesian ideal point posterior",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "svipe",
-    "svipe",
-    "Spatial",
-    "EM ideal point estimation",
-    quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
 _r(
     "svipk",
     "svipk",
@@ -28656,13 +28640,6 @@ _r(
     "Spatial",
     "MLE ideal point estimation",
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "svipn",
-    "svipn",
-    "Spatial",
-    "Normal ideal point model",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
     "sviut",

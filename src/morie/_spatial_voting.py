@@ -8,6 +8,8 @@ All functions are pure NumPy/SciPy -- no external R packages required.
 
 from __future__ import annotations
 
+import math
+
 from morie.fn import _array_core as np
 from morie.fn._array_core import NDArray
 
@@ -31,8 +33,8 @@ def aldrich_mckelvey(
     """
     if int(n_dims) != 1:
         raise NotImplementedError(
-            "aldrich_mckelvey: this implementation recovers a single latent "
-            "dimension; n_dims must be 1")
+            "aldrich_mckelvey: this implementation recovers a single latent dimension; n_dims must be 1"
+        )
     Z = np.asarray(Z, dtype=float)
     n_resp, n_stim = Z.shape
 
@@ -1131,117 +1133,144 @@ def bayesian_unfolding(
 
 
 def cjr_irt(
-    votes: NDArray,
+    votes,
     n_dims: int = 1,
     n_samples: int = 1000,
     burn_in: int = 200,
+    *,
+    beta_prior_var: float = 25.0,
+    start=None,
+    seed: int = 0,
+    keep_chains: bool = True,
 ) -> dict:
-    """Clinton-Jackman-Rivers Bayesian IRT model (Eqs 6.17-6.26).
+    """Clinton-Jackman-Rivers Bayesian IRT by Gibbs sampling (Eqs 6.17-6.26).
 
-    P(y_ij = 1) = Phi(beta_j' * x_i - alpha_j).
+    ``P(y_ij = 1) = Phi(beta_j' x_i - alpha_j)`` with priors
+    ``x_i ~ N(0, I)`` and ``(alpha_j, beta_j) ~ N(0, beta_prior_var I)``.
+    Each sweep draws the latent utilities from their truncated normals
+    (Albert and Chib 1993), then every ``(alpha_j, beta_j)`` and every
+    ``x_i`` from its Gaussian full conditional, as in
+    ``MCMCpack::MCMCirt1d`` and ``pscl::ideal``. All draws are inverse-CDF
+    transforms of Philox uniforms (sweep ``t`` uses stream ``t``), so the
+    Python and R arms give the same chain.
 
-    :param votes: (n_leg x n_votes) binary vote matrix.
+    :param votes: (n_leg x n_votes) matrix of 1, 0 and NaN (missing).
     :param n_dims: Number of ideal point dimensions.
-    :param n_samples: MCMC samples.
-    :param burn_in: Burn-in.
-    :return: dict with ideal_point_chain, alpha_chain, beta_chain, posteriors.
+    :param n_samples: Retained sweeps.
+    :param burn_in: Discarded sweeps.
+    :param beta_prior_var: Prior variance of alpha_j and beta_j.
+    :param start: Optional (n_leg x n_dims) starting ideal points; default
+        the ``em_irt`` posterior mode.
+    :param seed: Philox key.
+    :param keep_chains: Return the draws as well as the summaries.
+    :return: dict with ideal_point_mean, ideal_point_sd, alpha_mean,
+        beta_mean and, when kept, ideal_point_chain, alpha_chain, beta_chain.
     """
-    from morie.fn._stats_core import norm
+    from morie.fn._rng import normal_quantile, random_uniform
 
-    votes = np.asarray(votes, dtype=float)
-    n_leg, n_vote = votes.shape
-    mask = ~np.isnan(votes)
-    rng = np.random.default_rng(42)
-
-    x = rng.standard_normal((n_leg, n_dims)) * 0.5
-    alpha = np.zeros(n_vote)
-    beta = rng.standard_normal((n_vote, n_dims)) * 0.5
-
-    x_chain = np.zeros((n_samples, n_leg, n_dims))
-    alpha_chain = np.zeros((n_samples, n_vote))
-    beta_chain = np.zeros((n_samples, n_vote, n_dims))
-
-    step_x = 0.2
-    step_ab = 0.2
-
-    for t in range(n_samples + burn_in):
-        for i in range(n_leg):
-            x_prop = x.copy()
-            x_prop[i] += rng.normal(0, step_x, n_dims)
-
-            ll_curr = 0.0
-            ll_prop = 0.0
-            for j in range(n_vote):
-                if not mask[i, j]:
-                    continue
-                z_curr = float(beta[j] @ x[i] - alpha[j])
-                z_prop = float(beta[j] @ x_prop[i] - alpha[j])
-                p_c = norm.cdf(z_curr)
-                p_p = norm.cdf(z_prop)
-                p_c = np.clip(p_c, 1e-10, 1 - 1e-10)
-                p_p = np.clip(p_p, 1e-10, 1 - 1e-10)
-                if votes[i, j] == 1:
-                    ll_curr += np.log(p_c)
-                    ll_prop += np.log(p_p)
-                else:
-                    ll_curr += np.log(1 - p_c)
-                    ll_prop += np.log(1 - p_p)
-
-            prior_c = -np.sum(x[i] ** 2) / 2
-            prior_p = -np.sum(x_prop[i] ** 2) / 2
-
-            if np.log(rng.random()) < (ll_prop + prior_p) - (ll_curr + prior_c):
-                x[i] = x_prop[i]
-
-        if x[0, 0] < 0:
-            x[:, 0] *= -1
-            beta[:, 0] *= -1
-
-        for j in range(n_vote):
-            alpha_prop = alpha.copy()
-            beta_prop = beta.copy()
-            alpha_prop[j] += rng.normal(0, step_ab)
-            beta_prop[j] += rng.normal(0, step_ab, n_dims)
-
-            ll_curr = 0.0
-            ll_prop = 0.0
-            for i in range(n_leg):
-                if not mask[i, j]:
-                    continue
-                z_c = float(beta[j] @ x[i] - alpha[j])
-                z_p = float(beta_prop[j] @ x[i] - alpha_prop[j])
-                p_c = np.clip(norm.cdf(z_c), 1e-10, 1 - 1e-10)
-                p_p = np.clip(norm.cdf(z_p), 1e-10, 1 - 1e-10)
-                if votes[i, j] == 1:
-                    ll_curr += np.log(p_c)
-                    ll_prop += np.log(p_p)
-                else:
-                    ll_curr += np.log(1 - p_c)
-                    ll_prop += np.log(1 - p_p)
-
-            prior_c = -(alpha[j] ** 2 + np.sum(beta[j] ** 2)) / 50
-            prior_p = -(alpha_prop[j] ** 2 + np.sum(beta_prop[j] ** 2)) / 50
-
-            if np.log(rng.random()) < (ll_prop + prior_p) - (ll_curr + prior_c):
-                alpha[j] = alpha_prop[j]
-                beta[j] = beta_prop[j]
-
+    Y = [[float(v) for v in row] for row in votes]
+    N, J, D = len(Y), len(Y[0]), int(n_dims)
+    obs = [[v == v for v in row] for row in Y]
+    x = [list(map(float, r)) for r in start] if start is not None else em_irt(Y, n_dims=D)["ideal_points"]
+    alpha, beta = [0.0] * J, [[0.0] * D for _ in range(J)]
+    xs, as_, bs = [], [], []
+    for t in range(burn_in + n_samples):
+        u = [float(v) for v in random_uniform(N * J + J * (D + 1) + N * D, seed=seed, stream=t)]
+        M = [[_em_dot(beta[j], x[i]) - alpha[j] for j in range(J)] for i in range(N)]
+        q, far = [], {}
+        for i in range(N):
+            for j in range(J):
+                v = u[i * J + j]
+                s = M[i][j] if Y[i][j] == 1 else -M[i][j]
+                if obs[i][j] and s < -30.0:
+                    far[i * J + j] = _cjr_log_tail_quantile(math.log(v) + _cjr_log_phi_far(s))
+                    v = 0.5
+                elif obs[i][j]:
+                    v *= _em_phi_cdf(s)
+                q.append(v)
+        q = [far.get(k, float(v)) for k, v in enumerate(normal_quantile(q))]
+        ys = [
+            [M[i][j] + (-q[i * J + j] if obs[i][j] and Y[i][j] == 1 else q[i * J + j]) for j in range(J)]
+            for i in range(N)
+        ]
+        z_all = iter(float(v) for v in normal_quantile(u[N * J :]))
+        xt = [[-1.0] + x[i] for i in range(N)]
+        P = [
+            [(1.0 / beta_prior_var if r == c else 0.0) + _em_col(xt, r, c) for c in range(D + 1)] for r in range(D + 1)
+        ]
+        V = _em_inverse(P)
+        L = _cjr_chol(V)
+        for j in range(J):
+            rhs = [_em_ssum(xt[i][r] * ys[i][j] for i in range(N)) for r in range(D + 1)]
+            mu = [_em_dot(V[r], rhs) for r in range(D + 1)]
+            z = [next(z_all) for _ in range(D + 1)]
+            draw = [mu[r] + _em_dot(L[r][: r + 1], z[: r + 1]) for r in range(D + 1)]
+            alpha[j], beta[j] = draw[0], draw[1:]
+        Q = [[(1.0 if r == c else 0.0) + _em_col(beta, r, c) for c in range(D)] for r in range(D)]
+        W = _em_inverse(Q)
+        K = _cjr_chol(W)
+        for i in range(N):
+            rhs = [_em_ssum(beta[j][d] * (ys[i][j] + alpha[j]) for j in range(J)) for d in range(D)]
+            mu = [_em_dot(W[r], rhs) for r in range(D)]
+            z = [next(z_all) for _ in range(D)]
+            x[i] = [mu[r] + _em_dot(K[r][: r + 1], z[: r + 1]) for r in range(D)]
         if t >= burn_in:
-            idx = t - burn_in
-            x_chain[idx] = x.copy()
-            alpha_chain[idx] = alpha.copy()
-            beta_chain[idx] = beta.copy()
+            xs.append([list(r) for r in x])
+            as_.append(list(alpha))
+            bs.append([list(r) for r in beta])
+    S = len(xs)
 
-    return {
-        "ideal_point_chain": x_chain,
-        "ideal_point_mean": x_chain.mean(axis=0),
-        "ideal_point_sd": x_chain.std(axis=0),
-        "alpha_chain": alpha_chain,
-        "alpha_mean": alpha_chain.mean(axis=0),
-        "beta_chain": beta_chain,
-        "beta_mean": beta_chain.mean(axis=0),
+    def mean(ch, shape):
+        return [[_em_ssum(c[i][d] for c in ch) / S for d in range(shape[1])] for i in range(shape[0])]
+
+    xm = mean(xs, (N, D))
+    out = {
+        "ideal_point_mean": xm,
+        "ideal_point_sd": [
+            [math.sqrt(_em_ssum((c[i][d] - xm[i][d]) ** 2 for c in xs) / (S - 1)) if S > 1 else 0.0 for d in range(D)]
+            for i in range(N)
+        ],
+        "alpha_mean": [_em_ssum(c[j] for c in as_) / S for j in range(J)],
+        "beta_mean": mean(bs, (J, D)),
         "n_samples": n_samples,
     }
+    if keep_chains:
+        out.update(ideal_point_chain=xs, alpha_chain=as_, beta_chain=bs)
+    return out
+
+
+def _cjr_log_phi_far(m):
+    # log Phi(m) for m < -30 from the Mills-ratio series; Phi itself underflows
+    w = 1.0 / (m * m)
+    return (
+        -0.5 * m * m
+        - math.log(-m)
+        - 0.5 * math.log(2.0 * math.pi)
+        + math.log(1.0 - w + 3.0 * w * w - 15.0 * w**3 + 105.0 * w**4)
+    )
+
+
+def _cjr_log_tail_quantile(logp):
+    # AS 241 far-tail branch (r > 5) evaluated from log p
+    from morie.fn._rng import _E, _F
+
+    rr = math.sqrt(-logp) - 5.0
+    num, den = _E[-1], _F[-1]
+    for c in _E[-2::-1]:
+        num = num * rr + c
+    for c in _F[-2::-1]:
+        den = den * rr + c
+    return -(num / den)
+
+
+def _cjr_chol(A):
+    n = len(A)
+    L = [[0.0] * n for _ in range(n)]
+    for r in range(n):
+        for c in range(r + 1):
+            s = A[r][c] - _em_ssum(L[r][k] * L[c][k] for k in range(c))
+            L[r][c] = math.sqrt(s) if r == c else s / L[c][c]
+    return L
 
 
 def bayesian_irt_likelihood(
@@ -2152,99 +2181,176 @@ def dynamic_irt(
 
 
 def em_irt(
-    votes: NDArray,
+    votes,
     n_dims: int = 1,
-    max_iter: int = 100,
+    max_iter: int = 500,
     tol: float = 1e-6,
+    *,
+    x_prior=(0.0, 1.0),
+    beta_prior=(0.0, 25.0),
+    start=None,
+    conv: str = "cor",
 ) -> dict:
-    """EM algorithm for IRT (Section 6.7, Eqs 6.40-6.47).
+    """EM for the binary probit IRT model (Imai, Lo and Olmsted 2016).
 
-    Imai, Lo, and Olmsted (2016): closed-form EM for binary/ordinal IRT.
-    E-step computes expected ideal points; M-step maximizes discrimination
-    and difficulty parameters.
+    ``y*_ij = alpha_j + beta_j' x_i + e_ij`` with ``e_ij ~ N(0, 1)`` and a
+    yea when ``y*_ij > 0``; priors ``x_i ~ N(mu_x, s2_x I)`` and
+    ``(alpha_j, beta_j) ~ N(mu_b, s2_b I)``. The E-step replaces ``y*`` by
+    its truncated-normal mean (untruncated when the vote is missing); the
+    M-step is the pair of ridge regressions of ``emIRT::binIRT`` with
+    ``asEM = TRUE``. The fixed point is the posterior mode.
 
-    :param votes: (n_leg x n_votes) binary vote matrix.
+    :param votes: (n_leg x n_votes) matrix of 1 (yea), 0 (nay), NaN (missing).
     :param n_dims: Number of latent dimensions.
     :param max_iter: Maximum EM iterations.
-    :param tol: Convergence tolerance.
-    :return: dict with ideal_points, discrimination, difficulty, log_lik, iterations.
+    :param tol: Convergence threshold.
+    :param x_prior: ``(mu_x, s2_x)``.
+    :param beta_prior: ``(mu_b, s2_b)`` for the intercept and slopes.
+    :param start: Optional ``(alpha, beta, x)`` starting values; default
+        alpha = beta = 0 and x from 50 steps of orthogonal iteration on
+        ``Y Y'`` (Y the column-centred +1/-1 votes, missing 0).
+    :param conv: ``"cor"`` (1 - smallest correlation of old and new
+        estimates, per column) or ``"abs"`` (largest absolute change).
+    :return: dict with ideal_points, discrimination, difficulty (the
+        intercepts alpha), log_lik, iterations, converged.
     """
-    votes = np.asarray(votes, dtype=float)
-    n_leg, n_votes = votes.shape
-    mask = ~np.isnan(votes)
-
-    rng = np.random.default_rng(42)
-    theta = rng.standard_normal((n_leg, n_dims)) * 0.5
-    a = rng.standard_normal((n_votes, n_dims)) * 0.5
-    d = np.zeros(n_votes)
-
-    for iteration in range(max_iter):
-        theta_old = theta.copy()
-
-        for i in range(n_leg):
-            valid = mask[i]
-            if valid.sum() == 0:
-                continue
-            y_i = votes[i, valid]
-            a_i = a[valid]
-            d_i = d[valid]
-
-            eta = a_i @ theta[i] + d_i
-            eta = np.clip(eta, -20, 20)
-            p = 1.0 / (1.0 + np.exp(-eta))
-
-            residual = y_i - p
-            w = p * (1 - p) + 1e-10
-
-            H = a_i.T @ (a_i * w[:, None]) + np.eye(n_dims)
-            g = a_i.T @ residual
-            theta[i] += np.linalg.solve(H, g)
-
-        for j in range(n_votes):
-            valid = mask[:, j]
-            if valid.sum() == 0:
-                continue
-            y_j = votes[valid, j]
-            theta_j = theta[valid]
-
-            eta = theta_j @ a[j] + d[j]
-            eta = np.clip(eta, -20, 20)
-            p = 1.0 / (1.0 + np.exp(-eta))
-
-            residual = y_j - p
-            w = p * (1 - p) + 1e-10
-
-            X_aug = np.column_stack([theta_j, np.ones(theta_j.shape[0])])
-            H = X_aug.T @ (X_aug * w[:, None])
-            g = X_aug.T @ residual
-            H += np.eye(H.shape[0]) * 0.01
-            delta = np.linalg.solve(H, g)
-            a[j] += delta[:n_dims]
-            d[j] += delta[n_dims]
-
-        change = np.linalg.norm(theta - theta_old) / (np.linalg.norm(theta_old) + 1e-12)
-        if change < tol:
+    Y = [[float(v) for v in row] for row in votes]
+    N, J, D = len(Y), len(Y[0]), int(n_dims)
+    obs = [[v == v for v in row] for row in Y]
+    mx, sx = float(x_prior[0]), float(x_prior[1])
+    mb, sb = float(beta_prior[0]), float(beta_prior[1])
+    if start is None:
+        a = [0.0] * J
+        b = [[0.0] * D for _ in range(J)]
+        x = _em_irt_start(Y, obs, D)
+    else:
+        a = [float(v) for v in start[0]]
+        b = [[float(v) for v in row] for row in start[1]]
+        x = [[float(v) for v in row] for row in start[2]]
+    it, converged = 0, False
+    while it < max_iter:
+        it += 1
+        ys = [[_em_ystar(a[j] + _em_dot(b[j], x[i]), Y[i][j], obs[i][j]) for j in range(J)] for i in range(N)]
+        x2 = [[1.0] + x[i] for i in range(N)]
+        P = [[(1.0 / sb if r == c else 0.0) + _em_col(x2, r, c) for c in range(D + 1)] for r in range(D + 1)]
+        B = _em_inverse(P)
+        ab = []
+        for j in range(J):
+            rhs = [mb / sb + _em_ssum(x2[i][r] * ys[i][j] for i in range(N)) for r in range(D + 1)]
+            ab.append([_em_ssum(B[r][c] * rhs[c] for c in range(D + 1)) for r in range(D + 1)])
+        a_new = [ab[j][0] for j in range(J)]
+        b_new = [ab[j][1:] for j in range(J)]
+        eba = [_em_ssum(b_new[j][d] * a_new[j] for j in range(J)) for d in range(D)]
+        Q = [[(1.0 / sx if r == c else 0.0) + _em_col(b_new, r, c) for c in range(D)] for r in range(D)]
+        A = _em_inverse(Q)
+        x_new = []
+        for i in range(N):
+            rhs = [mx / sx + _em_ssum(b_new[j][d] * ys[i][j] for j in range(J)) - eba[d] for d in range(D)]
+            x_new.append([_em_ssum(A[r][c] * rhs[c] for c in range(D)) for r in range(D)])
+        if it > 1:
+            dev = max(
+                _em_dev(x, x_new, conv),
+                _em_dev([[v] for v in a], [[v] for v in a_new], conv),
+                _em_dev(b, b_new, conv),
+            )
+            converged = dev < tol
+        a, b, x = a_new, b_new, x_new
+        if converged:
             break
-
     ll = 0.0
-    for j in range(n_votes):
-        valid = mask[:, j]
-        if valid.sum() == 0:
-            continue
-        eta = theta[valid] @ a[j] + d[j]
-        eta = np.clip(eta, -20, 20)
-        p = 1.0 / (1.0 + np.exp(-eta))
-        p = np.clip(p, 1e-10, 1 - 1e-10)
-        y_j = votes[valid, j]
-        ll += np.sum(y_j * np.log(p) + (1 - y_j) * np.log(1 - p))
-
+    for i in range(N):
+        for j in range(J):
+            if obs[i][j]:
+                m = a[j] + _em_dot(b[j], x[i])
+                ll += math.log(_em_phi_cdf(m if Y[i][j] == 1 else -m))
     return {
-        "ideal_points": theta,
-        "discrimination": a,
-        "difficulty": d,
+        "ideal_points": x,
+        "discrimination": b,
+        "difficulty": a,
         "log_lik": ll,
-        "iterations": iteration + 1,
+        "iterations": it,
+        "converged": converged,
     }
+
+
+def _em_ssum(it):
+    s = 0.0
+    for v in it:
+        s += v
+    return s
+
+
+def _em_dot(u, v):
+    return _em_ssum(p * q for p, q in zip(u, v))
+
+
+def _em_col(M, r, c):
+    return _em_ssum(row[r] * row[c] for row in M)
+
+
+def _em_phi_cdf(z):
+    return 0.5 * math.erfc(-z / math.sqrt(2.0))
+
+
+def _em_ystar(m, y, observed):
+    if not observed:
+        return m
+    phi = math.exp(-0.5 * m * m) / math.sqrt(2.0 * math.pi)
+    if y == 1:
+        return m + phi / _em_phi_cdf(m)
+    return m - phi / _em_phi_cdf(-m)
+
+
+def _em_inverse(M):
+    n = len(M)
+    W = [list(M[r]) + [1.0 if r == c else 0.0 for c in range(n)] for r in range(n)]
+    for k in range(n):
+        p = max(range(k, n), key=lambda r: abs(W[r][k]))
+        W[k], W[p] = W[p], W[k]
+        piv = W[k][k]
+        W[k] = [v / piv for v in W[k]]
+        for r in range(n):
+            if r != k and W[r][k] != 0.0:
+                f = W[r][k]
+                W[r] = [v - f * w for v, w in zip(W[r], W[k])]
+    return [row[n:] for row in W]
+
+
+def _em_dev(old, new, conv):
+    if conv == "abs":
+        return max(abs(u - v) for ro, rn in zip(old, new) for u, v in zip(ro, rn))
+    worst = 0.0
+    for d in range(len(old[0])):
+        u = [r[d] for r in old]
+        v = [r[d] for r in new]
+        mu, mv = _em_ssum(u) / len(u), _em_ssum(v) / len(v)
+        su = _em_ssum((p - mu) ** 2 for p in u)
+        sv = _em_ssum((q - mv) ** 2 for q in v)
+        cuv = _em_ssum((p - mu) * (q - mv) for p, q in zip(u, v))
+        worst = max(worst, 1.0 - cuv / math.sqrt(su * sv) if su > 0 and sv > 0 else 1.0)
+    return worst
+
+
+def _em_irt_start(Y, obs, D):
+    N, J = len(Y), len(Y[0])
+    Z = [[(1.0 if Y[i][j] == 1 else -1.0) if obs[i][j] else 0.0 for j in range(J)] for i in range(N)]
+    for j in range(J):
+        c = _em_ssum(Z[i][j] for i in range(N)) / N
+        for i in range(N):
+            Z[i][j] -= c
+    S = [[_em_dot(Z[r], Z[c]) for c in range(N)] for r in range(N)]
+    V = [[float((i + 1) ** (d + 1)) for d in range(D)] for i in range(N)]
+    for _ in range(50):
+        V = [[_em_ssum(S[r][k] * V[k][d] for k in range(N)) for d in range(D)] for r in range(N)]
+        for d in range(D):
+            for e in range(d):
+                p = _em_ssum(V[i][d] * V[i][e] for i in range(N))
+                for i in range(N):
+                    V[i][d] -= p * V[i][e]
+            nrm = math.sqrt(_em_ssum(V[i][d] ** 2 for i in range(N)))
+            for i in range(N):
+                V[i][d] = V[i][d] / nrm if nrm > 0 else 0.0
+    return [[V[i][d] * math.sqrt(N) for d in range(D)] for i in range(N)]
 
 
 def nonparametric_bootstrap_scaling(

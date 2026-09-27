@@ -6,21 +6,26 @@ from . import _array_core as np
 from ._containers import DescriptiveResult
 
 
-def em_irt_estimate(votes=None, *, dims=1, n=10, m=5, max_iter=20):
-    """EM algorithm for IRT ideal point estimation.
+def em_irt_estimate(votes=None, *, dims=1, n=10, m=5, max_iter=500, **kwargs):
+    """EM ideal points for the binary probit IRT model (Imai, Lo and Olmsted 2016).
+
+    Wraps ``morie._spatial_voting.em_irt`` (the ``emIRT::binIRT`` updates
+    with ``asEM = TRUE``); ``kwargs`` pass through (``tol``, ``x_prior``,
+    ``beta_prior``, ``start``, ``conv``).
 
     Returns
     -------
     DescriptiveResult
+        ``value`` is the probit log-likelihood at the posterior mode.
     """
     if votes is None:
         rng = np.random.default_rng(0)
         votes = (rng.random((n, m)) > 0.5).astype(float)
     votes = np.asarray(votes, dtype=float)
-    result = _em_irt(votes, n_dims=dims, max_iter=max_iter)
+    result = _em_irt(votes.tolist(), n_dims=dims, max_iter=max_iter, **kwargs)
     return DescriptiveResult(
         name="EM IRT",
-        value=result.get("loglik", 0.0),
+        value=result["log_lik"],
         extra={"dims": dims, "max_iter": max_iter, **result},
     )
 

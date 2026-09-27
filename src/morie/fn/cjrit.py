@@ -11,6 +11,7 @@ def cjr_irt_model(
     n_dims: int = 1,
     n_samples: int = 1000,
     burn_in: int = 200,
+    **kwargs,
 ) -> DescriptiveResult:
     """Clinton-Jackman-Rivers Bayesian IRT for ideal point estimation.
 
@@ -18,13 +19,15 @@ def cjr_irt_model(
     :param n_dims: Number of latent dimensions.
     :param n_samples: Number of posterior samples.
     :param burn_in: Burn-in samples to discard.
+    :param kwargs: Passed to the Gibbs sampler (``beta_prior_var``,
+        ``start``, ``seed``, ``keep_chains``).
     :return: DescriptiveResult with ideal point posteriors in ``extra``.
 
     .. epigraph:: Mathematics is the art of giving the same name to different things. -- Henri Poincare
     """
     from morie._spatial_voting import cjr_irt as _fn
 
-    result = _fn(votes, n_dims=n_dims, n_samples=n_samples, burn_in=burn_in)
+    result = _fn(votes, n_dims=n_dims, n_samples=n_samples, burn_in=burn_in, **kwargs)
     return DescriptiveResult(
         name="cjr_irt_model",
         value=result["n_samples"],

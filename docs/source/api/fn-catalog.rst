@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,129 single-purpose callables** -- every one
+``morie.fn`` ships **17,121 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -7613,19 +7613,11 @@ Full list
    "icctwowaymixed", "icc3"
    "icerc", "icerc"
    "ictft", "bsaxfrm"
-   "ideal_point_1d", "svip1"
-   "ideal_point_2d", "svip2"
    "ideal_point_adapt", "svipa"
-   "ideal_point_bayes", "svipb"
-   "ideal_point_em", "svipe"
    "ideal_point_kernel", "svipk"
    "ideal_point_mle", "svipm"
-   "ideal_point_normal", "svipn"
    "ideal_point_recovery", "idlpt"
    "idealf", "idealf"
-   "idealpoint1d", "svip1"
-   "idealpoint2d", "svip2"
-   "idealpointem", "svipe"
    "idealpointmle", "svipm"
    "identifiability_conditions", "ident"
    "identity_by_state", "ibs"
