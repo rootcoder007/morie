@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **16,991 single-purpose callables** -- every one
+``morie.fn`` ships **16,990 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -9081,7 +9081,6 @@ Full list
    "local_dp", "locdp"
    "local_dp_planar_mechanism", "ldppm"
    "local_g_star", "gstarl"
-   "local_geary", "locgea"
    "local_gearys_c", "gearyl"
    "local_getis_g", "lisgst"
    "local_growth_rate", "lgrte"

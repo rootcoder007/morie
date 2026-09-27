@@ -7,10 +7,10 @@ tests/cross/test-morie_vs_spdep.R repeat that in R.
 
 import pytest
 
+from morie.fn.gearyl import localgeary
 from morie.fn.jcmult import join_count_multi
 from morie.fn.jjmsta import join_count
 from morie.fn.lmorbv import local_moran_bivariate
-from morie.fn.locgea import local_geary
 from morie.fn.morplt import moran_scatter
 from morie.fn.spcorr import graph_lags, spatial_correlogram
 
@@ -31,7 +31,7 @@ def test_local_geary_formula_and_docstring():
     x = [1.0, 2.0, 4.0, 8.0]
     z = _z(x)
     want = [sum(PATH4[i][j] * (z[i] - z[j]) ** 2 for j in range(4)) for i in range(4)]
-    got = local_geary(x, PATH4).local_values
+    got = localgeary(x, PATH4)["local"]
     assert got == pytest.approx(want, abs=1e-12)
     assert [round(c, 6) for c in got] == [0.104348, 0.521739, 2.086957, 1.669565]
     # (2 - 1)^2 / var(x) with var(x) = 28.75 / 3
@@ -42,15 +42,15 @@ def test_local_geary_multivariate_is_mean_of_univariate():
     x = [1.0, 2.0, 4.0, 8.0, 3.0]
     y = [5.0, 1.0, 2.0, 2.5, 9.0]
     W = _path(5)
-    a = local_geary(x, W).local_values
-    b = local_geary(y, W).local_values
-    m = local_geary([[x[i], y[i]] for i in range(5)], W).local_values
+    a = localgeary(x, W)["local"]
+    b = localgeary(y, W)["local"]
+    m = localgeary([[x[i], y[i]] for i in range(5)], W)["local"]
     assert m == pytest.approx([(a[i] + b[i]) / 2 for i in range(5)], abs=1e-12)
 
 
 def test_local_geary_rejects_constant():
     with pytest.raises(ValueError):
-        local_geary([1.0, 1.0, 1.0], _path(3))
+        localgeary([1.0, 1.0, 1.0], _path(3))
 
 
 def test_graph_lags_on_path():

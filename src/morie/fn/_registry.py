@@ -85006,13 +85006,6 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "locgea",
-    "local_geary",
-    "Auto",
-    "Auto-wired callable from fn/locgea.py",
-    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
     "spcorr",
     "spatial_correlogram",
     "Auto",
