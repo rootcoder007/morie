@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,994 single-purpose callables** -- every one
+``morie.fn`` ships **17,991 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1499,10 +1499,6 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_5", "bookadvanced_elementsofstatisticallearning2e5"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_6", "bookadvanced_elementsofstatisticallearning2e6"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_9", "bookadvanced_elementsofstatisticallearning2e9"
-   "bookadvanced_elementsofstatisticallearning_chapter_9_equation_27", "bookadvanced_elementsofstatisticallearning9e27"
-   "bookadvanced_elementsofstatisticallearning_chapter_9_equation_28", "bookadvanced_elementsofstatisticallearning9e28"
-   "bookadvanced_elementsofstatisticallearning_chapter_9_equation_29", "bookadvanced_elementsofstatisticallearning9e29"
-   "bookadvanced_elementsofstatisticallearning_chapter_9_equation_30", "bookadvanced_elementsofstatisticallearning9e30"
    "bookmeans", "bookmeans"
    "boolean_eval", "bexpr"
    "boolean_minimize", "boolm"
@@ -4620,6 +4616,7 @@ Full list
    "esl_gcv", "eslgcv"
    "esl_ggm_fit", "esleggm"
    "esl_graphical_lasso", "eslglso"
+   "esl_hme", "eslhme"
    "esl_holm_bonferroni", "eslmht"
    "esl_ica", "eslica"
    "esl_indicator_regression", "eslind"
