@@ -63888,20 +63888,6 @@ _r(
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "hedderich9u340",
-    "hedderich_chapter_9_unnumbered_340",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u340.py",
-    "The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "hedderich9u352",
-    "hedderich_chapter_9_unnumbered_352",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u352.py",
-    "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
     "hedgw",
     "hedgw",
     "Auto",
@@ -88880,6 +88866,13 @@ _r(
     "solve_linear_system",
     "Auto",
     "Auto-wired callable from fn/linsys.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "nlsgn",
+    "nonlinear_least_squares",
+    "Auto",
+    "Auto-wired callable from fn/nlsgn.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(

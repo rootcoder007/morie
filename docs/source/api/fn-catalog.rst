@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,174 single-purpose callables** -- every one
+``morie.fn`` ships **18,173 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -7855,8 +7855,6 @@ Full list
    "hedderich_chapter_8_equation_96", "hedderich8e96"
    "hedderich_chapter_9_unnumbered_3162", "hedderich9u3162"
    "hedderich_chapter_9_unnumbered_3163", "hedderich9u3163"
-   "hedderich_chapter_9_unnumbered_340", "hedderich9u340"
-   "hedderich_chapter_9_unnumbered_352", "hedderich9u352"
    "hedgeg", "hedgeg"
    "hedges_g", "g"
    "hedges_j", "hedges_j"
@@ -11435,6 +11433,7 @@ Full list
    "noncentrality_delta_r", "noncentrality_delta_r"
    "noncentrality_lambda_f", "noncentrality_lambda_f"
    "nonlinear_cg", "cgnonl"
+   "nonlinear_least_squares", "nlsgn"
    "nonlinear_least_squares_surv", "survnls"
    "nonlinearcg", "cgnonl"
    "nonmetric2d", "msnm2"
