@@ -29,7 +29,12 @@ def esl_penalized_logistic(N, y, Omega, lambda_, max_iter=100, tol=1e-10):
     lambda_ : float
         Penalty, >= 0.
     max_iter, tol
-        Newton controls.
+        Newton controls; convergence is judged on the linear predictor
+        :math:`N\theta`, which is identified even when :math:`\theta` is not (a
+        rank-deficient kernel basis leaves :math:`\theta` free along the null
+        space), or on a relative change below 1e-14 in the penalised
+        log-likelihood when rounding in an ill-conditioned basis keeps the
+        predictor from settling below ``tol``.
 
     Returns
     -------
@@ -52,6 +57,14 @@ def esl_penalized_logistic(N, y, Omega, lambda_, max_iter=100, tol=1e-10):
         raise ValueError("y must be 0/1")
     th = [0.0] * m
     converged, it = False, 0
+
+    def pll(t):
+        e = [sum(B[i][j] * t[j] for j in range(m)) for i in range(n)]
+        return sum(yy[i] * e[i] - math.log1p(math.exp(e[i])) for i in range(n)) - 0.5 * lam * sum(
+            t[a] * Om[a][b] * t[b] for a in range(m) for b in range(m)
+        )
+
+    obj = pll(th)
     for _ in range(max_iter):
         it += 1
         eta = [sum(B[i][j] * th[j] for j in range(m)) for i in range(n)]
@@ -62,11 +75,15 @@ def esl_penalized_logistic(N, y, Omega, lambda_, max_iter=100, tol=1e-10):
         rhs = [sum(B[i][a] * w[i] * z[i] for i in range(n)) for a in range(m)]
         inv = _inverse(A)
         new = [sum(inv[a][b] * rhs[b] for b in range(m)) for a in range(m)]
-        step = max(abs(u - v) for u, v in zip(new, th))
+        step = max(abs(sum(B[i][j] * (new[j] - th[j]) for j in range(m))) for i in range(n))
         th = new
-        if step < tol:
+        nobj = pll(th)
+        # the objective test covers an ill-conditioned basis, where the linear
+        # predictor stalls at the solver's rounding level above tol
+        if step < tol or (it >= 3 and abs(nobj - obj) <= 1e-14 * (1 + abs(nobj))):
             converged = True
             break
+        obj = nobj
     eta = [sum(B[i][j] * th[j] for j in range(m)) for i in range(n)]
     p = [1 / (1 + math.exp(-e)) for e in eta]
     w = [v * (1 - v) for v in p]

@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,023 single-purpose callables** -- every one
+``morie.fn`` ships **18,015 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1483,15 +1483,6 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_15", "bookadvanced_elementsofstatisticallearning11e15"
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_16", "bookadvanced_elementsofstatisticallearning11e16"
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_5", "bookadvanced_elementsofstatisticallearning11e5"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_10", "bookadvanced_elementsofstatisticallearning12e10"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_16", "bookadvanced_elementsofstatisticallearning12e16"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_19", "bookadvanced_elementsofstatisticallearning12e19"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_29", "bookadvanced_elementsofstatisticallearning12e29"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_32", "bookadvanced_elementsofstatisticallearning12e32"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_33", "bookadvanced_elementsofstatisticallearning12e33"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_34", "bookadvanced_elementsofstatisticallearning12e34"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_35", "bookadvanced_elementsofstatisticallearning12e35"
-   "bookadvanced_elementsofstatisticallearning_chapter_12_equation_36", "bookadvanced_elementsofstatisticallearning12e36"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_59", "bookadvanced_elementsofstatisticallearning12e59"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_60", "bookadvanced_elementsofstatisticallearning12e60"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_68", "bookadvanced_elementsofstatisticallearning12e68"
@@ -4717,6 +4708,7 @@ Full list
    "esl_subsampling", "eslsmp"
    "esl_svc", "eslsvc"
    "esl_svm_kernel", "eslsvm"
+   "esl_svr", "eslsvr"
    "esl_test_r2", "esltr2"
    "esl_thin_plate_spline", "eslthl"
    "esl_total_sum_squares", "eslrss2"

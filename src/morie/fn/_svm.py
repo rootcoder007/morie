@@ -1,7 +1,7 @@
 # morie.fn -- shared helpers (rootcoder007/morie)
 """SMO solver shared by the support-vector modules.
 
-Platt's sequential minimal optimisation for the dual soft-margin problem
+Sequential minimal optimisation for the dual soft-margin problem
 
 .. math::
     \\max_\\alpha \\sum_i \\alpha_i
@@ -41,51 +41,71 @@ def kernel_matrix(X, Z=None, kernel="rbf", gamma=None, degree=3, coef0=1.0):
     raise ValueError(f'unknown kernel {kernel!r}; expected linear, poly, rbf or sigmoid')
 
 
-def smo(K, y, C=1.0, tol=1e-3, max_passes=50, max_iter=10000, seed=0):
-    """Simplified SMO. Returns ``(alpha, b, n_iter, converged)``.
+def smo(K, y, C=1.0, tol=1e-3, max_passes=50, max_iter=100000, seed=0, p=None):
+    """SMO with the maximal-violating-pair working set. Returns ``(alpha, b, n_iter, converged)``.
 
-    ``K`` is the training Gram matrix and ``y`` is in {-1, +1}.
+    ``K`` is the training Gram matrix and ``y`` is in {-1, +1}. With the
+    gradient ``G = Q alpha - 1`` (``Q_ij = y_i y_j K_ij``) the pair is
+    ``i = argmax_{I_up} -y_t G_t`` and ``j = argmin_{I_low} -y_t G_t``
+    (Keerthi et al. 2001; the working set of libsvm, Fan, Chen & Lin 2005),
+    updated analytically within the box; the iteration stops when the
+    violation ``m - M`` drops below ``tol``, which certifies the dual optimum.
+    The bias is the average of ``-y_t G_t`` over the free support vectors
+    (or the midpoint of the bounds). Deterministic: ``max_passes`` and
+    ``seed`` are accepted for backward compatibility and not used. ``p`` is
+    the linear term of the dual ``1/2 a'Qa + p'a`` (default all -1, the
+    classifier); support-vector regression passes its own.
     """
     y = np.asarray(y, dtype=float).ravel()
+    Km = np.asarray(K, dtype=float)
     n = y.size
-    alpha = np.zeros(n)
-    b = 0.0
-    rng = np.random.default_rng(seed)
-    passes = it = 0
-    while passes < max_passes and it < max_iter:
-        changed = 0
-        for i in range(n):
-            it += 1
-            Ei = float(K[i] @ (alpha * y)) + b - y[i]
-            if (y[i] * Ei < -tol and alpha[i] < C) or (y[i] * Ei > tol and alpha[i] > 0):
-                j = int(rng.integers(n - 1))
-                j = j + 1 if j >= i else j
-                Ej = float(K[j] @ (alpha * y)) + b - y[j]
-                ai_old, aj_old = alpha[i], alpha[j]
-                if y[i] != y[j]:
-                    L, Hi = max(0.0, aj_old - ai_old), min(C, C + aj_old - ai_old)
-                else:
-                    L, Hi = max(0.0, ai_old + aj_old - C), min(C, ai_old + aj_old)
-                if L >= Hi:
-                    continue
-                eta = 2 * K[i, j] - K[i, i] - K[j, j]
-                if eta >= 0:
-                    continue
-                alpha[j] = np.clip(aj_old - y[j] * (Ei - Ej) / eta, L, Hi)
-                if abs(alpha[j] - aj_old) < 1e-12:
-                    alpha[j] = aj_old
-                    continue
-                alpha[i] = ai_old + y[i] * y[j] * (aj_old - alpha[j])
-                b1 = b - Ei - y[i] * (alpha[i] - ai_old) * K[i, i] \
-                    - y[j] * (alpha[j] - aj_old) * K[i, j]
-                b2 = b - Ej - y[i] * (alpha[i] - ai_old) * K[i, j] \
-                    - y[j] * (alpha[j] - aj_old) * K[j, j]
-                if 0 < alpha[i] < C:
-                    b = b1
-                elif 0 < alpha[j] < C:
-                    b = b2
-                else:
-                    b = (b1 + b2) / 2
-                changed += 1
-        passes = passes + 1 if changed == 0 else 0
-    return alpha, float(b), int(it), bool(passes >= max_passes)
+    Kl = [[float(Km[i, j]) for j in range(n)] for i in range(n)]
+    yl = [float(v) for v in y]
+    alpha = [0.0] * n
+    G = [-1.0] * n if p is None else [float(v) for v in p]
+    it, converged = 0, False
+    while it < max_iter:
+        it += 1
+        i, gmax = -1, -float("inf")
+        j, gmin = -1, float("inf")
+        for t in range(n):
+            v = -yl[t] * G[t]
+            up = (yl[t] > 0 and alpha[t] < C) or (yl[t] < 0 and alpha[t] > 0)
+            low = (yl[t] > 0 and alpha[t] > 0) or (yl[t] < 0 and alpha[t] < C)
+            if up and v > gmax:
+                i, gmax = t, v
+            if low and v < gmin:
+                j, gmin = t, v
+        if i < 0 or j < 0 or gmax - gmin < tol:
+            converged = True
+            break
+        a = Kl[i][i] + Kl[j][j] - 2 * Kl[i][j]
+        if a <= 0:
+            a = 1e-12
+        t = (gmax - gmin) / a
+        # alpha_i += y_i t, alpha_j -= y_j t, kept inside [0, C]
+        lo, hi = -float("inf"), float("inf")
+        if yl[i] > 0:
+            lo, hi = max(lo, -alpha[i]), min(hi, C - alpha[i])
+        else:
+            lo, hi = max(lo, alpha[i] - C), min(hi, alpha[i])
+        if yl[j] > 0:
+            lo, hi = max(lo, alpha[j] - C), min(hi, alpha[j])
+        else:
+            lo, hi = max(lo, -alpha[j]), min(hi, C - alpha[j])
+        t = min(max(t, lo), hi)
+        di, dj = yl[i] * t, -yl[j] * t
+        alpha[i] += di
+        alpha[j] += dj
+        alpha[i] = min(max(alpha[i], 0.0), C)
+        alpha[j] = min(max(alpha[j], 0.0), C)
+        for k in range(n):
+            G[k] += yl[k] * (yl[i] * Kl[k][i] * di + yl[j] * Kl[k][j] * dj)
+    free = [-yl[t] * G[t] for t in range(n) if 0 < alpha[t] < C]
+    if free:
+        b = sum(free) / len(free)
+    else:
+        ub = [-yl[t] * G[t] for t in range(n) if (yl[t] > 0 and alpha[t] < C) or (yl[t] < 0 and alpha[t] > 0)]
+        lb = [-yl[t] * G[t] for t in range(n) if (yl[t] > 0 and alpha[t] > 0) or (yl[t] < 0 and alpha[t] < C)]
+        b = (min(ub) + max(lb)) / 2 if ub and lb else 0.0
+    return np.asarray(alpha), float(b), int(it), bool(converged)

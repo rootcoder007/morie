@@ -88946,6 +88946,13 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "eslsvr",
+    "esl_svr",
+    "Auto",
+    "Auto-wired callable from fn/eslsvr.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
