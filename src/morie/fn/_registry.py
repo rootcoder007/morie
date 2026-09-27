@@ -45669,13 +45669,6 @@ _r(
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "bookadvanced_elementsofstatisticallearning5u826",
-    "bookadvanced_elementsofstatisticallearning_chapter_5_unnumbered_826",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning5u826.py",
-    "The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
     "boolm",
     "boolean_minimize",
     "Auto",
@@ -88964,6 +88957,13 @@ _r(
     "esl_curds_whey",
     "Auto",
     "Auto-wired callable from fn/eslcaw.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslfda",
+    "esl_fda",
+    "Auto",
+    "Auto-wired callable from fn/eslfda.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
