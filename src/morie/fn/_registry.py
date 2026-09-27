@@ -25322,13 +25322,6 @@ _r(
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "sacgmm",
-    "sacgmm",
-    "SAC",
-    "SAC GMM (Kelejian-Prucha) estimator.",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
     "sacimp",
     "sacimp",
     "SAC",
@@ -25384,27 +25377,12 @@ _r(
     "Moran eigenvector spatial filter",
     quote="Statistics is the grammar of science. -- Karl Pearson",
 )
-_r("sagcr", "sagcr", "SpatAutoC", "Geary correlogram", quote="Statistics is the grammar of science. -- Karl Pearson")
-_r(
-    "sagjk",
-    "sagjk",
-    "SpatAutoC",
-    "Join count (k classes)",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
 _r(
     "sagsp",
     "sagsp",
     "SpatAutoC",
     "Geary scatter plot",
     quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "salbi",
-    "salbi",
-    "SpatAutoC",
-    "Local bivariate Moran",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
     "saldf",
@@ -25421,39 +25399,11 @@ _r(
     quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "salge",
-    "salge",
-    "SpatAutoC",
-    "Local Geary's C",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "salml",
-    "salml",
-    "SpatAutoC",
-    "Local multivariate LISA",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "samcr",
-    "samcr",
-    "SpatAutoC",
-    "Moran correlogram",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
     "samob",
     "samob",
     "SpatAutoC",
     "Moran's I bias correction",
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "samsp",
-    "samsp",
-    "SpatAutoC",
-    "Moran scatter plot",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
     "saqmo",
@@ -25489,13 +25439,6 @@ _r(
     "SAR",
     "SAR Cochrane-Orcutt-style spatial filter.",
     quote="Knowledge is power. -- Francis Bacon",
-)
-_r(
-    "sargmm",
-    "sargmm",
-    "SAR",
-    "SAR GMM estimator.",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
     "sarimp",
@@ -85167,6 +85110,48 @@ _r(
     "spatial_two_stage_least_squares",
     "Auto",
     "Auto-wired callable from fn/s2sls.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "locgea",
+    "local_geary",
+    "Auto",
+    "Auto-wired callable from fn/locgea.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "spcorr",
+    "spatial_correlogram",
+    "Auto",
+    "Auto-wired callable from fn/spcorr.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "jcmult",
+    "join_count_multi",
+    "Auto",
+    "Auto-wired callable from fn/jcmult.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "lmorbv",
+    "local_moran_bivariate",
+    "Auto",
+    "Auto-wired callable from fn/lmorbv.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "morplt",
+    "moran_scatter",
+    "Auto",
+    "Auto-wired callable from fn/morplt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "gmsar",
+    "gm_error_sar",
+    "Auto",
+    "Auto-wired callable from fn/gmsar.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
