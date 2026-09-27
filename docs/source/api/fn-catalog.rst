@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,003 single-purpose callables** -- every one
+``morie.fn`` ships **18,002 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1487,8 +1487,6 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_75", "bookadvanced_elementsofstatisticallearning14e75"
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_91", "bookadvanced_elementsofstatisticallearning14e91"
    "bookadvanced_elementsofstatisticallearning_chapter_14_equation_92", "bookadvanced_elementsofstatisticallearning14e92"
-   "bookadvanced_elementsofstatisticallearning_chapter_18_equation_10", "bookadvanced_elementsofstatisticallearning18e10"
-   "bookadvanced_elementsofstatisticallearning_chapter_18_equation_19", "bookadvanced_elementsofstatisticallearning18e19"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_32", "bookadvanced_elementsofstatisticallearning18e32"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_33", "bookadvanced_elementsofstatisticallearning18e33"
    "bookadvanced_elementsofstatisticallearning_chapter_18_equation_51", "bookadvanced_elementsofstatisticallearning18e51"
@@ -4657,6 +4655,7 @@ Full list
    "esl_mds", "eslmds"
    "esl_median_nn_radius", "eslmnr"
    "esl_multi_output_ls", "eslmol"
+   "esl_multinomial_l1", "eslmn1"
    "esl_multinomial_logit", "eslmnl"
    "esl_mvn_em_missing", "eslmem"
    "esl_nadaraya_watson", "eslnnk"
