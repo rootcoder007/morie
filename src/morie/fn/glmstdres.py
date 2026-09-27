@@ -29,7 +29,8 @@ def glmstdres(y, X, family="binomial", trials=None):
     Returns
     -------
     RichResult
-        Keys: fitted, pearson, standardized, hat, beta.
+        Keys: fitted, pearson, standardized, hat, beta, deviance (2.10), pearson_chisq
+        (5.5; the sum of squared Pearson residuals), df (n - p).
 
     References
     ----------
@@ -50,10 +51,27 @@ def glmstdres(y, X, family="binomial", trials=None):
     hat = [v * sum(x[a] * inv[a][b] * x[b] for a in range(p) for b in range(p)) for x, v in zip(X, var)]
     e = [(yi - m) / math.sqrt(v) for yi, m, v in zip(y, mu, var)]
     r = [ei / math.sqrt(1 - h) for ei, h in zip(e, hat)]
+    if family == "binomial":
+        dev = 2 * sum(
+            (yi * math.log(yi / m) if yi > 0 else 0.0)
+            + ((ni - yi) * math.log((ni - yi) / (ni - m)) if yi < ni else 0.0)
+            for yi, m, ni in zip(y, mu, trials)
+        )
+    else:
+        dev = 2 * sum((yi * math.log(yi / m) if yi > 0 else 0.0) - (yi - m) for yi, m in zip(y, mu))
     return RichResult(
         title="GLM residuals",
         summary_lines=[("max |r|", max(abs(v) for v in r))],
-        payload={"fitted": mu, "pearson": e, "standardized": r, "hat": hat, "beta": beta},
+        payload={
+            "fitted": mu,
+            "pearson": e,
+            "standardized": r,
+            "hat": hat,
+            "beta": beta,
+            "deviance": dev,
+            "pearson_chisq": sum(v * v for v in e),
+            "df": len(y) - p,
+        },
     )
 
 

@@ -42522,48 +42522,6 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u465",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_unnumbered_465",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u465.py",
-    "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u467",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_unnumbered_467",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u467.py",
-    "You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u468",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_unnumbered_468",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u468.py",
-    "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u478",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_unnumbered_478",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u478.py",
-    "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u479",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_unnumbered_479",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u479.py",
-    "An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u482",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_unnumbered_482",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u482.py",
-    "Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
     "poisson_score_interval",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_1",
     "Auto",
@@ -42648,62 +42606,6 @@ _r(
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e5",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_5",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e5.py",
-    "The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1158",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1158",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1158.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1159",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1159",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1159.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1161",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1161",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1161.py",
-    "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1162",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1162",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1162.py",
-    "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1163",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1163",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1163.py",
-    "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u890",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_890",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u890.py",
-    "What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u962",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_962",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u962.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e1",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_1",
     "Auto",
@@ -42723,13 +42625,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/kott_carr_interval.py",
     "The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e12",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_12",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e12.py",
-    "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e14",
@@ -42765,13 +42660,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e18.py",
     "Number rules the universe. -- Pythagoras",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e19",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_19",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e19.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e20",
@@ -89034,6 +88922,20 @@ _r(
     "spmi",
     "Auto",
     "Auto-wired callable from fn/spmi.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "polrfit",
+    "polrfit",
+    "Auto",
+    "Auto-wired callable from fn/polrfit.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "raoscott",
+    "raoscott",
+    "Auto",
+    "Auto-wired callable from fn/raoscott.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
