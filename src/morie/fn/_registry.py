@@ -42627,20 +42627,6 @@ _r(
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4u676",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_unnumbered_676",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo4u676.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4u677",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_unnumbered_677",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo4u677.py",
-    "Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
     "bic_posterior_probs",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_2",
     "Auto",
@@ -42751,55 +42737,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u890.py",
     "What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u899",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_899",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u899.py",
-    "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u900",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_900",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u900.py",
-    "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u905",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_905",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u905.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u913",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_913",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u913.py",
-    "There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u915",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_915",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u915.py",
-    "You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u945",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_945",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u945.py",
-    "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u946",
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_946",
-    "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u946.py",
-    "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u962",
@@ -89076,6 +89013,48 @@ _r(
     "johanq",
     "Auto",
     "Auto-wired callable from fn/johanq.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "glmprofci",
+    "glmprofci",
+    "Auto",
+    "Auto-wired callable from fn/glmprofci.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "glmstdres",
+    "glmstdres",
+    "Auto",
+    "Auto-wired callable from fn/glmstdres.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "orint",
+    "orint",
+    "Auto",
+    "Auto-wired callable from fn/orint.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "invpredci",
+    "invpredci",
+    "Auto",
+    "Auto-wired callable from fn/invpredci.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "poisexactci",
+    "poisexactci",
+    "Auto",
+    "Auto-wired callable from fn/poisexactci.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "rogangladen",
+    "rogangladen",
+    "Auto",
+    "Auto-wired callable from fn/rogangladen.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
