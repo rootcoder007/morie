@@ -19190,13 +19190,6 @@ _r(
 _r("dssim", "dssim", "SpatialPat", "Direct sampling simulation", quote="Knowledge is power. -- Francis Bacon")
 _r("dtaic", "dtaic", "Spatial", "AIC dimensionality test.", quote="Number rules the universe. -- Pythagoras")
 _r(
-    "dtasy",
-    "dtasy",
-    "DistTheor",
-    "Asymmetric Laplace distribution",
-    quote="There is no royal road to geometry. -- Euclid",
-)
-_r(
     "dtbic",
     "dtbic",
     "Spatial",
@@ -19204,13 +19197,6 @@ _r(
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r("dtbng", "dtbng", "DistTheor", "Bingham distribution", quote="Statistics is the grammar of science. -- Karl Pearson")
-_r(
-    "dtbur",
-    "dtbur",
-    "DistTheor",
-    "Burr distribution",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
 _r(
     "dtbvc",
     "dtbvc",
@@ -19227,25 +19213,11 @@ _r(
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "dtcar",
-    "dtcar",
-    "DistTheor",
-    "Cardioid distribution",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
     "dtcfa",
     "dtcfa",
     "Spatial",
     "CFA dimensionality test.",
     quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "dtcir",
-    "dtcir",
-    "DistTheor",
-    "Circular uniform distribution",
-    quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
     "dtcmp",
@@ -19269,39 +19241,11 @@ _r(
     quote="Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    "dtcpc",
-    "dtcpc",
-    "DistTheor",
-    "Clayton copula",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "dtcpf",
-    "dtcpf",
-    "DistTheor",
-    "Frank copula",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
     "dtcpg",
     "dtcpg",
     "DistTheor",
     "Gaussian copula",
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "dtcpg2",
-    "dtcpg2",
-    "DistTheor",
-    "Gumbel copula",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "dtcpj",
-    "dtcpj",
-    "DistTheor",
-    "Joe copula",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
     "dtcpt",
@@ -19311,25 +19255,11 @@ _r(
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "dtctm",
-    "dtctm",
-    "DistTheor",
-    "Categorical distribution",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
     "dtcvg",
     "dtcvg",
     "Spatial",
     "Convergent validity dimensionality.",
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "dtdag",
-    "dtdag",
-    "DistTheor",
-    "Dagum distribution",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "dtdcr",
@@ -19338,34 +19268,12 @@ _r(
     "Discriminant test dimensionality.",
     quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
-_r("dtdir", "dtdir", "DistTheor", "Dirichlet distribution", quote="I think, therefore I am. -- Rene Descartes")
 _r(
     "dteig",
     "dteig",
     "Spatial",
     "Eigenvalue dimensionality test.",
     quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "dtfrc",
-    "dtfrc",
-    "DistTheor",
-    "Frechet distribution",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "dtfsk",
-    "dtfsk",
-    "DistTheor",
-    "Fisk (log-logistic) distribution",
-    quote="What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "dtgev",
-    "dtgev",
-    "DistTheor",
-    "Generalized extreme value",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "dtghs",
@@ -19375,39 +19283,11 @@ _r(
     quote="Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
-    "dtgmb",
-    "dtgmb",
-    "DistTheor",
-    "Gumbel distribution",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "dtgpd",
-    "dtgpd",
-    "DistTheor",
-    "Generalized Pareto distribution",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
     "dtiws",
     "dtiws",
     "DistTheor",
     "Inverse Wishart distribution",
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "dtjhm",
-    "dtjhm",
-    "DistTheor",
-    "Johnson SB distribution",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "dtjhs",
-    "dtjhs",
-    "DistTheor",
-    "Johnson SU distribution",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
     "dtknt",
@@ -19422,14 +19302,6 @@ _r(
     "DistTheor",
     "LKJ correlation distribution",
     quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r("dtlmd", "dtlmd", "DistTheor", "Lambda distribution", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "dtlpl",
-    "dtlpl",
-    "DistTheor",
-    "Laplace distribution",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
     "dtmap",
@@ -19461,46 +19333,11 @@ _r(
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "dtmxs",
-    "dtmxs",
-    "DistTheor",
-    "Max-stable process",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "dtnkc",
-    "dtnkc",
-    "DistTheor",
-    "Nakagami distribution",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "dtord",
-    "dtord",
-    "DistTheor",
-    "Ordered logistic distribution",
-    quote="There is no royal road to geometry. -- Euclid",
-)
-_r(
     "dtpar",
     "dtpar",
     "Spatial",
     "Parallel analysis dimensionality.",
     quote="There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "dtprt",
-    "dtprt",
-    "DistTheor",
-    "Power distribution",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "dtric",
-    "dtric",
-    "DistTheor",
-    "Rice distribution",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
     "dtrkn",
@@ -19509,29 +19346,13 @@ _r(
     "Rank-based dimensionality.",
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
-_r("dtrlg", "dtrlg", "DistTheor", "Rayleigh distribution", quote="There is no royal road to geometry. -- Euclid")
 _r("dtrot", "dtrot", "Spatial", "Rotation test dimensionality.", quote="Number rules the universe. -- Pythagoras")
-_r("dtsas", "dtsas", "DistTheor", "Sinh-Arcsinh distribution", quote="Knowledge is power. -- Francis Bacon")
 _r(
     "dtscr",
     "dtscr",
     "Spatial",
     "Scree test dimensionality.",
     quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "dtspt",
-    "dtspt",
-    "DistTheor",
-    "Spatial extreme value",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "dttvs",
-    "dttvs",
-    "DistTheor",
-    "Tukey lambda distribution",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
     "dtvar",
@@ -19548,27 +19369,6 @@ _r(
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "dtwbl2",
-    "dtwbl2",
-    "DistTheor",
-    "Weibull 3-parameter",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "dtwrn",
-    "dtwrn",
-    "DistTheor",
-    "Wrapped normal distribution",
-    quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "dtwrp",
-    "dtwrp",
-    "DistTheor",
-    "Wrapped Cauchy distribution",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
     "dtwsh",
     "dtwsh",
     "DistTheor",
@@ -19581,13 +19381,6 @@ _r(
     "Spatial",
     "Exploratory dimensionality test.",
     quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "dtzpf",
-    "dtzpf",
-    "DistTheor",
-    "Zipf distribution",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r("eckrt4", "eckrt4", "GeoProcss", "Eckert IV projection", quote="Number rules the universe. -- Pythagoras")
 _r(
@@ -50647,25 +50440,11 @@ _r(
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "dtgpd",
-    "dtgpd",
-    "Auto",
-    "Auto-wired callable from fn/dtgpd.py",
-    "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
     "dtldr",
     "data_loader_stats",
     "Auto",
     "Auto-wired callable from fn/dtldr.py",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
-    "dtnkc",
-    "dtnkc",
-    "Auto",
-    "Auto-wired callable from fn/dtnkc.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r("dtree", "decision_tree", "Auto", "Auto-wired callable from fn/dtree.py", "Knowledge is power. -- Francis Bacon")
 _r(
@@ -86458,6 +86237,167 @@ _r(
     "raoscott",
     "Auto",
     "Auto-wired callable from fn/raoscott.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "laplacedist",
+    "laplacedist",
+    "Auto",
+    "Auto-wired callable from fn/laplacedist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "asylaplace",
+    "asylaplace",
+    "Auto",
+    "Auto-wired callable from fn/asylaplace.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "burrdist",
+    "burrdist",
+    "Auto",
+    "Auto-wired callable from fn/burrdist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "dagumdist",
+    "dagumdist",
+    "Auto",
+    "Auto-wired callable from fn/dagumdist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "fiskdist",
+    "fiskdist",
+    "Auto",
+    "Auto-wired callable from fn/fiskdist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "frechetdist",
+    "frechetdist",
+    "Auto",
+    "Auto-wired callable from fn/frechetdist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "gumbeldist",
+    "gumbeldist",
+    "Auto",
+    "Auto-wired callable from fn/gumbeldist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "rayleighdist",
+    "rayleighdist",
+    "Auto",
+    "Auto-wired callable from fn/rayleighdist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "powerdist",
+    "powerdist",
+    "Auto",
+    "Auto-wired callable from fn/powerdist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "nakagami",
+    "nakagami",
+    "Auto",
+    "Auto-wired callable from fn/nakagami.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "weibull3",
+    "weibull3",
+    "Auto",
+    "Auto-wired callable from fn/weibull3.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "johnsonsu",
+    "johnsonsu",
+    "Auto",
+    "Auto-wired callable from fn/johnsonsu.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "johnsonsb",
+    "johnsonsb",
+    "Auto",
+    "Auto-wired callable from fn/johnsonsb.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "sinharcsinh",
+    "sinharcsinh",
+    "Auto",
+    "Auto-wired callable from fn/sinharcsinh.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "cardioid",
+    "cardioid",
+    "Auto",
+    "Auto-wired callable from fn/cardioid.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "circunif",
+    "circunif",
+    "Auto",
+    "Auto-wired callable from fn/circunif.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "wrapcauchy",
+    "wrapcauchy",
+    "Auto",
+    "Auto-wired callable from fn/wrapcauchy.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "wrapnorm",
+    "wrapnorm",
+    "Auto",
+    "Auto-wired callable from fn/wrapnorm.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "ricedist",
+    "ricedist",
+    "Auto",
+    "Auto-wired callable from fn/ricedist.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "genlambda",
+    "genlambda",
+    "Auto",
+    "Auto-wired callable from fn/genlambda.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "tukeylambda",
+    "tukeylambda",
+    "Auto",
+    "Auto-wired callable from fn/tukeylambda.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "orderedlogis",
+    "orderedlogis",
+    "Auto",
+    "Auto-wired callable from fn/orderedlogis.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "categoricaldist",
+    "categoricaldist",
+    "Auto",
+    "Auto-wired callable from fn/categoricaldist.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
