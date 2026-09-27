@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,995 single-purpose callables** -- every one
+``morie.fn`` ships **17,994 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1499,8 +1499,6 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_5", "bookadvanced_elementsofstatisticallearning2e5"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_6", "bookadvanced_elementsofstatisticallearning2e6"
    "bookadvanced_elementsofstatisticallearning_chapter_2_equation_9", "bookadvanced_elementsofstatisticallearning2e9"
-   "bookadvanced_elementsofstatisticallearning_chapter_9_equation_19", "bookadvanced_elementsofstatisticallearning9e19"
-   "bookadvanced_elementsofstatisticallearning_chapter_9_equation_20", "bookadvanced_elementsofstatisticallearning9e20"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_27", "bookadvanced_elementsofstatisticallearning9e27"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_28", "bookadvanced_elementsofstatisticallearning9e28"
    "bookadvanced_elementsofstatisticallearning_chapter_9_equation_29", "bookadvanced_elementsofstatisticallearning9e29"
@@ -4642,6 +4640,7 @@ Full list
    "esl_logistic_reg", "esllgr"
    "esl_mallows_cp", "eslcp"
    "esl_markov_rf", "eslmrf"
+   "esl_mars", "eslmrs"
    "esl_mda", "eslmda"
    "esl_mdl", "eslmdl"
    "esl_mds", "eslmds"
