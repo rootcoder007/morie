@@ -28504,13 +28504,6 @@ _r(
     "Bimodal utility combining peaks.",
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
-_r(
-    "svcal",
-    "svcal",
-    "Spatial",
-    "Calvert uncertainty model",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
 _r("svchy", "svchy", "Spatial", "Cauchy kernel spatial voting", quote="Knowledge is power. -- Francis Bacon")
 _r(
     "svcle",
@@ -28525,13 +28518,6 @@ _r(
     "Spatial",
     "Heart of spatial game",
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "svclk",
-    "svclk",
-    "Spatial",
-    "Coalition kernel set",
-    quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
     "svclv",
@@ -28589,28 +28575,6 @@ _r(
     "Spatial",
     "Gaussian spatial utility function",
     quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "svht2",
-    "svht2",
-    "Spatial",
-    "Two-party Hotelling spatial competition",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r("svht3", "svht3", "Spatial", "Three-candidate spatial equilibrium", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "svhtd",
-    "svhtd",
-    "Spatial",
-    "Hotelling-Downs convergence equilibrium",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "svhtm",
-    "svhtm",
-    "Spatial",
-    "Multi-candidate Hotelling model",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
     "svhut",
@@ -28675,15 +28639,6 @@ _r(
     "Spatial",
     "Linear utility function for spatial voting.",
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r("svmp2", "svmp2", "Spatial", "Multi-party 2D equilibrium", quote="There is no royal road to geometry. -- Euclid")
-_r("svmpc", "svmpc", "Spatial", "Multi-party spatial competition", quote="I think, therefore I am. -- Rene Descartes")
-_r(
-    "svmpn",
-    "svmpn",
-    "Spatial",
-    "Multi-party Nash equilibrium",
-    quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
     "svmut",
@@ -28844,25 +28799,11 @@ _r(
 )
 _r("svwdm", "svwdm", "Spatial", "Weighted directional model.", quote="There is no royal road to geometry. -- Euclid")
 _r(
-    "svwht",
-    "svwht",
-    "Spatial",
-    "Wittman divergence model (policy-motivated)",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
     "svwpm",
     "svwpm",
     "Spatial",
     "Weighted proximity model.",
     quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "svwt2",
-    "svwt2",
-    "Spatial",
-    "Wittman model in 2D space",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
     "svwut",
@@ -85776,6 +85717,41 @@ _r(
     "bliss_points",
     "Auto",
     "Auto-wired callable from fn/svbliss.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "polmot",
+    "policy_motivated_equilibrium",
+    "Auto",
+    "Auto-wired callable from fn/polmot.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "plucmp",
+    "plurality_competition",
+    "Auto",
+    "Auto-wired callable from fn/plucmp.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "logcmp",
+    "logit_competition",
+    "Auto",
+    "Auto-wired callable from fn/logcmp.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "tunucl",
+    "nucleolus",
+    "Auto",
+    "Auto-wired callable from fn/tunucl.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "tukern",
+    "kernel_point",
+    "Auto",
+    "Auto-wired callable from fn/tukern.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
