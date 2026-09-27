@@ -49,12 +49,6 @@ def factor_analysis_ml(
         M = np.eye(n_factors) + (L.T * psi_inv) @ L
         M_inv = np.linalg.inv(M)
 
-        L_new = (
-            S
-            @ (L * psi_inv[:, None])
-            @ np.linalg.inv(np.eye(n_factors) + M_inv @ (L.T * psi_inv) @ S @ (L * psi_inv[:, None]))
-        )
-
         L_new = S @ np.diag(psi_inv) @ L @ M_inv
         psi_new = np.diag(S) - np.sum(L_new * (S @ np.diag(psi_inv) @ L @ M_inv), axis=1)
         psi_new = np.maximum(psi_new, 1e-6)
