@@ -63881,27 +63881,6 @@ _r(
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
-    "hedderich9u1118",
-    "hedderich_chapter_9_unnumbered_1118",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1118.py",
-    "To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "hedderich9u1119",
-    "hedderich_chapter_9_unnumbered_1119",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1119.py",
-    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "hedderich9u1120",
-    "hedderich_chapter_9_unnumbered_1120",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1120.py",
-    "The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
     "hedderich9u1136",
     "hedderich_chapter_9_unnumbered_1136",
     "Auto",
@@ -63923,39 +63902,11 @@ _r(
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    "hedderich9u1143",
-    "hedderich_chapter_9_unnumbered_1143",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1143.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "hedderich9u1144",
-    "hedderich_chapter_9_unnumbered_1144",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1144.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
     "hedderich9u1226",
     "hedderich_chapter_9_unnumbered_1226",
     "Auto",
     "Auto-wired callable from fn/hedderich9u1226.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "hedderich9u1401",
-    "hedderich_chapter_9_unnumbered_1401",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1401.py",
-    "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "hedderich9u1421",
-    "hedderich_chapter_9_unnumbered_1421",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1421.py",
-    "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
     "hedderich9u1427",
@@ -64105,32 +64056,11 @@ _r(
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "hedderich9u1559",
-    "hedderich_chapter_9_unnumbered_1559",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1559.py",
-    "It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
     "hedderich9u1560",
     "hedderich_chapter_9_unnumbered_1560",
     "Auto",
     "Auto-wired callable from fn/hedderich9u1560.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "hedderich9u1561",
-    "hedderich_chapter_9_unnumbered_1561",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1561.py",
-    "No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "hedderich9u1562",
-    "hedderich_chapter_9_unnumbered_1562",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1562.py",
-    "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
     "hedderich9u1686",
@@ -64161,186 +64091,11 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "hedderich9u173",
-    "hedderich_chapter_9_unnumbered_173",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u173.py",
-    "No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "hedderich9u174",
-    "hedderich_chapter_9_unnumbered_174",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u174.py",
-    "There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "hedderich9u175",
-    "hedderich_chapter_9_unnumbered_175",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u175.py",
-    "There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "hedderich9u176",
-    "hedderich_chapter_9_unnumbered_176",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u176.py",
-    "It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "hedderich9u177",
-    "hedderich_chapter_9_unnumbered_177",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u177.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "hedderich9u178",
-    "hedderich_chapter_9_unnumbered_178",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u178.py",
-    "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
-    "hedderich9u180",
-    "hedderich_chapter_9_unnumbered_180",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u180.py",
-    "The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "hedderich9u181",
-    "hedderich_chapter_9_unnumbered_181",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u181.py",
-    "Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "hedderich9u182",
-    "hedderich_chapter_9_unnumbered_182",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u182.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "hedderich9u183",
-    "hedderich_chapter_9_unnumbered_183",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u183.py",
-    "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "hedderich9u184",
-    "hedderich_chapter_9_unnumbered_184",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u184.py",
-    "You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "hedderich9u185",
-    "hedderich_chapter_9_unnumbered_185",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u185.py",
-    "Number rules the universe. -- Pythagoras",
-)
-_r(
-    "hedderich9u186",
-    "hedderich_chapter_9_unnumbered_186",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u186.py",
-    "The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "hedderich9u187",
-    "hedderich_chapter_9_unnumbered_187",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u187.py",
-    "What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "hedderich9u188",
-    "hedderich_chapter_9_unnumbered_188",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u188.py",
-    "There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "hedderich9u189",
-    "hedderich_chapter_9_unnumbered_189",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u189.py",
-    "There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "hedderich9u190",
-    "hedderich_chapter_9_unnumbered_190",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u190.py",
-    "Number rules the universe. -- Pythagoras",
-)
-_r(
-    "hedderich9u2402",
-    "hedderich_chapter_9_unnumbered_2402",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2402.py",
-    "We must know. We will know. -- David Hilbert",
-)
-_r(
-    "hedderich9u2633",
-    "hedderich_chapter_9_unnumbered_2633",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2633.py",
-    "The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "hedderich9u2639",
-    "hedderich_chapter_9_unnumbered_2639",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2639.py",
-    "No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "hedderich9u2640",
-    "hedderich_chapter_9_unnumbered_2640",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2640.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
     "hedderich9u2682",
     "hedderich_chapter_9_unnumbered_2682",
     "Auto",
     "Auto-wired callable from fn/hedderich9u2682.py",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "hedderich9u2847",
-    "hedderich_chapter_9_unnumbered_2847",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2847.py",
-    "No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "hedderich9u285",
-    "hedderich_chapter_9_unnumbered_285",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u285.py",
-    "We must know. We will know. -- David Hilbert",
-)
-_r(
-    "hedderich9u2852",
-    "hedderich_chapter_9_unnumbered_2852",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2852.py",
-    "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "hedderich9u291",
-    "hedderich_chapter_9_unnumbered_291",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u291.py",
-    "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
     "hedderich9u2911",
@@ -64378,53 +64133,11 @@ _r(
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "hedderich9u292",
-    "hedderich_chapter_9_unnumbered_292",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u292.py",
-    "Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "hedderich9u293",
-    "hedderich_chapter_9_unnumbered_293",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u293.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "hedderich9u294",
-    "hedderich_chapter_9_unnumbered_294",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u294.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "hedderich9u296",
-    "hedderich_chapter_9_unnumbered_296",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u296.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
     "hedderich9u2966",
     "hedderich_chapter_9_unnumbered_2966",
     "Auto",
     "Auto-wired callable from fn/hedderich9u2966.py",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "hedderich9u2969",
-    "hedderich_chapter_9_unnumbered_2969",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2969.py",
-    "Knowledge is power. -- Francis Bacon",
-)
-_r(
-    "hedderich9u297",
-    "hedderich_chapter_9_unnumbered_297",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u297.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
     "hedderich9u2970",
@@ -64448,39 +64161,11 @@ _r(
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "hedderich9u2974",
-    "hedderich_chapter_9_unnumbered_2974",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2974.py",
-    "An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "hedderich9u2975",
-    "hedderich_chapter_9_unnumbered_2975",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2975.py",
-    "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
-    "hedderich9u2976",
-    "hedderich_chapter_9_unnumbered_2976",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2976.py",
-    "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
     "hedderich9u2977",
     "hedderich_chapter_9_unnumbered_2977",
     "Auto",
     "Auto-wired callable from fn/hedderich9u2977.py",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "hedderich9u298",
-    "hedderich_chapter_9_unnumbered_298",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u298.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "hedderich9u2984",
@@ -64497,150 +64182,10 @@ _r(
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
-    "hedderich9u299",
-    "hedderich_chapter_9_unnumbered_299",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u299.py",
-    "It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "hedderich9u300",
-    "hedderich_chapter_9_unnumbered_300",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u300.py",
-    "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "hedderich9u3002",
-    "hedderich_chapter_9_unnumbered_3002",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3002.py",
-    "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "hedderich9u3003",
-    "hedderich_chapter_9_unnumbered_3003",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3003.py",
-    "What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "hedderich9u301",
-    "hedderich_chapter_9_unnumbered_301",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u301.py",
-    "There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "hedderich9u302",
-    "hedderich_chapter_9_unnumbered_302",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u302.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
-    "hedderich9u303",
-    "hedderich_chapter_9_unnumbered_303",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u303.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "hedderich9u304",
-    "hedderich_chapter_9_unnumbered_304",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u304.py",
-    "You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "hedderich9u305",
-    "hedderich_chapter_9_unnumbered_305",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u305.py",
-    "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "hedderich9u306",
-    "hedderich_chapter_9_unnumbered_306",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u306.py",
-    "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
-    "hedderich9u307",
-    "hedderich_chapter_9_unnumbered_307",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u307.py",
-    "The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "hedderich9u308",
-    "hedderich_chapter_9_unnumbered_308",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u308.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "hedderich9u3085",
-    "hedderich_chapter_9_unnumbered_3085",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3085.py",
-    "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "hedderich9u3086",
-    "hedderich_chapter_9_unnumbered_3086",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3086.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
     "hedderich9u3112",
     "hedderich_chapter_9_unnumbered_3112",
     "Auto",
     "Auto-wired callable from fn/hedderich9u3112.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "hedderich9u3153",
-    "hedderich_chapter_9_unnumbered_3153",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3153.py",
-    "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "hedderich9u3154",
-    "hedderich_chapter_9_unnumbered_3154",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3154.py",
-    "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "hedderich9u3156",
-    "hedderich_chapter_9_unnumbered_3156",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3156.py",
-    "Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "hedderich9u3157",
-    "hedderich_chapter_9_unnumbered_3157",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3157.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "hedderich9u3158",
-    "hedderich_chapter_9_unnumbered_3158",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3158.py",
-    "Number rules the universe. -- Pythagoras",
-)
-_r(
-    "hedderich9u3159",
-    "hedderich_chapter_9_unnumbered_3159",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3159.py",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -64665,39 +64210,11 @@ _r(
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "hedderich9u3183",
-    "hedderich_chapter_9_unnumbered_3183",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3183.py",
-    "Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "hedderich9u3184",
-    "hedderich_chapter_9_unnumbered_3184",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3184.py",
-    "The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "hedderich9u3185",
-    "hedderich_chapter_9_unnumbered_3185",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3185.py",
-    "The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
     "hedderich9u340",
     "hedderich_chapter_9_unnumbered_340",
     "Auto",
     "Auto-wired callable from fn/hedderich9u340.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "hedderich9u3444",
-    "hedderich_chapter_9_unnumbered_3444",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3444.py",
-    "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
     "hedderich9u3453",
@@ -64721,104 +64238,6 @@ _r(
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "hedderich9u3527",
-    "hedderich_chapter_9_unnumbered_3527",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3527.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "hedderich9u3531",
-    "hedderich_chapter_9_unnumbered_3531",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3531.py",
-    "The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "hedderich9u3532",
-    "hedderich_chapter_9_unnumbered_3532",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3532.py",
-    "Knowledge is power. -- Francis Bacon",
-)
-_r(
-    "hedderich9u3533",
-    "hedderich_chapter_9_unnumbered_3533",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3533.py",
-    "An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "hedderich9u3534",
-    "hedderich_chapter_9_unnumbered_3534",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3534.py",
-    "To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "hedderich9u3535",
-    "hedderich_chapter_9_unnumbered_3535",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3535.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "hedderich9u3536",
-    "hedderich_chapter_9_unnumbered_3536",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3536.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
-    "hedderich9u3580",
-    "hedderich_chapter_9_unnumbered_3580",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3580.py",
-    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "hedderich9u3636",
-    "hedderich_chapter_9_unnumbered_3636",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3636.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "hedderich9u3637",
-    "hedderich_chapter_9_unnumbered_3637",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3637.py",
-    "What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "hedderich9u940",
-    "hedderich_chapter_9_unnumbered_940",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u940.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
-    "hedderich9u941",
-    "hedderich_chapter_9_unnumbered_941",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u941.py",
-    "The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "hedderich9u943",
-    "hedderich_chapter_9_unnumbered_943",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u943.py",
-    "Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "hedderich9u949",
-    "hedderich_chapter_9_unnumbered_949",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u949.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
     "hedderich9u952",
     "hedderich_chapter_9_unnumbered_952",
     "Auto",
@@ -64831,20 +64250,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/hedderich9u953.py",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
-    "hedderich9u977",
-    "hedderich_chapter_9_unnumbered_977",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u977.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "hedderich9u978",
-    "hedderich_chapter_9_unnumbered_978",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u978.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
     "hedgw",
