@@ -113,7 +113,9 @@ def esl_backprop(X, y, weights, task="regression"):
     if task == "regression":
         Y = yr.astype(float).reshape(n, K)
         delta = 2 * (T - Y) / n
-        loss = float(np.mean((T - Y) ** 2))
+        # ESL eq 11.9 sums the squared error over the K outputs; averaged over the
+        # n observations this is the loss whose gradient is delta = 2 (T - Y) / n
+        loss = float(np.sum((T - Y) ** 2) / n)
     elif task == "classification":
         Y = np.zeros((n, K))
         Y[np.arange(n), yr.astype(int)] = 1.0

@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,015 single-purpose callables** -- every one
+``morie.fn`` ships **18,010 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -1478,11 +1478,6 @@ Full list
    "bookadvanced_elementsofstatisticallearning_chapter_10_equation_57", "bookadvanced_elementsofstatisticallearning10e57"
    "bookadvanced_elementsofstatisticallearning_chapter_10_equation_58", "bookadvanced_elementsofstatisticallearning10e58"
    "bookadvanced_elementsofstatisticallearning_chapter_11_equation_1", "bookadvanced_elementsofstatisticallearning11e1"
-   "bookadvanced_elementsofstatisticallearning_chapter_11_equation_13", "bookadvanced_elementsofstatisticallearning11e13"
-   "bookadvanced_elementsofstatisticallearning_chapter_11_equation_14", "bookadvanced_elementsofstatisticallearning11e14"
-   "bookadvanced_elementsofstatisticallearning_chapter_11_equation_15", "bookadvanced_elementsofstatisticallearning11e15"
-   "bookadvanced_elementsofstatisticallearning_chapter_11_equation_16", "bookadvanced_elementsofstatisticallearning11e16"
-   "bookadvanced_elementsofstatisticallearning_chapter_11_equation_5", "bookadvanced_elementsofstatisticallearning11e5"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_59", "bookadvanced_elementsofstatisticallearning12e59"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_60", "bookadvanced_elementsofstatisticallearning12e60"
    "bookadvanced_elementsofstatisticallearning_chapter_12_equation_68", "bookadvanced_elementsofstatisticallearning12e68"
