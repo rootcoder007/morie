@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,388 single-purpose callables** -- every one
+``morie.fn`` ships **18,376 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -7827,16 +7827,12 @@ Full list
    "hedderich_chapter_2_equation_54", "hedderich2e54"
    "hedderich_chapter_3_equation_96", "hedderich3e96"
    "hedderich_chapter_3_equation_98", "hedderich3e98"
-   "hedderich_chapter_4_equation_32", "hedderich4e32"
-   "hedderich_chapter_5_equation_13", "hedderich5e13"
-   "hedderich_chapter_5_equation_16", "hedderich5e16"
    "hedderich_chapter_5_equation_46", "hedderich5e46"
    "hedderich_chapter_5_equation_54", "hedderich5e54"
    "hedderich_chapter_5_equation_81", "hedderich5e81"
    "hedderich_chapter_5_equation_82", "hedderich5e82"
    "hedderich_chapter_5_equation_85", "hedderich5e85"
    "hedderich_chapter_6_equation_25", "hedderich6e25"
-   "hedderich_chapter_6_equation_6", "hedderich6e6"
    "hedderich_chapter_7_equation_16", "hedderich7e16"
    "hedderich_chapter_7_equation_17", "hedderich7e17"
    "hedderich_chapter_7_equation_22", "hedderich7e22"
@@ -7902,8 +7898,6 @@ Full list
    "hedderich_chapter_8_equation_96", "hedderich8e96"
    "hedderich_chapter_8_equation_97", "hedderich8e97"
    "hedderich_chapter_8_equation_98", "hedderich8e98"
-   "hedderich_chapter_9_unnumbered_1028", "hedderich9u1028"
-   "hedderich_chapter_9_unnumbered_1029", "hedderich9u1029"
    "hedderich_chapter_9_unnumbered_1060", "hedderich9u1060"
    "hedderich_chapter_9_unnumbered_1118", "hedderich9u1118"
    "hedderich_chapter_9_unnumbered_1119", "hedderich9u1119"
@@ -7952,8 +7946,6 @@ Full list
    "hedderich_chapter_9_unnumbered_1560", "hedderich9u1560"
    "hedderich_chapter_9_unnumbered_1561", "hedderich9u1561"
    "hedderich_chapter_9_unnumbered_1562", "hedderich9u1562"
-   "hedderich_chapter_9_unnumbered_1632", "hedderich9u1632"
-   "hedderich_chapter_9_unnumbered_1633", "hedderich9u1633"
    "hedderich_chapter_9_unnumbered_1686", "hedderich9u1686"
    "hedderich_chapter_9_unnumbered_1687", "hedderich9u1687"
    "hedderich_chapter_9_unnumbered_1709", "hedderich9u1709"
@@ -8021,8 +8013,6 @@ Full list
    "hedderich_chapter_9_unnumbered_308", "hedderich9u308"
    "hedderich_chapter_9_unnumbered_3085", "hedderich9u3085"
    "hedderich_chapter_9_unnumbered_3086", "hedderich9u3086"
-   "hedderich_chapter_9_unnumbered_3087", "hedderich9u3087"
-   "hedderich_chapter_9_unnumbered_3088", "hedderich9u3088"
    "hedderich_chapter_9_unnumbered_3093", "hedderich9u3093"
    "hedderich_chapter_9_unnumbered_3097", "hedderich9u3097"
    "hedderich_chapter_9_unnumbered_3102", "hedderich9u3102"
@@ -8053,7 +8043,6 @@ Full list
    "hedderich_chapter_9_unnumbered_3160", "hedderich9u3160"
    "hedderich_chapter_9_unnumbered_3162", "hedderich9u3162"
    "hedderich_chapter_9_unnumbered_3163", "hedderich9u3163"
-   "hedderich_chapter_9_unnumbered_3166", "hedderich9u3166"
    "hedderich_chapter_9_unnumbered_3183", "hedderich9u3183"
    "hedderich_chapter_9_unnumbered_3184", "hedderich9u3184"
    "hedderich_chapter_9_unnumbered_3185", "hedderich9u3185"
@@ -8072,7 +8061,6 @@ Full list
    "hedderich_chapter_9_unnumbered_3580", "hedderich9u3580"
    "hedderich_chapter_9_unnumbered_3636", "hedderich9u3636"
    "hedderich_chapter_9_unnumbered_3637", "hedderich9u3637"
-   "hedderich_chapter_9_unnumbered_3662", "hedderich9u3662"
    "hedderich_chapter_9_unnumbered_940", "hedderich9u940"
    "hedderich_chapter_9_unnumbered_941", "hedderich9u941"
    "hedderich_chapter_9_unnumbered_943", "hedderich9u943"

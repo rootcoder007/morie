@@ -63874,20 +63874,6 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "hedderich9u1028",
-    "hedderich_chapter_9_unnumbered_1028",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1028.py",
-    "Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "hedderich9u1029",
-    "hedderich_chapter_9_unnumbered_1029",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1029.py",
-    "We must know. We will know. -- David Hilbert",
-)
-_r(
     "hedderich9u1060",
     "hedderich_chapter_9_unnumbered_1060",
     "Auto",
@@ -64222,20 +64208,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/hedderich9u1562.py",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "hedderich9u1632",
-    "hedderich_chapter_9_unnumbered_1632",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1632.py",
-    "Number rules the universe. -- Pythagoras",
-)
-_r(
-    "hedderich9u1633",
-    "hedderich_chapter_9_unnumbered_1633",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1633.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
     "hedderich9u1686",
@@ -64707,20 +64679,6 @@ _r(
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
-    "hedderich9u3087",
-    "hedderich_chapter_9_unnumbered_3087",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3087.py",
-    "I think, therefore I am. -- Rene Descartes",
-)
-_r(
-    "hedderich9u3088",
-    "hedderich_chapter_9_unnumbered_3088",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3088.py",
-    "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
     "hedderich9u3093",
     "hedderich_chapter_9_unnumbered_3093",
     "Auto",
@@ -64931,13 +64889,6 @@ _r(
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "hedderich9u3166",
-    "hedderich_chapter_9_unnumbered_3166",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3166.py",
-    "Knowledge is power. -- Francis Bacon",
-)
-_r(
     "hedderich9u3183",
     "hedderich_chapter_9_unnumbered_3183",
     "Auto",
@@ -65062,13 +65013,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/hedderich9u3637.py",
     "What is now proved was once only imagined. -- William Blake",
-)
-_r(
-    "hedderich9u3662",
-    "hedderich_chapter_9_unnumbered_3662",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3662.py",
-    "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
     "hedderich9u940",
