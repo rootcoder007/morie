@@ -3367,7 +3367,7 @@ File,Line,Status,Version,Context
 ./src/morie/fn/bdrj.py,74,STALE_OR_DEP,3.3.2,"2nd edn. Cambridge University Press. Theorem 3.3.2; the back-door"
 ./src/morie/fn/bdrj.py,131,STALE_OR_DEP,3.3.2,"method: Back-door adjustment (Pearl 2009; Thm 3.3.2); discrete;"
 ./src/morie/fn/bhltmsm.py,81,STALE_OR_DEP,9.4.403,"doi:10.1037/1082-989X.9.4.403. The boosted-regression propensity"
-./src/morie/fn/binghamdens.py,38,STALE_OR_DEP,9.4.3,"Mardia; K. V. & Jupp; P. E. (2000). Directional Statistics; Sec 9.4.3."
+./src/morie/fn/binghamdens.py,48,STALE_OR_DEP,9.4.3,"Mardia; K. V. & Jupp; P. E. (2000). Directional Statistics; Sec 9.4.3."
 ./src/morie/fn/bkrnig.py,12,STALE_OR_DEP,6.4.3.1,"Schabenberger & Gotway (2005; Sec. 6.4.3.1; eqs 6.94-6.98): with"
 ./src/morie/fn/blockMx.py,20,STALE_OR_DEP,3.3.2,"the GEV by ML (sec. 3.3.2). ``estimate`` is the fitted location."
 ./src/morie/fn/bndcv.py,45,STALE_OR_DEP,3.4.3,"Silverman; B. W. (1986). Density Estimation. Ch. 3.4.3."
