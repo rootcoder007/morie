@@ -23943,51 +23943,6 @@ _r(
     "Ordinary kriging filter",
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
-_r("opagg", "opagg", "OptimSp", "Spatial aggregation problem", quote="I think, therefore I am. -- Rene Descartes")
-_r(
-    "opazt",
-    "opazt",
-    "OptimSp",
-    "AZP regionalization",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "opgrr",
-    "opgrr",
-    "OptimSp",
-    "Spatial grouping/regionalization",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "opmax",
-    "opmax",
-    "OptimSp",
-    "Max-p regionalization",
-    quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r("oppar", "oppar", "OptimSp", "Spatial partitioning", quote="I think, therefore I am. -- Rene Descartes")
-_r(
-    "oprdn",
-    "oprdn",
-    "OptimSp",
-    "REDCAP regionalization",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r("opred", "opred", "OptimSp", "Spatial redistricting", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "opskr",
-    "opskr",
-    "OptimSp",
-    "SKATER regionalization",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "opzon",
-    "opzon",
-    "OptimSp",
-    "Spatial zoning problem",
-    quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
 _r(
     "overla",
     "overla",
@@ -74362,13 +74317,6 @@ _r(
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "opskr",
-    "opskr",
-    "Auto",
-    "Auto-wired callable from fn/opskr.py",
-    "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
     "optcl",
     "optimal_classification",
     "Auto",
@@ -86245,6 +86193,41 @@ _r(
     "sequential_linear_programming",
     "Auto",
     "Auto-wired callable from fn/slpmin.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "skater",
+    "skater",
+    "Auto",
+    "Auto-wired callable from fn/skater.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "redcap",
+    "redcap",
+    "Auto",
+    "Auto-wired callable from fn/redcap.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "azpreg",
+    "automatic_zoning",
+    "Auto",
+    "Auto-wired callable from fn/azpreg.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "maxpreg",
+    "max_p_regions",
+    "Auto",
+    "Auto-wired callable from fn/maxpreg.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "schcreg",
+    "constrained_hierarchical",
+    "Auto",
+    "Auto-wired callable from fn/schcreg.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(

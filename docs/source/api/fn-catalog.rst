@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **17,257 single-purpose callables** -- every one
+``morie.fn`` ships **17,253 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -824,6 +824,7 @@ Full list
    "autoformer", "autofm"
    "autoint", "autoI"
    "automated_readability", "ari"
+   "automatic_zoning", "azpreg"
    "availability", "avail"
    "avalon_fingerprint", "avalon"
    "ave", "ave"
@@ -2707,6 +2708,7 @@ Full list
    "conjugate_gradient", "cgd"
    "conjugate_posterior", "bpost"
    "connected_components", "cmpnt"
+   "constrained_hierarchical", "schcreg"
    "contact_trace_sp", "zectr"
    "contact_tracing_yield", "ttrace"
    "contacttracesp", "zectr"
@@ -9575,6 +9577,7 @@ Full list
    "max_exceedance_curve", "mxetA"
    "max_flow", "mxflw"
    "max_flow_min_cut", "cmbopt"
+   "max_p_regions", "maxpreg"
    "max_pooling", "maxpl"
    "max_stable_simulation", "mxetA"
    "max_step_size", "mstep"
@@ -10907,17 +10910,9 @@ Full list
    "onsetdetectfn", "onset"
    "oos_predict", "oospr"
    "oospredict", "oospr"
-   "opagg", "opagg"
-   "opazt", "opazt"
    "open_clip", "opnclp"
    "openclip", "opnclp"
    "openfold_msa_pair", "alfomg"
-   "opgrr", "opgrr"
-   "opmax", "opmax"
-   "oppar", "oppar"
-   "oprdn", "oprdn"
-   "opred", "opred"
-   "opskr", "opskr"
    "optcl", "optcl"
    "optics", "optic"
    "optimal_allocation_variance", "optimal_allocation_variance"
@@ -10930,7 +10925,6 @@ Full list
    "optimal_tree_regime", "opttre"
    "optimaldesign", "optds"
    "optimalhuberk", "opthr"
-   "opzon", "opzon"
    "or_from_rr", "or_from_rr"
    "or_to_d", "or2d"
    "or_to_r", "or2r"
@@ -12977,6 +12971,7 @@ Full list
    "recurrence_entropy", "rqent"
    "recurrence_quantification", "dormm"
    "red_pill_test", "rdpil"
+   "redcap", "redcap"
    "redpilltest", "rdpil"
    "redsh", "redsh"
    "redundancy", "redund"
@@ -14495,6 +14490,7 @@ Full list
    "sivar", "sivar"
    "sk_variance", "kgsmv"
    "sk_weights", "kgsmw"
+   "skater", "skater"
    "skew", "skew"
    "skewness_coeff", "sskew"
    "skewnesscoeff", "sskew"
