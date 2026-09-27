@@ -28504,25 +28504,11 @@ _r(
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "svals",
-    "svals",
-    "Spatial",
-    "Algebraic-distance (dot product) directional.",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
     "svamn",
     "svamn",
     "Spatial",
     "Sequential amendment procedure",
     quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "svang",
-    "svang",
-    "Spatial",
-    "Angular proximity model.",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
     "svasp",
@@ -28552,13 +28538,6 @@ _r(
     "Spatial",
     "Banzhaf power index spatial",
     quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "svbpl",
-    "svbpl",
-    "Spatial",
-    "Bayesian spatial vote probability.",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r("svbrd", "svbrd", "Spatial", "Borda count in spatial model", quote="There is no royal road to geometry. -- Euclid")
 _r(
@@ -28647,21 +28626,7 @@ _r(
     "Committee median voter model",
     quote="Luck is what happens when preparation meets opportunity. -- Seneca",
 )
-_r(
-    "svcos",
-    "svcos",
-    "Spatial",
-    "Cosine similarity voting model.",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
 _r("svcpw", "svcpw", "Spatial", "Copeland spatial winner", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "svcut",
-    "svcut",
-    "Spatial",
-    "City-block/L1 utility function.",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
 _r(
     "svcwn",
     "svcwn",
@@ -28675,13 +28640,6 @@ _r(
     "Spatial",
     "Condorcet cycle detection",
     quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "svdcm",
-    "svdcm",
-    "Spatial",
-    "Discounting model (Matthews 1979).",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
     "svdft",
@@ -28698,13 +28656,6 @@ _r(
     quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "svdir",
-    "svdir",
-    "Spatial",
-    "Directional voting model (Rabinowitz-Macdonald).",
-    quote="Knowledge is power. -- Francis Bacon",
-)
-_r(
     "svdm2",
     "svdm2",
     "Spatial",
@@ -28717,20 +28668,6 @@ _r(
     "Spatial",
     "Dimensionality test for spatial data",
     quote="We must know. We will know. -- David Hilbert",
-)
-_r(
-    "svdot",
-    "svdot",
-    "Spatial",
-    "Dot-product directional vote.",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "svdrc",
-    "svdrc",
-    "Spatial",
-    "Pure directional for categorical.",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
     "svdrv",
@@ -28769,13 +28706,6 @@ _r(
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "svexp",
-    "svexp",
-    "Spatial",
-    "Exponential vote probability decay.",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
     "svfut",
     "svfut",
     "Spatial",
@@ -28795,20 +28725,6 @@ _r(
     "Spatial",
     "Gaussian spatial utility function",
     quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "svgmp",
-    "svgmp",
-    "Spatial",
-    "Gompertz spatial vote probability.",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "svgut",
-    "svgut",
-    "Spatial",
-    "Gaussian utility function for spatial voting.",
-    quote="Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
     "svht2",
@@ -28899,25 +28815,11 @@ _r(
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "svjut",
-    "svjut",
-    "Spatial",
-    "Joint utility over multiple voters.",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
     "svkut",
     "svkut",
     "Spatial",
     "Kernel-smoothed utility surface.",
     quote="We must know. We will know. -- David Hilbert",
-)
-_r(
-    "svlap",
-    "svlap",
-    "Spatial",
-    "Laplace distribution vote probability.",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
     "svlgp",
@@ -28941,32 +28843,11 @@ _r(
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "svlss",
-    "svlss",
-    "Spatial",
-    "Spatial loss function (quadratic/city-block)",
-    quote="I think, therefore I am. -- Rene Descartes",
-)
-_r(
     "svlut",
     "svlut",
     "Spatial",
     "Linear utility function for spatial voting.",
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "svmix",
-    "svmix",
-    "Spatial",
-    "Mixed proximity-directional model.",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "svmnl",
-    "svmnl",
-    "Spatial",
-    "Multinomial spatial choice model",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r("svmp2", "svmp2", "Spatial", "Multi-party 2D equilibrium", quote="There is no royal road to geometry. -- Euclid")
 _r("svmpc", "svmpc", "Spatial", "Multi-party spatial competition", quote="I think, therefore I am. -- Rene Descartes")
@@ -29007,13 +28888,6 @@ _r(
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r("svnbg", "svnbg", "Spatial", "Nash bargaining in spatial game", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "svnlp",
-    "svnlp",
-    "Spatial",
-    "Normal distribution vote probability.",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
 _r(
     "svnrm",
     "svnrm",
@@ -29145,13 +29019,6 @@ _r(
 )
 _r("svppo", "svppo", "Spatial", "Party position estimation", quote="We must know. We will know. -- David Hilbert")
 _r(
-    "svprc",
-    "svprc",
-    "Spatial",
-    "Pure proximity for categorical issues.",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
     "svpro",
     "svpro",
     "Spatial",
@@ -29164,13 +29031,6 @@ _r(
     "Spatial",
     "Probit spatial voting probability",
     quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "svprx",
-    "svprx",
-    "Spatial",
-    "Proximity voting model (Euclidean).",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "svpwt",
@@ -29202,32 +29062,11 @@ _r(
     quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
-    "svqut",
-    "svqut",
-    "Spatial",
-    "Quadratic utility function for spatial voting.",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
     "svrce",
     "svrce",
     "Spatial",
     "Roll call classification error",
     quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "svrcl",
-    "svrcl",
-    "Spatial",
-    "Roll call logit model",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "svrcp",
-    "svrcp",
-    "Spatial",
-    "Roll call vote probability model",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "svrcs",
@@ -29244,13 +29083,6 @@ _r(
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r("svret", "svret", "Spatial", "Retrospective proximity model.", quote="There is no royal road to geometry. -- Euclid")
-_r(
-    "svrmv",
-    "svrmv",
-    "Spatial",
-    "Rabinowitz-Macdonald intensity component",
-    quote="There is no royal road to geometry. -- Euclid",
-)
 _r(
     "svrps",
     "svrps",
@@ -29273,13 +29105,6 @@ _r(
     quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "svsco",
-    "svsco",
-    "Spatial",
-    "Scalar-distance combined model.",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
     "svscr",
     "svscr",
     "Spatial",
@@ -29300,33 +29125,11 @@ _r(
     "Shapley value in spatial game",
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
-_r("svsl2", "svsl2", "Spatial", "Two-issue salience model", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "svsls",
-    "svsls",
-    "Spatial",
-    "Issue salience weighted model",
-    quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
 _r(
     "svsph",
     "svsph",
     "Spatial",
     "Spatial phase transition (chaos/order)",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "svstl",
-    "svstl",
-    "Spatial",
-    "Student-t spatial vote probability.",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "svsut",
-    "svsut",
-    "Spatial",
-    "Separable multidimensional utility.",
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r("svtcs", "svtcs", "Spatial", "Top cycle set computation", quote="Knowledge is power. -- Francis Bacon")
@@ -29344,20 +29147,6 @@ _r(
     "Spatial",
     "Spatial utility maximizer",
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "svvl2",
-    "svvl2",
-    "Spatial",
-    "2D valence spatial model",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "svvlm",
-    "svvlm",
-    "Spatial",
-    "Valence advantage model (Groseclose)",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
     "svvt2",
@@ -86188,6 +85977,20 @@ _r(
     "population_density_surface",
     "Auto",
     "Auto-wired callable from fn/popden.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "svutil",
+    "voter_utility",
+    "Auto",
+    "Auto-wired callable from fn/svutil.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "svprob",
+    "vote_probability",
+    "Auto",
+    "Auto-wired callable from fn/svprob.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
