@@ -98,3 +98,17 @@ def test_proportion_ci_wald_and_exact_alias():
     half = 1.959963984540054 * math.sqrt(0.28 * 0.72 / 25)
     assert close(lo, 0.28 - half, 1e-13) and close(hi, 0.28 + half, 1e-13)
     assert proportion_ci(7, 25, method="exact") == proportion_ci(7, 25, method="clopper-pearson")
+
+
+def test_gee_singular_working_correlation():
+    import math
+
+    import pytest
+
+    x = [math.sin(i) for i in range(1, 21)]
+    g = [i // 4 for i in range(20)]
+    # identical residual pattern in every cluster: exchangeable alpha = -1/(m - 1), the singular boundary
+    with pytest.raises(ValueError, match="working correlation is singular"):
+        gee_regression([a + b for a, b in zip(x, [0.2, -0.1, 0.3, 0] * 5)], x, g)
+    y = [a + b + 0.3 * math.cos(7 * i) for a, b, i in zip(x, [0.2, -0.1, 0.3, 0] * 5, range(1, 21))]
+    assert abs(gee_regression(y, x, g).extra["alpha"] - -0.21085606432035597) < 1e-8

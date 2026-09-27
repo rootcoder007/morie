@@ -165,6 +165,13 @@ def gee_regression(
         M = np.zeros((k, k))
         for g in order:
             m = len(g)
+            if m > 1 and corr_structure != "independence":
+                lo = -1 / (m - 1) if corr_structure == "exchangeable" else -1.0
+                if alpha <= lo + 1e-10 or alpha >= 1 - 1e-10:
+                    raise ValueError(
+                        f"working correlation is singular: alpha = {alpha:.6g} is outside ({lo:.6g}, 1); the data put "
+                        "the moment estimate on the boundary, use corr_structure='independence'"
+                    )
             if corr_structure == "exchangeable":
                 R = [[1.0 if a == b else alpha for b in range(m)] for a in range(m)]
             elif corr_structure == "ar1":
