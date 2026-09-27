@@ -9,7 +9,7 @@ from ._richresult import RichResult
 __all__ = ["esl_least_angle_reg"]
 
 
-def esl_least_angle_reg(X, y, max_steps=None, standardize=True):
+def esl_least_angle_reg(X, y, max_steps=None, standardize=True, method="lar"):
     r"""Compute the LAR coefficient path.
 
     LAR starts from :math:`\hat\beta = 0` and repeatedly moves the current
@@ -42,6 +42,12 @@ def esl_least_angle_reg(X, y, max_steps=None, standardize=True):
         Scale each column to unit norm before fitting. Correlations are not
         comparable across differently-scaled predictors, so turning this off
         makes the entry order depend on the units.
+
+    method : {"lar", "lasso"}
+        ``"lasso"`` applies the lasso modification (ESL Alg. 3.2a): when an
+        active coefficient would cross zero the step stops there and the
+        variable leaves the active set, giving the whole lasso path (piecewise
+        linear in lambda, ESL Ex. 3.27) as ``lars(type = "lasso")``.
 
     Returns
     -------
@@ -89,9 +95,12 @@ def esl_least_angle_reg(X, y, max_steps=None, standardize=True):
     n, p = X.shape
     if n != y.size:
         raise ValueError(f"X has {n} rows but y has {y.size}")
-    max_steps = min(p, n - 1) if max_steps is None else int(max_steps)
-    if not 1 <= max_steps <= min(p, n - 1):
-        raise ValueError(f"max_steps must be between 1 and {min(p, n - 1)}")
+    if method not in ("lar", "lasso"):
+        raise ValueError("method must be 'lar' or 'lasso'")
+    cap = min(p, n - 1) if method == "lar" else 8 * min(p, n - 1)
+    max_steps = cap if max_steps is None else int(max_steps)
+    if not 1 <= max_steps <= cap:
+        raise ValueError(f"max_steps must be between 1 and {cap}")
 
     xbar = X.mean(axis=0)
     Xc = X - xbar
@@ -106,6 +115,8 @@ def esl_least_angle_reg(X, y, max_steps=None, standardize=True):
     active: list[int] = []
     path = [beta.copy()]
     cors = [Xs.T @ yc]
+    dropped = []
+    just_dropped = -1
 
     for _ in range(max_steps):
         c = Xs.T @ (yc - mu)
@@ -113,8 +124,9 @@ def esl_least_angle_reg(X, y, max_steps=None, standardize=True):
         if C < 1e-12:
             break
         for j in np.flatnonzero(np.abs(np.abs(c) - C) < 1e-10):
-            if j not in active:
+            if j not in active and int(j) != just_dropped:
                 active.append(int(j))
+        just_dropped = -1
         A = np.array(active)
         s = np.sign(c[A])
         XA = Xs[:, A] * s
@@ -137,8 +149,24 @@ def esl_least_angle_reg(X, y, max_steps=None, standardize=True):
             cand = cand[(cand > 1e-12) & np.isfinite(cand)]
             gamma = float(cand.min()) if cand.size else C / AA
 
+        drop = None
+        if method == "lasso":
+            # lasso modification: stop where an active coefficient reaches zero (Efron et al. 2004, eq 3.5)
+            d = w * s
+            with np.errstate(divide="ignore", invalid="ignore"):
+                gt = np.where(d != 0, -beta[A] / d, np.inf)
+            ok = gt > 1e-12
+            if bool(np.any(ok)) and float(np.min(gt[ok])) < gamma:
+                k = int(np.flatnonzero(ok & (gt == np.min(gt[ok])))[0])
+                gamma = float(gt[k])
+                drop = int(A[k])
         mu = mu + gamma * u
         beta[A] += gamma * w * s
+        if drop is not None:
+            beta[drop] = 0.0
+            active.remove(drop)
+            dropped.append(drop)
+            just_dropped = drop
         path.append(beta.copy())
         cors.append(Xs.T @ (yc - mu))
 
@@ -157,7 +185,8 @@ def esl_least_angle_reg(X, y, max_steps=None, standardize=True):
             "fitted": fitted,
             "r_squared": float(1 - np.sum((y - fitted) ** 2) / ss_tot) if ss_tot > 0 else np.nan,
             "n_steps": len(path) - 1,
-            "method": "esl_least_angle_reg",
+            "dropped": np.array(dropped, dtype=int),
+            "method": "esl_least_angle_reg" if method == "lar" else "esl_least_angle_reg (lasso modification)",
         },
     )
 

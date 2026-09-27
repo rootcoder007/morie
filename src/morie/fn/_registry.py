@@ -45683,55 +45683,6 @@ _r(
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "bookadvanced_elementsofstatisticallearning4u112",
-    "bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_112",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning4u112.py",
-    "Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "bookadvanced_elementsofstatisticallearning4u115",
-    "bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_115",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning4u115.py",
-    "An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "bookadvanced_elementsofstatisticallearning4u171",
-    "bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_171",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning4u171.py",
-    "It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "bookadvanced_elementsofstatisticallearning4u172",
-    "bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_172",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning4u172.py",
-    "Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "bookadvanced_elementsofstatisticallearning4u187",
-    "bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_187",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning4u187.py",
-    "We must know. We will know. -- David Hilbert",
-)
-_r(
-    "bookadvanced_elementsofstatisticallearning4u188",
-    "bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_188",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning4u188.py",
-    "The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "bookadvanced_elementsofstatisticallearning4u189",
-    "bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_189",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning4u189.py",
-    "The measure of a man is what he does with power. -- Plato",
-)
-_r(
     "bookadvanced_elementsofstatisticallearning5u826",
     "bookadvanced_elementsofstatisticallearning_chapter_5_unnumbered_826",
     "Auto",
@@ -88985,6 +88936,20 @@ _r(
     "esl_mvn_em_missing",
     "Auto",
     "Auto-wired callable from fn/eslmem.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslfsw",
+    "esl_forward_stagewise",
+    "Auto",
+    "Auto-wired callable from fn/eslfsw.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "esll1m",
+    "esl_l1_margin",
+    "Auto",
+    "Auto-wired callable from fn/esll1m.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
