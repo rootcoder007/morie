@@ -45739,39 +45739,11 @@ _r(
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "bookadvanced_elementsofstatisticallearning6u1051",
-    "bookadvanced_elementsofstatisticallearning_chapter_6_unnumbered_1051",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning6u1051.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "bookadvanced_elementsofstatisticallearning6u1052",
-    "bookadvanced_elementsofstatisticallearning_chapter_6_unnumbered_1052",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning6u1052.py",
-    "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
     "bookadvanced_elementsofstatisticallearning6u862",
     "bookadvanced_elementsofstatisticallearning_chapter_6_unnumbered_862",
     "Auto",
     "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning6u862.py",
     "Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "bookadvanced_elementsofstatisticallearning6u944",
-    "bookadvanced_elementsofstatisticallearning_chapter_6_unnumbered_944",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning6u944.py",
-    "Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "bookadvanced_elementsofstatisticallearning6u946",
-    "bookadvanced_elementsofstatisticallearning_chapter_6_unnumbered_946",
-    "Auto",
-    "Auto-wired callable from fn/bookadvanced_elementsofstatisticallearning6u946.py",
-    "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "boolm",
@@ -88894,6 +88866,41 @@ _r(
     "esl_l1_logistic",
     "Auto",
     "Auto-wired callable from fn/esll1l.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslplg",
+    "esl_penalized_logistic",
+    "Auto",
+    "Auto-wired callable from fn/eslplg.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslvcm",
+    "esl_varying_coef",
+    "Auto",
+    "Auto-wired callable from fn/eslvcm.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "esllgl",
+    "esl_local_logistic",
+    "Auto",
+    "Auto-wired callable from fn/esllgl.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslrbf",
+    "esl_rbf_network",
+    "Auto",
+    "Auto-wired callable from fn/eslrbf.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "eslfwe",
+    "esl_fwer",
+    "Auto",
+    "Auto-wired callable from fn/eslfwe.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(

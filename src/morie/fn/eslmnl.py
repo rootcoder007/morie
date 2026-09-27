@@ -19,7 +19,7 @@ def _probs(Z, beta, K, q):
     return out
 
 
-def esl_multinomial_logit(X, g, query=None, max_iter=100, tol=1e-10):
+def esl_multinomial_logit(X, g, query=None, max_iter=100, tol=1e-10, weights=None):
     r"""Fit :math:`\log[\Pr(G=k\mid x)/\Pr(G=K\mid x)] = \beta_{k0} + \beta_k^Tx`, k = 1..K-1.
 
     The last class (in sorted order) is the baseline (ESL eqs 4.17-4.18).
@@ -35,6 +35,9 @@ def esl_multinomial_logit(X, g, query=None, max_iter=100, tol=1e-10):
     query : M x p nested sequence, optional
     max_iter, tol
         Newton controls (tol on the largest step).
+    weights : sequence of N non-negative floats, optional
+        Case weights multiplying each log-likelihood term (used by the
+        local fit of ESL eq 6.19).
 
     Returns
     -------
@@ -57,21 +60,29 @@ def esl_multinomial_logit(X, g, query=None, max_iter=100, tol=1e-10):
     if len(labels) != n:
         raise ValueError("X and g differ in length")
     yi = [classes.index(lab) for lab in labels]
+    wt = [1.0] * n if weights is None else [float(v) for v in weights]
+    if len(wt) != n or min(wt) < 0:
+        raise ValueError("weights must be N non-negative values")
     npar = (K - 1) * q
     beta = [0.0] * npar
 
     def loglik(b):
         P = _probs(Z, b, K, q)
-        return sum(math.log(P[i][yi[i]]) for i in range(n)), P
+        return sum(wt[i] * math.log(P[i][yi[i]]) for i in range(n) if wt[i] > 0), P
 
     ll, P = loglik(beta)
     converged, it, info = False, 0, None
     for _ in range(max_iter):
         it += 1
-        grad = [sum(Z[i][j] * ((yi[i] == k) - P[i][k]) for i in range(n)) for k in range(K - 1) for j in range(q)]
+        grad = [
+            sum(wt[i] * Z[i][j] * ((yi[i] == k) - P[i][k]) for i in range(n)) for k in range(K - 1) for j in range(q)
+        ]
         info = [
             [
-                sum(Z[i][a % q] * Z[i][b % q] * P[i][a // q] * ((a // q == b // q) - P[i][b // q]) for i in range(n))
+                sum(
+                    wt[i] * Z[i][a % q] * Z[i][b % q] * P[i][a // q] * ((a // q == b // q) - P[i][b // q])
+                    for i in range(n)
+                )
                 for b in range(npar)
             ]
             for a in range(npar)
@@ -91,7 +102,9 @@ def esl_multinomial_logit(X, g, query=None, max_iter=100, tol=1e-10):
             break
     info = [
         [
-            sum(Z[i][a % q] * Z[i][b % q] * P[i][a // q] * ((a // q == b // q) - P[i][b // q]) for i in range(n))
+            sum(
+                wt[i] * Z[i][a % q] * Z[i][b % q] * P[i][a // q] * ((a // q == b // q) - P[i][b // q]) for i in range(n)
+            )
             for b in range(npar)
         ]
         for a in range(npar)

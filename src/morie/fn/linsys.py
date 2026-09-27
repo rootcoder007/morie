@@ -54,6 +54,9 @@ def _householder_ls(rows, y):
         f = 2 * sum(v[i] * qty[k + i] for i in range(n - k)) / vv
         for i in range(n - k):
             qty[k + i] -= f * v[i]
+    dmax = max(abs(r[k][k]) for k in range(m))
+    if min(abs(r[k][k]) for k in range(m)) <= dmax * max(n, m) * 2.220446049250313e-16:
+        raise ValueError("design matrix is rank deficient")
     coef = [0.0] * m
     for k in range(m - 1, -1, -1):
         coef[k] = (qty[k] - sum(r[k][j] * coef[j] for j in range(k + 1, m))) / r[k][k]
