@@ -23945,53 +23945,10 @@ _r(
 )
 _r("opagg", "opagg", "OptimSp", "Spatial aggregation problem", quote="I think, therefore I am. -- Rene Descartes")
 _r(
-    "opall",
-    "opall",
-    "OptimSp",
-    "Spatial allocation problem",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "opass",
-    "opass",
-    "OptimSp",
-    "Spatial assignment problem",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
     "opazt",
     "opazt",
     "OptimSp",
     "AZP regionalization",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r("opcnt", "opcnt", "OptimSp", "Spatial p-center problem", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "opcom",
-    "opcom",
-    "OptimSp",
-    "Spatial compactness measure",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "opcov",
-    "opcov",
-    "OptimSp",
-    "Spatial set covering",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "openf",
-    "openf",
-    "KrigFilt",
-    "Opening morphological",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "opfln",
-    "opfln",
-    "OptimSp",
-    "Spatial flow capture",
     quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
@@ -24008,20 +23965,6 @@ _r(
     "Max-p regionalization",
     quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
-_r(
-    "opmed",
-    "opmed",
-    "OptimSp",
-    "Spatial p-median problem",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "opmxc",
-    "opmxc",
-    "OptimSp",
-    "Spatial max covering location",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
 _r("oppar", "oppar", "OptimSp", "Spatial partitioning", quote="I think, therefore I am. -- Rene Descartes")
 _r(
     "oprdn",
@@ -24031,13 +23974,6 @@ _r(
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r("opred", "opred", "OptimSp", "Spatial redistricting", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "opsfl",
-    "opsfl",
-    "OptimSp",
-    "Spatial facility location",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
 _r(
     "opskr",
     "opskr",
@@ -24052,20 +23988,6 @@ _r(
     "OptimSp",
     "Sequential quadratic programming",
     quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "optsp",
-    "optsp",
-    "OptimSp",
-    "Traveling salesman spatial",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "opvhc",
-    "opvhc",
-    "OptimSp",
-    "Vehicle routing spatial",
-    quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
     "opzon",
@@ -86240,6 +86162,90 @@ _r(
     "whale_optimization",
     "Auto",
     "Auto-wired callable from fn/woaopt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "lsapop",
+    "linear_assignment",
+    "Auto",
+    "Auto-wired callable from fn/lsapop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "tspsol",
+    "travelling_salesman",
+    "Auto",
+    "Auto-wired callable from fn/tspsol.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "pmedop",
+    "p_median",
+    "Auto",
+    "Auto-wired callable from fn/pmedop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "pcntop",
+    "p_center",
+    "Auto",
+    "Auto-wired callable from fn/pcntop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "mclpop",
+    "maximal_covering",
+    "Auto",
+    "Auto-wired callable from fn/mclpop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "lscpop",
+    "set_covering_location",
+    "Auto",
+    "Auto-wired callable from fn/lscpop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "uflpop",
+    "facility_location",
+    "Auto",
+    "Auto-wired callable from fn/uflpop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "trnsop",
+    "transportation_problem",
+    "Auto",
+    "Auto-wired callable from fn/trnsop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "cwvrp",
+    "vehicle_routing_savings",
+    "Auto",
+    "Auto-wired callable from fn/cwvrp.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "fclmop",
+    "flow_capturing_location",
+    "Auto",
+    "Auto-wired callable from fn/fclmop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "cmpctop",
+    "polygon_compactness",
+    "Auto",
+    "Auto-wired callable from fn/cmpctop.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "mopnop",
+    "morphological_opening",
+    "Auto",
+    "Auto-wired callable from fn/mopnop.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
