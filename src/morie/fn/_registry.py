@@ -89016,6 +89016,13 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "eslarc",
+    "esl_archetypes",
+    "Auto",
+    "Auto-wired callable from fn/eslarc.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
