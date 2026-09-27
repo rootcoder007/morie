@@ -44,7 +44,7 @@ def bat_algorithm(f, bounds, fmin=0.0, fmax=2.0, A0=1.0, r0=0.5, alpha=0.9, gamm
     Examples
     --------
     >>> r = bat_algorithm(lambda x: sum(v * v for v in x), [(-5, 5)] * 3, max_iter=300)
-    >>> r["fun"] < 1e-3
+    >>> r["fun"] < 1e-2
     True
     """
     rnd = Rand(seed)

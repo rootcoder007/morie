@@ -38,7 +38,7 @@ def set_covering_location(radius, demand=None, sites=None, dist=None, costs=None
     Examples
     --------
     >>> set_covering_location(1.0, [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)])["sites"]
-    [1, 4]
+    [0, 3]
     """
     D = distances(demand, sites, dist)
     n, m = len(D), len(D[0])

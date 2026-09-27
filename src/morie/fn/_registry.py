@@ -30271,156 +30271,11 @@ _r(
     "Turning bands simulation",
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
-_r(
-    "ubcls",
-    "ubcls",
-    "UrbanSp",
-    "Clustering index spatial",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "ubcmp",
-    "ubcmp",
-    "UrbanSp",
-    "Urban compactness",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "ubcnt",
-    "ubcnt",
-    "UrbanSp",
-    "Urban centrality",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "ubcon",
-    "ubcon",
-    "UrbanSp",
-    "Concentration index spatial",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "ubdis",
-    "ubdis",
-    "UrbanSp",
-    "Dissimilarity index spatial",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "ubedu",
-    "ubedu",
-    "UrbanSp",
-    "Education accessibility",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "ubelc",
-    "ubelc",
-    "UrbanSp",
-    "Electric grid coverage",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "ubexp",
-    "ubexp",
-    "UrbanSp",
-    "Exposure index spatial",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "ubfgm",
-    "ubfgm",
-    "UrbanSp",
-    "Urban fragmentation",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r("ubfir", "ubfir", "UrbanSp", "Fire station coverage", quote="Knowledge is power. -- Francis Bacon")
-_r("ubfod", "ubfod", "UrbanSp", "Food desert detection", quote="I think, therefore I am. -- Rene Descartes")
-_r("ubgas", "ubgas", "UrbanSp", "Gas network coverage", quote="There is no royal road to geometry. -- Euclid")
-_r(
-    "ubgrn",
-    "ubgrn",
-    "UrbanSp",
-    "Green space accessibility",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "ubhlc",
-    "ubhlc",
-    "UrbanSp",
-    "Healthcare accessibility",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
-)
 _r("ubhsg", "ubhsg", "UrbanSp", "Housing density spatial", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "ubimv",
-    "ubimv",
-    "UrbanSp",
-    "Impervious surface mapping",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "ubiso",
-    "ubiso",
-    "UrbanSp",
-    "Isolation index spatial",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
 _r("ublib", "ublib", "UrbanSp", "Library coverage spatial", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "ubpdn",
-    "ubpdn",
-    "UrbanSp",
-    "Population density mapping",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "ubpol",
-    "ubpol",
-    "UrbanSp",
-    "Police station coverage",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r("ubpxm", "ubpxm", "UrbanSp", "Proximity to amenities", quote="We must know. We will know. -- David Hilbert")
-_r(
-    "ubseg",
-    "ubseg",
-    "UrbanSp",
-    "Segregation index spatial",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "ubsho",
-    "ubsho",
-    "UrbanSp",
-    "Shopping accessibility",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "ubspr",
-    "ubspr",
-    "UrbanSp",
-    "Urban sprawl index",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
 _r("ubtrf", "ubtrf", "UrbanSp", "Traffic flow spatial", quote="Statistics is the grammar of science. -- Karl Pearson")
-_r(
-    "ubtrn",
-    "ubtrn",
-    "UrbanSp",
-    "Transit accessibility",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "ubuhi",
-    "ubuhi",
-    "UrbanSp",
-    "UHI intensity mapping",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
 _r("ubvac", "ubvac", "UrbanSp", "Vacancy rate spatial", quote="Number rules the universe. -- Pythagoras")
 _r("ubwlk", "ubwlk", "UrbanSp", "Walkability index spatial", quote="Knowledge is power. -- Francis Bacon")
-_r("ubwtr", "ubwtr", "UrbanSp", "Water supply coverage", quote="I think, therefore I am. -- Rene Descartes")
 _r(
     "ukflt",
     "ukflt",
@@ -86228,6 +86083,111 @@ _r(
     "constrained_hierarchical",
     "Auto",
     "Auto-wired callable from fn/schcreg.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "dsmidx",
+    "dissimilarity_index",
+    "Auto",
+    "Auto-wired callable from fn/dsmidx.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "expidx",
+    "exposure_index",
+    "Auto",
+    "Auto-wired callable from fn/expidx.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "isoidx",
+    "isolation_index",
+    "Auto",
+    "Auto-wired callable from fn/isoidx.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "concidx",
+    "spatial_concentration",
+    "Auto",
+    "Auto-wired callable from fn/concidx.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "clusidx",
+    "clustering_index",
+    "Auto",
+    "Auto-wired callable from fn/clusidx.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "centidx",
+    "centralization_index",
+    "Auto",
+    "Auto-wired callable from fn/centidx.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "evenidx",
+    "segregation_evenness",
+    "Auto",
+    "Auto-wired callable from fn/evenidx.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "accidx",
+    "spatial_accessibility",
+    "Auto",
+    "Auto-wired callable from fn/accidx.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "servcov",
+    "service_coverage",
+    "Auto",
+    "Auto-wired callable from fn/servcov.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "fooddes",
+    "food_desert",
+    "Auto",
+    "Auto-wired callable from fn/fooddes.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "fragmt",
+    "landscape_fragmentation",
+    "Auto",
+    "Auto-wired callable from fn/fragmt.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "sprawl",
+    "sprawl_entropy",
+    "Auto",
+    "Auto-wired callable from fn/sprawl.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "imperv",
+    "impervious_indices",
+    "Auto",
+    "Auto-wired callable from fn/imperv.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "uhiint",
+    "uhi_intensity",
+    "Auto",
+    "Auto-wired callable from fn/uhiint.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "popden",
+    "population_density_surface",
+    "Auto",
+    "Auto-wired callable from fn/popden.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
