@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **18,173 single-purpose callables** -- every one
+``morie.fn`` ships **18,172 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -3121,6 +3121,7 @@ Full list
    "correlation_matrix", "corrm"
    "correlation_sample_size", "corss"
    "correlation_test", "corrho"
+   "correlation_width_sample_size", "corwsn"
    "correlogram", "vgcrf"
    "correspondence_analysis", "crssp"
    "corrn", "corrn"
@@ -7853,8 +7854,6 @@ Full list
    "hedderich_chapter_8_equation_80", "hedderich8e80"
    "hedderich_chapter_8_equation_95", "hedderich8e95"
    "hedderich_chapter_8_equation_96", "hedderich8e96"
-   "hedderich_chapter_9_unnumbered_3162", "hedderich9u3162"
-   "hedderich_chapter_9_unnumbered_3163", "hedderich9u3163"
    "hedgeg", "hedgeg"
    "hedges_g", "g"
    "hedges_j", "hedges_j"

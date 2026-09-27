@@ -63874,20 +63874,6 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "hedderich9u3162",
-    "hedderich_chapter_9_unnumbered_3162",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3162.py",
-    "There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "hedderich9u3163",
-    "hedderich_chapter_9_unnumbered_3163",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3163.py",
-    "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
     "hedgw",
     "hedgw",
     "Auto",
@@ -88873,6 +88859,13 @@ _r(
     "nonlinear_least_squares",
     "Auto",
     "Auto-wired callable from fn/nlsgn.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "corwsn",
+    "correlation_width_sample_size",
+    "Auto",
+    "Auto-wired callable from fn/corwsn.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
