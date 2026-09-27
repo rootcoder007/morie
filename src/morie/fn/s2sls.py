@@ -57,8 +57,10 @@ def spatial_two_stage_least_squares(
 
     Examples
     --------
-    >>> r = spatial_two_stage_least_squares([1.0, 2.2, 1.4, 3.1, 0.9], [[1, 0.1], [1, 0.6], [1, 0.2], [1, 0.9], [1, 0.3]],
-    ...     [[0, .5, 0, 0, .5], [.5, 0, .5, 0, 0], [0, .5, 0, .5, 0], [0, 0, .5, 0, .5], [.5, 0, 0, .5, 0]])
+    >>> W = [[1.0 if abs(i - j) == 1 else 0.0 for j in range(6)] for i in range(6)]
+    >>> W = [[v / sum(r) for v in r] for r in W]
+    >>> X = [[1, v] for v in (0.1, 0.6, 0.2, 0.9, 0.3, 0.5)]
+    >>> r = spatial_two_stage_least_squares([1.0, 2.2, 1.4, 3.1, 0.9, 2.0], X, W)
     >>> len(r.value), r.extra["instruments"]
     (3, 2)
     """
