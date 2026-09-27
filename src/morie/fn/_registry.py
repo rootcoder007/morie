@@ -63944,59 +63944,10 @@ _r(
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "hedderich9u1709",
-    "hedderich_chapter_9_unnumbered_1709",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1709.py",
-    "Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "hedderich9u1710",
-    "hedderich_chapter_9_unnumbered_1710",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u1710.py",
-    "To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
     "hedderich9u2682",
     "hedderich_chapter_9_unnumbered_2682",
     "Auto",
     "Auto-wired callable from fn/hedderich9u2682.py",
-    "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "hedderich9u2911",
-    "hedderich_chapter_9_unnumbered_2911",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2911.py",
-    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "hedderich9u2912",
-    "hedderich_chapter_9_unnumbered_2912",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2912.py",
-    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "hedderich9u2913",
-    "hedderich_chapter_9_unnumbered_2913",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2913.py",
-    "To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "hedderich9u2914",
-    "hedderich_chapter_9_unnumbered_2914",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2914.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "hedderich9u2918",
-    "hedderich_chapter_9_unnumbered_2918",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2918.py",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -64005,13 +63956,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/hedderich9u2966.py",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "hedderich9u2970",
-    "hedderich_chapter_9_unnumbered_2970",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u2970.py",
-    "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
     "hedderich9u2971",
@@ -64056,13 +64000,6 @@ _r(
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "hedderich9u3160",
-    "hedderich_chapter_9_unnumbered_3160",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u3160.py",
-    "It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
     "hedderich9u3162",
     "hedderich_chapter_9_unnumbered_3162",
     "Auto",
@@ -64103,20 +64040,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/hedderich9u352.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "hedderich9u952",
-    "hedderich_chapter_9_unnumbered_952",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u952.py",
-    "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "hedderich9u953",
-    "hedderich_chapter_9_unnumbered_953",
-    "Auto",
-    "Auto-wired callable from fn/hedderich9u953.py",
-    "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
     "hedgw",
@@ -88936,6 +88859,41 @@ _r(
     "repeated_measures_correlation",
     "Auto",
     "Auto-wired callable from fn/rpmcor.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "lrgtst",
+    "g_test",
+    "Auto",
+    "Auto-wired callable from fn/lrgtst.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "catrnd",
+    "cochran_armitage_test",
+    "Auto",
+    "Auto-wired callable from fn/catrnd.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "ntrtau",
+    "noether_tau_sample_size",
+    "Auto",
+    "Auto-wired callable from fn/ntrtau.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "gamfit",
+    "gamma_fit",
+    "Auto",
+    "Auto-wired callable from fn/gamfit.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "pchnrm",
+    "pearson_normality_test",
+    "Auto",
+    "Auto-wired callable from fn/pchnrm.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
