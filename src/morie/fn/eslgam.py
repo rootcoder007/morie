@@ -27,10 +27,11 @@ def _band_solve(A, b, bw):
     return x
 
 
-def _spline_smooth(x, r, lam, w=None):
+def _spline_smooth(x, r, lam, w=None, full=False):
     """Weighted cubic smoothing spline at the data: minimise sum w (r - f)^2 + lam int f''^2 (Reinsch form).
 
-    Tied x are pooled with their weights; returns fitted values in the input order.
+    Tied x are pooled with their weights; returns fitted values in the input order, or with
+    ``full`` also the knots, the fitted values there and the second derivatives (zero at the ends).
     """
     n = len(x)
     w = [1.0] * n if w is None else w
@@ -41,6 +42,7 @@ def _spline_smooth(x, r, lam, w=None):
     m = len(u)
     W = [sum(w[i] for i in groups[v]) for v in u]
     ybar = [sum(w[i] * r[i] for i in groups[v]) / W[k] for k, v in enumerate(u)]
+    gam = []
     if m < 3 or lam == 0:
         fu = ybar
     else:
@@ -73,6 +75,8 @@ def _spline_smooth(x, r, lam, w=None):
     for k, v in enumerate(u):
         for i in groups[v]:
             out[i] = fu[k]
+    if full:
+        return out, u, fu, [0.0] + gam + [0.0] if gam else [0.0] * m
     return out
 
 
