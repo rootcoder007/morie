@@ -176,3 +176,7 @@ def esl_prodenica(X, penalty=1e-4, L=500, A0=None, max_iter=50, tol=1e-9):
             "converged": conv,
         },
     )
+
+
+def cheatsheet() -> str:
+    return "esl_prodenica -> product density ICA with tilted-Gaussian spline densities (ESL 14.89-14.96)."

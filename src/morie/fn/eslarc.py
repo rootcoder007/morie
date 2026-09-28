@@ -168,3 +168,7 @@ def esl_archetypes(X, r, max_iter=200, tol=1e-10):
             "converged": conv,
         },
     )
+
+
+def cheatsheet() -> str:
+    return "esl_archetypes -> archetypal analysis: data as convex mixtures of r archetypes (ESL 14.75-14.77)."

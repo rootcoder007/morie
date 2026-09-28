@@ -79,7 +79,7 @@ def nonlinear_least_squares(model, x, y, start, tol=1e-8, max_iter=200):
         return [yi - model(xi, t) for xi, yi in zip(x, yy)]
 
     r = resid(theta)
-    rss = sum(v * v for v in r)
+    rss = math.fsum(v * v for v in r)
     converged, it = False, 0
     for _ in range(max_iter):
         it += 1
@@ -92,12 +92,17 @@ def nonlinear_least_squares(model, x, y, start, tol=1e-8, max_iter=200):
         while fac >= 1 / 1024:
             cand = [t + fac * d for t, d in zip(theta, delta)]
             rc = resid(cand)
-            rssc = sum(v * v for v in rc)
+            rssc = math.fsum(v * v for v in rc)
             if rssc < rss:
                 theta, r, rss = cand, rc, rssc
                 break
             fac /= 2
         else:
+            # the predicted Gauss-Newton decrease is below the rounding error
+            # of rss itself, so no step can lower it: theta is the minimiser
+            if rss - rperp <= 4 * n * 2.220446049250313e-16 * rss:
+                converged = True
+                break
             raise ValueError("step factor reduced below 1/1024 without reducing the residual sum of squares")
     J = _jacobian(model, x, theta)
     jtj = [[sum(J[i][a] * J[i][b] for i in range(n)) for b in range(p)] for a in range(p)]

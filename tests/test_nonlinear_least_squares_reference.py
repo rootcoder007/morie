@@ -37,3 +37,10 @@ def test_step_halving_from_a_poor_start():
     r = nonlinear_least_squares(lambda x, t: t[0] * t[1] ** x, [1, 2, 3, 4, 5], [3, 7, 12, 26, 51], [1, 0.5])
     assert r["converged"] and r["rss"] <= 1.225082272330410893 * (1 + 1e-13)
     assert close(r["coefficients"][0], 1.602023650300048008, 1e-6)
+
+
+def test_converges_at_the_rounding_floor():
+    # tol = 0 never passes the relative-offset test, as on arm64 where the
+    # Gauss-Newton decrease stays one ulp above zero; the fit must converge
+    r = nonlinear_least_squares(lambda x, t: t[0] * t[1] ** x, [1, 2, 3, 4, 5], [3, 7, 12, 26, 51], [1, 0.5], tol=0)
+    assert r["converged"] and r["rss"] <= 1.225082272330410893 * (1 + 1e-13)

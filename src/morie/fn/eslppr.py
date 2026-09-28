@@ -171,3 +171,7 @@ def esl_projection_pursuit(X, y, M=2, penalty=1.0, max_iter=50, tol=1e-8, backfi
             "predicted": pred,
         },
     )
+
+
+def cheatsheet() -> str:
+    return "esl_projection_pursuit -> projection pursuit regression with smoothing-spline ridge functions (ESL 11.1-11.4)."
