@@ -10,7 +10,7 @@ class TestQuadUtility:
         x = np.array([1.0, 2.0])
         result = quad_utility(x, ideal_point=np.array([0.0, 0.0]))
         assert result.value is not None
-        assert result.value >= 0
+        assert result.value == -5.0  # -(1^2 + 2^2)
 
     def test_output_type(self):
         result = quad_utility(np.array([1.0, 2.0]))
