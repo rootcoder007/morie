@@ -616,8 +616,10 @@ def event_study(
     # relative-time dummies; the endpoints are binned, so every treated
     # observation outside the window counts in -leads or lags rather than
     # silently in the reference period (Schmidheiny & Siegloch 2020)
-    periods = [k for k in range(-leads, lags + 1) if k != reference_period]
-    rel = [min(max(v, -leads), lags) if v == v else v for v in df["_rel_time"].tolist()]
+    # never-treated units (inf or NaN) join the reference period; periods
+    # with no observations get no dummy, as in the R arm
+    rel = [min(max(v, -leads), lags) if math.isfinite(v) else reference_period for v in df["_rel_time"].tolist()]
+    periods = [k for k in range(-leads, lags + 1) if k != reference_period and k in set(rel)]
     for k in periods:
         df[f"_rel_{k}"] = [1.0 if r_ == k else 0.0 for r_ in rel]
     X_cols = [f"_rel_{k}" for k in periods]

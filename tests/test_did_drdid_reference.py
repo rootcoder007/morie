@@ -124,6 +124,11 @@ def test_twfe_and_event_study_match_fixest():
         i = rt.index(k)
         assert abs(c["estimate"].tolist()[i] - b) <= 1e-10 and abs(c["std_error"].tolist()[i] - s) <= 1e-11
     assert abs(es.pre_trend_f_stat - 0.216136594631) <= 1e-10
+    # never-treated coded as inf joins the reference period exactly as NaN does
+    u["tt"] = [float(v) if v > 0 else float("inf") for v in u["g"].tolist()]
+    es_inf = D.event_study(u, "y", "unit", "time", "tt", cluster="unit")
+    assert es_inf.coefficients["estimate"].tolist() == c["estimate"].tolist()
+    assert es_inf.coefficients["std_error"].tolist() == c["std_error"].tolist()
 
 
 def test_synthetic_did_matches_synthdid():
