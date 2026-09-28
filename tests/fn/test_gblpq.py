@@ -1,10 +1,6 @@
 """Tests for gblpq.gblup_equivalence."""
 
-import numpy as np
-
-from morie.fn import _array_core as _ac
-from morie.fn import _frame_core as pd
-
+from morie.fn import _array_core as np
 from morie.fn.gblpq import gblup_equivalence
 
 

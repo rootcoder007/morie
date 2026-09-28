@@ -1,8 +1,6 @@
-import numpy as np
 """Tests for chnntp.channel_capacity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.chnntp import channel_capacity
 
 

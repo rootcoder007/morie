@@ -120,7 +120,7 @@ def gpd_logpdf(y, sigma, xi):
 
 
 def gpd_loglik(y, sigma, xi):
-    return sum(gpd_logpdf(v, sigma, xi) for v in _flat(y))
+    return math.fsum(gpd_logpdf(v, sigma, xi) for v in _flat(y))
 
 
 def gpd_quantile(p, sigma, xi):

@@ -2,12 +2,12 @@
 
 import math
 
-from scipy import stats
-
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.gb47ad import gibbons_anderson_darling
+
+
+def _norm_cdf(v):
+    return 0.5 * math.erfc(-v / math.sqrt(2.0))
 
 
 def test_gb47ad_basic():
@@ -15,7 +15,7 @@ def test_gb47ad_basic():
     rng = np.random.default_rng(42)
     x = list(rng.normal(0, 1, 100))
 
-    result = gibbons_anderson_darling(x, stats.norm.cdf)
+    result = gibbons_anderson_darling(x, _norm_cdf)
 
     # Documented return keys (RichResult behaves dict-like)
     assert isinstance(result, dict)
@@ -26,7 +26,7 @@ def test_gb47ad_basic():
     # Independent computation of W_n^2 from eq. (4.7.1)
     xs_sorted = sorted(float(v) for v in x)
     n = len(xs_sorted)
-    z_vals = [float(stats.norm.cdf(v)) for v in xs_sorted]
+    z_vals = [float(_norm_cdf(v)) for v in xs_sorted]
     assert all(0.0 < v < 1.0 for v in z_vals)
     s = 0.0
     for j in range(1, n + 1):
@@ -52,7 +52,7 @@ def test_gb47ad_edge():
     rng = np.random.default_rng(42)
     x = list(rng.normal(0, 1, 25))
 
-    result = gibbons_anderson_darling(x, stats.norm.cdf,
+    result = gibbons_anderson_darling(x, _norm_cdf,
                                       case="normal-both", alpha=0.10)
 
     assert isinstance(result, dict)

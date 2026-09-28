@@ -1,8 +1,6 @@
-import numpy as np
 """Tests for gb1461o.gibbons_ordered_categories."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb1461o import gibbons_ordered_categories
 
 

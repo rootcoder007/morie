@@ -1,8 +1,6 @@
-import numpy as np
 """Tests for gb641p.gibbons_median_test_power."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb641p import gibbons_median_test_power
 
 
@@ -51,7 +49,7 @@ def test_gb641p_basic():
     # [0,1], and W_r | U=u ~ Binomial(n, u), so P(W_r < wcrit) =
     # E[I(U)(wcrit, n+1-wcrit)] / B(r, m-r+1).  The Beta CDF is
     # available in the function's array shim's special module.
-    from math import lgamma, exp
+    from math import exp, lgamma
 
     def log_beta(a, b):
         return lgamma(a) + lgamma(b) - lgamma(a + b)

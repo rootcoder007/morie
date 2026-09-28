@@ -1,9 +1,6 @@
-import numpy as np
 """Tests for basEvap.penman_monteith."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.basEvap import penman_monteith
 
 

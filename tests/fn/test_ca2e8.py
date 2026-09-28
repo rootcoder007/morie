@@ -1,9 +1,6 @@
 """Tests for ca2e8.ca_chapter_2_equation_8."""
 
-import numpy as np
 
-from morie.fn import _array_core as np_a
-from morie.fn import _frame_core as pd
 
 from morie.fn.ca2e8 import ca_chapter_2_equation_8
 

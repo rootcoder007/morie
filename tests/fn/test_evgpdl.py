@@ -1,7 +1,8 @@
 """Tests for evgpdl.evt_gpd_loglik."""
 
-import numpy as np
+import math
 
+from morie.fn import _array_core as np
 from morie.fn.evgpdl import evt_gpd_loglik
 
 
@@ -19,22 +20,17 @@ def test_evgpdl_basic():
     assert "method" in result
     assert result["n"] == len(y)
 
-    # Independent recomputation of the GPD log-likelihood (Coles 2001 eq. 4.10).
+    # Independent recomputation of the GPD log-likelihood (Coles 2001 eq. 4.10),
+    # one term per excess, summed exactly.
     s = float(sigma)
     x = float(xi)
-    arr = np.asarray(y, dtype=float)
-    if abs(x) < 1e-12:
-        expected_ll = float(-len(arr) * np.log(s) - (1.0 / s) * np.sum(arr - 0.0))
+    ys = [float(v) for v in y.tolist()]
+    if abs(x) < 1e-8:
+        terms = [-math.log(s) - v / s for v in ys]
     else:
-        z = arr / s
-        w = 1.0 + x * z
-        if np.any(w <= 0):
-            expected_ll = float("-inf")
-        else:
-            expected_ll = float(
-                -len(arr) * np.log(s)
-                - (1.0 + 1.0 / x) * np.sum(np.log(w))
-            )
+        terms = [-math.log(s) - (1.0 + 1.0 / x) * math.log(1.0 + x * v / s)
+                 if 1.0 + x * v / s > 0 else float("-inf") for v in ys]
+    expected_ll = math.fsum(terms)
     assert result["ll"] == expected_ll
 
 

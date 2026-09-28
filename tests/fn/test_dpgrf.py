@@ -3,13 +3,18 @@ prior (Li, Banerjee, Hanson and McBean 2015)."""
 
 import math
 
-import numpy as real
 import pytest
 
-from morie.fn.dpgrf import (adjacency_pairs, boundary_probabilities,
-                            car_precision, coclustering,
-                            continuous_prior_tie_probability,
-                            dp_grouped_random_field, sample_labels)
+from morie.fn import _array_core as real
+from morie.fn.dpgrf import (
+    adjacency_pairs,
+    boundary_probabilities,
+    car_precision,
+    coclustering,
+    continuous_prior_tie_probability,
+    dp_grouped_random_field,
+    sample_labels,
+)
 
 # a 4-region path 0 - 1 - 2 - 3
 PATH = [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]]

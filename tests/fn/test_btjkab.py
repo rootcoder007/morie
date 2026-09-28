@@ -1,7 +1,6 @@
 """Tests for btjkab.boot_jackknife_after_boot."""
 
-import numpy as np
-
+from morie.fn import _array_core as np
 from morie.fn.btjkab import boot_jackknife_after_boot
 
 
@@ -50,7 +49,11 @@ def test_btjkab_basic():
             used[b][i] = True
 
     tb = list(theta_b)
-    grand_independent = sum(tb) / len(tb)
+    # plain left-to-right sum, as core.mean (builtin sum() is compensated on py>=3.12)
+    acc = 0.0
+    for v in tb:
+        acc += v
+    grand_independent = acc / len(tb)
 
     infl_independent = []
     tm_independent = []
