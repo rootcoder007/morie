@@ -1,34 +1,35 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""CAR (simultaneous) ML estimation."""
+# morie.fn -- function file (rootcoder007/morie)
+"""CAR regression by maximum likelihood (spatialreg::spautolm, family = "CAR")."""
+
+from __future__ import annotations
 
 from . import _array_core as np
 from ._containers import SpatialResult
+from .spdurbin import car_ml
 
 
-def carml(y, W):
-    """CAR (simultaneous) ML estimation.
+def carml(y, W, X=None):
+    """CAR regression by maximum likelihood; ``statistic`` is the estimated ``lambda``.
 
-    Category: CAR
+    Delegates to :func:`morie.fn.spdurbin.car_ml` with the design ``X``
+    (intercept only by default) and symmetric weights ``W``; ``p_value`` is
+    the likelihood-ratio test of ``lambda = 0``.
 
-    Parameters
-    ----------
-    y, W : see function signature.
-
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> W = [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]]
+    >>> r = carml([1.0, 2.2, 2.9, 4.1], W, X=[[1, 0.0], [1, 1.0], [1, 2.0], [1, 3.0]])
+    >>> r.extra["lr_test"]["df"]
+    1
     """
-    try:
-        n = len(y)
-        Wy = np.dot(W, y)
-        result = float(np.corrcoef(y, Wy)[0, 1])
-        return SpatialResult(name="carml", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="carml", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    yv = [float(v) for v in np.asarray(y, dtype=float).tolist()]
+    Xm = [[1.0] for _ in yv] if X is None else np.asarray(X, dtype=float).tolist()
+    r = car_ml(yv, Xm, np.asarray(W, dtype=float).tolist())
+    return SpatialResult(name="carml", statistic=float(r["lambda"]), p_value=r.lr_test["pvalue"], extra=dict(r))
 
 
 carml_fn = carml
 
 
 def cheatsheet() -> str:
-    return "carml({}) -> CAR (simultaneous) ML estimation."
+    return "carml({}) -> CAR regression by maximum likelihood."

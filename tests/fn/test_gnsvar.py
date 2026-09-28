@@ -1,7 +1,6 @@
 """Tests for morie.fn.gnsvar."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gnsvar import gnsvar
 
 

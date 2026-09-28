@@ -1,7 +1,6 @@
 """Tests for morie.fn.sdemvar."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sdemvar import sdemvar
 
 
@@ -10,8 +9,10 @@ class TestSdemvar:
         np.random.seed(49)
         n = 15
         X = np.column_stack([np.ones(n), np.random.randn(n)])
-        WX = X * 0.3
-        W = np.eye(n) * 0.2
+        W = np.array(
+            [[0.5 if abs(i - j) in (1, n - 1) else 0.0 for j in range(n)] for i in range(n)]
+        )  # row-standardised ring
+        WX = W @ X[:, 1:]  # lag of the non-constant column; X * 0.3 was collinear with X
         lam = 0.3
         sigma2 = 1.0
         result = sdemvar(X, WX, W, lam, sigma2)
@@ -21,8 +22,10 @@ class TestSdemvar:
         np.random.seed(49)
         n = 15
         X = np.column_stack([np.ones(n), np.random.randn(n)])
-        WX = X * 0.3
-        W = np.eye(n) * 0.2
+        W = np.array(
+            [[0.5 if abs(i - j) in (1, n - 1) else 0.0 for j in range(n)] for i in range(n)]
+        )  # row-standardised ring
+        WX = W @ X[:, 1:]  # lag of the non-constant column; X * 0.3 was collinear with X
         lam = 0.3
         sigma2 = 1.0
         result = sdemvar(X, WX, W, lam, sigma2)
@@ -32,8 +35,10 @@ class TestSdemvar:
         np.random.seed(49)
         n = 15
         X = np.column_stack([np.ones(n), np.random.randn(n)])
-        WX = X * 0.3
-        W = np.eye(n) * 0.2
+        W = np.array(
+            [[0.5 if abs(i - j) in (1, n - 1) else 0.0 for j in range(n)] for i in range(n)]
+        )  # row-standardised ring
+        WX = W @ X[:, 1:]  # lag of the non-constant column; X * 0.3 was collinear with X
         lam = 0.3
         sigma2 = 1.0
         result = sdemvar(X, WX, W, lam, sigma2)

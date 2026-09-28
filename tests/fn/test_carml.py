@@ -1,7 +1,6 @@
 """Tests for morie.fn.carml."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.carml import carml
 
 
@@ -10,7 +9,9 @@ class TestCarml:
         np.random.seed(22)
         n = 20
         y = np.random.randn(n)
-        W = np.eye(n) * 0.2
+        W = np.array(
+            [[1.0 if abs(i - j) in (1, n - 1) else 0.0 for j in range(n)] for i in range(n)]
+        )  # ring: CAR needs real neighbours
         result = carml(y, W)
         assert result is not None
 
@@ -18,7 +19,9 @@ class TestCarml:
         np.random.seed(22)
         n = 20
         y = np.random.randn(n)
-        W = np.eye(n) * 0.2
+        W = np.array(
+            [[1.0 if abs(i - j) in (1, n - 1) else 0.0 for j in range(n)] for i in range(n)]
+        )  # ring: CAR needs real neighbours
         result = carml(y, W)
         assert hasattr(result, "statistic")
 
@@ -26,7 +29,9 @@ class TestCarml:
         np.random.seed(22)
         n = 20
         y = np.random.randn(n)
-        W = np.eye(n) * 0.2
+        W = np.array(
+            [[1.0 if abs(i - j) in (1, n - 1) else 0.0 for j in range(n)] for i in range(n)]
+        )  # ring: CAR needs real neighbours
         result = carml(y, W)
         assert result.statistic is not None
         assert not (result.statistic != result.statistic and result.statistic != float("nan"))

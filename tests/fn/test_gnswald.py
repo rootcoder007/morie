@@ -1,7 +1,6 @@
 """Tests for morie.fn.gnswald."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gnswald import gnswald
 
 

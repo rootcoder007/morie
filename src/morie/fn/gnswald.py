@@ -1,30 +1,23 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""GNS Wald test on rho and lambda."""
+"""Wald test that the GNS spatial parameters are jointly zero."""
 
-from . import _array_core as np
+from __future__ import annotations
+
 from ._containers import SpatialResult
+from .spdurbin import spatial_wald_test
 
 
 def gnswald(params, vcov):
-    """GNS Wald test on rho and lambda.
+    """Wald test ``b' V^{-1} b`` of ``(rho, lambda) = 0`` against chi-square (:func:`morie.fn.spdurbin.spatial_wald_test`).
 
-    Category: GNS
-
-    Parameters
-    ----------
-    params, vcov : see function signature.
-
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> r = gnswald([0.3, 0.2], [[0.01, 0.0], [0.0, 0.01]])
+    >>> round(r.statistic, 6), r.extra["df"]
+    (13.0, 2)
     """
-    try:
-        result = float(params @ np.linalg.solve(vcov + 1e-8 * np.eye(len(vcov)), params))
-        return SpatialResult(name="gnswald", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="gnswald", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    r = spatial_wald_test(params, vcov)
+    return SpatialResult(name="gnswald", statistic=r.statistic, p_value=r.pvalue, extra={"df": r.df})
 
 
 gnswald_fn = gnswald

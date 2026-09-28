@@ -1,7 +1,6 @@
 """Tests for morie.fn.sdemimp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sdemimp import sdemimp
 
 

@@ -1,29 +1,23 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""SDEM Wald test on lambda."""
+"""Wald test of the SDEM error parameter lambda."""
+
+from __future__ import annotations
 
 from ._containers import SpatialResult
+from .spdurbin import spatial_wald_test
 
 
 def sdemwld(lam, se_lam):
-    """SDEM Wald test on lambda.
+    """Wald test ``(lambda / se)^2`` of ``lambda = 0`` against chi-square with 1 df.
 
-    Category: SDEM
-
-    Parameters
-    ----------
-    lam, se_lam : see function signature.
-
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> r = sdemwld(0.3, 0.1)
+    >>> round(r.statistic, 6), round(r.p_value, 6)
+    (9.0, 0.0027)
     """
-    try:
-        result = float((lam / se_lam) ** 2)
-        return SpatialResult(name="sdemwld", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="sdemwld", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    r = spatial_wald_test([float(lam)], [[float(se_lam) ** 2]])
+    return SpatialResult(name="sdemwld", statistic=r.statistic, p_value=r.pvalue, extra={"df": 1})
 
 
 sdemwld_fn = sdemwld
