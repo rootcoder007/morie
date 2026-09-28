@@ -165,6 +165,7 @@ def spectral_grf_sim(
 
 
 sgsps = spectral_grf_sim
+spectralgrfsim = spectral_grf_sim
 
 
 def cheatsheet() -> str:
