@@ -2,7 +2,7 @@ import math
 
 from morie.fn._qpcore import ssum
 from morie.fn._rng import random_uniform
-from morie.fn.hullgeo import alpha_shape, convex_hull, delaunay, hull_metrics
+from morie.fn.hullgeo import alpha_shape, convex_hull, delaunay, hull_metrics, triangle_quality
 
 U = [float(v) for v in random_uniform(80, seed=17, stream=0)]
 PTS = [(U[i], U[40 + i]) for i in range(40)]
@@ -70,3 +70,12 @@ def test_alpha_shape_limits():
     assert small.area < big.area and len(small.triangles) < len(big.triangles)
     r = alpha_shape([(0, 0), (2, 0), (0, 2), (2.2, 2.1)], 10)
     assert (round(r.area, 12), len(r.edges)) == (4.3, 4)
+
+
+def test_triangle_quality():
+    r = triangle_quality([(0, 0), (1, 0), (0.5, 3**0.5 / 2)])
+    assert abs(r.quality[0] - 1) < 1e-15 and abs(r.edge_ratio[0] - 1) < 1e-15
+    q = triangle_quality([(0, 0), (2, 0), (0, 1)], [(0, 1, 2)])
+    assert abs(q.quality[0] - 4 * math.sqrt(3) * 1 / 10) < 1e-15 and abs(q.edge_ratio[0] - math.sqrt(5)) < 1e-15
+    t = triangle_quality(PTS)
+    assert 0 < t.min_quality <= t.mean_quality <= 1 and len(t.quality) == len(delaunay(PTS))

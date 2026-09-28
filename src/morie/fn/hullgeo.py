@@ -9,7 +9,7 @@ import math
 from ._qpcore import ssum
 from ._richresult import RichResult
 
-__all__ = ["convex_hull", "hull_metrics", "delaunay", "alpha_shape"]
+__all__ = ["convex_hull", "hull_metrics", "delaunay", "triangle_quality", "alpha_shape"]
 
 
 def _pts(P):
@@ -179,6 +179,46 @@ def delaunay(points) -> list:
     return sorted(t for t in tris if max(t) < n)
 
 
+def triangle_quality(points, triangles=None) -> RichResult:
+    r"""Area/edge quality ``q = 4 sqrt(3) A / (a^2 + b^2 + c^2)`` of each triangle (1 equilateral, 0 degenerate) of a triangulation.
+
+    Triangles default to :func:`delaunay` of ``points``. Also returns the
+    areas, the longest-to-shortest edge ratios and the minimum and mean
+    quality (Bank's shape measure; Field 2000).
+
+    References
+    ----------
+    Field, D. A. (2000). Qualitative measures for initial meshes.
+    *International Journal for Numerical Methods in Engineering*, 47(4),
+    887-906.
+
+    Examples
+    --------
+    >>> round(triangle_quality([(0, 0), (1, 0), (0.5, 3 ** 0.5 / 2)]).quality[0], 12)
+    1.0
+    """
+    P = _pts(points)
+    T = delaunay(P) if triangles is None else [tuple(int(v) for v in t) for t in triangles]
+    q, area, ratio = [], [], []
+    for t in T:
+        a, b, c = P[t[0]], P[t[1]], P[t[2]]
+        e = [math.dist(a, b), math.dist(b, c), math.dist(a, c)]
+        A = abs(_area([a, b, c]))
+        q.append(4 * math.sqrt(3) * A / ssum(v * v for v in e))
+        area.append(A)
+        ratio.append(max(e) / min(e))
+    return RichResult(
+        payload={
+            "triangles": T,
+            "quality": q,
+            "area": area,
+            "edge_ratio": ratio,
+            "min_quality": min(q),
+            "mean_quality": ssum(q) / len(q),
+        }
+    )
+
+
 def alpha_shape(points, radius: float) -> RichResult:
     r"""Alpha shape (concave hull) of a point set: Delaunay triangles with circumradius at most ``radius``, and their boundary.
 
@@ -223,4 +263,4 @@ def alpha_shape(points, radius: float) -> RichResult:
 
 
 def cheatsheet() -> str:
-    return "convex_hull / hull_metrics / delaunay / alpha_shape -> hull shape metrics and concave hulls."
+    return "convex_hull / hull_metrics / delaunay / triangle_quality / alpha_shape -> hull shape metrics and concave hulls."
