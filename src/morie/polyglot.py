@@ -29,6 +29,22 @@ import traceback
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
+
+def _run_timeout() -> float:
+    """Seconds a program or interpreter may run (``MORIE_POLYGLOT_TIMEOUT``, default 30)."""
+    return float(os.environ.get("MORIE_POLYGLOT_TIMEOUT", "30"))
+
+
+def _compile_timeout() -> float:
+    """Seconds a compile step may take (``MORIE_POLYGLOT_COMPILE_TIMEOUT``, default 180).
+
+    A cold toolchain (a fresh Windows runner scanning every new binary, the
+    first ``go build`` filling its cache) can take far longer than 30 s to
+    compile a hello-world, so compiling and running have separate limits.
+    """
+    return float(os.environ.get("MORIE_POLYGLOT_COMPILE_TIMEOUT", "180"))
+
+
 _R_PATTERNS = {
     "<-",
     "%>%",
@@ -879,8 +895,7 @@ class PolyglotEngine:
         self._node_proc: subprocess.Popen | None = None
         # $SHELL is unset on Windows; fall back to a bash/sh on PATH (Git
         # for Windows ships bash.exe) before the POSIX default
-        self._shell = (os.environ.get("SHELL") or shutil.which("bash")
-                       or shutil.which("sh") or "/bin/bash")
+        self._shell = os.environ.get("SHELL") or shutil.which("bash") or shutil.which("sh") or "/bin/bash"
 
         self._db_conn = None
 
@@ -1199,7 +1214,7 @@ class PolyglotEngine:
                 ["Rscript", "-e", code],
                 capture_output=True,
                 text=True,
-                timeout=30,
+                timeout=_run_timeout(),
             )
             return ExecResult(
                 language="r",
@@ -1209,8 +1224,8 @@ class PolyglotEngine:
             )
         except FileNotFoundError:
             return ExecResult(language="r", stderr="R not found", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="r", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="r", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
 
     def _get_r_value(self, name: str) -> object:
         if not self._r_proc or self._r_proc.poll() is not None:
@@ -1265,7 +1280,7 @@ class PolyglotEngine:
                 [self._shell, "-c", code],
                 capture_output=True,
                 text=True,
-                timeout=30,
+                timeout=_run_timeout(),
                 env={**os.environ, **{k: str(v) for k, v in self._py_ns.items() if isinstance(v, (str, int, float))}},
             )
             variables = {}
@@ -1285,8 +1300,8 @@ class PolyglotEngine:
                 success=result.returncode == 0,
                 variables=variables,
             )
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="shell", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="shell", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         except FileNotFoundError:
             return ExecResult(language="shell", stderr=f"shell not found: {self._shell}", success=False)
 
@@ -1319,7 +1334,7 @@ class PolyglotEngine:
                 ["julia", "-e", code],
                 capture_output=True,
                 text=True,
-                timeout=30,
+                timeout=_run_timeout(),
             )
             return ExecResult(
                 language="julia",
@@ -1329,8 +1344,8 @@ class PolyglotEngine:
             )
         except FileNotFoundError:
             return ExecResult(language="julia", stderr="Julia not found", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="julia", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="julia", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
 
     def _exec_sql(self, code: str) -> ExecResult:
         if not self._start_sql():
@@ -1364,7 +1379,7 @@ class PolyglotEngine:
                 ["node", "-e", code],
                 capture_output=True,
                 text=True,
-                timeout=30,
+                timeout=_run_timeout(),
             )
             return ExecResult(
                 language="node",
@@ -1374,8 +1389,8 @@ class PolyglotEngine:
             )
         except FileNotFoundError:
             return ExecResult(language="node", stderr="Node.js not found", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="node", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="node", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
 
     def _exec_compiled(
         self, code: str, lang: str, ext: str, compile_cmd: list, run_cmd: list | None = None
@@ -1387,17 +1402,21 @@ class PolyglotEngine:
             tmp.write(code)
             tmp.close()
             if run_cmd is not None:
-                comp = subprocess.run(compile_cmd + [tmp.name], capture_output=True, text=True, timeout=30)
+                comp = subprocess.run(
+                    compile_cmd + [tmp.name], capture_output=True, text=True, timeout=_compile_timeout()
+                )
                 if comp.returncode != 0:
                     return ExecResult(language=lang, stderr=comp.stderr, success=False)
-                result = subprocess.run(run_cmd, capture_output=True, text=True, timeout=30)
+                result = subprocess.run(run_cmd, capture_output=True, text=True, timeout=_run_timeout())
             else:
-                result = subprocess.run(compile_cmd + [tmp.name], capture_output=True, text=True, timeout=30)
+                result = subprocess.run(
+                    compile_cmd + [tmp.name], capture_output=True, text=True, timeout=_compile_timeout()
+                )
             return ExecResult(language=lang, stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(language=lang, stderr=f"{lang} compiler not found", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language=lang, stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language=lang, stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             try:
                 os.unlink(tmp.name)
@@ -1414,12 +1433,12 @@ class PolyglotEngine:
         try:
             tmp.write(code)
             tmp.close()
-            result = subprocess.run(["go", "run", tmp.name], capture_output=True, text=True, timeout=30)
+            result = subprocess.run(["go", "run", tmp.name], capture_output=True, text=True, timeout=_compile_timeout())
             return ExecResult(language="go", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(language="go", stderr="Go not found (install: brew install go)", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="go", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="go", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             try:
                 os.unlink(tmp.name)
@@ -1434,10 +1453,12 @@ class PolyglotEngine:
         try:
             tmp.write(code)
             tmp.close()
-            comp = subprocess.run(["rustc", tmp.name, "-o", out_bin], capture_output=True, text=True, timeout=30)
+            comp = subprocess.run(
+                ["rustc", tmp.name, "-o", out_bin], capture_output=True, text=True, timeout=_compile_timeout()
+            )
             if comp.returncode != 0:
                 return ExecResult(language="rust", stderr=comp.stderr, success=False)
-            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=30)
+            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=_run_timeout())
             return ExecResult(
                 language="rust", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
@@ -1447,8 +1468,8 @@ class PolyglotEngine:
                 stderr="rustc not found (install: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh)",
                 success=False,
             )
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="rust", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="rust", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             for f in (tmp.name, out_bin):
                 try:
@@ -1464,17 +1485,19 @@ class PolyglotEngine:
         try:
             tmp.write(code)
             tmp.close()
-            comp = subprocess.run(["cc", tmp.name, "-o", out_bin, "-lm"], capture_output=True, text=True, timeout=30)
+            comp = subprocess.run(
+                ["cc", tmp.name, "-o", out_bin, "-lm"], capture_output=True, text=True, timeout=_compile_timeout()
+            )
             if comp.returncode != 0:
                 return ExecResult(language="c", stderr=comp.stderr, success=False)
-            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=30)
+            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=_run_timeout())
             return ExecResult(language="c", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(
                 language="c", stderr="cc not found (install Xcode CLT: xcode-select --install)", success=False
             )
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="c", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="c", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             for f in (tmp.name, out_bin):
                 try:
@@ -1491,11 +1514,14 @@ class PolyglotEngine:
             tmp.write(code)
             tmp.close()
             comp = subprocess.run(
-                ["c++", "-std=c++17", tmp.name, "-o", out_bin], capture_output=True, text=True, timeout=30
+                ["c++", "-std=c++17", tmp.name, "-o", out_bin],
+                capture_output=True,
+                text=True,
+                timeout=_compile_timeout(),
             )
             if comp.returncode != 0:
                 return ExecResult(language="cpp", stderr=comp.stderr, success=False)
-            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=30)
+            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=_run_timeout())
             return ExecResult(
                 language="cpp", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
@@ -1503,8 +1529,8 @@ class PolyglotEngine:
             return ExecResult(
                 language="cpp", stderr="c++ not found (install Xcode CLT: xcode-select --install)", success=False
             )
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="cpp", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="cpp", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             for f in (tmp.name, out_bin):
                 try:
@@ -1519,14 +1545,14 @@ class PolyglotEngine:
         try:
             tmp.write(code)
             tmp.close()
-            result = subprocess.run(["ocaml", tmp.name], capture_output=True, text=True, timeout=30)
+            result = subprocess.run(["ocaml", tmp.name], capture_output=True, text=True, timeout=_run_timeout())
             return ExecResult(
                 language="ocaml", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
             return ExecResult(language="ocaml", stderr="OCaml not found (install: brew install ocaml)", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="ocaml", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="ocaml", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             try:
                 os.unlink(tmp.name)
@@ -1535,26 +1561,26 @@ class PolyglotEngine:
 
     def _exec_lua(self, code: str) -> ExecResult:
         try:
-            result = subprocess.run(["lua", "-e", code], capture_output=True, text=True, timeout=30)
+            result = subprocess.run(["lua", "-e", code], capture_output=True, text=True, timeout=_run_timeout())
             return ExecResult(
                 language="lua", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
             return ExecResult(language="lua", stderr="Lua not found (install: brew install lua)", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="lua", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="lua", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
 
     def _exec_typescript(self, code: str) -> ExecResult:
         for runner in (["npx", "tsx", "-e"], ["npx", "ts-node", "-e"], ["deno", "eval"]):
             try:
-                result = subprocess.run(runner + [code], capture_output=True, text=True, timeout=30)
+                result = subprocess.run(runner + [code], capture_output=True, text=True, timeout=_run_timeout())
                 return ExecResult(
                     language="typescript", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
                 )
             except FileNotFoundError:
                 continue
-            except subprocess.TimeoutExpired:
-                return ExecResult(language="typescript", stderr="Timeout (30s)", success=False)
+            except subprocess.TimeoutExpired as exc:
+                return ExecResult(language="typescript", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         return ExecResult(
             language="typescript", stderr="TypeScript runner not found (install: npm i -g tsx)", success=False
         )
@@ -1597,7 +1623,7 @@ class PolyglotEngine:
         else:
             cmd = ["psql", "-c", code]
         try:
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=_run_timeout())
             return ExecResult(
                 language="psql", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
@@ -1605,8 +1631,8 @@ class PolyglotEngine:
             return ExecResult(
                 language="psql", stderr="psql not found (install: brew install postgresql)", success=False
             )
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="psql", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="psql", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
 
     def _exec_oneshot(self, code: str, lang: str, cmd: list, timeout: int = 30) -> ExecResult:
         try:
@@ -1614,8 +1640,8 @@ class PolyglotEngine:
             return ExecResult(language=lang, stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(language=lang, stderr=f"{lang} not found", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language=lang, stderr=f"Timeout ({timeout}s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language=lang, stderr=f"Timeout ({exc.timeout:g}s)", success=False)
 
     def _exec_file_based(self, code: str, lang: str, ext: str, run_cmd: list, timeout: int = 30) -> ExecResult:
         import tempfile
@@ -1628,15 +1654,17 @@ class PolyglotEngine:
             return ExecResult(language=lang, stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(language=lang, stderr=f"{lang} not found", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language=lang, stderr=f"Timeout ({timeout}s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language=lang, stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             try:
                 os.unlink(tmp.name)
             except OSError:
                 pass
 
-    def _exec_compile_run(self, code: str, lang: str, ext: str, compile_cmd: list, timeout: int = 30) -> ExecResult:
+    def _exec_compile_run(
+        self, code: str, lang: str, ext: str, compile_cmd: list, timeout: float | None = None
+    ) -> ExecResult:
         import tempfile
 
         tmp = tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False)
@@ -1645,16 +1673,19 @@ class PolyglotEngine:
             tmp.write(code)
             tmp.close()
             comp = subprocess.run(
-                compile_cmd + [tmp.name, "-o", out_bin], capture_output=True, text=True, timeout=timeout
+                compile_cmd + [tmp.name, "-o", out_bin],
+                capture_output=True,
+                text=True,
+                timeout=timeout or _compile_timeout(),
             )
             if comp.returncode != 0:
                 return ExecResult(language=lang, stderr=comp.stderr, success=False)
-            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=timeout)
+            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=timeout or _run_timeout())
             return ExecResult(language=lang, stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(language=lang, stderr=f"{lang} compiler not found", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language=lang, stderr=f"Timeout ({timeout}s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language=lang, stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             for f in (tmp.name, out_bin):
                 try:
@@ -1681,17 +1712,19 @@ class PolyglotEngine:
         try:
             with open(java_path, "w") as f:
                 f.write(code)
-            comp = subprocess.run(["javac", java_path], capture_output=True, text=True, timeout=30)
+            comp = subprocess.run(["javac", java_path], capture_output=True, text=True, timeout=_compile_timeout())
             if comp.returncode != 0:
                 return ExecResult(language="java", stderr=comp.stderr, success=False)
-            result = subprocess.run(["java", "-cp", tmpdir, "Main"], capture_output=True, text=True, timeout=30)
+            result = subprocess.run(
+                ["java", "-cp", tmpdir, "Main"], capture_output=True, text=True, timeout=_run_timeout()
+            )
             return ExecResult(
                 language="java", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
             return ExecResult(language="java", stderr="Java not found (install JDK)", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="java", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="java", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
 
     def _exec_kotlin(self, code: str) -> ExecResult:
         return self._exec_file_based(code, "kotlin", ".kts", ["kotlinc", "-script"])
@@ -1718,14 +1751,16 @@ class PolyglotEngine:
         try:
             tmp.write(code)
             tmp.close()
-            result = subprocess.run(["nim", "r", "--hints:off", tmp.name], capture_output=True, text=True, timeout=30)
+            result = subprocess.run(
+                ["nim", "r", "--hints:off", tmp.name], capture_output=True, text=True, timeout=_run_timeout()
+            )
             return ExecResult(
                 language="nim", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
             return ExecResult(language="nim", stderr="Nim not found (install: brew install nim)", success=False)
-        except subprocess.TimeoutExpired:
-            return ExecResult(language="nim", stderr="Timeout (30s)", success=False)
+        except subprocess.TimeoutExpired as exc:
+            return ExecResult(language="nim", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             try:
                 os.unlink(tmp.name)
@@ -1747,14 +1782,14 @@ class PolyglotEngine:
     def _exec_scheme(self, code: str) -> ExecResult:
         for runner in (["racket", "-e"], ["guile", "-c"], ["chicken-csi", "-e"]):
             try:
-                result = subprocess.run(runner + [code], capture_output=True, text=True, timeout=30)
+                result = subprocess.run(runner + [code], capture_output=True, text=True, timeout=_run_timeout())
                 return ExecResult(
                     language="scheme", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
                 )
             except FileNotFoundError:
                 continue
-            except subprocess.TimeoutExpired:
-                return ExecResult(language="scheme", stderr="Timeout (30s)", success=False)
+            except subprocess.TimeoutExpired as exc:
+                return ExecResult(language="scheme", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         return ExecResult(language="scheme", stderr="Scheme not found (install: brew install racket)", success=False)
 
     def _exec_clojure(self, code: str) -> ExecResult:
@@ -1766,14 +1801,14 @@ class PolyglotEngine:
     def _exec_powershell(self, code: str) -> ExecResult:
         for ps in ("pwsh", "powershell"):
             try:
-                result = subprocess.run([ps, "-Command", code], capture_output=True, text=True, timeout=30)
+                result = subprocess.run([ps, "-Command", code], capture_output=True, text=True, timeout=_run_timeout())
                 return ExecResult(
                     language="powershell", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
                 )
             except FileNotFoundError:
                 continue
-            except subprocess.TimeoutExpired:
-                return ExecResult(language="powershell", stderr="Timeout (30s)", success=False)
+            except subprocess.TimeoutExpired as exc:
+                return ExecResult(language="powershell", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         return ExecResult(
             language="powershell", stderr="PowerShell not found (install: brew install powershell)", success=False
         )

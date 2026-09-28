@@ -359,6 +359,20 @@ class TestPolyglotRust:
 
 @pytest.mark.skipif(not shutil.which("cc"), reason="C compiler not installed")
 class TestPolyglotC:
+    def test_compile_timeout_is_separate_and_reported(self, monkeypatch):
+        import shutil
+
+        if not shutil.which("cc"):
+            pytest.skip("no C compiler")
+        engine = PolyglotEngine(polyglot=False)
+        monkeypatch.setenv("MORIE_POLYGLOT_COMPILE_TIMEOUT", "0.001")
+        result = engine.execute('C> #include <stdio.h>\nint main() { printf("42\\n"); return 0; }')
+        assert not result.success and result.stderr == "Timeout (0.001s)"
+        monkeypatch.setenv("MORIE_POLYGLOT_COMPILE_TIMEOUT", "180")
+        monkeypatch.setenv("MORIE_POLYGLOT_TIMEOUT", "30")
+        assert engine.execute('C> #include <stdio.h>\nint main() { printf("42\\n"); return 0; }').success
+        engine.close()
+
     def test_c_exec(self):
         engine = PolyglotEngine(polyglot=False)
         code = 'C> #include <stdio.h>\nint main() { printf("42\\n"); return 0; }'
