@@ -1,16 +1,15 @@
-"""Tests for morie.fn.zekls -- Circular scan statistic"""
+"""Tests for morie.fn.zekls -- circular scan statistic (re-export of scanstat.kulldorff_scan)."""
 
-from morie.fn import _array_core as np
+from morie.fn.scanstat import kulldorff_scan
+from morie.fn.zekls import scan, scan_circular, scancircular
 
-from morie.fn.zekls import scan_circular
+
+def test_zekls_is_the_real_circular_scan():
+    assert scan_circular is kulldorff_scan and scan is kulldorff_scan and scancircular is kulldorff_scan
 
 
-class TestScanCircular:
-    def test_basic(self):
-        observed = np.array([5, 3, 8, 2, 10])
-        result = scan_circular(observed)
-        assert result.statistic is not None
-
-    def test_output_type(self):
-        result = scan_circular(np.array([1, 2, 3, 4, 5]))
-        assert hasattr(result, "statistic")
+def test_zekls_binomial_cluster():
+    P = [(float(i), 0.0) for i in range(6)]
+    r = scan_circular(P, [9, 8, 1, 1, 1, 0], [20] * 6, kind="binomial", nsim=0)
+    assert r.all_zones[0] == [0, 1]
+    assert r.all_tobs[0] > 0
