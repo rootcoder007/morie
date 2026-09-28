@@ -12,7 +12,7 @@ from ._richresult import RichResult
 __all__ = [
     "grid_contiguity",
     "distance_band_weights",
-    "knn_weights",
+    "knn_neighbour_weights",
     "inverse_distance_weights",
     "kernel_weights",
     "symmetrize_weights",
@@ -74,14 +74,14 @@ def distance_band_weights(coords, d2: float, *, d1: float = 0.0):
     return [[1.0 if i != j and d1 < _d(p, q) <= d2 else 0.0 for j, q in enumerate(P)] for i, p in enumerate(P)]
 
 
-def knn_weights(coords, k: int):
+def knn_neighbour_weights(coords, k: int):
     r"""Binary ``k`` nearest neighbours (``spdep::knearneigh`` + ``knn2nb``), ties broken by the lower index.
 
     The result is generally asymmetric; see :func:`symmetrize_weights`.
 
     Examples
     --------
-    >>> knn_weights([(0, 0), (1, 0), (3, 0)], 1)
+    >>> knn_neighbour_weights([(0, 0), (1, 0), (3, 0)], 1)
     [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]
     """
     P = _pts(coords)
@@ -228,4 +228,4 @@ def weights_components(W) -> RichResult:
 
 
 def cheatsheet() -> str:
-    return "grid_contiguity / distance_band_weights / knn_weights / kernel_weights -> spatial weights construction."
+    return "grid_contiguity / distance_band_weights / knn_neighbour_weights / kernel_weights -> spatial weights construction."

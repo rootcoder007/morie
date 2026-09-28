@@ -11,7 +11,7 @@ from morie.fn.sglmm import (
     glmm_residuals,
     gmrf_simulate,
     sar_covariance,
-    spatial_glmm_fit,
+    glmm_laplace_fit,
     spatial_glmm_predict,
     spatial_glmm_simulate,
 )
@@ -133,7 +133,7 @@ def test_simulation_families():
 
 
 def test_laplace_fit_is_stationary_and_matches_hand_objective():
-    r = spatial_glmm_fit(Y, X, groups=G)
+    r = glmm_laplace_fit(Y, X, groups=G)
     Z = [[1.0 if g == k else 0.0 for k in range(10)] for g in G]
     S = [[r.sigma2 if a == b else 0.0 for b in range(10)] for a in range(10)]
     ll = _laplace(Y, X, Z, S, r.beta, "poisson", [1.0] * 60, [0.0] * 10)[0]
@@ -154,7 +154,7 @@ def test_laplace_fit_is_stationary_and_matches_hand_objective():
 def test_spatial_fit_predict_residuals_crps():
     P = [(4 * U[i], 4 * U[30 + i]) for i in range(20)]
     y = [3, 5, 2, 8, 4, 1, 6, 7, 2, 3, 9, 4, 5, 2, 1, 6, 3, 7, 4, 5]
-    f = spatial_glmm_fit(y, [[1.0]] * 20, coords=P)
+    f = glmm_laplace_fit(y, [[1.0]] * 20, coords=P)
     assert f.range > 0 and f.sigma2 > 0 and len(f.posterior_sd) == 20
     p = spatial_glmm_predict(f, [[1.0]], [P[4]])
     assert abs(p.eta[0] - f.eta[4]) < 1e-6

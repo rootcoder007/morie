@@ -2,7 +2,7 @@ import math
 
 from morie.fn._qpcore import ssum
 from morie.fn._rng import random_uniform
-from morie.fn.hullgeo import alpha_shape, convex_hull, delaunay, hull_metrics, triangle_quality
+from morie.fn.hullgeo import alpha_shape, convex_hull_vertices, delaunay, hull_metrics, triangle_quality
 
 U = [float(v) for v in random_uniform(80, seed=17, stream=0)]
 PTS = [(U[i], U[40 + i]) for i in range(40)]
@@ -13,12 +13,12 @@ def _cross(o, a, b):
 
 
 def test_convex_hull_contains_all_points():
-    H = convex_hull(PTS)
+    H = convex_hull_vertices(PTS)
     for i in range(len(H)):
         a, b = H[i], H[(i + 1) % len(H)]
         assert all(_cross(a, b, p) >= -1e-15 for p in PTS)
     assert set(H) <= set(PTS)
-    assert convex_hull([(0, 0), (1, 1), (2, 0), (1, 0.5), (0, 2), (2, 2)]) == [
+    assert convex_hull_vertices([(0, 0), (1, 1), (2, 0), (1, 0.5), (0, 2), (2, 2)]) == [
         (0.0, 0.0),
         (2.0, 0.0),
         (2.0, 2.0),
@@ -41,7 +41,7 @@ def test_hull_metrics_rectangles_and_l_shape():
 
 def test_delaunay_empty_circle_and_euler():
     T = delaunay(PTS)
-    h = len(convex_hull(PTS))
+    h = len(convex_hull_vertices(PTS))
     assert len(T) == 2 * 40 - 2 - h
     for t in T:
         a, b, c = (PTS[i] for i in t)
@@ -61,7 +61,7 @@ def test_delaunay_empty_circle_and_euler():
 
 
 def test_alpha_shape_limits():
-    H = convex_hull(PTS)
+    H = convex_hull_vertices(PTS)
     n = len(H)
     area = abs(0.5 * ssum(H[i][0] * H[(i + 1) % n][1] - H[(i + 1) % n][0] * H[i][1] for i in range(n)))
     big = alpha_shape(PTS, 1e6)

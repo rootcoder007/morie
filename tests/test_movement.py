@@ -3,7 +3,7 @@ import math
 from morie.fn._qpcore import ssum
 from morie.fn.movement import (
     brownian_bridge_ud,
-    brownian_motion,
+    planar_brownian_motion,
     correlated_random_walk,
     crw_msd,
     lattice_random_walk,
@@ -18,7 +18,7 @@ def test_lattice_and_brownian_msd():
     )
     se = math.sqrt(ssum((q[20][0] ** 2 + q[20][1] ** 2 - r.msd[20]) ** 2 for q in r.paths) / 399 / 400)
     assert abs(r.msd[20] - 20) / se < 4
-    b = brownian_motion(10, 0.5, sigma=2.0, nwalk=400, seed=6)
+    b = planar_brownian_motion(10, 0.5, sigma=2.0, nwalk=400, seed=6)
     d = [q[10][0] ** 2 + q[10][1] ** 2 for q in b.paths]
     se = math.sqrt(ssum((v - b.msd[10]) ** 2 for v in d) / 399 / 400)
     assert abs(b.msd[10] - 2 * 4 * 5) / se < 4

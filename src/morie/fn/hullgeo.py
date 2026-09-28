@@ -9,7 +9,7 @@ import math
 from ._qpcore import ssum
 from ._richresult import RichResult
 
-__all__ = ["convex_hull", "hull_metrics", "delaunay", "triangle_quality", "alpha_shape"]
+__all__ = ["convex_hull_vertices", "hull_metrics", "delaunay", "triangle_quality", "alpha_shape"]
 
 
 def _pts(P):
@@ -20,7 +20,7 @@ def _cross(o, a, b):
     return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
 
 
-def convex_hull(points) -> list:
+def convex_hull_vertices(points) -> list:
     r"""Convex hull vertices, counter-clockwise from the lexicographically smallest point (Andrew's monotone chain); collinear points dropped.
 
     References
@@ -30,7 +30,7 @@ def convex_hull(points) -> list:
 
     Examples
     --------
-    >>> convex_hull([(0, 0), (1, 1), (2, 0), (1, 0.5), (0, 2), (2, 2)])
+    >>> convex_hull_vertices([(0, 0), (1, 1), (2, 0), (1, 0.5), (0, 2), (2, 2)])
     [(0.0, 0.0), (2.0, 0.0), (2.0, 2.0), (0.0, 2.0)]
     """
     S = sorted(set(_pts(points)))
@@ -89,7 +89,7 @@ def hull_metrics(polygon) -> RichResult:
     (1.0, 0.75, 0.502654824574)
     """
     poly = _pts(polygon)
-    H = convex_hull(poly)
+    H = convex_hull_vertices(poly)
     ah, ph = abs(_area(H)), _perim(H)
     ap, pp = abs(_area(poly)), _perim(poly)
     best = None
@@ -263,4 +263,4 @@ def alpha_shape(points, radius: float) -> RichResult:
 
 
 def cheatsheet() -> str:
-    return "convex_hull / hull_metrics / delaunay / triangle_quality / alpha_shape -> hull shape metrics and concave hulls."
+    return "convex_hull_vertices / hull_metrics / delaunay / triangle_quality / alpha_shape -> hull shape metrics and concave hulls."

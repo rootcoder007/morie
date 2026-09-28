@@ -21,7 +21,7 @@ __all__ = [
     "sar_covariance",
     "gmrf_simulate",
     "spatial_glmm_simulate",
-    "spatial_glmm_fit",
+    "glmm_laplace_fit",
     "spatial_glmm_predict",
     "glmm_residuals",
     "crps_gaussian",
@@ -257,7 +257,7 @@ def _laplace(y, X, Z, Sigma, beta, family, m, u0):
     return ll, u, H, eta
 
 
-def spatial_glmm_fit(
+def glmm_laplace_fit(
     y, X, *, family: str = "poisson", coords=None, groups=None, model: str = "Exp", trials=None, start=None
 ) -> RichResult:
     r"""Fit a GLMM with Gaussian random effects by maximising the Laplace approximation of the marginal likelihood.
@@ -285,7 +285,7 @@ def spatial_glmm_fit(
 
     Examples
     --------
-    >>> r = spatial_glmm_fit([1, 3, 2, 6, 4, 9], [[1]] * 6, groups=[0, 0, 1, 1, 2, 2])
+    >>> r = glmm_laplace_fit([1, 3, 2, 6, 4, 9], [[1]] * 6, groups=[0, 0, 1, 1, 2, 2])
     >>> r.sigma2 > 0 and len(r.u) == 3
     True
     """
@@ -391,7 +391,7 @@ def _gh(n=20):
 
 
 def spatial_glmm_predict(fit, X0, coords0) -> RichResult:
-    r"""Predictive map of a fitted spatial GLMM (:func:`spatial_glmm_fit` with ``coords``).
+    r"""Predictive map of a fitted spatial GLMM (:func:`glmm_laplace_fit` with ``coords``).
 
     The latent field at new sites is kriged from the posterior mode:
     ``m* = c'Sigma^-1 u`` and ``v* = sigma2 - c'Sigma^-1 c + c'Sigma^-1 V
@@ -407,7 +407,7 @@ def spatial_glmm_predict(fit, X0, coords0) -> RichResult:
 
     Examples
     --------
-    >>> f = spatial_glmm_fit([2, 4, 3, 7, 5], [[1]] * 5, coords=[(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)])
+    >>> f = glmm_laplace_fit([2, 4, 3, 7, 5], [[1]] * 5, coords=[(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)])
     >>> p = spatial_glmm_predict(f, [[1]], [(1, 0)])
     >>> abs(p.eta[0] - f.eta[1]) < 1e-6
     True
@@ -604,6 +604,6 @@ def crps_sample(y, samples) -> list:
 
 def cheatsheet() -> str:
     return (
-        "car_precision / sar_covariance / gmrf_simulate / spatial_glmm_simulate / spatial_glmm_fit / "
+        "car_precision / sar_covariance / gmrf_simulate / spatial_glmm_simulate / glmm_laplace_fit / "
         "spatial_glmm_predict / glmm_residuals / crps_gaussian / crps_poisson / crps_sample -> spatial GLMMs."
     )

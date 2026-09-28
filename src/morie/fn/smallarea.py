@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Small-area and disease-rate estimation: the Fay-Herriot area-level EBLUP with its MSE, the
-Battese-Harter-Fuller unit-level EBLUP, Marshall's empirical-Bayes rates, the Poisson-gamma
-(Clayton-Kaldor) empirical-Bayes relative risks and the Potthoff-Whittinghill test of rate
-homogeneity."""
+Battese-Harter-Fuller unit-level EBLUP, Marshall's empirical-Bayes rates and the
+Potthoff-Whittinghill test of rate homogeneity (Poisson-gamma empirical Bayes is
+:func:`morie.fn.dismap.poisson_gamma_eb`)."""
 
 from __future__ import annotations
 
@@ -10,10 +10,9 @@ import math
 
 from ._qpcore import inverse, ssum
 from ._richresult import RichResult
-from ._rrng_core import pnorm, qgamma
-from ._sci_core import digamma, gammaln
+from ._rrng_core import pnorm
 
-__all__ = ["fay_herriot", "bhf_eblup", "marshall_eb", "poisson_gamma_eb", "potthoff_whittinghill"]
+__all__ = ["fay_herriot", "bhf_eblup", "marshall_eb", "potthoff_whittinghill"]
 
 
 def _mat(X):
@@ -317,136 +316,6 @@ def marshall_eb(cases, population, *, family: str = "poisson") -> RichResult:
     return RichResult(payload={"raw": raw, "estimate": est, "a": a, "b": b})
 
 
-def _trigamma(x):
-    s = 0.0
-    while x < 6.0:
-        s += 1.0 / (x * x)
-        x += 1.0
-    x2 = 1.0 / (x * x)
-    return s + 1.0 / x + x2 / 2.0 + (1.0 / x**3) * (1.0 / 6 - x2 * (1.0 / 30 - x2 * (1.0 / 42 - x2 / 30)))
-
-
-def poisson_gamma_eb(y, E, X=None, *, tol: float = 1e-12, maxit: int = 1000) -> RichResult:
-    r"""Poisson-gamma empirical-Bayes relative risks (Clayton and Kaldor 1987), as ``SpatialEpi::eBayes``.
-
-    ``y_i | theta_i ~ Poisson(E_i theta_i)``, ``theta_i ~ Gamma(alpha,
-    alpha / mu_i)`` with ``log mu_i = x_i'beta``: the marginal negative binomial
-    is fitted by maximum likelihood (IRLS for ``beta`` alternating with
-    Newton for ``alpha``, as ``MASS::glm.nb``, until the relative change of
-    ``alpha`` and ``beta`` is below ``tol``). Posterior mean ``RR_i = w_i SMR_i + (1 - w_i) mu_i``,
-    ``w_i = E_i mu_i / (alpha + E_i mu_i)``, and posterior median ``RRmed``
-    (gamma quantile).
-
-    References
-    ----------
-    Clayton, D. and Kaldor, J. (1987). Empirical Bayes estimates of
-    age-standardized relative risks for use in disease mapping. *Biometrics*,
-    43(3), 671-681.
-
-    Examples
-    --------
-    >>> r = poisson_gamma_eb([2, 3, 10, 1, 7, 4], [3.0, 4.0, 5.0, 2.5, 4.5, 4.0])
-    >>> 0 < r.alpha and all(min(s, m) <= e <= max(s, m) for s, e, m in zip(r.SMR, r.RR, r.mu))
-    True
-    """
-    yv = [float(v) for v in y]
-    Ev = [float(v) for v in E]
-    n = len(yv)
-    Xm = [
-        [1.0]
-        + (
-            [float(v) for v in X[i]]
-            if X is not None and hasattr(X[i], "__len__")
-            else ([float(X[i])] if X is not None else [])
-        )
-        for i in range(n)
-    ]
-    p = len(Xm[0])
-    off = [math.log(e) for e in Ev]
-
-    def loglik(beta, th):
-        mu = [math.exp(ssum(Xm[i][a] * beta[a] for a in range(p)) + off[i]) for i in range(n)]
-        return ssum(
-            gammaln(th + yi)
-            - gammaln(th)
-            - gammaln(yi + 1)
-            + th * math.log(th)
-            + yi * math.log(mi)
-            - (th + yi) * math.log(th + mi)
-            if mi > 0
-            else 0.0
-            for yi, mi in zip(yv, mu)
-        ), mu
-
-    def irls(beta, th):
-        for _ in range(100):
-            eta = [ssum(Xm[i][a] * beta[a] for a in range(p)) + off[i] for i in range(n)]
-            mu = [math.exp(v) for v in eta]
-            w = [m / (1.0 + m / th) for m in mu]
-            z = [eta[i] - off[i] + (yv[i] - mu[i]) / mu[i] for i in range(n)]
-            M = _inv([[ssum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)])
-            rhs = [ssum(w[i] * Xm[i][a] * z[i] for i in range(n)) for a in range(p)]
-            nb = [ssum(M[a][b] * rhs[b] for b in range(p)) for a in range(p)]
-            done = max(abs(u - v) for u, v in zip(nb, beta)) < 1e-14 * (1 + max(abs(v) for v in beta))
-            beta = nb
-            if done:
-                break
-        return beta
-
-    def theta_ml(mu, th):
-        for _ in range(100):
-            sc = ssum(
-                digamma(th + yi) - digamma(th) + math.log(th) + 1 - math.log(th + mi) - (yi + th) / (mi + th)
-                for yi, mi in zip(yv, mu)
-            )
-            inf = ssum(
-                -_trigamma(th + yi) + _trigamma(th) - 1 / th + 2 / (mi + th) - (yi + th) / (mi + th) ** 2
-                for yi, mi in zip(yv, mu)
-            )
-            step = sc / inf
-            nt = th + step
-            while nt <= 0:
-                step /= 2
-                nt = th + step
-            if abs(nt - th) < 1e-14 * th:
-                return nt
-            th = nt
-        return th
-
-    beta = [math.log(ssum(yv) / ssum(Ev))] + [0.0] * (p - 1)
-    mu = [math.exp(beta[0] + o) for o in off]
-    th = n / ssum((yi / mi - 1) ** 2 for yi, mi in zip(yv, mu))
-    it = 0
-    while it < maxit:
-        it += 1
-        b_old, th_old = beta, th
-        beta = irls(beta, th)
-        _, mu = loglik(beta, th)
-        th = theta_ml(mu, th)
-        if abs(th - th_old) <= tol * th and max(abs(u - v) for u, v in zip(beta, b_old)) <= tol * (
-            1 + max(abs(v) for v in beta)
-        ):
-            break
-    ll, mu = loglik(beta, th)
-    muhat = [m / e for m, e in zip(mu, Ev)]
-    wgt = [e * m / (th + e * m) for e, m in zip(Ev, muhat)]
-    smr = [yi / e for yi, e in zip(yv, Ev)]
-    rr = [w * s + (1 - w) * m for w, s, m in zip(wgt, smr, muhat)]
-    rrmed = [float(qgamma(0.5, th + yi, (th + e * m) / m)) for yi, e, m in zip(yv, Ev, muhat)]
-    return RichResult(
-        payload={
-            "RR": rr,
-            "RRmed": rrmed,
-            "beta": beta,
-            "alpha": th,
-            "SMR": smr,
-            "mu": muhat,
-            "loglik": ll,
-            "iterations": it,
-        }
-    )
-
-
 def potthoff_whittinghill(observed, expected) -> RichResult:
     r"""Potthoff-Whittinghill test of homogeneous relative risk against over-dispersion (as ``DCluster::pottwhitt.stat``).
 
@@ -481,6 +350,6 @@ def potthoff_whittinghill(observed, expected) -> RichResult:
 
 def cheatsheet() -> str:
     return (
-        "fay_herriot / bhf_eblup / marshall_eb / poisson_gamma_eb / potthoff_whittinghill -> small-area EBLUPs, "
+        "fay_herriot / bhf_eblup / marshall_eb / potthoff_whittinghill -> small-area EBLUPs, "
         "empirical-Bayes rates and rate-homogeneity test."
     )

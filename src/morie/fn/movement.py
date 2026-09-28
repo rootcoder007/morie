@@ -15,7 +15,7 @@ __all__ = [
     "lattice_random_walk",
     "correlated_random_walk",
     "crw_msd",
-    "brownian_motion",
+    "planar_brownian_motion",
     "brownian_bridge_ud",
     "site_percolation",
 ]
@@ -138,7 +138,7 @@ def crw_msd(steps: int, *, step_length: float = 1.0, kappa: float = 2.0) -> list
     return out
 
 
-def brownian_motion(n: int, dt: float, *, sigma: float = 1.0, nwalk: int = 1, seed: int = 1) -> RichResult:
+def planar_brownian_motion(n: int, dt: float, *, sigma: float = 1.0, nwalk: int = 1, seed: int = 1) -> RichResult:
     r"""Planar Brownian motion paths ``X_{t+dt} = X_t + sigma sqrt(dt) (Z_1, Z_2)`` from the origin (Philox normals, stream ``w``).
 
     ``E |X_t|^2 = 2 sigma^2 t``. Returns the paths and the ensemble mean
@@ -151,7 +151,7 @@ def brownian_motion(n: int, dt: float, *, sigma: float = 1.0, nwalk: int = 1, se
 
     Examples
     --------
-    >>> r = brownian_motion(4, 0.5, nwalk=2)
+    >>> r = planar_brownian_motion(4, 0.5, nwalk=2)
     >>> [len(p) for p in r.paths]
     [5, 5]
     """
@@ -280,6 +280,6 @@ def site_percolation(nrow: int, ncol: int, p: float, *, seed: int = 1, nsim: int
 
 def cheatsheet() -> str:
     return (
-        "lattice_random_walk / correlated_random_walk / crw_msd / brownian_motion / brownian_bridge_ud / "
+        "lattice_random_walk / correlated_random_walk / crw_msd / planar_brownian_motion / brownian_bridge_ud / "
         "site_percolation -> movement and spread processes."
     )

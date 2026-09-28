@@ -1,8 +1,7 @@
 import math
 
 from morie.fn._qpcore import ssum
-from morie.fn._sci_core import digamma
-from morie.fn.smallarea import bhf_eblup, fay_herriot, marshall_eb, poisson_gamma_eb, potthoff_whittinghill
+from morie.fn.smallarea import bhf_eblup, fay_herriot, marshall_eb, potthoff_whittinghill
 
 FY = [10.2, 12.8, 11.3, 15.0, 13.2, 9.7, 16.5, 8.9, 14.1, 12.0]
 FX = [3.1, 2.2, 4.0, 2.9, 4.4, 1.9, 3.6, 2.7, 4.8, 3.3]
@@ -89,24 +88,6 @@ def test_marshall_eb_formulas():
             (xi - 1) * s2 + ((7900 / 6 - xi) / (7900 / 6)) * b * (1 - b)
         )
         assert abs(e - (rho * ni / xi + (1 - rho) * b)) < 1e-15
-
-
-def test_poisson_gamma_eb_score_equations():
-    Y = [25, 2, 40, 8, 1, 30, 4, 60, 3, 18]
-    E = [10.2, 6.1, 14.5, 9.0, 4.8, 11.9, 10.5, 18.2, 7.7, 9.4]
-    cv = [0.3, -0.2, 0.8, 0.1, -0.5, 0.4, 0.0, 1.1, -0.3, 0.2]
-    r = poisson_gamma_eb(Y, E, [[v] for v in cv])
-    th = r.alpha
-    mu = [e * m for e, m in zip(E, r.mu)]
-    sb = [ssum(z * (y - m) / (1 + m / th) for z, y, m in zip(col, Y, mu)) for col in ([1.0] * 10, cv)]
-    assert max(abs(v) for v in sb) < 1e-8
-    st = ssum(
-        digamma(th + y) - digamma(th) + math.log(th) + 1 - math.log(th + m) - (y + th) / (m + th) for y, m in zip(Y, mu)
-    )
-    assert abs(st) < 1e-8
-    for i in range(10):
-        w = mu[i] / (th + mu[i])
-        assert abs(r.RR[i] - (w * Y[i] / E[i] + (1 - w) * r.mu[i])) < 1e-14
 
 
 def test_potthoff_whittinghill():

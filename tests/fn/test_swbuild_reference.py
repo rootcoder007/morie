@@ -9,7 +9,7 @@ from morie.fn.swbuild import (
     grid_contiguity,
     inverse_distance_weights,
     kernel_weights,
-    knn_weights,
+    knn_neighbour_weights,
     symmetrize_weights,
     weights_components,
 )
@@ -32,7 +32,7 @@ def test_grid_contiguity():
 def test_distance_knn_inverse_kernel():
     D = distance_band_weights(P, 1.25, d1=1.0)
     assert D[0] == [0.0, 0.0, 0.0, 1.0, 0.0]  # d(0,1) = 1 is excluded by d1 < d, d(0,3) = 1.2 included
-    K = knn_weights(P, 2)
+    K = knn_neighbour_weights(P, 2)
     # point 4 at (5, 5): nearest are (2.5, 0) at 5.59 and (0, 1.2) at 6.28
     assert K[0] == [0.0, 1.0, 0.0, 1.0, 0.0] and K[4] == [0.0, 0.0, 1.0, 1.0, 0.0]
     assert sum(map(sum, K)) == 10
@@ -52,7 +52,7 @@ def test_distance_knn_inverse_kernel():
 
 
 def test_symmetrize_components():
-    A = knn_weights(P, 1)
+    A = knn_neighbour_weights(P, 1)
     U = symmetrize_weights(A)
     assert all(U[i][j] == U[j][i] for i in range(5) for j in range(5))
     assert all(U[i][j] >= A[i][j] for i in range(5) for j in range(5))

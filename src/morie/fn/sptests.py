@@ -12,7 +12,7 @@ from ._rrng_core import pchisq
 from .sarreg import spatial_regression_ml
 from .spslx import spatial_impacts
 
-__all__ = ["sdm_ml", "breusch_pagan", "spatial_bp_test"]
+__all__ = ["sdm_ml", "bp_test", "spatial_bp_test"]
 
 
 def _mat(A):
@@ -72,7 +72,7 @@ def sdm_ml(y, X, W, *, interval=(-0.999, 0.999)) -> RichResult:
     )
 
 
-def breusch_pagan(residuals, Z, *, studentize: bool = True) -> RichResult:
+def bp_test(residuals, Z, *, studentize: bool = True) -> RichResult:
     r"""Breusch-Pagan test of residual variance depending on ``Z`` (intercept included), as ``lmtest::bptest`` / ``spatialreg::bptest.Sarlm``.
 
     With ``sigma^2 = sum e^2 / n``: original (Breusch and Pagan 1979)
@@ -90,7 +90,7 @@ def breusch_pagan(residuals, Z, *, studentize: bool = True) -> RichResult:
 
     Examples
     --------
-    >>> r = breusch_pagan([1, -1, 2, -2, 3, -3], [[1, 0, 0], [1, 0, 0], [1, 1, 0], [1, 1, 0], [1, 0, 1], [1, 0, 1]])
+    >>> r = bp_test([1, -1, 2, -2, 3, -3], [[1, 0, 0], [1, 0, 0], [1, 1, 0], [1, 1, 0], [1, 0, 1], [1, 0, 1]])
     >>> round(r.statistic, 12), r.df
     (6.0, 2)
     """
@@ -149,7 +149,7 @@ def spatial_bp_test(y, X, W, *, model: str = "lag", studentize: bool = True) -> 
         WX = [_mv(Wm, [r[u] for r in Xm]) for u in range(p)]
         Z = [[Xm[i][u] - lam * WX[u][i] for u in range(p)] for i in range(n)]
         e = [yv[i] - lam * Wy[i] - ssum(Z[i][u] * b[u] for u in range(p)) for i in range(n)]
-    bp = breusch_pagan(e, Z, studentize=studentize)
+    bp = bp_test(e, Z, studentize=studentize)
     return RichResult(
         payload={
             "statistic": bp.statistic,
@@ -163,4 +163,4 @@ def spatial_bp_test(y, X, W, *, model: str = "lag", studentize: bool = True) -> 
 
 
 def cheatsheet() -> str:
-    return "sdm_ml / breusch_pagan / spatial_bp_test -> spatial Durbin ML with spillovers; Breusch-Pagan tests."
+    return "sdm_ml / bp_test / spatial_bp_test -> spatial Durbin ML with spillovers; Breusch-Pagan tests."

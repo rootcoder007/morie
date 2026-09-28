@@ -3,7 +3,7 @@ import math
 from morie.fn._qpcore import ssum
 from morie.fn._rng import random_normal, random_uniform
 from morie.fn.sarreg import spatial_regression_ml
-from morie.fn.sptests import breusch_pagan, sdm_ml, spatial_bp_test
+from morie.fn.sptests import bp_test, sdm_ml, spatial_bp_test
 
 
 def _data(n=40, seed=61):
@@ -38,12 +38,12 @@ def test_sdm_is_lag_on_augmented_design_and_impacts_add_up():
 def test_breusch_pagan_formulas():
     e = [1, -1, 2, -2, 3, -3]
     Z = [[1, 0, 0], [1, 0, 0], [1, 1, 0], [1, 1, 0], [1, 0, 1], [1, 0, 1]]
-    r = breusch_pagan(e, Z)
+    r = bp_test(e, Z)
     s2 = 28 / 6
     w = [v * v - s2 for v in e]
     fitted = [1 - s2, 1 - s2, 4 - s2, 4 - s2, 9 - s2, 9 - s2]
     assert abs(r.statistic - 6 * ssum(v * v for v in fitted) / ssum(v * v for v in w)) < 1e-12
-    o = breusch_pagan(e, Z, studentize=False)
+    o = bp_test(e, Z, studentize=False)
     assert abs(o.statistic - 0.5 * ssum((v / s2) ** 2 for v in fitted)) < 1e-12
     assert o.df == 2 and 0 < o.p_value < 1
 
