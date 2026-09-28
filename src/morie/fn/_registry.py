@@ -17408,20 +17408,6 @@ _r(
     "Constructed wetland design",
     quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
-_r(
-    "agagg",
-    "agagg",
-    "AreaGeo",
-    "Aggregation index",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "agame",
-    "agame",
-    "Spatial",
-    "Amendment agenda procedure.",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
 _r("agawd", "agawd", "AreaGeo", "Area-weighted mean shape", quote="I think, therefore I am. -- Rene Descartes")
 _r(
     "agbar",
@@ -17430,16 +17416,7 @@ _r(
     "Bare soil index spatial",
     quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
-_r("agbck", "agbck", "Spatial", "Backward induction agenda.", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "agbll",
-    "agbll",
-    "Spatial",
-    "Binary agenda tree.",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
 _r("agbui", "agbui", "AreaGeo", "Built-up index spatial", quote="We must know. We will know. -- David Hilbert")
-_r("agclp", "agclp", "AreaGeo", "Clumpiness index", quote="No man ever steps in the same river twice. -- Heraclitus")
 _r("agcmp", "agcmp", "AreaGeo", "Compactness index", quote="We must know. We will know. -- David Hilbert")
 _r(
     "agcnt",
@@ -17447,14 +17424,6 @@ _r(
     "AreaGeo",
     "Connectivity index landscape",
     quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r("agcoh", "agcoh", "AreaGeo", "Patch cohesion", quote="There is no royal road to geometry. -- Euclid")
-_r(
-    "agcon",
-    "agcon",
-    "AreaGeo",
-    "Contagion landscape",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "agcrs",
@@ -17470,36 +17439,6 @@ _r(
     "AreaGeo",
     "Dissection index",
     quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "agdom",
-    "agdom",
-    "AreaGeo",
-    "Landscape dominance",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "agdvm",
-    "agdvm",
-    "AreaGeo",
-    "Landscape diversity (Simpson)",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r("agdvs", "agdvs", "AreaGeo", "Landscape diversity (Shannon)", quote="Number rules the universe. -- Pythagoras")
-_r("aged", "aged", "AreaGeo", "Edge density", quote="What is now proved was once only imagined. -- William Blake")
-_r(
-    "agenn",
-    "agenn",
-    "AreaGeo",
-    "Euclidean NN distance patch",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "ageve",
-    "ageve",
-    "AreaGeo",
-    "Landscape evenness",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r("agevi", "agevi", "AreaGeo", "EVI spatial analysis", quote="I think, therefore I am. -- Rene Descartes")
 _r("agfdi", "agfdi", "AreaGeo", "Fractal dimension shape", quote="I think, therefore I am. -- Rene Descartes")
@@ -17539,40 +17478,11 @@ _r(
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "agijm",
-    "agijm",
-    "AreaGeo",
-    "Interspersion juxtaposition",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
     "agimv",
     "agimv",
     "AreaGeo",
     "Imperviousness index",
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "agiso",
-    "agiso",
-    "AreaGeo",
-    "Isolation index patch",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r("aglpi", "aglpi", "AreaGeo", "Largest patch index", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "aglsi",
-    "aglsi",
-    "AreaGeo",
-    "Landscape shape index",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "aglsm",
-    "aglsm",
-    "AreaGeo",
-    "Landscape mean shape",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
     "aglst",
@@ -17602,16 +17512,7 @@ _r(
     "NDVI spatial analysis",
     quote="Give me a place to stand and I will move the earth. -- Archimedes",
 )
-_r("agnp", "agnp", "AreaGeo", "Number of patches", quote="Knowledge is power. -- Francis Bacon")
 _r("agopn", "agopn", "Spatial", "Open agenda model.", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "agpat",
-    "agpat",
-    "AreaGeo",
-    "Patch analysis metrics",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r("agpd", "agpd", "AreaGeo", "Patch density", quote="No man ever steps in the same river twice. -- Heraclitus")
 _r(
     "agplt",
     "agplt",
@@ -17636,7 +17537,6 @@ _r(
     quote="No man ever steps in the same river twice. -- Heraclitus",
 )
 _r("agrev", "agrev", "Spatial", "Reversion point agenda.", quote="I think, therefore I am. -- Rene Descartes")
-_r("agric", "agric", "AreaGeo", "Landscape richness", quote="The measure of a man is what he does with power. -- Plato")
 _r("agrst", "agrst", "Spatial", "Restricted agenda model.", quote="Number rules the universe. -- Pythagoras")
 _r("agsav", "agsav", "AreaGeo", "SAVI spatial analysis", quote="Number rules the universe. -- Pythagoras")
 _r(
@@ -17652,13 +17552,6 @@ _r(
     "Spatial",
     "Agenda setter model.",
     quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "agshp",
-    "agshp",
-    "AreaGeo",
-    "Shape index computation",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
     "agsim",
@@ -17834,13 +17727,6 @@ _r(
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "casim",
-    "casim",
-    "SpatialPat",
-    "Cellular automaton spatial",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
     "cassni",
     "cassni",
     "GeoProcss",
@@ -17916,20 +17802,6 @@ _r(
     "Spatial",
     "Conditional realization stochastic path.",
     quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "cdsim",
-    "cdsim",
-    "Spatial",
-    "Conditional simulation at data locations.",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "cdsim2",
-    "cdsim2",
-    "Spatial",
-    "Conditional simulation residual kriging approach.",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
     "cdval",
@@ -18041,42 +17913,6 @@ _r(
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    "chlcnd",
-    "chlcnd",
-    "Spatial",
-    "Cholesky conditional simulation grid.",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "chlexp",
-    "chlexp",
-    "Spatial",
-    "Cholesky sim with exponential covariance.",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "chlgss",
-    "chlgss",
-    "Spatial",
-    "Cholesky sim with Gaussian covariance kernel.",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "chlinv",
-    "chlinv",
-    "Spatial",
-    "Cholesky inverse covariance simulation.",
-    quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r("chlkrg", "chlkrg", "Spatial", "Cholesky-kriging hybrid simulation.", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "chlmat",
-    "chlmat",
-    "Spatial",
-    "Cholesky sim with Matern covariance.",
-    quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
     "chlmlt",
     "chlmlt",
     "Spatial",
@@ -18084,39 +17920,11 @@ _r(
     quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "chlpiv",
-    "chlpiv",
-    "Spatial",
-    "Pivoted Cholesky incomplete decomposition sim.",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "chlpow",
-    "chlpow",
-    "Spatial",
-    "Cholesky sim with power covariance model.",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
     "chlrng",
     "chlrng",
     "Spatial",
     "Cholesky sim range sensitivity analysis.",
     quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "chlsmp",
-    "chlsmp",
-    "Spatial",
-    "Cholesky sample path generation.",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "chlsph",
-    "chlsph",
-    "Spatial",
-    "Cholesky sim with spherical covariance.",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
     "chltps",
@@ -18138,20 +17946,6 @@ _r(
     "Spatial",
     "Cholesky simulation of Gaussian random field.",
     quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "chsim2",
-    "chsim2",
-    "Spatial",
-    "Cholesky simulation with nugget effect.",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "chsim3",
-    "chsim3",
-    "Spatial",
-    "Cholesky simulation conditional on data.",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "ckflm",
@@ -18191,13 +17985,6 @@ _r(
     quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
-    "clcal",
-    "clcal",
-    "ClstSp",
-    "Calinski-Harabasz spatial",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
     "clcha",
     "clcha",
     "ClstSp",
@@ -18227,7 +18014,6 @@ _r(
     "CURE spatial clustering",
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
-_r("cldbi", "cldbi", "ClstSp", "Davies-Bouldin spatial", quote="Number rules the universe. -- Pythagoras")
 _r(
     "cldbx",
     "cldbx",
@@ -18329,20 +18115,6 @@ _r(
     "ClstSp",
     "Label propagation spatial",
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "clldn",
-    "clldn",
-    "ClstSp",
-    "Leiden spatial community",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "cllvn",
-    "cllvn",
-    "ClstSp",
-    "Louvain spatial community",
-    quote="What is now proved was once only imagined. -- William Blake",
 )
 _r(
     "clmnb",
@@ -18499,13 +18271,6 @@ _r(
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "convhl",
-    "convhl",
-    "GeoAnalysis",
-    "Convex hull boundary computation",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
     "cosim",
     "cosim",
     "SpatialPat",
@@ -18593,7 +18358,6 @@ _r(
     "Manhunt range estimation",
     quote="What is now proved was once only imagined. -- William Blake",
 )
-_r("csmrk", "csmrk", "CrimSp", "Crime Markov chain", quote="We must know. We will know. -- David Hilbert")
 _r(
     "csncr",
     "csncr",
@@ -18646,13 +18410,6 @@ _r(
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r("csvnd", "csvnd", "CrimSp", "Vandalism pattern spatial", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "cszon",
-    "cszon",
-    "CrimSp",
-    "Zone design police",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
 _r(
     "ctband",
     "ctband",
@@ -18766,13 +18523,6 @@ _r(
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "dk3bl",
-    "dk3bl",
-    "DimKrig",
-    "3D block kriging",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
     "dk3co",
     "dk3co",
     "DimKrig",
@@ -18785,13 +18535,6 @@ _r(
     "DimKrig",
     "3D directional variogram",
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "dk3ok",
-    "dk3ok",
-    "DimKrig",
-    "3D ordinary kriging",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "dk3sg",
@@ -18807,20 +18550,12 @@ _r(
     "3D sequential indicator sim",
     quote="What is now proved was once only imagined. -- William Blake",
 )
-_r("dk3sk", "dk3sk", "DimKrig", "3D simple kriging", quote="No man ever steps in the same river twice. -- Heraclitus")
 _r(
     "dk3sm",
     "dk3sm",
     "DimKrig",
     "3D simulation sequential",
     quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "dk3uk",
-    "dk3uk",
-    "DimKrig",
-    "3D universal kriging",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
     "dk3vg",
@@ -18843,21 +18578,7 @@ _r(
     "4D directional variogram",
     quote="The only true wisdom is in knowing you know nothing. -- Socrates",
 )
-_r(
-    "dk4ok",
-    "dk4ok",
-    "DimKrig",
-    "4D space-time ordinary kriging",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
 _r("dk4sm", "dk4sm", "DimKrig", "4D simulation", quote="No man ever steps in the same river twice. -- Heraclitus")
-_r(
-    "dk4vg",
-    "dk4vg",
-    "DimKrig",
-    "4D space-time variogram",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
 _r(
     "dkchg",
     "dkchg",
@@ -18908,13 +18629,6 @@ _r(
     quote="The measure of a man is what he does with power. -- Plato",
 )
 _r("dkgak", "dkgak", "DimKrig", "GA-kriging optimization", quote="We must know. We will know. -- David Hilbert")
-_r(
-    "dkglb",
-    "dkglb",
-    "DimKrig",
-    "Global kriging",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
 _r("dkgnk", "dkgnk", "DimKrig", "Gneiting ST covariance", quote="Number rules the universe. -- Pythagoras")
 _r("dkicm", "dkicm", "DimKrig", "Intrinsic coregionalization", quote="Knowledge is power. -- Francis Bacon")
 _r(
@@ -18923,13 +18637,6 @@ _r(
     "DimKrig",
     "Kernel kriging",
     quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "dkloc",
-    "dkloc",
-    "DimKrig",
-    "Local kriging neighborhood",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "dklrf",
@@ -18949,22 +18656,6 @@ _r("dkmvk", "dkmvk", "DimKrig", "Multivariate kriging", quote="We must know. We 
 _r("dkmvv", "dkmvv", "DimKrig", "Multivariate variogram", quote="Knowledge is power. -- Francis Bacon")
 _r("dknkr", "dknkr", "DimKrig", "Non-stationary kriging", quote="Knowledge is power. -- Francis Bacon")
 _r("dknry", "dknry", "DimKrig", "NNGP kriging", quote="No man ever steps in the same river twice. -- Heraclitus")
-_r("dkpsm", "dkpsm", "DimKrig", "Product-sum ST variogram", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "dkrgr",
-    "dkrgr",
-    "DimKrig",
-    "Regression kriging",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r("dkrk", "dkrk", "DimKrig", "Residual kriging", quote="We must know. We will know. -- David Hilbert")
-_r(
-    "dksmt",
-    "dksmt",
-    "DimKrig",
-    "Metric space-time variogram",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
 _r(
     "dkspr",
     "dkspr",
@@ -18973,25 +18664,10 @@ _r(
     quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "dkssm",
-    "dkssm",
-    "DimKrig",
-    "Sum-metric ST variogram",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
     "dkstf",
     "dkstf",
     "DimKrig",
     "ST covariance fitting",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r("dkstk", "dkstk", "DimKrig", "STPK space-time kriging", quote="I think, therefore I am. -- Rene Descartes")
-_r(
-    "dkstv",
-    "dkstv",
-    "DimKrig",
-    "Space-time variogram joint",
     quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -19069,7 +18745,6 @@ _r(
     "Plurality electoral model.",
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
-_r("elpol", "elpol", "Spatial", "Electoral polarization index.", quote="Number rules the universe. -- Pythagoras")
 _r(
     "elprm",
     "elprm",
@@ -19147,32 +18822,11 @@ _r(
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "enpm1",
-    "enpm1",
-    "EnvStat",
-    "PM10 spatial interpolation",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "enpm2",
-    "enpm2",
-    "EnvStat",
-    "PM2.5 spatial interpolation",
-    quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
     "enpuf",
     "enpuf",
     "EnvStat",
     "Puff dispersion model",
     quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "enrfl",
-    "enrfl",
-    "EnvStat",
-    "Rainfall spatial interpolation",
-    quote="What is now proved was once only imagined. -- William Blake",
 )
 _r("ensno", "ensno", "EnvStat", "Snowfall spatial mapping", quote="We must know. We will know. -- David Hilbert")
 _r(
@@ -19225,13 +18879,6 @@ _r(
     "Erosion spatial operation",
     quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
-_r(
-    "fbmsi",
-    "fbmsi",
-    "SpatialPat",
-    "Fractional Brownian spatial",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
 _r("filsm", "filsm", "SpatialPat", "FILTERSIM MPS method", quote="We must know. We will know. -- David Hilbert")
 _r("foage", "foage", "ForstSp", "Age class distribution spatial", quote="We must know. We will know. -- David Hilbert")
 _r(
@@ -19246,13 +18893,6 @@ _r(
     "fobio",
     "ForstSp",
     "Biomass estimation forest",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "fobufr",
-    "fobufr",
-    "ForstSp",
-    "Buffer zone forest",
     quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -19291,13 +18931,6 @@ _r(
     quote="The measure of a man is what he does with power. -- Plato",
 )
 _r("fodbh", "fodbh", "ForstSp", "DBH distribution spatial", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "fodiv",
-    "fodiv",
-    "ForstSp",
-    "Species diversity forest",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
 _r(
     "fodrt",
     "fodrt",
@@ -19338,13 +18971,6 @@ _r(
 )
 _r("forecr", "forecr", "ForstSp", "Recruitment rate spatial", quote="Number rules the universe. -- Pythagoras")
 _r("foreld", "foreld", "ForstSp", "Relative density spatial", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "forich",
-    "forich",
-    "ForstSp",
-    "Species richness spatial",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
 _r("forsdi", "forsdi", "ForstSp", "Reineke SDI spatial", quote="Statistics is the grammar of science. -- Karl Pearson")
 _r(
     "forstr",
@@ -19366,13 +18992,6 @@ _r(
     "ForstSp",
     "Stand density index",
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "fosimp",
-    "fosimp",
-    "ForstSp",
-    "Simpson diversity spatial",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r("fosnwl", "fosnwl", "ForstSp", "Snow load risk spatial", quote="Number rules the universe. -- Pythagoras")
 _r("fotrew", "fotrew", "ForstSp", "Tree detection LiDAR", quote="Knowledge is power. -- Francis Bacon")
@@ -19574,7 +19193,6 @@ _r(
     quote="The measure of a man is what he does with power. -- Plato",
 )
 _r("gchrc", "gchrc", "GeoClim", "Hurricane intensity change", quote="I think, therefore I am. -- Rene Descartes")
-_r("gchwv", "gchwv", "GeoClim", "Heat wave frequency", quote="Statistics is the grammar of science. -- Karl Pearson")
 _r("gcjet", "gcjet", "GeoClim", "Jet stream shift spatial", quote="Number rules the universe. -- Pythagoras")
 _r("gcn2o", "gcn2o", "GeoClim", "N2O concentration spatial", quote="We must know. We will know. -- David Hilbert")
 _r("gcplr", "gcplr", "GeoClim", "Polar vortex spatial", quote="Knowledge is power. -- Francis Bacon")
@@ -19694,13 +19312,6 @@ _r(
 _r("geemp", "geemp", "GeoEcon", "Employment spatial", quote="Number rules the universe. -- Pythagoras")
 _r("gefrm", "gefrm", "GeoEcon", "Firm density spatial", quote="Knowledge is power. -- Francis Bacon")
 _r("gegni", "gegni", "GeoEcon", "Gini spatial economic", quote="There is no royal road to geometry. -- Euclid")
-_r(
-    "gegry",
-    "gegry",
-    "GeoEcon",
-    "Geary economic spatial",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
 _r("geinf", "geinf", "GeoEcon", "Infrastructure investment spatial", quote="Knowledge is power. -- Francis Bacon")
 _r(
     "geloc",
@@ -19710,7 +19321,6 @@ _r(
     quote="Statistics is the grammar of science. -- Karl Pearson",
 )
 _r("gemin", "gemin", "GeoEcon", "Mining sector spatial", quote="Statistics is the grammar of science. -- Karl Pearson")
-_r("gemrn", "gemrn", "GeoEcon", "Moran economic spatial", quote="We must know. We will know. -- David Hilbert")
 _r(
     "geodes",
     "geodes",
@@ -19730,13 +19340,6 @@ _r("gestrt", "gestrt", "GeoEcon", "Startup density spatial", quote="There is no 
 _r("gethl", "gethl", "GeoEcon", "Theil index spatial", quote="I think, therefore I am. -- Rene Descartes")
 _r("getrd", "getrd", "GeoEcon", "Trade flow spatial", quote="No man ever steps in the same river twice. -- Heraclitus")
 _r("gewlt", "gewlt", "GeoEcon", "Wealth spatial mapping", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "gh2sf",
-    "gh2sf",
-    "GeoHlth",
-    "2SFCA accessibility health",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
 _r(
     "ghacc",
     "ghacc",
@@ -19773,13 +19376,6 @@ _r(
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "ghchg",
-    "ghchg",
-    "GeoHlth",
-    "Change point health",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
     "ghclr",
     "ghclr",
     "GeoHlth",
@@ -19793,13 +19389,6 @@ _r(
     "GeoHlth",
     "Cox spatial health",
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "ghdlm",
-    "ghdlm",
-    "GeoHlth",
-    "Dynamic linear health",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
     "ghdst",
@@ -19837,13 +19426,6 @@ _r(
     quote="Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "ghfca",
-    "ghfca",
-    "GeoHlth",
-    "Floating catchment area",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
     "ghfrg",
     "ghfrg",
     "GeoHlth",
@@ -19870,20 +19452,6 @@ _r(
     "GeoHlth",
     "KD-E2SFCA accessibility",
     quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "ghlam",
-    "ghlam",
-    "GeoHlth",
-    "LASSO health regression",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "ghmgw",
-    "ghmgw",
-    "GeoHlth",
-    "MGWR health",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
     "ghmxc",
@@ -19944,20 +19512,6 @@ _r(
     "GeoHlth",
     "SIR mapping spatial",
     quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "ghslg",
-    "ghslg",
-    "GeoHlth",
-    "Spatial lag health",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "ghsmr",
-    "ghsmr",
-    "GeoHlth",
-    "SMR mapping spatial",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
     "ghspt",
@@ -20388,20 +19942,6 @@ _r(
 )
 _r("gwrtvl", "gwrtvl", "GWR", "GWR t-values for local coefficients.", quote="Number rules the universe. -- Pythagoras")
 _r(
-    "havrsi",
-    "havrsi",
-    "GeoProcss",
-    "Haversine distance formula",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "hexgen",
-    "hexgen",
-    "GeoProcss",
-    "Hexagonal grid generation",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
     "hexsmp",
     "hexsmp",
     "GeoProcss",
@@ -20450,7 +19990,6 @@ _r(
     "Divergence in Hotelling model.",
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
-_r("hsdwn", "hsdwn", "Spatial", "Downs electoral competition.", quote="We must know. We will know. -- David Hilbert")
 _r(
     "hsent",
     "hsent",
@@ -20460,25 +19999,11 @@ _r(
 )
 _r("hslin", "hslin", "Spatial", "Hotelling linear competition.", quote="Number rules the universe. -- Pythagoras")
 _r(
-    "hsmlt",
-    "hsmlt",
-    "Spatial",
-    "Multiparty Hotelling equilibrium.",
-    quote="What is now proved was once only imagined. -- William Blake",
-)
-_r(
     "hsmpt",
     "hsmpt",
     "Spatial",
     "Midpoint competition equilibrium.",
     quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "hsnsh",
-    "hsnsh",
-    "Spatial",
-    "Nash equilibrium in Hotelling.",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "hsprc",
@@ -20493,13 +20018,6 @@ _r(
     "Spatial",
     "Salience Hotelling model.",
     quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "hstrp",
-    "hstrp",
-    "Spatial",
-    "Three-party Hotelling competition.",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
     "hswas",
@@ -20678,13 +20196,6 @@ _r(
     quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
-    "hyret",
-    "hyret",
-    "HydroSp",
-    "Return period estimation",
-    quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
     "hyrpn",
     "hyrpn",
     "HydroSp",
@@ -20750,13 +20261,6 @@ _r(
     "Spatial",
     "Agenda-setter ideal point.",
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "idpbp",
-    "idpbp",
-    "Spatial",
-    "Bayesian ideal point estimation.",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "idpcm",
@@ -20888,13 +20392,6 @@ _r(
     quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "idwgrd",
-    "idwgrd",
-    "Spatial",
-    "IDW grid prediction surface.",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
     "idwknn",
     "idwknn",
     "Spatial",
@@ -20936,13 +20433,6 @@ _r(
     "Spatial",
     "Radial search IDW fixed radius.",
     quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "idwshp",
-    "idwshp",
-    "Spatial",
-    "Shepard IDW interpolation classic.",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
     "idwvar",
@@ -21146,14 +20636,6 @@ _r(
     "KDE nearest facility distance",
     quote="What is now proved was once only imagined. -- William Blake",
 )
-_r("kgbkd", "kgbkd", "Spatial", "Block kriging discretization", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "kgbkv",
-    "kgbkv",
-    "Spatial",
-    "Block kriging variance",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
 _r(
     "kgckv",
     "kgckv",
@@ -21170,179 +20652,11 @@ _r(
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "kgcvk",
-    "kgcvk",
-    "Spatial",
-    "Kriging k-fold cross-validation",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r("kgcvl", "kgcvl", "Spatial", "Kriging LOO cross-validation", quote="There is no royal road to geometry. -- Euclid")
-_r(
-    "kgeqv",
-    "kgeqv",
-    "Spatial",
-    "Kriging equivalence to GLS",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "kgfct",
-    "kgfct",
-    "Spatial",
-    "Factorial kriging",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "kglam",
-    "kglam",
-    "Spatial",
-    "Kriging weights (lambda)",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "kglgb",
-    "kglgb",
-    "Spatial",
-    "Lognormal kriging back-transform",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r("kgmae", "kgmae", "Spatial", "Kriging MAE", quote="Statistics is the grammar of science. -- Karl Pearson")
-_r(
-    "kgmtx",
-    "kgmtx",
-    "Spatial",
-    "Kriging system matrix",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r("kgord", "kgord", "Spatial", "Ordinary kriging prediction", quote="There is no royal road to geometry. -- Euclid")
-_r(
-    "kgprb",
-    "kgprb",
-    "Spatial",
-    "Kriging probability map",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r("kgprd", "kgprd", "Spatial", "Kriging prediction surface", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "kgqnt",
-    "kgqnt",
-    "Spatial",
-    "Kriging quantile prediction",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "kgres",
-    "kgres",
-    "Spatial",
-    "Kriging residual map",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "kgrhs",
-    "kgrhs",
-    "Spatial",
-    "Kriging right-hand side vector",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "kgrms",
-    "kgrms",
-    "Spatial",
-    "Kriging RMSE",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "kgsmp",
-    "kgsmp",
-    "Spatial",
-    "Simple kriging prediction",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r("kgsmw", "kgsmw", "Spatial", "Simple kriging weights", quote="I think, therefore I am. -- Rene Descartes")
-_r(
-    "kgstd",
-    "kgstd",
-    "Spatial",
-    "Kriging standard error map",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "kgtrn",
-    "kgtrn",
-    "Spatial",
-    "Kriging trend surface",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "kguni",
-    "kguni",
-    "Spatial",
-    "Universal kriging prediction",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "kgunr",
-    "kgunr",
-    "Spatial",
-    "Universal kriging residual",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r("kgunt", "kgunt", "Spatial", "Universal kriging trend", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "kgunw",
-    "kgunw",
-    "Spatial",
-    "Universal kriging weights",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "krgdg",
-    "krgdg",
-    "KrigFilt",
-    "Kriging diagnostics",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
     "krgef",
     "krgef",
     "KrigFilt",
     "Kriging efficiency",
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "krgnb",
-    "krgnb",
-    "KrigFilt",
-    "Kriging neighborhood selection",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r("krgre", "krgre", "KrigFilt", "Kriging residual analysis", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "krgsd",
-    "krgsd",
-    "KrigFilt",
-    "Kriging standard deviation",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "krgsm",
-    "krgsm",
-    "KrigFilt",
-    "Kriging search method",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "krgtr",
-    "krgtr",
-    "KrigFilt",
-    "Kriging trend removal",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "krgwt",
-    "krgwt",
-    "KrigFilt",
-    "Kriging weight map",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
     "ksmsp",
@@ -21578,13 +20892,6 @@ _r(
     "Lon/lat to projected coordinates",
     quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
-_r(
-    "lowsp",
-    "lowsp",
-    "KrigFilt",
-    "LOWESS spatial smoothing",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
 _r("ltest", "ltest", "SpatialPat", "L-function (linearized K)", quote="I think, therefore I am. -- Rene Descartes")
 _r(
     "luband",
@@ -21592,13 +20899,6 @@ _r(
     "Spatial",
     "LU banded covariance simulation.",
     quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
-    "lucnd",
-    "lucnd",
-    "Spatial",
-    "LU conditional simulation update step.",
-    quote="Number rules the universe. -- Pythagoras",
 )
 _r(
     "luinc",
@@ -21799,25 +21099,11 @@ _r(
     quote="Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    "mcimp",
-    "mcimp",
-    "Spatial",
-    "Importance sampling spatial MC.",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
     "mcint",
     "mcint",
     "Spatial",
     "Monte Carlo spatial integration estimate.",
     quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "mcqmc",
-    "mcqmc",
-    "Spatial",
-    "Quasi-Monte Carlo low-discrepancy integration.",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
     "mcsbs",
@@ -21953,13 +21239,6 @@ _r(
     "Spatial",
     "Structure-induced equilibrium.",
     quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "mdunc",
-    "mdunc",
-    "Spatial",
-    "Uncovered set multidimensional.",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r("mdwsl", "mdwsl", "Spatial", "Win-set location multidimensional.", quote="Knowledge is power. -- Francis Bacon")
 _r(
@@ -22219,13 +21498,6 @@ _r(
     "Party fragmentation index.",
     quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
-_r(
-    "mpgov",
-    "mpgov",
-    "Spatial",
-    "Government formation spatial.",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
 _r("mpmnt", "mpmnt", "Spatial", "Party movement spatial.", quote="Number rules the universe. -- Pythagoras")
 _r(
     "mpmrg",
@@ -22314,13 +21586,6 @@ _r(
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r("msdcs", "msdcs", "Spatial", "Cosine distance matrix", quote="There is no royal road to geometry. -- Euclid")
-_r(
-    "msdim",
-    "msdim",
-    "Spatial",
-    "MDS dimensionality selection",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
 _r(
     "msdmc",
     "msdmc",
@@ -22414,13 +21679,6 @@ _r(
     quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "msnmt",
-    "msnmt",
-    "Spatial",
-    "Nonmetric MDS (Kruskal)",
-    quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
     "msplt",
     "msplt",
     "Spatial",
@@ -22442,13 +21700,6 @@ _r(
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r("msprg", "msprg", "Spatial", "Generalized Procrustes analysis", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "mspro",
-    "mspro",
-    "Spatial",
-    "Orthogonal Procrustes rotation",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
 _r("msprp", "msprp", "Spatial", "Partial Procrustes", quote="We must know. We will know. -- David Hilbert")
 _r("msprr", "msprr", "Spatial", "Procrustes residuals", quote="I think, therefore I am. -- Rene Descartes")
 _r(
@@ -22467,32 +21718,11 @@ _r(
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    "msshp",
-    "msshp",
-    "Spatial",
-    "Shepard diagram values",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
     "msshr",
     "msshr",
     "Spatial",
     "Shepard residuals",
     quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "mssmc",
-    "mssmc",
-    "Spatial",
-    "SMACOF iterative MDS",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "mssmi",
-    "mssmi",
-    "Spatial",
-    "Individual differences SMACOF",
-    quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
     "mssmm",
@@ -22508,7 +21738,6 @@ _r(
     "Replicated SMACOF",
     quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
-_r("msst1", "msst1", "Spatial", "Raw stress (Kruskal stress-1)", quote="Number rules the universe. -- Pythagoras")
 _r("msst2", "msst2", "Spatial", "Normalized stress", quote="The measure of a man is what he does with power. -- Plato")
 _r(
     "mstnk",
@@ -22553,20 +21782,6 @@ _r(
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "mtbtw",
-    "mtbtw",
-    "MovTyp",
-    "Betweenness centrality spatial",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
-    "mtcls",
-    "mtcls",
-    "MovTyp",
-    "Closeness centrality spatial",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
     "mtcon",
     "mtcon",
     "MovTyp",
@@ -22579,13 +21794,6 @@ _r(
     "MovTyp",
     "Core-periphery spatial",
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "mtcps",
-    "mtcps",
-    "MovTyp",
-    "Capacitated spatial routing",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
     "mtcrw",
@@ -22645,13 +21853,6 @@ _r(
     "MovTyp",
     "Information centrality spatial",
     quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "mtktz",
-    "mtktz",
-    "MovTyp",
-    "Katz centrality spatial",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r("mtlvy", "mtlvy", "MovTyp", "Levy walk movement", quote="Number rules the universe. -- Pythagoras")
 _r(
@@ -22805,13 +22006,6 @@ _r(
 )
 _r("mttwr", "mttwr", "MovTyp", "Time-window routing", quote="I think, therefore I am. -- Rene Descartes")
 _r(
-    "mtvrp",
-    "mtvrp",
-    "MovTyp",
-    "Vehicle routing movement",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
     "mtvul",
     "mtvul",
     "MovTyp",
@@ -22826,13 +22020,6 @@ _r(
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    "mvtcl",
-    "mvtcl",
-    "Spatial",
-    "Condorcet median voter equilibrium.",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
     "mvtdv",
     "mvtdv",
     "Spatial",
@@ -22845,13 +22032,6 @@ _r(
     "Spatial",
     "Federal median voter theorem.",
     quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "mvtmj",
-    "mvtmj",
-    "Spatial",
-    "Majority rule median voter.",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
     "mvtms",
@@ -23272,13 +22452,6 @@ _r(
     quote="Knowledge is power. -- Francis Bacon",
 )
 _r(
-    "nngrd",
-    "nngrd",
-    "Spatial",
-    "Natural neighbor grid prediction.",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
     "nnlap",
     "nnlap",
     "Spatial",
@@ -23300,13 +22473,6 @@ _r(
     quote="Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
-    "nnvor",
-    "nnvor",
-    "Spatial",
-    "Voronoi-based natural neighbor weights.",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
     "nnwgt",
     "nnwgt",
     "Spatial",
@@ -23319,13 +22485,6 @@ _r(
     "GeoAnalysis",
     "Second nearest neighbor distance",
     quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
-_r(
-    "nrstd",
-    "nrstd",
-    "GeoAnalysis",
-    "Nearest distance computation",
-    quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
     "nrstk",
@@ -23458,13 +22617,6 @@ _r(
     quote="Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    "plafp",
-    "plafp",
-    "Spatial",
-    "Affective polarization index.",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
     "plbdn",
     "plbdn",
     "Spatial",
@@ -23522,13 +22674,6 @@ _r(
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "plidp",
-    "plidp",
-    "Spatial",
-    "Ideological polarization index.",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
     "plkur",
     "plkur",
     "Spatial",
@@ -23547,13 +22692,6 @@ _r(
     "plnet",
     "Spatial",
     "Network-based polarization.",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "plsor",
-    "plsor",
-    "Spatial",
-    "Sorting polarization index.",
     quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -23576,13 +22714,6 @@ _r(
     "Spatial",
     "Weighted Gini polarization.",
     quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "plwlf",
-    "plwlf",
-    "Spatial",
-    "Wolfson polarization index.",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r("ppare", "ppare", "PointProc", "Area-interaction process", quote="Number rules the universe. -- Pythagoras")
 _r(
@@ -23773,25 +22904,11 @@ _r(
     quote="Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    "ptenv",
-    "ptenv",
-    "Spatial",
-    "Point pattern Monte Carlo envelope",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
     "ptgfn",
     "ptgfn",
     "Spatial",
     "Nearest-neighbor G-function",
     quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "ptisg",
-    "ptisg",
-    "Spatial",
-    "Isotropic edge correction",
-    quote="What is now proved was once only imagined. -- William Blake",
 )
 _r(
     "ptjfn",
@@ -23827,13 +22944,6 @@ _r(
     "Spatial",
     "Morisita index of dispersion",
     quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "ptrpl",
-    "ptrpl",
-    "Spatial",
-    "Ripley edge correction",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "pttsp",
@@ -23878,32 +22988,11 @@ _r(
     quote="Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "rbfgss",
-    "rbfgss",
-    "Spatial",
-    "Gaussian RBF interpolation.",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "rbfimq",
-    "rbfimq",
-    "Spatial",
-    "Inverse multiquadric RBF interpolation.",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
     "rbflnr",
     "rbflnr",
     "Spatial",
     "Linear RBF interpolation.",
     quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
-    "rbfmq",
-    "rbfmq",
-    "Spatial",
-    "Multiquadric RBF interpolation.",
-    quote="What is now proved was once only imagined. -- William Blake",
 )
 _r(
     "rbfmsv",
@@ -24054,13 +23143,6 @@ _r(
     "Spatial",
     "Gamma random field via anamorphosis.",
     quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "rfgss",
-    "rfgss",
-    "Spatial",
-    "Gaussian random field with Matern covariance.",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
     "rflgn",
@@ -24269,20 +23351,6 @@ _r(
 )
 _r("rotgrd", "rotgrd", "GeoProcss", "Rotated grid generation", quote="Knowledge is power. -- Francis Bacon")
 _r(
-    "rsacc",
-    "rsacc",
-    "RemSens",
-    "Accuracy assessment RS",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "rsalb",
-    "rsalb",
-    "RemSens",
-    "Albedo estimation RS",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
     "rsatm",
     "rsatm",
     "RemSens",
@@ -24290,25 +23358,11 @@ _r(
     quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "rsbai",
-    "rsbai",
-    "RemSens",
-    "BAI burn area index",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
     "rschg",
     "rschg",
     "RemSens",
     "Change detection RS",
     quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "rscir",
-    "rscir",
-    "RemSens",
-    "CIre red-edge index",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
     "rsclm",
@@ -24325,49 +23379,14 @@ _r(
     quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "rscva",
-    "rscva",
-    "RemSens",
-    "Change vector analysis",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "rsemi",
-    "rsemi",
-    "RemSens",
-    "Emissivity estimation RS",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
     "rsend",
     "rsend",
     "RemSens",
     "Endmember extraction",
     quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
-_r(
-    "rsevi",
-    "rsevi",
-    "RemSens",
-    "EVI computation",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "rsfcv",
-    "rsfcv",
-    "RemSens",
-    "Fractional cover vegetation",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
 _r("rsfpr", "rsfpr", "RemSens", "FPAR from remote sensing", quote="Knowledge is power. -- Francis Bacon")
 _r("rsfus", "rsfus", "RemSens", "Image fusion RS", quote="We must know. We will know. -- David Hilbert")
-_r(
-    "rsgnd",
-    "rsgnd",
-    "RemSens",
-    "GNDVI computation",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
 _r("rsica", "rsica", "RemSens", "ICA remote sensing", quote="There is no royal road to geometry. -- Euclid")
 _r(
     "rslai2",
@@ -24377,14 +23396,6 @@ _r(
     quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "rslst",
-    "rslst",
-    "RemSens",
-    "Land surface temperature RS",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r("rsmnd", "rsmnd", "RemSens", "MNDWI computation", quote="There is no royal road to geometry. -- Euclid")
-_r(
     "rsmnf",
     "rsmnf",
     "RemSens",
@@ -24392,56 +23403,11 @@ _r(
     quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "rsmsr",
-    "rsmsr",
-    "RemSens",
-    "MSR modified simple ratio",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "rsmsv",
-    "rsmsv",
-    "RemSens",
-    "MSAVI computation",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
     "rsmxl",
     "rsmxl",
     "RemSens",
     "Maximum likelihood RS",
     quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "rsnbr",
-    "rsnbr",
-    "RemSens",
-    "NBR normalized burn ratio",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r("rsnbr2", "rsnbr2", "RemSens", "NBR2 enhanced burn ratio", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "rsndb",
-    "rsndb",
-    "RemSens",
-    "NDBI computation",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "rsndm",
-    "rsndm",
-    "RemSens",
-    "NDMI moisture index",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r("rsnds", "rsnds", "RemSens", "NDSI computation", quote="There is no royal road to geometry. -- Euclid")
-_r("rsndv", "rsndv", "RemSens", "NDVI computation", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "rsndw",
-    "rsndw",
-    "RemSens",
-    "NDWI computation",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "rspan",
@@ -24458,27 +23424,6 @@ _r(
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "rspri",
-    "rspri",
-    "RemSens",
-    "PRI photochemical index",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "rsreg",
-    "rsreg",
-    "RemSens",
-    "Red-edge NDVI",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "rsrei",
-    "rsrei",
-    "RemSens",
-    "REI red-edge inflection",
-    quote="What is now proved was once only imagined. -- William Blake",
-)
-_r(
     "rsrfc",
     "rsrfc",
     "RemSens",
@@ -24491,13 +23436,6 @@ _r(
     "RemSens",
     "Radiometric terrain correction",
     quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "rssav",
-    "rssav",
-    "RemSens",
-    "SAVI computation",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r("rsshd", "rsshd", "RemSens", "Shadow detection RS", quote="We must know. We will know. -- David Hilbert")
 _r(
@@ -24515,7 +23453,6 @@ _r(
     quote="Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r("rstcw", "rstcw", "RemSens", "Tasseled cap transform", quote="I think, therefore I am. -- Rene Descartes")
-_r("rstoa", "rstoa", "RemSens", "TOA reflectance", quote="Knowledge is power. -- Francis Bacon")
 _r("rsusc", "rsusc", "RemSens", "Unsupervised classification", quote="Number rules the universe. -- Pythagoras")
 _r(
     "rwksp",
@@ -24674,7 +23611,6 @@ _r(
     "SAR Wald test on spatial lag parameter.",
     quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
-_r("sbalt", "sbalt", "Spatial", "Alternating offer bargaining.", quote="We must know. We will know. -- David Hilbert")
 _r(
     "sbblk",
     "sbblk",
@@ -24688,13 +23624,6 @@ _r(
     "Spatial",
     "Bootstrap confidence bands spatial field.",
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "sbci",
-    "sbci",
-    "Spatial",
-    "Spatial bootstrap percentile CI.",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "sbdel",
@@ -24746,25 +23675,11 @@ _r(
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "sbsqp",
-    "sbsqp",
-    "Spatial",
-    "Status quo point bargaining.",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
     "sbstt",
     "sbstt",
     "Spatial",
     "Stationary bootstrap spatial autocorrelated.",
     quote="Knowledge is power. -- Francis Bacon",
-)
-_r(
-    "sbvar",
-    "sbvar",
-    "Spatial",
-    "Spatial bootstrap variance estimation.",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
     "scdisp",
@@ -24869,7 +23784,6 @@ _r(
     quote="The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r("sdemlrt", "sdemlrt", "SDEM", "SDEM likelihood-ratio test vs SEM.", quote="Number rules the universe. -- Pythagoras")
-_r("sdemml", "sdemml", "SDEM", "SDEM maximum-likelihood estimation.", quote="Knowledge is power. -- Francis Bacon")
 _r(
     "sdemres",
     "sdemres",
@@ -24949,13 +23863,6 @@ _r(
     quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "sdmml",
-    "sdmml",
-    "SDM",
-    "SDM maximum-likelihood estimation.",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
     "sdmolsi",
     "sdmolsi",
     "SDM",
@@ -25010,13 +23917,6 @@ _r(
     "SDM",
     "SDM spatially lagged X matrix WX.",
     quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "sebhr",
-    "sebhr",
-    "SpatEpi2",
-    "Bayesian hierarchical rate",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r("sebir", "sebir", "SpatEpi2", "ICAR spatial rate model", quote="I think, therefore I am. -- Rene Descartes")
 _r(
@@ -25136,13 +24036,6 @@ _r(
     quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "secoh",
-    "secoh",
-    "SpatEpi2",
-    "Cohort spatial study",
-    quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
     "secop",
     "secop",
     "SpatEpi2",
@@ -25186,25 +24079,11 @@ _r(
     quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "seeby",
-    "seeby",
-    "SpatEpi2",
-    "EB James-Stein smoothing",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
     "seecl",
     "seecl",
     "SpatEpi2",
     "Ecological spatial study",
     quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "seexr",
-    "seexr",
-    "SpatEpi2",
-    "Excess risk mapping",
-    quote="Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
     "segrf",
@@ -25263,13 +24142,6 @@ _r(
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "semgmm",
-    "semgmm",
-    "SEM",
-    "SEM GMM (Kelejian-Prucha) estimator.",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
     "semhet",
     "semhet",
     "SEM",
@@ -25283,7 +24155,6 @@ _r(
     "SEM Jacobian ln|I - lambda*W|.",
     quote="The only true wisdom is in knowing you know nothing. -- Socrates",
 )
-_r("semkp", "semkp", "SEM", "SEM Kelejian-Prucha IV/2SLS estimator.", quote="Number rules the universe. -- Pythagoras")
 _r(
     "semlm",
     "semlm",
@@ -25395,13 +24266,6 @@ _r(
     "SpatEpi2",
     "SIR spatial mapping",
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "sesmr",
-    "sesmr",
-    "SpatEpi2",
-    "SMR spatial mapping",
-    quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
     "sespc",
@@ -25523,13 +24387,6 @@ _r(
     quote="The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "sgcdf",
-    "sgcdf",
-    "Spatial",
-    "SGS Gaussian anamorphosis / normal score transform.",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
     "sgcosm",
     "sgcosm",
     "Spatial",
@@ -25542,13 +24399,6 @@ _r(
     "Spatial",
     "SGS histogram reproduction diagnostic.",
     quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "sglhd",
-    "sglhd",
-    "Spatial",
-    "SGS Latin hypercube stratified sampling.",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
     "sgmean",
@@ -26295,14 +25145,6 @@ _r(
     "Spatial hierarchical 3-level",
     quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
-_r("srmgc", "srmgc", "SpatReg2", "MGWR coefficients", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "srmgw",
-    "srmgw",
-    "SpatReg2",
-    "Multi-scale GWR (MGWR)",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
 _r(
     "srmix",
     "srmix",
@@ -26388,34 +25230,12 @@ _r(
     "Spatial robust regression",
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
-_r("srsdm", "srsdm", "SpatReg2", "Spatial Durbin model (SDM)", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "srsem",
-    "srsem",
-    "SpatReg2",
-    "Spatial Durbin error model (SDEM)",
-    quote="I think, therefore I am. -- Rene Descartes",
-)
 _r(
     "srswm",
     "srswm",
     "SpatReg2",
     "Spatial weight matrix regression",
     quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "srsxe",
-    "srsxe",
-    "SpatReg2",
-    "SLX with spatial error",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r(
-    "stanis",
-    "stanis",
-    "Spatial",
-    "Space-time anisotropic covariance.",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
     "stbkrg",
@@ -26446,13 +25266,6 @@ _r(
     quote="No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "stcov",
-    "stcov",
-    "Spatial",
-    "Space-time separable covariance model.",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
     "stdcv",
     "stdcv",
     "Spatial",
@@ -26473,7 +25286,6 @@ _r(
     "Stereographic projection",
     quote="The measure of a man is what he does with power. -- Plato",
 )
-_r("stexp", "stexp", "Spatial", "Space-time product-sum covariance.", quote="Number rules the universe. -- Pythagoras")
 _r("stfit", "stfit", "Spatial", "Space-time covariance model fitting.", quote="Knowledge is power. -- Francis Bacon")
 _r(
     "stgnt",
@@ -26511,25 +25323,11 @@ _r(
     quote="There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "stkint",
-    "stkint",
-    "Spatial",
-    "Space-time kriging temporal interpolation.",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
     "stklhs",
     "stklhs",
     "Spatial",
     "Space-time kriging leave-h-out validation.",
     quote="Knowledge is power. -- Francis Bacon",
-)
-_r(
-    "stkmap",
-    "stkmap",
-    "Spatial",
-    "Space-time kriging prediction map grid.",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
     "stknbr",
@@ -26539,40 +25337,11 @@ _r(
     quote="What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    "stkprd",
-    "stkprd",
-    "Spatial",
-    "Space-time kriging temporal prediction.",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
     "stkrg",
     "stkrg",
     "Spatial",
     "Space-time ordinary kriging prediction.",
     quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "stkrgs",
-    "stkrgs",
-    "Spatial",
-    "Space-time simple kriging prediction.",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "stkrgv",
-    "stkrgv",
-    "Spatial",
-    "Space-time kriging variance surface.",
-    quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r("stkse", "stkse", "Spatial", "Space-time kriging standard error map.", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "stkval",
-    "stkval",
-    "Spatial",
-    "Space-time kriging cross-validation LOOCV.",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "stlin",
@@ -26582,25 +25351,11 @@ _r(
     quote="Number rules the universe. -- Pythagoras",
 )
 _r(
-    "stmat",
-    "stmat",
-    "Spatial",
-    "Space-time Matern covariance.",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
     "stmet",
     "stmet",
     "Spatial",
     "Space-time integrated metric covariance.",
     quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "stnsep",
-    "stnsep",
-    "Spatial",
-    "Space-time non-separable covariance.",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
     "stper",
@@ -26617,24 +25372,10 @@ _r(
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "stprod",
-    "stprod",
-    "Spatial",
-    "Space-time product covariance model.",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
     "stsim",
     "stsim",
     "Spatial",
     "Space-time random field simulation.",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "stsmm",
-    "stsmm",
-    "Spatial",
-    "Space-time sum-metric covariance.",
     quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -26643,13 +25384,6 @@ _r(
     "Spatial",
     "Space-time universal kriging with drift.",
     quote="I think, therefore I am. -- Rene Descartes",
-)
-_r(
-    "stvario",
-    "stvario",
-    "Spatial",
-    "Space-time variogram estimation.",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
     "svasp",
@@ -26982,55 +25716,12 @@ _r(
     quote="No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "swasym",
-    "swasym",
-    "Weights",
-    "Asymmetric (directed) spatial weights.",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "swbin",
-    "swbin",
-    "Weights",
-    "Binary (0/1) spatial weights.",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
     "swblk",
     "swblk",
     "Weights",
     "Block spatial weights (group-based).",
     quote="What is now proved was once only imagined. -- William Blake",
 )
-_r(
-    "swcarc",
-    "swcarc",
-    "WDiag",
-    "Cardinality (neighbours count) for each unit.",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "swcomp",
-    "swcomp",
-    "WDiag",
-    "Number of connected components in W.",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "swconn",
-    "swconn",
-    "Weights",
-    "Connectivity (avg neighbours) of weights.",
-    quote="There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "swdense",
-    "swdense",
-    "Weights",
-    "Compute density of spatial weights matrix.",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r("swdiag", "swdiag", "WDiag", "Diagonal dominance check of W.", quote="I think, therefore I am. -- Rene Descartes")
 _r(
     "swdist",
     "swdist",
@@ -27039,21 +25730,6 @@ _r(
     quote="What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    "swdoub",
-    "swdoub",
-    "Weights",
-    "Doubly-standardise a spatial weights matrix.",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "sweig",
-    "sweig",
-    "WDiag",
-    "Eigenvalues of W (for feasible parameter range).",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r("swfro", "swfro", "WDiag", "Frobenius norm of W.", quote="The measure of a man is what he does with power. -- Plato")
-_r(
     "swgab",
     "swgab",
     "Weights",
@@ -27061,13 +25737,6 @@ _r(
     quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r("swinv", "swinv", "Weights", "Inverse-distance spatial weights.", quote="Number rules the universe. -- Pythagoras")
-_r(
-    "swisle",
-    "swisle",
-    "Weights",
-    "Identify islands (disconnected units) in W.",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
 _r(
     "swkern",
     "swkern",
@@ -27098,39 +25767,11 @@ _r(
     quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "swlowt",
-    "swlowt",
-    "Weights",
-    "Lower-triangular half of weights matrix.",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "swmmx",
-    "swmmx",
-    "Weights",
-    "Min-max standardised spatial weights.",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "swmtr2",
-    "swmtr2",
-    "WDiag",
-    "Trace of W^2.",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
     "swnest",
     "swnest",
     "Weights",
     "Nested / hierarchical spatial weights.",
     quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "swntri",
-    "swntri",
-    "WDiag",
-    "Number of non-zero entries (triples) in W.",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
     "swpath",
@@ -27161,13 +25802,6 @@ _r(
     quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "swrow",
-    "swrow",
-    "Weights",
-    "Row-standardise a spatial weights matrix.",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
     "swspars",
     "swspars",
     "Weights",
@@ -27180,20 +25814,6 @@ _r(
     "Weights",
     "Spherical (great-circle) distance weights.",
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "swstoch",
-    "swstoch",
-    "WDiag",
-    "Test row-stochastic property of W.",
-    quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
-    "swsym",
-    "swsym",
-    "WDiag",
-    "Test weights matrix symmetry.",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "swtri",
@@ -27210,20 +25830,6 @@ _r(
     quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
-    "tbaniso",
-    "tbaniso",
-    "Spatial",
-    "Turning bands anisotropic field.",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "tbbnd",
-    "tbbnd",
-    "Spatial",
-    "Turning bands line process generator.",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
     "tbcnd",
     "tbcnd",
     "Spatial",
@@ -27238,47 +25844,11 @@ _r(
     quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "tbexp",
-    "tbexp",
-    "Spatial",
-    "Turning bands exponential covariance.",
-    quote="There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "tbgss",
-    "tbgss",
-    "Spatial",
-    "Turning bands Gaussian covariance.",
-    quote="What is now proved was once only imagined. -- William Blake",
-)
-_r("tbmat", "tbmat", "Spatial", "Turning bands Matern covariance.", quote="Number rules the universe. -- Pythagoras")
-_r(
     "tbnbnd",
     "tbnbnd",
     "Spatial",
     "Turning bands number-of-bands convergence.",
     quote="There is no royal road to geometry. -- Euclid",
-)
-_r(
-    "tbreal",
-    "tbreal",
-    "Spatial",
-    "Turning bands single realization.",
-    quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "tbsim",
-    "tbsim",
-    "Spatial",
-    "Turning bands simulation 2D.",
-    quote="No man ever steps in the same river twice. -- Heraclitus",
-)
-_r(
-    "tbsim3",
-    "tbsim3",
-    "Spatial",
-    "Turning bands simulation 3D.",
-    quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
     "tbsmp",
@@ -27326,13 +25896,6 @@ _r(
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "tmhp",
-    "tmhp",
-    "Spatial",
-    "Hodrick-Prescott temporal trend filter.",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
     "tmloess",
     "tmloess",
     "Spatial",
@@ -27345,27 +25908,6 @@ _r(
     "GeoProcss",
     "Temporal stratified sampling",
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "tmsen",
-    "tmsen",
-    "Spatial",
-    "Sen slope temporal trend estimator.",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
-    "tmspln",
-    "tmspln",
-    "Spatial",
-    "Smoothing spline temporal trend.",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "tmtrnd",
-    "tmtrnd",
-    "Spatial",
-    "Temporal linear trend estimation OLS.",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
     "tmwav",
@@ -27729,13 +26271,6 @@ _r(
     "Spatial VAR model",
     quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
-_r(
-    "turng",
-    "turng",
-    "SpatialPat",
-    "Turning bands simulation",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
 _r("ubhsg", "ubhsg", "UrbanSp", "Housing density spatial", quote="Knowledge is power. -- Francis Bacon")
 _r("ublib", "ublib", "UrbanSp", "Library coverage spatial", quote="Number rules the universe. -- Pythagoras")
 _r("ubtrf", "ubtrf", "UrbanSp", "Traffic flow spatial", quote="Statistics is the grammar of science. -- Karl Pearson")
@@ -27885,28 +26420,7 @@ _r(
     quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r("vdwght", "vdwght", "Spatial", "Voronoi area-weighted interpolation.", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "vgaic",
-    "vgaic",
-    "Spatial",
-    "Variogram model AIC",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
 _r("vgani", "vgani", "Spatial", "Anisotropy ratio estimation", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "vgbin",
-    "vgbin",
-    "Spatial",
-    "Binned semivariogram",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
-    "vgcov",
-    "vgcov",
-    "Spatial",
-    "Covariogram function",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
 _r(
     "vgcrf",
     "vgcrf",
@@ -27915,50 +26429,13 @@ _r(
     quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "vgcub",
-    "vgcub",
-    "Spatial",
-    "Cubic variogram model",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
-)
-_r(
-    "vgcvr",
-    "vgcvr",
-    "Spatial",
-    "Covariance matrix from variogram",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
     "vgenv",
     "vgenv",
     "Spatial",
     "Variogram Monte Carlo envelope",
     quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
-_r(
-    "vgfev",
-    "vgfev",
-    "Spatial",
-    "Variogram fit evaluation",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r("vgfml", "vgfml", "Spatial", "Variogram ML fitting", quote="There is no royal road to geometry. -- Euclid")
-_r(
-    "vgfrl",
-    "vgfrl",
-    "Spatial",
-    "Variogram REML fitting",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r("vginv", "vginv", "Spatial", "Indicator variogram", quote="There is no royal road to geometry. -- Euclid")
 _r("vgjck", "vgjck", "Spatial", "Variogram jackknife", quote="No man ever steps in the same river twice. -- Heraclitus")
-_r(
-    "vglik",
-    "vglik",
-    "Spatial",
-    "Variogram log-likelihood",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
 _r(
     "vgmdr",
     "vgmdr",
@@ -27967,41 +26444,13 @@ _r(
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "vgns2",
-    "vgns2",
-    "Spatial",
-    "Nested variogram fitting",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
-)
-_r(
     "vgnug",
     "vgnug",
     "Spatial",
     "Nugget effect estimation",
     quote="No man ever steps in the same river twice. -- Heraclitus",
 )
-_r(
-    "vgpen",
-    "vgpen",
-    "Spatial",
-    "Pentaspherical variogram",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "vgprv",
-    "vgprv",
-    "Spatial",
-    "Pairwise relative variogram",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
 _r("vgpsr", "vgpsr", "Spatial", "Partial sill ratio", quote="We must know. We will know. -- David Hilbert")
-_r(
-    "vgpxv",
-    "vgpxv",
-    "Spatial",
-    "Pseudo-cross-variogram",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
 _r(
     "vgrdr",
     "vgrdr",
@@ -28016,27 +26465,12 @@ _r(
     "Effective range estimation",
     quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
-_r("vgros", "vgros", "Spatial", "Variogram rose diagram", quote="Knowledge is power. -- Francis Bacon")
-_r(
-    "vgrvr",
-    "vgrvr",
-    "Spatial",
-    "Relative variogram",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
 _r(
     "vgsil",
     "vgsil",
     "Spatial",
     "Sill estimation",
     quote="It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
-)
-_r(
-    "vgwav",
-    "vgwav",
-    "Spatial",
-    "Wave (hole-effect) variogram",
-    quote="The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "vincnt",
@@ -28053,60 +26487,11 @@ _r(
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "vmcrr",
-    "vmcrr",
-    "Variogram",
-    "Correlogram from variogram",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "vmcsn",
-    "vmcsn",
-    "Variogram",
-    "Cosine variogram model",
-    quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "vmcub",
-    "vmcub",
-    "Variogram",
-    "Cubic variogram model",
-    quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "vmcvr",
-    "vmcvr",
-    "Variogram",
-    "Covariance from variogram",
-    quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
-    "vmdmp",
-    "vmdmp",
-    "Variogram",
-    "Dampened oscillation variogram",
-    quote="You have power over your mind, not outside events. -- Marcus Aurelius",
-)
-_r(
-    "vmeff",
-    "vmeff",
-    "Variogram",
-    "Effective range computation",
-    quote="I think, therefore I am. -- Rene Descartes",
-)
-_r(
     "vmenv",
     "vmenv",
     "Variogram",
     "Variogram envelope bootstrap",
     quote="The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
-)
-_r(
-    "vmfml",
-    "vmfml",
-    "Variogram",
-    "Variogram model fitting (MLE)",
-    quote="Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
     "vmfrr",
@@ -28116,27 +26501,12 @@ _r(
     quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
-    "vmfrs",
-    "vmfrs",
-    "Variogram",
-    "Variogram model fitting (REML)",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "vmgmt",
-    "vmgmt",
-    "Variogram",
-    "Geometric anisotropy transform",
-    quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
     "vmhgm",
     "vmhgm",
     "Variogram",
     "Hagstrom variogram estimator",
     quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
-_r("vmhol", "vmhol", "Variogram", "Hole-effect variogram model", quote="I think, therefore I am. -- Rene Descartes")
 _r(
     "vmhrs",
     "vmhrs",
@@ -28145,90 +26515,13 @@ _r(
     quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "vmind",
-    "vmind",
-    "Variogram",
-    "Indicator variogram",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
-)
-_r(
-    "vmjbs",
-    "vmjbs",
-    "Variogram",
-    "J-Bessel variogram model",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "vmkbs",
-    "vmkbs",
-    "Variogram",
-    "K-Bessel variogram model",
-    quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
-)
-_r(
-    "vmmad",
-    "vmmad",
-    "Variogram",
-    "MAD variogram estimator",
-    quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "vmmap",
-    "vmmap",
-    "Variogram",
-    "Variogram map 2D",
-    quote="It is not what happens to you, but how you react, that matters. -- Epictetus",
-)
-_r(
-    "vmpnt",
-    "vmpnt",
-    "Variogram",
-    "Pentaspherical variogram model",
-    quote="A journey of a thousand miles begins with a single step. -- Lao Tzu",
-)
-_r(
-    "vmprd",
-    "vmprd",
-    "Variogram",
-    "Variogram predict at lag",
-    quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "vmprl",
-    "vmprl",
-    "Variogram",
-    "Practical range computation",
-    quote="He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
-)
-_r(
-    "vmpsc",
-    "vmpsc",
-    "Variogram",
-    "Pseudo-cross-variogram",
-    quote="Statistics is the grammar of science. -- Karl Pearson",
-)
-_r(
     "vmrng",
     "vmrng",
     "Variogram",
     "Range parameter estimation",
     quote="An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
-_r(
-    "vmsel",
-    "vmsel",
-    "Variogram",
-    "Variogram model selection (AIC)",
-    quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
 _r("vmsil", "vmsil", "Variogram", "Sill estimation", quote="No man ever steps in the same river twice. -- Heraclitus")
-_r(
-    "vmspc",
-    "vmspc",
-    "Variogram",
-    "Spectral density from variogram",
-    quote="It does not matter how slowly you go as long as you do not stop. -- Confucius",
-)
 _r(
     "vmsrf",
     "vmsrf",
@@ -28237,32 +26530,11 @@ _r(
     quote="No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "vmstb",
-    "vmstb",
-    "Variogram",
-    "Stable variogram model",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
     "vmswt",
     "vmswt",
     "Variogram",
     "Semivariance windowed temporal",
     quote="Errors using inadequate data are much less than those using none. -- Charles Babbage",
-)
-_r(
-    "vmwav",
-    "vmwav",
-    "Variogram",
-    "Wave variogram model",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "vmwht",
-    "vmwht",
-    "Variogram",
-    "Whittle variogram model",
-    quote="In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "vmzrn",
@@ -28362,13 +26634,6 @@ _r(
     "WildlSp",
     "BRT species model",
     quote="Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
-)
-_r(
-    "wlcmr",
-    "wlcmr",
-    "WildlSp",
-    "Capture-mark-recapture",
-    quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
     "wlcrc",
@@ -28750,14 +27015,6 @@ _r(
     quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "xrmgb",
-    "xrmgb",
-    "Spatial",
-    "MGWR variable bandwidths",
-    quote="The only true wisdom is in knowing you know nothing. -- Socrates",
-)
-_r("xrmgw", "xrmgw", "Spatial", "MGWR estimation", quote="Number rules the universe. -- Pythagoras")
-_r(
     "xrsdl",
     "xrsdl",
     "Spatial",
@@ -28857,13 +27114,6 @@ _r(
     quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "xrwrs",
-    "xrwrs",
-    "Spatial",
-    "Row-standardize weights",
-    quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
     "xrwsm",
     "xrwsm",
     "Spatial",
@@ -28924,13 +27174,6 @@ _r(
     quote="What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    "zedsm",
-    "zedsm",
-    "Spatial",
-    "Poisson disease mapping",
-    quote="The measure of a man is what he does with power. -- Plato",
-)
-_r(
     "zee2s",
     "zee2s",
     "Spatial",
@@ -28987,13 +27230,6 @@ _r(
     "Spatial",
     "Hotspot detection map",
     quote="Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
-)
-_r(
-    "zeidx",
-    "zeidx",
-    "Spatial",
-    "IDW exposure interpolation",
-    quote="The measure of a man is what he does with power. -- Plato",
 )
 _r(
     "zeitv",
@@ -29207,20 +27443,6 @@ _r(
     quote="There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "zsrbf",
-    "zsrbf",
-    "Spatial",
-    "Multiquadric RBF interpolation",
-    quote="The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
-)
-_r(
-    "zsrbg",
-    "zsrbg",
-    "Spatial",
-    "Gaussian RBF interpolation",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
-)
-_r(
     "zsrch",
     "zsrch",
     "Spatial",
@@ -29242,13 +27464,6 @@ _r(
     quote="Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "zsstc",
-    "zsstc",
-    "Spatial",
-    "Separable space-time covariance",
-    quote="If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
-)
-_r(
     "zsste",
     "zsste",
     "Spatial",
@@ -29261,13 +27476,6 @@ _r(
     "Spatial",
     "Space-time kriging prediction",
     quote="Give me a place to stand and I will move the earth. -- Archimedes",
-)
-_r(
-    "zsstn",
-    "zsstn",
-    "Spatial",
-    "Non-separable space-time covariance",
-    quote="Statistics is the grammar of science. -- Karl Pearson",
 )
 _r("zsstv", "zsstv", "Spatial", "Space-time kriging variance", quote="We must know. We will know. -- David Hilbert")
 _r(
@@ -29298,13 +27506,6 @@ _r(
     "Spatial",
     "Albers equal-area projection",
     quote="Mathematics is the art of giving the same name to different things. -- Henri Poincare",
-)
-_r(
-    "zxbet",
-    "zxbet",
-    "Spatial",
-    "Betti numbers computation",
-    quote="To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
     "zxclr",
@@ -48620,13 +46821,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/fbank.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
-)
-_r(
-    "fbmsi",
-    "fbmsi",
-    "Auto",
-    "Auto-wired callable from fn/fbmsi.py",
-    "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "fbmsn",
@@ -83062,6 +81256,48 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
+    "stkrig",
+    "st_covariance",
+    "Auto",
+    "Auto-wired callable from fn/stkrig.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "krgsys",
+    "krige",
+    "Auto",
+    "Auto-wired callable from fn/krgsys.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "vgmods",
+    "vgm_semivariance",
+    "Auto",
+    "Auto-wired callable from fn/vgmods.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "lsmets",
+    "landscape_metrics",
+    "Auto",
+    "Auto-wired callable from fn/lsmets.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "swutil",
+    "weights_style",
+    "Auto",
+    "Auto-wired callable from fn/swutil.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
+    "rsindex",
+    "spectral_index",
+    "Auto",
+    "Auto-wired callable from fn/rsindex.py",
+    "It does not matter how slowly you go as long as you do not stop. -- Confucius",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
@@ -87624,14 +85860,6 @@ _r(
     "Auto",
     "Auto-wired callable from fn/vmdfn.py",
     "What is now proved was once only imagined. -- William Blake",
-)
-_r("vmeff", "vmeff", "Auto", "Auto-wired callable from fn/vmeff.py", "I think, therefore I am. -- Rene Descartes")
-_r(
-    "vmpnt",
-    "vmpnt",
-    "Auto",
-    "Auto-wired callable from fn/vmpnt.py",
-    "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
     "vnamp",

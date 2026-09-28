@@ -1,89 +1,84 @@
-"""Turning bands simulation."""
+"""Turning bands simulation (SpatialResult wrapper of :func:`morie.fn.zstbs.turning_bands`)."""
 
 from __future__ import annotations
 
-from . import _array_core as np
 from ._containers import SpatialResult
+from .zstbs import turning_bands
 
 
 def turning_bands_sim(
-    coords: np.ndarray,
+    coords,
     cov_model: str = "exponential",
     cov_params: dict | None = None,
     n_bands: int = 100,
     seed: int = 42,
+    n_waves: int = 50,
 ) -> SpatialResult:
-    r"""Simulate a GRF using the turning bands method.
+    r"""Simulate a Gaussian random field by the turning bands method.
 
-    Projects 2D coordinates onto random 1D lines, simulates 1D
-    processes, and averages over bands.
+    Delegates to :func:`morie.fn.zstbs.turning_bands` (spectral line
+    processes on ``n_bands`` bands; Mantoglou and Wilson 1982) with
+    ``sill`` and ``range`` from ``cov_params``; a ``nugget`` adds independent
+    normal noise of that variance (Philox stream ``10**6``).
 
     Parameters
     ----------
-    coords : np.ndarray
-        Simulation coordinates, shape ``(n, 2)``.
+    coords : array-like
+        Simulation coordinates, shape ``(n, 2)`` or ``(n, 3)``.
     cov_model : str
-        ``"exponential"`` or ``"gaussian"``.
+        ``"exponential"``, ``"gaussian"`` or ``"matern"`` (2-D; ``nu`` in
+        ``cov_params``).
     cov_params : dict, optional
-        ``{"sill", "range", "nugget"}``.
+        ``{"sill", "range", "nugget", "nu"}``.
     n_bands : int
-        Number of random lines (bands).
+        Number of bands.
     seed : int
-        RNG seed.
+        Philox seed.
+    n_waves : int
+        Waves per band.
 
     Returns
     -------
     SpatialResult
-        ``statistic`` is mean of simulated field.
-        ``extra`` has ``simulated_values``, ``n_bands``.
+        ``statistic`` is the mean of the simulated field; ``extra`` has
+        ``simulated_values`` and ``n_bands``.
 
     References
     ----------
-    Schabenberger & Gotway (2005), Ch. 7.
+    Mantoglou, A. and Wilson, J. L. (1982). The turning bands method for
+    simulation of random fields using line generation by a spectral method.
+    *Water Resources Research*, 18(5), 1379-1394.
 
-    .. epigraph::
-
-        "I want to be your canary." -- FF9
+    Examples
+    --------
+    >>> r = turning_bands_sim([(0.0, 0.0), (1.0, 0.5)], "gaussian", n_bands=4, seed=2, n_waves=3)
+    >>> [round(v, 6) for v in r.extra["simulated_values"]]
+    [0.881358, 0.400421]
     """
-    rng = np.random.default_rng(seed)
-    coords = np.asarray(coords, dtype=np.float64)
-    n = len(coords)
-    params = cov_params or {"sill": 1.0, "range": 1.0, "nugget": 0.0}
-    sill = params.get("sill", 1.0)
-    r = params.get("range", 1.0)
+    p = cov_params or {}
+    z = list(
+        turning_bands(
+            coords,
+            cov_model,
+            sill=float(p.get("sill", 1.0)),
+            range_=float(p.get("range", 1.0)),
+            nu=float(p.get("nu", 0.5)),
+            n_bands=n_bands,
+            n_waves=n_waves,
+            seed=seed,
+        ).field
+    )
+    nug = float(p.get("nugget", 0.0))
+    if nug > 0:
+        from ._rng import random_normal
 
-    Z = np.zeros(n)
-    for _ in range(n_bands):
-        theta = rng.uniform(0, 2 * np.pi)
-        direction = np.array([np.cos(theta), np.sin(theta)])
-        proj = coords @ direction
-
-        sorted_idx = np.argsort(proj)
-        proj_sorted = proj[sorted_idx]
-        diffs = np.diff(proj_sorted, prepend=proj_sorted[0] - 1.0)
-        diffs = np.maximum(np.abs(diffs), 1e-10)
-
-        if cov_model == "gaussian":
-            rho = np.exp(-((diffs / r) ** 2))
-        else:
-            rho = np.exp(-diffs / r)
-
-        y = np.empty(n)
-        y[0] = rng.standard_normal()
-        for j in range(1, n):
-            y[j] = rho[j] * y[j - 1] + np.sqrt(max(1 - rho[j] ** 2, 0)) * rng.standard_normal()
-
-        unsorted = np.empty(n)
-        unsorted[sorted_idx] = y
-        Z += unsorted
-
-    Z *= np.sqrt(sill) / np.sqrt(n_bands)
-
+        e = random_normal(len(z), seed=seed, stream=10**6)
+        z = [v + nug**0.5 * float(w) for v, w in zip(z, e)]
     return SpatialResult(
         name="turning_bands_sim",
-        statistic=float(np.mean(Z)),
+        statistic=sum(z) / len(z),
         p_value=None,
-        extra={"simulated_values": Z, "n_bands": n_bands},
+        extra={"simulated_values": z, "n_bands": n_bands},
     )
 
 
