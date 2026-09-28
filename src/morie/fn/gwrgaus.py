@@ -1,33 +1,23 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GWR Gaussian kernel weights."""
 
+from __future__ import annotations
+
 from ._containers import SpatialResult
+from .gwrbas import gwr_kernel_weights
 
 
-def gwrgaus(dists, bw=0.5):
-    """GWR Gaussian kernel weights.
+def gwrgaus(dists, bw=0.5, adaptive: bool = False) -> SpatialResult:
+    """GWR Gaussian kernel weights of distances (= ``GWmodel::gw.weight`` kernel ``gaussian``).
 
-    Category: GWR
-
-    Parameters
-    ----------
-    dists, bw=0.5 : see function signature.
-
-    Returns
-    -------
-    SpatialResult
+    ``local_values`` are the weights; ``statistic`` is their sum.
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="gwrgaus", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="gwrgaus", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    w = gwr_kernel_weights(dists, bw, "gaussian", adaptive)
+    return SpatialResult(name="gwrgaus", statistic=sum(w), p_value=None, local_values=w)
 
 
 gwrgaus_fn = gwrgaus
 
 
 def cheatsheet() -> str:
-    return "gwrgaus({}) -> GWR Gaussian kernel weights."
+    return "gwrgaus(dists, bw) -> GWR Gaussian kernel weights."

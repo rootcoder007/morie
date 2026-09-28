@@ -1659,26 +1659,44 @@ class interpolate:  # namespace mirror
 # ------------------------------------------------------------ Bessel K
 
 def kv(v, x):
-    """Modified Bessel K_v via integral representation (adaptive quad).
+    """Modified Bessel function of the second kind K_v(x), x > 0.
 
-    K_v(x) = int_0^inf exp(-x cosh t) cosh(v t) dt, x > 0.
+    For x <= 20: K_v(x) e^x = int_0^inf exp(-x (cosh t - 1)) cosh(v t) dt
+    (the scaled integrand cannot underflow), by adaptive quadrature run
+    twice, the second time with an absolute tolerance of 1e-15 times the
+    first estimate, which gives full relative precision (a fixed 1e-12
+    absolute tolerance lost up to 1e-11 relative for small K). For x > 20:
+    the asymptotic series K_v(x) ~ sqrt(pi/(2x)) e^-x sum_k a_k(v)/x^k
+    (Abramowitz and Stegun 9.7.2), summed until terms fall below 1e-17.
     """
+    vv = abs(float(v))
+
     def one(xx):
         xx = float(xx)
         if xx <= 0:
             return float("inf")
+        if xx > 20.0:
+            mu = 4.0 * vv * vv
+            term, tot, k = 1.0, 1.0, 1
+            while k < 60:
+                term *= (mu - (2 * k - 1) ** 2) / (k * 8.0 * xx)
+                tot += term
+                if abs(term) < 1e-17 * abs(tot):
+                    break
+                k += 1
+            return _math.sqrt(_math.pi / (2.0 * xx)) * _math.exp(-xx) * tot
 
         def f(t):
-            e = -xx * _math.cosh(t)
-            if e < -700.0:
+            e = xx * (_math.cosh(t) - 1.0)
+            if e > 745.0:
                 return 0.0
-            return _math.exp(e) * _math.cosh(float(v) * t)
-        # integrand decays like exp(-x cosh t); upper cut where dead
+            return _math.exp(-e) * _math.cosh(vv * t)
         hi = 1.0
-        while xx * _math.cosh(hi) < 720.0 and hi < 60.0:
+        while xx * (_math.cosh(hi) - 1.0) < 745.0 and hi < 60.0:
             hi += 1.0
         val, _err = quad(f, 0.0, hi, epsabs=1e-12)
-        return val
+        val, _err = quad(f, 0.0, hi, epsabs=max(abs(val) * 1e-15, 1e-300))
+        return val * _math.exp(-xx)
     if isinstance(x, (list, tuple)) or hasattr(x, "tolist"):
         return _ac.asarray(x)._map(one)
     return one(x)

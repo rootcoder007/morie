@@ -1,35 +1,23 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""GWR basic model fit (Brunsdon et al. 1996)."""
+"""GWR basic model fit (Brunsdon, Fotheringham and Charlton 1996)."""
 
-from . import _array_core as np
+from __future__ import annotations
+
 from ._containers import SpatialResult
+from .gwrbas import gwr_basic
 
 
-def gwrfit(y, X, coords, bw=1.0):
-    """GWR basic model fit (Brunsdon et al. 1996).
+def gwrfit(y, X, coords, bw=1.0, kernel: str = "bisquare", adaptive: bool = False) -> SpatialResult:
+    """Fit a basic GWR (:func:`~morie.fn.gwrbas.gwr_basic`, = ``GWmodel::gwr.basic``).
 
-    Category: GWR
-
-    Parameters
-    ----------
-    y, X, coords, bw=1.0 : see function signature.
-
-    Returns
-    -------
-    SpatialResult
+    ``statistic`` is the AICc; ``extra`` carries the full fit.
     """
-    try:
-        n = len(y)
-        dists = np.sqrt(np.sum((coords[None, :, :] - coords[:, None, :]) ** 2, axis=-1))
-        kernel_sum = float(np.sum(np.exp(-0.5 * (dists / bw) ** 2)))
-        result = kernel_sum / (n * n)
-        return SpatialResult(name="gwrfit", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="gwrfit", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    r = gwr_basic(y, X, coords, bw, kernel=kernel, adaptive=adaptive)
+    return SpatialResult(name="gwrfit", statistic=r["diagnostics"]["AICc"], p_value=None, extra=dict(r))
 
 
 gwrfit_fn = gwrfit
 
 
 def cheatsheet() -> str:
-    return "gwrfit({}) -> GWR basic model fit (Brunsdon et al. 1996)."
+    return "gwrfit(y, X, coords, bw) -> basic GWR fit (GWmodel::gwr.basic)."

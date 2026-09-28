@@ -1,43 +1,21 @@
-"""Geographically Weighted Regression."""
+"""Geographically weighted regression."""
 
-from . import _array_core as np
 from ._richresult import RichResult
+from .gwrbas import gwr_basic
 
-__all__ = ["geographically_weighted_regression"]
 
+def geographically_weighted_regression(y, X, coords, bandwidth, kernel="bisquare", adaptive=False):
+    """Geographically weighted regression (:func:`~morie.fn.gwrbas.gwr_basic`).
 
-def geographically_weighted_regression(y, X, coords, bandwidth):
+    ``estimate`` is the matrix of local coefficients; the diagnostics
+    (AICc, enp, ...) and standard errors come with it (= ``GWmodel::gwr.basic``).
     """
-    Geographically Weighted Regression
+    r = gwr_basic(y, X, coords, bandwidth, kernel=kernel, adaptive=adaptive)
+    return RichResult(payload={"estimate": r["betas"], **dict(r)})
 
-    Formula: beta(s) varies by location; kernel-weighted local OLS
 
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    coords : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Brunsdon-Fotheringham-Charlton (1996)
-    """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Geographically Weighted Regression"})
+gwrmod = geographically_weighted_regression
 
 
 def cheatsheet():
-    return "gwrmod: Geographically Weighted Regression"
+    return "gwrmod: geographically weighted regression (GWmodel::gwr.basic)."

@@ -1,7 +1,6 @@
 """Tests for morie.fn.lmrlag2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lmrlag2 import lmrlag2
 
 
@@ -11,7 +10,8 @@ class TestLmrlag2:
         n = 25
         resid = np.random.randn(n)
         X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.5
+        W = np.array([[1.0 if abs(i - j) == 1 else 0.0 for j in range(n)] for i in range(n)])
+        W = W / W.sum(axis=1, keepdims=True)
         result = lmrlag2(resid, X, W)
         assert result is not None
 
@@ -20,7 +20,8 @@ class TestLmrlag2:
         n = 25
         resid = np.random.randn(n)
         X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.5
+        W = np.array([[1.0 if abs(i - j) == 1 else 0.0 for j in range(n)] for i in range(n)])
+        W = W / W.sum(axis=1, keepdims=True)
         result = lmrlag2(resid, X, W)
         assert hasattr(result, "statistic")
 
@@ -29,7 +30,8 @@ class TestLmrlag2:
         n = 25
         resid = np.random.randn(n)
         X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.5
+        W = np.array([[1.0 if abs(i - j) == 1 else 0.0 for j in range(n)] for i in range(n)])
+        W = W / W.sum(axis=1, keepdims=True)
         result = lmrlag2(resid, X, W)
         assert result.statistic is not None
         assert not (result.statistic != result.statistic and result.statistic != float("nan"))

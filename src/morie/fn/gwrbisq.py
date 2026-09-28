@@ -1,33 +1,23 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GWR bisquare kernel weights."""
 
+from __future__ import annotations
+
 from ._containers import SpatialResult
+from .gwrbas import gwr_kernel_weights
 
 
-def gwrbisq(dists, bw=0.5):
-    """GWR bisquare kernel weights.
+def gwrbisq(dists, bw=0.5, adaptive: bool = False) -> SpatialResult:
+    """GWR bisquare kernel weights of distances (= ``GWmodel::gw.weight`` kernel ``bisquare``).
 
-    Category: GWR
-
-    Parameters
-    ----------
-    dists, bw=0.5 : see function signature.
-
-    Returns
-    -------
-    SpatialResult
+    ``local_values`` are the weights; ``statistic`` is their sum.
     """
-    try:
-        result = 0.0
-        return SpatialResult(name="gwrbisq", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="gwrbisq", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    w = gwr_kernel_weights(dists, bw, "bisquare", adaptive)
+    return SpatialResult(name="gwrbisq", statistic=sum(w), p_value=None, local_values=w)
 
 
 gwrbisq_fn = gwrbisq
 
 
 def cheatsheet() -> str:
-    return "gwrbisq({}) -> GWR bisquare kernel weights."
+    return "gwrbisq(dists, bw) -> GWR bisquare kernel weights."

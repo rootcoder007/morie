@@ -1,33 +1,24 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""GWR bandwidth selection (AICc cross-validation)."""
+"""GWR bandwidth selection by AICc."""
 
-from . import _array_core as np
+from __future__ import annotations
+
 from ._containers import SpatialResult
+from .spgwrb import schabenberger_gwr_bandwidth
 
 
-def gwrbw(y, X, coords):
-    """GWR bandwidth selection (AICc cross-validation).
+def gwrbw(y, X, coords, kernel: str = "gaussian", adaptive: bool = False) -> SpatialResult:
+    """Bandwidth minimising the GWR AICc (:func:`~morie.fn.spgwrb.schabenberger_gwr_bandwidth`).
 
-    Category: GWR
-
-    Parameters
-    ----------
-    y, X, coords : see function signature.
-
-    Returns
-    -------
-    SpatialResult
+    ``statistic`` is the chosen bandwidth.
     """
-    try:
-        dists = np.sqrt(np.sum((coords[None, :, :] - coords[:, None, :]) ** 2, axis=-1))
-        result = float(np.mean(dists))
-        return SpatialResult(name="gwrbw", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="gwrbw", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    r = schabenberger_gwr_bandwidth(X, y, coords, kernel=kernel, criterion="aicc", adaptive=adaptive)
+    bw = r["optimal_bandwidth"]
+    return SpatialResult(name="gwrbw", statistic=float(bw), p_value=None, extra=dict(r))
 
 
 gwrbw_fn = gwrbw
 
 
 def cheatsheet() -> str:
-    return "gwrbw({}) -> GWR bandwidth selection (AICc cross-validation)."
+    return "gwrbw(y, X, coords) -> GWR bandwidth by AICc."
