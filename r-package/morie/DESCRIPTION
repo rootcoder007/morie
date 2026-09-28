@@ -30,6 +30,7 @@ Description: Multi-domain scientific computing toolkit for observational
   Ontario Special Investigations Unit (police-oversight) and federal
   Structured Intervention Unit reports.
 License: AGPL-3
+Copyright: See file inst/COPYRIGHTS for the bundled nlohmann/json header (MIT).
 LazyData: true
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, roclets = c("namespace", "rd", "srr::srr_stats_roclet"))

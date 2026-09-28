@@ -1,0 +1,115 @@
+"""Tests for the native SIU core twin (morie.siu.native / llm / audit / CLI), cross-checked with the C++ core."""
+
+import json
+
+import pytest
+
+pytest.importorskip("bs4")  # morie.siu imports the bs4-based scraper parser
+
+from morie.siu import llm  # noqa: E402
+from morie.siu.__main__ import main as siu_cli  # noqa: E402
+from morie.siu.audit import siu_audit_panel  # noqa: E402
+from morie.siu.corpus import PANEL_FIELDS  # noqa: E402
+from morie.siu.native import html_to_text, parse_report_html, to_iso_date  # noqa: E402
+
+FIXTURE = (
+    "<p>SIU Director's Report - Case # 23-OFD-001</p><p>The Investigation</p><p>Notification of the SIU</p>"
+    "<p>On January 6, 2023, the Barrie Police Service contacted the SIU with the following information. "
+    "It reported that on January 5, 2023, in the City of Barrie, a 34-year-old man was seriously injured.</p>"
+    "<p>The Team</p><p>Number of SIU Investigators assigned: 3</p>"
+    "<p>Number of SIU Forensic Investigators assigned: 1</p>"
+    "<p>Subject Officials</p><p>SO #1 Declined interview</p><p>SO #2 Interviewed</p>"
+    "<p>Incident Narrative</p><p>The man sustained a fractured left arm during the arrest.</p>"
+    "<p>Date: April 28, 2023</p><p>Electronically approved by</p><p>Joseph Martino</p><p>Director</p>"
+)
+
+
+def test_native_parser_fields():
+    f = parse_report_html(FIXTURE)
+    assert f["police_service"] == "Barrie Police Service"
+    assert f["date_siu_notified_iso"] == "2023-01-06"
+    assert f["date_of_director_decision_iso"] == "2023-04-28"
+    assert f["location_of_call"] == "City of Barrie"
+    assert (f["age_affected"], f["sex_gender_affected"]) == ("34", "man")
+    assert f["number_of_subject_officers"] == "2"
+    assert (f["siu_investigators"], f["siu_forensics_investigators"]) == ("3", "1")
+    assert f["directors_name"] == "Joseph Martino"
+    assert set(f) == {name for name, _, _ in PANEL_FIELDS} | {"_language"}
+    assert to_iso_date("March 9 2021") == "2021-03-09"
+
+
+def test_live_page_format():
+    live = FIXTURE.replace("</p>", "</p>\r\n").replace(
+        "<p>The Team</p>", "<p>Public Reports</p>\r\n<p>Director's Resource Committee</p><p>The Team</p>"
+    )
+    assert "\r" not in html_to_text(live)
+    assert parse_report_html(live)["directors_name"] == "Joseph Martino"
+    assert parse_report_html("<p>X Y</p><p>Jane Q. Doe<br>Interim Director</p>")["directors_name"] == "Jane Q. Doe"
+    fr = "<p>Jane Q. Doe</p><p>Directrice</p>"
+    assert parse_report_html(fr)["directors_name"] == "Jane Q. Doe"
+    hd = "<p>Brampton Collision Between Police</p><p>The Peel Regional Police notified the SIU.</p>"
+    assert parse_report_html(hd)["police_service"] == "Peel Regional Police"
+
+
+def test_backend_resolution(monkeypatch):
+    for v in (
+        "MORIE_LLM_API",
+        "MORIE_LLM_BASE",
+        "MORIE_LLM_KEY",
+        "OPENAI_BASE_URL",
+        "OPENAI_API_KEY",
+        "LLM_API_BASE_URL",
+        "LLM_API_KEY",
+        "OLLAMA_HOST",
+        "OLLAMA_BASE_URL",
+        "OLLAMA_API_KEY",
+    ):
+        monkeypatch.delenv(v, raising=False)
+    assert llm.resolve().base == "http://localhost:11434"
+    monkeypatch.setenv("MORIE_LLM_API", "openai")
+    monkeypatch.setenv("LLM_API_BASE_URL", "http://vllm:8000")
+    monkeypatch.setenv("LLM_API_KEY", "k3")
+    b = llm.resolve()
+    assert (b.api, b.base, b.key) == ("openai", "http://vllm:8000/v1", "k3")
+    with pytest.raises(ValueError):
+        llm.resolve(api="grpc")
+    assert llm.list_models(chat=lambda m, p: "x") == []
+
+
+def _fake(calls):
+    def chat(model, prompt):
+        calls.append(model)
+        if prompt.startswith("Reply with the word OK."):
+            return "" if model == "dead" else "OK"
+        if "You are the AUDITOR" in prompt:
+            return '<think>..</think>{"police_service": "Barrie Police Service", "number_of_subject_officers": 2}'
+        return '{"police_service": {"value": "Barrie", "quote": "Barrie", "confidence": "high"}}'
+
+    return chat
+
+
+def test_audit_panel_modes_and_chain():
+    calls = []
+    r1 = siu_audit_panel("report", {}, mode=1, readers=["dead", "r1"], chat=_fake(calls))
+    assert r1["json"] == '{"police_service":"Barrie"}' and calls.count("r1") == 2
+    calls.clear()
+    r4 = siu_audit_panel("report", {}, mode=4, readers=["r1", "r2"], auditors=["a1", "a2"], chat=_fake(calls))
+    assert r4["json"] == '{"number_of_subject_officers":2,"police_service":"Barrie Police Service"}'
+    assert sum(c in ("r1", "r2") for c in calls) == 3 + 2 and sum(c in ("a1", "a2") for c in calls) == 2 + 2
+    with pytest.raises(RuntimeError, match="healthy"):
+        siu_audit_panel("report", {}, readers=["dead"], chat=_fake([]))
+    per = siu_audit_panel("report", {}, mode=2, readers=["r1"], reader_granularity="per-field", chat=_fake([]))
+    assert json.loads(per["json"])["police_service"] == "Barrie Police Service"
+
+
+def test_cli(tmp_path, capsys):
+    h = tmp_path / "r.html"
+    h.write_text(FIXTURE, encoding="utf-8")
+    t = tmp_path / "r.txt"
+    t.write_text("Subject Officials\nSO #1 Interviewed\n", encoding="utf-8")
+    assert siu_cli(["version"]) == 0
+    assert siu_cli(["siu", "parse", str(h)]) == 0
+    assert json.loads(capsys.readouterr().out.split("\n", 1)[1])["directors_name"] == "Joseph Martino"
+    assert siu_cli(["resolve", str(t)]) == 0
+    assert "subject_officers=1" in capsys.readouterr().out
+    assert siu_cli(["bogus"]) == 2

@@ -25,3 +25,4 @@
 ^NOTICE$
 ^\.mailmap$
 ^data/private$
+^tools/siu-cli/build$

@@ -21,11 +21,12 @@ Public API:
     SIU_COLUMNS                              # 45-col canonical schema
 """
 
-from . import analyze
+from . import analyze, llm
 from ._parser import parse_html, parse_news_html
 from ._schema import BLANK_ROW, SIU_COLUMNS
 from ._scraper import scrape_drid, scrape_range
 from ._writer import write_csv, write_jsonl
+from .audit import siu_audit_panel
 from .corpus import (
     PANEL_FIELDS,
     resolve_subject_officials,
@@ -34,6 +35,7 @@ from .corpus import (
     siu_resolve_so,
     strip_boilerplate,
 )
+from .native import html_to_text, parse_report_html, parse_report_text, to_iso_date
 
 __all__ = [
     "SIU_COLUMNS",
@@ -45,4 +47,16 @@ __all__ = [
     "write_csv",
     "write_jsonl",
     "analyze",
+    "PANEL_FIELDS",
+    "resolve_subject_officials",
+    "siu_panel",
+    "siu_reports",
+    "siu_resolve_so",
+    "strip_boilerplate",
+    "html_to_text",
+    "llm",
+    "parse_report_html",
+    "parse_report_text",
+    "siu_audit_panel",
+    "to_iso_date",
 ]

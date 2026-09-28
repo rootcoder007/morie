@@ -13,8 +13,9 @@ Three layers, mirroring the R ecosystem exactly:
   engine (a faithful port of rmoriebricklayer's ``siu_resolve.cpp``,
   which scores 2,117 correct / 65 declined / 0 wrong on the corpus).
 * :func:`siu_panel` -- the Mixture-of-Agents reading panel for NEW
-  reports, on the user's own Ollama-compatible server (``OLLAMA_HOST`` /
-  ``OLLAMA_MODEL``; no hardcoded default model).
+  reports, on ANY model the user points at: an Ollama server, any
+  OpenAI-compatible server, or their own function (see
+  :mod:`morie.siu.llm`; no hardcoded host or model).
 """
 from __future__ import annotations
 
@@ -337,6 +338,10 @@ def siu_panel(
     granularity: str = "all_fields",
     host: str | None = None,
     timeout: float = 300,
+    api: str = "",
+    base: str = "",
+    key: str = "",
+    chat=None,
 ) -> dict:
     """Mixture-of-Agents reading panel for SIU reports not yet in the corpus.
 
@@ -346,11 +351,16 @@ def siu_panel(
     Readers run concurrently (hard barrier before the auditor); auditors
     chain sequentially, each seeing its predecessors' verdicts.
 
-    Models come from YOUR server: ``host`` (default ``$OLLAMA_HOST``) and
-    ``$OLLAMA_MODEL`` (default: first model the server lists). Nothing is
+    Models come from ANY backend (:mod:`morie.siu.llm`): ``api`` (``"ollama"``
+    or ``"openai"`` for llama.cpp, vLLM, LM Studio, LocalAI, TGI, OpenRouter
+    ...), ``base`` (``host`` is kept as an alias), ``key``, or your own
+    ``chat(model, prompt) -> str``. Empty values fall back to the
+    environment (``MORIE_LLM_API/BASE/KEY``, ``OLLAMA_HOST``,
+    ``OPENAI_BASE_URL``, ...); the default model is ``$MORIE_LLM_MODEL``,
+    ``$OLLAMA_MODEL`` or the first model the server lists. Nothing is
     hardcoded.
     """
-    import httpx
+    from . import llm
 
     if mode not in (1, 2, 3, 4):
         raise ValueError("mode must be 1-4")
@@ -365,18 +375,16 @@ def siu_panel(
         html = _sf._http_get(url, timeout=int(timeout))
     text = _html_to_text(html) if "<" in html else html
 
-    host = host or os.environ.get("OLLAMA_HOST", "")
-    if not host:
+    be = llm.Backend(api=api, base=base or host or "", key=key, timeout=timeout, chat=chat)
+    if chat is None:
+        be = llm.resolve(be)
+    available = llm.list_models(be)
+    env_model = os.environ.get("MORIE_LLM_MODEL") or os.environ.get("OLLAMA_MODEL")
+    default_model = env_model or (available[0] if available else "custom")
+    if chat is None and not available and readers is None:
         raise RuntimeError(
-            "no Ollama server: set OLLAMA_HOST (local, tailnet, or a "
-            "Cloudflare-tunnelled endpoint)")
-    host = host.rstrip("/")
-
-    tags = httpx.get(f"{host}/api/tags", timeout=30).json()
-    available = [m["name"] for m in tags.get("models", [])]
-    if not available:
-        raise RuntimeError(f"Ollama at {host} serves no models")
-    default_model = os.environ.get("OLLAMA_MODEL", available[0])
+            f"no models at {be.base} [{be.api}]: start a server, set MORIE_LLM_BASE / "
+            "OLLAMA_HOST / OPENAI_BASE_URL, pass `readers`, or supply `chat`")
 
     n_readers = (1, 1, 2, 3)[mode - 1]
     n_auditors = (0, 1, 1, 1)[mode - 1]
@@ -390,14 +398,7 @@ def siu_panel(
     field_names = [f[0] for f in PANEL_FIELDS]
 
     def ask(model: str, prompt: str) -> str:
-        r = httpx.post(
-            f"{host}/api/chat",
-            json={"model": model, "stream": False,
-                  "messages": [{"role": "user", "content": prompt}]},
-            timeout=timeout,
-        )
-        r.raise_for_status()
-        return r.json().get("message", {}).get("content", "")
+        return llm.chat(be, model, prompt)
 
     def read_once(model: str):
         if granularity == "per_field":
@@ -411,7 +412,7 @@ def siu_panel(
                           f"REPORT:\n{text}")
 
     # Readers: concurrent up to the cap; the executor join is the barrier.
-    cap = max(1, min(int(reader_concurrency), len(readers)))
+    cap = 1 if chat is not None else max(1, min(int(reader_concurrency), len(readers)))
     with ThreadPoolExecutor(max_workers=cap) as pool_ex:
         reader_out_list = list(pool_ex.map(read_once, readers))
     reader_out = {
@@ -445,5 +446,6 @@ def siu_panel(
         "fields": fields,
         "readers": reader_out,
         "audit_chain": audit_chain,
-        "models": {"readers": readers, "auditors": auditors, "host": host},
+        "models": {"readers": readers, "auditors": auditors,
+                   "backend": "custom" if chat is not None else {"api": be.api, "base": be.base}},
     }
