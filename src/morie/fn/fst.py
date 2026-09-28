@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Fst fixation index (Weir-Cockerham estimator)."""
+"""Wright's fixation index Fst from population allele frequencies."""
 
 from . import _array_core as np
 from ._containers import GenomicsResult
@@ -8,13 +8,16 @@ from ._containers import GenomicsResult
 def fixation_index(
     allele_freqs: np.ndarray | list,
 ) -> GenomicsResult:
-    """Fst fixation index via the Weir-Cockerham method.
+    """Wright's fixation index Fst from population allele frequencies.
 
     Fst = Var(p) / (p_bar * (1 - p_bar))
 
     where p_bar is the mean allele frequency across populations and
     Var(p) is the variance of allele frequencies across populations.
-    When multiple loci are provided, Fst is averaged across loci.
+    When multiple loci are provided, Fst is averaged across loci. This is
+    Wright's population-level Fst (populations weighted equally, no
+    sample-size correction); it is not the Weir-Cockerham estimator, which
+    needs sample sizes and heterozygosities.
 
     Parameters
     ----------
@@ -33,8 +36,8 @@ def fixation_index(
 
     References
     ----------
-    Weir, B. S., & Cockerham, C. C. (1984). Estimating F-statistics for
-        the analysis of population structure. Evolution, 38(6), 1358-1370.
+    Wright, S. (1951). The genetical structure of populations. Annals of
+        Eugenics, 15(4), 323-354.
     """
     freqs = np.asarray(allele_freqs, dtype=float)
     if freqs.ndim == 1:
