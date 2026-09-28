@@ -28,10 +28,11 @@ def _solve(A, b):
     # Gaussian elimination with partial pivoting (small dense systems)
     n = len(A)
     M = [list(A[i]) + [b[i]] for i in range(n)]
+    scale = max((abs(v) for r in A for v in r), default=0.0)
     for c in range(n):
         p = max(range(c, n), key=lambda r: abs(M[r][c]))
         M[c], M[p] = M[p], M[c]
-        if M[c][c] == 0:
+        if abs(M[c][c]) <= n * 2.220446049250313e-16 * scale:
             raise ZeroDivisionError("singular system")
         for r in range(c + 1, n):
             t = M[r][c] / M[c][c]
@@ -153,7 +154,10 @@ def _subspace(x, g, xc, c, lo, hi, theta, W, M):
         WtW = [[_ssum(WZ[a][i] * WZ[a][j] for a in range(len(Z))) for j in range(k2)] for i in range(k2)]
         MWtW = [[dot(M[i], [WtW[q][j] for q in range(k2)]) for j in range(k2)] for i in range(k2)]
         N = [[float(i == j) - MWtW[i][j] / theta for j in range(k2)] for i in range(k2)]
-        v = _solve(N, v)
+        try:
+            v = _solve(N, v)
+        except ZeroDivisionError:  # singular reduced system: stay at the generalized Cauchy point
+            return list(xc)
         du = [-r[a] / theta - dot(WZ[a], v) / (theta * theta) for a in range(len(Z))]
     alpha = 1.0
     for a, i in enumerate(Z):
@@ -230,7 +234,11 @@ def lbfgsb_minimize(f, x0, grad=None, lower=None, upper=None, m=10, pgtol=1e-8, 
     if conv:
         msg = "projected gradient below pgtol"
     while not conv and it < max_iter:
-        W, M = _compact(S, Y, theta)
+        try:
+            W, M = _compact(S, Y, theta)
+        except ZeroDivisionError:  # numerically singular compact matrix: refresh the memory (as the Fortran code)
+            S, Y, theta = [], [], 1.0
+            continue
         xc, c = _cauchy(x, g, lo, hi, theta, W, M)
         xb = _subspace(x, g, xc, c, lo, hi, theta, W, M)
         d = [u - v for u, v in zip(xb, x)]
