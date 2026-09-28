@@ -1,7 +1,6 @@
 """Tests for morie.fn.svdsc -- Discounted directional utility"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svdsc import discount_utility
 
 

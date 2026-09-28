@@ -1,7 +1,6 @@
 """Tests for morie.fn.svutm -- Spatial utility maximizer"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svutm import utility_max
 
 

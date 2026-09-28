@@ -1,7 +1,6 @@
 """Tests for morie.fn.svwvt -- Weighted voting game value"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svwvt import weighted_vote
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svvt2 -- 2D vote trading equilibrium"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svvt2 import vote_trade_2d
 
 
