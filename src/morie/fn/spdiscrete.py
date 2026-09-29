@@ -79,6 +79,8 @@ def binary_glm(y, X, link="logit", tol=1e-12, maxit=100):
         eta = _mv(Xm, beta)
         mu = [min(max(_cdf(e, link), 1e-15), 1 - 1e-15) for e in eta]
         d = [_pdf(e, link) for e in eta]
+        if any(di <= 0 or not math.isfinite(di) for di in d):
+            raise ValueError("binary_glm: perfect separation, the likelihood has no maximum")
         w = [di * di / (m * (1 - m)) for di, m in zip(d, mu)]
         z = [e + (yy - m) / di for e, yy, m, di in zip(eta, yv, mu, d)]
         A = [[ssum(w[i] * Xm[i][a] * Xm[i][b] for i in range(len(yv))) for b in range(k)] for a in range(k)]
