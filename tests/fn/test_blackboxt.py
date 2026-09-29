@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from morie.fn.blackboxt import blackbox_transpose
+from morie.fn.blackboxt import blackbox_transpose_fit
 
 
 def _data():
@@ -35,7 +35,7 @@ def _r2(pairs):
 
 def test_one_dimension_recomputes_fit_from_the_returned_parameters():
     rows = _data()
-    r = blackbox_transpose(rows, dims=1)
+    r = blackbox_transpose_fit(rows, dims=1)
     s1 = r.fits[0]["singular"]
     coords = [s[1] for s in r.stimuli[0]]
     assert math.fsum(c * c for c in coords) == pytest.approx(1.0, abs=1e-12)
@@ -62,7 +62,7 @@ def test_one_dimension_recomputes_fit_from_the_returned_parameters():
 
 
 def test_two_dimensions_orthonormal_and_nested_fits():
-    r = blackbox_transpose(_data(), dims=2)
+    r = blackbox_transpose_fit(_data(), dims=2)
     C = [s[1:3] for s in r.stimuli[1]]
     for a in range(2):
         for b in range(2):
@@ -75,13 +75,13 @@ def test_two_dimensions_orthonormal_and_nested_fits():
 def test_missing_codes_and_dropped_respondents():
     rows = _data()
     coded = [[9 if not _ok(v) else v for v in row] for row in rows]
-    a = blackbox_transpose(rows, dims=1)
-    b = blackbox_transpose(coded, missing=[9], dims=1)
+    a = blackbox_transpose_fit(rows, dims=1)
+    b = blackbox_transpose_fit(coded, missing=[9], dims=1)
     assert a.stimuli == b.stimuli
     rows[5] = [None, None, None, None, None, 3, 4]
-    c = blackbox_transpose(rows, dims=1)
+    c = blackbox_transpose_fit(rows, dims=1)
     assert c.individuals[0][5] is None and c.n_col == 39
     with pytest.raises(ValueError):
-        blackbox_transpose(rows[:6], dims=1)
+        blackbox_transpose_fit(rows[:6], dims=1)
     with pytest.raises(ValueError):
-        blackbox_transpose(rows, dims=0)
+        blackbox_transpose_fit(rows, dims=0)

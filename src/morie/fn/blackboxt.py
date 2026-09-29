@@ -9,7 +9,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ["blackbox_transpose"]
+__all__ = ["blackbox_transpose_fit"]
 
 _MISS = -999.0
 
@@ -384,7 +384,7 @@ def _r2(sums):
     return (a3 * a3) / (b3 * c3) if abs(b3 * c3) > 0.0 else 0.0
 
 
-def blackbox_transpose(data, missing=None, dims: int = 1) -> RichResult:
+def blackbox_transpose_fit(data, missing=None, dims: int = 1) -> RichResult:
     r"""Blackbox-transpose scaling of a respondent-by-stimulus rating matrix (basicspace ``blackbox_transpose``).
 
     The stimuli-by-respondents matrix is decomposed as ``X = P W' + J c' + E``
@@ -433,7 +433,7 @@ def blackbox_transpose(data, missing=None, dims: int = 1) -> RichResult:
     Examples
     --------
     >>> rows = [[(i * 7 + j * 3) % 10 + (j if i % 2 else -j) * 0.3 for j in range(4)] for i in range(12)]
-    >>> r = blackbox_transpose(rows, dims=1)
+    >>> r = blackbox_transpose_fit(rows, dims=1)
     >>> [len(r.stimuli[0]), len(r.stimuli[0][0]), r.n_col]
     [4, 3, 12]
     >>> round(sum(v[1] ** 2 for v in r.stimuli[0]), 12)
@@ -456,7 +456,7 @@ def blackbox_transpose(data, missing=None, dims: int = 1) -> RichResult:
     keep = [i for i in range(n) if sum(1 for v in rows[i] if not _miss(v)) >= dims + 2]
     ny = len(keep)
     if ny <= nq:
-        raise ValueError("blackbox_transpose needs more scaled respondents than stimuli")
+        raise ValueError("blackbox_transpose_fit needs more scaled respondents than stimuli")
     xb = [[rows[keep[j]][i] for j in range(ny)] for i in range(nq)]
     stimuli = []
     individuals = []
@@ -576,4 +576,4 @@ def blackbox_transpose(data, missing=None, dims: int = 1) -> RichResult:
 
 
 def cheatsheet() -> str:
-    return "blackbox_transpose(data, missing=None, dims=1) -> basicspace blackbox-transpose stimulus and respondent placements."
+    return "blackbox_transpose_fit(data, missing=None, dims=1) -> basicspace blackbox-transpose stimulus and respondent placements."
