@@ -1,7 +1,6 @@
 """Tests for morie.fn.bfmi -- BFMI diagnostic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bfmi import bayesian_fmi
 
 
@@ -36,3 +35,17 @@ def test_too_short():
         assert False
     except ValueError:
         pass
+
+
+def test_bfmi_is_betancourts_ratio_of_sums():
+    import pytest
+
+    e = [3.2, 1.1, 4.7, 2.2, 2.9, 5.1, 0.4, 3.3]
+    n = len(e)
+    m = sum(e) / n
+    num = sum((e[i] - e[i - 1]) ** 2 for i in range(1, n))
+    den = sum((v - m) ** 2 for v in e)
+    r = bayesian_fmi(e)
+    assert r["bfmi"] == pytest.approx(num / den, rel=1e-13)
+    assert r["energy_var"] == pytest.approx(den / (n - 1), rel=1e-13)
+    assert r["transition_var"] == pytest.approx(num / (n - 1), rel=1e-13)
