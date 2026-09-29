@@ -1,229 +1,131 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""
-Local Average Treatment Effect (LATE) via instrumental variables.
-
-Implements ``estimate_late`` -- estimates the LATE using 2SLS (linearmodels
-or statsmodels) with automatic fallback to the Wald estimator.
-"""
+"""Local average treatment effect by two-stage least squares."""
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
-from . import _array_core as np
-from . import _frame_core as pd
+from ._qpcore import inverse, solve
+
+__all__ = ["estimate_late"]
 
 
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
+def _col(frame, name):
+    v = frame[name]
+    v = v.tolist() if hasattr(v, "tolist") else list(v)
+    return [float(t) for t in v]
 
-    def __init__(self, name):
-        self._name = name
 
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from . import _glm_core as sm
-except ImportError:
-    sm = _MissingDep('sm')
+def _rss(Z, t):
+    """Residual sum of squares of the least-squares fit of t on the columns of Z."""
+    k = len(Z[0])
+    A = [[math.fsum(r[a] * r[b] for r in Z) for b in range(k)] for a in range(k)]
+    g = solve(A, [math.fsum(r[a] * v for r, v in zip(Z, t)) for a in range(k)])
+    return math.fsum((v - math.fsum(c * x for c, x in zip(g, r))) ** 2 for r, v in zip(Z, t))
 
 
 def estimate_late(
-    data: pd.DataFrame,
+    data,
     *,
     treatment: str,
     outcome: str,
     instrument: str,
     covariates: list[str] | None = None,
+    se_type: str = "homoskedastic",
 ) -> dict[str, Any]:
-    r"""Estimate the Local Average Treatment Effect (LATE) via instrumental variables.
+    r"""Local average treatment effect (LATE) by two-stage least squares.
 
-    For a binary instrument :math:`Z`, the **Wald estimator** (simple IV) is:
+    With a binary instrument ``Z`` and monotonicity the IV estimand is the
+    effect among compliers (Imbens and Angrist 1994); without covariates
+    2SLS is the Wald ratio ``Cov(Y, Z) / Cov(T, Z)``. With exogenous
+    covariates ``W`` the second stage regresses ``Y`` on ``(1, W, T)``
+    using instruments ``(1, W, Z)``: ``beta = (Xh'Xh)^{-1} Xh'y`` with
+    ``Xh = Z (Z'Z)^{-1} Z'X``, residuals ``e = y - X beta`` (Wooldridge
+    2010, sec. 5.2). Standard errors: ``"homoskedastic"`` uses ``s^2
+    (Xh'Xh)^{-1}``, ``s^2 = e'e / (n - k)`` (the ``AER::ivreg`` default);
+    ``"robust"`` is the HC0 sandwich ``(Xh'Xh)^{-1} Xh' diag(e^2) Xh
+    (Xh'Xh)^{-1}``. ``f_stat`` is the first-stage F statistic for the
+    excluded instrument, ``((RSS_r - RSS_u) / 1) / (RSS_u / (n - k_z))``.
 
-    .. math::
+    Parameters
+    ----------
+    data : DataFrame
+        Input frame; rows with a missing value in a used column are dropped.
+    treatment, outcome, instrument : str
+        Endogenous treatment, outcome and instrument columns.
+    covariates : list of str, optional
+        Exogenous covariates.
+    se_type : {"homoskedastic", "robust"}
+        Covariance of the 2SLS estimator.
 
-        \\widehat{\\text{LATE}} = \\frac{\\text{Cov}(Y, Z)}{\\text{Cov}(T, Z)}
-        = \\frac{\\bar{Y}_{Z=1} - \\bar{Y}_{Z=0}}{\\bar{T}_{Z=1} - \\bar{T}_{Z=0}}
-
-    With covariates, the function attempts 2SLS via ``linearmodels.iv.IV2SLS``
-    or ``statsmodels`` IV regression, falling back to the Wald estimator if
-    neither IV library is installed.
-
-    :param data: Input DataFrame.
-    :type data: pandas.DataFrame
-    :param treatment: Endogenous treatment column.
-    :type treatment: str
-    :param outcome: Outcome column.
-    :type outcome: str
-    :param instrument: Instrument column.
-    :type instrument: str
-    :param covariates: Exogenous covariate column names (optional).
-    :type covariates: list[str] or None
-    :return: Dictionary with ``late``, ``se``, ``ci`` (tuple), ``f_stat``,
-        ``method``.
-    :rtype: dict[str, Any]
+    Returns
+    -------
+    dict
+        ``late``, ``se``, ``ci`` (normal 95%), ``f_stat``, ``n``,
+        ``se_type``, ``method``.
 
     References
     ----------
-    Imbens, G. W., & Angrist, J. D. (1994). Identification and estimation
-    of local average treatment effects. *Econometrica*, 62(2), 467--475.
-    https://doi.org/10.2307/2951620
+    Imbens, G. W. and Angrist, J. D. (1994). Identification and estimation of local average
+    treatment effects. *Econometrica*, 62(2), 467-475.
 
-    Angrist, J. D., Imbens, G. W., & Rubin, D. B. (1996). Identification of
-    causal effects using instrumental variables. *JASA*, 91(434), 444--455.
+    Wooldridge, J. M. (2010). *Econometric Analysis of Cross Section and Panel Data*, 2nd ed.
+    MIT Press, ch. 5.
+
+    Examples
+    --------
+    >>> d = {"z": [0, 0, 0, 0, 1, 1, 1, 1], "t": [0, 0, 1, 0, 1, 1, 0, 1],
+    ...      "y": [1.0, 1.4, 3.1, 0.8, 3.3, 2.9, 1.2, 3.6]}
+    >>> r = estimate_late(d, treatment="t", outcome="y", instrument="z")
+    >>> round(r["late"], 10), round(r["se"], 10), round(r["f_stat"], 10)
+    (2.35, 0.4354116826, 2.0)
     """
-    cols = [treatment, outcome, instrument]
-    if covariates:
-        cols.extend(covariates)
-    frame = data[cols].dropna().copy()
-
-    y = frame[outcome].values.astype(float)
-    t = frame[treatment].values.astype(float)
-    z = frame[instrument].values.astype(float)
-    n = len(frame)
-
-    # Try linearmodels IV2SLS first
-    try:
-        from ._glm_core import IV2SLS_LM as LM_IV2SLS
-
-        if covariates:
-            exog = sm.add_constant(frame[covariates].values.astype(float))
-        else:
-            exog = np.ones((n, 1))
-
-        result = LM_IV2SLS(
-            dependent=y,
-            exog=exog,
-            endog=t.reshape(-1, 1),
-            instruments=z.reshape(-1, 1),
-        ).fit(cov_type="robust")
-
-        late_val = float(result.params.iloc[-1] if hasattr(result.params, "iloc") else result.params[-1])
-        se_val = float(result.std_errors.iloc[-1] if hasattr(result.std_errors, "iloc") else result.std_errors[-1])
-        try:
-            f_stat = float(result.first_stage.diagnostics.iloc[0]["f.stat"])
-        except Exception:
-            f_stat = float("nan")
-
-        z_crit = 1.959964
-        return {
-            "late": late_val,
-            "se": se_val,
-            "ci": (late_val - z_crit * se_val, late_val + z_crit * se_val),
-            "f_stat": f_stat,
-            "n": n,
-            "method": "2SLS (linearmodels)",
-        }
-    except ImportError:
-        pass
-    except Exception:
-        pass
-
-    # Try statsmodels IV2SLS
-    try:
-        from ._glm_core import IV2SLS as SM_IV2SLS
-
-        if covariates:
-            exog = np.column_stack(
-                [
-                    np.ones(n),
-                    frame[covariates].values.astype(float),
-                    t,
-                ]
-            )
-            instrument_matrix = np.column_stack(
-                [
-                    np.ones(n),
-                    frame[covariates].values.astype(float),
-                    z,
-                ]
-            )
-        else:
-            exog = sm.add_constant(t)
-            instrument_matrix = sm.add_constant(z)
-
-        result = SM_IV2SLS(y, exog, instrument_matrix).fit()
-        late_val = float(result.params[-1])
-        se_val = float(result.bse[-1])
-
-        # First-stage F-stat
-        if covariates:
-            X_first = np.column_stack([np.ones(n), frame[covariates].values.astype(float), z])
-        else:
-            X_first = sm.add_constant(z)
-        first_stage = sm.OLS(t, X_first).fit()
-        f_stat = float(first_stage.fvalue)
-
-        z_crit = 1.959964
-        return {
-            "late": late_val,
-            "se": se_val,
-            "ci": (late_val - z_crit * se_val, late_val + z_crit * se_val),
-            "f_stat": f_stat,
-            "n": n,
-            "method": "2SLS (statsmodels)",
-        }
-    except ImportError:
-        pass
-    except Exception:
-        pass
-
-    # Wald estimator fallback (no covariate adjustment)
-    cov_yz = np.cov(y, z)[0, 1]
-    cov_tz = np.cov(t, z)[0, 1]
-    if abs(cov_tz) < 1e-12:
+    if se_type not in ("homoskedastic", "robust"):
+        raise ValueError("se_type must be 'homoskedastic' or 'robust'")
+    covariates = list(covariates or [])
+    cols = [treatment, outcome, instrument] + covariates
+    raw = [_col(data, c) for c in cols]
+    keep = [i for i in range(len(raw[0])) if not any(math.isnan(c[i]) for c in raw)]
+    t, y, z = ([c[i] for i in keep] for c in raw[:3])
+    W = [[c[i] for c in raw[3:]] for i in keep]
+    n = len(keep)
+    X = [[1.0] + w + [ti] for w, ti in zip(W, t)]
+    Z = [[1.0] + w + [zi] for w, zi in zip(W, z)]
+    k = len(X[0])
+    if n <= k:
+        raise ValueError(f"{n} complete rows cannot support {k} parameters")
+    rss_u = _rss(Z, t)
+    rss_r = _rss([r[:-1] for r in Z], t)
+    if rss_r - rss_u <= 1e-12 * rss_r:
         raise ValueError(
-            "Instrument has near-zero covariance with treatment; LATE is not identified (weak instrument)."
+            "Instrument has no partial correlation with treatment; LATE is not identified (weak instrument)."
         )
-    late_val = float(cov_yz / cov_tz)
-
-    # Delta-method SE for Wald estimator with binary instrument
-    z_unique = np.unique(z)
-    if len(z_unique) == 2:
-        z0, z1 = sorted(z_unique)
-        y_z1 = y[z == z1]
-        y_z0 = y[z == z0]
-        t_z1 = t[z == z1]
-        t_z0 = t[z == z0]
-        n1_z = len(y_z1)
-        n0_z = len(y_z0)
-        denom = float(t_z1.mean() - t_z0.mean())
-        if abs(denom) < 1e-12:
-            se_val = float("nan")
-        else:
-            # Variance of the ratio via delta method
-            var_num = np.var(y_z1, ddof=1) / n1_z + np.var(y_z0, ddof=1) / n0_z
-            se_val = float(np.sqrt(var_num) / abs(denom))
+    f_stat = (rss_r - rss_u) / (rss_u / (n - k))
+    ZtZi = inverse([[math.fsum(r[a] * r[b] for r in Z) for b in range(k)] for a in range(k)])
+    ZtX = [[math.fsum(zr[a] * xr[b] for zr, xr in zip(Z, X)) for b in range(k)] for a in range(k)]
+    Pi = [[math.fsum(ZtZi[a][c] * ZtX[c][b] for c in range(k)) for b in range(k)] for a in range(k)]
+    Xh = [[math.fsum(zr[a] * Pi[a][b] for a in range(k)) for b in range(k)] for zr in Z]
+    B = inverse([[math.fsum(r[a] * r[b] for r in Xh) for b in range(k)] for a in range(k)])
+    Xhy = [math.fsum(r[a] * v for r, v in zip(Xh, y)) for a in range(k)]
+    beta = [math.fsum(B[a][b] * Xhy[b] for b in range(k)) for a in range(k)]
+    e = [v - math.fsum(c * x for c, x in zip(beta, r)) for r, v in zip(X, y)]
+    j = k - 1
+    if se_type == "homoskedastic":
+        var = math.fsum(v * v for v in e) / (n - k) * B[j][j]
     else:
-        se_val = float("nan")
-
-    # First stage F-stat
-    X_first = sm.add_constant(z)
-    first_stage = sm.OLS(t, X_first).fit()
-    f_stat = float(first_stage.fvalue)
-
-    z_crit = 1.959964
-    ci = (
-        (late_val - z_crit * se_val, late_val + z_crit * se_val)
-        if np.isfinite(se_val)
-        else (float("nan"), float("nan"))
-    )
-
+        g = [math.fsum(B[j][a] * r[a] for a in range(k)) for r in Xh]
+        var = math.fsum((gi * ei) ** 2 for gi, ei in zip(g, e))
+    late, se = beta[j], math.sqrt(var)
+    zc = 1.959963984540054
     return {
-        "late": late_val,
-        "se": se_val,
-        "ci": ci,
+        "late": late,
+        "se": se,
+        "ci": (late - zc * se, late + zc * se),
         "f_stat": f_stat,
         "n": n,
-        "method": "Wald estimator (no covariate adjustment)",
+        "se_type": se_type,
+        "method": "2SLS" + (" with covariates" if covariates else " (Wald ratio)"),
     }
 
 
@@ -231,7 +133,7 @@ late = estimate_late
 
 
 def cheatsheet() -> str:
-    return "estimate_late({}) -> Local Average Treatment Effect (LATE) via instrumental varia"
+    return "estimate_late: 2SLS LATE, Y on (1, W, T) instrumented by (1, W, Z); homoskedastic or HC0 SE, first-stage F"
 
 
 # compact alias per ledger/NAMING.md

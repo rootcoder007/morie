@@ -183,3 +183,20 @@ class TestDropIn:
         num = sum((a - xb) * (b - yb2) for a, b in zip(x, y))
         den = sum((a - xb) ** 2 for a in x)
         assert ols(mnp, x, y) == pytest.approx(num / den, rel=1e-12)
+
+
+def test_setitem_integer_row_index_as_long_as_the_array_is_not_a_mask():
+    """x[idx, j] = v with idx an integer array of length nrows selects rows by
+    number (numpy semantics); read as truthiness it skipped row 0 and shifted
+    every value down one row."""
+    from morie.fn import _array_core as npc
+
+    for idx in (npc.flatnonzero(npc.asarray([True, True, True])), npc.asarray([0, 1, 2]), [2, 0, 1]):
+        x = npc.full((3, 2), -1.0)
+        x[idx, 1] = npc.asarray([10.0, 20.0, 30.0])
+        want = {r: 10.0 * (k + 1) for k, r in enumerate(int(v) for v in (idx.tolist() if hasattr(idx, "tolist") else idx))}
+        assert [row[1] for row in x.tolist()] == [want[0], want[1], want[2]]
+        assert [row[0] for row in x.tolist()] == [-1.0, -1.0, -1.0]
+    m = npc.full((3, 1), 0.0)
+    m[npc.asarray([0.2, 0.9, 0.1]) > 0.15, 0] = 5.0
+    assert [row[0] for row in m.tolist()] == [5.0, 5.0, 0.0]

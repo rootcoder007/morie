@@ -1,31 +1,11 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Partially Linear IV (PLIV) for LATE via DoubleML or 2SLS fallback."""
+"""Partially linear IV model by double/debiased machine learning (native)."""
 
 
-from . import _array_core as np
+from ._rng import random_uniform
 from . import _frame_core as pd
 
 
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from . import _glm_core as sm
-except ImportError:
-    sm = _MissingDep('sm')
 
 
 def estimate_pliv(
@@ -38,39 +18,54 @@ def estimate_pliv(
     n_folds: int = 5,
     random_state: int = 42,
 ) -> dict:
-    r"""
-    Partially Linear IV (PLIV) for the Local Average Treatment Effect (LATE)
-    using an instrumental variable via DoubleML.
+    r"""Partially linear IV model by double/debiased machine learning.
 
-    The PLIV model is:
+    Model ``Y = theta D + g(X) + e``, ``Z = m(X) + v`` with ``E[e | Z, X] =
+    0`` (Chernozhukov et al. 2018, sec. 4.2). The nuisances ``l(X) = E[Y |
+    X]``, ``m(X) = E[Z | X]`` and ``r(X) = E[D | X]`` are fitted by ridge
+    regression with the penalty chosen from ``(0.1, 1, 10)`` by leave-one-out
+    PRESS, cross-fitted over ``n_folds`` folds (without covariates, the
+    fold-complement means). With ``u = Y - l``, ``w = Z - m``, ``v = D - r``
+    the partialling-out score ``psi = (u - theta v) w`` gives ``theta =
+    sum(w u) / sum(w v)`` and ``se = sqrt(mean(psi^2) / J^2 / n)``, ``J =
+    mean(w v)``. Rows are assigned to folds by ordering Philox uniforms
+    (seed ``random_state``) and dealing them out in turn, so the R twin
+    ``Pliv`` builds the same folds.
 
-    .. math::
+    Parameters
+    ----------
+    data : DataFrame
+        Input frame.
+    treatment, outcome, instrument : str
+        Endogenous treatment, outcome and instrument columns.
+    covariates : list of str
+        Exogenous covariates.
+    n_folds : int
+        Cross-fitting folds.
+    random_state : int
+        Philox seed of the fold assignment.
 
-        Y = \\theta_0 D + g_0(X) + \\varepsilon, \\quad
-        D = m_0(X) + f_0(Z, X) + v
-
-    where Z is the instrument, satisfying relevance and exclusion restriction.
-
-    Falls back to two-stage least squares (2SLS) via statsmodels if
-    DoubleML is unavailable.
-
-    :param data: DataFrame containing all required columns.
-    :param treatment: Column name of the endogenous treatment variable.
-    :param outcome: Column name of the outcome variable.
-    :param instrument: Column name of the instrument.
-    :param covariates: List of exogenous covariate column names.
-    :param n_folds: Cross-fitting folds (DoubleML path). Default 5.
-    :param random_state: Random seed. Default 42.
-    :return: dict with keys ``late``, ``se``, ``ci_lower``, ``ci_upper``,
-        ``pval``, ``n_obs``, ``method``.
-    :raises ValueError: If required columns are missing.
+    Returns
+    -------
+    dict
+        ``late``, ``se``, ``ci_lower``, ``ci_upper``, ``pval``, ``n_obs``,
+        ``method``.
 
     References
     ----------
-    Chernozhukov et al. (2018). Double/debiased machine learning.
-        Econometrics Journal, 21(1), C1-C68.
-    Angrist, J. D., Imbens, G. W., & Rubin, D. B. (1996). Identification of
-        causal effects using instrumental variables. JASA, 91(434), 444-455.
+    Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W. and Robins, J.
+    (2018). Double/debiased machine learning for treatment and structural parameters.
+    *Econometrics Journal*, 21(1), C1-C68.
+
+    Examples
+    --------
+    >>> d = pd.DataFrame({"z": [0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1],
+    ...                   "d": [0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1],
+    ...                   "x": [0.3, -0.2, 1.1, 0.4, -0.9, 0.0, 0.7, 1.5, -0.4, 0.2, -1.2, 0.9],
+    ...                   "y": [0.5, 2.1, 1.4, 2.6, 0.1, 0.2, 2.9, 3.1, 1.9, 0.6, -0.8, 3.0]})
+    >>> r = estimate_pliv(d, treatment="d", outcome="y", instrument="z", covariates=["x"], n_folds=3)
+    >>> round(r["late"], 10), round(r["se"], 10)
+    (2.3239954858, 0.3623974801)
     """
     required_cols = [treatment, outcome, instrument] + covariates
     missing = [c for c in required_cols if c not in data.columns]
@@ -89,9 +84,9 @@ def estimate_pliv(
     d = [float(v) for v in df[treatment].tolist()]
     z = [float(v) for v in df[instrument].tolist()]
 
-    rng = np.random.default_rng(random_state)
-    idx = list(range(n_obs))
-    rng.shuffle(idx)
+    u_ = random_uniform(n_obs, seed=random_state)
+    u_ = [float(v) for v in (u_.tolist() if hasattr(u_, "tolist") else u_)]
+    idx = sorted(range(n_obs), key=lambda i: (u_[i], i))
     folds = [idx[i::n_folds] for i in range(n_folds)]
 
     lhat = [0.0] * n_obs
