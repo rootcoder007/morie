@@ -52,6 +52,12 @@ def mann_kendall(x, continuity=True):
     ``trend`` (R/mk.test.R and R/utilfn.R, source tarball trend_1.1.7
     fetched from CRAN), whose ``.varmk`` and ``.Dfn`` give the tie
     corrections verbatim.
+
+    Examples
+    --------
+    >>> r = mann_kendall([1.2, 0.8, 1.9, 2.4, 2.1, 3.3, 3.0, 4.1, 2.4, 3.3, 3.3])
+    >>> r.S, round(r.statistic, 10), round(r.tau, 10)
+    (35.0, 2.6851404451, 0.660848048)
     """
     x = T.vec(x)
     n = len(x)
