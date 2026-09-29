@@ -322,14 +322,9 @@ def galois_group(poly) -> RichResult:
 _PREC = {"+": 1, "-": 1, "*": 2, "/": 2, "^": 4, "neg": 3}
 _RIGHT = {"^", "neg"}
 _FUNCS = {
-    "sin": math.sin,
-    "cos": math.cos,
-    "tan": math.tan,
-    "exp": math.exp,
-    "log": math.log,
-    "sqrt": math.sqrt,
-    "abs": abs,
-}
+    "sin": math.sin, "cos": math.cos, "tan": math.tan, "exp": math.exp, "log": math.log, "sqrt": math.sqrt, "abs": abs,
+    "asin": math.asin, "acos": math.acos, "atan": math.atan, "sinh": math.sinh, "cosh": math.cosh,
+}  # fmt: skip
 
 
 def _tokenize(s):
@@ -408,7 +403,7 @@ def shunting_yard(tokens, variables=None) -> RichResult:
     ``tokens`` is a string or a token list. Operators ``+ - * /`` (left
     associative), ``^`` (right associative, binding tighter than unary
     minus, so ``-2^2 = -4``), unary minus (``neg``), parentheses, and the
-    functions ``sin cos tan exp log sqrt abs`` (one argument) plus ``min``
+    functions ``sin cos tan exp log sqrt abs asin acos atan sinh cosh`` (one argument) plus ``min``
     and ``max`` (two, comma-separated). Operators pop from the stack while
     the top has higher precedence, or equal precedence and the incoming
     operator is left associative. The RPN is evaluated with a value stack
