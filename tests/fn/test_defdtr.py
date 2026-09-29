@@ -1,7 +1,6 @@
 """Tests for defdtr.deformable_detr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.defdtr import deformable_detr
 
 
@@ -40,3 +39,34 @@ def test_defdtr_edge():
     assert "ref_pixels" in result
     assert result["Q"] == 2
     assert result["K"] == 1
+
+
+def test_deformable_attention_recomputed():
+    """Bilinear samples at reference point + offset, weighted average."""
+    import math
+
+    import pytest
+
+    F = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 10.0]]
+
+    def bil(y, x):
+        y = min(max(y, 0.0), 2.0)
+        x = min(max(x, 0.0), 2.0)
+        y0, x0 = int(math.floor(y)), int(math.floor(x))
+        y1, x1 = min(y0 + 1, 2), min(x0 + 1, 2)
+        dy, dx = y - y0, x - x0
+        return (
+            F[y0][x0] * (1 - dy) * (1 - dx)
+            + F[y0][x1] * (1 - dy) * dx
+            + F[y1][x0] * dy * (1 - dx)
+            + F[y1][x1] * dy * dx
+        )
+
+    q = [[0.25, 0.5]]
+    off = [0.3, -0.4, -0.2, 0.7]
+    wt = [0.6, 0.4]
+    ry, rx = 0.5 * 2, 0.25 * 2
+    v = [bil(ry + off[0], rx + off[1]), bil(ry + off[2], rx + off[3])]
+    r = deformable_detr(F, q, K=2, offsets=off, weights=wt)
+    assert r["samples"][0] == pytest.approx(v, rel=1e-14)
+    assert r["out"][0] == pytest.approx((0.6 * v[0] + 0.4 * v[1]) / 1.0, rel=1e-14)

@@ -1,8 +1,8 @@
 """Tests for morie.fn.chrnf -- Chernoff distribution."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.chrnf import chernoff_distribution
 
 
@@ -33,3 +33,15 @@ class TestChernoffDistribution:
     def test_empty_raises(self):
         with pytest.raises(ValueError, match="non-empty"):
             chernoff_distribution(np.array([]))
+
+
+def test_chernoff_monte_carlo_moments_match_groeneboom_wellner():
+    """Chernoff's distribution has mean 0 and variance 0.26355 (Groeneboom
+    and Wellner 2001, Table 1); the Monte Carlo with a fine grid recovers
+    both to Monte Carlo accuracy (5000 argmaxes, sd of the mean ~0.007)."""
+    import pytest
+
+    r = chernoff_distribution([0.0], n_grid=400)
+    assert r["mean"] == pytest.approx(0.0, abs=0.03)
+    assert r["variance"] == pytest.approx(0.26355, abs=0.02)
+    assert r["cdf"][0] == pytest.approx(0.5, abs=0.03)
