@@ -20,7 +20,6 @@ __all__ = [
     "collocated_cosimulate",
     "sis_markov_bayes",
     "snesim_simulate",
-    "annealing_simulate",
 ]
 
 
@@ -482,102 +481,6 @@ def snesim_simulate(training, nx: int, ny: int, template, *, conditioning=None, 
                 break
         grid[j][i] = pick
     return RichResult(payload={"grid": grid, "categories": cats})
-
-
-def annealing_simulate(
-    values,
-    nx: int,
-    ny: int,
-    lags,
-    target,
-    *,
-    n_iter: int = 5000,
-    t0: float = 1.0,
-    cooling: float = 0.9,
-    every: int = 100,
-    seed: int = 0,
-) -> RichResult:
-    r"""Simulated annealing of a grid to a target variogram by value swaps (Deutsch and Cowan 1996).
-
-    The initial image is ``values`` placed by a Philox permutation (stream
-    0), preserving the histogram. The objective
-    ``O = sum_h (g(h) - g*(h))^2 / g*(h)^2`` uses the experimental
-    semivariogram ``g(h)`` averaged over the x and y directions at the
-    integer ``lags``. Iteration ``s`` swaps two random nodes (uniforms on
-    stream ``s + 1``), accepted when ``O`` decreases or with probability
-    ``exp(-dO / T)``; ``T`` starts at ``t0`` and is multiplied by
-    ``cooling`` every ``every`` iterations. Swap effects are updated
-    incrementally.
-
-    References
-    ----------
-    Deutsch, C. V. and Cowan, P. W. (1996). Simulated annealing applied to
-    geostatistics. In GSLIB, 2nd ed., section V.6. Kirkpatrick, S., Gelatt,
-    C. D. and Vecchi, M. P. (1983). Science 220, 671-680.
-
-    Examples
-    --------
-    >>> r = annealing_simulate([float(v) for v in range(16)], 4, 4, [1], [8.0], n_iter=50)
-    >>> sorted(v for row in r.grid for v in row) == [float(v) for v in range(16)]
-    True
-    """
-    n = nx * ny
-    perm = _perm(n, seed, 0)
-    g = [[0.0] * nx for _ in range(ny)]
-    for idx in range(n):
-        g[idx // nx][idx % nx] = float(values[perm[idx]])
-    L = len(lags)
-    npair = [ny * (nx - h) + nx * (ny - h) for h in lags]
-
-    def sums():
-        s = [0.0] * L
-        for a, h in enumerate(lags):
-            for j in range(ny):
-                for i in range(nx):
-                    if i + h < nx:
-                        s[a] += (g[j][i] - g[j][i + h]) ** 2
-                    if j + h < ny:
-                        s[a] += (g[j][i] - g[j + h][i]) ** 2
-        return s
-
-    def objective(s):
-        return ssum(((s[a] / (2 * npair[a])) - target[a]) ** 2 / target[a] ** 2 for a in range(L))
-
-    def contrib(i, j):
-        c = [0.0] * L
-        for a, h in enumerate(lags):
-            for di, dj in ((h, 0), (-h, 0), (0, h), (0, -h)):
-                ii, jj = i + di, j + dj
-                if 0 <= ii < nx and 0 <= jj < ny:
-                    c[a] += (g[j][i] - g[jj][ii]) ** 2
-        return c
-
-    S = sums()
-    obj = objective(S)
-    T = t0
-    acc = 0
-    for s in range(n_iter):
-        u = random_uniform(3, seed=seed, stream=s + 1)
-        p1 = min(int(float(u[0]) * n), n - 1)
-        p2 = min(int(float(u[1]) * n), n - 1)
-        if p1 != p2:
-            i1, j1, i2, j2 = p1 % nx, p1 // nx, p2 % nx, p2 // nx
-            before = [a + b for a, b in zip(contrib(i1, j1), contrib(i2, j2))]
-            g[j1][i1], g[j2][i2] = g[j2][i2], g[j1][i1]
-            after = [a + b for a, b in zip(contrib(i1, j1), contrib(i2, j2))]
-            # a pair joining the two swapped nodes is counted twice in both, and its value is unchanged
-            Sn = [S[a] + after[a] - before[a] for a in range(L)]
-            obj_new = objective(Sn)
-            if obj_new <= obj or float(u[2]) < math.exp(-(obj_new - obj) / T):
-                S, obj = Sn, obj_new
-                acc += 1
-            else:
-                g[j1][i1], g[j2][i2] = g[j2][i2], g[j1][i1]
-        if (s + 1) % every == 0:
-            T *= cooling
-    return RichResult(
-        payload={"grid": g, "objective": obj, "accepted": acc, "variogram": [S[a] / (2 * npair[a]) for a in range(L)]}
-    )
 
 
 def cheatsheet() -> str:

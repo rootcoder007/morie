@@ -9,7 +9,7 @@ import math
 from ._qpcore import ssum
 from ._richresult import RichResult
 
-__all__ = ["polygon_boolean", "polygon_area", "filled_contour_bands", "elevation_profile", "proximity_bands"]
+__all__ = ["polygon_boolean", "polygon_area", "elevation_profile", "proximity_bands"]
 
 
 def polygon_area(ring) -> float:
@@ -194,54 +194,6 @@ def _clip_linear(poly, vals, level, keep_above):
             out.append((p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])))
             ov.append(level)
     return out, ov
-
-
-def filled_contour_bands(x, y, z, levels) -> RichResult:
-    r"""Filled contours (isobands) of a gridded surface and the area of each band.
-
-    Every grid cell is split into two triangles on which the surface is
-    linear; the part of a triangle with ``levels[k] <= z <= levels[k+1]`` is
-    the triangle clipped by the two level lines, so band polygons and areas
-    are exact for the piecewise-linear surface (no marching-squares saddle
-    ambiguity). ``z[j][i]`` is the value at ``(x[i], y[j])``.
-
-    References
-    ----------
-    Lorensen, W. E. and Cline, H. E. (1987). Marching cubes: a high resolution
-    3D surface construction algorithm. *Computer Graphics*, 21(4), 163-169.
-    Watson, D. F. (1992). *Contouring: A Guide to the Analysis and Display of
-    Spatial Data*. Pergamon.
-
-    Examples
-    --------
-    >>> r = filled_contour_bands([0, 1], [0, 1], [[0, 1], [1, 2]], [0, 1, 2])
-    >>> r.areas
-    [0.5, 0.5]
-    """
-    X, Y = [float(v) for v in x], [float(v) for v in y]
-    Z = [[float(v) for v in row] for row in z]
-    L = [float(v) for v in levels]
-    nb = len(L) - 1
-    areas = [0.0] * nb
-    polys = [[] for _ in range(nb)]
-    for j in range(len(Y) - 1):
-        for i in range(len(X) - 1):
-            P = [(X[i], Y[j]), (X[i + 1], Y[j]), (X[i + 1], Y[j + 1]), (X[i], Y[j + 1])]
-            V = [Z[j][i], Z[j][i + 1], Z[j + 1][i + 1], Z[j + 1][i]]
-            for tri in ((0, 1, 2), (0, 2, 3)):
-                tp, tv = [P[t] for t in tri], [V[t] for t in tri]
-                for k in range(nb):
-                    a, av = _clip_linear(tp, tv, L[k], True)
-                    if len(a) < 3:
-                        continue
-                    b, _ = _clip_linear(a, av, L[k + 1], False)
-                    if len(b) < 3:
-                        continue
-                    ar = abs(polygon_area(b))
-                    if ar > 0:
-                        areas[k] += ar
-                        polys[k].append(b)
-    return RichResult(payload={"areas": areas, "polygons": polys, "levels": L})
 
 
 def _bilinear(X, Y, Z, px, py):

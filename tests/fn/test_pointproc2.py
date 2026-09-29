@@ -11,20 +11,12 @@ from morie.fn.pointproc2 import (
     st_g_function,
     st_j_function,
     st_k_function,
-    thomas_k,
-    thomas_simulate,
 )
 
 
 def test_area_interaction_with_eta_one_is_poisson():
     ns = [area_interaction_simulate(30.0, 1.0, 0.05, (0, 1, 0, 1), 400, grid=10, seed=s).n for s in range(20)]
     assert abs(sum(ns) / 20 - 30.0) < 4 * math.sqrt(30.0 / 20) + 3
-
-
-def test_thomas_parents_and_k():
-    r = thomas_simulate(10.0, 5.0, 0.05, (0, 1, 0, 1), seed=2)
-    assert all(0 <= p[0] <= 1 and 0 <= p[1] <= 1 for p in r.points)
-    assert thomas_k([0.1], 10.0, 0.05)[0] == math.pi * 0.01 + (1 - math.exp(-1.0)) / 10
 
 
 def test_lgcp_counts_follow_intensity():

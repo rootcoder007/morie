@@ -3,19 +3,7 @@ import statistics
 
 import pytest
 
-from morie.fn.envstats import (
-    ace_index,
-    budyko_olr,
-    empirical_breakdown_point,
-    fleiss_kappa,
-    prewhitened_mann_kendall,
-)
-
-
-def test_ace_threshold():
-    assert ace_index([30, 40, 65, 90, 70, 34, 120.5]) == pytest.approx(
-        1e-4 * (40**2 + 65**2 + 90**2 + 70**2 + 120.5**2), abs=1e-12
-    )
+from morie.fn.envstats import budyko_olr, empirical_breakdown_point, fleiss_kappa, prewhitened_mann_kendall
 
 
 def test_budyko():

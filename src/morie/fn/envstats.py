@@ -10,26 +10,7 @@ import math
 from ._qpcore import ssum
 from ._richresult import RichResult
 
-__all__ = ["ace_index", "budyko_olr", "prewhitened_mann_kendall", "fleiss_kappa", "empirical_breakdown_point"]
-
-
-def ace_index(vmax, *, threshold: float = 35.0) -> float:
-    r"""Accumulated cyclone energy ``ACE = 10^-4 sum v_max^2`` over six-hourly fixes at tropical-storm strength or more.
-
-    ``vmax`` are six-hourly maximum sustained winds in knots; fixes below
-    ``threshold`` (35 kt) are excluded. Units are ``10^4 kt^2``.
-
-    References
-    ----------
-    Bell, G. D. et al. (2000). Climate assessment for 1999. *Bulletin of the
-    American Meteorological Society*, 81, S1-S50.
-
-    Examples
-    --------
-    >>> round(ace_index([30, 40, 65, 90, 70, 34]), 10)
-    1.8825
-    """
-    return 1e-4 * ssum(float(v) ** 2 for v in vmax if float(v) >= threshold)
+__all__ = ["budyko_olr", "prewhitened_mann_kendall", "fleiss_kappa", "empirical_breakdown_point"]
 
 
 def budyko_olr(T, *, A: float = 203.3, B: float = 2.09, S0: float = 1361.0, albedo: float = 0.3) -> RichResult:

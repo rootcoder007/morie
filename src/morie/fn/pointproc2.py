@@ -13,8 +13,6 @@ from ._rng import random_normal, random_uniform
 
 __all__ = [
     "area_interaction_simulate",
-    "thomas_simulate",
-    "thomas_k",
     "lgcp_simulate_grid",
     "abramson_intensity",
     "berman_turner_fit",
@@ -103,61 +101,6 @@ def area_interaction_simulate(
                 pts.pop(k)
     covered = sum(1 for row in cover for c in row if c > 0) * unit
     return RichResult(payload={"points": [list(p) for p in pts], "n": len(pts), "union_area_units": covered})
-
-
-def thomas_simulate(kappa: float, mu: float, sigma: float, window, *, seed: int = 0, expand: float = 4.0) -> RichResult:
-    r"""Thomas cluster process: a Cox process driven by Gaussian clusters (Neyman-Scott).
-
-    Parents are Poisson with intensity ``kappa`` on the window dilated by
-    ``expand sigma``; each has ``Poisson(mu)`` offspring displaced by
-    ``N(0, sigma^2 I)``; offspring inside the window are kept. Philox:
-    stream 0 (parent count and positions), stream ``2k + 1`` (offspring
-    count of parent ``k``) and ``2k + 2`` (normal displacements).
-
-    References
-    ----------
-    Thomas, M. (1949). A generalization of Poisson's binomial limit for use
-    in ecology. Biometrika 36, 18-25. Moller, J. and Waagepetersen, R. P.
-    (2004). Statistical Inference and Simulation for Spatial Point Processes, ch. 5.
-
-    Examples
-    --------
-    >>> r = thomas_simulate(10.0, 5.0, 0.05, (0, 1, 0, 1), seed=2)
-    >>> r.n_parents > 0
-    True
-    """
-    x0, x1, y0, y1 = window
-    e = expand * sigma
-    ax0, ax1, ay0, ay1 = x0 - e, x1 + e, y0 - e, y1 + e
-    lam = kappa * (ax1 - ax0) * (ay1 - ay0)
-    u0 = random_uniform(1, seed=seed, stream=0)
-    npar = _poisson(lam, float(u0[0]))
-    pu = random_uniform(2 * npar + 1, seed=seed, stream=0)
-    parents = [
-        (ax0 + float(pu[1 + 2 * k]) * (ax1 - ax0), ay0 + float(pu[2 + 2 * k]) * (ay1 - ay0)) for k in range(npar)
-    ]
-    pts = []
-    for k, (px, py) in enumerate(parents):
-        m = _poisson(mu, float(random_uniform(1, seed=seed, stream=2 * k + 1)[0]))
-        if m == 0:
-            continue
-        z = random_normal(2 * m, seed=seed, stream=2 * k + 2)
-        for q in range(m):
-            ox, oy = px + sigma * float(z[2 * q]), py + sigma * float(z[2 * q + 1])
-            if x0 <= ox <= x1 and y0 <= oy <= y1:
-                pts.append([ox, oy])
-    return RichResult(payload={"points": pts, "parents": [list(p) for p in parents], "n_parents": npar})
-
-
-def thomas_k(r, kappa: float, sigma: float) -> list:
-    r"""Theoretical K function of the Thomas process: ``pi r^2 + (1 - exp(-r^2 / (4 sigma^2))) / kappa``.
-
-    Examples
-    --------
-    >>> [round(v, 12) for v in thomas_k([0.0, 0.1], 10.0, 0.05)]
-    [0.0, 0.094627982419]
-    """
-    return [math.pi * v * v + (1.0 - math.exp(-v * v / (4 * sigma * sigma))) / kappa for v in r]
 
 
 def lgcp_simulate_grid(

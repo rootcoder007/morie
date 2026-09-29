@@ -1,6 +1,6 @@
 import math
 
-from morie.fn.geomops import elevation_profile, filled_contour_bands, polygon_area, polygon_boolean, proximity_bands
+from morie.fn.geomops import elevation_profile, polygon_area, polygon_boolean, proximity_bands
 
 A = [(0, 0), (5, 0), (6, 3), (3, 5), (-1, 3)]
 B = [(2, -1), (7, 2), (4, 6.5), (1, 2.5)]
@@ -27,14 +27,6 @@ def test_disjoint_and_nested():
     assert polygon_boolean(big, sq, "difference").area == 15.0
     far = [(5, 5), (6, 5), (6, 6)]
     assert polygon_boolean(sq, far, "intersection").area == 0.0 and polygon_boolean(sq, far, "union").area == 1.5
-
-
-def test_filled_contours_of_a_plane():
-    x = [0, 0.5, 1.0, 2.0]
-    y = [0, 1]
-    z = [[v for v in x] for _ in y]  # z = x
-    r = filled_contour_bands(x, y, z, [0, 0.5, 1.2, 2.0])
-    assert all(abs(a - b) < 1e-12 for a, b in zip(r.areas, [0.5, 0.7, 0.8]))
 
 
 def test_profile_and_bands():

@@ -12,7 +12,7 @@ from . import _array_core as np
 from ._richresult import RichResult
 from ._rng import random_uniform
 
-__all__ = ["direct_sampling", "snesim"]
+__all__ = ["direct_sampling"]
 
 
 def _grid(g):
@@ -97,72 +97,6 @@ def direct_sampling(
         sg[i][j] = T[best[0]][best[1]]
         informed.append((i, j))
     return RichResult(payload={"grid": sg, "path": path})
-
-
-def snesim(ti, nx, ny, radius=2, max_nodes=12, min_replicates=5, conditioning=None, seed=0):
-    r"""Single-grid SNESIM simulation of a categorical variable.
-
-    The template holds the offsets within a square of half-width ``radius``
-    (closest ``max_nodes`` by distance, ties in scan order). At each node of a
-    random path the data event is formed by the informed template nodes; the
-    training-image locations matching it are counted by category, and the
-    farthest event node is dropped while fewer than ``min_replicates`` matches
-    remain. The category is drawn from the resulting conditional proportions
-    (the training-image marginal when nothing matches). This is the search-tree
-    probability of Strebelle (2002) computed by direct scanning, without
-    multiple grids.
-
-    References
-    ----------
-    Strebelle, S. (2002). Conditional simulation of complex geological
-    structures using multiple-point statistics. *Mathematical Geology* 34,
-    1-21.
-
-    Examples
-    --------
-    >>> ti = [[0, 0, 1, 1, 0, 0], [0, 0, 1, 1, 0, 0], [0, 0, 1, 1, 0, 0]]
-    >>> r = snesim(ti, 5, 4, radius=1, conditioning=[(0, 0, 1.0)], seed=2)
-    >>> r.grid[0][0], sorted(r.categories)
-    (1.0, [0.0, 1.0])
-    """
-    T = _grid(ti)
-    tr, tc = len(T), len(T[0])
-    cats = sorted({v for r in T for v in r})
-    marg = [sum(1 for r in T for v in r if v == c) / (tr * tc) for c in cats]
-    tmpl = sorted(
-        ((di, dj) for di in range(-radius, radius + 1) for dj in range(-radius, radius + 1) if (di, dj) != (0, 0)),
-        key=lambda h: (h[0] ** 2 + h[1] ** 2, h[0], h[1]),
-    )[:max_nodes]
-    sg = _setup(nx, ny, conditioning)
-    ntot = nx * ny
-    u = [float(v) for v in random_uniform(2 * ntot + 1, seed=seed)]
-    path = _path(sg, u)
-    for step, (i, j) in enumerate(path):
-        ev = [
-            (di, dj, sg[i + di][j + dj])
-            for di, dj in tmpl
-            if 0 <= i + di < ny and 0 <= j + dj < nx and not math.isnan(sg[i + di][j + dj])
-        ]
-        while True:
-            cnt = [0] * len(cats)
-            for a in range(tr):
-                for b in range(tc):
-                    if all(0 <= a + di < tr and 0 <= b + dj < tc and T[a + di][b + dj] == v for di, dj, v in ev):
-                        cnt[cats.index(T[a][b])] += 1
-            if sum(cnt) >= min_replicates or not ev:
-                break
-            ev = ev[:-1]
-        tot = sum(cnt)
-        prob = [c / tot for c in cnt] if tot > 0 else marg
-        x = u[ntot + step]
-        acc, k = 0.0, len(cats) - 1
-        for m, pm in enumerate(prob):
-            acc += pm
-            if x < acc:
-                k = m
-                break
-        sg[i][j] = cats[k]
-    return RichResult(payload={"grid": sg, "categories": cats, "template": tmpl})
 
 
 def cheatsheet() -> str:
