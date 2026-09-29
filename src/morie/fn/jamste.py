@@ -3,54 +3,92 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
 
 def james_stein(
-    x: np.ndarray | list[float],
+    x,
     *,
     target: float | None = None,
+    sigma2: float = 1.0,
 ) -> DescriptiveResult:
-    """James-Stein shrinkage estimator for a multivariate normal mean.
+    r"""James-Stein shrinkage estimator for a multivariate normal mean.
 
-    Shrinks the observed means toward a common target, reducing total MSE
-    when estimating >= 3 means simultaneously (Stein's paradox).
+    For :math:`X_i \sim N(\theta_i, \sigma^2)`, :math:`i = 1..p`, the
+    positive-part estimator shrinks every coordinate toward a common target
+    :math:`t`:
+
+    .. math::
+
+        \hat\theta_i = t + c\,(X_i - t), \qquad
+        c = \max\Big(0,\; 1 - \frac{k\,\sigma^2}{\sum_i (X_i - t)^2}\Big).
+
+    With a fixed target :math:`k = p - 2` (James and Stein 1961). When the
+    target is the grand mean :math:`\bar X`, estimated from the same data,
+    one degree of freedom is spent on it and :math:`k = p - 3` (Efron and
+    Morris 1973, 1975); using :math:`p - 2` there over-shrinks.
 
     Parameters
     ----------
-    x : array
-        Observed sample means (length >= 3).
+    x : array-like
+        Observed means (length >= 3).
     target : float or None
-        Shrinkage target.  If None, uses the grand mean.
+        Fixed shrinkage target; the grand mean (with ``p - 3``) if None.
+    sigma2 : float
+        Known sampling variance of each coordinate (default 1).
 
     Returns
     -------
     DescriptiveResult
-        ``value`` = shrinkage factor (0 = full shrinkage, 1 = no shrinkage).
+        ``value`` = shrinkage factor ``c`` (0 = full shrinkage, 1 = none);
+        ``extra`` has ``js_estimates``, ``target``, ``k``, ``sigma2`` and
+        the rest.
+
+    References
+    ----------
+    James, W. and Stein, C. (1961). Estimation with quadratic loss.
+    Proc. Fourth Berkeley Symp. 1, 361-379.
+    Efron, B. and Morris, C. (1973). Stein's estimation rule and its
+    competitors -- an empirical Bayes approach. JASA 68, 117-130.
+    Efron, B. and Morris, C. (1975). Data analysis using Stein's estimator
+    and its generalizations. JASA 70, 311-319.
+
+    Examples
+    --------
+    >>> r = james_stein([10.0, -5.0, 3.0, 0.1, -2.0])
+    >>> round(r.value, 12), r.extra["k"]
+    (0.984682311133, 2)
     """
-    x = np.asarray(x, dtype=float).ravel()
-    p = len(x)
+    xs = [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
+    p = len(xs)
     if p < 3:
         raise ValueError("James-Stein requires >= 3 means (Stein's paradox)")
+    s2 = float(sigma2)
+    if not s2 > 0:
+        raise ValueError("sigma2 must be positive")
     if target is None:
-        target = float(np.mean(x))
-    diff = x - target
-    ss = float(np.sum(diff**2))
-    if ss < 1e-30:
-        shrinkage = 0.0
+        tgt = math.fsum(xs) / p
+        k = p - 3
     else:
-        shrinkage = max(0.0, 1.0 - (p - 2) / ss)
-    js_estimate = target + shrinkage * diff
+        tgt = float(target)
+        k = p - 2
+    diff = [v - tgt for v in xs]
+    ss = math.fsum(d * d for d in diff)
+    shrinkage = 0.0 if ss < 1e-30 else max(0.0, 1.0 - k * s2 / ss)
+    js = [tgt + shrinkage * d for d in diff]
     return DescriptiveResult(
         name="James-Stein shrinkage estimator",
         value=float(shrinkage),
         extra={
             "p": p,
-            "target": target,
+            "target": tgt,
+            "k": k,
+            "sigma2": s2,
             "shrinkage_factor": shrinkage,
-            "js_estimates": js_estimate.tolist(),
-            "original_means": x.tolist(),
+            "js_estimates": js,
+            "original_means": xs,
             "mse_reduction_bound": round(1 - shrinkage**2, 4) if shrinkage < 1 else 0.0,
         },
     )
