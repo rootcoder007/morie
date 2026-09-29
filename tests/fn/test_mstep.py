@@ -1,23 +1,15 @@
-"""Test max_step_size (mstep)."""
+"""Tests for morie.fn.mstep."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.mstep import max_step_size, mstep
+import pytest
+
+from morie.fn.mstep import max_step_size
 
 
-class TestMstep:
-    def test_basic(self):
-        x = np.ones(100)
-        result = max_step_size(x, order=10)
-        assert isinstance(result, DescriptiveResult)
-        assert result.name == "max_step_size"
-        assert abs(result.value - 0.2) < 1e-10
-
-    def test_random(self):
-        x = np.random.default_rng(42).standard_normal(256)
-        result = max_step_size(x, order=16)
-        assert result.value > 0
-
-    def test_alias(self):
-        assert mstep is max_step_size
+def test_bound():
+    x = [math.cos(0.3 * n) + 0.1 * n % 1 for n in range(40)]
+    px = math.fsum(t * t for t in x) / 40
+    assert abs(max_step_size(x, order=8).value - 2 / (8 * px)) < 1e-15
+    with pytest.raises(ValueError):
+        max_step_size([0.0, 0.0])

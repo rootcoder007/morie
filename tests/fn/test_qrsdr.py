@@ -1,28 +1,15 @@
-"""Test qrs_duration (qrsdr)."""
+"""Tests for morie.fn.qrsdr."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.qrsdr import qrs_duration, qrsdr
+from morie.fn.qrsdr import qrs_duration
 
 
-class TestQrsDuration:
-    def test_basic(self):
-        qrs_on = np.array([100, 500, 900])
-        qrs_off = np.array([130, 530, 930])
-        result = qrs_duration(qrs_on, qrs_off, fs=250.0)
-        assert isinstance(result, DescriptiveResult)
-        assert result.name == "qrs_duration"
-
-    def test_correct_duration(self):
-        qrs_on = np.array([0, 100])
-        qrs_off = np.array([25, 125])
-        result = qrs_duration(qrs_on, qrs_off, fs=250.0)
-        assert np.allclose(result.value, 0.1)
-
-    def test_empty(self):
-        result = qrs_duration(np.array([]), np.array([]), fs=1.0)
-        assert result.value == 0.0
-
-    def test_alias(self):
-        assert qrsdr is qrs_duration
+def test_durations():
+    on, off = [100, 460, 830, 1200], [125, 482, 858, 1224]
+    r = qrs_duration(on, off, fs=250.0)
+    d = [(b - a) / 250 for a, b in zip(on, off)]
+    m = sum(d) / 4
+    assert abs(r.value - m) < 1e-15
+    assert abs(r.extra["std_dur"] - math.sqrt(sum((t - m) ** 2 for t in d) / 3)) < 1e-15
+    assert qrs_duration([], []).value == 0.0

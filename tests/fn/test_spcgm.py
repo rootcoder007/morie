@@ -1,30 +1,26 @@
-"""Tests for spcgm -- Spectrogram."""
+"""Tests for morie.fn.spcgm: Parseval and the peak frequency."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
 from morie.fn.spcgm import spcgm
 
-
-def test_spcgm_basic(signal_1khz):
-    x, fs = signal_1khz
-    result = spcgm(x, fs)
-    assert isinstance(result, DescriptiveResult)
-    assert "Sxx" in result.extra
-    assert "frequencies" in result.extra
-    assert "times" in result.extra
+X = [math.sin(2 * math.pi * 0.125 * n) + 0.5 * math.cos(2 * math.pi * 0.3125 * n) for n in range(96)]
 
 
-def test_spcgm_shape():
-    rng = np.random.default_rng(42)
-    x = rng.standard_normal(1024)
-    result = spcgm(x, fs=1000.0, nperseg=128)
-    Sxx = result.extra["Sxx"]
-    assert Sxx.ndim == 2
-    assert Sxx.shape[0] == len(result.extra["frequencies"])
+def test_density_integrates_to_segment_power():
+    r = spcgm(X, fs=2.0, nperseg=32, noverlap=16, window="boxcar")
+    # boxcar, one segment: sum_k S_k * fs / nperseg equals the mean power of the detrended segment
+    seg = X[:32]
+    m = sum(seg) / 32
+    power = sum((v - m) ** 2 for v in seg) / 32
+    col = [row[0] for row in r.value]
+    assert abs(sum(col) * 2.0 / 32 - power) < 1e-12
+    assert r.extra["times"][:2] == [8.0, 16.0]
+    assert r.extra["frequencies"][4] == 0.25
 
 
-def test_spcgm_nonnegative():
-    x = np.random.default_rng(7).standard_normal(512)
-    result = spcgm(x)
-    assert np.all(result.extra["Sxx"] >= 0)
+def test_peak_and_zero_padding():
+    r = spcgm(X, nperseg=32, noverlap=0, nfft=64)
+    col = [row[1] for row in r.value]
+    assert max(range(len(col)), key=lambda k: col[k]) == 8
+    assert len(col) == 33

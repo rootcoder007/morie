@@ -1,18 +1,14 @@
-"""Test noise_psd (npsd)."""
+"""Tests for morie.fn.npsd."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.npsd import noise_psd, npsd
+from morie.fn.npsd import noise_psd
+
+X = [math.sin(1.7 * n) for n in range(50)]
 
 
-class TestNoisePSD:
-    def test_basic(self):
-        rng = np.random.default_rng(42)
-        x = rng.normal(0, 1, 1000)
-        result = noise_psd(x, fs=100.0)
-        assert isinstance(result, DescriptiveResult)
-        assert result.value > 0
-
-    def test_alias(self):
-        assert npsd is noise_psd
+def test_levels():
+    m = sum(X) / 50
+    v = math.fsum((t - m) ** 2 for t in X) / 50
+    assert abs(noise_psd(X, fs=100.0).value - v / 100) < 1e-15
+    assert abs(noise_psd(X, fs=100.0, onesided=True).value - 2 * v / 100) < 1e-15

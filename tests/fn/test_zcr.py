@@ -1,32 +1,16 @@
-"""Test zero_crossing_rate."""
+"""Tests for morie.fn.zcr."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.zcr import alias, zero_crossing_rate
+from morie.fn.zcr import zero_crossing_rate
 
 
-class TestZeroCrossingRate:
-    def test_basic(self):
-        x = np.random.default_rng(42).standard_normal(256)
-        result = zero_crossing_rate(x)
-        assert isinstance(result, DescriptiveResult)
-
-    def test_value_range(self):
-        x = np.random.default_rng(42).standard_normal(256)
-        result = zero_crossing_rate(x)
-        assert isinstance(result.value, float)
-        assert result.value >= 0.0
-
-    def test_name(self):
-        x = np.random.default_rng(42).standard_normal(256)
-        result = zero_crossing_rate(x)
-        assert result.name == "zero_crossing_rate"
-
-    def test_constant_signal_zero_zcr(self):
-        x = np.ones(256)
-        result = zero_crossing_rate(x)
-        assert result.value == 0.0
-
-    def test_alias(self):
-        assert alias is zero_crossing_rate
+def test_rate_and_frames():
+    x = [math.sin(0.9 * n + 0.2) for n in range(60)]
+    s = [1 if t >= 0 else -1 for t in x]
+    ref = sum(1 for i in range(1, 60) if s[i] != s[i - 1]) / 59
+    assert abs(zero_crossing_rate(x).value - ref) < 1e-15
+    r = zero_crossing_rate(x, frame_length=20)
+    per = [sum(1 for i in range(1, 20) if s[20 * f + i] != s[20 * f + i - 1]) / 19 for f in range(3)]
+    assert r.extra["per_frame"] == per
+    assert abs(r.value - sum(per) / 3) < 1e-15
