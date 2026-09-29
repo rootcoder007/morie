@@ -1,35 +1,48 @@
-# morie.fn -- function file (rootcoder007/morie)
 """Ensemble variance."""
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "Statistics is the grammar of science. -- Karl Pearson"
+
+def _is2d(a):
+    rows = a.tolist() if hasattr(a, "tolist") else list(a)
+    return bool(rows) and hasattr(rows[0], "__len__")
 
 
-def ensemble_variance(segments, **kwargs) -> DescriptiveResult:
-    """Compute the variance across ensemble segments at each sample.
+def _vec(x):
+    return [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
 
-    Parameters
+
+def ensemble_variance(segments):
+    r"""Pointwise ensemble variance ``s^2(n) = (1/(M - 1)) sum_k (y_k(n) - ybar(n))^2`` across ``M`` sweeps (Bessel-corrected, unbiased; needs ``M >= 2``); ``mean_var`` is its average over ``n``.
+
+    References
     ----------
-    segments : array-like, shape (M, N)
-        M synchronized sweeps of length N.
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis*, 2nd ed., sec. 3.1.
+    Wiley-IEEE Press.
 
-    Returns
-    -------
-    DescriptiveResult
-        ``value`` is the pointwise variance (ndarray of length N).
+    Examples
+    --------
+    >>> ensemble_variance([[1.0, 2.0, 3.0], [3.0, 2.0, 5.0]]).value
+    [2.0, 0.0, 2.0]
     """
-    segments = np.asarray(segments, dtype=float)
-    if segments.ndim == 1:
-        segments = segments.reshape(1, -1)
-    var = np.var(segments, axis=0, ddof=1)
+    rows = (
+        [_vec(r) for r in (segments.tolist() if hasattr(segments, "tolist") else segments)]
+        if _is2d(segments)
+        else [_vec(segments)]
+    )
+    M, N = len(rows), len(rows[0])
+    if M < 2:
+        raise ValueError("the ensemble variance needs at least two sweeps")
+    var = []
+    for j in range(N):
+        m = math.fsum(r[j] for r in rows) / M
+        var.append(math.fsum((r[j] - m) ** 2 for r in rows) / (M - 1))
     return DescriptiveResult(
-        name="ensemble_variance",
-        value=var,
-        extra={"M": segments.shape[0], "N": segments.shape[1], "mean_var": float(np.mean(var))},
+        name="ensemble_variance", value=var, extra={"M": M, "N": N, "mean_var": math.fsum(var) / N}
     )
 
 
@@ -37,4 +50,4 @@ ensrv = ensemble_variance
 
 
 def cheatsheet() -> str:
-    return "ensemble_variance({}) -> Ensemble variance."
+    return "ensemble_variance(segments) -> (1/(M-1)) sum_k (y_k(n) - ybar(n))^2."

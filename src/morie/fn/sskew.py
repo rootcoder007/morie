@@ -2,51 +2,42 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "Luminous beings are we, not this crude matter."
+
+def _vec(x):
+    return [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
 
 
-def skewness_coeff(x, **kwargs) -> DescriptiveResult:
-    r"""Compute the skewness coefficient of signal *x*.
+def skewness_coeff(x):
+    r"""Moment skewness ``g1 = mu_3 / mu_2^(3/2)`` with the ``1/N`` central moments (the population / biased coefficient, ``e1071::skewness(type = 1)``); 0 for a constant signal.
 
-    .. math::
-
-        \\gamma_1 = \\frac{\\mu_3}{\\sigma^3}
-
-    where :math:`\\mu_3` is the third central moment.
-
-    Parameters
+    References
     ----------
-    x : array-like
-        Input signal.
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis*, 2nd ed., sec. 3.1.
+    Wiley-IEEE Press.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> round(skewness_coeff([1.0, 2.0, 4.0, 7.0]).value, 12)
+    0.498783749111
     """
-    x = np.asarray(x, dtype=float)
-    mu = np.mean(x)
-    sigma = np.std(x, ddof=0)
-    if sigma == 0.0:
-        skew = 0.0
-    else:
-        mu3 = float(np.mean((x - mu) ** 3))
-        skew = mu3 / (sigma**3)
-    return DescriptiveResult(
-        name="skewness_coeff",
-        value=float(skew),
-        extra={"skewness": float(skew), "n": len(x)},
-    )
+    v = _vec(x)
+    if not v:
+        raise ValueError("x must be non-empty")
+    n = len(v)
+    mu = math.fsum(v) / n
+    m2 = math.fsum((t - mu) ** 2 for t in v) / n
+    skew = 0.0 if m2 == 0.0 else (math.fsum((t - mu) ** 3 for t in v) / n) / m2**1.5
+    return DescriptiveResult(name="skewness_coeff", value=skew, extra={"skewness": skew, "n": n})
 
 
 sskew = skewness_coeff
+# compact alias per ledger/NAMING.md
+skewnesscoeff = skewness_coeff
 
 
 def cheatsheet() -> str:
-    return "skewness_coeff({}) -> Skewness coefficient."
-
-
-# compact alias per ledger/NAMING.md
-skewnesscoeff = skewness_coeff
+    return "skewness_coeff(x) -> mu_3 / mu_2^(3/2) (population)."

@@ -2,43 +2,39 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "The happiness of your life depends upon the quality of your thoughts. -- Marcus Aurelius"
+
+def _vec(x):
+    return [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
 
 
-def rms_value(x, **kwargs) -> DescriptiveResult:
-    r"""Compute the root mean square (RMS) value of signal *x*.
+def rms_value(x):
+    r"""Root mean square ``sqrt((1/N) sum_n x(n)^2)``, the square root of the mean power.
 
-    .. math::
-
-        \\text{RMS} = \\sqrt{\\frac{1}{N} \\sum_{n=0}^{N-1} x^2(n)}
-
-    Parameters
+    References
     ----------
-    x : array-like
-        Input signal.
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis*, 2nd ed., sec. 3.1.
+    Wiley-IEEE Press.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> rms_value([3.0, -4.0]).value
+    3.5355339059327378
     """
-    x = np.asarray(x, dtype=float)
-    rms = float(np.sqrt(np.mean(x**2)))
-    return DescriptiveResult(
-        name="rms_value",
-        value=rms,
-        extra={"rms": rms, "n": len(x)},
-    )
+    v = _vec(x)
+    if not v:
+        raise ValueError("x must be non-empty")
+    rms = math.sqrt(math.fsum(t * t for t in v) / len(v))
+    return DescriptiveResult(name="rms_value", value=rms, extra={"rms": rms, "n": len(v)})
 
 
 srms = rms_value
+# compact alias per ledger/NAMING.md
+rmsvalue = rms_value
 
 
 def cheatsheet() -> str:
-    return "rms_value({}) -> Root mean square value."
-
-
-# compact alias per ledger/NAMING.md
-rmsvalue = rms_value
+    return "rms_value(x) -> sqrt((1/N) sum x(n)^2)."

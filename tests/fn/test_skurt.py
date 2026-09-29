@@ -1,18 +1,16 @@
-"""Test kurtosis_coeff (skurt)."""
+"""Tests for morie.fn.skurt: recompute from the definition."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.skurt import kurtosis_coeff, skurt
+from morie.fn.skurt import kurtosis_coeff
+
+X = [2.5, -1.0, 4.25, 0.5, 3.0, -2.75, 1.5, 6.0]
 
 
-class TestKurtosis:
-    def test_normal_like(self):
-        rng = np.random.default_rng(42)
-        x = rng.normal(0, 1, 10000)
-        result = kurtosis_coeff(x)
-        assert isinstance(result, DescriptiveResult)
-        assert abs(result.value) < 0.3
-
-    def test_alias(self):
-        assert skurt is kurtosis_coeff
+def test_population_excess_kurtosis():
+    m = sum(X) / 8
+    m2 = math.fsum((v - m) ** 2 for v in X) / 8
+    m4 = math.fsum((v - m) ** 4 for v in X) / 8
+    assert abs(kurtosis_coeff(X).value - (m4 / m2**2 - 3)) < 1e-14
+    # two-point symmetric distribution: kurtosis 1, excess -2
+    assert abs(kurtosis_coeff([-1.0, 1.0]).value + 2.0) < 1e-15

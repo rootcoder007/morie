@@ -2,51 +2,42 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "Time discovers truth. -- Seneca"
+
+def _vec(x):
+    return [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
 
 
-def kurtosis_coeff(x, **kwargs) -> DescriptiveResult:
-    r"""Compute the excess kurtosis of signal *x*.
+def kurtosis_coeff(x):
+    r"""Excess kurtosis ``g2 = mu_4 / mu_2^2 - 3`` with the ``1/N`` central moments (the population / biased coefficient, ``e1071::kurtosis(type = 1)``); 0 for a constant signal.
 
-    .. math::
-
-        \\gamma_2 = \\frac{\\mu_4}{\\sigma^4} - 3
-
-    where :math:`\\mu_4` is the fourth central moment.
-
-    Parameters
+    References
     ----------
-    x : array-like
-        Input signal.
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis*, 2nd ed., sec. 3.1.
+    Wiley-IEEE Press.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> round(kurtosis_coeff([1.0, 2.0, 4.0, 7.0]).value, 12)
+    -1.238095238095
     """
-    x = np.asarray(x, dtype=float)
-    mu = np.mean(x)
-    sigma = np.std(x, ddof=0)
-    if sigma == 0.0:
-        kurt = 0.0
-    else:
-        mu4 = float(np.mean((x - mu) ** 4))
-        kurt = mu4 / (sigma**4) - 3.0
-    return DescriptiveResult(
-        name="kurtosis_coeff",
-        value=float(kurt),
-        extra={"excess_kurtosis": float(kurt), "n": len(x)},
-    )
+    v = _vec(x)
+    if not v:
+        raise ValueError("x must be non-empty")
+    n = len(v)
+    mu = math.fsum(v) / n
+    m2 = math.fsum((t - mu) ** 2 for t in v) / n
+    kurt = 0.0 if m2 == 0.0 else (math.fsum((t - mu) ** 4 for t in v) / n) / (m2 * m2) - 3.0
+    return DescriptiveResult(name="kurtosis_coeff", value=kurt, extra={"excess_kurtosis": kurt, "n": n})
 
 
 skurt = kurtosis_coeff
+# compact alias per ledger/NAMING.md
+kurtosiscoeff = kurtosis_coeff
 
 
 def cheatsheet() -> str:
-    return "kurtosis_coeff({}) -> Kurtosis coefficient (excess)."
-
-
-# compact alias per ledger/NAMING.md
-kurtosiscoeff = kurtosis_coeff
+    return "kurtosis_coeff(x) -> mu_4 / mu_2^2 - 3 (population, excess)."

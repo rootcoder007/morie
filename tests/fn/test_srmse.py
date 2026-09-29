@@ -1,23 +1,14 @@
-"""Test root_mean_squared_error (srmse)."""
+"""Tests for morie.fn.srmse: recompute from the definition."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.srmse import root_mean_squared_error, srmse
+from morie.fn.srmse import root_mean_squared_error
+
+X = [2.5, -1.0, 4.25, 0.5, 3.0, -2.75, 1.5, 6.0]
 
 
-class TestRMSE:
-    def test_zero(self):
-        x = np.array([1.0, 2.0, 3.0])
-        result = root_mean_squared_error(x, x)
-        assert isinstance(result, DescriptiveResult)
-        assert result.value == 0.0
-
-    def test_known(self):
-        x = np.array([1.0, 2.0, 3.0])
-        x_hat = np.array([2.0, 3.0, 4.0])
-        result = root_mean_squared_error(x, x_hat)
-        assert abs(result.value - 1.0) < 1e-10
-
-    def test_alias(self):
-        assert srmse is root_mean_squared_error
+def test_rmse():
+    Y = [v + 0.1 * i for i, v in enumerate(X)]
+    r = root_mean_squared_error(X, Y)
+    assert abs(r.value - math.sqrt(math.fsum((0.1 * i) ** 2 for i in range(8)) / 8)) < 1e-15
+    assert abs(r.value**2 - r.extra["mse"]) < 1e-15
