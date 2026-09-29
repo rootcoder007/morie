@@ -1,21 +1,13 @@
-"""Tests for row normalize weights."""
+"""Tests for morie.fn.sgrwn: row standardisation recomputed."""
 
-from morie.fn import _array_core as np
-
-from morie.fn.sgrwn import sgrwn
+from morie.fn.sgrwn import row_normalize_weights
 
 
-def test_sgrwn_smoke():
-    W = np.array([[0, 1, 2], [1, 0, 1], [2, 1, 0]], dtype=float)
-    r = sgrwn(W)
-    assert r.name == "row_normalize_weights"
-    W_norm = r.extra["W_normalized"]
-    assert np.allclose(W_norm.sum(axis=1), 1.0)
-
-
-def test_cheatsheet():
-    from morie.fn.sgrwn import cheatsheet
-
-    cs = cheatsheet()
-    assert isinstance(cs, str)
-    assert len(cs) > 0
+def test_rows_sum_to_one_and_zero_rows_stay_zero():
+    W = [[0, 2, 2], [1, 0, 3], [0, 0, 0]]
+    r = row_normalize_weights(W)
+    Wn = r.extra["W_normalized"].tolist()
+    assert Wn[0] == [0.0, 0.5, 0.5]
+    assert Wn[1] == [0.25, 0.0, 0.75]
+    assert Wn[2] == [0.0, 0.0, 0.0]
+    assert abs(r.statistic - 2 / 3) < 1e-15

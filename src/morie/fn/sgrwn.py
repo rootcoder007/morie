@@ -26,6 +26,11 @@ def row_normalize_weights(W: np.ndarray) -> SpatialResult:
 
     .. epigraph::
 
+
+    Examples
+    --------
+    >>> row_normalize_weights([[0, 2, 2], [1, 0, 0], [0, 0, 0]]).extra["W_normalized"].tolist()
+    [[0.0, 0.5, 0.5], [1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]
     """
     W = np.asarray(W, dtype=np.float64).copy()
     rs = W.sum(axis=1, keepdims=True)
