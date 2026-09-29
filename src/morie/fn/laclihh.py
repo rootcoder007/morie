@@ -1,36 +1,67 @@
 # morie.fn -- function file (rootcoder007/morie)
 """LISA high-high cluster identification."""
 
-from . import _array_core as np
+from __future__ import annotations
+
+from . import _lattice as lat
 from ._containers import SpatialResult
 
 
 def laclihh(y, W, p_thr=0.05):
-    """LISA high-high cluster identification.
+    r"""LISA high-high cluster identification.
 
-    Category: Lattice
+    Units whose local Moran's ``I_i`` is significant (two-sided p-value
+    below ``p_thr``, conditional randomisation moments as
+    ``spdep::localmoran``) and that fall in the high-high quadrant of the
+    Moran scatterplot: ``z_i > 0`` and ``(Wz)_i > 0`` (Anselin 1995; quadrants on ``z = y - ybar``
+    and its lag ``Wz``, the ``pysal`` quadrants of ``spdep``). No
+    multiple-testing adjustment is applied; pass a smaller ``p_thr`` for
+    one.
 
     Parameters
     ----------
-    y, W, p_thr=0.05 : see function signature.
+    y : array-like, shape (n,)
+        Variable observed on the n lattice units.
+    W : array-like, shape (n, n)
+        Spatial weights (zero diagonal).
+    p_thr : float
+        Significance threshold.
 
     Returns
     -------
     SpatialResult
+        ``statistic`` is the number of such units; ``extra`` has their
+        ``indices`` and the local ``p_value`` and ``Ii`` lists.
+
+    References
+    ----------
+    Anselin, L. (1995). Local indicators of spatial association -- LISA. *Geographical Analysis*,
+    27(2), 93-115.
+
+    Sokal, R. R., Oden, N. L. and Thomson, B. A. (1998). Local spatial autocorrelation in a
+    biological model. *Geographical Analysis*, 30(4), 331-354.
+
+    Examples
+    --------
+    >>> W = [[0, 1, 0, 0, 0, 0], [.5, 0, .5, 0, 0, 0], [0, .5, 0, .5, 0, 0], [0, 0, .5, 0, .5, 0], [0, 0, 0, .5, 0, .5], [0, 0, 0, 0, 1, 0]]
+    >>> r = laclihh([1.0, 2.4, 1.3, 3.1, 1.9, 2.2], W, p_thr=0.5)
+    >>> r.statistic, r.extra["indices"]
+    (0.0, [])
     """
-    try:
-        n = len(y)
-        Wy = np.dot(W, y)
-        result = float(np.corrcoef(y, Wy)[0, 1])
-        return SpatialResult(name="laclihh", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="laclihh", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    yv, Wm = lat.vec(y), lat.mat(W)
+    r = lat.local_moran(yv, Wm)
+    q, _z, _lz = lat.quadrants(yv, Wm)
+    idx = [i for i in range(len(yv)) if q[i] == 1 and r["p_value"][i] < p_thr]
+    return SpatialResult(
+        name="laclihh",
+        statistic=float(len(idx)),
+        local_values=r["Ii"],
+        extra={"indices": idx, "p_value": r["p_value"], "Ii": r["Ii"], "quadrant": q},
+    )
 
 
 laclihh_fn = laclihh
 
 
 def cheatsheet() -> str:
-    return "laclihh({}) -> LISA high-high cluster identification."
+    return "laclihh(y, W, p_thr) -> significant high-high LISA units"
