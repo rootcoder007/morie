@@ -24,6 +24,11 @@ def dc_removal(x) -> SignalResult:
     Returns
     -------
     SignalResult
+
+    Examples
+    --------
+    >>> [round(v, 12) for v in dc_removal([1.0, 2.0, 6.0]).filtered]
+    [-2.0, -1.0, 3.0]
     """
     x = np.asarray(x, dtype=float)
     dc = float(np.mean(x))

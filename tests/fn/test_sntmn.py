@@ -1,25 +1,17 @@
-"""Tests for morie.fn.sntmn — mandatory minimum sentence."""
+"""Tests for morie.fn.sntmn: values recomputed from the definition."""
 
-from morie.fn import _frame_core as pd
-import pytest
-
-from morie.fn._containers import DescriptiveResult
 from morie.fn.sntmn import sentence_mandatory_min
 
 
-class TestSentenceMandatoryMin:
-    def test_returns_descriptive(self):
-        df = pd.DataFrame(
-            {
-                "offense": ["A", "B", "A", "B"],
-                "sentence_days": [30, 90, 60, 120],
-                "mandatory_min_days": [30, 60, 30, 60],
-            }
-        )
-        result = sentence_mandatory_min(df)
-        assert isinstance(result, DescriptiveResult)
-
-    def test_all_at_min(self):
-        df = pd.DataFrame({"offense": ["A", "A"], "sentence_days": [30, 30], "mandatory_min_days": [30, 30]})
-        result = sentence_mandatory_min(df)
-        assert result.extra["pct_at_minimum"] == pytest.approx(1.0)
+def test_shares_and_excess():
+    d = {
+        "offense": ["a", "a", "b", "b", "b"],
+        "sentence_days": [60.0, 90.0, 30.0, 40.0, 100.0],
+        "mandatory_min_days": [60.0, 60.0, 30.0, 60.0, 60.0],
+    }
+    r = sentence_mandatory_min(d)
+    assert r.value == 2 / 5
+    assert r.extra["pct_below_minimum"] == 1 / 5
+    assert r.extra["pct_above_minimum"] == 2 / 5
+    assert r.extra["mean_above_minimum"] == (30.0 + 40.0) / 2
+    assert r.extra["by_offense"]["b"]["pct_at_minimum"] == 1 / 3

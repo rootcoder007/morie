@@ -10,6 +10,11 @@ def bayesian_se_from_posterior(chain) -> DescriptiveResult:
     """Standard errors from posterior chain.
 
     .. epigraph:: There is no royal road to geometry. -- Euclid
+
+    Examples
+    --------
+    >>> [round(v, 12) for v in bayesian_se_from_posterior([[1.0, 5.0], [2.0, 3.0], [4.0, 4.0]]).extra['ses']]
+    [1.527525231652, 1.0]
     """
     from morie.fn import _array_core as np
 

@@ -10,6 +10,11 @@ def nominate_confidence_interval(boot_se, alpha=0.05) -> DescriptiveResult:
     """Compute CIs from bootstrap standard errors.
 
     .. epigraph:: Statistics is the grammar of science. -- Karl Pearson
+
+    Examples
+    --------
+    >>> [round(v, 12) for v in nominate_confidence_interval([0.1, 0.2]).extra['ci_half_widths']]
+    [0.195996398454, 0.391992796908]
     """
     from morie.fn import _array_core as np
 

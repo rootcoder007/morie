@@ -1,28 +1,15 @@
-"""Test pr_duration (prdur)."""
+"""Tests for morie.fn.prdur: values recomputed from the definition."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.prdur import pr_duration, prdur
+from morie.fn.prdur import pr_duration
 
 
-class TestPrDuration:
-    def test_basic(self):
-        p_on = np.array([50, 450, 850])
-        qrs_on = np.array([100, 500, 900])
-        result = pr_duration(p_on, qrs_on, fs=250.0)
-        assert isinstance(result, DescriptiveResult)
-        assert result.name == "pr_duration"
-
-    def test_correct_interval(self):
-        p_on = np.array([0, 100])
-        qrs_on = np.array([40, 140])
-        result = pr_duration(p_on, qrs_on, fs=100.0)
-        assert np.allclose(result.value, 0.4)
-
-    def test_empty(self):
-        result = pr_duration(np.array([]), np.array([]), fs=1.0)
-        assert result.value == 0.0
-
-    def test_alias(self):
-        assert prdur is pr_duration
+def test_pr_intervals_in_seconds():
+    p_on, q_on, fs = [100, 900, 1700], [260, 1070, 1850], 500.0
+    r = pr_duration(p_on, q_on, fs=fs)
+    pr = [(b - a) / fs for a, b in zip(p_on, q_on)]
+    assert max(abs(a - b) for a, b in zip(r.extra["pr_intervals"], pr)) < 1e-15
+    m = sum(pr) / 3
+    assert abs(r.value - m) < 1e-15
+    assert abs(r.extra["std_pr"] - math.sqrt(sum((v - m) ** 2 for v in pr) / 2)) < 1e-15

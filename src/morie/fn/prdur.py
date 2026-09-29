@@ -24,6 +24,11 @@ def pr_duration(p_on, qrs_on, fs: float = 1.0, **kwargs) -> DescriptiveResult:
     Returns
     -------
     DescriptiveResult
+
+    Examples
+    --------
+    >>> pr_duration([100, 900], [260, 1070], fs=500.0).value
+    0.33
     """
     p_on = np.asarray(p_on, dtype=int)
     qrs_on = np.asarray(qrs_on, dtype=int)

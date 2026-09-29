@@ -24,6 +24,11 @@ def activity(x, **kwargs) -> DescriptiveResult:
     Returns
     -------
     DescriptiveResult
+
+    Examples
+    --------
+    >>> round(activity([1.0, 2.0, 6.0]).value, 12)
+    4.666666666667
     """
     x = np.asarray(x, dtype=float)
     act = float(np.var(x, ddof=0))

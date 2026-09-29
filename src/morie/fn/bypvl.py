@@ -10,6 +10,11 @@ def bayesian_p_value(chain, test_stat) -> DescriptiveResult:
     """Bayesian p-value: proportion of posterior exceeding test_stat.
 
     .. epigraph:: We must know. We will know. -- David Hilbert
+
+    Examples
+    --------
+    >>> bayesian_p_value([0.2, 1.5, 0.9, 2.2, 1.1], 1.0).value
+    0.6
     """
     from morie.fn import _array_core as np
 

@@ -1,21 +1,9 @@
-"""Test activity (sactv)."""
+"""Tests for morie.fn.sactv: values recomputed from the definition."""
 
-from morie.fn import _array_core as np
-
-from morie.fn._containers import DescriptiveResult
-from morie.fn.sactv import activity, sactv
+from morie.fn.sactv import activity
 
 
-class TestActivity:
-    def test_constant(self):
-        x = np.array([3.0, 3.0, 3.0])
-        result = activity(x)
-        assert isinstance(result, DescriptiveResult)
-        assert result.value == 0.0
-
-    def test_positive(self):
-        x = np.array([1.0, 2.0, 3.0])
-        assert activity(x).value > 0
-
-    def test_alias(self):
-        assert sactv is activity
+def test_hjorth_activity_is_the_population_variance():
+    x = [1.0, 2.0, 6.0, -3.0, 0.5]
+    m = sum(x) / 5
+    assert abs(activity(x).value - sum((v - m) ** 2 for v in x) / 5) < 1e-14
