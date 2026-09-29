@@ -1,24 +1,11 @@
-"""Tests for slope_from_cov.slope_from_cov."""
+"""Tests for morie.fn.slope_from_cov: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
-
-from morie.fn.slope_from_cov import (
-    slope_from_cov,
-)
+from morie.fn.slope_from_cov import slope_from_cov
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner6e13_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    result = slope_from_cov(x, y)
-    assert isinstance(result, dict)
-    assert "slope" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner6e13_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    result = slope_from_cov(x, y)
-    assert isinstance(result, dict)
+def test_least_squares_slope():
+    x = [1.0, 2.0, 3.0, 5.0, 8.0]
+    y = [2.0, 2.5, 4.0, 4.5, 9.0]
+    mx, my = sum(x) / 5, sum(y) / 5
+    b = sum((a - mx) * (c - my) for a, c in zip(x, y)) / sum((a - mx) ** 2 for a in x)
+    assert abs(slope_from_cov(x, y)["slope"] - b) < 1e-14

@@ -6,8 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
 from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
@@ -21,6 +19,11 @@ def sd_of_mean_hetero(sigmas):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.55).
+
+    Examples
+    --------
+    >>> round(sd_of_mean_hetero([1.0, 2.0, 2.0])["sd_avg"], 15)
+    1.0
     """
     value = _morin.sd_of_mean_hetero(sigmas)
     payload = {"sd_avg": value, "n": int(np.atleast_1d(sigmas).size)}

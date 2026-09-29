@@ -6,7 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -19,6 +18,11 @@ def factorial(n):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (1.1).
+
+    Examples
+    --------
+    >>> factorial(10)["factorial"]
+    3628800
     """
     value = _morin.factorial(n)
     payload = {"n": int(n), "factorial": value}

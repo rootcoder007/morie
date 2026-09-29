@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def pmf_sd(values, probs):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (5.31).
+
+    Examples
+    --------
+    >>> round(pmf_sd([1, 2, 6], [0.2, 0.5, 0.3])["sd"], 15)
+    2.0
     """
     sd, mu = _morin.pmf_sd(values, probs)
     payload = {"sd": sd, "mean": mu, "variance": sd * sd}

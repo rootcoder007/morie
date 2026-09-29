@@ -1,22 +1,12 @@
-"""Tests for sd_bernoulli.sd_bernoulli."""
+"""Tests for morie.fn.sd_bernoulli: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.sd_bernoulli import (
-    sd_bernoulli,
-)
+from morie.fn.sd_bernoulli import sd_bernoulli
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e46_basic():
-    """Test basic functionality."""
-    p = 0.1
-    result = sd_bernoulli(p)
-    assert isinstance(result, dict)
-    assert "p" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e46_edge():
-    """Test edge cases."""
-    p = 0.1
-    result = sd_bernoulli(p)
-    assert isinstance(result, dict)
+def test_bernoulli_sd():
+    p = 0.3
+    mu = p
+    var = p * (1 - mu) ** 2 + (1 - p) * mu**2
+    assert abs(sd_bernoulli(p)["sd"] - math.sqrt(var)) < 1e-15

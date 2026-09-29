@@ -6,7 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -19,6 +18,11 @@ def at_least_one_of_iid(p, k=3):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.96).
+
+    Examples
+    --------
+    >>> round(at_least_one_of_iid(1 / 6, 3)["p_at_least_one"], 15)
+    0.421296296296296
     """
     value = _morin.at_least_one_of_iid(p, k)
     payload = {"p": float(p), "k": int(k), "p_at_least_one": value}

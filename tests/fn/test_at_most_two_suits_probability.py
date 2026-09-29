@@ -1,31 +1,15 @@
-"""Tests for at_most_two_suits_probability.at_most_two_suits_probability."""
+"""Tests for morie.fn.at_most_two_suits_probability: values recomputed from first principles."""
 
 import math
 
-from morie.fn import _array_core as np
-
-from morie.fn.at_most_two_suits_probability import (
-    at_most_two_suits_probability,
-)
+from morie.fn.at_most_two_suits_probability import at_most_two_suits_probability
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner2e43_basic():
-    """Test basic functionality."""
-    result = at_most_two_suits_probability(n_suits=4, n_ranks=13, hand=5)
-    assert isinstance(result, dict)
-    assert "favorable" in result
-    assert "total" in result
-    assert "probability" in result
-    assert math.isfinite(result["probability"])
-    assert 0.0 <= result["probability"] <= 1.0
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner2e43_edge():
-    """Test edge cases."""
-    result = at_most_two_suits_probability(n_suits=2, n_ranks=2, hand=2)
-    assert isinstance(result, dict)
-    assert "favorable" in result
-    assert "total" in result
-    assert "probability" in result
-    assert math.isfinite(result["probability"])
-    assert 0.0 <= result["probability"] <= 1.0
+def test_count_by_enumerating_suit_patterns():
+    # hands with at most two suits: choose the suits used, count hands using exactly those
+    one = 4 * math.comb(13, 5)
+    two = math.comb(4, 2) * (math.comb(26, 5) - 2 * math.comb(13, 5))
+    r = at_most_two_suits_probability()
+    assert r["favorable"] == one + two
+    assert r["total"] == math.comb(52, 5)
+    assert abs(r["probability"] - (one + two) / math.comb(52, 5)) < 1e-15

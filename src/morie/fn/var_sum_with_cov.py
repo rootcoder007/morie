@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def var_sum_with_cov(var_x, var_y, cov_xy=0.0):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.26).
+
+    Examples
+    --------
+    >>> var_sum_with_cov(2.0, 3.0, 0.5)["var_sum"]
+    6.0
     """
     value = _morin.var_sum_with_cov(var_x, var_y, cov_xy)
     payload = {"var_sum": value, "cov_xy": float(cov_xy)}

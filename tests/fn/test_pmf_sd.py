@@ -1,24 +1,14 @@
-"""Tests for pmf_sd.pmf_sd."""
+"""Tests for morie.fn.pmf_sd: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.pmf_sd import (
-    pmf_sd,
-)
+from morie.fn.pmf_sd import pmf_sd
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner5e31_basic():
-    """Test basic functionality."""
-    values = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-    probs = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-    result = pmf_sd(values, probs)
-    assert isinstance(result, dict)
-    assert "sd" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner5e31_edge():
-    """Test edge cases."""
-    values = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-    probs = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-    result = pmf_sd(values, probs)
-    assert isinstance(result, dict)
+def test_sd_is_the_root_of_the_second_central_moment():
+    v, p = [1.0, 2.0, 6.0], [0.2, 0.5, 0.3]
+    mu = sum(a * b for a, b in zip(v, p))
+    var = sum(b * (a - mu) ** 2 for a, b in zip(v, p))
+    r = pmf_sd(v, p)
+    assert abs(r["mean"] - mu) < 1e-15
+    assert abs(r["sd"] - math.sqrt(var)) < 1e-15

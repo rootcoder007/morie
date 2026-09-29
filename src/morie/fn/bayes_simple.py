@@ -6,7 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -19,6 +18,11 @@ def bayes_simple(p_z_given_a, p_a, p_z):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.51).
+
+    Examples
+    --------
+    >>> round(bayes_simple(0.9, 0.01, 0.05)["posterior"], 15)
+    0.18
     """
     value = _morin.bayes_simple(p_z_given_a, p_a, p_z)
     payload = {"posterior": value}

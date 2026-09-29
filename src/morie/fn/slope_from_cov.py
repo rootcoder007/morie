@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def slope_from_cov(x, y):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.13).
+
+    Examples
+    --------
+    >>> round(slope_from_cov([1, 2, 3, 4], [2, 4.1, 5.9, 8.2])["slope"], 12)
+    2.04
     """
     value = _morin.slope_from_cov(x, y)
     payload = {"slope": value}

@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,11 +18,14 @@ def joint_independent(joint, tol=1e-9):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.9).
+
+    Examples
+    --------
+    >>> joint_independent([[0.12, 0.28], [0.18, 0.42]])["independent"]
+    True
     """
     independent, px, py = _morin.joint_independent(joint, tol)
-    payload = {"independent": independent,
-               "marginal_x": [float(v) for v in px],
-               "marginal_y": [float(v) for v in py]}
+    payload = {"independent": independent, "marginal_x": [float(v) for v in px], "marginal_y": [float(v) for v in py]}
     lines = [("independent", independent)]
     return RichResult(
         title="Independence of two discrete variables: the joint pmf factorizes.",

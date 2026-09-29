@@ -19,6 +19,11 @@ def prob_or_exclusive(ps):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.14).
+
+    Examples
+    --------
+    >>> round(prob_or_exclusive([0.1, 0.25, 0.3])["p_or"], 15)
+    0.65
     """
     value = _morin.prob_or_exclusive(ps)
     payload = {"ps": [float(x) for x in np.atleast_1d(ps)], "p_or": value}

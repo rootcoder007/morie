@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def sd_scale(a, sigma):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.41).
+
+    Examples
+    --------
+    >>> sd_scale(-3, 0.5)["sd_aX"]
+    1.5
     """
     value = _morin.sd_scale(a, sigma)
     payload = {"a": float(a), "sigma": float(sigma), "sd_aX": value}
@@ -33,7 +35,9 @@ def sd_scale(a, sigma):
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e41: sigma_aX = |a| sigma_X. Morin (2016) eq (3.41)."
+    return (
+        "david_j_morin_probability_for_the_enthusiastic_beginner3e41: sigma_aX = |a| sigma_X. Morin (2016) eq (3.41)."
+    )
 
 
 # compact alias per ledger/NAMING.md

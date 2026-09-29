@@ -1,24 +1,14 @@
-"""Tests for var_sum_with_cov.var_sum_with_cov."""
+"""Tests for morie.fn.var_sum_with_cov: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
-
-from morie.fn.var_sum_with_cov import (
-    var_sum_with_cov,
-)
+from morie.fn.var_sum_with_cov import var_sum_with_cov
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e26_basic():
-    """Test basic functionality."""
-    var_x = 0.5
-    var_y = 0.5
-    result = var_sum_with_cov(var_x, var_y)
-    assert isinstance(result, dict)
-    assert "var_sum" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e26_edge():
-    """Test edge cases."""
-    var_x = 0.5
-    var_y = 0.5
-    result = var_sum_with_cov(var_x, var_y)
-    assert isinstance(result, dict)
+def test_against_a_joint_pmf():
+    pts = [((0, 1), 0.2), ((1, 1), 0.3), ((1, 3), 0.1), ((2, 0), 0.4)]
+    E = lambda f: sum(p * f(x, y) for (x, y), p in pts)  # noqa: E731
+    mx, my = E(lambda x, y: x), E(lambda x, y: y)
+    vx = E(lambda x, y: (x - mx) ** 2)
+    vy = E(lambda x, y: (y - my) ** 2)
+    c = E(lambda x, y: (x - mx) * (y - my))
+    direct = E(lambda x, y: (x + y - mx - my) ** 2)
+    assert abs(var_sum_with_cov(vx, vy, c)["var_sum"] - direct) < 1e-14

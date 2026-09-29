@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def sd_bernoulli(p):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.46).
+
+    Examples
+    --------
+    >>> round(sd_bernoulli(0.3)["sd"], 15)
+    0.458257569495584
     """
     value = _morin.sd_bernoulli(p)
     payload = {"p": float(p), "sd": value}

@@ -1,33 +1,24 @@
-"""Tests for inclusion_exclusion_3.inclusion_exclusion_3."""
+"""Tests for morie.fn.inclusion_exclusion_3: values recomputed from first principles."""
 
-import math
-
-from morie.fn import _array_core as np
-
-from morie.fn.inclusion_exclusion_3 import (
-    inclusion_exclusion_3,
-)
+from morie.fn.inclusion_exclusion_3 import inclusion_exclusion_3
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner2e92_basic():
-    """Test basic functionality."""
-    p_a, p_b, p_c = 0.4, 0.5, 0.6
-    p_ab, p_ac, p_bc = 0.2, 0.25, 0.3
-    p_abc = 0.1
-    result = inclusion_exclusion_3(p_a, p_b, p_c, p_ab, p_ac, p_bc, p_abc)
-    assert hasattr(result, "payload")
-    assert "p_or" in result.payload
-    assert math.isfinite(result.payload["p_or"])
-    assert 0.0 <= result.payload["p_or"] <= 1.0
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner2e92_edge():
-    """Test edge cases."""
-    p_a, p_b, p_c = 0.1, 0.2, 0.15
-    p_ab, p_ac, p_bc = 0.02, 0.015, 0.03
-    p_abc = 0.005
-    result = inclusion_exclusion_3(p_a, p_b, p_c, p_ab, p_ac, p_bc, p_abc)
-    assert hasattr(result, "payload")
-    assert "p_or" in result.payload
-    assert math.isfinite(result.payload["p_or"])
-    assert 0.0 <= result.payload["p_or"] <= 1.0
+def test_against_an_explicit_sample_space():
+    # 8 atoms of three events with probabilities; P(A or B or C) = 1 - P(none)
+    atoms = {
+        (a, b, c): w
+        for (a, b, c), w in zip(
+            [(x, y, z) for x in (0, 1) for y in (0, 1) for z in (0, 1)], [0.1, 0.15, 0.05, 0.2, 0.1, 0.12, 0.08, 0.2]
+        )
+    }
+    P = lambda f: sum(w for k, w in atoms.items() if f(k))  # noqa: E731
+    r = inclusion_exclusion_3(
+        P(lambda k: k[0]),
+        P(lambda k: k[1]),
+        P(lambda k: k[2]),
+        P(lambda k: k[0] and k[1]),
+        P(lambda k: k[0] and k[2]),
+        P(lambda k: k[1] and k[2]),
+        P(lambda k: k[0] and k[1] and k[2]),
+    )
+    assert abs(r["p_or"] - (1 - atoms[(0, 0, 0)])) < 1e-15

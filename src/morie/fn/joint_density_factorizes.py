@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,9 +18,13 @@ def joint_density_factorizes(grid_x, density_x, grid_y, density_y):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.64).
+
+    Examples
+    --------
+    >>> round(joint_density_factorizes([0, 1, 2], [0.5, 0.5, 0.5], [0, 1], [1.0, 1.0])["total_mass"], 12)
+    1.0
     """
-    joint, total = _morin.joint_density_factorizes(grid_x, density_x,
-                                                   grid_y, density_y)
+    joint, total = _morin.joint_density_factorizes(grid_x, density_x, grid_y, density_y)
     payload = {"total_mass": total, "shape": list(joint.shape)}
     lines = [("total mass", total)]
     return RichResult(

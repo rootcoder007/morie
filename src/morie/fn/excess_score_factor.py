@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def excess_score_factor(r):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.81).
+
+    Examples
+    --------
+    >>> round(excess_score_factor(0.6)["factor"], 15)
+    0.5
     """
     value = _morin.excess_score_factor(r)
     payload = {"factor": value}
