@@ -1,8 +1,8 @@
 """Tests for morie.fn.admod — Additive model via marginal integration."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.admod import admod
 
 
@@ -53,3 +53,29 @@ def test_method_label(synth):
     Y, X = synth
     result = admod(Y, X)
     assert result["method"] == "AdditiveModel_MarginalIntegration"
+
+
+def test_component_is_the_pilot_averaged_over_the_other_covariate():
+    """m_1(t) = mean_k g(t, X_k2) - ybar with the 2-D Nadaraya-Watson pilot g."""
+    import math
+
+    import pytest
+
+    X = [[0.0, 1.0], [1.0, 0.0], [2.0, 2.0], [3.0, 1.0], [4.0, 3.0], [5.0, 2.0], [1.5, 2.5]]
+    Y = [1.0, 1.5, 3.2, 3.9, 6.1, 6.0, 2.2]
+    h = 1.3
+    n = len(Y)
+    ybar = sum(Y) / n
+
+    def g(t1, t2):
+        w = [math.exp(-0.5 * ((t1 - x[0]) / h) ** 2 - 0.5 * ((t2 - x[1]) / h) ** 2) for x in X]
+        return sum(wi * yi for wi, yi in zip(w, Y)) / sum(w)
+
+    r = admod(Y, X, bandwidth=h, grid_size=4)
+    grid = r["components"][0]["x_grid"]
+    assert grid == pytest.approx([0.0, 5 / 3, 10 / 3, 5.0], rel=1e-15)
+    want = [sum(g(t, x[1]) for x in X) / n - ybar for t in grid]
+    assert r["components"][0]["m_hat"] == pytest.approx(want, rel=1e-12, abs=1e-13)
+    want2 = [sum(g(x[0], t) for x in X) / n - ybar for t in r["components"][1]["x_grid"]]
+    assert r["components"][1]["m_hat"] == pytest.approx(want2, rel=1e-12, abs=1e-13)
+    assert r["intercept"] == pytest.approx(ybar, rel=1e-15)
