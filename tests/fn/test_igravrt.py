@@ -1,32 +1,41 @@
-"""Tests for morie.fn.igravrt."""
-
-from morie.fn import _array_core as np
+"""Tests for morie.fn.igravrt: expected values recomputed from the defining equations."""
 
 from morie.fn.igravrt import igravrt
 
+F = [12.0, 0.0, 30.0, 2.0, 85.0, 4.0, 19.0, 1.0, 7.0, 40.0, 3.0, 16.0]
+MO = [5.0, 5, 9, 9, 20, 20, 7, 7, 12, 12, 3, 3]
+MD = [9.0, 20, 5, 20, 5, 9, 20, 9, 7, 3, 12, 5]
+D = [1.0, 3.0, 1.0, 2.0, 3.0, 2.0, 2.5, 1.5, 2.0, 1.0, 3.0, 1.2]
 
-class TestIgravrt:
-    def test_basic(self):
-        np.random.seed(181)
-        mass = np.random.rand(8) * 500 + 10
-        dist = np.random.rand(8) * 20 + 1
-        beta = 2.0
-        result = igravrt(mass, dist, beta)
-        assert result is not None
 
-    def test_returns_spatial_result(self):
-        np.random.seed(181)
-        mass = np.random.rand(8) * 500 + 10
-        dist = np.random.rand(8) * 20 + 1
-        beta = 2.0
-        result = igravrt(mass, dist, beta)
-        assert hasattr(result, "statistic")
+def _solve(A, b):
+    n = len(A)
+    M = [list(r) + [v] for r, v in zip(A, b)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        M[c], M[p] = M[p], M[c]
+        for r in range(n):
+            if r != c:
+                f = M[r][c] / M[c][c]
+                M[r] = [a - f * q for a, q in zip(M[r], M[c])]
+    return [M[i][n] / M[i][i] for i in range(n)]
 
-    def test_statistic_numeric(self):
-        np.random.seed(181)
-        mass = np.random.rand(8) * 500 + 10
-        dist = np.random.rand(8) * 20 + 1
-        beta = 2.0
-        result = igravrt(mass, dist, beta)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+
+def _ols(X, y):
+    p = len(X[0])
+    return _solve(
+        [[sum(r[a] * r[b] for r in X) for b in range(p)] for a in range(p)],
+        [sum(r[a] * t for r, t in zip(X, y)) for a in range(p)],
+    )
+
+
+def test_huff_probabilities_and_patronage():
+    M = [10.0, 20.0, 5.0]
+    Dm = [[1.0, 2.0, 0.5], [3.0, 1.0, 2.0]]
+    r = igravrt(M, Dm, beta=1.5, demand=[100.0, 50.0])
+    for i in range(2):
+        u = [M[j] / Dm[i][j] ** 1.5 for j in range(3)]
+        for j in range(3):
+            assert abs(r.extra["probabilities"][i][j] - u[j] / sum(u)) < 1e-14
+    P = r.extra["probabilities"]
+    assert abs(r.statistic - (100 * P[0][0] + 50 * P[1][0])) < 1e-12
