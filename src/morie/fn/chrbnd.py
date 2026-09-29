@@ -9,20 +9,35 @@ from ._richresult import RichResult
 __all__ = ["chernozhukov_rosen_bounds"]
 
 
-def chernozhukov_rosen_bounds(y, X=None, instrument=None, alpha=0.05,
-                              gamma=None, beta=0.1):
+def _kmax(p, m):
+    """p-quantile of the maximum of m independent standard normals."""
+    return core.qnorm(p ** (1.0 / m))
+
+
+def chernozhukov_rosen_bounds(y, X=None, instrument=None, alpha=0.05, gamma=None, beta=0.1):
     """
-    Chernozhukov-Lee-Rosen intersection bounds
+    Chernozhukov-Lee-Rosen intersection bounds (independent cells).
 
-    Formula: theta = inf_v m(v); precision-corrected critical values
+    Target: theta0 = min_v theta(v), the intersection of the upper bounds
+    theta(v) = E[Y | cell v]. The sample minimum of the cell means is biased
+    DOWNWARD (the noisiest cell tends to win), so CLR correct each cell for
+    its precision before taking the minimum:
 
-    An upper bound valid for every cell v of the instrument is valid at
-    their MINIMUM, but plugging in the sample minimum is biased downward
-    because the noisiest cell wins.  The half-median-unbiased estimator
-    keeps only the cells within beta-level precision of the minimum --
-    the estimated contact set -- and takes the minimum over that set of
-    m_v - k se_v.  With one cell it reduces to the ordinary one-sided
-    interval, and with zero sampling noise to the plain minimum.
+        theta_hat(p) = min_{v in V_hat} [ m_v + k_{V_hat}(p) s_v ],
+
+    where ``k_S(p)`` is the p-quantile of the maximum of the studentised
+    estimation errors over S -- for independent cells, the p-quantile of
+    the maximum of |S| independent standard normals, ``qnorm(p^(1/|S|))`` --
+    and the contact set keeps only the cells that can be the minimiser,
+
+        V_hat = { v : m_v <= min_u (m_u + k_V(gamma_n) s_u) + 2 k_V(gamma_n) s_v },
+
+    with ``gamma_n = 1 - 0.1 / log(n)``. ``theta_hat(1 - alpha)`` is the
+    one-sided (1 - alpha) upper confidence bound on theta0 and
+    ``theta_hat(1/2)`` the half-median-unbiased estimate. (This module used
+    to SUBTRACT a Bonferroni multiple of the standard error and to take the
+    precision level from the number of cells, which with three cells made
+    the contact-set constant negative.)
 
     Parameters
     ----------
@@ -35,21 +50,29 @@ def chernozhukov_rosen_bounds(y, X=None, instrument=None, alpha=0.05,
     alpha : float
         One-sided level of the reported bound.
     gamma : float or None
-        Precision level of the contact set; None uses
-        1 - 1/log(n_cells + 1).
+        Contact-set precision level; ``1 - 0.1 / log(n)`` when None.
     beta : float
-        Not used directly; retained for the contact-set width.
+        Unused; kept for signature stability.
 
     Returns
     -------
     result : dict
-        Keys: estimate (bound), bound, naive_min, cells, means, ses,
-        contact_set, k_alpha, n_cells, n.
+        Keys: estimate and bound (the 1 - alpha upper bound), hmu_estimate
+        (half-median-unbiased), naive_min, cells, means, ses, contact_set,
+        k_alpha, k_gamma, n_cells, n.
 
     References
     ----------
     Chernozhukov, Lee & Rosen (2013), Intersection Bounds: Estimation
-    and Inference, Econometrica 81(2):667-737.
+    and Inference, Econometrica 81(2):667-737, Sec. 3 (precision
+    correction, adaptive inequality selection with gamma_n = 1 - 0.1/log n).
+
+    Examples
+    --------
+    >>> r = chernozhukov_rosen_bounds([3.0, 3.5, 2.8, 1.0, 1.6, 1.2, 5.0, 4.1],
+    ...                               instrument=[0, 0, 0, 1, 1, 1, 2, 2])
+    >>> r["contact_set"]
+    [1]
     """
     yv = core.vec(y)
     n = len(yv)
@@ -77,32 +100,33 @@ def chernozhukov_rosen_bounds(y, X=None, instrument=None, alpha=0.05,
         sizes.append(m)
     V = len(keys)
     if gamma is None:
-        gamma = 1.0 - 1.0 / math.log(V + 1.0) if V > 1 else 0.9
+        gamma = 1.0 - 0.1 / math.log(n) if n > 1 else 0.9
     if not (0.0 < gamma < 1.0):
         raise ValueError("gamma must lie strictly in (0, 1)")
-    k_gamma = core.qnorm(gamma)
-    naive = min(means)
-    # contact set: cells whose bound is within 2 k_gamma se of the minimum
-    thr = min(means[v] + 2.0 * k_gamma * ses[v] for v in range(V))
-    contact = [v for v in range(V) if means[v] - 2.0 * k_gamma * ses[v] <= thr]
-    if not contact:
-        contact = [min(range(V), key=lambda v: means[v])]
-    # one-sided critical value over the contact set, Bonferroni in |V_hat|
-    k_alpha = core.qnorm(1.0 - alpha / len(contact))
-    bound = min(means[v] - k_alpha * ses[v] for v in contact)
-    return RichResult(payload={
-        "estimate": bound,
-        "bound": bound,
-        "naive_min": naive,
-        "cells": [float(sz) for sz in sizes],
-        "means": means,
-        "ses": ses,
-        "contact_set": contact,
-        "k_alpha": k_alpha,
-        "n_cells": V,
-        "n": n,
-        "method": "Chernozhukov-Lee-Rosen intersection bounds",
-    })
+    k_gamma = _kmax(gamma, V)
+    thr = min(means[v] + k_gamma * ses[v] for v in range(V))
+    contact = [v for v in range(V) if means[v] <= thr + 2.0 * k_gamma * ses[v]]
+    k_alpha = _kmax(1.0 - alpha, len(contact))
+    k_half = _kmax(0.5, len(contact))
+    bound = min(means[v] + k_alpha * ses[v] for v in contact)
+    hmu = min(means[v] + k_half * ses[v] for v in contact)
+    return RichResult(
+        payload={
+            "estimate": bound,
+            "bound": bound,
+            "hmu_estimate": hmu,
+            "naive_min": min(means),
+            "cells": [float(sz) for sz in sizes],
+            "means": means,
+            "ses": ses,
+            "contact_set": contact,
+            "k_alpha": k_alpha,
+            "k_gamma": k_gamma,
+            "n_cells": V,
+            "n": n,
+            "method": "Chernozhukov-Lee-Rosen intersection bounds, independent cells",
+        }
+    )
 
 
 def cheatsheet():
