@@ -1,7 +1,6 @@
 """Tests for morie.fn.bcred -- Bayesian credible interval."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bcred import credible_interval
 
 
@@ -51,3 +50,26 @@ def test_invalid_prob():
         assert False
     except ValueError:
         pass
+
+
+def test_equal_tailed_interval_recomputed():
+    """Type-7 quantiles at (1 - prob)/2 and (1 + prob)/2."""
+    import math
+
+    import pytest
+
+    x = [0.3, -1.2, 0.8, 2.0, 0.1, -0.4, 1.3, 0.6, -0.9, 0.2]
+
+    def q(p):
+        s = sorted(x)
+        h = (len(s) - 1) * p
+        lo = int(h)
+        return s[lo] + (h - lo) * (s[min(lo + 1, len(s) - 1)] - s[lo])
+
+    r = credible_interval(x, prob=0.8)
+    assert r["ci_lower"] == pytest.approx(q(0.1), rel=1e-13)
+    assert r["ci_upper"] == pytest.approx(q(0.9), rel=1e-13)
+    m = sum(x) / 10
+    assert r["mean"] == pytest.approx(m, rel=1e-14)
+    assert r["sd"] == pytest.approx(math.sqrt(sum((v - m) ** 2 for v in x) / 9), rel=1e-13)
+    assert r["median"] == pytest.approx(q(0.5), rel=1e-14)

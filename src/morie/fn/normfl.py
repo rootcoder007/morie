@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["normalizing_flow_density", "normalizing_flow"]
 
 
-def normalizing_flow_density(x, at=None, n_layers=8, n_iter=400, lr=0.05,
-                             seed=0):
+def normalizing_flow_density(x, at=None, n_layers=8, n_iter=400, lr=0.05, seed=0):
     r"""Density by a chain of invertible maps, fitted by exact likelihood.
 
     A flow writes the density through the change of variables
@@ -59,7 +58,7 @@ def normalizing_flow_density(x, at=None, n_layers=8, n_iter=400, lr=0.05,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> out = normalizing_flow_density(rng.normal(size=300), n_iter=60)
     >>> bool(out["integral"] > 0.8)
@@ -68,7 +67,7 @@ def normalizing_flow_density(x, at=None, n_layers=8, n_iter=400, lr=0.05,
     v = np.asarray(x, dtype=float).ravel()
     n = v.size
     if n < 5:
-        raise ValueError("need at least 5 observations, got %d." % n)
+        raise ValueError(f"need at least 5 observations, got {n}.")
     if np.any(~np.isfinite(v)):
         raise ValueError("x contains non-finite values.")
     L = int(n_layers)
@@ -78,9 +77,9 @@ def normalizing_flow_density(x, at=None, n_layers=8, n_iter=400, lr=0.05,
     mu, sd = float(v.mean()), float(v.std(ddof=1)) or 1.0
     z0 = (v - mu) / sd
     rng = np.random.default_rng(int(seed))
-    a = np.zeros(L)                       # log-scale per layer
-    b = np.zeros(L)                       # shift per layer
-    w = rng.normal(scale=0.01, size=L)    # tanh mixing weight
+    a = np.zeros(L)  # log-scale per layer
+    b = np.zeros(L)  # shift per layer
+    w = rng.normal(scale=0.01, size=L)  # tanh mixing weight
 
     def forward(u, a, b, w):
         ld = np.zeros_like(u)
@@ -90,19 +89,21 @@ def normalizing_flow_density(x, at=None, n_layers=8, n_iter=400, lr=0.05,
             ld = ld + a[k]
             t = np.tanh(u)
             u = u + w[k] * t
-            ld = ld + np.log(np.abs(1.0 + w[k] * (1.0 - t ** 2)) + 1e-12)
+            ld = ld + np.log(np.abs(1.0 + w[k] * (1.0 - t**2)) + 1e-12)
         return u, ld
 
     def nll(a, b, w):
         u, ld = forward(z0, a, b, w)
-        lp = -0.5 * u ** 2 - 0.5 * np.log(2 * np.pi)
+        lp = -0.5 * u**2 - 0.5 * np.log(2 * np.pi)
         return -float(np.mean(lp + ld))
 
     cur = nll(a, b, w)
     step = float(lr)
     hist = [cur]
     for _ in range(int(n_iter)):
-        ga = np.zeros(L); gb = np.zeros(L); gw = np.zeros(L)
+        ga = np.zeros(L)
+        gb = np.zeros(L)
+        gw = np.zeros(L)
         h = 1e-5
         for k in range(L):
             for arr, g in ((a, ga), (b, gb), (w, gw)):
@@ -114,7 +115,7 @@ def normalizing_flow_density(x, at=None, n_layers=8, n_iter=400, lr=0.05,
                 arr[k] = old
                 g[k] = (up - dn) / (2 * h)
         a2, b2, w2 = a - step * ga, b - step * gb, w - step * gw
-        w2 = np.clip(w2, -0.95, 0.95)      # keeps the map invertible
+        w2 = np.clip(w2, -0.95, 0.95)  # keeps the map invertible
         new = nll(a2, b2, w2)
         if new < cur:
             a, b, w, cur = a2, b2, w2, new
@@ -125,11 +126,10 @@ def normalizing_flow_density(x, at=None, n_layers=8, n_iter=400, lr=0.05,
                 break
         hist.append(cur)
 
-    grid = (np.linspace(v.min() - 3 * sd, v.max() + 3 * sd, 400)
-            if at is None else np.asarray(at, dtype=float).ravel())
+    grid = np.linspace(v.min() - 3 * sd, v.max() + 3 * sd, 400) if at is None else np.asarray(at, dtype=float).ravel()
     zq = (grid - mu) / sd
     u, ld = forward(zq, a, b, w)
-    logp = -0.5 * u ** 2 - 0.5 * np.log(2 * np.pi) + ld - np.log(sd)
+    logp = -0.5 * u**2 - 0.5 * np.log(2 * np.pi) + ld - np.log(sd)
     dens = np.exp(logp)
     integral = float(np.trapezoid(dens, grid)) if grid.size > 1 else np.nan
     npar = 3 * L
@@ -156,8 +156,7 @@ def normalizing_flow_density(x, at=None, n_layers=8, n_iter=400, lr=0.05,
                 "likelihood to compare bandwidths with"
             ),
             "loss_history": np.asarray(hist),
-            "converged": bool(len(hist) > 2
-                              and abs(hist[-1] - hist[-2]) < 1e-8),
+            "converged": bool(len(hist) > 2 and abs(hist[-1] - hist[-2]) < 1e-8),
             "n_layers": L,
             "n": int(n),
             "method": "Normalizing-flow density estimate",
@@ -166,10 +165,7 @@ def normalizing_flow_density(x, at=None, n_layers=8, n_iter=400, lr=0.05,
 
 
 def cheatsheet():
-    return (
-        "normfl: 1-D normalizing flow with exact likelihood and a "
-        "unit-integral check on the Jacobian term"
-    )
+    return "normfl: 1-D normalizing flow with exact likelihood and a unit-integral check on the Jacobian term"
 
 
 #: Catalogue alias for :func:`normalizing_flow_density`.

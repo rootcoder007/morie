@@ -1,8 +1,8 @@
 """Tests for fzlst.fauzi_l_statistic."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.fzlst import fauzi_l_statistic
 
 
@@ -20,7 +20,10 @@ def test_fzlst_symmetric_score_weights_the_tails():
     the statistic measures spread, so scaling x by 3 scales it by 3."""
     rng = np.random.default_rng(1)
     x = rng.normal(size=500)
-    J = lambda u: 12.0 * (u - 0.5)
+
+    def J(u):
+        return 12.0 * (u - 0.5)
+
     a = float(fauzi_l_statistic(x, score=J)["estimate"])
     b = float(fauzi_l_statistic(3.0 * x, score=J)["estimate"])
     assert b == pytest.approx(3.0 * a, rel=0.05)
@@ -32,3 +35,14 @@ def test_fzlst_location_shift_moves_the_mean_functional():
     a = float(fauzi_l_statistic(x)["estimate"])
     b = float(fauzi_l_statistic(x + 5.0)["estimate"])
     assert b - a == pytest.approx(5.0, abs=0.02)
+
+
+def test_l_statistic_weights_integrate_the_score():
+    """With J(u) = 2u (linear), c_{n,i} = int_{(i-1)/n}^{i/n} 2u du =
+    (2i - 1)/n^2 exactly, which the trapezoid rule reproduces."""
+    x = [3.1, -0.4, 2.2, 5.9, 1.7]
+    xs = sorted(x)
+    n = 5
+    want = sum((2 * i - 1) / n**2 * v for i, v in enumerate(xs, start=1))
+    r = fauzi_l_statistic(x, score=lambda u: 2.0 * u)
+    assert float(r["estimate"]) == pytest.approx(want, rel=1e-12)

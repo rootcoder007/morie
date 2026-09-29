@@ -1,9 +1,10 @@
 """Tests for morie.fn.qpoi — Poisson quantile function."""
 
-from morie.fn import _array_core as np
 import math
+
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.qpoi import qpois
 
 
@@ -31,3 +32,12 @@ class TestQpois:
         """Should reject lambda_ <= 0."""
         with pytest.raises(ValueError):
             qpois(0.5, lambda_=0.0)
+
+
+def test_qpois_is_the_smallest_k_with_cdf_at_least_p():
+    for p in (0.05, 0.5, 0.95):
+        cdf, k = 0.0, -1
+        while cdf < p:
+            k += 1
+            cdf += math.exp(-3.2) * 3.2**k / math.factorial(k)
+        assert int(qpois(p, lambda_=3.2)) == k

@@ -1,7 +1,6 @@
 """Tests for morie.fn.cusum — CUSUM change detection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cusum import cusum
 
 
@@ -33,3 +32,23 @@ class TestCusum:
         result = cusum(series)
         assert len(result["cusum_pos"]) == 80
         assert len(result["cusum_neg"]) == 80
+
+
+def test_page_cusum_paths_recomputed():
+    import pytest
+
+    x = [0.1, -0.2, 0.3, 1.5, 1.8, 2.1, 0.2, -0.1]
+    mu0, k, h = 0.0, 0.2, 2.0
+    sp, sn, cps, P, N = 0.0, 0.0, [], [], []
+    for t, v in enumerate(x):
+        sp = max(0.0, sp + v - mu0 - k)
+        sn = max(0.0, sn - (v - mu0) - k)
+        if sp > h or sn > h:
+            cps.append(t)
+            sp = sn = 0.0
+        P.append(sp)
+        N.append(sn)
+    r = cusum(x, target_mean=mu0, threshold=h, drift=k)
+    assert [float(v) for v in r["cusum_pos"]] == pytest.approx(P, rel=1e-14, abs=1e-15)
+    assert [float(v) for v in r["cusum_neg"]] == pytest.approx(N, rel=1e-14, abs=1e-15)
+    assert r["change_points"] == cps

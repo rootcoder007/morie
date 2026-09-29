@@ -1,7 +1,6 @@
 """Tests for morie.fn.jawa -- Jackknife estimator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.jawa import jackknife, jawa
 
@@ -31,3 +30,24 @@ class TestJawa:
         x = np.array([1.0, 2.0, np.nan, 4.0, 5.0])
         result = jackknife(x)
         assert result.extra["n"] == 4
+
+
+def test_jackknife_bias_and_se_for_a_nonlinear_statistic():
+    import math
+
+    import pytest
+
+    x = [2.0, 4.5, 3.0, 7.5, 1.0, 5.0]
+    n = 6
+
+    def stat(v):
+        m = sum(v) / len(v)
+        return sum((t - m) ** 2 for t in v) / len(v)
+
+    full = stat(x)
+    loo = [stat(x[:i] + x[i + 1 :]) for i in range(n)]
+    tb = sum(loo) / n
+    r = jackknife(x, statistic=lambda a: stat(list(a)))
+    assert r.extra["bias"] == pytest.approx((n - 1) * (tb - full), rel=1e-12)
+    assert r.extra["se"] == pytest.approx(math.sqrt((n - 1) / n * sum((t - tb) ** 2 for t in loo)), rel=1e-12)
+    assert r.extra["corrected"] == pytest.approx(full - (n - 1) * (tb - full), rel=1e-12)

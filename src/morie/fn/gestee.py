@@ -30,9 +30,9 @@ def _z(q):
     return 0.5 * (lo + hi)
 
 
-def gauss_subgaussian_estimator(y, C=None, epsilon=1.0, n=None,
-                                mechanism="laplace", delta=1e-6,
-                                alpha=0.05, seed=None, lower=None):
+def gauss_subgaussian_estimator(
+    y, C=None, epsilon=1.0, n=None, mechanism="laplace", delta=1e-6, alpha=0.05, seed=None, lower=None
+):
     """Private mean of a bounded sample.
 
     The estimator has three stages and every one of them costs
@@ -101,7 +101,7 @@ def gauss_subgaussian_estimator(y, C=None, epsilon=1.0, n=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> out = gauss_subgaussian_estimator(np.arange(100.0), C=100.0,
     ...                                   epsilon=1.0, lower=0.0, seed=0)
     >>> bool(abs(out["estimate"] - 49.5) < 5)
@@ -168,10 +168,7 @@ def gauss_subgaussian_estimator(y, C=None, epsilon=1.0, n=None,
     # split the level between sampling error and mechanism noise, using
     # the exact Laplace tail rather than a normal approximation to it
     z_half = _z(1 - alpha / 4)
-    if mechanism == "laplace":
-        noise_half = scale * math.log(2.0 / alpha)
-    else:
-        noise_half = z_half * scale
+    noise_half = scale * math.log(2.0 / alpha) if mechanism == "laplace" else z_half * scale
     half = z_half * samp_se + noise_half
 
     out = RichResult(
@@ -200,7 +197,7 @@ def gauss_subgaussian_estimator(y, C=None, epsilon=1.0, n=None,
             "clip_width": C_,
             "n_clipped": n_clipped,
             "sampling_se": float(samp_se),
-            "total_se": float(math.sqrt(samp_se ** 2 + noise_sd ** 2)),
+            "total_se": float(math.sqrt(samp_se**2 + noise_sd**2)),
             "ci_lower": float(priv - half),
             "ci_upper": float(priv + half),
             "ci_naive_lower": float(ci_naive[0]),
@@ -235,8 +232,7 @@ def gauss_subgaussian_estimator(y, C=None, epsilon=1.0, n=None,
     return out
 
 
-def dp_mean_error_curve(y, widths, epsilon=1.0, reps=200, seed=0,
-                        mechanism="laplace", lower=None):
+def dp_mean_error_curve(y, widths, epsilon=1.0, reps=200, seed=0, mechanism="laplace", lower=None):
     """Total private error as a function of the clipping width.
 
     Traces bias, noise and root mean squared error across candidate

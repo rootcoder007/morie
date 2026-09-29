@@ -1,7 +1,6 @@
 """Tests for morie.fn.bal -- Balance diagnostics."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bal import balance_diagnostics
 
 
@@ -38,3 +37,20 @@ class TestBalanceDiagnostics:
         results = balance_diagnostics(X, T, covariate_names=["age", "income"])
         assert results[0]["variable"] == "age"
         assert results[1]["variable"] == "income"
+
+
+def test_smd_raw_and_weighted_recomputed():
+    import math
+
+    import pytest
+
+    X = [[1.0], [2.0], [3.0], [4.0], [5.0], [6.0]]
+    T = [0, 0, 0, 1, 1, 1]
+    w = [1.0, 2.0, 1.0, 1.0, 1.0, 3.0]
+    pooled = math.sqrt((1.0 + 1.0) / 2)
+    r = balance_diagnostics(X, T, weights=w)[0]
+    assert r["smd_raw"] == pytest.approx((5.0 - 2.0) / pooled, rel=1e-14)
+    wm1 = (4 + 5 + 18) / 5
+    wm0 = (1 + 4 + 3) / 4
+    assert r["smd_weighted"] == pytest.approx((wm1 - wm0) / pooled, rel=1e-14)
+    assert r["balanced_raw"] is False

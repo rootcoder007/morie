@@ -56,7 +56,7 @@ def brr_variance(estimates, full_estimate=None, fay_k=0.0):
     Without a Fay adjustment this is the mean squared deviation from the
     full-sample estimate.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> reps = np.array([10.0, 12.0, 8.0, 11.0])
     >>> r = brr_variance(reps, full_estimate=10.0)
     >>> float(round(r["variance"], 6))
@@ -91,13 +91,16 @@ def brr_variance(estimates, full_estimate=None, fay_k=0.0):
     se = float(np.sqrt(max(var, 0.0)))
     return RichResult(
         title="BRR variance",
-        summary_lines=[("replicates", int(R)), ("Fay k", fay_k),
-                       ("variance", var), ("se", se)],
-        warnings=["the (1-k)^2 divisor is required under a Fay adjustment; "
-                  "omitting it inflates the variance by 1/(1-k)^2"],
+        summary_lines=[("replicates", int(R)), ("Fay k", fay_k), ("variance", var), ("se", se)],
+        warnings=[
+            "the (1-k)^2 divisor is required under a Fay adjustment; omitting it inflates the variance by 1/(1-k)^2"
+        ],
         payload={
-            "variance": var, "se": se, "n_replicates": int(R),
-            "fay_k": fay_k, "estimate": theta,
+            "variance": var,
+            "se": se,
+            "n_replicates": int(R),
+            "fay_k": fay_k,
+            "estimate": theta,
             "cv": float(se / abs(theta)) if theta != 0 else float("nan"),
             "method": "brr_variance",
         },

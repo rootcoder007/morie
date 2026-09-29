@@ -1,8 +1,8 @@
 """Tests for morie.fn.mipol — multiple imputation pooling (Rubin's rules)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mipol import mi_pool
 
 
@@ -24,3 +24,18 @@ class TestMIPool:
         res = mi_pool(estimates, variances)
         assert res.extra["se"] > 0
         assert res.extra["m"] == 10
+
+
+def test_rubins_rules_recomputed():
+    q = [1.2, 1.5, 0.9, 1.4]
+    u = [0.10, 0.12, 0.09, 0.11]
+    m = 4
+    qb = sum(q) / m
+    ub = sum(u) / m
+    b = sum((t - qb) ** 2 for t in q) / (m - 1)
+    T = ub + (1 + 1 / m) * b
+    g = (1 + 1 / m) * b / T
+    res = mi_pool(q, u)
+    assert res.extra["total_variance"] == pytest.approx(T, rel=1e-13)
+    assert res.extra["frac_missing_info"] == pytest.approx(g, rel=1e-13)
+    assert res.extra["df"] == pytest.approx((m - 1) / g**2, rel=1e-12)

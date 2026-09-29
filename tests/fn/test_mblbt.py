@@ -1,8 +1,8 @@
 """Tests for morie.fn.mblbt -- Moving block bootstrap."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mblbt import moving_block_bootstrap
 
 
@@ -38,3 +38,20 @@ class TestMovingBlockBootstrap:
     def test_invalid_statistic(self):
         with pytest.raises(ValueError, match="statistic must be"):
             moving_block_bootstrap(np.arange(10, dtype=float), statistic="bad")
+
+
+def test_moving_blocks_replayed():
+    import math
+
+    x = np.array([0.5, 0.9, 0.4, 1.3, 1.1, 0.2, -0.3, 0.1, 0.8, 0.6])
+    n, L, B = 10, 3, 20
+    xs = [float(v) for v in x]
+    rng = np.random.default_rng(12)
+    vals = []
+    for _ in range(B):
+        starts = rng.integers(0, n - L + 1, size=math.ceil(n / L))
+        samp = [v for s in starts for v in xs[int(s) : int(s) + L]][:n]
+        vals.append(sum(samp) / n)
+    m = sum(vals) / B
+    r = moving_block_bootstrap(x, block_size=L, n_boot=B, seed=12)
+    assert r["se"] == pytest.approx(math.sqrt(sum((v - m) ** 2 for v in vals) / (B - 1)), rel=1e-12)

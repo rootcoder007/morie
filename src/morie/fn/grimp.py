@@ -48,7 +48,7 @@ def geron_simple_imputer(X, strategy="mean"):
     --------
     The mean of the observed 1 and 3 fills the hole:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = geron_simple_imputer([[1.0], [np.nan], [3.0]])
     >>> r["imputed"]
     [[1.0], [2.0], [3.0]]
@@ -93,7 +93,7 @@ def geron_simple_imputer(X, strategy="mean"):
             stats[j] = np.median(col)
         else:
             vals, counts = np.unique(col, return_counts=True)
-            stats[j] = vals[counts.argmax()]      # ties -> smallest value
+            stats[j] = vals[counts.argmax()]  # ties -> smallest value
 
     out = np.where(miss, stats, A)
 

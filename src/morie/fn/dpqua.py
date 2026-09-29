@@ -58,7 +58,7 @@ def dp_quantile(x, q=0.5, epsilon=1.0, a=None, b=None, seed=None):
     Rank-based utility means one wild value cannot drag the release with it --
     the failure mode that rules out adding noise to a quantile.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> v = rng.normal(0, 1, 2000)
     >>> med = dp_quantile(v, 0.5, epsilon=1.0, a=-5, b=5, seed=1)["release"]
@@ -71,9 +71,9 @@ def dp_quantile(x, q=0.5, epsilon=1.0, a=None, b=None, seed=None):
 
     Larger epsilon concentrates the release near the true quantile.
 
-    >>> errs = [abs(dp_quantile(v, 0.5, epsilon=e, a=-5, b=5, seed=2)["release"])
-    ...         for e in (0.05, 20.0)]
-    >>> bool(errs[1] < errs[0])
+    >>> pk = [float(max(dp_quantile(v, 0.5, epsilon=e, a=-5, b=5, seed=2)["probabilities"]))
+    ...       for e in (0.05, 20.0)]
+    >>> bool(pk[1] > pk[0])
     True
 
     Omitting bounds is allowed but flagged, since taking them from the data is
@@ -122,10 +122,15 @@ def dp_quantile(x, q=0.5, epsilon=1.0, a=None, b=None, seed=None):
         summary_lines=[("epsilon", epsilon), ("n", int(n)), ("release", rel)],
         warnings=warn,
         payload={
-            "release": rel, "true_quantile": float(np.quantile(vc, q)),
+            "release": rel,
+            "true_quantile": float(np.quantile(vc, q)),
             "interval": (float(edges[i]), float(edges[i + 1])),
-            "probabilities": p, "bounds": (a, b), "q": float(q),
-            "n": int(n), "epsilon": epsilon, "method": "dp_quantile",
+            "probabilities": p,
+            "bounds": (a, b),
+            "q": float(q),
+            "n": int(n),
+            "epsilon": epsilon,
+            "method": "dp_quantile",
         },
     )
 

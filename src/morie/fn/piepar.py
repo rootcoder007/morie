@@ -37,6 +37,9 @@ def pie_parameters(y, X, intervention_dist):
     -------
     RichResult
         ``estimate`` (PIE), ``observed``, ``intervened``, ``se``, ``n``.
+        With an intercept the observed mean equals the mean fitted value,
+        so ``PIE = b_1 (xbar* - xbar)`` and ``se = |xbar* - xbar| se(b_1)``,
+        the OLS standard error conditional on the design.
 
     References
     ----------
@@ -47,7 +50,7 @@ def pie_parameters(y, X, intervention_dist):
     Xm = C.mat(X)
     n = len(yv)
     W = C.cbind1(Xm)
-    b, fitted, resid, _ = S.ols(W, yv)
+    b, fitted, resid, xtxinv = S.ols(W, yv)
     xs = C.vec(intervention_dist)
     tot = 0.0
     for xv in xs:
@@ -55,12 +58,25 @@ def pie_parameters(y, X, intervention_dist):
         tot += sum(C.dot(r, b) for r in rows) / n
     interv = tot / len(xs)
     obs = sum(yv) / n
-    m = sum(resid) / n
-    se = math.sqrt(sum((t - m) ** 2 for t in resid) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": interv - obs, "observed": obs, "intervened": interv,
-        "se": se, "n": n,
-        "method": "Population intervention effect"})
+    # PIE is linear in the coefficients, b'(wbar* - wbar) = b_1 (xbar* - xbar),
+    # so its OLS standard error is |xbar* - xbar| se(b_1) given the design.
+    p = len(b)
+    rss = 0.0
+    for t in resid:
+        rss += t * t
+    xbar = sum(Xm[i][0] for i in range(n)) / n
+    dx = sum(xs) / len(xs) - xbar
+    se = abs(dx) * math.sqrt(rss / (n - p) * xtxinv[1][1]) if n > p else float("nan")
+    return RichResult(
+        payload={
+            "estimate": interv - obs,
+            "observed": obs,
+            "intervened": interv,
+            "se": se,
+            "n": n,
+            "method": "Population intervention effect",
+        }
+    )
 
 
 pieparameters = pie_parameters

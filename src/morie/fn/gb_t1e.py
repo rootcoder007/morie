@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Attainable exact sizes of a test with a discrete null distribution."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['exactsize', 'gibbons_type1_error']
+__all__ = ["exactsize", "gibbons_type1_error"]
 
 
 def exactsize(pmf, alpha=0.05, upper=True):
@@ -37,6 +35,13 @@ def exactsize(pmf, alpha=0.05, upper=True):
     References
     ----------
     Gibbons & Chakraborti (2011), Sec. 1.2.9, p. 26.
+
+    Examples
+    --------
+    >>> import math
+    >>> r = exactsize([math.comb(5, k) / 32 for k in range(6)], alpha=0.2)
+    >>> r["alpha_exact"], r["cut"]
+    (0.1875, 4)
     """
     p = [float(v) for v in pmf]
     k = len(p)
@@ -56,9 +61,12 @@ def exactsize(pmf, alpha=0.05, upper=True):
         for i in range(k):
             acc += p[i]
             sizes.append(acc)
+    # The exact size of the test is the LARGEST attainable size not above
+    # alpha: scan from the widest rejection region inward and stop at the
+    # first that fits (upper tail: small cut points first; lower tail: large).
     best = float("nan")
     cut = -1
-    rng = range(k - 1, -1, -1) if upper else range(k)
+    rng = range(k) if upper else range(k - 1, -1, -1)
     for i in rng:
         if sizes[i] <= alpha:
             best = sizes[i]

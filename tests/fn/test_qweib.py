@@ -1,8 +1,8 @@
 """Tests for morie.fn.qweib — Weibull quantile function."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.qweib import qweib
 
 
@@ -27,3 +27,10 @@ class TestQweib:
         """Should reject shape <= 0."""
         with pytest.raises(ValueError):
             qweib(0.5, shape=0)
+
+
+def test_weibull_quantile_closed_form():
+    import math
+
+    for p in (0.1, 0.5, 0.9):
+        assert qweib(p, shape=1.7, scale=2.5) == pytest.approx(2.5 * (-math.log(1 - p)) ** (1 / 1.7), rel=1e-12)

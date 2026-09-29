@@ -47,7 +47,7 @@ def dp_median(x, epsilon=1.0, a=None, b=None, seed=None):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> v = rng.normal(5.0, 1.0, 3000)
     >>> r = dp_median(v, epsilon=1.0, a=0, b=10, seed=1)
@@ -66,9 +66,13 @@ def dp_median(x, epsilon=1.0, a=None, b=None, seed=None):
         summary_lines=[("epsilon", r["epsilon"]), ("release", r["release"])],
         warnings=list(r.warnings),
         payload={
-            "release": r["release"], "true_median": r["true_quantile"],
-            "interval": r["interval"], "bounds": r["bounds"],
-            "n": r["n"], "epsilon": r["epsilon"], "method": "dp_median",
+            "release": r["release"],
+            "true_median": r["true_quantile"],
+            "interval": r["interval"],
+            "bounds": r["bounds"],
+            "n": r["n"],
+            "epsilon": r["epsilon"],
+            "method": "dp_median",
         },
     )
 

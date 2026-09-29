@@ -27,3 +27,19 @@ class TestRubinsRules:
         """Fewer than 2 estimates should raise ValueError."""
         with pytest.raises(ValueError, match="at least 2"):
             rubins_rules([1.0], [0.5])
+
+
+def test_barnard_rubin_pool_recomputed():
+
+    q = [1.2, 1.5, 0.9, 1.4]
+    se = [0.3, 0.35, 0.28, 0.32]
+    m = 4
+    qb = sum(q) / m
+    ub = sum(s * s for s in se) / m
+    b = sum((t - qb) ** 2 for t in q) / (m - 1)
+    T = ub + (1 + 1 / m) * b
+    r_ = (1 + 1 / m) * b / ub
+    res = rubins_rules(q, se)
+    assert res["total_var"] == pytest.approx(T, rel=1e-13)
+    assert res["df"] == pytest.approx((m - 1) * (1 + ub / ((1 + 1 / m) * b)) ** 2, rel=1e-12)
+    assert res["fmi"] == pytest.approx((r_ + 2 / (m + 1)) / (1 + r_), rel=1e-12)
