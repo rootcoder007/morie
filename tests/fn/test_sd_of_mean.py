@@ -1,24 +1,9 @@
-"""Tests for sd_of_mean.sd_of_mean."""
+"""Tests for morie.fn.sd_of_mean: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.sd_of_mean import (
-    sd_of_mean,
-)
+from morie.fn.sd_of_mean import sd_of_mean
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e53_basic():
-    """Test basic functionality."""
-    sigma = 0.1
-    n = 5
-    result = sd_of_mean(sigma, n)
-    assert isinstance(result, dict)
-    assert "sigma" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e53_edge():
-    """Test edge cases."""
-    sigma = 0.1
-    n = 5
-    result = sd_of_mean(sigma, n)
-    assert isinstance(result, dict)
+def test_sigma_over_root_n():
+    assert abs(sd_of_mean(3.0, 7)["sd_mean"] - 3.0 / math.sqrt(7)) < 1e-15

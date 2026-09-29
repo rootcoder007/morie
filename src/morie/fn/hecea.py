@@ -21,6 +21,11 @@ def cost_effectiveness_plane(
     Returns
     -------
     DescriptiveResult
+
+    Examples
+    --------
+    >>> cost_effectiveness_plane([1.0, -2.0, 3.0, 0.5], [0.1, 0.2, -0.3, 0.4]).value
+    {'NE': 50.0, 'NW': 25.0, 'SE': 25.0, 'SW': 0.0}
     """
     c = np.asarray(cost_diffs, dtype=float)
     e = np.asarray(effect_diffs, dtype=float)

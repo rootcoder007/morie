@@ -1,22 +1,17 @@
-"""Tests for prob_or_exclusive.prob_or_exclusive."""
+"""Tests for morie.fn.prob_or_exclusive: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.prob_or_exclusive import (
-    prob_or_exclusive,
-)
+from morie.fn.prob_or_exclusive import prob_or_exclusive
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner2e14_basic():
-    """Test basic functionality."""
-    ps = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-    result = prob_or_exclusive(ps)
-    assert isinstance(result, dict)
-    assert "ps" in result
+def test_sum_rule():
+    ps = [0.1, 0.25, 0.3]
+    assert abs(prob_or_exclusive(ps)["p_or"] - math.fsum(ps)) < 1e-15
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner2e14_edge():
-    """Test edge cases."""
-    ps = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-    result = prob_or_exclusive(ps)
-    assert isinstance(result, dict)
+def test_rejects_non_exclusive():
+    import pytest
+
+    with pytest.raises(ValueError):
+        prob_or_exclusive([0.6, 0.7])

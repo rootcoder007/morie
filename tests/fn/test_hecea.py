@@ -1,23 +1,13 @@
-"""Tests for morie.fn.hecea -- CE plane."""
-
-from morie.fn import _array_core as np
+"""Tests for morie.fn.hecea: values recomputed from the definition."""
 
 from morie.fn.hecea import cost_effectiveness_plane
 
 
-class TestCEPlane:
-    def test_basic(self):
-        rng = np.random.default_rng(42)
-        res = cost_effectiveness_plane(
-            cost_diffs=rng.normal(100, 50, 1000),
-            effect_diffs=rng.normal(0.5, 0.3, 1000),
-        )
-        assert res.name == "ce_plane"
-        total = sum(res.value.values())
-        assert abs(total - 100.0) < 0.1
-
-    def test_mismatch(self):
-        import pytest
-
-        with pytest.raises(ValueError):
-            cost_effectiveness_plane([1, 2], [1])
+def test_quadrant_percentages():
+    c = [1.0, -2.0, 3.0, 0.5, -1.0, 2.0]
+    e = [0.1, 0.2, -0.3, 0.4, -0.5, 0.0]
+    r = cost_effectiveness_plane(c, e)
+    q = r.value
+    assert abs(q["NE"] - 100 * sum(1 for a, b in zip(c, e) if a > 0 and b > 0) / 6) < 1e-12
+    assert abs(q["NW"] - 100 * sum(1 for a, b in zip(c, e) if a > 0 and b <= 0) / 6) < 1e-12
+    assert abs(sum(q.values()) - 100.0) < 1e-12

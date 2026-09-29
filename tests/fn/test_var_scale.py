@@ -1,24 +1,9 @@
-"""Tests for var_scale.var_scale."""
+"""Tests for morie.fn.var_scale: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
-
-from morie.fn.var_scale import (
-    var_scale,
-)
+from morie.fn.var_scale import var_scale
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e24_basic():
-    """Test basic functionality."""
-    a = 0.5
-    var_x = 0.5
-    result = var_scale(a, var_x)
-    assert isinstance(result, dict)
-    assert "a" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e24_edge():
-    """Test edge cases."""
-    a = 0.5
-    var_x = 0.5
-    result = var_scale(a, var_x)
-    assert isinstance(result, dict)
+def test_variance_scaling_on_a_pmf():
+    v, p = [1.0, 2.0, 6.0], [0.2, 0.5, 0.3]
+    var = lambda vals: sum(q * (a - sum(q2 * b for b, q2 in zip(vals, p))) ** 2 for a, q in zip(vals, p))  # noqa: E731
+    assert abs(var_scale(-1.5, var(v))["var_aX"] - var([-1.5 * a for a in v])) < 1e-13

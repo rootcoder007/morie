@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def expectation_linear(a, e_x, b, e_y, c):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.13).
+
+    Examples
+    --------
+    >>> expectation_linear(2, 1.5, -1, 4, 3)["expectation"]
+    2.0
     """
     value = _morin.expectation_linear(a, e_x, b, e_y, c)
     payload = {"expectation": value}

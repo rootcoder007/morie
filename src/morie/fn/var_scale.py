@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def var_scale(a, var_x):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.24).
+
+    Examples
+    --------
+    >>> var_scale(-3, 2.0)["var_aX"]
+    18.0
     """
     value = _morin.var_scale(a, var_x)
     payload = {"a": float(a), "var_x": float(var_x), "var_aX": value}

@@ -21,6 +21,11 @@ def years_life_lost(
     Returns
     -------
     ESRes
+
+    Examples
+    --------
+    >>> years_life_lost([2, 1, 3], [30.5, 12.0, 4.0]).estimate
+    85.0
     """
     d = np.atleast_1d(np.asarray(deaths, dtype=float))
     le = np.atleast_1d(np.asarray(life_expectancy_remaining, dtype=float))

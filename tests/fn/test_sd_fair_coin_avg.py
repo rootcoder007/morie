@@ -1,22 +1,12 @@
-"""Tests for sd_fair_coin_avg.sd_fair_coin_avg."""
+"""Tests for morie.fn.sd_fair_coin_avg: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.sd_fair_coin_avg import (
-    sd_fair_coin_avg,
-)
+from morie.fn.sd_fair_coin_avg import sd_fair_coin_avg
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e52_basic():
-    """Test basic functionality."""
-    n = 5
-    result = sd_fair_coin_avg(n)
-    assert isinstance(result, dict)
-    assert "n" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e52_edge():
-    """Test edge cases."""
-    n = 5
-    result = sd_fair_coin_avg(n)
-    assert isinstance(result, dict)
+def test_sd_of_the_heads_fraction():
+    n = 12
+    # exact binomial variance of k / n
+    var = sum(math.comb(n, k) / 2**n * (k / n - 0.5) ** 2 for k in range(n + 1))
+    assert abs(sd_fair_coin_avg(n)["sd_avg"] - math.sqrt(var)) < 1e-15

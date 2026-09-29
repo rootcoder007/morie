@@ -1,31 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Power for two-proportion z-test."""
 
-import math
+from __future__ import annotations
 
-from . import _array_core as np
-
-
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from ._glm_core import NormalIndPower
-except ImportError:
-    NormalIndPower = _MissingDep('NormalIndPower')
+from . import _powercore as pc
 
 
 def power_prop_test(
@@ -36,73 +14,78 @@ def power_prop_test(
     power: float | None = None,
     *,
     alternative: str = "two-sided",
+    strict: bool = True,
+    method: str = "fleiss",
 ) -> float:
-    """
-    Power for two-proportion z-test.
+    r"""Power for two-proportion z-test.
 
-    Solves for one missing parameter among ``n``, ``p1``, ``p2``, or ``power``.
-    Mirrors R's ``power.prop.test()``.
+    Solve for ``n`` (per group) or ``power`` of the two-sample test of
+    proportions. ``method="fleiss"`` (default) is the normal approximation
+    of R's ``power.prop.test`` (Fleiss 1981): ``power = Phi((sqrt(n) |p1 -
+    p2| - z sqrt(2 pbar qbar)) / sqrt(p1 q1 + p2 q2))`` with ``z =
+    z_{1 - alpha/tside}``, plus the far tail when ``strict`` and two-sided
+    (``strict=False`` is R's default). ``method="cohen_h"`` uses Cohen's
+    (1988) arcsine effect size ``h = |2 asin sqrt(p1) - 2 asin sqrt(p2)|``
+    with ``power = Phi(h sqrt(n/2) - z) (+ Phi(-h sqrt(n/2) - z))``, as
+    ``pwr::pwr.2p.test``. ``n`` is found by bisection on ``[1, 1e7]``.
 
     :param n: Sample size per group.
     :param p1: Proportion in group 1.
     :param p2: Proportion in group 2.
-    :param alpha: Type I error rate. Default 0.05.
-    :param power: Desired power.
-    :param alternative: ``"two-sided"`` or ``"one-sided"``. Default ``"two-sided"``.
-    :return: The value of the missing parameter (n, or power).
-    :raises ValueError: If p1 and p2 are both provided but either is out of [0, 1].
-
-    Notes
-    -----
-    The NormalIndPower class operates on an arcsine-transformed effect size
-    h = 2*arcsin(sqrt(p1)) - 2*arcsin(sqrt(p2)) (Cohen's h). This is the
-    conventional approach for proportion tests.
+    :param alpha: Significance level.
+    :param power: Target power.
+    :param alternative: ``"two-sided"`` or ``"one-sided"``.
+    :param strict: Include the far rejection tail (``fleiss``).
+    :param method: ``"fleiss"`` or ``"cohen_h"``.
+    :return: ``n`` or ``power``.
 
     References
     ----------
-    Cohen, J. (1988). Statistical Power Analysis for the Behavioral Sciences (2nd ed.).
-        Section 7. Effect size h.
-    R Core Team (2024). power.prop.test {stats}. R documentation.
+    Fleiss, J. L. (1981). *Statistical Methods for Rates and Proportions*, 2nd ed. Wiley.
+
+    Cohen, J. (1988). *Statistical Power Analysis for the Behavioral Sciences*, 2nd ed. Erlbaum, ch. 6.
+
+    Examples
+    --------
+    >>> round(power_prop_test(n=100, p1=0.5, p2=0.7), 12)
+    0.828109771966
+    >>> round(power_prop_test(p1=0.5, p2=0.7, power=0.8), 8)
+    92.99869757
     """
-    if p1 is not None and not 0 < p1 < 1:
-        raise ValueError(f"p1 must be in (0, 1), got {p1}.")
-    if p2 is not None and not 0 < p2 < 1:
-        raise ValueError(f"p2 must be in (0, 1), got {p2}.")
+    if p1 is None or p2 is None:
+        raise ValueError("p1 and p2 must both be provided.")
+    for v, nm in ((p1, "p1"), (p2, "p2")):
+        if not 0 < v < 1:
+            raise ValueError(f"{nm} must be in (0, 1), got {v}.")
     if not 0 < alpha < 1:
         raise ValueError(f"alpha must be in (0, 1), got {alpha}.")
-    two_tailed = alternative == "two-sided"
+    if (n is None) == (power is None):
+        raise ValueError("Provide exactly one of (n, power) when p1 and p2 are given.")
+    tside = {"two-sided": 2, "one-sided": 1, "greater": 1}.get(alternative)
+    if tside is None:
+        raise ValueError(f"alternative must be 'two-sided' or 'one-sided', got {alternative!r}.")
+    if method == "fleiss":
 
-    if p1 is not None and p2 is not None:
-        # Cohen's h: effect size for proportions
-        h = abs(2 * math.asin(math.sqrt(p1)) - 2 * math.asin(math.sqrt(p2)))
-        analysis = NormalIndPower()
-        if n is None and power is not None:
-            result = analysis.solve_power(
-                effect_size=h,
-                alpha=float(alpha),
-                power=float(power),
-                alternative="two-sided" if two_tailed else "larger",
-            )
-            return float(result)
-        elif power is None and n is not None:
-            result = analysis.solve_power(
-                effect_size=h,
-                alpha=float(alpha),
-                nobs1=float(n),
-                alternative="two-sided" if two_tailed else "larger",
-            )
-            return float(np.clip(result, 0.0, 1.0))
-        else:
-            raise ValueError("Provide exactly one of (n, power) when p1 and p2 are given.")
+        def pw(nn):
+            return pc.prop_power(float(nn), float(p1), float(p2), float(alpha), tside, strict)
+
+    elif method == "cohen_h":
+
+        def pw(nn):
+            return pc.cohen_h_power(float(nn), float(p1), float(p2), float(alpha), tside)
+
     else:
-        raise ValueError("p1 and p2 must both be provided.")
+        raise ValueError("method must be 'fleiss' or 'cohen_h'")
+    if power is None:
+        return pw(n)
+    return pc.solve_up(lambda v: pw(v) - power, 1.0, 1e7)
 
 
 pwr_p = power_prop_test
 
 
 def cheatsheet() -> str:
-    return "power_prop_test({}) -> Power for two-proportion z-test."
+    return "power_prop_test(n, p1, p2, alpha, power) -> power.prop.test (Fleiss) or Cohen's h"
 
 
 # compact alias per ledger/NAMING.md

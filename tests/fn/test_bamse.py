@@ -1,23 +1,16 @@
-"""Tests for morie.fn.bamse -- posterior standard errors."""
+"""Tests for morie.fn.bamse: values recomputed from the definition."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.bamse import bamse, bayesian_se_from_posterior
-
-
-def test_alias():
-    assert bamse is bayesian_se_from_posterior
+from morie.fn.bamse import bayesian_se_from_posterior
 
 
-def test_smoke():
-    chain = np.random.default_rng(42).standard_normal((200, 2))
+def test_posterior_sd_per_parameter():
+    chain = [[1.0, 5.0], [2.0, 3.0], [4.0, 4.0], [0.5, 6.5]]
     r = bayesian_se_from_posterior(chain)
-    assert r.name == "bayesian_se_from_posterior"
-    assert len(r.extra["ses"]) == 2
-    assert all(s > 0 for s in r.extra["ses"])
-
-
-def test_1d():
-    chain = np.array([1.0, 2.0, 3.0, 4.0])
-    r = bayesian_se_from_posterior(chain)
-    assert r.value > 0
+    for k in range(2):
+        col = [row[k] for row in chain]
+        m = sum(col) / 4
+        assert abs(r.extra["ses"][k] - math.sqrt(sum((v - m) ** 2 for v in col) / 3)) < 1e-14
+    assert r.value == r.extra["ses"][0]
+    assert r.extra["n_samples"] == 4

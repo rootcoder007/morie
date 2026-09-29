@@ -1,34 +1,51 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SEM Cochrane-Orcutt spatial filter transform."""
 
-from . import _array_core as np
+from __future__ import annotations
+
+from . import _spdiag as sd
 from ._containers import SpatialResult
 
 
 def semflt(y, W, lam=0.3):
-    """SEM Cochrane-Orcutt spatial filter transform.
+    r"""SEM Cochrane-Orcutt spatial filter transform.
 
-    Category: SEM
+    The spatial Cochrane-Orcutt transform ``y* = (I - lam W) y`` that
+    whitens a spatial error process (Anselin 1988, sec. 6.2): after it, OLS of ``y*`` on
+    the equally filtered regressors is the GLS / ML step for a given
+    ``lam``.
 
     Parameters
     ----------
-    y, W, lam=0.3 : see function signature.
+    y : array-like, shape (n,)
+        Series to filter.
+    W : array-like, shape (n, n)
+        Spatial weights.
+    lam : float
+        Autoregressive parameter.
 
     Returns
     -------
     SpatialResult
+        ``statistic`` is ``lam``; ``local_values`` and
+        ``extra["filtered"]`` the filtered series.
+
+    References
+    ----------
+    Anselin, L. (1988). *Spatial Econometrics: Methods and Models*. Kluwer, Dordrecht.
+
+    Examples
+    --------
+    >>> [round(v, 12) for v in semflt([1.0, 2.0, 4.0], [[0, 1, 0], [.5, 0, .5], [0, 1, 0]], 0.5).local_values]
+    [0.0, 0.75, 3.0]
     """
-    try:
-        n = len(y)
-        Wy = np.dot(W, y)
-        result = float(np.corrcoef(y, Wy)[0, 1])
-        return SpatialResult(name="semflt", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="semflt", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    yv, Wm = sd._vec(y), sd._mat(W)
+    f = [a - float(lam) * b for a, b in zip(yv, sd._mv(Wm, yv))]
+    return SpatialResult(name="semflt", statistic=float(lam), local_values=f, extra={"filtered": f})
 
 
 semflt_fn = semflt
 
 
 def cheatsheet() -> str:
-    return "semflt({}) -> SEM Cochrane-Orcutt spatial filter transform."
+    return "semflt(y, W, lam) -> (I - lam W) y"

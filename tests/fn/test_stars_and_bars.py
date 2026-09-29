@@ -1,24 +1,11 @@
-"""Tests for stars_and_bars.stars_and_bars."""
+"""Tests for morie.fn.stars_and_bars: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
-
-from morie.fn.stars_and_bars import (
-    stars_and_bars,
-)
+from morie.fn.stars_and_bars import stars_and_bars
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e57_basic():
-    """Test basic functionality."""
-    n = 5
-    N = 5
-    result = stars_and_bars(n, N)
-    assert isinstance(result, dict)
-    assert "n" in result
+def test_count_multisets_by_enumeration():
+    import itertools
 
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e57_edge():
-    """Test edge cases."""
-    n = 5
-    N = 5
-    result = stars_and_bars(n, N)
-    assert isinstance(result, dict)
+    for n, N in ((3, 4), (5, 2), (0, 3)):
+        want = sum(1 for _ in itertools.combinations_with_replacement(range(N), n))
+        assert stars_and_bars(n, N)["count"] == want

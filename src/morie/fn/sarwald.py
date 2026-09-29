@@ -1,33 +1,47 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SAR Wald test on spatial lag parameter."""
 
+from __future__ import annotations
+
+from . import _spdiag as sd
 from ._containers import SpatialResult
 
 
 def sarwald(rho, se_rho):
-    """SAR Wald test on spatial lag parameter.
+    r"""SAR Wald test on spatial lag parameter.
 
-    Category: SAR
+    ``W = (rho / se)^2`` against chi-square(1), equivalently the
+    two-sided z test ``z = rho / se`` (Anselin 1988, sec. 6.3);
+    :func:`morie.fn.spdurbin.spatial_wald_test` with a 1 x 1 covariance.
 
     Parameters
     ----------
-    rho, se_rho : see function signature.
+    rho : float
+        Estimate.
+    se_rho : float
+        Its standard error.
 
     Returns
     -------
     SpatialResult
+        ``statistic`` (Wald), ``p_value``; ``extra["z"]``.
+
+    References
+    ----------
+    Anselin, L. (1988). *Spatial Econometrics: Methods and Models*. Kluwer, Dordrecht.
+
+    Examples
+    --------
+    >>> r = sarwald(0.3, 0.1)
+    >>> round(r.statistic, 12), round(r.p_value, 12)
+    (9.0, 0.002699796063)
     """
-    try:
-        result = float((rho / se_rho) ** 2)
-        return SpatialResult(name="sarwald", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="sarwald", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    z = float(rho) / float(se_rho)
+    return SpatialResult(name="sarwald", statistic=z * z, p_value=sd._upper_p(z * z, 1), extra={"z": z, "df": 1})
 
 
 sarwald_fn = sarwald
 
 
 def cheatsheet() -> str:
-    return "sarwald({}) -> SAR Wald test on spatial lag parameter."
+    return "sarwald(rho, se_rho) -> Wald (est/se)^2, chi-square(1)"

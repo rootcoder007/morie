@@ -6,7 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -19,6 +18,11 @@ def chain_rule(p_a, p_b_given_a, p_b, p_a_given_b):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.9).
+
+    Examples
+    --------
+    >>> chain_rule(0.5, 0.4, 0.25, 0.8)["p_and"]
+    0.2
     """
     first = _morin.chain_rule(p_a, p_b_given_a)
     second = _morin.chain_rule(p_b, p_a_given_b)

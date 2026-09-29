@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dynamic conditional correlation GARCH -- front-end to the DCC engine."""
 
-from ._richresult import RichResult
-
 __all__ = ["dcc_garch"]
 
 
@@ -36,6 +34,14 @@ def dcc_garch(X):
     ----------
     Engle, R. F. (2002). Dynamic conditional correlation. *Journal of
     Business & Economic Statistics*, 20(3), 339-350.
+
+    Examples
+    --------
+    >>> import math
+    >>> X = [[math.sin(0.7 * t) + 0.3 * math.cos(1.9 * t), math.sin(0.7 * t + 0.4) + 0.2 * math.sin(2.3 * t)] for t in range(60)]
+    >>> r = dcc_garch(X)
+    >>> r["n"], r["k"]
+    (60, 2)
     """
     from .dccmd import dcc_multivariate_garch
 

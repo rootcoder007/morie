@@ -1,24 +1,19 @@
-"""Tests for morie.fn.sarwald."""
+"""Tests for morie.fn.sarwald: every expected value is recomputed from the formula."""
+
+import math
 
 from morie.fn.sarwald import sarwald
 
 
-class TestSarwald:
-    def test_basic(self):
-        rho = 0.4
-        se_rho = 0.1
-        result = sarwald(rho, se_rho)
-        assert result is not None
+def test_wald_is_squared_z_with_normal_pvalue():
+    est, se = 0.37, 0.12
+    r = sarwald(est, se)
+    z = est / se
+    assert abs(r.statistic - z * z) < 1e-12
+    assert abs(r.extra["z"] - z) < 1e-14
+    assert abs(r.p_value - math.erfc(abs(z) / math.sqrt(2))) < 1e-12
 
-    def test_returns_spatial_result(self):
-        rho = 0.4
-        se_rho = 0.1
-        result = sarwald(rho, se_rho)
-        assert hasattr(result, "statistic")
 
-    def test_statistic_numeric(self):
-        rho = 0.4
-        se_rho = 0.1
-        result = sarwald(rho, se_rho)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_negative_estimate():
+    r = sarwald(-0.2, 0.25)
+    assert abs(r.statistic - 0.64) < 1e-14

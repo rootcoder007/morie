@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def sd_fair_coin_avg(n):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.52).
+
+    Examples
+    --------
+    >>> sd_fair_coin_avg(100)["sd_avg"]
+    0.05
     """
     value = _morin.sd_fair_coin_avg(n)
     payload = {"n": int(n), "sd_avg": value}

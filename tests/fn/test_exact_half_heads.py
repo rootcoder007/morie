@@ -1,29 +1,15 @@
-"""Tests for exact_half_heads.exact_half_heads."""
+"""Tests for morie.fn.exact_half_heads: values recomputed from first principles."""
 
 import math
 
-from morie.fn.exact_half_heads import (
-    exact_half_heads,
-)
+from morie.fn.exact_half_heads import exact_half_heads
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner2e65_basic():
-    """Test basic functionality."""
-    result = exact_half_heads(5)
-    assert isinstance(result, dict)
-    assert "n" in result
-    assert "probability" in result
-    assert result["n"] == 5
-    assert math.isfinite(result["probability"])
-    assert 0.0 <= result["probability"] <= 1.0
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner2e65_edge():
-    """Test edge cases."""
-    result = exact_half_heads(1)
-    assert isinstance(result, dict)
-    assert "n" in result
-    assert "probability" in result
-    assert result["n"] == 1
-    assert math.isfinite(result["probability"])
-    assert 0.0 <= result["probability"] <= 1.0
+def test_binomial_count():
+    for n in (1, 5, 20):
+        want = (
+            sum(1 for k in range(2 ** (2 * n)) if bin(k).count("1") == n) / 4**n
+            if n <= 5
+            else math.comb(2 * n, n) / 4**n
+        )
+        assert abs(exact_half_heads(n)["probability"] - want) < 1e-15

@@ -6,7 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -19,6 +18,11 @@ def inclusion_exclusion_3(p_a, p_b, p_c, p_ab, p_ac, p_bc, p_abc):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.92).
+
+    Examples
+    --------
+    >>> round(inclusion_exclusion_3(0.5, 0.4, 0.3, 0.2, 0.15, 0.1, 0.05)["p_or"], 15)
+    0.8
     """
     value = _morin.inclusion_exclusion_3(p_a, p_b, p_c, p_ab, p_ac, p_bc, p_abc)
     payload = {"p_or": value}

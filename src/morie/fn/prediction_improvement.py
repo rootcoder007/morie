@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def prediction_improvement(r):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.27).
+
+    Examples
+    --------
+    >>> prediction_improvement(0.6)["mse_fraction_remaining"]
+    0.64
     """
     value = _morin.prediction_improvement(r)
     payload = {"r": float(r), "mse_fraction_remaining": value}

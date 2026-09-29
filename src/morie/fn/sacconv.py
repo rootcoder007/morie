@@ -1,35 +1,65 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SAC rho/lambda joint feasibility bounds."""
 
-from . import _array_core as np
+from __future__ import annotations
+
+from . import _spdiag as sd
 from ._containers import SpatialResult
 
 
 def sacconv(W, rho, lam):
-    """SAC rho/lambda joint feasibility bounds.
+    r"""SAC rho/lambda joint feasibility bounds.
 
-    Category: SAC
+    The log-likelihood of a spatial lag / error model is defined only where
+    ``I - a W`` is non-singular with the sign of ``a = 0``, i.e. inside
+    ``(1 / e_min, 1 / e_max)`` with ``e_min``, ``e_max`` the smallest and
+    largest real parts of the eigenvalues of ``W`` -- the search interval
+    ``spatialreg`` uses with ``method = "eigen"`` (Ord 1975; LeSage and Pace
+    2009, sec. 4.1). For a row-standardised ``W`` the upper bound is 1.
 
     Parameters
     ----------
-    W, rho, lam : see function signature.
+    W : array-like, shape (n, n)
+        Spatial weights.
+    rho, lam : float
+        Parameter value(s) to check.
 
     Returns
     -------
     SpatialResult
+        ``statistic`` is 1.0 when every parameter lies strictly inside the
+        interval, else 0.0; ``extra`` has ``lower``, ``upper``, ``feasible``
+        and ``logdet`` (the log-Jacobian, ``None`` when infeasible).
+
+    References
+    ----------
+    Ord, K. (1975). Estimation methods for models of spatial interaction. *Journal of the American
+    Statistical Association*, 70(349), 120-126.
+
+    LeSage, J. and Pace, R. K. (2009). *Introduction to Spatial Econometrics*. CRC Press, Boca Raton.
+
+    Examples
+    --------
+    >>> r = sacconv([[0, 1, 0], [.5, 0, .5], [0, 1, 0]], 0.5, 0.5)
+    >>> r.statistic, round(r.extra["lower"], 12), round(r.extra["upper"], 12)
+    (1.0, -1.0, 1.0)
     """
-    try:
-        eigvals = np.linalg.eigvalsh(W)
-        result = float(np.sum(np.log(1 - rho * eigvals)) + np.sum(np.log(1 - lam * eigvals)))
-        return SpatialResult(name="sacconv", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="sacconv", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    lo, hi = sd.bounds(W)
+    ok = lo < rho < hi and lo < lam < hi
+    return SpatialResult(
+        name="sacconv",
+        statistic=1.0 if ok else 0.0,
+        extra={
+            "lower": lo,
+            "upper": hi,
+            "feasible": ok,
+            "logdet": (sd.logdet(W, rho) + sd.logdet(W, lam)) if ok else None,
+        },
+    )
 
 
 sacconv_fn = sacconv
 
 
 def cheatsheet() -> str:
-    return "sacconv({}) -> SAC rho/lambda joint feasibility bounds."
+    return "sacconv(W, rho, lam) -> inside (1/e_min, 1/e_max)?"

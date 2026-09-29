@@ -1,36 +1,52 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gravity model LM test for spatial autocorrelation."""
 
-from . import _array_core as np
+from __future__ import annotations
+
 from ._containers import SpatialResult
+from .semlm import semlm
 
 
 def igravlm(resid, W):
-    """Gravity model LM test for spatial autocorrelation.
+    r"""Gravity model LM test for spatial autocorrelation.
 
-    Category: Gravity
+    The Lagrange multiplier test of spatially autocorrelated errors
+    ``LM = (n e'We / e'e)^2 / tr(W'W + WW)`` (Burridge 1980; Anselin 1988)
+    applied to the residuals of a log-linear gravity regression, with ``W``
+    an origin-destination (network) weights matrix; chi-square(1). This is
+    :func:`morie.fn.semlm.semlm`.
 
     Parameters
     ----------
-    resid, W : see function signature.
+    resid : array-like, shape (n,)
+        OLS residuals of the gravity model.
+    W : array-like, shape (n, n)
+        Weights between origin-destination pairs.
 
     Returns
     -------
     SpatialResult
+        ``statistic``, ``p_value``.
+
+    References
+    ----------
+    Anselin, L. (1988). *Spatial Econometrics: Methods and Models*. Kluwer, Dordrecht.
+
+    LeSage, J. P. and Pace, R. K. (2008). Spatial econometric modeling of origin-destination flows.
+    *Journal of Regional Science*, 48(5), 941-967.
+
+    Examples
+    --------
+    >>> W = [[0, 1, 0, 0], [0.5, 0, 0.5, 0], [0, 0.5, 0, 0.5], [0, 0, 1, 0]]
+    >>> round(igravlm([0.3, -0.2, 0.5, -0.4], W).statistic, 12)
+    2.395311136052
     """
-    try:
-        n = len(resid)
-        Wresid = np.dot(W, resid)
-        result = float(np.dot(resid, Wresid) / (np.dot(resid, resid) + 1e-12))
-        return SpatialResult(name="igravlm", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="igravlm", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    r = semlm(resid, W)
+    return SpatialResult(name="igravlm", statistic=r.statistic, p_value=r.p_value, extra=r.extra)
 
 
 igravlm_fn = igravlm
 
 
 def cheatsheet() -> str:
-    return "igravlm({}) -> Gravity model LM test for spatial autocorrelation."
+    return "igravlm(resid, W) -> LM error test on gravity residuals"

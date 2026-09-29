@@ -1,32 +1,15 @@
-"""Tests for morie.fn.semspec."""
+"""Tests for morie.fn.semspec: every expected value is recomputed from the formula."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.semspec import semspec
 
 
-class TestSemspec:
-    def test_basic(self):
-        np.random.seed(21)
-        coef_sar = np.array([0.3, 0.5])
-        coef_sem = np.array([0.3, 0.5])
-        vcov = np.eye(2) * 0.01
-        result = semspec(coef_sar, coef_sem, vcov)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        np.random.seed(21)
-        coef_sar = np.array([0.3, 0.5])
-        coef_sem = np.array([0.3, 0.5])
-        vcov = np.eye(2) * 0.01
-        result = semspec(coef_sar, coef_sem, vcov)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        np.random.seed(21)
-        coef_sar = np.array([0.3, 0.5])
-        coef_sem = np.array([0.3, 0.5])
-        vcov = np.eye(2) * 0.01
-        result = semspec(coef_sar, coef_sem, vcov)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_common_factor_wald():
+    V = [[0.01, 0.0, 0.0], [0.0, 0.04, 0.01], [0.0, 0.01, 0.09]]
+    g = -0.2 + 0.4 * 1.0
+    G = [1.0, 0.4, 1.0]
+    s = sum(G[i] * V[i][j] * G[j] for i in range(3) for j in range(3))
+    r = semspec([1.0], [-0.2], V, 0.4)
+    assert abs(r.statistic - g * g / s) < 1e-13
+    assert abs(r.p_value - math.erfc(math.sqrt(g * g / s / 2))) < 1e-12

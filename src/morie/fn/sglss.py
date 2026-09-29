@@ -35,6 +35,12 @@ def squared_error_loss(
 
     .. epigraph::
 
+
+    Examples
+    --------
+    >>> r = squared_error_loss([1.0, 2.0, 4.0], [1.5, 2.0, 3.0])
+    >>> r.statistic, r.extra["total_loss"]
+    (0.4166666666666667, 1.25)
     """
     pred = np.asarray(predicted, dtype=np.float64).ravel()
     obs = np.asarray(observed, dtype=np.float64).ravel()

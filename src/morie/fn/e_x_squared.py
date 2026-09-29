@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def e_x_squared(sigma, mu):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.70).
+
+    Examples
+    --------
+    >>> e_x_squared(2.0, 3.0)["e_x2"]
+    13.0
     """
     value = _morin.e_x_squared(sigma, mu)
     payload = {"e_x2": value}
@@ -33,7 +35,9 @@ def e_x_squared(sigma, mu):
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e70: E[X^2] = sigma^2 + mu^2. Morin (2016) eq (3.70)."
+    return (
+        "david_j_morin_probability_for_the_enthusiastic_beginner3e70: E[X^2] = sigma^2 + mu^2. Morin (2016) eq (3.70)."
+    )
 
 
 # compact alias per ledger/NAMING.md

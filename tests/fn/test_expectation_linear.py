@@ -1,25 +1,12 @@
-"""Tests for expectation_linear.expectation_linear."""
+"""Tests for morie.fn.expectation_linear: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
-
-from morie.fn.expectation_linear import (
-    expectation_linear,
-)
+from morie.fn.expectation_linear import expectation_linear
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e13_basic():
-    """Test basic functionality."""
-    a, e_x, b, e_y, c = 2.0, 3.0, 0.5, 4.0, 1.0
-    result = expectation_linear(a, e_x, b, e_y, c)
-    assert isinstance(result, dict)
-    assert "expectation" in result
-    assert result["expectation"] == a * e_x + b * e_y + c
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e13_edge():
-    """Test edge cases."""
-    a, e_x, b, e_y, c = 0.0, 5.0, 0.0, 7.0, 2.0
-    result = expectation_linear(a, e_x, b, e_y, c)
-    assert isinstance(result, dict)
-    assert "expectation" in result
-    assert result["expectation"] == c
+def test_linearity_on_a_joint_pmf():
+    # X, Y dependent: linearity holds regardless
+    pts = [((0, 1), 0.2), ((1, 1), 0.3), ((1, 3), 0.1), ((2, 0), 0.4)]
+    ex = sum(p * x for (x, _), p in pts)
+    ey = sum(p * y for (_, y), p in pts)
+    direct = sum(p * (2 * x - 3 * y + 5) for (x, y), p in pts)
+    assert abs(expectation_linear(2, ex, -3, ey, 5)["expectation"] - direct) < 1e-14

@@ -1,26 +1,28 @@
-"""Test xavier_init."""
+"""Tests for morie.fn.xvrig: fan_out x fan_in Glorot weights recomputed from Philox draws."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.xvrig import xavier_init, xvrig
+import pytest
+
+from morie.fn._rng import random_normal, random_uniform
+from morie.fn.xvrig import xavier_init
 
 
-class TestXavierInit:
-    def test_basic(self):
-        result = xavier_init(64, 128, seed=42)
-        assert isinstance(result, DescriptiveResult)
-        assert result.name == "xavier_init"
+def _l(v):
+    return v.tolist() if hasattr(v, "tolist") else list(v)
 
-    def test_shape(self):
-        result = xavier_init(64, 128, seed=42)
-        assert result.extra["weights"].shape == (128, 64)
 
-    def test_uniform(self):
-        result = xavier_init(64, 128, distribution="uniform", seed=42)
-        a = np.sqrt(6.0 / (64 + 128))
-        w = result.extra["weights"]
-        assert np.all(w >= -a) and np.all(w <= a)
+def test_layout_and_normal_scale():
+    z = _l(random_normal(6, seed=5))
+    W = xavier_init(3, 2, seed=5).extra["weights"]
+    assert len(W) == 2 and len(W[0]) == 3
+    assert abs(W[1][2] - math.sqrt(2.0 / 5.0) * z[5]) < 1e-15
 
-    def test_alias(self):
-        assert xvrig is xavier_init
+
+def test_uniform_and_default_seed():
+    u = _l(random_uniform(6, seed=0))
+    a = math.sqrt(6.0 / 5.0)
+    W = xavier_init(3, 2, distribution="uniform").extra["weights"]
+    assert abs(W[0][1] - (-a + 2 * a * u[1])) < 1e-15
+    with pytest.raises(ValueError):
+        xavier_init(3, 2, distribution="cauchy")

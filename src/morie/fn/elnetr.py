@@ -5,28 +5,7 @@ from collections.abc import Sequence
 from typing import Union
 
 from . import _array_core as np
-
-
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from ._ml_core import ElasticNet
-except ImportError:
-    ElasticNet = _MissingDep('ElasticNet')
+from ._ml_core import ElasticNet
 
 
 def elnetr(
@@ -37,7 +16,52 @@ def elnetr(
     fit_intercept: bool = True,
     max_iter: int = 10000,
 ):
-    """Elastic net - convex combination of L1 and L2 penalties."""
+    r"""Elastic net regression by cyclic coordinate descent.
+
+    Minimises ``(1/(2n)) ||y - b0 - X b||^2 + alpha * l1_ratio * ||b||_1 +
+    alpha * (1 - l1_ratio) / 2 * ||b||^2`` (Zou and Hastie 2005, in the
+    parametrisation of scikit-learn). With an intercept the columns and
+    ``y`` are centred; each coordinate update is the soft-threshold
+    ``b_j = S(x_j'r + b_j ||x_j||^2, n alpha l1_ratio) / (||x_j||^2 + n
+    alpha (1 - l1_ratio))`` (Friedman, Hastie and Tibshirani 2010), sweeps
+    stopping when the largest coefficient change is below ``1e-8``.
+
+    Parameters
+    ----------
+    X : array-like, shape (n, p)
+        Predictors (not standardised here).
+    y : array-like, shape (n,)
+        Response.
+    alpha : float
+        Overall penalty.
+    l1_ratio : float
+        L1 share of the penalty (1 = lasso, 0 = ridge).
+    fit_intercept : bool
+        Centre and fit an unpenalised intercept.
+    max_iter : int
+        Maximum number of sweeps.
+
+    Returns
+    -------
+    RichResult
+        ``coef``, ``intercept``, ``r2`` (training), ``alpha``,
+        ``l1_ratio``, ``nonzero``.
+
+    References
+    ----------
+    Zou, H. and Hastie, T. (2005). Regularization and variable selection via the elastic net.
+    *Journal of the Royal Statistical Society B*, 67(2), 301-320.
+
+    Friedman, J., Hastie, T. and Tibshirani, R. (2010). Regularization paths for generalized
+    linear models via coordinate descent. *Journal of Statistical Software*, 33(1), 1-22.
+
+    Examples
+    --------
+    >>> X = [[1.0, 0.5], [2.0, -1.0], [3.0, 0.2], [4.0, 1.5], [5.0, -0.3], [6.0, 0.8]]
+    >>> r = elnetr(X, [1.1, 2.3, 2.8, 4.4, 4.9, 6.2], alpha=0.1, l1_ratio=0.5)
+    >>> [round(c, 6) for c in r["coef"]], round(r["intercept"], 6)
+    ([0.960139, 0.024295], 0.249296)
+    """
     from ._richresult import RichResult
 
     X = np.asarray(X, dtype=float)

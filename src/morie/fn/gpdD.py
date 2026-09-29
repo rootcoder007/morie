@@ -62,7 +62,45 @@ def _q(p, sigma, xi):
 
 
 def gpd_distribution(sigma, xi, x=None, p=None):
-    """CDF, density, quantiles and moments of the GPD."""
+    r"""CDF, density, quantiles and moments of the generalized Pareto distribution.
+
+    ``F(x) = 1 - (1 + xi x / sigma)^(-1/xi)`` (``1 - exp(-x/sigma)`` at
+    ``xi = 0``) on ``x >= 0`` (up to ``-sigma/xi`` when ``xi < 0``); density
+    ``(1 + xi x/sigma)^(-1/xi - 1) / sigma``; quantile ``sigma ((1 - p)^(-xi)
+    - 1) / xi``; mean ``sigma / (1 - xi)`` for ``xi < 1`` and variance
+    ``sigma^2 / ((1 - xi)^2 (1 - 2 xi))`` for ``xi < 1/2`` (Pickands 1975;
+    Coles 2001, sec. 4.2).
+
+    Parameters
+    ----------
+    sigma : float
+        Scale, positive.
+    xi : float
+        Shape.
+    x : array-like, optional
+        Points for the CDF and density (default ``0.5, 1, 2, 4``).
+    p : array-like, optional
+        Probabilities for the quantiles (default ``0.5, 0.9, 0.95, 0.99``).
+
+    Returns
+    -------
+    RichResult
+        ``cdf``, ``pdf``, ``quantile``, ``mean``, ``variance``,
+        ``upper_endpoint``.
+
+    References
+    ----------
+    Pickands, J. (1975). Statistical inference using extreme order statistics. *Annals of Statistics*,
+    3(1), 119-131.
+
+    Coles, S. (2001). *An Introduction to Statistical Modeling of Extreme Values*. Springer, sec. 4.2.
+
+    Examples
+    --------
+    >>> r = gpd_distribution(2.0, 0.25, x=[1.0, 3.0], p=[0.5, 0.9])
+    >>> [round(v, 12) for v in r["cdf"] + r["quantile"]]
+    [0.37570492303, 0.720237688682, 1.513656920022, 6.226235280311]
+    """
     s = float(sigma)
     k = float(xi)
     if s <= 0:

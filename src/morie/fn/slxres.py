@@ -1,33 +1,60 @@
+# morie.fn -- function file (rootcoder007/morie)
 """SLX residual Moran test."""
 
-from . import _array_core as np
+from __future__ import annotations
+
+from . import _spdiag as sd
 from ._containers import SpatialResult
 
 
-def slxres(resid, W):
-    """SLX residual Moran test.
+def slxres(resid, W, X=None):
+    r"""SLX residual Moran test.
 
-    Category: SLX
-
+    Moran's I of the residuals of a SLX model (pass the SLX design ``[X, W X_*]`` as ``X``), ``I = (n / S0) e'We / e'e``
+    (Cliff and Ord 1981). With the design ``X`` the exact moments under
+    normality for OLS-type residuals ``e = M y``, ``M = I - X(X'X)^{-1}X'``,
+    are added -- ``E(I) = (n/S0) tr(MW)/(n-k)`` and the Cliff-Ord variance --
+    with the one-sided (greater) normal p-value, as ``spdep::lm.morantest``
+    (:func:`morie.fn.spdurbin.residual_moran`).
     Parameters
     ----------
-    resid, W : see function signature.
+    resid : array-like, shape (n,)
+        Model residuals.
+    W : array-like, shape (n, n)
+        Spatial weights.
+    X : array-like, shape (n, k), optional
+        Design whose column space the residuals are orthogonal to.
 
     Returns
     -------
     SpatialResult
+        ``statistic`` is I; with ``X`` also ``expected``, ``variance``,
+        ``p_value`` and ``extra["z"]``.
+
+    References
+    ----------
+    Cliff, A. D. and Ord, J. K. (1981). *Spatial Processes: Models and Applications*. Pion, London.
+
+    Examples
+    --------
+    >>> W = [[0, 1, 0, 0, 0, 0], [.5, 0, .5, 0, 0, 0], [0, .5, 0, .5, 0, 0], [0, 0, .5, 0, .5, 0], [0, 0, 0, .5, 0, .5], [0, 0, 0, 0, 1, 0]]
+    >>> e = [0.3, -0.2, 0.5, -0.4, 0.1, -0.3]
+    >>> round(slxres(e, W).statistic, 12)
+    -0.7421875
     """
-    try:
-        n = len(resid)
-        Wresid = np.dot(W, resid)
-        result = float(np.dot(resid, Wresid) / (np.dot(resid, resid) + 1e-12))
-        return SpatialResult(name="slxres", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="slxres", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    r = sd.resid_moran(resid, W, X)
+    return SpatialResult(
+        name="slxres",
+        statistic=r["I"],
+        p_value=r["p_value"],
+        expected=r["expected"],
+        variance=r["variance"],
+        extra={"z": r["z"]},
+    )
 
 
 slxres_fn = slxres
 
 
 def cheatsheet() -> str:
-    return "slxres({}) -> SLX residual Moran test."
+    return "slxres(resid, W, X=None) -> Moran's I of residuals (exact test with X)"

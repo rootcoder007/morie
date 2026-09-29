@@ -1,23 +1,14 @@
-"""Tests for morie.fn.i_pwr -- interaction power (ANOVA F-test)."""
+"""Tests for morie.fn.i_pwr: equals the one-numerator-df noncentral-F power."""
 
 from morie.fn.i_pwr import calculate_interaction_power
+from morie.fn.pwr_av import power_anova
 
 
-class TestInteractionPower:
-    def test_returns_float_in_range(self):
-        """Power should be a float between 0 and 1."""
-        pwr = calculate_interaction_power(sample_size=200, alpha=0.05, effect_size=0.2)
-        assert isinstance(pwr, float)
-        assert 0.0 <= pwr <= 1.0
+def test_single_df_equals_two_group_anova():
+    # df = (1, N - 2), ncp = f^2 N is the two-group ANOVA with n = N / 2 per group
+    for N, f in ((60, 0.2), (200, 0.15), (40, 0.5)):
+        assert abs(calculate_interaction_power(N, effect_size=f) - power_anova(n=N / 2, k=2, f=f)) < 1e-12
 
-    def test_larger_n_more_power(self):
-        """Larger sample should yield higher power."""
-        pwr_small = calculate_interaction_power(sample_size=50)
-        pwr_large = calculate_interaction_power(sample_size=500)
-        assert pwr_large > pwr_small
 
-    def test_larger_effect_more_power(self):
-        """Larger effect size should yield higher power."""
-        pwr_small = calculate_interaction_power(sample_size=100, effect_size=0.1)
-        pwr_large = calculate_interaction_power(sample_size=100, effect_size=0.4)
-        assert pwr_large > pwr_small
+def test_power_increases_with_n():
+    assert calculate_interaction_power(100) < calculate_interaction_power(300) < 1.0

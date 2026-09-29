@@ -6,7 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -19,6 +18,11 @@ def exact_half_heads(n):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.65).
+
+    Examples
+    --------
+    >>> exact_half_heads(5)["probability"]
+    0.24609375
     """
     value = _morin.exact_half_heads(n)
     payload = {"n": int(n), "probability": value}

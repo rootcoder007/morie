@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,10 +18,14 @@ def pmf_sum_convolution(values_x, probs_x, values_y, probs_y):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.11).
+
+    Examples
+    --------
+    >>> pmf_sum_convolution([0, 1], [0.5, 0.5], [0, 1], [0.5, 0.5])["probs"]
+    [0.25, 0.5, 0.25]
     """
     values, probs = _morin.pmf_sum_convolution(values_x, probs_x, values_y, probs_y)
-    payload = {"values": [float(v) for v in values],
-               "probs": [float(p) for p in probs]}
+    payload = {"values": [float(v) for v in values], "probs": [float(p) for p in probs]}
     lines = [(f"P(S={v:g})", float(p)) for v, p in zip(values, probs)]
     return RichResult(
         title="pmf of the sum of two independent discrete variables (convolution).",

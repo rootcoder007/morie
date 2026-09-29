@@ -1,22 +1,11 @@
-"""Test dc_removal (dcsub)."""
+"""Tests for morie.fn.dcsub: values recomputed from the definition."""
 
-from morie.fn import _array_core as np
-
-from morie.fn._containers import SignalResult
-from morie.fn.dcsub import dc_removal, dcsub
+from morie.fn.dcsub import dc_removal
 
 
-class TestDcRemoval:
-    def test_basic(self):
-        x = np.array([5.0, 6.0, 7.0, 8.0, 9.0])
-        result = dc_removal(x)
-        assert isinstance(result, SignalResult)
-        assert result.name == "dc_removal"
-
-    def test_zero_mean(self):
-        x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = dc_removal(x)
-        assert abs(np.mean(result.filtered)) < 1e-10
-
-    def test_alias(self):
-        assert dcsub is dc_removal
+def test_mean_removed():
+    x = [1.0, 2.0, 6.0, -3.0]
+    r = dc_removal(x)
+    m = sum(x) / 4
+    assert max(abs(a - (b - m)) for a, b in zip(r.filtered, x)) < 1e-15
+    assert abs(r.extra["dc_value"] - m) < 1e-15

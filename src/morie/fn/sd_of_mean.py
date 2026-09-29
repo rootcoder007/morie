@@ -6,9 +6,6 @@ sample mean of an arbitrary vector; this module now computes the
 book's actual result.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +18,11 @@ def sd_of_mean(sigma, n):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.53).
+
+    Examples
+    --------
+    >>> sd_of_mean(2.0, 16)["sd_mean"]
+    0.5
     """
     value = _morin.sd_of_mean(sigma, n)
     payload = {"sigma": float(sigma), "n": int(n), "sd_mean": value}

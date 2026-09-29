@@ -1,27 +1,17 @@
-"""Tests for morie.fn.scnblrt."""
+"""Tests for morie.fn.scnblrt: boundary-corrected likelihood-ratio p-value."""
+
+import math
 
 from morie.fn.scnblrt import scnblrt
 
 
-class TestScnblrt:
-    def test_basic(self):
-        ll_nb = -68.0
-        ll_pois = -72.0
-        df = 1
-        result = scnblrt(ll_nb, ll_pois, df)
-        assert result is not None
+def test_chi_bar_square_pvalue():
+    r = scnblrt(-40.0, -42.3)
+    lr = 2 * 2.3
+    assert abs(r.statistic - lr) < 1e-13
+    assert abs(r.p_value - 0.5 * math.erfc(math.sqrt(lr / 2))) < 1e-13
 
-    def test_returns_spatial_result(self):
-        ll_nb = -68.0
-        ll_pois = -72.0
-        df = 1
-        result = scnblrt(ll_nb, ll_pois, df)
-        assert hasattr(result, "statistic")
 
-    def test_statistic_numeric(self):
-        ll_nb = -68.0
-        ll_pois = -72.0
-        df = 1
-        result = scnblrt(ll_nb, ll_pois, df)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_negative_lr_truncated_and_df2():
+    assert scnblrt(-43.0, -42.0).statistic == 0.0
+    assert abs(scnblrt(-40.0, -42.0, df=2).p_value - math.exp(-2.0)) < 1e-12

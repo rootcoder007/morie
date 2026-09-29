@@ -1,19 +1,10 @@
-"""Tests for morie.fn.cdyll -- YLL."""
-
-from morie.fn import _array_core as np
-import pytest
+"""Tests for morie.fn.cdyll: values recomputed from the definition."""
 
 from morie.fn.cdyll import years_life_lost
 
 
-class TestYLL:
-    def test_scalar(self):
-        res = years_life_lost(deaths=10, life_expectancy_remaining=30.0)
-        assert res.estimate == pytest.approx(300.0)
-
-    def test_array(self):
-        res = years_life_lost(
-            deaths=np.array([5, 10]),
-            life_expectancy_remaining=np.array([40.0, 20.0]),
-        )
-        assert res.estimate == pytest.approx(400.0)
+def test_yll_is_deaths_times_remaining_life_expectancy():
+    d, le = [2, 1, 3, 5], [30.5, 12.0, 4.0, 1.5]
+    r = years_life_lost(d, le)
+    assert abs(r.estimate - sum(a * b for a, b in zip(d, le))) < 1e-12
+    assert r.extra["total_deaths"] == 11

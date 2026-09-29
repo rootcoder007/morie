@@ -52,6 +52,12 @@ def lord_chi_square(b_R, b_F, V_R, V_F=None):
     Practical Testing Problems*. Erlbaum, ch. 14.
     Definition cross-checked against the reference implementation in
     the difR package (``LordChi2``), which forms ``solve(Sig1 + Sig2)``.
+
+    Examples
+    --------
+    >>> r = lord_chi_square([1.2, 0.3], [0.9, 0.1], [[0.02, 0.0], [0.0, 0.02]], [[0.03, 0.0], [0.0, 0.03]])
+    >>> round(r["statistic"], 12), r["df"]
+    (2.6, 2)
     """
     vr = np.atleast_1d(np.asarray(b_R, dtype=float)).ravel()
     vf = np.atleast_1d(np.asarray(b_F, dtype=float)).ravel()
@@ -68,7 +74,7 @@ def lord_chi_square(b_R, b_F, V_R, V_F=None):
             raise ValueError("V_R and V_F must have the same shape.")
         S = S + S2
     if S.shape != (p, p):
-        raise ValueError("covariance must be %d x %d for %d parameters." % (p, p, p))
+        raise ValueError(f"covariance must be {p} x {p} for {p} parameters.")
     x = np.linalg.solve(S, d)
     stat = float(sum(float(d[i]) * float(x[i]) for i in range(p)))
     if stat < 0:
@@ -92,6 +98,7 @@ def lord_chi_square(b_R, b_F, V_R, V_F=None):
 # compact alias -- _lazy_map.json resolves 'lordchisquare' to this module, so the
 # name has to exist here or the lookup dies.
 lordchisquare = lord_chi_square
+
 
 def cheatsheet():
     return "lordzs: Lord's chi-square DIF test on item parameter differences"

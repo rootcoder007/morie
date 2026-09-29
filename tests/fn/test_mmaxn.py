@@ -1,19 +1,15 @@
-"""Tests for mmaxn.minmax_normalization."""
-
-from morie.fn import _array_core as np
+"""Tests for morie.fn.mmaxn: values recomputed from the definition."""
 
 from morie.fn.mmaxn import minmax_normalization
 
 
-def test_mmaxn_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = minmax_normalization(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+def test_unit_interval_map():
+    x = [2.0, 4.0, 3.0, 10.0]
+    assert minmax_normalization(x)["x_norm"] == [(v - 2.0) / 8.0 for v in x]
 
 
-def test_mmaxn_edge():
-    """Test edge cases."""
-    result = minmax_normalization(np.array([42.0]))
-    assert result["n"] == 1
+def test_columns_and_constant_column():
+    X = [[1.0, 5.0], [3.0, 5.0], [2.0, 5.0]]
+    r = minmax_normalization(X)
+    assert r["x_norm"] == [[0.0, 0.0], [1.0, 0.0], [0.5, 0.0]]
+    assert r["min"] == [1.0, 5.0]

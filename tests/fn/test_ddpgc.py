@@ -1,26 +1,14 @@
-"""Tests for ddpgc.ddpg."""
+"""Tests for morie.fn.ddpgc: equals hmddpg.geron_ddpg."""
 
-from morie.fn import _array_core as np
+import inspect
 
 from morie.fn.ddpgc import ddpg
+from morie.fn.hmddpg import geron_ddpg
 
 
-def test_ddpgc_basic():
-    """Test basic functionality."""
-    env = np.random.default_rng(42).normal(0, 1, 100)
-    actor = np.random.default_rng(42).normal(0, 1, 100)
-    critic = np.random.default_rng(42).normal(0, 1, 100)
-    tau = 0.1
-    result = ddpg(env, actor, critic, tau)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_ddpgc_edge():
-    """Test edge cases."""
-    env = np.random.default_rng(42).normal(0, 1, 100)
-    actor = np.random.default_rng(42).normal(0, 1, 100)
-    critic = np.random.default_rng(42).normal(0, 1, 100)
-    tau = 0.1
-    result = ddpg(env, actor, critic, tau)
-    assert isinstance(result, dict)
+def test_forwards_every_argument():
+    p = inspect.signature(ddpg).parameters
+    g = inspect.signature(geron_ddpg).parameters
+    for k in ("tau", "epochs", "lr", "gamma", "ou_theta", "ou_sigma", "seed", "s0"):
+        assert k in p and k in g
+        assert p[k].default == g[k].default

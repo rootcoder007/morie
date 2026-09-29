@@ -1,24 +1,16 @@
-"""Tests for sd_scale.sd_scale."""
+"""Tests for morie.fn.sd_scale: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.sd_scale import (
-    sd_scale,
-)
+from morie.fn.sd_scale import sd_scale
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e41_basic():
-    """Test basic functionality."""
-    a = 0.5
-    sigma = 0.5
-    result = sd_scale(a, sigma)
-    assert isinstance(result, dict)
-    assert "a" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner3e41_edge():
-    """Test edge cases."""
-    a = 0.5
-    sigma = 0.5
-    result = sd_scale(a, sigma)
-    assert isinstance(result, dict)
+def test_scaling():
+    # values of X scaled by a: population sd scales by |a|
+    x = [1.0, 4.0, 2.0, 7.0]
+    m = sum(x) / 4
+    s = math.sqrt(sum((v - m) ** 2 for v in x) / 4)
+    ax = [-2.5 * v for v in x]
+    ma = sum(ax) / 4
+    sa = math.sqrt(sum((v - ma) ** 2 for v in ax) / 4)
+    assert abs(sd_scale(-2.5, s)["sd_aX"] - sa) < 1e-14

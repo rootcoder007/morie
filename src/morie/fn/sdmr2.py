@@ -1,34 +1,51 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SDM pseudo-R-squared."""
 
-from . import _array_core as np
+from __future__ import annotations
+
+import math
+
 from ._containers import SpatialResult
 
 
 def sdmr2(ll_model, ll_null, n):
-    """SDM pseudo-R-squared.
+    r"""SDM pseudo-R-squared.
 
-    Category: SDM
+    Nagelkerke's (1991) rescaled likelihood-ratio R-squared of the spatial Durbin model
+    against the intercept-only (or OLS) model: ``R2_CS = 1 - exp(2 (l_0 -
+    l_1) / n)`` (Cox and Snell) divided by its maximum ``1 - exp(2 l_0 /
+    n)``. Returns 0.0 when that maximum vanishes.
 
     Parameters
     ----------
-    ll_model, ll_null, n : see function signature.
+    ll_model, ll_null : float
+        Log-likelihoods of the fitted and the null model.
+    n : int
+        Number of observations.
 
     Returns
     -------
     SpatialResult
+        ``statistic`` is Nagelkerke's R2; ``extra["cox_snell"]``.
+
+    References
+    ----------
+    Nagelkerke, N. J. D. (1991). A note on a general definition of the coefficient of determination.
+    *Biometrika*, 78(3), 691-692.
+
+    Examples
+    --------
+    >>> round(sdmr2(-20.0, -30.0, 50).statistic, 12)
+    0.471776221068
     """
-    try:
-        cox_snell = 1.0 - np.exp(2.0 / n * (ll_null - ll_model))
-        max_cs = 1.0 - np.exp(2.0 / n * ll_null)
-        result = float(cox_snell / max_cs) if abs(max_cs) > 1e-12 else 0.0
-        return SpatialResult(name="sdmr2", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="sdmr2", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    n = float(n)
+    cs = 1.0 - math.exp(2.0 / n * (float(ll_null) - float(ll_model)))
+    mx = 1.0 - math.exp(2.0 / n * float(ll_null))
+    return SpatialResult(name="sdmr2", statistic=cs / mx if abs(mx) > 1e-12 else 0.0, extra={"cox_snell": cs})
 
 
 sdmr2_fn = sdmr2
 
 
 def cheatsheet() -> str:
-    return "sdmr2({}) -> SDM pseudo-R-squared."
+    return "sdmr2(ll_model, ll_null, n) -> Nagelkerke R2"

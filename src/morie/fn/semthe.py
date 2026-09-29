@@ -40,6 +40,11 @@ def sem_theta(theta, items):
     Lord, F. M. (1980). *Applications of Item Response Theory to
     Practical Testing Problems*. Erlbaum. Ch. 5 (information and the
     standard error of measurement).
+
+    Examples
+    --------
+    >>> round(sem_theta(0.5, [[1.2, 0.0], [0.8, 1.0]])["se"], 12)
+    1.438564253831
     """
     th = np.atleast_1d(np.asarray(theta, dtype=float))
     it = np.asarray(items, dtype=float)

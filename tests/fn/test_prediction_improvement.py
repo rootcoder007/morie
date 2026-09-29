@@ -1,22 +1,18 @@
-"""Tests for prediction_improvement.prediction_improvement."""
+"""Tests for morie.fn.prediction_improvement: values recomputed from first principles."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.prediction_improvement import (
-    prediction_improvement,
-)
+from morie.fn.prediction_improvement import prediction_improvement
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner6e27_basic():
-    """Test basic functionality."""
-    r = 0.5
-    result = prediction_improvement(r)
-    assert isinstance(result, dict)
-    assert "r" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner6e27_edge():
-    """Test edge cases."""
-    r = 0.5
-    result = prediction_improvement(r)
-    assert isinstance(result, dict)
+def test_residual_fraction_of_a_regression():
+    x = [1.0, 2.0, 3.0, 5.0, 8.0]
+    y = [2.0, 2.5, 4.0, 4.5, 9.0]
+    n = len(x)
+    mx, my = sum(x) / n, sum(y) / n
+    sxy = sum((a - mx) * (b - my) for a, b in zip(x, y))
+    sxx = sum((a - mx) ** 2 for a in x)
+    syy = sum((b - my) ** 2 for b in y)
+    r = sxy / math.sqrt(sxx * syy)
+    sse = sum((b - my - sxy / sxx * (a - mx)) ** 2 for a, b in zip(x, y))
+    assert abs(prediction_improvement(r)["mse_fraction_remaining"] - sse / syy) < 1e-14

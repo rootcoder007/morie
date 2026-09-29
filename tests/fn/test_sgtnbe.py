@@ -1,8 +1,6 @@
 """Tests for sgtnbe.sgt_nonbacktracking_matrix."""
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.sgtnbe import sgt_nonbacktracking_matrix
 
 
