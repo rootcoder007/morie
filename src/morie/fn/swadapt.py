@@ -1,34 +1,37 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Adaptive kernel weights (variable bandwidth)."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from .spwgt import spatial_weights
 
 
-def swadapt(coords, k=5):
-    """Adaptive kernel weights (variable bandwidth).
+def swadapt(coords, k=5, kernel="gaussian", style="B"):
+    r"""Adaptive kernel weights: the bandwidth of point i is the distance to its k-th nearest neighbour and w_ij = K(d_ij / h_i) for i != j.
 
-    Category: Weights
+    Thin front-end to :func:`morie.fn.spwgt.spatial_weights` (method
+    ``"kernel"``); ``style`` is an ``spdep::nb2listw`` coding (``B`` binary,
+    ``W`` row-standardised, ...). Returns its ``SpatialResult``:
+    ``statistic`` is the mean number of neighbours and ``extra["W"]`` the
+    weights matrix.
 
-    Parameters
+    References
     ----------
-    coords, k=5 : see function signature.
+    Fotheringham, A. S., Brunsdon, C. and Charlton, M. (2002).
+    *Geographically Weighted Regression*. Wiley.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> coords = [[0, 0], [1, 0], [0, 1], [1, 1], [0.5, 0.4], [2, 0.5]]
+    >>> r = swadapt(coords, k=3, kernel="quartic")
+    >>> [sorted(v) for v in r.extra["neighbours"]][5]
+    [1, 3]
     """
-    try:
-        dists = np.sqrt(np.sum((coords[None, :, :] - coords[:, None, :]) ** 2, axis=-1))
-        result = float(np.mean(dists))
-        return SpatialResult(name="swadapt", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="swadapt", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    r = spatial_weights(coords, "kernel", k=int(k), bandwidth=None, kernel=kernel, style=style)
+    r.name = "swadapt"
+    return r
 
 
 swadapt_fn = swadapt
 
 
 def cheatsheet() -> str:
-    return "swadapt({}) -> Adaptive kernel weights (variable bandwidth)."
+    return "swadapt(coords, k=5) -> adaptive kernel weights, bandwidth = k-th neighbour distance."

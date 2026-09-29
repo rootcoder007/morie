@@ -1,29 +1,24 @@
 """Tests for morie.fn.swpath."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.swpath import swpath
 
+# ring of 6 plus a chord 0-3 with length 2.5
+W = [[0.0] * 7 for _ in range(7)]
+for a in range(6):
+    b = (a + 1) % 6
+    W[a][b] = W[b][a] = 1.0
+W[0][3] = W[3][0] = 2.5
 
-class TestSwpath:
-    def test_basic(self):
-        W = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=float)
-        i = 0
-        j = 2
-        result = swpath(W, i, j)
-        assert result is not None
 
-    def test_returns_spatial_result(self):
-        W = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=float)
-        i = 0
-        j = 2
-        result = swpath(W, i, j)
-        assert hasattr(result, "statistic")
+def test_orders():
+    assert swpath(W, 0, 3) == 1
+    assert swpath(W, 1, 4) == 3
+    assert swpath(W, 1, 3) == 2
+    assert swpath(W, 0, 6) == math.inf
 
-    def test_statistic_numeric(self):
-        W = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=float)
-        i = 0
-        j = 2
-        result = swpath(W, i, j)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+
+def test_dijkstra():
+    assert swpath(W, 0, 3, weighted=True) == 2.5
+    assert swpath(W, 1, 4, weighted=True) == 3.0

@@ -1,32 +1,25 @@
-"""Tests for morie.fn.swkern."""
+"""Tests for morie.fn.swkern: recompute the Gaussian and quartic kernels."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.swkern import swkern
+N = 12
+C = [[math.cos(1.7 * i) * (1 + i / 6.0), math.sin(2.3 * i) + 0.1 * i] for i in range(N)]
 
 
-class TestSwkern:
-    def test_basic(self):
-        np.random.seed(68)
-        coords = np.random.rand(12, 2)
-        bw = 0.5
-        kernel = "gaussian"
-        result = swkern(coords, bw, kernel)
-        assert result is not None
+def _d(a, b):
+    return math.hypot(a[0] - b[0], a[1] - b[1])
 
-    def test_returns_spatial_result(self):
-        np.random.seed(68)
-        coords = np.random.rand(12, 2)
-        bw = 0.5
-        kernel = "gaussian"
-        result = swkern(coords, bw, kernel)
-        assert hasattr(result, "statistic")
 
-    def test_statistic_numeric(self):
-        np.random.seed(68)
-        coords = np.random.rand(12, 2)
-        bw = 0.5
-        kernel = "gaussian"
-        result = swkern(coords, bw, kernel)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+from morie.fn.swkern import swkern  # noqa: E402
+
+
+def test_kernels():
+    G = swkern(C, bw=0.8).extra["W"].tolist()
+    Q = swkern(C, bw=0.8, kernel="quartic").extra["W"].tolist()
+    for i in range(N):
+        for j in range(N):
+            u = _d(C[i], C[j]) / 0.8
+            g = 0.0 if i == j else math.exp(-0.5 * u * u) / math.sqrt(2 * math.pi)
+            q = 0.0 if i == j or u >= 1 else 15.0 / 16.0 * (1 - u * u) ** 2
+            assert abs(G[i][j] - g) < 1e-14
+            assert abs(Q[i][j] - q) < 1e-14

@@ -1,29 +1,20 @@
-"""Tests for morie.fn.swknn."""
+"""Tests for morie.fn.swknn: recompute the k nearest neighbours."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.swknn import swknn
+N = 12
+C = [[math.cos(1.7 * i) * (1 + i / 6.0), math.sin(2.3 * i) + 0.1 * i] for i in range(N)]
 
 
-class TestSwknn:
-    def test_basic(self):
-        np.random.seed(66)
-        coords = np.random.rand(15, 2)
-        k = 3
-        result = swknn(coords, k)
-        assert result is not None
+def _d(a, b):
+    return math.hypot(a[0] - b[0], a[1] - b[1])
 
-    def test_returns_spatial_result(self):
-        np.random.seed(66)
-        coords = np.random.rand(15, 2)
-        k = 3
-        result = swknn(coords, k)
-        assert hasattr(result, "statistic")
 
-    def test_statistic_numeric(self):
-        np.random.seed(66)
-        coords = np.random.rand(15, 2)
-        k = 3
-        result = swknn(coords, k)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+from morie.fn.swknn import swknn  # noqa: E402
+
+
+def test_knn():
+    r = swknn(C, k=3)
+    for i in range(N):
+        order = sorted((j for j in range(N) if j != i), key=lambda j: (_d(C[i], C[j]), j))
+        assert sorted(r.extra["neighbours"][i]) == sorted(order[:3])

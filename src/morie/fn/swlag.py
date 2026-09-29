@@ -1,33 +1,29 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Spatial lag Wy."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from .swops import lag_operator
 
 
 def swlag(W, y):
-    """Spatial lag Wy.
+    r"""Spatial lag ``Wy``, ``(Wy)_i = sum_j w_ij y_j`` (``spdep::lag.listw``).
 
-    Category: Weights
+    Thin front-end to :func:`morie.fn.swops.lag_operator`; returns the list of
+    lagged values.
 
-    Parameters
+    References
     ----------
-    W, y : see function signature.
+    Anselin, L. (1988). *Spatial Econometrics: Methods and Models*. Kluwer.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> swlag([[0, 1, 0], [0.5, 0, 0.5], [0, 1, 0]], [1.0, 2.0, 4.0])
+    [2.0, 2.5, 2.0]
     """
-    try:
-        n = len(y)
-        Wy = np.dot(W, y)
-        result = float(np.corrcoef(y, Wy)[0, 1])
-        return SpatialResult(name="swlag", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="swlag", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    return lag_operator(W, y, 1)
 
 
 swlag_fn = swlag
 
 
 def cheatsheet() -> str:
-    return "swlag({}) -> Spatial lag Wy."
+    return "swlag(W, y) -> spatial lag Wy (spdep::lag.listw)."

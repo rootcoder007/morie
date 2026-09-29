@@ -1,34 +1,37 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Kernel spatial weights (Gaussian/bisquare)."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from .spwgt import spatial_weights
 
 
-def swkern(coords, bw=1.0, kernel="gaussian"):
-    """Kernel spatial weights (Gaussian/bisquare).
+def swkern(coords, bw=1.0, kernel="gaussian", style="B"):
+    r"""Fixed-bandwidth kernel weights ``w_ij = K(d_ij / bw)`` for ``i != j`` with the uniform, triangular, Epanechnikov, quartic (bisquare) or Gaussian kernel.
 
-    Category: Weights
+    Thin front-end to :func:`morie.fn.spwgt.spatial_weights` (method
+    ``"kernel"``); ``style`` is an ``spdep::nb2listw`` coding (``B`` binary,
+    ``W`` row-standardised, ...). Returns its ``SpatialResult``:
+    ``statistic`` is the mean number of neighbours and ``extra["W"]`` the
+    weights matrix.
 
-    Parameters
+    References
     ----------
-    coords, bw=1.0, kernel='gaussian' : see function signature.
+    Fotheringham, A. S., Brunsdon, C. and Charlton, M. (2002).
+    *Geographically Weighted Regression*. Wiley.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> coords = [[0, 0], [1, 0], [0, 1], [1, 1], [0.5, 0.4], [2, 0.5]]
+    >>> r = swkern(coords, bw=1.5, kernel="quartic")
+    >>> [sorted(v) for v in r.extra["neighbours"]][5]
+    [1, 3]
     """
-    try:
-        n = len(coords)
-        dists = np.sqrt(np.sum((coords[None, :, :] - coords[:, None, :]) ** 2, axis=-1))
-        kernel_sum = float(np.sum(np.exp(-0.5 * (dists / bw) ** 2)))
-        result = kernel_sum / (n * n)
-        return SpatialResult(name="swkern", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="swkern", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    r = spatial_weights(coords, "kernel", bandwidth=float(bw), kernel=kernel, style=style)
+    r.name = "swkern"
+    return r
 
 
 swkern_fn = swkern
 
 
 def cheatsheet() -> str:
-    return "swkern({}) -> Kernel spatial weights (Gaussian/bisquare)."
+    return "swkern(coords, bw=1.0, kernel='gaussian') -> fixed-bandwidth kernel weights."

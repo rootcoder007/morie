@@ -1,34 +1,41 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Power weights W^p."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from ._qpcore import ssum
 
 
 def swpower(W, p=2):
-    """Power weights W^p.
+    r"""Matrix power ``W^p`` of a spatial weights matrix (higher-order spatial operator).
 
-    Category: Weights
+    ``W^p`` weights the paths of length ``p`` in the neighbour graph; its
+    trace appears in the series ``log|I - rho W| = -sum_p rho^p tr(W^p) / p``
+    and in the spatial impacts ``(I - rho W)^{-1} = sum_p rho^p W^p``
+    (LeSage and Pace 2009, ch. 4). ``p = 0`` gives the identity. Returns the
+    matrix as lists.
 
-    Parameters
+    References
     ----------
-    W, p=2 : see function signature.
+    LeSage, J. and Pace, R. K. (2009). *Introduction to Spatial
+    Econometrics*. CRC Press.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> swpower([[0, 1, 0], [0.5, 0, 0.5], [0, 1, 0]], 2)
+    [[0.5, 0.0, 0.5], [0.0, 1.0, 0.0], [0.5, 0.0, 0.5]]
     """
-    try:
-        W_arr = np.asarray(W, dtype=float)
-        result = float(np.sum(W_arr))
-        return SpatialResult(name="swpower", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="swpower", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    A = [[float(v) for v in r] for r in (W.tolist() if hasattr(W, "tolist") else W)]
+    n = len(A)
+    p = int(p)
+    if p < 0:
+        raise ValueError("p must be non-negative")
+    P = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
+    for _ in range(p):
+        P = [[ssum(P[i][m] * A[m][j] for m in range(n)) for j in range(n)] for i in range(n)]
+    return P
 
 
 swpower_fn = swpower
 
 
 def cheatsheet() -> str:
-    return "swpower({}) -> Power weights W^p."
+    return "swpower(W, p=2) -> matrix power W^p (paths of length p)."
