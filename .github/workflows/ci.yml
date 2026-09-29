@@ -232,6 +232,10 @@ jobs:
           # changed), which made morie_mean_cpp/var/normal_pdf fail.
           cache-version: 2
           needs: check
+        env:
+          # pak refuses a source-only package when binaries are expected;
+          # RSQLite lagged on the PPM binary mirror on 2026-09-29.
+          R_COMPILE_AND_INSTALL_PACKAGES: always
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
         run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
