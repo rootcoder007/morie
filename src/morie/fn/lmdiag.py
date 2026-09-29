@@ -22,12 +22,12 @@ def _mat(A):
     return [[float(v) for v in (r if hasattr(r, "__len__") else [r])] for r in rows]
 
 
-def _design(X, n):
-    """X as a list of rows; an intercept column is prepended when X has no constant column."""
+def _design(X, n, intercept=True):
+    """X as a list of rows; an intercept column is prepended when X has no constant column (and intercept)."""
     Xm = _mat(X) if X is not None else [[] for _ in range(n)]
     k = len(Xm[0])
     const = [c for c in range(k) if len({r[c] for r in Xm}) == 1 and Xm[0][c] != 0.0]
-    if not const:
+    if not const and intercept:
         Xm = [[1.0] + r for r in Xm]
         const = [0]
     return Xm, const
@@ -45,11 +45,11 @@ def _quad(g, A):
     return ssum(g[a] * ssum(A[a][b] * g[b] for b in range(len(g))) for a in range(len(g)))
 
 
-def _rs_core(y, X, W):
+def _rs_core(y, X, W, intercept=True):
     """All Rao score statistics for an OLS fit of y on X with weights W (spreg / spdep algebra)."""
     yv = _flat(y)
     n = len(yv)
-    Xm, const = _design(X, n)
+    Xm, const = _design(X, n, intercept)
     Wm = _mat(W)
     k = len(Xm[0])
     xtxi = inverse([[ssum(r[a] * r[b] for r in Xm) for b in range(k)] for a in range(k)])
