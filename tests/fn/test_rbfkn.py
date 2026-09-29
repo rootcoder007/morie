@@ -1,20 +1,19 @@
-"""Tests for rbfkn.rbf_kernel."""
+"""Tests for morie.fn.rbfkn: the Gaussian kernel recomputed entry by entry."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.rbfkn import rbf_kernel
+from morie.fn.rbfkn import rbf_kernel, rbfkern
 
-
-def test_rbfkn_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    result = rbf_kernel(X)
-    assert isinstance(result, dict)
-    assert "K" in result
+X = [[0.1, 1.2, -0.3], [0.8, 0.4, 0.5], [-1.0, 0.0, 2.0], [0.3, -0.7, 1.1]]
 
 
-def test_rbfkn_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    result = rbf_kernel(X)
-    assert isinstance(result, dict)
+def test_gram_matrix_default_gamma():
+    r = rbf_kernel(X)
+    for i in range(4):
+        for j in range(4):
+            assert abs(r["K"][i][j] - math.exp(-(math.dist(X[i], X[j]) ** 2) / 3)) < 1e-15
+
+
+def test_given_gamma():
+    r = rbfkern(X, gamma=0.25)
+    assert abs(r["K"][0][3] - math.exp(-0.25 * math.dist(X[0], X[3]) ** 2)) < 1e-15

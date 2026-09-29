@@ -1,8 +1,9 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Generate Xavier/Glorot weight initialization matrix."""
 
 from __future__ import annotations
 
-from . import _array_core as np
+from . import _winit as wi
 from ._containers import DescriptiveResult
 
 
@@ -12,55 +13,45 @@ def xavier_init(
     seed: int = 42,
     uniform: bool = True,
 ) -> DescriptiveResult:
-    r"""
-    Generate Xavier/Glorot weight initialization matrix.
+    r"""Generate Xavier/Glorot weight initialization matrix.
 
-    For uniform distribution:
-
-    .. math::
-
-        W \\sim U\\left[-\\sqrt{\\frac{6}{n_{in} + n_{out}}},
-                        \\sqrt{\\frac{6}{n_{in} + n_{out}}}\\right]
-
-    For normal distribution:
-
-    .. math::
-
-        W \\sim \\mathcal{N}\\left(0, \\frac{2}{n_{in} + n_{out}}\\right)
+    ``W ~ U(-a, a)``, ``a = sqrt(6 / (fan_in + fan_out))`` (``uniform``), or
+    ``W ~ N(0, 2 / (fan_in + fan_out))``, both with variance ``2 / (fan_in
+    + fan_out)`` (Glorot and Bengio 2010), drawn from the Philox stream
+    ``seed`` row by row (:func:`morie.fn.vctrs.weight_init`).
 
     :param fan_in: Number of input units.
     :param fan_out: Number of output units.
-    :param seed: Random seed. Default 42.
-    :param uniform: Use uniform (True) or normal (False) init. Default True.
-    :return: DescriptiveResult with weight matrix and statistics.
-    :raises ValueError: If fan_in or fan_out <= 0.
+    :param seed: Philox seed.
+    :param uniform: Uniform (True) or normal (False).
+    :return: DescriptiveResult; ``value`` is the population standard
+        deviation of the weights, ``extra["weights"]`` the ``fan_in x
+        fan_out`` matrix.
 
     References
     ----------
-    Glorot, X., & Bengio, Y. (2010). Understanding the difficulty of
-    training deep feedforward neural networks. *AISTATS*.
+    Glorot, X. and Bengio, Y. (2010). Understanding the difficulty of training deep feedforward neural
+    networks. *AISTATS*, 249-256.
+
+    Examples
+    --------
+    >>> round(xavier_init(4, 3, seed=2).extra["weights"][0][0], 12)
+    -0.138044608242
     """
     if fan_in <= 0 or fan_out <= 0:
         raise ValueError(f"fan_in and fan_out must be > 0, got {fan_in}, {fan_out}.")
-
-    rng = np.random.default_rng(seed)
-
-    if uniform:
-        limit = np.sqrt(6.0 / (fan_in + fan_out))
-        W = rng.uniform(-limit, limit, size=(fan_in, fan_out))
-    else:
-        std = np.sqrt(2.0 / (fan_in + fan_out))
-        W = rng.normal(0, std, size=(fan_in, fan_out))
-
+    method = "xavier_uniform" if uniform else "xavier_normal"
+    W = wi.draw(fan_in, fan_out, method, 1.0, seed, fan_in, fan_out)
+    m, var = wi.moments(W)
     return DescriptiveResult(
         name="Xavier Initialization",
-        value=float(np.std(W)),
+        value=var**0.5,
         extra={
             "weights": W,
             "fan_in": fan_in,
             "fan_out": fan_out,
-            "mean": float(np.mean(W)),
-            "std": float(np.std(W)),
+            "mean": m,
+            "std": var**0.5,
             "shape": (fan_in, fan_out),
             "method": "uniform" if uniform else "normal",
         },
