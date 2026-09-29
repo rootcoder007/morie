@@ -1,35 +1,39 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GWR leave-one-out cross-validation score."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from ._qpcore import ssum
+from .gwrcoef import _setup, _wls
 
 
-def gwrcv(y, X, coords, bw=0.5):
-    """GWR leave-one-out cross-validation score.
+def gwrcv(y, X, coords, bw=0.5, kernel="bisquare", adaptive=False):
+    r"""Leave-one-out cross-validation score ``CV = sum_i (y_i - x_i beta_{(-i)})^2`` where ``beta_{(-i)}`` is the local estimate at ``i`` with ``w_ii = 0`` (Cleveland 1979; ``GWmodel::gwr.cv``), the bandwidth-selection criterion of Brunsdon, Fotheringham and Charlton (1996).
 
-    Category: GWR
-
-    Parameters
+    References
     ----------
-    y, X, coords, bw=0.5 : see function signature.
+    Brunsdon, C., Fotheringham, A. S. and Charlton, M. E. (1996).
+    Geographically weighted regression: a method for exploring spatial
+    nonstationarity. *Geographical Analysis* 28, 281-298.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> P = [(float(i % 4), float(i // 4)) for i in range(16)]
+    >>> X = [[(0.3 * i) % 1.7] for i in range(16)]
+    >>> y = [1.0 + 2.0 * X[i][0] + 0.1 * P[i][0] + 0.05 * (i % 3) for i in range(16)]
+    >>> round(gwrcv(y, X, P, 3.0, kernel="gaussian"), 10)
+    0.2163109487
     """
-    try:
-        n = len(y)
-        dists = np.sqrt(np.sum((coords[None, :, :] - coords[:, None, :]) ** 2, axis=-1))
-        kernel_sum = float(np.sum(np.exp(-0.5 * (dists / bw) ** 2)))
-        result = kernel_sum / (n * n)
-        return SpatialResult(name="gwrcv", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="gwrcv", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    yv, Xm, _, _, Wc = _setup(y, X, coords, bw, kernel, adaptive)
+    cv = 0.0
+    for i, w in enumerate(Wc):
+        w = list(w)
+        w[i] = 0.0
+        b, _ = _wls(Xm, w, yv)
+        cv += (yv[i] - ssum(Xm[i][a] * b[a] for a in range(len(b)))) ** 2
+    return cv
 
 
 gwrcv_fn = gwrcv
 
 
 def cheatsheet() -> str:
-    return "gwrcv({}) -> GWR leave-one-out cross-validation score."
+    return "gwrcv(y, X, coords, bw) -> leave-one-out CV score (GWmodel::gwr.cv)."
