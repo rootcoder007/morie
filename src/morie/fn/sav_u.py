@@ -16,34 +16,56 @@ def subscale_ua_ave(
 ) -> ESRes:
     """Average Variance Extracted (AVE) for the UA subscale.
 
+    AVE = mean(lambda_j^2), where lambda_j are the standardised loadings of a
+    one-factor model fitted to the item correlation matrix by maximum
+    likelihood (Rubin-Thayer EM, the solution ``stats::factanal`` reports).
+    Loadings taken from the first principal component -- what this function
+    used to use -- are not factor loadings: their squares average to
+    lambda_1 / p, the share of variance on the first component, which
+    overstates both AVE and rho_c.
+
     Parameters
     ----------
     data : DataFrame or ndarray
+        Item responses; a DataFrame keeps its complete rows of ``items``.
     items : list[str], optional
-        Default: UA1-UA5.
+        Column names. Default: UA1-UA5.
 
     Returns
     -------
     ESRes
-        measure="AVE_UA".
+        measure="AVE_UA"; ``extra``: ``loadings`` (absolute standardised),
+        ``uniquenesses``, ``subscale``, ``iterations``, ``converged``.
+
+    References
+    ----------
+    Fornell, C. and Larcker, D. F. (1981). Evaluating structural equation
+    models with unobservable variables and measurement error. Journal of
+    Marketing Research 18, 39-50.
+    Rubin, D. B. and Thayer, D. T. (1982). EM algorithms for ML factor
+    analysis. Psychometrika 47, 69-76.
+
+    Examples
+    --------
+    >>> rows = [[2, 3, 1, 4], [3, 3, 2, 5], [4, 5, 3, 4], [1, 2, 2, 2], [5, 4, 4, 5], [2, 1, 3, 3], [3, 4, 2, 3], [4, 3, 5, 4]]
+    >>> round(subscale_ua_ave(rows).estimate, 10)
+    0.6222069522
     """
-    if items is None:
-        items = [f"UA{i}" for i in range(1, 6)]
-    if isinstance(data, pd.DataFrame):
-        X = data[items].dropna().to_numpy(dtype=np.float64)
-    else:
-        X = np.asarray(data, dtype=np.float64)
+    from ._onefactor import ave_and_cr, subscale_matrix
 
-    R = np.corrcoef(X, rowvar=False)
-    evals, evecs = np.linalg.eigh(R)
-    idx = np.argsort(-evals)
-    loads = np.abs(evecs[:, idx[0]] * np.sqrt(max(evals[idx[0]], 0)))
-
+    rows = subscale_matrix(data, items, "UA")
+    fit = ave_and_cr(rows)
     return ESRes(
         measure="AVE_UA",
-        estimate=float(np.mean(loads**2)),
-        n=X.shape[0],
-        extra={"loadings": loads.tolist(), "subscale": "UA"},
+        estimate=float(fit["ave"]),
+        n=len(rows),
+        extra={
+            "loadings": fit["loadings"],
+            "uniquenesses": fit["uniquenesses"],
+            "subscale": "UA",
+            "iterations": fit["iterations"],
+            "converged": fit["converged"],
+        },
     )
 
 
