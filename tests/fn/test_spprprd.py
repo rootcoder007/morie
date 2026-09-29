@@ -1,38 +1,42 @@
-"""Tests for morie.fn.spprprd."""
+"""Tests for morie.fn.spprprd: the impacts recomputed in matrix form."""
+
+import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.spprprd import spprprd
 
+N = 10
+W = [[1.0 if abs(i - j) == 1 else 0.0 for j in range(N)] for i in range(N)]
+W = [[v / sum(r) for v in r] for r in W]
+X = [[1.0, v, math.cos(k)] for k, v in enumerate((2.0, -1.0, 0.1, 1.5, 0.6, -0.4, 0.9, -1.3, 0.2, 1.1))]
+B = [-0.2, 0.9, 0.4]
+RHO = 0.35
 
-class TestSpprprd:
-    def test_basic(self):
-        np.random.seed(150)
-        coef = np.array([0.5, 0.3])
-        n = 10
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.2
-        rho = 0.2
-        result = spprprd(coef, X, W, rho)
-        assert result is not None
 
-    def test_returns_spatial_result(self):
-        np.random.seed(150)
-        coef = np.array([0.5, 0.3])
-        n = 10
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.2
-        rho = 0.2
-        result = spprprd(coef, X, W, rho)
-        assert hasattr(result, "statistic")
+def _ref(dens):
+    Si = np.linalg.inv(np.eye(N) - RHO * np.array(W))
+    eta = Si @ (np.array(X) @ np.array(B))
+    d = [dens(float(v)) for v in eta.tolist()]
+    dirr = sum(d[i] * float(Si[i, i]) for i in range(N)) / N
+    tot = sum(d[i] * float(Si[i].sum()) for i in range(N)) / N
+    return dirr, tot
 
-    def test_statistic_numeric(self):
-        np.random.seed(150)
-        coef = np.array([0.5, 0.3])
-        n = 10
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        W = np.eye(n) * 0.2
-        rho = 0.2
-        result = spprprd(coef, X, W, rho)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+
+def _phi(v):
+    return math.exp(-v * v / 2) / math.sqrt(2 * math.pi)
+
+
+def _lam(v):
+    return math.exp(v) / (1 + math.exp(v)) ** 2
+
+
+def test_probabilities():
+    Si = np.linalg.inv(np.eye(N) - RHO * np.array(W))
+    eta = (Si @ (np.array(X) @ np.array(B))).tolist()
+    V = Si @ Si.T
+    p = spprprd(B, X, W, rho=RHO)
+    q = spprprd(B, X, W, rho=RHO, method="lesage_pace")
+    for i in range(N):
+        s = math.sqrt(float(V[i, i]))
+        assert abs(p[i] - 0.5 * math.erfc(-eta[i] / s / math.sqrt(2))) < 1e-14
+        assert abs(q[i] - 0.5 * math.erfc(-eta[i] / math.sqrt(2))) < 1e-14

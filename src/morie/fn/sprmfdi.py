@@ -1,34 +1,38 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Spatial probit direct/indirect MEs."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from ._richresult import RichResult
+from .spprmf import _impacts
 
 
-def sprmfdi(coef, rho, X, W):
-    """Spatial probit direct/indirect MEs.
+def sprmfdi(coef, rho, X, W, method="lesage_pace"):
+    r"""Average direct, indirect and total marginal effects of a SAR probit model.
 
-    Category: SProbit
+    The summary impacts of :func:`morie.fn.spprmf.spprmf` (LeSage and Pace
+    2009, sec. 10.1.6): direct = mean of diag(phi(eta)) S^{-1} times
+    beta_r, total = mean row sum, indirect = total - direct; returns
+    only the three averaged vectors.
 
-    Parameters
+    References
     ----------
-    coef, rho, X, W : see function signature.
+    LeSage, J. and Pace, R. K. (2009). *Introduction to Spatial
+    Econometrics*. CRC Press.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> W = [[1.0 if abs(i - j) == 1 else 0.0 for j in range(10)] for i in range(10)]
+    >>> W = [[v / sum(r) for v in r] for r in W]
+    >>> X = [[1.0, v] for v in (2.0, -1.0, 0.1, 1.5, 0.6, -0.4, 0.9, -1.3, 0.2, 1.1)]
+    >>> r = sprmfdi([-0.2, 0.9], 0.4, X, W)
+    >>> round(r["indirect"][0], 10)
+    0.1526759112
     """
-    try:
-        eigvals = np.linalg.eigvalsh(W)
-        result = float(np.sum(np.log(np.abs(1 - rho * eigvals) + 1e-12)))
-        return SpatialResult(name="sprmfdi", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(
-            name="sprmfdi", statistic=float("nan"), p_value=None, extra={"error": "computation failed"}
-        )
+    r = _impacts(coef, rho, X, W, "probit", method)
+    return RichResult(payload={"direct": r["direct"], "indirect": r["indirect"], "total": r["total"]})
 
 
 sprmfdi_fn = sprmfdi
 
 
 def cheatsheet() -> str:
-    return "sprmfdi({}) -> Spatial probit direct/indirect MEs."
+    return "sprmfdi(coef, rho, X, W) -> SAR probit average direct, indirect and total effects."
