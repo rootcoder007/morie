@@ -1368,13 +1368,19 @@ class marr:
                 return
             if isinstance(i, (marr, list, tuple)) \
                     and not isinstance(i, slice):
-                flags = [bool(v) for v in (
-                    i._flat() if isinstance(i, marr) else i)]
-                if len(flags) == self.shape[0]:
-                    rows = [r for r, fl in enumerate(flags) if fl]
+                # a mask only when it IS boolean: an integer index array
+                # as long as the row count (np.flatnonzero of an all-True
+                # mask, say) is a list of row numbers, as in numpy --
+                # read as truthiness it skipped row 0 and shifted every
+                # value down one row
+                raw = list(i._flat() if isinstance(i, marr) else i)
+                if len(raw) == self.shape[0] and (
+                        getattr(i, "_is_mask", False)
+                        or getattr(i, "_dt", None) == "bool"
+                        or (raw and _bi.all(isinstance(v, bool) for v in raw))):
+                    rows = [r for r, fl in enumerate(raw) if fl]
                 else:
-                    rows = [int(v) for v in (
-                        i._flat() if isinstance(i, marr) else i)]
+                    rows = [int(v) for v in raw]
                 cols = (range(*j.indices(self.shape[1]))
                         if isinstance(j, slice) else [int(j)])
                 v = asarray(value)

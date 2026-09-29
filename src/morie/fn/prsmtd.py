@@ -43,6 +43,16 @@ def propensity_score_method(A, H, time=None):
     Lu, B. (2005). Propensity score matching with time-dependent
     covariates. *Biometrics*, 61(3), 721-728.
     doi:10.1111/j.1541-0420.2005.00356.x.
+
+    Examples
+    --------
+    >>> A = [[0, 1], [1, 1], [0, 0], [0, 0], [1, 1], [0, 0], [0, 1], [0, 0]]
+    >>> H = [[0.1, 0.9], [1.2, 1.0], [-0.3, 0.2], [0.5, 0.4], [0.9, 1.1], [-0.8, -0.1], [0.4, 1.3], [0.0, 0.7]]
+    >>> r = propensity_score_method(A, H)
+    >>> r["matched_idx"].tolist(), r["n_initiators"]
+    ([[0, 1, 0], [0, 4, 2], [1, 0, 3], [1, 6, 5]], 4)
+
+    doi:10.1111/j.1541-0420.2005.00356.x.
     """
     A = np.asarray(A, dtype=float)
     H = np.asarray(H, dtype=float)

@@ -14,32 +14,6 @@ from . import _array_core as np
 from . import _frame_core as pd
 
 
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from ._ml_core import LinearRegression, LogisticRegression
-except ImportError:
-    LinearRegression = _MissingDep('LinearRegression')
-    LogisticRegression = _MissingDep('LogisticRegression')
-try:
-    from ._ml_core import LabelEncoder, StandardScaler
-except ImportError:
-    LabelEncoder = _MissingDep('LabelEncoder')
-    StandardScaler = _MissingDep('StandardScaler')
 
 import math as _math
 
@@ -200,6 +174,17 @@ def estimate_aipw(
         finite.
 
     The R arm ``morie_estimate_aipw`` takes the same two arguments with
+    the same meanings and the same defaults.
+
+    Examples
+    --------
+    >>> d = pd.DataFrame({"t": [0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0],
+    ...                   "x": [0.2, 1.1, -0.5, 0.9, 1.4, 0.1, 0.3, -1.0, 2.0, 0.6, -0.2, 0.8],
+    ...                   "y": [1.1, 3.4, 0.2, 3.0, 3.9, 1.0, 2.5, -0.3, 4.6, 1.6, 2.0, 1.9]})
+    >>> r = estimate_aipw(d, treatment="t", outcome="y", covariates=["x"], outcome_model="linear")
+    >>> round(r["ate"], 10), round(r["se"], 10)
+    (1.2666272606, 0.0542436048)
+
     the same meanings and the same defaults.
     """
     r"""

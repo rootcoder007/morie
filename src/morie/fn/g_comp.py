@@ -7,31 +7,9 @@ from . import _array_core as np
 from . import _frame_core as pd
 
 
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from ._ml_core import LinearRegression, LogisticRegression
-except ImportError:
-    LinearRegression = _MissingDep('LinearRegression')
-    LogisticRegression = _MissingDep('LogisticRegression')
-try:
-    from ._ml_core import StandardScaler
-except ImportError:
-    StandardScaler = _MissingDep('StandardScaler')
+from ._ml_core import LinearRegression, LogisticRegression
+from ._ml_core import StandardScaler
+from ._rng import random_uniform
 
 
 def estimate_ate_gcomputation(
@@ -42,40 +20,55 @@ def estimate_ate_gcomputation(
     covariates: list[str],
     outcome_model: str = "linear",
 ) -> dict:
-    r"""
-    G-computation (outcome regression / standardisation) ATE estimator.
+    r"""G-computation (outcome regression / standardisation) ATE estimator.
 
-    The G-computation estimator proceeds in three steps:
+    1. Fit an outcome model ``E[Y | T, X]`` on the complete cases: ordinary
+       least squares (``"linear"``) or unpenalised maximum-likelihood
+       logistic regression (``"logistic"``), both with an intercept and
+       main effects of ``T`` and ``X``.
+    2. Predict ``Y(1)`` and ``Y(0)`` for every unit by setting ``T = 1``
+       and ``T = 0``.
+    3. The ATE is ``n^{-1} sum_i (Y_i(1) - Y_i(0))`` (Robins 1986; Hernan
+       and Robins 2020, ch. 13).
 
-    1. Fit an outcome model :math:`E[Y | T, X]` on the observed data.
-    2. Predict potential outcomes :math:`\\hat{Y}(1)` and :math:`\\hat{Y}(0)`
-       for every unit by setting T = 1 and T = 0 respectively.
-    3. Compute ATE as the average difference:
+    The standard error is the standard deviation of 500 nonparametric
+    bootstrap replicates of the whole procedure (replicate ``b`` resamples
+    rows with Philox stream ``b`` of seed 42, so the R twin ``GComp``
+    draws the same rows; resamples holding a single treatment arm are
+    skipped), and the interval is their 2.5% and 97.5% type-7 percentiles.
 
-    .. math::
+    Parameters
+    ----------
+    data : DataFrame
+        Input frame (at least 10 complete rows).
+    treatment, outcome : str
+        Binary treatment and outcome columns.
+    covariates : list of str
+        Confounders.
+    outcome_model : {"linear", "logistic"}
+        Outcome regression.
 
-        \\widehat{\\text{ATE}} = \\frac{1}{n} \\sum_i
-        \\left(\\hat{Y}_i(1) - \\hat{Y}_i(0)\\right)
-
-    Standard error is estimated via non-parametric bootstrap (500 iterations
-    with seed = 42) on the full three-step procedure.
-
-    :param data: DataFrame containing all required columns.
-    :param treatment: Column name of the binary treatment indicator (0/1).
-    :param outcome: Column name of the outcome variable.
-    :param covariates: List of covariate column names.
-    :param outcome_model: ``"linear"`` (OLS) for continuous outcomes or
-        ``"logistic"`` for binary outcomes. Default ``"linear"``.
-    :return: dict with keys ``ate``, ``se``, ``ci_lower``, ``ci_upper``,
-        ``n_obs``, ``outcome_model``.
-    :raises ValueError: If required columns are missing or outcome_model is invalid.
+    Returns
+    -------
+    dict
+        ``ate``, ``se``, ``ci_lower``, ``ci_upper``, ``n_obs``,
+        ``outcome_model``.
 
     References
     ----------
-    Robins, J. M. (1986). A new approach to causal inference in mortality
-        studies. Mathematical Modelling, 7, 1393-1512.
-    Hernan, M. A., & Robins, J. M. (2020). Causal Inference: What If.
-        Chapman & Hall/CRC. (Chapter 13.)
+    Robins, J. M. (1986). A new approach to causal inference in mortality studies with a sustained
+    exposure period. *Mathematical Modelling*, 7, 1393-1512.
+
+    Hernan, M. A. and Robins, J. M. (2020). *Causal Inference: What If*. Chapman & Hall/CRC, ch. 13.
+
+    Examples
+    --------
+    >>> d = pd.DataFrame({"t": [0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0],
+    ...                   "x": [0.2, 1.1, -0.5, 0.9, 1.4, 0.1, 0.3, -1.0, 2.0, 0.6, -0.2, 0.8],
+    ...                   "y": [1.1, 3.4, 0.2, 3.0, 3.9, 1.0, 2.5, -0.3, 4.6, 1.6, 2.0, 1.9]})
+    >>> r = estimate_ate_gcomputation(d, treatment="t", outcome="y", covariates=["x"])
+    >>> round(r["ate"], 10), round(r["se"], 10)
+    (1.2485390115, 0.0709248273)
     """
     valid_models = {"linear", "logistic"}
     if outcome_model not in valid_models:
@@ -103,7 +96,7 @@ def estimate_ate_gcomputation(
         if outcome_model == "linear":
             model = LinearRegression()
         else:
-            model = LogisticRegression(max_iter=500, solver="lbfgs", random_state=42)
+            model = LogisticRegression(penalty=None, max_iter=500)
 
         model.fit(X_scaled, y)
 
@@ -128,11 +121,14 @@ def estimate_ate_gcomputation(
     # Point estimate
     ate = _fit_and_predict_ate(df)
 
-    # Bootstrap SE (500 iterations, seeded for reproducibility)
-    rng = np.random.default_rng(42)
+    # Bootstrap SE: replicate b resamples rows with Philox stream b of seed 42
     boot_ates = []
-    for _ in range(500):
-        idx = rng.integers(0, n_obs, size=n_obs)
+    tvals = [float(v) for v in df[treatment].tolist()]
+    for b in range(500):
+        u = random_uniform(n_obs, seed=42, stream=b)
+        idx = [min(int(float(v) * n_obs), n_obs - 1) for v in (u.tolist() if hasattr(u, "tolist") else u)]
+        if len({tvals[i] for i in idx}) < 2:
+            continue  # one arm only: the treatment effect is not identified in this resample
         boot_df = df.iloc[idx].reset_index(drop=True)
         try:
             boot_ates.append(_fit_and_predict_ate(boot_df))

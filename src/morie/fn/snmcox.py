@@ -199,6 +199,15 @@ def snmcox(time, event, treatment_history, covariate_history=None,
         counting-process form; a filtering approximation was tried,
         failed the recovery anchor, and was removed rather than shipped.
 
+    Examples
+    --------
+    >>> T = [2.0, 3.1, 1.2, 4.5, 2.7, 0.9, 3.8, 1.9, 5.2, 2.2]
+    >>> A = [1, 1, 0, 1, 0, 0, 1, 0, 1, 0]
+    >>> L = [0.4, 1.2, -0.3, 0.8, 0.1, -1.0, 0.9, 0.2, 1.5, -0.4]
+    >>> r = snmcox(T, [1] * 10, A, L)
+    >>> round(r["estimate"], 8), r["lower"], r["upper"]
+    (-0.07295044, -3.0, 3.0)
+
     Returns
     -------
     RichResult
