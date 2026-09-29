@@ -42,6 +42,12 @@ def sgt_adjacency_matrix(edges, n=None, directed=False):
     ----------
     Chung, F. R. K. (1997). *Spectral Graph Theory*. CBMS Regional
     Conference Series in Mathematics 92, AMS. Ch. 1.
+
+    Examples
+    --------
+    >>> r = sgt_adjacency_matrix([("A", "B"), ("B", "C")])
+    >>> r["A"].tolist(), r["m"]
+    ([[0.0, 1.0, 0.0], [1.0, 0.0, 1.0], [0.0, 1.0, 0.0]], 2)
     """
     edges = [tuple(e) for e in edges]
     for e in edges:

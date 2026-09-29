@@ -45,6 +45,12 @@ def sgt_sbm_detect_threshold(a, b, k=2):
     Asymptotic analysis of the stochastic block model for modular
     networks and its algorithmic applications.  Physical Review E 84,
     066106.  doi:10.1103/PhysRevE.84.066106; equation (44).
+
+    Examples
+    --------
+    >>> r = sgt_sbm_detect_threshold(10.0, 1.0)
+    >>> r["detectable"], round(r["margin"], 12)
+    (1.0, 4.309584240177)
     """
     a = float(a)
     b = float(b)
@@ -57,10 +63,17 @@ def sgt_sbm_detect_threshold(a, b, k=2):
     thr = k * math.sqrt(c)
     margin = abs(a - b) - thr
     det = 1.0 if margin > 0.0 else 0.0
-    return RichResult(payload={
-        "detectable": det, "estimate": det, "margin": margin, "c": c,
-        "threshold": thr, "k": k,
-        "method": "Kesten-Stigum SBM detectability, |a-b| > k sqrt(c)"})
+    return RichResult(
+        payload={
+            "detectable": det,
+            "estimate": det,
+            "margin": margin,
+            "c": c,
+            "threshold": thr,
+            "k": k,
+            "method": "Kesten-Stigum SBM detectability, |a-b| > k sqrt(c)",
+        }
+    )
 
 
 def cheatsheet():

@@ -22,6 +22,11 @@ def pagerank(G, damping=0.85, n_iter=100):
     Page, L., Brin, S., Motwani, R. & Winograd, T. (1999).  The PageRank
     citation ranking: bringing order to the web.  Stanford InfoLab
     technical report 1999-66.
+
+    Examples
+    --------
+    >>> [round(v, 12) for v in pagerank([[0, 1, 1], [0, 0, 1], [1, 0, 0]])["pr"]]
+    [0.387789711702, 0.214810627473, 0.397399660825]
     """
     return _pagerank(G, d=damping, n_iter=n_iter)
 

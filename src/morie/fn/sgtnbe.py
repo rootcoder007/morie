@@ -46,6 +46,12 @@ def sgt_nonbacktracking_matrix(edges, n=None):
     Krzakala, F., Moore, C., Mossel, E., Neeman, J., Sly, A.,
     Zdeborova, L. & Zhang, P. (2013). Spectral redemption in
     clustering sparse networks. *PNAS*, 110(52), 20935-20940.
+
+    Examples
+    --------
+    >>> r = sgt_nonbacktracking_matrix([(0, 1), (1, 2)])
+    >>> r["directed_edges"], r["B"].tolist()
+    ([(0, 1), (1, 0), (1, 2), (2, 1)], [[0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]])
     """
     from .sgtadj import sgt_adjacency_matrix
 
