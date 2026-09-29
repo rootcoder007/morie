@@ -65,6 +65,22 @@ def test_covariance_families():
         st_covariance_family([1.0], [1.0], "bogus")
 
 
+def test_porcu_quasi_arithmetic_family():
+    p = dict(power_s=1.5, power_t=0.8, scale_s=2.0, scale_t=3.0)
+    a1 = 1 + (1.7 / 2.0) ** 1.5
+    a2 = 1 + (2.5 / 3.0) ** 0.8
+    got = st_covariance_family([1.7], [-2.5], "porcu", sigma2=2.0, sep=0.4, **p)[0]
+    assert got == pytest.approx(2.0 * (0.5 * a1**0.4 + 0.5 * a2**0.4) ** (-1 / 0.4), abs=1e-14)
+    assert st_covariance_family([1.7], [2.5], "porcu", sep=0.0, **p)[0] == pytest.approx((a1 * a2) ** -0.5, abs=1e-15)
+    near = st_covariance_family([1.7], [2.5], "porcu", sep=1e-7, **p)[0]
+    assert near == pytest.approx((a1 * a2) ** -0.5, abs=1e-9)
+    pkg = st_covariance_family([1.7], [2.5], "porcu", sep=0.0, method="GeoModels", **p)[0]
+    assert pkg == pytest.approx(1 / (a1 * a2), abs=1e-15)
+    assert st_covariance_family([0.0], [0.0], "porcu", sigma2=3.0, **p) == [3.0]
+    with pytest.raises(ValueError):
+        st_covariance_family([1.0], [1.0], "porcu", power_s=2.5, power_t=1.0, scale_s=1.0, scale_t=1.0)
+
+
 def test_covariance_matrix_is_positive_semidefinite():
     pts = [(0.0, 0.0, 0.0), (1.0, 0.0, 1.0), (0.0, 2.0, 0.5), (1.5, 1.5, 2.0), (0.3, 0.9, 3.0)]
     for fam, p in [

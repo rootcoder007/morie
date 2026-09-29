@@ -116,6 +116,19 @@ def _cov(family, h, u, p):
         )
     if family == "separable_exp":
         return s2 * math.exp(-h / p["range_s"] - abs(u) / p["range_t"])
+    if family == "porcu":
+        d = p.get("sep", 0.5)
+        if not (
+            0 < p["power_s"] <= 2 and 0 < p["power_t"] <= 2 and p["scale_s"] > 0 and p["scale_t"] > 0 and 0 <= d <= 1
+        ):
+            raise ValueError("porcu needs power_s, power_t in (0, 2], scale_s, scale_t > 0 and sep in [0, 1]")
+        a1 = 1 + (h / p["scale_s"]) ** p["power_s"]
+        a2 = 1 + (abs(u) / p["scale_t"]) ** p["power_t"]
+        if d == 0:
+            # the sep -> 0 limit of the quasi-arithmetic mean is the geometric mean; GeoModels/CompRandFld
+            # instead return the product 1 / (a1 a2) at sep = 0 exactly (discontinuous in sep)
+            return s2 / (a1 * a2) if p.get("method") == "GeoModels" else s2 / math.sqrt(a1 * a2)
+        return s2 * (0.5 * a1**d + 0.5 * a2**d) ** (-1 / d)
     raise ValueError("unknown covariance family")
 
 
@@ -134,7 +147,15 @@ def st_covariance_family(h, u, family: str, **params):
     - ``periodic``: ``sigma2 exp(-h/range) exp(-|u|/tau) cos(2 pi u /
       period)``, a product of valid covariances with a periodic temporal
       factor (``tau`` infinite by default);
-    - ``separable_exp``: ``sigma2 exp(-h/range_s - |u|/range_t)``.
+    - ``separable_exp``: ``sigma2 exp(-h/range_s - |u|/range_t)``;
+    - ``porcu`` (Porcu, Gregori and Mateu 2006; the quasi-arithmetic-mean
+      class, eq. 4 of Bevilacqua et al. 2010 with unit exponents): ``sigma2
+      (0.5 (1 + (h/scale_s)^power_s)^sep + 0.5 (1 + (|u|/scale_t)^power_t)^sep)^{-1/sep}``,
+      ``power_s, power_t`` in ``(0, 2]``, ``sep`` in ``[0, 1]`` (default 0.5);
+      at ``sep = 0`` the continuous limit, the geometric mean, gives the
+      separable ``sigma2 ((1 + (h/scale_s)^power_s)(1 + (|u|/scale_t)^power_t))^{-1/2}``;
+      ``method="GeoModels"`` reproduces GeoModels/CompRandFld, whose
+      ``sep = 0`` branch returns the square of that product instead.
 
     References
     ----------
@@ -147,11 +168,19 @@ def st_covariance_family(h, u, family: str, **params):
     De Iaco, S., Myers, D. E. and Posa, D. (2002). Nonseparable space-time
     covariance models: some parametric families. *Mathematical Geology*,
     34(1), 23-42.
+    Porcu, E., Gregori, P. and Mateu, J. (2006). Nonseparable stationary
+    anisotropic space-time covariance functions. *Stochastic Environmental
+    Research and Risk Assessment*, 21(2), 113-122.
+    Bevilacqua, M., Mateu, J., Porcu, E., Zhang, H. and Zini, A. (2010).
+    Weighted composite likelihood-based tests for space-time separability of
+    covariance functions. *Statistics and Computing*, 20(3), 283-293.
 
     Examples
     --------
     >>> round(st_covariance_family([1.0], [2.0], "gneiting", a=1.0, alpha=0.5, beta=1.0, gamma=0.5, c=1.0, tau=1.0)[0], 6)
     0.187128
+    >>> round(st_covariance_family([1.0], [2.0], "porcu", power_s=1.0, power_t=1.0, scale_s=1.0, scale_t=1.0, sep=1.0)[0], 6)
+    0.4
     """
     return [_cov(family, a, b, params) for a, b in zip(_vec(h), _vec(u))]
 
