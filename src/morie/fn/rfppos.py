@@ -131,7 +131,7 @@ def dihedral(a, b, c, d):
     n1 = _cross(b1, b2)
     n3 = _cross(b2, b3)
     x = _w.dot(n1, n3)
-    y = _w.dot(_cross(n1, n3), u) * -1.0
+    y = _w.dot(_cross(n1, n3), u)
     return math.degrees(math.atan2(y, x))
 
 
