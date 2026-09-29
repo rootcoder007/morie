@@ -26,9 +26,11 @@ def sequential_linear_programming(
     non-vertex optima (use SQP there). The step is
     accepted when rho = (phi(x) - phi(x + p)) / (m(0) - m(p)) > 0.1; Delta shrinks to
     ||p|| / 4 when rho < 0.25 and doubles when rho > 0.75 at the boundary. Stops when the
-    predicted reduction or Delta falls below ``tol`` (``converged`` only for the former); mu is
-    multiplied by 10 (up to 1e8) while the limit point is infeasible, so mu ends above the
-    multipliers as exactness of the l1 penalty requires.
+    predicted reduction or Delta falls below ``tol`` (``converged`` only for the former, and
+    only at a feasible point: with too small an initial mu the l1 penalty can be unbounded
+    below and the iterates run off, which is reported, not hidden); mu is multiplied by 10
+    (up to 1e8) while the limit point is infeasible, so mu ends above the multipliers as
+    exactness of the l1 penalty requires.
 
     Parameters
     ----------
@@ -118,7 +120,7 @@ def sequential_linear_programming(
                 D = max(D, float(delta))
                 it += 1
                 continue
-            conv = pred <= tol * max(1.0, abs(phi))
+            conv = pred <= tol * max(1.0, abs(phi)) and viol(ce, ci) <= tol
             break
         xn = [xi + pi for xi, pi in zip(x, p)]
         fn = float(f(xn))
