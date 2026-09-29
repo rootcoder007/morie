@@ -10,7 +10,7 @@ def mediation_analysis(Y, T, M, X=None):
     Delegates to :func:`morie.fn.bkmed.baron_kenny` on (Y, T, M); the
     optional baseline covariates X are residualised out of all three
     variables first (Frisch-Waugh), which leaves the paths unchanged in
-    the linear model. The placeholder this replaces averaged Y.
+    the linear model.
 
     References
     ----------
@@ -18,6 +18,15 @@ def mediation_analysis(Y, T, M, X=None):
     variable distinction in social psychological research: conceptual,
     strategic, and statistical considerations. *J. Pers. Soc.
     Psychol.*, 51(6), 1173-1182.
+
+    Examples
+    --------
+    >>> import math
+    >>> X = [math.sin(k) for k in range(12)]
+    >>> M = [0.5 * X[k] + 0.3 * math.cos(2 * k) for k in range(12)]
+    >>> Y = [0.4 * X[k] + 0.8 * M[k] + 0.2 * math.sin(3 * k) for k in range(12)]
+    >>> round(mediation_analysis(Y, X, M)["indirect"], 12)
+    0.383604604142
     """
     from morie.fn import _array_core as np
 
@@ -31,7 +40,10 @@ def mediation_analysis(Y, T, M, X=None):
         if C.ndim == 1:
             C = C.reshape(-1, 1)
         D = np.column_stack([np.ones(len(y)), C])
-        resid = lambda v: v - D @ np.linalg.lstsq(D, v, rcond=None)[0]
+
+        def resid(v):
+            return v - D @ np.linalg.lstsq(D, v, rcond=None)[0]
+
         y, t, m = resid(y), resid(t), resid(m)
     return baron_kenny(y, t, m)
 

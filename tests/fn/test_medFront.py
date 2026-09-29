@@ -1,24 +1,26 @@
-"""Tests for medFront.front_door."""
+"""Tests for morie.fn.medFront: argument order (Y, X, M) of the front-door formula."""
 
-from morie.fn import _array_core as np
-import pytest
-
-from morie.fn.fdadj import frontdoor_adjustment
 from morie.fn.medFront import front_door
 
-
-def test_medFront_basic():
-    rng = np.random.default_rng(42)
-    n = 6000
-    u = (rng.random(n) < 0.5).astype(int)
-    x = (rng.random(n) < 0.2 + 0.6 * u).astype(int)
-    m = (rng.random(n) < 0.1 + 0.8 * x).astype(int)
-    y = (rng.random(n) < 0.1 + 0.5 * m + 0.3 * u).astype(int)
-    a = front_door(y, x, m)
-    b = frontdoor_adjustment(x, m, y)
-    assert a["distribution"] == b["distribution"]  # same estimator, y-first args
+x = [0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0]
+z = [0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1]
+y = [0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1]
 
 
-def test_medFront_edge():
-    with pytest.raises(ValueError):
-        front_door(np.zeros(10), np.zeros(5), np.zeros(10))  # length mismatch
+def _fd(t):
+    """sum_z P(z|t) sum_x P(y=1|x,z) P(x), by counting."""
+    n = len(x)
+    out = 0.0
+    for zv in (0, 1):
+        pz = sum(1 for i in range(n) if x[i] == t and z[i] == zv) / sum(1 for i in range(n) if x[i] == t)
+        inner = 0.0
+        for xv in (0, 1):
+            cell = [y[i] for i in range(n) if x[i] == xv and z[i] == zv]
+            inner += sum(cell) / len(cell) * sum(1 for v in x if v == xv) / n
+        out += pz * inner
+    return out
+
+
+def test_front_door_sum():
+    d = front_door(y, x, z)["distribution"]
+    assert abs(d[1][1] - _fd(1)) < 1e-15

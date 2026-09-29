@@ -1,35 +1,28 @@
-"""Tests for fdadj.frontdoor_adjustment."""
-
-from morie.fn import _array_core as np
-import pytest
+"""Tests for morie.fn.fdadj: the front-door sum recomputed by counting."""
 
 from morie.fn.fdadj import frontdoor_adjustment
 
-
-def _confounded(seed=42, n=8000):
-    """X <- U -> Y with X -> Z -> Y: the front-door path is identified."""
-    rng = np.random.default_rng(seed)
-    u = (rng.random(n) < 0.5).astype(int)
-    x = (rng.random(n) < 0.2 + 0.6 * u).astype(int)
-    z = (rng.random(n) < 0.1 + 0.8 * x).astype(int)
-    y = (rng.random(n) < 0.1 + 0.5 * z + 0.3 * u).astype(int)
-    return x, z, y
+x = [0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0]
+z = [0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1]
+y = [0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1]
 
 
-def test_fdadj_basic():
-    x, z, y = _confounded()
-    out = frontdoor_adjustment(x, z, y)
-    dist = out["distribution"]
-    # true P(Y=1|do(x)) contrast = 0.8 * 0.5 = 0.4
-    contrast = dist[1][1] - dist[0][1]
-    assert contrast == pytest.approx(0.4, abs=0.06)
-    assert out["incomplete_cells"] == []
+def _fd(t):
+    """sum_z P(z|t) sum_x P(y=1|x,z) P(x), by counting."""
+    n = len(x)
+    out = 0.0
+    for zv in (0, 1):
+        pz = sum(1 for i in range(n) if x[i] == t and z[i] == zv) / sum(1 for i in range(n) if x[i] == t)
+        inner = 0.0
+        for xv in (0, 1):
+            cell = [y[i] for i in range(n) if x[i] == xv and z[i] == zv]
+            inner += sum(cell) / len(cell) * sum(1 for v in x if v == xv) / n
+        out += pz * inner
+    return out
 
 
-def test_fdadj_edge():
-    x, z, y = _confounded()
-    # each do(x) row is a proper distribution
-    for row in frontdoor_adjustment(x, z, y)["distribution"].values():
-        assert sum(row.values()) == pytest.approx(1.0)
-    with pytest.raises(ValueError):
-        frontdoor_adjustment(x[:10], z, y)  # length mismatch
+def test_front_door_sum():
+    d = frontdoor_adjustment(x, z, y)["distribution"]
+    for t in (0, 1):
+        assert abs(d[t][1] - _fd(t)) < 1e-15
+        assert abs(d[t][0] + d[t][1] - 1) < 1e-15

@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bounding factor for an unmeasured confounder (Ding-VanderWeele)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["unmeasured_conf_bias"]
@@ -19,8 +18,6 @@ def unmeasured_conf_bias(RR_UD, RR_UY, RR_obs=None):
     move the estimate by more than the factor B. The E-value is the
     solution of B = RR_obs on the diagonal
     :math:`RR_{UD} = RR_{UY}`, which is how the two modules connect.
-
-    This replaces a placeholder that averaged its first argument.
 
     Parameters
     ----------
@@ -46,13 +43,16 @@ def unmeasured_conf_bias(RR_UD, RR_UY, RR_obs=None):
     observational research: introducing the E-value. *Annals of
     Internal Medicine*, 167(4), 268-274 (the E-value as the diagonal
     case).
+
+    Examples
+    --------
+    >>> unmeasured_conf_bias(2.0, 3.0)["bias_factor"]
+    1.5
     """
     a = float(RR_UD)
     b = float(RR_UY)
     if a < 1.0 or b < 1.0:
-        raise ValueError(
-            f"RR_UD and RR_UY must be >= 1 (reciprocate protective ratios first); got ({a}, {b})."
-        )
+        raise ValueError(f"RR_UD and RR_UY must be >= 1 (reciprocate protective ratios first); got ({a}, {b}).")
     B = a * b / (a + b - 1.0)
     rr_bound = explains = None
     if RR_obs is not None:
@@ -63,7 +63,7 @@ def unmeasured_conf_bias(RR_UD, RR_UY, RR_obs=None):
         rr_bound = r_star / B
         # At associations exactly equal to the E-value, B equals RR up to
         # rounding; the boundary counts as explaining away.
-        explains = bool(B >= r_star * (1.0 - 1e-9))
+        explains = bool(r_star * (1.0 - 1e-9) <= B)
     return RichResult(
         payload={
             "bias_factor": float(B),
