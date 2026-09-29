@@ -13,6 +13,16 @@ def test_km002_doctest():
 
 def test_km002_edge():
     import pytest
+
     from morie.fn.km002 import kamath_ch2_context_vector
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_context_vector(*([None] * 2))
+
+
+def test_context_mappings_recomputed():
+    H = [[1.0, 5.0], [3.0, 2.0], [2.0, 8.0]]
+    assert mod.kamath_ch2_context_vector(H)["context"] == [2.0, 5.0]
+    assert mod.kamath_ch2_context_vector(H, "last")["context"] == [2.0, 8.0]
+    assert mod.kamath_ch2_context_vector(H, "max")["context"] == [3.0, 8.0]
+    assert mod.kamath_ch2_context_vector(H, lambda A: A[0] + A[1])["context"] == [4.0, 7.0]

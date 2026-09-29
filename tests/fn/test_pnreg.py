@@ -1,8 +1,8 @@
 """Tests for morie.fn.pnreg — Penalized kernel regression."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.pnreg import pnreg
 
 
@@ -35,3 +35,23 @@ def test_negative_penalty_raises():
 def test_too_few_raises():
     with pytest.raises(ValueError, match="at least 3"):
         pnreg(np.ones(2), np.ones(2))
+
+
+def test_penalised_local_linear_recomputed():
+    """beta = (X'WX + lambda I)^-1 X'Wy with X = (1, x - x0)."""
+    import math
+
+    x = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5]
+    y = [1.0, 1.4, 0.9, 0.2, -0.3, 0.1]
+    h, lam, x0 = 0.8, 0.5, 1.2
+    w = [math.exp(-0.5 * ((a - x0) / h) ** 2) / math.sqrt(2 * math.pi) for a in x]
+    d = [a - x0 for a in x]
+    A = [
+        [sum(w) + lam, sum(wi * di for wi, di in zip(w, d))],
+        [sum(wi * di for wi, di in zip(w, d)), sum(wi * di * di for wi, di in zip(w, d)) + lam],
+    ]
+    bvec = [sum(wi * yi for wi, yi in zip(w, y)), sum(wi * di * yi for wi, di, yi in zip(w, d, y))]
+    det = A[0][0] * A[1][1] - A[0][1] * A[1][0]
+    b0 = (A[1][1] * bvec[0] - A[0][1] * bvec[1]) / det
+    r = pnreg(x, y, [x0], bandwidth=h, penalty=lam)
+    assert r["y_hat"][0] == pytest.approx(b0, rel=1e-11)

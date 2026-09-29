@@ -1,7 +1,6 @@
 """Tests for morie.fn.ppc -- posterior predictive check."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ppc import posterior_predictive_check
 
 
@@ -57,3 +56,20 @@ def test_quantiles():
     result = posterior_predictive_check(obs, reps)
     q = result["T_rep_quantiles"]
     assert q["q025"] <= q["q500"] <= q["q975"]
+
+
+def test_bayesian_p_for_the_variance_statistic():
+    import pytest
+
+    obs = [1.0, 3.0, 2.0, 5.0]
+    reps = [[1.0, 1.5, 2.0, 2.5], [0.0, 4.0, 1.0, 6.0], [2.0, 2.0, 2.0, 3.0]]
+
+    def v1(a):
+        m = sum(a) / len(a)
+        return sum((t - m) ** 2 for t in a) / (len(a) - 1)
+
+    tr = [v1(r) for r in reps]
+    res = posterior_predictive_check(obs, reps, test_statistic="var")
+    assert res["T_obs"] == pytest.approx(v1(obs), rel=1e-14)
+    assert res["bayesian_p"] == pytest.approx(sum(t >= v1(obs) for t in tr) / 3, rel=1e-15)
+    assert res["T_rep_mean"] == pytest.approx(sum(tr) / 3, rel=1e-13)

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.ksr08 import kosorok_multiplier_bootstrap
 
 
@@ -36,3 +35,21 @@ def test_ksr08_edge():
         assert math.isfinite(float(vals[0]))
     else:
         assert math.isfinite(float(estimate))
+
+
+def test_exponential_multiplier_bootstrap_replayed():
+    import pytest
+
+    from morie.fn._tail1core import Lcg
+
+    x = [1.0, 2.5, 3.0, 4.5, 7.0]
+    n, B = 5, 10
+    g = Lcg(5)
+    st = []
+    for _ in range(B):
+        w = [-math.log(g.unif()) for _ in range(n)]
+        wb = sum(w) / n
+        st.append(sum(w[i] / wb * x[i] for i in range(n)) / n)
+    r = kosorok_multiplier_bootstrap(x, B=B, seed=5)
+    assert r["boot_mean"] == pytest.approx(sum(st) / B, rel=1e-13)
+    assert r["estimate"] == pytest.approx(sum(x) / n, rel=1e-15)

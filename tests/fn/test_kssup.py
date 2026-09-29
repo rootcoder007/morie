@@ -1,8 +1,8 @@
 """Tests for kssup.ks_supremum."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.kssup import ks_supremum
 
 
@@ -38,3 +38,18 @@ def test_kssup_rejects_bad_input():
         ks_supremum(np.array([1.0, 2.0, 3.0]))
     with pytest.raises(ValueError, match="Unknown distribution"):
         ks_supremum(np.random.default_rng(0).standard_normal(30), dist="notadist")
+
+
+def test_ks_statistic_against_the_fitted_normal():
+    """D = max_i max(i/n - F(x_(i)), F(x_(i)) - (i-1)/n) with the ML fit
+    (mean, divisor-n sd) that scipy's norm.fit returns."""
+    import math
+
+    x = [2.1, 3.4, 1.9, 5.6, 2.8, 3.1, 4.2, 2.5]
+    n = 8
+    m = sum(x) / n
+    s = math.sqrt(sum((v - m) ** 2 for v in x) / n)
+    F = [0.5 * math.erfc(-((v - m) / s) / math.sqrt(2)) for v in sorted(x)]
+    D = max(max((i + 1) / n - F[i], F[i] - i / n) for i in range(n))
+    r = ks_supremum(x)
+    assert r.statistic == pytest.approx(D, rel=1e-10)

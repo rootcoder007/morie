@@ -1,7 +1,8 @@
 """Test rr_variability (rrvar)."""
 
-from morie.fn import _array_core as np
+import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rrvar import rr_variability, rrvar
 
@@ -29,3 +30,15 @@ class TestRrVariability:
 
     def test_alias(self):
         assert rrvar is rr_variability
+
+
+def test_hrv_in_seconds_recomputed():
+    import math
+
+    rr = [0.80, 0.86, 0.79, 0.805, 0.90, 0.78]
+    m = sum(rr) / 6
+    d = [rr[i + 1] - rr[i] for i in range(5)]
+    r = rr_variability(rr)
+    assert r.extra["sdnn"] == pytest.approx(math.sqrt(sum((v - m) ** 2 for v in rr) / 5), rel=1e-13)
+    assert r.extra["rmssd"] == pytest.approx(math.sqrt(sum(v * v for v in d) / 5), rel=1e-13)
+    assert r.extra["pnn50"] == pytest.approx(100 * sum(abs(v) > 0.05 for v in d) / 5, rel=1e-14)

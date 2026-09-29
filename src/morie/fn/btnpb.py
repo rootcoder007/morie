@@ -60,7 +60,7 @@ def boot_nonoverlap_block(x, block_len=None, stat=None, B=500, seed=0):
     On dependent data the block bootstrap gives a materially larger standard
     error than the iid bootstrap, which is the entire point.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> x = np.zeros(600)
     >>> for i in range(1, 600):
@@ -101,10 +101,8 @@ def boot_nonoverlap_block(x, block_len=None, stat=None, B=500, seed=0):
         stat = np.mean
     n_blocks = n // block_len
     if n_blocks < 2:
-        raise ValueError(
-            f"block_len={block_len} leaves only {n_blocks} blocks; too few to resample"
-        )
-    blocks = np.array([x[i * block_len:(i + 1) * block_len] for i in range(n_blocks)])
+        raise ValueError(f"block_len={block_len} leaves only {n_blocks} blocks; too few to resample")
+    blocks = np.array([x[i * block_len : (i + 1) * block_len] for i in range(n_blocks)])
     rng = np.random.default_rng(seed)
     reps = np.empty(int(B))
     for b in range(int(B)):
@@ -113,16 +111,20 @@ def boot_nonoverlap_block(x, block_len=None, stat=None, B=500, seed=0):
     est = float(stat(x))
     return RichResult(
         title="Non-overlapping block bootstrap",
-        summary_lines=[("n", n), ("block", block_len), ("blocks", n_blocks),
-                       ("se", float(np.std(reps, ddof=1)))],
-        warnings=["non-overlapping blocks give only n/block_len resampling "
-                  "units; the moving-block variant is more efficient but its "
-                  "blocks are correlated"],
+        summary_lines=[("n", n), ("block", block_len), ("blocks", n_blocks), ("se", float(np.std(reps, ddof=1)))],
+        warnings=[
+            "non-overlapping blocks give only n/block_len resampling "
+            "units; the moving-block variant is more efficient but its "
+            "blocks are correlated"
+        ],
         payload={
-            "estimate": est, "se": float(np.std(reps, ddof=1)),
+            "estimate": est,
+            "se": float(np.std(reps, ddof=1)),
             "ci": (float(np.quantile(reps, 0.025)), float(np.quantile(reps, 0.975))),
-            "replicates": reps, "block_len": block_len,
-            "n_blocks": int(n_blocks), "B": int(B),
+            "replicates": reps,
+            "block_len": block_len,
+            "n_blocks": int(n_blocks),
+            "B": int(B),
             "method": "boot_nonoverlap_block",
         },
     )

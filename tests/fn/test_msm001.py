@@ -1,7 +1,6 @@
 """Tests for msm001.mvsml_general_eq_1_1."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.msm001 import mvsml_general_eq_1_1
 
 
@@ -18,3 +17,10 @@ def test_msm001_edge():
     x = np.random.default_rng(42).normal(0.0, 1.0, 40)
     result = mvsml_general_eq_1_1(x)
     assert isinstance(result, dict)
+
+
+def test_systematic_plus_random_part():
+    r = mvsml_general_eq_1_1([1.0, 2.0, 3.0], f=lambda v: 2 * v + 1, noise=[0.1, -0.2, 0.4])
+    assert r["systematic"] == [3.0, 5.0, 7.0]
+    assert r["y"] == [3.0 + 0.1, 5.0 - 0.2, 7.0 + 0.4]
+    assert abs(r["mean_error"] - 0.1) < 1e-15

@@ -1,8 +1,8 @@
 """Tests for morie.fn.qlnrm — lognormal quantile function."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.qlnrm import qlnrm
 
 
@@ -27,3 +27,12 @@ class TestQlnrm:
         """Should reject sdlog <= 0."""
         with pytest.raises(ValueError):
             qlnrm(0.5, sdlog=0)
+
+
+def test_lognormal_quantile_is_exp_of_the_normal_quantile():
+    import math
+
+    from morie.fn._s03core import qnorm
+
+    for p in (0.1, 0.5, 0.9):
+        assert qlnrm(p, meanlog=0.7, sdlog=1.3) == pytest.approx(math.exp(0.7 + 1.3 * qnorm(p)), rel=1e-10)

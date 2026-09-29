@@ -37,7 +37,7 @@ def wasserman_kde_bandwidth(data):
     --------
     >>> d = list(range(1, 101))
     >>> out = wasserman_kde_bandwidth(d)
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> s = float(np.std(d, ddof=1))
     >>> round(out["h_normal_reference"], 12) == round((4.0 / (3 * 100)) ** 0.2 * s, 12)
     True
@@ -59,11 +59,16 @@ def wasserman_kde_bandwidth(data):
     q3 = data[int(np.ceil(0.75 * n)) - 1]
     iqr = float(q3 - q1)
     spread = min(s, iqr / 1.34) if iqr > 0 else s
-    return RichResult(payload={
-        "estimate": float(0.9 * spread * n ** -0.2),
-        "h_normal_reference": float((4.0 / (3.0 * n)) ** 0.2 * s),
-        "sd": s, "iqr": iqr, "n": int(n),
-        "method": "Silverman 0.9 min(s, IQR/1.34) n^-1/5; normal reference alongside"})
+    return RichResult(
+        payload={
+            "estimate": float(0.9 * spread * n**-0.2),
+            "h_normal_reference": float((4.0 / (3.0 * n)) ** 0.2 * s),
+            "sd": s,
+            "iqr": iqr,
+            "n": int(n),
+            "method": "Silverman 0.9 min(s, IQR/1.34) n^-1/5; normal reference alongside",
+        }
+    )
 
 
 def cheatsheet():

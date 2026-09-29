@@ -1,8 +1,8 @@
 """Tests for morie.fn.qnbm — negative binomial quantile function."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.qnbm import qnbm
 
 
@@ -28,3 +28,15 @@ class TestQnbm:
         """Should reject prob not in (0, 1]."""
         with pytest.raises(ValueError):
             qnbm(0.5, size=1, prob=0)
+
+
+def test_qnbinom_is_the_smallest_k_with_cdf_at_least_p():
+    import math
+
+    size, prob = 3, 0.4
+    for p in (0.1, 0.5, 0.9):
+        cdf, k = 0.0, -1
+        while cdf < p:
+            k += 1
+            cdf += math.comb(k + size - 1, k) * prob**size * (1 - prob) ** k
+        assert int(qnbm(p, size=size, prob=prob)) == k

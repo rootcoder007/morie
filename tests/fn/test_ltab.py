@@ -27,3 +27,24 @@ class TestLifeTable:
     def test_length_mismatch_raises(self):
         with pytest.raises(ValueError, match="length"):
             life_table([0, 5], [10], [100, 90])
+
+
+def test_life_table_columns_recomputed():
+    a = [0.0, 1.0, 5.0]
+    d = [50.0, 20.0, 400.0]
+    N = [5000.0, 19000.0, 8000.0]
+    n = [1.0, 4.0, 5.0]
+    M = [di / Ni for di, Ni in zip(d, N)]
+    ax = [0.1, 2.0, 2.5]
+    q = [n[i] * M[i] / (1 + (n[i] - ax[i]) * M[i]) for i in range(2)] + [1.0]
+    lx = [100000.0]
+    for i in range(2):
+        lx.append(lx[i] * (1 - q[i]))
+    dx = [lx[i] * q[i] for i in range(3)]
+    L = [n[i] * lx[i + 1] + ax[i] * dx[i] for i in range(2)] + [lx[2] / M[2]]
+    T = [sum(L[i:]) for i in range(3)]
+    r = life_table(a, d, N)
+    assert r["nqx"] == pytest.approx(q, rel=1e-13)
+    assert r["lx"] == pytest.approx(lx, rel=1e-13)
+    assert r["nLx"] == pytest.approx(L, rel=1e-13)
+    assert r["ex"] == pytest.approx([T[i] / lx[i] for i in range(3)], rel=1e-13)
