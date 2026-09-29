@@ -2,7 +2,7 @@
 
 import math
 
-from morie.fn.sppanel import sp_panel_dynamic, sp_panel_fe, sp_panel_re
+from morie.fn.sppaneldyn import sp_panel_dynamic, sp_panel_fe, sp_panel_re
 
 N, T = 8, 5
 _A = [[1.0 if (i != j and (abs(i - j) == 1 or (i * 3 + j * 5) % 7 == 0)) else 0.0 for j in range(N)] for i in range(N)]
