@@ -25,3 +25,29 @@ def test_barte_alias_exact_zero():
     assert a["estimate"] == b["estimate"]
     assert a["loss"] == b["loss"]
     assert bart is barte
+
+
+def test_barte_delegates_and_scores_with_the_bigram_model():
+    """barte is geron_bart; the default score is the add-one bigram
+    cross-entropy of the target, recomputed here."""
+    import math
+
+    import pytest
+
+    src = ["the", "cat", "sat", "on", "the", "mat", "today", "ok"]
+    tgt = ["a", "b", "a", "b", "c"]
+    r = barte(src, tgt, mask_ratio=0.25, seed=2)
+    ref = geron_bart(src, tgt, mask_ratio=0.25, seed=2)
+    assert r["corrupted"] == ref["corrupted"] and r["loss"] == ref["loss"]
+    vocab = sorted(set(tgt))
+    V = len(vocab)
+    counts = {(p, c): 1.0 for p in vocab + ["<s>"] for c in vocab}
+    for i, tok in enumerate(tgt):
+        counts[("<s>" if i == 0 else tgt[i - 1], tok)] += 1.0
+    lp = []
+    for i, tok in enumerate(tgt):
+        prev = "<s>" if i == 0 else tgt[i - 1]
+        tot = sum(counts[(prev, c)] for c in vocab)
+        lp.append(math.log(counts[(prev, tok)] / tot))
+    assert r["loss"] == pytest.approx(-sum(lp) / len(lp), rel=1e-13)
+    assert V == 3

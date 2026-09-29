@@ -1,7 +1,6 @@
 """Tests for morie.fn.bhpd -- HPD interval."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bhpd import hpd_interval
 
 
@@ -50,3 +49,16 @@ def test_invalid_prob():
         assert False
     except ValueError:
         pass
+
+
+def test_hpd_is_the_shortest_window_recomputed():
+    import pytest
+
+    x = [3.2, 0.1, 0.4, 0.2, 0.9, 5.5, 0.35, 0.6, 1.4, 0.05, 2.2, 0.8]
+    s = sorted(x)
+    size = int(0.5 * len(s))
+    widths = [s[i + size] - s[i] for i in range(len(s) - size)]
+    i = widths.index(min(widths))
+    r = hpd_interval(x, prob=0.5)
+    assert (r["hpd_lower"], r["hpd_upper"]) == pytest.approx((s[i], s[i + size]), rel=1e-15)
+    assert r["width"] == pytest.approx(widths[i], rel=1e-14)
