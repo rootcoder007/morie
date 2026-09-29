@@ -29,20 +29,51 @@ from ._richresult import RichResult
 __all__ = ["gaussian_dp"]
 
 
-def gaussian_dp(mech, mu, alpha=None, epsilon=1.0):
+def gaussian_dp(mech=None, mu=None, alpha=None, epsilon=1.0):
     """Trade-off curve of a mu-GDP mechanism and its (eps, delta) profile.
+
+    ``G_mu(alpha) = Phi(Phi^{-1}(1 - alpha) - mu)`` at each ``alpha`` and the
+    ``(epsilon, delta)`` conversion ``delta = Phi(-eps/mu + mu/2) - e^eps
+    Phi(-eps/mu - mu/2)`` (Dong, Roth and Su 2022, Corollary 2.13). The
+    mechanism may be given instead of ``mu``: ``mech = (sensitivity,
+    sigma)`` describes the Gaussian mechanism ``M(D) = f(D) + N(0,
+    sigma^2)`` for a query ``f`` of that l2 sensitivity, which is
+    ``mu``-GDP with ``mu = sensitivity / sigma`` (their Theorem 2.7).
 
     Parameters
     ----------
-    mech : array-like or None
-        Placeholder for the mechanism description; only mu is used.
-    mu : float
+    mech : tuple (sensitivity, sigma), optional
+        Gaussian mechanism; used when ``mu`` is not given.
+    mu : float, optional
         The GDP parameter, non-negative.
     alpha : array-like, optional
         Type I error rates at which the trade-off is evaluated.
     epsilon : float
         Epsilon at which the (eps, delta) conversion is reported.
+
+    Returns
+    -------
+    RichResult
+        ``trade_off``, ``alpha``, ``delta``, ``mu``, ``epsilon``.
+
+    References
+    ----------
+    Dong, J., Roth, A. and Su, W. J. (2022). Gaussian differential privacy. *Journal of the Royal
+    Statistical Society B*, 84(1), 3-37.
+
+    Examples
+    --------
+    >>> r = gaussian_dp(mech=(1.0, 2.0), alpha=[0.05, 0.5])
+    >>> r["mu"], [round(v, 12) for v in r["trade_off"]], round(r["delta"], 12)
+    (0.5, [0.873865101807, 0.308537538726], 0.006829594983)
     """
+    if mu is None:
+        if mech is None:
+            raise ValueError("gaussian_dp: give mu or mech = (sensitivity, sigma)")
+        sens, sig = (float(v) for v in mech)
+        if sens < 0 or sig <= 0:
+            raise ValueError("gaussian_dp: need sensitivity >= 0 and sigma > 0")
+        mu = sens / sig
     m = float(mu)
     if m < 0:
         raise ValueError("gaussian_dp: mu must be non-negative")
