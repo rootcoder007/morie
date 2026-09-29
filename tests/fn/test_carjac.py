@@ -1,26 +1,14 @@
-"""Tests for morie.fn.carjac."""
+"""Tests for morie.fn.carjac: 0.5 log|I - rho W| from the eigenvalues."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.carjac import carjac
 
+W = [[0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 1.0, 0.0], [0.0, 1.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0]]
 
-class TestCarjac:
-    def test_basic(self):
-        W = np.eye(10) * 0.1
-        rho = 0.3
-        result = carjac(W, rho)
-        assert result is not None
 
-    def test_returns_spatial_result(self):
-        W = np.eye(10) * 0.1
-        rho = 0.3
-        result = carjac(W, rho)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        W = np.eye(10) * 0.1
-        rho = 0.3
-        result = carjac(W, rho)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_path_eigenvalues():
+    # eigenvalues of the path graph P4 are 2 cos(k pi / 5), k = 1..4
+    rho = 0.35
+    ref = 0.5 * sum(math.log(1 - rho * 2 * math.cos(k * math.pi / 5)) for k in range(1, 5))
+    assert abs(carjac(W, rho).statistic - ref) < 1e-14

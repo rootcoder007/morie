@@ -1,29 +1,19 @@
-"""Tests for morie.fn.caricar."""
+"""Tests for morie.fn.caricar: generalised-determinant ICAR log-density."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.caricar import caricar
 
+W = [[0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 1.0, 0.0], [0.0, 1.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0]]
+PHI = [0.4, -0.1, 0.3, -0.6]
 
-class TestCaricar:
-    def test_basic(self):
-        np.random.seed(24)
-        phi = np.random.randn(10)
-        W = np.eye(10) * 0.2
-        result = caricar(phi, W)
-        assert result is not None
 
-    def test_returns_spatial_result(self):
-        np.random.seed(24)
-        phi = np.random.randn(10)
-        W = np.eye(10) * 0.2
-        result = caricar(phi, W)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        np.random.seed(24)
-        phi = np.random.randn(10)
-        W = np.eye(10) * 0.2
-        result = caricar(phi, W)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_path_density():
+    # Laplacian of P4 has eigenvalues 2 - 2 cos(k pi / 4), k = 0..3 (one zero)
+    tau = 2.5
+    pos = [2 - 2 * math.cos(k * math.pi / 4) for k in range(1, 4)]
+    quad = sum((PHI[i] - PHI[i + 1]) ** 2 for i in range(3))
+    ref = -1.5 * math.log(2 * math.pi) + 1.5 * math.log(tau) + 0.5 * sum(math.log(v) for v in pos) - 0.5 * tau * quad
+    r = caricar(PHI, W, tau=tau)
+    assert abs(r.statistic - ref) < 1e-12
+    assert r.extra["rank"] == 3
