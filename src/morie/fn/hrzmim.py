@@ -43,7 +43,7 @@ def _avgderiv(Xb, y, h):
         diff = Xb[:, j][:, None] - Xb[:, j][None, :]
         # dK/dx of the product kernel in coordinate j
         G = W * (-diff / (h * h))
-        d[j] = -2.0 * float(np.sum(y[:, None] * G)) / (n * n * (h ** k))
+        d[j] = -2.0 * float(np.sum(y[:, None] * G)) / (n * n * (h**k))
     return d
 
 
@@ -65,14 +65,24 @@ def multindex(x, y, blocks, x0=None, h=None, hg=None, ngrid=0):
         Bandwidth for the regression of Y on the fitted indices.
         Default n**(-1/(M+4)).
     ngrid : int, default 0
-        Unused placeholder for a future evaluation grid; G is returned
-        at the sample indices.
+        With a single index (``M = 1``) and ``ngrid >= 2``, G is also
+        evaluated by the same Nadaraya-Watson smoother on ``ngrid``
+        equally spaced points spanning the fitted index (payload ``grid``
+        and ``ggrid``); 0 skips the grid.
 
     Returns
     -------
     RichResult
         payload keys: estimate, beta0, indices, ghat, resid, rss,
         betaexp, gexp, M, n, method.
+
+    Examples
+    --------
+    >>> import math
+    >>> X = [[-2 + 4 * i / 59, math.cos(0.6 * i)] for i in range(60)]
+    >>> y = [(r[0] + 0.7 * r[1]) + 0.3 * (r[0] + 0.7 * r[1]) ** 2 for r in X]
+    >>> round(float(multindex(X, y, [[0, 1]], h=0.6, hg=0.3)["estimate"][0][1]), 8)
+    0.55068093
     """
     X = np.atleast_2d(np.asarray(x, dtype=float))
     yv = np.asarray(y, dtype=float).ravel()
@@ -104,7 +114,8 @@ def multindex(x, y, blocks, x0=None, h=None, hg=None, ngrid=0):
             raise ValueError(
                 "the first covariate of an index block has a zero average "
                 "derivative, so the scale normalisation beta_1 = 1 is "
-                "unavailable for that block.")
+                "unavailable for that block."
+            )
         b = d / float(d[0])
         betas.append(b)
         idx[:, m] = Xb @ b
@@ -117,14 +128,35 @@ def multindex(x, y, blocks, x0=None, h=None, hg=None, ngrid=0):
     den = np.where(den > 1e-300, den, 1e-300)
     ghat = (W @ resid) / den
     r = resid - ghat
+    grid = ggrid = None
+    if ngrid:
+        if M != 1 or int(ngrid) < 2:
+            raise ValueError("ngrid needs a single index (M = 1) and at least 2 points.")
+        lo, hi = float(np.min(idx[:, 0])), float(np.max(idx[:, 0]))
+        grid = [lo + (hi - lo) * j / (int(ngrid) - 1) for j in range(int(ngrid))]
+        rv = [float(v) for v in resid.tolist()]
+        iv = [float(v) for v in idx[:, 0].tolist()]
+        ggrid = []
+        for gpt in grid:
+            w = [float(_gauss((gpt - v) / hgv)) for v in iv]
+            ggrid.append(sum(a * b for a, b in zip(w, rv)) / max(sum(w), 1e-300))
     return RichResult(
         title="Multiple-index model (eq. 2.5)",
-        payload={"estimate": betas, "beta0": beta0, "indices": idx,
-                 "ghat": ghat, "resid": r,
-                 "rss": float(np.sum(r * r)),
-                 "betaexp": 0.5, "gexp": 2.0 / (4.0 + M),
-                 "M": M, "n": n,
-                 "method": "Horowitz (2009) eq. (2.5), average-derivative indices"},
+        payload={
+            "estimate": betas,
+            "beta0": beta0,
+            "indices": idx,
+            "ghat": ghat,
+            "resid": r,
+            "rss": float(np.sum(r * r)),
+            "betaexp": 0.5,
+            "gexp": 2.0 / (4.0 + M),
+            "M": M,
+            "n": n,
+            "grid": grid,
+            "ggrid": ggrid,
+            "method": "Horowitz (2009) eq. (2.5), average-derivative indices",
+        },
     )
 
 
@@ -142,7 +174,7 @@ if __name__ == "__main__":  # pragma: no cover
     b = np.cos(np.arange(n) * 0.6)
     X = np.column_stack([a, b])
     z = X @ np.array([1.0, 0.7])
-    y = z + 0.3 * z ** 2
+    y = z + 0.3 * z**2
     r = multindex(X, y, [[0, 1]], h=0.6, hg=0.3)
     got = float(r["estimate"][0][1])
     assert abs(got - 0.7) < 0.25, got

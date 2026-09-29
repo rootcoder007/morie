@@ -1,24 +1,38 @@
-"""Tests for hrzmim.horowitz_multiple_index_model."""
+"""Tests for hrzmim.multindex: the second-stage smoother and the grid recomputed."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.hrzmim import horowitz_multiple_index_model
+import pytest
 
+from morie.fn.hrzmim import multindex
 
-def test_hrzmim_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    blocks = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    result = horowitz_multiple_index_model(x, y, blocks)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "estimate" in result
+N = 60
+X = [[-2 + 4 * i / (N - 1), math.cos(0.6 * i)] for i in range(N)]
+Z = [r[0] + 0.7 * r[1] for r in X]
+Y = [z + 0.3 * z * z for z in Z]
 
 
-def test_hrzmim_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    y = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    blocks = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
-    result = horowitz_multiple_index_model(x, y, blocks)
-    assert isinstance(result, dict)
+def _k(u):
+    return math.exp(-0.5 * u * u) / math.sqrt(2 * math.pi)
+
+
+def test_normalisation_smoother_and_grid():
+    r = multindex(X, Y, [[0, 1]], h=0.6, hg=0.3, ngrid=5)
+    b = [float(v) for v in r["estimate"][0].tolist()]
+    assert b[0] == 1.0
+    idx = [float(v) for v in r["indices"][:, 0].tolist()]
+    for i in range(N):
+        assert abs(idx[i] - (X[i][0] + b[1] * X[i][1])) < 1e-12
+    w = [_k((idx[3] - v) / 0.3) for v in idx]
+    assert abs(float(r["ghat"][3]) - sum(a * c for a, c in zip(w, Y)) / sum(w)) < 1e-12
+    lo, hi = min(idx), max(idx)
+    assert r["grid"][0] == lo and abs(r["grid"][-1] - hi) < 1e-12
+    g2 = r["grid"][2]
+    w = [_k((g2 - v) / 0.3) for v in idx]
+    assert abs(r["ggrid"][2] - sum(a * c for a, c in zip(w, Y)) / sum(w)) < 1e-12
+    assert abs(b[1] - 0.7) < 0.25
+
+
+def test_grid_needs_single_index():
+    with pytest.raises(ValueError):
+        multindex(X, Y, [[0], [1]], ngrid=5)
