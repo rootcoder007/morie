@@ -1,26 +1,18 @@
 """Tests for morie.fn.swpower."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.swpower import swpower
 
+W = [[0, 0.5, 0.5, 0], [1 / 3, 0, 1 / 3, 1 / 3], [0.5, 0.5, 0, 0], [0, 1, 0, 0]]
 
-class TestSwpower:
-    def test_basic(self):
-        W = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=float)
-        p = 2
-        result = swpower(W, p)
-        assert result is not None
 
-    def test_returns_spatial_result(self):
-        W = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=float)
-        p = 2
-        result = swpower(W, p)
-        assert hasattr(result, "statistic")
+def _mm(A, B):
+    return [[sum(A[i][m] * B[m][j] for m in range(4)) for j in range(4)] for i in range(4)]
 
-    def test_statistic_numeric(self):
-        W = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=float)
-        p = 2
-        result = swpower(W, p)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+
+def test_powers():
+    ref = _mm(_mm(W, W), W)
+    P = swpower(W, 3)
+    assert max(abs(P[i][j] - ref[i][j]) for i in range(4) for j in range(4)) < 1e-15
+    assert swpower(W, 0) == [[1.0 if i == j else 0.0 for j in range(4)] for i in range(4)]
+    # row-stochastic W stays row-stochastic
+    assert all(abs(sum(r) - 1.0) < 1e-14 for r in P)

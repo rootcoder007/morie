@@ -17,8 +17,7 @@ def frontdoor_adjustment(x, z, y, at=None):
     re-weighting is the whole difference from conditioning. Validity is
     a graph question -- see :func:`morie.fn.fdcrt.frontdoor_criterion`.
 
-    This replaces a placeholder that averaged its first argument. All
-    variables are discrete.
+    All variables are discrete.
 
     Parameters
     ----------
@@ -37,6 +36,15 @@ def frontdoor_adjustment(x, z, y, at=None):
     ----------
     Pearl, J. (2009). *Causality*, 2nd edn. Cambridge UP. Thm. 3.3.4
     (front-door adjustment).
+
+    Examples
+    --------
+    >>> x = [0, 0, 0, 0, 1, 1, 1, 1, 0, 1]
+    >>> z = [0, 0, 1, 0, 1, 1, 0, 1, 0, 1]
+    >>> y = [0, 1, 0, 0, 1, 1, 0, 1, 1, 1]
+    >>> r = frontdoor_adjustment(x, z, y)
+    >>> round(r["distribution"][0][1], 12), round(r["distribution"][1][1], 12)
+    (0.3, 0.45)
     """
     xa = np.asarray(x).ravel()
     za = np.asarray(z).ravel()

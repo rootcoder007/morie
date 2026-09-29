@@ -8,9 +8,13 @@ def causal_e_value(RR):
     r"""E-value for a point risk ratio.
 
     Delegates to :func:`morie.fn.evalu.evalue`; this entry point exists
-    under the historical name whose placeholder body returned the mean
-    of RR. See that module for the formula and reference (VanderWeele
+    under its historical name. See that module for the formula and reference (VanderWeele
     & Ding 2017, *Ann Intern Med* 167(4), 268-274).
+
+    Examples
+    --------
+    >>> round(causal_e_value(2.0)["evalue"], 12)
+    3.414213562373
     """
     from .evalu import evalue
 

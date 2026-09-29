@@ -1,36 +1,43 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MGWR cross-validation score."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from ._qpcore import ssum
+from .mgwrfit import mgwrfit
 
 
-def mgwrcv(y, X, coords, bws=None):
-    """MGWR cross-validation score.
+def mgwrcv(y, X, coords, bws=None, kernel="bisquare", adaptive=False):
+    r"""Leave-one-out cross-validation score of an MGWR fit, CV = sum_i (e_i / (1 - S_ii))^2.
 
-    Category: MGWR
+    For a linear smoother y_hat = S y the leave-one-out residual is
+    e_i / (1 - S_ii) (Hastie and Tibshirani 1990, sec. 3.4), with S
+    the MGWR hat matrix of :func:`morie.fn.mgwrfit.mgwrfit`.
 
-    Parameters
+    References
     ----------
-    y, X, coords, bws=None : see function signature.
+    Hastie, T. J. and Tibshirani, R. J. (1990). *Generalized Additive
+    Models*. Chapman and Hall.
+    Fotheringham, A. S., Yang, W. and Kang, W. (2017). Multiscale
+    geographically weighted regression (MGWR). *Annals of the American
+    Association of Geographers* 107, 1247-1265.
+    Yu, H., Fotheringham, A. S., Li, Z., Oshan, T., Kang, W. and Wolf, L. J.
+    (2020). Inference in multiscale geographically weighted regression.
+    *Geographical Analysis* 52, 87-106.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> import math
+    >>> P = [(float(i % 5), float(i // 5)) for i in range(20)]
+    >>> X = [[math.sin(i), (0.3 * i) % 1.1] for i in range(20)]
+    >>> y = [1.0 + (1 + 0.2 * P[i][0]) * X[i][0] - X[i][1] + 0.1 * math.cos(3 * i) for i in range(20)]
+    >>> round(mgwrcv(y, X, P, bws=[6.0, 3.0, 8.0], kernel="gaussian"), 10)
+    0.721102564
     """
-    try:
-        n = len(y)
-        dists = np.sqrt(np.sum((coords[None, :, :] - coords[:, None, :]) ** 2, axis=-1))
-        bw = bws if bws is not None else float(np.median(dists[dists > 0]))
-        kernel_sum = float(np.sum(np.exp(-0.5 * (dists / bw) ** 2)))
-        result = kernel_sum / (n * n)
-        return SpatialResult(name="mgwrcv", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="mgwrcv", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    r = mgwrfit(y, X, coords, bandwidths=bws, kernel=kernel, adaptive=adaptive)
+    return ssum((e / (1.0 - h)) ** 2 for e, h in zip(r["residuals"], r["hat_diagonal"]))
 
 
 mgwrcv_fn = mgwrcv
 
 
 def cheatsheet() -> str:
-    return "mgwrcv({}) -> MGWR cross-validation score."
+    return "mgwrcv(y, X, coords, bws) -> sum (e_i / (1 - S_ii))^2 for the MGWR smoother."

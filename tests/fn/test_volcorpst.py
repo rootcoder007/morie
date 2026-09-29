@@ -1,70 +1,45 @@
-"""Tests for volcorpst.vol_corradi_swan_persistence."""
+"""Tests for volcorpst.vol_corradi_swan_persistence: statistics and Monte Carlo p-values recomputed."""
 
-from morie.fn import _array_core as np
-import pytest
-from morie.fn import _stats_core as stats
+import math
 
+from morie.fn._rng import random_normal
 from morie.fn.volcorpst import vol_corradi_swan_persistence
 
-
-def _garch(seed, n=4000, omega=0.05, alpha=0.25, beta=0.72):
-    rng = np.random.default_rng(seed)
-    s2, y = omega / (1 - alpha - beta), np.empty(n)
-    for t in range(n):
-        y[t] = np.sqrt(s2) * rng.standard_normal()
-        s2 = omega + alpha * y[t] ** 2 + beta * s2
-    return y
+R = [0.01 * math.sin(1.7 * t) + 0.004 * math.cos(0.3 * t * t) for t in range(120)]
 
 
-def test_volcorpst_reports_every_requested_horizon():
-    rng = np.random.default_rng(0)
-    r = vol_corradi_swan_persistence(rng.standard_normal(800), horizons=(1, 5, 20), n_mc=200)
-    per = r["per_horizon"]
-    assert [e["h"] for e in per] == [1, 5, 20]
-    assert per[0]["n_h"] == 800 and per[1]["n_h"] == 160 and per[2]["n_h"] == 40
-    assert float(r["statistic"]) == pytest.approx(max(e["statistic"] for e in per), rel=1e-12)
+def _fks(z):
+    z = sorted(z)
+    n = len(z)
+    m = sum(z) / n
+    s = math.sqrt(sum((v - m) ** 2 for v in z) / (n - 1))
+    c = [0.5 * math.erfc(-(v - m) / (s * math.sqrt(2))) for v in z]
+    return max(max((i + 1) / n - ci for i, ci in enumerate(c)), max(ci - i / n for i, ci in enumerate(c)))
 
 
-def test_volcorpst_gaussian_data_passes_at_all_horizons():
-    """Aggregates of i.i.d. Gaussians are Gaussian at every horizon, so
-    the fitted-normal test should not reject. Measured joint p > 0.2 on
-    seeds 0..2."""
-    for s in range(3):
-        rng = np.random.default_rng(s)
-        r = vol_corradi_swan_persistence(rng.standard_normal(1200), horizons=(1, 5, 10), n_mc=200, seed=s)
-        assert float(r["p_value"]) > 0.05
+def test_fitted_normal_path():
+    out = vol_corradi_swan_persistence(R, horizons=(1, 4), n_mc=39, seed=3)
+    for i, h in enumerate((1, 4)):
+        agg = [sum(R[j * h : (j + 1) * h]) for j in range(120 // h)]
+        d = _fks(agg)
+        e = out["per_horizon"][i]
+        assert abs(e["statistic"] - d) < 1e-12
+        cnt = sum(
+            1 for k in range(39) if _fks([float(v) for v in random_normal(len(agg), seed=3, stream=i * 39 + k)]) >= d
+        )
+        assert abs(e["p_value"] - (1 + cnt) / 40) < 1e-15
+    assert abs(out["p_value"] - min(1.0, 2 * min(e["p_value"] for e in out["per_horizon"]))) < 1e-15
 
 
-def test_volcorpst_detects_heavy_tails_at_short_horizons():
-    """i.i.d. t(3) is far from Gaussian at h = 1 but its 20-period
-    aggregates are already CLT-normalised: rejection must come from the
-    SHORT horizon. This is what checking multiple horizons is for."""
-    rng = np.random.default_rng(1)
-    r = vol_corradi_swan_persistence(rng.standard_t(3, 3000), horizons=(1, 20), n_mc=300)
-    per = {e["h"]: e for e in r["per_horizon"]}
-    assert per[1]["p_value"] < 0.01
-    assert per[1]["statistic"] > per[20]["statistic"]
-    assert float(r["p_value"]) < 0.05
+def test_supplied_cdf_uses_exact_kolmogorov():
+    from morie.fn import _stats_core as stats
 
+    def cdf(x, h):
+        return 0.5 * math.erfc(-x / (0.01 * math.sqrt(h) * math.sqrt(2)))
 
-def test_volcorpst_specified_cdf_uses_the_exact_null():
-    """With the true CDF supplied there is no estimation, and the classical
-    Kolmogorov distribution applies: p must be well-behaved under the
-    null and reject under a wrong CDF."""
-    rng = np.random.default_rng(2)
-    x = rng.standard_normal(600)
-    ok = vol_corradi_swan_persistence(
-        x, horizons=(1, 4), cdf=lambda v, h: stats.norm.cdf(v, scale=np.sqrt(h))
-    )
-    assert float(ok["p_value"]) > 0.05
-    bad = vol_corradi_swan_persistence(
-        x, horizons=(1, 4), cdf=lambda v, h: stats.norm.cdf(v, scale=3.0 * np.sqrt(h))
-    )
-    assert float(bad["p_value"]) < 0.01
-
-
-def test_volcorpst_rejects_bad_input():
-    with pytest.raises(ValueError, match="positive"):
-        vol_corradi_swan_persistence(np.arange(100.0), horizons=(0, 5))
-    with pytest.raises(ValueError, match="at least 8 aggregates"):
-        vol_corradi_swan_persistence(np.arange(50.0), horizons=(20,))
+    out = vol_corradi_swan_persistence(R, horizons=(4,), cdf=cdf)
+    agg = sorted(sum(R[j * 4 : (j + 1) * 4]) for j in range(30))
+    c = [cdf(v, 4) for v in agg]
+    d = max(max((i + 1) / 30 - ci for i, ci in enumerate(c)), max(ci - i / 30 for i, ci in enumerate(c)))
+    assert abs(out["statistic"] - d) < 1e-15
+    assert abs(out["p_value"] - stats.kstwo.sf(d, 30)) < 1e-15

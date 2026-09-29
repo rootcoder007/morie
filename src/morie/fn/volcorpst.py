@@ -1,31 +1,43 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multi-horizon distributional accuracy test (Corradi-Swanson type)."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 from ._richresult import RichResult
+from ._rng import random_normal
 
 __all__ = ["vol_corradi_swan_persistence"]
 
 
-def _ks_stat(sample, cdf_vals):
-    n = sample.size
-    ecdf_hi = np.arange(1, n + 1) / n
-    ecdf_lo = np.arange(0, n) / n
-    return float(max(np.max(ecdf_hi - cdf_vals), np.max(cdf_vals - ecdf_lo)))
+def _pnorm(x, m, s):
+    return 0.5 * math.erfc(-(x - m) / (s * math.sqrt(2.0)))
 
 
-def _mc_pvalue_fitted_normal(d_obs, n, n_mc, rng):
+def _ks_stat(sorted_sample, cdf_vals):
+    n = len(sorted_sample)
+    return max(max((i + 1) / n - c for i, c in enumerate(cdf_vals)), max(c - i / n for i, c in enumerate(cdf_vals)))
+
+
+def _fitted_ks(z):
+    """KS distance of a sorted sample from the Gaussian with its own mean and SD."""
+    n = len(z)
+    m = math.fsum(z) / n
+    s = math.sqrt(math.fsum((v - m) ** 2 for v in z) / (n - 1))
+    return _ks_stat(z, [_pnorm(v, m, s) for v in z])
+
+
+def _mc_pvalue_fitted_normal(d_obs, n, n_mc, seed, block):
     """Null distribution of the KS statistic when mean and sd are fitted.
 
     Parameter-free for the location-scale Gaussian family, so simulating
-    standard normals is exact (the Lilliefors construction).
+    standard normals is exact (the Lilliefors construction); replicate k
+    uses Philox stream ``block * n_mc + k``.
     """
     count = 0
-    for _ in range(n_mc):
-        z = np.sort(rng.standard_normal(n))
-        cdf = stats.norm.cdf(z, loc=z.mean(), scale=z.std(ddof=1))
-        if _ks_stat(z, cdf) >= d_obs:
+    for k in range(n_mc):
+        z = sorted(float(v) for v in random_normal(n, seed=seed, stream=block * n_mc + k))
+        if _fitted_ks(z) >= d_obs:
             count += 1
     return (1.0 + count) / (1.0 + n_mc)
 
@@ -55,10 +67,6 @@ def vol_corradi_swan_persistence(r, horizons=(1, 5, 20), cdf=None, n_mc=500, see
     location-scale family). The joint p-value is Bonferroni across
     horizons.
 
-    This replaces a placeholder that computed a single-horizon KS
-    normality statistic, ignored ``horizons`` entirely, and used the
-    classical p-value on fitted parameters.
-
     Parameters
     ----------
     r : array-like, shape (n,)
@@ -71,7 +79,8 @@ def vol_corradi_swan_persistence(r, horizons=(1, 5, 20), cdf=None, n_mc=500, see
     n_mc : int, default 500
         Monte Carlo replicates for the fitted-parameter null.
     seed : int, default 0
-        Seed for the Monte Carlo.
+        Philox seed of the Monte Carlo (stream ``i * n_mc + k`` for
+        replicate ``k`` of the ``i``-th horizon, identical in the R arm).
 
     Returns
     -------
@@ -88,44 +97,40 @@ def vol_corradi_swan_persistence(r, horizons=(1, 5, 20), cdf=None, n_mc=500, see
     Lilliefors, H. W. (1967). On the Kolmogorov-Smirnov test for
     normality with mean and variance unknown. *JASA*, 62(318), 399-402
     (the fitted-parameter null by simulation).
+
+    Examples
+    --------
+    >>> import math
+    >>> r = [0.01 * math.sin(1.7 * t) + 0.004 * math.cos(0.3 * t * t) for t in range(120)]
+    >>> out = vol_corradi_swan_persistence(r, horizons=(1, 4), n_mc=49)
+    >>> [round(e["statistic"], 10) for e in out["per_horizon"]]
+    [0.0957967024, 0.1211485613]
     """
-    r = np.asarray(r, dtype=float).ravel()
-    n = r.size
-    horizons = [int(h) for h in np.atleast_1d(horizons)]
-    if any(h < 1 for h in horizons):
-        raise ValueError(f"horizons must be positive, got {horizons}.")
-    if not np.all(np.isfinite(r)):
-        raise ValueError("r must be finite.")
-    hmax = max(horizons)
-    if n < 8 * hmax:
-        raise ValueError(
-            f"Need at least 8 aggregates at the longest horizon; n={n} gives {n // hmax} at h={hmax}."
-        )
-
-    rng = np.random.default_rng(seed)
+    rv = [float(v) for v in (r.tolist() if hasattr(r, "tolist") else r)]
+    n = len(rv)
+    horizons = tuple(int(h) for h in horizons)
     per = []
-    for h in horizons:
+    for i, h in enumerate(horizons):
         m = n // h
-        agg = np.sort(r[: m * h].reshape(m, h).sum(axis=1))
+        if m < 3:
+            raise ValueError(f"horizon {h} leaves fewer than 3 aggregates")
+        agg = sorted(math.fsum(rv[j * h : (j + 1) * h]) for j in range(m))
         if cdf is None:
-            cdf_vals = stats.norm.cdf(agg, loc=agg.mean(), scale=agg.std(ddof=1))
-            d = _ks_stat(agg, cdf_vals)
-            p = _mc_pvalue_fitted_normal(d, m, n_mc, rng)
+            d = _fitted_ks(agg)
+            p = _mc_pvalue_fitted_normal(d, m, int(n_mc), seed, i)
         else:
-            cdf_vals = np.array([float(cdf(x, h)) for x in agg])
-            d = _ks_stat(agg, cdf_vals)
+            d = _ks_stat(agg, [float(cdf(x, h)) for x in agg])
             p = float(stats.kstwo.sf(d, m))
-        per.append({"h": h, "n_h": int(m), "statistic": d, "p_value": float(p)})
-
+        per.append({"h": h, "n_h": m, "statistic": d, "p_value": p})
     stat = max(e["statistic"] for e in per)
     p_joint = min(1.0, len(per) * min(e["p_value"] for e in per))
     return RichResult(
         payload={
-            "statistic": float(stat),
-            "p_value": float(p_joint),
+            "statistic": stat,
+            "p_value": p_joint,
             "per_horizon": per,
             "horizons": horizons,
-            "n": int(n),
+            "n": n,
             "method": "Multi-horizon KS-type distributional accuracy (Corradi-Swanson type)",
         }
     )

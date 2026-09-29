@@ -1,24 +1,13 @@
-"""Tests for poisson_mean_rate.poisson_mean_rate."""
+"""Tests for morie.fn.poisson_mean_rate: recompute Morin (2016) from the formula."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.poisson_mean_rate import (
-    poisson_mean_rate,
-)
+from morie.fn.poisson_mean_rate import poisson_mean_rate
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e19_basic():
-    """Test basic functionality."""
-    lam = 0.5
-    t = 0.5
-    result = poisson_mean_rate(lam, t)
-    assert isinstance(result, dict)
-    assert "lambda" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e19_edge():
-    """Test edge cases."""
-    lam = 0.5
-    t = 0.5
-    result = poisson_mean_rate(lam, t)
-    assert isinstance(result, dict)
+def test_series_mean():
+    lam, t = 2.5, 4.0
+    a = lam * t
+    series = math.fsum(k * math.exp(-a) * a**k / math.factorial(k) for k in range(80))
+    assert abs(poisson_mean_rate(lam, t)["expected_events"] - a) < 1e-15
+    assert abs(series - a) < 1e-12

@@ -1,35 +1,42 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GWR logistic regression (binary outcome)."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from .gwrpois import _ggwr
 
 
-def gwrlgt(y, X, coords, bw=0.5):
-    """GWR logistic regression (binary outcome).
+def gwrlgt(y, X, coords, bw=0.5, kernel="bisquare", adaptive=False, tol=1e-10, maxiter=200):
+    r"""Geographically weighted logistic regression by the GWmodel local scoring.
 
-    Category: GWR
+    For a binary ``y`` the working response ``z_j = eta_j + (y_j - mu_j) /
+    (mu_j (1 - mu_j))`` is regressed at each location by WLS with weights
+    ``w_ij mu_j (1 - mu_j)`` (unit weights and ``mu = 0.5`` at the start),
+    ``eta_i = x_i beta_i`` updated and the loop stopped on the relative change
+    of the Bernoulli log-likelihood (Fotheringham, Brunsdon and Charlton
+    2002, ch. 8; Nakaya et al. 2005). ``tol=1e-5, maxiter=20`` reproduces
+    ``GWmodel::ggwr.basic(family = "binomial")``.
 
-    Parameters
+    References
     ----------
-    y, X, coords, bw=0.5 : see function signature.
+    Fotheringham, A. S., Brunsdon, C. and Charlton, M. (2002).
+    *Geographically Weighted Regression*. Wiley.
+    Nakaya, T., Fotheringham, A. S., Brunsdon, C. and Charlton, M. (2005).
+    Geographically weighted Poisson regression for disease association
+    mapping. *Statistics in Medicine* 24, 2695-2717.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> P = [(float(i % 5), float(i // 5)) for i in range(20)]
+    >>> X = [[(0.37 * i) % 1.3] for i in range(20)]
+    >>> y = [float((i * 7) % 3 == 0) for i in range(20)]
+    >>> r = gwrlgt(y, X, P, 6.0, kernel="gaussian")
+    >>> round(r["betas"][0][1], 8)
+    -1.16439525
     """
-    try:
-        n = len(y)
-        dists = np.sqrt(np.sum((coords[None, :, :] - coords[:, None, :]) ** 2, axis=-1))
-        kernel_sum = float(np.sum(np.exp(-0.5 * (dists / bw) ** 2)))
-        result = kernel_sum / (n * n)
-        return SpatialResult(name="gwrlgt", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="gwrlgt", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    return _ggwr(y, X, coords, bw, kernel, adaptive, tol, maxiter, "binomial")
 
 
 gwrlgt_fn = gwrlgt
 
 
 def cheatsheet() -> str:
-    return "gwrlgt({}) -> GWR logistic regression (binary outcome)."
+    return "gwrlgt(y, X, coords, bw) -> GW logistic regression by local scoring (GWmodel::ggwr.basic)."

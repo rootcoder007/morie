@@ -1,34 +1,35 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """CAR residual Moran test."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from .miml import miml
 
 
-def carres(resid, W):
-    """CAR residual Moran test.
+def carres(resid, W, alternative="greater"):
+    r"""Moran's I test of residual spatial autocorrelation after a CAR fit.
 
-    Category: CAR
+    Moran's I of the model residuals with randomisation moments (Cliff and
+    Ord 1981), the check applied after ``spatialreg::spautolm`` (Bivand,
+    Pebesma and Gomez-Rubio 2013, ch. 10). Thin front-end to
+    :func:`morie.fn.miml.miml`.
 
-    Parameters
+    References
     ----------
-    resid, W : see function signature.
+    Cliff, A. D. and Ord, J. K. (1981). *Spatial Processes: Models and
+    Applications*. Pion, London.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> W = [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]]
+    >>> round(carres([0.5, -1.0, 1.5, -1.0], W).statistic, 12)
+    -1.037037037037
     """
-    try:
-        n = len(resid)
-        Wresid = np.dot(W, resid)
-        result = float(np.dot(resid, Wresid) / (np.dot(resid, resid) + 1e-12))
-        return SpatialResult(name="carres", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="carres", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    r = miml(resid, W, alternative=alternative)
+    r.name = "carres"
+    return r
 
 
 carres_fn = carres
 
 
 def cheatsheet() -> str:
-    return "carres({}) -> CAR residual Moran test."
+    return "carres(resid, W) -> Moran's I of CAR-model residuals, randomisation moments."

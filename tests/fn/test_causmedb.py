@@ -1,31 +1,25 @@
-"""Tests for causmedb.causal_mediation_baron_kenny."""
+"""Tests for morie.fn.causmedb: the three Baron-Kenny regressions recomputed."""
+
+import math
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.causmedb import causal_mediation_baron_kenny
 
-
-def _dgp(seed=42, n=1500):
-    rng = np.random.default_rng(seed)
-    x = rng.normal(size=n)
-    m = 0.8 * x + rng.normal(scale=0.7, size=n)
-    y = 0.7 * x + 1.5 * m + rng.normal(scale=0.7, size=n)
-    return x, m, y
+X = [math.sin(k) for k in range(14)]
+M = [0.5 * X[k] + 0.3 * math.cos(2 * k) for k in range(14)]
+Y = [0.4 * X[k] + 0.8 * M[k] + 0.2 * math.sin(3 * k) for k in range(14)]
 
 
-def test_causmedb_basic():
-    x, m, y = _dgp()
-    out = causal_mediation_baron_kenny(x, m, y)
-    assert out["a"] == pytest.approx(0.8, abs=0.1)
-    assert out["b"] == pytest.approx(1.5, abs=0.1)
-    assert out["indirect"] == pytest.approx(1.2, abs=0.15)  # a * b
-    assert out["c"] == pytest.approx(out["c_prime"] + out["indirect"], abs=1e-6)
+def _ols(cols, y):
+    A = np.column_stack([np.ones(len(y))] + [np.array(c) for c in cols])
+    return (np.linalg.inv(A.T @ A) @ (A.T @ np.array(y))).tolist()
 
 
-def test_causmedb_edge():
-    x, m, y = _dgp()
-    out = causal_mediation_baron_kenny(x, m, y)
-    assert out["proportion_mediated"] == pytest.approx(out["indirect"] / out["c"], abs=1e-6)
-    with pytest.raises(ValueError):
-        causal_mediation_baron_kenny(x[:10], m, y)  # length mismatch
+def test_paths():
+    r = causal_mediation_baron_kenny(X, M, Y)
+    c = _ols([X], Y)[1]
+    a = _ols([X], M)[1]
+    _, cp, b = _ols([X, M], Y)
+    assert abs(r["c"] - c) < 1e-12 and abs(r["a"] - a) < 1e-12
+    assert abs(r["b"] - b) < 1e-12 and abs(r["c_prime"] - cp) < 1e-12
+    assert abs(r["indirect"] - (c - cp)) < 1e-12

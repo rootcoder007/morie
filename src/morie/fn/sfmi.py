@@ -1,33 +1,36 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Moran's I of spatially filtered residuals."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from .miml import miml
 
 
-def sfmi(resid_f, W):
-    """Moran's I of spatially filtered residuals.
+def sfmi(resid_f, W, alternative="greater"):
+    r"""Moran's I of the residuals of a spatially filtered regression, with randomisation moments.
 
-    Category: SFilter
+    The check that an eigenvector filter has removed the residual spatial
+    autocorrelation (Tiefelsdorf and Griffith 2007): Moran's I of the
+    filtered-model residuals referred to its randomisation moments. Thin
+    front-end to :func:`morie.fn.miml.miml`.
 
-    Parameters
+    References
     ----------
-    resid_f, W : see function signature.
+    Tiefelsdorf, M. and Griffith, D. A. (2007). Semiparametric filtering of
+    spatial autocorrelation: the eigenvector approach. *Environment and
+    Planning A* 39, 1193-1221.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> W = [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]]
+    >>> round(sfmi([0.5, -1.0, 1.5, -1.0], W).statistic, 12)
+    -1.037037037037
     """
-    try:
-        n = len(resid_f)
-        Wresid = np.dot(W, resid_f)
-        result = float(np.dot(resid_f, Wresid) / (np.dot(resid_f, resid_f) + 1e-12))
-        return SpatialResult(name="sfmi", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="sfmi", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    r = miml(resid_f, W, alternative=alternative)
+    r.name = "sfmi"
+    return r
 
 
 sfmi_fn = sfmi
 
 
 def cheatsheet() -> str:
-    return "sfmi({}) -> Moran's I of spatially filtered residuals."
+    return "sfmi(resid_f, W) -> Moran's I of spatially filtered residuals (randomisation moments)."

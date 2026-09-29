@@ -1,21 +1,15 @@
 """Tests for morie.fn.miexp."""
 
+import pytest
+
 from morie.fn.miexp import miexp
 
 
-class TestMiexp:
-    def test_basic(self):
-        n = 20
-        result = miexp(n)
-        assert result is not None
+def test_expectation_formula():
+    for n in (2, 5, 37):
+        assert abs(miexp(n).statistic - (-1.0 / (n - 1))) < 1e-15
 
-    def test_returns_spatial_result(self):
-        n = 20
-        result = miexp(n)
-        assert hasattr(result, "statistic")
 
-    def test_statistic_numeric(self):
-        n = 20
-        result = miexp(n)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_small_n_rejected():
+    with pytest.raises(ValueError):
+        miexp(1)

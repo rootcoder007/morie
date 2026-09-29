@@ -1,40 +1,15 @@
-"""Tests for density_expectation.density_expectation."""
+"""Tests for morie.fn.density_expectation: recompute Morin (2016) from the formula."""
 
 import math
 
-import pytest
-
-from morie.fn import _array_core as np
-
-from morie.fn.density_expectation import (
-    density_expectation,
-)
+from morie.fn.density_expectation import density_expectation
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e55_basic():
-    """Test basic functionality."""
-    rng = np.random.default_rng(42)
-    grid = np.linspace(-5.0, 5.0, 201)
-    density = [math.exp(-0.5 * (x ** 2)) / math.sqrt(2 * math.pi) for x in grid]
-    result = density_expectation(grid, density)
-    assert isinstance(result, dict)
-    assert "expectation" in result
-    assert math.isfinite(result["expectation"])
-    # The density is symmetric about 0, and the quadrature is exact on a
-    # symmetric grid, so the expectation is zero to machine precision
-    assert abs(result["expectation"]) < 1e-12
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e55_edge():
-    """Test edge cases."""
-    # Uniform density rho(x) = 1 on the interval [0, 1]
-    n = 51
-    grid = np.linspace(0.0, 1.0, n)
-    density = [1.0] * n
-    result = density_expectation(grid, density)
-    assert isinstance(result, dict)
-    assert "expectation" in result
-    assert math.isfinite(result["expectation"])
-    # E[X] for uniform on [0, 1] is 1/2, and the trapezoid rule is exact
-    # for a linear integrand, so no sampling slack is warranted
-    assert abs(result["expectation"] - 0.5) < 1e-12
+def test_trapezoid_expectation():
+    xs = [i / 10 for i in range(21)]
+    rho = [3 * x * x / 8 for x in xs]  # density on [0, 2]
+    f = [x * r for x, r in zip(xs, rho)]
+    ref = math.fsum((f[i] + f[i + 1]) * (xs[i + 1] - xs[i]) / 2 for i in range(20))
+    assert abs(density_expectation(xs, rho)["expectation"] - ref) < 1e-12
+    # the exact mean is 3/2; the trapezoid rule is within h^2
+    assert abs(ref - 1.5) < 0.01

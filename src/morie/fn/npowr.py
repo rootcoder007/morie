@@ -1,50 +1,57 @@
-# morie.fn -- function file (rootcoder007/morie)
 """Noise power estimation."""
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "Impressive. Most impressive."
 
+def noise_power(x, signal=None) -> DescriptiveResult:
+    r"""Noise power of a recording: from a clean reference, or by the difference estimator.
 
-def noise_power(x, signal=None, **kwargs) -> DescriptiveResult:
-    """Estimate the noise power in *x*.
+    With a reference signal the noise is x - signal and its power is
+    (1/N) sum (x - s)^2. Without one, the noise variance is estimated from
+    the first differences, sigma^2 = sum (x_{n+1} - x_n)^2 / (2 (N - 1))
+    (von Neumann 1941; Rice 1984): for a slowly varying signal plus white
+    noise the differences cancel the signal and have variance 2 sigma^2.
 
-    If *signal* is provided, noise is ``x - signal``. Otherwise the
-    variance of *x* is used as a proxy.
-
-    Parameters
+    References
     ----------
-    x : array-like
-        Observed (possibly noisy) signal.
-    signal : array-like or None
-        Clean reference signal. If None, var(x) is returned.
+    von Neumann, J. (1941). Distribution of the ratio of the mean square
+    successive difference to the variance. *Annals of Mathematical
+    Statistics* 12, 367-395.
+    Rice, J. (1984). Bandwidth choice for nonparametric regression. *Annals
+    of Statistics* 12, 1215-1230.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> noise_power([1.0, 2.0, 4.0], signal=[1.0, 1.5, 3.0]).value
+    0.4166666666666667
+    >>> noise_power([0.0, 1.0, 0.0, 1.0]).value
+    0.5
     """
-    x = np.asarray(x, dtype=float)
+    v = [float(t) for t in (x.tolist() if hasattr(x, "tolist") else x)]
+    n = len(v)
     if signal is not None:
-        signal = np.asarray(signal, dtype=float)
-        noise = x - signal
-        pn = float(np.mean(noise**2))
+        s = [float(t) for t in (signal.tolist() if hasattr(signal, "tolist") else signal)]
+        if len(s) != n:
+            raise ValueError("x and signal must have equal length")
+        pn = math.fsum((a - b) ** 2 for a, b in zip(v, s)) / n
+        method = "reference"
     else:
-        pn = float(np.var(x, ddof=0))
-    return DescriptiveResult(
-        name="noise_power",
-        value=pn,
-        extra={"noise_power": pn, "n": len(x)},
-    )
+        if n < 2:
+            raise ValueError("the difference estimator needs at least two samples")
+        pn = math.fsum((v[i + 1] - v[i]) ** 2 for i in range(n - 1)) / (2.0 * (n - 1))
+        method = "successive differences"
+    return DescriptiveResult(name="noise_power", value=pn, extra={"noise_power": pn, "n": n, "method": method})
 
 
 npowr = noise_power
 
 
 def cheatsheet() -> str:
-    return "noise_power({}) -> Noise power estimation."
+    return "noise_power(x, signal=None) -> mean (x - s)^2, or sum diff(x)^2 / (2(N-1))."
 
 
 # compact alias per ledger/NAMING.md

@@ -2,45 +2,39 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "Great, kid. Don't get cocky."
+
+def _vec(x):
+    return [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
 
 
-def raw_moment(x, k=1, **kwargs) -> DescriptiveResult:
-    r"""Compute the *k*-th raw moment of signal *x*.
+def raw_moment(x, k=1):
+    r"""The ``k``-th raw (non-central) moment ``m_k = (1/N) sum_n x(n)^k``; ``k = 1`` is the mean, ``k = 2`` the mean power.
 
-    .. math::
-
-        m_k = \\frac{1}{N} \\sum_{n=0}^{N-1} x^k(n)
-
-    Parameters
+    References
     ----------
-    x : array-like
-        Input signal.
-    k : int
-        Moment order (default 1).
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis*, 2nd ed., sec. 3.1.
+    Wiley-IEEE Press.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> raw_moment([1.0, 2.0, 4.0, 7.0], k=2).value
+    17.5
     """
-    x = np.asarray(x, dtype=float)
-    mk = float(np.mean(x**k))
-    return DescriptiveResult(
-        name="raw_moment",
-        value=mk,
-        extra={"moment_order": k, "raw_moment": mk, "n": len(x)},
-    )
+    v = _vec(x)
+    if not v:
+        raise ValueError("x must be non-empty")
+    mk = math.fsum(t**k for t in v) / len(v)
+    return DescriptiveResult(name="raw_moment", value=mk, extra={"moment_order": k, "raw_moment": mk, "n": len(v)})
 
 
 smom1 = raw_moment
+# compact alias per ledger/NAMING.md
+rawmoment = raw_moment
 
 
 def cheatsheet() -> str:
-    return "raw_moment({}) -> Raw moment."
-
-
-# compact alias per ledger/NAMING.md
-rawmoment = raw_moment
+    return "raw_moment(x, k=1) -> (1/N) sum x(n)^k."

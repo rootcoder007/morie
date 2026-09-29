@@ -1,20 +1,15 @@
-"""Tests for morie.fn.cstdy2 — custody days credit."""
+"""Tests for cstdy2.custody_days_credit."""
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn._containers import ESRes
 from morie.fn.cstdy2 import custody_days_credit
 
 
-class TestCustodyDaysCredit:
-    def test_returns_esres(self):
-        days = np.array([10, 20, 30])
-        result = custody_days_credit(days)
-        assert isinstance(result, ESRes)
-        assert result.estimate == pytest.approx(30.0)
-
-    def test_custom_ratio(self):
-        days = np.array([100.0])
-        result = custody_days_credit(days, credit_ratio=2.0)
-        assert result.extra["total_credited"] == pytest.approx(200.0)
+def test_credit():
+    d = [10, 30, 45, 0, 7]
+    r = custody_days_credit(d)
+    assert r.extra["credited"] == [1.5 * v for v in d]
+    assert r.estimate == sum(1.5 * v for v in d) / 5
+    assert custody_days_credit(d, credit_ratio=1.0).extra["total_credited"] == 92.0
+    with pytest.raises(ValueError):
+        custody_days_credit(d, credit_ratio=2.0)

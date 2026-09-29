@@ -21,8 +21,6 @@ def frontdoor_criterion(dag, X, Y, Z):
     (:func:`morie.fn.fdadj.frontdoor_adjustment`) even with an
     unobserved X-Y confounder -- the case the back-door cannot handle.
 
-    This replaces a placeholder that averaged the dag argument.
-
     Parameters
     ----------
     dag : dict or edge list
@@ -42,6 +40,11 @@ def frontdoor_criterion(dag, X, Y, Z):
     ----------
     Pearl, J. (2009). *Causality*, 2nd edn. Cambridge UP.
     Def. 3.3.3 and Thm. 3.3.4.
+
+    Examples
+    --------
+    >>> frontdoor_criterion({"U": ["X", "Y"], "X": ["Z"], "Z": ["Y"]}, "X", "Y", "Z")["satisfied"]
+    True
     """
     from .bdcrt import _has_cycle, _parse, _paths, backdoor_criterion
 

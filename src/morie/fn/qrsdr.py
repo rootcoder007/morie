@@ -1,50 +1,42 @@
-# morie.fn -- function file (rootcoder007/morie)
 """QRS complex duration measurement."""
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "Big results require big ambitions. -- Heraclitus"
 
+def qrs_duration(qrs_on, qrs_off, fs: float = 1.0) -> DescriptiveResult:
+    r"""QRS durations (offset - onset) / fs of paired beats, their mean and sample SD.
 
-def qrs_duration(qrs_on, qrs_off, fs: float = 1.0, **kwargs) -> DescriptiveResult:
-    """Measure QRS complex duration from onset to offset.
+    Onsets and offsets are sample indices of detected QRS boundaries
+    (Rangayyan 2015, sec. 4.3; normal adult QRS 60-100 ms); the first
+    min(len(on), len(off)) pairs are used. The SD has the n - 1
+    divisor.
 
-    Parameters
+    References
     ----------
-    qrs_on : array-like of int
-        QRS onset sample indices.
-    qrs_off : array-like of int
-        QRS offset sample indices.
-    fs : float
-        Sampling frequency in Hz.
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis*, 2nd ed.
+    Wiley-IEEE Press.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> round(qrs_duration([100, 460, 830], [125, 482, 858], fs=250.0).value, 12)
+    0.1
     """
-    qrs_on = np.asarray(qrs_on, dtype=int)
-    qrs_off = np.asarray(qrs_off, dtype=int)
-    n = min(len(qrs_on), len(qrs_off))
+    on = [int(v) for v in qrs_on]
+    off = [int(v) for v in qrs_off]
+    n = min(len(on), len(off))
     if n == 0:
-        return DescriptiveResult(
-            name="qrs_duration",
-            value=0.0,
-            extra={"qrs_durations": np.array([])},
-        )
-    dur = (qrs_off[:n] - qrs_on[:n]) / fs
+        return DescriptiveResult(name="qrs_duration", value=0.0, extra={"qrs_durations": [], "n_beats": 0})
+    dur = [(off[i] - on[i]) / fs for i in range(n)]
+    m = math.fsum(dur) / n
+    sd = math.sqrt(math.fsum((d - m) ** 2 for d in dur) / (n - 1)) if n > 1 else 0.0
     return DescriptiveResult(
         name="qrs_duration",
-        value=float(np.mean(dur)),
-        extra={
-            "qrs_durations": dur,
-            "mean_dur": float(np.mean(dur)),
-            "std_dur": float(np.std(dur, ddof=1)) if n > 1 else 0.0,
-            "n_beats": n,
-            "fs": fs,
-        },
+        value=m,
+        extra={"qrs_durations": dur, "mean_dur": m, "std_dur": sd, "n_beats": n, "fs": fs},
     )
 
 
@@ -52,7 +44,7 @@ qrsdr = qrs_duration
 
 
 def cheatsheet() -> str:
-    return "qrs_duration({}) -> QRS complex duration measurement."
+    return "qrs_duration(on, off, fs) -> mean and SD of (off - on)/fs."
 
 
 # compact alias per ledger/NAMING.md

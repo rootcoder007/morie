@@ -1,32 +1,37 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Distance-band spatial weights matrix."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from .spwgt import spatial_weights
 
 
-def swdist(coords, d=1.0):
-    """Distance-band spatial weights matrix.
+def swdist(coords, d=1.0, style="B", d_min=0.0):
+    r"""Distance-band neighbours ``d_min < d_ij <= d`` (``spdep::dnearneigh``).
 
-    Category: Weights
+    Thin front-end to :func:`morie.fn.spwgt.spatial_weights` (method
+    ``"distance"``); ``style`` is an ``spdep::nb2listw`` coding (``B`` binary,
+    ``W`` row-standardised, ...). Returns its ``SpatialResult``:
+    ``statistic`` is the mean number of neighbours and ``extra["W"]`` the
+    weights matrix.
 
-    Parameters
+    References
     ----------
-    coords, d=1.0 : see function signature.
+    Bivand, R. S., Pebesma, E. and Gomez-Rubio, V. (2013). *Applied Spatial
+    Data Analysis with R*, 2nd ed., ch. 9. Springer.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> coords = [[0, 0], [1, 0], [0, 1], [1, 1], [0.5, 0.4], [2, 0.5]]
+    >>> r = swdist(coords, d=1.2)
+    >>> [sorted(v) for v in r.extra["neighbours"]][5]
+    [1, 3]
     """
-    try:
-        dists = np.sqrt(np.sum((coords[None, :, :] - coords[:, None, :]) ** 2, axis=-1))
-        result = float(np.mean(dists))
-        return SpatialResult(name="swdist", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="swdist", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    r = spatial_weights(coords, "distance", threshold=float(d), style=style, d_min=float(d_min))
+    r.name = "swdist"
+    return r
 
 
 swdist_fn = swdist
 
 
 def cheatsheet() -> str:
-    return "swdist({}) -> Distance-band spatial weights matrix."
+    return "swdist(coords, d=1.0) -> distance-band weights d_min < d_ij <= d (spdep::dnearneigh)."

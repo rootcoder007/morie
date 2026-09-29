@@ -8,31 +8,7 @@ with Random Forest nuisance estimators and cross-fitting.
 
 from __future__ import annotations
 
-from . import _array_core as np
 from . import _frame_core as pd
-
-
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from ._ml_core import RandomForestClassifier, RandomForestRegressor
-except ImportError:
-    RandomForestClassifier = _MissingDep('RandomForestClassifier')
-    RandomForestRegressor = _MissingDep('RandomForestRegressor')
 
 _DOUBLEML_RANDOM_STATE: int = 42
 """Module-level seed for all DoubleML estimations.  Change at call-site if needed."""
@@ -101,9 +77,10 @@ def estimate_double_ml(
     """
     del n_rep  # single-rep native estimator; kept for signature compat
     from .plr import estimate_plr as _native_plr
-    return _native_plr(data, treatment=treatment, outcome=outcome,
-                       covariates=covariates, n_folds=n_folds,
-                       random_state=random_state)
+
+    return _native_plr(
+        data, treatment=treatment, outcome=outcome, covariates=covariates, n_folds=n_folds, random_state=random_state
+    )
 
 
 dml = estimate_double_ml

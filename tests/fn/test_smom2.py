@@ -1,21 +1,14 @@
-"""Test central_moment (smom2)."""
+"""Tests for morie.fn.smom2: recompute from the definition."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.smom2 import central_moment, smom2
+from morie.fn.smom2 import central_moment
+
+X = [2.5, -1.0, 4.25, 0.5, 3.0, -2.75, 1.5, 6.0]
 
 
-class TestCentralMoment:
-    def test_second_is_variance(self):
-        x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = central_moment(x, k=2)
-        assert isinstance(result, DescriptiveResult)
-        assert abs(result.value - np.var(x, ddof=0)) < 1e-10
-
-    def test_first_is_zero(self):
-        x = np.array([1.0, 2.0, 3.0])
-        assert abs(central_moment(x, k=1).value) < 1e-10
-
-    def test_alias(self):
-        assert smom2 is central_moment
+def test_central_moments():
+    m = sum(X) / 8
+    for k in (2, 3, 4):
+        assert abs(central_moment(X, k=k).value - math.fsum((v - m) ** k for v in X) / 8) < 1e-12
+    assert abs(central_moment(X, k=1).value) < 1e-15

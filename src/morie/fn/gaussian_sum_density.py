@@ -1,14 +1,11 @@
 """Sum of independent zero-mean Gaussians: N(0, sx^2 + sy^2).
 
 Implements eq (6.70) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+Enthusiastic Beginner.
 """
 
 import math
 
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,10 +18,14 @@ def gaussian_sum_density(z, sigma_x, sigma_y):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.70).
+
+    Examples
+    --------
+    >>> round(gaussian_sum_density(1.0, 3.0, 4.0)["density"], 12)
+    0.078208538795
     """
     value = _morin.gaussian_sum_density(z, sigma_x, sigma_y)
-    payload = {"density": value,
-               "sigma_sum": math.sqrt(float(sigma_x) ** 2 + float(sigma_y) ** 2)}
+    payload = {"density": value, "sigma_sum": math.sqrt(float(sigma_x) ** 2 + float(sigma_y) ** 2)}
     lines = [("rho_Z(z)", value)]
     return RichResult(
         title="Sum of independent zero-mean Gaussians: N(0, sx^2 + sy^2).",

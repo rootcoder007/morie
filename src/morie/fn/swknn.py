@@ -1,32 +1,37 @@
+# morie.fn -- function file (rootcoder007/morie)
 """k-nearest-neighbour spatial weights matrix."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from .spwgt import spatial_weights
 
 
-def swknn(coords, k=4):
-    """k-nearest-neighbour spatial weights matrix.
+def swknn(coords, k=4, style="B"):
+    r"""The ``k`` nearest neighbours of each point, ties broken by index (``spdep::knn2nb(knearneigh(coords, k))``); not symmetric in general.
 
-    Category: Weights
+    Thin front-end to :func:`morie.fn.spwgt.spatial_weights` (method
+    ``"knn"``); ``style`` is an ``spdep::nb2listw`` coding (``B`` binary,
+    ``W`` row-standardised, ...). Returns its ``SpatialResult``:
+    ``statistic`` is the mean number of neighbours and ``extra["W"]`` the
+    weights matrix.
 
-    Parameters
+    References
     ----------
-    coords, k=4 : see function signature.
+    Bivand, R. S., Pebesma, E. and Gomez-Rubio, V. (2013). *Applied Spatial
+    Data Analysis with R*, 2nd ed., ch. 9. Springer.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> coords = [[0, 0], [1, 0], [0, 1], [1, 1], [0.5, 0.4], [2, 0.5]]
+    >>> r = swknn(coords, k=2)
+    >>> [sorted(v) for v in r.extra["neighbours"]][5]
+    [1, 3]
     """
-    try:
-        dists = np.sqrt(np.sum((coords[None, :, :] - coords[:, None, :]) ** 2, axis=-1))
-        result = float(np.mean(dists))
-        return SpatialResult(name="swknn", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="swknn", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    r = spatial_weights(coords, "knn", k=int(k), style=style)
+    r.name = "swknn"
+    return r
 
 
 swknn_fn = swknn
 
 
 def cheatsheet() -> str:
-    return "swknn({}) -> k-nearest-neighbour spatial weights matrix."
+    return "swknn(coords, k=4) -> k-nearest-neighbour weights (spdep::knearneigh)."

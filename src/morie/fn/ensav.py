@@ -1,44 +1,46 @@
-# morie.fn -- function file (rootcoder007/morie)
 """Ensemble average."""
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "An unexamined life is not worth living. -- Socrates"
+
+def _is2d(a):
+    rows = a.tolist() if hasattr(a, "tolist") else list(a)
+    return bool(rows) and hasattr(rows[0], "__len__")
 
 
-def ensemble_average(segments, **kwargs) -> DescriptiveResult:
-    r"""Compute the ensemble (synchronized) average.
+def _vec(x):
+    return [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
 
-    .. math::
 
-        \\bar{y}(n) = \\frac{1}{M} \\sum_{k=1}^{M} y_k(n)
+def ensemble_average(segments):
+    r"""Ensemble (synchronized) average ``ybar(n) = (1/M) sum_k y_k(n)`` of ``M`` time-locked sweeps of length ``N`` (rows); averaging reduces uncorrelated noise variance by ``1/M``. Returns the averaged signal as a list.
 
-    Parameters
+    References
     ----------
-    segments : array-like, shape (M, N)
-        M synchronized sweeps of length N.
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis*, 2nd ed., sec. 3.1.
+    Wiley-IEEE Press.
 
-    Returns
-    -------
-    DescriptiveResult
-        ``value`` is the ensemble-averaged signal (ndarray of length N).
+    Examples
+    --------
+    >>> ensemble_average([[1.0, 2.0, 3.0], [3.0, 2.0, 5.0]]).value
+    [2.0, 2.0, 4.0]
     """
-    segments = np.asarray(segments, dtype=float)
-    if segments.ndim == 1:
-        segments = segments.reshape(1, -1)
-    avg = np.mean(segments, axis=0)
-    return DescriptiveResult(
-        name="ensemble_average",
-        value=avg,
-        extra={"M": segments.shape[0], "N": segments.shape[1]},
+    rows = (
+        [_vec(r) for r in (segments.tolist() if hasattr(segments, "tolist") else segments)]
+        if _is2d(segments)
+        else [_vec(segments)]
     )
+    M, N = len(rows), len(rows[0])
+    avg = [math.fsum(r[j] for r in rows) / M for j in range(N)]
+    return DescriptiveResult(name="ensemble_average", value=avg, extra={"M": M, "N": N})
 
 
 ensav = ensemble_average
 
 
 def cheatsheet() -> str:
-    return "ensemble_average({}) -> Ensemble average."
+    return "ensemble_average(segments) -> (1/M) sum_k y_k(n)."

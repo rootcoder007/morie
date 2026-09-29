@@ -1,53 +1,45 @@
-# morie.fn -- function file (rootcoder007/morie)
 """Maximum LMS step size."""
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "You must unlearn what you have learned."
 
+def max_step_size(x, order: int = 16) -> DescriptiveResult:
+    r"""Upper bound of the LMS step size for mean-square stability, mu_max = 2 / (M P_x).
 
-def max_step_size(x, order: int = 16, **kwargs) -> DescriptiveResult:
-    r"""Compute the maximum stable LMS step size.
+    The LMS filter with M taps converges in the mean square when 0 <
+    mu < 2 / tr(R) = 2 / (M P_x), P_x = (1/N) sum x^2 the input power
+    (tap-input power, Haykin 2014, sec. 6.4; Widrow and Stearns 1985).
 
-    .. math::
-
-        \\mu_{\\max} = \\frac{2}{M \\cdot P_x}
-
-    where *M* is the filter order and *Px* is the input signal power.
-
-    Parameters
+    References
     ----------
-    x : array-like
-        Input signal.
-    order : int
-        Filter order (number of taps).
+    Haykin, S. (2014). *Adaptive Filter Theory*, 5th ed. Pearson.
+    Widrow, B. and Stearns, S. D. (1985). *Adaptive Signal Processing*.
+    Prentice-Hall.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> max_step_size([1.0, -2.0, 2.0, -1.0], order=4).value
+    0.2
     """
-    x = np.asarray(x, dtype=float)
-    Px = float(np.mean(x**2))
-    if Px <= 0:
+    v = [float(t) for t in (x.tolist() if hasattr(x, "tolist") else x)]
+    px = math.fsum(t * t for t in v) / len(v)
+    if px <= 0:
         raise ValueError("Signal power is zero; step size is undefined.")
     if order <= 0:
         raise ValueError("Filter order must be positive.")
-    mu_max = 2.0 / (order * Px)
-    return DescriptiveResult(
-        name="max_step_size",
-        value=mu_max,
-        extra={"mu_max": mu_max, "order": order, "Px": Px},
-    )
+    mu = 2.0 / (order * px)
+    return DescriptiveResult(name="max_step_size", value=mu, extra={"mu_max": mu, "order": order, "Px": px})
 
 
 mstep = max_step_size
 
 
 def cheatsheet() -> str:
-    return "max_step_size({}) -> Maximum LMS step size."
+    return "max_step_size(x, order=16) -> LMS stability bound 2 / (M P_x)."
 
 
 # compact alias per ledger/NAMING.md

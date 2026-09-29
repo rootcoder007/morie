@@ -1,34 +1,36 @@
 # morie.fn -- function file (rootcoder007/morie)
 """LM test for spatial lag (Anselin 1988)."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from .lmdiag import _result, _rs_core
 
 
-def lmlag(resid, X, W):
-    """LM test for spatial lag (Anselin 1988).
+def lmlag(y, X, W):
+    r"""LM test for a spatial lag (Anselin 1988), RSlag = (u'Wy/sigma2)^2 / nJ.
 
-    Category: LM
+    Computed from the OLS fit of y on X (an intercept is prepended
+    when X has no constant column); matches spdep::lm.RStests(test =
+    "RSlag"). See :func:`morie.fn.lmdiag.lmdiag` for the notation.
 
-    Parameters
+    References
     ----------
-    resid, X, W : see function signature.
+    Anselin, L. (1988). Lagrange multiplier test diagnostics for spatial
+    dependence and spatial heterogeneity. *Geographical Analysis* 20, 1-17.
+    Anselin, L., Bera, A. K., Florax, R. and Yoon, M. J. (1996). Simple
+    diagnostic tests for spatial dependence. *Regional Science and Urban
+    Economics* 26, 77-104.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> W = [[0, 1, 0, 0, 0], [0.5, 0, 0.5, 0, 0], [0, 0.5, 0, 0.5, 0], [0, 0, 0.5, 0, 0.5], [0, 0, 0, 1, 0]]
+    >>> r = lmlag([1.0, 2.5, 2.0, 4.5, 4.0], [[0.0], [1.0], [2.0], [3.0], [4.0]], W)
+    >>> round(r.statistic, 10)
+    2.6282001776
     """
-    try:
-        n = len(resid)
-        Wresid = np.dot(W, resid)
-        result = float(np.dot(resid, Wresid) / (np.dot(resid, resid) + 1e-12))
-        return SpatialResult(name="lmlag", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="lmlag", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    return _result("lmlag", _rs_core(y, X, W)["RSlag"], 1)
 
 
 lmlag_fn = lmlag
 
 
 def cheatsheet() -> str:
-    return "lmlag({}) -> LM test for spatial lag (Anselin 1988)."
+    return "lmlag(y, X, W) -> RSlag Rao score test for spatial dependence after OLS (spdep::lm.RStests)."

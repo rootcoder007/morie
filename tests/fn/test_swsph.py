@@ -1,32 +1,22 @@
-"""Tests for morie.fn.swsph."""
+"""Tests for morie.fn.swsph: recompute the haversine distances."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.swsph import swsph
 
+LAT = [43.65, 45.50, 49.28, 46.81, 44.65]
+LON = [-79.38, -73.57, -123.12, -71.21, -63.57]
 
-class TestSwsph:
-    def test_basic(self):
-        np.random.seed(73)
-        lat = np.random.uniform(43, 45, 10)
-        lon = np.random.uniform(-80, -78, 10)
-        d = 300.0
-        result = swsph(lat, lon, d)
-        assert result is not None
 
-    def test_returns_spatial_result(self):
-        np.random.seed(73)
-        lat = np.random.uniform(43, 45, 10)
-        lon = np.random.uniform(-80, -78, 10)
-        d = 300.0
-        result = swsph(lat, lon, d)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        np.random.seed(73)
-        lat = np.random.uniform(43, 45, 10)
-        lon = np.random.uniform(-80, -78, 10)
-        d = 300.0
-        result = swsph(lat, lon, d)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_haversine_band():
+    r = swsph(LAT, LON, d=800.0)
+    for i in range(5):
+        for j in range(5):
+            p1, p2 = math.radians(LAT[i]), math.radians(LAT[j])
+            h = (
+                math.sin((p2 - p1) / 2) ** 2
+                + math.cos(p1) * math.cos(p2) * math.sin(math.radians(LON[j] - LON[i]) / 2) ** 2
+            )
+            d = 2 * 6371.0 * math.asin(math.sqrt(h))
+            assert abs(r.extra["D"][i][j] - d) < 1e-9
+            assert r.extra["W"][i][j] == (1.0 if i != j and d <= 800.0 else 0.0)

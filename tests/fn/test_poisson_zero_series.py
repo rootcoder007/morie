@@ -1,22 +1,16 @@
-"""Tests for poisson_zero_series.poisson_zero_series."""
+"""Tests for morie.fn.poisson_zero_series: recompute Morin (2016) from the formula."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.poisson_zero_series import (
-    poisson_zero_series,
-)
+from morie.fn.poisson_zero_series import poisson_zero_series
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e53_basic():
-    """Test basic functionality."""
-    a = 0.5
-    result = poisson_zero_series(a)
-    assert isinstance(result, dict)
-    assert "partial_sums" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e53_edge():
-    """Test edge cases."""
-    a = 0.5
-    result = poisson_zero_series(a)
-    assert isinstance(result, dict)
+def test_partial_sums():
+    a = 1.5
+    r = poisson_zero_series(a, 20)
+    s = 0.0
+    for j in range(20):
+        s += (-a) ** j / math.factorial(j)
+        assert abs(r["partial_sums"][j] - s) < 1e-15
+    assert abs(r["partial_sums"][-1] - math.exp(-a)) < 1e-12
+    assert r["e_minus_a"] == math.exp(-a)

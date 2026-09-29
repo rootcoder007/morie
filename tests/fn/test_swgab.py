@@ -1,26 +1,27 @@
-"""Tests for morie.fn.swgab."""
+"""Tests for morie.fn.swgab: recompute the Gabriel condition."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.swgab import swgab
+N = 12
+C = [[math.cos(1.7 * i) * (1 + i / 6.0), math.sin(2.3 * i) + 0.1 * i] for i in range(N)]
 
 
-class TestSwgab:
-    def test_basic(self):
-        np.random.seed(72)
-        coords = np.random.rand(10, 2)
-        result = swgab(coords)
-        assert result is not None
+def _d(a, b):
+    return math.hypot(a[0] - b[0], a[1] - b[1])
 
-    def test_returns_spatial_result(self):
-        np.random.seed(72)
-        coords = np.random.rand(10, 2)
-        result = swgab(coords)
-        assert hasattr(result, "statistic")
 
-    def test_statistic_numeric(self):
-        np.random.seed(72)
-        coords = np.random.rand(10, 2)
-        result = swgab(coords)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+from morie.fn.swgab import swgab  # noqa: E402
+
+
+def test_gabriel():
+    r = swgab(C)
+    for i in range(N):
+        want = [
+            j
+            for j in range(N)
+            if j != i
+            and not any(
+                _d(C[i], C[k]) ** 2 + _d(C[j], C[k]) ** 2 < _d(C[i], C[j]) ** 2 for k in range(N) if k not in (i, j)
+            )
+        ]
+        assert sorted(r.extra["neighbours"][i]) == want

@@ -21,8 +21,6 @@ def mediation_formula(x, m, y, x1=None, x0=None):
     mediator; identification needs sequential ignorability, which data
     cannot certify.
 
-    This replaces a placeholder that averaged its first argument.
-
     Parameters
     ----------
     x, m, y : array-like, shape (n,)
@@ -42,6 +40,15 @@ def mediation_formula(x, m, y, x1=None, x0=None):
     Conference on Uncertainty in Artificial Intelligence*, 411-420.
     VanderWeele, T. J. (2015). *Explanation in Causal Inference*.
     Oxford UP. Ch. 2.
+
+    Examples
+    --------
+    >>> x = [0, 0, 0, 0, 1, 1, 1, 1, 0, 1]
+    >>> z = [0, 0, 1, 0, 1, 1, 0, 1, 0, 1]
+    >>> y = [0, 1, 0, 0, 1, 1, 0, 1, 1, 1]
+    >>> r = mediation_formula(x, z, [0.5, 1.0, 1.5, 0.7, 2.0, 2.2, 1.1, 2.5, 0.9, 2.4], x1=1, x0=0)
+    >>> round(r["nde"], 12), round(r["nie"], 12)
+    (0.415, 0.705)
     """
     xa = np.asarray(x).ravel()
     ma = np.asarray(m).ravel()

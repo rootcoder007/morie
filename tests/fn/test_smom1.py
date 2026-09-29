@@ -1,21 +1,12 @@
-"""Test raw_moment (smom1)."""
+"""Tests for morie.fn.smom1: recompute from the definition."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.smom1 import raw_moment, smom1
+from morie.fn.smom1 import raw_moment
+
+X = [2.5, -1.0, 4.25, 0.5, 3.0, -2.75, 1.5, 6.0]
 
 
-class TestRawMoment:
-    def test_first_moment_is_mean(self):
-        x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = raw_moment(x, k=1)
-        assert isinstance(result, DescriptiveResult)
-        assert abs(result.value - 3.0) < 1e-10
-
-    def test_second_moment(self):
-        x = np.array([1.0, 2.0, 3.0])
-        assert abs(raw_moment(x, k=2).value - np.mean(x**2)) < 1e-10
-
-    def test_alias(self):
-        assert smom1 is raw_moment
+def test_raw_moments():
+    for k in (1, 2, 3, 4):
+        assert abs(raw_moment(X, k=k).value - math.fsum(v**k for v in X) / 8) < 1e-12

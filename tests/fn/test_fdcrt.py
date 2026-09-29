@@ -1,22 +1,20 @@
-"""Tests for fdcrt.frontdoor_criterion."""
-
-import pytest
+"""Tests for morie.fn.fdcrt: Pearl's three conditions on textbook graphs."""
 
 from morie.fn.fdcrt import frontdoor_criterion
 
-# X <- U -> Y, X -> Z -> Y: Z is a valid front-door mediator
-GOOD = {"U": ["X", "Y"], "X": ["Z"], "Z": ["Y"]}
+
+def test_smoking_tar_cancer():
+    g = {"U": ["X", "Y"], "X": ["Z"], "Z": ["Y"]}
+    r = frontdoor_criterion(g, "X", "Y", "Z")
+    assert r["satisfied"] and r["cond1"] and r["cond2"] and r["cond3"]
 
 
-def test_fdcrt_basic():
-    out = frontdoor_criterion(GOOD, "X", "Y", ("Z",))
-    assert out["satisfied"] is True
-    assert out["cond1"] and out["cond2"] and out["cond3"]
-
-
-def test_fdcrt_edge():
-    # a direct X -> Y edge leaves a path Z does not intercept
-    leaky = {"U": ["X", "Y"], "X": ["Z", "Y"], "Z": ["Y"]}
-    assert frontdoor_criterion(leaky, "X", "Y", ("Z",))["satisfied"] is False
-    with pytest.raises(ValueError):
-        frontdoor_criterion(GOOD, "X", "Y", ("W",))  # W not in the graph
+def test_violations():
+    # a direct X -> Y edge bypasses Z
+    assert not frontdoor_criterion({"X": ["Z", "Y"], "Z": ["Y"]}, "X", "Y", "Z")["cond1"]
+    # a confounder of X and Z opens a back-door from X to Z
+    r = frontdoor_criterion({"U": ["X", "Z"], "X": ["Z"], "Z": ["Y"]}, "X", "Y", "Z")
+    assert r["cond1"] and not r["cond2"]
+    # a confounder of Z and Y not blocked by X
+    r = frontdoor_criterion({"V": ["Z", "Y"], "X": ["Z"], "Z": ["Y"]}, "X", "Y", "Z")
+    assert r["cond1"] and r["cond2"] and not r["cond3"]

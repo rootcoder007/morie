@@ -1,21 +1,12 @@
-"""Test rms_value (srms)."""
+"""Tests for morie.fn.srms: recompute from the definition."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.srms import rms_value, srms
+from morie.fn.srms import rms_value
+
+X = [2.5, -1.0, 4.25, 0.5, 3.0, -2.75, 1.5, 6.0]
 
 
-class TestRMS:
-    def test_dc(self):
-        x = np.array([3.0, 3.0, 3.0])
-        result = rms_value(x)
-        assert isinstance(result, DescriptiveResult)
-        assert abs(result.value - 3.0) < 1e-10
-
-    def test_known(self):
-        x = np.array([1.0, -1.0])
-        assert abs(rms_value(x).value - 1.0) < 1e-10
-
-    def test_alias(self):
-        assert srms is rms_value
+def test_rms():
+    assert abs(rms_value(X).value - math.sqrt(math.fsum(v * v for v in X) / 8)) < 1e-15
+    assert rms_value([3.0, -4.0]).value == math.sqrt(12.5)

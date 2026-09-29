@@ -1,12 +1,10 @@
 """Tests for morie.fn.dml — Double Machine Learning (Partially Linear Regression)."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
-
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.dml import estimate_double_ml
-
 
 
 @pytest.fixture()
@@ -23,8 +21,7 @@ def synth_data():
 
 def test_returns_native_result_dict(synth_data):
     result = estimate_double_ml(synth_data, outcome="outcome", treatment="treatment", covariates=["x1", "x2"])
-    assert set(result) >= {"ate", "se", "ci_lower", "ci_upper", "pval",
-                           "n_obs"}
+    assert set(result) >= {"ate", "se", "ci_lower", "ci_upper", "pval", "n_obs"}
 
 
 def test_coef_is_finite(synth_data):

@@ -1,35 +1,29 @@
-"""Tests for morie.fn.spphaus."""
+"""Tests for morie.fn.spphaus: the Hausman quadratic form recomputed."""
 
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.spphaus import spphaus
 
 
-class TestSpphaus:
-    def test_basic(self):
-        np.random.seed(129)
-        coef_fe = np.random.randn(2)
-        coef_re = np.random.randn(2)
-        vcov_fe = np.eye(2) * 0.01
-        vcov_re = np.eye(2) * 0.02
-        result = spphaus(coef_fe, coef_re, vcov_fe, vcov_re)
-        assert result is not None
+def test_quadratic_form():
+    bf, br = [1.2, -0.4, 0.3], [1.0, -0.35, 0.1]
+    Vf = [[0.09, 0.01, 0.0], [0.01, 0.04, 0.005], [0.0, 0.005, 0.03]]
+    Vr = [[0.05, 0.0, 0.0], [0.0, 0.02, 0.0], [0.0, 0.0, 0.01]]
+    d = [a - b for a, b in zip(bf, br)]
+    D = [[Vf[i][j] - Vr[i][j] for j in range(3)] for i in range(3)]
 
-    def test_returns_spatial_result(self):
-        np.random.seed(129)
-        coef_fe = np.random.randn(2)
-        coef_re = np.random.randn(2)
-        vcov_fe = np.eye(2) * 0.01
-        vcov_re = np.eye(2) * 0.02
-        result = spphaus(coef_fe, coef_re, vcov_fe, vcov_re)
-        assert hasattr(result, "statistic")
+    # solve D x = d by Cramer's rule
+    def det3(M):
+        return (
+            M[0][0] * (M[1][1] * M[2][2] - M[1][2] * M[2][1])
+            - M[0][1] * (M[1][0] * M[2][2] - M[1][2] * M[2][0])
+            + M[0][2] * (M[1][0] * M[2][1] - M[1][1] * M[2][0])
+        )
 
-    def test_statistic_numeric(self):
-        np.random.seed(129)
-        coef_fe = np.random.randn(2)
-        coef_re = np.random.randn(2)
-        vcov_fe = np.eye(2) * 0.01
-        vcov_re = np.eye(2) * 0.02
-        result = spphaus(coef_fe, coef_re, vcov_fe, vcov_re)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+    dd = det3(D)
+    x = [det3([[d[r] if c == k else D[r][c] for c in range(3)] for r in range(3)]) / dd for k in range(3)]
+    h = sum(a * b for a, b in zip(d, x))
+    r = spphaus(bf, br, Vf, Vr)
+    assert abs(r.statistic - h) < 1e-10
+    # chi-square(3) upper tail: erfc(sqrt(h/2)) + sqrt(2h/pi) exp(-h/2)
+    assert abs(r.p_value - (math.erfc(math.sqrt(h / 2)) + math.sqrt(2 * h / math.pi) * math.exp(-h / 2))) < 1e-10

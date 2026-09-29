@@ -1,38 +1,28 @@
-"""Tests for morie.fn.mgwrhat."""
+"""Tests for morie.fn.mgwrhat: the OLS limit (huge bandwidths) recomputed in matrix form, and fixed-bandwidth checks."""
+
+import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.mgwrhat import mgwrhat
 
+N = 20
+P = [(float(i % 5), float(i // 5)) for i in range(N)]
+X = [[math.sin(i + 0.5), (0.3 * i) % 1.1 + 0.2] for i in range(N)]
+Y = [1.0 + (1 + 0.2 * P[i][0]) * X[i][0] - X[i][1] + 0.1 * math.cos(3 * i) for i in range(N)]
+BIG = [1e6, 1e6, 1e6]
 
-class TestMgwrhat:
-    def test_basic(self):
-        np.random.seed(120)
-        n = 15
-        y = np.random.randn(n)
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        coords = np.random.rand(n, 2)
-        bws = None
-        result = mgwrhat(y, X, coords, bws)
-        assert result is not None
 
-    def test_returns_spatial_result(self):
-        np.random.seed(120)
-        n = 15
-        y = np.random.randn(n)
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        coords = np.random.rand(n, 2)
-        bws = None
-        result = mgwrhat(y, X, coords, bws)
-        assert hasattr(result, "statistic")
+def _ols():
+    """OLS pieces: with huge bandwidths every local smoother is global, so MGWR collapses to OLS."""
+    Xa = np.column_stack([np.ones(N), np.array([r[0] for r in X]), np.array([r[1] for r in X])])
+    G = np.linalg.inv(Xa.T @ Xa)
+    b = G @ (Xa.T @ np.array(Y))
+    e = np.array(Y) - Xa @ b
+    H = Xa @ G @ Xa.T
+    return Xa, G, b, e, H
 
-    def test_statistic_numeric(self):
-        np.random.seed(120)
-        n = 15
-        y = np.random.randn(n)
-        X = np.column_stack([np.ones(n), np.random.randn(n)])
-        coords = np.random.rand(n, 2)
-        bws = None
-        result = mgwrhat(y, X, coords, bws)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+
+def test_ols_limit():
+    _, _, _, _, H = _ols()
+    h = mgwrhat(Y, X, P, bws=BIG, kernel="gaussian")
+    assert max(abs(h[i] - float(H[i, i])) for i in range(N)) < 1e-7

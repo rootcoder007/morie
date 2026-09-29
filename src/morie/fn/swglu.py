@@ -2,53 +2,38 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
 from ._containers import DescriptiveResult
-from ._sci_core import expit
+from .swigl import swiglu_activation
 
 
-def swiglu(
-    x: np.ndarray,
-    W1: np.ndarray | None = None,
-    W2: np.ndarray | None = None,
-    W3: np.ndarray | None = None,
-) -> DescriptiveResult:
-    r"""Compute the SwiGLU activation (Shazeer 2020).
+def swiglu(x, W1=None, W2=None, W3=None) -> DescriptiveResult:
+    r"""SwiGLU feed-forward block ``(x W1 * SiLU(x W3)) W2`` (Shazeer 2020).
 
-    :math:`\\text{SwiGLU}(x) = (x W_1 \\odot \\text{SiLU}(x W_3)) W_2`
+    The gate ``SiLU(x W3) = x W3 sigma(x W3)`` multiplies the up projection
+    ``x W1`` elementwise and ``W2`` projects back; without ``W1``/``W3`` the
+    gating is elementwise (``x * SiLU(x)``) and without ``W2`` the hidden
+    layer is returned. Thin front-end to
+    :func:`morie.fn.swigl.swiglu_activation` (``W = W3``, ``V = W1``);
+    ``value`` is the output array, ``extra["hidden"]`` the gated layer.
 
-    If weight matrices are None, operates element-wise as SiLU gating.
+    References
+    ----------
+    Shazeer, N. (2020). GLU variants improve Transformer. arXiv:2002.05202.
 
-    :param x: Input array.
-    :param W1: Gate projection weights.
-    :param W2: Output projection weights.
-    :param W3: Up projection weights.
-    :return: DescriptiveResult with output in ``extra['output']``.
+    Examples
+    --------
+    >>> round(float(swiglu([[1.0, -2.0]]).value[0][0]), 12)
+    0.73105857863
     """
-    if W1 is not None and W3 is not None:
-        gate = x @ W3
-        up = x @ W1
-    else:
-        gate = x
-        up = x
-
-    silu_gate = gate * expit(gate)
-    hidden = up * silu_gate
-
-    if W2 is not None:
-        output = hidden @ W2
-    else:
-        output = hidden
-
-    return DescriptiveResult(
-        name="swiglu",
-        value=float(np.mean(output)),
-        extra={"output": output, "hidden_mean": float(np.mean(hidden))},
-    )
+    if (W1 is None) != (W3 is None):
+        raise ValueError("provide both W1 and W3 or neither")
+    h = swiglu_activation(x, W3, W1)["tensor"]
+    out = h if W2 is None else h @ W2
+    return DescriptiveResult(name="swiglu", value=out, extra={"output": out, "hidden": h})
 
 
 def cheatsheet() -> str:
-    return "swiglu(x, W1, W2, W3) -> SwiGLU activation output"
+    return "swiglu(x, W1, W2, W3) -> (x W1 * SiLU(x W3)) W2 (Shazeer 2020)."
 
 
 swglu = swiglu

@@ -1,12 +1,9 @@
 """Partial permutations N_P_n = N(N-1)...(N-(n-1)) = N!/(N-n)!.
 
 Implements eq (1.5) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+Enthusiastic Beginner.
 """
 
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -19,6 +16,11 @@ def partial_permutations(N, n):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (1.5).
+
+    Examples
+    --------
+    >>> partial_permutations(8, 3)["partial_permutations"]
+    336
     """
     value = _morin.partial_permutations(N, n)
     payload = {"N": int(N), "n": int(n), "partial_permutations": value}

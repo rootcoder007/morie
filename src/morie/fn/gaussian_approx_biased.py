@@ -1,14 +1,9 @@
 """Gaussian approximation for n biased flips, centered at pn.
 
 Implements eq (5.15) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+Enthusiastic Beginner.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +16,11 @@ def gaussian_approx_biased(x, n, p):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (5.15).
+
+    Examples
+    --------
+    >>> round(gaussian_approx_biased(4, 100, 0.3)["PG"], 12)
+    0.05947780073
     """
     value = _morin.gaussian_approx_biased(x, n, p)
     payload = {"x": float(x), "n": int(n), "p": float(p), "PG": value}

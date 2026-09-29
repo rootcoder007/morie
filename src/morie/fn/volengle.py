@@ -23,11 +23,9 @@ def vol_engle_lagrange(r, q=1, demean=True):
     from its own past -- the defining feature of ARCH -- while the
     *level* of the series may remain serially uncorrelated.
 
-    This replaces a placeholder that computed a KS normality statistic
-    and silently ignored ``q``. A KS test cannot detect ARCH at all: a
-    GARCH process with a near-Gaussian unconditional distribution
-    passes a normality check while being strongly conditionally
-    heteroskedastic.
+    A Kolmogorov-Smirnov normality check cannot detect ARCH: a GARCH
+    process with a near-Gaussian unconditional distribution passes it
+    while being strongly conditionally heteroskedastic.
 
     Parameters
     ----------
@@ -49,6 +47,13 @@ def vol_engle_lagrange(r, q=1, demean=True):
     Engle, R. F. (1982). Autoregressive conditional heteroscedasticity
     with estimates of the variance of United Kingdom inflation.
     *Econometrica*, 50(4), 987-1007. Sec. 8 (the LM test).
+
+    Examples
+    --------
+    >>> import math
+    >>> r = [math.sin(1.3 * t) * (1 + 0.8 * math.sin(0.2 * t)) for t in range(80)]
+    >>> round(vol_engle_lagrange(r, q=2)["statistic"], 10)
+    32.2002564654
     """
     r = np.asarray(r, dtype=float).ravel()
     n = r.size

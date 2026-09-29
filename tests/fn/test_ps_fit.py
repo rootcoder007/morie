@@ -1,10 +1,11 @@
 """Tests for morie.fn.ps_fit — propensity score estimation via logistic regression."""
 
 import math
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
+
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.ps_fit import compute_propensity_scores
 
 
@@ -15,7 +16,7 @@ def synth_data():
     x1 = rng.normal(0, 1, n)
     x2 = rng.normal(0, 1, n)
     logits = [0.5 * x1[i] - 0.3 * x2[i] for i in range(n)]
-    probs = [1.0 / (1.0 + math.exp(-l)) for l in logits]
+    probs = [1.0 / (1.0 + math.exp(-lg)) for lg in logits]
     u = rng.uniform(0, 1, n)
     t = [1 if u[i] < probs[i] else 0 for i in range(n)]
     return pd.DataFrame({"x1": x1, "x2": x2, "treatment": t})

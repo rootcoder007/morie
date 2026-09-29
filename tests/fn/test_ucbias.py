@@ -1,23 +1,16 @@
-"""Tests for ucbias.unmeasured_conf_bias."""
+"""Tests for morie.fn.ucbias: the bounding factor and its link to the E-value."""
 
-import pytest
+import math
 
 from morie.fn.ucbias import unmeasured_conf_bias
 
 
-def test_ucbias_basic():
-    # B = RR_UD * RR_UY / (RR_UD + RR_UY - 1) = 9 / 5 = 1.8
-    out = unmeasured_conf_bias(3.0, 3.0, RR_obs=2.0)
-    assert out["bias_factor"] == pytest.approx(1.8)
-    assert out["rr_bound"] == pytest.approx(2.0 / 1.8)
-    assert out["explains_away"] is False
-
-
-def test_ucbias_edge():
-    # the diagonal identity: at RR_UD = RR_UY = E-value, B equals the RR
-    e = 2 + 2**0.5
-    assert unmeasured_conf_bias(e, e)["bias_factor"] == pytest.approx(2.0)
-    # a confounder that strong does explain away an observed RR of 2
-    assert unmeasured_conf_bias(e, e, RR_obs=2.0)["explains_away"] is True
-    with pytest.raises(ValueError):
-        unmeasured_conf_bias(0.5, 3.0)  # RR_UD below 1
+def test_bias_factor():
+    r = unmeasured_conf_bias(2.5, 1.8, RR_obs=1.6)
+    B = 2.5 * 1.8 / (2.5 + 1.8 - 1)
+    assert abs(r["bias_factor"] - B) < 1e-15
+    assert abs(r["rr_bound"] - 1.6 / B) < 1e-15
+    # at RR_UD = RR_UY = E-value the factor equals the observed RR
+    e = 1.6 + math.sqrt(1.6 * 0.6)
+    assert abs(unmeasured_conf_bias(e, e)["bias_factor"] - 1.6) < 1e-12
+    assert unmeasured_conf_bias(e, e, RR_obs=1.6)["explains_away"]

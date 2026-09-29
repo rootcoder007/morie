@@ -1,26 +1,11 @@
 """Tests for morie.fn.swlag."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.swlag import swlag
 
+W = [[0, 0.5, 0.5, 0], [1 / 3, 0, 1 / 3, 1 / 3], [0.5, 0.5, 0, 0], [0, 1, 0, 0]]
+Y = [1.5, -2.0, 4.0, 0.25]
 
-class TestSwlag:
-    def test_basic(self):
-        W = np.eye(5) * 0.3
-        y = np.arange(5, dtype=float)
-        result = swlag(W, y)
-        assert result is not None
 
-    def test_returns_spatial_result(self):
-        W = np.eye(5) * 0.3
-        y = np.arange(5, dtype=float)
-        result = swlag(W, y)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        W = np.eye(5) * 0.3
-        y = np.arange(5, dtype=float)
-        result = swlag(W, y)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_lag():
+    ref = [sum(W[i][j] * Y[j] for j in range(4)) for i in range(4)]
+    assert all(abs(a - b) < 1e-15 for a, b in zip(swlag(W, Y), ref))

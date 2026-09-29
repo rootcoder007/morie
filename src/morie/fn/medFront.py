@@ -8,7 +8,15 @@ def front_door(Y, X, M):
     r"""Front-door adjustment of the X -> Y effect through mediator M.
 
     Delegates to :func:`morie.fn.fdadj.frontdoor_adjustment` (Pearl
-    2009, Thm. 3.3.4). The placeholder this replaces averaged Y.
+    2009, Thm. 3.3.4).
+
+    Examples
+    --------
+    >>> x = [0, 0, 0, 0, 1, 1, 1, 1, 0, 1]
+    >>> z = [0, 0, 1, 0, 1, 1, 0, 1, 0, 1]
+    >>> y = [0, 1, 0, 0, 1, 1, 0, 1, 1, 1]
+    >>> round(front_door(y, x, z)["distribution"][1][1], 12)
+    0.45
     """
     from .fdadj import frontdoor_adjustment
 

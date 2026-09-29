@@ -2,43 +2,39 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "In my experience, there is no such thing as luck."
+
+def _vec(x):
+    return [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
 
 
-def sample_mean(x, **kwargs) -> DescriptiveResult:
-    r"""Compute the sample mean of signal *x*.
+def sample_mean(x):
+    r"""Sample mean ``xbar = (1/N) sum_n x(n)`` of a signal or data vector (correctly rounded sum, ``math.fsum``).
 
-    .. math::
-
-        \\bar{x} = \\frac{1}{N} \\sum_{n=0}^{N-1} x(n)
-
-    Parameters
+    References
     ----------
-    x : array-like
-        Input signal or data vector.
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis*, 2nd ed., sec. 3.1.
+    Wiley-IEEE Press.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> sample_mean([1.0, 2.0, 4.0, 7.0]).value
+    3.5
     """
-    x = np.asarray(x, dtype=float)
-    mu = float(np.mean(x))
-    return DescriptiveResult(
-        name="sample_mean",
-        value=mu,
-        extra={"mean": mu, "n": len(x)},
-    )
+    v = _vec(x)
+    if not v:
+        raise ValueError("x must be non-empty")
+    mu = math.fsum(v) / len(v)
+    return DescriptiveResult(name="sample_mean", value=mu, extra={"mean": mu, "n": len(v)})
 
 
 smean = sample_mean
+# compact alias per ledger/NAMING.md
+samplemean = sample_mean
 
 
 def cheatsheet() -> str:
-    return "sample_mean({}) -> Sample mean."
-
-
-# compact alias per ledger/NAMING.md
-samplemean = sample_mean
+    return "sample_mean(x) -> (1/N) sum x(n)."

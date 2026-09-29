@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.missinM import missing_mechanism_sensitivity
 
 
@@ -28,10 +27,7 @@ def test_missinM_basic():
 
     # Check return type and required keys
     assert isinstance(result, dict)
-    expected_keys = {
-        "estimate", "means", "delta_grid", "mar_mean",
-        "p_observed", "tipping_delta", "n_observed", "n"
-    }
+    expected_keys = {"estimate", "means", "delta_grid", "mar_mean", "p_observed", "tipping_delta", "n_observed", "n"}
     assert expected_keys.issubset(result.keys())
 
     # Numerical checks

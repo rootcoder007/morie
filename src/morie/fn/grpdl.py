@@ -1,47 +1,55 @@
-# morie.fn -- function file (rootcoder007/morie)
 """Group delay of a digital filter."""
 
 from __future__ import annotations
 
-from . import _array_core as np
-from ._containers import DescriptiveResult
+import cmath
+import math
 
-_QUOTE = "Truly wonderful, the mind of a child is."
+from ._containers import DescriptiveResult
 
 
 def group_delay(b, a, worN: int = 512) -> DescriptiveResult:
-    """Compute group delay tau_g(omega) = -d(phi)/d(omega).
+    r"""Group delay tau_g(w) = -d arg H(e^{jw}) / dw of H(z) = B(z)/A(z), in samples.
 
-    Parameters
+    Computed exactly, not by differencing the phase: with c = b * a~
+    (convolution with the reversed a) tau_g(w) = Re[sum_k k c_k
+    e^{-jwk} / sum_k c_k e^{-jwk}] - (len(a) - 1) on w = pi k / worN,
+    k = 0..worN-1 (Oppenheim and Schafer 2010, sec. 5.1.2; the algorithm
+    of scipy.signal.group_delay); frequencies where the denominator
+    vanishes are set to 0. value is the delay curve, extra holds the
+    frequencies.
+
+    References
     ----------
-    b : array-like
-        Numerator coefficients.
-    a : array-like
-        Denominator coefficients.
-    worN : int
-        Number of frequency points. Default 512.
+    Oppenheim, A. V. and Schafer, R. W. (2010). *Discrete-Time Signal
+    Processing*, 3rd ed. Pearson.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> [round(v, 12) for v in group_delay([1.0, 2.0, 1.0], [1.0], worN=4).value]
+    [1.0, 1.0, 1.0, 1.0]
     """
-    from ._signal_core import group_delay as _gd
-
-    b = np.asarray(b, dtype=float)
-    a = np.asarray(a, dtype=float)
-    w, gd = _gd((b, a), w=worN)
-    return DescriptiveResult(
-        name="group_delay",
-        value=float(np.mean(gd)),
-        extra={"frequencies": w, "delay": gd},
-    )
+    bb = [float(v) for v in (b.tolist() if hasattr(b, "tolist") else b)]
+    aa = [float(v) for v in (a.tolist() if hasattr(a, "tolist") else a)]
+    ar = aa[::-1]
+    c = [0.0] * (len(bb) + len(ar) - 1)
+    for i, u in enumerate(bb):
+        for j, v in enumerate(ar):
+            c[i + j] += u * v
+    ws = [math.pi * k / worN for k in range(int(worN))]
+    gd = []
+    for w in ws:
+        num = sum(k * ck * cmath.exp(-1j * w * k) for k, ck in enumerate(c))
+        den = sum(ck * cmath.exp(-1j * w * k) for k, ck in enumerate(c))
+        gd.append(0.0 if abs(den) < 10 * 2.220446049250313e-16 else (num / den).real - (len(aa) - 1))
+    return DescriptiveResult(name="group_delay", value=gd, extra={"frequencies": ws, "delay": gd})
 
 
 grpdl = group_delay
 
 
 def cheatsheet() -> str:
-    return "group_delay({}) -> Group delay of a digital filter."
+    return "group_delay(b, a, worN=512) -> exact group delay Re[sum k c_k z^-k / sum c_k z^-k] - (len(a)-1)."
 
 
 # compact alias per ledger/NAMING.md

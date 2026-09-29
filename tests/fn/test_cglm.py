@@ -1,9 +1,9 @@
 """Tests for morie.fn.cglm — Complex survey GLM."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.cglm import complex_survey_glm
 
 

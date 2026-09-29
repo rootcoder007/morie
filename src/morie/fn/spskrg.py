@@ -60,14 +60,19 @@ def schabenberger_simple_kriging(coords, z, target, cov_model=None, mu=None):
     Schabenberger, O. & Gotway, C. A. (2005). Statistical Methods for
     Spatial Data Analysis. Chapman & Hall/CRC. Sec. 5.2.1, eqs.
     (5.10)-(5.11), pp. 223-224.
+
+    Examples
+    --------
+    >>> r = schabenberger_simple_kriging([[0, 0], [1, 0], [0, 1], [1, 1]], [1.0, 2.0, 1.5, 3.0], [[0.5, 0.5]], mu=1.8)
+    >>> round(float(r["prediction"][0]), 12), round(float(r["variance"][0]), 12)
+    (1.832283475342, 0.948400998481)
     """
     pred, var, lam = simple_kriging(coords, z, target, cov_model, mu)
     mu_used = float(np.mean(np.asarray(z, dtype=float))) if mu is None else float(mu)
     return RichResult(
         title="Simple kriging",
         summary_lines=[("mu", mu_used), ("n targets", int(pred.size))],
-        payload={"prediction": pred, "variance": var, "weights": lam,
-                 "mu": mu_used},
+        payload={"prediction": pred, "variance": var, "weights": lam, "mu": mu_used},
     )
 
 

@@ -51,10 +51,15 @@ def esl_total_sum_squares(y):
         raise ValueError("the total sum of squares needs at least one observation.")
     mu = float(np.mean(y))
     tss = float(np.sum((y - mu) ** 2))
-    return RichResult(payload={
-        "estimate": tss, "mean": mu, "n": int(y.size),
-        "is_degenerate": bool(tss == 0.0),
-        "method": "TSS = sum (y_i - y_bar)^2"})
+    return RichResult(
+        payload={
+            "estimate": tss,
+            "mean": mu,
+            "n": int(y.size),
+            "is_degenerate": bool(tss == 0.0),
+            "method": "TSS = sum (y_i - y_bar)^2",
+        }
+    )
 
 
 def cheatsheet():

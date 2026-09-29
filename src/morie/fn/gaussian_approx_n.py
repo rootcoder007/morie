@@ -1,14 +1,9 @@
 """Gaussian approximation for n fair flips: e^(-2x^2/n)/sqrt(pi n/2).
 
 Implements eq (5.14) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+Enthusiastic Beginner.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +16,11 @@ def gaussian_approx_n(x, n):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (5.14).
+
+    Examples
+    --------
+    >>> round(gaussian_approx_n(3, 100)["PG"], 12)
+    0.066644920578
     """
     value = _morin.gaussian_approx_n(x, n)
     payload = {"x": float(x), "n": int(n), "PG": value}

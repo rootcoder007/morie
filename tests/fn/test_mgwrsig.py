@@ -1,32 +1,10 @@
 """Tests for morie.fn.mgwrsig."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.mgwrsig import mgwrsig
 
+E = [0.3, -0.7, 0.25, 0.1, -0.45, 0.6, -0.05]
 
-class TestMgwrsig:
-    def test_basic(self):
-        np.random.seed(124)
-        resid = np.random.randn(15)
-        tr_S = 5.0
-        n = 15
-        result = mgwrsig(resid, tr_S, n)
-        assert result is not None
 
-    def test_returns_spatial_result(self):
-        np.random.seed(124)
-        resid = np.random.randn(15)
-        tr_S = 5.0
-        n = 15
-        result = mgwrsig(resid, tr_S, n)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        np.random.seed(124)
-        resid = np.random.randn(15)
-        tr_S = 5.0
-        n = 15
-        result = mgwrsig(resid, tr_S, n)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_sigma2():
+    assert abs(mgwrsig(E, 3.2).statistic - sum(v * v for v in E) / (7 - 3.2)) < 1e-15
+    assert abs(mgwrsig(E, 3.2, n=10).statistic - sum(v * v for v in E) / 6.8) < 1e-15

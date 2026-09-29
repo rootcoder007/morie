@@ -10,33 +10,7 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _frame_core as pd
-
-
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from ._ml_core import RandomForestRegressor
-except ImportError:
-    RandomForestRegressor = _MissingDep('RandomForestRegressor')
-try:
-    from ._ml_core import LabelEncoder, StandardScaler
-except ImportError:
-    LabelEncoder = _MissingDep('LabelEncoder')
-    StandardScaler = _MissingDep('StandardScaler')
+from ._ml_core import LabelEncoder, RandomForestRegressor, StandardScaler
 
 
 def estimate_cate(

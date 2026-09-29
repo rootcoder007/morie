@@ -2,45 +2,42 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "He who fights with monsters should be careful lest he thereby become a monster. -- Friedrich Nietzsche"
+
+def _vec(x):
+    return [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
 
 
-def central_moment(x, k=2, **kwargs) -> DescriptiveResult:
-    r"""Compute the *k*-th central moment of signal *x*.
+def central_moment(x, k=2):
+    r"""The ``k``-th central moment ``mu_k = (1/N) sum_n (x(n) - xbar)^k`` with the ``1/N`` (population, biased) divisor; ``k = 2`` is the population variance.
 
-    .. math::
-
-        \\mu_k = \\frac{1}{N} \\sum_{n=0}^{N-1} (x(n) - \\bar{x})^k
-
-    Parameters
+    References
     ----------
-    x : array-like
-        Input signal.
-    k : int
-        Moment order (default 2).
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis*, 2nd ed., sec. 3.1.
+    Wiley-IEEE Press.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> central_moment([1.0, 2.0, 4.0, 7.0], k=2).value
+    5.25
     """
-    x = np.asarray(x, dtype=float)
-    mu_k = float(np.mean((x - np.mean(x)) ** k))
+    v = _vec(x)
+    if not v:
+        raise ValueError("x must be non-empty")
+    mu = math.fsum(v) / len(v)
+    mk = math.fsum((t - mu) ** k for t in v) / len(v)
     return DescriptiveResult(
-        name="central_moment",
-        value=mu_k,
-        extra={"moment_order": k, "central_moment": mu_k, "n": len(x)},
+        name="central_moment", value=mk, extra={"moment_order": k, "central_moment": mk, "n": len(v)}
     )
 
 
 smom2 = central_moment
+# compact alias per ledger/NAMING.md
+centralmoment = central_moment
 
 
 def cheatsheet() -> str:
-    return "central_moment({}) -> Central moment."
-
-
-# compact alias per ledger/NAMING.md
-centralmoment = central_moment
+    return "central_moment(x, k=2) -> (1/N) sum (x(n) - xbar)^k."

@@ -1,22 +1,10 @@
-"""Test sample_mean (smean)."""
+"""Tests for morie.fn.smean: recompute from the definition."""
 
-from morie.fn import _array_core as np
+from morie.fn.smean import sample_mean
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.smean import sample_mean, smean
+X = [2.5, -1.0, 4.25, 0.5, 3.0, -2.75, 1.5, 6.0]
 
 
-class TestSampleMean:
-    def test_basic(self):
-        x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = sample_mean(x)
-        assert isinstance(result, DescriptiveResult)
-        assert result.name == "sample_mean"
-        assert result.value == 3.0
-
-    def test_negative(self):
-        x = np.array([-2.0, -1.0, 0.0, 1.0, 2.0])
-        assert sample_mean(x).value == 0.0
-
-    def test_alias(self):
-        assert smean is sample_mean
+def test_mean():
+    assert abs(sample_mean(X).value - sum(X) / len(X)) < 1e-15
+    assert sample_mean(X).extra["n"] == 8

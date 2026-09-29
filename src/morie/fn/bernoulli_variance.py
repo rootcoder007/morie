@@ -1,14 +1,9 @@
 """Bernoulli variance p(1-p) = pq.
 
 Implements eq (3.22) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+Enthusiastic Beginner.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +16,11 @@ def bernoulli_variance(p):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.22).
+
+    Examples
+    --------
+    >>> round(bernoulli_variance(0.3)["variance"], 12)
+    0.21
     """
     value = _morin.bernoulli_variance(p)
     payload = {"p": float(p), "variance": value}

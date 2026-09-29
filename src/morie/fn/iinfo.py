@@ -26,9 +26,7 @@ def item_information(theta, a=1.0, b=0.0, c=0.0):
         I(\theta) = \frac{a^2 (1-c)^2 (P^{*}Q^{*})^2}{P\,Q}.
 
     With ``c = 0`` this collapses to the familiar
-    :math:`I(\theta) = a^2 P(\theta) Q(\theta)`, which is the form the old
-    placeholder docstring quoted while the body averaged a spurious leading
-    ``y`` argument and ignored every item parameter. That ``y`` is gone.
+    :math:`I(\theta) = a^2 P(\theta) Q(\theta)`.
 
     Parameters
     ----------
@@ -57,6 +55,11 @@ def item_information(theta, a=1.0, b=0.0, c=0.0):
 
     Birnbaum, A. (1968). In F. M. Lord & M. R. Novick, *Statistical Theories
     of Mental Test Scores*, chs. 17-20.
+
+    Examples
+    --------
+    >>> [round(v, 12) for v in item_information([-1.0, 0.0, 1.5], a=1.4, b=0.3, c=0.2)["info"]]
+    [0.08420602692, 0.287650137963, 0.200167829763]
     """
     th = [float(v) for v in seq_(theta)]
     n = len(th)
@@ -68,9 +71,9 @@ def item_information(theta, a=1.0, b=0.0, c=0.0):
 
     for i in range(n):
         if not (cv[i] >= 0.0) or cv[i] >= 1.0:
-            raise ValueError("c must lie in [0, 1); got %r" % (cv[i],))
+            raise ValueError(f"c must lie in [0, 1); got {cv[i]!r}")
         if av[i] != av[i] or av[i] in (INF, -INF):
-            raise ValueError("a must be finite; got %r" % (av[i],))
+            raise ValueError(f"a must be finite; got {av[i]!r}")
 
     p = []
     dp = []

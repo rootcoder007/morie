@@ -1,32 +1,30 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Spatial lag filter (I - rho*W)^-1."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from .swops import error_operator
 
 
 def swlagf(W, rho):
-    """Spatial lag filter (I - rho*W)^-1.
+    r"""Spatial multiplier ``(I - rho W)^{-1}`` (``spatialreg::invIrW``).
 
-    Category: WDiag
+    Maps innovations to the autoregressive process ``u = rho W u + e`` and
+    gives the reduced form of the spatial lag model. Thin front-end to
+    :func:`morie.fn.swops.error_operator`; returns the matrix as lists.
 
-    Parameters
+    References
     ----------
-    W, rho : see function signature.
+    Anselin, L. (1988). *Spatial Econometrics: Methods and Models*. Kluwer.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> [[round(v, 6) for v in r] for r in swlagf([[0, 1], [1, 0]], 0.5)]
+    [[1.333333, 0.666667], [0.666667, 1.333333]]
     """
-    try:
-        eigvals = np.linalg.eigvalsh(W)
-        result = float(np.sum(np.log(np.abs(1 - rho * eigvals) + 1e-12)))
-        return SpatialResult(name="swlagf", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="swlagf", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    return error_operator(W, float(rho))
 
 
 swlagf_fn = swlagf
 
 
 def cheatsheet() -> str:
-    return "swlagf({}) -> Spatial lag filter (I - rho*W)^-1."
+    return "swlagf(W, rho) -> spatial multiplier (I - rho W)^-1 (spatialreg::invIrW)."

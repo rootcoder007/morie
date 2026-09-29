@@ -2,9 +2,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Median lethal dose from a quantal dose-response assay (Finney 1971).
 
-The placeholder this replaces was specified as a deep network regressing
-rat LD50 on Morgan fingerprints of a SMILES string. That is not
-implementable natively: it needs a chemistry toolkit to produce the
+A deep network regressing rat LD50 on Morgan fingerprints of a SMILES
+string is not implementable natively: it needs a chemistry toolkit to produce the
 fingerprints and a set of trained weights that this package does not
 have and would have to invent. Rather than ship a wrapper around a
 model we do not possess, this implements the estimator the LD50 is
@@ -98,15 +97,16 @@ def _chisq_upper_tail(stat, df):
 
 def _links(link):
     if link == "probit":
+
         def mu(eta):
             return np.clip(_PHI(np.clip(eta, -8, 8)), _EPS, 1 - _EPS)
 
         def dmu(eta):
             return np.maximum(_PDF(np.clip(eta, -8, 8)), 1e-10)
     elif link == "logit":
+
         def mu(eta):
-            return np.clip(1.0 / (1.0 + np.exp(-np.clip(eta, -30, 30))),
-                           _EPS, 1 - _EPS)
+            return np.clip(1.0 / (1.0 + np.exp(-np.clip(eta, -30, 30))), _EPS, 1 - _EPS)
 
         def dmu(eta):
             p = mu(eta)
@@ -154,8 +154,7 @@ def _fit(X, k, n, link, max_iter=100, tol=1e-11):
     return beta, cov, converged, p
 
 
-def effective_dose(intercept, slope, cov, level=0.5, alpha=0.05,
-                   link="probit", log_scale=True):
+def effective_dose(intercept, slope, cov, level=0.5, alpha=0.05, link="probit", log_scale=True):
     r"""Effective dose at a given response level, with Fieller limits.
 
     The dose solving :math:`\mu(\alpha + \beta x) = p` is
@@ -199,16 +198,20 @@ def effective_dose(intercept, slope, cov, level=0.5, alpha=0.05,
         raise ValueError(f"level must lie in (0, 1); got {level}.")
     g_p = _z(level) if link == "probit" else math.log(level / (1 - level))
     if b == 0 or not np.isfinite(b):
-        return {"ed": float("nan"), "lower": float("nan"),
-                "upper": float("nan"), "fieller_g": float("inf"),
-                "bounded": False, "se_delta": float("nan")}
+        return {
+            "ed": float("nan"),
+            "lower": float("nan"),
+            "upper": float("nan"),
+            "fieller_g": float("inf"),
+            "bounded": False,
+            "se_delta": float("nan"),
+        }
     x = (g_p - a) / b
     t = _z(1 - alpha / 2)
 
     ap = a - g_p
     g = t * t * V[1, 1] / (b * b)
-    se_delta = (math.sqrt(max(V[0, 0] + 2 * x * V[0, 1] + x * x * V[1, 1],
-                              0.0)) / abs(b))
+    se_delta = math.sqrt(max(V[0, 0] + 2 * x * V[0, 1] + x * x * V[1, 1], 0.0)) / abs(b)
 
     if g >= 1.0:
         lo, hi, bounded = -math.inf, math.inf, False
@@ -227,8 +230,7 @@ def effective_dose(intercept, slope, cov, level=0.5, alpha=0.05,
             r2 = (-B + math.sqrt(disc)) / (2 * A)
             lo, hi = (min(r1, r2), max(r1, r2))
             bounded = True
-    out = {"ed": x, "lower": lo, "upper": hi, "fieller_g": g,
-           "bounded": bounded, "se_delta": se_delta}
+    out = {"ed": x, "lower": lo, "upper": hi, "fieller_g": g, "bounded": bounded, "se_delta": se_delta}
     if log_scale and bounded:
         out["ed_dose"] = math.exp(x)
         out["lower_dose"] = math.exp(lo)
@@ -240,8 +242,7 @@ def effective_dose(intercept, slope, cov, level=0.5, alpha=0.05,
     return out
 
 
-def acute_toxicity_ld50(dose, n_dead, n_total, link="probit",
-                        level=0.5, alpha=0.05, log_dose=True):
+def acute_toxicity_ld50(dose, n_dead, n_total, link="probit", level=0.5, alpha=0.05, log_dose=True):
     """Median lethal dose from a quantal assay.
 
     Groups of subjects are exposed at several doses and the number
@@ -326,10 +327,7 @@ def acute_toxicity_ld50(dose, n_dead, n_total, link="probit",
     k = np.asarray(n_dead, dtype=float).ravel()
     n = np.asarray(n_total, dtype=float).ravel()
     if not (d.size == k.size == n.size):
-        raise ValueError(
-            f"dose, n_dead and n_total must agree in length; got "
-            f"{d.size}, {k.size} and {n.size}."
-        )
+        raise ValueError(f"dose, n_dead and n_total must agree in length; got {d.size}, {k.size} and {n.size}.")
     if d.size < 2:
         raise ValueError("need at least two dose groups.")
     if np.any(n <= 0):
@@ -338,8 +336,7 @@ def acute_toxicity_ld50(dose, n_dead, n_total, link="probit",
         raise ValueError("n_dead must lie between 0 and n_total.")
     if log_dose and np.any(d <= 0):
         raise ValueError(
-            "dose must be positive to fit on the log scale; pass "
-            "log_dose=False to fit on the natural scale."
+            "dose must be positive to fit on the log scale; pass log_dose=False to fit on the natural scale."
         )
     if link not in ("probit", "logit"):
         raise ValueError('link must be "probit" or "logit".')
@@ -348,17 +345,13 @@ def acute_toxicity_ld50(dose, n_dead, n_total, link="probit",
     X = np.column_stack([np.ones_like(x), x])
     beta, cov, conv, phat = _fit(X, k, n, link)
 
-    ed = effective_dose(beta[0], beta[1], cov, level=level, alpha=alpha,
-                        link=link, log_scale=log_dose)
+    ed = effective_dose(beta[0], beta[1], cov, level=level, alpha=alpha, link=link, log_scale=log_dose)
 
     # residual deviance for the heterogeneity check
     p_obs = k / n
     with np.errstate(divide="ignore", invalid="ignore"):
-        term1 = np.where(k > 0, k * np.log(np.maximum(p_obs, _EPS)
-                                           / phat), 0.0)
-        term2 = np.where(n - k > 0,
-                         (n - k) * np.log(np.maximum(1 - p_obs, _EPS)
-                                          / (1 - phat)), 0.0)
+        term1 = np.where(k > 0, k * np.log(np.maximum(p_obs, _EPS) / phat), 0.0)
+        term2 = np.where(n - k > 0, (n - k) * np.log(np.maximum(1 - p_obs, _EPS) / (1 - phat)), 0.0)
     dev = float(2.0 * np.sum(term1 + term2))
     df = int(d.size - 2)
     het = dev / df if df > 0 else float("nan")
@@ -373,8 +366,7 @@ def acute_toxicity_ld50(dose, n_dead, n_total, link="probit",
     other = "logit" if link == "probit" else "probit"
     try:
         b2, c2, _, _ = _fit(X, k, n, other)
-        ed2 = effective_dose(b2[0], b2[1], c2, level=level, alpha=alpha,
-                             link=other, log_scale=log_dose)
+        ed2 = effective_dose(b2[0], b2[1], c2, level=level, alpha=alpha, link=other, log_scale=log_dose)
         sens = abs(ed2["ed"] - ed["ed"])
         ed_other = ed2.get("ed_dose", ed2["ed"])
     except Exception:
@@ -423,16 +415,13 @@ def acute_toxicity_ld50(dose, n_dead, n_total, link="probit",
             "method": _METHOD,
         },
         interpretation=(
-            f"Half the subjects are expected to respond at a dose of "
-            f"{est:.4g}." if np.isfinite(est) else
-            "The dose-response fit did not identify a median."
+            f"Half the subjects are expected to respond at a dose of {est:.4g}."
+            if np.isfinite(est)
+            else "The dose-response fit did not identify a median."
         ),
     )
     if not conv:
-        out.warnings.append(
-            "Fisher scoring did not converge. The estimate and its interval "
-            "should not be used."
-        )
+        out.warnings.append("Fisher scoring did not converge. The estimate and its interval should not be used.")
     if not ed["bounded"]:
         out.warnings.append(
             f"Fieller's g = {ed['fieller_g']:.3g} is at or above 1, so the "

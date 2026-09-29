@@ -2,42 +2,37 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "The ability to speak does not make you intelligent."
+
+def _vec(x):
+    return [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
 
 
-def mean_squared_error(x, x_hat, **kwargs) -> DescriptiveResult:
-    r"""Compute the mean squared error between *x* and *x_hat*.
+def mean_squared_error(x, x_hat):
+    r"""Mean squared error ``(1/N) sum_n (x(n) - xhat(n))^2`` between a reference and an estimate of equal length.
 
-    .. math::
-
-        \\text{MSE} = \\frac{1}{N} \\sum_{n=0}^{N-1} (x(n) - \\hat{x}(n))^2
-
-    Parameters
+    References
     ----------
-    x : array-like
-        Reference signal.
-    x_hat : array-like
-        Estimated / reconstructed signal.
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis*, 2nd ed., sec. 3.1.
+    Wiley-IEEE Press.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> mean_squared_error([1.0, 2.0, 3.0], [1.5, 2.0, 2.0]).value
+    0.4166666666666667
     """
-    x = np.asarray(x, dtype=float)
-    x_hat = np.asarray(x_hat, dtype=float)
-    mse = float(np.mean((x - x_hat) ** 2))
-    return DescriptiveResult(
-        name="mean_squared_error",
-        value=mse,
-        extra={"mse": mse, "n": len(x)},
-    )
+    a, b = _vec(x), _vec(x_hat)
+    if len(a) != len(b) or not a:
+        raise ValueError("x and x_hat must be non-empty and of equal length")
+    mse = math.fsum((u - w) ** 2 for u, w in zip(a, b)) / len(a)
+    return DescriptiveResult(name="mean_squared_error", value=mse, extra={"mse": mse, "n": len(a)})
 
 
 smse = mean_squared_error
 
 
 def cheatsheet() -> str:
-    return "mean_squared_error({}) -> Mean squared error."
+    return "mean_squared_error(x, x_hat) -> (1/N) sum (x - xhat)^2."

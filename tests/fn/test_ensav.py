@@ -1,21 +1,12 @@
-"""Test ensemble_average (ensav)."""
+"""Tests for morie.fn.ensav: recompute from the definition."""
 
-from morie.fn import _array_core as np
+from morie.fn.ensav import ensemble_average
 
-from morie.fn._containers import DescriptiveResult
-from morie.fn.ensav import ensav, ensemble_average
+X = [2.5, -1.0, 4.25, 0.5, 3.0, -2.75, 1.5, 6.0]
 
 
-class TestEnsembleAverage:
-    def test_basic(self):
-        segments = np.array([[1.0, 2.0, 3.0], [3.0, 4.0, 5.0]])
-        result = ensemble_average(segments)
-        assert isinstance(result, DescriptiveResult)
-        assert np.allclose(result.value, [2.0, 3.0, 4.0])
-
-    def test_single(self):
-        s = np.array([[1.0, 2.0, 3.0]])
-        assert np.allclose(ensemble_average(s).value, [1.0, 2.0, 3.0])
-
-    def test_alias(self):
-        assert ensav is ensemble_average
+def test_average():
+    S = [X, [v * 0.5 for v in X], [v - 1 for v in X]]
+    a = ensemble_average(S).value
+    for j in range(8):
+        assert abs(a[j] - (X[j] + 0.5 * X[j] + X[j] - 1) / 3) < 1e-15

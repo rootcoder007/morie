@@ -57,6 +57,16 @@ def tmle_missing_data(y, D, X, missing):
     robust plug-in form is Bang, H. & Robins, J. M. (2005), Doubly
     robust estimation in missing data and causal inference models,
     Biometrics 61(4):962-973.  doi:10.1111/j.1541-0420.2005.00377.x.
+
+    Examples
+    --------
+    >>> import math
+    >>> X = [[math.sin(0.7 * i), math.cos(1.3 * i)] for i in range(40)]
+    >>> D = [1.0 if math.sin(2.1 * i + X[i][0]) > 0 else 0.0 for i in range(40)]
+    >>> y = [1.0 + 2.0 * D[i] + X[i][0] - 0.5 * X[i][1] + 0.3 * math.sin(5 * i) for i in range(40)]
+    >>> miss = [1.0 if math.cos(3.7 * i) > 0.6 else 0.0 for i in range(40)]
+    >>> round(tmle_missing_data(y, D, X, miss)["estimate"], 8)
+    2.02036264
     """
     yv = C.vec(y)
     Dv = C.vec(D)
@@ -103,10 +113,16 @@ def tmle_missing_data(y, D, X, missing):
         ic.append(H[i] * resid + Q1s[i] - Q0s[i] - psi)
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps,
-        "n_obs": float(sum(delta)), "n": n,
-        "method": "TMLE for the ATE under a missing-at-random outcome"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "eps": eps,
+            "n_obs": float(sum(delta)),
+            "n": n,
+            "method": "TMLE for the ATE under a missing-at-random outcome",
+        }
+    )
 
 
 def cheatsheet():

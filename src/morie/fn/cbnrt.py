@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Treatment effects with text-borne confounding.
 
-The placeholder this replaces was specified as CausalBERT: transformer
-embeddings feeding a propensity and outcome model. The transformer is
+CausalBERT (Veitch et al. 2020) feeds transformer embeddings to a
+propensity and outcome model. The transformer is
 not implementable natively -- it needs pretrained weights this package
 does not have and would have to invent -- so the *representation* here
 is a native TF-IDF and truncated singular value decomposition, and the
@@ -60,10 +60,7 @@ def tfidf_matrix(texts, min_df=1, max_df=1.0, vocabulary=None):
     else:
         vocab = list(vocabulary)
     if not vocab:
-        raise ValueError(
-            "no terms survived the document-frequency filter; relax min_df "
-            "or max_df."
-        )
+        raise ValueError("no terms survived the document-frequency filter; relax min_df or max_df.")
     index = {w: j for j, w in enumerate(vocab)}
     tf = np.zeros((n, len(vocab)))
     for i, tk in enumerate(toks):
@@ -74,10 +71,9 @@ def tfidf_matrix(texts, min_df=1, max_df=1.0, vocabulary=None):
     dfv = (tf > 0).sum(axis=0)
     idf = np.log((1.0 + n) / (1.0 + dfv)) + 1.0
     X = tf * idf[None, :]
-    nrm = np.sqrt((X ** 2).sum(axis=1, keepdims=True))
+    nrm = np.sqrt((X**2).sum(axis=1, keepdims=True))
     X = X / np.where(nrm > 0, nrm, 1.0)
-    return {"matrix": X, "vocabulary": vocab, "document_frequency": dfv,
-            "idf": idf}
+    return {"matrix": X, "vocabulary": vocab, "document_frequency": dfv, "idf": idf}
 
 
 def text_embedding(texts, n_components=10, min_df=1, max_df=1.0):
@@ -96,20 +92,18 @@ def text_embedding(texts, n_components=10, min_df=1, max_df=1.0):
     k = min(k, min(X.shape))
     Xc = X - X.mean(axis=0, keepdims=True)
     U, S, Vt = np.linalg.svd(Xc, full_matrices=False)
-    tot = float(np.sum(S ** 2))
+    tot = float(np.sum(S**2))
     return {
         "embedding": U[:, :k] * S[:k],
         "singular_values": S[:k],
-        "explained_variance_ratio": ((S[:k] ** 2) / tot if tot > 0
-                                     else np.zeros(k)),
+        "explained_variance_ratio": ((S[:k] ** 2) / tot if tot > 0 else np.zeros(k)),
         "components": Vt[:k],
         "vocabulary": tf["vocabulary"],
         "n_terms": len(tf["vocabulary"]),
     }
 
 
-def causalbert_text(texts, T, Y, X=None, n_components=10, trim=0.02,
-                    min_df=1, max_df=1.0, alpha=0.05, embedding=None):
+def causalbert_text(texts, T, Y, X=None, n_components=10, trim=0.02, min_df=1, max_df=1.0, alpha=0.05, embedding=None):
     r"""Average treatment effect adjusting for what the text reveals.
 
     The setting is one where the confounder is written down but not
@@ -212,19 +206,18 @@ def causalbert_text(texts, T, Y, X=None, n_components=10, trim=0.02,
         if E.shape[0] != n:
             E = E.T
         if E.shape[0] != n:
-            raise ValueError(
-                f"embedding has {E.shape[0]} rows but there are {n} units."
-            )
-        emb = {"embedding": E, "explained_variance_ratio": np.full(
-            E.shape[1], np.nan), "n_terms": -1, "vocabulary": [],
-            "singular_values": np.full(E.shape[1], np.nan)}
+            raise ValueError(f"embedding has {E.shape[0]} rows but there are {n} units.")
+        emb = {
+            "embedding": E,
+            "explained_variance_ratio": np.full(E.shape[1], np.nan),
+            "n_terms": -1,
+            "vocabulary": [],
+            "singular_values": np.full(E.shape[1], np.nan),
+        }
     else:
         if len(texts) != n:
-            raise ValueError(
-                f"texts has {len(texts)} documents but there are {n} units."
-            )
-        emb = text_embedding(texts, n_components=n_components,
-                             min_df=min_df, max_df=max_df)
+            raise ValueError(f"texts has {len(texts)} documents but there are {n} units.")
+        emb = text_embedding(texts, n_components=n_components, min_df=min_df, max_df=max_df)
     E = emb["embedding"]
 
     parts = [E]
@@ -287,8 +280,7 @@ def causalbert_text(texts, T, Y, X=None, n_components=10, trim=0.02,
             "embedding": E,
             "n_components": int(E.shape[1]),
             "explained_variance_ratio": evr,
-            "cumulative_variance": (float(np.nansum(evr))
-                                    if evr.size else float("nan")),
+            "cumulative_variance": (float(np.nansum(evr)) if evr.size else float("nan")),
             "vocabulary_size": emb["n_terms"],
             "mu1": mu1,
             "mu0": mu0,

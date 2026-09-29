@@ -1,17 +1,15 @@
-"""Tests for gb_are5 (Gibbons shelf)."""
+"""Tests for gb_are5.gibbons_are_scale_tests."""
 
-from morie.fn import _array_core as np
+import math
+
 import pytest
 
 from morie.fn.gb_are5 import gibbons_are_scale_tests
 
 
-def test_gb_are5_basic():
-    out = gibbons_are_scale_tests()
-    assert out["are_mood_f"] == pytest.approx(15 / (2 * np.pi**2))  # PDF-verified
-    assert out["are_klotz_f"] == 1.0
-
-
-def test_gb_are5_edge():
+def test_values():
+    r = gibbons_are_scale_tests()
+    assert abs(r["are_mood_f"] - 15 / (2 * math.pi**2)) < 1e-15
+    assert r["are_klotz_f"] == 1.0
     with pytest.raises(ValueError):
-        gibbons_are_scale_tests("uniform")
+        gibbons_are_scale_tests("logistic")

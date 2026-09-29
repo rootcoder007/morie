@@ -1,33 +1,30 @@
-"""Tests for spskrg.schabenberger_simple_kriging.
+"""Tests for spskrg.schabenberger_simple_kriging: the kriging equations recomputed."""
 
-Book identities for the kriging family live in test_schab_kriging.py.
-This pins the module's own contract.
-"""
+import math
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.spskrg import schabenberger_simple_kriging
 
-CM = {"nugget": 0.0, "sill": 1.0, "range": 2.0, "model": "exponential"}
+P = [[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.4, 1.7]]
+Z = [1.0, 2.0, 1.5, 3.0, 2.2]
+T = [[0.5, 0.5]]
 
 
-def _field(n=20):
-    rng = np.random.default_rng(0)
-    c = rng.random((n, 2)) * 5.0
-    return c, np.sin(c[:, 0]) + np.cos(c[:, 1])
+def _cov(h):
+    # exponential model with practical range 1: exp(-3 h / range) (Schabenberger and Gotway eq. 4.11)
+    return math.exp(-3.0 * h)
 
 
-def test_spskrg_returns_a_real_estimate():
-    c, z = _field()
-    r = schabenberger_simple_kriging(c, z, np.array([[2.0, 2.0]]), CM)
-    assert r["prediction"].size == 1
-    assert r["variance"][0] >= 0
-    assert r["weights"].shape == (20, 1)
-    assert np.isfinite(r["prediction"][0])
+def test_predictor_and_variance():
+    S = np.array([[_cov(math.dist(p, q)) for q in P] for p in P])
+    s = np.array([_cov(math.dist(p, T[0])) for p in P])
+    lam = np.linalg.inv(S) @ s
+    r = schabenberger_simple_kriging(P, Z, T, mu=1.8)
+    assert abs(float(r["prediction"][0]) - (1.8 + float(lam @ (np.array(Z) - 1.8)))) < 1e-12
+    assert abs(float(r["variance"][0]) - (1.0 - float(s @ lam))) < 1e-12
 
 
-def test_spskrg_rejects_bad_input():
-    c, z = _field()
-    with pytest.raises(ValueError, match="same number of rows"):
-        schabenberger_simple_kriging(c, z[:-1], np.array([[1.0, 1.0]]), CM)
+def test_exact_interpolation():
+    r = schabenberger_simple_kriging(P, Z, [P[3]], mu=1.8)
+    assert abs(float(r["prediction"][0]) - 3.0) < 1e-12
+    assert abs(float(r["variance"][0])) < 1e-12

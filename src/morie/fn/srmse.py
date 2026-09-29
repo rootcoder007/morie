@@ -2,43 +2,38 @@
 
 from __future__ import annotations
 
-from . import _array_core as np
+import math
+
 from ._containers import DescriptiveResult
 
-_QUOTE = "I find your lack of faith disturbing."
+
+def _vec(x):
+    return [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
 
 
-def root_mean_squared_error(x, x_hat, **kwargs) -> DescriptiveResult:
-    r"""Compute the root mean squared error between *x* and *x_hat*.
+def root_mean_squared_error(x, x_hat):
+    r"""Root mean squared error ``sqrt((1/N) sum_n (x(n) - xhat(n))^2)``.
 
-    .. math::
-
-        \\text{RMSE} = \\sqrt{\\frac{1}{N} \\sum_{n=0}^{N-1} (x(n) - \\hat{x}(n))^2}
-
-    Parameters
+    References
     ----------
-    x : array-like
-        Reference signal.
-    x_hat : array-like
-        Estimated / reconstructed signal.
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis*, 2nd ed., sec. 3.1.
+    Wiley-IEEE Press.
 
-    Returns
-    -------
-    DescriptiveResult
+    Examples
+    --------
+    >>> round(root_mean_squared_error([1.0, 2.0, 3.0], [1.5, 2.0, 2.0]).value, 12)
+    0.645497224368
     """
-    x = np.asarray(x, dtype=float)
-    x_hat = np.asarray(x_hat, dtype=float)
-    mse = float(np.mean((x - x_hat) ** 2))
-    rmse = float(np.sqrt(mse))
-    return DescriptiveResult(
-        name="root_mean_squared_error",
-        value=rmse,
-        extra={"rmse": rmse, "mse": mse, "n": len(x)},
-    )
+    a, b = _vec(x), _vec(x_hat)
+    if len(a) != len(b) or not a:
+        raise ValueError("x and x_hat must be non-empty and of equal length")
+    mse = math.fsum((u - w) ** 2 for u, w in zip(a, b)) / len(a)
+    rmse = math.sqrt(mse)
+    return DescriptiveResult(name="root_mean_squared_error", value=rmse, extra={"rmse": rmse, "mse": mse, "n": len(a)})
 
 
 srmse = root_mean_squared_error
 
 
 def cheatsheet() -> str:
-    return "root_mean_squared_error({}) -> Root mean squared error."
+    return "root_mean_squared_error(x, x_hat) -> sqrt(MSE)."

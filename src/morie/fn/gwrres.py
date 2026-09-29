@@ -1,35 +1,31 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GWR local residuals."""
 
-from . import _array_core as np
-from ._containers import SpatialResult
+from .gwrcoef import _fit
 
 
-def gwrres(y, X, coords, bw=0.5):
-    """GWR local residuals.
+def gwrres(y, X, coords, bw=0.5, kernel="bisquare", adaptive=False):
+    r"""GWR residuals ``e_i = y_i - x_i beta_i`` with ``beta_i`` the local estimate at location ``i`` (``GWmodel::gwr.basic``; see :func:`morie.fn.gwrcoef.gwrcoef`).
 
-    Category: GWR
-
-    Parameters
+    References
     ----------
-    y, X, coords, bw=0.5 : see function signature.
+    Brunsdon, C., Fotheringham, A. S. and Charlton, M. E. (1996).
+    Geographically weighted regression: a method for exploring spatial
+    nonstationarity. *Geographical Analysis* 28, 281-298.
 
-    Returns
-    -------
-    SpatialResult
+    Examples
+    --------
+    >>> P = [(float(i % 4), float(i // 4)) for i in range(16)]
+    >>> X = [[(0.3 * i) % 1.7] for i in range(16)]
+    >>> y = [1.0 + 2.0 * X[i][0] + 0.1 * P[i][0] + 0.05 * (i % 3) for i in range(16)]
+    >>> round(gwrres(y, X, P, 3.0, kernel="gaussian")[5], 10)
+    -0.0605255395
     """
-    try:
-        n = len(y)
-        dists = np.sqrt(np.sum((coords[None, :, :] - coords[:, None, :]) ** 2, axis=-1))
-        kernel_sum = float(np.sum(np.exp(-0.5 * (dists / bw) ** 2)))
-        result = kernel_sum / (n * n)
-        return SpatialResult(name="gwrres", statistic=result, p_value=None, extra={})
-    except Exception:
-        return SpatialResult(name="gwrres", statistic=float("nan"), p_value=None, extra={"error": "computation failed"})
+    return _fit(y, X, coords, bw, kernel, adaptive)["residuals"]
 
 
 gwrres_fn = gwrres
 
 
 def cheatsheet() -> str:
-    return "gwrres({}) -> GWR local residuals."
+    return "gwrres(y, X, coords, bw) -> GWR residuals y_i - x_i beta_i."
