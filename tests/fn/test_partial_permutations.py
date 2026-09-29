@@ -1,24 +1,11 @@
-"""Tests for partial_permutations.partial_permutations."""
+"""Tests for morie.fn.partial_permutations: recompute Morin (2016) from the formula."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.partial_permutations import (
-    partial_permutations,
-)
+from morie.fn.partial_permutations import partial_permutations
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e5_basic():
-    """Test basic functionality."""
-    N = 5
-    n = 5
-    result = partial_permutations(N, n)
-    assert isinstance(result, dict)
-    assert "N" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e5_edge():
-    """Test edge cases."""
-    N = 5
-    n = 5
-    result = partial_permutations(N, n)
-    assert isinstance(result, dict)
+def test_falling_factorial():
+    for N, n in ((8, 3), (5, 5), (9, 0)):
+        assert partial_permutations(N, n)["partial_permutations"] == math.factorial(N) // math.factorial(N - n)
+    assert partial_permutations(8, 3)["partial_permutations"] == 8 * 7 * 6

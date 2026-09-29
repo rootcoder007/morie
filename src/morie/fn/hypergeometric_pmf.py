@@ -1,14 +1,9 @@
 """Hypergeometric distribution P(k) = C(K,k)C(N-K,n-k)/C(N,n).
 
 Implements eq (4.71) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+Enthusiastic Beginner.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +16,11 @@ def hypergeometric_pmf(k, N, K, n):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.71).
+
+    Examples
+    --------
+    >>> round(hypergeometric_pmf(2, 20, 7, 5)["probability"], 12)
+    0.387383900929
     """
     value = _morin.hypergeometric_pmf(k, N, K, n)
     payload = {"probability": value}

@@ -1,14 +1,9 @@
 """Variance of the number of Heads in n biased flips: npq.
 
 Implements eq (3.33) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+Enthusiastic Beginner.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +16,11 @@ def binomial_variance(n, p):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.33).
+
+    Examples
+    --------
+    >>> round(binomial_variance(10, 0.3)["variance"], 12)
+    2.1
     """
     value = _morin.binomial_variance(n, p)
     payload = {"n": int(n), "p": float(p), "variance": value}

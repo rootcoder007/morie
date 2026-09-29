@@ -1,14 +1,9 @@
 """Binomial pmf normalization: sum over k equals 1.
 
 Implements eq (4.10) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+Enthusiastic Beginner.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +16,11 @@ def binomial_pmf_vector(n, p):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.10).
+
+    Examples
+    --------
+    >>> round(binomial_pmf_vector(4, 0.3)["pmf"][2], 12)
+    0.2646
     """
     pmf = _morin.binomial_pmf_vector(n, p)
     payload = {"pmf": [float(x) for x in pmf], "total": float(pmf.sum())}

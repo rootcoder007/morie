@@ -1,14 +1,9 @@
 """Expected event count in time t equals lambda t (series-checked).
 
 Implements eq (4.19) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+Enthusiastic Beginner.
 """
 
-import math
-
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -21,6 +16,11 @@ def poisson_mean_rate(lam, t):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.19).
+
+    Examples
+    --------
+    >>> round(poisson_mean_rate(2.5, 4.0)["expected_events"], 12)
+    10.0
     """
     value = _morin.poisson_mean_rate(lam, t)
     payload = {"lambda": float(lam), "t": float(t), "expected_events": value}

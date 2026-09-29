@@ -1,12 +1,9 @@
 """Conditional probability from the joint: P(B|A) = P(A and B)/P(A).
 
 Implements eq (2.48) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+Enthusiastic Beginner.
 """
 
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -19,10 +16,14 @@ def conditional_from_joint(p_a_and_b, p_a):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.48).
+
+    Examples
+    --------
+    >>> round(conditional_from_joint(0.12, 0.3)["p_b_given_a"], 12)
+    0.4
     """
     value = _morin.conditional_from_joint(p_a_and_b, p_a)
-    payload = {"p_a_and_b": float(p_a_and_b), "p_a": float(p_a),
-               "p_b_given_a": value}
+    payload = {"p_a_and_b": float(p_a_and_b), "p_a": float(p_a), "p_b_given_a": value}
     lines = [("P(B|A)", value)]
     return RichResult(
         title="Conditional probability from the joint: P(B|A) = P(A and B)/P(A).",

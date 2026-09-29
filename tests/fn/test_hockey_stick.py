@@ -1,24 +1,13 @@
-"""Tests for hockey_stick.hockey_stick."""
+"""Tests for morie.fn.hockey_stick: recompute Morin (2016) from the formula."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.hockey_stick import (
-    hockey_stick,
-)
+from morie.fn.hockey_stick import hockey_stick
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e29_basic():
-    """Test basic functionality."""
-    n = 5
-    k = 5
-    result = hockey_stick(n, k)
-    assert isinstance(result, dict)
-    assert "n" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner1e29_edge():
-    """Test edge cases."""
-    n = 5
-    k = 5
-    result = hockey_stick(n, k)
-    assert isinstance(result, dict)
+def test_identity():
+    for n, k in ((7, 3), (10, 1), (6, 6), (12, 5)):
+        r = hockey_stick(n, k)
+        assert r["sum"] == sum(math.comb(j, k - 1) for j in range(k - 1, n))
+        assert r["binomial"] == math.comb(n, k)
+        assert r["identity_holds"]

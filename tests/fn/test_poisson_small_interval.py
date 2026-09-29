@@ -1,24 +1,13 @@
-"""Tests for poisson_small_interval.poisson_small_interval."""
+"""Tests for morie.fn.poisson_small_interval: recompute Morin (2016) from the formula."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.poisson_small_interval import (
-    poisson_small_interval,
-)
+from morie.fn.poisson_small_interval import poisson_small_interval
 
 
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e18_basic():
-    """Test basic functionality."""
-    lam = 0.5
-    eps = 0.5
-    result = poisson_small_interval(lam, eps)
-    assert isinstance(result, dict)
-    assert "approx" in result
-
-
-def test_david_j_morin_probability_for_the_enthusiastic_beginner4e18_edge():
-    """Test edge cases."""
-    lam = 0.5
-    eps = 0.5
-    result = poisson_small_interval(lam, eps)
-    assert isinstance(result, dict)
+def test_first_order():
+    lam, eps = 3.0, 1e-3
+    r = poisson_small_interval(lam, eps)
+    assert r["approx"] == lam * eps
+    assert abs(r["exact"] - lam * eps * math.exp(-lam * eps)) < 1e-16
+    assert abs(r["abs_error"] - abs(r["approx"] - r["exact"])) < 1e-18

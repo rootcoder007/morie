@@ -1,12 +1,9 @@
 """Conditional probability when B is a subset of A: P(B|A) = P(B)/P(A).
 
 Implements eq (2.49) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+Enthusiastic Beginner.
 """
 
-from . import _array_core as np
 from . import _morin
 from ._richresult import RichResult
 
@@ -19,6 +16,11 @@ def conditional_subset(p_b, p_a):
     Reference
     ---------
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.49).
+
+    Examples
+    --------
+    >>> round(conditional_subset(0.1, 0.4)["p_b_given_a"], 12)
+    0.25
     """
     value = _morin.conditional_subset(p_b, p_a)
     payload = {"p_b": float(p_b), "p_a": float(p_a), "p_b_given_a": value}
