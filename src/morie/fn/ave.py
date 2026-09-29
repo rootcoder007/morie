@@ -21,6 +21,11 @@ def ave(loads: np.ndarray) -> float:
     -------
     float
         AVE coefficient.
+
+    Examples
+    --------
+    >>> round(ave([0.7, 0.8, 0.9]), 15)
+    0.646666666666667
     """
     return float(np.mean(np.asarray(loads, dtype=np.float64) ** 2))
 
