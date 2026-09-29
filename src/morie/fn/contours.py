@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Contour operations on a gridded field: marching-squares isolines, filled contour bands
-(isobands), clipping to a polygon, the integrated quantity between levels, contour label
-placement and B-spline smoothing of contour lines."""
+"""Contour operations on a gridded field: filled contour bands (isobands), clipping to a
+polygon, the integrated quantity between levels, contour label placement and B-spline smoothing
+of contour lines (the lines themselves come from :func:`morie.fn.iso_lines`)."""
 
 from __future__ import annotations
 
@@ -10,102 +10,7 @@ import math
 from ._qpcore import ssum
 from ._richresult import RichResult
 
-__all__ = [
-    "isolines",
-    "contour_fill",
-    "contour_bands",
-    "contour_clip",
-    "contour_quantity",
-    "contour_labels",
-    "contour_smooth",
-]
-
-
-def _interp(xa, ya, va, xb, yb, vb, level):
-    t = 0.5 if vb == va else (level - va) / (vb - va)
-    return (xa + t * (xb - xa), ya + t * (yb - ya))
-
-
-def _cell_segments(z, xs, ys, i, j, level):
-    # marching squares on cell (i, j) - (i+1, j+1); asymptotic decider for saddles
-    c = [z[i][j], z[i][j + 1], z[i + 1][j + 1], z[i + 1][j]]
-    p = [(xs[j], ys[i]), (xs[j + 1], ys[i]), (xs[j + 1], ys[i + 1]), (xs[j], ys[i + 1])]
-    idx = sum(1 << k for k in range(4) if c[k] >= level)
-    if idx in (0, 15):
-        return []
-    edges = []
-    for k in range(4):
-        a, b = k, (k + 1) % 4
-        if (c[a] >= level) != (c[b] >= level):
-            edges.append((k, _interp(p[a][0], p[a][1], c[a], p[b][0], p[b][1], c[b], level)))
-    if len(edges) == 2:
-        return [(edges[0][1], edges[1][1])]
-    centre = ssum(c) / 4
-    # edges 0-1-2-3 in order; pair (0,1),(2,3) or (0,3),(1,2) by the centre value
-    e = {k: pt for k, pt in edges}
-    if (centre >= level) == (c[0] >= level):
-        return [(e[0], e[3]), (e[1], e[2])]
-    return [(e[0], e[1]), (e[2], e[3])]
-
-
-def _join(segments, tol=1e-12):
-    # chain segments sharing endpoints into polylines
-    segs = [list(s) for s in segments]
-    lines = []
-    while segs:
-        a, b = segs.pop()
-        line = [a, b]
-        grown = True
-        while grown:
-            grown = False
-            for k, (c, d) in enumerate(segs):
-                if abs(c[0] - line[-1][0]) <= tol and abs(c[1] - line[-1][1]) <= tol:
-                    line.append(d)
-                elif abs(d[0] - line[-1][0]) <= tol and abs(d[1] - line[-1][1]) <= tol:
-                    line.append(c)
-                elif abs(d[0] - line[0][0]) <= tol and abs(d[1] - line[0][1]) <= tol:
-                    line.insert(0, c)
-                elif abs(c[0] - line[0][0]) <= tol and abs(c[1] - line[0][1]) <= tol:
-                    line.insert(0, d)
-                else:
-                    continue
-                segs.pop(k)
-                grown = True
-                break
-        lines.append(line)
-    return lines
-
-
-def isolines(z, xs, ys, levels) -> RichResult:
-    r"""Isolines of a gridded field by marching squares (Lorensen and Cline 1987; Maple 2003).
-
-    ``z[i][j]`` is the value at ``(xs[j], ys[i])``; crossings are linearly
-    interpolated along cell edges and saddle cells are resolved by the
-    centre value. Returns one list of polylines per level.
-
-    References
-    ----------
-    Lorensen, W. E. and Cline, H. E. (1987). Marching cubes. *Computer
-    Graphics*, 21(4), 163-169.
-    Maple, C. (2003). Geometric design and space planning using the marching
-    squares and marching cube algorithms. *Proc. Geometric Modeling and
-    Graphics*, 90-95.
-
-    Examples
-    --------
-    >>> r = isolines([[0, 0, 0], [0, 2, 0], [0, 0, 0]], [0, 1, 2], [0, 1, 2], [1.0])
-    >>> len(r.lines[0]), len(r.lines[0][0])
-    (1, 5)
-    """
-    zz = [[float(v) for v in row] for row in z]
-    out = []
-    for lev in levels:
-        segs = []
-        for i in range(len(ys) - 1):
-            for j in range(len(xs) - 1):
-                segs.extend(_cell_segments(zz, xs, ys, i, j, float(lev)))
-        out.append(_join(segs))
-    return RichResult(payload={"lines": out, "levels": [float(v) for v in levels]})
+__all__ = ["contour_fill", "contour_bands", "contour_clip", "contour_quantity", "contour_labels", "contour_smooth"]
 
 
 def _clip_band(poly, z_at, lo, hi):
@@ -432,6 +337,6 @@ def contour_smooth(line, *, degree: int = 3, samples: int = 50, closed: bool = F
 
 def cheatsheet() -> str:
     return (
-        "isolines / contour_fill / contour_bands / contour_clip / contour_quantity / contour_labels / "
+        "contour_fill / contour_bands / contour_clip / contour_quantity / contour_labels / "
         "contour_smooth -> contour operations on gridded fields."
     )

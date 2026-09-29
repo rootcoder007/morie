@@ -1,4 +1,4 @@
-"""Tests for contours: isolines, isobands, clipping, band quantities, labels, smoothing."""
+"""Tests for contours: isobands, clipping, band quantities, labels, smoothing."""
 
 import math
 
@@ -9,29 +9,11 @@ from morie.fn.contours import (
     contour_labels,
     contour_quantity,
     contour_smooth,
-    isolines,
 )
 
 XS = [0.0, 1.0, 2.0]
 YS = [0.0, 1.0, 2.0]
 LINEAR = [[x + 2 * y for x in XS] for y in YS]  # z = x + 2 y
-
-
-def test_isolines_peak_gives_one_closed_loop_through_edge_midpoints():
-    r = isolines([[0, 0, 0], [0, 2, 0], [0, 0, 0]], XS, YS, [1.0])
-    line = r.lines[0][0]
-    assert len(r.lines[0]) == 1 and line[0] == line[-1]
-    pts = {(round(x, 12), round(y, 12)) for x, y in line}
-    assert pts == {(0.5, 1.0), (1.0, 0.5), (1.5, 1.0), (1.0, 1.5)}
-
-
-def test_isolines_of_a_linear_field_lie_on_the_exact_line():
-    r = isolines(LINEAR, XS, YS, [2.0, 3.0])
-    for lev, lines in zip((2.0, 3.0), r.lines):
-        assert lines
-        for line in lines:
-            for x, y in line:
-                assert abs(x + 2 * y - lev) <= 1e-12
 
 
 def test_contour_fill_areas_are_exact_for_a_linear_field():
