@@ -11,6 +11,12 @@ def e_value_unmeasured_confounding(estimate, ci_lower, ci_upper):
     under the historical name whose placeholder body averaged its three
     arguments. See that module for the formula and reference
     (VanderWeele & Ding 2017, *Ann Intern Med* 167(4), 268-274).
+
+    Examples
+    --------
+    >>> r = e_value_unmeasured_confounding(0.5, 0.3, 0.8)
+    >>> round(r["evalue"], 12), round(r["evalue_ci"], 12)
+    (3.414213562373, 1.809016994375)
     """
     from .evalu import evalue
 

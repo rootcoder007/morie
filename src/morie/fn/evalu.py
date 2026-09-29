@@ -51,6 +51,12 @@ def evalue(RR, ci_lower=None, ci_upper=None, rare_outcome=True):
     VanderWeele, T. J. & Ding, P. (2017). Sensitivity analysis in
     observational research: introducing the E-value. *Annals of
     Internal Medicine*, 167(4), 268-274. doi:10.7326/M16-2607.
+
+    Examples
+    --------
+    >>> r = evalue(2.0, ci_lower=1.3, ci_upper=3.1)
+    >>> round(r["evalue"], 12), round(r["evalue_ci"], 12)
+    (3.414213562373, 1.92449979984)
     """
     rr = float(RR)
     if rr <= 0:

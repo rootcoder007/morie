@@ -41,6 +41,15 @@ def joint_significance_mediation(x, m, y, alpha=0.05):
     Sheets, V. (2002). A comparison of methods to test mediation and
     other intervening variable effects. *Psychological Methods*, 7(1),
     83-104.
+
+    Examples
+    --------
+    >>> x = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+    >>> m = [0.3, 1.1, 1.6, 3.4, 3.9, 5.2, 6.4, 6.8]
+    >>> y = [1.0, 1.9, 3.1, 4.4, 4.8, 6.9, 7.2, 8.1]
+    >>> r = joint_significance_mediation(x, m, y)
+    >>> round(r["a"], 10), round(r["b"], 10), round(r["p_value"], 10)
+    (0.9916666667, 0.4360385144, 0.3810206688)
     """
     x = np.asarray(x, dtype=float).ravel()
     m = np.asarray(m, dtype=float).ravel()
