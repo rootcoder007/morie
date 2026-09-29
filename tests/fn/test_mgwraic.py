@@ -1,27 +1,12 @@
 """Tests for morie.fn.mgwraic."""
 
+import math
+
 from morie.fn.mgwraic import mgwraic
 
 
-class TestMgwraic:
-    def test_basic(self):
-        ll = -55.0
-        tr_S = 6.0
-        n = 30
-        result = mgwraic(ll, tr_S, n)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        ll = -55.0
-        tr_S = 6.0
-        n = 30
-        result = mgwraic(ll, tr_S, n)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        ll = -55.0
-        tr_S = 6.0
-        n = 30
-        result = mgwraic(ll, tr_S, n)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_matches_rss_form():
+    n, rss, tr = 40, 7.3, 6.2
+    ll = -n / 2 * (math.log(2 * math.pi * rss / n) + 1)
+    ref = n * math.log(rss / n) + n * math.log(2 * math.pi) + n * (n + tr) / (n - 2 - tr)
+    assert abs(mgwraic(ll, tr, n).statistic - ref) < 1e-11

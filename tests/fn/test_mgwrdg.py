@@ -1,30 +1,15 @@
 """Tests for morie.fn.mgwrdg."""
 
+import math
+
 from morie.fn.mgwrdg import mgwrdg
 
 
-class TestMgwrdg:
-    def test_basic(self):
-        ll = -50.0
-        tr_S = 5.0
-        n = 30
-        k = 3
-        result = mgwrdg(ll, tr_S, n, k)
-        assert result is not None
-
-    def test_returns_spatial_result(self):
-        ll = -50.0
-        tr_S = 5.0
-        n = 30
-        k = 3
-        result = mgwrdg(ll, tr_S, n, k)
-        assert hasattr(result, "statistic")
-
-    def test_statistic_numeric(self):
-        ll = -50.0
-        tr_S = 5.0
-        n = 30
-        k = 3
-        result = mgwrdg(ll, tr_S, n, k)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_criteria():
+    ll, tr, n = -31.5, 7.25, 50
+    r = mgwrdg(ll, tr, n, k=4)
+    assert abs(r["AIC"] - (63.0 + 2 * 8.25)) < 1e-12
+    assert abs(r["BIC"] - (63.0 + 8.25 * math.log(50))) < 1e-12
+    assert abs(r["AICc"] - (63.0 - 50 + 50 * 57.25 / 40.75)) < 1e-12
+    assert abs(r["alpha_adjusted"] - 0.05 * 4 / 7.25) < 1e-15
+    assert r["df_residual"] == 42.75
