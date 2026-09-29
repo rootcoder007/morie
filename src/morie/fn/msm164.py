@@ -16,12 +16,9 @@ def hyperplane_side(X, beta, beta0=0.0):
     hyperplane (Eq. 9.1 of the source, extended to p dimensions by its
     Eq. 9.2); the sign of :math:`f(x)` says which side, and
     :math:`|f(x)| / \lVert\beta\rVert` is the Euclidean distance to
-    the plane -- the margin quantity of an SVM. This replaces a
-    placeholder whose signature was six words of extracted prose and
-    whose body returned the mean of the first argument. The generated
-    name promised "ridge lasso elastic", but the chapter's Eq. (9.1)
-    is the hyperplane definition; the module now implements what its
-    source actually says.
+    the plane -- the margin quantity of an SVM. (The registry alias
+    ``mvsml_ridge_lasso_elastic_eq_9_1`` is historical; the chapter's
+    Eq. (9.1) is the hyperplane definition.)
 
     Parameters
     ----------
@@ -45,6 +42,11 @@ def hyperplane_side(X, beta, beta0=0.0):
     Prediction (2022). Springer. Ch. 9, Eqs. (9.1)-(9.2) (hyperplane
     definition), citing James et al. (2013), *An Introduction to
     Statistical Learning*, Ch. 9.
+
+    Examples
+    --------
+    >>> [round(v, 12) for v in hyperplane_side([[3.0, 7.0], [-2.0, 1.0]], [1.0, 2.0], 0.5)["distance"].tolist()]
+    [7.826237921249, 0.22360679775]
     """
     b = np.asarray(beta, dtype=float).ravel()
     nb = float(np.linalg.norm(b))

@@ -1,31 +1,34 @@
 """qrntcq -- quarantine efficacy. Source: Ashcroft, P., Lehtinen, S.,
 Angst, D. C., Low, N. & Bonhoeffer, S. (2021) eLife 10, e63704,
 doi:10.7554/eLife.63704."""
+
 import pytest
 
-from morie.fn.qrntcq import (efficacy_test_and_release,
-                             gamma_generation_time, optimal_duration,
-                             quarantine_efficacy, relative_utility,
-                             utility)
+from morie.fn.qrntcq import (
+    efficacy_test_and_release,
+    gamma_generation_time,
+    optimal_duration,
+    quarantine_efficacy,
+    relative_utility,
+    utility,
+)
 
 G = gamma_generation_time()
 
 
 def test_the_generation_time_density_is_normalised():
-    tot = sum(0.5 * (G["density"][i] + G["density"][i + 1])
-              * (G["t"][i + 1] - G["t"][i])
-              for i in range(len(G["t"]) - 1))
+    tot = sum(
+        0.5 * (G["density"][i] + G["density"][i + 1]) * (G["t"][i + 1] - G["t"][i]) for i in range(len(G["t"]) - 1)
+    )
     assert tot == pytest.approx(1.0, abs=1e-9)
 
 
 def test_quarantine_over_the_whole_period_prevents_everything():
-    assert quarantine_efficacy(0.0, 30.0, G)["efficacy"] == \
-        pytest.approx(1.0, abs=1e-9)
+    assert quarantine_efficacy(0.0, 30.0, G)["efficacy"] == pytest.approx(1.0, abs=1e-9)
 
 
 def test_a_zero_length_quarantine_prevents_nothing():
-    assert quarantine_efficacy(3.0, 3.0, G)["efficacy"] == \
-        pytest.approx(0.0, abs=1e-12)
+    assert quarantine_efficacy(3.0, 3.0, G)["efficacy"] == pytest.approx(0.0, abs=1e-12)
 
 
 def test_efficacy_is_a_fraction():
@@ -35,8 +38,7 @@ def test_efficacy_is_a_fraction():
 
 
 def test_efficacy_increases_with_the_release_time():
-    e = [quarantine_efficacy(3.0, t, G)["efficacy"]
-         for t in (4.0, 6.0, 9.0, 13.0)]
+    e = [quarantine_efficacy(3.0, t, G)["efficacy"] for t in (4.0, 6.0, 9.0, 13.0)]
     assert all(e[i] < e[i + 1] for i in range(len(e) - 1))
 
 
@@ -53,29 +55,23 @@ def test_a_later_start_forfeits_more_transmission():
 
 
 def test_release_strategy_never_beats_full_detention():
-    r = efficacy_test_and_release(3.0, 5.0, 7.0, 0.25,
-                                  generation_time=G)
+    r = efficacy_test_and_release(3.0, 5.0, 7.0, 0.25, generation_time=G)
     assert r["efficacy"] <= r["bound"] + 1e-12
 
 
 def test_a_perfect_test_matches_full_detention():
-    r = efficacy_test_and_release(3.0, 5.0, 7.0, 0.0,
-                                  generation_time=G)
+    r = efficacy_test_and_release(3.0, 5.0, 7.0, 0.0, generation_time=G)
     assert r["efficacy"] == pytest.approx(r["bound"], abs=1e-12)
 
 
 def test_a_useless_test_matches_early_release():
-    r = efficacy_test_and_release(3.0, 5.0, 7.0, 1.0,
-                                  generation_time=G)
-    assert r["efficacy"] == pytest.approx(r["efficacy_released"],
-                                          abs=1e-12)
+    r = efficacy_test_and_release(3.0, 5.0, 7.0, 1.0, generation_time=G)
+    assert r["efficacy"] == pytest.approx(r["efficacy_released"], abs=1e-12)
 
 
 def test_testing_later_raises_efficacy():
-    a = efficacy_test_and_release(3.0, 5.0, 7.0, 0.2,
-                                  generation_time=G)["efficacy"]
-    b = efficacy_test_and_release(3.0, 8.0, 10.0, 0.1,
-                                  generation_time=G)["efficacy"]
+    a = efficacy_test_and_release(3.0, 5.0, 7.0, 0.2, generation_time=G)["efficacy"]
+    b = efficacy_test_and_release(3.0, 8.0, 10.0, 0.1, generation_time=G)["efficacy"]
     assert b > a
 
 
@@ -84,10 +80,8 @@ def test_utility_is_efficacy_over_days():
 
 
 def test_relative_utility_ignores_the_infected_fraction():
-    a = relative_utility(7.0, 10.0, t_Q=3.0, generation_time=G,
-                         infected_fraction=0.01)["relative_utility"]
-    b = relative_utility(7.0, 10.0, t_Q=3.0, generation_time=G,
-                         infected_fraction=0.99)["relative_utility"]
+    a = relative_utility(7.0, 10.0, t_Q=3.0, generation_time=G, infected_fraction=0.01)["relative_utility"]
+    b = relative_utility(7.0, 10.0, t_Q=3.0, generation_time=G, infected_fraction=0.99)["relative_utility"]
     assert a == pytest.approx(b, abs=1e-15)
 
 
@@ -108,20 +102,17 @@ def test_quarantine_before_exposure_is_refused():
 
 def test_an_out_of_range_false_negative_is_refused():
     with pytest.raises(ValueError):
-        efficacy_test_and_release(3.0, 5.0, 7.0, -0.2,
-                                  generation_time=G)
+        efficacy_test_and_release(3.0, 5.0, 7.0, -0.2, generation_time=G)
 
 
 def test_a_test_before_quarantine_starts_is_refused():
     with pytest.raises(ValueError):
-        efficacy_test_and_release(3.0, 2.0, 7.0, 0.2,
-                                  generation_time=G)
+        efficacy_test_and_release(3.0, 2.0, 7.0, 0.2, generation_time=G)
 
 
 def test_release_before_the_test_is_refused():
     with pytest.raises(ValueError):
-        efficacy_test_and_release(3.0, 6.0, 5.0, 0.2,
-                                  generation_time=G)
+        efficacy_test_and_release(3.0, 6.0, 5.0, 0.2, generation_time=G)
 
 
 def test_a_non_positive_quarantine_length_is_refused():
