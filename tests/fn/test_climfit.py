@@ -1,11 +1,11 @@
-"""climidx: normalisation and least-squares identities."""
+"""climfit: normalisation and least-squares identities."""
 
 import math
 
 import pytest
 
 from morie.fn._rng import random_normal
-from morie.fn.climidx import co2_curve_fit, nao_station_index
+from morie.fn.climfit import co2_curve_fit, nao_station_index
 
 
 def test_nao_is_difference_of_z_scores():

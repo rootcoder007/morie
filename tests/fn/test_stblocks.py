@@ -1,4 +1,4 @@
-"""stmodels: moments, decompositions and filters recomputed from their defining formulas."""
+"""stblocks: moments, decompositions and filters recomputed from their defining formulas."""
 
 import math
 
@@ -7,7 +7,7 @@ import pytest
 from morie.fn._qpcore import inverse, solve
 from morie.fn._rng import random_normal
 from morie.fn._sci_core import digamma
-from morie.fn.stmodels import (
+from morie.fn.stblocks import (
     arma_acf,
     carroll_st_correlation,
     harmonic_ozone_dlm,
