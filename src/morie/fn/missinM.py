@@ -66,6 +66,12 @@ def missing_mechanism_sensitivity(Y, R, delta_grid, reference=0.0):
     not in the local corpus and could not be obtained; the mean and the
     tipping point above are elementary consequences of the shift
     equation and are stated in full so they can be checked against it.
+
+    Examples
+    --------
+    >>> r = missing_mechanism_sensitivity([2.0, 3.0, 0.0, 4.0], [1, 1, 0, 1], [0.0, 3.0], reference=1.0)
+    >>> r["means"], r["tipping_delta"]
+    ([3.0, 3.75], -8.0)
     """
     r = C.vec(R)
     n = len(r)
@@ -91,11 +97,19 @@ def missing_mechanism_sensitivity(Y, R, delta_grid, reference=0.0):
     means = [m1 + p0 * d for d in grid]
     ref = float(reference)
     tip = (ref - m1) / p0 if p0 > 0.0 else float("nan")
-    return RichResult(payload={
-        "estimate": m1, "means": means, "delta_grid": grid,
-        "mar_mean": m1, "p_observed": p1, "tipping_delta": tip,
-        "n_observed": len(obs), "n": n,
-        "method": "Delta-shift NMAR sensitivity (pattern mixture)"})
+    return RichResult(
+        payload={
+            "estimate": m1,
+            "means": means,
+            "delta_grid": grid,
+            "mar_mean": m1,
+            "p_observed": p1,
+            "tipping_delta": tip,
+            "n_observed": len(obs),
+            "n": n,
+            "method": "Delta-shift NMAR sensitivity (pattern mixture)",
+        }
+    )
 
 
 missingmechanismsensitivity = missing_mechanism_sensitivity

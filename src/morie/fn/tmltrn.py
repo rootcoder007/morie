@@ -50,6 +50,16 @@ def tmle_transportability(y, D, X, S):
     encouragement design intervention effects transported across sites.
     Journal of the Royal Statistical Society Series B 79(5):1509-1525.
     doi:10.1111/rssb.12213.
+
+    Examples
+    --------
+    >>> import math
+    >>> X = [[math.sin(0.7 * i), math.cos(1.3 * i)] for i in range(40)]
+    >>> D = [1.0 if math.sin(2.1 * i + X[i][0]) > 0 else 0.0 for i in range(40)]
+    >>> y = [1.0 + 2.0 * D[i] + X[i][0] - 0.5 * X[i][1] + 0.3 * math.sin(5 * i) for i in range(40)]
+    >>> S = [1.0 if math.sin(1.9 * i) > -0.3 else 0.0 for i in range(40)]
+    >>> round(tmle_transportability(y, D, X, S)["estimate"], 8)
+    1.99750357
     """
     yv = C.vec(y)
     Dv = C.vec(D)
@@ -75,11 +85,9 @@ def tmle_transportability(y, D, X, S):
     Qobs = [Q1[i] if Dv[i] > 0.5 else Q0[i] for i in range(n)]
     pt = len(tgt) / float(n)
     odds = [(1.0 - p[i]) / p[i] for i in range(n)]
-    H = [Sv[i] / pt * odds[i] * (Dv[i] / g[i] - (1.0 - Dv[i]) / (1.0 - g[i]))
-         for i in range(n)]
+    H = [Sv[i] / pt * odds[i] * (Dv[i] / g[i] - (1.0 - Dv[i]) / (1.0 - g[i])) for i in range(n)]
     den = sum(h * h for h in H)
-    eps = sum(H[i] * (yv[i] - Qobs[i]) for i in range(n) if Sv[i] > 0.5) / den \
-        if den != 0.0 else 0.0
+    eps = sum(H[i] * (yv[i] - Qobs[i]) for i in range(n) if Sv[i] > 0.5) / den if den != 0.0 else 0.0
     Q1s = [Q1[i] + eps * odds[i] / (pt * g[i]) for i in range(n)]
     Q0s = [Q0[i] - eps * odds[i] / (pt * (1.0 - g[i])) for i in range(n)]
     psi = sum(Q1s[i] - Q0s[i] for i in tgt) / len(tgt)
@@ -89,10 +97,17 @@ def tmle_transportability(y, D, X, S):
         ic.append(H[i] * r + (1.0 - Sv[i]) / pt * (Q1[i] - Q0[i] - psi))
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps,
-        "n_source": float(len(src)), "n_target": float(len(tgt)), "n": n,
-        "method": "TMLE transporting a treatment effect to a target population"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "eps": eps,
+            "n_source": float(len(src)),
+            "n_target": float(len(tgt)),
+            "n": n,
+            "method": "TMLE transporting a treatment effect to a target population",
+        }
+    )
 
 
 def cheatsheet():
