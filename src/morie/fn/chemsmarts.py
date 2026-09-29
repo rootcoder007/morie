@@ -306,10 +306,7 @@ def _molecule(smiles, explicit_h=False):
                 continue
             seen.add(sub)
             atoms = set().union(*(rset[a] for a in sub))
-            if len(sub) > 2 and any(sum(1 for a in sub if v in rset[a]) > 2 for v in atoms):
-                tot = None
-            else:
-                tot = 0
+            tot = None if len(sub) > 2 and any(sum(1 for a in sub if v in rset[a]) > 2 for v in atoms) else 0
             for v in atoms if tot is not None else ():
                 if ec[v] is None:
                     tot = None

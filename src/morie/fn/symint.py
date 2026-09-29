@@ -24,8 +24,8 @@ def _fmt(v):
     if v == 0:
         return "0"
     if math.isfinite(v) and v == int(v) and abs(v) < 1e15:
-        return "%d" % int(v)
-    return "%.15g" % v
+        return str(int(v))
+    return f"{v:.15g}"
 
 
 def _prec(e):
@@ -737,7 +737,6 @@ def _factors(e):
 
 def _parts(fs, x, depth):
     """Polynomial times exp/sin/cos/sinh/cosh (tabular parts) or times log/atan/asin/acos (one step)."""
-    X = ("sym", x)
     polys = [f for f in fs if _poly(f, x) is not None]
     rest = [f for f in fs if _poly(f, x) is None]
     if len(rest) != 1 or not polys:
@@ -784,10 +783,7 @@ def _exp_trig(fs, x):
     v = tr[0][2]
     s, c = _fn("sin", v), _fn("cos", v)
     k = _num(_snap(1 / (a * a + b * b)))
-    if tr[0][1] == "sin":
-        inner = _add(_mul(_num(a), s), _mul(_num(-b), c))
-    else:
-        inner = _add(_mul(_num(a), c), _mul(_num(b), s))
+    inner = _add(_mul(_num(a), s), _mul(_num(-b), c)) if tr[0][1] == "sin" else _add(_mul(_num(a), c), _mul(_num(b), s))
     return _mul(k, ex[0], inner)
 
 

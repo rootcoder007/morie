@@ -162,7 +162,7 @@ def berkeley_earth(
     se = [0.0] * nt
     c, L, sse = 1.0, 1.0, 0.0
     it = 0
-    for it in range(1, int(n_iter) + 1):
+    for _it in range(1, int(n_iter) + 1):
         resid = [[None if S[i][t] is None else S[i][t] - theta[t] - b[i] for t in range(nt)] for i in range(m)]
         pairs = _pair_corr(resid, D)
         if not pairs:

@@ -337,8 +337,8 @@ def roemer_pune(
 
     t, s = a, b
     for _ in range(iters):
-        t_new = gold(lambda v: obj_a(v, s), a, s)
-        s_new = gold(lambda v: obj_b(v, t_new), t_new, b)
+        t_new = gold(lambda v, s=s: obj_a(v, s), a, s)
+        s_new = gold(lambda v, t_new=t_new: obj_b(v, t_new), t_new, b)
         done = abs(t_new - t) < 1e-12 and abs(s_new - s) < 1e-12
         t, s = t_new, s_new
         if done:

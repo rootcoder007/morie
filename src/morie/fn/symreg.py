@@ -165,7 +165,7 @@ def _string(t, un, names):
         k, v = t[pos[0]]
         pos[0] += 1
         if k == 0:
-            return "%.6g" % v
+            return f"{v:.6g}"
         if k == 1:
             return names[v]
         if k == 3:

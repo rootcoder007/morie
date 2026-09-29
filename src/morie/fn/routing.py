@@ -196,7 +196,7 @@ def solomon_vrptw(points, demand, ready, due, service, capacity: float) -> RichR
     while un:
         seed = max(un, key=lambda u: (D[0][u], -u))
         if _schedule([seed], D, e, lt, s) is None or q[seed] > capacity:
-            raise ValueError("customer %d cannot be served on its own" % seed)
+            raise ValueError(f"customer {seed} cannot be served on its own")
         route = [seed]
         un.remove(seed)
         while True:
@@ -299,7 +299,7 @@ def pickup_delivery_insertion(points, requests, capacity: float, *, max_ride: fl
                         best = (add, ri, cand)
         if best is None:
             if not feasible([p, d]):
-                raise ValueError("request (%d, %d) is infeasible on its own" % (p, d))
+                raise ValueError(f"request ({p}, {d}) is infeasible on its own")
             routes.append([p, d])
         else:
             routes[best[1]] = best[2]

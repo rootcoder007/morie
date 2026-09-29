@@ -22,9 +22,9 @@ def test_gelman_king_normal_equations():
     v = [0.55, 0.62, 0.41, 0.48, 0.66, 0.37, 0.52, 0.45]
     vl = [0.52, 0.58, 0.45, 0.50, 0.61, 0.40, 0.49, 0.47]
     P = [1, 1, -1, -1, 1, -1, 1, -1]
-    I = [1, 1, -1, 0, 1, -1, 0, -1]
-    r = gelman_king_incumbency(v, vl, P, I)
-    X = [[1, vl[i], P[i], I[i]] for i in range(8)]
+    ident = [1, 1, -1, 0, 1, -1, 0, -1]
+    r = gelman_king_incumbency(v, vl, P, ident)
+    X = [[1, vl[i], P[i], ident[i]] for i in range(8)]
     res = [v[i] - sum(X[i][a] * r.coefficients[a] for a in range(4)) for i in range(8)]
     for a in range(4):
         assert abs(sum(X[i][a] * res[i] for i in range(8))) < 1e-12
