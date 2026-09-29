@@ -1,86 +1,44 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Calculate statistical power for an ANOVA F-test (interaction power)."""
 
-from . import _array_core as np
+from __future__ import annotations
+
+from . import _powercore as pc
 
 
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
+def calculate_interaction_power(sample_size: int, alpha: float = 0.05, effect_size: float = 0.2, df1: int = 1) -> float:
+    r"""Calculate statistical power for an ANOVA F-test (interaction power).
 
-    def __init__(self, name):
-        self._name = name
+    Power of the F test of an interaction (or any set of ``df1`` regression
+    terms) with Cohen's ``f`` effect size in the fixed-effects linear model
+    (Cohen 1988, ch. 9; G*Power "linear multiple regression: fixed model, R2
+    increase", Faul et al. 2007): ``ncp = f^2 N``, ``df = (df1, N - df1 -
+    1)`` and ``power = 1 - F'_{df, ncp}(F_{1 - alpha, df})``. The default
+    ``df1 = 1`` is a single-degree-of-freedom interaction.
 
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from ._glm_core import FTestAnovaPower
-except ImportError:
-    FTestAnovaPower = _MissingDep('FTestAnovaPower')
-
-
-def calculate_interaction_power(sample_size: int, alpha: float = 0.05, effect_size: float = 0.2) -> float:
-    r"""
-    Calculate statistical power for an ANOVA F-test, used as an approximation
-    for interaction-term power in the CPADS study design.
-
-    The formula ``1 - exp(-(n * f) / 50)`` that appeared in earlier versions
-    of this function is **not a valid power formula** -- it is a heuristic
-    approximation with no grounding in probability theory and produces values
-    that systematically diverge from the correct power at moderate sample
-    sizes.  It has been replaced by the exact normal-approximation F-test
-    power computation from :mod:`statsmodels.stats.power`.
-
-    The implemented estimator solves:
-
-    .. math::
-
-        \\text{power} = 1 - F_{df_1, df_2, \\lambda}(F_{\\text{crit}})
-
-    where :math:`F_{\\text{crit}}` is the critical value under the central
-    F-distribution at level ``alpha``, :math:`\\lambda = n \\cdot f^2` is the
-    non-centrality parameter, :math:`f` is Cohen's f effect size, :math:`df_1`
-    defaults to 1 (single-df test), and :math:`df_2 = n - df_1 - 1`.
-
-    :param sample_size: Total number of observations.
-    :type sample_size: int
-    :param alpha: Type I error probability limit (significance level), defaults to 0.05.
-    :type alpha: float, optional
-    :param effect_size: Cohen's *f* effect size for the interaction term,
-        defaults to 0.2 (conventionally "small").
-    :type effect_size: float, optional
-    :return: The estimated statistical power (1 - beta), clipped to [0, 1].
-    :rtype: float
+    :param sample_size: Total number of observations ``N``.
+    :param alpha: Significance level.
+    :param effect_size: Cohen's f of the tested terms.
+    :param df1: Numerator degrees of freedom.
+    :return: Power in [0, 1].
 
     References
     ----------
-    Cohen, J. (1988). *Statistical Power Analysis for the Behavioral Sciences*
-    (2nd ed.). Lawrence Erlbaum Associates.
+    Cohen, J. (1988). *Statistical Power Analysis for the Behavioral Sciences*, 2nd ed. Erlbaum, ch. 9.
 
-    Faul, F., Erdfelder, E., Lang, A.-G., & Buchner, A. (2007). G*Power 3: A
-    flexible statistical power analysis program for the social, behavioral, and
-    biomedical sciences. *Behavior Research Methods*, 39(2), 175-191.
-    https://doi.org/10.3758/BF03193146
+    Faul, F., Erdfelder, E., Lang, A.-G. and Buchner, A. (2007). G*Power 3. *Behavior Research
+    Methods*, 39(2), 175-191.
+
+    Examples
+    --------
+    >>> round(calculate_interaction_power(200), 12)
+    0.803647504421
     """
-    analysis = FTestAnovaPower()
-    # solve_power returns a float; clip defensively to [0, 1].
-    power = analysis.solve_power(
-        effect_size=float(effect_size),
-        nobs=float(sample_size),
-        alpha=float(alpha),
-    )
-    return float(np.clip(power, 0.0, 1.0))
+    return pc.anova_power(float(sample_size), 2, float(effect_size), float(alpha), df1=int(df1))
 
 
 i_pwr = calculate_interaction_power
 
 
 def cheatsheet() -> str:
-    return "calculate_interaction_power({}) -> Calculate statistical power for an ANOVA F-test (interaction"
+    return "calculate_interaction_power(N, alpha, f, df1) -> noncentral-F power, ncp = f^2 N"

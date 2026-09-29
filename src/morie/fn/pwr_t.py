@@ -1,30 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Power analysis for t-tests."""
 
-from . import _array_core as np
+from __future__ import annotations
 
-
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from ._glm_core import TTestIndPower, TTestPower
-except ImportError:
-    TTestIndPower = _MissingDep('TTestIndPower')
-    TTestPower = _MissingDep('TTestPower')
+from . import _powercore as pc
 
 
 def power_t_test(
@@ -36,32 +15,45 @@ def power_t_test(
     *,
     alternative: str = "two-sided",
     type: str = "two-sample",
+    strict: bool = True,
 ) -> float:
-    """
-    Solve for any one missing parameter in a t-test power calculation.
+    r"""Power analysis for t-tests.
 
-    Exactly one of ``n``, ``delta``, or ``power`` must be None; the function
-    solves for that parameter and returns it.
+    Solve for whichever one of ``n``, ``delta`` and ``power`` is ``None``,
+    as R's ``power.t.test``: with ``nu = (n - 1) tsample`` (``tsample = 2``
+    for two independent samples, else 1) and ``ncp = sqrt(n / tsample)
+    delta / sd``, the power is ``P(T'(nu, ncp) > t_{1 - alpha/tside, nu})``
+    (Cohen 1988, ch. 2). With ``strict=True`` (default, the exact rejection
+    probability of the two-sided test) the lower rejection tail ``P(T' <
+    -t)`` is added; ``strict=False`` drops it, reproducing R's default.
+    ``n`` and ``delta`` are found by bisection to ``1e-12``, the upper
+    bracket doubled from the lower end of R's ranges ``[2, 1e7]`` and ``sd
+    [1e-7, 1e7]``.
 
-    Mirrors R's ``power.t.test()``.
-
-    :param n: Sample size per group (two-sample) or total (one-sample).
-    :param delta: Standardised effect size (|mean difference| / sd).
-    :param sd: Standard deviation. Default 1.0.
-    :param alpha: Type I error rate. Default 0.05.
-    :param power: Desired power (1 - beta).
-    :param alternative: ``"two-sided"`` or ``"one-sided"``. Default ``"two-sided"``.
-    :param type: ``"two-sample"``, ``"one-sample"``, or ``"paired"``. Default ``"two-sample"``.
-    :return: The value of the missing parameter.
-    :raises ValueError: If exactly one parameter is not None, or invalid values provided.
+    :param n: Observations per group (two-sample) or pairs / observations.
+    :param delta: True difference in means (raw scale).
+    :param sd: Standard deviation.
+    :param alpha: Significance level.
+    :param power: Target power.
+    :param alternative: ``"two-sided"`` or ``"one-sided"``.
+    :param type: ``"two-sample"``, ``"one-sample"`` or ``"paired"``.
+    :param strict: Include the far rejection tail of a two-sided test.
+    :return: The missing quantity.
 
     References
     ----------
-    Cohen, J. (1988). Statistical Power Analysis for the Behavioral Sciences (2nd ed.).
-    R Core Team (2024). power.t.test {stats}. R documentation.
+    Cohen, J. (1988). *Statistical Power Analysis for the Behavioral Sciences*, 2nd ed. Erlbaum, ch. 2.
+
+    R Core Team. ``power.t.test`` (package stats).
+
+    Examples
+    --------
+    >>> round(power_t_test(n=20, delta=1.0), 12)
+    0.868953027724
+    >>> round(power_t_test(delta=1.0, power=0.9), 8)
+    22.02108843
     """
-    none_count = sum(v is None for v in [n, delta, power])
-    if none_count != 1:
+    if sum(v is None for v in (n, delta, power)) != 1:
         raise ValueError("Exactly one of n, delta, or power must be None.")
     if sd <= 0:
         raise ValueError(f"sd must be > 0, got {sd}.")
@@ -69,83 +61,30 @@ def power_t_test(
         raise ValueError(f"alpha must be in (0, 1), got {alpha}.")
     if power is not None and not 0 < power < 1:
         raise ValueError(f"power must be in (0, 1), got {power}.")
-
-    if alternative == "two-sided":
-        ratio = 1 if type in ("one-sample", "paired") else 1
-        two_tailed = True
-    elif alternative in ("one-sided", "greater", "less"):
-        two_tailed = False
-    else:
+    tside = {"two-sided": 2, "one-sided": 1, "greater": 1}.get(alternative)
+    if tside is None:
         raise ValueError(f"alternative must be 'two-sided' or 'one-sided', got {alternative!r}.")
+    tsample = {"two-sample": 2, "one-sample": 1, "paired": 1}.get(type)
+    if tsample is None:
+        raise ValueError(f"type must be 'two-sample', 'one-sample' or 'paired', got {type!r}.")
+    if delta is not None and tside == 2:
+        delta = abs(delta)
 
-    # Effective effect size (Cohen's d-like) = delta / sd
-    effect = (delta / sd) if delta is not None else None
+    def pw(nn, dd):
+        return pc.t_power(float(nn), float(dd), float(sd), float(alpha), tsample, tside, strict)
 
-    if type == "two-sample":
-        analysis = TTestIndPower()
-        ratio_arg = 1.0  # equal group sizes
-    else:
-        analysis = TTestPower()
-        ratio_arg = None
-
+    if power is None:
+        return pw(n, delta)
     if n is None:
-        if type == "two-sample":
-            result = analysis.solve_power(
-                effect_size=float(effect),
-                alpha=float(alpha),
-                power=float(power),
-                alternative="two-sided" if two_tailed else "larger",
-                ratio=ratio_arg,
-            )
-        else:
-            result = analysis.solve_power(
-                effect_size=float(effect),
-                alpha=float(alpha),
-                power=float(power),
-                alternative="two-sided" if two_tailed else "larger",
-            )
-        return float(result)
-    elif delta is None:
-        if type == "two-sample":
-            result = analysis.solve_power(
-                nobs1=float(n),
-                alpha=float(alpha),
-                power=float(power),
-                alternative="two-sided" if two_tailed else "larger",
-                ratio=ratio_arg,
-            )
-        else:
-            result = analysis.solve_power(
-                nobs=float(n),
-                alpha=float(alpha),
-                power=float(power),
-                alternative="two-sided" if two_tailed else "larger",
-            )
-        return float(result) * float(sd)  # convert back to delta scale
-    else:  # power is None
-        if type == "two-sample":
-            result = analysis.solve_power(
-                effect_size=float(effect),
-                nobs1=float(n),
-                alpha=float(alpha),
-                alternative="two-sided" if two_tailed else "larger",
-                ratio=ratio_arg,
-            )
-        else:
-            result = analysis.solve_power(
-                effect_size=float(effect),
-                nobs=float(n),
-                alpha=float(alpha),
-                alternative="two-sided" if two_tailed else "larger",
-            )
-        return float(np.clip(result, 0.0, 1.0))
+        return pc.solve_up(lambda v: pw(v, delta) - power, 2.0, 1e7)
+    return pc.solve_up(lambda v: pw(n, v) - power, sd * 1e-7, sd * 1e7)
 
 
 pwr_t = power_t_test
 
 
 def cheatsheet() -> str:
-    return "power_t_test({}) -> Power analysis for t-tests."
+    return "power_t_test(n, delta, sd, alpha, power) -> power.t.test (strict two-sided by default)"
 
 
 # compact alias per ledger/NAMING.md
