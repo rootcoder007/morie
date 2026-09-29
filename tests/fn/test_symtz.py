@@ -1,8 +1,8 @@
 """Tests for morie.fn.symtz -- Symmetrization via Rademacher complexity."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.symtz import symmetrization_bound
 
 
@@ -33,3 +33,17 @@ class TestSymmetrization:
     def test_empty_raises(self):
         with pytest.raises(ValueError, match="non-empty"):
             symmetrization_bound(np.array([]))
+
+
+def test_rademacher_average_replayed():
+    from morie.fn import _array_core as np
+
+    x = np.array([0.5, -1.2, 0.3, 2.0, -0.7])
+    rng = np.random.default_rng(3)
+    vals = []
+    for _ in range(40):
+        s = rng.choice([-1.0, 1.0], size=5)
+        vals.append(abs(float(np.mean(s * x))))
+    r = symmetrization_bound(x, n_rademacher=40, seed=3)
+    assert r["rademacher_avg"] == pytest.approx(sum(vals) / 40, rel=1e-13)
+    assert r["empirical_value"] == pytest.approx(float(np.mean(x)), rel=1e-14)

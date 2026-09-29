@@ -24,3 +24,20 @@ class TestOneSampleTTest:
         assert "ci_lower" in result
         assert "ci_upper" in result
         assert result["ci_lower"] < result["ci_upper"]
+
+
+def test_t_statistic_and_interval_recomputed():
+    import math
+
+    import pytest
+
+    from morie.fn import _stats_core as st
+
+    x = [2.1, 3.4, 1.9, 5.6, 2.8, 3.1]
+    n = 6
+    m = sum(x) / n
+    se = math.sqrt(sum((v - m) ** 2 for v in x) / (n - 1)) / math.sqrt(n)
+    tc = float(st.t(df=n - 1).ppf(0.975))
+    r = one_sample_t_test(x, mu0=2.5)
+    assert r["t"] == pytest.approx((m - 2.5) / se, rel=1e-12)
+    assert (r["ci_lower"], r["ci_upper"]) == pytest.approx((m - tc * se, m + tc * se), rel=1e-12)

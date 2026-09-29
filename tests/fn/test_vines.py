@@ -4,9 +4,9 @@ Czado, C. (2019). *Analyzing Dependent Data with Vine Copulas* (Springer) --
 in the library as 13 page-range volumes.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.vines import vine_copula as vc
 
 
@@ -24,8 +24,7 @@ def test_vines_recovers_a_planted_dependence():
     """Two strongly coupled columns must show a large pairwise entry."""
     rng = np.random.default_rng(3607)
     a = rng.standard_normal(500)
-    x = np.column_stack([a, 0.9 * a + 0.436 * rng.standard_normal(500),
-                         rng.standard_normal(500)])
+    x = np.column_stack([a, 0.9 * a + 0.436 * rng.standard_normal(500), rng.standard_normal(500)])
     R = np.asarray(vc(x)["R"])
     assert abs(R[0, 1]) > 0.7
     assert abs(R[0, 2]) < 0.3
@@ -61,8 +60,7 @@ def test_vines_conditional_independence_shows_in_the_partial_correlation():
     R = np.asarray(vc(np.column_stack([x1, x2, x3]))["R"])
     marginal = abs(R[0, 2])
     # partial corr of 1,3 given 2, computed independently from R
-    part = abs((R[0, 2] - R[0, 1] * R[1, 2]) /
-               np.sqrt((1 - R[0, 1] ** 2) * (1 - R[1, 2] ** 2)))
+    part = abs((R[0, 2] - R[0, 1] * R[1, 2]) / np.sqrt((1 - R[0, 1] ** 2) * (1 - R[1, 2] ** 2)))
     assert marginal > 0.6
     assert part < 0.15
 
@@ -72,3 +70,33 @@ def test_vines_reports_shape_and_finite_loglik():
     r = vc(rng.standard_normal((250, 5)))
     assert r["n"] == 250 and r["d"] == 5
     assert np.isfinite(r["loglik"])
+
+
+def test_first_tree_is_the_normal_scores_correlation():
+    """Pseudo-observations rank/(n+1) -> normal scores; tree 1 entries are
+    their correlations and tree 2 the partial correlation given the middle."""
+    import math
+
+    from morie.fn._s03core import qnorm
+
+    X = [[1.0, 2.0, 0.5], [2.0, 2.5, 1.5], [3.0, 1.0, 1.0], [4.0, 4.0, 3.5], [5.0, 3.0, 2.0], [6.0, 5.5, 4.0]]
+    n = 6
+    Z = []
+    for j in range(3):
+        col = [r[j] for r in X]
+        rk = [sorted(col).index(v) + 1 for v in col]
+        Z.append([qnorm(k / (n + 1)) for k in rk])
+
+    def cor(a, b):
+        ma, mb = sum(a) / n, sum(b) / n
+        return sum((u - ma) * (v - mb) for u, v in zip(a, b)) / math.sqrt(
+            sum((u - ma) ** 2 for u in a) * sum((v - mb) ** 2 for v in b)
+        )
+
+    R = [[cor(Z[i], Z[j]) for j in range(3)] for i in range(3)]
+    pc = (R[0][2] - R[0][1] * R[1][2]) / math.sqrt((1 - R[0][1] ** 2) * (1 - R[1][2] ** 2))
+    r = vc(X)
+    P = r["partial_corr"]
+    assert float(P[0][1]) == pytest.approx(R[0][1], rel=1e-10)
+    assert float(P[1][2]) == pytest.approx(R[1][2], rel=1e-10)
+    assert float(P[0][2]) == pytest.approx(pc, rel=1e-9)
