@@ -5,32 +5,46 @@ from collections.abc import Sequence
 from typing import Union
 
 from . import _array_core as np
-
-
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from ._ml_core import PCA
-except ImportError:
-    PCA = _MissingDep('PCA')
+from ._ml_core import PCA
 
 
 def pcaprx(X: Union[Sequence, np.ndarray], n_components: int | None = None, standardize: bool = True):
-    """PCA: orthogonal components ranked by explained variance."""
+    r"""Principal component analysis by eigendecomposition of the covariance.
+
+    Columns are optionally standardised (sample standard deviation;
+    constant columns left unscaled), the sample covariance ``S = X_c'X_c /
+    (n - 1)`` is decomposed, and the components are its eigenvectors in
+    decreasing eigenvalue order, each signed so that its largest-magnitude
+    loading is positive; scores are ``X_c V`` (Jolliffe 2002, ch. 1-3).
+    ``n_for_80`` and ``n_for_95`` are the smallest numbers of components
+    whose cumulative variance share reaches 80% and 95%.
+
+    Parameters
+    ----------
+    X : array-like, shape (n, p)
+        Data.
+    n_components : int, optional
+        Components retained (all by default).
+    standardize : bool
+        Correlation-matrix PCA (True) or covariance PCA.
+
+    Returns
+    -------
+    RichResult
+        ``components`` (rows), ``scores``, ``explained_variance``,
+        ``explained_variance_ratio``, ``n_for_80``, ``n_for_95``.
+
+    References
+    ----------
+    Jolliffe, I. T. (2002). *Principal Component Analysis*, 2nd ed. Springer.
+
+    Examples
+    --------
+    >>> X = [[2.5, 2.4, 1.0], [0.5, 0.7, 2.1], [2.2, 2.9, 0.4], [1.9, 2.2, 1.8], [3.1, 3.0, 0.9]]
+    >>> r = pcaprx(X)
+    >>> [round(v, 8) for v in r["explained_variance"]], r["n_for_80"]
+    ([2.6968172, 0.26409782, 0.03908498], 1)
+    """
     from ._richresult import RichResult
 
     X = np.asarray(X, dtype=float)

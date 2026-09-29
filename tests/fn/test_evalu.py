@@ -1,8 +1,8 @@
 """Tests for the E-value cluster (evalu, evaltw, causfromle, ucbias)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.causfromle import causal_e_value
 from morie.fn.evaltw import e_value_unmeasured_confounding
 from morie.fn.evalu import evalue
@@ -48,7 +48,7 @@ def test_ucbias_bounding_factor_and_the_evalue_connection():
     rr = 2.5
     e = float(evalue(rr)["evalue"])
     B = float(unmeasured_conf_bias(e, e)["bias_factor"])
-    assert B == pytest.approx(rr, rel=1e-9)
+    assert pytest.approx(rr, rel=1e-9) == B
     r = unmeasured_conf_bias(e, e, RR_obs=rr)
     assert r["explains_away"] is True
     weak = unmeasured_conf_bias(1.3, 1.3, RR_obs=rr)
