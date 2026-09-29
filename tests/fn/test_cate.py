@@ -1,9 +1,9 @@
 """Tests for morie.fn.cate — Conditional Average Treatment Effect via meta-learners."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.cate import estimate_cate
 
 

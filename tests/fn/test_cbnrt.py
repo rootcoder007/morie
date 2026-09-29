@@ -1,7 +1,6 @@
 """Tests for cbnrt.causalbert_text."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cbnrt import causalbert_text
 
 

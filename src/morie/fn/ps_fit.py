@@ -12,34 +12,6 @@ import math as _math
 
 from . import _frame_core as pd
 
-
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            f"{self._name} is no longer bundled; this code path awaits its native "
-            "morie implementation")
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            f"{self._name} is no longer bundled; this code path awaits its native "
-            "morie implementation")
-
-try:
-    from ._ml_core import LogisticRegression
-except ImportError:
-    LogisticRegression = _MissingDep('LogisticRegression')
-try:
-    from ._ml_core import LabelEncoder, StandardScaler
-except ImportError:
-    LabelEncoder = _MissingDep('LabelEncoder')
-    StandardScaler = _MissingDep('StandardScaler')
-
-
 _PS_MODELS = ("mle", "ridge")
 
 
@@ -89,7 +61,7 @@ def _ps_standardize(X):
         col = [X[i][j] for i in range(n)]
         m = sum(col) / n
         v = sum((u - m) ** 2 for u in col) / n
-        s = v ** 0.5
+        s = v**0.5
         if s <= 0.0:
             s = 1.0
         for i in range(n):
@@ -129,9 +101,10 @@ def _ps_irls_beta(X, y, lam=0.0, max_iter=200, tol=1e-12):
         mu = [1.0 / (1.0 + _math.exp(-e)) for e in eta]
         w = [max(m * (1.0 - m), 1e-10) for m in mu]
         z = [eta[i] + (y[i] - mu[i]) / w[i] for i in range(n)]
-        A = [[sum(w[i] * X[i][a] * X[i][b] for i in range(n))
-              + (pen[a] if a == b else 0.0) for b in range(p)]
-             for a in range(p)]
+        A = [
+            [sum(w[i] * X[i][a] * X[i][b] for i in range(n)) + (pen[a] if a == b else 0.0) for b in range(p)]
+            for a in range(p)
+        ]
         rhs = [sum(w[i] * X[i][a] * z[i] for i in range(n)) for a in range(p)]
         new = _ps_solve(A, rhs)
         delta = max(abs(new[j] - beta[j]) for j in range(p))
@@ -167,10 +140,9 @@ def _ps_solve(A, b):
     return [M[i][p] for i in range(p)]
 
 
-def compute_propensity_scores(data: pd.DataFrame, treatment: str,
-                              covariates: list,
-                              ps_model: str = "mle",
-                              ridge_lambda: float = 1.0) -> pd.Series:
+def compute_propensity_scores(
+    data: pd.DataFrame, treatment: str, covariates: list, ps_model: str = "mle", ridge_lambda: float = 1.0
+) -> pd.Series:
     """Propensity scores by logistic regression.
 
     Two estimators, both available and both matched exactly by the R
@@ -200,6 +172,7 @@ def compute_propensity_scores(data: pd.DataFrame, treatment: str,
     else:
         ps = _ps_irls(X, y, lam=0.0)
     return pd.Series(ps, index=frame.index)
+
 
 def cheatsheet() -> str:
     return "compute_propensity_scores({}) -> Propensity score estimation via logistic regression."
