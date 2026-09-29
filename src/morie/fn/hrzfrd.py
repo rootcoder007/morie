@@ -1,75 +1,73 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fredholm integral equation of the first kind (statistical inverse problem)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+from ._qpcore import inverse, ssum
 from ._richresult import RichResult
 
-__all__ = ["horowitz_fredholm_eq"]
 
+def horowitz_fredholm_eq(m, k, alpha=1e-3, weights=None):
+    r"""Tikhonov-regularised solution of a discretised Fredholm equation of the first kind.
 
-def horowitz_fredholm_eq(m, k, cdf=None):
-    """
-    Fredholm integral equation of the first kind (statistical inverse problem)
-
-    Formula: m(w) = integral k(m,w)*g(m)dx; g is unknown function to be estimated
+    ``m(w) = int k(x, w) g(x) dx`` is discretised on grids ``w_i`` and
+    ``x_j`` with quadrature weights ``d_j`` (default 1): ``m = K D g``. The
+    problem is ill-posed -- ``K``'s singular values decay, so ``(KD)^{-1}``
+    amplifies noise -- and the Tikhonov estimate ``g = (A'A + alpha I)^{-1}
+    A'm``, ``A = K D``, trades bias for stability (Tikhonov 1963; Horowitz
+    2009, ch. 5, eq. 5.1 and sec. 5.2). Returns ``g_hat`` and the residual
+    norm ``||A g - m||``.
 
     Parameters
     ----------
-    m : array-like
-        Input data.
-    k : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: g_hat
+    m : array-like, shape (n_w,)
+        Left-hand side on the ``w`` grid.
+    k : array-like, shape (n_w, n_x)
+        Kernel values ``k(x_j, w_i)``.
+    alpha : float
+        Tikhonov regularisation parameter (> 0).
+    weights : array-like, shape (n_x,), optional
+        Quadrature weights of the ``x`` grid.
 
     References
     ----------
-    Horowitz Ch 5, Eq 5.1
+    Tikhonov, A. N. (1963). Solution of incorrectly formulated problems and
+    the regularization method. *Soviet Mathematics Doklady* 4, 1035-1038.
+    Horowitz, J. L. (2009). *Semiparametric and Nonparametric Methods in
+    Econometrics*, ch. 5. Springer.
+
+    Examples
+    --------
+    >>> K = [[1.0, 0.5], [0.5, 1.0], [0.2, 0.9]]
+    >>> r = horowitz_fredholm_eq([1.5, 1.5, 1.1], K, alpha=1e-12)
+    >>> [round(v, 8) for v in r["g_hat"]]
+    [1.0, 1.0]
     """
-    m = np.asarray(m, dtype=float)
-    n = int(m) if m.ndim == 0 else len(m)
-    if m.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Fredholm integral equation of the first kind (statistical inverse problem)",
-            }
-        )
-    x_sorted = np.sort(m)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(m), scale=np.std(m, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    mv = [float(v) for v in (m.tolist() if hasattr(m, "tolist") else m)]
+    K = [[float(v) for v in r] for r in (k.tolist() if hasattr(k, "tolist") else k)]
+    nw, nx = len(K), len(K[0])
+    if len(mv) != nw:
+        raise ValueError("m must have one value per row of k")
+    if not alpha > 0:
+        raise ValueError("alpha must be positive")
+    d = [1.0] * nx if weights is None else [float(v) for v in weights]
+    A = [[K[i][j] * d[j] for j in range(nx)] for i in range(nw)]
+    G = inverse(
+        [
+            [ssum(A[i][p] * A[i][q] for i in range(nw)) + (alpha if p == q else 0.0) for q in range(nx)]
+            for p in range(nx)
+        ]
+    )
+    rhs = [ssum(A[i][p] * mv[i] for i in range(nw)) for p in range(nx)]
+    g = [ssum(G[p][q] * rhs[q] for q in range(nx)) for p in range(nx)]
+    res = [ssum(A[i][j] * g[j] for j in range(nx)) - mv[i] for i in range(nw)]
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Fredholm integral equation of the first kind (statistical inverse problem)",
+            "g_hat": g,
+            "residual_norm": ssum(v * v for v in res) ** 0.5,
+            "alpha": alpha,
+            "method": "Tikhonov-regularised Fredholm equation of the first kind",
         }
     )
 
 
 def cheatsheet():
-    return "hrzfrd: Fredholm integral equation of the first kind (statistical inverse problem)"
+    return "hrzfrd: Tikhonov solution g = (A'A + alpha I)^-1 A'm of m = K D g (Fredholm, first kind)"

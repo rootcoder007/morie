@@ -7,7 +7,7 @@ from ._richresult import RichResult
 __all__ = ["gibbons_are_scale_tests"]
 
 
-def gibbons_are_scale_tests(distribution="normal", cdf=None):
+def gibbons_are_scale_tests(distribution="normal"):
     r"""Scale-problem efficiencies at the normal (Gibbons
     Sec. 13.3.3, PDF-verified):
 
@@ -17,18 +17,14 @@ def gibbons_are_scale_tests(distribution="normal", cdf=None):
     normal-scores test (Klotz 1962), which attains full efficiency
     where the F test is optimal.
 
-    NOTE: the placeholder this module replaces claimed
-    ARE(Mood, F) = 3/pi; the book's own derivation (Sec. 13.3.3, the
-    e(M_N) calculation) gives 15/(2 pi^2). The placeholder value was
-    wrong and is gone.
+    (The value 3/pi sometimes quoted for Mood's test is not the book's; its
+    derivation of e(M_N) in Sec. 13.3.3 gives 15/(2 pi^2).)
 
     Parameters
     ----------
     distribution : str
         Only "normal" is tabulated here; anything else raises rather
         than guessing.
-    cdf : ignored
-        Interface compatibility.
 
     Returns
     -------
@@ -43,12 +39,14 @@ def gibbons_are_scale_tests(distribution="normal", cdf=None):
 
     Klotz, J. (1962). Nonparametric tests for scale. *The Annals of
     Mathematical Statistics*, 33(2), 498-512.
+
+    Examples
+    --------
+    >>> round(gibbons_are_scale_tests()["are_mood_f"], 12)
+    0.759908877318
     """
     if distribution != "normal":
-        raise ValueError(
-            "scale-test AREs are tabulated here for the normal only; "
-            f"got {distribution!r}."
-        )
+        raise ValueError(f"scale-test AREs are tabulated here for the normal only; got {distribution!r}.")
     return RichResult(
         payload={
             "are_mood_f": ARE_MOOD_VS_F_NORMAL,

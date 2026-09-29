@@ -1,18 +1,17 @@
-"""Tests for morie.fn.irtva -- per-legislator IRT variance."""
+"""Tests for irtva.irt_variance_legislator."""
 
-from morie.fn import _array_core as np
+import math
 
-from morie.fn.irtva import irt_variance_legislator, irtva
+from morie.fn.irtva import irt_variance_legislator
+
+C = [[math.sin(k) + j, math.cos(1.7 * k) * j] for k in range(25) for j in (1,)]
+C = [[math.sin(k), math.cos(1.7 * k) * 2, 0.1 * k] for k in range(25)]
 
 
-def test_alias():
-    assert irtva is irt_variance_legislator
-
-
-def test_smoke():
-    chain = np.random.default_rng(42).standard_normal((200, 5))
-    r = irt_variance_legislator(chain)
-    assert r.name == "irt_variance_legislator"
-    assert r.extra["n_legislators"] == 5
-    assert r.extra["n_samples"] == 200
-    assert all(v > 0 for v in r.extra["variances"])
+def test_column_variances():
+    r = irt_variance_legislator(C)
+    for j in range(3):
+        col = [row[j] for row in C]
+        m = sum(col) / 25
+        assert abs(r.value[j] - sum((v - m) ** 2 for v in col) / 24) < 1e-14
+    assert r.extra["n_legislators"] == 3 and r.extra["n_samples"] == 25
