@@ -20,8 +20,8 @@ def degree_centrality(A, node=0):
 
     The stub this replaces took a leading ``y`` data argument that its
     body only averaged; it carried no meaning here and has been dropped.
-    ``degcen.degree_centrality`` is the same measure but is still a
-    placeholder at the time of writing, so the arithmetic lives here.
+    ``graphlogic.graph_degree_centrality`` (alias ``degree_centrality``) is the
+    same measure on an adjacency matrix; the arithmetic lives here as well.
 
     Parameters
     ----------

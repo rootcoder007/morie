@@ -390,3 +390,21 @@ def cheatsheet() -> str:
         "bayes_linear_halfcauchy / finite_mixture_gibbs / contaminated_normal_outliers / bayes_a / bayes_b / "
         "genomic_reliability -> Bayesian regression samplers."
     )
+
+# alias kept from the retired placeholder of the same name
+bayes_a_alpha = bayes_a
+
+# alias kept from the retired placeholder of the same name
+bayes_b_marker = bayes_b
+
+# alias kept from the retired placeholder of the same name
+bayes_linear = bayes_linear_halfcauchy
+
+# alias kept from the retired placeholder of the same name
+bayes_outlier = contaminated_normal_outliers
+
+# alias kept from the retired placeholder of the same name
+finite_mixture = finite_mixture_gibbs
+
+# alias kept from the retired placeholder of the same name
+reliability_gebv = genomic_reliability

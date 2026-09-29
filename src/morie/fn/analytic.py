@@ -619,3 +619,30 @@ def cheatsheet() -> str:
         "hadamard_inverse / poly_expand / poly_factor_mod_p / rational_cancel / heat_equation_series / "
         "quadratic_roots / functional_norm -> analytic and symbolic-numeric tools."
     )
+
+# alias kept from the retired placeholder of the same name
+functional_scale = functional_norm
+
+# alias kept from the retired placeholder of the same name
+inverse_laplace = talbot_inverse
+
+# alias kept from the retired placeholder of the same name
+laplace_transform = laplace_transform_num
+
+# alias kept from the retired placeholder of the same name
+laurent_series = laurent_coefficients
+
+# alias kept from the retired placeholder of the same name
+pde_separation = heat_equation_series
+
+# alias kept from the retired placeholder of the same name
+sympy_expand = poly_expand
+
+# alias kept from the retired placeholder of the same name
+sympy_factor = poly_factor_mod_p
+
+# alias kept from the retired placeholder of the same name
+sympy_simplify = rational_cancel
+
+# alias kept from the retired placeholder of the same name
+walsh_hadamard_inverse = hadamard_inverse

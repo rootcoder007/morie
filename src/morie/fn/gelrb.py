@@ -41,3 +41,6 @@ gelrb = gelman_rubin_rhat
 
 def cheatsheet() -> str:
     return "gelman_rubin_rhat({}) -> Gelman-Rubin R-hat statistic."
+
+# alias kept from the retired placeholder of the same name
+alpha_nom_conv = gelman_rubin_rhat

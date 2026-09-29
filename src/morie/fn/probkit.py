@@ -394,3 +394,18 @@ def cheatsheet() -> str:
         "product_variance / weibull_moments / folded_normal / chisq1_cdf / harmonic_mean_evidence / crps_cdf / "
         "max_entropy_discrete / bv_logistic_simulate / ddm_drift / king_kinship -> probability and inference toolkit."
     )
+
+# alias kept from the retired placeholder of the same name
+evt_bv_evd_sim = bv_logistic_simulate
+
+# alias kept from the retired placeholder of the same name
+harmonic_mean_estimator = harmonic_mean_evidence
+
+# alias kept from the retired placeholder of the same name
+kinship_estimator = king_kinship
+
+# alias kept from the retired placeholder of the same name
+max_entropy = max_entropy_discrete
+
+# alias kept from the retired placeholder of the same name
+telemetry_drift = ddm_drift

@@ -37,3 +37,6 @@ oocls = optimal_classification
 
 def cheatsheet() -> str:
     return "optimal_classification({}) -> Optimal classification for roll-call voting."
+
+# alias kept from the retired placeholder of the same name
+oc_2d = optimal_classification

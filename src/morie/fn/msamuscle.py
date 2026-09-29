@@ -403,3 +403,6 @@ def muscle_align(
 
 def cheatsheet() -> str:
     return "muscle_align(sequences) -> MUSCLE-style progressive MSA with refinement; sum_of_pairs_score(alignment)."
+
+# alias kept from the retired placeholder of the same name
+muscle_msa = muscle_align

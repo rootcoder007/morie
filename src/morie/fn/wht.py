@@ -56,3 +56,6 @@ wht = walsh_hadamard
 
 # compact alias per ledger/NAMING.md
 walshhadamard = walsh_hadamard
+
+# alias kept from the retired placeholder of the same name
+turboquant_walsh_hadamard_transform = walsh_hadamard

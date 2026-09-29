@@ -106,3 +106,6 @@ def geron_senet_squeeze_excite(X, W1, W2):
 
 def cheatsheet():
     return "grsen: z=GAP(X); s=sigmoid(W2 relu(W1 z)); Y = s*X per channel; sigmoid not softmax"
+
+# alias kept from the retired placeholder of the same name
+squeeze_excite = geron_senet_squeeze_excite

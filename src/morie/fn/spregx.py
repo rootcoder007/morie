@@ -564,3 +564,6 @@ def cheatsheet() -> str:
         "moran_permutation_test / spautolm_fit / s2sls_lag / gm_error_het / spatial_j_test / satorra_bentler -> "
         "spatial regression extras and the Satorra-Bentler scaled chi-square."
     )
+
+# alias kept from the retired placeholder of the same name
+sem_sb_chi_sq = satorra_bentler

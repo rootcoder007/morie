@@ -82,3 +82,6 @@ clfrt = classification_rate
 
 def cheatsheet() -> str:
     return "classification_rate({}) -> Classification rate for spatial voting model."
+
+# alias kept from the retired placeholder of the same name
+wnominate_class = classification_rate

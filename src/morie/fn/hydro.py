@@ -819,3 +819,6 @@ def cheatsheet() -> str:
         "baseflow_filter / hydrograph_summary / stream_segments / channel_slope / meander_metrics / darcy_flow / "
         "breach_depressions / height_above_drainage -> hydrology."
     )
+
+# alias kept from the retired placeholder of the same name
+flow_duration = flow_duration_curve

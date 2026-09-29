@@ -577,3 +577,6 @@ def blackbox_transpose_fit(data, missing=None, dims: int = 1) -> RichResult:
 
 def cheatsheet() -> str:
     return "blackbox_transpose_fit(data, missing=None, dims=1) -> basicspace blackbox-transpose stimulus and respondent placements."
+
+# alias kept from the retired placeholder of the same name
+blackbox_transpose = blackbox_transpose_fit

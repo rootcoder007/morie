@@ -65,3 +65,6 @@ def shapley_owen(ideals):
 
 def cheatsheet():
     return "svsowen: Shapley-Owen spatial voting power (median-in-direction measure)"
+
+# alias kept from the retired placeholder of the same name
+coalition_value = shapley_owen

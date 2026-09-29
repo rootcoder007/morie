@@ -92,3 +92,6 @@ def irt_identification_constraints(x, polarity_idx=None, pivot_idx=None):
 
 def cheatsheet():
     return "irtid: normalise to mean 0 / sd 1, reflect so polarity_idx < 0 (< pivot_idx)"
+
+# alias kept from the retired placeholder of the same name
+leg_polarity = irt_identification_constraints

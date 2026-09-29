@@ -212,3 +212,12 @@ def cheatsheet() -> str:
         "ace_index / budyko_olr / prewhitened_mann_kendall / fleiss_kappa / empirical_breakdown_point -> "
         "climate and agreement statistics."
     )
+
+# alias kept from the retired placeholder of the same name
+breakdown_point = empirical_breakdown_point
+
+# alias kept from the retired placeholder of the same name
+outgoing_longwave = budyko_olr
+
+# alias kept from the retired placeholder of the same name
+prewhitening_mk = prewhitened_mann_kendall

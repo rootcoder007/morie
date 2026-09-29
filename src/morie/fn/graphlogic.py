@@ -459,3 +459,12 @@ def cheatsheet() -> str:
         "graph_degree_centrality / graph_diameter / graph_betweenness / cdcl_solve / crf_fit / crf_viterbi / "
         "crf_marginals -> graphs, CDCL satisfiability and linear-chain CRFs."
     )
+
+# alias kept from the retired placeholder of the same name
+crf_sequence = crf_fit
+
+# alias kept from the retired placeholder of the same name
+degree_centrality = graph_degree_centrality
+
+# alias kept from the retired placeholder of the same name
+network_between = graph_betweenness

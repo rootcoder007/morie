@@ -108,3 +108,9 @@ nmnlt = nominate_scaling
 
 def cheatsheet() -> str:
     return "nominate_scaling({}) -> NOMINATE scaling for ideal points."
+
+# alias kept from the retired placeholder of the same name
+ideal_point_mle = nominate_scaling
+
+# alias kept from the retired placeholder of the same name
+wnominate_2d = nominate_scaling

@@ -507,3 +507,15 @@ def cheatsheet() -> str:
         "cp_als / tucker_hooi / matrix_factorization_als / haar_dwt / haar_mra / haar_dwt_2d / haar_mra_2d / "
         "wavelet_detrend / harmonic_regression -> space-time decompositions."
     )
+
+# alias kept from the retired placeholder of the same name
+tensor_3way_sp = cp_als
+
+# alias kept from the retired placeholder of the same name
+tensor_decomp_sp = tucker_hooi
+
+# alias kept from the retired placeholder of the same name
+wavelet_mra_sp = haar_mra_2d
+
+# alias kept from the retired placeholder of the same name
+wavelet_spatial = haar_dwt_2d

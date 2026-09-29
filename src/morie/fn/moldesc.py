@@ -316,3 +316,18 @@ def lipinski_descriptors(smiles: str) -> RichResult:
 
 def cheatsheet() -> str:
     return "smiles_molecular_weight / smiles_hba / smiles_hbd / smiles_rotatable_bonds / smiles_tpsa -> descriptors."
+
+# alias kept from the retired placeholder of the same name
+hbond_acceptor_count = smiles_hba
+
+# alias kept from the retired placeholder of the same name
+hbond_donor_count = smiles_hbd
+
+# alias kept from the retired placeholder of the same name
+molecular_weight = smiles_molecular_weight
+
+# alias kept from the retired placeholder of the same name
+polar_surface_area = smiles_tpsa
+
+# alias kept from the retired placeholder of the same name
+rotatable_bond_count = smiles_rotatable_bonds

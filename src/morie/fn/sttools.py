@@ -404,3 +404,6 @@ def eof_analysis(Z, *, k: int | None = None) -> RichResult:
 
 def cheatsheet() -> str:
     return "knox_space_time / near_repeat_table / mantel_matrix_test / geographic_profile / kde2d / eof_analysis -> space-time tools."
+
+# alias kept from the retired placeholder of the same name
+empirical_orthogonal_func = eof_analysis

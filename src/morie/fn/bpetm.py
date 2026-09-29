@@ -64,3 +64,6 @@ bpetm = bpe_train_merges
 
 # compact alias per ledger/NAMING.md
 bpetrainmerges = bpe_train_merges
+
+# alias kept from the retired placeholder of the same name
+tiktoken_bpe = bpe_train_merges

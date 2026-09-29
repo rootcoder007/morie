@@ -534,3 +534,6 @@ def cheatsheet() -> str:
         "zip_gibbs / kernel_relative_risk / oden_ipop / prospective_scan / poisson_ecological / areal_wombling / "
         "buffer_rate_ratio / need_based_allocation / funnel_control_limits / ghose_drug_filter -> spatial epidemiology."
     )
+
+# alias kept from the retired placeholder of the same name
+ghose_filter = ghose_drug_filter

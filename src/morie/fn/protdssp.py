@@ -285,3 +285,6 @@ def dssp_assign(coords, sequence=None, chain=None, prefer_pi: bool = True) -> Ri
 
 def cheatsheet() -> str:
     return "dssp_assign(coords, sequence=None) -> DSSP 8-state secondary structure; dssp_hbond_energy(n, h, c, o) -> kcal/mol."
+
+# alias kept from the retired placeholder of the same name
+dssp_secondary = dssp_assign

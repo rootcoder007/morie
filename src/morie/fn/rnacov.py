@@ -330,3 +330,6 @@ def cheatsheet():
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 rnacovariance = rna_covariance
+
+# alias kept from the retired placeholder of the same name
+rna_fold = nussinov

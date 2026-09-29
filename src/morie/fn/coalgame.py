@@ -351,3 +351,15 @@ def cheatsheet() -> str:
         "median_lines / weighted_game_core / spatial_heart / quota_solution / minimal_range_coalition / roemer_pune "
         "-> coalition and party competition games."
     )
+
+# alias kept from the retired placeholder of the same name
+coalition_equil = weighted_game_core
+
+# alias kept from the retired placeholder of the same name
+coalition_heart = spatial_heart
+
+# alias kept from the retired placeholder of the same name
+quota_game = quota_solution
+
+# alias kept from the retired placeholder of the same name
+roemer_model = roemer_pune

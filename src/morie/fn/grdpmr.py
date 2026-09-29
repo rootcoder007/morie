@@ -154,3 +154,6 @@ def geron_ddpm_reverse_step(x_t, t, eps_pred, alpha, alpha_bar, sigma, z=None, s
 
 def cheatsheet():
     return "grdpmr: x_{t-1} = (x_t - (1-a)/sqrt(1-ab) eps)/sqrt(a) + sigma z; sigma=0 is DDIM"
+
+# alias kept from the retired placeholder of the same name
+ddpm_step = geron_ddpm_reverse_step

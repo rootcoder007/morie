@@ -95,3 +95,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 dirichletprocessmixture = dirichlet_process_mixture
+
+# alias kept from the retired placeholder of the same name
+bayes_outlier_dp = dirichlet_process_mixture

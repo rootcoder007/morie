@@ -584,3 +584,9 @@ def cheatsheet() -> str:
         "hadley_edge / cc_scaling / sea_level_semi_empirical / empirical_quantile_map / bcsd_downscale / "
         "probability_ratio -> climate indices and climate-change diagnostics."
     )
+
+# alias kept from the retired placeholder of the same name
+bcsd_downscaling = bcsd_downscale
+
+# alias kept from the retired placeholder of the same name
+cyclone_intensity = cyclone_energy

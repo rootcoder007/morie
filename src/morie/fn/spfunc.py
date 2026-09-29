@@ -573,3 +573,30 @@ def cheatsheet() -> str:
         "possibilistic_cmeans / reml_components / crossed_random_effects / nested_random_effects -> "
         "spatial functional, topological, graph and multilevel methods."
     )
+
+# alias kept from the retired placeholder of the same name
+fda_spatial = curve_fpca
+
+# alias kept from the retired placeholder of the same name
+fpca_spatial = curve_fpca
+
+# alias kept from the retired placeholder of the same name
+graph_attention_sp = gat_layer
+
+# alias kept from the retired placeholder of the same name
+graph_conv_sp = gcn_layer
+
+# alias kept from the retired placeholder of the same name
+hier_spatial_cross = crossed_random_effects
+
+# alias kept from the retired placeholder of the same name
+hier_spatial_fe = nested_random_effects
+
+# alias kept from the retired placeholder of the same name
+persistence_land = persistence_landscape
+
+# alias kept from the retired placeholder of the same name
+possibilistic_sp = possibilistic_cmeans
+
+# alias kept from the retired placeholder of the same name
+tda_persistent = rips_persistence

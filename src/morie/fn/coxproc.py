@@ -241,3 +241,9 @@ def voronoi_residuals(points, bbox, beta) -> RichResult:
 
 def cheatsheet() -> str:
     return "lgcp_simulate / lgcp_moments / thomas_simulate / thomas_pcf / voronoi_residuals -> Cox processes."
+
+# alias kept from the retired placeholder of the same name
+log_gaussian_cox = lgcp_simulate
+
+# alias kept from the retired placeholder of the same name
+pp_delaunay_resid = voronoi_residuals

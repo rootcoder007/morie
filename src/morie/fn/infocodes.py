@@ -252,3 +252,6 @@ def cheatsheet() -> str:
         "bounded_distance_noise / self_dual_code_check / runlength_channel_capacity / repetition_error_approx / "
         "robust_soliton / code_length_decomposition / mcgill_interaction_information -> MacKay coding results."
     )
+
+# alias kept from the retired placeholder of the same name
+interaction_information = mcgill_interaction_information

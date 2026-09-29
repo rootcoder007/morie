@@ -92,3 +92,6 @@ def esl_gaussian_mixture(X, k=2, newdata=None, **kwargs):
 
 def cheatsheet():
     return "eslmix: mixture as a DENSITY estimate (ESL 6.8); integrates to 1, unlike a bare cluster fit"
+
+# alias kept from the retired placeholder of the same name
+gmm_spatial = esl_gaussian_mixture

@@ -54,3 +54,6 @@ fe_meta = fixed_effects_meta
 
 def cheatsheet() -> str:
     return "fixed_effects_meta({}) -> Fixed-effects (inverse-variance weighted) meta-analytic pool"
+
+# alias kept from the retired placeholder of the same name
+gwas_block_combine = fixed_effects_meta

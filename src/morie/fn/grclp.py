@@ -133,3 +133,9 @@ def geron_clip_contrastive_loss(image_embeddings, text_embeddings, tau=0.07,
 
 def cheatsheet():
     return "grclp: CLIP loss = mean of image->text and text->image InfoNCE with diagonal targets"
+
+# alias kept from the retired placeholder of the same name
+clip_image_text = geron_clip_contrastive_loss
+
+# alias kept from the retired placeholder of the same name
+clip_image_text_align = geron_clip_contrastive_loss

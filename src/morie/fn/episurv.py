@@ -489,3 +489,21 @@ def cheatsheet() -> str:
         "bayes_outbreak / cusum_surveillance / ecological_regression / leroux_precision / bym2_structure / "
         "buffer_exposure / kernel_exposure -> spatial epidemiology."
     )
+
+# alias kept from the retired placeholder of the same name
+bym2_model = bym2_structure
+
+# alias kept from the retired placeholder of the same name
+cusum_spatial = cusum_surveillance
+
+# alias kept from the retired placeholder of the same name
+ecological_nb = ecological_regression
+
+# alias kept from the retired placeholder of the same name
+ecological_reg = ecological_regression
+
+# alias kept from the retired placeholder of the same name
+ecological_zip = ecological_regression
+
+# alias kept from the retired placeholder of the same name
+leroux_model = leroux_precision

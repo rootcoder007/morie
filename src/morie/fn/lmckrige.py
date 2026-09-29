@@ -140,3 +140,6 @@ def lmc_cokriging(z, coords, var, new_coords, lmc, *, target: int = 0, means=Non
 
 def cheatsheet() -> str:
     return "lmc_covariance / lmc_cokriging -> linear model of coregionalization and cokriging."
+
+# alias kept from the retired placeholder of the same name
+cok_weights = lmc_cokriging

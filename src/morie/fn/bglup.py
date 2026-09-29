@@ -164,3 +164,6 @@ def cheatsheet():
 # np.random.seed(11); X = np.random.randn(30, 6); beta_true = np.array([1,0,0,-1,0,0])
 # y = X @ beta_true + 0.1*np.random.randn(30)
 # r = bayes_cpi_genomic(X, y, seed=11); high PIP on indices 0,3.
+
+# alias kept from the retired placeholder of the same name
+bayes_c_pi = bayes_cpi_genomic

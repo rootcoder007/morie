@@ -344,3 +344,24 @@ def cheatsheet() -> str:
         "pollard_rho / legendre_polynomials / resolution_refutation / polar_transform / panter_dite_bound / "
         "logit_proportion / mc_standard_error -> numerical and discrete algorithms."
     )
+
+# alias kept from the retired placeholder of the same name
+legendre_basis = legendre_polynomials
+
+# alias kept from the retired placeholder of the same name
+ma_logit_transform = logit_proportion
+
+# alias kept from the retired placeholder of the same name
+mcmc_standard_error = mc_standard_error
+
+# alias kept from the retired placeholder of the same name
+pollards_rho = pollard_rho
+
+# alias kept from the retired placeholder of the same name
+resolution_proof = resolution_refutation
+
+# alias kept from the retired placeholder of the same name
+turboquant_mse_distortion_bound = panter_dite_bound
+
+# alias kept from the retired placeholder of the same name
+turboquant_polar_transform = polar_transform

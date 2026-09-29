@@ -78,3 +78,6 @@ def jackknife_estimator(x, statistic=None):
 
 def cheatsheet():
     return "jkest(x, statistic=mean): leave-one-out jackknife bias/var/SE."
+
+# alias kept from the retired placeholder of the same name
+jackknife_repl = jackknife_estimator

@@ -566,3 +566,6 @@ def cheatsheet():
     return ("avalon: Avalon-style feature fingerprint. Atom, bond, "
             "path, ring and atom-pair features hashed with FNV-1a into "
             "a folded bit vector; SMILES parsed, not assumed")
+
+# alias kept from the retired placeholder of the same name
+smiles_grammar_parse = parse_smiles

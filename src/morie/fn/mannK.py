@@ -101,3 +101,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 mannkendall = mann_kendall
+
+# alias kept from the retired placeholder of the same name
+trend_temporal = mann_kendall

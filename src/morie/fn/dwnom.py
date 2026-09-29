@@ -28,3 +28,9 @@ dwnom = dw_nominate_estimate
 
 def cheatsheet() -> str:
     return "dw_nominate_estimate({}) -> DW-NOMINATE dynamic weighted estimation."
+
+# alias kept from the retired placeholder of the same name
+dwnominate_bridge = dw_nominate_estimate
+
+# alias kept from the retired placeholder of the same name
+dwnominate_trend = dw_nominate_estimate

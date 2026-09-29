@@ -102,3 +102,15 @@ def oral_bioavailability_rules(mw, logp, hbd, hba, rotatable_bonds, psa):
 
 def cheatsheet() -> str:
     return "lipinski_rule_of_five / veber_rules / egan_egg / oral_bioavailability_rules -> drug-likeness filters."
+
+# alias kept from the retired placeholder of the same name
+egan_filter = egan_egg
+
+# alias kept from the retired placeholder of the same name
+lipinski_rule_of_5 = lipinski_rule_of_five
+
+# alias kept from the retired placeholder of the same name
+oral_bioavailability = oral_bioavailability_rules
+
+# alias kept from the retired placeholder of the same name
+veber_rule = veber_rules

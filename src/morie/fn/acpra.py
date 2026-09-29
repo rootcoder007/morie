@@ -110,3 +110,6 @@ def acceptance_rate_diagnostic(chains, target=None, kind="metropolis"):
 
 def cheatsheet():
     return "acpra: 0.234 RWM / 0.574 MALA / 0.8 HMC -- not interchangeable; always read with ESS"
+
+# alias kept from the retired placeholder of the same name
+alpha_nom_accept = acceptance_rate_diagnostic

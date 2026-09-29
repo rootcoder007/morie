@@ -102,3 +102,6 @@ def ripley_j_function(points, window=None, r=None, n_grid=40):
 
 def cheatsheet():
     return "ripJ: J(r) = (1-G(r))/(1-F(r)); J = 1 under CSR, < 1 clustered, > 1 regular."
+
+# alias kept from the retired placeholder of the same name
+j_function = ripley_j_function

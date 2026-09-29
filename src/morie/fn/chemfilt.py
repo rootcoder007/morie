@@ -2896,3 +2896,9 @@ def cheatsheet() -> str:
         "maccs_fingerprint(smiles) -> 166 MACCS keys; reos_filter(smiles) -> rd_filters REOS verdict; "
         "molecular_properties(smiles); morgan_environments(smiles); sa_score(smiles, fragment_scores)."
     )
+
+# alias kept from the retired placeholder of the same name
+maccs_keys = maccs_fingerprint
+
+# alias kept from the retired placeholder of the same name
+synthetic_accessibility = sa_score

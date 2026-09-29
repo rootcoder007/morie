@@ -120,3 +120,6 @@ def dp_gaussian_mixture(y, alpha=1.0, prior_mu=0.0, prior_sigma=1.0,
 
 def cheatsheet():
     return "dpgmm: DP Gaussian mixture with stick-breaking representation"
+
+# alias kept from the retired placeholder of the same name
+dirichlet_proc_sp = dp_gaussian_mixture

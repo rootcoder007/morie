@@ -99,3 +99,6 @@ def gravity_ppml(flows, mass_o, mass_d, dist, *, tol: float = 1e-12, max_iter: i
 
 def cheatsheet() -> str:
     return "gravity_ppml(flows, mass_o, mass_d, dist) -> PPML gravity elasticities (Santos Silva-Tenreyro)."
+
+# alias kept from the retired placeholder of the same name
+migration_flow = gravity_ppml
