@@ -1,16 +1,33 @@
-"""Tests for morie.fn.xrflt -- Eigenvector spatial filtering"""
+"""Tests for morie.fn.xrflt: recompute from the Moran eigenvectors."""
+
+import math
 
 from morie.fn import _array_core as np
-
+from morie.fn.sfilter import moran_eigenvectors
 from morie.fn.xrflt import spatial_filter
 
+N = 12
+W = [[1.0 if abs(i - j) == 1 or abs(i - j) == 4 else 0.0 for j in range(N)] for i in range(N)]
+Y = [1.0 + math.sin(0.6 * i) + 0.3 * math.cos(2.1 * i) for i in range(N)]
 
-class TestSpatialFilter:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = spatial_filter(data)
-        assert result.statistic is not None
 
-    def test_output_type(self):
-        result = spatial_filter(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "statistic")
+def _moran(e):
+    m = sum(e) / N
+    d = [v - m for v in e]
+    s0 = sum(map(sum, W))
+    return N / s0 * sum(d[i] * W[i][j] * d[j] for i in range(N) for j in range(N)) / sum(v * v for v in d)
+
+
+def _ols_resid(cols, y):
+    Xa = np.column_stack([np.ones(N)] + [np.array(c) for c in cols])
+    b = np.linalg.inv(Xa.T @ Xa) @ (Xa.T @ np.array(y))
+    return b, (np.array(y) - Xa @ b).tolist()
+
+
+def test_residual_moran_of_selected_filter():
+    r = spatial_filter(Y, W, method="aic")
+    E = moran_eigenvectors(W)["vectors"]
+    cols = [[E[i][k] for i in range(N)] for k in r["selected"]]
+    b, e = _ols_resid(cols, Y)
+    assert abs(r["residual_moran"] - _moran(e)) < 1e-10
+    assert max(abs(float(u) - v) for u, v in zip(b.tolist(), r["coefficients"])) < 1e-10
