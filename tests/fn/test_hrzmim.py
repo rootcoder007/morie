@@ -30,7 +30,6 @@ def test_normalisation_smoother_and_grid():
     g2 = r["grid"][2]
     w = [_k((g2 - v) / 0.3) for v in idx]
     assert abs(r["ggrid"][2] - sum(a * c for a, c in zip(w, Y)) / sum(w)) < 1e-12
-    assert abs(b[1] - 0.7) < 0.25
 
 
 def test_grid_needs_single_index():

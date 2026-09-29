@@ -26,7 +26,7 @@ def test_ols_limit():
     Xa, G, b, e, H = _ols()
     r = mgwrfit(Y, X, P, bandwidths=BIG, kernel="gaussian")
     assert max(abs(r["betas"][i][k] - float(b[k])) for i in range(N) for k in range(3)) < 1e-7
-    assert abs(r["trS"] - 3.0) < 1e-6
+    assert abs(r["trS"] - float(np.trace(H))) < 1e-6
     s2 = float(e @ e) / (N - 3)
     assert abs(r["se"][4][1] - math.sqrt(s2 * float(G[1, 1]))) < 1e-7
     assert abs(r["sigma2"] - s2) < 1e-9

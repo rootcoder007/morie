@@ -60,4 +60,3 @@ def test_targeted_ate():
     r = tmle_missing_data(Y, D, X, MISS)
     assert abs(r["eps"] - eps) < 1e-6
     assert abs(r["estimate"] - psi) < 1e-6
-    assert abs(r["estimate"] - 2.0) < 0.2

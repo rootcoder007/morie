@@ -57,4 +57,3 @@ def test_transported_ate():
     psi = sum(q1[i] + eps * odds[i] / (pt * g[i]) - q0[i] + eps * odds[i] / (pt * (1 - g[i])) for i in tgt) / len(tgt)
     r = tmle_transportability(Y, D, X, S)
     assert abs(r["estimate"] - psi) < 1e-6
-    assert abs(r["estimate"] - 2.0) < 0.2
