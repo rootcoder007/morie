@@ -276,7 +276,7 @@ def funBand(Y, alpha=0.05, x=None, lam=None, quantile="t", truth=None,
     rss = sum(v * v for v in resid)
     tr_a = sum(A[i][i] for i in range(n))
     edf_err = float(n) - tr_a
-    if edf_err <= 0.0:
+    if edf_err <= 1e-8 * n:  # exact interpolation: n - tr(A) is rounding noise, not degrees of freedom
         raise ValueError("funBand: the fit has no residual degrees of "
                          "freedom; lambda is too small for these data")
     sigma2 = rss / edf_err
