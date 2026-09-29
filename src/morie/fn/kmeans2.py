@@ -1,67 +1,70 @@
 # morie.fn -- function file (rootcoder007/morie)
 """K-means clustering with R-style verbose result."""
 
-from collections.abc import Sequence
-from typing import Union
-
-from . import _array_core as np
-
-
-class _MissingDep:
-    """Placeholder for a dependency being nativized (task #141)."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-    def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
-
-try:
-    from ._ml_core import KMeans
-except ImportError:
-    KMeans = _MissingDep('KMeans')
+from ._richresult import RichResult
+from ._rng import random_uniform
+from .clusops import kmeans_lloyd
 
 
-def kmeans2(X: Union[Sequence, np.ndarray], n_clusters: int = 3, n_init: int = 10, random_state: int = 42):
-    """K-means clustering."""
-    from ._richresult import RichResult
+def kmeans2(X, n_clusters: int = 3, n_init: int = 10, random_state: int = 42):
+    r"""K-means (Lloyd's algorithm) with ``n_init`` random starts, keeping the smallest within-cluster SSE.
 
-    X = np.asarray(X, dtype=float)
-    if n_clusters < 2:
+    Start ``s`` takes ``k`` distinct observations as centres, drawn by a
+    partial Fisher-Yates shuffle driven by Philox stream ``s`` of
+    ``random_state`` (the R arm draws the same starts); each start is run
+    to convergence by :func:`morie.fn.clusops.kmeans_lloyd` (Lloyd 1982;
+    ``stats::kmeans(algorithm = "Lloyd")``) and the solution with the least
+    total within-cluster sum of squares is returned (Hartigan and Wong 1979
+    discuss the need for several starts). ``labels`` are 0-based.
+
+    References
+    ----------
+    Lloyd, S. P. (1982). Least squares quantization in PCM. *IEEE
+    Transactions on Information Theory* 28, 129-137.
+
+    Examples
+    --------
+    >>> r = kmeans2([[0, 0], [0, 1], [5, 5], [5, 6], [9, 0], [9, 1]], n_clusters=3)
+    >>> r["inertia"]
+    1.5
+    """
+    P = [[float(v) for v in r] for r in (X.tolist() if hasattr(X, "tolist") else X)]
+    n = len(P)
+    k = int(n_clusters)
+    if k < 2:
         raise ValueError(f"n_clusters must be >= 2, got {n_clusters}.")
-    km = KMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state)
-    labels = km.fit_predict(X)
-    sizes = np.bincount(labels, minlength=n_clusters)
-    rows = [
-        [f"Cluster {i}", int(sizes[i]), ", ".join(f"{c:.3g}" for c in km.cluster_centers_[i])]
-        for i in range(n_clusters)
-    ]
+    best = None
+    for s in range(int(n_init)):
+        u = random_uniform(n, seed=random_state, stream=s)
+        idx = list(range(n))
+        for i in range(k):
+            j = i + int(float(u[i]) * (n - i))
+            idx[i], idx[j] = idx[j], idx[i]
+        r = kmeans_lloyd(P, [P[i] for i in idx[:k]])
+        if best is None or r["tot_withinss"] < best["tot_withinss"]:
+            best = r
+    labels = [c - 1 for c in best["cluster"]]
+    sizes = [labels.count(i) for i in range(k)]
+    cent = [list(c) for c in best["centers"]]
     return RichResult(
         title="K-means clustering",
         summary_lines=[
-            ("k (clusters)", n_clusters),
-            ("n observations", len(X)),
-            ("Inertia (within-cluster SSE)", float(km.inertia_)),
+            ("k (clusters)", k),
+            ("n observations", n),
+            ("Inertia (within-cluster SSE)", best["tot_withinss"]),
             ("n_init restarts", n_init),
         ],
         tables=[
             {
                 "title": "Cluster summary:",
                 "headers": ["Cluster", "Size", "Centroid"],
-                "rows": rows,
+                "rows": [[f"Cluster {i}", sizes[i], ", ".join(f"{c:.3g}" for c in cent[i])] for i in range(k)],
             }
         ],
         warnings=[] if min(sizes) > 1 else ["one or more clusters has only 1 point - check k or initialization."],
-        payload={"labels": labels.tolist(), "centroids": km.cluster_centers_.tolist(), "inertia": float(km.inertia_)},
+        payload={"labels": labels, "centroids": cent, "inertia": best["tot_withinss"], "sizes": sizes},
     )
 
 
 def cheatsheet() -> str:
-    return "kmeans2: kmeans2(X, n_clusters, n_init, random_state) -> K-means clustering."
+    return "kmeans2: kmeans2(X, n_clusters, n_init, random_state) -> Lloyd k-means, best of n_init Philox starts."
