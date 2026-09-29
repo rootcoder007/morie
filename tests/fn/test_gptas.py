@@ -1,26 +1,17 @@
-"""Tests for gptas.gpt_assistant_decode."""
+"""Tests for morie.fn.gptas: beam search against exhaustive enumeration."""
 
-from morie.fn import _array_core as np
+import itertools
+import math
 
 from morie.fn.gptas import gpt_assistant_decode
 
 
-def test_gptas_basic():
-    """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    prompt = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    max_len = np.random.default_rng(42).normal(0, 1, 100)
-    result = gpt_assistant_decode(model, prompt, k, max_len)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def _model(src, prefix):
+    return [math.log(0.6), math.log(0.4)] if len(prefix) % 2 == 0 else [math.log(0.3), math.log(0.7)]
 
 
-def test_gptas_edge():
-    """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    prompt = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    max_len = np.random.default_rng(42).normal(0, 1, 100)
-    result = gpt_assistant_decode(model, prompt, k, max_len)
-    assert isinstance(result, dict)
+def test_beam_equals_exhaustive_best_for_a_wide_beam():
+    r = gpt_assistant_decode(_model, "hi", k=8, max_len=3)
+    best = max(itertools.product([0, 1], repeat=3), key=lambda s: sum(_model("hi", s[:i])[t] for i, t in enumerate(s)))
+    assert tuple(r["sequence"]) == best
+    assert abs(r["score"] - sum(_model("hi", best[:i])[t] for i, t in enumerate(best))) < 1e-12
