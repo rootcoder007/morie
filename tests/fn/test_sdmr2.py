@@ -1,27 +1,18 @@
-"""Tests for morie.fn.sdmr2."""
+"""Tests for morie.fn.sdmr2: every expected value is recomputed from the formula."""
+
+import math
 
 from morie.fn.sdmr2 import sdmr2
 
 
-class TestSdmr2:
-    def test_basic(self):
-        ll_model = -42.0
-        ll_null = -60.0
-        n = 50
-        result = sdmr2(ll_model, ll_null, n)
-        assert result is not None
+def test_nagelkerke_formula():
+    l1, l0, n = -20.0, -31.5, 40
+    cs = 1 - math.exp(2 / n * (l0 - l1))
+    mx = 1 - math.exp(2 / n * l0)
+    r = sdmr2(l1, l0, n)
+    assert abs(r.extra["cox_snell"] - cs) < 1e-14
+    assert abs(r.statistic - cs / mx) < 1e-14
 
-    def test_returns_spatial_result(self):
-        ll_model = -42.0
-        ll_null = -60.0
-        n = 50
-        result = sdmr2(ll_model, ll_null, n)
-        assert hasattr(result, "statistic")
 
-    def test_statistic_numeric(self):
-        ll_model = -42.0
-        ll_null = -60.0
-        n = 50
-        result = sdmr2(ll_model, ll_null, n)
-        assert result.statistic is not None
-        assert not (result.statistic != result.statistic and result.statistic != float("nan"))
+def test_equal_likelihoods_give_zero():
+    assert abs(sdmr2(-12.0, -12.0, 30).statistic) < 1e-15
