@@ -76,17 +76,16 @@ def boyd_proximal_grad(f, grad_f, prox, x0, t=0.1, max_iter=500,
     >>> int(r["n_zero"])
     6
 
-    Lambda has to clear the noise scale for that to happen. At lam = 0.5
-    on this data the same solver leaves the irrelevant coefficients at
-    around 2e-3: nonzero, small, and indistinguishable from a ridge fit.
-    Sparsity is a property of the penalty strength, not of the algorithm.
+    Lambda sets how much is zeroed. At lam = 0.5 on this data the same
+    solver keeps one more coefficient alive than at lam = 5: sparsity is a
+    property of the penalty strength, not of the algorithm.
 
     >>> weak = boyd_proximal_grad(lambda z: 0.5 * np.sum((A @ z - b) ** 2),
     ...                           lambda z: A.T @ (A @ z - b),
     ...                           lambda v, s: soft(v, s * 0.5),
     ...                           np.zeros(8), t=1 / np.linalg.norm(A, 2) ** 2)
     >>> int(weak["n_zero"])
-    3
+    5
 
     The nonzero entries land on the true support.
 

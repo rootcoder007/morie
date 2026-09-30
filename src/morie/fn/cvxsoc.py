@@ -68,7 +68,7 @@ def boyd_socp(f, A, b, c, d, x0=None):
     >>> from morie.fn import _array_core as np
     >>> r = boyd_socp([1.0, 0.0], [np.eye(2)], [np.zeros(2)],
     ...               [np.zeros(2)], [1.0])
-    >>> [round(float(v), 5) for v in r["x"]]
+    >>> [round(float(v), 5) + 0.0 for v in r["x"]]  # + 0.0 folds a signed zero
     [-1.0, 0.0]
     >>> round(float(r["objective"]), 5)
     -1.0
@@ -85,7 +85,7 @@ def boyd_socp(f, A, b, c, d, x0=None):
 
     >>> q = boyd_socp([-1.0, 0.0], [np.eye(2)], [[-2.0, 0.0]],
     ...               [np.zeros(2)], [1.0])
-    >>> [round(float(v), 4) for v in q["x"]]
+    >>> [round(float(v), 4) + 0.0 for v in q["x"]]
     [3.0, 0.0]
 
     An LP is the degenerate case ``A_i = 0``: with no norm term the

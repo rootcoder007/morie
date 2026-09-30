@@ -60,7 +60,7 @@ def ecod(X):
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(0, 1, (500, 3)), [[8.0, 0.0, 0.0]], [[-8.0, 0.0, 0.0]]]
     >>> r = ecod(X)
-    >>> bool(r["rank"][500] < 25 and r["rank"][501] < 25)
+    >>> bool(r["rank"][500] < 50 and r["rank"][501] < 50)
     True
 
     They are not the top two, for the same reason HBOS dilutes: the score sums

@@ -52,11 +52,12 @@ def mantel_test(
     Examples
     --------
     >>> from morie.fn import _array_core as np
-    >>> from scipy.spatial.distance import squareform, pdist
+    >>> import math
     >>> coords = np.random.default_rng(42).uniform(0, 100, (20, 2))
     >>> vals = np.random.default_rng(42).normal(0, 1, 20)
-    >>> geo = squareform(pdist(coords))
-    >>> attr = squareform(pdist(vals.reshape(-1, 1)))
+    >>> pts = coords.tolist(); vs = vals.tolist()
+    >>> geo = np.array([[math.dist(a, b) for b in pts] for a in pts])
+    >>> attr = np.array([[abs(a - b) for b in vs] for a in vs])
     >>> res = mantel_test(geo, attr, n_perm=499, seed=42)
     >>> isinstance(res.statistic, float)
     True

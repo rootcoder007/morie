@@ -51,7 +51,7 @@ def nwtrp(f, fprime, x0, tol=1e-6, max_iter=100, full_output=False):
     >>> f = lambda x: x**2 - 2
     >>> fp = lambda x: 2*x
     >>> root = nwtrp(f, fp, 1.5)
-    >>> np.isclose(root, np.sqrt(2))
+    >>> bool(np.isclose(root, np.sqrt(2)))
     True
     """
     x = np.atleast_1d(x0).astype(float)

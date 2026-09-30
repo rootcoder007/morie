@@ -55,7 +55,7 @@ def sqpmh(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, full_output=False)
     >>> c = {'type': 'eq', 'fun': lambda x: x[0] + x[1] - 2}
     >>> x0 = np.array([0.5, 1.5])
     >>> x_min = sqpmh(f, gf, [c], x0)
-    >>> np.isclose(x_min[0] + x_min[1], 2.0, atol=1e-4)
+    >>> bool(np.isclose(x_min[0] + x_min[1], 2.0, atol=1e-4))
     True
     """
     x = np.atleast_1d(x0).astype(float)

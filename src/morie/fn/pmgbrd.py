@@ -78,8 +78,8 @@ def pm_gemm_burden(
     baseline NCD+LRI mortality 0.008:
 
     >>> r = pm_gemm_burden(10.0, 500_000, 0.008)
-    >>> round(r.value, 1)  # low exposure -> modest attribution
-    159.1
+    >>> round(r.value, 1)  # GEMM NCD+LRI RR(10) = exp(0.143 T(7.6)) = 1.118, PAF 0.106
+    422.7
 
     High-pollution city, 80 µg/m³, 1M people:
 

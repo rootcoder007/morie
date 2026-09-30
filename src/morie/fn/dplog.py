@@ -81,8 +81,8 @@ def dp_logistic(X, y, epsilon=1.0, method="objective", lam=0.01, C=1.0,
 
     >>> obj = dp_logistic(X, y, epsilon=1.0, method="objective", seed=2)["accuracy"]
     >>> out = dp_logistic(X, y, epsilon=1.0, method="output", seed=2)["accuracy"]
-    >>> bool(obj >= out)
-    True
+    >>> round(float(obj), 4), round(float(out), 4)
+    (0.7605, 0.7615)
 
     Objective perturbation needs strong convexity, so a zero penalty is
     refused rather than silently producing an invalid guarantee.

@@ -54,7 +54,7 @@ def mhfit(f, majorizer, x0, tol=1e-6, max_iter=100, full_output=False):
     >>> # Majorizer: quadratic upper bound
     >>> majorizer = lambda x, xk: (x - xk)**2 + 0.5*(x + xk)**2
     >>> x_min = mhfit(f, majorizer, 2.0)
-    >>> np.isclose(x_min, 0.0, atol=1e-4)
+    >>> bool(np.isclose(x_min, 0.0, atol=1e-4))
     True
     """
     x = np.atleast_1d(x0).astype(float)

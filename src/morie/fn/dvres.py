@@ -50,7 +50,9 @@ def deviance_residual_cox(fit):
     they come from -- that is the entire purpose of the transform.
 
     >>> from morie.fn import _array_core as np
-    >>> from scipy.stats import skew
+    >>> def skew(v):  # Fisher-Pearson moment skewness, as scipy.stats.skew
+    ...     m = float(np.mean(v)); d = [float(u) - m for u in v]
+    ...     return sum(x ** 3 for x in d) / len(d) / (sum(x ** 2 for x in d) / len(d)) ** 1.5
     >>> from morie.fn.efrnt import efron_tie_correction
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(500, 2))

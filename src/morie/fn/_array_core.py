@@ -637,6 +637,11 @@ class marr:
             return gathered
         out = self._getitem_raw(idx)
         if isinstance(out, marr):
+            if len(self.shape) == 2 and out.shape == (0,) \
+                    and not isinstance(idx, tuple):
+                # a row selection that picks no rows (all-False mask, empty
+                # index array, empty slice) keeps the column count: (0, m)
+                out = zeros((0, self.shape[1]))
             if getattr(self, "_is_mask", False):
                 out._is_mask = True
             dt = getattr(self, "_dt", None)
@@ -1814,6 +1819,12 @@ class marr:
     def _kd_all(self, v):
         """keepdims form of a full reduction: (1, 1) for 2-D, (1,) for 1-D."""
         return marr([[v]]) if len(self.shape) == 2 else marr([v])
+
+    def cumsum(self, axis=None, dtype=None):
+        return cumsum(self, axis)
+
+    def cumprod(self, axis=None, dtype=None):
+        return cumprod(self, axis)
 
     def sum(self, axis=None, dtype=None, out=None, keepdims=False):
         del dtype, out
@@ -4465,8 +4476,19 @@ def isin(x, values):
     return asarray(x)._map(lambda v: 1.0 if v in vs else 0.0)
 
 
+def _is_scalar_like(v):
+    """True for Python numbers and 0-d / length-1 shim scalars produced by reductions."""
+    if isinstance(v, bool | int | float | complex):
+        return True
+    if isinstance(v, marr):
+        return v.shape == () or (len(v.shape) == 1 and v.shape[0] == 1 and getattr(v, "_scalar", False))
+    return False
+
+
 def isclose(a, b, rtol=1e-5, atol=1e-8, equal_nan=False):
     # same predicate as allclose, so allclose(x, y) == all(isclose(x, y))
+    if _is_scalar_like(a) and _is_scalar_like(b):
+        return bool(_close_scalar(float(a), float(b), rtol, atol, equal_nan))
     return asarray(a)._zip(
         b, lambda x, y: 1.0 if _close_scalar(x, y, rtol, atol, equal_nan)
         else 0.0)
@@ -8026,7 +8048,7 @@ class _RClass:
     def __getitem__(self, key):
         if not isinstance(key, tuple):
             key = (key,)
-        out = []
+        items = []
         for item in key:
             if isinstance(item, str):
                 raise ValueError(
@@ -8034,10 +8056,26 @@ class _RClass:
             if isinstance(item, slice):
                 raise ValueError("r_ slice syntax is not supported; pass "
                                  "arange(...) explicitly")
-            if isinstance(item, (int, float, complex)):
-                out.append(item)
+            items.append(item)
+        arrays = [asarray(it) if not isinstance(it, (int, float, complex))
+                  else None for it in items]
+        if any(a is not None and len(a.shape) >= 2 for a in arrays):
+            # numpy: with a 2-D operand r_ concatenates along axis 0, so a
+            # (n, p) block and a [[...]] row stack into (n + 1, p) rows
+            rows = []
+            for it, a in zip(items, arrays):
+                if a is None:
+                    raise ValueError("r_ cannot mix a scalar with 2-D arrays")
+                if len(a.shape) == 1:
+                    a = a.reshape(1, -1)
+                rows.append(a)
+            return concatenate(rows, axis=0)
+        out = []
+        for it, a in zip(items, arrays):
+            if a is None:
+                out.append(it)
             else:
-                out.extend(list(asarray(item)._flat()))
+                out.extend(list(a._flat()))
         return marr(out)
 
 

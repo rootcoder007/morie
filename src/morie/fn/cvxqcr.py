@@ -67,7 +67,7 @@ def boyd_quadratic_constraint(P0, q0, P=(), q=(), r=(), x0=None,
     >>> r1 = boyd_quadratic_constraint(np.eye(2), [-2.0, 0.0],
     ...                                P=[np.eye(2)], q=[[0.0, 0.0]],
     ...                                r=[-0.5])
-    >>> [round(float(v), 5) for v in r1["x"]]
+    >>> [round(float(v), 5) + 0.0 for v in r1["x"]]  # + 0.0 folds a signed zero
     [1.0, 0.0]
     >>> round(float(r1["objective"]), 5)
     -1.5
@@ -82,7 +82,7 @@ def boyd_quadratic_constraint(P0, q0, P=(), q=(), r=(), x0=None,
     unconstrained minimiser comes back.
 
     >>> qp = boyd_quadratic_constraint(np.eye(2), [-2.0, 0.0])
-    >>> [round(float(v), 5) for v in qp["x"]]
+    >>> [round(float(v), 5) + 0.0 for v in qp["x"]]
     [2.0, 0.0]
     >>> round(float(qp["objective"]), 5)
     -2.0

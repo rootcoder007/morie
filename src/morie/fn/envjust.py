@@ -59,7 +59,7 @@ def environmental_justice_index(
 
     Examples
     --------
-    >>> import pandas as pd
+    >>> from morie.fn import _frame_core as pd
     >>> df = pd.DataFrame({
     ...     "pm25": [12, 14, 18, 10, 16, 20],
     ...     "race": ["white","white","white","white","black","black"],

@@ -135,9 +135,10 @@ def discrete_wavelet_anomaly(x, threshold=None, levels=None, max_span=8):
             continue
         for j in np.flatnonzero(big):
             lo, hi = j * span, min((j + 1) * span, n)
-            fresh = fired[lo:hi] == 0
-            score[lo:hi][fresh] = abs(d[j])
-            fired[lo:hi][fresh] = lv
+            idx = [k for k in range(lo, hi) if fired[k] == 0]
+            for k in idx:
+                score[k] = abs(d[j])
+                fired[k] = lv
     score, fired = score[:n0], fired[:n0]
     anom = score > lam
     return RichResult(

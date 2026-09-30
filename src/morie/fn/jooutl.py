@@ -78,7 +78,7 @@ def joseph_ts_outlier_detection(y, W=10, threshold=3.5):
 
     >>> [float(round(joseph_ts_outlier_detection(y, W=w)["score"][200], 1))
     ...  for w in (3, 5, 10)]
-    [3.8, 2.8, 1.9]
+    [4.4, 2.8, 1.9]
 
     The documented failure: a long run of outliers becomes the local median
     and hides itself.

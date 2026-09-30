@@ -50,7 +50,7 @@ def sctmh(f, x0, x1, tol=1e-6, max_iter=100, full_output=False):
     >>> f = lambda x: x**2 - 2
     >>> root = sctmh(f, 1.0, 2.0)
     >>> from morie.fn import _array_core as np
-    >>> np.isclose(root, np.sqrt(2), atol=1e-5)
+    >>> bool(np.isclose(root, np.sqrt(2), atol=1e-5))
     True
     """
     x_prev = float(x0)
