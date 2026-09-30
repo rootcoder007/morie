@@ -89,21 +89,6 @@ def _check_openai() -> tuple[bool, str]:
     return (True, "key set") if key else (False, "OPENAI_API_KEY not set (optional)")
 
 
-def _check_freeapi() -> tuple[bool, str]:
-    """Check OllamaFreeAPI SDK -- free LLM access, no API key needed."""
-    try:
-        from .fam import OllamaFreeAPI
-
-        client = OllamaFreeAPI()
-        models = client.list_models()
-        names = [m if isinstance(m, str) else str(m) for m in models[:5]]
-        return True, f"{len(models)} models ({', '.join(names)}...)"
-    except ImportError:
-        return False, "morie.fam not available"
-    except Exception as e:
-        return False, f"error: {e}"
-
-
 def _check_datasets() -> tuple[bool, str]:
     """Check built-in MORIE datasets database."""
     try:
@@ -202,9 +187,6 @@ def run_checks() -> dict[str, Any]:
     _add("R (Rscript)", ok, detail, required=False)
 
     # LLM providers
-    ok, detail = _check_freeapi()
-    _add("OllamaFreeAPI", ok, detail, required=False)
-
     ok, detail = _check_ollama()
     _add("Ollama (local)", ok, detail, required=False)
 

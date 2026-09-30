@@ -221,7 +221,6 @@ def build_parser() -> argparse.ArgumentParser:
     percy_talk.add_argument("--model", default=None, help="Override model name")
     percy_talk.add_argument("--remote", action="store_true", help="Use Perseus cloud (MORIE-hosted, no local setup)")
     percy_talk.add_argument("--local", action="store_true", help="Force local Ollama only (no network)")
-    percy_talk.add_argument("--freeapi", action="store_true", help="Use free community LLM servers (fallback)")
     percy_talk.add_argument("--pi", default=None, help="Connect to Pi (e.g. --pi host or MORIE_PI_HOST)")
     percy_talk.add_argument("--cloud", default=None, help="Custom Perseus relay URL (e.g. https://your-relay:8421)")
     percy_talk.add_argument("--no-stream", action="store_true", help="Disable streaming output")
@@ -1490,7 +1489,7 @@ PERCY_MODELS = [
     ("lfm2.5-thinking", "0.7 GB", "Reasoning", "Liquid LFM2.5 thinking"),
     ("qwen3-vl:8b", "6.1 GB", "Vision", "Qwen 3 Vision 8B"),
     ("glm-ocr", "2.2 GB", "Vision", "GLM OCR model"),
-    ("gpt-oss:20b", "12 GB", "LLM", "Open-source GPT 20B (FreeAPI)"),
+    ("gpt-oss:20b", "12 GB", "LLM", "Open-source GPT 20B"),
     ("translategemma", "3.3 GB", "Translation", "Google TranslateGemma"),
     ("phi4-mini", "2.5 GB", "LLM", "Microsoft Phi-4 Mini"),
     ("phi4-mini:3.8b-q8_0", "4.1 GB", "LLM", "Microsoft Phi-4 Mini Q8"),
@@ -1517,7 +1516,6 @@ def _handle_percy(args: argparse.Namespace) -> int:
 
     use_stream = not getattr(args, "no_stream", False)
     model = getattr(args, "model", None)
-    provider = None
     base_url = None
 
     cloud_url = getattr(args, "cloud", None) or os.environ.get("PERSEUS_CLOUD_URL")
@@ -1538,12 +1536,9 @@ def _handle_percy(args: argparse.Namespace) -> int:
                 cloud_url = f"http://{host_part}:8421"
                 print(f"Perseus [cloud via Pi] -- connecting to {cloud_url}...")
             else:
-                provider = "freeapi"
-                print("Perseus [internet fallback] -- no cloud relay configured, using community servers...")
-                print("  Tip: Set PERSEUS_CLOUD_URL or run `morie serve` on your Pi for the real Perseus.")
-    elif getattr(args, "freeapi", False):
-        provider = "freeapi"
-        print("Perseus [community servers] -- using OllamaFreeAPI...")
+                print("Perseus [cloud] -- no relay configured.", file=sys.stderr)
+                print("  Set PERSEUS_CLOUD_URL or MORIE_PI_HOST, or run `morie serve` on your Pi.", file=sys.stderr)
+                return 1
     elif getattr(args, "pi", None):
         pi_host = args.pi
         base_url = f"http://{pi_host}:11434" if "://" not in pi_host else pi_host
@@ -1553,10 +1548,8 @@ def _handle_percy(args: argparse.Namespace) -> int:
         host_part = pi.split("@")[-1] if "@" in pi else pi
         base_url = f"http://{host_part}:11434"
 
-    agent = create_agent(
-        model=model, base_url=base_url, provider=provider, cloud_url=cloud_url, cloud_token=cloud_token
-    )
-    model_name = getattr(agent, "_model", "freeapi")
+    agent = create_agent(model=model, base_url=base_url, cloud_url=cloud_url, cloud_token=cloud_token)
+    model_name = getattr(agent, "_model", "unknown")
     print(f"Perseus [{model_name}] ready.\n")
 
     question = getattr(args, "question", None)

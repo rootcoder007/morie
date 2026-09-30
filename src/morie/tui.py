@@ -488,7 +488,7 @@ if _TEXTUAL_AVAILABLE:
                 log = self.query_one("#chat-log", RichLog)
                 log.write(f"[dim]LLM: {model_label}[/dim]")
                 if provider == "local":
-                    log.write("[dim]No LLM available. Set moriefam env var or install ollama.[/dim]")
+                    log.write("[dim]No LLM available. Install ollama or set GEMINI_API_KEY / LLM_API_KEY.[/dim]")
             except Exception:
                 pass  # Non-critical -- don't break the screen.
 
@@ -1007,7 +1007,7 @@ if _TEXTUAL_AVAILABLE:
                 log.write("  /agent <name>    -- Switch agent persona")
                 log.write("  /agents          -- List available agents")
                 log.write("  /models          -- List available LLM models")
-                log.write("  /model <alias>   -- Switch model (e.g. /model dq)")
+                log.write("  /model <name>    -- Switch local Ollama model")
                 log.write("  /provider        -- Show LLM provider")
                 log.write("  /history         -- Show conversation history")
                 log.write("  /clear           -- Clear history")
@@ -1406,7 +1406,7 @@ if _TEXTUAL_AVAILABLE:
             self._r_proc = None  # persistent R subprocess
             self._py_console_ns: dict = {}
             self._polyglot: bool = False  # P↔R↔Shell variable bridge
-            self._current_model: str | None = None  # override FreeAPI model
+            self._current_model: str | None = None  # override the local Ollama model
             # Detect user's shell
             self._user_shell = os.environ.get("SHELL", "/bin/bash")
 
@@ -3163,41 +3163,17 @@ if _TEXTUAL_AVAILABLE:
             self._history_idx = -1
             log = self.query_one("#repl-log", RichLog)
 
-            # LLM chat via ? prefix (with optional ?XX model alias)
+            # LLM chat via ? prefix
             if user_code.startswith("?"):
-                rest = user_code[1:].strip()
-                if not rest:
-                    log.write("[dim]Usage: ?prompt  or  ?<alias> prompt  (e.g. ?dq what is DML)[/dim]")
-                    return
-                # Check if first 2 chars are a model alias
-                inline_model = None
-                from .llm import _build_alias_table
-
-                alias_table = _build_alias_table()
-                if len(rest) >= 3 and rest[:2] in alias_table and rest[2] == " ":
-                    inline_model = alias_table[rest[:2]]
-                    query = rest[3:].strip()
-                else:
-                    query = rest
+                query = user_code[1:].strip()
                 if not query:
-                    log.write("[dim]Usage: ?<alias> your question[/dim]")
+                    log.write("[dim]Usage: ?prompt  (e.g. ?what is DML)[/dim]")
                     return
-                model_to_use = inline_model or self._current_model
-                if inline_model:
-                    # Show which model we're using for this query
-                    from .llm import list_freeapi_models
-
-                    mlabel = inline_model
-                    for m in list_freeapi_models():
-                        if m["model"] == inline_model:
-                            mlabel = m["label"]
-                            break
-                    log.write(f"[bold magenta]you>[/bold magenta] {query} [dim]({mlabel})[/dim]")
-                else:
-                    log.write(f"[bold magenta]you>[/bold magenta] {query}")
+                model_to_use = self._current_model
+                log.write(f"[bold magenta]you>[/bold magenta] {query}")
                 from .llm import detect_provider_and_model, pick_thinking_word
 
-                _mod = model_to_use or self._current_model or detect_provider_and_model()[1]
+                _mod = model_to_use or detect_provider_and_model()[1]
                 _tw = pick_thinking_word(query)
                 log.write(f"[dim]\\[{_mod}] {_tw}.....[/dim]")
                 self._history.append(user_code)
@@ -3291,9 +3267,6 @@ if _TEXTUAL_AVAILABLE:
                 self._update_mode_indicator()
                 return
             if user_code == "/models":
-                from .llm import detect_provider_and_model, list_freeapi_models
-
-                _, current_label = detect_provider_and_model()
                 current = self._current_model or ""
                 log.write("[bold cyan]Available models[/bold cyan]")
                 # Show local Ollama models first
@@ -3310,39 +3283,24 @@ if _TEXTUAL_AVAILABLE:
                                 log.write(f"    {m.label:22s} ({m.name}) {m.quantization}{marker}")
                 except Exception:
                     pass
-                # Show FreeAPI models
-                freeapi_models = list_freeapi_models()
-                if freeapi_models:
-                    log.write("[dim]  Remote (FreeAPI, no key)[/dim]")
-                    log.write("[dim]  Alias  Model                  Size[/dim]")
-                    for m in freeapi_models:
-                        marker = " ◀" if m["model"] == current else ""
-                        log.write(f"    [bold]{m['alias']:4s}[/bold]   {m['label']:22s} ({m['model']}){marker}")
                 log.write("")
-                log.write("[dim]Switch: /model <alias>  |  Inline: ?<alias> <prompt>[/dim]")
+                log.write("[dim]Switch: /model <name>[/dim]")
                 return
             if user_code.startswith("/model "):
-                alias = user_code[7:].strip().lower()
-                from .llm import _build_alias_table, list_freeapi_models
+                name = user_code[7:].strip()
+                try:
+                    from .loc import LocalOllama
 
-                table = _build_alias_table()
-                if alias in table:
-                    self._current_model = table[alias]
-                    label = alias
-                    for m in list_freeapi_models():
-                        if m["model"] == self._current_model:
-                            label = m["label"]
-                            break
-                    log.write(f"[bold green]Model: {label}[/bold green]")
-                else:
-                    # Try exact model name match
-                    for m in list_freeapi_models():
-                        if m["model"] == alias:
-                            self._current_model = alias
-                            log.write(f"[bold green]Model: {m['label']}[/bold green]")
-                            return
-                    log.write(f"[yellow]Unknown model alias: {alias}[/yellow]")
-                    log.write("[dim]Type /models to see available models[/dim]")
+                    local_models = LocalOllama().list_models()
+                except Exception:
+                    local_models = []
+                for m in local_models:
+                    if m.name == name:
+                        self._current_model = name
+                        log.write(f"[bold green]Model: {m.label}[/bold green]")
+                        return
+                log.write(f"[yellow]Unknown model: {name}[/yellow]")
+                log.write("[dim]Type /models to see available models[/dim]")
                 return
             # Catch-all for unknown slash commands
             if user_code.startswith("/"):

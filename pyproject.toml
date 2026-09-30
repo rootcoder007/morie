@@ -109,7 +109,7 @@ morie = "morie.runner:main"
 minimum-version = "build-system.requires"
 build-dir = "build/{wheel_tag}"
 # The pure-Python package. scikit-build-core copies the whole tree, so
-# data files inside it (data/*, ollama_json/*, fn/_lazy_map.json, ...)
+# data files inside it (data/*, fn/_lazy_map.json, ...)
 # ship in the wheel without a separate package-data declaration.
 wheel.packages = ["src/morie"]
 # Collapse morie.fn's ~73k loose files (36k per-callable .py + 36k describe_*.md)

@@ -20,8 +20,6 @@ MORIE (Multi-domain Open Research and Inferential Estimation) is developed by Va
 
 **Ollama** — [Ollama](https://ollama.com) provides the local LLM serving infrastructure that powers Perseus on both macOS and Raspberry Pi. Ollama's model management, quantization support, and simple API make local AI inference accessible across platforms.
 
-**OllamaFreeAPI** — Community-maintained free API providing access to 16+ LLM models without API keys, serving as MORIE's fallback provider when local models are unavailable.
-
 ## Open Source Dependencies
 
 MORIE builds on the work of many open-source projects, including but not limited to: NumPy, SciPy, pandas, scikit-learn, Textual, httpx, Sphinx, and the broader Python/R scientific computing ecosystem.

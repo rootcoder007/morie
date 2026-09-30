@@ -163,11 +163,9 @@ providers in priority order. No API key is needed for the default tier.
    ``curl -fsSL https://ollama.com/install.sh | sh``; the model is
    auto-detected from the running instance (``morie percysuits`` pulls the
    Perseus models).
-2. **OllamaFreeAPI** (free community servers, no key): the client is
-   vendored, nothing to set up.
-3. **Gemini** (free tier): ``export GEMINI_API_KEY=...`` (free key at
+2. **Gemini** (free tier): ``export GEMINI_API_KEY=...`` (free key at
    `aistudio.google.com <https://aistudio.google.com>`_); default model
    ``gemini-2.5-flash``.
-4. **Local fallback**: automatic. Keyword-matched help text, no network.
+3. **Local fallback**: automatic. Keyword-matched help text, no network.
 
 Run ``morie doctor`` to see which providers are currently available.

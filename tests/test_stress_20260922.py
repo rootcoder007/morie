@@ -428,7 +428,7 @@ def test_round_three_exit_codes_for_failed_backends(monkeypatch):
     assert payload["mode"] == "local_fallback"
     assert list(payload["output_stream"]) == ["nobody home"]
 
-    failed = {"mode": "agent", "output_text": "FreeAPI request failed: x",
+    failed = {"mode": "agent", "output_text": "agent request failed: x",
               "failed": True}
     assert runner._llm_exit_code(failed) == 1
     assert runner._llm_exit_code({"mode": "agent", "output_text": "ok",

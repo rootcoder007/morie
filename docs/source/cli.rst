@@ -95,7 +95,7 @@ Assistant and LLM
 
 ``percy`` (alias ``perseus``)
    Talk to Perseus, the MORIE expert agent. ``--local`` forces Ollama only,
-   ``--freeapi`` the free community servers, ``--remote`` or
+   ``--remote`` or
    ``--cloud URL`` a Perseus relay, ``--pi HOST`` a Raspberry Pi.
 
 ``serve``

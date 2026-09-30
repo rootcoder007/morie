@@ -74,17 +74,15 @@ def _local_fallback_response(question: str, context: str | None = None) -> str:
     return "\n\n".join(sections)
 
 
-def _try_agent(
-    question: str, *, stream: bool = False, model: str | None = None, provider: str | None = None
-) -> dict[str, Any] | None:
-    """Try the agentic path (Ollama native or FreeAPI text-based). Returns None if unavailable."""
+def _try_agent(question: str, *, stream: bool = False, model: str | None = None) -> dict[str, Any] | None:
+    """Try the agentic path (Ollama native tool calling). Returns None if unavailable."""
     try:
         from .agent import create_agent
     except ImportError:
         return None
 
     try:
-        agent = create_agent(model=model, provider=provider)
+        agent = create_agent(model=model)
         if stream:
             return {
                 "mode": "agent",
@@ -128,8 +126,8 @@ def ask_percy(
     """
     provider = detect_available_provider()
 
-    if use_agent and provider in ("ollama", "freeapi"):
-        agent_result = _try_agent(question, stream=stream, model=model, provider=provider)
+    if use_agent and provider == "ollama":
+        agent_result = _try_agent(question, stream=stream, model=model)
         if agent_result is not None:
             return agent_result
 
