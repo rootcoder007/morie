@@ -72056,6 +72056,76 @@ _r(
     "Measure twice, cut once. -- Proverb",
 )
 _r(
+    "research_concentration",
+    "concentration_gini",
+    "Auto",
+    "Auto-wired callable from fn/research_concentration.py",
+    "Measure twice, cut once. -- Proverb",
+)
+_r(
+    "research_contagion",
+    "contagion_branching",
+    "Auto",
+    "Auto-wired callable from fn/research_contagion.py",
+    "Measure twice, cut once. -- Proverb",
+)
+_r(
+    "research_dark_figure",
+    "dark_figure_two_source",
+    "Auto",
+    "Auto-wired callable from fn/research_dark_figure.py",
+    "Measure twice, cut once. -- Proverb",
+)
+_r(
+    "research_ecological",
+    "ecological_decompose",
+    "Auto",
+    "Auto-wired callable from fn/research_ecological.py",
+    "Measure twice, cut once. -- Proverb",
+)
+_r(
+    "research_fairness",
+    "fairness_rates",
+    "Auto",
+    "Auto-wired callable from fn/research_fairness.py",
+    "Measure twice, cut once. -- Proverb",
+)
+_r(
+    "research_feedback_loop",
+    "feedback_loop_meanfield",
+    "Auto",
+    "Auto-wired callable from fn/research_feedback_loop.py",
+    "Measure twice, cut once. -- Proverb",
+)
+_r(
+    "research_recording",
+    "recording_map",
+    "Auto",
+    "Auto-wired callable from fn/research_recording.py",
+    "Measure twice, cut once. -- Proverb",
+)
+_r(
+    "research_selection",
+    "disparity_exposure_bounds",
+    "Auto",
+    "Auto-wired callable from fn/research_selection.py",
+    "Measure twice, cut once. -- Proverb",
+)
+_r(
+    "research_sentence_bounds",
+    "sentence_effect_bounds",
+    "Auto",
+    "Auto-wired callable from fn/research_sentence_bounds.py",
+    "Measure twice, cut once. -- Proverb",
+)
+_r(
+    "research_spillover",
+    "spillover_exposure",
+    "Auto",
+    "Auto-wired callable from fn/research_spillover.py",
+    "Measure twice, cut once. -- Proverb",
+)
+_r(
     "spsph",
     "schabenberger_spherical_variogram",
     "Auto",
