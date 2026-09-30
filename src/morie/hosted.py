@@ -118,7 +118,11 @@ def probe_hosted(timeout: float = _PROBE_TIMEOUT) -> bool:
     return _hosted_cached
 
 
-def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, echo=print) -> str:
+def _say(msg: str) -> None:
+    print(msg, flush=True)  # the code must reach a redirected stdout before polling starts
+
+
+def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, echo=_say) -> str:
     """Run the GitHub device flow against the gateway's auth service.
 
     1. ``POST {auth}/device/code`` returns ``user_code``, ``verification_uri``,
@@ -166,7 +170,7 @@ def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, ech
     raise TimeoutError("the sign-in was not completed in time; run `morie login` again")
 
 
-def logout(echo=print) -> bool:
+def logout(echo=_say) -> bool:
     """Forget the stored key. Returns True when a key was removed."""
     data = read_credentials()
     had = bool(data.pop("hosted_key", None))
