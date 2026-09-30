@@ -238,6 +238,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="Sign in to the hosted MORIE LLM tier (llm.rmorie.com) with GitHub; stores a per-user key",
     )
     login_cmd.add_argument("--no-browser", action="store_true", help="Print the sign-in URL instead of opening it")
+    login_cmd.add_argument("--email", default=None, metavar="ADDRESS", help="Sign in with a code emailed to this address instead of GitHub")
     subparsers.add_parser("logout", help="Forget the hosted LLM key")
 
     doctor_cmd = subparsers.add_parser(
@@ -1164,10 +1165,13 @@ def _main_impl() -> int:
         return 0
 
     if args.command == "login":
-        from .hosted import device_login
+        from .hosted import device_login, email_login
 
         try:
-            device_login(open_browser=not getattr(args, "no_browser", False))
+            if getattr(args, "email", None):
+                email_login(args.email)
+            else:
+                device_login(open_browser=not getattr(args, "no_browser", False))
         except Exception as exc:  # network or user abandoned the flow
             print(f"login failed: {exc}")
             return 1

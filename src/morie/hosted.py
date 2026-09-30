@@ -171,6 +171,37 @@ def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, ech
     raise TimeoutError("the sign-in was not completed in time; run `morie login` again")
 
 
+def email_login(email: str, code: str | None = None, ask=input, echo=_say) -> str:
+    """Sign in with an emailed one-time code instead of GitHub.
+
+    ``POST {auth}/email/code`` sends a 6-digit code (10 minutes, single use);
+    the user types it (or passes ``code``), ``POST {auth}/email/verify``
+    returns the key, stored like the device-flow one.
+    """
+    auth = hosted_auth_url()
+    email = (email or "").strip().lower()
+    if "@" not in email:
+        raise ValueError("an email address is required")
+    if code is None:
+        r = httpx.post(f"{auth}/email/code", json={"email": email}, timeout=20.0)
+        if r.status_code != 200:
+            raise RuntimeError(r.json().get("error", f"the sign-in service answered {r.status_code}"))
+        echo(f"A 6-digit code was sent to {email} (valid for 10 minutes).")
+        code = ask("Enter the code: ").strip()
+    r = httpx.post(f"{auth}/email/verify", json={"email": email, "code": code}, timeout=20.0)
+    if r.status_code != 200:
+        raise RuntimeError(r.json().get("error", f"the sign-in service answered {r.status_code}"))
+    body = r.json()
+    data = read_credentials()
+    data.update(
+        {"hosted_key": body["api_key"], "hosted_user": body.get("user", ""), "hosted_base_url": hosted_base_url()}
+    )
+    path = write_credentials(data)
+    reset_probe_cache()
+    echo(f"Logged in; key stored in {path}")
+    return body["api_key"]
+
+
 def logout(echo=_say) -> bool:
     """Forget the stored key. Returns True when a key was removed."""
     data = read_credentials()

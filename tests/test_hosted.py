@@ -107,3 +107,36 @@ def test_device_login_polls_until_key_and_stores_it(isolated_home, monkeypatch):
     data = json.loads((isolated_home / "morie" / "credentials.json").read_text())
     assert data["hosted_key"] == "sk-new" and data["hosted_user"] == "octocat"
     assert posts[0].endswith("/device/code") and posts[-1].endswith("/device/token")
+
+
+def test_email_login_sends_code_then_stores_key(isolated_home, monkeypatch):
+    posts = []
+
+    def fake_post(url, json=None, timeout=None):
+        posts.append((url, json))
+        if url.endswith("/email/code"):
+            return httpx.Response(200, json={"sent": True, "expires_in": 600})
+        assert json == {"email": "vee@example.com", "code": "123456"}
+        return httpx.Response(200, json={"api_key": "sk-mail", "user": "mail:abc"})
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    lines = []
+    key = hosted.email_login("Vee@Example.com ", ask=lambda _: " 123456 ", echo=lines.append)
+    assert key == "sk-mail"
+    assert posts[0][1] == {"email": "vee@example.com"}
+    assert hosted.hosted_key() == "sk-mail"
+    assert any("6-digit" in line for line in lines)
+
+
+def test_email_login_reports_service_errors(isolated_home, monkeypatch):
+    monkeypatch.setattr(
+        httpx,
+        "post",
+        lambda url, json=None, timeout=None: httpx.Response(
+            429, json={"error": "too many codes requested; try again later"}
+        ),
+    )
+    with pytest.raises(RuntimeError, match="too many codes"):
+        hosted.email_login("vee@example.com", ask=lambda _: "000000")
+    with pytest.raises(ValueError):
+        hosted.email_login("not-an-address")
