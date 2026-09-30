@@ -213,7 +213,8 @@ def test_naps_hourly_csv_parses_to_long_rows_and_fetch_filters_province(monkeypa
     assert len(rows) == 4
 
 
-def test_ckan_resource_without_a_datastore_is_downloaded_as_a_file(monkeypatch, tmp_path):
+@pytest.mark.parametrize("code", [404, 500])
+def test_ckan_resource_without_a_datastore_is_downloaded_as_a_file(monkeypatch, tmp_path, code):
     db = _isolate(monkeypatch, tmp_path)
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w") as zf:
@@ -227,7 +228,7 @@ def test_ckan_resource_without_a_datastore_is_downloaded_as_a_file(monkeypatch, 
         url = getattr(req, "full_url", req)
         calls.append(url)
         if "datastore_search" in url:
-            raise HTTPError(url, 404, "NOT FOUND", {}, None)
+            raise HTTPError(url, code, "datastore unavailable", {}, None)
         if "resource_show" in url:
             return _Reply(
                 json.dumps(

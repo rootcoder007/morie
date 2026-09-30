@@ -22,9 +22,10 @@ Per-package full changelogs:
   `list_rmoriedata()`, no R needed); the SIU index scraper follows the
   site's current report links.
   A CKAN resource with no datastore behind it (the CSUS 2023 bootstrap
-  weights, and StatCan's CSUS 2019-2020 release, a zip holding the
-  microdata and the bootstrap weights) is downloaded as a file and read
-  from the cache; 52 of the 70 keys now load from a clean install.
+  weights, StatCan's CSUS 2019-2020 release, a zip holding the microdata
+  and the bootstrap weights, and the two resources whose datastore cannot
+  serve a full page) is downloaded as a file and read from the cache; 52
+  of the 70 keys now load from a clean install.
 - **Your own data files are found.** Catalog paths (`data/datasets/...`)
   resolve through `MORIE_DATA_DIR`, the per-user data directory, a source
   checkout, then the working directory, instead of the package directory,
@@ -36,6 +37,7 @@ Per-package full changelogs:
 - **Docs.** The README quick start and the dataset pages describe the
   routes above; the Docker example pins the release.
 
+## 1.3.3 (2026-09-30)
 
 - **Same code as 1.3.2 on the Python side.** The R arm's hosted-model
   fallback test allows its mocked probe under `R CMD check`, and the

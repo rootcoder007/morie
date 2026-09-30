@@ -1235,9 +1235,13 @@ def fetch_ckan_to_cache(
         try:
             payload = json.loads(urlopen(url, timeout=timeout).read().decode())
         except HTTPError as exc:
-            if exc.code != 404 or offset:
+            # 404: no datastore behind this resource. 500: the datastore
+            # cannot serve a full page of it (the 2018-2022 CCS microdata,
+            # the CSADS 2022 bootstrap weights). Either way the resource
+            # itself is the file to read.
+            if exc.code not in (404, 500) or offset:
                 raise
-            payload = {}  # no datastore behind this resource: it is a plain file
+            payload = {}
         result = payload.get("result", {})
         batch = result.get("records", [])
         records.extend(batch)

@@ -18,6 +18,7 @@
   one, including the hosted tier (`morie_llm_login()`, `rmorie login`),
   instead of listing Python commands.
 
+# morie 1.3.3 - 2026-09-30
 
 ## Release hygiene
 
