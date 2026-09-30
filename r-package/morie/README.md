@@ -109,23 +109,35 @@ morie is not a wrapper. At runtime it does not call:
 Those packages appear in `Suggests` solely so `tests/cross/` can
 prove that the native engines match them.
 
-## What's in v1.1.7
+## What's in v1.3.2
 
-- **All native-specialization modules complete** in both languages —
-  the package's statistics run with zero runtime dependencies on other
-  statistical packages.
-- **12,600+ exported `morie_*` R functions** and a 14,000-module Python
-  arm (`morie.fn`), every public callable prefixed to avoid name
-  collisions with other CRAN packages.
-- **SIU subsystem** — the verified 65-column corpus, the zero-wrong
-  subject-official resolver and the Mixture-of-Agents reading panel,
-  in R and in Python (`morie.siu`). See *SIU pipeline* below.
-- **Polite-by-default HTTP fetcher** — token-bucket throttling at 4
-  req/s, exponential backoff on 429/5xx, on-disk page cache.
-- **Built-in datasets** through the shared SQLite store plus the
-  `rmoriedata` companion package.
-- **Outputs-manifest tooling**, **CPADS contract helpers**, and
-  **synthetic data generators** for development and CI.
+- **5,000+ exported functions, every one tested** — 5,189 `morie_*` entry
+  points (13,655 exports in all), each with a test that recomputes its
+  value, and the same names in the Python package, checked against each
+  other in CI.
+- **Hosted LLM tier** — `morie_llm_ask()` uses a local Ollama first and
+  falls back to <https://llm.rmorie.com>; sign in with
+  `morie_llm_login()` (GitHub or an emailed code).
+- **Command line inside the package** — `install_cli()` puts `rmorie` on
+  your PATH: `rmorie login`, `rmorie doctor`, `rmorie ask`, `rmorie analyze`.
+- **Policing, search and staffing** — police operations research, search
+  theory for search and rescue, calls-for-service staffing, CrimeStat
+  journey-to-crime, risk terrain modelling, the Crime Severity Index.
+- **Spatial statistics end to end** — weights, autocorrelation, spatial
+  regression and panels, GWR, kriging and geostatistical simulation,
+  point processes, spatial machine learning and epidemiology,
+  regionalisation.
+- **Political science, optimisation and the bookshelf** — spatial voting
+  and roll-call models, tournaments and power indices; quasi-Newton, SQP
+  and metaheuristics, routing and location; Hastie-Tibshirani-Friedman,
+  Wilcox, Bilder, Morin, MacKay and more, verified against the reference
+  packages.
+- **Criminology research program** — the open-problems ledger under
+  `research/`, with Lean 4 proofs of the identification results and the
+  VSR MRP proofs.
+- **SIU subsystem** — the Ontario Special Investigations Unit
+  director's-report corpus with the native SIU core and its reading
+  panel. See *SIU pipeline* below.
 - **C/C++ computational backend** — Hawkes likelihoods, the native
   Parquet/JSON/XML/HTML parsers, the SIU text core (via
   `rmoriebricklayer`), SHA-2/HMAC/PBKDF2 and liboqs post-quantum

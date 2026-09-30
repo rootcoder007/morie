@@ -7,12 +7,79 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
-## Unreleased
+## 1.3.2 (2026-09-30)
 
+- **Hosted LLM tier.** `morie ask` falls back to `https://llm.rmorie.com`
+  when no local Ollama answers. `morie login` (GitHub device flow),
+  `morie login --email you@example.com` (emailed code), `--to-email` (the
+  key mailed to the verified inbox) and `morie login --token` (paste a
+  key) store one key, owner-only, in `$XDG_CONFIG_HOME/morie/credentials.json`,
+  shared with the R package; `morie logout` forgets it; `morie doctor`
+  shows the tier. `MORIE_HOSTED_KEY`, `MORIE_HOSTED_BASE_URL` (`off`
+  disables) and `MORIE_HOSTED_MODEL` override it, and a model the gateway
+  no longer lists falls back to the first one it does list.
 - **OllamaFreeAPI provider removed (security).** It sent prompts to
-  anonymous volunteer Ollama servers found through a public registry. The
-  provider chain is now Ollama, Gemini, an OpenAI-compatible endpoint,
-  OpenAI, then the local fallback; `percy --freeapi` is gone.
+  anonymous volunteer Ollama servers found through a public registry;
+  `percy --freeapi` is gone. The chain is now Ollama, hosted, Gemini, an
+  OpenAI-compatible endpoint, OpenAI, then the local fallback.
+- **Policing, public safety and search.** Police operations research
+  (hypercube queue, square-root law), search theory (lateral range,
+  probability of detection, optimal circular search), calls-for-service
+  staffing (Erlang C, staffing requirements, shift schedules, relief
+  factors, Wilson-Weiss obligated time), CrimeStat journey-to-crime, the
+  circle hypothesis, risk terrain modelling, the Crime Severity Index,
+  combat models, segregation and accessibility indices, and the native
+  SIU core with its reading panel and `siu` CLI.
+- **Spatial statistics, end to end.** Weights and lattice autocorrelation,
+  SAR/SEM/SDM/SAC/SLX diagnostics, spatial panels, probit/logit and count
+  models, GWR/MGWR/GTWR, the kriging and geostatistical-simulation
+  families (Bayesian, area-to-point, Vecchia/NNGP, cokriging, space-time,
+  SGS/SIS, turning bands, SNESIM, FILTERSIM, direct sampling), point
+  processes (LGCP, Thomas, space-time K/L/G/J, STARMA), spatial machine
+  learning and epidemiology (BYM2, Leroux, scan, wombling), regionalisation
+  (SKATER, REDCAP, AZP, max-p), geometry, grids and sampling designs. The
+  placeholder versions of the CAR, GWR, MGWR, Moran, filtering, LM-test,
+  panel, probit, SIR and weights families were replaced by the methods.
+- **Political science.** Fifteen spatial voting models, roll-call and
+  ideal-point estimation (emIRT, CJR Gibbs, W-NOMINATE, BLACKBOXT),
+  majority tournaments and the yolk, power indices, party competition,
+  voter utility models, polarisation, optimal cutting lines.
+- **Optimisation and operations research.** BFGS, L-BFGS-B, Nelder-Mead,
+  SQP, SLP, twelve Philox metaheuristics, assignment, TSP, location,
+  covering, transportation and the vehicle-routing family.
+- **Statistics from the bookshelf.** Hastie-Tibshirani-Friedman chapters 3
+  to 8, 11, 14, 17 and 18 verified against rpart, gbm and the R arms;
+  Wilcox, Bilder (complete), Hedderich, Morin, MacKay, Rangayyan,
+  Schabenberger-Gotway, Wasserman, Gibbons; twenty-three closed-form
+  distribution families; power analysis on exact power functions.
+- **Causal inference against the references.** Matching (cobalt,
+  Matching), sensitivity (EValue, sensemakr, konfound, tipr), TWFE and
+  event study (fixest), staggered DiD (did), synthetic DiD (synthdid),
+  fuzzy DiD, wild cluster bootstrap (boottest), RD (rdrobust,
+  rddensity), IV (ivreg, linearmodels); the Callaway-Sant'Anna doubly
+  robust ATT(g,t) had its IPW correction zeroed; Rambachan-Roth honest
+  sensitivity, Kitagawa validity, CLR bounds.
+- **Core fidelity.** The array, frame, stats and GLM cores agree with
+  numpy, scipy, pandas, statsmodels and R on the surface the module tests
+  reach for: dtypes, n-D indexing, boolean masks, complex matrices,
+  batched products, SVD, norms, gradients, distribution tails; `r_`
+  stacks 2-D blocks, empty row selections keep their width, scalar
+  `isclose`, a `cumsum` method.
+- **Placeholders.** 4,224 placeholder callables that returned fabricated
+  numbers now raise `NotImplementedError`, and thousands of them were
+  replaced with real implementations family by family; `PLACEHOLDERS.csv`
+  tracks what remains.
+- **Criminology research program.** The open-problems ledger (dark figure,
+  contagion, ecological correlation, crime recording, sentencing bounds,
+  concentration, fairness, deterrence) ships as `morie.fn.research_*`
+  modules that replay the R arm's Philox-seeded simulations exactly; the
+  identification results are machine-checked in Lean 4 (176 theorems)
+  next to the VSR MRP proofs (38) in the R package's `research/lean/`.
+- **Windows.** `Replaypack` writes its canonical text without CRLF
+  translation so the file matches its digest; the hosted-tier off switch
+  works where an empty environment variable is dropped.
+- **Docs.** Counts, the provider chain, a hosted-tier page, the fifteen
+  public modules the API reference never listed; zero Sphinx warnings.
 
 ## 1.3.2 (2026-09-21)
 
