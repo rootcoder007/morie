@@ -192,3 +192,36 @@ def test_hosted_model_falls_back_to_what_the_gateway_lists(isolated_home, monkey
     monkeypatch.setattr(httpx, "get", lambda url, headers=None, timeout=None: httpx.Response(500))
     monkeypatch.setenv("MORIE_HOSTED_MODEL", "anything:cloud")
     assert hosted.hosted_model_available() == "anything:cloud"  # no list known: keep the configured name
+
+
+def test_models_lines_cover_every_hosted_state(monkeypatch):
+    from morie import hosted
+
+    monkeypatch.setattr(
+        hosted, "status", lambda: {"base_url": None, "logged_in": False, "user": "", "reachable": False}
+    )
+    assert hosted.models_lines() == ["Hosted tier: disabled (MORIE_HOSTED_BASE_URL is empty)"]
+    monkeypatch.setattr(
+        hosted,
+        "status",
+        lambda: {"base_url": "https://llm.rmorie.com", "logged_in": False, "user": "", "reachable": False},
+    )
+    assert "not logged in" in hosted.models_lines()[0]
+    monkeypatch.setattr(
+        hosted,
+        "status",
+        lambda: {"base_url": "https://llm.rmorie.com", "logged_in": True, "user": "gh:vee", "reachable": False},
+    )
+    assert hosted.models_lines()[0].startswith("Hosted tier (https://llm.rmorie.com): logged in, gateway not reachable")
+    monkeypatch.setattr(
+        hosted,
+        "status",
+        lambda: {"base_url": "https://llm.rmorie.com", "logged_in": True, "user": "gh:vee", "reachable": True},
+    )
+    monkeypatch.setattr(hosted, "hosted_models", lambda: ["a:cloud", "b:cloud"])
+    monkeypatch.setattr(hosted, "hosted_model_available", lambda: "b:cloud")
+    assert hosted.models_lines() == [
+        "Hosted tier (https://llm.rmorie.com), logged in as gh:vee; default marked *:",
+        "    a:cloud",
+        "  * b:cloud",
+    ]

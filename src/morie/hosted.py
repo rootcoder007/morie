@@ -274,6 +274,24 @@ def logout(echo=_say) -> bool:
     return had
 
 
+def models_lines() -> list[str]:
+    """What `morie models` prints for the hosted tier: every model this key may ask, default marked."""
+    s = status()
+    if not s["base_url"]:
+        return ["Hosted tier: disabled (MORIE_HOSTED_BASE_URL is empty)"]
+    if not s["logged_in"]:
+        return [f"Hosted tier ({DEFAULT_HOSTED_BASE_URL}): not logged in -- run `morie login`"]
+    if not s["reachable"]:
+        return [
+            f"Hosted tier ({s['base_url']}): logged in, gateway not reachable (or the key was replaced by a newer sign-in: run `morie login` again)"
+        ]
+    default = hosted_model_available()
+    who = f", logged in as {s['user']}" if s.get("user") else ""
+    lines = [f"Hosted tier ({s['base_url']}){who}; default marked *:"]
+    lines += [f"  {'*' if m == default else ' '} {m}" for m in hosted_models() or []]
+    return lines
+
+
 def status() -> dict:
     """What `morie doctor` reports: endpoint, whether a key is present, whether it works."""
     key = hosted_key()

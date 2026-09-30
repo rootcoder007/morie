@@ -30,8 +30,24 @@ One key per account, shared by both languages. Any of these mints it:
 The R package also ships the same verbs as a shell command:
 ``rmorie::install_cli()`` links ``rmorie`` onto your PATH, after which
 ``rmorie login``, ``rmorie login --email …``, ``rmorie login --token``,
-``rmorie logout``, ``rmorie doctor`` and ``rmorie ask …`` work like
-their ``morie`` counterparts.
+``rmorie logout``, ``rmorie doctor``, ``rmorie models`` and ``rmorie ask …``
+work like their ``morie`` counterparts; ``rmoriebricklayer`` has the same
+verbs once ``rmoriebricklayer::install_cli()`` has run.
+
+Which models you can ask
+------------------------
+
+.. code-block:: bash
+
+   morie models                                  # the hosted tier's list for your key (default marked *), then local Ollama
+   morie doctor                                  # the same list on the hosted line
+   morie ask --model gpt-oss:120b-cloud "..."    # one call with a named model
+
+The same verbs exist as ``rmorie models`` / ``rmorie ask --model NAME`` and
+``rmoriebricklayer models`` / ``rmoriebricklayer ask --model NAME``; in R,
+``rmorie::morie_llm_hosted_models()`` and
+``rmoriebricklayer::bricklayer_llm_models()`` return the list with the
+default as an attribute. ``MORIE_HOSTED_MODEL`` changes the default.
 
 The browser works too: https://llm.rmorie.com offers both sign-ins and
 shows the key once (or emails it, if you tick the box).

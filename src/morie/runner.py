@@ -243,6 +243,7 @@ def build_parser() -> argparse.ArgumentParser:
     login_cmd.add_argument("--token", nargs="?", const="", default=None, metavar="KEY",
                            help="Store a key you already have (from the website or your email); prompts when KEY is omitted")
     subparsers.add_parser("logout", help="Forget the hosted LLM key")
+    subparsers.add_parser("models", help="List the models you can ask: the hosted tier for your key, then local Ollama")
 
     doctor_cmd = subparsers.add_parser(
         "doctor",
@@ -705,6 +706,20 @@ def _llm_exit_code(payload, chunks=None) -> int:
         print("the LLM backend produced no output", file=sys.stderr)
         return 1
     return 0
+
+
+def _local_models_line() -> str:
+    """One line on the local Ollama server for `morie models`."""
+    try:
+        from .loc import LocalOllama
+
+        client = LocalOllama()
+        if not client.is_running():
+            return f"Local Ollama: not reachable at {client.base_url}"
+        names = [m.name for m in client.list_models()]
+        return f"Local Ollama ({client.base_url}): " + (", ".join(names) if names else "running, no models pulled")
+    except Exception:  # noqa: BLE001 - a missing or broken local server is not an error here
+        return "Local Ollama: not reachable"
 
 
 def main() -> int:
@@ -1197,6 +1212,15 @@ def _main_impl() -> int:
         from .hosted import logout
 
         logout()
+        return 0
+
+    if args.command == "models":
+        from .hosted import models_lines
+
+        for line in models_lines():
+            print(line)
+        print(_local_models_line())
+        print("Pick one per call with `morie ask --model NAME ...`, or set MORIE_HOSTED_MODEL / MORIE_OLLAMA_MODEL.")
         return 0
 
     if args.command == "doctor":

@@ -9,6 +9,11 @@ Per-package full changelogs:
 
 ## 1.3.4 (2026-09-30)
 
+- **See what you can ask.** `morie models` lists the hosted tier's models
+  for your key (default marked) and the local Ollama server's; `morie
+  doctor` names them on its hosted line. `morie ask --model NAME` picks one.
+  The same verb lands in `rmorie` and `rmoriebricklayer`.
+
 - **Every catalog key loads from a clean install.** `load_dataset("ocp21")`
   and the other open.canada.ca keys reached the CKAN fetcher under the wrong
   name and were refused; the fetcher also stopped at CKAN's 32,000-row page

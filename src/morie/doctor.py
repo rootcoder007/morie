@@ -81,7 +81,13 @@ def _check_hosted() -> tuple[bool, str]:
     if not s["logged_in"]:
         return False, "not logged in -- run `morie login`"
     who = f" as {s['user']}" if s.get("user") else ""
-    return (True, f"logged in{who}, gateway answering") if s["reachable"] else (False, f"logged in{who}, gateway not reachable")
+    if not s["reachable"]:
+        return False, f"logged in{who}, gateway not reachable"
+    from .hosted import hosted_model_available, hosted_models
+
+    listed = hosted_models() or []
+    tail = f"; models: {', '.join(listed)} (default {hosted_model_available()})" if listed else ""
+    return True, f"logged in{who}, gateway answering{tail}"
 
 
 def _check_gemini() -> tuple[bool, str]:

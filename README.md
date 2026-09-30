@@ -184,7 +184,7 @@ For the planned roadmap see [ROADMAP.md](ROADMAP.md).
 Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.github.io/morie/).
 
 - **Website**: <https://rmorie.com> — the MORIE family (rmorie, morie, rmoriebricklayer, rmoriedata) in one place.
-- **Hosted LLM tier**: <https://llm.rmorie.com> — the fallback model behind `morie ask` when there is no local Ollama. Sign in with `morie login` (GitHub) or `morie login --email you@example.com`; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html).
+- **Hosted LLM tier**: <https://llm.rmorie.com> — the fallback model behind `morie ask` when there is no local Ollama. Sign in with `morie login` (GitHub) or `morie login --email you@example.com`; `morie models` lists the models on your key and `morie ask --model NAME` picks one; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html).
 
 ## Citation
 

@@ -105,6 +105,11 @@ Assistant and LLM
    of stored on this machine. ``--token`` stores a key you already have
    (prompts for it when ``KEY`` is omitted) and probes the gateway once.
 
+``models``
+   List the models you can ask: the hosted tier's list for your key (the
+   default marked ``*``), then the local Ollama server's. Pick one per call
+   with ``morie ask --model NAME``.
+
 ``logout``
    Forget the stored hosted key.
 

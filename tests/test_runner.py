@@ -89,3 +89,15 @@ def test_main_lists_modules(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert status == 0
     assert "power-design" in captured.out
+
+
+def test_models_verb_prints_hosted_and_local_lists(monkeypatch, capsys):
+    import morie.runner as runner
+    from morie import hosted
+
+    monkeypatch.setattr(hosted, "models_lines", lambda: ["Hosted tier (x); default marked *:", "  * m:cloud"])
+    monkeypatch.setattr(runner, "_local_models_line", lambda: "Local Ollama: not reachable at http://localhost:11434")
+    monkeypatch.setattr("sys.argv", ["morie", "models"])
+    assert main() == 0
+    out = capsys.readouterr().out
+    assert "  * m:cloud" in out and "Local Ollama: not reachable" in out and "morie ask --model NAME" in out
