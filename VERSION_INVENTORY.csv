@@ -60,7 +60,7 @@ File,Line,Status,Version,Context
 ./PLACEHOLDERS.csv,3276,STALE_OR_DEP,8.3.4,"statistical_methods_for_spatial_data_analysis1u93;statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_93;book-equation;Formula: Theorem 1.1 If the k × k matrix C can be written as C = (a − b)I + bJ;;Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis; ch.1 (unnumbered);statistical_methods_for_spatial_data_analysis;1;unnumbered 93;userguides/other/pdf/Statistical_Methods_for_Spatial_Data_Analysis.pdf;src/morie/fn/statistical_methods_for_spatial_data_analysis1u93.py;statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_93(x; y=None);result;missing;;missing;;;;;;removed;inverse of (a-b)I+bJ (Graybill Thm 8.3.4; Theorem 1.1);csinv.compound_symmetry_inverse (new; R csinv);;;removed-duplicate;"
 ./PLACEHOLDERS.csv,3999,STALE_OR_DEP,11.1.5,"wilcox6e24;wilcox_chapter_6_equation_24;book-equation;Formula: rqtest(x; y; qval = 0.5; nboot = 200; alpha = 0.05);Wilcox; R.R. (2017) Modern Statistics for the Social and Behavioral Sciences; ch.6 eq.6.24;wilcox;6;eq 24;userguides/other/pdf/ Wilcox; Rand R. - Modern statistics for the social and behavioral sciences _ a practical introduction.pdf;src/morie/fn/wilcox6e24.py;wilcox_chapter_6_equation_24(x; cdf=None);result;missing;;missing;;;;;;removed;;not a method: null hypothesis that all slopes are zero (robust version; see Wilcox 2017 Sec 11.1.5);;;not-a-method;"
 ./PLACEHOLDERS.csv,4015,STALE_OR_DEP,12.1.13,"wilcox8e12;wilcox_chapter_8_equation_12;book-equation;Formula: is approximately α . That is; compare all pairs of groups with the goal that FWE is α;Wilcox; R.R. (2017) Modern Statistics for the Social and Behavioral Sciences; ch.8 eq.8.12;wilcox;8;eq 12;userguides/other/pdf/ Wilcox; Rand R. - Modern statistics for the social and behavioral sciences _ a practical introduction.pdf;src/morie/fn/wilcox8e12.py;wilcox_chapter_8_equation_12(x; cdf=None);result;missing;;missing;;;;;;removed;;morie.fn.linconbt.linconbt (bootstrap-t Tmax all-pairs trimmed means; Sec 12.1.13);;;removed-duplicate;"
-./README.md,97,STALE_OR_DEP,1.1.4,"docker run --rm ghcr.io/rootcoder007/morie:1.1.4 morie --help"
+./README.md,98,STALE_OR_DEP,1.1.4,"docker run --rm ghcr.io/rootcoder007/morie:1.1.4 morie --help"
 ./REFERENCES.md,111,STALE_OR_DEP,68.1.326,"<https://doi.org/10.1093/biomet/68.1.326>."
 ./REFERENCES.md,340,STALE_OR_DEP,81.3.425,"<https://doi.org/10.1093/biomet/81.3.425>."
 ./REFERENCES.md,929,STALE_OR_DEP,1.1.30,"30–46. <https://doi.org/10.1037/1082-989X.1.1.30>."
@@ -1769,10 +1769,10 @@ File,Line,Status,Version,Context
 ./r-package/morie/R/wsm_native.R,412,STALE_OR_DEP,2.2.6,"#'   Sec. 2.2.6; Fisher (1922)."
 ./r-package/morie/R/wsmstn.R,13,STALE_OR_DEP,9.13.2,"#' @references Wasserman (2004); All of Statistics; Section 9.13.2;"
 ./r-package/morie/R/wsrpw.R,4,STALE_OR_DEP,5.7.3,"#' (Gibbons Ch 5.7.3)"
-./r-package/morie/README.md,109,STALE_OR_DEP,1.1.7,"## What's in v1.1.7"
-./r-package/morie/README.md,218,STALE_OR_DEP,1.1.4,"Since 1.1.4 the subsystem is layered on the compiled SIU core in"
-./r-package/morie/README.md,267,STALE_OR_DEP,0.9.5,"`release/v0.9.5-audit` head:"
-./r-package/morie/README.md,290,STALE_OR_DEP,1.0.1,"note    = {R package version 1.0.1};"
+./r-package/morie/README.md,112,STALE_OR_DEP,1.1.7,"## What's in v1.1.7"
+./r-package/morie/README.md,221,STALE_OR_DEP,1.1.4,"Since 1.1.4 the subsystem is layered on the compiled SIU core in"
+./r-package/morie/README.md,270,STALE_OR_DEP,0.9.5,"`release/v0.9.5-audit` head:"
+./r-package/morie/README.md,293,STALE_OR_DEP,1.0.1,"note    = {R package version 1.0.1};"
 ./r-package/morie/inst/COPYRIGHTS,4,STALE_OR_DEP,3.11.3,"JSON for Modern C++; version 3.11.3"
 ./r-package/morie/inst/extdata/nist_rds_synthetic.csv,2,STALE_OR_DEP,1.0.0,"ark:/88434/mds00ch8q4;Dataset from Fire Safety Challenges of Tall Wood Buildings - Phase 2: Task 3 - Cross Laminated Timber Compartment Fire Tests;NA;NA;2018-02-15;National Institute of Standards and Technology;1.0.0;NA"
 ./r-package/morie/inst/extdata/nist_rds_synthetic.csv,3,STALE_OR_DEP,1.0.0,"ark:/88434/mds007zd70;SRM 895 Stainless Steel (SAE 201);NA;NA;2017-01-05;National Institute of Standards and Technology;1.0.0;NA"
