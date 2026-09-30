@@ -75,7 +75,7 @@ def geron_sac(env, policy=None, critic=None, epochs=20, lr=0.5, alpha=0.2, gamma
     A one-state bandit where action 1 pays 1 and action 0 pays nothing.
     With a cold temperature the soft policy collapses onto the paying arm:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> class Bandit:
     ...     n_states, n_actions = 1, 2
     ...     def reset(self):

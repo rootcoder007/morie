@@ -59,7 +59,7 @@ def aitchison_balance(x, numerator, denominator):
     A balance is invariant to the total, which is what makes compositions
     comparable.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> c = np.array([20.0, 30.0, 50.0])
     >>> a = aitchison_balance(c, [0], [1, 2])["balance"]
     >>> b = aitchison_balance(c * 7.3, [0], [1, 2])["balance"]

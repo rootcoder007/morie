@@ -52,7 +52,7 @@ def data_subset_refutation(estimator, y, d, X, fraction=0.8, n_sims=50,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn.drblr import doubly_robust_ate
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(300, 2))

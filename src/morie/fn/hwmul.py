@@ -67,7 +67,7 @@ def holt_winters_mult(y, period=4, alpha=0.3, beta=0.1, gamma=0.1, horizon=None)
     multiplicative form fits better than the additive one -- which is the
     entire reason to choose it.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn.hwadd import holt_winters_additive
     >>> t = np.arange(72)
     >>> y = (100 + 3 * t) * (1 + 0.4 * np.sin(2 * np.pi * t / 12))

@@ -65,7 +65,7 @@ def boyd_socp(f, A, b, c, d, x0=None):
     Minimise ``x1`` over the unit disc -- one cone constraint,
     ``|x| <= 1``. The answer is the leftmost point of the disc.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = boyd_socp([1.0, 0.0], [np.eye(2)], [np.zeros(2)],
     ...               [np.zeros(2)], [1.0])
     >>> [round(float(v), 5) for v in r["x"]]

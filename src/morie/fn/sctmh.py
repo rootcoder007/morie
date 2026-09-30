@@ -49,7 +49,7 @@ def sctmh(f, x0, x1, tol=1e-6, max_iter=100, full_output=False):
     >>> from morie.fn import sctmh
     >>> f = lambda x: x**2 - 2
     >>> root = sctmh(f, 1.0, 2.0)
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> np.isclose(root, np.sqrt(2), atol=1e-5)
     True
     """

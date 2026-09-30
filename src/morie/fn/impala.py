@@ -67,7 +67,7 @@ def impala_vtrace(rewards, values, behavior_logp, target_logp, gamma=0.99,
     On-policy data leaves the importance weights at 1, so V-trace reduces to
     the usual n-step return.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = np.ones(5); v = np.zeros(5); lp = np.full(5, -0.7)
     >>> out = impala_vtrace(r, v, lp, lp, gamma=0.9)
     >>> bool(np.all(out["rho"] == 1.0))

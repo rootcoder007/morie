@@ -69,7 +69,7 @@ def tmle_ate(y, D, X, trunc=0.01, g=None):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> W = rng.normal(size=(4000, 2))
     >>> p = 1 / (1 + np.exp(-(0.8 * W[:, 0])))

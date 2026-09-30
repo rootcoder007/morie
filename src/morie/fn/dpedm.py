@@ -60,7 +60,7 @@ def approx_dp(mech, D, D_prime, epsilon=1.0, n_samples=20000, bins=50, seed=None
     A Gaussian mechanism generously calibrated needs almost no delta at its
     nominal epsilon.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> D, Dp = np.zeros(10), np.r_[np.zeros(9), 1.0]
     >>> gauss = lambda X, rng: float(X.sum() + rng.normal(0, 3.0))
     >>> r = approx_dp(gauss, D, Dp, epsilon=1.0, n_samples=30000, seed=0)

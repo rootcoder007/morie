@@ -60,7 +60,7 @@ def spatial_arma(
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(42)
     >>> n = 25
     >>> W = np.zeros((n, n))

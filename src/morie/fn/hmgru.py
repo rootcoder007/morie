@@ -61,7 +61,7 @@ def geron_gru(x_t, h_prev, weights):
     All-zero weights make every gate ``sigma(0) = 0.5`` and the
     candidate ``tanh(0) = 0``, so ``h_t = (1 - 0.5) * h_prev``:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> W = {k: (np.zeros((2, 2)) if k[0] in "WU" else np.zeros(2)) for k in
     ...      ("W_z", "U_z", "b_z", "W_r", "U_r", "b_r", "W_h", "U_h", "b_h")}
     >>> r = geron_gru([0.0, 0.0], [4.0, -2.0], W)

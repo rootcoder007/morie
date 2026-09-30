@@ -59,7 +59,7 @@ def aft_residuals(fit):
     about 1 among the uncensored, which is the property the diagnostic rests
     on.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn.aftwbl import aft_weibull
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(1500, 2))

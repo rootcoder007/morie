@@ -75,7 +75,7 @@ def regime_value(y, d, X, regime, propensity=None, method="aipw",
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(600, 1))
     >>> d = (rng.uniform(size=600) < 0.5).astype(float)

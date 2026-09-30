@@ -42,7 +42,7 @@ def gradient_descent_update(beta, grad, alpha=0.01):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> b = np.zeros(2)
     >>> for _ in range(2000):
     ...     b = gradient_descent_update(b, 2 * (b - np.array([1.0, -2.0])), 0.05)["beta"]

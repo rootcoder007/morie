@@ -70,7 +70,7 @@ def esl_svm_kernel(X, y, C=1.0, kernel="rbf", gamma=None, degree=3, coef0=1.0,
     --------
     Two separated Gaussian clouds, classified perfectly.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(-2, 1, (60, 2)), rng.normal(2, 1, (60, 2))]
     >>> y = np.r_[-np.ones(60), np.ones(60)]

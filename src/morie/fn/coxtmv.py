@@ -60,7 +60,7 @@ def cox_time_varying(time, event, X, n_intervals=3, ties="efron"):
     where a single Cox fit reports one intermediate value that fits neither
     period.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> x = rng.integers(0, 2, 1200).astype(float)
     >>> early = rng.exponential(1 / np.exp(-1.2 * x))       # strong effect early

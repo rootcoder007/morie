@@ -52,7 +52,7 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq="ucb", kappa=2.576, full_output=F
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import bysop
     >>> f = lambda x: (x[0] - 2)**2 + (x[1] - 3)**2
     >>> bounds = [(0, 5), (0, 5)]

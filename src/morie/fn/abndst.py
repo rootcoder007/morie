@@ -95,7 +95,7 @@ def abundance_estimation(kraken_output, kmer_distribution, max_iter=1000,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> # two species; the third node is a shared ancestor
     >>> P = np.array([[0.5, 0.0], [0.0, 0.5], [0.5, 0.5]])
     >>> reads = np.array([100.0, 300.0, 400.0])

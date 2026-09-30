@@ -68,7 +68,7 @@ def tmle_heterogeneous(y, treatment, W, strata, trunc=0.01, min_stratum=20):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> n = 4000
     >>> s = rng.integers(0, 2, size=n)

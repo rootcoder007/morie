@@ -58,7 +58,7 @@ def dp_pca(X, k=2, epsilon=1.0, delta=1e-5, C=1.0, seed=None):
     With a strong signal direction and a workable budget, the private first
     component aligns with the true one.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> v = np.array([1.0, 0.0, 0.0, 0.0])
     >>> X = rng.normal(size=(4000, 1)) * v * 3 + rng.normal(size=(4000, 4)) * 0.1

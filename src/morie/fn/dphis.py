@@ -56,7 +56,7 @@ def dp_histogram(x, bins=10, epsilon=1.0, range_=None, seed=None, nonneg=True):
     One epsilon covers every bin -- the noise scale does not grow with the
     number of bins.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> v = rng.normal(0, 1, 5000)
     >>> a = dp_histogram(v, bins=5, epsilon=1.0, range_=(-4, 4), seed=0)

@@ -64,7 +64,7 @@ def esl_sparse_pca(X, k=2, lambda_=0.1, max_iter=500, tol=1e-8, center=True, sca
     With ``lambda_ = 0`` this reduces to ordinary PCA, so the leading loading
     matches the top eigenvector up to sign.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(200, 6)) @ np.diag([5.0, 3.0, 1, 1, 1, 1])
     >>> v = esl_sparse_pca(X, k=1, lambda_=0.0)["loadings"][:, 0]

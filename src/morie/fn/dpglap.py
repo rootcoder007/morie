@@ -57,7 +57,7 @@ def dp_laplace_mechanism(y, sensitivity=1.0, epsilon=1.0, seed=None):
     --------
     Noise scale is sensitivity over epsilon, and the release is unbiased.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = dp_laplace_mechanism(100.0, sensitivity=1.0, epsilon=0.5, seed=0)
     >>> float(r["noise_scale"])
     2.0

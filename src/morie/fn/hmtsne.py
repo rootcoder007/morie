@@ -98,7 +98,7 @@ def geron_tsne(X, n_components=2, perplexity=5.0, seed=0, n_iter=300, lr=None, m
     Two tight groups far apart stay separated in the embedding, and the
     divergence falls during optimisation:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = [[0.0], [0.1], [0.2], [10.0], [10.1], [10.2]]
     >>> r = geron_tsne(X, n_components=1, perplexity=2.0, n_iter=250)
     >>> r["embedding"].shape

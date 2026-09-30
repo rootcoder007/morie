@@ -70,7 +70,7 @@ def equating_haebara(a_ref, b_ref, a_focal, b_focal, n_quad=41, theta_range=4.0)
     --------
     A known linear transform is recovered.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> a = np.array([1.0, 1.2, 0.8, 1.5, 0.9])
     >>> b = np.array([-1.0, 0.0, 0.5, 1.0, -0.5])
     >>> A_true, B_true = 1.3, 0.4

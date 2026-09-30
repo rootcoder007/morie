@@ -63,7 +63,7 @@ def boyd_dual_norm(norm, z):
     The maximizer attains the supremum: it lies in the primal unit ball
     and its inner product with z equals the dual norm.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> z = np.array([3.0, -5.0, 2.0])
     >>> x = boyd_dual_norm(1, z)["maximizer"]
     >>> bool(np.max(np.abs(x)) <= 1 + 1e-12 and abs(z @ x - 5.0) < 1e-12)

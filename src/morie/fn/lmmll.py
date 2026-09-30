@@ -59,7 +59,7 @@ def lmm_loglik(y, X, Z=None, D=None, R=None, V=None, reml=False):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = np.ones((5, 1))
     >>> out = lmm_loglik(np.arange(5.0), X, V=np.eye(5))
     >>> bool(out["loglik"] < 0)

@@ -59,7 +59,7 @@ def esl_svc(X, y, C=1.0, newdata=None, tol=1e-3, max_passes=50, seed=0):
     On separable data the fitted normal points from the negative class to
     the positive one along the true axis.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(-3, 0.5, (50, 2)), rng.normal(3, 0.5, (50, 2))]
     >>> y = np.r_[-np.ones(50), np.ones(50)]

@@ -101,7 +101,7 @@ def tmle_average_predictiveness(y, D, X, f=None, loss="r_squared",
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(600, 3))
     >>> y = 2 * X[:, 0] + rng.normal(scale=0.5, size=600)

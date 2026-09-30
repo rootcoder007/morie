@@ -55,7 +55,7 @@ def astle_balding_grm(marker_matrix, freq=None):
     --------
     The matrix is symmetric with diagonal near 1 for unrelated individuals.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> p = rng.uniform(0.15, 0.85, 400)
     >>> Xg = rng.binomial(2, p, size=(120, 400)).astype(float)

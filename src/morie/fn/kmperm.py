@@ -125,7 +125,7 @@ def kamath_permutation_lm_loss(logits, targets, permutation,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> lg = np.log([[0.5, 0.5], [0.25, 0.75]])
     >>> out = kamath_permutation_lm_loss(lg, [0, 1], [1, 0])
     >>> round(float(out["loss"]), 6)  # (-log 0.5 - log 0.75) / 2

@@ -59,7 +59,7 @@ def censoring_at_risk_weight(time, censor, at=None, stabilize=True):
     Censored subjects get zero weight and the uncensored are up-weighted to
     stand in for them.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> T = rng.exponential(2.0, 500)
     >>> C = rng.exponential(3.0, 500)

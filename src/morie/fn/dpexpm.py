@@ -62,7 +62,7 @@ def dp_exponential_mechanism(candidates, utility, epsilon=1.0, sensitivity=1.0,
     --------
     The highest-utility candidate is the most likely, but not certain.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = dp_exponential_mechanism(["a", "b", "c"], [0.0, 5.0, 1.0],
     ...                              epsilon=2.0, seed=0)
     >>> int(np.argmax(r["probabilities"]))

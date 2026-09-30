@@ -63,7 +63,7 @@ def boyd_quadratic_constraint(P0, q0, P=(), q=(), r=(), x0=None,
     minimiser is (2, 0), well outside, so the answer is where the
     objective's gradient points through the boundary.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r1 = boyd_quadratic_constraint(np.eye(2), [-2.0, 0.0],
     ...                                P=[np.eye(2)], q=[[0.0, 0.0]],
     ...                                r=[-0.5])

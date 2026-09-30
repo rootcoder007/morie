@@ -68,7 +68,7 @@ def genomic_ebv(marker_matrix, y=None, effects=None, h2=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> M = np.array([[0, 1, 2], [2, 1, 0], [1, 1, 1], [0, 0, 2]], float)
     >>> out = genomic_ebv(M, effects=[1.0, 0.0, -1.0])
     >>> int(out["ranking"][0])

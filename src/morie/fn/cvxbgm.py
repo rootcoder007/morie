@@ -62,7 +62,7 @@ def boyd_basis_pursuit(A, b, eps=0.0):
     across the first two -- and the answer is genuinely sparse, not
     merely small.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.array([[1.0, 0.0, 0.8], [0.0, 1.0, 0.8]])
     >>> b = np.array([1.0, 1.0])
     >>> r = boyd_basis_pursuit(A, b, eps=0.0)

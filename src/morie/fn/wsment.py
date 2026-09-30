@@ -43,7 +43,7 @@ def wasserman_entropy(p, x_grid=None):
     1.0
     >>> wasserman_entropy([1.0, 0.0])["estimate"]
     0.0
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> g = np.linspace(0.0, 1.0, 100001)
     >>> abs(wasserman_entropy(np.ones_like(g), g)["estimate"] - 0.0) < 1e-12
     True

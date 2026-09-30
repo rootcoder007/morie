@@ -49,7 +49,7 @@ def brtmh(f, a, b, tol=1e-6, max_iter=100, full_output=False):
     >>> from morie.fn import brtmh
     >>> f = lambda x: x**3 - 2
     >>> root = brtmh(f, 1.0, 2.0)
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> np.isclose(root, 2**(1/3), atol=1e-6)
     True
     """

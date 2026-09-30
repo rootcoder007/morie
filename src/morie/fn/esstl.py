@@ -51,7 +51,7 @@ def effective_sample_size_tail(chains, prob=0.05):
     --------
     Independent draws explore both tails well.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> r = effective_sample_size_tail(rng.normal(size=(4, 2000)))
     >>> bool(r["sufficient"])

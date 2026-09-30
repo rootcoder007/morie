@@ -63,7 +63,7 @@ def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> x = rng.normal(size=(400, 1))
     >>> out = mine_mutual_information(x, x + rng.normal(size=(400, 1)),

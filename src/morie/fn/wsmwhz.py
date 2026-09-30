@@ -44,7 +44,7 @@ def wasserman_white_huber(X, y, f=None):
     --------
     Homoskedastic equal-leverage design: sandwich matches classical.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = np.array([[1.0, -1.0], [1.0, 1.0]] * 50)
     >>> beta = np.array([1.0, 2.0])
     >>> e = np.tile([0.5, -0.5, -0.5, 0.5], 25)

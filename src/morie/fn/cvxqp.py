@@ -57,7 +57,7 @@ def boyd_quadratic_program(P, q, G=None, h=None, A=None, b=None,
     --------
     Unconstrained, the solution is the linear solve -P^-1 q.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> P = np.array([[2.0, 0.0], [0.0, 4.0]])
     >>> r = boyd_quadratic_program(P, [-2.0, -8.0])
     >>> [round(float(v), 6) for v in r["x"]]

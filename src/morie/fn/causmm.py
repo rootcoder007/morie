@@ -61,7 +61,7 @@ def causal_mahalanobis_match(X, treat, k=1, replace=True, caliper=None):
     Matching finds close controls, so the mean matched distance is far below
     the mean distance to a random control.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(400, 2))
     >>> tr = (rng.random(400) < 0.3).astype(float)

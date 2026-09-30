@@ -89,7 +89,7 @@ def pm_gemm_burden(
 
     Per-FSA vectorized run across an array of units:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> concs = np.array([8.0, 12.0, 15.0])
     >>> pops  = np.array([25_000, 30_000, 20_000])
     >>> r = pm_gemm_burden(concs, pops, 0.008)

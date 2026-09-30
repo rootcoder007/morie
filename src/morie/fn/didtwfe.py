@@ -66,7 +66,7 @@ def twoway_fixed_effects_did(y, D, unit, time):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> unit = np.repeat(np.arange(6), 6)
     >>> time = np.tile(np.arange(6), 6)
     >>> g = np.repeat([2.0, 2.0, 4.0, 4.0, np.inf, np.inf], 6)

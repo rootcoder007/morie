@@ -58,7 +58,7 @@ def dp_gaussian_mechanism(y, sensitivity=1.0, epsilon=1.0, delta=1e-5, seed=None
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = dp_gaussian_mechanism(10.0, sensitivity=1.0, epsilon=1.0,
     ...                           delta=1e-5, seed=0)
     >>> bool(abs(r["sigma"] - np.sqrt(2 * np.log(1.25e5))) < 1e-9)

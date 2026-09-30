@@ -53,7 +53,7 @@ def cause_specific_hazard_all(time, cause, X, ties="efron"):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(1500, 1))
     >>> T1 = rng.exponential(1 / np.exp(0.9 * X[:, 0]))

@@ -56,7 +56,7 @@ def placebo_dr_did(y_pre1, y_pre2, D, X, **kwargs):
     --------
     With genuinely parallel pre-trends the placebo effect is near zero.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(3000, 2))
     >>> e = 1 / (1 + np.exp(-(0.7 * X[:, 0])))

@@ -44,7 +44,7 @@ def boyd_convex_combination(x, theta=None, tol=1e-09):
     --------
     Uniform weights give the centroid.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> P = np.array([[0.0, 0.0], [2.0, 0.0], [1.0, 3.0]])
     >>> [float(v) for v in boyd_convex_combination(P)["value"]]
     [1.0, 1.0]

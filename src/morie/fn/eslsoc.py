@@ -65,7 +65,7 @@ def esl_self_organize(X, grid=(5, 5), eta=0.5, n_epochs=50, sigma0=None, seed=0)
     Prototypes adjacent on the lattice end up close in data space -- the
     topology-preserving property, measured by a low topographic error.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.uniform(0, 1, (600, 2))
     >>> r = esl_self_organize(X, grid=(6, 6), seed=1)

@@ -59,7 +59,7 @@ def schabenberger_composite_likelihood(coords, z, variogram_model="exponential")
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(1)
     >>> co = rng.uniform(0, 10, size=(60, 2))
     >>> z = rng.normal(size=60)

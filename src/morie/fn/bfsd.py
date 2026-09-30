@@ -61,7 +61,7 @@ def savage_dickey_ratio(samples, prior, theta0=0.0, bandwidth=None):
     Posterior centred far from 0 gives BF_01 << 1 (evidence against
     the null); centred at 0 with matching prior gives BF_01 > 1:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> g = np.linspace(-3.0, 3.0, 2001)
     >>> draws = g / 3.0                            # posterior ~ Uniform(-1,1): denser at 0
     >>> flat = 1.0 / 6.0                           # Uniform(-3,3) prior

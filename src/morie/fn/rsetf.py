@@ -205,7 +205,7 @@ def ramsey_reset(y, X, powers=(2, 3), add_intercept=False):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> x = rng.normal(size=400)
     >>> X = np.column_stack([np.ones(400), x])

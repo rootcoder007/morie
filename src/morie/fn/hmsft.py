@@ -86,7 +86,7 @@ def geron_sft(model=None, instruction_data=None, epochs=200, lr=0.5, l2=0.0):
     before fine-tuning the model is uniform (loss log 2 per example), and
     training drives the loss down and the accuracy to 1.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> data = [("translate hello", "bonjour"), ("summarise text", "resume")]
     >>> r = geron_sft(None, data, epochs=300, lr=0.5)
     >>> round(float(r["loss_curve"][0]), 9) == round(float(np.log(2)), 9)

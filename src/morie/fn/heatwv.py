@@ -58,7 +58,7 @@ def heat_wave_detect(
     --------
     A series with a clear 5-day spike:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> T = np.concatenate([
     ...     np.full(100, 25.0),    # baseline
     ...     np.array([32, 34, 33, 35, 32]),  # heat wave

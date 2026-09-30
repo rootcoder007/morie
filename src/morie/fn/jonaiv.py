@@ -52,7 +52,7 @@ def joseph_naive_forecast(y, horizon=1, season=None):
     --------
     Plain naive repeats the last observation.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> [float(v) for v in joseph_naive_forecast([1.0, 2.0, 5.0], horizon=3)["forecast"]]
     [5.0, 5.0, 5.0]
 

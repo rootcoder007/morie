@@ -51,7 +51,7 @@ def nadmf(f, grad_f, x0, learning_rate=0.01, momentum=0.9, tol=1e-6, max_iter=10
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import nadmf
     >>> f = lambda x: (x[0] - 1)**2 + (x[1] - 2)**2
     >>> gf = lambda x: np.array([2*(x[0]-1), 2*(x[1]-2)])

@@ -61,7 +61,7 @@ def dp_kmeans(X, k=3, epsilon=1.0, n_iter=5, bounds=None, seed=None):
     --------
     Well-separated clusters are recovered at a workable budget.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(-5, 0.4, (300, 2)), rng.normal(5, 0.4, (300, 2))]
     >>> r = dp_kmeans(X, k=2, epsilon=20.0, n_iter=5, bounds=(-8, 8), seed=1)

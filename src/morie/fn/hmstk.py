@@ -52,7 +52,7 @@ def geron_stacking(X, y, base_models, meta_model=None, k_folds=3):
     second, so the stacked error is essentially zero while the mean
     model's out-of-fold error is not.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = [[1.0], [2.0], [3.0], [4.0], [5.0], [6.0]]
     >>> y = [2.0, 4.0, 6.0, 8.0, 10.0, 12.0]
     >>> mean_model = lambda Xtr, ytr, Xte: np.full(len(Xte), np.mean(ytr))

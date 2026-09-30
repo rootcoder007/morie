@@ -44,7 +44,7 @@ def boyd_newton(grad, hess, ridge=0.0):
     --------
     On a quadratic, one Newton step lands exactly on the minimiser.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.array([[4.0, 1.0], [1.0, 3.0]])
     >>> x = np.array([5.0, -2.0])          # f(x) = 0.5 x'Ax, minimiser at 0
     >>> step = boyd_newton(A @ x, A)["step"]

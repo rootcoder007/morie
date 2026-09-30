@@ -59,7 +59,7 @@ def spectral_sbm(adjacency, k=2, regularized=True, n_iter=100, seed=0):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.zeros((6, 6))
     >>> A[:3, :3] = 1 - np.eye(3)
     >>> A[3:, 3:] = 1 - np.eye(3)

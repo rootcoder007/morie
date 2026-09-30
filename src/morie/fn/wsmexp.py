@@ -37,7 +37,7 @@ def wasserman_expectation(x, f):
     --------
     Uniform(0,1) on a fine grid has mean 1/2:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> g = np.linspace(0.0, 1.0, 100001)
     >>> out = wasserman_expectation(g, np.ones_like(g))
     >>> round(out["estimate"], 10)

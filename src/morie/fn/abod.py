@@ -56,7 +56,7 @@ def abod(X, k=None):
     --------
     The outlier has the smallest angle variance, hence the largest score.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(0, 1, (120, 3)), [[10.0, 10.0, 10.0]]]
     >>> r = abod(X)

@@ -62,7 +62,7 @@ def epsilon_dp(mech, D, D_prime, n_samples=20000, bins=50, seed=None):
     A correctly calibrated Laplace mechanism shows an empirical epsilon near
     its nominal one, not far above it.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> D, Dp = np.zeros(10), np.r_[np.zeros(9), 1.0]
     >>> lap = lambda X, rng: float(X.sum() + rng.laplace(0, 1 / 0.5))
     >>> r = epsilon_dp(lap, D, Dp, n_samples=40000, seed=0)

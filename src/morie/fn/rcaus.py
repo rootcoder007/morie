@@ -53,7 +53,7 @@ def random_common_cause_refutation(estimator, y, d, X, n_sims=50, seed=0,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn.drblr import doubly_robust_ate
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(300, 2))

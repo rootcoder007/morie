@@ -49,7 +49,7 @@ def rmsprop(g, rho=0.9, lr=0.001, eps=1e-8, state=None):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> x, st = np.zeros(1), None
     >>> for _ in range(5000):
     ...     r = rmsprop(2 * (x - 3.0), lr=0.05, state=st)

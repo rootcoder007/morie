@@ -38,7 +38,7 @@ def rmsprop_optimizer(theta, grad, lr=0.001, rho=0.9, eps=1e-8, state=None):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> th, st = np.zeros(1), None
     >>> for _ in range(5000):
     ...     r = rmsprop_optimizer(th, 2 * (th - 3.0), lr=0.05, state=st)

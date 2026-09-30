@@ -58,7 +58,7 @@ def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=Fals
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import emfit
     >>> X = np.random.randn(100, 2)
     >>> result = emfit(X, n_components=2, seed=42)

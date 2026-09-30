@@ -47,7 +47,7 @@ def drift_forecast(y, h=1):
     --------
     A clean linear trend is extrapolated exactly.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> [float(v) for v in drift_forecast([1.0, 2.0, 3.0, 4.0], h=2)["forecast"]]
     [5.0, 6.0]
 

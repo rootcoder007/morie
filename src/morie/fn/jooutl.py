@@ -58,7 +58,7 @@ def joseph_ts_outlier_detection(y, W=10, threshold=3.5):
     A spike on a trending, seasonal series is caught where a global rule
     would flag the seasonal peaks instead.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> t = np.arange(400)
     >>> y = 0.05 * t + 5 * np.sin(2 * np.pi * t / 40) + rng.normal(0, 0.3, 400)

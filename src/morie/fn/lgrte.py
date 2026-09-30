@@ -54,7 +54,7 @@ def local_growth_rate(
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> vals = np.array([[100, 110, 121], [200, 190, 200]], dtype=float)
     >>> res = local_growth_rate(vals)
     >>> res.local_values.shape == (2,)

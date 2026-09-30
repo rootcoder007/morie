@@ -62,7 +62,7 @@ def boyd_central_path(f0, f, t, x0=None):
     ``t*x = 1/(x-1)``, so ``x*(t) = (1 + sqrt(1 + 4/t))/2`` in closed
     form and the whole path can be checked against it.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> obj = lambda x: 0.5 * x[0] ** 2
     >>> con = [lambda x: 1.0 - x[0]]
     >>> r = boyd_central_path(obj, con, [1.0, 10.0, 100.0], x0=[2.0])

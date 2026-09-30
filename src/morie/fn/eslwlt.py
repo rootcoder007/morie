@@ -66,7 +66,7 @@ def esl_wavelet_smooth(y, wavelet="haar", mode="soft", threshold=None, levels=No
     --------
     Denoising a blocky signal reduces the error against the truth.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> clean = np.repeat([0.0, 4.0, 1.0, -2.0], 64)
     >>> noisy = clean + rng.normal(0, 0.5, 256)

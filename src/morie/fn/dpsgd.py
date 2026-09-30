@@ -68,7 +68,7 @@ def dp_sgd(grads, C=1.0, sigma=1.0, lr=0.1, theta=None, seed=None):
     Clipping is per example: a single enormous gradient cannot dominate the
     average, which is exactly the guarantee.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> G = rng.normal(size=(64, 5)) * 0.1
     >>> G_bad = G.copy(); G_bad[0] = 1e6                  # one runaway example

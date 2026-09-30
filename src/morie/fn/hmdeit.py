@@ -73,7 +73,7 @@ def geron_deit(
     A 32x32 image with 16x16 patches gives a 2x2 grid, so 4 patches plus
     the class and distillation tokens:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> img = np.zeros((3, 32, 32))
     >>> r = geron_deit(img, patch_size=16, n_layers=1, d_model=8, n_heads=2, n_classes=4)
     >>> r["n_patches"], r["n_tokens"]

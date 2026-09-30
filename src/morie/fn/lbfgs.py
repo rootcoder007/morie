@@ -48,7 +48,7 @@ def lbfgs(f, grad_f, x0, m=10, tol=1e-6, max_iter=1000, full_output=False):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import lbfgs
     >>> f = lambda x: (x[0] - 1)**2 + 100*(x[1] - x[0]**2)**2
     >>> gf = lambda x: np.array([2*(x[0]-1) - 400*x[0]*(x[1]-x[0]**2),

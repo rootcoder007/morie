@@ -51,7 +51,7 @@ def joseph_simple_exponential_smoothing(y, alpha=None, horizon=1):
     --------
     The forecast is flat -- one level repeated for every horizon.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> r = joseph_simple_exponential_smoothing(rng.normal(10, 1, 100), alpha=0.3,
     ...                                         horizon=5)

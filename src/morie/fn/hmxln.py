@@ -85,7 +85,7 @@ def geron_xlnet(X, n_layers=1, vocab_size=None, d_model=8, seed=0):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = geron_xlnet([0, 1, 2, 1], n_layers=1, vocab_size=3)
     >>> sorted(int(v) for v in r["permutation"])
     [0, 1, 2, 3]

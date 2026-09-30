@@ -59,7 +59,7 @@ def causal_caliper_matching(ps, treat, caliper=None, k=1, replace=True,
     --------
     With good overlap almost every treated unit finds a match.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> ps = rng.beta(2, 2, 1000)
     >>> tr = (rng.random(1000) < ps).astype(float)

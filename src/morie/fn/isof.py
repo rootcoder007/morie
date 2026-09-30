@@ -60,7 +60,7 @@ def isolation_forest(X, n_trees=100, sample_size=256, seed=0):
     --------
     A clear outlier scores highest.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(0, 1, (300, 2)), [[12.0, 12.0]]]
     >>> r = isolation_forest(X, n_trees=100, seed=1)

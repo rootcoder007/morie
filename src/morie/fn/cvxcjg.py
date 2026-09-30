@@ -47,7 +47,7 @@ def boyd_conjugate(f, y, x_grid=None):
     For :math:`f(x) = x^2/2` the conjugate is :math:`y^2/2` -- the
     quadratic is self-conjugate.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> g = np.linspace(-10, 10, 20001)
     >>> r = boyd_conjugate(lambda x: 0.5 * x ** 2, 2.0, x_grid=g)
     >>> round(r["value"], 6)

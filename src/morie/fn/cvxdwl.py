@@ -50,7 +50,7 @@ def boyd_dual_function(L, lambda_=None, nu=None, x_grid=None):
     --------
     For :math:`L(x) = x^2 - 2x` the infimum is -1, attained at 1.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> g = boyd_dual_function(lambda x: x ** 2 - 2 * x,
     ...                        x_grid=np.linspace(-4, 4, 801))
     >>> round(g["value"], 6)

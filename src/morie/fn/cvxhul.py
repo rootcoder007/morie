@@ -49,7 +49,7 @@ def boyd_convex_hull(S, query=None, tol=1e-09):
     --------
     A point inside a triangle is in the hull; one outside is not.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> P = np.array([[0.0, 0.0], [4.0, 0.0], [0.0, 4.0]])
     >>> boyd_convex_hull(P, query=[1.0, 1.0])["in_hull"]
     True

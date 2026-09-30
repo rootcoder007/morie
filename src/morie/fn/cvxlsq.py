@@ -44,7 +44,7 @@ def boyd_least_squares(A, b, rcond=None):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.array([[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]])
     >>> r = boyd_least_squares(A, [1.0, 2.0, 3.0])
     >>> [round(float(v), 6) for v in r["x"]]

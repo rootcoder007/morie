@@ -61,7 +61,7 @@ def esl_cv_score(X, y, model=None, k=5, loss="mse", stratify=False, seed=0):
     --------
     On data with real signal, CV error is well below the variance of ``y``.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(200, 3))
     >>> y = X @ [1.0, -2.0, 0.5] + rng.normal(0, 0.3, 200)

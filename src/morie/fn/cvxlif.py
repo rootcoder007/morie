@@ -44,7 +44,7 @@ def boyd_linf_fitting(A, b):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.c_[np.ones(5), np.arange(5.0)]
     >>> b = np.array([0.0, 1.0, 2.0, 3.0, 4.5])
     >>> r = boyd_linf_fitting(A, b)

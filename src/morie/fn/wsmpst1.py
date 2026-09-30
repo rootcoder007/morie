@@ -36,7 +36,7 @@ def wasserman_posterior_mean(posterior):
     --------
     Uniform on [0, 1]: mean 1/2, sd 1/sqrt(12).
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> g = np.linspace(0.0, 1.0, 100001)
     >>> out = wasserman_posterior_mean((g, np.ones_like(g)))
     >>> round(out["estimate"], 9)

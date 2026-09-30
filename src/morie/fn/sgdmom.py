@@ -44,7 +44,7 @@ def sgd_momentum(g, mu=0.9, lr=0.01, state=None):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> x, st = np.zeros(1), None
     >>> for _ in range(500):
     ...     r = sgd_momentum(2 * (x - 3.0), mu=0.9, lr=0.01, state=st)

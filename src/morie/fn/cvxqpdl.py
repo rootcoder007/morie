@@ -58,7 +58,7 @@ def boyd_qp_dual(P, q, G, h):
     unconstrained minimiser is (1, 1), which violates the constraint, so
     the solution sits on the boundary at (1/2, 1/2).
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> P = np.eye(2)
     >>> r = boyd_qp_dual(P, [-1.0, -1.0], [[1.0, 1.0]], [1.0])
     >>> [round(float(v), 6) for v in r["x"]]

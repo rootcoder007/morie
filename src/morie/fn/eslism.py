@@ -58,7 +58,7 @@ def esl_isomap(X, k=2, neighbors=5):
     On a Swiss roll the embedding recovers the roll's own arclength
     parameter, which a straight-line method cannot.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> t = rng.uniform(1.5 * np.pi, 4.5 * np.pi, 400)
     >>> h = rng.uniform(0, 10, 400)

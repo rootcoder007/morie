@@ -47,7 +47,7 @@ def adagrad(g, lr=0.01, eps=1e-8, state=None):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> x, st = np.zeros(1), None
     >>> for _ in range(20000):
     ...     r = adagrad(2 * (x - 3.0), lr=0.5, state=st)

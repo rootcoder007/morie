@@ -46,7 +46,7 @@ def geron_average_pooling_2d(x, pool_size=2, stride=None, padding="valid"):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> a = np.arange(16.0).reshape(4, 4)
     >>> out = geron_average_pooling_2d(a, 2)
     >>> out["pooled"].tolist()

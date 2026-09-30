@@ -57,7 +57,7 @@ def autoencoder_anomaly(X, k=2, n_iter=300, lr=0.05, seed=0, contamination=0.05)
     --------
     A point off the dominant subspace scores highest.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> Z = rng.normal(size=(300, 1))
     >>> X = np.c_[Z, 2 * Z, -Z] + rng.normal(0, 0.05, (300, 3))

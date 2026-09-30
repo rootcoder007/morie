@@ -45,7 +45,7 @@ def effective_sample_size_bulk(chains):
     --------
     Independent draws give bulk-ESS near the draw count.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> r = effective_sample_size_bulk(rng.normal(size=(4, 1000)))
     >>> bool(r["efficiency"] > 0.85)

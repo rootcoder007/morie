@@ -45,7 +45,7 @@ def boyd_hinge_loss(u, margin=1.0):
     Correct and beyond the margin costs nothing; inside the margin costs
     the shortfall.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = boyd_hinge_loss([2.0, 1.0, 0.5, -1.0])
     >>> [float(v) for v in r["loss"]]
     [0.0, 0.0, 0.5, 2.0]

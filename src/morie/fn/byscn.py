@@ -63,7 +63,7 @@ def bayes_c_pi(y, X, n_iter=2000, burn_in=500, pi_a=1.0, pi_b=1.0,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(120, 20))
     >>> y = X[:, 0] * 2.0 + rng.normal(scale=0.3, size=120)

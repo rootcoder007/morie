@@ -47,7 +47,7 @@ def geron_adaboost_weight_update(y_true, y_pred, weights, alpha_t):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = geron_adaboost_weight_update([0, 0, 1, 1], [0, 1, 1, 1],
     ...                                  [0.25] * 4, np.log(3.0))
     >>> [round(w, 6) for w in r["weights_new"]]

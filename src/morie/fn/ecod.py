@@ -56,7 +56,7 @@ def ecod(X):
     Both the high and the low injected point are caught, which is the value of
     aggregating *both* tails rather than one.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(0, 1, (500, 3)), [[8.0, 0.0, 0.0]], [[-8.0, 0.0, 0.0]]]
     >>> r = ecod(X)

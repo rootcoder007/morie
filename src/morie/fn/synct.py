@@ -88,7 +88,7 @@ def synthetic_control(Y, unit_id, time_id, treated_unit, treatment_time,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> f = rng.normal(size=20)
     >>> load = np.array([1.0, 0.5, 1.5, 0.2, 1.0])

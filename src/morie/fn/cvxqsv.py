@@ -80,7 +80,7 @@ def boyd_qcqp_relaxation(P0, q0, P=(), q=(), r=(), rank_tol=1e-05,
     ``|x|^2/2 - 2*x1`` over the unit disc: the bound equals the true
     optimum and the lifted matrix comes back rank one.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r1 = boyd_qcqp_relaxation(np.eye(2), [-2.0, 0.0], P=[np.eye(2)],
     ...                           q=[[0.0, 0.0]], r=[-0.5])
     >>> round(float(r1["lower_bound"]), 4)

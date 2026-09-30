@@ -62,7 +62,7 @@ def geron_sinusoidal_positional_encoding(seq_len, d_model, base=10000.0):
 
     Every row has the same norm ``sqrt(d/2)``:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> round(float(np.linalg.norm(r["encoding"][2])), 10)
     1.4142135624
     """

@@ -52,7 +52,7 @@ def cox_dfbeta_influence(fit):
     --------
     Shapes line up with the data, one row per subject.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn.efrnt import efron_tie_correction
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(300, 2))

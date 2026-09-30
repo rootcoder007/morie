@@ -54,7 +54,7 @@ def local_outlier_factor(X, k=20):
     --------
     A point between two clusters scores well above 1.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(0, 0.3, (100, 2)), rng.normal(6, 0.3, (100, 2)),
     ...           [[3.0, 3.0]]]

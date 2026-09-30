@@ -63,7 +63,7 @@ def dp_synthetic_data(X, epsilon=1.0, n_synth=None, bins=10, bounds=None, seed=N
     --------
     Marginals are approximately preserved.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> z = rng.normal(size=3000)
     >>> X = np.column_stack([z, z + rng.normal(0, 0.2, 3000)])   # strongly correlated

@@ -62,7 +62,7 @@ def mcd_outlier(X, support_fraction=None, n_trials=50, alpha=0.025, seed=0):
     Masking: a cluster of outliers inflates the classical covariance until it
     hides itself, while the robust distance still finds it.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(0, 1, (200, 2)), rng.normal(7, 0.3, (25, 2))]
     >>> r = mcd_outlier(X, seed=1)

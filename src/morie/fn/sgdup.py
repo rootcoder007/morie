@@ -45,7 +45,7 @@ def sgd_update(beta, batch_grads, eta=0.01):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = sgd_update([0.0, 0.0], [[1.0, 2.0], [3.0, 4.0]], eta=0.1)
     >>> [float(v) for v in r["grad_mean"]]
     [2.0, 3.0]

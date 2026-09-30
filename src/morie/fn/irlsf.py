@@ -45,7 +45,7 @@ def irlsf(X, y, family="gaussian", max_iter=100, tol=1e-6, full_output=False):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import irlsf
     >>> X = np.column_stack([np.ones(20), np.linspace(0, 1, 20)])
     >>> y = 1 + 2*X[:, 1] + np.random.randn(20)*0.1

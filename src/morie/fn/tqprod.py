@@ -61,7 +61,7 @@ def turboquant_qjl_product_estimator(q, signs_k, norm_k, S):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> S = np.array([[1.0, 0.0], [0.0, 1.0]])
     >>> out = turboquant_qjl_product_estimator([1.0, 0.0], [[1, 1]], 1.0, S)
     >>> bool(out["estimate"].size == 1)

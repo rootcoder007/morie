@@ -57,7 +57,7 @@ def boyd_proximal_grad(f, grad_f, prox, x0, t=0.1, max_iter=500,
     LASSO by proximal gradient: soft thresholding is the prox of the
     l1 norm.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> A = rng.normal(size=(60, 8))
     >>> x_true = np.array([3.0, 0, 0, -2.0, 0, 0, 0, 0])

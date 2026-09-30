@@ -81,7 +81,7 @@ def esl_nmf(X, k, max_iter=500, tol=1e-10, seed=13, loss="frobenius", W0=None, H
     An exactly rank-1 non-negative matrix is recovered essentially
     exactly, and every entry of both factors stays non-negative:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = np.outer([1.0, 2.0, 3.0], [4.0, 5.0])
     >>> out = esl_nmf(X, 1)
     >>> out["relative_error"] < 1e-6

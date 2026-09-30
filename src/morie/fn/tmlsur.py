@@ -106,7 +106,7 @@ def tmle_survival(time, event, treatment, covariates, tau=None, n_bins=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(3)
     >>> n = 400
     >>> W = rng.normal(size=(n, 1))

@@ -60,7 +60,7 @@ def newey_west_hac(scores, lags=None, X=None, prewhiten=False):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> out = newey_west_hac(rng.normal(size=(200, 1)), lags=4)
     >>> bool(out["positive_definite"])

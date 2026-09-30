@@ -63,7 +63,7 @@ def diffusion_score_matching(x, score, sigma=0.1, n_noise=16, seed=0):
     Monte Carlo estimate to resolve that -- at the default 16 the ordering
     among nearby candidates is not reliable.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(400, 1))
     >>> cand = (0.25, 0.5, 1.0, 2.0, 4.0)

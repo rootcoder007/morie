@@ -61,7 +61,7 @@ def propensity_score_matching(y, d, X=None, propensity=None, n_neighbors=1,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> d = np.r_[np.ones(50), np.zeros(50)]
     >>> e = np.r_[rng.uniform(0.4, 0.6, 50), rng.uniform(0.4, 0.6, 50)]

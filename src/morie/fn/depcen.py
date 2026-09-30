@@ -54,7 +54,7 @@ def dependent_censoring_hazard(time, event, X, ties="efron"):
     --------
     Independent censoring leaves the censoring model null.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(1000, 1))
     >>> T = rng.exponential(1 / np.exp(0.8 * X[:, 0]))

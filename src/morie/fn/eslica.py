@@ -65,7 +65,7 @@ def esl_ica(X, k=None, fun="logcosh", max_iter=500, tol=1e-8, seed=0):
     Two non-Gaussian sources, linearly mixed, are recovered up to
     permutation and sign.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> t = np.linspace(0, 8 * np.pi, 2000)
     >>> S = np.column_stack([np.sin(t), np.sign(np.cos(2.7 * t))])

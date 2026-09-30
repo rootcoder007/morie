@@ -51,7 +51,7 @@ def psopt(f, bounds, n_particles=30, generations=100, w=0.7, c1=1.5, c2=1.5, ful
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import psopt
     >>> f = lambda x: (x[0] - 2)**2 + (x[1] - 3)**2
     >>> bounds = [(0, 5), (0, 5)]

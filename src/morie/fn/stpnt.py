@@ -60,7 +60,7 @@ def spacetime_intensity(
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(42)
     >>> res = spacetime_intensity(rng.uniform(0, 1, 100),
     ...     rng.uniform(0, 1, 100), rng.uniform(0, 10, 100))

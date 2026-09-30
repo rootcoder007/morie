@@ -95,7 +95,7 @@ def schabenberger_kriging_pred_error(coords, z, target,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng_ = np.random.default_rng(0)
     >>> co = rng_.uniform(0, 10, size=(60, 2))
     >>> z = rng_.normal(size=60)

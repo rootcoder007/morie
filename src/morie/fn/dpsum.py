@@ -58,7 +58,7 @@ def dp_sum(x, a, b, epsilon=1.0, seed=None):
 
     Unbiased around the clipped truth.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> v = rng.uniform(0, 10, 200)
     >>> d = [dp_sum(v, 0, 10, 1.0, seed=s)["release"] for s in range(3000)]

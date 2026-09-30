@@ -40,7 +40,7 @@ def average_pooling(x, pool_size=2, stride=None, padding="valid",
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> a = np.arange(16.0).reshape(4, 4)
     >>> float(average_pooling(a, global_pool=True)["pooled"])
     7.5

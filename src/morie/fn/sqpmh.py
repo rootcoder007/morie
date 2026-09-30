@@ -48,7 +48,7 @@ def sqpmh(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, full_output=False)
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import sqpmh
     >>> f = lambda x: (x[0] - 1)**2 + (x[1] - 2)**2
     >>> gf = lambda x: np.array([2*(x[0]-1), 2*(x[1]-2)])

@@ -51,7 +51,7 @@ def geron_seq2seq(src, tgt, encoder, decoder, max_len=None, eos=None):
     A decoder that scores every token equally gives the uniform loss
     log V and decodes token 0 at every step:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> z_of = lambda s: np.asarray([float(sum(s))])
     >>> dec = lambda z, prefix: np.zeros(3)
     >>> r = geron_seq2seq([1, 2], [1, 2], z_of, dec)

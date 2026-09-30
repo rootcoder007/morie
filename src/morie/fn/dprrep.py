@@ -60,7 +60,7 @@ def randomized_response_dp(truth, epsilon=1.0, seed=None):
     --------
     The debiased estimate recovers the true proportion; the raw one does not.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> truth = (rng.random(20000) < 0.3).astype(int)
     >>> r = randomized_response_dp(truth, epsilon=1.0, seed=1)

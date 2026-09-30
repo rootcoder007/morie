@@ -174,7 +174,7 @@ def callaway_santanna(y, D, unit, time, cohort=None, control="notyet"):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> unit = np.repeat(np.arange(9), 8)
     >>> time = np.tile(np.arange(8), 9)
     >>> gv = np.repeat([3., 3., 3., 5., 5., 5., np.inf, np.inf, np.inf], 8)

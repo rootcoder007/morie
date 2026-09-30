@@ -58,7 +58,7 @@ def doubly_robust_ate(y, d, X, propensity=None, mu1=None, mu0=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(600, 2))
     >>> d = (rng.uniform(size=600) < 0.5).astype(float)

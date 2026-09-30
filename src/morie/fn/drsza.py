@@ -93,7 +93,7 @@ def dr_did_santanna_zhao(y_pre, y_post, treatment, X=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> x = rng.normal(size=4000)
     >>> D = (rng.uniform(size=4000) < 1 / (1 + np.exp(-x))).astype(float)

@@ -46,7 +46,7 @@ def nwtrp(f, fprime, x0, tol=1e-6, max_iter=100, full_output=False):
     Examples
     --------
     >>> # Solve x^2 - 2 = 0 (root = sqrt(2))
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import nwtrp
     >>> f = lambda x: x**2 - 2
     >>> fp = lambda x: 2*x

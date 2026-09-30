@@ -68,7 +68,7 @@ def dp_logistic(X, y, epsilon=1.0, method="objective", lam=0.01, C=1.0,
     --------
     At a workable budget the private fit recovers the sign and beats chance.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(2000, 2))
     >>> y = (rng.random(2000) < 1 / (1 + np.exp(-(1.5 * X[:, 0] - X[:, 1])))).astype(float)

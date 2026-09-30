@@ -114,7 +114,7 @@ def alphazero_loss_var(losses, value_loss=None, policy_loss=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> out = alphazero_loss_var(rng.normal(2.0, 0.5, size=500))
     >>> bool(abs(out["estimate"] - 2.0) < 0.1)

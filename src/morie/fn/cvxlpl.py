@@ -46,7 +46,7 @@ def boyd_linear_program_dual(A, b, c):
     Primal and dual optima agree exactly -- strong duality, with no
     constraint qualification required.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.array([[1.0, 1.0]])
     >>> r = boyd_linear_program_dual(A, [4.0], [1.0, 2.0])
     >>> round(r["primal_value"], 8) == round(r["dual_value"], 8)

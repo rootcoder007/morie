@@ -59,7 +59,7 @@ def spatial_flow(
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> O = np.array([1000, 2000, 500], dtype=float)
     >>> D = np.array([1500, 800], dtype=float)
     >>> dist = np.array([[10, 20], [15, 5], [25, 10]], dtype=float)

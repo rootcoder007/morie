@@ -43,7 +43,7 @@ def boyd_l1_fitting(A, b):
     --------
     An outlier moves the l1 fit far less than the least-squares fit.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.c_[np.ones(6), np.arange(6.0)]
     >>> b = np.array([0.0, 1.0, 2.0, 3.0, 4.0, 40.0])
     >>> x1 = boyd_l1_fitting(A, b)["x"]

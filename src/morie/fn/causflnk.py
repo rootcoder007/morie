@@ -55,7 +55,7 @@ def causal_falsification_test(y_pre, treat, X_baseline=None):
     the procedure, where a single draw only shows whether that draw happened
     to be balanced.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rej = 0
     >>> for s in range(400):
     ...     g = np.random.default_rng(s)

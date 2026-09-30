@@ -65,7 +65,7 @@ def cox_stratified(time, event, X, stratum, ties="efron", max_iter=50, tol=1e-9)
     When the baseline genuinely differs by stratum but the effect does not,
     stratifying recovers the shared coefficient.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(600, 1))
     >>> s = rng.integers(0, 3, 600)

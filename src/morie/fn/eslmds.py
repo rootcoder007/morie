@@ -47,7 +47,7 @@ def esl_mds(D, k):
     --------
     Distances from points on a line are reproduced exactly:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> pts = np.array([[0.0], [1.0], [3.0]])
     >>> D = np.abs(pts - pts.T)
     >>> out = esl_mds(D, 1)

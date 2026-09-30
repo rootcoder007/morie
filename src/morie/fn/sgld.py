@@ -66,7 +66,7 @@ def sgld(
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import sgld
     >>> ll = lambda p, X, y: -0.5*np.sum((y - X @ p)**2)
     >>> lp = lambda p: -0.5*np.sum(p**2)

@@ -71,7 +71,7 @@ def causal_iptw_atoweights(treat, ps, estimand="ato", trim=None, stabilize=True)
     Overlap weights are bounded by 1, and the tilting function e(1-e) they
     imply is bounded by 1/4 -- so no single unit can dominate.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> ps = np.array([0.01, 0.5, 0.99])
     >>> tr = np.array([1, 1, 0])
     >>> w = causal_iptw_atoweights(tr, ps, estimand="ato")["weights"]

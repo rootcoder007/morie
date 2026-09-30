@@ -56,7 +56,7 @@ def esl_sis_screening(X, y, d=None):
     --------
     The two genuinely marginal predictors are retained out of 50.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(100, 50))
     >>> y = 3 * X[:, 7] - 2 * X[:, 21] + rng.normal(0, 0.1, 100)

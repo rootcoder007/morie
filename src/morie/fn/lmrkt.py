@@ -58,7 +58,7 @@ def local_markov(
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(42)
     >>> n, T = 30, 10
     >>> W = np.ones((n, n)) / (n - 1)

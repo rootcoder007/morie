@@ -77,7 +77,7 @@ def zonal_ebm(S, albedo=0.3, A=203.3, B=2.09, k=3.8, n_zones=9, max_iter=500,
     From a warm start the model settles on a temperate climate with partial
     ice cover.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> warm = zonal_ebm(1.0, start=20.0)
     >>> bool(warm["global_mean"] > 0 and not warm["snowball"])
     True

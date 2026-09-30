@@ -58,7 +58,7 @@ def causal_forest(Y, T, X, n_trees=200, min_node_size=10, max_depth=6,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(800, 3))
     >>> T = (rng.uniform(size=800) < 0.5).astype(float)

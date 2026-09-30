@@ -50,7 +50,7 @@ def difev(f, bounds, pop_size=50, generations=100, F=0.8, Cr=0.7, full_output=Fa
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import difev
     >>> f = lambda x: (x[0] - 2)**2 + (x[1] - 3)**2
     >>> bounds = [(0, 5), (0, 5)]

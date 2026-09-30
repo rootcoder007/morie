@@ -70,7 +70,7 @@ def knn_entropy(x, k=3, base="nats"):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> h = knn_entropy(rng.normal(size=2000))["entropy"]
     >>> bool(abs(h - 0.5 * np.log(2 * np.pi * np.e)) < 0.1)

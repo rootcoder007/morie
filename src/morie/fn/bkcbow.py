@@ -53,7 +53,7 @@ def burkov_cbow(context_ids, center_ids, embeddings, output_weights,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> E = np.eye(3)
     >>> out = burkov_cbow([[0, 1]], [2], E, np.eye(3))
     >>> out["hidden"].shape

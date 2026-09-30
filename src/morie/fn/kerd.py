@@ -70,7 +70,7 @@ def kernel_density(x, at=None, bandwidth=None, kernel="gaussian",
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> out = kernel_density([0.0, 0.0, 0.0], at=[0.0])
     >>> bool(out["density"][0] > 0)
     True

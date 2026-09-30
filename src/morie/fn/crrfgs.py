@@ -68,7 +68,7 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
     On data where a covariate drives cause 1, the subdistribution hazard ratio
     points the same way as the cause-specific one.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn.crrcsh import cause_specific_hazard
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(1500, 1))

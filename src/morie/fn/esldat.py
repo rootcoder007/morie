@@ -57,7 +57,7 @@ def esl_dropout(X, p=0.5, training=True, seed=0):
     Inverted dropout preserves the expected activation, which is why test
     time needs no rescaling.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = np.ones((4000, 10))
     >>> out = esl_dropout(X, p=0.5, seed=1)["output"]
     >>> bool(abs(out.mean() - 1.0) < 0.02)

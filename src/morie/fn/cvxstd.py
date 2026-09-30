@@ -50,7 +50,7 @@ def boyd_steepest_desc(grad, norm=2, P=None):
     --------
     In the Euclidean norm it is the normalised negative gradient.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = boyd_steepest_desc([3.0, 4.0], norm=2)
     >>> [round(float(v), 4) for v in r["direction"]]
     [-0.6, -0.8]

@@ -61,7 +61,7 @@ def discrete_wavelet_anomaly(x, threshold=None, levels=None, max_span=8):
     --------
     A single spike is caught, and it fires at the finest scale.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> y = rng.normal(0, 0.2, 256)
     >>> y[128] += 8.0

@@ -50,7 +50,7 @@ def boyd_cvxlin_complement(A, B, C, tol=1e-09):
     --------
     A positive definite block matrix passes all three conditions.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = boyd_cvxlin_complement([[2.0, 0.0], [0.0, 2.0]],
     ...                            [[1.0], [0.0]], [[1.0]])
     >>> bool(r["psd"])

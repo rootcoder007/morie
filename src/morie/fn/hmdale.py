@@ -63,7 +63,8 @@ def geron_dalle(text, model, n_image_tokens=4, temperature=1.0, top_k=None, imag
     A model that is uniform over two codebook entries: every step is a
     coin flip, so each token costs ``log 2`` and the perplexity is 2.
 
-    >>> import numpy as np, math
+    >>> import math
+    >>> from morie.fn import _array_core as np
     >>> uniform = lambda ctx: np.zeros(2)
     >>> r = geron_dalle([0, 1], uniform, n_image_tokens=4)
     >>> len(r["image_tokens"]), r["n_steps"]

@@ -61,7 +61,7 @@ def importance_sampling(log_weights, values=None, normalized=True):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> out = importance_sampling(np.zeros(100), np.ones(100))
     >>> float(out["estimate"])
     1.0

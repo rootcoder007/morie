@@ -58,7 +58,7 @@ def efron_tie_correction(time, event, X, **kwargs):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(400, 2))
     >>> T = rng.exponential(1 / np.exp(X @ [0.8, -0.5]))

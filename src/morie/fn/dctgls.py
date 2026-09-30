@@ -78,7 +78,7 @@ def doubly_censored_gls(y, X, left=None, right=None, delta=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(400, 1))
     >>> y = 2.0 * X[:, 0] + rng.normal(size=400)

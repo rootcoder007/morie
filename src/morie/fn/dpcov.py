@@ -60,7 +60,7 @@ def dp_covariance(X, C=1.0, epsilon=1.0, delta=1e-5, seed=None, project_psd=True
     The release is symmetric and, after projection, positive semi-definite --
     both required of anything calling itself a covariance.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(400, 4)) * 0.3
     >>> r = dp_covariance(X, C=2.0, epsilon=2.0, seed=0)

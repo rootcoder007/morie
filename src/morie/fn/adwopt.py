@@ -74,7 +74,7 @@ def adamw_step(g, beta1=0.9, beta2=0.999, lr=1e-3, wd=0.01, eps=1e-8, theta=None
     >>> bool(abs(a - b) < 1e-12)
     True
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> x, st = np.zeros(1), None
     >>> for _ in range(4000):
     ...     r = adamw_step(2 * (x - 3.0), lr=0.05, wd=0.0, state=st)

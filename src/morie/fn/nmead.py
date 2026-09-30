@@ -50,7 +50,7 @@ def nmead(f, x0, alpha=1.0, beta=0.5, gamma=2.0, tol=1e-8, max_iter=5000, full_o
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import nmead
     >>> f = lambda x: (x[0] - 2)**2 + (x[1] - 3)**2
     >>> x0 = np.array([0.0, 0.0])

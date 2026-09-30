@@ -143,7 +143,7 @@ def boyd_interior_point(f0, f=(), x0=None, t=1.0, mu=10.0, tol=1e-06,
     Minimise ``x^2/2`` subject to ``x >= 1``. The optimum is at the
     boundary, ``x = 1``, with value ``1/2``.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> obj = lambda x: 0.5 * x[0] ** 2
     >>> con = [lambda x: 1.0 - x[0]]
     >>> r = boyd_interior_point(obj, con, [2.0])

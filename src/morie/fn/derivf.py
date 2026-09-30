@@ -68,7 +68,7 @@ def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> t = np.linspace(0, 1, 200)
     >>> out = smoothed_derivative(t, t ** 2, order=1)
     >>> bool(abs(float(np.mean(out["derivative"])) - 1.0) < 0.1)

@@ -61,7 +61,7 @@ def dp_mean(x, a, b, epsilon=1.0, seed=None, split=0.5, known_n=True):
 
     Unbiased when n is public.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> v = rng.uniform(0, 1, 500)
     >>> d = [dp_mean(v, 0, 1, 1.0, seed=s)["release"] for s in range(3000)]

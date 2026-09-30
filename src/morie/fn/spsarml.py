@@ -111,7 +111,7 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> n = 40
     >>> W = np.zeros((n, n))
     >>> for i in range(n - 1):

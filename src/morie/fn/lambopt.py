@@ -62,7 +62,7 @@ def lamb_optimizer(g, w, lr=0.001, beta1=0.9, beta2=0.999, wd=0.01, eps=1e-6, st
     --------
     Step length scales with the weight norm, as for LARS.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> a = lamb_optimizer([1.0, 1.0], [1.0, 1.0], lr=1.0, wd=0.0)["update"]
     >>> b = lamb_optimizer([1.0, 1.0], [2.0, 2.0], lr=1.0, wd=0.0)["update"]
     >>> bool(abs(np.linalg.norm(b) - 2 * np.linalg.norm(a)) < 1e-9)

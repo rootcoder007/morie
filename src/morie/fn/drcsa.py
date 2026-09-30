@@ -101,7 +101,7 @@ def dr_callaway_santanna(y, D, unit, time, cohort=None, X=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(2)
     >>> nu, T = 60, 6
     >>> gv = np.where(np.arange(nu) < 20, 3.0,

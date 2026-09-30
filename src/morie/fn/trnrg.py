@@ -50,7 +50,7 @@ def trnrg(f, grad_f, hess_f, x0, tol=1e-6, max_iter=100, radius=1.0, full_output
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import trnrg
     >>> f = lambda x: (x[0] - 1)**2 + (x[1] - 2)**2
     >>> gf = lambda x: np.array([2*(x[0]-1), 2*(x[1]-2)])

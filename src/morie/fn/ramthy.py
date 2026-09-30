@@ -335,7 +335,7 @@ def monochromatic_triangles(colouring, brute_force=False):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> # the 5-cycle colouring of K5 has no monochromatic triangle
     >>> C = np.zeros((5, 5), dtype=int)
     >>> for i in range(5):

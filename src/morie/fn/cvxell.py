@@ -61,7 +61,7 @@ def boyd_minvol_ellipsoid(X, tol=1e-07, max_iter=10000):
     circumscribed CIRCLE, centred at (1/2, 1/2) with radius
     sqrt(2)/2 -- and all four corners lie exactly on it.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> sq = np.array([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0]])
     >>> r = boyd_minvol_ellipsoid(sq)
     >>> [round(float(v), 5) for v in r["center"]]

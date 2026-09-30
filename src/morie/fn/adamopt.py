@@ -57,7 +57,7 @@ def adam(g, beta1=0.9, beta2=0.999, lr=1e-3, eps=1e-8, state=None):
     --------
     Minimise ``f(x) = (x - 3)^2`` from ``x = 0``; the iterate moves toward 3.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> x, st = np.zeros(1), None
     >>> for _ in range(4000):
     ...     r = adam(2 * (x - 3.0), lr=0.05, state=st)

@@ -57,7 +57,7 @@ def natural_neighbor(
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> pts = np.array([[0,0],[1,0],[0,1],[1,1]], dtype=float)
     >>> vals = np.array([1.0, 2.0, 3.0, 4.0])
     >>> q = np.array([[0.5, 0.5]])

@@ -62,7 +62,7 @@ def boyd_indicator(x, C="ball", tol=1e-09, **set_kw):
     The proximal operator of the indicator IS the projection, which is
     why projected gradient is a proximal method.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> p = boyd_indicator([3.0, 4.0], "ball")["prox"]
     >>> [round(float(v), 6) for v in p]
     [0.6, 0.8]

@@ -78,7 +78,7 @@ def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn._did import add_intercept, ols_fit, logit_fit, logit_predict
     >>> def nuis(yt, dt, Xt, Xe):
     ...     B, Be = add_intercept(Xt), add_intercept(Xe)

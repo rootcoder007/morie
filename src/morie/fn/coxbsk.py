@@ -58,7 +58,7 @@ def cox_breslow_step(time, event, X, beta=None, ties="efron"):
     The baseline cumulative hazard is non-decreasing and survival is
     non-increasing -- the defining shape constraints.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(300, 1))
     >>> T = rng.exponential(1 / np.exp(X[:, 0] * 0.7))

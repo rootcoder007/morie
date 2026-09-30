@@ -65,7 +65,7 @@ def esl_score_match(score, X, grad_score=None, eps=1e-5):
     For a Gaussian model the objective is minimised at the true parameters.
     With ``q`` a ``N(mu, 1)`` density the score is ``-(x - mu)``.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(2.0, 1.0, (4000, 1))
     >>> J = [esl_score_match(lambda Z, m=m: -(Z - m), X)["objective"]

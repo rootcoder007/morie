@@ -64,7 +64,7 @@ def boyd_generalized_p(x, y, K="nonneg", tol=1e-09):
     semi-definite, which is strictly stronger than every entry being
     larger.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.array([[1.0, 0.0], [0.0, 1.0]])
     >>> B = np.array([[2.0, 0.0], [0.0, 3.0]])
     >>> bool(boyd_generalized_p(A, B, "psd")["precedes"])

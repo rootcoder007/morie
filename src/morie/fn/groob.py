@@ -51,7 +51,7 @@ def geron_oob_evaluation(y, predictions, in_bag, task="regression"):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> y = np.array([0.0, 1.0])
     >>> # row 0 is out-of-bag for estimator 1, row 1 for estimator 0, so
     >>> # only the off-diagonal entries are ever scored

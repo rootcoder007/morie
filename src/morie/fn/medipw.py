@@ -132,7 +132,7 @@ def huber_ipw_mediation(y, d, m, x, link="probit", trim=0.0, boot=0,
     Plant a direct effect of 1.0 and an indirect path of 0.8 * 1.5 = 1.2,
     so the total is 2.2.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(11)
     >>> n = 4000
     >>> x = rng.normal(size=(n, 2))

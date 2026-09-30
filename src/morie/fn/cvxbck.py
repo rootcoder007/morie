@@ -56,7 +56,7 @@ def boyd_backtracking(f, grad, x, dx, alpha=0.25, beta=0.5, max_iter=100):
     Steepest descent on a quadratic; from a point where the full step
     overshoots, the search backs off.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> f = lambda z: float(z @ z)
     >>> x = np.array([1.0])
     >>> r = boyd_backtracking(f, 2 * x, x, -2 * x)   # dx = -grad, full step overshoots

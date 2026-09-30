@@ -62,7 +62,7 @@ def lars_optimizer(g, w, lr=0.1, mu=0.9, wd=0.0, eta=0.001, eps=1e-8, state=None
     The trust ratio scales with the weight norm, so doubling the weights
     doubles the step.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> a = lars_optimizer([1.0, 1.0], [1.0, 1.0], lr=1.0, mu=0.0)["update"]
     >>> b = lars_optimizer([1.0, 1.0], [2.0, 2.0], lr=1.0, mu=0.0)["update"]
     >>> bool(abs(np.linalg.norm(b) - 2 * np.linalg.norm(a)) < 1e-9)

@@ -38,7 +38,7 @@ def wasserman_credible_interval(posterior, alpha):
     --------
     Uniform posterior on [0, 1], alpha = 0.1 -> (0.05, 0.95).
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> g = np.linspace(0.0, 1.0, 100001)
     >>> out = wasserman_credible_interval((g, np.ones_like(g)), 0.10)
     >>> round(out["lower"], 6)

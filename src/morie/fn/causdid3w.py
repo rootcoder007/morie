@@ -59,7 +59,7 @@ def causal_did_three_way(y, treated, post, group):
     A true effect present only in the eligible group is recovered, and the
     placebo DiD is near zero.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> n = 8000
     >>> tr = rng.integers(0, 2, n).astype(float)

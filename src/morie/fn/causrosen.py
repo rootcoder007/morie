@@ -60,7 +60,7 @@ def causal_rosenbaum_bound(paired_diff, gamma_max=3.0, n_gamma=25, alpha=0.05):
     --------
     A strong effect survives substantial hidden bias.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> d = rng.normal(2.0, 1.0, 200)
     >>> r = causal_rosenbaum_bound(d)

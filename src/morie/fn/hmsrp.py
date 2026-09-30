@@ -44,7 +44,7 @@ def geron_sparse_rand_projection(X, d_out, density=None, seed=0):
     A dense (density = 1) projection has entries exactly ±1/sqrt(d_out),
     so nothing is zero and the shape is as requested:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
     >>> r = geron_sparse_rand_projection(X, 2, density=1.0, seed=7)
     >>> r["X_proj"].shape

@@ -72,7 +72,7 @@ def egregious_loss_forest(y, D, X, n_trees=200, min_leaf=10, max_depth=6,
     Effect modification by the first covariate: treatment helps when
     ``X[:, 0] > 0`` and hurts otherwise. The forest recovers the sign split.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(800, 4))
     >>> D = (rng.random(800) < 0.5).astype(float)

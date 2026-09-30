@@ -48,7 +48,7 @@ def boyd_smooth_min(x, axis=None):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = boyd_smooth_min([0.0, 0.0, 0.0])
     >>> round(r["value"], 6)
     1.098612

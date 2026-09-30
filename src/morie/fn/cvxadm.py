@@ -60,7 +60,7 @@ def boyd_admm(prox_f, prox_g, A=None, B=None, c=None, rho=1.0, n=None,
     Splitting a least-squares fit against an l1 penalty -- the standard
     LASSO-by-ADMM arrangement.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(1)
     >>> A_ = rng.normal(size=(50, 6))
     >>> x_true = np.array([2.0, 0, 0, -3.0, 0, 0])

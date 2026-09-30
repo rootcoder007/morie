@@ -60,7 +60,7 @@ def generalized_gamma_aft(time, event, X, max_iter=500, tol=1e-6):
     On Weibull data the fitted shape sits near 1 and the likelihood-ratio test
     against Weibull does not reject.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(1200, 2))
     >>> mu = 1.0 + 0.7 * X[:, 0] - 0.4 * X[:, 1]

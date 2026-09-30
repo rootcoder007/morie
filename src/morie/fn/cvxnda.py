@@ -45,7 +45,7 @@ def boyd_newton_decrement(grad, hess):
     --------
     For ``f(x) = 0.5 x'Ax`` the bound is exact.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.array([[4.0, 1.0], [1.0, 3.0]])
     >>> x = np.array([5.0, -2.0])
     >>> r = boyd_newton_decrement(A @ x, A)

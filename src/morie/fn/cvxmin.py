@@ -45,7 +45,7 @@ def boyd_minimum_norm(A, b, norm=2):
     --------
     The l2 answer is dense -- every coordinate is used.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.array([[1.0, 1.0, 1.0]])
     >>> r2 = boyd_minimum_norm(A, [3.0], norm=2)
     >>> [round(float(v), 6) for v in r2["x"]]

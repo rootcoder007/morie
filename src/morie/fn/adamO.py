@@ -39,7 +39,7 @@ def adam_optimizer(theta, grad, lr=1e-3, beta1=0.9, beta2=0.999, eps=1e-8, state
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> th, st = np.zeros(2), None
     >>> for _ in range(4000):
     ...     r = adam_optimizer(th, 2 * (th - np.array([1.0, -2.0])), lr=0.05, state=st)

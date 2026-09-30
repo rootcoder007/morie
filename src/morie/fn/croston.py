@@ -55,7 +55,7 @@ def croston(y, alpha=0.1, variant="croston"):
     --------
     Demand of 10 units every 4 periods gives a rate of 2.5 per period.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> y = [0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0, 10]
     >>> r = croston(y, alpha=0.1)
     >>> bool(abs(r["forecast"] - 2.5) < 0.2)

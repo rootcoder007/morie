@@ -61,7 +61,7 @@ def covariate_balance_check(X, treat, weights=None, threshold=0.1):
     --------
     Weighting on a correct propensity model improves balance.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(2000, 3))
     >>> ps = 1 / (1 + np.exp(-(0.8 * X[:, 0] + 0.5 * X[:, 1])))

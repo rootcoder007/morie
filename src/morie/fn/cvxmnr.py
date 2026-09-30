@@ -46,7 +46,7 @@ def boyd_minimax(A, b=None):
     --------
     Minimising the larger of two opposed affine functions balances them.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.array([[1.0], [-1.0]])
     >>> r = boyd_minimax(A, [0.0, 2.0])
     >>> round(float(r["x"][0]), 6), round(r["value"], 6)

@@ -61,7 +61,7 @@ def cause_specific_hazard(time, event_type, X, cause=1, ties="efron"):
     A covariate driving cause 1 but not cause 2 shows up in the cause-1 fit
     and not the cause-2 one.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(1500, 1))
     >>> T1 = rng.exponential(1 / np.exp(0.9 * X[:, 0]))

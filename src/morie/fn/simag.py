@@ -49,7 +49,7 @@ def simag(f, x0, bounds, T_init=1.0, cooling_rate=0.95, max_iter=10000, full_out
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import simag
     >>> f = lambda x: (x[0] - 2)**2 + (x[1] - 3)**2
     >>> bounds = [(0, 5), (0, 5)]

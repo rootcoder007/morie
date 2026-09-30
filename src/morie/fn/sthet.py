@@ -53,7 +53,7 @@ def spacetime_heterogeneity(
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(42)
     >>> n, T = 20, 8
     >>> W = np.ones((n, n)) / (n - 1)

@@ -57,7 +57,7 @@ def neural_kantorovich_map(source, target, n_iter=400, lr=0.05,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> s = rng.normal(size=300)
     >>> out = neural_kantorovich_map(s, 2 * s + 1, n_iter=150)

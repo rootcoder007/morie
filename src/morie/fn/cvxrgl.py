@@ -47,7 +47,7 @@ def boyd_regularized_ls(A, b, delta=1.0):
     A singular design has no unique least-squares solution but a perfectly
     unique ridge solution.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.array([[1.0, 1.0], [1.0, 1.0]])
     >>> r = boyd_regularized_ls(A, [2.0, 2.0], delta=1.0)
     >>> [round(float(v), 6) for v in r["x"]]

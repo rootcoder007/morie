@@ -63,7 +63,7 @@ def esl_iwls(X, y, beta0=None, family="binomial", max_iter=50, tol=1e-8, add_int
     --------
     Coefficient recovery on data simulated from the model.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(4000, 2))
     >>> eta = -0.5 + 1.5 * X[:, 0] - 1.0 * X[:, 1]

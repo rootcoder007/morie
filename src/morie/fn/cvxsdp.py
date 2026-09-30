@@ -62,7 +62,7 @@ def boyd_sdp(c, F, x0=None, tol=1e-09):
     simpler: ``t*I - A >= 0`` holds exactly when ``t >= lambda_max(A)``,
     so minimising ``t`` under that LMI returns the eigenvalue.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.array([[2.0, 1.0], [1.0, 2.0]])
     >>> r = boyd_sdp([1.0], [-A, np.eye(2)])
     >>> round(float(r["objective"]), 6)

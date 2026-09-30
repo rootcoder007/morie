@@ -67,7 +67,7 @@ def geron_lstm(x_t, h_prev, c_prev, weights):
     ``c_t = 0.5*c_prev`` and ``h_t = 0.5*tanh(c_t)``.  With
     ``c_prev = [2, -2]`` that is ``c_t = [1, -1]``:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> Z = {k: (np.zeros((2, 2)) if k[0] in "WU" else np.zeros(2)) for k in
     ...      ("W_i", "U_i", "b_i", "W_f", "U_f", "b_f",
     ...       "W_o", "U_o", "b_o", "W_g", "U_g", "b_g")}

@@ -67,7 +67,7 @@ def dp_adam(grads, C=1.0, sigma=1.0, lr=1e-3, betas=(0.9, 0.999), eps=1e-8,
     --------
     With no noise DP-Adam reduces to Adam on the clipped mean gradient.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn.adamopt import adam
     >>> rng = np.random.default_rng(0)
     >>> G = rng.normal(size=(32, 4)) * 0.05

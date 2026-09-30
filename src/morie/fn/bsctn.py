@@ -49,7 +49,7 @@ def bsctn(f, a, b, tol=1e-6, max_iter=100, full_output=False):
     >>> from morie.fn import bsctn
     >>> f = lambda x: x**2 - 2
     >>> root = bsctn(f, 1.0, 2.0)
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> np.isclose(root, np.sqrt(2), atol=1e-6)
     True
     """

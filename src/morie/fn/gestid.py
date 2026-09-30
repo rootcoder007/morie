@@ -63,7 +63,7 @@ def g_estimation_snmm(y, d, X, grid=None, n_grid=401, span=None):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(500, 2))
     >>> d = (rng.uniform(size=500) < 1 / (1 + np.exp(-X[:, 0]))).astype(float)

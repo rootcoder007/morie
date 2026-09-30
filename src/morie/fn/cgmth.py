@@ -81,7 +81,7 @@ def cgmth(f, grad_f, x0, tol=1e-6, max_iter=1000, full_output=False):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import cgmth
     >>> f = lambda x: (x[0] - 2)**2 + (x[1] - 3)**2
     >>> gf = lambda x: np.array([2*(x[0]-2), 2*(x[1]-3)])

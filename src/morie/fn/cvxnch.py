@@ -57,7 +57,7 @@ def boyd_nuclear_norm(X, tol=None):
     --------
     A diagonal matrix wears its singular values on its face.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = np.array([[3.0, 0.0], [0.0, 4.0]])
     >>> r = boyd_nuclear_norm(X)
     >>> [round(float(v), 6) for v in (r["nuclear"], r["frobenius"],

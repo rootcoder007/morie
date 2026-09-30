@@ -63,7 +63,7 @@ def esl_thin_plate_spline(X, y, lambda_=1.0, newdata=None):
     --------
     With no penalty the spline interpolates the observations exactly.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> P = rng.uniform(-1, 1, (25, 2))
     >>> z = np.sin(2 * P[:, 0]) + P[:, 1] ** 2

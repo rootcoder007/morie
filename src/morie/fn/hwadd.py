@@ -66,7 +66,7 @@ def holt_winters_additive(y, period=4, alpha=0.3, beta=0.1, gamma=0.1, horizon=N
     Recovers a level, trend and seasonal pattern from a series built with
     all three.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> t = np.arange(48)
     >>> y = 100 + 2 * t + 20 * np.sin(2 * np.pi * t / 12)
     >>> r = holt_winters_additive(y, period=12, alpha=0.4, beta=0.1, gamma=0.3)

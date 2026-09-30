@@ -61,7 +61,7 @@ def esl_backprop(X, y, weights, task="regression"):
     Backprop agrees with a central finite difference to 8 decimals -- the
     only test that actually validates a gradient.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(40, 3))
     >>> y = rng.normal(size=40)

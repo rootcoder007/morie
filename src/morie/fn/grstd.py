@@ -51,7 +51,7 @@ def geron_standardization(X, ddof=0):
 
     Output has mean 0 and variance 1 by construction:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> round(float(np.var(r["scaled"])), 12)
     1.0
     """

@@ -52,7 +52,7 @@ def boyd_chebyshev_center(A, b, max_iter=500, tol=1e-10):
     --------
     The unit square has centre (0.5, 0.5) and inradius 0.5.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.array([[-1.0, 0.0], [1.0, 0.0], [0.0, -1.0], [0.0, 1.0]])
     >>> b = np.array([0.0, 1.0, 0.0, 1.0])
     >>> r = boyd_chebyshev_center(A, b)

@@ -41,7 +41,7 @@ def esl_pls(X, y, M):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = [[0.0, 1.0], [1.0, 0.0], [2.0, 2.0], [3.0, 1.0]]
     >>> y = [1.0, 2.0, 5.0, 5.0]
     >>> full = esl_pls(X, y, 2)

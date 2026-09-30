@@ -51,7 +51,7 @@ def ipopt(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, mu_init=1.0, full_
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import ipopt
     >>> f = lambda x: (x[0] - 1)**2 + (x[1] - 2)**2
     >>> gf = lambda x: np.array([2*(x[0]-1), 2*(x[1]-2)])

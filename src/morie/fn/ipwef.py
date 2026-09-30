@@ -60,7 +60,7 @@ def ipw_ate(y, d, X=None, propensity=None, trunc=0.01, stabilized=True,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> d = (rng.uniform(size=400) < 0.5).astype(float)
     >>> y = 2.0 * d + rng.normal(size=400)

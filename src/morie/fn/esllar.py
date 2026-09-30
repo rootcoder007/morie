@@ -66,7 +66,7 @@ def esl_least_angle_reg(X, y, max_steps=None, standardize=True, method="lar"):
     --------
     Predictors enter in order of marginal correlation, strongest first.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(120, 5))
     >>> y = 5 * X[:, 2] - 2 * X[:, 0] + rng.normal(0, 0.1, 120)

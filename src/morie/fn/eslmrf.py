@@ -58,7 +58,7 @@ def esl_markov_rf(graph, psi=None, states=2, normalize=True):
     A 3-node chain with attractive potentials: by symmetry every node is
     equally likely to be in either state.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = esl_markov_rf([(0, 1), (1, 2)])
     >>> bool(np.allclose(r["marginals"], 0.5))
     True

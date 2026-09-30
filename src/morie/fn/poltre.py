@@ -63,7 +63,7 @@ def polya_tree_density(x, at=None, depth=8, c=1.0, base="normal",
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> out = polya_tree_density(rng.normal(size=300), depth=6)
     >>> bool(out["absolutely_continuous"])

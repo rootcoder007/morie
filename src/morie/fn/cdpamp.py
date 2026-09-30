@@ -62,7 +62,7 @@ def cdp_subgaussian_amplification(rho, k_compositions=1, delta=1e-5):
     zCDP composes additively, and the resulting epsilon grows like sqrt(k) --
     advanced composition without the union bound.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> a = cdp_subgaussian_amplification(0.01, k_compositions=100)
     >>> b = cdp_subgaussian_amplification(0.01, k_compositions=400)
     >>> float(round(a["rho_total"], 10)), float(round(b["rho_total"], 10))

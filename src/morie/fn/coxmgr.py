@@ -62,7 +62,7 @@ def cox_martingale_residuals(fit):
     --------
     Martingale residuals sum to approximately zero under a correct model.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn.efrnt import efron_tie_correction
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(400, 2))

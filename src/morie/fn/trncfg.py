@@ -64,7 +64,7 @@ def trimmed_causal_effect(y, d, X=None, propensity=None, alpha=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(600, 1))
     >>> d = (rng.uniform(size=600) < 1 / (1 + np.exp(-2 * X[:, 0]))).astype(float)

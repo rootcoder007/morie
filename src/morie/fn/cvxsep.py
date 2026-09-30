@@ -50,7 +50,7 @@ def boyd_separating_hyperplane(C, D, tol=1e-08):
     --------
     Two clearly disjoint clouds separate, with a positive margin.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> C = np.array([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0]])
     >>> D = np.array([[5.0, 5.0], [6.0, 5.0], [5.0, 6.0]])
     >>> r = boyd_separating_hyperplane(C, D)

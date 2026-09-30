@@ -59,7 +59,7 @@ def geron_classification_localization(image, model, n_classes=None, gt_class=Non
     Two classes and a box: the class head is softmaxed, the box head is
     read off directly.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> model = lambda img: np.array([0.0, 0.0, 5.0, 5.0, 2.0, 4.0])
     >>> r = geron_classification_localization(None, model)
     >>> r["class_probs"][0]

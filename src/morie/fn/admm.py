@@ -50,7 +50,7 @@ def admm(f, g, A, b, rho=1.0, max_iter=1000, tol=1e-4, full_output=False):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import admm
     >>> f = lambda x: np.sum(x**2)
     >>> g = lambda z: np.sum(np.abs(z))

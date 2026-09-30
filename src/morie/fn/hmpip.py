@@ -47,7 +47,7 @@ def preprocessing_pipeline(X_train, X_test=None, steps=("impute_median",
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> out = preprocessing_pipeline([[1.0], [2.0], [3.0]],
     ...                              steps=("standardize",))
     >>> [round(float(v), 4) for v in out["train"].ravel()]

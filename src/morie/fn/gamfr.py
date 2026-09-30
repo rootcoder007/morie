@@ -47,7 +47,7 @@ def gamma_frailty_cox(time, event, X, cluster, **kwargs):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> k = np.repeat(np.arange(50), 8)
     >>> w = rng.gamma(2.0, 0.5, 50)[k]

@@ -40,7 +40,7 @@ def boyd_logistic_loss(u):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = boyd_logistic_loss([0.0])
     >>> round(float(r["loss"][0]), 6)
     0.693147

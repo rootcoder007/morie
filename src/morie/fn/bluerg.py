@@ -84,7 +84,7 @@ def blue_gls(y, X, V=None, Z=None, Sigma=None, R=None, K=None):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = np.column_stack([np.ones(4), [0.0, 1.0, 2.0, 3.0]])
     >>> y = np.array([1.0, 3.0, 5.0, 7.0])
     >>> [round(float(b), 6) for b in blue_gls(y, X)["beta"]]

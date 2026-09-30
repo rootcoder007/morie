@@ -46,7 +46,7 @@ def geron_gaussian_rand_projection(X, d_out, seed=0):
     >>> r = geron_gaussian_rand_projection([[1.0, 0.0], [0.0, 1.0]], d_out=3, seed=0)
     >>> r["X_projected"].shape, r["R"].shape
     ((2, 3), (2, 3))
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> bool(np.allclose(r["X_projected"], r["R"]))
     True
 

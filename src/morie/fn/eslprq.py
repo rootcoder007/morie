@@ -63,7 +63,7 @@ def esl_prototype_lvq(X, y, n_prototypes=2, eta=0.1, n_epochs=50, newdata=None, 
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(-2, 1, (100, 2)), rng.normal(2, 1, (100, 2))]
     >>> y = np.r_[np.zeros(100), np.ones(100)]

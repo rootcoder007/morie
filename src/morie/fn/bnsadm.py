@@ -164,7 +164,7 @@ def bound_admissible_estimators(y, D, X, family="gaussian", trim=0.01,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(4000, 2))
     >>> e = 1 / (1 + np.exp(-0.6 * X[:, 0]))

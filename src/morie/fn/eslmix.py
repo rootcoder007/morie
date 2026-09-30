@@ -49,7 +49,7 @@ def esl_gaussian_mixture(X, k=2, newdata=None, **kwargs):
     The fitted density integrates to one, which is the check that separates a
     density estimate from an arbitrary positive function.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(-3, 1, 400), rng.normal(3, 1, 400)]
     >>> grid = np.linspace(-12, 12, 2001)

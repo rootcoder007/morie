@@ -48,7 +48,7 @@ def mhfit(f, majorizer, x0, tol=1e-6, max_iter=100, full_output=False):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import mhfit
     >>> f = lambda x: x**2  # True minimizer at x=0
     >>> # Majorizer: quadratic upper bound

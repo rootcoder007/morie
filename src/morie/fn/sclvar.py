@@ -65,7 +65,7 @@ def selection_coefficient(counts, n_total=None, generations=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> c = np.array([[10, 10], [20, 0], [15, 5]], float)
     >>> out = selection_coefficient(c, n_total=np.full((3, 2), 20.0))
     >>> int(np.argmax(out["fst"]))

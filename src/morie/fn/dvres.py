@@ -49,7 +49,7 @@ def deviance_residual_cox(fit):
     Deviance residuals are far more symmetric than the martingale residuals
     they come from -- that is the entire purpose of the transform.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from scipy.stats import skew
     >>> from morie.fn.efrnt import efron_tie_correction
     >>> rng = np.random.default_rng(0)

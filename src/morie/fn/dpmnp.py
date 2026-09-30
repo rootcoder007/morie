@@ -56,7 +56,7 @@ def dp_minmax(x, epsilon=1.0, a=None, b=None, alpha=0.01, seed=None):
     The released interval sits inside the true range, because it is a quantile
     pair rather than the extremes.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> v = rng.uniform(0, 100, 5000)
     >>> r = dp_minmax(v, epsilon=2.0, a=0, b=100, alpha=0.01, seed=1)

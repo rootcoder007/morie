@@ -55,7 +55,7 @@ def geron_cosine_annealing(t, T, eta_max, eta_min=0.0):
 
     The schedule is monotone decreasing over the cycle:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> sch = geron_cosine_annealing(0, T=10, eta_max=1.0)["schedule"]
     >>> bool(np.all(np.diff(sch) < 0)), len(sch)
     (True, 11)

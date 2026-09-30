@@ -118,7 +118,7 @@ def schabenberger_intensity_estimation(points, bandwidth=None, region=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> pts = rng.uniform(0, 10, size=(200, 2))
     >>> out = schabenberger_intensity_estimation(pts, region=(0, 10, 0, 10))

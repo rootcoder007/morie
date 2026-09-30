@@ -67,7 +67,7 @@ def esl_em_gmm(X, k=2, max_iter=200, tol=1e-6, reg=1e-6, seed=0):
     Two well-separated clusters are recovered, and the means come back in
     the data's own units.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(-4, 0.5, 200), rng.normal(4, 0.5, 200)]
     >>> r = esl_em_gmm(X, k=2, seed=1)

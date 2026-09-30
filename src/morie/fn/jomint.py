@@ -60,7 +60,7 @@ def joseph_mint_reconciliation(y_hat, S, W=None, method="ols"):
     --------
     A two-level hierarchy whose base forecasts do not add up is made coherent.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> S = np.array([[1.0, 1.0], [1.0, 0.0], [0.0, 1.0]])
     >>> r = joseph_mint_reconciliation([10.0, 4.0, 5.0], S)
     >>> bool(r["coherent"])

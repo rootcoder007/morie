@@ -62,7 +62,7 @@ def dr_overlap_weighted(y, D, X, ps=None, n_folds=2, seed=0):
     --------
     Recovers a known effect under confounding.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(3000, 2))
     >>> e = 1 / (1 + np.exp(-(0.8 * X[:, 0])))

@@ -59,7 +59,7 @@ def geron_he_init(fan_in, seed=0, fan_out=None, distribution="normal"):
     >>> u = geron_he_init(6, seed=1, fan_out=3, distribution="uniform")
     >>> round(u["limit"], 10)
     1.0
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> bool(np.all(np.abs(u["W"]) <= u["limit"]))
     True
 

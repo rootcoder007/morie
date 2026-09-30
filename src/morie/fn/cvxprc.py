@@ -51,7 +51,7 @@ def boyd_projection(v, C="ball", radius=1.0, lo=None, hi=None, A=None,
     --------
     A point inside the ball is its own projection.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = boyd_projection([0.3, 0.4], "ball", radius=1.0)
     >>> bool(not r["changed"])
     True

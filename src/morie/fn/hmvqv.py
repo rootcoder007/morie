@@ -76,7 +76,7 @@ def geron_vq_vae(X, codebook_size=4, latent_dim=2, epochs=200, lr=0.05, beta=0.2
     Two well-separated groups and two codes: the quantiser assigns one
     code per group and every latent equals its codebook entry exactly.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = [[0.0, 0.0], [0.1, 0.1], [5.0, 5.0], [5.1, 5.1]]
     >>> r = geron_vq_vae(X, codebook_size=2, latent_dim=1, epochs=400, lr=0.05)
     >>> int(len(set(int(i) for i in r["indices"])))

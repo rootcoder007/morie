@@ -64,7 +64,7 @@ def schabenberger_ml_variogram(coords, z, variogram_model="exponential",
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(2)
     >>> co = rng.uniform(0, 10, size=(50, 2))
     >>> z = rng.normal(size=50)

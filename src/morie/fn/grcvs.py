@@ -94,7 +94,7 @@ def geron_cross_validation_score(X, y, K, fit=None, predict=None, score=None,
 
     A custom scorer -- negative mean absolute error -- on the same data:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> mae = lambda yt, yp: -float(np.mean(np.abs(yt - yp)))
     >>> round(geron_cross_validation_score([[1.0], [2.0], [3.0], [4.0]],
     ...                                    [2.0, 4.0, 6.0, 8.0], K=2,

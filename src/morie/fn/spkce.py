@@ -82,7 +82,7 @@ def schabenberger_cov_param_estimation_kriging(coords, z,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(3)
     >>> co = rng.uniform(0, 10, size=(80, 2))
     >>> z = 2 + 0.5 * co[:, 0] + rng.normal(scale=0.5, size=80)

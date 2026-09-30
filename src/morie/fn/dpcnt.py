@@ -56,7 +56,7 @@ def dp_count(D, epsilon=1.0, predicate=None, seed=None, nonneg=True):
     --------
     Noise scale is 1/epsilon and does not depend on n.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> a = dp_count(np.ones(10), epsilon=0.5, seed=0)["noise_scale"]
     >>> b = dp_count(np.ones(10_000), epsilon=0.5, seed=0)["noise_scale"]
     >>> float(a), float(b)

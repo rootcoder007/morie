@@ -58,7 +58,7 @@ def boyd_subgrad_method(f, subgrad, x0, t=None, max_iter=500, rule="sqrt"):
     --------
     Minimising :math:`|x|`, which has no gradient at its minimum.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = boyd_subgrad_method(lambda z: float(abs(z[0])),
     ...                         lambda z: np.sign(z), [3.0], t=0.5)
     >>> bool(r["f_best"] < 0.05)

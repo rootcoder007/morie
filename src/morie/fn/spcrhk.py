@@ -61,7 +61,7 @@ def schabenberger_cressie_hawkins(coords, z, lag_bins=None, cutoff=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> co = np.array([[1, 1], [1, 4], [2, 2], [3, 1], [3, 4]], float)
     >>> z = np.array([1, 4, 2, 3, 20], float)
     >>> out = schabenberger_cressie_hawkins(co, z, exact=True)

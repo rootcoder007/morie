@@ -59,7 +59,7 @@ def burkov_lm_ch2_perplexity(D, k=None, t=None, log_probs=None, base="e"):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> float(round(burkov_lm_ch2_perplexity(np.log([0.5, 0.5]))["perplexity"], 6))
     2.0
     """

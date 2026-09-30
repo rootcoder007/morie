@@ -61,7 +61,7 @@ def fine_gray_subdistribution_hazard(time, cause, X, of_cause=1, **kwargs):
     Cumulative incidence is a probability: bounded in [0, 1] and
     non-decreasing.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(1200, 1))
     >>> T1 = rng.exponential(1 / np.exp(0.8 * X[:, 0]))

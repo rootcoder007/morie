@@ -69,7 +69,7 @@ def aft_weibull(time, event, X, **kwargs):
     --------
     Coefficients are recovered on data simulated from the model.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(800, 2))
     >>> mu = 1.0 + 0.7 * X[:, 0] - 0.4 * X[:, 1]

@@ -53,7 +53,7 @@ def rmspf(f, grad_f, x0, learning_rate=0.01, decay=0.9, epsilon=1e-8, max_iter=1
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import rmspf
     >>> f = lambda x: (x[0] - 1)**2 + (x[1] - 2)**2
     >>> gf = lambda x: np.array([2*(x[0]-1), 2*(x[1]-2)])

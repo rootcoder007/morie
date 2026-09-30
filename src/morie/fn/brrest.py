@@ -53,7 +53,7 @@ def brr_balanced(strata, fay_k=0.0):
     Replicate count is the next power of two at or above the stratum count,
     which is where Hadamard matrices exist.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> s = np.repeat(np.arange(5), 2)
     >>> r = brr_balanced(s)
     >>> int(r["n_strata"]), int(r["n_replicates"])

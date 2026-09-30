@@ -57,7 +57,7 @@ def autocorrelation(y, lag_max=None, ci=0.95):
     White noise shows no systematic autocorrelation and the portmanteau test
     does not reject.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> r = autocorrelation(rng.normal(size=500), lag_max=10)
     >>> bool(r["ljung_box_p"] > 0.05)

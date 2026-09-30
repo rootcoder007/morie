@@ -56,7 +56,7 @@ def dp_fedavg(client_updates, C=1.0, sigma=1.0, seed=None):
     Per-client noise falls as the number of clients grows -- more
     participants make federated DP cheaper, not costlier.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> small = dp_fedavg(rng.normal(size=(10, 5)) * 0.1, C=1.0, sigma=1.0, seed=0)
     >>> big = dp_fedavg(rng.normal(size=(1000, 5)) * 0.1, C=1.0, sigma=1.0, seed=0)

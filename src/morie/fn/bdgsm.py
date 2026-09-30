@@ -62,7 +62,7 @@ def bridge_sampling(log_p_posterior, log_q_posterior, log_p_proposal,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> lp1, lq1 = rng.normal(size=200), rng.normal(size=200)
     >>> lp2, lq2 = rng.normal(size=200), rng.normal(size=200)

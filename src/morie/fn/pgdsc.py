@@ -49,7 +49,7 @@ def pgdsc(f, grad_f, prox_g, x0, step_size=0.01, tol=1e-6, max_iter=1000, full_o
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import pgdsc
     >>> f = lambda x: np.sum(x**2)
     >>> gf = lambda x: 2*x

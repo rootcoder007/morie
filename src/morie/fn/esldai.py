@@ -67,7 +67,7 @@ def esl_dirichlet_proc(alpha=1.0, G0=None, n_atoms=50, size=None, seed=0):
     --------
     Weights are a probability vector once the truncation residual is added.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = esl_dirichlet_proc(alpha=2.0, n_atoms=200, seed=1)
     >>> bool(abs(r["weights"].sum() + r["truncation_mass"] - 1.0) < 1e-12)
     True

@@ -65,7 +65,7 @@ def boyd_grad_proj(f, grad_f, x0, C="ball", t=0.05, max_iter=500,
     Minimising a quadratic whose unconstrained optimum is outside the
     ball drives the iterate to the boundary.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> f = lambda z: 0.5 * np.sum((z - np.array([3.0, 4.0])) ** 2)
     >>> gf = lambda z: z - np.array([3.0, 4.0])
     >>> r = boyd_grad_proj(f, gf, [0.0, 0.0], "ball", radius=1.0, t=0.5)

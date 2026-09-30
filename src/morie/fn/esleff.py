@@ -40,7 +40,7 @@ def esl_effective_dof(S):
     A projection onto a 2-dimensional subspace has df 2, and all three
     traces agree:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = np.array([[1.0, 0.0], [1.0, 1.0], [1.0, 2.0], [1.0, 3.0]])
     >>> H = X @ np.linalg.inv(X.T @ X) @ X.T
     >>> out = esl_effective_dof(H)

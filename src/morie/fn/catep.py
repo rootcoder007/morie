@@ -95,7 +95,7 @@ def cate_estimation(Y, T, X, estimator="x", degree=2, n_trees=200, seed=0):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(2000, 2))
     >>> T = (rng.uniform(size=2000) < 0.5).astype(float)

@@ -52,7 +52,7 @@ def esl_logistic_reg(X, y, newdata=None, threshold=0.5, **kwargs):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(1)
     >>> X = rng.normal(size=(3000, 1))
     >>> y = (rng.random(3000) < 1 / (1 + np.exp(-(0.3 + 2.0 * X[:, 0])))).astype(float)

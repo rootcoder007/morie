@@ -53,7 +53,7 @@ def bits_per_byte(log_probs, n_bytes=None, bytes_per_token=None, base="e"):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> out = bits_per_byte(np.log([0.5, 0.5]), bytes_per_token=1.0)
     >>> float(out["bits_per_byte"])
     1.0

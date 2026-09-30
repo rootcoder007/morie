@@ -52,7 +52,7 @@ def geron_transfer_learning(pretrained_model, X, y, n_frozen=1, epochs=200, lr=0
     Two layers, the first frozen: layer 0 comes back untouched, layer 1
     has moved, and the loss has fallen.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> W0 = [[0.5, -0.5], [0.5, 0.5]]
     >>> W1 = [[1.0], [1.0]]
     >>> X = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [2.0, 1.0]]

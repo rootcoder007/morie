@@ -60,7 +60,7 @@ def causal_overlap_diagnostic(ps, treat, bins=20, eps=0.05):
     --------
     Good overlap gives a wide common support and a high overlap coefficient.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> ps = rng.beta(2, 2, 2000)
     >>> tr = (rng.random(2000) < ps).astype(float)

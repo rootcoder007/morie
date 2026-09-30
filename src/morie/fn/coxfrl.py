@@ -71,7 +71,7 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
     With genuine cluster heterogeneity the frailty variance is estimated well
     above zero, and the coefficient is still recovered.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> k = np.repeat(np.arange(60), 10)
     >>> w = rng.gamma(2.0, 0.5, 60)[k]              # cluster multipliers

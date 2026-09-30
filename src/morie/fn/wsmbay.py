@@ -43,7 +43,7 @@ def wasserman_posterior(data, f, prior):
     N(theta, 1) with flat prior: posterior is N(xbar, 1/n) — mean
     equals the sample mean.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> grid = np.linspace(-5.0, 5.0, 4001)
     >>> out = wasserman_posterior([1.0, 0.5, 1.5], None, (grid, np.ones_like(grid)))
     >>> abs(out["estimate"] - 1.0) < 1e-9

@@ -61,7 +61,7 @@ def dp_gan(disc_grads, C=1.0, sigma=1.0, lr=0.1, n_disc_steps=1, seed=None):
     The generator costs nothing extra -- it only ever sees privatised
     gradients.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> G = rng.normal(size=(64, 6)) * 0.1
     >>> r = dp_gan(G, C=1.0, sigma=1.0, lr=0.05, n_disc_steps=5, seed=0)

@@ -65,7 +65,7 @@ def geron_videobert(video_tokens, text_tokens, d_model=8, mask_positions=None, m
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = geron_videobert([0, 1, 2, 1], [0, 1], d_model=4)
     >>> int(r["n_video"]), int(r["n_text"])
     (4, 2)

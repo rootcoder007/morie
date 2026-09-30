@@ -45,7 +45,7 @@ def esl_pcr(X, y, M):
     --------
     With M = p, PCR reproduces OLS on the centred design:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = [[0.0, 1.0], [1.0, 0.0], [2.0, 2.0], [3.0, 1.0]]
     >>> y = [1.0, 2.0, 5.0, 5.0]
     >>> full = esl_pcr(X, y, 2)

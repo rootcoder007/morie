@@ -73,7 +73,7 @@ def esl_neural_net(X, y, M=5, lambda_=0.0, lr=0.1, n_epochs=400, task="regressio
     --------
     A non-linear regression surface a linear model cannot represent.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.uniform(-2, 2, (400, 2))
     >>> y = np.sin(X[:, 0]) + X[:, 1] ** 2

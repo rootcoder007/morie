@@ -49,7 +49,7 @@ def boyd_support_hyperplane(C, x0, tol=1e-07):
     At a face of a square the supporting hyperplane touches two
     generators.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> S = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
     >>> r = boyd_support_hyperplane(S, [0.5, 1.0])
     >>> bool(r["supports"])

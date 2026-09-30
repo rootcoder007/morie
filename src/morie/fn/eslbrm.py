@@ -71,7 +71,7 @@ def esl_boltzmann(v, h=4, lr=0.1, n_epochs=200, k_cd=1, seed=0, batch_size=None)
     --------
     Two repeated binary patterns are learned, so reconstruction error drops.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> base = np.array([[1, 1, 1, 0, 0, 0], [0, 0, 0, 1, 1, 1]], dtype=float)
     >>> V = np.repeat(base, 100, axis=0)

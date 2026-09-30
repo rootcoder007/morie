@@ -61,7 +61,7 @@ def triply_robust_mediation(Y, X, M, C=None, trunc=0.01):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> C = rng.normal(size=(800, 1))
     >>> X = (rng.uniform(size=800) < 0.5).astype(float)

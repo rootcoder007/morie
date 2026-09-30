@@ -70,7 +70,7 @@ def gate_estimation(cate, X=None, group_var=None, n_groups=4, se=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> tau = np.linspace(-1, 1, 400)
     >>> g = (np.arange(400) >= 200).astype(int)
     >>> out = gate_estimation(tau, group_var=g)

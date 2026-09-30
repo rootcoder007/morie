@@ -58,7 +58,7 @@ def esl_partial_dependence(model, X, S, grid=None, n_grid=20):
     For an additive model the partial-dependence curve reproduces the
     component exactly, up to the additive constant.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.uniform(-2, 2, (400, 2))
     >>> f = lambda Z: 3 * Z[:, 0] + Z[:, 1] ** 2

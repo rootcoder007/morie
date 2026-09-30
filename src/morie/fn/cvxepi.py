@@ -60,7 +60,7 @@ def boyd_epigraph(f, x, t):
     Convexity of the function shows up as convexity of the epigraph: the
     midpoint of two epigraph points is itself in the epigraph.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> f = lambda x: x ** 2
     >>> p, q = (-2.0, 5.0), (3.0, 10.0)
     >>> mid_x, mid_t = (p[0] + q[0]) / 2, (p[1] + q[1]) / 2

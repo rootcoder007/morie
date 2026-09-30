@@ -57,7 +57,7 @@ def turboquant_estimate_scores(q, k_tildes, norms, S, scale=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> S = np.eye(2)
     >>> out = turboquant_estimate_scores([1.0, 0.0], [[1, 1], [-1, 1]],
     ...                                  [1.0, 1.0], S)

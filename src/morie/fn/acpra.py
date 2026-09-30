@@ -54,7 +54,7 @@ def acceptance_rate_diagnostic(chains, target=None, kind="metropolis"):
     --------
     A chain that never repeats a value accepted everything.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> float(acceptance_rate_diagnostic(rng.normal(size=(2, 500)))["acceptance_rate"])
     1.0

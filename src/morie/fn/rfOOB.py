@@ -51,7 +51,7 @@ def random_forest_oob(y, predictions, in_bag=None, task="regression",
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> y = np.array([0.0, 1.0])
     >>> P = np.array([[9.0, 1.0], [0.0, 9.0]])
     >>> M = np.array([[True, False], [False, True]])

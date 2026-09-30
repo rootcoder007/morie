@@ -49,7 +49,7 @@ def gldsc(f, a, b, tol=1e-6, max_iter=100, full_output=False):
     >>> from morie.fn import gldsc
     >>> f = lambda x: (x - 3)**2
     >>> x_min = gldsc(f, 0.0, 5.0)
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> np.isclose(x_min, 3.0, atol=1e-4)
     True
     """

@@ -62,7 +62,8 @@ def geron_dalle_autoregressive_token(text_tokens, image_tokens_prefix, logits_fn
     A model that is uniform over two tokens assigns each prefix token
     ``log 1/2``:
 
-    >>> import numpy as np, math
+    >>> import math
+    >>> from morie.fn import _array_core as np
     >>> uniform = lambda ctx: np.zeros(2)
     >>> r = geron_dalle_autoregressive_token([0], [1, 0], uniform)
     >>> round(r["log_likelihood"], 6) == round(2 * math.log(0.5), 6)

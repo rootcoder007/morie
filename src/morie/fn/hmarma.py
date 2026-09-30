@@ -52,7 +52,7 @@ def arma_model(x, p=1, q=1, max_iter=200, tol=1e-10):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> e = rng.normal(size=400)
     >>> z = np.zeros(400)

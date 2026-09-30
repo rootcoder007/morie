@@ -44,7 +44,7 @@ def boyd_lse(x, temperature=1.0):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> p = boyd_lse([1.0, 2.0, 3.0])["value"]
     >>> bool(abs(p.sum() - 1) < 1e-12 and np.all(p > 0))
     True

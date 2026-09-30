@@ -24,7 +24,7 @@ def kamath_ch9_input_alignment_loss(P_X, F_T, t, llm=None, loss_fn=None):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> mse = lambda y, tgt: float(np.mean((np.asarray(y)
     ...                                     - np.asarray(tgt)) ** 2))
     >>> add = lambda p, f: np.asarray(p) + np.asarray(f)

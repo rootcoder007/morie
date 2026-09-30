@@ -63,7 +63,7 @@ def dp_changepoint(y, epsilon=1.0, bounds=None, min_segment=5, seed=None):
     --------
     A clear level shift is located near the truth.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> y = np.r_[rng.normal(0, 0.3, 100), rng.normal(4, 0.3, 100)]
     >>> r = dp_changepoint(y, epsilon=20.0, bounds=(-3, 8), seed=1)

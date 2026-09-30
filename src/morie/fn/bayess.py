@@ -51,7 +51,7 @@ def effective_sample_size_bayes(chain):
     --------
     Independent draws have ESS close to the draw count.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> r = effective_sample_size_bayes(rng.normal(size=(4, 2000)))
     >>> bool(r["efficiency"] > 0.9)

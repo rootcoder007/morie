@@ -44,7 +44,7 @@ def esl_z_score(X, y, beta):
     --------
     >>> X = [[1.0, 1.0], [1.0, -1.0], [1.0, 1.0], [1.0, -1.0]]
     >>> y = [3.2, -0.8, 2.8, -1.2]
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> b = np.linalg.lstsq(np.array(X), np.array(y), rcond=None)[0]
     >>> out = esl_z_score(X, y, b)
     >>> len(out["z"])

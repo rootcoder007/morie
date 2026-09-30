@@ -54,7 +54,7 @@ def hbos(X, bins=10, mode="static"):
     --------
     A point far out on one axis lands in the extreme upper tail of scores.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = np.r_[rng.normal(0, 1, (300, 2)), [[9.0, 0.0]]]
     >>> r = hbos(X, bins=12)

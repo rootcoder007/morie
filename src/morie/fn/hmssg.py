@@ -42,7 +42,7 @@ def geron_semantic_segmentation(image, model, y_true=None):
     A model that splits the image down the middle, scored against a
     ground truth that is right about the left half only:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> img = [[0.0, 0.0], [0.0, 0.0]]
     >>> def m(x):
     ...     s = np.zeros((2, 2, 2))

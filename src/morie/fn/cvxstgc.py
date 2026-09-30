@@ -54,7 +54,7 @@ def boyd_strong_convex(f, grad_f, x, m, y_samples=None, n_probe=64,
     A quadratic with Hessian diag(2, 5) is 2-strongly convex, and not
     5-strongly convex.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> Q = np.diag([2.0, 5.0])
     >>> f = lambda z: 0.5 * z @ Q @ z
     >>> gf = lambda z: Q @ z

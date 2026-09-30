@@ -62,7 +62,7 @@ def esl_lle(X, k=2, neighbors=5, reg=1e-3):
     The reconstruction weights sum to one for every point, which is the
     constraint that buys the invariance.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> t = rng.uniform(0, 4 * np.pi, 300)
     >>> X = np.column_stack([t * np.cos(t), t * np.sin(t), rng.normal(0, 0.05, 300)])

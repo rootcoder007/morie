@@ -51,7 +51,7 @@ def mantel_test(
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from scipy.spatial.distance import squareform, pdist
     >>> coords = np.random.default_rng(42).uniform(0, 100, (20, 2))
     >>> vals = np.random.default_rng(42).normal(0, 1, 20)

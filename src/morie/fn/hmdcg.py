@@ -68,7 +68,7 @@ def geron_dcgan(X, z_dim=100, filters=64, epochs=50, lr=0.0002, seed_shape=(4, 4
     A 16x16 image from a 4x4 seed at stride 2 needs exactly two
     upsampling layers:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> X = np.zeros((3, 16, 16))
     >>> r = geron_dcgan(X, z_dim=8, filters=4)
     >>> r["n_layers"]

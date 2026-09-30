@@ -70,7 +70,7 @@ def geron_detr(
     --------
     A 224x224 image reduces to a 7x7 grid, i.e. 49 encoder tokens:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> r = geron_detr(np.zeros((3, 224, 224)), n_queries=10, n_layers=1,
     ...                d_model=8, n_heads=2, n_classes=3)
     >>> r["feature_shape"], r["n_tokens"]

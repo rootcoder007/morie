@@ -61,7 +61,7 @@ def empirical_variogram(coords, z, lags=None, cutoff=None, model=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> co = rng.uniform(0, 10, size=(120, 2))
     >>> z = co[:, 0] * 0.5 + rng.normal(scale=0.4, size=120)

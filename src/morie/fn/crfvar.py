@@ -60,7 +60,7 @@ def causal_forest_variance(forest, X_test=None, bias_correct=True):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn.cfst import causal_forest
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(600, 2))

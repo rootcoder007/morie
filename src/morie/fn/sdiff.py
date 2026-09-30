@@ -101,7 +101,7 @@ def synthetic_did(Y, unit_id, time_id, treated, treatment_time, zeta=None,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(1)
     >>> f = np.cumsum(rng.normal(size=16))
     >>> load = np.concatenate([[1.0, 1.1], rng.uniform(0.4, 1.6, size=10)])

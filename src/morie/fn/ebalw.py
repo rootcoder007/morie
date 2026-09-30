@@ -64,7 +64,7 @@ def entropy_balancing(X, treat, moments=1, max_iter=200, tol=1e-8):
     Balance on the specified moments is exact by construction, not
     approximate.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> X = rng.normal(size=(600, 3))
     >>> ps = 1 / (1 + np.exp(-(X[:, 0] + 0.5 * X[:, 1])))

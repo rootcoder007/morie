@@ -81,7 +81,7 @@ def geron_torch_compile(model, mode="default", example_inputs=None):
     Three chained linear layers fuse into one, and the answer does not
     change:
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> A = np.eye(2) * 2
     >>> B = np.eye(2) * 3
     >>> C = np.eye(2) * 5

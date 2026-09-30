@@ -67,7 +67,7 @@ def aft_log_logistic(time, event, X, **kwargs):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(1)
     >>> X = rng.normal(size=(800, 2))
     >>> mu = 1.0 + 0.7 * X[:, 0] - 0.4 * X[:, 1]

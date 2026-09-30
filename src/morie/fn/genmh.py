@@ -49,7 +49,7 @@ def genmh(f, bounds, pop_size=50, generations=100, pc=0.7, pm=0.1, full_output=F
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fn import genmh
     >>> f = lambda x: (x[0] - 2)**2 + (x[1] - 3)**2
     >>> bounds = [(0, 5), (0, 5)]

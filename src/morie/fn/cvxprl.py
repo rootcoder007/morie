@@ -64,7 +64,7 @@ def boyd_perspective(f, x, t):
     The perspective of -log is the relative-entropy building block
     :math:`-t\log(x/t)`.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> round(float(boyd_perspective(lambda z: -np.log(z), [1.0], [2.0])["value"][0]), 6)
     1.386294
 

@@ -59,7 +59,7 @@ def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0,
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
     >>> g = [rng.normal(size=60), rng.normal(loc=3, size=60)]
     >>> out = hierarchical_dp_density(g, n_iter=60)

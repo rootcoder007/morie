@@ -62,7 +62,7 @@ def spacetime_cox(
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(42)
     >>> res = spacetime_cox(rng.uniform(size=80), rng.uniform(size=80),
     ...                     rng.uniform(0, 10, 80))

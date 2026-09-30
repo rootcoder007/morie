@@ -52,7 +52,7 @@ def boyd_gradient_descent(f, grad_f, x0, t=0.01, max_iter=1000, tol=1e-08):
     --------
     A well-conditioned quadratic converges quickly.
 
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> Q = np.diag([1.0, 2.0])
     >>> r = boyd_gradient_descent(lambda x: 0.5 * x @ Q @ x,
     ...                           lambda x: Q @ x, [1.0, 1.0], t=0.4)
