@@ -77,6 +77,8 @@ def test_empty_base_url_disables_the_tier(isolated_home, monkeypatch):
     monkeypatch.setenv("MORIE_HOSTED_BASE_URL", "")
     assert hosted.hosted_base_url() is None
     assert hosted.probe_hosted() is False
+    monkeypatch.setenv("MORIE_HOSTED_BASE_URL", "OFF")  # the spelling that works on Windows too
+    assert hosted.hosted_base_url() is None
 
 
 def test_device_login_polls_until_key_and_stores_it(isolated_home, monkeypatch):

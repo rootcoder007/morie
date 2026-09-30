@@ -39,9 +39,11 @@ _PROBE_TIMEOUT = 2.0
 
 
 def hosted_base_url() -> str | None:
-    """Return the hosted endpoint, or None when disabled via an empty override."""
+    """Return the hosted endpoint, or None when disabled via an override of "" or "off"."""
     if "MORIE_HOSTED_BASE_URL" in os.environ:
         url = os.environ["MORIE_HOSTED_BASE_URL"].strip()
+        if url.lower() in ("off", "none", "disabled"):
+            return None
         return url.rstrip("/") or None
     return DEFAULT_HOSTED_BASE_URL
 

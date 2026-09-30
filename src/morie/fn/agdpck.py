@@ -41,7 +41,7 @@ def _digest(text):
 
 
 def _fmt(x):
-    return "%.17g" % float(x)
+    return f"{float(x):.17g}"
 
 
 def alphazero_data_pickle(replay_buffer, path=None):
@@ -72,7 +72,7 @@ def alphazero_data_pickle(replay_buffer, path=None):
     text = "\n".join(parts)
     written = False
     if path is not None:
-        with open(path, "w") as fh:
+        with open(path, "w", newline="") as fh:  # no CRLF translation: bytes on disk equal the digested text
             fh.write(text)
         written = True
     return RichResult(
