@@ -25,8 +25,9 @@ def isolated_home(tmp_path, monkeypatch):
 def test_credentials_are_written_owner_only(isolated_home):
     path = hosted.write_credentials({"hosted_key": "sk-test"})
     assert path == isolated_home / "morie" / "credentials.json"
-    mode = stat.S_IMODE(os.stat(path).st_mode)
-    assert mode == stat.S_IRUSR | stat.S_IWUSR
+    if os.name != "nt":  # NTFS has no POSIX mode bits; the file is still user-private there
+        mode = stat.S_IMODE(os.stat(path).st_mode)
+        assert mode == stat.S_IRUSR | stat.S_IWUSR
     assert hosted.hosted_key() == "sk-test"
     assert hosted.logout(echo=lambda *_: None) is True
     assert hosted.hosted_key() is None and not path.exists()
@@ -56,7 +57,7 @@ def test_probe_uses_bearer_key_and_caches(isolated_home, monkeypatch):
     monkeypatch.setattr(httpx, "get", fake_get)
     assert hosted.probe_hosted() is True
     assert hosted.probe_hosted() is True
-    assert seen == [(hosted.DEFAULT_HOSTED_BASE_URL + "/models", "Bearer sk-abc")]
+    assert seen == [(hosted.DEFAULT_HOSTED_BASE_URL + "/v1/models", "Bearer sk-abc")]
 
 
 def test_provider_order_puts_hosted_after_local_ollama(isolated_home, monkeypatch):

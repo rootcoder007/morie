@@ -128,3 +128,22 @@ def pytest_sessionfinish(session, exitstatus):
         "(regenerate with python tests/fn/_audit/harvest_trivial.py).",
         stacklevel=1,
     )
+
+
+@pytest.fixture(autouse=True)
+def _isolate_hosted_credentials(tmp_path, monkeypatch):
+    """Tests must not see the developer's own hosted-tier login.
+
+    The hosted provider reads $XDG_CONFIG_HOME/morie/credentials.json and
+    caches its probe per process; point both at an empty temp dir so provider
+    detection starts from nothing configured in every test.
+    """
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "xdg"))
+    monkeypatch.delenv("MORIE_HOSTED_KEY", raising=False)
+    try:
+        from morie import hosted
+
+        hosted.reset_probe_cache()
+    except Exception:  # pragma: no cover - import guard
+        pass
+    yield

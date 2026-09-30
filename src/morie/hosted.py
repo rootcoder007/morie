@@ -11,7 +11,8 @@ that key, and no anonymous endpoint is contacted.
 Environment
 -----------
 MORIE_HOSTED_BASE_URL
-    Override the endpoint (``https://llm.rmorie.com/v1``). An empty string
+    Override the endpoint (``https://llm.rmorie.com``; the request layer adds
+    ``/v1/chat/completions``). An empty string
     disables the tier.
 MORIE_HOSTED_KEY
     Override the stored key (CI, containers).
@@ -31,7 +32,7 @@ from pathlib import Path
 
 import httpx
 
-DEFAULT_HOSTED_BASE_URL = "https://llm.rmorie.com/v1"
+DEFAULT_HOSTED_BASE_URL = "https://llm.rmorie.com"
 DEFAULT_HOSTED_AUTH_URL = "https://llm.rmorie.com/auth"
 DEFAULT_HOSTED_MODEL = "minimax-m3:cloud"
 _PROBE_TIMEOUT = 2.0
@@ -111,7 +112,7 @@ def probe_hosted(timeout: float = _PROBE_TIMEOUT) -> bool:
         _hosted_cached = False
         return False
     try:
-        resp = httpx.get(f"{base}/models", headers={"Authorization": f"Bearer {key}"}, timeout=timeout)
+        resp = httpx.get(f"{base}/v1/models", headers={"Authorization": f"Bearer {key}"}, timeout=timeout)
         _hosted_cached = resp.status_code < 400
     except Exception:
         _hosted_cached = False
