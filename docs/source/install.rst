@@ -23,7 +23,7 @@ From PyPI:
 
 .. code-block:: bash
 
-   pip install morie                  # the package, 68 built-in datasets, 15,222 morie.fn callables
+   pip install morie                  # the package, 70 catalogued datasets, 15,222 morie.fn callables
    pip install "morie[interactive]"   # + the Terminal IDE (textual)
 
 The runtime dependencies are small and pure Python (``openpyxl``, ``httpx``,

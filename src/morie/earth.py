@@ -168,7 +168,7 @@ def fetch_openaq(
 
     df = _pd.DataFrame(rows)
     if use_cache and not df.empty:
-        df.to_parquet(cache_path, index=False)
+        df.to_parquet(cache_path)
     return df
 
 
@@ -213,28 +213,101 @@ def fetch_naps(
     if use_cache and cache_path.exists():
         return _pd.read_parquet(cache_path)
 
-    pkg_url = f"https://open.canada.ca/data/api/action/package_show?id={_NAPS_CKAN_PACKAGE}"
-    with httpx.Client(timeout=60.0) as client:
-        meta = client.get(pkg_url).json()
-        resources = meta.get("result", {}).get("resources", [])
-        match = [
-            r
-            for r in resources
-            if str(year) in (r.get("name") or "")
-            and pollutant.upper() in (r.get("name") or "").upper()
-            and (r.get("format") or "").upper() == "CSV"
-        ]
-        if not match:
-            raise FileNotFoundError(f"NAPS CKAN has no {pollutant.upper()} CSV for year {year}")
-        csv_url = match[0]["url"]
-        df = _pd.read_csv(csv_url, low_memory=False)
-
-    if province and "Province" in df.columns:
-        df = df[df["Province"].str.upper() == province.upper()]
+    # The open.canada.ca CKAN package for NAPS no longer carries the data
+    # files, only links to ECCC's data catalogue. The catalogue is a web
+    # app over two endpoints: path_contents lists a folder, file streams a
+    # file (via a signed redirect). It answers 404 to non-browser agents.
+    rows = _naps_download_rows(year, pollutant, client_factory=httpx.Client)
+    if not rows:
+        raise FileNotFoundError(f"NAPS has no {pollutant.upper()} hourly file for {year}")
+    if province:
+        rows = [r for r in rows if str(r.get("province", "")).upper() == province.upper()]
+    df = _pd.DataFrame.from_records(rows)
 
     if use_cache and not df.empty:
-        df.to_parquet(cache_path, index=False)
+        df.to_parquet(cache_path)
     return df
+
+
+_ECCC_API = "https://data-donnees.az.ec.gc.ca/api"
+_NAPS_ROOT = "/air/monitor/national-air-pollution-surveillance-naps-program/Data-Donnees"
+_NAPS_HOURLY = "ContinuousData-DonneesContinu/HourlyData-DonneesHoraires"
+_ECCC_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; morie/1; +https://rmorie.com)"}
+_NAPS_UNITS = {
+    "no2": "ppb",
+    "no": "ppb",
+    "nox": "ppb",
+    "o3": "ppb",
+    "so2": "ppb",
+    "co": "ppm",
+    "pm25": "ug/m3",
+    "pm10": "ug/m3",
+}
+
+
+def naps_hourly_file_path(year: int, pollutant: str) -> str:
+    """The catalogue path of one NAPS hourly file, e.g. .../2023/.../NO2_2023.csv."""
+    return f"{_NAPS_ROOT}/{year}/{_NAPS_HOURLY}/{pollutant.upper()}_{year}.csv"
+
+
+def _naps_download_rows(year: int, pollutant: str, client_factory) -> list[dict]:
+    """Fetch one NAPS hourly file and return long-format rows (one per station-hour)."""
+    from urllib.parse import quote
+
+    path = naps_hourly_file_path(year, pollutant)
+    with client_factory(timeout=180.0, follow_redirects=True, headers=_ECCC_HEADERS) as client:
+        listing = client.get(f"{_ECCC_API}/path_contents", params={"path": path.rsplit("/", 1)[0]})
+        if listing.status_code == 200:
+            names = [e.get("name") for e in listing.json().get("path_contents", [])]
+            if path.rsplit("/", 1)[1] not in names:
+                return []
+        r = client.get(f"{_ECCC_API}/file?path={quote(path, safe='')}")
+        if r.status_code != 200:
+            raise FileNotFoundError(f"ECCC catalogue answered {r.status_code} for {path}")
+        text = r.content.decode("utf-8-sig", errors="replace")
+    return parse_naps_hourly_csv(text, pollutant)
+
+
+def parse_naps_hourly_csv(text: str, pollutant: str) -> list[dict]:
+    """Parse NAPS's wide hourly CSV (bilingual preamble, H01..H24 columns) into long rows.
+
+    -999 marks a missing hour and is dropped; hours are hour-ending local
+    standard time, so H01 of a date is 01:00 on that date.
+    """
+    import csv
+    import io
+
+    lines = text.splitlines()
+    start = next((i for i, ln in enumerate(lines) if ln.startswith("Pollutant//Polluant")), None)
+    if start is None:
+        raise ValueError("NAPS file has no header row starting with Pollutant//Polluant")
+    reader = csv.reader(io.StringIO("\n".join(lines[start:])))
+    header = next(reader)
+    col = {h.split("//")[0].strip(): i for i, h in enumerate(header)}
+    hours = [(h.split("//")[0].strip(), i) for i, h in enumerate(header) if h.startswith("H") and h[1:3].isdigit()]
+    unit = _NAPS_UNITS.get(pollutant.lower(), "")
+    out: list[dict] = []
+    for rec in reader:
+        if len(rec) < len(header) - 1 or not rec[0]:
+            continue
+        base = {
+            "station_id": rec[col["NAPS ID"]],
+            "station_name": rec[col["City"]],
+            "latitude": float(rec[col["Latitude"]]) if rec[col["Latitude"]] else None,
+            "longitude": float(rec[col["Longitude"]]) if rec[col["Longitude"]] else None,
+            "province": rec[col["Province/Territory"]],
+        }
+        date = rec[col["Date"]]
+        for hname, idx in hours:
+            raw = rec[idx].strip() if idx < len(rec) else ""
+            if raw in ("", "-999", "-999.0"):
+                continue
+            try:
+                val = float(raw)
+            except ValueError:
+                continue
+            out.append({**base, "datetime_local": f"{date} {int(hname[1:]):02d}:00", "value": val, "unit": unit})
+    return out
 
 
 # ─── Google Earth Engine -- requires auth ──────────────────────────────────

@@ -50,8 +50,11 @@ def _http_get(url: str, *, timeout: int = 60) -> str:
 
 def _extract_case_links(index_html: str) -> list[tuple[str, str]]:
     """Return [(case_number, url)] tuples found in an index HTML page."""
+    # The index links each report as /en/directors_report_details.php?drid=N
+    # (the older case_summary_details.php form is kept for archived pages)
+    # and prints the case number in the link text.
     pat = re.compile(
-        r'href="(case_summary_details\.php\?[^"]+)"[^>]*>(?:\s*<[^>]+>)*\s*'
+        r'href="([^"]*(?:directors_report_details|case_summary_details)\.php\?[^"]+)"[^>]*>(?:\s*<[^>]+>)*\s*'
         r"([A-Za-z\-]+[0-9]+|[0-9]+-[A-Z]+-[0-9]+)",
         re.I,
     )

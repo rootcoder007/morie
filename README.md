@@ -99,7 +99,7 @@ The tap repo is [`rootcoder007/homebrew-morie`](https://github.com/rootcoder007/
 pip install morie
 ```
 
-> **Heads-up:** modern Debian / Ubuntu / Raspberry Pi OS forbid `pip` outside virtual environments (PEP 668), and the system `python3` on Raspberry Pi OS 13 segfaults on importing the SciPy stack. If `pip install morie` errors or `import morie` segfaults, use the one-liner above instead — it handles both cases automatically.
+> **Heads-up:** Debian, Ubuntu and Raspberry Pi OS forbid `pip` outside a virtual environment (PEP 668). Use the venv three-liner above, or the one-liner installer, which sets one up for you. morie needs no NumPy or SciPy, so no compiled scientific stack has to be present.
 
 ### Python — Docker (no local dependencies)
 
@@ -108,20 +108,18 @@ pip install morie
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
+docker run --rm ghcr.io/rootcoder007/morie:1.3.4 morie --help
 ```
 
-Multi-arch image published on every release with both versioned and `:latest` tags. Requires only Docker — no Python, no pip.
+Published on every release with a versioned tag, a major.minor tag and `:latest` (linux/amd64). Requires only Docker — no Python, no pip.
 
-### R package: rmorie — r-universe (CRAN when available)
+### R package: rmorie — r-universe
 
 The R distribution of morie is the **[rmorie](https://github.com/rootcoder007/rmorie)** package.
 
 ```r
-# Stable from CRAN (when listing is live)
-install.packages("rmorie")
-
-# Nightly binary builds (recommended while CRAN listing is rolling out)
+# rmorie comes from r-universe (prebuilt binaries for macOS and Windows,
+# source on Linux); its companions rmoriebricklayer and rmoriedata are on CRAN
 install.packages(
   "rmorie",
   repos = c(
@@ -129,6 +127,7 @@ install.packages(
     CRAN     = "https://cloud.r-project.org"
   )
 )
+install.packages(c("rmoriebricklayer", "rmoriedata"))
 ```
 
 ## Quick start
@@ -137,8 +136,9 @@ install.packages(
 import morie
 from morie.data import load_dataset
 
-# CPADS 2021-22 public-use microdata: fetched from Open Canada on first
-# use, then served from the local cache
+# CPADS 2021-22 public-use microdata (40,931 rows): downloaded from
+# open.canada.ca on first use (about a minute), then served from the
+# local cache in ~/.cache/morie
 df = load_dataset("ocp21")
 print(df.shape)
 
@@ -148,6 +148,29 @@ from morie.fn import describe, welcht
 result = welcht([5.1, 4.9, 5.6, 5.8, 6.0], [6.2, 6.8, 7.1, 6.5, 7.4])
 print(result)
 print(describe("welcht"))
+```
+
+### Where the datasets come from
+
+`morie list-datasets` prints a **Route** column next to every key. Of the
+70 keys, 52 download themselves on first use and are cached: open.canada.ca
+(CPADS, CSADS, CSUS microdata and bootstrap weights), data.ontario.ca (the
+OTIS correctional tables), Statistics Canada (CCHS), CIHI (the indicator
+library and its tables), Environment Canada's NAPS air-quality files, the
+Toronto Police ArcGIS feeds (the Canada-wide NAPS hourly keys are about
+2 million rows: allow ten minutes and 1.5 GB), and the reviewed SIU corpus
+from the
+[rmoriedata](https://cran.r-project.org/package=rmoriedata) package on CRAN
+(fetched as a source tarball, no R needed). The other 18 are restricted or
+your own files (Health Infobase aggregates, the MAPQ workbook, the OTIS
+research environments): put them under a data directory and point
+`MORIE_DATA_DIR` at it, keeping the relative paths that `morie list-datasets`
+shows, e.g. `$MORIE_DATA_DIR/datasets/hib/CSUS/Alcohol.csv`.
+
+```python
+from morie.data import list_rmoriedata, load_rmoriedata
+[r["slug"] for r in list_rmoriedata()]        # the 99 rmoriedata tables
+siu = load_rmoriedata("siu_directors_reports")  # 5,157 reviewed SIU reports
 ```
 
 ## What's new

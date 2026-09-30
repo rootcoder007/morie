@@ -916,30 +916,29 @@ def _stream_completion(
 _LOCAL_FALLBACK_TEXT = """\
 MORIE is running in local-only mode (no LLM provider detected).
 
-Available capabilities without an LLM:
-  - morie list-modules          List all analysis modules
-  - morie run-module <name>     Run a specific module against CPADS data
+The analyses do not need a model:
+  - morie list-modules          List the analysis modules
+  - morie run-module <name>     Run one module
   - morie pipeline --all -y     Run the full analysis pipeline
-  - morie assistant <question>  Ask the built-in rule-based agent
 
-To enable AI-assisted mode, use any of the following:
+To get answers from a model, enable one of these (tried in this order):
 
-  1. Install Ollama (local, private, no API key):
+  1. A local Ollama (private, no key):
        curl -fsSL https://ollama.com/install.sh | sh
-       ollama pull gemma4:e2b            # or mistral, llama3, deepseek-r1, ...
+       ollama pull gemma4:e2b
 
-  2. Set a Gemini API key (free tier available at aistudio.google.com):
-       export GEMINI_API_KEY="your-key-here"
-       export GEMINI_MODEL="gemini-2.5-flash"   # optional, this is the default
+  2. The hosted MORIE tier at https://llm.rmorie.com (one key per user,
+     rate-limited, nothing you send is stored):
+       morie login                          # GitHub device flow
+       morie login --email you@example.com  # a code sent to your inbox
+       morie login --token                  # paste a key from the website
 
-  3. Use an OpenAI-compatible endpoint (Qwen, GPT-OSS, Mistral, Groq):
-       export LLM_API_BASE_URL="https://openrouter.ai/api/v1"
-       export LLM_API_KEY="your-key-here"
+  3. Your own key:
+       export GEMINI_API_KEY="..."                              # Gemini
+       export LLM_API_BASE_URL="..." LLM_API_KEY="..."          # any OpenAI-compatible endpoint
+       export OPENAI_API_KEY="..."                              # OpenAI
 
-  4. Set an OpenAI API key:
-       export OPENAI_API_KEY="your-key-here"
-
-For more information, see: https://github.com/rootcoder007/morie
+`morie doctor` reports what is reachable from here.
 """
 
 

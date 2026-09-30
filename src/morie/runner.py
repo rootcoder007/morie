@@ -933,11 +933,17 @@ def _main_impl() -> int:
         from .data import list_datasets
 
         datasets = list_datasets()
-        print(f"{'Key':<45} {'Type':<12} {'Rows':>8}  {'Status'}")
-        print("-" * 80)
+        print(f"{'Key':<20} {'Type':<12} {'Rows':>8}  {'Route'}")
+        print("-" * 96)
         for d in datasets:
             status = f"{d['rows']:,}" if d["cached"] else "not cached"
-            print(f"{d['key']:<45} {d['type']:<12} {status:>8}")
+            print(f"{d['key']:<20} {d['type']:<12} {status:>8}  {d['route']}")
+        n_own = sum(d["route"].startswith("own file") for d in datasets)
+        print("-" * 96)
+        print(
+            f"{len(datasets)} keys: {len(datasets) - n_own} download from their portal or rmoriedata on first use; "
+            f"{n_own} are files you place under $MORIE_DATA_DIR/datasets/ (restricted or your own data)."
+        )
         return 0
 
     if args.command == "verify-pollution":

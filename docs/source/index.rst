@@ -44,7 +44,7 @@ Pick any one channel — each installs the current ``morie`` release:
    curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash
 
    # 2. PyPI (any platform with Python ≥3.10)
-   pip install morie                  # 68 built-in datasets, 15,222 morie.fn callables
+   pip install morie                  # 70 catalogued datasets, 15,222 morie.fn callables
    pip install "morie[interactive]"   # + Terminal IDE (TUI)
    #    Debian / Ubuntu / Raspberry Pi OS refuse system-wide pip: use a venv
    python3 -m venv ~/.venvs/morie && source ~/.venvs/morie/bin/activate && pip install -U morie
@@ -86,7 +86,7 @@ Run your first analysis in seconds:
    # Self-diagnostics — checks LLM providers, datasets, R, Docker
    morie doctor
 
-   # List all 68 built-in datasets
+   # List all 70 catalogued datasets
    morie list-datasets
 
    # List all 23 analysis modules
@@ -193,11 +193,14 @@ for function reference.
   near-optimal distortion (Zandieh et al. 2026 ICLR).
 
 **Datasets**
-  68 built-in datasets (Canadian carceral, police, and oversight +
-  epidemiological reference data): every key has a loader that pulls
-  the real file from its source portal on first use and caches it, the
-  core tables also ship as synthetic samples in the wheel, and the R side
-  reads the same corpus from ``rmoriedata``.
+  70 catalog keys (Canadian carceral, police, and oversight +
+  epidemiological reference data). 52 download themselves on first use
+  and are cached: open.canada.ca, data.ontario.ca, Statistics Canada,
+  CIHI, the NAPS air-quality files, the Toronto Police feeds and the
+  reviewed SIU corpus from ``rmoriedata`` on CRAN. The other 18 are
+  restricted or your own files, resolved through ``MORIE_DATA_DIR``;
+  ``morie list-datasets`` shows the route of every key. Small synthetic
+  samples of the core tables ship in the wheel for tests and tutorials.
   Auto dataset-profiling for arbitrary tabular input
   (``morie.dataset.profile_dataset``).
 
@@ -296,9 +299,11 @@ researchers who need:
   application for Canadian carceral, police, and oversight data
   (Ontario OTIS, federal SIU, TPS).
 
-The package ships 68 built-in datasets (Canadian carceral, police,
-and oversight + epidemiological reference data), each with a loader for
-the real file; the core tables also ship as synthetic samples.
+The package catalogues 70 datasets (Canadian carceral, police, and
+oversight + epidemiological reference data): 52 download themselves from
+their portal or from ``rmoriedata`` on first use, 18 are restricted or
+your own files placed under ``MORIE_DATA_DIR``; the core tables also
+ship as synthetic samples.
 
 MORIE is licensed under ``AGPL-3.0-or-later`` (Python and R). The AGPL
 is a strong copyleft license: a modified MORIE that is distributed, or

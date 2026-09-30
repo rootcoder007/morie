@@ -6,6 +6,7 @@ import sqlite3
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
+from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import urlopen
 
@@ -98,6 +99,34 @@ CKAN_DATASETS: dict[str, dict[str, str]] = {
 
 DATASET_CATALOG: dict[str, dict] = {
     # ── OpenCanada (oc) PUMF microdata ────────────────────────
+    # rmoriedata (CRAN) slugs: the reviewed SIU corpus and manifest, read
+    # straight from the CRAN source tarball (fetched once, no R needed).
+    "siu": {
+        "name": "SIU director's reports (reviewed corpus, rmoriedata)",
+        "source": "rmoriedata",
+        "survey": "siu",
+        "year": "2005-2026",
+        "format": "csv",
+        "type": "oversight",
+        "large_file": False,
+        "local_path": "data/datasets/siu/siu_directors_reports.csv",
+        "table_name": "siu",
+        "ckan_resource_id": "",
+        "rmoriedata": "siu_directors_reports",
+    },
+    "siumanifest": {
+        "name": "SIU drid manifest (rmoriedata)",
+        "source": "rmoriedata",
+        "survey": "siu",
+        "year": "2005-2026",
+        "format": "csv",
+        "type": "oversight",
+        "large_file": False,
+        "local_path": "data/datasets/siu/siu_drid_manifest.csv",
+        "table_name": "siumanifest",
+        "ckan_resource_id": "",
+        "rmoriedata": "siu_drid_manifest",
+    },
     "ocp21": {
         "name": "CPADS 2021-2022 PUMF",
         "source": "oc",
@@ -231,7 +260,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "large_file": True,
         "local_path": "data/datasets/oc/CSUS/2019-2020/CADS201920bsw.csv",
         "table_name": "cu20bt",
-        "ckan_resource_id": "",
+        "ckan_resource_id": "0f4c0418-b9d1-4f89-a917-a660d20fd6d0",
     },
     "cu23mf": {
         "name": "CSUS 2023 PUMF",
@@ -437,6 +466,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "indicator",
         "large_file": False,
         "local_path": "data/datasets/cihi/indicator-library-all-indicator-data-en.xlsx",
+        "fetcher": "morie.data:fetch_cihi_indicator_library",
         "table_name": "cihidt",
         "ckan_resource_id": "",
     },
@@ -636,19 +666,6 @@ DATASET_CATALOG: dict[str, dict] = {
         "ckan_resource_id": "5a0c5804-a055-4031-9743-73f556e43bb4",
     },
     # ── Ontario SIU case-level (used by morie.mrm_siu_*) ──
-    "siu": {
-        "name": "Ontario SIU: case-level investigations (2014-present)",
-        "source": "vsr",
-        "survey": "siu",
-        "year": "2014-present",
-        "format": "csv",
-        "type": "oversight",
-        "large_file": False,
-        "local_path": "data/datasets/vsr/SIU.csv",
-        "table_name": "siu",
-        "ckan_resource_id": "",
-        "fetcher": "morie.siu_fetch:fetch_siu_dataframe",
-    },
     # ── TPS per-category open-data events (used by morie.mrm_tps_*) ──
     "tpsassault": {
         "name": "TPS Assault open-data events 2014-present",
@@ -1008,7 +1025,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "year": "2023",
         "format": "fetcher",
         "type": "air-quality",
-        "large_file": False,
+        "large_file": True,
         "local_path": "",
         "table_name": "naps_pm25_ca_2023",
         "ckan_resource_id": "",
@@ -1022,7 +1039,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "year": "2023",
         "format": "fetcher",
         "type": "air-quality",
-        "large_file": False,
+        "large_file": True,
         "local_path": "",
         "table_name": "naps_no2_ca_2023",
         "ckan_resource_id": "",
@@ -1036,7 +1053,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "year": "2023",
         "format": "fetcher",
         "type": "air-quality",
-        "large_file": False,
+        "large_file": True,
         "local_path": "",
         "table_name": "naps_o3_ca_2023",
         "ckan_resource_id": "",
@@ -1188,9 +1205,7 @@ def fetch_ckan_to_cache(
     pd.DataFrame
         The fetched (and optionally canonicalized) DataFrame.
     """
-    info = CKAN_DATASETS.get(dataset_key)
-    if not info:
-        raise ValueError(f"Unknown CKAN dataset: {dataset_key}. Known: {list(CKAN_DATASETS)}")
+    info, table_name, is_cpads = _ckan_source(dataset_key)
 
     resource_id = info["resource_id"]
     if not resource_id:
@@ -1207,33 +1222,271 @@ def fetch_ckan_to_cache(
         else:
             raise ValueError(f"No resources found for {dataset_key}")
 
-    params = {"resource_id": resource_id, "limit": limit}
-    url = f"{DEFAULT_CKAN_API_BASE}?{urlencode(params)}"
-    logger.info("Fetching %s from CKAN (%d records max)...", dataset_key, limit)
-    raw = urlopen(url, timeout=timeout).read().decode()
-    payload = json.loads(raw)
-    records = payload.get("result", {}).get("records", [])
-    if not records:
-        raise RuntimeError(f"CKAN returned 0 records for {dataset_key}")
+    # The DataStore API caps one request at 32,000 records, so page with
+    # ``offset`` until a short page (or the reported total) says we are
+    # done. A single request used to return the first 32,000 of the
+    # 40,931 CPADS rows and call it the dataset.
+    records: list[dict] = []
+    offset = 0
+    logger.info("Fetching %s from CKAN (%d records per page)...", dataset_key, limit)
+    while True:
+        params = {"resource_id": resource_id, "limit": limit, "offset": offset}
+        url = f"{DEFAULT_CKAN_API_BASE}?{urlencode(params)}"
+        try:
+            payload = json.loads(urlopen(url, timeout=timeout).read().decode())
+        except HTTPError as exc:
+            if exc.code != 404 or offset:
+                raise
+            payload = {}  # no datastore behind this resource: it is a plain file
+        result = payload.get("result", {})
+        batch = result.get("records", [])
+        records.extend(batch)
+        total = result.get("total")
+        if len(batch) < limit or (isinstance(total, int) and len(records) >= total):
+            break
+        offset += len(batch)
 
-    df = pd.DataFrame.from_records(records)
-    # Drop CKAN internal column.
-    if "_id" in df.columns:
-        df = df.drop(columns=["_id"])
+    if records:
+        df = pd.DataFrame.from_records(records)
+        # Drop CKAN internal column.
+        if "_id" in df.columns:
+            df = df.drop(columns=["_id"])
+    else:
+        # Bootstrap-weight files and the older StatCan releases are not
+        # loaded into the datastore (the API answers 404 or an empty page);
+        # the resource itself is a CSV or a zip of CSVs.
+        df = _ckan_resource_file(resource_id, dataset_key, timeout)
 
     logger.info("Fetched %d rows x %d cols for %s", len(df), len(df.columns), dataset_key)
 
-    # Cache raw data.
-    table_name = f"{dataset_key}_raw"
+    # Cache under the name load_dataset() looks up next time.
     cache_store(df, table_name, db_path)
 
     # If CPADS, also canonicalize and cache the canonical version.
-    if dataset_key == "cpads" and has_raw_cpads_columns(df):
+    if is_cpads and has_raw_cpads_columns(df):
         canonical = canonicalize_cpads_frame(df)
         cache_store(canonical, "cpads_canonical", db_path)
         return canonical
 
     return df
+
+
+def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -> pd.DataFrame:
+    """Download a CKAN resource that has no datastore and read it as a table.
+
+    The resource URL comes from ``resource_show``. A zip (StatCan's
+    ``CSV.zip`` releases hold the microdata, the bootstrap weights and the
+    PDF codebooks together) yields the CSV that matches the catalog entry:
+    the bootstrap file for a ``bootstrap`` key, the other one otherwise.
+    The download is kept under the cache directory.
+    """
+    import zipfile
+    from urllib.request import Request
+
+    meta_url = f"{DEFAULT_CKAN_API_BASE.rsplit('/', 1)[0]}/resource_show?id={resource_id}"
+    meta = json.loads(urlopen(meta_url, timeout=timeout).read().decode())
+    url = (meta.get("result") or {}).get("url") or ""
+    if not url:
+        raise RuntimeError(f"CKAN returned 0 records for {dataset_key} and resource {resource_id} has no file URL")
+    dest = _user_cache_dir() / "ckan" / resource_id / url.rsplit("/", 1)[-1]
+    if not dest.exists():
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        logger.info("Downloading %s for %s", url, dataset_key)
+        # open.canada.ca's front end rejects a bare "Mozilla/5.0" agent
+        req = Request(url, headers={"User-Agent": "morie/1 (+https://rmorie.com)"})
+        tmp = dest.with_suffix(dest.suffix + ".part")
+        with urlopen(req, timeout=timeout) as resp, tmp.open("wb") as fh:
+            while chunk := resp.read(1 << 20):
+                fh.write(chunk)
+        tmp.replace(dest)
+    if not zipfile.is_zipfile(dest):
+        return pd.read_csv(dest, low_memory=False)
+    entry = DATASET_CATALOG.get(dataset_key, {})
+    want_boot = entry.get("type") == "bootstrap"
+    with zipfile.ZipFile(dest) as zf:
+        csvs = [n for n in zf.namelist() if n.lower().endswith(".csv")]
+        is_boot = lambda n: bool(re.search(r"bsw|bwt|boot", n.rsplit("/", 1)[-1], re.I))  # noqa: E731
+        pick = [n for n in csvs if is_boot(n) == want_boot] or csvs
+        if not pick:
+            raise RuntimeError(f"{dest.name} for {dataset_key} holds no CSV")
+        with zf.open(pick[0]) as fh:
+            return pd.read_csv(fh, low_memory=False)
+
+
+def _data_dir_candidates() -> list[Path]:
+    """Where a catalog ``local_path`` (``data/datasets/...``) may live.
+
+    ``MORIE_DATA_DIR`` first (a directory holding ``datasets/``), then the
+    per-user data directory of :mod:`morie._datapaths`, then a source
+    checkout, then the working directory.
+    """
+    from ._datapaths import _user_data_dir
+
+    out: list[Path] = []
+    env = os.environ.get("MORIE_DATA_DIR", "").strip()
+    if env:
+        out.append(Path(env).expanduser())
+    out.append(_user_data_dir())
+    out.append(_project_root() / "data")
+    out.append(Path.cwd() / "data")
+    return out
+
+
+def _find_local_file(rel: str) -> Path | None:
+    """Resolve a catalog ``local_path`` through :func:`_data_dir_candidates`."""
+    p = Path(rel)
+    if p.is_absolute():
+        return p if p.exists() else None
+    tail = Path(*p.parts[1:]) if p.parts and p.parts[0] == "data" else p
+    for base in _data_dir_candidates():
+        for cand in (base / tail, base / p):
+            if cand.exists():
+                return cand
+    return None
+
+
+RMORIEDATA_VERSION = "0.3.3"
+RMORIEDATA_TARBALL = f"https://cran.r-project.org/src/contrib/rmoriedata_{RMORIEDATA_VERSION}.tar.gz"
+
+
+def _rmoriedata_extdata(timeout: int = 120) -> Path:
+    """The ``inst/extdata`` of rmoriedata, fetched once from CRAN into the user cache.
+
+    rmoriedata is the family's data package on CRAN; its tables are plain
+    CSV files, so Python reads them without R. The tarball is 6.8 MB.
+    """
+    root = _user_cache_dir() / "rmoriedata" / RMORIEDATA_VERSION
+    ext = root / "extdata"
+    if (ext / "_catalog.csv").exists():
+        return ext
+    import tarfile
+    import tempfile
+
+    root.mkdir(parents=True, exist_ok=True)
+    logger.info("Fetching rmoriedata %s from CRAN (%s)...", RMORIEDATA_VERSION, RMORIEDATA_TARBALL)
+    data = urlopen(RMORIEDATA_TARBALL, timeout=timeout).read()
+    with tempfile.TemporaryDirectory() as tmp:
+        tgz = Path(tmp) / "rmoriedata.tar.gz"
+        tgz.write_bytes(data)
+        with tarfile.open(tgz) as tf:
+            members = [m for m in tf.getmembers() if "/inst/extdata/" in m.name and not m.name.endswith("/")]
+            for m in members:
+                target = ext / m.name.split("/inst/extdata/", 1)[1]
+                if ".." in target.parts:
+                    continue
+                target.parent.mkdir(parents=True, exist_ok=True)
+                fh = tf.extractfile(m)
+                if fh is not None:
+                    target.write_bytes(fh.read())
+    if not (ext / "_catalog.csv").exists():
+        raise RuntimeError("the rmoriedata tarball carried no extdata catalog")
+    return ext
+
+
+def list_rmoriedata(timeout: int = 120) -> list[dict]:
+    """The rmoriedata catalog: one dict per slug (slug, source_path, kind, n_rows, n_cols)."""
+    import csv
+
+    ext = _rmoriedata_extdata(timeout=timeout)
+    with (ext / "_catalog.csv").open(newline="", encoding="utf-8-sig") as fh:
+        return list(csv.DictReader(fh))
+
+
+def load_rmoriedata(slug: str, timeout: int = 120) -> pd.DataFrame:
+    """Load one rmoriedata table by slug (``list_rmoriedata()`` lists them).
+
+    Reads the CSV (or CSV.gz) that rmoriedata ships, applying the column
+    names from its schema exactly as ``rmoriedata::morie_data_load()`` does.
+    """
+    import csv
+    import gzip
+
+    ext = _rmoriedata_extdata(timeout=timeout)
+    rows = list_rmoriedata(timeout=timeout)
+    hit = [r for r in rows if r.get("slug") == slug]
+    if not hit:
+        known = ", ".join(sorted(r["slug"] for r in rows if r.get("kind") == "table"))
+        raise KeyError(f"rmoriedata has no table {slug!r}. Tables: {known}")
+    entry = hit[0]
+    if entry.get("kind") != "table":
+        raise ValueError(f"rmoriedata slug {slug!r} is a {entry.get('kind')}, not a table")
+    src = ext / entry["source_path"]
+    if not src.exists():
+        raise FileNotFoundError(f"rmoriedata file missing from the tarball: {src}")
+    if src.suffix == ".gz":
+        plain = src.with_suffix("")
+        if not plain.exists():
+            with gzip.open(src, "rb") as fin, plain.open("wb") as fout:
+                fout.write(fin.read())
+        src = plain
+    df = pd.read_csv(src, low_memory=False)
+    schema = ext / "_schema.csv"
+    if schema.exists():
+        with schema.open(newline="", encoding="utf-8-sig") as fh:
+            names = [r["name"] for r in csv.DictReader(fh) if r.get("slug") == slug]
+        if names and len(names) == len(df.columns):
+            df.columns = names
+    return df
+
+
+CIHI_INDICATOR_LIBRARY_URL = (
+    "https://www.cihi.ca/sites/default/files/document/indicator-library-all-indicator-data-en.xlsx"
+)
+
+
+def fetch_cihi_indicator_library(timeout: int = 120) -> pd.DataFrame:
+    """CIHI's Indicator Library, all indicators: the public workbook, fetched once.
+
+    The workbook is 72 MB and 809,000 rows by 33 columns. Loading it as a
+    worksheet object needs more than 10 GB, so it is streamed row by row
+    into a CSV next to it (once) and read from there. A copy you already
+    have under ``MORIE_DATA_DIR`` is used instead of downloading.
+    """
+    import csv
+    from urllib.request import Request
+
+    xlsx = _find_local_file("data/datasets/cihi/indicator-library-all-indicator-data-en.xlsx")
+    if xlsx is None:
+        xlsx = _user_cache_dir() / "cihi" / "indicator-library-all-indicator-data-en.xlsx"
+        if not xlsx.exists():
+            xlsx.parent.mkdir(parents=True, exist_ok=True)
+            logger.info("Fetching the CIHI indicator library (72 MB) from %s", CIHI_INDICATOR_LIBRARY_URL)
+            req = Request(CIHI_INDICATOR_LIBRARY_URL, headers={"User-Agent": "morie/1 (+https://rmorie.com)"})
+            xlsx.write_bytes(urlopen(req, timeout=timeout).read())
+    csv_path = _user_cache_dir() / "cihi" / "indicator-library-all-indicator-data-en.csv"
+    if not csv_path.exists() or csv_path.stat().st_mtime < xlsx.stat().st_mtime:
+        import openpyxl
+
+        csv_path.parent.mkdir(parents=True, exist_ok=True)
+        wb = openpyxl.load_workbook(xlsx, read_only=True, data_only=True)
+        ws = wb.worksheets[0]
+        tmp = csv_path.with_suffix(".csv.tmp")
+        with tmp.open("w", newline="", encoding="utf-8") as fh:
+            w = csv.writer(fh)
+            for row in ws.iter_rows(values_only=True):
+                w.writerow(["" if v is None else v for v in row])
+        wb.close()
+        tmp.replace(csv_path)
+    return pd.read_csv(csv_path, low_memory=False)
+
+
+def _ckan_source(dataset_key: str) -> tuple[dict[str, str], str, bool]:
+    """Resolve a CKAN_DATASETS key or a DATASET_CATALOG key with a resource id.
+
+    Returns the source record, the cache table to store under, and whether
+    the rows are raw CPADS (so the canonical frame is cached as well).
+    ``load_dataset("ocp21")`` reaches here with the catalog key; it used to
+    be rejected because only the three short keys were known.
+    """
+    info = CKAN_DATASETS.get(dataset_key)
+    if info:
+        return dict(info), f"{dataset_key}_raw", dataset_key == "cpads"
+    entry = DATASET_CATALOG.get(dataset_key)
+    if entry and entry.get("ckan_resource_id"):
+        info = {"name": entry["name"], "resource_id": entry["ckan_resource_id"], "metadata_url": ""}
+        return info, entry["table_name"], entry.get("survey") == "cpads"
+    known = sorted(set(CKAN_DATASETS) | {k for k, e in DATASET_CATALOG.items() if e.get("ckan_resource_id")})
+    raise ValueError(f"Unknown CKAN dataset: {dataset_key}. Known: {known}")
 
 
 def load_cpads(db_path: str | Path | None = None, timeout: int = 60) -> pd.DataFrame:
@@ -1403,11 +1656,23 @@ def load_dataset(
                 logger.warning("Could not cache %s: %s", matched, exc)
         return df
 
-    # 3. Local file.
-    local_path = Path(entry["local_path"])
-    if not local_path.is_absolute():
-        local_path = _project_root() / local_path
-    if local_path.exists():
+    # 2c. rmoriedata (CRAN): read the slug from the package's extdata,
+    #     fetched once from CRAN as a source tarball. No R needed.
+    slug = entry.get("rmoriedata")
+    if slug:
+        df = load_rmoriedata(slug, timeout=timeout)
+        try:
+            cache_store(df, table_name, db_path)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not cache %s: %s", matched, exc)
+        return df
+
+    # 3. Local file: the catalog path is relative to a data directory.
+    #    An installed package has no source tree, so the cascade is
+    #    MORIE_DATA_DIR, the per-user data directory, the source checkout
+    #    (when there is one), then the working directory.
+    local_path = _find_local_file(entry["local_path"])
+    if local_path is not None:
         logger.info("Ingesting %s from local file: %s", matched, local_path)
         if entry["format"] == "csv":
             df = pd.read_csv(local_path, low_memory=False)
@@ -1421,8 +1686,20 @@ def load_dataset(
             logger.warning("Could not cache %s: %s", matched, exc)
         return df
 
-    # 4. CKAN API.
+    # 4. Open data portals: Ontario's catalogue for the OTIS tables (their
+    #    downloader lives in morie.otis_datasets), open.canada.ca for the
+    #    rest of the CKAN-backed keys.
     rid = entry.get("ckan_resource_id", "")
+    if rid and entry.get("source") == "otis":
+        from .otis_datasets import load_otis_dataset
+
+        logger.info("Fetching %s from data.ontario.ca...", matched)
+        df = load_otis_dataset(entry["survey"])
+        try:
+            cache_store(df, table_name, db_path)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not cache %s: %s", matched, exc)
+        return df
     if rid:
         logger.info("Fetching %s from CKAN API...", matched)
         return fetch_ckan_to_cache(matched, db_path=db_path, timeout=timeout)
@@ -1473,9 +1750,29 @@ def list_datasets(db_path: str | Path | None = None) -> list[dict]:
                 "type": entry["type"],
                 "cached": tbl in cached_tables,
                 "rows": cached_tables.get(tbl),
+                "route": dataset_route(entry),
             }
         )
     return result
+
+
+def dataset_route(entry: dict) -> str:
+    """How a catalog entry is obtained: a portal it downloads from, rmoriedata, or your own file."""
+    if entry.get("rmoriedata"):
+        return "rmoriedata (CRAN)"
+    fetcher = entry.get("fetcher") or ""
+    if fetcher:
+        return {
+            "naps": "ECCC NAPS",
+            "statcan": "Statistics Canada",
+            "cihi": "CIHI",
+            "tps": "Toronto Police ArcGIS",
+        }.get(entry.get("source", ""), "fetched on demand")
+    if entry.get("ckan_resource_id"):
+        return "data.ontario.ca" if entry.get("source") == "otis" else "open.canada.ca"
+    if entry.get("source") in CKAN_DATASETS:
+        return "open.canada.ca"
+    return "own file: " + entry.get("local_path", "")
 
 
 def dataset_info(key: str) -> dict:

@@ -7,7 +7,35 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
-## 1.3.3 (2026-09-30)
+## 1.3.4 (2026-09-30)
+
+- **Every catalog key loads from a clean install.** `load_dataset("ocp21")`
+  and the other open.canada.ca keys reached the CKAN fetcher under the wrong
+  name and were refused; the fetcher also stopped at CKAN's 32,000-row page
+  and called that the dataset. The catalog key is resolved to its resource
+  and the fetch pages to the end (40,931 CPADS rows). The OTIS tables route
+  to the existing data.ontario.ca downloader; NAPS air-quality files come
+  from Environment Canada's data catalogue, whose CKAN package no longer
+  holds them (hourly files are returned long, one row per station-hour);
+  CIHI's indicator library downloads itself; the SIU corpus and manifest
+  are read from the `rmoriedata` CRAN tarball (`load_rmoriedata()`,
+  `list_rmoriedata()`, no R needed); the SIU index scraper follows the
+  site's current report links.
+  A CKAN resource with no datastore behind it (the CSUS 2023 bootstrap
+  weights, and StatCan's CSUS 2019-2020 release, a zip holding the
+  microdata and the bootstrap weights) is downloaded as a file and read
+  from the cache; 52 of the 70 keys now load from a clean install.
+- **Your own data files are found.** Catalog paths (`data/datasets/...`)
+  resolve through `MORIE_DATA_DIR`, the per-user data directory, a source
+  checkout, then the working directory, instead of the package directory,
+  which an installed wheel does not have. `morie list-datasets` gains a
+  Route column and a summary of which keys need a file from you.
+- **Honest keyword fallback.** With no model reachable, `morie ask` now says
+  how to enable one, including the hosted tier (`morie login`), instead of
+  the pre-hosted-tier text.
+- **Docs.** The README quick start and the dataset pages describe the
+  routes above; the Docker example pins the release.
+
 
 - **Same code as 1.3.2 on the Python side.** The R arm's hosted-model
   fallback test allows its mocked probe under `R CMD check`, and the

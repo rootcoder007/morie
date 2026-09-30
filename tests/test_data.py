@@ -210,3 +210,44 @@ def test_load_dataset_unknown_key_raises():
 
     with pytest.raises(KeyError, match="Unknown dataset key"):
         load_dataset("totally_fake_dataset_xyz")
+
+
+def test_load_dataset_ocp21_pages_through_ckan_and_caches(tmp_path, monkeypatch):
+    """The README's first line, load_dataset("ocp21"), reaches CKAN and gets every row."""
+    from morie import data as mdata
+
+    monkeypatch.setattr(mdata, "_project_root", lambda: tmp_path)  # no local file
+    monkeypatch.setattr(mdata, "_builtin_db_connect", lambda: None)  # the shipped DB is not under test
+    calls = []
+
+    class Reply:
+        def __init__(self, body):
+            self._body = body
+
+        def read(self):
+            return json.dumps(self._body).encode()
+
+    def fake_urlopen(url, timeout=30):
+        calls.append(url)
+        assert "resource_id=d2639429-c304-45a6-90b3-770562f4d46d" in url
+        offset = int(url.split("offset=")[1].split("&")[0]) if "offset=" in url else 0
+        rows = [{"_id": i, "PUMFID": i, "AGEGR": 1} for i in range(offset, min(offset + 3, 7))]
+        return Reply({"result": {"records": rows, "total": 7}})
+
+    monkeypatch.setattr("morie.data.urlopen", fake_urlopen)
+    db = tmp_path / "cache.db"
+    df = mdata.fetch_ckan_to_cache("ocp21", limit=3, db_path=db)
+    assert len(df) == 7  # three pages: 3 + 3 + 1
+    assert "_id" not in df.columns
+    assert len(calls) == 3
+    # cached under the catalog table name, so the next load needs no network
+    monkeypatch.setattr("morie.data.urlopen", lambda *a, **k: (_ for _ in ()).throw(AssertionError("network")))
+    again = mdata.load_dataset("ocp21", db_path=db)
+    assert len(again) == 7
+
+
+def test_fetch_ckan_to_cache_names_every_known_key():
+    from morie import data as mdata
+
+    with pytest.raises(ValueError, match="ocp21"):
+        mdata.fetch_ckan_to_cache("nope")
