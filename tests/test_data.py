@@ -178,18 +178,18 @@ def test_load_dataset_from_builtin_db(tmp_path, monkeypatch):
 
     db = tmp_path / "mock.db"
     conn = sqlite3.connect(str(db))
-    pd.DataFrame({"SEQID": [1, 2, 3], "weight": [1.0, 1.0, 1.0]}).to_sql("ocp21_cpads_2021_pumf", conn, index=False)
+    # the built-in database keys tables by the catalog table_name ("ocp21");
+    # a mismatched name used to fall through to a ValueError and a skip,
+    # and since 1.3.4 would fall through to a live CKAN fetch
+    pd.DataFrame({"SEQID": [1, 2, 3], "weight": [1.0, 1.0, 1.0]}).to_sql("ocp21", conn, index=False)
     conn.close()
 
     monkeypatch.setattr(
         "morie.data._builtin_db_connect",
         lambda: sqlite3.connect(str(db)),
     )
-    try:
-        loaded = load_dataset("ocp21")
-    except (ValueError, KeyError):
-        pytest.skip("short-key DB resolution unavailable (LFS disabled)")
-    assert len(loaded) > 0
+    loaded = load_dataset("ocp21", db_path=tmp_path / "cache.db")
+    assert len(loaded) == 3
     assert "SEQID" in loaded.columns or "weight" in loaded.columns
 
 
