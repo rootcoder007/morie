@@ -120,11 +120,22 @@ macOS
 Linux
 -----
 
+Debian, Ubuntu and Raspberry Pi OS mark the system Python "externally
+managed" (PEP 668), so a bare ``pip install`` stops with an error. Install
+into a virtual environment; it needs only the stock ``python3``:
+
 .. code-block:: bash
 
-   # Debian/Ubuntu
-   sudo apt-get install r-base python3 python3-pip
-   pip3 install morie
+   # Debian/Ubuntu (add python3-venv if `venv` is missing)
+   sudo apt-get install -y r-base python3 python3-venv
+   python3 -m venv ~/.venvs/morie
+   source ~/.venvs/morie/bin/activate
+   pip install -U morie
+   morie --version
+
+Activate the venv in each new shell (``source ~/.venvs/morie/bin/activate``)
+or call ``~/.venvs/morie/bin/morie`` directly. Other distributions: ``pip
+install morie`` in any Python 3.10+ environment.
 
 Windows
 -------

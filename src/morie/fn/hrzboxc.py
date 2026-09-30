@@ -97,26 +97,29 @@ def horowitz_box_cox(x, y, a_lo=-2.0, a_hi=2.0, ngrid=81, refine=60, nu=201):
     def fit(a):
         Ty = [_bc(v, a) for v in yv]
         b = core.lstsq(XX, Ty, 1e-12)
+        # xb is kept and reused by crit() so that a residual and the threshold
+        # it is compared with share one rounding of x'b: at u = max(y) the
+        # comparison is an exact tie by construction, and a second summation
+        # order could break it either way.
+        xb = []
         uh = []
         for i in range(n):
-            r = Ty[i]
+            s = 0.0
             for k in range(p):
-                r -= XX[i][k] * b[k]
-            uh.append(r)
-        return Ty, b, uh
+                s += XX[i][k] * b[k]
+            xb.append(s)
+            uh.append(Ty[i] - s)
+        return Ty, b, uh, xb
 
     def crit(a):
-        Ty, b, uh = fit(a)
+        Ty, b, uh, xb_all = fit(a)
         us = sorted(uh)
         tot = 0.0
         for k in range(m):
             u = ug[k]
             tu = _bc(u, a)
             for i in range(n):
-                xb = 0.0
-                for j in range(p):
-                    xb += XX[i][j] * b[j]
-                z = tu - xb
+                z = tu - xb_all[i]
                 # F_n(z) = n^-1 sum I(U_hat < z), by binary search on the sorted residuals
                 lo = 0
                 hi = n
@@ -169,7 +172,7 @@ def horowitz_box_cox(x, y, a_lo=-2.0, a_hi=2.0, ngrid=81, refine=60, nu=201):
             f2, _ = crit(c2)
     a_hat = 0.5 * (left + right)
     val, b_hat = crit(a_hat)
-    Ty, b_hat, uh = fit(a_hat)
+    Ty, b_hat, uh, _xb = fit(a_hat)
     return RichResult(
         title="Box-Cox regression by minimum distance",
         summary_lines=[("n", n), ("lambda", a_hat)],

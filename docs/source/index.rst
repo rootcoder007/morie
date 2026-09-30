@@ -46,6 +46,8 @@ Pick any one channel — each installs the current ``morie`` release:
    # 2. PyPI (any platform with Python ≥3.10)
    pip install morie                  # 68 built-in datasets, 15,222 morie.fn callables
    pip install "morie[interactive]"   # + Terminal IDE (TUI)
+   #    Debian / Ubuntu / Raspberry Pi OS refuse system-wide pip: use a venv
+   python3 -m venv ~/.venvs/morie && source ~/.venvs/morie/bin/activate && pip install -U morie
 
    # 3. Homebrew (macOS / Linuxbrew)
    brew tap rootcoder007/morie

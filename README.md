@@ -25,7 +25,7 @@ morie is a Python (and R) package — once Python is present it is `pip install 
 
 - **Windows** — install Python from [python.org](https://www.python.org/downloads/) (on the first screen tick **Add python.exe to PATH**), then `pip install morie`. Full walkthrough: [Windows](#recommended--windows) below. Windows has no `curl`/`bash`, so the one-liner does not apply there.
 - **macOS / Linux** — the one-liner below sets up everything. It needs `curl` and `bash`, which macOS has built in and most Linux ships.
-- **Already have Python ≥3.10** — just `pip install morie`. The estimators take a pandas DataFrame, a CSV path, or a dict of columns; pandas is optional (morie ships its own frame core).
+- **Already have Python ≥3.10** — just `pip install morie` (on Debian, Ubuntu and Raspberry Pi OS use the venv three-liner below; their system `pip` refuses to install into `/usr`). The estimators take a pandas DataFrame, a CSV path, or a dict of columns; pandas is optional (morie ships its own frame core).
 
 ### For terminal users — one-liner (Linux / macOS / WSL)
 
@@ -44,6 +44,19 @@ curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash -s -- --auto
 After install, `~/.local/bin/morie` is a thin shim into the managed venv at `~/.venvs/morie`. Full install instructions, channel comparison, and platform-specific notes are at **[rootcoder007.github.io/morie/#quick-start](https://rootcoder007.github.io/morie/#quick-start)**.
 
 > On minimal Linux containers (Alpine, slim Debian) that ship without `curl`, install it first: `apt-get install -y curl` or `apk add curl`. macOS already has `curl` built in.
+
+### Debian, Ubuntu, Raspberry Pi OS — plain `pip` in a venv
+
+Debian-family systems mark the system Python "externally managed", so `pip install morie` stops with an error. A virtual environment is the supported way and needs nothing beyond the stock `python3` (add `sudo apt-get install -y python3-venv` if `venv` is missing):
+
+```bash
+python3 -m venv ~/.venvs/morie
+source ~/.venvs/morie/bin/activate
+pip install -U morie
+morie --version
+```
+
+Activate the venv (`source ~/.venvs/morie/bin/activate`) in each new shell, or call `~/.venvs/morie/bin/morie` directly.
 
 ### Recommended — Windows
 

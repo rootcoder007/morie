@@ -7,6 +7,14 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## 1.3.3 (2026-09-30)
+
+- **Same code as 1.3.2 on the Python side.** The R arm's hosted-model
+  fallback test allows its mocked probe under `R CMD check`, and the
+  rmorie research vignette attaches the package. 1.3.2 was tagged before
+  its R checks finished; 1.3.3 is the version whose checks are green in
+  both languages, released so the two arms keep the same number.
+
 ## 1.3.2 (2026-09-30)
 
 - **Hosted LLM tier.** `morie ask` falls back to `https://llm.rmorie.com`

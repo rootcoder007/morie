@@ -1,3 +1,12 @@
+# morie 1.3.3 - 2026-09-30
+
+## Release hygiene
+
+* The hosted-model fallback test
+  allows its (mocked) probe under `R CMD check`, which parks network
+  probes by default. 1.3.2 was tagged before its check finished and was
+  never submitted to CRAN; 1.3.3 is that release with the two fixes.
+
 # morie 1.3.2 - 2026-09-30
 
 ## Hosted LLM tier

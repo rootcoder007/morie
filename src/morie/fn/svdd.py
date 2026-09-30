@@ -88,11 +88,11 @@ def _mat(X, name):
         rows = [[float(v) for v in r]
                 for r in np.atleast_2d(arr)]
     if not rows or not rows[0]:
-        raise ValueError("svdd: %s must be a non-empty (n, p) matrix" % name)
+        raise ValueError(f"svdd: {name} must be a non-empty (n, p) matrix")
     w = len(rows[0])
     for r in rows:
         if len(r) != w:
-            raise ValueError("svdd: %s must be rectangular" % name)
+            raise ValueError(f"svdd: {name} must be rectangular")
     return rows
 
 
@@ -164,7 +164,7 @@ def svdd(X, C=None, nu=None, kernel="rbf", gamma=None, degree=3,
     if nu is not None:
         nu = float(nu)
         if not 0.0 < nu <= 1.0:
-            raise ValueError("svdd: nu must lie in (0, 1], got %r" % (nu,))
+            raise ValueError(f"svdd: nu must lie in (0, 1], got {nu!r}")
         C = 1.0 / (nu * n)
     if C is None:
         C = 1.0
@@ -257,7 +257,9 @@ def svdd(X, C=None, nu=None, kernel="rbf", gamma=None, degree=3,
 
     def predict(Z):
         """True where the object is accepted as a member of the class."""
-        return [v <= 0.0 for v in decision(Z)]
+        # a boundary support vector sits on the sphere up to the KKT tolerance,
+        # so membership is decided with the same slack n_out uses
+        return [v <= 1e-8 for v in decision(Z)]
 
     n_out = sum(1 for i in range(n) if d2[i] > R2 + 1e-8)
     return RichResult(payload={
