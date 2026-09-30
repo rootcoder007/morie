@@ -692,8 +692,6 @@ morie_llm_agent_available.Rd,0,0,0
 morie_llm_ask.Rd,0,0,0
 morie_llm_ask_multi.Rd,0,0,0
 morie_llm_detect_provider.Rd,0,0,0
-morie_llm_list_freeapi_models.Rd,0,0,0
-morie_llm_probe_freeapi.Rd,0,0,0
 morie_llm_probe_ollama.Rd,0,0,0
 morie_llm_request_completion.Rd,0,0,0
 morie_load_cpads.Rd,1,0,1

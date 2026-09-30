@@ -7,6 +7,13 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## Unreleased
+
+- **OllamaFreeAPI provider removed (security).** It sent prompts to
+  anonymous volunteer Ollama servers found through a public registry. The
+  provider chain is now Ollama, Gemini, an OpenAI-compatible endpoint,
+  OpenAI, then the local fallback; `percy --freeapi` is gone.
+
 ## 1.3.2 (2026-09-21)
 
 - **Round four (exhaustive sweep).** Array core: `keepdims` honoured by all

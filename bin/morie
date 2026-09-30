@@ -1251,7 +1251,7 @@ ${BOLD}QUICK REFERENCE${RESET}
     Sources:        CPADS, CCS, CSADS, CSUS, HealthInfobase, CIHI
     License:        GPL-3.0-or-later
     Documentation:  Sphinx (developer site) + Quarto (analysis site)
-    LLM providers:  Ollama → OllamaFreeAPI → Gemini → OpenAI → local fallback
+    LLM providers:  Ollama → Gemini → OpenAI → local fallback
     TUI screens:    Home, Chat, Pipeline, Doctor, Dataset, Help, Debug, Stat, REPL
 
 ${BOLD}GETTING STARTED${RESET}
@@ -6378,13 +6378,6 @@ HEALTHEOF
                 success "Ollama: running"
             else
                 info "Ollama: not running"
-            fi
-            # OllamaFreeAPI
-            _require_python 2>/dev/null
-            if "$PYTHON" -c "import ollamafreeapi" 2>/dev/null; then
-                success "OllamaFreeAPI: installed"
-            else
-                info "OllamaFreeAPI: not installed"
             fi
             # Venv
             if [ -d "$ROOT/.venv" ]; then

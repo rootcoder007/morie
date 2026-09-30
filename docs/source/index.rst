@@ -219,7 +219,7 @@ for function reference.
   district maps. (See CITATION.cff for the companion Hawkes paper.)
 
 **LLM + assistant**
-  Ollama (local, private) → vendored OllamaFreeAPI (no key) → Gemini
+  Ollama (local, private) → Gemini
   free tier → local-keyword fallback. Zero cloud dependency at the
   default tier. Vendored TurboQuant KV-cache compression. Polyglot
   REPL bridges variables across Python ↔ R ↔ shell ↔ 12 other

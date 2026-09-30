@@ -1931,185 +1931,6 @@ def _pick_best_model(base_url: str) -> str:
     return _DEFAULT_MODEL
 
 
-_TEXT_TOOL_PROMPT = (
-    "You are Perseus, MORIE's scientific computing demigod. "
-    "You command 20 statistical domains and 5710+ functions.\n\n"
-    "TOOLS AVAILABLE:\n"
-    "- domain_guide(domain): Complete guide for any domain (spatial/causal/biomedical/etc.)\n"
-    "- recommend_analysis(question): Get analysis plan from a research question\n"
-    "- search_functions(query): Search fn/ registry by keyword\n"
-    "- run_morie_function(name, kwargs): Run any morie function by short name\n"
-    "- get_cheatsheet(name): Get usage docs for a function\n"
-    "- run_pipeline(steps): Chain multiple functions as a pipeline\n"
-    "- compare_methods(methods, data_code): Run methods side-by-side\n"
-    "- run_suite(domain): Run all core functions for a domain\n"
-    "- execute_code(code): Run Python code and return output\n"
-    "- category_tree(): See all 100+ categories\n\n"
-    "TO CALL A TOOL, output EXACTLY this format on its own line:\n"
-    '<tool_call>{"name": "domain_guide", "arguments": {"domain": "spatial"}}</tool_call>\n\n'
-    "RULES:\n"
-    "1. Start with domain_guide or recommend_analysis to plan your approach\n"
-    "2. ALWAYS search before running -- never guess function names\n"
-    "3. Short names: 'moran', 'ate', 'dnorm', 'd' (max 7 chars)\n"
-    "4. Be explicit about statistical assumptions and limitations\n"
-    "5. Never fabricate results -- only report what tools return"
-)
-
-_TOOL_CALL_RE = None
-
-
-def _get_tool_call_re():
-    global _TOOL_CALL_RE
-    if _TOOL_CALL_RE is None:
-        import re
-
-        _TOOL_CALL_RE = re.compile(r"<tool_call>\s*(\{.*?\})\s*</tool_call>", re.DOTALL)
-    return _TOOL_CALL_RE
-
-
-class FreeAPIAgent:
-    """Agent that works over OllamaFreeAPI or any text-based LLM.
-
-    Uses text-based tool calling: the system prompt teaches the model to
-    output <tool_call> tags, which we parse and execute locally. This enables
-    Perseus tool calling over the internet for free -- no local hardware needed.
-    """
-
-    def __init__(self, *, max_iterations: int = 5) -> None:
-        self._max_iterations = max_iterations
-        self._sandbox = _find_project_root()
-
-    def _send(self, messages: list[dict[str, str]], model: str | None = None) -> str:
-        """Send messages to FreeAPI and get response text."""
-        from .fam import OllamaFreeAPI
-
-        client = OllamaFreeAPI()
-
-        if model is None:
-            model = os.environ.get("moriefam", "mistral-nemo:custom")  # noqa: SIM112
-
-        try:
-            return client.chat_messages(
-                messages=messages,
-                model=model,
-                temperature=_TEMPERATURE,
-                num_predict=_NUM_PREDICT,
-            )
-        except Exception:
-            prompt_parts = []
-            for msg in messages:
-                role, content = msg["role"], msg["content"]
-                if role == "system":
-                    prompt_parts.append(f"[System]\n{content}")
-                elif role == "user":
-                    prompt_parts.append(f"[User]\n{content}")
-                elif role == "assistant":
-                    prompt_parts.append(f"[Assistant]\n{content}")
-                elif role == "tool":
-                    prompt_parts.append(f"[Tool Result]\n{content}")
-            full_prompt = "\n\n".join(prompt_parts) + "\n\n[Assistant]\n"
-            return client.chat(
-                prompt=full_prompt,
-                model=model,
-                temperature=_TEMPERATURE,
-                num_predict=_NUM_PREDICT,
-            )
-
-    def _parse_tool_calls(self, text: str) -> list[_ToolCall]:
-        pattern = _get_tool_call_re()
-        calls = []
-        for match in pattern.finditer(text):
-            try:
-                data = json.loads(match.group(1))
-                name = data.get("name", "")
-                args = data.get("arguments", {})
-                if isinstance(args, str):
-                    try:
-                        args = json.loads(args)
-                    except (json.JSONDecodeError, ValueError):
-                        args = {"raw_input": args}
-                if name and name in _TOOL_DISPATCH:
-                    calls.append(_ToolCall(name=name, arguments=args))
-            except (json.JSONDecodeError, ValueError):
-                continue
-        return calls
-
-    def _execute_tool(self, name: str, args: dict) -> str:
-        handler = _TOOL_DISPATCH.get(name)
-        if handler is None:
-            return f"Unknown tool: {name}"
-        if name in ("read_file", "write_file", "list_files"):
-            args["sandbox"] = self._sandbox
-        try:
-            return str(handler(**args))
-        except Exception:
-            return f"Tool {name} failed:\n{traceback.format_exc()}"
-
-    def chat(self, message: str, *, model: str | None = None) -> AgentResponse:
-        """Run text-based agent loop over FreeAPI."""
-        messages: list[dict[str, str]] = [
-            {"role": "system", "content": _TEXT_TOOL_PROMPT},
-            {"role": "user", "content": message},
-        ]
-
-        all_tool_calls: list[dict] = []
-        iteration = 0
-
-        while iteration < self._max_iterations:
-            iteration += 1
-            try:
-                response_text = self._send(messages, model=model)
-            except Exception as exc:
-                return AgentResponse(
-                    text=f"FreeAPI request failed: {exc}",
-                    tool_calls_made=all_tool_calls,
-                    iterations=iteration,
-                    model=model or "freeapi",
-                    failed=True,
-                )
-
-            tool_calls = self._parse_tool_calls(response_text)
-
-            if not tool_calls:
-                clean = _get_tool_call_re().sub("", response_text).strip()
-                return AgentResponse(
-                    text=clean or response_text,
-                    tool_calls_made=all_tool_calls,
-                    iterations=iteration,
-                    model=model or "freeapi",
-                )
-
-            messages.append({"role": "assistant", "content": response_text})
-
-            for tc in tool_calls:
-                result = self._execute_tool(tc.name, tc.arguments)
-                record = {"name": tc.name, "arguments": tc.arguments, "result": result[:500]}
-                all_tool_calls.append(record)
-                messages.append({"role": "tool", "content": f"[{tc.name}] {result}"})
-
-        clean = _get_tool_call_re().sub("", response_text).strip()
-        return AgentResponse(
-            text=clean or "(max iterations reached)",
-            tool_calls_made=all_tool_calls,
-            iterations=iteration,
-            model=model or "freeapi",
-        )
-
-    def chat_stream(self, message: str, *, model: str | None = None) -> Iterator[str]:
-        """Streaming variant -- yields text, executes tools between rounds."""
-        resp = self.chat(message, model=model)
-        if getattr(resp, "failed", False):
-            # surface the failure instead of streaming its text as an
-            # answer, so the caller can fall back and report exit 1
-            raise RuntimeError(resp.text)
-        if resp.tool_calls_made:
-            yield f"[{len(resp.tool_calls_made)} tools called]\n\n"
-        yield resp.text
-
-    def close(self) -> None:
-        pass
-
-
 class PerseusCloudAgent:
     """Agent that connects to a remote Perseus relay server.
 
@@ -2153,17 +1974,16 @@ def create_agent(
     model: str | None = None,
     base_url: str | None = None,
     *,
-    provider: str | None = None,
     cloud_url: str | None = None,
     cloud_token: str | None = None,
     **kwargs: Any,
-) -> PerseusAgent | FreeAPIAgent | PerseusCloudAgent:
+) -> PerseusAgent | PerseusCloudAgent:
     """Create the best available Perseus agent.
 
     Priority:
     1. Explicit cloud URL -- remote Perseus relay (full tools, server-side execution)
     2. Local/remote Ollama -- native tool calling (fastest, most capable)
-    3. FreeAPI -- text-based tool calling over free community servers
+    3. Perseus relay on MORIE_PI_HOST
     4. Fallback -- local Ollama endpoint (may not be running)
 
     Environment variables:
@@ -2196,9 +2016,6 @@ def create_agent(
                 except Exception:
                     pass
 
-    if provider == "freeapi":
-        return FreeAPIAgent(**kwargs)
-
     try:
         import httpx
 
@@ -2223,16 +2040,6 @@ def create_agent(
                 return PerseusCloudAgent(relay_url)
         except Exception:
             pass
-
-    try:
-        from .fam import OllamaFreeAPI
-
-        client = OllamaFreeAPI()
-        if client.list_models():
-            logger.info("No local Ollama -- using FreeAPI with text-based tool calling")
-            return FreeAPIAgent(**kwargs)
-    except Exception:
-        pass
 
     if model is None:
         model = _DEFAULT_MODEL

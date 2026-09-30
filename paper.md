@@ -70,7 +70,7 @@ scaling), and classical-test-theory and item-response-theory
 psychometrics. The toolkit ships with 41 built-in Canadian
 datasets, runs entirely from the terminal via a 10-screen
 Textual TUI, and supports a multi-provider LLM chain (local
-Ollama, free OllamaFreeAPI, Gemini, OpenAI-compatible) with a
+Ollama, Gemini, OpenAI-compatible) with a
 vendored TurboQuant [@zandieh2026turboquant] KV-cache compression
 implementation for offline inference.
 
@@ -251,7 +251,7 @@ transposed a window specification the Python read correctly.
 
 A Textual TUI with 10 screens, a multi-language REPL with
 bidirectional Python / R / Shell variable bridging, and a
-provider chain (local Ollama → vendored OllamaFreeAPI client →
+provider chain (local Ollama →
 Gemini → OpenAI-compatible → keyword-fallback) for
 LLM-assisted analysis. The vendored TurboQuant
 [@zandieh2026turboquant] KV-cache compression preserves the

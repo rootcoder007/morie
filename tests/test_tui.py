@@ -523,56 +523,6 @@ class TestStatCommandsRegistry:
 
 
 # ---------------------------------------------------------------------------
-# Vendored FreeAPI client tests
-# ---------------------------------------------------------------------------
-
-
-class TestVendoredFreeAPI:
-    def test_import(self):
-        from morie.fam import OllamaFreeAPI
-
-        client = OllamaFreeAPI()
-        assert hasattr(client, "chat")
-        assert hasattr(client, "stream_chat")
-        assert hasattr(client, "list_models")
-
-    def test_list_models_returns_list(self):
-        from morie.fam import OllamaFreeAPI
-
-        client = OllamaFreeAPI()
-        models = client.list_models()
-        assert isinstance(models, list)
-        assert len(models) > 0
-
-    def test_list_families(self):
-        from morie.fam import OllamaFreeAPI
-
-        client = OllamaFreeAPI()
-        families = client.list_families()
-        assert isinstance(families, list)
-        assert len(families) >= 1
-
-    def test_build_payload_structure(self):
-        from morie.fam import OllamaFreeAPI
-
-        client = OllamaFreeAPI()
-        payload = client._build_payload("gpt-oss:20b", "test prompt", num_predict=10000)
-        assert payload["model"] == "gpt-oss:20b"
-        assert payload["prompt"] == "test prompt"
-        assert payload["options"]["num_predict"] == 10000
-        assert "temperature" in payload["options"]
-
-    def test_get_model_servers_returns_list(self):
-        from morie.fam import OllamaFreeAPI
-
-        client = OllamaFreeAPI()
-        models = client.list_models()
-        if models:
-            servers = client.get_model_servers(models[0])
-            assert isinstance(servers, list)
-
-
-# ---------------------------------------------------------------------------
 # Verify: all commands have valid backend (from verify_all_commands.py)
 # ---------------------------------------------------------------------------
 

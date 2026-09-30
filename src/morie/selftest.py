@@ -298,7 +298,7 @@ def _test_llm_detection():
     from morie.llm import detect_available_provider
 
     provider = detect_available_provider()
-    valid = ("ollama", "freeapi", "gemini", "api", "openai", "local")
+    valid = ("ollama", "gemini", "api", "openai", "local")
     if provider not in valid:
         raise RuntimeError(f"Unknown provider: {provider}")
     return f"LLM provider: {provider}"
