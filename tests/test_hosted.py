@@ -177,3 +177,18 @@ def test_email_login_can_have_the_key_mailed(isolated_home, monkeypatch):
     assert posts[-1][1] == {"email": "vee@example.com", "code": "123456", "deliver": "email"}
     assert "hosted_key" not in hosted.read_credentials()
     assert "morie login --token" in lines[0]
+
+
+def test_hosted_model_falls_back_to_what_the_gateway_lists(isolated_home, monkeypatch):
+    hosted.write_credentials({"hosted_key": "sk-abc"})
+    listed = {"data": [{"id": "gemma4:31b-cloud"}, {"id": "minimax-m3:cloud"}]}
+    monkeypatch.setattr(httpx, "get", lambda url, headers=None, timeout=None: httpx.Response(200, json=listed))
+    monkeypatch.setenv("MORIE_HOSTED_MODEL", "qwen3.5:397b-cloud")  # retired upstream
+    assert hosted.hosted_model() == "qwen3.5:397b-cloud"
+    assert hosted.hosted_model_available() == "gemma4:31b-cloud"
+    monkeypatch.setenv("MORIE_HOSTED_MODEL", "minimax-m3:cloud")
+    assert hosted.hosted_model_available() == "minimax-m3:cloud"
+    hosted.reset_probe_cache()
+    monkeypatch.setattr(httpx, "get", lambda url, headers=None, timeout=None: httpx.Response(500))
+    monkeypatch.setenv("MORIE_HOSTED_MODEL", "anything:cloud")
+    assert hosted.hosted_model_available() == "anything:cloud"  # no list known: keep the configured name

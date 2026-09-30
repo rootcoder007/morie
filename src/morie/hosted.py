@@ -93,11 +93,13 @@ def hosted_key() -> str | None:
 
 
 _hosted_cached: bool | None = None
+_hosted_models: list[str] | None = None  # what the gateway listed for this key, once probed
 
 
 def reset_probe_cache() -> None:
-    global _hosted_cached
+    global _hosted_cached, _hosted_models
     _hosted_cached = None
+    _hosted_models = None
 
 
 def probe_hosted(timeout: float = _PROBE_TIMEOUT) -> bool:
@@ -106,7 +108,7 @@ def probe_hosted(timeout: float = _PROBE_TIMEOUT) -> bool:
     Cached for the process lifetime like the Ollama probe; never called
     without a key, so a fresh install makes no network request here.
     """
-    global _hosted_cached
+    global _hosted_cached, _hosted_models
     if _hosted_cached is not None:
         return _hosted_cached
     base, key = hosted_base_url(), hosted_key()
@@ -116,9 +118,32 @@ def probe_hosted(timeout: float = _PROBE_TIMEOUT) -> bool:
     try:
         resp = httpx.get(f"{base}/v1/models", headers={"Authorization": f"Bearer {key}"}, timeout=timeout)
         _hosted_cached = resp.status_code < 400
+        if _hosted_cached:
+            with contextlib.suppress(Exception):
+                ids = [m.get("id") for m in resp.json().get("data", [])]
+                _hosted_models = [m for m in ids if isinstance(m, str) and m] or None
     except Exception:
         _hosted_cached = False
     return _hosted_cached
+
+
+def hosted_models() -> list[str] | None:
+    """The models the gateway lists for this key (None until a successful probe)."""
+    probe_hosted()
+    return _hosted_models
+
+
+def hosted_model_available() -> str:
+    """The configured model, or the gateway's first model when the configured one is not offered.
+
+    Cloud models get retired upstream; a stale default must not turn every
+    hosted request into a 400. Nothing is fetched beyond the probe already made.
+    """
+    wanted = hosted_model()
+    listed = hosted_models()
+    if listed and wanted not in listed:
+        return listed[0]
+    return wanted
 
 
 def _say(msg: str) -> None:

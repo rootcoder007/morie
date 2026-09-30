@@ -206,11 +206,11 @@ def _hosted_ready() -> bool:
 
 
 def _hosted_attempt(model: str | None) -> tuple[str, str, str | None] | None:
-    from .hosted import hosted_base_url, hosted_key, hosted_model
+    from .hosted import hosted_base_url, hosted_key, hosted_model_available
 
     base, key = hosted_base_url(), hosted_key()
     if base and key:
-        return (base, model or hosted_model(), key)
+        return (base, model or hosted_model_available(), key)
     return None
 
 
