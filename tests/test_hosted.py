@@ -140,3 +140,38 @@ def test_email_login_reports_service_errors(isolated_home, monkeypatch):
         hosted.email_login("vee@example.com", ask=lambda _: "000000")
     with pytest.raises(ValueError):
         hosted.email_login("not-an-address")
+
+
+def test_store_token_writes_the_key_and_probes_it(isolated_home, monkeypatch):
+    seen = {}
+
+    def fake_get(url, headers=None, timeout=None):
+        seen["auth"] = headers["Authorization"]
+        return httpx.Response(200, json={"data": []})
+
+    monkeypatch.setattr(httpx, "get", fake_get)
+    lines = []
+    assert hosted.store_token("  sk-pasted  ", echo=lines.append) == "sk-pasted"
+    assert hosted.read_credentials()["hosted_key"] == "sk-pasted"
+    assert seen["auth"] == "Bearer sk-pasted"
+    assert "accepts it" in lines[0]
+    with pytest.raises(ValueError):
+        hosted.store_token("   ")
+
+
+def test_email_login_can_have_the_key_mailed(isolated_home, monkeypatch):
+    posts = []
+
+    def fake_post(url, json=None, timeout=None):
+        posts.append((url, json))
+        if url.endswith("/email/code"):
+            return httpx.Response(200, json={"sent": True})
+        return httpx.Response(200, json={"sent": True, "user": "mail:abc"})
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    lines = []
+    out = hosted.email_login("vee@example.com", code="123456", echo=lines.append, to_email=True)
+    assert out == ""
+    assert posts[-1][1] == {"email": "vee@example.com", "code": "123456", "deliver": "email"}
+    assert "hosted_key" not in hosted.read_credentials()
+    assert "morie login --token" in lines[0]

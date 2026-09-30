@@ -171,12 +171,34 @@ def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, ech
     raise TimeoutError("the sign-in was not completed in time; run `morie login` again")
 
 
-def email_login(email: str, code: str | None = None, ask=input, echo=_say) -> str:
+def store_token(token: str, echo=_say) -> str:
+    """Store a key obtained elsewhere (the landing page, or one emailed by the gateway).
+
+    The key is trimmed, written to the shared credentials file and probed once;
+    a key the gateway rejects is still stored but the user is told.
+    """
+    token = (token or "").strip()
+    if not token:
+        raise ValueError("an empty token cannot be stored")
+    data = read_credentials()
+    data.update({"hosted_key": token, "hosted_base_url": hosted_base_url()})
+    path = write_credentials(data)
+    reset_probe_cache()
+    if probe_hosted():
+        echo(f"Token stored in {path}; the gateway accepts it.")
+    else:
+        echo(f"Token stored in {path}, but the gateway did not accept it (check the key, or run `morie login` again).")
+    return token
+
+
+def email_login(email: str, code: str | None = None, ask=input, echo=_say, to_email: bool = False) -> str:
     """Sign in with an emailed one-time code instead of GitHub.
 
     ``POST {auth}/email/code`` sends a 6-digit code (10 minutes, single use);
     the user types it (or passes ``code``), ``POST {auth}/email/verify``
-    returns the key, stored like the device-flow one.
+    returns the key, stored like the device-flow one. With ``to_email`` the
+    gateway emails the key instead of returning it; nothing is stored and the
+    user pastes it later with ``morie login --token``.
     """
     auth = hosted_auth_url()
     email = (email or "").strip().lower()
@@ -188,10 +210,18 @@ def email_login(email: str, code: str | None = None, ask=input, echo=_say) -> st
             raise RuntimeError(r.json().get("error", f"the sign-in service answered {r.status_code}"))
         echo(f"A 6-digit code was sent to {email} (valid for 10 minutes).")
         code = ask("Enter the code: ").strip()
-    r = httpx.post(f"{auth}/email/verify", json={"email": email, "code": code}, timeout=20.0)
+    payload = {"email": email, "code": code}
+    if to_email:
+        payload["deliver"] = "email"
+    r = httpx.post(f"{auth}/email/verify", json=payload, timeout=20.0)
     if r.status_code != 200:
         raise RuntimeError(r.json().get("error", f"the sign-in service answered {r.status_code}"))
     body = r.json()
+    if to_email:
+        if not body.get("sent"):
+            raise RuntimeError("the sign-in service did not confirm the email")
+        echo(f"Your key was emailed to {email}. Store it with: morie login --token")
+        return ""
     data = read_credentials()
     data.update(
         {"hosted_key": body["api_key"], "hosted_user": body.get("user", ""), "hosted_base_url": hosted_base_url()}

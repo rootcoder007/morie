@@ -239,6 +239,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     login_cmd.add_argument("--no-browser", action="store_true", help="Print the sign-in URL instead of opening it")
     login_cmd.add_argument("--email", default=None, metavar="ADDRESS", help="Sign in with a code emailed to this address instead of GitHub")
+    login_cmd.add_argument("--to-email", action="store_true", help="With --email: have the key emailed to you instead of stored here")
+    login_cmd.add_argument("--token", nargs="?", const="", default=None, metavar="KEY",
+                           help="Store a key you already have (from the website or your email); prompts when KEY is omitted")
     subparsers.add_parser("logout", help="Forget the hosted LLM key")
 
     doctor_cmd = subparsers.add_parser(
@@ -1165,11 +1168,18 @@ def _main_impl() -> int:
         return 0
 
     if args.command == "login":
-        from .hosted import device_login, email_login
+        from .hosted import device_login, email_login, store_token
 
         try:
-            if getattr(args, "email", None):
-                email_login(args.email)
+            if getattr(args, "token", None) is not None:
+                token = args.token
+                if not token:
+                    import getpass
+
+                    token = getpass.getpass("Paste your MORIE key: ")
+                store_token(token)
+            elif getattr(args, "email", None):
+                email_login(args.email, to_email=getattr(args, "to_email", False))
             else:
                 device_login(open_browser=not getattr(args, "no_browser", False))
         except Exception as exc:  # network or user abandoned the flow
