@@ -5,7 +5,10 @@
 [![codecov](https://codecov.io/gh/rootcoder007/morie/branch/main/graph/badge.svg)](https://app.codecov.io/gh/rootcoder007/morie)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![rOpenSci review](https://img.shields.io/badge/rOpenSci-under_review_%23770-orange)](https://github.com/ropensci/software-review/issues/770)
+[![Website](https://img.shields.io/badge/website-rmorie.com-1d1d1f.svg)](https://rmorie.com) [![Hosted LLM](https://img.shields.io/badge/hosted%20LLM-llm.rmorie.com-0066cc.svg)](https://llm.rmorie.com)
 <!-- badges: end -->
+
+Website: <https://rmorie.com> · Hosted LLM tier: <https://llm.rmorie.com> (`morie_llm_login()`, or `rmorie login` after `install_cli()`).
 
 `morie` is a dual-language (R + Python) scientific computing package for
 causal inference, sampling, psychometrics, point-process modeling, and

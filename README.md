@@ -12,6 +12,7 @@ The R package ships **native causal-inference engines** — matching (nearest/Ma
 [![PyPI version](https://img.shields.io/pypi/v/morie.svg)](https://pypi.org/project/morie/)
 [![rmorie on r-universe](https://rootcoder007.r-universe.dev/badges/rmorie)](https://rootcoder007.r-universe.dev/rmorie)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Website](https://img.shields.io/badge/website-rmorie.com-1d1d1f.svg)](https://rmorie.com) [![Hosted LLM](https://img.shields.io/badge/hosted%20LLM-llm.rmorie.com-0066cc.svg)](https://llm.rmorie.com)
 
 > `import morie` checks PyPI once a day for a newer release (fail-silent,
 > cached). Set `MORIE_NO_UPDATE_CHECK=1` to disable it.
@@ -145,6 +146,9 @@ For the planned roadmap see [ROADMAP.md](ROADMAP.md).
 ## Documentation
 
 Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.github.io/morie/).
+
+- **Website**: <https://rmorie.com> — the MORIE family (rmorie, morie, rmoriebricklayer, rmoriedata) in one place.
+- **Hosted LLM tier**: <https://llm.rmorie.com> — the fallback model behind `morie ask` when there is no local Ollama. Sign in with `morie login` (GitHub) or `morie login --email you@example.com`; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html).
 
 ## Citation
 
