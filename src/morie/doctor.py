@@ -68,6 +68,22 @@ def _check_ollama() -> tuple[bool, str]:
         return False, f"not reachable at {url} (optional)"
 
 
+def _check_hosted() -> tuple[bool, str]:
+    """The hosted tier: logged in and answering, logged in but unreachable, or not logged in."""
+    from .hosted import status
+
+    try:
+        s = status()
+    except Exception as exc:  # pragma: no cover - defensive
+        return False, f"error: {exc}"
+    if not s["base_url"]:
+        return False, "disabled (MORIE_HOSTED_BASE_URL is empty)"
+    if not s["logged_in"]:
+        return False, "not logged in -- run `morie login`"
+    who = f" as {s['user']}" if s.get("user") else ""
+    return (True, f"logged in{who}, gateway answering") if s["reachable"] else (False, f"logged in{who}, gateway not reachable")
+
+
 def _check_gemini() -> tuple[bool, str]:
     key = os.environ.get("GEMINI_API_KEY", "").strip()
     if key:
@@ -189,6 +205,9 @@ def run_checks() -> dict[str, Any]:
     # LLM providers
     ok, detail = _check_ollama()
     _add("Ollama (local)", ok, detail, required=False)
+
+    ok, detail = _check_hosted()
+    _add("Hosted LLM (llm.rmorie.com)", ok, detail, required=False)
 
     ok, detail = _check_gemini()
     _add("Gemini API key", ok, detail, required=False)
