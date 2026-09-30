@@ -233,6 +233,13 @@ def build_parser() -> argparse.ArgumentParser:
     relay_cmd.add_argument("--token", default=None, help="Require auth token for API access")
     relay_cmd.add_argument("--bind", default="127.0.0.1", help="Bind address (default: 127.0.0.1)")
 
+    login_cmd = subparsers.add_parser(
+        "login",
+        help="Sign in to the hosted MORIE LLM tier (llm.rmorie.com) with GitHub; stores a per-user key",
+    )
+    login_cmd.add_argument("--no-browser", action="store_true", help="Print the sign-in URL instead of opening it")
+    subparsers.add_parser("logout", help="Forget the hosted LLM key")
+
     doctor_cmd = subparsers.add_parser(
         "doctor",
         help="Run MORIE environment diagnostics",
@@ -1154,6 +1161,22 @@ def _main_impl() -> int:
         from .pt2gguf import convert
 
         convert(args.checkpoint, args.output, args.tokenizer_dir, args.turbo_bits)
+        return 0
+
+    if args.command == "login":
+        from .hosted import device_login
+
+        try:
+            device_login(open_browser=not getattr(args, "no_browser", False))
+        except Exception as exc:  # network or user abandoned the flow
+            print(f"login failed: {exc}")
+            return 1
+        return 0
+
+    if args.command == "logout":
+        from .hosted import logout
+
+        logout()
         return 0
 
     if args.command == "doctor":

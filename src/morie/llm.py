@@ -69,6 +69,7 @@ OPENAI_BASE_URL = "https://api.openai.com"
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai"
 
 _PROVIDER_OLLAMA = "ollama"
+_PROVIDER_HOSTED = "hosted"
 _PROVIDER_GEMINI = "gemini"
 _PROVIDER_API = "api"
 _PROVIDER_OPENAI = "openai"
@@ -197,6 +198,22 @@ def _gemini_model() -> str:
 _ollama_cached: bool | None = None
 
 
+def _hosted_ready() -> bool:
+    """True when the user logged in to the hosted tier and its gateway answers."""
+    from .hosted import probe_hosted
+
+    return probe_hosted()
+
+
+def _hosted_attempt(model: str | None) -> tuple[str, str, str | None] | None:
+    from .hosted import hosted_base_url, hosted_key, hosted_model
+
+    base, key = hosted_base_url(), hosted_key()
+    if base and key:
+        return (base, model or hosted_model(), key)
+    return None
+
+
 def _probe_ollama(timeout: float = _PROBE_TIMEOUT) -> bool:
     """Return True if a local Ollama instance responds to a health check.
 
@@ -234,25 +251,29 @@ def detect_available_provider() -> str:
     The detection order mirrors the provider chain priority:
 
     1. **ollama**  -- a local Ollama instance is reachable (probed via HTTP).
-    2. **gemini**  -- ``GEMINI_API_KEY`` is set.
-    3. **api**     -- ``LLM_API_BASE_URL`` and ``LLM_API_KEY`` are set.
-    4. **openai**  -- ``OPENAI_API_KEY`` is set.
-    5. **local**   -- no live provider; MORIE will return static help text.
+    2. **hosted**  -- the user ran ``morie login`` and llm.rmorie.com answers.
+    3. **gemini**  -- ``GEMINI_API_KEY`` is set.
+    4. **api**     -- ``LLM_API_BASE_URL`` and ``LLM_API_KEY`` are set.
+    5. **openai**  -- ``OPENAI_API_KEY`` is set.
+    6. **local**   -- no live provider; MORIE will return static help text.
 
     Returns
     -------
     str
-        One of ``"ollama"``, ``"gemini"``, ``"api"``,
+        One of ``"ollama"``, ``"hosted"``, ``"gemini"``, ``"api"``,
         ``"openai"``, or ``"local"``.
 
     Examples
     --------
     >>> provider = detect_available_provider()
-    >>> provider in ("ollama", "gemini", "api", "openai", "local")
+    >>> provider in ("ollama", "hosted", "gemini", "api", "openai", "local")
     True
     """
     if _probe_ollama():
         return _PROVIDER_OLLAMA
+
+    if _hosted_ready():
+        return _PROVIDER_HOSTED
 
     if _gemini_key():
         return _PROVIDER_GEMINI
@@ -1067,6 +1088,18 @@ def ask(
             )
         )
         # Fallback chain if Ollama fails at request time.
+        if _hosted_attempt(model):
+            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
+        if _gemini_key():
+            attempts.append((GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
+        if _api_base_url() and _api_key():
+            attempts.append((_api_base_url(), model or DEFAULT_API_MODEL, _api_key()))  # type: ignore[arg-type]
+        if _openai_key():
+            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
+
+    elif provider == _PROVIDER_HOSTED:
+        if _hosted_attempt(model):
+            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
         if _gemini_key():
             attempts.append((GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
         if _api_base_url() and _api_key():
