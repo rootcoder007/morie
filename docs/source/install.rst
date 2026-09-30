@@ -23,7 +23,7 @@ From PyPI:
 
 .. code-block:: bash
 
-   pip install morie                  # the package, 69 built-in datasets, 18,560 morie.fn callables
+   pip install morie                  # the package, 68 built-in datasets, 15,222 morie.fn callables
    pip install "morie[interactive]"   # + the Terminal IDE (textual)
 
 The runtime dependencies are small and pure Python (``openpyxl``, ``httpx``,
@@ -157,15 +157,26 @@ LLM provider setup
 ------------------
 
 The assistant (``morie ask``, ``morie chat``, ``morie percy``) tries
-providers in priority order. No API key is needed for the default tier.
+providers in this order and uses the first one that answers. Nothing
+needs configuring for the first and last tiers.
 
 1. **Ollama** (local, private): install with
    ``curl -fsSL https://ollama.com/install.sh | sh``; the model is
    auto-detected from the running instance (``morie percysuits`` pulls the
-   Perseus models).
-2. **Gemini** (free tier): ``export GEMINI_API_KEY=...`` (free key at
+   Perseus models). Override with ``MORIE_OLLAMA_MODEL``.
+2. **Hosted MORIE tier** (``https://llm.rmorie.com``): sign in once with
+   ``morie login`` (GitHub) or ``morie login --email you@example.com``
+   (a code sent to your inbox), or paste a key you already have with
+   ``morie login --token``. The key is stored owner-only in
+   ``$XDG_CONFIG_HOME/morie/credentials.json`` (``~/.config/morie/`` by
+   default) and shared with the R package. Rate-limited per key; no
+   prompts or responses are stored. Details in :doc:`hosted`.
+3. **Gemini**: ``export GEMINI_API_KEY=...`` (key at
    `aistudio.google.com <https://aistudio.google.com>`_); default model
-   ``gemini-2.5-flash``.
-3. **Local fallback**: automatic. Keyword-matched help text, no network.
+   ``gemini-2.5-flash`` (``GEMINI_MODEL`` overrides).
+4. **Any OpenAI-compatible endpoint**: ``LLM_API_BASE_URL`` plus
+   ``LLM_API_KEY``.
+5. **OpenAI**: ``export OPENAI_API_KEY=...``; default model ``gpt-4o-mini``.
+6. **Local fallback**: automatic. Keyword-matched help text, no network.
 
 Run ``morie doctor`` to see which providers are currently available.

@@ -178,7 +178,7 @@ html_js_files = [
 # off-white body, classic Sphinx blue (#2980B9), subtle gray sidebar,
 # fixed sidebar so the toctree is always visible.
 html_theme_options = {
-    "description": "Reproducible scientific computing — 18,560 registered callables, 69 built-in datasets, Python + R.",
+    "description": "Reproducible scientific computing — 15,222 registered callables, 68 built-in datasets, Python + R.",
     "github_user": "rootcoder007",
     "github_repo": "morie",
     "github_button": False,

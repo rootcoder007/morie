@@ -44,7 +44,7 @@ Pick any one channel — each installs the current ``morie`` release:
    curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash
 
    # 2. PyPI (any platform with Python ≥3.10)
-   pip install morie                  # 69 built-in datasets, 18,560 morie.fn callables
+   pip install morie                  # 68 built-in datasets, 15,222 morie.fn callables
    pip install "morie[interactive]"   # + Terminal IDE (TUI)
 
    # 3. Homebrew (macOS / Linuxbrew)
@@ -84,7 +84,7 @@ Run your first analysis in seconds:
    # Self-diagnostics — checks LLM providers, datasets, R, Docker
    morie doctor
 
-   # List all 69 built-in datasets
+   # List all 68 built-in datasets
    morie list-datasets
 
    # List all 23 analysis modules
@@ -191,7 +191,7 @@ for function reference.
   near-optimal distortion (Zandieh et al. 2026 ICLR).
 
 **Datasets**
-  69 built-in datasets (Canadian carceral, police, and oversight +
+  68 built-in datasets (Canadian carceral, police, and oversight +
   epidemiological reference data): every key has a loader that pulls
   the real file from its source portal on first use and caches it, the
   core tables also ship as synthetic samples in the wheel, and the R side
@@ -200,7 +200,7 @@ for function reference.
   (``morie.dataset.profile_dataset``).
 
 **Function namespace ``morie.fn``**
-  18,560 individual callables indexed by a registry, exposing
+  15,222 individual callables indexed by a registry, exposing
   short stable names for every estimator, every kernel,
   every weight matrix, every test. Use ``morie.fn.cheatsheet(name)``
   for a per-function help card.
@@ -219,9 +219,11 @@ for function reference.
   district maps. (See CITATION.cff for the companion Hawkes paper.)
 
 **LLM + assistant**
-  Ollama (local, private) → Gemini
-  free tier → local-keyword fallback. Zero cloud dependency at the
-  default tier. Vendored TurboQuant KV-cache compression. Polyglot
+  Providers in order: a local Ollama (private, tried first) → the
+  hosted MORIE tier at ``llm.rmorie.com`` (``morie login``; per-user key,
+  rate-limited, nothing stored) → your own Gemini / OpenAI-compatible /
+  OpenAI keys → a keyword-matched local fallback that needs no network.
+  See :doc:`hosted`. Vendored TurboQuant KV-cache compression. Polyglot
   REPL bridges variables across Python ↔ R ↔ shell ↔ 12 other
   languages.
 
@@ -292,7 +294,7 @@ researchers who need:
   application for Canadian carceral, police, and oversight data
   (Ontario OTIS, federal SIU, TPS).
 
-The package ships 69 built-in datasets (Canadian carceral, police,
+The package ships 68 built-in datasets (Canadian carceral, police,
 and oversight + epidemiological reference data), each with a loader for
 the real file; the core tables also ship as synthetic samples.
 
@@ -318,6 +320,8 @@ navigation, every page on this site is listed below — top to bottom:
 - :doc:`install` — Installation instructions for Python, R, macOS,
   Linux, Windows, plus LLM provider setup.
 - :doc:`cli` — Reference for every ``morie …`` subcommand.
+- :doc:`hosted` — The hosted LLM tier: signing in with GitHub or an
+  emailed code, pasting a key, limits, what is and is not stored.
 - :doc:`methods/index` — Statistical-methods reference. Estimands,
   causal estimators, survey statistics, spatial methods, Hawkes
   processes, statistical physics of crime, OTIS / TPS / SIU
@@ -335,6 +339,7 @@ navigation, every page on this site is listed below — top to bottom:
    learn/index
    install
    cli
+   hosted
 
 .. toctree::
    :maxdepth: 2

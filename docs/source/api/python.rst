@@ -639,6 +639,11 @@ Assistant, LLM and model tooling
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: morie.hosted
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 .. automodule:: morie.perseus
    :members:
    :undoc-members:
@@ -747,10 +752,83 @@ Runner and environment
    :undoc-members:
    :show-inheritance:
 
+Editors, terminal UI and tooling
+--------------------------------
+
+.. automodule:: morie.agent_cli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.bench
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.demo
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.editor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.fast
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.i18n
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.inspector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.loc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.progress
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.repl_init
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.tide_launcher
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.tui
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.verify_earth_engine
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.verify_pollution
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Function namespace ``morie.fn``
 ---------------------------------
 
-The ``morie.fn`` namespace exposes 18,560 individual callables,
+The ``morie.fn`` namespace exposes 15,222 individual callables,
 indexed by a registry and resolved lazily on first access. To keep the
 wheel small, the implementations and per-callable guides ship as two
 compressed archives (``_fnsrc.json.xz`` and ``describe_docs.json.xz``,

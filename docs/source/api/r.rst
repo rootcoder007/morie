@@ -9,10 +9,25 @@ code). Signatures and descriptions come from the Roxygen2 ``.Rd`` files
 in ``r-package/morie/man/``; see :doc:`../methods/index` for the
 methodology behind each function.
 
-The package exports 12,046 functions, 4,851 of them ``morie_*`` entry
+The package exports 13,655 functions, 5,189 of them ``morie_*`` entry
 points; this page lists the ones a first analysis reaches for. The
 complete reference, one page per function, is the pkgdown site at
 https://rootcoder007.github.io/rmorie/reference/ .
+
+Assistant, hosted LLM tier and command line
+-------------------------------------------
+
+The R side of :doc:`../hosted`: the provider chain, sign-in and the
+``rmorie`` shell command shipped inside the package.
+
+.. r:function:: morie_llm_ask
+.. r:function:: morie_llm_detect_provider
+.. r:function:: morie_llm_probe_ollama
+.. r:function:: morie_llm_probe_hosted
+.. r:function:: morie_llm_login
+.. r:function:: morie_llm_logout
+.. r:function:: morie_cli
+.. r:function:: install_cli
 
 Causal estimators
 -----------------

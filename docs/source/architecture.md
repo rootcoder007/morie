@@ -8,8 +8,8 @@ reference and the {doc}`api/index`.
 
 ## The result-container spine
 
-MORIE's public API is **function-based**: 4,851 `morie_*` entry points in R
-(12,046 exports in all), the same names in Python, plus 18,560 single-purpose
+MORIE's public API is **function-based**: 5,189 `morie_*` entry points in R
+(13,655 exports in all), the same names in Python, plus 15,222 single-purpose
 callables under `morie.fn`, with Python + R parity. Every result-emitting function returns a `RichResult`
 — a `dict` subclass carrying a title, summary lines, tables, warnings, an
 interpretation, and the raw payload — so any result prints as a readable

@@ -57,7 +57,7 @@ Datasets
 --------
 
 ``list-datasets``
-   List the 69 built-in dataset keys with type, row count and cache status.
+   List the 68 built-in dataset keys with type, row count and cache status.
 
 ``pull KEY``
    One-line dataset shortcut (the CLI for ``morie.datasets``); writes a CSV
@@ -87,8 +87,21 @@ Assistant and LLM
 
 ``ask QUESTION`` / ``agent QUESTION``
    Ask the MORIE assistant (streams by default; ``--no-stream``,
-   ``--context``, ``--model``). No API key is needed: providers are tried
-   in the order listed under :doc:`install`.
+   ``--context``, ``--model``). No API key is needed: a local Ollama is
+   tried first, then the hosted tier if you are signed in, then your own
+   keys, then a local keyword fallback (the order is listed under
+   :doc:`install`).
+
+``login [--no-browser] [--email ADDRESS [--to-email]] [--token [KEY]]``
+   Sign in to the hosted LLM tier (:doc:`hosted`). With no options: the
+   GitHub device flow (``--no-browser`` prints the URL instead of opening
+   it). ``--email`` asks for a 6-digit code sent to that address;
+   ``--to-email`` additionally has the key itself emailed to you instead
+   of stored on this machine. ``--token`` stores a key you already have
+   (prompts for it when ``KEY`` is omitted) and probes the gateway once.
+
+``logout``
+   Forget the stored hosted key.
 
 ``chat``
    Interactive chat REPL with slash commands (``--agent`` loads a persona).
@@ -129,8 +142,9 @@ Environment
 -----------
 
 ``doctor``
-   Diagnostics for LLM providers, datasets, R and Docker; ``--fix`` tries to
-   remediate.
+   Diagnostics for LLM providers (local Ollama, the hosted tier at
+   ``llm.rmorie.com``, configured keys), datasets, R and Docker;
+   ``--fix`` tries to remediate.
 
 ``selftest``
    Quick smoke test of every subsystem (also the Docker health check).
