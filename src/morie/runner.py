@@ -1004,8 +1004,6 @@ def _main_impl() -> int:
                 content = src.read_text(encoding="utf-8")
         except FileNotFoundError:
             # Fallback: try the project-tree path (dev install)
-            from pathlib import Path
-
             src = Path(__file__).resolve().parents[2] / "templates" / "first-paper.md"
             content = src.read_text(encoding="utf-8")
         # Light placeholder substitution

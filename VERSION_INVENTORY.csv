@@ -6234,6 +6234,7 @@ File,Line,Status,Version,Context
 ./tests/test_ml_fnds_det_seed.py,4,STALE_OR_DEP,0.4.0,"callables (rfens; gbens; xgbst; tsnrd; rndsr) for morie v0.4.0:"
 ./tests/test_montesinos_det_seed.py,3,STALE_OR_DEP,0.4.0,"Verifies that the ``deterministic_seed`` kwarg added in morie v0.4.0 to"
 ./tests/test_nonlinear_least_squares_reference.py,1,STALE_OR_DEP,3.7.12,"Gauss-Newton nonlinear least squares against R nls and lm (Hedderich; Sec. 3.7.12 examples)."
+./tests/test_runner.py,108,CURRENT,1.3.5,"Path(...) in the function raise UnboundLocalError (morie pull --out; 1.3.5)."
 ./tests/test_schab_fieldtrial_reference.py,1,STALE_OR_DEP,6.1.3.2,"Papadakis (Sec. 6.1.3.2) and the first-difference model (eqs 6.12-6.13) against R lm()."
 ./tests/test_statistical_correctness.py,438,STALE_OR_DEP,4.6.1,"# Examples 4.6.1 and 4.7.1 use this exact 10-point sample and publish the"
 ./tests/test_statistical_correctness.py,438,STALE_OR_DEP,4.6.1,"# Examples 4.6.1 and 4.7.1 use this exact 10-point sample and publish the"

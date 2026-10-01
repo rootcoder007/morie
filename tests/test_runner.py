@@ -101,3 +101,11 @@ def test_models_verb_prints_hosted_and_local_lists(monkeypatch, capsys):
     assert main() == 0
     out = capsys.readouterr().out
     assert "  * m:cloud" in out and "Local Ollama: not reachable" in out and "morie ask --model NAME" in out
+
+
+def test_main_impl_does_not_shadow_path():
+    """A local `from pathlib import Path` inside _main_impl made every earlier
+    Path(...) in the function raise UnboundLocalError (morie pull --out, 1.3.5)."""
+    from morie import runner
+
+    assert "Path" not in runner._main_impl.__code__.co_varnames
