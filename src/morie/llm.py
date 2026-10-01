@@ -169,15 +169,33 @@ def _ollama_model() -> str:
     return DEFAULT_OLLAMA_MODEL
 
 
+def _stored_provider() -> dict:
+    """The endpoint attached with `morie provider set` (shared credentials file)."""
+    try:
+        from .hosted import read_credentials
+
+        data = read_credentials()
+    except Exception:
+        return {}
+    return {k: v for k, v in data.items() if k in ("api_base_url", "api_key", "api_model") and v}
+
+
 def _api_base_url() -> str | None:
-    """Return the configured generic OpenAI-compatible base URL, or None."""
-    url = os.environ.get("LLM_API_BASE_URL", "").strip()
+    """The generic OpenAI-compatible base URL: LLM_API_BASE_URL, else the attached endpoint."""
+    url = os.environ.get("LLM_API_BASE_URL", "").strip() or str(_stored_provider().get("api_base_url", "")).strip()
     return url.rstrip("/") if url else None
 
 
 def _api_key() -> str | None:
-    """Return the LLM_API_KEY for the generic endpoint."""
-    return os.environ.get("LLM_API_KEY", "").strip() or None
+    """The key for that endpoint: LLM_API_KEY, else the attached endpoint's key."""
+    return os.environ.get("LLM_API_KEY", "").strip() or str(_stored_provider().get("api_key", "")).strip() or None
+
+
+def _api_model() -> str:
+    """The model for that endpoint: MORIE_API_MODEL, else the attached endpoint's model, else the default."""
+    return (os.environ.get("MORIE_API_MODEL", "").strip()
+            or str(_stored_provider().get("api_model", "")).strip()
+            or DEFAULT_API_MODEL)
 
 
 def _openai_key() -> str | None:
@@ -306,8 +324,7 @@ def detect_provider_and_model() -> tuple[str, str]:
         return provider, f"Gemini:{model}"
 
     if provider == _PROVIDER_API:
-        model = os.environ.get("MORIE_API_MODEL", DEFAULT_API_MODEL).strip()
-        return provider, f"API:{model}"
+        return provider, f"API:{_api_model()}"
 
     if provider == _PROVIDER_OPENAI:
         model = os.environ.get("MORIE_OPENAI_MODEL", DEFAULT_OPENAI_MODEL).strip()
@@ -1092,7 +1109,7 @@ def ask(
         if _gemini_key():
             attempts.append((GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
         if _api_base_url() and _api_key():
-            attempts.append((_api_base_url(), model or DEFAULT_API_MODEL, _api_key()))  # type: ignore[arg-type]
+            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
         if _openai_key():
             attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
 
@@ -1102,7 +1119,7 @@ def ask(
         if _gemini_key():
             attempts.append((GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
         if _api_base_url() and _api_key():
-            attempts.append((_api_base_url(), model or DEFAULT_API_MODEL, _api_key()))  # type: ignore[arg-type]
+            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
         if _openai_key():
             attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
 
@@ -1112,7 +1129,7 @@ def ask(
             attempts.append((GEMINI_BASE_URL, model or _gemini_model(), key))
         # Fallback to generic API then OpenAI if Gemini fails.
         if _api_base_url() and _api_key():
-            attempts.append((_api_base_url(), model or DEFAULT_API_MODEL, _api_key()))  # type: ignore[arg-type]
+            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
         if _openai_key():
             attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
 
@@ -1120,7 +1137,7 @@ def ask(
         base = _api_base_url()
         key = _api_key()
         if base and key:
-            attempts.append((base, model or DEFAULT_API_MODEL, key))
+            attempts.append((base, model or _api_model(), key))
         if _openai_key():
             attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
 
@@ -1236,7 +1253,7 @@ def ask_multi(
         if _gemini_key():
             attempts.append((GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
         if _api_base_url() and _api_key():
-            attempts.append((_api_base_url(), model or DEFAULT_API_MODEL, _api_key()))  # type: ignore[arg-type]
+            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
         if _openai_key():
             attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
     elif provider == _PROVIDER_GEMINI:
@@ -1244,14 +1261,14 @@ def ask_multi(
         if key:
             attempts.append((GEMINI_BASE_URL, model or _gemini_model(), key))
         if _api_base_url() and _api_key():
-            attempts.append((_api_base_url(), model or DEFAULT_API_MODEL, _api_key()))  # type: ignore[arg-type]
+            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
         if _openai_key():
             attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
     elif provider == _PROVIDER_API:
         base = _api_base_url()
         key = _api_key()
         if base and key:
-            attempts.append((base, model or DEFAULT_API_MODEL, key))
+            attempts.append((base, model or _api_model(), key))
         if _openai_key():
             attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
     elif provider == _PROVIDER_OPENAI:

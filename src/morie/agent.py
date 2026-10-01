@@ -1856,8 +1856,10 @@ class PerseusAgent:
             try:
                 data = self._send_to_ollama(messages, tools)
             except Exception as exc:
-                yield f"\n[Agent error: {exc}]"
-                return
+                # a dead backend is not an answer: raise so the caller can fall
+                # back (morie agent then behaves like morie ask) instead of
+                # printing an error line with exit status 0
+                raise RuntimeError(f"agent backend: {exc}") from exc
 
             assistant_msg = data.get("message", {})
             content = assistant_msg.get("content", "")

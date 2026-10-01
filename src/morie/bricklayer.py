@@ -7,8 +7,8 @@ Python is already present (you ran ``morie``), so this focuses on the
 
 * R: ``rmorie`` from r-universe, which pulls ``rmoriedata`` +
   ``rmoriebricklayer`` as dependencies.
-* ``rmorie-cli`` is proprietary (Receipt-of-Custody) -- never auto-installed,
-  only pointed to.
+* the ``rmorie`` command-line launcher ships inside rmorie;
+  ``rmorie::install_cli()`` links it onto PATH.
 
 The whole family is built on a shared C/C++ numeric core (``libmorie`` ->
 ``morie._core`` in Python; ``rmoriebricklayer``'s compiled kernels in R).
@@ -26,7 +26,6 @@ import sys
 
 RUNIV = "https://rootcoder007.r-universe.dev"
 CRAN = "https://cloud.r-project.org"
-CLI_URL = "https://github.com/rootcoder007/rmorie-cli"
 GITHUB_REPO = "rootcoder007/morie"
 GITHUB_SUBDIR = "r-package/morie"
 
@@ -131,7 +130,7 @@ def run(args) -> int:
     print("morie family status:")
     _mark(py_ok, "morie            (Python / this interpreter)")
     _mark(r_ok, "rmorie + data + bricklayer  (R / r-universe)")
-    _mark(cli_ok, "rmorie-cli       (proprietary -- not auto-installed)")
+    _mark(cli_ok, "rmorie launcher  (rmorie on PATH; Rscript -e 'rmorie::install_cli()')")
     _mark(tc_ok, "C/C++ toolchain  (cc + c++ -- REQUIRED for the compiled core)")
 
     if not _py_backend_ok():
@@ -152,8 +151,9 @@ def run(args) -> int:
     if getattr(args, "check", False):
         return 0
 
-    if not cli_ok:
-        print(f"note: rmorie-cli is proprietary (Receipt-of-Custody); obtain it at {CLI_URL}")
+    if r_ok and not cli_ok:
+        print("note: the rmorie launcher is not on PATH; put it there with "
+              "Rscript -e 'rmorie::install_cli()' (then: rmorie login, rmorie models, rmorie ask ...)")
 
     if r_ok and not getattr(args, "github", False):
         print("Nothing to install: the R side is already present.")

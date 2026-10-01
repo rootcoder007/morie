@@ -41,6 +41,35 @@ def build_prompt(question: str, context: str | None = None) -> str:
     return prompt
 
 
+def _how_to_get_a_model() -> str:
+    """The three routes to a live model, with the one that applies to this machine first."""
+    from .hosted import hosted_failure, hosted_key
+
+    lines = ["To get answers from a model (tried in this order):"]
+    if hosted_key() and hosted_failure() == "rejected":
+        lines.append(
+            "  1. hosted MORIE tier: you are signed in but the gateway rejected the key "
+            "(reset, or replaced by a newer sign-in). Run `morie login` again."
+        )
+    elif hosted_key():
+        lines.append(
+            "  1. hosted MORIE tier: you are signed in but https://llm.rmorie.com was not "
+            "reachable from here. Check the network, then `morie doctor`."
+        )
+    else:
+        lines.append(
+            "  1. hosted MORIE tier (free, sign in with GitHub or email): `morie login`; "
+            "after that `morie ask` uses it automatically and `morie models` lists what you can ask."
+        )
+    lines.append("  2. a local Ollama: install it, then `ollama pull gemma4:e2b` (or any model; pick with `morie ask --model NAME`).")
+    lines.append("  3. your own model: `morie provider set --base-url URL --key KEY [--model NAME]` for any "
+                 "OpenAI-compatible endpoint (OpenAI, Anthropic's https://api.anthropic.com/v1, OpenRouter, "
+                 "LM Studio, vLLM ...), or GEMINI_API_KEY / OPENAI_API_KEY in the environment.")
+    lines.append("`morie doctor` shows which of these answers from this machine. Until one does, this local "
+                 "mode still explains docs, commands, modules and data-contract requirements.")
+    return "\n".join(lines)
+
+
 def _local_fallback_response(question: str, context: str | None = None) -> str:
     """Generate a local keyword-matched response when no LLM is available."""
     normalized = question.lower()
@@ -66,11 +95,7 @@ def _local_fallback_response(question: str, context: str | None = None) -> str:
     if context:
         sections.append(f"Context noted: {context.strip()}")
 
-    sections.append(
-        "For live agent mode, install Ollama (`ollama pull gemma4:e2b`), "
-        "or set `LLM_API_KEY` / `OPENAI_API_KEY`. "
-        "Without that, this local mode can still explain docs, commands, modules, and data-contract requirements."
-    )
+    sections.append(_how_to_get_a_model())
     return "\n\n".join(sections)
 
 

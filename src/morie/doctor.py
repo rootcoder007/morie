@@ -82,7 +82,9 @@ def _check_hosted() -> tuple[bool, str]:
         return False, "not logged in -- run `morie login`"
     who = f" as {s['user']}" if s.get("user") else ""
     if not s["reachable"]:
-        return False, f"logged in{who}, gateway not reachable"
+        from .hosted import hosted_problem_line
+
+        return False, f"{hosted_problem_line()}{who}"
     from .hosted import hosted_model_available, hosted_models
 
     listed = hosted_models() or []

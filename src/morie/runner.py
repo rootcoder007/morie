@@ -272,7 +272,8 @@ def build_parser() -> argparse.ArgumentParser:
         "profile-dataset",
         help="Profile a dataset: infer variable types, roles, and suggest analyses",
     )
-    profile_cmd.add_argument("--csv", required=True, help="Path to the dataset file (CSV, TSV, Excel, Parquet, JSON)")
+    profile_cmd.add_argument("path", nargs="?", default=None, help="Dataset file (CSV, TSV, Excel, Parquet, JSON)")
+    profile_cmd.add_argument("--csv", default=None, help="Same as the positional path (kept for scripts)")
     profile_cmd.add_argument("--treatment", default=None, help="Hint: column to use as treatment")
     profile_cmd.add_argument("--outcome", default=None, help="Hint: column to use as outcome")
     profile_cmd.add_argument("--weights", default=None, help="Hint: column to use as survey weight")
@@ -283,7 +284,8 @@ def build_parser() -> argparse.ArgumentParser:
         "sample",
         help="Draw a sample from a dataset (SRS, stratified, cluster, PPS)",
     )
-    sample_cmd.add_argument("--csv", required=True, help="Path to the input dataset")
+    sample_cmd.add_argument("path", nargs="?", default=None, help="Input dataset file")
+    sample_cmd.add_argument("--csv", default=None, help="Same as the positional path (kept for scripts)")
     sample_cmd.add_argument(
         "--method",
         choices=["srs", "stratified", "cluster", "pps"],
@@ -464,6 +466,20 @@ def build_parser() -> argparse.ArgumentParser:
         _vee_register(subparsers)
     except ImportError:
         pass
+
+    # ── provider: attach your own OpenAI-compatible endpoint ───────────
+    prov = subparsers.add_parser(
+        "provider",
+        help="Attach your own model endpoint (OpenAI-compatible: OpenAI, Anthropic, "
+        "OpenRouter, LM Studio, vLLM, ...): set | show | unset",
+    )
+    prov_sub = prov.add_subparsers(dest="provider_cmd", required=True)
+    prov_set = prov_sub.add_parser("set", help="store the endpoint, key and optional model")
+    prov_set.add_argument("--base-url", required=True, help="e.g. https://api.openai.com/v1 or https://api.anthropic.com/v1")
+    prov_set.add_argument("--key", required=True, help="the API key for that endpoint")
+    prov_set.add_argument("--model", default=None, help="model name to ask by default (optional)")
+    prov_sub.add_parser("show", help="what is attached")
+    prov_sub.add_parser("unset", help="detach it")
 
     # ── bricklayer: offer to install the rest of the morie family ──────
     try:
@@ -1217,8 +1233,28 @@ def _main_impl() -> int:
 
         for line in models_lines():
             print(line)
+        from .hosted import provider_line
+
+        own = provider_line()
+        if own:
+            print(own)
         print(_local_models_line())
         print("Pick one per call with `morie ask --model NAME ...`, or set MORIE_HOSTED_MODEL / MORIE_OLLAMA_MODEL.")
+        return 0
+
+    if args.command == "provider":
+        from .hosted import provider_set, provider_show, provider_unset
+
+        if args.provider_cmd == "set":
+            try:
+                provider_set(args.base_url, args.key, args.model)
+            except ValueError as exc:
+                print(f"morie provider: {exc}", file=sys.stderr)
+                return 2
+        elif args.provider_cmd == "show":
+            provider_show()
+        else:
+            provider_unset()
         return 0
 
     if args.command == "doctor":
@@ -1230,6 +1266,12 @@ def _main_impl() -> int:
         from ._update_check import run_update
 
         return run_update(yes=getattr(args, "yes", False))
+
+    if args.command in ("profile-dataset", "sample"):
+        args.csv = args.csv or getattr(args, "path", None)
+        if not args.csv:
+            print(f"usage: morie {args.command} PATH  (or --csv PATH)", file=sys.stderr)
+            return 2
 
     if args.command == "profile-dataset":
         from .dataset import load_dataset, profile_dataset, suggest_analysis_plan
@@ -1613,11 +1655,42 @@ def _handle_percy(args: argparse.Namespace) -> int:
         host_part = pi.split("@")[-1] if "@" in pi else pi
         base_url = f"http://{host_part}:11434"
 
-    agent = create_agent(model=model, base_url=base_url, cloud_url=cloud_url, cloud_token=cloud_token)
-    model_name = getattr(agent, "_model", "unknown")
+    try:
+        agent = create_agent(model=model, base_url=base_url, cloud_url=cloud_url, cloud_token=cloud_token)
+        model_name = getattr(agent, "_model", "unknown")
+        if hasattr(agent, "is_running") and not agent.is_running():
+            raise RuntimeError("no Ollama server answers at " + str(base_url or "the default address"))
+    except Exception as exc:
+        # Perseus's tool-calling agent needs a local Ollama; without one, answer
+        # through the provider chain (hosted tier, your own endpoint, ...)
+        print(f"Perseus: no local Ollama ({exc}); answering through the provider chain instead.",
+              file=sys.stderr)
+        question = getattr(args, "question", None)
+        if question is None:
+            print("Give the question on the command line: morie percy \"...\"  (or run `morie chat`)", file=sys.stderr)
+            return 1
+        payload = ask_percy(question, stream=use_stream, model=model)
+        if use_stream:
+            return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
+        print(payload["output_text"])
+        return _llm_exit_code(payload)
     print(f"Perseus [{model_name}] ready.\n")
 
+    def _answer(q: str) -> int:
+        try:
+            _percy_answer(agent, q, use_stream, sys.stdout)
+            return 0
+        except Exception as exc:  # the Ollama backend died mid-answer: provider chain instead
+            print(f"Perseus: the local agent backend failed ({exc}); answering through the provider chain.",
+                  file=sys.stderr)
+            payload = ask_percy(q, stream=use_stream, model=model)
+            if use_stream:
+                return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
+            print(payload["output_text"])
+            return _llm_exit_code(payload)
+
     question = getattr(args, "question", None)
+    rc = 0
     if question is None:
         print("Type your question (or 'quit' to exit):\n")
         while True:
@@ -1629,14 +1702,14 @@ def _handle_percy(args: argparse.Namespace) -> int:
             if not q or q.lower() in ("quit", "exit", "q"):
                 print("Bye!")
                 break
-            _percy_answer(agent, q, use_stream, sys.stdout)
+            rc = _answer(q)
             print()
     else:
-        _percy_answer(agent, question, use_stream, sys.stdout)
+        rc = _answer(question)
 
     if hasattr(agent, "close"):
         agent.close()
-    return 0
+    return rc
 
 
 def _percy_answer(agent, question, use_stream, out):

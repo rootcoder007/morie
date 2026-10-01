@@ -7,6 +7,30 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## 1.3.7 (2026-10-01)
+
+- **Attach your own model.** `morie provider set --base-url URL --key KEY
+  [--model NAME]` stores any OpenAI-compatible endpoint (OpenAI, Anthropic's
+  compatibility endpoint, OpenRouter, Mistral, Groq, a local LM Studio / vLLM /
+  llama.cpp server) in the credentials file the R package reads too; `provider
+  show` / `provider unset`; `morie models` lists it. `LLM_API_BASE_URL`,
+  `LLM_API_KEY` and `MORIE_API_MODEL` in the environment still win.
+- **Every entry point falls back the same way.** `morie percy` and `morie
+  agent` answer through the provider chain (local Ollama, hosted tier, your
+  endpoint, Gemini, OpenAI) when the local tool-calling agent has no Ollama,
+  instead of printing a connection error with exit status 0.
+- **Honest status.** A hosted key the gateway rejects (401/403) is reported as
+  "run `morie login` again", not "gateway not reachable"; the local-mode text
+  names the hosted tier first, then Ollama, then your own endpoint.
+- **CLI consistency.** `profile-dataset` and `sample` take the file
+  positionally like `explain`, `verify` and `pull`. `morie bricklayer` no
+  longer calls the rmorie launcher "proprietary": it ships inside rmorie
+  (`rmorie::install_cli()`). The cheat sheet shows login, models, `ask
+  --model` and `provider set`.
+- **R arm.** The `rmorie` command line gains `list-modules`, `run-module`,
+  `list-datasets`, `pull`, `cheatsheet` and `provider`; `morie_module_names()`
+  and `morie_llm_provider_set()` / `_show()` / `_unset()` are exported.
+
 ## 1.3.6 (2026-10-01)
 
 - **Fix.** `morie pull ... --out PATH` and `morie first-paper` raised

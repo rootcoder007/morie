@@ -227,7 +227,13 @@ morie cheat sheet
   morie ingest siu --report-id 22-OFD-001 --out report/
 
 {t("cheatsheet.help")}
+  morie login                     Sign in to the hosted model tier (free; GitHub or email)
+  morie models                    What you can ask: hosted models for your key, then local Ollama
   morie ask "I have a treatment-control design; what module fits?"
+  morie ask --model NAME "..."    Pick one model for this question
+  morie provider set --base-url URL --key KEY [--model NAME]
+                                  Attach your own OpenAI-compatible endpoint (OpenAI, Anthropic,
+                                  OpenRouter, LM Studio, vLLM, ...)
   morie doctor                    Check what's installed and working
   morie --help                    Top-level help
 

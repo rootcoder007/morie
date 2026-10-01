@@ -94,12 +94,14 @@ def hosted_key() -> str | None:
 
 _hosted_cached: bool | None = None
 _hosted_models: list[str] | None = None  # what the gateway listed for this key, once probed
+_hosted_failure: str | None = None
 
 
 def reset_probe_cache() -> None:
-    global _hosted_cached, _hosted_models
+    global _hosted_cached, _hosted_models, _hosted_failure
     _hosted_cached = None
     _hosted_models = None
+    _hosted_failure = None
 
 
 def probe_hosted(timeout: float = _PROBE_TIMEOUT) -> bool:
@@ -108,7 +110,7 @@ def probe_hosted(timeout: float = _PROBE_TIMEOUT) -> bool:
     Cached for the process lifetime like the Ollama probe; never called
     without a key, so a fresh install makes no network request here.
     """
-    global _hosted_cached, _hosted_models
+    global _hosted_cached, _hosted_models, _hosted_failure
     if _hosted_cached is not None:
         return _hosted_cached
     base, key = hosted_base_url(), hosted_key()
@@ -119,12 +121,34 @@ def probe_hosted(timeout: float = _PROBE_TIMEOUT) -> bool:
         resp = httpx.get(f"{base}/v1/models", headers={"Authorization": f"Bearer {key}"}, timeout=timeout)
         _hosted_cached = resp.status_code < 400
         if _hosted_cached:
+            _hosted_failure = None
             with contextlib.suppress(Exception):
                 ids = [m.get("id") for m in resp.json().get("data", [])]
                 _hosted_models = [m for m in ids if isinstance(m, str) and m] or None
+        else:
+            _hosted_failure = "rejected" if resp.status_code in (401, 403) else f"http {resp.status_code}"
     except Exception:
         _hosted_cached = False
+        _hosted_failure = "network"
     return _hosted_cached
+
+
+def hosted_failure() -> str | None:
+    """Why the last probe failed: "rejected" (401/403: the key is no longer
+    valid at the gateway), "network", "http NNN", or None when it succeeded."""
+    probe_hosted()
+    return _hosted_failure
+
+
+def hosted_problem_line(cli: str = "morie") -> str:
+    """One sentence for a logged-in user whose probe failed, with the remedy."""
+    why = hosted_failure()
+    if why == "rejected":
+        return (f"logged in, but the gateway rejected the key (it was reset or replaced "
+                f"by a newer sign-in): run `{cli} login` again")
+    if why in (None, "network"):
+        return "logged in, gateway not reachable from this machine (network)"
+    return f"logged in, gateway answered {why}: try again, or `{cli} login`"
 
 
 def hosted_models() -> list[str] | None:
@@ -282,9 +306,7 @@ def models_lines() -> list[str]:
     if not s["logged_in"]:
         return [f"Hosted tier ({DEFAULT_HOSTED_BASE_URL}): not logged in -- run `morie login`"]
     if not s["reachable"]:
-        return [
-            f"Hosted tier ({s['base_url']}): logged in, gateway not reachable (or the key was replaced by a newer sign-in: run `morie login` again)"
-        ]
+        return [f"Hosted tier ({s['base_url']}): {hosted_problem_line()}"]
     default = hosted_model_available()
     who = f", logged in as {s['user']}" if s.get("user") else ""
     lines = [f"Hosted tier ({s['base_url']}){who}; default marked *:"]
@@ -300,4 +322,74 @@ def status() -> dict:
         "logged_in": bool(key),
         "user": read_credentials().get("hosted_user", ""),
         "reachable": probe_hosted() if key else False,
+        "failure": hosted_failure() if key else None,
     }
+
+
+# ---------------------------------------------------------------------------
+# Your own endpoint: `morie provider set|show|unset`
+# ---------------------------------------------------------------------------
+
+_PROVIDER_KEYS = ("api_base_url", "api_key", "api_model")
+
+
+def provider_set(base_url: str, key: str, model: str | None = None, echo=_say) -> dict:
+    """Attach an OpenAI-compatible endpoint (chat completions at BASE_URL/chat/completions).
+
+    Works for OpenAI, Anthropic's compatibility endpoint (https://api.anthropic.com/v1),
+    OpenRouter, Mistral, Groq, a local LM Studio / vLLM / llama.cpp server, or any
+    other server that speaks that API. Environment variables LLM_API_BASE_URL,
+    LLM_API_KEY and MORIE_API_MODEL still take precedence when set.
+    """
+    base_url = base_url.strip().rstrip("/")
+    if not base_url.startswith(("http://", "https://")):
+        raise ValueError("base URL must start with http:// or https://")
+    if not key.strip():
+        raise ValueError("the key is empty")
+    data = read_credentials()
+    data["api_base_url"] = base_url
+    data["api_key"] = key.strip()
+    if model and model.strip():
+        data["api_model"] = model.strip()
+    else:
+        data.pop("api_model", None)
+    path = write_credentials(data)
+    echo(f"Endpoint attached: {base_url}" + (f" (model {data.get('api_model')})" if data.get("api_model") else "")
+         + f"; stored in {path}")
+    return {k: data.get(k) for k in _PROVIDER_KEYS}
+
+
+def provider_show(echo=_say) -> dict:
+    data = read_credentials()
+    base, model = data.get("api_base_url"), data.get("api_model")
+    if not base:
+        echo("No endpoint attached. Attach one with: morie provider set --base-url URL --key KEY [--model NAME]")
+    else:
+        key = str(data.get("api_key", ""))
+        echo(f"Endpoint: {base}\nModel:    {model or 'server default'}\nKey:      {key[:4]}...{key[-3:]} ({len(key)} chars)")
+    return {k: data.get(k) for k in _PROVIDER_KEYS}
+
+
+def provider_unset(echo=_say) -> bool:
+    data = read_credentials()
+    had = any(k in data for k in _PROVIDER_KEYS)
+    for k in _PROVIDER_KEYS:
+        data.pop(k, None)
+    if data:
+        write_credentials(data)
+    else:
+        with contextlib.suppress(FileNotFoundError):
+            credentials_path().unlink()
+    echo("Endpoint detached." if had else "No endpoint was attached.")
+    return had
+
+
+def provider_line() -> str | None:
+    """One line for `morie models` when an endpoint is attached or set in the environment."""
+    from .llm import _api_base_url, _api_key, _api_model
+
+    base = _api_base_url()
+    if not base or not _api_key():
+        return None
+    return f"Your endpoint ({base}): model {_api_model()}"
+
