@@ -183,5 +183,9 @@ def run_update(yes: bool = False) -> int:
     result = subprocess.run(cmd)
     if result.returncode == 0:
         _write_cache(latest)
-        print(f'Updated to morie {latest}. The R package updates via install.packages("morie").')
+        print(
+            f"Updated to morie {latest}. The R package is rmorie: "
+            'install.packages("rmorie", repos = c("https://rootcoder007.r-universe.dev", '
+            '"https://cloud.r-project.org"))'
+        )
     return result.returncode
