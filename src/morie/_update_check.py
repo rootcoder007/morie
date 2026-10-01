@@ -184,8 +184,10 @@ def run_update(yes: bool = False) -> int:
     if result.returncode == 0:
         _write_cache(latest)
         print(
-            f"Updated to morie {latest}. The R package is rmorie: "
-            'install.packages("rmorie", repos = c("https://rootcoder007.r-universe.dev", '
-            '"https://cloud.r-project.org"))'
+            f"Updated to morie {latest}.\n"
+            "The R side is rmorie, prebuilt on r-universe:\n"
+            '  Rscript -e \'install.packages("rmorie", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))\'\n'
+            "or this repository's own R arm, built from source with remotes:\n"
+            '  Rscript -e \'remotes::install_github("rootcoder007/morie", subdir = "r-package/morie")\''
         )
     return result.returncode

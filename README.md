@@ -128,6 +128,12 @@ install.packages(
   )
 )
 install.packages(c("rmoriebricklayer", "rmoriedata"))
+
+# The same R code also lives in this repository as r-package/morie (package
+# name "morie"), tracking every commit here; build it from source with remotes
+# (needs a C++ toolchain and rmoriebricklayer):
+# install.packages("remotes")
+remotes::install_github("rootcoder007/morie", subdir = "r-package/morie")
 ```
 
 ## Quick start
