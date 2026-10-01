@@ -155,3 +155,6 @@ cran-comments.md
 # package content. _audit is real and stays tracked.
 tests/fn/_*/
 !tests/fn/_audit/
+
+# placeholder-audit ledger: kept locally, not in the repository
+PLACEHOLDERS.csv
