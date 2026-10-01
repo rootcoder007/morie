@@ -188,6 +188,7 @@ def run_update(yes: bool = False) -> int:
             "The R side is rmorie, prebuilt on r-universe:\n"
             '  Rscript -e \'install.packages("rmorie", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))\'\n'
             "or this repository's own R arm, built from source with remotes:\n"
-            '  Rscript -e \'remotes::install_github("rootcoder007/morie", subdir = "r-package/morie")\''
+            '  Rscript -e \'remotes::install_github("rootcoder007/morie", subdir = "r-package/morie")\'\n'
+            "or let morie run it: morie r-install [--github]"
         )
     return result.returncode

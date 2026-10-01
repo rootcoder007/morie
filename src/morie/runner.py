@@ -971,7 +971,7 @@ def _main_impl() -> int:
 
         return handle_verify_earth_engine(args)
 
-    if args.command == "bricklayer":
+    if args.command in ("bricklayer", "r-install"):
         from .bricklayer import run as _bl_run
 
         return _bl_run(args)
@@ -1004,9 +1004,9 @@ def _main_impl() -> int:
                 content = src.read_text(encoding="utf-8")
         except FileNotFoundError:
             # Fallback: try the project-tree path (dev install)
-            from pathlib import Path as _P
+            from pathlib import Path
 
-            src = _P(__file__).resolve().parents[2] / "templates" / "first-paper.md"
+            src = Path(__file__).resolve().parents[2] / "templates" / "first-paper.md"
             content = src.read_text(encoding="utf-8")
         # Light placeholder substitution
         content = content.replace("[MODULE_NAME]", args.module)

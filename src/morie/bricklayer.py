@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""``morie bricklayer`` -- offer to install the rest of the morie family.
+"""``morie bricklayer`` / ``morie r-install`` -- offer to install the rest of
+the morie family.
 
 Python is already present (you ran ``morie``), so this focuses on the
 *other* ecosystems:
@@ -26,6 +27,24 @@ import sys
 RUNIV = "https://rootcoder007.r-universe.dev"
 CRAN = "https://cloud.r-project.org"
 CLI_URL = "https://github.com/rootcoder007/rmorie-cli"
+GITHUB_REPO = "rootcoder007/morie"
+GITHUB_SUBDIR = "r-package/morie"
+
+
+def _r_install_expr(github: bool = False) -> str:
+    """The R expression that installs the R side.
+
+    Default: rmorie from r-universe (prebuilt binaries, pulls rmoriedata and
+    rmoriebricklayer). ``github``: this repository's own R arm, built from
+    source with remotes (needs a C/C++ toolchain and rmoriebricklayer).
+    """
+    if github:
+        return (
+            'if (!requireNamespace("remotes", quietly = TRUE)) '
+            f"install.packages('remotes', repos='{CRAN}'); "
+            f"remotes::install_github('{GITHUB_REPO}', subdir = '{GITHUB_SUBDIR}')"
+        )
+    return f"install.packages('rmorie', repos=c('{RUNIV}','{CRAN}'))"
 
 
 def _have_spec(name: str) -> bool:
@@ -79,8 +98,24 @@ def register_subparser(subparsers) -> None:
         help="Offer to install the rest of the morie family (R packages) and "
         "verify the shared C/C++ backend.",
     )
+    _add_install_args(p)
+    r = subparsers.add_parser(
+        "r-install",
+        help="Install the R side: rmorie from r-universe, or this repository's "
+        "own R arm from GitHub with --github.",
+    )
+    _add_install_args(r)
+
+
+def _add_install_args(p) -> None:
     p.add_argument("-y", "--yes", action="store_true", help="install without prompting")
     p.add_argument("--check", action="store_true", help="report status only; install nothing")
+    p.add_argument(
+        "--github",
+        action="store_true",
+        help="build r-package/morie from GitHub with remotes instead of installing "
+        "rmorie from r-universe (needs a C/C++ toolchain and rmoriebricklayer)",
+    )
 
 
 def _mark(ok: bool, label: str) -> None:
@@ -120,29 +155,34 @@ def run(args) -> int:
     if not cli_ok:
         print(f"note: rmorie-cli is proprietary (Receipt-of-Custody); obtain it at {CLI_URL}")
 
-    if r_ok:
+    if r_ok and not getattr(args, "github", False):
         print("Nothing to install: the R side is already present.")
         return 0
 
+    github = bool(getattr(args, "github", False))
+    expr = _r_install_expr(github)
     if not _rscript():
         print("R is not installed. Install R first (https://cloud.r-project.org), then:")
-        print(f'  Rscript -e "install.packages(\'rmorie\', repos=c(\'{RUNIV}\',\'{CRAN}\'))"')
+        print(f'  Rscript -e "{expr}"')
         return 0
 
     if not getattr(args, "yes", False):
         if not sys.stdin.isatty():
             print("Non-interactive; not installing. Re-run with --yes, or:")
-            print(f'  Rscript -e "install.packages(\'rmorie\', repos=c(\'{RUNIV}\',\'{CRAN}\'))"')
+            print(f'  Rscript -e "{expr}"')
             return 0
-        reply = input("Install the R package rmorie (+ rmoriedata, rmoriebricklayer) now? [Y/n] ").strip()
+        what = (
+            "this repository's R arm (r-package/morie) from GitHub"
+            if github
+            else "the R package rmorie (+ rmoriedata, rmoriebricklayer)"
+        )
+        reply = input(f"Install {what} now? [Y/n] ").strip()
         if reply not in ("", "y", "Y", "yes", "YES"):
             print("Skipped. Re-run `morie bricklayer` anytime.")
             return 0
 
-    print("-> installing R rmorie (+ rmoriedata, rmoriebricklayer) ...")
-    rc = subprocess.run(
-        [_rscript(), "-e", f"install.packages('rmorie', repos=c('{RUNIV}','{CRAN}'))"]
-    ).returncode
+    print("-> installing the R side ..." if github else "-> installing R rmorie (+ rmoriedata, rmoriebricklayer) ...")
+    rc = subprocess.run([_rscript(), "-e", expr]).returncode
 
     if rc != 0:
         print("R install failed (see output above).", file=sys.stderr)

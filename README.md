@@ -108,7 +108,7 @@ pip install morie
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/rootcoder007/morie:1.3.4 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:1.3.5 morie --help
 ```
 
 Published on every release with a versioned tag, a major.minor tag and `:latest` (linux/amd64). Requires only Docker — no Python, no pip.
@@ -135,6 +135,9 @@ install.packages(c("rmoriebricklayer", "rmoriedata"))
 # install.packages("remotes")
 remotes::install_github("rootcoder007/morie", subdir = "r-package/morie")
 ```
+
+Or let morie run either install for you: `morie r-install` (r-universe) or
+`morie r-install --github` (this repository's R arm).
 
 ## Quick start
 

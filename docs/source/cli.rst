@@ -166,6 +166,12 @@ Environment
    Offer to install the rest of the morie family (the R packages) and
    verify the shared C/C++ backend (``--check`` reports only).
 
+``r-install``
+   Install the R side: ``rmorie`` from r-universe (prebuilt, pulls
+   ``rmoriedata`` and ``rmoriebricklayer``), or with ``--github`` this
+   repository's own R arm, ``r-package/morie``, built from source with
+   remotes. Same options as ``bricklayer``.
+
 Verification pipelines
 ----------------------
 

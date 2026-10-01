@@ -7,6 +7,25 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## 1.3.5 (2026-10-01)
+
+- **Install the R side from the Python CLI.** `morie r-install` installs
+  rmorie from r-universe (prebuilt binaries; pulls rmoriedata and
+  rmoriebricklayer); `morie r-install --github` builds this repository's
+  own R arm, `r-package/morie`, from source with remotes. `morie bricklayer`
+  gains the same `--github` switch. The message after a self-update names
+  both routes; it used to point at a CRAN package that does not exist under
+  that name.
+- **R arm, CRAN follow-ups.** No example line over 100 characters; the
+  `morie_load_dataset` example reads the built-in copy first and the Hawkes
+  examples fit 400 and 500 events; `research/` stays out of the tarball.
+- **R arm, CI.** The CLI tests run under covr; testthat runs in one process
+  under covr and on Windows (a parallel worker died there with an access
+  violation); on R-universe's R-oldrel macOS x86_64 runner the test files run
+  inside a 10-minute budget so the check fits its 60-minute cap.
+- **Tests.** The mock built-in database test names its table `ocp21`, so the
+  Python suite no longer downloads CPADS from the portal on every CI run.
+
 ## 1.3.4 (2026-09-30)
 
 - **See what you can ask.** `morie models` lists the hosted tier's models
