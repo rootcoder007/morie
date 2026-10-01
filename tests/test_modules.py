@@ -46,7 +46,9 @@ def _mock_db(tmp_path):
     """Build a tiny SQLite DB with a CPADS-like table."""
     db_path = tmp_path / "mock_morie.db"
     conn = sqlite3.connect(str(db_path))
-    _mock_cpads_df().to_sql("ocp21_cpads_2021_pumf", conn, index=False)
+    # the built-in database keys tables by the catalog table_name ("ocp21");
+    # any other name misses and load_dataset falls through to the live portal
+    _mock_cpads_df().to_sql("ocp21", conn, index=False)
     conn.close()
     return db_path
 
