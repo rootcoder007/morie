@@ -268,7 +268,7 @@ def _cpu_percent():
     except OSError:
         try:
             return max(0.0, min(100.0, 100.0 * os.getloadavg()[0] / (os.cpu_count() or 1)))
-        except OSError:
+        except (OSError, AttributeError):  # Windows has neither /proc/stat nor getloadavg
             return 0.0
 
 

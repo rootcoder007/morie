@@ -75,7 +75,10 @@ def test_load_multiple_datasets_mock(tmp_path, monkeypatch):
     from morie.data import load_dataset
 
     db_path = _mock_db(tmp_path)
-    conn_factory = lambda: sqlite3.connect(str(db_path))
+
+    def conn_factory():
+        return sqlite3.connect(str(db_path))
+
     monkeypatch.setattr("morie.data._builtin_db_connect", conn_factory)
     try:
         df = load_dataset("ocp21")
@@ -92,3 +95,30 @@ def test_run_module_with_mock_cpads(tmp_path):
     outputs = run_module("power-design", cpads_csv=str(csv_path), output_dir=tmp_path)
     assert "power_summary" in outputs
     assert (tmp_path / "power_summary.csv").exists()
+
+
+def test_run_module_materialises_dataset_key_and_cached_pumf_for_the_r_bridge(monkeypatch, tmp_path):
+    """--dataset KEY and a pulled PUMF must reach the R stage as a CSV path (they used to be dropped)."""
+    from morie import modules
+    from morie.fn import _frame_core as pd
+
+    seen = {}
+
+    def fake_bridge(module_name, cpads_csv=None, output_dir=None):
+        seen["csv"] = str(cpads_csv)
+        return {"ok": pd.DataFrame({"x": [1]})}
+
+    monkeypatch.setattr(modules, "_run_r_module", fake_bridge)
+    monkeypatch.setattr("morie.data.load_dataset", lambda key, **kw: pd.DataFrame({"k": [key]}))
+    monkeypatch.setattr("tempfile.gettempdir", lambda: str(tmp_path))
+    modules.run_module("descriptive-statistics", dataset_key="ocp21")
+    assert seen["csv"].endswith("morie-dataset-ocp21.csv")
+    assert pd.read_csv(seen["csv"])["k"].tolist() == ["ocp21"]
+    # a real PUMF already in the Python store beats the shipped synthetic frame
+    monkeypatch.setattr("morie.data.cached_cpads", lambda: pd.DataFrame({"real": [1, 2]}))
+    modules.run_module("descriptive-statistics")
+    assert seen["csv"].endswith("morie-dataset-ocp21-cached.csv")
+    # nothing cached: the synthetic path goes through unchanged
+    monkeypatch.setattr("morie.data.cached_cpads", lambda: None)
+    modules.run_module("descriptive-statistics")
+    assert seen["csv"] == str(modules.DEFAULT_CPADS_CSV)

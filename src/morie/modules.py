@@ -14,21 +14,19 @@ from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn._glm_core import NormalIndPower
 
-
-def proportion_effectsize(prop1, prop2):
-    """Cohen's h = 2 asin(sqrt(p1)) - 2 asin(sqrt(p2)) (statsmodels-free)."""
-    return (2.0 * _math.asin(_math.sqrt(prop1))
-            - 2.0 * _math.asin(_math.sqrt(prop2)))
-
-
 from .causal import run_ebac_selection_ipw_analysis, run_propensity_ipw_analysis
-from .cpads import canonicalize_cpads_frame
+from .cpads import canonicalize_cpads_frame, has_raw_cpads_columns
 from .data import DatasetRegistry
 from .investigation import (
     compare_nested_logistic_models,
     run_treatment_effects_analysis,
     run_weighted_logistic_analysis,
 )
+
+
+def proportion_effectsize(prop1, prop2):
+    """Cohen's h = 2 asin(sqrt(p1)) - 2 asin(sqrt(p2)) (statsmodels-free)."""
+    return 2.0 * _math.asin(_math.sqrt(prop1)) - 2.0 * _math.asin(_math.sqrt(prop2))
 
 
 def _find_cpads_csv() -> str:
@@ -351,14 +349,21 @@ def load_cpads_analysis_data(
     import warnings
 
     resolved = Path(cpads_csv).expanduser().resolve()
+    if _is_synthetic_cpads_path(resolved) and not (column_mapping or auto_map):
+        from .data import cached_cpads
+
+        cached = cached_cpads()
+        if cached is not None:
+            # the real PUMF pulled earlier (`morie pull cpads`) beats the toy frame
+            return canonicalize_cpads_frame(cached) if has_raw_cpads_columns(cached) else cached
     if _is_synthetic_cpads_path(resolved):
         warnings.warn(
             "morie: using the SHIPPED SYNTHETIC CPADS frame "
             f"({resolved}). This is a 1,200-row toy dataset with the "
             "correct schema but random data, intended for first-run "
-            "demos. Download the real Statistics Canada CPADS PUMF "
-            "from open.canada.ca and pass its path explicitly "
-            "(cpads_csv=...) for production analyses.",
+            "demos. Get the real Statistics Canada CPADS PUMF once with "
+            "`morie pull cpads` (cached, used by default afterwards), or "
+            "run modules with --dataset ocp21 / cpads_csv=... .",
             UserWarning,
             stacklevel=2,
         )
@@ -914,15 +919,45 @@ def _load_dataset_frame(
 
 # Modules with BOTH an R and a Python implementation; only these may fall
 # back to Python when the R stage fails (with a logged warning).
-_PY_FALLBACK_MODULES = frozenset({
-    "power-design",
-    "logistic-models",
-    "model-comparison",
-    "propensity-scores",
-    "treatment-effects",
-    "ebac-selection-adjustment-ipw",
-    "ebac-gender-smote-sensitivity",
-})
+_PY_FALLBACK_MODULES = frozenset(
+    {
+        "power-design",
+        "logistic-models",
+        "model-comparison",
+        "propensity-scores",
+        "treatment-effects",
+        "ebac-selection-adjustment-ipw",
+        "ebac-gender-smote-sensitivity",
+    }
+)
+
+
+def _cpads_csv_for_run(cpads_csv: str | Path, dataset_key: str | None) -> str | Path:
+    """The CSV the module stages (R bridge or Python) will read.
+
+    The R bridge takes a path only, so a ``dataset_key`` and the real PUMF
+    pulled into the Python store (``morie pull ocp21``) are written to a
+    CSV first; otherwise ``--dataset`` was dropped on the R route and a
+    pulled PUMF stayed invisible to it (both arms then ran the synthetic
+    frame while the user believed otherwise).
+    """
+    import tempfile
+
+    from .data import cached_cpads, load_dataset
+
+    frame = None
+    label = ""
+    if dataset_key:
+        frame = load_dataset(dataset_key)
+        label = dataset_key
+    elif _is_synthetic_cpads_path(Path(cpads_csv).expanduser().resolve()):
+        frame = cached_cpads()
+        label = "ocp21-cached"
+    if frame is None:
+        return cpads_csv
+    dest = Path(tempfile.gettempdir()) / f"morie-dataset-{label}.csv"
+    frame.to_csv(dest, index=False)
+    return dest
 
 
 def run_module(
@@ -950,6 +985,7 @@ def run_module(
         valid = ", ".join(sorted(MODULE_SPECS))
         raise ValueError(f"Unknown module: {module_name}. Valid modules: {valid}")
 
+    cpads_csv = _cpads_csv_for_run(cpads_csv, dataset_key)
     try:
         return _run_r_module(module_name, cpads_csv=cpads_csv, output_dir=output_dir)
     except (RuntimeError, OSError, subprocess.SubprocessError) as exc:

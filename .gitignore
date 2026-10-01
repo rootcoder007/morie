@@ -108,6 +108,7 @@ papers/
 # at templates/first-paper.md (removed 2026-05-26); the dir stays
 # ignored so future scaffolding doesn't accidentally land in git.
 templates/
+!r-package/morie/inst/templates/
 !papers/hawkes-paper/main.tex
 !papers/hawkes-paper/refs.bib
 !papers/morie-empirical-paper/main.tex

@@ -26,8 +26,28 @@ The R side of :doc:`../hosted`: the provider chain, sign-in and the
 .. r:function:: morie_llm_probe_hosted
 .. r:function:: morie_llm_login
 .. r:function:: morie_llm_logout
+.. r:function:: morie_llm_provider_set
 .. r:function:: morie_cli
 .. r:function:: install_cli
+.. r:function:: morie_module_names
+.. r:function:: morie_hosted_manifest
+
+Pollution to health, compute emissions
+--------------------------------------
+
+The R side of :doc:`../methods/envhealth` and :doc:`../methods/compute-emissions`.
+
+.. r:function:: morie_envhealth_crf_pm25
+.. r:function:: morie_envhealth_attributable_fraction
+.. r:function:: morie_envhealth_mortality_displaced
+.. r:function:: morie_envhealth_burden
+.. r:function:: morie_envhealth_sensitivity
+.. r:function:: morie_envhealth_equity
+.. r:function:: morie_envhealth_burden_by_fsa
+.. r:function:: morie_verify_pollution
+.. r:function:: morie_emissions_start
+.. r:function:: morie_emissions_carbon_intensity
+.. r:function:: morie_emissions_verify
 
 Causal estimators
 -----------------

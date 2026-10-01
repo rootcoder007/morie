@@ -82,6 +82,9 @@ The track
 
    what-is-this
    first-analysis
+   datasets
+   emissions
+   r-cli
 
 ----
 

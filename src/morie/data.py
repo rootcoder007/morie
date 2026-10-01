@@ -6,11 +6,20 @@ import sqlite3
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import urlopen
 
 from morie.fn import _frame_core as pd
+
+from .cpads import (
+    CPADS_REQUIRED_VARIABLES,
+    canonicalize_cpads_frame,
+    cpads_contract,
+    has_raw_cpads_columns,
+    infer_file_format,
+    validate_cpads_frame,
+)
 
 _SAFE_TABLE_RE = re.compile(r"^[A-Za-z0-9_]+$")
 
@@ -21,15 +30,6 @@ def _safe_table_name(name: str) -> str:
         raise ValueError(f"Unsafe table name: {name!r}")
     return name
 
-
-from .cpads import (
-    CPADS_REQUIRED_VARIABLES,
-    canonicalize_cpads_frame,
-    cpads_contract,
-    has_raw_cpads_columns,
-    infer_file_format,
-    validate_cpads_frame,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -1181,6 +1181,44 @@ def cache_list(db_path: str | Path | None = None) -> list[dict[str, Any]]:
         conn.close()
 
 
+def wayback_snapshot_url(url: str, timestamp: str | None = None, timeout: int = 15) -> str | None:
+    """The closest Internet Archive snapshot of ``url`` (https), or None.
+
+    Mirrors ``rmoriebricklayer::wayback_snapshot_url()``: asks
+    ``archive.org/wayback/available`` and returns the snapshot URL only when
+    the archive reports it available.
+    """
+    from urllib.parse import quote
+
+    api = "https://archive.org/wayback/available?url=" + quote(url, safe="")
+    if timestamp:
+        api += "&timestamp=" + timestamp
+    try:
+        res = json.loads(urlopen(api, timeout=timeout).read().decode())
+        snap = res.get("archived_snapshots", {}).get("closest") or {}
+        if snap.get("available") and snap.get("url"):
+            return str(snap["url"]).replace("http://", "https://", 1)
+    except Exception:  # noqa: BLE001 - the archive being down is the same as no snapshot
+        return None
+    return None
+
+
+def download_with_wayback(url: str, timeout: int = 60) -> tuple[bytes, str]:
+    """Fetch ``url``; if the live site fails, the closest Wayback snapshot.
+
+    Returns the bytes and the URL they came from. Raises the live error when
+    no snapshot exists either.
+    """
+    try:
+        return urlopen(url, timeout=timeout).read(), url
+    except Exception as live_exc:  # noqa: BLE001
+        snap = wayback_snapshot_url(url)
+        if snap is None:
+            raise
+        logger.warning("Live download of %s failed (%s); using the Wayback snapshot %s", url, live_exc, snap)
+        return urlopen(snap, timeout=timeout).read(), snap
+
+
 def fetch_ckan_to_cache(
     dataset_key: str = "cpads",
     limit: int = 32000,
@@ -1242,6 +1280,13 @@ def fetch_ckan_to_cache(
             if exc.code not in (404, 500) or offset:
                 raise
             payload = {}
+        except (URLError, OSError) as exc:
+            # The datastore API is unreachable: the resource file is the
+            # route, live or from its Wayback Machine snapshot.
+            if offset:
+                raise
+            logger.warning("CKAN datastore unreachable for %s (%s); reading the resource file", dataset_key, exc)
+            payload = {}
         result = payload.get("result", {})
         batch = result.get("records", [])
         records.extend(batch)
@@ -1275,6 +1320,60 @@ def fetch_ckan_to_cache(
     return df
 
 
+def _download_file(url: str, dest: Path, timeout: int = 60) -> str:
+    """Stream ``url`` to ``dest``; when the live site fails, its closest Wayback snapshot.
+
+    Returns the URL the bytes came from. The same fallback the R arm has in
+    ``morie_download(attempt_wayback = TRUE)``.
+    """
+    from urllib.request import Request
+
+    def _stream(src: str) -> None:
+        # open.canada.ca's front end rejects a bare "Mozilla/5.0" agent
+        req = Request(src, headers={"User-Agent": "morie/1 (+https://rmorie.com)"})
+        with urlopen(req, timeout=timeout) as resp, dest.open("wb") as fh:
+            while chunk := resp.read(1 << 20):
+                fh.write(chunk)
+
+    try:
+        _stream(url)
+        return url
+    except Exception as live_exc:  # noqa: BLE001 - any live failure may have an archived copy
+        snap = wayback_snapshot_url(url)
+        if snap is None:
+            raise
+        logger.warning("Live download of %s failed (%s); using the Wayback snapshot %s", url, live_exc, snap)
+        _stream(snap)
+        return snap
+
+
+def _download_file(url: str, dest: Path, timeout: int = 60) -> str:
+    """Stream ``url`` to ``dest``; when the live site fails, its closest Wayback snapshot.
+
+    Returns the URL the bytes came from. The same fallback the R arm has in
+    ``morie_download(attempt_wayback = TRUE)``.
+    """
+    from urllib.request import Request
+
+    def _stream(src: str) -> None:
+        # open.canada.ca's front end rejects a bare "Mozilla/5.0" agent
+        req = Request(src, headers={"User-Agent": "morie/1 (+https://rmorie.com)"})
+        with urlopen(req, timeout=timeout) as resp, dest.open("wb") as fh:
+            while chunk := resp.read(1 << 20):
+                fh.write(chunk)
+
+    try:
+        _stream(url)
+        return url
+    except Exception as live_exc:  # noqa: BLE001 - any live failure may have an archived copy
+        snap = wayback_snapshot_url(url)
+        if snap is None:
+            raise
+        logger.warning("Live download of %s failed (%s); using the Wayback snapshot %s", url, live_exc, snap)
+        _stream(snap)
+        return snap
+
+
 def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -> pd.DataFrame:
     """Download a CKAN resource that has no datastore and read it as a table.
 
@@ -1285,7 +1384,6 @@ def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -
     The download is kept under the cache directory.
     """
     import zipfile
-    from urllib.request import Request
 
     meta_url = f"{DEFAULT_CKAN_API_BASE.rsplit('/', 1)[0]}/resource_show?id={resource_id}"
     meta = json.loads(urlopen(meta_url, timeout=timeout).read().decode())
@@ -1297,11 +1395,8 @@ def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -
         dest.parent.mkdir(parents=True, exist_ok=True)
         logger.info("Downloading %s for %s", url, dataset_key)
         # open.canada.ca's front end rejects a bare "Mozilla/5.0" agent
-        req = Request(url, headers={"User-Agent": "morie/1 (+https://rmorie.com)"})
         tmp = dest.with_suffix(dest.suffix + ".part")
-        with urlopen(req, timeout=timeout) as resp, tmp.open("wb") as fh:
-            while chunk := resp.read(1 << 20):
-                fh.write(chunk)
+        _download_file(url, tmp, timeout)
         tmp.replace(dest)
     if not zipfile.is_zipfile(dest):
         return pd.read_csv(dest, low_memory=False)
@@ -1493,6 +1588,23 @@ def _ckan_source(dataset_key: str) -> tuple[dict[str, str], str, bool]:
     raise ValueError(f"Unknown CKAN dataset: {dataset_key}. Known: {known}")
 
 
+def cached_cpads() -> pd.DataFrame | None:
+    """The real CPADS PUMF already in the built-in store (``morie pull cpads``), or None. No network."""
+    builtin = _builtin_db_connect()
+    if builtin is None:
+        return None
+    try:
+        for tbl in ("cpads_canonical", "ocp21"):
+            hit = builtin.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (tbl,)).fetchone()
+            if hit:
+                return pd.read_sql(f"SELECT * FROM [{_safe_table_name(tbl)}]", builtin)
+    except Exception:
+        return None
+    finally:
+        builtin.close()
+    return None
+
+
 def load_cpads(db_path: str | Path | None = None, timeout: int = 60) -> pd.DataFrame:
     """Load CPADS data: try local files, then cache, then CKAN API.
 
@@ -1604,8 +1716,16 @@ def load_dataset(
     """
     matched = _fuzzy_match_key(key)
     if matched is None:
+        from .datahub import is_hosted_key, load_hosted_dataset
+
+        if is_hosted_key(key):
+            # a curated table at data.rmorie.com (db/table), opened by the MORIE key
+            return load_hosted_dataset(key, db_path=db_path)
         available = ", ".join(sorted(DATASET_CATALOG))
-        raise KeyError(f"Unknown dataset key: {key!r}. Available: {available}")
+        raise KeyError(
+            f"Unknown dataset key: {key!r}. Available: {available}; "
+            "curated tables at data.rmorie.com use db/table keys (morie list-datasets shows them after morie login)."
+        )
 
     entry = DATASET_CATALOG[matched]
     table_name = entry["table_name"]
@@ -1757,6 +1877,22 @@ def list_datasets(db_path: str | Path | None = None) -> list[dict]:
                 "route": dataset_route(entry),
             }
         )
+    from .datahub import DataHubAuthError, cached_manifest, hosted_entries, hosted_manifest
+
+    try:
+        from .hosted import hosted_key
+
+        manifest = hosted_manifest() if hosted_key() else cached_manifest()
+    except DataHubAuthError:
+        manifest = cached_manifest()
+    except Exception as exc:  # noqa: BLE001 - offline: the local list still prints
+        logger.warning("data.rmorie.com manifest unavailable (%s)", exc)
+        manifest = cached_manifest()
+    for row in hosted_entries(manifest):
+        row["cached"] = row["table_name"] in cached_tables
+        if row["cached"]:
+            row["rows"] = cached_tables.get(row["table_name"])
+        result.append(row)
     return result
 
 

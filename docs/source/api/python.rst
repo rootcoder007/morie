@@ -644,6 +644,11 @@ Assistant, LLM and model tooling
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: morie.datahub
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 .. automodule:: morie.perseus
    :members:
    :undoc-members:

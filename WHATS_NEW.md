@@ -7,6 +7,33 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## 1.3.9 (2026-10-01)
+
+- **Curated datasets at data.rmorie.com.** 160 databases materialised from
+  Google BigQuery public datasets (Chicago crime, EPA air quality, census,
+  FEC, FDA, NOAA, Hacker News, Ethereum, World Bank, ...) are served from
+  the edge and open with the key `morie login` stores. `morie list-datasets`
+  shows them with route "data.rmorie.com", `morie pull chicago_crime/incidents`
+  and `load_dataset("db/table")` fetch one (cached in the dataset store);
+  `/manifest.json` carries rows, columns, SHA-256 and the BigQuery source of
+  every table. R: `morie_hosted_datasets()`, `morie_load_hosted_dataset()`,
+  `rmorie pull db/table`.
+- **Any dataset, over the network, from either package.** `morie pull KEY`
+  accepts every catalog key (not just the nine shortcuts) and `pull --all`
+  downloads the whole catalog; `run-module --dataset KEY` is honoured on the
+  R bridge too (it was dropped there); a real PUMF pulled by one package is
+  used by the other's module runs; CKAN downloads fall back to the resource
+  file and then to its Wayback Machine snapshot when the live portal is down.
+- **Windows fix.** The emissions tracker crashed on Windows (`os.getloadavg`
+  does not exist there), which took `morie emissions` and `morie pipeline`
+  down with it; utilisation now reads as 0 where the OS offers no counters.
+- **R arm.** The module runner falls back to the synthetic CPADS PUMF that
+  rmoriedata ships when the real PUMF is not checked out (so `rmorie
+  selftest` and `run-module` work on a clean install); `selftest` skips a
+  check only when neither is present; the first-paper template is
+  shipped (it was caught by a `templates/` ignore rule); one non-ASCII
+  character and two over-long lines fixed.
+
 ## 1.3.8 (2026-10-01)
 
 - **Compute emissions you can prove.** `morie emissions [--seconds N]` measures

@@ -214,6 +214,7 @@ morie cheat sheet
 
 {t("cheatsheet.pull")}
   morie pull tps-major --year 2024 --out tps-2024.csv
+  morie pull chicago_crime/incidents --out incidents.csv   # curated tables at data.rmorie.com (after morie login)
   morie pull tps-shootings --year 2024
   morie pull tps-homicide --year 2024
   morie pull tps-layers                                   # registry

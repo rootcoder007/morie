@@ -6,7 +6,8 @@ endpoint run by the MORIE project for the ``morie`` (Python) and
 ``rmorie`` (R) packages. It exists so that ``morie ask`` and
 ``morie_llm_ask()`` work on a machine with no local model and no API key
 of your own. A local Ollama is always tried first; the hosted tier is the
-second provider in the chain (see :doc:`install`).
+second provider in the chain, and an endpoint of your own the third (see
+`Your own model endpoint`_ below).
 
 Getting a key
 -------------
@@ -74,6 +75,48 @@ Environment overrides:
    does list instead of failing, since cloud models get retired upstream.
 ``MORIE_HOSTED_AUTH_URL``
    The sign-in service (default ``https://llm.rmorie.com/auth``).
+
+The same key opens data.rmorie.com
+----------------------------------
+
+The curated datasets at https://data.rmorie.com (:doc:`learn/datasets`) are
+gated by this key too: ``morie pull chicago_crime/incidents``,
+``rmorie::morie_load_hosted_dataset()``, or any HTTP client with
+``Authorization: Bearer <key>``.
+
+Your own model endpoint
+-----------------------
+
+The hosted tier is one route; any OpenAI-compatible endpoint can be attached
+instead or as well, and the assistant verbs (``ask``, ``percy``, ``agent``,
+``chat``) use it when no local Ollama answers and the hosted tier is not
+signed in. OpenAI, Anthropic's compatibility endpoint
+(``https://api.anthropic.com/v1``), OpenRouter, Mistral, Groq, a local LM
+Studio / vLLM / llama.cpp server: anything that serves
+``POST BASE_URL/chat/completions``.
+
+.. code-block:: bash
+
+   morie provider set --base-url https://api.openai.com/v1 --key sk-... --model gpt-4o-mini
+   morie provider show                 # endpoint, model, masked key
+   morie models                        # "Your endpoint (...)" is listed first
+   morie ask "which module fits a treatment-control design?"
+   morie provider unset
+
+.. code-block:: r
+
+   rmorie::morie_llm_provider_set("https://api.openai.com/v1", "sk-...", model = "gpt-4o-mini")
+   rmorie::morie_llm_provider_show()
+   rmorie::morie_llm_provider_unset()
+   # or, from the shell: rmorie provider set --base-url URL --key KEY [--model NAME]
+
+The setting is stored in the same credentials file as the hosted key, so
+both languages see it. The environment variables ``LLM_API_BASE_URL``,
+``LLM_API_KEY`` and ``MORIE_API_MODEL`` take precedence when set (CI,
+containers). The full order the packages try, as ``morie doctor`` /
+``rmorie doctor`` report it: local Ollama, the hosted tier, your endpoint,
+``GEMINI_API_KEY``, ``OPENAI_API_KEY``, then a local keyword fallback that
+says it is one.
 
 Emailed keys and pasted tokens
 ------------------------------

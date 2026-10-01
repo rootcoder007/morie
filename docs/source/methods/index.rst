@@ -18,6 +18,8 @@ matches the estimator's signature.
    survey
    sampling
    dataset
+   envhealth
+   compute-emissions
    psymet
    otis
    otis_linkage

@@ -563,19 +563,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     pull_cmd.add_argument(
         "dataset",
-        choices=[
-            "tps-major",
-            "tps-shootings",
-            "tps-homicide",
-            "tps-layers",
-            "tps-major-toy",  # bundled synthetic 500-row frame
-            "cpads",  # real PUMF if present, else synth
-            "otis-a01-toy",  # bundled synthetic 800-row frame
-            "siu-toy",  # bundled synthetic director's report text
-            "siu-index",
-        ],
-        help="Named dataset to pull",
+        nargs="?",
+        help="A catalog key (morie list-datasets, e.g. ocp21) or a shortcut: tps-major, tps-shootings, "
+        "tps-homicide, tps-layers, tps-major-toy, cpads, otis-a01-toy, siu-toy, siu-index",
     )
+    pull_cmd.add_argument("--all", action="store_true", help="Download every catalog dataset into --out (a directory)")
     pull_cmd.add_argument("--year", type=int, help="Filter to a single year (TPS only)")
     pull_cmd.add_argument("--max", type=int, dest="max_features", help="Cap rows fetched (TPS only)")
     pull_cmd.add_argument("--out", type=Path, help="Output CSV path (stdout if omitted)")
@@ -991,6 +983,13 @@ def _main_impl() -> int:
             f"{len(datasets)} keys: {len(datasets) - n_own} download from their portal or rmoriedata on first use; "
             f"{n_own} are files you place under $MORIE_DATA_DIR/datasets/ (restricted or your own data)."
         )
+        n_hub = sum(d["type"] == "hosted" for d in datasets)
+        if n_hub:
+            print(
+                f"{n_hub} curated tables at data.rmorie.com (db/table keys), opened by your MORIE key: morie pull KEY"
+            )
+        else:
+            print("Curated tables at data.rmorie.com appear here after `morie login` (they need the MORIE key).")
         return 0
 
     if args.command == "verify-pollution":
@@ -1049,8 +1048,34 @@ def _main_impl() -> int:
     if args.command == "pull":
         # One-line dataset shortcuts — the non-coder entry point.
         # Resolves a name like "tps-major" into the matching morie.datasets
-        # function and writes its DataFrame to disk (or stdout).
+        # function, or any catalog key into load_dataset(), and writes the
+        # DataFrame to disk (or stdout). Downloads are cached, so a module
+        # run after `morie pull ocp21` uses the real PUMF.
         import morie.datasets as md
+
+        from .data import DATASET_CATALOG, _fuzzy_match_key, load_dataset
+
+        if args.all:
+            out_dir = Path(args.out or "datasets")
+            out_dir.mkdir(parents=True, exist_ok=True)
+            failed = 0
+            for key in sorted(DATASET_CATALOG):
+                try:
+                    frame = load_dataset(key)
+                except Exception as exc:  # noqa: BLE001 - report and continue
+                    failed += 1
+                    print(f"  {key:<12} FAILED: {type(exc).__name__}: {exc}", file=sys.stderr)
+                    continue
+                dest = out_dir / f"{key}.csv"
+                frame.to_csv(dest, index=False)
+                print(f"  {key:<12} {len(frame):,} rows -> {dest}")
+            return 1 if failed else 0
+        if not args.dataset:
+            print(
+                "usage: morie pull KEY [--out FILE.csv] | morie pull --all [--out DIR]   (keys: morie list-datasets)",
+                file=sys.stderr,
+            )
+            return 2
 
         try:
             if args.dataset == "tps-major":
@@ -1073,6 +1098,13 @@ def _main_impl() -> int:
                 from morie.fn import _frame_core as _pd
 
                 df = _pd.DataFrame([{"report_id": "24-OFD-001", "text": md.siu_report_text(offline=True)}])
+            elif (
+                args.dataset in DATASET_CATALOG
+                or _fuzzy_match_key(args.dataset) is not None
+                or args.dataset in DATASET_CATALOG
+                or _fuzzy_match_key(args.dataset) is not None
+            ):
+                df = load_dataset(args.dataset)
             elif args.dataset == "siu-index":
                 df = md.siu_director_reports()
             else:

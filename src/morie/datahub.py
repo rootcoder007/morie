@@ -1,0 +1,131 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Curated datasets at data.rmorie.com, opened by the MORIE key.
+
+The MORIE project materialises public BigQuery datasets (Chicago crime, EPA
+air quality, census, FEC, FDA, NOAA, ...) and serves them as CSV from the
+edge (Cloudflare R2 behind a Worker), so they are reachable whenever the
+internet is, with the same key ``morie login`` stores for the hosted model
+tier. ``/manifest.json`` lists every table with its rows, columns, size,
+SHA-256 and the BigQuery source it was built from; ``/<db>/<table>.csv.gz``
+is the table. Downloads are cached in the dataset store, so a key is
+needed once per table, not per call.
+"""
+
+from __future__ import annotations
+
+import gzip
+import io
+import json
+import os
+import time
+from pathlib import Path
+from urllib.error import HTTPError
+from urllib.request import Request, urlopen
+
+from morie.fn import _frame_core as pd
+
+DEFAULT_DATA_URL = "https://data.rmorie.com"
+_MANIFEST_TTL = 24 * 3600
+
+
+class DataHubAuthError(RuntimeError):
+    """No key, or a key the gateway rejects."""
+
+
+def data_url() -> str:
+    return os.environ.get("MORIE_DATA_URL", DEFAULT_DATA_URL).rstrip("/")
+
+
+def _key() -> str | None:
+    from .hosted import hosted_key
+
+    return hosted_key()
+
+
+def _manifest_cache_path() -> Path:
+    from .data import _user_cache_dir
+
+    return _user_cache_dir() / "data_rmorie_manifest.json"
+
+
+def _get(path: str, timeout: int = 60) -> bytes:
+    key = _key()
+    if not key:
+        raise DataHubAuthError("data.rmorie.com needs your MORIE key: run `morie login` (or `rmorie login`) once.")
+    req = Request(
+        data_url() + path, headers={"Authorization": f"Bearer {key}", "User-Agent": "morie/1 (+https://rmorie.com)"}
+    )
+    try:
+        with urlopen(req, timeout=timeout) as resp:
+            return resp.read()
+    except HTTPError as exc:
+        if exc.code in (401, 403):
+            raise DataHubAuthError("data.rmorie.com rejected the stored key; run `morie login` again.") from exc
+        raise
+
+
+def hosted_manifest(refresh: bool = False) -> dict:
+    """The gateway's manifest, cached for a day under the user cache dir."""
+    p = _manifest_cache_path()
+    if not refresh and p.exists() and time.time() - p.stat().st_mtime < _MANIFEST_TTL:
+        return json.loads(p.read_text(encoding="utf-8"))
+    raw = _get("/manifest.json")
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_bytes(raw)
+    return json.loads(raw.decode("utf-8"))
+
+
+def cached_manifest() -> dict | None:
+    """The manifest if it was fetched before (no network, no key needed)."""
+    p = _manifest_cache_path()
+    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
+
+
+def hosted_table_name(key: str) -> str:
+    return "hub_" + key.replace("/", "__")
+
+
+def is_hosted_key(key: str) -> bool:
+    return "/" in key and not key.startswith(("/", ".")) and not key.endswith("/")
+
+
+def load_hosted_dataset(key: str, *, db_path: str | Path | None = None, refresh: bool = False):
+    """``db/table`` from data.rmorie.com: the dataset store first, then one download."""
+    from .data import cache_load, cache_store
+
+    if not is_hosted_key(key):
+        raise KeyError(f"{key!r} is not a data.rmorie.com key (expected db/table; see `morie list-datasets`)")
+    table = hosted_table_name(key)
+    if not refresh:
+        try:
+            cached = cache_load(table, db_path)
+        except Exception:  # noqa: BLE001 - a broken cache must not block the download
+            cached = None
+        if cached is not None:
+            return cached
+    db, tbl = key.split("/", 1)
+    raw = _get(f"/{db}/{tbl}.csv.gz", timeout=600)
+    df = pd.read_csv(io.BytesIO(gzip.decompress(raw)), low_memory=False)
+    cache_store(df, table, db_path)
+    return df
+
+
+def hosted_entries(manifest: dict | None) -> list[dict]:
+    """Catalog-shaped rows for ``list_datasets()``."""
+    out = []
+    for d in (manifest or {}).get("datasets", []):
+        out.append(
+            {
+                "key": d["key"],
+                "name": (d.get("meta") or {}).get("description") or d.get("source") or d["key"],
+                "source": "data.rmorie.com",
+                "survey": d.get("source", ""),
+                "year": "",
+                "type": "hosted",
+                "cached": False,
+                "rows": d.get("rows"),
+                "route": "data.rmorie.com (your MORIE key)",
+                "table_name": hosted_table_name(d["key"]),
+            }
+        )
+    return out
