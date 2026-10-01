@@ -7,6 +7,14 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## 1.3.6 (2026-10-01)
+
+- **Fix.** `morie pull ... --out PATH` and `morie first-paper` raised
+  `UnboundLocalError: Path` in 1.3.5: a local `from pathlib import Path`
+  inside the command dispatcher shadowed the module import. Removed; a test
+  now asserts the dispatcher never rebinds `Path`. No other command was
+  affected.
+
 ## 1.3.5 (2026-10-01)
 
 - **Install the R side from the Python CLI.** `morie r-install` installs

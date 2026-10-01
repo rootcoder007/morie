@@ -109,6 +109,11 @@ morie is not a wrapper. At runtime it does not call:
 Those packages appear in `Suggests` solely so `tests/cross/` can
 prove that the native engines match them.
 
+## What's in v1.3.6
+
+Version lockstep with the Python package's 1.3.6 hotfix; no change to the R
+package.
+
 ## What's in v1.3.5
 
 CRAN follow-ups (example widths and costs, `research/` out of the tarball)
