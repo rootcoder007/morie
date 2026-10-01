@@ -141,6 +141,21 @@ morie_dsp_median_filter_cpp <- function(x, kernel_size) {
     .Call(`_morie_morie_dsp_median_filter_cpp`, x, kernel_size)
 }
 
+#' @noRd
+.emissions_sampler_start <- function(interval) {
+    .Call(`_morie_emissions_sampler_start`, interval)
+}
+
+#' @noRd
+.emissions_sampler_stop <- function() {
+    .Call(`_morie_emissions_sampler_stop`)
+}
+
+#' @noRd
+.emissions_sampler_running <- function() {
+    .Call(`_morie_emissions_sampler_running`)
+}
+
 morie_normal_pdf_cpp <- function(x, mean, sd) {
     .Call(`_morie_morie_normal_pdf_cpp`, x, mean, sd)
 }

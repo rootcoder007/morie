@@ -7,6 +7,31 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## 1.3.8 (2026-10-01)
+
+- **Compute emissions you can prove.** `morie emissions [--seconds N]` measures
+  this machine's energy and CO2 (CodeCarbon method: TDP x utilisation + RAM,
+  grid carbon intensity from the IEA energy mix) and `morie pipeline` keeps
+  tracking its runs; every run now ends in a capsule next to `emissions.csv`:
+  `emissions_manifest.json` (measurements, method, sources, environment) and,
+  when R with rmoriebricklayer is present, a signed `capsule_bundle.json`
+  (ML-DSA-44) that `rmorie::morie_emissions_verify()` checks. The tracker's
+  CPU-utilisation sample no longer reads the counters twice (the second read
+  always saw 0). `MORIE_COUNTRY_ISO` sets the grid; `MORIE_EMISSIONS_OFFLINE`
+  skips geolocation.
+- **verify-pollution report fixed.** It printed `source: ?` and
+  `attributable deaths: 0.0` because it read fields the result objects do
+  not have; it now shows the citation and the attributable cases.
+- **The R command line has every verb.** `rmorie` gains `explain`,
+  `inspect`, `verify`, `profile-dataset`, `sample`, `run-modules`,
+  `pipeline` (with emissions + capsule), `emissions`, `verify-pollution`,
+  `percy`/`agent`, `chat`, `selftest`, `tutorial`, `generate-template`,
+  `update`, `crypto`, `ingest`, `download-bootstrap`, `exec`, `edit` and
+  `percysuits`; the pollution-health module (`morie_envhealth_*`,
+  `morie_verify_pollution()`) and the emissions tracker
+  (`morie_emissions_track()`, with a C++ background utilisation sampler) are
+  native R, cross-checked against the Python arm.
+
 ## 1.3.7 (2026-10-01)
 
 - **Attach your own model.** `morie provider set --base-url URL --key KEY

@@ -87,8 +87,7 @@ def execute_pipeline(
     failed: dict[str, str] = {}
     for idx, module_name in enumerate(selected, start=1):
         if _progress:
-            _progress.update(_task,
-                             description=f"Running: {module_name}")
+            _progress.update(_task, description=f"Running: {module_name}")
         else:
             print(f"[{idx}/{total}] Running: {module_name}", flush=True)
         try:
@@ -116,15 +115,15 @@ def execute_pipeline(
             emissions = tracker.stop()
             if emissions is not None:
                 print(f"Pipeline CO₂ emissions: {emissions:.6f} kg CO₂eq")
+                cap = getattr(tracker, "capsule", None)
+                if cap:
+                    print(f"Capsule: {cap['manifest']}{' (signed)' if cap.get('signed') else ' (unsigned)'}")
         except Exception:  # pragma: no cover
             pass
 
     n_ok = len(results)
     if failed:
-        print(
-            f"Pipeline completed {n_ok}/{total} "
-            f"({len(failed)} failed: {', '.join(failed)})."
-        )
+        print(f"Pipeline completed {n_ok}/{total} ({len(failed)} failed: {', '.join(failed)}).")
         if results:
             print("Succeeded modules:", ", ".join(results.keys()))
         return 1
@@ -136,9 +135,7 @@ def execute_pipeline(
 def build_parser() -> argparse.ArgumentParser:
     """Create the CLI argument parser."""
     parser = argparse.ArgumentParser(description="MORIE package runner")
-    parser.add_argument(
-        "--version", action="version", version=f"morie {__version__}"
-    )
+    parser.add_argument("--version", action="version", version=f"morie {__version__}")
     subparsers = parser.add_subparsers(dest="command")
 
     pipeline = subparsers.add_parser("pipeline", help="Run the MORIE module pipeline")
@@ -238,10 +235,20 @@ def build_parser() -> argparse.ArgumentParser:
         help="Sign in to the hosted MORIE LLM tier (llm.rmorie.com) with GitHub; stores a per-user key",
     )
     login_cmd.add_argument("--no-browser", action="store_true", help="Print the sign-in URL instead of opening it")
-    login_cmd.add_argument("--email", default=None, metavar="ADDRESS", help="Sign in with a code emailed to this address instead of GitHub")
-    login_cmd.add_argument("--to-email", action="store_true", help="With --email: have the key emailed to you instead of stored here")
-    login_cmd.add_argument("--token", nargs="?", const="", default=None, metavar="KEY",
-                           help="Store a key you already have (from the website or your email); prompts when KEY is omitted")
+    login_cmd.add_argument(
+        "--email", default=None, metavar="ADDRESS", help="Sign in with a code emailed to this address instead of GitHub"
+    )
+    login_cmd.add_argument(
+        "--to-email", action="store_true", help="With --email: have the key emailed to you instead of stored here"
+    )
+    login_cmd.add_argument(
+        "--token",
+        nargs="?",
+        const="",
+        default=None,
+        metavar="KEY",
+        help="Store a key you already have (from the website or your email); prompts when KEY is omitted",
+    )
     subparsers.add_parser("logout", help="Forget the hosted LLM key")
     subparsers.add_parser("models", help="List the models you can ask: the hosted tier for your key, then local Ollama")
 
@@ -256,6 +263,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     # ── update ───────────────────────────────────────────────────────────
+    em_p = subparsers.add_parser(
+        "emissions", help="Measure this machine's compute emissions (CodeCarbon method) and seal a capsule"
+    )
+    em_p.add_argument("--seconds", type=float, default=3.0, help="How long to load the CPU (default 3)")
+    em_p.add_argument("--output-dir", default="emissions", help="Where emissions.csv and the capsule go")
+    em_p.add_argument("--country", default="", help="ISO-3 country code for the grid's carbon intensity")
+    em_p.add_argument("--no-capsule", action="store_true", help="Skip the manifest and signature")
     update_cmd = subparsers.add_parser(
         "update",
         help="Check PyPI for a newer morie release and optionally install it",
@@ -475,7 +489,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     prov_sub = prov.add_subparsers(dest="provider_cmd", required=True)
     prov_set = prov_sub.add_parser("set", help="store the endpoint, key and optional model")
-    prov_set.add_argument("--base-url", required=True, help="e.g. https://api.openai.com/v1 or https://api.anthropic.com/v1")
+    prov_set.add_argument(
+        "--base-url", required=True, help="e.g. https://api.openai.com/v1 or https://api.anthropic.com/v1"
+    )
     prov_set.add_argument("--key", required=True, help="the API key for that endpoint")
     prov_set.add_argument("--model", default=None, help="model name to ask by default (optional)")
     prov_sub.add_parser("show", help="what is attached")
@@ -707,8 +723,7 @@ def _llm_exit_code(payload, chunks=None) -> int:
     call could not tell an answer from "no backend reachable".
     """
     if isinstance(payload, dict) and payload.get("mode") == "local_fallback":
-        print("no LLM backend was reachable; this is the local fallback text",
-              file=sys.stderr)
+        print("no LLM backend was reachable; this is the local fallback text", file=sys.stderr)
         return 1
     if isinstance(payload, dict) and payload.get("failed"):
         print("the LLM backend request failed", file=sys.stderr)
@@ -716,9 +731,12 @@ def _llm_exit_code(payload, chunks=None) -> int:
     if chunks is not None and chunks == 0:
         print("the LLM backend produced no output", file=sys.stderr)
         return 1
-    if chunks is None and isinstance(payload, dict) \
-            and "output_stream" not in payload \
-            and not str(payload.get("output_text") or "").strip():
+    if (
+        chunks is None
+        and isinstance(payload, dict)
+        and "output_stream" not in payload
+        and not str(payload.get("output_text") or "").strip()
+    ):
         print("the LLM backend produced no output", file=sys.stderr)
         return 1
     return 0
@@ -893,8 +911,7 @@ def _main_impl() -> int:
             else:
                 resp = agent.chat(args.question)
                 print(resp.text)
-                answered = bool(str(resp.text or "").strip()) \
-                    and not getattr(resp, "failed", False)
+                answered = bool(str(resp.text or "").strip()) and not getattr(resp, "failed", False)
                 if resp.tool_calls_made:
                     print(f"\n[{len(resp.tool_calls_made)} tool calls in {resp.iterations} iterations]")
             agent.close()
@@ -904,8 +921,7 @@ def _main_impl() -> int:
         except Exception as exc:
             # the agent needs an LLM backend; say why it stepped aside
             # rather than hiding a real bug in create_agent()
-            print(f"agent unavailable ({type(exc).__name__}: {exc}); "
-                  "falling back to Perseus", file=sys.stderr)
+            print(f"agent unavailable ({type(exc).__name__}: {exc}); falling back to Perseus", file=sys.stderr)
             payload = ask_percy(
                 args.question,
                 context=getattr(args, "context", None),
@@ -1194,7 +1210,7 @@ def _main_impl() -> int:
         crypto_cmd_parser = build_parser()._subparsers._group_actions[0].choices.get("crypto")
         if crypto_cmd_parser:
             crypto_cmd_parser.print_help()
-        return 2                # usage error, as argparse reports for the others
+        return 2  # usage error, as argparse reports for the others
 
     if args.command == "convert-checkpoint":
         from .pt2gguf import convert
@@ -1261,6 +1277,13 @@ def _main_impl() -> int:
         from .doctor import run_doctor
 
         return run_doctor(fix=getattr(args, "fix", False))
+
+    if args.command == "emissions":
+        from .emissions import run_check, summary_text
+
+        data = run_check(args.seconds, args.output_dir, capsule=not args.no_capsule, country_iso_code=args.country)
+        print(summary_text(data, getattr(data, "capsule", None)))
+        return 0
 
     if args.command == "update":
         from ._update_check import run_update
@@ -1418,10 +1441,8 @@ def _handle_exec(args: argparse.Namespace) -> int:
     try:
         from morie._exec_guard import ExecGuardError, ensure_exec_allowed
     except ModuleNotFoundError:
-        print("Error: 'morie exec' is not available in this build.",
-              file=sys.stderr)
+        print("Error: 'morie exec' is not available in this build.", file=sys.stderr)
         return 1
-
 
     try:
         ensure_exec_allowed("'morie exec'")
@@ -1663,11 +1684,10 @@ def _handle_percy(args: argparse.Namespace) -> int:
     except Exception as exc:
         # Perseus's tool-calling agent needs a local Ollama; without one, answer
         # through the provider chain (hosted tier, your own endpoint, ...)
-        print(f"Perseus: no local Ollama ({exc}); answering through the provider chain instead.",
-              file=sys.stderr)
+        print(f"Perseus: no local Ollama ({exc}); answering through the provider chain instead.", file=sys.stderr)
         question = getattr(args, "question", None)
         if question is None:
-            print("Give the question on the command line: morie percy \"...\"  (or run `morie chat`)", file=sys.stderr)
+            print('Give the question on the command line: morie percy "..."  (or run `morie chat`)', file=sys.stderr)
             return 1
         payload = ask_percy(question, stream=use_stream, model=model)
         if use_stream:
@@ -1681,8 +1701,10 @@ def _handle_percy(args: argparse.Namespace) -> int:
             _percy_answer(agent, q, use_stream, sys.stdout)
             return 0
         except Exception as exc:  # the Ollama backend died mid-answer: provider chain instead
-            print(f"Perseus: the local agent backend failed ({exc}); answering through the provider chain.",
-                  file=sys.stderr)
+            print(
+                f"Perseus: the local agent backend failed ({exc}); answering through the provider chain.",
+                file=sys.stderr,
+            )
             payload = ask_percy(q, stream=use_stream, model=model)
             if use_stream:
                 return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))

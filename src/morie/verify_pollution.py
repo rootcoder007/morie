@@ -316,7 +316,7 @@ def _emit(report: dict[str, Any], *, as_json: bool) -> None:
     ci = crf.get("ci95") or crf.get("ci")
     if ci:
         print(f"  95% CI:   ({ci[0]:.4f}, {ci[1]:.4f})")
-    print(f"  source:   {crf.get('source', '?')}")
+    print(f"  source:   {crf.get('citation', '?')}")
 
     print(f"\nAttributable fraction (PAF): {pipe['paf']:.4f}")
 
@@ -326,7 +326,7 @@ def _emit(report: dict[str, Any], *, as_json: bool) -> None:
 
     b = pipe["burden"]
     print("\nBurden of pollution")
-    print(f"  attributable deaths:   {b.get('deaths_attributable', 0):.1f}")
+    print(f"  attributable deaths:   {b.get('attributable_cases', 0):.1f}")
     if "dalys" in b and b["dalys"] is not None:
         print(f"  DALYs:                 {b['dalys']:.1f}")
 

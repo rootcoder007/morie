@@ -7,15 +7,12 @@ with the implementation.
 
 from __future__ import annotations
 
+import json
 import tempfile
 import time
 from pathlib import Path
 
-import pytest
-
-# The tracker samples CPU/RAM through psutil at call time; on an install
-# without the [test] extra these tests should skip, not error.
-pytest.importorskip("psutil")
+# The tracker reads /proc and sysctl itself (no psutil); nothing to skip.
 
 
 class TestCarbonIntensity:
@@ -167,3 +164,49 @@ class TestEmissionsTracker:
         header_count = len(data.csv_header.split(","))
         row_count = len(data.csv_row().split(","))
         assert row_count == header_count, f"csv_row has {row_count} fields but csv_header has {header_count}"
+
+
+class TestCapsuleAndVerb:
+    def test_run_writes_csv_manifest_and_formula_holds(self, monkeypatch):
+        from morie import emissions as em
+
+        monkeypatch.setenv("MORIE_EMISSIONS_OFFLINE", "1")
+        with tempfile.TemporaryDirectory() as d:
+            data = em.run_check(0.4, d, country_iso_code="CAN")
+            assert data.emissions > 0
+            ci = em._get_carbon_intensity("CAN")
+            assert abs(data.emissions - data.energy_consumed * data.pue * ci) < 1e-15
+            assert abs(data.energy_consumed - (data.cpu_energy + data.gpu_energy + data.ram_energy)) < 1e-15
+            assert 0.0 <= data.cpu_utilization_percent <= 100.0
+            csv = (Path(d) / "emissions.csv").read_text().splitlines()
+            assert csv[0] == data.csv_header
+            assert len(csv) == 2
+            manifest = json.loads((Path(d) / "emissions_manifest.json").read_text())
+            assert manifest["meta"]["measurements"]["emissions"] == data.emissions
+            assert manifest["meta"]["emissions_csv_sha256"] == em._sha256_file(Path(d) / "emissions.csv")
+            cap = data.capsule
+            assert cap["manifest"].endswith("emissions_manifest.json")
+            assert cap["signed"] in (True, False)
+            if cap["signed"]:
+                assert Path(cap["bundle"]).exists()
+            text = em.summary_text(data, cap)
+            assert "kg CO2eq" in text and "Capsule:" in text
+
+    def test_country_env_overrides_lookup(self, monkeypatch):
+        from morie import emissions as em
+
+        monkeypatch.setenv("MORIE_COUNTRY_ISO", "FRA")
+        monkeypatch.delenv("MORIE_EMISSIONS_OFFLINE", raising=False)
+        with tempfile.TemporaryDirectory() as d:
+            t = em.EmissionsTracker(output_dir=d, capsule=False)
+            t.start()
+            t.stop()
+            assert t._country_iso == "FRA"
+
+    def test_emissions_verb_parses(self):
+        from morie.runner import build_parser
+
+        a = build_parser().parse_args(
+            ["emissions", "--seconds", "1", "--output-dir", "x", "--no-capsule", "--country", "CAN"]
+        )
+        assert (a.command, a.seconds, a.output_dir, a.no_capsule, a.country) == ("emissions", 1.0, "x", True, "CAN")

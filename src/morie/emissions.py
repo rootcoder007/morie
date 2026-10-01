@@ -26,6 +26,7 @@ import sys
 import time
 import uuid
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from threading import Event, Thread
 from typing import Any
@@ -229,15 +230,14 @@ def _total_ram_gb():
         with open("/proc/meminfo") as fh:
             for line in fh:
                 if line.startswith("MemTotal:"):
-                    return int(line.split()[1]) / (1024 ** 2)
+                    return int(line.split()[1]) / (1024**2)
     except OSError:
         pass
     try:
         import subprocess
-        out = subprocess.run(["sysctl", "-n", "hw.memsize"],
-                             capture_output=True, text=True,
-                             timeout=5)
-        return int(out.stdout.strip()) / (1024 ** 3)
+
+        out = subprocess.run(["sysctl", "-n", "hw.memsize"], capture_output=True, text=True, timeout=5)
+        return int(out.stdout.strip()) / (1024**3)
     except Exception:
         return 16.0
 
@@ -267,9 +267,7 @@ def _cpu_percent():
         return max(0.0, min(100.0, 100.0 * (1.0 - didle / dtotal)))
     except OSError:
         try:
-            return max(0.0, min(
-                100.0,
-                100.0 * os.getloadavg()[0] / (os.cpu_count() or 1)))
+            return max(0.0, min(100.0, 100.0 * os.getloadavg()[0] / (os.cpu_count() or 1)))
         except OSError:
             return 0.0
 
@@ -307,10 +305,8 @@ def _cpu_brand_native():
         pass
     try:
         import subprocess
-        out = subprocess.run(["sysctl", "-n",
-                              "machdep.cpu.brand_string"],
-                             capture_output=True, text=True,
-                             timeout=5)
+
+        out = subprocess.run(["sysctl", "-n", "machdep.cpu.brand_string"], capture_output=True, text=True, timeout=5)
         if out.stdout.strip():
             return out.stdout.strip()
     except Exception:
@@ -369,9 +365,6 @@ def _read_powermetrics(duration_ms: int = 500) -> tuple[float, float]:
         return cpu_w, gpu_w
     except Exception:
         return 0.0, 0.0
-
-
-from functools import lru_cache
 
 
 @lru_cache(maxsize=1)
@@ -510,7 +503,7 @@ def _get_cpu_model() -> str:
                 timeout=3,
             )
             return result.stdout.strip() or platform.processor()
-        return platform.processor()
+        return _cpu_brand_native() or platform.processor()
     except Exception:
         return platform.processor()
 
@@ -550,6 +543,7 @@ class EmissionsTracker:
         save_to_logger: bool = False,
         country_iso_code: str = "",
         region: str = "",
+        capsule: bool = True,
         **kwargs: Any,
     ) -> None:
         self._project_name = project_name
@@ -564,6 +558,8 @@ class EmissionsTracker:
         _logger.setLevel(getattr(logging, str(log_level).upper(), logging.WARNING))
         self._country_iso = country_iso_code
         self._region = region
+        self._capsule = capsule
+        self.capsule: dict[str, Any] | None = None
 
         self._run_id = str(uuid.uuid4())
         self._experiment_id = kwargs.get("experiment_id", str(uuid.uuid4()))
@@ -597,9 +593,15 @@ class EmissionsTracker:
         self._ram_power = _estimate_ram_power()
         self._stop_event.clear()
 
-        # Detect location if not provided
+        # Detect location if not provided (MORIE_COUNTRY_ISO wins; MORIE_EMISSIONS_OFFLINE skips the lookup)
         if not self._country_iso:
-            iso, reg, name, lat, lon = _detect_location()
+            env_iso = os.environ.get("MORIE_COUNTRY_ISO", "")
+            if env_iso:
+                iso, reg, name, lat, lon = env_iso.upper(), os.environ.get("MORIE_REGION", ""), "", 0.0, 0.0
+            elif os.environ.get("MORIE_EMISSIONS_OFFLINE"):
+                iso, reg, name, lat, lon = "", "", "", 0.0, 0.0
+            else:
+                iso, reg, name, lat, lon = _detect_location()
             self._country_iso = iso
             self._region = reg or self._region
             self._country_name = name
@@ -632,12 +634,16 @@ class EmissionsTracker:
         water = energy_with_pue * self._wue
 
         data = self._build_data(duration, emissions, total_energy, water)
+        self._last_data = data
 
         if self._save_to_file:
             self._write_csv(data)
+            if self._capsule:
+                self.capsule = write_capsule(
+                    self._output_dir, data, self._output_file, carbon_intensity=carbon_intensity
+                )
         if self._save_to_logger:
-            _logger.info("emissions: %.6f kg CO2 over %.1f s (%.6f kWh)",
-                         emissions, duration, total_energy)
+            _logger.info("emissions: %.6f kg CO2 over %.1f s (%.6f kWh)", emissions, duration, total_energy)
 
         return emissions
 
@@ -662,17 +668,18 @@ class EmissionsTracker:
             return
         self._last_measure_time = now
 
-        # CPU/GPU power
+        # CPU/GPU power. One utilisation read per sample: a second read
+        # right after the first sees no new ticks and reports 0, which
+        # used to drag cpu_utilization_percent down.
+        cpu_pct = _cpu_percent()
         if self._is_apple:
             cpu_w, gpu_w = _read_powermetrics(500)
             if cpu_w == 0:
                 # Fallback: TDP × utilization
-                cpu_pct = _cpu_percent()
                 tdp = _cpu_tdp_fallback()
                 cpu_w = tdp * (0.1 + 0.9 * (cpu_pct / 100.0) ** 3)
                 gpu_w = 0.0
         else:
-            cpu_pct = _cpu_percent()
             tdp = _cpu_tdp_fallback()
             cpu_w = tdp * (0.1 + 0.9 * (cpu_pct / 100.0) ** 3)
             gpu_w = 0.0
@@ -686,11 +693,10 @@ class EmissionsTracker:
         self._total_ram_energy += self._ram_power * dt / 3_600_000
 
         # Utilization samples
-        self._cpu_util_samples.append(_cpu_percent())
+        self._cpu_util_samples.append(cpu_pct)
         # RAM utilisation from the same native source
         self._ram_util_samples.append(_ram_percent())
-        self._ram_used_samples.append(
-            _total_ram_gb() * _ram_percent() / 100.0)
+        self._ram_used_samples.append(_total_ram_gb() * _ram_percent() / 100.0)
 
     # ------------------------------------------------------------------
     # Output
@@ -704,7 +710,9 @@ class EmissionsTracker:
         water: float,
     ) -> EmissionsData:
         cpu_model = _get_cpu_model()
-        avg = lambda xs: sum(xs) / len(xs) if xs else 0.0
+
+        def avg(xs):
+            return sum(xs) / len(xs) if xs else 0.0
 
         return EmissionsData(
             timestamp=time.strftime("%Y-%m-%dT%H:%M:%S"),
@@ -753,3 +761,138 @@ class EmissionsTracker:
             if write_header:
                 f.write(data.csv_header + "\n")
             f.write(data.csv_row() + "\n")
+
+
+# ---------------------------------------------------------------------------
+# Provenance: a bricklayer capsule around the run
+# ---------------------------------------------------------------------------
+
+
+def _sha256_file(path: Path) -> str:
+    import hashlib
+
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 16), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def write_capsule(
+    output_dir: Path | str, data: EmissionsData, csv_name: str = "emissions.csv", *, carbon_intensity: float = 0.0
+) -> dict[str, Any]:
+    """Seal an emissions run in a capsule next to its CSV.
+
+    Writes ``emissions_manifest.json``: a bricklayer manifest (``meta`` with
+    the measurements, the method and its sources, ``results`` empty,
+    ``environment`` with the interpreter and platform) that
+    ``rmoriebricklayer::bricklayer_json_from_json()`` reads back as a
+    manifest. When ``Rscript`` and the rmoriebricklayer package are
+    available the manifest and the CSV are then bundled and signed with a
+    per-run ML-DSA-44 key into ``capsule_bundle.json``
+    (``rmoriebricklayer::capsule_bundle()``), which ``capsule_bundle_verify()``
+    or ``rmorie::morie_emissions_verify()`` checks: a verifier learns the two
+    files have not changed since sealing. Without R the manifest alone is
+    written and ``signed`` is False -- said so, never pretended.
+    """
+    import json
+    import shutil
+    import subprocess
+
+    out_dir = Path(output_dir)
+    csv_path = out_dir / csv_name
+    manifest = {
+        "meta": {
+            "project": data.project_name,
+            "run_id": data.run_id,
+            "tool": "morie.emissions (Python)",
+            "method": "CodeCarbon methodology: energy = (TDP x (0.1 + 0.9 u^3) + RAM) x time; "
+            "emissions = energy x carbon intensity x PUE",
+            "sources": ["https://github.com/mlco2/codecarbon", "IEA / Our World in Data energy mix"],
+            "measurements": {
+                "duration": data.duration,
+                "emissions": data.emissions,
+                "energy_consumed": data.energy_consumed,
+                "cpu_power": data.cpu_power,
+                "ram_power": data.ram_power,
+                "cpu_utilization_percent": data.cpu_utilization_percent,
+                "tracking_mode": data.tracking_mode,
+                "country_iso_code": data.country_iso_code,
+            },
+            "carbon_intensity_kg_per_kwh": carbon_intensity,
+            "emissions_csv": csv_name,
+            "emissions_csv_sha256": _sha256_file(csv_path) if csv_path.exists() else "",
+        },
+        "results": {},
+        "environment": {
+            "python_version": platform.python_version(),
+            "platform": platform.platform(),
+            "captured_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "packages": {"morie": data.tracker_version},
+        },
+    }
+    manifest_path = out_dir / "emissions_manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    result: dict[str, Any] = {"manifest": str(manifest_path), "bundle": None, "signed": False}
+    rscript = shutil.which("Rscript")
+    if rscript is None:
+        return result
+    expr = (
+        "suppressPackageStartupMessages(library(rmoriebricklayer));"
+        f"d <- {json.dumps(str(out_dir))};"
+        "m <- bricklayer_json_from_json(paste(readLines(file.path(d, 'emissions_manifest.json'), warn = FALSE), collapse = '\\n'));"
+        "key <- fips_keygen('ML-DSA-44');"
+        f"capsule_bundle(d, m, key, files = c({json.dumps(csv_name)}, 'emissions_manifest.json'),"
+        f" note = {json.dumps('morie emissions run ' + data.run_id)});"
+        "cat('BUNDLED')"
+    )
+    try:
+        proc = subprocess.run([rscript, "--vanilla", "-e", expr], capture_output=True, text=True, timeout=120)
+    except Exception:
+        return result
+    if proc.returncode == 0 and "BUNDLED" in proc.stdout:
+        result["bundle"] = str(out_dir / "capsule_bundle.json")
+        result["signed"] = True
+    return result
+
+
+def run_check(
+    seconds: float = 3.0, output_dir: str = "emissions", *, capsule: bool = True, country_iso_code: str = ""
+) -> EmissionsData:
+    """Busy-loop for ``seconds`` under the tracker and return the row (the ``morie emissions`` verb)."""
+    tracker = EmissionsTracker(
+        project_name="morie-emissions-check",
+        output_dir=output_dir,
+        measure_power_secs=min(1.0, max(0.1, seconds / 3)),
+        capsule=capsule,
+        country_iso_code=country_iso_code,
+    )
+    tracker.start()
+    t0 = time.time()
+    x = 0.0
+    while time.time() - t0 < seconds:
+        x += sum(i * i for i in range(20000))
+    tracker.stop()
+    data = tracker._last_data
+    data.capsule = tracker.capsule  # type: ignore[attr-defined]
+    return data
+
+
+def summary_text(data: EmissionsData, capsule: dict[str, Any] | None) -> str:
+    ci = data.emissions / data.energy_consumed / data.pue if data.energy_consumed > 0 else float("nan")
+    where = data.country_iso_code or "world average; set MORIE_COUNTRY_ISO"
+    lines = [
+        f"Emissions:         {data.emissions:.6g} kg CO2eq over {data.duration:.1f} s",
+        f"Energy:            {data.energy_consumed:.6g} kWh (CPU {data.cpu_energy:.6g}, RAM {data.ram_energy:.6g})",
+        f"CPU:               {data.cpu_model or 'unknown'}, TDP-scaled {data.cpu_power:.1f} W at "
+        f"{data.cpu_utilization_percent:.1f}% utilisation ({data.tracking_mode} mode)",
+        f"Carbon intensity:  {ci:.4g} kg/kWh ({where})",
+    ]
+    if capsule:
+        tail = (
+            f" + signed {capsule['bundle']}"
+            if capsule.get("signed")
+            else " (unsigned: Rscript with rmoriebricklayer not found)"
+        )
+        lines.append(f"Capsule:           {capsule['manifest']}{tail}")
+    return "\n".join(lines)
