@@ -7,6 +7,18 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## 1.4.0 (unreleased)
+
+* `morie.research`: the research programme on the hardest problems in criminology and
+  sociolegal studies arrives in Python, at parity with the R package (48 functions, thirteen
+  problems, every one resting on a Lean 4 theorem named in its `theorems` field; the
+  stochastic ones share the Philox stream with R, so a seed gives the same path in both).
+  New in this release in all three arms: pooling evaluations (DerSimonian-Laird truncation
+  bias and the random-effects variance inequality, `meta_random_effects`, `meta_dl_bias`),
+  separation in a logistic fit (why the Baldus logit could not converge, `logit_separation`),
+  Imbens-Manski intervals for partially identified sentencing effects (`bounds_confidence`)
+  and the Cheeger bound tying a hot-spot boundary to the spectral gap (`cheeger_bound`).
+
 ## 1.3.9 (2026-10-01)
 
 * `morie interactive install` adds the polyglot REPL, `exec`, agent and TUI modules to an

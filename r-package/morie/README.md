@@ -109,6 +109,14 @@ morie is not a wrapper. At runtime it does not call:
 Those packages appear in `Suggests` solely so `tests/cross/` can
 prove that the native engines match them.
 
+## What's in v1.4.0
+
+The Lean-backed research programme grows by four problems, each with its R
+function and tests: pooling evaluations (DerSimonian-Laird), separation in a
+logistic fit, Imbens-Manski intervals for partially identified sentencing
+effects, and the Cheeger bound on a hot-spot boundary. The Python package now
+carries every research function at parity.
+
 ## What's in v1.3.9
 
 Hotfix: module runs fall back to rmoriedata's synthetic CPADS PUMF, the

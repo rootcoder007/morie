@@ -104,7 +104,7 @@ def test_missing_manifest_blocks_a_verified_install(tmp_path, monkeypatch):
 
 def test_github_route_builds_the_tagged_urls(tmp_path, monkeypatch):
     monkeypatch.setenv("MORIE_INTERACTIVE_DIR", str(tmp_path / "layer"))
-    monkeypatch.setattr(inter, "package_version", lambda: "1.3.9")
+    monkeypatch.setattr(inter, "package_version", lambda: "7.7.7")
     seen: list[str] = []
 
     def fake_download(url: str, dest: Path, label: str) -> None:
@@ -113,8 +113,8 @@ def test_github_route_builds_the_tagged_urls(tmp_path, monkeypatch):
 
     monkeypatch.setattr(inter, "_download", fake_download)
     assert inter.install(out=lambda s: None) == 0
-    assert seen == [inter.RAW_URL.format(ref="v1.3.9", name=n) for n in inter.FILES]
-    assert (tmp_path / "layer" / "VERSION").read_text(encoding="utf-8").strip() == "1.3.9"
+    assert seen == [inter.RAW_URL.format(ref="v7.7.7", name=n) for n in inter.FILES]
+    assert (tmp_path / "layer" / "VERSION").read_text(encoding="utf-8").strip() == "7.7.7"
 
 
 def test_a_missing_ref_is_reported_in_words(tmp_path, monkeypatch):

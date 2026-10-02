@@ -1,3 +1,16 @@
+# morie 1.4.0 - unreleased
+
+* Research: four new problems join the Lean-backed programme, each with its R function and
+  tests. `morie_meta_random_effects()` and `morie_meta_dl_bias()` (pooling evaluations:
+  the DerSimonian-Laird truncation is biased upward under homogeneity and the random-effects
+  variance is never below the fixed-effect one, `Research.P13`); `morie_logit_separation()`
+  (complete or quasi-complete separation makes the logistic likelihood climb without a
+  maximiser, the Baldus proportionality-review logit, `Research.P5`);
+  `morie_bounds_confidence()` (Imbens-Manski intervals for partially identified sentencing
+  effects, `Research.P11`); `morie_cheeger_bound()` (the conductance of a hot-spot set
+  bounds the spectral gap of the street graph, `Research.P3`). The Python package carries
+  every research function at parity.
+
 # morie 1.3.9 - 2026-10-01
 
 * Command line, from a hostile QA pass: the launcher works under R 4.6 (which

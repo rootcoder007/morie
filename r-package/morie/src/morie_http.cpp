@@ -20,7 +20,7 @@ namespace morie {
 namespace http {
 
 const char* kDefaultUserAgent =
-  "morie-R/1.3.9 (+https://github.com/rootcoder007/morie) "
+  "morie-R/1.4.0 (+https://github.com/rootcoder007/morie) "
   "libcurl";
 
 namespace {
