@@ -4,8 +4,11 @@
 import shutil
 
 import pytest
+import pytest as _pytest
 
-from morie.polyglot import PolyglotEngine
+_pytest.importorskip("morie.polyglot")  # interactive/agent layer ships in the source tree only
+
+from morie.polyglot import PolyglotEngine  # noqa: E402
 
 pytestmark = pytest.mark.skipif(shutil.which("Rscript") is None, reason="Rscript not on PATH")
 
