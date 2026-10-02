@@ -9,6 +9,9 @@ Per-package full changelogs:
 
 ## 1.3.9 (2026-10-01)
 
+* The `causal-estimators` module runs again on the synthetic CPADS frame (`morie pipeline --all`
+  completes 23/23): its AIPW line lines the propensity rows up with the outcome rows by name.
+
 * A thinking model that spends its whole budget reasoning and returns an empty answer
   is asked again with four times the room, and if it is still silent the provider chain
   moves on instead of returning an empty reply.
