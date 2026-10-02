@@ -81,11 +81,11 @@ Which models
 
 ``morie models`` (``morie_llm_models()`` in R) is the list to trust: the
 gateway serves the ollama.com cloud models (``minimax-m3:cloud``,
-``gpt-oss:120b-cloud`` and the rest) and Cloudflare Workers AI models,
+``gpt-oss:120b-cloud`` and the rest) and additional AI models,
 whose ids end in ``:cf``: kimi-k2.6:cf, kimi-k2.7-code:cf, deepseek-v4-pro:cf, deepseek-v4-flash:cf, glm-5.2:cf, glm-5.3:cf, glm-5.3-flash:cf, gpt-oss-120b:cf, gpt-oss-20b:cf, llama-4-scout:cf, qwen3.8-27b:cf, nemotron-3-120b:cf and gemma-4-26b:cf.
 Pick one per call with ``morie ask --model gpt-oss-120b:cf "..."``. When an
 ollama.com model is rate limited or down, the gateway answers the same
-request from the nearest Workers AI model, so a busy hour does not turn
+request from one of the additional models, so a busy hour does not turn
 into an error.
 
 The same key opens data.rmorie.com

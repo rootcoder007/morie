@@ -56,8 +56,8 @@ case("doctor", function() { r <- run("doctor"); check(r$status == 0 && nzchar(r$
 case("models", function() {
   r <- run("models"); check(r$status == 0, r$text)
   if (!nzchar(key)) check(grepl("login", r$text, ignore.case = TRUE), "no key: models must point at login")
-  # the gateway serves Cloudflare Workers AI models beside the ollama.com ones
-  if (nzchar(key)) check(grepl(":cf", r$text, fixed = TRUE), paste("no Workers AI model listed:", r$text))
+  # the gateway serves additional AI models (ids ending in :cf) beside the ollama.com ones
+  if (nzchar(key)) check(grepl(":cf", r$text, fixed = TRUE), paste("no :cf model listed:", r$text))
 })
 case("provider", function() {
   check(run("provider", "set", "--base-url", "https://api.example.org/v1/", "--key", "sk-smoke-1234567", "--model", "demo")$status == 0, "provider set")

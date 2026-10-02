@@ -257,7 +257,7 @@ Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.git
 - **Website**: <https://rmorie.com> — the MORIE family (rmorie, morie, rmoriebricklayer, rmoriedata) in one place.
 - **Curated data**: <https://data.rmorie.com> — the BigQuery-built tables, opened by the same key; `/browse` for SQL in the browser.
 - **CLI reference**: [cli](https://rootcoder007.github.io/morie/cli.html); learn pages for [datasets](https://rootcoder007.github.io/morie/learn/datasets.html), [emissions and capsules](https://rootcoder007.github.io/morie/learn/emissions.html) and [the R command line](https://rootcoder007.github.io/morie/learn/r-cli.html).
-- **Hosted LLM tier**: <https://llm.rmorie.com> — the fallback model behind `morie ask` when there is no local Ollama. Sign in with `morie login` (GitHub) or `morie login --email you@example.com`; `morie models` lists the models on your key and `morie ask --model NAME` picks one; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html). The tier serves ollama.com cloud models and Cloudflare Workers AI models (kimi-k2.6:cf, kimi-k2.7-code:cf, deepseek-v4-pro:cf, deepseek-v4-flash:cf, glm-5.2:cf, glm-5.3:cf, glm-5.3-flash:cf, gpt-oss-120b:cf, gpt-oss-20b:cf, llama-4-scout:cf, qwen3.8-27b:cf, nemotron-3-120b:cf and gemma-4-26b:cf); a rate-limited cloud model falls back to Workers AI.
+- **Hosted LLM tier**: <https://llm.rmorie.com> — the fallback model behind `morie ask` when there is no local Ollama. Sign in with `morie login` (GitHub) or `morie login --email you@example.com`; `morie models` lists the models on your key and `morie ask --model NAME` picks one; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html). The tier serves ollama.com cloud models and additional AI models (kimi-k2.6:cf, kimi-k2.7-code:cf, deepseek-v4-pro:cf, deepseek-v4-flash:cf, glm-5.2:cf, glm-5.3:cf, glm-5.3-flash:cf, gpt-oss-120b:cf, gpt-oss-20b:cf, llama-4-scout:cf, qwen3.8-27b:cf, nemotron-3-120b:cf and gemma-4-26b:cf); a rate-limited cloud model falls back to one of them.
 
 ## Citation
 
@@ -339,8 +339,8 @@ Full detail in [`LICENSING.md`](https://github.com/rootcoder007/morie/blob/main/
 ## Trust model — what the powerful features can do to your machine
 
 morie is a developer/research toolkit with some intentionally powerful
-surfaces. They run **local, user-supplied** input by design — never remote or
-network-supplied code — but under an untrusted-input threat model each is
+surfaces. They run **local, user-supplied** input by design — the only network-supplied
+code is the verified interactive layer below — but under an untrusted-input threat model each is
 high-impact, so every one defaults to the safe behaviour and gates the risky
 path behind a single, named, off-by-default environment knob:
 
@@ -348,6 +348,7 @@ path behind a single, named, off-by-default environment knob:
 |---|---|---|
 | `MORIE_NO_EXEC` | master kill-switch for all dynamic execution | executes; set `MORIE_NO_EXEC=1` to disable REPL/exec/shell everywhere |
 | **`morie tui`** / **polyglot** REPLs | run Python/R/shell/other code you type, like any REPL | run your input only; honour `MORIE_NO_EXEC=1`. Feed them only code you'd run at your own shell |
+| **`morie interactive install`** | fetches the REPL/exec/agent/TUI modules (five files) from this version's release tag on GitHub, the one network-supplied code path | every file is checked against the SHA-256 manifest shipped inside the package before it is enabled; nothing runs during the install; `--no-verify` is the opt-in for a non-release `--ref` |
 | **`pt2gguf`** | deserialize `.pt`/`.pkl` model files | `torch.load(weights_only=True)` + a restricted unpickler; the code-executing `weights_only=False` path needs `MORIE_TRUST_CHECKPOINT=1`. Use trusted checkpoints only |
 | **`bin/morie`** installer — Ollama | remote `install.sh` | fetched to a temp file with its SHA256 printed; executes only under `MORIE_ALLOW_REMOTE_INSTALL=1` |
 | **`bin/morie`** — `ESML_RC` config | shell config sourced on every run (persistence) | **not sourced** unless `MORIE_ALLOW_RC=1` |
