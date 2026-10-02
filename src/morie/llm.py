@@ -835,7 +835,7 @@ def _extract_text(response: httpx.Response) -> str:
     return choices[0].get("message", {}).get("content", "") or ""
 
 
-class EmptyAnswer(Exception):
+class EmptyAnswerError(Exception):
     """The provider answered with no text, twice: the chain moves on to the next provider."""
 
 
@@ -851,7 +851,7 @@ def _completion_text(
 
     A thinking model sometimes spends its whole budget on reasoning and returns
     an empty ``content``; the retry gives it four times the room. An answer that
-    is still empty is reported as :class:`EmptyAnswer` rather than returned as
+    is still empty is reported as :class:`EmptyAnswerError` rather than returned as
     silence, so the caller's provider chain can try the next provider.
     """
     for budget in (4096, 16384):
@@ -863,7 +863,7 @@ def _completion_text(
         if text.strip():
             return text
         logger.warning("Empty answer from %s (%s) with max_tokens=%d; retrying", base_url, model, budget)
-    raise EmptyAnswer(f"{model} at {base_url} answered with no text")
+    raise EmptyAnswerError(f"{model} at {base_url} answered with no text")
 
 
 def _iter_stream(response: httpx.Response) -> Iterator[str]:
@@ -1216,7 +1216,7 @@ def ask(
                     timeout=timeout,
                 )
 
-        except (httpx.HTTPError, httpx.TimeoutException, OSError, KeyError, EmptyAnswer) as exc:
+        except (httpx.HTTPError, httpx.TimeoutException, OSError, KeyError, EmptyAnswerError) as exc:
             last_error = exc
             logger.warning(
                 "Provider at %s failed: %s. Trying next provider.",
@@ -1335,7 +1335,7 @@ def ask_multi(
                     api_key=api_key,
                     timeout=timeout,
                 )
-        except (httpx.HTTPError, httpx.TimeoutException, OSError, KeyError, EmptyAnswer) as exc:
+        except (httpx.HTTPError, httpx.TimeoutException, OSError, KeyError, EmptyAnswerError) as exc:
             logger.warning("Provider at %s failed: %s", base_url, exc)
             continue
 

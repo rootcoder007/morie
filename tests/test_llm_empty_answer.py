@@ -34,5 +34,5 @@ def test_empty_answer_is_retried_with_a_larger_budget(monkeypatch):
 
 def test_two_empty_answers_raise_so_the_chain_moves_on(monkeypatch):
     monkeypatch.setattr(llm, "_request_completion", lambda *a, **k: _Resp(None))
-    with pytest.raises(llm.EmptyAnswer):
+    with pytest.raises(llm.EmptyAnswerError):
         llm._completion_text("https://gw", "m", [{"role": "user", "content": "hi"}], api_key="k", timeout=5)
