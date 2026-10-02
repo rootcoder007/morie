@@ -3,7 +3,7 @@
 
 test_that("causal-estimators returns IPW, outcome regression and AIPW with finite numbers", {
   d <- make_canonical_cpads()
-  out <- suppressWarnings(rmorie:::.run_causal_estimators_module_internal(d))
+  out <- suppressWarnings(morie:::.run_causal_estimators_module_internal(d))
   tbl <- out$causal_estimator_comparison
   expect_identical(tbl$method, c("IPW", "Outcome regression", "AIPW"))
   expect_true(all(is.finite(tbl$ate)))
