@@ -10,6 +10,10 @@
 # No PAT needed — uses the built-in GITHUB_TOKEN with packages:write.
 
 name: Build and Publish Container
+# a newer push to the same ref cancels the run this one supersedes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 
 on:

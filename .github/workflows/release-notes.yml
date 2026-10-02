@@ -5,6 +5,10 @@
 # A release that already exists for the tag is updated (title and notes), so a moved tag
 # keeps one release. Notes are unwrapped: one bullet per line.
 name: release-notes
+# a newer push to the same ref cancels the run this one supersedes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
   push:

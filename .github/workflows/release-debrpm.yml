@@ -1,4 +1,8 @@
 name: Release .deb / .rpm
+# a newer push to the same ref cancels the run this one supersedes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"

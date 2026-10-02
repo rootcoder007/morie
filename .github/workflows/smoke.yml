@@ -2,6 +2,10 @@
 # `morie` verb for real (scripts/smoke/smoke.py), plus the docs drift check. A tag is only
 # cut when this and `build` are green on the same commit.
 name: smoke
+# a newer push to the same ref cancels the run this one supersedes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 on:

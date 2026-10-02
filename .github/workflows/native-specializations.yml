@@ -5,6 +5,10 @@
 # the branch is zero-Suggests engines) plus the three native test
 # tiers. Debian bookworm container: P3M binaries keep it fast.
 name: native-specializations
+# a newer push to the same ref cancels the run this one supersedes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
   push:
