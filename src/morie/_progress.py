@@ -198,7 +198,8 @@ def download_url(
         if written:
             hdrs["Range"] = f"bytes={written}-"
         try:
-            with opener(Request(url, headers=hdrs), timeout) as resp:
+            # a plain URL when nothing is to be added, so callers' own openers see the string they expect
+            with opener(Request(url, headers=hdrs) if hdrs else url, timeout) as resp:
                 if written and getattr(resp, "status", 200) != 206:
                     written = 0  # the server ignored the range: start over
                 return stream_to_file(resp, dest, label, offset=written)
