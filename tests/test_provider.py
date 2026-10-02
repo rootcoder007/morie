@@ -28,7 +28,7 @@ def test_provider_set_show_unset(creds, capsys):
     assert hosted.provider_line() == "Your endpoint (https://api.example.org/v1): model demo-model"
     hosted.provider_show()
     shown = capsys.readouterr().out
-    assert "sk-t...567" in shown and "sk-test-1234567" not in shown
+    assert "never printed" in shown and "sk-test-1234567" not in shown and "sk-t" not in shown
     assert hosted.provider_unset() is True
     assert llm._api_base_url() is None and hosted.provider_line() is None
     assert hosted.provider_unset() is False
