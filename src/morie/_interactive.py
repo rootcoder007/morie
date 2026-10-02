@@ -50,11 +50,12 @@ def manifest() -> dict[str, str]:
 
 
 def sha256_of(path: Path) -> str:
-    h = hashlib.sha256()
-    with open(path, "rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 16), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    """SHA-256 of the file with CRLF line endings read as LF.
+
+    A Windows checkout with autocrlf turns every .py into CRLF, and the manifest
+    describes the LF bytes GitHub serves; the hash must not depend on that.
+    """
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def package_version() -> str:

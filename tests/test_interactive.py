@@ -29,6 +29,16 @@ def test_manifest_matches_the_source_tree():
         assert manifest[name] == _sha(REPO_SRC / name), f"{name}: run scripts/interactive_manifest.py"
 
 
+def test_hash_ignores_crlf_line_endings(tmp_path):
+    """A Windows checkout (autocrlf) must verify against the manifest built from LF files."""
+    lf = tmp_path / "lf.py"
+    crlf = tmp_path / "crlf.py"
+    lf.write_bytes(b"x = 1\nprint(x)\n")
+    crlf.write_bytes(b"x = 1\r\nprint(x)\r\n")
+    assert inter.sha256_of(lf) == inter.sha256_of(crlf)
+    assert inter.sha256_of(lf) == hashlib.sha256(b"x = 1\nprint(x)\n").hexdigest()
+
+
 def test_default_ref_is_the_release_tag_or_main():
     assert inter.default_ref("1.3.9") == "v1.3.9"
     assert inter.default_ref("1.3.9.dev3") == "main"

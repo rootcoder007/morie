@@ -20,7 +20,8 @@ FILES = ("polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py")
 
 
 def build() -> str:
-    files = {n: hashlib.sha256((PKG / n).read_bytes()).hexdigest() for n in FILES}
+    # CRLF read as LF: a Windows checkout must produce the same hashes (see morie._interactive.sha256_of)
+    files = {n: hashlib.sha256((PKG / n).read_bytes().replace(b"\r\n", b"\n")).hexdigest() for n in FILES}
     return json.dumps({"files": files}, indent=2, sort_keys=True) + "\n"
 
 
