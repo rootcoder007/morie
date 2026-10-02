@@ -247,6 +247,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "pumf",
         "large_file": False,
         "local_path": "data/datasets/oc/CSUS/2019-2020/CADS201920pumf.csv",
+        "zip_member": "CADS.csv",
         "table_name": "cu20mf",
         "ckan_resource_id": "0f4c0418-b9d1-4f89-a917-a660d20fd6d0",
     },
@@ -259,6 +260,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "bootstrap",
         "large_file": True,
         "local_path": "data/datasets/oc/CSUS/2019-2020/CADS201920bsw.csv",
+        "zip_member": "CADS_bsw.csv",
         "table_name": "cu20bt",
         "ckan_resource_id": "0f4c0418-b9d1-4f89-a917-a660d20fd6d0",
     },
@@ -1389,8 +1391,14 @@ def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -
     want_boot = entry.get("type") == "bootstrap"
     with zipfile.ZipFile(dest) as zf:
         csvs = [n for n in zf.namelist() if n.lower().endswith(".csv")]
-        is_boot = lambda n: bool(re.search(r"bsw|bwt|boot", n.rsplit("/", 1)[-1], re.I))  # noqa: E731
-        pick = [n for n in csvs if is_boot(n) == want_boot] or csvs
+        member = entry.get("zip_member")
+        if member:  # the catalog names the member: StatCan's CSV.zip holds the microdata and the weights together
+            pick = [n for n in csvs if n.rsplit("/", 1)[-1] == member]
+            if not pick:
+                raise RuntimeError(f"{dest.name} for {dataset_key} has no member {member!r}; it holds {', '.join(csvs)}")
+        else:
+            is_boot = lambda n: bool(re.search(r"bsw|bwt|boot", n.rsplit("/", 1)[-1], re.I))  # noqa: E731
+            pick = [n for n in csvs if is_boot(n) == want_boot] or csvs
         if not pick:
             raise RuntimeError(f"{dest.name} for {dataset_key} holds no CSV")
         with zf.open(pick[0]) as fh:

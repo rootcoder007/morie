@@ -342,7 +342,3 @@ trust posture at a glance. Only enable a knob for inputs you fully control.
 
 - General issues: [GitHub Issues](https://github.com/rootcoder007/morie/issues)
 - Security vulnerabilities: see [`SECURITY.md`](https://github.com/rootcoder007/morie/blob/main/.github/SECURITY.md)
-
-## Smoke suite
-
-Every release is gated on a clean-user smoke suite that installs the built package into an empty home directory on Linux, macOS and Windows and runs every command for real, with live downloads and assertions, no mocks (`python scripts/smoke/smoke.py`; `.github/workflows/smoke.yml`). A verb without a smoke case fails the suite.

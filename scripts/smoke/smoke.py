@@ -67,6 +67,14 @@ class Smoke:
             errors="replace",
         )
 
+    def run_llm(self, *args: str) -> subprocess.CompletedProcess:
+        """A hosted-tier call. Every runner of every package asks on the shared key at once, so a 429 is retried once after a pause."""
+        r = self.run(*args)
+        if r.returncode != 0 and "429" in (r.stdout + r.stderr):
+            time.sleep(45)
+            r = self.run(*args)
+        return r
+
 
 def case(verb: str):
     def deco(fn):
@@ -165,22 +173,22 @@ def _answered(r, verb: str) -> None:
 
 @case("ask")
 def c_ask(s: Smoke):
-    _answered(s.run("ask", "--no-stream", "What does the power-design module compute?"), "ask")
+    _answered(s.run_llm("ask", "--no-stream", "What does the power-design module compute?"), "ask")
 
 
 @case("percy")
 def c_percy(s: Smoke):
-    _answered(s.run("percy", "--no-stream", "Which module compares two groups?"), "percy")
+    _answered(s.run_llm("percy", "--no-stream", "Which module compares two groups?"), "percy")
 
 
 @case("perseus")
 def c_perseus(s: Smoke):
-    _answered(s.run("perseus", "--no-stream", "hello"), "perseus")
+    _answered(s.run_llm("perseus", "--no-stream", "hello"), "perseus")
 
 
 @case("agent")
 def c_agent(s: Smoke):
-    _answered(s.run("agent", "--no-stream", "hello"), "agent")
+    _answered(s.run_llm("agent", "--no-stream", "hello"), "agent")
 
 
 def _pty_session(s: Smoke, args: list[str], lines: list[str], timeout: int = 120) -> str:

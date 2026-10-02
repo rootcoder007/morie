@@ -34,6 +34,12 @@ run <- function(...) {
   LAST$text <- paste(buf, collapse = "")
   list(status = st, text = LAST$text)
 }
+# the hosted tier answers 429 when every runner of every package asks at once on the shared key: wait and ask once more
+run_llm <- function(...) {
+  r <- run(...)
+  if (r$status != 0 && grepl("429", r$text, fixed = TRUE)) { Sys.sleep(45); r <- run(...) }
+  r
+}
 results <- list()
 check <- function(cond, what) if (!isTRUE(cond)) stop(what, call. = FALSE)
 case <- function(verb, fn) results[[length(results) + 1L]] <<- list(verb = verb, fn = fn)
@@ -54,10 +60,10 @@ case("provider", function() {
   check(grepl("Your endpoint", run("models")$text), "models does not list the endpoint")
   check(run("provider", "unset")$status == 0, "provider unset")
 })
-case("ask", function() { r <- run("ask", "What does the power-design module compute?"); check(r$status == 0 && nzchar(trimws(r$text)), r$text) })
-case("percy", function() { r <- run("percy", "Which module compares two groups?"); check(r$status == 0 && nzchar(trimws(r$text)), r$text) })
-case("perseus", function() { r <- run("perseus", "hello"); check(r$status == 0, r$text) })
-case("agent", function() { r <- run("agent", "hello"); check(r$status == 0, r$text) })
+case("ask", function() { r <- run_llm("ask", "What does the power-design module compute?"); check(r$status == 0 && nzchar(trimws(r$text)), r$text) })
+case("percy", function() { r <- run_llm("percy", "Which module compares two groups?"); check(r$status == 0 && nzchar(trimws(r$text)), r$text) })
+case("perseus", function() { r <- run_llm("perseus", "hello"); check(r$status == 0, r$text) })
+case("agent", function() { r <- run_llm("agent", "hello"); check(r$status == 0, r$text) })
 case("chat", function() {
   con <- textConnection("/quit"); on.exit(close(con))
   testthat::local_mocked_bindings(.cli_readline = function(prompt) "/quit", .package = pkg)
@@ -148,6 +154,24 @@ case("-h", function() { r <- run("-h"); check(r$status == 0 && grepl("usage: rmo
 case("verify-earth-engine", function() {
   r <- run("verify-earth-engine")
   check(r$status != 0 && grepl("morie verify-earth-engine", r$text, fixed = TRUE), paste("must point at the Python verb:", r$text))
+})
+case("launcher", function() {
+  # exactly what inst/bin/rmorie does, with the tree loaded in place of the installed package
+  tree_arg <- if (nzchar(tree)) sprintf("pkgload::load_all(%s, quiet = TRUE)", shQuote(tree)) else "library(rmorie)"
+  r <- suppressWarnings(system2("Rscript", c("--vanilla", "-e",
+    shQuote(sprintf("suppressMessages(%s); q <- morie_cli(); quit(status = as.integer(q))", tree_arg)),
+    "--args", "version"), stdout = TRUE, stderr = TRUE))
+  check(identical(attr(r, "status"), NULL) && any(grepl(paste(pkg, "1\\."), r)), paste("launcher:", paste(r, collapse = " | ")))
+})
+case("run-module-default-dir", function() {
+  r <- run("run-module", "power-design")
+  check(r$status == 0 && dir.exists(file.path("morie-output", "power-design")) &&
+          length(list.files(file.path("morie-output", "power-design"), pattern = "[.]csv$")) > 5,
+        paste("run-module without --output-dir must write under morie-output/:", r$text))
+})
+case("verb-help", function() {
+  r <- run("emissions", "--help")
+  check(r$status == 0 && grepl("emissions", r$text) && !dir.exists("emissions"), paste("emissions --help must not run it:", r$text))
 })
 case("launcher", function() {
   # exactly what inst/bin/rmorie does, with the tree loaded in place of the installed package
