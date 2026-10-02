@@ -144,8 +144,6 @@ def c_models(s: Smoke):
         check(":cf" in r.stdout, "no Workers AI model listed: " + r.stdout[-300:])
 
 
-
-
 @case("provider")
 def c_provider(s: Smoke):
     r = s.run(
@@ -192,7 +190,9 @@ def _agent_case(s: Smoke, verb: str, *args: str) -> None:
     r = s.run_llm(verb, "--no-stream", *args)
     if _source_tree_only(r.stdout + r.stderr):
         check(r.returncode == 1, f"{verb} without the agent layer must exit 1: " + r.stdout[-200:])
-        RESULTS.append((verb, "SKIP", "the agent layer is excluded from the wheel by design; the honest message was verified"))
+        RESULTS.append(
+            (verb, "SKIP", "the agent layer is excluded from the wheel by design; the honest message was verified")
+        )
         return
     _answered(r, verb)
 
@@ -312,6 +312,27 @@ def c_login(s: Smoke):
     check((s.home / "cfg" / "morie" / "credentials.json").exists(), "credentials file not written")
 
 
+@case("interactive")
+def c_interactive(s: Smoke):
+    """The source-tree-only layer can be added to an installed copy: status, offline install from this checkout, exec works, remove."""
+    r = s.run("interactive", "status")
+    check(r.returncode == 0 and "interactive layer directory" in r.stdout, r.stdout[-300:] + r.stderr[-300:])
+    src = Path(__file__).resolve().parents[2] / "src" / "morie"
+    r = s.run("interactive", "install", "--from", str(src))
+    check(r.returncode == 0 and "Installed the interactive layer" in r.stdout, r.stdout[-400:] + r.stderr[-300:])
+    r = s.run("interactive", "status")
+    check("active" in r.stdout, "status after install: " + r.stdout[-300:])
+    r = s.run("exec", "print(6 * 7)")
+    check(r.returncode == 0 and "42" in r.stdout, "exec after install: " + r.stdout[-300:] + r.stderr[-300:])
+    r = s.run("interactive", "remove")
+    check(r.returncode == 0 and "Removed" in r.stdout, r.stdout[-300:] + r.stderr[-300:])
+    r = s.run("exec", "print(6 * 7)")
+    check(
+        _source_tree_only(r.stdout + r.stderr) or "42" in r.stdout,
+        "exec after remove: " + r.stdout[-300:] + r.stderr[-300:],
+    )
+
+
 @case("logout")
 def c_logout(s: Smoke):
     r = s.run("logout")
@@ -376,7 +397,9 @@ def c_pull(s: Smoke):
     else:
         RESULTS.append(("pull data.rmorie.com", "SKIP", "MORIE_SMOKE_KEY not set"))
     if not _r_arm_ok():
-        RESULTS.append(("pull -> module", "SKIP", "no Rscript, or no R 'morie' package, on this runner (the modules are R-backed)"))
+        RESULTS.append(
+            ("pull -> module", "SKIP", "no Rscript, or no R 'morie' package, on this runner (the modules are R-backed)")
+        )
         return
     r = s.run("run-module", "descriptive-statistics", "--output-dir", "out1")
     check(r.returncode == 0, r.stderr[-400:])
@@ -475,7 +498,9 @@ def _r_arm_ok() -> bool:
             try:
                 r = subprocess.run(
                     ["Rscript", "-e", "quit(status = as.integer(!requireNamespace('morie', quietly = TRUE)))"],
-                    capture_output=True, text=True, timeout=300,
+                    capture_output=True,
+                    text=True,
+                    timeout=300,
                 )
                 _R_ARM = r.returncode == 0
             except (OSError, subprocess.SubprocessError):

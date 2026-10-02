@@ -354,6 +354,40 @@ rmorie::install_cli()   # puts the `rmorie` command on your PATH
 
 From Python, `morie r-install` runs the same install for you.
 
+## 7. The interactive layer (REPL, exec, agent, TUI)
+
+Every channel above installs morie without five modules: `polyglot.py`, `agent.py`,
+`tui.py`, `_exec_guard.py` and `repl_init.py`. They execute code that you or a
+model type, and package scanners flag that surface, so they are kept out of the
+wheel, the sdist, the Homebrew formula, the deb/rpm and the container image.
+Without them `morie repl`, `morie exec`, `morie agent` and `morie tui` say so,
+print the command below, and on a terminal offer to run it for you.
+
+Add them for your user:
+
+```bash
+morie interactive install            # fetches the files for your installed version
+morie interactive status             # where they live, and whether they are active
+morie interactive remove             # take them out again
+```
+
+`install` downloads the five files from the tag of your installed version on
+GitHub (`https://raw.githubusercontent.com/rootcoder007/morie/v<version>/src/morie/`),
+checks each one against the SHA-256 manifest that ships inside the package
+(`morie/_interactive_manifest.json`), and copies them to
+`~/.local/share/morie/interactive` (`$XDG_DATA_HOME/morie/interactive`;
+`%LOCALAPPDATA%\morie\interactive` on Windows; `MORIE_INTERACTIVE_DIR`
+overrides). `import morie` adds that directory to the package path when its
+recorded version matches, so an upgrade of morie simply asks you to run
+`install` again. Nothing under site-packages is modified.
+
+Options: `--ref main` (or any tag, branch or commit) fetches another revision
+and then needs `--no-verify`, because the manifest describes your release only;
+`--from DIR` copies from a local `src/morie` directory for offline machines.
+The TUI additionally needs the `interactive` extra: `pip install "morie[interactive]"`.
+`MORIE_NO_EXEC=1` still disables every execution path; `MORIE_NO_PROMPT=1` turns
+the terminal offer off.
+
 ## Verifying the install
 
 Any of these should print the installed `morie` version:

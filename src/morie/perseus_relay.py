@@ -35,7 +35,7 @@ def _create_agent():
     try:
         from .agent import create_agent
     except ImportError as exc:
-        raise RuntimeError("the morie agent is not bundled in this install (source-tree only)") from exc
+        raise RuntimeError("the morie agent is not bundled in this install; run `morie interactive install` to add it") from exc
     return create_agent()
 
 

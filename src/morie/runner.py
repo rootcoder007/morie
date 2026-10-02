@@ -251,6 +251,28 @@ def build_parser() -> argparse.ArgumentParser:
         help="Store a key you already have (from the website or your email); prompts when KEY is omitted",
     )
     subparsers.add_parser("logout", help="Forget the hosted LLM key")
+    inter = subparsers.add_parser(
+        "interactive",
+        help="Add, inspect or remove the interactive layer (polyglot REPL, agent, TUI, exec) that the published package leaves out",
+    )
+    inter_sub = inter.add_subparsers(dest="interactive_cmd")
+    inter_install = inter_sub.add_parser(
+        "install",
+        help="Fetch the five modules for this version from the tagged source on GitHub, verify them against the bundled manifest, and enable them for this user",
+    )
+    inter_install.add_argument(
+        "--ref", help="git ref to fetch (default: the tag of the installed version, or main for a dev build)"
+    )
+    inter_install.add_argument(
+        "--from", dest="source", metavar="DIR", help="a local src/morie directory instead of GitHub (offline)"
+    )
+    inter_install.add_argument(
+        "--no-verify",
+        action="store_true",
+        help="skip the SHA-256 check (needed for a --ref that is not this version's tag)",
+    )
+    inter_sub.add_parser("status", help="Show where the layer lives and whether it is active for this version")
+    inter_sub.add_parser("remove", help="Delete the per-user copy of the layer")
     subparsers.add_parser("models", help="List the models you can ask: the hosted tier for your key, then local Ollama")
 
     doctor_cmd = subparsers.add_parser(
@@ -750,6 +772,36 @@ def _local_models_line() -> str:
         return "Local Ollama: not reachable"
 
 
+def _add_interactive_layer(what: str) -> bool:
+    """A verb needs a module the published package leaves out: say how to add it, and on a terminal offer to do it now.
+
+    Returns True when the layer was just installed and joined to the package path, so
+    the caller can import again; False when the person should run the install first.
+    Never reads stdin unless both ends are a terminal (CI and pipes get the message only).
+    """
+    import os
+
+    from . import _interactive
+
+    print(f"{what} is not bundled in this install. Run `morie interactive install` to add it for this user.")
+    interactive = sys.stdin.isatty() and sys.stdout.isatty() and not os.environ.get("MORIE_NO_PROMPT", "").strip()
+    if not interactive:
+        return False
+    try:
+        answer = input("Add it now? [y/N] ").strip().lower()
+    except (EOFError, KeyboardInterrupt):
+        print()
+        return False
+    if answer not in ("y", "yes"):
+        return False
+    if _interactive.install() != 0:
+        return False
+    import morie
+
+    _interactive.activate(morie.__path__, morie.__version__)
+    return True
+
+
 def main() -> int:
     """
     Entry point for the MORIE command line interface.
@@ -978,8 +1030,13 @@ def _main_impl() -> int:
         try:
             from .tui import launch_tui
         except ImportError:
-            print("The TUI is not bundled in this install (source-tree only).")
-            return 1
+            if not _add_interactive_layer('The TUI (also: pip install "morie[interactive]")'):
+                return 1
+            try:
+                from .tui import launch_tui
+            except ImportError:
+                print('The TUI also needs the interactive extra: pip install "morie[interactive]"')
+                return 1
         return launch_tui()
 
     if args.command == "selftest":
@@ -1380,6 +1437,16 @@ def _main_impl() -> int:
             return 1
         return 0
 
+    if args.command == "interactive":
+        from . import _interactive
+
+        sub = getattr(args, "interactive_cmd", None) or "status"
+        if sub == "install":
+            return _interactive.install(ref=args.ref, source=args.source, verify=not args.no_verify)
+        if sub == "remove":
+            return _interactive.remove()
+        return _interactive.status()
+
     if args.command == "logout":
         from .hosted import logout
 
@@ -1600,8 +1667,9 @@ def _handle_exec(args: argparse.Namespace) -> int:
     try:
         from morie._exec_guard import ExecGuardError, ensure_exec_allowed
     except ModuleNotFoundError:
-        print("Error: 'morie exec' is not available in this build.", file=sys.stderr)
-        return 1
+        if not _add_interactive_layer("'morie exec'"):
+            return 1
+        from morie._exec_guard import ExecGuardError, ensure_exec_allowed
 
     try:
         ensure_exec_allowed("'morie exec'")
@@ -1728,12 +1796,9 @@ def _handle_repl(args: argparse.Namespace) -> int:
     try:
         from .polyglot import run_headless_repl
     except ImportError:
-        print(
-            "The polyglot multi-language REPL is not bundled in this install.\n"
-            "It ships in the source tree only (run morie from a source checkout "
-            "to use `morie repl --polyglot`)."
-        )
-        return 1
+        if not _add_interactive_layer("The polyglot multi-language REPL"):
+            return 1
+        from .polyglot import run_headless_repl
 
     polyglot = not getattr(args, "no_polyglot", False)
     auto_detect = not getattr(args, "no_detect", False)
@@ -1795,8 +1860,9 @@ def _handle_percy(args: argparse.Namespace) -> int:
     try:
         from .agent import create_agent
     except ImportError:
-        print("The agent is not bundled in this install (source-tree only).")
-        return 1
+        if not _add_interactive_layer("The agent"):
+            return 1
+        from .agent import create_agent
 
     use_stream = not getattr(args, "no_stream", False)
     model = getattr(args, "model", None)

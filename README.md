@@ -113,6 +113,25 @@ docker run --rm ghcr.io/rootcoder007/morie:1.3.9 morie --help
 
 Published on every release with a versioned tag, a major.minor tag and `:latest` (linux/amd64). Requires only Docker — no Python, no pip.
 
+### The interactive layer — `morie repl`, `morie exec`, `morie agent`, `morie tui`
+
+Every channel above leaves five modules out on purpose: they execute code that
+you or a model type, and package scanners flag that surface. Add them for your
+user in one step:
+
+```bash
+morie interactive install
+```
+
+That fetches the files for your installed version from the tagged source on
+GitHub, checks each one against the SHA-256 manifest shipped inside the
+package, and stores them under `~/.local/share/morie/interactive`
+(`%LOCALAPPDATA%\morie\interactive` on Windows). Nothing in site-packages
+changes. `morie interactive status` shows what is active and `morie interactive
+remove` takes it out again. The TUI also needs `pip install "morie[interactive]"`.
+A source checkout has all of this already. Offline: `morie interactive install
+--from path/to/morie/src/morie`.
+
 ### R package: rmorie — r-universe
 
 The R distribution of morie is the **[rmorie](https://github.com/rootcoder007/rmorie)** package.

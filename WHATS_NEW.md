@@ -9,6 +9,13 @@ Per-package full changelogs:
 
 ## 1.3.9 (2026-10-01)
 
+* `morie interactive install` adds the polyglot REPL, `exec`, agent and TUI modules to an
+  installed copy (they stay out of the wheel, sdist, Homebrew, deb/rpm and the image on
+  purpose): the files for the installed version are fetched from the release tag, verified
+  against a SHA-256 manifest shipped in the package, and kept per user under
+  `~/.local/share/morie/interactive`; `status` and `remove` manage the copy. The verbs that
+  need the layer now say how to add it.
+
 * The `causal-estimators` module runs again on the synthetic CPADS frame (`morie pipeline --all`
   completes 23/23): its AIPW line lines the propensity rows up with the outcome rows by name.
 

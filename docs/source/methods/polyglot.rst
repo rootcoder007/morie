@@ -16,6 +16,13 @@ Access the REPL via the TUI (``e`` key) or the CLI:
    morie repl
    morie exec --file script.py   # non-interactive; `morie repl` is the interactive session
 
+.. note::
+
+   Installed copies (PyPI, Homebrew, deb/rpm, Docker) leave the REPL, ``exec``,
+   agent and TUI modules out on purpose. Run ``morie interactive install`` once
+   to add them for your user; ``morie interactive status`` / ``remove`` manage
+   the copy. See INSTALLATION.md, section 7.
+
 Language Detection
 ------------------
 

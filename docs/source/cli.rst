@@ -183,6 +183,10 @@ Editors and REPLs
 ``exec``
    Execute code inline, from stdin, or from ``--file``; ``--lang python|r``.
 
+``interactive install|status|remove``
+   Add the REPL/exec/agent/TUI modules that the published package leaves out,
+   verified against the bundled manifest, for the current user.
+
 ``tutorial`` / ``cheatsheet``
    Interactive first-time walkthrough; one-page command reference.
 

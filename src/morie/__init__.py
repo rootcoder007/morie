@@ -25,6 +25,17 @@ try:
 except ImportError:
     __version__ = "0.0.0+unknown"
 
+# The interactive layer (polyglot REPL, agent, TUI, exec) stays out of the
+# published package; `morie interactive install` keeps a per-user copy that
+# joins the package path here when its version matches. One stat when absent.
+try:
+    from . import _interactive as _interactive_layer
+
+    _interactive_layer.activate(__path__, __version__)
+    del _interactive_layer
+except Exception:  # noqa: BLE001 - never let this block `import morie`
+    pass
+
 # name -> submodule (".cpads", ".causal", ...).  Generated from the
 # previous eager try-import block at v0.3.0.  Edit this dict to add
 # new top-level exports instead of adding more try-imports.
@@ -251,7 +262,7 @@ def __getattr__(name):
             # symbol doesn't exist when its dependencies are absent.
             raise AttributeError(
                 f"morie has no attribute {name!r} (optional submodule {_LAZY_EXPORTS[name]!r} could not be loaded)"
-            )
+            ) from None
     raise AttributeError(f"module 'morie' has no attribute {name!r}")
 
 
