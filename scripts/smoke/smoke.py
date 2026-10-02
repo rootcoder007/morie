@@ -176,14 +176,24 @@ def c_ask(s: Smoke):
     _answered(s.run_llm("ask", "--no-stream", "What does the power-design module compute?"), "ask")
 
 
+def _agent_case(s: Smoke, verb: str, *args: str) -> None:
+    """The agent layer (agent.py) is kept out of the published wheel on purpose; from a wheel the verb must say so and exit 1."""
+    r = s.run_llm(verb, "--no-stream", *args)
+    if _source_tree_only(r.stdout + r.stderr):
+        check(r.returncode == 1, f"{verb} without the agent layer must exit 1: " + r.stdout[-200:])
+        RESULTS.append((verb, "SKIP", "the agent layer is excluded from the wheel by design; the honest message was verified"))
+        return
+    _answered(r, verb)
+
+
 @case("percy")
 def c_percy(s: Smoke):
-    _answered(s.run_llm("percy", "--no-stream", "Which module compares two groups?"), "percy")
+    _agent_case(s, "percy", "Which module compares two groups?")
 
 
 @case("perseus")
 def c_perseus(s: Smoke):
-    _answered(s.run_llm("perseus", "--no-stream", "hello"), "perseus")
+    _agent_case(s, "perseus", "hello")
 
 
 @case("agent")
@@ -346,12 +356,6 @@ def c_pull(s: Smoke):
     check(r.returncode == 0, "pull ocp21 failed: " + r.stderr[-400:])
     rows = _lines(s.work / "cpads.csv") - 1
     check(rows > 40000, f"CPADS PUMF has {rows} rows; expected ~40,931")
-    if not shutil.which("Rscript"):
-        RESULTS.append(("pull -> module", "SKIP", "no Rscript on this runner (the modules are R-backed)"))
-        return
-    r = s.run("run-module", "descriptive-statistics", "--output-dir", "out1")
-    check(r.returncode == 0, r.stderr[-400:])
-    check("SYNTHETIC" not in r.stderr.upper(), "after the pull the module still used the synthetic frame")
     if KEY:
         r = s.run("pull", "fec_cm_2020/fec_cm_2020", "--out", "fec.csv", timeout=900)
         check(
@@ -360,6 +364,12 @@ def c_pull(s: Smoke):
         )
     else:
         RESULTS.append(("pull data.rmorie.com", "SKIP", "MORIE_SMOKE_KEY not set"))
+    if not _r_arm_ok():
+        RESULTS.append(("pull -> module", "SKIP", "no Rscript, or no R 'morie' package, on this runner (the modules are R-backed)"))
+        return
+    r = s.run("run-module", "descriptive-statistics", "--output-dir", "out1")
+    check(r.returncode == 0, r.stderr[-400:])
+    check("SYNTHETIC" not in r.stderr.upper(), "after the pull the module still used the synthetic frame")
 
 
 @case("run-modules")
@@ -440,6 +450,26 @@ def c_bootstrap(s: Smoke):
 def c_percysuits(s: Smoke):
     r = s.run("percysuits", "--dry-run")
     check(r.returncode in (0, 1) and r.stdout.strip(), r.stderr[-300:])
+
+
+_R_ARM: bool | None = None
+
+
+def _r_arm_ok() -> bool:
+    """Rscript on PATH and the R 'morie' package installed: what the R-backed modules need."""
+    global _R_ARM
+    if _R_ARM is None:
+        _R_ARM = False
+        if shutil.which("Rscript"):
+            try:
+                r = subprocess.run(
+                    ["Rscript", "-e", "quit(status = as.integer(!requireNamespace('morie', quietly = TRUE)))"],
+                    capture_output=True, text=True, timeout=300,
+                )
+                _R_ARM = r.returncode == 0
+            except (OSError, subprocess.SubprocessError):
+                _R_ARM = False
+    return _R_ARM
 
 
 def _source_tree_only(text: str) -> bool:
@@ -591,8 +621,8 @@ def c_exec(s: Smoke):
 @case("selftest")
 def c_selftest(s: Smoke):
     r = s.run("selftest", timeout=900)
-    if not shutil.which("Rscript"):
-        # the R-backed checks cannot pass here; every other row must
+    if not _r_arm_ok():
+        # the R-backed checks cannot pass without Rscript and the R package; every other row must
         rows = [ln for ln in r.stdout.splitlines() if ln.strip().startswith(("FAIL", "OK", "SKIP"))]
         bad = [ln for ln in rows if ln.strip().startswith("FAIL") and "R " not in ln and "module" not in ln.lower()]
         check(not bad, "selftest failed a check that does not need R: " + "\n".join(bad)[-400:])

@@ -1339,15 +1339,13 @@ def _download_file(url: str, dest: Path, timeout: int = 60, label: str | None = 
     Returns the URL the bytes came from. The same fallback the R arm has in
     ``morie_download(attempt_wayback = TRUE)``.
     """
-    from urllib.request import Request
-
-    from ._progress import stream_to_file
+    from ._progress import download_url
 
     def _stream(src: str) -> None:
-        # open.canada.ca's front end rejects a bare "Mozilla/5.0" agent
-        req = Request(src, headers={"User-Agent": "morie/1 (+https://rmorie.com)"})
-        with urlopen(req, timeout=timeout) as resp:
-            stream_to_file(resp, dest, label or dest.name)
+        # open.canada.ca's front end rejects a bare "Mozilla/5.0" agent; a dropped transfer is resumed
+        download_url(
+            src, dest, label or dest.name, timeout=timeout, headers={"User-Agent": "morie/1 (+https://rmorie.com)"}
+        )
 
     try:
         _stream(url)
@@ -1395,7 +1393,9 @@ def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -
         if member:  # the catalog names the member: StatCan's CSV.zip holds the microdata and the weights together
             pick = [n for n in csvs if n.rsplit("/", 1)[-1] == member]
             if not pick:
-                raise RuntimeError(f"{dest.name} for {dataset_key} has no member {member!r}; it holds {', '.join(csvs)}")
+                raise RuntimeError(
+                    f"{dest.name} for {dataset_key} has no member {member!r}; it holds {', '.join(csvs)}"
+                )
         else:
             is_boot = lambda n: bool(re.search(r"bsw|bwt|boot", n.rsplit("/", 1)[-1], re.I))  # noqa: E731
             pick = [n for n in csvs if is_boot(n) == want_boot] or csvs
@@ -1455,13 +1455,12 @@ def _rmoriedata_extdata(timeout: int = 120) -> Path:
     import tempfile
 
     root.mkdir(parents=True, exist_ok=True)
-    from ._progress import stream_to_file
+    from ._progress import download_url
 
     logger.info("Fetching rmoriedata %s from CRAN (%s)...", RMORIEDATA_VERSION, RMORIEDATA_TARBALL)
     with tempfile.TemporaryDirectory() as tmp:
         tgz = Path(tmp) / "rmoriedata.tar.gz"
-        with urlopen(RMORIEDATA_TARBALL, timeout=timeout) as resp:
-            stream_to_file(resp, tgz, f"rmoriedata {RMORIEDATA_VERSION} (CRAN)")
+        download_url(RMORIEDATA_TARBALL, tgz, f"rmoriedata {RMORIEDATA_VERSION} (CRAN)", timeout=timeout)
         with tarfile.open(tgz) as tf:
             members = [m for m in tf.getmembers() if "/inst/extdata/" in m.name and not m.name.endswith("/")]
             for m in members:

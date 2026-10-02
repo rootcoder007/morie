@@ -149,14 +149,68 @@ def run_step(cmd: list[str], label: str, *, env: dict | None = None, cwd: str | 
         return rc
 
 
-def stream_to_file(resp, dest, label: str, chunk_size: int = 1 << 20) -> int:
-    """Copy an HTTP response body to ``dest`` with progress; returns the bytes written."""
+def stream_to_file(resp, dest, label: str, chunk_size: int = 1 << 20, offset: int = 0) -> int:
+    """Copy an HTTP response body to ``dest`` with progress; returns the bytes written.
+
+    ``offset`` > 0 appends a resumed transfer (a 206 response) to what is already on disk.
+    """
     try:
         total: int | None = int(resp.headers.get("Content-Length") or 0) or None
     except (AttributeError, TypeError, ValueError):
         total = None
-    with open(dest, "wb") as fh, Progress(label, total) as prog:
+    if total is not None and offset:
+        total += offset
+    with open(dest, "ab" if offset else "wb") as fh, Progress(label, total) as prog:
+        if offset:
+            prog.update(offset)
         while chunk := resp.read(chunk_size):
             fh.write(chunk)
             prog.update(len(chunk))
+        if total is not None and prog.done < total:
+            # a connection that closes early reads as a short body, not an error:
+            # say so, or a truncated file would pass as complete
+            from http.client import IncompleteRead
+
+            raise IncompleteRead(b"", total - prog.done)
         return prog.done
+
+
+def download_url(
+    url: str, dest, label: str, timeout: int = 60, headers: dict | None = None, attempts: int = 3, opener=None
+) -> int:
+    """Stream ``url`` to ``dest`` with progress; a transfer that drops part-way is resumed, up to ``attempts`` times.
+
+    The retry asks for the remainder with an HTTP Range header; a server that ignores it
+    (answers 200 instead of 206) is read again from the start. HTTP errors (404, 401, ...)
+    are not retried. ``opener(request, timeout)`` replaces ``urlopen`` (tests, authenticated hubs).
+    Returns the bytes on disk.
+    """
+    from http.client import IncompleteRead
+    from pathlib import Path
+    from urllib.error import HTTPError
+    from urllib.request import Request, urlopen
+
+    dest = Path(dest)
+    opener = opener or (lambda req, timeout: urlopen(req, timeout=timeout))
+    written = 0
+    for attempt in range(1, attempts + 1):
+        hdrs = dict(headers or {})
+        if written:
+            hdrs["Range"] = f"bytes={written}-"
+        try:
+            with opener(Request(url, headers=hdrs), timeout) as resp:
+                if written and getattr(resp, "status", 200) != 206:
+                    written = 0  # the server ignored the range: start over
+                return stream_to_file(resp, dest, label, offset=written)
+        except HTTPError:
+            raise
+        except (IncompleteRead, ConnectionError, TimeoutError, OSError) as exc:
+            if attempt == attempts:
+                raise
+            written = dest.stat().st_size if dest.exists() else 0
+            sys.stderr.write(
+                f"{label}: the transfer dropped ({type(exc).__name__}); "
+                f"resuming from {fmt_bytes(written)}, attempt {attempt + 1} of {attempts}\n"
+            )
+            time.sleep(attempt)
+    return written

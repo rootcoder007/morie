@@ -70,11 +70,25 @@ def _get(path: str, timeout: int = 60) -> bytes:
 
 
 def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
-    """Stream a gateway file to ``dest`` with progress (the manifest's size is in Content-Length)."""
-    from ._progress import stream_to_file
+    """Stream a gateway file to ``dest`` with progress; a dropped transfer is resumed."""
+    from ._progress import download_url
 
-    with _open(path, timeout) as resp:
-        return stream_to_file(resp, dest, label)
+    key = _key()
+    if not key:
+        raise DataHubAuthError("data.rmorie.com needs your MORIE key: run `morie login` (or `rmorie login`) once.")
+    try:
+        return download_url(
+            data_url() + path,
+            dest,
+            label,
+            timeout=timeout,
+            headers={"Authorization": f"Bearer {key}", "User-Agent": "morie/1 (+https://rmorie.com)"},
+            opener=lambda req, timeout: urlopen(req, timeout=timeout),
+        )
+    except HTTPError as exc:
+        if exc.code in (401, 403):
+            raise DataHubAuthError("data.rmorie.com rejected the stored key; run `morie login` again.") from exc
+        raise
 
 
 def hosted_manifest(refresh: bool = False) -> dict:

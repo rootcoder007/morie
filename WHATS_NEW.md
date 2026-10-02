@@ -9,6 +9,10 @@ Per-package full changelogs:
 
 ## 1.3.9 (2026-10-01)
 
+* Downloads that drop part-way are resumed (HTTP Range, or from the start when the
+  server ignores it), up to three attempts, with the reason on screen; a short body
+  no longer passes as a complete file. The R arm starts the transfer again.
+
 - **From a hostile QA pass on every feature.** `morie pull` only takes exact
   keys and suggests near misses instead of silently fetching another dataset;
   `run-module` without `--output-dir` writes under `morie-output/NAME`;
