@@ -115,7 +115,7 @@ def execute_pipeline(
         try:
             emissions = tracker.stop()
             if emissions is not None:
-                print(f"Pipeline CO₂ emissions: {emissions:.6f} kg CO₂eq")
+                print(f"Pipeline CO₂ emissions: {emissions:.3g} kg CO₂eq")
                 cap = getattr(tracker, "capsule", None)
                 if cap:
                     print(f"Capsule: {cap['manifest']}{' (signed)' if cap.get('signed') else ' (unsigned)'}")
@@ -941,10 +941,10 @@ def _main_impl() -> int:
                     return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
                 print(payload["output_text"])
                 return _llm_exit_code(payload)
-        except Exception as exc:
+        except Exception:
             # the agent needs an LLM backend; say why it stepped aside
             # rather than hiding a real bug in create_agent()
-            print(f"agent unavailable ({type(exc).__name__}: {exc}); falling back to Perseus", file=sys.stderr)
+            print("no local Ollama for the tool-calling agent; answering through the provider chain", file=sys.stderr)
             payload = ask_percy(
                 args.question,
                 context=getattr(args, "context", None),
@@ -1003,14 +1003,15 @@ def _main_impl() -> int:
         from .data import list_datasets
 
         datasets = list_datasets()
-        print(f"{'Key':<20} {'Type':<12} {'Rows':>8}  {'Route'}")
-        print("-" * 96)
+        kw = max(20, max((len(d["key"]) for d in datasets), default=20))
+        print(f"{'Key':<{kw}} {'Type':<12} {'Rows':>10}  {'Route'}")
+        print("-" * (kw + 76))
         for d in datasets:
             known = d["cached"] or (d["type"] == "hosted" and d.get("rows"))  # hosted rows come from the manifest
             status = f"{d['rows']:,}" if known else "not cached"
-            print(f"{d['key']:<20} {d['type']:<12} {status:>8}  {d['route']}")
+            print(f"{d['key']:<{kw}} {d['type']:<12} {status:>10}  {d['route']}")
         n_own = sum(d["route"].startswith("own file") for d in datasets)
-        print("-" * 96)
+        print("-" * (kw + 76))
         print(
             f"{len(datasets)} keys: {len(datasets) - n_own} download from their portal or rmoriedata on first use; "
             f"{n_own} are files you place under $MORIE_DATA_DIR/datasets/ (restricted or your own data)."
@@ -1105,6 +1106,13 @@ def _main_impl() -> int:
             for key in sorted(DATASET_CATALOG):
                 try:
                     frame = load_dataset(key)
+                except MemoryError:
+                    failed += 1
+                    print(
+                        f"  {key:<12} FAILED: out of memory (this table needs more RAM than this machine has)",
+                        file=sys.stderr,
+                    )
+                    continue
                 except Exception as exc:  # noqa: BLE001 - report and continue
                     failed += 1
                     print(f"  {key:<12} FAILED: {type(exc).__name__}: {exc}", file=sys.stderr)
@@ -1217,7 +1225,12 @@ def _main_impl() -> int:
             print(f"  Downloading {key} ({entry['name']}) from CKAN (limit={args.limit})...")
             try:
                 df = fetch_ckan_to_cache(key, limit=args.limit)
-                print(f"    OK: {len(df):,} rows cached")
+                if args.limit and len(df) > args.limit:
+                    df = df.head(args.limit)
+                print(
+                    f"    OK: {len(df):,} rows cached"
+                    + (f" (first {args.limit:,}; --limit)" if args.limit and len(df) == args.limit else "")
+                )
             except Exception as e:
                 print(f"    ERROR: {e}")
         return 0
@@ -1385,6 +1398,11 @@ def _main_impl() -> int:
             print(own)
         print(_local_models_line())
         print("Pick one per call with `morie ask --model NAME ...`, or set MORIE_HOSTED_MODEL / MORIE_OLLAMA_MODEL.")
+        from . import hosted as _hosted
+
+        if getattr(_hosted, "_hosted_failure", None) == "rejected":
+            print("the gateway rejected the stored key; run `morie login` again", file=sys.stderr)
+            return 1
         return 0
 
     if args.command == "provider":

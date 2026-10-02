@@ -123,8 +123,11 @@ def _check_datasets() -> tuple[bool, str]:
             return False, "morie.db not found -- it is fetched, not shipped: run `morie download-bootstrap`"
         size_mb = db_path.stat().st_size // (1024 * 1024)
         ds = list_datasets()
-        cached = [d for d in ds if d["cached"]]
-        return True, f"{len(cached)}/{len(ds)} datasets ({size_mb}MB built-in DB)"
+        catalog = [d for d in ds if d["type"] != "hosted"]
+        hosted = [d for d in ds if d["type"] == "hosted"]
+        cached = [d for d in catalog if d["cached"]]
+        extra = f", {len(hosted)} curated tables at data.rmorie.com" if hosted else ""
+        return True, f"{len(cached)} of {len(catalog)} catalog keys cached ({size_mb}MB store){extra}"
     except Exception as e:
         return False, f"error: {e}"
 

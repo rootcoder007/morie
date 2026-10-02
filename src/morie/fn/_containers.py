@@ -209,6 +209,20 @@ class DescriptiveResult:
     def to_dict(self) -> dict:
         return {"name": self.name, "value": self.value, **self.extra}
 
+    def __getitem__(self, key: str):
+        """``r["value"]``, ``r["name"]`` or any ``extra`` key, like the dict-style results."""
+        if key == "value":
+            return self.value
+        if key == "name":
+            return self.name
+        try:
+            return self.extra[key]
+        except KeyError:
+            raise KeyError(f"{key!r} is not a field of this result (value, name, {', '.join(self.extra)})") from None
+
+    def __float__(self) -> float:
+        return float(self.value)
+
 
 # -- Time series --
 

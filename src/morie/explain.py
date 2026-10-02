@@ -126,9 +126,10 @@ Step-by-step log of what the data-wrangling module did to your input
 """.strip(),
     # ─── descriptive-statistics outputs ─────────────────────────────────
     "binomial_summaries.csv": """
-Survey-weighted binomial summaries (e.g. heavy_drinking_30d prevalence)
-WITHOUT survey weights.  Compare against binomial_summaries_survey_weighted
-to see how much the weights shift the estimates.
+Unweighted binomial summaries (e.g. heavy_drinking_30d prevalence): plain
+sample proportions with Wilson intervals, no survey weights applied. Compare
+against binomial_summaries_survey_weighted to see how much the design
+weights shift the estimates.
 """.strip(),
     "binomial_summaries_survey_weighted.csv": """
 Survey-weighted binomial summaries WITH the CPADS weighting variable

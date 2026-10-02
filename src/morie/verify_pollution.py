@@ -87,7 +87,7 @@ def _check_assumptions(
     _add(
         "exposure > reference",
         exposure_mean > reference,
-        f"mean {exposure_mean} vs ref {reference} -- CRF is monotonic only "
+        f"mean {exposure_mean:.6g} vs ref {reference:.6g} -- CRF is monotonic only "
         "when exposure exceeds the counterfactual floor.",
     )
     _add(
@@ -278,9 +278,22 @@ def _dump(obj: Any) -> Any:
     return obj
 
 
+def _round_floats(obj: Any, digits: int = 10) -> Any:
+    """Ten significant digits: 5.8 prints as 5.8, not 5.7999999999999998; arrays become lists."""
+    if hasattr(obj, "tolist") and not isinstance(obj, (str, bytes)):
+        return _round_floats(obj.tolist(), digits)
+    if isinstance(obj, float):
+        return float(f"{obj:.{digits}g}") if obj == obj and obj not in (float("inf"), float("-inf")) else obj
+    if isinstance(obj, dict):
+        return {k: _round_floats(v, digits) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_round_floats(v, digits) for v in obj]
+    return obj
+
+
 def _emit(report: dict[str, Any], *, as_json: bool) -> None:
     if as_json:
-        print(json.dumps(report, indent=2, default=str))
+        print(json.dumps(_round_floats(report), indent=2, default=str))
         return
 
     print("=" * 66)

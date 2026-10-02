@@ -73,6 +73,50 @@ class SIUError(RuntimeError):
 
 
 def list_reports(*, timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = DEFAULT_USER_AGENT) -> pd.DataFrame:
+    """One row per reviewed SIU director's report, from the rmoriedata corpus.
+
+    The SIU site has rendered its case list with JavaScript since 2025, so
+    scraping the index page yields nothing; the reviewed corpus (fetched
+    once from CRAN, then cached) is the index. Columns: ``case_number``,
+    ``drid``, ``source_url_report``, ``date_of_incident_iso``,
+    ``date_of_director_decision_iso``.
+    """
+    from morie.data import load_rmoriedata
+
+    corpus = load_rmoriedata("siu_directors_reports")
+    cols = [
+        c
+        for c in ("case_number", "drid", "source_url_report", "date_of_incident_iso", "date_of_director_decision_iso")
+        if c in corpus.columns
+    ]
+    return corpus[cols]
+
+
+def _list_reports_legacy_scrape(
+    *, timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = DEFAULT_USER_AGENT
+) -> pd.DataFrame:
+    """One row per reviewed SIU director's report, from the rmoriedata corpus.
+
+    The SIU site has rendered its case list with JavaScript since 2025, so
+    scraping the index page yields nothing; the reviewed corpus (fetched
+    once from CRAN, then cached) is the index. Columns: ``case_number``,
+    ``drid``, ``source_url_report``, ``date_of_incident_iso``,
+    ``date_of_director_decision_iso``.
+    """
+    from morie.data import load_rmoriedata
+
+    corpus = load_rmoriedata("siu_directors_reports")
+    cols = [
+        c
+        for c in ("case_number", "drid", "source_url_report", "date_of_incident_iso", "date_of_director_decision_iso")
+        if c in corpus.columns
+    ]
+    return corpus[cols]
+
+
+def _list_reports_legacy_scrape(
+    *, timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = DEFAULT_USER_AGENT
+) -> pd.DataFrame:
     """Fetch the SIU director's-reports index and parse it.
 
     **Known limitation (v0.5.0):** the SIU re-launched their website

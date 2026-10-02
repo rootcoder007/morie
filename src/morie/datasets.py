@@ -183,12 +183,12 @@ def cpads() -> pd.DataFrame:
 
 
 def siu_director_reports() -> pd.DataFrame:
-    """SIU director's-reports index.
+    """SIU director's-reports index: one row per reviewed report.
 
-    NOTE: the SIU re-launched their site in 2025 with a JS-rendered
-    case list; this function returns the legacy-pattern PDF anchors
-    only, which may be empty.  Use :func:`siu_report_text` with a
-    known PDF URL.
+    The SIU site renders its case list with JavaScript since 2025, so the
+    index comes from the reviewed corpus shipped by rmoriedata (5,157
+    reports): case number, report id, source URL and the key dates. Pass a
+    report URL to :func:`siu_report_text` for the full text.
     """
     from .ingest.siu import list_reports
 
@@ -511,8 +511,9 @@ def ckan_package(portal: str, package_id: str) -> dict[str, pd.DataFrame]:
 # ----------------------------------------------------------------------
 
 
-def a2aj_search(query: str, *, doc_type: str = "cases", dataset: str | list[str] | None = None,
-                size: int = 10) -> pd.DataFrame:
+def a2aj_search(
+    query: str, *, doc_type: str = "cases", dataset: str | list[str] | None = None, size: int = 10
+) -> pd.DataFrame:
     """Search A2AJ Canadian Legal Data (api.a2aj.ca); at most 50 hits.
 
     ``dataset`` restricts to court codes such as ``"SCC"`` or
