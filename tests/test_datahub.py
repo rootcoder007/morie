@@ -85,7 +85,7 @@ def test_manifest_is_cached_and_download_is_cached_in_the_store(hub, monkeypatch
     assert sum(u.endswith(".csv.gz") for u, _ in hub) == 1  # served from the dataset store the second time
     rows = {d["key"]: d for d in data.list_datasets(db_path=db)}
     hubrow = rows["chicago_crime/incidents"]
-    assert hubrow["route"].startswith("data.rmorie.com") and hubrow["cached"] and hubrow["rows"] == 3
+    assert hubrow["route"] == "data.rmorie.com (your MORIE key)" and hubrow["cached"] and hubrow["rows"] == 3
     assert "ocp21" in rows
 
 

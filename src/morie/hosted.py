@@ -144,8 +144,10 @@ def hosted_problem_line(cli: str = "morie") -> str:
     """One sentence for a logged-in user whose probe failed, with the remedy."""
     why = hosted_failure()
     if why == "rejected":
-        return (f"logged in, but the gateway rejected the key (it was reset or replaced "
-                f"by a newer sign-in): run `{cli} login` again")
+        return (
+            f"logged in, but the gateway rejected the key (it was reset or replaced "
+            f"by a newer sign-in): run `{cli} login` again"
+        )
     if why in (None, "network"):
         return "logged in, gateway not reachable from this machine (network)"
     return f"logged in, gateway answered {why}: try again, or `{cli} login`"
@@ -354,8 +356,11 @@ def provider_set(base_url: str, key: str, model: str | None = None, echo=_say) -
     else:
         data.pop("api_model", None)
     path = write_credentials(data)
-    echo(f"Endpoint attached: {base_url}" + (f" (model {data.get('api_model')})" if data.get("api_model") else "")
-         + f"; stored in {path}")
+    echo(
+        f"Endpoint attached: {base_url}"
+        + (f" (model {data.get('api_model')})" if data.get("api_model") else "")
+        + f"; stored in {path}"
+    )
     return {k: data.get(k) for k in _PROVIDER_KEYS}
 
 
@@ -366,7 +371,9 @@ def provider_show(echo=_say) -> dict:
         echo("No endpoint attached. Attach one with: morie provider set --base-url URL --key KEY [--model NAME]")
     else:
         key = str(data.get("api_key", ""))
-        echo(f"Endpoint: {base}\nModel:    {model or 'server default'}\nKey:      {key[:4]}...{key[-3:]} ({len(key)} chars)")
+        echo(
+            f"Endpoint: {base}\nModel:    {model or 'server default'}\nKey:      stored ({len(key)} characters; never printed)"
+        )
     return {k: data.get(k) for k in _PROVIDER_KEYS}
 
 
@@ -392,4 +399,3 @@ def provider_line() -> str | None:
     if not base or not _api_key():
         return None
     return f"Your endpoint ({base}): model {_api_model()}"
-
