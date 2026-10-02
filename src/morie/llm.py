@@ -774,6 +774,7 @@ def _request_completion(
     api_key: str | None = None,
     stream: bool = False,
     timeout: float = _REQUEST_TIMEOUT,
+    max_tokens: int = 4096,
 ) -> httpx.Response:
     """Send a POST to ``/v1/chat/completions`` and return the raw response.
 
@@ -812,7 +813,7 @@ def _request_completion(
 
     # reasoning models (the hosted default) spend tokens thinking before answering: give them room,
     # or the answer comes back as an empty "content" with the budget gone
-    payload["max_tokens"] = 4096
+    payload["max_tokens"] = max_tokens
     if "localhost" in base_url or "127.0.0.1" in base_url:
         timeout = max(timeout, 300.0)
 
@@ -831,7 +832,38 @@ def _extract_text(response: httpx.Response) -> str:
     if not choices:
         logger.warning("LLM response contained no choices: %s", data)
         return ""
-    return choices[0].get("message", {}).get("content", "")
+    return choices[0].get("message", {}).get("content", "") or ""
+
+
+class EmptyAnswer(Exception):
+    """The provider answered with no text, twice: the chain moves on to the next provider."""
+
+
+def _completion_text(
+    base_url: str,
+    model: str,
+    messages: list[dict[str, str]],
+    *,
+    api_key: str | None,
+    timeout: float,
+) -> str:
+    """One non-streaming completion, with one retry when the answer comes back empty.
+
+    A thinking model sometimes spends its whole budget on reasoning and returns
+    an empty ``content``; the retry gives it four times the room. An answer that
+    is still empty is reported as :class:`EmptyAnswer` rather than returned as
+    silence, so the caller's provider chain can try the next provider.
+    """
+    for budget in (4096, 16384):
+        resp = _request_completion(
+            base_url, model, messages, api_key=api_key, stream=False, timeout=timeout, max_tokens=budget
+        )
+        resp.raise_for_status()
+        text = _extract_text(resp)
+        if text.strip():
+            return text
+        logger.warning("Empty answer from %s (%s) with max_tokens=%d; retrying", base_url, model, budget)
+    raise EmptyAnswer(f"{model} at {base_url} answered with no text")
 
 
 def _iter_stream(response: httpx.Response) -> Iterator[str]:
@@ -1176,18 +1208,15 @@ def ask(
                     timeout=timeout,
                 )
             else:
-                resp = _request_completion(
+                return _completion_text(
                     base_url,
                     req_model,
                     messages,
                     api_key=api_key,
-                    stream=False,
                     timeout=timeout,
                 )
-                resp.raise_for_status()
-                return _extract_text(resp)
 
-        except (httpx.HTTPError, httpx.TimeoutException, OSError, KeyError) as exc:
+        except (httpx.HTTPError, httpx.TimeoutException, OSError, KeyError, EmptyAnswer) as exc:
             last_error = exc
             logger.warning(
                 "Provider at %s failed: %s. Trying next provider.",
@@ -1299,17 +1328,14 @@ def ask_multi(
                     timeout=timeout,
                 )
             else:
-                resp = _request_completion(
+                return _completion_text(
                     base_url,
                     req_model,
                     messages,
                     api_key=api_key,
-                    stream=False,
                     timeout=timeout,
                 )
-                resp.raise_for_status()
-                return _extract_text(resp)
-        except (httpx.HTTPError, httpx.TimeoutException, OSError, KeyError) as exc:
+        except (httpx.HTTPError, httpx.TimeoutException, OSError, KeyError, EmptyAnswer) as exc:
             logger.warning("Provider at %s failed: %s", base_url, exc)
             continue
 
