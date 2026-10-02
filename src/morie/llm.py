@@ -193,9 +193,11 @@ def _api_key() -> str | None:
 
 def _api_model() -> str:
     """The model for that endpoint: MORIE_API_MODEL, else the attached endpoint's model, else the default."""
-    return (os.environ.get("MORIE_API_MODEL", "").strip()
-            or str(_stored_provider().get("api_model", "")).strip()
-            or DEFAULT_API_MODEL)
+    return (
+        os.environ.get("MORIE_API_MODEL", "").strip()
+        or str(_stored_provider().get("api_model", "")).strip()
+        or DEFAULT_API_MODEL
+    )
 
 
 def _openai_key() -> str | None:
@@ -808,8 +810,10 @@ def _request_completion(
         "stream": stream,
     }
 
+    # reasoning models (the hosted default) spend tokens thinking before answering: give them room,
+    # or the answer comes back as an empty "content" with the budget gone
+    payload["max_tokens"] = 4096
     if "localhost" in base_url or "127.0.0.1" in base_url:
-        payload["max_tokens"] = 4096
         timeout = max(timeout, 300.0)
 
     return httpx.post(
@@ -902,8 +906,10 @@ def _stream_completion(
         "stream": True,
     }
 
+    # reasoning models (the hosted default) spend tokens thinking before answering: give them room,
+    # or the answer comes back as an empty "content" with the budget gone
+    payload["max_tokens"] = 4096
     if "localhost" in base_url or "127.0.0.1" in base_url:
-        payload["max_tokens"] = 4096
         timeout = max(timeout, 300.0)
 
     with httpx.stream("POST", url, json=payload, headers=headers, timeout=timeout) as resp:

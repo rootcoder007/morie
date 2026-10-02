@@ -1083,7 +1083,7 @@ def _main_impl() -> int:
         content = content.replace("[MODULE_NAME]", args.module)
         args.out = Path(args.out)
         args.out.parent.mkdir(parents=True, exist_ok=True)
-        args.out.write_text(content)
+        args.out.write_text(content, encoding="utf-8")
         print(f"wrote {args.out}  ({len(content):,} chars)", file=sys.stderr)
         return 0
 

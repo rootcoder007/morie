@@ -152,7 +152,10 @@ def _answered(r, verb: str) -> None:
     """With a key: a model answered (exit 0). Without: the local fallback text, exit 1 by design. Never empty."""
     check(r.stdout.strip(), f"{verb} printed nothing: " + r.stderr[-300:])
     if KEY:
-        check(r.returncode == 0, f"{verb} with a key did not get a model answer: " + r.stderr[-300:])
+        check(
+            r.returncode == 0,
+            f"{verb} with a key did not get a model answer: stdout={r.stdout[-200:]!r} stderr={r.stderr[-300:]!r}",
+        )
     else:
         check(
             r.returncode == 1 and "fallback" in r.stderr,
@@ -335,6 +338,9 @@ def c_pull(s: Smoke):
     check(r.returncode == 0, "pull ocp21 failed: " + r.stderr[-400:])
     rows = _lines(s.work / "cpads.csv") - 1
     check(rows > 40000, f"CPADS PUMF has {rows} rows; expected ~40,931")
+    if not shutil.which("Rscript"):
+        RESULTS.append(("pull -> module", "SKIP", "no Rscript on this runner (the modules are R-backed)"))
+        return
     r = s.run("run-module", "descriptive-statistics", "--output-dir", "out1")
     check(r.returncode == 0, r.stderr[-400:])
     check("SYNTHETIC" not in r.stderr.upper(), "after the pull the module still used the synthetic frame")
@@ -577,6 +583,12 @@ def c_exec(s: Smoke):
 @case("selftest")
 def c_selftest(s: Smoke):
     r = s.run("selftest", timeout=900)
+    if not shutil.which("Rscript"):
+        # the R-backed checks cannot pass here; every other row must
+        rows = [ln for ln in r.stdout.splitlines() if ln.strip().startswith(("FAIL", "OK", "SKIP"))]
+        bad = [ln for ln in rows if ln.strip().startswith("FAIL") and "R " not in ln and "module" not in ln.lower()]
+        check(not bad, "selftest failed a check that does not need R: " + "\n".join(bad)[-400:])
+        return
     check(r.returncode == 0 and "FAILED" not in r.stdout, r.stdout[-600:])
 
 
