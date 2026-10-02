@@ -1344,7 +1344,12 @@ def _download_file(url: str, dest: Path, timeout: int = 60, label: str | None = 
     def _stream(src: str) -> None:
         # open.canada.ca's front end rejects a bare "Mozilla/5.0" agent; a dropped transfer is resumed
         download_url(
-            src, dest, label or dest.name, timeout=timeout, headers={"User-Agent": "morie/1 (+https://rmorie.com)"}
+            src,
+            dest,
+            label or dest.name,
+            timeout=timeout,
+            headers={"User-Agent": "morie/1 (+https://rmorie.com)"},
+            opener=lambda req, timeout: urlopen(req, timeout=timeout),
         )
 
     try:
@@ -1460,7 +1465,13 @@ def _rmoriedata_extdata(timeout: int = 120) -> Path:
     logger.info("Fetching rmoriedata %s from CRAN (%s)...", RMORIEDATA_VERSION, RMORIEDATA_TARBALL)
     with tempfile.TemporaryDirectory() as tmp:
         tgz = Path(tmp) / "rmoriedata.tar.gz"
-        download_url(RMORIEDATA_TARBALL, tgz, f"rmoriedata {RMORIEDATA_VERSION} (CRAN)", timeout=timeout)
+        download_url(
+            RMORIEDATA_TARBALL,
+            tgz,
+            f"rmoriedata {RMORIEDATA_VERSION} (CRAN)",
+            timeout=timeout,
+            opener=lambda req, timeout: urlopen(req, timeout=timeout),
+        )
         with tarfile.open(tgz) as tf:
             members = [m for m in tf.getmembers() if "/inst/extdata/" in m.name and not m.name.endswith("/")]
             for m in members:

@@ -3410,7 +3410,7 @@ File,Line,Status,Version,Context
 ./src/morie/data/equation_index.json,998,STALE_OR_DEP,1.3.1,"reference: Schabenberger Ch 1; Sec 1.3.1;"
 ./src/morie/data/first-paper.md,24,STALE_OR_DEP,0.5.0,"Analyses were conducted in `morie` v0.5.0 [@Ruhela2026MoriePy; @Ruhela2026MorieR]; a multi-domain scientific computing toolkit for observational inference. The Multilevel Reconciliation Methodology (MRM) framework backing morie's primary modules is documented separately [@Ruhela2026MRM]."
 ./src/morie/data/first-paper.md,47,STALE_OR_DEP,0.5.0,"Reproducibility: outputs are reproducible by running `morie run-module [MODULE] --output-dir <dir>` on morie v0.5.0; the analysis CSVs are available in our supplementary materials."
-./src/morie/data.py,1440,STALE_OR_DEP,0.3.3,"RMORIEDATA_VERSION = 0.3.3"
+./src/morie/data.py,1445,STALE_OR_DEP,0.3.3,"RMORIEDATA_VERSION = 0.3.3"
 ./src/morie/dataset.py,21,STALE_OR_DEP,103.2684.677,"*Science*; 103(2684); 677--680. https://doi.org/10.1126/science.103.2684.677"
 ./src/morie/doctor.py,47,STALE_OR_DEP,4.4.1,"# R scripting front-end version 4.4.1 (2024-06-14)"
 ./src/morie/doctor.py,157,STALE_OR_DEP,0.0.0,"installed = getattr(morie; __version__; 0.0.0+unknown)"
