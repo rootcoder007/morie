@@ -84,9 +84,14 @@ def dml_plr(
         fold_ids[perm[s:e]] = k
 
     def _ridge(Xtr, ytr, Xte, lam=1.0):
-        p = Xtr.shape[1]
-        beta = np.linalg.solve(Xtr.T @ Xtr + lam * np.eye(p), Xtr.T @ ytr)
-        return Xte @ beta
+        # an unpenalised intercept: without it the residuals are not centred and the estimate is biased
+        Xtr1 = np.column_stack([np.ones(Xtr.shape[0]), Xtr])
+        Xte1 = np.column_stack([np.ones(Xte.shape[0]), Xte])
+        p = Xtr1.shape[1]
+        pen = lam * np.eye(p)
+        pen[0, 0] = 0.0
+        beta = np.linalg.solve(Xtr1.T @ Xtr1 + pen, Xtr1.T @ ytr)
+        return Xte1 @ beta
 
     g_hat = np.zeros(n)
     m_hat = np.zeros(n)

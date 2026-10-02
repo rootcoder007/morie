@@ -167,16 +167,12 @@ def _check_morie_version() -> tuple[bool, str]:
 # ---------------------------------------------------------------------------
 
 _REQUIRED_IMPORTS = [
-    "pandas",
-    "numpy",
-    "scipy",
-    "sklearn",
-    "statsmodels",
     "httpx",
     "rich",
 ]
 
-_OPTIONAL_IMPORTS: list[str] = []  # everything is native now
+# morie's core is native: these only speed up or extend a few paths and are reported, not required
+_OPTIONAL_IMPORTS: list[str] = ["pandas", "numpy", "scipy", "sklearn", "statsmodels"]
 
 
 def run_checks() -> dict[str, Any]:

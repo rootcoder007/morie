@@ -406,7 +406,7 @@ ho = md.tps_homicide(year=2024)
 cpads = md.cpads()                       # real PUMF if available, else synth
 
 # SIU director's reports (text-mining)
-text   = md.siu_report_text("https://www.siu.on.ca/.../22-OFD-001.pdf")
+text   = md.siu_report_text(offline=True)   # a bundled sample report; pass a report URL for a live one
 fields = md.siu_report_fields(text)
 print(fields["conclusion"])
 

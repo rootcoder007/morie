@@ -165,7 +165,19 @@ def run_update(yes: bool = False) -> int:
         return 0
 
     print(f"A newer version is available: {latest} (you have {installed_version}).")
-    cmd = [sys.executable, "-m", "pip", "install", "-U", "morie"]
+    import importlib.util
+    import shutil
+
+    if importlib.util.find_spec("pip") is not None:
+        cmd = [sys.executable, "-m", "pip", "install", "-U", "morie"]
+    elif shutil.which("uv"):
+        cmd = ["uv", "pip", "install", "--python", sys.executable, "-U", "morie"]
+    else:
+        print(
+            "this interpreter has no pip and uv is not on PATH; re-run the installer "
+            "(curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash) or add pip (python -m ensurepip)."
+        )
+        return 1
 
     if not yes:
         try:

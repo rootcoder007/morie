@@ -1896,11 +1896,8 @@ class PolyglotEngine:
             ("powershell", "pwsh"),
             ("awk", "awk"),
         ]:
-            try:
-                subprocess.run([cmd, "--version"], capture_output=True, timeout=5)
-                result[name] = True
-            except (FileNotFoundError, subprocess.TimeoutExpired):
-                result[name] = False
+            # on PATH or not: running `--version` would trigger installer shims (juliaup, rustup)
+            result[name] = __import__("shutil").which(cmd) is not None
         result["sql"] = True
         result["rmd"] = result.get("r", False)
         return result

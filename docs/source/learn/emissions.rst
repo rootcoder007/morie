@@ -44,12 +44,18 @@ From code
 .. code-block:: python
 
    from morie.emissions import EmissionsTracker
+   from morie.modules import run_module
+
+   def run_everything():
+       run_module("power-design", output_dir="out/power-design")
+
    with EmissionsTracker(project_name="my-analysis", output_dir="out/emissions") as t:
        run_everything()
    print(t.capsule)        # {'manifest': ..., 'bundle': ..., 'signed': True/False}
 
 .. code-block:: r
 
+   run_everything <- function() rmorie::morie_run_morie_module("power-design", output_dir = "out/power-design")
    r <- rmorie::morie_emissions_track(run_everything(), project_name = "my-analysis",
                                       output_dir = "out/emissions")
    r$emissions_kg; r$capsule

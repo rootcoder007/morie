@@ -8,16 +8,13 @@ consistent if either the propensity score model or outcome model is correct.
 
 from __future__ import annotations
 
+import math as _math
 from typing import Any
+
+from morie.fn.ps_fit import _ps_design, _ps_irls_beta, _ps_solve, compute_propensity_scores
 
 from . import _array_core as np
 from . import _frame_core as pd
-
-
-
-import math as _math
-
-from morie.fn.ps_fit import _ps_design, _ps_irls_beta, _ps_solve, compute_propensity_scores
 
 _PS_EPS = 1e-6
 
@@ -59,8 +56,7 @@ def _trim_ps(ps, trim, trim_type="value"):
             hi = _quantile7(v, hi)
         ps = np.asarray([min(max(float(u), lo), hi) for u in ps], dtype=float)
     # numerical guard: the weights must stay finite whatever was asked
-    return np.asarray([min(max(float(u), _PS_EPS), 1.0 - _PS_EPS)
-                       for u in ps], dtype=float)
+    return np.asarray([min(max(float(u), _PS_EPS), 1.0 - _PS_EPS) for u in ps], dtype=float)
 
 
 def _quantile7(sorted_v, p):
@@ -87,8 +83,7 @@ def _trim_weights(w, weight_trim=None, side="upper"):
         return w
     if side not in ("upper", "both"):
         raise ValueError("weight_trim_side must be 'upper' or 'both'")
-    q = [float(v) for v in (weight_trim if hasattr(weight_trim, "__len__")
-                            else (0.0, weight_trim))]
+    q = [float(v) for v in (weight_trim if hasattr(weight_trim, "__len__") else (0.0, weight_trim))]
     if len(q) == 1:
         q = [0.0, q[0]]
     lo, hi = q[0], q[1]
@@ -104,8 +99,7 @@ def _trim_weights(w, weight_trim=None, side="upper"):
 def _om_ols(X, y):
     """Least squares by the normal equations; shared with the R arm."""
     p = len(X[0])
-    A = [[sum(X[i][a] * X[i][b] for i in range(len(X))) for b in range(p)]
-         for a in range(p)]
+    A = [[sum(X[i][a] * X[i][b] for i in range(len(X))) for b in range(p)] for a in range(p)]
     rhs = [sum(X[i][a] * y[i] for i in range(len(X))) for a in range(p)]
     return _ps_solve(A, rhs)
 
@@ -133,7 +127,7 @@ def estimate_aipw(
     treatment: str = "cannabis_any_use",
     outcome: str = "heavy_drinking_30d",
     covariates: list[str] | None = None,
-    outcome_model: str = "logistic",
+    outcome_model: str = "auto",
     trim: tuple[float, float] | None = (0.01, 0.99),
     trim_type: str = "value",
     ps_model: str = "mle",
@@ -233,6 +227,17 @@ def estimate_aipw(
     nonignorable drop-out using semiparametric nonresponse models. *JASA*,
     94(448), 1096--1120.
     """
+    if outcome_model == "auto":
+        # binary outcome: logistic; anything else: linear (the R arm makes the same choice)
+        _yv = [float(v) for v in data[outcome]]
+        outcome_model = "logistic" if set(_yv) <= {0.0, 1.0} else "linear"
+    if len(data) < 4:
+        raise ValueError("at least 4 rows are needed")
+    _tv = {float(v) for v in data[treatment]}
+    if not _tv <= {0.0, 1.0}:
+        raise ValueError("treatment must be coded 0/1")
+    if len(_tv) < 2:
+        raise ValueError("both treated and control units are needed")
     covariates = covariates or [
         "age_group",
         "gender",
@@ -247,10 +252,9 @@ def estimate_aipw(
     y = frame[outcome].values.astype(float)
 
     # -- Propensity scores -------------------------------------------------------
-    ps = compute_propensity_scores(frame, treatment=treatment,
-                                   covariates=covariates,
-                                   ps_model=ps_model,
-                                   ridge_lambda=ridge_lambda).values
+    ps = compute_propensity_scores(
+        frame, treatment=treatment, covariates=covariates, ps_model=ps_model, ridge_lambda=ridge_lambda
+    ).values
     ps = _trim_ps(ps, trim, trim_type)
 
     # -- Outcome model -----------------------------------------------------------

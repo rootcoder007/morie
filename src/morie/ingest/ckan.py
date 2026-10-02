@@ -259,7 +259,7 @@ def cli(args: list[str]) -> int:
     )
     p.add_argument("--portal", required=True, help="Base URL of the CKAN portal, e.g. https://open.canada.ca/data")
     p.add_argument("--package", help="Package id / slug to download every CSV resource of")
-    p.add_argument("--search", help="Free-text search; prints matching packages as JSON to stdout")
+    p.add_argument("--search", help="Free-text search; prints matching packages as CSV to stdout")
     p.add_argument("--rows", type=int, default=20, help="Max search results to return")
     p.add_argument("--out", type=Path, default=Path("./ckan-out"), help="Output directory for downloaded CSVs")
     ns = p.parse_args(args)

@@ -1381,7 +1381,7 @@ def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -
         logger.info("Downloading %s for %s", url, dataset_key)
         # open.canada.ca's front end rejects a bare "Mozilla/5.0" agent
         tmp = dest.with_suffix(dest.suffix + ".part")
-        _download_file(url, tmp, timeout)
+        _download_file(url, tmp, timeout, label=dataset_key)
         tmp.replace(dest)
     if not zipfile.is_zipfile(dest):
         return pd.read_csv(dest, low_memory=False)
@@ -1741,6 +1741,15 @@ def load_dataset(
         cached = None
     if cached is not None:
         logger.info("Loaded %s from cache (%d rows)", matched, len(cached))
+        if matched == "ocp21" and has_raw_cpads_columns(cached):
+            # the first load cached the canonical frame alongside the raw one: same shape every call
+            try:
+                canonical = cache_load("cpads_canonical", db_path)
+            except Exception:  # noqa: BLE001
+                canonical = None
+            if canonical is not None and len(canonical) == len(cached):
+                return canonical
+            return canonicalize_cpads_frame(cached)
         return cached
 
     # 2b. Fetcher dispatch (NAPS, OpenAQ, Earth Engine, ArcGIS).

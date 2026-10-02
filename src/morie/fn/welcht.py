@@ -26,6 +26,16 @@ def welcht(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
 
     a = np.asarray(x, dtype=float)
     b = np.asarray(y, dtype=float)
+    for name, v in (("x", a), ("y", b)):
+        if len(v) < 2:
+            raise ValueError(f"{name} must have at least 2 observations")
+    if float(np.var(a)) == 0.0 and float(np.var(b)) == 0.0:
+        raise ValueError("both samples are constant; the Welch statistic is undefined")
+    for name, v in (("x", a), ("y", b)):
+        if len(v) < 2:
+            raise ValueError(f"{name} must have at least 2 observations")
+    if float(np.var(a)) == 0.0 and float(np.var(b)) == 0.0:
+        raise ValueError("both samples are constant; the Welch statistic is undefined")
     res = ttest_ind(a, b, equal_var=False)
 
     warnings = []

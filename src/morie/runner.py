@@ -7,6 +7,7 @@ querying the LLM agent, and checking environment health.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import sys
 from pathlib import Path
 
@@ -715,7 +716,8 @@ def _llm_exit_code(payload, chunks=None) -> int:
     call could not tell an answer from "no backend reachable".
     """
     if isinstance(payload, dict) and payload.get("mode") == "local_fallback":
-        print("no LLM backend was reachable; this is the local fallback text", file=sys.stderr)
+        sys.stdout.flush()
+        print("\nno LLM backend was reachable; this is the local fallback text", file=sys.stderr)
         return 1
     if isinstance(payload, dict) and payload.get("failed"):
         print("the LLM backend request failed", file=sys.stderr)
@@ -759,6 +761,9 @@ def main() -> int:
         return 130
     except SystemExit:
         raise
+    except PermissionError as exc:
+        print(f"morie: cannot write {exc.filename or 'here'}: permission denied", file=sys.stderr)
+        return 1
     except BaseException as exc:  # noqa: BLE001
         hint = _friendly_error(exc)
         if hint is not None:
@@ -871,14 +876,17 @@ def _main_impl() -> int:
         return 0
 
     if args.command == "run-module":
+        out_dir = Path(args.output_dir) if args.output_dir else Path("morie-output") / args.module
         outputs = run_module(
             args.module,
             cpads_csv=args.cpads_csv,
             dataset_key=getattr(args, "dataset", None),
-            output_dir=args.output_dir,
+            output_dir=out_dir,
         )
         print(f"Completed module: {args.module}")
         print("Generated tables:", ", ".join(outputs.keys()))
+        n_files = len(list(out_dir.iterdir())) if out_dir.is_dir() else 0
+        print(f"Written to {out_dir} ({n_files} files)")
         return 0
 
     if args.command == "run-modules":
@@ -920,10 +928,11 @@ def _main_impl() -> int:
                 answered = _drain_stream(agent.chat_stream(args.question)) > 0
             else:
                 resp = agent.chat(args.question)
-                print(resp.text)
                 answered = bool(str(resp.text or "").strip()) and not getattr(resp, "failed", False)
-                if resp.tool_calls_made:
-                    print(f"\n[{len(resp.tool_calls_made)} tool calls in {resp.iterations} iterations]")
+                if answered:  # a failed backend's text ("LLM request failed ...") is not an answer
+                    print(resp.text)
+                    if resp.tool_calls_made:
+                        print(f"\n[{len(resp.tool_calls_made)} tool calls in {resp.iterations} iterations]")
             agent.close()
             if not answered:
                 print("the local agent produced no output; answering through the provider chain", file=sys.stderr)
@@ -1012,7 +1021,17 @@ def _main_impl() -> int:
                 f"{n_hub} curated tables at data.rmorie.com (db/table keys), opened by your MORIE key: morie pull KEY"
             )
         else:
-            print("Curated tables at data.rmorie.com appear here after `morie login` (they need the MORIE key).")
+            from .datahub import hosted_key
+
+            if hosted_key():
+                print("data.rmorie.com was not reachable just now; its tables appear once a fetch succeeds.")
+            else:
+                from .datahub import hosted_key
+
+            if hosted_key():
+                print("data.rmorie.com was not reachable just now; its tables appear once a fetch succeeds.")
+            else:
+                print("Curated tables at data.rmorie.com appear here after `morie login` (they need the MORIE key).")
         return 0
 
     if args.command == "verify-pollution":
@@ -1131,10 +1150,21 @@ def _main_impl() -> int:
             elif args.dataset == "siu-index":
                 df = md.siu_director_reports()
             else:
-                print(f"unknown dataset {args.dataset!r}", file=sys.stderr)
+                import difflib
+
+                near = difflib.get_close_matches(args.dataset, list(DATASET_CATALOG), n=5, cutoff=0.5)
+                near += [k for k in DATASET_CATALOG if k.startswith(args.dataset[:3]) and k not in near][:5]
+                hint = f"; did you mean: {', '.join(near)}" if near else " (morie list-datasets shows every key)"
+                print(f"unknown dataset {args.dataset!r}{hint}", file=sys.stderr)
                 return 2
         except Exception as exc:  # noqa: BLE001 — surface origin-API errors plainly
             print(f"pull failed: {type(exc).__name__}: {exc}", file=sys.stderr)
+            return 1
+        if len(df) == 0:
+            print(
+                f"pull {args.dataset}: the source returned no rows (the portal may have changed; nothing written)",
+                file=sys.stderr,
+            )
             return 1
         if args.out:
             args.out = Path(args.out)
@@ -1196,6 +1226,17 @@ def _main_impl() -> int:
         import getpass
         from pathlib import Path as _CryptoPath
 
+        def _crypto_password() -> str | None:
+            try:
+                return getpass.getpass("Keystore password: ")
+            except (EOFError, OSError):
+                print(
+                    "a keystore password is needed: run this in a terminal, or use file keys "
+                    "(keygen --output DIR; encrypt --to DIR/NAME.moriepk; decrypt --key DIR/NAME.moriesk)",
+                    file=sys.stderr,
+                )
+                return None
+
         if args.crypto_command == "keygen":
             from .crypto.hybrid import keygen as _hybrid_keygen
             from .crypto.keystore import create_keystore as _ks_create
@@ -1209,10 +1250,14 @@ def _main_impl() -> int:
                 sk_path = out_dir / f"{args.name}.moriesk"
                 pk_path.write_bytes(pk)
                 sk_path.write_bytes(sk)
+                with contextlib.suppress(OSError):
+                    sk_path.chmod(0o600)  # a secret key is owner-only
                 print(f"Public key:  {pk_path}")
                 print(f"Secret key:  {sk_path}")
             else:
-                pw = getpass.getpass("Keystore password: ")
+                pw = _crypto_password()
+                if pw is None:
+                    return 1
                 ks_path = str(_CryptoPath("~/.morie/keys/keystore.json").expanduser())
                 if not _CryptoPath(ks_path).exists():
                     _ks_create(pw, path=ks_path)
@@ -1235,8 +1280,14 @@ def _main_impl() -> int:
             else:
                 from .crypto.keystore import load_keypair as _ks_load
 
-                pw = getpass.getpass("Keystore password: ")
-                pk, _ = _ks_load(args.recipient, pw)
+                pw = _crypto_password()
+                if pw is None:
+                    return 1
+                try:
+                    pk, _ = _ks_load(args.recipient, pw)
+                except ValueError:
+                    print("wrong keystore password, or the keystore is corrupted", file=sys.stderr)
+                    return 1
             ct = _h_enc(src.read_bytes(), pk)
             out = src.with_suffix(src.suffix + ".morieenc")
             out.write_bytes(ct)
@@ -1251,9 +1302,23 @@ def _main_impl() -> int:
             if not src.exists():
                 print(f"File not found: {src}")
                 return 1
-            pw = getpass.getpass("Keystore password: ")
-            _, sk = _ks_load2(args.key, pw)
-            plaintext = _h_dec(src.read_bytes(), sk)
+            key_file = _CryptoPath(args.key)
+            if key_file.is_file():  # a secret key written by `keygen --output DIR`
+                sk = key_file.read_bytes()
+            else:
+                pw = _crypto_password()
+                if pw is None:
+                    return 1
+                try:
+                    _, sk = _ks_load2(args.key, pw)
+                except ValueError:
+                    print("wrong keystore password, or the keystore is corrupted", file=sys.stderr)
+                    return 1
+            try:
+                plaintext = _h_dec(src.read_bytes(), sk)
+            except (ValueError, KeyError) as exc:
+                print(f"decrypt failed: {exc} (wrong key, or the file is not a morie ciphertext)", file=sys.stderr)
+                return 1
             out_name = str(src).replace(".morieenc", "")
             if out_name == str(src):
                 out_name = str(src) + ".dec"
@@ -1363,7 +1428,19 @@ def _main_impl() -> int:
     if args.command == "profile-dataset":
         from .dataset import load_dataset, profile_dataset, suggest_analysis_plan
 
-        df = load_dataset(args.csv)
+        try:
+            df = load_dataset(args.csv)
+        except FileNotFoundError:
+            print(f"file not found: {args.csv}", file=sys.stderr)
+            return 1
+        except UnicodeDecodeError:
+            print(f"{args.csv} is not UTF-8 text; re-save it as UTF-8 (iconv -f latin1 -t utf-8)", file=sys.stderr)
+            return 1
+        except (IndexError, ValueError) as exc:
+            print(f"{args.csv} has no data rows ({exc})", file=sys.stderr)
+            return 1
+        if len(df.columns) != len(set(df.columns)):
+            print("note: duplicate column names in the header; only the first of each is kept", file=sys.stderr)
         profile = profile_dataset(
             df,
             hint_treatment=args.treatment,

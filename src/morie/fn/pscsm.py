@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["propensity_score_matching"]
 
 
-def propensity_score_matching(y, d, X=None, propensity=None, n_neighbors=1,
-                              caliper=None, replace=True, estimand="att"):
+def propensity_score_matching(y, d, X=None, propensity=None, n_neighbors=1, caliper=None, replace=True, estimand="att"):
     r"""Match on the propensity score and compare matched outcomes.
 
     Rosenbaum and Rubin's result is that if treatment is ignorable
@@ -78,7 +77,7 @@ def propensity_score_matching(y, d, X=None, propensity=None, n_neighbors=1,
     if not np.all(np.isin(dv, (0.0, 1.0))):
         raise ValueError("d must be binary 0/1.")
     if estimand not in ("att", "ate"):
-        raise ValueError("estimand must be 'att' or 'ate', got %r." % estimand)
+        raise ValueError(f"estimand must be 'att' or 'ate', got {estimand!r}.")
     Xa = None if X is None else np.atleast_2d(np.asarray(X, dtype=float))
     if Xa is not None and Xa.shape[0] != n:
         Xa = Xa.T
@@ -90,8 +89,7 @@ def propensity_score_matching(y, d, X=None, propensity=None, n_neighbors=1,
     else:
         e = np.asarray(propensity, dtype=float).ravel()
         if e.size != n:
-            raise ValueError("propensity has %d entries for %d rows."
-                             % (e.size, n))
+            raise ValueError("propensity has %d entries for %d rows." % (e.size, n))
     ti = np.nonzero(dv == 1)[0]
     ci = np.nonzero(dv == 0)[0]
     if ti.size == 0 or ci.size == 0:
@@ -122,13 +120,28 @@ def propensity_score_matching(y, d, X=None, propensity=None, n_neighbors=1,
                     pool.remove(int(v))
 
     if not pairs:
-        raise ValueError(
-            "no treated unit found a match; the caliper may be too tight."
-        )
+        raise ValueError("no treated unit found a match; the caliper may be too tight.")
     diffs = np.array([yv[i] - float(np.mean(yv[m])) for i, m in pairs])
+    if estimand == "ate":
+        # the ATE averages treated-minus-control over every unit: controls are matched to treated too
+        pool_t = list(ti)
+        for j in ci:
+            avail = np.asarray(pool_t if not replace else ti)
+            if avail.size == 0:
+                break
+            dist = np.abs(e[avail] - e[j])
+            sel = avail[np.argsort(dist)[:k]]
+            if caliper is not None:
+                sel = sel[np.abs(e[sel] - e[j]) <= float(caliper)]
+            if sel.size == 0:
+                continue
+            diffs = np.append(diffs, float(np.mean(yv[sel])) - yv[j])
+            if not replace:
+                for v in sel:
+                    if v in pool_t:
+                        pool_t.remove(int(v))
     est = float(np.mean(diffs))
-    se = float(np.std(diffs, ddof=1) / np.sqrt(diffs.size)) \
-        if diffs.size > 1 else np.nan
+    se = float(np.std(diffs, ddof=1) / np.sqrt(diffs.size)) if diffs.size > 1 else np.nan
 
     used = [v for _, m in pairs for v in m]
     reuse = int(np.max(np.bincount(used))) if used else 0
@@ -136,10 +149,12 @@ def propensity_score_matching(y, d, X=None, propensity=None, n_neighbors=1,
     bb = ba = None
     balanced = None
     if Xa is not None:
+
         def smd(a, b):
             sp = np.sqrt((a.var(axis=0, ddof=1) + b.var(axis=0, ddof=1)) / 2)
             sp = np.where(sp > 0, sp, 1.0)
             return (a.mean(axis=0) - b.mean(axis=0)) / sp
+
         bb = smd(Xa[ti], Xa[ci])
         mt = np.array([i for i, _ in pairs])
         mc = np.array(used)
@@ -149,14 +164,14 @@ def propensity_score_matching(y, d, X=None, propensity=None, n_neighbors=1,
         payload={
             "estimate": est,
             "se": se,
-            "ci": (est - 1.959963984540054 * se,
-                   est + 1.959963984540054 * se) if se == se else None,
+            "ci": (est - 1.959963984540054 * se, est + 1.959963984540054 * se) if se == se else None,
             "matched_pairs": pairs,
             "n_matched": int(len(pairs)),
             "n_unmatched": int(unmatched),
             "unmatched_note": (
-                None if unmatched == 0 else
-                "%d treated unit(s) found no match, so the estimand is the "
+                None
+                if unmatched == 0
+                else "%d treated unit(s) found no match, so the estimand is the "
                 "ATT among the MATCHABLE rather than the ATT" % unmatched
             ),
             "balance_before": bb,
@@ -179,13 +194,10 @@ def propensity_score_matching(y, d, X=None, propensity=None, n_neighbors=1,
             "n_treated": int(ti.size),
             "n_control": int(ci.size),
             "n": int(n),
-            "method": "Propensity score matching (%s)" % estimand.upper(),
+            "method": f"Propensity score matching ({estimand.upper()})",
         }
     )
 
 
 def cheatsheet():
-    return (
-        "pscsm: nearest-neighbour propensity matching with before/after "
-        "balance, caliper losses and control reuse"
-    )
+    return "pscsm: nearest-neighbour propensity matching with before/after balance, caliper losses and control reuse"

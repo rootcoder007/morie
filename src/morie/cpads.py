@@ -90,26 +90,27 @@ def canonicalize_cpads_frame(frame: pd.DataFrame) -> pd.DataFrame:
     # Accept both weight column names: wtpumf (PUMF release) and wtdf (full dataset).
     weight_col = "wtpumf" if "wtpumf" in frame.columns else "wtdf"
     out["weight"] = pd.to_numeric(frame[weight_col], errors="coerce")
-    out["alcohol_past12m"] = frame["alc05"].replace({1: 1, 2: 0, 98: np.nan, 99: np.nan})
+    num = lambda col: pd.to_numeric(frame[col], errors="coerce")  # noqa: E731 - CSV cells arrive as text
+    out["alcohol_past12m"] = num("alc05").replace({1: 1, 2: 0, 98: np.nan, 99: np.nan})
     out["heavy_drinking_30d"] = np.where(
-        frame["alc12_30d_prev_total"] == 1,
+        num("alc12_30d_prev_total") == 1,
         1,
         np.where(
-            frame["alc12_30d_prev_total"] == 0,
+            num("alc12_30d_prev_total") == 0,
             0,
             np.where(
-                frame["alc12_30d_prev"] == 1,
+                num("alc12_30d_prev") == 1,
                 1,
-                np.where(frame["alc12_30d_prev"] == 0, 0, np.nan),
+                np.where(num("alc12_30d_prev") == 0, 0, np.nan),
             ),
         ),
     )
-    out["cannabis_any_use"] = frame["can05"].replace({1: 1, 2: 0, 98: np.nan, 99: np.nan})
-    out["age_group"] = frame["age_groups"].replace({98: np.nan, 99: np.nan})
-    out["gender"] = frame["dvdemq01"].replace({98: np.nan, 99: np.nan})
-    out["province_region"] = frame["region"].replace({98: np.nan, 99: np.nan})
-    out["mental_health"] = frame["hwbq02"].replace({98: np.nan, 99: np.nan})
-    out["physical_health"] = frame["hwbq01"].replace({98: np.nan, 99: np.nan})
+    out["cannabis_any_use"] = num("can05").replace({1: 1, 2: 0, 98: np.nan, 99: np.nan})
+    out["age_group"] = num("age_groups").replace({98: np.nan, 99: np.nan})
+    out["gender"] = num("dvdemq01").replace({98: np.nan, 99: np.nan})
+    out["province_region"] = num("region").replace({98: np.nan, 99: np.nan})
+    out["mental_health"] = num("hwbq02").replace({98: np.nan, 99: np.nan})
+    out["physical_health"] = num("hwbq01").replace({98: np.nan, 99: np.nan})
     out["ebac_tot"] = pd.to_numeric(frame["ebac_tot"], errors="coerce")
     out["ebac_legal"] = pd.to_numeric(frame["ebac_legal"], errors="coerce")
     validate_cpads_frame(out, strict=True)

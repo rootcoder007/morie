@@ -1308,10 +1308,7 @@ if _TEXTUAL_AVAILABLE:
                 val = os.environ.get(var, "")
                 # Mask secrets by name (KEY/TOKEN/SECRET/PASSWORD/AUTH) and any
                 # value carrying URL userinfo credentials (user:pass@host).
-                if val and (
-                    any(s in var for s in ("KEY", "TOKEN", "SECRET", "PASSWORD", "AUTH"))
-                    or "@" in val
-                ):
+                if val and (any(s in var for s in ("KEY", "TOKEN", "SECRET", "PASSWORD", "AUTH")) or "@" in val):
                     val = f"{val[:4]}...{val[-4:]}" if len(val) > 8 else "***"
                 log.write(f"  {var}={val or '(not set)'}")
 
@@ -1505,7 +1502,9 @@ if _TEXTUAL_AVAILABLE:
             self._py_console = code_module.InteractiveConsole(self._py_console_ns)
             self._inject_repl_helpers()
             try:
-                self._py_console.runsource("import morie; import morie.fn._frame_core as pd; import morie.fn._array_core as np")
+                self._py_console.runsource(
+                    "import morie; import morie.fn._frame_core as pd; import morie.fn._array_core as np"
+                )
                 self._py_console.runsource("from morie import *")
                 log.write("[green]Python: morie, pandas (pd), numpy (np) loaded[/green]")
             except Exception as e:
@@ -3347,7 +3346,9 @@ if _TEXTUAL_AVAILABLE:
             self._py_console_ns = {"__name__": "__console__", "__builtins__": __builtins__}
             self._py_console = code_module.InteractiveConsole(self._py_console_ns)
             self._inject_repl_helpers()
-            self._py_console.runsource("import morie; import morie.fn._frame_core as pd; import morie.fn._array_core as np")
+            self._py_console.runsource(
+                "import morie; import morie.fn._frame_core as pd; import morie.fn._array_core as np"
+            )
             self._py_console.runsource("from morie import *")
             if self._r_proc:
                 self._r_proc.terminate()
@@ -5086,7 +5087,7 @@ def launch_tui(*, agent: str | None = None) -> int:
             from rich.console import Console
 
             Console(stderr=True).print(
-                "[red]Textual is required for the TUI.[/red]\nInstall with: [bold]pip install morie[interactive][/bold]"
+                "[red]Textual is required for the TUI.[/red]\nInstall with: [bold]pip install 'morie\\[interactive]'[/bold]"
             )
         except ImportError:
             print(

@@ -149,6 +149,24 @@ case("verify-earth-engine", function() {
   r <- run("verify-earth-engine")
   check(r$status != 0 && grepl("morie verify-earth-engine", r$text, fixed = TRUE), paste("must point at the Python verb:", r$text))
 })
+case("launcher", function() {
+  # exactly what inst/bin/rmorie does, with the tree loaded in place of the installed package
+  tree_arg <- if (nzchar(tree)) sprintf("pkgload::load_all(%s, quiet = TRUE)", shQuote(tree)) else "library(rmorie)"
+  r <- suppressWarnings(system2("Rscript", c("--vanilla", "-e",
+    shQuote(sprintf("suppressMessages(%s); q <- morie_cli(); quit(status = as.integer(q))", tree_arg)),
+    "--args", "version"), stdout = TRUE, stderr = TRUE))
+  check(identical(attr(r, "status"), NULL) && any(grepl(paste(pkg, "1\\."), r)), paste("launcher:", paste(r, collapse = " | ")))
+})
+case("run-module-default-dir", function() {
+  r <- run("run-module", "power-design")
+  check(r$status == 0 && dir.exists(file.path("morie-output", "power-design")) &&
+          length(list.files(file.path("morie-output", "power-design"), pattern = "[.]csv$")) > 5,
+        paste("run-module without --output-dir must write under morie-output/:", r$text))
+})
+case("verb-help", function() {
+  r <- run("emissions", "--help")
+  check(r$status == 0 && grepl("emissions", r$text) && !dir.exists("emissions"), paste("emissions --help must not run it:", r$text))
+})
 case("exec", function() { r <- run("exec", "6 * 7"); check(r$status == 0 && grepl("42", r$text), r$text) })
 case("ask-fallback-honest", function() {
   if (nzchar(key)) return(invisible())

@@ -37,6 +37,16 @@ def linear_regression_ols(x, y):
     if X.ndim == 1:
         X = X.reshape(-1, 1)
     n, p = X.shape
+    if n <= p + 1:
+        raise ValueError(f"at least {p + 2} rows are needed to fit {p + 1} coefficients with a standard error")
+    for j in range(p):
+        if float(np.var(X[:, j])) == 0.0:
+            raise ValueError(f"column {j} of x is constant; the design is not identified (drop it)")
+    if n <= p + 1:
+        raise ValueError(f"at least {p + 2} rows are needed to fit {p + 1} coefficients with a standard error")
+    for j in range(p):
+        if float(np.var(X[:, j])) == 0.0:
+            raise ValueError(f"column {j} of x is constant; the design is not identified (drop it)")
 
     model = LinearRegression(fit_intercept=True).fit(X, y)
     coef = np.concatenate([[model.intercept_], model.coef_])

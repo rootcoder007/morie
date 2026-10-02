@@ -208,12 +208,11 @@ morie_download <- function(url, target_path, attempt_wayback = NULL,
   # which truncated downloads mid-way (2026-10-01, cu23bt at 415 of 612 MB)
   old <- options(timeout = max(getOption("timeout", 60), 3600))
   on.exit(options(old), add = TRUE)
-  if (!.morie_dl_quiet()) {
-    # the live bar first; on any failure the bricklayer route explains and tries the Wayback Machine
-    ok <- tryCatch({ .morie_dl(url, target_path, label = label, size = size); TRUE },
-                   error = function(e) FALSE, warning = function(w) FALSE)
-    if (ok) return(invisible(target_path))
-  }
+  # the package's own transfer first (live bar, or silent under options(morie.quiet = TRUE));
+  # on any failure the bricklayer route explains and tries the Wayback Machine
+  ok <- tryCatch({ .morie_dl(url, target_path, label = label, size = size); TRUE },
+                 error = function(e) FALSE, warning = function(w) FALSE)
+  if (ok) return(invisible(target_path))
   rmoriebricklayer::friendly_download(url, target_path,
     attempt_wayback = attempt_wayback
   )

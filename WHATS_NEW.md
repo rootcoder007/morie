@@ -9,6 +9,23 @@ Per-package full changelogs:
 
 ## 1.3.9 (2026-10-01)
 
+- **From a hostile QA pass on every feature.** `morie pull` only takes exact
+  keys and suggests near misses instead of silently fetching another dataset;
+  `run-module` without `--output-dir` writes under `morie-output/NAME`;
+  `crypto keygen --output` writes the secret key owner-only and `decrypt --key`
+  accepts that file; keystore prompts and wrong passwords are reported in
+  words; `doctor` no longer fails a clean install over optional libraries;
+  `update` works in the curl installer's venv (no pip); the REPL stops
+  running every toolchain's `--version` at startup (a juliaup shim pulled a
+  1.1 GB Julia); `profile-dataset` reports unreadable files and duplicate
+  headers in words; permission errors print one line; `datasets.cpads()`
+  recodes the survey codes it reads from CSV, and `load_dataset("ocp21")` has
+  the same canonical columns on every call; the Toronto Police homicide layer
+  follows its new name; `dml_plr` fits an intercept in its nuisance models
+  (its estimate was biased), `propensity_score_matching(estimand="ate")`
+  matches controls too, `estimate_aipw` defaults to `outcome_model="auto"`
+  in both arms, and `welcht` / `linear_regression_ols` / `estimate_aipw` refuse
+  degenerate input in words.
 - **Downloads show their progress.** Every download (CPADS and the other
   catalog files, the bootstrap weights, CKAN datastore pages, the rmoriedata
   tables, the curated tables at data.rmorie.com) draws a live bar with

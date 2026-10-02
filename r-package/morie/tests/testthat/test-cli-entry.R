@@ -42,8 +42,11 @@ test_that("login forwards the flags to morie_llm_login and logout forgets the ke
   expect_equal(r2$status, 0L)
   expect_true(seen$to_email)
   expect_false(grepl("Logged in", r2$text, fixed = TRUE))
+  testthat::local_mocked_bindings(.package = .pkg, .morie_llm_probe_token = function(token) identical(token, "sk-pasted"))
   expect_equal(.capture("login", "--token", "sk-pasted")$status, 0L)
   expect_equal(seen$token, "sk-pasted")
+  expect_equal(.capture("login", "--token", "sk-rejected")$status, 1L)
+  expect_equal(seen$token, "sk-pasted")  # a rejected key is never stored
   .morie_llm_write_credentials(list(hosted_key = "sk-x"))
   expect_equal(suppressMessages(.capture("logout"))$status, 0L)
   expect_null(.morie_llm_hosted_key())
@@ -60,7 +63,8 @@ test_that("doctor lists the providers and ask relays the reply", {
   expect_match(d$text, "Ollama \\(local\\) +not reachable")
   expect_match(d$text, "not logged in")
   expect_match(d$text, "active provider: local")
-  testthat::local_mocked_bindings(.package = .pkg, morie_llm_ask = function(prompt, ...) paste("echo:", prompt))
+  testthat::local_mocked_bindings(.package = .pkg, morie_llm_ask = function(prompt, ...) paste("echo:", prompt),
+                                  morie_llm_detect_provider = function(...) "hosted")
   a <- .capture("ask", "what", "is", "MORIE")
   expect_equal(a$text, "echo: what is MORIE\n")
   expect_match(.capture("ask", "--help")$text, "usage: rmorie ask")
@@ -88,7 +92,8 @@ test_that("models lists the hosted and local models and ask --model names one", 
   expect_match(.capture("doctor")$text, "models: a:cloud, b:cloud \\(default b:cloud\\)")
   seen <- NULL
   testthat::local_mocked_bindings(.package = .pkg,
-    morie_llm_ask = function(prompt, model = NULL, ...) { seen <<- model; paste("echo:", prompt) })
+    morie_llm_ask = function(prompt, model = NULL, ...) { seen <<- model; paste("echo:", prompt) },
+    morie_llm_detect_provider = function(...) "hosted")
   expect_equal(.capture("ask", "--model", "a:cloud", "hi", "there")$text, "echo: hi there\n")
   expect_equal(seen, "a:cloud")
   expect_equal(.capture("ask", "hi")$text, "echo: hi\n")

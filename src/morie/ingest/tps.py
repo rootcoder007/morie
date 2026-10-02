@@ -56,7 +56,7 @@ LAYER_REGISTRY: dict[str, str] = {
         "Shooting_and_Firearm_Discharges_Open_Data/FeatureServer/0"
     ),
     "homicide": (
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Homicides_Open_Data/FeatureServer/0"
+        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Homicides_Open_Data_ASR_RC_TBL_002/FeatureServer/0"
     ),
     "robbery": ("https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Robbery_Open_Data/FeatureServer/0"),
     "assault": ("https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Assault_Open_Data/FeatureServer/0"),
