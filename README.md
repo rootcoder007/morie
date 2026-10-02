@@ -238,7 +238,7 @@ Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.git
 - **Website**: <https://rmorie.com> — the MORIE family (rmorie, morie, rmoriebricklayer, rmoriedata) in one place.
 - **Curated data**: <https://data.rmorie.com> — the BigQuery-built tables, opened by the same key; `/browse` for SQL in the browser.
 - **CLI reference**: [cli](https://rootcoder007.github.io/morie/cli.html); learn pages for [datasets](https://rootcoder007.github.io/morie/learn/datasets.html), [emissions and capsules](https://rootcoder007.github.io/morie/learn/emissions.html) and [the R command line](https://rootcoder007.github.io/morie/learn/r-cli.html).
-- **Hosted LLM tier**: <https://llm.rmorie.com> — the fallback model behind `morie ask` when there is no local Ollama. Sign in with `morie login` (GitHub) or `morie login --email you@example.com`; `morie models` lists the models on your key and `morie ask --model NAME` picks one; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html).
+- **Hosted LLM tier**: <https://llm.rmorie.com> — the fallback model behind `morie ask` when there is no local Ollama. Sign in with `morie login` (GitHub) or `morie login --email you@example.com`; `morie models` lists the models on your key and `morie ask --model NAME` picks one; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html). The tier serves ollama.com cloud models and Cloudflare Workers AI models (gpt-oss-120b:cf, gpt-oss-20b:cf, llama-4-scout:cf, qwen3.8-27b:cf, nemotron-3-120b:cf and gemma-4-26b:cf); a rate-limited cloud model falls back to Workers AI.
 
 ## Citation
 

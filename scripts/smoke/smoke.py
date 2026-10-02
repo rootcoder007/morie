@@ -139,6 +139,11 @@ def c_models(s: Smoke):
     check(r.returncode == 0, r.stderr[-300:])
     if not KEY:
         check("login" in (r.stdout + r.stderr).lower(), "without a key, models must point at morie login")
+    else:
+        # the gateway serves Cloudflare Workers AI models beside the ollama.com ones
+        check(":cf" in r.stdout, "no Workers AI model listed: " + r.stdout[-300:])
+
+
 
 
 @case("provider")
@@ -174,6 +179,12 @@ def _answered(r, verb: str) -> None:
 @case("ask")
 def c_ask(s: Smoke):
     _answered(s.run_llm("ask", "--no-stream", "What does the power-design module compute?"), "ask")
+    # a Cloudflare Workers AI model, named per call
+    r = s.run_llm("ask", "--no-stream", "--model", "gpt-oss-120b:cf", "Reply with the single word pong.")
+    if KEY:
+        _answered(r, "ask --model gpt-oss-120b:cf")
+    else:
+        check(r.returncode != 0, "without a key, ask must not claim an answer")
 
 
 def _agent_case(s: Smoke, verb: str, *args: str) -> None:
