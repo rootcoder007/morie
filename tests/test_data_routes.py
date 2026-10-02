@@ -14,11 +14,26 @@ from morie import earth, siu_fetch
 
 
 class _Reply:
+    """A fake HTTP response: whole-body and chunked reads, headers, context manager."""
+
+    headers: dict = {}
+
     def __init__(self, body: bytes):
         self._body = body
+        self._pos = 0
 
-    def read(self):
-        return self._body
+    def read(self, n: int = -1):
+        if n is None or n < 0:
+            out, self._pos = self._body[self._pos :], len(self._body)
+        else:
+            out, self._pos = self._body[self._pos : self._pos + n], self._pos + n
+        return out
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
 
 
 def _isolate(monkeypatch, tmp_path):

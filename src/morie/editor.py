@@ -10,6 +10,7 @@ framework.
 from __future__ import annotations
 
 import os
+import shlex
 import shutil
 import subprocess
 import sys
@@ -18,12 +19,13 @@ import sys
 def edit_file(path: str, lang_hint: str | None = None) -> int:
     """Open ``path`` in the user's editor; returns the exit code."""
     del lang_hint
-    editor = os.environ.get("VISUAL") or os.environ.get("EDITOR") \
-        or ("vi" if shutil.which("vi") else None)
+    editor = os.environ.get("VISUAL") or os.environ.get("EDITOR") or ("vi" if shutil.which("vi") else None)
     if editor is None:
         print("no editor found: set $EDITOR", file=sys.stderr)
         return 1
-    return subprocess.call([editor, path])
+    if os.name == "nt":  # $EDITOR may carry arguments; let the shell split them
+        return subprocess.call(editor + " " + subprocess.list2cmdline([path]), shell=True)
+    return subprocess.call([*shlex.split(editor), path])
 
 
 def main(argv: list[str] | None = None) -> int:

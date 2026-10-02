@@ -98,3 +98,13 @@ def test_pull_parses_hosted_keys():
     from morie.runner import build_parser
 
     assert build_parser().parse_args(["pull", "chicago_crime/incidents"]).dataset == "chicago_crime/incidents"
+
+
+def test_empty_cached_table_is_refetched(hub, monkeypatch, tmp_path):
+    from morie.fn import _frame_core as pd
+
+    monkeypatch.setenv("MORIE_HOSTED_KEY", "sk-good")
+    db = tmp_path / "cache.db"
+    data.cache_store(pd.DataFrame({"id": [], "type": []}), datahub.hosted_table_name("chicago_crime/incidents"), db)
+    df = datahub.load_hosted_dataset("chicago_crime/incidents", db_path=db)
+    assert len(df) == 3  # the empty cached copy was ignored and the edge copy fetched

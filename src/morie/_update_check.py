@@ -62,8 +62,7 @@ def _parse_version(s: str) -> tuple[int, ...]:
             m = re.match(r"(a|b|rc|dev|post)?(\d*)", rest)
             tag = (m.group(1) or "") if m else ""
             num = int(m.group(2) or 0) if m else 0
-            pre = (2, num) if tag == "post" else (
-                0, {"dev": 0, "a": 1, "b": 2, "rc": 3}.get(tag, 0), num)
+            pre = (2, num) if tag == "post" else (0, {"dev": 0, "a": 1, "b": 2, "rc": 3}.get(tag, 0), num)
             break
     return tuple(parts or [0]) + pre
 
@@ -177,10 +176,12 @@ def run_update(yes: bool = False) -> int:
             print("Skipped. To update later, run:\n  " + " ".join(cmd))
             return 0
 
-    import subprocess
+    from ._progress import run_step
 
-    print("Running: " + " ".join(cmd))
-    result = subprocess.run(cmd)
+    class _Result:
+        returncode = run_step(cmd, f"pip install -U morie ({latest})")
+
+    result = _Result()
     if result.returncode == 0:
         _write_cache(latest)
         print(

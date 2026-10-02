@@ -14,7 +14,7 @@ Access the REPL via the TUI (``e`` key) or the CLI:
 .. code-block:: bash
 
    morie repl
-   morie repl --headless    # non-interactive, reads from stdin
+   morie exec --file script.py   # non-interactive; `morie repl` is the interactive session
 
 Language Detection
 ------------------
@@ -156,8 +156,8 @@ For scripting and CI pipelines, the REPL runs in headless mode:
 
 .. code-block:: bash
 
-   echo 'print(2+2)' | morie repl --headless
-   cat analysis_script.txt | morie repl --headless
+   morie exec --lang python 'print(2+2)'
+   morie exec --file analysis_script.py
 
 Headless mode reads from stdin, executes each line, prints output to
 stdout, and exits when input is exhausted. All language detection and

@@ -1,5 +1,11 @@
 # morie 1.3.9 - 2026-10-01
 
+* Every download draws a live progress bar (percent, size, rate) on a
+  terminal and prints milestone lines in a log: the catalog files, bootstrap
+  weights, StatCan tables, Wayback copies and the curated tables at
+  data.rmorie.com. `options(morie.quiet = TRUE)` silences it; the command line
+  turns it on, R sessions show it when interactive.
+
 * `morie_hosted_manifest()`, `morie_hosted_datasets()`,
   `morie_load_hosted_dataset()`: the curated tables at data.rmorie.com,
   opened by the stored MORIE key; `morie_load_dataset()`, `morie_list_datasets()`

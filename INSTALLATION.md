@@ -116,7 +116,7 @@ installed and working. Pick by what you have:
 - **You already have Python ≥3.10** — `pip install morie`
   ([section 4](#4-pypi-manual-pip)).
 - **You want the R package** — install **R** (Step 1), then
-  [section 6](#6-r-cran--r-universe).
+  [section 6](#6-r-r-universe--cran).
 
 ## Install channels
 
@@ -130,7 +130,7 @@ environment — the comparison table first, then full steps for each.
 | 3 | **Homebrew tap** | macOS or Linuxbrew users | Homebrew |
 | 4 | **PyPI (pip)** | You already manage your own venv | Python ≥3.10, pip |
 | 5 | **Docker (GHCR)** | Zero-install or CI/CD | Docker |
-| 6 | **R (CRAN + r-universe)** | You want the R package | R ≥4.3 |
+| 6 | **R (r-universe + CRAN)** | You want the R package | R ≥4.3 |
 
 ## 1. Curl one-liner (Linux / macOS / WSL)
 
@@ -310,9 +310,9 @@ error: externally-managed-environment
 
 This is **expected behaviour** of the distro, not a morie bug. Always install inside a venv (option 1 or option 2 handle this for you).
 
-#### Raspberry Pi OS 13 — `python3` segfaults on SciPy imports
+#### Raspberry Pi OS 13 — `python3` segfaults on compiled-extension imports
 
-The Pi's `/usr/bin/python3` is Python 3.13.5, which segfaults on importing the SciPy stack (a Debian-packaging issue). Symptoms:
+Some Pi OS 13 images ship a `/usr/bin/python3` (3.13.5) that segfaults when importing compiled extension modules (a Debian-packaging issue). morie itself needs no NumPy or SciPy, but if the symptom appears:
 
 ```
 $ python3 -c "import morie"
@@ -328,26 +328,31 @@ Segmentation fault (core dumped)
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a version for reproducibility
-docker run --rm ghcr.io/rootcoder007/morie:1.1.4 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:1.3.9 morie --help
 ```
 
 The image is published on every release with both `:latest` and `:<version>` tags. Multi-arch (linux/amd64). Includes morie + the full SciPy + R stack + R 4.5.
 
-## 6. R (CRAN + r-universe)
+## 6. R (r-universe + CRAN)
+
+The R distribution of morie is the **rmorie** package. It comes from
+r-universe (prebuilt binaries for macOS and Windows, source on Linux);
+its companions **rmoriebricklayer** (signing, capsules) and **rmoriedata**
+(the reviewed data tables) are on CRAN:
 
 ```r
-# Stable from CRAN (when listing is live)
-install.packages("morie")
-
-# Nightly binary builds (recommended while CRAN listing is rolling out)
 install.packages(
-  "morie",
+  "rmorie",
   repos = c(
     rootcoder007 = "https://rootcoder007.r-universe.dev",
     CRAN     = "https://cloud.r-project.org"
   )
 )
+install.packages(c("rmoriebricklayer", "rmoriedata"))
+rmorie::install_cli()   # puts the `rmorie` command on your PATH
 ```
+
+From Python, `morie r-install` runs the same install for you.
 
 ## Verifying the install
 
@@ -369,7 +374,7 @@ packageVersion("rmorie")
 
 ## First analysis (≤60 seconds, no code to write)
 
-After install, this exact sequence works on a fresh machine. No data download. No coding. Just copy-paste:
+After install, this exact sequence works on a fresh machine. No coding. Just copy-paste:
 
 ```bash
 # 1. Sanity check
@@ -383,7 +388,7 @@ ls ~/morie-first-run/
 head -3 ~/morie-first-run/power_summary.csv
 ```
 
-The synthetic CPADS frame is a 1,200-row toy dataset bundled inside the wheel; module output will emit a `UserWarning` so you know the analysis isn't of real Statistics Canada microdata. When you have the real CPADS PUMF, pass its path: `morie run-module power-design --cpads-csv /path/to/real.csv`.
+Without the real microdata the module runs on a 1,200-row synthetic CPADS-shaped frame bundled inside the wheel and prints a `UserWarning` so the output isn't mistaken for findings about the real population. The real CPADS 2021-22 PUMF is public: `morie pull ocp21` downloads it from open.canada.ca once (about a minute, 40,931 rows) into the local cache, and every module uses it from then on. `--dataset ocp21` on `run-module` forces that dataset, and `--cpads-csv /path/to/file.csv` uses a file of your own. The R command line does the same: `rmorie pull ocp21`, `rmorie run-module power-design`.
 
 ### In Python — `morie.datasets`
 
@@ -413,7 +418,7 @@ cases = md.a2aj_search("right to housing", dataset=["SCC", "ONCA"])
 scc   = md.a2aj_load("SCC", columns=["citation_en", "document_date_en", "cases_cited_en"])
 ```
 
-Every helper returns a plain `pandas.DataFrame` — no bespoke result type, no boilerplate.
+Every helper returns a DataFrame from morie's own pandas-compatible frame core (no pandas install needed) — no bespoke result type, no boilerplate.
 
 ## Using your own dataset (any column names)
 
@@ -525,7 +530,7 @@ brew untap rootcoder007/morie  # optional — removes the tap repo cache
 pip uninstall morie
 
 # R
-remove.packages("morie")
+remove.packages(c("rmorie", "rmoriebricklayer", "rmoriedata"))
 ```
 
 ## Getting help
@@ -534,5 +539,6 @@ remove.packages("morie")
 - Source / issues: <https://github.com/rootcoder007/morie>
 - PyPI: <https://pypi.org/project/morie/>
 - `import morie` checks PyPI once a day for a newer release; set `MORIE_NO_UPDATE_CHECK=1` to disable it.
-- r-universe: <https://rootcoder007.r-universe.dev/morie>
+- r-universe: <https://rootcoder007.r-universe.dev/rmorie>
+- Website: <https://rmorie.com>; curated data: <https://data.rmorie.com>; hosted models: <https://llm.rmorie.com>
 - Homebrew tap: <https://github.com/rootcoder007/homebrew-morie>

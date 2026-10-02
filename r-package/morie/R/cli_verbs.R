@@ -394,7 +394,7 @@
 .cli_crypto <- function(rest, flag, out) {
   sub <- if (length(rest)) rest[[1L]] else ""
   usage <- paste0("usage: rmorie crypto keygen [--name NAME] [--output DIR]\n",
-                  "       rmorie crypto encrypt FILE --recipient PKFILE|KEYNAME\n",
+                  "       rmorie crypto encrypt FILE --to PKFILE|KEYNAME\n",
                   "       rmorie crypto decrypt FILE --key KEYNAME\n",
                   "Keys live in ~/.morie/keys/keystore.json (password: prompt or MORIE_KEYSTORE_PASSWORD).\n")
   if (identical(sub, "keygen")) {
@@ -422,7 +422,7 @@
   }
   if (identical(sub, "encrypt")) {
     f <- if (length(rest) > 1L) rest[[2L]] else NULL
-    rcpt <- flag("--recipient")
+    rcpt <- flag("--to") %||% flag("--recipient")
     if (is.null(f) || is.null(rcpt)) {
       out(usage)
       return(2L)

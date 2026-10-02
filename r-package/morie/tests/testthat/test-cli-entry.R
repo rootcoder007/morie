@@ -272,7 +272,7 @@ test_that("crypto keygen/encrypt/decrypt round-trip through files and the keysto
   expect_true(file.exists(file.path(d, "keys", "alice.moriepk")))
   f <- file.path(d, "secret.txt")
   writeLines("hello capsule", f)
-  e <- .capture("crypto", "encrypt", f, "--recipient", file.path(d, "keys", "alice.moriepk"))
+  e <- .capture("crypto", "encrypt", f, "--to", file.path(d, "keys", "alice.moriepk"))
   expect_equal(e$status, 0L)
   expect_true(file.exists(paste0(f, ".morieenc")))
   expect_equal(.capture("crypto", "encrypt", file.path(d, "missing"), "--recipient", "x")$status, 1L)

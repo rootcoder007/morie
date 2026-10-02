@@ -17,6 +17,7 @@ the project does not work properly without a C/C++ toolchain.
 
 Pure stdlib, cross-platform (works for Windows pip users with no shell).
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -76,7 +77,7 @@ def _have_r_morie() -> bool:
 
 
 def _r_backend_ok() -> bool:
-    return _r_eval_ok('quit(status = as.integer(!isTRUE(rmorie::morie_fast_available())))')
+    return _r_eval_ok("quit(status = as.integer(!isTRUE(rmorie::morie_fast_available())))")
 
 
 def _py_backend_ok() -> bool:
@@ -94,14 +95,12 @@ def register_subparser(subparsers) -> None:
     """Called from morie.runner.build_parser() to register this command."""
     p = subparsers.add_parser(
         "bricklayer",
-        help="Offer to install the rest of the morie family (R packages) and "
-        "verify the shared C/C++ backend.",
+        help="Offer to install the rest of the morie family (R packages) and verify the shared C/C++ backend.",
     )
     _add_install_args(p)
     r = subparsers.add_parser(
         "r-install",
-        help="Install the R side: rmorie from r-universe, or this repository's "
-        "own R arm from GitHub with --github.",
+        help="Install the R side: rmorie from r-universe, or this repository's own R arm from GitHub with --github.",
     )
     _add_install_args(r)
 
@@ -152,8 +151,10 @@ def run(args) -> int:
         return 0
 
     if r_ok and not cli_ok:
-        print("note: the rmorie launcher is not on PATH; put it there with "
-              "Rscript -e 'rmorie::install_cli()' (then: rmorie login, rmorie models, rmorie ask ...)")
+        print(
+            "note: the rmorie launcher is not on PATH; put it there with "
+            "Rscript -e 'rmorie::install_cli()' (then: rmorie login, rmorie models, rmorie ask ...)"
+        )
 
     if r_ok and not getattr(args, "github", False):
         print("Nothing to install: the R side is already present.")
@@ -181,8 +182,14 @@ def run(args) -> int:
             print("Skipped. Re-run `morie bricklayer` anytime.")
             return 0
 
-    print("-> installing the R side ..." if github else "-> installing R rmorie (+ rmoriedata, rmoriebricklayer) ...")
-    rc = subprocess.run([_rscript(), "-e", expr]).returncode
+    from ._progress import run_step
+
+    rc = run_step(
+        [_rscript(), "-e", expr],
+        "installing the R side from GitHub (compiles; minutes)"
+        if github
+        else "installing rmorie, rmoriedata, rmoriebricklayer",
+    )
 
     if rc != 0:
         print("R install failed (see output above).", file=sys.stderr)

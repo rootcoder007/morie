@@ -47,6 +47,8 @@
 #' morie_cli(c("ask", "--help"))
 #' @export
 morie_cli <- function(args = commandArgs(trailingOnly = TRUE), out = cat) {
+  old_progress <- options(morie.progress = TRUE)  # a person is watching: downloads draw their bar
+  on.exit(options(old_progress), add = TRUE)
   args <- as.character(args)
   verb <- if (length(args)) args[[1L]] else "help"
   rest <- args[-1L]

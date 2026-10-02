@@ -159,6 +159,29 @@ print(result)
 print(describe("welcht"))
 ```
 
+### From the terminal
+
+Every feature is a verb of the `morie` command; `morie --help` lists them,
+`morie cheatsheet` fits them on one page, and the R package ships the same
+verbs as `rmorie` (see below).
+
+```bash
+morie list-modules                                   # the 23 analysis modules
+morie run-module power-design --output-dir out/      # one module, its tables as CSV
+morie explain power_two_proportion_gender.csv        # how to read an output table
+morie list-datasets                                  # 70 catalog keys + the curated tables after login
+morie pull ocp21 --out cpads.csv                     # the real CPADS PUMF, cached; modules use it from then on
+morie pull --all --out datasets/                     # every catalog dataset
+morie login                                          # one key: hosted model tier + data.rmorie.com
+morie pull chicago_crime/incidents --out incidents.csv   # a curated table (8.6M rows)
+morie ask "which module fits a treatment-control design?"
+morie provider set --base-url https://api.openai.com/v1 --key sk-...   # or your own model endpoint
+morie emissions --seconds 5 --country CAN            # energy + CO2 of this machine, sealed in a capsule
+morie pipeline --modules power-design -y             # modules + emissions tracking + capsule
+morie verify-pollution --pollutant no2 --demo        # pollution -> health causal pipeline
+morie selftest                                       # every subsystem, with real downloads
+```
+
 ### Where the datasets come from
 
 `morie list-datasets` prints a **Route** column next to every key. Of the
@@ -178,9 +201,29 @@ shows, e.g. `$MORIE_DATA_DIR/datasets/hib/CSUS/Alcohol.csv`.
 
 ```python
 from morie.data import list_rmoriedata, load_rmoriedata
-[r["slug"] for r in list_rmoriedata()]        # the 99 rmoriedata tables
+[r["slug"] for r in list_rmoriedata()]        # 99 tables + 8 data dictionaries
 siu = load_rmoriedata("siu_directors_reports")  # 5,157 reviewed SIU reports
 ```
+
+Beyond the catalog, the project keeps **160 databases materialised from
+Google BigQuery public datasets** (Chicago crime, EPA air quality, US
+census, FEC, FDA, NOAA, NHTSA, Hacker News, Ethereum, World Bank, ...),
+served from the edge at <https://data.rmorie.com> and opened by the key
+`morie login` stores. `morie list-datasets` shows their `db/table` keys
+with the route "data.rmorie.com"; `morie pull db/table` and
+`load_dataset("db/table")` fetch one (cached locally), and
+`https://data.rmorie.com/browse` runs SQL on any of them in the browser.
+They are rebuilt weekly without any project machine in the loop.
+
+### The R side has every verb
+
+`rmorie` (r-universe) ships the same command line: `rmorie::install_cli()`
+puts `rmorie` on your PATH, and `rmorie pull ocp21`, `rmorie run-module`,
+`rmorie emissions`, `rmorie verify-pollution`, `rmorie provider set`,
+`rmorie selftest` and the rest behave like their `morie` twins. The two
+packages share the credentials file, the CPADS resolution order, the
+emissions CSV layout and the capsule format, so they mix in one workflow.
+`morie r-install` installs the R side from Python.
 
 ## What's new
 
@@ -193,6 +236,8 @@ For the planned roadmap see [ROADMAP.md](ROADMAP.md).
 Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.github.io/morie/).
 
 - **Website**: <https://rmorie.com> — the MORIE family (rmorie, morie, rmoriebricklayer, rmoriedata) in one place.
+- **Curated data**: <https://data.rmorie.com> — the BigQuery-built tables, opened by the same key; `/browse` for SQL in the browser.
+- **CLI reference**: [cli](https://rootcoder007.github.io/morie/cli.html); learn pages for [datasets](https://rootcoder007.github.io/morie/learn/datasets.html), [emissions and capsules](https://rootcoder007.github.io/morie/learn/emissions.html) and [the R command line](https://rootcoder007.github.io/morie/learn/r-cli.html).
 - **Hosted LLM tier**: <https://llm.rmorie.com> — the fallback model behind `morie ask` when there is no local Ollama. Sign in with `morie login` (GitHub) or `morie login --email you@example.com`; `morie models` lists the models on your key and `morie ask --model NAME` picks one; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html).
 
 ## Citation
@@ -229,7 +274,7 @@ methods, and the scientific claims; AI assistance accelerated
 implementation but does not change the attribution of the work.
 
 - **Claude — Anthropic.** Anthropic's Claude family (Opus, Sonnet, and
-  Haiku across the 4.x generation) was used extensively throughout
+  Haiku across the 4.x and 5.x generations) was used extensively throughout
   development for code generation, refactoring, documentation, code
   review, and design discussions. Use was supported by Anthropic
   research-credit programs.
@@ -297,3 +342,7 @@ trust posture at a glance. Only enable a knob for inputs you fully control.
 
 - General issues: [GitHub Issues](https://github.com/rootcoder007/morie/issues)
 - Security vulnerabilities: see [`SECURITY.md`](https://github.com/rootcoder007/morie/blob/main/.github/SECURITY.md)
+
+## Smoke suite
+
+Every release is gated on a clean-user smoke suite that installs the built package into an empty home directory on Linux, macOS and Windows and runs every command for real, with live downloads and assertions, no mocks (`python scripts/smoke/smoke.py`; `.github/workflows/smoke.yml`). A verb without a smoke case fails the suite.

@@ -75,7 +75,7 @@ CLI Usage
 
    morie crypto keygen --name alice --output ./keys
    morie crypto encrypt secret.csv --to ./keys/alice_pk.bin --output secret.morieenc
-   morie crypto decrypt secret.morieenc --sk ./keys/alice_sk.bin --output secret.csv
+   morie crypto decrypt secret.csv.morieenc --key alice      # key name in the keystore; writes secret.csv
 
 Keystore
 --------

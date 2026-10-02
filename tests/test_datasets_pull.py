@@ -96,3 +96,34 @@ def test_ckan_resource_file_reads_the_download(monkeypatch, tmp_path):
     df = data._ckan_resource_file("abc", "demo")
     assert list(df.columns) == ["a", "b"] and len(df) == 2
     assert (tmp_path / "ckan" / "abc" / "f.csv").exists()
+
+
+def test_download_bootstrap_maps_surveys_to_catalog_keys(monkeypatch, capsys):
+    from morie import data as d
+    from morie.runner import _main_impl
+
+    seen = []
+    monkeypatch.setattr(
+        d,
+        "fetch_ckan_to_cache",
+        lambda key, limit=0: (
+            seen.append(key) or __import__("morie.fn._frame_core", fromlist=["DataFrame"]).DataFrame({"w": [1, 2]})
+        ),
+    )
+    monkeypatch.setattr("sys.argv", ["morie", "download-bootstrap", "--survey", "csus_2023"])
+    assert _main_impl() == 0
+    assert seen == ["cu23bt"]
+    with pytest.raises(SystemExit):  # argparse rejects an unknown survey
+        build_parser().parse_args(["download-bootstrap", "--survey", "zzz_1999"])
+
+
+def test_pull_routes_hosted_keys_to_load_dataset(monkeypatch, tmp_path):
+    from morie import runner
+    from morie.fn import _frame_core as pd
+
+    monkeypatch.setattr(runner, "load_dataset", lambda key, **kw: pd.DataFrame({"k": [key]}), raising=False)
+    monkeypatch.setattr("morie.data.load_dataset", lambda key, **kw: pd.DataFrame({"k": [key]}))
+    out = tmp_path / "o.csv"
+    monkeypatch.setattr("sys.argv", ["morie", "pull", "chicago_crime/incidents", "--out", str(out)])
+    assert runner._main_impl() == 0
+    assert pd.read_csv(out)["k"].tolist() == ["chicago_crime/incidents"]

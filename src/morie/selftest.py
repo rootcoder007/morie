@@ -298,7 +298,7 @@ def _test_llm_detection():
     from morie.llm import detect_available_provider
 
     provider = detect_available_provider()
-    valid = ("ollama", "gemini", "api", "openai", "local")
+    valid = ("ollama", "hosted", "gemini", "api", "openai", "local")  # the chain's order
     if provider not in valid:
         raise RuntimeError(f"Unknown provider: {provider}")
     return f"LLM provider: {provider}"
@@ -308,12 +308,13 @@ def _test_datasets():
     """Test built-in dataset database."""
     from morie.data import list_datasets, morie_db
 
-    db_path = morie_db()
-    if not db_path.exists():
-        raise RuntimeError("Built-in morie.db not found")
     ds = list_datasets()
+    if len(ds) < 50:
+        raise RuntimeError(f"catalog lists only {len(ds)} datasets")
     cached = [d for d in ds if d["cached"]]
-    return f"Datasets: {len(cached)}/{len(ds)} available ({db_path.stat().st_size // (1024 * 1024)}MB)"
+    db_path = morie_db()
+    size = f" ({db_path.stat().st_size // (1024 * 1024)}MB store)" if db_path.exists() else " (nothing pulled yet)"
+    return f"Datasets: {len(cached)}/{len(ds)} available{size}"
 
 
 def _test_doctor():
@@ -436,10 +437,7 @@ def run_selftest() -> int:
 
         for r in _results:
             if r["passed"]:
-                if r["detail"].startswith("SKIP"):
-                    status = "[yellow] SKIP[/yellow]"
-                else:
-                    status = "[green]  OK [/green]"
+                status = "[yellow] SKIP[/yellow]" if r["detail"].startswith("SKIP") else "[green]  OK [/green]"
             else:
                 status = "[red] FAIL[/red]"
             table.add_row(
@@ -457,10 +455,7 @@ def run_selftest() -> int:
             console.print(f"[red]{failed} FAILED, {passed} OK, {skipped} skipped ({total_elapsed:.1f}s)[/red]")
     else:
         for r in _results:
-            if r["passed"]:
-                status = "SKIP" if r["detail"].startswith("SKIP") else " OK "
-            else:
-                status = "FAIL"
+            status = ("SKIP" if r["detail"].startswith("SKIP") else " OK ") if r["passed"] else "FAIL"
             print(f"  [{status}] {r['name']:<35} {r['detail'][:60]}")
 
         print()

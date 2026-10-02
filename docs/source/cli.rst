@@ -240,7 +240,7 @@ Models and cryptography
    Post-quantum file encryption (ML-KEM-768 + ChaCha20-Poly1305):
    ``keygen [--name NAME] [--output DIR]`` (keystore at
    ``~/.morie/keys/keystore.json`` unless ``--output``), ``encrypt FILE
-   --recipient PKFILE|NAME``, ``decrypt FILE --key NAME``.
+   --to PKFILE|NAME``, ``decrypt FILE --key NAME``.
 
 Repo-root wrapper
 -----------------

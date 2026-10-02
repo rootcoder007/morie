@@ -14,9 +14,10 @@ needed once per table, not per call.
 from __future__ import annotations
 
 import gzip
-import io
 import json
 import os
+import shutil
+import tempfile
 import time
 from pathlib import Path
 from urllib.error import HTTPError
@@ -48,7 +49,7 @@ def _manifest_cache_path() -> Path:
     return _user_cache_dir() / "data_rmorie_manifest.json"
 
 
-def _get(path: str, timeout: int = 60) -> bytes:
+def _open(path: str, timeout: int = 60):
     key = _key()
     if not key:
         raise DataHubAuthError("data.rmorie.com needs your MORIE key: run `morie login` (or `rmorie login`) once.")
@@ -56,12 +57,24 @@ def _get(path: str, timeout: int = 60) -> bytes:
         data_url() + path, headers={"Authorization": f"Bearer {key}", "User-Agent": "morie/1 (+https://rmorie.com)"}
     )
     try:
-        with urlopen(req, timeout=timeout) as resp:
-            return resp.read()
+        return urlopen(req, timeout=timeout)
     except HTTPError as exc:
         if exc.code in (401, 403):
             raise DataHubAuthError("data.rmorie.com rejected the stored key; run `morie login` again.") from exc
         raise
+
+
+def _get(path: str, timeout: int = 60) -> bytes:
+    with _open(path, timeout) as resp:
+        return resp.read()
+
+
+def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
+    """Stream a gateway file to ``dest`` with progress (the manifest's size is in Content-Length)."""
+    from ._progress import stream_to_file
+
+    with _open(path, timeout) as resp:
+        return stream_to_file(resp, dest, label)
 
 
 def hosted_manifest(refresh: bool = False) -> dict:
@@ -101,11 +114,17 @@ def load_hosted_dataset(key: str, *, db_path: str | Path | None = None, refresh:
             cached = cache_load(table, db_path)
         except Exception:  # noqa: BLE001 - a broken cache must not block the download
             cached = None
-        if cached is not None:
-            return cached
+        if cached is not None and len(cached) > 0:
+            return cached  # an empty cached table is a miss: the edge copy may have been rebuilt
     db, tbl = key.split("/", 1)
-    raw = _get(f"/{db}/{tbl}.csv.gz", timeout=600)
-    df = pd.read_csv(io.BytesIO(gzip.decompress(raw)), low_memory=False)
+    # streamed to disk, not held in memory: a table can be a gigabyte compressed
+    with tempfile.TemporaryDirectory() as tmp:
+        gz = Path(tmp) / "table.csv.gz"
+        csv_path = Path(tmp) / "table.csv"
+        _get_to_file(f"/{db}/{tbl}.csv.gz", gz, key, timeout=600)
+        with gzip.open(gz, "rb") as src, csv_path.open("wb") as out:
+            shutil.copyfileobj(src, out, 1 << 20)
+        df = pd.read_csv(str(csv_path), low_memory=False)
     cache_store(df, table, db_path)
     return df
 

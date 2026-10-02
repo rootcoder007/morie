@@ -1264,8 +1264,11 @@ def fetch_ckan_to_cache(
     # ``offset`` until a short page (or the reported total) says we are
     # done. A single request used to return the first 32,000 of the
     # 40,931 CPADS rows and call it the dataset.
+    from ._progress import Progress
+
     records: list[dict] = []
     offset = 0
+    prog: Progress | None = None
     logger.info("Fetching %s from CKAN (%d records per page)...", dataset_key, limit)
     while True:
         params = {"resource_id": resource_id, "limit": limit, "offset": offset}
@@ -1291,9 +1294,17 @@ def fetch_ckan_to_cache(
         batch = result.get("records", [])
         records.extend(batch)
         total = result.get("total")
+        if batch:
+            if prog is None:
+                prog = Progress(
+                    f"{dataset_key} (CKAN datastore)", total if isinstance(total, int) else None, unit="rows"
+                )
+            prog.update(len(batch))
         if len(batch) < limit or (isinstance(total, int) and len(records) >= total):
             break
         offset += len(batch)
+    if prog is not None:
+        prog.close()
 
     if records:
         df = pd.DataFrame.from_records(records)
@@ -1320,7 +1331,7 @@ def fetch_ckan_to_cache(
     return df
 
 
-def _download_file(url: str, dest: Path, timeout: int = 60) -> str:
+def _download_file(url: str, dest: Path, timeout: int = 60, label: str | None = None) -> str:
     """Stream ``url`` to ``dest``; when the live site fails, its closest Wayback snapshot.
 
     Returns the URL the bytes came from. The same fallback the R arm has in
@@ -1328,39 +1339,13 @@ def _download_file(url: str, dest: Path, timeout: int = 60) -> str:
     """
     from urllib.request import Request
 
-    def _stream(src: str) -> None:
-        # open.canada.ca's front end rejects a bare "Mozilla/5.0" agent
-        req = Request(src, headers={"User-Agent": "morie/1 (+https://rmorie.com)"})
-        with urlopen(req, timeout=timeout) as resp, dest.open("wb") as fh:
-            while chunk := resp.read(1 << 20):
-                fh.write(chunk)
-
-    try:
-        _stream(url)
-        return url
-    except Exception as live_exc:  # noqa: BLE001 - any live failure may have an archived copy
-        snap = wayback_snapshot_url(url)
-        if snap is None:
-            raise
-        logger.warning("Live download of %s failed (%s); using the Wayback snapshot %s", url, live_exc, snap)
-        _stream(snap)
-        return snap
-
-
-def _download_file(url: str, dest: Path, timeout: int = 60) -> str:
-    """Stream ``url`` to ``dest``; when the live site fails, its closest Wayback snapshot.
-
-    Returns the URL the bytes came from. The same fallback the R arm has in
-    ``morie_download(attempt_wayback = TRUE)``.
-    """
-    from urllib.request import Request
+    from ._progress import stream_to_file
 
     def _stream(src: str) -> None:
         # open.canada.ca's front end rejects a bare "Mozilla/5.0" agent
         req = Request(src, headers={"User-Agent": "morie/1 (+https://rmorie.com)"})
-        with urlopen(req, timeout=timeout) as resp, dest.open("wb") as fh:
-            while chunk := resp.read(1 << 20):
-                fh.write(chunk)
+        with urlopen(req, timeout=timeout) as resp:
+            stream_to_file(resp, dest, label or dest.name)
 
     try:
         _stream(url)
@@ -1462,11 +1447,13 @@ def _rmoriedata_extdata(timeout: int = 120) -> Path:
     import tempfile
 
     root.mkdir(parents=True, exist_ok=True)
+    from ._progress import stream_to_file
+
     logger.info("Fetching rmoriedata %s from CRAN (%s)...", RMORIEDATA_VERSION, RMORIEDATA_TARBALL)
-    data = urlopen(RMORIEDATA_TARBALL, timeout=timeout).read()
     with tempfile.TemporaryDirectory() as tmp:
         tgz = Path(tmp) / "rmoriedata.tar.gz"
-        tgz.write_bytes(data)
+        with urlopen(RMORIEDATA_TARBALL, timeout=timeout) as resp:
+            stream_to_file(resp, tgz, f"rmoriedata {RMORIEDATA_VERSION} (CRAN)")
         with tarfile.open(tgz) as tf:
             members = [m for m in tf.getmembers() if "/inst/extdata/" in m.name and not m.name.endswith("/")]
             for m in members:

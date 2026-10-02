@@ -19,6 +19,7 @@ Only feed this engine code you would be willing to run at your own shell.
 from __future__ import annotations
 
 import code as _code
+import contextlib
 import io
 import os
 import re
@@ -1196,6 +1197,10 @@ class PolyglotEngine:
                 if not raw:
                     break
                 if sentinel in raw:
+                    # output that ends without a newline (cat(42)) shares the sentinel's line
+                    head = raw.split(sentinel, 1)[0]
+                    if head:
+                        lines.append(head.rstrip("\n"))
                     break
                 lines.append(raw.rstrip("\n"))
 
@@ -1397,10 +1402,9 @@ class PolyglotEngine:
     ) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False)
-        try:
+        with tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False) as tmp:
             tmp.write(code)
-            tmp.close()
+        try:
             if run_cmd is not None:
                 comp = subprocess.run(
                     compile_cmd + [tmp.name], capture_output=True, text=True, timeout=_compile_timeout()
@@ -1429,10 +1433,9 @@ class PolyglotEngine:
     def _exec_go(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".go", mode="w", delete=False)
-        try:
+        with tempfile.NamedTemporaryFile(suffix=".go", mode="w", delete=False) as tmp:
             tmp.write(code)
-            tmp.close()
+        try:
             result = subprocess.run(["go", "run", tmp.name], capture_output=True, text=True, timeout=_compile_timeout())
             return ExecResult(language="go", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
@@ -1440,19 +1443,16 @@ class PolyglotEngine:
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="go", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
-            try:
+            with contextlib.suppress(OSError):
                 os.unlink(tmp.name)
-            except OSError:
-                pass
 
     def _exec_rust(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".rs", mode="w", delete=False)
+        with tempfile.NamedTemporaryFile(suffix=".rs", mode="w", delete=False) as tmp:
+            tmp.write(code)
         out_bin = tmp.name.replace(".rs", "")
         try:
-            tmp.write(code)
-            tmp.close()
             comp = subprocess.run(
                 ["rustc", tmp.name, "-o", out_bin], capture_output=True, text=True, timeout=_compile_timeout()
             )
@@ -1472,19 +1472,16 @@ class PolyglotEngine:
             return ExecResult(language="rust", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             for f in (tmp.name, out_bin):
-                try:
+                with contextlib.suppress(OSError):
                     os.unlink(f)
-                except OSError:
-                    pass
 
     def _exec_c(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".c", mode="w", delete=False)
+        with tempfile.NamedTemporaryFile(suffix=".c", mode="w", delete=False) as tmp:
+            tmp.write(code)
         out_bin = tmp.name.replace(".c", "")
         try:
-            tmp.write(code)
-            tmp.close()
             comp = subprocess.run(
                 ["cc", tmp.name, "-o", out_bin, "-lm"], capture_output=True, text=True, timeout=_compile_timeout()
             )
@@ -1500,19 +1497,16 @@ class PolyglotEngine:
             return ExecResult(language="c", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             for f in (tmp.name, out_bin):
-                try:
+                with contextlib.suppress(OSError):
                     os.unlink(f)
-                except OSError:
-                    pass
 
     def _exec_cpp(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".cpp", mode="w", delete=False)
+        with tempfile.NamedTemporaryFile(suffix=".cpp", mode="w", delete=False) as tmp:
+            tmp.write(code)
         out_bin = tmp.name.replace(".cpp", "")
         try:
-            tmp.write(code)
-            tmp.close()
             comp = subprocess.run(
                 ["c++", "-std=c++17", tmp.name, "-o", out_bin],
                 capture_output=True,
@@ -1533,18 +1527,15 @@ class PolyglotEngine:
             return ExecResult(language="cpp", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             for f in (tmp.name, out_bin):
-                try:
+                with contextlib.suppress(OSError):
                     os.unlink(f)
-                except OSError:
-                    pass
 
     def _exec_ocaml(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".ml", mode="w", delete=False)
-        try:
+        with tempfile.NamedTemporaryFile(suffix=".ml", mode="w", delete=False) as tmp:
             tmp.write(code)
-            tmp.close()
+        try:
             result = subprocess.run(["ocaml", tmp.name], capture_output=True, text=True, timeout=_run_timeout())
             return ExecResult(
                 language="ocaml", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
@@ -1554,10 +1545,8 @@ class PolyglotEngine:
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="ocaml", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
-            try:
+            with contextlib.suppress(OSError):
                 os.unlink(tmp.name)
-            except OSError:
-                pass
 
     def _exec_lua(self, code: str) -> ExecResult:
         try:
@@ -1618,10 +1607,7 @@ class PolyglotEngine:
 
     def _exec_psql(self, code: str) -> ExecResult:
         db_url = os.environ.get("MORIE_PGURL", os.environ.get("DATABASE_URL", ""))
-        if db_url:
-            cmd = ["psql", db_url, "-c", code]
-        else:
-            cmd = ["psql", "-c", code]
+        cmd = ["psql", db_url, "-c", code] if db_url else ["psql", "-c", code]
         try:
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=_run_timeout())
             return ExecResult(
@@ -1646,10 +1632,9 @@ class PolyglotEngine:
     def _exec_file_based(self, code: str, lang: str, ext: str, run_cmd: list, timeout: int = 30) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False)
-        try:
+        with tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False) as tmp:
             tmp.write(code)
-            tmp.close()
+        try:
             result = subprocess.run(run_cmd + [tmp.name], capture_output=True, text=True, timeout=timeout)
             return ExecResult(language=lang, stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
@@ -1657,21 +1642,18 @@ class PolyglotEngine:
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language=lang, stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
-            try:
+            with contextlib.suppress(OSError):
                 os.unlink(tmp.name)
-            except OSError:
-                pass
 
     def _exec_compile_run(
         self, code: str, lang: str, ext: str, compile_cmd: list, timeout: float | None = None
     ) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False)
+        with tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False) as tmp:
+            tmp.write(code)
         out_bin = tmp.name.rsplit(".", 1)[0]
         try:
-            tmp.write(code)
-            tmp.close()
             comp = subprocess.run(
                 compile_cmd + [tmp.name, "-o", out_bin],
                 capture_output=True,
@@ -1688,10 +1670,8 @@ class PolyglotEngine:
             return ExecResult(language=lang, stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
             for f in (tmp.name, out_bin):
-                try:
+                with contextlib.suppress(OSError):
                     os.unlink(f)
-                except OSError:
-                    pass
 
     def _exec_perl(self, code: str) -> ExecResult:
         return self._exec_oneshot(code, "perl", ["perl", "-e", code])
@@ -1747,10 +1727,9 @@ class PolyglotEngine:
     def _exec_nim(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".nim", mode="w", delete=False)
-        try:
+        with tempfile.NamedTemporaryFile(suffix=".nim", mode="w", delete=False) as tmp:
             tmp.write(code)
-            tmp.close()
+        try:
             result = subprocess.run(
                 ["nim", "r", "--hints:off", tmp.name], capture_output=True, text=True, timeout=_run_timeout()
             )
@@ -1762,10 +1741,8 @@ class PolyglotEngine:
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="nim", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
-            try:
+            with contextlib.suppress(OSError):
                 os.unlink(tmp.name)
-            except OSError:
-                pass
 
     def _exec_d(self, code: str) -> ExecResult:
         return self._exec_file_based(code, "d", ".d", ["rdmd"])
@@ -1819,10 +1796,9 @@ class PolyglotEngine:
     def _exec_rmd(self, code: str) -> ExecResult:
         import tempfile
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".Rmd", mode="w", delete=False)
-        try:
+        with tempfile.NamedTemporaryFile(suffix=".Rmd", mode="w", delete=False) as tmp:
             tmp.write(code)
-            tmp.close()
+        try:
             result = subprocess.run(
                 ["Rscript", "-e", f'rmarkdown::render("{tmp.name}", quiet=TRUE)'],
                 capture_output=True,
@@ -1830,20 +1806,15 @@ class PolyglotEngine:
                 timeout=120,
             )
             html_path = tmp.name.replace(".Rmd", ".html")
-            if os.path.exists(html_path):
-                stdout = f"Rendered: {html_path}"
-            else:
-                stdout = result.stdout
+            stdout = f"Rendered: {html_path}" if os.path.exists(html_path) else result.stdout
             return ExecResult(language="rmd", stdout=stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(language="rmd", stderr="Rscript not found", success=False)
         except subprocess.TimeoutExpired:
             return ExecResult(language="rmd", stderr="Timeout (120s)", success=False)
         finally:
-            try:
+            with contextlib.suppress(OSError):
                 os.unlink(tmp.name)
-            except OSError:
-                pass
 
     def _bridge_variables(self, from_lang: str, variables: dict) -> None:
         for name, value in variables.items():

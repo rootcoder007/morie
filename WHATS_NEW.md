@@ -9,6 +9,25 @@ Per-package full changelogs:
 
 ## 1.3.9 (2026-10-01)
 
+- **Downloads show their progress.** Every download (CPADS and the other
+  catalog files, the bootstrap weights, CKAN datastore pages, the rmoriedata
+  tables, the curated tables at data.rmorie.com) draws a live bar with
+  percent, size and rate on a terminal, and prints milestone lines in a log.
+  The same look in Python, rmorie, rmoriebricklayer and rmoriedata;
+  `MORIE_NO_PROGRESS=1` (Python) or `options(morie.quiet = TRUE)` (R)
+  silence it. CKAN datastore pages count rows the same way. The installers
+  (`install.sh`, `morie r-install`, `morie bricklayer`, `morie update`) run
+  each step behind a spinner with the elapsed time and the tool's last line,
+  and show the full output only when a step fails; `install.sh` now installs
+  rmorie from r-universe with its CRAN companions and puts `rmorie` on PATH.
+- **`morie serve` answers everywhere.** The relay falls back to the provider
+  chain (hosted tier, your own endpoint) when the local tool-calling agent is
+  absent or its Ollama dies, and returns 503 instead of a 200 that says "LLM
+  request failed" when nothing can answer. `morie edit` opens `$VISUAL` /
+  `$EDITOR` (arguments allowed) and `--run` executes the file afterwards; both
+  verbs now run in the clean-user smoke suite, in Python and in R, as does
+  every other verb: `parity-review` and `convert-checkpoint` report a missing
+  tree or file in words instead of a traceback.
 - **Curated datasets at data.rmorie.com.** 160 databases materialised from
   Google BigQuery public datasets (Chicago crime, EPA air quality, census,
   FEC, FDA, NOAA, Hacker News, Ethereum, World Bank, ...) are served from

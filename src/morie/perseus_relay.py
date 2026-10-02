@@ -35,9 +35,7 @@ def _create_agent():
     try:
         from .agent import create_agent
     except ImportError as exc:
-        raise RuntimeError(
-            "the morie agent is not bundled in this install (source-tree only)"
-        ) from exc
+        raise RuntimeError("the morie agent is not bundled in this install (source-tree only)") from exc
     return create_agent()
 
 
@@ -55,7 +53,7 @@ class PerseusRelayHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path in ("/v1/health", "/health", "/"):
-            model = getattr(self.agent, "_model", "unknown")
+            model = getattr(self.agent, "_model", "provider-chain")
             self._respond(
                 200,
                 {
@@ -88,25 +86,10 @@ class PerseusRelayHandler(BaseHTTPRequestHandler):
             self._respond(400, {"error": "Missing 'question' field"})
             return
 
-        if self.agent is None:
-            self.agent = _create_agent()
-
         start = time.monotonic()
-        try:
-            resp = self.agent.chat(question)
-            elapsed = time.monotonic() - start
-            self._respond(
-                200,
-                {
-                    "text": resp.text,
-                    "tool_calls": resp.tool_calls_made,
-                    "iterations": resp.iterations,
-                    "model": resp.model,
-                    "elapsed_s": round(elapsed, 2),
-                },
-            )
-        except Exception as exc:
-            self._respond(500, {"error": str(exc)})
+        code, data = answer_question(self.agent, question)
+        data["elapsed_s"] = round(time.monotonic() - start, 2)
+        self._respond(code, data)
 
     def _respond(self, code: int, data: dict[str, Any]):
         self.send_response(code)
@@ -157,11 +140,56 @@ class PerseusCloudClient:
             return False
 
 
+def answer_question(agent: Any, question: str) -> tuple[int, dict[str, Any]]:
+    """Answer through the local tool-calling agent when it works, otherwise through the
+    provider chain (hosted tier, your own endpoint, ...). 503 when nothing answered: a
+    relay must never hand a client "LLM request failed" with status 200."""
+    if agent is not None:
+        try:
+            resp = agent.chat(question)
+        except Exception as exc:  # the Ollama backend died mid-answer
+            logger.info("local agent failed (%s); answering through the provider chain", exc)
+        else:
+            if str(resp.text or "").strip() and not getattr(resp, "failed", False):
+                return 200, {
+                    "text": resp.text,
+                    "tool_calls": resp.tool_calls_made,
+                    "iterations": resp.iterations,
+                    "model": resp.model,
+                    "backend": "agent",
+                }
+            logger.info("local agent produced no answer; answering through the provider chain")
+    from .perseus import ask_percy
+
+    payload = ask_percy(question)
+    text = str(payload.get("output_text") or "")
+    if payload.get("mode") == "local_fallback":
+        return 503, {
+            "error": "no LLM backend reachable: run `morie login` for the hosted tier or start Ollama",
+            "text": text,
+            "tool_calls": [],
+            "iterations": 0,
+            "model": str(payload.get("model", "local")),
+            "backend": "local_fallback",
+        }
+    return 200, {
+        "text": text,
+        "tool_calls": [],
+        "iterations": 1,
+        "model": str(payload.get("model", "")),
+        "backend": str(payload.get("mode", "provider")),
+    }
+
+
 def serve(port: int = 8421, token: str | None = None, bind: str = "127.0.0.1"):
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 
-    agent = _create_agent()
-    model_name = getattr(agent, "_model", "unknown")
+    try:
+        agent = _create_agent()
+    except Exception as exc:  # no agent layer in this install, or no Ollama: provider chain
+        agent = None
+        logger.info("local tool-calling agent unavailable (%s); answering through the provider chain", exc)
+    model_name = getattr(agent, "_model", "provider-chain")
     logger.info("Perseus relay starting on %s:%d with model %s", bind, port, model_name)
 
     PerseusRelayHandler.agent = agent

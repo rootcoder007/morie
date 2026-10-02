@@ -834,7 +834,21 @@ def _main_impl() -> int:
     if args.command == "parity-review":
         from ._parity import build_parity_matrix, summarize_parity_matrix, write_parity_matrix
 
-        matrix = build_parity_matrix(args.epiml_root)
+        root = Path(args.epiml_root)
+        if not root.is_dir():
+            print(f"parity-review: {root} is not a directory", file=sys.stderr)
+            return 2
+        try:
+            matrix = build_parity_matrix(args.epiml_root)
+        except Exception as exc:  # noqa: BLE001 - an empty or foreign tree, reported in words
+            print(
+                f"parity-review: {root} does not look like the reference checkout ({type(exc).__name__}: {exc})",
+                file=sys.stderr,
+            )
+            return 2
+        if len(matrix) == 0:
+            print(f"parity-review: no reference modules found under {root}", file=sys.stderr)
+            return 2
         summary = summarize_parity_matrix(matrix)
         if args.output:
             write_parity_matrix(matrix, args.output)
@@ -888,7 +902,11 @@ def _main_impl() -> int:
     if args.command == "serve":
         from .perseus_relay import serve
 
-        serve(port=args.port, token=args.token, bind=args.bind)
+        try:
+            serve(port=args.port, token=args.token, bind=args.bind)
+        except OSError as exc:  # port taken, bind address refused
+            print(f"serve: {exc}", file=sys.stderr)
+            return 1
         return 0
 
     if args.command in ("agent", "assistant"):
@@ -908,8 +926,12 @@ def _main_impl() -> int:
                     print(f"\n[{len(resp.tool_calls_made)} tool calls in {resp.iterations} iterations]")
             agent.close()
             if not answered:
-                print("the agent produced no output", file=sys.stderr)
-                return 1
+                print("the local agent produced no output; answering through the provider chain", file=sys.stderr)
+                payload = ask_percy(args.question, context=getattr(args, "context", None), stream=use_stream)
+                if use_stream:
+                    return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
+                print(payload["output_text"])
+                return _llm_exit_code(payload)
         except Exception as exc:
             # the agent needs an LLM backend; say why it stepped aside
             # rather than hiding a real bug in create_agent()
@@ -975,7 +997,8 @@ def _main_impl() -> int:
         print(f"{'Key':<20} {'Type':<12} {'Rows':>8}  {'Route'}")
         print("-" * 96)
         for d in datasets:
-            status = f"{d['rows']:,}" if d["cached"] else "not cached"
+            known = d["cached"] or (d["type"] == "hosted" and d.get("rows"))  # hosted rows come from the manifest
+            status = f"{d['rows']:,}" if known else "not cached"
             print(f"{d['key']:<20} {d['type']:<12} {status:>8}  {d['route']}")
         n_own = sum(d["route"].startswith("own file") for d in datasets)
         print("-" * 96)
@@ -1054,6 +1077,7 @@ def _main_impl() -> int:
         import morie.datasets as md
 
         from .data import DATASET_CATALOG, _fuzzy_match_key, load_dataset
+        from .datahub import is_hosted_key
 
         if args.all:
             out_dir = Path(args.out or "datasets")
@@ -1101,8 +1125,7 @@ def _main_impl() -> int:
             elif (
                 args.dataset in DATASET_CATALOG
                 or _fuzzy_match_key(args.dataset) is not None
-                or args.dataset in DATASET_CATALOG
-                or _fuzzy_match_key(args.dataset) is not None
+                or is_hosted_key(args.dataset)
             ):
                 df = load_dataset(args.dataset)
             elif args.dataset == "siu-index":
@@ -1146,23 +1169,22 @@ def _main_impl() -> int:
     if args.command == "download-bootstrap":
         from .data import DATASET_CATALOG, fetch_ckan_to_cache
 
-        bootstrap_keys = {
-            "csads_2021": "oc_csads_2021_bootstrap",
-            "csads_2023": "oc_csads_2023_bootstrap",
-            "csus_2019": "oc_csus_2019_bootstrap",
-            "csus_2023": "oc_csus_2023_bootstrap",
-        }
-        targets = list(bootstrap_keys.values()) if args.survey == "all" else [bootstrap_keys[args.survey]]
+        boot = {k: e for k, e in DATASET_CATALOG.items() if e.get("type") == "bootstrap"}
+        if args.survey == "all":
+            targets = sorted(boot)
+        else:
+            survey, _, year = args.survey.partition("_")
+            targets = sorted(k for k, e in boot.items() if e.get("survey") == survey and year in str(e.get("year", "")))
+            if not targets:
+                print(f"  Unknown survey {args.survey!r}; bootstrap keys: {', '.join(sorted(boot))}")
+                return 1
         for key in targets:
-            entry = DATASET_CATALOG.get(key)
-            if not entry:
-                print(f"  Unknown: {key}")
-                continue
+            entry = DATASET_CATALOG[key]
             rid = entry.get("ckan_resource_id", "")
             if not rid:
                 print(f"  {key}: no CKAN resource ID -- download the CSV manually to {entry['local_path']}")
                 continue
-            print(f"  Downloading {key} from CKAN (limit={args.limit})...")
+            print(f"  Downloading {key} ({entry['name']}) from CKAN (limit={args.limit})...")
             try:
                 df = fetch_ckan_to_cache(key, limit=args.limit)
                 print(f"    OK: {len(df):,} rows cached")
@@ -1247,7 +1269,17 @@ def _main_impl() -> int:
     if args.command == "convert-checkpoint":
         from .pt2gguf import convert
 
-        convert(args.checkpoint, args.output, args.tokenizer_dir, args.turbo_bits)
+        if not Path(args.checkpoint).is_file():
+            print(f"convert-checkpoint: checkpoint not found: {args.checkpoint}", file=sys.stderr)
+            return 2
+        try:
+            convert(args.checkpoint, args.output, args.tokenizer_dir, args.turbo_bits)
+        except ImportError as exc:  # torch / gguf are optional extras
+            print(f"convert-checkpoint: {exc}", file=sys.stderr)
+            return 1
+        except RuntimeError as exc:  # the MORIE_TRUST_CHECKPOINT gate, a malformed file
+            print(f"convert-checkpoint: {exc}", file=sys.stderr)
+            return 1
         return 0
 
     if args.command == "login":
@@ -1580,24 +1612,21 @@ def _handle_exec_co(args: argparse.Namespace) -> int:
 def _handle_edit(args: argparse.Namespace) -> int:
     from pathlib import Path
 
+    from .editor import edit_file
+
     filepath = Path(args.file).resolve()
     if not filepath.exists():
         filepath.parent.mkdir(parents=True, exist_ok=True)
         filepath.write_text("")
 
-    try:
-        from .editor import launch_editor
-
-        return launch_editor(
-            str(filepath),
-            run_on_save=args.run,
-            lang_hint=args.lang,
-        )
-    except ImportError:
-        import subprocess
-
-        editor = "nano"
-        return subprocess.call([editor, str(filepath)])
+    rc = edit_file(str(filepath), lang_hint=args.lang)
+    if rc != 0 or not args.run:
+        return rc
+    lang = args.lang or ("r" if filepath.suffix.lower() == ".r" else "python")
+    if lang not in ("python", "r"):
+        print(f"--run supports python and r files, not {lang}", file=sys.stderr)
+        return 2
+    return _handle_exec(argparse.Namespace(code=None, filename=None, lang=lang, exec_file=str(filepath), co_dir=None))
 
 
 def _handle_repl(args: argparse.Namespace) -> int:
