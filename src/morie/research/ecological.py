@@ -5,6 +5,7 @@
 * ``Research.P12.within_orth``: the within-group residual is orthogonal to every group-level function
 * ``Research.P12.cov_decomp`` / ``var_decomp``: exact between/within decompositions
 * ``Research.P12.ecological_ge``: zero within covariance gives corr(x, y)^2 <= corr(group means)^2
+* ``Research.P12.dd_bounds`` / ``Cells.ends_attained`` / ``dd_complement`` / ``dd_aggregate_bounds`` (``P12Bounds.lean``)
 
 R parity: ``rmorie`` ``R/ecological.R`` (``morie_ecological_decompose``).
 """
@@ -14,8 +15,9 @@ from __future__ import annotations
 import math
 
 from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
-__all__ = ["ecological_decompose"]
+__all__ = ["ecological_decompose", "ecological_bounds"]
 
 
 def ecological_decompose(x, y, group) -> dict:
@@ -80,5 +82,58 @@ def ecological_decompose(x, y, group) -> dict:
             "Research.P12.cov_decomp",
             "Research.P12.var_decomp",
             "Research.P12.ecological_ge",
+        ],
+    }
+
+
+def ecological_bounds(p, q, weights=None) -> dict:
+    """Duncan-Davis bounds: what neighbourhood marginals say about an individual rate.
+
+    ``max(0, (p+q-1)/p) <= P(y | x) <= min(1, q/p)``, both ends attained
+    (``Research.P12.dd_bounds``, ``Cells.ends_attained``); the complement rate
+    follows from ``q = p r + (1-p) r'`` (``dd_complement``); the aggregate rate
+    inherits the ``m_g p_g``-weighted mean of the intervals (``dd_aggregate_bounds``).
+
+    Examples
+    --------
+    >>> r = ecological_bounds([0.2, 0.5, 0.8], [0.1, 0.3, 0.6], weights=[1000, 2000, 500])
+    >>> ([round(float(v), 12) for v in r["neighbourhoods"]["upper"]], round(r["aggregate"]["upper"], 12))
+    ([0.5, 0.6, 0.75], 0.625)
+    """
+    p = np.atleast_1d(np.asarray(p, dtype=float))
+    q = np.atleast_1d(np.asarray(q, dtype=float))
+    n = p.shape[0]
+    if q.shape[0] != n:
+        raise ValueError("p and q must have equal length")
+    if np.any(np.isnan(p)) or np.any(np.isnan(q)) or np.any((p <= 0) | (p >= 1)) or np.any((q < 0) | (q > 1)):
+        raise ValueError("p must lie in (0, 1) and q in [0, 1]")
+    w = np.ones(n) if weights is None else np.atleast_1d(np.asarray(weights, dtype=float))
+    if w.shape[0] != n or np.any(w <= 0):
+        raise ValueError("weights must be positive, one per neighbourhood")
+    lower = np.maximum(0.0, (p + q - 1) / p)
+    upper = np.minimum(1.0, q / p)
+    m = w * p
+    agg_lo = float(np.sum(m * lower) / np.sum(m))
+    agg_hi = float(np.sum(m * upper) / np.sum(m))
+    return {
+        "neighbourhoods": pd.DataFrame(
+            {
+                "p": p,
+                "q": q,
+                "lower": lower,
+                "upper": upper,
+                "width": upper - lower,
+                "point_identified": np.abs(upper - lower) < 1e-12,
+                "complement_lower": (q - p * upper) / (1 - p),
+                "complement_upper": (q - p * lower) / (1 - p),
+            }
+        ),
+        "aggregate": {"lower": agg_lo, "upper": agg_hi, "width": agg_hi - agg_lo},
+        "theorems": [
+            "Research.P12.pq_ge",
+            "Research.P12.dd_bounds",
+            "Research.P12.Cells.ends_attained",
+            "Research.P12.dd_complement",
+            "Research.P12.dd_aggregate_bounds",
         ],
     }
