@@ -209,7 +209,8 @@ morie explain power_two_proportion_gender.csv        # how to read an output tab
 morie list-datasets                                  # 71 catalog keys + the curated tables after login
 morie pull ocp21 --out cpads.csv                     # the real CPADS PUMF, cached; modules use it from then on
 morie pull --all --out datasets/                     # every catalog dataset
-morie login                                          # one key (GitHub, or --email you@example.com): hosted model tier + data.rmorie.com
+morie login                                          # one key for the hosted model tier + data.rmorie.com, with a GitHub account
+morie login --email you@example.com                  # no GitHub account: a code is emailed, type it at the prompt
 morie login --no-browser                             # server / SSH / no browser: prints a link + code for any device
 morie pull chicago_crime/incidents --out incidents.csv   # a curated table (8.6M rows)
 morie ask "which module fits a treatment-control design?"
