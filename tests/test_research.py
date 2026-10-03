@@ -734,3 +734,281 @@ def test_regression_to_the_mean_edge_branches():
         R.regression_to_mean([1, 2, 3], [1, 2, 3], float("nan"))
     r = R.regression_to_mean([5, 6], [7, 8], 4)
     assert r["low_symmetrised_change"] != r["low_symmetrised_change"]
+
+
+# ----------------------------------------------------------------- P13 HKSJ (P13HKSJ.lean)
+
+
+def test_meta_hksj_theorems_and_parity():
+    est = [-0.25, -0.10, -0.40, 0.05, -0.30]
+    v = [0.010, 0.020, 0.015, 0.030, 0.012]
+    h = R.meta_hksj(est, v)
+    # R: tau2 0.00696774193548387, q 1.08617755964300433, hksj se 0.07005678381727683, wald se 0.06722019728093469
+    assert close(h["tau2"], 0.00696774193548387, 1e-10)
+    assert close(h["q"], 1.08617755964300433, 1e-10)
+    assert close(h["hksj"]["se"], 0.07005678381727683, 1e-10)
+    assert close(h["wald"]["se"], 0.06722019728093469, 1e-10)
+    w = [1 / (vi + h["tau2"]) for vi in v]
+    mu = sum(wi * yi for wi, yi in zip(w, est)) / sum(w)
+    Q = sum(wi * (yi - mu) ** 2 for wi, yi in zip(w, est))
+    assert close(h["Q"], Q, 1e-10) and close(h["q"], Q / 4, 1e-10)
+    assert close(h["hksj"]["variance"], h["q"] / sum(w), 1e-10)
+    assert h["wider_than_wald"] == (h["q"] >= 1) == (h["hksj"]["variance"] >= h["wald"]["variance"])  # hksj_wider_iff
+    assert not h["degenerate"] and not h["equal_weights"] and h["hksj"]["df"] == 4
+    r = R.meta_hksj(est, v, tau2="REML")
+    # R: tau2 0.00290803591431826, q 1.27119896482387307, hksj se 0.06805979694728266
+    assert close(r["tau2"], 0.00290803591431826, 1e-9)
+    assert close(r["q"], 1.27119896482387307, 1e-9)
+    assert close(r["hksj"]["se"], 0.06805979694728266, 1e-9)
+    assert r["tau2_method"] == "REML"
+
+    # REML maximises the restricted log-likelihood on a grid
+    def ll(t):
+        ww = [1 / (vi + t) for vi in v]
+        m = sum(a * b for a, b in zip(ww, est)) / sum(ww)
+        return (
+            -0.5 * sum(math.log(vi + t) for vi in v)
+            - 0.5 * math.log(sum(ww))
+            - 0.5 * sum(a * (b - m) ** 2 for a, b in zip(ww, est))
+        )
+
+    assert ll(r["tau2"]) >= max(ll(i * 1e-4) for i in range(2001)) - 1e-9
+    assert R.meta_hksj([0.10, 0.11, 0.09, 0.10], [0.05] * 4, tau2="REML")["tau2"] == 0
+    # Q_eq_zero_iff
+    d = R.meta_hksj([0.2, 0.2, 0.2, 0.2], [0.01, 0.02, 0.03, 0.04])
+    assert d["degenerate"] and d["hksj"]["se"] == 0 and d["hksj"]["ci"] == {"lower": 0.2, "upper": 0.2}
+    # hksj_equal_weights: equal variances give s^2/k for DL and REML
+    y = [0.3, -0.1, 0.7, 0.2, -0.4, 0.5]
+    for method in ("DL", "REML"):
+        e = R.meta_hksj(y, [0.04] * 6, tau2=method)
+        ybar = sum(y) / 6
+        s2 = sum((yi - ybar) ** 2 for yi in y) / 5
+        assert (
+            e["equal_weights"] and close(e["hksj"]["variance"], s2 / 6, 1e-10) and close(e["t_variance"], s2 / 6, 1e-10)
+        )
+        assert close(e["estimate"], ybar, 1e-12)
+    # hksj_wider_iff on both sides: the example has q > 1; near-identical sites with large variances have q < 1
+    narrow = R.meta_hksj([0.10, 0.11, 0.09, 0.10], [0.05, 0.06, 0.04, 0.05])
+    assert narrow["q"] < 1 and not narrow["wider_than_wald"] and narrow["hksj"]["variance"] < narrow["wald"]["variance"]
+    assert h["q"] > 1 and h["wider_than_wald"] and h["hksj"]["variance"] > h["wald"]["variance"]
+
+
+# ----------------------------------------------------------------- P16 censoring (P16Censoring.lean)
+
+
+def test_backlog_censoring_theorems_and_parity():
+    b = R.backlog_censoring([30, 45, 60, 90, 120], [100, 150, 200])
+    assert (b["disposed_mean"], b["lower_bound"], b["bias_lower"], b["understates"]) == (69.0, 99.375, 30.375, True)
+    assert b["upper_bound"] == math.inf and b["n"] == 5 and b["m"] == 3 and b["pending_age"] == 150.0
+    t, a = [30.0, 45.0, 60.0, 90.0, 120.0], [100.0, 150.0, 200.0]
+    assert close(b["lower_bound"] - b["disposed_mean"], (3 / 8) * (150 - 69))  # lower_bound_sub
+    for extra in (0.0, 10.0, 500.0):
+        u = [x + extra for x in a]
+        truth = (sum(t) + sum(u)) / 8
+        assert truth >= b["lower_bound"] - 1e-12  # true_mean_ge
+        assert truth - b["disposed_mean"] >= b["bias_lower"] - 1e-12  # bias_lower
+        assert truth >= b["disposed_mean"]  # disposed_understates
+    # no_upper_bound
+    for level in (100.0, 1e3, 1e6):
+        K = max((level * 8 - sum(t) - sum(a)) / 3 + 1, 0)
+        assert (sum(t) + sum(x + K for x in a)) / 8 > level
+    c = R.backlog_censoring([100, 200], [10])
+    assert not c["understates"] and c["bias_lower"] < 0
+
+
+# ----------------------------------------------------------------- P17 replacement and desistance (P17Replacement.lean)
+
+
+def test_incapacitation_career_theorems_and_parity():
+    lam = [12, 10, 8, 6, 5, 4, 3, 2, 2, 1]
+    r = R.incapacitation_career(lam, t0=2, S=3, replacement=0.25)
+    assert (r["prevented"], r["prevented_net"], r["upper"], r["lower"], r["later"]) == (19.0, 14.25, 24.0, 12.0, 15.0)
+    assert r["factor"] == 0.75 and r["replacement"] == 0.25
+    for t0 in range(0, 6):
+        for S in range(1, 4):
+            if len(lam) < t0 + S + 1:
+                continue
+            out = R.incapacitation_career(lam, t0, S)
+            assert close(out["prevented"], sum(lam[t0 : t0 + S]))
+            assert out["prevented"] <= out["upper"] + 1e-12  # prevented_le_const
+            assert out["prevented"] >= out["lower"] - 1e-12  # prevented_ge_const
+            if not math.isnan(out["later"]):
+                assert out["later"] <= out["prevented"] + 1e-12  # later_sentence_prevents_less
+            net = R.incapacitation_career(lam, t0, S, replacement=0.4)
+            assert net["prevented_net"] <= out["prevented_net"] + 1e-12  # replaced_antitone
+            assert net["prevented_net"] <= out["upper"] + 1e-12  # prevented_net_le
+    c = R.incapacitation_career([3] * 6, t0=1, S=4)
+    assert (
+        c["prevented"] == 12.0 and c["upper"] == 12.0 and c["lower"] == 12.0 and math.isnan(c["later"])
+    )  # constant_rate
+    assert R.incapacitation_career([3] * 6, t0=1, S=4, replacement=1)["prevented_net"] == 0.0  # replaced_full
+
+
+# ----------------------------------------------------------------- P19 shrinkage (P19Shrinkage.lean)
+
+
+def _noise_law(theta, e, w):
+    """Project e onto the orthogonal complement of {1, theta} under w (so sum w e = 0 and sum w theta e = 0)."""
+    s_w = sum(w)
+    s_wt = sum(a * b for a, b in zip(w, theta))
+    s_wtt = sum(a * b * b for a, b in zip(w, theta))
+    s_we = sum(a * b for a, b in zip(w, e))
+    s_wte = sum(a * b * c for a, b, c in zip(w, theta, e))
+    det = s_w * s_wtt - s_wt**2
+    alpha = (s_wtt * s_we - s_wt * s_wte) / det
+    beta = (s_w * s_wte - s_wt * s_we) / det
+    return [ei - alpha - beta * ti for ei, ti in zip(e, theta)]
+
+
+def test_shrinkage_theorems_and_parity():
+    sl = R.shrinkage_loss([10, 20, 30, 40], [3, -3, -3, 3], B=0.5)
+    assert (sl["loss"], sl["closed_form"], sl["loss_raw"], sl["noise_law"]) == (134.0, 134.0, 36.0, True)
+    assert close(sl["B_star"], 0.0671641791044776, 1e-12) and close(sl["loss_star"], 33.5820895522388057, 1e-12)
+    assert close(sl["Se"], 36.0) and close(sl["Stheta"], 500.0)
+    theta = [3.0, 11.0, 7.0, 25.0, 14.0, 9.0, 31.0]
+    w = [1.0, 0.5, 2.0, 1.5, 1.0, 0.8, 1.2]
+    e = _noise_law(theta, [2.0, -1.0, 4.0, -3.0, 0.5, 1.5, -2.5], w)
+    assert abs(sum(a * b for a, b in zip(w, e))) < 1e-9 and abs(sum(a * b * c for a, b, c in zip(w, theta, e))) < 1e-9
+    base = R.shrinkage_loss(theta, e, w, B=0.3)
+    assert base["noise_law"]
+    Se, St = base["Se"], base["Stheta"]
+    Bstar = Se / (Se + St)
+    star = R.shrinkage_loss(theta, e, w, B=Bstar)
+    assert close(star["loss"], star["closed_form"], 1e-9)  # loss_eq
+    assert close(star["loss"], Se * St / (Se + St), 1e-9) and close(
+        star["loss_star"], Se * St / (Se + St), 1e-12
+    )  # loss_bstar_eq
+    assert star["loss_star"] <= star["loss_raw"]  # loss_bstar_le_raw
+    assert 0 <= Bstar <= 1  # bstar_mem
+    for B in (0.0, 0.1, 0.5, 0.9, 1.0, Bstar + 0.05):
+        lb = R.shrinkage_loss(theta, e, w, B=B)
+        assert close(lb["loss"], (1 - B) ** 2 * Se + B**2 * St, 1e-9)  # loss_eq
+        assert lb["loss"] >= star["loss"] - 1e-9  # loss_min
+    assert close(R.shrinkage_loss(theta, e, w, B=0)["loss"], Se, 1e-9)  # loss_raw
+    off = R.shrinkage_loss([1, 2, 3], [1, 1, 1], B=0.5)
+    assert not off["noise_law"] and not close(off["loss"], off["closed_form"])
+    z = R.shrinkage_loss([1, 1], [0, 0], B=0.3)
+    assert z["B_star"] == 0 and z["loss_star"] == 0
+    # hotspot_shrinkage parity: R B 0.132686449283538, fall_top 2.869344465756516, shrunk_top 37.130655534243481
+    y = [40, 12, 9, 25, 7, 31, 5, 18]
+    s = R.hotspot_shrinkage(y, noise_variance=sum(y) / 8)
+    assert close(s["B"], 0.132686449283538, 1e-12) and close(s["predicted_fall"][0], 2.869344465756516, 1e-12)
+    assert close(s["shrunk"][0], 37.130655534243481, 1e-12) and s["total_variance"] == 138.484375
+    ybar = sum(y) / 8
+    assert all(close(yi - si, s["B"] * (yi - ybar), 1e-10) for yi, si in zip(y, s["shrunk"]))  # predicted_fall
+    assert s["B"] == s["B_star"] and 0 <= s["B"] <= 1
+    Se2 = s["noise_variance"] * 8
+    St2 = s["signal_variance"] * 8
+    assert close(s["B_star"], Se2 / (Se2 + St2), 1e-12)
+    fixed = R.hotspot_shrinkage(y, noise_variance=sum(y) / 8, weights=[1, 2, 1, 2, 1, 2, 1, 2], B=0.25)
+    wm = sum(a * b for a, b in zip([1, 2, 1, 2, 1, 2, 1, 2], y)) / 12
+    assert fixed["B"] == 0.25 and all(close(yi - si, 0.25 * (yi - wm), 1e-10) for yi, si in zip(y, fixed["shrunk"]))
+    assert R.hotspot_shrinkage([0, 0, 0], noise_variance=0)["B"] == 0
+
+
+# ----------------------------------------------------------------- P14 slope test (P14Slope.lean)
+
+
+def test_judge_slope_theorems_and_parity():
+    judge = ["A"] * 6 + ["B"] * 6 + ["C"] * 6
+    d = [0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0]
+    y = [1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1]
+    s = R.judge_slope_test(judge, d, y)
+    assert s["judges"]["judge"] == ["A", "B", "C"] and s["judges"]["n"] == [6, 6, 6]
+    assert all(close(a, b) for a, b in zip(s["judges"]["propensity"], [2 / 6, 4 / 6, 5 / 6]))
+    assert all(close(a, b) for a, b in zip(s["judges"]["outcome"], [2 / 6, 3 / 6, 5 / 6]))
+    assert s["pairs"]["violation"] == [False, False, True] and s["violations"] == 1 and not s["monotone_consistent"]
+    assert all(close(a, b) for a, b in zip(s["pairs"]["late"], [0.5, 1.0, 2.0]))
+    assert (s["lo"], s["hi"]) == (0.0, 1.0)
+    # nested judges on one population: propensity_mono, outcome_diff, slope_bound, no violation
+    n, J = 25, 4
+    w = [1 + (i % 3) * 0.5 for i in range(n)]
+    y0 = [((i * 7) % 11) / 10 for i in range(n)]
+    y1 = [((i * 5 + 3) % 11) / 10 for i in range(n)]
+    sev = [((i * 13) % 17) / 17 for i in range(n)]
+    cuts = [0.8, 0.6, 0.4, 0.2]
+    dmat = [[1.0 if sev[i] > c else 0.0 for c in cuts] for i in range(n)]
+    jj = [str(j) for j in range(J) for _ in range(n)]
+    dd = [dmat[i][j] for j in range(J) for i in range(n)]
+    yy = [y1[i] if dmat[i][j] else y0[i] for j in range(J) for i in range(n)]
+    ww = [w[i] for _ in range(J) for i in range(n)]
+    t = R.judge_slope_test(jj, dd, yy, weights=ww, lo=0, hi=1)
+    assert t["violations"] == 0 and t["monotone_consistent"]
+    P = t["judges"]["propensity"]
+    assert all(P[i] <= P[i + 1] + 1e-15 for i in range(J - 1))  # propensity_mono
+    W = sum(w)
+    for r in range(len(t["pairs"]["j"])):
+        j, k = int(t["pairs"]["j"][r]), int(t["pairs"]["k"][r])
+        marginal = sum(w[i] * (dmat[i][k] - dmat[i][j]) * (y1[i] - y0[i]) for i in range(n)) / W
+        assert close(t["pairs"]["dY"][r], marginal, 1e-10)  # outcome_diff
+        assert abs(t["pairs"]["dY"][r]) <= t["pairs"]["dP"][r] + 1e-12  # slope_bound
+        if t["pairs"]["dP"][r] > 0:
+            assert close(t["pairs"]["late"][r], t["pairs"]["dY"][r] / t["pairs"]["dP"][r])
+    one = R.judge_slope_test(["A"] * 3, [0, 1, 1], [1, 0, 1])
+    assert one["pairs"] is None and one["violations"] == 0
+
+
+# ----------------------------------------------------------------- P15 DFL reweighting (P15Reweight.lean)
+
+
+def test_dfl_reweight_theorems_and_parity():
+    g = [True] * 6 + [False] * 6
+    x = ["a", "a", "a", "a", "b", "b", "a", "a", "b", "b", "b", "b"]
+    y = [10, 12, 11, 13, 20, 22, 8, 9, 15, 16, 14, 17]
+    r = R.dfl_reweight(g, x, y)
+    # R: mean_1 14.66666666666667, mean_0 13.16666666666667, cf 10.83333333333333, structure 3.83333333333333, composition -2.33333333333333
+    assert close(r["mean_1"], 14.66666666666667, 1e-12) and close(r["mean_0"], 13.16666666666667, 1e-12)
+    assert close(r["counterfactual"], 10.83333333333333, 1e-12)
+    assert close(r["structure"], 3.83333333333333, 1e-12) and close(r["composition"], -2.33333333333333, 1e-12)
+    assert r["psi"] == {"x": ["a", "b"], "mass_1": [4.0, 2.0], "mass_0": [2.0, 4.0], "psi": [2.0, 0.5]}
+    assert r["max_composition_gap"] == 0.0 and r["reweighted_mass"] == r["mass_1"] == 6.0  # reweighted_mass
+    assert close(r["mean_1"] - r["mean_0"], r["structure"] + r["composition"])  # decomposition
+    # counterfactual_outcome: group-0 outcomes a function of x
+    mu0 = {"a": 8.0, "b": 15.0}
+    y2 = y[:6] + [mu0[v] for v in x[6:]]
+    c = R.dfl_reweight(g, x, y2)
+    assert close(c["counterfactual"], (4 / 6) * 8 + (2 / 6) * 15)
+    # reweighting_matches with weights and three values, any h
+    g3 = [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]
+    x3 = ["a", "b", "c", "a", "b", "a", "a", "b", "c", "c", "b", "a"]
+    w3 = [1.0, 2.0, 0.5, 1.5, 1.0, 2.0, 1.0, 0.5, 1.0, 1.5, 2.0, 1.0]
+    y3 = [float(i) for i in range(12)]
+    r3 = R.dfl_reweight(g3, x3, y3, weights=w3)
+    psi = dict(zip(r3["psi"]["x"], r3["psi"]["psi"]))
+    for h in ({"a": 1.0, "b": -2.0, "c": 0.5}, {"a": 3.0, "b": 3.0, "c": -1.0}):
+        lhs = sum(psi[x3[i]] * w3[i] * h[x3[i]] for i in range(12) if not g3[i])
+        rhs = sum(w3[i] * h[x3[i]] for i in range(12) if g3[i])
+        assert close(lhs, rhs, 1e-10)
+    assert r3["max_composition_gap"] < 1e-12
+    with pytest.raises(ValueError, match="common support fails at x = b"):
+        R.dfl_reweight([True, True, False], ["a", "b", "a"], [1, 2, 3])
+
+
+# ----------------------------------------------------------------- P1 Le Cam (P1LeCam.lean)
+
+
+def test_two_point_bound_theorems_and_parity():
+    p = [0.0625, 0.25, 0.375, 0.25, 0.0625]
+    q = [0.0256, 0.1536, 0.3456, 0.3456, 0.1296]
+    b = R.two_point_bound(p, q, theta_p=2, theta_q=3, estimator=[0, 1.25, 2.5, 3.75, 5])
+    # R: tv 0.1627, bound 0.41865, minimax 1.125, risk_q 1.0368, sum_min 0.8373
+    assert close(b["tv"], 0.1627, 1e-12) and close(b["bound"], 0.41865, 1e-12)
+    assert (
+        close(b["minimax_risk"], 1.125, 1e-12)
+        and close(b["risk_q"], 1.0368, 1e-12)
+        and close(b["sum_min"], 0.8373, 1e-12)
+    )
+    assert b["satisfied"] and b["delta"] == 1
+    assert close(b["sum_min"], 1 - b["tv"])  # sum_min
+    assert 0 <= b["tv"] <= 1  # tv_nonneg, tv_le_one
+    assert b["risk_p"] + b["risk_q"] >= b["delta"] * (1 - b["tv"]) - 1e-12  # two_point
+    assert b["minimax_risk"] >= b["bound"] - 1e-12  # minimax
+    for T in ([2.5] * 5, [0, 0, 0, 0, 0], [3, 2, 3, 2, 3], [-10, 10, -10, 10, 0]):
+        e = R.two_point_bound(p, q, 2, 3, estimator=T)
+        assert e["risk_p"] + e["risk_q"] >= 1 - e["tv"] - 1e-12 and e["satisfied"]
+    no = R.two_point_bound(p, q, 2, 3)
+    assert "risk_p" not in no and close(no["bound"], 0.41865, 1e-12)
+    same = R.two_point_bound([0.5, 0.5], [0.5, 0.5], 0, 1)
+    assert same["tv"] == 0 and same["bound"] == 0.5
+    far = R.two_point_bound([1, 0], [0, 1], 0, 1)
+    assert far["tv"] == 1 and far["bound"] == 0

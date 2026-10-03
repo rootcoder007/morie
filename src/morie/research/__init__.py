@@ -16,7 +16,7 @@ from morie.research.concentration import (
     concentration_gini,
 )
 from morie.research.contagion import contagion_branching, contagion_extinction
-from morie.research.court_backlog import court_backlog
+from morie.research.court_backlog import backlog_censoring, court_backlog
 from morie.research.dark_figure import (
     dark_figure_bounds,
     dark_figure_breakdown,
@@ -24,7 +24,7 @@ from morie.research.dark_figure import (
     dark_figure_three_list,
     dark_figure_two_source,
 )
-from morie.research.disparity_decomposition import disparity_decomposition
+from morie.research.disparity_decomposition import dfl_reweight, disparity_decomposition
 from morie.research.ecological import ecological_bounds, ecological_decompose
 from morie.research.fairness_bounds import (
     fairness_base_rate_bounds,
@@ -43,12 +43,13 @@ from morie.research.feedback_loop import (
     feedback_loop_sim,
     feedback_loop_urn_law,
 )
-from morie.research.incapacitation import incapacitation
-from morie.research.judge_iv import judge_iv, judge_iv_population
+from morie.research.incapacitation import incapacitation, incapacitation_career
+from morie.research.judge_iv import judge_iv, judge_iv_population, judge_slope_test
+from morie.research.lecam import two_point_bound
 from morie.research.logit_separation import logit_separation
-from morie.research.meta_pooling import meta_dl_bias, meta_random_effects
+from morie.research.meta_pooling import meta_dl_bias, meta_hksj, meta_random_effects
 from morie.research.recording_map import detection_rate_shift, recording_map
-from morie.research.regression_to_mean import regression_to_mean
+from morie.research.regression_to_mean import hotspot_shrinkage, regression_to_mean, shrinkage_loss
 from morie.research.selection import (
     age_crime_aggregate,
     collider_arrest,
@@ -78,6 +79,7 @@ from morie.research.spillover import (
 
 __all__ = [
     "age_crime_aggregate",
+    "backlog_censoring",
     "bounds_confidence",
     "cheeger_bound",
     "collider_arrest",
@@ -87,8 +89,8 @@ __all__ = [
     "concentration_gini",
     "contagion_branching",
     "contagion_extinction",
-    "court_backlog",
     "contaminated_bounds",
+    "court_backlog",
     "dark_figure_bounds",
     "dark_figure_breakdown",
     "dark_figure_hierarchy",
@@ -97,6 +99,7 @@ __all__ = [
     "detection_rate_shift",
     "deterrence_design_check",
     "deterrence_response",
+    "dfl_reweight",
     "disparity_benchmark",
     "disparity_decomposition",
     "disparity_exposure_bounds",
@@ -113,13 +116,17 @@ __all__ = [
     "feedback_loop_sim",
     "feedback_loop_urn_law",
     "hazard_selection",
+    "hotspot_shrinkage",
     "incapacitation",
+    "incapacitation_career",
     "interracial_rates",
     "judge_iv",
     "judge_iv_population",
+    "judge_slope_test",
     "logit_rescale",
     "logit_separation",
     "meta_dl_bias",
+    "meta_hksj",
     "meta_random_effects",
     "probability_of_necessity",
     "ranking_resolution",
@@ -130,9 +137,11 @@ __all__ = [
     "sentence_effect_bounds",
     "sentence_effect_mtr",
     "sentence_effect_mts",
+    "shrinkage_loss",
     "spillover_effects",
     "spillover_exposure",
     "spillover_exposure_probs",
     "spillover_ht",
     "spillover_ht_variance",
+    "two_point_bound",
 ]

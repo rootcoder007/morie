@@ -26,6 +26,16 @@ Per-package full changelogs:
   (`disparity_decomposition`), Little's law on a docket (`court_backlog`) and the
   incapacitation identity (`incapacitation`) selective labels (`selective_labels`) and regression to the mean at selected hot spots (`regression_to_mean`); every theorem is named in the result.
 
+* Seven continuations close the ledger's open items on the theorems' own terms, each in Lean, R
+  and Python: Le Cam's two-point lower bound for the dark figure (`two_point_bound`), the
+  Hartung-Knapp-Sidik-Jonkman interval with DerSimonian-Laird or REML heterogeneity
+  (`meta_hksj`), the many-judge slope test of monotonicity (`judge_slope_test`),
+  DiNardo-Fortin-Lemieux reweighting without a linear model (`dfl_reweight`), the
+  disposed-cases mean as a bound (`backlog_censoring`), incapacitation under desistance and
+  replacement (`incapacitation_career`) and the empirical-Bayes shrinkage that gives the size
+  of the regression-to-the-mean fall (`hotspot_shrinkage`, `shrinkage_loss`). The Lean audit
+  now covers 264 theorems in 58 files, 0 sorry, standard axioms only.
+
 * Datasets: the fourteen Health Infobase tables download from the portal with the
   data.rmorie.com copy as the fallback (`morie pull hibua`), the three OTIS research
   environments are saved from data.rmorie.com for R to open, and `otisloc` (Ontario

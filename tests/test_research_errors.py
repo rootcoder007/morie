@@ -242,3 +242,113 @@ def test_recycled_half_width_and_quasi_separation():
     assert r["separation"] in ("quasi-complete", "complete")
     assert all(m > -1e-8 for m in r["margins"]) and any(m > 1e-8 for m in r["margins"])
     assert r["n_zero_margin"] is not None
+
+
+def test_meta_hksj_errors():
+    with pytest.raises(ValueError, match="at least two"):
+        R.meta_hksj([1], [1])
+    with pytest.raises(ValueError, match="equal length"):
+        R.meta_hksj([1, 2], [1, 2, 3])
+    with pytest.raises(ValueError, match="positive"):
+        R.meta_hksj([1, 2], [1, -1])
+    with pytest.raises(ValueError, match="level"):
+        R.meta_hksj([1, 2], [1, 1], level=1)
+    with pytest.raises(ValueError, match="tau2"):
+        R.meta_hksj([1, 2], [1, 1], tau2="ML")
+
+
+def test_backlog_censoring_errors():
+    with pytest.raises(ValueError, match="numeric"):
+        R.backlog_censoring(["a"], [1])
+    with pytest.raises(ValueError, match="missing"):
+        R.backlog_censoring([1, float("nan")], [1])
+    with pytest.raises(ValueError, match="non-negative"):
+        R.backlog_censoring([1, -1], [1])
+    with pytest.raises(ValueError, match="at least one"):
+        R.backlog_censoring([], [1])
+    with pytest.raises(ValueError, match="at least one"):
+        R.backlog_censoring([1], [])
+
+
+def test_incapacitation_career_errors():
+    lam = [5, 4, 3, 2, 1]
+    with pytest.raises(ValueError, match="non-negative"):
+        R.incapacitation_career([1, -1], 0, 1)
+    with pytest.raises(ValueError, match="non-negative"):
+        R.incapacitation_career(["a"], 0, 1)
+    with pytest.raises(ValueError, match="non-increasing"):
+        R.incapacitation_career([1, 2, 3], 0, 1)
+    with pytest.raises(ValueError, match="t0"):
+        R.incapacitation_career(lam, -1, 1)
+    with pytest.raises(ValueError, match="t0"):
+        R.incapacitation_career(lam, 0.5, 1)
+    with pytest.raises(ValueError, match="S must"):
+        R.incapacitation_career(lam, 0, 0)
+    with pytest.raises(ValueError, match="replacement"):
+        R.incapacitation_career(lam, 0, 1, replacement=2)
+    with pytest.raises(ValueError, match="length at least"):
+        R.incapacitation_career(lam, 3, 2)
+
+
+def test_shrinkage_errors():
+    with pytest.raises(ValueError, match="at least two"):
+        R.hotspot_shrinkage([1], 1)
+    with pytest.raises(ValueError, match="noise_variance"):
+        R.hotspot_shrinkage([1, 2], -1)
+    with pytest.raises(ValueError, match="weights"):
+        R.hotspot_shrinkage([1, 2], 1, weights=[1, -1])
+    with pytest.raises(ValueError, match="B must"):
+        R.hotspot_shrinkage([1, 2], 1, B=2)
+    with pytest.raises(ValueError, match="equal length"):
+        R.shrinkage_loss([1, 2], [1], B=0.5)
+    with pytest.raises(ValueError, match="single"):
+        R.shrinkage_loss([1, 2], [1, 2], B=[0.5, 0.6])
+    with pytest.raises(ValueError, match="single"):
+        R.shrinkage_loss([1, 2], [1, 2])
+    with pytest.raises(ValueError, match="weights"):
+        R.shrinkage_loss([1, 2], [1, 2], weights=[0, 0], B=0.5)
+
+
+def test_judge_slope_errors():
+    with pytest.raises(ValueError, match="equal length"):
+        R.judge_slope_test([1, 2, 3], [0, 1], [1, 0, 1])
+    with pytest.raises(ValueError, match="missing"):
+        R.judge_slope_test([1, 2, 3], [0, float("nan"), 1], [1, 0, 1])
+    with pytest.raises(ValueError, match="0/1"):
+        R.judge_slope_test([1, 2, 3], [0, 2, 1], [1, 0, 1])
+    with pytest.raises(ValueError, match="lo, hi"):
+        R.judge_slope_test([1, 2, 3], [0, 1, 1], [1, 0, 1], lo=0.5)
+    with pytest.raises(ValueError, match="weights"):
+        R.judge_slope_test([1, 2, 3], [0, 1, 1], [1, 0, 1], weights=[1, -1, 1])
+    with pytest.raises(ValueError, match="positive total"):
+        R.judge_slope_test([1, 1, 2], [0, 1, 1], [1, 0, 1], weights=[1, 1, 0])
+
+
+def test_dfl_reweight_errors():
+    with pytest.raises(ValueError, match="equal length"):
+        R.dfl_reweight([True, False], ["a"], [1, 2])
+    with pytest.raises(ValueError, match="missing"):
+        R.dfl_reweight([True, None], ["a", "a"], [1, 2])
+    with pytest.raises(ValueError, match="missing"):
+        R.dfl_reweight([True, False], ["a", "a"], [1, float("nan")])
+    with pytest.raises(ValueError, match="logical"):
+        R.dfl_reweight(["x", "y"], ["a", "a"], [1, 2])
+    with pytest.raises(ValueError, match="weights"):
+        R.dfl_reweight([True, False], ["a", "a"], [1, 2], weights=[1, -1])
+    with pytest.raises(ValueError, match="positive total"):
+        R.dfl_reweight([True, True], ["a", "a"], [1, 2])
+    with pytest.raises(ValueError, match="common support"):
+        R.dfl_reweight([1, 1, 0], ["a", "b", "a"], [1, 2, 3])
+
+
+def test_two_point_bound_errors():
+    with pytest.raises(ValueError, match="equal length"):
+        R.two_point_bound([0.5, 0.5], [1], 0, 1)
+    with pytest.raises(ValueError, match="equal length"):
+        R.two_point_bound(["a", "b"], [0.5, 0.5], 0, 1)
+    with pytest.raises(ValueError, match="probability"):
+        R.two_point_bound([0.5, 0.6], [0.5, 0.5], 0, 1)
+    with pytest.raises(ValueError, match="single"):
+        R.two_point_bound([0.5, 0.5], [0.5, 0.5], [0, 1], 1)
+    with pytest.raises(ValueError, match="one value per point"):
+        R.two_point_bound([0.5, 0.5], [0.5, 0.5], 0, 1, estimator=[1])

@@ -15,8 +15,9 @@ import math
 from morie.fn import _array_core as np
 from morie.fn._rng import normal_quantile, random_uniform
 from morie.fn._stats_core import norm
+from morie.fn._stats_core import t as student_t
 
-__all__ = ["meta_random_effects", "meta_dl_bias"]
+__all__ = ["meta_random_effects", "meta_dl_bias", "meta_hksj"]
 
 
 def meta_random_effects(estimates, variances, level=0.95) -> dict:
@@ -120,5 +121,110 @@ def meta_dl_bias(variances, n_draws=2000, seed=0) -> dict:
             "Research.P13.truncation_bias",
             "Research.P13.pos_part_pos",
             "Research.P13.dl_biased_under_homogeneity",
+        ],
+    }
+
+
+def _reml_tau2(y, v, tol=1e-12):
+    """REML between-site variance by golden-section search; identical to the R arm (``.morie_reml_tau2``)."""
+
+    def ll(t):
+        w = [1 / (vi + t) for vi in v]
+        mu = math.fsum(wi * yi for wi, yi in zip(w, y)) / math.fsum(w)
+        return (
+            -0.5 * math.fsum(math.log(vi + t) for vi in v)
+            - 0.5 * math.log(math.fsum(w))
+            - 0.5 * math.fsum(wi * (yi - mu) ** 2 for wi, yi in zip(w, y))
+        )
+
+    gr = (math.sqrt(5) - 1) / 2
+    a = 0.0
+    b = max(v) + 10 * (max(y) - min(y)) ** 2
+    c = b - gr * (b - a)
+    d = a + gr * (b - a)
+    fc = ll(c)
+    fd = ll(d)
+    for _ in range(300):
+        if b - a < tol:
+            break
+        if fc > fd:
+            b, d, fd = d, c, fc
+            c = b - gr * (b - a)
+            fc = ll(c)
+        else:
+            a, c, fc = c, d, fd
+            d = a + gr * (b - a)
+            fd = ll(d)
+    t = (a + b) / 2
+    return 0.0 if ll(0.0) >= ll(t) else t
+
+
+def meta_hksj(estimates, variances, tau2="DL", level=0.95) -> dict:
+    """Hartung-Knapp-Sidik-Jonkman interval with DerSimonian-Laird or REML heterogeneity.
+
+    ``Research.P13HKSJ.hksj_wider_iff`` (wider than Wald iff ``q >= 1``), ``Q_eq_zero_iff`` (degenerate
+    iff every site equals the pooled value), ``hksj_equal_weights`` (equal weights: the one-sample t variance).
+
+    Examples
+    --------
+    >>> h = meta_hksj([-0.25, -0.10, -0.40, 0.05, -0.30], [0.010, 0.020, 0.015, 0.030, 0.012])
+    >>> (round(h["tau2"], 12), round(h["q"], 12), round(h["hksj"]["se"], 12), round(h["wald"]["se"], 12), h["wider_than_wald"])
+    (0.006967741935, 1.086177559643, 0.070056783817, 0.067220197281, True)
+    >>> r = meta_hksj([-0.25, -0.10, -0.40, 0.05, -0.30], [0.010, 0.020, 0.015, 0.030, 0.012], tau2="REML")
+    >>> (round(r["tau2"], 12), round(r["q"], 12))
+    (0.002908035914, 1.271198964824)
+    """
+    if tau2 not in ("DL", "REML"):
+        raise ValueError("tau2 must be 'DL' or 'REML'")
+    y = [float(e) for e in estimates]
+    v = [float(x) for x in variances]
+    k = len(y)
+    if len(v) != k:
+        raise ValueError("estimates and variances must have equal length")
+    if k < 2:
+        raise ValueError("need at least two sites")
+    if any(math.isnan(x) for x in y + v) or any(x <= 0 for x in v):
+        raise ValueError("variances must be positive and nothing missing")
+    if level <= 0 or level >= 1:
+        raise ValueError("level must lie in (0, 1)")
+    t2 = meta_random_effects(y, v, level)["tau2"] if tau2 == "DL" else _reml_tau2(y, v)
+    w = [1 / (vi + t2) for vi in v]
+    sw = math.fsum(w)
+    mu = math.fsum(wi * yi for wi, yi in zip(w, y)) / sw
+    Q = math.fsum(wi * (yi - mu) ** 2 for wi, yi in zip(w, y))
+    q = Q / (k - 1)
+    var_h = q / sw
+    var_w = 1 / sw
+    tq = float(student_t.ppf(1 - (1 - level) / 2, df=k - 1))
+    z = float(norm.ppf(1 - (1 - level) / 2))
+    equal = all(abs(vi - v[0]) <= 1e-12 * max(1.0, abs(v[0])) for vi in v)
+    ybar = math.fsum(y) / k
+    return {
+        "k": k,
+        "tau2": t2,
+        "tau2_method": tau2,
+        "estimate": mu,
+        "Q": Q,
+        "q": q,
+        "hksj": {
+            "variance": var_h,
+            "se": math.sqrt(var_h),
+            "df": k - 1,
+            "ci": {"lower": mu - tq * math.sqrt(var_h), "upper": mu + tq * math.sqrt(var_h)},
+        },
+        "wald": {
+            "variance": var_w,
+            "se": math.sqrt(var_w),
+            "ci": {"lower": mu - z * math.sqrt(var_w), "upper": mu + z * math.sqrt(var_w)},
+        },
+        "wider_than_wald": q >= 1,
+        "degenerate": Q == 0,
+        "equal_weights": equal,
+        "t_variance": math.fsum((yi - ybar) ** 2 for yi in y) / (k - 1) / k,
+        "weights": [wi / sw for wi in w],
+        "theorems": [
+            "Research.P13HKSJ.hksj_wider_iff",
+            "Research.P13HKSJ.Q_eq_zero_iff",
+            "Research.P13HKSJ.hksj_equal_weights",
         ],
     }

@@ -9,9 +9,11 @@ R parity: ``rmorie`` ``R/regression_to_mean.R`` (``morie_regression_to_mean``).
 
 from __future__ import annotations
 
+import math
+
 from morie.fn import _array_core as np
 
-__all__ = ["regression_to_mean"]
+__all__ = ["regression_to_mean", "hotspot_shrinkage", "shrinkage_loss"]
 
 
 def regression_to_mean(x1, x2, threshold, weights=None) -> dict:
@@ -74,5 +76,106 @@ def regression_to_mean(x1, x2, threshold, weights=None) -> dict:
             "Research.P19.indicator_bound",
             "Research.P19.selected_change_nonpos",
             "Research.P19.low_selected_change_nonneg",
+        ],
+    }
+
+
+def _w_or_ones(weights, n):
+    if weights is None:
+        return [1.0] * n
+    w = [float(x) for x in weights]
+    if len(w) != n or any(math.isnan(x) or x < 0 for x in w) or math.fsum(w) <= 0:
+        raise ValueError("weights must be non-negative with positive total")
+    return w
+
+
+def hotspot_shrinkage(y, noise_variance, weights=None, B=None) -> dict:
+    """Empirical-Bayes shrinkage of hot-spot counts: the expected size of the fall.
+
+    ``Research.P19Shrinkage.loss_min`` / ``bstar_mem`` / ``predicted_fall``.
+
+    Examples
+    --------
+    >>> s = hotspot_shrinkage([40, 12, 9, 25, 7, 31, 5, 18], noise_variance=18.375)
+    >>> (round(s["B"], 12), round(s["predicted_fall"][0], 12), round(s["shrunk"][0], 12), s["total_variance"])
+    (0.132686449284, 2.869344465757, 37.130655534243, 138.484375)
+    """
+    yy = [float(x) for x in y]
+    if len(yy) < 2 or any(math.isnan(x) for x in yy):
+        raise ValueError("y must be at least two numbers without NA")
+    if noise_variance is None or math.isnan(noise_variance) or noise_variance < 0:
+        raise ValueError("noise_variance must be a non-negative number")
+    w = _w_or_ones(weights, len(yy))
+    W = math.fsum(w)
+    ybar = math.fsum(wi * yi for wi, yi in zip(w, yy)) / W
+    total = math.fsum(wi * (yi - ybar) ** 2 for wi, yi in zip(w, yy)) / W
+    signal = max(total - noise_variance, 0.0)
+    Se = noise_variance * W
+    St = signal * W
+    Bstar = Se / (Se + St) if Se + St > 0 else 0.0
+    if B is None:
+        B = Bstar
+    if B is None or math.isnan(B) or B < 0 or B > 1:
+        raise ValueError("B must lie in [0, 1]")
+    return {
+        "mean": ybar,
+        "total_variance": total,
+        "noise_variance": float(noise_variance),
+        "signal_variance": signal,
+        "B": B,
+        "B_star": Bstar,
+        "shrunk": [(1 - B) * yi + B * ybar for yi in yy],
+        "predicted_fall": [B * (yi - ybar) for yi in yy],
+        "theorems": [
+            "Research.P19Shrinkage.loss_min",
+            "Research.P19Shrinkage.bstar_mem",
+            "Research.P19Shrinkage.predicted_fall",
+        ],
+    }
+
+
+def shrinkage_loss(theta, noise, weights=None, B=None) -> dict:
+    """Loss of the shrinkage estimator against a known truth, next to the closed form of ``loss_eq``.
+
+    ``Research.P19Shrinkage.loss_eq`` / ``loss_min`` / ``loss_bstar_eq`` / ``loss_bstar_le_raw``.
+
+    Examples
+    --------
+    >>> l = shrinkage_loss([10, 20, 30, 40], [3, -3, -3, 3], B=0.5)
+    >>> (l["loss"], l["closed_form"], round(l["B_star"], 12), round(l["loss_star"], 12), l["loss_raw"], l["noise_law"])
+    (134.0, 134.0, 0.067164179104, 33.582089552239, 36.0, True)
+    """
+    th = [float(x) for x in theta]
+    e = [float(x) for x in noise]
+    if len(th) != len(e) or any(math.isnan(x) for x in th + e):
+        raise ValueError("theta and noise must be numeric of equal length without NA")
+    if B is None or isinstance(B, list | tuple) or math.isnan(B):
+        raise ValueError("B must be a single number")
+    w = _w_or_ones(weights, len(th))
+    W = math.fsum(w)
+    y = [a + b for a, b in zip(th, e)]
+    ybar = math.fsum(wi * yi for wi, yi in zip(w, y)) / W
+    tbar = math.fsum(wi * ti for wi, ti in zip(w, th)) / W
+    Se = math.fsum(wi * ei**2 for wi, ei in zip(w, e))
+    St = math.fsum(wi * (ti - tbar) ** 2 for wi, ti in zip(w, th))
+    shrunk = [(1 - B) * yi + B * ybar for yi in y]
+    law = abs(math.fsum(wi * ei for wi, ei in zip(w, e))) <= 1e-10 * max(1.0, W) and abs(
+        math.fsum(wi * ti * ei for wi, ti, ei in zip(w, th, e))
+    ) <= 1e-10 * max(1.0, math.fsum(abs(wi * ti) for wi, ti in zip(w, th)))
+    Bstar = Se / (Se + St) if Se + St > 0 else 0.0
+    return {
+        "loss": math.fsum(wi * (si - ti) ** 2 for wi, si, ti in zip(w, shrunk, th)),
+        "closed_form": (1 - B) ** 2 * Se + B**2 * St,
+        "noise_law": law,
+        "Se": Se,
+        "Stheta": St,
+        "B_star": Bstar,
+        "loss_star": Se * St / (Se + St) if Se + St > 0 else 0.0,
+        "loss_raw": Se,
+        "theorems": [
+            "Research.P19Shrinkage.loss_eq",
+            "Research.P19Shrinkage.loss_min",
+            "Research.P19Shrinkage.loss_bstar_eq",
+            "Research.P19Shrinkage.loss_bstar_le_raw",
         ],
     }

@@ -9,10 +9,12 @@ R parity: ``rmorie`` ``R/judge_iv.R`` (``morie_judge_iv_population``, ``morie_ju
 
 from __future__ import annotations
 
+import math
+
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
-__all__ = ["judge_iv_population", "judge_iv"]
+__all__ = ["judge_iv_population", "judge_iv", "judge_slope_test"]
 
 _THEOREMS = [
     "Research.P14.itt_decomposition",
@@ -137,5 +139,88 @@ def judge_iv(z, d, y, weights=None, defier_share=(0, 0.05, 0.1), defier_effect=(
             "Research.P14.late_identification",
             "Research.P14.wald_with_defiers",
             "Research.P14.first_stage_decomposition",
+        ],
+    }
+
+
+def judge_slope_test(judge, d, y, weights=None, lo=None, hi=None) -> dict:
+    """The many-judge slope test of monotonicity (Frandsen, Lefgren & Leslie 2023).
+
+    ``Research.P14Slope.propensity_mono`` / ``outcome_diff`` / ``slope_bound`` / ``violation_refutes_monotonicity``.
+
+    Examples
+    --------
+    >>> judge = ["A"] * 6 + ["B"] * 6 + ["C"] * 6
+    >>> d = [0, 0, 0, 1, 1, 0,  0, 1, 1, 1, 0, 1,  1, 1, 1, 1, 1, 0]
+    >>> y = [1, 0, 0, 1, 0, 0,  0, 1, 1, 0, 0, 1,  1, 1, 1, 1, 0, 1]
+    >>> s = judge_slope_test(judge, d, y)
+    >>> (s["judges"]["judge"], [round(p, 12) for p in s["judges"]["propensity"]], s["pairs"]["violation"], s["violations"])
+    (['A', 'B', 'C'], [0.333333333333, 0.666666666667, 0.833333333333], [False, False, True], 1)
+    >>> [round(v, 12) for v in s["pairs"]["late"]]
+    [0.5, 1.0, 2.0]
+    """
+    judge = [str(j) for j in judge]
+    dd = [float(x) for x in d]
+    yy = [float(x) for x in y]
+    n = len(judge)
+    if len(dd) != n or len(yy) != n:
+        raise ValueError("judge, d and y must have equal length")
+    if any(math.isnan(x) for x in dd + yy):
+        raise ValueError("no missing values allowed")
+    if any(x not in (0.0, 1.0) for x in dd):
+        raise ValueError("d must be 0/1")
+    lo = min(yy) if lo is None else float(lo)
+    hi = max(yy) if hi is None else float(hi)
+    if any(v < lo or v > hi for v in yy):
+        raise ValueError("y must lie in [lo, hi]")
+    w = [1.0] * n if weights is None else [float(x) for x in weights]
+    if len(w) != n or any(math.isnan(x) or x < 0 for x in w):
+        raise ValueError("weights must be non-negative")
+    ids = list(dict.fromkeys(judge))
+    P, Y, cnt = {}, {}, {}
+    for j in ids:
+        sel = [i for i in range(n) if judge[i] == j]
+        tw = math.fsum(w[i] for i in sel)
+        if tw <= 0:
+            raise ValueError("every judge needs positive total weight")
+        P[j] = math.fsum(w[i] * dd[i] for i in sel) / tw
+        Y[j] = math.fsum(w[i] * yy[i] for i in sel) / tw
+        cnt[j] = len(sel)
+    order = sorted(ids, key=lambda j: P[j])
+    judges = {
+        "judge": order,
+        "n": [cnt[j] for j in order],
+        "propensity": [P[j] for j in order],
+        "outcome": [Y[j] for j in order],
+    }
+    pairs = None
+    if len(order) >= 2:
+        pairs = {k: [] for k in ("j", "k", "dP", "dY", "bound", "violation", "late")}
+        for a in range(len(order)):
+            for b in range(a + 1, len(order)):
+                j, k = order[a], order[b]
+                dP = P[k] - P[j]
+                dY = Y[k] - Y[j]
+                bound = (hi - lo) * dP
+                pairs["j"].append(j)
+                pairs["k"].append(k)
+                pairs["dP"].append(dP)
+                pairs["dY"].append(dY)
+                pairs["bound"].append(bound)
+                pairs["violation"].append(abs(dY) > bound + 1e-12)
+                pairs["late"].append(dY / dP if dP > 0 else math.nan)
+    viol = 0 if pairs is None else sum(pairs["violation"])
+    return {
+        "judges": judges,
+        "pairs": pairs,
+        "violations": viol,
+        "monotone_consistent": viol == 0,
+        "lo": lo,
+        "hi": hi,
+        "theorems": [
+            "Research.P14Slope.propensity_mono",
+            "Research.P14Slope.outcome_diff",
+            "Research.P14Slope.slope_bound",
+            "Research.P14Slope.violation_refutes_monotonicity",
         ],
     }

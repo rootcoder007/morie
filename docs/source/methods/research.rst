@@ -35,6 +35,9 @@ Problems and functions
    * - P1 dark figure
      - ``P1.TwoSource.petersen_bounds``, ``P1.true_rate_bounds``, ``P1.dark_figure_bounds``, ``P1.conclusion_holds_below_breakdown``, ``P1.three_list_saturated_fits``, ``P1.offence_count_bounds``
      - :func:`dark_figure_two_source`, :func:`dark_figure_bounds`, :func:`dark_figure_breakdown`, :func:`dark_figure_three_list`, :func:`dark_figure_hierarchy`
+   * - P1 Le Cam two-point bound
+     - ``P1LeCam.sum_min``, ``P1LeCam.two_point``, ``P1LeCam.minimax``
+     - :func:`two_point_bound`
    * - P2 selection in police records
      - ``P2.rate_bounds``, ``P2.disparity_bounds``, ``P2.benchmark_product``, ``P2.offset_shift``, ``P2.rr_between``, ``P2.dyad_ratio``, ``P2.collider_or_eq_background``
      - :func:`disparity_exposure_bounds`, :func:`disparity_benchmark`, :func:`relative_risk_from_or`, :func:`interracial_rates`, :func:`collider_arrest`
@@ -71,24 +74,42 @@ Problems and functions
    * - P13 pooling evaluations
      - ``P13.truncation_bias``, ``P13.dl_biased_under_homogeneity``, ``P13.re_var_ge``
      - :func:`meta_random_effects`, :func:`meta_dl_bias`
+   * - P13 HKSJ interval
+     - ``P13HKSJ.hksj_wider_iff``, ``P13HKSJ.Q_eq_zero_iff``, ``P13HKSJ.hksj_equal_weights``
+     - :func:`meta_hksj`
    * - P14 judge leniency
      - ``P14.itt_decomposition``, ``P14.first_stage_decomposition``, ``P14.late_identification``, ``P14.wald_with_defiers``, ``P14.defiers_can_flip``
      - :func:`judge_iv_population`, :func:`judge_iv`
+   * - P14 many-judge slope test
+     - ``P14Slope.propensity_mono``, ``P14Slope.outcome_diff``, ``P14Slope.slope_bound``, ``P14Slope.violation_refutes_monotonicity``
+     - :func:`judge_slope_test`
    * - P15 disparity decomposition
      - ``P15.twofold_B``, ``P15.threefold``, ``P15.reference_dependence``, ``P15.attribution_shift``
      - :func:`disparity_decomposition`
+   * - P15 DFL reweighting
+     - ``P15Reweight.reweighting_matches``, ``P15Reweight.reweighted_mass``, ``P15Reweight.counterfactual_outcome``
+     - :func:`dfl_reweight`
    * - P16 court backlog
      - ``P16.occupancy_integral``, ``P16.little``, ``P16.little_backlog``, ``P16.little_target``
      - :func:`court_backlog`
+   * - P16 disposed-cases mean as a bound
+     - ``P16Censoring.true_mean_ge``, ``P16Censoring.bias_lower``, ``P16Censoring.disposed_understates``, ``P16Censoring.no_upper_bound``
+     - :func:`backlog_censoring`
    * - P17 incapacitation
      - ``P17.steady_state_rate``, ``P17.prevented_share_lt_one``, ``P17.marginal_prevention_eq``, ``P17.high_rate_more_prevented``
      - :func:`incapacitation`
+   * - P17 desistance and replacement
+     - ``P17Replacement.prevented_le_const``, ``P17Replacement.prevented_ge_const``, ``P17Replacement.later_sentence_prevents_less``, ``P17Replacement.prevented_net_le``
+     - :func:`incapacitation_career`
    * - P18 selective labels
      - ``P18.nested_rate_identified``, ``P18.unobserved_bounds``, ``P18.unobserved_width``
      - :func:`selective_labels`
    * - P19 regression to the mean
      - ``P19.exchange_cross``, ``P19.indicator_bound``, ``P19.selected_change_nonpos``
      - :func:`regression_to_mean`
+   * - P19 empirical-Bayes shrinkage
+     - ``P19Shrinkage.loss_eq``, ``P19Shrinkage.loss_min``, ``P19Shrinkage.loss_bstar_le_raw``, ``P19Shrinkage.predicted_fall``
+     - :func:`hotspot_shrinkage`, :func:`shrinkage_loss`
 
 Reference
 ---------

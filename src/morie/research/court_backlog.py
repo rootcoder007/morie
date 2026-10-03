@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import math
 
-__all__ = ["court_backlog"]
+__all__ = ["court_backlog", "backlog_censoring"]
 
 
 def court_backlog(arrivals, dispositions, horizon=None, target_backlog=None) -> dict:
@@ -77,3 +77,49 @@ def occupancy_on_grid(arrivals, dispositions, horizon, step=0.001) -> float:
     d = [float(v) for v in dispositions]
     k = int(math.floor(horizon / step))
     return sum(_pending_count(a, d, i * step) for i in range(k + 1)) * step
+
+
+def backlog_censoring(disposed, pending_ages) -> dict:
+    """The disposed-cases mean as a bound: what the pending cases imply.
+
+    ``Research.P16Censoring.true_mean_ge`` / ``lower_bound_sub`` / ``bias_lower`` / ``disposed_understates`` /
+    ``no_upper_bound``.
+
+    Examples
+    --------
+    >>> b = backlog_censoring([30, 45, 60, 90, 120], [100, 150, 200])
+    >>> (b["disposed_mean"], b["lower_bound"], b["bias_lower"], b["understates"], b["upper_bound"])
+    (69.0, 99.375, 30.375, True, inf)
+    """
+    try:
+        t = [float(x) for x in disposed]
+        a = [float(x) for x in pending_ages]
+    except (TypeError, ValueError) as exc:
+        raise ValueError("disposed and pending_ages must be numeric") from exc
+    if any(math.isnan(x) for x in t + a):
+        raise ValueError("no missing values allowed")
+    if any(x < 0 for x in t + a):
+        raise ValueError("durations and ages must be non-negative")
+    n, m = len(t), len(a)
+    if n < 1 or m < 1:
+        raise ValueError("need at least one disposed and one pending case")
+    tbar = math.fsum(t) / n
+    abar = math.fsum(a) / m
+    lower = (math.fsum(t) + math.fsum(a)) / (n + m)
+    return {
+        "n": n,
+        "m": m,
+        "disposed_mean": tbar,
+        "pending_age": abar,
+        "lower_bound": lower,
+        "bias_lower": (m / (n + m)) * (abar - tbar),
+        "understates": tbar <= abar,
+        "upper_bound": math.inf,
+        "theorems": [
+            "Research.P16Censoring.true_mean_ge",
+            "Research.P16Censoring.lower_bound_sub",
+            "Research.P16Censoring.bias_lower",
+            "Research.P16Censoring.disposed_understates",
+            "Research.P16Censoring.no_upper_bound",
+        ],
+    }

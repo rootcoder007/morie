@@ -9,10 +9,12 @@ R parity: ``rmorie`` ``R/disparity_decomposition.R`` (``morie_disparity_decompos
 
 from __future__ import annotations
 
+import math
+
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
-__all__ = ["disparity_decomposition"]
+__all__ = ["disparity_decomposition", "dfl_reweight"]
 
 
 def _ols(X, y):
@@ -101,5 +103,83 @@ def disparity_decomposition(y, X, group, reference, names=None, shift=1.0) -> di
             "Research.P15.reference_dependence",
             "Research.P15.explained_eq_iff",
             "Research.P15.attribution_shift",
+        ],
+    }
+
+
+def dfl_reweight(group, x, y, weights=None) -> dict:
+    """DiNardo-Fortin-Lemieux reweighting: composition and structure without a linear model.
+
+    ``Research.P15Reweight.reweighting_matches`` / ``reweighted_mass`` / ``counterfactual_outcome`` / ``decomposition``.
+
+    Examples
+    --------
+    >>> g = [True] * 6 + [False] * 6
+    >>> x = ["a", "a", "a", "a", "b", "b",  "a", "a", "b", "b", "b", "b"]
+    >>> y = [10, 12, 11, 13, 20, 22,  8, 9, 15, 16, 14, 17]
+    >>> r = dfl_reweight(g, x, y)
+    >>> tuple(round(r[k], 12) for k in ("mean_1", "mean_0", "counterfactual", "structure", "composition"))
+    (14.666666666667, 13.166666666667, 10.833333333333, 3.833333333333, -2.333333333333)
+    >>> (r["psi"]["x"], r["psi"]["psi"], r["max_composition_gap"])
+    (['a', 'b'], [2.0, 0.5], 0.0)
+    """
+    n = len(group)
+    if len(x) != n or len(y) != n:
+        raise ValueError("group, x and y must have equal length")
+    if any(v is None for v in group) or any(v is None for v in x):
+        raise ValueError("no missing values allowed")
+    g = []
+    for v in group:
+        if isinstance(v, bool):
+            g.append(v)
+        elif v in (0, 1):
+            g.append(bool(v))
+        else:
+            raise ValueError("group must be logical or 0/1")
+    yy = [float(v) for v in y]
+    if any(math.isnan(v) for v in yy):
+        raise ValueError("no missing values allowed")
+    w = [1.0] * n if weights is None else [float(v) for v in weights]
+    if len(w) != n or any(math.isnan(v) or v < 0 for v in w):
+        raise ValueError("weights must be non-negative")
+    xs = [str(v) for v in x]
+    if math.fsum(w[i] for i in range(n) if g[i]) <= 0 or math.fsum(w[i] for i in range(n) if not g[i]) <= 0:
+        raise ValueError("both groups need positive total weight")
+    vals = list(dict.fromkeys(xs))
+    m1 = {v: math.fsum(w[i] for i in range(n) if g[i] and xs[i] == v) for v in vals}
+    m0 = {v: math.fsum(w[i] for i in range(n) if not g[i] and xs[i] == v) for v in vals}
+    bad = [v for v in vals if m1[v] > 0 and m0[v] == 0]
+    if bad:
+        raise ValueError("common support fails at x = " + ", ".join(bad))
+    psi = {v: (m1[v] / m0[v] if m0[v] > 0 else 0.0) for v in vals}
+    pw = [w[i] * psi[xs[i]] for i in range(n)]
+    i1 = [i for i in range(n) if g[i]]
+    i0 = [i for i in range(n) if not g[i]]
+    mean_1 = math.fsum(w[i] * yy[i] for i in i1) / math.fsum(w[i] for i in i1)
+    mean_0 = math.fsum(w[i] * yy[i] for i in i0) / math.fsum(w[i] for i in i0)
+    rw_mass = math.fsum(pw[i] for i in i0)
+    cf = math.fsum(pw[i] * yy[i] for i in i0) / rw_mass
+    tot1 = math.fsum(m1.values())
+    gap = max(abs(math.fsum(pw[i] for i in i0 if xs[i] == v) / rw_mass - m1[v] / tot1) for v in vals)
+    return {
+        "mean_1": mean_1,
+        "mean_0": mean_0,
+        "counterfactual": cf,
+        "structure": mean_1 - cf,
+        "composition": cf - mean_0,
+        "psi": {
+            "x": vals,
+            "mass_1": [m1[v] for v in vals],
+            "mass_0": [m0[v] for v in vals],
+            "psi": [psi[v] for v in vals],
+        },
+        "reweighted_mass": rw_mass,
+        "mass_1": tot1,
+        "max_composition_gap": gap,
+        "theorems": [
+            "Research.P15Reweight.reweighting_matches",
+            "Research.P15Reweight.reweighted_mass",
+            "Research.P15Reweight.counterfactual_outcome",
+            "Research.P15Reweight.decomposition",
         ],
     }

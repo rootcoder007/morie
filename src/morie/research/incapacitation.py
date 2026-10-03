@@ -11,10 +11,12 @@ R parity: ``rmorie`` ``R/incapacitation.R`` (``morie_incapacitation``).
 
 from __future__ import annotations
 
+import math
+
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
-__all__ = ["incapacitation"]
+__all__ = ["incapacitation", "incapacitation_career"]
 
 
 def incapacitation(lam, q, S, shares=None):
@@ -58,3 +60,52 @@ def incapacitation(lam, q, S, shares=None):
         "Research.P17.high_rate_more_prevented",
     ]
     return out
+
+
+def incapacitation_career(lambda_path, t0, S, replacement=0.0) -> dict:
+    """Incapacitation under desistance (a non-increasing rate path) and replacement.
+
+    ``Research.P17Replacement.prevented_le_const`` / ``prevented_ge_const`` / ``later_sentence_prevents_less`` /
+    ``replaced_antitone`` / ``prevented_net_le``.
+
+    Examples
+    --------
+    >>> r = incapacitation_career([12, 10, 8, 6, 5, 4, 3, 2, 2, 1], t0=2, S=3, replacement=0.25)
+    >>> (r["prevented"], r["prevented_net"], r["upper"], r["lower"], r["later"])
+    (19.0, 14.25, 24.0, 12.0, 15.0)
+    """
+    try:
+        lam = [float(x) for x in lambda_path]
+    except (TypeError, ValueError) as exc:
+        raise ValueError("lambda_path must be non-negative numbers") from exc
+    if any(math.isnan(x) or x < 0 for x in lam):
+        raise ValueError("lambda_path must be non-negative numbers")
+    if any(b > a for a, b in zip(lam, lam[1:])):
+        raise ValueError("lambda_path must be non-increasing (desistance)")
+    if t0 < 0 or t0 != int(t0):
+        raise ValueError("t0 must be a non-negative integer")
+    if S < 1 or int(S) != S:
+        raise ValueError("S must be a positive integer")
+    if replacement < 0 or replacement > 1:
+        raise ValueError("replacement must lie in [0, 1]")
+    t0, S = int(t0), int(S)
+    if len(lam) < t0 + S + 1:
+        raise ValueError("lambda_path must have length at least t0 + S + 1")
+    prevented = math.fsum(lam[t0 : t0 + S])
+    later = math.fsum(lam[t0 + 1 : t0 + 1 + S]) if len(lam) >= t0 + S + 2 else math.nan
+    return {
+        "prevented": prevented,
+        "prevented_net": (1 - replacement) * prevented,
+        "upper": S * lam[t0],
+        "lower": S * lam[t0 + S],
+        "later": later,
+        "replacement": replacement,
+        "factor": 1 - replacement,
+        "theorems": [
+            "Research.P17Replacement.prevented_le_const",
+            "Research.P17Replacement.prevented_ge_const",
+            "Research.P17Replacement.later_sentence_prevents_less",
+            "Research.P17Replacement.replaced_antitone",
+            "Research.P17Replacement.prevented_net_le",
+        ],
+    }
