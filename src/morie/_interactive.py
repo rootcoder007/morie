@@ -105,7 +105,17 @@ def _download(url: str, dest: Path, label: str) -> None:
     download_url(url, dest, label, timeout=60)
 
 
-def install(ref: str | None = None, source: str | None = None, verify: bool = True, out=print) -> int:
+def _textual_available() -> bool:
+    try:
+        import textual  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
+def install(
+    ref: str | None = None, source: str | None = None, verify: bool = True, out=print, force: bool = False
+) -> int:
     """Fetch, verify and enable the five files. Returns a process exit code."""
     from urllib.error import HTTPError, URLError
 
@@ -113,6 +123,18 @@ def install(ref: str | None = None, source: str | None = None, verify: bool = Tr
     ref = ref or default_ref(version)
     expected = manifest()
     d = data_dir()
+    if (
+        not force
+        and not source
+        and expected
+        and installed_version(d) == version
+        and len(present(d)) == len(FILES)
+        and all(sha256_of(d / n) == expected.get(n) for n in FILES)
+    ):
+        out(
+            f"The interactive layer for morie {version} is already installed in {d} (verified). Pass --force to fetch it again."
+        )
+        return 0
     if verify and not expected:
         out("This build carries no manifest for the interactive layer, so the files cannot be verified.")
         out("Pass --no-verify to install them on trust, or run morie from a source checkout.")
@@ -157,7 +179,12 @@ def install(ref: str | None = None, source: str | None = None, verify: bool = Tr
     where = "a local directory" if source else ref
     checked = "verified against the bundled manifest" if verify else "not verified"
     out(f"Installed the interactive layer for morie {version} from {where} into {d} ({checked}).")
-    out('morie repl, morie exec and morie agent work now; morie tui also needs: pip install "morie[interactive]"')
+    if _textual_available():
+        out("morie repl, morie exec, morie agent, morie edit and morie tui work now.")
+    else:
+        out(
+            'morie repl, morie exec, morie agent and morie edit work now; morie tui also needs: pip install "morie[interactive]"'
+        )
     out("Remove it again with: morie interactive remove")
     return 0
 

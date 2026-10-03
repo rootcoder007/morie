@@ -139,7 +139,13 @@ def _rotation_rows(d, seed):
 
 
 def verify_orthogonal(Q: F64, atol: float = 1e-10) -> bool:
-    """Verify that Q is orthogonal: Q^T · Q ≈ I."""
+    """Verify that Q is orthogonal: Q^T · Q ≈ I.
+
+    Examples
+    --------
+    >>> verify_orthogonal(rotation_matrix(8, seed=1))
+    True
+    """
     d = Q.shape[0]
     return bool(np.allclose(Q.T @ Q, np.eye(d), atol=atol))
 
@@ -219,8 +225,7 @@ def lloyd_max_codebook(d: int, bits: int, n_iter: int = 200) -> F64:
 
     cvals = [float(v) for v in centroids]
     for _ in range(n_iter):
-        bounds = [lo] + [0.5 * (cvals[k] + cvals[k + 1])
-                         for k in range(K - 1)] + [hi]
+        bounds = [lo] + [0.5 * (cvals[k] + cvals[k + 1]) for k in range(K - 1)] + [hi]
         new_cvals = [0.0] * K
         for k in range(K):
             # grid >= bounds[k] and grid < bounds[k + 1]
@@ -845,8 +850,7 @@ def pack_indices(indices: U8, bits: int) -> bytes:
     bytes
         Packed byte string.
     """
-    vals = [int(v) for v in (indices.tolist()
-                             if hasattr(indices, "tolist") else indices)]
+    vals = [int(v) for v in (indices.tolist() if hasattr(indices, "tolist") else indices)]
     if bits == 8:
         return bytes(vals)
 
@@ -860,8 +864,7 @@ def pack_indices(indices: U8, bits: int) -> bytes:
         byte_idx = bit_pos // 8
         bit_offset = bit_pos % 8
         # Spread across at most 2 bytes
-        packed[byte_idx] |= ((idx & ((1 << bits) - 1))
-                             << bit_offset) & 0xFF
+        packed[byte_idx] |= ((idx & ((1 << bits) - 1)) << bit_offset) & 0xFF
         overflow = bit_offset + bits - 8
         if overflow > 0 and byte_idx + 1 < n_bytes:
             packed[byte_idx + 1] |= (idx >> (bits - overflow)) & 0xFF

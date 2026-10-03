@@ -51,9 +51,6 @@ class _MissingDep:
 
 from morie.fn._glm_core import (
     FTestAnovaPower,
-    NormalIndPower,
-    TTestIndPower,
-    TTestPower,
 )
 
 
@@ -151,6 +148,15 @@ def bootstrap_ci(
     ----------
     Efron, B., & Tibshirani, R. J. (1993). *An Introduction to the Bootstrap*.
     Chapman & Hall/CRC. https://doi.org/10.1201/9780429246593
+
+    Examples
+    --------
+    >>> from morie.fn import _array_core as np
+    >>> from morie.fn import _frame_core as pd
+    >>> df = pd.DataFrame({"x": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]})
+    >>> lo, hi = bootstrap_ci(lambda d: float(np.mean(d["x"])), df, n_iterations=200, seed=1)
+    >>> (round(lo, 3), round(hi, 3))
+    (3.0, 6.128)
     """
     # Set the random seed BEFORE any stochastic operation so that all
     # bootstrap draws are deterministic given the same (data, seed) pair.
@@ -1206,7 +1212,7 @@ def _fisher_conditional(table, conf_level=0.95):
     interval of a 2x2 table from the noncentral hypergeometric
     distribution, a port of R's fisher.test (Fisher 1935; Cornfield 1956).
     Returns (estimate, ci_lower, ci_upper)."""
-    (a, b), (c, d) = [[int(v) for v in r] for r in table]
+    (a, b), (c, d) = ([int(v) for v in r] for r in table)
     m, n, k = a + c, b + d, a + b
     lo, hi = max(0, k - n), min(k, m)
     support = list(range(lo, hi + 1))

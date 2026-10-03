@@ -1,3 +1,4 @@
+import io
 from pathlib import Path
 
 import pytest
@@ -7,7 +8,15 @@ from morie.runner import build_parser, execute_pipeline, main
 _RTESTS_DIR = Path(__file__).resolve().parents[1] / "rtests"
 
 
+class _TtyStdin(io.StringIO):
+    """stdin that reports a terminal, so the confirmation prompt (mocked below) is reached under pytest."""
+
+    def isatty(self):
+        return True
+
+
 def test_execute_pipeline_requires_confirmation_by_default(monkeypatch, capsys):
+    monkeypatch.setattr("sys.stdin", _TtyStdin())
     monkeypatch.setattr("builtins.input", lambda _: "n")
 
     status = execute_pipeline()
@@ -19,6 +28,7 @@ def test_execute_pipeline_requires_confirmation_by_default(monkeypatch, capsys):
 
 
 def test_execute_pipeline_runs_when_confirmed(monkeypatch, capsys):
+    monkeypatch.setattr("sys.stdin", _TtyStdin())
     monkeypatch.setattr("builtins.input", lambda _: "y")
     monkeypatch.setattr("morie.runner.run_module", lambda *_, **__: {})
 

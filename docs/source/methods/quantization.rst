@@ -213,6 +213,8 @@ Implementation
 .. code-block:: python
 
    from morie.quant_bridge import GGMLTurboQuant
+   import numpy as np
+   x = np.random.default_rng(42).standard_normal(256)
    tq = GGMLTurboQuant()  # auto-loads .dylib
    block = tq.quantize(x.astype(np.float32), bits=3)
    x_hat = tq.dequantize(block, bits=3)

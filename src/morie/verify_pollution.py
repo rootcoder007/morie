@@ -155,6 +155,18 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
             equity_df = df
         data_source = str(p)
     else:
+        if not getattr(args, "exposure_mean", None):
+            print(
+                "no exposure given: pass --demo, --exposure-csv FILE, or --exposure-mean X with --exposure-prevalence P",
+                file=sys.stderr,
+            )
+            return 2
+        if getattr(args, "exposure_prevalence", None) in (None, 0, 0.0):
+            print(
+                "--exposure-mean needs --exposure-prevalence P (the share of the population at that mean)",
+                file=sys.stderr,
+            )
+            return 2
         exposure_mean = float(args.exposure_mean)
         exposure_prevalence = float(args.exposure_prevalence)
         data_source = "CLI scalar args"
@@ -223,7 +235,10 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
     baseline_rate_per_person = baseline_rate / 100_000.0
     exposure_delta = max(0.0, exposure_mean - reference)
     beta_per_unit = float(np.log(crf.rr) / max(exposure_delta, 1e-9))
-    displaced_n = envhealth.mortality_displaced(
+    # mortality_displaced() counts everyone's exposure cut to the reference; only the exposed
+    # share can gain, so the figure is scaled by the prevalence -- otherwise it exceeds the
+    # attributable count (Levin's PAF on the same prevalence) in the same report
+    displaced_n = exposure_prevalence * envhealth.mortality_displaced(
         exposure_delta=exposure_delta,
         population=population,
         baseline_rate=baseline_rate_per_person,
@@ -239,6 +254,7 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
         baseline_rate=baseline_rate_per_person,
         population=population,
         pollutant=burden_name,
+        reference_conc=reference,  # the same counterfactual as the CRF and the displaced-mortality stage
     )
 
     # --- Stage 5: equity (only if we have demographic data) ---
@@ -335,7 +351,7 @@ def _emit(report: dict[str, Any], *, as_json: bool) -> None:
 
     d = pipe["displaced"]
     print("\nMortality displaced")
-    print(f"  expected avoided deaths: {d.get('deaths_displaced', 0):.1f}")
+    print(f"  expected avoided deaths: {d.get('deaths_displaced', 0):.1f}  (exposed share cut to the reference)")
 
     b = pipe["burden"]
     print("\nBurden of pollution")

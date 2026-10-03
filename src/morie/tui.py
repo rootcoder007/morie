@@ -4732,6 +4732,11 @@ if _TEXTUAL_AVAILABLE:
     class MORIEApp(App):
         """MORIE Terminal IDE -- Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation."""
 
+        def __init__(self, agent: str | None = None, **kwargs) -> None:
+            # textual's App.__init__ takes no `agent`; keep the name for the chat screen (textual 0.60 .. 8.x)
+            super().__init__(**kwargs)
+            self._agent = agent
+
         TITLE = "MORIE"
         SUB_TITLE = (
             "Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation"

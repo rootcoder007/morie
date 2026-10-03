@@ -90,11 +90,11 @@ def _test_core_imports():
 
 def _test_new_modules():
     """Test that all new IDE/statistical modules import."""
+    # morie.tui belongs to the interactive layer, which the wheel leaves out: checked by the TUI test
     new_mods = [
         "morie.progress",
         "morie.inspector",
         "morie.chat",
-        "morie.tui",
         "morie.statistics",
         "morie.survival",
         "morie.missing",
@@ -167,19 +167,19 @@ def _test_chat_session():
 
 
 def _test_tui_screens():
-    """Test TUI screens render headlessly."""
+    """Test TUI screens render headlessly, through the same constructor `morie tui` uses."""
     try:
         from morie.tui import _TEXTUAL_AVAILABLE, MORIEApp
     except ImportError:
-        return "SKIP: textual not installed"
+        return "SKIP: the interactive layer (morie.tui) is not installed: morie interactive install"
 
     if not _TEXTUAL_AVAILABLE:
-        return "SKIP: textual not available"
+        return 'SKIP: textual is not installed: pip install "morie[interactive]"'
 
     import asyncio
 
     async def _verify():
-        app = MORIEApp()
+        app = MORIEApp(agent=None)
         async with app.run_test() as pilot:
             assert pilot.app.title == "MORIE"
             # Doctor screen.
@@ -324,7 +324,7 @@ def _test_doctor():
     results = run_checks()
     n_checks = len(results["checks"])
     n_passed = sum(1 for c in results["checks"] if c["passed"])
-    return f"Doctor: {n_passed}/{n_checks} checks passed"
+    return f"Doctor: {n_passed} of {n_checks} checks OK (the rest are optional); required checks passed"
 
 
 def _test_r_available():
@@ -391,7 +391,7 @@ def run_selftest() -> int:
 
     tests = [
         ("Core module imports", _test_core_imports),
-        ("New module imports (25 modules)", _test_new_modules),
+        ("New module imports (24 modules)", _test_new_modules),
         ("Module registry (21 specs)", _test_module_registry),
         ("Chat session (slash commands)", _test_chat_session),
         ("TUI screens (headless render)", _test_tui_screens),

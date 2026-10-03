@@ -28,7 +28,7 @@ import struct
 
 from morie.crypto._chacha import chacha20_poly1305_decrypt, chacha20_poly1305_encrypt
 from morie.crypto._kdf import hkdf_sha256
-from morie.crypto._mlkem import mlkem768_encaps, mlkem768_keygen
+from morie.crypto._mlkem import mlkem768_decaps, mlkem768_encaps, mlkem768_keygen
 
 
 def keygen() -> tuple[bytes, bytes]:
@@ -37,16 +37,29 @@ def keygen() -> tuple[bytes, bytes]:
     Convenience wrapper around :func:`morie.crypto.mlkem768_keygen`.
 
     :return: ``(public_key, secret_key)`` as bytes.
+
+    Examples
+    --------
+    >>> pk, sk = keygen()
+    >>> (len(pk), len(sk))
+    (1184, 2400)
+    >>> hybrid_decrypt(hybrid_encrypt(b"the report", pk), sk)
+    b'the report'
     """
     return mlkem768_keygen()
 
 
-def _wrapping_key(kem_ct: bytes, pk: bytes) -> bytes:
-    """Derive a 32-byte wrapping key from KEM ciphertext and public key."""
+def _wrapping_key(shared_secret: bytes, kem_ct: bytes, pk: bytes) -> bytes:
+    """Derive the 32-byte wrapping key from the KEM shared secret, bound to the ciphertext and key.
+
+    The secret is what makes the wrap private: a key derived from ``kem_ct || pk`` alone is
+    computable by anyone holding the ciphertext and the public key (the 1.3.x container did that,
+    which is why files encrypted by 1.3.x cannot be opened by 1.4.0 and should be re-encrypted).
+    """
     return hkdf_sha256(
-        kem_ct + pk,
+        shared_secret + kem_ct + pk,
         length=32,
-        salt=hashlib.sha256(b"morie-hybrid-wrap-v1").digest(),
+        salt=hashlib.sha256(b"morie-hybrid-wrap-v2").digest(),
         info=b"key-wrap",
     )
 
@@ -63,9 +76,9 @@ def hybrid_encrypt(plaintext: bytes, recipient_pk: bytes) -> bytes:
     :param recipient_pk: Recipient's ML-KEM-768 public key.
     :return: Serialized ciphertext container.
     """
-    kem_ct, _shared_secret = mlkem768_encaps(recipient_pk)
+    kem_ct, shared_secret = mlkem768_encaps(recipient_pk)
 
-    wrap_key = _wrapping_key(kem_ct, recipient_pk)
+    wrap_key = _wrapping_key(shared_secret, kem_ct, recipient_pk)
     sym_key = os.urandom(32)
 
     wrap_nonce = os.urandom(12)
@@ -111,7 +124,8 @@ def hybrid_decrypt(ciphertext: bytes, recipient_sk: bytes) -> bytes:
     pk_end = pk_start + 3 * 384 + 32
     recipient_pk = recipient_sk[pk_start:pk_end]
 
-    wrap_key = _wrapping_key(kem_ct, recipient_pk)
+    shared_secret = mlkem768_decaps(recipient_sk, kem_ct)
+    wrap_key = _wrapping_key(shared_secret, kem_ct, recipient_pk)
 
     wrap_nonce = ciphertext[offset : offset + 12]
     offset += 12

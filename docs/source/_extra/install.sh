@@ -36,9 +36,15 @@ done
 
 run() { if [ "$DRY" = "1" ]; then echo "[dry-run] $*"; else "$@"; fi }
 prompt() {
-  # prompt user; returns 0 (yes) or 1 (no).  In --auto always yes.
+  # prompt user; returns 0 (yes) or 1 (no).  In --auto always yes.  With no terminal to
+  # ask on (curl | bash, cron, CI) an optional step is skipped rather than assumed.
   if [ "$AUTO" = "1" ]; then return 0; fi
-  read -r -p "$1 [Y/n] " ans
+  if [ -r /dev/tty ]; then
+    read -r -p "$1 [Y/n] " ans </dev/tty || return 1
+  else
+    echo "[install.sh] no terminal to answer '$1'; skipping (pass --auto to say yes to everything)"
+    return 1
+  fi
   case "$ans" in n|N|no|NO) return 1 ;; *) return 0 ;; esac
 }
 
@@ -235,9 +241,14 @@ if [ "$PY" = "1" ] && [ "$HAVE_PY" = "1" ]; then
 fi
 
 # --- R morie ------------------------------------------------------
-if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ]; then
-  echo "[install.sh] installing R morie from GitHub source (remotes::install_github) ..."
-  if Rscript -e 'if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes", repos = "https://cloud.r-project.org"); remotes::install_github("rootcoder007/morie", subdir = "r-package/morie", upgrade = "never")'; then
+# The R arm is optional and takes a C++ build (minutes): it is asked for on a terminal and
+# installed without asking only with --auto. It follows the Python release just installed.
+MORIE_R_REF="v$("$VENV/bin/python" -c 'import importlib.metadata as m; print(m.version("morie"))' 2>/dev/null)"
+case "$MORIE_R_REF" in v[0-9]*.[0-9]*.[0-9]*) ;; *) MORIE_R_REF="main" ;; esac
+export MORIE_R_REF
+if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ] && prompt "Also install the R package morie (ref $MORIE_R_REF; a C++ build of several minutes)?"; then
+  echo "[install.sh] installing R morie from GitHub source (remotes::install_github, ref $MORIE_R_REF) ..."
+  if Rscript -e 'if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes", repos = "https://cloud.r-project.org"); remotes::install_github("rootcoder007/morie", subdir = "r-package/morie", ref = Sys.getenv("MORIE_R_REF", "main"), upgrade = "never")'; then
     echo "[install.sh] ✓ R morie installed"
   else
     echo "[install.sh] NOTE: R morie build failed (needs a C toolchain + libcurl/libsodium dev headers). Python morie is installed and fully usable; build r-package/morie manually if you need the R side."

@@ -83,10 +83,13 @@ Usage Example
 
 .. code-block:: python
 
-   import pandas as pd
    from morie.dataset import load_dataset, profile_dataset, suggest_analysis_plan
+   from morie.fn import _frame_core as pd   # pandas is optional; any frame works
 
-   df = load_dataset("data/my_survey.csv")
+   # df = load_dataset("data/my_survey.csv")   # your own CSV; here a small frame
+   df = pd.DataFrame({"cannabis_use": [0, 1, 0, 1, 1, 0, 1, 0, 0, 1],
+                      "heavy_drinking_30d": [0, 1, 0, 0, 1, 0, 1, 0, 1, 1],
+                      "age": [19, 24, 31, 22, 45, 38, 27, 52, 33, 29]})
    profile = profile_dataset(df, hint_treatment="cannabis_use")
 
    # Print rich-formatted summary table

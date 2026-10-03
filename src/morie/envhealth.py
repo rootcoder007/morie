@@ -298,6 +298,11 @@ def attributable_fraction(rr: float, exposure_prevalence: float) -> float:
     ----------
     Levin, M. L. (1953). Acta Un Int Cancr, 9, 531-541.
     Rothman, Greenland & Lash (2008). Modern Epidemiology, 3e, Ch 5.
+
+    Examples
+    --------
+    >>> round(attributable_fraction(rr=1.08, exposure_prevalence=0.9), 4)   # Levin's formula
+    0.0672
     """
     rr = float(rr)
     p = float(exposure_prevalence)

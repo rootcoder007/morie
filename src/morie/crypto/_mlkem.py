@@ -17,10 +17,22 @@ ETA2 = 2
 DU = 10
 DV = 4
 
-ZETAS = [1]
-_g = 17
-for _ in range(N - 1):
-    ZETAS.append((ZETAS[-1] * _g) % Q)
+_ZETA = 17  # a primitive 256th root of unity modulo q
+
+
+def _bitrev7(i: int) -> int:
+    return int(f"{i:07b}"[::-1], 2)
+
+
+# FIPS 203 Algorithms 9-11: the NTT of Z_q[X]/(X^256 + 1) is incomplete -- it splits the ring into
+# 128 quadratic factors X^2 - zeta^(2 BitRev7(i) + 1) -- so the twiddles are taken in bit-reversed
+# order, the inverse is scaled by 128^-1 (3303), and a product in the NTT domain is 128 base-case
+# multiplications of coefficient PAIRS, not a coefficient-wise product. The previous version used
+# the twiddles in natural order and a coefficient-wise product, so decapsulation never recovered
+# the message (hybrid encryption did not notice because it discarded the shared secret).
+ZETAS = [pow(_ZETA, _bitrev7(i), Q) for i in range(128)]
+_GAMMAS = [pow(_ZETA, 2 * _bitrev7(i) + 1, Q) for i in range(128)]
+_INV_128 = pow(128, Q - 2, Q)  # 3303
 
 
 def _mod_q(x: int) -> int:
@@ -29,43 +41,45 @@ def _mod_q(x: int) -> int:
 
 def _ntt(f: list[int]) -> list[int]:
     a = f[:]
-    k = 1
+    i = 1
     length = 128
     while length >= 2:
-        start = 0
-        while start < N:
-            zeta = ZETAS[k]
-            k += 1
+        for start in range(0, N, 2 * length):
+            zeta = ZETAS[i]
+            i += 1
             for j in range(start, start + length):
                 t = _mod_q(zeta * a[j + length])
                 a[j + length] = _mod_q(a[j] - t)
                 a[j] = _mod_q(a[j] + t)
-            start += 2 * length
         length //= 2
     return a
 
 
 def _inv_ntt(f: list[int]) -> list[int]:
     a = f[:]
-    k = 127
+    i = 127
     length = 2
     while length <= 128:
-        start = 0
-        while start < N:
-            zeta = ZETAS[k]
-            k -= 1
+        for start in range(0, N, 2 * length):
+            zeta = ZETAS[i]
+            i -= 1
             for j in range(start, start + length):
                 t = a[j]
                 a[j] = _mod_q(t + a[j + length])
-                a[j + length] = _mod_q(zeta * _mod_q(a[j + length] - t))
-            start += 2 * length
+                a[j + length] = _mod_q(zeta * (a[j + length] - t))
         length *= 2
-    inv_n = pow(N, Q - 2, Q)
-    return [_mod_q(x * inv_n) for x in a]
+    return [_mod_q(x * _INV_128) for x in a]
 
 
 def _poly_mul_ntt(a: list[int], b: list[int]) -> list[int]:
-    return [_mod_q(a[i] * b[i]) for i in range(N)]
+    """MultiplyNTTs (FIPS 203 Algorithm 12): base-case products of the 128 coefficient pairs."""
+    h = [0] * N
+    for i in range(128):
+        a0, a1 = a[2 * i], a[2 * i + 1]
+        b0, b1 = b[2 * i], b[2 * i + 1]
+        h[2 * i] = _mod_q(a0 * b0 + _mod_q(a1 * b1) * _GAMMAS[i])
+        h[2 * i + 1] = _mod_q(a0 * b1 + a1 * b0)
+    return h
 
 
 def _poly_add(a: list[int], b: list[int]) -> list[int]:
@@ -147,7 +161,8 @@ def mlkem768_keygen() -> tuple[bytes, bytes]:
     :return: (public_key, secret_key) as bytes.
     """
     d = os.urandom(32)
-    rho, sigma = _sha3_512(d)[:32], _sha3_512(d)[32:]
+    z = os.urandom(32)
+    rho, sigma = _sha3_512(d + bytes([K]))[:32], _sha3_512(d + bytes([K]))[32:]
 
     a_hat = [[None] * K for _ in range(K)]
     for i in range(K):
@@ -196,38 +211,19 @@ def mlkem768_keygen() -> tuple[bytes, bytes]:
         sk_bytes += _encode(s[i], 12)
 
     pk_hash = _sha3_256(pk_bytes)
-    sk_full = sk_bytes + pk_bytes + pk_hash + d
+    sk_full = sk_bytes + pk_bytes + pk_hash + z  # dk = dk_PKE || ek || H(ek) || z
 
     return pk_bytes, sk_full
 
 
-def mlkem768_encaps(pk: bytes) -> tuple[bytes, bytes]:
-    """Encapsulate a shared secret using the public key.
-
-    :param pk: Public key from mlkem768_keygen().
-    :return: (ciphertext, shared_secret_32_bytes).
-    """
-    t_hat = []
-    offset = 0
-    for _i in range(K):
-        chunk = pk[offset : offset + 384]
-        t_hat.append(_decode(chunk, 12))
-        offset += 384
-    rho = pk[offset : offset + 32]
-
-    m = os.urandom(32)
-    m_hash = _sha3_256(m)
-    pk_hash = _sha3_256(pk)
-    kr = _sha3_512(m_hash + pk_hash)
-    shared_secret = kr[:32]
-    coins = kr[32:]
-
+def _sample_matrix(rho: bytes) -> list[list[list[int]]]:
+    """A-hat from the seed rho (FIPS 203 SampleNTT on XOF(rho, j, i) for row i, column j)."""
     a_hat = [[None] * K for _ in range(K)]
     for i in range(K):
         for j in range(K):
             seed = rho + bytes([j, i])
-            stream = _shake128(seed, 3 * N)
-            poly = []
+            stream = _shake128(seed, 3 * N * 2)
+            poly: list[int] = []
             idx = 0
             while len(poly) < N and idx + 2 < len(stream):
                 d1 = stream[idx] | ((stream[idx + 1] & 0x0F) << 8)
@@ -240,6 +236,19 @@ def mlkem768_encaps(pk: bytes) -> tuple[bytes, bytes]:
             while len(poly) < N:
                 poly.append(0)
             a_hat[i][j] = poly
+    return a_hat
+
+
+def _encrypt(pk: bytes, m: bytes, coins: bytes) -> bytes:
+    """K-PKE.Encrypt (FIPS 203 Algorithm 14): deterministic in (pk, m, coins)."""
+    t_hat = []
+    offset = 0
+    for _i in range(K):
+        chunk = pk[offset : offset + 384]
+        t_hat.append(_decode(chunk, 12))
+        offset += 384
+    rho = pk[offset : offset + 32]
+    a_hat = _sample_matrix(rho)
 
     r = []
     for i in range(K):
@@ -258,7 +267,7 @@ def mlkem768_encaps(pk: bytes) -> tuple[bytes, bytes]:
     for i in range(K):
         acc = [0] * N
         for j in range(K):
-            prod = _poly_mul_ntt(a_hat[j][i], r[j])
+            prod = _poly_mul_ntt(a_hat[j][i], r[j])  # A-hat transposed
             acc = _poly_add(acc, prod)
         acc_time = _inv_ntt(acc)
         u.append(_poly_add(acc_time, e1[i]))
@@ -270,7 +279,7 @@ def mlkem768_encaps(pk: bytes) -> tuple[bytes, bytes]:
     v_time = _inv_ntt(v_acc)
     v = _poly_add(v_time, e2)
 
-    m_poly = _decode(m_hash, 1)
+    m_poly = _decode(m, 1)
     m_decomp = [_decompress(c, 1) for c in m_poly]
     v = _poly_add(v, m_decomp)
 
@@ -280,21 +289,15 @@ def mlkem768_encaps(pk: bytes) -> tuple[bytes, bytes]:
         ct += _encode(compressed, DU)
     v_compressed = [_compress(c, DV) for c in v]
     ct += _encode(v_compressed, DV)
+    return ct
 
-    return ct, shared_secret
 
-
-def mlkem768_decaps(sk: bytes, ct: bytes) -> bytes:
-    """Decapsulate the shared secret using the secret key.
-
-    :param sk: Secret key from mlkem768_keygen().
-    :param ct: Ciphertext from mlkem768_encaps().
-    :return: 32-byte shared secret.
-    """
+def _decrypt(sk_pke: bytes, ct: bytes) -> bytes:
+    """K-PKE.Decrypt (FIPS 203 Algorithm 15): the 32-byte message."""
     s_hat = []
     offset = 0
     for _i in range(K):
-        chunk = sk[offset : offset + 384]
+        chunk = sk_pke[offset : offset + 384]
         s_hat.append(_decode(chunk, 12))
         offset += 384
 
@@ -319,14 +322,47 @@ def mlkem768_decaps(sk: bytes, ct: bytes) -> bytes:
 
     m_poly = _poly_sub(v, su)
     m_bits = [_compress(c, 1) for c in m_poly]
-    m_recovered = _encode(m_bits, 1)
+    return _encode(m_bits, 1)
 
-    pk_start = K * 384
-    pk_end = pk_start + K * 384 + 32
-    pk = sk[pk_start:pk_end]
-    pk_hash = _sha3_256(pk)
 
-    kr = _sha3_512(m_recovered[:32] + pk_hash)
-    shared_secret = kr[:32]
+def mlkem768_encaps(pk: bytes) -> tuple[bytes, bytes]:
+    """Encapsulate a shared secret using the public key (FIPS 203 Algorithm 17).
 
-    return shared_secret
+    :param pk: Public key from mlkem768_keygen().
+    :return: (ciphertext, shared_secret_32_bytes).
+    """
+    if len(pk) != K * 384 + 32:
+        raise ValueError(f"ML-KEM-768 public key must be {K * 384 + 32} bytes, got {len(pk)}")
+    m = os.urandom(32)
+    kr = _sha3_512(m + _sha3_256(pk))
+    shared_secret, coins = kr[:32], kr[32:]
+    return _encrypt(pk, m, coins), shared_secret
+
+
+def mlkem768_decaps(sk: bytes, ct: bytes) -> bytes:
+    """Decapsulate the shared secret using the secret key (FIPS 203 Algorithm 18).
+
+    Re-encrypts the recovered message and compares the ciphertexts; on a mismatch the
+    implicit-rejection key ``J(z || ct)`` is returned instead of an error, so a tampered
+    ciphertext yields a different secret rather than a signal.
+
+    :param sk: Secret key from mlkem768_keygen().
+    :param ct: Ciphertext from mlkem768_encaps().
+    :return: 32-byte shared secret.
+    """
+    if len(sk) != 2 * K * 384 + 96:  # dk_PKE (1152) || ek (1184) || H(ek) (32) || z (32)
+        raise ValueError(f"ML-KEM-768 secret key must be {2 * K * 384 + 96} bytes, got {len(sk)}")
+    if len(ct) != K * N * DU // 8 + N * DV // 8:
+        raise ValueError(f"ML-KEM-768 ciphertext must be {K * N * DU // 8 + N * DV // 8} bytes, got {len(ct)}")
+    sk_pke = sk[: K * 384]
+    pk = sk[K * 384 : 2 * K * 384 + 32]
+    pk_hash = sk[2 * K * 384 + 32 : 2 * K * 384 + 64]
+    z = sk[2 * K * 384 + 64 :]
+
+    m = _decrypt(sk_pke, ct)
+    kr = _sha3_512(m + pk_hash)
+    key, coins = kr[:32], kr[32:]
+    rejection = _shake256(z + ct, 32)
+    ct_check = _encrypt(pk, m, coins)
+    # constant-time compare is beside the point in pure Python; the structure is FIPS 203's
+    return key if ct_check == ct else rejection

@@ -43,7 +43,8 @@ Python API
 
    from morie import calculate_ebac, is_over_legal_limit
 
-   ebac = calculate_ebac(drinks=5, weight_kg=70, gender="male", hours=2.0)
+   # weight in pounds; the Widmark constant is 0.68 for men, 0.55 for women
+   ebac = calculate_ebac(drinks=5, weight_lbs=154, hours=2.0, gender_constant=0.68)
    over = is_over_legal_limit(ebac)
 
 eBAC-IPW module

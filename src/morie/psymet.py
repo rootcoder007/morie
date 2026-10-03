@@ -104,6 +104,14 @@ def crba(
     Returns
     -------
     RlbRes
+
+    Examples
+    --------
+    >>> from morie.fn import _array_core as np
+    >>> items = np.array([[4, 5, 3, 4], [3, 4, 3, 3], [5, 5, 4, 5], [2, 3, 2, 2], [4, 4, 4, 5], [3, 3, 2, 3]], dtype=float)
+    >>> r = crba(items)
+    >>> (round(r.raw, 4), r.k, r.n, round(r.ci_lo, 4) < r.raw < round(r.ci_hi, 4))
+    (0.9519, 4, 6, True)
     """
     X = np.asarray(data, dtype=np.float64)
     n, k = X.shape

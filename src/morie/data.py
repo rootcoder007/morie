@@ -1282,6 +1282,7 @@ def fetch_ckan_to_cache(
     limit: int = 32000,
     db_path: str | Path | None = None,
     timeout: int = 60,
+    max_records: int | None = None,
 ) -> pd.DataFrame:
     """Fetch a dataset from CKAN and store it in the SQLite cache.
 
@@ -1290,7 +1291,9 @@ def fetch_ckan_to_cache(
     dataset_key : str
         Key in CKAN_DATASETS (e.g., "cpads", "csads", "csus").
     limit : int
-        Max records to fetch from CKAN DataStore API.
+        Records per page of the CKAN DataStore API.
+    max_records : int, optional
+        Stop once this many records have been fetched (``morie download-bootstrap --limit``).
     db_path : str | Path | None
         Override cache database path.
     timeout : int
@@ -1359,6 +1362,8 @@ def fetch_ckan_to_cache(
                 )
             prog.update(len(batch))
         if len(batch) < limit or (isinstance(total, int) and len(records) >= total):
+            break
+        if max_records is not None and len(records) >= max_records:
             break
         offset += len(batch)
     if prog is not None:
@@ -2323,7 +2328,7 @@ def dataset_recommendation(key: str, entry: "dict | None" = None) -> str:
             "morie."
         )
         if local_path:
-            lines.append(f"  Place the data file at: {local_path}")
+            lines.append(f"  Place the data file at: {Path(local_path).expanduser().resolve()}")
     return "\n".join(lines)
 
 

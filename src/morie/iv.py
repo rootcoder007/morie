@@ -247,6 +247,19 @@ def tsls(
     ----------
     Angrist, J. D., & Pischke, J.-S. (2009). *Mostly Harmless
     Econometrics*. Princeton University Press.
+
+    Examples
+    --------
+    >>> import random
+    >>> from morie.fn import _frame_core as pd
+    >>> r = random.Random(3)
+    >>> z = [r.gauss(0, 1) for _ in range(120)]
+    >>> u = [r.gauss(0, 1) for _ in range(120)]                 # the confounder
+    >>> d = [0.8 * zi + ui + r.gauss(0, 0.5) for zi, ui in zip(z, u)]
+    >>> y = [1.5 * di + ui + r.gauss(0, 0.5) for di, ui in zip(d, u)]
+    >>> fit = tsls(pd.DataFrame({"y": y, "d": d, "z": z}), "y", ["d"], ["z"])
+    >>> (fit.variable_names, [round(float(c), 3) for c in fit.coefficients], fit.n_obs)
+    (['const', 'd'], [-0.081, 1.48], 120)
     """
     cols = [outcome] + endogenous + instruments
     if exogenous:

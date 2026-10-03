@@ -7,6 +7,7 @@ from __future__ import annotations
 import math
 from typing import Any
 
+from morie._frames import as_frame
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
@@ -114,7 +115,16 @@ def compute_propensity_scores(
     Rosenbaum, P. R., & Rubin, D. B. (1983). The central role of the
     propensity score in observational studies for causal effects.
     *Biometrika*, 70(1), 41–55. https://doi.org/10.1093/biomet/70.1.41
+
+    Examples
+    --------
+    >>> ps = compute_propensity_scores(
+    ...     {"t": [1, 0, 1, 0, 1, 0, 1, 0, 0, 1], "x": [0.9, 0.3, 0.6, 0.4, 0.7, 0.5, 0.2, 0.1, 0.8, 0.4]}, "t", ["x"]
+    ... )
+    >>> [round(float(p), 3) for p in ps][:4]
+    [0.731, 0.387, 0.567, 0.446]
     """
+    data = as_frame(data, name="data")
     if ps_model not in ("mle", "ridge"):
         raise ValueError("ps_model must be 'mle' or 'ridge'")
     # A missing covariate or treatment value is refused, not propagated:
@@ -159,6 +169,7 @@ def calculate_ipw_weights(
     :return: A pandas Series containing the IPTW for each observation.
     :rtype: pandas.Series
     """
+    data = as_frame(data, name="data")
     ps = data[ps_col].clip(lower=0.01, upper=0.99)
     t = data[treatment]
     weights = (t / ps) + ((1 - t) / (1 - ps))
@@ -230,6 +241,7 @@ def run_propensity_ipw_analysis(
     *Foundations of Statistical Inference* (pp. 236–236). Holt, Rinehart &
     Winston.
     """
+    data = as_frame(data, name="data")
     covariates = covariates or [
         "age_group",
         "gender",
@@ -370,6 +382,7 @@ def estimate_aipw(
     nonignorable drop-out using semiparametric nonresponse models. *JASA*,
     94(448), 1096–1120.
     """
+    data = as_frame(data, name="data")
     covariates = covariates or [
         "age_group",
         "gender",
@@ -752,6 +765,7 @@ def estimate_att(
     of average treatment effects using the estimated propensity score.
     *Econometrica*, 71(4), 1161--1189.
     """
+    data = as_frame(data, name="data")
     frame = data[[treatment, outcome, *covariates]].dropna().copy()
     t = frame[treatment].values.astype(float)
     y = frame[outcome].values.astype(float)
@@ -1403,6 +1417,7 @@ def estimate_double_ml(
     treatment and structural parameters. *The Econometrics Journal*, 21(1),
     C1–C68. https://doi.org/10.1111/ectj.12097
     """
+    data = as_frame(data, name="data")
     del n_rep  # single-rep native estimator; kept for signature compat
     from morie.fn.plr import estimate_plr as _native_plr
 

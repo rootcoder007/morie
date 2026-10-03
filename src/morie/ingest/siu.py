@@ -89,7 +89,13 @@ def list_reports(*, timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = 
         for c in ("case_number", "drid", "source_url_report", "date_of_incident_iso", "date_of_director_decision_iso")
         if c in corpus.columns
     ]
-    return corpus[cols]
+    out = corpus[cols]
+    if "case_number" in out.columns:
+        # the oldest reports carry no case number; list the identifiable ones first
+        has = [bool(str(v).strip()) for v in out["case_number"]]
+        order = [i for i, h in enumerate(has) if h] + [i for i, h in enumerate(has) if not h]
+        out = out.iloc[order].reset_index(drop=True)
+    return out
 
 
 def _list_reports_legacy_scrape(
@@ -374,7 +380,7 @@ def cli(args: list[str]) -> int:
     if url is None and ns.report_id:
         # Resolve from index
         df = list_reports()
-        match = df[df["report_id"] == ns.report_id]
+        match = df[df["case_number"] == ns.report_id]
         if match.empty:
             sys.stderr.write(f"report id {ns.report_id!r} not found in current index\n")
             return 3

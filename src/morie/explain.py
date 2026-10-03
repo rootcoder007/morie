@@ -211,7 +211,7 @@ morie cheat sheet
   morie run-module power-design --output-dir out/
   morie run-module descriptive-statistics --output-dir out/
   morie run-module frequentist-inference --output-dir out/
-  morie run-modules all --output-dir out/
+  morie pipeline --all --output-dir out/
 
 {t("cheatsheet.pull")}
   morie pull tps-major --year 2024 --out tps-2024.csv

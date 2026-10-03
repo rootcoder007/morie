@@ -66,9 +66,15 @@ step() {
   return "$rc"
 }
 prompt() {
-  # prompt user; returns 0 (yes) or 1 (no).  In --auto always yes.
+  # prompt user; returns 0 (yes) or 1 (no).  In --auto always yes.  With no terminal to
+  # ask on (curl | bash, cron, CI) an optional step is skipped rather than assumed.
   if [ "$AUTO" = "1" ]; then return 0; fi
-  read -r -p "$1 [Y/n] " ans
+  if [ -r /dev/tty ]; then
+    read -r -p "$1 [Y/n] " ans </dev/tty || return 1
+  else
+    echo "[install.sh] no terminal to answer '$1'; skipping (pass --auto to say yes to everything)"
+    return 1
+  fi
   case "$ans" in n|N|no|NO) return 1 ;; *) return 0 ;; esac
 }
 

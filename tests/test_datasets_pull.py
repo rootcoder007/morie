@@ -106,7 +106,7 @@ def test_download_bootstrap_maps_surveys_to_catalog_keys(monkeypatch, capsys):
     monkeypatch.setattr(
         d,
         "fetch_ckan_to_cache",
-        lambda key, limit=0: (
+        lambda key, limit=0, **_kw: (
             seen.append(key) or __import__("morie.fn._frame_core", fromlist=["DataFrame"]).DataFrame({"w": [1, 2]})
         ),
     )

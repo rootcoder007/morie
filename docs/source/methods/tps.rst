@@ -63,6 +63,7 @@ Quick start
 
 .. code-block:: python
 
+   # needs the TPS CSVs under data/datasets/TPS (morie pull tps-major writes a year's feed)
    from morie.tps_io import load_tps
    from morie.tps_hawkes_advanced import compare_hawkes_kernels
 

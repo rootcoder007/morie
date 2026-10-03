@@ -138,6 +138,14 @@ def bootstrap(
     Returns
     -------
     BootstrapResult
+
+    Examples
+    --------
+    >>> from morie.fn import _array_core as np
+    >>> x = np.array([3.1, 2.4, 4.0, 3.3, 2.9, 3.8, 3.5, 2.7])
+    >>> b = bootstrap(x, lambda a: float(np.mean(a)), n_boot=200, seed=1)
+    >>> (round(b.estimate, 4), round(b.ci_lower, 4), round(b.ci_upper, 4), b.ci_method)
+    (3.2125, 2.7232, 3.5087, 'bca')
     """
     import math
 

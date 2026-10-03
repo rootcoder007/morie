@@ -315,6 +315,13 @@ def hajek_mean(
     Hájek, J. (1971). Comment in Godambe & Sprott (Eds.), Foundations of
         Statistical Inference. Holt, Rinehart and Winston.
     Cochran, W. G. (1977). Sampling Techniques (3rd ed.). Wiley. (Section 6.13.)
+
+    Examples
+    --------
+    >>> from morie.fn import _array_core as np
+    >>> r = hajek_mean(np.array([3.0, 5.0, 4.0, 6.0]), np.array([1.0, 2.0, 1.0, 2.0]))
+    >>> (round(r["mean"], 4), round(r["se"], 4))
+    (4.8333, 0.5966)
     """
     y_arr = np.asarray(y, dtype=float)
     w_arr = np.asarray(weights, dtype=float)

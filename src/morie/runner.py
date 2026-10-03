@@ -46,7 +46,14 @@ def execute_pipeline(
 
     if not silent:
         print("Selected modules:", ", ".join(selected))
-        confirm = input(f"This will run the MORIE module pipeline for: {', '.join(selected)}. Continue? [y/N]: ")
+        if not sys.stdin.isatty():
+            print("no terminal to confirm on; pass -y to run the pipeline without the prompt", file=sys.stderr)
+            return 2
+        try:
+            confirm = input(f"This will run the MORIE module pipeline for: {', '.join(selected)}. Continue? [y/N]: ")
+        except EOFError:
+            print("no answer on stdin; pass -y to run the pipeline without the prompt", file=sys.stderr)
+            return 2
         if confirm.lower() != "y":
             print("Pipeline aborted.")
             return 1
@@ -155,7 +162,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     parity = subparsers.add_parser(
         "parity-review",
-        help=argparse.SUPPRESS,
+        help="Maintainer audit of the reference checkout (internal)",
         description="Internal compatibility audit for maintainers.",
     )
     parity.add_argument("--epiml-root", required=True, help="Path to the internal reference checkout")
@@ -270,6 +277,9 @@ def build_parser() -> argparse.ArgumentParser:
         "--no-verify",
         action="store_true",
         help="skip the SHA-256 check (needed for a --ref that is not this version's tag)",
+    )
+    inter_install.add_argument(
+        "--force", action="store_true", help="fetch again even when this version's layer is already installed"
     )
     inter_sub.add_parser("status", help="Show where the layer lives and whether it is active for this version")
     inter_sub.add_parser("remove", help="Delete the per-user copy of the layer")
@@ -417,7 +427,7 @@ def build_parser() -> argparse.ArgumentParser:
     # ── repl ────────────────────────────────────────────────────────────
     repl_cmd = subparsers.add_parser(
         "repl",
-        help="Launch headless polyglot REPL (36 languages)",
+        help="Launch the headless polyglot REPL (python, R, julia, node, shell and more; the banner lists what this machine has)",
     )
     repl_cmd.add_argument("--lang", default="python", help="Default language (default: python)")
     repl_cmd.add_argument(
@@ -455,6 +465,7 @@ def build_parser() -> argparse.ArgumentParser:
     crypto_keygen = crypto_sub.add_parser("keygen", help="Generate an ML-KEM-768 key pair")
     crypto_keygen.add_argument("--name", required=True, help="Key pair identifier")
     crypto_keygen.add_argument("--output", default=None, help="Output directory for key files (default: keystore)")
+    crypto_keygen.add_argument("--force", action="store_true", help="replace an existing key pair of that name")
 
     crypto_encrypt = crypto_sub.add_parser("encrypt", help="Hybrid-encrypt a file")
     crypto_encrypt.add_argument("file", help="File to encrypt")
@@ -463,6 +474,10 @@ def build_parser() -> argparse.ArgumentParser:
     crypto_decrypt = crypto_sub.add_parser("decrypt", help="Decrypt a hybrid-encrypted file")
     crypto_decrypt.add_argument("file", help="File to decrypt")
     crypto_decrypt.add_argument("--key", required=True, help="Key name in keystore")
+    crypto_decrypt.add_argument(
+        "--out", default=None, help="Where to write the plaintext (default: the input name without .morieenc)"
+    )
+    crypto_decrypt.add_argument("--force", action="store_true", help="replace an existing output file")
 
     # ── list-datasets ────────────────────────────────────────────────────
     subparsers.add_parser(
@@ -865,8 +880,8 @@ def _main_impl() -> int:
 
     if args.command == "pipeline":
         if not args.all and not args.modules:
-            parser.print_help()
-            return 0
+            print("pipeline needs --all or --modules a,b (names: morie list-modules)", file=sys.stderr)
+            return 2
         # Use rich progress display when running in an interactive terminal.
         if sys.stdout.isatty():
             from .progress import execute_pipeline_with_progress
@@ -929,12 +944,24 @@ def _main_impl() -> int:
 
     if args.command == "run-module":
         out_dir = Path(args.output_dir) if args.output_dir else Path("morie-output") / args.module
-        outputs = run_module(
-            args.module,
-            cpads_csv=args.cpads_csv,
-            dataset_key=getattr(args, "dataset", None),
-            output_dir=out_dir,
-        )
+        if args.cpads_csv and not Path(args.cpads_csv).expanduser().is_file():
+            print(f"CPADS CSV not found: {args.cpads_csv}", file=sys.stderr)
+            return 1
+        try:
+            outputs = run_module(
+                args.module,
+                cpads_csv=args.cpads_csv,
+                dataset_key=getattr(args, "dataset", None),
+                output_dir=out_dir,
+            )
+        except KeyError as exc:
+            print(
+                f"unknown dataset key: {exc.args[0] if exc.args else exc} (keys: morie list-datasets)", file=sys.stderr
+            )
+            return 1
+        except ValueError as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
         print(f"Completed module: {args.module}")
         print("Generated tables:", ", ".join(outputs.keys()))
         n_files = len(list(out_dir.iterdir())) if out_dir.is_dir() else 0
@@ -994,6 +1021,14 @@ def _main_impl() -> int:
                 print(payload["output_text"])
                 return _llm_exit_code(payload)
         except Exception:
+            from . import _interactive as _inter
+
+            if not _inter.present(_inter.data_dir()) and not (Path(__file__).with_name("polyglot.py")).is_file():
+                print(
+                    "The agent's tool layer is not bundled in this install. Run `morie interactive install` to add it for this user.",
+                    file=sys.stderr,
+                )
+                return 1
             # the agent needs an LLM backend; say why it stepped aside
             # rather than hiding a real bug in create_agent()
             print("no local Ollama for the tool-calling agent; answering through the provider chain", file=sys.stderr)
@@ -1056,6 +1091,12 @@ def _main_impl() -> int:
     if args.command == "repl":
         return _handle_repl(args)
 
+    if args.command in ("verify", "inspect") and getattr(args, "module", None):
+        known = [item["name"] for item in list_modules()]
+        if args.module not in known:
+            print(f"unknown module: {args.module} (names: morie list-modules)", file=sys.stderr)
+            return 1
+
     if args.command == "list-datasets":
         from .data import list_datasets
 
@@ -1079,12 +1120,7 @@ def _main_impl() -> int:
                 f"{n_hub} curated tables at data.rmorie.com (db/table keys), opened by your MORIE key: morie pull KEY"
             )
         else:
-            from .datahub import hosted_key
-
-            if hosted_key():
-                print("data.rmorie.com was not reachable just now; its tables appear once a fetch succeeds.")
-            else:
-                from .datahub import hosted_key
+            from .hosted import hosted_key
 
             if hosted_key():
                 print("data.rmorie.com was not reachable just now; its tables appear once a fetch succeeds.")
@@ -1125,6 +1161,10 @@ def _main_impl() -> int:
         return 0
 
     if args.command == "generate-template":
+        known = [item["name"] for item in list_modules()]
+        if getattr(args, "module", None) and args.module not in known:
+            print(f"unknown module: {args.module} (names: morie list-modules)", file=sys.stderr)
+            return 1
         # Copy the bundled first-paper template (shipped alongside the
         # source repo at templates/first-paper.md, mirrored into the
         # wheel as morie/data/first-paper.md).
@@ -1185,11 +1225,23 @@ def _main_impl() -> int:
             )
             return 2
 
+        import warnings as _warnings
+
+        def _note_synthetic(record):
+            for w in record:
+                if issubclass(w.category, UserWarning):
+                    print(f"note: {w.message}", file=sys.stderr)
+                else:
+                    _warnings.showwarning(w.message, w.category, w.filename, w.lineno)
+
         try:
             if args.dataset == "tps-major":
                 df = md.tps_major_crime(year=args.year, max_features=args.max_features)
             elif args.dataset == "tps-major-toy":
-                df = md.tps_major_crime(year=args.year, max_features=args.max_features, offline=True)
+                with _warnings.catch_warnings(record=True) as _rec:
+                    _warnings.simplefilter("always")
+                    df = md.tps_major_crime(year=args.year, max_features=args.max_features, offline=True)
+                _note_synthetic(_rec)
             elif args.dataset == "tps-shootings":
                 df = md.tps_shootings(year=args.year, max_features=args.max_features)
             elif args.dataset == "tps-homicide":
@@ -1281,7 +1333,9 @@ def _main_impl() -> int:
                 continue
             print(f"  Downloading {key} ({entry['name']}) from CKAN (limit={args.limit})...")
             try:
-                df = fetch_ckan_to_cache(key, limit=args.limit)
+                df = fetch_ckan_to_cache(
+                    key, limit=min(args.limit, 32000) if args.limit else 32000, max_records=args.limit
+                )
                 if args.limit and len(df) > args.limit:
                     df = df.head(args.limit)
                 print(
@@ -1297,6 +1351,13 @@ def _main_impl() -> int:
         from pathlib import Path as _CryptoPath
 
         def _crypto_password() -> str | None:
+            if not sys.stdin.isatty():
+                print(
+                    "a keystore password is needed: run this in a terminal, or use file keys "
+                    "(keygen --output DIR; encrypt --to DIR/NAME.moriepk; decrypt --key DIR/NAME.moriesk)",
+                    file=sys.stderr,
+                )
+                return None
             try:
                 return getpass.getpass("Keystore password: ")
             except (EOFError, OSError):
@@ -1318,6 +1379,12 @@ def _main_impl() -> int:
                 out_dir.mkdir(parents=True, exist_ok=True)
                 pk_path = out_dir / f"{args.name}.moriepk"
                 sk_path = out_dir / f"{args.name}.moriesk"
+                if sk_path.exists() and not getattr(args, "force", False):
+                    print(
+                        f"{sk_path} already exists; files encrypted to it would become undecryptable. Pass --force to replace it.",
+                        file=sys.stderr,
+                    )
+                    return 1
                 pk_path.write_bytes(pk)
                 sk_path.write_bytes(sk)
                 with contextlib.suppress(OSError):
@@ -1332,6 +1399,18 @@ def _main_impl() -> int:
                 if not _CryptoPath(ks_path).exists():
                     _ks_create(pw, path=ks_path)
                     print(f"Created keystore at {ks_path}")
+                from .crypto.keystore import list_keys as _ks_list
+
+                try:
+                    existing = _ks_list(pw, path=ks_path)
+                except (ValueError, TypeError):
+                    existing = []
+                if args.name in existing and not getattr(args, "force", False):
+                    print(
+                        f"a key pair named {args.name!r} is already in the keystore; pass --force to replace it",
+                        file=sys.stderr,
+                    )
+                    return 1
                 pk, sk = _hybrid_keygen()
                 _ks_store(args.name, pk, sk, pw, path=ks_path)
                 print(f"Key pair '{args.name}' stored in keystore")
@@ -1389,9 +1468,15 @@ def _main_impl() -> int:
             except (ValueError, KeyError) as exc:
                 print(f"decrypt failed: {exc} (wrong key, or the file is not a morie ciphertext)", file=sys.stderr)
                 return 1
-            out_name = str(src).replace(".morieenc", "")
+            out_name = getattr(args, "out", None) or str(src).replace(".morieenc", "")
             if out_name == str(src):
                 out_name = str(src) + ".dec"
+            if _CryptoPath(out_name).exists() and not getattr(args, "force", False):
+                print(
+                    f"{out_name} already exists; pass --out NAME to write elsewhere or --force to replace it",
+                    file=sys.stderr,
+                )
+                return 1
             _CryptoPath(out_name).write_bytes(plaintext)
             print(f"Decrypted: {out_name}")
             return 0
@@ -1431,7 +1516,7 @@ def _main_impl() -> int:
             elif getattr(args, "email", None):
                 email_login(args.email, to_email=getattr(args, "to_email", False))
             else:
-                device_login(open_browser=not getattr(args, "no_browser", False))
+                device_login(open_browser=not getattr(args, "no_browser", False) and sys.stdout.isatty())
         except Exception as exc:  # network or user abandoned the flow
             print(f"login failed: {exc}")
             return 1
@@ -1442,7 +1527,9 @@ def _main_impl() -> int:
 
         sub = getattr(args, "interactive_cmd", None) or "status"
         if sub == "install":
-            return _interactive.install(ref=args.ref, source=args.source, verify=not args.no_verify)
+            return _interactive.install(
+                ref=args.ref, source=args.source, verify=not args.no_verify, force=getattr(args, "force", False)
+            )
         if sub == "remove":
             return _interactive.remove()
         return _interactive.status()
@@ -1468,8 +1555,7 @@ def _main_impl() -> int:
         from . import hosted as _hosted
 
         if getattr(_hosted, "_hosted_failure", None) == "rejected":
-            print("the gateway rejected the stored key; run `morie login` again", file=sys.stderr)
-            return 1
+            return 1  # the hosted line above already says the key was rejected and what to do
         return 0
 
     if args.command == "provider":
@@ -1495,6 +1581,18 @@ def _main_impl() -> int:
     if args.command == "emissions":
         from .emissions import run_check, summary_text
 
+        if not (args.seconds > 0):
+            print(f"--seconds must be a positive number, not {args.seconds}", file=sys.stderr)
+            return 2
+        if args.country:
+            from .emissions import known_country_codes
+
+            codes = known_country_codes()
+            if codes and args.country.upper() not in codes:
+                print(
+                    f"--country {args.country}: not an ISO-3 code in the energy-mix table; the world average will be used",
+                    file=sys.stderr,
+                )
         data = run_check(args.seconds, args.output_dir, capsule=not args.no_capsule, country_iso_code=args.country)
         print(summary_text(data, getattr(data, "capsule", None)))
         return 0
@@ -1557,6 +1655,12 @@ def _main_impl() -> int:
 
         df = load_dataset(args.csv)
         method = args.method
+        if args.n < 1:
+            print(f"--n must be a positive integer, not {args.n}", file=sys.stderr)
+            return 2
+        if method in ("srs", "stratified") and args.n > len(df):
+            print(f"cannot draw {args.n} rows from {len(df)} without replacement", file=sys.stderr)
+            return 1
 
         if method == "srs":
             sample = simple_random_sample(df, args.n, seed=args.seed)
@@ -1762,20 +1866,36 @@ def _handle_exec_co(args: argparse.Namespace) -> int:
     else:
         print(f"Opening {filepath}")
 
+    import os
+
+    if not (sys.stdin.isatty() and sys.stdout.isatty()):
+        print(f"no terminal to edit in; open {filepath} in your editor, or run `morie exec --file {filepath}`")
+        return 0
     try:
         from .editor import launch_editor
 
         return launch_editor(str(filepath), run_on_save=True, lang_hint=lang)
     except ImportError:
-        import subprocess
+        if not _add_interactive_layer("The built-in editor"):
+            editor = os.environ.get("EDITOR") or "nano"
+            print(f"falling back to {editor}")
+            import subprocess
 
-        return subprocess.call(["nano", str(filepath)])
+            return subprocess.call([editor, str(filepath)])
+        from .editor import launch_editor
+
+        return launch_editor(str(filepath), run_on_save=True, lang_hint=lang)
 
 
 def _handle_edit(args: argparse.Namespace) -> int:
     from pathlib import Path
 
-    from .editor import edit_file
+    try:
+        from .editor import edit_file
+    except ImportError:
+        if not _add_interactive_layer("The built-in editor"):
+            return 1
+        from .editor import edit_file
 
     filepath = Path(args.file).resolve()
     if not filepath.exists():

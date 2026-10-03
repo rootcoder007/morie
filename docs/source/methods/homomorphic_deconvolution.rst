@@ -20,8 +20,11 @@ where :math:`X(k) = \text{FFT}(x[n])`.
 
 .. code-block:: python
 
+   import math
    from morie.signal import cepst
-   result = cepst(signal)   # CepstrumResult with .cepstrum array
+
+   signal = [math.sin(2 * math.pi * 5 * i / 256) for i in range(512)]
+   result = cepst(signal)   # SignalResult: the real cepstrum is result.filtered
 
 Complex Cepstrum
 ----------------
@@ -37,7 +40,9 @@ This is invertible: ``inverse_complex_cepstrum(complex_cepstrum(x)) = x``.
 .. code-block:: python
 
    from morie.signal import hcepst
-   result = hcepst(signal)  # CepstrumResult
+   import math
+   signal = [math.sin(2 * math.pi * 5 * i / 256) for i in range(512)]
+   result = hcepst(signal)  # SignalResult: the complex cepstrum is result.filtered
 
 Liftering and Deconvolution
 ---------------------------
@@ -55,10 +60,11 @@ minimum-phase component from the rapidly varying excitation.
 .. code-block:: python
 
    from morie.signal import hdecon
+   import math
+   signal = [math.sin(2 * math.pi * 5 * i / 256) for i in range(512)]
 
-   result = hdecon(pcg_signal, cutoff_quefrency=64)
-   min_phase = result.extra["min_phase"]
-   residual = result.extra["residual"]
+   result = hdecon(signal, cutoff=64)   # low-time lifter at quefrency 64
+   print(sorted(result.extra))          # the components the deconvolution returns
 
 Application: PCG S1/S2 Decomposition
 -------------------------------------
@@ -71,9 +77,12 @@ this enables murmur detection in cardiotoxicity studies.
 .. code-block:: python
 
    from morie.signal import pcgflt, hdecon, pcgmur
+   import math
+   # a synthetic phonocardiogram: two short bursts per cycle (S1, S2) at 2 kHz (use your own recording)
+   pcg = [(math.sin(2 * math.pi * 60 * i / 2000) if (i % 1600) < 120 or 700 <= (i % 1600) < 780 else 0.0) for i in range(8000)]
 
    filtered = pcgflt(pcg, fs=2000)
-   decomposed = hdecon(filtered.filtered, cutoff_quefrency=128)
+   decomposed = hdecon(filtered.filtered, cutoff=128)
    score = pcgmur(pcg, fs=2000)
 
 References

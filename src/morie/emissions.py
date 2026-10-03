@@ -411,6 +411,15 @@ def _cpu_tdp_fallback() -> float:
     return 85.0  # conservative default
 
 
+def known_country_codes() -> set[str]:
+    """ISO-3 codes the energy-mix table knows (empty when the table is not bundled)."""
+    try:
+        _load_energy_data()
+        return set(_GLOBAL_ENERGY_MIX.keys())
+    except Exception:
+        return set()
+
+
 def _get_carbon_intensity(
     country_iso: str = "",
     region: str = "",
@@ -587,7 +596,6 @@ class EmissionsTracker:
         self._tdp: float = 0.0
 
     def start(self) -> EmissionsTracker:
-
         self._start_time = time.time()
         self._last_measure_time = self._start_time
         self._ram_power = _estimate_ram_power()

@@ -161,7 +161,7 @@ You can quit at any prompt (press q) and resume by re-running
         "  • Pull any TPS or CPADS feed:  morie pull <name>\n"
         '  • Ask the agent for help:      morie ask "..."\n'
         "  • Browse the cheat sheet:      morie cheatsheet\n"
-        "  • Read the full tutorial:      cat TUTORIAL.md\n"
+        "  • Read the full tutorial:      https://github.com/rootcoder007/morie/blob/main/TUTORIAL.md\n"
         "  • File an issue if stuck:      https://github.com/rootcoder007/morie/issues\n\n"
         "Welcome aboard.",
     )

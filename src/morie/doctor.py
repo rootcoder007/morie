@@ -15,6 +15,7 @@ import os
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 from typing import Any
 
 # ---------------------------------------------------------------------------
@@ -32,10 +33,37 @@ def _check_python_version() -> tuple[bool, str]:
 def _check_import(package: str) -> tuple[bool, str]:
     try:
         mod = importlib.import_module(package)
-        version = getattr(mod, "__version__", "?")
-        return True, version
     except ImportError:
         return False, "not installed"
+    version = getattr(mod, "__version__", None)
+    if not version:  # rich, textual and others keep their version in the package metadata only
+        try:
+            from importlib.metadata import version as _dist_version
+
+            version = _dist_version(package)
+        except Exception:
+            version = "installed"
+    return True, str(version)
+
+
+def _check_interactive_layer() -> tuple[bool, str]:
+    """The repl/exec/agent/edit/tui verbs need five modules the wheel leaves out."""
+    try:
+        from . import _interactive as inter
+
+        pkg_dir = Path(__file__).resolve().parent
+        if all((pkg_dir / n).is_file() for n in inter.FILES):
+            return True, "bundled (source checkout)"
+        d = inter.data_dir()
+        have = inter.present(d)
+        iv = inter.installed_version(d)
+        if len(have) == len(inter.FILES) and iv == inter.package_version():
+            return True, f"installed for morie {iv} in {d}"
+        if have:
+            return False, f"installed for morie {iv} (this is {inter.package_version()}): morie interactive install"
+        return False, "not installed (morie repl/exec/agent/edit/tui): morie interactive install"
+    except Exception as exc:
+        return False, f"error: {exc}"
 
 
 def _check_r() -> tuple[bool, str]:
@@ -175,7 +203,7 @@ _REQUIRED_IMPORTS = [
 ]
 
 # morie's core is native: these only speed up or extend a few paths and are reported, not required
-_OPTIONAL_IMPORTS: list[str] = ["pandas", "numpy", "scipy", "sklearn", "statsmodels"]
+_OPTIONAL_IMPORTS: list[str] = ["pandas", "numpy", "scipy", "sklearn", "statsmodels", "textual"]
 
 
 def run_checks() -> dict[str, Any]:
@@ -203,7 +231,12 @@ def run_checks() -> dict[str, Any]:
     # Optional Python packages
     for pkg in _OPTIONAL_IMPORTS:
         ok, detail = _check_import(pkg)
+        if pkg == "textual" and not ok:
+            detail = 'not installed (morie tui and edit need it): pip install "morie[interactive]"'
         _add(f"import {pkg}", ok, detail, required=False)
+
+    ok, detail = _check_interactive_layer()
+    _add("Interactive layer", ok, detail, required=False)
 
     # R
     ok, detail = _check_r()

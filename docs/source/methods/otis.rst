@@ -85,11 +85,12 @@ Usage
 
 .. code-block:: python
 
+   # with df the expanded OTIS placement frame: morie pull otis (the environments are served
+   # by data.rmorie.com after morie login) or your own data/cache/dt_expanded.csv
    from morie.otis import rplace, astcmb, otdml
-   import pandas as pd
+   from morie.dataset import load_dataset
 
-   # Load expanded placement data (via R bridge or direct)
-   # df = pd.read_csv("data/cache/dt_expanded.csv")
+   df = load_dataset("data/cache/dt_expanded.csv")
 
    # Regional placement by year
    result = rplace(df, year=2024, sex="Male")

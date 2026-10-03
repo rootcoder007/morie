@@ -36,6 +36,33 @@ Per-package full changelogs:
   of the regression-to-the-mean fall (`hotspot_shrinkage`, `shrinkage_loss`). The Lean audit
   now covers 264 theorems in 58 files, 0 sorry, standard axioms only.
 
+* Fixes from the 1.3.9 stress test of the published wheel. Two were serious: ML-KEM-768
+  decapsulation never recovered the encapsulated secret (the number-theoretic transform used
+  its twiddles in natural order and a coefficient-wise product; it now follows FIPS 203
+  Algorithms 9-12 and 17-18, with implicit rejection), and the hybrid file encryption derived
+  its wrapping key from the ciphertext and public key alone, so anyone holding the file and
+  the public key could open it; the key is now bound to the KEM shared secret. Files encrypted
+  by 1.3.x cannot be opened by 1.4.0: decrypt them with 1.3.x and encrypt again. Also:
+  `morie tui` opens again (textual 8 rejected the `agent` argument); `selftest` passes on a
+  fresh wheel and says when the interactive layer or textual is absent; `doctor` reports the
+  interactive layer and textual; `list-datasets` no longer ends in a traceback; `pipeline`
+  without a terminal says to pass `-y`; `run-module` gives one-line errors for a missing CSV
+  or an unknown dataset key; `download-bootstrap --limit` caps what is fetched; `crypto
+  keygen` and `decrypt` never overwrite silently (`--force`, `--out`); `generate-template`
+  rejects an unknown module; `sample --n` must be positive and within the file; `emissions`
+  rejects a negative duration and names an unknown country code; `inspect` refuses a file
+  that is not a table; `verify`/`inspect --module` reject an unknown module; `login` does
+  not open a browser off a terminal; `edit`, `exec co` and `agent` say when the interactive
+  layer is absent instead of falling back to nano or the provider chain; `interactive
+  install` says when the layer is already installed (`--force` refetches) and only mentions
+  the textual extra when it is missing; `from morie.fn import os` is an ImportError, not the
+  stdlib module; the estimators and sampling functions accept a CSV path or a dict of columns
+  as the README says; the SIU index lists reports with case numbers first and `ingest siu
+  --report-id` works; the install one-liner asks before building the R arm, skips it with
+  no terminal, and pins it to the release; the R launcher works on R 4.6 (no explicit
+  `--args`); sampling docstrings run without pandas; docs blocks for ebac, spatial and
+  genomics name the functions that exist.
+
 * Datasets: the fourteen Health Infobase tables download from the portal with the
   data.rmorie.com copy as the fallback (`morie pull hibua`), the three OTIS research
   environments are saved from data.rmorie.com for R to open, and `otisloc` (Ontario

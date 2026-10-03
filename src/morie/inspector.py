@@ -100,7 +100,7 @@ def inspect_output(path: str | Path) -> InspectionResult:
     elif suffix == ".parquet":
         df = pd.read_parquet(path)
     else:
-        df = pd.read_csv(path)
+        raise ValueError(f"{path.name}: not a supported table format (csv, tsv, xlsx, xls, parquet)")
 
     numeric_cols = df.select_dtypes(include=[np.number])
     summary = numeric_cols.describe().T if not numeric_cols.empty else None
