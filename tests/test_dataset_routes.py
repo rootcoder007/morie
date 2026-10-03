@@ -19,7 +19,6 @@ def isolated(tmp_path, monkeypatch):
 
 
 def test_routes_name_a_source_for_the_health_infobase_and_otis_keys():
-    )
     cat = data.DATASET_CATALOG
     assert data.dataset_route(cat["hibua"]).startswith("health-infobase.canada.ca (or data.rmorie.com)")
     assert data.dataset_route(cat["hibp"]) == "data.rmorie.com (your MORIE key)"
