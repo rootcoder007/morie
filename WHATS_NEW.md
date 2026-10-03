@@ -42,7 +42,9 @@ Per-package full changelogs:
   Algorithms 9-12 and 17-18, with implicit rejection), and the hybrid file encryption derived
   its wrapping key from the ciphertext and public key alone, so anyone holding the file and
   the public key could open it; the key is now bound to the KEM shared secret. Files encrypted
-  by 1.3.x cannot be opened by 1.4.0: decrypt them with 1.3.x and encrypt again. Also:
+  by 1.3.x still open in 1.4.0 (the old derivation needed no secret, so reading them costs
+  nothing); `morie crypto decrypt` says so and asks you to encrypt them again, and every file
+  written by 1.4.0 carries a container marker. Also:
   `morie tui` opens again (textual 8 rejected the `agent` argument); `selftest` passes on a
   fresh wheel and says when the interactive layer or textual is absent; `doctor` reports the
   interactive layer and textual; `list-datasets` no longer ends in a traceback; `pipeline`

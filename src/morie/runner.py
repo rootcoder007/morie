@@ -1496,8 +1496,14 @@ def _main_impl() -> int:
                 except ValueError:
                     print("wrong keystore password, or the keystore is corrupted", file=sys.stderr)
                     return 1
+            import warnings as _warnings
+
             try:
-                plaintext = _h_dec(src.read_bytes(), sk)
+                with _warnings.catch_warnings(record=True) as _notes:
+                    _warnings.simplefilter("always")
+                    plaintext = _h_dec(src.read_bytes(), sk)
+                for _n in _notes:
+                    print(f"note: {_n.message}", file=sys.stderr)
             except (ValueError, KeyError) as exc:
                 print(f"decrypt failed: {exc} (wrong key, or the file is not a morie ciphertext)", file=sys.stderr)
                 return 1

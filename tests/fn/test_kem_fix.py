@@ -60,3 +60,37 @@ def test_hybrid_needs_the_secret_key():
     forged = b"\x00" * (3 * 384) + pk + M._sha3_256(pk) + b"\x00" * 32
     with pytest.raises(ValueError):
         hybrid.hybrid_decrypt(ct, forged)
+
+
+def _legacy_container(plaintext: bytes, pk: bytes) -> bytes:
+    """A container exactly as morie 1.3.x wrote it: the wrap key from the ciphertext and public key only."""
+    import hashlib
+    import os
+    import struct
+
+    from morie.crypto._chacha import chacha20_poly1305_encrypt
+    from morie.crypto._kdf import hkdf_sha256
+
+    kem_ct, _ = M.mlkem768_encaps(pk)
+    wrap_key = hkdf_sha256(
+        kem_ct + pk, length=32, salt=hashlib.sha256(b"morie-hybrid-wrap-v1").digest(), info=b"key-wrap"
+    )
+    sym_key, wrap_nonce, payload_nonce = os.urandom(32), os.urandom(12), os.urandom(12)
+    wrapped, wrap_tag = chacha20_poly1305_encrypt(wrap_key, wrap_nonce, sym_key)
+    aead, tag = chacha20_poly1305_encrypt(sym_key, payload_nonce, plaintext)
+    return struct.pack(">I", len(kem_ct)) + kem_ct + wrap_nonce + wrapped + wrap_tag + payload_nonce + aead + tag
+
+
+def test_files_from_1_3_still_open_and_say_so():
+    pk, sk = hybrid.keygen()
+    old = _legacy_container(b"a 1.3.x report", pk)
+    assert hybrid.container_version(old) == 1
+    with pytest.warns(hybrid.LegacyContainerWarning, match="encrypted by morie 1.3.x"):
+        assert hybrid.hybrid_decrypt(old, sk) == b"a 1.3.x report"
+    new = hybrid.hybrid_encrypt(b"a 1.4.0 report", pk)
+    assert hybrid.container_version(new) == 2 and new.startswith(hybrid.CONTAINER_MAGIC)
+    import warnings
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")  # a 1.4.0 file never triggers the legacy note
+        assert hybrid.hybrid_decrypt(new, sk) == b"a 1.4.0 report"

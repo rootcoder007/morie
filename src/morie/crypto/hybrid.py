@@ -30,6 +30,30 @@ from morie.crypto._chacha import chacha20_poly1305_decrypt, chacha20_poly1305_en
 from morie.crypto._kdf import hkdf_sha256
 from morie.crypto._mlkem import mlkem768_decaps, mlkem768_encaps, mlkem768_keygen
 
+# Every container written by 1.4.0 starts with this marker. A 1.3.x container starts with the
+# 4-byte length of the KEM ciphertext (0x00000440), so the two cannot be confused.
+CONTAINER_MAGIC = b"MORIEHYB\x02"
+
+
+class LegacyContainerWarning(UserWarning):
+    """The file was written by morie 1.3.x, whose wrapping key was derivable from the ciphertext
+    and the public key alone; it opened, and it should be encrypted again with this version."""
+
+
+def container_version(ciphertext: bytes) -> int:
+    """2 for a container written by morie 1.4.0 or later, 1 for the 1.3.x layout."""
+    return 2 if ciphertext.startswith(CONTAINER_MAGIC) else 1
+
+
+def _legacy_wrapping_key(kem_ct: bytes, pk: bytes) -> bytes:
+    """The 1.3.x derivation, kept only to READ old files: no secret enters it."""
+    return hkdf_sha256(
+        kem_ct + pk,
+        length=32,
+        salt=hashlib.sha256(b"morie-hybrid-wrap-v1").digest(),
+        info=b"key-wrap",
+    )
+
 
 def keygen() -> tuple[bytes, bytes]:
     """Generate an ML-KEM-768 key pair for hybrid encryption.
@@ -88,7 +112,8 @@ def hybrid_encrypt(plaintext: bytes, recipient_pk: bytes) -> bytes:
     aead_ct, payload_tag = chacha20_poly1305_encrypt(sym_key, payload_nonce, plaintext)
 
     return (
-        struct.pack(">I", len(kem_ct))
+        CONTAINER_MAGIC
+        + struct.pack(">I", len(kem_ct))
         + kem_ct
         + wrap_nonce
         + wrapped_ct
@@ -107,6 +132,9 @@ def hybrid_decrypt(ciphertext: bytes, recipient_sk: bytes) -> bytes:
     :return: Decrypted plaintext.
     :raises ValueError: If the ciphertext is malformed or authentication fails.
     """
+    legacy = container_version(ciphertext) == 1
+    if not legacy:
+        ciphertext = ciphertext[len(CONTAINER_MAGIC) :]
     if len(ciphertext) < 4:
         raise ValueError("Ciphertext too short to contain header")
 
@@ -124,8 +152,20 @@ def hybrid_decrypt(ciphertext: bytes, recipient_sk: bytes) -> bytes:
     pk_end = pk_start + 3 * 384 + 32
     recipient_pk = recipient_sk[pk_start:pk_end]
 
-    shared_secret = mlkem768_decaps(recipient_sk, kem_ct)
-    wrap_key = _wrapping_key(shared_secret, kem_ct, recipient_pk)
+    if legacy:
+        import warnings
+
+        warnings.warn(
+            "this file was encrypted by morie 1.3.x, whose wrapping key was derivable from the ciphertext "
+            "and the public key alone; it opened, but anyone holding the file and the public key can open "
+            "it too. Encrypt it again with this version (morie crypto encrypt FILE --to KEY).",
+            LegacyContainerWarning,
+            stacklevel=2,
+        )
+        wrap_key = _legacy_wrapping_key(kem_ct, recipient_pk)
+    else:
+        shared_secret = mlkem768_decaps(recipient_sk, kem_ct)
+        wrap_key = _wrapping_key(shared_secret, kem_ct, recipient_pk)
 
     wrap_nonce = ciphertext[offset : offset + 12]
     offset += 12
