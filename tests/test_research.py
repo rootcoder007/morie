@@ -444,3 +444,72 @@ def test_contagion_extinction_fixed_point():
             assert all(f(s) > s for s in grid)  # extinction_le_fixed: smallest
     with pytest.raises(ValueError, match="summing to one"):
         R.contagion_extinction([0.5, 0.6])
+
+
+def test_judge_leniency_instrument():
+    from morie.fn._rng import random_uniform
+
+    u = [float(v) for v in random_uniform(2000, seed=14)]
+    n = 300
+    d0 = [1 if u[i] < 0.3 else 0 for i in range(n)]
+    d1 = [1 if u[300 + i] < 0.6 else 0 for i in range(n)]
+    y0 = [u[600 + i] for i in range(n)]
+    y1 = [y0[i] + u[900 + i] * 2 for i in range(n)]
+    w = [u[1200 + i] for i in range(n)]
+    r = R.judge_iv_population(d0, d1, y0, y1, w)
+    ww = [x / sum(w) for x in w]
+    comp = [i for i in range(n) if d0[i] == 0 and d1[i] == 1]
+    de = [i for i in range(n) if d0[i] == 1 and d1[i] == 0]
+    assert close(
+        r["itt"], sum(ww[i] * (y1[i] - y0[i]) for i in comp) - sum(ww[i] * (y1[i] - y0[i]) for i in de)
+    )  # itt_decomposition
+    assert close(r["first_stage"], sum(ww[i] for i in comp) - sum(ww[i] for i in de))  # first_stage
+    pc = r["shares"]["complier"]
+    pdf = r["shares"]["defier"]
+    assert close(
+        r["wald"], (pc * r["effects"]["complier"] - pdf * r["effects"]["defier"]) / (pc - pdf), 1e-9
+    )  # wald_with_defiers
+    d1m = [max(a, b) for a, b in zip(d0, d1)]
+    rm_ = R.judge_iv_population(d0, d1m, y0, y1, w)
+    assert rm_["monotone"] and close(rm_["wald"], rm_["late"], 1e-9)  # late_identification
+    wit = R.judge_iv_population([0, 1], [1, 0], [0, 0], [1, 4], weights=[0.6, 0.4])
+    assert (
+        close(wit["wald"], -5) and wit["effects"]["complier"] > 0 and wit["effects"]["defier"] > 0
+    )  # defiers_can_flip
+    # cloned design: observed means are the population means, so the Wald ratio is the LATE exactly
+    z = [0] * n + [1] * n
+    d = d0 + d1m
+    y = [y1[i] if d0[i] == 1 else y0[i] for i in range(n)] + [y1[i] if d1m[i] == 1 else y0[i] for i in range(n)]
+    obs = R.judge_iv(z, d, y, weights=w + w)
+    assert close(obs["wald"], rm_["late"]) and close(obs["first_stage"], rm_["first_stage"])
+    assert close(obs["shares_if_monotone"]["complier"], rm_["shares"]["complier"])
+    s = obs["sensitivity"]
+    assert close(float(s["implied_complier_effect"][0]), obs["wald"])
+    row = {k: float(s[k][2]) for k in s.columns}
+    assert close(
+        obs["wald"],
+        (row["complier_share"] * row["implied_complier_effect"] - 0.1 * row["defier_effect"])
+        / (row["complier_share"] - 0.1),
+    )
+    with pytest.raises(ValueError, match="both values"):
+        R.judge_iv([1, 1], [0, 1], [1, 2])
+    with pytest.raises(ValueError, match="0/1"):
+        R.judge_iv_population([0, 2], [1, 1], [0, 0], [1, 1])
+    with pytest.raises(ValueError, match="equal length"):
+        R.judge_iv_population([0], [1, 1], [0, 0], [1, 1])
+    with pytest.raises(ValueError, match="equal length"):
+        R.judge_iv([0, 1], [0], [1, 2])
+    with pytest.raises(ValueError, match="weights"):
+        R.judge_iv([0, 1], [0, 1], [1, 2], weights=[1])
+    with pytest.raises(ValueError, match="weights"):
+        R.judge_iv_population([0, 1], [1, 1], [0, 0], [1, 1], weights=[-1, 1])
+    with pytest.raises(ValueError, match="0/1"):
+        R.judge_iv([0, 1], [0, 2], [1, 2])
+    assert (
+        R.judge_iv_population([1, 1], [1, 1], [0, 0], [1, 1])["wald"]
+        != R.judge_iv_population([1, 1], [1, 1], [0, 0], [1, 1])["wald"]
+    )  # nan
+    assert (
+        R.judge_iv([0, 0, 1, 1], [1, 1, 1, 1], [1, 2, 3, 4])["wald"]
+        != R.judge_iv([0, 0, 1, 1], [1, 1, 1, 1], [1, 2, 3, 4])["wald"]
+    )

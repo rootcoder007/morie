@@ -41,6 +41,7 @@ from morie.research.feedback_loop import (
     feedback_loop_sim,
     feedback_loop_urn_law,
 )
+from morie.research.judge_iv import judge_iv, judge_iv_population
 from morie.research.logit_separation import logit_separation
 from morie.research.meta_pooling import meta_dl_bias, meta_random_effects
 from morie.research.recording_map import detection_rate_shift, recording_map
@@ -106,6 +107,8 @@ __all__ = [
     "feedback_loop_urn_law",
     "hazard_selection",
     "interracial_rates",
+    "judge_iv",
+    "judge_iv_population",
     "logit_rescale",
     "logit_separation",
     "meta_dl_bias",

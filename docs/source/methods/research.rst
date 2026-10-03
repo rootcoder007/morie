@@ -71,6 +71,9 @@ Problems and functions
    * - P13 pooling evaluations
      - ``P13.truncation_bias``, ``P13.dl_biased_under_homogeneity``, ``P13.re_var_ge``
      - :func:`meta_random_effects`, :func:`meta_dl_bias`
+   * - P14 judge leniency
+     - ``P14.itt_decomposition``, ``P14.first_stage_decomposition``, ``P14.late_identification``, ``P14.wald_with_defiers``, ``P14.defiers_can_flip``
+     - :func:`judge_iv_population`, :func:`judge_iv`
 
 Reference
 ---------

@@ -76,6 +76,8 @@ _LAZY_EXPORTS = {
     "feedback_loop_urn_law": "research.feedback_loop",
     "hazard_selection": "research.fairness_bounds",
     "interracial_rates": "research.selection",
+    "judge_iv": "research.judge_iv",
+    "judge_iv_population": "research.judge_iv",
     "logit_rescale": "research.fairness_bounds",
     "logit_separation": "research.logit_separation",
     "meta_dl_bias": "research.meta_pooling",
