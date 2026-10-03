@@ -210,6 +210,7 @@ morie list-datasets                                  # 71 catalog keys + the cur
 morie pull ocp21 --out cpads.csv                     # the real CPADS PUMF, cached; modules use it from then on
 morie pull --all --out datasets/                     # every catalog dataset
 morie login                                          # one key (GitHub, or --email you@example.com): hosted model tier + data.rmorie.com
+morie login --no-browser                             # server / SSH / no browser: prints a link + code for any device
 morie pull chicago_crime/incidents --out incidents.csv   # a curated table (8.6M rows)
 morie ask "which module fits a treatment-control design?"
 morie provider set --base-url https://api.openai.com/v1 --key sk-...   # or your own model endpoint
@@ -278,7 +279,7 @@ Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.git
 - **Website**: <https://rmorie.com> — the MORIE family (rmorie, morie, rmoriebricklayer, rmoriedata) in one place.
 - **Curated data**: <https://data.rmorie.com> — the BigQuery-built tables, opened by the same key; `/browse` for SQL in the browser.
 - **CLI reference**: [cli](https://rootcoder007.github.io/morie/cli.html); learn pages for [datasets](https://rootcoder007.github.io/morie/learn/datasets.html), [emissions and capsules](https://rootcoder007.github.io/morie/learn/emissions.html) and [the R command line](https://rootcoder007.github.io/morie/learn/r-cli.html).
-- **Hosted LLM tier**: <https://llm.rmorie.com> — the fallback model behind `morie ask` when there is no local Ollama. Sign in with `morie login` (GitHub) or `morie login --email you@example.com`; `morie models` lists the models on your key and `morie ask --model NAME` picks one; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html). The tier serves ollama.com cloud models and additional AI models (kimi-k2.6:cf, kimi-k2.7-code:cf, deepseek-v4-pro:cf, deepseek-v4-flash:cf, glm-5.2:cf, glm-5.3:cf, glm-5.3-flash:cf, gpt-oss-120b:cf, gpt-oss-20b:cf, llama-4-scout:cf, qwen3.8-27b:cf, nemotron-3-120b:cf and gemma-4-26b:cf); a rate-limited cloud model falls back to one of them.
+- **Hosted LLM tier**: <https://llm.rmorie.com> — the fallback model behind `morie ask` when there is no local Ollama. Sign in with `morie login` (GitHub) or `morie login --email you@example.com`; on a server or over SSH, `morie login --no-browser` prints a link and a code to open on any device (1.4.0 opens no browser there on its own); `morie models` lists the models on your key and `morie ask --model NAME` picks one; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html). The tier serves ollama.com cloud models and additional AI models (kimi-k2.6:cf, kimi-k2.7-code:cf, deepseek-v4-pro:cf, deepseek-v4-flash:cf, glm-5.2:cf, glm-5.3:cf, glm-5.3-flash:cf, gpt-oss-120b:cf, gpt-oss-20b:cf, llama-4-scout:cf, qwen3.8-27b:cf, nemotron-3-120b:cf and gemma-4-26b:cf); a rate-limited cloud model falls back to one of them.
 
 ## Citation
 
