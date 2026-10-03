@@ -7,7 +7,7 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
-## 1.4.0 (unreleased)
+## 1.4.0 (2026-10-03)
 
 * `morie.research`: the research programme on the hardest problems in criminology and
   sociolegal studies arrives in Python, at parity with the R package (48 functions, thirteen
@@ -64,6 +64,11 @@ Per-package full changelogs:
   no terminal, and pins it to the release; the R launcher works on R 4.6 (no explicit
   `--args`); sampling docstrings run without pandas; docs blocks for ebac, spatial and
   genomics name the functions that exist.
+
+* `morie interactive install` is the second step of every install channel: the README, the
+  install pages and INSTALLATION.md say so up front, and the curl one-liner runs it as its last
+  step (the installer's two copies are one file again, with the progress spinner and the R-side
+  prompt). A verb that needs the layer prints the command and, on a terminal, offers to run it.
 
 * Supply-chain hygiene (the Socket.dev alerts on the 1.3.9 tarball). The sdist now carries
   only what the build needs (package, C++ core, CMake file, bundling script); tests, docs,

@@ -766,7 +766,7 @@ def _bhm_mcmc(X, y, terms, m0, s0, frame, group, chains, iter, seed):
     draws_beta = [[] for _ in range(k)]
     draws_sigma = []
     warm = max(200, iter // 2)
-    for c in range(max(1, chains)):
+    for _c in range(max(1, chains)):
         beta = list(m0l)
         log_sigma = 0.0
         step_b = [0.1] * k

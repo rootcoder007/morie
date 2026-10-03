@@ -1,4 +1,4 @@
-# morie 1.4.0 - unreleased
+# morie 1.4.0 - 2026-10-03
 
 * Research: four new problems join the Lean-backed programme, each with its R function and
   tests. `morie_meta_random_effects()` and `morie_meta_dl_bias()` (pooling evaluations:

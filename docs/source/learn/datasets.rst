@@ -2,7 +2,7 @@ Get the real data
 =================
 
 Nothing in MORIE depends on a dataset being on your machine already. The
-packages ship the catalogue (70 keys), the provenance records and a few small
+packages ship the catalogue (71 keys), the provenance records and a few small
 synthetic frames; the real files are downloaded on first use from the
 portals that publish them and cached, so every later call is local.
 
@@ -19,10 +19,13 @@ See what exists
    rmorie::morie_list_datasets()
 
 Each row says where the data comes from: a portal it is pulled from
-(open.canada.ca, data.ontario.ca, Statistics Canada, CIHI, ECCC, the Toronto
-Police ArcGIS hub), ``rmoriedata`` on CRAN (sample frames and the provenance
-records), or "own file" for restricted data you drop under
-``$MORIE_DATA_DIR`` yourself.
+(open.canada.ca, data.ontario.ca, Statistics Canada, CIHI,
+health-infobase.canada.ca, ECCC, the Toronto Police ArcGIS hub),
+``rmoriedata`` on CRAN (sample frames and the provenance records),
+data.rmorie.com (the Health Infobase fallback copy, the OTIS research
+environments and, after ``morie login``, the curated tables), or "own file"
+for the one key that is your own research file (the MAPQ workbook), dropped
+under ``$MORIE_DATA_DIR`` yourself.
 
 Pull one dataset, or all of them
 --------------------------------

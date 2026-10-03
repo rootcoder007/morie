@@ -119,7 +119,10 @@ treatment selection, the extinction probability of a near-repeat chain, judge-le
 designs, the Oaxaca-Blinder decomposition, Little's law on a docket and the
 incapacitation identity. The Health Infobase tables and the OTIS research
 environments are served from data.rmorie.com. The Python package carries every
-research function at parity.
+research function at parity. Seven continuations close the Lean ledger (264
+theorems, 0 sorry), every finding from the 1.3.9 stress test is fixed with a
+test, ML-KEM-768 and the hybrid container follow FIPS 203 (files from 1.3.x
+still open) and the Python sdist carries only what the build needs.
 
 ## What's in v1.3.9
 
@@ -344,7 +347,7 @@ Run `citation("morie")` after installation. Please cite the software:
   title   = {morie: Multi-domain Open Research and Inferential Estimation},
   author  = {Ruhela, Vansh Singh},
   year    = {2026},
-  note    = {R package version 1.3.9},
+  note    = {R package version 1.4.0},
   url     = {https://github.com/rootcoder007/morie}
 }
 ```

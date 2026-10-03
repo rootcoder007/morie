@@ -323,7 +323,13 @@ def c_interactive(s: Smoke):
     else:
         r = s.run("interactive", "install")  # the suite runs from an installed copy: fetch the release tag
         if r.returncode != 0 and ("does not exist" in r.stdout or "download of" in r.stdout):
-            RESULTS.append(("interactive", "SKIP", "no checkout beside the suite and the release tag is not downloadable from here"))
+            RESULTS.append(
+                (
+                    "interactive",
+                    "SKIP",
+                    "no checkout beside the suite and the release tag is not downloadable from here",
+                )
+            )
             return
     check(r.returncode == 0 and "Installed the interactive layer" in r.stdout, r.stdout[-400:] + r.stderr[-300:])
     r = s.run("interactive", "status")

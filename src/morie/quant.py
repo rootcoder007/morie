@@ -297,7 +297,7 @@ def polar_transform(x: F64) -> tuple[float, list[F64]]:
     radii = np.sqrt(x_pairs[:, 0] ** 2 + x_pairs[:, 1] ** 2)
 
     # Higher levels: recursively compute atan2 of radius ratios
-    for level in range(1, levels):
+    for _level in range(1, levels):
         pairs = radii.reshape(-1, 2)
         level_angles = np.arctan2(pairs[:, 1], pairs[:, 0])
         # These angles are in [0, π/2] since radii are non-negative
@@ -436,10 +436,8 @@ def dequantize_angles(
         codebook = get_codebook(d, b)
         centroids = codebook[idx]
 
-        if level == 0:
-            a = centroids * np.pi + np.pi  # scale back to [0, 2π)
-        else:
-            a = centroids * (np.pi / 4) + np.pi / 4  # scale back to [0, π/2]
+        # level 0 scales back to [0, 2π), deeper levels to [0, π/2]
+        a = centroids * np.pi + np.pi if level == 0 else centroids * (np.pi / 4) + np.pi / 4
 
         angles.append(a)
 
@@ -622,10 +620,7 @@ def turboquant_mse(
     y = Q @ x  # rotate
 
     norm = float(np.linalg.norm(y))
-    if norm > 1e-15:
-        y_unit = y / norm
-    else:
-        y_unit = y
+    y_unit = y / norm if norm > 1e-15 else y
 
     # Scalar-quantize each coordinate via Lloyd-Max codebook
     codebook = get_codebook(d, bits)

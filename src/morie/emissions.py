@@ -443,7 +443,7 @@ def _get_carbon_intensity(
                 usa_data = json.load(f)
             for state, info in usa_data.items():
                 if region.lower() in state.lower() or state.lower() in region.lower():
-                    lbs_mwh = info if isinstance(info, (int, float)) else info.get("emissions", 0)
+                    lbs_mwh = info if isinstance(info, int | float) else info.get("emissions", 0)
                     return float(lbs_mwh) * _LBS_MWH_TO_KG_KWH
 
     # Canadian provincial data
@@ -456,7 +456,7 @@ def _get_carbon_intensity(
                 can_data = json.load(f)
             for prov, info in can_data.items():
                 if region.lower() in prov.lower() or prov.lower() in region.lower():
-                    if isinstance(info, (int, float)):
+                    if isinstance(info, int | float):
                         return float(info) * _G_TO_KG
                     elif isinstance(info, dict) and "carbon_intensity" in info:
                         return float(info["carbon_intensity"]) * _G_TO_KG
@@ -472,7 +472,7 @@ def _get_carbon_intensity(
             total_twh = 0.0
             weighted_intensity = 0.0
             for source, twh in country_data.items():
-                if source in _SOURCE_INTENSITY and isinstance(twh, (int, float)):
+                if source in _SOURCE_INTENSITY and isinstance(twh, int | float):
                     total_twh += twh
                     weighted_intensity += twh * _SOURCE_INTENSITY[source]
             if total_twh > 0:

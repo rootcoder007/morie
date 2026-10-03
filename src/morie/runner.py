@@ -1121,8 +1121,9 @@ def _main_impl() -> int:
         n_own = sum(d["route"].startswith("own file") for d in datasets)
         print("-" * (kw + 76))
         print(
-            f"{len(datasets)} keys: {len(datasets) - n_own} download from their portal or rmoriedata on first use; "
-            f"{n_own} are your own research files, placed under $MORIE_DATA_DIR/datasets/ with the paths shown."
+            f"{len(datasets)} keys: {len(datasets) - n_own} download from their portal, rmoriedata or data.rmorie.com "
+            f"on first use; {n_own} {'is' if n_own == 1 else 'are'} your own research file{'' if n_own == 1 else 's'}, "
+            f"placed under $MORIE_DATA_DIR/datasets/ with the path{'' if n_own == 1 else 's'} shown."
         )
         n_hub = sum(d["type"] == "hosted" for d in datasets)
         if n_hub:

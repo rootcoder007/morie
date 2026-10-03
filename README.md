@@ -14,14 +14,27 @@ The R package ships **native causal-inference engines** — matching (nearest/Ma
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Website](https://img.shields.io/badge/website-rmorie.com-1d1d1f.svg)](https://rmorie.com) [![Hosted LLM](https://img.shields.io/badge/hosted%20LLM-llm.rmorie.com-0066cc.svg)](https://llm.rmorie.com)
 
-> `import morie` checks PyPI once a day for a newer release (fail-silent,
-> cached). Set `MORIE_NO_UPDATE_CHECK=1` to disable it.
+> The `morie` command line checks PyPI once a day for a newer release (fail-silent,
+> cached); `import morie` makes no network request. Set `MORIE_NO_UPDATE_CHECK=1` to disable it.
 
 ## Installation
 
 > Full step-by-step install guide with platform-specific notes (PEP 668 on Debian, python 3.13 segfault on Raspberry Pi OS, etc.) is at **[INSTALLATION.md](https://github.com/rootcoder007/morie/blob/main/INSTALLATION.md)**.
 
 morie is a Python (and R) package — once Python is present it is `pip install morie`. If you are starting with **nothing installed**, INSTALLATION.md opens with **[Step 1 — install the prerequisites](https://github.com/rootcoder007/morie/blob/main/INSTALLATION.md#step-1--install-the-prerequisites)**: every tool you might need (Python, `curl`, `bash`/WSL, Git Bash, `winget`, Homebrew, Docker, R) with its official download. The short version:
+
+> **Two steps, whatever the channel.** Install morie, then run
+>
+> ```bash
+> morie interactive install
+> ```
+>
+> once per user. The published package leaves out the five modules behind
+> `morie repl`, `morie exec`, `morie agent` and `morie tui` (they run code you or a
+> model type); that command fetches them for your installed version from the
+> release tag on GitHub and checks each against the manifest inside the package.
+> The one-liner installer below runs it for you. A verb that needs the layer says
+> so and, on a terminal, offers to run it. Details: [the interactive layer](#the-interactive-layer--morie-repl-morie-exec-morie-agent-morie-tui).
 
 - **Windows** — install Python from [python.org](https://www.python.org/downloads/) (on the first screen tick **Add python.exe to PATH**), then `pip install morie`. Full walkthrough: [Windows](#recommended--windows) below. Windows has no `curl`/`bash`, so the one-liner does not apply there.
 - **macOS / Linux** — the one-liner below sets up everything. It needs `curl` and `bash`, which macOS has built in and most Linux ships.
@@ -54,6 +67,7 @@ python3 -m venv ~/.venvs/morie
 source ~/.venvs/morie/bin/activate
 pip install -U morie
 morie --version
+morie interactive install
 ```
 
 Activate the venv (`source ~/.venvs/morie/bin/activate`) in each new shell, or call `~/.venvs/morie/bin/morie` directly.
@@ -70,6 +84,7 @@ Windows doesn't ship `curl`, `bash`, `python`, or `R`, so the Linux/macOS one-li
 python -m pip install --upgrade pip
 python -m pip install morie
 python -c "import morie; print(morie.__version__)"
+morie interactive install
 ```
 
 For the R package, install **rmorie** (the R distribution of morie): `Rscript -e "install.packages('rmorie', repos=c('https://rootcoder007.r-universe.dev','https://cloud.r-project.org'))"`
@@ -89,6 +104,7 @@ Then:
 ```bash
 brew tap rootcoder007/morie
 brew install morie
+morie interactive install
 ```
 
 The tap repo is [`rootcoder007/homebrew-morie`](https://github.com/rootcoder007/homebrew-morie). It pulls morie's source distribution from PyPI and bundles a self-contained `python@3.12` venv — no system Python required.
@@ -97,6 +113,7 @@ The tap repo is [`rootcoder007/homebrew-morie`](https://github.com/rootcoder007/
 
 ```bash
 pip install morie
+morie interactive install
 ```
 
 > **Heads-up:** Debian, Ubuntu and Raspberry Pi OS forbid `pip` outside a virtual environment (PEP 668). Use the venv three-liner above, or the one-liner installer, which sets one up for you. morie needs no NumPy or SciPy, so no compiled scientific stack has to be present.
@@ -117,7 +134,8 @@ Published on every release with a versioned tag, a major.minor tag and `:latest`
 
 Every channel above leaves five modules out on purpose: they execute code that
 you or a model type, and package scanners flag that surface. Add them for your
-user in one step:
+user in one step (the one-liner installer does it for you; a verb that needs
+them prints this command and, on a terminal, offers to run it):
 
 ```bash
 morie interactive install
@@ -188,7 +206,7 @@ verbs as `rmorie` (see below).
 morie list-modules                                   # the 23 analysis modules
 morie run-module power-design --output-dir out/      # one module, its tables as CSV
 morie explain power_two_proportion_gender.csv        # how to read an output table
-morie list-datasets                                  # 70 catalog keys + the curated tables after login
+morie list-datasets                                  # 71 catalog keys + the curated tables after login
 morie pull ocp21 --out cpads.csv                     # the real CPADS PUMF, cached; modules use it from then on
 morie pull --all --out datasets/                     # every catalog dataset
 morie login                                          # one key: hosted model tier + data.rmorie.com
@@ -204,19 +222,21 @@ morie selftest                                       # every subsystem, with rea
 ### Where the datasets come from
 
 `morie list-datasets` prints a **Route** column next to every key. Of the
-70 keys, 52 download themselves on first use and are cached: open.canada.ca
+71 keys, 70 download themselves on first use and are cached: open.canada.ca
 (CPADS, CSADS, CSUS microdata and bootstrap weights), data.ontario.ca (the
-OTIS correctional tables), Statistics Canada (CCHS), CIHI (the indicator
-library and its tables), Environment Canada's NAPS air-quality files, the
-Toronto Police ArcGIS feeds (the Canada-wide NAPS hourly keys are about
-2 million rows: allow ten minutes and 1.5 GB), and the reviewed SIU corpus
-from the
+OTIS correctional tables and institution locations), Statistics Canada
+(CCHS), CIHI (the indicator library and its tables), Environment Canada's
+NAPS air-quality files, the Toronto Police ArcGIS feeds (the Canada-wide
+NAPS hourly keys are about 2 million rows: allow ten minutes and 1.5 GB),
+the Health Infobase tables from health-infobase.canada.ca with the
+data.rmorie.com copy as the fallback, the OTIS research environments from
+data.rmorie.com (R objects: rmorie loads them, morie saves them for R), and
+the reviewed SIU corpus from the
 [rmoriedata](https://cran.r-project.org/package=rmoriedata) package on CRAN
-(fetched as a source tarball, no R needed). The other 18 are restricted or
-your own files (Health Infobase aggregates, the MAPQ workbook, the OTIS
-research environments): put them under a data directory and point
-`MORIE_DATA_DIR` at it, keeping the relative paths that `morie list-datasets`
-shows, e.g. `$MORIE_DATA_DIR/datasets/hib/CSUS/Alcohol.csv`.
+(fetched as a source tarball, no R needed). One key, the MAPQ workbook, is
+your own file: put it under a data directory and point `MORIE_DATA_DIR` at
+it, keeping the relative path that `morie list-datasets` shows. The curated
+tables at data.rmorie.com join the list after `morie login`.
 
 ```python
 from morie.data import list_rmoriedata, load_rmoriedata

@@ -34,6 +34,9 @@ from typing import Union
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as stats
+from morie.fn._glm_core import (
+    FTestAnovaPower,
+)
 
 
 class _MissingDep:
@@ -43,15 +46,10 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError("%s is no longer bundled; this code path awaits its native morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError("%s is no longer bundled; this code path awaits its native morie implementation" % self._name)
-
-
-from morie.fn._glm_core import (
-    FTestAnovaPower,
-)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
 
 def calculate_interaction_power(sample_size: int, alpha: float = 0.05, effect_size: float = 0.2) -> float:
@@ -255,13 +253,10 @@ def pnorm(
     if sd <= 0:
         raise ValueError(f"sd must be > 0, got {sd}.")
     dist = stats.norm(loc=mean, scale=sd)
+    # lower tail: log P(X <= x); upper tail: log P(X > x) = log(1 - CDF)
     if lower_tail:
-        # logcdf = log(P(X <= x)) -- correct for lower tail
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        # logsf = log(P(X > x)) = log(1 - CDF) -- correct for upper tail
-        result = dist.logsf(x) if log else dist.sf(x)
-    return result
+        return dist.logcdf(x) if log else dist.cdf(x)
+    return dist.logsf(x) if log else dist.sf(x)
 
 
 def qnorm(
@@ -367,10 +362,7 @@ def pt(x: Union[float, np.ndarray], df: float, lower_tail: bool = True, log: boo
     if df <= 0:
         raise ValueError(f"df must be > 0, got {df}.")
     dist = stats.t(df=df)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 
@@ -450,10 +442,7 @@ def pchisq(
     if df <= 0:
         raise ValueError(f"df must be > 0, got {df}.")
     dist = stats.chi2(df=df)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 
@@ -543,10 +532,7 @@ def pbinom(
     if not 0.0 <= prob <= 1.0:
         raise ValueError(f"prob must be in [0, 1], got {prob}.")
     dist = stats.binom(n=size, p=prob)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 
@@ -661,10 +647,7 @@ def ppois(
     if lambda_ <= 0:
         raise ValueError(f"lambda_ must be > 0, got {lambda_}.")
     dist = stats.poisson(mu=lambda_)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 
@@ -776,10 +759,7 @@ def pbeta(
     if beta <= 0:
         raise ValueError(f"beta must be > 0, got {beta}.")
     dist = stats.beta(a=alpha, b=beta)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 
@@ -883,10 +863,7 @@ def pgamma(
     if effective_scale <= 0:
         raise ValueError(f"Effective scale must be > 0, got {effective_scale}.")
     dist = stats.gamma(a=shape, scale=effective_scale)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 
@@ -944,10 +921,7 @@ def punif(
     if min >= max:
         raise ValueError(f"min must be < max, got min={min}, max={max}.")
     dist = stats.uniform(loc=min, scale=max - min)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 
@@ -1224,7 +1198,7 @@ def _fisher_conditional(table, conf_level=0.95):
 
     def dnhyper(ncp):
         ln = math.log(ncp)
-        dd = [l + ln * u for l, u in zip(logdc, support)]
+        dd = [ld + ln * u for ld, u in zip(logdc, support)]
         mx = max(dd)
         w = [math.exp(v - mx) for v in dd]
         tot = math.fsum(w)
@@ -1920,10 +1894,7 @@ def hedges_g(
     d = cohens_d(a1, a2, pooled=True)
     m = len(a1) + len(a2) - 2
     # Hedges correction factor: exact via gamma functions; approximate for large m
-    if m > 0:
-        j = math.exp(math.lgamma(m / 2) - math.log(math.sqrt(m / 2)) - math.lgamma((m - 1) / 2))
-    else:
-        j = 1.0
+    j = math.exp(math.lgamma(m / 2) - math.log(math.sqrt(m / 2)) - math.lgamma((m - 1) / 2)) if m > 0 else 1.0
     return float(d * j) if math.isfinite(d) else float("nan")
 
 
@@ -2180,10 +2151,7 @@ def spearman_rho(
         # R cor.test(method = "spearman"): exact / Edgeworth (AS 89) p-value
         # for untied data; with ties the t approximation stays
         q = (n**3 - n) * (1.0 - rho) / 6.0
-        if q > (n**3 - n) / 6.0:
-            pp = _prho(n, round(q) + 0.0, False)
-        else:
-            pp = _prho(n, round(q) + 2.0, True)
+        pp = _prho(n, round(q) + 0.0, False) if q > (n**3 - n) / 6.0 else _prho(n, round(q) + 2.0, True)
         p_val = min(2.0 * pp, 1.0)
     return {"rho": rho, "p_value": float(p_val)}
 

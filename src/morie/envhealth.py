@@ -525,7 +525,7 @@ def exposure_response_sensitivity(
 
     rng = np.random.default_rng(random_state)
     boot_ates: list[float] = []
-    for b in range(n_bootstrap):
+    for _b in range(n_bootstrap):
         idx = rng.integers(0, len(data), size=len(data))
         resample = data.iloc[idx].reset_index(drop=True)
         try:

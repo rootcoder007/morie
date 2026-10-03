@@ -117,6 +117,11 @@ installed and working. Pick by what you have:
   ([section 4](#4-pypi-manual-pip)).
 - **You want the R package** — install **R** (Step 1), then
   [section 6](#6-r-r-universe--cran).
+- **Whatever you pick** — finish with `morie interactive install`
+  ([section 7](#7-the-interactive-layer-repl-exec-agent-tui)): it adds the
+  REPL, exec, agent and TUI modules that every channel leaves out. The
+  one-liner runs it for you; a verb that needs them prints the command and,
+  on a terminal, offers to run it.
 
 ## Install channels
 
@@ -361,7 +366,8 @@ Every channel above installs morie without five modules: `polyglot.py`, `agent.p
 model type, and package scanners flag that surface, so they are kept out of the
 wheel, the sdist, the Homebrew formula, the deb/rpm and the container image.
 Without them `morie repl`, `morie exec`, `morie agent` and `morie tui` say so,
-print the command below, and on a terminal offer to run it for you.
+print the command below, and on a terminal offer to run it for you. The
+curl one-liner (section 1) runs it as its last step.
 
 Add them for your user:
 

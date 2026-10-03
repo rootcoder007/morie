@@ -23,8 +23,17 @@ From PyPI:
 
 .. code-block:: bash
 
-   pip install morie                  # the package, 70 catalogued datasets, 15,222 morie.fn callables
+   pip install morie                  # the package, 71 catalogued datasets, 15,222 morie.fn callables
    pip install "morie[interactive]"   # + the Terminal IDE (textual)
+   morie interactive install          # the REPL, exec, agent and TUI modules, once per user
+
+``morie interactive install`` fetches the five modules behind ``morie repl``,
+``morie exec``, ``morie agent`` and ``morie tui`` from the release tag of the
+version you installed and checks each against the manifest inside the package;
+every published artifact leaves them out because they run code you or a model
+type. Without them those verbs print the command and, on a terminal, offer to
+run it. ``morie interactive status`` and ``morie interactive remove`` manage the
+per-user copy; a source checkout needs none of this.
 
 The runtime dependencies are small and pure Python (``openpyxl``, ``httpx``,
 ``rich``, ``beautifulsoup4``). There is no NumPy, SciPy or pandas
