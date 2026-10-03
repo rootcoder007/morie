@@ -33,6 +33,16 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 
+def _registry_size() -> int | None:
+    """Number of functions in the morie.fn registry (the count `morie repl` prints)."""
+    try:
+        from morie.fn._registry import REGISTRY
+
+        return len(REGISTRY)
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _create_agent():
     try:
         from .agent import create_agent
@@ -65,7 +75,7 @@ class PerseusRelayHandler(BaseHTTPRequestHandler):
                     "service": "perseus-relay",
                     "model": model,
                     "tools": 12,
-                    "functions": "5710+",
+                    "functions": _registry_size(),
                 },
             )
         else:

@@ -18,6 +18,14 @@ list with \code{total}, \code{hier}, \code{alpha}, \code{nf}, \code{expvar}.
 Native principal-axis approximation of McDonald's omega
 (total + hierarchical).
 }
+\details{
+Loadings come from principal-axis factoring (communalities iterated on the
+reduced correlation matrix). \code{hier} is the general-factor omega of the Schmid-Leiman
+transformation: the \code{nf} factors are promax-rotated, their correlations are factored for
+one general factor (with two factors both load the square root of their correlation),
+and the items are projected onto it. With \code{nf = 1} the single factor is the general
+factor, so \code{hier} equals \code{total}: a one-factor model cannot separate them.
+}
 \examples{
 if (requireNamespace("psych", quietly = TRUE)) {
   set.seed(1)

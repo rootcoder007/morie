@@ -187,9 +187,15 @@ def stratified_sample(
             raise ValueError(f"Stratum '{stratum_val}': requested n={n_draw} exceeds population size {len(group_df)}")
         if n_draw > 0:
             idx = rng.choice(len(group_df), size=n_draw, replace=False)
-            samples.append(group_df.iloc[idx])
+            drawn = group_df.iloc[idx].copy()
+            drawn[".weight"] = [len(group_df) / n_draw] * n_draw  # each row stands for N_h / n_h units
+            samples.append(drawn)
 
-    return pd.concat(samples).copy() if samples else clean.iloc[:0].copy()
+    if not samples:
+        empty = clean.iloc[:0].copy()
+        empty[".weight"] = []
+        return empty
+    return pd.concat(samples).copy()
 
 
 # ---------------------------------------------------------------------------
@@ -613,10 +619,9 @@ def effective_sample_size(weights: np.ndarray | pd.Series) -> float:
 
     Examples
     --------
-    >>> import numpy as np
-    >>> effective_sample_size(np.ones(100))
+    >>> effective_sample_size([1.0] * 100)
     100.0
-    >>> ess = effective_sample_size(np.array([1.0, 1.0, 10.0]))
+    >>> ess = effective_sample_size([1.0, 1.0, 10.0])
     >>> ess < 3.0
     True
 
@@ -655,8 +660,7 @@ def design_effect(weights: np.ndarray | pd.Series) -> float:
 
     Examples
     --------
-    >>> import numpy as np
-    >>> design_effect(np.ones(100))
+    >>> design_effect([1.0] * 100)
     1.0
 
     References

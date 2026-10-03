@@ -477,6 +477,72 @@ def _write_outputs(outputs: dict[str, pd.DataFrame], output_dir: str | Path | No
     return outputs
 
 
+_GENDER_LABELS = {1: "Female", 2: "Male", 3: "Non-binary"}
+
+
+def _gender_label(g) -> str:
+    """The CPADS code as its label (1 -> Female); a frame that already holds labels keeps them."""
+    try:
+        return _GENDER_LABELS.get(int(g), str(g))
+    except (TypeError, ValueError):
+        return str(g)
+
+
+def _two_proportion_rows(df, outcome: str, g1, g2) -> list[dict]:
+    """One power row for two gender groups, as the R route writes it.
+
+    p1, p2 are weighted prevalences; h is Cohen's h; n_eq the per-group n for 80% power
+    at alpha 0.05 with equal allocation, 2((z_a + z_b)/h)^2; power_srs the power the observed
+    n1, n2 give, Phi(|h| / sqrt(1/n1 + 1/n2) - z_a); the design-effect columns inflate
+    both by Kish's deff = n sum(w^2) / (sum w)^2 over the two groups' weights.
+    """
+    from statistics import NormalDist
+
+    nd = NormalDist()
+    rows: list[dict] = []
+    groups = list(df["gender"])
+    ys = list(df[outcome])
+    ws = list(df["weight"])
+
+    def _pick(g):
+        out = []
+        for gv, yv, wv in zip(groups, ys, ws):
+            if gv == g and yv == yv and yv is not None and wv == wv and wv is not None:
+                out.append((float(yv), float(wv)))
+        return out
+
+    a, b = _pick(g1), _pick(g2)
+    if not a or not b:
+        return rows
+    p1 = sum(y * w for y, w in a) / sum(w for _, w in a)
+    p2 = sum(y * w for y, w in b) / sum(w for _, w in b)
+    h = 2 * _math.asin(_math.sqrt(p1)) - 2 * _math.asin(_math.sqrt(p2))
+    z_a, z_b = nd.inv_cdf(0.975), nd.inv_cdf(0.80)
+    w_all = [w for _, w in a] + [w for _, w in b]
+    deff = len(w_all) * sum(w * w for w in w_all) / sum(w_all) ** 2
+    n1, n2 = len(a), len(b)
+    n_eq = 2 * ((z_a + z_b) / abs(h)) ** 2 if h != 0 else float("nan")
+    se_unit = _math.sqrt(1 / n1 + 1 / n2)
+    rows.append(
+        {
+            "group1": _gender_label(g1),
+            "group2": _gender_label(g2),
+            "p1": p1,
+            "p2": p2,
+            "h": h,
+            "n1": n1,
+            "n2": n2,
+            "n_eq": n_eq,
+            "power_srs": nd.cdf(abs(h) / se_unit - z_a),
+            "n_eq_eff": n_eq * deff,
+            "power_deff": nd.cdf(abs(h) / (se_unit * _math.sqrt(deff)) - z_a),
+            "analysis_mode": "observational",
+            "power_scope": outcome,
+        }
+    )
+    return rows
+
+
 def run_power_design_module(
     cpads_csv: str | Path = DEFAULT_CPADS_CSV,
     *,
@@ -521,17 +587,14 @@ def run_power_design_module(
                         "power": power,
                     }
                 )
-            pair_rows.append(
-                {
-                    "group1": ref["gender"],
-                    "group2": other["gender"],
-                    "p1": ref["weighted_prevalence"],
-                    "p2": other["weighted_prevalence"],
-                    "effect_size_h": effect,
-                    "n1": ref["n"],
-                    "n2": other["n"],
-                }
-            )
+            pair_rows.extend(_two_proportion_rows(analysis, "heavy_drinking_30d", ref["gender"], other["gender"]))
+    if "ebac_legal" in frame.columns and "alcohol_past12m" in frame.columns and len(gender_summary) >= 2:
+        # eBAC over the past-year drinkers, as the R route scopes it
+        drinkers = frame.dropna(subset=["gender", "weight", "ebac_legal", "alcohol_past12m"])
+        drinkers = drinkers[drinkers["alcohol_past12m"] == 1]
+        levels = list(gender_summary["gender"])
+        for g2 in levels[1:]:
+            pair_rows.extend(_two_proportion_rows(drinkers, "ebac_legal", levels[0], g2))
 
     overall_prev = float((analysis["heavy_drinking_30d"] * analysis["weight"]).sum() / analysis["weight"].sum())
 

@@ -151,11 +151,120 @@ def crba(
     )
 
 
+def _paf(R, nf: int, max_iter: int = 200, tol: float = 1e-6):
+    """Principal-axis factoring: communalities iterated on the diagonal of the reduced
+    correlation matrix from a squared-multiple-correlation start (rmorie's .morie_paf)."""
+    k = R.shape[0]
+    try:
+        h2 = 1.0 - 1.0 / np.diag(np.linalg.inv(R))
+    except np.linalg.LinAlgError:
+        h2 = np.full(k, 0.5)
+    h2 = np.clip(h2, 0.05, 0.995)
+    loads = np.zeros((k, nf))
+    for _ in range(max_iter):
+        Rr = R.copy()
+        np.fill_diagonal(Rr, h2)
+        ev, evec = np.linalg.eigh(Rr)
+        order = np.argsort(-ev)
+        ev, evec = ev[order], evec[:, order]
+        loads = evec[:, :nf] * np.sqrt(np.maximum(ev[:nf], 0))
+        new_h2 = np.minimum(np.sum(loads**2, axis=1), 0.995)
+        converged = np.max(np.abs(new_h2 - h2)) < tol
+        h2 = new_h2
+        if converged:
+            break
+    if loads[:, 0].sum() < 0:
+        loads[:, 0] = -loads[:, 0]  # the general factor loads positively
+    return loads
+
+
+def _mm(a, b):
+    return [[sum(a[i][t] * b[t][j] for t in range(len(b))) for j in range(len(b[0]))] for i in range(len(a))]
+
+
+def _tr(a):
+    return [list(r) for r in zip(*a)]
+
+
+def _inv(a):
+    return np.linalg.inv(np.array(a, dtype=np.float64)).tolist()
+
+
+def _inv_sqrt_psd(a):
+    """(A)^(-1/2) for a symmetric positive-definite A, and the sum of sqrt eigenvalues."""
+    w, V = np.linalg.eigh(np.array(a, dtype=np.float64))
+    w, V = list(w.tolist()), V.tolist()
+    n = len(w)
+    out = [[sum(V[i][t] * V[j][t] / w[t] ** 0.5 for t in range(n)) for j in range(n)] for i in range(n)]
+    return out, sum(max(x, 0.0) ** 0.5 for x in w)
+
+
+def _varimax(x, eps: float = 1e-5):
+    """stats::varimax(normalize = TRUE): Kaiser-normalised rotation; the SVD step u v' is
+    computed as the polar factor B (B'B)^(-1/2), the same matrix."""
+    k, nc = len(x), len(x[0])
+    sc = [sum(v * v for v in row) ** 0.5 for row in x]
+    xn = [[v / sc[i] for v in row] for i, row in enumerate(x)]
+    TT = [[1.0 if i == j else 0.0 for j in range(nc)] for i in range(nc)]
+    d = 0.0
+    for _ in range(1000):
+        z = _mm(xn, TT)
+        colsq = [sum(z[i][j] ** 2 for i in range(k)) for j in range(nc)]
+        inner = [[z[i][j] ** 3 - z[i][j] * colsq[j] / k for j in range(nc)] for i in range(k)]
+        B = _mm(_tr(xn), inner)
+        isq, dsum = _inv_sqrt_psd(_mm(_tr(B), B))
+        TT = _mm(B, isq)
+        dpast, d = d, dsum
+        if d < dpast * (1 + eps):
+            break
+    z = _mm(xn, TT)
+    return [[v * sc[i] for v in row] for i, row in enumerate(z)], TT
+
+
+def _promax(x, m: int = 4):
+    """stats::promax: varimax, then the least-squares fit to the powered target."""
+    z, rot = _varimax(x)
+    Q = [[v * abs(v) ** (m - 1) for v in row] for row in z]
+    U = _mm(_inv(_mm(_tr(z), z)), _mm(_tr(z), Q))
+    dg = _inv(_mm(_tr(U), U))
+    nc = len(U)
+    U = [[U[i][j] * dg[j][j] ** 0.5 for j in range(nc)] for i in range(nc)]
+    return _mm(z, U), _mm(rot, U)
+
+
+def _schmid_leiman_g(loads):
+    """General-factor loadings by the Schmid-Leiman transformation (rmorie's
+    .morie_schmid_leiman_g): promax-rotate, factor the factor correlations for one general
+    factor (two factors: both load sqrt(phi_12)), project the items onto it."""
+    nf = len(loads[0])
+    if nf < 2:
+        return [row[0] for row in loads]
+    P, U = _promax(loads)
+    Phi = _inv(_mm(_tr(U), U))
+    s = [1.0 if sum(P[i][j] for i in range(len(P))) >= 0 else -1.0 for j in range(nf)]
+    P = [[P[i][j] * s[j] for j in range(nf)] for i in range(len(P))]
+    Phi = [[Phi[a][b] * s[a] * s[b] for b in range(nf)] for a in range(nf)]
+    if nf == 2:
+        gam = [max(Phi[0][1], 0.0) ** 0.5] * 2
+    else:
+        gl = _paf(np.array(Phi, dtype=np.float64), 1)
+        gam = [float(v) for v in gl[:, 0].tolist()]
+    return [sum(P[i][j] * gam[j] for j in range(nf)) for i in range(len(P))]
+
+
 def mcdo(
     data: pd.DataFrame | np.ndarray,
     nf: int = 1,
 ) -> OmgRes:
     """McDonald's omega total and hierarchical.
+
+    Loadings come from principal-axis factoring (communalities iterated on the reduced
+    correlation matrix). ``hier`` is the general-factor omega of the Schmid-Leiman
+    transformation: the ``nf`` factors are promax-rotated, their correlations are factored
+    for one general factor (with two factors both load the square root of their
+    correlation), and the items are projected onto it. With ``nf = 1`` the single factor is
+    the general factor, so ``hier`` equals ``total``. Same arithmetic as
+    ``rmorie::morie_psymet_omega``.
 
     Parameters
     ----------
@@ -171,16 +280,13 @@ def mcdo(
     n, k = X.shape
     R = np.corrcoef(X, rowvar=False)
 
-    evals, evecs = np.linalg.eigh(R)
-    idx = np.argsort(-evals)
-    evals = evals[idx]
-    evecs = evecs[:, idx]
-
-    loads = evecs[:, :nf] * np.sqrt(np.maximum(evals[:nf], 0))
+    evals = np.sort(np.linalg.eigvalsh(R))[::-1]
+    loads = _paf(R, nf)
     comm = np.sum(loads**2, axis=1)
     uniq = 1 - comm
     omg_t = 1 - uniq.sum() / R.sum()
-    omg_h = (loads[:, 0].sum() ** 2) / R.sum()
+    g = _schmid_leiman_g(loads.tolist() if hasattr(loads, "tolist") else loads)
+    omg_h = sum(g) ** 2 / R.sum()
 
     a = crba(data)
     expvar = evals[:nf].sum() / evals.sum()

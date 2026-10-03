@@ -31,7 +31,7 @@ agent <- function(task, model = NULL, backend = "auto", dry_run = FALSE) {
   .morie_agent_arg(task, "task")
   .morie_agent_arg(backend, "backend")
   if (!is.null(model)) .morie_agent_arg(model, "model")
-  bin <- Sys.which("morie")
+  bin <- Sys.which("rmorie")
   if (!nzchar(bin)) {
     return("the rmorie launcher is not on PATH: run Rscript -e 'morie::install_cli()' once, then agent() works.")
   }
@@ -55,7 +55,7 @@ agent <- function(task, model = NULL, backend = "auto", dry_run = FALSE) {
 #' @examples
 #' agent_available()
 #' @export
-agent_available <- function() nzchar(Sys.which("morie"))
+agent_available <- function() nzchar(Sys.which("rmorie"))
 
 # A non-NA, non-blank character scalar, or an error naming the argument.
 .morie_agent_arg <- function(x, what) {

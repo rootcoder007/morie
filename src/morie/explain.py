@@ -43,15 +43,15 @@ Read each row: it compares two groups (group1 vs group2) as observed in the
 data; p1 and p2 are their weighted prevalences of the outcome and h is the
 gap between them as an effect size.
 
-Columns (the Python route writes the first seven; the R route adds the rest):
+Columns (both routes write all of them; one row per group pair and outcome):
   - group1, group2       The two groups compared (e.g. men vs women)
   - p1, p2               The weighted outcome prevalence observed in each group
-  - effect_size_h / h    Cohen's h for the two proportions
+  - h                    Cohen's h for the two proportions
   - n1, n2               The observed group sizes in the data (not sample sizes needed)
   - n_eq                 Per-group n needed for 80% power at this h, equal allocation,
-                         simple random sampling
+                         simple random sampling: 2((z_a + z_b) / h)^2
   - power_srs            Power the observed n1, n2 give under simple random sampling
-  - n_eq_eff             n_eq inflated by the survey design effect (deff)
+  - n_eq_eff             n_eq inflated by Kish's design effect of the two groups' weights
   - power_deff           Power the observed sizes give once the design effect is applied
   - analysis_mode        "observational": the groups are as surveyed, not assigned
   - power_scope          The outcome the comparison is about (e.g. heavy_drinking_30d)

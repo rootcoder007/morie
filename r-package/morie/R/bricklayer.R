@@ -55,7 +55,7 @@ morie_bricklayer <- function(yes = FALSE, check = FALSE) {
     "import importlib.util,sys; sys.exit(0 if importlib.util.find_spec('morie._core') else 1)"
   )
 
-  have_cli <- nzchar(Sys.which("morie"))  # the launcher install_cli() writes (the command line ships in rmorie)
+  have_cli <- nzchar(Sys.which("rmorie"))  # the launcher install_cli() writes (the command line ships in rmorie)
   have_rdata <- requireNamespace("rmoriedata", quietly = TRUE)
   have_rbrick <- requireNamespace("rmoriebricklayer", quietly = TRUE)
   r_backend_ok <- isTRUE(tryCatch(morie_fast_available(), error = function(e) FALSE))

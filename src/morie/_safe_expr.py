@@ -78,6 +78,37 @@ _BLOCKED_ATTRS = frozenset(
         "inspect",
     }
 )
+# file input and output: a formula computes, it never reads or writes a file (np.savez wrote an
+# arbitrary path from a moncar formula; np.load read one back; frames and arrays have writers too)
+_IO_PREFIXES = ("save", "load", "dump", "read", "write", "to_")
+_IO_ALLOWED = frozenset({"to_numpy", "to_list", "to_dict"})
+_IO_NAMES = frozenset(
+    {
+        "tofile",
+        "fromfile",
+        "fromregex",
+        "genfromtxt",
+        "unlink",
+        "remove",
+        "rmdir",
+        "rmtree",
+        "mkdir",
+        "makedirs",
+        "rename",
+        "chmod",
+        "chown",
+        "touch",
+        "symlink_to",
+        "hardlink_to",
+        "link_to",
+    }
+)
+
+
+def _is_io_attr(name: str) -> bool:
+    return name in _IO_NAMES or (name.startswith(_IO_PREFIXES) and name not in _IO_ALLOWED)
+
+
 # builtins an expression may call once it has reached them through a value's attribute
 _SAFE_BUILTINS = frozenset({"abs", "min", "max", "round", "sum", "len", "float", "int", "bool", "pow", "divmod"})
 
@@ -138,7 +169,10 @@ def safe_eval_expr(expression: str, namespace: dict[str, Any] | None = None) -> 
         if not isinstance(node, _EXPR_NODES):
             raise ValueError(f"disallowed syntax in expression: {type(node).__name__}")
         if isinstance(node, ast.Attribute) and (
-            node.attr.startswith("_") or node.attr in ("format", "format_map", "mro") or node.attr in _BLOCKED_ATTRS
+            node.attr.startswith("_")
+            or node.attr in ("format", "format_map", "mro")
+            or node.attr in _BLOCKED_ATTRS
+            or _is_io_attr(node.attr)
         ):
             raise ValueError(f"attribute '{node.attr}' not allowed")
         if isinstance(node, ast.Constant) and isinstance(node.value, str) and "__" in node.value:
@@ -184,6 +218,8 @@ class _Evaluator:
 
         if isinstance(base, types.ModuleType) and base not in self._ns.values():
             raise ValueError(f"attribute access on module '{base.__name__}' is not allowed")
+        if _is_io_attr(attr):
+            raise ValueError(f"'{attr}' reads or writes files and is not allowed in an expression")
         value = getattr(base, attr)
         if isinstance(value, types.ModuleType):
             raise ValueError(f"'{attr}' is a module and may not be used in an expression")

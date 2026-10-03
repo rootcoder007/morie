@@ -178,7 +178,11 @@ def build_parser() -> argparse.ArgumentParser:
     pipeline.add_argument("--all", action="store_true", help="Run the current MORIE module surface")
     pipeline.add_argument("--modules", nargs="+", help="Override the default module list")
     pipeline.add_argument("--cpads-csv", default=DEFAULT_CPADS_CSV, help="Path to the CPADS CSV")
-    pipeline.add_argument("--dataset", default=None, help="Dataset key (e.g. ocp21, hibp). Overrides --cpads-csv")
+    pipeline.add_argument(
+        "--dataset",
+        default=None,
+        help="Key of a CPADS-shaped dataset (e.g. ocp21; morie list-datasets names the keys). Overrides --cpads-csv",
+    )
     pipeline.add_argument("--output-dir", help="Optional directory for CSV outputs")
     pipeline.add_argument("-y", "--yes", action="store_true", help="Skip confirmation prompt")
     pipeline.add_argument(
@@ -201,13 +205,21 @@ def build_parser() -> argparse.ArgumentParser:
     run_cmd = subparsers.add_parser("run-module", help="Run one MORIE module")
     run_cmd.add_argument("module", help="Module name to run")
     run_cmd.add_argument("--cpads-csv", default=DEFAULT_CPADS_CSV, help="Path to the CPADS CSV")
-    run_cmd.add_argument("--dataset", default=None, help="Dataset key (e.g. ocp21, hibp). Overrides --cpads-csv")
+    run_cmd.add_argument(
+        "--dataset",
+        default=None,
+        help="Key of a CPADS-shaped dataset (e.g. ocp21; morie list-datasets names the keys). Overrides --cpads-csv",
+    )
     run_cmd.add_argument("--output-dir", help="Optional directory for CSV outputs")
 
     run_all = subparsers.add_parser("run-modules", help="Run multiple MORIE modules")
     run_all.add_argument("--modules", nargs="+", help="Module names to run; defaults to all implemented modules")
     run_all.add_argument("--cpads-csv", default=DEFAULT_CPADS_CSV, help="Path to the CPADS CSV")
-    run_all.add_argument("--dataset", default=None, help="Dataset key (e.g. ocp21, hibp). Overrides --cpads-csv")
+    run_all.add_argument(
+        "--dataset",
+        default=None,
+        help="Key of a CPADS-shaped dataset (e.g. ocp21; morie list-datasets names the keys). Overrides --cpads-csv",
+    )
     run_all.add_argument("--output-dir", help="Optional directory for CSV outputs")
 
     agent_cmd = subparsers.add_parser("agent", help="Ask Perseus, the MORIE agent")

@@ -215,3 +215,26 @@ def download_url(
             )
             time.sleep(attempt)
     return written
+
+
+class Stages:
+    """Numbered stage lines on stderr for a long computation with no byte count to show.
+
+    ``Stages("logistic-models", 4).step("fitting the interaction model")`` prints
+    ``logistic-models [2/4] fitting the interaction model (12 s)``. ``MORIE_NO_PROGRESS=1``
+    silences it, like the download bars.
+    """
+
+    def __init__(self, label: str, total: int, stream: IO[str] | None = None) -> None:
+        self.label, self.total, self.n = label, total, 0
+        self.stream = stream if stream is not None else sys.stderr
+        self.enabled = not os.environ.get("MORIE_NO_PROGRESS")
+        self.t0 = time.monotonic()
+
+    def step(self, what: str) -> None:
+        self.n += 1
+        if self.enabled:
+            elapsed = time.monotonic() - self.t0
+            count = f"[{self.n}/{self.total}] " if self.total else ""
+            self.stream.write(f"{self.label} {count}{what} ({elapsed:.0f} s)\n")
+            self.stream.flush()

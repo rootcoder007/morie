@@ -5,6 +5,10 @@ from __future__ import annotations
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
+from .causal import compute_propensity_scores
+from .cpads import validate_cpads_frame
+from .survey import SurveyDesign
+
 
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""
@@ -13,23 +17,16 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
+
 
 try:
     from morie.fn import _glm_core as sm
 except ImportError:
-    sm = _MissingDep('sm')
-
-from .causal import compute_propensity_scores
-from .cpads import validate_cpads_frame
-from .survey import SurveyDesign
+    sm = _MissingDep("sm")
 
 DEFAULT_INVESTIGATION_COVARIATES = [
     "age_group",
@@ -102,15 +99,20 @@ def run_weighted_logistic_analysis(
         "mental_health",
         treatment,
     ]
+    from ._progress import Stages
+
+    stages = Stages("logistic-models", 4)
     required = [outcome, weight_col, *predictors]
     frame = _prepare_analysis_frame(data, required=required)
     design = SurveyDesign(frame, weights_col=weight_col)
 
     formula = f"{outcome} ~ {' + '.join(predictors)}"
+    stages.step(f"survey-weighted logistic model on {len(frame):,} rows")
     fit = design.svyglm(formula, family=sm.families.Binomial())
     or_table = _extract_or_table(fit)
 
     interaction_formula = formula + f" + {treatment}:gender"
+    stages.step(f"interaction model ({treatment} x gender)")
     fit_int = design.svyglm(interaction_formula, family=sm.families.Binomial())
     int_or_table = _extract_or_table(
         fit_int,
@@ -151,14 +153,15 @@ def run_weighted_logistic_analysis(
 
     y_smote = frame[outcome].astype(int)
     X_smote = pd.get_dummies(frame[predictors], drop_first=True, dtype=float)
+    stages.step("SMOTE resampling for the sensitivity check (the slow step on a full survey)")
     X_res, y_res, smote_info = apply_smote(X_smote, y_smote)
 
     smote_status = pd.DataFrame([smote_info])
 
+    stages.step("refitting on the resampled data")
     # Refit logistic on SMOTE-resampled data
     smote_frame = X_res.copy()
     smote_frame[outcome] = y_res.values
-    smote_formula = f"{outcome} ~ " + " + ".join(X_res.columns)
     try:
         smote_fit = sm.GLM(
             smote_frame[outcome],
@@ -232,7 +235,7 @@ def compare_nested_logistic_models(
 
     null_deviance = float(fits[0][3].deviance)
     summary_rows = []
-    for label, description, formula, fit in fits:
+    for label, description, _formula, fit in fits:
         summary_rows.append(
             {
                 "model": label,
@@ -264,7 +267,7 @@ def compare_nested_logistic_models(
 
     # Full coefficient table for the best model (Model 3 with all predictors)
     full_coef_rows = []
-    for label, description, formula, fit in fits:
+    for label, _description, _formula, fit in fits:
         conf = fit.conf_int()
         for term in fit.params.index:
             full_coef_rows.append(

@@ -345,12 +345,9 @@ def format_chi_square(
     Examples
     --------
     >>> format_chi_square(12.34, 3, 0.006, n=200, cramers_v=0.18)
-    "chi-sq(3, N = 200) = 12.34, p = .006, V = 0.18"
+    'chi-sq(3, N = 200) = 12.34, p = .006, V = 0.18'
     """
-    if n is not None:
-        stat = f"chi-sq({df}, N = {n}) = {chi2:.2f}"
-    else:
-        stat = f"chi-sq({df}) = {chi2:.2f}"
+    stat = f"chi-sq({df}, N = {n}) = {chi2:.2f}" if n is not None else f"chi-sq({df}) = {chi2:.2f}"
     parts = [stat, format_p_value(p)]
     if cramers_v is not None:
         parts.append(f"V = {cramers_v:.2f}")
@@ -1379,7 +1376,6 @@ def audit_statistical_reporting(
             score=0.0,
         )
 
-    cols_lower = [c.lower() for c in df.columns]
     checks: list[dict[str, Any]] = []
     missing: list[str] = []
 
@@ -1584,11 +1580,14 @@ def generate_author_contributions(
 
     Examples
     --------
-    >>> generate_author_contributions({
+    >>> print(generate_author_contributions({
     ...     "Smith, J.": ["Conceptualization", "Methodology", "Writing - original draft"],
     ...     "Doe, A.": ["Formal analysis", "Software", "Writing - review & editing"],
-    ... })
-    '**Author Contributions**:\n\nSmith, J.: Conceptualization, Methodology, Writing - original draft.\nDoe, A.: Formal analysis, Software, Writing - review & editing.'
+    ... }))
+    **Author Contributions**:
+    <BLANKLINE>
+    Smith, J.: Conceptualization, Methodology, Writing - original draft.
+    Doe, A.: Formal analysis, Software, Writing - review & editing.
     """
     lines = ["**Author Contributions**:", ""]
     for author, roles in contributions.items():
@@ -1625,7 +1624,7 @@ def compile_report(
     if output_format == "markdown":
         parts.append(f"# {report.title}")
         parts.append("")
-        parts.append("A journey of a thousand miles begins with a single step. -- Lao Tzu")
+        parts.append(f"**Authors**: {', '.join(report.authors)}")
         parts.append(f"**Date**: {report.date}")
         parts.append("")
         for section in report.sections:
@@ -1639,7 +1638,7 @@ def compile_report(
     elif output_format == "latex":
         parts.append(f"\\title{{{report.title}}}")
         author_str = " \\and ".join(report.authors)
-        parts.append("A journey of a thousand miles begins with a single step. -- Lao Tzu")
+        parts.append(f"\\author{{{author_str}}}")
         parts.append(f"\\date{{{report.date}}}")
         parts.append("\\maketitle")
         parts.append("")
@@ -1652,7 +1651,7 @@ def compile_report(
 
     elif output_format == "html":
         parts.append(f"<h1>{report.title}</h1>")
-        parts.append("A journey of a thousand miles begins with a single step. -- Lao Tzu")
+        parts.append(f"<p><strong>Authors</strong>: {', '.join(report.authors)}</p>")
         parts.append(f"<p><strong>Date</strong>: {report.date}</p>")
         for section in report.sections:
             parts.append(section.to_html())
@@ -1723,8 +1722,8 @@ def compare_reports(
     removed = set_a - set_b
 
     # Count section headings changed
-    headings_a = {l for l in text_a if l.startswith("#")}
-    headings_b = {l for l in text_b if l.startswith("#")}
+    headings_a = {line for line in text_a if line.startswith("#")}
+    headings_b = {line for line in text_b if line.startswith("#")}
     sections_added = headings_b - headings_a
     sections_removed = headings_a - headings_b
 

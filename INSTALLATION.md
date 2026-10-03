@@ -492,7 +492,7 @@ The same works for any morie-supported domain: pass the canonical list for your 
 
 ## Languages
 
-morie's CLI carries French, Spanish, German and Mandarin (Simplified) strings for the cheatsheet and the explain headings; everything else is English. Set `MORIE_LOCALE`:
+morie's CLI carries French, Spanish, German, Portuguese, Japanese, Arabic, Hindi and Mandarin (Simplified) strings for the cheatsheet section headings, the `doctor` heading, `pull`'s row summary and the network-error line; everything else, `explain` included, is English. Set `MORIE_LOCALE`:
 
 ```bash
 MORIE_LOCALE=fr morie cheatsheet

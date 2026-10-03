@@ -233,9 +233,16 @@ def fetch_report_text(
         from bs4 import BeautifulSoup
 
         soup = BeautifulSoup(pdf_bytes, "html.parser")
-        for tag in soup(["script", "style", "nav", "header", "footer"]):
+        for tag in soup(["script", "style", "nav", "header", "footer", "form"]):
             tag.decompose()
-        text = soup.get_text("\n")
+        # the report body; the site menus and sidebars sit outside it
+        body = soup.find("div", class_="siu-content") or soup.find(attrs={"role": "main"}) or soup.body or soup
+        # the in-page table of contents is a list of #anchors; its entries repeat the section headings
+        for ul in body.find_all(["ul", "ol"]):
+            links = ul.find_all("a", href=True)
+            if links and all(a["href"].startswith("#") for a in links):
+                ul.decompose()
+        text = body.get_text("\n")
         text = "\n".join(line.strip() for line in text.splitlines() if line.strip())
         if not text:
             raise SIUError(f"report page holds no text: {url}")
@@ -264,13 +271,13 @@ _SECTION_HEADINGS = {
     "narrative": re.compile(r"\b(Narrative of Events|Narrative)\s*[:\.\n]", re.IGNORECASE),
     "evidence": re.compile(r"\b(Evidence)\s*[:\.\n]", re.IGNORECASE),
     "law": re.compile(r"\b(Relevant Legislation|Applicable Law)\s*[:\.\n]", re.IGNORECASE),
-    "analysis": re.compile(r"\b(Analysis|Analysis and Director's Decision)\s*[:\.\n]", re.IGNORECASE),
-    "conclusion": re.compile(r"\b(Decision|Conclusion|Director's Decision)\s*[:\.\n]", re.IGNORECASE),
+    "analysis": re.compile(r"\b(Analysis and Director['\u2019]s Decision|Analysis)\s*[:\.\n]", re.IGNORECASE),
+    "conclusion": re.compile(r"\b(Director['\u2019]s Decision|Conclusion|Decision)\s*[:\.\n]", re.IGNORECASE),
 }
 
 _REPORT_ID = re.compile(r"\b(\d{2}-[A-Z]{3,4}-\d{3,4})\b")
 _INCIDENT_DATE = re.compile(
-    r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*\d{4}",
+    r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s*\d{4}",
     re.IGNORECASE,
 )
 
@@ -303,8 +310,14 @@ def extract_report_fields(text: str) -> dict[str, Any]:
 
     # Section slicing — find each heading, take text up to the next heading
     boundaries: list[tuple[str, int]] = []
+    analysis_span = None
     for name, pat in _SECTION_HEADINGS.items():
         m = pat.search(text)
+        if name == "analysis" and m:
+            analysis_span = (m.start(), m.end())
+        if name == "conclusion" and analysis_span:
+            # "Decision" inside the "Analysis and Director's Decision" heading is not a heading of its own
+            m = next((x for x in pat.finditer(text) if not analysis_span[0] <= x.start() < analysis_span[1]), None)
         if m:
             boundaries.append((name, m.end()))
     boundaries.sort(key=lambda x: x[1])
@@ -319,6 +332,8 @@ def extract_report_fields(text: str) -> dict[str, Any]:
         out["sections"][name] = text[start:end].strip()
     if "conclusion" in out["sections"]:
         out["conclusion"] = out["sections"]["conclusion"]
+    elif analysis_span and "decision" in text[analysis_span[0] : analysis_span[1]].lower():
+        out["conclusion"] = out["sections"].get("analysis")
 
     return out
 
@@ -328,7 +343,7 @@ def extract_report_fields(text: str) -> dict[str, Any]:
 
 
 _DATE_PAT = re.compile(
-    r"(\d{4}-\d{2}-\d{2})|(\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*\d{4}\b)",
+    r"(\d{4}-\d{2}-\d{2})|(\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s*\d{4}\b)",
     re.IGNORECASE,
 )
 

@@ -176,15 +176,18 @@ def install(
         for name in FILES:
             shutil.copyfile(tmpd / name, d / name)
         (d / "VERSION").write_text(version + "\n", encoding="utf-8")
+        marker = d / "VERIFIED"
+        if verify:
+            marker.write_text("sha256 against the bundled manifest\n", encoding="utf-8")
+        elif marker.exists():
+            marker.unlink()
     where = "a local directory" if source else ref
     checked = "verified against the bundled manifest" if verify else "not verified"
     out(f"Installed the interactive layer for morie {version} from {where} into {d} ({checked}).")
     if _textual_available():
-        out("morie repl, morie exec, morie agent, morie edit and morie tui work now.")
+        out("morie repl, morie exec, morie agent and morie tui work now.")
     else:
-        out(
-            'morie repl, morie exec, morie agent and morie edit work now; morie tui also needs: pip install "morie[interactive]"'
-        )
+        out('morie repl, morie exec and morie agent work now; morie tui also needs: pip install "morie[interactive]"')
     out("Remove it again with: morie interactive remove")
     return 0
 
@@ -220,5 +223,10 @@ def status(out=print) -> int:
     if iv != version:
         out(f"state: installed for morie {iv}, this is morie {version}; run: morie interactive install")
         return 0
-    out(f"state: active for morie {version} (files: {', '.join(FILES)})")
+    checked = (
+        "verified against the bundled manifest"
+        if (d / "VERIFIED").is_file()
+        else "NOT verified (installed with --no-verify)"
+    )
+    out(f"state: active for morie {version}, {checked} (files: {', '.join(FILES)})")
     return 0

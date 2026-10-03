@@ -141,9 +141,13 @@ def inspect_directory(
 
     if module_name and module_name in MODULE_SPECS:
         expected = MODULE_SPECS[module_name].output_files
-        files = [directory / f for f in expected if (directory / f).is_file()]
+        files = []
+        for base in (directory, directory / module_name):  # a module folder, or the folder that holds module folders
+            files = [base / f for f in expected if (base / f).is_file()]
+            if files:
+                break
     else:
-        files = sorted(directory.glob("*.csv"))
+        files = sorted(directory.glob("*.csv")) or sorted(directory.rglob("*.csv"))
 
     return [inspect_output(f) for f in files]
 
@@ -398,9 +402,13 @@ def verify_directory(
 
     if module_name and module_name in MODULE_SPECS:
         expected = MODULE_SPECS[module_name].output_files
-        files = [directory / f for f in expected if (directory / f).is_file()]
+        files = []
+        for base in (directory, directory / module_name):  # a module folder, or the folder that holds module folders
+            files = [base / f for f in expected if (base / f).is_file()]
+            if files:
+                break
     else:
-        files = sorted(directory.glob("*.csv"))
+        files = sorted(directory.glob("*.csv")) or sorted(directory.rglob("*.csv"))
 
     return [verify_statistical_output(f) for f in files]
 

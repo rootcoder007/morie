@@ -2115,7 +2115,9 @@ def dataset_route(entry: dict) -> str:
         return "data.rmorie.com file (an R object: rmorie loads it, morie saves it)"
     if entry.get("source") in CKAN_DATASETS:
         return "open.canada.ca"
-    return "own file: " + entry.get("local_path", "")
+    rel = entry.get("local_path", "")
+    rel = rel[len("data/") :] if rel.startswith("data/") else rel
+    return "own file: $MORIE_DATA_DIR/" + rel
 
 
 def dataset_info(key: str) -> dict:

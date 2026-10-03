@@ -143,7 +143,6 @@ wheel.exclude = [
 # score everything inside the tarball; shipping the whole tree made the package
 # look like it executed shell, eval and network code it never ships.)
 sdist.exclude = [
-  "/src/morie/tests/",  # the placeholder test package ships in neither artifact
   "*",
   "!/pyproject.toml",
   "!/CMakeLists.txt",
@@ -169,6 +168,10 @@ sdist.exclude = [
   "src/morie/tui.py",
   "src/morie/_exec_guard.py",
   "src/morie/repl_init.py",
+  # the placeholder test package ships in neither artifact; listed after the "!/src/morie/**"
+  # re-include because the last matching pattern wins
+  "/src/morie/tests/",
+  "/src/morie/tests/**",
 ]
 # anchored: an unanchored "libmorie/" also re-included build/*/libmorie/*.o and the R package's CMake files
 sdist.include = ["/libmorie/", "/CMakeLists.txt", "/scripts/bundle_fn.py", "/LICENSE", "/CITATION.cff"]
