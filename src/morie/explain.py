@@ -171,6 +171,11 @@ def describe(filename: str) -> str:
     name = filename.rsplit("/", 1)[-1]
     if name in _EXPLANATIONS:
         return _EXPLANATIONS[name]
+    from ._explain_tables import explain_table
+
+    table = explain_table(name, filename)  # every module table: purpose + the columns the file really has
+    if table is not None:
+        return table
     # Try without extension swap
     base = name.rsplit(".", 1)[0]
     for candidate, body in _EXPLANATIONS.items():
@@ -233,7 +238,7 @@ morie cheat sheet
 {t("cheatsheet.ingest")}
   morie ingest tps --layer major-crime --year 2024 --out tps.csv
   morie ingest ckan --portal https://open.canada.ca/data --search alcohol
-  morie ingest siu --report-id 22-OFD-001 --out report/
+  morie ingest siu --report-id 17-OVI-201 --out report/
 
 {t("cheatsheet.help")}
   morie login                     Sign in to the hosted model tier (free; GitHub or email)

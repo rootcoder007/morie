@@ -13,16 +13,13 @@ def blackbox_scaling_basic(
     *,
     missing_val: float = float("nan"),
 ) -> DescriptiveResult:
-    """Time discovers truth. -- Seneca"""
+    """Blackbox scaling of a response matrix (respondents x stimuli) into ``n_dims`` dimensions."""
     R = np.asarray(response_matrix, dtype=float)
     if R.ndim != 2:
         raise ValueError("response_matrix must be 2D.")
     n_resp, n_items = R.shape
 
-    if np.isnan(missing_val):
-        mask = ~np.isnan(R)
-    else:
-        mask = missing_val != R
+    mask = ~np.isnan(R) if np.isnan(missing_val) else missing_val != R
 
     col_means = np.nanmean(R, axis=0)
     for j in range(n_items):

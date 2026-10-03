@@ -1,4 +1,3 @@
-
 import pytest as _pytest
 
 _pytest.importorskip("morie.polyglot")  # interactive/agent layer ships in the source tree only
@@ -12,6 +11,7 @@ import pytest
 from morie.polyglot import LABELS, LANGUAGES, ExecResult, PolyglotEngine, detect_language
 
 _HAS_SHELL = bool(os.environ.get("SHELL") or shutil.which("bash") or shutil.which("sh"))
+
 
 class TestDetectLanguage:
     def test_python_default(self):

@@ -54,7 +54,7 @@ def _scalarize(v):
         return ""
     if isinstance(v, bool):
         return "true" if v else "false"
-    if isinstance(v, (list, tuple)):
+    if isinstance(v, list | tuple):
         return "; ".join(str(x) for x in v)
     if isinstance(v, dict):
         return json.dumps(v, ensure_ascii=False)

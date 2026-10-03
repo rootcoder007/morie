@@ -57,10 +57,11 @@ __all__ = [
 # validation, matching rmoriebricklayer's .rmbl_pos_num
 # --------------------------------------------------------------------------
 
+
 def _pos_num(x, what: str, allow_zero: bool = False) -> list[float]:
     if x is None:
         raise ValueError(f"`{what}` must not be None")
-    if isinstance(x, (int, float)) and not isinstance(x, bool):
+    if isinstance(x, int | float) and not isinstance(x, bool):
         vals = [float(x)]
     else:
         try:
@@ -91,6 +92,7 @@ def _recycle(v: list[float], n: int, what: str) -> list[float]:
 # the measures
 # --------------------------------------------------------------------------
 
+
 def adp(days, t: float = 365) -> float:
     """Average daily population: person-days per day of the period."""
     d = _pos_num(days, "days", allow_zero=True)
@@ -113,9 +115,9 @@ def alos(days, n) -> float:
 def admissions(adp_value, alos_value, t: float = 365) -> float:
     """Admissions implied by the identity adp = N_a * alos / t."""
     a = _pos_num(adp_value, "adp")[0]
-    l = _pos_num(alos_value, "alos")[0]
+    alos_v = _pos_num(alos_value, "alos")[0]
     tt = _pos_num(t, "t")[0]
-    return a * tt / l
+    return a * tt / alos_v
 
 
 def adp_from_counts(counts, t: float = 365) -> float:
@@ -127,18 +129,21 @@ def adp_from_counts(counts, t: float = 365) -> float:
 
 def period_days(start, end) -> float:
     """Inclusive length of a period in days."""
+
     def _d(v):
         if isinstance(v, datetime):
             return v.date()
         if isinstance(v, date):
             return v
         return datetime.strptime(str(v), "%Y-%m-%d").date()
+
     return float((_d(end) - _d(start)).days) + 1.0
 
 
 # --------------------------------------------------------------------------
 # stay summary
 # --------------------------------------------------------------------------
+
 
 @dataclass
 class StaySummary:
@@ -178,9 +183,9 @@ def stay_summary(days_per_person, conf_level: float = 0.95) -> StaySummary:
     n = len(x)
     m = sum(x) / n
     if n > 1:
-        var = sum((v - m) ** 2 for v in x) / (n - 1)   # sample sd, as R's sd()
-        sd = var ** 0.5
-        se = sd / (n ** 0.5)
+        var = sum((v - m) ** 2 for v in x) / (n - 1)  # sample sd, as R's sd()
+        sd = var**0.5
+        se = sd / (n**0.5)
         tq = float(stats.t.ppf(1 - (1 - cl) / 2, n - 1))
         lower, upper = m - tq * se, m + tq * se
     else:
@@ -188,14 +193,15 @@ def stay_summary(days_per_person, conf_level: float = 0.95) -> StaySummary:
     q1 = _quantile_type7(x, 0.25)
     q2 = _quantile_type7(x, 0.50)
     q3 = _quantile_type7(x, 0.75)
-    return StaySummary(n=n, total_days=sum(x), mean=m, sd=sd, median=q2,
-                       iqr=q3 - q1, max=max(x), se=se, lower=lower,
-                       upper=upper)
+    return StaySummary(
+        n=n, total_days=sum(x), mean=m, sd=sd, median=q2, iqr=q3 - q1, max=max(x), se=se, lower=lower, upper=upper
+    )
 
 
 # --------------------------------------------------------------------------
 # stock and flow
 # --------------------------------------------------------------------------
+
 
 @dataclass
 class StockFlowResult:
@@ -221,8 +227,7 @@ class StockFlowResult:
         return len(self.period)
 
     def to_frame(self):
-        cols = {"period": self.period, "people": self.people,
-                "days": self.days, "alos": self.alos, "adp": self.adp}
+        cols = {"period": self.period, "people": self.people, "days": self.days, "alos": self.alos, "adp": self.adp}
         if self.exposure is not None:
             cols["exposure"] = self.exposure
             cols["flow_rate"] = self.flow_rate
@@ -256,8 +261,9 @@ def _changes(v: list[float], baseline: str) -> list[float | None]:
     return [None] + [100.0 * (v[i] / v[i - 1] - 1.0) for i in range(1, len(v))]
 
 
-def stock_flow(days, people, period=None, t: float = 365, exposure=None,
-               per: float = 100000, baseline: str = "first") -> StockFlowResult:
+def stock_flow(
+    days, people, period=None, t: float = 365, exposure=None, per: float = 100000, baseline: str = "first"
+) -> StockFlowResult:
     """The stock and the flow side by side, with the exact decomposition.
 
     `baseline` is a reporting decision, not a detail: "first" compares
@@ -272,14 +278,13 @@ def stock_flow(days, people, period=None, t: float = 365, exposure=None,
         raise ValueError("`days` and `people` must be the same length")
     n = len(d)
     tt = _recycle(_pos_num(t, "t"), n, "t")
-    per_lab = [str(x) for x in (period if period is not None
-                                else range(1, n + 1))]
+    per_lab = [str(x) for x in (period if period is not None else range(1, n + 1))]
     if len(per_lab) != n:
         raise ValueError(f"`period` must be length {n}")
     los = [d[i] / p[i] for i in range(n)]
     pop = [d[i] / tt[i] for i in range(n)]
 
-    exp_v = fr = sr = frc = src = None
+    exp_v = fr = sr = None
     per_used = None
     if exposure is not None:
         exp_v = _recycle(_pos_num(exposure, "exposure"), n, "exposure")
@@ -288,13 +293,22 @@ def stock_flow(days, people, period=None, t: float = 365, exposure=None,
         sr = [per_used * pop[i] / exp_v[i] for i in range(n)]
 
     out = StockFlowResult(
-        period=per_lab, people=p, days=d, alos=los, adp=pop,
+        period=per_lab,
+        people=p,
+        days=d,
+        alos=los,
+        adp=pop,
         people_change=_changes(p, baseline),
         alos_change=_changes(los, baseline),
         days_change=_changes(d, baseline),
         adp_change=_changes(pop, baseline),
-        t=tt, baseline=baseline, exposure=exp_v,
-        flow_rate=fr, stock_rate=sr, per=per_used)
+        t=tt,
+        baseline=baseline,
+        exposure=exp_v,
+        flow_rate=fr,
+        stock_rate=sr,
+        per=per_used,
+    )
     if exposure is not None:
         out.flow_rate_change = _changes(fr, baseline)
         out.stock_rate_change = _changes(sr, baseline)
@@ -305,6 +319,7 @@ def stock_flow(days, people, period=None, t: float = 365, exposure=None,
 # MRM across the OTIS strata
 # --------------------------------------------------------------------------
 
+
 @dataclass
 class OtisStockFlowResult:
     stock_flow: StockFlowResult
@@ -313,9 +328,9 @@ class OtisStockFlowResult:
     decomposition_exact: bool = False
 
     def to_frame(self):
-        return pd.DataFrame({k: [r[k] for r in self.reconciliation]
-                             for k in (self.reconciliation[0] if
-                                       self.reconciliation else {})})
+        return pd.DataFrame(
+            {k: [r[k] for r in self.reconciliation] for k in (self.reconciliation[0] if self.reconciliation else {})}
+        )
 
 
 def _columns(data, cols: list[str], what: str) -> dict:
@@ -326,16 +341,14 @@ def _columns(data, cols: list[str], what: str) -> dict:
         have = list(data.columns)
         missing = [c for c in cols if c not in have]
         if missing:
-            raise ValueError(
-                f"`{what}` is missing column(s): {', '.join(missing)}")
+            raise ValueError(f"`{what}` is missing column(s): {', '.join(missing)}")
         return {c: list(data[c]) for c in cols}
     rows = list(data)
     if not rows or not all(hasattr(r, "keys") for r in rows):
         raise ValueError(f"`{what}` must be a data frame or rows of mappings")
     missing = [c for c in cols if c not in rows[0]]
     if missing:
-        raise ValueError(
-            f"`{what}` is missing column(s): {', '.join(missing)}")
+        raise ValueError(f"`{what}` is missing column(s): {', '.join(missing)}")
     return {c: [r[c] for r in rows] for c in cols}
 
 
@@ -389,13 +402,12 @@ def mrm_otis_stock_flow(
     if any(v == 0 for v in people_by_year):
         raise ValueError("every period must contain at least one person")
 
-    sf = stock_flow(days=days_by_year, people=people_by_year, period=years,
-                    t=t, exposure=exposure, per=per)
+    sf = stock_flow(days=days_by_year, people=people_by_year, period=years, t=t, exposure=exposure, per=per)
 
-    rec = [{"period": years[i],
-            "person_stratum_people": people_by_year[i],
-            "person_stratum_days": days_by_year[i]}
-           for i in range(len(years))]
+    rec = [
+        {"period": years[i], "person_stratum_people": people_by_year[i], "person_stratum_days": days_by_year[i]}
+        for i in range(len(years))
+    ]
 
     if placements is not None:
         need = [year_col, id_col, consecutive_col]
@@ -424,8 +436,7 @@ def mrm_otis_stock_flow(
             # of the year. Reported so that summing the wrong column is
             # visible rather than silently understating the total.
             pdays = rec[i]["person_stratum_days"]
-            rec[i]["consecutive_over_person_days"] = (
-                cons / pdays if pdays else None)
+            rec[i]["consecutive_over_person_days"] = cons / pdays if pdays else None
             if has_count:
                 cnt = 0.0
                 for j in idx:
@@ -458,9 +469,7 @@ def mrm_otis_stock_flow(
             r["aggregate_stratum_total"] = None
 
     for r in rec:
-        vals = [r.get("person_stratum_people"),
-                r.get("placement_stratum_people"),
-                r.get("aggregate_stratum_total")]
+        vals = [r.get("person_stratum_people"), r.get("placement_stratum_people"), r.get("aggregate_stratum_total")]
         vals = [v for v in vals if v is not None]
         r["strata_agree"] = len(set(vals)) == 1
 
@@ -470,10 +479,9 @@ def mrm_otis_stock_flow(
     exact = True
     if len(sf) > 1:
         p = sf.people_change[-1] / 100.0
-        l = sf.alos_change[-1] / 100.0
-        exact = abs((1 + p) * (1 + l) - 1 - sf.days_change[-1] / 100.0) < 1e-8
+        alos_v = sf.alos_change[-1] / 100.0
+        exact = abs((1 + p) * (1 + alos_v) - 1 - sf.days_change[-1] / 100.0) < 1e-8
 
     return OtisStockFlowResult(
-        stock_flow=sf, reconciliation=rec,
-        strata_agree=all(r["strata_agree"] for r in rec),
-        decomposition_exact=exact)
+        stock_flow=sf, reconciliation=rec, strata_agree=all(r["strata_agree"] for r in rec), decomposition_exact=exact
+    )

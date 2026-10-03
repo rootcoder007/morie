@@ -286,20 +286,17 @@ _BOOLEAN_VALUE_SETS = (
 )
 
 _IDENTIFIER_PATTERNS = re.compile(
-    r"(^_?id$|^id_$|_id$|[a-z]id$|^uniqueindividual|^batchfile|"
-    r"^recordnum|^record_id$|^incidentnumber$|index$)",
+    r"(^_?id$|^id_$|_id$|[a-z]id$|^uniqueindividual|^batchfile|" r"^recordnum|^record_id$|^incidentnumber$|index$)",
     re.IGNORECASE,
 )
 
 _OUTCOME_NAME_PATTERNS = re.compile(
-    r"(injur|death|killed|incident_outcome|outcome|fatal|"
-    r"hospital|medical|treatment)",
+    r"(injur|death|killed|incident_outcome|outcome|fatal|" r"hospital|medical|treatment)",
     re.IGNORECASE,
 )
 
 _RATIO_NAME_PATTERNS = re.compile(
-    r"(number|count|days|hours|minutes|seconds|cycles|"
-    r"placements|reports|amount|rate|score|n_)",
+    r"(number|count|days|hours|minutes|seconds|cycles|" r"placements|reports|amount|rate|score|n_)",
     re.IGNORECASE,
 )
 

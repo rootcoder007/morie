@@ -120,7 +120,7 @@ def _extract_python_functions(text: str) -> list[str]:
         return [
             node.name
             for node in ast.walk(tree)
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and not node.name.startswith("_")
+            if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef) and not node.name.startswith("_")
         ]
     except SyntaxError:
         return re.findall(r"^def\s+(\w+)", text, re.MULTILINE)

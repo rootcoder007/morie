@@ -48,8 +48,7 @@ def ensure_exec_allowed(feature: str = "dynamic code execution") -> None:
     """Raise ExecGuardError if MORIE_NO_EXEC is set."""
     if exec_disabled():
         raise ExecGuardError(
-            f"{feature} is disabled because MORIE_NO_EXEC is set. "
-            "Unset MORIE_NO_EXEC to allow it on this machine."
+            f"{feature} is disabled because MORIE_NO_EXEC is set. " "Unset MORIE_NO_EXEC to allow it on this machine."
         )
 
 
@@ -120,10 +119,7 @@ def knob_status() -> list[dict[str, Any]]:
     Used by the ``doctor`` module so the active trust posture is visible
     on startup.
     """
-    return [
-        {"name": name, "enabled": bool(getter()), "detail": detail}
-        for name, (getter, detail) in _KNOBS.items()
-    ]
+    return [{"name": name, "enabled": bool(getter()), "detail": detail} for name, (getter, detail) in _KNOBS.items()]
 
 
 # --------------------------------------------------------------------------
@@ -137,8 +133,17 @@ def knob_status() -> list[dict[str, Any]]:
 # defeats any list by construction). Guarded code gets morie's arrays,
 # frames and dataset loaders through guarded_namespace() instead.
 _ALLOWED_IMPORT_ROOTS = {
-    "numpy", "pandas", "scipy", "math", "statistics", "random",
-    "itertools", "collections", "datetime", "json", "re",
+    "numpy",
+    "pandas",
+    "scipy",
+    "math",
+    "statistics",
+    "random",
+    "itertools",
+    "collections",
+    "datetime",
+    "json",
+    "re",
 }
 
 
@@ -148,42 +153,147 @@ _ALLOWED_IMPORT_ROOTS = {
 # numpy.load(allow_pickle=True), joblib.load, ...).
 _BLOCKED_ATTRS = {
     # format-string dunder-traversal escape
-    "format", "format_map", "mro",
+    "format",
+    "format_map",
+    "mro",
     # deserialization / native-load RCE gadgets on whitelisted libs
-    "read_pickle", "to_pickle", "load_library", "ctypeslib",
+    "read_pickle",
+    "to_pickle",
+    "load_library",
+    "ctypeslib",
     # file read/write through the allowed data libraries: the docstring
     # promises no filesystem access, and a write into a shell rc or a
     # .pth is one login away from execution. numpy.load stays: it reads
     # only the .npy/.npz binary layout (no arbitrary text), and the
     # allow_pickle=True form is refused by the keyword check below.
-    "read_csv", "read_table", "read_fwf", "read_json", "read_excel",
-    "read_parquet", "read_feather", "read_hdf", "read_html", "read_xml",
-    "read_sql", "read_sql_query", "read_sql_table", "read_stata",
-    "read_sas", "read_spss", "read_orc", "read_clipboard",
-    "to_csv", "to_json", "to_excel", "to_parquet", "to_feather", "to_hdf",
-    "to_html", "to_latex", "to_xml", "to_sql", "to_stata", "to_clipboard",
-    "to_markdown", "savetxt", "save", "savez", "savez_compressed",
-    "loadtxt", "genfromtxt", "fromfile", "tofile", "memmap",
-    "open_memmap", "fromregex", "DataSource", "savemat", "loadmat",
-    "mmread", "mmwrite", "netcdf_file", "wavfile", "imread", "imsave",
+    "read_csv",
+    "read_table",
+    "read_fwf",
+    "read_json",
+    "read_excel",
+    "read_parquet",
+    "read_feather",
+    "read_hdf",
+    "read_html",
+    "read_xml",
+    "read_sql",
+    "read_sql_query",
+    "read_sql_table",
+    "read_stata",
+    "read_sas",
+    "read_spss",
+    "read_orc",
+    "read_clipboard",
+    "to_csv",
+    "to_json",
+    "to_excel",
+    "to_parquet",
+    "to_feather",
+    "to_hdf",
+    "to_html",
+    "to_latex",
+    "to_xml",
+    "to_sql",
+    "to_stata",
+    "to_clipboard",
+    "to_markdown",
+    "savetxt",
+    "save",
+    "savez",
+    "savez_compressed",
+    "loadtxt",
+    "genfromtxt",
+    "fromfile",
+    "tofile",
+    "memmap",
+    "open_memmap",
+    "fromregex",
+    "DataSource",
+    "savemat",
+    "loadmat",
+    "mmread",
+    "mmwrite",
+    "netcdf_file",
+    "wavfile",
+    "imread",
+    "imsave",
     # process/shell gadgets (belt-and-braces; the modules aren't importable)
-    "system", "popen", "fork", "check_output", "Popen",
+    "system",
+    "popen",
+    "fork",
+    "check_output",
+    "Popen",
     # stdlib modules that library code re-exports as attributes; the
     # module proxy below refuses them by type, this refuses them by name
-    "os", "sys", "subprocess", "shutil", "importlib", "ctypes", "pickle",
-    "socket", "builtins", "import_module", "CDLL", "sysconfig",
+    "os",
+    "sys",
+    "subprocess",
+    "shutil",
+    "importlib",
+    "ctypes",
+    "pickle",
+    "socket",
+    "builtins",
+    "import_module",
+    "CDLL",
+    "sysconfig",
 }
 
 _SAFE_BUILTIN_NAMES = (
-    "abs", "all", "any", "bool", "bytes", "callable", "chr", "complex",
-    "dict", "divmod", "enumerate", "filter", "float", "format",
-    "frozenset", "hasattr", "hash", "hex", "int", "isinstance",
-    "issubclass", "iter", "len", "list", "map", "max", "min", "next",
-    "oct", "ord", "pow", "print", "range", "repr", "reversed", "round",
-    "set", "slice", "sorted", "str", "sum", "tuple", "zip",
-    "ArithmeticError", "AttributeError", "Exception", "IndexError",
-    "KeyError", "TypeError", "ValueError", "ZeroDivisionError", "True",
-    "False", "None",
+    "abs",
+    "all",
+    "any",
+    "bool",
+    "bytes",
+    "callable",
+    "chr",
+    "complex",
+    "dict",
+    "divmod",
+    "enumerate",
+    "filter",
+    "float",
+    "format",
+    "frozenset",
+    "hasattr",
+    "hash",
+    "hex",
+    "int",
+    "isinstance",
+    "issubclass",
+    "iter",
+    "len",
+    "list",
+    "map",
+    "max",
+    "min",
+    "next",
+    "oct",
+    "ord",
+    "pow",
+    "print",
+    "range",
+    "repr",
+    "reversed",
+    "round",
+    "set",
+    "slice",
+    "sorted",
+    "str",
+    "sum",
+    "tuple",
+    "zip",
+    "ArithmeticError",
+    "AttributeError",
+    "Exception",
+    "IndexError",
+    "KeyError",
+    "TypeError",
+    "ValueError",
+    "ZeroDivisionError",
+    "True",
+    "False",
+    "None",
 )
 
 
@@ -208,9 +318,7 @@ class _GuardedModule:
         if isinstance(val, types.ModuleType):
             if (val.__name__ + ".").startswith("morie."):
                 return _GuardedModule(val)
-            raise ExecGuardError(
-                f"access to module '{val.__name__}' is not allowed in guarded code"
-            )
+            raise ExecGuardError(f"access to module '{val.__name__}' is not allowed in guarded code")
         return val
 
     def __setattr__(self, name: str, value: Any) -> None:
@@ -259,22 +367,15 @@ def validate_source(code: str) -> ast.Module:
         raise ExecGuardError(f"invalid Python source: {exc}") from exc
 
     for node in ast.walk(tree):
-        if isinstance(node, (ast.Import, ast.ImportFrom)):
-            names = (
-                [node.module or ""] if isinstance(node, ast.ImportFrom)
-                else [a.name for a in node.names]
-            )
+        if isinstance(node, ast.Import | ast.ImportFrom):
+            names = [node.module or ""] if isinstance(node, ast.ImportFrom) else [a.name for a in node.names]
             for name in names:
                 root = name.split(".")[0]
                 if root not in _ALLOWED_IMPORT_ROOTS:
                     raise ExecGuardError(f"import of '{name}' is not allowed")
-        elif isinstance(node, ast.Attribute) and (
-            node.attr.startswith("_") or node.attr in _BLOCKED_ATTRS
-        ):
+        elif isinstance(node, ast.Attribute) and (node.attr.startswith("_") or node.attr in _BLOCKED_ATTRS):
             raise ExecGuardError(f"access to attribute '{node.attr}' is not allowed")
-        elif isinstance(node, ast.Name) and (
-            node.id in _BLOCKED_NAMES or node.id.startswith("__")
-        ):
+        elif isinstance(node, ast.Name) and (node.id in _BLOCKED_NAMES or node.id.startswith("__")):
             raise ExecGuardError(f"use of '{node.id}' is not allowed")
         elif isinstance(node, ast.Constant) and isinstance(node.value, str) and "__" in node.value:
             # closes the str.format dunder-traversal escape,
@@ -298,11 +399,7 @@ def guarded_exec(code: str, namespace: dict[str, Any]) -> None:
     """
     ensure_exec_allowed("guarded exec")
     tree = validate_source(code)
-    safe_builtins = {
-        name: getattr(builtins, name)
-        for name in _SAFE_BUILTIN_NAMES
-        if hasattr(builtins, name)
-    }
+    safe_builtins = {name: getattr(builtins, name) for name in _SAFE_BUILTIN_NAMES if hasattr(builtins, name)}
     safe_builtins["__import__"] = _guarded_import
     namespace["__builtins__"] = safe_builtins
     exec(compile(tree, "<morie-guarded>", "exec"), namespace)  # noqa: S102
@@ -313,15 +410,35 @@ def guarded_exec(code: str, namespace: dict[str, Any]) -> None:
 # --------------------------------------------------------------------------
 
 _SHELL_ALLOWLIST = {
-    "ls", "cat", "head", "tail", "wc", "grep", "find", "pwd", "which",
-    "echo", "date", "uname", "file", "stat", "du", "df", "sort", "uniq",
-    "git", "python", "python3", "pip", "pip3", "R", "Rscript",
+    "ls",
+    "cat",
+    "head",
+    "tail",
+    "wc",
+    "grep",
+    "find",
+    "pwd",
+    "which",
+    "echo",
+    "date",
+    "uname",
+    "file",
+    "stat",
+    "du",
+    "df",
+    "sort",
+    "uniq",
+    "git",
+    "python",
+    "python3",
+    "pip",
+    "pip3",
+    "R",
+    "Rscript",
 }
 
 
-def safe_shell_run(
-    command: str, *, timeout: int = 30, cwd: str | None = None
-) -> subprocess.CompletedProcess[str]:
+def safe_shell_run(command: str, *, timeout: int = 30, cwd: str | None = None) -> subprocess.CompletedProcess[str]:
     """Run a command WITHOUT a shell, only if the binary is allowlisted.
 
     The command string is tokenized with shlex (no shell metacharacter
@@ -335,9 +452,7 @@ def safe_shell_run(
     binary = os.path.basename(argv[0])
     if binary not in _SHELL_ALLOWLIST and argv[0] != sys.executable:
         allowed = ", ".join(sorted(_SHELL_ALLOWLIST))
-        raise ExecGuardError(
-            f"'{binary}' is not on the command allowlist ({allowed})"
-        )
+        raise ExecGuardError(f"'{binary}' is not on the command allowlist ({allowed})")
     return subprocess.run(  # noqa: S603 -- shlex-tokenized, allowlisted, shell=False
         argv, capture_output=True, text=True, timeout=timeout, cwd=cwd
     )

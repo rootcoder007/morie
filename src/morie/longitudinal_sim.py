@@ -62,7 +62,7 @@ def sync_rng(seed: int) -> np.random.Generator:
     cross-language simulation workflow. Both sides use the PCG64 family
     initialised from the same scalar integer, which is reproducible.
     """
-    if not isinstance(seed, (int, np.integer)) or seed < 0:
+    if not isinstance(seed, int | np.integer) or seed < 0:
         raise ValueError("seed must be a non-negative integer")
     return np.random.default_rng(int(seed))
 
@@ -120,9 +120,9 @@ def generate_var_coefficients(
     if lags < 1:
         raise ValueError("lags must be >= 1")
     out = np.zeros((p, p, lags))
-    for l in range(lags):
-        A = generate_ar_coefficients(p, rng=rng, spectral_radius=spectral_radius * decay**l)
-        out[:, :, l] = A
+    for lag in range(lags):
+        A = generate_ar_coefficients(p, rng=rng, spectral_radius=spectral_radius * decay**lag)
+        out[:, :, lag] = A
     return out
 
 
@@ -229,13 +229,12 @@ def simulate_longitudinal_panel(spec: LongitudinalSimSpec) -> pd.DataFrame:
             kernel=spec.cov_kernel,
             rho=spec.cov_rho,
         )
-        x = np.zeros(spec.p_variables)
         history = []
         for t in range(spec.n_timepoints):
             x_new = eps[t].copy()
-            for l in range(spec.ar_lags):
-                if t - l - 1 >= 0:
-                    x_new = x_new + A[:, :, l] @ history[t - l - 1]
+            for lag in range(spec.ar_lags):
+                if t - lag - 1 >= 0:
+                    x_new = x_new + A[:, :, lag] @ history[t - lag - 1]
             history.append(x_new)
             panel[i, t] = x_new
 

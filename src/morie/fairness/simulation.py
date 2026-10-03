@@ -93,11 +93,9 @@ def noisy_or_detection(
         # an explicit squared-distance comparison per (crime, officer).
         r2 = float(radius) * float(radius)
         od = officer.tolist()
-        k = np.asarray([
-            float(sum(1 for ox, oy in od
-                      if (cx - ox) ** 2 + (cy - oy) ** 2 <= r2))
-            for cx, cy in crime.tolist()
-        ])
+        k = np.asarray(
+            [float(sum(1 for ox, oy in od if (cx - ox) ** 2 + (cy - oy) ** 2 <= r2)) for cx, cy in crime.tolist()]
+        )
     prob = 1.0 - (1.0 - p_detect) ** k
 
     detected = None

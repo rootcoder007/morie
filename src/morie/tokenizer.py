@@ -90,15 +90,14 @@ class Tokenizer:
 
         pieces, scores, types, bos, eos, unk = load_model(str(path))
         del types
-        self._sp = None                     # native path only
+        self._sp = None  # native path only
         self._vocab = pieces
         self._scores = scores
-        self._token_to_id = {tok: i for i, tok in
-                             enumerate(self._vocab)}
+        self._token_to_id = {tok: i for i, tok in enumerate(self._vocab)}
         self._bos_id = bos
         self._eos_id = eos
         self._unk_id = unk
-        self._unigram = True                # Viterbi encode
+        self._unigram = True  # Viterbi encode
 
     # ------------------------------------------------------------------
     # Public API
@@ -112,9 +111,7 @@ class Tokenizer:
         if getattr(self, "_unigram", False):
             from morie._sp_model import encode_unigram
 
-            ids = encode_unigram(text, self._vocab, self._scores,
-                                 getattr(self, "_unk_id", 0),
-                                 self._token_to_id)
+            ids = encode_unigram(text, self._vocab, self._scores, getattr(self, "_unk_id", 0), self._token_to_id)
             if add_bos and (not ids or ids[0] != self._bos_id):
                 ids = [self._bos_id] + ids
             return ids

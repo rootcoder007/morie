@@ -8,10 +8,7 @@ from ._containers import SignalResult
 
 
 def hilbert_envelope_fn(x: np.ndarray) -> SignalResult:
-    """Compute the Hilbert transform amplitude envelope.
-
-    'He who is brave is free. -- Seneca' -- Chirrut Imwe
-    """
+    """Compute the Hilbert transform amplitude envelope."""
     from morie._detection import hilbert_envelope as _backend
 
     result = _backend(x)

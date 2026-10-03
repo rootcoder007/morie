@@ -529,7 +529,7 @@ morie ingest ckan --portal https://open.canada.ca/data \
                   --search "alcohol"
 
 morie ingest ckan --portal https://open.canada.ca/data \
-                  --package canadian-postsecondary-alcohol-and-drug-use-survey \
+                  --package 736fa9b2-62e4-4e31-aea4-51869605b363 \
                   --out ./cpads/
 
 # Toronto Police Service ArcGIS open-data layers
@@ -539,7 +539,7 @@ morie ingest tps --layer major-crime --year 2024 \
 
 # Special Investigations Unit director's-report mining
 morie ingest siu --list                                 # index → CSV
-morie ingest siu --report-id 22-OFD-001 --out report/   # text + structured fields
+morie ingest siu --report-id 17-OVI-201 --out report/   # text + structured fields
 ```
 
 Each adapter is also importable as `morie.ingest.{ckan,tps,siu}` for use inside Python scripts.

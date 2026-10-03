@@ -169,6 +169,7 @@ class TestChatSessionAgent:
         # Try switching to a nonexistent agent.
         result = session.send("/agent nonexistent-agent-xyz", stream=False)
         assert "not found" in result.lower()
+        assert session.system_prompt == original_prompt  # a failed switch keeps the prompt
 
     def test_agent_init(self):
         # Test with a nonexistent agent — should fall back to default.

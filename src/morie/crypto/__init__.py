@@ -8,6 +8,8 @@ production-grade encryption, use hardware KMS or audited C implementations.
 Pure-Python ML-KEM is ~100x slower than the reference C implementation.
 """
 
+import contextlib
+
 from morie.crypto._chacha import chacha20_poly1305_decrypt, chacha20_poly1305_encrypt
 from morie.crypto._gf2m import (
     find_irreducible,
@@ -45,18 +47,12 @@ from morie.crypto.hybrid import hybrid_decrypt, hybrid_encrypt
 from morie.crypto.hybrid import keygen as hybrid_keygen
 from morie.crypto.keystore import create_keystore, list_keys, load_keypair, store_keypair
 
-try:
+with contextlib.suppress(Exception):
     from morie.crypto._dilithium import mldsa_keygen, mldsa_sign, mldsa_verify
-except Exception:
-    pass
-try:
+with contextlib.suppress(Exception):
     from morie.crypto._ntru import ntru_decrypt, ntru_encrypt, ntru_keygen
-except Exception:
-    pass
-try:
+with contextlib.suppress(Exception):
     from morie.crypto._mceliece import mceliece_decaps, mceliece_encaps, mceliece_keygen
-except Exception:
-    pass
 
 __all__ = [
     "mlkem768_keygen",

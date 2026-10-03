@@ -106,9 +106,9 @@ def test_retention_criteria_match_references():
         < 1e-12
     )  # Philox, identical in the R arm
     for meth in ("parallel", "map", "map4", "kaiser", "scree", "af", "variance", "aic", "bic"):
-        assert efa_nfactors(X, method=meth)["n_factors"] == 2, (
-            meth
-        )  # the data have two factors (nScree: noc = naf = nkaiser = 2)
+        assert (
+            efa_nfactors(X, method=meth)["n_factors"] == 2
+        ), meth  # the data have two factors (nScree: noc = naf = nkaiser = 2)
     s = efa_nfactors(X, method="scree")
     ev = s["eigenvalues"]
     assert abs(s["predicted"][0] - (ev[1] - (ev[5] - ev[1]) / 4)) < 1e-15  # line through (2, l2) and (6, l6) at 1

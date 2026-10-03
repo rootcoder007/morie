@@ -12,7 +12,7 @@ def sparse_diagonal(
     offsets: list | None = None,
     n: int | None = None,
 ) -> DescriptiveResult:
-    """We are what we repeatedly do. Excellence is a habit. -- Aristotle"""
+    """Dense matrix assembled from diagonals at the given offsets; returns its non-zero count and the matrix."""
     if offsets is None:
         offsets = [0]
     if not isinstance(diags[0], np.ndarray):
@@ -39,4 +39,4 @@ sparsediagonal = sparse_diagonal
 
 
 def cheatsheet() -> str:
-    return "spdmt: sparse_diagonal(diags) -> We are what we repeatedly do. Excellence is a habit. -- Aristotle"
+    return "spdmt: sparse_diagonal(diags) -> dense matrix from diagonals at the given offsets"

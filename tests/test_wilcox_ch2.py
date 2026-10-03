@@ -13,8 +13,7 @@ from morie.fn.outmad import outmad
 from morie.fn.outms import outms
 
 # p.27 worked example
-_P27 = [-29.6, -20.9, -19.7, -15.4, -12.3, -8.0,
-        -4.3, 0.8, 2.0, 6.2, 11.2, 25.0]
+_P27 = [-29.6, -20.9, -19.7, -15.4, -12.3, -8.0, -4.3, 0.8, 2.0, 6.2, 11.2, 25.0]
 # p.32 masking demonstration
 _P32 = [2] * 5 + [3] * 5 + [4] * 5 + [1000]
 # p.33 MAD-median example
@@ -38,10 +37,10 @@ def test_idealf_upper_fourth_mirrors_the_lower():
 def test_bimid_matches_closed_form_on_minus_one_zero_one():
     """M = 0, MAD = 1, Y = (-1/9, 0, 1/9), every a_i = 1."""
     from math import sqrt
+
     num = sqrt(3.0) * sqrt(2.0 * (80 / 81) ** 4)
     den = 1.0 + 2.0 * (80 / 81) * (1 - 5 * (1 / 81))
-    assert dict(bimid([-1.0, 0.0, 1.0]))["zeta"] == pytest.approx(
-        num / den, rel=0, abs=1e-15)
+    assert dict(bimid([-1.0, 0.0, 1.0]))["zeta"] == pytest.approx(num / den, rel=0, abs=1e-15)
 
 
 def test_bimid_rejects_a_sample_with_zero_mad():
@@ -71,9 +70,9 @@ def test_outmad_survives_the_masking_that_defeats_outms():
 def test_outmad_confusion_matrix():
     clean = [10.0, 10.1, 9.9, 10.2, 9.8, 10.05, 9.95, 10.15, 9.85, 10.3, 9.7]
     dirty = clean + [500.0, -400.0, 900.0]
-    assert dict(outmad(clean))["n_out"] == 0            # no false positives
+    assert dict(outmad(clean))["n_out"] == 0  # no false positives
     flags = dict(outmad(dirty))["flag"]
-    assert sum(flags[len(clean):]) == 3                 # all three found
+    assert sum(flags[len(clean) :]) == 3  # all three found
 
 
 def test_outmad_crit_exposes_the_hampel_identifier():

@@ -123,6 +123,7 @@ def test_pull_routes_hosted_keys_to_load_dataset(monkeypatch, tmp_path):
 
     monkeypatch.setattr(runner, "load_dataset", lambda key, **kw: pd.DataFrame({"k": [key]}), raising=False)
     monkeypatch.setattr("morie.data.load_dataset", lambda key, **kw: pd.DataFrame({"k": [key]}))
+    monkeypatch.setattr(runner, "_hub_rows", lambda key: 10)  # a small table: the frame route (big ones stream)
     out = tmp_path / "o.csv"
     monkeypatch.setattr("sys.argv", ["morie", "pull", "chicago_crime/incidents", "--out", str(out)])
     assert runner._main_impl() == 0

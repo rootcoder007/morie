@@ -368,7 +368,6 @@ def build_multistage(
     results: list[DockerResult] = []
     if stages:
         for stage in stages:
-            stage_tag = f"{image_name}:{stage}"
             r = build_image(
                 context_dir,
                 image_name=image_name,

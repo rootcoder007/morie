@@ -54,7 +54,8 @@ def _resolve_key(api_key: str | None) -> str:
         raise CanLIIError(
             "A CanLII API key is required: pass api_key= or set the CANLII_API_KEY "
             "environment variable. Keys are free on request from "
-            "https://www.canlii.org/en/feedback/feedback.html")
+            "https://www.canlii.org/en/feedback/feedback.html"
+        )
     return key
 
 
@@ -82,13 +83,20 @@ def _date_params(**kwargs: str | None) -> dict[str, str]:
     return out
 
 
-def _get_json(path: str, params: dict[str, Any] | None = None, *, api_key: str | None,
-              timeout: float, user_agent: str,
-              transport: httpx.BaseTransport | None = None) -> Any:
+def _get_json(
+    path: str,
+    params: dict[str, Any] | None = None,
+    *,
+    api_key: str | None,
+    timeout: float,
+    user_agent: str,
+    transport: httpx.BaseTransport | None = None,
+) -> Any:
     query = {"api_key": _resolve_key(api_key)}
     query.update({k: v for k, v in (params or {}).items() if v is not None})
-    with httpx.Client(timeout=timeout, headers={"User-Agent": user_agent},
-                      follow_redirects=True, transport=transport) as client:
+    with httpx.Client(
+        timeout=timeout, headers={"User-Agent": user_agent}, follow_redirects=True, transport=transport
+    ) as client:
         r = client.get(f"{API_URL}/{path}", params=query)
     try:
         parsed = r.json()
@@ -124,23 +132,44 @@ def _records_df(records: list[dict[str, Any]] | None) -> pd.DataFrame:
     return pd.DataFrame({k: [r.get(k) for r in rows] for k in keys})
 
 
-def databases(language: str = "en", *, api_key: str | None = None,
-              timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = DEFAULT_USER_AGENT,
-              transport: httpx.BaseTransport | None = None) -> pd.DataFrame:
+def databases(
+    language: str = "en",
+    *,
+    api_key: str | None = None,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    user_agent: str = DEFAULT_USER_AGENT,
+    transport: httpx.BaseTransport | None = None,
+) -> pd.DataFrame:
     """Every court and tribunal: ``databaseId``, ``jurisdiction``, ``name``."""
-    res = _get_json(f"caseBrowse/{_check_lang(language)}/", api_key=api_key,
-                    timeout=timeout, user_agent=user_agent, transport=transport)
+    res = _get_json(
+        f"caseBrowse/{_check_lang(language)}/",
+        api_key=api_key,
+        timeout=timeout,
+        user_agent=user_agent,
+        transport=transport,
+    )
     return _records_df(res.get("caseDatabases"))
 
 
-def cases(database_id: str, *, offset: int = 0, result_count: int = 100,
-          published_before: str | None = None, published_after: str | None = None,
-          modified_before: str | None = None, modified_after: str | None = None,
-          changed_before: str | None = None, changed_after: str | None = None,
-          decision_date_before: str | None = None, decision_date_after: str | None = None,
-          language: str = "en", api_key: str | None = None,
-          timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = DEFAULT_USER_AGENT,
-          transport: httpx.BaseTransport | None = None) -> pd.DataFrame:
+def cases(
+    database_id: str,
+    *,
+    offset: int = 0,
+    result_count: int = 100,
+    published_before: str | None = None,
+    published_after: str | None = None,
+    modified_before: str | None = None,
+    modified_after: str | None = None,
+    changed_before: str | None = None,
+    changed_after: str | None = None,
+    decision_date_before: str | None = None,
+    decision_date_after: str | None = None,
+    language: str = "en",
+    api_key: str | None = None,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    user_agent: str = DEFAULT_USER_AGENT,
+    transport: httpx.BaseTransport | None = None,
+) -> pd.DataFrame:
     """Decisions of one database, newest first; at most 10,000 per call.
 
     Returns ``databaseId``, ``caseId``, ``title`` and ``citation``.
@@ -150,77 +179,138 @@ def cases(database_id: str, *, offset: int = 0, result_count: int = 100,
     if not 1 <= result_count <= MAX_RESULT_COUNT:
         raise ValueError(f"result_count must be between 1 and {MAX_RESULT_COUNT}")
     params: dict[str, Any] = {"offset": int(offset), "resultCount": result_count}
-    params.update(_date_params(
-        publishedBefore=published_before, publishedAfter=published_after,
-        modifiedBefore=modified_before, modifiedAfter=modified_after,
-        changedBefore=changed_before, changedAfter=changed_after,
-        decisionDateBefore=decision_date_before, decisionDateAfter=decision_date_after))
-    res = _get_json(f"caseBrowse/{_check_lang(language)}/{database_id}/", params,
-                    api_key=api_key, timeout=timeout, user_agent=user_agent,
-                    transport=transport)
+    params.update(
+        _date_params(
+            publishedBefore=published_before,
+            publishedAfter=published_after,
+            modifiedBefore=modified_before,
+            modifiedAfter=modified_after,
+            changedBefore=changed_before,
+            changedAfter=changed_after,
+            decisionDateBefore=decision_date_before,
+            decisionDateAfter=decision_date_after,
+        )
+    )
+    res = _get_json(
+        f"caseBrowse/{_check_lang(language)}/{database_id}/",
+        params,
+        api_key=api_key,
+        timeout=timeout,
+        user_agent=user_agent,
+        transport=transport,
+    )
     return _records_df(res.get("cases"))
 
 
-def case(database_id: str, case_id: str, *, language: str = "en",
-         api_key: str | None = None, timeout: float = DEFAULT_TIMEOUT_SECONDS,
-         user_agent: str = DEFAULT_USER_AGENT,
-         transport: httpx.BaseTransport | None = None) -> dict[str, Any]:
+def case(
+    database_id: str,
+    case_id: str,
+    *,
+    language: str = "en",
+    api_key: str | None = None,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    user_agent: str = DEFAULT_USER_AGENT,
+    transport: httpx.BaseTransport | None = None,
+) -> dict[str, Any]:
     """Metadata of one decision (``url``, ``title``, ``citation``, ``decisionDate``, ...)."""
     _check_id(database_id, "database_id")
     _check_id(case_id, "case_id")
-    res = _get_json(f"caseBrowse/{_check_lang(language)}/{database_id}/{case_id}/",
-                    api_key=api_key, timeout=timeout, user_agent=user_agent,
-                    transport=transport)
+    res = _get_json(
+        f"caseBrowse/{_check_lang(language)}/{database_id}/{case_id}/",
+        api_key=api_key,
+        timeout=timeout,
+        user_agent=user_agent,
+        transport=transport,
+    )
     df = _records_df([res])
     return {k: df[k][0] for k in df.columns}
 
 
-def citator(database_id: str, case_id: str, metadata_type: str = "citedCases", *,
-            api_key: str | None = None, timeout: float = DEFAULT_TIMEOUT_SECONDS,
-            user_agent: str = DEFAULT_USER_AGENT,
-            transport: httpx.BaseTransport | None = None) -> pd.DataFrame:
+def citator(
+    database_id: str,
+    case_id: str,
+    metadata_type: str = "citedCases",
+    *,
+    api_key: str | None = None,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    user_agent: str = DEFAULT_USER_AGENT,
+    transport: httpx.BaseTransport | None = None,
+) -> pd.DataFrame:
     """Cited cases, citing cases or cited legislation of one decision (English only)."""
     if metadata_type not in ("citedCases", "citingCases", "citedLegislations"):
         raise ValueError("metadata_type must be 'citedCases', 'citingCases' or 'citedLegislations'")
     _check_id(database_id, "database_id")
     _check_id(case_id, "case_id")
-    res = _get_json(f"caseCitator/en/{database_id}/{case_id}/{metadata_type}",
-                    api_key=api_key, timeout=timeout, user_agent=user_agent,
-                    transport=transport)
+    res = _get_json(
+        f"caseCitator/en/{database_id}/{case_id}/{metadata_type}",
+        api_key=api_key,
+        timeout=timeout,
+        user_agent=user_agent,
+        transport=transport,
+    )
     return _records_df(res.get(metadata_type))
 
 
-def legislation_databases(language: str = "en", *, api_key: str | None = None,
-                          timeout: float = DEFAULT_TIMEOUT_SECONDS,
-                          user_agent: str = DEFAULT_USER_AGENT,
-                          transport: httpx.BaseTransport | None = None) -> pd.DataFrame:
+def legislation_databases(
+    language: str = "en",
+    *,
+    api_key: str | None = None,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    user_agent: str = DEFAULT_USER_AGENT,
+    transport: httpx.BaseTransport | None = None,
+) -> pd.DataFrame:
     """Legislation databases: ``databaseId``, ``type``, ``jurisdiction``, ``name``."""
-    res = _get_json(f"legislationBrowse/{_check_lang(language)}/", api_key=api_key,
-                    timeout=timeout, user_agent=user_agent, transport=transport)
+    res = _get_json(
+        f"legislationBrowse/{_check_lang(language)}/",
+        api_key=api_key,
+        timeout=timeout,
+        user_agent=user_agent,
+        transport=transport,
+    )
     return _records_df(res.get("legislationDatabases"))
 
 
-def legislations(database_id: str, *, language: str = "en", api_key: str | None = None,
-                 timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = DEFAULT_USER_AGENT,
-                 transport: httpx.BaseTransport | None = None) -> pd.DataFrame:
+def legislations(
+    database_id: str,
+    *,
+    language: str = "en",
+    api_key: str | None = None,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    user_agent: str = DEFAULT_USER_AGENT,
+    transport: httpx.BaseTransport | None = None,
+) -> pd.DataFrame:
     """Statutes or regulations of one legislation database."""
     _check_id(database_id, "database_id")
-    res = _get_json(f"legislationBrowse/{_check_lang(language)}/{database_id}/",
-                    api_key=api_key, timeout=timeout, user_agent=user_agent,
-                    transport=transport)
+    res = _get_json(
+        f"legislationBrowse/{_check_lang(language)}/{database_id}/",
+        api_key=api_key,
+        timeout=timeout,
+        user_agent=user_agent,
+        transport=transport,
+    )
     return _records_df(res.get("legislations"))
 
 
-def legislation(database_id: str, legislation_id: str, *, language: str = "en",
-                api_key: str | None = None, timeout: float = DEFAULT_TIMEOUT_SECONDS,
-                user_agent: str = DEFAULT_USER_AGENT,
-                transport: httpx.BaseTransport | None = None) -> dict[str, Any]:
+def legislation(
+    database_id: str,
+    legislation_id: str,
+    *,
+    language: str = "en",
+    api_key: str | None = None,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    user_agent: str = DEFAULT_USER_AGENT,
+    transport: httpx.BaseTransport | None = None,
+) -> dict[str, Any]:
     """Metadata of one statute or regulation."""
     _check_id(database_id, "database_id")
     _check_id(legislation_id, "legislation_id")
     res = _get_json(
         f"legislationBrowse/{_check_lang(language)}/{database_id}/{legislation_id}/",
-        api_key=api_key, timeout=timeout, user_agent=user_agent, transport=transport)
+        api_key=api_key,
+        timeout=timeout,
+        user_agent=user_agent,
+        transport=transport,
+    )
     df = _records_df([res])
     return {k: df[k][0] for k in df.columns}
 
@@ -241,5 +331,4 @@ def case_id(citation: str) -> dict[str, str | None]:
     db = court.lower()
     if db == "scc":
         db = "csc-scc"
-    return {"citation": citation, "database_id": db,
-            "case_id": f"{year}{court.lower()}{number}"}
+    return {"citation": citation, "database_id": db, "case_id": f"{year}{court.lower()}{number}"}

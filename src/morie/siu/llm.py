@@ -72,7 +72,9 @@ def resolve(b: Backend | None = None, **kw) -> Backend:
         raise ValueError('api must be "ollama" or "openai"')
     base = b.base or _env("MORIE_LLM_BASE")
     if not base:
-        base = _env("OLLAMA_HOST", "OLLAMA_BASE_URL") if api == "ollama" else _env("OPENAI_BASE_URL", "LLM_API_BASE_URL")
+        base = (
+            _env("OLLAMA_HOST", "OLLAMA_BASE_URL") if api == "ollama" else _env("OPENAI_BASE_URL", "LLM_API_BASE_URL")
+        )
     if not base:
         base = "http://localhost:11434" if api == "ollama" else "http://localhost:8080/v1"
     if not base.startswith("http"):
@@ -80,8 +82,11 @@ def resolve(b: Backend | None = None, **kw) -> Backend:
     base = base.rstrip("/")
     if api == "openai" and not base.endswith("/v1"):
         base += "/v1"
-    key = b.key or (_env("MORIE_LLM_KEY", "OLLAMA_API_KEY") if api == "ollama"
-                    else _env("MORIE_LLM_KEY", "OPENAI_API_KEY", "LLM_API_KEY"))
+    key = b.key or (
+        _env("MORIE_LLM_KEY", "OLLAMA_API_KEY")
+        if api == "ollama"
+        else _env("MORIE_LLM_KEY", "OPENAI_API_KEY", "LLM_API_KEY")
+    )
     return replace(b, api=api, base=base, key=key)
 
 
@@ -132,8 +137,9 @@ def chat(b: Backend | None, model: str, prompt: str) -> str:
         body = json.loads(_request(b.base + "/api/chat", body=json.dumps(req).encode(), key=b.key, timeout=b.timeout))
         return (body.get("message") or {}).get("content", "")
     req = {"model": model, "stream": False, "temperature": b.temperature, "messages": messages}
-    body = json.loads(_request(b.base + "/chat/completions", body=json.dumps(req).encode(), key=b.key,
-                               timeout=b.timeout))
+    body = json.loads(
+        _request(b.base + "/chat/completions", body=json.dumps(req).encode(), key=b.key, timeout=b.timeout)
+    )
     choices = body.get("choices") or []
     if not choices:
         return ""

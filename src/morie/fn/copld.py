@@ -8,7 +8,7 @@ from ._containers import DescriptiveResult
 
 
 def copeland_method(preference_matrix) -> DescriptiveResult:
-    """An unexamined life is not worth living. -- Socrates"""
+    """Copeland's method: rank alternatives by pairwise wins minus losses in a preference matrix."""
     M = np.asarray(preference_matrix, dtype=float)
     n = M.shape[0]
     if M.shape != (n, n):

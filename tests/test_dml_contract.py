@@ -5,6 +5,7 @@ They returned a DoubleMLPLR-like object with .coef/.se; the change was
 unrecorded and the canonical tests that would have caught it were muted.
 This is the live contract test (WHATS_NEW 1.3.2).
 """
+
 import math
 
 from morie.fn import _array_core as np
@@ -23,8 +24,7 @@ def _dgp(n=600, tau=2.0, seed=7):
 def test_double_ml_returns_dict_with_ate_and_se():
     from morie.causal import estimate_double_ml
 
-    out = estimate_double_ml(data=_dgp(), outcome="outcome", treatment="treatment",
-                             covariates=["X1", "X2"], n_folds=3)
+    out = estimate_double_ml(data=_dgp(), outcome="outcome", treatment="treatment", covariates=["X1", "X2"], n_folds=3)
     assert isinstance(out, dict) and {"ate", "se"} <= set(out)
     assert math.isfinite(float(out["ate"])) and float(out["se"]) > 0
     assert abs(float(out["ate"]) - 2.0) < 0.6
@@ -33,8 +33,7 @@ def test_double_ml_returns_dict_with_ate_and_se():
 def test_irm_returns_dict_with_ate_and_se():
     from morie.causal import estimate_irm
 
-    out = estimate_irm(_dgp(tau=1.0), treatment="treatment", outcome="outcome",
-                       covariates=["X1", "X2"], n_folds=3)
+    out = estimate_irm(_dgp(tau=1.0), treatment="treatment", outcome="outcome", covariates=["X1", "X2"], n_folds=3)
     assert isinstance(out, dict) and {"ate", "se"} <= set(out)
     assert math.isfinite(float(out["ate"])) and float(out["se"]) > 0
     assert abs(float(out["ate"]) - 1.0) < 0.6

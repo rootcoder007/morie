@@ -220,9 +220,7 @@ class DatasetSchema:
 
 # Matches lines like  "-   `_id`: (Row ID) - Auto-generated variable..."
 _MD_VAR_LINE = re.compile(
-    r"^\s*-\s+`(?P<name>[^`]+)`\s*:\s*"
-    r"(?:\((?P<label>[^)]*)\)\s*-?\s*)?"
-    r"(?P<desc>.*?)$",
+    r"^\s*-\s+`(?P<name>[^`]+)`\s*:\s*" r"(?:\((?P<label>[^)]*)\)\s*-?\s*)?" r"(?P<desc>.*?)$",
 )
 
 
@@ -262,7 +260,7 @@ def parse_markdown_dictionary(path: str | Path) -> dict[str, DatasetSchema]:
     pairs = list(zip(titles, sections[1:]))
 
     schemas: dict[str, DatasetSchema] = {}
-    for title, body in pairs:
+    for _title, body in pairs:
         m_id = re.search(r"^\s*-\s*\*\*Dataset Name\*\*:\s*`([^`]+)`", body, re.M)
         if not m_id:
             continue
@@ -415,7 +413,6 @@ def _parse_xlsx_sheet(
         role_to_col["file_name"] = -1  # sentinel meaning "no grouping"
 
     by_dataset: dict[str, list[ColumnSpec]] = {}
-    by_dataset_source_notes: dict[str, str] = {}
 
     for row in rows[hdr_idx + 1 :]:
         # An entirely-blank row separates dataset blocks in some layouts;
@@ -423,7 +420,7 @@ def _parse_xlsx_sheet(
         if all(c is None or str(c).strip() == "" for c in row):
             continue
 
-        def get(role: str) -> str | None:
+        def get(role: str, row=row) -> str | None:
             idx = role_to_col.get(role)
             if idx is None or idx < 0 or idx >= len(row):
                 return None
@@ -557,10 +554,7 @@ def parse_xlsx_dictionary(
             continue
 
         # Decide language from sheet name.
-        if any(tok in name_lc for tok in ("french", "français", "francais")):
-            language = "fr"
-        else:
-            language = "en"
+        language = "fr" if any(tok in name_lc for tok in ("french", "français", "francais")) else "en"
 
         parsed = _parse_xlsx_sheet(
             sheet,
@@ -713,7 +707,6 @@ def merge_schemas(primary: DatasetSchema, secondary: DatasetSchema) -> DatasetSc
     Column matching is case-insensitive on name. Columns present in
     only one of the two schemas are kept in their original position.
     """
-    by_name: dict[str, ColumnSpec] = {c.name.lower(): c for c in primary.columns}
     sec_by_name: dict[str, ColumnSpec] = {c.name.lower(): c for c in secondary.columns}
 
     merged_cols: list[ColumnSpec] = []

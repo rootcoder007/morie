@@ -1001,6 +1001,38 @@ _R_INSTALL_HINT = (
 )
 
 
+_R_READY: bool | None = None
+
+
+def _r_route_ready() -> None:
+    """Raise at once when Rscript or the R package (rmorie or morie) is missing; cached per process."""
+    global _R_READY
+    if _R_READY:
+        return
+    rscript = _rscript_bin()
+    if rscript is None:
+        raise RuntimeError("Rscript is not available on PATH.")
+    probe = subprocess.run(
+        [
+            rscript,
+            "--vanilla",
+            "-e",
+            'quit(status = !(requireNamespace("rmorie", quietly = TRUE) || '
+            'requireNamespace("morie", quietly = TRUE)))',
+        ],
+        stdin=subprocess.DEVNULL,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    if probe.returncode != 0:
+        raise RuntimeError(
+            "The R package for the R-backed modules is required for R-backed modules but is not installed "
+            "(install rmorie, or morie's R package)"
+        )
+    _R_READY = True
+
+
 def _r_package_absent(exc: BaseException) -> bool:
     """True when the R route failed only because R or its package is not installed."""
     text = str(exc)
@@ -1084,6 +1116,8 @@ def run_module(
         valid = ", ".join(sorted(MODULE_SPECS))
         raise ValueError(f"Unknown module: {module_name}. Valid modules: {valid}")
 
+    if module_name not in _PY_FALLBACK_MODULES:
+        _r_route_ready()  # R and its package first: loading the frame took 10-14 s before this failed
     cpads_csv = _cpads_csv_for_run(cpads_csv, dataset_key)
     try:
         return _run_r_module(module_name, cpads_csv=cpads_csv, output_dir=output_dir)

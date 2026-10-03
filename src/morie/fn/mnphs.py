@@ -8,10 +8,7 @@ from ._containers import SignalResult
 
 
 def minimum_phase_correspondent(x: np.ndarray) -> SignalResult:
-    """Compute the minimum-phase correspondent via cepstral windowing.
-
-    'Time discovers truth. -- Seneca'
-    """
+    """Compute the minimum-phase correspondent via cepstral windowing."""
     from morie._waveform import minimum_phase_correspondent as _backend
 
     result = _backend(x)

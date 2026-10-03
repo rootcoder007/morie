@@ -297,7 +297,7 @@ def _alert_yes(series):
     for v in series:
         if isinstance(v, bool):
             out.append(v)
-        elif isinstance(v, (int, float)):
+        elif isinstance(v, int | float):
             out.append(v == v and v > 0)
         else:
             out.append(str(v).strip().lower() == "yes")

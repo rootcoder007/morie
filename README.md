@@ -372,7 +372,7 @@ path behind a single, named, off-by-default environment knob:
 | `MORIE_NO_EXEC` | master kill-switch for all dynamic execution | executes; set `MORIE_NO_EXEC=1` to disable REPL/exec/shell everywhere |
 | **`morie tui`** / **polyglot** REPLs | run Python/R/shell/other code you type, like any REPL | run your input only; honour `MORIE_NO_EXEC=1`. Feed them only code you'd run at your own shell |
 | **`morie interactive install`** | fetches the REPL/exec/agent/TUI modules (five files) from this version's release tag on GitHub, the one network-supplied code path | every file is checked against the SHA-256 manifest shipped inside the package before it is enabled; nothing runs during the install; `--no-verify` is the opt-in for a non-release `--ref` |
-| **`pt2gguf`** | deserialize `.pt`/`.pkl` model files | `torch.load(weights_only=True)` + a restricted unpickler; the code-executing `weights_only=False` path needs `MORIE_TRUST_CHECKPOINT=1`. Use trusted checkpoints only |
+| **`pt2gguf`** / `morie convert-checkpoint` | deserialize `.pt`/`.pkl` model files | refuses every checkpoint unless `MORIE_TRUST_CHECKPOINT=1`; even then the native reader only resolves tensors, storages and plain containers (the `torch.load(weights_only=True)` allowlist) and refuses any other object. Use checkpoints you produced or fully trust |
 | **`bin/morie`** installer — Ollama | remote `install.sh` | fetched to a temp file with its SHA256 printed; executes only under `MORIE_ALLOW_REMOTE_INSTALL=1` |
 | **`bin/morie`** — `ESML_RC` config | shell config sourced on every run (persistence) | **not sourced** unless `MORIE_ALLOW_RC=1` |
 | **`bin/morie`** — `morie cron` | writes your crontab (persistence) | `add`/`remove` refuse unless `MORIE_ALLOW_CRON=1`; `list` is read-only |

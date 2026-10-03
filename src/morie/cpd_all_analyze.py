@@ -39,16 +39,13 @@ def analyze_crime_by_type(crime_df: pd.DataFrame | None = None) -> RichResult:
     """Incident volume by Chicago primary crime type."""
     df = crime_df if crime_df is not None else _load("crime")
     if df is None or "primary_type" not in df.columns:
-        return RichResult(title="CPD crimes by primary type",
-                          warnings=["missing column: primary_type"])
+        return RichResult(title="CPD crimes by primary type", warnings=["missing column: primary_type"])
     counts = df["primary_type"].value_counts()
     rows = [[k, int(v)] for k, v in counts.items()]
     return RichResult(
         title="CPD crimes by primary type",
-        summary_lines=[("distinct types", int(len(counts))),
-                       ("total records", int(counts.sum()))],
-        tables=[{"title": "By primary type", "headers": ["Type", "Count"],
-                 "rows": rows}],
+        summary_lines=[("distinct types", int(len(counts))), ("total records", int(counts.sum()))],
+        tables=[{"title": "By primary type", "headers": ["Type", "Count"], "rows": rows}],
         payload={"by_type": {str(k): int(v) for k, v in counts.items()}},
     )
 
@@ -57,20 +54,23 @@ def analyze_arrests_by_area(crime_df: pd.DataFrame | None = None) -> RichResult:
     """Predpol area aggregation: arrest concentration by community area."""
     df = crime_df if crime_df is not None else _load("crime")
     if df is None or not {"community_area", "arrest"}.issubset(df.columns):
-        return RichResult(title="CPD arrest concentration by community area",
-                          warnings=["missing column(s): community_area, arrest"])
+        return RichResult(
+            title="CPD arrest concentration by community area", warnings=["missing column(s): community_area, arrest"]
+        )
     area = df["community_area"].astype(str)
-    arrest = df["arrest"].astype(str).str.lower().isin(
-        ["true", "1", "t", "yes"]).astype(int)
+    arrest = df["arrest"].astype(str).str.lower().isin(["true", "1", "t", "yes"]).astype(int)
     risk = arrest.groupby(area).transform("mean")
-    agg = predpol_aggregate_areas(area=area.tolist(), risk=risk.tolist(),
-                                  outcome=arrest.tolist())
+    agg = predpol_aggregate_areas(area=area.tolist(), risk=risk.tolist(), outcome=arrest.tolist())
     return RichResult(
         title="CPD arrest concentration by community area",
         summary_lines=[("areas", int(area.nunique()))],
-        tables=[{"title": "Area aggregate (predpol)",
-                 "headers": ["field", "value"],
-                 "rows": [[k, str(v)[:60]] for k, v in dict(agg).items()]}],
+        tables=[
+            {
+                "title": "Area aggregate (predpol)",
+                "headers": ["field", "value"],
+                "rows": [[k, str(v)[:60]] for k, v in dict(agg).items()],
+            }
+        ],
         payload={"aggregate": _jsonable(agg)},
     )
 
@@ -79,25 +79,23 @@ def analyze_temporal(crime_df: pd.DataFrame | None = None) -> RichResult:
     """Incident counts by year."""
     df = crime_df if crime_df is not None else _load("crime")
     if df is None or "year" not in df.columns:
-        return RichResult(title="CPD temporal trend",
-                          warnings=["missing column: year"])
+        return RichResult(title="CPD temporal trend", warnings=["missing column: year"])
     counts = df["year"].value_counts().sort_index()
     return RichResult(
         title="CPD temporal trend",
         summary_lines=[("years", int(len(counts)))],
-        tables=[{"title": "By year", "headers": ["Year", "Count"],
-                 "rows": [[str(k), int(v)] for k, v in counts.items()]}],
+        tables=[
+            {"title": "By year", "headers": ["Year", "Count"], "rows": [[str(k), int(v)] for k, v in counts.items()]}
+        ],
         payload={"by_year": {str(k): int(v) for k, v in counts.items()}},
     )
 
 
-def analyze_arrest_race_disparity(
-        arrests_df: pd.DataFrame | None = None) -> RichResult:
+def analyze_arrest_race_disparity(arrests_df: pd.DataFrame | None = None) -> RichResult:
     """Disparate-impact of arrest representation across race categories."""
     df = arrests_df if arrests_df is not None else _load("arrests")
     if df is None or "race" not in df.columns:
-        return RichResult(title="CPD arrests: race disparity",
-                          warnings=["missing column: race (arrests data)"])
+        return RichResult(title="CPD arrests: race disparity", warnings=["missing column: race (arrests data)"])
     frame = df[["race"]].copy()
     frame["race"] = frame["race"].astype(str)
     frame = frame[frame["race"].str.len() > 0]
@@ -112,12 +110,11 @@ def analyze_arrest_race_disparity(
     counts = race.value_counts()
     return RichResult(
         title="CPD arrests: race disparity",
-        summary_lines=[("groups", int(race.nunique())),
-                       ("records", int(len(race)))],
-        tables=[{"title": "By race", "headers": ["Race", "Count"],
-                 "rows": [[str(k), int(v)] for k, v in counts.items()]}],
-        payload={"disparate_impact": _jsonable(di),
-                 "counts": {str(k): int(v) for k, v in counts.items()}},
+        summary_lines=[("groups", int(race.nunique())), ("records", int(len(race)))],
+        tables=[
+            {"title": "By race", "headers": ["Race", "Count"], "rows": [[str(k), int(v)] for k, v in counts.items()]}
+        ],
+        payload={"disparate_impact": _jsonable(di), "counts": {str(k): int(v) for k, v in counts.items()}},
     )
 
 
@@ -136,12 +133,10 @@ def analyze_all(*, out_dir: str | None = None) -> dict[str, RichResult]:
         try:
             results[name] = fn()
         except Exception as exc:  # noqa: BLE001 -- surface-level isolation
-            results[name] = RichResult(title=f"cpd.{name} (failed)",
-                                       warnings=[f"{type(exc).__name__}: {exc}"])
+            results[name] = RichResult(title=f"cpd.{name} (failed)", warnings=[f"{type(exc).__name__}: {exc}"])
         if out_dir:
             Path(out_dir).mkdir(parents=True, exist_ok=True)
-            (Path(out_dir) / f"cpd_{name}.json").write_text(
-                json.dumps(_jsonable(results[name].payload), default=str))
+            (Path(out_dir) / f"cpd_{name}.json").write_text(json.dumps(_jsonable(results[name].payload), default=str))
     return results
 
 
@@ -154,6 +149,6 @@ def _jsonable(obj: Any) -> Any:
             pass
     if isinstance(obj, dict):
         return {str(k): _jsonable(v) for k, v in obj.items()}
-    if isinstance(obj, (list, tuple)):
+    if isinstance(obj, list | tuple):
         return [_jsonable(v) for v in obj]
     return obj

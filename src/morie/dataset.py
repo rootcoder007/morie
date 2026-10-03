@@ -460,17 +460,20 @@ def _summarize_column(series: pd.Series, *, level: MeasurementLevel) -> dict:
     """
     non_null = series.dropna()
 
-    if level in (MeasurementLevel.INTERVAL, MeasurementLevel.RATIO):
-        if pd.api.types.is_numeric_dtype(non_null) and len(non_null) > 0:
-            return {
-                "mean": float(non_null.mean()),
-                "std": float(non_null.std()),
-                "min": float(non_null.min()),
-                "q25": float(non_null.quantile(0.25)),
-                "median": float(non_null.median()),
-                "q75": float(non_null.quantile(0.75)),
-                "max": float(non_null.max()),
-            }
+    if (
+        level in (MeasurementLevel.INTERVAL, MeasurementLevel.RATIO)
+        and pd.api.types.is_numeric_dtype(non_null)
+        and len(non_null) > 0
+    ):
+        return {
+            "mean": float(non_null.mean()),
+            "std": float(non_null.std()),
+            "min": float(non_null.min()),
+            "q25": float(non_null.quantile(0.25)),
+            "median": float(non_null.median()),
+            "q75": float(non_null.quantile(0.75)),
+            "max": float(non_null.max()),
+        }
     # Categorical / ordinal / nominal / binary
     if len(non_null) > 0:
         top_counts = non_null.value_counts().head(10).to_dict()
@@ -548,8 +551,7 @@ def profile_dataset(
         if hasattr(df, "columns") and hasattr(df, "__getitem__"):
             df = pd.DataFrame({c: list(df[c]) for c in df.columns})
         else:
-            raise TypeError(
-                f"Expected pandas DataFrame, got {type(df).__name__}")
+            raise TypeError(f"Expected pandas DataFrame, got {type(df).__name__}")
     if df.shape[0] == 0 or df.shape[1] == 0:
         raise ValueError(f"DataFrame must have at least one row and one column; got shape {df.shape}")
 

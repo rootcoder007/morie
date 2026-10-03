@@ -191,10 +191,7 @@ def preprocess_fmri(record: dict, motion_threshold_mm: float = 0.5, n_noise_comp
             fd = np.asarray(fd, dtype=np.float32)
             # Pad / truncate FD to match arr.shape[-1]
             t = arr.shape[-1]
-            if fd.shape[0] >= t:
-                fd_t = fd[:t]
-            else:
-                fd_t = np.concatenate([fd, np.zeros(t - fd.shape[0], dtype=np.float32)])
+            fd_t = fd[:t] if fd.shape[0] >= t else np.concatenate([fd, np.zeros(t - fd.shape[0], dtype=np.float32)])
             bad = fd_t > motion_threshold_mm
             n_scrubbed += int(bad.sum())
             arr = arr.copy()

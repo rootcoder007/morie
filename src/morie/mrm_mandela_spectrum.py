@@ -161,10 +161,7 @@ def mrm_otis_mandela_spectrum(
                     in_proxy = cum_long.index.isin(ids_m.index)
                     cum_long_proxy = [bool(a) and bool(b) for a, b in zip(in_proxy, list(cum_long.values))]
                     n_d = int(cum.size)
-                    if proxy == "none":
-                        n_m = int(cum_long.sum())
-                    else:
-                        n_m = int(np.array(cum_long_proxy, dtype=bool).sum())
+                    n_m = int(cum_long.sum()) if proxy == "none" else int(np.array(cum_long_proxy, dtype=bool).sum())
                 elif denom == "c11_aggregate":
                     if c11_data is None:
                         continue

@@ -14,6 +14,7 @@ Usage::
 
 from __future__ import annotations
 
+import contextlib
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -62,10 +63,8 @@ class RichResult(dict):
         # We don't store payload twice -- `payload` and `self` (as a dict)
         # are kept in sync because __getitem__/__contains__/keys/values
         # all proxy through payload.
-        try:
+        with contextlib.suppress(Exception):
             dict.update(self, self.payload)
-        except Exception:
-            pass
 
     # Allow attribute access: result.statistic instead of result.payload["statistic"]
     def __getattr__(self, name: str) -> Any:
@@ -152,7 +151,12 @@ class RichResult(dict):
             out.append("")
         if self.interpretation:
             out.append(self.interpretation)
-        return "\n".join(out).rstrip()
+        text = "\n".join(out).rstrip()
+        if not text and self.payload:
+            # built from a bare mapping (morani, moran_scatter): show its fields, never a blank
+            width = max(len(str(k)) for k in self.payload)
+            text = "\n".join(f"  {str(k):<{width}}  {self._fmt(v)}" for k, v in self.payload.items())
+        return text
 
     @staticmethod
     def _render_table(headers: list[str], rows: list[list[Any]]) -> str:
@@ -178,7 +182,7 @@ class RichResult(dict):
             if abs(v) < 1e-4 and v != 0:
                 return f"{v:.3e}"
             return f"{v:.4f}".rstrip("0").rstrip(".")
-        if isinstance(v, (list, tuple)):
+        if isinstance(v, list | tuple):
             inner = ", ".join(RichResult._fmt(x) for x in v[:6])
             if len(v) > 6:
                 inner += ", …"

@@ -141,6 +141,17 @@ def load_keypair(
     return pk, sk
 
 
+def load_public_key(name: str, path: str = _DEFAULT_PATH) -> bytes:
+    """The public key of a key pair: stored in the clear, so no password is needed to encrypt to it.
+
+    :raises KeyError: If the name is not found.
+    """
+    store = _read_store(path)
+    if name not in store["keys"]:
+        raise KeyError(f"Key '{name}' not found in keystore")
+    return bytes.fromhex(store["keys"][name]["pk"])
+
+
 def list_keys(
     password: str,
     path: str = _DEFAULT_PATH,

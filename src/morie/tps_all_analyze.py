@@ -251,7 +251,6 @@ def crime_compare(dfs: dict[str, pd.DataFrame]) -> RichResult:
 
     # Year-by-year side-by-side
     year_table = None
-    cols = sorted(dfs.keys())
     yc = "OCC_YEAR"
     pivots = []
     for name, df in dfs.items():

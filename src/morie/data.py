@@ -1509,6 +1509,17 @@ def _direct_or_hosted(entry: dict, matched: str, db_path, timeout: int = 60) -> 
     return df
 
 
+class RObjectSavedError(NotImplementedError):
+    """The dataset is an R object (RData/rds): Python cannot open it, but it is saved at ``path`` for R."""
+
+    def __init__(self, key: str, path: Path):
+        self.key, self.path = key, Path(path)
+        super().__init__(
+            f"{key} is an R object ({self.path.suffix}), saved at {self.path}. Open it in R with "
+            f"rmorie::morie_load_dataset('{key}'), or readRDS()/load() on that file."
+        )
+
+
 def _load_hosted_file(entry: dict, matched: str):
     """Tier 3b: fetch an R object (RData/rds) from data.rmorie.com into the data directory and say where it is."""
     from .datahub import _get_to_file
@@ -1519,11 +1530,7 @@ def _load_hosted_file(entry: dict, matched: str):
     if not dest.exists():
         dest.parent.mkdir(parents=True, exist_ok=True)
         _get_to_file("/files/" + entry["hosted_file"], dest, label=matched)
-    raise NotImplementedError(
-        f"{matched} is an R object ({dest.suffix}), now saved at {dest}. Open it in R with "
-        f"rmorie::morie_load_dataset('{matched}'), or readRDS()/load() on that file; "
-        "morie keeps the download so the file is in place."
-    )
+    raise RObjectSavedError(matched, dest)
 
 
 def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -> pd.DataFrame:
@@ -1655,7 +1662,12 @@ def list_rmoriedata(timeout: int = 120) -> list[dict]:
 
     ext = _rmoriedata_extdata(timeout=timeout)
     with (ext / "_catalog.csv").open(newline="", encoding="utf-8-sig") as fh:
-        return list(csv.DictReader(fh))
+        rows = list(csv.DictReader(fh))
+    for r in rows:  # counts are numbers (r["n_rows"] > 100 raised TypeError on the CSV strings)
+        for k in ("n_rows", "n_cols"):
+            v = (r.get(k) or "").strip()
+            r[k] = int(v) if v.lstrip("-").isdigit() else None
+    return rows
 
 
 def load_rmoriedata(slug: str, timeout: int = 120) -> pd.DataFrame:
@@ -1718,7 +1730,19 @@ def fetch_cihi_indicator_library(timeout: int = 120) -> pd.DataFrame:
             xlsx.parent.mkdir(parents=True, exist_ok=True)
             logger.info("Fetching the CIHI indicator library (72 MB) from %s", CIHI_INDICATOR_LIBRARY_URL)
             req = Request(CIHI_INDICATOR_LIBRARY_URL, headers={"User-Agent": "morie/1 (+https://rmorie.com)"})
-            xlsx.write_bytes(urlopen(req, timeout=timeout).read())
+            import tempfile
+
+            from ._progress import stream_to_file
+
+            fd, part = tempfile.mkstemp(dir=xlsx.parent, prefix=xlsx.name + ".", suffix=".part")
+            os.close(fd)
+            try:
+                with urlopen(req, timeout=timeout) as resp:
+                    stream_to_file(resp, part, "CIHI indicator library")
+                os.replace(part, xlsx)
+            finally:
+                if os.path.exists(part):
+                    os.remove(part)
     csv_path = _user_cache_dir() / "cihi" / "indicator-library-all-indicator-data-en.csv"
     if not csv_path.exists() or csv_path.stat().st_mtime < xlsx.stat().st_mtime:
         import openpyxl
@@ -1726,13 +1750,25 @@ def fetch_cihi_indicator_library(timeout: int = 120) -> pd.DataFrame:
         csv_path.parent.mkdir(parents=True, exist_ok=True)
         wb = openpyxl.load_workbook(xlsx, read_only=True, data_only=True)
         ws = wb.worksheets[0]
-        tmp = csv_path.with_suffix(".csv.tmp")
-        with tmp.open("w", newline="", encoding="utf-8") as fh:
-            w = csv.writer(fh)
-            for row in ws.iter_rows(values_only=True):
-                w.writerow(["" if v is None else v for v in row])
-        wb.close()
-        tmp.replace(csv_path)
+        import tempfile
+
+        fd, tmp_name = tempfile.mkstemp(dir=csv_path.parent, prefix=csv_path.name + ".", suffix=".tmp")
+        tmp = Path(tmp_name)
+        try:
+            from ._progress import Progress
+
+            with (
+                open(fd, "w", newline="", encoding="utf-8") as fh,
+                Progress("CIHI workbook -> CSV", unit="rows") as prog,
+            ):
+                w = csv.writer(fh)
+                for row in ws.iter_rows(values_only=True):
+                    w.writerow(["" if v is None else v for v in row])
+                    prog.update(1)
+            wb.close()
+            tmp.replace(csv_path)  # atomic: a concurrent pull either sees the old file or the new one
+        finally:
+            tmp.unlink(missing_ok=True)
     return pd.read_csv(csv_path, low_memory=False)
 
 
@@ -1864,6 +1900,41 @@ def _fuzzy_match_key(key: str) -> str | None:
     return None
 
 
+def synthetic_mapq_panel(n: int = 400, seed: int = 2026) -> pd.DataFrame:
+    """Deterministic synthetic MAPQII panel: a toy stand-in for TKARONTOMAPQ.xlsx.
+
+    The same design as rmorie's ``.morie_mapq_synth_panel()``: 20 Likert items (1-5) in four
+    subscales (EE, EA, UA, ER) with a planted one-factor-per-subscale structure, ``gender_male``
+    and ``age``, subscale scores, and a Knowledge Scale score ``ks_score`` driven by epistemic
+    attitudes, gender and age, so the psychometric and DML stages have a real signal to recover.
+    Participant-level MAPQ data are not distributed; this panel is.
+    """
+    import random
+
+    from morie.fn._mapq_const import SUBSCALES
+
+    rng = random.Random(seed)
+    cols: dict[str, list] = {
+        "gender_male": [1 if rng.random() < 0.5 else 0 for _ in range(n)],
+        "age": [rng.randint(18, 65) for _ in range(n)],
+    }
+    for items in SUBSCALES.values():
+        latent = [rng.gauss(0.0, 1.0) for _ in range(n)]
+        for item in items:
+            cols[item] = [min(5, max(1, round(3 + 0.9 * z + rng.gauss(0.0, 0.8)))) for z in latent]
+    for name, items in SUBSCALES.items():
+        cols[f"{name.lower()}_score"] = [sum(cols[i][r] for i in items) for r in range(n)]
+    cols["ks_score"] = [
+        10 + 0.4 * cols["ea_score"][r] + 1.5 * cols["gender_male"][r] + 0.02 * cols["age"][r] + rng.gauss(0.0, 1.0)
+        for r in range(n)
+    ]
+    return pd.DataFrame(cols)
+
+
+# own-file datasets with a synthetic toy stand-in used when the real file is absent
+SYNTHETIC_OWN_FILES = {"mapq": synthetic_mapq_panel}
+
+
 def load_dataset(
     key: str,
     *,
@@ -1900,6 +1971,17 @@ def load_dataset(
     if dataset_route(entry).startswith("own file"):
         # your own research file: read it where it is, every time, and keep it out of the cache
         local_path = _find_local_file(entry["local_path"])
+        if local_path is None and matched in SYNTHETIC_OWN_FILES:
+            import warnings
+
+            warnings.warn(
+                f"{matched}: your file is not at $MORIE_DATA_DIR/{entry['local_path'].removeprefix('data/')}; "
+                "returning the synthetic toy panel (n = 400, planted structure) so the analyses run. "
+                "Its numbers demonstrate the pipeline, they are not findings.",
+                UserWarning,
+                stacklevel=2,
+            )
+            return SYNTHETIC_OWN_FILES[matched]()
         if local_path is None:
             raise FileNotFoundError(dataset_recommendation(matched, entry))
         logger.info("Reading %s from your file: %s", matched, local_path)
@@ -1992,6 +2074,8 @@ def load_dataset(
             df = pd.read_csv(local_path, low_memory=False)
         elif entry["format"] == "xlsx":
             df = pd.read_excel(local_path)
+        elif str(entry["format"]).lower() in ("rdata", "rda", "rds"):
+            raise RObjectSavedError(matched, local_path)
         else:
             raise NotImplementedError(f"Format {entry['format']} not supported for on-the-fly ingest")
         try:

@@ -161,7 +161,10 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
                 return 2
             df = df.assign(exposure=vals).dropna(subset=["exposure"])
         if "exposure" not in df.columns:
-            print("ERROR: CSV needs an 'exposure' column (ug/m3), or a NAPS pull's 'value' column.", file=sys.stderr)
+            print(
+                "ERROR: CSV missing 'exposure' column (ug/m3); a NAPS pull's 'value' column also works.",
+                file=sys.stderr,
+            )
             return 2
         exposure_mean = float(df["exposure"].mean())
         exposure_prevalence = float((df["exposure"] > reference).mean())

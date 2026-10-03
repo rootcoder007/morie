@@ -55,14 +55,8 @@ def _align_timecourses(eeg: np.ndarray, fmri: np.ndarray) -> tuple[np.ndarray, n
     """
     e = np.asarray(eeg, dtype=np.float32)
     f = np.asarray(fmri, dtype=np.float32)
-    if e.ndim == 2:
-        e_tc = e.mean(axis=0)
-    else:
-        e_tc = e
-    if f.ndim == 2:
-        f_tc = f.mean(axis=0)
-    else:
-        f_tc = f
+    e_tc = e.mean(axis=0) if e.ndim == 2 else e
+    f_tc = f.mean(axis=0) if f.ndim == 2 else f
     n = min(e_tc.shape[0], f_tc.shape[0])
     if n == 0:
         return e_tc, f_tc

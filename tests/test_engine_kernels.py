@@ -76,9 +76,9 @@ class TestMatvec:
         np.testing.assert_allclose(out, expected, atol=1e-5)
 
     def test_identity_matrix(self):
-        I = np.eye(32, dtype=np.float32)
+        ident = np.eye(32, dtype=np.float32)
         x = np.arange(32, dtype=np.float32)
-        np.testing.assert_allclose(matvec(I, x), x, atol=1e-6)
+        np.testing.assert_allclose(matvec(ident, x), x, atol=1e-6)
 
 
 class TestSiLU:

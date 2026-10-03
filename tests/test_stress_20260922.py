@@ -4,6 +4,7 @@
 Each test is the reviewer's reproducer turned into an assertion; the
 numbers quoted in comments are what the previous code returned.
 """
+
 from __future__ import annotations
 
 import math
@@ -36,8 +37,7 @@ def test_logistic_refuses_nan_and_has_no_cutoff():
 def test_propensity_scores_name_missing_columns():
     import morie
 
-    df = pd.DataFrame({"x": [0.1, nan, 0.3, 0.4], "z": [1.0, 2.0, 3.0, 4.0],
-                       "t": [0, 1, 0, 1]})
+    df = pd.DataFrame({"x": [0.1, nan, 0.3, 0.4], "z": [1.0, 2.0, 3.0, 4.0], "t": [0, 1, 0, 1]})
     with pytest.raises(ValueError, match="'x'"):
         morie.compute_propensity_scores(df, "t", ["x", "z"])
 
@@ -114,14 +114,39 @@ def test_oneprop_test_runs_and_matches_docs():
 
 
 # ------------------------------------------------------------------ 9
-@pytest.mark.parametrize("d", ["uniform", "norm", "expon", "poisson", "gamma", "beta", "t", "chi2",
-                               "geom", "nbinom", "hypergeom", "binom", "laplace", "logistic"])
+@pytest.mark.parametrize(
+    "d",
+    [
+        "uniform",
+        "norm",
+        "expon",
+        "poisson",
+        "gamma",
+        "beta",
+        "t",
+        "chi2",
+        "geom",
+        "nbinom",
+        "hypergeom",
+        "binom",
+        "laplace",
+        "logistic",
+    ],
+)
 def test_clt_demo_and_rvs_for_every_distribution(d):
     import morie
 
-    kw = {"gamma": {"a": 2.0}, "beta": {"a": 2.0, "b": 3.0}, "t": {"df": 5}, "chi2": {"df": 3},
-          "geom": {"p": 0.3}, "nbinom": {"n": 3, "p": 0.4}, "hypergeom": {"M": 20, "n": 7, "N": 12},
-          "binom": {"n": 10, "p": 0.3}, "poisson": {"mu": 2.0}}.get(d, {})
+    kw = {
+        "gamma": {"a": 2.0},
+        "beta": {"a": 2.0, "b": 3.0},
+        "t": {"df": 5},
+        "chi2": {"df": 3},
+        "geom": {"p": 0.3},
+        "nbinom": {"n": 3, "p": 0.4},
+        "hypergeom": {"M": 20, "n": 7, "N": 12},
+        "binom": {"n": 10, "p": 0.3},
+        "poisson": {"mu": 2.0},
+    }.get(d, {})
     out = morie.mrm_clt_demo(d, n_samples=20, sample_size=8, **kw)
     assert len(out) == 20
     g = np.random.default_rng(3)
@@ -164,12 +189,26 @@ def test_tox_missing_is_not_censored():
 # ------------------------------------------------------------------ 14/15 array shim
 def test_generator_surface_and_axis_keywords():
     g = np.random.default_rng(5)
-    for name, args in [("standard_t", (4,)), ("triangular", (0.0, 0.5, 1.0)), ("weibull", (1.5,)),
-                       ("pareto", (3.0,)), ("power", (2.0,)), ("rayleigh", (1.0,)), ("gumbel", ()),
-                       ("logistic", ()), ("wald", (1.0, 1.0)), ("vonmises", (0.0, 2.0)),
-                       ("f", (3, 7)), ("noncentral_chisquare", (3, 1.5)), ("negative_binomial", (3, 0.4)),
-                       ("hypergeometric", (7, 13, 5)), ("zipf", (2.5,)), ("logseries", (0.3,)),
-                       ("standard_cauchy", ()), ("standard_exponential", ())]:
+    for name, args in [
+        ("standard_t", (4,)),
+        ("triangular", (0.0, 0.5, 1.0)),
+        ("weibull", (1.5,)),
+        ("pareto", (3.0,)),
+        ("power", (2.0,)),
+        ("rayleigh", (1.0,)),
+        ("gumbel", ()),
+        ("logistic", ()),
+        ("wald", (1.0, 1.0)),
+        ("vonmises", (0.0, 2.0)),
+        ("f", (3, 7)),
+        ("noncentral_chisquare", (3, 1.5)),
+        ("negative_binomial", (3, 0.4)),
+        ("hypergeometric", (7, 13, 5)),
+        ("zipf", (2.5,)),
+        ("logseries", (0.3,)),
+        ("standard_cauchy", ()),
+        ("standard_exponential", ()),
+    ]:
         out = getattr(g, name)(*args, size=30).tolist()
         assert len(out) == 30 and all(v == v for v in out), name
     m = g.multinomial(20, [0.2, 0.3, 0.5]).tolist()
@@ -232,8 +271,10 @@ def test_every_fn_module_has_cheatsheet():
         if f.name.startswith("_") or f.name == "describe.py":
             continue
         src = f.read_text(encoding="utf-8")
-        if not (re.search(r"^def cheatsheet\(|^cheatsheet\s*=", src, re.M)
-                or re.search(r"^from \.[A-Za-z0-9_]+ import \(?[^)]*\bcheatsheet\b", src, re.M)):
+        if not (
+            re.search(r"^def cheatsheet\(|^cheatsheet\s*=", src, re.M)
+            or re.search(r"^from \.[A-Za-z0-9_]+ import \(?[^)]*\bcheatsheet\b", src, re.M)
+        ):
             missing.append(f.stem)
     assert not missing, missing[:20]
 
@@ -335,8 +376,9 @@ def test_hunt_round_four_stats():
 
 
 def test_hunt_round_four_frame():
-    df = pd.DataFrame({"g": ["a", "b", "a", "b", "a"], "x": [1.0, 2.0, nan, 4.0, 5.0],
-                       "y": [10.0, 20.0, 30.0, 40.0, 50.0]})
+    df = pd.DataFrame(
+        {"g": ["a", "b", "a", "b", "a"], "x": [1.0, 2.0, nan, 4.0, 5.0], "y": [10.0, 20.0, 30.0, 40.0, 50.0]}
+    )
     assert df.sort_values("x", ascending=False)["y"].tolist() == [50.0, 40.0, 20.0, 10.0, 30.0]
     assert df.sort_values("x", na_position="first")["y"].tolist() == [30.0, 10.0, 20.0, 40.0, 50.0]
     vc = df["x"].value_counts(dropna=False)
@@ -400,8 +442,7 @@ def test_round_three_correlate_shorter_first():
     a, v = np.array([1.0, 2.0]), np.array([1.0, 2.0, 3.0, 4.0])
     assert np.correlate(a, v).tolist() == [11.0, 8.0, 5.0]
     assert np.correlate(v, a).tolist() == [5.0, 8.0, 11.0]
-    assert np.correlate(np.array([1.0, 2.0, 3.0]),
-                        np.array([0.0, 1.0, 0.5])).tolist() == [3.5]
+    assert np.correlate(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 0.5])).tolist() == [3.5]
 
 
 def test_round_three_twoprop_degenerate_is_zero_and_one():
@@ -416,23 +457,19 @@ def test_round_three_exit_codes_for_failed_backends(monkeypatch):
     from morie import llm, perseus, runner
 
     monkeypatch.setattr(perseus, "detect_available_provider", lambda: "ollama")
-    monkeypatch.setattr(perseus, "llm_ask",
-                        lambda *a, **k: llm._FallbackText("nobody home"))
+    monkeypatch.setattr(perseus, "llm_ask", lambda *a, **k: llm._FallbackText("nobody home"))
     payload = perseus.ask_percy("hi", use_agent=False, stream=False)
     assert payload["mode"] == "local_fallback"
     assert runner._llm_exit_code(payload) == 1
 
-    monkeypatch.setattr(perseus, "llm_ask",
-                        lambda *a, **k: iter([llm._FallbackText("nobody home")]))
+    monkeypatch.setattr(perseus, "llm_ask", lambda *a, **k: iter([llm._FallbackText("nobody home")]))
     payload = perseus.ask_percy("hi", use_agent=False, stream=True)
     assert payload["mode"] == "local_fallback"
     assert list(payload["output_stream"]) == ["nobody home"]
 
-    failed = {"mode": "agent", "output_text": "agent request failed: x",
-              "failed": True}
+    failed = {"mode": "agent", "output_text": "agent request failed: x", "failed": True}
     assert runner._llm_exit_code(failed) == 1
-    assert runner._llm_exit_code({"mode": "agent", "output_text": "ok",
-                                  "failed": False}) == 0
+    assert runner._llm_exit_code({"mode": "agent", "output_text": "ok", "failed": False}) == 0
 
 
 # --- round four (2026-09-24, at 1aa4b634d): the exhaustive sweep ------------
@@ -440,8 +477,23 @@ def test_round_three_exit_codes_for_failed_backends(monkeypatch):
 
 def test_round_four_keepdims_everywhere():
     m = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-    for fn in ("sum", "prod", "mean", "median", "std", "var", "min", "max",
-               "nanmean", "nanstd", "nanvar", "nansum", "nanmedian", "nanmin", "nanmax"):
+    for fn in (
+        "sum",
+        "prod",
+        "mean",
+        "median",
+        "std",
+        "var",
+        "min",
+        "max",
+        "nanmean",
+        "nanstd",
+        "nanvar",
+        "nansum",
+        "nanmedian",
+        "nanmin",
+        "nanmax",
+    ):
         f = getattr(np, fn)
         assert f(m, axis=None, keepdims=True).shape == (1, 1), fn
         assert f(m, axis=0, keepdims=True).shape == (1, 3), fn
@@ -495,6 +547,7 @@ def test_round_four_loader_keeps_callables():
     import importlib
 
     import morie.fn as F
+
     # touching a sibling used to leave the module's own name bound to the module
     getattr(F, "binary_segmentation")
     assert callable(getattr(F, "binseg"))
@@ -510,11 +563,13 @@ def test_round_four_stats_semantics():
     assert len(tuple(r)) == 4 and r.low_slope == pytest.approx(1.0 / 3.0)
     assert st.binomtest(7, 20).statistic == pytest.approx(0.35)
     # exact small-sample tails, reference values from scipy 1.18
-    assert st.ansari([1.1, 2.2, 3.3, 4.4, 5.5, 6.6],
-                     [0.5, 1.7, 2.9, 4.1, 5.3, 7.2, 8.4]).pvalue == pytest.approx(0.6060606060606061, rel=1e-9)
+    assert st.ansari([1.1, 2.2, 3.3, 4.4, 5.5, 6.6], [0.5, 1.7, 2.9, 4.1, 5.3, 7.2, 8.4]).pvalue == pytest.approx(
+        0.6060606060606061, rel=1e-9
+    )
     assert st.kstwo.cdf(0.3, 10) == pytest.approx(0.7294644, abs=2e-7)
-    assert st.cramervonmises_2samp([2.1, 3.4, 3.4, 5.6, 1.2, 4.4, 4.4, 6.0],
-                                   [3.3, 2.2, 5.5, 4.1, 4.1, 7.0, 1.0, 2.0]).pvalue == pytest.approx(0.8060606, abs=1e-6)
+    assert st.cramervonmises_2samp(
+        [2.1, 3.4, 3.4, 5.6, 1.2, 4.4, 4.4, 6.0], [3.3, 2.2, 5.5, 4.1, 4.1, 7.0, 1.0, 2.0]
+    ).pvalue == pytest.approx(0.8060606, abs=1e-6)
     assert st.ncf.logpdf(1.0, 6, 9, 1.0) == pytest.approx(-0.6770838039, abs=1e-8)
     assert st.ncf.cdf(st.ncf.ppf(0.5, 5, 10, 1.5), 5, 10, 1.5) == pytest.approx(0.5, abs=1e-6)
 
@@ -540,14 +595,16 @@ def test_round_four_moment_interface_and_new_distributions():
 
 def test_round_four_estimate_gate_honours_propensity():
     from morie.causal import estimate_gate
+
     rng = np.random.default_rng(3)
     n = 200
     x = rng.standard_normal(n)
     t = (rng.random(n) < 1.0 / (1.0 + np.exp(-x))).astype(float)
     y = 1.0 + 2.0 * t + x + rng.normal(0, 0.5, n)
     grp = np.array(["a", "b"] * (n // 2))
-    df = pd.DataFrame({"y": y, "t": t, "x": x, "g": grp,
-                       "ps_good": 1.0 / (1.0 + np.exp(-x)), "ps_flat": np.full(n, 0.5)})
+    df = pd.DataFrame(
+        {"y": y, "t": t, "x": x, "g": grp, "ps_good": 1.0 / (1.0 + np.exp(-x)), "ps_flat": np.full(n, 0.5)}
+    )
     good = estimate_gate(df, treatment="t", outcome="y", covariates=["x"], group_col="g", propensity_col="ps_good")
     flat = estimate_gate(df, treatment="t", outcome="y", covariates=["x"], group_col="g", propensity_col="ps_flat")
     assert good["ate"].tolist() != flat["ate"].tolist()
@@ -555,6 +612,7 @@ def test_round_four_estimate_gate_honours_propensity():
 
 def test_round_four_scalar_out_and_avgde():
     from morie.fn import avgde, digamma, relu6, sigmoid
+
     assert isinstance(digamma(0.5), float) and digamma(0.5) == pytest.approx(-1.96351002602, abs=1e-8)
     assert isinstance(relu6(0.5), float) and isinstance(sigmoid(0.5), float)
     rng = np.random.default_rng(0)

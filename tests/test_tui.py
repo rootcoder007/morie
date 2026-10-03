@@ -10,14 +10,11 @@ import pytest as _pytest
 
 _pytest.importorskip("morie.tui")  # interactive/agent layer ships in the source tree only
 
+import importlib.util
+
 import pytest
 
-try:
-    import textual
-
-    _TEXTUAL_AVAILABLE = True
-except ImportError:
-    _TEXTUAL_AVAILABLE = False
+_TEXTUAL_AVAILABLE = importlib.util.find_spec("textual") is not None
 
 pytestmark = pytest.mark.skipif(
     not _TEXTUAL_AVAILABLE,

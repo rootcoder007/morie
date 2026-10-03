@@ -77,7 +77,7 @@ def mrm_tps_levy_scaling(
 
 @dataclass
 class MoranClusteringResult:
-    morans_I: float
+    morans_I: float  # noqa: N815 -- Moran's I notation; a public result field
     morans_z: float
     dbscan_n_clusters: int
     dbscan_n_noise: int
@@ -215,10 +215,7 @@ def mrm_tps_load_hawkes_refit(
     (the default) to read the bundled copy; pass an explicit path to
     load a user-supplied refit.
     """
-    if manifest_path is None:
-        p = Path(__file__).parent / "data" / "paper_hawkes_refit.json"
-    else:
-        p = Path(manifest_path)
+    p = Path(__file__).parent / "data" / "paper_hawkes_refit.json" if manifest_path is None else Path(manifest_path)
     if not p.is_file():
         raise FileNotFoundError(p)
     d = json.loads(p.read_text())

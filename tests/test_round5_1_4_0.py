@@ -487,3 +487,390 @@ def test_siu_report_page_text_has_no_chrome_and_real_sections():
     assert "PHIPA" not in f["sections"]["investigation"]
     assert f["sections"]["narrative"] == "Three men attempted to rob a bank."
     assert f["conclusion"] == "There are no grounds to proceed with charges."
+
+
+def test_describe_resolves_public_names_through_their_module():
+    from morie.fn import describe
+    from morie.fn.describe import _lazy_map
+
+    lazy = _lazy_map()
+    differing = [n for n, m in sorted(lazy.items()) if n != m and n[0].islower()][:40]
+    assert len(differing) >= 20
+    for name in differing:
+        assert f"describe({name!r}) -- " in str(describe(name))  # warnings may come first
+    head = str(describe("kamath_ch9_fom_loss")).splitlines()[0]
+    assert head.startswith("describe('kamath_ch9_fom_loss') -- ") and "# morie.fn" not in head
+
+
+def test_richresult_from_a_bare_mapping_shows_its_fields():
+    import morie.fn as fn
+
+    w = [
+        [0, 1, 0, 0, 0, 0],
+        [1, 0, 1, 0, 0, 0],
+        [0, 1, 0, 1, 0, 0],
+        [0, 0, 1, 0, 1, 0],
+        [0, 0, 0, 1, 0, 1],
+        [0, 0, 0, 0, 1, 0],
+    ]
+    r = fn.morani([1, 2, 3, 4, 10, 2], w)
+    text = repr(r)
+    assert text and str(r) == text
+    for key in r:
+        assert key in text
+
+
+def test_pipeline_checks_module_names_and_keeps_its_tables(tmp_path):
+    r = _morie("pipeline", "--modules", "nosuch", "-y", cwd=tmp_path)
+    assert r.returncode == 2 and "unknown module: nosuch" in r.stderr
+    assert list(tmp_path.iterdir()) == []  # nothing ran, nothing written
+    r = _morie("pipeline", "--modules", "power-design", "-y", "--no-carbon", cwd=tmp_path)
+    assert r.returncode == 0, r.stderr[-300:]
+    assert "morie-output/" in r.stdout
+    assert len(list((tmp_path / "morie-output").glob("*.csv"))) >= 10
+
+
+def test_nist_rds_sends_searchphrase_first_and_pages_by_page(monkeypatch):
+    import morie.ingest.forensics as fx
+
+    calls = []
+    data = [{"@id": f"ark:{i}", "title": f"t{i}"} for i in range(5)]
+
+    class Resp:
+        status_code = 200
+
+        def __init__(self, payload):
+            self._p = payload
+
+        def json(self):
+            return self._p
+
+    class Client:
+        def __init__(self, *a, **k):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+        def get(self, url, params):
+            calls.append(list(params.items()))
+            page = params["page"]
+            return Resp({"ResultCount": 5, "ResultData": data[(page - 1) * 2 : page * 2]})
+
+    monkeypatch.setattr(fx.httpx, "Client", Client)
+    df = fx.fetch_nist_rds(query="cocaine", page_size=2)
+    assert len(df) == 5
+    assert all(c[0] == ("searchphrase", "cocaine") for c in calls)
+    assert [dict(c)["page"] for c in calls] == [1, 2, 3]
+    assert all("from" not in dict(c) for c in calls)
+
+
+def test_no_quote_spliced_into_fn_docstrings_or_values():
+    import re
+    from pathlib import Path
+
+    fn_dir = Path(__file__).resolve().parents[1] / "src" / "morie" / "fn"
+    if not (fn_dir / "amhst.py").is_file():
+        pytest.skip("needs the loose fn modules of a source checkout")
+    who = (
+        r"(Aristotle|Lao Tzu|Confucius|Seneca|Marcus Aurelius|Socrates|Heraclitus|Pythagoras|Euclid|Benjamin Franklin)"
+    )
+    spliced = re.compile(
+        r'^\s*(r?"""[^"\n]*-- ' + who + r'[^"\n]*"""|\'.*-- ' + who + r".*'|test_name=.*-- " + who + r")"
+    )
+    hits = []
+    for p in fn_dir.glob("*.py"):
+        if p.name == "_registry.py":  # its fifth field is the epigraph, on purpose
+            continue
+        for i, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1):
+            if spliced.match(line):
+                hits.append(f"{p.name}:{i}")
+    assert hits == [], hits[:10]
+    from morie.fn import red_pill_test
+
+    assert red_pill_test([0.1, 0.4, -0.2, 0.3, 0.2]).test_name == "One-sample t-test (red pill / blue pill)"
+
+
+def test_doctor_lists_every_trust_knob(monkeypatch, capsys):
+    from morie import doctor
+
+    monkeypatch.setenv("MORIE_NO_EXEC", "1")
+    monkeypatch.delenv("MORIE_TRUST_CHECKPOINT", raising=False)
+    posture = dict((k, on) for k, on, _ in doctor.trust_posture())
+    assert set(posture) == {
+        "MORIE_NO_EXEC",
+        "MORIE_TRUST_CHECKPOINT",
+        "MORIE_ALLOW_REMOTE_INSTALL",
+        "MORIE_ALLOW_RC",
+        "MORIE_ALLOW_CRON",
+    }
+    assert posture["MORIE_NO_EXEC"] is True and posture["MORIE_TRUST_CHECKPOINT"] is False
+    doctor._render_trust_knobs()
+    out = capsys.readouterr().out
+    assert "MORIE_NO_EXEC" in out and "SET" in out and "unset" in out
+
+
+def test_smote_sensitivity_is_skipped_on_a_balanced_outcome():
+    from morie.investigation import run_weighted_logistic_analysis
+
+    out = run_weighted_logistic_analysis(_lcg_frame())  # heavy drinking ~45/55: ratio >= 0.8
+    status = out["logistic_smote_status"].to_dict("records")[0]
+    assert status["method"].startswith("skipped: classes already balanced")
+    assert len(out["logistic_smote_odds_ratios"]) == 0
+
+
+def test_r_backed_module_fails_fast_without_r(monkeypatch):
+    import time
+
+    import morie.modules as m
+
+    monkeypatch.setattr(m, "_rscript_bin", lambda: None)
+    monkeypatch.setattr(m, "_R_READY", None)
+    called = []
+    monkeypatch.setattr(m, "_cpads_csv_for_run", lambda *a, **k: called.append(1) or "x.csv")
+    r_only = next(n for n in m.MODULE_SPECS if n not in m._PY_FALLBACK_MODULES)
+    t0 = time.monotonic()
+    with pytest.raises(RuntimeError, match="Rscript is not available"):
+        m.run_module(r_only, dataset_key="ocp21")
+    assert called == [] and time.monotonic() - t0 < 2  # the data were never loaded
+
+
+def test_doctor_heading_and_pull_summary_are_translated(monkeypatch):
+    from morie.i18n import t
+
+    monkeypatch.setenv("MORIE_LOCALE", "fr")
+    assert t("doctor.heading").startswith("MORIE Doctor") and "environnement" in t("doctor.heading")
+    assert t("pull.wrote_n_rows", path="x.csv", rows=35, cols=15) == "écrit x.csv  (35 lignes, 15 colonnes)"
+
+
+def test_aipw_picks_the_outcome_model_and_refuses_logistic_on_a_continuous_outcome():
+    from morie.causal import estimate_aipw
+    from morie.fn import _frame_core as fpd
+
+    n = 200
+    u = _lcg_frame(n).to_dict("records")
+    rows = [
+        {
+            "t": r["cannabis_any_use"],
+            "z": r["ebac_tot"],
+            "y": 1.5 + 0.8 * r["cannabis_any_use"] + 2 * r["ebac_tot"] + r["weight"],
+        }
+        for r in u
+    ]
+    d = fpd.DataFrame(rows)
+    res = estimate_aipw(d, treatment="t", outcome="y", covariates=["z"])
+    assert res["ate"] == pytest.approx(0.8, abs=0.35)
+    with pytest.raises(ValueError, match="needs a 0/1 outcome"):
+        estimate_aipw(d, treatment="t", outcome="y", covariates=["z"], outcome_model="logistic")
+
+
+def test_inspect_reads_json(tmp_path):
+    import json as _json
+
+    from morie.inspector import inspect_output
+
+    p = tmp_path / "t.json"
+    p.write_text(_json.dumps([{"a": 1, "b": 2.5}, {"a": 2, "b": 3.5}]))
+    rep = inspect_output(str(p))
+    assert rep is not None and "not a supported" not in str(rep)
+
+
+def test_mapq_without_your_file_is_the_synthetic_panel(tmp_path, monkeypatch):
+    import warnings as _w
+
+    from morie.data import load_dataset, synthetic_mapq_panel
+
+    monkeypatch.setenv("MORIE_DATA_DIR", str(tmp_path))
+    with _w.catch_warnings(record=True) as rec:
+        _w.simplefilter("always")
+        df = load_dataset("mapq")
+    assert any("synthetic toy panel" in str(w.message) for w in rec)
+    assert len(df) == 400 and "ks_score" in df.columns and "EE1" in df.columns
+    again = synthetic_mapq_panel()
+    assert df.to_dict("records")[:5] == again.to_dict("records")[:5]  # deterministic
+    items = [c for c in df.columns if c[:2] in ("EE", "EA", "UA", "ER") and c[2:].isdigit()]
+    assert len(items) == 20 and all(1 <= v <= 5 for c in items for v in df[c])
+    r = _morie("list-datasets", env={**os.environ, "MORIE_DATA_DIR": str(tmp_path)})
+    assert any(line.startswith("mapq") and "synthetic" in line for line in r.stdout.splitlines())
+
+
+def test_encrypt_to_a_keystore_name_needs_no_password(tmp_path):
+    from morie.crypto.keystore import create_keystore, load_public_key, store_keypair
+
+    ks = str(tmp_path / "ks.json")
+    create_keystore("pw", path=ks)
+    store_keypair("carol", b"\x01" * 1184, b"\x02" * 2400, "pw", path=ks)
+    assert load_public_key("carol", path=ks) == b"\x01" * 1184
+    with pytest.raises(KeyError):
+        load_public_key("nobody", path=ks)
+
+
+def test_chat_and_ask_share_the_provider_chain_with_the_hosted_tier(monkeypatch):
+    import morie.llm as llm
+
+    monkeypatch.setattr(llm, "_hosted_attempt", lambda model: ("https://llm.example.invalid/v1", model or "m", "k"))
+    for prov in ("hosted", "ollama"):
+        bases = [a[0] for a in llm._provider_attempts(prov, None)]
+        assert "https://llm.example.invalid/v1" in bases, prov
+    seen = []
+
+    def fake(base_url, model, messages, **kw):
+        seen.append((base_url, messages[0]["content"]))
+        return "PONG"
+
+    monkeypatch.setattr(llm, "_completion_text", fake)
+    assert llm.ask_multi([{"role": "user", "content": "hi"}], provider="hosted") == "PONG"
+    assert seen[0][0] == "https://llm.example.invalid/v1"
+
+
+def test_a_model_not_on_the_key_is_one_clear_error(monkeypatch):
+    import httpx
+
+    import morie.llm as llm
+
+    base = "https://llm.example.invalid/v1"
+    monkeypatch.setattr(llm, "_hosted_attempt", lambda model: (base, model or "m", "k"))
+    req = httpx.Request("POST", base + "/chat/completions")
+
+    def refuse(*a, **k):
+        raise httpx.HTTPStatusError("403", request=req, response=httpx.Response(403, request=req))
+
+    monkeypatch.setattr(llm, "_completion_text", refuse)
+    with pytest.raises(llm.ModelNotOnKeyError, match="not available on your hosted key"):
+        llm.ask("hi", provider="hosted", model="nosuch-model")
+    from morie.perseus import ask_percy
+
+    monkeypatch.setattr(llm, "detect_available_provider", lambda: "hosted")
+    import morie.perseus as pz
+
+    monkeypatch.setattr(pz, "detect_available_provider", lambda: "hosted")
+    payload = ask_percy("hi", model="nosuch-model", stream=False)
+    assert payload["failed"] and "not available on your hosted key" in payload["output_text"]
+
+
+def test_a_custom_system_prompt_keeps_the_module_list():
+    from morie.llm import _build_messages, build_morie_context
+
+    msgs = _build_messages("which module?", context=build_morie_context(), system_prompt="You are Perseus.")
+    sysmsg = msgs[0]["content"]
+    assert sysmsg.startswith("You are Perseus.") and "treatment-effects" in sysmsg and "recommend only these" in sysmsg
+
+
+def test_r_object_pull_is_saved_not_failed(tmp_path, monkeypatch, capsys):
+    import morie.data as data
+    from morie import runner
+
+    rdata = tmp_path / "env.RData"
+    rdata.write_bytes(b"RDX3\n")
+
+    def fake_load(key, *a, **k):
+        raise data.RObjectSavedError(key, rdata)
+
+    monkeypatch.setattr(runner, "load_dataset", fake_load, raising=False)
+    monkeypatch.setattr(data, "load_dataset", fake_load)
+    out = tmp_path / "otis.out"
+    monkeypatch.setattr(sys, "argv", ["morie", "pull", "otis", "--out", str(out)])
+    assert runner.main() == 0
+    err = capsys.readouterr().err
+    assert "is an R object; saved" in err and "rmorie::morie_load_dataset('otis')" in err
+    assert (tmp_path / "otis.out.RData").read_bytes() == b"RDX3\n"
+
+
+def test_unknown_hosted_key_is_named(monkeypatch):
+    import morie.datahub as hub
+
+    monkeypatch.setattr(hub, "hosted_manifest", lambda refresh=False: {"datasets": [{"key": "a/b", "rows": 3}]})
+    with pytest.raises(KeyError, match="unknown dataset key 'nosuchdb/x'"):
+        hub._check_known("nosuchdb/x")
+    hub._check_known("a/b")
+
+
+def test_hosted_table_streams_to_csv_without_a_frame(tmp_path, monkeypatch):
+    import gzip as _gz
+
+    import morie.datahub as hub
+
+    monkeypatch.setattr(hub, "hosted_manifest", lambda refresh=False: {"datasets": [{"key": "big/t", "rows": 3}]})
+
+    def fake_get(path, dest, label, timeout=600):
+        with _gz.open(dest, "wt", encoding="utf-8", newline="") as fh:
+            fh.write('a,b\n1,"x, y"\n2,z\n3,"multi\nline"\n')
+        return 1
+
+    monkeypatch.setattr(hub, "_get_to_file", fake_get)
+    rows, cols = hub.hosted_to_csv("big/t", tmp_path / "o.csv")
+    assert (rows, cols) == (3, 2)
+    assert (tmp_path / "o.csv").read_text().startswith('a,b\n1,"x, y"\n')
+
+
+def test_whole_number_float_columns_are_written_as_integers():
+    from morie.fn import _frame_core as fpd
+    from morie.runner import _integral_floats_as_int
+
+    df = fpd.DataFrame({"n": [100.0, None, 0.0], "x": [1.5, 2.0, None], "s": ["a", "b", "c"]})
+    _integral_floats_as_int(df)
+    assert list(df["n"]) == [100, None, 0] and list(df["x"])[:2] == [1.5, 2.0]
+    assert "100.0" not in df.to_csv(index=False)
+
+
+def test_login_while_signed_in_warns_and_needs_force(monkeypatch, capsys):
+    import morie.hosted as hosted
+    from morie import runner
+
+    monkeypatch.setattr(hosted, "read_credentials", lambda: {"hosted_key": "sk-x", "hosted_user": "someone"})
+    started = []
+    monkeypatch.setattr(hosted, "device_login", lambda **k: started.append(1))
+    monkeypatch.setattr(runner, "_stdin_is_terminal", lambda: False)
+    monkeypatch.setattr(sys, "argv", ["morie", "login", "--no-browser"])
+    assert runner.main() == 1 and started == []
+    err = capsys.readouterr().err
+    assert "signed in as someone" in err and "--force" in err
+    monkeypatch.setattr(sys, "argv", ["morie", "login", "--no-browser", "--force"])
+    assert runner.main() == 0 and started == [1]
+
+
+def test_every_module_table_has_an_explanation(tmp_path):
+    from morie.explain import describe
+    from morie.modules import MODULE_SPECS
+
+    for spec in MODULE_SPECS.values():
+        for f in spec.output_files:
+            if f.endswith(".csv"):
+                assert not describe(f).startswith("No registered explanation"), f
+    p = tmp_path / "logistic_odds_ratios.csv"
+    p.write_text("term,OR,p_value,weird_col\nx,1.2,0.04,3\n")
+    text = describe(str(p))
+    assert "odds ratio = exp(coefficient)" in text and "weird_col" in text and "SE" not in text
+
+
+def test_each_stat_repl_handler_documents_its_own_command():
+    from morie.stat_commands import commands_by_category
+
+    for cat in ("Descriptive",):
+        cmds = commands_by_category().get(cat, [])
+        docs = [c.handler_repl.__doc__ for c in cmds if c.handler_repl is not None and c.handler_repl.__doc__]
+        if len(docs) > 1:
+            assert len(set(docs)) == len(docs)  # every handler read the loop's last description before
+            for c in cmds:
+                if c.handler_repl is not None and c.handler_repl.__doc__:
+                    assert c.description in c.handler_repl.__doc__
+
+
+def test_mat_reader_reads_an_empty_char_matrix():
+    import struct
+
+    from morie import _mat_reader as mr
+
+    def element(dtype, payload):
+        pad = (-len(payload)) % 8
+        return struct.pack("<II", dtype, len(payload)) + payload + b"\0" * pad
+
+    flags = element(6, struct.pack("<II", 4, 0))  # miUINT32: mxCHAR class
+    dims = element(5, struct.pack("<ii", 0, 0))  # miINT32: 0 x 0
+    name = element(1, b"s")  # miINT8
+    payload = flags + dims + name  # no data element at all
+    got_name, txt = mr._matrix(payload)
+    assert got_name == "s" and txt == ""

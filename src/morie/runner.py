@@ -264,7 +264,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     percy_talk.add_argument("question", nargs="?", default=None, help="Question (omit for interactive mode)")
     percy_talk.add_argument("--model", default=None, help="Override model name")
-    percy_talk.add_argument("--remote", action="store_true", help="Use Perseus cloud (MORIE-hosted, no local setup)")
+    percy_talk.add_argument(
+        "--remote",
+        action="store_true",
+        help="Use a Perseus relay you run (PERSEUS_CLOUD_URL, or `morie serve` on MORIE_PI_HOST); "
+        "without Ollama, percy already answers through the hosted tier after `morie login`",
+    )
     percy_talk.add_argument("--local", action="store_true", help="Force local Ollama only (no network)")
     percy_talk.add_argument("--pi", default=None, help="Connect to Pi (e.g. --pi host or MORIE_PI_HOST)")
     percy_talk.add_argument("--cloud", default=None, help="Custom Perseus relay URL (e.g. https://your-relay:8421)")
@@ -283,6 +288,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Sign in to the hosted MORIE LLM tier (llm.rmorie.com) with GitHub; stores a per-user key",
     )
     login_cmd.add_argument("--no-browser", action="store_true", help="Print the sign-in URL instead of opening it")
+    login_cmd.add_argument(
+        "--force",
+        action="store_true",
+        help="Sign in again even when signed in (the new key replaces the old one everywhere)",
+    )
     login_cmd.add_argument(
         "--email", default=None, metavar="ADDRESS", help="Sign in with a code emailed to this address instead of GitHub"
     )
@@ -793,6 +803,30 @@ def _drain_stream(stream) -> int:
     return n
 
 
+def _hub_rows(key: str) -> int | None:
+    from .datahub import _manifest_rows
+
+    try:
+        return _manifest_rows(key)
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _integral_floats_as_int(df) -> None:
+    """Float columns holding only whole numbers (and gaps) are written as integers.
+
+    The download path and the cache path inferred one column differently (``100`` vs ``100.0``)
+    for the same table.
+    """
+    for col in list(df.columns):
+        vals = list(df[col])
+        nums = [v for v in vals if isinstance(v, float) and v == v]
+        if not nums or len(nums) + sum(1 for v in vals if v is None or (isinstance(v, float) and v != v)) != len(vals):
+            continue
+        if all(v.is_integer() and abs(v) < 2**53 for v in nums):
+            df[col] = [None if (v is None or v != v) else int(v) for v in vals]
+
+
 def _llm_exit_code(payload, chunks=None) -> int:
     """0 when an LLM answered; 1 when the static local fallback did or
     the selected backend produced no output at all.
@@ -805,7 +839,8 @@ def _llm_exit_code(payload, chunks=None) -> int:
         print("\nno LLM backend was reachable; this is the local fallback text", file=sys.stderr)
         return 1
     if isinstance(payload, dict) and payload.get("failed"):
-        print("the LLM backend request failed", file=sys.stderr)
+        if payload.get("mode") != "error":  # an error payload already said what went wrong
+            print("the LLM backend request failed", file=sys.stderr)
         return 1
     if chunks is not None and chunks == 0:
         print("the LLM backend produced no output", file=sys.stderr)
@@ -937,6 +972,17 @@ def _main_impl() -> int:
         if not args.all and not args.modules:
             print("pipeline needs --all or --modules a,b (names: morie list-modules)", file=sys.stderr)
             return 2
+        if args.modules:
+            args.modules = [m for chunk in args.modules for m in str(chunk).split(",") if m.strip()]
+            known = {spec["name"] for spec in list_modules()}
+            unknown = [m for m in args.modules if m not in known]
+            if unknown:  # before anything runs, measures emissions or writes a capsule
+                print(f"unknown module: {', '.join(unknown)} (names: morie list-modules)", file=sys.stderr)
+                return 2
+        if not args.output_dir:
+            # without a directory the module tables were computed and thrown away
+            args.output_dir = "morie-output"
+            print(f"writing the module tables under {args.output_dir}/ (choose with --output-dir)")
         # Use rich progress display when running in an interactive terminal.
         if sys.stdout.isatty():
             from .progress import execute_pipeline_with_progress
@@ -1101,7 +1147,12 @@ def _main_impl() -> int:
         use_stream = not getattr(args, "no_stream", False)
         try:
             from .agent import create_agent
+            from .llm import detect_available_provider
 
+            if detect_available_provider() != "ollama":
+                # the tool-calling agent runs on Ollama: say so once and answer through the provider chain,
+                # instead of an "Ollama request failed" line before the answer
+                raise RuntimeError("no local Ollama")
             agent = create_agent()
             answered = True
             if use_stream:
@@ -1214,9 +1265,17 @@ def _main_impl() -> int:
         kw = max(20, max((len(d["key"]) for d in datasets), default=20))
         print(f"{'Key':<{kw}} {'Type':<12} {'Rows':>10}  {'Route'}")
         print("-" * (kw + 76))
+        from .data import DATASET_CATALOG, SYNTHETIC_OWN_FILES, _find_local_file
+
         for d in datasets:
             known = d["cached"] or (d["type"] == "hosted" and d.get("rows"))  # hosted rows come from the manifest
             status = f"{d['rows']:,}" if known else "not cached"
+            if not known and d["route"].startswith("own file"):
+                # read in place, never cached: say whether the file is where pull looks for it
+                local = (DATASET_CATALOG.get(d["key"]) or {}).get("local_path", "")
+                status = "present" if local and _find_local_file(local) is not None else "not found"
+                if status == "not found" and d["key"] in SYNTHETIC_OWN_FILES:
+                    status = "synthetic"  # the toy panel stands in until your file is there
             print(f"{d['key']:<{kw}} {d['type']:<12} {status:>10}  {d['route']}")
         n_own = sum(d["route"].startswith("own file") for d in datasets)
         print("-" * (kw + 76))
@@ -1425,8 +1484,18 @@ def _main_impl() -> int:
                 from morie.fn import _frame_core as _pd
 
                 df = _pd.DataFrame([{"report_id": "24-OFD-001", "text": md.siu_report_text(offline=True)}])
+            elif is_hosted_key(args.dataset) and args.out and (_hub_rows(args.dataset) or 0) > 1_000_000:
+                from .datahub import hosted_to_csv
+                from .i18n import t as _t
+
+                rows, ncol = hosted_to_csv(args.dataset, args.out)
+                print(_t("pull.wrote_n_rows", path=args.out, rows=rows, cols=ncol), file=sys.stderr)
+                return 0
             elif args.dataset in DATASET_CATALOG or is_hosted_key(args.dataset):
-                df = load_dataset(args.dataset)
+                with _warnings.catch_warnings(record=True) as _rec:
+                    _warnings.simplefilter("always")
+                    df = load_dataset(args.dataset)
+                _note_synthetic(_rec)  # e.g. mapq without your file: the synthetic toy panel
             elif args.dataset == "siu-index":
                 df = md.siu_director_reports()
             else:
@@ -1452,6 +1521,26 @@ def _main_impl() -> int:
                 print(f"unknown dataset {args.dataset!r}{hint}", file=sys.stderr)
                 return 2
         except Exception as exc:  # noqa: BLE001 — surface origin-API errors plainly
+            from .data import RObjectSavedError
+
+            if isinstance(exc, RObjectSavedError):
+                # the documented outcome for the R-object keys: saved for R, not a failure
+                where = exc.path
+                if args.out:
+                    import shutil
+
+                    target = Path(args.out)
+                    if target.suffix.lower() != exc.path.suffix.lower():
+                        target = target.with_name(target.name + exc.path.suffix)
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(exc.path, target)
+                    where = target
+                print(
+                    f"{exc.key} is an R object; saved {where}. Open it in R with "
+                    f"rmorie::morie_load_dataset('{exc.key}') or load('{where}')",
+                    file=sys.stderr,
+                )
+                return 0
             print(f"pull failed: {type(exc).__name__}: {exc}", file=sys.stderr)
             return 1
         if len(df) == 0:
@@ -1460,11 +1549,14 @@ def _main_impl() -> int:
                 file=sys.stderr,
             )
             return 1
+        _integral_floats_as_int(df)  # a cached pull and a fresh one write the same numbers
         if args.out:
             args.out = Path(args.out)
             args.out.parent.mkdir(parents=True, exist_ok=True)
             df.to_csv(args.out, index=False)
-            print(f"wrote {args.out}  ({len(df):,} rows, {len(df.columns)} cols)", file=sys.stderr)
+            from .i18n import t as _t
+
+            print(_t("pull.wrote_n_rows", path=args.out, rows=len(df), cols=len(df.columns)), file=sys.stderr)
         else:
             sys.stdout.write(df.to_csv(index=False))
         return 0
@@ -1672,7 +1764,6 @@ def _main_impl() -> int:
                 return 1
             else:
                 from .crypto.keystore import keypair_version as _ks_version
-                from .crypto.keystore import load_keypair as _ks_load
 
                 try:
                     if _ks_version(args.recipient) < 2:
@@ -1680,16 +1771,13 @@ def _main_impl() -> int:
                         return 1
                 except (KeyError, FileNotFoundError, ValueError):
                     pass  # the load below reports a missing keystore or name
-                pw = _crypto_password()
-                if pw is None:
-                    return 1
+                from .crypto.keystore import load_public_key as _ks_public
+
                 try:
-                    pk, _ = _ks_load(args.recipient, pw)
-                except KeyError:
+                    # encryption is a public-key operation: the keystore keeps public keys in the clear
+                    pk = _ks_public(args.recipient)
+                except (KeyError, FileNotFoundError):
                     print(f"no key pair named {args.recipient!r} in the keystore", file=sys.stderr)
-                    return 1
-                except ValueError:
-                    print("wrong keystore password, or the keystore is corrupted", file=sys.stderr)
                     return 1
             out = _CryptoPath(args.out) if getattr(args, "out", None) else src.with_suffix(src.suffix + ".morieenc")
             if out.exists() and not getattr(args, "force", False):
@@ -1807,10 +1895,26 @@ def _main_impl() -> int:
 
                     token = getpass.getpass("Paste your MORIE key: ")
                 store_token(token)
-            elif getattr(args, "email", None):
-                email_login(args.email, to_email=getattr(args, "to_email", False))
             else:
-                device_login(open_browser=not getattr(args, "no_browser", False) and sys.stdout.isatty())
+                from .hosted import read_credentials
+
+                creds = read_credentials()
+                if creds.get("hosted_key") and not getattr(args, "force", False):
+                    who = f" as {creds['hosted_user']}" if creds.get("hosted_user") else ""
+                    print(
+                        f"You are signed in{who}. A new sign-in replaces this key here and on every other "
+                        "machine that uses it (one key per account).",
+                        file=sys.stderr,
+                    )
+                    if not (_stdin_is_terminal() and sys.stdout.isatty()):
+                        print("pass --force to sign in again anyway", file=sys.stderr)
+                        return 1
+                    if input("Continue? [y/N] ").strip().lower() not in ("y", "yes"):
+                        return 1
+                if getattr(args, "email", None):
+                    email_login(args.email, to_email=getattr(args, "to_email", False))
+                else:
+                    device_login(open_browser=not getattr(args, "no_browser", False) and sys.stdout.isatty())
         except Exception as exc:  # network or user abandoned the flow
             print(f"login failed: {exc}")
             return 1
@@ -2369,6 +2473,12 @@ def _handle_percy(args: argparse.Namespace) -> int:
         base_url = f"http://{host_part}:11434"
 
     try:
+        if base_url is None and cloud_url is None and not getattr(args, "local", False):
+            from .llm import detect_available_provider
+
+            # the tool-calling agent needs Ollama; without one the hosted tier (or your endpoint) answers
+            if detect_available_provider() != "ollama":
+                raise RuntimeError("no Ollama server answers")
         agent = create_agent(model=model, base_url=base_url, cloud_url=cloud_url, cloud_token=cloud_token)
         model_name = getattr(agent, "_model", "unknown")
         if hasattr(agent, "is_running") and not agent.is_running():

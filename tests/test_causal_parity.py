@@ -41,8 +41,7 @@ def test_run_ebac_selection_ipw_analysis_returns_key_outputs():
     rows = {
         "weight": [0.8 + 0.02 * (i % 25) for i in range(n)],
         "alcohol_past12m": [1] * n,
-        "ebac_tot": [None if i % 11 == 0 else 0.02 + 0.005 * (i % 19)
-                     for i in range(n)],
+        "ebac_tot": [None if i % 11 == 0 else 0.02 + 0.005 * (i % 19) for i in range(n)],
         "ebac_legal": [(i * 7) % 3 == 0 for i in range(n)],
         "cannabis_any_use": [(i * 5) % 4 == 0 for i in range(n)],
         "age_group": [1 + (i % 4) for i in range(n)],
@@ -60,8 +59,7 @@ def test_run_ebac_selection_ipw_analysis_returns_key_outputs():
     result = run_ebac_selection_ipw_analysis(frame)
 
     assert "ebac_final_ipw_or" in result
-    assert "ebac_legal_or_cannabis" in set(
-        result["ebac_final_ipw_comparison"]["metric"])
+    assert "ebac_legal_or_cannabis" in set(result["ebac_final_ipw_comparison"]["metric"])
     # The odds ratio and its interval have to be positive and finite, or
     # the fit silently degenerated again the way the old fixture did.
     or_tbl = result["ebac_final_ipw_or"]

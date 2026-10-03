@@ -26,11 +26,9 @@ def test_edges_parse_from_arrows_or_pairs():
 
 def test_a_cycle_is_rejected():
     with pytest.raises(ValueError, match="cycle"):
-        morie.causal_dag(["a -> b", "b -> c", "c -> a"],
-                         exposure="a", outcome="c")
+        morie.causal_dag(["a -> b", "b -> c", "c -> a"], exposure="a", outcome="c")
     # a diamond is acyclic and must be accepted
-    g = morie.causal_dag(["a -> b", "a -> c", "b -> d", "c -> d"],
-                         exposure="a", outcome="d")
+    g = morie.causal_dag(["a -> b", "a -> c", "b -> d", "c -> d"], exposure="a", outcome="d")
     assert len(g.nodes) == 4
 
 
@@ -47,8 +45,7 @@ def test_exposure_and_outcome_must_be_in_the_graph():
 
 def test_parents_and_children():
     g = morie.mrm_dags()["placement"]
-    assert sorted(g.parents("outcome")) == \
-        ["age", "placement", "prior_record", "race"]
+    assert sorted(g.parents("outcome")) == ["age", "placement", "prior_record", "race"]
     assert g.children("race") == ["placement", "outcome"]
     assert g.parents("race") == []
 
@@ -59,20 +56,27 @@ def test_bundled_dags_match_rmorie():
 
     p = d["placement"]
     assert p.exposure == "placement" and p.outcome == "outcome"
-    assert sorted(p.nodes) == ["age", "outcome", "placement",
-                               "prior_record", "race"]
-    assert sorted("%s>%s" % e for e in p.edges) == [
-        "age>outcome", "age>placement", "placement>outcome",
-        "prior_record>outcome", "prior_record>placement",
-        "race>outcome", "race>placement"]
+    assert sorted(p.nodes) == ["age", "outcome", "placement", "prior_record", "race"]
+    assert sorted("{}>{}".format(*e) for e in p.edges) == [
+        "age>outcome",
+        "age>placement",
+        "placement>outcome",
+        "prior_record>outcome",
+        "prior_record>placement",
+        "race>outcome",
+        "race>placement",
+    ]
 
     u = d["use_of_force"]
     assert u.exposure == "police_contact" and u.outcome == "force"
-    assert sorted(u.nodes) == ["force", "neighbourhood", "police_contact",
-                               "race"]
-    assert sorted("%s>%s" % e for e in u.edges) == [
-        "neighbourhood>force", "neighbourhood>police_contact",
-        "police_contact>force", "race>force", "race>police_contact"]
+    assert sorted(u.nodes) == ["force", "neighbourhood", "police_contact", "race"]
+    assert sorted("{}>{}".format(*e) for e in u.edges) == [
+        "neighbourhood>force",
+        "neighbourhood>police_contact",
+        "police_contact>force",
+        "race>force",
+        "race>police_contact",
+    ]
 
 
 def test_the_common_causes_are_what_must_be_adjusted():
@@ -98,5 +102,5 @@ def test_edges_are_the_representation_the_rest_of_morie_takes():
     g = morie.mrm_dags()["placement"]
     assert all(isinstance(e, tuple) and len(e) == 2 for e in g.edges)
     from morie.fn.bdcrt import backdoor_criterion
-    assert backdoor_criterion(g.edges, g.exposure, g.outcome,
-                              ("race", "prior_record", "age")).satisfied
+
+    assert backdoor_criterion(g.edges, g.exposure, g.outcome, ("race", "prior_record", "age")).satisfied

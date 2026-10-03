@@ -212,7 +212,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["N", "B"]  # relaxed naming in tests
+"tests/**" = ["N", "B", "E402"]  # relaxed naming; E402: pytest.importorskip() must run before the guarded import
 "src/morie/fn/**" = ["N"]  # short names are intentional
 
 [tool.ruff.lint.isort]

@@ -1183,7 +1183,7 @@ class PolyglotEngine:
 
         if self.polyglot:
             for name, val in self._py_ns.items():
-                if name.startswith("_") or not isinstance(val, (int, float, str, bool)):
+                if name.startswith("_") or not isinstance(val, int | float | str | bool):
                     continue
                 self._inject_r_var(name, val)
 
@@ -1286,7 +1286,7 @@ class PolyglotEngine:
                 capture_output=True,
                 text=True,
                 timeout=_run_timeout(),
-                env={**os.environ, **{k: str(v) for k, v in self._py_ns.items() if isinstance(v, (str, int, float))}},
+                env={**os.environ, **{k: str(v) for k, v in self._py_ns.items() if isinstance(v, str | int | float)}},
             )
             variables = {}
             for m in re.finditer(r'(\w+)=(["\']?)(.+?)\2(?:\s|$)', code):
@@ -1841,11 +1841,11 @@ class PolyglotEngine:
             return
         if isinstance(value, bool):
             r_val = "TRUE" if value else "FALSE"
-        elif isinstance(value, (int, float)):
+        elif isinstance(value, int | float):
             r_val = str(value)
         elif isinstance(value, str):
             r_val = f'"{value}"'
-        elif isinstance(value, (list, tuple)):
+        elif isinstance(value, list | tuple):
             try:
                 r_val = f"c({','.join(str(v) for v in value)})"
             except Exception:

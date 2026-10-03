@@ -99,8 +99,12 @@ def inspect_output(path: str | Path) -> InspectionResult:
         df = pd.read_excel(path)
     elif suffix == ".parquet":
         df = pd.read_parquet(path)
+    elif suffix == ".json":  # as profile-dataset and sample read it
+        from .dataset import load_dataset
+
+        df = load_dataset(str(path))
     else:
-        raise ValueError(f"{path.name}: not a supported table format (csv, tsv, xlsx, xls, parquet)")
+        raise ValueError(f"{path.name}: not a supported table format (csv, tsv, xlsx, xls, parquet, json)")
 
     numeric_cols = df.select_dtypes(include=[np.number])
     summary = numeric_cols.describe().T if not numeric_cols.empty else None

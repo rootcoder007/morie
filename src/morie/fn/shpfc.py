@@ -7,10 +7,7 @@ from ._containers import DescriptiveResult
 
 
 def shape_factor_fn(x: np.ndarray) -> DescriptiveResult:
-    """Compute the shape factor (RMS / mean of absolute value).
-
-    'The whole is greater than the sum of its parts.' -- Aristotle
-    """
+    """Compute the shape factor (RMS / mean of absolute value)."""
     from morie._waveform import shape_factor as _backend
 
     result = _backend(x)

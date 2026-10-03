@@ -239,7 +239,7 @@ def _display_result(result: Any, log: Any) -> None:
                 log.write(f"  {k}: {v:.6f}")
             else:
                 log.write(f"  {k}: {v}")
-    elif isinstance(result, (list, tuple)):
+    elif isinstance(result, list | tuple):
         for item in result[:20]:
             log.write(f"  {item}")
         if len(result) > 20:
@@ -1023,7 +1023,7 @@ def _register_descriptive() -> int:
 
             return handler
 
-        def _make_desc_repl(cn: str) -> Callable:
+        def _make_desc_repl(cn: str, desc: str) -> Callable:
             def handler(*args: Any, **kwargs: Any) -> Any:
                 from morie.fn import _array_core as np
                 from morie.fn import _frame_core as pd
@@ -1040,7 +1040,7 @@ def _register_descriptive() -> int:
                     series = data[col].dropna()
                 elif isinstance(data, pd.Series):
                     series = data.dropna()
-                elif isinstance(data, (list, np.ndarray)):
+                elif isinstance(data, list | np.ndarray):
                     series = pd.Series(data).dropna()
                 else:
                     raise ValueError(f"Pass DataFrame+col, Series, or array to {cn}")
@@ -1131,7 +1131,7 @@ def _register_descriptive() -> int:
                 usage=usage,
                 description=desc,
                 handler_stat=_make_desc_stat(cmd_name, desc),
-                handler_repl=_make_desc_repl(cmd_name),
+                handler_repl=_make_desc_repl(cmd_name, desc),
                 aliases=[cmd_name.replace("desc_", "")],
             )
         )
@@ -1276,7 +1276,7 @@ def _register_r_bridge() -> int:
 
             return handler
 
-        def _make_r_repl(cn: str) -> Callable:
+        def _make_r_repl(cn: str, desc: str) -> Callable:
             def handler(*args: Any, **kwargs: Any) -> str:
                 import shutil
                 import subprocess
@@ -1307,7 +1307,7 @@ def _register_r_bridge() -> int:
                 usage=usage,
                 description=desc,
                 handler_stat=_make_r_stat(cmd_name, desc),
-                handler_repl=_make_r_repl(cmd_name),
+                handler_repl=_make_r_repl(cmd_name, desc),
                 aliases=[],
                 is_r_bridge=True,
             )

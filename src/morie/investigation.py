@@ -156,39 +156,56 @@ def run_weighted_logistic_analysis(
         ]
     )
 
-    # SMOTE sensitivity -- rebalance and refit to check stability of ORs
-    from .ml import apply_smote
-
-    y_smote = frame[outcome].astype(int)
-    X_smote = pd.get_dummies(frame[predictors], drop_first=True, dtype=float)
-    stages.step("SMOTE resampling for the sensitivity check (the slow step on a full survey)")
-    X_res, y_res, smote_info = apply_smote(X_smote, y_smote)
-
-    smote_status = pd.DataFrame([smote_info])
-
-    stages.step("refitting on the resampled data")
-    # Refit logistic on SMOTE-resampled data
-    smote_frame = X_res.copy()
-    smote_frame[outcome] = y_res.values
-    try:
-        smote_fit = sm.GLM(
-            smote_frame[outcome],
-            sm.add_constant(X_res),
-            family=sm.families.Binomial(),
-        ).fit()
-        smote_or_table = pd.DataFrame(
-            {
-                "term": smote_fit.params.index,
-                "log_odds": smote_fit.params.values,
-                "SE": smote_fit.bse.values,
-                "OR": _safe_exp(smote_fit.params.values),
-                "OR_lower95": _safe_exp(smote_fit.conf_int()[0].values),
-                "OR_upper95": _safe_exp(smote_fit.conf_int()[1].values),
-                "p_value": smote_fit.pvalues.values,
-            }
+    # SMOTE sensitivity -- rebalance and refit to check the stability of the ORs. On an outcome that is
+    # already balanced it adds nothing (1,205 synthetic rows on a 48/52 split) and the refit took 7 minutes.
+    _counts = frame[outcome].astype(int).value_counts()
+    _ratio = float(_counts.min()) / float(_counts.max()) if len(_counts) == 2 and _counts.max() else 0.0
+    if _ratio >= 0.8:
+        smote_status = pd.DataFrame(
+            [
+                {
+                    "method": "skipped: classes already balanced (minority/majority >= 0.8)",
+                    "imbalance_ratio_before": round(_ratio, 4),
+                    "total_before": int(_counts.sum()),
+                }
+            ]
         )
-    except Exception:
         smote_or_table = pd.DataFrame(columns=["term", "log_odds", "SE", "OR", "OR_lower95", "OR_upper95", "p_value"])
+    else:
+        from .ml import apply_smote
+
+        y_smote = frame[outcome].astype(int)
+        X_smote = pd.get_dummies(frame[predictors], drop_first=True, dtype=float)
+        stages.step("SMOTE resampling for the sensitivity check (the slow step on a full survey)")
+        X_res, y_res, smote_info = apply_smote(X_smote, y_smote)
+
+        smote_status = pd.DataFrame([smote_info])
+
+        stages.step("refitting on the resampled data")
+        # Refit logistic on SMOTE-resampled data
+        smote_frame = X_res.copy()
+        smote_frame[outcome] = y_res.values
+        try:
+            smote_fit = sm.GLM(
+                smote_frame[outcome],
+                sm.add_constant(X_res),
+                family=sm.families.Binomial(),
+            ).fit()
+            smote_or_table = pd.DataFrame(
+                {
+                    "term": smote_fit.params.index,
+                    "log_odds": smote_fit.params.values,
+                    "SE": smote_fit.bse.values,
+                    "OR": _safe_exp(smote_fit.params.values),
+                    "OR_lower95": _safe_exp(smote_fit.conf_int()[0].values),
+                    "OR_upper95": _safe_exp(smote_fit.conf_int()[1].values),
+                    "p_value": smote_fit.pvalues.values,
+                }
+            )
+        except Exception:
+            smote_or_table = pd.DataFrame(
+                columns=["term", "log_odds", "SE", "OR", "OR_lower95", "OR_upper95", "p_value"]
+            )
 
     return {
         "analysis_frame": frame,

@@ -153,7 +153,7 @@ def _kml_to_dataframe(xml_text: str, nrows: int | None) -> pd.DataFrame:
         pt = pm.find(".//kml:Point/kml:coordinates", _KML_NS)
         if pt is not None and pt.text:
             try:
-                lon, lat, *_ = [float(x) for x in pt.text.strip().split(",")]
+                lon, lat, *_ = (float(x) for x in pt.text.strip().split(","))
                 row["geometry_type"] = "Point"
                 row["geometry"] = (lon, lat)
             except Exception:
@@ -256,8 +256,8 @@ def _read_sqlite_geo(name: str, fmt_subdir: str, ext: str, nrows: int | None) ->
         df = pd.read_sql(f'SELECT * FROM "{best}"{limit};', con)
         # Decode geometry blob if a geometry column exists
         for col in df.columns:
-            if df[col].dtype == object and df[col].iloc[:1].apply(lambda v: isinstance(v, (bytes, bytearray))).any():
-                df["geometry"] = df[col].apply(lambda b: _wkb_point(b) if isinstance(b, (bytes, bytearray)) else None)
+            if df[col].dtype == object and df[col].iloc[:1].apply(lambda v: isinstance(v, bytes | bytearray)).any():
+                df["geometry"] = df[col].apply(lambda b: _wkb_point(b) if isinstance(b, bytes | bytearray) else None)
                 break
         return df
     finally:

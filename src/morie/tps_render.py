@@ -25,6 +25,7 @@ Public API
 
 from __future__ import annotations
 
+import contextlib
 import math
 from collections.abc import Iterable
 from pathlib import Path
@@ -301,7 +302,6 @@ def render_quad(
     poly_df = load_tps("NeighbourhoodCrimeRates", format="geojson")
     pieces = _polygon_pieces(poly_df)
     polys = [p for p, _ in pieces]
-    poly_attrs = [a for _, a in pieces]
 
     # ---- incident points --------------------------------------------
     df = load_tps_dataset(category, nrows=sample_rows)
@@ -368,11 +368,9 @@ def render_quad(
     for tbl in rr_lisa.tables or []:
         rows = tbl["rows"] if isinstance(tbl, dict) else getattr(tbl, "rows", [])
         for r in rows:
-            try:
-                # quadrant cells look like "HH (high-high)" -- keep "HH"
+            # quadrant cells look like "HH (high-high)" -- keep "HH"
+            with contextlib.suppress(TypeError, ValueError, IndexError):
                 hood_q[int(r[0])] = str(r[-1]).strip()[:2].upper()
-            except (TypeError, ValueError, IndexError):
-                pass
     poly_face = []
     for _, attrs in pieces:
         hid = attrs.get("HOOD_ID") or attrs.get("AREA_ID")
@@ -409,10 +407,8 @@ def render_quad(
             (i for i, h in enumerate(headers) if isinstance(h, str) and h.lower() in ("z_score", "z(count)", "z")), -1
         )
         for r in rows:
-            try:
+            with contextlib.suppress(TypeError, ValueError, IndexError):
                 z_by_hood[int(r[0])] = float(r[z_idx])
-            except (TypeError, ValueError, IndexError):
-                pass
     z_vals = []
     for _, attrs in pieces:
         hid = attrs.get("HOOD_ID") or attrs.get("AREA_ID")
@@ -993,7 +989,6 @@ def render_satscan_panel(
 
     # Legend (bottom-right of map): sig locations / sig clusters /
     # sig neighbourhoods / wards
-    legend_y = 0.04
     handles = [
         plt.Line2D(
             [],

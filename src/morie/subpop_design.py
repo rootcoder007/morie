@@ -67,6 +67,7 @@ def _z(conf):
 # Design effects
 # ---------------------------------------------------------------------------
 
+
 def morie_deff_cluster(m, icc):
     """Cluster design effect ``1 + (m - 1) * icc``."""
     m = float(m)
@@ -93,6 +94,7 @@ def morie_neff_cluster(n, m, icc):
 # Sample size
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class SampleSizeProportion:
     """Sample size for a proportion under a complex design."""
@@ -108,8 +110,7 @@ class SampleSizeProportion:
     response_rate: float
 
 
-def morie_sample_size_proportion(p, moe, conf=0.95, N=float("inf"), deff=1.0,
-                                 response_rate=1.0):
+def morie_sample_size_proportion(p, moe, conf=0.95, N=float("inf"), deff=1.0, response_rate=1.0):
     """Completed sample size for a proportion, with FPC, deff and non-response.
 
     Precision first, then the population limit, then the design, then
@@ -133,8 +134,14 @@ def morie_sample_size_proportion(p, moe, conf=0.95, N=float("inf"), deff=1.0,
     n_fpc = n0 / (1.0 + (n0 - 1.0) / N) if math.isfinite(N) else n0
     n_design = n_fpc * deff
     return SampleSizeProportion(
-        n_srs=n0, n_design=n_design, n_invite=n_design / response_rate,
-        p=p, moe=moe, conf=float(conf), N=N, deff=deff,
+        n_srs=n0,
+        n_design=n_design,
+        n_invite=n_design / response_rate,
+        p=p,
+        moe=moe,
+        conf=float(conf),
+        N=N,
+        deff=deff,
         response_rate=response_rate,
     )
 
@@ -154,9 +161,9 @@ class SampleSizeDomain:
     conf: float
 
 
-def morie_sample_size_domain(p, moe, domain_prevalence, conf=0.95,
-                             N_domain=float("inf"), deff=1.0,
-                             response_rate=1.0, coverage=1.0):
+def morie_sample_size_domain(
+    p, moe, domain_prevalence, conf=0.95, N_domain=float("inf"), deff=1.0, response_rate=1.0, coverage=1.0
+):
     """How large the whole sample must be for the subgroup to be large enough."""
     dp = _prob(domain_prevalence, "domain_prevalence")
     if dp <= 0.0:
@@ -164,15 +171,17 @@ def morie_sample_size_domain(p, moe, domain_prevalence, conf=0.95,
     cov = _prob(coverage, "coverage")
     if cov <= 0.0:
         raise ValueError("coverage must be greater than 0")
-    base = morie_sample_size_proportion(p, moe, conf=conf, N=N_domain,
-                                        deff=deff,
-                                        response_rate=response_rate)
+    base = morie_sample_size_proportion(p, moe, conf=conf, N=N_domain, deff=deff, response_rate=response_rate)
     return SampleSizeDomain(
         n_domain=base.n_design,
         n_domain_invite=base.n_invite,
         n_overall=base.n_invite / (dp * cov),
-        domain_prevalence=dp, coverage=cov, deff=base.deff,
-        response_rate=base.response_rate, moe=base.moe, conf=float(conf),
+        domain_prevalence=dp,
+        coverage=cov,
+        deff=base.deff,
+        response_rate=base.response_rate,
+        moe=base.moe,
+        conf=float(conf),
     )
 
 
@@ -197,8 +206,7 @@ def morie_oversample_factor(domain_prevalence, target_share):
     wr = 1.0 / fac
     wbar = ts * wr + (1.0 - ts)
     w2bar = ts * wr * wr + (1.0 - ts)
-    return OversampleFactor(factor=fac, weight_ratio=wr,
-                            deff_weights=w2bar / (wbar * wbar))
+    return OversampleFactor(factor=fac, weight_ratio=wr, deff_weights=w2bar / (wbar * wbar))
 
 
 @dataclass
@@ -212,9 +220,9 @@ class ScreenDesign:
     screening_share_of_cost: float
 
 
-def morie_screen_design(prevalence, target_n, cost_screen=1.0,
-                        cost_interview=1.0, screen_response=1.0,
-                        interview_response=1.0):
+def morie_screen_design(
+    prevalence, target_n, cost_screen=1.0, cost_interview=1.0, screen_response=1.0, interview_response=1.0
+):
     """Expected screens, cost, and the share of budget spent screening."""
     pr = _prob(prevalence, "prevalence")
     if pr <= 0.0:
@@ -236,7 +244,9 @@ def morie_screen_design(prevalence, target_n, cost_screen=1.0,
     cost_i = target_n * cost_interview
     total = cost_s + cost_i
     return ScreenDesign(
-        n_screen=n_screen, n_eligible=n_eligible, cost_total=total,
+        n_screen=n_screen,
+        n_eligible=n_eligible,
+        cost_total=total,
         cost_per_completed_interview=total / target_n,
         screening_share_of_cost=(cost_s / total) if total > 0 else float("nan"),
     )
@@ -296,6 +306,7 @@ def morie_alloc_optimal(N_h, S_h, n, cost_h=None):
 # Weighting
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class RakeResult:
     """Iterative proportional fitting of weights to known margins."""
@@ -346,9 +357,7 @@ def morie_rake(data, margins, weights=None, max_iter=50, tol=1e-8):
             lev = cols[v]
             unknown = sorted(set(lev) - set(tgt))
             if unknown:
-                raise ValueError(
-                    f"variable {v} has levels absent from its margin: "
-                    + ", ".join(unknown))
+                raise ValueError(f"variable {v} has levels absent from its margin: " + ", ".join(unknown))
             cur = {k: 0.0 for k in tgt}
             for i, lab in enumerate(lev):
                 cur[lab] += w[i]
@@ -359,8 +368,7 @@ def morie_rake(data, margins, weights=None, max_iter=50, tol=1e-8):
                         if lab == level:
                             w[i] *= f
                 elif target > 0.0:
-                    raise ValueError(
-                        f"level {level} of {v} has a positive target but no sample units")
+                    raise ValueError(f"level {level} of {v} has a positive target but no sample units")
         disc = 0.0
         for v, tgt in margins.items():
             cur = {k: 0.0 for k in tgt}
@@ -371,13 +379,13 @@ def morie_rake(data, margins, weights=None, max_iter=50, tol=1e-8):
         if disc < tol:
             converged = True
             break
-    return RakeResult(weights=w, converged=converged, iterations=it,
-                      max_discrepancy=disc)
+    return RakeResult(weights=w, converged=converged, iterations=it, max_discrepancy=disc)
 
 
 # ---------------------------------------------------------------------------
 # Identification error
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class MisclassCorrection:
@@ -407,14 +415,15 @@ def morie_misclass_correct(p_obs, sensitivity, specificity, n=None, conf=0.95):
     sp_ = _prob(specificity, "specificity")
     youden = se_ + sp_ - 1.0
     if abs(youden) < 1e-8:
-        raise ValueError(
-            "sensitivity + specificity must differ from 1; "
-            "the classifier carries no information")
+        raise ValueError("sensitivity + specificity must differ from 1; " "the classifier carries no information")
     p_true = (p_obs + sp_ - 1.0) / youden
     out = MisclassCorrection(
-        p_corrected=p_true, p_obs=p_obs, youden=youden,
+        p_corrected=p_true,
+        p_obs=p_obs,
+        youden=youden,
         ratio=(p_true / p_obs) if p_obs > 0 else float("nan"),
-        sensitivity=se_, specificity=sp_,
+        sensitivity=se_,
+        specificity=sp_,
     )
     if n is not None:
         n = float(n)
@@ -452,14 +461,14 @@ def morie_misclass_count(observed_count, n, sensitivity, specificity):
         count_corrected=corrected,
         count_observed=observed_count,
         undercount=corrected - observed_count,
-        undercount_pct=(100.0 * (corrected - observed_count) / corrected)
-        if corrected > 0 else float("nan"),
+        undercount_pct=(100.0 * (corrected - observed_count) / corrected) if corrected > 0 else float("nan"),
     )
 
 
 # ---------------------------------------------------------------------------
 # Measurement equivalence
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class DifSampleSize:
@@ -476,8 +485,7 @@ class DifSampleSize:
     alpha: float
 
 
-def morie_dif_sample_size(p_reference, odds_ratio=None, p_focal=None,
-                          ratio=1.0, power=0.8, alpha=0.05):
+def morie_dif_sample_size(p_reference, odds_ratio=None, p_focal=None, ratio=1.0, power=0.8, alpha=0.05):
     """Two-proportion sample size; power is governed by the smaller group."""
     p_r = _prob(p_reference, "p_reference")
     if p_r <= 0.0 or p_r >= 1.0:
@@ -495,8 +503,7 @@ def morie_dif_sample_size(p_reference, odds_ratio=None, p_focal=None,
         p_f = _prob(p_focal, "p_focal")
         orv = (p_f / (1.0 - p_f)) / (p_r / (1.0 - p_r))
     if abs(p_f - p_r) < 1e-12:
-        raise ValueError(
-            "the two groups have the same response probability; no effect to detect")
+        raise ValueError("the two groups have the same response probability; no effect to detect")
     ratio = float(ratio)
     if math.isnan(ratio) or ratio <= 0.0:
         raise ValueError("ratio must be a positive number")
@@ -513,9 +520,15 @@ def morie_dif_sample_size(p_reference, odds_ratio=None, p_focal=None,
     term2 = z_b * math.sqrt(p_f * (1.0 - p_f) + p_r * (1.0 - p_r) / ratio)
     n_focal = (term1 + term2) ** 2 / (p_r - p_f) ** 2
     return DifSampleSize(
-        n_focal=n_focal, n_reference=ratio * n_focal,
-        n_total=n_focal * (1.0 + ratio), p_focal=p_f, p_reference=p_r,
-        odds_ratio=orv, ratio=ratio, power=power, alpha=alpha,
+        n_focal=n_focal,
+        n_reference=ratio * n_focal,
+        n_total=n_focal * (1.0 + ratio),
+        p_focal=p_f,
+        p_reference=p_r,
+        odds_ratio=orv,
+        ratio=ratio,
+        power=power,
+        alpha=alpha,
     )
 
 
@@ -525,7 +538,7 @@ def morie_dif_delta_mh(or_mh):
     Returns a list of dicts with ``or_mh``, ``delta_mh``, ``magnitude`` and
     ``favours``.
     """
-    if isinstance(or_mh, (int, float)):
+    if isinstance(or_mh, int | float):
         or_mh = [or_mh]
     or_mh = [float(v) for v in or_mh]
     if not or_mh:
@@ -538,8 +551,7 @@ def morie_dif_delta_mh(or_mh):
         ad = abs(delta)
         mag = "A" if ad < 1.0 else ("B" if ad < 1.5 else "C")
         fav = "neither" if ad < 1e-12 else ("focal" if delta < 0 else "reference")
-        out.append({"or_mh": v, "delta_mh": delta, "magnitude": mag,
-                    "favours": fav})
+        out.append({"or_mh": v, "delta_mh": delta, "magnitude": mag, "favours": fav})
     return out
 
 
@@ -559,8 +571,7 @@ def morie_invariance_compare(fits, cfi_cut=0.01, rmsea_cut=0.015):
         raise ValueError("at least two models are required to compare")
     df = [float(r["df"]) for r in rows]
     if any(df[i + 1] - df[i] <= 0 for i in range(len(df) - 1)):
-        raise ValueError(
-            "models must be ordered from least to most constrained (df must increase)")
+        raise ValueError("models must be ordered from least to most constrained (df must increase)")
     chisq = [float(r["chisq"]) for r in rows]
     cfi = [float(r["cfi"]) for r in rows]
     rmsea = [float(r["rmsea"]) for r in rows]
@@ -568,19 +579,20 @@ def morie_invariance_compare(fits, cfi_cut=0.01, rmsea_cut=0.015):
     for i in range(len(rows) - 1):
         d_chisq = chisq[i + 1] - chisq[i]
         d_df = df[i + 1] - df[i]
-        pval = (stats.chi2.sf(d_chisq, df=d_df)
-                if d_chisq > 0 else float("nan"))
+        pval = stats.chi2.sf(d_chisq, df=d_df) if d_chisq > 0 else float("nan")
         d_cfi = cfi[i + 1] - cfi[i]
         d_rmsea = rmsea[i + 1] - rmsea[i]
-        out.append({
-            "step": f"{rows[i]['model']} -> {rows[i + 1]['model']}",
-            "delta_chisq": d_chisq,
-            "delta_df": d_df,
-            "p_value": pval,
-            "delta_cfi": d_cfi,
-            "delta_rmsea": d_rmsea,
-            "supported": (-d_cfi <= cfi_cut) and (d_rmsea <= rmsea_cut),
-        })
+        out.append(
+            {
+                "step": f"{rows[i]['model']} -> {rows[i + 1]['model']}",
+                "delta_chisq": d_chisq,
+                "delta_df": d_df,
+                "p_value": pval,
+                "delta_cfi": d_cfi,
+                "delta_rmsea": d_rmsea,
+                "supported": (-d_cfi <= cfi_cut) and (d_rmsea <= rmsea_cut),
+            }
+        )
     return out
 
 
@@ -588,9 +600,10 @@ def morie_invariance_compare(fits, cfi_cut=0.01, rmsea_cut=0.015):
 # Score precision
 # ---------------------------------------------------------------------------
 
+
 def morie_irt_theta_se(information):
     """``SE(theta) = 1 / sqrt(I(theta))``."""
-    scalar = isinstance(information, (int, float))
+    scalar = isinstance(information, int | float)
     vals = [float(information)] if scalar else [float(v) for v in information]
     if not vals:
         raise ValueError("information must have at least one element")
@@ -602,7 +615,7 @@ def morie_irt_theta_se(information):
 
 def morie_irt_marginal_reliability(se, var_theta=1.0):
     """``1 - mean(se^2) / var_theta``, the marginal reliability."""
-    if isinstance(se, (int, float)):
+    if isinstance(se, int | float):
         se = [se]
     vals = [float(v) for v in se]
     if not vals:

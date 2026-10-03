@@ -80,15 +80,23 @@ def fetch_statcan_csv(
     except ImportError as exc:  # pragma: no cover - httpx is a core dep
         raise ImportError("fetch_statcan_csv needs httpx") from exc
 
-    tmp = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
+    fd, tmp_name = tempfile.mkstemp(suffix=".zip")
     try:
-        with httpx.Client(timeout=timeout, follow_redirects=True) as client, client.stream("GET", url) as resp:
+        from morie._progress import Progress
+
+        with (
+            os.fdopen(fd, "wb") as tmp,
+            httpx.Client(timeout=timeout, follow_redirects=True) as client,
+            client.stream("GET", url) as resp,
+        ):
             resp.raise_for_status()
-            for chunk in resp.iter_bytes():
-                tmp.write(chunk)
-        tmp.close()
-        return _csv_from_zip(tmp.name, member, **read_csv_kwargs)
+            total = int(resp.headers.get("Content-Length") or 0) or None
+            # progress lines also reach a redirected log (the StatCan zips run to ~500 MB)
+            with Progress(os.path.basename(url.split("?", 1)[0]) or "StatCan", total) as prog:
+                for chunk in resp.iter_bytes():
+                    tmp.write(chunk)
+                    prog.update(len(chunk))
+        return _csv_from_zip(tmp_name, member, **read_csv_kwargs)
     finally:
-        tmp.close()
-        if os.path.exists(tmp.name):
-            os.unlink(tmp.name)
+        if os.path.exists(tmp_name):
+            os.unlink(tmp_name)

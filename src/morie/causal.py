@@ -333,7 +333,7 @@ def estimate_aipw(
     treatment: str = "cannabis_any_use",
     outcome: str = "heavy_drinking_30d",
     covariates: list[str] | None = None,
-    outcome_model: str = "logistic",
+    outcome_model: str = "auto",
     propensity_col: str | None = None,
 ) -> dict[str, Any]:
     """
@@ -365,8 +365,9 @@ def estimate_aipw(
     :param covariates: Covariate column names.  Defaults to the standard
         CPADS confounders.
     :type covariates: list[str] | None
-    :param outcome_model: ``"logistic"`` for binary outcomes, ``"linear"``
-        for continuous.  Defaults to ``"logistic"``.
+    :param outcome_model: ``"logistic"`` for a 0/1 outcome, ``"linear"`` for a
+        continuous one, ``"auto"`` (default) picks by the outcome's values. A logistic
+        model on a non-0/1 outcome raises: it had silently fitted one.
     :type outcome_model: str
     :return: Dictionary with keys ``ate``, ``se``, ``ci_lower``, ``ci_upper``,
         ``n``, ``method``.
@@ -408,6 +409,14 @@ def estimate_aipw(
     # ── Outcome models: unpenalised regressions on the same design ──────────
     X = _ps_design(frame, covariates)
     yl = [float(v) for v in y.tolist()]
+    binary = set(yl) <= {0.0, 1.0}
+    if outcome_model == "auto":
+        outcome_model = "logistic" if binary else "linear"
+    elif outcome_model == "logistic" and not binary:
+        raise ValueError(
+            f"outcome_model='logistic' needs a 0/1 outcome; {outcome!r} has {len(set(yl))} distinct values "
+            "(pass outcome_model='linear', or leave the default 'auto')"
+        )
     rows1 = [i for i in range(len(yl)) if t[i] == 1]
     rows0 = [i for i in range(len(yl)) if t[i] == 0]
     mu1 = np.array(_om_fit_predict(X, yl, rows1, X, outcome_model))

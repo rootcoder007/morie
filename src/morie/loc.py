@@ -16,6 +16,7 @@ MORIE_OLLAMA_MODEL : str
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import os
@@ -194,10 +195,8 @@ class LocalOllama:
             resp.raise_for_status()
             for line in resp.iter_lines():
                 if line.strip():
-                    try:
+                    with contextlib.suppress(json.JSONDecodeError):
                         yield json.loads(line)
-                    except json.JSONDecodeError:
-                        pass
 
     def remove(self, name: str) -> bool:
         """Delete a local model. Returns True on success."""

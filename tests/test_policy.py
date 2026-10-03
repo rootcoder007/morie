@@ -22,7 +22,7 @@ def _clustered(G=80, ng=15, seed=1):
     u_g = rng.normal(0, 1.0, G)
     z, d, u = z_g[g], d_g[g], u_g[g]
     x = rng.normal(size=n)
-    y = 2 * d + 0.5 * z + x + u + rng.normal(0, 0.5, n)   # true ATE = 2
+    y = 2 * d + 0.5 * z + x + u + rng.normal(0, 0.5, n)  # true ATE = 2
     return pd.DataFrame({"y": y, "d": d, "x": x, "z": z, "corridor": g})
 
 
@@ -85,10 +85,8 @@ def test_loglik_peaks_near_truth():
 
 
 def test_simulation_clusters_with_alpha():
-    lo = hs.hawkes_st_simulate({"mu": 0.2, "alpha": 0.1, "beta": 1, "sigma": 0.4},
-                               50, (0, 10, 0, 10), seed=11)
-    hi = hs.hawkes_st_simulate({"mu": 0.2, "alpha": 0.7, "beta": 1, "sigma": 0.4},
-                               50, (0, 10, 0, 10), seed=11)
+    lo = hs.hawkes_st_simulate({"mu": 0.2, "alpha": 0.1, "beta": 1, "sigma": 0.4}, 50, (0, 10, 0, 10), seed=11)
+    hi = hs.hawkes_st_simulate({"mu": 0.2, "alpha": 0.7, "beta": 1, "sigma": 0.4}, 50, (0, 10, 0, 10), seed=11)
     assert len(hi) > len(lo)
     assert (hi["t"] < 50).all()
     assert (hi["gen"] >= 0).all()
@@ -97,8 +95,7 @@ def test_simulation_clusters_with_alpha():
 
 def test_simulation_rejects_supercritical():
     with pytest.raises(ValueError, match="subcritical"):
-        hs.hawkes_st_simulate({"mu": 1, "alpha": 1.2, "beta": 1, "sigma": 1},
-                              10, (0, 1, 0, 1))
+        hs.hawkes_st_simulate({"mu": 1, "alpha": 1.2, "beta": 1, "sigma": 1}, 10, (0, 1, 0, 1))
 
 
 def test_mle_maximises_likelihood_and_is_stable():

@@ -11,7 +11,7 @@ def temperature_schedule(
     cooling: float = 0.95,
     n_iter: int = 100,
 ) -> SpatialResult:
-    r"""The whole is greater than the sum of its parts. -- Aristotle"""
+    r"""Geometric cooling schedule for simulated annealing: ``T0 * cooling**k`` for k = 0 .. n_iter - 1."""
     schedule = T0 * cooling ** np.arange(n_iter)
     return SpatialResult(
         name="temperature_schedule",

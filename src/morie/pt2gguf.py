@@ -182,8 +182,7 @@ class _TokenizerUnpickler(pickle.Unpickler):
         if module.split(".")[0] in self._ALLOWED_ROOTS:
             return super().find_class(module, name)
         raise pickle.UnpicklingError(
-            f"blocked pickle global {module}.{name} -- tokenizer files may "
-            "only contain tiktoken objects"
+            f"blocked pickle global {module}.{name} -- tokenizer files may " "only contain tiktoken objects"
         )
 
 
@@ -264,6 +263,7 @@ def convert(checkpoint_path, output_path, tokenizer_dir=None, turbo_bits=0):
     try:
         from morie._exec_guard import checkpoint_trusted
     except ModuleNotFoundError:
+
         def checkpoint_trusted():
             val = os.environ.get("MORIE_TRUST_CHECKPOINT", "").strip().lower()
             return val in {"1", "true", "yes", "on"}
@@ -280,16 +280,18 @@ def convert(checkpoint_path, output_path, tokenizer_dir=None, turbo_bits=0):
     # sees.
     if not checkpoint_trusted():
         raise RuntimeError(
-            "refusing to deserialize %r: set MORIE_TRUST_CHECKPOINT=1 to "
+            f"refusing to deserialize {checkpoint_path!r}: set MORIE_TRUST_CHECKPOINT=1 to "
             "allow it. A .pt checkpoint can execute arbitrary code when "
             "loaded; enable this only for files you produced yourself or "
             "obtained from a source you fully trust."
-            % (checkpoint_path,))
+        )
 
     warnings.warn(
-        "MORIE_TRUST_CHECKPOINT is set: deserializing %r. Only do this "
-        "with checkpoints you trust." % (checkpoint_path,),
-        RuntimeWarning, stacklevel=2)
+        f"MORIE_TRUST_CHECKPOINT is set: deserializing {checkpoint_path!r}. Only do this "
+        "with checkpoints you trust.",
+        RuntimeWarning,
+        stacklevel=2,
+    )
 
     ckpt = load_checkpoint(checkpoint_path)
 
@@ -451,7 +453,7 @@ def convert(checkpoint_path, output_path, tokenizer_dir=None, turbo_bits=0):
 
     _pad_to_alignment(out, 32)
 
-    for i, data in enumerate(tensor_data_parts):
+    for _i, data in enumerate(tensor_data_parts):
         out.write(data)
         pad = (32 - len(data) % 32) % 32
         out.write(b"\x00" * pad)

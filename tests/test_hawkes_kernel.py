@@ -342,8 +342,7 @@ def test_hawkes_ll_soe_reduces_to_exponential():
     t = _event_times(300, rate=2.0, seed=51)
     T = float(t[-1]) + 1.0
     a0, eta, beta = -1.0, 0.4, 1.5
-    soe = core.hawkes_ll_soe(_buf(t), T, math.exp(a0), eta,
-                             _buf([beta]), _buf([beta]))
+    soe = core.hawkes_ll_soe(_buf(t), T, math.exp(a0), eta, _buf([beta]), _buf([beta]))
     ref = float(_ll_exp_const(t, T, a0, eta, beta))
     assert np.isclose(soe, ref, rtol=1e-9, atol=1e-6)
 
@@ -463,8 +462,7 @@ def _ri(seq):
     import array as _pyarray
 
     vals = [complex(v) for v in seq]
-    return (_pyarray.array("d", [v.real for v in vals]),
-            _pyarray.array("d", [v.imag for v in vals]))
+    return (_pyarray.array("d", [v.real for v in vals]), _pyarray.array("d", [v.imag for v in vals]))
 
 
 def _soe_ll_reference_cplx(t, T, nu, eta, w, beta):
@@ -482,14 +480,12 @@ def _soe_ll_reference_cplx(t, T, nu, eta, w, beta):
         s = 0.0
         for j in range(i):
             d = tv[i] - tv[j]
-            s += sum(wm * cmath.exp(-bm * d)
-                     for wm, bm in zip(w, beta)).real
+            s += sum(wm * cmath.exp(-bm * d) for wm, bm in zip(w, beta)).real
         log_sum += math.log(nu + eta * s)
     integral = nu * T
     for i in range(n):
         u = T - tv[i]
-        integral += eta * sum((wm / bm) * (1.0 - cmath.exp(-bm * u))
-                              for wm, bm in zip(w, beta)).real
+        integral += eta * sum((wm / bm) * (1.0 - cmath.exp(-bm * u)) for wm, bm in zip(w, beta)).real
     return -(log_sum - integral)
 
 
@@ -502,8 +498,7 @@ def test_hawkes_ll_soe_cplx_reduces_to_real():
     real = core.hawkes_ll_soe(_buf(t), T, 0.4, 0.3, _buf(w), _buf(beta))
     w_re, w_im = _ri(w)
     b_re, b_im = _ri(beta)
-    cplx = core.hawkes_ll_soe_cplx_ri(_buf(t), T, 0.4, 0.3, w_re, w_im,
-                                      b_re, b_im)
+    cplx = core.hawkes_ll_soe_cplx_ri(_buf(t), T, 0.4, 0.3, w_re, w_im, b_re, b_im)
     assert np.isclose(cplx, real, rtol=1e-12, atol=1e-9)
 
 
@@ -516,8 +511,7 @@ def test_hawkes_ll_soe_cplx_conjugate_pair_matches_bruteforce():
     beta = [0.70 + 0j, 1.20 + 0.80j, 1.20 - 0.80j]
     w_re, w_im = _ri(w)
     b_re, b_im = _ri(beta)
-    got = core.hawkes_ll_soe_cplx_ri(_buf(t), T, nu, eta, w_re, w_im,
-                                     b_re, b_im)
+    got = core.hawkes_ll_soe_cplx_ri(_buf(t), T, nu, eta, w_re, w_im, b_re, b_im)
     ref = _soe_ll_reference_cplx(t, T, nu, eta, w, beta)
     assert np.isclose(got, ref, rtol=1e-8, atol=1e-6)
 
@@ -540,13 +534,11 @@ def test_soe_fit_gamma_tail_accuracy(alpha, beta):
     assert err < 1e-5
     assert all(b.real > 0.0 for b in beta_soe)  # all modes decay
     s = [0.0, 1.0 / beta, 5.0 / beta]
-    val = [sum(wm * cmath.exp(-bm * u) for wm, bm in zip(w, beta_soe))
-           for u in s]
+    val = [sum(wm * cmath.exp(-bm * u) for wm, bm in zip(w, beta_soe)) for u in s]
     # Tolerance: ~1e-7 relative. Windows BLAS/LAPACK gives slightly looser
     # complex-arithmetic rounding than Linux/macOS (observed ~3e-9 absolute
     # imaginary residue on Windows vs ~7e-10 on Linux for the same inputs).
-    assert max(abs(v.imag) for v in val) < \
-        1e-7 * max(abs(v.real) for v in val) + 1e-10
+    assert max(abs(v.imag) for v in val) < 1e-7 * max(abs(v.real) for v in val) + 1e-10
 
 
 @pytest.mark.parametrize("alpha,beta", [(1.5, 1.0), (2.5, 1.0), (4.0, 2.0)])
@@ -563,8 +555,7 @@ def test_hawkes_ll_gamma_hybrid_matches_exact(alpha, beta):
     exact = core.hawkes_ll_gamma_const(_buf(t), T, a0, eta, alpha, beta)
     w_re, w_im = _ri(w)
     b_re, b_im = _ri(beta_soe)
-    hybrid = core.hawkes_ll_gamma_hybrid_ri(
-        _buf(t), T, a0, eta, alpha, beta, u_split, w_re, w_im, b_re, b_im)
+    hybrid = core.hawkes_ll_gamma_hybrid_ri(_buf(t), T, a0, eta, alpha, beta, u_split, w_re, w_im, b_re, b_im)
     assert np.isclose(hybrid, exact, rtol=1e-4)
 
 

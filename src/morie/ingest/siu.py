@@ -40,8 +40,8 @@ CLI
 ::
 
     morie ingest siu --list                       # index → CSV
-    morie ingest siu --report-id 22-OFD-001 \\
-                     --out reports/22-OFD-001/    # text + fields
+    morie ingest siu --report-id 17-OVI-201 \\
+                     --out reports/17-OVI-201/    # text + fields
 
 """
 
@@ -77,23 +77,40 @@ def list_reports(*, timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = 
 
     The SIU site has rendered its case list with JavaScript since 2025, so
     scraping the index page yields nothing; the reviewed corpus (fetched
-    once from CRAN, then cached) is the index. Columns: ``case_number``,
-    ``drid``, ``source_url_report``, ``date_of_incident_iso``,
-    ``date_of_director_decision_iso``.
+    once from CRAN, then cached) is the index. One row per report and
+    language (most cases have an English and a French report). Columns:
+    ``case_number``, ``language``, ``drid``, ``source_url_report``,
+    ``date_of_incident_iso``, ``date_of_director_decision_iso``.
     """
     from morie.data import load_rmoriedata
 
     corpus = load_rmoriedata("siu_directors_reports")
+    if "_language" in corpus.columns and "language" not in corpus.columns:
+        corpus = corpus.rename(columns={"_language": "language"})
     cols = [
         c
-        for c in ("case_number", "drid", "source_url_report", "date_of_incident_iso", "date_of_director_decision_iso")
+        for c in (
+            "case_number",
+            "language",
+            "drid",
+            "source_url_report",
+            "date_of_incident_iso",
+            "date_of_director_decision_iso",
+        )
         if c in corpus.columns
     ]
     out = corpus[cols]
     if "case_number" in out.columns:
-        # the oldest reports carry no case number; list the identifiable ones first
-        has = [bool(str(v).strip()) for v in out["case_number"]]
-        order = [i for i, h in enumerate(has) if h] + [i for i, h in enumerate(has) if not h]
+        # one row per report and language: most cases have an English and a French report (two drids).
+        # Identifiable English reports first, then French, then the oldest pages with no case number
+        # (an empty cell reads as NaN, whose str() "nan" had passed for a case number).
+        def _rank(i: int) -> tuple[int, int]:
+            case = out["case_number"].iloc[i]
+            known = case is not None and str(case).strip().lower() not in ("", "nan", "none")
+            lang = str(out["language"].iloc[i]) if "language" in out.columns else "en"
+            return (0 if known else 1, {"en": 0, "fr": 1}.get(lang, 2))
+
+        order = sorted(range(len(out)), key=_rank)
         out = out.iloc[order].reset_index(drop=True)
     return out
 
@@ -139,7 +156,7 @@ def _list_reports_legacy_scrape(
     PDF anchors are found.
 
     Returns a DataFrame with columns:
-      - ``report_id``       : e.g. "22-OFD-001"
+      - ``report_id``       : e.g. "17-OVI-201"
       - ``url``             : direct PDF URL
       - ``incident_date``   : ISO date string when known
       - ``location``        : city / region string
@@ -371,7 +388,7 @@ def extract_report_fields(text: str) -> dict[str, Any]:
     """Apply the SIU-template regex to a report and return structured fields.
 
     Returned dict (every key may be missing or None on parse failure):
-      - ``report_id``        : 22-OFD-001 style
+      - ``report_id``        : 17-OVI-201 style
       - ``incident_date``    : first detected long-form date
       - ``sections``         : dict mapping section name -> raw text slice
       - ``conclusion``       : the Director's-decision section, isolated
@@ -486,7 +503,7 @@ def cli(args: list[str]) -> int:
         prog="morie ingest siu", description="Pull SIU director's-report index or a single report."
     )
     p.add_argument("--list", action="store_true", help="Fetch the index page and emit CSV to stdout")
-    p.add_argument("--report-id", help="Report id (e.g. 22-OFD-001); requires --out")
+    p.add_argument("--report-id", help="Report id (e.g. 17-OVI-201); requires --out")
     p.add_argument("--url", help="Direct PDF URL of a single report")
     p.add_argument("--out", type=Path, help="Output directory for the fetched report's text + fields")
     ns = p.parse_args(args)

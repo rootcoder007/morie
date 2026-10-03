@@ -639,10 +639,7 @@ def fairness_gini(values: Any, *, group: Any = None) -> RichResult:
         )
 
     if overall != overall:
-        interp = (
-            f"Gini is undefined: {n_missing} of {int(vals.size)} values are missing "
-            "or non-finite."
-        )
+        interp = f"Gini is undefined: {n_missing} of {int(vals.size)} values are missing " "or non-finite."
     else:
         interp = f"Gini = {overall:.3f}. " + (
             "The quantity is highly concentrated — a small share of units absorbs most of it."
@@ -652,8 +649,7 @@ def fairness_gini(values: Any, *, group: Any = None) -> RichResult:
 
     return RichResult(
         title="Gini Coefficient",
-        summary_lines=[("Gini", overall), ("n", int(vals.size)),
-                       ("n_missing", n_missing)],
+        summary_lines=[("Gini", overall), ("n", int(vals.size)), ("n_missing", n_missing)],
         sections=sections,
         warnings=warnings,
         interpretation=interp,

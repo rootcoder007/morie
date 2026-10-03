@@ -37,6 +37,8 @@ def boolean_eval(
 
     def _value(m):
         name = m.group(0)
+        if name in ("True", "False", "and", "or", "not"):  # literals and word operators stay as written
+            return name
         if name not in variables:
             raise ValueError(f"Undefined variable: {name}")
         return str(bool(variables[name]))

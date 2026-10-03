@@ -17,6 +17,7 @@ from typing import Any
 
 from .cpads import cpads_contract
 from .llm import (
+    ModelNotOnKeyError,
     _FallbackText,
     agent_available,  # noqa: F401 -- re-exported
     build_morie_context,
@@ -210,6 +211,15 @@ def ask_percy(
             result["output_text"] = output
         return result
 
+    except ModelNotOnKeyError as exc:
+        # a model the key does not offer: the answer is that sentence, not the local setup text
+        msg = str(exc)
+        result = {"mode": "error", "model": model, "failed": True}
+        if stream:
+            result["output_stream"] = iter([msg])
+        else:
+            result["output_text"] = msg
+        return result
     except Exception as exc:
         logger.warning("LLM request failed: %s", exc)
         if allow_fallback:

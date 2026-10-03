@@ -75,9 +75,7 @@ def _in_band(value: float, lo: float | None, hi: float | None) -> bool:
         return False
     if lo is not None and value < lo:
         return False
-    if hi is not None and value > hi:
-        return False
-    return True
+    return not (hi is not None and value > hi)
 
 
 def run_gate(g: DatasetGate) -> GateResult:
@@ -92,7 +90,7 @@ def run_gate(g: DatasetGate) -> GateResult:
     failures: list[str] = []
     for key, (lo, hi) in g.expected.items():
         v = actual.get(key)
-        if not isinstance(v, (int, float)) or not _in_band(float(v), lo, hi):
+        if not isinstance(v, int | float) or not _in_band(float(v), lo, hi):
             failures.append(f"{key}={v!r} expected in [{lo}, {hi}]")
     status = "pass" if not failures else "fail"
     return GateResult(gate=g, actual=actual, status=status, failures=failures)

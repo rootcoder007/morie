@@ -193,7 +193,6 @@ def _neg_loglik_general(
         return neg_loglik_jit(theta, t, T, kernel_kind, baseline_kind)
 
     nb = _n_baseline_params(baseline_kind)
-    nk = _n_kernel_params(kernel_kind)
     a = tuple(theta[:nb])
     eta = float(theta[nb])
     psi = tuple(theta[nb + 1 :])
@@ -230,10 +229,7 @@ def _neg_loglik_general(
 
 def _x0(kernel_kind: KernelKind, baseline_kind: BaselineKind, n: int, T: float, mean_dt: float) -> np.ndarray:
     rate = max(n / T, 1e-3)
-    if baseline_kind == "constant":
-        a = [math.log(rate * 0.6)]
-    else:
-        a = [math.log(rate * 0.6), 0.0, 0.0, 0.0]
+    a = [math.log(rate * 0.6)] if baseline_kind == "constant" else [math.log(rate * 0.6), 0.0, 0.0, 0.0]
     eta = [0.4]
     if kernel_kind == "exponential":
         psi = [1.0 / max(mean_dt, 1e-3)]
@@ -271,7 +267,6 @@ def fit_hawkes_general(
     # L-BFGS-B with explicit bounds avoids the Hawkes spike-train
     # degeneracy that Nelder-Mead drives into via the upper β wall.
     nb = _n_baseline_params(baseline_kind)
-    nk = _n_kernel_params(kernel_kind)
     bounds: list[tuple[float, float]] = []
     bounds += [(-15.0, 15.0)] + [(-5.0, 5.0)] * (nb - 1)  # a0, then a1..a3
     bounds += [(1e-3, 0.99)]  # eta

@@ -300,12 +300,12 @@ def mortification_cooccurrence(df: pd.DataFrame | None = None) -> RichResult:
     if "MentalHealth_Alert" in have and "SuicideRisk_Alert" in have:
         ct = pd.crosstab(flags["MentalHealth_Alert"], flags["SuicideRisk_Alert"])
         try:
-            chi2, p, dof, _ = sps.chi2_contingency(ct)
+            chi2, p, _, _ = sps.chi2_contingency(ct)
             cramer_v = float(np.sqrt(chi2 / (ct.values.sum() * max(1, min(ct.shape) - 1))))
         except Exception:
-            chi2, p, dof, cramer_v = float("nan"), float("nan"), 0, float("nan")
+            chi2, p, cramer_v = float("nan"), float("nan"), float("nan")
     else:
-        chi2, p, dof, cramer_v = float("nan"), float("nan"), 0, float("nan")
+        chi2, p, cramer_v = float("nan"), float("nan"), float("nan")
 
     return RichResult(
         title="Goffmanian: mortification co-occurrence",
