@@ -1,11 +1,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """New-version detection and the ``morie update`` command.
 
-``import morie`` performs a fail-silent, daily-cached check for a newer
-release on PyPI and prints a one-line stderr notice when the installed
-version is out of date.  The network request runs in a background
-daemon thread, so it never slows ``import morie`` down -- the hot path
-only reads a small cache file.
+``morie`` (the command line entry point) performs a fail-silent,
+daily-cached check for a newer release on PyPI and prints a one-line
+stderr notice when the installed version is out of date.  The network
+request runs in a background thread that the interpreter waits for at
+exit (bounded by ``_NET_TIMEOUT``), so a command that finishes before the
+request does is never torn down beneath an open TLS connection -- a
+daemon thread there crashed ``morie list-modules`` with a segmentation
+fault at exit on Python 3.13.  The hot path only reads a small cache
+file.
 
 Opt out entirely with the environment variable ``MORIE_NO_UPDATE_CHECK``.
 """
@@ -20,7 +24,8 @@ import time
 
 PYPI_JSON_URL = "https://pypi.org/pypi/morie/json"
 _CHECK_INTERVAL = 24 * 60 * 60  # seconds between PyPI checks
-_NET_TIMEOUT = 3.0
+_NET_TIMEOUT = 2.0
+_REFRESH_THREAD = None
 _NOTIFIED = False
 
 __all__ = ["maybe_notify", "check_pypi_latest", "run_update"]
@@ -100,23 +105,30 @@ def check_pypi_latest(timeout: float = _NET_TIMEOUT) -> str | None:
 
 
 def _refresh_cache_async() -> None:
-    """Refresh the cached latest-version in a background daemon thread."""
+    """Refresh the cached latest-version in a background thread.
+
+    The thread is deliberately NOT a daemon: the interpreter joins it at
+    exit, which takes at most ``_NET_TIMEOUT`` seconds once a day and
+    avoids finalising Python while OpenSSL is still running in it.
+    """
     import threading
+
+    global _REFRESH_THREAD
 
     def _worker() -> None:
         latest = check_pypi_latest()
         if latest:
             _write_cache(latest)
 
-    threading.Thread(target=_worker, name="morie-update-check", daemon=True).start()
+    _REFRESH_THREAD = threading.Thread(target=_worker, name="morie-update-check", daemon=False)
+    _REFRESH_THREAD.start()
 
 
 def maybe_notify(installed_version: str) -> None:
     """Print a one-line stderr notice if a newer morie release exists.
 
     Uses a daily-cached result, so there is no network call on the
-    ``import morie`` hot path; a stale cache triggers a background
-    refresh for next time.  Fail-silent, runs at most once per process,
+    hot path; a stale cache triggers a background refresh for next time.  Fail-silent, runs at most once per process,
     and is a no-op under ``MORIE_NO_UPDATE_CHECK``.
     """
     global _NOTIFIED

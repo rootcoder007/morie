@@ -146,6 +146,7 @@ Per-package full changelogs:
   server ignores it), up to three attempts, with the reason on screen; a short body
   no longer passes as a complete file. The R arm starts the transfer again.
 
+- **No more exit crash on fast commands.** The daily PyPI update check ran in a daemon thread; a command that finished first (`morie list-modules`) could segfault at exit on Python 3.13 while the thread was still inside OpenSSL. The thread is now joined at exit (at most two seconds, once a day).
 - **From a hostile QA pass on every feature.** `morie pull` only takes exact
   keys and suggests near misses instead of silently fetching another dataset;
   `run-module` without `--output-dir` writes under `morie-output/NAME`;
