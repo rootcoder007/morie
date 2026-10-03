@@ -18,7 +18,8 @@ pytestmark = pytest.mark.skipif(
 
 
 def _sha(p: Path) -> str:
-    return hashlib.sha256(p.read_bytes()).hexdigest()
+    # Same digest the installer and the generator use: a CRLF checkout (Windows runners) hashes like an LF one.
+    return inter.sha256_of(p)
 
 
 def test_manifest_matches_the_source_tree():
