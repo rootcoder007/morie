@@ -52,7 +52,9 @@ def _manifest_cache_path() -> Path:
 def _open(path: str, timeout: int = 60):
     key = _key()
     if not key:
-        raise DataHubAuthError("data.rmorie.com needs your MORIE key: run `morie login` (or `rmorie login`) once.")
+        raise DataHubAuthError(
+            "data.rmorie.com needs your MORIE key: run `morie login` (GitHub) or `morie login --email you@example.com` once (R: `rmorie login`)."
+        )
     req = Request(
         data_url() + path, headers={"Authorization": f"Bearer {key}", "User-Agent": "morie/1 (+https://rmorie.com)"}
     )
@@ -75,7 +77,9 @@ def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
 
     key = _key()
     if not key:
-        raise DataHubAuthError("data.rmorie.com needs your MORIE key: run `morie login` (or `rmorie login`) once.")
+        raise DataHubAuthError(
+            "data.rmorie.com needs your MORIE key: run `morie login` (GitHub) or `morie login --email you@example.com` once (R: `rmorie login`)."
+        )
     try:
         return download_url(
             data_url() + path,

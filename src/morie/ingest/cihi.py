@@ -25,12 +25,12 @@ def _pick_data_sheet(xl, **read_excel_kwargs):
     data lives on a later, much larger sheet.  Picking the sheet with
     the most cells skips the notes page without hard-coding names.
     """
-    best_name, best_df, best_cells = xl.sheet_names[0], None, -1
+    best_df, best_cells = None, -1
     for name in xl.sheet_names:
         df = xl.parse(name, **read_excel_kwargs)
         cells = df.shape[0] * df.shape[1]
         if cells > best_cells:
-            best_name, best_df, best_cells = name, df, cells
+            best_df, best_cells = df, cells
     return best_df
 
 
@@ -107,6 +107,9 @@ def _read_xlsx_streaming(path: str, sheet: Any = None, **read_excel_kwargs: Any)
         records = []
         for row in rows:
             if header is None:
+                if row:
+                    last = max((i for i, v in enumerate(row) if v is not None), default=-1)
+                    row = tuple(row[: last + 1])  # the sheet may declare 16,384 columns; count the used ones
                 if row and sum(v is not None for v in row) >= max(1, len(row) // 2):
                     header = [str(v) if v is not None else f"col{i}" for i, v in enumerate(row)]
                 continue

@@ -1487,11 +1487,11 @@ def _direct_or_hosted(entry: dict, matched: str, db_path, timeout: int = 60) -> 
         elif err is not None:
             raise RuntimeError(
                 f"{matched}: the portal download failed ({err}); the data.rmorie.com copy ({hk}) "
-                "opens with your MORIE key: run `morie login` once."
+                "opens with your MORIE key: run `morie login` (GitHub) or `morie login --email you@example.com` once."
             ) from err
         else:
             raise RuntimeError(
-                f"{matched} is served from data.rmorie.com as {hk}: run `morie login` once, then "
+                f"{matched} is served from data.rmorie.com as {hk}: run `morie login` (GitHub) or `morie login --email you@example.com` once, then "
                 f"`morie pull {matched}` (or `morie pull {hk}`)."
             )
     if df is None:
@@ -1886,11 +1886,23 @@ def load_dataset(
         available = ", ".join(sorted(DATASET_CATALOG))
         raise KeyError(
             f"Unknown dataset key: {key!r}. Available: {available}; "
-            "curated tables at data.rmorie.com use db/table keys (morie list-datasets shows them after morie login)."
+            "curated tables at data.rmorie.com use db/table keys (morie list-datasets shows them after `morie login`, GitHub or --email)."
         )
 
     entry = DATASET_CATALOG[matched]
     table_name = entry["table_name"]
+
+    if dataset_route(entry).startswith("own file"):
+        # your own research file: read it where it is, every time, and keep it out of the cache
+        local_path = _find_local_file(entry["local_path"])
+        if local_path is None:
+            raise FileNotFoundError(dataset_recommendation(matched, entry))
+        logger.info("Reading %s from your file: %s", matched, local_path)
+        if entry["format"] == "csv":
+            return pd.read_csv(local_path, low_memory=False)
+        if entry["format"] == "xlsx":
+            return pd.read_excel(local_path)
+        raise NotImplementedError(f"Format {entry['format']} not supported for on-the-fly ingest")
 
     # 1. Built-in database (ships with package).
     builtin = _builtin_db_connect()
@@ -1903,6 +1915,8 @@ def load_dataset(
             if tables:
                 df = pd.read_sql(f"SELECT * FROM [{_safe_table_name(table_name)}]", builtin)
                 logger.info("Loaded %s from built-in DB (%d rows)", matched, len(df))
+                if matched == "ocp21" and has_raw_cpads_columns(df):
+                    return canonicalize_cpads_frame(df)  # the same frame the cache tier returns
                 return df
         finally:
             builtin.close()
@@ -2345,7 +2359,13 @@ def dataset_recommendation(key: str, entry: "dict | None" = None) -> str:
             "morie."
         )
         if local_path:
-            lines.append(f"  Place the data file at: {Path(local_path).expanduser().resolve()}")
+            rel = Path(local_path)
+            tail = Path(*rel.parts[1:]) if rel.parts and rel.parts[0] == "data" else rel
+            lines.append(f"  Place the data file at: {(_data_dir_candidates()[0] / tail)}")
+            lines.append(
+                f"  (that is {local_path} under MORIE_DATA_DIR when it is set, else the per-user data directory; "
+                "the file is read in place and never copied into the cache)"
+            )
     return "\n".join(lines)
 
 

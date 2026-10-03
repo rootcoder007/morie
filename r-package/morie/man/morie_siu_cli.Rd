@@ -14,7 +14,7 @@ Invisibly, an exit status (0 success).
 }
 \description{
 The \code{siu} CLI commands, run from R (or \code{Rscript -e
-'rmorie::morie_siu_cli()' siu ...}): \code{version}, \code{models},
+'morie::morie_siu_cli()' siu ...}): \code{version}, \code{models},
 \code{chat}, \code{fetch <drid>}, \code{parse <file>}, \code{resolve
 <file>}, \code{audit <parsed.json> <report.txt>}, with the same
 \code{--api/--base/--key/--model/--mode/--readers/--auditors/...} options

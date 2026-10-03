@@ -237,7 +237,7 @@ def verify_statistical_output(path: str | Path) -> VerificationReport:
             VerificationCheck(
                 f"p_value_range:{col}",
                 bad == 0,
-                f"{bad}/{len(vals)} values outside [0,1]" if bad else f"{len(vals)} values OK",
+                f"{int(bad)}/{len(vals)} values outside [0,1]" if bad else f"{len(vals)} values OK",
             )
         )
 

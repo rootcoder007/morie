@@ -311,7 +311,7 @@ morie_weight_super <- function(data, treatment, covariates,
     }
   }
 
-  .rmorie_local_seed(1L)
+  .morie_local_seed(1L)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
   Zcv <- matrix(NA_real_, n, length(learners))
   for (f in seq_len(n_folds)) {

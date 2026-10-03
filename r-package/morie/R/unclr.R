@@ -67,7 +67,7 @@ morie_unclr_Phi <- function(z) stats::pnorm(z)
 #' @return A list with `likelihood`, `loglik`, `n`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Likprod(V)
+#' morie:::Likprod(V)
 #' @keywords internal
 Likprod <- function(dens) {
   d <- as.numeric(dens)
@@ -82,7 +82,7 @@ Likprod <- function(dens) {
 #' @return A list with `loglik`, `terms`, `n`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Loglksum(V)
+#' morie:::Loglksum(V)
 #' @keywords internal
 Loglksum <- function(dens) {
   d <- as.numeric(dens)
@@ -100,7 +100,7 @@ Loglksum <- function(dens) {
 #' e <- runif(20, 5, 15)
 #' theta <- matrix(rgamma(80, 2, 2), 4, 20)
 #' y <- rpois(20, e * colMeans(theta))
-#' rmorie:::Postres(y, e, theta)
+#' morie:::Postres(y, e, theta)
 #' @keywords internal
 Postres <- function(y, e, theta_draws) {
   y <- as.numeric(y)
@@ -120,7 +120,7 @@ Postres <- function(y, e, theta_draws) {
 #' @return A list with `intensity`, `total`, `n`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Intmod(V, V)
+#' morie:::Intmod(V, V)
 #' @keywords internal
 Intmod <- function(lam0, lam1) {
   a <- as.numeric(lam0)
@@ -137,7 +137,7 @@ Intmod <- function(lam0, lam1) {
 #' @return A list with `loglik`, `p`, `n_cases`, `n`.
 #' @examples
 #' set.seed(4)
-#' rmorie:::Cclogl(eta = rnorm(8), y = rbinom(8, 1, 0.5))
+#' morie:::Cclogl(eta = rnorm(8), y = rbinom(8, 1, 0.5))
 #' @keywords internal
 Cclogl <- function(eta, y) {
   e <- as.numeric(eta)
@@ -155,7 +155,7 @@ Cclogl <- function(eta, y) {
 #' @param R Argument `R`; see Usage.
 #' @return A list with `eta`, `p`, `n`.
 #' @examples
-#' rmorie:::Mlogitlp(f = c(1, 2, 3, 4, 5, 6, 7, 8), g = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Mlogitlp(f = c(1, 2, 3, 4, 5, 6, 7, 8), g = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   R = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Mlogitlp <- function(f, g, R) {
@@ -174,7 +174,7 @@ Mlogitlp <- function(f, g, R) {
 #' @param S Argument `S`; see Usage.
 #' @return A list with `intensity`, `total`, `beta`, `n`.
 #' @examples
-#' rmorie:::Lgcpint(lam0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5, S = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie:::Lgcpint(lam0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5, S = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Lgcpint <- function(lam0, beta, S) {
   a <- as.numeric(lam0)
@@ -190,7 +190,7 @@ Lgcpint <- function(lam0, beta, S) {
 #' @param phi Argument `phi`; see Usage.
 #' @return A list with `logrisk`, `risk`, `n`, `n_components`.
 #' @examples
-#' rmorie:::Facrisk(alpha0 = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8), phi = 0.5)
+#' morie:::Facrisk(alpha0 = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8), phi = 0.5)
 #' @keywords internal
 Facrisk <- function(alpha0, W, phi) {
   W <- as.matrix(W)
@@ -206,7 +206,7 @@ Facrisk <- function(alpha0, W, phi) {
 #' @param f Argument `f`; see Usage.
 #' @return A list with `rho`, `mu`, `n`, `n_disease`.
 #' @examples
-#' rmorie:::Mvfacmu(e = c(1, 2, 3, 4, 5, 6, 7, 8), lam = 5L, f = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie:::Mvfacmu(e = c(1, 2, 3, 4, 5, 6, 7, 8), lam = 5L, f = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Mvfacmu <- function(e, lam, f) {
   E <- as.matrix(e)
@@ -227,7 +227,7 @@ Mvfacmu <- function(e, lam, f) {
 #' @param W Argument `W`; see Usage.
 #' @return A list with `lograte`, `rate`, `n`.
 #' @examples
-#' rmorie:::Mlpois(beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Mlpois(beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta1 = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   age = c(1, 2, 3, 4, 5, 6, 7, 8), race_effect = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   v = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
@@ -249,7 +249,7 @@ Mlpois <- function(beta0, beta1, age, race_effect, v, W) {
 #' @param tau Argument `tau`; see Usage.
 #' @return A list with `mu`, `var`, `sd`, `n`.
 #' @examples
-#' rmorie:::Menorm(beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Menorm(beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta1 = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   x_true = c(1, 2, 3, 4, 5, 6, 7, 8), tau = 0.5)
 #' @keywords internal
 Menorm <- function(beta0, beta1, x_true, tau) {
@@ -271,7 +271,7 @@ Menorm <- function(beta0, beta1, x_true, tau) {
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_unclr_dft_amp(V)
-#' rmorie:::Logitre(gamma0 = V, gamma1 = V, d = V, gamma2 = V, x = V, R = V)
+#' morie:::Logitre(gamma0 = V, gamma1 = V, d = V, gamma2 = V, x = V, R = V)
 #' @keywords internal
 Logitre <- function(gamma0, gamma1, d, gamma2, x, R) {
   d <- as.numeric(d)
@@ -290,7 +290,7 @@ Logitre <- function(gamma0, gamma1, d, gamma2, x, R) {
 #' @param b1 Argument `b1`; see Usage.
 #' @return A list with `logf`, `f`, `n`.
 #' @examples
-#' rmorie:::Epiar(beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Epiar(beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta1 = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   i_lag = c(1, 2, 3, 4, 5, 6, 7, 8), b1 = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Epiar <- function(beta0, beta1, i_lag, b1) {
@@ -310,7 +310,7 @@ Epiar <- function(beta0, beta1, i_lag, b1) {
 #' @param b1 Argument `b1`; see Usage.
 #' @return A list with `logf`, `f`, `total_lag`, `n`.
 #' @examples
-#' rmorie:::Epiarnb(beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Epiarnb(beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta1 = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   i_lag = c(1, 2, 3, 4, 5, 6, 7, 8), nb_lag = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   b1 = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
@@ -338,7 +338,7 @@ Epiarnb <- function(beta0, beta1, i_lag, nb_lag, b1) {
 #' @param x Argument `x`; see Usage.
 #' @return A list with `pmf`, `x`, `n_nodes`.
 #' @examples
-#' rmorie:::Cfinvpmf(t = c(1, 2, 3, 4, 5, 6, 7, 8), phi_re = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Cfinvpmf(t = c(1, 2, 3, 4, 5, 6, 7, 8), phi_re = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   phi_im = c(1, 2, 3, 4, 5, 6, 7, 8), x = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Cfinvpmf <- function(t, phi_re, phi_im, x) {
@@ -364,7 +364,7 @@ Cfinvpmf <- function(t, phi_re, phi_im, x) {
 #' @return A list with `n_conditions`, `max_deviation`, `independent`, `k`.
 #' @examples
 #' # two events with P(A) = 0.5, P(B) = 0.4; joint holds one probability per subset mask
-#' rmorie:::Indevk(p = c(0.5, 0.4), joint = c(1, 0.5, 0.4, 0.2))
+#' morie:::Indevk(p = c(0.5, 0.4), joint = c(1, 0.5, 0.4, 0.2))
 #' @keywords internal
 Indevk <- function(p, joint) {
   pv <- as.numeric(p)
@@ -387,7 +387,7 @@ Indevk <- function(p, joint) {
 #' @return A list with `max_deviation`, `independent`, `margin_row`, `margin_col`.
 #' @examples
 #' J <- outer(c(0.3, 0.7), c(0.4, 0.6))
-#' rmorie:::Indrv2(J)
+#' morie:::Indrv2(J)
 #' @keywords internal
 Indrv2 <- function(joint) {
   J <- as.matrix(joint)
@@ -405,7 +405,7 @@ Indrv2 <- function(joint) {
 #' @param k Argument `k`; see Usage.
 #' @return A list with `threshold`, `in_event`, `prob`, `n_paths`.
 #' @examples
-#' rmorie:::Limsupio(dev = c(1, 2, 3, 4, 5, 6, 7, 8), k = 5L)
+#' morie:::Limsupio(dev = c(1, 2, 3, 4, 5, 6, 7, 8), k = 5L)
 #' @keywords internal
 Limsupio <- function(dev, k) {
   D <- as.matrix(dev)
@@ -423,7 +423,7 @@ Limsupio <- function(dev, k) {
 #' @return A list with `cdf`, `mu`, `x`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Degencdf(V, V)
+#' morie:::Degencdf(V, V)
 #' @keywords internal
 Degencdf <- function(x, mu) {
   xv <- as.numeric(x)
@@ -443,7 +443,7 @@ Degencdf <- function(x, mu) {
 #' @return A list with `Lplus`, `eigenvalues`, `rank`, `n`.
 #' @examples
 #' A <- rbind(c(0, 1, 1, 0), c(1, 0, 1, 0), c(1, 1, 0, 1), c(0, 0, 1, 0))
-#' rmorie:::Lappinv(A)
+#' morie:::Lappinv(A)
 #' @keywords internal
 Lappinv <- function(A, tol = 1e-9) {
   A <- as.matrix(A)
@@ -467,7 +467,7 @@ Lappinv <- function(A, tol = 1e-9) {
 #' @return A list with `R`, `Lplus`, `n`, `rank`.
 #' @examples
 #' A <- rbind(c(0, 1, 1, 0), c(1, 0, 1, 0), c(1, 1, 0, 1), c(0, 0, 1, 0))
-#' rmorie:::Resdist(A)
+#' morie:::Resdist(A)
 #' @keywords internal
 Resdist <- function(A, tol = 1e-9) {
   lp <- Lappinv(A, tol)
@@ -484,7 +484,7 @@ Resdist <- function(A, tol = 1e-9) {
 #' @return A list with `C`, `R`, `two_m`, `n`.
 #' @examples
 #' A <- rbind(c(0, 1, 1, 0), c(1, 0, 1, 0), c(1, 1, 0, 1), c(0, 0, 1, 0))
-#' rmorie:::Commdist(A)
+#' morie:::Commdist(A)
 #' @keywords internal
 Commdist <- function(A, tol = 1e-9) {
   rd <- Resdist(A, tol)
@@ -498,7 +498,7 @@ Commdist <- function(A, tol = 1e-9) {
 #' @return A list with `Kf`, `Kf_spectral`, `n`, `rank`.
 #' @examples
 #' A <- rbind(c(0, 1, 1, 0), c(1, 0, 1, 0), c(1, 1, 0, 1), c(0, 0, 1, 0))
-#' rmorie:::Kirchidx(A)
+#' morie:::Kirchidx(A)
 #' @keywords internal
 Kirchidx <- function(A, tol = 1e-9) {
   rd <- Resdist(A, tol)
@@ -527,7 +527,7 @@ Kirchidx <- function(A, tol = 1e-9) {
 #' set.seed(5)
 #' Cx <- as.matrix(dist(matrix(rnorm(10), 5, 2)))
 #' Cy <- as.matrix(dist(matrix(rnorm(10), 5, 2)))
-#' rmorie:::Gwdist(Cx, Cy, a = rep(0.2, 5), b = rep(0.2, 5), n_iter = 10)
+#' morie:::Gwdist(Cx, Cy, a = rep(0.2, 5), b = rep(0.2, 5), n_iter = 10)
 #' @keywords internal
 Gwdist <- function(Cx, Cy, a, b, n_iter = 50, epsilon = 0.05, n_sinkhorn = 50) {
   X <- as.matrix(Cx)
@@ -692,7 +692,7 @@ morie_unclr_lr_impute <- function(X, dl, n_iter, draw = NULL) {
 #' @param n_iter Argument `n_iter`; see Usage.
 #' @return The value of `morie_unclr_lr_impute`.
 #' @examples
-#' rmorie:::Lrem(X = c(1, 2, 3, 4, 5, 6, 7, 8), dl = 5L)
+#' morie:::Lrem(X = c(1, 2, 3, 4, 5, 6, 7, 8), dl = 5L)
 #' @keywords internal
 Lrem <- function(X, dl, n_iter = 20) morie_unclr_lr_impute(X, dl, n_iter, NULL)
 
@@ -703,7 +703,7 @@ Lrem <- function(X, dl, n_iter = 20) morie_unclr_lr_impute(X, dl, n_iter, NULL)
 #' @param n_iter Argument `n_iter`; see Usage.
 #' @return The value of `morie_unclr_lr_impute`.
 #' @examples
-#' rmorie:::Lrda(X = c(1, 2, 3, 4, 5, 6, 7, 8), dl = 5L, draw = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie:::Lrda(X = c(1, 2, 3, 4, 5, 6, 7, 8), dl = 5L, draw = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Lrda <- function(X, dl, draw, n_iter = 20) {
   if (is.null(draw)) stop("lrda needs caller-supplied standard normal variates")
@@ -721,7 +721,7 @@ Lrda <- function(X, dl, draw, n_iter = 20) {
 #' @return A list with `variance`, `se`, `mean`, `n_subsets`, `n`, `d`.
 #' @examples
 #' set.seed(4)
-#' rmorie:::Jackd(theta = rnorm(10, 2, 0.1), n = 10, d = 1)
+#' morie:::Jackd(theta = rnorm(10, 2, 0.1), n = 10, d = 1)
 #' @keywords internal
 Jackd <- function(theta, n, d) {
   tv <- as.numeric(theta)
@@ -747,7 +747,7 @@ Jackd <- function(theta, n, d) {
 #' @param m Argument `m`; see Usage.
 #' @return A list with `mean`, `variance`, `se`, `score_mean`, `N`, `m`, `n`.
 #' @examples
-#' rmorie:::Lrankmom(a = c(1, 2, 3, 4, 5, 6, 7, 8), m = 5L)
+#' morie:::Lrankmom(a = c(1, 2, 3, 4, 5, 6, 7, 8), m = 5L)
 #' @keywords internal
 Lrankmom <- function(a, m) {
   av <- as.numeric(a)
@@ -772,7 +772,7 @@ Lrankmom <- function(a, m) {
 #' @return A list with `weights`, `cap`, `n_truncated`, `n`, `mean_before`, `mean_after`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Wtrunc(V)
+#' morie:::Wtrunc(V)
 #' @keywords internal
 Wtrunc <- function(w, q = 0.99) {
   wv <- as.numeric(w)
@@ -800,7 +800,7 @@ Wtrunc <- function(w, q = 0.99) {
 #' X <- cbind(1, rnorm(n))
 #' snp <- rbinom(n, 2, 0.3)
 #' y <- X %*% c(1, 0.5) + 0.4 * snp + rnorm(n, 0, 0.5)
-#' rmorie:::Gwasmlm(as.numeric(y), X, snp, diag(n))
+#' morie:::Gwasmlm(as.numeric(y), X, snp, diag(n))
 #' @keywords internal
 Gwasmlm <- function(y, X, snp, Vinv) {
   yv <- as.numeric(y)
@@ -837,7 +837,7 @@ Gwasmlm <- function(y, X, snp, Vinv) {
 #' @return A list with `statistic`, `df1`, `df2`, `r`, `estimate`, `m`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Mitest(V, V)
+#' morie:::Mitest(V, V)
 #' @keywords internal
 Mitest <- function(theta, U) {
   Th <- as.matrix(theta)
@@ -870,7 +870,7 @@ Mitest <- function(theta, U) {
 #' @param sigma2 Argument `sigma2`; see Usage.
 #' @return A list with `beta`, `shrinkage`, `n`, `sigma2`, `n_snp`.
 #' @examples
-#' rmorie:::Csshrink(beta_hat = 0.2, D = 1, psi = 0.25, n = 1000)$beta  # 0.2 / (1 + 4)
+#' morie:::Csshrink(beta_hat = 0.2, D = 1, psi = 0.25, n = 1000)$beta  # 0.2 / (1 + 4)
 #' @keywords internal
 Csshrink <- function(beta_hat, D, psi, n, sigma2 = 1) {
   bh <- as.numeric(beta_hat)
@@ -906,7 +906,7 @@ Csshrink <- function(beta_hat, D, psi, n, sigma2 = 1) {
 #' days <- 0:14
 #' load <- 10^(c(seq(2, 6, length.out = 5), seq(5.8, 4, length.out = 5),
 #'               rep(3.9, 5)) + rnorm(15, 0, 0.05))
-#' rmorie:::Shedcurve(days, load, t_peak = 4, t_plateau = 9)
+#' morie:::Shedcurve(days, load, t_peak = 4, t_plateau = 9)
 #' @keywords internal
 Shedcurve <- function(days, load, t_peak, t_plateau) {
   d <- as.numeric(days)
@@ -964,7 +964,7 @@ Shedcurve <- function(days, load, t_peak, t_plateau) {
 #' q1 <- rep(0.6, n); q0 <- rep(0.4, n)
 #' y <- rbinom(n, 1, ifelse(a == 1, 0.6, 0.4))
 #' fold <- rep(1:3, length.out = n)
-#' rmorie:::Cvtmle(y, a, q0, q1, g, fold)
+#' morie:::Cvtmle(y, a, q0, q1, g, fold)
 #' @keywords internal
 Cvtmle <- function(y, a, q0, q1, g, fold, n_newton = 50) {
   yv <- as.numeric(y)
@@ -1015,7 +1015,7 @@ Cvtmle <- function(y, a, q0, q1, g, fold, n_newton = 50) {
 #' @return A list with `estimate`, `se`, `mean_y10`, `mean_y00`, `n`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Ndeff(V, V)
+#' morie:::Ndeff(V, V)
 #' @keywords internal
 Ndeff <- function(y10, y00) {
   a <- as.numeric(y10)
@@ -1033,7 +1033,7 @@ Ndeff <- function(y10, y00) {
 #' @return A list with `estimate`, `se`, `mean_y11`, `mean_y10`, `n`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Nieff(V, V)
+#' morie:::Nieff(V, V)
 #' @keywords internal
 Nieff <- function(y11, y10) {
   a <- as.numeric(y11)
@@ -1056,7 +1056,7 @@ Nieff <- function(y11, y10) {
 #' @return A list with `tau`, `ate`, `se`, `n`.
 #' @examples
 #' set.seed(3)
-#' rmorie:::Xlearn(tau1 = rnorm(20, 1), tau0 = rnorm(20, 0.8), g = runif(20, 0.3, 0.7))
+#' morie:::Xlearn(tau1 = rnorm(20, 1), tau0 = rnorm(20, 0.8), g = runif(20, 0.3, 0.7))
 #' @keywords internal
 Xlearn <- function(tau1, tau0, g) {
   t1 <- as.numeric(tau1)
@@ -1083,7 +1083,7 @@ Xlearn <- function(tau1, tau0, g) {
 #' @param theta Argument `theta`; see Usage.
 #' @return A list with `q`, `m`, `norm`, `n`.
 #' @examples
-#' rmorie:::Rope(q = c(1, 0, 0.5, -0.5), m = 3,
+#' morie:::Rope(q = c(1, 0, 0.5, -0.5), m = 3,
 #'      theta = 10000^(-c(0, 1) / 2))
 #' @keywords internal
 Rope <- function(q, m, theta) {
@@ -1112,7 +1112,7 @@ Rope <- function(q, m, theta) {
 #' @return A list with `x`, `mean`, `sd`, `n_groups`, `group_size`.
 #' @examples
 #' set.seed(4)
-#' rmorie:::Grpnorm(rnorm(12), n_groups = 3)
+#' morie:::Grpnorm(rnorm(12), n_groups = 3)
 #' @keywords internal
 Grpnorm <- function(x, n_groups, eps = 1e-5) {
   xv <- as.numeric(x)
@@ -1140,7 +1140,7 @@ Grpnorm <- function(x, n_groups, eps = 1e-5) {
 #' @return A list with `sum`, `mean`, `max`, `n_nodes`, `dim`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Sumpl(V)
+#' morie:::Sumpl(V)
 #' @keywords internal
 Sumpl <- function(H) {
   Hm <- as.matrix(H)
@@ -1157,7 +1157,7 @@ Sumpl <- function(H) {
 #' @examples
 #' A <- rbind(c(0, 1, 0), c(1, 0, 1), c(0, 1, 0))
 #' H <- matrix(1:6, 3, 2)
-#' rmorie:::Ginagg(A, H, eps = 0.1)
+#' morie:::Ginagg(A, H, eps = 0.1)
 #' @keywords internal
 Ginagg <- function(A, H, eps = 0) {
   Am <- as.matrix(A)
@@ -1198,7 +1198,7 @@ morie_unclr_sym_norm <- function(A, self_loops) {
 #' @examples
 #' A <- rbind(c(0, 1, 0), c(1, 0, 1), c(0, 1, 0))
 #' X <- matrix(1:6, 3, 2)
-#' rmorie:::Sgcprop(A, X, K = 2)
+#' morie:::Sgcprop(A, X, K = 2)
 #' @keywords internal
 Sgcprop <- function(A, X, K) {
   S <- morie_unclr_sym_norm(as.matrix(A), TRUE)
@@ -1217,7 +1217,7 @@ Sgcprop <- function(A, X, K) {
 #' set.seed(1)
 #' A <- rbind(c(0, 1, 0), c(1, 0, 1), c(0, 1, 0))
 #' E <- matrix(rnorm(6), 3, 2)
-#' rmorie:::Lgcnprop(A, E, K = 2)
+#' morie:::Lgcnprop(A, E, K = 2)
 #' @keywords internal
 Lgcnprop <- function(A, E, K, alpha = NULL) {
   S <- morie_unclr_sym_norm(as.matrix(A), FALSE)
@@ -1241,7 +1241,7 @@ Lgcnprop <- function(A, E, K, alpha = NULL) {
 #' @param alpha Argument `alpha`; see Usage.
 #' @return A list with `score`, `mean`, `bonus`, `arm`, `n_arms`, `alpha`.
 #' @examples
-#' rmorie:::Linucb(x = 5L, theta = c(1, 2, 3, 4, 5, 6, 7, 8), Ainv = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie:::Linucb(x = 5L, theta = c(1, 2, 3, 4, 5, 6, 7, 8), Ainv = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Linucb <- function(x, theta, Ainv, alpha = 1) {
   xv <- as.numeric(x)
@@ -1272,7 +1272,7 @@ Linucb <- function(x, theta, Ainv, alpha = 1) {
 #' @param L Argument `L`; see Usage.
 #' @return A list with `K`, `L`, `state_dim`.
 #' @examples
-#' rmorie:::Ssmk(A = c(1, 2, 3, 4, 5, 6, 7, 8), B = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Ssmk(A = c(1, 2, 3, 4, 5, 6, 7, 8), B = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   C = c(1, 2, 3, 4, 5, 6, 7, 8), L = 5L)
 #' @keywords internal
 Ssmk <- function(A, B, C, L) {
@@ -1297,7 +1297,7 @@ Ssmk <- function(A, B, C, L) {
 #' @return A vector.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Ssmconv(V, V)
+#' morie:::Ssmconv(V, V)
 #' @keywords internal
 Ssmconv <- function(K, x) {
   Kv <- as.numeric(K)
@@ -1314,7 +1314,7 @@ Ssmconv <- function(K, x) {
 #' @return A list with `frequency`, `period`, `amplitude`, `spectrum`, `n`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Fftperiod(V)
+#' morie:::Fftperiod(V)
 #' @keywords internal
 Fftperiod <- function(x, k = 1) {
   xv <- as.numeric(x)
@@ -1337,7 +1337,7 @@ Fftperiod <- function(x, k = 1) {
 #' @examples
 #' set.seed(5)
 #' x <- sin(2 * pi * (1:60) / 12) + 0.1 * (1:60) / 10 + rnorm(60, 0, 0.1)
-#' str(rmorie:::Serdecomp(x, kernel = 5), max.level = 1)
+#' str(morie:::Serdecomp(x, kernel = 5), max.level = 1)
 #' @keywords internal
 Serdecomp <- function(x, kernel) {
   xv <- as.numeric(x)

@@ -204,7 +204,7 @@ for function reference.
   corpus from ``rmoriedata`` on CRAN. One, the MAPQ workbook, is your own
   file, resolved through ``MORIE_DATA_DIR``; ``morie list-datasets`` shows
   the route of every key and the curated data.rmorie.com tables after
-  ``morie login``. Small synthetic
+  ``morie login`` (GitHub, or ``--email you@example.com``). Small synthetic
   samples of the core tables ship in the wheel for tests and tutorials.
   Auto dataset-profiling for arbitrary tabular input
   (``morie.dataset.profile_dataset``).
@@ -230,7 +230,7 @@ for function reference.
 
 **LLM + assistant**
   Providers in order: a local Ollama (private, tried first) → the
-  hosted MORIE tier at ``llm.rmorie.com`` (``morie login``; per-user key,
+  hosted MORIE tier at ``llm.rmorie.com`` (``morie login``, GitHub or ``--email``; per-user key,
   rate-limited, nothing stored) → your own Gemini / OpenAI-compatible /
   OpenAI keys → a keyword-matched local fallback that needs no network.
   See :doc:`hosted`. Vendored TurboQuant KV-cache compression. Polyglot

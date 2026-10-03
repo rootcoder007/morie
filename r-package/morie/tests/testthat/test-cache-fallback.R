@@ -6,7 +6,7 @@ test_that("a SQL cache request without DBI falls back to the file backend with a
   testthat::skip_on_covr()
   df <- data.frame(a = 1:3, b = c("x", "y", "z"))
   withr::local_envvar(MORIE_CACHE_BACKEND = "")
-  testthat::local_mocked_bindings(.package = if (isNamespaceLoaded("rmorie")) "rmorie" else "morie", .morie_dbi_available = function() FALSE)
+  testthat::local_mocked_bindings(.package = if (isNamespaceLoaded("morie")) "morie" else "morie", .morie_dbi_available = function() FALSE)
   tmp <- tempfile(fileext = ".db")
   expect_message(morie_cache_store(df, "fallback_tbl", db_path = tmp), "file backend")
   expect_false(file.exists(tmp))

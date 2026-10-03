@@ -384,7 +384,8 @@ def cli(args: list[str]) -> int:
         if match.empty:
             sys.stderr.write(f"report id {ns.report_id!r} not found in current index\n")
             return 3
-        url = match.iloc[0]["url"]
+        row = match.iloc[0]
+        url = row["source_url_report"] if "source_url_report" in match.columns else row["url"]
     if url is None:
         p.error("provide --list, --report-id, or --url")
         return 2

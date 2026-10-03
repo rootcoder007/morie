@@ -74,7 +74,7 @@ See :doc:`learn/datasets` for the walk-through.
    health-infobase.canada.ca, ECCC NAPS whose Canada-wide hourly keys take
    about ten minutes, Toronto Police ArcGIS), ``rmoriedata`` on CRAN,
    data.rmorie.com (the Health Infobase fallback copy and the OTIS research
-   environments; the curated tables join the list after ``morie login``),
+   environments; the curated tables join the list after ``morie login``, GitHub or ``--email``),
    or "own file: data/..." for the one key that is your own research file
    (the MAPQ workbook), placed under ``$MORIE_DATA_DIR`` keeping that
    relative path.

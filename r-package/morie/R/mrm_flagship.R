@@ -39,7 +39,7 @@ morie_mrm_load_si_dataset <- function(name = "otis_b01") {
         name = name,
         n_rows = nrow(data),
         n_cols = ncol(data),
-        sha256 = .rmorie_sha256_hex_impl(buf),
+        sha256 = .morie_sha256_hex_impl(buf),
         loaded_at = format(Sys.time(), tz = "UTC",
                            "%Y-%m-%dT%H:%M:%SZ"))),
     class = c("morie_mrm_dataset", "list"))
@@ -141,7 +141,7 @@ morie_mrm_reconcile <- function(primary, secondary, keys,
 #' @return The value of `invisible`.
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' rmorie:::print.morie_mrm_reconciliation(D)
+#' morie:::print.morie_mrm_reconciliation(D)
 #' @export
 #' @keywords internal
 print.morie_mrm_reconciliation <- function(x, ...) {
@@ -294,7 +294,7 @@ morie_mrm_estimate_causal_effect <- function(data, treatment, outcome,
          citation = paste(
            # canonical entry from inst/CITATION (never hand-written
            # here, so it cannot drift from the package metadata)
-           format(utils::citation("rmorie")[1L], style = "text"),
+           format(utils::citation("morie")[1L], style = "text"),
            collapse = " ")),
     class = c("morie_mrm_effect", "list"))
 }

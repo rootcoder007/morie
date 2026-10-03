@@ -19,6 +19,6 @@ morie_mll
 }
 \examples{
 probs <- rbind(c(0.7, 0.2, 0.1), c(0.2, 0.5, 0.3), c(0.1, 0.1, 0.8))
-rmorie:::morie_mll(probs, y_true = c(0L, 1L, 2L))
+morie:::morie_mll(probs, y_true = c(0L, 1L, 2L))
 }
 \keyword{internal}

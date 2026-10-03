@@ -19,6 +19,6 @@ Independence of k events (Deshmukh eq. 5.1)
 }
 \examples{
 # two events with P(A) = 0.5, P(B) = 0.4; joint holds one probability per subset mask
-rmorie:::Indevk(p = c(0.5, 0.4), joint = c(1, 0.5, 0.4, 0.2))
+morie:::Indevk(p = c(0.5, 0.4), joint = c(1, 0.5, 0.4, 0.2))
 }
 \keyword{internal}

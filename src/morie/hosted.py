@@ -234,14 +234,19 @@ def store_token(token: str, echo=_say) -> str:
     if not token:
         raise ValueError("an empty token cannot be stored")
     data = read_credentials()
+    previous = dict(data)
     data.update({"hosted_key": token, "hosted_base_url": hosted_base_url()})
     path = write_credentials(data)
     reset_probe_cache()
     if probe_hosted():
         echo(f"Token stored in {path}; the gateway accepts it.")
-    else:
-        echo(f"Token stored in {path}, but the gateway did not accept it (check the key, or run `morie login` again).")
-    return token
+        return token
+    why = hosted_failure()
+    write_credentials(previous)  # nothing is kept that the gateway refused
+    reset_probe_cache()
+    if why == "rejected":
+        raise ValueError("the gateway rejected that key; nothing stored (check it, or run `morie login` again)")
+    raise ValueError(f"the gateway could not be reached to check that key ({why}); nothing stored, try again")
 
 
 def email_login(email: str, code: str | None = None, ask=input, echo=_say, to_email: bool = False) -> str:
@@ -306,7 +311,9 @@ def models_lines() -> list[str]:
     if not s["base_url"]:
         return ["Hosted tier: disabled (MORIE_HOSTED_BASE_URL is empty)"]
     if not s["logged_in"]:
-        return [f"Hosted tier ({DEFAULT_HOSTED_BASE_URL}): not logged in -- run `morie login`"]
+        return [
+            f"Hosted tier ({DEFAULT_HOSTED_BASE_URL}): not logged in -- run `morie login` (GitHub) or `morie login --email you@example.com`"
+        ]
     if not s["reachable"]:
         return [f"Hosted tier ({s['base_url']}): {hosted_problem_line()}"]
     default = hosted_model_available()

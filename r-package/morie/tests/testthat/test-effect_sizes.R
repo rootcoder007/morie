@@ -182,13 +182,6 @@ test_that("bootstrap_effect_size_ci wraps any function", {
 })
 
 
-test_that("round four: cramers_v carries a noncentral chi-square interval", {
-  r <- cramers_v(matrix(c(10, 30, 20, 15), 2))
-  expect_true(is.finite(r$ci_lower) && is.finite(r$ci_upper))
-  expect_true(r$ci_lower <= r$estimate && r$estimate <= r$ci_upper)
-  expect_equal(r$extra$confidence, 0.95)
-})
-
 test_that("round four: random_effects_meta honours method", {
   est <- c(0.2, 0.5, 0.35, 0.6, 0.1)
   se <- c(0.1, 0.12, 0.08, 0.15, 0.2)
@@ -222,6 +215,13 @@ test_that("random_effects_meta PM and REML match metafor::rma", {
   expect_equal(random_effects_meta(c(0.1, 0.12, 0.11), c(0.2, 0.25, 0.3),
                                    method = "PM")$extra$tau_squared, 0)
   expect_error(random_effects_meta(y, s, method = "SJ"), "method must be")
+})
+
+test_that("round four: cramers_v carries a noncentral chi-square interval", {
+  r <- cramers_v(matrix(c(10, 30, 20, 15), 2))
+  expect_true(is.finite(r$ci_lower) && is.finite(r$ci_upper))
+  expect_true(r$ci_lower <= r$estimate && r$estimate <= r$ci_upper)
+  expect_equal(r$extra$confidence, 0.95)
 })
 
 test_that("hedges_g uses the exact J; cohens_d SE is Hedges-Olkin; CLES counts ties", {

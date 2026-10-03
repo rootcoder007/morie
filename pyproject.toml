@@ -97,7 +97,7 @@ Documentation = "https://rootcoder007.github.io/morie/"
 "Issue tracker" = "https://github.com/rootcoder007/morie/issues"
 Changelog     = "https://github.com/rootcoder007/morie/releases"
 "Download"    = "https://pypi.org/project/morie/#files"
-"R package"   = "https://rootcoder007.r-universe.dev/morie"
+"R package"   = "https://rootcoder007.r-universe.dev/rmorie"
 "Container (GHCR)" = "https://github.com/rootcoder007/morie/pkgs/container/morie"
 
 
@@ -122,6 +122,7 @@ wheel.exclude = [
   "morie/fn/describe_*.md",
   "morie/fn/*.py",
   "!morie/fn/_*.py",
+  "morie/tests/",
   "!morie/fn/__init__.py",
   "!morie/fn/describe.py",
   # The interactive/agent layer runs user/LLM-supplied code (exec + shell -c)

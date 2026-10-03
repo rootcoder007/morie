@@ -96,12 +96,21 @@ def store_keypair(
     nonce = os.urandom(12)
     ct, tag = chacha20_poly1305_encrypt(enc_key, nonce, sk)
     store["keys"][name] = {
+        "v": 2,  # ML-KEM-768 per FIPS 203 (morie 1.4.0); entries without "v" were made by 1.3.x
         "pk": pk.hex(),
         "sk_nonce": nonce.hex(),
         "sk_ct": ct.hex(),
         "sk_tag": tag.hex(),
     }
     _write_store(store, path)
+
+
+def keypair_version(name: str, path: str = _DEFAULT_PATH) -> int:
+    """2 for a pair made by morie 1.4.0 or later, 1 for one made by 1.3.x (no password needed)."""
+    store = _read_store(path)
+    if name not in store["keys"]:
+        raise KeyError(f"Key '{name}' not found in keystore")
+    return int(store["keys"][name].get("v", 1))
 
 
 def load_keypair(

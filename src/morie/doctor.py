@@ -107,7 +107,7 @@ def _check_hosted() -> tuple[bool, str]:
     if not s["base_url"]:
         return False, "disabled (MORIE_HOSTED_BASE_URL is empty)"
     if not s["logged_in"]:
-        return False, "not logged in -- run `morie login`"
+        return False, "not logged in -- run `morie login` (GitHub) or `morie login --email you@example.com`"
     who = f" as {s['user']}" if s.get("user") else ""
     if not s["reachable"]:
         from .hosted import hosted_problem_line
@@ -148,7 +148,10 @@ def _check_datasets() -> tuple[bool, str]:
 
         db_path = morie_db()
         if not db_path.exists():
-            return False, "morie.db not found -- it is fetched, not shipped: run `morie download-bootstrap`"
+            return (
+                False,
+                "morie.db not found -- it is built on first use: run `morie pull KEY` (keys: morie list-datasets)",
+            )
         size_mb = db_path.stat().st_size // (1024 * 1024)
         ds = list_datasets()
         catalog = [d for d in ds if d["type"] != "hosted"]
@@ -231,8 +234,12 @@ def run_checks() -> dict[str, Any]:
     # Optional Python packages
     for pkg in _OPTIONAL_IMPORTS:
         ok, detail = _check_import(pkg)
-        if pkg == "textual" and not ok:
-            detail = 'not installed (morie tui and edit need it): pip install "morie[interactive]"'
+        if not ok:
+            detail = (
+                'not installed (morie tui and edit need it): pip install "morie[interactive]"'
+                if pkg == "textual"
+                else "not installed (optional: morie's native cores need none of these)"
+            )
         _add(f"import {pkg}", ok, detail, required=False)
 
     ok, detail = _check_interactive_layer()

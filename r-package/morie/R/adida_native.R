@@ -134,7 +134,7 @@ disaggregate <- function(aggregate_value, m, profile = NULL) {
 #' @keywords internal
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::intermittent_forecast(V)
+#' morie:::intermittent_forecast(V)
 intermittent_forecast <- function(y, method = "tsb", alpha = 0.1,
                                   beta = 0.05, horizon = 1L) {
   yv <- as.numeric(y)

@@ -35,6 +35,52 @@ _BLOCKED_NAMES = {
     "object",
 }
 
+# attribute names that lead out of arithmetic: modules the array core re-exports, the
+# interpreter's own objects, and anything that runs code or touches the file system
+_BLOCKED_ATTRS = frozenset(
+    {
+        "eval",
+        "exec",
+        "compile",
+        "open",
+        "input",
+        "breakpoint",
+        "exit",
+        "quit",
+        "system",
+        "popen",
+        "getattr",
+        "setattr",
+        "delattr",
+        "globals",
+        "locals",
+        "vars",
+        "dir",
+        "import_module",
+        "bltns",
+        "builtins",
+        "sys",
+        "os",
+        "re",
+        "enum",
+        "importlib",
+        "subprocess",
+        "types",
+        "ctypes",
+        "io",
+        "pathlib",
+        "shutil",
+        "socket",
+        "codecs",
+        "pickle",
+        "marshal",
+        "gc",
+        "inspect",
+    }
+)
+# builtins an expression may call once it has reached them through a value's attribute
+_SAFE_BUILTINS = frozenset({"abs", "min", "max", "round", "sum", "len", "float", "int", "bool", "pow", "divmod"})
+
 _EXPR_NODES = (
     ast.Expression,
     ast.BoolOp,
@@ -92,7 +138,7 @@ def safe_eval_expr(expression: str, namespace: dict[str, Any] | None = None) -> 
         if not isinstance(node, _EXPR_NODES):
             raise ValueError(f"disallowed syntax in expression: {type(node).__name__}")
         if isinstance(node, ast.Attribute) and (
-            node.attr.startswith("_") or node.attr in ("format", "format_map", "mro")
+            node.attr.startswith("_") or node.attr in ("format", "format_map", "mro") or node.attr in _BLOCKED_ATTRS
         ):
             raise ValueError(f"attribute '{node.attr}' not allowed")
         if isinstance(node, ast.Constant) and isinstance(node.value, str) and "__" in node.value:
@@ -129,6 +175,36 @@ class _Evaluator:
 
     def __init__(self, namespace: dict[str, Any]) -> None:
         self._ns = namespace
+
+    def _attribute(self, base: Any, attr: str) -> Any:
+        """``base.attr`` only while the result stays arithmetic: never a module, a class or an
+        interpreter builtin (``np.re.enum.bltns.eval`` walked out through the array core's
+        re-exports; the static check cannot see what a name resolves to)."""
+        import types
+
+        if isinstance(base, types.ModuleType) and base not in self._ns.values():
+            raise ValueError(f"attribute access on module '{base.__name__}' is not allowed")
+        value = getattr(base, attr)
+        if isinstance(value, types.ModuleType):
+            raise ValueError(f"'{attr}' is a module and may not be used in an expression")
+        if (
+            isinstance(value, type)
+            and getattr(value, "__module__", "") == "builtins"
+            and value.__name__ not in _SAFE_BUILTINS
+        ):
+            raise ValueError(f"'{attr}' is not allowed in an expression")
+        if isinstance(value, types.BuiltinFunctionType) and value.__name__ not in _SAFE_BUILTINS:
+            owner = getattr(value, "__self__", None)
+            # a method of a value ("ab".upper) and a function of a module the caller put in the
+            # namespace (math.sin) are arithmetic; a function of the builtins module, of a module
+            # reached through an attribute, or of a class (str.format) is the interpreter
+            if owner is None or isinstance(owner, type):
+                raise ValueError(f"'{attr}' is not allowed in an expression")
+            if isinstance(owner, types.ModuleType) and (
+                owner.__name__ == "builtins" or not any(owner is v for v in self._ns.values())
+            ):
+                raise ValueError(f"'{attr}' is not allowed in an expression")
+        return value
 
     def visit(self, node: ast.AST) -> Any:
         if isinstance(node, ast.Constant):
@@ -178,7 +254,7 @@ class _Evaluator:
         if isinstance(node, ast.IfExp):
             return self.visit(node.body) if self.visit(node.test) else self.visit(node.orelse)
         if isinstance(node, ast.Attribute):
-            return getattr(self.visit(node.value), node.attr)
+            return self._attribute(self.visit(node.value), node.attr)
         if isinstance(node, ast.Subscript):
             return self.visit(node.value)[self.visit(node.slice)]
         if isinstance(node, ast.Slice):

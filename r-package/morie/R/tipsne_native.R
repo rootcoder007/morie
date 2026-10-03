@@ -223,7 +223,7 @@
 #'     5L))
 #' DES <- cbind(1, ARM, COV[, 1], COV[, 2])[MISS == 0L, , drop = FALSE]
 #' YO <- BASE[MISS == 0L]
-#' rmorie:::morie_tipsne_ancova(YO, DES)
+#' morie:::morie_tipsne_ancova(YO, DES)
 morie_tipsne_ancova <- function(y, design) {
   n <- length(y)
   p <- ncol(design)
@@ -447,7 +447,7 @@ morie_tipsne_impute <- function(e, y, arm, X, miss, fit, mi) {
 #' @keywords internal
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::morie_tipsne_pool(V, V)
+#' morie:::morie_tipsne_pool(V, V)
 morie_tipsne_pool <- function(ests, vars, pooling = "rubin1987",
                               df_complete = NULL) {
   m <- length(ests)

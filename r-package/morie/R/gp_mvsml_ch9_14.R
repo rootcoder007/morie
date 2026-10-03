@@ -84,7 +84,7 @@ Apxkern <- function(X, m_index, Z_u1, Z_E, kernel = "linear",
 #' @param beta Argument `beta`; see Usage.
 #' @return A list with `value`, `side`, `below`, `above`, `on_plane`, `distance`, `norm_beta`.
 #' @examples
-#' rmorie:::Hyperpl(X = c(1, 2, 3, 4, 5, 6, 7, 8), beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5)
+#' morie:::Hyperpl(X = c(1, 2, 3, 4, 5, 6, 7, 8), beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5)
 #' @keywords internal
 Hyperpl <- function(X, beta0, beta) {
   X <- as.matrix(X)
@@ -112,7 +112,7 @@ Hyperpl <- function(X, beta0, beta) {
 #' @return A list with `beta`, `beta0`, `norm_beta`, `margin`, `street_width`, `objective`, `functional_margin`, `min_functional_margin`, `constraint_ok`, `alpha`, `support_vectors`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Hardsvm(V, V)
+#' morie:::Hardsvm(V, V)
 #' @keywords internal
 Hardsvm <- function(X, y, ...) {
   fit <- morie_svm_fit_dual(X, y, C = NULL, ...)
@@ -153,7 +153,7 @@ Hardsvm <- function(X, y, ...) {
 #' @return A list with `L`, `stationarity`, `max_stationarity`, `alpha_nonnegative`, `n_equality`, `n_inequality`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Wolfedual(V, V)
+#' morie:::Wolfedual(V, V)
 #' @keywords internal
 Wolfedual <- function(f, grad_f, h = NULL, grad_h = NULL, g = NULL,
                       grad_g = NULL, lam = NULL, alpha = NULL) {
@@ -205,7 +205,7 @@ Wolfedual <- function(f, grad_f, h = NULL, grad_h = NULL, g = NULL,
 #' @return A list with `x`, `alpha`, `dual_quadratic`, `dual_linear`, `dual_value`, `primal_value`, `constraint`, `active`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Qplincon(V, V)
+#' morie:::Qplincon(V, V)
 #' @keywords internal
 Qplincon <- function(a, c) {
   av <- as.numeric(a)
@@ -236,7 +236,7 @@ Qplincon <- function(a, c) {
 #' @param alpha Argument `alpha`; see Usage.
 #' @return A list with `L`, `quadratic_term`, `slack`, `grad_beta`, `grad_beta0`.
 #' @examples
-#' rmorie:::Svmlagr(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Svmlagr(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   beta0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5, alpha = 0.5)
 #' @keywords internal
 Svmlagr <- function(X, y, beta0, beta, alpha) {
@@ -269,7 +269,7 @@ Svmlagr <- function(X, y, beta0, beta, alpha) {
 #' @param T Argument `T`; see Usage.
 #' @return A list with `beta`, `beta0`, `norm_beta`, `margin`, `zeta`, `slack_sum`, `n_violating`, `n_misclassified`, `alpha`, `support_vectors`, `objective`.
 #' @examples
-#' rmorie:::Softsvm(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Softsvm(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   T = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Softsvm <- function(X, y, T, ...) {
@@ -315,7 +315,7 @@ Softsvm <- function(X, y, T, ...) {
 #' @return A list with `L`, `stationarity_beta`, `balance`, `multiplier_sum`, `complementary_alpha`, `complementary_delta`, `max_residual`, `kkt_satisfied`.
 #' @examples
 #' set.seed(1)
-#' r <- rmorie:::Svmkkt(X = rnorm(10), y = rnorm(10), beta0 = 0.5, beta = 0.5, alpha = 0.5,
+#' r <- morie:::Svmkkt(X = rnorm(10), y = rnorm(10), beta0 = 0.5, beta = 0.5, alpha = 0.5,
 #'   delta = rnorm(10), zeta = rnorm(10), T = rnorm(10))
 #' TRUE
 #' @keywords internal
@@ -358,7 +358,7 @@ Svmkkt <- function(X, y, beta0, beta, alpha, delta, zeta, T) {
 #' @param K Argument `K`; see Usage.
 #' @return A list with `alpha`, `beta`, `beta0`, `objective`, `support_vectors`, `balance`, `bounded`, `at_bound`.
 #' @examples
-#' rmorie:::Svmsdual(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Svmsdual(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   T = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Svmsdual <- function(X, y, T, K = NULL, ...) {
@@ -392,7 +392,7 @@ Svmsdual <- function(X, y, T, K = NULL, ...) {
 #' @param K Argument `K`; see Usage.
 #' @return The value of `out`, as built in the body.
 #' @examples
-#' rmorie:::Ksvmdual(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Ksvmdual(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   T = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Ksvmdual <- function(X, y, T, kernel = "linear", gamma = NULL,
@@ -422,7 +422,7 @@ Ksvmdual <- function(X, y, T, kernel = "linear", gamma = NULL,
 #' @param mu Argument `mu`; see Usage.
 #' @return A list with `integral`, `fitted`, `mu`, `n_points`.
 #' @examples
-#' rmorie:::Flmint(t = c(1, 2, 3, 4, 5, 6, 7, 8), x_values = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Flmint(t = c(1, 2, 3, 4, 5, 6, 7, 8), x_values = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   beta_values = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Flmint <- function(t, x_values, beta_values, mu = 0) {
@@ -451,7 +451,7 @@ Flmint <- function(t, x_values, beta_values, mu = 0) {
 #' @return A list with `beta_t`, `t`, `n_basis`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::Basexp(V, V)
+#' morie:::Basexp(V, V)
 #' @keywords internal
 Basexp <- function(t, beta_coef, kind = "fourier", period = NULL) {
   coefs <- as.numeric(beta_coef)
@@ -483,7 +483,7 @@ Basexp <- function(t, beta_coef, kind = "fourier", period = NULL) {
 #' @param period Argument `period`; see Usage.
 #' @return A list with `Psi`, `m`, `L2`, `PsiTPsi`.
 #' @examples
-#' rmorie:::Basmat(t = c(1, 2, 3, 4, 5, 6, 7, 8), n_basis = 5L)
+#' morie:::Basmat(t = c(1, 2, 3, 4, 5, 6, 7, 8), n_basis = 5L)
 #' @keywords internal
 Basmat <- function(t, n_basis, kind = "fourier", period = NULL) {
   Psi <- morie_fda_basis(t, n_basis, kind, period)
@@ -572,7 +572,7 @@ morie_fda_basis_deriv <- function(t, n_basis, p = 1L, kind = "fourier",
 #' @param beta Argument `beta`; see Usage.
 #' @return The value of `out`, as built in the body.
 #' @examples
-#' rmorie:::Penmat(t = seq(0, 1, length.out = 50), L1 = 5L, p = 2L)
+#' morie:::Penmat(t = seq(0, 1, length.out = 50), L1 = 5L, p = 2L)
 #' @keywords internal
 Penmat <- function(t, L1, p = 2L, kind = "fourier", period = NULL,
                    beta = NULL) {
@@ -613,7 +613,7 @@ Penmat <- function(t, L1, p = 2L, kind = "fourier", period = NULL,
 #' @param mu Argument `mu`; see Usage.
 #' @return A list with `sse`, `penalty`, `lambda`, `objective`, `fitted`, `residuals`.
 #' @examples
-#' rmorie:::Pensse(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5,
+#' morie:::Pensse(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5,
 #'   lam = c(1, 2, 3, 4, 5, 6, 7, 8), P = 0.5)
 #' @keywords internal
 Pensse <- function(y, X, beta, lam, P, mu = 0) {
@@ -650,7 +650,7 @@ Pensse <- function(y, X, beta, lam, P, mu = 0) {
 #' @param tol Argument `tol`; see Usage.
 #' @return A list with `beta`, `beta_star`, `Gamma`, `eigenvalues`, `X_star`, `mu`, `fitted`, `residuals`, `sse`, `penalty`, `objective`, `rank`.
 #' @examples
-#' rmorie:::Penfreg(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), P = 0.5,
+#' morie:::Penfreg(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), P = 0.5,
 #'   lam = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Penfreg <- function(y, X, P, lam, mu = NULL, tol = 1e-10) {
@@ -748,7 +748,7 @@ morie_fda_env_interaction <- function(X, env, reference = TRUE) {
 #' @param P Argument `P`; see Usage.
 #' @return A list with `coef`, `mu`, `beta_E`, `beta`, `beta_EF`, `widths`, `design`, `fitted`, `residuals`, `sse`, `n_columns`, `has_interaction`.
 #' @examples
-#' rmorie:::Fregenv(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Fregenv(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   X_E = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Fregenv <- function(y, X, X_E, X_EF = NULL, lam = 0, P = NULL) {
@@ -807,7 +807,7 @@ Fregenv <- function(y, X, X_E, X_EF = NULL, lam = 0, P = NULL) {
 #' @param reference Argument `reference`; see Usage.
 #' @return The value of `out`, as built in the body.
 #' @examples
-#' rmorie:::Fregint(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' morie:::Fregint(y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
 #'   X_E = c(1, 2, 3, 4, 5, 6, 7, 8))
 #' @keywords internal
 Fregint <- function(y, X, X_E, X_EF = NULL, env = NULL, lam = 0,

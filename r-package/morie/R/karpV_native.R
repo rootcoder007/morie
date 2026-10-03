@@ -370,7 +370,7 @@ morie_karpV_to_string <- function(node) {
 #' @return a list of trees with a spread of depths and shapes.
 #' @export
 #' @examples
-#' morie_karpV_ramped(.karpv_rng(3), 60L, rmorie:::.KARPV_FUNCTIONS, "x",
+#' morie_karpV_ramped(.karpv_rng(3), 60L, morie:::.KARPV_FUNCTIONS, "x",
 #'     c(-5, 5), 6L)
 #' @keywords internal
 morie_karpV_ramped <- function(e, n, functions, terminals, erc, max_depth) {

@@ -48,7 +48,7 @@ def test_verify_pollution_demo_pm25_exit0():
     assert r.returncode == 0
     assert "PM25" in r.stdout
     # the report reads the dataclass fields that exist (1.4.0): no "?" source, non-zero burden
-    assert "source:   Burnett" in r.stdout
+    assert "source:   Chen & Hoek" in r.stdout
     import re
 
     m = re.search(r"attributable deaths:\s+([0-9.]+)", r.stdout)

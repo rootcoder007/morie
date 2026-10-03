@@ -116,7 +116,7 @@ NULL
 
 #' @noRd
 .morie_matching_have_cpp <- function(name) {
-  exists(name, envir = asNamespace("rmorie"), inherits = FALSE)
+  exists(name, envir = asNamespace("morie"), inherits = FALSE)
 }
 
 #' @param fn See Usage.
@@ -349,7 +349,7 @@ morie_matching_nearest_neighbor <- function(data, treatment, covariates,
   tr <- as.numeric(data[[treatment]])
   if (!isTRUE(replace) && sum(tr == 1, na.rm = TRUE) * n_neighbors > sum(tr == 0, na.rm = TRUE)) {
     # MatchIt's default too, so the cross-validation holds; but the user must know the estimand shifts
-    warning("Fewer controls than treated units: 1:1 matching without replacement leaves treated ",
+    warning("Fewer control units than treated: 1:1 matching without replacement leaves treated ",
             "units unmatched and the ATT is estimated on the matchable subset only; pass ",
             "replace = TRUE to re-use controls.", call. = FALSE)
   }
@@ -1416,7 +1416,7 @@ morie_matching_rosenbaum_bounds <- function(data, outcome, treatment,
 morie_matching_doubly_robust <- function(data, outcome, treatment, covariates,
                                          ps = NULL, n_bootstrap = 200L,
                                          seed = 42L, alpha = 0.05) {
-  .rmorie_local_seed(seed)
+  .morie_local_seed(seed)
   df <- .morie_matching_drop_na(data, c(outcome, treatment, covariates))
   # Fold the per-match "fewer controls than treated" warnings (from
   # the full-data match and from every bootstrap resample) into one

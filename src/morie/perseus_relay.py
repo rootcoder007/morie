@@ -35,7 +35,9 @@ def _create_agent():
     try:
         from .agent import create_agent
     except ImportError as exc:
-        raise RuntimeError("the morie agent is not bundled in this install; run `morie interactive install` to add it") from exc
+        raise RuntimeError(
+            "the morie agent is not bundled in this install; run `morie interactive install` to add it"
+        ) from exc
     return create_agent()
 
 
@@ -165,7 +167,7 @@ def answer_question(agent: Any, question: str) -> tuple[int, dict[str, Any]]:
     text = str(payload.get("output_text") or "")
     if payload.get("mode") == "local_fallback":
         return 503, {
-            "error": "no LLM backend reachable: run `morie login` for the hosted tier or start Ollama",
+            "error": "no LLM backend reachable: run `morie login` (GitHub, or --email you@example.com) for the hosted tier or start Ollama",
             "text": text,
             "tool_calls": [],
             "iterations": 0,

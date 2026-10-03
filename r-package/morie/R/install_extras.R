@@ -190,7 +190,7 @@ morie_install_extras <- function(which = "missing",
 #' Internal helper: Morie Get Suggests
 #' @noRd
 .morie_get_suggests <- function() {
-  desc_path <- system.file("DESCRIPTION", package = "rmorie")
+  desc_path <- system.file("DESCRIPTION", package = "morie")
   if (!nzchar(desc_path)) {
     stop("Could not locate morie's DESCRIPTION; package not installed?",
          call. = FALSE)
@@ -274,7 +274,8 @@ morie_install_extras <- function(which = "missing",
 #' @export
 morie_ensure_extras <- function(pkgs, ask = interactive(), repos = NULL) {
   stopifnot(is.character(pkgs), length(pkgs) >= 1L)
-  miss <- pkgs[!vapply(pkgs, .morie_pkg_installed, logical(1L))]
+  # about to be loaded anyway, so ask requireNamespace(): an installed but broken package counts as missing
+  miss <- pkgs[!vapply(pkgs, function(p) isTRUE(requireNamespace(p, quietly = TRUE)), logical(1L))]
   if (length(miss) == 0L) {
     return(invisible(TRUE))
   }

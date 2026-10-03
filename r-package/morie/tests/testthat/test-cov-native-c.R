@@ -41,8 +41,8 @@ test_that("morie_bricklayer check mode reports without installing", {
   skip_on_cran()
   out <- NULL
   expect_output(out <- morie_bricklayer(check = TRUE), "morie family status")
-  expect_named(out, c("morie", "rmorie", "rmoriedata", "rmoriebricklayer", "rmorie-cli"))
-  expect_true(out[["rmorie"]])
+  expect_named(out, c("morie", "morie", "rmoriedata", "rmoriebricklayer", "rmorie-cli"))
+  expect_true(out[["morie"]])
   expect_equal(out[["rmoriedata"]], requireNamespace("rmoriedata", quietly = TRUE))
 })
 

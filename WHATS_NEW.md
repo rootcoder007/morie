@@ -54,8 +54,8 @@ Per-package full changelogs:
   rejects an unknown module; `sample --n` must be positive and within the file; `emissions`
   rejects a negative duration and names an unknown country code; `inspect` refuses a file
   that is not a table; `verify`/`inspect --module` reject an unknown module; `login` does
-  not open a browser off a terminal; `edit`, `exec co` and `agent` say when the interactive
-  layer is absent instead of falling back to nano or the provider chain; `interactive
+  not open a browser off a terminal; `exec co` and `agent` say when the interactive
+  layer is absent instead of falling back to the provider chain (`edit` opens your $EDITOR and needs no layer); `interactive
   install` says when the layer is already installed (`--force` refetches) and only mentions
   the textual extra when it is missing; `from morie.fn import os` is an ImportError, not the
   stdlib module; the estimators and sampling functions accept a CSV path or a dict of columns
@@ -64,6 +64,39 @@ Per-package full changelogs:
   no terminal, and pins it to the release; the R launcher works on R 4.6 (no explicit
   `--args`); sampling docstrings run without pandas; docs blocks for ebac, spatial and
   genomics name the functions that exist.
+
+* Fixes from the 1.4.0 fresh-user test agents (tests in `test_stress_1_4_0.py` and the R arm's
+  `test-agent-round-1_4_0.R`). Pollution: the concentration-response coefficients now match their
+  sources in both arms: NO2 all-cause mortality RR 1.02 per 10 µg/m³ (Huangfu & Atkinson 2020, the
+  WHO 2021 review) instead of 1.04, and PM2.5 all-cause mortality log-linear at RR 1.08 per 10 µg/m³
+  (Chen & Hoek 2020, WHO 2021) instead of an IER triple with no source (the IER stays for IHD and
+  stroke), so `verify-pollution` burdens are smaller than 1.3.x reported. The formula sandbox behind
+  `bexpr()`/`moncar()` no longer lets an attribute chain reach a module or a builtin
+  (`np.re.enum.bltns`); `serve --bind` beyond loopback needs `--token`; `pull` takes exact keys and
+  suggests near misses; `ingest siu --report-id` works; the effects estimators take a CSV path or a
+  dict of columns as documented; `edit` refuses a terminal editor off a terminal and names a missing
+  one; the R bridge accepts rmorie for the R-backed modules. Crypto: key files written by 1.4.0 carry a marker, a 1.3.x public key is
+  refused by `encrypt` (its key generation was not FIPS 203, so the file could never be opened) and a
+  1.3.x secret key says so when it meets a 1.4.0 container; `encrypt` takes `--out`/`--force` and never
+  overwrites; key names are plain identifiers (no path traversal); a missing key file is named; the
+  keystore password is confirmed when the keystore is created; prompts never wait on Windows' NUL
+  device. Datasets: a cached `ocp21` has the same columns as the first pull; your own research file
+  (`mapq`) is read in place and never copied into the cache, and the message names the directory
+  `MORIE_DATA_DIR` points at; the CIHI tables download again (the sheet declares 16,384 columns);
+  `download-bootstrap` asks for `--survey` instead of fetching several hundred MB; `--year` says it is
+  TPS-only; toy datasets print their synthetic note as a note. Verbs: `run-module` says in one line that
+  an R-backed module needs R and `morie r-install` (rmorie from r-universe, which the R bridge now
+  accepts), notes the synthetic frame, fails when a module wrote nothing, and names an unknown dataset
+  once; `generate-template` takes the module as a positional argument, fills the description and never
+  overwrites without `--force`; `sample` validates its columns, rejects a non-numeric size column and
+  gains `--per-stratum`/`--no-weight` like rmorie; `profile-dataset` validates its hint columns;
+  `inspect` refuses a non-table in one line; `emissions --country` is case-insensitive; `explain`
+  describes the columns the power table really has and exits 1 for an unknown file; `tutorial` says it
+  needs a terminal; `selftest` labels are honest and the inspector/verifier run on the shipped CSV;
+  `doctor` says which imports are optional and points `morie.db` at `morie pull`; `login --token` refuses
+  a key the gateway rejects and never prompts off a terminal; `list-datasets` says when the stored key
+  was rejected; a progress line shows no rate before half a second; every login instruction names the
+  email route; the placeholder test package stays out of the wheel.
 
 * `morie interactive install` is the second step of every install channel: the README, the
   install pages and INSTALLATION.md say so up front, and the curl one-liner runs it as its last

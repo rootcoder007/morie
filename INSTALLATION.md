@@ -496,8 +496,7 @@ morie's CLI is bilingual (EN/FR) by default and ships translations for **English
 
 ```bash
 MORIE_LOCALE=fr morie cheatsheet
-MORIE_LOCALE=es morie doctor
-MORIE_LOCALE=zh morie tutorial
+MORIE_LOCALE=fr morie explain power_two_proportion_gender.csv
 ```
 
 Methodology documentation (the JSS papers, in-depth method descriptions) is English-only for now — translating dense statistical prose is its own scoped project. Help us add it: every locale is one dict edit at [`src/morie/i18n.py`](src/morie/i18n.py).

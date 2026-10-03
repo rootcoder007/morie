@@ -108,7 +108,7 @@ def _check_assumptions(
     _add(
         "pollutant supported by envhealth CRF",
         pollutant.lower() in ("no2", "pm25"),
-        "Current CRFs: NO2 (log-linear), PM2.5 (Burnett IER). Other pollutants reject.",
+        "Current CRFs: NO2 (log-linear), PM2.5 (log-linear all-cause; Burnett IER for IHD and stroke). Other pollutants reject.",
     )
     return assumptions
 

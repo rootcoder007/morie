@@ -142,7 +142,7 @@
 #' @method as.double morie_frac
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' rmorie:::as.double.morie_frac(D)
+#' morie:::as.double.morie_frac(D)
 #' @keywords internal
 as.double.morie_frac <- function(x, ...) x$n / x$d
 #' as.numeric.morie_frac
@@ -157,7 +157,7 @@ as.double.morie_frac <- function(x, ...) x$n / x$d
 #' @export
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' rmorie:::as.numeric.morie_frac(D)
+#' morie:::as.numeric.morie_frac(D)
 #' @keywords internal
 as.numeric.morie_frac <- function(x, ...) x$n / x$d
 #' format.morie_frac
@@ -172,7 +172,7 @@ as.numeric.morie_frac <- function(x, ...) x$n / x$d
 #' @export
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' rmorie:::format.morie_frac(D)
+#' morie:::format.morie_frac(D)
 #' @keywords internal
 format.morie_frac <- function(x, ...) paste0(x$n, "/", x$d)
 #' print.morie_frac
@@ -187,7 +187,7 @@ format.morie_frac <- function(x, ...) paste0(x$n, "/", x$d)
 #' @export
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::print.morie_frac(V)
+#' morie:::print.morie_frac(V)
 #' @keywords internal
 print.morie_frac <- function(x, ...) cat(format(x), "\n")
 #' Equality of exact rationals

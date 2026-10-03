@@ -5,7 +5,7 @@
 
 test_that("morie_llm_detect_provider walks ollama, gemini, api, openai, local in order", {
   testthat::skip_on_covr()
-  pkg <- if (isNamespaceLoaded("rmorie")) "rmorie" else "morie"
+  pkg <- if (isNamespaceLoaded("morie")) "morie" else "morie"
   ollama_up <- FALSE
   local_mocked_bindings(morie_llm_probe_ollama = function(...) ollama_up, .package = pkg)
   vars <- c(gem = "GEMINI_API_KEY", base = "LLM_API_BASE_URL", key = "LLM_API_KEY", oai = "OPENAI_API_KEY")

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Fixes for the 1.3.9 stress-test findings (2026-10-02): each test is one finding.
 
-.pkg <- utils::packageName(environment(morie_cli))   # "rmorie", or "morie" in the morie r-package
+.pkg <- utils::packageName(environment(morie_cli))   # "morie", or "morie" in the morie r-package
 .cap <- function(...) {
   txt <- character()
   status <- morie_cli(c(...), out = function(s) txt <<- c(txt, s))
@@ -196,7 +196,7 @@ test_that("install_cli() writes a launcher that pins the library it was installe
   lines <- readLines(p)
   lib <- normalizePath(dirname(system.file(package = .pkg)), winslash = "/")
   expect_true(any(grepl(lib, lines, fixed = TRUE)))
-  expect_true(any(grepl("^R_LIBS=", lines)))
+  expect_true(any(grepl(".libPaths(c(", lines, fixed = TRUE)))  # pinned inside R: ~/.Renviron cannot undo it
   expect_false(any(grepl("--vanilla", lines)))
   expect_true(any(grepl(paste0(.pkg, "::morie_cli()"), lines, fixed = TRUE)))
 })

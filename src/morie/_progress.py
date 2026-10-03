@@ -47,8 +47,8 @@ class Progress:
         return fmt_bytes(n) if self.unit == "B" else f"{int(n):,} {self.unit}"
 
     def _line(self) -> str:
-        elapsed = max(time.monotonic() - self.t0, 1e-6)
-        rate = f"{self._fmt(self.done / elapsed)}/s"
+        elapsed = time.monotonic() - self.t0
+        rate = f"{self._fmt(self.done / elapsed)}/s" if elapsed >= 0.5 else ""
         if self.total:
             pct = min(100, int(100 * self.done / self.total))
             filled = pct // 4

@@ -932,6 +932,37 @@ _PY_FALLBACK_MODULES = frozenset(
 )
 
 
+_R_INSTALL_HINT = (
+    "install R, then `morie r-install` (rmorie from r-universe, prebuilt on macOS and Windows) "
+    "and run the module again"
+)
+
+
+def _r_package_absent(exc: BaseException) -> bool:
+    """True when the R route failed only because R or its package is not installed."""
+    text = str(exc)
+    return (
+        "Rscript is not available" in text
+        or "is required for R-backed modules but is not installed" in text
+        or "there is no package called" in text
+    )
+
+
+def r_route_problem(module_name: str, exc: BaseException) -> str:
+    """One line for the terminal when an R-backed module cannot run."""
+    if _r_package_absent(exc):
+        return (
+            f"{module_name} runs in R and this install has no R package for it: {_R_INSTALL_HINT}. "
+            f"The Python-only modules are: {', '.join(sorted(_PY_FALLBACK_MODULES))}."
+        )
+    text = str(exc)
+    tail = ""
+    if "STDERR:" in text:
+        err_lines = [ln for ln in text.split("STDERR:", 1)[1].splitlines() if ln.strip()]
+        tail = f": {err_lines[-1].strip()}" if err_lines else ""
+    return f"{module_name}: the R-backed run failed{tail} (`morie doctor` checks the R side)"
+
+
 def _cpads_csv_for_run(cpads_csv: str | Path, dataset_key: str | None) -> str | Path:
     """The CSV the module stages (R bridge or Python) will read.
 
@@ -994,13 +1025,18 @@ def run_module(
         # in OUR code and must not be masked by the Python fallback.
         if module_name not in _PY_FALLBACK_MODULES:
             raise
-        logging.getLogger(__name__).warning(
-            "R implementation of %s failed (%s); falling back to the "
-            "Python implementation. An R-side regression would otherwise "
-            "be invisible - investigate if unexpected.",
-            module_name,
-            str(exc).splitlines()[0] if str(exc) else type(exc).__name__,
-        )
+        if _r_package_absent(exc):
+            logging.getLogger(__name__).info(
+                "%s: the R package is not installed; using the Python implementation", module_name
+            )
+        else:
+            logging.getLogger(__name__).warning(
+                "R implementation of %s failed (%s); falling back to the "
+                "Python implementation. An R-side regression would otherwise "
+                "be invisible - investigate if unexpected.",
+                module_name,
+                str(exc).splitlines()[0] if str(exc) else type(exc).__name__,
+            )
 
     if module_name == "power-design":
         return run_power_design_module(cpads_csv, output_dir=output_dir)

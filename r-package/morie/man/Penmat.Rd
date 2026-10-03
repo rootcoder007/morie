@@ -29,6 +29,6 @@ P_ij = int_0^T phi_i^(p)(t) phi_j^(p)(t) dt.  The chapter says p is
 typically 1 or 2.  Integrals by the trapezoid rule on the grid t.
 }
 \examples{
-rmorie:::Penmat(t = seq(0, 1, length.out = 50), L1 = 5L, p = 2L)
+morie:::Penmat(t = seq(0, 1, length.out = 50), L1 = 5L, p = 2L)
 }
 \keyword{internal}

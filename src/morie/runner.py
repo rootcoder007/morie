@@ -20,6 +20,31 @@ from . import __version__
 from .modules import DEFAULT_CPADS_CSV, list_modules, run_module
 from .perseus import ask_percy
 
+
+def _stdin_is_terminal() -> bool:
+    """True only when stdin is a real console.
+
+    ``sys.stdin.isatty()`` answers True for the NUL device on Windows, so a prompt there
+    (getpass, input) waits on a console nobody has; ask the console API as well.
+    """
+    try:
+        if not sys.stdin.isatty():
+            return False
+    except (AttributeError, ValueError):
+        return False
+    if sys.platform != "win32":
+        return True
+    try:
+        import ctypes
+        import msvcrt
+
+        handle = msvcrt.get_osfhandle(sys.stdin.fileno())
+        mode = ctypes.c_ulong()
+        return bool(ctypes.windll.kernel32.GetConsoleMode(ctypes.c_void_p(handle), ctypes.byref(mode)))
+    except Exception:  # noqa: BLE001 - no console API means no console
+        return False
+
+
 _CODECARBON_AVAILABLE = True  # the vendored tracker is always present
 
 
@@ -344,6 +369,10 @@ def build_parser() -> argparse.ArgumentParser:
     sample_cmd.add_argument("--cluster-col", default=None, help="Column for cluster sampling")
     sample_cmd.add_argument("--size-col", default=None, help="Column for PPS sampling")
     sample_cmd.add_argument("--proportional", action="store_true", help="Use proportional allocation (stratified only)")
+    sample_cmd.add_argument(
+        "--per-stratum", action="store_true", help="--n is the size of EACH stratum (default: --n is the total)"
+    )
+    sample_cmd.add_argument("--no-weight", action="store_true", help="Do not add the .weight column to the sample")
     sample_cmd.add_argument("--seed", type=int, default=42, help="Random seed (default: 42)")
     sample_cmd.add_argument("--output", default=None, help="Output CSV path for the sample")
 
@@ -418,7 +447,7 @@ def build_parser() -> argparse.ArgumentParser:
     # ── edit ────────────────────────────────────────────────────────────
     edit_cmd = subparsers.add_parser(
         "edit",
-        help="Open a file in the built-in scientific editor (Textual)",
+        help="Open a file in your editor ($VISUAL or $EDITOR; --run executes it afterwards)",
     )
     edit_cmd.add_argument("file", help="File to edit (creates if not found)")
     edit_cmd.add_argument("--run", action="store_true", help="Run the file after saving (ctrl+r)")
@@ -470,6 +499,8 @@ def build_parser() -> argparse.ArgumentParser:
     crypto_encrypt = crypto_sub.add_parser("encrypt", help="Hybrid-encrypt a file")
     crypto_encrypt.add_argument("file", help="File to encrypt")
     crypto_encrypt.add_argument("--to", required=True, dest="recipient", help="Recipient key name or public key file")
+    crypto_encrypt.add_argument("--out", default=None, help="Where to write the ciphertext (default: FILE.morieenc)")
+    crypto_encrypt.add_argument("--force", action="store_true", help="replace an existing output file")
 
     crypto_decrypt = crypto_sub.add_parser("decrypt", help="Decrypt a hybrid-encrypted file")
     crypto_decrypt.add_argument("file", help="File to decrypt")
@@ -493,8 +524,8 @@ def build_parser() -> argparse.ArgumentParser:
     bootstrap_cmd.add_argument(
         "--survey",
         choices=["csads_2021", "csads_2023", "csus_2019", "csus_2023", "all"],
-        default="all",
-        help="Which bootstrap file to download (default: all)",
+        default=None,
+        help="Which bootstrap file to download (csads_2021, csads_2023, csus_2019, csus_2023, or all)",
     )
     bootstrap_cmd.add_argument(
         "--limit",
@@ -583,12 +614,14 @@ def build_parser() -> argparse.ArgumentParser:
         "generate-template",
         help="Write a methods+results scaffold for your first paper",
     )
+    template_cmd.add_argument("module_pos", nargs="?", default=None, metavar="MODULE", help="Module name to scaffold")
     template_cmd.add_argument(
-        "--module", default="power-design", help="Module name to scaffold methods for (default: power-design)"
+        "--module", default=None, help="Module name to scaffold methods for (default: power-design)"
     )
     template_cmd.add_argument(
         "--out", type=Path, default=Path("first-paper.md"), help="Output markdown path (default: first-paper.md)"
     )
+    template_cmd.add_argument("--force", action="store_true", help="replace an existing output file")
 
     # ── pull: one-line CLI shortcuts to named morie.datasets loaders ───
     # This is the non-coder entry point.  Users never have to write
@@ -799,7 +832,7 @@ def _add_interactive_layer(what: str) -> bool:
     from . import _interactive
 
     print(f"{what} is not bundled in this install. Run `morie interactive install` to add it for this user.")
-    interactive = sys.stdin.isatty() and sys.stdout.isatty() and not os.environ.get("MORIE_NO_PROMPT", "").strip()
+    interactive = _stdin_is_terminal() and sys.stdout.isatty() and not os.environ.get("MORIE_NO_PROMPT", "").strip()
     if not interactive:
         return False
     try:
@@ -962,17 +995,44 @@ def _main_impl() -> int:
                 output_dir=out_dir,
             )
         except KeyError as exc:
-            print(
-                f"unknown dataset key: {exc.args[0] if exc.args else exc} (keys: morie list-datasets)", file=sys.stderr
-            )
+            msg = str(exc.args[0] if exc.args else exc)
+            if msg.startswith("Unknown dataset key"):
+                msg = "unknown" + msg[len("Unknown") :]
+            else:
+                msg = f"unknown dataset key: {msg}"
+            print(msg, file=sys.stderr)
             return 1
         except ValueError as exc:
             print(str(exc), file=sys.stderr)
             return 1
+        except RuntimeError as exc:
+            from .modules import r_route_problem
+
+            print(r_route_problem(args.module, exc), file=sys.stderr)
+            return 1
+        from .modules import _is_synthetic_cpads_path
+
+        if not getattr(args, "dataset", None) and (
+            not args.cpads_csv or _is_synthetic_cpads_path(Path(args.cpads_csv).expanduser().resolve())
+        ):
+            from .data import cached_cpads
+
+            if cached_cpads() is None:
+                print(
+                    "note: this run used the shipped 1,200-row synthetic CPADS frame; the numbers are an exercise, "
+                    "not findings (`morie pull ocp21` fetches the real PUMF, used by default from then on)",
+                    file=sys.stderr,
+                )
         print(f"Completed module: {args.module}")
         print("Generated tables:", ", ".join(outputs.keys()))
         n_files = len(list(out_dir.iterdir())) if out_dir.is_dir() else 0
         print(f"Written to {out_dir} ({n_files} files)")
+        if n_files == 0:
+            print(
+                f"{args.module} wrote nothing: see the module's declared outputs with `morie list-modules`",
+                file=sys.stderr,
+            )
+            return 1
         return 0
 
     if args.command == "run-modules":
@@ -996,6 +1056,12 @@ def _main_impl() -> int:
     if args.command == "serve":
         from .perseus_relay import serve
 
+        if args.bind not in ("127.0.0.1", "localhost", "::1") and not args.token:
+            print(
+                f"serve --bind {args.bind} listens beyond this machine: pass --token so callers must authenticate",
+                file=sys.stderr,
+            )
+            return 2
         try:
             serve(port=args.port, token=args.token, bind=args.bind)
         except OSError as exc:  # port taken, bind address refused
@@ -1134,9 +1200,16 @@ def _main_impl() -> int:
             from .hosted import hosted_key
 
             if hosted_key():
-                print("data.rmorie.com was not reachable just now; its tables appear once a fetch succeeds.")
+                from .hosted import hosted_failure, probe_hosted
+
+                if not probe_hosted() and hosted_failure() == "rejected":
+                    print("data.rmorie.com rejected the stored key; run `morie login` again (GitHub, or --email).")
+                else:
+                    print("data.rmorie.com was not reachable just now; its tables appear once a fetch succeeds.")
             else:
-                print("Curated tables at data.rmorie.com appear here after `morie login` (they need the MORIE key).")
+                print(
+                    "Curated tables at data.rmorie.com appear here after `morie login` (GitHub) or `morie login --email you@example.com` (they need the MORIE key)."
+                )
         return 0
 
     if args.command == "verify-pollution":
@@ -1168,11 +1241,17 @@ def _main_impl() -> int:
     if args.command == "explain":
         from .explain import describe
 
-        print(describe(args.filename))
+        text = describe(args.filename)
+        print(text)
+        if text.startswith("No registered explanation"):
+            if not Path(args.filename).exists():
+                print(f"({args.filename} does not exist here either)", file=sys.stderr)
+            return 1
         return 0
 
     if args.command == "generate-template":
-        name = getattr(args, "module", None)
+        name = getattr(args, "module", None) or getattr(args, "module_pos", None) or "power-design"
+        args.module = name
         if name:
             known = {item["name"] for item in list_modules()}
             try:
@@ -1213,7 +1292,16 @@ def _main_impl() -> int:
             content = src.read_text(encoding="utf-8")
         # Light placeholder substitution
         content = content.replace("[MODULE_NAME]", args.module)
+        description = next((item.get("description", "") for item in list_modules() if item["name"] == args.module), "")
+        if description:
+            content = content.replace("[REPLACE_WITH_MODULE_DESCRIPTION]", description.rstrip("."))
         args.out = Path(args.out)
+        if args.out.exists() and not args.force:
+            print(
+                f"{args.out} already exists; pass --out NAME to write elsewhere or --force to replace it",
+                file=sys.stderr,
+            )
+            return 1
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(content, encoding="utf-8")
         print(f"wrote {args.out}  ({len(content):,} chars)", file=sys.stderr)
@@ -1227,12 +1315,16 @@ def _main_impl() -> int:
         # run after `morie pull ocp21` uses the real PUMF.
         import morie.datasets as md
 
-        from .data import DATASET_CATALOG, _fuzzy_match_key, load_dataset
+        from .data import DATASET_CATALOG, load_dataset
         from .datahub import is_hosted_key
 
         if args.all:
             out_dir = Path(args.out or "datasets")
             out_dir.mkdir(parents=True, exist_ok=True)
+            print(
+                f"pull --all: every catalog key is fetched and written to {out_dir.resolve()} (several GB; Ctrl-C stops it)",
+                file=sys.stderr,
+            )
             failed = 0
             for key in sorted(DATASET_CATALOG):
                 try:
@@ -1268,6 +1360,8 @@ def _main_impl() -> int:
                 else:
                     _warnings.showwarning(w.message, w.category, w.filename, w.lineno)
 
+        if args.year is not None and not args.dataset.startswith("tps-"):
+            print(f"note: --year applies to the TPS feeds only; {args.dataset} is written in full", file=sys.stderr)
         try:
             if args.dataset == "tps-major":
                 df = md.tps_major_crime(year=args.year, max_features=args.max_features)
@@ -1285,18 +1379,17 @@ def _main_impl() -> int:
             elif args.dataset == "cpads":
                 df = md.cpads()
             elif args.dataset == "otis-a01-toy":
-                df = md.otis_a01()
+                with _warnings.catch_warnings(record=True) as _rec:
+                    _warnings.simplefilter("always")
+                    df = md.otis_a01()
+                _note_synthetic(_rec)
             elif args.dataset == "siu-toy":
                 # Single-row "DataFrame" carrying the synthetic report text
                 # for parity with the other pull verbs.
                 from morie.fn import _frame_core as _pd
 
                 df = _pd.DataFrame([{"report_id": "24-OFD-001", "text": md.siu_report_text(offline=True)}])
-            elif (
-                args.dataset in DATASET_CATALOG
-                or _fuzzy_match_key(args.dataset) is not None
-                or is_hosted_key(args.dataset)
-            ):
+            elif args.dataset in DATASET_CATALOG or is_hosted_key(args.dataset):
                 df = load_dataset(args.dataset)
             elif args.dataset == "siu-index":
                 df = md.siu_director_reports()
@@ -1351,6 +1444,13 @@ def _main_impl() -> int:
         from .data import DATASET_CATALOG, fetch_ckan_to_cache
 
         boot = {k: e for k, e in DATASET_CATALOG.items() if e.get("type") == "bootstrap"}
+        if not args.survey:
+            print(
+                "download-bootstrap: pass --survey csads_2021 | csads_2023 | csus_2019 | csus_2023 (or --survey all for "
+                "every file, several hundred MB); the files are the StatCan bootstrap weights, not the microdata",
+                file=sys.stderr,
+            )
+            return 2
         if args.survey == "all":
             targets = sorted(boot)
         else:
@@ -1382,10 +1482,37 @@ def _main_impl() -> int:
 
     if args.command == "crypto":
         import getpass
+        import re as _re
         from pathlib import Path as _CryptoPath
 
+        # Key files written by 1.4.0 start with a marker; a bare 1,184/2,400-byte file is a 1.3.x key,
+        # whose ML-KEM key generation was not FIPS 203: files encrypted to such a key cannot be opened.
+        _PK_MAGIC, _SK_MAGIC = b"MORIEPK\x02", b"MORIESK\x02"
+        _LEGACY_PK = (
+            "{path} was written by morie 1.3.x, whose key generation was not FIPS 203; a file encrypted "
+            "to it could not be opened. Ask the key's owner to run `morie crypto keygen` with morie 1.4.0 "
+            "and share the new .moriepk"
+        )
+
+        def _valid_key_name(name: str) -> bool:
+            return bool(_re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}", name or ""))
+
+        def _read_key_file(path: _CryptoPath, magic: bytes) -> tuple[bytes, bool]:
+            """(key bytes, legacy) where legacy means a markerless 1.3.x file."""
+            raw = path.read_bytes()
+            if raw.startswith(magic):
+                return raw[len(magic) :], False
+            return raw, True
+
+        if getattr(args, "name", None) is not None and not _valid_key_name(args.name):
+            print(
+                f"--name {args.name!r}: a key name is letters, digits, '.', '_' or '-' (up to 64, not starting with '.')",
+                file=sys.stderr,
+            )
+            return 2
+
         def _crypto_password() -> str | None:
-            if not sys.stdin.isatty():
+            if not _stdin_is_terminal():
                 print(
                     "a keystore password is needed: run this in a terminal, or use file keys "
                     "(keygen --output DIR; encrypt --to DIR/NAME.moriepk; decrypt --key DIR/NAME.moriesk)",
@@ -1419,18 +1546,23 @@ def _main_impl() -> int:
                         file=sys.stderr,
                     )
                     return 1
-                pk_path.write_bytes(pk)
-                sk_path.write_bytes(sk)
+                pk_path.write_bytes(_PK_MAGIC + pk)
+                sk_path.write_bytes(_SK_MAGIC + sk)
                 with contextlib.suppress(OSError):
                     sk_path.chmod(0o600)  # a secret key is owner-only
                 print(f"Public key:  {pk_path}")
                 print(f"Secret key:  {sk_path}")
             else:
+                ks_path = str(_CryptoPath("~/.morie/keys/keystore.json").expanduser())
                 pw = _crypto_password()
                 if pw is None:
                     return 1
-                ks_path = str(_CryptoPath("~/.morie/keys/keystore.json").expanduser())
                 if not _CryptoPath(ks_path).exists():
+                    if _stdin_is_terminal():
+                        again = getpass.getpass("Keystore password (again): ")
+                        if again != pw:
+                            print("the two passwords differ; nothing created", file=sys.stderr)
+                            return 1
                     _ks_create(pw, path=ks_path)
                     print(f"Created keystore at {ks_path}")
                 from .crypto.keystore import list_keys as _ks_list
@@ -1458,21 +1590,43 @@ def _main_impl() -> int:
                 print(f"File not found: {src}")
                 return 1
             pk_path = _CryptoPath(args.recipient)
-            if pk_path.exists():
-                pk = pk_path.read_bytes()
+            if pk_path.is_file():
+                pk, legacy = _read_key_file(pk_path, _PK_MAGIC)
+                if legacy:
+                    print(_LEGACY_PK.format(path=pk_path), file=sys.stderr)
+                    return 1
+            elif "/" in args.recipient or "\\" in args.recipient or args.recipient.endswith(".moriepk"):
+                print(f"{args.recipient}: no such public key file", file=sys.stderr)
+                return 1
             else:
+                from .crypto.keystore import keypair_version as _ks_version
                 from .crypto.keystore import load_keypair as _ks_load
 
+                try:
+                    if _ks_version(args.recipient) < 2:
+                        print(_LEGACY_PK.format(path=f"keystore entry {args.recipient!r}"), file=sys.stderr)
+                        return 1
+                except (KeyError, FileNotFoundError, ValueError):
+                    pass  # the load below reports a missing keystore or name
                 pw = _crypto_password()
                 if pw is None:
                     return 1
                 try:
                     pk, _ = _ks_load(args.recipient, pw)
+                except KeyError:
+                    print(f"no key pair named {args.recipient!r} in the keystore", file=sys.stderr)
+                    return 1
                 except ValueError:
                     print("wrong keystore password, or the keystore is corrupted", file=sys.stderr)
                     return 1
+            out = _CryptoPath(args.out) if getattr(args, "out", None) else src.with_suffix(src.suffix + ".morieenc")
+            if out.exists() and not getattr(args, "force", False):
+                print(
+                    f"{out} already exists; pass --out NAME to write elsewhere or --force to replace it",
+                    file=sys.stderr,
+                )
+                return 1
             ct = _h_enc(src.read_bytes(), pk)
-            out = src.with_suffix(src.suffix + ".morieenc")
             out.write_bytes(ct)
             print(f"Encrypted: {out}")
             return 0
@@ -1485,18 +1639,37 @@ def _main_impl() -> int:
             if not src.exists():
                 print(f"File not found: {src}")
                 return 1
+            from .crypto.hybrid import container_version as _container_version
+
             key_file = _CryptoPath(args.key)
+            legacy_sk = False
             if key_file.is_file():  # a secret key written by `keygen --output DIR`
-                sk = key_file.read_bytes()
+                sk, legacy_sk = _read_key_file(key_file, _SK_MAGIC)
+            elif "/" in args.key or "\\" in args.key or args.key.endswith(".moriesk"):
+                print(f"{args.key}: no such key file", file=sys.stderr)
+                return 1
             else:
+                from .crypto.keystore import keypair_version as _ks_version2
+
                 pw = _crypto_password()
                 if pw is None:
                     return 1
                 try:
                     _, sk = _ks_load2(args.key, pw)
+                    legacy_sk = _ks_version2(args.key) < 2
+                except KeyError:
+                    print(f"no key pair named {args.key!r} in the keystore", file=sys.stderr)
+                    return 1
                 except ValueError:
                     print("wrong keystore password, or the keystore is corrupted", file=sys.stderr)
                     return 1
+            if legacy_sk and _container_version(src.read_bytes()) == 2:
+                print(
+                    f"{src} was encrypted by morie 1.4.0 to a key pair that this 1.3.x secret key did not make "
+                    "(a 1.4.0 key pair carries a marker). Encrypt it again to a key pair from `morie crypto keygen`.",
+                    file=sys.stderr,
+                )
+                return 1
             import warnings as _warnings
 
             try:
@@ -1549,6 +1722,11 @@ def _main_impl() -> int:
             if getattr(args, "token", None) is not None:
                 token = args.token
                 if not token:
+                    if not _stdin_is_terminal():
+                        print(
+                            "no terminal to paste the key into: pass it as `morie login --token KEY`", file=sys.stderr
+                        )
+                        return 1
                     import getpass
 
                     token = getpass.getpass("Paste your MORIE key: ")
@@ -1627,6 +1805,7 @@ def _main_impl() -> int:
         if args.country:
             from .emissions import known_country_codes
 
+            args.country = args.country.upper()
             codes = known_country_codes()
             if codes and args.country.upper() not in codes:
                 print(
@@ -1664,6 +1843,13 @@ def _main_impl() -> int:
             return 1
         if len(df.columns) != len(set(df.columns)):
             print("note: duplicate column names in the header; only the first of each is kept", file=sys.stderr)
+        for flag, col in (("--treatment", args.treatment), ("--outcome", args.outcome), ("--weights", args.weights)):
+            if col and col not in df.columns:
+                print(
+                    f"{flag} {col}: not a column of {args.csv} (columns: {', '.join(map(str, df.columns))})",
+                    file=sys.stderr,
+                )
+                return 1
         profile = profile_dataset(
             df,
             hint_treatment=args.treatment,
@@ -1698,6 +1884,26 @@ def _main_impl() -> int:
         if args.n < 1:
             print(f"--n must be a positive integer, not {args.n}", file=sys.stderr)
             return 2
+        for flag, col in (
+            ("--strata-col", args.strata_col),
+            ("--cluster-col", args.cluster_col),
+            ("--size-col", args.size_col),
+        ):
+            if col and col not in df.columns:
+                print(
+                    f"{flag} {col}: not a column of {args.csv} (columns: {', '.join(map(str, df.columns))})",
+                    file=sys.stderr,
+                )
+                return 1
+        if method == "pps" and args.size_col:
+            try:
+                sizes = [float(v) for v in df[args.size_col]]
+            except (TypeError, ValueError):
+                print(f"--size-col {args.size_col} must be numeric (a size measure for PPS)", file=sys.stderr)
+                return 1
+            if any(v < 0 for v in sizes):
+                print(f"--size-col {args.size_col} has negative values; PPS needs sizes >= 0", file=sys.stderr)
+                return 1
         if method in ("srs", "stratified") and args.n > len(df):
             print(f"cannot draw {args.n} rows from {len(df)} without replacement", file=sys.stderr)
             return 1
@@ -1708,13 +1914,16 @@ def _main_impl() -> int:
             if not args.strata_col:
                 print("Error: --strata-col is required for stratified sampling")
                 return 1
-            sample = stratified_sample(
-                df,
-                args.strata_col,
-                args.n,
-                proportional=args.proportional,
-                seed=args.seed,
-            )
+            n_strata = len(set(df[args.strata_col]))
+            if args.per_stratum:
+                sample = stratified_sample(df, args.strata_col, args.n, proportional=False, seed=args.seed)
+            else:
+                sample = stratified_sample(df, args.strata_col, args.n, proportional=True, seed=args.seed)
+                if not args.proportional:
+                    print(
+                        f"note: --n {args.n} is the total across {n_strata} strata (--per-stratum for {args.n} each)",
+                        file=sys.stderr,
+                    )
         elif method == "cluster":
             if not args.cluster_col:
                 print("Error: --cluster-col is required for cluster sampling")
@@ -1729,6 +1938,10 @@ def _main_impl() -> int:
             print(f"Unknown method: {method}")
             return 1
 
+        if getattr(args, "no_weight", False) and ".weight" in list(sample.columns):
+            sample = sample.drop(columns=[".weight"])
+        elif ".weight" in list(sample.columns):
+            print("note: the .weight column is the design weight of each row (--no-weight to drop it)", file=sys.stderr)
         print(f"Sampled {len(sample)} rows using {method}")
         if args.output:
             sample.to_csv(args.output, index=False)
@@ -1748,7 +1961,11 @@ def _main_impl() -> int:
 
         target = _Path(args.path)
         if target.is_file():
-            render_inspection(inspect_output(target))
+            try:
+                render_inspection(inspect_output(target))
+            except ValueError as exc:
+                print(str(exc), file=sys.stderr)
+                return 1
         elif target.is_dir():
             results = inspect_directory(target, module_name=args.module)
             if not results:

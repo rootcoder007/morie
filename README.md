@@ -209,14 +209,14 @@ morie explain power_two_proportion_gender.csv        # how to read an output tab
 morie list-datasets                                  # 71 catalog keys + the curated tables after login
 morie pull ocp21 --out cpads.csv                     # the real CPADS PUMF, cached; modules use it from then on
 morie pull --all --out datasets/                     # every catalog dataset
-morie login                                          # one key: hosted model tier + data.rmorie.com
+morie login                                          # one key (GitHub, or --email you@example.com): hosted model tier + data.rmorie.com
 morie pull chicago_crime/incidents --out incidents.csv   # a curated table (8.6M rows)
 morie ask "which module fits a treatment-control design?"
 morie provider set --base-url https://api.openai.com/v1 --key sk-...   # or your own model endpoint
 morie emissions --seconds 5 --country CAN            # energy + CO2 of this machine, sealed in a capsule
 morie pipeline --modules power-design -y             # modules + emissions tracking + capsule
 morie verify-pollution --pollutant no2 --demo        # pollution -> health causal pipeline
-morie selftest                                       # every subsystem, with real downloads
+morie selftest                                       # every subsystem, offline (no downloads)
 ```
 
 ### Where the datasets come from
@@ -236,7 +236,8 @@ the reviewed SIU corpus from the
 (fetched as a source tarball, no R needed). One key, the MAPQ workbook, is
 your own file: put it under a data directory and point `MORIE_DATA_DIR` at
 it, keeping the relative path that `morie list-datasets` shows. The curated
-tables at data.rmorie.com join the list after `morie login`.
+tables at data.rmorie.com join the list after `morie login` (GitHub) or
+`morie login --email you@example.com`.
 
 ```python
 from morie.data import list_rmoriedata, load_rmoriedata

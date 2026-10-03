@@ -12,7 +12,7 @@
 }
 
 .morie_data_manifest_path <- function() {
-  file.path(tools::R_user_dir("morie", which = "cache"), "data_rmorie_manifest.json")
+  file.path(tools::R_user_dir("morie", which = "cache"), "data_morie_manifest.json")
 }
 
 #' Internal helper: GET a path from data.rmorie.com with the stored key
@@ -20,7 +20,7 @@
 .morie_data_get <- function(path, dest, timeout = 600, size = NULL) {
   key <- .morie_llm_hosted_key()
   if (is.null(key)) {
-    stop("data.rmorie.com needs your MORIE key: run `rmorie login` (R: morie_llm_login()) once.", call. = FALSE)
+    stop("data.rmorie.com needs your MORIE key: run `rmorie login` (GitHub) or `rmorie login --email you@example.com` once (R: morie_llm_login(), or morie_llm_login(email = \"you@example.com\")).", call. = FALSE)
   }
   label <- sub("^/", "", path)
   if (is.null(size) && grepl("\\.csv\\.gz$", path)) {

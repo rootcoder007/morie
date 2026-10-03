@@ -23,7 +23,7 @@ Each row says where the data comes from: a portal it is pulled from
 health-infobase.canada.ca, ECCC, the Toronto Police ArcGIS hub),
 ``rmoriedata`` on CRAN (sample frames and the provenance records),
 data.rmorie.com (the Health Infobase fallback copy, the OTIS research
-environments and, after ``morie login``, the curated tables), or "own file"
+environments and, after ``morie login`` with GitHub or ``--email``, the curated tables), or "own file"
 for the one key that is your own research file (the MAPQ workbook), dropped
 under ``$MORIE_DATA_DIR`` yourself.
 
@@ -86,7 +86,8 @@ depend on any project machine being up.
 
 .. code-block:: bash
 
-   morie login                                   # once
+   morie login                                   # once (GitHub)
+   morie login --email you@example.com           # or a code by email, no GitHub needed
    morie list-datasets                           # the curated tables appear with route "data.rmorie.com"
    morie pull chicago_crime/incidents --out incidents.csv
    rmorie pull epa_pm25_daily/epa_pm25_daily --out pm25.csv

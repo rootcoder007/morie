@@ -204,11 +204,13 @@ def _test_tui_screens():
 
 def _test_progress_tracker():
     """Test PipelineTracker with a mock module."""
+    import contextlib
+    import io
     from unittest.mock import MagicMock, patch
 
     from morie.progress import PipelineTracker
 
-    with patch("morie.progress.run_module") as mock_run:
+    with patch("morie.progress.run_module") as mock_run, contextlib.redirect_stdout(io.StringIO()):
         mock_run.return_value = {"output": MagicMock()}
         tracker = PipelineTracker(
             ["power-design"],
@@ -216,23 +218,31 @@ def _test_progress_tracker():
             use_live=False,
             track_carbon=False,
         )
-        results = tracker.run()
+        results = tracker.run()  # a mocked run: its progress lines are not a real module run
         if results[0].status != "success":
             raise RuntimeError(f"Expected success, got {results[0].status}")
 
     return "PipelineTracker: runs, reports success"
 
 
+def _sample_csvs() -> list[Path]:
+    """A CSV every install has: the shipped synthetic CPADS frame, else a checkout's survey files."""
+    from morie.modules import DEFAULT_CPADS_CSV
+
+    shipped = Path(DEFAULT_CPADS_CSV) if DEFAULT_CPADS_CSV else None
+    if shipped is not None and shipped.is_file():
+        return [shipped]
+    project = Path(__file__).resolve().parents[2]
+    return list((project / "data" / "files" / "csv" / "survey").glob("*.csv"))[:1]
+
+
 def _test_inspector():
     """Test inspect_output on a real CSV."""
     from morie.inspector import inspect_output
 
-    # Find a CSV file.
-    project = Path(__file__).resolve().parents[2]
-    csv_dir = project / "data" / "files" / "csv" / "survey"
-    csvs = list(csv_dir.glob("*.csv"))[:1]
+    csvs = _sample_csvs()
     if not csvs:
-        return "SKIP: no CSV files found in data/"
+        return "SKIP: no CSV file ships with this install"
 
     result = inspect_output(csvs[0])
     if result.rows < 1:
@@ -244,11 +254,9 @@ def _test_verify():
     """Test verify_statistical_output on a real CSV."""
     from morie.inspector import verify_statistical_output
 
-    project = Path(__file__).resolve().parents[2]
-    csv_dir = project / "data" / "files" / "csv" / "survey"
-    csvs = list(csv_dir.glob("*.csv"))[:1]
+    csvs = _sample_csvs()
     if not csvs:
-        return "SKIP: no CSV files found"
+        return "SKIP: no CSV file ships with this install"
 
     report = verify_statistical_output(csvs[0])
     return f"Verifier: {len(report.checks)} checks on {csvs[0].name}"
@@ -392,7 +400,7 @@ def run_selftest() -> int:
     tests = [
         ("Core module imports", _test_core_imports),
         ("New module imports (24 modules)", _test_new_modules),
-        ("Module registry (21 specs)", _test_module_registry),
+        ("Module registry", _test_module_registry),
         ("Chat session (slash commands)", _test_chat_session),
         ("TUI screens (headless render)", _test_tui_screens),
         ("Progress tracker", _test_progress_tracker),

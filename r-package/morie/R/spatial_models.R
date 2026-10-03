@@ -13,7 +13,7 @@
 #' @return The value of `[`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' rmorie:::morie_logdet_I_minus(V, V)
+#' morie:::morie_logdet_I_minus(V, V)
 #' @keywords internal
 morie_logdet_I_minus <- function(rho, W) {
   determinant(diag(nrow(W)) - rho * W, logarithm = TRUE)$modulus[1]
@@ -228,7 +228,7 @@ morie_local_dp_randomised_response <- function(truth, k, epsilon,
   e <- exp(epsilon)
   p_keep <- e / (k - 1 + e)
   p_flip <- 1 / (k - 1 + e)
-  .rmorie_local_seed(seed)
+  .morie_local_seed(seed)
   reports <- vapply(v, function(u) {
     if (stats::runif(1) < p_keep) u
     else sample(setdiff(0:(k - 1), u), 1)

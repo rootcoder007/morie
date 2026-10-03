@@ -1233,6 +1233,12 @@ morie_e_value <- function(rr, rr_lower = NULL) {
   if (!is.null(rr_lower) && (!is.numeric(rr_lower) || is.na(rr_lower) || rr_lower <= 0)) {
     stop("rr_lower must be a positive risk ratio", call. = FALSE)
   }
+  if (!is.numeric(rr) || length(rr) != 1L || is.na(rr) || rr <= 0) {
+    stop("rr must be a single positive risk ratio", call. = FALSE)
+  }
+  if (!is.null(rr_lower) && (!is.numeric(rr_lower) || is.na(rr_lower) || rr_lower <= 0)) {
+    stop("rr_lower must be a positive risk ratio", call. = FALSE)
+  }
   # Module 26: the Ding-VanderWeele closed form is exact; a CI bound
   # whose interval covers 1 has E-value 1 (no confounding needed).
   compute_e <- function(r) {

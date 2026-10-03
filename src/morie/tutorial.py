@@ -53,6 +53,11 @@ def _run(cmd: list[str]) -> int:
 
 def run() -> int:
     """Entry point.  Returns CLI exit code."""
+    if not sys.stdin.isatty():
+        print(
+            "the tutorial is interactive: run `morie tutorial` in a terminal (stdin is not one here)", file=sys.stderr
+        )
+        return 2
     out_root = Path.home() / f"morie-tutorial-{_dt.date.today().isoformat()}"
     out_root.mkdir(exist_ok=True)
 
@@ -106,9 +111,9 @@ You can quit at any prompt (press q) and resume by re-running
         f"Now we'll run the `power-design` module.  This computes how many "
         f"participants you'd need to survey to detect a given effect.  Output "
         f"lands in:\n\n    {out_dir}\n\n"
-        f"You'll see a 'synthetic data' warning — expected, because the "
-        f"bundled CPADS frame is a 1,200-row toy file.  When you have the "
-        f"real Statistics Canada PUMF, you'd add `--cpads-csv /path/to/real.csv`.",
+        f"The bundled CPADS frame is a 1,200-row synthetic toy file, so the "
+        f"numbers are an exercise, not findings.  When you have the real "
+        f"Statistics Canada PUMF (`morie pull ocp21`), the module uses it.",
     )
     ans = _prompt()
     if ans == "q":
@@ -120,7 +125,7 @@ You can quit at any prompt (press q) and resume by re-running
     _print_step(
         4,
         "What did we just produce?",
-        f"The module wrote ~13 CSVs to:\n\n    {out_dir}\n\n"
+        f"The module wrote its CSV tables to:\n\n    {out_dir}\n\n"
         f'The one that answers "how many participants do I need?" is '
         f"`power_two_proportion_gender.csv`.  Let's peek at it:",
     )

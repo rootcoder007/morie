@@ -34,7 +34,7 @@ static void morie_oqs_ready() {
 }
 #endif
 
-// [[Rcpp::export(name = ".rmorie_liboqs_available_impl")]]
+// [[Rcpp::export(name = ".morie_liboqs_available_impl")]]
 bool morie_crypto_liboqs_available() {
 #ifdef MORIE_HAVE_LIBOQS
   return true;
@@ -43,7 +43,7 @@ bool morie_crypto_liboqs_available() {
 #endif
 }
 
-// [[Rcpp::export(name = ".rmorie_liboqs_version_impl")]]
+// [[Rcpp::export(name = ".morie_liboqs_version_impl")]]
 std::string morie_crypto_liboqs_version() {
 #ifdef MORIE_HAVE_LIBOQS
   morie_oqs_ready();
@@ -63,7 +63,7 @@ std::string morie_crypto_liboqs_version() {
 //   ciphertext  : 1088 bytes
 //   shared sec  :   32 bytes
 
-// [[Rcpp::export(name = ".rmorie_mlkem768_keygen_impl")]]
+// [[Rcpp::export(name = ".morie_mlkem768_keygen_impl")]]
 Rcpp::List morie_crypto_mlkem768_keygen() {
 #ifdef MORIE_HAVE_LIBOQS
   morie_oqs_ready();
@@ -80,13 +80,12 @@ Rcpp::List morie_crypto_mlkem768_keygen() {
   return Rcpp::List::create(Rcpp::Named("pk") = pk,
                               Rcpp::Named("sk") = sk);
 #else
-  Rcpp::stop("rmorie was built without liboqs (ML-KEM); install the liboqs headers (liboqs-devel / liboqs-dev / brew install liboqs) and reinstall "
-             "liboqs-dev / brew install liboqs and rebuild morie.");
+  Rcpp::stop("morie was built without liboqs (ML-KEM); install the liboqs headers (liboqs-devel / liboqs-dev / brew install liboqs) and reinstall rmorie.");
   return R_NilValue;
 #endif
 }
 
-// [[Rcpp::export(name = ".rmorie_mlkem768_encaps_impl")]]
+// [[Rcpp::export(name = ".morie_mlkem768_encaps_impl")]]
 Rcpp::List morie_crypto_mlkem768_encaps(SEXP pk_sxp) {
 #ifdef MORIE_HAVE_LIBOQS
   morie_oqs_ready();
@@ -110,12 +109,12 @@ Rcpp::List morie_crypto_mlkem768_encaps(SEXP pk_sxp) {
   return Rcpp::List::create(Rcpp::Named("ct") = ct,
                               Rcpp::Named("shared_secret") = ss);
 #else
-  Rcpp::stop("rmorie was built without liboqs (ML-KEM); install liboqs-devel / liboqs-dev / brew install liboqs and reinstall");
+  Rcpp::stop("morie was built without liboqs (ML-KEM); install liboqs-devel / liboqs-dev / brew install liboqs and reinstall");
   return R_NilValue;
 #endif
 }
 
-// [[Rcpp::export(name = ".rmorie_mlkem768_decaps_impl")]]
+// [[Rcpp::export(name = ".morie_mlkem768_decaps_impl")]]
 SEXP morie_crypto_mlkem768_decaps(SEXP sk_sxp, SEXP ct_sxp) {
 #ifdef MORIE_HAVE_LIBOQS
   morie_oqs_ready();
@@ -141,7 +140,7 @@ SEXP morie_crypto_mlkem768_decaps(SEXP sk_sxp, SEXP ct_sxp) {
   OQS_KEM_free(kem);
   return ss;
 #else
-  Rcpp::stop("rmorie was built without liboqs (ML-KEM); install liboqs-devel / liboqs-dev / brew install liboqs and reinstall");
+  Rcpp::stop("morie was built without liboqs (ML-KEM); install liboqs-devel / liboqs-dev / brew install liboqs and reinstall");
   return R_NilValue;
 #endif
 }
@@ -155,7 +154,7 @@ SEXP morie_crypto_mlkem768_decaps(SEXP sk_sxp, SEXP ct_sxp) {
 //   secret key  : 4032 bytes
 //   signature   : 3309 bytes (max; actual is variable up to this)
 
-// [[Rcpp::export(name = ".rmorie_mldsa65_keygen_impl")]]
+// [[Rcpp::export(name = ".morie_mldsa65_keygen_impl")]]
 Rcpp::List morie_crypto_mldsa65_keygen() {
 #ifdef MORIE_HAVE_LIBOQS
   morie_oqs_ready();
@@ -172,12 +171,12 @@ Rcpp::List morie_crypto_mldsa65_keygen() {
   return Rcpp::List::create(Rcpp::Named("pk") = pk,
                               Rcpp::Named("sk") = sk);
 #else
-  Rcpp::stop("rmorie was built without liboqs (ML-KEM); install liboqs-devel / liboqs-dev / brew install liboqs and reinstall");
+  Rcpp::stop("morie was built without liboqs (ML-KEM); install liboqs-devel / liboqs-dev / brew install liboqs and reinstall");
   return R_NilValue;
 #endif
 }
 
-// [[Rcpp::export(name = ".rmorie_mldsa65_sign_impl")]]
+// [[Rcpp::export(name = ".morie_mldsa65_sign_impl")]]
 SEXP morie_crypto_mldsa65_sign(SEXP sk_sxp, SEXP message_sxp) {
 #ifdef MORIE_HAVE_LIBOQS
   morie_oqs_ready();
@@ -208,12 +207,12 @@ SEXP morie_crypto_mldsa65_sign(SEXP sk_sxp, SEXP message_sxp) {
   std::memcpy(&out[0], sigbuf.data(), sig_len);
   return out;
 #else
-  Rcpp::stop("rmorie was built without liboqs (ML-KEM); install liboqs-devel / liboqs-dev / brew install liboqs and reinstall");
+  Rcpp::stop("morie was built without liboqs (ML-KEM); install liboqs-devel / liboqs-dev / brew install liboqs and reinstall");
   return R_NilValue;
 #endif
 }
 
-// [[Rcpp::export(name = ".rmorie_mldsa65_verify_impl")]]
+// [[Rcpp::export(name = ".morie_mldsa65_verify_impl")]]
 bool morie_crypto_mldsa65_verify(SEXP pk_sxp, SEXP message_sxp,
                                    SEXP signature_sxp) {
 #ifdef MORIE_HAVE_LIBOQS
@@ -238,7 +237,7 @@ bool morie_crypto_mldsa65_verify(SEXP pk_sxp, SEXP message_sxp,
   OQS_SIG_free(sig);
   return rc == OQS_SUCCESS;
 #else
-  Rcpp::stop("rmorie was built without liboqs (ML-KEM); install liboqs-devel / liboqs-dev / brew install liboqs and reinstall");
+  Rcpp::stop("morie was built without liboqs (ML-KEM); install liboqs-devel / liboqs-dev / brew install liboqs and reinstall");
   return false;
 #endif
 }
