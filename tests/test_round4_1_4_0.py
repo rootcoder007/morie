@@ -188,7 +188,7 @@ def test_formula_sandbox_refuses_file_io(tmp_path):
     from morie.fn import _array_core as np
 
     ns = {"np": np, "x": np.array([1.0, 2.0])}
-    target = tmp_path / "pwned"
+    target = (tmp_path / "pwned").as_posix()
     for expr in (
         f'np.savez("{target}", x)',
         f'np.savez_compressed("{target}", x)',
