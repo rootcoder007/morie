@@ -9,6 +9,8 @@ Per-package full changelogs:
 
 ## 1.4.0 (2026-10-03)
 
+* **No more exit crash on fast commands.** The daily PyPI update check ran in a daemon thread; a command that finished first (`morie list-modules`) could segfault at exit on Python 3.13 while the thread was still inside OpenSSL. The thread is now joined at exit (at most two seconds, once a day).
+
 * `morie.research`: the research programme on the hardest problems in criminology and
   sociolegal studies arrives in Python, at parity with the R package (48 functions, thirteen
   problems, every one resting on a Lean 4 theorem named in its `theorems` field; the
@@ -146,7 +148,6 @@ Per-package full changelogs:
   server ignores it), up to three attempts, with the reason on screen; a short body
   no longer passes as a complete file. The R arm starts the transfer again.
 
-- **No more exit crash on fast commands.** The daily PyPI update check ran in a daemon thread; a command that finished first (`morie list-modules`) could segfault at exit on Python 3.13 while the thread was still inside OpenSSL. The thread is now joined at exit (at most two seconds, once a day).
 - **From a hostile QA pass on every feature.** `morie pull` only takes exact
   keys and suggests near misses instead of silently fetching another dataset;
   `run-module` without `--output-dir` writes under `morie-output/NAME`;
