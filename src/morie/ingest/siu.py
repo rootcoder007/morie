@@ -205,6 +205,82 @@ def _list_reports_legacy_scrape(
 # Step 2 — fetch a single report's text
 
 
+_BLOCK_TAGS = (
+    "p",
+    "div",
+    "section",
+    "article",
+    "li",
+    "ul",
+    "ol",
+    "table",
+    "tr",
+    "td",
+    "th",
+    "blockquote",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "dt",
+    "dd",
+    "figure",
+    "figcaption",
+    "pre",
+)
+
+
+def _report_page_text(body) -> str:
+    """The report's own text, one line per block, without the page chrome.
+
+    The "Warning: graphic content" banner and the "Contents:" box (its section links, the news
+    releases and the French version) come first on every page: they made the report start with
+    chrome and put "The Investigation" (a contents entry) ahead of the section itself. Inline
+    elements (``<abbr>GPS</abbr>``) stay inside their sentence instead of becoming lines.
+    """
+    for head in body.find_all(["h2", "h3", "h4", "h5"]):
+        label = head.get_text(" ", strip=True).rstrip(":").strip().lower()
+        if label in ("warning", "contents"):
+            nxt = head.find_next_sibling()
+            while nxt is not None and nxt.name not in ("h2", "h3", "h4"):
+                after = nxt.find_next_sibling()
+                nxt.decompose()
+                nxt = after
+            head.decompose()
+    for ul in body.find_all(["ul", "ol"]):  # any other in-page index of #anchors
+        links = ul.find_all("a", href=True)
+        if links and all(a["href"].startswith("#") for a in links):
+            ul.decompose()
+    for br in body.find_all("br"):
+        br.replace_with("\n")
+    for el in body.find_all(_BLOCK_TAGS):
+        el.insert_before("\n")
+        el.insert_after("\n")
+    lines: list[str] = []
+    for line in body.get_text("").splitlines():
+        line = re.sub(r"\s+", " ", line).strip()
+        line = re.sub(r"([(\u201c\u2018])\s+", r"\1", line)
+        line = re.sub(r"\s+([)\u201d\u2019,.;:])", r"\1", line)
+        if line:
+            lines.append(line)
+    first = next((i for i, x in enumerate(lines) if _FIRST_SECTION.match(x)), None)
+    if first:
+        title = [
+            x
+            for x in lines[:first]
+            if x.lower().startswith(("siu director", "director's report", "director\u2019s report"))
+        ][:1]
+        lines = title + lines[first:]
+    return "\n".join(lines)
+
+
+_FIRST_SECTION = re.compile(
+    r"^(Mandate of the SIU|Information restrictions|Mandate engaged|The Investigation|Summary of the Incident)$", re.I
+)
+
+
 def fetch_report_text(
     url: str, *, timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = DEFAULT_USER_AGENT
 ) -> str:
@@ -237,13 +313,7 @@ def fetch_report_text(
             tag.decompose()
         # the report body; the site menus and sidebars sit outside it
         body = soup.find("div", class_="siu-content") or soup.find(attrs={"role": "main"}) or soup.body or soup
-        # the in-page table of contents is a list of #anchors; its entries repeat the section headings
-        for ul in body.find_all(["ul", "ol"]):
-            links = ul.find_all("a", href=True)
-            if links and all(a["href"].startswith("#") for a in links):
-                ul.decompose()
-        text = body.get_text("\n")
-        text = "\n".join(line.strip() for line in text.splitlines() if line.strip())
+        text = _report_page_text(body)
         if not text:
             raise SIUError(f"report page holds no text: {url}")
         return text
@@ -268,12 +338,27 @@ def fetch_report_text(
 _SECTION_HEADINGS = {
     "summary": re.compile(r"\b(Summary of the Incident|Summary of Incident|Summary)\s*[:\.\n]", re.IGNORECASE),
     "investigation": re.compile(r"\b(The Investigation|The Investigative Action)\s*[:\.\n]", re.IGNORECASE),
-    "narrative": re.compile(r"\b(Narrative of Events|Narrative)\s*[:\.\n]", re.IGNORECASE),
+    "narrative": re.compile(r"\b(Narrative of Events|Incident Narrative|Narrative)\s*[:\.\n]", re.IGNORECASE),
     "evidence": re.compile(r"\b(Evidence)\s*[:\.\n]", re.IGNORECASE),
     "law": re.compile(r"\b(Relevant Legislation|Applicable Law)\s*[:\.\n]", re.IGNORECASE),
     "analysis": re.compile(r"\b(Analysis and Director['\u2019]s Decision|Analysis)\s*[:\.\n]", re.IGNORECASE),
     "conclusion": re.compile(r"\b(Director['\u2019]s Decision|Conclusion|Decision)\s*[:\.\n]", re.IGNORECASE),
 }
+
+# a heading on a line of its own: in running text "... in the course of the investigation." also
+# matched the investigation heading (its section became the PHIPA disclaimer)
+_SECTION_LINES = {
+    name: re.compile(r"(?im)^[ \t]*(?:" + pat.pattern.split("(", 1)[1].split(")", 1)[0] + r")[ \t]*[:.]?[ \t]*$")
+    for name, pat in _SECTION_HEADINGS.items()
+}
+
+
+def _heading(name: str, text: str, pos: int = 0):
+    m = _SECTION_LINES[name].search(text, pos)
+    if m is None and not any(p.search(text) for p in _SECTION_LINES.values()):
+        m = _SECTION_HEADINGS[name].search(text, pos)  # running-text layout (older PDFs): headings inline
+    return m
+
 
 _REPORT_ID = re.compile(r"\b(\d{2}-[A-Z]{3,4}-\d{3,4})\b")
 _INCIDENT_DATE = re.compile(
@@ -311,13 +396,18 @@ def extract_report_fields(text: str) -> dict[str, Any]:
     # Section slicing — find each heading, take text up to the next heading
     boundaries: list[tuple[str, int]] = []
     analysis_span = None
-    for name, pat in _SECTION_HEADINGS.items():
-        m = pat.search(text)
+    for name in _SECTION_HEADINGS:
+        m = _heading(name, text)
         if name == "analysis" and m:
             analysis_span = (m.start(), m.end())
-        if name == "conclusion" and analysis_span:
+        if (
+            name == "conclusion"
+            and analysis_span
+            and m is not None
+            and analysis_span[0] <= m.start() < analysis_span[1]
+        ):
             # "Decision" inside the "Analysis and Director's Decision" heading is not a heading of its own
-            m = next((x for x in pat.finditer(text) if not analysis_span[0] <= x.start() < analysis_span[1]), None)
+            m = _heading(name, text, analysis_span[1])
         if m:
             boundaries.append((name, m.end()))
     boundaries.sort(key=lambda x: x[1])
@@ -325,8 +415,7 @@ def extract_report_fields(text: str) -> dict[str, Any]:
         end = boundaries[i + 1][1] if i + 1 < len(boundaries) else len(text)
         # back off to the start of the next section's heading
         if i + 1 < len(boundaries):
-            next_pat = _SECTION_HEADINGS[boundaries[i + 1][0]]
-            m = next_pat.search(text, pos=start)
+            m = _heading(boundaries[i + 1][0], text, start)
             if m:
                 end = m.start()
         out["sections"][name] = text[start:end].strip()

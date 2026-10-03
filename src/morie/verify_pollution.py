@@ -149,8 +149,19 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
             print(f"ERROR: exposure CSV not found: {p}", file=sys.stderr)
             return 2
         df = pd.read_csv(p)
+        if "exposure" not in df.columns and "value" in df.columns:
+            # a NAPS pull (morie pull naps-...): hourly `value` in `unit`; NO2 is reported in ppb
+            vals = pd.to_numeric(df["value"], errors="coerce")
+            units = {str(u).strip().lower() for u in df["unit"].dropna().unique()} if "unit" in df.columns else set()
+            if pollutant == "no2" and units & {"ppb", "ppbv"}:
+                vals = vals * 1.88  # ug/m3 per ppb of NO2 at 25 C and 1 atm (WHO 2021 conversion)
+                print("note: NO2 in ppb converted to ug/m3 (x 1.88)", file=sys.stderr)
+            elif units - {"ug/m3", "\u00b5g/m3", "\u00b5g/m\u00b3", "ug/m\u00b3"}:
+                print(f"ERROR: exposure unit {', '.join(sorted(units))} is not ug/m3 for {pollutant}", file=sys.stderr)
+                return 2
+            df = df.assign(exposure=vals).dropna(subset=["exposure"])
         if "exposure" not in df.columns:
-            print("ERROR: CSV missing 'exposure' column.", file=sys.stderr)
+            print("ERROR: CSV needs an 'exposure' column (ug/m3), or a NAPS pull's 'value' column.", file=sys.stderr)
             return 2
         exposure_mean = float(df["exposure"].mean())
         exposure_prevalence = float((df["exposure"] > reference).mean())

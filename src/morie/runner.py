@@ -1488,7 +1488,19 @@ def _main_impl() -> int:
         else:
             print(f"unknown portal {portal!r}; valid: ckan, tps, siu, a2aj")
             return 2
-        return _cli(portal_args)
+        try:
+            return _cli(portal_args)
+        except Exception as e:
+            if not type(e).__module__.startswith("morie.ingest"):
+                raise
+            msg = str(e).splitlines()[0] if str(e) else type(e).__name__
+            if "HTTP 404" in msg:
+                what = next(
+                    (portal_args[i + 1] for i, a in enumerate(portal_args[:-1]) if a in ("--package", "--layer")), ""
+                )
+                msg = f"{what or 'the requested item'} was not found on the portal (HTTP 404); check the id"
+            print(f"ingest {portal}: {msg[:300]}", file=sys.stderr)
+            return 1
 
     if args.command == "download-bootstrap":
         from .data import DATASET_CATALOG, fetch_ckan_to_cache
@@ -1522,10 +1534,12 @@ def _main_impl() -> int:
                 )
                 if args.limit and len(df) > args.limit:
                     df = df.head(args.limit)
-                print(
-                    f"    OK: {len(df):,} rows cached"
-                    + (f" (first {args.limit:,}; --limit)" if args.limit and len(df) == args.limit else "")
-                )
+                if args.limit:
+                    print(
+                        f"    OK: first {len(df):,} rows (--limit preview; not cached, so pull fetches the whole file)"
+                    )
+                else:
+                    print(f"    OK: {len(df):,} rows cached")
             except Exception as e:
                 print(f"    ERROR: {e}")
         return 0

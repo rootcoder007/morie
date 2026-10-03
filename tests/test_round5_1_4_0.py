@@ -350,3 +350,140 @@ def test_published_files_do_not_point_at_files_missing_from_the_sdist():
     poly = root / "src" / "morie" / "polyglot.py"
     if poly.is_file():
         assert "brew install" not in poly.read_text(encoding="utf-8")
+
+
+def _report():
+    import morie.reporting as r
+    from morie.fn import _frame_core as fpd
+
+    rep = r.Report(title="Test & <Stuff>", authors=["Ada", "Emile"], date="2026-10-03")
+    rep.add_section(r.ReportSection("Methods", "We used 50% of $data_1 with x_i & y^2 and <b>html</b>."))
+    rep.add_table("Odds & ends", fpd.DataFrame({"term": ["a_b", "c"], "OR": [1.23456, 12345.0], "n": [3, None]}))
+    return r, rep
+
+
+def test_reports_render_tables_without_pandas_and_escape_text(tmp_path):
+    r, rep = _report()
+    md = r.compile_report(rep)
+    assert "| term | OR | n |" in md and "| a_b | 1.23456 | 3 |" in md and "| c | 12345 |  |" in md
+    assert "**Authors**: Ada, Emile\n\n**Date**: 2026-10-03" in md
+    tex = r.compile_report(rep, output_format="latex")
+    assert r"\title{Test \& <Stuff>}" in tex
+    assert r"We used 50\% of \$data\_1 with x\_i \& y\textasciicircum{}2" in tex
+    assert r"a\_b & 1.23456 & 3 \\" in tex and r"\caption{Table 1. Odds \& ends}" in tex
+    page = r.compile_report(rep, output_format="html")
+    assert "<h1>Test &amp; &lt;Stuff&gt;</h1>" in page
+    assert "&lt;b&gt;html&lt;/b&gt;" in page and "<b>html</b>" not in page
+    assert "<td>a_b</td><td>1.23456</td><td>3</td>" in page  # tables are part of the HTML now
+    for fmt in ("docx", "txt", "nonsense"):
+        with pytest.raises(ValueError, match="output_format must be one of markdown, latex, html"):
+            r.compile_report(rep, output_format=fmt)
+    for name in ("r.docx", "r.pdf", "r.xyz"):
+        with pytest.raises(ValueError, match="cannot tell the format"):
+            r.save_report(rep, tmp_path / name)
+        assert not (tmp_path / name).exists()
+    assert r.save_report(rep, tmp_path / "r.tex").read_text(encoding="utf-8").startswith(r"\title{")
+
+
+def test_format_p_value_refuses_impossible_p():
+    from morie.reporting import format_p_value
+
+    assert format_p_value(0.034) == "p = .034"
+    assert format_p_value(0.0002) == "p < .001"
+    for bad in (-0.1, 1.5):
+        with pytest.raises(ValueError, match="between 0 and 1"):
+            format_p_value(bad)
+
+
+def test_verify_pollution_reads_a_naps_pull_in_ppb(tmp_path):
+    naps = tmp_path / "naps.csv"
+    naps.write_text("station_id,datetime_local,value,unit\n1,a,10,ppb\n1,b,20,ppb\n2,a,15,ppb\n")
+    r = _verify_pollution("--pollutant", "no2", "--exposure-csv", str(naps), "--json")
+    assert r.returncode == 0, r.stderr[-300:]
+    assert "converted to ug/m3" in r.stderr
+    rep = json.loads(r.stdout[r.stdout.index("{") :])
+    assert rep["inputs"]["exposure_mean"] == pytest.approx(15 * 1.88, abs=1e-9)
+    bad = tmp_path / "bad.csv"
+    bad.write_text("value,unit\n3,ppm\n")
+    r = _verify_pollution("--pollutant", "pm25", "--exposure-csv", str(bad))
+    assert r.returncode == 2 and "is not ug/m3" in r.stderr
+
+
+def test_a_limited_ckan_fetch_is_never_cached(monkeypatch):
+    import morie.data as data
+
+    stored = []
+    rows = [{"a": i} for i in range(5)]
+    monkeypatch.setattr(data, "_ckan_source", lambda key: ({"resource_id": "rid", "metadata_url": ""}, "tbl", False))
+    monkeypatch.setattr(
+        data, "_urlopen_json_with_retry", lambda url, timeout: {"result": {"records": rows, "total": len(rows)}}
+    )
+    monkeypatch.setattr(data, "cache_store", lambda df, name, db=None: stored.append((name, len(df))))
+    preview = data.fetch_ckan_to_cache("ocs22bt", max_records=3)
+    assert len(preview) >= 3 and stored == []
+    data.fetch_ckan_to_cache("ocs22bt")
+    assert stored == [("tbl", 5)]
+
+
+@pytest.mark.parametrize(
+    ("portal", "args", "error", "expect"),
+    [
+        ("tps", ["--layer", "robbery"], "layer returned zero features: where='OCC_YEAR=2099'", "zero features"),
+        ("ckan", ["--package", "no-such-pkg"], 'package_show -> HTTP 404: {"help": "x"}', "no-such-pkg was not found"),
+    ],
+)
+def test_ingest_portal_errors_are_one_line(monkeypatch, capsys, portal, args, error, expect):
+    import importlib
+
+    from morie import runner
+
+    mod = importlib.import_module(f"morie.ingest.{portal}")
+    cls = type("PortalError", (RuntimeError,), {"__module__": mod.__name__})
+
+    def boom(argv):
+        raise cls(error)
+
+    monkeypatch.setattr(mod, "cli", boom)
+    monkeypatch.setattr(sys, "argv", ["morie", "ingest", portal, *args])
+    assert runner.main() == 1
+    err = capsys.readouterr().err
+    assert expect in err and "Traceback" not in err and err.count("\n") == 1
+
+
+_SIU_PAGE = """<html><body><div class="col-lg-9 siu-content">
+<h2>SIU Director’s Report - Case # 17-OVI-201</h2>
+<h4>Warning:</h4><p>This page contains graphic content that can shock, offend and upset.</p>
+<h3>Contents:</h3><ul><li><a href="#mandate">Mandate of the SIU</a></li><li><a href="#inv">The Investigation</a></li></ul>
+<div><strong>News Releases for this Case:</strong><ul><li><a href="/news/1">SIU Investigation Started</a></li></ul>
+<strong>French:</strong><ul><li><a href="/fr/46">Director's Report for Case # 17-OVI-201.</a></li></ul></div>
+<h2 id="mandate">Mandate of the SIU</h2><div>The Unit investigates police incidents.</div>
+<h2>Information restrictions</h2>
+<p>Witness statements gathered in the course of the investigation.</p>
+<p>Pursuant to <abbr>PHIPA</abbr>, any information related to health is withheld.</p>
+<h2 id="inv">The Investigation</h2>
+<h3>Notification of the SIU</h3>
+<p>At 11:46 a.m. on August 3rd, 2017, the Guelph Police Service (<abbr>GPS</abbr>) notified the SIU.</p>
+<h2>Incident Narrative</h2><p>Three men attempted to rob a bank.</p>
+<h2>Analysis and Director's Decision</h2><p>There are no grounds to proceed with charges.</p>
+</div></body></html>"""
+
+
+def test_siu_report_page_text_has_no_chrome_and_real_sections():
+    pytest.importorskip("bs4")
+    from bs4 import BeautifulSoup
+
+    from morie.ingest import siu
+
+    body = BeautifulSoup(_SIU_PAGE, "html.parser").find("div", class_="siu-content")
+    text = siu._report_page_text(body)
+    lines = text.splitlines()
+    assert lines[:2] == ["SIU Director’s Report - Case # 17-OVI-201", "Mandate of the SIU"]
+    for chrome in ("Warning", "graphic content", "Contents", "News Releases", "French"):
+        assert chrome not in text
+    assert "the Guelph Police Service (GPS) notified the SIU." in text  # inline tags stay in the sentence
+    assert "Pursuant to PHIPA, any information" in text
+    f = siu.extract_report_fields(text)
+    assert f["sections"]["investigation"].startswith("Notification of the SIU")
+    assert "PHIPA" not in f["sections"]["investigation"]
+    assert f["sections"]["narrative"] == "Three men attempted to rob a bank."
+    assert f["conclusion"] == "There are no grounds to proceed with charges."

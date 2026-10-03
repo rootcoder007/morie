@@ -1399,6 +1399,11 @@ def fetch_ckan_to_cache(
 
     logger.info("Fetched %d rows x %d cols for %s", len(df), len(df.columns), dataset_key)
 
+    if max_records is not None:
+        # a --limit preview is not the dataset: caching it made later pulls and modules
+        # silently use the first rows (10 of 61,096 bootstrap replicates)
+        logger.info("%s: first %d rows fetched (--limit); not cached", dataset_key, len(df))
+        return df
     # Cache under the name load_dataset() looks up next time.
     cache_store(df, table_name, db_path)
 
