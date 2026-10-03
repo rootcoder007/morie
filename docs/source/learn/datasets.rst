@@ -74,7 +74,7 @@ To be explicit, pass ``--dataset KEY`` (any catalog key) or
 Curated tables at data.rmorie.com
 ---------------------------------
 
-Beyond the open portals, the project keeps 160 curated databases built from
+Beyond the open portals, the project keeps 160 curated databases built from BigQuery public datasets, plus the Health Infobase tables and the OTIS research files, all from
 Google BigQuery public datasets (Chicago crime, EPA air quality, US census,
 FEC, FDA, NOAA, NHTSA, Hacker News, Ethereum, World Bank, ...) and serves
 their tables from the edge at https://data.rmorie.com. They open with the

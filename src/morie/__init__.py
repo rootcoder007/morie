@@ -89,6 +89,7 @@ _LAZY_EXPORTS = {
     "ranking_resolution": "research.fairness_bounds",
     "recording_map": "research.recording_map",
     "relative_risk_from_or": "research.selection",
+    "selective_labels": "research.selective_labels",
     "sentence_effect_bounds": "research.sentence_bounds",
     "sentence_effect_mtr": "research.sentence_bounds",
     "sentence_effect_mts": "research.sentence_bounds",

@@ -19,6 +19,19 @@ Per-package full changelogs:
   Imbens-Manski intervals for partially identified sentencing effects (`bounds_confidence`)
   and the Cheeger bound tying a hot-spot boundary to the spectral gap (`cheeger_bound`).
 
+* Seven more problems in `morie.research`, at parity with R: Duncan-Davis bounds
+  (`ecological_bounds`), monotone treatment selection (`sentence_effect_mts`), the
+  extinction probability of a near-repeat chain (`contagion_extinction`), judge-leniency
+  designs (`judge_iv`, `judge_iv_population`), the Oaxaca-Blinder decomposition
+  (`disparity_decomposition`), Little's law on a docket (`court_backlog`) and the
+  incapacitation identity (`incapacitation`) and selective labels (`selective_labels`); every theorem is named in the result.
+
+* Datasets: the fourteen Health Infobase tables download from the portal with the
+  data.rmorie.com copy as the fallback (`morie pull hibua`), the three OTIS research
+  environments are saved from data.rmorie.com for R to open, and `otisloc` (Ontario
+  correctional institution locations) joins the catalog; `morie list-datasets` no
+  longer calls any of them restricted.
+
 ## 1.3.9 (2026-10-01)
 
 * `morie interactive install` adds the polyglot REPL, `exec`, agent and TUI modules to an

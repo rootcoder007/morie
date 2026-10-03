@@ -59,6 +59,7 @@ from morie.research.selection import (
     probability_of_necessity,
     relative_risk_from_or,
 )
+from morie.research.selective_labels import selective_labels
 from morie.research.sentence_bounds import (
     bounds_confidence,
     contaminated_bounds,
@@ -123,6 +124,7 @@ __all__ = [
     "ranking_resolution",
     "recording_map",
     "relative_risk_from_or",
+    "selective_labels",
     "sentence_effect_bounds",
     "sentence_effect_mtr",
     "sentence_effect_mts",

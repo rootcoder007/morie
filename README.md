@@ -225,7 +225,7 @@ siu = load_rmoriedata("siu_directors_reports")  # 5,157 reviewed SIU reports
 ```
 
 Beyond the catalog, the project keeps **160 databases materialised from
-Google BigQuery public datasets** (Chicago crime, EPA air quality, US
+Google BigQuery public datasets, plus the Health Infobase tables and the OTIS research files** (Chicago crime, EPA air quality, US
 census, FEC, FDA, NOAA, NHTSA, Hacker News, Ethereum, World Bank, ...),
 served from the edge at <https://data.rmorie.com> and opened by the key
 `morie login` stores. `morie list-datasets` shows their `db/table` keys

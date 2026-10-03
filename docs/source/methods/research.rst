@@ -83,6 +83,9 @@ Problems and functions
    * - P17 incapacitation
      - ``P17.steady_state_rate``, ``P17.prevented_share_lt_one``, ``P17.marginal_prevention_eq``, ``P17.high_rate_more_prevented``
      - :func:`incapacitation`
+   * - P18 selective labels
+     - ``P18.nested_rate_identified``, ``P18.unobserved_bounds``, ``P18.unobserved_width``
+     - :func:`selective_labels`
 
 Reference
 ---------

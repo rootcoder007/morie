@@ -633,3 +633,55 @@ def test_incapacitation_arithmetic():
         R.incapacitation(0, 0.1, 1)
     with pytest.raises(ValueError, match="summing to one"):
         R.incapacitation([1, 2], 0.1, 1, shares=[0.5, 0.6])
+
+
+def test_selective_labels_contraction_and_bounds():
+    from morie.fn._rng import random_uniform
+
+    u = [float(v) for v in random_uniform(1200, seed=19)]
+    n = 300
+    risk = u[:n]
+    y = [1 if u[300 + i] < risk[i] else 0 for i in range(n)]
+    w = [0.5 + 1.5 * u[600 + i] for i in range(n)]
+    released = [r < 0.7 for r in risk]
+    inner = [r < 0.5 for r in risk]
+    r = R.selective_labels(y, released, inner, w)
+    assert r["identified"] and r["width"] == 0
+    assert close(
+        r["rule_rate"], sum(w[i] * y[i] for i in range(n) if inner[i]) / sum(w[i] for i in range(n) if inner[i])
+    )  # nested
+    assert close(
+        r["observed_rate"],
+        sum(w[i] * y[i] for i in range(n) if released[i]) / sum(w[i] for i in range(n) if released[i]),
+    )
+    outer = [r_ < 0.9 for r_ in risk]
+    r2 = R.selective_labels(y, released, outer, w)
+    assert not r2["identified"]
+    assert close(
+        r2["width"],
+        sum(w[i] for i in range(n) if outer[i] and not released[i]) / sum(w[i] for i in range(n) if outer[i]),
+    )
+    for fill in ([0] * n, [1] * n, [1 if u[900 + i] < 0.5 else 0 for i in range(n)]):
+        yy = [y[i] if released[i] else fill[i] for i in range(n)]
+        rate = sum(w[i] * yy[i] for i in range(n) if outer[i]) / sum(w[i] for i in range(n) if outer[i])
+        assert r2["bounds"]["lower"] - 1e-12 <= rate <= r2["bounds"]["upper"] + 1e-12  # unobserved_bounds
+    y0 = [y[i] if released[i] else 0 for i in range(n)]
+    y1 = [y[i] if released[i] else 1 for i in range(n)]
+    assert close(
+        sum(w[i] * y0[i] for i in range(n) if outer[i]) / sum(w[i] for i in range(n) if outer[i]), r2["bounds"]["lower"]
+    )
+    assert close(
+        sum(w[i] * y1[i] for i in range(n) if outer[i]) / sum(w[i] for i in range(n) if outer[i]), r2["bounds"]["upper"]
+    )
+    for args, kw, msg in [
+        (([0, 1], [True, True], [True]), {}, "equal length"),
+        (([0, 2], [True, True], [True, True]), {}, "0/1"),
+        (([0, 1], [True, True], [True, True]), {"weights": [-1, 1]}, "non-negative"),
+        (([0, 1], [False, False], [True, True]), {}, "positive mass"),
+    ]:
+        with pytest.raises(ValueError, match=msg):
+            R.selective_labels(*args, **kw)
+    assert (
+        R.selective_labels([0, 1], [True, False], [False, True])["naive_rate"]
+        != R.selective_labels([0, 1], [True, False], [False, True])["naive_rate"]
+    )
