@@ -7,7 +7,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 from urllib.request import urlopen
 
 from morie.fn import _frame_core as pd
@@ -298,6 +298,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CPADS/CPADS.csv",
+        "hosted_key": "hib/cpads_cpads",
         "table_name": "hibp",
         "ckan_resource_id": "",
     },
@@ -310,6 +311,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSADS/provinces.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csads/downloadable/CSADS-data.zip",
+        "zip_member": "provinces.csv",
+        "hosted_key": "hib/csads_provinces",
         "table_name": "hibsa",
         "ckan_resource_id": "",
     },
@@ -322,6 +326,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSADS/trends.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csads/downloadable/CSADS-data.zip",
+        "zip_member": "trends.csv",
+        "hosted_key": "hib/csads_trends",
         "table_name": "hibsb",
         "ckan_resource_id": "",
     },
@@ -334,6 +341,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Alcohol.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Alcohol.csv",
+        "hosted_key": "hib/csus_alcohol",
         "table_name": "hibua",
         "ckan_resource_id": "",
     },
@@ -346,6 +356,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Cannabis.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Cannabis.csv",
+        "hosted_key": "hib/csus_cannabis",
         "table_name": "hibub",
         "ckan_resource_id": "",
     },
@@ -358,6 +371,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Cigarette smoking and vaping.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Cigarette smoking and vaping.csv",
+        "hosted_key": "hib/csus_cigarette_smoking_and_vaping",
         "table_name": "hibuc",
         "ckan_resource_id": "",
     },
@@ -370,6 +386,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Illegal substances.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Illegal substances.csv",
+        "hosted_key": "hib/csus_illegal_substances",
         "table_name": "hibud",
         "ckan_resource_id": "",
     },
@@ -382,6 +401,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Opioids.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Opioids.csv",
+        "hosted_key": "hib/csus_opioids",
         "table_name": "hibue",
         "ckan_resource_id": "",
     },
@@ -394,6 +416,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Over the counter products.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Over the counter products.csv",
+        "hosted_key": "hib/csus_over_the_counter_products",
         "table_name": "hibuf",
         "ckan_resource_id": "",
     },
@@ -406,6 +431,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Polysubstance.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Polysubstance.csv",
+        "hosted_key": "hib/csus_polysubstance",
         "table_name": "hibug",
         "ckan_resource_id": "",
     },
@@ -418,6 +446,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Sedatives.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Sedatives.csv",
+        "hosted_key": "hib/csus_sedatives",
         "table_name": "hibuh",
         "ckan_resource_id": "",
     },
@@ -430,6 +461,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Stimulants.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Stimulants.csv",
+        "hosted_key": "hib/csus_stimulants",
         "table_name": "hibui",
         "ckan_resource_id": "",
     },
@@ -442,6 +476,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Substance use harms.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Substance use harms.csv",
+        "hosted_key": "hib/csus_substance_use_harms",
         "table_name": "hibuj",
         "ckan_resource_id": "",
     },
@@ -454,6 +491,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Treatment.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Treatment.csv",
+        "hosted_key": "hib/csus_treatment",
         "table_name": "hibuk",
         "ckan_resource_id": "",
     },
@@ -589,6 +629,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "correctional",
         "large_file": False,
         "local_path": "data/cache/correctional_stats_report_environment1b.RData",
+        "hosted_file": "otis/correctional_stats_report_environment1b.RData",
         "table_name": "otis",
         "ckan_resource_id": "",
     },
@@ -601,6 +642,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "correctional",
         "large_file": True,
         "local_path": "data/cache/dt_expanded.rds",
+        "hosted_file": "otis/dt_expanded.rds",
         "table_name": "otisexp",
         "ckan_resource_id": "",
     },
@@ -613,7 +655,21 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "correctional",
         "large_file": True,
         "local_path": "data/cache/finne_env.RData",
+        "hosted_file": "otis/finne_env.RData",
         "table_name": "otisfin",
+        "ckan_resource_id": "",
+    },
+    "otisloc": {
+        "name": "OTIS: Ontario's adult provincial correctional institutions (locations)",
+        "source": "otis",
+        "survey": "otis",
+        "year": "",
+        "format": "csv",
+        "type": "correctional",
+        "large_file": False,
+        "local_path": "data/datasets/otis/institutional_locations_en.csv",
+        "download_url": "https://data.ontario.ca/dataset/3ca4505b-091c-4b04-89e8-c316ffaa0d9e/resource/97d82317-539c-479d-9479-4dd9b7e9e08c/download/institutional_locations_en.csv",
+        "table_name": "otisloc",
         "ckan_resource_id": "",
     },
     # ── OTIS public release per-table CSVs (used by morie.mrm_otis_*) ──
@@ -1364,6 +1420,85 @@ def _download_file(url: str, dest: Path, timeout: int = 60, label: str | None = 
         return snap
 
 
+def _download_url_table(entry: dict, matched: str, timeout: int = 60) -> pd.DataFrame:
+    """Tier 3c: the catalog's ``download_url`` (a CSV/XLSX, or a zip whose ``zip_member`` is the table)."""
+    import zipfile
+
+    url = entry["download_url"]
+    dest = _user_cache_dir() / "direct" / matched / url.rsplit("/", 1)[-1]
+    if not dest.exists():
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        tmp = dest.with_suffix(dest.suffix + ".part")
+        _download_file(url, tmp, timeout, label=matched)
+        tmp.replace(dest)
+    if zipfile.is_zipfile(dest):
+        member = entry.get("zip_member") or ""
+        with zipfile.ZipFile(dest) as zf:
+            names = zf.namelist()
+            pick = [n for n in names if n.rsplit("/", 1)[-1].lower() == member.lower()]
+            if not pick:
+                raise RuntimeError(f"{dest.name} for {matched} has no member {member!r}; it holds {', '.join(names)}")
+            with zf.open(pick[0]) as fh:
+                return pd.read_csv(fh, low_memory=False)
+    if entry.get("format") == "xlsx":
+        return pd.read_excel(dest)
+    return pd.read_csv(dest, low_memory=False)
+
+
+def _direct_or_hosted(entry: dict, matched: str, db_path, timeout: int = 60) -> pd.DataFrame:
+    """Tier 3c: portal first, the data.rmorie.com copy second; cache whichever answered."""
+    err: Exception | None = None
+    df = None
+    if entry.get("download_url"):
+        try:
+            df = _download_url_table(entry, matched, timeout)
+        except Exception as exc:  # noqa: BLE001 - the hosted copy is the fallback
+            err = exc
+            logger.warning("Direct download of %s failed (%s)", matched, exc)
+    hk = entry.get("hosted_key")
+    if df is None and hk:
+        from .datahub import load_hosted_dataset
+        from .hosted import hosted_key
+
+        if hosted_key():
+            df = load_hosted_dataset(hk, db_path=db_path)
+        elif err is not None:
+            raise RuntimeError(
+                f"{matched}: the portal download failed ({err}); the data.rmorie.com copy ({hk}) "
+                "opens with your MORIE key: run `morie login` once."
+            ) from err
+        else:
+            raise RuntimeError(
+                f"{matched} is served from data.rmorie.com as {hk}: run `morie login` once, then "
+                f"`morie pull {matched}` (or `morie pull {hk}`)."
+            )
+    if df is None:
+        assert err is not None
+        raise err
+    try:
+        cache_store(df, entry["table_name"], db_path)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Could not cache %s: %s", matched, exc)
+    return df
+
+
+def _load_hosted_file(entry: dict, matched: str):
+    """Tier 3b: fetch an R object (RData/rds) from data.rmorie.com into the data directory and say where it is."""
+    from .datahub import _get_to_file
+
+    rel = Path(entry["local_path"])
+    tail = Path(*rel.parts[1:]) if rel.parts and rel.parts[0] == "data" else rel
+    dest = _data_dir_candidates()[0] / tail
+    if not dest.exists():
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        _get_to_file("/files/" + entry["hosted_file"], dest, label=matched)
+    raise NotImplementedError(
+        f"{matched} is an R object ({dest.suffix}), now saved at {dest}. Open it in R with "
+        f"rmorie::morie_load_dataset('{matched}'), or readRDS()/load() on that file; "
+        "morie keeps the download so the file is in place."
+    )
+
+
 def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -> pd.DataFrame:
     """Download a CKAN resource that has no datastore and read it as a table.
 
@@ -1824,6 +1959,17 @@ def load_dataset(
             logger.warning("Could not cache %s: %s", matched, exc)
         return df
 
+    # 3b. Research files that are not tables (R environments) kept at data.rmorie.com:
+    #     saved under the data directory for R to open.
+    if entry.get("hosted_file"):
+        return _load_hosted_file(entry, matched)
+
+    # 3c. A direct portal download (a file, or one member of a zip), then the
+    #     data.rmorie.com copy of the same table when the portal fails or the
+    #     catalog only names the copy.
+    if entry.get("download_url") or entry.get("hosted_key"):
+        return _direct_or_hosted(entry, matched, db_path, timeout)
+
     # 4. Open data portals: Ontario's catalogue for the OTIS tables (their
     #    downloader lives in morie.otis_datasets), open.canada.ca for the
     #    rest of the CKAN-backed keys.
@@ -1924,6 +2070,13 @@ def dataset_route(entry: dict) -> str:
         }.get(entry.get("source", ""), "fetched on demand")
     if entry.get("ckan_resource_id"):
         return "data.ontario.ca" if entry.get("source") == "otis" else "open.canada.ca"
+    if entry.get("download_url"):
+        host = urlparse(entry["download_url"]).netloc
+        return host + (" (or data.rmorie.com)" if entry.get("hosted_key") else "")
+    if entry.get("hosted_key"):
+        return "data.rmorie.com (your MORIE key)"
+    if entry.get("hosted_file"):
+        return "data.rmorie.com file (an R object: rmorie loads it, morie saves it)"
     if entry.get("source") in CKAN_DATASETS:
         return "open.canada.ca"
     return "own file: " + entry.get("local_path", "")

@@ -1071,7 +1071,7 @@ def _main_impl() -> int:
         print("-" * (kw + 76))
         print(
             f"{len(datasets)} keys: {len(datasets) - n_own} download from their portal or rmoriedata on first use; "
-            f"{n_own} are files you place under $MORIE_DATA_DIR/datasets/ (restricted or your own data)."
+            f"{n_own} are your own research files, placed under $MORIE_DATA_DIR/datasets/ with the paths shown."
         )
         n_hub = sum(d["type"] == "hosted" for d in datasets)
         if n_hub:
