@@ -39,24 +39,26 @@ The actual power/sample-size grids live in the companion files:
 Question this file answers: "How many participants per gender group
 do I need to detect an effect of size X?"
 
-Read each row: it compares two groups (group1 vs group2) at the baseline
-proportions p1 and p2; the row tells you the sample size that detects that
-gap at the design's power.
+Read each row: it compares two groups (group1 vs group2) as observed in the
+data; p1 and p2 are their weighted prevalences of the outcome and h is the
+gap between them as an effect size.
 
-Columns:
+Columns (the Python route writes the first seven; the R route adds the rest):
   - group1, group2       The two groups compared (e.g. men vs women)
-  - p1, p2               The proportions assumed in each group
-  - h                    Cohen's h, the effect size for two proportions
-  - n1, n2               Per-group sample sizes needed under simple random sampling
-  - n_eq                 The equal-allocation per-group n
-  - power_srs            Power at that n under simple random sampling
-  - n_eq_eff             The per-group n after the survey design effect (deff)
-  - power_deff           Power at that n once the design effect is applied
-  - analysis_mode        How the power was computed (analytic or simulated)
-  - power_scope          What the power statement covers (the comparison or the whole grid)
+  - p1, p2               The weighted outcome prevalence observed in each group
+  - effect_size_h / h    Cohen's h for the two proportions
+  - n1, n2               The observed group sizes in the data (not sample sizes needed)
+  - n_eq                 Per-group n needed for 80% power at this h, equal allocation,
+                         simple random sampling
+  - power_srs            Power the observed n1, n2 give under simple random sampling
+  - n_eq_eff             n_eq inflated by the survey design effect (deff)
+  - power_deff           Power the observed sizes give once the design effect is applied
+  - analysis_mode        "observational": the groups are as surveyed, not assigned
+  - power_scope          The outcome the comparison is about (e.g. heavy_drinking_30d)
 
-Typical usage: find the row with your groups and assumed proportions, read
-n_eq_eff (the design-adjusted per-group n) and double it for the total sample.
+Typical usage: read n_eq_eff (the design-adjusted per-group n needed) and double
+it for the total sample; power_srs / power_deff say what the survey as it stands
+can detect.
 """.strip(),
     "power_one_proportion_grid.csv": """
 Same idea as power_two_proportion_gender.csv, but for a single-proportion

@@ -110,7 +110,8 @@ def _read_xlsx_streaming(path: str, sheet: Any = None, **read_excel_kwargs: Any)
                 if row:
                     last = max((i for i, v in enumerate(row) if v is not None), default=-1)
                     row = tuple(row[: last + 1])  # the sheet may declare 16,384 columns; count the used ones
-                if row and sum(v is not None for v in row) >= max(1, len(row) // 2):
+                filled = sum(v is not None for v in row) if row else 0
+                if row and filled >= 2 and filled >= max(1, len(row) // 2):  # a sheet title is one cell
                     header = [str(v) if v is not None else f"col{i}" for i, v in enumerate(row)]
                 continue
             if row is None or all(v is None for v in row):

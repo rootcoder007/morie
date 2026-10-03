@@ -2363,8 +2363,8 @@ def dataset_recommendation(key: str, entry: "dict | None" = None) -> str:
             tail = Path(*rel.parts[1:]) if rel.parts and rel.parts[0] == "data" else rel
             lines.append(f"  Place the data file at: {(_data_dir_candidates()[0] / tail)}")
             lines.append(
-                f"  (that is {local_path} under MORIE_DATA_DIR when it is set, else the per-user data directory; "
-                "the file is read in place and never copied into the cache)"
+                f"  (catalog path {local_path}: the file goes under the directory MORIE_DATA_DIR names, else under "
+                "the per-user data directory; it is read in place and never copied into the cache)"
             )
     return "\n".join(lines)
 

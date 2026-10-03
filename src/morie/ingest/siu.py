@@ -226,7 +226,20 @@ def fetch_report_text(
         if r.status_code >= 400:
             raise SIUError(f"report fetch -> HTTP {r.status_code}: {url}")
         pdf_bytes = r.content
+        content_type = r.headers.get("content-type", "")
 
+    if "html" in content_type or pdf_bytes.lstrip()[:1] == b"<":
+        # the SIU publishes directors' reports as web pages; the text is the page's text
+        from bs4 import BeautifulSoup
+
+        soup = BeautifulSoup(pdf_bytes, "html.parser")
+        for tag in soup(["script", "style", "nav", "header", "footer"]):
+            tag.decompose()
+        text = soup.get_text("\n")
+        text = "\n".join(line.strip() for line in text.splitlines() if line.strip())
+        if not text:
+            raise SIUError(f"report page holds no text: {url}")
+        return text
     reader = PdfReader(io.BytesIO(pdf_bytes))
     parts = []
     for page in reader.pages:
@@ -234,7 +247,10 @@ def fetch_report_text(
             parts.append(page.extract_text() or "")
         except Exception:  # noqa: BLE001 — individual page failures shouldn't kill the report
             parts.append("")
-    return "\n".join(parts)
+    text = "\n".join(parts)
+    if not text.strip():
+        raise SIUError(f"no text could be extracted from the report at {url}")
+    return text
 
 
 # ----------------------------------------------------------------------

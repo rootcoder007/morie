@@ -951,8 +951,13 @@ def _r_package_absent(exc: BaseException) -> bool:
 def r_route_problem(module_name: str, exc: BaseException) -> str:
     """One line for the terminal when an R-backed module cannot run."""
     if _r_package_absent(exc):
+        hint = (
+            "run `morie r-install` (rmorie from r-universe, prebuilt on macOS and Windows) and run the module again"
+            if _rscript_bin()
+            else _R_INSTALL_HINT
+        )
         return (
-            f"{module_name} runs in R and this install has no R package for it: {_R_INSTALL_HINT}. "
+            f"{module_name} runs in R and this machine has no R package for it: {hint}. "
             f"The Python-only modules are: {', '.join(sorted(_PY_FALLBACK_MODULES))}."
         )
     text = str(exc)

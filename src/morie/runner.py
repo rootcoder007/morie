@@ -39,10 +39,13 @@ def _stdin_is_terminal() -> bool:
         import msvcrt
 
         handle = msvcrt.get_osfhandle(sys.stdin.fileno())
+    except Exception:  # noqa: BLE001 - a stand-in stdin (a test, a capture): isatty() is all there is
+        return True
+    try:
         mode = ctypes.c_ulong()
         return bool(ctypes.windll.kernel32.GetConsoleMode(ctypes.c_void_p(handle), ctypes.byref(mode)))
-    except Exception:  # noqa: BLE001 - no console API means no console
-        return False
+    except Exception:  # noqa: BLE001 - no console API: trust isatty()
+        return True
 
 
 _CODECARBON_AVAILABLE = True  # the vendored tracker is always present
@@ -987,13 +990,21 @@ def _main_impl() -> int:
         if args.cpads_csv and not Path(args.cpads_csv).expanduser().is_file():
             print(f"CPADS CSV not found: {args.cpads_csv}", file=sys.stderr)
             return 1
+        import warnings as _mod_warnings
+
+        notes: list[str] = []
         try:
-            outputs = run_module(
-                args.module,
-                cpads_csv=args.cpads_csv,
-                dataset_key=getattr(args, "dataset", None),
-                output_dir=out_dir,
-            )
+            with _mod_warnings.catch_warnings(record=True) as _rec:
+                _mod_warnings.simplefilter("always")
+                outputs = run_module(
+                    args.module,
+                    cpads_csv=args.cpads_csv,
+                    dataset_key=getattr(args, "dataset", None),
+                    output_dir=out_dir,
+                )
+            notes = [str(w.message) for w in _rec if issubclass(w.category, UserWarning)]
+            for n in notes:
+                print(f"note: {n}", file=sys.stderr)
         except KeyError as exc:
             msg = str(exc.args[0] if exc.args else exc)
             if msg.startswith("Unknown dataset key"):
@@ -1012,8 +1023,10 @@ def _main_impl() -> int:
             return 1
         from .modules import _is_synthetic_cpads_path
 
-        if not getattr(args, "dataset", None) and (
-            not args.cpads_csv or _is_synthetic_cpads_path(Path(args.cpads_csv).expanduser().resolve())
+        if (
+            not any("synthetic" in n.lower() for n in notes)
+            and not getattr(args, "dataset", None)
+            and (not args.cpads_csv or _is_synthetic_cpads_path(Path(args.cpads_csv).expanduser().resolve()))
         ):
             from .data import cached_cpads
 
@@ -1023,16 +1036,19 @@ def _main_impl() -> int:
                     "not findings (`morie pull ocp21` fetches the real PUMF, used by default from then on)",
                     file=sys.stderr,
                 )
+        n_files = len(list(out_dir.iterdir())) if out_dir.is_dir() else 0
+        if n_files == 0:
+            why = (
+                ": it collects the figures and tables a project checkout wrote (data/manifest/outputs); "
+                "run the analysis modules into that tree first"
+                if args.module in ("figures", "tables", "meta-synthesis", "final-report")
+                else ": see the module's declared outputs with `morie list-modules`"
+            )
+            print(f"{args.module} wrote nothing{why}", file=sys.stderr)
+            return 1
         print(f"Completed module: {args.module}")
         print("Generated tables:", ", ".join(outputs.keys()))
-        n_files = len(list(out_dir.iterdir())) if out_dir.is_dir() else 0
         print(f"Written to {out_dir} ({n_files} files)")
-        if n_files == 0:
-            print(
-                f"{args.module} wrote nothing: see the module's declared outputs with `morie list-modules`",
-                file=sys.stderr,
-            )
-            return 1
         return 0
 
     if args.command == "run-modules":
@@ -1138,10 +1154,16 @@ def _main_impl() -> int:
         return run_chat_repl(agent=args.agent)
 
     if args.command == "tui":
+        if not (sys.stdout.isatty() and _stdin_is_terminal()):
+            print(
+                "morie tui is a full-screen terminal app: run it from a terminal (stdin and stdout are not one here)",
+                file=sys.stderr,
+            )
+            return 2
         try:
             from .tui import launch_tui
         except ImportError:
-            if not _add_interactive_layer('The TUI (also: pip install "morie[interactive]")'):
+            if not _add_interactive_layer("The TUI"):
                 return 1
             try:
                 from .tui import launch_tui
@@ -1294,7 +1316,9 @@ def _main_impl() -> int:
         content = content.replace("[MODULE_NAME]", args.module)
         description = next((item.get("description", "") for item in list_modules() if item["name"] == args.module), "")
         if description:
-            content = content.replace("[REPLACE_WITH_MODULE_DESCRIPTION]", description.rstrip("."))
+            desc = description.rstrip(".")
+            desc = desc[:1].lower() + desc[1:]  # it follows "which provides"
+            content = content.replace("[REPLACE_WITH_MODULE_DESCRIPTION]", desc)
         args.out = Path(args.out)
         if args.out.exists() and not args.force:
             print(
@@ -1396,8 +1420,22 @@ def _main_impl() -> int:
             else:
                 import difflib
 
-                near = difflib.get_close_matches(args.dataset, list(DATASET_CATALOG), n=5, cutoff=0.5)
-                near += [k for k in DATASET_CATALOG if k.startswith(args.dataset[:3]) and k not in near][:5]
+                shortcuts = [
+                    "tps-major",
+                    "tps-major-toy",
+                    "tps-shootings",
+                    "tps-homicide",
+                    "tps-layers",
+                    "cpads",
+                    "otis-a01-toy",
+                    "siu-toy",
+                    "siu-index",
+                ]
+                candidates = list(DATASET_CATALOG) + shortcuts
+                asked = args.dataset.lower()
+                near = [k for k in candidates if k.lower() == asked]
+                near += [k for k in difflib.get_close_matches(asked, candidates, n=5, cutoff=0.5) if k not in near]
+                near += [k for k in candidates if k.startswith(asked[:3]) and k not in near][:5]
                 hint = f"; did you mean: {', '.join(near)}" if near else " (morie list-datasets shows every key)"
                 print(f"unknown dataset {args.dataset!r}{hint}", file=sys.stderr)
                 return 2
@@ -1799,8 +1837,11 @@ def _main_impl() -> int:
     if args.command == "emissions":
         from .emissions import run_check, summary_text
 
-        if not (args.seconds > 0):
-            print(f"--seconds must be a positive number, not {args.seconds}", file=sys.stderr)
+        if not (0 < args.seconds <= 86400):
+            print(
+                f"--seconds must be a positive number of seconds up to 86400 (a day), not {args.seconds}",
+                file=sys.stderr,
+            )
             return 2
         if args.country:
             from .emissions import known_country_codes
@@ -1895,6 +1936,9 @@ def _main_impl() -> int:
                     file=sys.stderr,
                 )
                 return 1
+        if args.per_stratum and method != "stratified":
+            print("--per-stratum applies to --method stratified only", file=sys.stderr)
+            return 2
         if method == "pps" and args.size_col:
             try:
                 sizes = [float(v) for v in df[args.size_col]]
@@ -2043,6 +2087,9 @@ def _handle_exec(args: argparse.Namespace) -> int:
 
     code = args.code
     if args.exec_file:
+        if not Path(args.exec_file).is_file():
+            print(f"exec --file {args.exec_file}: no such file", file=sys.stderr)
+            return 1
         with open(args.exec_file) as f:
             code = f.read()
     elif code is None:
@@ -2157,9 +2204,7 @@ def _handle_edit(args: argparse.Namespace) -> int:
         from .editor import edit_file
 
     filepath = Path(args.file).resolve()
-    if not filepath.exists():
-        filepath.parent.mkdir(parents=True, exist_ok=True)
-        filepath.write_text("")
+    filepath.parent.mkdir(parents=True, exist_ok=True)  # the editor creates the file when you save
 
     rc = edit_file(str(filepath), lang_hint=args.lang)
     if rc != 0 or not args.run:

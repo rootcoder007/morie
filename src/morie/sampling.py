@@ -92,7 +92,9 @@ def simple_random_sample(
         raise ValueError(f"Cannot draw n={n} without replacement from a frame of size {len(df)}")
     rng = np.random.default_rng(seed)
     indices = rng.choice(len(df), size=n, replace=replace)
-    return df.iloc[indices].copy()
+    out = df.iloc[indices].copy()
+    out[".weight"] = [1.0] * n if replace else [len(df) / n] * n  # N / n: each row stands for N/n units
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -253,7 +255,9 @@ def cluster_sample(
 
     rng = np.random.default_rng(seed)
     selected = rng.choice(clusters, size=n_clusters, replace=False)
-    return clean[clean[cluster_col].isin(selected)].copy()
+    out = clean[clean[cluster_col].isin(selected)].copy()
+    out[".weight"] = [len(clusters) / n_clusters] * len(out)  # every unit of a chosen cluster: M / m
+    return out
 
 
 # ---------------------------------------------------------------------------

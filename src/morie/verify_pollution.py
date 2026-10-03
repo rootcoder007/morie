@@ -130,7 +130,9 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
 
     pollutant = args.pollutant.lower()
     outcome = args.outcome
-    reference = args.reference
+    reference = (
+        args.reference if args.reference is not None else (10.0 if str(args.pollutant).lower() == "no2" else 5.8)
+    )
 
     # --- Resolve exposure source ---
     equity_df = None
@@ -391,7 +393,12 @@ def register_subparser(subparsers) -> None:
         "--exposure-mean", type=float, default=0.0, help="Scalar exposure mean (µg/m³). Used if no csv/demo."
     )
     p.add_argument("--exposure-prevalence", type=float, default=0.0, help="Fraction of population above reference.")
-    p.add_argument("--reference", type=float, default=5.8, help="Counterfactual reference concentration (µg/m³).")
+    p.add_argument(
+        "--reference",
+        type=float,
+        default=None,
+        help="Counterfactual reference concentration (µg/m³); default 10 for NO2 (WHO 2021 guideline), 5.8 for PM2.5",
+    )
     p.add_argument("--baseline-rate", type=float, default=500.0, help="Baseline outcome rate per 100,000 per year.")
     p.add_argument("--population", type=int, default=1_000_000, help="Population at risk.")
     p.add_argument("--json", action="store_true", help="Emit machine-readable JSON instead of the text report.")

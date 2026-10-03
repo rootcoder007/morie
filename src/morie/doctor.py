@@ -236,7 +236,7 @@ def run_checks() -> dict[str, Any]:
         ok, detail = _check_import(pkg)
         if not ok:
             detail = (
-                'not installed (morie tui and edit need it): pip install "morie[interactive]"'
+                'not installed (morie tui needs it): pip install "morie[interactive]"'
                 if pkg == "textual"
                 else "not installed (optional: morie's native cores need none of these)"
             )

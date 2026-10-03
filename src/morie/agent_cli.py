@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""morie.agent — call the rmorie terminal agent (from rmorie-cli).
+"""morie.agent — call the rmorie terminal agent (the rmorie R package's launcher).
 
 morie already ships a native LLM layer (``morie.ask`` / ``morie.llm``). This
 is the *ecosystem-uniform* entry point that shells out to the optional
@@ -9,6 +9,7 @@ package exposes one consistent agent. Optional dependency: needs the
 ``rmorie`` binary on PATH and, for cloud backends, ``RMORIE_AGENT_API_KEY`` in
 the environment (the key is never passed as an argument).
 """
+
 from __future__ import annotations
 
 import shutil
@@ -49,8 +50,8 @@ def agent(
     binary = shutil.which("rmorie")
     if not binary:
         return (
-            "rmorie CLI not found on PATH. Install rmorie-cli to use "
-            "morie.agent()."
+            "the rmorie launcher is not on PATH: install the rmorie R package (morie r-install) and run "
+            "Rscript -e 'rmorie::install_cli()' once, then morie.agent() works."
         )
     args = [binary, "agent", "--backend", backend]
     if model:

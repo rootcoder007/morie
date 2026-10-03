@@ -192,7 +192,7 @@ def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, ech
         raise RuntimeError(f"the sign-in service answered {start.status_code}")
     info = start.json()
     user_code, uri = info["user_code"], info["verification_uri"]
-    echo(f"Sign in at {uri} and enter the code: {user_code}")
+    echo(f"Sign in at {uri} and enter the code: {user_code}  (no GitHub? run: morie login --email you@example.com)")
     if open_browser:
         with contextlib.suppress(Exception):
             webbrowser.open(uri)

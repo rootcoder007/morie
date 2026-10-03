@@ -492,11 +492,10 @@ The same works for any morie-supported domain: pass the canonical list for your 
 
 ## Languages
 
-morie's CLI is bilingual (EN/FR) by default and ships translations for **English, French, Spanish, German, Mandarin (Simplified), Portuguese (pt-BR), Japanese, Arabic, Hindi**. Set `MORIE_LOCALE`:
+morie's CLI carries French, Spanish, German and Mandarin (Simplified) strings for the cheatsheet and the explain headings; everything else is English. Set `MORIE_LOCALE`:
 
 ```bash
 MORIE_LOCALE=fr morie cheatsheet
-MORIE_LOCALE=fr morie explain power_two_proportion_gender.csv
 ```
 
 Methodology documentation (the JSS papers, in-depth method descriptions) is English-only for now — translating dense statistical prose is its own scoped project. Help us add it: every locale is one dict edit at [`src/morie/i18n.py`](src/morie/i18n.py).

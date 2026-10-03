@@ -143,6 +143,7 @@ wheel.exclude = [
 # score everything inside the tarball; shipping the whole tree made the package
 # look like it executed shell, eval and network code it never ships.)
 sdist.exclude = [
+  "/src/morie/tests/",  # the placeholder test package ships in neither artifact
   "*",
   "!/pyproject.toml",
   "!/CMakeLists.txt",
