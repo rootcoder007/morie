@@ -77,6 +77,9 @@ Problems and functions
    * - P15 disparity decomposition
      - ``P15.twofold_B``, ``P15.threefold``, ``P15.reference_dependence``, ``P15.attribution_shift``
      - :func:`disparity_decomposition`
+   * - P16 court backlog
+     - ``P16.occupancy_integral``, ``P16.little``, ``P16.little_backlog``, ``P16.little_target``
+     - :func:`court_backlog`
 
 Reference
 ---------

@@ -568,3 +568,38 @@ def test_oaxaca_blinder_parity_with_r():
     bv = r["by_variable"]
     assert [round(float(v), 9) for v in bv["unexplained_A"]] == [-3.0, 6.5, 0.75]  # R
     assert [round(float(v), 9) for v in bv["unexplained_shift"]] == [-6.0, 5.2, 3.0]  # R
+
+
+def test_little_law_on_a_docket():
+    from morie.fn._rng import random_uniform
+    from morie.research.court_backlog import occupancy_on_grid
+
+    u = [float(v) for v in random_uniform(400, seed=17)]
+    for k in range(10):
+        n = 5 + k * 5
+        a = [u[i] * 80 for i in range(n)]
+        d = [a[i] + u[100 + i] * 20 for i in range(n)]
+        r = R.court_backlog(a, d, horizon=100, target_backlog=2.5)
+        assert close(r["occupancy_integral"], sum(dv - av for av, dv in zip(a, d)))  # occupancy_integral
+        assert abs(occupancy_on_grid(a, d, 100, 0.01) - r["occupancy_integral"]) < 2e-1 * 0.01 * n + 1e-9
+        assert close(r["average_backlog"], r["filing_rate"] * r["mean_disposition_time"])  # little
+        assert close(r["little_identity_check"], 0) and close(r["required_mean_time"], 2.5 / r["filing_rate"])
+        assert close(r["occupancy_integral"], 100 * (r["filing_rate"] * r["mean_disposition_time"]))  # little_backlog
+    r = R.court_backlog([0, 1, 2, 4, 5, 7], [3, 2.5, 6, 5, 9, 10], horizon=10)
+    assert close(r["average_backlog"], 1.65)  # R
+    rc = R.court_backlog([0, 1, 2], [3, None, 12], horizon=10)
+    assert (
+        rc["n_censored"] == 2
+        and close(rc["occupancy_integral"], 3 + 9 + 8)
+        and rc["little_identity_check"] != rc["little_identity_check"]
+    )
+    for args, kw, msg in [
+        (([0, 1], [1]), {}, "same positive length"),
+        (([-1, 1], [1, 2]), {}, "non-negative"),
+        (([0, 1], [1, 2]), {"horizon": 0}, "positive"),
+        (([0, 11], [1, 12]), {"horizon": 10}, "inside the horizon"),
+        (([2, 1], [1, 2]), {}, "precede"),
+        (([0, 1], [1, 2]), {"target_backlog": -1}, "non-negative"),
+    ]:
+        with pytest.raises(ValueError, match=msg):
+            R.court_backlog(*args, **kw)
