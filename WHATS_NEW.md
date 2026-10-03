@@ -11,6 +11,8 @@ Per-package full changelogs:
 
 * **Fresh-user test, fourth pass.** McDonald's omega (`morie.psymet.mcdo`) factors by principal axes and takes omega hierarchical from the Schmid-Leiman transformation, so a multi-factor scale no longer reports it near 1 (same numbers as rmorie to 1e-12, psych to 1e-3). The power-design table `power_two_proportion_gender.csv` now carries the same columns as the R route (`n_eq`, `power_srs`, `n_eq_eff`, `power_deff` with Kish's design effect, groups by name, both outcomes). `morie sample --method stratified` writes `.weight`; the sdist no longer ships the placeholder test package; CIHI workbooks pick the sheet that holds data even when an instructions sheet declares a huge range (CIHI 885b); `ingest siu --report-id` reads the report body only and isolates the Director's decision; `list-datasets` shows an own file's path under `$MORIE_DATA_DIR`; `current_locale()` reports the locale in effect and INSTALLATION.md says exactly what is translated.
 
+* **`morie login` no longer stalls on the browser.** With `$BROWSER` set (Brave, Firefox), Python waited for the browser to exit before polling, so an approved sign-in never arrived. The browser now starts detached; over SSH or on a machine without a desktop session nothing is opened and the printed URL and code finish the sign-in from any device.
+
 * **No more exit crash on fast commands.** The daily PyPI update check ran in a daemon thread; a command that finished first (`morie list-modules`) could segfault at exit on Python 3.13 while the thread was still inside OpenSSL. The thread is now joined at exit (at most two seconds, once a day).
 
 * `morie.research`: the research programme on the hardest problems in criminology and

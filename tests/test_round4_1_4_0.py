@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import sys
 from pathlib import Path
 from statistics import NormalDist
 
@@ -287,3 +288,77 @@ def test_power_rows_keep_gender_labels_a_frame_already_holds():
     df = pd.DataFrame({"gender": ["Female"] * 3 + ["Male"] * 3, "y": [1, 0, 1, 0, 0, 1], "weight": [1.0] * 6})
     (row,) = _two_proportion_rows(df, "y", "Female", "Male")
     assert (row["group1"], row["group2"]) == ("Female", "Male")
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="POSIX shell-style $BROWSER entries")
+def test_login_browser_open_does_not_wait_for_the_browser(tmp_path, monkeypatch):
+    import time
+
+    from morie import hosted
+
+    seen = tmp_path / "seen.txt"
+    script = tmp_path / "slow_browser.py"
+    script.write_text(
+        "import sys, time, pathlib\n" f"pathlib.Path({str(seen)!r}).write_text(sys.argv[1])\n" "time.sleep(30)\n"
+    )
+    monkeypatch.setenv("BROWSER", f"{sys.executable} {script}")
+    monkeypatch.setenv("DISPLAY", ":0")
+    monkeypatch.delenv("SSH_CONNECTION", raising=False)
+    monkeypatch.delenv("SSH_TTY", raising=False)
+    t0 = time.monotonic()
+    hosted._open_browser("https://github.com/login/device")
+    assert time.monotonic() - t0 < 5
+    for _ in range(100):
+        if seen.exists():
+            break
+        time.sleep(0.05)
+    assert seen.read_text() == "https://github.com/login/device"
+
+    seen.unlink()
+    monkeypatch.setenv("BROWSER", f"{sys.executable} {script} --url=%s")
+    hosted._open_browser("https://x.invalid/a")
+    for _ in range(100):
+        if seen.exists():
+            break
+        time.sleep(0.05)
+    assert seen.read_text() == "--url=https://x.invalid/a"
+
+
+def test_login_browser_open_falls_back_to_webbrowser(monkeypatch):
+    from morie import hosted
+
+    class _Gui:
+        def open(self, uri):
+            opened.append(uri)
+
+    opened = []
+    monkeypatch.setattr(hosted, "_can_open_browser", lambda: True)
+    monkeypatch.setenv("BROWSER", "/nonexistent/browser-binary")
+    monkeypatch.setattr(hosted.webbrowser, "get", lambda: _Gui())
+    hosted._open_browser("https://github.com/login/device")
+    assert opened == ["https://github.com/login/device"]
+    # a console browser (plain GenericBrowser) is never started: it would take over the terminal
+    monkeypatch.setattr(hosted.webbrowser, "get", lambda: hosted.webbrowser.GenericBrowser("lynx"))
+    monkeypatch.delenv("BROWSER")
+    hosted._open_browser("https://github.com/login/device")
+    assert opened == ["https://github.com/login/device"]
+
+
+def test_login_opens_no_browser_headless_or_over_ssh(monkeypatch):
+    from morie import hosted
+
+    monkeypatch.setenv("SSH_CONNECTION", "10.0.0.1 22 10.0.0.2 22")
+    assert hosted._can_open_browser() is False
+    monkeypatch.delenv("SSH_CONNECTION")
+    monkeypatch.delenv("SSH_TTY", raising=False)
+    if sys.platform.startswith("linux"):
+        monkeypatch.delenv("DISPLAY", raising=False)
+        monkeypatch.delenv("WAYLAND_DISPLAY", raising=False)
+        assert hosted._can_open_browser() is False
+        monkeypatch.setenv("WAYLAND_DISPLAY", "wayland-0")
+        assert hosted._can_open_browser() is True
+    called = []
+    monkeypatch.setattr(hosted, "_can_open_browser", lambda: False)
+    monkeypatch.setattr(hosted.webbrowser, "get", lambda: called.append(1))
+    hosted._open_browser("https://github.com/login/device")
+    assert called == []
