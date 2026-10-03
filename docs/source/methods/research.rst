@@ -80,6 +80,9 @@ Problems and functions
    * - P16 court backlog
      - ``P16.occupancy_integral``, ``P16.little``, ``P16.little_backlog``, ``P16.little_target``
      - :func:`court_backlog`
+   * - P17 incapacitation
+     - ``P17.steady_state_rate``, ``P17.prevented_share_lt_one``, ``P17.marginal_prevention_eq``, ``P17.high_rate_more_prevented``
+     - :func:`incapacitation`
 
 Reference
 ---------

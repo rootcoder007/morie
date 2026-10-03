@@ -603,3 +603,33 @@ def test_little_law_on_a_docket():
     ]:
         with pytest.raises(ValueError, match=msg):
             R.court_backlog(*args, **kw)
+
+
+def test_incapacitation_arithmetic():
+    from morie.fn._rng import random_uniform
+
+    u = [float(v) for v in random_uniform(300, seed=18)]
+    for k in range(40):
+        lam = 0.1 + 20 * u[k]
+        q = 0.01 + 0.99 * u[100 + k]
+        S = 10 * u[200 + k]
+        r = R.incapacitation(lam, q, S)
+        rate = float(r["rate"][0])
+        ps = float(r["prevented_share"][0])
+        mp = float(r["marginal_prevention"][0])
+        fbar = 1 / (lam * q)
+        assert close(rate, lam * fbar / (fbar + S))  # steady_state_rate
+        assert close(ps, 1 - rate / lam) and 0 <= ps < 1 and rate <= lam  # prevented_share_*
+        assert float(R.incapacitation(lam, q, S + 1)["rate"][0]) <= rate  # rate_antitone_in_S
+        assert float(R.incapacitation(lam, min(1.0, q + 0.1), S)["rate"][0]) <= rate  # rate_antitone_in_q
+        assert close(mp, rate - float(R.incapacitation(lam, q, S + 1)["rate"][0])) and mp > 0  # marginal_prevention_*
+        assert mp >= float(R.incapacitation(lam, q, S + 1)["marginal_prevention"][0])  # diminishing
+    g = R.incapacitation([2, 10], 0.1, 1, shares=[0.8, 0.2])
+    assert float(g["prevented_share"][0]) <= float(g["prevented_share"][1])  # high_rate_more_prevented
+    assert close(g.attrs["aggregate"]["free_rate"], 3.6) and close(
+        g.attrs["aggregate"]["incapacitated_rate"], 0.8 * 2 / 1.2 + 0.2 * 5
+    )
+    with pytest.raises(ValueError, match="positive"):
+        R.incapacitation(0, 0.1, 1)
+    with pytest.raises(ValueError, match="summing to one"):
+        R.incapacitation([1, 2], 0.1, 1, shares=[0.5, 0.6])

@@ -43,6 +43,7 @@ from morie.research.feedback_loop import (
     feedback_loop_sim,
     feedback_loop_urn_law,
 )
+from morie.research.incapacitation import incapacitation
 from morie.research.judge_iv import judge_iv, judge_iv_population
 from morie.research.logit_separation import logit_separation
 from morie.research.meta_pooling import meta_dl_bias, meta_random_effects
@@ -110,6 +111,7 @@ __all__ = [
     "feedback_loop_sim",
     "feedback_loop_urn_law",
     "hazard_selection",
+    "incapacitation",
     "interracial_rates",
     "judge_iv",
     "judge_iv_population",
