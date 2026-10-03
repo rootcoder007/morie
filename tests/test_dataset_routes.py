@@ -19,10 +19,6 @@ def isolated(tmp_path, monkeypatch):
 
 
 def test_routes_name_a_source_for_the_health_infobase_and_otis_keys():
-    routes = (
-        {d["key"]: d["route"] for d in data.list_datasets.__wrapped__() if hasattr(data.list_datasets, "__wrapped__")}
-        if False
-        else None
     )
     cat = data.DATASET_CATALOG
     assert data.dataset_route(cat["hibua"]).startswith("health-infobase.canada.ca (or data.rmorie.com)")
