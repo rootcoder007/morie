@@ -269,9 +269,9 @@ emissions CSV layout and the capsule format, so they mix in one workflow.
 
 ## What's new
 
-Per-release user-facing changes are now in [WHATS_NEW.md](WHATS_NEW.md).
-For the R-package changelog see [r-package/morie/NEWS.md](r-package/morie/NEWS.md).
-For the planned roadmap see [ROADMAP.md](ROADMAP.md).
+Per-release user-facing changes are now in [WHATS_NEW.md](https://github.com/rootcoder007/morie/blob/main/WHATS_NEW.md).
+For the R-package changelog see [r-package/morie/NEWS.md](https://github.com/rootcoder007/morie/blob/main/r-package/morie/NEWS.md).
+For the planned roadmap see [ROADMAP.md](https://github.com/rootcoder007/morie/blob/main/ROADMAP.md).
 
 ## Documentation
 

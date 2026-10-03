@@ -60,11 +60,19 @@ def test_import_does_not_start_the_update_check(monkeypatch):
     import morie._update_check as uc
 
     monkeypatch.setattr(uc, "maybe_notify", lambda v: calls.append(v))
-    for name in [n for n in list(sys.modules) if n == "morie" or n.startswith("morie.")]:
-        if name not in ("morie._update_check",):
+    # a fresh import of morie, then the original module objects back: tests that run later on
+    # this worker hold references to them (an identity check in test_exec_guard failed otherwise)
+    saved = {n: m for n, m in sys.modules.items() if n == "morie" or n.startswith("morie.")}
+    try:
+        for name in saved:
+            if name not in ("morie._update_check",):
+                sys.modules.pop(name, None)
+        importlib.import_module("morie")
+        assert calls == []
+    finally:
+        for name in [n for n in list(sys.modules) if n == "morie" or n.startswith("morie.")]:
             sys.modules.pop(name, None)
-    importlib.import_module("morie")
-    assert calls == []
+        sys.modules.update(saved)
 
 
 def test_safe_expr_evaluates_without_eval():

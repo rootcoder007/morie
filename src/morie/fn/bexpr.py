@@ -33,14 +33,23 @@ def boolean_eval(
         if val not in (0, 1):
             raise ValueError(f"Variable {var} must be 0 or 1, got {val}.")
 
-    expr = expression
-    for var in sorted(variables.keys(), key=len, reverse=True):
-        expr = expr.replace(var, str(bool(variables[var])))
+    import re
+
+    def _value(m):
+        name = m.group(0)
+        if name not in variables:
+            raise ValueError(f"Undefined variable: {name}")
+        return str(bool(variables[name]))
+
+    # whole identifiers only: a text replace of a lower-case name ("o", "n") also rewrote the
+    # letters of the True/False it had just inserted
+    expr = re.sub(r"[A-Za-z_][A-Za-z0-9_]*", _value, expression)
 
     expr = expr.replace("~", " not ")
     expr = expr.replace("&", " and ")
     expr = expr.replace("|", " or ")
     expr = expr.replace("^", " != ")
+    expr = expr.strip()  # "~A" became " not True": the expression parser rejects a leading space
 
     allowed = set("TrueFalsendorat!=() 01")
     cleaned = expr.replace("not", "").replace("and", "").replace("or", "")

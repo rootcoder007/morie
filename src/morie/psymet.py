@@ -279,6 +279,10 @@ def mcdo(
     X = np.asarray(data, dtype=np.float64)
     n, k = X.shape
     R = np.corrcoef(X, rowvar=False)
+    if not isinstance(nf, int | np.integer) or isinstance(nf, bool) or not 1 <= nf <= k - 1:
+        raise ValueError(
+            f"nf must be a whole number of factors between 1 and {k - 1} (one fewer than the {k} items), not {nf!r}"
+        )
 
     evals = np.sort(np.linalg.eigvalsh(R))[::-1]
     loads = _paf(R, nf)

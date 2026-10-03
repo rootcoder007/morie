@@ -1439,7 +1439,9 @@ class PolyglotEngine:
             result = subprocess.run(["go", "run", tmp.name], capture_output=True, text=True, timeout=_compile_timeout())
             return ExecResult(language="go", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
-            return ExecResult(language="go", stderr="Go not found (install: brew install go)", success=False)
+            return ExecResult(
+                language="go", stderr="Go not found (install go with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="go", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
@@ -1541,7 +1543,9 @@ class PolyglotEngine:
                 language="ocaml", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
-            return ExecResult(language="ocaml", stderr="OCaml not found (install: brew install ocaml)", success=False)
+            return ExecResult(
+                language="ocaml", stderr="OCaml not found (install ocaml with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="ocaml", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
@@ -1555,7 +1559,9 @@ class PolyglotEngine:
                 language="lua", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
-            return ExecResult(language="lua", stderr="Lua not found (install: brew install lua)", success=False)
+            return ExecResult(
+                language="lua", stderr="Lua not found (install lua with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="lua", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
 
@@ -1600,7 +1606,7 @@ class PolyglotEngine:
             return ExecResult(language="latex", stdout=stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(
-                language="latex", stderr="pdflatex not found (install: brew install --cask mactex)", success=False
+                language="latex", stderr="pdflatex not found (install mactex with your package manager)", success=False
             )
         except subprocess.TimeoutExpired:
             return ExecResult(language="latex", stderr="Timeout (60s)", success=False)
@@ -1615,7 +1621,7 @@ class PolyglotEngine:
             )
         except FileNotFoundError:
             return ExecResult(
-                language="psql", stderr="psql not found (install: brew install postgresql)", success=False
+                language="psql", stderr="psql not found (install postgresql with your package manager)", success=False
             )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="psql", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
@@ -1737,7 +1743,9 @@ class PolyglotEngine:
                 language="nim", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
-            return ExecResult(language="nim", stderr="Nim not found (install: brew install nim)", success=False)
+            return ExecResult(
+                language="nim", stderr="Nim not found (install nim with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="nim", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
@@ -1767,7 +1775,9 @@ class PolyglotEngine:
                 continue
             except subprocess.TimeoutExpired as exc:
                 return ExecResult(language="scheme", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
-        return ExecResult(language="scheme", stderr="Scheme not found (install: brew install racket)", success=False)
+        return ExecResult(
+            language="scheme", stderr="Scheme not found (install racket with your package manager)", success=False
+        )
 
     def _exec_clojure(self, code: str) -> ExecResult:
         return self._exec_file_based(code, "clojure", ".clj", ["clojure"])
@@ -1787,7 +1797,9 @@ class PolyglotEngine:
             except subprocess.TimeoutExpired as exc:
                 return ExecResult(language="powershell", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         return ExecResult(
-            language="powershell", stderr="PowerShell not found (install: brew install powershell)", success=False
+            language="powershell",
+            stderr="PowerShell not found (install powershell with your package manager)",
+            success=False,
         )
 
     def _exec_awk(self, code: str) -> ExecResult:

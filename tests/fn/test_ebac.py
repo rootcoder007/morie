@@ -11,8 +11,8 @@ class TestCalculateEbac:
     def test_basic_computation(self):
         """Two drinks, 180 lbs male, 1 hour elapsed."""
         result = ebac(drinks=2, weight_lbs=180, hours=1, gender_constant=0.73)
-        # (2 * 5.14) / (180 * 0.73) - 0.015 * 1
-        expected = (10.28 / 131.4) - 0.015
+        # Widmark in US units: 2 drinks x 0.6 fl oz ethanol, (1.2 * 5.14) / (180 * 0.73) - 0.015 * 1
+        expected = (2 * 0.6 * 5.14) / (180 * 0.73) - 0.015
         assert result == pytest.approx(expected, abs=1e-6)
         assert result > 0
 

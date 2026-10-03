@@ -1,0 +1,34 @@
+{
+  "environment": {
+    "captured_at_utc": "2026-10-03T22:26:05Z",
+    "packages": {
+      "morie": "morie-1.0.0"
+    },
+    "platform": "Linux-7.1.3-200.fc44.x86_64-x86_64-with-glibc2.43",
+    "python_version": "3.13.14"
+  },
+  "meta": {
+    "carbon_intensity_kg_per_kwh": 0.47500000000000003,
+    "emissions_csv": "emissions.csv",
+    "emissions_csv_sha256": "5734ad1b02beb90b5a3cefa1b11d1075708b5464077008bad1b1854a25eebda2",
+    "measurements": {
+      "country_iso_code": "",
+      "cpu_power": 7.229522639662407,
+      "cpu_utilization_percent": 17.69590643274854,
+      "duration": 1.1469581127166748,
+      "emissions": 2.5918141998030066e-06,
+      "energy_consumed": 5.456450946953698e-06,
+      "ram_power": 10.0,
+      "tracking_mode": "machine"
+    },
+    "method": "CodeCarbon methodology: energy = (TDP x (0.1 + 0.9 u^3) + RAM) x time; emissions = energy x carbon intensity x PUE",
+    "project": "morie-emissions-check",
+    "run_id": "dd0ba731-2c9d-45f7-9c37-b39650b253c8",
+    "sources": [
+      "https://github.com/mlco2/codecarbon",
+      "IEA / Our World in Data energy mix"
+    ],
+    "tool": "morie.emissions (Python)"
+  },
+  "results": {}
+}

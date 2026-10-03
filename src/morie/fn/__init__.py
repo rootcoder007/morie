@@ -119,6 +119,30 @@ def _candidate_cache_dirs():
     return dirs
 
 
+def _owned_private(path, want_dir):
+    """True when ``path`` is ours alone: not a symlink, owned by this uid, not group/world-writable.
+
+    The shared ``/tmp/morie-cache-<uid>`` can be pre-created by another user with a planted
+    ``fnsrc-<tag>.zip`` (the tag is computable from the public wheel), so a cache directory or
+    zip is only trusted when it passes this check. Same-user tampering is out of scope: that
+    user can already edit the installed package. Windows has no uid; there the per-user
+    profile directories are private by default.
+    """
+    import stat
+
+    try:
+        st = _os.lstat(path)
+    except OSError:
+        return False
+    if stat.S_ISLNK(st.st_mode):
+        return False
+    if want_dir != stat.S_ISDIR(st.st_mode) or (not want_dir and not stat.S_ISREG(st.st_mode)):
+        return False
+    if not hasattr(_os, "getuid"):
+        return True
+    return st.st_uid == _os.getuid() and not st.st_mode & 0o022
+
+
 def _decompress_fnsrc(xz_path):
     import lzma
 
@@ -172,7 +196,7 @@ def _install_fnsrc():
     # Fast path: a cache zip from a previous run already exists.
     for base in _candidate_cache_dirs():
         cz = _os.path.join(base, cache_name)
-        if _os.path.isfile(cz):
+        if _os.path.isfile(cz) and _owned_private(base, True) and _owned_private(cz, False):
             if cz not in __path__:
                 __path__.append(cz)
             return
@@ -185,6 +209,9 @@ def _install_fnsrc():
     for base in _candidate_cache_dirs():
         cz = _os.path.join(base, cache_name)
         try:
+            _os.makedirs(base, mode=0o700, exist_ok=True)
+            if not _owned_private(base, True):
+                continue  # someone else's (or a world-writable) directory: never write or load there
             _write_cache_zip(cz, sources)
         except OSError:
             continue

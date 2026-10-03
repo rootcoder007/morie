@@ -565,7 +565,11 @@ class EmissionsTracker:
         self._save_to_file = save_to_file
         self._save_to_logger = save_to_logger
         _logger.setLevel(getattr(logging, str(log_level).upper(), logging.WARNING))
-        self._country_iso = country_iso_code
+        iso = (country_iso_code or "").upper()
+        codes = known_country_codes() if iso else set()
+        # a code the energy-mix table does not know gets the world average, and must be labelled so,
+        # not "(XYZ)" in the summary, the CSV and the signed capsule
+        self._country_iso = iso if (not codes or iso in codes) else ""
         self._region = region
         self._capsule = capsule
         self.capsule: dict[str, Any] | None = None

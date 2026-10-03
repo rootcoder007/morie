@@ -123,6 +123,10 @@ wheel.exclude = [
   "morie/fn/*.py",
   "!morie/fn/_*.py",
   "morie/tests/",
+  "morie/*.c",
+  "morie/*.h",
+  "morie/Makefile",
+  "morie/Modelfile*",
   "!morie/fn/__init__.py",
   "!morie/fn/describe.py",
   # The interactive/agent layer runs user/LLM-supplied code (exec + shell -c)

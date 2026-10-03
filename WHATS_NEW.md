@@ -3,13 +3,15 @@
 Reverse-chronological summary of user-facing changes per release.
 Per-package full changelogs:
 
-- **R package:** [r-package/morie/NEWS.md](r-package/morie/NEWS.md)
+- **R package:** [r-package/morie/NEWS.md](https://github.com/rootcoder007/morie/blob/main/r-package/morie/NEWS.md)
 - **Python package:** see commit history + git tags
-- **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
+- **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
 ## 1.4.0 (2026-10-03)
 
 * **Fresh-user test, fourth pass.** McDonald's omega (`morie.psymet.mcdo`) factors by principal axes and takes omega hierarchical from the Schmid-Leiman transformation, so a multi-factor scale no longer reports it near 1 (same numbers as rmorie to 1e-12, psych to 1e-3). The power-design table `power_two_proportion_gender.csv` now carries the same columns as the R route (`n_eq`, `power_srs`, `n_eq_eff`, `power_deff` with Kish's design effect, groups by name, both outcomes). `morie sample --method stratified` writes `.weight`; the sdist no longer ships the placeholder test package; CIHI workbooks pick the sheet that holds data even when an instructions sheet declares a huge range (CIHI 885b); `ingest siu --report-id` reads the report body only and isolates the Director's decision; `list-datasets` shows an own file's path under `$MORIE_DATA_DIR`; `current_locale()` reports the locale in effect and INSTALLATION.md says exactly what is translated.
+
+* **Fresh-user test, fifth pass (installed from the sdist).** `morie.fn` trusts a cached source zip only when it is the user's own (a zip planted in a shared `/tmp/morie-cache-<uid>` was imported); the interactive layer is re-checked against its manifest at import and `interactive status` names an edited file; the formula sandbox refuses `np.memmap` and caps integer powers and sequence repetition. eBAC counts a standard drink as 0.6 fl oz of ethanol (Widmark in US units, Matthews & Miller 1979; each drink had been taken as 1 oz, about 1.7x too high), and logistic-models enters region, gender, age group and health ratings as categories, as the R route does. `sample --method stratified` with a total `--n`, `boolean_eval("~A")`, `verify-pollution --outcome ihd|stroke` (one outcome throughout; an unknown outcome is a one-line error) and `emissions --country XYZ` (labelled world average) work again; a key of the wrong kind is named in `crypto`; `mcdo` checks `nf`.
 
 * **`morie login` no longer stalls on the browser.** With `$BROWSER` set (Brave, Firefox), Python waited for the browser to exit before polling, so an approved sign-in never arrived. The browser now starts detached; over SSH or on a machine without a desktop session nothing is opened and the printed URL and code finish the sign-in from any device.
 

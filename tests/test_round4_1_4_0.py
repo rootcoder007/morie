@@ -256,6 +256,8 @@ def test_interactive_status_says_whether_the_layer_was_verified(tmp_path, monkey
     ia.status(out=lines.append)
     assert any("NOT verified" in x for x in lines)
     (d / "VERIFIED").write_text("ok\n")
+    # a verified install is re-checked against the manifest; these placeholder files are the manifest here
+    monkeypatch.setattr(ia, "manifest", lambda: {f: ia.sha256_of(d / f) for f in ia.FILES})
     lines.clear()
     ia.status(out=lines.append)
     assert any("verified against the bundled manifest" in x for x in lines)

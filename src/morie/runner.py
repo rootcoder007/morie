@@ -1552,6 +1552,10 @@ def _main_impl() -> int:
             raw = path.read_bytes()
             if raw.startswith(magic):
                 return raw[len(magic) :], False
+            if raw.startswith(_SK_MAGIC if magic == _PK_MAGIC else _PK_MAGIC):
+                if magic == _PK_MAGIC:
+                    raise ValueError(f"{path} is a secret key; encrypt to the public key (.moriepk) instead")
+                raise ValueError(f"{path} is a public key; decrypt needs the secret key (.moriesk)")
             return raw, True
 
         if getattr(args, "name", None) is not None and not _valid_key_name(args.name):
@@ -1641,7 +1645,11 @@ def _main_impl() -> int:
                 return 1
             pk_path = _CryptoPath(args.recipient)
             if pk_path.is_file():
-                pk, legacy = _read_key_file(pk_path, _PK_MAGIC)
+                try:
+                    pk, legacy = _read_key_file(pk_path, _PK_MAGIC)
+                except ValueError as e:
+                    print(e, file=sys.stderr)
+                    return 1
                 if legacy:
                     print(_LEGACY_PK.format(path=pk_path), file=sys.stderr)
                     return 1
@@ -1694,7 +1702,11 @@ def _main_impl() -> int:
             key_file = _CryptoPath(args.key)
             legacy_sk = False
             if key_file.is_file():  # a secret key written by `keygen --output DIR`
-                sk, legacy_sk = _read_key_file(key_file, _SK_MAGIC)
+                try:
+                    sk, legacy_sk = _read_key_file(key_file, _SK_MAGIC)
+                except ValueError as e:
+                    print(e, file=sys.stderr)
+                    return 1
             elif "/" in args.key or "\\" in args.key or args.key.endswith(".moriesk"):
                 print(f"{args.key}: no such key file", file=sys.stderr)
                 return 1
@@ -1932,7 +1944,11 @@ def _main_impl() -> int:
             stratified_sample,
         )
 
-        df = load_dataset(args.csv)
+        try:
+            df = load_dataset(args.csv)
+        except FileNotFoundError:
+            print(f"file not found: {args.csv}", file=sys.stderr)
+            return 1
         method = args.method
         if args.n < 1:
             print(f"--n must be a positive integer, not {args.n}", file=sys.stderr)
@@ -2084,7 +2100,7 @@ def _handle_exec(args: argparse.Namespace) -> int:
     try:
         from morie._exec_guard import ExecGuardError, ensure_exec_allowed
     except ModuleNotFoundError:
-        if not _add_interactive_layer("'morie exec'"):
+        if not _add_interactive_layer(getattr(args, "verb", "'morie exec'")):
             return 1
         from morie._exec_guard import ExecGuardError, ensure_exec_allowed
 
@@ -2109,8 +2125,8 @@ def _handle_exec(args: argparse.Namespace) -> int:
             print("Enter code (ctrl+d to execute):")
         code = sys.stdin.read()
     if not code or not code.strip():
-        print("No code provided.")
-        return 1
+        print("No code provided: morie exec CODE | --file PATH", file=sys.stderr)
+        return 2
 
     if args.lang == "r":
         with tempfile.NamedTemporaryFile(mode="w", suffix=".R", delete=False) as f:
@@ -2225,7 +2241,11 @@ def _handle_edit(args: argparse.Namespace) -> int:
     if lang not in ("python", "r"):
         print(f"--run supports python and r files, not {lang}", file=sys.stderr)
         return 2
-    return _handle_exec(argparse.Namespace(code=None, filename=None, lang=lang, exec_file=str(filepath), co_dir=None))
+    return _handle_exec(
+        argparse.Namespace(
+            code=None, filename=None, lang=lang, exec_file=str(filepath), co_dir=None, verb="'morie edit --run'"
+        )
+    )
 
 
 def _handle_repl(args: argparse.Namespace) -> int:

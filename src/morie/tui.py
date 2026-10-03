@@ -5050,7 +5050,7 @@ if _TEXTUAL_AVAILABLE:
                 datasets = list_datasets()
                 n_cached = sum(1 for d in datasets if d["cached"])
             except Exception:
-                n_cached = 0
+                datasets, n_cached = [], 0
 
             content = self.query_one("#home-status-content", Static)
             content.update(
@@ -5058,10 +5058,9 @@ if _TEXTUAL_AVAILABLE:
                 f"  LLM: [bold green]{info['inner']}[/bold green] "
                 f"[dim]\\[{info['outer']}][/dim]  |  "
                 f"Modules: [bold]{len(modules)}[/bold]  |  "
-                f"Datasets: [bold]{n_cached}[/bold] built-in  |  "
+                f"Datasets: [bold]{len(datasets) if datasets else 0}[/bold] keys ({n_cached} cached)  |  "
                 f"Python: [bold]{sys.version.split()[0]}[/bold]\n\n"
-                f"MORIE ships 32 Canadian public health datasets and "
-                f"48 statistical analysis commands.\n"
+                f"{len(modules)} analysis modules and the datasets of `morie list-datasets`.\n"
                 f"Press [bold yellow]i[/bold yellow] to browse datasets, "
                 f"[bold yellow]s[/bold yellow] for stats, "
                 f"[bold yellow]c[/bold yellow] to chat with an LLM, or "

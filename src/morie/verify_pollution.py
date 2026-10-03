@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
@@ -86,7 +87,7 @@ def _check_assumptions(
 
     _add(
         "exposure > reference",
-        exposure_mean > reference,
+        math.isfinite(exposure_mean) and exposure_mean > reference,
         f"mean {exposure_mean:.6g} vs ref {reference:.6g} -- CRF is monotonic only "
         "when exposure exceeds the counterfactual floor.",
     )
@@ -97,7 +98,7 @@ def _check_assumptions(
     )
     _add(
         "baseline_rate non-negative",
-        baseline_rate >= 0.0,
+        math.isfinite(baseline_rate) and baseline_rate >= 0.0,
         f"baseline_rate={baseline_rate} per 100k per year",
     )
     _add(
@@ -212,18 +213,22 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
         return 1
 
     # --- Pipeline stage 1: concentration-response ---
-    if pollutant == "no2":
-        crf = envhealth.concentration_response_no2(
-            exposure_mean,
-            outcome=outcome,
-            reference_conc=reference,
-        )
-    else:  # pm25
-        crf = envhealth.concentration_response_pm25(
-            exposure_mean,
-            outcome=outcome,
-            reference_conc=reference,
-        )
+    try:
+        if pollutant == "no2":
+            crf = envhealth.concentration_response_no2(
+                exposure_mean,
+                outcome=outcome,
+                reference_conc=reference,
+            )
+        else:  # pm25
+            crf = envhealth.concentration_response_pm25(
+                exposure_mean,
+                outcome=outcome,
+                reference_conc=reference,
+            )
+    except ValueError as e:  # an unknown --outcome names the outcomes this pollutant has
+        print(f"ERROR: --outcome {outcome}: {e}", file=sys.stderr)
+        return 2
 
     # --- Stage 2: attributable fraction ---
     paf = envhealth.attributable_fraction(
@@ -256,6 +261,7 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
         baseline_rate=baseline_rate_per_person,
         population=population,
         pollutant=burden_name,
+        outcome=outcome,  # the same outcome as the CRF stage (IHD/stroke were burdened as all-cause)
         reference_conc=reference,  # the same counterfactual as the CRF and the displaced-mortality stage
     )
 
@@ -381,7 +387,11 @@ def register_subparser(subparsers) -> None:
         help="Run a pollution -> health causal pipeline and print a report.",
     )
     p.add_argument("--pollutant", required=True, choices=["no2", "pm25", "NO2", "PM25"], help="Pollutant to analyze.")
-    p.add_argument("--outcome", default="all_cause_mortality", help="Outcome name passed to concentration_response_*.")
+    p.add_argument(
+        "--outcome",
+        default="all_cause_mortality",
+        help="Outcome: all_cause_mortality (default); NO2 also respiratory, childhood_asthma; PM2.5 also ihd, stroke.",
+    )
     p.add_argument("--region", default=None, help="Region label for reporting (e.g. ON-FSA-M6H).")
     p.add_argument("--years", default=None, help="Year range label for reporting (e.g. 2019-2023).")
 

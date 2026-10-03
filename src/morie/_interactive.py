@@ -93,10 +93,29 @@ def activate(package_path: list, version: str) -> bool:
     d = data_dir()
     if installed_version(d) != version:
         return False
+    if changed_files(d):
+        return False  # edited since a verified install: never load it (``status`` names the files)
     p = str(d)
     if p not in package_path:
         package_path.append(p)
     return True
+
+
+def changed_files(d: Path | None = None) -> list[str]:
+    """Files of a verified install that no longer match the bundled manifest.
+
+    A layer installed with verification is re-checked at every ``import morie``
+    (five files, about 400 KB of SHA-256), so a file edited after install is not
+    loaded. A layer installed with ``--no-verify`` is the user's explicit choice
+    and is not checked.
+    """
+    d = d or data_dir()
+    if not (d / "VERIFIED").is_file():
+        return []
+    expected = manifest()
+    if not expected:
+        return []
+    return [n for n in FILES if not (d / n).is_file() or sha256_of(d / n) != expected.get(n)]
 
 
 def _download(url: str, dest: Path, label: str) -> None:
@@ -223,6 +242,10 @@ def status(out=print) -> int:
     if iv != version:
         out(f"state: installed for morie {iv}, this is morie {version}; run: morie interactive install")
         return 0
+    bad = changed_files(d)
+    if bad:
+        out(f"state: NOT loaded: {', '.join(bad)} changed since the verified install; run: morie interactive install")
+        return 1
     checked = (
         "verified against the bundled manifest"
         if (d / "VERIFIED").is_file()

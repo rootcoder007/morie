@@ -9,19 +9,24 @@ data in CPADS. MORIE computes two eBAC variants.
 Widmark formula
 ---------------
 
-The standard Widmark (1932) formula estimates BAC from consumed alcohol:
+MORIE uses Widmark's formula in US units (Matthews & Miller, 1979):
 
 .. math::
 
-   \text{BAC} = \frac{A}{r \cdot W} - \beta \cdot t
+   \text{eBAC} = \frac{A \times 5.14}{W \times r} - 0.015\, t
 
 where
 
-- :math:`A` = grams of alcohol consumed
-- :math:`r` = Widmark distribution factor (0.68 for males, 0.55 for females)
-- :math:`W` = body weight (kg)
-- :math:`\beta` = elimination rate (≈ 0.15 g/dL/hr)
+- :math:`A` = fluid ounces of ethanol consumed; a standard drink (14 g of
+  ethanol) is 0.6 fl oz, so :math:`A = 0.6 \times` drinks
+- :math:`W` = body weight (lb)
+- :math:`r` = Widmark distribution factor (0.73 for men, 0.66 for women)
+- :math:`0.015` = elimination rate (percent BAC per hour)
 - :math:`t` = hours since drinking began
+
+The result is a percentage (g/dL); values below zero are floored at zero.
+Five drinks for a 150 lb man over two hours give
+:math:`5 \times 0.6 \times 5.14 / (150 \times 0.73) - 0.03 = 0.111`.
 
 MORIE variants
 -------------
@@ -43,8 +48,8 @@ Python API
 
    from morie import calculate_ebac, is_over_legal_limit
 
-   # weight in pounds; the Widmark constant is 0.68 for men, 0.55 for women
-   ebac = calculate_ebac(drinks=5, weight_lbs=154, hours=2.0, gender_constant=0.68)
+   # weight in pounds; the Widmark constant is 0.73 for men, 0.66 for women
+   ebac = calculate_ebac(drinks=5, weight_lbs=154, hours=2.0, gender_constant=0.73)
    over = is_over_legal_limit(ebac)
 
 eBAC-IPW module
@@ -57,6 +62,9 @@ framework.
 References
 ----------
 
+- Matthews DB, Miller WR (1979). Estimating blood alcohol concentration: two
+  computer programs and their applications in therapy and research.
+  *Addictive Behaviors* 4(1):55-60.
 - Widmark EMP (1932). *Die theoretischen Grundlagen und die praktische
   Verwendbarkeit der gerichtlich-medizinischen Alkoholbestimmung*.
   Urban & Schwarzenberg.

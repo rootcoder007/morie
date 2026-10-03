@@ -20,18 +20,19 @@ class _MissingDep:
 
     def __getattr__(self, attr):
         raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+            "%s is no longer bundled; this code path awaits its native " "morie implementation" % self._name
+        )
 
     def __call__(self, *a, **k):
         raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+            "%s is no longer bundled; this code path awaits its native " "morie implementation" % self._name
+        )
+
 
 try:
     from . import _glm_core as sm
 except ImportError:
-    sm = _MissingDep('sm')
+    sm = _MissingDep("sm")
 
 from morie.cpads import validate_cpads_frame
 from morie.fn._helpers import _safe_exp
@@ -127,11 +128,17 @@ def run_weighted_logistic_analysis(
     frame = _prepare_analysis_frame(data, required=required)
     design = SurveyDesign(frame, weights_col=weight_col)
 
-    formula = f"{outcome} ~ {' + '.join(predictors)}"
+    # survey codes of nominal/ordinal groups are categories, as in the R route (factor labels)
+    categorical = {"age_group", "gender", "province_region", "mental_health", "physical_health"}
+
+    def term(v: str) -> str:
+        return f"C({v})" if v in categorical else v
+
+    formula = f"{outcome} ~ {' + '.join(term(v) for v in predictors)}"
     fit = design.svyglm(formula, family=sm.families.Binomial())
     or_table = _extract_or_table(fit)
 
-    interaction_formula = formula + f" + {treatment}:gender"
+    interaction_formula = formula + f" + {treatment}:{term('gender')}"
     fit_int = design.svyglm(interaction_formula, family=sm.families.Binomial())
     int_or_table = _extract_or_table(
         fit_int,

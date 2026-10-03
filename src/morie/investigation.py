@@ -83,6 +83,9 @@ def _extract_or_table(fit, *, model_name: str | None = None) -> pd.DataFrame:
     return table
 
 
+_CATEGORICAL_CODES = frozenset({"age_group", "gender", "province_region", "mental_health", "physical_health"})
+
+
 def run_weighted_logistic_analysis(
     data: pd.DataFrame,
     *,
@@ -106,12 +109,17 @@ def run_weighted_logistic_analysis(
     frame = _prepare_analysis_frame(data, required=required)
     design = SurveyDesign(frame, weights_col=weight_col)
 
-    formula = f"{outcome} ~ {' + '.join(predictors)}"
+    # survey codes of nominal/ordinal groups are categories, as in the R route (factor labels):
+    # entered as numbers they gave one "per unit of region code" odds ratio
+    def term(v: str) -> str:
+        return f"C({v})" if v in _CATEGORICAL_CODES else v
+
+    formula = f"{outcome} ~ {' + '.join(term(v) for v in predictors)}"
     stages.step(f"survey-weighted logistic model on {len(frame):,} rows")
     fit = design.svyglm(formula, family=sm.families.Binomial())
     or_table = _extract_or_table(fit)
 
-    interaction_formula = formula + f" + {treatment}:gender"
+    interaction_formula = formula + f" + {treatment}:{term('gender')}"
     stages.step(f"interaction model ({treatment} x gender)")
     fit_int = design.svyglm(interaction_formula, family=sm.families.Binomial())
     int_or_table = _extract_or_table(

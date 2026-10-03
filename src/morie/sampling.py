@@ -170,11 +170,11 @@ def stratified_sample(
         fractions = stratum_sizes / stratum_sizes.sum()
         allocation = (fractions * total_n).round().astype(int)
         # Adjust rounding: add/remove from largest stratum
-        diff = total_n - allocation.sum()
+        diff = int(total_n - int(allocation.sum()))
         if diff != 0:
             largest = allocation.idxmax()
             allocation[largest] += diff
-        n_map = allocation.to_dict()
+        n_map = {k: int(v) for k, v in allocation.to_dict().items()}  # counts, never floats
     elif isinstance(n_per_stratum, dict):
         n_map = n_per_stratum
     else:

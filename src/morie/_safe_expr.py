@@ -85,6 +85,8 @@ _IO_ALLOWED = frozenset({"to_numpy", "to_list", "to_dict"})
 _IO_NAMES = frozenset(
     {
         "tofile",
+        "memmap",
+        "open_memmap",
         "fromfile",
         "fromregex",
         "genfromtxt",
@@ -185,6 +187,32 @@ def safe_eval_expr(expression: str, namespace: dict[str, Any] | None = None) -> 
     return _Evaluator(namespace).visit(tree.body)
 
 
+# a formula is arithmetic on data, not a way to stall the machine: 10**10**10 ran unbounded and
+# "a" * 10**8 allocated 100 MB; integer powers and sequence repetition get a ceiling
+_MAX_INT_BITS = 10_000
+_MAX_REPEAT = 1_000_000
+
+
+def _capped_pow(a, b):
+    if (
+        isinstance(a, int)
+        and isinstance(b, int)
+        and not isinstance(a, bool)
+        and b > 0
+        and abs(a) > 1
+        and b * abs(a).bit_length() > _MAX_INT_BITS
+    ):
+        raise ValueError(f"result too large: an integer power above {_MAX_INT_BITS} bits")
+    return a**b
+
+
+def _capped_mult(a, b):
+    for seq, n in ((a, b), (b, a)):
+        if isinstance(seq, str | bytes | list | tuple) and isinstance(n, int) and len(seq) * n > _MAX_REPEAT:
+            raise ValueError(f"result too large: more than {_MAX_REPEAT:,} repeated items")
+    return a * b
+
+
 class _Evaluator:
     """Walk the validated tree and compute it: the same operators and node types
     :func:`safe_eval_expr` admits, with no call into the interpreter's eval()."""
@@ -192,11 +220,11 @@ class _Evaluator:
     _BIN = {
         ast.Add: lambda a, b: a + b,
         ast.Sub: lambda a, b: a - b,
-        ast.Mult: lambda a, b: a * b,
+        ast.Mult: lambda a, b: _capped_mult(a, b),
         ast.Div: lambda a, b: a / b,
         ast.FloorDiv: lambda a, b: a // b,
         ast.Mod: lambda a, b: a % b,
-        ast.Pow: lambda a, b: a**b,
+        ast.Pow: lambda a, b: _capped_pow(a, b),
     }
     _CMP = {
         ast.Eq: lambda a, b: a == b,
