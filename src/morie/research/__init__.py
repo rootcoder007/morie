@@ -15,7 +15,7 @@ from morie.research.concentration import (
     concentration_distinct_growth,
     concentration_gini,
 )
-from morie.research.contagion import contagion_branching
+from morie.research.contagion import contagion_branching, contagion_extinction
 from morie.research.dark_figure import (
     dark_figure_bounds,
     dark_figure_breakdown,
@@ -80,6 +80,7 @@ __all__ = [
     "concentration_distinct_growth",
     "concentration_gini",
     "contagion_branching",
+    "contagion_extinction",
     "contaminated_bounds",
     "dark_figure_bounds",
     "dark_figure_breakdown",

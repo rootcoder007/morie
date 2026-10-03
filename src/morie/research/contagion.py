@@ -6,13 +6,14 @@
 * ``Research.P10.stationary_rate``: mean rate mu/(1-n)
 * ``Research.P10.cluster_size_diverges_of_ge_one``: n >= 1 gives unbounded partial sums
 * ``Research.P10.endogeneity_share``: share of triggered events = n
+* ``Research.P10.iter_tendsto`` / ``extinction_fixed`` / ``extinction_le_fixed`` / ``subcritical_extinction_one`` / ``supercritical_extinction_lt_one`` (``P10Extinction.lean``)
 
 R parity: ``rmorie`` ``R/contagion.R`` (``morie_contagion_branching``).
 """
 
 from __future__ import annotations
 
-__all__ = ["contagion_branching"]
+__all__ = ["contagion_branching", "contagion_extinction"]
 
 
 def contagion_branching(n, mu=1.0, generations=10) -> dict:
@@ -47,5 +48,58 @@ def contagion_branching(n, mu=1.0, generations=10) -> dict:
             "Research.P10.stationary_rate",
             "Research.P10.cluster_size_diverges_of_ge_one",
             "Research.P10.endogeneity_share",
+        ],
+    }
+
+
+def contagion_extinction(p, tol=1e-14, max_iter=100000) -> dict:
+    """Extinction probability of a near-repeat chain: the smallest fixed point of the generating function.
+
+    Iterates ``s_0 = 0``, ``s_{n+1} = f(s_n)`` (``Research.P10.iter_tendsto``,
+    ``extinction_fixed``, ``extinction_le_fixed``); mean offspring below one gives
+    certain extinction (``subcritical_extinction_one``), above one a survival
+    probability strictly positive (``supercritical_extinction_lt_one``).
+
+    Examples
+    --------
+    >>> r = contagion_extinction([0.3, 0.3, 0.4])
+    >>> (round(r["extinction"], 9), r["regime"])
+    (0.75, 'supercritical')
+    >>> round(contagion_extinction([0.5, 0.3, 0.2])["extinction"], 9)
+    1.0
+    """
+    pp = [float(v) for v in p]
+    if not pp or any(v != v or v < 0 for v in pp) or abs(sum(pp) - 1) > 1e-10:
+        raise ValueError("p must be non-negative probabilities summing to one")
+    ks = list(range(len(pp)))
+
+    def f(s):
+        return sum(pk * s**k for pk, k in zip(pp, ks))
+
+    m = sum(k * pk for pk, k in zip(pp, ks))
+    s = 0.0
+    iterates = []
+    for _ in range(int(max_iter)):
+        s_new = f(s)
+        iterates.append(s_new)
+        if abs(s_new - s) < tol:
+            s = s_new
+            break
+        s = s_new
+    regime = "subcritical" if m < 1 else ("supercritical" if m > 1 else "critical")
+    return {
+        "mean_offspring": m,
+        "regime": regime,
+        "extinction": s,
+        "survival": 1 - s,
+        "iterates": iterates,
+        "fixed_point_check": f(s) - s,
+        "theorems": [
+            "Research.P10.iter_mono",
+            "Research.P10.iter_tendsto",
+            "Research.P10.extinction_fixed",
+            "Research.P10.extinction_le_fixed",
+            "Research.P10.subcritical_extinction_one",
+            "Research.P10.supercritical_extinction_lt_one",
         ],
     }

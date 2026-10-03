@@ -60,8 +60,8 @@ Problems and functions
      - ``P9.total_invariant_of_colStochastic``, ``P9.detection_rate_rises``
      - :func:`recording_map`, :func:`detection_rate_shift`
    * - P10 near-repeat contagion
-     - ``P10.cluster_size_of_lt_one``, ``P10.endogeneity_share``
-     - :func:`contagion_branching`
+     - ``P10.cluster_size_of_lt_one``, ``P10.endogeneity_share``, ``P10.extinction_le_fixed``, ``P10.supercritical_extinction_lt_one``
+     - :func:`contagion_branching`, :func:`contagion_extinction`
    * - P11 sentencing effects as intervals
      - ``P11.Pop.outcome_bounds``, ``P11.clean_bounds``, ``P11.Pop.mtr_upper``, ``P11.Pop.mts_ate_le_naive``, ``P11.im_cutoff_antitone``, ``P11.two_sided_overcovers``
      - :func:`sentence_effect_bounds`, :func:`contaminated_bounds`, :func:`sentence_effect_mtr`, :func:`sentence_effect_mts`, :func:`bounds_confidence`

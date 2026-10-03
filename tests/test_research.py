@@ -415,3 +415,32 @@ def test_monotone_treatment_selection():
             ate = sum(yb) / 400 - sum(ya) / 400
             assert r["ate_bounds_mts"]["lower"] - 1e-12 <= ate <= r["ate_bounds_mts"]["upper"] + 1e-12
     assert k > 0
+
+
+def test_contagion_extinction_fixed_point():
+    r = R.contagion_extinction([0.3, 0.3, 0.4])
+    assert close(r["extinction"], 0.75, 1e-9) and r["regime"] == "supercritical"  # 0.4 s^2 - 0.7 s + 0.3 = 0
+    it = r["iterates"]
+    assert all(b >= a - 1e-15 for a, b in zip(it, it[1:]))  # iter_mono
+    assert abs(r["fixed_point_check"]) < 1e-12  # extinction_fixed
+    assert close(R.contagion_extinction([0.5, 0.3, 0.2])["extinction"], 1, 1e-9)  # subcritical_extinction_one
+    from morie.fn._rng import random_uniform
+
+    u = [float(v) for v in random_uniform(400, seed=13)]
+    for k in range(40):
+        K = 2 + (k % 5)
+        w = [u[k * 8 + j] for j in range(K + 1)]
+        p = [v / sum(w) for v in w]
+        rr = R.contagion_extinction(p)
+        m = sum(j * p[j] for j in range(K + 1))
+        assert close(rr["mean_offspring"], m)
+        if m < 1:
+            assert close(rr["extinction"], 1, 1e-9)
+        if m > 1:
+            assert rr["extinction"] < 1 - 1e-9  # supercritical_extinction_lt_one
+        f = lambda s, p=p: sum(p[j] * s**j for j in range(len(p)))  # noqa: E731
+        if rr["extinction"] > 1e-6:
+            grid = [rr["extinction"] * 0.999 * t / 199 for t in range(200)]
+            assert all(f(s) > s for s in grid)  # extinction_le_fixed: smallest
+    with pytest.raises(ValueError, match="summing to one"):
+        R.contagion_extinction([0.5, 0.6])

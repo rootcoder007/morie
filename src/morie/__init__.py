@@ -50,6 +50,7 @@ _LAZY_EXPORTS = {
     "concentration_distinct_growth": "research.concentration",
     "concentration_gini": "research.concentration",
     "contagion_branching": "research.contagion",
+    "contagion_extinction": "research.contagion",
     "contaminated_bounds": "research.sentence_bounds",
     "dark_figure_bounds": "research.dark_figure",
     "dark_figure_breakdown": "research.dark_figure",
