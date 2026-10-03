@@ -48,6 +48,7 @@ from morie.research.judge_iv import judge_iv, judge_iv_population
 from morie.research.logit_separation import logit_separation
 from morie.research.meta_pooling import meta_dl_bias, meta_random_effects
 from morie.research.recording_map import detection_rate_shift, recording_map
+from morie.research.regression_to_mean import regression_to_mean
 from morie.research.selection import (
     age_crime_aggregate,
     collider_arrest,
@@ -123,6 +124,7 @@ __all__ = [
     "probability_of_necessity",
     "ranking_resolution",
     "recording_map",
+    "regression_to_mean",
     "relative_risk_from_or",
     "selective_labels",
     "sentence_effect_bounds",

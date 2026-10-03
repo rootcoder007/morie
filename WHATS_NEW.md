@@ -24,7 +24,7 @@ Per-package full changelogs:
   extinction probability of a near-repeat chain (`contagion_extinction`), judge-leniency
   designs (`judge_iv`, `judge_iv_population`), the Oaxaca-Blinder decomposition
   (`disparity_decomposition`), Little's law on a docket (`court_backlog`) and the
-  incapacitation identity (`incapacitation`) and selective labels (`selective_labels`); every theorem is named in the result.
+  incapacitation identity (`incapacitation`) selective labels (`selective_labels`) and regression to the mean at selected hot spots (`regression_to_mean`); every theorem is named in the result.
 
 * Datasets: the fourteen Health Infobase tables download from the portal with the
   data.rmorie.com copy as the fallback (`morie pull hibua`), the three OTIS research

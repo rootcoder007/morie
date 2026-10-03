@@ -86,6 +86,9 @@ Problems and functions
    * - P18 selective labels
      - ``P18.nested_rate_identified``, ``P18.unobserved_bounds``, ``P18.unobserved_width``
      - :func:`selective_labels`
+   * - P19 regression to the mean
+     - ``P19.exchange_cross``, ``P19.indicator_bound``, ``P19.selected_change_nonpos``
+     - :func:`regression_to_mean`
 
 Reference
 ---------

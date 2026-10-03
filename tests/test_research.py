@@ -685,3 +685,52 @@ def test_selective_labels_contraction_and_bounds():
         R.selective_labels([0, 1], [True, False], [False, True])["naive_rate"]
         != R.selective_labels([0, 1], [True, False], [False, True])["naive_rate"]
     )
+
+
+def test_regression_to_the_mean_under_exchangeability():
+    from morie.fn._rng import random_uniform
+
+    u = [float(v) for v in random_uniform(1000, seed=20)]
+    n = 200
+    mu = [0.5 + 6 * u[i] for i in range(n)]
+    x1 = [int(mu[i] * (0.5 + u[200 + i])) for i in range(n)]
+    x2 = [int(mu[i] * (0.5 + u[400 + i])) for i in range(n)]
+    w = [0.5 + 1.5 * u[600 + i] for i in range(n)]
+    c = sorted(x1)[int(0.8 * n)]
+    r = R.regression_to_mean(x1, x2, c, w)
+    assert r["symmetrised_change"] <= 1e-12  # selected_change_nonpos on the symmetrised population
+    assert r["low_symmetrised_change"] >= -1e-12  # low_selected_change_nonneg
+    assert close(r["excess_over_symmetry"], r["selected_change"] - r["symmetrised_change"])
+    X1 = x1 + x2
+    X2 = x2 + x1
+    W = w + w
+    s1 = [v > c for v in X1]
+    s2 = [v > c for v in X2]
+    assert close(sum(W[i] for i in range(2 * n) if s1[i]), sum(W[i] for i in range(2 * n) if s2[i]))  # exchange_mass
+    assert close(
+        sum(W[i] * X2[i] for i in range(2 * n) if s1[i]), sum(W[i] * X1[i] for i in range(2 * n) if s2[i])
+    )  # exchange_cross
+    assert sum(W[i] * (X2[i] - X1[i]) for i in range(2 * n) if s1[i]) <= 1e-12  # selected_change_nonpos
+    assert all(
+        X1[i] * (int(s1[i]) - int(s2[i])) >= c * (int(s1[i]) - int(s2[i])) - 1e-12 for i in range(2 * n)
+    )  # indicator_bound
+    rr = R.regression_to_mean(X1, X2, c, W)
+    assert close(rr["selected_change"], rr["symmetrised_change"])
+    for args, kw, msg in [
+        (([1, 2, 3], [1, 2], 1), {}, "equal length"),
+        (([1, float("nan")], [1, 2], 1), {}, "NA"),
+        (([1, 2, 3], [1, 2, 3], [1, 2]), {}, "single number"),
+        (([1, 2, 3], [1, 2, 3], 1), {"weights": [-1, 1, 1]}, "non-negative"),
+        (([1, 2, 3], [1, 2, 3], 10), {}, "exceeds the threshold"),
+    ]:
+        with pytest.raises(ValueError, match=msg):
+            R.regression_to_mean(*args, **kw)
+    one = R.regression_to_mean([5, 5], [1, 1], 4)
+    assert one["mirror_change"] != one["mirror_change"] and one["low_selected_change"] != one["low_selected_change"]
+
+
+def test_regression_to_the_mean_edge_branches():
+    with pytest.raises(ValueError, match="single number"):
+        R.regression_to_mean([1, 2, 3], [1, 2, 3], float("nan"))
+    r = R.regression_to_mean([5, 6], [7, 8], 4)
+    assert r["low_symmetrised_change"] != r["low_symmetrised_change"]

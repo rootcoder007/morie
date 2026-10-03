@@ -88,6 +88,7 @@ _LAZY_EXPORTS = {
     "probability_of_necessity": "research.selection",
     "ranking_resolution": "research.fairness_bounds",
     "recording_map": "research.recording_map",
+    "regression_to_mean": "research.regression_to_mean",
     "relative_risk_from_or": "research.selection",
     "selective_labels": "research.selective_labels",
     "sentence_effect_bounds": "research.sentence_bounds",
