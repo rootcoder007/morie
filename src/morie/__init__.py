@@ -61,6 +61,7 @@ _LAZY_EXPORTS = {
     "deterrence_design_check": "research.selection",
     "deterrence_response": "research.selection",
     "disparity_benchmark": "research.selection",
+    "disparity_decomposition": "research.disparity_decomposition",
     "disparity_exposure_bounds": "research.selection",
     "ecological_bounds": "research.ecological",
     "ecological_decompose": "research.ecological",

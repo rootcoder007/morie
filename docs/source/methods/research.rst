@@ -74,6 +74,9 @@ Problems and functions
    * - P14 judge leniency
      - ``P14.itt_decomposition``, ``P14.first_stage_decomposition``, ``P14.late_identification``, ``P14.wald_with_defiers``, ``P14.defiers_can_flip``
      - :func:`judge_iv_population`, :func:`judge_iv`
+   * - P15 disparity decomposition
+     - ``P15.twofold_B``, ``P15.threefold``, ``P15.reference_dependence``, ``P15.attribution_shift``
+     - :func:`disparity_decomposition`
 
 Reference
 ---------

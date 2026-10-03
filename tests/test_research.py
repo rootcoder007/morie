@@ -513,3 +513,58 @@ def test_judge_leniency_instrument():
         R.judge_iv([0, 0, 1, 1], [1, 1, 1, 1], [1, 2, 3, 4])["wald"]
         != R.judge_iv([0, 0, 1, 1], [1, 1, 1, 1], [1, 2, 3, 4])["wald"]
     )
+
+
+def test_oaxaca_blinder_identities_and_attribution_shift():
+    from morie.fn._rng import random_uniform
+
+    u = [float(v) for v in random_uniform(1200, seed=16)]
+    n = 300
+    g = ["A"] * 150 + ["B"] * 150
+    score = [u[i] * 4 + (5 if g[i] == "A" else 4) for i in range(n)]
+    priors = [int(u[300 + i] * (4 if g[i] == "A" else 2)) for i in range(n)]
+    y = [2 + 0.8 * score[i] + 0.5 * priors[i] + (1 if g[i] == "A" else 0) + u[600 + i] - 0.5 for i in range(n)]
+    X = [[score[i], priors[i]] for i in range(n)]
+    r = R.disparity_decomposition(y, X, g, reference="B", names=["score", "priors"], shift=3)
+    assert all(abs(v) < 1e-10 for v in r["identity_checks"].values())  # twofold_B/A, threefold, reference
+    assert close(r["gap"], sum(y[:150]) / 150 - sum(y[150:]) / 150)
+    assert close(r["twofold_A"]["explained"] - r["twofold_B"]["explained"], r["threefold"]["interaction"], 1e-10)
+    X2 = [[score[i] + 3, priors[i]] for i in range(n)]
+    r2 = R.disparity_decomposition(y, X2, g, reference="B", names=["score", "priors"])
+    assert close(
+        r2["twofold_B"]["unexplained"], r["twofold_B"]["unexplained"], 1e-9
+    )  # attribution_shift: total unchanged
+    bv = r["by_variable"]
+    bv2 = r2["by_variable"]
+    assert close(
+        float(bv2["unexplained_A"][1]) - float(bv["unexplained_A"][1]), float(bv["unexplained_shift"][1]), 1e-9
+    )
+    assert close(float(sum(bv["unexplained_A"])), r["twofold_B"]["unexplained"], 1e-9)
+    # identical coefficients: interaction zero and the references agree (explained_eq_iff)
+    x = [u[900 + i] + (1 if g[i] == "A" else 0) for i in range(n)]
+    y0 = [1 + 2 * v for v in x]
+    r0 = R.disparity_decomposition(y0, x, g, reference="B")
+    assert abs(r0["threefold"]["interaction"]) < 1e-9 and close(
+        r0["twofold_A"]["explained"], r0["twofold_B"]["explained"], 1e-9
+    )
+    with pytest.raises(ValueError, match="two values"):
+        R.disparity_decomposition(y0, x, ["A"] * n, reference="A")
+    with pytest.raises(ValueError, match="reference"):
+        R.disparity_decomposition(y0, x, g, reference="C")
+    with pytest.raises(ValueError, match="collinear"):
+        R.disparity_decomposition(y0, [[v, 2 * v] for v in x], g, reference="B")
+    with pytest.raises(ValueError, match="same rows"):
+        R.disparity_decomposition(y0[:10], x, g, reference="B")
+
+
+def test_oaxaca_blinder_parity_with_r():
+    y = [10, 12, 13, 15, 9, 8, 11, 7]
+    X = [[1, 0], [2, 1], [3, 1], [4, 0], [1, 1], [2, 0], [2, 0], [3, 1]]
+    r = R.disparity_decomposition(y, X, ["A"] * 4 + ["B"] * 4, reference="B", names=["x1", "x2"], shift=2)
+    assert close(r["gap"], 3.75)
+    assert close(r["twofold_B"]["explained"], -0.5, 1e-9) and close(r["twofold_B"]["unexplained"], 4.25, 1e-9)  # R
+    assert close(r["twofold_A"]["explained"], 0.8, 1e-9) and close(r["twofold_A"]["unexplained"], 2.95, 1e-9)  # R
+    assert close(r["threefold"]["interaction"], 1.3, 1e-9)
+    bv = r["by_variable"]
+    assert [round(float(v), 9) for v in bv["unexplained_A"]] == [-3.0, 6.5, 0.75]  # R
+    assert [round(float(v), 9) for v in bv["unexplained_shift"]] == [-6.0, 5.2, 3.0]  # R

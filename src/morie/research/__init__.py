@@ -23,6 +23,7 @@ from morie.research.dark_figure import (
     dark_figure_three_list,
     dark_figure_two_source,
 )
+from morie.research.disparity_decomposition import disparity_decomposition
 from morie.research.ecological import ecological_bounds, ecological_decompose
 from morie.research.fairness_bounds import (
     fairness_base_rate_bounds,
@@ -92,6 +93,7 @@ __all__ = [
     "deterrence_design_check",
     "deterrence_response",
     "disparity_benchmark",
+    "disparity_decomposition",
     "disparity_exposure_bounds",
     "ecological_bounds",
     "ecological_decompose",
