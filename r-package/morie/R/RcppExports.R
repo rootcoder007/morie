@@ -25,35 +25,35 @@
     .Call(`_morie_morie_crypto_argon2_native`, password, salt, memory, passes, parallelism, tag_length, variant, secret, associated)
 }
 
-.morie_liboqs_available_impl <- function() {
+.rmorie_liboqs_available_impl <- function() {
     .Call(`_morie_morie_crypto_liboqs_available`)
 }
 
-.morie_liboqs_version_impl <- function() {
+.rmorie_liboqs_version_impl <- function() {
     .Call(`_morie_morie_crypto_liboqs_version`)
 }
 
-.morie_mlkem768_keygen_impl <- function() {
+.rmorie_mlkem768_keygen_impl <- function() {
     .Call(`_morie_morie_crypto_mlkem768_keygen`)
 }
 
-.morie_mlkem768_encaps_impl <- function(pk_sxp) {
+.rmorie_mlkem768_encaps_impl <- function(pk_sxp) {
     .Call(`_morie_morie_crypto_mlkem768_encaps`, pk_sxp)
 }
 
-.morie_mlkem768_decaps_impl <- function(sk_sxp, ct_sxp) {
+.rmorie_mlkem768_decaps_impl <- function(sk_sxp, ct_sxp) {
     .Call(`_morie_morie_crypto_mlkem768_decaps`, sk_sxp, ct_sxp)
 }
 
-.morie_mldsa65_keygen_impl <- function() {
+.rmorie_mldsa65_keygen_impl <- function() {
     .Call(`_morie_morie_crypto_mldsa65_keygen`)
 }
 
-.morie_mldsa65_sign_impl <- function(sk_sxp, message_sxp) {
+.rmorie_mldsa65_sign_impl <- function(sk_sxp, message_sxp) {
     .Call(`_morie_morie_crypto_mldsa65_sign`, sk_sxp, message_sxp)
 }
 
-.morie_mldsa65_verify_impl <- function(pk_sxp, message_sxp, signature_sxp) {
+.rmorie_mldsa65_verify_impl <- function(pk_sxp, message_sxp, signature_sxp) {
     .Call(`_morie_morie_crypto_mldsa65_verify`, pk_sxp, message_sxp, signature_sxp)
 }
 

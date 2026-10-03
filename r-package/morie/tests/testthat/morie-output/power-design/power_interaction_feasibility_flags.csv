@@ -1,0 +1,7 @@
+"gender","observed_prop","endpoint","scenario","status","note","analysis_mode","power_scope"
+"Female",0.469983351582006,"heavy_drinking_30d","pilot_observed","reached","Observed n = 19334","design","cpads"
+"Male",0.448681445427123,"heavy_drinking_30d","pilot_observed","reached","Observed n = 11376","design","cpads"
+"Non-binary",0.398283630248952,"heavy_drinking_30d","pilot_observed","reached","Observed n = 849","design","cpads"
+"Female",0.688133115329323,"ebac_legal","pilot_observed","reached","Observed n = 13800","design","cpads"
+"Male",0.610299201370699,"ebac_legal","pilot_observed","reached","Observed n = 7770","design","cpads"
+"Non-binary",0.563820892690504,"ebac_legal","pilot_observed","reached","Observed n = 658","design","cpads"

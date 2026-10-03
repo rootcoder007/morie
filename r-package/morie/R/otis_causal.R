@@ -331,7 +331,7 @@ morie_otis_aipw_ate <- function(df, treatment, outcome, covariates,
   n_treated <- sum(d)
   p_treat <- mean(d)
 
-  .morie_local_seed(seed)
+  .rmorie_local_seed(seed)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
   e_hat <- numeric(n)
   mu1_hat <- numeric(n)
@@ -498,7 +498,7 @@ morie_otis_irm_dml <- function(df, treatment, outcome, covariates,
       logit_e <- log(e_all / (1 - e_all))
       sd_logit <- stats::sd(logit_e)
       caliper <- match_caliper_sd * sd_logit
-      .morie_local_seed(seed + 7L)
+      .rmorie_local_seed(seed + 7L)
       treated_idx <- which(d_all == 1L)
       control_idx <- which(d_all == 0L)
       treated_order <- sample(treated_idx)
@@ -542,7 +542,7 @@ morie_otis_irm_dml <- function(df, treatment, outcome, covariates,
   }
 
   # ---- Cross-fit nuisance models ------------------------------------
-  .morie_local_seed(seed)
+  .rmorie_local_seed(seed)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
   e_hat <- numeric(n)
   mu1_hat <- numeric(n)
@@ -1029,6 +1029,12 @@ morie_otis_make_pair_c <- function(df) {
               "Region_MostRecentPlacement",
               "MentalHealth_Alert",
               "NumberConsecutiveDays_Segregation")
+  miss <- setdiff(needed, names(df))
+  if (length(miss)) {
+    stop("pair (c) needs the column(s) ", paste(miss, collapse = ", "),
+         "; the bundled morie_otis_load() frame carries no segregation data, so pass the full OTIS extract",
+         call. = FALSE)
+  }
   base <- df[, needed, drop = FALSE]
   base <- base[stats::complete.cases(base), , drop = FALSE]
   base$T_c <- as.integer(base$Region_AtTimeOfPlacement !=
@@ -1093,11 +1099,21 @@ morie_otis_causal_grid <- function(df = NULL, seed = 123L) {
     }
     df <- morie_otis_load()
   }
-  pairs <- list(
-    "(a) MentalHealth -> SuicideRisk" = morie_otis_make_pair_a(df),
-    "(b) HighAlertComplexity -> AnyReadmission" = morie_otis_make_pair_b(df),
-    "(c) RegionalVolatility -> SegregationDays" = morie_otis_make_pair_c(df)
+  makers <- list(
+    "(a) MentalHealth -> SuicideRisk" = morie_otis_make_pair_a,
+    "(b) HighAlertComplexity -> AnyReadmission" = morie_otis_make_pair_b,
+    "(c) RegionalVolatility -> SegregationDays" = morie_otis_make_pair_c
   )
+  pairs <- list()
+  for (label in names(makers)) {
+    pr <- tryCatch(makers[[label]](df), error = function(e) e)
+    if (inherits(pr, "error")) {
+      # a pair whose columns the frame lacks is skipped, not fatal (the bundled frame has no segregation days)
+      warning(sprintf("%s: %s -- skipped", label, conditionMessage(pr)), call. = FALSE)
+      next
+    }
+    pairs[[label]] <- pr
+  }
   rows <- list()
   for (label in names(pairs)) {
     pr <- pairs[[label]]
@@ -1295,7 +1311,7 @@ morie_otis_aipw_superlearner <- function(df, treatment, outcome,
     as.numeric(P %*% a)
   }
 
-  .morie_local_seed(seed)
+  .rmorie_local_seed(seed)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
   e_hat <- numeric(n)
   mu1_hat <- numeric(n)
@@ -1401,7 +1417,7 @@ morie_otis_psm <- function(df, treatment, outcome, covariates,
   cal <- caliper * stats::sd(lps)
   t_idx <- which(d == 1L)
   c_idx <- which(d == 0L)
-  .morie_local_seed(seed)
+  .rmorie_local_seed(seed)
   t_idx <- t_idx[order(stats::runif(length(t_idx)))]
   used <- logical(length(c_idx))
   diffs <- numeric(0)

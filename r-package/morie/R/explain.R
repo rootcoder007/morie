@@ -18,10 +18,10 @@
 # <https://www.gnu.org/licenses/>.
 
 # ---------------------------------------------------------------------------
-# morie::explain - human-readable descriptions of module-output CSVs
+# rmorie::explain - human-readable descriptions of module-output CSVs
 # ---------------------------------------------------------------------------
-# R port of src/morie/explain.py.  Backs `morie::explain_file()` and
-# `morie::.explain_cheatsheet()` (R analogues of the `morie explain` and
+# R port of src/morie/explain.py.  Backs `rmorie::explain_file()` and
+# `rmorie::.explain_cheatsheet()` (R analogues of the `morie explain` and
 # `morie cheatsheet` CLI subcommands).  Explanations target a user
 # who just ran a morie module and is staring at 10-15 CSVs not
 # knowing where to start.
@@ -275,7 +275,7 @@ explain_file <- function(filename) {
     "\
 \
 If you think this file should be explained, file an issue at ",
-    "https://github.com/rootcoder007/morie/issues."
+    "https://github.com/rootcoder007/rmorie/issues."
   )
 }
 
@@ -337,7 +337,7 @@ If you think this file should be explained, file an issue at ",
     "",
     "Refs",
     "  Docs:     https://rootcoder007.github.io/morie/",
-    "  Issues:   https://github.com/rootcoder007/morie/issues",
+    "  Issues:   https://github.com/rootcoder007/rmorie/issues",
     "  PyPI:     https://pypi.org/project/morie/",
     "  R:        https://rootcoder007.r-universe.dev/morie",
     sep = "\

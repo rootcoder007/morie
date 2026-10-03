@@ -142,7 +142,7 @@
 #' @method as.double morie_frac
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' morie:::as.double.morie_frac(D)
+#' rmorie:::as.double.morie_frac(D)
 #' @keywords internal
 as.double.morie_frac <- function(x, ...) x$n / x$d
 #' as.numeric.morie_frac
@@ -157,7 +157,7 @@ as.double.morie_frac <- function(x, ...) x$n / x$d
 #' @export
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' morie:::as.numeric.morie_frac(D)
+#' rmorie:::as.numeric.morie_frac(D)
 #' @keywords internal
 as.numeric.morie_frac <- function(x, ...) x$n / x$d
 #' format.morie_frac
@@ -172,7 +172,7 @@ as.numeric.morie_frac <- function(x, ...) x$n / x$d
 #' @export
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' morie:::format.morie_frac(D)
+#' rmorie:::format.morie_frac(D)
 #' @keywords internal
 format.morie_frac <- function(x, ...) paste0(x$n, "/", x$d)
 #' print.morie_frac
@@ -187,7 +187,7 @@ format.morie_frac <- function(x, ...) paste0(x$n, "/", x$d)
 #' @export
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie:::print.morie_frac(V)
+#' rmorie:::print.morie_frac(V)
 #' @keywords internal
 print.morie_frac <- function(x, ...) cat(format(x), "\n")
 #' Equality of exact rationals
@@ -1409,9 +1409,7 @@ Mahal <- function(x, mu, C) {
 #' \code{regions_are_convex}, \code{decision_surfaces_are_hyperplanes}, \code{method}.
 #' @export
 #' @examples
-#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
-#' S <- c("a", "b", "c")
-#' LinDisc(S, M)
+#' LinDisc(x = c(1, 2), weights = rbind(c(1, 0), c(0, 1), c(-1, 1)), w0 = c(0, 0, 0.5))
 #' @keywords internal
 LinDisc <- function(x, weights, w0 = NULL) {
   # Section 10.4.1: d_i(x) = w_i^T x + w_i0, assign to the largest.  The

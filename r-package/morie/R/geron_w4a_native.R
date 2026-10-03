@@ -64,9 +64,7 @@
 #' @return Array of `shape` with row-major (Python) fill order.
 #' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
-#' morie_lcg_normal(M, V)
+#' morie_lcg_normal(shape = c(2, 3), seed = 7)
 morie_lcg_normal <- function(shape, seed) {
   n <- prod(shape)
   m <- n + (n %% 2)
@@ -91,8 +89,8 @@ morie_lcg_normal <- function(shape, seed) {
 #' @return Numeric vector of length T.
 #' @export
 #' @examples
-#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie_beta_schedule_values(V)
+#' morie_beta_schedule_values(T = 8L)
+#' morie_beta_schedule_values(T = 8L, beta_schedule = "cosine")
 morie_beta_schedule_values <- function(T, beta_schedule = "linear", beta_start = 1e-4, beta_end = 0.02) {
   if (is.character(beta_schedule)) {
     if (beta_schedule == "linear") {
@@ -3373,7 +3371,7 @@ morie_geron_gaussian_rand_projection <- function(X, d_out, seed = 0) {
   m <- nrow(A)
   d_in <- ncol(A)
   k <- as.integer(d_out)
-  .morie_local_seed(as.integer(seed))
+  .rmorie_local_seed(as.integer(seed))
   R <- matrix(rnorm(d_in * k, 0, 1 / sqrt(k)), d_in, k)
   Z <- A %*% R
   if (m >= 2) {

@@ -39,7 +39,7 @@ morie_mrm_load_si_dataset <- function(name = "otis_b01") {
         name = name,
         n_rows = nrow(data),
         n_cols = ncol(data),
-        sha256 = .morie_sha256_hex_impl(buf),
+        sha256 = .rmorie_sha256_hex_impl(buf),
         loaded_at = format(Sys.time(), tz = "UTC",
                            "%Y-%m-%dT%H:%M:%SZ"))),
     class = c("morie_mrm_dataset", "list"))
@@ -141,7 +141,7 @@ morie_mrm_reconcile <- function(primary, secondary, keys,
 #' @return The value of `invisible`.
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' morie:::print.morie_mrm_reconciliation(D)
+#' rmorie:::print.morie_mrm_reconciliation(D)
 #' @export
 #' @keywords internal
 print.morie_mrm_reconciliation <- function(x, ...) {
@@ -294,7 +294,7 @@ morie_mrm_estimate_causal_effect <- function(data, treatment, outcome,
          citation = paste(
            # canonical entry from inst/CITATION (never hand-written
            # here, so it cannot drift from the package metadata)
-           format(utils::citation("morie")[1L], style = "text"),
+           format(utils::citation("rmorie")[1L], style = "text"),
            collapse = " ")),
     class = c("morie_mrm_effect", "list"))
 }
@@ -305,8 +305,14 @@ morie_mrm_estimate_causal_effect <- function(data, treatment, outcome,
 #' @param ... Ignored; accepted for S3 consistency.
 #' @return The value of `invisible`.
 #' @examples
-#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' morie:::print.morie_mrm_effect(D)
+#' set.seed(92)
+#' n <- 200
+#' x1 <- rnorm(n); x2 <- rnorm(n)
+#' t <- rbinom(n, 1, plogis(0.5 * x1))
+#' y <- 0.8 * t + x1 + 0.5 * x2 + rnorm(n)
+#' df <- data.frame(y = y, t = t, x1 = x1, x2 = x2)
+#' eff <- morie_mrm_estimate_causal_effect(df, "t", "y", c("x1", "x2"), methods = c("ate", "aipw"))
+#' print(eff)
 #' @export
 #' @keywords internal
 print.morie_mrm_effect <- function(x, ...) {

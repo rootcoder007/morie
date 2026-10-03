@@ -43,8 +43,11 @@ test_that("login forwards the flags to morie_llm_login and logout forgets the ke
   expect_true(seen$to_email)
   expect_false(grepl("Logged in", r2$text, fixed = TRUE))
   testthat::local_mocked_bindings(.package = .pkg, .morie_llm_probe_token = function(token) identical(token, "sk-pasted"))
+  testthat::local_mocked_bindings(.package = .pkg, .morie_llm_probe_token = function(token) identical(token, "sk-pasted"))
   expect_equal(.capture("login", "--token", "sk-pasted")$status, 0L)
   expect_equal(seen$token, "sk-pasted")
+  expect_equal(.capture("login", "--token", "sk-rejected")$status, 1L)
+  expect_equal(seen$token, "sk-pasted")  # a rejected key is never stored
   expect_equal(.capture("login", "--token", "sk-rejected")$status, 1L)
   expect_equal(seen$token, "sk-pasted")  # a rejected key is never stored
   .morie_llm_write_credentials(list(hosted_key = "sk-x"))
@@ -187,7 +190,9 @@ test_that("profile-dataset and sample work on a CSV", {
   expect_equal(nrow(utils::read.csv(file.path(d, "s.csv"))), 7L)
   expect_match(.capture("sample", f, "--n", "3", "--method", "stratified")$text, "strata-col")
   st <- .capture("sample", f, "--n", "2", "--method", "stratified", "--strata-col", "g")
-  expect_match(st$text, "Sampled 4 rows")
+  expect_match(st$text, "Sampled 2 rows")   # --n is the total; the strata share it
+  each <- .capture("sample", f, "--n", "2", "--method", "stratified", "--strata-col", "g", "--per-stratum")
+  expect_match(each$text, "Sampled 4 rows")
 })
 
 test_that("run-modules and pipeline run through the module runner", {

@@ -91,7 +91,8 @@ aggregate_buckets <- function(y, m, overlapping = FALSE) {
 #' @return Numeric vector of length \code{m}.
 #' @export
 #' @examples
-#' disaggregate(aggregate_value = c(1, 2, 3, 4, 5, 6, 7, 8), m = 5L)
+#' disaggregate(aggregate_value = 100, m = 4L)
+#' disaggregate(100, m = 4L, profile = c(1, 2, 3, 4))
 #' @keywords internal
 disaggregate <- function(aggregate_value, m, profile = NULL) {
   mm <- as.integer(m)
@@ -133,7 +134,7 @@ disaggregate <- function(aggregate_value, m, profile = NULL) {
 #' @keywords internal
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie:::intermittent_forecast(V)
+#' rmorie:::intermittent_forecast(V)
 intermittent_forecast <- function(y, method = "tsb", alpha = 0.1,
                                   beta = 0.05, horizon = 1L) {
   yv <- as.numeric(y)

@@ -13,7 +13,7 @@
 #' @return The value of `[`.
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' morie:::morie_logdet_I_minus(V, V)
+#' rmorie:::morie_logdet_I_minus(V, V)
 #' @keywords internal
 morie_logdet_I_minus <- function(rho, W) {
   determinant(diag(nrow(W)) - rho * W, logarithm = TRUE)$modulus[1]
@@ -35,7 +35,14 @@ morie_logdet_I_minus <- function(rho, W) {
 #'   `loglik` and `residuals`
 #' @export
 #' @examples
-#' morie_spatial_lag_model(y = 5L, X = 5L, W = 5L)
+#' set.seed(1)
+#' n <- 25
+#' W <- matrix(0, n, n)
+#' for (i in 2:n) W[i, i - 1] <- W[i - 1, i] <- 1   # a chain of neighbours
+#' W <- W / rowSums(W)
+#' x <- rnorm(n)
+#' y <- 0.4 * as.numeric(solve(diag(n) - 0.4 * W, x + rnorm(n))) + 1
+#' morie_spatial_lag_model(y, X = x, W = W)$rho
 morie_spatial_lag_model <- function(y, X, W, add_intercept = TRUE) {
   X <- as.matrix(X)
   W <- as.matrix(W)
@@ -221,7 +228,7 @@ morie_local_dp_randomised_response <- function(truth, k, epsilon,
   e <- exp(epsilon)
   p_keep <- e / (k - 1 + e)
   p_flip <- 1 / (k - 1 + e)
-  .morie_local_seed(seed)
+  .rmorie_local_seed(seed)
   reports <- vapply(v, function(u) {
     if (stats::runif(1) < p_keep) u
     else sample(setdiff(0:(k - 1), u), 1)

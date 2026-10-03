@@ -89,7 +89,7 @@ morie_cluster <- function(x, k = 2L, scale = FALSE,
       rn <- as.character(case_labels)
     } # UL3.2
     else {
-      warning("input has no row names; using positional labels", call. = FALSE)
+      message("input has no row names; using positional labels")
       rn <- as.character(seq_len(nrow(xm))) # UL1.2
     }
   }
@@ -117,7 +117,7 @@ morie_cluster <- function(x, k = 2L, scale = FALSE,
     xm <- scale(xm)
   }
 
-  .morie_local_seed(seed)
+  .rmorie_local_seed(seed)
   km <- stats::kmeans(xm, centers = k, nstart = 10L, iter.max = iter_max)
 
   # relabel clusters by decreasing size (UL3.0)
