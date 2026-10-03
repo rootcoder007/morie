@@ -575,15 +575,6 @@ __all__ = [
 ]
 
 
-# Fail-silent, daily-cached check for a newer morie release on PyPI.
-# The import hot path only reads a small cache file; any network
-# request runs in a background daemon thread.  This is how an existing
-# user on an older version is told a new one exists.  Opt out with the
-# MORIE_NO_UPDATE_CHECK environment variable.
-try:
-    from ._update_check import maybe_notify as _maybe_notify
-
-    _maybe_notify(__version__)
-    del _maybe_notify
-except Exception:
-    pass
+# The daily check for a newer release on PyPI runs from the command line
+# (morie.runner.main), not on import: a library import never touches the
+# network. Opt out with the MORIE_NO_UPDATE_CHECK environment variable.

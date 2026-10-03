@@ -26,7 +26,6 @@ import json as _json
 import os as _os
 import sys as _sys
 import types as _types
-from importlib import util as _importlib_util
 
 # the stdlib imports are private: `from morie.fn import os` must be an ImportError, not the stdlib module
 _FN_DIR = _os.path.dirname(__file__)
@@ -147,48 +146,8 @@ def _write_cache_zip(target, sources):
             pass
 
 
-class _InMemoryFnLoader:
-    """Loader compiling a single morie.fn.<short> from an in-RAM source string."""
-
-    def __init__(self, fullname, source):
-        self._fullname = fullname
-        self._source = source
-
-    def create_module(self, spec):
-        return None
-
-    def exec_module(self, module):
-        # Standard importlib loader protocol. `self._source` is morie's OWN
-        # packaged fn/ source (shipped inside the wheel), never user or
-        # network input -- this is the import mechanism itself, equivalent
-        # to how CPython execs any module body.
-        exec(compile(self._source, f"<{self._fullname}>", "exec"), module.__dict__)  # noqa: S102
-
-    def get_source(self, fullname):
-        return self._source
-
-
-class _InMemoryFnFinder:
-    """MetaPathFinder serving morie.fn.<short> from a decompressed source map.
-    Used only when no cache directory is writable."""
-
-    def __init__(self, sources):
-        self._sources = sources
-        self._prefix = __name__ + "."
-
-    def find_spec(self, fullname, path=None, target=None):
-        if not fullname.startswith(self._prefix):
-            return None
-        src = self._sources.get(fullname[len(self._prefix) :])
-        if src is None:
-            return None
-        return _importlib_util.spec_from_loader(fullname, _InMemoryFnLoader(fullname, src))
-
-
 def _install_fnsrc():
     """Make morie.fn.<short> importable from whichever archive layout shipped."""
-    global _inmem_sources
-
     # Layout 2: a ready-made zip next to us -> just put it on the path.
     zip_path = _os.path.join(_FN_DIR, "_fnsrc.zip")
     if _os.path.isfile(zip_path):
@@ -233,9 +192,13 @@ def _install_fnsrc():
             __path__.append(cz)
         return
 
-    # No writable cache dir anywhere -> compile from memory.
-    _inmem_sources = sources
-    _sys.meta_path.insert(0, _InMemoryFnFinder(sources))
+    # No writable cache dir anywhere -> a private temporary directory for this process, so the
+    # modules are still imported by zipimport (no in-memory compilation of decompressed source).
+    import tempfile
+
+    cz = _os.path.join(tempfile.mkdtemp(prefix="morie-fnsrc-"), cache_name)
+    _write_cache_zip(cz, sources)
+    __path__.append(cz)
 
 
 _install_fnsrc()

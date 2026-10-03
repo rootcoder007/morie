@@ -821,6 +821,13 @@ def main() -> int:
     """
     Entry point for the MORIE command line interface.
     """
+    # fail-silent, daily-cached notice of a newer release (MORIE_NO_UPDATE_CHECK=1 silences it)
+    try:
+        from ._update_check import maybe_notify as _maybe_notify
+
+        _maybe_notify(__version__)
+    except Exception:
+        pass
     try:
         return _main_impl()
     except KeyboardInterrupt:
@@ -1025,13 +1032,16 @@ def _main_impl() -> int:
 
             if not _inter.present(_inter.data_dir()) and not (Path(__file__).with_name("polyglot.py")).is_file():
                 print(
-                    "The agent's tool layer is not bundled in this install. Run `morie interactive install` to add it for this user.",
+                    "The agent's tool layer is not bundled in this install (morie interactive install adds it); "
+                    "answering through the provider chain without tools.",
                     file=sys.stderr,
                 )
-                return 1
-            # the agent needs an LLM backend; say why it stepped aside
-            # rather than hiding a real bug in create_agent()
-            print("no local Ollama for the tool-calling agent; answering through the provider chain", file=sys.stderr)
+            else:
+                # the agent needs an LLM backend; say why it stepped aside
+                # rather than hiding a real bug in create_agent()
+                print(
+                    "no local Ollama for the tool-calling agent; answering through the provider chain", file=sys.stderr
+                )
             payload = ask_percy(
                 args.question,
                 context=getattr(args, "context", None),
@@ -1161,11 +1171,34 @@ def _main_impl() -> int:
         return 0
 
     if args.command == "generate-template":
-        known = [item["name"] for item in list_modules()]
-        if getattr(args, "module", None) and args.module not in known:
-            print(f"unknown module: {args.module} (names: morie list-modules)", file=sys.stderr)
-            return 1
-        # Copy the bundled first-paper template (shipped alongside the
+        name = getattr(args, "module", None)
+        if name:
+            known = {item["name"] for item in list_modules()}
+            try:
+                import json as _json
+
+                with open(Path(__file__).with_name("fn") / "_lazy_map.json", encoding="utf-8") as fh:
+                    families = set(_json.load(fh))
+            except OSError:
+                families = set()
+            import pkgutil
+
+            import morie as _morie
+
+            # a method family is also any top-level morie module carrying the name (hawkes -> hawkes_spatial)
+            modules = {n for _, n, _ in pkgutil.iter_modules(_morie.__path__)}
+            key = name.lower().replace("-", "_")
+            if (
+                name not in known
+                and key not in families
+                and not any(f.startswith(key + "_") for f in families)
+                and not any(key in m for m in modules)
+            ):
+                print(
+                    f"unknown module: {name} (a pipeline module from `morie list-modules`, or a method family such as hawkes or dml)",
+                    file=sys.stderr,
+                )
+                return 1  # Copy the bundled first-paper template (shipped alongside the
         # source repo at templates/first-paper.md, mirrored into the
         # wheel as morie/data/first-paper.md).
         from importlib.resources import as_file, files
@@ -1805,29 +1838,31 @@ def _handle_exec(args: argparse.Namespace) -> int:
         finally:
             os.unlink(tmp)
 
-    ns = {"__name__": "__morie_exec__"}
+    # The code runs in a child interpreter with the same prelude the in-process version
+    # offered (np, pd, fn, REGISTRY): the library itself contains no dynamic code execution,
+    # and a crash in the user's code cannot take the CLI down with it.
+    prelude = (
+        "import sys\n"
+        "__name__ = '__morie_exec__'\n"
+        "try:\n"
+        "    from morie.fn import _array_core as np, _frame_core as pd\n"
+        "except ImportError:\n"
+        "    pass\n"
+        "try:\n"
+        "    from morie import fn\n"
+        "    from morie.fn._registry import REGISTRY\n"
+        "except ImportError:\n"
+        "    pass\n"
+        "del sys\n"
+    )
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False, encoding="utf-8") as f:
+        f.write(prelude + code)
+        tmp = f.name
     try:
-        from morie.fn import _array_core as np
-        from morie.fn import _frame_core as pd
-
-        ns["np"] = np
-        ns["pd"] = pd
-    except ImportError:
-        pass
-    try:
-        from morie import fn
-        from morie.fn._registry import REGISTRY
-
-        ns["REGISTRY"] = REGISTRY
-        ns["fn"] = fn
-    except ImportError:
-        pass
-    try:
-        exec(compile(code, "<morie-exec>", "exec"), ns)
-    except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
-        return 1
-    return 0
+        proc = subprocess.run([sys.executable, tmp], check=False)
+    finally:
+        os.unlink(tmp)
+    return proc.returncode
 
 
 def _handle_exec_co(args: argparse.Namespace) -> int:

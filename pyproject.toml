@@ -136,21 +136,40 @@ wheel.exclude = [
   "morie/_exec_guard.py",
   "morie/repl_init.py",
 ]
+# The sdist is a build input, not a repository snapshot: the package, the C++ core,
+# the CMake file and the one script CMake runs. Tests, docs, CI, the audit trail,
+# the legacy bash launcher and the R package live on GitHub. (Registry scanners
+# score everything inside the tarball; shipping the whole tree made the package
+# look like it executed shell, eval and network code it never ships.)
 sdist.exclude = [
+  "*",
+  "!/pyproject.toml",
+  "!/CMakeLists.txt",
+  "!/README.md",
+  "!/LICENSE",
+  "!/CITATION.cff",
+  "!/VERSION",
+  "!/WHATS_NEW.md",
+  "!/libmorie/",
+  "!/libmorie/**",
+  "!/scripts/",
+  "!/scripts/bundle_fn.py",
+  "!/src/",
+  "!/src/morie/",
+  "!/src/morie/**",
+  "/build/",
+  "/build/**",
+  "/r-package/",
+  "/r-package/**",
+  # the interactive layer runs user/LLM-supplied code and stays out of every artifact
   "src/morie/polyglot.py",
   "src/morie/agent.py",
   "src/morie/tui.py",
   "src/morie/_exec_guard.py",
   "src/morie/repl_init.py",
-  # Test files for the excised modules carry exec/payload strings that
-  # re-trigger gptMalware/gptAnomaly on scan even though the source is gone.
-  "tests/test_polyglot.py",
-  "tests/test_exec_guard.py",
-  # Docs page for the excised REPL module -- describes a feature the
-  # published artifact does not contain.
-  "docs/source/methods/polyglot.rst",
 ]
-sdist.include = ["libmorie/", "CMakeLists.txt", "scripts/bundle_fn.py"]
+# anchored: an unanchored "libmorie/" also re-included build/*/libmorie/*.o and the R package's CMake files
+sdist.include = ["/libmorie/", "/CMakeLists.txt", "/scripts/bundle_fn.py", "/LICENSE", "/CITATION.cff"]
 
 [tool.cibuildwheel]
 # Build CPython wheels for the supported range; skip musl, 32-bit, PyPy.

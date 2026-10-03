@@ -1277,6 +1277,23 @@ def download_with_wayback(url: str, timeout: int = 60) -> tuple[bytes, str]:
         return urlopen(snap, timeout=timeout).read(), snap
 
 
+def _urlopen_json_with_retry(url: str, timeout: int, attempts: int = 4) -> dict:
+    """GET a JSON document; a 409/429/5xx answer (the datastore under load) is retried with backoff."""
+    import time as _time
+
+    delay = 2.0
+    for attempt in range(attempts):
+        try:
+            return json.loads(urlopen(url, timeout=timeout).read().decode())
+        except HTTPError as exc:
+            if exc.code not in (409, 429, 500, 502, 503, 504) or attempt == attempts - 1:
+                raise
+            logger.warning("CKAN answered %d; retrying in %.0f s", exc.code, delay)
+            _time.sleep(delay)
+            delay *= 2
+    raise RuntimeError("unreachable")
+
+
 def fetch_ckan_to_cache(
     dataset_key: str = "cpads",
     limit: int = 32000,
@@ -1335,7 +1352,7 @@ def fetch_ckan_to_cache(
         params = {"resource_id": resource_id, "limit": limit, "offset": offset}
         url = f"{DEFAULT_CKAN_API_BASE}?{urlencode(params)}"
         try:
-            payload = json.loads(urlopen(url, timeout=timeout).read().decode())
+            payload = _urlopen_json_with_retry(url, timeout)
         except HTTPError as exc:
             # 404: no datastore behind this resource. 500: the datastore
             # cannot serve a full page of it (the 2018-2022 CCS microdata,

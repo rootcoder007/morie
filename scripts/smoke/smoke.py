@@ -318,7 +318,13 @@ def c_interactive(s: Smoke):
     r = s.run("interactive", "status")
     check(r.returncode == 0 and "interactive layer directory" in r.stdout, r.stdout[-300:] + r.stderr[-300:])
     src = Path(__file__).resolve().parents[2] / "src" / "morie"
-    r = s.run("interactive", "install", "--from", str(src))
+    if all((src / n).is_file() for n in ("polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py")):
+        r = s.run("interactive", "install", "--from", str(src))  # offline, from this checkout
+    else:
+        r = s.run("interactive", "install")  # the suite runs from an installed copy: fetch the release tag
+        if r.returncode != 0 and ("does not exist" in r.stdout or "download of" in r.stdout):
+            RESULTS.append(("interactive", "SKIP", "no checkout beside the suite and the release tag is not downloadable from here"))
+            return
     check(r.returncode == 0 and "Installed the interactive layer" in r.stdout, r.stdout[-400:] + r.stderr[-300:])
     r = s.run("interactive", "status")
     check("active" in r.stdout, "status after install: " + r.stdout[-300:])

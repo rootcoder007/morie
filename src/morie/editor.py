@@ -23,9 +23,9 @@ def edit_file(path: str, lang_hint: str | None = None) -> int:
     if editor is None:
         print("no editor found: set $EDITOR", file=sys.stderr)
         return 1
-    if os.name == "nt":  # $EDITOR may carry arguments; let the shell split them
-        return subprocess.call(editor + " " + subprocess.list2cmdline([path]), shell=True)
-    return subprocess.call([*shlex.split(editor), path])
+    # $EDITOR may carry arguments ("code --wait"): split it ourselves, never through a shell
+    parts = [p.strip('"') for p in shlex.split(editor, posix=False)] if os.name == "nt" else shlex.split(editor)
+    return subprocess.call([*parts, path])
 
 
 def main(argv: list[str] | None = None) -> int:

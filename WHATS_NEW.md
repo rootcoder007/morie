@@ -63,6 +63,19 @@ Per-package full changelogs:
   `--args`); sampling docstrings run without pandas; docs blocks for ebac, spatial and
   genomics name the functions that exist.
 
+* Supply-chain hygiene (the Socket.dev alerts on the 1.3.9 tarball). The sdist now carries
+  only what the build needs (package, C++ core, CMake file, bundling script); tests, docs,
+  CI, the audit trail, the legacy bash launcher and the R package stay on GitHub. The
+  published package contains no `eval`, `exec` or `compile` call and no `shell=True`:
+  `morie exec` runs the code in a child interpreter with the same prelude, the formula
+  evaluator behind `bexpr()`/`moncar()` walks the validated syntax tree instead of calling
+  `eval`, the `morie.fn` loader falls back to a private temporary zip instead of compiling
+  decompressed source in memory, and the editor splits `$EDITOR` itself. `import morie` no
+  longer starts the PyPI version check (the command line still does; `MORIE_NO_UPDATE_CHECK=1`
+  silences it). In the bash launcher, `morie config set` validates the key and value it writes
+  to the shell-sourced rc file and the package checker passes names by argv. A test keeps the
+  package that way.
+
 * Datasets: the fourteen Health Infobase tables download from the portal with the
   data.rmorie.com copy as the fallback (`morie pull hibua`), the three OTIS research
   environments are saved from data.rmorie.com for R to open, and `otisloc` (Ontario
