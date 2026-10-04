@@ -230,12 +230,9 @@ def prophet_fit(
             if gaa <= 0.0:
                 continue
             r = Xty[a] - sum(XtX[a][b] * beta[b] for b in range(p) if b != a)
-            if pen[a] > 0.0:
-                # soft threshold: this is what actually sets deltas to
-                # EXACTLY zero, which ridge never does
-                nb = 0.0 if abs(r) <= pen[a] else (r - math.copysign(pen[a], r)) / gaa
-            else:
-                nb = r / gaa
+            # soft threshold: this is what actually sets deltas to
+            # EXACTLY zero, which ridge never does
+            nb = (0.0 if abs(r) <= pen[a] else (r - math.copysign(pen[a], r)) / gaa) if pen[a] > 0.0 else r / gaa
             shift = max(shift, abs(nb - beta[a]))
             beta[a] = nb
         if shift < 1e-12:

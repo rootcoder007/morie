@@ -25,7 +25,7 @@ for p in sorted(glob.glob("src/morie/fn/msm*.py")):
     groups.setdefault(key, []).append((mod, s))
 
 shimmed = 0
-for key, members in groups.items():
+for _key, members in groups.items():
     if len(members) < 2:
         continue
     members.sort(key=lambda t: t[0])

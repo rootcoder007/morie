@@ -169,8 +169,8 @@ class _ConfIntLoc:
         if isinstance(key, str):
             try:
                 return self._ci._rows[self._ci.names.index(key)]
-            except ValueError:
-                raise KeyError(key)
+            except ValueError as exc:
+                raise KeyError(key) from exc
         return self._ci._rows[key]
 
     def __getitem__(self, key):
@@ -251,8 +251,8 @@ class _NamedVec(list):
         if isinstance(key, str):
             try:
                 return list.__getitem__(self, self._names.index(key))
-            except ValueError:
-                raise KeyError(key)
+            except ValueError as exc:
+                raise KeyError(key) from exc
         return list.__getitem__(self, key)
 
     def get(self, key, default=None):

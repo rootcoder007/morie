@@ -170,7 +170,7 @@ def dirichlet_regression(X_cov, Y_comp, ref=None, max_iter=400, step0=0.05, tol=
     ll = _loglik(A, LY)
     gmax = float("inf")
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         G = _score(Xm, A, LY)
         gmax = 0.0
         for row in G:

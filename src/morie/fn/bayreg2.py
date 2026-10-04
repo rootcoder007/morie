@@ -72,7 +72,7 @@ def student_t_regression(X, y, nu=4.0, max_iter=200, tol=1e-10, add_intercept=Tr
     beta, A = wls(w)
     s2 = 1.0
     it, converged = 0, False
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         res = [yv[i] - sum(Xm[i][a] * beta[a] for a in range(p)) for i in range(n)]
         s2 = sum(w[i] * res[i] * res[i] for i in range(n)) / n
         if s2 <= _EPS:

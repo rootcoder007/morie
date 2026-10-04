@@ -957,7 +957,7 @@ def _render_axes_svg(ax, W, H):
         return y1 - (v - dy0) / (dy1 - dy0 or 1.0) * (y1 - y0)
 
     def rgb(c):
-        return "rgb(%d,%d,%d)" % c
+        return "rgb({},{},{})".format(*(int(v) for v in c))
 
     o = []
     for it in ax.items:

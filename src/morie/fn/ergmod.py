@@ -109,7 +109,7 @@ def ergm(G, statistics=("edges",), theta_init=None, iters=100, tol=1e-11):
     if len(th) != p:
         raise ValueError("theta_init must have one entry per statistic")
     used = 0
-    for used in range(1, int(iters) + 1):
+    for used in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         H = [[0.0] * p for _ in range(p)]
         g = [0.0] * p
         for d in range(nd):
@@ -123,12 +123,12 @@ def ergm(G, statistics=("edges",), theta_init=None, iters=100, tol=1e-11):
                     H[a][c] += wv * X[d][a] * X[d][c]
         try:
             step = core.cholsolve(H, g)
-        except ValueError:
+        except ValueError as exc:
             raise ValueError(
                 "pseudo-likelihood Hessian is singular: the dyad "
                 "regression is separated or the change statistics are "
                 "collinear on this graph"
-            )
+            ) from exc
         th = [th[k] + step[k] for k in range(p)]
         if max(abs(v) for v in step) < float(tol):
             break
@@ -148,12 +148,12 @@ def ergm(G, statistics=("edges",), theta_init=None, iters=100, tol=1e-11):
         for a in range(p):
             col = core.cholsolve(H, [1.0 if k == a else 0.0 for k in range(p)])
             se.append(math.sqrt(col[a]))
-    except ValueError:
+    except ValueError as exc:
         raise ValueError(
             "pseudo-likelihood Hessian is singular: the dyad regression "
             "is separated or the change statistics are collinear on this "
             "graph"
-        )
+        ) from exc
     obs = []
     for nm in names:
         if nm == "edges":

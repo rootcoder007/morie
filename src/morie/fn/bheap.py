@@ -49,12 +49,10 @@ def binary_heap(
         while True:
             smallest = idx
             left, right = 2 * idx + 1, 2 * idx + 2
-            if left < size:
-                if (is_min and h[left] < h[smallest]) or (not is_min and h[left] > h[smallest]):
-                    smallest = left
-            if right < size:
-                if (is_min and h[right] < h[smallest]) or (not is_min and h[right] > h[smallest]):
-                    smallest = right
+            if left < size and ((is_min and h[left] < h[smallest]) or (not is_min and h[left] > h[smallest])):
+                smallest = left
+            if right < size and ((is_min and h[right] < h[smallest]) or (not is_min and h[right] > h[smallest])):
+                smallest = right
             if smallest != idx:
                 h[idx], h[smallest] = h[smallest], h[idx]
                 idx = smallest

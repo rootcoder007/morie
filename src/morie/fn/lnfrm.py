@@ -20,7 +20,7 @@ def _penalized_newton(t, e, Xa, D, sigma2, max_iter=50, tol=1e-10):
     etimes = sorted(set(float(t[i]) for i in range(n) if e[i] == 1.0))
     info = None
     ll = 0.0
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         eta = np.clip(Z @ theta, -500.0, 500.0)
         w = np.exp(eta)
         U = np.zeros(p + q)
@@ -97,7 +97,7 @@ def lognormal_frailty(time, event, X, cluster, max_outer=50, tol=1e-7):
         D[i, ks.index(cl[i])] = 1.0
     sigma2 = 0.5
     theta = None
-    for outer in range(max_outer):
+    for outer in range(max_outer):  # noqa: B007 - read after the loop
         theta, info, ll_pen, n_newton, etimes = _penalized_newton(t, e, Xa, D, sigma2)
         b = theta[p:]
         cov = np.linalg.inv(info)

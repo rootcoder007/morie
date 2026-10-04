@@ -303,7 +303,7 @@ def fit_variogram_wls(centres, gam, npair, model="exponential", weights="cressie
     theta = _start(centres, gam)
     w = np.ones_like(gam) if weights == "ols" else None
     prev = None
-    for it in range(int(max_reweight)):
+    for it in range(int(max_reweight)):  # noqa: B007 - read after the loop
         ww = w if w is not None else wls_weights(npair, variogram_model(centres, model, *theta))
 
         def obj(p, ww=ww):
@@ -380,7 +380,7 @@ def composite_likelihood_fit(coords, z, model="exponential", max_iter=60, tol=1e
     # with sill 2.0, the direct version returned 6.09 while the
     # iteratively re-weighted one returns a value in line with WLS.
     prev = None
-    for it in range(int(max_iter)):
+    for it in range(int(max_iter)):  # noqa: B007 - read after the loop
         g_cur = np.maximum(variogram_model(h, model, theta[0], theta[1], theta[2]), 1e-12)
         w = 1.0 / (8.0 * g_cur**2)
 

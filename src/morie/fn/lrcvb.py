@@ -53,7 +53,7 @@ def learning_curve_bio(X, y, train_sizes=None, cv=5, **kwargs) -> DescriptiveRes
             classes = np.unique(y[tr_idx])
             centroids = np.array([X[tr_idx][y[tr_idx] == c].mean(axis=0) for c in classes])
 
-            def _predict(Xp):
+            def _predict(Xp, *, centroids=centroids, classes=classes):
                 dists = np.array([np.sum((Xp - c) ** 2, axis=1) for c in centroids])
                 return classes[np.argmin(dists, axis=0)]
 

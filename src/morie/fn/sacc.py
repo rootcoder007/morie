@@ -82,7 +82,7 @@ def soft_policy_iteration(P, R, gamma, temp=1.0, tol=1e-12, max_eval=100000, max
     n_eval = 0
     converged = False
     rounds = 0
-    for rounds in range(1, int(max_improve) + 1):
+    for rounds in range(1, int(max_improve) + 1):  # noqa: B007 - read after the loop
         # soft policy evaluation (eq. 2-3) under the current pi
         for _ in range(int(max_eval)):
             n_eval += 1

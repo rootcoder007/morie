@@ -52,8 +52,8 @@ def formant_extract(
     rhs = r[1 : order + 1]
     try:
         a = np.linalg.solve(R, rhs)
-    except np.linalg.LinAlgError:
-        raise ValueError("Singular autocorrelation matrix; signal may be silence")
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("Singular autocorrelation matrix; signal may be silence") from exc
     poly = np.concatenate([[1], -a])
     roots = np.roots(poly)
     roots = roots[np.imag(roots) >= 0]

@@ -75,7 +75,7 @@ def cox_counting_process(start, stop, event, X, strata=None, max_iter=50, tol=1e
     loglik = 0.0
     info_l = [[0.0] * p for _ in range(p)]
     it = 0
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         eta = [_bi_clip(sum(Xl[i][j] * b_[j] for j in range(p)) + of[i]) for i in range(n)]
         w = [_m.exp(v) for v in eta]
         U = [0.0] * p
@@ -105,8 +105,8 @@ def cox_counting_process(start, stop, event, X, strata=None, max_iter=50, tol=1e
                     info_l[a_][c_] = info_l[a_][c_] + d * (S2[a_][c_] / S0 - xbar[a_] * xbar[c_])
         try:
             step = list(np.linalg.solve(np.array(info_l), np.array(U))._flat())
-        except Exception:
-            raise ValueError("partial likelihood is monotone or information singular")
+        except Exception as exc:
+            raise ValueError("partial likelihood is monotone or information singular") from exc
         b_ = [b_[j] + step[j] for j in range(p)]
         if max(abs(v) for v in step) < tol:
             break

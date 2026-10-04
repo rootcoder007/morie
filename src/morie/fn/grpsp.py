@@ -43,7 +43,7 @@ def group_sparse_decompose(
     c = X.copy()
     step = 1.0
 
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         grad = c - X
         z = c - step * grad
 

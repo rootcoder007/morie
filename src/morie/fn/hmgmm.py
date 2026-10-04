@@ -146,7 +146,7 @@ def geron_gaussian_mixture(X, n_components=2, seed=0, max_iter=100, tol=1e-6, re
     converged = False
     it = 0
     R = np.full((m, K), 1.0 / K)
-    for it in range(1, T + 1):
+    for it in range(1, T + 1):  # noqa: B007 - read after the loop
         logp = np.stack([np.log(pi[k] + 1e-300) + gmm_log_pdf(A, mu[k], Sig[k]) for k in range(K)], axis=1)
         mx = logp.max(axis=1, keepdims=True)
         lse = mx[:, 0] + np.log(np.exp(logp - mx).sum(axis=1))

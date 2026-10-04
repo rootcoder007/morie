@@ -895,8 +895,7 @@ def to_parquet(df, path, compression="snappy"):
     cols = {n: list(df[n]) for n in names}
     nrows = len(df)
 
-    fh = open(path, "wb")
-    try:
+    with open(path, "wb") as fh:
         fh.write(b"PAR1")
         chunks = []
         for name in names:
@@ -981,8 +980,6 @@ def to_parquet(df, path, compression="snappy"):
         fh.write(footer)
         fh.write(struct.pack("<I", len(footer)))
         fh.write(b"PAR1")
-    finally:
-        fh.close()
     return path
 
 

@@ -72,7 +72,7 @@ def ramsay_weight(y, a, max_iter=100, tol=1e-13):
     mu = k.median(v)
     it = 0
     w = [1.0] * n
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         w = [math.exp(-aa * abs((v[i] - mu) / s)) for i in range(n)]
         sw = 0.0
         sx = 0.0

@@ -80,8 +80,8 @@ _SEARCHERS = ("diamond", "mmseqs", "hmmer")
 def _hit(h):
     try:
         q, t = h["query"], h["target"]
-    except (KeyError, TypeError):
-        raise ValueError("funcal: a hit needs 'query' and 'target'")
+    except (KeyError, TypeError) as exc:
+        raise ValueError("funcal: a hit needs 'query' and 'target'") from exc
     out = {
         "query": q,
         "target": t,

@@ -69,7 +69,7 @@ def cross_classified_membership(y, cluster1, cluster2=None, weights=None):
             raise ValueError("classification weights must sum to a positive value")
         wc = [v / s for v in wc]
     levels = []
-    for k, cl in enumerate(cls):
+    for k, cl in enumerate(cls):  # noqa: B007 - read after the loop
         seen = []
         for v in cl:
             if v not in seen:

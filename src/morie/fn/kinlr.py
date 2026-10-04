@@ -73,7 +73,7 @@ def kinlr(
         b1, b2 = genotype_b[loc]
         freq = allele_freqs[loc]
 
-        def _f(allele):
+        def _f(allele, *, freq=freq):
             return max(freq.get(allele, 1e-4), 1e-6)
 
         pa1, pa2 = _f(a1), _f(a2)

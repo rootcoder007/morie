@@ -42,7 +42,7 @@ def horowitz_mixture_model(y, k=2, maxiter=200, tol=1e-6, seed=0):
     sigma = np.full(k, float(np.std(y, ddof=1) / k + 1e-3))
     pi = np.full(k, 1.0 / k)
     ll_prev = -np.inf
-    for it in range(maxiter):
+    for it in range(maxiter):  # noqa: B007 - read after the loop
         # E-step
         comps = np.column_stack([pi[j] * _gauss_pdf(y, mu[j], sigma[j]) for j in range(k)])
         denom = comps.sum(axis=1, keepdims=True)

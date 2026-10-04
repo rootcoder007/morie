@@ -318,8 +318,8 @@ def _ols(X, y, w=None):
     try:
         beta = [float(t) for t in np.linalg.solve(np.asarray(M, dtype=float), np.asarray(v, dtype=float))]
         inv = [[float(t) for t in row] for row in np.linalg.inv(np.asarray(M, dtype=float))]
-    except Exception:
-        raise ValueError("limmav: the design matrix is singular")
+    except Exception as exc:
+        raise ValueError("limmav: the design matrix is singular") from exc
     fit = [sum(X[i][a] * beta[a] for a in range(p)) for i in range(n)]
     df = n - p
     if df <= 0:

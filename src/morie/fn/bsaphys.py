@@ -2568,10 +2568,10 @@ def rcmemb(t, I_inj=0.0, C_m=0.2, R_m=100.0, V_rest=-65.0):
         raise ValueError("R_m must be positive (MOhm)")
     try:
         cur = [float(I_inj)] * len(ts)
-    except TypeError:
+    except TypeError as exc:
         cur = [float(v) for v in aslist(I_inj)]
         if len(cur) != len(ts):
-            raise ValueError("I_inj must be scalar or the same length as t")
+            raise ValueError("I_inj must be scalar or the same length as t") from exc
     tau = R_m * C_m
     V = V_rest
     Vs = []

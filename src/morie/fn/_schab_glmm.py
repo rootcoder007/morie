@@ -285,7 +285,7 @@ def fit_pseudo_likelihood(z, X, Sigma_S, family="poisson", link_kind=None, sigma
     beta = np.zeros(k)
     S_hat = np.zeros(n)
     converged = False
-    for it in range(int(max_iter)):
+    for it in range(int(max_iter)):  # noqa: B007 - read after the loop
         nu = pseudo_data(z, mu, link_kind)  # step 2
         Sig_mu = sigma_mu(mu, sigma2, family, link_kind, R=R)
         Sigma_nu = Sigma_S + Sig_mu  # Var[nu], Sec. 6.3.5.2
@@ -852,7 +852,7 @@ def bym_map(y, c, adjacency, kappa, lam, max_iter=200, tol=1e-11):
     v = np.zeros(n)
     I_ = np.eye(n)
     converged = False
-    for it in range(int(max_iter)):
+    for it in range(int(max_iter)):  # noqa: B007 - read after the loop
         w = c * np.exp(u + v)
         g_u = y - w - R @ u / kappa
         g_v = y - w - v / lam

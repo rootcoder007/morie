@@ -330,7 +330,7 @@ def mm_fit(
     converged = False
     it = 0
     z_by_seq = None
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         # ---- E-step (equation 4), in logs -------------------------------
         z_by_seq = [[0.0] * max(0, len(row) - w + 1) for row in coded]
         loglik = 0.0

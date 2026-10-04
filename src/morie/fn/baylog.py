@@ -79,7 +79,7 @@ def bayeslogit(X, y, prior_sd=10.0, iters=50, tol=1e-12):
     inv_s2 = 1.0 / (s * s)
     conv = 0.0
     it = 0
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         eta = [sum(Z[i][j] * b[j] for j in range(p)) for i in range(n)]
         mu = [1.0 / (1.0 + math.exp(-min(500.0, max(-500.0, e)))) for e in eta]
         g = [sum(Z[i][j] * (y[i] - mu[i]) for i in range(n)) - b[j] * inv_s2 for j in range(p)]

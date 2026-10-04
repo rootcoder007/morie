@@ -256,7 +256,7 @@ def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9, male_label=1):
     cycles = 0
     converged = False
     prev_theta = None
-    for cycles in range(1, int(max_cycles) + 1):
+    for cycles in range(1, int(max_cycles) + 1):  # noqa: B007 - read after the loop
         path[-1]
         for idx in (0, 1, 3, 4):
 

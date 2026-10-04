@@ -142,7 +142,7 @@ def geron_mdp(states, actions, P, R, gamma=0.95, max_iter=1000, tol=1e-10):
     expected_r = np.sum(Pa * Ra, axis=2)  # (n_s, n_a)
     V = np.zeros(n_s)
     n_iter = 0
-    for n_iter in range(1, iters + 1):
+    for n_iter in range(1, iters + 1):  # noqa: B007 - read after the loop
         Q = expected_r + g * (Pa @ V)
         V_new = Q.max(axis=1)
         delta = float(np.max(np.abs(V_new - V)))

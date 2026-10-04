@@ -172,7 +172,7 @@ def two_stage_hazard(time, event, X, Z=None, error="ph", max_iter=50, tol=1e-10)
     G2 = [geval(float(t[j]), before=True) ** 2 for j in range(n)]
 
     beta = np.zeros(p)
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         U = np.zeros(p)
         J = np.zeros((p, p))
         for i in range(n):

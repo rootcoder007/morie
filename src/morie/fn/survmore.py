@@ -933,7 +933,7 @@ def turnbull(left, right, max_iter=1000, tol=1e-10):
         raise ValueError("an observation is compatible with no Turnbull interval; check the endpoints")
     p_mass = [1.0 / m] * m
     it, change = 0, inf
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         new = [0.0] * m
         for i in range(n):
             denom = fsum(alpha[i][j] * p_mass[j] for j in range(m))

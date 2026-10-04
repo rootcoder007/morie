@@ -81,8 +81,8 @@ def _ridge(X, y, lambda_, penalize_intercept):
     G = X.T @ X + lam * P
     try:
         Ginv = np.linalg.inv(G)
-    except np.linalg.LinAlgError:
-        raise ValueError("X'X + lambda P is singular; increase lambda or fix the design.")
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("X'X + lambda P is singular; increase lambda or fix the design.") from exc
     beta = Ginv @ X.T @ y
     H = X @ Ginv @ X.T
     resid = y - X @ beta

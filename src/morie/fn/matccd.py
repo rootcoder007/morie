@@ -83,7 +83,7 @@ def matched_case_control(cases, controls, matching_id, exposure, level=0.95, max
     it = 0
     conv = False
     info = 0.0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         score = 0.0
         info = 0.0
         for k in keys:

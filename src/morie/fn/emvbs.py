@@ -46,7 +46,7 @@ def evidence_maximization(
 
     prev_evidence = -np.inf
 
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         S_inv = alpha * np.eye(p) + beta * X_arr.T @ X_arr
         S = np.linalg.inv(S_inv)
         m = beta * S @ X_arr.T @ y_arr

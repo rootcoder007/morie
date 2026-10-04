@@ -25,7 +25,7 @@ def _enet(X, y, lam1, lam2, max_iter, tol):
     beta = np.zeros(p)
     r = y.copy()
     converged, it = False, 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         delta = 0.0
         for j in range(p):
             old = beta[j]

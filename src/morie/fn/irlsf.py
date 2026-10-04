@@ -89,7 +89,7 @@ def irlsf(X, y, family="gaussian", max_iter=100, tol=1e-6, full_output=False):
 
         try:
             beta_new = np.linalg.lstsq(Xw, zw, rcond=None)[0]
-        except:
+        except Exception:
             beta_new = beta
 
         residual = np.linalg.norm(beta_new - beta)

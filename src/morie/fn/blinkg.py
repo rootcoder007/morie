@@ -350,7 +350,7 @@ def blink_gwas(
     cand = []
     it = 0
     converged = False
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         scan = marker_scan(ys, g, cv, qtn)
         order = [j for j in _order_by_p(scan["p"]) if scan["p"][j] < thr]
         if selection == "ld":

@@ -72,7 +72,7 @@ def raking_ratio(y, weights, margins, tol=1e-12, max_iter=200):
     if len(marg) == 0:
         raise ValueError("raking_ratio: at least one margin is required")
     tot0 = None
-    for labs, tt in marg:
+    for labs, tt in marg:  # noqa: B007 - read after the loop
         t = 0.0
         for k in tt:
             t += tt[k]
@@ -82,7 +82,7 @@ def raking_ratio(y, weights, margins, tol=1e-12, max_iter=200):
             raise ValueError("raking_ratio: margins have inconsistent totals")
     it = 0
     err = float("inf")
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         for labs, tt in marg:
             for k in tt:
                 cur = 0.0

@@ -179,7 +179,7 @@ def sccs_loglik(params, cells_by_person, n_risk, n_age):
             den += e * math.exp(alpha[j] + beta[r])
         if den <= _EPS:
             raise ValueError("sccsno: an individual has no observation time")
-        for j, r, e, n in cells:
+        for j, r, e, n in cells:  # noqa: B007 - read after the loop
             if n:
                 ll += n * (alpha[j] + beta[r])
         ll -= tot * math.log(den)
@@ -214,7 +214,7 @@ def _grad_hess(params, cells_by_person, n_risk, n_age):
             w.append(v)
             rows.append(idx(j, r))
         pr = [v / den for v in w]
-        for c, (j, r, e, n) in enumerate(cells):
+        for c, (_j, _r, _e, n) in enumerate(cells):
             if n:
                 for a in range(p):
                     g[a] += n * rows[c][a]
@@ -255,15 +255,15 @@ def sccs_fit(cases, risk_periods, age_breaks=(), iters=100, tol=1e-10, ridge=1e-
     p = n_risk + n_age - 1
     par = [0.0] * p
     conv, it = False, 0
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         g, H = _grad_hess(par, cells_by_person, n_risk, n_age)
         A = [[-H[a][b] + (ridge if a == b else 0.0) for b in range(p)] for a in range(p)]
         try:
             step = k.cholsolve(A, g)
-        except Exception:
+        except Exception as exc:
             raise ValueError(
                 "sccsno: the information matrix is singular -- some interval carries no events or no exposure time"
-            )
+            ) from exc
         mx = 0.0
         for a in range(p):
             par[a] += step[a]

@@ -54,9 +54,11 @@ def test_successful_chat_with_tool_call():
             "tool_calls": [{"function": {"name": "dnorm", "arguments": {"x": 0}}}],
         }
     }
-    with patch("httpx.post", return_value=mock_resp):
-        with patch("morie.fn.gmafn._execute_morie_function", return_value=0.3989):
-            r = gemma_function_call("compute dnorm(0)")
+    with (
+        patch("httpx.post", return_value=mock_resp),
+        patch("morie.fn.gmafn._execute_morie_function", return_value=0.3989),
+    ):
+        r = gemma_function_call("compute dnorm(0)")
     assert r.name == "Function call(s) returned"
     assert len(r.extra["executed_results"]) == 1
     assert r.extra["executed_results"][0]["function"] == "dnorm"

@@ -87,7 +87,7 @@ def spatial_arma(
     lam = 0.0
     converged = False
 
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         A = I_ - rho * W
         u = A @ y
         if ma_order >= 1:

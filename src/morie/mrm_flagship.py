@@ -274,9 +274,7 @@ def mrm_report(effect=None, reconciliation=None, dataset=None, digits: int = 3, 
         rows = _as_rows(rows, "effect.results")
         lines.append("")
         lines.append("Causal effect")
-        head = "  {:<28} {!s:>10} {!s:>10} {!s:>22} {!s:>10}".format(
-            "method", "estimate", "std.err", "95% CI", "p.adj"
-        )
+        head = "  {:<28} {!s:>10} {!s:>10} {!s:>22} {!s:>10}".format("method", "estimate", "std.err", "95% CI", "p.adj")
         lines.append(head)
         lines.append("  " + "-" * (len(head) - 2))
         for r in rows:

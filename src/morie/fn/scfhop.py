@@ -128,18 +128,18 @@ def atom_types(smiles):
                 t.append("D")
         if e == "N" and not arom[i]:
             amide = False
-            for v, o, _k in adj[i]:
+            for v, o, _k in adj[i]:  # noqa: B007 - read after the loop
                 if el[v] == "C" and dbl_o[v] > 0:
                     amide = True
             if not amide:
                 t.append("P")
         if e == "O":
-            for v, o, _k in adj[i]:
+            for v, o, _k in adj[i]:  # noqa: B007 - read after the loop
                 if el[v] == "C" and dbl_o[v] > 0 and sng_o[v] > 0:
                     t.append("N")
         if e == "C":
             het = False
-            for v, o, _k in adj[i]:
+            for v, o, _k in adj[i]:  # noqa: B007 - read after the loop
                 if el[v] in ("N", "O"):
                     het = True
             if not het:

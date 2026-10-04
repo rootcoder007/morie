@@ -49,12 +49,9 @@ def kosorok_ch2_bootstrap_donsker_almost_sure(X, t=None, n_boot=400, rng=None, F
     Semiparametric Inference*. Springer. Ch. 2 (outer almost sure bootstrap convergence).
     """
     base = kosorok_ch2_bootstrap_donsker_iff(X, t=t, n_boot=n_boot, rng=rng, F=F)
-    if envelope_sq_mean is None:
-        # indicator class: |1{X <= t} - F(t)| <= 1, so the centred
-        # envelope's square has mean at most 1
-        env = 1.0
-    else:
-        env = float(envelope_sq_mean)
+    # indicator class: |1{X <= t} - F(t)| <= 1, so the centred
+    # envelope's square has mean at most 1
+    env = 1.0 if envelope_sq_mean is None else float(envelope_sq_mean)
     env_ok = bool(np.isfinite(env))
     return RichResult(
         payload={

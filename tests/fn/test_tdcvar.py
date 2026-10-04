@@ -10,7 +10,7 @@ import pytest
 
 from morie.fn.tdcvar import time_dep_covariate
 
-from ._msm_fixture import TH1, N, dose, feedback  # noqa: F401
+from ._msm_fixture import TH1
 
 
 def test_the_fixture_is_additive(feedback):

@@ -80,8 +80,8 @@ def _pairs(coords):
     """
     try:
         n = len(coords)
-    except TypeError:
-        raise ValueError("hardcore_process: coords must be a sequence")
+    except TypeError as exc:
+        raise ValueError("hardcore_process: coords must be a sequence") from exc
     if n == 0:
         raise ValueError("hardcore_process: no coordinates supplied")
     first = coords[0]

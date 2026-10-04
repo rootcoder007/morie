@@ -107,7 +107,7 @@ def geron_one_class_svm(X, nu=0.5, gamma=1.0, max_iter=2000, tol=1e-9):
     grad = K @ alpha
 
     n_iter = 0
-    for n_iter in range(1, it_max + 1):
+    for n_iter in range(1, it_max + 1):  # noqa: B007 - read after the loop
         up = np.where(alpha < C - 1e-12)[0]
         dn = np.where(alpha > 1e-12)[0]
         if up.size == 0 or dn.size == 0:

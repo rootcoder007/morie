@@ -78,7 +78,7 @@ def mdp_policy_iteration(P, R, gamma, tol=1e-12, max_eval=100000, max_improve=10
     n_eval = 0
     stable = False
     rounds = 0
-    for rounds in range(1, int(max_improve) + 1):
+    for rounds in range(1, int(max_improve) + 1):  # noqa: B007 - read after the loop
         # 2. iterative policy evaluation (in place, sweep order s = 0..S-1)
         for _ in range(int(max_eval)):
             n_eval += 1

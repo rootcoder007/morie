@@ -121,7 +121,7 @@ def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01, seed=0, ema=
         g_j = np.ones_like(tj) / tj.size
         g_m = -np.exp(tm - mx) * np.exp(mx) / (tj.size * max(denom_ema, 1e-300))
 
-        def backprop(g, A, Z):
+        def backprop(g, A, Z, *, W2=W2):
             gW2 = A.T @ g[:, None]
             gb2 = np.array([g.sum()])
             dA = np.outer(g, W2.ravel()) * (A > 0)

@@ -133,8 +133,8 @@ def _pair(p):
     try:
         c1, p1, s1 = p["chrom1"], int(p["pos1"]), p["strand1"]
         c2, p2, s2 = p["chrom2"], int(p["pos2"]), p["strand2"]
-    except (KeyError, TypeError):
-        raise ValueError("sv_dl: a pair needs chrom1/pos1/strand1 and chrom2/pos2/strand2")
+    except (KeyError, TypeError) as exc:
+        raise ValueError("sv_dl: a pair needs chrom1/pos1/strand1 and chrom2/pos2/strand2") from exc
     l1 = int(p.get("len1", p.get("read_length", 100)))
     l2 = int(p.get("len2", p.get("read_length", 100)))
     if l1 < 1 or l2 < 1:
@@ -628,9 +628,8 @@ def refine_breakpoint(
     left_ref = f_at[i - 1]
     right_ref = r_at[j - 1]
     size = right_ref - left_ref
-    if call["size"] is not None and call["size"] > 0:
-        if abs(size - call["size"]) > max_length_diff * abs(call["size"]):
-            return None
+    if call["size"] is not None and call["size"] > 0 and abs(size - call["size"]) > max_length_diff * abs(call["size"]):
+        return None
     # Microhomology: bases shared by the two breakpoint flanks. The
     # junction slides freely across them, so a call inside the homology
     # is not wrong -- it describes the same haplotype. DELLY's alignment

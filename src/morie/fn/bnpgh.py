@@ -50,8 +50,8 @@ def _vec(x, what):
         return [float(x)]
     try:
         out = [float(v) for v in x]
-    except TypeError:
-        raise ValueError(f"{what} must be a number or a sequence of numbers")
+    except TypeError as exc:
+        raise ValueError(f"{what} must be a number or a sequence of numbers") from exc
     return out
 
 

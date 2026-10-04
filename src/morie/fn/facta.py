@@ -77,7 +77,7 @@ def facta(
         h2 = 0.5 * np.ones(p)
 
     # Iterative communality estimation
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 - read after the loop
         h2_old = h2.copy()
 
         # Reduced correlation matrix

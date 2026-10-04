@@ -8,6 +8,7 @@ Run as:
 
 import importlib
 import os
+import pathlib
 import sys
 import traceback
 
@@ -23,7 +24,7 @@ def run_one(name):
     print(f"=== {name} ===")
     try:
         m = _load(name, f"{name}.py")
-        src = open(os.path.join(SRC, "morie", "fn", f"{name}.py")).read()
+        src = pathlib.Path(SRC, "morie", "fn", f"{name}.py").read_text(encoding="utf-8")
         if 'if __name__ == "__main__":' in src:
             tail = src.split('if __name__ == "__main__":', 1)[1]
             lines = tail.splitlines()

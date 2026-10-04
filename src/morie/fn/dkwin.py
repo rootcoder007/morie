@@ -54,8 +54,8 @@ def dkw_test(
 
     try:
         dist = getattr(stats, cdf)
-    except AttributeError:
-        raise ValueError(f"Unknown distribution: {cdf}.")
+    except AttributeError as exc:
+        raise ValueError(f"Unknown distribution: {cdf}.") from exc
 
     n = x.size
     x_sorted = np.sort(x)

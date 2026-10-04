@@ -57,7 +57,7 @@ def self_org_map(X, grid_size=(10, 10), n_iter=1000, lr_init=0.5, sigma_init=Non
         bmu = np.unravel_index(np.argmin(dists), (rows, cols))
         bmu_coord = np.array([bmu[0], bmu[1]])
 
-        for i, coord in enumerate(grid_coords):
+        for i, coord in enumerate(grid_coords):  # noqa: B007 - read after the loop
             d = np.sum((coord - bmu_coord) ** 2)
             h = np.exp(-d / (2 * sigma**2))
             r, c = coord

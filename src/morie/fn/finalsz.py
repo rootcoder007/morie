@@ -76,7 +76,7 @@ def final_epidemic_size(R0, s0=1.0, i0=None, tol=1e-14, max_iter=200):
         # (resid'(0) = R0 s0 - 1 <= 0 and resid is concave)
         Z = 0.0
     else:
-        for it in range(1, int(max_iter) + 1):
+        for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
             mid = 0.5 * (lo + hi)
             if resid(mid) > 0.0:
                 lo = mid

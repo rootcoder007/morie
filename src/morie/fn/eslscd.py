@@ -105,7 +105,7 @@ def esl_sparse_pca(X, k=2, lambda_=0.1, max_iter=500, tol=1e-8, center=True, sca
     for j in range(k):
         v = np.linalg.eigh(Sd)[1][:, -1]
         it = 0
-        for it in range(1, max_iter + 1):
+        for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
             t = Sd @ v
             t = np.sign(t) * np.maximum(np.abs(t) - lambda_, 0.0)
             nrm = np.linalg.norm(t)

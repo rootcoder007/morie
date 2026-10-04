@@ -12,6 +12,8 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _frame_core as pd
+from ._helpers import _safe_exp
+from .ess import effective_sample_size
 
 
 class _MissingDep:
@@ -35,9 +37,6 @@ try:
     from ._glm_core import formula as smf
 except ImportError:
     smf = _MissingDep("smf")
-
-from morie.fn._helpers import _safe_exp
-from morie.fn.ess import effective_sample_size
 
 
 def run_ebac_selection_ipw_analysis(

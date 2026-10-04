@@ -115,7 +115,7 @@ def compare_nested_logistic_models(
 
     null_deviance = float(fits[0][3].deviance)
     summary_rows = []
-    for label, description, formula, fit in fits:
+    for label, description, _formula, fit in fits:
         summary_rows.append(
             {
                 "model": label,
@@ -154,7 +154,7 @@ def compare_nested_logistic_models(
 
     # Full coefficient table for all models
     full_coef_rows = []
-    for label, description, formula, fit in fits:
+    for label, _description, _unused_formula, fit in fits:
         conf = fit.conf_int()
         for term in fit.params.index:
             full_coef_rows.append(

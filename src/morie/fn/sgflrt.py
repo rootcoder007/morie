@@ -389,7 +389,7 @@ def spatial_glmm_fit(
                 # unusable, since every entry costs a Bessel evaluation
                 R = corrmat(phh)
 
-                def fs(ls):
+                def fs(ls, *, R=R, disp=disp):
                     r = _laplace(yv, Xm, scaled(R, math.exp(ls)), family, inner_iter, tol, disp)
                     return -1e300 if r is None else r[0]
 
@@ -397,7 +397,7 @@ def spatial_glmm_fit(
                 s2h = math.exp(ls_hat)
             if phi is None:
 
-                def fp(lp):
+                def fp(lp, *, disp=disp, s2h=s2h):
                     r = _laplace(yv, Xm, scaled(corrmat(math.exp(lp)), s2h), family, inner_iter, tol, disp)
                     return -1e300 if r is None else r[0]
 
@@ -406,7 +406,7 @@ def spatial_glmm_fit(
                 Rd = corrmat(phh)
                 Sd = scaled(Rd, s2h)
 
-                def fdp(ld):
+                def fdp(ld, *, Sd=Sd):
                     r = _laplace(yv, Xm, Sd, family, inner_iter, tol, math.exp(ld))
                     return -1e300 if r is None else r[0]
 

@@ -228,7 +228,7 @@ def minimum_spanning_tree(D, clusters, ends=None):
         near = min(inner, key=lambda v: D[(e, v)])
         edges.append((near, e, D[(e, near)]))
     adj = {}
-    for a, b, w in edges:
+    for a, b, w in edges:  # noqa: B007 - read after the loop
         adj.setdefault(a, []).append(b)
         adj.setdefault(b, []).append(a)
     for v in nodes:

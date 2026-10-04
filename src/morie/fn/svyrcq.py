@@ -92,7 +92,7 @@ def survey_quantile_regression(X, y, tau=0.5, weights=None, add_intercept=True, 
     beta = wls([wi for wi in w], [0.0] * n)  # weighted LS start
     obj = [check_loss(beta)]
     it, converged = 0, False
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         om, adj = [], []
         for i in range(n):
             u = yv[i] - sum(Xm[i][a] * beta[a] for a in range(p))

@@ -67,13 +67,13 @@ def wasserman_poisson_regression(X, y, max_iter=100, tol=1e-10):
     beta[0] = np.log(np.mean(y)) if np.mean(y) > 0 else 0.0
     converged = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         mu = np.exp(np.clip(X @ beta, -30, 30))
         H = X.T @ (X * mu[:, None])
         try:
             step = np.linalg.solve(H, X.T @ (y - mu))
-        except np.linalg.LinAlgError:
-            raise ValueError("the information matrix is singular; check the design.")
+        except np.linalg.LinAlgError as exc:
+            raise ValueError("the information matrix is singular; check the design.") from exc
         beta = beta + step
         if np.max(np.abs(step)) < tol:
             converged = True

@@ -186,7 +186,7 @@ def solve_lp(A, b, c, tol=1e-9, max_iter=100, nu=3.0, eta=0.9995, corrector=True
     s = [1.0] * n
     y = [0.0] * m
     it, _gap = 0, float("inf")
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         r = residuals(M, bv, cv, x, y, s)
         mu = r["mu"]
         if mu < float(tol) and r["primal_norm"] < float(tol) and r["dual_norm"] < float(tol):

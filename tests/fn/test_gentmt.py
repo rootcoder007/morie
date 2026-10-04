@@ -10,8 +10,6 @@ import pytest
 
 from morie.fn.gentmt import generalized_treatment_msm
 
-from ._msm_fixture import TH1, N, dose, feedback  # noqa: F401
-
 
 def test_gentmt_three_routes_agree_on_the_dose_slope(dose):
     w = generalized_treatment_msm(dose["Y"], dose["D"], dose["X"])

@@ -35,12 +35,9 @@ def group_time_att(Y, g, control="notyet"):
         for t in range(T):
             if t == base:
                 continue
-            if control == "never":
-                ctrl = ~np.isfinite(g)
-            else:
-                # not-yet-treated at max(t, g): never-treated units plus
-                # cohorts that adopt strictly later than both periods
-                ctrl = g > max(t, gg)
+            # not-yet-treated at max(t, g): never-treated units plus
+            # cohorts that adopt strictly later than both periods
+            ctrl = ~np.isfinite(g) if control == "never" else g > max(t, gg)
             if treated.sum() == 0 or ctrl.sum() == 0:
                 continue
             dY = Y[:, t] - Y[:, base]

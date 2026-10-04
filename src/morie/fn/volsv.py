@@ -163,9 +163,9 @@ def vol_sv_quasi_lik(r, init=None, sweeps=25, offset=1e-8):
     if sweeps < 1:
         raise ValueError("sweeps must be at least 1")
     for _s in range(sweeps):
-        mu = _golden(lambda v: _kalman_qll(y, v, phi, np.exp(2.0 * lsig)), mu - 5.0, mu + 5.0)
-        phi = _golden(lambda v: _kalman_qll(y, mu, v, np.exp(2.0 * lsig)), -0.999, 0.999)
-        lsig = _golden(lambda v: _kalman_qll(y, mu, phi, np.exp(2.0 * v)), lsig - 3.0, lsig + 3.0)
+        mu = _golden(lambda v, *, lsig=lsig, phi=phi: _kalman_qll(y, v, phi, np.exp(2.0 * lsig)), mu - 5.0, mu + 5.0)
+        phi = _golden(lambda v, *, lsig=lsig, mu=mu: _kalman_qll(y, mu, v, np.exp(2.0 * lsig)), -0.999, 0.999)
+        lsig = _golden(lambda v, *, mu=mu, phi=phi: _kalman_qll(y, mu, phi, np.exp(2.0 * v)), lsig - 3.0, lsig + 3.0)
 
     sig = np.exp(lsig)
     ll = _kalman_qll(y, mu, phi, sig * sig)

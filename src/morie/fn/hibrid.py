@@ -272,10 +272,10 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None, p1_new=None,
         it, conv = 0, False
         path.append(_reml_at(la, ls, Kg, Ks_used, yv, Xm)[0])
         prev_la = prev_ls = None
-        for it in range(1, int(max_iter) + 1):
+        for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
             path[-1]
 
-            def fa(ell):
+            def fa(ell, *, ls=ls):
                 return _reml_at(math.exp(ell), ls, Kg, Ks_used, yv, Xm)[0]
 
             la = math.exp(_gridmax(fa, _LO, _HI))
@@ -286,7 +286,7 @@ def hibrid_prediction(y, p1_geno, p2_geno, sigma2_sca=None, X=None, p1_new=None,
                 ls = s2e_now / max(float(sigma2_sca), 1e-300)
             else:
 
-                def fs(ell):
+                def fs(ell, *, la=la):
                     return _reml_at(la, math.exp(ell), Kg, Ks_used, yv, Xm)[0]
 
                 ls = math.exp(_gridmax(fs, _LO, _HI))

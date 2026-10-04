@@ -135,7 +135,7 @@ def gauss_newton_semivariogram(
     obj, fitted, w, resid = objective(theta)
     converged = False
     it = 0
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         jac = semivariogram_jacobian(h, theta[0], theta[1], theta[2], model)
         # Normal equations of the weighted Gauss-Newton step:
         #   (J' W J) delta = J' W r

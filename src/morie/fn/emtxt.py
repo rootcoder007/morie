@@ -83,7 +83,7 @@ def em_irt_text(word_freq_matrix, max_iter=200, tol=1e-6, polarity=(0, 1)):
         return b
 
     converged = False
-    for it in range(int(max_iter)):
+    for it in range(int(max_iter)):  # noqa: B007 - read after the loop
         theta_old = theta.copy()
         # word block: (psi_k, beta_k) given documents
         Xw = np.column_stack([np.ones(n), theta])

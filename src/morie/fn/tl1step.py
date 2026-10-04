@@ -190,7 +190,7 @@ def iterative_tmle(Q, H_fn, Y, max_iter=25, tol=1e-8):
     n = len(q)
     cur = list(q)
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         h = [float(v) for v in H_fn(cur)]
         off = [_logit(v) for v in cur]
         e = 0.0

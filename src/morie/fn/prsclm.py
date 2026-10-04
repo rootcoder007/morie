@@ -212,7 +212,7 @@ def prs_cs_clump(sumstats, ld_ref, p_threshold=None, r2=0.1, window=250000.0, ge
             scores.append([sum(beta[j] * G[i][j] for j in keep) for i in range(n)])
 
     best = None
-    for u, t in enumerate(thr):
+    for u, _t in enumerate(thr):
         if counts[u] > 0:
             best = u
             break

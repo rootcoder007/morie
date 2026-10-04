@@ -36,16 +36,8 @@ def test_kmtot_edge():
     # Model that produces some dead ends but still completes to max_depth.
     # With beam=2 both children are kept, so the dead end is expanded.
     def mixed_dead_end(state, b):
-        if state == "x":
-            return [("a", 1.0), ("b", 2.0)]
-        elif state == "a":
-            return []  # dead end
-        elif state == "b":
-            return [("c", 3.0)]
-        elif state == "c":
-            return [("d", 4.0)]
-        else:
-            return []
+        # "a" is the dead end
+        return {"x": [("a", 1.0), ("b", 2.0)], "a": [], "b": [("c", 3.0)], "c": [("d", 4.0)]}.get(state, [])
 
     out = kamath_tree_of_thoughts("x", 2, 3, mixed_dead_end, beam=2)
     assert isinstance(out, dict)

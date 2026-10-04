@@ -71,7 +71,7 @@ def bndapp(y, z, t1=None, t0=None):
         pm.append((len(idx) / float(n), sum(yv[i] for i in idx) / float(len(idx))))
     lower = []
     upper = []
-    for k, g in enumerate(lev):
+    for k, _g in enumerate(lev):
         lo = sum(pm[j][0] * pm[j][1] for j in range(k))
         lo += pm[k][1] * sum(pm[j][0] for j in range(k, len(lev)))
         hi = sum(pm[j][0] * pm[j][1] for j in range(k + 1, len(lev)))

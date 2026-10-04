@@ -110,7 +110,7 @@ def esl_em_gmm(X, k=2, max_iter=200, tol=1e-6, reg=1e-6, seed=0):
     pi = np.full(k, 1.0 / k)
 
     path, prev, converged = [], -np.inf, False
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         logp = np.empty((n, k))
         for j in range(k):
             logp[:, j] = np.log(pi[j] + 1e-300) + _log_mvn(X, mu[j], sigma[j])

@@ -7,6 +7,8 @@ tests pin that re-export and the basic shape of the result; the
 statistical content is tested in ``test_johsn.py``.
 """
 
+import pathlib
+
 import pytest
 
 from morie.fn import _array_core as np
@@ -19,7 +21,7 @@ def test_johanc_is_the_johsn_implementation():
 
 
 def test_johanc_has_no_ks_residue():
-    src = open(johanc.__file__).read()
+    src = pathlib.Path(johanc.__file__).read_text(encoding="utf-8")
     for token in ("d_plus", "d_minus", "ecdf", "ksone"):
         assert token not in src, "pasted KS body still present: " + token
 

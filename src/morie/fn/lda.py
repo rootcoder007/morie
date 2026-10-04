@@ -121,7 +121,7 @@ def variational_inference(doc, alpha, beta, iters=100, tol=1e-8):
     phi = [[1.0 / K] * K for _ in range(N)]
     gam = [a[i] + N / float(K) for i in range(K)]
     it, conv = 0, False
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         elog = e_log_theta(gam)
         new = []
         for n in range(N):

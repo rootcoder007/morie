@@ -112,10 +112,8 @@ def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1, s
         vals = detr[j::m]
         vals = vals[np.isfinite(vals)]
         s0[j] = np.mean(vals) if vals.size else (1.0 if mult else 0.0)
-    if mult:
-        s0 = s0 / s0.mean()
-    else:
-        s0 = s0 - s0.mean()  # centre so the level is identified
+    # centre so the level is identified
+    s0 = s0 / s0.mean() if mult else s0 - s0.mean()
 
     def run(a, b, g):
         lev = np.empty(n)

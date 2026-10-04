@@ -124,7 +124,7 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6, ties
         conv_l = False
         ll_l = -np.inf
         it_l = 0
-        for it_l in range(1, max_iter + 1):
+        for it_l in range(1, max_iter + 1):  # noqa: B007 - read after the loop
             beta_new, ll_l, _, _, _, _ = cox_fit(t, e, Xm, ties=ties, offset=logw)
             times, _, Hc = baseline_hazard(t, e, Xm, beta_new, offset=logw)
             pos = np.searchsorted(times, t, side="right") - 1

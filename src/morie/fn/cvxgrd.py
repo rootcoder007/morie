@@ -85,7 +85,7 @@ def boyd_gradient_descent(f, grad_f, x0, t=0.01, max_iter=1000, tol=1e-08):
     fs = [float(f(x))]
     conv = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         g = np.atleast_1d(np.asarray(grad_f(x), dtype=float)).ravel()
         if np.max(np.abs(g)) < tol:
             conv = True

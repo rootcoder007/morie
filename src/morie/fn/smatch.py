@@ -142,7 +142,7 @@ def sccs_poisson_fit(cases, risk_periods, age_breaks=(), iters=200, tol=1e-12, r
     p = len(X[0])
     beta = [0.0] * p
     conv, it = False, 0
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         mu, W, z = [], [], []
         for i in range(len(y)):
             eta = off[i] + sum(X[i][a] * beta[a] for a in range(p))
@@ -165,12 +165,12 @@ def sccs_poisson_fit(cases, risk_periods, age_breaks=(), iters=200, tol=1e-12, r
             XtWX[a][a] += ridge
         try:
             nb = k.cholsolve(XtWX, XtWz)
-        except Exception:
+        except Exception as exc:
             raise ValueError(
                 "smatch: the Poisson design is singular "
                 "-- an interval has no exposure time or "
                 "an individual has no variation"
-            )
+            ) from exc
         mx = max(abs(nb[a] - beta[a]) for a in range(p))
         beta = nb
         if mx < tol:

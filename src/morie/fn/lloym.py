@@ -28,7 +28,7 @@ def lloyd_max(
     vmin, vmax = float(x.min()), float(x.max())
     centroids = np.linspace(vmin, vmax, levels)
     iteration = 0
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 - read after the loop
         dists = np.abs(x[:, None] - centroids[None, :])
         labels = np.argmin(dists, axis=1)
         new_centroids = np.array(

@@ -4049,7 +4049,7 @@ def vmodes(x, K=3, alpha=2000.0, tau=0.0, init="uniform", tol=1e-7, max_iter=300
     lam = [0j] * half
     it = 0
     conv = False
-    for it in range(1, mi + 1):
+    for it in range(1, mi + 1):  # noqa: B007 - read after the loop
         change = 0.0
         for j in range(k):
             others = [sum(uk[q][i] for q in range(k) if q != j) for i in range(half)]

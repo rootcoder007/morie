@@ -80,7 +80,7 @@ def rey_zp(df, y: str = "y", x: list | str = "x", max_iter: int = 200, tol: floa
         w = np.clip(w, 1e-10, 1 - 1e-10)
 
         # M-step: logistic part (weighted logistic for zero-component membership)
-        def neg_ll_logistic(delta):
+        def neg_ll_logistic(delta, *, w=w):
             eta = X_arr @ delta
             pi_tmp = 1.0 / (1.0 + np.exp(-eta))
             pi_tmp = np.clip(pi_tmp, 1e-10, 1 - 1e-10)
@@ -90,7 +90,7 @@ def rey_zp(df, y: str = "y", x: list | str = "x", max_iter: int = 200, tol: floa
         delta_hat = res_d.x
 
         # M-step: Poisson part (weighted Poisson)
-        def neg_ll_poisson(gamma):
+        def neg_ll_poisson(gamma, *, w=w):
             eta = X_arr @ gamma
             lam_tmp = np.exp(eta)
             lam_tmp = np.clip(lam_tmp, 1e-10, 1e6)

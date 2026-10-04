@@ -120,7 +120,7 @@ def schabenberger_cov_param_estimation_kriging(
     beta = ols_fit(Xd, zz)
     theta = None
     converged, it = False, 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         r = zz - Xd @ beta
         new = _cov_params(r)
         P = np.atleast_2d(np.asarray(coords, dtype=float))

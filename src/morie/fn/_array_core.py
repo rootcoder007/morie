@@ -377,8 +377,8 @@ class _Flags:
     def __getitem__(self, key):
         try:
             return getattr(self, str(key))
-        except AttributeError:
-            raise KeyError(key)
+        except AttributeError as exc:
+            raise KeyError(key) from exc
 
     def __repr__(self):
         return "  C_CONTIGUOUS : True\n  F_CONTIGUOUS : False\n  OWNDATA : True\n  WRITEABLE : True\n  ALIGNED : True"
@@ -821,10 +821,8 @@ class marr:
                 and idx.shape == (self.shape[0],)
                 and _pyall(v in (0.0, 1.0) for v in vals)
             )
-            if is_mask:
-                keep = [k for k, m in enumerate(vals) if m != 0]
-            else:
-                keep = [int(v) for v in vals]  # fancy integer indexing
+            # fancy integer indexing
+            keep = [k for k, m in enumerate(vals) if m != 0] if is_mask else [int(v) for v in vals]
             out = _carry(self, marr([self.data[k] for k in keep]))
             if getattr(self, "_is_index", False):
                 out._is_index = True
@@ -7900,7 +7898,7 @@ class _RClass:
             # numpy: with a 2-D operand r_ concatenates along axis 0, so a
             # (n, p) block and a [[...]] row stack into (n + 1, p) rows
             rows = []
-            for it, a in zip(items, arrays):
+            for it, a in zip(items, arrays):  # noqa: B007 - read after the loop
                 if a is None:
                     raise ValueError("r_ cannot mix a scalar with 2-D arrays")
                 if len(a.shape) == 1:
@@ -9214,7 +9212,7 @@ def roll(a, shift, axis=None):
     for sh, ax in zip(shifts, axes):
         ax = int(ax) % nd
 
-        def rec(node, d):
+        def rec(node, d, *, ax=ax, sh=sh):
             if d == ax:
                 n_ = len(node)
                 k = int(sh) % n_ if n_ else 0
@@ -9689,7 +9687,7 @@ def _dt_unit_of(text):
     """numpy's unit for an ISO string: the finest component given."""
     if "T" not in text and " " not in text:
         return "D"
-    clock = re.split("[T ]", text, 1)[1]
+    clock = re.split("[T ]", text, maxsplit=1)[1]
     parts = clock.split(":")
     return {1: "h", 2: "m"}.get(len(parts), "s")
 
@@ -10111,13 +10109,11 @@ def histogramdd(sample, bins=10, range=None, density=False):  # noqa: A002
     Counts come back as a rank-d nested container (marr for d == 2,
     ndlist above that) so the callers' ``.sum()`` / flattening work.
     """
-    if hasattr(sample, "shape"):
-        a = atleast_2d(sample)  # an (N, D) array
-    else:
-        # numpy: anything without a .shape is a sequence of D coordinate
-        # arrays, i.e. (D, N); [x] is N points in one dimension, not one
-        # point in N dimensions (which allocated bins ** N cells)
-        a = atleast_2d(asarray(sample)).T
+    # an (N, D) array
+    # numpy: anything without a .shape is a sequence of D coordinate
+    # arrays, i.e. (D, N); [x] is N points in one dimension, not one
+    # point in N dimensions (which allocated bins ** N cells)
+    a = atleast_2d(sample) if hasattr(sample, "shape") else atleast_2d(asarray(sample)).T
     n, d = a.shape
     if isinstance(bins, int):
         bins = [bins] * d

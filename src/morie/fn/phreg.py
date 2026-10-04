@@ -86,7 +86,7 @@ def phreg(
         eps = 1e-5
         for i in range(p + K):
 
-            def f_i(xi):
+            def f_i(xi, *, i=i):
                 params = result.x.copy()
                 params[i] = xi
                 return neg_loglik(params)

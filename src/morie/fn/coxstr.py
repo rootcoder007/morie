@@ -109,7 +109,7 @@ def cox_stratified(time, event, X, stratum, ties="efron", max_iter=50, tol=1e-9)
     it = 0
     ll_total = 0.0
     I_total = np.zeros((p, p))
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         U = np.zeros(p)
         I_total = np.zeros((p, p))
         ll_total = 0.0

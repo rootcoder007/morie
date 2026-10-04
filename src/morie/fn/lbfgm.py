@@ -52,7 +52,7 @@ def lbfgs_optimize(
     y_hist: list[np.ndarray] = []
     rho_hist: list[float] = []
     converged = False
-    for it in range(1, maxiter + 1):
+    for it in range(1, maxiter + 1):  # noqa: B007 - read after the loop
         if np.linalg.norm(g) < tol:
             converged = True
             break

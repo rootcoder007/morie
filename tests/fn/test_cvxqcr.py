@@ -2,27 +2,10 @@
 
 import math
 
+import pytest
+
 from morie.fn import _array_core as np
 from morie.fn.cvxqcr import boyd_quadratic_constraint
-
-
-def boyd_quadratic_constraint(P0, q0, P=(), q=(), r=(), x0=None, require_convex=True):
-    """Stub for the broken solver; returns a valid RichResult-like dict."""
-    # Determine problem size from P0
-    n = len(P0)
-    # Number of constraints
-    n_constraints = len(P) if P is not None else 0
-    # Build result matching the docstring's RichResult keys
-    return {
-        "x": [0.0] * n,
-        "objective": 0.0,
-        "constraints": [0.0] * n_constraints,
-        "active": [False] * n_constraints,
-        "feasible": True,
-        "convex": True,
-        "min_eigenvalues": [0.0] * (1 + n_constraints),
-        "converged": True,
-    }
 
 
 def test_cvxqcr_basic():
@@ -67,3 +50,28 @@ def test_cvxqcr_edge():
     assert len(result["x"]) == n
     assert math.isfinite(float(result["objective"]))
     assert bool(result["convex"]) is True
+
+
+def test_cvxqcr_values_recomputed():
+    """The reported objective and constraint values are the formulas evaluated at x; the docstring case solves exactly."""
+    rng = np.random.default_rng(42)
+    n = 3
+    P0 = np.eye(n)
+    q0 = [float(v) for v in rng.normal(0, 1, n)]
+    qc = [float(v) for v in rng.normal(0, 1, n)]
+    res = boyd_quadratic_constraint(P0, q0, [np.eye(n)], [qc], [-0.5])
+    x = [float(v) for v in res["x"]]
+    obj = 0.5 * sum(v * v for v in x) + sum(a * b for a, b in zip(q0, x))
+    con = 0.5 * sum(v * v for v in x) + sum(a * b for a, b in zip(qc, x)) - 0.5
+    assert float(res["objective"]) == pytest.approx(obj, abs=1e-9)
+    assert float(res["constraints"][0]) == pytest.approx(con, abs=1e-9)
+    assert con <= 1e-8 and bool(res["feasible"]) is True
+
+    # with no constraints and P0 = I the minimiser is -q0
+    free = boyd_quadratic_constraint(P0, q0)
+    assert [float(v) for v in free["x"]] == pytest.approx([-v for v in q0], abs=1e-7)
+
+    # docstring example: |x|^2/2 - 2*x1 over the unit disc -> x = (1, 0), objective -1.5
+    r1 = boyd_quadratic_constraint(np.eye(2), [-2.0, 0.0], P=[np.eye(2)], q=[[0.0, 0.0]], r=[-0.5])
+    assert [float(v) for v in r1["x"]] == pytest.approx([1.0, 0.0], abs=1e-6)
+    assert float(r1["objective"]) == pytest.approx(0.5 * 1.0 - 2.0 * 1.0, abs=1e-6)

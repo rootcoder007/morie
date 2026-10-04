@@ -68,7 +68,7 @@ def irt1p(
 
     # Joint MLE via alternating Newton-Raphson
     loglik_prev = -np.inf
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 - read after the loop
         # E-step: compute probabilities P(X=1 | theta, b) with a=1
         # P = 1 / (1 + exp(-(theta_i - b_j)))
         logits = theta[:, None] - b[None, :]

@@ -11,7 +11,7 @@ import pytest
 from morie.fn.polkrn import polynomial_kernel_msm
 from morie.fn.tdcvar import time_dep_covariate
 
-from ._msm_fixture import TH1, N, dose, feedback  # noqa: F401
+from ._msm_fixture import N
 
 
 def test_polkrn_degree_one_is_the_linear_msm(feedback):

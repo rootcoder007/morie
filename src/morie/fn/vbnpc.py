@@ -132,7 +132,7 @@ def vb_nonparametric(y, K_truncate=5, alpha=1.0, sigma2=1.0, m0=0.0, s0=10.0, ma
     path = []
     it = 0
     converged = False
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         # --- q(z): Eq. (21)
         elv = [0.0] * K
         el1v = [0.0] * K

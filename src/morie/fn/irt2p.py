@@ -74,7 +74,7 @@ def irt2p(
 
     loglik_prev = -np.inf
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 - read after the loop
         # E-step: compute posterior weights for each person at each quad point
         # P(X_i | theta_q) = prod_j P_j(theta_q)^x_ij * Q_j(theta_q)^(1-x_ij)
         log_like_quad = np.zeros((n, n_quad))
@@ -105,7 +105,7 @@ def irt2p(
         # M-step: update a, b for each item
         for j in range(k):
 
-            def _neg_loglik_item(params):
+            def _neg_loglik_item(params, *, f_bar=f_bar, j=j, r_bar=r_bar):
                 aj, bj = params
                 if aj < 0.01:
                     return 1e12

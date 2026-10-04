@@ -83,7 +83,9 @@ def test_z_tau_matches_the_urca_formula():
     u = [c - (mc - rho * ml) - rho * a for a, c in zip(yl, yc)]
     t = (rho - 1) / math.sqrt(sum(e * e for e in u) / (n - 2) / sxx)
     s = sum(e * e for e in u) / n
-    sig = s + 2 / n * sum((1 - ell / (L + 1)) * sum(u[i] * u[i - ell] for i in range(ell, n)) for ell in range(1, L + 1))
+    sig = s + 2 / n * sum(
+        (1 - ell / (L + 1)) * sum(u[i] * u[i - ell] for i in range(ell, n)) for ell in range(1, L + 1)
+    )
     yb2 = sum((c - mc) ** 2 for c in yc) / n**2
     z = math.sqrt(s / sig) * t - 0.5 * (sig - s) / sig * math.sqrt(sig / yb2)
     r = pp_test(x, lags=L)

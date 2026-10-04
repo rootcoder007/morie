@@ -140,7 +140,7 @@ def interior_point(c, A, b, tol=1e-10, max_iter=200):
         d = [x[j] / s[j] for j in range(n)]
         L = _cholesky(_ada(M, d))
 
-        def step(r3):
+        def step(r3, *, L=L, d=d, rd=rd, rp=rp, s=s):
             # dy from A D A' dy = rp - A S^-1 r3 + A D rd
             t = [r3[j] / s[j] for j in range(n)]
             rhs = [

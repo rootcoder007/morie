@@ -77,7 +77,9 @@ def test_matches_the_univariate_scalar_case():
     res = white_noise_test(x, lags=m)
     xc = x - x.mean()
     g0 = ((xc.T @ xc) / 300).item()
-    expected = 300**2 * sum((((xc[ell:].T @ xc[:-ell]) / 300).item() / g0) ** 2 / (300 - ell) for ell in range(1, m + 1))
+    expected = 300**2 * sum(
+        (((xc[ell:].T @ xc[:-ell]) / 300).item() / g0) ** 2 / (300 - ell) for ell in range(1, m + 1)
+    )
     assert res["statistic"] == pytest.approx(expected, rel=1e-12)
 
 

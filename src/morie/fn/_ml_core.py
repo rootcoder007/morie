@@ -858,11 +858,8 @@ class _ForestBase:
                 if classify:
                     votes = {}
                     for p in preds:
-                        if isinstance(p, list):
-                            # class-count leaf: argmax class
-                            k = _bi.max(range(len(p)), key=lambda c2: p[c2])
-                        else:
-                            k = int(round(p))
+                        # class-count leaf: argmax class
+                        k = _bi.max(range(len(p)), key=lambda c2: p[c2]) if isinstance(p, list) else int(round(p))
                         votes[k] = votes.get(k, 0) + 1
                     pred = _bi.max(votes, key=votes.get)
                     if pred == int(round(yv[i])):

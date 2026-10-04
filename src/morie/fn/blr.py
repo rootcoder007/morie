@@ -73,10 +73,8 @@ def bayesian_linear_regression(
 
     # Posterior covariance of beta (integrating out sigma^2)
     # Var(beta | data) = b_n / (a_n - 1) * Lambda_n_inv  (when a_n > 1)
-    if a_n > 1:
-        post_cov = (b_n / (a_n - 1.0)) * Lambda_n_inv
-    else:
-        post_cov = Lambda_n_inv  # fallback
+    # fallback
+    post_cov = b_n / (a_n - 1.0) * Lambda_n_inv if a_n > 1 else Lambda_n_inv
 
     # Credible intervals (using t-distribution with 2*a_n degrees of freedom)
     from . import _stats_core as _st

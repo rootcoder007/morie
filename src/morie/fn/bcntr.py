@@ -44,11 +44,8 @@ def bayesian_contraction_rate(
     exponent = -smoothness / (2.0 * smoothness + dimension)
     metric_rate = (n**exponent) / np.sqrt(np.log(n))
 
-    if prior_entropy is None:
-        # Default: DP prior
-        prior_entropy_rate = np.sqrt(np.log(prior_concentration) / n)
-    else:
-        prior_entropy_rate = prior_entropy
+    # Default: DP prior
+    prior_entropy_rate = np.sqrt(np.log(prior_concentration) / n) if prior_entropy is None else prior_entropy
 
     # Testing rate (likelihood ratio test)
     test_rate = np.sqrt(dimension * np.log(n) / n)

@@ -151,7 +151,7 @@ def cox_partial_likelihood(time, event, X, beta=None, max_iter=50, tol=1e-10):
     if fitted:
         b = [0.0] * p
         converged = False
-        for iterations in range(1, max_iter + 1):
+        for iterations in range(1, max_iter + 1):  # noqa: B007 - read after the loop
             _ll, u, info = _terms(time, event, X, b)[:3]
             step = _inv(info)
             delta = [sum(step[a][c] * u[c] for c in range(p)) for a in range(p)]

@@ -32,7 +32,8 @@ for p in sorted(glob.glob("/home/rootcoder/work/ledger/mvsml_pdf/*.pdf")):
         book_page = int(m.group(1)) + i - 1
         for mm in re.finditer(f"\\({int(ch)}[.:](\\d{{1,2}}[a-z]?)\\)", flat):
             found[ch].setdefault(mm.group(1), book_page)
-json.dump({str(k): v for k, v in found.items()}, open("/tmp/eq_census.json", "w"))
+with open("/tmp/eq_census.json", "w") as fh:
+    json.dump({str(k): v for k, v in found.items()}, fh)
 
 
 def key(s):

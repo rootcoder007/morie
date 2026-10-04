@@ -241,8 +241,8 @@ class TimeSeriesResult:
     def __getattr__(self, item: str):
         try:
             return object.__getattribute__(self, "extra")[item]
-        except KeyError:
-            raise AttributeError(f"'TimeSeriesResult' object has no attribute {item!r}")
+        except KeyError as exc:
+            raise AttributeError(f"'TimeSeriesResult' object has no attribute {item!r}") from exc
 
     def summary(self) -> str:
         n = len(self.values) if self.values is not None else 0

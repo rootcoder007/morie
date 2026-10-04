@@ -360,7 +360,7 @@ def central_point(
 
     iters = 0
     decrement = float("inf")
-    for iters in range(1, max_iter + 1):
+    for iters in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         fv = [c.val(x) for c in cons]
         jac = [c.grad(x) for c in cons]
         g0 = f0.grad(x)
@@ -563,7 +563,7 @@ def barrier_method(
     history = []
     outer = 0
     converged = False
-    for outer in range(1, max_outer + 1):
+    for outer in range(1, max_outer + 1):  # noqa: B007 - read after the loop
         x, it, dec = central_point(f0, cons, x, t, aeq, centering, tol, max_inner)
         total += it
         history.append((t, m / t, f0.val(x), it))

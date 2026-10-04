@@ -198,8 +198,8 @@ def _revcomp(s):
 def _transcript(tr):
     try:
         exons = [(int(a), int(b)) for a, b in tr["exons"]]
-    except (KeyError, TypeError, ValueError):
-        raise ValueError("vepan: a transcript needs exons as (start, end)")
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("vepan: a transcript needs exons as (start, end)") from exc
     if not exons:
         raise ValueError("vepan: a transcript needs at least one exon")
     exons.sort()
@@ -273,8 +273,8 @@ def _variant(v):
         pos = int(v["pos"])
         ref = str(v["ref"]).upper()
         alt = str(v["alt"]).upper()
-    except (KeyError, TypeError, ValueError):
-        raise ValueError("vepan: a variant needs pos, ref and alt")
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("vepan: a variant needs pos, ref and alt") from exc
     if pos < 1:
         raise ValueError("vepan: pos is 1-based and must be positive")
     if not ref or not alt:

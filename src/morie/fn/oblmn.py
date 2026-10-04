@@ -41,7 +41,7 @@ def oblimin(
     N = np.ones((k, k)) - np.eye(k)
     I_gamma = np.eye(p) * gamma / p + np.ones((p, p)) * (1 - gamma) / p if gamma != 0 else None
 
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         B = A @ np.linalg.inv(T).T
         B2 = B**2
 

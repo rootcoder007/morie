@@ -25,8 +25,8 @@ def cholesky_decompose(matrix: np.ndarray) -> DescriptiveResult:
         raise ValueError("Matrix must be square.")
     try:
         L = np.linalg.cholesky(A)
-    except np.linalg.LinAlgError:
-        raise ValueError("Matrix is not positive definite.")
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("Matrix is not positive definite.") from exc
     log_det = 2 * np.sum(np.log(np.diag(L)))
     return DescriptiveResult(
         name="cholesky",

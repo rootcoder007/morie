@@ -168,7 +168,7 @@ def _nelder_mead(fun, x0, args=(), maxiter=None, xatol=1e-8, fatol=1e-8):
         simplex.append(pt)
     fvals = [float(fun(_ac.marr(p), *args)) for p in simplex]
     nfev = n + 1
-    for it in range(maxiter):
+    for it in range(maxiter):  # noqa: B007 - read after the loop
         order = sorted(range(n + 1), key=lambda k: fvals[k])
         simplex = [simplex[k] for k in order]
         fvals = [fvals[k] for k in order]
@@ -228,7 +228,7 @@ def _bfgs(fun, x0, args=(), maxiter=None, gtol=1e-6):
     hinv = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
     g, f = _num_grad(fun, x, args)
     nfev = n + 1
-    for it in range(maxiter):
+    for it in range(maxiter):  # noqa: B007 - read after the loop
         gnorm = max(abs(v) for v in g)
         if gnorm < gtol:
             break

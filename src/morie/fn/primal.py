@@ -104,7 +104,7 @@ def chambolle_pock(
     xbar = list(x)
     it = 0
     converged = False
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         Kx = K(xbar)
         y = list(prox_f_star([y[i] + sigma * float(Kx[i]) for i in range(len(y))], sigma))
         Kty = Kt(y)

@@ -122,7 +122,7 @@ def irtgr(
 
     loglik_prev = -np.inf
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 - read after the loop
         # E-step. _grm_category_probs is already vectorised over theta, so the
         # whole quadrature grid goes through in one call instead of n_quad
         # single-point calls. For a fixed (respondent, quad point) the item

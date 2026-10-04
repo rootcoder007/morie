@@ -75,8 +75,8 @@ def effective_resistance(G, u, v):
     # component; a chol failure means u and v are in different components
     try:
         x = core.cholsolve(Lg, b)
-    except Exception:
-        raise ValueError("u and v are not connected")
+    except Exception as exc:
+        raise ValueError("u and v are not connected") from exc
     R = x[keep.index(u)]
     return RichResult(
         payload={

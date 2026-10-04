@@ -111,7 +111,7 @@ def geron_bellman_optimality(Q, transitions, rewards, gamma, max_iter=1000, tol=
     ER = np.sum(T * R, axis=2)  # (S, A) expected immediate reward
     residual = np.inf
     it = 0
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         V = Q.max(axis=1)
         Q_new = ER + gamma * (T @ V)
         residual = float(np.max(np.abs(Q_new - Q)))

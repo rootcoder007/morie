@@ -329,7 +329,7 @@ def hyperparam_optim_gp(
             # the kernel instead of being stranded by it.
             for c in range(3):
 
-                def target(v, c=c):
+                def target(v, c=c, *, nu=nu):
                     th = list(theta)
                     th[c] = v
                     Lt = chol_of(th)
@@ -353,7 +353,7 @@ def hyperparam_optim_gp(
             s2 = math.exp(2.0 * theta[2])
             g = [f[i] + math.sqrt(s2) * float(rng.normal()) for i in range(n)]
 
-            def post(th):
+            def post(th, *, g=g):
                 Kt = _add_jitter(kernel_matrix(Xv, Xv, th[0], th[1], kind), jitter)
                 s2t = math.exp(2.0 * th[2])
                 A = _add_jitter(Kt, s2t)
@@ -373,7 +373,7 @@ def hyperparam_optim_gp(
 
             for c in range(3):
 
-                def target(v, c=c):
+                def target(v, c=c, *, eta=eta, g=g):
                     th = list(theta)
                     th[c] = v
                     mv, Rt, Lat = post(th)

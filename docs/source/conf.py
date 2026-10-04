@@ -204,9 +204,6 @@ html_theme_options = {
     "narrow_sidebar_link": "#2980B9",
     "code_bg": "#f5f5f5",
     "pre_bg": "#fafafa",
-    "narrow_sidebar_bg": "#eee",
-    "narrow_sidebar_link": "#444",
-    "narrow_sidebar_fg": "#333",
 }
 
 html_sidebars = {

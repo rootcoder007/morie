@@ -2,7 +2,8 @@ import collections
 import json
 import re
 
-rows = json.load(open("/tmp/census.json"))
+with open("/tmp/census.json") as fh:
+    rows = json.load(fh)
 
 CODE = re.compile(
     r"cat\(|print\(|<-|%>%|library\(|require\(|\bdata\.frame\(|ggplot\(|"
@@ -51,4 +52,5 @@ for k, v in c.most_common():
     print(f"  {k:22s} {v:6d}  {100 * v / n:5.1f}%")
 print(f"\n  ==> usable equations       {usable:6d}  ({100 * usable / n:.1f}%)")
 print(f"  ==> not implementable      {n - usable:6d}  ({100 * (n - usable) / n:.1f}%)")
-json.dump(rows, open("/tmp/census2.json", "w"))
+with open("/tmp/census2.json", "w") as fh:
+    json.dump(rows, fh)

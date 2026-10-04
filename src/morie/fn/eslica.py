@@ -120,7 +120,7 @@ def esl_ica(X, k=None, fun="logcosh", max_iter=500, tol=1e-8, seed=0):
         w = rng.normal(size=k)
         w /= np.linalg.norm(w)
         it = 0
-        for it in range(1, max_iter + 1):
+        for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
             wx = Z @ w
             new = (Z * g(wx)[:, None]).mean(axis=0) - gp(wx).mean() * w
             new -= W[:j].T @ (W[:j] @ new)  # deflation

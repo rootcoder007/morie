@@ -247,7 +247,7 @@ def target_arm(a, A, k_obs, event, lam_a, lamc_a, g_a, t0, max_iter=100):
     wt = in_arm[ridx]
 
     eps, iters, eic = 0.0, 0, None
-    for iters in range(1, int(max_iter) + 1):
+    for iters in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         H = _clever(g_a, S_a, SC_a, t0)
         # influence curve, their equation (2)
         atrisk = np.zeros((n, tmax))

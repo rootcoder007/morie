@@ -74,7 +74,7 @@ def esl_lasso(X, y, lambda_, max_iter=10000, tol=1e-12):
     r = y.copy()
     converged = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         delta = 0.0
         for j in range(p):
             old = beta[j]

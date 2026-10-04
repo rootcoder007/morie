@@ -101,7 +101,7 @@ def boyd_admm(prox_f, prox_g, A=None, B=None, c=None, rho=1.0, n=None, max_iter=
     path = []
     conv = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         x = np.atleast_1d(np.asarray(prox_f(z - u, rho), dtype=float)).ravel()
         z_old = z.copy()
         z = np.atleast_1d(np.asarray(prox_g(x + u, rho), dtype=float)).ravel()

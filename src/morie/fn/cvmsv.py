@@ -48,8 +48,8 @@ def cramer_von_mises(
 
     try:
         getattr(stats, cdf)
-    except AttributeError:
-        raise ValueError(f"Unknown distribution: {cdf}.")
+    except AttributeError as exc:
+        raise ValueError(f"Unknown distribution: {cdf}.") from exc
 
     result = stats.cramervonmises(x, cdf, args=cdf_params)
 

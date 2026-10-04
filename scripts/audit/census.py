@@ -49,4 +49,5 @@ print(f"auto-extracted modules examined: {len(rows)}\n")
 c = collections.Counter(r["cls"] for r in rows)
 for k, v in c.most_common():
     print(f"  {k:26s} {v:6d}  {100 * v / len(rows):5.1f}%")
-json.dump(rows, open("/tmp/census.json", "w"))
+with open("/tmp/census.json", "w") as fh:
+    json.dump(rows, fh)

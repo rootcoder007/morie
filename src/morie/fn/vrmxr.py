@@ -51,7 +51,7 @@ def vrmxr(L, max_iter=1000, tol=1e-6, gamma=1.0):
 
     R = np.eye(k)
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 - read after the loop
         R_old = R.copy()
 
         # For each pair of columns

@@ -80,8 +80,8 @@ def esl_lda_disc(X, y, query=None):
     S /= n - K
     try:
         Sinv = np.linalg.inv(S)
-    except np.linalg.LinAlgError:
-        raise ValueError("the pooled covariance is singular; reduce dimensions or use more data.")
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("the pooled covariance is singular; reduce dimensions or use more data.") from exc
     Q = X if query is None else np.atleast_2d(np.asarray(query, dtype=float))
     D = np.empty((Q.shape[0], K))
     for j, (mu, pi_) in enumerate(zip(means, priors)):

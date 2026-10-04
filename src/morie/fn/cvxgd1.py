@@ -95,7 +95,7 @@ def boyd_grad_proj(f, grad_f, x0, C="ball", t=0.05, max_iter=500, tol=1e-08, **s
     traj = [x.copy()]
     conv = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         g = np.atleast_1d(np.asarray(grad_f(x), dtype=float)).ravel()
         x_new = boyd_projection(x - t * g, C, **set_kw)["x"]
         traj.append(x_new.copy())

@@ -67,8 +67,8 @@ def swinmw(x, window_size, relative_bias=None, WQ=None, WK=None, WV=None):
     # is parsed as nested lists directly
     try:
         A = [[[float(v) for v in cell] for cell in row] for row in x]
-    except TypeError:
-        raise ValueError("swinmw: x must be a (H, W, d) nested array")
+    except TypeError as exc:
+        raise ValueError("swinmw: x must be a (H, W, d) nested array") from exc
     H = len(A)
     W = len(A[0]) if H else 0
     d = len(A[0][0]) if W else 0

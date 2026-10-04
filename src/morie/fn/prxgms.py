@@ -67,7 +67,7 @@ def prox_gradient(
     it = 0
     converged = False
 
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         gy = [float(v) for v in grad(y)]
         Lk = L
         if backtrack:

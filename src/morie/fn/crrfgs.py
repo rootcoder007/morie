@@ -174,7 +174,7 @@ def _fg_newton(t, e, X, competing, G, Gi, max_iter=50, tol=1e-9):
     ll = 0.0
     I_ = np.zeros((p, p))
     U = np.zeros(p)
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         w = np.exp(np.clip(X @ beta, -500, 500))
         ll = 0.0
         U = np.zeros(p)

@@ -92,7 +92,7 @@ def sgld(
         y_batch = y[idx]
 
         # Gradient of log likelihood + log prior (scaled by minibatch)
-        def grad_log_post(p):
+        def grad_log_post(p, *, X_batch=X_batch, y_batch=y_batch):
             grad_ll = np.zeros(param_shape)
             # Numerical gradient (simple approach; could use autodiff)
             eps = 1e-5

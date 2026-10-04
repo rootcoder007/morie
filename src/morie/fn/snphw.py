@@ -73,7 +73,7 @@ def snphw(
         min_het = n_a % 2
         max_het = min(n_a, n_b)
 
-        def _het_prob(het):
+        def _het_prob(het, *, n=n, n_a=n_a, n_b=n_b):
             aa = (n_a - het) // 2
             bb = (n_b - het) // 2
             log_p = (

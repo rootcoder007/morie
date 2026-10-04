@@ -11,7 +11,7 @@ import pytest
 from morie.fn.lggvls import laggedval_iptw
 from morie.fn.tdcvar import time_dep_covariate
 
-from ._msm_fixture import TH1, N, dose, feedback  # noqa: F401
+from ._msm_fixture import N
 
 
 def test_lggvls_matches_the_full_history_and_the_lag_bites(feedback):

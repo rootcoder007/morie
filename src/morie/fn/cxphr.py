@@ -194,7 +194,7 @@ def cxphr(
     _loglik_fn = _partial_loglik_breslow if ties == "breslow" else _partial_loglik_efron
 
     converged = False
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 - read after the loop
         ll, grad, hess = _loglik_fn(beta)
         # Newton-Raphson step: beta_new = beta + H^{-1} grad
         try:

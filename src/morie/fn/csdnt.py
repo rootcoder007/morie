@@ -52,7 +52,7 @@ def denoise_cs(
     t = 1.0 / L if L > 0 else 1.0
 
     x = np.zeros(n)
-    for i in range(max_iter):
+    for i in range(max_iter):  # noqa: B007 - read after the loop
         grad = AtA @ x - Aty
         x_new = np.sign(x - t * grad) * np.maximum(np.abs(x - t * grad) - t * lambda_, 0.0)
         if np.linalg.norm(x_new - x) < tol:

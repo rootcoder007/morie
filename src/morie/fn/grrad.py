@@ -92,7 +92,7 @@ def geron_reverse_mode_autodiff(graph, loss_grad=1.0, output=None):
         parents.setdefault(n, {})
 
     children_count = {n: 0 for n in nodes}
-    for node, ps in parents.items():
+    for _node, ps in parents.items():
         for p in ps:
             children_count[p] += 1
     sinks = [n for n in nodes if children_count[n] == 0]

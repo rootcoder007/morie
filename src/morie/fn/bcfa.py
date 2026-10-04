@@ -63,7 +63,7 @@ def bayesian_cfa(
 
     # Initialize
     Lambda = np.zeros((p, nf))  # loading matrix
-    for fi, (f, idxs) in enumerate(factor_items.items()):
+    for fi, (f, idxs) in enumerate(factor_items.items()):  # noqa: B007 - read after the loop
         for j in idxs:
             Lambda[j, fi] = 0.7
 
@@ -86,7 +86,7 @@ def bayesian_cfa(
         eta = mean_eta + rng.standard_normal((n, nf)) @ L_eta.T
 
         # Sample loadings (column by column)
-        for fi, (f, idxs) in enumerate(factor_items.items()):
+        for fi, (f, idxs) in enumerate(factor_items.items()):  # noqa: B007 - read after the loop
             for j in idxs:
                 # Posterior for lambda_j,fi
                 psi_j = Psi[j, j] + 1e-10

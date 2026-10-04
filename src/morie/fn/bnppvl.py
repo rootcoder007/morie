@@ -517,7 +517,7 @@ def np_predictive_value(
         # pieces and has no closed-form inverse, and a fixed step count
         # is the only root find that cannot iterate a different number
         # of times in the two arms.
-        pq.append(lo + span * _w.bisect(lambda t: _F(t) - p, 0.0, 1.0))
+        pq.append(lo + span * _w.bisect(lambda t, *, p=p: _F(t) - p, 0.0, 1.0))
 
     ll = log_likelihood(u, [(v - lo) / span for v in qbar], likelihood)
     return RichResult(

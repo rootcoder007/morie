@@ -513,8 +513,10 @@ def robust_pca(X, k=None, alpha=0.75, kmax=10, n_dirs=250, n_start=250, seed=17,
     scale = 1.0
     try:
         d = _mahalanobis(Xs, mu4, S3)
-    except ZeroDivisionError:
-        raise ValueError("robpca: the scatter on the k-dimensional subspace is singular; ask for fewer components")
+    except ZeroDivisionError as exc:
+        raise ValueError(
+            "robpca: the scatter on the k-dimensional subspace is singular; ask for fewer components"
+        ) from exc
     if reweight:
         # consistency factor c1, with the hth quantile of the squared
         # robust distances rather than their median

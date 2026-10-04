@@ -178,7 +178,7 @@ def msa_pairing(msas, mode="multimer", min_coverage=0.5, max_gap=0.9, copies=Non
     order = []
     seen = {}
     for c in range(nc):
-        for pos, i in enumerate(kept[c]):
+        for pos, i in enumerate(kept[c]):  # noqa: B007 - read after the loop
             s = tabs[c]["species"][i]
             if s not in seen:
                 seen[s] = len(order)

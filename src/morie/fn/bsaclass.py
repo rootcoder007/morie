@@ -165,8 +165,8 @@ def _bxmat(M, name="X"):
         raise ValueError(name + " is required")
     try:
         rows = list(M)
-    except TypeError:
-        raise ValueError(name + " must be a sequence of rows")
+    except TypeError as exc:
+        raise ValueError(name + " must be a sequence of rows") from exc
     if not rows:
         raise ValueError(name + " must have at least one row")
     out = []
@@ -358,7 +358,7 @@ def _bxnmfmu(V, r, maxiter, tol, seed, cost):
     prev = None
     err = float("nan")
     it = 0
-    for it in range(1, int(maxiter) + 1):
+    for it in range(1, int(maxiter) + 1):  # noqa: B007 - read after the loop
         if cost == "ls":
             Wt = _bxtr(W)
             WtV = _bxmm(Wt, V)
@@ -918,7 +918,7 @@ def mlpbp(X, y, hidden=4, eta=0.5, alpha=0.9, maxiter=500, tol=1e-4, seed=1):
 
     mse = float("nan")
     it = 0
-    for it in range(1, maxiter + 1):
+    for it in range(1, maxiter + 1):  # noqa: B007 - read after the loop
         tot = 0.0
         for s in range(n):
             xs = X[s]
@@ -1152,8 +1152,8 @@ def bbb(qrsdur, criteria=None):
     """
     try:
         qrsdur = float(qrsdur)
-    except (TypeError, ValueError):
-        raise ValueError("qrsdur must be a number of milliseconds")
+    except (TypeError, ValueError) as exc:
+        raise ValueError("qrsdur must be a number of milliseconds") from exc
     if not isfinite(qrsdur) or qrsdur <= 0.0:
         raise ValueError("qrsdur must be a positive, finite duration in ms")
     if criteria is None:
@@ -1897,7 +1897,7 @@ def bpursuit(x, D, lam=0.01, maxiter=2000, tol=1e-10):
 
     a = [0.0] * m
     it = 0
-    for it in range(1, maxiter + 1):
+    for it in range(1, maxiter + 1):  # noqa: B007 - read after the loop
         approx = _bxmv(_bxtr(A), a)
         r = [x[i] - approx[i] for i in range(n)]
         g = _bxmv(A, r)
@@ -2312,8 +2312,8 @@ def pvclindf(rr, ff, train=None):
     else:
         try:
             trr, tff, tlab = train
-        except (TypeError, ValueError):
-            raise ValueError("train must be a (rr, ff, labels) triple")
+        except (TypeError, ValueError) as exc:
+            raise ValueError("train must be a (rr, ff, labels) triple") from exc
         trr = _bxvec(trr, "train rr")
         tff = _bxvec(tff, "train ff")
         tlab = [int(t) for t in _bxvec(tlab, "train labels")]
@@ -2431,8 +2431,8 @@ def eegbands(x, fs, bands=None):
     for name, lim in bands.items():
         try:
             f1, f2 = float(lim[0]), float(lim[1])
-        except (TypeError, ValueError, IndexError):
-            raise ValueError(f"band {name!r} must be an (f1, f2) pair")
+        except (TypeError, ValueError, IndexError) as exc:
+            raise ValueError(f"band {name!r} must be an (f1, f2) pair") from exc
         if f1 < 0.0 or f2 <= f1:
             raise ValueError(f"band {name!r} must satisfy 0 <= f1 < f2")
         c1, c2 = closure.get(name, (True, f2 >= nyq))
@@ -2978,7 +2978,7 @@ def icafix(X, ncomp=None, maxiter=200, tol=1e-8, seed=1):
         nr = _bxnrm(w)
         w = [t / nr for t in w] if nr > 1e-12 else [1.0 if i == c else 0.0 for i in range(L)]
         it = 0
-        for it in range(1, maxiter + 1):
+        for it in range(1, maxiter + 1):  # noqa: B007 - read after the loop
             g, gp = [0.0] * L, 0.0
             for t in range(T):
                 s = fsum(w[i] * Z[i][t] for i in range(L))
@@ -3201,7 +3201,7 @@ def infomax(X, ncomp=None, eta=0.05, maxiter=300, tol=1e-8, seed=1):
         return 1.0 / (1.0 + exp(-b))
 
     it, chg = 0, float("nan")
-    for it in range(1, maxiter + 1):
+    for it in range(1, maxiter + 1):  # noqa: B007 - read after the loop
         U = _bxmm(W, Z)
         P = [[1.0 - 2.0 * sig(U[i][t]) for t in range(T)] for i in range(L)]
         M = [
@@ -3366,7 +3366,7 @@ def kmeans(X, k, maxiter=100, tol=1e-10, init=None):
     lab = [0] * n
     prev = None
     it = 0
-    for it in range(1, int(maxiter) + 1):
+    for it in range(1, int(maxiter) + 1):  # noqa: B007 - read after the loop
         for i in range(n):
             lab[i] = min(range(kk), key=lambda c: d2(Xs[i], cent[c]))
         for c in range(kk):
@@ -3662,7 +3662,7 @@ def ksvdfit(Y, natoms, sparsity, maxiter=15, tol=1e-10, seed=1):
 
     prev, err, it = None, float("nan"), 0
     Xc = [[0.0] * natoms for _ in range(m)]
-    for it in range(1, maxiter + 1):
+    for it in range(1, maxiter + 1):  # noqa: B007 - read after the loop
         Xc = [_bxomp(S[i], D, sparsity, 1e-12)[0] for i in range(m)]
         for k in range(natoms):
             users = [i for i in range(m) if Xc[i][k] != 0.0]
@@ -3985,7 +3985,7 @@ def logreg(X, y, maxiter=100, tol=1e-8, ridge=1e-8):
     w = [0.0] * p
     lam = float(ridge)
     it, sep = 0, False
-    for it in range(1, int(maxiter) + 1):
+    for it in range(1, int(maxiter) + 1):  # noqa: B007 - read after the loop
         eta = [fsum(A[i][j] * w[j] for j in range(p)) for i in range(n)]
         mu = [1.0 / (1.0 + exp(-min(500.0, max(-500.0, v)))) for v in eta]
         g = [fsum(A[i][j] * (ys[i] - mu[i]) for i in range(n)) - lam * w[j] for j in range(p)]
@@ -4088,8 +4088,8 @@ def lstm(sequences, labels=None, hidden=8, ridge=1e-6, seed=1, weights=None):
     """
     try:
         seqs = [list(s) for s in sequences]
-    except TypeError:
-        raise ValueError("sequences must be a sequence of sequences")
+    except TypeError as exc:
+        raise ValueError("sequences must be a sequence of sequences") from exc
     if not seqs:
         raise ValueError("sequences must be non-empty")
     steps = []

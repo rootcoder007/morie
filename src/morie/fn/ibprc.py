@@ -52,7 +52,7 @@ def indian_buffet_process(
     for i in range(n):
         # Sample existing dishes
         z_i = []
-        for k, m_k in enumerate(dish_counts):
+        for k, m_k in enumerate(dish_counts):  # noqa: B007 - read after the loop
             if rng.uniform() < m_k / (i + 1.0):
                 z_i.append(1)
             else:

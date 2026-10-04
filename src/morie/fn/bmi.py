@@ -100,7 +100,7 @@ def bayesian_mi(
             Sigma = np.linalg.inv(W @ W.T + np.eye(p) * 1e-8)
 
             if t >= burn:
-                for fi, (f, idxs) in enumerate(factor_idx.items()):
+                for fi, (f, idxs) in enumerate(factor_idx.items()):  # noqa: B007 - read after the loop
                     sub = Sigma[np.ix_(idxs, idxs)]
                     eigvals, eigvecs = np.linalg.eigh(sub)
                     pc1 = eigvecs[:, np.argmax(eigvals)]

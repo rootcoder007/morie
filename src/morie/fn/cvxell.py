@@ -142,13 +142,10 @@ def boyd_minvol_ellipsoid(X, tol=1e-07, max_iter=10000):
         # from the worst-served supported point and, capped, drives it
         # to exactly zero.
         j = up if excess >= deficit else down
-        if abs(g[j] - 1.0) < 1e-12:
-            # g == 1 means the point sits at the current centre: the
-            # unconstrained away step is infinite, so take the capped
-            # one directly rather than dividing by zero to get there.
-            step = -u[j] / (1.0 - u[j])
-        else:
-            step = (g[j] - d - 1.0) / ((d + 1.0) * (g[j] - 1.0))
+        # g == 1 means the point sits at the current centre: the
+        # unconstrained away step is infinite, so take the capped
+        # one directly rather than dividing by zero to get there.
+        step = -u[j] / (1.0 - u[j]) if abs(g[j] - 1.0) < 1e-12 else (g[j] - d - 1.0) / ((d + 1.0) * (g[j] - 1.0))
         if step < 0.0:
             step = max(step, -u[j] / (1.0 - u[j]))
         u = (1.0 - step) * u

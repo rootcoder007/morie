@@ -231,7 +231,7 @@ def smo(y, K, C=1.0, tol=1e-8, max_iter=20000):
     a = [0.0] * n
     grad = [-1.0] * n
     it, gap = 0, float("inf")
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         v = kkt_violation(a, yy, grad, C)
         gap = v["gap"]
         if v["i"] is None or gap <= float(tol):

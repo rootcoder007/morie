@@ -59,7 +59,7 @@ def hrz_backfitting(X, y, h=None, max_iter=50, tol=1e-6, kernel_name="gaussian")
     G = np.zeros((n, d))
     conv = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         prev = G.copy()
         for j in range(d):
             partial = y - mu - (G.sum(axis=1) - G[:, j])

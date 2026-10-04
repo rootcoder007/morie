@@ -123,7 +123,7 @@ def solve_sdp(c, F0, Fs, x0=None, t0=1.0, mu=15.0, tol=1e-09, max_outer=80, max_
             if not np.isfinite(lam2) or lam2 / 2.0 <= 1e-12:
                 break
 
-            def phi(z):
+            def phi(z, *, t=t):
                 Mz = _F(F0, Fs, z)
                 ev = np.linalg.eigvalsh(Mz)
                 if ev[0] <= 0:

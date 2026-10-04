@@ -101,10 +101,8 @@ def wasserman_boosting(X, y, model, T):
         if err >= 0.5:
             break
         rounds += 1
-        if err == 0.0:
-            alpha = 10.0  # capped: a perfect stump dominates the committee
-        else:
-            alpha = 0.5 * math.log((1.0 - err) / err)
+        # capped: a perfect stump dominates the committee
+        alpha = 10.0 if err == 0.0 else 0.5 * math.log((1.0 - err) / err)
         alphas.append(float(alpha))
         F += alpha * pred
         if err == 0.0:

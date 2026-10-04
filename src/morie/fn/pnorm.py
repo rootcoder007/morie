@@ -35,12 +35,9 @@ def pnorm(
     if sd <= 0:
         raise ValueError(f"sd must be > 0, got {sd}.")
     dist = stats.norm(loc=mean, scale=sd)
-    if lower_tail:
-        # logcdf = log(P(X <= x)) -- correct for lower tail
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        # logsf = log(P(X > x)) = log(1 - CDF) -- correct for upper tail
-        result = dist.logsf(x) if log else dist.sf(x)
+    # logcdf = log(P(X <= x)) -- correct for lower tail
+    # logsf = log(P(X > x)) = log(1 - CDF) -- correct for upper tail
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 

@@ -99,7 +99,7 @@ def gaussian_approximation(log_lik, log_lik_d1, log_lik_d2, prior_mean, prior_pr
         raise ValueError("inlasm: the prior precision must be positive")
     x = float(x0)
     it = 0
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         g = float(log_lik_d1(x)) - Q * (x - m)
         h = float(log_lik_d2(x)) - Q
         if h >= -_EPS:

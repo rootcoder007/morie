@@ -89,7 +89,7 @@ def specclus(W, k=2, normalized=True, max_iter=50):
     # which is exactly where the R arm (1-based labels) disagreed.
     lab = [-1] * n
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         moved = False
         for i in range(n):
             best = 0

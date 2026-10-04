@@ -196,7 +196,7 @@ def strauss_process(coords, r, gamma=None, window=None, nx=12, ny=12, max_iter=1
     it = 0
     converged = False
     A = [[0.0, 0.0], [0.0, 0.0]]
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         eta = [X[i][0] * beta[0] + X[i][1] * beta[1] for i in range(m)]
         mu = [math.exp(max(-500.0, min(500.0, e))) for e in eta]
         # working weights w_i * mu_i, working response eta + (y-mu)/mu

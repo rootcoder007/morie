@@ -70,4 +70,5 @@ cnt = collections.Counter(r[0] for r in rows)
 print(f"placeholders classified: {len(rows)}\n")
 for d, c in cnt.most_common():
     print(f"  {d:18s} {c:6d}  {100 * c / len(rows):5.1f}%")
-json.dump([{"domain": d, "module": m, "title": t} for d, m, t in rows], open("/tmp/triage.json", "w"), indent=0)
+with open("/tmp/triage.json", "w") as fh:
+    json.dump([{"domain": d, "module": m, "title": t} for d, m, t in rows], fh, indent=0)

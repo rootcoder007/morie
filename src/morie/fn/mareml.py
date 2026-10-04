@@ -67,7 +67,7 @@ def ma_random_reml(yi, vi, max_iter=200, tol=1e-12):
         t2 = max(0.0, float(dersimonian_laird(y, v)))
         conv = False
         it = 0
-        for it in range(1, int(max_iter) + 1):
+        for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
             w = 1.0 / (v + t2)
             mu = float(np.sum(w * y) / np.sum(w))
             num = float(np.sum(w**2 * ((y - mu) ** 2 - v)))

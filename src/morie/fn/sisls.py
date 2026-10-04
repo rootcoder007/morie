@@ -84,7 +84,7 @@ def sisls(
         denom = np.where(denom < 1e-15, 1.0, denom)
         g_hat = (W @ y) / denom
 
-        def obj(b):
+        def obj(b, *, h=h):
             b_norm = b / (np.linalg.norm(b) + 1e-15)
             idx_v = X @ b_norm
             d = idx_v[:, None] - idx_v[None, :]

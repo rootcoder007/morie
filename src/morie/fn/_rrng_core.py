@@ -21,6 +21,7 @@ No external dependencies -- plain integer arithmetic.
 """
 
 import math
+import math as _math
 
 __all__ = ["RRandom", "set_seed", "runif", "sample_int", "sample"]
 
@@ -193,8 +194,6 @@ def sample(x, size=None, replace=False):
 # R-named distribution functions.  Kept here so callers stop hand-rolling
 # Box-Muller, and pointed at AS 241 rather than the coarser Acklam
 # approximation that also lives in this package.
-
-import math as _math
 
 
 def dnorm(x, mean=0.0, sd=1.0, log=False):

@@ -37,8 +37,8 @@ def vec(x, name="x"):
 def mat(a, name="a"):
     try:
         rows = [aslist(r) for r in a]
-    except TypeError:
-        raise ValueError(f"`{name}` must be a matrix")
+    except TypeError as exc:
+        raise ValueError(f"`{name}` must be a matrix") from exc
     if not rows or not rows[0]:
         raise ValueError(f"`{name}` must be a non-empty matrix")
     w = len(rows[0])

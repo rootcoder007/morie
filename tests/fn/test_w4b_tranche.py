@@ -11,6 +11,7 @@ satisfy.
 """
 
 import math
+import pathlib
 
 import pytest
 
@@ -1366,7 +1367,9 @@ def test_every_module_returns_the_required_payload_keys():
 
     # the shelf's modules are the ones this file imports (a list read
     # from a sandbox path on one machine made the test unrunnable)
-    names = sorted(set(re.findall(r"from morie\.fn\.(hm\w+) import", open(__file__).read())))
+    names = sorted(
+        set(re.findall(r"from morie\.fn\.(hm\w+) import", pathlib.Path(__file__).read_text(encoding="utf-8")))
+    )
     assert len(names) >= 70
     for n in names:
         m = importlib.import_module(f"morie.fn.{n}")

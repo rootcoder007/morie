@@ -58,8 +58,8 @@ def dirichlet_loglik(alpha, X):
             raise ValueError("dirichlet_loglik: alpha must be strictly positive")
     try:
         first = X[0]
-    except (TypeError, IndexError, KeyError):
-        raise ValueError("dirichlet_loglik: X is empty")
+    except (TypeError, IndexError, KeyError) as exc:
+        raise ValueError("dirichlet_loglik: X is empty") from exc
     if hasattr(first, "__len__") and not isinstance(first, (str, bytes)):
         rows = [[float(v) for v in r] for r in X]
     else:

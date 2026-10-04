@@ -78,12 +78,12 @@ def tree_predict(tree, x):
     while not _leaf(node):
         try:
             i, br = node["feature"], node["branches"]
-        except (KeyError, TypeError):
-            raise ValueError("attrInf: a node needs 'feature' and 'branches', or 'label' for a leaf")
+        except (KeyError, TypeError) as exc:
+            raise ValueError("attrInf: a node needs 'feature' and 'branches', or 'label' for a leaf") from exc
         try:
             v = x[i]
-        except (IndexError, KeyError):
-            raise ValueError(f"attrInf: no value supplied for feature {i!r}, which the tree needs")
+        except (IndexError, KeyError) as exc:
+            raise ValueError(f"attrInf: no value supplied for feature {i!r}, which the tree needs") from exc
         if v is None:
             raise ValueError(f"attrInf: no value supplied for feature {i!r}, which the tree needs")
         if v not in br:

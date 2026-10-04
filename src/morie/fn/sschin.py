@@ -144,7 +144,7 @@ def _cox_breslow(t, e, X, max_iter=100, tol=1e-10):
     converged = False
     info = [[0.0] * p for _ in range(p)]
     ll = 0.0
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         ll = 0.0
         grad = [0.0] * p
         info = [[0.0] * p for _ in range(p)]
@@ -285,7 +285,7 @@ def chained_imputation(time, event, X, mi_iter=5, cycles=10, ties="breslow"):
                 # the outcome belongs in the imputation model: imputing a
                 # covariate without it biases the fitted hazard ratio
                 # towards the null (White & Royston 2009)
-                def row(i):
+                def row(i, *, F=F, others=others):
                     return [1.0] + [F[i][b] for b in others] + [ev[i], math.log(max(tv[i], 1e-12))]
 
                 Xo = [row(i) for i in rows_obs]

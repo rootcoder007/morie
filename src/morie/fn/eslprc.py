@@ -78,7 +78,7 @@ def esl_perceptron(X, y, eta=1.0, max_epoch=1000):
     beta = np.zeros(p)
     converged = False
     ep = 0
-    for ep in range(1, int(max_epoch) + 1):
+    for ep in range(1, int(max_epoch) + 1):  # noqa: B007 - read after the loop
         errors = 0
         for i in range(n):
             if y[i] * float(X[i] @ beta) <= 0:

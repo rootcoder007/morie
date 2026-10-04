@@ -163,7 +163,7 @@ def _centre(x0, c, F0, Fs, t, iters=200, tol=1e-14):
     if not math.isfinite(f):
         raise ValueError("sdpwts: the starting point is not strictly feasible, so the barrier is infinite there")
     it = 0
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         F = lmi(x, F0, Fs)
         m = len(F)
         vals, vecs = np.linalg.eigh(F)
@@ -210,7 +210,7 @@ def solve_sdp(c, F0, Fs, x0, t0=1.0, mu=10.0, tol=1e-8, max_outer=60):
         raise ValueError("sdpwts: mu must exceed 1, or t never increases")
     t = float(t0)
     path, outer = [], 0
-    for outer in range(1, int(max_outer) + 1):
+    for outer in range(1, int(max_outer) + 1):  # noqa: B007 - read after the loop
         r = _centre(x, cc, F0, Fs, t)
         x = r["x"]
         gap = central_path_gap(t, m)["gap"]

@@ -39,7 +39,7 @@ def iteratively_reweighted_ls(A, b, p: float = 1.0, n_iter: int = 50, eps: float
 
     x, _, _, _ = np.linalg.lstsq(A, b, rcond=None)
 
-    for it in range(n_iter):
+    for it in range(n_iter):  # noqa: B007 - read after the loop
         w = np.power(np.abs(x) + eps, (p - 2.0) / 2.0)
         W = np.diag(w**2)
         AW = A @ W @ A.T

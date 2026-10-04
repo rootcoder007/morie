@@ -87,7 +87,7 @@ def esem_target_rotation(loadings, target, iters=200, tol=1e-13):
 
     T = [[1.0 if a == b else 0.0 for b in range(m)] for a in range(m)]
     used = 0
-    for used in range(1, int(iters) + 1):
+    for used in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         Rot = [[sum(L[i][k] * T[k][j] for k in range(m)) for j in range(m)] for i in range(p)]
         H = [[H0[i][j] if spec[i][j] else Rot[i][j] for j in range(m)] for i in range(p)]
         Tn = _procrustes(H)

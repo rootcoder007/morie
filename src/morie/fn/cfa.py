@@ -78,7 +78,7 @@ def cfa(
 
     # Factor correlation
     factor_scores = np.zeros((n, n_factors))
-    for f_idx, (fname, items) in enumerate(structure.items()):
+    for f_idx, (_fname, items) in enumerate(structure.items()):
         indices = [col_map[it] for it in items]
         factor_scores[:, f_idx] = Z[:, indices].mean(axis=1)
     Phi = np.corrcoef(factor_scores, rowvar=False)

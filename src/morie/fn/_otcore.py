@@ -329,7 +329,10 @@ def gw_cost(Cx, Cy, T, a, b):
     n, m = len(a), len(b)
     t1 = sum(Cx[i][k] ** 2 * a[i] * a[k] for i in range(n) for k in range(n))
     t3 = sum(Cy[j][ell] ** 2 * b[j] * b[ell] for j in range(m) for ell in range(m))
-    CT = [[sum(Cx[i][k] * T[k][ell] * Cy[ell][j] for k in range(n) for ell in range(m)) for j in range(m)] for i in range(n)]
+    CT = [
+        [sum(Cx[i][k] * T[k][ell] * Cy[ell][j] for k in range(n) for ell in range(m)) for j in range(m)]
+        for i in range(n)
+    ]
     val = t1 + t3 - 2.0 * sum(CT[i][j] * T[i][j] for i in range(n) for j in range(m))
     return val, CT
 
@@ -355,7 +358,9 @@ def w2gauss(m1, S1, m2, S2):
     if len(b) != d or len(A) != d or len(B) != d:
         raise ValueError("w2gauss: dimension mismatch")
     R = sqrtm_sym(A)
-    M = [[sum(R[i][k] * B[k][ell] * R[ell][j] for k in range(d) for ell in range(d)) for j in range(d)] for i in range(d)]
+    M = [
+        [sum(R[i][k] * B[k][ell] * R[ell][j] for k in range(d) for ell in range(d)) for j in range(d)] for i in range(d)
+    ]
     Msq = sqrtm_sym(M)
     bures = sum(A[i][i] + B[i][i] - 2.0 * Msq[i][i] for i in range(d))
     if bures < 0.0:

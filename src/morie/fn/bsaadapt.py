@@ -932,7 +932,7 @@ def riccati(F, H, Q, R, maxiter=1000, tol=1e-12):
     P = [row[:] for row in Qm]
     change = float("inf")
     it = 0
-    for it in range(1, int(maxiter) + 1):
+    for it in range(1, int(maxiter) + 1):  # noqa: B007 - read after the loop
         FPFt = mm(mm(Fm, P), tr(Fm))
         S = mm(mm(Hm, P), tr(Hm))
         S = [[S[i][j] + Rm[i][j] for j in range(p)] for i in range(p)]

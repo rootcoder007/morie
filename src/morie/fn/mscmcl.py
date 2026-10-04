@@ -104,7 +104,7 @@ def matrix_completion_scm(y, D, lam, max_iter=500, tol=1e-10):
     L = np.zeros((N, T))
     it = 0
     converged = False
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         # Fill the treated (missing) cells with the current estimate and
         # keep the observed ones exactly: this is P_O(Y) + P_O^perp(L).
         Z = np.where(obs, Y, L)

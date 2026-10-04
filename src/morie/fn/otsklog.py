@@ -57,7 +57,7 @@ def ot_sinkhorn_log(a, b, C, epsilon=0.1, max_iter=200, tol=1e-13, f0=None, g0=N
     lb = [math.log(x) if x > 0.0 else -1e300 for x in bv]
     it = 0
     err = float("nan")
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         for i in range(n):
             f[i] = e * la[i] - e * k.logsumexp([(g[j] - Cm[i][j]) / e for j in range(m)])
         for j in range(m):

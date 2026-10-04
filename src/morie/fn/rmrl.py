@@ -121,10 +121,10 @@ def _compile(phi):
     else:
         try:
             p, n = phi
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as exc:
             raise ValueError(
                 f"reward_machine: formula must be 'true', a proposition name, or (positive, negative), got {phi!r}"
-            )
+            ) from exc
         pos, neg = set(p), set(n)
     return lambda sigma: pos <= set(sigma) and not (neg & set(sigma))
 

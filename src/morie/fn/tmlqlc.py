@@ -82,7 +82,7 @@ def tmle_qlearning(state, action, reward, time):
         bb = S.glmbin([[1.0, sv[i]] for i in idx], [av[i] for i in idx])
         b1 = [S.clip(S.expit(C.dot([1.0, sv[i]], bb)), 0.025, 0.975) for i in idx]
 
-        def q(k, a):
+        def q(k, a, *, idx=idx, qb=qb):
             i = idx[k]
             return C.dot([1.0, sv[i], a, sv[i] * a], qb)
 

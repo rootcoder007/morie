@@ -87,7 +87,7 @@ def negbin_regression(
 
         mu_new = np.exp(np.clip(X_int @ beta_new, -20, 20))
 
-        def neg_ll(a):
+        def neg_ll(a, *, mu_new=mu_new):
             a = max(a, 1e-6)
             ll = np.sum(sp_stats.nbinom.logpmf(y.astype(int), n=1 / a, p=1 / (1 + a * mu_new)))
             return -ll

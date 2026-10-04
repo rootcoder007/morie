@@ -102,7 +102,7 @@ def esl_iwls(X, y, beta0=None, family="binomial", max_iter=50, tol=1e-8, add_int
         raise ValueError(f"beta0 must have {p} entries")
 
     converged = False
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         eta = X @ beta
         if family == "binomial":
             mu = 1.0 / (1.0 + np.exp(-np.clip(eta, -500, 500)))

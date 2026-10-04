@@ -127,7 +127,7 @@ def bayesian_glm(X, y, family="binomial", prior_sd=2.5, add_intercept=True, max_
     beta = [0.0] * p
     it, converged = 0, False
     H = None
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         eta = [sum(Xm[i][a] * beta[a] for a in range(p)) for i in range(n)]
         mu = [inv(e) for e in eta]
         w = [var(m) for m in mu]

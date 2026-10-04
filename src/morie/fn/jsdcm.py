@@ -45,7 +45,7 @@ def joint_sparse_decompose(
     C = X.copy()
     step = 1.0
 
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         grad = C - X
         Z = C - step * grad
 

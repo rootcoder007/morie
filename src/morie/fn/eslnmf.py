@@ -119,7 +119,7 @@ def esl_nmf(X, k, max_iter=500, tol=1e-10, seed=13, loss="frobenius", W0=None, H
     prev = float("inf")
     converged, it = False, 0
     path = []
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         if loss == "frobenius":
             H = H * (W.T @ X) / (W.T @ W @ H + eps)
             W = W * (X @ H.T) / (W @ H @ H.T + eps)

@@ -155,7 +155,7 @@ def hmm_genotype_probabilities(genotypes, positions, error_rate=0.0):
     out = []
     for row in genotypes:
 
-        def emit(j, state):
+        def emit(j, state, *, row=row):
             if row[j] is None:
                 return 1.0
             return (1.0 - e) if int(row[j]) == state else e

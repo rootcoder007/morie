@@ -42,7 +42,7 @@ def peak_detect_advanced(x, prominence=0.5, distance=10, **kwargs) -> Descriptiv
 
     filtered = []
     filtered_proms = []
-    for i, (idx, prom) in enumerate(zip(candidates, proms)):
+    for i, (idx, prom) in enumerate(zip(candidates, proms)):  # noqa: B007 - read after the loop
         if prom >= prominence:
             filtered.append(idx)
             filtered_proms.append(prom)

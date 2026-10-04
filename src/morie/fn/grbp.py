@@ -106,7 +106,9 @@ def geron_backpropagation_gradient(activations, weights, y_true, activation="sig
             raise ValueError(f"activations[{i}] contains non-finite values.")
     for ell, W in enumerate(Ws):
         if W.shape != (acts[ell].shape[1], acts[ell + 1].shape[1]):
-            raise ValueError(f"weights[{ell}] has shape {W.shape}, expected {(acts[ell].shape[1], acts[ell + 1].shape[1])}.")
+            raise ValueError(
+                f"weights[{ell}] has shape {W.shape}, expected {(acts[ell].shape[1], acts[ell + 1].shape[1])}."
+            )
         if not np.all(np.isfinite(W)):
             raise ValueError(f"weights[{ell}] contains non-finite values.")
     if y.shape != acts[-1].shape:

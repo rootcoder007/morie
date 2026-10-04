@@ -145,7 +145,7 @@ def lloyd_max_codebook(levels=4, source="gaussian", data=None, lo=None, hi=None,
     it = 0
     converged = False
     prev = float("inf")
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         cb = sorted(cb)
         # Nearest-neighbour condition: boundaries midway between codewords.
         bnd = [0.5 * (cb[k] + cb[k + 1]) for k in range(N - 1)]

@@ -75,7 +75,7 @@ def wasserman_em_algorithm(X, theta0, max_iter=200, tol=1e-8):
     ll_old = -np.inf
     converged = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         d1 = (1.0 - pi) * _norm_pdf(X, mu1, sd1)
         d2 = pi * _norm_pdf(X, mu2, sd2)
         tot = d1 + d2

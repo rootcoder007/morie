@@ -55,10 +55,8 @@ def bayesian_ppc(
         for factor_loads in model_fit["loadings"].values():
             if isinstance(factor_loads, dict):
                 all_loadings.append(list(factor_loads.values()))
-        if all_loadings:
-            Lambda = np.array(all_loadings).T  # k x nf
-        else:
-            Lambda = np.eye(k)
+        # k x nf
+        Lambda = np.array(all_loadings).T if all_loadings else np.eye(k)
     else:
         Lambda = np.eye(k)
 

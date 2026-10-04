@@ -8,8 +8,10 @@ import json
 import re
 from pathlib import Path
 
-inv = json.load(open("/tmp/msm_inv.json"))  # pre-shelf snapshot
-census = json.load(open("/tmp/eq_census.json"))
+with open("/tmp/msm_inv.json") as fh:  # pre-shelf snapshot
+    inv = json.load(fh)
+with open("/tmp/eq_census.json") as fh:
+    census = json.load(fh)
 
 
 def content_class(f):
@@ -118,7 +120,8 @@ for ch in sorted(census, key=int):
     )
 
 Path("scripts/audit/MVSML_INDEX.md").write_text("\n".join(out) + "\n")
-json.dump(rows, open("scripts/audit/mvsml_index.json", "w"), indent=1)
+with open("scripts/audit/mvsml_index.json", "w") as fh:
+    json.dump(rows, fh, indent=1)
 print("distinct methods indexed:", len(rows))
 print("stub files re-exporting them:", sum(len(r["reexported_by"]) for r in rows))
 cc = collections.Counter(r["stub_content"] for r in rows)

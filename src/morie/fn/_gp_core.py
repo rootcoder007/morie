@@ -594,7 +594,7 @@ def em_lmm(X, Z, y, D0=None, sigma2_0=1.0, n_iter=200, tol=1e-10):
     XtX = _mm(_t(Xm), Xm)
     ZtZ = _mm(_t(Zm), Zm)
     beta = _solve(XtX, _mv(_t(Xm), y))
-    for it in range(int(n_iter)):
+    for it in range(int(n_iter)):  # noqa: B007 - read after the loop
         Di = _inv(D)
         A = [[Di[i][j] + ZtZ[i][j] / s2 for j in range(q)] for i in range(q)]
         Dt = _inv(A)
@@ -1739,7 +1739,7 @@ def penalized_poisson_fit(X, y, lam=1.0, penalty="ridge", n_iter=100, tol=1e-10,
     beta = [0.0] * p
     if add_intercept:
         beta[0] = math.log(max(sum(ys) / n, 1e-6))
-    for it in range(int(n_iter)):
+    for it in range(int(n_iter)):  # noqa: B007 - read after the loop
         eta = _mv(Xm, beta)
         mu = [math.exp(min(v, 700.0)) for v in eta]
         w = [max(m, 1e-9) for m in mu]

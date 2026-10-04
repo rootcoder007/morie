@@ -63,11 +63,7 @@ def test_eslbpr_basic():
     assert result["grad_alpha0"].shape == expected_grad_alpha0.shape
     # elementwise agreement
     diff_b = float(np.max(np.abs(result["grad_beta"] - expected_grad_beta)))
-    diff_a0 = (
-        float(np.max(np.abs(result["grad_alpha0"] - expected_grad_a0)))
-        if False
-        else float(np.max(np.abs(result["grad_alpha0"] - expected_grad_alpha0)))
-    )
+    diff_a0 = float(np.max(np.abs(result["grad_alpha0"] - expected_grad_alpha0)))
     assert diff_b < 1e-10
     assert diff_a0 < 1e-10
 

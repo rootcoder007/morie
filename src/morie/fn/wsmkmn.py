@@ -72,7 +72,7 @@ def wasserman_kmeans(X, k, max_iter=300):
     labels = np.full(n, -1)
     converged = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         dist = np.sum((X[:, None, :] - C[None, :, :]) ** 2, axis=2)
         new = np.argmin(dist, axis=1)
         if np.array_equal(new, labels):

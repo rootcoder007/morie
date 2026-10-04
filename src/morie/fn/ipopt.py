@@ -68,7 +68,7 @@ def ipopt(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, mu_init=1.0, full_
 
     for iteration in range(max_iter):
 
-        def barrier_f(x_):
+        def barrier_f(x_, *, mu=mu):
             # f(x) - mu * sum(log(c_i(x)))
             barrier_val = f(x_)
             for c_dict in constraints:
@@ -78,12 +78,12 @@ def ipopt(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, mu_init=1.0, full_
                 barrier_val -= mu * np.log(c_val)
             return barrier_val
 
-        def barrier_grad(x_):
+        def barrier_grad(x_, *, mu=mu):
             # grad f - mu * sum(grad(log(c_i)))
             g = grad_f(x_)
             for c_dict in constraints:
                 c_val = c_dict["fun"](x_)
-                jac = c_dict.get("jac", lambda x: np.gradient(c_dict["fun"](x)))
+                jac = c_dict.get("jac", lambda z, *, c_dict=c_dict: np.gradient(c_dict["fun"](z)))
                 g -= mu * jac(x_) / (c_val + 1e-14)
             return g
 

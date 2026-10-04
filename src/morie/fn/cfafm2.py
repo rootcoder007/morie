@@ -63,7 +63,7 @@ def _fa_em(S, mask):
         v = S[i][i] - sum(lam[i][j] ** 2 for j in range(k))
         psi.append(v if v > 1e-6 else 1e-6)
     it = 0
-    for it in range(1, _MAXIT + 1):
+    for it in range(1, _MAXIT + 1):  # noqa: B007 - read after the loop
         Sig = [
             [sum(lam[a][j] * lam[b][j] for j in range(k)) + (psi[a] if a == b else 0.0) for b in range(p)]
             for a in range(p)

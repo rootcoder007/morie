@@ -79,7 +79,7 @@ def geron_bellman_optimality(V, P, R, gamma, tol=1e-10, max_iter=10000):
     residual = np.inf
     it = 0
     Q = Rm + g * (Pm @ Vv)
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         Q = Rm + g * (Pm @ Vv)
         Vn = Q.max(axis=1)
         residual = float(np.max(np.abs(Vn - Vv)))

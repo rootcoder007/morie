@@ -132,7 +132,7 @@ def synthetic_control(x_treated, x_donors, v=None, max_iter=5000, tol=1e-12, ste
     cur = loss(w)
     converged = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         r = resid(w)
         grad = [-2.0 * sum(vv[i] * r[i] * D[j][i] for i in range(k)) for j in range(J)]
         s = step

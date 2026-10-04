@@ -350,7 +350,7 @@ def trust_region(
     last_why = "not started"
     why = "iteration limit"
     k = 0
-    for k in range(1, int(max_iter) + 1):
+    for k in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         g = [float(v) for v in grad_f(x)]
         gn = _norm(g)
         if gn <= gtol:

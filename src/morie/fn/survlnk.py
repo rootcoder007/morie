@@ -68,7 +68,7 @@ def link_function_survival(time, event, X, link="cloglog", max_iter=100, tol=1e-
     theta = np.zeros(q)
     ll = 0.0
     info = np.zeros((q, q))
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         U = np.zeros(q)
         info = np.zeros((q, q))
         ll = 0.0

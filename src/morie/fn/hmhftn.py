@@ -157,9 +157,7 @@ def geron_hf_trainer(model, args, train_ds, eval_ds=None):
     for ep in range(1, epochs + 1):
         order = rng.permutation(m)
         losses = []
-        step = 0
-        for start in range(0, m, batch_size):
-            step += 1
+        for step, start in enumerate(range(0, m, batch_size), start=1):
             idx = order[start : start + batch_size]
             loss, grad = lg(params, Xtr[idx], ytr[idx])
             grad = np.atleast_1d(np.asarray(grad, dtype=float)).ravel()

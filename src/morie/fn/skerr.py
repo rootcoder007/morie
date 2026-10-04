@@ -69,7 +69,7 @@ def spatial_error_model(
     resid = y - X @ beta
     lam = 0.0
 
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         Wu = W @ resid
         denom = float(Wu @ Wu)
         lam_new = float(Wu @ resid) / denom if denom > 0 else 0.0

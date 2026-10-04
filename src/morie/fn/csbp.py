@@ -59,7 +59,7 @@ def basis_pursuit_l1(
     def _soft_threshold(z, thresh):
         return np.sign(z) * np.maximum(np.abs(z) - thresh, 0.0)
 
-    for i in range(max_iter):
+    for i in range(max_iter):  # noqa: B007 - read after the loop
         grad = AtA @ x - Aty
         x_new = _soft_threshold(x - t * grad, t * lambda_)
         if np.linalg.norm(x_new - x) < tol:

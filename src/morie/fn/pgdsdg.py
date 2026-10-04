@@ -163,7 +163,7 @@ def projected_gradient(f, grad, x0, project, step=None, rule="backtracking", max
     hist = [float(f(x))]
     y, tk = list(x), 1.0
     n_back = 0
-    for it in range(int(max_iter)):
+    for it in range(int(max_iter)):  # noqa: B007 - read after the loop
         base = y if rule == "fista" else x
         g = [float(v) for v in grad(base)]
         if len(g) != n:

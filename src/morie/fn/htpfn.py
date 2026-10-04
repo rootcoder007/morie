@@ -213,7 +213,7 @@ def htp_functional_predictor(y, markers, W_functional, n_basis=5, lam=1.0, a=0.0
             "fixed-effect block is not, so this means the functional design Xstar "
             "is rank deficient -- typically n_basis >= n, or curves that are "
             "identical across lines."
-        )
+        ) from exc
     # The Cholesky solve returns a ZERO VECTOR, silently and without error,
     # when the coefficient matrix is not positive definite. Check that the
     # solution actually solves the system rather than trusting it converged.

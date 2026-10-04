@@ -190,11 +190,8 @@ def bcq(
         target = {}
         cnt = {}
         for s, a, r, s1, done in D:
-            if done:
-                t = r
-            else:
-                # eq. 18: the max runs over the CONSTRAINED set.
-                t = r + gamma * max(Q[(s1, b)] for b in allowed[s1])
+            # eq. 18: the max runs over the CONSTRAINED set.
+            t = r if done else r + gamma * max(Q[s1, b] for b in allowed[s1])
             target[(s, a)] = target.get((s, a), 0.0) + t
             cnt[(s, a)] = cnt.get((s, a), 0) + 1
         delta = 0.0

@@ -555,7 +555,7 @@ def snpqc1(
     drop = []
     for _t, j in enumerate(snps):
 
-        def counts(rows):
+        def counts(rows, *, j=j):
             a = h = b = 0
             for i in rows:
                 g = G[i][j]

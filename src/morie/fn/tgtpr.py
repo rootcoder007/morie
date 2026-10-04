@@ -54,7 +54,7 @@ def tgtpr(
 
     if link == "logit":
         Q_logit = special.logit(np.clip(Q_init, 1e-6, 1 - 1e-6))
-        for it in range(max_iter):
+        for it in range(max_iter):  # noqa: B007 - read after the loop
             Q_star = special.expit(Q_logit + epsilon * H)
             Q_star = np.clip(Q_star, 1e-8, 1 - 1e-8)
             score = np.sum(H * (Y - Q_star))
@@ -68,7 +68,7 @@ def tgtpr(
                 break
         Q_final = special.expit(Q_logit + epsilon * H)
     elif link == "identity":
-        for it in range(max_iter):
+        for it in range(max_iter):  # noqa: B007 - read after the loop
             Q_star = Q_init + epsilon * H
             score = np.sum(H * (Y - Q_star))
             info = np.sum(H**2)

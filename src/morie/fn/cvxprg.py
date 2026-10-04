@@ -100,7 +100,7 @@ def boyd_proximal_grad(f, grad_f, prox, x0, t=0.1, max_iter=500, tol=1e-09, h=No
     obj = [float(f(x)) + (float(h(x)) if h is not None else 0.0)]
     conv = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         g = np.atleast_1d(np.asarray(grad_f(x), dtype=float)).ravel()
         x_new = np.atleast_1d(np.asarray(prox(x - t * g, t), dtype=float)).ravel()
         obj.append(float(f(x_new)) + (float(h(x_new)) if h is not None else 0.0))

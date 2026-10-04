@@ -3,18 +3,21 @@
 'He who would learn to fly one day must first learn to stand and walk. — Friedrich Nietzsche'
 """
 
+import contextlib
+
 import pytest
 
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
-try:
-    # pytest.approx() compares nested array-likes only when numpy is
-    # loaded (it converts objects with __array__); without this the
-    # result depended on which other test had imported numpy first.
+# module-scoped fixtures shared by the MSM tests (gentmt, lggvls, polkrn, tdcvar)
+from ._msm_fixture import dose, feedback  # noqa: F401
+
+# pytest.approx() compares nested array-likes only when numpy is
+# loaded (it converts objects with __array__); without this the
+# result depended on which other test had imported numpy first.
+with contextlib.suppress(ImportError):  # pragma: no cover - numpy is a dev dependency
     import numpy  # noqa: F401
-except ImportError:  # pragma: no cover - numpy is a dev dependency
-    pass
 
 
 @pytest.fixture()

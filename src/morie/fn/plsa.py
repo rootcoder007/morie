@@ -183,7 +183,7 @@ def fit_plsa(n_dw, K, iters=100, tol=1e-8, seed=0):
     Pw_z = [norm([0.5 + float(rng.uniform()) for _ in range(V)]) for _ in range(int(K))]
     hist, prev = [], None
     it = 0
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         post = e_step(N, Pz, Pd_z, Pw_z)
         Pz, Pd_z, Pw_z = m_step(N, post, int(K))
         ll = log_likelihood(N, Pz, Pd_z, Pw_z)

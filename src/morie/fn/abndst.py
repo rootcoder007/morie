@@ -131,7 +131,7 @@ def abundance_estimation(kraken_output, kmer_distribution, max_iter=1000, tol=1e
     it = 0
     converged = False
     r_use = np.where(reachable, r, 0.0)
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         w = P * theta[None, :]
         den = w.sum(axis=1)
         den_safe = np.where(den > 0, den, 1.0)

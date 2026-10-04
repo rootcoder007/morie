@@ -269,12 +269,12 @@ def _fmt_num(x, digits):
     if digits is None:
         s = f"{x:.17g}"
     elif isinstance(digits, Sig):
-        s = "%.*g" % (max(1, digits.n), x)
+        s = f"{x:.{max(1, digits.n)}g}"
     else:
         d = int(digits)
         if d < 0:
             d = 0
-        s = "%.*f" % (d, x)
+        s = f"{x:.{d}f}"
     return _tidy(s)
 
 

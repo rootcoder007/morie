@@ -186,7 +186,7 @@ def descriptors(smiles):
         if arom[i]:
             continue
         allsingle = True
-        for v, o, k in adj[i]:
+        for v, o, k in adj[i]:  # noqa: B007 - read after the loop
             if o != 1:
                 allsingle = False
         if allsingle and len(adj[i]) + nh[i] == 4:
@@ -246,7 +246,7 @@ def fit(X, y, ridge=1e-6, iters=50, tol=1e-12):
     b = [0.0] * p
     it = 0
     dev = 0.0
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         eta = [_w.dot(D[i], b) for i in range(n)]
         mu = [_logistic(v) for v in eta]
         w = [max(mu[i] * (1.0 - mu[i]), 1e-10) for i in range(n)]

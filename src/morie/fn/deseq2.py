@@ -239,7 +239,7 @@ def nb_glm_fit(K, X, alpha, s=None, lam=None, max_iter=100, tol=1e-8, beta0=None
     converged = False
     it = 0
     Sig = None
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         mu = []
         for j in range(m):
             eta = sum(X[j][r] * beta[r] for r in range(p))
@@ -256,8 +256,10 @@ def nb_glm_fit(K, X, alpha, s=None, lam=None, max_iter=100, tol=1e-8, beta0=None
         Mr = [[M[a][bb] + (lam[a] if a == bb else 0.0) for bb in range(p)] for a in range(p)]
         try:
             new = [float(t) for t in np.linalg.solve(np.asarray(Mr, dtype=float), np.asarray(v, dtype=float))]
-        except Exception:
-            raise ValueError("deseq2: the GLM design is singular; check the design matrix for collinear columns")
+        except Exception as exc:
+            raise ValueError(
+                "deseq2: the GLM design is singular; check the design matrix for collinear columns"
+            ) from exc
         step = max(abs(new[r] - beta[r]) for r in range(p))
         beta = new
         Sig = Mr

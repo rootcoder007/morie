@@ -211,7 +211,7 @@ def wnominate_alternating(votes, n_dims=1, polarity=None, max_iter=250, tol=1e-7
     delta = float("inf")
     it = 0
     converged = False
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         for i in range(n):
             oi = obs[i]
             if int(oi.sum()) < n_dims + 1:

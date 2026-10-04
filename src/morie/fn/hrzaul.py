@@ -20,7 +20,9 @@ def _phi(v, p):
 
 def _gram(p):
     """Exact Gram matrix int_0^1 phi_k phi_l dv."""
-    return [[1.0 / (k + ell + 1.0) - 1.0 / ((k + 1.0) * (ell + 1.0)) for ell in range(1, p + 1)] for k in range(1, p + 1)]
+    return [
+        [1.0 / (k + ell + 1.0) - 1.0 / ((k + 1.0) * (ell + 1.0)) for ell in range(1, p + 1)] for k in range(1, p + 1)
+    ]
 
 
 def _rough(p):
@@ -230,7 +232,7 @@ def horowitz_additive_unknown_link(x, y, bandwidth=None, degree=3, link_degree=3
 
     # (3.25) exactly: each basis function integrates to zero, so does m_j.
     loc = 0.0
-    for j in range(d):
+    for _j in range(d):
         loc += abs(0.0)
 
     return RichResult(

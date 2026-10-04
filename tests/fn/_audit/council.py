@@ -61,7 +61,8 @@ def main():
         out["synthesis"] = agg
         print(f"\n{'=' * 70}\n### SYNTHESIS ({ORCHESTRATOR}, {dt:.1f}s)\n{'=' * 70}\n{agg}", flush=True)
         print("\n[FINAL DECISION IS OPUS 5's -- this synthesis is advisory, and the book outranks both.]", flush=True)
-    json.dump(out, open("/tmp/council_out.json", "w"), indent=2)
+    with open("/tmp/council_out.json", "w") as fh:
+        json.dump(out, fh, indent=2)
 
 
 if __name__ == "__main__":

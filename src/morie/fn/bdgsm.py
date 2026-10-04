@@ -90,7 +90,7 @@ def bridge_sampling(log_p_posterior, log_q_posterior, log_p_proposal, log_q_prop
     logr = 0.0
     it = 0
     converged = False
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         r = np.exp(logr)
         num = np.mean(e2 / (s1 * e2 + s2 * r))
         den = np.mean(1.0 / (s1 * e1 + s2 * r))
