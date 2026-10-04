@@ -132,6 +132,23 @@ def test_exec_file_runs_the_users_file_in_place(monkeypatch, tmp_path, capfd):
     out, err = capfd.readouterr()
     assert out.splitlines()[:2] == ["g.py", "['g.py']"]
     assert 'File "g.py", line 5' in err
+    # the traceback starts at the user's frame: none of the runner's own frames
+    assert "runpy" not in err and 'File "<string>", line 1' not in err
+    assert err.count("File ") == 1
+
+
+def test_exec_inline_traceback_reads_like_python_c(monkeypatch, capfd):
+    import pytest
+
+    pytest.importorskip("morie._exec_guard")
+    from morie import runner
+
+    monkeypatch.setattr("sys.argv", ["morie", "exec", "1/0"])
+    assert runner.main() == 1
+    err = capfd.readouterr().err
+    assert 'File "<string>", line 1, in <module>' in err
+    assert "morie_exec.py" not in err and "runpy" not in err
+    assert err.rstrip().endswith("ZeroDivisionError: division by zero")
 
 
 def test_morie_no_progress_zero_keeps_the_bars(monkeypatch):
@@ -847,3 +864,18 @@ def test_run_module_removes_only_the_staging_directory_it_made(monkeypatch, tmp_
     monkeypatch.setattr(m, "_cpads_csv_for_run", lambda *a, **k: made / "d.csv")
     m.run_module("power-design")
     assert not made.exists() and made not in m._STAGED_DIRS
+
+
+def test_verify_and_inspect_of_a_module_that_writes_no_tables(tmp_path, capsys, monkeypatch):
+    import sys
+
+    from morie import runner
+
+    (tmp_path / "power_summary.csv").write_text("a,b\n1,2\n")
+    for verb in ("verify", "inspect"):
+        monkeypatch.setattr(sys, "argv", ["morie", verb, str(tmp_path), "--module", "figures"])
+        assert runner.main() == 0
+        assert "figures writes no tables" in capsys.readouterr().out
+        monkeypatch.setattr(sys, "argv", ["morie", verb, str(tmp_path), "--module", "descriptive-statistics"])
+        assert runner.main() == 1
+        assert "no table of descriptive-statistics" in capsys.readouterr().out

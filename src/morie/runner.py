@@ -1422,6 +1422,14 @@ def _main_impl() -> int:
         if args.module not in known:
             print(f"unknown module: {args.module} (names: morie list-modules)", file=sys.stderr)
             return 1
+        from .modules import MODULE_SPECS
+
+        outputs = MODULE_SPECS[args.module].output_files if args.module in MODULE_SPECS else ()
+        if outputs and not any(str(f).lower().endswith(".csv") for f in outputs):
+            # figures / tables / final-report: figures and HTML, nothing the table checks apply to
+            kinds = sorted({str(f).rsplit(".", 1)[-1].lower() for f in outputs if "." in str(f)})
+            print(f"{args.module} writes no tables (its outputs are {'/'.join(kinds)} files); nothing to check")
+            return 0
 
     if args.command == "list-datasets":
         from .data import list_datasets
@@ -2399,7 +2407,10 @@ def _main_impl() -> int:
         elif target.is_dir():
             results = inspect_directory(target, module_name=args.module)
             if not results:
-                print(f"No CSV files found in {target}")
+                if args.module:  # never every table in the tree under another module's name
+                    print(f"no table of {args.module} in {target} (run it: morie run-module {args.module})")
+                else:
+                    print(f"No CSV files found in {target}")
                 return 1
             for result in results:
                 render_inspection(result)
@@ -2426,7 +2437,10 @@ def _main_impl() -> int:
         elif target.is_dir():
             reports = verify_directory(target, module_name=args.module)
             if not reports:
-                print(f"No CSV files found in {target}")
+                if args.module:  # never every table in the tree under another module's name
+                    print(f"no table of {args.module} in {target} (run it: morie run-module {args.module})")
+                else:
+                    print(f"No CSV files found in {target}")
                 return 1
             all_passed = True
             for report in reports:
@@ -2525,19 +2539,35 @@ def _handle_exec(args: argparse.Namespace) -> int:
         "    g.update(fn=fn, REGISTRY=REGISTRY)\n"
         "except ImportError:\n"
         "    pass\n"
-        "path = sys.argv[1]\n"
-        "sys.argv = sys.argv[1:]\n"
+        "path, shown = sys.argv[1], sys.argv[2]\n"
+        "sys.argv = [path] if shown == path else ['-c']\n"
         "sys.path[0] = os.path.dirname(os.path.abspath(path))\n"
-        "del os, sys\n"
-        "runpy.run_path(path, init_globals=g, run_name='__morie_exec__')\n"
+        "try:\n"
+        "    runpy.run_path(path, init_globals=g, run_name='__morie_exec__')\n"
+        "except SystemExit:\n"
+        "    raise\n"
+        "except BaseException as e:\n"
+        "    import traceback\n"
+        # drop the runner's own frames: the traceback starts at the user's code, as `python FILE` shows
+        "    tb = e.__traceback__\n"
+        "    while tb is not None and tb.tb_frame.f_code.co_filename != path:\n"
+        "        tb = tb.tb_next\n"
+        "    te = traceback.TracebackException(type(e), e, tb or e.__traceback__)\n"
+        "    for fs in te.stack:\n"
+        "        if fs.filename == path:\n"
+        "            fs.filename = shown\n"
+        "    sys.stderr.write(''.join(te.format()))\n"
+        "    sys.exit(130 if isinstance(e, KeyboardInterrupt) else 1)\n"
     )
     if args.exec_file:
-        return subprocess.run([sys.executable, "-c", boot, args.exec_file], check=False).returncode
+        cmd = [sys.executable, "-c", boot, args.exec_file, args.exec_file]
+        return subprocess.run(cmd, check=False).returncode
     with tempfile.TemporaryDirectory() as d:
         tmp = os.path.join(d, "morie_exec.py")
         with open(tmp, "w", encoding="utf-8") as f:
             f.write(code)
-        return subprocess.run([sys.executable, "-c", boot, tmp], check=False).returncode
+        # inline code is reported as python -c reports it: File "<string>"
+        return subprocess.run([sys.executable, "-c", boot, tmp, "<string>"], check=False).returncode
 
 
 def _handle_exec_co(args: argparse.Namespace) -> int:

@@ -136,7 +136,8 @@ Step-by-step log of what the data-wrangling module did to your input
     # ─── descriptive-statistics outputs ─────────────────────────────────
     "binomial_summaries.csv": """
 Unweighted binomial summaries (e.g. heavy_drinking_30d prevalence): plain
-sample proportions with Wilson intervals, no survey weights applied. Compare
+sample proportions with 95% Wald intervals (ci_low_wald, ci_high_wald;
+p +/- 1.96 sqrt(p(1-p)/n), clipped to [0, 1]), no survey weights applied. Compare
 against binomial_summaries_survey_weighted to see how much the design
 weights shift the estimates.
 """.strip(),
@@ -150,19 +151,22 @@ Read column by column; row labels indicate the conditioning event.
 """.strip(),
     # ─── frequentist-inference outputs ──────────────────────────────────
     "frequentist_heavy_drinking_prevalence_ci.csv": """
-Frequentist (Wilson / Clopper-Pearson) confidence intervals for the
-prevalence of heavy drinking.  Each row is one subgroup; columns are
-estimate, ci_lower, ci_upper.
+Survey-weighted prevalence of heavy drinking with 95% Wald intervals on the
+Kish effective sample size (n_eff = (sum w)^2 / sum w^2).  Each row is one
+subgroup: prev, se, ci_lower, ci_upper, n_unweighted_nonmissing.
 """.strip(),
     "frequentist_effect_sizes.csv": """
-Cohen's-d / odds-ratio / risk-difference effect sizes for the primary
-contrasts of the analysis.  Read alongside p-values from
+Effect sizes for each pair of subgroups' weighted heavy-drinking prevalence
+(p1, p2) on three scales: Cohen's h = 2 asin(sqrt(p1)) - 2 asin(sqrt(p2))
+(|h| < 0.2 small, < 0.5 medium, otherwise large), risk_difference = p1 - p2,
+and odds_ratio = [p1/(1-p1)] / [p2/(1-p2)].  Read alongside p-values from
 frequentist_hypothesis_tests.csv.
 """.strip(),
     "frequentist_hypothesis_tests.csv": """
-Per-contrast p-values and test statistics.  CAUTION: these are
-NOT corrected for multiple comparisons by default — apply
-Bonferroni / Benjamini-Hochberg yourself if your design demands it.
+Per-contrast test statistics and p-values.  p_value is unadjusted;
+p_bonferroni and p_fdr_bh adjust it across all the tests in this table
+(Bonferroni; Benjamini-Hochberg), and sig_nominal / sig_bonf / sig_fdr flag
+p < 0.05 on each scale.
 """.strip(),
 }
 

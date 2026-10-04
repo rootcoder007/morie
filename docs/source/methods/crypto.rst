@@ -93,12 +93,15 @@ password protection:
 
 .. code-block:: python
 
+   import os, tempfile
    from morie.crypto import create_keystore, hybrid_keygen, load_keypair, store_keypair
 
-   create_keystore("my-password")
+   # a throwaway keystore; leave out path= to use your own ~/.morie/keys/keystore.json
+   ks = os.path.join(tempfile.mkdtemp(), "keystore.json")
+   create_keystore("my-password", path=ks)
    pk, sk = hybrid_keygen()
-   store_keypair("alice", pk, sk, "my-password")
-   pk2, sk2 = load_keypair("alice", "my-password")
+   store_keypair("alice", pk, sk, "my-password", path=ks)
+   pk2, sk2 = load_keypair("alice", "my-password", path=ks)
 
 Security Considerations
 -----------------------

@@ -39,7 +39,7 @@ We applied the [MODULE_NAME] module of morie, which provides [REPLACE_WITH_MODUL
 
 - **`power-design`**: Sample-size and power calculations followed the survey-weighted two-proportion formula implemented in morie's `power-design` module, calibrated against G*Power [REF] using the cross-reference table in `power_gpower_reference_two_group.csv`.
 - **`descriptive-statistics`**: Prevalence estimates were computed with the design weight (the `weight` column in CPADS) and survey-design–robust standard errors.
-- **`frequentist-inference`**: Confidence intervals are Wilson intervals for binomial proportions [REF]; effect sizes are reported as Cohen's *h* for two-proportion contrasts and as odds ratios for logistic models.
+- **`frequentist-inference`**: Confidence intervals for binomial proportions are 95% Wald intervals (survey-weighted ones on the Kish effective sample size) [REF]; effect sizes are reported as Cohen's *h* for two-proportion contrasts and as odds ratios for logistic models.
 - **`bayesian-inference`**: Posterior summaries assume a Beta(1, 1) (uniform) prior for proportions, with credible intervals computed from posterior quantiles.
 - **`logistic-models`**: Logistic regression was fit with the survey weight; interaction terms and SMOTE oversampling for class imbalance were applied as preplanned in `logistic_smote_*.csv`.
 - **`mrm_*` (causal inference)**: The MRM module composed ten estimators (IPW Hájek, AIPW RRZ doubly-robust, double machine learning IRM, propensity-score matching, …); details and theoretical motivation are in [@Ruhela2026MRM].

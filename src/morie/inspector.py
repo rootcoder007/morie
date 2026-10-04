@@ -144,7 +144,7 @@ def inspect_directory(
         raise NotADirectoryError(f"Not a directory: {directory}")
 
     if module_name and module_name in MODULE_SPECS:
-        expected = MODULE_SPECS[module_name].output_files
+        expected = [f for f in MODULE_SPECS[module_name].output_files if f.lower().endswith(".csv")]
         files = []
         for base in (directory, directory / module_name):  # a module folder, or the folder that holds module folders
             files = [base / f for f in expected if (base / f).is_file()]
@@ -405,7 +405,7 @@ def verify_directory(
         raise NotADirectoryError(f"Not a directory: {directory}")
 
     if module_name and module_name in MODULE_SPECS:
-        expected = MODULE_SPECS[module_name].output_files
+        expected = [f for f in MODULE_SPECS[module_name].output_files if f.lower().endswith(".csv")]
         files = []
         for base in (directory, directory / module_name):  # a module folder, or the folder that holds module folders
             files = [base / f for f in expected if (base / f).is_file()]
