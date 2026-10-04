@@ -21,6 +21,7 @@ from __future__ import annotations
 import code as _code
 import contextlib
 import io
+import json
 import os
 import re
 import shutil
@@ -929,6 +930,13 @@ class PolyglotEngine:
         except ImportError:
             pass
 
+    def _restart_r(self) -> bool:
+        if self._r_proc:
+            self._r_proc.kill()
+            self._r_proc.wait()
+        self._r_proc = None
+        return self._start_r()
+
     def _start_r(self) -> bool:
         if self._r_proc and self._r_proc.poll() is None:
             return True
@@ -1190,9 +1198,25 @@ class PolyglotEngine:
                 self._inject_r_var(name, val)
 
         sentinel = f"__MORIE_{id(code)}__"
+        # R reading a pipe is non-interactive and quits on its first error, so a stop() would end the
+        # session and the next write would hit a dead pipe (EINVAL on Windows). Each chunk runs inside
+        # R's own handler instead: visible values print as at the prompt, an error prints "Error: ..."
+        # and the session lives on.
+        wrapped = (
+            "tryCatch(local({ for (.morie_e in parse(text = " + json.dumps(code) + ")) {"
+            " .morie_r <- withVisible(eval(.morie_e, globalenv())); if (.morie_r$visible) print(.morie_r$value) }"
+            ' }), error = function(e) cat("Error: ", conditionMessage(e), "\\n", sep = ""))'
+        )
         try:
-            self._r_proc.stdin.write(f"{code}\ncat('{sentinel}\\n')\n")
-            self._r_proc.stdin.flush()
+            for attempt in (1, 2):
+                try:
+                    self._r_proc.stdin.write(f"{wrapped}\ncat('{sentinel}\\n')\n")
+                    self._r_proc.stdin.flush()
+                    break
+                except OSError:
+                    # the session ended between commands: start a new one once
+                    if attempt == 2 or not self._restart_r():
+                        raise
             lines = []
             while True:
                 raw = self._r_proc.stdout.readline()
