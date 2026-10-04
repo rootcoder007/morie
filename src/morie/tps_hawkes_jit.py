@@ -1091,7 +1091,11 @@ def hawkes_inar(t, T, kernel_kind, baseline_kind, bounds, delta=None, support=No
     n = len(tl)
     rate = n / T
     if delta is None:
-        delta = max(T / 20000.0, 0.25 / rate)  # at most 20,000 bins
+        # bins narrow against the clustering (a quarter of the median gap; offspring that share
+        # their parent's bin are invisible to the lag regression), at most 20,000 of them
+        gaps = sorted(b - a for a, b in zip(tl[:-1], tl[1:]))
+        med = gaps[len(gaps) // 2] if gaps else T / max(n, 1)
+        delta = max(T / 20000.0, min(0.25 / rate, med / 4.0))
     if support is None:
         support = min(T / 10.0, 200.0 * delta)
     p = max(2, int(math.ceil(support / delta)))

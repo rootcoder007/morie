@@ -536,6 +536,28 @@ def _time_rescaling_residuals(
 # ── Pretty wrappers (RichResult) ────────────────────────────────────
 
 
+def splitmix_uniforms(n: int, seed: int) -> list[float]:
+    """n uniforms on [0, 1) from splitmix64 (Steele, Lea & Flood 2014): the same numbers as
+    ``rmoriebricklayer::core_uniforms(n, seed)``, so the R and Python arms draw identical values
+    where their results must agree (the within-day jitter of tied dates, a subsample).
+
+    Examples:
+        >>> [round(u, 12) for u in splitmix_uniforms(2, 42)]
+        [0.741564878772, 0.159910392877]
+    """
+    mask = (1 << 64) - 1
+    x = int(seed) & mask
+    out = []
+    for _ in range(int(n)):
+        x = (x + 0x9E3779B97F4A7C15) & mask
+        z = x
+        z = ((z ^ (z >> 30)) * 0xBF58476D1CE4E5B9) & mask
+        z = ((z ^ (z >> 27)) * 0x94D049BB133111EB) & mask
+        z ^= z >> 31
+        out.append((z >> 11) * (1.0 / 9007199254740992.0))
+    return out
+
+
 def _events_to_days(df: pd.DataFrame, max_n: int | None) -> tuple[np.ndarray, float]:
     """Convert TPS event timestamps to a clean days-since-t0 vector.
 
@@ -550,15 +572,20 @@ def _events_to_days(df: pd.DataFrame, max_n: int | None) -> tuple[np.ndarray, fl
     dt = _date_series(df)
     # a random subsample thins the process (its clustering is lost: Hawkes fits on thinned data
     # flatten the kernel comparison); None keeps every event, now that the likelihood is fast
-    if max_n is not None and dt.size > max_n:
-        dt = dt.sample(n=max_n, random_state=42).sort_values()
-    t0 = dt.min()
-    t = (dt - t0).dt.total_seconds().to_numpy() / 86400.0
-    rng = np.random.default_rng(42)
-    # Add U(0,1)-day jitter to break OCC_DATE ties; the original event
-    # ordering by day is preserved because the jitter is at most 1 day.
-    t = t + rng.random(t.size)
-    t.sort()
+    vals = list(dt.tolist())
+    if max_n is not None and len(vals) > max_n:
+        # the max_n events with the smallest splitmix keys (seed 43), in data order: the same
+        # subsample as rmorie's (a random sample in each language would differ)
+        keys = splitmix_uniforms(len(vals), 43)
+        keep = sorted(sorted(range(len(vals)), key=keys.__getitem__)[:max_n])
+        vals = [vals[i] for i in keep]
+    vals = sorted(vals)  # stable: ties keep data order
+    t0 = vals[0]
+    # U(0,1)-day jitter (splitmix64, seed 42, the same numbers as rmorie's) breaks the daily ties;
+    # the order of days is kept because the jitter is below one day
+    jit = splitmix_uniforms(len(vals), 42)
+    t = sorted((v - t0).total_seconds() / 86400.0 + u for v, u in zip(vals, jit))
+    t = np.asarray(t, dtype=float)
     return t, float(t[-1])
 
 
@@ -732,11 +759,14 @@ def compare_hawkes_kernels(
     )
 
 
-def hawkes_markovian_vs_nonmarkovian(df: pd.DataFrame, *, ds_name: str = "?", max_n: int = 4000) -> RichResult:
+def hawkes_markovian_vs_nonmarkovian(
+    df: pd.DataFrame, *, ds_name: str = "?", max_n: int | None = None, method: str = "auto", eps: float = 1e-9
+) -> RichResult:
     """Focused 2-way comparison: classical exp/const vs gamma/sinusoidal.
 
     The two endpoints of the Kwan-Chen-Dunsmuir framework -- quickest to
-    run on the dashboard.
+    run on the dashboard. ``max_n=None`` keeps every event; ``method`` and ``eps`` as in
+    :func:`fit_hawkes_general`.
     """
     return compare_hawkes_kernels(
         df,
@@ -744,4 +774,6 @@ def hawkes_markovian_vs_nonmarkovian(df: pd.DataFrame, *, ds_name: str = "?", ma
         max_n=max_n,
         kernels=("exponential", "gamma"),
         baselines=("constant", "sinusoidal"),
+        method=method,
+        eps=eps,
     )
